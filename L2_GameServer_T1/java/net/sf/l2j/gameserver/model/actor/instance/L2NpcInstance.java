@@ -805,6 +805,7 @@ public class L2NpcInstance extends L2Character
             html1.append("Rates legend: <font color=\"ff0000\">50%+</font> <font color=\"00ff00\">30%+</font> <font color=\"0000ff\">less than 30%</font>");
             html1.append("<table border=0 width=\"100%\">");
 
+            if (getTemplate().getDropData()!=null)
             for(L2DropCategory cat:getTemplate().getDropData())
 	    	    for(L2DropData drop : cat.getAllDrops())
 	    	    {

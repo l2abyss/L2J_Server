@@ -876,7 +876,7 @@ public final class L2VillageMasterInstance extends L2FolkInstance
 
     private final Race getVillageMasterRace()
     {
-        String npcClass = getTemplate().getStatsSet().getString("jClass").toLowerCase();
+        String npcClass = getTemplate().jClass.toLowerCase();
 
         if (npcClass.indexOf("human") > -1) return Race.Human;
 
@@ -893,7 +893,7 @@ public final class L2VillageMasterInstance extends L2FolkInstance
 
     private final ClassType getVillageMasterTeachType()
     {
-        String npcClass = getTemplate().getStatsSet().getString("jClass");
+        String npcClass = getTemplate().jClass.toLowerCase();
 
         if (npcClass.indexOf("sanctuary") > -1 || npcClass.indexOf("clergyman") > -1)
             return ClassType.Priest;

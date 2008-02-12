@@ -1264,6 +1264,7 @@ public class L2Attackable extends L2NpcInstance
          	CursedWeaponsManager.getInstance().checkDrop(this, player);
 
          // now throw all categorized drops and handle spoil.
+         if (npcTemplate.getDropData()!=null)
     	 for(L2DropCategory cat:npcTemplate.getDropData())
     	 {
     		 RewardItem item = null;

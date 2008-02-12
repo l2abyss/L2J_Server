@@ -878,6 +878,7 @@ public class AdminEditNpc implements IAdminCommandHandler {
 		replyMSG.append("<table>");
 		replyMSG.append("<tr><td>npc_id itemId category</td><td>item[id]</td><td>type</td><td>del</td></tr>");
 
+		if (npcData.getDropData()!=null)
 		for(L2DropCategory cat:npcData.getDropData())
 			for(L2DropData drop : cat.getAllDrops())
 			{
@@ -1111,7 +1112,7 @@ public class AdminEditNpc implements IAdminCommandHandler {
 			con = L2DatabaseFactory.getInstance().getConnection();
 			L2DropData dropData = null;
 
-			npcData.getDropData().clear();
+			npcData.clearAllDropData();
 
 			PreparedStatement statement = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] {"mobId", "itemId", "min", "max", "category", "chance"}) + " FROM droplist WHERE mobId=?");
 			statement.setInt(1, npcId);

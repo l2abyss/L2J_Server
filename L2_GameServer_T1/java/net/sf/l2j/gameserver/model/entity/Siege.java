@@ -1227,7 +1227,6 @@ public class Siege
 
         	L2NpcTemplate template = NpcTable.getInstance().getTemplate(_sp.getNpcId());
 
-            template.getStatsSet().set("baseHpMax", _sp.getHp());
             // TODO: Check/confirm if control towers have any special weapon resistances/vulnerabilities
             // template.addVulnerability(Stats.BOW_WPN_VULN,0);
             // template.addVulnerability(Stats.BLUNT_WPN_VULN,0);
@@ -1236,7 +1235,7 @@ public class Siege
             ct = new L2ControlTowerInstance(IdFactory.getInstance().getNextId(), template);
 
 
-            ct.setCurrentHpMp(ct.getMaxHp(), ct.getMaxMp());
+            ct.setCurrentHpMp(_sp.getHp(), ct.getMaxMp());
             ct.spawnMe(_sp.getLocation().getX(),_sp.getLocation().getY(),_sp.getLocation().getZ() + 20);
 
             _controlTowers.add(ct);

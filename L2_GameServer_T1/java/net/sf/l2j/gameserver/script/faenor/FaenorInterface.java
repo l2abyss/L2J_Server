@@ -129,6 +129,7 @@ public class FaenorInterface implements EngineInterface
     	{
         	int maxCategory = -1;
 
+        	if (npc.getDropData()!=null)
 	    	for(L2DropCategory cat:npc.getDropData())
 	    	{
 	    		if(maxCategory<cat.getCategoryType())
@@ -165,6 +166,7 @@ public class FaenorInterface implements EngineInterface
             return null;
         }
         List<L2DropData> questDrops = new FastList<L2DropData>();
+        if (npc.getDropData()!=null)
         for (L2DropCategory cat:npc.getDropData())
         for (L2DropData drop : cat.getAllDrops() )
         {

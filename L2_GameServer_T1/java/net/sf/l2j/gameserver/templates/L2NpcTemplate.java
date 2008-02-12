@@ -69,6 +69,7 @@ public final class L2NpcTemplate extends L2CharTemplate
     public final int     absorbLevel;
     public final AbsorbCrystalType absorbType;
     public Race race;
+    public final String jClass; 
     
     public static enum AbsorbCrystalType
     {
@@ -107,13 +108,13 @@ public final class L2NpcTemplate extends L2CharTemplate
     	NONE
 	}
     	
-	private final StatsSet _npcStatsSet;
+	//private final StatsSet _npcStatsSet;
 	
 	/** The table containing all Item that can be dropped by L2NpcInstance using this L2NpcTemplate*/
-	private final FastList<L2DropCategory> _categories = new FastList<L2DropCategory>();
+	private FastList<L2DropCategory> _categories = null;
 	
 	/** The table containing all Minions that must be spawn with the L2NpcInstance using this L2NpcTemplate*/
-	private final List<L2MinionData>  _minions     = new FastList<L2MinionData>(0);
+	private List<L2MinionData>  _minions     = null;
 	
 	private List<ClassId>             _teachInfo;
 	private Map<Integer, L2Skill> _skills;
@@ -154,8 +155,9 @@ public final class L2NpcTemplate extends L2CharTemplate
         absorbLevel  = set.getInteger("absorb_level", 0);
     	absorbType = AbsorbCrystalType.valueOf(set.getString("absorb_type"));
     	race = null;
-		_npcStatsSet = set;
+		//_npcStatsSet = set;
 		_teachInfo = null;
+		jClass = set.getString("jClass");
 	}
 	
     public void addTeachInfo(ClassId classId)
@@ -194,7 +196,8 @@ public final class L2NpcTemplate extends L2CharTemplate
 //				_questDrops = new FastList<L2DropData>(0);
 //	        _questDrops.add(drop);
 	    } else {
-	    	// if the category doesn't already exist, create it first
+	        if (_categories == null) _categories = new FastList<L2DropCategory>();
+	        // if the category doesn't already exist, create it first
 	    	synchronized (_categories)
 	    	{
 	    		boolean catExists = false;
@@ -219,6 +222,7 @@ public final class L2NpcTemplate extends L2CharTemplate
     
     public void addRaidData(L2MinionData minion)
     {
+        if (_minions == null) _minions = new FastList<L2MinionData>();
     	_minions.add(minion);
     }
 	
@@ -259,6 +263,7 @@ public final class L2NpcTemplate extends L2CharTemplate
      */
     public List<L2DropData> getAllDropData()
     {
+        if (_categories == null) return null;
         List<L2DropData> lst = new FastList<L2DropData>();
         for (L2DropCategory tmp:_categories)
         {
@@ -272,6 +277,7 @@ public final class L2NpcTemplate extends L2CharTemplate
      */
     public synchronized void clearAllDropData()
     {
+        if (_categories == null) return;
     	while (_categories.size() > 0)
     	{
     		_categories.getFirst().clearAllDrops();
@@ -343,11 +349,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 		if (_questEvents == null)
 			return null;
 		return _questEvents.get(EventType);
-	}
-	
-	public StatsSet getStatsSet()
-	{
-		return _npcStatsSet;
 	}
 	
 	public void setRace(int raceId)
