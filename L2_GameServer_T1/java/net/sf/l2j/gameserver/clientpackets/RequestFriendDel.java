@@ -96,9 +96,11 @@ public final class RequestFriendDel extends L2GameClientPacket{
 			statement.close();
             rset.close();
 
-			statement = con.prepareStatement("DELETE FROM character_friends WHERE char_id=? AND friend_id=?");
+			statement = con.prepareStatement("DELETE FROM character_friends WHERE (char_id=? AND friend_id=?) OR (char_id=? AND friend_id=?)");
 			statement.setInt(1, activeChar.getObjectId());
 			statement.setInt(2, objectId);
+			statement.setInt(3, objectId);
+            statement.setInt(4, activeChar.getObjectId());
 			statement.execute();
 			// Player deleted from your friendlist
 			sm = new SystemMessage(SystemMessageId.S1_HAS_BEEN_DELETED_FROM_YOUR_FRIENDS_LIST);
