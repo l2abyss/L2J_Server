@@ -136,27 +136,27 @@ public class Olympiad
     protected static final int[][] STADIUMS =
     {
      {-20814, -21189, -3030},
-     {-120324, -225077, -3331},
-     {-102495, -209023, -3331},
-     {-120156, -207378, -3331},
-     {-87628, -225021, -3331},
-     {-81705, -213209, -3331},
-     {-87593, -207339, -3331},
-     {-93709, -218304, -3331},
-     {-77157, -218608, -3331},
-     {-69682, -209027, -3331},
-     {-76887, -201256, -3331},
-     {-109985, -218701, -3331},
-     {-126367, -218228, -3331},
-     {-109629, -201292, -3331},
-     {-87523, -240169, -3331},
-     {-81748, -245950, -3331},
-     {-77123, -251473, -3331},
-     {-69778, -241801, -3331},
-     {-76754, -234014, -3331},
-     {-93742, -251032, -3331},
-     {-87466, -257752, -3331},
-     {-114413, -213241, -3331}
+     {-76079, -252621, -3331},
+     {-80022, -252621, -3331},
+     {-84199, -252621, -3331},
+     {-88407, -252621, -3331},
+     {-76079, -249756, -3331},
+     {-80022, -249756, -3331},
+     {-84199, -249756, -3331},
+     {-88407, -249756, -3331},
+     {-76079, -246951, -3331},
+     {-80022, -246951, -3331},
+     {-84199, -246951, -3331},
+     {-88407, -246951, -3331},
+     {-76079, -244265, -3331},
+     {-80022, -244265, -3331},
+     {-84199, -244265, -3331},
+     {-88407, -244265, -3331},
+     {-76079, -241481, -3331},
+     {-80022, -241481, -3331},
+     {-84199, -241481, -3331},
+     {-88407, -241481, -3331},
+     {-88407, -238786, -3331}
     };
 
     private static enum COMP_TYPE
@@ -1163,7 +1163,7 @@ public class Olympiad
 
     		try{
                 sortClassBasedOpponents();
-    			_nonClassBasedParticipants = pickOpponents(_nonClassBasedRegisters);
+    			_nonClassBasedParticipants = pickOpponents(_nonClassBasedRegisters, false);
     		}catch(Exception e){e.printStackTrace();}
 
             int classIndex = 0;
@@ -1314,14 +1314,14 @@ public class Olympiad
 
             int count = 0;
 
-            if (_classBasedRegisters.size() == 0) return;
+            if (_classBasedRegisters.size() == 0 ) return;
 
             for (List<L2PcInstance> classed : _classBasedRegisters.values())
             {
-                if (classed.size() == 0) continue;
+                if (classed.size() < 5) continue;
 
                 try{
-                   result = pickOpponents(classed);
+                   result = pickOpponents(classed, true);
                 }catch(Exception e){e.printStackTrace();}
 
                 if (result.size() == 0)
@@ -1343,13 +1343,15 @@ public class Olympiad
     		return (_olympiadInstances == null)? null : _olympiadInstances;
     	}
 
-    	private Map<Integer, List<L2PcInstance>> pickOpponents(List<L2PcInstance> list) throws Exception
+    	private Map<Integer, List<L2PcInstance>> pickOpponents(List<L2PcInstance> list, boolean classed) throws Exception
     	{
     		Map<Integer, List<L2PcInstance>> result =
     			new FastMap<Integer, List<L2PcInstance>>();
 
             if (list.size() == 0)
                 return result;
+            
+            if (!classed && list.size() < 9) return result;
 
     		int loopCount = (list.size() / 2);
 
