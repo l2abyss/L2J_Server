@@ -1295,14 +1295,6 @@ public final class Formulas
 					break;
 			}
 		}
-        if (shld)
-        {
-            if (100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100)) 
-            {
-                damage = 1;
-                target.sendPacket(new SystemMessage(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS));
-            }
-        }
 		if (damage > 0 && damage < 1)
 		{
 			damage = 1;
@@ -1543,9 +1535,12 @@ public final class Formulas
 		double shldRate = target.calcStat(Stats.SHIELD_RATE, 0, attacker, null)
 			* DEXbonus[target.getDEX()];
 		if (shldRate == 0.0) return false;
-		// Check for passive skill Aegis (316) or Aegis Stance (318)
-		if (target.getKnownSkill(316) == null && target.getFirstEffect(318) == null)
-			if (!target.isFront(attacker)) return false;
+        int degreeside = (int)target.calcStat(Stats.SHIELD_DEFENCE_ANGLE, 0, null, null) + 120;
+        if (degreeside < 360 && (!target.isInFront(attacker, degreeside)))
+        {
+            return false;
+        }
+        // if attacker 
 		// if attacker use bow and target wear shield, shield block rate is multiplied by 1.3 (30%)
 		if (at_weapon != null && at_weapon.getItemType() == L2WeaponType.BOW)
 			shldRate *= 1.3;

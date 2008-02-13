@@ -174,7 +174,10 @@ public enum Stats
     SOULSHOT_COUNT 		("soulShotCount"),
     
     //T1 stats
-    transformId ("transformId")
+    transformId 		("transformId"),
+    
+    //Shield Stats
+    SHIELD_DEFENCE_ANGLE	("shieldDefAngle");
 	;
 
 	public static final int NUM_STATS = values().length;

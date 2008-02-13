@@ -4897,12 +4897,17 @@ public abstract class L2Character extends L2Object
 			if (target instanceof L2PcInstance)
 			{
 				L2PcInstance enemy = (L2PcInstance)target;
-
-				// Check if shield is efficient
+	
 				if (shld)
-					enemy.sendPacket(new SystemMessage(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL));
-				//else if (!miss && damage < 1)
-					//enemy.sendMessage("You hit the target's armor.");
+				{
+		           if (100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100))
+		           {  
+		                     damage = 1;  
+		                     enemy.sendPacket(new SystemMessage(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS));; //SHIELD_DEFENCE faultless 
+		           }
+		            else
+		              enemy.sendPacket(new SystemMessage(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL)); 
+				}
 			}
             else if (target instanceof L2Summon)
             {
@@ -6128,6 +6133,26 @@ public abstract class L2Character extends L2Object
 		return false;
 	}
 
+    /** Returns true if target is in front of attacker */
+    public boolean isInFront(L2Character target, int degrees)
+    {
+        double angleChar, angleTarget, angleDiff, maxAngleDiff = 45;
+        if(target == null)
+            return false;
+        angleChar = Util.calculateAngleFrom(target, this);
+        angleTarget = Util.convertHeadingToDegree(target.getHeading());
+        angleDiff = angleChar - angleTarget;
+        if (angleDiff <= -degrees + maxAngleDiff) angleDiff += degrees;
+        if (angleDiff >= degrees - maxAngleDiff) angleDiff -= degrees;
+        if (Math.abs(angleDiff) <= maxAngleDiff)
+        {
+            if (Config.DEBUG)
+                _log.info("Char " + getName() + " is side " + target.getName());
+            return true;
+        }
+        return false;
+    }
+    
 	public boolean isFrontTarget()
 	{
 		return isFront(getTarget());
