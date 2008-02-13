@@ -1452,7 +1452,10 @@ public abstract class L2Character extends L2Object
 		// Send a Server->Client packet MagicSkillUser with target, displayId, level, skillTime, reuseDelay
 		// to the L2Character AND to all L2PcInstance in the _KnownPlayers of the L2Character
 		broadcastPacket(new MagicSkillUse(this, target, displayId, level, hitTime, reuseDelay));
-
+	    //======================================
+        // To prevent area skill animation/packet arrive too late 
+		broadcastPacket(new MagicSkillLaunched(this, magicId, level, targets));
+		//======================================
 		// Send a system message USE_S1 to the L2Character
 		if (this instanceof L2PcInstance && magicId != 1312)
         {

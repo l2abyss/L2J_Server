@@ -77,11 +77,6 @@ public abstract class L2Decoy extends L2Character
         return _owner.isAutoAttackable(attacker);
     }
     
-    public void store()
-    {
-        return;
-    }
-    
     @Override
     public L2ItemInstance getActiveWeaponInstance()
     {
@@ -131,7 +126,6 @@ public abstract class L2Decoy extends L2Character
         {
             if (getWorldRegion() != null)
                 getWorldRegion().removeFromZones(this);
-            store();
             owner.setDecoy(null);
             decayMe();
             getKnownList().removeAllKnownObjects();
