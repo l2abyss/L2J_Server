@@ -49,7 +49,11 @@ import net.sf.l2j.gameserver.clientpackets.Say2;
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
+import net.sf.l2j.gameserver.datatables.SpawnTable;
+import net.sf.l2j.gameserver.datatables.TeleportLocationTable;
+import net.sf.l2j.gameserver.instancemanager.DayNightSpawnManager;
 import net.sf.l2j.gameserver.instancemanager.Manager;
+import net.sf.l2j.gameserver.instancemanager.RaidBossSpawnManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Multisell;
@@ -614,6 +618,23 @@ public class GameStatusThread extends Thread
                 		{
                 			_print.print("Reloading zone tables... ");
                 			//TODO: ZONETODO reload zones using telnet ZoneManager.getInstance().reload();
+                			_print.print("done\n");
+                		}
+                		else if(type.equals("teleports"))
+                		{
+                			_print.print("Reloading telport location table... ");
+                			TeleportLocationTable.getInstance().reloadAll();
+                			_print.print("done\n");
+                		}
+                		else if(type.equals("spawns"))
+                		{
+                			_print.print("Reloading spawns... ");
+                			RaidBossSpawnManager.getInstance().cleanUp();
+                			DayNightSpawnManager.getInstance().cleanUp();
+                			L2World.getInstance().deleteVisibleNpcSpawns();
+                			NpcTable.getInstance().reloadAllNpc();
+                			SpawnTable.getInstance().reloadAll();
+                			RaidBossSpawnManager.getInstance().reloadBosses();
                 			_print.print("done\n");
                 		}
 
