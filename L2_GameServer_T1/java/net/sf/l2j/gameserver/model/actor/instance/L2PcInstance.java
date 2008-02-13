@@ -9350,7 +9350,9 @@ public final class L2PcInstance extends L2PlayableInstance
 			else
 			    _revivePower = Formulas.getInstance().calculateSkillResurrectRestorePercent(skill.getPower(), Reviver.getWIT());
 			_revivePet = Pet;
-			sendPacket(new ConfirmDlg(SystemMessageId.RESSURECTION_REQUEST.getId(),Reviver.getName(),(int) _revivePower));
+
+			ConfirmDlg dlg = new ConfirmDlg(SystemMessageId.RESSURECTION_REQUEST.getId());
+			sendPacket(dlg.addString(Reviver.getName()).addString(((int) _revivePower)+" %"));
 		}
 	}
 
