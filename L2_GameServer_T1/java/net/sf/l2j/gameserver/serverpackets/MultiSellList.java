@@ -60,7 +60,7 @@ public final class MultiSellList extends L2GameServerPacket
         writeD(_page);		// page
         writeD(_finished);	// finished
         writeD(0x28);	// size of pages
-        writeD(_list == null ? 0 : _list.getEntries().size()); //list lenght
+        writeD(_list == null ? 0 : _list.getEntries().size()); //list length
 
         if(_list != null)
         {
