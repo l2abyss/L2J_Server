@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.serverpackets;
 
-import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 
@@ -104,29 +103,7 @@ public class Attack extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-        // flood protection especially for sieges
-        if (GameTimeController.getGameTicks() - getClient().packetsReceivedStartTick > 10)
-        {
-            getClient().packetsReceivedStartTick = GameTimeController.getGameTicks();
-            getClient().packetsReceivedInSec = 0;
-        }
-        else
-        {
-            getClient().packetsReceivedInSec++;
-            // if over 18 packets per second and client isn't the attacker
-            if (getClient().packetsReceivedInSec > 18 
-                    && getClient().getActiveChar().getObjectId() != _attackerObjId)
-            {
-                // only lets 18 packets through if client not involved directly in fight
-                if (getClient().getActiveChar().getObjectId() != _hits[0]._targetId)                
-                    return;
-                // reserves 2 extra packets in case client is involved
-                else if (getClient().packetsReceivedInSec > 20) 
-                    return;
-            }
-        }
-	    
-	    writeC(0x33);
+		writeC(0x33);
 
 		writeD(_attackerObjId);
 		writeD(_hits[0]._targetId);
