@@ -54,6 +54,7 @@ import net.sf.l2j.gameserver.skills.l2skills.L2SkillDefault;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillDrain;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSeed;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSummon;
+import net.sf.l2j.gameserver.skills.l2skills.L2SkillTrap;
 import net.sf.l2j.gameserver.templates.L2WeaponType;
 import net.sf.l2j.gameserver.templates.StatsSet;
 import net.sf.l2j.gameserver.util.Util;
@@ -237,6 +238,9 @@ public abstract class L2Skill
         CHARGESOUL,
         TRANSFORM,
         TRANSFORMDISPEL,
+        SUMMON_TRAP (L2SkillTrap.class),
+        DETECT_TRAP,
+        REMOVE_TRAP,
         
         // Kamael WeaponChange
         CHANGEWEAPON (L2SkillChangeWeapon.class),
@@ -1399,6 +1403,7 @@ public abstract class L2Skill
                 if (activeChar instanceof L2PcInstance) src = (L2PcInstance)activeChar;
                 if (activeChar instanceof L2Summon) src = ((L2Summon)activeChar).getOwner();
                 if (activeChar instanceof L2Decoy) src = ((L2Decoy)activeChar).getOwner();
+                if (activeChar instanceof L2Trap) src = ((L2Trap)activeChar).getOwner();
                 
                 // Go through the L2Character _knownList
                 for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())
@@ -1454,6 +1459,7 @@ public abstract class L2Skill
                 L2PcInstance src = null;
                 if (activeChar instanceof L2PcInstance) src = (L2PcInstance)activeChar;
                 if (activeChar instanceof L2Summon) src = ((L2Summon)activeChar).getOwner();
+                if (activeChar instanceof L2Trap) src = ((L2Trap)activeChar).getOwner();
 
                 // Go through the L2Character _knownList
                 for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())
@@ -1513,6 +1519,7 @@ public abstract class L2Skill
                 L2PcInstance src = null;
                 if (activeChar instanceof L2PcInstance) src = (L2PcInstance)activeChar;
                 if (activeChar instanceof L2Summon) src = ((L2Summon)activeChar).getOwner();
+                if (activeChar instanceof L2Trap) src = ((L2Trap)activeChar).getOwner();
 
                 // Go through the L2Character _knownList
                 for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())

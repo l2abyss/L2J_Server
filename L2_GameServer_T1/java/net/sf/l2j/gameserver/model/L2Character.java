@@ -803,6 +803,8 @@ public abstract class L2Character extends L2Object
             player = (L2PcInstance)this;
         else if (this instanceof L2Summon)
             player = ((L2Summon)this).getOwner();
+        else if (this instanceof L2Trap)
+        	player = ((L2Trap)this).getOwner();
 
         if (player != null)
             player.updatePvPStatus(target);
@@ -1269,6 +1271,22 @@ public abstract class L2Character extends L2Object
 			}
 
 			return;
+		}
+		
+		switch (skill.getSkillType())
+		{
+			case SUMMON_TRAP:
+			{
+				if (isInsideZone(ZONE_PEACE))
+				{
+					if (this instanceof L2PcInstance)
+						((L2PcInstance)this).sendPacket(new SystemMessage(SystemMessageId.A_MALICIOUS_SKILL_CANNOT_BE_USED_IN_PEACE_ZONE));
+					return;
+				}
+				if (this instanceof L2PcInstance && ((L2PcInstance)this).getTrap() != null)
+					return;
+				break;
+			}
 		}
 
 		// Check if the skill is a magic spell and if the L2Character is not muted
@@ -5931,12 +5949,14 @@ public abstract class L2Character extends L2Object
 						activeChar = (L2PcInstance)this;
 					else if (this instanceof L2Summon)
 						activeChar = ((L2Summon)this).getOwner();
+					else if (this instanceof L2Trap)
+						activeChar = ((L2Trap)this).getOwner();
 
 					if (activeChar != null)
 					{
 						if (skill.isOffensive())
 						{
-							if (player instanceof L2PcInstance || player instanceof L2Summon)
+							if (player instanceof L2PcInstance || player instanceof L2Summon || player instanceof L2Trap)
                             {
                                 player.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, activeChar);
                                 activeChar.updatePvPStatus(player);

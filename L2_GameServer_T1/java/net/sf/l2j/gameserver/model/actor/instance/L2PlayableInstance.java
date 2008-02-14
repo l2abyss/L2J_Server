@@ -18,6 +18,7 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.L2Trap;
 import net.sf.l2j.gameserver.model.actor.knownlist.PlayableKnownList;
 import net.sf.l2j.gameserver.model.actor.stat.PlayableStat;
 import net.sf.l2j.gameserver.model.actor.status.PlayableStatus;
@@ -93,6 +94,8 @@ public abstract class L2PlayableInstance extends L2Character
                 player = (L2PcInstance)killer;
             else if (killer instanceof L2Summon)
                 player = ((L2Summon)killer).getOwner();
+            else if (killer instanceof L2Trap)
+            	player = ((L2Trap)killer).getOwner();
 
             if (player != null) player.onKillUpdatePvPKarma(this);
         }

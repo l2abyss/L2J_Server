@@ -101,6 +101,7 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2SkillLearn;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.L2Transformation;
+import net.sf.l2j.gameserver.model.L2Trap;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2WorldRegion;
 import net.sf.l2j.gameserver.model.MacroList;
@@ -501,6 +502,8 @@ public final class L2PcInstance extends L2PlayableInstance
 	private L2Summon _summon = null;
 	/** The L2Decoy of the L2PcInstance */
     private L2Decoy _decoy = null;
+    /** The L2Trap of the L2PcInstance */
+    private L2Trap _trap = null;
 	// apparently, a L2PcInstance CAN have both a summon AND a tamed beast at the same time!!
 	private L2TamedBeastInstance _tamedBeast = null;
 
@@ -5081,6 +5084,14 @@ public final class L2PcInstance extends L2PlayableInstance
     {
         return _decoy;
     }
+    
+    /**
+     * Return the L2Trap of the L2PcInstance or null.<BR><BR>
+     */
+    public L2Trap getTrap()
+    {
+    	return _trap;
+    }
 
 	/**
 	 * Set the L2Summon of the L2PcInstance.<BR><BR>
@@ -5096,6 +5107,16 @@ public final class L2PcInstance extends L2PlayableInstance
     {
         _decoy = decoy;
     }
+    
+    /**
+     * Set the L2Trap of this L2PcInstance<BR><BR>
+     * @param trap
+     */
+    public void setTrap(L2Trap trap)
+    {
+    	_trap = trap;
+    }
+    
 	/**
 	 * Return the L2Summon of the L2PcInstance or null.<BR><BR>
 	 */

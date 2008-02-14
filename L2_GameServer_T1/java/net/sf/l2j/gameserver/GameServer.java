@@ -182,6 +182,7 @@ import net.sf.l2j.gameserver.handler.skillhandlers.SummonTreasureKey;
 import net.sf.l2j.gameserver.handler.skillhandlers.Sweep;
 import net.sf.l2j.gameserver.handler.skillhandlers.TakeCastle;
 import net.sf.l2j.gameserver.handler.skillhandlers.TransformDispel;
+import net.sf.l2j.gameserver.handler.skillhandlers.Trap;
 import net.sf.l2j.gameserver.handler.skillhandlers.Unlock;
 import net.sf.l2j.gameserver.handler.usercommandhandlers.ChannelDelete;
 import net.sf.l2j.gameserver.handler.usercommandhandlers.ChannelLeave;
@@ -531,6 +532,7 @@ public class GameServer
         _skillHandler.registerSkillHandler(new Signets());
         _skillHandler.registerSkillHandler(new GetPlayer());
         _skillHandler.registerSkillHandler(new TransformDispel());
+        _skillHandler.registerSkillHandler(new Trap());
         _log.config("SkillHandler: Loaded " + _skillHandler.size() + " handlers.");
 
 		_adminCommandHandler = AdminCommandHandler.getInstance();
