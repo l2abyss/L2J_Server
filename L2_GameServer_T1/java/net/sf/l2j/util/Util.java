@@ -40,9 +40,10 @@ public class Util
     {
         return (ipAddress.startsWith("192.168.") ||
                 ipAddress.startsWith("10.") ||
-				//ipAddress.startsWith("172.16.") ||
-                //Removed because there are some net IPs in this range.
-                //TODO: Use regexp or something to only include 172.16.0.0 => 172.16.31.255
+                ipAddress.matches("^172\\.16\\." +            // 172.16.
+                		"(?:[0-9]|[1-2][0-9]|3[0-1])\\."+     // 0. to 31.
+                		"(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2" + // 0 to 255
+                		"(?:[0-4][0-9]|5[0-5]))$") ||
                 ipAddress.startsWith("127.0.0.1"));
     }
 

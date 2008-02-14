@@ -29,6 +29,7 @@ import net.sf.l2j.loginserver.serverpackets.PlayFail;
 import net.sf.l2j.loginserver.serverpackets.LoginFail.LoginFailReason;
 import net.sf.l2j.loginserver.serverpackets.PlayFail.PlayFailReason;
 import net.sf.l2j.util.Rnd;
+import net.sf.l2j.util.Util;
 
 import org.mmocore.network.MMOClient;
 import org.mmocore.network.MMOConnection;
@@ -70,8 +71,7 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 		_state = LoginClientState.CONNECTED;
 		String ip = getConnection().getSocket().getInetAddress().getHostAddress();
 
-		// TODO unhardcode this
-		if (ip.startsWith("192.168") || ip.startsWith("10.0") || ip.equals("127.0.0.1"))
+		if (Util.isInternalIP(ip))
 		{
 			_usesInternalIP = true;
 		}
