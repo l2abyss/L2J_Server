@@ -35,7 +35,10 @@ import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2World;
+import net.sf.l2j.gameserver.model.actor.instance.L2BossInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2FeedableBeastInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FestivalMonsterInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2GuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RiftInvaderInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
@@ -328,10 +331,10 @@ public class CursedWeaponsManager
 		if (attackable instanceof L2SiegeGuardInstance
 			|| attackable instanceof L2RiftInvaderInstance
 			|| attackable instanceof L2FestivalMonsterInstance
+			|| attackable instanceof L2GuardInstance
+			|| attackable instanceof L2BossInstance
+			|| attackable instanceof L2FeedableBeastInstance
 			)return;
-
-		if (player.isCursedWeaponEquipped())
-			return;
 
 		for (CursedWeapon cw : _cursedWeapons.values())
 		{
