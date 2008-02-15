@@ -461,9 +461,9 @@ public class L2Attackable extends L2NpcInstance
                 if (killer instanceof L2PcInstance)
                 	player = (L2PcInstance)killer;
                 else if (killer instanceof L2Summon)
-                	((L2Summon)killer).getOwner();
+                	player = ((L2Summon)killer).getOwner();
                 else if (killer instanceof L2Trap)
-                	((L2Trap)killer).getOwner();
+                	player = ((L2Trap)killer).getOwner();
 
             	if (getTemplate().getEventQuests(Quest.QuestEventType.MOBKILLED) != null)
             		for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.MOBKILLED))
