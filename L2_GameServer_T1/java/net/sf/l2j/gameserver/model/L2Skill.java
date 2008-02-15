@@ -589,8 +589,8 @@ public abstract class L2Skill
         _sSBoost = set.getFloat("SSBoost", 0.f);
         _aggroPoints = set.getInteger("aggroPoints", 0);
 
-	_flyType = set.getString("flyType", null);
-	_flyRadius = set.getInteger("flyRadius", 200);
+        _flyType = set.getString("flyType", null);
+        _flyRadius = set.getInteger("flyRadius", 200);
 
         String canLearn = set.getString("canLearn", null);
         if (canLearn == null)
@@ -1404,7 +1404,7 @@ public abstract class L2Skill
                 if (activeChar instanceof L2Summon) src = ((L2Summon)activeChar).getOwner();
                 if (activeChar instanceof L2Decoy) src = ((L2Decoy)activeChar).getOwner();
                 if (activeChar instanceof L2Trap) src = ((L2Trap)activeChar).getOwner();
-                
+
                 // Go through the L2Character _knownList
                 for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())
                 {
@@ -1443,6 +1443,12 @@ public abstract class L2Skill
                                 }
                             }
                         }
+                    	else // Skill user is not L2PlayableInstance
+                    	{
+                    		if (!(obj instanceof L2PlayableInstance) // Target is not L2PlayableInstance
+                    				&& !activeChar.isConfused()) // and caster not confused (?)
+                            			continue;
+                    	}
                         if (!Util.checkIfInRange(radius, activeChar, obj, true)) continue;
 
                         if (onlyFirst == false) targetList.add((L2Character) obj);
@@ -1460,7 +1466,7 @@ public abstract class L2Skill
                 if (activeChar instanceof L2PcInstance) src = (L2PcInstance)activeChar;
                 if (activeChar instanceof L2Summon) src = ((L2Summon)activeChar).getOwner();
                 if (activeChar instanceof L2Trap) src = ((L2Trap)activeChar).getOwner();
-
+                
                 // Go through the L2Character _knownList
                 for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())
                 {
@@ -1470,26 +1476,26 @@ public abstract class L2Skill
                         if (obj == activeChar || obj == src) continue;
                     	if (src != null)
                         {
-				if (!((L2Character) obj).isFront(activeChar))
+                    		if (!((L2Character) obj).isFront(activeChar))
                     			continue;
 
-				if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
+                    		if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
                     			continue;
 
-				// check if both attacker and target are L2PcInstances and if they are in same party
-				if (obj instanceof L2PcInstance)
-				{
-					if(!src.checkPvpSkill(obj, this)) continue;
-					if((src.getParty() != null && ((L2PcInstance) obj).getParty() != null) && src.getParty().getPartyLeaderOID() == ((L2PcInstance) obj).getParty().getPartyLeaderOID())
-						continue;
-					if(!srcInArena && !(((L2Character)obj).isInsideZone(L2Character.ZONE_PVP) && !((L2Character)obj).isInsideZone(L2Character.ZONE_SIEGE)))
-					{
-						if(src.getClanId() != 0 && src.getClanId() == ((L2PcInstance)obj).getClanId())
-							continue;
-					}
-				}
-				if(obj instanceof L2Summon)
-				{
+                    		// check if both attacker and target are L2PcInstances and if they are in same party
+                    		if (obj instanceof L2PcInstance)
+                    		{
+                    			if(!src.checkPvpSkill(obj, this)) continue;
+                    			if((src.getParty() != null && ((L2PcInstance) obj).getParty() != null) && src.getParty().getPartyLeaderOID() == ((L2PcInstance) obj).getParty().getPartyLeaderOID())
+                    				continue;
+                    			if(!srcInArena && !(((L2Character)obj).isInsideZone(L2Character.ZONE_PVP) && !((L2Character)obj).isInsideZone(L2Character.ZONE_SIEGE)))
+                    			{
+                    				if(src.getClanId() != 0 && src.getClanId() == ((L2PcInstance)obj).getClanId())
+                    					continue;
+                    			}
+                    		}
+                    		if(obj instanceof L2Summon)
+                    		{
 	                            	L2PcInstance trg = ((L2Summon)obj).getOwner();
 	                                if(trg == src) continue;
 	                            	if(!src.checkPvpSkill(trg, this)) continue;
@@ -1501,15 +1507,21 @@ public abstract class L2Skill
 	                                    if(src.getClanId() != 0 && src.getClanId() == trg.getClanId())
 	                                        continue;
 	                                }
-				}
-			}
-			if (!Util.checkIfInRange(radius, activeChar, obj, true)) continue;
+                    		}
+                        }
+                    	else // Skill user is not L2PlayableInstance
+                    	{
+                    		if (!(obj instanceof L2PlayableInstance) // Target is not L2PlayableInstance
+                    				&& !activeChar.isConfused()) // and caster not confused (?)
+                            			continue;
+                    	}
+                    	if (!Util.checkIfInRange(radius, activeChar, obj, true)) continue;
 
-			if (onlyFirst == false) targetList.add((L2Character) obj);
-			else return new L2Character[] {(L2Character) obj};
-		    }
-		}
-		return targetList.toArray(new L2Character[targetList.size()]);
+                    	if (onlyFirst == false) targetList.add((L2Character) obj);
+                    	else return new L2Character[] {(L2Character) obj};
+                    }
+                }
+                return targetList.toArray(new L2Character[targetList.size()]);
             }
             case TARGET_BEHIND_AURA:
             {
@@ -1520,7 +1532,7 @@ public abstract class L2Skill
                 if (activeChar instanceof L2PcInstance) src = (L2PcInstance)activeChar;
                 if (activeChar instanceof L2Summon) src = ((L2Summon)activeChar).getOwner();
                 if (activeChar instanceof L2Trap) src = ((L2Trap)activeChar).getOwner();
-
+                
                 // Go through the L2Character _knownList
                 for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())
                 {
@@ -1530,46 +1542,52 @@ public abstract class L2Skill
                         if (obj == activeChar || obj == src) continue;
                     	if (src != null)
                         {
-				if (!((L2Character) obj).isBehind(activeChar))
+                    		if (!((L2Character) obj).isBehind(activeChar))
                     			continue;
 
-				if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
+                    		if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
                     			continue;
 
-				// check if both attacker and target are L2PcInstances and if they are in same party
-				if (obj instanceof L2PcInstance)
-				{
-					if(!src.checkPvpSkill(obj, this)) continue;
-					if((src.getParty() != null && ((L2PcInstance) obj).getParty() != null) && src.getParty().getPartyLeaderOID() == ((L2PcInstance) obj).getParty().getPartyLeaderOID())
-						continue;
-					if(!srcInArena && !(((L2Character)obj).isInsideZone(L2Character.ZONE_PVP) && !((L2Character)obj).isInsideZone(L2Character.ZONE_SIEGE)))
-					{
-						if(src.getClanId() != 0 && src.getClanId() == ((L2PcInstance)obj).getClanId())
-							continue;
-					}
-				}
-				if(obj instanceof L2Summon)
-				{
-	                            	L2PcInstance trg = ((L2Summon)obj).getOwner();
-	                                if(trg == src) continue;
-	                            	if(!src.checkPvpSkill(trg, this)) continue;
-	                                if((src.getParty() != null && trg.getParty() != null) &&
-	                                    src.getParty().getPartyLeaderOID() == trg.getParty().getPartyLeaderOID())
-	                                    continue;
-	                                if(!srcInArena && !(((L2Character)obj).isInsideZone(L2Character.ZONE_PVP) && !((L2Character)obj).isInsideZone(L2Character.ZONE_SIEGE)))
-	                                {
-	                                    if(src.getClanId() != 0 && src.getClanId() == trg.getClanId())
-	                                        continue;
-	                                }
-				}
-			}
-			if (!Util.checkIfInRange(radius, activeChar, obj, true)) continue;
+                    		// check if both attacker and target are L2PcInstances and if they are in same party
+                    		if (obj instanceof L2PcInstance)
+                    		{
+                    			if(!src.checkPvpSkill(obj, this)) continue;
+                    			if((src.getParty() != null && ((L2PcInstance) obj).getParty() != null) && src.getParty().getPartyLeaderOID() == ((L2PcInstance) obj).getParty().getPartyLeaderOID())
+                    				continue;
+                    			if(!srcInArena && !(((L2Character)obj).isInsideZone(L2Character.ZONE_PVP) && !((L2Character)obj).isInsideZone(L2Character.ZONE_SIEGE)))
+                    			{
+                    				if(src.getClanId() != 0 && src.getClanId() == ((L2PcInstance)obj).getClanId())
+                    					continue;
+                    			}
+                    		}
+                    		if(obj instanceof L2Summon)
+                    		{
+                    			L2PcInstance trg = ((L2Summon)obj).getOwner();
+                    			if(trg == src) continue;
+                    			if(!src.checkPvpSkill(trg, this)) continue;
+                    			if((src.getParty() != null && trg.getParty() != null) &&
+                    					src.getParty().getPartyLeaderOID() == trg.getParty().getPartyLeaderOID())
+                    				continue;
+	                            if(!srcInArena && !(((L2Character)obj).isInsideZone(L2Character.ZONE_PVP) && !((L2Character)obj).isInsideZone(L2Character.ZONE_SIEGE)))
+	                            {
+	                            	if(src.getClanId() != 0 && src.getClanId() == trg.getClanId())
+	                            		continue;
+	                            }
+                    		}
+                        }
+                    	else // Skill user is not L2PlayableInstance
+                    	{
+                    		if (!(obj instanceof L2PlayableInstance) // Target is not L2PlayableInstance
+                    				&& !activeChar.isConfused()) // and caster not confused (?)
+                            			continue;
+                    	}
+                    	if (!Util.checkIfInRange(radius, activeChar, obj, true)) continue;
 
-			if (onlyFirst == false) targetList.add((L2Character) obj);
-			else return new L2Character[] {(L2Character) obj};
-		    }
-		}
-		return targetList.toArray(new L2Character[targetList.size()]);
+                    	if (onlyFirst == false) targetList.add((L2Character) obj);
+                    	else return new L2Character[] {(L2Character) obj};
+                    }
+                }
+                return targetList.toArray(new L2Character[targetList.size()]);
             }
             case TARGET_AREA:
             {
@@ -1720,28 +1738,25 @@ public abstract class L2Skill
 
                 for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())
                 {
-                    if (obj == null)
-			continue;
+                    if (obj == null || obj == cha)
+                    	continue;
 
-		    if (!(obj instanceof L2Attackable
-			|| obj instanceof L2PlayableInstance))
-			continue;
-
-                    if (obj == cha)
-			continue;
+                    if (!(obj instanceof L2Attackable
+                    		|| obj instanceof L2PlayableInstance))
+                    	continue;
 
                     target = (L2Character) obj;
 
                     if(!target.isAlikeDead() && (target != activeChar))
                     {
                         if (!Util.checkIfInRange(radius, obj, activeChar, true))
-			   continue;
+                        	continue;
 
-			if (!((L2Character) obj).isFront(activeChar))
-			   continue;
+                        if (!((L2Character) obj).isFront(activeChar))
+                        	continue;
 
-			if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
-			   continue;
+                        if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
+                        	continue;
 
                         if (src != null) // caster is l2playableinstance and exists
                         {
@@ -1856,11 +1871,11 @@ public abstract class L2Skill
                         if (!Util.checkIfInRange(radius, obj, activeChar, true))
                         	continue;
 
-			if (!((L2Character) obj).isBehind(activeChar))
-				continue;
+                        if (!((L2Character) obj).isBehind(activeChar))
+                        	continue;
 
-			if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
-            			continue;
+                        if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
+                        	continue;
 
                         if (src != null) // caster is l2playableinstance and exists
                         {
@@ -1986,7 +2001,7 @@ public abstract class L2Skill
 
 				if (activeChar.getParty() != null)
 				{
-                    // Get all visible objects in a spheric area near the L2Character
+                    // Get all visible objects in a spherical area near the L2Character
 					// Get a list of Party Members
 					List<L2PcInstance> partyList = activeChar.getParty().getPartyMembers();
 
@@ -2080,7 +2095,7 @@ public abstract class L2Skill
 
                     if (clan != null)
                     {
-                        // Get all visible objects in a spheric area near the L2Character
+                        // Get all visible objects in a spherical area near the L2Character
                         // Get Clan Members
                         for (L2Object newTarget : activeChar.getKnownList().getKnownObjects().values())
                         {
