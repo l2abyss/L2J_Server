@@ -462,9 +462,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
                     x1 = _actor.getX() + (int) ((x1 - _actor.getX()) / delay);
                     y1 = _actor.getY() + (int) ((y1 - _actor.getY()) / delay);
                 }
-                else
-                	npc.setisReturningToSpawnPoint(false);
-
             }
             else
             {

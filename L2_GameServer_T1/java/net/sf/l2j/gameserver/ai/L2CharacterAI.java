@@ -676,6 +676,10 @@ public class L2CharacterAI extends AbstractAI
     	if (_accessor.getActor().moveToNextRoutePoint())
     		return;
 
+    	if (_accessor.getActor() instanceof L2Attackable)
+    	{
+    		((L2Attackable)_accessor.getActor()).setisReturningToSpawnPoint(false);
+    	}
     	clientStoppedMoving();
 
     	// If the Intention was AI_INTENTION_MOVE_TO, set the Intention to AI_INTENTION_ACTIVE
