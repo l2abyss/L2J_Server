@@ -1338,50 +1338,49 @@ public abstract class L2Character extends L2Object
 		// Get all possible targets of the skill in a table in function of the skill target type
 		L2Object[] targets = skill.getTargetList(this);
 
-        if ((targets == null || targets.length == 0)  && skill.getTargetType() != SkillTargetType.TARGET_AURA)
-        {
-            getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
-            return;
-        }
-        else if ((targets == null || targets.length == 0)  && skill.getTargetType() == SkillTargetType.TARGET_AURA)
-        {
-             target = this;
-        }
-
-
-		if(     skill.getSkillType() == SkillType.BUFF ||
-				skill.getSkillType() == SkillType.HEAL ||
-				skill.getSkillType() == SkillType.COMBATPOINTHEAL ||
-				skill.getSkillType() == SkillType.MANAHEAL ||
-				skill.getSkillType() == SkillType.REFLECT ||
-				skill.getSkillType() == SkillType.SEED ||
-				skill.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF ||
-				skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PET ||
-				skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PARTY ||
-				skill.getTargetType() == L2Skill.SkillTargetType.TARGET_CLAN ||
-				skill.getTargetType() == L2Skill.SkillTargetType.TARGET_ALLY)
-		{
-			target = (L2Character) targets[0];
-
-			if (this instanceof L2PcInstance && target instanceof L2PcInstance && target.getAI().getIntention() == CtrlIntention.AI_INTENTION_ATTACK)
-			{
-				if(skill.getSkillType() == SkillType.BUFF || skill.getSkillType() == SkillType.HOT || skill.getSkillType() == SkillType.HEAL || skill.getSkillType() == SkillType.HEAL_PERCENT || skill.getSkillType() == SkillType.MANAHEAL || skill.getSkillType() == SkillType.MANAHEAL_PERCENT || skill.getSkillType() == SkillType.BALANCE_LIFE)
-					target.setLastBuffer(this);
-
-				if (((L2PcInstance)this).isInParty() && skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PARTY)
-				{
-					for (L2PcInstance member : ((L2PcInstance)this).getParty().getPartyMembers())
-						 member.setLastBuffer(this);
-				}
-			}
-		} else
-			target = (L2Character) getTarget();
-
 		// AURA skills should always be using caster as target
 		if (skill.getTargetType() == SkillTargetType.TARGET_AURA
-		|| skill.getTargetType() == SkillTargetType.TARGET_FRONT_AURA
-		|| skill.getTargetType() == SkillTargetType.TARGET_BEHIND_AURA)
+				|| skill.getTargetType() == SkillTargetType.TARGET_FRONT_AURA
+				|| skill.getTargetType() == SkillTargetType.TARGET_BEHIND_AURA)
+		{
 			target = this;
+		}
+		else 
+        {
+			if (targets == null || targets.length == 0)  
+			{
+				getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+				return;
+			}
+			
+			if(     skill.getSkillType() == SkillType.BUFF ||
+					skill.getSkillType() == SkillType.HEAL ||
+					skill.getSkillType() == SkillType.COMBATPOINTHEAL ||
+					skill.getSkillType() == SkillType.MANAHEAL ||
+					skill.getSkillType() == SkillType.REFLECT ||
+					skill.getSkillType() == SkillType.SEED ||
+					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF ||
+					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PET ||
+					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PARTY ||
+					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_CLAN ||
+					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_ALLY)
+			{
+				target = (L2Character) targets[0];
+
+				if (this instanceof L2PcInstance && target instanceof L2PcInstance && target.getAI().getIntention() == CtrlIntention.AI_INTENTION_ATTACK)
+				{
+					if(skill.getSkillType() == SkillType.BUFF || skill.getSkillType() == SkillType.HOT || skill.getSkillType() == SkillType.HEAL || skill.getSkillType() == SkillType.HEAL_PERCENT || skill.getSkillType() == SkillType.MANAHEAL || skill.getSkillType() == SkillType.MANAHEAL_PERCENT || skill.getSkillType() == SkillType.BALANCE_LIFE)
+						target.setLastBuffer(this);
+
+					if (((L2PcInstance)this).isInParty() && skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PARTY)
+					{
+						for (L2PcInstance member : ((L2PcInstance)this).getParty().getPartyMembers())
+							 member.setLastBuffer(this);
+					}
+				}
+			} 
+			else target = (L2Character) getTarget();
+        }
 
 		if (target == null)
 		{
