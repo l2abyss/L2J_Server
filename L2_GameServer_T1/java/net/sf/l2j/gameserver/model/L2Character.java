@@ -5891,37 +5891,37 @@ public abstract class L2Character extends L2Object
 	{
 		try
 		{
-
 			// Do initial checkings for skills and set pvp flag/draw aggro when needed
-			for (L2Object target : targets)
+			for (L2Object trg : targets)
 			{
-				if (target instanceof L2Character)
+				if (trg instanceof L2Character)
 				{
 					// Set some values inside target's instance for later use
-					L2Character player = (L2Character) target;
+					L2Character target = (L2Character) trg;
 
                     L2Weapon activeWeapon = getActiveWeaponItem();
 					// Launch weapon Special ability skill effect if available
-					if (activeWeapon != null && !((L2Character)target).isDead())
+					if (activeWeapon != null && !target.isDead())
 					{
-						if (activeWeapon.getSkillEffects(this, player, skill).length > 0 && this instanceof L2PcInstance)
+						if (activeWeapon.getSkillEffects(this, target, skill).length > 0 && this instanceof L2PcInstance)
 						{
 							sendPacket(SystemMessage.sendString("Target affected by weapon special ability!"));
 						}
 					}
 
 					// Check Raidboss attack
-					if (player.isRaid() && getLevel() > player.getLevel() + 8)
+					if (target.isRaid() && getLevel() > target.getLevel() + 8)
 					{
 						L2Skill tempSkill = SkillTable.getInstance().getInfo(4515, 99);
 						if(tempSkill != null)
 						{
-							tempSkill.getEffects(player, this);
+							tempSkill.getEffects(target, this);
 						}
 						else
 						{
 							_log.warning("Skill 4515 at level 99 is missing in DP.");
 						}
+						return;
 					}
 
 					L2PcInstance activeChar = null;
@@ -5937,26 +5937,30 @@ public abstract class L2Character extends L2Object
 					{
 						if (skill.isOffensive())
 						{
-							if (player instanceof L2PcInstance || player instanceof L2Summon || player instanceof L2Trap)
+							if (target instanceof L2PcInstance || target instanceof L2Summon || target instanceof L2Trap)
                             {
-                                player.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, activeChar);
-                                activeChar.updatePvPStatus(player);
-                            }else if (player instanceof L2Attackable)
+								target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, activeChar);
+                                activeChar.updatePvPStatus(target);
+                            }
+							else if (target instanceof L2Attackable)
                             {
                             	// notify the AI that she is attacked
-                            	player.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, activeChar);
+                            	target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, activeChar);
                             }
 						}
 						else
 						{
-							if (player instanceof L2PcInstance)
+							if (target instanceof L2PcInstance)
 							{
 								// Casting non offensive skill on player with pvp flag set or with karma
-								if (!player.equals(this) &&
-										(((L2PcInstance)player).getPvpFlag() > 0 ||
-												((L2PcInstance)player).getKarma() > 0)) activeChar.updatePvPStatus();
+								if (!target.equals(this) &&
+										(((L2PcInstance)target).getPvpFlag() > 0 ||
+												((L2PcInstance)target).getKarma() > 0)) activeChar.updatePvPStatus();
 							}
-							else if (player instanceof L2Attackable && !(skill.getSkillType() == L2Skill.SkillType.SUMMON)&& !(skill.getSkillType() == L2Skill.SkillType.BEAST_FEED) && !(skill.getSkillType() == L2Skill.SkillType.UNLOCK)
+							else if (target instanceof L2Attackable 
+									&& !(skill.getSkillType() == L2Skill.SkillType.SUMMON)
+									&& !(skill.getSkillType() == L2Skill.SkillType.BEAST_FEED) 
+									&& !(skill.getSkillType() == L2Skill.SkillType.UNLOCK)
 									&& !(skill.getSkillType() == L2Skill.SkillType.DELUXE_KEY_UNLOCK))
 								activeChar.updatePvPStatus();
 						}
