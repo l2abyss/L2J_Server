@@ -232,6 +232,12 @@ public class CharStatus
             
             // now reset currentHp to zero
             setCurrentHp(0);
+            if (getActiveChar() instanceof L2PcInstance) 
+            { 
+            	QuestState qs = ((L2PcInstance) getActiveChar()).getQuestState("255_Tutorial"); 
+            	if (qs != null) 
+            		qs.getQuest().notifyEvent("CE30", null, ((L2PcInstance) getActiveChar())); 
+            } 
         }
         else
         {

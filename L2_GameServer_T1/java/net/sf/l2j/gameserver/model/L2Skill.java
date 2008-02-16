@@ -413,6 +413,10 @@ public abstract class L2Skill
     private final int _castRange;
     private final int _effectRange;
     
+    // Remove Skill Effect
+    private final int _cancelEffect;
+
+    
     // kill by damage over time
     private final boolean _killByDOT;
 
@@ -524,6 +528,8 @@ public abstract class L2Skill
 
         _castRange = set.getInteger("castRange", 0);
         _effectRange = set.getInteger("effectRange", -1);
+        
+        _cancelEffect = set.getInteger("cancelEffect", 0);
         
         _killByDOT = set.getBool("killByDOT", false);
         
@@ -693,6 +699,11 @@ public abstract class L2Skill
     public final boolean killByDOT()
     {
         return _killByDOT;
+    }
+    
+    public final int cancelEffect()
+    {
+        return _cancelEffect;
     }
 
     public final boolean isSuicideAttack()

@@ -2229,7 +2229,7 @@ public abstract class L2Character extends L2Object
 	 * <li>If this effect doesn't belong to a Stack Group, add its Funcs to the Calculator set of the L2Character (remove the old one if necessary)</li>
 	 * <li>If this effect has higher priority in its Stack Group, add its Funcs to the Calculator set of the L2Character (remove previous stacked effect Funcs if necessary)</li>
 	 * <li>If this effect has NOT higher priority in its Stack Group, set the effect to Not In Use</li>
-	 * <li>Update active skills in progress icones on player client</li><BR>
+	 * <li>Update active skills in progress icons on player client</li><BR>
 	 *
 	 */
 	public final void addEffect(L2Effect newEffect)
@@ -2299,7 +2299,7 @@ public abstract class L2Character extends L2Object
 				// Add Funcs of this effect to the Calculator set of the L2Character
 				addStatFuncs(newEffect.getStatFuncs());
 
-				// Update active skills in progress icones on player client
+				// Update active skills in progress icons on player client
 				updateEffectIcons();
 				return;
 			}
@@ -2358,7 +2358,7 @@ public abstract class L2Character extends L2Object
 			// Add all Func objects corresponding to this stacked effect to the Calculator set of the L2Character
 			addStatFuncs(tempEffect.getStatFuncs());
 		}
-		// Update active skills in progress (In Use and Not In Use because stacked) icones on client
+		// Update active skills in progress (In Use and Not In Use because stacked) icons on client
 		updateEffectIcons();
 	}
 
@@ -2417,7 +2417,7 @@ public abstract class L2Character extends L2Object
 	}
 
 	/**
-	 * Stop and remove L2Effect (including Stack Group management) from L2Character and update client magic icone.<BR><BR>
+	 * Stop and remove L2Effect (including Stack Group management) from L2Character and update client magic icon.<BR><BR>
 	 *
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * All active skills effects in progress on the L2Character are identified in ConcurrentHashMap(Integer,L2Effect) <B>_effects</B>.
@@ -2432,7 +2432,7 @@ public abstract class L2Character extends L2Object
 	 * <li>Remove Func added by this effect from the L2Character Calculator (Stop L2Effect)</li>
 	 * <li>If the L2Effect belongs to a not empty Stack Group, replace theses Funcs by next stacked effect Funcs</li>
 	 * <li>Remove the L2Effect from _effects of the L2Character</li>
-	 * <li>Update active skills in progress icones on player client</li><BR>
+	 * <li>Update active skills in progress icons on player client</li><BR>
 	 *
 	 */
 	public final void removeEffect(L2Effect effect)
@@ -2511,7 +2511,7 @@ public abstract class L2Character extends L2Object
 			}
 
 		}
-		// Update active skills in progress (In Use and Not In Use because stacked) icones on client
+		// Update active skills in progress (In Use and Not In Use because stacked) icons on client
 		updateEffectIcons();
 	}
 
@@ -2729,7 +2729,7 @@ public abstract class L2Character extends L2Object
 	 * <B><U> Actions</U> :</B><BR><BR>
 	 * <li>Remove Func added by this effect from the L2Character Calculator (Stop L2Effect)</li>
 	 * <li>Remove the L2Effect from _effects of the L2Character</li>
-	 * <li>Update active skills in progress icones on player client</li><BR><BR>
+	 * <li>Update active skills in progress icons on player client</li><BR><BR>
 	 *
 	 * @param type The type of effect to stop ((ex : BUFF, DMG_OVER_TIME...)
 	 *
@@ -2864,6 +2864,8 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void stopImmobileUntilAttacked(L2Effect effect)
 	{
+		stopSkillEffects(effect.getSkill().cancelEffect());
+	    
         if (effect == null)
             stopEffects(L2Effect.EffectType.IMMOBILEUNTILATTACKED);
         else
