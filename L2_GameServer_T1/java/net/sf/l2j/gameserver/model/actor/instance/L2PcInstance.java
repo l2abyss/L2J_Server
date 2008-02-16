@@ -220,7 +220,6 @@ public final class L2PcInstance extends L2PlayableInstance
 
 	// Character Skill Save SQL String Definitions:
 	private static final String ADD_SKILL_SAVE = "INSERT INTO character_skills_save (char_obj_id,skill_id,skill_level,effect_count,effect_cur_time,reuse_delay,restore_type,class_index,buff_index) VALUES (?,?,?,?,?,?,?,?,?)";
-	private static final String UPDATE_SKILL_SAVE = "UPDATE character_skills_save SET skill_level=?, effect_count=?, effect_cur_time=?,reuse_delay=?,restore_type=? WHERE char_obj_id=? AND skill_id=? AND class_index=?";
 	private static final String RESTORE_SKILL_SAVE = "SELECT skill_id,skill_level,effect_count,effect_cur_time, reuse_delay FROM character_skills_save WHERE char_obj_id=? AND class_index=? AND restore_type=? ORDER BY buff_index ASC";
 	private static final String DELETE_SKILL_SAVE = "DELETE FROM character_skills_save WHERE char_obj_id=? AND class_index=?";
 
@@ -6538,53 +6537,7 @@ public final class L2PcInstance extends L2PlayableInstance
         finally { try { con.close(); } catch (Exception e) {} }
     }
     
-    private void updateCharSkillSave()
-    {
-        if (!Config.STORE_SKILL_COOLTIME) 
-            return;
-        
-        java.sql.Connection con = null;
-        try
-        {
-            con = L2DatabaseFactory.getInstance().getConnection();
-            PreparedStatement statement;
-            
-            statement = con.prepareStatement(UPDATE_SKILL_SAVE);
-            
-            for (L2Effect effect : getAllEffects())
-            {
-                if (effect != null && !effect.isHerbEffect() && effect.getInUse() && !effect.getSkill().isToggle())
-                {
-                    // Skill Id to be saved.
-                    int skillId = effect.getSkill().getId();
-                                        
-                    statement.setInt(1, effect.getSkill().getLevel());
-                    statement.setInt(2, effect.getCount());
-                    statement.setInt(3, effect.getTime());
-                    statement.setInt(4, getObjectId());
-                    statement.setInt(5, getObjectId());
-                    statement.setInt(6, skillId);
-                    statement.setInt(7, getClassIndex());
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            _log.warning("Could not store char effect data: "+ e);
-        }
-        finally
-        {
-            try
-            {
-                con.close(); 
-            }
-            catch (Exception e)
-            {  
-            }
-        }
-    }
-
-	private void storeEffect()
+    private void storeEffect()
 	{
 		if (!Config.STORE_SKILL_COOLTIME) return;
 
