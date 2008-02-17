@@ -78,7 +78,7 @@ public class TvTManager implements Runnable
 	{
 	    if (!TvTEvent.startParticipation())
 	    {
-	        Announcements.getInstance().announceToAll("TvT Event: Event was canceled.");
+	        Announcements.getInstance().announceToAll("TvT Event: Event was cancelled.");
 	        _log.warning("TvTEventEngine[TvTManager.run()]: Error spawning event npc for participation.");
 	        
 	        this.scheduleEventStart();
@@ -97,7 +97,7 @@ public class TvTManager implements Runnable
     {
         if (!TvTEvent.startFight())
         {
-            Announcements.getInstance().announceToAll("TvT Event: Event canceled due to lack of Participation.");
+            Announcements.getInstance().announceToAll("TvT Event: Event cancelled due to lack of Participation.");
             _log.info("TvTEventEngine[TvTManager.run()]: Lack of registration, abort event.");
             
             this.scheduleEventStart();
@@ -207,7 +207,7 @@ public class TvTManager implements Runnable
             {
                 if (TvTEvent.isParticipating())
                 {
-                    Announcements.getInstance().announceToAll("TvT Event: "+(time/60/60)+" hour(s) umtil registration is closed!");
+                    Announcements.getInstance().announceToAll("TvT Event: "+(time/60/60)+" hour(s) until registration is closed!");
                 }
                 else if (TvTEvent.isStarted())
                 {
