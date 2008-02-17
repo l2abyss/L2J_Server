@@ -1085,6 +1085,7 @@ public final class Formulas
 	/** Calculate blow damage based on cAtk */
 	public double calcBlowDamage(L2Character attacker, L2Character target, L2Skill skill, boolean shld, boolean ss)
 	{
+		if (target.isInvul()) return 0;
 		double power = skill.getPower();
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
@@ -1142,6 +1143,7 @@ public final class Formulas
 	public final double calcPhysDam(L2Character attacker, L2Character target, L2Skill skill,
 									boolean shld, boolean crit, boolean dual, boolean ss)
 	{
+		if (target.isInvul()) return 0;
 		if (attacker instanceof L2PcInstance)
 		{
 			L2PcInstance pcInst = (L2PcInstance)attacker;
@@ -1320,6 +1322,7 @@ public final class Formulas
 	public final double calcMagicDam(L2Character attacker, L2Character target, L2Skill skill,
 										boolean ss, boolean bss, boolean mcrit)
 	{
+		if (target.isInvul()) return 0;
 		if (attacker instanceof L2PcInstance)
 		{
 			L2PcInstance pcInst = (L2PcInstance)attacker;

@@ -203,15 +203,17 @@ public abstract class L2Object
         	}
         	if (itemId == 57 || itemId == 6353)
         	{
-        		QuestState qs = ((L2PcInstance) player).getQuestState("255_Tutorial");
-        		if(qs != null)
+        		QuestState qs = null;
+        		if (player instanceof L2Summon)
+        			qs = ((L2Summon)player).getOwner().getQuestState("255_Tutorial");
+        		else if (player instanceof L2PcInstance)
+        			qs = ((L2PcInstance)player).getQuestState("255_Tutorial");
+        		if (qs != null)
         			qs.getQuest().notifyEvent("CE"+itemId+"",null,(L2PcInstance)player);
         	}
         }
 
-
-        // this can synchronize on others instancies, so it's out of
-        // synchronized, to avoid deadlocks
+        // outside of synchronized to avoid deadlocks
         // Remove the L2ItemInstance from the world
         L2World.getInstance().removeVisibleObject(this, oldregion);
     }
