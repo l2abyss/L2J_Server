@@ -245,7 +245,7 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 	}
 
 	@Override
-	public void onDisconection()
+	public void onDisconnection()
 	{
 		if (Config.DEBUG)
 		{

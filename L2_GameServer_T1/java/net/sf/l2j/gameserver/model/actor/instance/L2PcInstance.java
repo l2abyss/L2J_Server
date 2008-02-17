@@ -3333,9 +3333,10 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	public void closeNetConnection()
 	{
-		if (_client != null)
+		L2GameClient client = _client;
+		if (client != null && !client.getConnection().isClosed())
 		{
-			_client.close(new LeaveWorld());
+			client.close(new LeaveWorld());
 		}
 	}
 

@@ -62,12 +62,11 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	public GameClientState state;
 
 	// Info
-	public String accountName;
-	public SessionKey sessionId;
-	public L2PcInstance activeChar;
+    private String _accountName;
+    private SessionKey _sessionId;
+	private L2PcInstance _activeChar;
 	private ReentrantLock _activeCharLock = new ReentrantLock();
 
-	@SuppressWarnings("unused")
 	private boolean _isAuthedGG;
 	private long _connectionStartTime;
 	private List<Integer> _charSlotMapping = new FastList<Integer>();
@@ -76,7 +75,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	protected final ScheduledFuture<?> _autoSaveInDB;
 
 	// Crypt
-	public GameCrypt crypt;
+	private GameCrypt _crypt;
 
 	// Flood protection
 	public byte packetsSentInSec = 0;
@@ -87,7 +86,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 		super(con);
 		state = GameClientState.CONNECTED;
 		_connectionStartTime = System.currentTimeMillis();
-		crypt = new GameCrypt();
+        _crypt = new GameCrypt();
         
         if (Config.CHAR_STORE_INTERVAL > 0)
         {
@@ -104,7 +103,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	public byte[] enableCrypt()
 	{
 		byte[] key = BlowFishKeygen.getRandomKey();
-		crypt.setKey(key);
+        _crypt.setKey(key);
 		return key;
 	}
 
@@ -126,27 +125,27 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	@Override
 	public boolean decrypt(ByteBuffer buf, int size)
 	{
-		crypt.decrypt(buf.array(), buf.position(), size);
+        _crypt.decrypt(buf.array(), buf.position(), size);
 		return true;
 	}
 
 	@Override
 	public boolean encrypt(final ByteBuffer buf, final int size)
 	{
-		crypt.encrypt(buf.array(), buf.position(), size);
+        _crypt.encrypt(buf.array(), buf.position(), size);
 		buf.position(buf.position() + size);
 		return true;
 	}
 
 	public L2PcInstance getActiveChar()
 	{
-		return activeChar;
+		return _activeChar;
 	}
 
 	public void setActiveChar(L2PcInstance pActiveChar)
 	{
-		activeChar = pActiveChar;
-		if (activeChar != null)
+		_activeChar = pActiveChar;
+		if (_activeChar != null)
 		{
 			L2World.getInstance().storeObject(getActiveChar());
 		}
@@ -169,22 +168,22 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 
 	public void setAccountName(String pAccountName)
 	{
-		accountName = pAccountName;
+		_accountName = pAccountName;
 	}
 
 	public String getAccountName()
 	{
-		return accountName;
+		return _accountName;
 	}
 
 	public void setSessionId(SessionKey sk)
 	{
-		sessionId = sk;
+		_sessionId = sk;
 	}
 
 	public SessionKey getSessionId()
 	{
-		return sessionId;
+		return _sessionId;
 	}
 
 	public void sendPacket(L2GameServerPacket gsp)
@@ -494,7 +493,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
     }
 
     @Override
-    protected void onDisconection()
+    protected void onDisconnection()
 	{
     	// no long running tasks here, do it async
     	try

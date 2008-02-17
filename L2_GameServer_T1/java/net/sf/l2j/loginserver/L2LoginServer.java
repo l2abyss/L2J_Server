@@ -178,10 +178,10 @@ public class L2LoginServer
 		
 		L2LoginPacketHandler loginPacketHandler = new L2LoginPacketHandler();
 		SelectorHelper sh = new SelectorHelper();
-        SelectorConfig ssc = new SelectorConfig(null, sh);
+        SelectorConfig ssc = new SelectorConfig(null, null, sh, loginPacketHandler);
 		try
 		{
-			_selectorThread = new SelectorThread<L2LoginClient>(ssc, null, loginPacketHandler, sh, sh, sh);
+			_selectorThread = new SelectorThread<L2LoginClient>(ssc, sh, sh, sh);
 			_selectorThread.setAcceptFilter(sh);
 		}
 		catch (IOException e)

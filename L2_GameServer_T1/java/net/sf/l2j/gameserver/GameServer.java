@@ -681,11 +681,11 @@ public class GameServer
 		_loginThread.start();
         
         L2GamePacketHandler gph = new L2GamePacketHandler();
-		SelectorConfig<L2GameClient> sc = new SelectorConfig<L2GameClient>(null, gph);
+		SelectorConfig<L2GameClient> sc = new SelectorConfig<L2GameClient>(null, null, gph, gph);
         sc.setMaxSendPerPass(12);
         sc.setSelectorSleepTime(20);
         
-		_selectorThread = new SelectorThread<L2GameClient>(sc, null, gph, gph, gph, null);
+		_selectorThread = new SelectorThread<L2GameClient>(sc, gph, gph, null);
 		_selectorThread.openServerSocket(null, Config.PORT_GAME);
 		_selectorThread.start();
 		_log.config("Maximum Numbers of Connected Players: " + Config.MAXIMUM_ONLINE_USERS);

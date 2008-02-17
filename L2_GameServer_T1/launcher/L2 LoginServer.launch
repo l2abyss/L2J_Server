@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/L2_GameServer_t1"/>
+<listEntry value="/L2_GameServer_t1_pub"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="E:\shared\L2J_Tests\l2j-server\login"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="L2_GameServer_t1"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="E:\shared\L2J_Tests\l2j-t1\login"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="L2_GameServer_t1_pub"/>
 <stringAttribute key="org.eclipse.debug.ui.target_debug_perspective" value="perspective_default"/>
 <booleanAttribute key="org.eclipse.jdt.launching.STOP_IN_MAIN" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="net.sf.l2j.loginserver.L2LoginServer"/>
