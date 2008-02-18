@@ -24,6 +24,7 @@ import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_REST;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
@@ -200,7 +201,8 @@ public class L2PlayerAI extends L2CharacterAI
     {
 
     	L2Character target = getCastTarget();
-        //if (Config.DEBUG) _log.warning("L2PlayerAI: thinkCast -> Start");
+        if (Config.DEBUG) 
+        	_log.warning("L2PlayerAI: thinkCast -> Start");
 
         if (checkTargetLost(target))
         {

@@ -571,9 +571,8 @@ public final class L2VillageMasterInstance extends L2FolkInstance
 
     public void createSubPledge(L2PcInstance player, String clanName, String leaderName, int pledgeType, int minClanLvl)
     {
-        //if (Config.DEBUG)
-            _log.fine(player.getObjectId() + "(" + player.getName() + ") requested sub clan creation from "
-                + getObjectId() + "(" + getName() + ")");
+    	if (Config.DEBUG)
+            _log.fine(player.getObjectId() + "(" + player.getName() + ") requested sub clan creation from " + getObjectId() + "(" + getName() + ")");
 
         if (!player.isClanLeader())
         {
