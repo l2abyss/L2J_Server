@@ -2864,13 +2864,14 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void stopImmobileUntilAttacked(L2Effect effect)
 	{
-		stopSkillEffects(effect.getSkill().cancelEffect());
-	    
-        if (effect == null)
+		 if (effect == null)
             stopEffects(L2Effect.EffectType.IMMOBILEUNTILATTACKED);
         else
+        {
             removeEffect(effect);
-
+            stopSkillEffects(effect.getSkill().cancelEffect());
+        }
+		 	
         setIsImmobileUntilAttacked(false);
         getAI().notifyEvent(CtrlEvent.EVT_THINK, null);
         updateAbnormalEffect();
