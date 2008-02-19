@@ -47,7 +47,7 @@ public final class DlgAnswer extends L2GameClientPacket
 			_log.fine(getType()+": Answer acepted. Message ID "+_messageId+", asnwer "+_answer+", unknown field "+_unk);
 		if (_messageId == SystemMessageId.RESSURECTION_REQUEST.getId())
 			getClient().getActiveChar().reviveAnswer(_answer);
-		else if (_messageId==1983 && Config.L2JMOD_ALLOW_WEDDING)
+		else if (_messageId == SystemMessageId.S1.getId() && Config.L2JMOD_ALLOW_WEDDING)
 						getClient().getActiveChar().EngageAnswer(_answer);
 
 	}

@@ -224,7 +224,7 @@ public class Wedding implements IVoicedCommandHandler
 
         ptarget.setEngageRequest(true, activeChar.getObjectId());
                                        // $s1
-        ConfirmDlg dlg = new ConfirmDlg(1983).addString(activeChar.getName()+" asking you to engage. Do you want to start a new relationship?");
+        ConfirmDlg dlg = new ConfirmDlg(SystemMessageId.S1.getId()).addString(activeChar.getName()+" is asking to engage you. Do you want to start a new relationship?");
         ptarget.sendPacket(dlg);
         return true;
     }

@@ -4730,6 +4730,12 @@ public enum SystemMessageId
     S1S_REMAINING_MANA_IS_NOW_0(1982),
 
     /**
+     * ID: 1983<br>
+     * Message: $s1
+     */
+    S1(1983),
+    
+    /**
      * ID: 1984<br>
      * Message: Press the Augment button to begin.
      */
