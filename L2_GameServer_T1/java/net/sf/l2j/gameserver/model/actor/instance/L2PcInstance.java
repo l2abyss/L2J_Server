@@ -472,8 +472,8 @@ public final class L2PcInstance extends L2PlayableInstance
 	private TradeList _sellList;
 	private TradeList _buyList;
 
-	/** True if the L2PcInstance is newbie */
-	private boolean _newbie;
+	/** Bitmask used to keep track of one-time/newbie quest rewards*/
+	private int _newbie;
 
 	private boolean _noble = false;
 	private boolean _hero = false;
@@ -783,10 +783,8 @@ public final class L2PcInstance extends L2PlayableInstance
 
 		// Set the base class ID to that of the actual class ID.
 		player.setBaseClass(player.getClassId());
-
-		if (Config.ALT_GAME_NEW_CHAR_ALWAYS_IS_NEWBIE)
-			player.setNewbie(true);
-
+		//Kept for backwards compabitility.
+		player.setNewbie(1);
 		// Add the player in the characters table of the database
 		boolean ok = player.createDb();
 
@@ -995,7 +993,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
 
 	/**
-	 * Calculate a destination to explore the area and set the AI Intension to AI_INTENTION_MOVE_TO.<BR><BR>
+	 * Calculate a destination to explore the area and set the AI Intention to AI_INTENTION_MOVE_TO.<BR><BR>
 	 */
 	public void explore()
 	{
@@ -1026,23 +1024,33 @@ public final class L2PcInstance extends L2PlayableInstance
 	/** Return the Level of the L2PcInstance. */
 	@Override
 	public final int getLevel() { return getStat().getLevel(); }
+	
 	/**
-	 * Return the _newbie state of the L2PcInstance.<BR><BR>
+     * Return the _newbie state of the L2PcInstance.<BR><BR>
+     * @deprecated Use {@link #getNewbie()} instead
+     */
+    public int isNewbie()
+    {
+        return getNewbie();
+    }
+
+	/**
+	 * Return the _newbie rewards state of the L2PcInstance.<BR><BR>
 	 */
-	public boolean isNewbie()
+	public int getNewbie()
 	{
 		return _newbie;
 	}
 
 	/**
-	 * Set the _newbie state of the L2PcInstance.<BR><BR>
+	 * Set the _newbie rewards state of the L2PcInstance.<BR><BR>
 	 *
-	 * @param isNewbie The Identifier of the _newbie state<BR><BR>
+	 * @param newbieRewards The Identifier of the _newbie state<BR><BR>
 	 *
 	 */
-	public void setNewbie(boolean isNewbie)
+	public void setNewbie(int newbieRewards)
 	{
-		_newbie = isNewbie;
+		_newbie = newbieRewards;
 	}
 
 
@@ -5969,7 +5977,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			statement.setInt(29, getClanPrivileges());
 			statement.setInt(30, getWantsPeace());
 			statement.setInt(31, getBaseClass());
-			statement.setInt(32, isNewbie() ? 1 : 0);
+			statement.setInt(32, getNewbie());
 			statement.setInt(33, isNoble() ? 1 :0);
 			statement.setLong(34, 0);
 			statement.setLong(35,System.currentTimeMillis());
@@ -6044,7 +6052,7 @@ public final class L2PcInstance extends L2PlayableInstance
 				player.setPvpKills(rset.getInt("pvpkills"));
 				player.setPkKills(rset.getInt("pkkills"));
 				player.setOnlineTime(rset.getLong("onlinetime"));
-				player.setNewbie(rset.getInt("newbie")==1);
+				player.setNewbie(rset.getInt("newbie"));
 				player.setNoble(rset.getInt("nobless")==1);
 
 				player.setClanJoinExpiryTime(rset.getLong("clan_join_expiry_time"));
@@ -6484,7 +6492,7 @@ public final class L2PcInstance extends L2PlayableInstance
             statement.setLong(34, totalOnlineTime);
             statement.setInt(35, isInJail() ? 1 : 0);
             statement.setLong(36, getJailTimer());
-            statement.setInt(37, isNewbie() ? 1 : 0);
+            statement.setInt(37, getNewbie());
             statement.setInt(38, isNoble() ? 1 : 0);
             statement.setLong(39, getPowerGrade());
             statement.setInt(40, getPledgeType());
