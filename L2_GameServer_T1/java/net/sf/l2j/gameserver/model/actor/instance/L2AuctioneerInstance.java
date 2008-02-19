@@ -276,7 +276,7 @@ public final class L2AuctioneerInstance extends L2FolkInstance
             else if (actualCommand.equalsIgnoreCase("list"))
             {
                 List<Auction> auctions =AuctionManager.getInstance().getAuctions();
-            	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            	SimpleDateFormat format = new SimpleDateFormat("yy/MM/dd");
                 /** Limit for make new page, prevent client crash **/
                 int limit = 15;
                 int start;
