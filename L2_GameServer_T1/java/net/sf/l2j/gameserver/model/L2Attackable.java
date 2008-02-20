@@ -34,7 +34,7 @@ import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.EventDroplist.DateDrop;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
-import net.sf.l2j.gameserver.model.actor.instance.L2BossInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MinionInstance;
@@ -475,7 +475,7 @@ public class L2Attackable extends L2NpcInstance
         if (Config.L2JMOD_CHAMPION_ENABLE)
         {
         	//Set champion on next spawn
-        	if (!(this instanceof L2BossInstance) && this instanceof L2MonsterInstance && Config.L2JMOD_CHAMPION_FREQUENCY > 0 && getLevel()>=Config.L2JMOD_CHAMP_MIN_LVL && getLevel()<=Config.L2JMOD_CHAMP_MAX_LVL)
+        	if (!(this instanceof L2GrandBossInstance) && this instanceof L2MonsterInstance && Config.L2JMOD_CHAMPION_FREQUENCY > 0 && getLevel()>=Config.L2JMOD_CHAMP_MIN_LVL && getLevel()<=Config.L2JMOD_CHAMP_MAX_LVL)
         	{
         		int random = Rnd.get(100);
         		if (random < Config.L2JMOD_CHAMPION_FREQUENCY)
@@ -2242,7 +2242,7 @@ public class L2Attackable extends L2NpcInstance
     @Override
 	public boolean hasRandomAnimation()
     {
-        return ((Config.MAX_MONSTER_ANIMATION > 0) && !(this instanceof L2BossInstance));
+        return ((Config.MAX_MONSTER_ANIMATION > 0) && !(this instanceof L2GrandBossInstance));
     }
 
     @Override

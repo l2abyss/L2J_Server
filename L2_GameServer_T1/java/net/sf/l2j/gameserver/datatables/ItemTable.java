@@ -35,7 +35,7 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2PetDataTable;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2ItemInstance.ItemLocation;
-import net.sf.l2j.gameserver.model.actor.instance.L2BossInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RaidBossInstance;
 import net.sf.l2j.gameserver.skills.SkillsEngine;
@@ -677,7 +677,7 @@ public class ItemTable
         	ScheduledFuture<?> itemLootShedule;
         	long delay = 0;
         	// if in CommandChannel and was killing a World/RaidBoss
-            if (reference != null && reference instanceof L2BossInstance || reference instanceof L2RaidBossInstance)
+            if (reference != null && reference instanceof L2GrandBossInstance || reference instanceof L2RaidBossInstance)
             {
             	if(((L2Attackable)reference).getFirstCommandChannelAttacked() != null
             			&& ((L2Attackable)reference).getFirstCommandChannelAttacked().meetRaidWarCondition(reference))

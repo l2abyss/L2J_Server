@@ -17,7 +17,7 @@ package net.sf.l2j.gameserver.handler.skillhandlers;
 import javolution.util.FastList;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
-import net.sf.l2j.gameserver.instancemanager.BossZoneManager;
+import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
@@ -56,7 +56,7 @@ public class SummonFriend implements ISkillHandler
         	return;
         }
 
-        if (BossZoneManager.getInstance().getZone(activePlayer) != null && !activePlayer.isGM())
+        if (GrandBossManager.getInstance().getZone(activePlayer) != null && !activePlayer.isGM())
         {
             activePlayer.sendMessage("You may not use Summon Friend Skill inside a Boss Zone.");
             activePlayer.sendPacket(new ActionFailed());
@@ -133,7 +133,7 @@ public class SummonFriend implements ISkillHandler
                     }
 
                     // Check for the the target's Inside Boss Zone
-                    if (BossZoneManager.getInstance().getZone(targetChar) != null && !targetChar.isGM())
+                    if (GrandBossManager.getInstance().getZone(targetChar) != null && !targetChar.isGM())
                     {
                         activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_USE_SUMMON_SKILL_ON_SELECTED_TARGET));
                     	continue;

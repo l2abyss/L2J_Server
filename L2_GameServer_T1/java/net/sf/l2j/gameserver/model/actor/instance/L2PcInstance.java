@@ -10684,7 +10684,7 @@ public final class L2PcInstance extends L2PlayableInstance
     {
     	if(Rnd.get(100) <= Config.DEATH_PENALTY_CHANCE 
     			&& !(killer instanceof L2PcInstance) && !(this.isGM())
-    			&& !(this.getCharmOfLuck() && (killer instanceof L2BossInstance || killer instanceof L2RaidBossInstance))) 
+    			&& !(this.getCharmOfLuck() && (killer instanceof L2GrandBossInstance || killer instanceof L2RaidBossInstance))) 
     		
     		increaseDeathPenaltyBuffLevel();
 	}

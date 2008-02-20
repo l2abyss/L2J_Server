@@ -22,7 +22,7 @@ import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Manor;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.actor.instance.L2BossInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2ChestInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
@@ -91,7 +91,7 @@ public class Seed implements IItemHandler {
 
         if ( !(target instanceof L2MonsterInstance)  ||
         		(target instanceof L2ChestInstance)  ||
-        		(target instanceof L2BossInstance)   ||
+        		(target instanceof L2GrandBossInstance)   ||
         		(target instanceof L2RaidBossInstance)) {
         	_activeChar.sendPacket(new SystemMessage(SystemMessageId.THE_TARGET_IS_UNAVAILABLE_FOR_SEEDING));
         	_activeChar.sendPacket(new ActionFailed());

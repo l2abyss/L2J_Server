@@ -20,7 +20,7 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.handler.IUserCommandHandler;
-import net.sf.l2j.gameserver.instancemanager.BossZoneManager;
+import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -72,7 +72,7 @@ public class Escape implements IUserCommandHandler
         }
 
   
-        if (BossZoneManager.getInstance().getZone(activeChar) != null && !activeChar.isGM())
+        if (GrandBossManager.getInstance().getZone(activeChar) != null && !activeChar.isGM())
         {
             activeChar.sendMessage("You may not use an escape command in a Boss Zone.");
             return false;

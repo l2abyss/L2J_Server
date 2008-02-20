@@ -214,6 +214,7 @@ import net.sf.l2j.gameserver.instancemanager.MercTicketManager;
 import net.sf.l2j.gameserver.instancemanager.PetitionManager;
 import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossSpawnManager;
+import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.instancemanager.TransformationManager;
 import net.sf.l2j.gameserver.model.AutoChatHandler;
@@ -400,6 +401,7 @@ public class GameServer
         SpawnTable.getInstance();
         RaidBossSpawnManager.getInstance();
         DayNightSpawnManager.getInstance().notifyChangeMode();
+        GrandBossManager.getInstance();
         DimensionalRiftManager.getInstance();
 		Announcements.getInstance();
 		MapRegionTable.getInstance();

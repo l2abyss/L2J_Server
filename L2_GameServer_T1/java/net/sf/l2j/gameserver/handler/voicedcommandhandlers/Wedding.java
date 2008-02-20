@@ -26,7 +26,7 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.handler.IVoicedCommandHandler;
-import net.sf.l2j.gameserver.instancemanager.BossZoneManager;
+import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.CoupleManager;
 import net.sf.l2j.gameserver.model.L2Skill;
@@ -236,7 +236,7 @@ public class Wedding implements IVoicedCommandHandler
             activeChar.sendMessage("You're not married.");
             return false;
         }
-        if (BossZoneManager.getInstance().getZone(activeChar) != null)
+        if (GrandBossManager.getInstance().getZone(activeChar) != null)
         {
             activeChar.sendMessage("You are inside a Boss Zone.");
             return false;
@@ -261,7 +261,7 @@ public class Wedding implements IVoicedCommandHandler
             activeChar.sendMessage("Your partner is in Jail.");
             return false;
         }
-        else if (BossZoneManager.getInstance().getZone(partner) != null)
+        else if (GrandBossManager.getInstance().getZone(partner) != null)
         {
             activeChar.sendMessage("Your partner is inside a Boss Zone.");
             return false;

@@ -32,6 +32,7 @@ import net.sf.l2j.util.Rnd;
  * L2MonsterInstance :<BR><BR>
  * <li>L2MinionInstance</li>
  * <li>L2RaidBossInstance </li>
+ * <li>L2GrandBossInstance </li>
  *
  * @version $Revision: 1.20.4.6 $ $Date: 2005/04/06 16:13:39 $
  */

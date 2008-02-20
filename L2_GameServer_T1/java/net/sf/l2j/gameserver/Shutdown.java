@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
 import net.sf.l2j.gameserver.instancemanager.ItemsOnGroundManager;
 import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossSpawnManager;
+import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.L2GameClient;
@@ -409,9 +410,11 @@ public class Shutdown extends Thread
         // Save Seven Signs data before closing. :)
         SevenSigns.getInstance().saveSevenSignsData(null, true);
 
-        // Save all raidboss status ^_^
+        // Save all raidboss and GrandBoss status ^_^
         RaidBossSpawnManager.getInstance().cleanUp();
         System.err.println("RaidBossSpawnManager: All raidboss info saved!!");
+        GrandBossManager.getInstance().cleanUp();
+        System.err.println("GrandBossManager: All Grand Boss info saved!!");
         TradeController.getInstance().dataCountStore();
         System.err.println("TradeController: All count Item Saved");
         try
