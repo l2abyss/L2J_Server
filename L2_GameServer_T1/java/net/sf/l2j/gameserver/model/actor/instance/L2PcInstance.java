@@ -176,6 +176,7 @@ import net.sf.l2j.gameserver.serverpackets.RecipeShopSellList;
 import net.sf.l2j.gameserver.serverpackets.RelationChanged;
 import net.sf.l2j.gameserver.serverpackets.Ride;
 import net.sf.l2j.gameserver.serverpackets.SetupGauge;
+import net.sf.l2j.gameserver.serverpackets.ShortBuffStatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.ShortCutInit;
 import net.sf.l2j.gameserver.serverpackets.SkillList;
 import net.sf.l2j.gameserver.serverpackets.Snoop;
@@ -702,6 +703,27 @@ public final class L2PcInstance extends L2PlayableInstance
 			{
 				_log.log(Level.WARNING, "", t);
 			}
+		}
+	}
+
+	/** ShortBuff clearing Task */
+	private ScheduledFuture<?> _shortBuffTask = null;
+
+	private class ShortBuffTask implements Runnable
+	{
+		private L2PcInstance _player = null;
+
+        public ShortBuffTask(L2PcInstance activeChar)
+        {
+	        _player = activeChar;
+        }
+
+		public void run()
+		{
+			if (_player == null)
+				return;
+			
+			_player.sendPacket(new ShortBuffStatusUpdate(0, 0, 0));
 		}
 	}
 
@@ -10669,6 +10691,24 @@ public final class L2PcInstance extends L2PlayableInstance
             _player.clearSouls();
         }
     }
+    
+    /**
+     *
+     * @param magicId
+     * @param level
+     * @param time
+     */
+    public void shortBuffStatusUpdate(int magicId, int level, int time)
+	{
+		if (_shortBuffTask != null)
+		{
+			_shortBuffTask.cancel(false);
+			_shortBuffTask = null;
+		}
+		_shortBuffTask = ThreadPoolManager.getInstance().scheduleGeneral(new ShortBuffTask(this), 15000);
+		
+		sendPacket(new ShortBuffStatusUpdate(magicId, level, time));
+	}
 
     public int getDeathPenaltyBuffLevel()
     {
