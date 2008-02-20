@@ -1136,6 +1136,7 @@ public abstract class L2Character extends L2Object
 		L2Character temp;
 		for (L2Object obj : getKnownList().getKnownObjects().values())
 		{
+			if (obj == target) continue; // do not hit twice
 			//Check if the L2Object is a L2Character
 			if(obj instanceof L2Character)
 			{
