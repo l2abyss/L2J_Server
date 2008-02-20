@@ -859,7 +859,9 @@ public final class Config
     /**define L2JMODS */
     /** Champion Mod*/
     public static boolean L2JMOD_CHAMPION_ENABLE;
+    public static boolean L2JMOD_CHAMPION_PASSIVE;
     public static int L2JMOD_CHAMPION_FREQUENCY;
+    public static String L2JMOD_CHAMP_TITLE;
     public static int L2JMOD_CHAMP_MIN_LVL;
     public static int L2JMOD_CHAMP_MAX_LVL;
     public static int L2JMOD_CHAMPION_HP;
@@ -1870,19 +1872,21 @@ public final class Config
                 L2JModSettings.load(is);
                 is.close();
 
-                L2JMOD_CHAMPION_ENABLE              = Boolean.parseBoolean(L2JModSettings.getProperty("ChampionEnable", "false"));
-                L2JMOD_CHAMPION_FREQUENCY              = Integer.parseInt(L2JModSettings.getProperty("ChampionFrequency", "0"));
-                L2JMOD_CHAMP_MIN_LVL                = Integer.parseInt(L2JModSettings.getProperty("ChampionMinLevel", "20"));
-                L2JMOD_CHAMP_MAX_LVL                = Integer.parseInt(L2JModSettings.getProperty("ChampionMaxLevel", "60"));
-                L2JMOD_CHAMPION_HP                     = Integer.parseInt(L2JModSettings.getProperty("ChampionHp", "7"));
-                L2JMOD_CHAMPION_HP_REGEN               = Float.parseFloat(L2JModSettings.getProperty("ChampionHpRegen", "1."));
-                L2JMOD_CHAMPION_REWARDS                = Integer.parseInt(L2JModSettings.getProperty("ChampionRewards", "8"));
-                L2JMOD_CHAMPION_ADENAS_REWARDS         = Integer.parseInt(L2JModSettings.getProperty("ChampionAdenasRewards", "1"));
-                L2JMOD_CHAMPION_ATK                 = Float.parseFloat(L2JModSettings.getProperty("ChampionAtk", "1."));
-                L2JMOD_CHAMPION_SPD_ATK             = Float.parseFloat(L2JModSettings.getProperty("ChampionSpdAtk", "1."));
-                L2JMOD_CHAMPION_REWARD                 = Integer.parseInt(L2JModSettings.getProperty("ChampionRewardItem", "0"));
-                L2JMOD_CHAMPION_REWARD_ID             = Integer.parseInt(L2JModSettings.getProperty("ChampionRewardItemID", "6393"));
-                L2JMOD_CHAMPION_REWARD_QTY            = Integer.parseInt(L2JModSettings.getProperty("ChampionRewardItemQty", "1"));
+                L2JMOD_CHAMPION_ENABLE              	= Boolean.parseBoolean(L2JModSettings.getProperty("ChampionEnable", "false"));
+                L2JMOD_CHAMPION_PASSIVE					= Boolean.parseBoolean(L2JModSettings.getProperty("ChampionPassive", "false"));
+                L2JMOD_CHAMPION_FREQUENCY              	= Integer.parseInt(L2JModSettings.getProperty("ChampionFrequency", "0"));
+                L2JMOD_CHAMP_TITLE                      = L2JModSettings.getProperty("ChampionTitle", "Champion");
+                L2JMOD_CHAMP_MIN_LVL                	= Integer.parseInt(L2JModSettings.getProperty("ChampionMinLevel", "20"));
+                L2JMOD_CHAMP_MAX_LVL                	= Integer.parseInt(L2JModSettings.getProperty("ChampionMaxLevel", "60"));
+                L2JMOD_CHAMPION_HP                     	= Integer.parseInt(L2JModSettings.getProperty("ChampionHp", "7"));
+                L2JMOD_CHAMPION_HP_REGEN               	= Float.parseFloat(L2JModSettings.getProperty("ChampionHpRegen", "1."));
+                L2JMOD_CHAMPION_REWARDS                	= Integer.parseInt(L2JModSettings.getProperty("ChampionRewards", "8"));
+                L2JMOD_CHAMPION_ADENAS_REWARDS         	= Integer.parseInt(L2JModSettings.getProperty("ChampionAdenasRewards", "1"));
+                L2JMOD_CHAMPION_ATK                 	= Float.parseFloat(L2JModSettings.getProperty("ChampionAtk", "1."));
+                L2JMOD_CHAMPION_SPD_ATK             	= Float.parseFloat(L2JModSettings.getProperty("ChampionSpdAtk", "1."));
+                L2JMOD_CHAMPION_REWARD                 	= Integer.parseInt(L2JModSettings.getProperty("ChampionRewardItem", "0"));
+                L2JMOD_CHAMPION_REWARD_ID             	= Integer.parseInt(L2JModSettings.getProperty("ChampionRewardItemID", "6393"));
+                L2JMOD_CHAMPION_REWARD_QTY            	= Integer.parseInt(L2JModSettings.getProperty("ChampionRewardItemQty", "1"));
 
                 TVT_EVENT_ENABLED                        = Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventEnabled", "false"));
                 TVT_EVENT_INTERVAL                        = Integer.parseInt(L2JModSettings.getProperty("TvTEventInterval", "18000"));

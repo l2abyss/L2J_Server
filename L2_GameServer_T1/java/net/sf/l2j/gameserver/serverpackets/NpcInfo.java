@@ -65,7 +65,7 @@ public final class NpcInfo extends L2GameServerPacket
         	_name = cha.getTemplate().name;
 
         if(Config.L2JMOD_CHAMPION_ENABLE && cha.isChampion())
-            _title = ("Champion");
+            _title = (Config.L2JMOD_CHAMP_TITLE);
         else if (cha.getTemplate().serverSideTitle)
     		_title = cha.getTemplate().title;
     	else

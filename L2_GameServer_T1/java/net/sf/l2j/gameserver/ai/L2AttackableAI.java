@@ -223,6 +223,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
             // unless they are already following those players from outside the peacezone.
             if (!Config.ALT_MOB_AGRO_IN_PEACEZONE && target.isInsideZone(L2Character.ZONE_PEACE))
                 return false;
+            
+            if (me.isChampion() && Config.L2JMOD_CHAMPION_PASSIVE)
+            	return false;
 
             // Check if the actor is Aggressive
             return (me.isAggressive() && GeoData.getInstance().canSeeTarget(me, target));
