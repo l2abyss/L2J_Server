@@ -21,6 +21,8 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.skills.Calculator;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.Stats;
+import net.sf.l2j.gameserver.templates.L2WeaponType;
+import net.sf.l2j.gameserver.templates.L2Weapon;
 
 public class CharStat
 {
@@ -534,7 +536,11 @@ public class CharStat
 	{
     	if (_activeChar == null)
     		return 1;
-
+    	// Polearm handled here for now. Basically L2PcInstance could have a function
+    	// similar to FuncBowAtkRange and NPC are defined in DP. 
+    	L2Weapon weaponItem = _activeChar.getActiveWeaponItem();
+        if (weaponItem != null && weaponItem.getItemType() == L2WeaponType.POLE)
+            return (int) calcStat(Stats.POWER_ATTACK_RANGE, 66, null, null);
 		return (int) calcStat(Stats.POWER_ATTACK_RANGE, _activeChar.getTemplate().baseAtkRange, null, null);
 	}
 
