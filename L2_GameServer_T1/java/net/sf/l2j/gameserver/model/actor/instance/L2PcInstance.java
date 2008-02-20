@@ -1975,8 +1975,16 @@ public final class L2PcInstance extends L2PlayableInstance
 		{
 			getSubClasses().get(_classIndex).setClassId(Id);
 		}
+		setTarget(this);
 		doCast(SkillTable.getInstance().getInfo(5103,1));
 		setClassTemplate(Id);
+		
+		// Update class icon in party and clan
+		if (isInParty())
+			getParty().broadcastToPartyMembers(new PartySmallWindowUpdate(this));
+
+		if (getClan() != null)
+			getClan().broadcastToOnlineMembers(new PledgeShowMemberListUpdate(this));
 	}
 
 	/** Return the Experience of the L2PcInstance. */
