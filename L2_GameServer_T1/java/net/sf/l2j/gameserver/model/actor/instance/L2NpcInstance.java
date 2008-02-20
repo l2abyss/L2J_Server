@@ -1016,15 +1016,19 @@ public class L2NpcInstance extends L2Character
             else if (command.startsWith("npcfind_byid"))
             {
                 try
-                {
-                    L2Spawn spawn = SpawnTable.getInstance().getTemplate(Integer.parseInt(command.substring(12).trim()));
-                    
-                    if(spawn!=null) 
-                        player.sendPacket(new RadarControl(0,1,spawn.getLocx(),spawn.getLocy(),spawn.getLocz()));
-                } catch (NumberFormatException nfe)
-                { 
-                    player.sendMessage("Wrong command parameters");
-                }
+				{
+					L2Spawn spawn = SpawnTable.getInstance().getTemplate(Integer.parseInt(command.substring(12).trim()));
+					
+					if (spawn != null)
+					{
+						player.sendPacket(new RadarControl(2, 2, spawn.getLocx(), spawn.getLocy(), spawn.getLocz()));
+						player.sendPacket(new RadarControl(0, 1, spawn.getLocx(), spawn.getLocy(), spawn.getLocz()));
+					}
+				}
+				catch (NumberFormatException nfe)
+				{
+					player.sendMessage("Wrong command parameters");
+				}
             }
             else if (command.startsWith("EnterRift"))
             {

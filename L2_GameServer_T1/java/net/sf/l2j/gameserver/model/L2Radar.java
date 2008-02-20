@@ -49,23 +49,23 @@ public final class L2Radar
         RadarMarker newMarker = new RadarMarker(x, y, z);
 
         _markers.remove(newMarker);
-        _player.sendPacket(new RadarControl(2, 2, x, y, z));
+        _player.sendPacket(new RadarControl(1, 1, x, y, z));
     }
 
     public void removeAllMarkers()
     {
-        // TODO: Need method to remove all markers from radar at once
         for (RadarMarker tempMarker : _markers)
-            _player.sendPacket(new RadarControl(1, tempMarker._type, tempMarker._x, tempMarker._y, tempMarker._z));
+            _player.sendPacket(new RadarControl(2, 2, tempMarker._x, tempMarker._y, tempMarker._z));
 
         _markers.removeAllElements();
     }
 
     public void loadMarkers()
     {
-        // TODO: Need method to re-send radar markers after load/teleport/death
-        // etc.
-    }
+		_player.sendPacket(new RadarControl(2, 2, _player.getX(), _player.getY(), _player.getZ()));
+		for (RadarMarker tempMarker : _markers)
+			_player.sendPacket(new RadarControl(0, 1, tempMarker._x, tempMarker._y, tempMarker._z));
+	}
 
     public class RadarMarker
     {

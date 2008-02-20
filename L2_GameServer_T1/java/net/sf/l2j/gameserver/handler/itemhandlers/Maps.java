@@ -45,7 +45,7 @@ public class Maps implements IItemHandler
 		if (itemId == 7063 )
 		{
 			activeChar.sendPacket(new ShowMiniMap(1665));
-			activeChar.sendPacket(new RadarControl(0, 1, 51995, -51265, -3104));
+			activeChar.sendPacket(new RadarControl(0, 2, 51995, -51265, -3104));
 		}
 		else	
 			activeChar.sendPacket(new ShowMiniMap(itemId));
