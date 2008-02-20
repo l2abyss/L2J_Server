@@ -27,10 +27,12 @@ import net.sf.l2j.gameserver.model.L2EnchantSkillLearn.EnchantSkillDetail;
 import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.base.Experience;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.ShortCutRegister;
 import net.sf.l2j.gameserver.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.util.IllegalPlayerAction;
 import net.sf.l2j.gameserver.util.Util;
 import net.sf.l2j.util.Rnd;
@@ -120,7 +122,8 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
         
         if (player.getSp() >= requiredSp)
         {
-            if (player.getExp() >= requiredExp)
+            long expAfter = player.getExp() - requiredExp;
+            if (player.getExp() >= requiredExp && expAfter >= Experience.LEVEL[player.getLevel()])
             {
                 // only first lvl requires book
                 boolean usesBook = _skillLvl % 100 == 1; // 101, 201, 301 ...
@@ -161,6 +164,8 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
                     StatusUpdate su = new StatusUpdate(player.getObjectId());
                     su.addAttribute(StatusUpdate.SP, player.getSp());
                     player.sendPacket(su);
+                    
+                    player.sendPacket(new UserInfo(player));
                     
                     SystemMessage sm = new SystemMessage(SystemMessageId.YOU_HAVE_SUCCEEDED_IN_ENCHANTING_THE_SKILL_S1);
                     sm.addSkillName(_skillId);
