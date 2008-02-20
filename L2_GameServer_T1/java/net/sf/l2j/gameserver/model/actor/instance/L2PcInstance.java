@@ -9091,6 +9091,17 @@ public final class L2PcInstance extends L2PlayableInstance
 
             getCubics().clear();
         }
+        
+        // Delete a force buff upon class change.
+        if(_forceBuff != null)
+			_forceBuff.delete();
+
+        // Stop casting for any player that may be casting a force buff on this l2pcinstance.
+		for(L2Character character : getKnownList().getKnownCharacters())
+		{
+			if(character.getForceBuff() != null && character.getForceBuff().getTarget() == this)
+				character.abortCast();
+		}
 
         for (L2Skill oldSkill : getAllSkills())
             super.removeSkill(oldSkill);
