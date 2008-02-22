@@ -757,6 +757,9 @@ public class TvTEvent
 	 */
 	public static boolean isPlayerParticipant(String playerName)
 	{
+		if ( !Config.TVT_EVENT_ENABLED )
+			return false;
+
 		return _teams[0].containsPlayer(playerName) || _teams[1].containsPlayer(playerName);
 	}
 
@@ -767,6 +770,9 @@ public class TvTEvent
 	 */
 	public static int getParticipatedPlayersCount()
 	{
+		if ( !Config.TVT_EVENT_ENABLED )
+			return 0;
+
 		return _teams[0].getParticipatedPlayerCount() + _teams[1].getParticipatedPlayerCount();
 	}
 
