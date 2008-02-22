@@ -54,8 +54,6 @@ public class Continuous implements ISkillHandler
 		L2Skill.SkillType.HOT,
 		L2Skill.SkillType.CPHOT,
 		L2Skill.SkillType.MPHOT,
-		//L2Skill.SkillType.MANAHEAL,
-		//L2Skill.SkillType.MANA_BY_LEVEL,
 		L2Skill.SkillType.FEAR,
 		L2Skill.SkillType.CONT,
 		L2Skill.SkillType.WEAKNESS,
@@ -71,6 +69,7 @@ public class Continuous implements ISkillHandler
 	public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
 	{
 		L2Character target = null;
+		boolean acted = true;
 
 		L2PcInstance player = null;
 		if (activeChar instanceof L2PcInstance)
@@ -164,56 +163,59 @@ public class Continuous implements ISkillHandler
 			            }
 		        }
 
-				boolean acted = Formulas.getInstance().calcSkillSuccess(activeChar, target, skill, ss, sps, bss);
-				if (!acted) {
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.ATTACK_FAILED));
-					continue;
-				}
-
+				acted = Formulas.getInstance().calcSkillSuccess(activeChar, target, skill, ss, sps, bss);
 			}
-			boolean stopped = false;
-			L2Effect[] effects = target.getAllEffects();
-			if (effects != null)
+
+			if (acted)
 			{
-				for (L2Effect e : effects) {
-                    if (e != null && skill != null)
-                        if (e.getSkill().getId() == skill.getId()) {
-						e.exit();
-						stopped = true;
+				boolean stopped = false;
+				L2Effect[] effects = target.getAllEffects();
+				if (effects != null)
+				{
+					for (L2Effect e : effects) {
+	                    if (e != null && skill != null)
+	                        if (e.getSkill().getId() == skill.getId()) {
+							e.exit();
+							stopped = true;
+						}
 					}
 				}
-			}
-			if (skill.isToggle() && stopped)
-				return;
+				if (skill.isToggle() && stopped)
+					return;
 
-			// if this is a debuff let the duel manager know about it
-			// so the debuff can be removed after the duel
-			// (player & target must be in the same duel)
-			if (target instanceof L2PcInstance && ((L2PcInstance)target).isInDuel()
-					&& (skill.getSkillType() == L2Skill.SkillType.DEBUFF ||
-					skill.getSkillType() == L2Skill.SkillType.BUFF)
-					&& player.getDuelId() == ((L2PcInstance)target).getDuelId())
-			{
-				DuelManager dm = DuelManager.getInstance();
-				for (L2Effect buff : skill.getEffects(activeChar, target))
-					if (buff != null) dm.onBuff(((L2PcInstance)target), buff);
+				// if this is a debuff let the duel manager know about it
+				// so the debuff can be removed after the duel
+				// (player & target must be in the same duel)
+				if (target instanceof L2PcInstance && ((L2PcInstance)target).isInDuel()
+						&& (skill.getSkillType() == L2Skill.SkillType.DEBUFF ||
+						skill.getSkillType() == L2Skill.SkillType.BUFF)
+						&& player.getDuelId() == ((L2PcInstance)target).getDuelId())
+				{
+					DuelManager dm = DuelManager.getInstance();
+					for (L2Effect buff : skill.getEffects(activeChar, target))
+						if (buff != null) dm.onBuff(((L2PcInstance)target), buff);
+				}
+				else
+					skill.getEffects(activeChar, target);
+
+	        	if (skill.getSkillType() == L2Skill.SkillType.AGGDEBUFF)
+				{
+	        		if (target instanceof L2Attackable)
+	        			target.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, activeChar, (int)skill.getPower());
+	        		else if (target instanceof L2PlayableInstance)
+	    			{
+	        			if (target.getTarget() == activeChar)
+	        				target.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK,activeChar);
+	        			else
+	        				target.setTarget(activeChar);
+	    			}
+				}
 			}
 			else
-				skill.getEffects(activeChar, target);
-
-        	if (skill.getSkillType() == L2Skill.SkillType.AGGDEBUFF)
 			{
-        		if (target instanceof L2Attackable)
-        			target.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, activeChar, (int)skill.getPower());
-        		else if (target instanceof L2PlayableInstance)
-    			{
-        			if (target.getTarget() == activeChar)
-        				target.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK,activeChar);
-        			else
-        				target.setTarget(activeChar);
-    			}
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.ATTACK_FAILED));
 			}
-            
+
         	// Possibility of a lethal strike
             Formulas.getInstance().calcLethalHit(activeChar, target, skill);
         }
