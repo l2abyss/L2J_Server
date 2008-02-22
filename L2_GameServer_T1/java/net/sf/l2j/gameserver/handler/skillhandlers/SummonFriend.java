@@ -157,18 +157,21 @@ public class SummonFriend implements ISkillHandler
                     	activeChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_IS_IN_AN_AREA_WHICH_BLOCKS_SUMMONING));
                         continue;
                     }
-
+                    
                     // Requires a Summoning Crystal
-                    if (targetChar.getInventory().getItemByItemId(8615) == null)
-                    {
-                    	((L2PcInstance)activeChar).sendMessage("Your target cannot be summoned while he hasn't got a Summoning Crystal");
-                    	targetChar.sendMessage("You cannot be summoned while you haven't got a Summoning Crystal");
-                    	continue;
-                    }
+                    if(skill.getTargetConsume() != 0)
+                        if (targetChar.getInventory().getInventoryItemCount(skill.getTargetConsumeId(), 0) < skill.getTargetConsume())
+                        {
+                            ((L2PcInstance)activeChar).sendMessage("Your target cannot be summoned while he hasn't got enough Summoning Crystal");
+                            targetChar.sendMessage("You cannot be summoned while you haven't got enough Summoning Crystal");
+                            continue;
+                        }
 
                     if (!Util.checkIfInRange(0, activeChar, target, false))
                     {
-                    	targetChar.getInventory().destroyItemByItemId("Consume", 8615, 1, targetChar, activeChar);
+                        if(skill.getTargetConsume() != 0)
+                    	targetChar.getInventory().destroyItemByItemId("Consume", skill.getTargetConsumeId(), skill.getTargetConsume(), targetChar, activeChar);
+                    	
                     	targetChar.sendPacket(SystemMessage.sendString("You are summoned to a party member."));
 
                     	targetChar.teleToLocation(activeChar.getX(),activeChar.getY(),activeChar.getZ(), true);

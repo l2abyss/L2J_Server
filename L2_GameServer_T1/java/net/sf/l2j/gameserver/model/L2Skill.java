@@ -392,6 +392,10 @@ public abstract class L2Skill
     private final int _mpConsume;
     private final int _mpInitialConsume;
     private final int _hpConsume;
+    
+    private final int _targetConsume;
+    private final int _targetConsumeId;
+    
     private final int _itemConsume;
     private final int _itemConsumeId;
     // item consume count over time
@@ -516,6 +520,8 @@ public abstract class L2Skill
         _mpConsume = set.getInteger("mpConsume", 0);
         _mpInitialConsume = set.getInteger("mpInitialConsume", 0);
         _hpConsume = set.getInteger("hpConsume", 0);
+        _targetConsume = set.getInteger("targetConsumeCount", 0);
+        _targetConsumeId = set.getInteger("targetConsumeId", 0);
         _itemConsume = set.getInteger("itemConsumeCount", 0);
         _itemConsumeId = set.getInteger("itemConsumeId", 0);
         _itemConsumeOT = set.getInteger("itemConsumeCountOT", 0);
@@ -842,7 +848,22 @@ public abstract class L2Skill
     {
         return _stat;
     }
-
+    
+    /**
+     * @return Returns the _targetConsumeId.
+     */
+    public final int getTargetConsumeId()
+    {
+        return _targetConsumeId;
+    }
+    
+    /**
+     * @return Returns the targetConsume.
+     */
+    public final int getTargetConsume()
+    {
+        return _targetConsume;
+    }
     /**
      * @return Returns the itemConsume.
      */
