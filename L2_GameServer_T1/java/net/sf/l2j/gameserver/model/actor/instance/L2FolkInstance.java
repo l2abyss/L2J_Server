@@ -369,6 +369,9 @@ public class L2FolkInstance extends L2NpcInstance
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
+		if (player.isTransformed())
+        	return;
+		
 		if (command.startsWith("SkillList"))
 		{
 			if (Config.ALT_GAME_SKILL_LEARN)
@@ -400,14 +403,12 @@ public class L2FolkInstance extends L2NpcInstance
 
 					if (!own_class)
                     {
-						String mages = player.getClassId().isMage() ? "fighters" : "mages";
+						String charType = player.getClassId().isMage() ? "fighter" : "mage";
 						text +=
 							"Skills of your class are the easiest to learn.<br>"+
-							"Skills of another class are harder.<br>"+
-							"Skills for another race are even more hard to learn.<br>"+
-							"You can also learn skills of "+mages+", and they are"+
-							" the hardest to learn!<br>"+
-							"<br>";
+							"Skills of another class of your race are a little harder.<br>"+
+							"Skills for classes of another race are extremely difficult.<br>"+
+							"But the hardest of all to learn are the  "+ charType +"skills!<br>";
 					}
 
 					// make a list of classes
