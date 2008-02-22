@@ -822,8 +822,10 @@ public final class QuestState
 	{
 		String text = HtmCache.getInstance().getHtm("data/scripts/quests/255_Tutorial/"+ html);
 		if(text == null)
+		{
 			_log.warning("missing html page data/scripts/quests/255_Tutorial/"+html);
 			text = "<html><body>File data/scripts/quests/255_Tutorial/" + html + " not found or file is empty.</body></html>";
+		}
 		getPlayer().sendPacket(new TutorialShowHtml(text));
 	}
 
