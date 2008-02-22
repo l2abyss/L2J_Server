@@ -16,10 +16,12 @@ package net.sf.l2j.gameserver;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
+import javolution.util.FastMap;
 import net.sf.l2j.gameserver.ai.CtrlEvent;
 import net.sf.l2j.gameserver.instancemanager.DayNightSpawnManager;
 import net.sf.l2j.gameserver.model.L2Character;
@@ -42,7 +44,7 @@ public class GameTimeController
 	protected static long _gameStartTime;
 	protected static boolean _isNight = false;
 
-	private static FastList<L2Character> _movingObjects = new FastList<L2Character>();
+	private static Map<Integer,L2Character> _movingObjects = new FastMap<Integer,L2Character>().setShared(true);
 
 	protected static TimerThread _timer;
 	private ScheduledFuture<?> _timerWatcher;
@@ -95,10 +97,7 @@ public class GameTimeController
 	public void registerMovingObject(L2Character cha)
 	{
 		if(cha == null) return;
-		synchronized (_movingObjects)
-        {
-		    if (!_movingObjects.contains(cha)) _movingObjects.add(cha);   
-        }
+		    if (!_movingObjects.containsKey(cha.getObjectId())) _movingObjects.put(cha.getObjectId(),cha);   
 	}
 
 	/**
@@ -114,44 +113,33 @@ public class GameTimeController
 	 *
 	 */
 	protected void moveObjects()
-    {
-        // Create an FastList to contain all L2Character that are arrived to
-        // destination
-        FastList<L2Character> ended = null;
-        
-        // Go throw the table containing L2Character in movement
-        synchronized (_movingObjects)
-        {
-            for (FastList.Node<L2Character> ch = _movingObjects.head(), e = _movingObjects.tail(); (ch = ch.getNext()) != e;)
-            {
-                
-                L2Character cha = ch.getValue();
-                
-                // If movement is finished, the L2Character is removed from
-                // movingObjects and added to the ArrayList ended
-                if (cha != null)
-                    if (cha.updatePosition(_gameTicks))
-                    {
-                        ch = ch.getPrevious();
-                        _movingObjects.remove(cha);
-                        if (ended == null)
-                            ended = new FastList<L2Character>();
-                        
-                        ended.add(cha);
-                    }
-            }
-        }
-		// Create a task to update the _knownObject and _knowPlayers of each L2Character that finished its movement and of their already known L2Object
-		// then notify AI with EVT_ARRIVED
-        // KnownObjects updates is kinda expensive operation, so i splited tasks to avoid blocking of too many parts of code (Julian)
-		// TODO: maybe a general TP is needed for that kinda stuff (all knownlist updates should be done in a TP anyway).
+	{
+		// Create an FastList to contain all L2Character that are arrived to
+		// destination
+		FastList<L2Character> ended = null;
+		
+		// Go throw the table containing L2Character in movement
+		for (L2Character ch : _movingObjects.values())
+		{
+			// If movement is finished, the L2Character is removed from
+			// movingObjects and added to the ArrayList ended
+			if (ch != null)
+				if (ch.updatePosition(_gameTicks))
+				{
+					if (ended == null)
+						ended = new FastList<L2Character>();
+					
+					ended.add(ch);
+				}
+		}
 		if (ended != null)
 		{
-		    for (FastList.Node<L2Character> ch = ended.head(), e = ended.tail(); (ch = ch.getNext()) != e;)
-		        ThreadPoolManager.getInstance().executeTask(new MovingObjectArrived(ch.getValue()));
-		    ended.clear();
+			_movingObjects.values().removeAll(ended);
+			for (L2Character ch : ended)
+				if (ch != null) // Disconnected?
+					ThreadPoolManager.getInstance().executeTask(new MovingObjectArrived(ch));
+			ended.clear();
 		}
-
 	}
 
 	public void stopTimer()
@@ -244,6 +232,7 @@ public class GameTimeController
             }
             catch (NullPointerException e)
             {
+            	e.printStackTrace();
             }
         }
     }
