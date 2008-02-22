@@ -24,16 +24,15 @@ import org.mmocore.network.SendablePacket;
  */
 public abstract class L2LoginServerPacket extends SendablePacket<L2LoginClient>
 {
-	byte[] b = {(byte)0xFF,(byte)0xFF,(byte)0xFF};
-	
+
     /**
      * @see org.mmocore.network.SendablePacket#getHeaderSize()
      */
     @Override
     protected int getHeaderSize()
     {
-    	return 2 + 3; // where X is the bytes u want to prepend
-    }    
+        return 2;
+    }
 
     /**
      * @see org.mmocore.network.SendablePacket#writeHeader(int)
@@ -41,7 +40,7 @@ public abstract class L2LoginServerPacket extends SendablePacket<L2LoginClient>
     @Override
     protected void writeHeader(int dataSize)
     {
-    	writeB(b); // write before packet, size of this write must be X
-        writeH(dataSize + this.getHeaderSize() - 3); // dont include ur data in the L2 stuff
+        writeH(dataSize + this.getHeaderSize());
     }
+    
 }

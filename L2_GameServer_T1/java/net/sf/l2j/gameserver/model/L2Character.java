@@ -48,7 +48,11 @@ import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2ArtefactInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2ControlTowerInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2DecoyInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2FriendlyMobInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2GuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcWalkerInstance;
@@ -56,6 +60,10 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RiftInvaderInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2SiegeSummonInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2TrapInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance.SkillDat;
 import net.sf.l2j.gameserver.model.actor.knownlist.CharKnownList;
 import net.sf.l2j.gameserver.model.actor.knownlist.ObjectKnownList.KnownListAsynchronousUpdateTask;
@@ -73,6 +81,7 @@ import net.sf.l2j.gameserver.serverpackets.ChangeMoveType;
 import net.sf.l2j.gameserver.serverpackets.ChangeWaitType;
 import net.sf.l2j.gameserver.serverpackets.CharInfo;
 import net.sf.l2j.gameserver.serverpackets.EtcStatusUpdate;
+import net.sf.l2j.gameserver.serverpackets.FlyToLocation;
 import net.sf.l2j.gameserver.serverpackets.L2GameServerPacket;
 import net.sf.l2j.gameserver.serverpackets.MagicSkillCanceld;
 import net.sf.l2j.gameserver.serverpackets.MagicSkillLaunched;
@@ -89,7 +98,6 @@ import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.serverpackets.TargetUnselected;
 import net.sf.l2j.gameserver.serverpackets.TeleportToLocation;
 import net.sf.l2j.gameserver.serverpackets.UserInfo;
-import net.sf.l2j.gameserver.serverpackets.FlyToLocation;
 import net.sf.l2j.gameserver.serverpackets.FlyToLocation.FlyType;
 import net.sf.l2j.gameserver.skills.Calculator;
 import net.sf.l2j.gameserver.skills.Formulas;
@@ -252,6 +260,14 @@ public abstract class L2Character extends L2Object
 			_calculators = new Calculator[Stats.NUM_STATS];
 			Formulas.getInstance().addFuncsToNewCharacter(this);
 		}
+
+		if (!(this instanceof L2PcInstance) && !(this instanceof L2MonsterInstance) &&
+			!(this instanceof L2GuardInstance) && !(this instanceof L2SiegeGuardInstance) &&
+			!(this instanceof L2ControlTowerInstance) && !(this instanceof L2SummonInstance) &&
+			!(this instanceof L2DoorInstance) && !(this instanceof L2TrapInstance) &&
+			!(this instanceof L2SiegeSummonInstance) && !(this instanceof L2FriendlyMobInstance) &&
+			!(this instanceof L2DecoyInstance))
+			setIsInvul(true);
 	}
 
 	protected void initCharStatusUpdateValues()
@@ -5190,6 +5206,8 @@ public abstract class L2Character extends L2Object
 		if (target == null) return false;
 		if (target instanceof L2MonsterInstance) return false;
 		if (attacker instanceof L2MonsterInstance) return false;
+		if (target instanceof L2NpcInstance) return false;
+		if (attacker instanceof L2NpcInstance) return false;
 		if (Config.ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE)
 		{
 			// allows red to be attacked and red to attack flagged players
@@ -5211,17 +5229,6 @@ public abstract class L2Character extends L2Object
 				if(target instanceof L2Summon && ((L2Summon)target).getOwner().getPvpFlag() > 0)
 					return false;
 			}
-		}
-		// Right now only L2PcInstance has up-to-date zone status...
-		// TODO: ZONETODO: Are there things < L2Characters in peace zones that can be attacked? If not this could be cleaned up
-		
-		if (attacker instanceof L2Character && target instanceof L2Character)
-		{
-			return (((L2Character)target).isInsideZone(ZONE_PEACE) || ((L2Character)attacker).isInsideZone(ZONE_PEACE));
-		}
-		if (attacker instanceof L2Character)
-		{
-			return (TownManager.getInstance().getTown(target.getX(), target.getY(), target.getZ()) != null || ((L2Character)attacker).isInsideZone(ZONE_PEACE));
 		}
 
 		return (TownManager.getInstance().getTown(target.getX(), target.getY(), target.getZ()) != null ||
