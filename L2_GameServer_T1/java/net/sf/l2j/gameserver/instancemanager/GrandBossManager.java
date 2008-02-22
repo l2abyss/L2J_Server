@@ -257,13 +257,22 @@ public class GrandBossManager
         _bossStatus.put(bossId, status);
     }
     /*
-     * Adds a L2GrandBossInstance to the list of bosses. Called from Jython AI
+     * Adds a L2GrandBossInstance to the list of bosses.
      */
     
     public void addBoss (L2GrandBossInstance boss)
     {
         if (boss != null)
+        {
+            if (_bosses.containsKey(boss.getNpcId()))
+                _bosses.remove(boss.getNpcId());
             _bosses.put(boss.getNpcId(), boss);
+        }
+    }
+    
+    public L2GrandBossInstance getBoss (int bossId)
+    {
+    	return _bosses.get(bossId);
     }
     
     public StatsSet getStatsSet (int bossId)
@@ -370,9 +379,10 @@ public class GrandBossManager
     {
         storeToDb();
 
-        //_bosses.clear();
-        //_storedInfo.clear();
-        //_bossStatus.clear();
+       // _bosses.clear();
+       // _storedInfo.clear();
+       // _bossStatus.clear();
+       // _zones.clear();
     }
 
 }
