@@ -202,6 +202,23 @@ public abstract class L2Character extends L2Object
 		else if (isInsideZone(zone)) // zone overlap possible
 			_currentZones ^= zone;
 	}
+	
+	/**
+	 * This will return true if the player is transformed,<br>
+	 * but if the player is not transformed it will return false.
+	 * @return
+	 */
+	public boolean charIsTransformed()
+	{
+		if (this instanceof L2PcInstance)
+		{
+			if (((L2PcInstance)this).isTransformed())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 	// =========================================================
 	// Constructor

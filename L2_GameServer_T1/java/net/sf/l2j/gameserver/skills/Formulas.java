@@ -1172,12 +1172,13 @@ public final class Formulas
 			}
 		}
 		// In C5 summons make 10 % less dmg in PvP.
-		if(attacker instanceof L2Summon && target instanceof L2PcInstance) damage *= 0.9;
+		if(attacker instanceof L2Summon && target instanceof L2PcInstance) 
+			damage *= 0.9;
 
 		// defence modifier depending of the attacker weapon
 		L2Weapon weapon = attacker.getActiveWeaponItem();
 		Stats stat = null;
-		if (weapon != null && attacker.getFirstEffect(L2Effect.EffectType.TRANSFORMATION) == null)
+		if (weapon != null && !attacker.charIsTransformed())
 		{
 			switch (weapon.getItemType())
 			{
