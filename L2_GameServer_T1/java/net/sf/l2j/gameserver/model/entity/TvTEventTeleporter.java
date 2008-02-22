@@ -30,11 +30,12 @@ public class TvTEventTeleporter implements Runnable
 	private boolean _adminRemove;
 
 	/**
-	 * Initialize the teleporter and start the delayed task
+	 * Initialize the teleporter and start the delayed task<br><br>
 	 *
-	 * @param playerInstance
-	 * @param coordinates
-	 * @param reAdd
+	 * @param playerInstance as L2PcInstance<br>
+	 * @param coordinates as int[]<br>
+	 * @param fastShedule as boolean<br>
+	 * @param adminRemove as boolean<br>
 	 */
 	public TvTEventTeleporter(L2PcInstance playerInstance, int[] coordinates, boolean fastSchedule, boolean adminRemove)
 	{
@@ -53,13 +54,13 @@ public class TvTEventTeleporter implements Runnable
 
 	/**
 	 * The task method to teleport the player<br>
-	 * 1. Unsummon pet if there is one
-	 * 2. Remove all effects
-	 * 3. Revive and full heal the player
-	 * 4. Teleport the player
-	 * 5. Broadcast status and user info
+	 * 1. Unsummon pet if there is one<br>
+	 * 2. Remove all effects<br>
+	 * 3. Revive and full heal the player<br>
+	 * 4. Teleport the player<br>
+	 * 5. Broadcast status and user info<br><br>
 	 *
-	 * @see java.lang.Runnable#run()
+	 * @see java.lang.Runnable#run()<br>
 	 */
 	public void run()
 	{

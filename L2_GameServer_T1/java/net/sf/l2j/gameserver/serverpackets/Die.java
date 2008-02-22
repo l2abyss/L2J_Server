@@ -36,7 +36,7 @@ public class Die extends L2GameServerPacket
 {
     private static final String _S__0B_DIE = "[S] 00 Die";
     private int _charObjId;
-    private boolean _fake;
+    private boolean _fallDown;
     private boolean _sweepable;
     private int _access;
     private net.sf.l2j.gameserver.model.L2Clan _clan;
@@ -56,7 +56,7 @@ public class Die extends L2GameServerPacket
 
         }
         _charObjId = cha.getObjectId();
-        _fake = !cha.isDead();
+        _fallDown = cha instanceof L2PcInstance ? ((L2PcInstance)cha).mustFallDownOnDeath() : cha.mustFallDownOnDeath();
         if (cha instanceof L2Attackable)
             _sweepable = ((L2Attackable)cha).isSweepActive();
 
@@ -65,7 +65,7 @@ public class Die extends L2GameServerPacket
     @Override
 	protected final void writeImpl()
     {
-        if (_fake)
+        if (!_fallDown)
             return;
 
         writeC(0x00);

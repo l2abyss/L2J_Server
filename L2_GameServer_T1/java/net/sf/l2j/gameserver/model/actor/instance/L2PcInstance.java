@@ -10925,4 +10925,10 @@ public final class L2PcInstance extends L2PlayableInstance
 	{
 		_forceBuff = fb;
 	}
+
+    @Override
+    public boolean mustFallDownOnDeath()
+    {
+        return super.mustFallDownOnDeath() && !TvTEvent.isPlayerParticipant(getName());
+    }
 }

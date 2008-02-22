@@ -39,8 +39,8 @@ public class TvTEventTeam
 	/**
 	 * C'tor initialize the team<br><br>
 	 *
-	 * @param name<br>
-	 * @param coordinates<br>
+	 * @param name as String<br>
+	 * @param coordinates as int[]<br>
 	 */
 	public TvTEventTeam(String name, int[] coordinates)
 	{
@@ -52,8 +52,8 @@ public class TvTEventTeam
 	/**
 	 * Adds a player to the team<br><br>
 	 *
-	 * @param playerInstance<br>
-	 * @return boolean<br>
+	 * @param playerInstance as L2PcInstance<br>
+	 * @return boolean: true if success, otherwise false<br>
 	 */
 	public boolean addPlayer(L2PcInstance playerInstance)
 	{
@@ -76,7 +76,7 @@ public class TvTEventTeam
 	/**
 	 * Removes a player from the team<br><br>
 	 *
-	 * @param playerName<br>
+	 * @param playerName as String<br>
 	 */
 	public void removePlayer(String playerName)
 	{
@@ -110,8 +110,8 @@ public class TvTEventTeam
 	/**
 	 * Is given player in this team?<br><br>
 	 *
-	 * @param playerName<br>
-	 * @return boolean<br>
+	 * @param playerName as String<br>
+	 * @return boolean: true if player is in this team, otherwise false<br>
 	 */
 	public boolean containsPlayer(String playerName)
 	{
@@ -128,7 +128,7 @@ public class TvTEventTeam
 	/**
 	 * Returns the name of the team<br><br>
 	 *
-	 * @return String<br>
+	 * @return String: name of the team<br>
 	 */
 	public String getName()
 	{
@@ -138,7 +138,7 @@ public class TvTEventTeam
 	/**
 	 * Returns the coordinates of the team spot<br><br>
 	 *
-	 * @return int[]<br>
+	 * @return int[]: team coordinates<br>
 	 */
 	public int[] getCoordinates()
 	{
@@ -148,7 +148,7 @@ public class TvTEventTeam
 	/**
 	 * Returns the points of the team<br><br>
 	 *
-	 * @return short<br>
+	 * @return short: team points<br>
 	 */
 	public short getPoints()
 	{
@@ -158,7 +158,7 @@ public class TvTEventTeam
 	/**
 	 * Returns name and instance of all participated players in FastMap<br><br>
 	 *
-	 * @return Map<String, L2PcInstance><br>
+	 * @return Map<String, L2PcInstance>: map of players in this team<br>
 	 */
 	public Map<String, L2PcInstance> getParticipatedPlayers()
 	{
@@ -175,7 +175,7 @@ public class TvTEventTeam
 	/**
 	 * Returns name of all participated players in Vector<br><br>
 	 *
-	 * @return Vector<String><br>
+	 * @return Vector<String>: player names in vector<br>
 	 */
 	public Vector<String> getParticipatedPlayerNames()
 	{
@@ -192,7 +192,7 @@ public class TvTEventTeam
 	/**
 	 * Returns player count of this team<br><br>
 	 *
-	 * @return int<br>
+	 * @return int: number of players in team<br>
 	 */
 	public int getParticipatedPlayerCount()
 	{

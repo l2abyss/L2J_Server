@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.model.entity;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.clientpackets.Say2;
 import net.sf.l2j.gameserver.datatables.DoorTable;
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
@@ -32,6 +33,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.serverpackets.StatusUpdate;
@@ -84,7 +86,7 @@ public class TvTEvent
 	 * 1. Get L2NpcTemplate by Config.TVT_EVENT_PARTICIPATION_NPC_ID<br>
 	 * 2. Try to spawn a new npc of it<br><br>
 	 *
-	 * @return boolean<br>
+	 * @return boolean: true if success, otherwise false<br>
 	 */
 	public static boolean startParticipation()
 	{
@@ -135,13 +137,13 @@ public class TvTEvent
 	 * 4. Set state EventState.STARTED<br>
 	 * 5. Teleport all participants to team spot<br><br>
 	 *
-	 * @return boolean<br>
+	 * @return boolean: true if success, otherwise false<br>
 	 */
 	public static boolean startFight()
 	{
 		setState(EventState.STARTING);
 
-		// not enought participants
+		// not enough participants
 		if (_teams[0].getParticipatedPlayerCount() < Config.TVT_EVENT_MIN_PLAYERS_IN_TEAMS || _teams[1].getParticipatedPlayerCount() < Config.TVT_EVENT_MIN_PLAYERS_IN_TEAMS)
 		{
 			setState(EventState.INACTIVE);
@@ -180,7 +182,7 @@ public class TvTEvent
 	 * 4. Reward team with more points<br>
 	 * 5. Show win html to wining team participants<br><br>
 	 *
-	 * @return String<br>
+	 * @return String: winning team name<br>
 	 */
 	public static String calculateRewards()
 	{
@@ -299,8 +301,8 @@ public class TvTEvent
 	 * 1. Calculate the id of the team in which the player should be added<br>
 	 * 2. Add the player to the calculated team<br><br>
 	 *
-	 * @param playerInstance<br>
-	 * @return boolean<br>
+	 * @param playerInstance as L2PcInstance<br>
+	 * @return boolean: true if success, otherwise false<br>
 	 */
 	public static synchronized boolean addParticipant(L2PcInstance playerInstance)
 	{
@@ -322,8 +324,8 @@ public class TvTEvent
 	 * 1. Get team id of the player<br>
 	 * 2. Remove player from it's team<br><br>
 	 *
-	 * @param playerName<br>
-	 * @return boolean<br>
+	 * @param playerName as String<br>
+	 * @return boolean: true if success, otherwise false<br>
 	 */
 	public static boolean removeParticipant(String playerName)
 	{
@@ -341,7 +343,7 @@ public class TvTEvent
 	 * 1. Send the message to all players of team number one<br>
 	 * 2. Send the message to all players of team number two<br><br>
 	 *
-	 * @param message<br>
+	 * @param message as String<br>
 	 */
 	public static void sysMsgToAllParticipants(String message)
 	{
@@ -400,7 +402,7 @@ public class TvTEvent
 	/**
 	 * Called when a player logs in<br><br>
 	 *
-	 * @param playerInstance<br>
+	 * @param playerInstance as L2PcInstance<br>
 	 */
 	public static void onLogin(L2PcInstance playerInstance)
 	{
@@ -419,7 +421,7 @@ public class TvTEvent
 	/**
 	 * Called when a player logs out<br><br>
 	 *
-	 * @param playerInstance<br>
+	 * @param playerInstance as L2PcInstance<br>
 	 */
 	public static void onLogout(L2PcInstance playerInstance)
 	{
@@ -433,8 +435,8 @@ public class TvTEvent
 	 * Called on every bypass by npc of type L2TvTEventNpc<br>
 	 * Needs synchronization cause of the max player check<br><br>
 	 *
-	 * @param command<br>
-	 * @param playerInstance<br>
+	 * @param command as String<br>
+	 * @param playerInstance as L2PcInstance<br>
 	 */
 	public static synchronized void onBypass(String command, L2PcInstance playerInstance)
 	{
@@ -450,12 +452,10 @@ public class TvTEvent
 				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>Cursed weapon owners are not allowed to participate.</body></html>");
 			else if (playerInstance.getKarma() > 0)
 				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>Chaotic players are not allowed to participate.</body></html>");
-			else if (_teams[0].getParticipatedPlayerCount() >= Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS && _teams[1].getParticipatedPlayerCount() >= Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS)
-				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>Sorry the event is full!</body></html>");
 			else if (playerLevel < Config.TVT_EVENT_MIN_LVL || playerLevel > Config.TVT_EVENT_MAX_LVL)
 				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>Only players from level " + Config.TVT_EVENT_MIN_LVL + " to level " + Config.TVT_EVENT_MAX_LVL + " are allowed tro participate.</body></html>");
-			else if (_teams[0].getParticipatedPlayerCount() > 19 && _teams[1].getParticipatedPlayerCount() > 19)
-				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>The event is full! Maximum of " + Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS + "  player are allowed in one team.</body></html>");
+			else if (_teams[0].getParticipatedPlayerCount() == Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS && _teams[1].getParticipatedPlayerCount() == Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS)
+				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>The event is full! Only " + Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS + " players are allowed per team.</body></html>");
 			else if (addParticipant(playerInstance))
 				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>You are on the registration list now.</body></html>");
 			else // addParticipant returned false cause playerInstance == null
@@ -477,9 +477,9 @@ public class TvTEvent
 	/**
 	 * Called on every onAction in L2PcIstance<br><br>
 	 *
-	 * @param playerName<br>
-	 * @param targetPlayerName<br>
-	 * @return boolean<br>
+	 * @param playerName as String<br>
+	 * @param targetPlayerName as String<br>
+	 * @return boolean: true if player is allowed to target, otherwise false<br>
 	 */
 	public static boolean onAction(String playerName, String targetPlayerName)
 	{
@@ -510,8 +510,8 @@ public class TvTEvent
 	/**
 	 * Called on every potion use<br><br>
 	 *
-	 * @param playerName<br>
-	 * @return boolean<br>
+	 * @param playerName as String<br>
+	 * @return boolean: true if player is allowed to use potions, otherwise false<br>
 	 */
 	public static boolean onPotionUse(String playerName)
 	{
@@ -527,8 +527,8 @@ public class TvTEvent
 	/**
 	 * Called on every escape use(thanks to nbd)<br><br>
 	 *
-	 * @param playerName<br>
-	 * @return boolean<br>
+	 * @param playerName as String<br>
+	 * @return boolean: true if player is not in tvt event, otherwise false<br>
 	 */
 	public static boolean onEscapeUse(String playerName)
 	{
@@ -544,8 +544,8 @@ public class TvTEvent
 	/**
 	 * Called on every summon item use<br><br>
 	 *
-	 * @param playerName<br>
-	 * @return boolean<br>
+	 * @param playerName as String<br>
+	 * @return boolean: true if player is allowed to summon by item, otherwise false<br>
 	 */
 	public static boolean onItemSummon(String playerName)
 	{
@@ -560,18 +560,24 @@ public class TvTEvent
 
 	/**
 	 * Is called when a player is killed<br><br>
-	 *
-	 * @param killerCharacter<br>
-	 * @param killedPlayerInstance<br>
+	 * 
+	 * @param killerCharacter as L2Character<br>
+	 * @param killedPlayerInstance as L2PcInstance<br>
 	 */
 	public static void onKill(L2Character killerCharacter, L2PcInstance killedPlayerInstance)
 	{
-		if (killerCharacter == null || killedPlayerInstance == null ||
-			(!(killerCharacter instanceof L2PcInstance) &&
-			 !(killerCharacter instanceof L2PetInstance) &&
-			 !(killerCharacter instanceof L2SummonInstance)) ||
-			!isStarted())
-			return;
+	    if (!isStarted() || killedPlayerInstance == null)
+	        return;
+
+	    byte killedTeamId = getParticipantTeamId(killedPlayerInstance.getName());
+
+	    if (killedTeamId == -1)
+	        return;
+
+	    new TvTEventTeleporter(killedPlayerInstance, _teams[killedTeamId].getCoordinates(), false, false);
+
+	    if (killerCharacter == null)
+	        return;
 
 		L2PcInstance killerPlayerInstance = null;
 
@@ -582,27 +588,33 @@ public class TvTEvent
 			if (killerPlayerInstance == null)
 				return;
 		}
+		else if (killerCharacter instanceof L2PcInstance)
+		    killerPlayerInstance = (L2PcInstance)killerCharacter;
 		else
-			killerPlayerInstance = (L2PcInstance)killerCharacter;
+			return;
 
-		String playerName = killerPlayerInstance.getName();
-		byte killerTeamId = getParticipantTeamId(playerName);
-
-		playerName = killedPlayerInstance.getName();
-
-		byte killedTeamId = getParticipantTeamId(playerName);
+		byte killerTeamId = getParticipantTeamId(killerPlayerInstance.getName());
 
 		if (killerTeamId != -1 && killedTeamId != -1 && killerTeamId != killedTeamId)
-			_teams[killerTeamId].increasePoints();
+		{
+		    _teams[killerTeamId].increasePoints();
 
-		if (killedTeamId != -1)
-			new TvTEventTeleporter(killedPlayerInstance, _teams[killedTeamId].getCoordinates(), false, false);
+		    CreatureSay cs = new CreatureSay(killerPlayerInstance.getObjectId(), Say2.TELL, killerPlayerInstance.getName(), "I have killed " + killedPlayerInstance.getName() + "!");
+
+		    for (String playerName : _teams[killerTeamId].getParticipatedPlayers().keySet())
+		    {
+		        L2PcInstance playerInstance = _teams[killerTeamId].getParticipatedPlayers().get(playerName);
+
+		        if (playerInstance != null)
+		            playerInstance.sendPacket(cs);
+		    }
+		}
 	}
 
 	/**
 	 * Sets the TvTEvent state<br><br>
 	 *
-	 * @param state<br>
+	 * @param state as EventState<br>
 	 */
 	private static void setState(EventState state)
 	{
@@ -615,7 +627,7 @@ public class TvTEvent
 	/**
 	 * Is TvTEvent inactive?<br><br>
 	 *
-	 * @return boolean<br>
+	 * @return boolean: true if event is inactive(waiting for next event cycle), otherwise false<br>
 	 */
 	public static boolean isInactive()
 	{
@@ -632,7 +644,7 @@ public class TvTEvent
 	/**
 	 * Is TvTEvent in inactivating?<br><br>
 	 *
-	 * @return boolean<br>
+	 * @return boolean: true if event is in inactivating progress, otherwise false<br>
 	 */
 	public static boolean isInactivating()
 	{
@@ -649,7 +661,7 @@ public class TvTEvent
 	/**
 	 * Is TvTEvent in participation?<br><br>
 	 *
-	 * @return boolean<br>
+	 * @return boolean: true if event is in participation progress, otherwise false<br>
 	 */
 	public static boolean isParticipating()
 	{
@@ -666,7 +678,7 @@ public class TvTEvent
 	/**
 	 * Is TvTEvent starting?<br><br>
 	 *
-	 * @return boolean<br>
+	 * @return boolean: true if event is starting up(setting up fighting spot, teleport players etc.), otherwise false<br>
 	 */
 	public static boolean isStarting()
 	{
@@ -683,7 +695,7 @@ public class TvTEvent
 	/**
 	 * Is TvTEvent started?<br><br>
 	 *
-	 * @return boolean<br>
+	 * @return boolean: true if event is started, otherwise false<br>
 	 */
 	public static boolean isStarted()
 	{
@@ -700,7 +712,7 @@ public class TvTEvent
 	/**
 	 * Is TvTEvent rewadrding?<br><br>
 	 *
-	 * @return boolean<br>
+	 * @return boolean: true if event is currently rewarding, otherwise false<br>
 	 */
 	public static boolean isRewarding()
 	{
@@ -717,8 +729,8 @@ public class TvTEvent
 	/**
 	 * Returns the team id of a player, if player is not participant it returns -1<br><br>
 	 *
-	 * @param playerName<br>
-	 * @return byte<br>
+	 * @param playerName as String<br>
+	 * @return byte: team name of the given playerName, if not in event -1<br>
 	 */
 	public static byte getParticipantTeamId(String playerName)
 	{
@@ -728,8 +740,8 @@ public class TvTEvent
 	/**
 	 * Returns the team coordinates in which the player is in, if player is not in a team return null<br><br>
 	 *
-	 * @param playerName<br>
-	 * @return int[]<br>
+	 * @param playerName as String<br>
+	 * @return int[]: coordinates of teams, 2 elements, index 0 for team 1 and index 1 for team 2<br>
 	 */
 	public static int[] getParticipantTeamCoordinates(String playerName)
 	{
@@ -740,8 +752,8 @@ public class TvTEvent
 	/**
 	 * Is given player participant of the event?<br><br>
 	 *
-	 * @param playerName<br>
-	 * @return boolean<br>
+	 * @param playerName as String<br>
+	 * @return boolean: true if player is participant, ohterwise false<br>
 	 */
 	public static boolean isPlayerParticipant(String playerName)
 	{
@@ -751,7 +763,7 @@ public class TvTEvent
 	/**
 	 * Returns participated player count<br><br>
 	 *
-	 * @return int<br>
+	 * @return int: amount of players registered in the event<br>
 	 */
 	public static int getParticipatedPlayersCount()
 	{
@@ -761,7 +773,7 @@ public class TvTEvent
 	/**
 	 * Returns teams names<br><br>
 	 *
-	 * @return String[]<br>
+	 * @return String[]: names of teams, 2 elements, index 0 for team 1 and index 1 for team 2<br>
 	 */
 	public static String[] getTeamNames()
 	{
@@ -771,7 +783,7 @@ public class TvTEvent
 	/**
 	 * Returns player count of both teams<br><br>
 	 *
-	 * @return int[]<br>
+	 * @return int[]: player count of teams, 2 elements, index 0 for team 1 and index 1 for team 2<br>
 	 */
 	public static int[] getTeamsPlayerCounts()
 	{
@@ -781,7 +793,7 @@ public class TvTEvent
 	/**
 	 * Returns points count of both teams
 	 *
-	 * @return int[]
+	 * @return int[]: points of teams, 2 elements, index 0 for team 1 and index 1 for team 2<br>
 	 */
 	public static int[] getTeamsPoints()
 	{
