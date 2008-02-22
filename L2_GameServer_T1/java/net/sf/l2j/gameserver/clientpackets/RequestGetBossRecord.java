@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.clientpackets;
 
 import java.util.logging.Logger;
+
 import net.sf.l2j.Config;
 /**
  * Format: (ch) d

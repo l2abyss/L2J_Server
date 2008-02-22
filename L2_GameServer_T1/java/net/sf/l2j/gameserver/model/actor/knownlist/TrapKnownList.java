@@ -14,8 +14,8 @@
  */
 package net.sf.l2j.gameserver.model.actor.knownlist;
 
-import net.sf.l2j.gameserver.model.L2Trap;
 import net.sf.l2j.gameserver.model.L2Object;
+import net.sf.l2j.gameserver.model.L2Trap;
 
 public class TrapKnownList extends CharKnownList
 {

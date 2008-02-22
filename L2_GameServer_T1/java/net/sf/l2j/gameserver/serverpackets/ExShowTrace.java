@@ -19,9 +19,8 @@ package net.sf.l2j.gameserver.serverpackets;
 
 import java.util.List;
 
-import net.sf.l2j.gameserver.model.L2Object;
-
 import javolution.util.FastList;
+import net.sf.l2j.gameserver.model.L2Object;
 
 /**
  *
