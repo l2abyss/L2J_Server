@@ -375,6 +375,7 @@ public class CursedWeapon
 	            _player.addSkill(sk, false);
 	        }
 		}
+		_player.regiveTemporarySkills();
 		_player.sendSkillList();
 	}
 	

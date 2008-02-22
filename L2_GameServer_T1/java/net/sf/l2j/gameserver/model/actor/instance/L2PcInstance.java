@@ -2194,7 +2194,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 * Regive all skills which aren't saved to database, like Noble, Hero, Clan Skills<BR><BR>
 	 *
 	 */
-	private void regiveTemporarySkills()
+	public void regiveTemporarySkills()
 	{
 		// Do not call this on enterworld or char load
 
