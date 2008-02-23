@@ -280,10 +280,10 @@ public abstract class L2Character extends L2Object
 
 		if (!(this instanceof L2PcInstance) && !(this instanceof L2MonsterInstance) &&
 			!(this instanceof L2GuardInstance) && !(this instanceof L2SiegeGuardInstance) &&
-			!(this instanceof L2ControlTowerInstance) && !(this instanceof L2SummonInstance) &&
-			!(this instanceof L2DoorInstance) && !(this instanceof L2TrapInstance) &&
-			!(this instanceof L2SiegeSummonInstance) && !(this instanceof L2FriendlyMobInstance) &&
-			!(this instanceof L2DecoyInstance))
+			!(this instanceof L2ControlTowerInstance) && !(this instanceof L2DoorInstance) &&
+			!(this instanceof L2TrapInstance) && !(this instanceof L2FriendlyMobInstance) &&
+			!(this instanceof L2DecoyInstance) && !(this instanceof L2SiegeSummonInstance) &&
+			!(this instanceof L2PetInstance) && !(this instanceof L2SummonInstance))
 			setIsInvul(true);
 	}
 
