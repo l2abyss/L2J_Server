@@ -140,7 +140,7 @@ public abstract class L2Item
 	private final boolean _destroyable;
 	private final boolean _tradeable;
 
-	protected final Enum _type;
+	protected final Enum<?>  _type;
 
 	protected FuncTemplate[] _funcTemplates;
 	protected EffectTemplate[] _effectTemplates;
@@ -193,7 +193,7 @@ public abstract class L2Item
 	 * Returns the itemType.
 	 * @return Enum
 	 */
-	public Enum getItemType()
+	public Enum<?>  getItemType()
 	{
 		return _type;
 	}

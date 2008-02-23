@@ -62,7 +62,7 @@ public class FastMRUCache<K,V> extends FastCollection implements Reusable
     /**
      * Holds the set factory.
      */
-    private static final Factory FACTORY = new Factory() {
+    private static final Factory<?> FACTORY = new Factory() {
 
         @Override
 		public Object create() {

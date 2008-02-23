@@ -405,7 +405,7 @@ public final class L2ItemInstance extends L2Object
 	 * Returns the type of item
 	 * @return Enum
 	 */
-	public Enum getItemType()
+	public Enum<?> getItemType()
 	{
 		return _item.getItemType();
 	}
