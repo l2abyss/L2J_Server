@@ -673,7 +673,7 @@ public abstract class L2Character extends L2Object
         }
 
 		// Check for a bow
-		if ((weaponItem != null && weaponItem.getItemType() == L2WeaponType.BOW))
+		if ((weaponItem != null && weaponItem.getItemType() == L2WeaponType.BOW && !charIsTransformed()))
 		{
 			//Check for arrows and MP
 			if (this instanceof L2PcInstance)
@@ -723,7 +723,7 @@ public abstract class L2Character extends L2Object
 			}
         }
 		// Check for a crossbow
-		if ((weaponItem != null && weaponItem.getItemType() == L2WeaponType.CROSSBOW))
+		if ((weaponItem != null && weaponItem.getItemType() == L2WeaponType.CROSSBOW && !charIsTransformed()))
 		{
 		    //Check for bolts
 		    if (this instanceof L2PcInstance)
@@ -816,12 +816,12 @@ public abstract class L2Character extends L2Object
 		int reuse = calculateReuseTime(target, weaponItem);
 
 		// Select the type of attack to start
-		if (weaponItem == null)
+		if (weaponItem == null || charIsTransformed())
 			hitted = doAttackHitSimple(attack, target, timeToHit);
 		else if (weaponItem.getItemType() == L2WeaponType.BOW)
 			hitted = doAttackHitByBow(attack, target, timeAtk, reuse);
-        else if (weaponItem.getItemType() == L2WeaponType.CROSSBOW)
-            hitted = doAttackHitByCrossBow(attack, target, timeAtk, reuse);
+	    else if (weaponItem.getItemType() == L2WeaponType.CROSSBOW)
+	        hitted = doAttackHitByCrossBow(attack, target, timeAtk, reuse);
 		else if (weaponItem.getItemType() == L2WeaponType.POLE)
 			hitted = doAttackHitByPole(attack, target, timeToHit);
 		else if (isUsingDualWeapon())
@@ -4973,7 +4973,7 @@ public abstract class L2Character extends L2Object
 				L2Weapon weapon = getActiveWeaponItem();
 				boolean isBow = (weapon != null && weapon.getItemType().toString().equalsIgnoreCase("Bow"));
 
-				if (!isBow) // Do not reflect or absorb if weapon is of type bow
+				if (!isBow || charIsTransformed()) // Do not reflect or absorb if weapon is of type bow
 				{
 					// Reduce HP of the target and calculate reflection damage to reduce HP of attacker if necessary
 					double reflectPercent = target.getStat().calcStat(Stats.REFLECT_DAMAGE_PERCENT,0,null,null);
@@ -5283,7 +5283,7 @@ public abstract class L2Character extends L2Object
     public int calculateTimeBetweenAttacks(L2Character target, L2Weapon weapon)
     {
         double atkSpd = 0;
-        if (weapon !=null)
+        if (weapon !=null && !charIsTransformed())
         {
 		    switch (weapon.getItemType())
 		    {
@@ -5309,7 +5309,7 @@ public abstract class L2Character extends L2Object
 
     public int calculateReuseTime(L2Character target, L2Weapon weapon)
     {
-        if (weapon == null) return 0;
+        if (weapon == null || charIsTransformed()) return 0;
 
         int reuse = weapon.getAttackReuseDelay();
         // only bows should continue for now
