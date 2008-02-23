@@ -14,13 +14,13 @@
  */
 package net.sf.l2j.gameserver.model.zone.type;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.GameServer;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
+import net.sf.l2j.util.L2FastList;
 
 /**
  * @author DaRkRaGe
@@ -39,13 +39,13 @@ public class L2BossZone extends L2ZoneType
     // track the players admitted to the zone who should be allowed back in 
     // after reboot/server downtime (outside of their control), within 30 
     // of server restart
-    private FastList<Integer> _playersAllowed;
+    private L2FastList<Integer> _playersAllowed;
     
     public L2BossZone(int id)
     {
         super(id);
         _playerAllowedReEntryTimes = new FastMap<Integer, Long>();
-        _playersAllowed = new FastList<Integer>();
+        _playersAllowed = new L2FastList<Integer>();
     }
     
     @Override
@@ -159,13 +159,13 @@ public class L2BossZone extends L2ZoneType
         return _timeInvade;
     }
 
-    public void setAllowedPlayers(FastList<Integer> players)
+    public void setAllowedPlayers(L2FastList<Integer> players)
     {
         if (players != null)
             _playersAllowed = players;
     }
 
-    public FastList<Integer> getAllowedPlayers()
+    public L2FastList<Integer> getAllowedPlayers()
     {
         return _playersAllowed;
     }

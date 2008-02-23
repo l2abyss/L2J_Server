@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
-import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 
@@ -45,7 +44,6 @@ public final class L2GrandBossInstance extends L2MonsterInstance
 	public void onSpawn()
     {
     	super.onSpawn();
-        GrandBossManager.getInstance().addBoss(this);
     }
 
     /**
