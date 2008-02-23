@@ -5017,8 +5017,6 @@ public final class L2PcInstance extends L2PlayableInstance
 		    	lostExp = 0;
 		}
 
-		setCharmOfCourage(false);
-
         if (Config.DEBUG)
             _log.fine(getName() + " died and lost " + lostExp + " experience.");
 

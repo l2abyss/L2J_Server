@@ -116,12 +116,12 @@ public class Scrolls implements IItemHandler
 	   	{
 	   	    byte expIndex = (byte)activeChar.getExpertiseIndex();
             
-	   		if ((itemId == 8515 && expIndex==0) || // Charm of Courage (No Grade)
-			    (itemId == 8516 && expIndex==1) || // Charm of Courage (D Grade)
-       	        (itemId == 8517 && expIndex==2) || // Charm of Courage (C Grade)
-       	        (itemId == 8518 && expIndex==3) || // Charm of Courage (B Grade)
-       	        (itemId == 8519 && expIndex==4) || // Charm of Courage (A Grade)
-       	        (itemId == 8520 && (expIndex==5 || expIndex==6))) // Charm of Courage (S Grade)
+	   		if ((itemId == 8515 && expIndex == 0) || // Charm of Courage (No Grade)
+			    (itemId == 8516 && expIndex <= 1) || // Charm of Courage (D Grade)
+       	        (itemId == 8517 && expIndex <= 2) || // Charm of Courage (C Grade)
+       	        (itemId == 8518 && expIndex <= 3) || // Charm of Courage (B Grade)
+       	        (itemId == 8519 && expIndex <= 4) || // Charm of Courage (A Grade)
+       	        (itemId == 8520 && expIndex <= 6)) // Charm of Courage (S Grade)
        	  	{
 	   			if (!playable.destroyItem("Consume", item.getObjectId(), 1, null, false))
 	   				return;
