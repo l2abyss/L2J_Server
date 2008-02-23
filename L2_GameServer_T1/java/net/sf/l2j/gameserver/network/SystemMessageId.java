@@ -372,7 +372,7 @@ public enum SystemMessageId
     /**
     * ID: 104<br>
     * Message: You may not equip items while casting or performing a skill.
-        */
+	*/
     CANNOT_USE_ITEM_WHILE_USING_MAGIC(104),
 
     /**

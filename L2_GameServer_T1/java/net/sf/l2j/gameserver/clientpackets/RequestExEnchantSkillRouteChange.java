@@ -30,7 +30,6 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.base.Experience;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.ShortCutRegister;
-import net.sf.l2j.gameserver.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.util.IllegalPlayerAction;
@@ -174,12 +173,7 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
                 {
                     _log.fine("Learned skill ID: "+_skillId+" Level: "+_skillLvl+" for "+requiredSp+" SP, "+requiredExp+" EXP.");
                 }
-                
-                
-                StatusUpdate su = new StatusUpdate(player.getObjectId());
-                su.addAttribute(StatusUpdate.SP, player.getSp());
-                player.sendPacket(su);
-                
+
                 player.sendPacket(new UserInfo(player));
                 
                 if (levelPenalty == 0)

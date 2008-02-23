@@ -77,8 +77,8 @@ public final class UseItem extends L2GameClientPacket
 		}
 
 		// NOTE: disabled due to deadlocks
-//        synchronized (activeChar.getInventory())
-//		{
+		// synchronized (activeChar.getInventory())
+		// 	{
 			L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
 
 			if (item == null)
@@ -267,8 +267,14 @@ public final class UseItem extends L2GameClientPacket
                     case L2Item.SLOT_R_HAND:
                     {
                         // Prevent player to remove the weapon on special conditions
-                        if ((activeChar.isAttackingNow() || activeChar.isCastingNow() || activeChar.isMounted()))
-                                return;
+                    	if (activeChar.isCastingNow())
+                    	{
+                    		activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_USE_ITEM_WHILE_USING_MAGIC));
+                    		return;
+                    	}
+                    	
+                        if ((activeChar.isAttackingNow() || activeChar.isMounted()))
+                        	return;
                         
                         
                         if (activeChar.isDisarmed())
