@@ -25,6 +25,7 @@ import javolution.util.FastMap;
  * @author Layane
  *
  */
+@SuppressWarnings("unchecked")
 public class FastMRUCache<K,V> extends FastCollection implements Reusable
 {
     /**
@@ -62,7 +63,8 @@ public class FastMRUCache<K,V> extends FastCollection implements Reusable
     /**
      * Holds the set factory.
      */
-    private static final Factory<?> FACTORY = new Factory() {
+    @SuppressWarnings("unchecked")
+    private static final Factory FACTORY = new Factory() {
 
         @Override
 		public Object create() {

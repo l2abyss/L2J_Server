@@ -365,7 +365,6 @@ public class GrandBossManager
 			{
 				L2GrandBossInstance boss = _bosses.get(bossId);
 				StatsSet info = _storedInfo.get(bossId);
-				System.err.println("here"+bossId + info + boss);
 				if (boss == null || info == null)
 				{
 					statement = con.prepareStatement(UPDATE_GRAND_BOSS_DATA2);
@@ -374,7 +373,6 @@ public class GrandBossManager
 				}
 				else
 				{
-					System.err.println("still here"+bossId);
 					statement = con.prepareStatement(UPDATE_GRAND_BOSS_DATA);
 					statement.setInt(1, boss.getX());
 					statement.setInt(2, boss.getY());
