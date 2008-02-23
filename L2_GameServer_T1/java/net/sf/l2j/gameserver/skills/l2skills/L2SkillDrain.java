@@ -93,8 +93,24 @@ public class L2SkillDrain extends L2Skill {
 			boolean mcrit = Formulas.getInstance().calcMCrit(activeChar.getMCriticalHit(target, this));
 			int damage = (int)Formulas.getInstance().calcMagicDam(
 					activeChar, target, this, ss, bss, mcrit);
+			
+			int _drain = 0;
+			int _cp = (int)target.getCurrentCp();
+			int _hp = (int)target.getCurrentHp();
+			
+			if (_cp > 0)
+			{
+				if (damage < _cp)
+					_drain = 0;
+				else
+					_drain = damage - _cp;
+			}
+			else if (damage > _hp)
+				_drain = _hp;
+			else
+				_drain = damage;
 
-			double hpAdd = _absorbAbs + _absorbPart * damage;
+			double hpAdd = _absorbAbs + _absorbPart * _drain;
 			double hp = ((activeChar.getCurrentHp() + hpAdd) > activeChar.getMaxHp() ? activeChar.getMaxHp() : (activeChar.getCurrentHp() + hpAdd));
 
             activeChar.setCurrentHp(hp);
