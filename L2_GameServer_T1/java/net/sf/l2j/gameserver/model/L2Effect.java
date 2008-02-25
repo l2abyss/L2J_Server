@@ -83,7 +83,8 @@ public abstract class L2Effect
         INVINCIBLE,
         TRANSFORMATION,
         IMMOBILEUNTILATTACKED,
-        DISARM
+        DISARM,
+        CHARMOFCOURAGE
     }
 
     private static final Func[] _emptyFunctionSet = new Func[0];

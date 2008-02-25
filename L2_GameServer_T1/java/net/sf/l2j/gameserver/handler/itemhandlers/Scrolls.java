@@ -127,7 +127,6 @@ public class Scrolls implements IItemHandler
 	   				return;
       		 	activeChar.broadcastPacket(new MagicSkillUse(playable, playable, 5041, 1, 1, 0));
       		  	useScroll(activeChar, 5041, 1);
-      		  	activeChar.setCharmOfCourage(true);
        	  	}
 	   		else
 	   			activeChar.sendPacket(new SystemMessage(SystemMessageId.INCOMPATIBLE_ITEM_GRADE));
