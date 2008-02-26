@@ -2310,6 +2310,12 @@ public enum SystemMessageId
         */
         YOU_MAY_NOT_THROW_THE_DICE_AT_THIS_TIME_TRY_AGAIN_LATER(835),
 
+        /**
+        * ID: 836<br>
+        * Message: You have exceeded your inventory volume limit and cannot take this item.
+        */
+        YOU_HAVE_EXCEEDED_YOUR_INVENTORY_VOLUME_LIMIT_AND_CANNOT_TAKE_THIS_ITEM(836),
+
     /**
     * ID: 837<br>
     * Message: Macro descriptions may contain up to 32 characters.
