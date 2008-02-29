@@ -3,12 +3,12 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -366,13 +366,18 @@ public final class L2FestivalGuideInstance extends L2FolkInstance
                      */
                     boolean isLeader = playerParty.isLeader(player);
 
-                    if (isLeader) {
+                    if (isLeader)
+                    {
                         SevenSignsFestival.getInstance().updateParticipants(player, null);
                     }
-                    else {
-                        SevenSignsFestival.getInstance().updateParticipants(player, playerParty);
-                        playerParty.removePartyMember(player);
+
+                    if (playerParty.getMemberCount() > Config.ALT_FESTIVAL_MIN_PLAYER)
+                    {
+                    	SevenSignsFestival.getInstance().updateParticipants(player, playerParty);
+                    	playerParty.removePartyMember(player);
                     }
+                    else
+                    player.sendMessage("Only partyleader can leave festival, if minmum party member is reached.");
                     break;
                 case 0: // Distribute Accumulated Bonus
                     if (!SevenSigns.getInstance().isSealValidationPeriod())
