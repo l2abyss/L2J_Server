@@ -55,9 +55,19 @@ public final class AnswerTradeRequest extends L2GameClientPacket
 
 
         L2PcInstance partner = player.getActiveRequester();
-        if (partner == null || L2World.getInstance().findObject(partner.getObjectId()) == null)
+        if (partner == null)
         {
             // Trade partner not found, cancel trade
+			player.sendPacket(new TradeDone(0));
+            SystemMessage msg = new SystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
+            player.sendPacket(msg);
+			player.setActiveRequester(null);
+			msg = null;
+            return;
+        }
+        else if (L2World.getInstance().findObject(partner.getObjectId()) == null)
+        {
+        	// Trade partner not found, cancel trade
 			player.sendPacket(new TradeDone(0));
             SystemMessage msg = new SystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
             player.sendPacket(msg);
