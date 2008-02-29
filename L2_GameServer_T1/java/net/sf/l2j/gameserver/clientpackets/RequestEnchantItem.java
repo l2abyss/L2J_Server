@@ -55,8 +55,11 @@ public final class RequestEnchantItem extends L2GameClientPacket
 
         L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
         L2ItemInstance scroll = activeChar.getActiveEnchantItem();
-        activeChar.setActiveEnchantItem(null);
-        if (item == null || scroll == null) return;
+        if (item == null || scroll == null)
+        {
+        	activeChar.setActiveEnchantItem(null);
+        	return;
+        }
 
          // can't enchant rods, hero weapons and shadow items
         if(item.getItem().getItemType() == L2WeaponType.ROD
@@ -64,12 +67,27 @@ public final class RequestEnchantItem extends L2GameClientPacket
         		|| item.isShadowItem())
         {
         	activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
+        	activeChar.setActiveEnchantItem(null);
             return;
         }
         if(item.isWear())
         {
             Util.handleIllegalPlayerAction(activeChar,"Player "+activeChar.getName()+" tried to enchant a weared Item", IllegalPlayerAction.PUNISH_KICK);
             return;
+        }
+        
+        switch (item.getLocation())
+        {
+        	case INVENTORY:
+        	case PAPERDOLL:
+        	{
+        		break;
+        	}
+        	default:
+        	{
+        		Util.handleIllegalPlayerAction(activeChar,"Player "+activeChar.getName()+" tried to use enchant Exploit!", IllegalPlayerAction.PUNISH_KICKBAN);
+        		return;
+        	}
         }
         int itemType2 = item.getItem().getType2();
         boolean enchantItem = false;
@@ -155,6 +173,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
         if (!enchantItem)
         {
             activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
+            activeChar.setActiveEnchantItem(null);
             return;
         }
 
@@ -173,6 +192,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
         {
             activeChar.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
             Util.handleIllegalPlayerAction(activeChar,"Player "+activeChar.getName()+" tried to enchant with a scroll he doesnt have", Config.DEFAULT_PUNISH);
+            activeChar.setActiveEnchantItem(null);
             return;
         }
 
@@ -213,11 +233,13 @@ public final class RequestEnchantItem extends L2GameClientPacket
             	    || (item.getEnchantLevel() >= maxEnchantLevel && maxEnchantLevel != 0))
             	{
             		activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
+            		activeChar.setActiveEnchantItem(null);
             		return;
             	}
             	if (item.getLocation() != L2ItemInstance.ItemLocation.INVENTORY && item.getLocation() != L2ItemInstance.ItemLocation.PAPERDOLL)
             	{
             		activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
+            		activeChar.setActiveEnchantItem(null);
             		return;
             	}
             	if (item.getEnchantLevel() == 0)
@@ -294,7 +316,11 @@ public final class RequestEnchantItem extends L2GameClientPacket
                 if (count < 1) count = 1;
     
                 L2ItemInstance destroyItem = activeChar.getInventory().destroyItem("Enchant", item, activeChar, null);
-                if (destroyItem == null) return;
+                if (destroyItem == null)
+                {
+                	activeChar.setActiveEnchantItem(null);
+                	return;
+                }
                 
                 L2ItemInstance crystals = activeChar.getInventory().addItem("Enchant", crystalId, count, activeChar, destroyItem);
             
@@ -339,6 +365,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
         activeChar.sendPacket(new EnchantResult(item.getEnchantLevel())); //FIXME i'm really not sure about this...
         activeChar.sendPacket(new ItemList(activeChar, false)); //TODO update only the enchanted item
         activeChar.broadcastUserInfo();
+        activeChar.setActiveEnchantItem(null);
     }
     
     /* (non-Javadoc)

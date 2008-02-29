@@ -29,6 +29,8 @@ import net.sf.l2j.gameserver.serverpackets.ItemList;
 import net.sf.l2j.gameserver.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.L2EtcItemType;
+import net.sf.l2j.gameserver.util.IllegalPlayerAction;
+import net.sf.l2j.gameserver.util.Util;
 
 /**
  * This class ...
@@ -86,6 +88,12 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
         {
             player.sendMessage("Transactions are disable for your Access Level");
             return;
+        }
+        
+        if (player.getActiveEnchantItem() != null)
+        {
+        	Util.handleIllegalPlayerAction(player,"Player "+player.getName()+" tried to use enchant Exploit!", IllegalPlayerAction.PUNISH_KICKBAN);
+        	return;
         }
 
         // Alt game - Karma punishment
