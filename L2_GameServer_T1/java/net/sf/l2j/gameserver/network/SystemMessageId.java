@@ -2966,6 +2966,18 @@ public enum SystemMessageId
          * Message: $s1 harvested $s2(s).
          */
         S1_HARVESTED_S2S(1138),
+        
+        /**
+         * ID: 1140<br>
+         * Message: Would you like to open the gate?
+         */
+        WOULD_YOU_LIKE_TO_OPEN_THE_GATE(1140),
+        
+        /**
+         * ID: 1141<br>
+         * Message: Would you like to close the gate?
+         */
+        WOULD_YOU_LIKE_TO_CLOSE_THE_GATE(1141),
 
         /**
          * ID: 1176<br>
