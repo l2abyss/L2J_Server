@@ -804,7 +804,12 @@ public abstract class L2Character extends L2Object
         int ssGrade = 0;
 
         if (weaponItem != null)
-            ssGrade = weaponItem.getCrystalType();
+        {
+        	ssGrade = weaponItem.getCrystalType();
+        	if (ssGrade == 6)
+        		ssGrade = 5;
+        }
+            
 
         // Create a Server->Client packet Attack
 		Attack attack = new Attack(this, wasSSCharged, ssGrade);
