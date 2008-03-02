@@ -141,7 +141,12 @@ public class L2PetDataTable
     {
     	return npcId == 12077;
     }
-
+    
+    public static boolean isGreatWolf(int npcId)
+    {
+        return npcId == 16030;
+    }
+    
     public static boolean isSinEater(int npcId)
     {
        return npcId == 12564;
@@ -169,12 +174,16 @@ public class L2PetDataTable
 
     public static boolean isPetFood(int itemId)
     {
-    	return (itemId == 2515) || (itemId == 4038) || (itemId == 5168) || (itemId == 6316) || (itemId == 7582);
+    	return (itemId == 2515) || (itemId == 4038) || (itemId == 5168) || (itemId == 6316) || (itemId == 7582) || (itemId == 9668);
     }
 
     public static boolean isWolfFood(int itemId)
     {
     	return itemId == 2515;
+    }
+    public static boolean isGreatWolfFood(int itemId)
+    {
+        return itemId == 9668;
     }
 
     public static boolean isSinEaterFood(int itemId)
@@ -204,128 +213,59 @@ public class L2PetDataTable
 
     public static int getFoodItemId(int npcId)
     {
-    	if (isWolf(npcId))
-    		return 2515;
-        else if (isSinEater(npcId))
-            return 2515;
-    	else if (isHatchling(npcId))
-    		return 4038;
-    	else if (isStrider(npcId))
-    		return 5168;
-    	else if (isBaby(npcId))
-    		return 7582;
-    	else
-    		return 0;
-	}
-
-    public static int getPetIdByItemId(int itemId)
-    {
-		switch (itemId)
+    	switch (npcId)
 		{
-			// wolf pet a
-			case 2375:
-				return 12077;
-			// Sin Eater
-            case 4425:
-               return 12564;
-			// hatchling of wind
-			case 3500:
-				return 12311;
-			// hatchling of star
-			case 3501:
-				return 12312;
-			// hatchling of twilight
-			case 3502:
-				return 12313;
-			//  wind strider
-			case 4422:
-				return 12526;
-			//	Star strider
-			case 4423:
-				return 12527;
-			// Twilight strider
-			case 4424:
-				return 12528;
-		    // Wyvern
-            case 8663:
-                return 12621;
-			// Baby Buffalo
-			case 6648:
-				return 12780;
-			// Baby Cougar
-			case 6649:
-				return 12782;
-			// Baby Kookaburra
-			case 6650:
-				return 12781;
-			// unknown item id.. should never happen
+			case 12077:// Wolf
+				return 2515;
+            case 16030:// Great Wolf 
+                return 9668;
+			case 12564://Sin Eater
+				return 2515;
+
+			case 12311:// hatchling of wind
+			case 12312:// hatchling of star
+			case 12313:// hatchling of twilight
+	    		return 4038;
+
+			case 12526:// wind strider
+			case 12527:// Star strider
+			case 12528:// Twilight strider
+	    		return 5168;
+
+			case 12780:// Baby Buffalo
+			case 12782:// Baby Cougar
+			case 12781:// Baby Kookaburra
+	    		return 7582;
 			default:
 				return 0;
 		}
-    }
-
-    public static int getHatchlingWindId()
-    {
-    	return 12311;
-    }
-    public static int getHatchlingStarId()
-    {
-    	return 12312;
-    }
-    public static int getHatchlingTwilightId()
-    {
-    	return 12313;
-    }
-    public static int getStriderWindId()
-    {
-    	return 12526;
-    }
-    public static int getStriderStarId()
-    {
-    	return 12527;
-    }
-    public static int getStriderTwilightId()
-    {
-    	return 12528;
-    }
-    public static int getWyvernItemId()
-    {
-       return 8663;
-    }
-    public static int getStriderWindItemId()
-    {
-    	return 4422;
-    }
-    public static int getStriderStarItemId()
-    {
-    	return 4423;
-    }
-    public static int getStriderTwilightItemId()
-    {
-    	return 4424;
-    }
-
-    public static int getSinEaterItemId()
-    {
-       return 4425;
-    }
+	}
 
     public static boolean isPetItem(int itemId)
     {
-    	return (itemId == 2375 // wolf
+    	return (itemId == 2375 // Wolf
+                || itemId == 9882 // Great Wolf
     			|| itemId == 4425 //Sin Eater
-				|| itemId == 3500 || itemId == 3501 || itemId == 3502 // hatchlings
-				|| itemId == 4422 || itemId == 4423 || itemId == 4424 // striders
+				|| itemId == 3500 
+				|| itemId == 3501
+				|| itemId == 3502 // hatchlings
+				|| itemId == 4422
+				|| itemId == 4423
+				|| itemId == 4424 // striders
 				|| itemId == 8663 // Wyvern
-				|| itemId == 6648 || itemId == 6649 || itemId == 6650); // Babies
+				|| itemId == 6648
+				|| itemId == 6649
+				|| itemId == 6650); // Babies
     }
 
-    public static int[] getPetItemsAsNpc(int npcId)
+    public static int[] getPetItemsByNpc(int npcId)
     {
 		switch (npcId)
 		{
-			case 12077:// wolf pet a
+			case 12077:// Wolf
 				return new int[]{2375};
+            case 9882:// Great Wolf 
+                return new int[]{10163};
 			case 12564://Sin Eater
 				return new int[]{4425};
 
@@ -359,6 +299,7 @@ public class L2PetDataTable
     	return npcId == 12526		// wind strider
 		    	|| npcId == 12527	// star strider
 		    	|| npcId == 12528	// twilight strider
-		    	|| npcId == 12621;	// wyvern
+		    	|| npcId == 12621	// wyvern
+                || npcId == 16030;  // Greatwolf
     }
 }

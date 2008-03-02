@@ -132,7 +132,7 @@ public class PetInfo extends L2GameServerPacket
 		writeD(0);//c2  abnormal visual effect... bleed=1; poison=2; poison & bleed=3; flame=4;
 		int npcId = _summon.getTemplate().npcId;
 
-		if (npcId >= 12526 && npcId <= 12528)
+        if ((npcId >= 12526 && npcId <= 12528) || (npcId == 16030)) //  16025  16030 CT1 Great Wolf
 			writeH(1);//c2    ride button
 		else
 			writeH(0);

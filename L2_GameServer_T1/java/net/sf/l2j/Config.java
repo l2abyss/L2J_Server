@@ -652,6 +652,8 @@ public final class Config
     public static int WYVERN_SPEED;
     /** Speed of Striders */
     public static int STRIDER_SPEED;
+    /** Speed of Wolf */
+    public static int GREAT_WOLF_SPEED;
     /** Allow Wyvern Upgrader ? */
     public static boolean ALLOW_WYVERN_UPGRADER;
 
@@ -1494,6 +1496,7 @@ public final class Config
                 EFFECT_CANCELING    = Boolean.valueOf(otherSettings.getProperty("CancelLesserEffect", "True"));
                 WYVERN_SPEED        = Integer.parseInt(otherSettings.getProperty("WyvernSpeed", "100"));
                 STRIDER_SPEED       = Integer.parseInt(otherSettings.getProperty("StriderSpeed", "80"));
+                GREAT_WOLF_SPEED       = Integer.parseInt(otherSettings.getProperty("GreatWolfSpeed", "80"));
                 ALLOW_WYVERN_UPGRADER     = Boolean.valueOf(otherSettings.getProperty("AllowWyvernUpgrader", "False"));
 
                 /* Inventory slots limits */
@@ -2028,7 +2031,7 @@ public final class Config
 
                 KARMA_PK_LIMIT                      = Integer.parseInt(pvpSettings.getProperty("MinimumPKRequiredToDrop", "5"));
 
-                KARMA_NONDROPPABLE_PET_ITEMS    = pvpSettings.getProperty("ListOfPetItems", "2375,3500,3501,3502,4422,4423,4424,4425,6648,6649,6650");
+                KARMA_NONDROPPABLE_PET_ITEMS    = pvpSettings.getProperty("ListOfPetItems", "2375,3500,3501,3502,4422,4423,4424,4425,6648,6649,6650,9882");
                 KARMA_NONDROPPABLE_ITEMS        = pvpSettings.getProperty("ListOfNonDroppableItems", "57,1147,425,1146,461,10,2368,7,6,2370,2369,6842,6611,6612,6613,6614,6615,6616,6617,6618,6619,6620,6621,7694,8181,5575,7694,9388,9389,9390");
 
                 KARMA_LIST_NONDROPPABLE_PET_ITEMS = new FastList<Integer>();
@@ -2303,6 +2306,7 @@ public final class Config
         else if (pName.equalsIgnoreCase("CancelLesserEffect")) EFFECT_CANCELING = Boolean.valueOf(pValue);
         else if (pName.equalsIgnoreCase("WyvernSpeed")) WYVERN_SPEED = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("StriderSpeed")) STRIDER_SPEED = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("WolfSpeed")) GREAT_WOLF_SPEED = Integer.parseInt(pValue);
 
         else if (pName.equalsIgnoreCase("MaximumSlotsForNoDwarf")) INVENTORY_MAXIMUM_NO_DWARF = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("MaximumSlotsForDwarf")) INVENTORY_MAXIMUM_DWARF = Integer.parseInt(pValue);

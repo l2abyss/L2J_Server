@@ -307,7 +307,7 @@ public final class NpcInfo extends L2GameServerPacket
 
             writeC(((L2Decoy)_activeChar).getOwner().getAppearance().getInvisible() ? 1 : 0); // invisible = 1  visible =0
 
-            writeC(((L2Decoy)_activeChar).getOwner().getMountType()); // 1 on strider   2 on wyvern   0 no mount
+            writeC(((L2Decoy)_activeChar).getOwner().getMountType()); // 1 on strider   2 on wyvern  3 on Great Wolf  0 no mount
             writeC(((L2Decoy)_activeChar).getOwner().getPrivateStoreType());   //  1 - sellshop
 
             writeH(((L2Decoy)_activeChar).getOwner().getCubics().size());

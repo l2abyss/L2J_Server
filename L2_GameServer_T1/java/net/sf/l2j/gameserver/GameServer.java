@@ -105,7 +105,7 @@ import net.sf.l2j.gameserver.handler.admincommandhandlers.AdminPolymorph;
 import net.sf.l2j.gameserver.handler.admincommandhandlers.AdminQuest;
 import net.sf.l2j.gameserver.handler.admincommandhandlers.AdminRepairChar;
 import net.sf.l2j.gameserver.handler.admincommandhandlers.AdminRes;
-import net.sf.l2j.gameserver.handler.admincommandhandlers.AdminRideWyvern;
+import net.sf.l2j.gameserver.handler.admincommandhandlers.AdminRide;
 import net.sf.l2j.gameserver.handler.admincommandhandlers.AdminShop;
 import net.sf.l2j.gameserver.handler.admincommandhandlers.AdminShutdown;
 import net.sf.l2j.gameserver.handler.admincommandhandlers.AdminSiege;
@@ -581,7 +581,7 @@ public class GameServer
         _adminCommandHandler.registerAdminCommandHandler(new AdminMammon());
         _adminCommandHandler.registerAdminCommandHandler(new AdminUnblockIp());
         _adminCommandHandler.registerAdminCommandHandler(new AdminPledge());
-        _adminCommandHandler.registerAdminCommandHandler(new AdminRideWyvern());
+        _adminCommandHandler.registerAdminCommandHandler(new AdminRide());
         _adminCommandHandler.registerAdminCommandHandler(new AdminLogin());
         _adminCommandHandler.registerAdminCommandHandler(new AdminCache());
         _adminCommandHandler.registerAdminCommandHandler(new AdminLevel());

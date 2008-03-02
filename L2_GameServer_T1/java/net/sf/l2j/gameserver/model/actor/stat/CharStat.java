@@ -572,9 +572,14 @@ public class CharStat
 			val += Config.WYVERN_SPEED;
 			return val;
 		}
-		if (_activeChar.isRiding())
+		if (_activeChar.isRidingStrider())
 		{
 			val += Config.STRIDER_SPEED;
+			return val;
+		}
+		if (_activeChar.isRidingGreatWolf())
+		{
+			val += Config.GREAT_WOLF_SPEED;
 			return val;
 		}
 		// TODO: check if sharks/fish should be affected ;)

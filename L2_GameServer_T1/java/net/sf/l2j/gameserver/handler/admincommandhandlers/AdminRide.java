@@ -21,18 +21,18 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 
 /**
- * @author
- *
- * TODO nothing.
+ * @author 
  */
-public class AdminRideWyvern implements IAdminCommandHandler
+public class AdminRide implements IAdminCommandHandler
 {
     private static final String[] ADMIN_COMMANDS = {
         "admin_ride_wyvern",
         "admin_ride_strider",
         "admin_unride_wyvern",
         "admin_unride_strider",
-        "admin_unride",
+        "admin_unride", 
+        "admin_ride_wolf",
+        "admin_unride_wolf",
     };
     private static final int REQUIRED_LEVEL = Config.GM_RIDER;
     private int _petRideId;
@@ -55,6 +55,9 @@ public class AdminRideWyvern implements IAdminCommandHandler
             }
             else if (command.startsWith("admin_ride_strider")) {
             	_petRideId = 12526;
+            }
+            else if (command.startsWith("admin_ride_wolf")) { 
+            	_petRideId = 16030; 
             }
             else
             {

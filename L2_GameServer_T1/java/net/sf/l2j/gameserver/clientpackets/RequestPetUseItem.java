@@ -86,6 +86,12 @@ public final class RequestPetUseItem extends L2GameClientPacket
 				useItem(pet, item, activeChar);
 				return;
 			}
+            else if (L2PetDataTable.isGreatWolf(pet.getNpcId()) && // Greatwolf
+                    item.getItem().isForWolf())
+            {
+                useItem(pet, item, activeChar);
+                return;
+            }
 			else if (L2PetDataTable.isHatchling(pet.getNpcId()) && // hatchlings
                         item.getItem().isForHatchling())
 			{
@@ -117,6 +123,11 @@ public final class RequestPetUseItem extends L2GameClientPacket
 				feed(activeChar, pet, item);
 				return;
 			}
+            if (L2PetDataTable.isGreatWolf(pet.getNpcId()) && L2PetDataTable.isGreatWolfFood(itemId))
+            {
+                feed(activeChar, pet, item);
+                return;
+            }
 			if (L2PetDataTable.isSinEater(pet.getNpcId()) && L2PetDataTable.isSinEaterFood(itemId))
 			{
 				feed(activeChar, pet, item);

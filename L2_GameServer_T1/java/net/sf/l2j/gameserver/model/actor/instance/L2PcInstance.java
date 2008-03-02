@@ -7993,10 +7993,11 @@ public final class L2PcInstance extends L2PlayableInstance
 		{
 			case 0:
                 setIsFlying(false);
-                setIsRiding(false);
+				setIsRidingGreatWolf(false);
+				setIsRidingStrider(false);
                 break; //Dismounted
 			case 1:
-                setIsRiding(true);
+                setIsRidingStrider(true);
                 if(isNoble())
                 {
                 	L2Skill striderAssaultSkill = SkillTable.getInstance().getInfo(325, 1);
@@ -8006,6 +8007,9 @@ public final class L2PcInstance extends L2PlayableInstance
 			case 2:
                 setIsFlying(true);
                 break; //Flying Wyvern
+			case 3:
+				setIsRidingGreatWolf(true);
+				break; // Riding a Great Wolf
 		}
 
 		_mountType = mountType;
