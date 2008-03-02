@@ -264,8 +264,8 @@ public class L2PetDataTable
 		{
 			case 12077:// Wolf
 				return new int[]{2375};
-            case 9882:// Great Wolf 
-                return new int[]{10163};
+            case 16030:// Great Wolf 
+                return new int[]{9882};
 			case 12564://Sin Eater
 				return new int[]{4425};
 
