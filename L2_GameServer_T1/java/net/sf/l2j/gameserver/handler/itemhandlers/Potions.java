@@ -454,7 +454,18 @@ public class Potions implements IItemHandler
 			L2Skill skill = SkillTable.getInstance().getInfo(magicId, level);
 			if (skill != null)
 			{
-				activeChar.doCast(skill);
+				// Return false if potion is in reuse
+			    // so is not destroyed from inventory
+			    if (activeChar.isSkillDisabled(skill.getId()))
+		        {
+	                SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
+	                sm.addSkillName(skill.getId(),skill.getLevel());
+	                activeChar.sendPacket(sm);
+
+		            return false;
+		        }
+			    
+			    activeChar.doCast(skill);
 				
 				//only for Heal potions
 				if (magicId == 2031 ||magicId == 2032 ||magicId == 2037)
