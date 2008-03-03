@@ -3325,6 +3325,10 @@ public final class L2PcInstance extends L2PlayableInstance
 			// cannot drop/trade wear-items
 			return null;
 		}
+		
+		// We cannot put a Weapon with Augmention in WH while casting (Possible Exploit)
+		if (item.isAugmented() && isCastingNow())
+			return null;
 
 		return item;
 	}
