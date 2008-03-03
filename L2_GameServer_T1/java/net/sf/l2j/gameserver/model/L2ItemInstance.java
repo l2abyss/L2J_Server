@@ -621,6 +621,16 @@ public final class L2ItemInstance extends L2Object
 		_enchantLevel = enchantLevel;
 		_storedInDb = false;
 	}
+	
+	public int setItemId(int itemId)
+	{
+		switch(itemId)
+		{
+			case 2375:
+				return 10163;
+		}
+		return 0;
+	}
 
 	/**
 	 * Returns the physical defense of the item
