@@ -948,6 +948,42 @@ public class L2Attackable extends L2NpcInstance
         }
         return mostHated;
     }
+    
+    /**
+     * Return the 2 most hated L2Character of the L2Attackable _aggroList.<BR><BR>
+     */
+    public List<L2Character> get2MostHated()
+    {
+    	if (getAggroListRP().isEmpty() || isAlikeDead()) return null;
+
+        L2Character mostHated = null;
+        L2Character secondMostHated = null;
+        int maxHate = 0;
+        List<L2Character> result = new FastList<L2Character>();
+
+        // While Interating over This Map Removing Object is Not Allowed
+        synchronized (getAggroList())
+        {
+            // Go through the aggroList of the L2Attackable
+            for (AggroInfo ai : getAggroListRP().values())
+            {
+            	if (ai == null) continue;
+            	if (ai._attacker.isAlikeDead() || !getKnownList().knowsObject(ai._attacker) ||!ai._attacker.isVisible())
+            		ai._hate = 0;
+            	if (ai._hate > maxHate)
+            	{
+            		secondMostHated = mostHated;
+            		mostHated = ai._attacker;
+            		maxHate = ai._hate;
+            	}
+            }
+        }
+        result.add(mostHated);
+        if (getAttackByList().contains(secondMostHated)) 
+        		result.add(secondMostHated);
+        else result.add(null);
+        return result;
+    }
 
     /**
      * Return the hate level of the L2Attackable against this L2Character contained in _aggroList.<BR><BR>

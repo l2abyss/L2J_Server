@@ -2228,6 +2228,28 @@ public abstract class L2Skill
                         }
                     }
                 }
+                else if (activeChar instanceof L2NpcInstance)
+                {
+                	// for buff purposes, returns one unbuffed friendly mob nearby or mob itself?
+                	L2NpcInstance npc = (L2NpcInstance) activeChar;
+                	for (L2Object newTarget : activeChar.getKnownList().getKnownObjects().values())
+                	{
+                		if (newTarget instanceof L2NpcInstance && ((L2NpcInstance)newTarget).getFactionId() == npc.getFactionId())
+                		{
+                			if (!Util.checkIfInRange(getCastRange(), activeChar, newTarget, true))
+                				continue;
+                			if (((L2NpcInstance)newTarget).getFirstEffect(this) != null)
+                			{
+                				 targetList.add((L2NpcInstance)newTarget);
+                				 break;
+                			}
+                		}
+                	}
+                	if (targetList.isEmpty())
+                	{
+                		targetList.add(activeChar);
+                	}
+                }
 
                 return targetList.toArray(new L2Character[targetList.size()]);
             }

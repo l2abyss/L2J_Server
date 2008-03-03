@@ -68,14 +68,26 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public final int     factionRange;
     public final int     absorbLevel;
     public final AbsorbCrystalType absorbType;
+    public final short   ss;
+    public final short   bss;
+    public final short   ssRate;
     public Race race;
-    public final String jClass; 
+    public final String jClass;
+    public final AIType AI;
     
     public static enum AbsorbCrystalType
     {
         LAST_HIT,
         FULL_PARTY,
         PARTY_ONE_RANDOM
+    }
+    
+    public static enum AIType
+    {
+    	FIGHTER,
+    	ARCHER,
+    	BALANCED,
+    	MAGE
     }
     
     public static enum Race 
@@ -125,7 +137,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * Constructor of L2Character.<BR><BR>
 	 * 
-	 * @param set The StatsSet object to transfert data to the method
+	 * @param set The StatsSet object to transfer data to the method
 	 * 
 	 */
 	public L2NpcTemplate(StatsSet set)
@@ -154,10 +166,18 @@ public final class L2NpcTemplate extends L2CharTemplate
 		factionRange  = set.getInteger("factionRange");
         absorbLevel  = set.getInteger("absorb_level", 0);
     	absorbType = AbsorbCrystalType.valueOf(set.getString("absorb_type"));
+    	ss  = (short)set.getInteger("ss", 0);
+    	bss  = (short)set.getInteger("bss", 0);
+    	ssRate  = (short)set.getInteger("ssRate", 0);
     	race = null;
 		//_npcStatsSet = set;
 		_teachInfo = null;
 		jClass = set.getString("jClass");
+		String ai = set.getString("AI", "fighter");
+		if (ai.equalsIgnoreCase("archer")) AI = AIType.ARCHER;
+		else if (ai.equalsIgnoreCase("balanced")) AI = AIType.BALANCED;
+		else if (ai.equalsIgnoreCase("mage")) AI = AIType.MAGE;
+		else AI = AIType.FIGHTER;
 	}
 	
     public void addTeachInfo(ClassId classId)

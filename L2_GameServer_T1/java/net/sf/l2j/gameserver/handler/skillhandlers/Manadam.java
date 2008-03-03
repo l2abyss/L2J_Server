@@ -62,6 +62,27 @@ L2Character activeChar, L2Skill skill, L2Object[] targets)
 			weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
 		}
 	}
+	// If there is no weapon equipped, check for an active summon.
+	else if (activeChar instanceof L2Summon)
+	{
+		L2Summon activeSummon = (L2Summon) activeChar;
+			
+		if (activeSummon.getChargedSpiritShot() == L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT)
+		{
+			bss = true;
+			activeSummon.setChargedSpiritShot(L2ItemInstance.CHARGED_NONE);
+		}
+		else if (activeSummon.getChargedSpiritShot() == L2ItemInstance.CHARGED_SPIRITSHOT)
+		{
+			ss = true;
+			activeSummon.setChargedSpiritShot(L2ItemInstance.CHARGED_NONE);
+		}
+	}
+	else if (activeChar instanceof L2NpcInstance)
+	{
+		bss = ((L2NpcInstance)activeChar).isUsingShot(false);
+		ss = ((L2NpcInstance)activeChar).isUsingShot(true);
+	}
 	for (int index = 0; index < targets.length; index++)
 	{
 		target = (L2Character) targets[index];

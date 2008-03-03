@@ -32,10 +32,10 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
+import net.sf.l2j.gameserver.util.Util;
 import net.sf.l2j.util.Rnd;
 
 /**
@@ -52,7 +52,11 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
     /** The L2Attackable AI task executed every 1s (call onEvtThink method)*/
     private Future<?> _aiTask;
 
-    /** The delay after wich the attacked is stopped */
+    /** For attack AI, analysis of mob and its targets */
+    private SelfAnalysis _selfAnalysis = new SelfAnalysis();
+    //private TargetAnalysis _mostHatedAnalysis = new TargetAnalysis();
+    
+    /** The delay after which the attacked is stopped */
     private int _attackTimeout;
 
     /** The L2Attackable aggro counter */
@@ -72,10 +76,9 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
     public L2SiegeGuardAI(L2Character.AIAccessor accessor)
     {
         super(accessor);
-
+        _selfAnalysis.Init();
         _attackTimeout = Integer.MAX_VALUE;
         _globalAggro = -10; // 10 seconds timeout of ATTACK after respawn
-
         _attackRange = ((L2Attackable) _actor).getPhysicalAttackRange();
     }
 
@@ -125,9 +128,18 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
         	target instanceof L2SiegeGuardInstance ||
             target instanceof L2FolkInstance ||
         	target instanceof L2DoorInstance ||
-        	target.isAlikeDead() ||
-        	target.isInvul()) return false;
+        	target.isAlikeDead()) return false;
 
+        // Check if the target isn't invulnerable
+        if (target.isInvul())
+        {
+            // However EffectInvincible requires to check GMs specially
+            if (target instanceof L2PcInstance && ((L2PcInstance)target).isGM())
+                return false;
+            if (target instanceof L2Summon && ((L2Summon)target).getOwner().isGM())
+                return false;
+        }
+        
         // Get the owner if the target is a summon
         if (target instanceof L2Summon)
         {
@@ -143,7 +155,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
             if (((L2PcInstance) target).isSilentMoving()
                 && !_actor.isInsideRadius(target, 250, false, false)) return false;
         }
-               // Los Check Here
+        // Los Check Here
         return (_actor.isAutoAttackable(target) && GeoData.getInstance().canSeeTarget(_actor, target));
 
     }
@@ -263,7 +275,8 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
             L2Character hated;
             if (_actor.isConfused()) hated = _attackTarget; // Force mobs to attak anybody if confused
             else hated = npc.getMostHated();
-
+            //_mostHatedAnalysis.Update(hated);
+            
             // Order to the L2Attackable to attack the target
             if (hated != null)
             {
@@ -286,214 +299,6 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
         // Order to the L2SiegeGuardInstance to return to its home location because there's no target to attack
         ((L2SiegeGuardInstance) _actor).returnHome();
         return;
-
-    }
-
-    private void attackPrepare()
-    {
-        // Get all information needed to chose between physical or magical attack
-        L2Skill[] skills = null;
-        double dist_2 = 0;
-        int range = 0;
-        L2SiegeGuardInstance sGuard = (L2SiegeGuardInstance) _actor;
-
-        try
-        {
-            _actor.setTarget(_attackTarget);
-            skills = _actor.getAllSkills();
-            dist_2 = _actor.getPlanDistanceSq(_attackTarget.getX(), _attackTarget.getY());
-            range = _actor.getPhysicalAttackRange() + _actor.getTemplate().collisionRadius + _attackTarget.getTemplate().collisionRadius;
-        }
-        catch (NullPointerException e)
-        {
-        	//_log.warning("AttackableAI: Attack target is NULL.");
-        	_actor.setTarget(null);
-        	setIntention(AI_INTENTION_IDLE, null, null);
-        	return;
-        }
-
-        // never attack defenders
-        if(_attackTarget instanceof L2PcInstance && sGuard.getCastle().getSiege().checkIsDefender(((L2PcInstance)_attackTarget).getClan()))
-        {
-        	// Cancel the target
-        	sGuard.stopHating(_attackTarget);
-        	_actor.setTarget(null);
-        	setIntention(AI_INTENTION_IDLE, null, null);
-        	return;
-        }
-
-        if (!GeoData.getInstance().canSeeTarget(_actor, _attackTarget))
-    	{
-        	// Siege guards differ from normal mobs currently:
-        	// If target cannot seen, don't attack any more
-        	sGuard.stopHating(_attackTarget);
-        	_actor.setTarget(null);
-        	setIntention(AI_INTENTION_IDLE, null, null);
-        	return;
-    	}
-
-        // Check if the actor isn't muted and if it is far from target
-        if (!_actor.isMuted() && dist_2 > (range + 20) * (range + 20))
-        {
-            // check for long ranged skills and heal/buff skills
-            if (!Config.ALT_GAME_MOB_ATTACK_AI
-                || (_actor instanceof L2MonsterInstance && Rnd.nextInt(100) <= 5))
-                for (L2Skill sk : skills)
-                {
-                    int castRange = sk.getCastRange();
-
-                    if (((sk.getSkillType() == L2Skill.SkillType.BUFF || sk.getSkillType() == L2Skill.SkillType.HEAL) || (dist_2 >= castRange * castRange / 9)
-                        && (dist_2 <= castRange * castRange) && (castRange > 70))
-                        && !_actor.isSkillDisabled(sk.getId())
-                        && _actor.getCurrentMp() >= _actor.getStat().getMpConsume(sk) && !sk.isPassive())
-                    {
-                        L2Object OldTarget = _actor.getTarget();
-                        if (sk.getSkillType() == L2Skill.SkillType.BUFF
-                            || sk.getSkillType() == L2Skill.SkillType.HEAL)
-                        {
-                            boolean useSkillSelf = true;
-                            if (sk.getSkillType() == L2Skill.SkillType.HEAL
-                                && _actor.getCurrentHp() > (int) (_actor.getMaxHp() / 1.5))
-                            {
-                                useSkillSelf = false;
-                                break;
-                            }
-                            if (sk.getSkillType() == L2Skill.SkillType.BUFF)
-                            {
-                                L2Effect[] effects = _actor.getAllEffects();
-                                for (int i = 0; effects != null && i < effects.length; i++)
-                                {
-                                    L2Effect effect = effects[i];
-                                    if (effect.getSkill() == sk)
-                                    {
-                                        useSkillSelf = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (useSkillSelf) _actor.setTarget(_actor);
-                        }
-
-                        clientStopMoving(null);
-                        _accessor.doCast(sk);
-                        _actor.setTarget(OldTarget);
-                        return;
-                    }
-                }
-
-            // Check if the L2SiegeGuardInstance is attacking, knows the target and can't run
-            if (!(_actor.isAttackingNow()) && (_actor.getRunSpeed() == 0)
-                && (_actor.getKnownList().knowsObject(_attackTarget)))
-            {
-            	// Cancel the target
-                _actor.getKnownList().removeKnownObject(_attackTarget);
-                _actor.setTarget(null);
-                setIntention(AI_INTENTION_IDLE, null, null);
-            }
-            else
-            {
-                double dx = _actor.getX() - _attackTarget.getX();
-                double dy = _actor.getY() - _attackTarget.getY();
-                double dz = _actor.getZ() - _attackTarget.getZ();
-                double homeX = _attackTarget.getX() - sGuard.getHomeX();
-                double homeY = _attackTarget.getY() - sGuard.getHomeY();
-
-                // Check if the L2SiegeGuardInstance isn't too far from it's home location
-                if ((dx * dx + dy * dy > 10000) && (homeX * homeX + homeY * homeY > 3240000) // 1800 * 1800
-                    && (_actor.getKnownList().knowsObject(_attackTarget)))
-                {
-                    // Cancel the target
-                    _actor.getKnownList().removeKnownObject(_attackTarget);
-                    _actor.setTarget(null);
-                    setIntention(AI_INTENTION_IDLE, null, null);
-                }
-                else // Move the actor to Pawn server side AND client side by sending Server->Client packet MoveToPawn (broadcast)
-                {
-                	// Temporary hack for preventing guards jumping off towers,
-                	// before replacing this with effective geodata checks and AI modification
-                	if(dz*dz < 170*170) // normally 130 if guard z coordinates correct
-                		moveToPawn(_attackTarget, range);
-                }
-            }
-
-            return;
-
-        }
-        // Else, if the actor is muted and far from target, just "move to pawn"
-        else if (_actor.isMuted() && dist_2 > (range + 20) * (range + 20))
-        {
-        	// Temporary hack for preventing guards jumping off towers,
-        	// before replacing this with effective geodata checks and AI modification
-        	double dz = _actor.getZ() - _attackTarget.getZ();
-        	if(dz*dz < 170*170) // normally 130 if guard z coordinates correct
-        		moveToPawn(_attackTarget, range);
-            return;
-        }
-        // Else, if this is close enough to attack
-        else if (dist_2 <= (range + 20) * (range + 20))
-        {
-            // Force mobs to attak anybody if confused
-            L2Character hated = null;
-            if (_actor.isConfused()) hated = _attackTarget;
-            else hated = ((L2Attackable) _actor).getMostHated();
-
-            if (hated == null)
-            {
-                setIntention(AI_INTENTION_ACTIVE, null, null);
-                return;
-            }
-            if (hated != _attackTarget) _attackTarget = hated;
-
-            _attackTimeout = MAX_ATTACK_TIMEOUT + GameTimeController.getGameTicks();
-
-            // check for close combat skills && heal/buff skills
-            if (!_actor.isMuted() && Rnd.nextInt(100) <= 5)
-            {
-                for (L2Skill sk : skills)
-                {
-                    int castRange = sk.getCastRange();
-
-                    if (castRange * castRange >= dist_2 && castRange <= 70 && !sk.isPassive()
-                        && _actor.getCurrentMp() >= _actor.getStat().getMpConsume(sk)
-                        && !_actor.isSkillDisabled(sk.getId()))
-                    {
-                        L2Object OldTarget = _actor.getTarget();
-                        if (sk.getSkillType() == L2Skill.SkillType.BUFF
-                            || sk.getSkillType() == L2Skill.SkillType.HEAL)
-                        {
-                            boolean useSkillSelf = true;
-                            if (sk.getSkillType() == L2Skill.SkillType.HEAL
-                                && _actor.getCurrentHp() > (int) (_actor.getMaxHp() / 1.5))
-                            {
-                                useSkillSelf = false;
-                                break;
-                            }
-                            if (sk.getSkillType() == L2Skill.SkillType.BUFF)
-                            {
-                                L2Effect[] effects = _actor.getAllEffects();
-                                for (int i = 0; effects != null && i < effects.length; i++)
-                                {
-                                    L2Effect effect = effects[i];
-                                    if (effect.getSkill() == sk)
-                                    {
-                                        useSkillSelf = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (useSkillSelf) _actor.setTarget(_actor);
-                        }
-
-                        clientStopMoving(null);
-                        _accessor.doCast(sk);
-                        _actor.setTarget(OldTarget);
-                        return;
-                    }
-                }
-            }
-            // Finally, do the physical attack itself
-            _accessor.doAttack(_attackTarget);
-        }
     }
 
     /**
@@ -549,54 +354,336 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
             return;
         }
 
+        factionNotifyAndSupport();
         attackPrepare();
-        factionNotify();
     }
 
-    private final void factionNotify()
+    private final void factionNotifyAndSupport()
     {
-        // Call all L2Object of its Faction inside the Faction Range
-        if (((L2NpcInstance) _actor).getFactionId() == null || _attackTarget == null || _actor == null)
+    	L2Character target = getAttackTarget();
+    	// Call all L2Object of its Faction inside the Faction Range
+        if (((L2NpcInstance) _actor).getFactionId() == null || target == null || _actor == null)
             return;
 
-        if (_attackTarget.isInvul()) return;
+        if (target.isInvul()) return; // speeding it up for siege guards
 
         String faction_id = ((L2NpcInstance) _actor).getFactionId();
 
-        // Go through all L2Object that belong to its faction
+        // Go through all L2Character that belong to its faction
+        //for (L2Character cha : _actor.getKnownList().getKnownCharactersInRadius(((L2NpcInstance) _actor).getFactionRange()+_actor.getTemplate().collisionRadius))
         for (L2Character cha : _actor.getKnownList().getKnownCharactersInRadius(1000))
         {
             if (cha == null) continue;
 
-            if (!(cha instanceof L2NpcInstance)) continue;
-
+            if (!(cha instanceof L2NpcInstance)) 
+            {
+                if(_selfAnalysis.hasHealOrResurrect && cha instanceof L2PcInstance && ((L2NpcInstance) _actor).getCastle().getSiege().checkIsDefender(((L2PcInstance)cha).getClan()))
+                {
+                    // heal friends
+                    if (!_actor.isAttackingDisabled()
+                            && cha.getCurrentHp() < cha.getMaxHp()*0.6
+                            && _actor.getCurrentHp() > _actor.getMaxHp()/2
+                            && _actor.getCurrentMp() > _actor.getMaxMp()/2
+                            && cha.isInCombat())
+                    {
+                        for (L2Skill sk : _selfAnalysis.healSkills)
+                        {
+                            if (_actor.getCurrentMp() < sk.getMpConsume())
+                                continue;
+                            if (_actor.isSkillDisabled(sk.getId()))
+                                continue;
+                            if (!Util.checkIfInRange(sk.getCastRange(), _actor, cha, true))
+                                continue;
+                               
+                            int chance = 5;
+                            if (chance >= Rnd.get(100)) // chance
+                                continue;
+                            if (!GeoData.getInstance().canSeeTarget(_actor, cha))
+                                break;
+                               
+                            L2Object OldTarget = _actor.getTarget();
+                            _actor.setTarget(cha);
+                            clientStopMoving(null);
+                            _accessor.doCast(sk);
+                            _actor.setTarget(OldTarget);
+                            return;
+                        }
+                    }
+                }
+                continue;
+            }
+            
             L2NpcInstance npc = (L2NpcInstance) cha;
 
             if (faction_id != npc.getFactionId()) continue;
-
-            // Check if the L2Object is inside the Faction Range of the actor
-            if ((npc.getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE || npc.getAI().getIntention() == CtrlIntention.AI_INTENTION_ACTIVE)
-                && _actor.isInsideRadius(npc, npc.getFactionRange(), false, true)
-                && npc.getTarget() == null
-                && _attackTarget.isInsideRadius(npc, npc.getFactionRange(), false, true)
-                )
+            
+            if (npc.getAI() != null) // TODO: possibly check not needed
             {
-                if (Config.GEODATA > 0)
+                if (Math.abs(target.getZ() - npc.getZ()) < 600
+                        //&& _actor.getAttackByList().contains(getAttackTarget())
+                        && (npc.getAI()._intention == CtrlIntention.AI_INTENTION_IDLE
+                                || npc.getAI()._intention == CtrlIntention.AI_INTENTION_ACTIVE)
+                        //limiting aggro for siege guards
+                        && target.isInsideRadius(npc, 1500, true, false) 
+                        && GeoData.getInstance().canSeeTarget(npc, target))
                 {
-                	if (GeoData.getInstance().canSeeTarget(npc, _attackTarget))
-                		// Notify the L2Object AI with EVT_AGGRESSION
-                        npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, _attackTarget, 1);
+                    // Notify the L2Object AI with EVT_AGGRESSION
+                    npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, getAttackTarget(), 1);
                 }
-                else
+                // heal friends
+                if (_selfAnalysis.hasHealOrResurrect && !_actor.isAttackingDisabled()
+                        && npc.getCurrentHp() < npc.getMaxHp()*0.6
+                        && _actor.getCurrentHp() > _actor.getMaxHp()/2
+                        && _actor.getCurrentMp() > _actor.getMaxMp()/2
+                        && npc.isInCombat())
                 {
-                	if (Math.abs(_attackTarget.getZ() - npc.getZ()) < 600)
-                		// Notify the L2Object AI with EVT_AGGRESSION
-                        npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, _attackTarget, 1);
+                    for (L2Skill sk : _selfAnalysis.healSkills)
+                    {
+                        if (_actor.getCurrentMp() < sk.getMpConsume())
+                            continue;
+                        if (_actor.isSkillDisabled(sk.getId()))
+                            continue;
+                        if (!Util.checkIfInRange(sk.getCastRange(), _actor, npc, true))
+                            continue;
+                           
+                        int chance = 4;
+                        if (chance >= Rnd.get(100)) // chance
+                            continue;
+                        if (!GeoData.getInstance().canSeeTarget(_actor, npc))
+                            break;
+                           
+                        L2Object OldTarget = _actor.getTarget();
+                        _actor.setTarget(npc);
+                        clientStopMoving(null);
+                        _accessor.doCast(sk);
+                        _actor.setTarget(OldTarget);
+                        return;
+                    }
                 }
             }
         }
     }
+    
+    private void attackPrepare()
+    {
+        // Get all information needed to choose between physical or magical attack
+        L2Skill[] skills = null;
+        double dist_2 = 0;
+        int range = 0;
+        L2SiegeGuardInstance sGuard = (L2SiegeGuardInstance) _actor;
 
+        try
+        {
+            _actor.setTarget(_attackTarget);
+            skills = _actor.getAllSkills();
+            dist_2 = _actor.getPlanDistanceSq(_attackTarget.getX(), _attackTarget.getY());
+            range = _actor.getPhysicalAttackRange() + _actor.getTemplate().collisionRadius + _attackTarget.getTemplate().collisionRadius;
+            if (_attackTarget.isMoving()) range += 50;
+        }
+        catch (NullPointerException e)
+        {
+            //_log.warning("AttackableAI: Attack target is NULL.");
+            _actor.setTarget(null);
+            setIntention(AI_INTENTION_IDLE, null, null);
+            return;
+        }
+        
+        // never attack defenders
+        if(_attackTarget instanceof L2PcInstance && sGuard.getCastle().getSiege().checkIsDefender(((L2PcInstance)_attackTarget).getClan()))
+        {
+            // Cancel the target
+            sGuard.stopHating(_attackTarget);
+            _actor.setTarget(null);
+            setIntention(AI_INTENTION_IDLE, null, null);
+            return;
+        }
+
+        if (!GeoData.getInstance().canSeeTarget(_actor, _attackTarget))
+        {
+            // Siege guards differ from normal mobs currently:
+            // If target cannot seen, don't attack any more
+            sGuard.stopHating(_attackTarget);
+            _actor.setTarget(null);
+            setIntention(AI_INTENTION_IDLE, null, null);
+            return;
+        }
+
+        // Check if the actor isn't muted and if it is far from target
+        if (!_actor.isMuted() && dist_2 > range * range)
+        {
+            // check for long ranged skills and heal/buff skills
+            for (L2Skill sk : skills)
+            {
+                int castRange = sk.getCastRange();
+
+                if ((dist_2 <= castRange * castRange) 
+                    && castRange > 70
+                    && !_actor.isSkillDisabled(sk.getId())
+                    && _actor.getCurrentMp() >= _actor.getStat().getMpConsume(sk) 
+                    && !sk.isPassive())
+                {
+                        
+                    L2Object OldTarget = _actor.getTarget();
+                    if (sk.getSkillType() == L2Skill.SkillType.BUFF
+                            || sk.getSkillType() == L2Skill.SkillType.HEAL)
+                    {
+                        boolean useSkillSelf = true;
+                        if (sk.getSkillType() == L2Skill.SkillType.HEAL
+                                && _actor.getCurrentHp() > (int) (_actor.getMaxHp() / 1.5))
+                        {
+                            useSkillSelf = false;
+                            break;
+                        }
+                        if (sk.getSkillType() == L2Skill.SkillType.BUFF)
+                        {
+                            L2Effect[] effects = _actor.getAllEffects();
+                            for (int i = 0; effects != null && i < effects.length; i++)
+                            {
+                                L2Effect effect = effects[i];
+                                if (effect.getSkill() == sk)
+                                {
+                                    useSkillSelf = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (useSkillSelf) _actor.setTarget(_actor);
+                    }
+
+                    clientStopMoving(null);
+                    _accessor.doCast(sk);
+                    _actor.setTarget(OldTarget);
+                    return;
+                }
+            }
+
+            // Check if the L2SiegeGuardInstance is attacking, knows the target and can't run
+            if (!(_actor.isAttackingNow()) && (_actor.getRunSpeed() == 0)
+                && (_actor.getKnownList().knowsObject(_attackTarget)))
+            {
+                // Cancel the target
+                _actor.getKnownList().removeKnownObject(_attackTarget);
+                _actor.setTarget(null);
+                setIntention(AI_INTENTION_IDLE, null, null);
+            }
+            else
+            {
+                double dx = _actor.getX() - _attackTarget.getX();
+                double dy = _actor.getY() - _attackTarget.getY();
+                double dz = _actor.getZ() - _attackTarget.getZ();
+                double homeX = _attackTarget.getX() - sGuard.getHomeX();
+                double homeY = _attackTarget.getY() - sGuard.getHomeY();
+
+                // Check if the L2SiegeGuardInstance isn't too far from it's home location
+                if ((dx * dx + dy * dy > 10000) && (homeX * homeX + homeY * homeY > 3240000) // 1800 * 1800
+                    && (_actor.getKnownList().knowsObject(_attackTarget)))
+                {
+                    // Cancel the target
+                    _actor.getKnownList().removeKnownObject(_attackTarget);
+                    _actor.setTarget(null);
+                    setIntention(AI_INTENTION_IDLE, null, null);
+                }
+                else // Move the actor to Pawn server side AND client side by sending Server->Client packet MoveToPawn (broadcast)
+                {
+                    // Temporary hack for preventing guards jumping off towers,
+                    // before replacing this with effective geodata checks and AI modification
+                    if(dz*dz < 170*170) // normally 130 if guard z coordinates correct
+                    {
+                        if (_selfAnalysis.isMage) range = _selfAnalysis.maxCastRange-50;
+                        if (_attackTarget.isMoving()) 
+                            moveToPawn(_attackTarget, range-70);
+                        else
+                            moveToPawn(_attackTarget, range);
+                    }
+                }
+            }
+
+            return;
+
+        }
+        // Else, if the actor is muted and far from target, just "move to pawn"
+        else if (_actor.isMuted() && dist_2 > range * range)
+        {
+            // Temporary hack for preventing guards jumping off towers,
+            // before replacing this with effective geodata checks and AI modification
+            double dz = _actor.getZ() - _attackTarget.getZ();
+            if(dz*dz < 170*170) // normally 130 if guard z coordinates correct
+            {
+                if (_selfAnalysis.isMage) range = _selfAnalysis.maxCastRange-50;
+                if (_attackTarget.isMoving()) 
+                    moveToPawn(_attackTarget, range-70);
+                else
+                    moveToPawn(_attackTarget, range);
+            }
+            return;
+        }
+        // Else, if this is close enough to attack
+        else if (dist_2 <= range * range)
+        {
+            // Force mobs to attack anybody if confused
+            L2Character hated = null;
+            if (_actor.isConfused()) hated = _attackTarget;
+            else hated = ((L2Attackable) _actor).getMostHated();
+
+            if (hated == null)
+            {
+                setIntention(AI_INTENTION_ACTIVE, null, null);
+                return;
+            }
+            if (hated != _attackTarget) _attackTarget = hated;
+
+            _attackTimeout = MAX_ATTACK_TIMEOUT + GameTimeController.getGameTicks();
+
+            // check for close combat skills && heal/buff skills
+            if (!_actor.isMuted() && Rnd.nextInt(100) <= 5)
+            {
+                for (L2Skill sk : skills)
+                {
+                    int castRange = sk.getCastRange();
+
+                    if (castRange * castRange >= dist_2 && !sk.isPassive()
+                        && _actor.getCurrentMp() >= _actor.getStat().getMpConsume(sk)
+                        && !_actor.isSkillDisabled(sk.getId()))
+                    {
+                        L2Object OldTarget = _actor.getTarget();
+                        if (sk.getSkillType() == L2Skill.SkillType.BUFF
+                            || sk.getSkillType() == L2Skill.SkillType.HEAL)
+                        {
+                            boolean useSkillSelf = true;
+                            if (sk.getSkillType() == L2Skill.SkillType.HEAL
+                                && _actor.getCurrentHp() > (int) (_actor.getMaxHp() / 1.5))
+                            {
+                                useSkillSelf = false;
+                                break;
+                            }
+                            if (sk.getSkillType() == L2Skill.SkillType.BUFF)
+                            {
+                                L2Effect[] effects = _actor.getAllEffects();
+                                for (int i = 0; effects != null && i < effects.length; i++)
+                                {
+                                    L2Effect effect = effects[i];
+                                    if (effect.getSkill() == sk)
+                                    {
+                                        useSkillSelf = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (useSkillSelf) _actor.setTarget(_actor);
+                        }
+
+                        clientStopMoving(null);
+                        _accessor.doCast(sk);
+                        _actor.setTarget(OldTarget);
+                        return;
+                    }
+                }
+            }
+            // Finally, do the physical attack itself
+            _accessor.doAttack(_attackTarget);
+        }
+    }
+    
     /**
      * Manage AI thinking actions of a L2Attackable.<BR><BR>
      */

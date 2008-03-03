@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.ai;
 
+import java.util.List;
+import javolution.util.FastList;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_CAST;
@@ -32,10 +34,17 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2RaidBossInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
 import net.sf.l2j.gameserver.serverpackets.AutoAttackStop;
 import net.sf.l2j.gameserver.taskmanager.AttackStanceTaskManager;
+import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.gameserver.templates.L2Weapon;
+import net.sf.l2j.gameserver.templates.L2WeaponType;
+import net.sf.l2j.util.Rnd;
 
 /**
  * This class manages AI of L2Character.<BR><BR>
@@ -1029,5 +1038,203 @@ public class L2CharacterAI extends AbstractAI
             return true;
         }
         return false;
+    }
+    
+    protected class SelfAnalysis
+    {
+        public boolean isMage = false;
+        public boolean isBalanced;
+        public boolean isArcher = false;
+        public boolean isFighter = false;
+        public boolean cannotMoveOnLand = false;
+        public List<L2Skill> generalSkills = new FastList<L2Skill>();
+        public List<L2Skill> buffSkills = new FastList<L2Skill>();
+        public int lastBuffTick = 0;
+        public List<L2Skill> debuffSkills = new FastList<L2Skill>();
+        public int lastDebuffTick = 0;
+        public List<L2Skill> cancelSkills = new FastList<L2Skill>();
+        public List<L2Skill> healSkills = new FastList<L2Skill>();
+        //public List<L2Skill> trickSkills = new FastList<L2Skill>();
+        public List<L2Skill> generalDisablers = new FastList<L2Skill>();
+        public List<L2Skill> sleepSkills = new FastList<L2Skill>();
+        public List<L2Skill> rootSkills = new FastList<L2Skill>();
+        public List<L2Skill> muteSkills = new FastList<L2Skill>();
+        public List<L2Skill> resurrectSkills = new FastList<L2Skill>();
+        public boolean hasHealOrResurrect = false;
+        public boolean hasLongRangeSkills = false;
+        public boolean hasLongRangeDamageSkills = false;
+        public int maxCastRange = 0;
+        
+        public SelfAnalysis()
+        {
+        }
+        
+        public void Init()
+        {
+        	switch (((L2NpcTemplate)_actor.getTemplate()).AI)
+        	{
+        		case FIGHTER:
+        			isFighter = true;
+        			break;
+        		case MAGE:
+        			isMage = true;
+        			break;
+        		case BALANCED:
+        			isBalanced = true;
+        			break;
+        		case ARCHER:
+        			isArcher = true;
+        			break;
+        		default:
+        			isFighter = true;
+        			break;
+        	}
+            // water movement analysis
+            if (_actor instanceof L2NpcInstance)
+            {
+                // well, lol..
+                if (((L2NpcInstance)_actor).getNpcId() == 20314) // great white shark
+                    cannotMoveOnLand = true;
+            }
+            // skill analysis
+            for (L2Skill sk : _actor.getAllSkills())
+            {
+                int castRange = sk.getCastRange();
+                boolean isLongRangeDamageSkill = false;
+                switch(sk.getSkillType())
+                {
+                    case HEAL:
+                    case HEAL_PERCENT:
+                    case HEAL_STATIC:
+                    case BALANCE_LIFE:
+                    case HOT:
+                        healSkills.add(sk);
+                        hasHealOrResurrect = true;
+                        continue; // won't be considered something for fighting 
+                    case BUFF:
+                        buffSkills.add(sk);
+                        continue; // won't be considered something for fighting
+                    case PARALYZE:
+                    case STUN:
+                        generalDisablers.add(sk);
+                        break;
+                    case MUTE:
+                        muteSkills.add(sk);
+                        break;
+                    case SLEEP: 
+                        sleepSkills.add(sk);
+                        break;
+                    case ROOT:
+                        rootSkills.add(sk);
+                        break;
+                    case FEAR: // could be used as an alternative for healing?
+                    case CONFUSION:
+                    //  trickSkills.add(sk);
+                    case DEBUFF:
+                        debuffSkills.add(sk);
+                        break;
+                    case CANCEL:
+                    case MAGE_BANE:
+                    case WARRIOR_BANE:
+                    case NEGATE:
+                        cancelSkills.add(sk);
+                        break;
+                    case RESURRECT:
+                        resurrectSkills.add(sk);
+                        hasHealOrResurrect = true;
+                        break;
+                    case NOTDONE:
+                        continue; // won't be considered something for fighting
+                    default:
+                        if (!sk.isPassive()) {
+                            generalSkills.add(sk);
+                            isLongRangeDamageSkill = true;
+                        }
+                        break;  
+                }
+                if (castRange > 70) {
+                    hasLongRangeSkills = true;
+                    if (isLongRangeDamageSkill) 
+                        hasLongRangeDamageSkills = true;
+                }
+                if (castRange > maxCastRange) maxCastRange = castRange;
+            
+            }
+            // Because of missing skills, some mages/balanced cannot play like mages
+            if (!hasLongRangeDamageSkills && isMage)
+            {
+                isBalanced = true;
+                isMage = false;
+                isFighter = false;
+            }
+            if (!hasLongRangeSkills && (isMage || isBalanced))
+            {
+                isBalanced = false;
+                isMage = false;
+                isFighter = true;
+            }
+            if (generalSkills.isEmpty() && isMage)
+            {
+                isBalanced = true;
+                isMage = false;
+            }
+        }
+    }
+    
+    protected class TargetAnalysis
+    {
+        public L2Character character;
+        public boolean isMage;
+        public boolean isBalanced;
+        public boolean isArcher;
+        public boolean isFighter;
+        public boolean isCanceled;
+        public boolean isSlower;
+        public boolean isMagicResistant;
+        
+        public TargetAnalysis()
+        {
+        }
+            
+        public void Update(L2Character target)
+        {
+            // update status once in 4 seconds
+            if (target == character && Rnd.nextInt(100) > 25)
+                return;
+            character = target;
+            if (target == null) 
+                return;
+            isMage = false;
+            isBalanced = false;
+            isArcher = false;
+            isFighter = false;
+            isCanceled = false;
+            
+            if (target.getMAtk(null, null) > 1.5*target.getPAtk(null))
+                isMage = true;
+            else if (target.getPAtk(null)*0.8 < target.getMAtk(null, null)
+                    || target.getMAtk(null, null)*0.8 > target.getPAtk(null))
+            {
+                isBalanced = true;
+            }
+            else 
+            { 
+                L2Weapon weapon = target.getActiveWeaponItem();
+                if (weapon != null && (weapon.getItemType() == L2WeaponType.BOW || weapon.getItemType() == L2WeaponType.CROSSBOW))
+                    isArcher = true;
+                else 
+                    isFighter = true;
+            }
+            if (target.getRunSpeed() < _actor.getRunSpeed()-3)
+                isSlower = true;
+            else 
+                isSlower = false;
+            if (target.getMDef(null, null)*1.2 > _actor.getMAtk(null, null))
+                isMagicResistant = true;
+            else 
+                isMagicResistant = false;
+            if (target.getBuffCount() < 4) 
+                isCanceled = true;
+        }
     }
 }

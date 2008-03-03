@@ -31,6 +31,7 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.L2Skill.SkillType;
+import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import net.sf.l2j.gameserver.model.base.Experience;
@@ -151,6 +152,11 @@ public class Disablers implements ISkillHandler
             		activeSummon.setChargedSoulShot(L2ItemInstance.CHARGED_NONE);
             	}
             }
+        }
+        else if (activeChar instanceof L2NpcInstance)
+        {
+        	bss = ((L2NpcInstance)activeChar).isUsingShot(false);
+        	ss = ((L2NpcInstance)activeChar).isUsingShot(true);
         }
 
         for (int index = 0; index < targets.length; index++)

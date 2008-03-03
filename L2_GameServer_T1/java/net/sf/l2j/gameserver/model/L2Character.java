@@ -789,7 +789,9 @@ public abstract class L2Character extends L2Object
         // Verify if soulshots are charged.
         boolean wasSSCharged;
 
-        if (this instanceof L2Summon && !(this instanceof L2PetInstance))
+        if (this instanceof L2NpcInstance)
+        	wasSSCharged = ((L2NpcInstance)this).rechargeAutoSoulShot(true, false);
+        else if (this instanceof L2Summon && !(this instanceof L2PetInstance))
             wasSSCharged = (((L2Summon)this).getChargedSoulShot() != L2ItemInstance.CHARGED_NONE);
         else
             wasSSCharged = (weaponInst != null && weaponInst.getChargedSoulshot() != L2ItemInstance.CHARGED_NONE);
@@ -1351,14 +1353,16 @@ public abstract class L2Character extends L2Object
         //Recharge AutoSoulShot
         if (skill.useSoulShot())
         {
-            if (this instanceof L2PcInstance)
+        	if (this instanceof L2NpcInstance)
+        		((L2NpcInstance)this).rechargeAutoSoulShot(true, false);
+        	else if (this instanceof L2PcInstance)
                 ((L2PcInstance)this).rechargeAutoSoulShot(true, false, false);
             else if (this instanceof L2Summon)
                 ((L2Summon)this).getOwner().rechargeAutoSoulShot(true, false, true);
         }
         else if (skill.useSpiritShot())
         {
-            if (this instanceof L2PcInstance)
+        	if (this instanceof L2PcInstance)
                 ((L2PcInstance)this).rechargeAutoSoulShot(false, true, false);
             else if (this instanceof L2Summon)
                 ((L2Summon)this).getOwner().rechargeAutoSoulShot(false, true, true);
@@ -1485,6 +1489,14 @@ public abstract class L2Character extends L2Object
 				}
 			}
 		}
+		else if (this instanceof L2NpcInstance && skill.useSpiritShot() && !forceBuff)
+        {
+    		if(((L2NpcInstance)this).rechargeAutoSoulShot(false, true))
+    		{
+    			hitTime = (int)(0.70 * hitTime);
+    			coolTime = (int)(0.70 * coolTime);
+    		}
+        }
 
 		// Set the _castEndTime and _castInterruptTim. +10 ticks for lag situations, will be reseted in onMagicFinalizer
 		_castEndTime = 10 + GameTimeController.getGameTicks() + (coolTime + hitTime) / GameTimeController.MILLIS_IN_TICK;

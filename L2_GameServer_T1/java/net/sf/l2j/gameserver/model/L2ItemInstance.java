@@ -63,7 +63,8 @@ public final class L2ItemInstance extends L2Object
 		PET,
 		PET_EQUIP,
 		LEASE,
-        FREIGHT
+        FREIGHT,
+        NPC
 	}
 
 	/** ID of the owner */
@@ -939,7 +940,7 @@ public final class L2ItemInstance extends L2Object
             {
 				return;
             }
-			if (_loc == ItemLocation.VOID || _ownerId == 0)
+			if (_loc == ItemLocation.VOID || _loc == ItemLocation.NPC || _ownerId == 0)
             {
 				return;
             }
