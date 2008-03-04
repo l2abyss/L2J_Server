@@ -189,7 +189,6 @@ public class Universe implements java.io.Serializable
         //Position p  = new Position(x, y, z, 0);
         //_map.add(p);
         _coordList.add(new Coord(x, y, z));
-        //if (Config.USE_3D_MAP) insertInto3DMap(p);
     }
 
     public void registerObstacle(int x, int y, int z)
@@ -197,7 +196,6 @@ public class Universe implements java.io.Serializable
         //Position p = new Position(x, y, z, -1);
         //_map.add(p);
         _coordList.add(new Coord(x, y, z));
-        //if (Config.USE_3D_MAP) insertInto3DMap(p);
     }
 
     public boolean shouldLog(Integer id)

@@ -36,690 +36,709 @@ import javolution.util.FastList;
  */
 public final class Config
 {
-    protected static final Logger _log = Logger.getLogger(Config.class.getName());
-    /** Debug/release mode */
-    public static boolean DEBUG;
-    /** Enable/disable assertions */
-    public static boolean ASSERT;
-    /** Enable/disable code 'in progress' */
-    public static boolean DEVELOPER;
-
-    /** Set if this server is a test server used for development */
-    public static boolean TEST_SERVER;
-
-    /** Game Server ports */
-    public static int PORT_GAME;
-    /** Login Server port */
-    public static int PORT_LOGIN;
-    /** Login Server bind ip */
-    public static String LOGIN_BIND_ADDRESS;
-    /** Number of login tries before IP ban gets activated, default 10*/
-    public static int LOGIN_TRY_BEFORE_BAN;
-    /** Number of seconds the IP ban will last, default 10 minutes */
-    public static int LOGIN_BLOCK_AFTER_BAN;
-    /** Hostname of the Game Server */
-    public static String GAMESERVER_HOSTNAME;
-
-    // Access to database
-    /** Driver to access to database */
-    public static String DATABASE_DRIVER;
-    /** Path to access to database */
-    public static String DATABASE_URL;
-    /** Database login */
-    public static String DATABASE_LOGIN;
-    /** Database password */
-    public static String DATABASE_PASSWORD;
-    /** Maximum number of connections to the database */
-    public static int DATABASE_MAX_CONNECTIONS;
-
-    /** Maximum number of players allowed to play simultaneously on server */
-    public static int   MAXIMUM_ONLINE_USERS;
-
-    // Setting for serverList
-    /** Displays [] in front of server name ? */
-    public static boolean SERVER_LIST_BRACKET;
-    /** Displays a clock next to the server name ? */
-    public static boolean SERVER_LIST_CLOCK;
-    /** Display test server in the list of servers ? */
-    public static boolean SERVER_LIST_TESTSERVER;
-    /** Set the server as gm only at startup ? */
-    public static boolean SERVER_GMONLY;
-
-    // Thread pools size
-    /** Thread pool size effect */
-    public static int THREAD_P_EFFECTS;
-    /** Thread pool size general */
-    public static int THREAD_P_GENERAL;
-    /** Packet max thread */
-    public static int GENERAL_PACKET_THREAD_CORE_SIZE;
-    public static int IO_PACKET_THREAD_CORE_SIZE;
-    /** General max thread */
-    public static int GENERAL_THREAD_CORE_SIZE;
-    /** AI max thread */
-    public static int AI_MAX_THREAD;
-
-    /** Accept auto-loot ? */
-    public static boolean AUTO_LOOT;
-    public static boolean AUTO_LOOT_HERBS;
-
-    /** Character name template */
-    public static String CNAME_TEMPLATE;
-    /** Pet name template */
-    public static String PET_NAME_TEMPLATE;
-    /** Maximum number of characters per account */
-    public static int MAX_CHARACTERS_NUMBER_PER_ACCOUNT;
-
-    /** Global chat state */
-    public static String  DEFAULT_GLOBAL_CHAT;
-    /** Trade chat state */
-    public static String  DEFAULT_TRADE_CHAT;
-    /** For test servers - everybody has admin rights */
-    public static boolean EVERYBODY_HAS_ADMIN_RIGHTS;
-    /** Alternative game crafting */
-    public static boolean ALT_GAME_CREATION;
-    /** Alternative game crafting speed mutiplier - default 0 (fastest but still not instant) */
-    public static double ALT_GAME_CREATION_SPEED;
-    /** Alternative game crafting XP rate multiplier - default 1*/
-    public static double ALT_GAME_CREATION_XP_RATE;
-    /** Alternative game crafting SP rate multiplier - default 1*/
-    public static double ALT_GAME_CREATION_SP_RATE;
-    /** Alternative setting to blacksmith use of recipes to craft - default true*/
-    public static boolean ALT_BLACKSMITH_USE_RECIPES;
-
-    /** Remove Castle circlets after clan lose his castle? - default true*/
-	public static boolean REMOVE_CASTLE_CIRCLETS;
-    /** Alternative game weight limit multiplier - default 1*/
-    public static double ALT_WEIGHT_LIMIT;
-
-    /** Alternative game skill learning */
-    public static boolean ALT_GAME_SKILL_LEARN;
-    /** Alternative auto skill learning */
-    public static boolean AUTO_LEARN_SKILLS;
-    /** Alternative auto skill learning for divine inspiration (+4 max buff count) */
-    public static boolean AUTO_LEARN_DIVINE_INSPIRATION;
-    /** Cancel attack bow by hit */
-    public static boolean ALT_GAME_CANCEL_BOW;
-    /** Cancel cast by hit */
-    public static boolean ALT_GAME_CANCEL_CAST;
-
-    /** Alternative game - use tiredness, instead of CP */
-    public static boolean ALT_GAME_TIREDNESS;
-    public static int ALT_PARTY_RANGE;
-    public static int ALT_PARTY_RANGE2;
-    /** Alternative shield defence */
-    public static boolean ALT_GAME_SHIELD_BLOCKS;
-    /** Alternative Perfect shield defence rate */
-    public static int ALT_PERFECT_SHLD_BLOCK;
-    /** Alternative game mob ATTACK AI */
-    public static boolean ALT_GAME_MOB_ATTACK_AI;
-    public static boolean ALT_MOB_AGRO_IN_PEACEZONE;
-
-    /** Alternative freight modes - Freights can be withdrawed from any village */
-    public static boolean ALT_GAME_FREIGHTS;
-    /** Alternative freight modes - Sets the price value for each freightened item */
-    public static int ALT_GAME_FREIGHT_PRICE;
-
-    /** Fast or slow multiply coefficient for skill hit time */
-    public static float ALT_GAME_SKILL_HIT_RATE;
-
-    /** Alternative gameing - loss of XP on death */
-    public static boolean ALT_GAME_DELEVEL;
-
-    /** Alternative gameing - magic dmg failures */
-    public static boolean ALT_GAME_MAGICFAILURES;
-
-    /** Alternative gaming - player must be in a castle-owning clan or ally to sign up for Dawn. */
-    public static boolean ALT_GAME_REQUIRE_CASTLE_DAWN;
-
-    /** Alternative gaming - allow clan-based castle ownage check rather than ally-based. */
-    public static boolean ALT_GAME_REQUIRE_CLAN_CASTLE;
-
-    /** Alternative gaming - allow free teleporting around the world. */
-    public static boolean ALT_GAME_FREE_TELEPORT;
-
-    /** Disallow recommend character twice or more a day ? */
-    public static boolean ALT_RECOMMEND;
-
-    /** Alternative gaming - allow sub-class addition without quest completion. */
-    public static boolean ALT_GAME_SUBCLASS_WITHOUT_QUESTS;
-
-    /** View npc stats/drop by shift-cliking it for nongm-players */
-    public static boolean ALT_GAME_VIEWNPC;
-
-    /** Minimum number of player to participate in SevenSigns Festival */
-    public static int ALT_FESTIVAL_MIN_PLAYER;
-
-    /** Maximum of player contrib during Festival */
-    public static int ALT_MAXIMUM_PLAYER_CONTRIB;
-
-    /** Festival Manager start time. */
-    public static long ALT_FESTIVAL_MANAGER_START;
-
-    /** Festival Length */
-    public static long ALT_FESTIVAL_LENGTH;
-
-    /** Festival Cycle Length */
-    public static long ALT_FESTIVAL_CYCLE_LENGTH;
-
-    /** Festival First Spawn */
-    public static long ALT_FESTIVAL_FIRST_SPAWN;
-
-    /** Festival First Swarm */
-    public static long ALT_FESTIVAL_FIRST_SWARM;
-
-    /** Festival Second Spawn */
-    public static long ALT_FESTIVAL_SECOND_SPAWN;
-
-    /** Festival Second Swarm */
-    public static long ALT_FESTIVAL_SECOND_SWARM;
-
-    /** Festival Chest Spawn */
-    public static long ALT_FESTIVAL_CHEST_SPAWN;
-
-    /** Number of members needed to request a clan war */
-    public static int ALT_CLAN_MEMBERS_FOR_WAR;
-
-    /** Number of days before joining a new clan */
-    public static int ALT_CLAN_JOIN_DAYS;
-    /** Number of days before creating a new clan */
-    public static int ALT_CLAN_CREATE_DAYS;
-    /** Number of days it takes to dissolve a clan */
-    public static int ALT_CLAN_DISSOLVE_DAYS;
-    /** Number of days before joining a new alliance when clan voluntarily leave an alliance */
-    public static int ALT_ALLY_JOIN_DAYS_WHEN_LEAVED;
-    /** Number of days before joining a new alliance when clan was dismissed from an alliance */
-    public static int ALT_ALLY_JOIN_DAYS_WHEN_DISMISSED;
-    /** Number of days before accepting a new clan for alliance when clan was dismissed from an alliance */
-    public static int ALT_ACCEPT_CLAN_DAYS_WHEN_DISMISSED;
-    /** Number of days before creating a new alliance when dissolved an alliance */
-    public static int ALT_CREATE_ALLY_DAYS_WHEN_DISSOLVED;
-
-    /** Alternative gaming - DEPRECATED: all new characters are always 'newbies' since C5.
-     * Database field and player methods related with this old setting are now used for 
-     * newbie rewards tracking from quest scripts and should not be altered by any other way.
-     */
-    public final static boolean ALT_GAME_NEW_CHAR_ALWAYS_IS_NEWBIE = true;
-
-    /** Alternative gaming - clan members with see privilege can also withdraw from clan warehouse. */
-    public static boolean ALT_MEMBERS_CAN_WITHDRAW_FROM_CLANWH;
-
-    /** Alternative gaming - Castle Shield can be equiped by all clan members if they own a castle. - default True */
-    public static boolean CASTLE_SHIELD;
-    /** Alternative gaming - Clan Hall Shield can be equiped by all clan members if they own a clan hall. - default True */
-    public static boolean CLANHALL_SHIELD;
-    /** Alternative gaming - Apella armors can be equiped only by clan members if their class is Baron or higher - default True */
-    public static boolean APELLA_ARMORS;
-    /** Alternative gaming - Clan Oath Armors can be equiped only by clan members - default True */
-    public static boolean OATH_ARMORS;
-    /** Alternative gaming - Castle Crown can be equiped only by castle lord - default True */
-    public static boolean CASTLE_CROWN;
-    /** Alternative gaming - Castle Circlets can be equiped only by clan members if they own a castle - default True */
-    public static boolean CASTLE_CIRCLETS;
-
-    /** Maximum number of clans in ally */
-    public static int ALT_MAX_NUM_OF_CLANS_IN_ALLY;
-    /** Life Crystal needed to learn clan skill */
-    public static boolean LIFE_CRYSTAL_NEEDED;
-    /** Spell Book needed to learn skill */
-    public static boolean SP_BOOK_NEEDED;
-    /** Spell Book needet to enchant skill */
-    public static boolean ES_SP_BOOK_NEEDED;
-    /** Logging Chat Window */
-    public static boolean LOG_CHAT;
-    /** Logging Item Window */
-    public static boolean LOG_ITEMS;
-
-    /** Alternative privileges for admin */
-    public static boolean ALT_PRIVILEGES_ADMIN;
-    /** Alternative secure check privileges */
-    public static boolean ALT_PRIVILEGES_SECURE_CHECK;
-    /** Alternative default level for privileges */
-    public static int ALT_PRIVILEGES_DEFAULT_LEVEL;
-
-    /** Olympiad Competition Starting time */
-    public static int ALT_OLY_START_TIME;
-    /** Olympiad Minutes */
-    public static int ALT_OLY_MIN;
-
-    /** Olympiad Competition Period */
-    public static long ALT_OLY_CPERIOD;
-
-    /** Olympiad Battle Period */
-    public static long ALT_OLY_BATTLE;
-
-    /** Olympiad Battle Wait */
-    public static long ALT_OLY_BWAIT;
-
-    /** Olympiad Inital Wait */
-    public static long ALT_OLY_IWAIT;
-
-    /** Olympaid Weekly Period */
-    public static long ALT_OLY_WPERIOD;
-
-    /** Olympaid Validation Period */
-    public static long ALT_OLY_VPERIOD;
-
-    /** Manor Refresh Starting time */
-    public static int ALT_MANOR_REFRESH_TIME;
-
-    /** Manor Refresh Min */
-    public static int ALT_MANOR_REFRESH_MIN;
-
-    /** Manor Next Period Approve Starting time */
-    public static int ALT_MANOR_APPROVE_TIME;
-
-    /** Manor Next Period Approve Min */
-    public static int ALT_MANOR_APPROVE_MIN;
-
-    /** Manor Maintenance Time */
-    public static int ALT_MANOR_MAINTENANCE_PERIOD;
-
-    /** Manor Save All Actions */
-    public static boolean ALT_MANOR_SAVE_ALL_ACTIONS;
-
-    /** Manor Save Period Rate */
-    public static int ALT_MANOR_SAVE_PERIOD_RATE;
-
-    /** Initial Lottery prize */
-    public static int ALT_LOTTERY_PRIZE;
-
-    /** Lottery Ticket Price */
-    public static int ALT_LOTTERY_TICKET_PRICE;
-
-    /** What part of jackpot amount should receive characters who pick 5 wining numbers */
-    public static float ALT_LOTTERY_5_NUMBER_RATE;
-
-    /** What part of jackpot amount should receive characters who pick 4 wining numbers */
-    public static float ALT_LOTTERY_4_NUMBER_RATE;
-
-    /** What part of jackpot amount should receive characters who pick 3 wining numbers */
-    public static float ALT_LOTTERY_3_NUMBER_RATE;
-
-    /** How much adena receive characters who pick two or less of the winning number */
-    public static int ALT_LOTTERY_2_AND_1_NUMBER_PRIZE;
-
-    /** Minimum siz e of a party that may enter dimensional rift */
-    public static int RIFT_MIN_PARTY_SIZE;
-
-    /** Time in ms the party has to wait until the mobs spawn when entering a room */
-    public static int RIFT_SPAWN_DELAY;
-
-    /** Amount of random rift jumps before party is ported back */
-    public static int RIFT_MAX_JUMPS;
-
-    /** Random time between two jumps in dimensional rift - in seconds */
-    public static int RIFT_AUTO_JUMPS_TIME_MIN;
-    public static int RIFT_AUTO_JUMPS_TIME_MAX;
-
-    /** Dimensional Fragment cost for entering rift */
-    public static int RIFT_ENTER_COST_RECRUIT;
-    public static int RIFT_ENTER_COST_SOLDIER;
-    public static int RIFT_ENTER_COST_OFFICER;
-    public static int RIFT_ENTER_COST_CAPTAIN;
-    public static int RIFT_ENTER_COST_COMMANDER;
-    public static int RIFT_ENTER_COST_HERO;
-
-    /** time multiplier for boss room */
-    public static float RIFT_BOSS_ROOM_TIME_MUTIPLY;
-
-
-    /* **************************************************************************
-     * GM CONFIG General GM AccessLevel *
-     ************************************************************************* */
-    /** General GM access level */
-    public static int     GM_ACCESSLEVEL;
-    /** General GM Minimal AccessLevel */
-    public static int     GM_MIN;
-    /** Minimum privileges level for a GM to do Alt+G*/
-    public static int     GM_ALTG_MIN_LEVEL;
-    /** General GM AccessLevel to change announcements */
-    public static int     GM_ANNOUNCE;
-    /** General GM AccessLevel can /ban /unban */
-    public static int     GM_BAN;
-    /** General GM AccessLevel can /ban /unban for chat */
-    public static int     GM_BAN_CHAT;
-    /** General GM AccessLevel can /create_item and /gmshop */
-    public static int     GM_CREATE_ITEM;
-    /** General GM AccessLevel can /delete */
-    public static int     GM_DELETE;
-    /** General GM AccessLevel can /kick /disconnect */
-    public static int     GM_KICK;
-    /** General GM AccessLevel for access to GMMenu */
-    public static int     GM_MENU;
-    /** General GM AccessLevel to use god mode command */
-    public static int     GM_GODMODE;
-    /** General GM AccessLevel with character edit rights */
-    public static int     GM_CHAR_EDIT;
-    /** General GM AccessLevel with edit rights for other characters */
-    public static int     GM_CHAR_EDIT_OTHER;
-    /** General GM AccessLevel with character view rights */
-    public static int     GM_CHAR_VIEW;
-    /** General GM AccessLevel with NPC edit rights */
-    public static int     GM_NPC_EDIT;
-    public static int     GM_NPC_VIEW;
-    /** General GM AccessLevel to teleport to any location */
-    public static int     GM_TELEPORT;
-    /** General GM AccessLevel to teleport character to any location */
-    public static int     GM_TELEPORT_OTHER;
-    /** General GM AccessLevel to restart server */
-    public static int     GM_RESTART;
-    /** General GM AccessLevel for MonsterRace */
-    public static int     GM_MONSTERRACE;
-    /** General GM AccessLevel to ride Wyvern */
-    public static int     GM_RIDER;
-    /** General GM AccessLevel to unstuck without 5min delay */
-    public static int     GM_ESCAPE;
-    /** General GM AccessLevel to resurect fixed after death */
-    public static int     GM_FIXED;
-    /** General GM AccessLevel to create Path Nodes */
-    public static int     GM_CREATE_NODES;
-    /** General GM AccessLevel with Enchant rights */
-    public static int     GM_ENCHANT;
-    /** General GM AccessLevel to close/open Doors */
-    public static int     GM_DOOR;
-    /** General GM AccessLevel with Resurrection rights */
-    public static int     GM_RES;
-    /** General GM AccessLevel to attack in the peace zone */
-    public static int     GM_PEACEATTACK;
-    /** General GM AccessLevel to heal */
-    public static int     GM_HEAL;
-    /** General GM AccessLevel to unblock IPs detected as hack IPs */
-    public static int     GM_UNBLOCK;
-    /** General GM AccessLevel to use Cache commands */
-    public static int     GM_CACHE;
-    /** General GM AccessLevel to use test&st commands */
-    public static int     GM_TALK_BLOCK;
-    public static int     GM_TEST;
-    /** Disable transaction on AccessLevel **/
-    public static boolean GM_DISABLE_TRANSACTION;
-    /** GM transactions disabled from this range */
-    public static int     GM_TRANSACTION_MIN;
-    /** GM transactions disabled to this range */
-    public static int     GM_TRANSACTION_MAX;
-    /** Minimum level to allow a GM giving damage */
-    public static int     GM_CAN_GIVE_DAMAGE;
-    /** Minimum level to don't give Exp/Sp in party */
-    public static int     GM_DONT_TAKE_EXPSP;
-    /** Minimum level to don't take aggro */
-    public static int     GM_DONT_TAKE_AGGRO;
-
-    public static int GM_REPAIR = 75;
-
-    /* Rate control */
-    /** Rate for eXperience Point rewards */
-    public static float   RATE_XP;
-    /** Rate for Skill Point rewards */
-    public static float   RATE_SP;
-    /** Rate for party eXperience Point rewards */
-    public static float   RATE_PARTY_XP;
-    /** Rate for party Skill Point rewards */
-    public static float   RATE_PARTY_SP;
-    /** Rate for Quest rewards (XP and SP) */
-    public static float   RATE_QUESTS_REWARD;
-    /** Rate for drop adena */
-    public static float   RATE_DROP_ADENA;
-    /** Rate for cost of consumable */
-    public static float   RATE_CONSUMABLE_COST;
-    /** Rate for dropped items */
-    public static float   RATE_DROP_ITEMS;
-    /** Rate for spoiled items */
-    public static float   RATE_DROP_SPOIL;
-    /** Rate for manored items */
-    public static int   RATE_DROP_MANOR;
-    /** Rate for quest items */
-    public static float   RATE_DROP_QUEST;
-    /** Rate for karma and experience lose */
-    public static float   RATE_KARMA_EXP_LOST;
-    /** Rate siege guards prices */
-    public static float   RATE_SIEGE_GUARDS_PRICE;
-    /*Alternative Xp/Sp rewards, if not 0, then calculated as 2^((mob.level-player.level) / coef),
-     * A few examples for "AltGameExponentXp = 5." and "AltGameExponentSp = 3."
-     * diff = 0 (player and mob has the same level), XP bonus rate = 1, SP bonus rate = 1
-     * diff = 3 (mob is 3 levels above), XP bonus rate = 1.52, SP bonus rate = 2
-     * diff = 5 (mob is 5 levels above), XP bonus rate = 2, SP bonus rate = 3.17
-     * diff = -8 (mob is 8 levels below), XP bonus rate = 0.4, SP bonus rate = 0.16 */
-    /** Alternative eXperience Point rewards */
-    public static float   ALT_GAME_EXPONENT_XP;
-    /** Alternative Spirit Point rewards */
-    public static float   ALT_GAME_EXPONENT_SP;
-
-    /** Rate Common herbs */
-    public static float   RATE_DROP_COMMON_HERBS;
-    /** Rate MP/HP herbs */
-    public static float   RATE_DROP_MP_HP_HERBS;
-    /** Rate Common herbs */
-    public static float   RATE_DROP_GREATER_HERBS;
-    /** Rate Common herbs */
-    public static float   RATE_DROP_SUPERIOR_HERBS;
-    /** Rate Common herbs */
-    public static float   RATE_DROP_SPECIAL_HERBS;
-
-    // Player Drop Rate control
-    /** Limit for player drop */
-    public static int   PLAYER_DROP_LIMIT;
-    /** Rate for drop */
-    public static int   PLAYER_RATE_DROP;
-    /** Rate for player's item drop */
-    public static int   PLAYER_RATE_DROP_ITEM;
-    /** Rate for player's equipment drop */
-    public static int   PLAYER_RATE_DROP_EQUIP;
-    /** Rate for player's equipment and weapon drop */
-    public static int   PLAYER_RATE_DROP_EQUIP_WEAPON;
-
-    // Pet Rates (Multipliers)
-    /** Rate for experience rewards of the pet */
-    public static float         PET_XP_RATE;
-    /** Rate for food consumption of the pet */
-    public static int           PET_FOOD_RATE;
-    /** Rate for experience rewards of the Sin Eater */
-    public static float         SINEATER_XP_RATE;
-
-    // Karma Drop Rate control
-    /** Karma drop limit */
-    public static int   KARMA_DROP_LIMIT;
-    /** Karma drop rate */
-    public static int   KARMA_RATE_DROP;
-    /** Karma drop rate for item */
-    public static int   KARMA_RATE_DROP_ITEM;
-    /** Karma drop rate for equipment */
-    public static int   KARMA_RATE_DROP_EQUIP;
-    /** Karma drop rate for equipment and weapon */
-    public static int   KARMA_RATE_DROP_EQUIP_WEAPON;
-
-    /** Time after which item will auto-destroy */
-    public static int     AUTODESTROY_ITEM_AFTER;
-    /** Auto destroy herb time */
-    public static int     HERB_AUTO_DESTROY_TIME;
-    /** List of items that will not be destroyed (seperated by ",") */
-    public static String  PROTECTED_ITEMS;
-    /** List of items that will not be destroyed */
-    public static List<Integer> LIST_PROTECTED_ITEMS = new FastList<Integer>();
-    
-    /** Interval that the gameserver will update and store character information */
-    public static int CHAR_STORE_INTERVAL;
-    
-    /** Update itens owned by this char when storing the char on DB */
-    public static boolean UPDATE_ITEMS_ON_CHAR_STORE;
-    
-    /** Update itens only when strictly necessary */
-    public static boolean LAZY_ITEMS_UPDATE;
-
-    /** Auto destroy nonequipable items dropped by players */
-    public static boolean     DESTROY_DROPPED_PLAYER_ITEM;
-    /** Auto destroy equipable items dropped by players */
-    public static boolean     DESTROY_EQUIPABLE_PLAYER_ITEM;
-    /** Save items on ground for restoration on server restart */
-    public static boolean     SAVE_DROPPED_ITEM;
-    /** Empty table ItemsOnGround after load all items */
-    public static boolean     EMPTY_DROPPED_ITEM_TABLE_AFTER_LOAD;
-    /** Time interval to save into db items on ground */
-    public static int         SAVE_DROPPED_ITEM_INTERVAL;
-    /** Clear all items stored in ItemsOnGround table */
-    public static boolean     CLEAR_DROPPED_ITEM_TABLE;
-
-    /** Accept precise drop calculation ? */
-    public static boolean PRECISE_DROP_CALCULATION;
-    /** Accept multi-items drop ? */
-    public static boolean MULTIPLE_ITEM_DROP;
-
-    /** This is setting of experimental Client <--> Server Player coordinates synchronization<br>
-     * <b><u>Valeurs :</u></b>
-     * <li>0 - no synchronization at all</li>
-     * <li>1 - parcial synchronization Client --> Server only * using this option it is difficult for players
-     *         to bypass obstacles</li>
-     * <li>2 - parcial synchronization Server --> Client only</li>
-     * <li>3 - full synchronization Client <--> Server</li>
-     * <li>-1 - Old system: will synchronize Z only</li>
-     */
-    public static int     COORD_SYNCHRONIZE;
-
-    /** Period in days after which character is deleted */
-    public static int     DELETE_DAYS;
-
-    /** Datapack root directory */
-    public static File    DATAPACK_ROOT;
-
-    /** Maximum range mobs can randomly go from spawn point */
-    public static int MAX_DRIFT_RANGE;
-
-    /** Allow fishing ? */
-    public static boolean ALLOWFISHING;
-
-    /** Allow Manor system */
-    public static boolean ALLOW_MANOR;
-
-    /** Jail config **/
-    public static boolean JAIL_IS_PVP;
-    public static boolean JAIL_DISABLE_CHAT;
-
-    /** FloodProtector initial capacity */
-    public static int              FLOODPROTECTOR_INITIALSIZE;
-
-    /** Allow Discard item ?*/
-    public static boolean         ALLOW_DISCARDITEM;
-    /** Allow freight ? */
-    public static boolean         ALLOW_FREIGHT;
-    /** Allow warehouse ? */
-    public static boolean         ALLOW_WAREHOUSE;
-    /** Allow warehouse cache? */
-    public static boolean         WAREHOUSE_CACHE;
-    /** How long store WH datas */
-    public static int             WAREHOUSE_CACHE_TIME;
-    /** Allow wear ? (try on in shop) */
-    public static boolean           ALLOW_WEAR;
-    /** Duration of the try on after which items are taken back */
-    public static int               WEAR_DELAY;
-    /** Price of the try on of one item */
-    public static int               WEAR_PRICE;
-    /** Allow lottery ? */
-    public static boolean           ALLOW_LOTTERY;
-    /** Allow race ? */
-    public static boolean           ALLOW_RACE;
-    /** Allow water ? */
-    public static boolean           ALLOW_WATER;
-    /** Allow rent pet ? */
-    public static boolean         ALLOW_RENTPET;
-    /** Allow boat ? */
-    public static boolean           ALLOW_BOAT;
-    /** Allow cursed weapons ? */
-    public static boolean           ALLOW_CURSED_WEAPONS;
-
-    //WALKER NPC
-    public static boolean          ALLOW_NPC_WALKERS;
-    
-    /** Time after which a packet is considered as lost */
-    public static int             PACKET_LIFETIME;
-
-    // Pets
-    /** Speed of Weverns */
-    public static int WYVERN_SPEED;
-    /** Speed of Striders */
-    public static int STRIDER_SPEED;
-    /** Speed of Wolf */
-    public static int GREAT_WOLF_SPEED;
-    /** Allow Wyvern Upgrader ? */
-    public static boolean ALLOW_WYVERN_UPGRADER;
-
-    // protocol revision
-    /** Minimal protocol revision */
-    public static int MIN_PROTOCOL_REVISION;
-    /** Maximal protocol revision */
-    public static int MAX_PROTOCOL_REVISION;
-
-    // random animation interval
-    /** Minimal time between 2 animations of a NPC */
-    public static int MIN_NPC_ANIMATION;
-    /** Maximal time between 2 animations of a NPC */
-    public static int MAX_NPC_ANIMATION;
-    /** Minimal time between animations of a MONSTER */
-    public static int MIN_MONSTER_ANIMATION;
-    /** Maximal time between animations of a MONSTER */
-    public static int MAX_MONSTER_ANIMATION;
-
-
-
-    /** Activate position recorder ? */
-    public static boolean ACTIVATE_POSITION_RECORDER;
-    /** Use 3D Map ? */
-    public static boolean USE_3D_MAP;
-
-    // Community Board
-    /** Type of community */
-    public static String COMMUNITY_TYPE;
-    public static boolean BBS_SHOW_PLAYERLIST;
-    public static String BBS_DEFAULT;
-    /** Show level of the community board ? */
-    public static boolean SHOW_LEVEL_COMMUNITYBOARD;
-    /** Show status of the community board ? */
-    public static boolean SHOW_STATUS_COMMUNITYBOARD;
-    /** Size of the name page on the community board */
-    public static int     NAME_PAGE_SIZE_COMMUNITYBOARD;
-    /** Name per row on community board */
-    public static int     NAME_PER_ROW_COMMUNITYBOARD;
-
-    // Configuration files
-    /** Properties file that allows selection of new Classes for storage of World Objects.
-     * <br>This may help servers with large amounts of players recieving error messages related to
-     * the <i>L2ObjectHashMap</i> and <i>L2ObejctHashSet</i> classes.*/
-    /** Properties file for game server (connection and ingame) configurations */
-    public static final String  CONFIGURATION_FILE          = "./config/server.properties";
-    /** Properties file for game server options */
-    public static final String  OPTIONS_FILE                = "./config/options.properties";
-    /** Properties file for login server configurations */
-    public static final String  LOGIN_CONFIGURATION_FILE    = "./config/loginserver.properties";
-    /** Properties file for the ID factory */
-    public static final String  ID_CONFIG_FILE                = "./config/idfactory.properties";
-    /** Properties file for other configurations */
-    public static final String  OTHER_CONFIG_FILE            = "./config/other.properties";
-    /** Properties file for rates configurations */
-    public static final String  RATES_CONFIG_FILE            = "./config/rates.properties";
-    /** Properties file for alternative configuration */
-    public static final String  ALT_SETTINGS_FILE            = "./config/altsettings.properties";
-    /** Properties file for PVP configurations */
-    public static final String  PVP_CONFIG_FILE                = "./config/pvp.properties";
-    /** Properties file for GM access configurations */
-    public static final String  GM_ACCESS_FILE                = "./config/GMAccess.properties";
-    /** Properties file for telnet configuration */
-    public static final String  TELNET_FILE                    = "./config/telnet.properties";
-    /** Properties file for l2j server version configurations */
-    public static final String  SERVER_VERSION_FILE            = "./config/l2j-version.properties";
-    /** Properties file for l2j datapack version configurations */
-    public static final String  DATAPACK_VERSION_FILE       = "./config/l2jdp-version.properties";
-    /** Properties file for siege configuration */
-    public static final String  SIEGE_CONFIGURATION_FILE    = "./config/siege.properties";
-    /** XML file for banned IP */
-    public static final String  BANNED_IP_XML                = "./config/banned.xml";
+	protected static final Logger _log = Logger.getLogger(Config.class.getName());
+	
+	/******************************************************************************************************************************************************/
+    /** L2J Property File Definitions Start Here**/
+	/******************************************************************************************************************************************************/
+	
+    /** Properties file for Character Configurations */
+    public static final String  CHARACTER_CONFIG_FILE							= "./config/Character.properties";
+    /** Properties file for Clan Hall Configurations*/
+    public static final String  CLANHALL_CONFIG_FILE							= "./config/clanhall.properties";
+    /** Properties file for alternative configure GM commands access level.*/
+    public static final String  COMMAND_PRIVILEGES_FILE							= "./config/command-privileges.properties";
+    /** Properties file for Dynamic Extensions*/
+    public static final String  EXTENSIONS_CONFIG_FILE							= "./config/extensions.properties";
+    /** Properties file for General Configurations */
+    public static final String  GENERAL_CONFIG_FILE								= "./config/General.properties";
+    /** Properties file for GM access Configurations */
+    public static final String  GM_ACCESS_FILE									= "./config/GMAccess.properties";
     /** Text file containing hexadecimal value of server ID */
-    public static final String  HEXID_FILE                    = "./config/hexid.txt";
-    /** Properties file for alternative configure GM commands access level.<br>
-     * Note that this file only read if "AltPrivilegesAdmin = True" */
-    public static final String  COMMAND_PRIVILEGES_FILE     = "./config/command-privileges.properties";
-    /** Properties file for AI configurations */
-    public static final String  AI_FILE                     = "./config/ai.properties";
+    public static final String  HEXID_FILE										= "./config/hexid.txt";
+    /** Properties file for the ID factory */
+    public static final String  ID_CONFIG_FILE									= "./config/idfactory.properties";
+    /** Properties file for l2j server version configurations */
+    public static final String  SERVER_VERSION_FILE								= "./config/l2j-version.properties";
+    /** Properties file for l2j datapack version configurations */
+    public static final String  DATAPACK_VERSION_FILE							= "./config/l2jdp-version.properties";
+    /** Properties file for the L2J Mod Confirugrations */
+    public static final String  L2JMOD_CONFIG_FILE								= "./config/l2jmods.properties";
+    /** Properties file for login server configurations */
+    public static final String  LOGIN_CONFIGURATION_FILE						= "./config/loginserver.properties";
+    /** Properties file for NPC Configurations */
+    public static final String  NPC_CONFIG_FILE									= "./config/NPC.properties";
+    /** Properties file for PVP Configurations */
+    public static final String  PVP_CONFIG_FILE									= "./config/pvp.properties";
+    /** Properties file for rates Configurations */
+    public static final String  RATES_CONFIG_FILE								= "./config/rates.properties";
+    /** Properties file for game server (connection and ingame) configurations */
+    public static final String  CONFIGURATION_FILE								= "./config/server.properties";
     /** Properties file for 7 Signs Festival */
-    public static final String  SEVENSIGNS_FILE             = "./config/sevensigns.properties";
-    public static final String  CLANHALL_CONFIG_FILE        = "./config/clanhall.properties";
-    public static final String  L2JMOD_CONFIG_FILE            = "./config/l2jmods.properties";
+    public static final String  SEVENSIGNS_FILE									= "./config/sevensigns.properties";
+    /** Properties file for siege Configurations */
+    public static final String  SIEGE_CONFIGURATION_FILE						= "./config/siege.properties";
+    /** Properties file for telnet configuration */
+    public static final String  TELNET_FILE										= "./config/telnet.properties";
+    
+    /** TODO: Delete these 3 Configs after fully implementing Character, General, and NPC Property files, Ahmed.
+     */
+    /** Properties file for game server options */
+    public static final String  OPTIONS_FILE									= "./config/options.properties";
+    /** Properties file for Alternative Configurations */
+    public static final String  ALT_SETTINGS_FILE								= "./config/altsettings.properties";
+    /** Properties file for other configurations */
+    public static final String  OTHER_CONFIG_FILE								= "./config/other.properties";   
+
+    /******************************************************************************************************************************************************/
+    /** L2J Property File Definitions End Here**/
+	/******************************************************************************************************************************************************/
+	
+	/******************************************************************************************************************************************************/
+    /** L2J Variable Definitions Start Here**/
+	/******************************************************************************************************************************************************/
+	
+	/** ************************************************** **/
+	/** Character Settings -Begin                          **/
+	/** ************************************************** **/
+	
+	public static boolean	ALT_GAME_DELEVEL;
+    public static double	ALT_WEIGHT_LIMIT;
+    public static int		DEATH_PENALTY_CHANCE;
+    public static double	RESPAWN_RESTORE_CP;
+    public static double	RESPAWN_RESTORE_HP;
+    public static double	RESPAWN_RESTORE_MP;
+    public static boolean	ALT_GAME_TIREDNESS;
+    public static boolean	AUTO_LEARN_SKILLS;
+    public static boolean	AUTO_LOOT_HERBS;
+    public static byte		BUFFS_MAX_AMOUNT;
+    public static boolean	AUTO_LEARN_DIVINE_INSPIRATION;
+    public static boolean	ALT_GAME_CANCEL_BOW;
+    public static boolean	ALT_GAME_CANCEL_CAST;
+    public static boolean	EFFECT_CANCELING;
+    public static boolean	ALT_GAME_MAGICFAILURES;
+    public static int		PLAYER_FAKEDEATH_UP_PROTECTION;
+    public static boolean	STORE_SKILL_COOLTIME;
+    public static boolean	ALT_GAME_SHIELD_BLOCKS;
+    public static int		ALT_PERFECT_SHLD_BLOCK;
+    public static boolean	ALLOW_CLASS_MASTERS;
+    public static boolean	LIFE_CRYSTAL_NEEDED;
+    public static boolean	SP_BOOK_NEEDED;
+    public static boolean	ES_SP_BOOK_NEEDED;
+    public static boolean	ALT_GAME_SKILL_LEARN;
+    public static boolean	ALT_GAME_SUBCLASS_WITHOUT_QUESTS;
+    public static int		MAX_PVTSTORE_SLOTS_DWARF;
+    public static int		MAX_PVTSTORE_SLOTS_OTHER;
+    public static int		INVENTORY_MAXIMUM_NO_DWARF;
+    public static int		INVENTORY_MAXIMUM_DWARF;
+    public static int		INVENTORY_MAXIMUM_GM;
+    public static int		WAREHOUSE_SLOTS_DWARF;
+    public static int		WAREHOUSE_SLOTS_NO_DWARF;
+    public static int		WAREHOUSE_SLOTS_CLAN;
+    public static int		FREIGHT_SLOTS;
+    public static boolean	CASTLE_SHIELD;
+    public static boolean	CLANHALL_SHIELD;
+    public static boolean	APELLA_ARMORS;
+    public static boolean	OATH_ARMORS;
+    public static boolean	CASTLE_CROWN;
+    public static boolean	CASTLE_CIRCLETS;
+    public static boolean 	ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE;
+    public static boolean 	ALT_GAME_KARMA_PLAYER_CAN_SHOP;
+    public static boolean 	ALT_GAME_KARMA_PLAYER_CAN_TELEPORT;
+    public static boolean 	ALT_GAME_KARMA_PLAYER_CAN_USE_GK;
+    public static boolean 	ALT_GAME_KARMA_PLAYER_CAN_TRADE;
+    public static boolean 	ALT_GAME_KARMA_PLAYER_CAN_USE_WAREHOUSE;
+    public static boolean	IS_CRAFTING_ENABLED;
+    public static int		DWARF_RECIPE_LIMIT;
+    public static int		COMMON_RECIPE_LIMIT;
+    public static boolean	ALT_GAME_CREATION;
+    public static double	ALT_GAME_CREATION_SPEED;
+    public static double	ALT_GAME_CREATION_XP_RATE;
+    public static double	ALT_GAME_CREATION_SP_RATE;
+    public static boolean	ALT_BLACKSMITH_USE_RECIPES;
+    public static int		ALT_CLAN_JOIN_DAYS;
+    public static int		ALT_CLAN_CREATE_DAYS;
+    public static int		ALT_CLAN_DISSOLVE_DAYS;
+    public static int		ALT_ALLY_JOIN_DAYS_WHEN_LEAVED;
+    public static int		ALT_ALLY_JOIN_DAYS_WHEN_DISMISSED;
+    public static int		ALT_ACCEPT_CLAN_DAYS_WHEN_DISMISSED;
+    public static int		ALT_CREATE_ALLY_DAYS_WHEN_DISSOLVED;
+    public static int		ALT_MAX_NUM_OF_CLANS_IN_ALLY;
+    public static int		ALT_CLAN_MEMBERS_FOR_WAR;
+    public static boolean	ALT_GAME_NEW_CHAR_ALWAYS_IS_NEWBIE;
+    public static boolean	ALT_MEMBERS_CAN_WITHDRAW_FROM_CLANWH;
+    public static boolean	REMOVE_CASTLE_CIRCLETS;
+    public static int		ALT_PARTY_RANGE;
+    public static int		ALT_PARTY_RANGE2;
+    public static int		STARTING_ADENA;
+    public static boolean	AUTO_LOOT;
+    public static int		UNSTUCK_INTERVAL;
+    public static int		PLAYER_SPAWN_PROTECTION;
+    public static boolean	RESPAWN_RANDOM_ENABLED;
+    public static int		RESPAWN_RANDOM_MAX_OFFSET;
+    public static boolean	PETITIONING_ALLOWED;
+    public static int		MAX_PETITIONS_PER_PLAYER;
+    public static int		MAX_PETITIONS_PENDING;
+    public static boolean	ALT_GAME_FREIGHTS;
+    public static int		ALT_GAME_FREIGHT_PRICE;
+    public static boolean	ALT_GAME_FREE_TELEPORT;
+    public static boolean	ALT_RECOMMEND;
+    public static int		DELETE_DAYS;
+    public static float		ALT_GAME_EXPONENT_XP;
+    public static float		ALT_GAME_EXPONENT_SP;
+    public static String	PARTY_XP_CUTOFF_METHOD;
+    public static double	PARTY_XP_CUTOFF_PERCENT;
+    public static int		PARTY_XP_CUTOFF_LEVEL;
+	
+	/** ************************************************** **/
+	/** Character Settings -End                            **/
+	/** ************************************************** **/
+    
+    /** ************************************************** **/
+	/** ClanHall Settings -Begin                           **/
+	/** ************************************************** **/
+    
+    public static long 		CH_TELE_FEE_RATIO;
+    public static int 		CH_TELE1_FEE;
+    public static int 		CH_TELE2_FEE;
+    public static long 		CH_ITEM_FEE_RATIO;
+    public static int 		CH_ITEM1_FEE;
+    public static int 		CH_ITEM2_FEE;
+    public static int 		CH_ITEM3_FEE;
+    public static long 		CH_MPREG_FEE_RATIO;
+    public static int 		CH_MPREG1_FEE;
+    public static int 		CH_MPREG2_FEE;
+    public static int 		CH_MPREG3_FEE;
+    public static int 		CH_MPREG4_FEE;
+    public static int 		CH_MPREG5_FEE;
+    public static long 		CH_HPREG_FEE_RATIO;
+    public static int 		CH_HPREG1_FEE;
+    public static int 		CH_HPREG2_FEE;
+    public static int 		CH_HPREG3_FEE;
+    public static int 		CH_HPREG4_FEE;
+    public static int 		CH_HPREG5_FEE;
+    public static int 		CH_HPREG6_FEE;
+    public static int 		CH_HPREG7_FEE;
+    public static int 		CH_HPREG8_FEE;
+    public static int 		CH_HPREG9_FEE;
+    public static int 		CH_HPREG10_FEE;
+    public static int 		CH_HPREG11_FEE;
+    public static int 		CH_HPREG12_FEE;
+    public static int 		CH_HPREG13_FEE;
+    public static long 		CH_EXPREG_FEE_RATIO;
+    public static int 		CH_EXPREG1_FEE;
+    public static int 		CH_EXPREG2_FEE;
+    public static int 		CH_EXPREG3_FEE;
+    public static int 		CH_EXPREG4_FEE;
+    public static int 		CH_EXPREG5_FEE;
+    public static int 		CH_EXPREG6_FEE;
+    public static int 		CH_EXPREG7_FEE;
+    public static long 		CH_SUPPORT_FEE_RATIO;
+    public static int 		CH_SUPPORT1_FEE;
+    public static int 		CH_SUPPORT2_FEE;
+    public static int 		CH_SUPPORT3_FEE;
+    public static int 		CH_SUPPORT4_FEE;
+    public static int 		CH_SUPPORT5_FEE;
+    public static int 		CH_SUPPORT6_FEE;
+    public static int 		CH_SUPPORT7_FEE;
+    public static int 		CH_SUPPORT8_FEE;
+    public static long 		CH_CURTAIN_FEE_RATIO;
+    public static int 		CH_CURTAIN1_FEE;
+    public static int 		CH_CURTAIN2_FEE;
+    public static long 		CH_FRONT_FEE_RATIO;
+    public static int 		CH_FRONT1_FEE;
+    public static int 		CH_FRONT2_FEE;
+    
+    /** ************************************************** **/
+	/** ClanHall Settings -End                             **/
+	/** ************************************************** **/
+	
+    /** ************************************************** **/
+	/** General Settings -Begin                            **/
+	/** ************************************************** **/
+	
+	public static boolean	EVERYBODY_HAS_ADMIN_RIGHTS;
+	public static boolean 	SERVER_LIST_BRACKET;
+    public static boolean	SERVER_LIST_CLOCK;
+    public static boolean	SERVER_GMONLY;
+    public static boolean	ALT_PRIVILEGES_ADMIN;
+    public static boolean	ALT_PRIVILEGES_SECURE_CHECK;
+    public static int		ALT_PRIVILEGES_DEFAULT_LEVEL;
+    public static boolean	GM_NAME_COLOR_ENABLED;
+    public static int		ADMIN_NAME_COLOR;
+    public static int		GM_NAME_COLOR;
+    public static boolean	GM_HERO_AURA;
+    public static boolean	GM_STARTUP_INVULNERABLE;
+    public static boolean	GM_STARTUP_INVISIBLE;
+    public static boolean	GM_STARTUP_SILENCE;
+    public static boolean	GM_STARTUP_AUTO_LIST;
+    public static String	GM_ADMIN_MENU_STYLE;
+    public static boolean	BYPASS_VALIDATION;
+    public static boolean	GAMEGUARD_ENFORCE;
+    public static boolean	GAMEGUARD_PROHIBITACTION;
+    public static boolean	LOG_CHAT;
+    public static boolean	LOG_ITEMS;
+    public static boolean	GMAUDIT;
+    public static boolean	DEBUG;
+    public static boolean	ASSERT;
+    public static boolean	DEVELOPER;
+    public static boolean	ACCEPT_GEOEDITOR_CONN;
+    public static boolean	TEST_SERVER;
+    public static boolean	ALT_DEV_NO_QUESTS;
+    public static boolean	ALT_DEV_NO_SPAWNS;
+    public static boolean	SERVER_LIST_TESTSERVER;
+    public static int		THREAD_P_EFFECTS;
+    public static int		THREAD_P_GENERAL;
+    public static int		GENERAL_PACKET_THREAD_CORE_SIZE;
+    public static int		IO_PACKET_THREAD_CORE_SIZE;
+    public static int		GENERAL_THREAD_CORE_SIZE;
+    public static int		AI_MAX_THREAD;
+    public static int		PACKET_LIFETIME;
+    public static int		FLOODPROTECTOR_INITIALSIZE;
+    public static boolean	ALLOW_DISCARDITEM;
+    public static int		AUTODESTROY_ITEM_AFTER;
+    public static int		HERB_AUTO_DESTROY_TIME;
+    public static String	PROTECTED_ITEMS;
+    public static List<Integer> LIST_PROTECTED_ITEMS = new FastList<Integer>();
+    public static int		CHAR_STORE_INTERVAL;
+    public static boolean	LAZY_ITEMS_UPDATE;
+    public static boolean	UPDATE_ITEMS_ON_CHAR_STORE;
+    public static boolean	DESTROY_DROPPED_PLAYER_ITEM;
+    public static boolean	DESTROY_EQUIPABLE_PLAYER_ITEM;
+    public static boolean	SAVE_DROPPED_ITEM;
+    public static boolean	EMPTY_DROPPED_ITEM_TABLE_AFTER_LOAD;
+    public static int		SAVE_DROPPED_ITEM_INTERVAL;
+    public static boolean	CLEAR_DROPPED_ITEM_TABLE;
+    public static boolean	AUTODELETE_INVALID_QUEST_DATA;
+    public static boolean	PRECISE_DROP_CALCULATION;
+    public static boolean	MULTIPLE_ITEM_DROP;
+    public static boolean	FORCE_INVENTORY_UPDATE;
+    public static boolean	LAZY_CACHE;
+    public static int		MIN_NPC_ANIMATION;
+    public static int		MAX_NPC_ANIMATION;
+    public static int		MIN_MONSTER_ANIMATION;
+    public static int		MAX_MONSTER_ANIMATION;
+    public static int		COORD_SYNCHRONIZE;
+    public static boolean	GRIDS_ALWAYS_ON;
+    public static int		GRID_NEIGHBOR_TURNON_TIME;
+    public static int		GRID_NEIGHBOR_TURNOFF_TIME;
+    public static int		GEODATA;
+    public static boolean	FORCE_GEODATA;
+    public static int		ZONE_TOWN;
+    public static boolean	ACTIVATE_POSITION_RECORDER;
+    public static String	DEFAULT_GLOBAL_CHAT;
+    public static String	DEFAULT_TRADE_CHAT;
+    public static boolean	ALLOW_WAREHOUSE;
+    public static boolean	WAREHOUSE_CACHE;
+    public static int		WAREHOUSE_CACHE_TIME;
+    public static boolean	ALLOW_FREIGHT;
+    public static boolean	ALLOW_WEAR;
+    public static int		WEAR_DELAY;
+    public static int		WEAR_PRICE;
+    public static boolean	ALLOW_LOTTERY;
+    public static boolean	ALLOW_RACE;
+    public static boolean	ALLOW_WATER;
+    public static boolean	ALLOW_RENTPET;
+    public static boolean	ALLOWFISHING;
+    public static boolean	ALLOW_BOAT;
+    public static boolean	ALLOW_CURSED_WEAPONS;
+    public static boolean	ALLOW_MANOR;
+    public static boolean	ALLOW_NPC_WALKERS;
+    public static boolean	SERVER_NEWS;
+    public static String	COMMUNITY_TYPE;
+    public static boolean	BBS_SHOW_PLAYERLIST;
+    public static String	BBS_DEFAULT;
+    public static boolean	SHOW_LEVEL_COMMUNITYBOARD;
+    public static boolean	SHOW_STATUS_COMMUNITYBOARD;
+    public static int		NAME_PAGE_SIZE_COMMUNITYBOARD;
+    public static int		NAME_PER_ROW_COMMUNITYBOARD;
+    public static int		ALT_OLY_START_TIME;
+    public static int		ALT_OLY_MIN;
+    public static long		ALT_OLY_CPERIOD;
+    public static long		ALT_OLY_BATTLE;
+    public static long		ALT_OLY_BWAIT;
+    public static long		ALT_OLY_IWAIT;
+    public static long		ALT_OLY_WPERIOD;
+    public static long		ALT_OLY_VPERIOD;
+    public static int		ALT_MANOR_REFRESH_TIME;
+    public static int		ALT_MANOR_REFRESH_MIN;
+    public static int		ALT_MANOR_APPROVE_TIME;
+    public static int		ALT_MANOR_APPROVE_MIN;
+    public static int		ALT_MANOR_MAINTENANCE_PERIOD;
+    public static boolean	ALT_MANOR_SAVE_ALL_ACTIONS;
+    public static int		ALT_MANOR_SAVE_PERIOD_RATE;
+    public static int		ALT_LOTTERY_PRIZE;
+    public static int		ALT_LOTTERY_TICKET_PRICE;
+    public static float		ALT_LOTTERY_5_NUMBER_RATE;
+    public static float		ALT_LOTTERY_4_NUMBER_RATE;
+    public static float		ALT_LOTTERY_3_NUMBER_RATE;
+    public static int		ALT_LOTTERY_2_AND_1_NUMBER_PRIZE;
+    public static int		RIFT_MIN_PARTY_SIZE;
+    public static int		RIFT_SPAWN_DELAY;
+    public static int		RIFT_MAX_JUMPS;
+    public static int		RIFT_AUTO_JUMPS_TIME_MIN;
+    public static int		RIFT_AUTO_JUMPS_TIME_MAX;
+    public static float		RIFT_BOSS_ROOM_TIME_MUTIPLY;
+    public static int		RIFT_ENTER_COST_RECRUIT;
+    public static int		RIFT_ENTER_COST_SOLDIER;
+    public static int		RIFT_ENTER_COST_OFFICER;
+    public static int		RIFT_ENTER_COST_CAPTAIN;
+    public static int		RIFT_ENTER_COST_COMMANDER;
+    public static int		RIFT_ENTER_COST_HERO;
+    public static int		DEFAULT_PUNISH;
+    public static int		DEFAULT_PUNISH_PARAM;
+    public static boolean 	ONLY_GM_ITEMS_FREE;
+    public static boolean 	JAIL_IS_PVP;
+    public static boolean 	JAIL_DISABLE_CHAT;
+	
+	/** ************************************************** **/
+	/** General Settings -End                              **/
+	/** ************************************************** **/
+    
+    /** ************************************************** **/
+	/** GM Access Settings -Begin                          **/
+	/** ************************************************** **/
+    
+    /** General GM access level */
+    public static int    	GM_ACCESSLEVEL;
+    /** General GM Minimal AccessLevel */
+    public static int     	GM_MIN;
+    /** Minimum privileges level for a GM to do Alt+G*/
+    public static int     	GM_ALTG_MIN_LEVEL;
+    /** General GM AccessLevel to change announcements */
+    public static int     	GM_ANNOUNCE;
+    /** General GM AccessLevel can /ban /unban */
+    public static int     	GM_BAN;
+    /** General GM AccessLevel can /ban /unban for chat */
+    public static int     	GM_BAN_CHAT;
+    /** General GM AccessLevel can /create_item and /gmshop */
+    public static int     	GM_CREATE_ITEM;
+    /** General GM AccessLevel can /delete */
+    public static int     	GM_DELETE;
+    /** General GM AccessLevel can /kick /disconnect */
+    public static int     	GM_KICK;
+    /** General GM AccessLevel for access to GMMenu */
+    public static int     	GM_MENU;
+    /** General GM AccessLevel to use god mode command */
+    public static int     	GM_GODMODE;
+    /** General GM AccessLevel with character edit rights */
+    public static int     	GM_CHAR_EDIT;
+    /** General GM AccessLevel with edit rights for other characters */
+    public static int     	GM_CHAR_EDIT_OTHER;
+    /** General GM AccessLevel with character view rights */
+    public static int     	GM_CHAR_VIEW;
+    /** General GM AccessLevel with NPC edit rights */
+    public static int     	GM_NPC_EDIT;
+    public static int     	GM_NPC_VIEW;
+    /** General GM AccessLevel to teleport to any location */
+    public static int     	GM_TELEPORT;
+    /** General GM AccessLevel to teleport character to any location */
+    public static int     	GM_TELEPORT_OTHER;
+    /** General GM AccessLevel to restart server */
+    public static int     	GM_RESTART;
+    /** General GM AccessLevel for MonsterRace */
+    public static int     	GM_MONSTERRACE;
+    /** General GM AccessLevel to ride Wyvern */
+    public static int     	GM_RIDER;
+    /** General GM AccessLevel to unstuck without 5min delay */
+    public static int     	GM_ESCAPE;
+    /** General GM AccessLevel to resurrect fixed after death */
+    public static int     	GM_FIXED;
+    /** General GM AccessLevel to create Path Nodes */
+    public static int     	GM_CREATE_NODES;
+    /** General GM AccessLevel with Enchant rights */
+    public static int     	GM_ENCHANT;
+    /** General GM AccessLevel to close/open Doors */
+    public static int     	GM_DOOR;
+    /** General GM AccessLevel with Resurrection rights */
+    public static int     	GM_RES;
+    /** General GM AccessLevel to attack in the peace zone */
+    public static int     	GM_PEACEATTACK;
+    /** General GM AccessLevel to heal */
+    public static int     	GM_HEAL;
+    /** General GM AccessLevel to unblock IPs detected as hack IPs */
+    public static int     	GM_UNBLOCK;
+    /** General GM AccessLevel to use Cache commands */
+    public static int     	GM_CACHE;
+    /** General GM AccessLevel to use test commands */
+    public static int     	GM_TALK_BLOCK;
+    public static int     	GM_TEST;
+    /** Disable transaction on AccessLevel **/
+    public static boolean 	GM_DISABLE_TRANSACTION;
+    /** GM transactions disabled from this range */
+    public static int     	GM_TRANSACTION_MIN;
+    /** GM transactions disabled to this range */
+    public static int     	GM_TRANSACTION_MAX;
+    /** Minimum level to allow a GM giving damage */
+    public static int     	GM_CAN_GIVE_DAMAGE;
+    /** Minimum level to don't give Exp/Sp in party */
+    public static int     	GM_DONT_TAKE_EXPSP;
+    /** Minimum level to don't take aggro */
+    public static int     	GM_DONT_TAKE_AGGRO;
+    
+    /** ************************************************** **/
+	/** GM Access Settings -End                            **/
+	/** ************************************************** **/
+    
+    /** ************************************************** **/
+	/** L2JMods Settings -Begin                            **/
+	/** ************************************************** **/
+    
+    public static boolean	L2JMOD_CHAMPION_ENABLE;
+    public static boolean	L2JMOD_CHAMPION_PASSIVE;
+    public static int		L2JMOD_CHAMPION_FREQUENCY;
+    public static String	L2JMOD_CHAMP_TITLE;
+    public static int		L2JMOD_CHAMP_MIN_LVL;
+    public static int		L2JMOD_CHAMP_MAX_LVL;
+    public static int		L2JMOD_CHAMPION_HP;
+    public static int		L2JMOD_CHAMPION_REWARDS;
+    public static int		L2JMOD_CHAMPION_ADENAS_REWARDS;
+    public static float		L2JMOD_CHAMPION_HP_REGEN;
+    public static float		L2JMOD_CHAMPION_ATK;
+    public static float		L2JMOD_CHAMPION_SPD_ATK;
+    public static int		L2JMOD_CHAMPION_REWARD;
+    public static int		L2JMOD_CHAMPION_REWARD_ID;
+    public static int		L2JMOD_CHAMPION_REWARD_QTY;
+    public static boolean	TVT_EVENT_ENABLED;
+    public static int		TVT_EVENT_INTERVAL;
+    public static int		TVT_EVENT_PARTICIPATION_TIME;
+    public static int		TVT_EVENT_RUNNING_TIME;
+    public static int		TVT_EVENT_PARTICIPATION_NPC_ID;
+    public static int[]		TVT_EVENT_PARTICIPATION_NPC_COORDINATES = new int[3];
+    public static int		TVT_EVENT_MIN_PLAYERS_IN_TEAMS;
+    public static int		TVT_EVENT_MAX_PLAYERS_IN_TEAMS;
+    public static int		TVT_EVENT_RESPAWN_TELEPORT_DELAY;
+    public static int		TVT_EVENT_START_LEAVE_TELEPORT_DELAY;
+    public static String	TVT_EVENT_TEAM_1_NAME;
+    public static int[]		TVT_EVENT_TEAM_1_COORDINATES = new int[3];
+    public static String	TVT_EVENT_TEAM_2_NAME;
+    public static int[]		TVT_EVENT_TEAM_2_COORDINATES = new int[3];
+    public static List<int[]>	TVT_EVENT_REWARDS = new FastList<int[]>();
+    public static boolean	TVT_EVENT_TARGET_TEAM_MEMBERS_ALLOWED;
+    public static boolean	TVT_EVENT_POTIONS_ALLOWED;
+    public static boolean	TVT_EVENT_SUMMON_BY_ITEM_ALLOWED;
+    public static List<Integer>	TVT_EVENT_DOOR_IDS = new FastList<Integer>();
+    public static byte		TVT_EVENT_MIN_LVL;
+    public static byte		TVT_EVENT_MAX_LVL;
+    public static boolean	L2JMOD_ALLOW_WEDDING;
+    public static int L2JMOD_WEDDING_PRICE;
+    public static boolean	L2JMOD_WEDDING_PUNISH_INFIDELITY;
+    public static boolean	L2JMOD_WEDDING_TELEPORT;
+    public static int		L2JMOD_WEDDING_TELEPORT_PRICE;
+    public static int		L2JMOD_WEDDING_TELEPORT_DURATION;
+    public static boolean	L2JMOD_WEDDING_SAMESEX;
+    public static boolean	L2JMOD_WEDDING_FORMALWEAR;
+    public static int		L2JMOD_WEDDING_DIVORCE_COSTS;
+    
+    /** ************************************************** **/
+	/** L2JMods Settings -End                              **/
+	/** ************************************************** **/
+    
+	/** ************************************************** **/
+	/** NPC Settings -Begin                                **/
+	/** ************************************************** **/
+	
+	public static boolean	ANNOUNCE_MAMMON_SPAWN;
+	public static boolean	ALT_MOB_AGRO_IN_PEACEZONE;
+	public static boolean	ALT_GAME_VIEWNPC;
+	public static int		MAX_DRIFT_RANGE;
+    public static boolean	DEEPBLUE_DROP_RULES;
+    public static boolean	SHOW_NPC_LVL;
+    public static boolean	GUARD_ATTACK_AGGRO_MOB;
+    public static boolean	ALLOW_WYVERN_UPGRADER;
+    public static String	PET_RENT_NPC;
+    public static List<Integer> LIST_PET_RENT_NPC   = new FastList<Integer>();
+    public static int		WYVERN_SPEED;
+    public static int		STRIDER_SPEED;
+    public static int 		GREAT_WOLF_SPEED;
+    public static double	RAID_HP_REGEN_MULTIPLIER;
+    public static double	RAID_MP_REGEN_MULTIPLIER;
+    public static double	RAID_PDEFENCE_MULTIPLIER;
+    public static double	RAID_MDEFENCE_MULTIPLIER;
+    public static double	RAID_MINION_RESPAWN_TIMER;
+    public static float		RAID_MIN_RESPAWN_MULTIPLIER;
+    public static float		RAID_MAX_RESPAWN_MULTIPLIER;
+	
+	/** ************************************************** **/
+	/** NPC Settings -End                                  **/
+	/** ************************************************** **/
+    
+    /** ************************************************** **/
+	/** PvP Settings -Begin                                **/
+	/** ************************************************** **/
+    
+    /** Minimum karma gain/loss */
+    public static int		KARMA_MIN_KARMA;
+    /** Maximum karma gain/loss */
+    public static int		KARMA_MAX_KARMA;
+    /** Number to divide the xp received by, to calculate karma lost on xp gain/lost */
+    public static int		KARMA_XP_DIVIDER;
+    /** The Minimum Karma lost if 0 karma is to be removed */
+    public static int		KARMA_LOST_BASE;
+    /** Can a GM drop item ? */
+    public static boolean	KARMA_DROP_GM;
+    /** Should award a pvp point for killing a player with karma ? */
+    public static boolean	KARMA_AWARD_PK_KILL;
+    /** Minimum PK required to drop */
+    public static int		KARMA_PK_LIMIT;
+    /** List of pet items that cannot be dropped (separated by ",") when PVP */
+    public static String	KARMA_NONDROPPABLE_PET_ITEMS;
+    /** List of items that cannot be dropped (separated by ",") when PVP*/
+    public static String	KARMA_NONDROPPABLE_ITEMS;
+    /** List of pet items that cannot be dropped when PVP */
+    public static List<Integer> KARMA_LIST_NONDROPPABLE_PET_ITEMS   = new FastList<Integer>();
+    /** List of items that cannot be dropped when PVP */
+    public static List<Integer> KARMA_LIST_NONDROPPABLE_ITEMS       = new FastList<Integer>();
+    
+    /** ************************************************** **/
+	/** PvP Settings -End                                  **/
+	/** ************************************************** **/
+    
+    /** ************************************************** **/
+	/** Rate Settings -Begin                               **/
+	/** ************************************************** **/
+    
+    /** Rate for eXperience Point rewards */
+    public static float		RATE_XP;
+    /** Rate for Skill Point rewards */
+    public static float		RATE_SP;
+    /** Rate for party eXperience Point rewards */
+    public static float		RATE_PARTY_XP;
+    /** Rate for party Skill Point rewards */
+    public static float		RATE_PARTY_SP;
+    /** Rate for Quest rewards (XP and SP) */
+    public static float		RATE_QUESTS_REWARD;
+    /** Rate for drop adena */
+    public static float		RATE_DROP_ADENA;
+    /** Rate for cost of consumable */
+    public static float		RATE_CONSUMABLE_COST;
+    /** Rate for dropped items */
+    public static float		RATE_DROP_ITEMS;
+    /** Rate for spoiled items */
+    public static float		RATE_DROP_SPOIL;
+    /** Rate for manor items */
+    public static int		RATE_DROP_MANOR;
+    /** Rate for quest items */
+    public static float		RATE_DROP_QUEST;
+    /** Rate for karma and experience lose */
+    public static float		RATE_KARMA_EXP_LOST;
+    /** Rate siege guards prices */
+    public static float		RATE_SIEGE_GUARDS_PRICE;
+    /** Rate Common herbs */
+    public static float		RATE_DROP_COMMON_HERBS;
+    /** Rate MP/HP herbs */
+    public static float		RATE_DROP_MP_HP_HERBS;
+    /** Rate Common herbs */
+    public static float		RATE_DROP_GREATER_HERBS;
+    /** Rate Common herbs */
+    public static float		RATE_DROP_SUPERIOR_HERBS;
+    /** Rate Common herbs */
+    public static float		RATE_DROP_SPECIAL_HERBS;
+    /** Limit for player drop */
+    public static int		PLAYER_DROP_LIMIT;
+    /** Rate for drop */
+    public static int		PLAYER_RATE_DROP;
+    /** Rate for player's item drop */
+    public static int		PLAYER_RATE_DROP_ITEM;
+    /** Rate for player's equipment drop */
+    public static int		PLAYER_RATE_DROP_EQUIP;
+    /** Rate for player's equipment and weapon drop */
+    public static int		PLAYER_RATE_DROP_EQUIP_WEAPON;
+    /** Rate for experience rewards of the pet */
+    public static float		PET_XP_RATE;
+    /** Rate for food consumption of the pet */
+    public static int		PET_FOOD_RATE;
+    /** Rate for experience rewards of the Sin Eater */
+    public static float		SINEATER_XP_RATE;
+    /** Karma drop limit */
+    public static int		KARMA_DROP_LIMIT;
+    /** Karma drop rate */
+    public static int		KARMA_RATE_DROP;
+    /** Karma drop rate for item */
+    public static int		KARMA_RATE_DROP_ITEM;
+    /** Karma drop rate for equipment */
+    public static int		KARMA_RATE_DROP_EQUIP;
+    /** Karma drop rate for equipment and weapon */
+    public static int		KARMA_RATE_DROP_EQUIP_WEAPON;
+    
+    /** ************************************************** **/
+	/** Rate Settings -End                                 **/
+	/** ************************************************** **/
+    
+    /** ************************************************** **/
+	/** SevinSigns Settings -Begin                         **/
+	/** ************************************************** **/
+    
+    public static boolean 	ALT_GAME_REQUIRE_CASTLE_DAWN;
+    public static boolean 	ALT_GAME_REQUIRE_CLAN_CASTLE;
+    public static int 		ALT_FESTIVAL_MIN_PLAYER;
+    public static int 		ALT_MAXIMUM_PLAYER_CONTRIB;
+    public static long		ALT_FESTIVAL_MANAGER_START;
+    public static long		ALT_FESTIVAL_LENGTH;
+    public static long		ALT_FESTIVAL_CYCLE_LENGTH;
+    public static long		ALT_FESTIVAL_FIRST_SPAWN;
+    public static long		ALT_FESTIVAL_FIRST_SWARM;
+    public static long		ALT_FESTIVAL_SECOND_SPAWN;
+    public static long		ALT_FESTIVAL_SECOND_SWARM;
+    public static long		ALT_FESTIVAL_CHEST_SPAWN;
+	
+    /** ************************************************** **/
+	/** SevinSigns Settings -End                           **/
+	/** ************************************************** **/
+    
+    /** ************************************************** **/
+	/** Server Settings -Begin                             **/
+	/** ************************************************** **/
+    
+    /** Game Server ports */
+    public static int		PORT_GAME;
+    /** Login Server port */
+    public static int		PORT_LOGIN;
+    /** Login Server bind ip */
+    public static String	LOGIN_BIND_ADDRESS;
+    /** Number of login tries before IP ban gets activated, default 10*/
+    public static int		LOGIN_TRY_BEFORE_BAN;
+    /** Number of seconds the IP ban will last, default 10 minutes */
+    public static int		LOGIN_BLOCK_AFTER_BAN;
+    /** Hostname of the Game Server */
+    public static String	GAMESERVER_HOSTNAME;
+    /** Driver to access to database */
+    public static String	DATABASE_DRIVER;
+    /** Path to access to database */
+    public static String	DATABASE_URL;
+    /** Database login */
+    public static String	DATABASE_LOGIN;
+    /** Database password */
+    public static String	DATABASE_PASSWORD;
+    /** Maximum number of connections to the database */
+    public static int		DATABASE_MAX_CONNECTIONS;
+    /** Maximum number of players allowed to play simultaneously on server */
+    public static int		MAXIMUM_ONLINE_USERS;
+    /** Character name template */
+    public static String	CNAME_TEMPLATE;
+    /** Pet name template */
+    public static String	PET_NAME_TEMPLATE;
+    /** Maximum number of characters per account */
+    public static int		MAX_CHARACTERS_NUMBER_PER_ACCOUNT;
+    /** Datapack root directory */
+    public static File		DATAPACK_ROOT;
+    /** Accept alternate ID for server ? */
+    public static boolean	ACCEPT_ALTERNATE_ID;
+    /** ID for request to the server */
+    public static int		REQUEST_ID;
+    public static boolean	RESERVE_HOST_ON_LOGIN = false;
+    /** Minimal protocol revision */
+    public static int		MIN_PROTOCOL_REVISION;
+    /** Maximal protocol revision */
+    public static int		MAX_PROTOCOL_REVISION;
+	
+    /** ************************************************** **/
+	/** Server Settings -End                           **/
+	/** ************************************************** **/
+
+    /******************************************************************************************************************************************************/
+    /** L2J Variable Definitions End Here**/
+	/******************************************************************************************************************************************************/
     public static int MAX_ITEM_IN_PACKET;
 
     public static boolean CHECK_KNOWN;
@@ -738,18 +757,6 @@ public final class Config
     public static int        LINKED_NODE_ID;
     public static String     NEW_NODE_TYPE;
 
-    /** Show "data/html/servnews.htm" whenever a character enters world.*/
-    public static boolean SERVER_NEWS;
-    /** Show L2Monster level and aggro ? */
-    public static boolean    SHOW_NPC_LVL;
-
-    /** Force full item inventory packet to be sent for any item change ?<br>
-     * <u><i>Note:</i></u> This can increase network traffic*/
-    public static boolean    FORCE_INVENTORY_UPDATE;
-    /** Disable the use of guards against agressive monsters ? */
-    public static boolean    ALLOW_GUARDS;
-    /** Allow use Event Managers for change occupation ?*/
-    public static boolean    ALLOW_CLASS_MASTERS;
     /** Time between 2 updates of IP */
     public static int        IP_UPDATE_TIME;
 
@@ -761,137 +768,18 @@ public final class Config
 
     // Datapack version
     /** Datapack version */
-    public static String     DATAPACK_VERSION;
-
-    /** Zone Setting */
-    public static int ZONE_TOWN;
-
-    /** Crafting Enabled? */
-    public static boolean IS_CRAFTING_ENABLED;
-
-    // Inventory slots limit
-    /** Maximum inventory slots limits for non dwarf characters */
-    public static int INVENTORY_MAXIMUM_NO_DWARF;
-    /** Maximum inventory slots limits for dwarf characters */
-    public static int INVENTORY_MAXIMUM_DWARF;
-    /** Maximum inventory slots limits for GM */
-    public static int INVENTORY_MAXIMUM_GM;
-
-    // Warehouse slots limits
-    /** Maximum inventory slots limits for non dwarf warehouse */
-    public static int WAREHOUSE_SLOTS_NO_DWARF;
-    /** Maximum inventory slots limits for dwarf warehouse */
-    public static int WAREHOUSE_SLOTS_DWARF;
-    /** Maximum inventory slots limits for clan warehouse */
-    public static int WAREHOUSE_SLOTS_CLAN;
-    /** Maximum inventory slots limits for freight */
-    public static int FREIGHT_SLOTS;
-
-    // Karma System Variables
-    /** Minimum karma gain/loss */
-    public static int     KARMA_MIN_KARMA;
-    /** Maximum karma gain/loss */
-    public static int     KARMA_MAX_KARMA;
-    /** Number to divide the xp recieved by, to calculate karma lost on xp gain/lost */
-    public static int     KARMA_XP_DIVIDER;
-    /** The Minimum Karma lost if 0 karma is to be removed */
-    public static int     KARMA_LOST_BASE;
-    /** Can a GM drop item ? */
-    public static boolean KARMA_DROP_GM;
-    /** Should award a pvp point for killing a player with karma ? */
-    public static boolean KARMA_AWARD_PK_KILL;
-    /** Minimum PK required to drop */
-    public static int     KARMA_PK_LIMIT;
-
-    /** List of pet items that cannot be dropped (seperated by ",") when PVP */
-    public static String        KARMA_NONDROPPABLE_PET_ITEMS;
-    /** List of items that cannot be dropped (seperated by ",") when PVP*/
-    public static String        KARMA_NONDROPPABLE_ITEMS;
-    /** List of pet items that cannot be dropped when PVP */
-    public static List<Integer> KARMA_LIST_NONDROPPABLE_PET_ITEMS   = new FastList<Integer>();
-    /** List of items that cannot be dropped when PVP */
-    public static List<Integer> KARMA_LIST_NONDROPPABLE_ITEMS       = new FastList<Integer>();
+    public static String     DATAPACK_VERSION;    
 
     /** List of items that cannot be dropped (seperated by ",") */
     public static String        NONDROPPABLE_ITEMS;
     /** List of items that cannot be dropped */
     public static List<Integer> LIST_NONDROPPABLE_ITEMS       = new FastList<Integer>();
 
-    /** List of NPCs that rent pets (seperated by ",") */
-    public static String        PET_RENT_NPC;
-    /** List of NPCs that rent pets */
-    public static List<Integer> LIST_PET_RENT_NPC   = new FastList<Integer>();
-
     /** Duration (in ms) while a player stay in PVP mode after hitting an innocent */
     public static int PVP_NORMAL_TIME;
     /** Duration (in ms) while a player stay in PVP mode after hitting a purple player */
     public static int PVP_PVP_TIME;
 
-    // Karma Punishment
-    /** Allow player with karma to be killed in peace zone ? */
-    public static boolean ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE;
-    /** Allow player with karma to shop ? */
-    public static boolean ALT_GAME_KARMA_PLAYER_CAN_SHOP;
-    /** Allow player with karma to use gatekeepers ? */
-    public static boolean ALT_GAME_KARMA_PLAYER_CAN_USE_GK;
-    /** Allow player with karma to use SOE or Return skill ? */
-    public static boolean ALT_GAME_KARMA_PLAYER_CAN_TELEPORT;
-    /** Allow player with karma to trade ? */
-    public static boolean ALT_GAME_KARMA_PLAYER_CAN_TRADE;
-    /** Allow player with karma to use warehouse ?*/
-    public static boolean ALT_GAME_KARMA_PLAYER_CAN_USE_WAREHOUSE;
-
-    /**define L2JMODS */
-    /** Champion Mod*/
-    public static boolean L2JMOD_CHAMPION_ENABLE;
-    public static boolean L2JMOD_CHAMPION_PASSIVE;
-    public static int L2JMOD_CHAMPION_FREQUENCY;
-    public static String L2JMOD_CHAMP_TITLE;
-    public static int L2JMOD_CHAMP_MIN_LVL;
-    public static int L2JMOD_CHAMP_MAX_LVL;
-    public static int L2JMOD_CHAMPION_HP;
-    public static int L2JMOD_CHAMPION_REWARDS;
-    public static int L2JMOD_CHAMPION_ADENAS_REWARDS;
-    public static float L2JMOD_CHAMPION_HP_REGEN;
-    public static float L2JMOD_CHAMPION_ATK;
-    public static float L2JMOD_CHAMPION_SPD_ATK;
-    public static int L2JMOD_CHAMPION_REWARD;
-    public static int L2JMOD_CHAMPION_REWARD_ID;
-    public static int L2JMOD_CHAMPION_REWARD_QTY;
-
-    /** Team vs. Team Event Engine */
-    public static boolean TVT_EVENT_ENABLED;
-    public static int TVT_EVENT_INTERVAL;
-    public static int TVT_EVENT_PARTICIPATION_TIME;
-    public static int TVT_EVENT_RUNNING_TIME;
-    public static int TVT_EVENT_PARTICIPATION_NPC_ID;
-    public static int[] TVT_EVENT_PARTICIPATION_NPC_COORDINATES = new int[3];
-    public static int TVT_EVENT_MIN_PLAYERS_IN_TEAMS;
-    public static int TVT_EVENT_MAX_PLAYERS_IN_TEAMS;
-    public static int TVT_EVENT_RESPAWN_TELEPORT_DELAY;
-    public static int TVT_EVENT_START_LEAVE_TELEPORT_DELAY;
-    public static String TVT_EVENT_TEAM_1_NAME;
-    public static int[] TVT_EVENT_TEAM_1_COORDINATES = new int[3];
-    public static String TVT_EVENT_TEAM_2_NAME;
-    public static int[] TVT_EVENT_TEAM_2_COORDINATES = new int[3];
-    public static List<int[]> TVT_EVENT_REWARDS = new FastList<int[]>();
-    public static boolean TVT_EVENT_TARGET_TEAM_MEMBERS_ALLOWED;
-    public static boolean TVT_EVENT_POTIONS_ALLOWED;
-    public static boolean TVT_EVENT_SUMMON_BY_ITEM_ALLOWED;
-    public static List<Integer> TVT_EVENT_DOOR_IDS = new FastList<Integer>();
-    public static byte TVT_EVENT_MIN_LVL;
-    public static byte TVT_EVENT_MAX_LVL;
-
-    /** L2JMOD Wedding system  */
-    public static boolean L2JMOD_ALLOW_WEDDING;
-    public static int L2JMOD_WEDDING_PRICE;
-    public static boolean L2JMOD_WEDDING_PUNISH_INFIDELITY;
-    public static boolean L2JMOD_WEDDING_TELEPORT;
-    public static int L2JMOD_WEDDING_TELEPORT_PRICE;
-    public static int L2JMOD_WEDDING_TELEPORT_DURATION;
-    public static boolean L2JMOD_WEDDING_SAMESEX;
-    public static boolean L2JMOD_WEDDING_FORMALWEAR;
-    public static int L2JMOD_WEDDING_DIVORCE_COSTS;
 
     // Packet information
     /** Count the amount of packets per minute ? */
@@ -933,15 +821,6 @@ public final class Config
     /** Type of set object */
     public static ObjectSetType   SET_TYPE;
 
-    /**
-     * Allow lesser effects to be canceled if stronger effects are used when effects of the same stack group are used.<br>
-     * New effects that are added will be canceled if they are of lesser priority to the old one.
-     */
-    public static boolean EFFECT_CANCELING;
-
-    /** Auto-delete invalid quest data ? */
-    public static boolean AUTODELETE_INVALID_QUEST_DATA;
-
     /** Chance that an item will succesfully be enchanted */
     public static int ENCHANT_CHANCE_WEAPON;
     public static int ENCHANT_CHANCE_ARMOR;
@@ -963,72 +842,13 @@ public final class Config
     /** Multiplier for character CP regeneration */
     public static double  CP_REGEN_MULTIPLIER;
 
-    // Raid Boss multipliers
-    /** Multiplier for Raid boss HP regeneration */
-    public static double   RAID_HP_REGEN_MULTIPLIER;
-    /** Mulitplier for Raid boss MP regeneration */
-    public static double   RAID_MP_REGEN_MULTIPLIER;
-    /** Multiplier for Raid boss power defense multiplier */
-    public static double   RAID_PDEFENCE_MULTIPLIER;
-    /** Multiplier for Raid boss magic defense multiplier */
-    public static double   RAID_MDEFENCE_MULTIPLIER;
-    /** Raid Boss Minin Spawn Timer */
-    public static double   RAID_MINION_RESPAWN_TIMER;
-    /** Mulitplier for Raid boss minimum time respawn */
-    public static float   RAID_MIN_RESPAWN_MULTIPLIER;
-    /** Mulitplier for Raid boss maximum time respawn */
-    public static float   RAID_MAX_RESPAWN_MULTIPLIER;
-    /** Amount of adenas when starting a new character */
-    public static int STARTING_ADENA;
-
-    /** Deep Blue Mobs' Drop Rules Enabled */
-    public static boolean DEEPBLUE_DROP_RULES;
-    public static int     UNSTUCK_INTERVAL;
-
     /** Is telnet enabled ? */
     public static boolean IS_TELNET_ENABLED;
 
-    /** Death Penalty chance */
-    public static int   DEATH_PENALTY_CHANCE;
-
-    /** Player Protection control */
-    public static int   PLAYER_SPAWN_PROTECTION;
-    public static int   PLAYER_FAKEDEATH_UP_PROTECTION;
-
-    /** Define Party XP cutoff point method - Possible values: level and percentage */
-    public static String  PARTY_XP_CUTOFF_METHOD;
-    /** Define the cutoff point value for the "level" method */
-    public static int PARTY_XP_CUTOFF_LEVEL;
-    /** Define the cutoff point value for the "percentage" method */
-    public static double  PARTY_XP_CUTOFF_PERCENT;
-
-    /** Percent CP is restore on respawn */
-    public static double  RESPAWN_RESTORE_CP;
-    /** Percent HP is restore on respawn */
-    public static double  RESPAWN_RESTORE_HP;
-    /** Percent MP is restore on respawn */
-    public static double  RESPAWN_RESTORE_MP;
-    /** Allow randomizing of the respawn point in towns. */
-    public static boolean RESPAWN_RANDOM_ENABLED;
-    /** The maximum offset from the base respawn point to allow. */
-    public static int RESPAWN_RANDOM_MAX_OFFSET;
-
-    /** Maximum number of available slots for pvt stores (sell/buy) - Dwarves */
-    public static int  MAX_PVTSTORE_SLOTS_DWARF;
-    /** Maximum number of available slots for pvt stores (sell/buy) - Others */
-    public static int  MAX_PVTSTORE_SLOTS_OTHER;
-
-    /** Store skills cooltime on char exit/relogin */
-    public static boolean STORE_SKILL_COOLTIME;
     /** Show licence or not just after login (if false, will directly go to the Server List */
     public static boolean SHOW_LICENCE;
     /** Force GameGuard authorization in loginserver */
     public static boolean FORCE_GGAUTH;
-
-    /** Default punishment for illegal actions */
-    public static int DEFAULT_PUNISH;
-    /** Parameter for default punishment */
-    public static int DEFAULT_PUNISH_PARAM;
 
     /** Accept new game server ? */
     public static boolean ACCEPT_NEW_GAMESERVER;
@@ -1038,54 +858,9 @@ public final class Config
     /** Hexadecimal ID of the game server */
     public static byte[] HEX_ID;
 
-    /** Accept alternate ID for server ? */
-    public static boolean ACCEPT_ALTERNATE_ID;
-    /** ID for request to the server */
-    public static int REQUEST_ID;
-    public static boolean RESERVE_HOST_ON_LOGIN = false;
-
     public static int MINIMUM_UPDATE_DISTANCE;
     public static int KNOWNLIST_FORGET_DELAY;
-    public static int MINIMUN_UPDATE_TIME;
-
-    public static boolean ANNOUNCE_MAMMON_SPAWN;
-    public static boolean LAZY_CACHE;
-
-    /** Enable colored name for GM ? */
-    public static boolean GM_NAME_COLOR_ENABLED;
-    /** Color of GM name */
-    public static int     GM_NAME_COLOR;
-    /** Color of admin name */
-    public static int     ADMIN_NAME_COLOR;
-    /** Place an aura around the GM ? */
-    public static boolean GM_HERO_AURA;
-    /** Set the GM invulnerable at startup ? */
-    public static boolean GM_STARTUP_INVULNERABLE;
-    /** Set the GM invisible at startup ? */
-    public static boolean GM_STARTUP_INVISIBLE;
-    /** Set silence to GM at startup ? */
-    public static boolean GM_STARTUP_SILENCE;
-    /** Add GM in the GM list at startup ? */
-    public static boolean GM_STARTUP_AUTO_LIST;
-    /** Change the way admin panel is shown */
-    public static String GM_ADMIN_MENU_STYLE;
-
-    /** Allow petition ? */
-    public static boolean PETITIONING_ALLOWED;
-    /** Maximum number of petitions per player */
-    public static int     MAX_PETITIONS_PER_PLAYER;
-    /** Maximum number of petitions pending */
-    public static int     MAX_PETITIONS_PENDING;
-
-
-    /** Bypass exploit protection ? */
-    public static boolean BYPASS_VALIDATION;
-
-    /** Only GM buy items for free**/
-    public static boolean ONLY_GM_ITEMS_FREE;
-
-    /** GM Audit ?*/
-    public static boolean GMAUDIT;
+    public static int MINIMUN_UPDATE_TIME;    
 
     /** Allow auto-create account ? */
     public static boolean AUTO_CREATE_ACCOUNTS;
@@ -1095,87 +870,7 @@ public final class Config
     public static int     FAST_CONNECTION_LIMIT;
     public static int     NORMAL_CONNECTION_TIME;
     public static int     FAST_CONNECTION_TIME;
-    public static int     MAX_CONNECTION_PER_IP;
-
-    /** Enforce gameguard query on character login ? */
-    public static boolean GAMEGUARD_ENFORCE;
-    /** Don't allow player to perform trade,talk with npc and move until gameguard reply received ? */
-    public static boolean GAMEGUARD_PROHIBITACTION;
-
-    /** Recipebook limits */
-    public static int DWARF_RECIPE_LIMIT;
-    public static int COMMON_RECIPE_LIMIT;
-
-    /** Grid Options */
-    public static boolean GRIDS_ALWAYS_ON;
-    public static int GRID_NEIGHBOR_TURNON_TIME;
-    public static int GRID_NEIGHBOR_TURNOFF_TIME;
-
-    /** Clan Hall function related configs*/
-    public static long CH_TELE_FEE_RATIO;
-    public static int CH_TELE1_FEE;
-    public static int CH_TELE2_FEE;
-    public static long CH_ITEM_FEE_RATIO;
-    public static int CH_ITEM1_FEE;
-    public static int CH_ITEM2_FEE;
-    public static int CH_ITEM3_FEE;
-    public static long CH_MPREG_FEE_RATIO;
-    public static int CH_MPREG1_FEE;
-    public static int CH_MPREG2_FEE;
-    public static int CH_MPREG3_FEE;
-    public static int CH_MPREG4_FEE;
-    public static int CH_MPREG5_FEE;
-    public static long CH_HPREG_FEE_RATIO;
-    public static int CH_HPREG1_FEE;
-    public static int CH_HPREG2_FEE;
-    public static int CH_HPREG3_FEE;
-    public static int CH_HPREG4_FEE;
-    public static int CH_HPREG5_FEE;
-    public static int CH_HPREG6_FEE;
-    public static int CH_HPREG7_FEE;
-    public static int CH_HPREG8_FEE;
-    public static int CH_HPREG9_FEE;
-    public static int CH_HPREG10_FEE;
-    public static int CH_HPREG11_FEE;
-    public static int CH_HPREG12_FEE;
-    public static int CH_HPREG13_FEE;
-    public static long CH_EXPREG_FEE_RATIO;
-    public static int CH_EXPREG1_FEE;
-    public static int CH_EXPREG2_FEE;
-    public static int CH_EXPREG3_FEE;
-    public static int CH_EXPREG4_FEE;
-    public static int CH_EXPREG5_FEE;
-    public static int CH_EXPREG6_FEE;
-    public static int CH_EXPREG7_FEE;
-    public static long CH_SUPPORT_FEE_RATIO;
-    public static int CH_SUPPORT1_FEE;
-    public static int CH_SUPPORT2_FEE;
-    public static int CH_SUPPORT3_FEE;
-    public static int CH_SUPPORT4_FEE;
-    public static int CH_SUPPORT5_FEE;
-    public static int CH_SUPPORT6_FEE;
-    public static int CH_SUPPORT7_FEE;
-    public static int CH_SUPPORT8_FEE;
-    public static long CH_CURTAIN_FEE_RATIO;
-    public static int CH_CURTAIN1_FEE;
-    public static int CH_CURTAIN2_FEE;
-    public static long CH_FRONT_FEE_RATIO;
-    public static int CH_FRONT1_FEE;
-    public static int CH_FRONT2_FEE;
-
-    /** GeoData 0/1/2 */
-    public static int GEODATA;
-    /** Force loading GeoData to psychical memory */
-    public static boolean FORCE_GEODATA;
-    public static boolean ACCEPT_GEOEDITOR_CONN;
-
-    /** Max amount of buffs */
-    public static byte BUFFS_MAX_AMOUNT;
-
-    /** Alt Settings for devs */
-    public static boolean ALT_DEV_NO_QUESTS;
-    public static boolean ALT_DEV_NO_SPAWNS;
-
+    public static int     MAX_CONNECTION_PER_IP;  
 
     /**
      * This class initializes all global variables for configuration.<br>
@@ -1366,8 +1061,6 @@ public final class Config
                 // Configuration values not found in config files
                 // ---------------------------------------------------
 
-                USE_3D_MAP                      = Boolean.valueOf(optionsSettings.getProperty("Use3DMap", "False"));
-
                 PATH_NODE_RADIUS                = Integer.parseInt(optionsSettings.getProperty("PathNodeRadius", "50"));
                 NEW_NODE_ID                     = Integer.parseInt(optionsSettings.getProperty("NewNodeId", "7952"));
                 SELECTED_NODE_ID                = Integer.parseInt(optionsSettings.getProperty("NewNodeId", "7952"));
@@ -1471,7 +1164,7 @@ public final class Config
                 is.close();
 
                 DEEPBLUE_DROP_RULES = Boolean.parseBoolean(otherSettings.getProperty("UseDeepBlueDropRules", "True"));
-                ALLOW_GUARDS        = Boolean.valueOf(otherSettings.getProperty("AllowGuards", "False"));
+                GUARD_ATTACK_AGGRO_MOB        = Boolean.valueOf(otherSettings.getProperty("AllowGuards", "False"));
                 EFFECT_CANCELING    = Boolean.valueOf(otherSettings.getProperty("CancelLesserEffect", "True"));
                 WYVERN_SPEED        = Integer.parseInt(otherSettings.getProperty("WyvernSpeed", "100"));
                 STRIDER_SPEED       = Integer.parseInt(otherSettings.getProperty("StriderSpeed", "80"));
@@ -1762,7 +1455,7 @@ public final class Config
                 Properties SevenSettings  = new Properties();
                 InputStream is            = new FileInputStream(new File(SEVENSIGNS_FILE));
                 SevenSettings.load(is);
-                is.close();
+                is.close();                
 
                 ALT_GAME_REQUIRE_CASTLE_DAWN    = Boolean.parseBoolean(SevenSettings.getProperty("AltRequireCastleForDawn", "False"));
                 ALT_GAME_REQUIRE_CLAN_CASTLE    = Boolean.parseBoolean(SevenSettings.getProperty("AltRequireClanCastle", "False"));
@@ -2280,7 +1973,7 @@ public final class Config
 
         // Other settings
         else if (pName.equalsIgnoreCase("UseDeepBlueDropRules")) DEEPBLUE_DROP_RULES = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AllowGuards")) ALLOW_GUARDS = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("AllowGuards")) GUARD_ATTACK_AGGRO_MOB = Boolean.valueOf(pValue);
         else if (pName.equalsIgnoreCase("CancelLesserEffect")) EFFECT_CANCELING = Boolean.valueOf(pValue);
         else if (pName.equalsIgnoreCase("WyvernSpeed")) WYVERN_SPEED = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("StriderSpeed")) STRIDER_SPEED = Integer.parseInt(pValue);

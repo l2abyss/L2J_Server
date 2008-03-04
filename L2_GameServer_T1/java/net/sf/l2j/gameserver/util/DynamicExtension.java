@@ -22,6 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sf.l2j.Config;
+
 /**
  * extension loader for l2j
  * @author galun
@@ -30,7 +32,6 @@ import java.util.logging.Logger;
 public class DynamicExtension {
 	private static Logger _log = Logger.getLogger(DynamicExtension.class.getCanonicalName());
 	private JarClassLoader _classLoader;
-	private static final String CONFIG = "config/extensions.properties";
 	private Properties _prop;
 	private ConcurrentHashMap<String, Object> _loadedExtensions;
 	private static DynamicExtension _instance;
@@ -78,7 +79,7 @@ public class DynamicExtension {
         String res = "";
 		_loadedExtensions = new ConcurrentHashMap<String, Object>();
 		try {
-			_prop.load(new FileInputStream(CONFIG));
+			_prop.load(new FileInputStream(Config.EXTENSIONS_CONFIG_FILE));
         } catch (FileNotFoundException ex) {
             _log.info(ex.getMessage() + ": no extensions to load");
 		} catch (Exception ex) {
