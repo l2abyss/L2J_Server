@@ -72,8 +72,8 @@ abstract class AbstractAI implements Ctrl
             {
                 if (_followTask == null) return;
 
-            	
-            	if (_followTarget == null)
+                L2Character followTarget = _followTarget; // copy to prevent NPE
+            	if (followTarget == null)
             	{
             		if(_actor instanceof L2Summon) 
             			((L2Summon)_actor).setFollowStatus(false);
@@ -81,9 +81,9 @@ abstract class AbstractAI implements Ctrl
             		return;
             	}
 
-                if (!_actor.isInsideRadius(_followTarget, _range, true, false))
+                if (!_actor.isInsideRadius(followTarget, _range, true, false))
                 {
-                	 if (!_actor.isInsideRadius(_followTarget, 3000, true, false))
+                	 if (!_actor.isInsideRadius(followTarget, 3000, true, false))
                 	 {
                 		 // if the target is too far (maybe also teleported)
                 		 if(_actor instanceof L2Summon)
@@ -93,7 +93,7 @@ abstract class AbstractAI implements Ctrl
                  		 return;
                 	 }
                 	
-                	 moveToPawn(_followTarget, _range);
+                	 moveToPawn(followTarget, _range);
                 }
             }
             catch (Throwable t)

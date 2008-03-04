@@ -74,6 +74,8 @@ public final class L2NpcTemplate extends L2CharTemplate
     public Race race;
     public final String jClass;
     public final AIType AI;
+    public boolean isQuestMonster; 	// doesn't include all mobs that are involved in 
+    								// quests, just plain quest monsters for preventing champion spawn 
     
     public static enum AbsorbCrystalType
     {
@@ -149,6 +151,10 @@ public final class L2NpcTemplate extends L2CharTemplate
 		name      = set.getString("name");
         serverSideName = set.getBool("serverSideName");
         title     = set.getString("title");
+        if (title.equalsIgnoreCase("Quest Monster"))
+        	isQuestMonster = true;
+        else
+        	isQuestMonster = false;
         serverSideTitle = set.getBool("serverSideTitle");
 		sex       = set.getString("sex");
 		level     = set.getByte("level");

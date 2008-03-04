@@ -1709,10 +1709,11 @@ public abstract class L2Character extends L2Object
 	/** Sets HP, MP and CP and revives the L2Character. */
 	public void doRevive()
 	{
+		if (!isKilledAlready()) return;
 		if (!isTeleporting())
 		{
 			setIsPendingRevive(false);
-			
+			setIsKilledAlready(false);
 			if (this instanceof L2PlayableInstance && ((L2PlayableInstance)this).isPhoenixBlessed())
 			{
 			    ((L2PlayableInstance)this).stopPhoenixBlessing(null);
@@ -1870,7 +1871,12 @@ public abstract class L2Character extends L2Object
     public final void setIsPsychicalMuted(boolean value) { _isPsychicalMuted = value; }
 
 	/** Return True if the L2Character can't move (stun, root, sleep, overload, paralyzed). */
-	public boolean isMovementDisabled() { return isStunned() || isRooted() || isSleeping() || isOverloaded() || isParalyzed() || isImmobilized() || isFakeDeath(); }
+	public boolean isMovementDisabled() 
+	{ 
+		// check for isTeleporting to prevent teleport cheating (if appear packet not received)
+		return isStunned() || isRooted() || isSleeping() || isOverloaded() || isParalyzed() 
+			|| isImmobilized() || isFakeDeath() || isTeleporting(); 
+	}
 
 	/** Return True if the L2Character can be controlled by the player (confused, afraid). */
 	public final boolean isOutOfControl() { return isConfused() || isAfraid(); }
@@ -5432,6 +5438,15 @@ public abstract class L2Character extends L2Object
 		// Remove all its Func objects from the L2Character calculator set
 		if (oldSkill != null)
 		{
+			// Stop casting if this skill is used right now
+			if (this instanceof L2PcInstance)
+			{
+				if (((L2PcInstance)this).getCurrentSkill() != null && isCastingNow())
+				{
+					if (oldSkill.getId() == ((L2PcInstance)this).getCurrentSkill().getSkillId())
+						abortCast();
+				}
+			}
 			removeStatsOwner(oldSkill);
 			stopSkillEffects(oldSkill.getId());
 		}
