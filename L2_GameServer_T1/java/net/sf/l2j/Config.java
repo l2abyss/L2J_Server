@@ -25,7 +25,6 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
-import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * This class contains global server configuration.<br>
@@ -592,22 +591,6 @@ public final class Config
     /** Jail config **/
     public static boolean JAIL_IS_PVP;
     public static boolean JAIL_DISABLE_CHAT;
-
-
-    /** Enumeration describing values for Allowing the use of L2Walker client */
-    public static enum L2WalkerAllowed
-    {
-        True,
-        False,
-        GM
-    }
-
-    /** Allow the use of L2Walker client ? */
-    public static L2WalkerAllowed ALLOW_L2WALKER_CLIENT;
-    /** Auto-ban client that use L2Walker ? */
-    public static boolean         AUTOBAN_L2WALKER_ACC;
-    /** Revision of L2Walker */
-    public static int             L2WALKER_REVISION;
 
     /** FloodProtector initial capacity */
     public static int              FLOODPROTECTOR_INITIALSIZE;
@@ -1314,10 +1297,6 @@ public final class Config
                 ALLOW_BOAT                      = Boolean.valueOf(optionsSettings.getProperty("AllowBoat", "False"));
                 ALLOW_NPC_WALKERS               = Boolean.valueOf(optionsSettings.getProperty("AllowNpcWalkers", "true"));
                 ALLOW_CURSED_WEAPONS            = Boolean.valueOf(optionsSettings.getProperty("AllowCursedWeapons", "False"));
-
-                ALLOW_L2WALKER_CLIENT           = L2WalkerAllowed.valueOf(optionsSettings.getProperty("AllowL2Walker", "False"));
-                L2WALKER_REVISION               = Integer.parseInt(optionsSettings.getProperty("L2WalkerRevision", "537"));
-                AUTOBAN_L2WALKER_ACC            = Boolean.valueOf(optionsSettings.getProperty("AutobanL2WalkerAcc", "False"));
 
                 ACTIVATE_POSITION_RECORDER      = Boolean.valueOf(optionsSettings.getProperty("ActivatePositionRecorder", "False"));
 
@@ -2461,18 +2440,6 @@ public final class Config
         else if (pName.equalsIgnoreCase("MenuStyle"))  GM_ADMIN_MENU_STYLE = pValue;
         else return false;
         return true;
-    }
-
-    /**
-     * Allow the player to use L2Walker ?
-     * @param player (L2PcInstance) : Player trying to use L2Walker
-     * @return boolean : true if (L2Walker allowed as a general rule) or (L2Walker client allowed for GM and
-     *                   player is a GM)
-     */
-    public static boolean allowL2Walker(L2PcInstance player)
-    {
-        return (ALLOW_L2WALKER_CLIENT == L2WalkerAllowed.True ||
-                (ALLOW_L2WALKER_CLIENT == L2WalkerAllowed.GM && player != null && player.isGM()));
     }
 
     // it has no instances
