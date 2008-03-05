@@ -211,10 +211,8 @@ public class Mdam implements ISkillHandler
         skill.getEffectsSelf(activeChar);
 
         if (skill.isSuicideAttack())
-        {
         	activeChar.doDie(null);
-        	activeChar.setCurrentHp(0);
-        }
+
     }
 
     public SkillType[] getSkillIds()

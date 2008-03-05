@@ -230,8 +230,6 @@ public class CharStatus
             // Start the doDie process
             getActiveChar().doDie(attacker);
             
-            // now reset currentHp to zero
-            setCurrentHp(0);
             if (getActiveChar() instanceof L2PcInstance) 
             { 
             	QuestState qs = ((L2PcInstance) getActiveChar()).getQuestState("255_Tutorial"); 

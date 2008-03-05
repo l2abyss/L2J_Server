@@ -1642,6 +1642,8 @@ public abstract class L2Character extends L2Object
         synchronized (this)
         {
             if (isKilledAlready()) return false;
+            // now reset currentHp to zero
+            setCurrentHp(0);
             setIsKilledAlready(true);
         }
 		// Set target to null and cancel Attack or Cast
