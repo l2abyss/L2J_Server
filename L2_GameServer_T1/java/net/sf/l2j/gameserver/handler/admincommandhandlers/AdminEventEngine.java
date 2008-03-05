@@ -567,18 +567,15 @@ public class AdminEventEngine implements IAdminCommandHandler {
    void resTeam(int team){
        LinkedList<String> linked = L2Event.players.get(team);
        Iterator<String> it = linked.iterator();
-       while(it.hasNext()){
-           try{L2PcInstance character = L2World.getInstance().getPlayer(it.next().toString());
+       while(it.hasNext())
+       {
+       	   L2PcInstance character = L2World.getInstance().getPlayer(it.next().toString());
+       	   if (character == null || !character.isDead()) continue;
+           character.restoreExp(100.0);
+           character.doRevive();
            character.setCurrentHpMp(character.getMaxHp(), character.getMaxMp());
            character.setCurrentCp(character.getMaxCp());
-           Revive revive = new Revive(character);
-           SocialAction sa = new SocialAction(character.getObjectId(), 15);
-           character.broadcastPacket(sa);
-           character.sendPacket(sa);
-           character.sendPacket(revive);
-           character.broadcastPacket(revive);}catch(Exception e){}
        }
-
    }
 
    void polyTeam(int team, String id){

@@ -1696,14 +1696,6 @@ public class L2Clan
         	sm = null;
 			return false;
 		}
-		if (target.getClanId() != 0)
-		{
-        	SystemMessage sm = new SystemMessage(SystemMessageId.S1_WORKING_WITH_ANOTHER_CLAN);
-        	sm.addString(target.getName());
-        	activeChar.sendPacket(sm);
-        	sm = null;
-			return false;
-		}
 		if (target.getClanJoinExpiryTime() > System.currentTimeMillis())
 		{
         	SystemMessage sm = new SystemMessage(SystemMessageId.S1_MUST_WAIT_BEFORE_JOINING_ANOTHER_CLAN);
