@@ -123,7 +123,7 @@ import net.sf.l2j.gameserver.handler.itemhandlers.BeastSpiritShot;
 import net.sf.l2j.gameserver.handler.itemhandlers.BlessedSpiritShot;
 import net.sf.l2j.gameserver.handler.itemhandlers.Book;
 import net.sf.l2j.gameserver.handler.itemhandlers.CharChangePotions;
-import net.sf.l2j.gameserver.handler.itemhandlers.ChestKey;
+import net.sf.l2j.gameserver.handler.itemhandlers.Key;
 import net.sf.l2j.gameserver.handler.itemhandlers.CrystalCarol;
 import net.sf.l2j.gameserver.handler.itemhandlers.EnchantScrolls;
 import net.sf.l2j.gameserver.handler.itemhandlers.EnergyStone;
@@ -472,7 +472,7 @@ public class GameServer
 		_itemHandler.registerItemHandler(new BlessedSpiritShot());
         _itemHandler.registerItemHandler(new BeastSoulShot());
         _itemHandler.registerItemHandler(new BeastSpiritShot());
-        _itemHandler.registerItemHandler(new ChestKey());
+        _itemHandler.registerItemHandler(new Key());
         _itemHandler.registerItemHandler(new PaganKeys());
 		_itemHandler.registerItemHandler(new Maps());
 		_itemHandler.registerItemHandler(new Potions());

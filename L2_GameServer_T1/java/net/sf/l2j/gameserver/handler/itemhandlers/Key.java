@@ -26,44 +26,67 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 
-public class ChestKey implements IItemHandler
+public class Key implements IItemHandler
 {
 	public static final int INTERACTION_DISTANCE = 100;
-
-	private static final int[] ITEM_IDS = {
-											6665, 6666, 6667, 6668, 6669, 6670, 6671, 6672  //deluxe key
-										  };
+	
+	
+	private static final int[] ITEM_IDS =
+	{
+		6665, 6666, 6667, 6668, 6669, 6670, 6671, 6672, // deluxe chest key
+		8060
+	};
 
 	public void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
 		if (!(playable instanceof L2PcInstance)) return;
-
 		L2PcInstance activeChar = (L2PcInstance) playable;
-		int itemId = item.getItemId();
-		L2Skill skill = SkillTable.getInstance().getInfo(2229, itemId-6664);//box key skill
-		L2Object target = activeChar.getTarget();
 
-		if (!(target instanceof L2ChestInstance) || target == null)
+		int itemId = item.getItemId();
+		
+		switch (itemId)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
-			activeChar.sendPacket(new ActionFailed());
-		}
-		else
-		{
-			L2ChestInstance chest = (L2ChestInstance) target;
-			if (chest.isDead() || chest.isInteracted())
+			case 6665:
+			case 6666:
+			case 6667:
+			case 6668:
+			case 6669:
+			case 6670:
+			case 6671:
+			case 6672:
 			{
-				activeChar.sendMessage("The chest Is empty.");
-				activeChar.sendPacket(new ActionFailed());
-				return;
+				L2Skill skill = SkillTable.getInstance().getInfo(2229, itemId - 6664);// box key skill
+				L2Object target = activeChar.getTarget();
+				
+				if (!(target instanceof L2ChestInstance) || target == null)
+				{
+					activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
+					activeChar.sendPacket(new ActionFailed());
+				}
+				else
+				{
+					L2ChestInstance chest = (L2ChestInstance) target;
+					if (chest.isDead() || chest.isInteracted())
+					{
+						activeChar.sendMessage("The chest Is empty.");
+						activeChar.sendPacket(new ActionFailed());
+						return;
+					}
+					activeChar.useMagic(skill, false, false);
+				}
+				break;
 			}
-			activeChar.useMagic(skill,false,false);
+			case 8060:
+			{
+				L2Skill skill = SkillTable.getInstance().getInfo(2260,1);
+				activeChar.doCast(skill);
+			}
 		}
 	}
-
+	
+	
 	public int[] getItemIds()
 	{
 		return ITEM_IDS;
 	}
-
 }
