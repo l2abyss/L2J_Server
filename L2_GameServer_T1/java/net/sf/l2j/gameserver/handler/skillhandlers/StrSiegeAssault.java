@@ -64,12 +64,12 @@ public class StrSiegeAssault implements ISkillHandler
             {
                 L2Character target = (L2Character)targets[index];
                 L2ItemInstance weapon = activeChar.getActiveWeaponInstance();
-                if (activeChar instanceof L2PcInstance && target instanceof L2PcInstance &&
-                		target.isAlikeDead() && target.isFakeDeath())
+                if (activeChar instanceof L2PcInstance && target instanceof L2PcInstance 
+                		&& target.isFakeDeath())
                 {
                 	target.stopFakeDeath(null);
                 }
-                else if (target.isAlikeDead())
+                else if (target.isDead())
                     continue;
 
                 boolean dual  = activeChar.isUsingDualWeapon();

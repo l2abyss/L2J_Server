@@ -109,7 +109,7 @@ public class L2ControllableMobInstance extends L2MonsterInstance
 
 		setCurrentHp(i);
 
-		if (isDead())
+		if (getCurrentHp() < 0.5) // Die
 		{
 			// first die (and calculate rewards), if currentHp < 0,
 			// then overhit may be calculated

@@ -173,10 +173,9 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		if (activeChar.isFakeDeath())
 		{
 			activeChar.stopFakeDeath(null);
-			activeChar.broadcastPacket(new Revive(activeChar));
 			return;
 		}
-		else if(!activeChar.isAlikeDead())
+		else if(!activeChar.isDead())
 		{
 			_log.warning("Living player ["+activeChar.getName()+"] called RestartPointPacket! Ban this player!");
 			return;

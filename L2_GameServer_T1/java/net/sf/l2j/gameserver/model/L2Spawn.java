@@ -485,7 +485,7 @@ public class L2Spawn
                 mob.removeEffect(f);
         }
 
-        mob.setIsKilledAlready(false);
+        mob.setIsDead(false);
         // Reset decay info
         mob.setDecayed(false);
         // Set the HP and MP of the L2NpcInstance to the max
