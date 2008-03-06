@@ -287,6 +287,8 @@ public class EnterWorld extends L2GameClientPacket
             sendPacket(new PledgeStatusChanged(activeChar.getClan()));
         }
 
+        if (activeChar.isDead())
+        	activeChar.setIsKilledAlready(true);
         if (activeChar.isAlikeDead())
         {
             // no broadcast needed since the player will already spawn dead to others
