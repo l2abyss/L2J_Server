@@ -66,11 +66,11 @@ public class Recipes implements IItemHandler
         			SystemMessage sm = new SystemMessage(SystemMessageId.CREATE_LVL_TOO_LOW_TO_REGISTER);
         			activeChar.sendPacket(sm);
 			    }
-			    else if (activeChar.getDwarvenRecipeBook().length >= activeChar.GetDwarfRecipeLimit())
+			    else if (activeChar.getDwarvenRecipeBook().length >= activeChar.getDwarfRecipeLimit())
 				{
 					//Up to $s1 recipes can be registered.
 					SystemMessage sm = new SystemMessage(SystemMessageId.UP_TO_S1_RECIPES_CAN_REGISTER);
-					sm.addNumber(activeChar.GetDwarfRecipeLimit());
+					sm.addNumber(activeChar.getDwarfRecipeLimit());
         			activeChar.sendPacket(sm);
 				}
 				else
@@ -98,11 +98,11 @@ public class Recipes implements IItemHandler
         			SystemMessage sm = new SystemMessage(SystemMessageId.CREATE_LVL_TOO_LOW_TO_REGISTER);
         			activeChar.sendPacket(sm);
 			    }
-			    else if (activeChar.getCommonRecipeBook().length >= activeChar.GetCommonRecipeLimit())
+			    else if (activeChar.getCommonRecipeBook().length >= activeChar.getCommonRecipeLimit())
 				{
 					//Up to $s1 recipes can be registered.
 					SystemMessage sm = new SystemMessage(SystemMessageId.UP_TO_S1_RECIPES_CAN_REGISTER);
-					sm.addNumber(activeChar.GetCommonRecipeLimit());
+					sm.addNumber(activeChar.getCommonRecipeLimit());
         			activeChar.sendPacket(sm);
 				}
 				else

@@ -91,8 +91,8 @@ public class Fishing implements ISkillHandler
 
 		if (player.isFishing())
 		{
-			if (player.GetFishCombat() != null) player.GetFishCombat().doDie(false);
-			else player.EndFishing(false);
+			if (player.getFishCombat() != null) player.getFishCombat().doDie(false);
+			else player.endFishing(false);
 			//Cancels fishing
 			player.sendPacket(new SystemMessage(SystemMessageId.FISHING_ATTEMPT_CANCELLED));
 			return;
@@ -135,7 +135,7 @@ public class Fishing implements ISkillHandler
 			player.sendPacket(new SystemMessage(SystemMessageId.BAIT_ON_HOOK_BEFORE_FISHING));
             return;
 		}
-		player.SetLure(lure);
+		player.setLure(lure);
 		L2ItemInstance lure2 = player.getInventory().getPaperdollItem(Inventory.PAPERDOLL_LHAND);
 
 		if (lure2 == null || lure2.getCount() < 1) //Not enough bait.

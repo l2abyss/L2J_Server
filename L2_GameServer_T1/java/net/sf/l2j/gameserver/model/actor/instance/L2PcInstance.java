@@ -8321,7 +8321,7 @@ public final class L2PcInstance extends L2PlayableInstance
         public void run()
         {
             if (System.currentTimeMillis() >= _endTaskTime) {
-            	EndFishing(false);
+            	endFishing(false);
             	return;
             }
         	if (_fishType == -1)
@@ -8330,7 +8330,7 @@ public final class L2PcInstance extends L2PlayableInstance
             if(_fishGutsCheck > check)
             {
                 stopLookingForFishTask();
-                StartFishCombat(_isNoob, _isUpperGrade);
+                startFishCombat(_isNoob, _isUpperGrade);
             }
         }
 
@@ -8624,12 +8624,12 @@ public final class L2PcInstance extends L2PlayableInstance
 	{
 		if (hero && _baseClass == _activeClass)
 		{
-			for (L2Skill s : HeroSkillTable.GetHeroSkills())
+			for (L2Skill s : HeroSkillTable.getHeroSkills())
 				addSkill(s, false); //Dont Save Hero skills to database
 		}
 		else
 		{
-			for (L2Skill s : HeroSkillTable.GetHeroSkills())
+			for (L2Skill s : HeroSkillTable.getHeroSkills())
 				super.removeSkill(s); //Just Remove skills from nonHero characters
 		}
 		_hero = hero;
@@ -8746,10 +8746,10 @@ public final class L2PcInstance extends L2PlayableInstance
     public void setNoble(boolean val)
     {
     	if (val)
-    		for (L2Skill s : NobleSkillTable.getInstance().GetNobleSkills())
+    		for (L2Skill s : NobleSkillTable.getInstance().getNobleSkills())
     			addSkill(s, false); //Dont Save Noble skills to Sql
     	else
-    		for (L2Skill s : NobleSkillTable.getInstance().GetNobleSkills())
+    		for (L2Skill s : NobleSkillTable.getInstance().getNobleSkills())
     			super.removeSkill(s); //Just Remove skills without deleting from Sql
     	_noble = val;
     	
@@ -9977,7 +9977,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		if (fishs == null || fishs.size() == 0)
 		{
 			sendMessage("Error - Fishes are not definied");
-			EndFishing(false);
+			endFishing(false);
 			return;
 		}
 		int check = Rnd.get(fishs.size());
@@ -9992,7 +9992,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		//sendMessage("Hook x,y: " + _x + "," + _y + " - Water Z, Player Z:" + _z + ", " + getZ()); //debug line, uncoment to show coordinates used in fishing.
     	efs = new ExFishingStart(this,_fish.getType(),_x,_y,_z,_lure.isNightLure());
         broadcastPacket(efs);
-        StartLookingForFishTask();
+        startLookingForFishTask();
     }
     public void stopLookingForFishTask()
     {
@@ -10002,7 +10002,7 @@ public final class L2PcInstance extends L2PlayableInstance
             _taskforfish = null;
         }
     }
-    public void StartLookingForFishTask()
+    public void startLookingForFishTask()
     {
         if (!isDead() && _taskforfish == null)
         {
@@ -10214,11 +10214,12 @@ public final class L2PcInstance extends L2PlayableInstance
 
 		return randomlvl;
 	}
-	public void StartFishCombat(boolean isNoob, boolean isUpperGrade)
+	public void startFishCombat(boolean isNoob, boolean isUpperGrade)
     {
         _fishCombat = new L2Fishing (this, _fish, isNoob, isUpperGrade);
     }
-    public void EndFishing(boolean win)
+    
+	public void endFishing(boolean win)
     {
         ExFishingEnd efe = new ExFishingEnd(win, this);
         broadcastPacket(efe);
@@ -10236,101 +10237,104 @@ public final class L2PcInstance extends L2PlayableInstance
         setIsImmobilized(false);
         stopLookingForFishTask();
     }
-    public L2Fishing GetFishCombat()
+
+    public L2Fishing getFishCombat()
     {
         return _fishCombat;
     }
-    public int GetFishx()
+
+    public int getFishx()
     {
         return _fishx;
     }
-    public int GetFishy()
+
+    public int getFishy()
     {
         return _fishy;
     }
-    public int GetFishz()
+
+    public int getFishz()
     {
         return _fishz;
     }
-    public void SetLure (L2ItemInstance lure)
+
+    public void setLure (L2ItemInstance lure)
     {
         _lure = lure;
     }
-    public L2ItemInstance GetLure()
-    {
-    return _lure;
-    }
-    public int GetInventoryLimit()
-    {
-        int ivlim;
-        if (isGM()) {
-            ivlim = Config.INVENTORY_MAXIMUM_GM;
-        }
-        else if (getRace() == Race.Dwarf)
-        {
-                ivlim = Config.INVENTORY_MAXIMUM_DWARF;
-        }
-        else
-        {
-            ivlim = Config.INVENTORY_MAXIMUM_NO_DWARF;
-        }
-        ivlim += (int)getStat().calcStat(Stats.INV_LIM, 0, null, null);
 
-           return ivlim;
-       }
-       public int GetWareHouseLimit()
-       {
-           int whlim;
-           if (getRace() == Race.Dwarf){
+ 	public L2ItemInstance getLure()
+	{
+ 		return _lure;
+	}
+
+	public int getInventoryLimit()
+	{
+		int ivlim;
+		if (isGM())
+			ivlim = Config.INVENTORY_MAXIMUM_GM;
+		else if (getRace() == Race.Dwarf)
+			ivlim = Config.INVENTORY_MAXIMUM_DWARF;
+		else
+        	ivlim = Config.INVENTORY_MAXIMUM_NO_DWARF;
+		ivlim += (int)getStat().calcStat(Stats.INV_LIM, 0, null, null);
+
+		return ivlim;
+	}
+
+	public int getWareHouseLimit()
+	{
+		int whlim;
+		if (getRace() == Race.Dwarf)
                whlim = Config.WAREHOUSE_SLOTS_DWARF;
-           }
-           else{
-               whlim = Config.WAREHOUSE_SLOTS_NO_DWARF;
-           }
-           whlim += (int)getStat().calcStat(Stats.WH_LIM, 0, null, null);
+		else
+			whlim = Config.WAREHOUSE_SLOTS_NO_DWARF;
 
-           return whlim;
-       }
-       public int GetPrivateSellStoreLimit()
-       {
-           int pslim;
-           if (getRace() == Race.Dwarf){
-               pslim = Config.MAX_PVTSTORE_SLOTS_DWARF;
-           }
-           else{
-               pslim = Config.MAX_PVTSTORE_SLOTS_OTHER;
-           }
-           pslim += (int)getStat().calcStat(Stats.P_SELL_LIM, 0, null, null);
+		whlim += (int)getStat().calcStat(Stats.WH_LIM, 0, null, null);
 
-           return pslim;
-       }
-       public int GetPrivateBuyStoreLimit()
-       {
-           int pblim;
-           if (getRace() == Race.Dwarf){
-               pblim = Config.MAX_PVTSTORE_SLOTS_DWARF;
-           }
-           else
-           {
-               pblim = Config.MAX_PVTSTORE_SLOTS_OTHER;
-           }
-           pblim += (int)getStat().calcStat(Stats.P_BUY_LIM, 0, null, null);
+		return whlim;
+	}
+	
+	public int getPrivateSellStoreLimit()
+	{
+		int pslim;
+	
+		if (getRace() == Race.Dwarf)
+			pslim = Config.MAX_PVTSTORE_SLOTS_DWARF;
+        else
+        	pslim = Config.MAX_PVTSTORE_SLOTS_OTHER;
 
-           return pblim;
-       }
-       public int GetFreightLimit()
-       {
-        return Config.FREIGHT_SLOTS + (int)getStat().calcStat(Stats.FREIGHT_LIM, 0, null, null);
-    }
+		pslim += (int)getStat().calcStat(Stats.P_SELL_LIM, 0, null, null);
 
-    public int GetDwarfRecipeLimit()
+		return pslim;
+	}
+
+	public int getPrivateBuyStoreLimit()
+	{
+		int pblim;
+		
+		if (getRace() == Race.Dwarf)
+			pblim = Config.MAX_PVTSTORE_SLOTS_DWARF;
+		else
+			pblim = Config.MAX_PVTSTORE_SLOTS_OTHER;
+		pblim += (int)getStat().calcStat(Stats.P_BUY_LIM, 0, null, null);
+
+		return pblim;
+	}
+	
+	public int getFreightLimit()
+	{
+		return Config.FREIGHT_SLOTS + (int)getStat().calcStat(Stats.FREIGHT_LIM, 0, null, null);
+	}
+
+    public int getDwarfRecipeLimit()
     {
         int recdlim = Config.DWARF_RECIPE_LIMIT;
         recdlim += (int)getStat().calcStat(Stats.REC_D_LIM, 0, null, null);
         return recdlim;
     }
 
-    public int GetCommonRecipeLimit()
+    public int getCommonRecipeLimit()
     {
         int recclim = Config.COMMON_RECIPE_LIMIT;
         recclim += (int)getStat().calcStat(Stats.REC_C_LIM, 0, null, null);

@@ -320,7 +320,7 @@ public final class UserInfo extends L2GameServerPacket
         writeH(_activeChar.getRecomLeft()); //c2  recommendations remaining
         writeH(_activeChar.getRecomHave()); //c2  recommendations received
         writeD(_activeChar.getMountNpcId() + 1000000);
-        writeH(_activeChar.GetInventoryLimit());
+        writeH(_activeChar.getInventoryLimit());
 
         writeD(_activeChar.getClassId().getId());
         writeD(0x00); // special effects? circles around player...
@@ -340,9 +340,9 @@ public final class UserInfo extends L2GameServerPacket
         writeC((_activeChar.isHero() || (_activeChar.isGM() && Config.GM_HERO_AURA)) ? 1 : 0); //0x01: Hero Aura
 
         writeC(_activeChar.isFishing() ? 1 : 0); //Fishing Mode
-        writeD(_activeChar.GetFishx()); //fishing x
-        writeD(_activeChar.GetFishy()); //fishing y
-        writeD(_activeChar.GetFishz()); //fishing z
+        writeD(_activeChar.getFishx()); //fishing x
+        writeD(_activeChar.getFishy()); //fishing y
+        writeD(_activeChar.getFishz()); //fishing z
         writeD(_activeChar.getAppearance().getNameColor());
 
 		//new c5

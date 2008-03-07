@@ -44,7 +44,7 @@ public class GMViewItemList extends L2GameServerPacket
 	{
 		writeC(0x9a);
 		writeS(_playerName);
-		writeD(_cha.GetInventoryLimit()); // inventory limit
+		writeD(_cha.getInventoryLimit()); // inventory limit
 		writeH(0x01); // show window ??
 		writeH(_items.length);
 

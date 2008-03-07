@@ -691,7 +691,7 @@ public class TradeList
      * Buy items from this PrivateStore list
      * @return : boolean true if success
      */
-    public synchronized boolean PrivateStoreBuy(L2PcInstance player, ItemRequest[] items, int price)
+    public synchronized boolean privateStoreBuy(L2PcInstance player, ItemRequest[] items, int price)
     {
         if (_locked) return false;
         if (!validate())
@@ -810,7 +810,7 @@ public class TradeList
      * Sell items to this PrivateStore list
      * @return : boolean true if success
      */
-    public synchronized boolean PrivateStoreSell(L2PcInstance player, ItemRequest[] items, int price)
+    public synchronized boolean privateStoreSell(L2PcInstance player, ItemRequest[] items, int price)
     {
         if (_locked) return false;
 

@@ -338,9 +338,9 @@ public final class NpcInfo extends L2GameServerPacket
             writeC(((L2Decoy)_activeChar).getOwner().isHero() ? 1 : 0); // Hero Aura
 
             writeC(((L2Decoy)_activeChar).getOwner().isFishing() ? 1 : 0); //0x01: Fishing Mode (Cant be undone by setting back to 0)
-            writeD(((L2Decoy)_activeChar).getOwner().GetFishx());
-            writeD(((L2Decoy)_activeChar).getOwner().GetFishy());
-            writeD(((L2Decoy)_activeChar).getOwner().GetFishz());
+            writeD(((L2Decoy)_activeChar).getOwner().getFishx());
+            writeD(((L2Decoy)_activeChar).getOwner().getFishy());
+            writeD(((L2Decoy)_activeChar).getOwner().getFishz());
 
             writeD(((L2Decoy)_activeChar).getOwner().getAppearance().getNameColor());
 

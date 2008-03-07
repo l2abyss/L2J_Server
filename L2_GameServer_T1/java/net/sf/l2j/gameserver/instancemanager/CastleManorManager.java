@@ -43,7 +43,7 @@ import net.sf.l2j.util.Rnd;
  */
 
 public class CastleManorManager {
-	protected static Logger _log = Logger.getLogger(CastleManorManager.class.getName());
+	protected static final Logger _log = Logger.getLogger(CastleManorManager.class.getName());
 
 	private static CastleManorManager _instance;
 

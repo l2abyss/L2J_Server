@@ -841,6 +841,6 @@ public final class QuestState
 
 	public void dropItem(L2MonsterInstance npc, L2PcInstance player, int itemId, int count)
 	{
-		npc.DropItem(player, itemId, count);
+		npc.dropItem(player, itemId, count);
 	}
 }

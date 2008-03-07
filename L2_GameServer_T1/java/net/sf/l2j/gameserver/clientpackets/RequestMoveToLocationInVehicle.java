@@ -68,7 +68,7 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 		}
 		else
 		{
-			L2BoatInstance boat = BoatManager.getInstance().GetBoat(_boatId);
+			L2BoatInstance boat = BoatManager.getInstance().getBoat(_boatId);
 			if (boat == null) return;
 			activeChar.setBoat(boat);
 			activeChar.setInBoat(true);

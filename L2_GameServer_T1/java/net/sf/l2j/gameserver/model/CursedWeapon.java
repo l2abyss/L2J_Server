@@ -247,7 +247,7 @@ public class CursedWeapon
 
 		if (fromMonster)
 		{
-			_item = attackable.DropItem(player, _itemId, 1);
+			_item = attackable.dropItem(player, _itemId, 1);
 			_item.setDropTime(0); // Prevent item from being removed by ItemsAutoDestroy
 
 			// RedSky and Earthquake

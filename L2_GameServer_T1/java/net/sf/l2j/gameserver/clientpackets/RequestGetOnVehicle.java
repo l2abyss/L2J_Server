@@ -46,7 +46,7 @@ public final class RequestGetOnVehicle extends L2GameClientPacket
         L2PcInstance activeChar = getClient().getActiveChar();
         if (activeChar == null) return;
 
-        L2BoatInstance boat = BoatManager.getInstance().GetBoat(_id);
+        L2BoatInstance boat = BoatManager.getInstance().getBoat(_id);
         if (boat == null) return;
 
         GetOnVehicle Gon = new GetOnVehicle(activeChar,boat,_x,_y,_z);

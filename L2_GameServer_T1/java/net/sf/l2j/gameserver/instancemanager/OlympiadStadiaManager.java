@@ -22,7 +22,7 @@ import net.sf.l2j.gameserver.model.zone.type.L2OlympiadStadiumZone;
 
 public class OlympiadStadiaManager
 {
-    protected static Logger _log = Logger.getLogger(OlympiadStadiaManager.class.getName());
+    protected static final Logger _log = Logger.getLogger(OlympiadStadiaManager.class.getName());
 
     // =========================================================
     private static OlympiadStadiaManager _instance;

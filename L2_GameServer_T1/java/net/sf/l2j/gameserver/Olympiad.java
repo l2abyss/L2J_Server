@@ -1515,7 +1515,7 @@ public class Olympiad
 				//Remove Hero Skills
 				if (player.isHero())
 				{
-					for(L2Skill skill: HeroSkillTable.GetHeroSkills())
+					for(L2Skill skill: HeroSkillTable.getHeroSkills())
 						player.removeSkill(skill,false);
 				}
 				
@@ -1720,7 +1720,7 @@ public class Olympiad
                 //Add Hero Skills
 				if (player.isHero())
 				{
-					for(L2Skill skill: HeroSkillTable.GetHeroSkills())
+					for(L2Skill skill: HeroSkillTable.getHeroSkills())
 						player.addSkill(skill,false);
 				}
 				player.sendSkillList();

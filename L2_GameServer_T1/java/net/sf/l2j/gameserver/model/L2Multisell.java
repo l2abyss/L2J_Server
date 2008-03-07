@@ -225,7 +225,7 @@ public class L2Multisell
         return newEntry;
     }
 
-    public void SeparateAndSend(int listId, L2PcInstance player, boolean inventoryOnly, double taxRate)
+    public void separateAndSend(int listId, L2PcInstance player, boolean inventoryOnly, double taxRate)
     {
 		MultiSellListContainer list = generateMultiSell(listId, inventoryOnly, player, taxRate);
 		MultiSellListContainer temp = new MultiSellListContainer();

@@ -210,7 +210,7 @@ public class BoatManager
 	 * @param boatId
 	 * @return
 	 */
-	public L2BoatInstance GetBoat(int boatId)
+	public L2BoatInstance getBoat(int boatId)
 	{
 		if (_staticItems == null) _staticItems = new FastMap<Integer,L2BoatInstance>();
 		return _staticItems.get(boatId);

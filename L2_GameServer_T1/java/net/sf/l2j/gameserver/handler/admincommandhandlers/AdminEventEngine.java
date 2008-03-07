@@ -39,8 +39,6 @@ import net.sf.l2j.gameserver.serverpackets.CharInfo;
 import net.sf.l2j.gameserver.serverpackets.ItemList;
 import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.serverpackets.PlaySound;
-import net.sf.l2j.gameserver.serverpackets.Revive;
-import net.sf.l2j.gameserver.serverpackets.SocialAction;
 import net.sf.l2j.gameserver.serverpackets.UserInfo;
 /**
  * This class handles following admin commands:
@@ -504,7 +502,7 @@ public class AdminEventEngine implements IAdminCommandHandler {
        int max = 0;
        String name = "";
        while(it.hasNext()){
-           try{tempName2 =it.next().toString();
+           try{tempName2 =it.next();
            pc = L2World.getInstance().getPlayer(tempName2);
            if( max < pc.getLevel() ) {
                max = pc.getLevel();
@@ -538,7 +536,7 @@ public class AdminEventEngine implements IAdminCommandHandler {
        LinkedList<String> linked = L2Event.players.get(team);
        Iterator<String> it = linked.iterator();
        while(it.hasNext()){
-           try{L2PcInstance pc = L2World.getInstance().getPlayer(it.next().toString());
+           try{L2PcInstance pc = L2World.getInstance().getPlayer(it.next());
            pc.setTitle(L2Event.names.get(team));
            pc.teleToLocation(activeChar.getX(), activeChar.getY(), activeChar.getZ(), true);}catch(Exception e){}
        }
@@ -548,7 +546,7 @@ public class AdminEventEngine implements IAdminCommandHandler {
        LinkedList<String> linked = L2Event.players.get(team);
        Iterator<String> it = linked.iterator();
        while(it.hasNext()){
-           try{L2PcInstance pc = L2World.getInstance().getPlayer(it.next().toString());
+           try{L2PcInstance pc = L2World.getInstance().getPlayer(it.next());
            pc.eventSitForced = !pc.eventSitForced;
            if(pc.eventSitForced) pc.sitDown();
            else pc.standUp();}catch(Exception e){}
@@ -559,7 +557,7 @@ public class AdminEventEngine implements IAdminCommandHandler {
        LinkedList<String> linked = L2Event.players.get(team);
        Iterator<String> it = linked.iterator();
        while(it.hasNext()){
-           try{L2PcInstance target = L2World.getInstance().getPlayer(it.next().toString());
+           try{L2PcInstance target = L2World.getInstance().getPlayer(it.next());
            target.reduceCurrentHp(target.getMaxHp() + target.getMaxCp() + 1, activeChar);}catch(Exception e){}
        }
 
@@ -569,7 +567,7 @@ public class AdminEventEngine implements IAdminCommandHandler {
        Iterator<String> it = linked.iterator();
        while(it.hasNext())
        {
-       	   L2PcInstance character = L2World.getInstance().getPlayer(it.next().toString());
+       	   L2PcInstance character = L2World.getInstance().getPlayer(it.next());
        	   if (character == null || !character.isDead()) continue;
            character.restoreExp(100.0);
            character.doRevive();
@@ -582,7 +580,7 @@ public class AdminEventEngine implements IAdminCommandHandler {
        LinkedList<String> linked = L2Event.players.get(team);
        Iterator<String> it = linked.iterator();
        while(it.hasNext()){
-        try{   L2PcInstance target = L2World.getInstance().getPlayer(it.next().toString());
+        try{   L2PcInstance target = L2World.getInstance().getPlayer(it.next());
         target.getPoly().setPolyInfo("npc", id);
         target.teleToLocation(target.getX(), target.getY(), target.getZ(), true);
         CharInfo info1 = new CharInfo(target);
@@ -596,7 +594,7 @@ public class AdminEventEngine implements IAdminCommandHandler {
        LinkedList<String> linked = L2Event.players.get(team);
        Iterator<String> it = linked.iterator();
        while(it.hasNext()){
-          try{ L2PcInstance target = L2World.getInstance().getPlayer(it.next().toString());
+          try{ L2PcInstance target = L2World.getInstance().getPlayer(it.next());
 
            target.getPoly().setPolyInfo(null, "1");
         target.decayMe();
@@ -629,7 +627,7 @@ public class AdminEventEngine implements IAdminCommandHandler {
        int temp = n;
        Iterator<String> it = linked.iterator();
        while(it.hasNext()){
-          try{ L2PcInstance target = L2World.getInstance().getPlayer(it.next().toString());
+          try{ L2PcInstance target = L2World.getInstance().getPlayer(it.next());
            if(type.equalsIgnoreCase("level")) temp = n * target.getLevel();
            else if(type.equalsIgnoreCase("kills")) temp = n * target.kills.size();
            else temp = n;
@@ -643,7 +641,7 @@ public class AdminEventEngine implements IAdminCommandHandler {
        LinkedList<String> linked = L2Event.players.get(team);
        Iterator<String> it = linked.iterator();
        while(it.hasNext()){
-         try{ L2PcInstance target = L2World.getInstance().getPlayer(it.next().toString());
+         try{ L2PcInstance target = L2World.getInstance().getPlayer(it.next());
           target.setTitle(target.eventTitle);
           target.setKarma(target.eventkarma);
           target.setPvpKills(target.eventpvpkills);

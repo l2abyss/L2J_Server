@@ -138,7 +138,7 @@ public class L2Fishing implements Runnable
         		_fisher.addItem("Fishing", _fishId, 1, null, true);
         	}
         }
-        _fisher.EndFishing(win);
+        _fisher.endFishing(win);
         _fisher = null;
 	}
 
@@ -349,9 +349,9 @@ public class L2Fishing implements Runnable
 			try
 			{
 				L2Spawn spawn = new L2Spawn(temp);
-				spawn.setLocx(_fisher.GetFishx());
-				spawn.setLocy(_fisher.GetFishy());
-				spawn.setLocz(_fisher.GetFishz());
+				spawn.setLocx(_fisher.getFishx());
+				spawn.setLocy(_fisher.getFishy());
+				spawn.setLocz(_fisher.getFishz());
 				spawn.setAmount(1);
 				spawn.setHeading(_fisher.getHeading());
 				spawn.stopRespawn();

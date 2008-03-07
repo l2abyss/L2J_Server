@@ -30,7 +30,7 @@ import net.sf.l2j.gameserver.model.entity.Castle;
  */
 public class CastleUpdater implements Runnable
 {
-        protected static Logger _log = Logger.getLogger(CastleUpdater.class.getName());
+        protected static final Logger _log = Logger.getLogger(CastleUpdater.class.getName());
         private L2Clan _clan;
         private int _runCount = 0;
 

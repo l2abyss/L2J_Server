@@ -157,6 +157,7 @@ public class Couple
             statement = con.prepareStatement("DELETE FROM mods_wedding WHERE id=?");
             statement.setInt(1, _Id);
             statement.execute();
+            statement.close();
         }
         catch (Exception e)
         {

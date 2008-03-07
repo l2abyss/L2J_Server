@@ -46,7 +46,7 @@ import net.sf.l2j.gameserver.serverpackets.PledgeShowInfoUpdate;
 
 public class Castle
 {
-    protected static Logger _log = Logger.getLogger(Castle.class.getName());
+    protected static final Logger _log = Logger.getLogger(Castle.class.getName());
 
  // =========================================================
     // Data Field

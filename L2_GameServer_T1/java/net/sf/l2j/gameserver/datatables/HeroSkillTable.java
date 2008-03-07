@@ -42,7 +42,7 @@ public class HeroSkillTable
 		return _instance;
 	}
 
-	public static L2Skill[] GetHeroSkills()
+	public static L2Skill[] getHeroSkills()
 	{
 		return _heroSkills;
 	}

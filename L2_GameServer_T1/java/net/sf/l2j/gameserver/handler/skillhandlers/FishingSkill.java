@@ -38,7 +38,7 @@ public class FishingSkill implements ISkillHandler
 
         L2PcInstance player = (L2PcInstance)activeChar;
 
-		L2Fishing fish = player.GetFishCombat();
+		L2Fishing fish = player.getFishCombat();
         if (fish == null)
 		{
 			if (skill.getSkillType()==SkillType.PUMPING)

@@ -227,7 +227,7 @@ public class L2Event
             boolean temp = false;
             while (it.hasNext())
             {
-                temp = player.getName().equalsIgnoreCase(it.next().toString());
+                temp = player.getName().equalsIgnoreCase(it.next());
                 if (temp) return true;
             }
         }

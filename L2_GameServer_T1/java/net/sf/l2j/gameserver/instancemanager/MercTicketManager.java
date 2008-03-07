@@ -50,7 +50,7 @@ import net.sf.l2j.gameserver.templates.L2NpcTemplate;
  */
 public class MercTicketManager
 {
-    protected static Logger _log = Logger.getLogger(CastleManager.class.getName());
+    protected static final Logger _log = Logger.getLogger(CastleManager.class.getName());
 
     // =========================================================
     private static MercTicketManager _instance;
