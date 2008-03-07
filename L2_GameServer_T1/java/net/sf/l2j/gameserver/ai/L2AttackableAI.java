@@ -1061,7 +1061,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			// circling around the target
 			if (Rnd.nextInt(100) <= 33) // check it once per 3 seconds
 			{
-				for (L2Object nearby : _actor.getKnownList().getKnownCharactersInRadius(20))
+				for (L2Object nearby : _actor.getKnownList().getKnownCharactersInRadius(10))
 				{
 					if (nearby instanceof L2Attackable
 					        && nearby != getAttackTarget())
