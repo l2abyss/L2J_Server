@@ -1007,8 +1007,8 @@ public final class Config
             // Character Config File
             try
             {
-                Properties Character    = new Properties();
-                InputStream is               = new FileInputStream(new File(GENERAL_CONFIG_FILE));
+                Properties Character    	= new Properties();
+                InputStream is              = new FileInputStream(new File(CHARACTER_CONFIG_FILE));
                 Character.load(is);
                 is.close();
 
@@ -1113,7 +1113,7 @@ public final class Config
             catch (Exception e)
             {
                 e.printStackTrace();
-                throw new Error("Failed to Load "+GENERAL_CONFIG_FILE+" File.");
+                throw new Error("Failed to Load "+CHARACTER_CONFIG_FILE+" File.");
             }
 
             /*
@@ -1192,7 +1192,7 @@ public final class Config
             // General Config File
             try
             {
-                Properties General    = new Properties();
+                Properties General    		= new Properties();
                 InputStream is              = new FileInputStream(new File(GENERAL_CONFIG_FILE));
                 General.load(is);
                 is.close();
