@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.model.actor.stat;
 
 import java.util.logging.Logger;
 
+import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.base.Experience;
 
@@ -44,12 +45,19 @@ public class PlayableStat extends CharStat
 
         setExp(getExp() + value);
 
-		byte level = 0;
-		for (level = 1; level <= Experience.MAX_LEVEL; level++)
+        byte level = 1; // minimum level
+        if (getActiveChar() instanceof L2PetInstance)
         {
-        	if (getExp() >= getExpForLevel(level)) continue;
-        	level--;
-        	break;
+        	// get minimum level from L2NpcTemplate
+        	level = ((L2PetInstance)getActiveChar()).getTemplate().level;
+        }
+        
+        for (byte tmp = level; tmp <= Experience.MAX_LEVEL; tmp++)
+        {
+            if (getExp() >= getExpForLevel(tmp))
+            	continue;
+            level = tmp--;
+            break;
         }
         if (level != getLevel()) addLevel((byte)(level - getLevel()));
 
@@ -63,12 +71,18 @@ public class PlayableStat extends CharStat
 
         setExp(getExp() - value);
 
-        byte level = 0;
-        for (level = 1; level <= Experience.MAX_LEVEL; level++)
+        byte level = 1; // minimum level
+        if (getActiveChar() instanceof L2PetInstance)
         {
-            if (getExp() >= getExpForLevel(level))
+        	// get minimum level from L2NpcTemplate
+        	level = ((L2PetInstance)getActiveChar()).getTemplate().level;
+        }
+        
+        for (byte tmp = level; tmp <= Experience.MAX_LEVEL; tmp++)
+        {
+            if (getExp() >= getExpForLevel(tmp))
             	continue;
-            level--;
+            level = tmp--;
             break;
         }
         if (level != getLevel())
