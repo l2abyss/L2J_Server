@@ -51,12 +51,12 @@ public class PlayableStat extends CharStat
         	// get minimum level from L2NpcTemplate
         	level = ((L2PetInstance)getActiveChar()).getTemplate().level;
         }
-        
+
         for (byte tmp = level; tmp <= Experience.MAX_LEVEL; tmp++)
         {
             if (getExp() >= getExpForLevel(tmp))
             	continue;
-            level = tmp--;
+            level = --tmp;
             break;
         }
         if (level != getLevel()) addLevel((byte)(level - getLevel()));
@@ -82,7 +82,7 @@ public class PlayableStat extends CharStat
         {
             if (getExp() >= getExpForLevel(tmp))
             	continue;
-            level = tmp--;
+            level = --tmp;
             break;
         }
         if (level != getLevel())
