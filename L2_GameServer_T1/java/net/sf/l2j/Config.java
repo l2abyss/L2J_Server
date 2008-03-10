@@ -21,10 +21,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
+import javolution.util.FastMap;
 
 /**
  * This class contains global server configuration.<br>
@@ -98,6 +100,8 @@ public final class Config
     public static double	RESPAWN_RESTORE_HP;
     public static double	RESPAWN_RESTORE_MP;
     public static boolean	ALT_GAME_TIREDNESS;
+    public static boolean	ENABLE_MODIFY_SKILL_DURATION;
+    public static Map<Integer, Integer> SKILL_DURATION_LIST;
     public static boolean	AUTO_LEARN_SKILLS;
     public static boolean	AUTO_LOOT_HERBS;
     public static byte		BUFFS_MAX_AMOUNT;
@@ -1022,6 +1026,33 @@ public final class Config
                 MP_REGEN_MULTIPLIER					= Double.parseDouble(Character.getProperty("MpRegenMultiplier", "100")) /100;
                 CP_REGEN_MULTIPLIER 				= Double.parseDouble(Character.getProperty("CpRegenMultiplier", "100")) /100;
                 ALT_GAME_TIREDNESS					= Boolean.parseBoolean(Character.getProperty("AltGameTiredness", "false"));
+                // Create Map only if enabled
+                if (ENABLE_MODIFY_SKILL_DURATION)
+                {
+                    SKILL_DURATION_LIST = new FastMap<Integer, Integer>();
+                    String[] propertySplit;
+                    propertySplit = Character.getProperty("SkillDurationList", "").split(";");
+                    for (String skill : propertySplit)
+                    {
+                        String[] skillSplit = skill.split(",");
+                        if (skillSplit.length != 2)
+                        {
+                            System.out.println("[SkillDurationList]: invalid config property -> SkillDurationList \"" + skill + "\"");
+                        } else
+                        {
+                            try
+                            {
+                                SKILL_DURATION_LIST.put(Integer.valueOf(skillSplit[0]), Integer.valueOf(skillSplit[1]));
+                            } catch (NumberFormatException nfe)
+                            {
+                                if (!skill.equals(""))
+                                {
+                                    System.out.println("[SkillDurationList]: invalid config property -> SkillList \"" + skillSplit[0] + "\"" + skillSplit[1]);
+                                }
+                            }
+                        }
+                    }
+                }
                 AUTO_LEARN_SKILLS					= Boolean.parseBoolean(Character.getProperty("AutoLearnSkills", "false"));
                 AUTO_LOOT_HERBS						= Boolean.parseBoolean(Character.getProperty("AutoLootHerbs", "true"));
                 BUFFS_MAX_AMOUNT					= Byte.parseByte(Character.getProperty("maxbuffamount","24"));
