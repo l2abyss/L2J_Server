@@ -1045,6 +1045,7 @@ public final class Config
                 INVENTORY_MAXIMUM_NO_DWARF			= Integer.parseInt(Character.getProperty("MaximumSlotsForNoDwarf", "80"));
                 INVENTORY_MAXIMUM_DWARF				= Integer.parseInt(Character.getProperty("MaximumSlotsForDwarf", "100"));
                 INVENTORY_MAXIMUM_GM				= Integer.parseInt(Character.getProperty("MaximumSlotsForGMPlayer", "250"));
+                MAX_ITEM_IN_PACKET 					= Math.max(INVENTORY_MAXIMUM_NO_DWARF, Math.max(INVENTORY_MAXIMUM_DWARF, INVENTORY_MAXIMUM_GM));
                 WAREHOUSE_SLOTS_DWARF				= Integer.parseInt(Character.getProperty("MaximumWarehouseSlotsForDwarf", "120"));
                 WAREHOUSE_SLOTS_NO_DWARF			= Integer.parseInt(Character.getProperty("MaximumWarehouseSlotsForNoDwarf", "100"));
                 WAREHOUSE_SLOTS_CLAN				= Integer.parseInt(Character.getProperty("MaximumWarehouseSlotsForClan", "150"));
@@ -1349,11 +1350,11 @@ public final class Config
                 NPC.load(is);
                 is.close();
 
-                ANNOUNCE_MAMMON_SPAWN					= Boolean.parseBoolean(NPC.getProperty("AnnounceMammonSpawn", "True"));
-                ALT_MOB_AGRO_IN_PEACEZONE				= Boolean.parseBoolean(NPC.getProperty("AltMobAgroInPeaceZone", "true"));
-                ALT_GAME_VIEWNPC						= Boolean.parseBoolean(NPC.getProperty("AltGameViewNpc", "False"));
+                ANNOUNCE_MAMMON_SPAWN					= Boolean.valueOf(NPC.getProperty("AnnounceMammonSpawn", "True"));
+                ALT_MOB_AGRO_IN_PEACEZONE				= Boolean.valueOf(NPC.getProperty("AltMobAgroInPeaceZone", "true"));
+                ALT_GAME_VIEWNPC						= Boolean.valueOf(NPC.getProperty("AltGameViewNpc", "False"));
                 MAX_DRIFT_RANGE							= Integer.parseInt(NPC.getProperty("MaxDriftRange", "300"));
-                DEEPBLUE_DROP_RULES						= Boolean.parseBoolean(NPC.getProperty("UseDeepBlueDropRules", "True"));
+                DEEPBLUE_DROP_RULES						= Boolean.valueOf(NPC.getProperty("UseDeepBlueDropRules", "True"));
                 SHOW_NPC_LVL							= Boolean.valueOf(NPC.getProperty("ShowNpcLevel", "False"));
                 GUARD_ATTACK_AGGRO_MOB					= Boolean.valueOf(NPC.getProperty("GuardAttackAggroMob", "False"));
                 ALLOW_WYVERN_UPGRADER					= Boolean.valueOf(NPC.getProperty("AllowWyvernUpgrader", "False"));
