@@ -1750,26 +1750,38 @@ public class Olympiad
 
 			double playerOneHp = 0;
 			double hpDiffOne = 9999999;
-			try{
+			try
+			{
 				if (_playerOne != null && !_playerOneDisconnected)
 				{
-					playerOneHp = _playerOne.getCurrentHp()+_playerOne.getCurrentCp();
-					hpDiffOne = (_playerOne.getMaxHp()+_playerOne.getMaxCp()) - playerOneHp;
+					if (!_playerOne.isDead())
+					{
+						playerOneHp = _playerOne.getCurrentHp()+_playerOne.getCurrentCp();
+						hpDiffOne = (_playerOne.getMaxHp()+_playerOne.getMaxCp()) - playerOneHp;
+					}
 				}
-			}catch (Exception e){
+			}
+			catch (Exception e)
+			{
 				playerOneHp = 0;
 				hpDiffOne = 9999999;
 			}
 
 			double playerTwoHp = 0;
 			double hpDiffTwo = 9999999;
-			try{
+			try
+			{
 				if (_playerTwo != null && !_playerTwoDisconnected)
 				{
-					playerTwoHp = _playerTwo.getCurrentHp()+_playerTwo.getCurrentCp();
-					hpDiffTwo = (_playerTwo.getMaxHp()+_playerTwo.getMaxCp()) - playerTwoHp;
+					if (!_playerTwo.isDead())
+					{
+						playerTwoHp = _playerTwo.getCurrentHp()+_playerTwo.getCurrentCp();
+						hpDiffTwo = (_playerTwo.getMaxHp()+_playerTwo.getMaxCp()) - playerTwoHp;
+					}
 				}
-			}catch (Exception e){
+			}
+			catch (Exception e)
+			{
 				playerTwoHp = 0;
 				hpDiffTwo = 9999999;
 			}

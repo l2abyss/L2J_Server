@@ -215,6 +215,8 @@ public class CharStatus
                 if (((L2PcInstance) getActiveChar()).isInOlympiadMode())
                 {
                     stopHpMpRegeneration();
+                    getActiveChar().setIsDead(true);
+                    getActiveChar().setIsPendingRevive(true);
                     return;
                 }
             }

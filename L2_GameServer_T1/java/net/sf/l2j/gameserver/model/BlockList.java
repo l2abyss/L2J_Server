@@ -48,7 +48,7 @@ public class BlockList
         _blockAll    = false;
     }
 
-    private void addToBlockList(L2PcInstance character)
+    private synchronized void addToBlockList(L2PcInstance character)
     {
         if(character != null)
         {
@@ -56,7 +56,7 @@ public class BlockList
         }
     }
 
-    private void removeFromBlockList(L2PcInstance character)
+    private synchronized void removeFromBlockList(L2PcInstance character)
     {
         if(character != null)
         {

@@ -55,7 +55,7 @@ public class Escape implements IUserCommandHandler
                 activeChar.isInOlympiadMode())
             return false;
 
-        int unstuckTimer = (activeChar.getAccessLevel() >=REQUIRED_LEVEL? 5000 : Config.UNSTUCK_INTERVAL*1000 );
+        int unstuckTimer = (activeChar.getAccessLevel() >= REQUIRED_LEVEL? 5000 : Config.UNSTUCK_INTERVAL*1000 );
 
         // Check to see if the player is in a festival.
         if (activeChar.isFestivalParticipant())
@@ -78,8 +78,15 @@ public class Escape implements IUserCommandHandler
             return false;
         }
 
-        SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-        sm.addString("After " + unstuckTimer/60000 + " min. you be returned to near village.");
+        if(activeChar.getAccessLevel() >= REQUIRED_LEVEL)
+        {
+        	activeChar.sendMessage("You use Fast Escape: 5 seconds.");
+        }
+        else if(Config.UNSTUCK_INTERVAL > 100)
+        {
+        	activeChar.sendMessage("You use Escape: " + unstuckTimer/60000 + " minutes.");
+        }
+        else activeChar.sendMessage("You use Escape: " + unstuckTimer/1000 + " seconds.");
 
         activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
         //SoE Animation section

@@ -118,6 +118,8 @@ public class Blow implements ISkillHandler
 	        	    			   player.abortAttack();
 	        	    			   player.abortCast();
 	        	    			   player.getStatus().stopHpMpRegeneration();
+	        	    			   player.setIsDead(true);
+	        	    			   player.setIsPendingRevive(true);
 	        	    		   }
 	        	    		   else
 	        	    			   player.doDie(activeChar);
