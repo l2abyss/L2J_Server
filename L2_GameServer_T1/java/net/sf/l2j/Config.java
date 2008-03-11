@@ -1119,6 +1119,7 @@ public final class Config
                 ALT_MAX_NUM_OF_CLANS_IN_ALLY		= Integer.parseInt(Character.getProperty("AltMaxNumOfClansInAlly", "3"));
                 ALT_CLAN_MEMBERS_FOR_WAR    		= Integer.parseInt(Character.getProperty("AltClanMembersForWar", "15"));
                 //ALT_GAME_NEW_CHAR_ALWAYS_IS_NEWBIE	= Boolean.parseBoolean(Character.getProperty("AltNewCharAlwaysIsNewbie", "False"));
+                ALT_MEMBERS_CAN_WITHDRAW_FROM_CLANWH= Boolean.parseBoolean(Character.getProperty("AltMembersCanWithdrawFromClanWH", "false"));
                 REMOVE_CASTLE_CIRCLETS				= Boolean.parseBoolean(Character.getProperty("RemoveCastleCirclets", "true"));
                 ALT_PARTY_RANGE						= Integer.parseInt(Character.getProperty("AltPartyRange", "1600"));
                 ALT_PARTY_RANGE2					= Integer.parseInt(Character.getProperty("AltPartyRange2", "1400"));
