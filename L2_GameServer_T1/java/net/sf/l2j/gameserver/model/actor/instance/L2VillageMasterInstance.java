@@ -412,7 +412,7 @@ public final class L2VillageMasterInstance extends L2FolkInstance
                      */
                     if (player.modifySubClass(paramOne, paramTwo))
                     {
-                    	stopAllEffects(); // all effects from old subclass stopped!
+                    	player.stopAllEffects(); // all effects from old subclass stopped!
                     	player.setActiveClass(paramOne);
 
                         content.append("Change Subclass:<br>Your sub class has been changed to <font color=\"LEVEL\">"
