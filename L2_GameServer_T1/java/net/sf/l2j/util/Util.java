@@ -25,6 +25,7 @@
 package net.sf.l2j.util;
 
 import java.nio.ByteBuffer;
+import java.net.*;
 
 import javolution.text.TextBuilder;
 
@@ -38,14 +39,17 @@ public class Util
 {
     public static boolean isInternalIP(String ipAddress)
     {
-        return (ipAddress.startsWith("192.168.") ||
-                ipAddress.startsWith("10.") ||
-                ipAddress.matches("^172\\.16\\." +            // 172.16.
-                		"(?:[0-9]|[1-2][0-9]|3[0-1])\\."+     // 0. to 31.
-                		"(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2" + // 0 to 255
-                		"(?:[0-4][0-9]|5[0-5]))$") ||
-                ipAddress.startsWith("127.0.0.1"));
-    }
+    	java.net.InetAddress addr = null;
+    	try
+        {
+	        addr = java.net.InetAddress.getByName(ipAddress);
+        }
+        catch (UnknownHostException e)
+        {
+	        e.printStackTrace();
+        }
+        return addr.isSiteLocalAddress() || addr.isLoopbackAddress();
+     }
 
     public static String printData(byte[] data, int len)
 	{
