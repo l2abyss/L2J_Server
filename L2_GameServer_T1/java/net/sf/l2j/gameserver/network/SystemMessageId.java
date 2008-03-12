@@ -4930,17 +4930,52 @@ public enum SystemMessageId
     SHOUT_AND_TRADE_CHAT_CANNOT_BE_USED_WHILE_POSSESSING_CURSED_WEAPON(2085),
     
     /**
+     * ID: 2087<br>
+     * Message: A fortress is under attack!
+     */
+    A_FORTRESS_IS_UNDER_ATTACK(2087),
+    
+    /**
+     * ID: 2089<br>
+     * Message: $s1 minute(s) until the fortress battle starts.
+     */
+    S1_MINUTES_UNTIL_THE_FORTRESS_BATTLE_STARTS(2089),
+    
+    /**
+     * ID: 2090<br>
+     * Message: The fortress battle $s1 has begun.
+     */
+    THE_FORTRESS_BATTLE_S1_AS_BEGUN(2090),
+    
+    /**
+     * ID: 2154<br>
+     * Message: The target is not a flagpole so a flag cannot be displayed.
+     */
+    THE_TARGET_IS_NOT_A_FLAGPOLE_SO_A_FLAG_CANNOT_BE_DISPLAYED(2154),
+    
+    /**
+     * ID: 2155<br>
+     * Message: A flag is already being displayed, another flag cannot be displayed.
+     */
+    A_FLAG_IS_ALREADY_BEING_DISPLAYED_ANOTHER_FLAG_CANNOT_BE_DISPLAYED(2155),
+    
+    /**
+     * ID: 2156<br>
+     * Message: There are not enough necessary items to use the skill.
+     */
+    THERE_ARE_NOT_ENOUGH_NECESSARY_ITEMS_TO_USE_THE_SKILL(2156),
+    
+    /**
+     * ID: 2158<br>
+     * Message: Forced attack is impossible against seige side temporary allied members.
+     */
+    FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS(2158),
+    
+    /**
      * ID: 2167<BR>
      * Message: A malicious skill cannot be used in a peace zone.
      */
     A_MALICIOUS_SKILL_CANNOT_BE_USED_IN_PEACE_ZONE(2167),
-
-    /**
-     * ID: 2259<br>
-     * Message: Current Location: $s1, $s2, $s3 (near Fantasy Island)
-     */
-    LOC_FANTASY_ISLAND_S1_S2_S3(2259),
-
 
     /**
     * ID: 2162<br>
@@ -4952,8 +4987,20 @@ public enum SystemMessageId
     * ID: 2163<br>
     * Message: Soul cannot be increased anymore.
     */
-   SOUL_CANNOT_BE_INCREASED_ANYMORE(2163),
-
+   SOUL_CANNOT_BE_INCREASED_ANYMORE(2163),   
+   
+   /**
+    * ID: 2183<br>
+    * Message: The fortress battle of $s1 has finished.
+    */
+   THE_FORTRESS_BATTLE_OF_S1_HAS_FINISHED(2183),
+   
+   /**
+    * ID: 2184<br>
+    * Message: $s1 clan is victorious in the fortress battle of $s2.
+    */
+   S1_CLAN_IS_VICTORIOUS_IN_THE_FORTRESS_BATTLE_OF_S2(2184),
+   
    /**
     * ID: 2186<br>
     * Message: Soul cannot be absorbed anymore.
@@ -5066,7 +5113,13 @@ public enum SystemMessageId
     * ID: 2258<br>
     * Message: You have already mounted another steed
     */
-   YOU_HAVE_ALREADY_MOUNTED_ANOTHER_STEED(2258);
+   YOU_HAVE_ALREADY_MOUNTED_ANOTHER_STEED(2258),
+
+    /**
+     * ID: 2259<br>
+     * Message: Current Location: $s1, $s2, $s3 (near Fantasy Island)
+     */
+    LOC_FANTASY_ISLAND_S1_S2_S3(2259);
 
 
     private int _id;
