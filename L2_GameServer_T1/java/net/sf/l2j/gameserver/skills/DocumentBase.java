@@ -221,7 +221,6 @@ abstract class DocumentBase
                         _log.info("*** Skill " + ((L2Skill) template).getName() + " (" + ((L2Skill) template).getLevel() + ") changed duration to " + time + " seconds.");
                 }
             }
-            else time = Integer.decode(getValue(attrs.getNamedItem("time").getNodeValue(),template));
         }
         else time = ((L2Skill) template).getBuffDuration() / 1000 / count;
         boolean self = false;
