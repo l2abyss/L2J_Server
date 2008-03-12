@@ -1026,6 +1026,7 @@ public final class Config
                 MP_REGEN_MULTIPLIER					= Double.parseDouble(Character.getProperty("MpRegenMultiplier", "100")) /100;
                 CP_REGEN_MULTIPLIER 				= Double.parseDouble(Character.getProperty("CpRegenMultiplier", "100")) /100;
                 ALT_GAME_TIREDNESS					= Boolean.parseBoolean(Character.getProperty("AltGameTiredness", "false"));
+                ENABLE_MODIFY_SKILL_DURATION		= Boolean.parseBoolean(Character.getProperty("EnableModifySkillDuration", "false"));
                 // Create Map only if enabled
                 if (ENABLE_MODIFY_SKILL_DURATION)
                 {
