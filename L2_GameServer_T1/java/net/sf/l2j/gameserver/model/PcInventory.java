@@ -187,7 +187,7 @@ public class PcInventory extends Inventory
 	}
 
 	/**
-	 * Returns the list of items in inventory available for transaction adjusetd by tradeList
+	 * Returns the list of items in inventory available for transaction adjusted by tradeList
 	 * @return L2ItemInstance : items in inventory
 	 */
 	public TradeList.TradeItem[] getAvailableItems(TradeList tradeList)

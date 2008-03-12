@@ -26,6 +26,8 @@ import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2ItemInstance.ItemLocation;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.L2Armor;
 import net.sf.l2j.gameserver.templates.L2EtcItem;
 import net.sf.l2j.gameserver.templates.L2EtcItemType;
@@ -989,7 +991,14 @@ public abstract class Inventory extends ItemContainer
         if(getOwner() instanceof L2PcInstance)
         {
             L2PcInstance player = (L2PcInstance)getOwner();
-            
+
+
+            if(player.getPkKills() > 0 && item.getItemId() >= 7816 && item.getItemId() <= 7831)
+            {
+                player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_UNABLE_TO_EQUIP_THIS_ITEM_WHEN_YOUR_PK_COUNT_IS_GREATER_THAN_OR_EQUAL_TO_ONE));
+                return;
+            }
+
             if(!player.isGM())
                 if (!player.isHero())
                 {
@@ -1270,6 +1279,11 @@ public abstract class Inventory extends ItemContainer
 	            if(getOwner() instanceof L2PcInstance)
 	            {
 	                L2PcInstance player = (L2PcInstance)getOwner();
+
+		            if(player.getPkKills() > 0 && item.getItemId() >= 7816 && item.getItemId() <= 7831)
+		            {
+		                item.setLocation(ItemLocation.INVENTORY);
+		            }
 	                
 	                if(!player.isGM())
 	                    if (!player.isHero())

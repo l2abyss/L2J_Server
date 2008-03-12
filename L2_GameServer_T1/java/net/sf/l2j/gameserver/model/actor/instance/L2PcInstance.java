@@ -4836,6 +4836,21 @@ public final class L2PcInstance extends L2PlayableInstance
 			else if (targetPlayer.getPvpFlag() == 0)                                                                    // Target player doesn't have karma
 			{
                 increasePkKillsAndKarma(targetPlayer.getLevel());
+				//Unequip adventurer items
+				if(getInventory().getPaperdollItemId(7) >= 7816 && getInventory().getPaperdollItemId(7) <= 7831) 
+				{
+					L2ItemInstance invItem = getInventory().getItemByItemId(getInventory().getPaperdollItemId(7));
+					if(invItem.isEquipped()) 
+					{
+						L2ItemInstance unequiped[] = getInventory().unEquipItemInSlotAndRecord(invItem.getLocationSlot());
+						InventoryUpdate iu = new InventoryUpdate();
+						for(int i = 0; i < unequiped.length; i++)
+							iu.addModifiedItem(unequiped[i]);
+						sendPacket(iu);
+					}
+					refreshExpertisePenalty();			
+					sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_UNABLE_TO_EQUIP_THIS_ITEM_WHEN_YOUR_PK_COUNT_IS_GREATER_THAN_OR_EQUAL_TO_ONE));
+				}
 			}
 		}
 	}
