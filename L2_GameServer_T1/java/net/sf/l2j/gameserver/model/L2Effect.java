@@ -56,6 +56,7 @@ public abstract class L2Effect
         COMBAT_POINT_HEAL_OVER_TIME,
         MANA_DMG_OVER_TIME,
         MANA_HEAL_OVER_TIME,
+        MP_CONSUME_PER_LEVEL,
         RELAXING, STUN, ROOT,
         SLEEP,
         HATE,
