@@ -601,7 +601,14 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                         if (skill.getSkillType() == SkillType.SUMMON)
                             player.doCast(skill);
                         else
-                            doCast(skill);
+                        {
+                        	if (!((skill.getMpConsume() + skill.getMpInitialConsume()) > this.getCurrentMp()))
+                        		this.doCast(skill);
+                        	else
+                        	{
+                        		player.sendMessage("The Clanhall Managers MP is to low.");
+                        	}
+                        }
                         if (getClanHall().getFunction(ClanHall.FUNC_SUPPORT)== null)
                             return;
                         NpcHtmlMessage html = new NpcHtmlMessage(1);
