@@ -166,7 +166,7 @@ public class Disablers implements ISkillHandler
 
             L2Character target = (L2Character) targets[index];
 
-            if (target == null || target.isDead()) //bypass if target is null or dead
+            if (target == null || target.isDead() || target.isInvul()) //bypass if target is null, invul or dead
         		continue;
 
             switch (type)
