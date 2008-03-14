@@ -1256,6 +1256,7 @@ public final class Config
                 DEBUG										= Boolean.parseBoolean(General.getProperty("Debug", "false"));
                 ASSERT										= Boolean.parseBoolean(General.getProperty("Assert", "false"));
                 DEVELOPER									= Boolean.parseBoolean(General.getProperty("Developer", "false"));
+                ACCEPT_GEOEDITOR_CONN						= Boolean.parseBoolean(General.getProperty("AcceptGeoeditorConn", "false"));
                 TEST_SERVER									= Boolean.parseBoolean(General.getProperty("TestServer", "false"));
                 SERVER_LIST_TESTSERVER						= Boolean.parseBoolean(General.getProperty("ListTestServers", "false"));
                 ALT_DEV_NO_QUESTS							= Boolean.parseBoolean(General.getProperty("AltDevNoQuests", "False"));
