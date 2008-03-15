@@ -1983,6 +1983,7 @@ public class L2NpcInstance extends L2Character
                         if (playerCabal != compWinner || playerCabal != sealAvariceOwner)
                         {
                             player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
+                            player.sendPacket( new ActionFailed() );
                             return;
                         }
                         break;
@@ -1990,6 +1991,7 @@ public class L2NpcInstance extends L2Character
                         if (playerCabal != compWinner || playerCabal != sealAvariceOwner)
                         {
                             player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
+                            player.sendPacket( new ActionFailed() );
                             return;
                         }
                         break;
@@ -2003,6 +2005,7 @@ public class L2NpcInstance extends L2Character
                         if (playerCabal != compWinner || playerCabal != sealGnosisOwner)
                         {
                             player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
+                            player.sendPacket( new ActionFailed() );
                             return;
                         }
                         break;
@@ -2010,6 +2013,7 @@ public class L2NpcInstance extends L2Character
                         if (playerCabal != compWinner || playerCabal != sealGnosisOwner)
                         {
                             player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
+                            player.sendPacket( new ActionFailed() );
                             return;
                         }
                         break;
