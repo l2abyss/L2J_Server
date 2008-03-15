@@ -1233,29 +1233,17 @@ public class L2NpcInstance extends L2Character
      */
     public void showQuestWindow(L2PcInstance player, String questId) 
     {
-        String content;
+        String content = null;
         
         Quest q = QuestManager.getInstance().getQuest(questId);
-
-        if ((q.getQuestIntId() >= 1 && q.getQuestIntId() < 1000) && (player.getWeightPenalty()>=3 || player.getInventoryLimit()*0.8 <= player.getInventory().getSize()))
-        {	
-            player.sendPacket(new SystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
-            return;
-        }
-        
-        //FileInputStream fis = null;
         
         // Get the state of the selected quest
         QuestState qs = player.getQuestState(questId);
         
-        if (qs != null) 
+        if (qs == null || q == null || questId == "") 
         {
-            // If the quest is alreday started, no need to show a window
-            if (!qs.getQuest().notifyTalk(this, qs))
-                return;
-        }
-        else
-        {
+            // no quests found
+            content = "<html><body>You are either not on a quest that involves this NPC, or you don't meet this NPC's minimum quest requirements.</body></html>";
             if (q != null) 
             {
                 // check for start point
@@ -1268,12 +1256,6 @@ public class L2NpcInstance extends L2Character
                         if (qlst[i] == q) 
                         {
                             qs = q.newQuestState(player);
-                            //disabled by mr. becouse quest dialog only show on second click.
-                            //if(qs.getState().getName().equalsIgnoreCase("completed"))
-                            //{
-                            if (!qs.getQuest().notifyTalk(this, qs))
-                                return; // no need to show a window
-                            //}
                             break;
                         }
                     }
@@ -1281,13 +1263,18 @@ public class L2NpcInstance extends L2Character
             }
         }
         
-        if (qs == null) 
+        if (qs != null)
         {
-            // no quests found
-            content = "<html><body>You are either not on a quest that involves this NPC, or you don't meet this NPC's minimum quest requirements.</body></html>";
-        } 
-        else 
-        {
+            if ((q.getQuestIntId() >= 1 && q.getQuestIntId() < 1000) && (player.getWeightPenalty()>=3 || player.getInventoryLimit()*0.8 <= player.getInventory().getSize()))
+            {	
+                player.sendPacket(new SystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+                return;
+            }
+
+            // If the quest is alreday started, no need to show a window
+            if (!qs.getQuest().notifyTalk(this, qs))
+                return;
+
             questId = qs.getQuest().getName();
             String stateId = State.getStateName(qs.getState());
             String path = "data/scripts/quests/"+questId+"/"+stateId+".htm";
