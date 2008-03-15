@@ -1240,37 +1240,40 @@ public class L2NpcInstance extends L2Character
         // Get the state of the selected quest
         QuestState qs = player.getQuestState(questId);
         
-        if (qs == null || q == null || questId == "") 
+        if (q == null) 
         {
             // no quests found
             content = "<html><body>You are either not on a quest that involves this NPC, or you don't meet this NPC's minimum quest requirements.</body></html>";
-            if (q != null) 
-            {
-                // check for start point
-                Quest[] qlst = getTemplate().getEventQuests(Quest.QuestEventType.QUEST_START);
-                
-                if (qlst != null && qlst.length > 0) 
-                {
-                    for (int i=0; i < qlst.length; i++) 
-                    {
-                        if (qlst[i] == q) 
-                        {
-                            qs = q.newQuestState(player);
-                            break;
-                        }
-                    }
-                }
-            }
         }
-        
-        if (qs != null)
+        else
         {
             if ((q.getQuestIntId() >= 1 && q.getQuestIntId() < 1000) && (player.getWeightPenalty()>=3 || player.getInventoryLimit()*0.8 <= player.getInventory().getSize()))
             {	
                 player.sendPacket(new SystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
                 return;
             }
+            
+        	if (qs == null)
+        	{
+	            // check for start point
+	            Quest[] qlst = getTemplate().getEventQuests(Quest.QuestEventType.QUEST_START);
+	            
+	            if (qlst != null && qlst.length > 0) 
+	            {
+	                for (int i=0; i < qlst.length; i++) 
+	                {
+	                    if (qlst[i] == q) 
+	                    {
+	                        qs = q.newQuestState(player);
+	                        break;
+	                    }
+	                }
+	            }
+        	}
+        }
 
+        if (qs != null)
+        {
             // If the quest is alreday started, no need to show a window
             if (!qs.getQuest().notifyTalk(this, qs))
                 return;
