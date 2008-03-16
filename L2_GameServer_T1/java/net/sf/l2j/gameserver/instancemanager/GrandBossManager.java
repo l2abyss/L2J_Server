@@ -177,7 +177,7 @@ public class GrandBossManager
 	{
 		Connection con = null;
 
-		FastMap<String, L2FastList<Integer>> zones = new FastMap<String, L2FastList<Integer>>();
+		FastMap<Integer, L2FastList<Integer>> zones = new FastMap<Integer, L2FastList<Integer>>();
 
 		if (_zones == null)
 		{
@@ -189,7 +189,7 @@ public class GrandBossManager
 		{
 			if (zone == null)
 				continue;
-			zones.put(zone.getZoneName(), new L2FastList<Integer>());
+			zones.put(zone.getId(), new L2FastList<Integer>());
 		}
 
 		try
@@ -202,8 +202,8 @@ public class GrandBossManager
 			while (rset.next())
 			{
 				int id = rset.getInt("player_id");
-				String zoneName = rset.getString("zone");
-				zones.get(zoneName).add(id);
+				int zone_id = rset.getInt("zone");
+				zones.get(zone_id).add(id);
 			}
 
 			rset.close();
@@ -235,7 +235,7 @@ public class GrandBossManager
 		{
 			if (zone == null)
 				continue;
-			zone.setAllowedPlayers(zones.get(zone.getZoneName()));
+			zone.setAllowedPlayers(zones.get(zone.getId()));
 		}
 
 		zones.clear();
