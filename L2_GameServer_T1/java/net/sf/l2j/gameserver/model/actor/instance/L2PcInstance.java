@@ -3637,7 +3637,7 @@ public final class L2PcInstance extends L2PlayableInstance
             {
                 L2Effect effect = effects[i];
 
-                if (effect == null)
+                if (effect == null || !effect.getShowIcon())
                 {
                     continue;
                 }
