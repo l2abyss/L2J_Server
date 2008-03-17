@@ -1369,6 +1369,8 @@ public final class Config
                 DEFAULT_PUNISH								= Integer.parseInt(General.getProperty("DefaultPunish", "2"));
                 DEFAULT_PUNISH_PARAM						= Integer.parseInt(General.getProperty("DefaultPunishParam", "0"));
                 ONLY_GM_ITEMS_FREE							= Boolean.parseBoolean(General.getProperty("OnlyGMItemsFree", "True"));
+                JAIL_IS_PVP									= Boolean.parseBoolean(General.getProperty("JailIsPvp", "True"));
+                JAIL_DISABLE_CHAT							= Boolean.parseBoolean(General.getProperty("JailDisableChat", "True"));
             }
             catch (Exception e)
             {
