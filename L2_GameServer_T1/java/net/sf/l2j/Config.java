@@ -939,56 +939,56 @@ public final class Config
                 Feature.load(is);
                 is.close();
                 
-				CH_TELE_FEE_RATIO                                   = Long.valueOf(Feature.getProperty("ClanHallTeleportFunctionFeeRation", "86400000"));
-                CH_TELE1_FEE                                        = Integer.valueOf(Feature.getProperty("ClanHallTeleportFunctionFeeLvl1", "86400000"));
-                CH_TELE2_FEE                                        = Integer.valueOf(Feature.getProperty("ClanHallTeleportFunctionFeeLvl2", "86400000"));
-                CH_SUPPORT_FEE_RATIO                                = Long.valueOf(Feature.getProperty("ClanHallSupportFunctionFeeRation", "86400000"));
-                CH_SUPPORT1_FEE                                     = Integer.valueOf(Feature.getProperty("ClanHallSupportFeeLvl1", "86400000"));
-                CH_SUPPORT2_FEE                                     = Integer.valueOf(Feature.getProperty("ClanHallSupportFeeLvl2", "86400000"));
-                CH_SUPPORT3_FEE                                     = Integer.valueOf(Feature.getProperty("ClanHallSupportFeeLvl3", "86400000"));
-                CH_SUPPORT4_FEE                                     = Integer.valueOf(Feature.getProperty("ClanHallSupportFeeLvl4", "86400000"));
-                CH_SUPPORT5_FEE                                     = Integer.valueOf(Feature.getProperty("ClanHallSupportFeeLvl5", "86400000"));
-                CH_SUPPORT6_FEE                                     = Integer.valueOf(Feature.getProperty("ClanHallSupportFeeLvl6", "86400000"));
-                CH_SUPPORT7_FEE                                     = Integer.valueOf(Feature.getProperty("ClanHallSupportFeeLvl7", "86400000"));
-                CH_SUPPORT8_FEE                                     = Integer.valueOf(Feature.getProperty("ClanHallSupportFeeLvl8", "86400000"));
-                CH_MPREG_FEE_RATIO                                  = Long.valueOf(Feature.getProperty("ClanHallMpRegenerationFunctionFeeRation", "86400000"));
-                CH_MPREG1_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallMpRegenerationFeeLvl1", "86400000"));
-                CH_MPREG2_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallMpRegenerationFeeLvl2", "86400000"));
-                CH_MPREG3_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallMpRegenerationFeeLvl3", "86400000"));
-                CH_MPREG4_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallMpRegenerationFeeLvl4", "86400000"));
-                CH_MPREG5_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallMpRegenerationFeeLvl5", "86400000"));
-                CH_HPREG_FEE_RATIO                                  = Long.valueOf(Feature.getProperty("ClanHallHpRegenerationFunctionFeeRation", "86400000"));
-                CH_HPREG1_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallHpRegenerationFeeLvl1", "86400000"));
-                CH_HPREG2_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallHpRegenerationFeeLvl2", "86400000"));
-                CH_HPREG3_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallHpRegenerationFeeLvl3", "86400000"));
-                CH_HPREG4_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallHpRegenerationFeeLvl4", "86400000"));
-                CH_HPREG5_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallHpRegenerationFeeLvl5", "86400000"));
-                CH_HPREG6_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallHpRegenerationFeeLvl6", "86400000"));
-                CH_HPREG7_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallHpRegenerationFeeLvl7", "86400000"));
-                CH_HPREG8_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallHpRegenerationFeeLvl8", "86400000"));
-                CH_HPREG9_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallHpRegenerationFeeLvl9", "86400000"));
-                CH_HPREG10_FEE                                      = Integer.valueOf(Feature.getProperty("ClanHallHpRegenerationFeeLvl10", "86400000"));
-                CH_HPREG11_FEE                                      = Integer.valueOf(Feature.getProperty("ClanHallHpRegenerationFeeLvl11", "86400000"));
-                CH_HPREG12_FEE										= Integer.valueOf(Feature.getProperty("ClanHallHpRegenerationFeeLvl12", "86400000"));
-                CH_HPREG13_FEE                                      = Integer.valueOf(Feature.getProperty("ClanHallHpRegenerationFeeLvl13", "86400000"));
-                CH_EXPREG_FEE_RATIO                                 = Long.valueOf(Feature.getProperty("ClanHallExpRegenerationFunctionFeeRation", "86400000"));
-                CH_EXPREG1_FEE                                      = Integer.valueOf(Feature.getProperty("ClanHallExpRegenerationFeeLvl1", "86400000"));
-                CH_EXPREG2_FEE                                      = Integer.valueOf(Feature.getProperty("ClanHallExpRegenerationFeeLvl2", "86400000"));
-                CH_EXPREG3_FEE                                      = Integer.valueOf(Feature.getProperty("ClanHallExpRegenerationFeeLvl3", "86400000"));
-                CH_EXPREG4_FEE                                      = Integer.valueOf(Feature.getProperty("ClanHallExpRegenerationFeeLvl4", "86400000"));
-                CH_EXPREG5_FEE                                      = Integer.valueOf(Feature.getProperty("ClanHallExpRegenerationFeeLvl5", "86400000"));
-                CH_EXPREG6_FEE                                      = Integer.valueOf(Feature.getProperty("ClanHallExpRegenerationFeeLvl6", "86400000"));
-                CH_EXPREG7_FEE                                      = Integer.valueOf(Feature.getProperty("ClanHallExpRegenerationFeeLvl7", "86400000"));
-                CH_ITEM_FEE_RATIO                                   = Long.valueOf(Feature.getProperty("ClanHallItemCreationFunctionFeeRation", "86400000"));
-                CH_ITEM1_FEE                                        = Integer.valueOf(Feature.getProperty("ClanHallItemCreationFunctionFeeLvl1", "86400000"));
-                CH_ITEM2_FEE                                        = Integer.valueOf(Feature.getProperty("ClanHallItemCreationFunctionFeeLvl2", "86400000"));
-                CH_ITEM3_FEE                                        = Integer.valueOf(Feature.getProperty("ClanHallItemCreationFunctionFeeLvl3", "86400000"));
-                CH_CURTAIN_FEE_RATIO                                = Long.valueOf(Feature.getProperty("ClanHallCurtainFunctionFeeRation", "86400000"));
-                CH_CURTAIN1_FEE                                     = Integer.valueOf(Feature.getProperty("ClanHallCurtainFunctionFeeLvl1", "86400000"));
-                CH_CURTAIN2_FEE                                     = Integer.valueOf(Feature.getProperty("ClanHallCurtainFunctionFeeLvl2", "86400000"));
-                CH_FRONT_FEE_RATIO                                	= Long.valueOf(Feature.getProperty("ClanHallFrontPlatformFunctionFeeRation", "86400000"));
-                CH_FRONT1_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallFrontPlatformFunctionFeeLvl1", "86400000"));
-                CH_FRONT2_FEE                                       = Integer.valueOf(Feature.getProperty("ClanHallFrontPlatformFunctionFeeLvl2", "86400000"));
+				CH_TELE_FEE_RATIO                                   = Long.parseLong(Feature.getProperty("ClanHallTeleportFunctionFeeRation", "86400000"));
+                CH_TELE1_FEE                                        = Integer.parseInt(Feature.getProperty("ClanHallTeleportFunctionFeeLvl1", "86400000"));
+                CH_TELE2_FEE                                        = Integer.parseInt(Feature.getProperty("ClanHallTeleportFunctionFeeLvl2", "86400000"));
+                CH_SUPPORT_FEE_RATIO                                = Long.parseLong(Feature.getProperty("ClanHallSupportFunctionFeeRation", "86400000"));
+                CH_SUPPORT1_FEE                                     = Integer.parseInt(Feature.getProperty("ClanHallSupportFeeLvl1", "86400000"));
+                CH_SUPPORT2_FEE                                     = Integer.parseInt(Feature.getProperty("ClanHallSupportFeeLvl2", "86400000"));
+                CH_SUPPORT3_FEE                                     = Integer.parseInt(Feature.getProperty("ClanHallSupportFeeLvl3", "86400000"));
+                CH_SUPPORT4_FEE                                     = Integer.parseInt(Feature.getProperty("ClanHallSupportFeeLvl4", "86400000"));
+                CH_SUPPORT5_FEE                                     = Integer.parseInt(Feature.getProperty("ClanHallSupportFeeLvl5", "86400000"));
+                CH_SUPPORT6_FEE                                     = Integer.parseInt(Feature.getProperty("ClanHallSupportFeeLvl6", "86400000"));
+                CH_SUPPORT7_FEE                                     = Integer.parseInt(Feature.getProperty("ClanHallSupportFeeLvl7", "86400000"));
+                CH_SUPPORT8_FEE                                     = Integer.parseInt(Feature.getProperty("ClanHallSupportFeeLvl8", "86400000"));
+                CH_MPREG_FEE_RATIO                                  = Long.parseLong(Feature.getProperty("ClanHallMpRegenerationFunctionFeeRation", "86400000"));
+                CH_MPREG1_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallMpRegenerationFeeLvl1", "86400000"));
+                CH_MPREG2_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallMpRegenerationFeeLvl2", "86400000"));
+                CH_MPREG3_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallMpRegenerationFeeLvl3", "86400000"));
+                CH_MPREG4_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallMpRegenerationFeeLvl4", "86400000"));
+                CH_MPREG5_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallMpRegenerationFeeLvl5", "86400000"));
+                CH_HPREG_FEE_RATIO                                  = Long.parseLong(Feature.getProperty("ClanHallHpRegenerationFunctionFeeRation", "86400000"));
+                CH_HPREG1_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallHpRegenerationFeeLvl1", "86400000"));
+                CH_HPREG2_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallHpRegenerationFeeLvl2", "86400000"));
+                CH_HPREG3_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallHpRegenerationFeeLvl3", "86400000"));
+                CH_HPREG4_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallHpRegenerationFeeLvl4", "86400000"));
+                CH_HPREG5_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallHpRegenerationFeeLvl5", "86400000"));
+                CH_HPREG6_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallHpRegenerationFeeLvl6", "86400000"));
+                CH_HPREG7_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallHpRegenerationFeeLvl7", "86400000"));
+                CH_HPREG8_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallHpRegenerationFeeLvl8", "86400000"));
+                CH_HPREG9_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallHpRegenerationFeeLvl9", "86400000"));
+                CH_HPREG10_FEE                                      = Integer.parseInt(Feature.getProperty("ClanHallHpRegenerationFeeLvl10", "86400000"));
+                CH_HPREG11_FEE                                      = Integer.parseInt(Feature.getProperty("ClanHallHpRegenerationFeeLvl11", "86400000"));
+                CH_HPREG12_FEE										= Integer.parseInt(Feature.getProperty("ClanHallHpRegenerationFeeLvl12", "86400000"));
+                CH_HPREG13_FEE                                      = Integer.parseInt(Feature.getProperty("ClanHallHpRegenerationFeeLvl13", "86400000"));
+                CH_EXPREG_FEE_RATIO                                 = Long.parseLong(Feature.getProperty("ClanHallExpRegenerationFunctionFeeRation", "86400000"));
+                CH_EXPREG1_FEE                                      = Integer.parseInt(Feature.getProperty("ClanHallExpRegenerationFeeLvl1", "86400000"));
+                CH_EXPREG2_FEE                                      = Integer.parseInt(Feature.getProperty("ClanHallExpRegenerationFeeLvl2", "86400000"));
+                CH_EXPREG3_FEE                                      = Integer.parseInt(Feature.getProperty("ClanHallExpRegenerationFeeLvl3", "86400000"));
+                CH_EXPREG4_FEE                                      = Integer.parseInt(Feature.getProperty("ClanHallExpRegenerationFeeLvl4", "86400000"));
+                CH_EXPREG5_FEE                                      = Integer.parseInt(Feature.getProperty("ClanHallExpRegenerationFeeLvl5", "86400000"));
+                CH_EXPREG6_FEE                                      = Integer.parseInt(Feature.getProperty("ClanHallExpRegenerationFeeLvl6", "86400000"));
+                CH_EXPREG7_FEE                                      = Integer.parseInt(Feature.getProperty("ClanHallExpRegenerationFeeLvl7", "86400000"));
+                CH_ITEM_FEE_RATIO                                   = Long.parseLong(Feature.getProperty("ClanHallItemCreationFunctionFeeRation", "86400000"));
+                CH_ITEM1_FEE                                        = Integer.parseInt(Feature.getProperty("ClanHallItemCreationFunctionFeeLvl1", "86400000"));
+                CH_ITEM2_FEE                                        = Integer.parseInt(Feature.getProperty("ClanHallItemCreationFunctionFeeLvl2", "86400000"));
+                CH_ITEM3_FEE                                        = Integer.parseInt(Feature.getProperty("ClanHallItemCreationFunctionFeeLvl3", "86400000"));
+                CH_CURTAIN_FEE_RATIO                                = Long.parseLong(Feature.getProperty("ClanHallCurtainFunctionFeeRation", "86400000"));
+                CH_CURTAIN1_FEE                                     = Integer.parseInt(Feature.getProperty("ClanHallCurtainFunctionFeeLvl1", "86400000"));
+                CH_CURTAIN2_FEE                                     = Integer.parseInt(Feature.getProperty("ClanHallCurtainFunctionFeeLvl2", "86400000"));
+                CH_FRONT_FEE_RATIO                                	= Long.parseLong(Feature.getProperty("ClanHallFrontPlatformFunctionFeeRation", "86400000"));
+                CH_FRONT1_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallFrontPlatformFunctionFeeLvl1", "86400000"));
+                CH_FRONT2_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallFrontPlatformFunctionFeeLvl2", "86400000"));
 				ALT_GAME_REQUIRE_CASTLE_DAWN    					= Boolean.parseBoolean(Feature.getProperty("AltRequireCastleForDawn", "False"));
                 ALT_GAME_REQUIRE_CLAN_CASTLE    					= Boolean.parseBoolean(Feature.getProperty("AltRequireClanCastle", "False"));
                 ALT_FESTIVAL_MIN_PLAYER         					= Integer.parseInt(Feature.getProperty("AltFestivalMinPlayer", "5"));
@@ -1043,7 +1043,7 @@ public final class Config
                         {
                             try
                             {
-                                SKILL_DURATION_LIST.put(Integer.valueOf(skillSplit[0]), Integer.valueOf(skillSplit[1]));
+                                SKILL_DURATION_LIST.put(Integer.parseInt(skillSplit[0]), Integer.parseInt(skillSplit[1]));
                             } catch (NumberFormatException nfe)
                             {
                                 if (!skill.equals(""))
@@ -1060,13 +1060,13 @@ public final class Config
                 AUTO_LEARN_DIVINE_INSPIRATION		= Boolean.parseBoolean(Character.getProperty("AutoLearnDivineInspiration", "false"));
                 ALT_GAME_CANCEL_BOW					= Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("bow") || Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("all");
                 ALT_GAME_CANCEL_CAST				= Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("cast") || Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("all");
-                EFFECT_CANCELING					= Boolean.valueOf(Character.getProperty("CancelLesserEffect", "True"));
+                EFFECT_CANCELING					= Boolean.parseBoolean(Character.getProperty("CancelLesserEffect", "True"));
                 ALT_GAME_MAGICFAILURES				= Boolean.parseBoolean(Character.getProperty("MagicFailures", "false"));
                 PLAYER_FAKEDEATH_UP_PROTECTION 		= Integer.parseInt(Character.getProperty("PlayerFakeDeathUpProtection", "0"));
                 STORE_SKILL_COOLTIME				= Boolean.parseBoolean(Character.getProperty("StoreSkillCooltime", "true"));
                 ALT_GAME_SHIELD_BLOCKS				= Boolean.parseBoolean(Character.getProperty("AltShieldBlocks", "false"));
                 ALT_PERFECT_SHLD_BLOCK				= Integer.parseInt(Character.getProperty("AltPerfectShieldBlockRate", "10"));
-                ALLOW_CLASS_MASTERS					= Boolean.valueOf(Character.getProperty("AllowClassMasters", "False"));
+                ALLOW_CLASS_MASTERS					= Boolean.parseBoolean(Character.getProperty("AllowClassMasters", "False"));
                 LIFE_CRYSTAL_NEEDED					= Boolean.parseBoolean(Character.getProperty("LifeCrystalNeeded", "true"));
                 SP_BOOK_NEEDED						= Boolean.parseBoolean(Character.getProperty("SpBookNeeded", "true"));
                 ES_SP_BOOK_NEEDED					= Boolean.parseBoolean(Character.getProperty("EnchantSkillSpBookNeeded","true"));
@@ -1096,12 +1096,12 @@ public final class Config
                 ENCHANT_MAX_JEWELRY					= Integer.parseInt(Character.getProperty("EnchantMaxJewelry", "255"));
                 ENCHANT_SAFE_MAX					= Integer.parseInt(Character.getProperty("EnchantSafeMax", "3"));
                 ENCHANT_SAFE_MAX_FULL				= Integer.parseInt(Character.getProperty("EnchantSafeMaxFull", "4"));
-                ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE	= Boolean.valueOf(Character.getProperty("AltKarmaPlayerCanBeKilledInPeaceZone", "false"));
-                ALT_GAME_KARMA_PLAYER_CAN_SHOP		= Boolean.valueOf(Character.getProperty("AltKarmaPlayerCanShop", "true"));
-                ALT_GAME_KARMA_PLAYER_CAN_TELEPORT	= Boolean.valueOf(Character.getProperty("AltKarmaPlayerCanTeleport", "true"));
-                ALT_GAME_KARMA_PLAYER_CAN_USE_GK	= Boolean.valueOf(Character.getProperty("AltKarmaPlayerCanUseGK", "false"));
-                ALT_GAME_KARMA_PLAYER_CAN_TRADE		= Boolean.valueOf(Character.getProperty("AltKarmaPlayerCanTrade", "true"));
-                ALT_GAME_KARMA_PLAYER_CAN_USE_WAREHOUSE	= Boolean.valueOf(Character.getProperty("AltKarmaPlayerCanUseWareHouse", "true"));
+                ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE	= Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanBeKilledInPeaceZone", "false"));
+                ALT_GAME_KARMA_PLAYER_CAN_SHOP		= Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanShop", "true"));
+                ALT_GAME_KARMA_PLAYER_CAN_TELEPORT	= Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanTeleport", "true"));
+                ALT_GAME_KARMA_PLAYER_CAN_USE_GK	= Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanUseGK", "false"));
+                ALT_GAME_KARMA_PLAYER_CAN_TRADE		= Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanTrade", "true"));
+                ALT_GAME_KARMA_PLAYER_CAN_USE_WAREHOUSE	= Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanUseWareHouse", "true"));
                 IS_CRAFTING_ENABLED					= Boolean.parseBoolean(Character.getProperty("CraftingEnabled", "true"));
                 DWARF_RECIPE_LIMIT					= Integer.parseInt(Character.getProperty("DwarfRecipeLimit","50"));
                 COMMON_RECIPE_LIMIT					= Integer.parseInt(Character.getProperty("CommonRecipeLimit","50"));
@@ -1196,7 +1196,7 @@ public final class Config
                 telnetSettings.load(is);
                 is.close();
 
-                IS_TELNET_ENABLED   = Boolean.valueOf(telnetSettings.getProperty("EnableTelnet", "false"));
+                IS_TELNET_ENABLED   = Boolean.parseBoolean(telnetSettings.getProperty("EnableTelnet", "false"));
             }
             catch (Exception e)
             {
@@ -1215,7 +1215,7 @@ public final class Config
                 MAP_TYPE        = ObjectMapType.valueOf(idSettings.getProperty("L2Map", "WorldObjectMap"));
                 SET_TYPE        = ObjectSetType.valueOf(idSettings.getProperty("L2Set", "WorldObjectSet"));
                 IDFACTORY_TYPE  = IdFactoryType.valueOf(idSettings.getProperty("IDFactory", "Compaction"));
-                BAD_ID_CHECKING = Boolean.valueOf(idSettings.getProperty("BadIdChecking", "True"));
+                BAD_ID_CHECKING = Boolean.parseBoolean(idSettings.getProperty("BadIdChecking", "True"));
             }
             catch (Exception e)
             {
@@ -1232,9 +1232,9 @@ public final class Config
                 is.close();
 
                 EVERYBODY_HAS_ADMIN_RIGHTS					= Boolean.parseBoolean(General.getProperty("EverybodyHasAdminRights", "false"));
-                SERVER_LIST_BRACKET							= Boolean.valueOf(General.getProperty("ServerListBrackets", "false"));
-                SERVER_LIST_CLOCK							= Boolean.valueOf(General.getProperty("ServerListClock", "false"));
-                SERVER_GMONLY								= Boolean.valueOf(General.getProperty("ServerGMOnly", "false"));
+                SERVER_LIST_BRACKET							= Boolean.parseBoolean(General.getProperty("ServerListBrackets", "false"));
+                SERVER_LIST_CLOCK							= Boolean.parseBoolean(General.getProperty("ServerListClock", "false"));
+                SERVER_GMONLY								= Boolean.parseBoolean(General.getProperty("ServerGMOnly", "false"));
                 ALT_PRIVILEGES_ADMIN						= Boolean.parseBoolean(General.getProperty("AltPrivilegesAdmin", "False"));
                 ALT_PRIVILEGES_SECURE_CHECK					= Boolean.parseBoolean(General.getProperty("AltPrivilegesSecureCheck", "True"));
                 ALT_PRIVILEGES_DEFAULT_LEVEL				= Integer.parseInt(General.getProperty("AltPrivilegesDefaultLevel", "100"));
@@ -1247,12 +1247,12 @@ public final class Config
                 GM_STARTUP_SILENCE							= Boolean.parseBoolean(General.getProperty("GMStartupSilence", "True"));
                 GM_STARTUP_AUTO_LIST						= Boolean.parseBoolean(General.getProperty("GMStartupAutoList", "True"));
                 GM_ADMIN_MENU_STYLE							= General.getProperty("GMAdminMenuStyle", "modern");
-                BYPASS_VALIDATION							= Boolean.valueOf(General.getProperty("BypassValidation", "True"));
-                GAMEGUARD_ENFORCE							= Boolean.valueOf(General.getProperty("GameGuardEnforce", "False"));
-                GAMEGUARD_PROHIBITACTION					= Boolean.valueOf(General.getProperty("GameGuardProhibitAction", "False"));
-                LOG_CHAT									= Boolean.valueOf(General.getProperty("LogChat", "false"));
-                LOG_ITEMS									= Boolean.valueOf(General.getProperty("LogItems", "false"));
-                GMAUDIT										= Boolean.valueOf(General.getProperty("GMAudit", "False"));
+                BYPASS_VALIDATION							= Boolean.parseBoolean(General.getProperty("BypassValidation", "True"));
+                GAMEGUARD_ENFORCE							= Boolean.parseBoolean(General.getProperty("GameGuardEnforce", "False"));
+                GAMEGUARD_PROHIBITACTION					= Boolean.parseBoolean(General.getProperty("GameGuardProhibitAction", "False"));
+                LOG_CHAT									= Boolean.parseBoolean(General.getProperty("LogChat", "false"));
+                LOG_ITEMS									= Boolean.parseBoolean(General.getProperty("LogItems", "false"));
+                GMAUDIT										= Boolean.parseBoolean(General.getProperty("GMAudit", "False"));
                 DEBUG										= Boolean.parseBoolean(General.getProperty("Debug", "false"));
                 ASSERT										= Boolean.parseBoolean(General.getProperty("Assert", "false"));
                 DEVELOPER									= Boolean.parseBoolean(General.getProperty("Developer", "false"));
@@ -1269,7 +1269,7 @@ public final class Config
                 AI_MAX_THREAD								= Integer.parseInt(General.getProperty("AiMaxThread", "10"));
                 PACKET_LIFETIME								= Integer.parseInt(General.getProperty("PacketLifeTime", "0"));
                 FLOODPROTECTOR_INITIALSIZE					= Integer.parseInt(General.getProperty("FloodProtectorInitialSize", "50"));
-                ALLOW_DISCARDITEM							= Boolean.valueOf(General.getProperty("AllowDiscardItem", "True"));
+                ALLOW_DISCARDITEM							= Boolean.parseBoolean(General.getProperty("AllowDiscardItem", "True"));
                 AUTODESTROY_ITEM_AFTER						= Integer.parseInt(General.getProperty("AutoDestroyDroppedItemAfter", "0"));
                 HERB_AUTO_DESTROY_TIME						= Integer.parseInt(General.getProperty("AutoDestroyHerbTime","15"))*1000;
                 PROTECTED_ITEMS								= General.getProperty("ListOfProtectedItems");
@@ -1281,17 +1281,17 @@ public final class Config
                 CHAR_STORE_INTERVAL							= Integer.parseInt(General.getProperty("CharacterDataStoreInterval", "15"));
                 LAZY_ITEMS_UPDATE							= Boolean.parseBoolean(General.getProperty("LazyItemsUpdate", "false"));
                 UPDATE_ITEMS_ON_CHAR_STORE					= Boolean.parseBoolean(General.getProperty("UpdateItemsOnCharStore", "false"));
-                DESTROY_DROPPED_PLAYER_ITEM					= Boolean.valueOf(General.getProperty("DestroyPlayerDroppedItem", "false"));
-                DESTROY_EQUIPABLE_PLAYER_ITEM				= Boolean.valueOf(General.getProperty("DestroyEquipableItem", "false"));
-                SAVE_DROPPED_ITEM							= Boolean.valueOf(General.getProperty("SaveDroppedItem", "false"));
-                EMPTY_DROPPED_ITEM_TABLE_AFTER_LOAD			= Boolean.valueOf(General.getProperty("EmptyDroppedItemTableAfterLoad", "false"));
+                DESTROY_DROPPED_PLAYER_ITEM					= Boolean.parseBoolean(General.getProperty("DestroyPlayerDroppedItem", "false"));
+                DESTROY_EQUIPABLE_PLAYER_ITEM				= Boolean.parseBoolean(General.getProperty("DestroyEquipableItem", "false"));
+                SAVE_DROPPED_ITEM							= Boolean.parseBoolean(General.getProperty("SaveDroppedItem", "false"));
+                EMPTY_DROPPED_ITEM_TABLE_AFTER_LOAD			= Boolean.parseBoolean(General.getProperty("EmptyDroppedItemTableAfterLoad", "false"));
                 SAVE_DROPPED_ITEM_INTERVAL					= Integer.parseInt(General.getProperty("SaveDroppedItemInterval", "0"))*60000;
-                CLEAR_DROPPED_ITEM_TABLE					= Boolean.valueOf(General.getProperty("ClearDroppedItemTable", "false"));
-                AUTODELETE_INVALID_QUEST_DATA				= Boolean.valueOf(General.getProperty("AutoDeleteInvalidQuestData", "False"));
-                PRECISE_DROP_CALCULATION					= Boolean.valueOf(General.getProperty("PreciseDropCalculation", "True"));
-                MULTIPLE_ITEM_DROP							= Boolean.valueOf(General.getProperty("MultipleItemDrop", "True"));
-                FORCE_INVENTORY_UPDATE						= Boolean.valueOf(General.getProperty("ForceInventoryUpdate", "False"));
-                LAZY_CACHE									= Boolean.valueOf(General.getProperty("LazyCache", "False"));
+                CLEAR_DROPPED_ITEM_TABLE					= Boolean.parseBoolean(General.getProperty("ClearDroppedItemTable", "false"));
+                AUTODELETE_INVALID_QUEST_DATA				= Boolean.parseBoolean(General.getProperty("AutoDeleteInvalidQuestData", "False"));
+                PRECISE_DROP_CALCULATION					= Boolean.parseBoolean(General.getProperty("PreciseDropCalculation", "True"));
+                MULTIPLE_ITEM_DROP							= Boolean.parseBoolean(General.getProperty("MultipleItemDrop", "True"));
+                FORCE_INVENTORY_UPDATE						= Boolean.parseBoolean(General.getProperty("ForceInventoryUpdate", "False"));
+                LAZY_CACHE									= Boolean.parseBoolean(General.getProperty("LazyCache", "False"));
                 MIN_NPC_ANIMATION							= Integer.parseInt(General.getProperty("MinNPCAnimation", "10"));
                 MAX_NPC_ANIMATION							= Integer.parseInt(General.getProperty("MaxNPCAnimation", "20"));
                 MIN_MONSTER_ANIMATION						= Integer.parseInt(General.getProperty("MinMonsterAnimation", "5"));
@@ -1303,34 +1303,34 @@ public final class Config
                 GEODATA										= Integer.parseInt(General.getProperty("GeoData", "0"));
                 FORCE_GEODATA								= Boolean.parseBoolean(General.getProperty("ForceGeoData", "True"));
                 ZONE_TOWN									= Integer.parseInt(General.getProperty("ZoneTown", "0"));
-                ACTIVATE_POSITION_RECORDER					= Boolean.valueOf(General.getProperty("ActivatePositionRecorder", "False"));
+                ACTIVATE_POSITION_RECORDER					= Boolean.parseBoolean(General.getProperty("ActivatePositionRecorder", "False"));
                 DEFAULT_GLOBAL_CHAT							= General.getProperty("GlobalChat", "ON");
                 DEFAULT_TRADE_CHAT							= General.getProperty("TradeChat", "ON");
-                ALLOW_WAREHOUSE								= Boolean.valueOf(General.getProperty("AllowWarehouse", "True"));
-                WAREHOUSE_CACHE								= Boolean.valueOf(General.getProperty("WarehouseCache", "False"));
+                ALLOW_WAREHOUSE								= Boolean.parseBoolean(General.getProperty("AllowWarehouse", "True"));
+                WAREHOUSE_CACHE								= Boolean.parseBoolean(General.getProperty("WarehouseCache", "False"));
                 WAREHOUSE_CACHE_TIME						= Integer.parseInt(General.getProperty("WarehouseCacheTime", "15"));
-                ALLOW_FREIGHT								= Boolean.valueOf(General.getProperty("AllowFreight", "True"));
-                ALLOW_WEAR									= Boolean.valueOf(General.getProperty("AllowWear", "False"));
+                ALLOW_FREIGHT								= Boolean.parseBoolean(General.getProperty("AllowFreight", "True"));
+                ALLOW_WEAR									= Boolean.parseBoolean(General.getProperty("AllowWear", "False"));
                 WEAR_DELAY									= Integer.parseInt(General.getProperty("WearDelay", "5"));
                 WEAR_PRICE									= Integer.parseInt(General.getProperty("WearPrice", "10"));
-                ALLOW_LOTTERY								= Boolean.valueOf(General.getProperty("AllowLottery", "False"));
-                ALLOW_RACE									= Boolean.valueOf(General.getProperty("AllowRace", "False"));
-                ALLOW_WATER									= Boolean.valueOf(General.getProperty("AllowWater", "False"));
-                ALLOW_RENTPET								= Boolean.valueOf(General.getProperty("AllowRentPet", "False"));
+                ALLOW_LOTTERY								= Boolean.parseBoolean(General.getProperty("AllowLottery", "False"));
+                ALLOW_RACE									= Boolean.parseBoolean(General.getProperty("AllowRace", "False"));
+                ALLOW_WATER									= Boolean.parseBoolean(General.getProperty("AllowWater", "False"));
+                ALLOW_RENTPET								= Boolean.parseBoolean(General.getProperty("AllowRentPet", "False"));
                 FLOODPROTECTOR_INITIALSIZE					= Integer.parseInt(General.getProperty("FloodProtectorInitialSize", "50"));
-                ALLOW_DISCARDITEM							= Boolean.valueOf(General.getProperty("AllowDiscardItem", "True"));
-                ALLOWFISHING								= Boolean.valueOf(General.getProperty("AllowFishing", "False"));
+                ALLOW_DISCARDITEM							= Boolean.parseBoolean(General.getProperty("AllowDiscardItem", "True"));
+                ALLOWFISHING								= Boolean.parseBoolean(General.getProperty("AllowFishing", "False"));
                 ALLOW_MANOR									= Boolean.parseBoolean(General.getProperty("AllowManor", "False"));
-                ALLOW_BOAT									= Boolean.valueOf(General.getProperty("AllowBoat", "False"));
-                ALLOW_CURSED_WEAPONS						= Boolean.valueOf(General.getProperty("AllowCursedWeapons", "False"));
+                ALLOW_BOAT									= Boolean.parseBoolean(General.getProperty("AllowBoat", "False"));
+                ALLOW_CURSED_WEAPONS						= Boolean.parseBoolean(General.getProperty("AllowCursedWeapons", "False"));
                 ALLOW_MANOR									= Boolean.parseBoolean(General.getProperty("AllowManor", "False"));
-                ALLOW_NPC_WALKERS							= Boolean.valueOf(General.getProperty("AllowNpcWalkers", "true"));
-                SERVER_NEWS									= Boolean.valueOf(General.getProperty("ShowServerNews", "False"));
+                ALLOW_NPC_WALKERS							= Boolean.parseBoolean(General.getProperty("AllowNpcWalkers", "true"));
+                SERVER_NEWS									= Boolean.parseBoolean(General.getProperty("ShowServerNews", "False"));
                 COMMUNITY_TYPE								= General.getProperty("CommunityType", "old").toLowerCase();
-                BBS_SHOW_PLAYERLIST							= Boolean.valueOf(General.getProperty("BBSShowPlayerList", "false"));
+                BBS_SHOW_PLAYERLIST							= Boolean.parseBoolean(General.getProperty("BBSShowPlayerList", "false"));
                 BBS_DEFAULT									= General.getProperty("BBSDefault", "_bbshome");
-                SHOW_LEVEL_COMMUNITYBOARD					= Boolean.valueOf(General.getProperty("ShowLevelOnCommunityBoard", "False"));
-                SHOW_STATUS_COMMUNITYBOARD					= Boolean.valueOf(General.getProperty("ShowStatusOnCommunityBoard", "True"));
+                SHOW_LEVEL_COMMUNITYBOARD					= Boolean.parseBoolean(General.getProperty("ShowLevelOnCommunityBoard", "False"));
+                SHOW_STATUS_COMMUNITYBOARD					= Boolean.parseBoolean(General.getProperty("ShowStatusOnCommunityBoard", "True"));
                 NAME_PAGE_SIZE_COMMUNITYBOARD				= Integer.parseInt(General.getProperty("NamePageSizeOnCommunityBoard", "50"));
                 NAME_PER_ROW_COMMUNITYBOARD					= Integer.parseInt(General.getProperty("NamePerRowOnCommunityBoard", "5"));
                 ALT_OLY_START_TIME							= Integer.parseInt(General.getProperty("AltOlyStartTime", "18"));
@@ -1368,7 +1368,7 @@ public final class Config
                 RIFT_ENTER_COST_HERO						= Integer.parseInt(General.getProperty("HeroCost", "33"));
                 DEFAULT_PUNISH								= Integer.parseInt(General.getProperty("DefaultPunish", "2"));
                 DEFAULT_PUNISH_PARAM						= Integer.parseInt(General.getProperty("DefaultPunishParam", "0"));
-                ONLY_GM_ITEMS_FREE							= Boolean.valueOf(General.getProperty("OnlyGMItemsFree", "True"));
+                ONLY_GM_ITEMS_FREE							= Boolean.parseBoolean(General.getProperty("OnlyGMItemsFree", "True"));
             }
             catch (Exception e)
             {
@@ -1384,14 +1384,14 @@ public final class Config
                 NPC.load(is);
                 is.close();
 
-                ANNOUNCE_MAMMON_SPAWN					= Boolean.valueOf(NPC.getProperty("AnnounceMammonSpawn", "True"));
-                ALT_MOB_AGRO_IN_PEACEZONE				= Boolean.valueOf(NPC.getProperty("AltMobAgroInPeaceZone", "true"));
-                ALT_GAME_VIEWNPC						= Boolean.valueOf(NPC.getProperty("AltGameViewNpc", "False"));
+                ANNOUNCE_MAMMON_SPAWN					= Boolean.parseBoolean(NPC.getProperty("AnnounceMammonSpawn", "True"));
+                ALT_MOB_AGRO_IN_PEACEZONE				= Boolean.parseBoolean(NPC.getProperty("AltMobAgroInPeaceZone", "true"));
+                ALT_GAME_VIEWNPC						= Boolean.parseBoolean(NPC.getProperty("AltGameViewNpc", "False"));
                 MAX_DRIFT_RANGE							= Integer.parseInt(NPC.getProperty("MaxDriftRange", "300"));
-                DEEPBLUE_DROP_RULES						= Boolean.valueOf(NPC.getProperty("UseDeepBlueDropRules", "True"));
-                SHOW_NPC_LVL							= Boolean.valueOf(NPC.getProperty("ShowNpcLevel", "False"));
-                GUARD_ATTACK_AGGRO_MOB					= Boolean.valueOf(NPC.getProperty("GuardAttackAggroMob", "False"));
-                ALLOW_WYVERN_UPGRADER					= Boolean.valueOf(NPC.getProperty("AllowWyvernUpgrader", "False"));
+                DEEPBLUE_DROP_RULES						= Boolean.parseBoolean(NPC.getProperty("UseDeepBlueDropRules", "True"));
+                SHOW_NPC_LVL							= Boolean.parseBoolean(NPC.getProperty("ShowNpcLevel", "False"));
+                GUARD_ATTACK_AGGRO_MOB					= Boolean.parseBoolean(NPC.getProperty("GuardAttackAggroMob", "False"));
+                ALLOW_WYVERN_UPGRADER					= Boolean.parseBoolean(NPC.getProperty("AllowWyvernUpgrader", "False"));
                 PET_RENT_NPC 							= NPC.getProperty("ListPetRentNpc", "30827");
                 LIST_PET_RENT_NPC 						= new FastList<Integer>();
                                 						for (String id : PET_RENT_NPC.split(","))
@@ -1495,7 +1495,7 @@ public final class Config
                 TVT_EVENT_PARTICIPATION_NPC_ID            = Integer.parseInt(L2JModSettings.getProperty("TvTEventParticipationNpcId", "0"));
 
                 /** L2JMOD Wedding system  */
-                L2JMOD_ALLOW_WEDDING                    = Boolean.valueOf(L2JModSettings.getProperty("AllowWedding", "False"));
+                L2JMOD_ALLOW_WEDDING                    = Boolean.parseBoolean(L2JModSettings.getProperty("AllowWedding", "False"));
                 L2JMOD_WEDDING_PRICE                    = Integer.parseInt(L2JModSettings.getProperty("WeddingPrice", "250000000"));
                 L2JMOD_WEDDING_PUNISH_INFIDELITY        = Boolean.parseBoolean(L2JModSettings.getProperty("WeddingPunishInfidelity", "True"));
                 L2JMOD_WEDDING_TELEPORT                 = Boolean.parseBoolean(L2JModSettings.getProperty("WeddingTeleport", "True"));
@@ -1571,7 +1571,7 @@ public final class Config
                                 	{
                                 		try
                                 		{
-                                			TVT_EVENT_REWARDS.add(new int[]{Integer.valueOf(rewardSplit[0]), Integer.valueOf(rewardSplit[1])});
+                                			TVT_EVENT_REWARDS.add(new int[]{Integer.parseInt(rewardSplit[0]), Integer.parseInt(rewardSplit[1])});
                                 		}
                                 		catch (NumberFormatException nfe)
                                 		{
@@ -1590,7 +1590,7 @@ public final class Config
                         		{
                         			try
                         			{
-                        				TVT_EVENT_DOOR_IDS.add(Integer.valueOf(door));
+                        				TVT_EVENT_DOOR_IDS.add(Integer.parseInt(door));
                         			}
                         			catch (NumberFormatException nfe)
                         			{
@@ -1795,7 +1795,7 @@ public final class Config
                 telnetSettings.load(is);
                 is.close();
 
-                IS_TELNET_ENABLED   = Boolean.valueOf(telnetSettings.getProperty("EnableTelnet", "false"));
+                IS_TELNET_ENABLED   = Boolean.parseBoolean(telnetSettings.getProperty("EnableTelnet", "false"));
             }
             catch (Exception e)
             {
@@ -1848,45 +1848,45 @@ public final class Config
         else if (pName.equalsIgnoreCase("KarmaRateDropEquipWeapon")) KARMA_RATE_DROP_EQUIP_WEAPON = Integer.parseInt(pValue);
 
         else if (pName.equalsIgnoreCase("AutoDestroyDroppedItemAfter")) AUTODESTROY_ITEM_AFTER = Integer.parseInt(pValue);
-        else if (pName.equalsIgnoreCase("DestroyPlayerDroppedItem")) DESTROY_DROPPED_PLAYER_ITEM = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("DestroyEquipableItem")) DESTROY_EQUIPABLE_PLAYER_ITEM = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("SaveDroppedItem")) SAVE_DROPPED_ITEM = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("EmptyDroppedItemTableAfterLoad")) EMPTY_DROPPED_ITEM_TABLE_AFTER_LOAD = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("DestroyPlayerDroppedItem")) DESTROY_DROPPED_PLAYER_ITEM = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("DestroyEquipableItem")) DESTROY_EQUIPABLE_PLAYER_ITEM = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("SaveDroppedItem")) SAVE_DROPPED_ITEM = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("EmptyDroppedItemTableAfterLoad")) EMPTY_DROPPED_ITEM_TABLE_AFTER_LOAD = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("SaveDroppedItemInterval")) SAVE_DROPPED_ITEM_INTERVAL = Integer.parseInt(pValue);
-        else if (pName.equalsIgnoreCase("ClearDroppedItemTable")) CLEAR_DROPPED_ITEM_TABLE = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("ClearDroppedItemTable")) CLEAR_DROPPED_ITEM_TABLE = Boolean.parseBoolean(pValue);
 
-        else if (pName.equalsIgnoreCase("PreciseDropCalculation")) PRECISE_DROP_CALCULATION = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("MultipleItemDrop")) MULTIPLE_ITEM_DROP = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("PreciseDropCalculation")) PRECISE_DROP_CALCULATION = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("MultipleItemDrop")) MULTIPLE_ITEM_DROP = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("CoordSynchronize")) COORD_SYNCHRONIZE = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("DeleteCharAfterDays")) DELETE_DAYS = Integer.parseInt(pValue);
 
-        else if (pName.equalsIgnoreCase("AllowDiscardItem")) ALLOW_DISCARDITEM = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AllowFreight")) ALLOW_FREIGHT = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AllowWarehouse")) ALLOW_WAREHOUSE = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AllowWear")) ALLOW_WEAR = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("AllowDiscardItem")) ALLOW_DISCARDITEM = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AllowFreight")) ALLOW_FREIGHT = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AllowWarehouse")) ALLOW_WAREHOUSE = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AllowWear")) ALLOW_WEAR = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("WearDelay")) WEAR_DELAY = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("WearPrice")) WEAR_PRICE = Integer.parseInt(pValue);
-        else if (pName.equalsIgnoreCase("AllowWater")) ALLOW_WATER = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AllowRentPet")) ALLOW_RENTPET = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AllowBoat")) ALLOW_BOAT = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AllowCursedWeapons")) ALLOW_CURSED_WEAPONS = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AllowManor")) ALLOW_MANOR = Boolean.valueOf(pValue);        
-        else if (pName.equalsIgnoreCase("BypassValidation")) BYPASS_VALIDATION = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("AllowWater")) ALLOW_WATER = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AllowRentPet")) ALLOW_RENTPET = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AllowBoat")) ALLOW_BOAT = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AllowCursedWeapons")) ALLOW_CURSED_WEAPONS = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AllowManor")) ALLOW_MANOR = Boolean.parseBoolean(pValue);        
+        else if (pName.equalsIgnoreCase("BypassValidation")) BYPASS_VALIDATION = Boolean.parseBoolean(pValue);
 
         else if (pName.equalsIgnoreCase("CommunityType")) COMMUNITY_TYPE = pValue.toLowerCase();
-        else if (pName.equalsIgnoreCase("BBSShowPlayerList")) BBS_SHOW_PLAYERLIST = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("BBSShowPlayerList")) BBS_SHOW_PLAYERLIST = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("BBSDefault")) BBS_DEFAULT = pValue;
-        else if (pName.equalsIgnoreCase("ShowLevelOnCommunityBoard")) SHOW_LEVEL_COMMUNITYBOARD = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("ShowStatusOnCommunityBoard")) SHOW_STATUS_COMMUNITYBOARD = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("ShowLevelOnCommunityBoard")) SHOW_LEVEL_COMMUNITYBOARD = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("ShowStatusOnCommunityBoard")) SHOW_STATUS_COMMUNITYBOARD = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("NamePageSizeOnCommunityBoard")) NAME_PAGE_SIZE_COMMUNITYBOARD = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("NamePerRowOnCommunityBoard")) NAME_PER_ROW_COMMUNITYBOARD = Integer.parseInt(pValue);
 
-        else if (pName.equalsIgnoreCase("ShowServerNews")) SERVER_NEWS = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("ShowNpcLevel")) SHOW_NPC_LVL = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("ShowServerNews")) SERVER_NEWS = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("ShowNpcLevel")) SHOW_NPC_LVL = Boolean.parseBoolean(pValue);
 
-        else if (pName.equalsIgnoreCase("ForceInventoryUpdate")) FORCE_INVENTORY_UPDATE = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("ForceInventoryUpdate")) FORCE_INVENTORY_UPDATE = Boolean.parseBoolean(pValue);
 
-        else if (pName.equalsIgnoreCase("AutoDeleteInvalidQuestData")) AUTODELETE_INVALID_QUEST_DATA = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("AutoDeleteInvalidQuestData")) AUTODELETE_INVALID_QUEST_DATA = Boolean.parseBoolean(pValue);
 
         else if (pName.equalsIgnoreCase("MaximumOnlineUsers")) MAXIMUM_ONLINE_USERS = Integer.parseInt(pValue);
 
@@ -1894,13 +1894,13 @@ public final class Config
 
         else if (pName.equalsIgnoreCase("MaximumUpdateDistance")) MINIMUM_UPDATE_DISTANCE = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("MinimumUpdateTime")) MINIMUN_UPDATE_TIME = Integer.parseInt(pValue);
-        else if (pName.equalsIgnoreCase("CheckKnownList")) CHECK_KNOWN = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("CheckKnownList")) CHECK_KNOWN = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("KnownListForgetDelay")) KNOWNLIST_FORGET_DELAY = Integer.parseInt(pValue);
 
         // Other settings
-        else if (pName.equalsIgnoreCase("UseDeepBlueDropRules")) DEEPBLUE_DROP_RULES = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AllowGuards")) GUARD_ATTACK_AGGRO_MOB = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("CancelLesserEffect")) EFFECT_CANCELING = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("UseDeepBlueDropRules")) DEEPBLUE_DROP_RULES = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AllowGuards")) GUARD_ATTACK_AGGRO_MOB = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("CancelLesserEffect")) EFFECT_CANCELING = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("WyvernSpeed")) WYVERN_SPEED = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("StriderSpeed")) STRIDER_SPEED = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("WolfSpeed")) GREAT_WOLF_SPEED = Integer.parseInt(pValue);
@@ -1950,69 +1950,69 @@ public final class Config
         else if (pName.equalsIgnoreCase("MaxPvtStoreSlotsDwarf")) MAX_PVTSTORE_SLOTS_DWARF = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("MaxPvtStoreSlotsOther")) MAX_PVTSTORE_SLOTS_OTHER = Integer.parseInt(pValue);
 
-        else if (pName.equalsIgnoreCase("StoreSkillCooltime")) STORE_SKILL_COOLTIME = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AnnounceMammonSpawn")) ANNOUNCE_MAMMON_SPAWN = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("StoreSkillCooltime")) STORE_SKILL_COOLTIME = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AnnounceMammonSpawn")) ANNOUNCE_MAMMON_SPAWN = Boolean.parseBoolean(pValue);
 
         // Alternative settings
-        else if (pName.equalsIgnoreCase("AltGameTiredness")) ALT_GAME_TIREDNESS = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AltGameCreation")) ALT_GAME_CREATION = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("AltGameTiredness")) ALT_GAME_TIREDNESS = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltGameCreation")) ALT_GAME_CREATION = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltGameCreationSpeed")) ALT_GAME_CREATION_SPEED = Double.parseDouble(pValue);
         else if (pName.equalsIgnoreCase("AltGameCreationXpRate")) ALT_GAME_CREATION_XP_RATE = Double.parseDouble(pValue);
         else if (pName.equalsIgnoreCase("AltGameCreationSpRate")) ALT_GAME_CREATION_SP_RATE = Double.parseDouble(pValue);
         else if (pName.equalsIgnoreCase("AltWeightLimit")) ALT_WEIGHT_LIMIT = Double.parseDouble(pValue);
-        else if (pName.equalsIgnoreCase("AltBlacksmithUseRecipes")) ALT_BLACKSMITH_USE_RECIPES = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AltGameSkillLearn")) ALT_GAME_SKILL_LEARN = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("RemoveCastleCirclets")) REMOVE_CASTLE_CIRCLETS = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("AltBlacksmithUseRecipes")) ALT_BLACKSMITH_USE_RECIPES = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltGameSkillLearn")) ALT_GAME_SKILL_LEARN = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("RemoveCastleCirclets")) REMOVE_CASTLE_CIRCLETS = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltGameCancelByHit"))
         {
             ALT_GAME_CANCEL_BOW     = pValue.equalsIgnoreCase("bow") || pValue.equalsIgnoreCase("all");
             ALT_GAME_CANCEL_CAST    = pValue.equalsIgnoreCase("cast") || pValue.equalsIgnoreCase("all");
         }
 
-        else if (pName.equalsIgnoreCase("AltShieldBlocks")) ALT_GAME_SHIELD_BLOCKS = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("AltShieldBlocks")) ALT_GAME_SHIELD_BLOCKS = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltPerfectShieldBlockRate")) ALT_PERFECT_SHLD_BLOCK = Integer.parseInt(pValue);
-        else if (pName.equalsIgnoreCase("Delevel")) ALT_GAME_DELEVEL = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("MagicFailures")) ALT_GAME_MAGICFAILURES = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AltMobAgroInPeaceZone")) ALT_MOB_AGRO_IN_PEACEZONE = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("Delevel")) ALT_GAME_DELEVEL = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("MagicFailures")) ALT_GAME_MAGICFAILURES = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltMobAgroInPeaceZone")) ALT_MOB_AGRO_IN_PEACEZONE = Boolean.parseBoolean(pValue);
 
         else if (pName.equalsIgnoreCase("AltGameExponentXp")) ALT_GAME_EXPONENT_XP = Float.parseFloat(pValue);
         else if (pName.equalsIgnoreCase("AltGameExponentSp")) ALT_GAME_EXPONENT_SP = Float.parseFloat(pValue);
 
-        else if (pName.equalsIgnoreCase("AllowClassMasters")) ALLOW_CLASS_MASTERS = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AltGameFreights")) ALT_GAME_FREIGHTS = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("AllowClassMasters")) ALLOW_CLASS_MASTERS = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltGameFreights")) ALT_GAME_FREIGHTS = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltGameFreightPrice")) ALT_GAME_FREIGHT_PRICE = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("AltPartyRange")) ALT_PARTY_RANGE = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("AltPartyRange2")) ALT_PARTY_RANGE2 = Integer.parseInt(pValue);
 
-        else if (pName.equalsIgnoreCase("CraftingEnabled")) IS_CRAFTING_ENABLED = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("LifeCrystalNeeded")) LIFE_CRYSTAL_NEEDED = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("SpBookNeeded")) SP_BOOK_NEEDED = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AutoLoot")) AUTO_LOOT = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AutoLootHerbs")) AUTO_LOOT_HERBS = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("CraftingEnabled")) IS_CRAFTING_ENABLED = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("LifeCrystalNeeded")) LIFE_CRYSTAL_NEEDED = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("SpBookNeeded")) SP_BOOK_NEEDED = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AutoLoot")) AUTO_LOOT = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AutoLootHerbs")) AUTO_LOOT_HERBS = Boolean.parseBoolean(pValue);
 
-        else if (pName.equalsIgnoreCase("AltKarmaPlayerCanBeKilledInPeaceZone")) ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AltKarmaPlayerCanShop")) ALT_GAME_KARMA_PLAYER_CAN_SHOP = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AltKarmaPlayerCanUseGK")) ALT_GAME_KARMA_PLAYER_CAN_USE_GK = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AltKarmaPlayerCanTeleport")) ALT_GAME_KARMA_PLAYER_CAN_TELEPORT = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AltKarmaPlayerCanTrade")) ALT_GAME_KARMA_PLAYER_CAN_TRADE = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AltKarmaPlayerCanUseWareHouse")) ALT_GAME_KARMA_PLAYER_CAN_USE_WAREHOUSE = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AltRequireCastleForDawn")) ALT_GAME_REQUIRE_CASTLE_DAWN = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AltRequireClanCastle")) ALT_GAME_REQUIRE_CLAN_CASTLE = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AltFreeTeleporting")) ALT_GAME_FREE_TELEPORT = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AltSubClassWithoutQuests")) ALT_GAME_SUBCLASS_WITHOUT_QUESTS = Boolean.valueOf(pValue);
-        //else if (pName.equalsIgnoreCase("AltNewCharAlwaysIsNewbie")) ALT_GAME_NEW_CHAR_ALWAYS_IS_NEWBIE = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AltMembersCanWithdrawFromClanWH")) ALT_MEMBERS_CAN_WITHDRAW_FROM_CLANWH = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("AltKarmaPlayerCanBeKilledInPeaceZone")) ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltKarmaPlayerCanShop")) ALT_GAME_KARMA_PLAYER_CAN_SHOP = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltKarmaPlayerCanUseGK")) ALT_GAME_KARMA_PLAYER_CAN_USE_GK = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltKarmaPlayerCanTeleport")) ALT_GAME_KARMA_PLAYER_CAN_TELEPORT = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltKarmaPlayerCanTrade")) ALT_GAME_KARMA_PLAYER_CAN_TRADE = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltKarmaPlayerCanUseWareHouse")) ALT_GAME_KARMA_PLAYER_CAN_USE_WAREHOUSE = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltRequireCastleForDawn")) ALT_GAME_REQUIRE_CASTLE_DAWN = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltRequireClanCastle")) ALT_GAME_REQUIRE_CLAN_CASTLE = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltFreeTeleporting")) ALT_GAME_FREE_TELEPORT = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltSubClassWithoutQuests")) ALT_GAME_SUBCLASS_WITHOUT_QUESTS = Boolean.parseBoolean(pValue);
+        //else if (pName.equalsIgnoreCase("AltNewCharAlwaysIsNewbie")) ALT_GAME_NEW_CHAR_ALWAYS_IS_NEWBIE = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltMembersCanWithdrawFromClanWH")) ALT_MEMBERS_CAN_WITHDRAW_FROM_CLANWH = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("DwarfRecipeLimit")) DWARF_RECIPE_LIMIT = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("CommonRecipeLimit")) COMMON_RECIPE_LIMIT = Integer.parseInt(pValue);
-        else if (pName.equalsIgnoreCase("CastleShieldRestriction")) CASTLE_SHIELD = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("ClanHallShieldRestriction")) CLANHALL_SHIELD = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("ApellaArmorsRestriction")) APELLA_ARMORS = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("OathArmorsRestriction")) OATH_ARMORS = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("CastleLordsCrownRestriction")) CASTLE_CROWN = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("CastleCircletsRestriction")) CASTLE_CIRCLETS = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("CastleShieldRestriction")) CASTLE_SHIELD = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("ClanHallShieldRestriction")) CLANHALL_SHIELD = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("ApellaArmorsRestriction")) APELLA_ARMORS = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("OathArmorsRestriction")) OATH_ARMORS = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("CastleLordsCrownRestriction")) CASTLE_CROWN = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("CastleCircletsRestriction")) CASTLE_CIRCLETS = Boolean.parseBoolean(pValue);
 
         //ChampionMobs L2JMOD
-        else if (pName.equalsIgnoreCase("ChampionEnable")) L2JMOD_CHAMPION_ENABLE =  Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("ChampionEnable")) L2JMOD_CHAMPION_ENABLE =  Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("ChampionFrequency")) L2JMOD_CHAMPION_FREQUENCY = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("ChampionMinLevel")) L2JMOD_CHAMP_MIN_LVL = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("ChampionMaxLevel")) L2JMOD_CHAMP_MAX_LVL = Integer.parseInt(pValue);
@@ -2027,7 +2027,7 @@ public final class Config
         else if (pName.equalsIgnoreCase("ChampionRewardItemQty")) L2JMOD_CHAMPION_REWARD_QTY = Integer.parseInt(pValue);
 
         // L2JMOD Wedding System
-        else if (pName.equalsIgnoreCase("AllowWedding")) L2JMOD_ALLOW_WEDDING = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("AllowWedding")) L2JMOD_ALLOW_WEDDING = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("WeddingPrice")) L2JMOD_WEDDING_PRICE = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("WeddingPunishInfidelity")) L2JMOD_WEDDING_PUNISH_INFIDELITY = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("WeddingTeleport")) L2JMOD_WEDDING_TELEPORT = Boolean.parseBoolean(pValue);
@@ -2048,8 +2048,8 @@ public final class Config
         else if (pName.equalsIgnoreCase("XPDivider")) KARMA_XP_DIVIDER = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("BaseKarmaLost")) KARMA_LOST_BASE = Integer.parseInt(pValue);
 
-        else if (pName.equalsIgnoreCase("CanGMDropEquipment")) KARMA_DROP_GM = Boolean.valueOf(pValue);
-        else if (pName.equalsIgnoreCase("AwardPKKillPVPPoint")) KARMA_AWARD_PK_KILL = Boolean.valueOf(pValue);
+        else if (pName.equalsIgnoreCase("CanGMDropEquipment")) KARMA_DROP_GM = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AwardPKKillPVPPoint")) KARMA_AWARD_PK_KILL = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("MinimumPKRequiredToDrop")) KARMA_PK_LIMIT = Integer.parseInt(pValue);
 
         else if (pName.equalsIgnoreCase("PvPVsNormalTime")) PVP_NORMAL_TIME = Integer.parseInt(pValue);
