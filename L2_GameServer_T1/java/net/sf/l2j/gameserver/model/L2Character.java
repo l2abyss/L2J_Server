@@ -2319,7 +2319,8 @@ public abstract class L2Character extends L2Object
 						&& _effects.get(i).getEffectType() == newEffect.getEffectType()
 						&& _effects.get(i).getStackOrder() == newEffect.getStackOrder())
 				{
-					if (newEffect.getSkill().getSkillType() == L2Skill.SkillType.BUFF)
+					if (newEffect.getSkill().getSkillType() == L2Skill.SkillType.BUFF
+							|| newEffect.getEffectType() == L2Effect.EffectType.BUFF)
 					{
 						// renew buffs, exit old
 						_effects.get(i).exit();

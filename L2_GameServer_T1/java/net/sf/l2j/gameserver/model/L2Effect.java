@@ -50,6 +50,7 @@ public abstract class L2Effect
     public static enum EffectType
     {
         BUFF,
+        DEBUFF,
         CHARGE,
         DMG_OVER_TIME,
         HEAL_OVER_TIME,
