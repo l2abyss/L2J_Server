@@ -511,9 +511,11 @@ public final class L2PcInstance extends L2PlayableInstance
 	/** The L2Summon of the L2PcInstance */
 	private L2Summon _summon = null;
 	/** The L2Decoy of the L2PcInstance */
-    private L2Decoy _decoy = null;
-    /** The L2Trap of the L2PcInstance */
-    private L2Trap _trap = null;
+	private L2Decoy _decoy = null;
+	/** The L2Trap of the L2PcInstance */
+	private L2Trap _trap = null;
+	/** The L2Agathion of the L2PcInstance */
+	private int _agathionId = 0;
 	// apparently, a L2PcInstance CAN have both a summon AND a tamed beast at the same time!!
 	private L2TamedBeastInstance _tamedBeast = null;
 
@@ -10958,5 +10960,14 @@ public final class L2PcInstance extends L2PlayableInstance
     public boolean mustFallDownOnDeath()
     {
         return super.mustFallDownOnDeath() && !TvTEvent.isPlayerParticipant(getName());
+    }
+
+    public void setAgathionId(int npcId)
+    {
+    	_agathionId = npcId;
+    }
+    public int getAgathionId()
+    {
+	    return _agathionId;
     }
 }

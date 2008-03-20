@@ -363,7 +363,6 @@ public final class UserInfo extends L2GameServerPacket
         // T1 Starts
         writeD(_activeChar.getTranformationId());
         
-        //im not sure if position is in right place
         writeD(_activeChar.getAttackElement());
         writeD(_activeChar.getAttackElementValue());
         writeD(_activeChar.getDefAttrFire());
@@ -373,7 +372,7 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.getDefAttrHoly());
         writeD(_activeChar.getDefAttrUnholy());
         
-        writeD(0x00);
+        writeD(_activeChar.getAgathionId());
     }
 
     /* (non-Javadoc)
