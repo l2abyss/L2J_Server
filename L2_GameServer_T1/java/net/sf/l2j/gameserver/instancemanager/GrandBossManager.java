@@ -347,15 +347,15 @@ public class GrandBossManager
 			{
 				if (zone == null)
 					continue;
-				String name = zone.getZoneName();
+				Integer id = zone.getId();
 				L2FastList<Integer> list = zone.getAllowedPlayers();
-				if (name == null || list == null || list.isEmpty())
+				if (list == null || list.isEmpty())
 					continue;
 				for (Integer player : list)
 				{
 					statement = con.prepareStatement(INSERT_GRAND_BOSS_LIST);
 					statement.setInt(1, player);
-					statement.setString(2, name);
+					statement.setInt(2, id);
 					statement.executeUpdate();
 					statement.close();
 				}
