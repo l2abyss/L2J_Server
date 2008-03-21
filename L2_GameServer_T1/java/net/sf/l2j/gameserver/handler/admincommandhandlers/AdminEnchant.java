@@ -187,7 +187,7 @@ public class AdminEnchant implements IAdminCommandHandler
                 + itemInstance.getItem().getName() + " from " + curEnchant + " to " + ench + ".");
 
             // log
-            GMAudit.auditGMAction(activeChar.getName(), "enchant", player.getName(), itemInstance.getItem().getName() + " from " + curEnchant + " to " + ench);
+            GMAudit.auditGMAction(activeChar.getName(), "enchant", player.getName(), itemInstance.getItem().getName() + "(" + itemInstance.getObjectId() + ")" + " from " + curEnchant + " to " + ench);
         }
     }
 
