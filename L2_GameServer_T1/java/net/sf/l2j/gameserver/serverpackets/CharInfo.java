@@ -60,7 +60,6 @@ public class CharInfo extends L2GameServerPacket
 	private int _mAtkSpd, _pAtkSpd;
 	private int _runSpd, _walkSpd, _swimRunSpd, _swimWalkSpd, _flRunSpd, _flWalkSpd, _flyRunSpd, _flyWalkSpd;
     private float _moveMultiplier, _attackSpeedMultiplier;
-    private int _maxCp;
 
 	/**
 	 * @param _characters
@@ -81,7 +80,6 @@ public class CharInfo extends L2GameServerPacket
     	_walkSpd        = (int)(_activeChar.getWalkSpeed()/_moveMultiplier);    
         _swimRunSpd = _flRunSpd = _flyRunSpd = _runSpd;
         _swimWalkSpd = _flWalkSpd = _flyWalkSpd = _walkSpd;
-    	_maxCp = _activeChar.getMaxCp();
     }
 
 	@Override
@@ -111,7 +109,7 @@ public class CharInfo extends L2GameServerPacket
 				writeD(_x);
 				writeD(_y);
 				writeD(_z);
-				writeD(_heading);
+				writeD(0x00);
 				writeD(0x00);
 				writeD(_mAtkSpd);
 				writeD(_pAtkSpd);
@@ -363,8 +361,8 @@ public class CharInfo extends L2GameServerPacket
 			writeH(_activeChar.getRecomHave()); //Blue value for name (0 = white, 255 = pure blue)
 			writeD(_activeChar.getMountNpcId() + 1000000);
 
-			writeD(_maxCp);
-			writeD((int) _activeChar.getCurrentCp());
+			writeD(_activeChar.getClassId().getId());
+			writeD(0x00); //?
 	        writeC(_activeChar.isMounted() ? 0 : _activeChar.getEnchantEffect());
 
 	        if(_activeChar.getTeam()==1)
@@ -385,24 +383,26 @@ public class CharInfo extends L2GameServerPacket
 
 	        writeD(_activeChar.getAppearance().getNameColor());
 
-	        writeD(0x00); // isRunning() as in UserInfo?
+	        writeD(_heading);
 
 	        writeD(_activeChar.getPledgeClass());
-	        writeD(0x00); // ??
+	        writeD(_activeChar.getPledgeType());
 
 	        writeD(_activeChar.getAppearance().getTitleColor());
-
-	        //writeD(0x00); // ??
 
 	        if (_activeChar.isCursedWeaponEquipped())
 	        	writeD(CursedWeaponsManager.getInstance().getLevel(_activeChar.getCursedWeaponEquippedId()));
 	        else
 	        	writeD(0x00);
-	        
-			// T1
-			writeD(0x00);
-			writeD(_activeChar.getTranformationId());
-			writeD(_activeChar.getAgathionId());
+
+	        if (_activeChar.getClanId() > 0)
+	        	writeD(_activeChar.getClan().getReputationScore());
+	        else
+	        	writeD(0x00); 
+
+	        // T1
+	        writeD(_activeChar.getTranformationId());
+	        writeD(_activeChar.getAgathionId());
 		}
 	}
 
