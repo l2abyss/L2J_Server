@@ -247,6 +247,9 @@ public abstract class L2Skill
         // Kamael WeaponChange
         CHANGEWEAPON (L2SkillChangeWeapon.class),
 
+		// Skill is done within the core.
+		COREDONE,
+		
         // unimplemented
         NOTDONE;
 
