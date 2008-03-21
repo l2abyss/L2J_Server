@@ -865,6 +865,8 @@ public abstract class Inventory extends ItemContainer
 			case PAPERDOLL_BACK:		slot = L2Item.SLOT_BACK;		break;
 			case PAPERDOLL_FEET:		slot = L2Item.SLOT_FEET;		break;
 			case PAPERDOLL_LRHAND:		slot = L2Item.SLOT_LR_HAND;		break;
+			case PAPERDOLL_LBRACELET:   slot = L2Item.SLOT_L_BRACELET;  break;
+			case PAPERDOLL_RBRACELET:   slot = L2Item.SLOT_R_BRACELET;  break;
 		}
 		
 		return slot;
@@ -955,6 +957,8 @@ public abstract class Inventory extends ItemContainer
 			setPaperdollItem(PAPERDOLL_RHAND, null);// this should be the same as in LRHAND
 			pdollSlot = PAPERDOLL_LRHAND;
 			break;
+		case L2Item.SLOT_L_BRACELET:	pdollSlot = PAPERDOLL_LBRACELET;	break;
+		case L2Item.SLOT_R_BRACELET:	pdollSlot = PAPERDOLL_RBRACELET;	break;
 		}
 		if (pdollSlot >= 0)
 			setPaperdollItem(pdollSlot, null);
@@ -1172,6 +1176,12 @@ public abstract class Inventory extends ItemContainer
 				break;
 			case L2Item.SLOT_BACK:
 				setPaperdollItem(PAPERDOLL_BACK, item);
+				break;
+			case L2Item.SLOT_L_BRACELET:
+				setPaperdollItem(PAPERDOLL_LBRACELET, item);
+				break;
+			case L2Item.SLOT_R_BRACELET:
+				setPaperdollItem(PAPERDOLL_RBRACELET, item);
 				break;
 			default:
 				_log.warning("unknown body slot:" + targetSlot);

@@ -131,8 +131,9 @@ public class ItemTable
         _armorTypes.put("pet",              L2ArmorType.PET);  
 
         _slots.put("shirt",                 L2Item.SLOT_UNDERWEAR);  
-        _slots.put("belt",                  L2Item.SLOT_ALLDRESS);  
-        _slots.put("braslet",               L2Item.SLOT_R_BRACELET);  
+        _slots.put("belt",                  L2Item.SLOT_ALLDRESS);
+        _slots.put("lbracelet",             L2Item.SLOT_L_BRACELET);
+        _slots.put("rbracelet",             L2Item.SLOT_R_BRACELET);   
         _slots.put("talisman",              L2Item.SLOT_DECO);  
         _slots.put("chest",                 L2Item.SLOT_CHEST);  
         _slots.put("fullarmor",             L2Item.SLOT_FULL_ARMOR);  
