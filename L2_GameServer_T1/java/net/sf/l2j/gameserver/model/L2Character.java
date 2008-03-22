@@ -1399,33 +1399,7 @@ public abstract class L2Character extends L2Object
         // Set the target of the skill in function of Skill Type and Target Type
         L2Character target = null;
 		// Get all possible targets of the skill in a table in function of the skill target type
-        L2Object[] targets = null;
-        // targets could be NULL or 0 here couse its not given that objects are in the pointed area
-        switch (skill.getTargetType())
-        {
-        	case TARGET_GROUND:
-        	case TARGET_AURA:
-        	case TARGET_FRONT_AURA:
-        	case TARGET_BEHIND_AURA:
-        	{
-        		targets = skill.getTargetList(this);
-        		if (targets == null || targets.length == 0)
-        		{
-        			target = this;
-        		}
-        		break;
-        	}
-        	default:
-        	{
-        		targets = skill.getTargetList(this);
-        		if (targets == null || targets.length == 0)
-        		{
-        			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
-        			return;
-        		}
-        		break;
-        	}
-        }
+        L2Object[] targets = skill.getTargetList(this);
 
 		// AURA skills should always be using caster as target
 		if (skill.getTargetType() == SkillTargetType.TARGET_AURA
