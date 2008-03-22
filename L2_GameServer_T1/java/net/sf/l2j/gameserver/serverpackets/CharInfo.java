@@ -109,7 +109,7 @@ public class CharInfo extends L2GameServerPacket
 				writeD(_x);
 				writeD(_y);
 				writeD(_z);
-				writeD(0x00);
+				writeD(_heading);
 				writeD(0x00);
 				writeD(_mAtkSpd);
 				writeD(_pAtkSpd);
@@ -190,7 +190,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_x);
 			writeD(_y);
 			writeD(_z);
-			writeD(_heading);
+			writeD(0x00);
 			writeD(_activeChar.getObjectId());
 			writeS(_activeChar.getAppearance().getVisibleName());
 			writeD(_activeChar.getRace().ordinal());

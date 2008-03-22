@@ -349,11 +349,9 @@ public final class UserInfo extends L2GameServerPacket
        	writeC(_activeChar.isRunning() ? 0x01 : 0x00); //changes the Speed display on Status Window
 
         writeD(_activeChar.getPledgeClass()); //changes the text above CP on Status Window
-        writeD(0x00); // ??
+        writeD(_activeChar.getPledgeType());
 
         writeD(_activeChar.getAppearance().getTitleColor());
-
-        //writeD(0x00); // ??
 
         if (_activeChar.isCursedWeaponEquipped())
         	writeD(CursedWeaponsManager.getInstance().getLevel(_activeChar.getCursedWeaponEquippedId()));
