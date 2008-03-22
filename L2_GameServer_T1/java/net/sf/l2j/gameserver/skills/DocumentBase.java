@@ -360,7 +360,7 @@ abstract class DocumentBase
     {
         Condition cond = null;
         int[] ElementSeeds = new int[5];
-        int[] forces = new int[2];
+        byte[] forces = new byte[2];
         NamedNodeMap attrs = n.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++)
         {
@@ -442,11 +442,11 @@ abstract class DocumentBase
             }
             else if ("battle_force".equalsIgnoreCase(a.getNodeName()))
             {
-                forces[0] = Integer.decode(getValue(a.getNodeValue(), null));
+                forces[0] = Byte.decode(getValue(a.getNodeValue(), null));
             }
             else if ("spell_force".equalsIgnoreCase(a.getNodeName()))
             {
-                forces[1] = Integer.decode(getValue(a.getNodeValue(), null));
+                forces[1] = Byte.decode(getValue(a.getNodeValue(), null));
             }
         }
 

@@ -27,6 +27,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneManager;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
+import net.sf.l2j.gameserver.model.zone.type.L2PeaceZone;
 import net.sf.l2j.util.L2ObjectSet;
 
 
@@ -123,6 +124,41 @@ public final class L2WorldRegion
             return false;
         }
         return false;
+    }
+    
+    public boolean checkEffectRangeInsidePeaceZone(L2Skill skill, final int x, final int y, final int z)
+    {
+        if (_zoneManager != null)
+        {
+            final int range = skill.getEffectRange();
+            final int up = y + range;
+            final int down = y - range;
+            final int left = x + range;
+            final int right = x - range;
+            
+            for (L2ZoneType e : _zoneManager.getZones())
+            {
+            	if (e instanceof L2PeaceZone)
+            	{
+            		if (e.isInsideZone(x, up, z))
+            			return false;
+                        
+            		if (e.isInsideZone(x, down, z))
+            			return false;
+                        	
+            		if (e.isInsideZone(left, y, z))
+            			return false;
+            		
+            		if (e.isInsideZone(right, y, z))
+            			return false;
+                        
+            		if (e.isInsideZone(x, y, z))
+            			return false;
+            	}
+            }
+            return true;
+        }
+        return true;
     }
 
     public void onDeath(L2Character character)

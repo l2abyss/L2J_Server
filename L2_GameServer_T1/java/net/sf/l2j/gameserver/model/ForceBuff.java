@@ -12,105 +12,80 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
+ 
 package net.sf.l2j.gameserver.model;
 
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
-
+import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.skills.effects.EffectForce;
+import net.sf.l2j.gameserver.util.Util;
 
 /**
- * @author kombat
- *
+ * @author kombat, Forsaiken
  */
-public class ForceBuff
+public final class ForceBuff
 {
-	static final Logger _log = Logger.getLogger(ForceBuff.class.getName());
-
-	protected L2PcInstance _caster;
-	private L2PcInstance _target;
-	private L2Skill _skill;
-	private L2Skill _force;
-	private Future<?> _task;
-	private boolean _applied;
-
-	public L2PcInstance getCaster() { return _caster; }
-	public L2PcInstance getTarget() { return _target; }
-	public L2Skill getSkill() { return _skill; }
-	public L2Skill getForce() { return _force; }
-	protected void setTask(Future<?> task) { _task = task; }
-	protected void setApplied(boolean applied) { _applied = applied; }
-
-	public ForceBuff(L2PcInstance caster, L2PcInstance target, L2Skill skill)
-	{
-		_caster = caster;
-		_target = target;
-		_skill = skill;
-		_force = SkillTable.getInstance().getInfo(skill.getForceId(), 1);
-		_applied = false;
-
-		Runnable r = new Runnable()
-		{
-			public void run()
-			{
-				setApplied(true);
-				setTask(null);
-
-				int forceId = getForce().getId();
-				boolean create = true;
-				L2Effect[] effects = getTarget().getAllEffects();
-				if (effects != null)
-				{
-					for(L2Effect e : effects)
-					{
-						if (e.getSkill().getId() == forceId)
-						{
-							EffectForce ef = (EffectForce)e;
-							if(ef.forces < 3)
-								ef.increaseForce();
-							create = false;
-							break;
-						}
-					}
-				}
-				if(create)
-				{
-					getForce().getEffects(_caster, getTarget());
-				}
-			}
-		};
-		setTask(ThreadPoolManager.getInstance().scheduleGeneral(r, 2000));
-	}
-
-	public void delete()
-	{
-		if (_task != null)
-		{
-			_task.cancel(false);
-			_task = null;
-		}
-
-		_caster.setForceBuff(null);
-
-		if(!_applied) return;
-
-		int toDeleteId = getForce().getId();
-
-		L2Effect[] effects = _target.getAllEffects();
-		if (effects != null)
-		{
-			for(L2Effect e : effects)
-			{
-				if (e.getSkill().getId() == toDeleteId && (e instanceof EffectForce))
-				{
-					((EffectForce)e).decreaseForce();
-					break;
-				}
-			}
-		}
-	}
+    final int _skillCastRange;
+    final int _forceId;
+    L2PcInstance _caster;
+    L2PcInstance _target;
+    Future<?> _geoCheckTask;
+    
+    public L2PcInstance getCaster()
+    {
+        return _caster;
+    }
+    
+    public L2PcInstance getTarget()
+    {
+        return _target;
+    }
+    
+    public ForceBuff(L2PcInstance caster, L2PcInstance target, L2Skill skill)
+    {
+        _skillCastRange = skill.getCastRange();
+        _caster = caster;
+        _target = target;
+        _forceId = skill.getForceId();
+        
+        L2Effect effect = _target.getFirstEffect(_forceId);
+        if (effect != null)
+            ((EffectForce)effect).increaseForce();
+        else
+            SkillTable.getInstance().getInfo(_forceId, 1).getEffects(_caster, _target);
+        
+        _geoCheckTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new GeoCheckTask(), 1000, 1000);
+    }
+    
+    public void delete()
+    {
+        _caster.setForceBuff(null);
+        L2Effect effect = _target.getFirstEffect(_forceId);
+        if (effect != null)
+            ((EffectForce)effect).decreaseForce();
+        
+        _geoCheckTask.cancel(true);
+    }
+    
+    class GeoCheckTask implements Runnable
+    {
+        public void run()
+        {
+            try
+            {
+                if (!Util.checkIfInRange(_skillCastRange, _caster, _target, true))
+                    delete();
+                
+                if (!GeoData.getInstance().canSeeTarget(_caster, _target))
+                    delete();
+            }
+            catch (Exception e)
+            {
+                // ignore
+            }
+        }
+    }
 }

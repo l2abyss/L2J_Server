@@ -56,8 +56,26 @@ public final class Util
     public static double calculateAngleFrom(int obj1X, int obj1Y, int obj2X, int obj2Y)
     {
         double angleTarget = Math.toDegrees(Math.atan2(obj1Y - obj2Y, obj1X - obj2X));
-        if (angleTarget <= 0) angleTarget += 360;
+        if (angleTarget < 0) angleTarget += 360;
         return angleTarget;
+    }
+    public static double convertHeadingToDegree(int clientHeading)
+    {
+    	double degree = (clientHeading / 182.04) - 180;
+    	if (degree < 0) degree += 360;
+    	return degree;
+    }
+    public static int convertDegreeToClientHeading(double degree)
+    {
+    	if (degree > 180) degree -= 360;
+    	return (int)((degree + 180)*182.04);
+    }
+
+    public static int calculateHeadingFrom(L2Object obj1, L2Object obj2) { return calculateHeadingFrom(obj1.getX(), obj1.getY(), obj2.getX(), obj2.getY()); }
+    
+    public static int calculateHeadingFrom(int obj1X, int obj1Y, int obj2X, int obj2Y)
+    {
+        return (int)(Math.atan2(obj1Y - obj2Y, obj1X - obj2X)*10430.38 + 32768);
     }
 
     public static double calculateDistance(int x1, int y1, int z1, int x2, int y2) { return calculateDistance(x1, y1, 0, x2, y2, 0, false); }
@@ -179,11 +197,6 @@ public final class Util
 
             return d <= range*range + 2*range*rad +rad*rad;
         }
-    }
-    public static double convertHeadingToDegree(int heading)
-    {
-    	if (heading == 0) return 360;
-        return 9.0 * (heading / 1610.0); // = 360.0 * (heading / 64400.0)
     }
 
     /**

@@ -55,7 +55,7 @@ public class ConditionPlayerState extends Condition {
         case BEHIND:
             return env.player.isBehindTarget() == _required;
         case FRONT:
-            return env.player.isFrontTarget() == _required;
+            return env.player.isInFrontOfTarget() == _required;
 		}
 		return !_required;
 	}

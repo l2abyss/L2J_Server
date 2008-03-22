@@ -29,6 +29,7 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Character.AIAccessor;
+import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2StaticObjectInstance;
 import net.sf.l2j.gameserver.model.actor.knownlist.ObjectKnownList.KnownListAsynchronousUpdateTask;
@@ -199,23 +200,29 @@ public class L2PlayerAI extends L2CharacterAI
 
     private void thinkCast()
     {
-
     	L2Character target = getCastTarget();
         if (Config.DEBUG) 
         	_log.warning("L2PlayerAI: thinkCast -> Start");
 
-        if (checkTargetLost(target))
+        if (_skill.getTargetType() == SkillTargetType.TARGET_GROUND && _actor instanceof L2PcInstance)
         {
-            if (_skill.isOffensive() && getAttackTarget() != null)
-            {
-                //Notify the target
-                setCastTarget(null);
-            }
-            return;
+        	if (maybeMoveToPosition(((L2PcInstance)_actor).getCurrentSkillWorldPosition(), _actor.getMagicalAttackRange(_skill)))
+                return;
         }
-
-        if (target != null)
-        	if (maybeMoveToPawn(target, _actor.getMagicalAttackRange(_skill))) return;
+        else
+        {
+            if (checkTargetLost(target))
+            {
+            	if (_skill.isOffensive() && getAttackTarget() != null)
+                {
+                    //Notify the target
+                    setCastTarget(null);
+                }
+                return;
+            }
+            if (target != null && maybeMoveToPawn(target, _actor.getMagicalAttackRange(_skill)))
+                return;
+        }
 
         if (_skill.getHitTime() > 50) clientStopMoving(null);
 

@@ -79,14 +79,14 @@ public abstract class L2Effect
         PHOENIX_BLESSING,
         PETRIFICATION,
         BLUFF,
-        BATTLE_FORCE,
-        SPELL_FORCE,
         CHARM_OF_LUCK,
         INVINCIBLE,
         TRANSFORMATION,
         IMMOBILEUNTILATTACKED,
         DISARM,
-        CHARMOFCOURAGE
+        CHARMOFCOURAGE,
+        SIGNET_EFFECT,
+        SIGNET_GROUND
     }
 
     private static final Func[] _emptyFunctionSet = new Func[0];

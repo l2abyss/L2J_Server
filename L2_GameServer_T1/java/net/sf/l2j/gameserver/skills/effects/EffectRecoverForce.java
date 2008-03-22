@@ -14,57 +14,36 @@
  */
 package net.sf.l2j.gameserver.skills.effects;
 
-import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2Effect;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.serverpackets.EtcStatusUpdate;
 import net.sf.l2j.gameserver.skills.Env;
 
-/**
- * @author kombat
- */
-
-public final class EffectForce extends L2Effect
+public class EffectRecoverForce extends L2Effect
 {
-    public int forces;
-    
-    public EffectForce(Env env, EffectTemplate template) 
+    public EffectRecoverForce(Env env, EffectTemplate template)
     {
         super(env, template);
-        forces = getSkill().getLevel();
     }
-    
-    @Override
-    public boolean onActionTime()
-    {
-        return true;
-    }
-    
+
     @Override
     public EffectType getEffectType()
     {
         return EffectType.BUFF;
     }
-    
-    public void increaseForce()
+
+    @Override
+    public boolean onActionTime()
     {
-        if (forces < 3)
+    	if (getEffected() instanceof L2PcInstance)
         {
-            forces++;
-            updateBuff();
+            EffectCharge effect = (EffectCharge)getEffected().getFirstEffect(EffectType.CHARGE);
+            if (effect != null)
+            {
+                effect.addNumCharges(1);
+                getEffected().sendPacket(new EtcStatusUpdate((L2PcInstance)getEffected()));
+            }
         }
-    }
-    
-    public void decreaseForce()
-    {
-        forces--;
-        if (forces < 1)
-            exit();
-        else
-            updateBuff();
-    }
-    
-    private void updateBuff()
-    {
-        exit();
-        SkillTable.getInstance().getInfo(getSkill().getId(), forces).getEffects(getEffector(), getEffected());
+        return true;
     }
 }

@@ -59,16 +59,15 @@ public class Fishing implements ISkillHandler
 		 * Decide now where will the hook be cast...*/
         int rnd = Rnd.get(200) + 200;
         double angle = Util.convertHeadingToDegree(player.getHeading());
-        //this.sendMessage("Angel: "+angle+" Heading: "+getHeading());
-        double radian = Math.toRadians(angle - 90);
+        double radian = Math.toRadians(angle);
         double sin = Math.sin(radian);
         double cos = Math.cos(radian);
-        int x1 = -(int)(sin * rnd); //Somthing wrong with L2j Heding calculation o_0?
-        int y1 = (int)(cos * rnd); //Somthing wrong with L2j Heding calculation o_0?
+        int x1 = (int)(cos * rnd);
+        int y1 = (int)(sin * rnd);
         int x = player.getX()+x1;
         int y = player.getY()+y1;
         int z = player.getZ()-30;
-
+        
         /* ...and if the spot is in a fishing zone. If it is, it will then position the hook on the water
          * surface. If not, you have to be GM to proceed past here... in that case, the hook will be
          * positioned using the old Z lookup method.

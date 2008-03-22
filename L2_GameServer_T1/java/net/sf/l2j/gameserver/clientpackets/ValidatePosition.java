@@ -126,7 +126,7 @@ public class ValidatePosition extends L2GameClientPacket
             activeChar.setClientX(_x);
             activeChar.setClientY(_y);
             activeChar.setClientZ(_z);
-            activeChar.setClientHeading(_heading);
+            activeChar.setClientHeading(_heading); // No real need to validate heading.
             int realX = activeChar.getX();
             int realY = activeChar.getY();
             int realZ = activeChar.getZ();
@@ -136,9 +136,6 @@ public class ValidatePosition extends L2GameClientPacket
             double diffSq = (dx*dx + dy*dy);
             if (diffSq < 250000)
                 activeChar.setXYZ(realX,realY,_z);
-            int realHeading = activeChar.getHeading();
-
-            //activeChar.setHeading(_heading);
 
             //TODO: do we need to validate?
             /*double dx = (_x - realX);
@@ -149,7 +146,7 @@ public class ValidatePosition extends L2GameClientPacket
 
             if (Config.DEBUG) {
                 _log.fine("client pos: "+ _x + " "+ _y + " "+ _z +" head "+ _heading);
-                _log.fine("server pos: "+ realX + " "+realY+ " "+realZ +" head "+realHeading);
+                _log.fine("server pos: "+ realX + " "+realY+ " "+realZ +" head "+activeChar.getHeading());
             }
 
             if (Config.ACTIVATE_POSITION_RECORDER && !activeChar.isFlying() && Universe.getInstance().shouldLog(activeChar.getObjectId()))

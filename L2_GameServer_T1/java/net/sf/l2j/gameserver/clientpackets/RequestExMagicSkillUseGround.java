@@ -16,49 +16,88 @@ package net.sf.l2j.gameserver.clientpackets;
 
 import java.util.logging.Logger;
 
+import net.sf.l2j.gameserver.datatables.SkillTable;
+import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.serverpackets.ActionFailed;
+import net.sf.l2j.gameserver.serverpackets.ValidateLocation;
+import net.sf.l2j.gameserver.util.Util;
+import net.sf.l2j.util.Point3D;
+
 /**
  * Fromat:(ch) dddddc
  * @author  -Wooden-
  */
 public final class RequestExMagicSkillUseGround extends L2GameClientPacket
 {
-    protected static final Logger _log = Logger.getLogger(RequestExMagicSkillUseGround.class.getName());
-	private static final String _C__D0_2F_REQUESTEXMAGICSKILLUSEGROUND = "[C] D0:2F RequestExMagicSkillUseGround";
+    private static final String _C__D0_2F_REQUESTEXMAGICSKILLUSEGROUND = "[C] D0:2F RequestExMagicSkillUseGround";
+    private static Logger _log = Logger.getLogger(RequestExMagicSkillUseGround.class.getName());
+    
+    private int _x;
+    private int _y;
+    private int _z;
+    private int _skillId;
+    private boolean _ctrlPressed;
+    private boolean _shiftPressed;
+    
+    @Override
+    protected void readImpl()
+    {
+        _x = readD();
+        _y = readD();
+        _z = readD();
+        _skillId = readD();
+        _ctrlPressed = readD() != 0;
+        _shiftPressed = readC() != 0;
+    }
+    
+    /**
+     * @see net.sf.l2j.gameserver.clientpackets.ClientBasePacket#runImpl()
+     */
+    @Override
+    protected void runImpl()
+    {
+        // Get the current L2PcInstance of the player
+        L2PcInstance activeChar = getClient().getActiveChar();
+        
+        if (activeChar == null)
+            return;
 
-	private int _x;
-	private int _y;
-	private int _z;
-	private int _skillId;
-	private int _ctrlPressed;
-	private int _shiftPressed;
+        // Get the level of the used skill
+        int level = activeChar.getSkillLevel(_skillId);
+        if (level <= 0) 
+        {
+            activeChar.sendPacket(new ActionFailed());
+            return;
+        }
+        
+        // Get the L2Skill template corresponding to the skillID received from the client
+        L2Skill skill = SkillTable.getInstance().getInfo(_skillId, level);
+        
+        // Check the validity of the skill
+        if (skill != null)
+        {
+            activeChar.setCurrentSkillWorldPosition(new Point3D(_x , _y, _z));
 
-	@Override
-	protected void readImpl()
-	{
-		_x = readD();
-		_y = readD();
-		_z = readD();
-		_skillId = readD();
-		_ctrlPressed = readD();
-		_shiftPressed = readC();
-	}
+            // normally magicskilluse packet turns char client side but for these skills, it doesn't (even with correct target)
+            activeChar.setHeading(Util.calculateHeadingFrom(activeChar.getX(), activeChar.getY(), _x , _y));
+            activeChar.broadcastPacket(new ValidateLocation(activeChar));    	
 
-	/**
-	 * @see net.sf.l2j.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
-	@Override
-	protected void runImpl()
-	{
-		// TODO: remove me
-		_log.info("C6: RequestExMagicSkillUseGround. x: "+_x+" y: "+_y+" z: "+_z+" skill: "+_skillId+" crtl: "+_ctrlPressed+" shift: "+_shiftPressed);
-	}
-
-	/**
-	 * @see net.sf.l2j.gameserver.BasePacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _C__D0_2F_REQUESTEXMAGICSKILLUSEGROUND;
-	}
+            activeChar.useMagic(skill, _ctrlPressed, _shiftPressed);
+        }
+        else
+        {
+            activeChar.sendPacket(new ActionFailed());
+            _log.warning("No skill found!!");
+        }
+    }
+    
+    /**
+     * @see net.sf.l2j.gameserver.BasePacket#getType()
+     */
+    @Override
+    public String getType()
+    {
+        return _C__D0_2F_REQUESTEXMAGICSKILLUSEGROUND;
+    }
 }

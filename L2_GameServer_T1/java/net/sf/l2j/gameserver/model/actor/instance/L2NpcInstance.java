@@ -1637,30 +1637,30 @@ public class L2NpcInstance extends L2Character
     	
         int player_level = player.getLevel();        
         int lowestLevel = 0;
-        int higestLevel = 0;
+        int highestLevel = 0;
         
         
         // Select the player
         setTarget(player);
         
         
-        // Calculate the min and max level between wich the player must be to obtain buff
+        // Calculate the min and max level between which the player must be to obtain buff
         if(player.isMageClass())
         {
             lowestLevel = HelperBuffTable.getInstance().getMagicClassLowestLevel();
-            higestLevel = HelperBuffTable.getInstance().getMagicClassHighestLevel();
+            highestLevel = HelperBuffTable.getInstance().getMagicClassHighestLevel();
         }
         else
         {
             lowestLevel = HelperBuffTable.getInstance().getPhysicClassLowestLevel();
-            higestLevel = HelperBuffTable.getInstance().getPhysicClassHighestLevel();
+            highestLevel = HelperBuffTable.getInstance().getPhysicClassHighestLevel();
         }
         
       
         // If the player is too high level, display a message and return
-        if (player_level > higestLevel)
+        if (player_level > highestLevel)
         {
-            String content = "<html><body>Newbie Guide:<br>Only a <font color=\"LEVEL\">novice character of level "+ higestLevel +" or less</font> can receive my support magic.<br>Your novice character is the first one that you created and raised in this world.</body></html>";
+            String content = "<html><body>Newbie Guide:<br>Only a <font color=\"LEVEL\">novice character of level "+ highestLevel +" or less</font> can receive my support magic.<br>Your novice character is the first one that you created and raised in this world.</body></html>";
             insertObjectIdAndShowChatWindow(player, content);
             return;
         }

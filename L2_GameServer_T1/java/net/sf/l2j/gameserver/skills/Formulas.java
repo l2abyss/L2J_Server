@@ -1466,6 +1466,12 @@ public final class Formulas
 	/** Returns true in case when ATTACK is canceled due to hit */
 	public final boolean calcAtkBreak(L2Character target, double dmg)
 	{
+	    if (target instanceof L2PcInstance)
+        {
+            if (((L2PcInstance)target).getForceBuff() != null)
+                return true;
+        }
+	    
         double init = 0;
 
 		if (Config.ALT_GAME_CANCEL_CAST && target.isCastingNow()) init = 50;
@@ -1531,7 +1537,7 @@ public final class Formulas
 		return d < Rnd.get(100);
 	}
 
-	/** Returns true if shield defence successfull */
+	/** Returns true if shield defence successful */
 	public boolean calcShldUse(L2Character attacker, L2Character target)
 	{
 		L2Weapon at_weapon = attacker.getActiveWeaponItem();
@@ -1539,7 +1545,7 @@ public final class Formulas
 			* DEXbonus[target.getDEX()];
 		if (shldRate == 0.0) return false;
         int degreeside = (int)target.calcStat(Stats.SHIELD_DEFENCE_ANGLE, 0, null, null) + 120;
-        if (degreeside < 360 && (!target.isInFront(attacker, degreeside)))
+        if (degreeside < 360 && (!target.isFacing(attacker, degreeside)))
         {
             return false;
         }

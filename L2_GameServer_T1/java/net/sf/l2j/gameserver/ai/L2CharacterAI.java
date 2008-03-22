@@ -41,6 +41,7 @@ import net.sf.l2j.gameserver.taskmanager.AttackStanceTaskManager;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.L2Weapon;
 import net.sf.l2j.gameserver.templates.L2WeaponType;
+import net.sf.l2j.util.Point3D;
 import net.sf.l2j.util.Rnd;
 
 /**
@@ -894,6 +895,53 @@ public class L2CharacterAI extends AbstractAI
     {
         // do nothing
     }
+    
+    protected boolean maybeMoveToPosition(Point3D worldPosition, int offset)
+	{
+    	if (worldPosition == null)
+    	{
+    		_log.warning("maybeMoveToPosition: worldPosition == NULL!");
+    		return false;
+    	}
+
+    	if (offset < 0)
+    		return false; // skill radius -1
+
+    	if (!_actor.isInsideRadius(worldPosition.getX(), worldPosition.getY(), offset + _actor.getTemplate().collisionRadius, false))
+    	{
+    		if (_actor.isMovementDisabled())
+    			return true;
+
+    		if (!_actor.isRunning() && !(this instanceof L2PlayerAI))
+    			_actor.setRunning();
+
+    		stopFollow();
+
+    		int x = _actor.getX();
+    		int y = _actor.getY();
+
+    		double dx = worldPosition.getX() - x;
+    		double dy = worldPosition.getY() - y;
+
+    		double dist = Math.sqrt(dx * dx + dy * dy);
+
+    		double sin = dy / dist;
+    		double cos = dx / dist;
+
+    		dist -= offset - 5;
+
+    		x += (int) (dist * cos);
+    		y += (int) (dist * sin);
+
+    		moveTo(x, y, worldPosition.getZ());
+    		return true;
+    	}
+
+    	if (getFollowTarget() != null)
+    		stopFollow();
+
+    	return false;
+	}
 
     /**
      * Manage the Move to Pawn action in function of the distance and of the Interact area.<BR><BR>

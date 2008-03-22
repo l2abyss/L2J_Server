@@ -305,6 +305,17 @@ public class L2Party {
 
 			if(player.isInDuel())
 				DuelManager.getInstance().onRemoveFromParty(player);
+			
+			try
+            {
+                if (player.getForceBuff() != null)
+                    player.abortCast();
+                
+                for (L2Character character : player.getKnownList().getKnownCharacters())
+                    if (character.getForceBuff() != null && character.getForceBuff().getTarget() == player)
+                        character.abortCast();
+            }
+            catch (Exception e){}
 
 			SystemMessage msg = new SystemMessage(SystemMessageId.YOU_LEFT_PARTY);
 			player.sendPacket(msg);
