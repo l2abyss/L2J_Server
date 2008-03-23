@@ -97,7 +97,6 @@ import net.sf.l2j.gameserver.serverpackets.SetupGauge;
 import net.sf.l2j.gameserver.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.StopMove;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.serverpackets.TargetUnselected;
 import net.sf.l2j.gameserver.serverpackets.TeleportToLocation;
 import net.sf.l2j.gameserver.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.serverpackets.FlyToLocation.FlyType;
@@ -4148,40 +4147,6 @@ public abstract class L2Character extends L2Object
 		{
 			getKnownList().addKnownObject(object);
 			object.getKnownList().addKnownObject(this);
-		}
-
-		// If object==null, Cancel Attak or Cast
-		if (object == null)
-		{
-			if(_target != null)
-			{
-				broadcastPacket(new TargetUnselected(this));
-			}
-			/*if (isAttackingNow() && getAI().getAttackTarget() == _target)
-			{
-				abortAttack();
-
-				getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-
-				if (this instanceof L2PcInstance) {
-					sendPacket(new ActionFailed());
-					SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-					sm.addString("Attack is aborted");
-					sendPacket(sm);
-				}
-			}
-
-			if (isCastingNow() && canAbortCast() && getAI().getCastTarget() == _target)
-			{
-				abortCast();
-				getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-				if (this instanceof L2PcInstance) {
-					sendPacket(new ActionFailed());
-					SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-					sm.addString("Casting is aborted");
-					sendPacket(sm);
-				}
-			}*/
 		}
 
 		_target = object;
