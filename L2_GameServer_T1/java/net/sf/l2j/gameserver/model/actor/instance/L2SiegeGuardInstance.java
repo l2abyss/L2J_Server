@@ -90,6 +90,12 @@ public final class L2SiegeGuardInstance extends L2Attackable
          && !getCastle().getSiege().checkIsDefender(((L2PcInstance)attacker).getClan()));
     }
 
+    @Override
+	public boolean hasRandomAnimation()
+	{
+		return false;
+	}
+    
     /**
      * Sets home location of guard. Guard will always try to return to this location after
      * it has killed all PK's in range.
