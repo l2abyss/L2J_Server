@@ -120,6 +120,7 @@ public final class Config
     public static boolean	ES_SP_BOOK_NEEDED;
     public static boolean	ALT_GAME_SKILL_LEARN;
     public static boolean	ALT_GAME_SUBCLASS_WITHOUT_QUESTS;
+    public static byte		MAX_SUBCLASS;
     public static int		MAX_PVTSTORE_SLOTS_DWARF;
     public static int		MAX_PVTSTORE_SLOTS_OTHER;
     public static int		INVENTORY_MAXIMUM_NO_DWARF;
@@ -1072,6 +1073,7 @@ public final class Config
                 ES_SP_BOOK_NEEDED					= Boolean.parseBoolean(Character.getProperty("EnchantSkillSpBookNeeded","true"));
                 ALT_GAME_SKILL_LEARN				= Boolean.parseBoolean(Character.getProperty("AltGameSkillLearn", "false"));
                 ALT_GAME_SUBCLASS_WITHOUT_QUESTS	= Boolean.parseBoolean(Character.getProperty("AltSubClassWithoutQuests", "False"));
+                MAX_SUBCLASS						= Byte.parseByte(Character.getProperty("MaxSubclass", "3"));
                 MAX_PVTSTORE_SLOTS_DWARF			= Integer.parseInt(Character.getProperty("MaxPvtStoreSlotsDwarf", "5"));
                 MAX_PVTSTORE_SLOTS_OTHER			= Integer.parseInt(Character.getProperty("MaxPvtStoreSlotsOther", "4"));
                 INVENTORY_MAXIMUM_NO_DWARF			= Integer.parseInt(Character.getProperty("MaximumSlotsForNoDwarf", "80"));

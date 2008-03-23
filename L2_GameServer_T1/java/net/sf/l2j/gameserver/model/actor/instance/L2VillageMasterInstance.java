@@ -187,7 +187,7 @@ public final class L2VillageMasterInstance extends L2FolkInstance
             {
                 case 1: // Add Subclass - Initial
                     // Avoid giving player an option to add a new sub class, if they have three already.
-                    if (player.getTotalSubClasses() == 3)
+                    if (player.getTotalSubClasses() == Config.MAX_SUBCLASS)
                     {
                         player.sendMessage("You can now only change one of your current sub classes.");
                         return;
