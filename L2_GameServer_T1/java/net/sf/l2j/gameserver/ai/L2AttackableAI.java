@@ -28,6 +28,7 @@ import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.Territory;
 import net.sf.l2j.gameserver.ThreadPoolManager;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
 import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2CharPosition;
@@ -399,6 +400,27 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 
                     if (!(targetPlayer.isFestivalParticipant())) continue;
                 }
+                // Raid curse
+                if (_actor.isRaid() && obj instanceof L2Summon)
+                {
+                	if ((((L2Summon)obj).getLevel() > _actor.getLevel() + 8)
+                		&& (Util.checkIfInRange(500, _actor, obj, true)))
+                	{
+                		L2Skill tempSkill = SkillTable.getInstance().getInfo(4515, 1);
+						if(tempSkill != null)
+							tempSkill.getEffects(_actor, (L2Character)obj);
+                	}
+                }
+                if (_actor.isRaid() && obj instanceof L2PcInstance)
+                {
+                	if ((((L2PcInstance)obj).getLevel() > _actor.getLevel() + 8)
+                		&& (Util.checkIfInRange(500, _actor, obj, true)))
+                	{
+                		L2Skill tempSkill = SkillTable.getInstance().getInfo(4515, 1);
+						if(tempSkill != null)
+							tempSkill.getEffects(_actor, (L2Character)obj);
+                	}
+                }
 
                 // For each L2Character check if the target is autoattackable
                 if (autoAttackCondition(target)) // check aggression
@@ -410,7 +432,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
                     if (hating == 0) npc.addDamageHate(target, 0, 1);
                 }
             }
-
+            
             // Chose a target from its aggroList
             L2Character hated;
             if (_actor.isConfused()) hated = getAttackTarget(); // effect handles selection
@@ -492,7 +514,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
             }
         }
         // Order to the L2MonsterInstance to random walk (1/100)
-        else if (npc.getSpawn() != null && Rnd.nextInt(RANDOM_WALK_RATE) == 0)
+        else if (npc.getSpawn() != null && Rnd.nextInt(RANDOM_WALK_RATE) == 0 && !(_actor instanceof L2RaidBossInstance || _actor instanceof L2MinionInstance))
         {
             int x1, y1, z1;
             int range = Config.MAX_DRIFT_RANGE;

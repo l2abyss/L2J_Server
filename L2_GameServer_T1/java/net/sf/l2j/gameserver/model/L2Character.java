@@ -4989,12 +4989,12 @@ public abstract class L2Character extends L2Object
 
 				if (level > target.getLevel() + 8)
 				{
-					L2Skill skill = SkillTable.getInstance().getInfo(4515, 99);
+					L2Skill skill = SkillTable.getInstance().getInfo(4515, 1);
 
 					if (skill != null)
 						skill.getEffects(target, this);
 					else
-						_log.warning("Skill 4515 at level 99 is missing in DP.");
+						_log.warning("Skill 4515 at level 1 is missing in DP.");
 
 					damage = 0; // prevents messing up drop calculation
 				}
@@ -6014,17 +6014,36 @@ public abstract class L2Character extends L2Object
 						}
 					}
 
-					// Check Raidboss attack
-					if (target.isRaid() && getLevel() > target.getLevel() + 8)
+					// Check Raidboss attack and
+					// check buffing chars who attack raidboss. Results in mute.
+					L2Object target2 = target.getTarget();
+					if ((target.isRaid() && getLevel() > target.getLevel() + 8)
+							|| (target2 instanceof L2Character && (((L2Character)target2).isRaid() 
+							&& getLevel() > ((L2Character)target2).getLevel() + 8)))
 					{
-						L2Skill tempSkill = SkillTable.getInstance().getInfo(4515, 99);
-						if(tempSkill != null)
+						if (skill.isMagic())
 						{
-							tempSkill.getEffects(target, this);
+							L2Skill tempSkill = SkillTable.getInstance().getInfo(4215, 1);
+							if(tempSkill != null)
+							{
+								tempSkill.getEffects(target, this);
+							}
+							else
+							{
+								_log.warning("Skill 4215 at level 1 is missing in DP.");
+							}
 						}
 						else
 						{
-							_log.warning("Skill 4515 at level 99 is missing in DP.");
+							L2Skill tempSkill = SkillTable.getInstance().getInfo(4515, 1);
+							if(tempSkill != null)
+							{
+								tempSkill.getEffects(target, this);
+							}
+							else
+							{
+								_log.warning("Skill 4515 at level 1 is missing in DP.");
+							}
 						}
 						return;
 					}
