@@ -14,8 +14,6 @@
  */
 package net.sf.l2j.gameserver.ai;
 
-import java.util.List;
-import javolution.util.FastList;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_CAST;
@@ -25,6 +23,10 @@ import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_INTERACT;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_MOVE_TO;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_PICK_UP;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_REST;
+
+import java.util.List;
+
+import javolution.util.FastList;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.Universe;
 import net.sf.l2j.gameserver.model.L2Attackable;

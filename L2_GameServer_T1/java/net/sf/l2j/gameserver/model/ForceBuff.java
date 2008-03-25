@@ -16,6 +16,7 @@
 package net.sf.l2j.gameserver.model;
 
 import java.util.concurrent.Future;
+
 import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.SkillTable;

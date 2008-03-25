@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 import javolution.util.FastList;
-
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.GeoData;
@@ -49,8 +48,8 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RaidBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RiftInvaderInstance;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
-import net.sf.l2j.util.Rnd;
 import net.sf.l2j.gameserver.util.Util;
+import net.sf.l2j.util.Rnd;
 
 /**
  * This class manages AI of L2Attackable.<BR><BR>

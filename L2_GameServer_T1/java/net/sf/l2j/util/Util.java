@@ -24,8 +24,8 @@
  */
 package net.sf.l2j.util;
 
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.net.*;
 
 import javolution.text.TextBuilder;
 
