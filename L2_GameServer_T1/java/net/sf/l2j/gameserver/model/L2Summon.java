@@ -192,8 +192,6 @@ public abstract class L2Summon extends L2PlayableInstance
 			StatusUpdate su = new StatusUpdate(getObjectId());
 			su.addAttribute(StatusUpdate.CUR_HP, (int) getCurrentHp());
 			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
-			su.addAttribute(StatusUpdate.CUR_MP, (int) getCurrentMp());
-			su.addAttribute(StatusUpdate.MAX_MP, getMaxMp());
 			player.sendPacket(su);
         }
     }
