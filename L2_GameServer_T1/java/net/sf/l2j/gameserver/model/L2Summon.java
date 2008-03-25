@@ -39,6 +39,7 @@ import net.sf.l2j.gameserver.serverpackets.PetDelete;
 import net.sf.l2j.gameserver.serverpackets.PetInfo;
 import net.sf.l2j.gameserver.serverpackets.PetStatusShow;
 import net.sf.l2j.gameserver.serverpackets.PetStatusUpdate;
+import net.sf.l2j.gameserver.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
@@ -186,6 +187,14 @@ public abstract class L2Summon extends L2PlayableInstance
             player.setTarget(this);
             MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
             player.sendPacket(my);
+
+            //sends HP/MP status of the summon to other characters
+			StatusUpdate su = new StatusUpdate(getObjectId());
+			su.addAttribute(StatusUpdate.CUR_HP, (int) getCurrentHp());
+			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
+			su.addAttribute(StatusUpdate.CUR_MP, (int) getCurrentMp());
+			su.addAttribute(StatusUpdate.MAX_MP, getMaxMp());
+			player.sendPacket(su);
         }
     }
 
