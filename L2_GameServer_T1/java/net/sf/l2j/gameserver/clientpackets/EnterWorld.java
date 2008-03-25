@@ -193,14 +193,14 @@ public class EnterWorld extends L2GameClientPacket
             notifyPartner(activeChar,activeChar.getPartnerId());
         }
         
-        if((activeChar.isCursedWeaponEquipped() && activeChar.transformId() > 0) || activeChar.isCursedWeaponEquipped()) 
+        if(activeChar.isCursedWeaponEquipped()) 
         {
             CursedWeaponsManager.getInstance().getCursedWeapon(activeChar.getCursedWeaponEquippedId()).cursedOnLogin();
         }
         else if (activeChar.transformId() > 0)
-            {
+        {
             TransformationManager.getInstance().transformPlayer(activeChar.transformId(), activeChar, Long.MAX_VALUE);
-            }
+        }
 
         if (activeChar.getAllEffects() != null)
         {
