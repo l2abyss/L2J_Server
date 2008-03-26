@@ -29,6 +29,7 @@ public class L2BossZone extends L2ZoneType
 {
     private String _zoneName;
     private int _timeInvade;
+    private boolean _enabled = true;   // default value, unless overriden by xml...
     
     // track the times that players got disconnected. Players are allowed
     // to log back into the zone as long as their log-out was within _timeInvade
@@ -60,6 +61,10 @@ public class L2BossZone extends L2ZoneType
         {
             _timeInvade = Integer.parseInt(value);
         }
+        if (name.equals("EnabledByDefault"))
+        {
+        	_enabled = Boolean.parseBoolean(value);
+        }
         else
         {
             super.setParameter(name, value);
@@ -82,71 +87,85 @@ public class L2BossZone extends L2ZoneType
      */
     protected void onEnter(L2Character character)
     {
-        if (character instanceof L2PcInstance)
-        {
-            //Thread.dumpStack();
-            L2PcInstance player = (L2PcInstance) character;
-            if (player.isGM())
-            {
-                player.sendMessage("You entered "
-                        + _zoneName);
-                return;
-            }
-            // if player has been (previously) cleared by npc/ai for entry and the zone is 
-            // set to receive players (aka not waiting for boss to respawn)
-            if (_playersAllowed.contains(character.getObjectId()))
-            {
-                // Get the information about this player's last logout-exit from
-                // this zone.
-                Long expirationTime = _playerAllowedReEntryTimes.get(character.getObjectId());
-                
-                // with legal entries, do nothing.
-                if (expirationTime == null) // legal null expirationTime entries
-                {
-                    long serverStartTime = GameServer.dateTimeServerStarted.getTimeInMillis();
-                    //long playerLastAccess = player.getLastAccess();
-                    if ((serverStartTime > (System.currentTimeMillis() - _timeInvade)))
-                            //&& (playerLastAccess < serverStartTime)
-                            //&& (playerLastAccess > (serverStartTime - 4 * _timeInvade)))
-                        return;
-                }
-                else 
-                {
-                    // legal non-null logoutTime entries
-                    _playerAllowedReEntryTimes.remove(character.getObjectId());
-                    if (expirationTime.longValue() > System.currentTimeMillis())
-                        return;
-                }
-                _playersAllowed.remove(_playersAllowed.indexOf(character.getObjectId()));
-            }
-            // teleport out all players who attempt "illegal" (re-)entry
-            player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
-        }
+    	if (_enabled)
+    	{
+	        if (character instanceof L2PcInstance)
+	        {
+	            //Thread.dumpStack();
+	            L2PcInstance player = (L2PcInstance) character;
+	            if (player.isGM())
+	            {
+	                player.sendMessage("You entered "
+	                        + _zoneName);
+	                return;
+	            }
+	            // if player has been (previously) cleared by npc/ai for entry and the zone is 
+	            // set to receive players (aka not waiting for boss to respawn)
+	            if (_playersAllowed.contains(character.getObjectId()))
+	            {
+	                // Get the information about this player's last logout-exit from
+	                // this zone.
+	                Long expirationTime = _playerAllowedReEntryTimes.get(character.getObjectId());
+	                
+	                // with legal entries, do nothing.
+	                if (expirationTime == null) // legal null expirationTime entries
+	                {
+	                    long serverStartTime = GameServer.dateTimeServerStarted.getTimeInMillis();
+	                    //long playerLastAccess = player.getLastAccess();
+	                    if ((serverStartTime > (System.currentTimeMillis() - _timeInvade)))
+	                            //&& (playerLastAccess < serverStartTime)
+	                            //&& (playerLastAccess > (serverStartTime - 4 * _timeInvade)))
+	                        return;
+	                }
+	                else 
+	                {
+	                    // legal non-null logoutTime entries
+	                    _playerAllowedReEntryTimes.remove(character.getObjectId());
+	                    if (expirationTime.longValue() > System.currentTimeMillis())
+	                        return;
+	                }
+	                _playersAllowed.remove(_playersAllowed.indexOf(character.getObjectId()));
+	            }
+	            // teleport out all players who attempt "illegal" (re-)entry
+	            player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+	        }
+    	}
     }
     
     @Override
     protected void onExit(L2Character character)
     {
-        if (character instanceof L2PcInstance)
-        {
-            //Thread.dumpStack();
-            L2PcInstance player = (L2PcInstance) character;
-            if (player.isGM())
-            {
-                player.sendMessage("You left " + _zoneName);
-                return;
-            }
-            // if the player just got disconnected/logged out, store the dc
-            // time so that
-            // decisions can be made later about allowing or not the player
-            // to log into the zone
-            if (player.isOnline() == 0 && _playersAllowed.contains(character.getObjectId()))
-            {
-                // mark the time that the player left the zone
-                _playerAllowedReEntryTimes.put(character.getObjectId(), System.currentTimeMillis()
-                        + _timeInvade);
-            }
-        }
+    	if (_enabled)
+    	{
+	        if (character instanceof L2PcInstance)
+	        {
+	            //Thread.dumpStack();
+	            L2PcInstance player = (L2PcInstance) character;
+	            if (player.isGM())
+	            {
+	                player.sendMessage("You left " + _zoneName);
+	                return;
+	            }
+	            // if the player just got disconnected/logged out, store the dc
+	            // time so that
+	            // decisions can be made later about allowing or not the player
+	            // to log into the zone
+	            if (player.isOnline() == 0 && _playersAllowed.contains(character.getObjectId()))
+	            {
+	                // mark the time that the player left the zone
+	                _playerAllowedReEntryTimes.put(character.getObjectId(), System.currentTimeMillis()
+	                        + _timeInvade);
+	            }
+	        }
+    	}
+    }
+    
+    public void setZoneEnabled(boolean flag)
+    {
+    	if (_enabled != flag)
+    		oustAllPlayers();
+    	
+    	_enabled = flag;
     }
     
     public String getZoneName()
