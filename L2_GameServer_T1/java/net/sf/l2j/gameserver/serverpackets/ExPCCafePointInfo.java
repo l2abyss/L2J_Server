@@ -37,11 +37,11 @@ public class ExPCCafePointInfo extends L2GameServerPacket
 	{
 		writeC(0xFE);
 		writeH(0x32);
-		writeD(_unk1);
-		writeD(_unk2);
-		writeC(_unk3);
-		writeD(_unk4);
-		writeC(_unk5);
+		writeD(_unk1); // num points
+		writeD(_unk2); // points inc display
+		writeC(_unk3); // period(0=don't show window,1=acquisition,2=use points)
+		writeD(_unk4); // period hours left
+		writeC(_unk5); // points inc display color(0=yellow,1=cyan-blue,2=red,all other black)
 	}
 
 	/**
