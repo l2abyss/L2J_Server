@@ -379,6 +379,9 @@ public class L2Clan
 		        SiegeManager.getInstance().removeSiegeSkills(player);
 		        player.setClanCreateExpiryTime(System.currentTimeMillis() + Config.ALT_CLAN_CREATE_DAYS * 86400000L); //24*60*60*1000 = 86400000
 			}
+			// remove Clanskills from Player
+			for(L2Skill skill: player.getClan().getAllSkills())
+				player.removeSkill(skill,false);
 			player.setClan(null);
 			player.setClanJoinExpiryTime(clanJoinExpiryTime);
 			player.setPledgeClass(exMember.calculatePledgeClass(player));
