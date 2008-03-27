@@ -174,17 +174,22 @@ public class Continuous implements ISkillHandler
 
 			if (acted)
 			{
-		
-				if (skill.isToggle())
+				L2Effect[] effects = target.getAllEffects();
+				if (effects != null)
 				{
-					L2Effect[] effects = target.getAllEffects();
-					if (effects != null)
+					for (L2Effect e : effects)
 					{
-						for (L2Effect e : effects) {
-		                    if (e != null && skill != null)
-		                        if (e.getSkill().getId() == skill.getId()) {
-								e.exit();
-								return;
+						if (e != null && skill != null)
+	                    {
+							if (e.getSkill().getSkillType() == L2Skill.SkillType.BUFF
+									|| e.getEffectType() == L2Effect.EffectType.BUFF)
+							{
+								if (e.getSkill().getId() == skill.getId())
+		                        {
+		                        	e.exit();
+		                        	if (skill.isToggle())
+		                        		return;
+		                        }
 							}
 						}
 					}
