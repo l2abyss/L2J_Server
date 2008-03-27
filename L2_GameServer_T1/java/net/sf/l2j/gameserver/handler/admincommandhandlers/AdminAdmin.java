@@ -48,9 +48,28 @@ import net.sf.l2j.gameserver.serverpackets.SystemMessage;
  */
 public class AdminAdmin implements IAdminCommandHandler {
 
-	private static final String[] ADMIN_COMMANDS = {"admin_admin", "admin_admin1", "admin_admin2", "admin_admin3", "admin_admin4", "admin_admin5",
-		"admin_gmliston", "admin_gmlistoff", "admin_silence", "admin_diet", "admin_tradeoff", "admin_reload", "admin_set", "admin_set_menu", "admin_set_mod",
-		"admin_saveolymp", "admin_manualhero"};
+	private static final String[] ADMIN_COMMANDS =
+	{
+		"admin_admin",
+		"admin_admin1",
+		"admin_admin2",
+		"admin_admin3",
+		"admin_admin4",
+		"admin_admin5",
+		"admin_gmliston",
+		"admin_gmlistoff",
+		"admin_silence",
+		"admin_diet",
+		"admin_tradeoff",
+		"admin_reload",
+		"admin_set",
+		"admin_set_menu",
+		"admin_set_mod",
+		"admin_saveolymp",
+		"admin_manualhero",
+		"admin_sethero",
+		"admin_endolympiad"
+	};
 
 	private static final int REQUIRED_LEVEL = Config.GM_MENU;
 
@@ -98,7 +117,7 @@ public class AdminAdmin implements IAdminCommandHandler {
 			catch(Exception e){e.printStackTrace();}
 			activeChar.sendMessage("olympiad stuff saved!!");
 		}
-		else if(command.startsWith("admin_manualhero"))
+		else if(command.startsWith("admin_endolympiad"))
 		{
 			try
 			{
@@ -106,6 +125,21 @@ public class AdminAdmin implements IAdminCommandHandler {
 			}
 			catch(Exception e){e.printStackTrace();}
 			activeChar.sendMessage("Heroes formed");
+		}
+		else if (command.startsWith("admin_manualhero") || command.startsWith("admin_sethero"))
+		{
+			L2PcInstance target = null;
+            
+			if (activeChar.getTarget() != null && activeChar.getTarget() instanceof L2PcInstance)
+			{
+				target = (L2PcInstance)activeChar.getTarget();
+				target.setHero(target.isHero()? false : true);
+			}
+			else
+			{
+				target = activeChar;
+				target.setHero(target.isHero()? false : true);
+			}
 		}
 		else if(command.startsWith("admin_diet"))
 		{
