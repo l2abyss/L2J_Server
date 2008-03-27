@@ -1519,6 +1519,11 @@ public class Olympiad
 						player.removeSkill(skill,false);
 				}
 				
+				// Heal Player fully
+				player.setCurrentCp(player.getMaxCp());
+				player.setCurrentHp(player.getMaxHp());
+				player.setCurrentMp(player.getMaxMp());
+				
 				//Remove Buffs
 				player.stopAllEffects();
 				
@@ -1586,7 +1591,8 @@ public class Olympiad
 				for (int itemId : activeSoulShots.values())
 					player.removeAutoSoulShot(itemId);
 				player.sendSkillList(); 
-    		  } catch (Exception e) {}
+    		  }
+    		  catch (Exception e) {}
     		}
             
             _sm = new SystemMessage(SystemMessageId.THE_GAME_WILL_START_IN_S1_SECOND_S);
