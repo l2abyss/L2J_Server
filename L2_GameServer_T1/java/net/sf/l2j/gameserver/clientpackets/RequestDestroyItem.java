@@ -74,10 +74,10 @@ public final class RequestDestroyItem extends L2GameClientPacket
         }
 
 		L2ItemInstance itemToRemove = activeChar.getInventory().getItemByObjectId(_objectId);
-		// if we cant find requested item, its actualy a cheat!
+		// if we can't find requested item, its actually a cheat!
 		if (itemToRemove == null) return;
 
-		// Cannot discard item that the skill is consumming
+		// Cannot discard item that the skill is consuming
 		if (activeChar.isCastingNow())
 		{
 			if (activeChar.getCurrentSkill() != null && activeChar.getCurrentSkill().getSkill().getItemConsumeId() == itemToRemove.getItemId())
@@ -88,7 +88,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		}
 
 		int itemId = itemToRemove.getItemId();
-		if (itemToRemove == null || itemToRemove.isWear() || !itemToRemove.isDestroyable() || CursedWeaponsManager.getInstance().isCursed(itemId))
+		if (itemToRemove == null || itemToRemove.isWear() || (!activeChar.isGM() && !itemToRemove.isDestroyable()) || CursedWeaponsManager.getInstance().isCursed(itemId))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
 			return;
