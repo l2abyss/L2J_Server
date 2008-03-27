@@ -170,6 +170,14 @@ public class EnterWorld extends L2GameClientPacket
                 else if (activeChar.getAccessLevel() >= 75)
                     activeChar.getAppearance().setNameColor(Config.GM_NAME_COLOR);
             }
+            
+            if (Config.GM_TITLE_COLOR_ENABLED)
+            {
+                if (activeChar.getAccessLevel() >= 100)
+                    activeChar.getAppearance().setTitleColor(Config.ADMIN_TITLE_COLOR);
+                else if (activeChar.getAccessLevel() >= 75)
+                    activeChar.getAppearance().setTitleColor(Config.GM_TITLE_COLOR);
+            }
         }
 
         if (Config.PLAYER_SPAWN_PROTECTION > 0)

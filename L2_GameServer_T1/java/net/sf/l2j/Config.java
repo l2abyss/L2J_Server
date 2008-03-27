@@ -271,6 +271,9 @@ public final class Config
     public static boolean	GM_NAME_COLOR_ENABLED;
     public static int		ADMIN_NAME_COLOR;
     public static int		GM_NAME_COLOR;
+    public static boolean	GM_TITLE_COLOR_ENABLED;
+    public static int		ADMIN_TITLE_COLOR;
+    public static int		GM_TITLE_COLOR;
     public static boolean	GM_HERO_AURA;
     public static boolean	GM_STARTUP_INVULNERABLE;
     public static boolean	GM_STARTUP_INVISIBLE;
@@ -1243,6 +1246,9 @@ public final class Config
                 GM_NAME_COLOR_ENABLED						= Boolean.parseBoolean(General.getProperty("GMNameColorEnabled", "False"));
                 ADMIN_NAME_COLOR							= Integer.decode("0x" + General.getProperty("AdminNameColor", "00FF00"));
                 GM_NAME_COLOR								= Integer.decode("0x" + General.getProperty("GMNameColor", "FFFF00"));
+                GM_TITLE_COLOR_ENABLED						= Boolean.parseBoolean(General.getProperty("GMTitleColorEnabled", "False"));
+                ADMIN_TITLE_COLOR							= Integer.decode("0x" + General.getProperty("AdminTitleColor", "00FF00"));
+                GM_TITLE_COLOR								= Integer.decode("0x" + General.getProperty("GMTitleColor", "FFFF00"));
                 GM_HERO_AURA								= Boolean.parseBoolean(General.getProperty("GMHeroAura", "True"));
                 GM_STARTUP_INVULNERABLE						= Boolean.parseBoolean(General.getProperty("GMStartupInvulnerable", "True"));
                 GM_STARTUP_INVISIBLE						= Boolean.parseBoolean(General.getProperty("GMStartupInvisible", "True"));
