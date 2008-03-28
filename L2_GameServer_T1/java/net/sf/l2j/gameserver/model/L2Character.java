@@ -147,6 +147,7 @@ public abstract class L2Character extends L2Object
 	private boolean _isFlying                               = false; //Is flying Wyvern?
 	private boolean _isMuted                                = false; // Cannot use magic
 	private boolean _isPhysicalMuted                       = false; // Cannot use physical skills
+	private boolean _isPhysicalAttackMuted                 = false; // Cannot use attack
 	private boolean _isDead			                        = false;
 	private boolean _isImmobilized                          = false;
 	private boolean _isOverloaded                           = false; // the char is carrying too much
@@ -1332,6 +1333,13 @@ public abstract class L2Character extends L2Object
             getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
             return;
         }
+        
+        // Prevent use attack
+        if (isPhysicalAttackMuted() && !skill.isMagic() && !skill.isPotion())
+        {
+        	sendPacket(new ActionFailed());
+        	return;
+        }        
 
         // Can't use Hero and resurrect skills during Olympiad
         if (this instanceof L2PcInstance && ((L2PcInstance)this).isInOlympiadMode() &&
@@ -1875,8 +1883,9 @@ public abstract class L2Character extends L2Object
 	/** Return True if the L2Character can't use its skills (ex : stun, sleep...). */
 	public final boolean isAllSkillsDisabled() { return _allSkillsDisabled || isImmobileUntilAttacked() || isStunned() || isSleeping() || isParalyzed(); }
 
-	/** Return True if the L2Character can't attack (stun, sleep, attackEndTime, fakeDeath, paralyse). */
-	public boolean isAttackingDisabled() { return isStunned() || isImmobileUntilAttacked() || isSleeping() || _attackEndTime > GameTimeController.getGameTicks() || isFakeDeath() || isParalyzed(); }
+	/** Return True if the L2Character can't attack (stun, sleep, attackEndTime, fakeDeath, paralyse, attackMute). */
+	public boolean isAttackingDisabled() { return isStunned() || isImmobileUntilAttacked() || isSleeping() || _attackEndTime > GameTimeController.getGameTicks() || isFakeDeath() || isParalyzed() || isPhysicalAttackMuted(); }
+
 
 	public final Calculator[] getCalculators() { return _calculators; }
 
@@ -1906,6 +1915,9 @@ public abstract class L2Character extends L2Object
 
 	public final boolean isPhysicalMuted() { return _isPhysicalMuted; }
     public final void setIsPhysicalMuted(boolean value) { _isPhysicalMuted = value; }
+    
+    public final boolean isPhysicalAttackMuted() { return _isPhysicalAttackMuted; }
+    public final void setIsPhysicalAttackMuted(boolean value) { _isPhysicalAttackMuted = value; } 
 
 	/** Return True if the L2Character can't move (stun, root, sleep, overload, paralyzed). */
 	public boolean isMovementDisabled() 
@@ -6596,4 +6608,19 @@ public abstract class L2Character extends L2Object
     {
         return isDead();
     }
+    
+    public final void startPhysicalAttackMuted()
+    {
+       setIsPhysicalAttackMuted(true);
+    }    
+    
+    public final void stopPhysicalAttackMuted(L2Effect effect)
+    {
+       if (effect == null)
+           stopEffects(L2Effect.EffectType.PHYSICAL_ATTACK_MUTE);
+       else
+            removeEffect(effect);
+  
+       setIsPhysicalAttackMuted(false);
+    }  
 }

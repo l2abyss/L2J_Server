@@ -71,6 +71,7 @@ public abstract class L2Effect
         PARALYZE,
         STUN_SELF,
         PHYSICAL_MUTE,
+        PHYSICAL_ATTACK_MUTE,
         REMOVE_TARGET,
         TARGET_ME,
         SILENCE_MAGIC_PHYSICAL,
