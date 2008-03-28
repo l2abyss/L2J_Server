@@ -2346,7 +2346,7 @@ public abstract class L2Character extends L2Object
 		}
 		synchronized(_effects)
 		{
-			L2Effect tempEffect = null;
+			L2Effect tempEffect, tempEffect2;
 
 			// Check for same effects
 			for (int i=0; i<_effects.size(); i++)
@@ -2358,7 +2358,7 @@ public abstract class L2Character extends L2Object
 					if (newEffect.getSkill().getSkillType() == L2Skill.SkillType.BUFF
 							|| newEffect.getEffectType() == L2Effect.EffectType.BUFF)
 					{
-						// renew buffs, exit old
+						// renew buffs, exit old (could consider only reschedule and stop new but then effector would be wrong)
 						_effects.get(i).exit();
 					}
 					else
@@ -2429,10 +2429,10 @@ public abstract class L2Character extends L2Object
 			if (stackQueue == null)
 				stackQueue = new FastList<L2Effect>();
 
+			tempEffect = null;
 			if (stackQueue.size() > 0)
 			{
 				// Get the first stacked effect of the Stack group selected
-				tempEffect = null;
 				for (int i=0; i<_effects.size(); i++)
 				{
 					if (_effects.get(i) == stackQueue.get(0))
@@ -2440,15 +2440,6 @@ public abstract class L2Character extends L2Object
 						tempEffect = _effects.get(i);
 						break;
 					}
-				}
-
-				if (tempEffect != null)
-				{
-					// Remove all Func objects corresponding to this stacked effect from the Calculator set of the L2Character
-					removeStatsOwner(tempEffect);
-
-					// Set the L2Effect to Not In Use
-					tempEffect.setInUse(false);
 				}
 			}
 
@@ -2461,21 +2452,35 @@ public abstract class L2Character extends L2Object
 			_stackedEffects.put(newEffect.getStackType(), stackQueue);
 
 			// Get the first stacked effect of the Stack group selected
-			tempEffect = null;
+			tempEffect2 = null;
 			for (int i=0; i<_effects.size(); i++)
 			{
 				if (_effects.get(i) == stackQueue.get(0))
 				{
-					tempEffect = _effects.get(i);
+					tempEffect2 = _effects.get(i);
 					break;
 				}
 			}
 
-			// Set this L2Effect to In Use
-			tempEffect.setInUse(true);
+			if (tempEffect != tempEffect2)
+			{
+				if (tempEffect != null)
+				{
+					// Remove all Func objects corresponding to this stacked effect from the Calculator set of the L2Character
+					removeStatsOwner(tempEffect);
 
-			// Add all Func objects corresponding to this stacked effect to the Calculator set of the L2Character
-			addStatFuncs(tempEffect.getStatFuncs());
+					// Set the L2Effect to Not In Use
+					tempEffect.setInUse(false);
+				}
+				if (tempEffect2 != null)
+				{
+					// Set this L2Effect to In Use
+					tempEffect2.setInUse(true);
+
+					// Add all Func objects corresponding to this stacked effect to the Calculator set of the L2Character
+					addStatFuncs(tempEffect2.getStatFuncs());
+				}
+			}
 		}
 		// Update active skills in progress (In Use and Not In Use because stacked) icons on client
 		updateEffectIcons();
