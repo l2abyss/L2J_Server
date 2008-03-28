@@ -9093,7 +9093,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
     public boolean isSubClassActive()
     {
-        return _classIndex > 0;
+        return getBaseClass() != getClassId().getId();
     }
 
     public Map<Integer, SubClass> getSubClasses()
