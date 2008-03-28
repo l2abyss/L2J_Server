@@ -21,17 +21,17 @@ import net.sf.l2j.gameserver.skills.Env;
  * @author -Nemesiss-
  *
  */
-public class EffectPsychicalMute extends L2Effect {
+public class EffectPhysicalMute extends L2Effect {
 
 
-    public EffectPsychicalMute(Env env, EffectTemplate template) {
+    public EffectPhysicalMute(Env env, EffectTemplate template) {
         super(env, template);
     }
 
 
     @Override
 	public EffectType getEffectType() {
-        return L2Effect.EffectType.PSYCHICAL_MUTE;
+        return L2Effect.EffectType.PHYSICAL_MUTE;
     }
 
     @Override

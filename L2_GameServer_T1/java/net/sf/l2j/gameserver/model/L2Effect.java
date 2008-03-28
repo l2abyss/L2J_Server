@@ -70,7 +70,7 @@ public abstract class L2Effect
         SEED,
         PARALYZE,
         STUN_SELF,
-        PSYCHICAL_MUTE,
+        PHYSICAL_MUTE,
         REMOVE_TARGET,
         TARGET_ME,
         SILENCE_MAGIC_PHYSICAL,

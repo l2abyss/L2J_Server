@@ -146,7 +146,7 @@ public abstract class L2Character extends L2Object
 	private boolean _isFakeDeath                            = false; // Fake death
 	private boolean _isFlying                               = false; //Is flying Wyvern?
 	private boolean _isMuted                                = false; // Cannot use magic
-	private boolean _isPsychicalMuted                       = false; // Cannot use psychical skills
+	private boolean _isPhysicalMuted                       = false; // Cannot use physical skills
 	private boolean _isDead			                        = false;
 	private boolean _isImmobilized                          = false;
 	private boolean _isOverloaded                           = false; // the char is carrying too much
@@ -1326,8 +1326,8 @@ public abstract class L2Character extends L2Object
 			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
 			return;
 		}
-        // Check if the skill is psychical and if the L2Character is not psychical_muted
-        if (!skill.isMagic() && isPsychicalMuted() && !skill.isPotion())
+        // Check if the skill is physical and if the L2Character is not psychical_muted
+        if (!skill.isMagic() && isPhysicalMuted() && !skill.isPotion())
         {
             getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
             return;
@@ -1904,8 +1904,8 @@ public abstract class L2Character extends L2Object
 	public final boolean isMuted() { return _isMuted; }
 	public final void setIsMuted(boolean value) { _isMuted = value; }
 
-	public final boolean isPsychicalMuted() { return _isPsychicalMuted; }
-    public final void setIsPsychicalMuted(boolean value) { _isPsychicalMuted = value; }
+	public final boolean isPhysicalMuted() { return _isPhysicalMuted; }
+    public final void setIsPhysicalMuted(boolean value) { _isPhysicalMuted = value; }
 
 	/** Return True if the L2Character can't move (stun, root, sleep, overload, paralyzed). */
 	public boolean isMovementDisabled() 
@@ -2693,7 +2693,7 @@ public abstract class L2Character extends L2Object
      */
     public final void startPsychicalMuted()
     {
-        setIsPsychicalMuted(true);
+        setIsPhysicalMuted(true);
         getAI().notifyEvent(CtrlEvent.EVT_MUTED);
         updateAbnormalEffect();
     }
@@ -2941,11 +2941,11 @@ public abstract class L2Character extends L2Object
 	public final void stopPsychicalMuted(L2Effect effect)
     {
         if (effect == null)
-            stopEffects(L2Effect.EffectType.PSYCHICAL_MUTE);
+            stopEffects(L2Effect.EffectType.PHYSICAL_MUTE);
         else
             removeEffect(effect);
 
-        setIsPsychicalMuted(false);
+        setIsPhysicalMuted(false);
         updateAbnormalEffect();
     }
 
@@ -3125,7 +3125,7 @@ public abstract class L2Character extends L2Object
 		if (isConfused()) ae |= ABNORMAL_EFFECT_CONFUSED;
 		if (isMuted())    ae |= ABNORMAL_EFFECT_MUTED;
 		if (isAfraid())  ae |= ABNORMAL_EFFECT_AFRAID;
-		if (isPsychicalMuted()) ae |= ABNORMAL_EFFECT_MUTED;
+		if (isPhysicalMuted()) ae |= ABNORMAL_EFFECT_MUTED;
 		return ae;
 	}
 
