@@ -1326,7 +1326,7 @@ public abstract class L2Character extends L2Object
 			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
 			return;
 		}
-        // Check if the skill is physical and if the L2Character is not psychical_muted
+        // Check if the skill is physical and if the L2Character is not physical_muted
         if (!skill.isMagic() && isPhysicalMuted() && !skill.isPotion())
         {
             getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
@@ -2313,7 +2313,7 @@ public abstract class L2Character extends L2Object
 
 	// Method - Public
 	/**
-	 * Launch and add L2Effect (including Stack Group management) to L2Character and update client magic icone.<BR><BR>
+	 * Launch and add L2Effect (including Stack Group management) to L2Character and update client magic icon.<BR><BR>
 	 *
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * All active skills effects in progress on the L2Character are identified in ConcurrentHashMap(Integer,L2Effect) <B>_effects</B>.
@@ -2798,7 +2798,7 @@ public abstract class L2Character extends L2Object
 	 * Stop a specified/all Confused abnormal L2Effect.<BR><BR>
 	 *
 	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Delete a specified/all (if effect=null) Confused abnormal L2Effect from L2Character and update client magic icone </li>
+	 * <li>Delete a specified/all (if effect=null) Confused abnormal L2Effect from L2Character and update client magic icon </li>
 	 * <li>Set the abnormal effect flag _confused to False </li>
 	 * <li>Notify the L2Character AI</li>
 	 * <li>Send Server->Client UserInfo/CharInfo packet</li><BR><BR>
@@ -3081,7 +3081,7 @@ public abstract class L2Character extends L2Object
 	 * Update active skills in progress (In Use and Not In Use because stacked) icons on client.<BR><BR>
 	 *
 	 * <B><U> Concept</U> :</B><BR><BR>
-	 * All active skills effects in progress (In Use and Not In Use because stacked) are represented by an icone on the client.<BR><BR>
+	 * All active skills effects in progress (In Use and Not In Use because stacked) are represented by an icon on the client.<BR><BR>
 	 *
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method ONLY UPDATE the client of the player and not clients of all players in the party.</B></FONT><BR><BR>
 	 *

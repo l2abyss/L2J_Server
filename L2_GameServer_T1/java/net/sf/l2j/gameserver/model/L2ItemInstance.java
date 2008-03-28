@@ -120,7 +120,7 @@ public final class L2ItemInstance extends L2Object
 	public static final int CHARGED_NONE				=	0;
 	public static final int CHARGED_SOULSHOT				=	1;
 	public static final int CHARGED_SPIRITSHOT			=	1;
-	public static final int CHARGED_BLESSED_SOULSHOT		=	2; // It's a realy exists? ;-)
+	public static final int CHARGED_BLESSED_SOULSHOT		=	2; // It's a really exists? ;-)
 	public static final int CHARGED_BLESSED_SPIRITSHOT		=	2;
 
 	/** Item charged with SoulShot (type of SoulShot) */
