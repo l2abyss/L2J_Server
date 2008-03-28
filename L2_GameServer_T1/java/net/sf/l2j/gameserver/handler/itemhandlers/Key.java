@@ -80,6 +80,7 @@ public class Key implements IItemHandler
 			{
 				L2Skill skill = SkillTable.getInstance().getInfo(2260,1);
 				activeChar.doCast(skill);
+				break;
 			}
 		}
 	}

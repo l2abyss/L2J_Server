@@ -45,7 +45,8 @@ public class Continuous implements ISkillHandler
 {
 	//private static Logger _log = Logger.getLogger(Continuous.class.getName());
 
-	private static final SkillType[] SKILL_IDS = {
+	private static final SkillType[] SKILL_IDS =
+	{
 		L2Skill.SkillType.BUFF,
 		L2Skill.SkillType.DEBUFF,
 		L2Skill.SkillType.DOT,
@@ -62,7 +63,7 @@ public class Continuous implements ISkillHandler
 		L2Skill.SkillType.UNDEAD_DEFENSE,
 		L2Skill.SkillType.AGGDEBUFF,
 		L2Skill.SkillType.FORCE_BUFF
-		};
+	};
 
 	/* (non-Javadoc)
 	 * @see net.sf.l2j.gameserver.handler.IItemHandler#useItem(net.sf.l2j.gameserver.model.L2PcInstance, net.sf.l2j.gameserver.model.L2ItemInstance)
@@ -80,13 +81,24 @@ public class Continuous implements ISkillHandler
         {
             target = (L2Character)targets[index];
 
-            if(skill.getSkillType() != L2Skill.SkillType.BUFF && skill.getSkillType() != L2Skill.SkillType.HOT
-            		&& skill.getSkillType() != L2Skill.SkillType.CPHOT && skill.getSkillType() != L2Skill.SkillType.MPHOT
-            		&& skill.getSkillType() != L2Skill.SkillType.UNDEAD_DEFENSE && skill.getSkillType() != L2Skill.SkillType.AGGDEBUFF
-            		&& skill.getSkillType() != L2Skill.SkillType.CONT)
+            switch (skill.getSkillType())
             {
-                if(target.reflectSkill(skill))
-                	target = activeChar;
+            	case BUFF:
+            	case HOT:
+            	case CPHOT:
+            	case MPHOT:
+            	case UNDEAD_DEFENSE:
+            	case AGGDEBUFF:
+            	case CONT:
+            	{
+            		break;
+            	}
+            	default:
+            	{
+            		if(target.reflectSkill(skill))
+            			target = activeChar;
+            		break;
+            	}
             }
 
             // Walls and Door should not be buffed
@@ -174,17 +186,20 @@ public class Continuous implements ISkillHandler
 
 			if (acted)
 			{
-		
 				if (skill.isToggle())
 				{
 					L2Effect[] effects = target.getAllEffects();
 					if (effects != null)
 					{
-						for (L2Effect e : effects) {
-		                    if (e != null && skill != null)
-		                        if (e.getSkill().getId() == skill.getId()) {
-								e.exit();
-								return;
+						for (L2Effect e : effects)
+						{
+							if (e != null && skill != null)
+							{
+								if (e.getSkill().getId() == skill.getId())
+								{
+									e.exit();
+									return;
+								}
 							}
 						}
 					}

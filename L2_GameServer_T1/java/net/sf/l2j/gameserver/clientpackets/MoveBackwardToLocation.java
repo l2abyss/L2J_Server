@@ -23,7 +23,6 @@ import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.serverpackets.PartyMemberPosition;
-import net.sf.l2j.gameserver.templates.L2WeaponType;
 
 /**
  * This class ...
