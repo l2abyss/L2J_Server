@@ -863,7 +863,7 @@ public final class L2VillageMasterInstance extends L2FolkInstance
             player.sendPacket(asl);
         }
 
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
     }
 
     private final String formatClassForDisplay(PlayerClass className)

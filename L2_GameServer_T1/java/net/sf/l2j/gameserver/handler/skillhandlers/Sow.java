@@ -68,23 +68,23 @@ public class Sow implements ISkillHandler {
 	        _target = (L2MonsterInstance) targetList[0];
 
 	        if (_target.isSeeded()) {
-	        	_activeChar.sendPacket(new ActionFailed());
+	        	_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 	            continue;
 	        }
 
 	        if ( _target.isDead()) {
-	        	_activeChar.sendPacket(new ActionFailed());
+	        	_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 	            continue;
 	        }
 
 	        if (_target.getSeeder() != _activeChar) {
-	        	_activeChar.sendPacket(new ActionFailed());
+	        	_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 	            continue;
 	        }
 
 	        _seedId = _target.getSeedType();
 	        if (_seedId == 0) {
-	        	_activeChar.sendPacket(new ActionFailed());
+	        	_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 	            continue;
 	        }
 

@@ -46,7 +46,7 @@ public final class RequestRecipeShopManageList extends L2GameClientPacket
         // Player shouldn't be able to set stores if he/she is alike dead (dead or fake death)
         if (player.isAlikeDead())
         {
-            sendPacket(new ActionFailed());
+            sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
 		if(player.getPrivateStoreType() != 0){

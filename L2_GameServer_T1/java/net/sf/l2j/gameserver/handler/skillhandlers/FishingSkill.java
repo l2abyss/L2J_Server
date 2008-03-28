@@ -51,7 +51,7 @@ public class FishingSkill implements ISkillHandler
                 //Reeling skill is available only while fishing
 				player.sendPacket(new SystemMessage(SystemMessageId.CAN_USE_REELING_ONLY_WHILE_FISHING));
 			}
-			player.sendPacket(new ActionFailed());
+			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		L2Weapon weaponItem = player.getActiveWeaponItem();

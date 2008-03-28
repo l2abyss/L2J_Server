@@ -59,7 +59,7 @@ public class SummonFriend implements ISkillHandler
         if (GrandBossManager.getInstance().getZone(activePlayer) != null && !activePlayer.isGM())
         {
             activePlayer.sendMessage("You may not use Summon Friend Skill inside a Boss Zone.");
-            activePlayer.sendPacket(new ActionFailed());
+            activePlayer.sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
 

@@ -70,7 +70,7 @@ public final class L2MercManagerInstance extends L2MerchantInstance
 			}
 		}
 		// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-		player.sendPacket(new ActionFailed());
+		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 
     @Override

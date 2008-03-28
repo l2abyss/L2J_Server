@@ -68,7 +68,7 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 				if (getClient().packetsSentInSec > 12) 
 				{
 					if (getClient().packetsSentInSec < 100)
-						sendPacket(new ActionFailed()); 
+						sendPacket(ActionFailed.STATIC_PACKET); 
 					return;
 				}
 			}

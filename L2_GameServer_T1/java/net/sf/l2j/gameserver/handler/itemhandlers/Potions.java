@@ -94,7 +94,7 @@ public class Potions implements IItemHandler
 
 		if (!TvTEvent.onPotionUse(playable.getName()))
 		{
-			playable.sendPacket(new ActionFailed());
+			playable.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 
@@ -106,7 +106,7 @@ public class Potions implements IItemHandler
 
 		if (activeChar.isAllSkillsDisabled())
 		{
-			ActionFailed af = new ActionFailed();
+			ActionFailed af = ActionFailed.STATIC_PACKET;
 			activeChar.sendPacket(af);
 			return;
 		}

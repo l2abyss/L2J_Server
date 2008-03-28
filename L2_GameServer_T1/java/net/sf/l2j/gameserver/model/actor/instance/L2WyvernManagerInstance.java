@@ -135,12 +135,12 @@ public class L2WyvernManagerInstance extends L2CastleChamberlainInstance
 				showMessageWindow(player);
 			}
 		}
-		player.sendPacket(new ActionFailed());
+		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 
     private void showMessageWindow(L2PcInstance player)
     {
-        player.sendPacket( new ActionFailed() );
+        player.sendPacket( ActionFailed.STATIC_PACKET );
         String filename = "data/html/wyvernmanager/wyvernmanager-no.htm";
 
         int condition = validateCondition(player);

@@ -85,7 +85,7 @@ public class Seed implements IItemHandler {
         if(!(target instanceof L2NpcInstance)) 
         {
             _activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
-            _activeChar.sendPacket(new ActionFailed());
+            _activeChar.sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
 
@@ -94,7 +94,7 @@ public class Seed implements IItemHandler {
         		(target instanceof L2GrandBossInstance)   ||
         		(target instanceof L2RaidBossInstance)) {
         	_activeChar.sendPacket(new SystemMessage(SystemMessageId.THE_TARGET_IS_UNAVAILABLE_FOR_SEEDING));
-        	_activeChar.sendPacket(new ActionFailed());
+        	_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
         	return;
         }
 
@@ -102,12 +102,12 @@ public class Seed implements IItemHandler {
 
         if(_target == null || _target.isDead()) {
         	_activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
-        	_activeChar.sendPacket(new ActionFailed());
+        	_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
 
         if(_target.isSeeded()) {
-        	_activeChar.sendPacket(new ActionFailed());
+        	_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
         	return;
         }
 

@@ -52,7 +52,7 @@ public final class RequestSurrenderPledgeWar extends L2GameClientPacket
         if(clan == null)
         {
         	_activeChar.sendMessage("No such clan.");
-        	_activeChar.sendPacket(new ActionFailed());
+        	_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
 
@@ -61,7 +61,7 @@ public final class RequestSurrenderPledgeWar extends L2GameClientPacket
         if(!_clan.isAtWarWith(clan.getClanId()))
         {
         	_activeChar.sendMessage("You aren't at war with this clan.");
-        	_activeChar.sendPacket(new ActionFailed());
+        	_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
 
@@ -76,7 +76,7 @@ public final class RequestSurrenderPledgeWar extends L2GameClientPacket
         if(leader != null && leader.isOnline() == 0)
         {
             player.sendMessage("Clan leader isn't online.");
-            player.sendPacket(new ActionFailed());
+            player.sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
 

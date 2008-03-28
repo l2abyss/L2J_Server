@@ -539,7 +539,7 @@ public class L2NpcInstance extends L2Character
     {
         if (player.isOutOfControl())
         {
-            player.sendPacket(new ActionFailed());
+            player.sendPacket(ActionFailed.STATIC_PACKET);
             return false;
         }
         // TODO: More checks...
@@ -640,7 +640,7 @@ public class L2NpcInstance extends L2Character
                 else
                 {
                     // Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-                    player.sendPacket(new ActionFailed());
+                    player.sendPacket(ActionFailed.STATIC_PACKET);
                 }
             }
             else if(!isAutoAttackable(player)) 
@@ -671,7 +671,7 @@ public class L2NpcInstance extends L2Character
                 }
             }
             else
-                player.sendPacket(new ActionFailed());
+                player.sendPacket(ActionFailed.STATIC_PACKET);
         }
     }
     
@@ -833,7 +833,7 @@ public class L2NpcInstance extends L2Character
         }
 
         // Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
     }
 
     /** Return the L2Castle this L2NpcInstance belongs to. */
@@ -880,7 +880,7 @@ public class L2NpcInstance extends L2Character
         {
             if (isBusy() && getBusyMessage().length()>0)
             {
-                player.sendPacket( new ActionFailed() );
+                player.sendPacket( ActionFailed.STATIC_PACKET );
 
                 NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
                 html.setFile("data/html/npcbusy.htm");
@@ -1301,7 +1301,7 @@ public class L2NpcInstance extends L2Character
             insertObjectIdAndShowChatWindow(player, content);
         
         // Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-        player.sendPacket( new ActionFailed() );
+        player.sendPacket( ActionFailed.STATIC_PACKET );
     }
     
     /**
@@ -1590,7 +1590,7 @@ public class L2NpcInstance extends L2Character
         player.sendPacket(html);
              
         // Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
     }
     
     public void makeCPRecovery(L2PcInstance player)
@@ -1715,7 +1715,7 @@ public class L2NpcInstance extends L2Character
     		NpcHtmlMessage pkDenyMsg = new NpcHtmlMessage(getObjectId());
     		pkDenyMsg.setHtml(html);
     		player.sendPacket(pkDenyMsg);
-    		player.sendPacket(new ActionFailed());
+    		player.sendPacket(ActionFailed.STATIC_PACKET);
     		return true;
     	}
 
@@ -1986,7 +1986,7 @@ public class L2NpcInstance extends L2Character
                         if (playerCabal != compWinner || playerCabal != sealAvariceOwner)
                         {
                             player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
-                            player.sendPacket( new ActionFailed() );
+                            player.sendPacket( ActionFailed.STATIC_PACKET );
                             return;
                         }
                         break;
@@ -1994,7 +1994,7 @@ public class L2NpcInstance extends L2Character
                         if (playerCabal != compWinner || playerCabal != sealAvariceOwner)
                         {
                             player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
-                            player.sendPacket( new ActionFailed() );
+                            player.sendPacket( ActionFailed.STATIC_PACKET );
                             return;
                         }
                         break;
@@ -2008,7 +2008,7 @@ public class L2NpcInstance extends L2Character
                         if (playerCabal != compWinner || playerCabal != sealGnosisOwner)
                         {
                             player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
-                            player.sendPacket( new ActionFailed() );
+                            player.sendPacket( ActionFailed.STATIC_PACKET );
                             return;
                         }
                         break;
@@ -2016,7 +2016,7 @@ public class L2NpcInstance extends L2Character
                         if (playerCabal != compWinner || playerCabal != sealGnosisOwner)
                         {
                             player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
-                            player.sendPacket( new ActionFailed() );
+                            player.sendPacket( ActionFailed.STATIC_PACKET );
                             return;
                         }
                         break;
@@ -2081,7 +2081,7 @@ public class L2NpcInstance extends L2Character
         player.sendPacket(html);
         
         // Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-        player.sendPacket( new ActionFailed() );
+        player.sendPacket( ActionFailed.STATIC_PACKET );
     }
     
     /**
@@ -2102,7 +2102,7 @@ public class L2NpcInstance extends L2Character
         player.sendPacket(html);
         
         // Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-        player.sendPacket( new ActionFailed() );
+        player.sendPacket( ActionFailed.STATIC_PACKET );
     }
     
     /**

@@ -58,7 +58,7 @@ public class EnergyStone implements IItemHandler
 
         	if (activeChar.isAllSkillsDisabled())
         	{
-        		ActionFailed af = new ActionFailed();
+        		ActionFailed af = ActionFailed.STATIC_PACKET;
         		activeChar.sendPacket(af);
         		return;
             }

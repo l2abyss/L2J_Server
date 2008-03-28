@@ -139,7 +139,7 @@ public final class RequestSellItem extends L2GameClientPacket
 		{
 			if (merchant.getTemplate().npcId != _listId-1000000)
 			{
-				sendPacket(new ActionFailed());
+				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
 		}

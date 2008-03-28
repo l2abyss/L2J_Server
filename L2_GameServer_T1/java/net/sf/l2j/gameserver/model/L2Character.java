@@ -604,7 +604,7 @@ public abstract class L2Character extends L2Object
 			// If L2PcInstance is dead or the target is dead, the action is stoped
 			getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 
-			sendPacket(new ActionFailed());
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 
@@ -616,7 +616,7 @@ public abstract class L2Character extends L2Object
 	        if (((L2PcInstance)this).inObserverMode())
 	        {
 	            sendPacket(new SystemMessage(SystemMessageId.OBSERVERS_CANNOT_PARTICIPATE));
-	            sendPacket(new ActionFailed());
+	            sendPacket(ActionFailed.STATIC_PACKET);
 	            return;
 	        }
 
@@ -624,13 +624,13 @@ public abstract class L2Character extends L2Object
 	        {
 		        if (((L2PcInstance)target).isCursedWeaponEquipped() && ((L2PcInstance)this).getLevel()<=20){
 		        	((L2PcInstance)this).sendMessage("Can't attack a cursed player when under level 21.");
-		        	sendPacket(new ActionFailed());
+		        	sendPacket(ActionFailed.STATIC_PACKET);
 		        	return;
 		        }
 
 		        if (((L2PcInstance)this).isCursedWeaponEquipped() && ((L2PcInstance)target).getLevel()<=20){
 		        	((L2PcInstance)this).sendMessage("Can't attack a newbie player using a cursed weapon.");
-		        	sendPacket(new ActionFailed());
+		        	sendPacket(ActionFailed.STATIC_PACKET);
 		        	return;
 		        }
 	        }
@@ -638,7 +638,7 @@ public abstract class L2Character extends L2Object
 			if (target.isInsidePeaceZone((L2PcInstance)this))
 			{
 				getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-				sendPacket(new ActionFailed());
+				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
 
@@ -646,7 +646,7 @@ public abstract class L2Character extends L2Object
 		else if (isInsidePeaceZone(this, target))
 		{
 			getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-			sendPacket(new ActionFailed());
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 
@@ -663,7 +663,7 @@ public abstract class L2Character extends L2Object
 			((L2PcInstance)this).sendPacket(new SystemMessage(SystemMessageId.CANNOT_ATTACK_WITH_FISHING_POLE));
 			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 
-            ActionFailed af = new ActionFailed();
+            ActionFailed af = ActionFailed.STATIC_PACKET;
             sendPacket(af);
 			return;
 		}
@@ -673,7 +673,7 @@ public abstract class L2Character extends L2Object
         {
             sendPacket(new SystemMessage(SystemMessageId.CANT_SEE_TARGET));
             getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-            sendPacket(new ActionFailed());
+            sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
 
@@ -697,7 +697,7 @@ public abstract class L2Character extends L2Object
 				        ThreadPoolManager.getInstance().scheduleAi(new NotifyAITask(CtrlEvent.EVT_READY_TO_ACT), 1000);
 
 				        sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_MP));
-				        sendPacket(new ActionFailed());
+				        sendPacket(ActionFailed.STATIC_PACKET);
 				        return;
 				    }
 				    // If L2PcInstance have enough MP, the bow consummes it
@@ -711,7 +711,7 @@ public abstract class L2Character extends L2Object
 					// Cancel the action because the bow can't be re-use at this moment
 					ThreadPoolManager.getInstance().scheduleAi(new NotifyAITask(CtrlEvent.EVT_READY_TO_ACT), 1000);
 
-					sendPacket(new ActionFailed());
+					sendPacket(ActionFailed.STATIC_PACKET);
 					return;
 				}
 
@@ -721,7 +721,7 @@ public abstract class L2Character extends L2Object
 					// Cancel the action because the L2PcInstance have no arrow
 					getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 
-					sendPacket(new ActionFailed());
+					sendPacket(ActionFailed.STATIC_PACKET);
 					sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ARROWS));
 					return;
 				}
@@ -738,7 +738,7 @@ public abstract class L2Character extends L2Object
 		        if (target.isInsidePeaceZone((L2PcInstance)this))
 		        {
 		            getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-		            sendPacket(new ActionFailed());
+		            sendPacket(ActionFailed.STATIC_PACKET);
 		            return;
 		        }
 
@@ -753,7 +753,7 @@ public abstract class L2Character extends L2Object
 		            // Cancel the action because the crossbow can't be re-use at this moment
 		            ThreadPoolManager.getInstance().scheduleAi(new NotifyAITask(CtrlEvent.EVT_READY_TO_ACT), 1000);
 
-		            sendPacket(new ActionFailed());
+		            sendPacket(ActionFailed.STATIC_PACKET);
 		            return;
 		        }
 
@@ -763,7 +763,7 @@ public abstract class L2Character extends L2Object
 		            // Cancel the action because the L2PcInstance have no arrow
 		            getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 
-		            sendPacket(new ActionFailed());
+		            sendPacket(ActionFailed.STATIC_PACKET);
 		            sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_BOLTS));
 		            return;
 		        }
@@ -1337,7 +1337,7 @@ public abstract class L2Character extends L2Object
         // Prevent use attack
         if (isPhysicalAttackMuted() && !skill.isMagic() && !skill.isPotion())
         {
-        	sendPacket(new ActionFailed());
+        	sendPacket(ActionFailed.STATIC_PACKET);
         	return;
         }        
 
@@ -3968,7 +3968,7 @@ public abstract class L2Character extends L2Object
 		if (isAttackingNow())
 		{
 			_attacking = 0;
-			sendPacket(new ActionFailed());
+			sendPacket(ActionFailed.STATIC_PACKET);
 		}
 	}
 
@@ -4006,7 +4006,7 @@ public abstract class L2Character extends L2Object
 			enableAllSkills();                                      // re-enables the skills
 			if (this instanceof L2PcInstance) getAI().notifyEvent(CtrlEvent.EVT_FINISH_CASTING); // setting back previous intention
 			broadcastPacket(new MagicSkillCanceld(getObjectId()));  // broadcast packet to stop animations client-side
-			sendPacket(new ActionFailed());                         // send an "action failed" packet to the caster
+			sendPacket(ActionFailed.STATIC_PACKET);                         // send an "action failed" packet to the caster
 		}
 	}
 
@@ -4966,7 +4966,7 @@ public abstract class L2Character extends L2Object
 			//getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
 			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
 
-			sendPacket(new ActionFailed());
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 
@@ -5175,7 +5175,7 @@ public abstract class L2Character extends L2Object
 			if (this instanceof L2PcInstance)
 			{
 				//TODO Remove sendPacket because it's always done in abortAttack
-				sendPacket(new ActionFailed());
+				sendPacket(ActionFailed.STATIC_PACKET);
 
 				// Send a system message
 				sendPacket(new SystemMessage(SystemMessageId.ATTACK_FAILED));
@@ -5234,7 +5234,7 @@ public abstract class L2Character extends L2Object
 		{
 			// If L2Character or target is in a peace zone, send a system message TARGET_IN_PEACEZONE a Server->Client packet ActionFailed
 			player.sendPacket(new SystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
-			player.sendPacket(new ActionFailed());
+			player.sendPacket(ActionFailed.STATIC_PACKET);
 		}
 		else if (player.isInOlympiadMode() && player.getTarget() != null)
         {
@@ -5247,23 +5247,23 @@ public abstract class L2Character extends L2Object
         	if (target.isInOlympiadMode() && !player.isOlympiadStart() && player.getOlympiadGameId()!=target.getOlympiadGameId())
         	{
         		// if L2PcInstance is in Olympia and the match isn't already start, send a Server->Client packet ActionFailed
-        		player.sendPacket(new ActionFailed());
+        		player.sendPacket(ActionFailed.STATIC_PACKET);
         	}
         }
 		else if (player.getTarget() != null && !player.getTarget().isAttackable() && (player.getAccessLevel() < Config.GM_PEACEATTACK))
 		{
 			// If target is not attackable, send a Server->Client packet ActionFailed
-			player.sendPacket(new ActionFailed());
+			player.sendPacket(ActionFailed.STATIC_PACKET);
 		}
 		else if (player.isConfused())
 		{
 			// If target is confused, send a Server->Client packet ActionFailed
-			player.sendPacket(new ActionFailed());
+			player.sendPacket(ActionFailed.STATIC_PACKET);
 		}
 		else if (this instanceof L2ArtefactInstance)
 		{
 			// If L2Character is a L2ArtefactInstance, send a Server->Client packet ActionFailed
-			player.sendPacket(new ActionFailed());
+			player.sendPacket(ActionFailed.STATIC_PACKET);
 		}
 		else
 		{
@@ -5271,7 +5271,7 @@ public abstract class L2Character extends L2Object
 	        if (!GeoData.getInstance().canSeeTarget(player, this))
 	        {
 	            player.sendPacket(new SystemMessage(SystemMessageId.CANT_SEE_TARGET));
-	            player.sendPacket(new ActionFailed());
+	            player.sendPacket(ActionFailed.STATIC_PACKET);
 	            return;
 	        }
 			// Notify AI with AI_INTENTION_ATTACK

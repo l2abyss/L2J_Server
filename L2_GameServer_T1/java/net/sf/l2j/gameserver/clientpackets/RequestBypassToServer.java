@@ -106,7 +106,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 					{
 						((L2NpcInstance)object).onBypassFeedback(activeChar, _command.substring(endOfId+1));
 					}
-					activeChar.sendPacket(new ActionFailed());
+					activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				}
 				catch (NumberFormatException nfe) {}
 			}

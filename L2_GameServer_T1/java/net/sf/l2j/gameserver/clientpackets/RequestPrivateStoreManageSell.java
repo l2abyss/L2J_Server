@@ -45,13 +45,13 @@ public final class RequestPrivateStoreManageSell extends L2GameClientPacket
         // Player shouldn't be able to set stores if he/she is alike dead (dead or fake death)
         if (player.isAlikeDead())
         {
-            sendPacket(new ActionFailed());
+            sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
 
         if (player.isInOlympiadMode())
         {
-            sendPacket(new ActionFailed());
+            sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
         if (player.getMountType() != 0)

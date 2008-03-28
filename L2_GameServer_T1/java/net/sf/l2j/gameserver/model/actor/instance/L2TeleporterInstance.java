@@ -53,7 +53,7 @@ public final class L2TeleporterInstance extends L2FolkInstance
     @Override
     public void onBypassFeedback(L2PcInstance player, String command)
     {
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
 
         int condition = validateCondition(player);
 
@@ -226,7 +226,7 @@ public final class L2TeleporterInstance extends L2FolkInstance
         {
             _log.warning("No teleport destination with id:" + val);
         }
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
     }
 
     private int validateCondition(L2PcInstance player)

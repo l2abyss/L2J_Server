@@ -61,7 +61,7 @@ public final class L2WarehouseInstance extends L2FolkInstance
 
     private void showRetrieveWindow(L2PcInstance player)
     {
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
         player.setActiveWarehouse(player.getWarehouse());
 
         if (player.getActiveWarehouse().getSize() == 0)
@@ -76,7 +76,7 @@ public final class L2WarehouseInstance extends L2FolkInstance
 
     private void showDepositWindow(L2PcInstance player)
     {
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
         player.setActiveWarehouse(player.getWarehouse());
         player.tempInvetoryDisable();
         if (Config.DEBUG) _log.fine("Showing items to deposit");
@@ -86,7 +86,7 @@ public final class L2WarehouseInstance extends L2FolkInstance
 
     private void showDepositWindowClan(L2PcInstance player)
     {
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
     	if (player.getClan() != null)
     	{
             if (player.getClan().getLevel() == 0)
@@ -105,7 +105,7 @@ public final class L2WarehouseInstance extends L2FolkInstance
 
     private void showWithdrawWindowClan(L2PcInstance player)
     {
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
     	if ((player.getClanPrivileges() & L2Clan.CP_CL_VIEW_WAREHOUSE) != L2Clan.CP_CL_VIEW_WAREHOUSE)
     	{
     		player.sendPacket(new SystemMessage(SystemMessageId.YOU_DO_NOT_HAVE_THE_RIGHT_TO_USE_CLAN_WAREHOUSE));
@@ -126,7 +126,7 @@ public final class L2WarehouseInstance extends L2FolkInstance
 
     private void showWithdrawWindowFreight(L2PcInstance player)
     {
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
         if (Config.DEBUG) _log.fine("Showing freightened items");
 
         PcFreight freight = player.getFreight();
@@ -171,7 +171,7 @@ public final class L2WarehouseInstance extends L2FolkInstance
 
             if (chars.size() < 1)
             {
-                player.sendPacket(new ActionFailed());
+                player.sendPacket(ActionFailed.STATIC_PACKET);
                 return;
             }
 
@@ -184,7 +184,7 @@ public final class L2WarehouseInstance extends L2FolkInstance
 
     private void showDepositWindowFreight(L2PcInstance player, int obj_Id)
     {
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
         L2PcInstance destChar = L2PcInstance.load(obj_Id);
         if (destChar == null)
         {

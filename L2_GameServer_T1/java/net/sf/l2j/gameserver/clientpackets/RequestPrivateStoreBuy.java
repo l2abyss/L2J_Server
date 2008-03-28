@@ -88,7 +88,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
         if (Config.GM_DISABLE_TRANSACTION && player.getAccessLevel() >= Config.GM_TRANSACTION_MIN && player.getAccessLevel() <= Config.GM_TRANSACTION_MAX)
         {
         	player.sendMessage("Transactions are disable for your Access Level");
-            sendPacket(new ActionFailed());
+            sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
 
@@ -129,7 +129,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
         if (player.getAdena() < priceTotal)
 		{
 			sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
-			sendPacket(new ActionFailed());
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 
@@ -145,7 +145,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 
         if (!storeList.privateStoreBuy(player, _items, (int) priceTotal))
         {
-            sendPacket(new ActionFailed());
+            sendPacket(ActionFailed.STATIC_PACKET);
             _log.warning("PrivateStore buy has failed due to invalid list or request. Player: " + player.getName() + ", Private store of: " + storePlayer.getName());
             return;
         }

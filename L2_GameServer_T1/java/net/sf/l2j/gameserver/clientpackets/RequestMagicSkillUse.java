@@ -57,13 +57,13 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 		int level = activeChar.getSkillLevel(_magicId);
 		if (level <= 0)
 		{
-			activeChar.sendPacket(new ActionFailed());
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 
 		if (activeChar.isOutOfControl())
 		{
-			activeChar.sendPacket(new ActionFailed());
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 
@@ -87,7 +87,7 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 		}
 		else
 		{
-			activeChar.sendPacket(new ActionFailed());
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			_log.warning("No skill found!!");
 		}
 	}

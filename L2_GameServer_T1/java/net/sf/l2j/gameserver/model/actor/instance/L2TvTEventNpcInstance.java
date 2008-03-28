@@ -90,6 +90,6 @@ public class L2TvTEventNpcInstance extends L2NpcInstance
 	    	}
 		}
 
-		playerInstance.sendPacket(new ActionFailed());
+		playerInstance.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 }

@@ -143,7 +143,7 @@ public final class L2CastleTeleporterInstance extends L2FolkInstance
 		{
 			_log.warning("No teleport destination with id:" +val);
 		}
-		player.sendPacket( new ActionFailed() );
+		player.sendPacket( ActionFailed.STATIC_PACKET );
 	}
 
 	private int validateCondition(L2PcInstance player)

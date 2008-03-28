@@ -73,21 +73,21 @@ public final class RequestActionUse extends L2GameClientPacket
         // dont do anything if player is dead
         if (activeChar.isAlikeDead())
         {
-            getClient().sendPacket(new ActionFailed());
+            getClient().sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
         
         // don't do anything if player is confused
         if (activeChar.isOutOfControl())
         {
-            getClient().sendPacket(new ActionFailed());
+            getClient().sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
         
         // don't do anything if player is transformed
         if (activeChar.isTransformed())
         {
-            getClient().sendPacket(new ActionFailed());
+            getClient().sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
         
@@ -153,7 +153,7 @@ public final class RequestActionUse extends L2GameClientPacket
                 {
                     if (activeChar.isInOlympiadMode() && !activeChar.isOlympiadStart()){
                         // if L2PcInstance is in Olympia and the match isn't already start, send a Server->Client packet ActionFailed
-                        activeChar.sendPacket(new ActionFailed());
+                        activeChar.sendPacket(ActionFailed.STATIC_PACKET);
                         return;
                     }
                     
@@ -225,7 +225,7 @@ public final class RequestActionUse extends L2GameClientPacket
                     if (activeChar.isTransformed())
                     {
                         // You cannot mount a steed while transformed.
-                        getClient().sendPacket(new ActionFailed());
+                        getClient().sendPacket(ActionFailed.STATIC_PACKET);
                         SystemMessage msg = new SystemMessage(SystemMessageId.YOU_CANNOT_MOUNT_A_STEED_WHILE_TRANSFORMED);
                         activeChar.sendPacket(msg);
                         return;
@@ -294,7 +294,7 @@ public final class RequestActionUse extends L2GameClientPacket
             case 37:
                 if (activeChar.isAlikeDead())
                 {
-                    getClient().sendPacket(new ActionFailed());
+                    getClient().sendPacket(ActionFailed.STATIC_PACKET);
                     return;
                 }
                 if(activeChar.getPrivateStoreType() != 0){
@@ -342,7 +342,7 @@ public final class RequestActionUse extends L2GameClientPacket
                 // Player shouldn't be able to set stores if he/she is alike dead (dead or fake death)
                 if (activeChar.isAlikeDead())
                 {
-                    getClient().sendPacket(new ActionFailed());
+                    getClient().sendPacket(ActionFailed.STATIC_PACKET);
                     return;
                 }
                 if(activeChar.getPrivateStoreType() != 0){

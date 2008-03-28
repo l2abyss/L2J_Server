@@ -48,13 +48,13 @@ public final class RequestPetGetItem extends L2GameClientPacket
 		    return;
 		if(getClient().getActiveChar().getPet() instanceof L2SummonInstance)
 		{
-			sendPacket(new ActionFailed());
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		L2PetInstance pet = (L2PetInstance)getClient().getActiveChar().getPet();
 		if (pet == null || pet.isDead() || pet.isOutOfControl())
 		{
-			sendPacket(new ActionFailed());
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		pet.getAI().setIntention(CtrlIntention.AI_INTENTION_PICK_UP, item);

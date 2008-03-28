@@ -61,7 +61,7 @@ public class ScrollOfEscape implements IItemHandler
         // Thanks nbd
         if (!TvTEvent.onEscapeUse(activeChar.getName()))
         {
-        	activeChar.sendPacket(new ActionFailed());
+        	activeChar.sendPacket(ActionFailed.STATIC_PACKET);
         	return;
         }
 
@@ -76,7 +76,7 @@ public class ScrollOfEscape implements IItemHandler
 
         if (GrandBossManager.getInstance().getZone(activeChar) != null && !activeChar.isGM())
         {
-            activeChar.sendPacket(new ActionFailed());
+            activeChar.sendPacket(ActionFailed.STATIC_PACKET);
             activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_USE_SCROLL_OF_ESCAPE_INSIDE_BOSS_ZONE));
             return;
         }

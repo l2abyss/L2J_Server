@@ -39,7 +39,7 @@ public class Recall implements ISkillHandler
         	// Thanks nbd
         	if (!TvTEvent.onEscapeUse(((L2PcInstance)activeChar).getName()))
         	{
-        		((L2PcInstance)activeChar).sendPacket(new ActionFailed());
+        		((L2PcInstance)activeChar).sendPacket(ActionFailed.STATIC_PACKET);
         		return;
         	}
 

@@ -51,14 +51,14 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
         {
             SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_WAR_DECLARED_IF_CLAN_LVL3_OR_15_MEMBER);
             player.sendPacket(sm);
-            player.sendPacket(new ActionFailed());
+            player.sendPacket(ActionFailed.STATIC_PACKET);
             sm = null;
             return;
         }
         else if (!player.isClanLeader())
         {
             player.sendMessage("You can't declare war. You are not clan leader.");
-            player.sendPacket(new ActionFailed());
+            player.sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
 
@@ -67,14 +67,14 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
         {
         	SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_WAR_CANNOT_DECLARED_CLAN_NOT_EXIST);
             player.sendPacket(sm);
-            player.sendPacket(new ActionFailed());
+            player.sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
         else if (_clan.getAllyId() == clan.getAllyId() && _clan.getAllyId() != 0)
         {
             SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_WAR_AGAINST_A_ALLIED_CLAN_NOT_WORK);
             player.sendPacket(sm);
-            player.sendPacket(new ActionFailed());
+            player.sendPacket(ActionFailed.STATIC_PACKET);
             sm = null;
             return;
         }
@@ -83,7 +83,7 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
         {
             SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_WAR_DECLARED_IF_CLAN_LVL3_OR_15_MEMBER);
             player.sendPacket(sm);
-            player.sendPacket(new ActionFailed());
+            player.sendPacket(ActionFailed.STATIC_PACKET);
             sm = null;
             return;
         }
@@ -92,7 +92,7 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
             SystemMessage sm = new SystemMessage(SystemMessageId.ALREADY_AT_WAR_WITH_S1_WAIT_5_DAYS); //msg id 628
             sm.addString(clan.getName());
             player.sendPacket(sm);
-            player.sendPacket(new ActionFailed());
+            player.sendPacket(ActionFailed.STATIC_PACKET);
             sm = null;
             return;
         }
@@ -107,7 +107,7 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
         //        if(leader != null && leader.isOnline() == 0)
         //        {
         //            player.sendMessage("Clan leader isn't online.");
-        //            player.sendPacket(new ActionFailed());
+        //            player.sendPacket(ActionFailed.STATIC_PACKET);
         //            return;
         //        }
 

@@ -77,7 +77,7 @@ public final class Action extends L2GameClientPacket
 		{
 			// pressing e.g. pickup many times quickly would get you here
 			// _log.warning("Character: " + activeChar.getName() + " request action with non existent ObjectID:" + _objectId);
-			getClient().sendPacket(new ActionFailed());
+			getClient().sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 
@@ -98,13 +98,13 @@ public final class Action extends L2GameClientPacket
 				default:
 					// Ivalid action detected (probably client cheating), log this
 					_log.warning("Character: " + activeChar.getName() + " requested invalid action: " + _actionId);
-					getClient().sendPacket(new ActionFailed());
+					getClient().sendPacket(ActionFailed.STATIC_PACKET);
 					break;
 			}
 		}
 		else
 			// Actions prohibited when in trade
-			getClient().sendPacket(new ActionFailed());
+			getClient().sendPacket(ActionFailed.STATIC_PACKET);
 	}
 
 	/* (non-Javadoc)

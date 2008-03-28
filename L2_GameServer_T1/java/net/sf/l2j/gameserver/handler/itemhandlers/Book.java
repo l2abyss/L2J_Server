@@ -63,7 +63,7 @@ public class Book implements IItemHandler {
 			activeChar.sendPacket(itemReply);
 		}
 
-		activeChar.sendPacket( new ActionFailed() );
+		activeChar.sendPacket( ActionFailed.STATIC_PACKET );
 	}
 
 	public int[] getItemIds()

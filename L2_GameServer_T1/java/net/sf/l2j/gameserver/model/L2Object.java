@@ -61,17 +61,17 @@ public abstract class L2Object
     // Event - Public
     public void onAction(L2PcInstance player)
     {
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
     }
 
     public void onActionShift(L2GameClient client)
     {
-        client.getActiveChar().sendPacket(new ActionFailed());
+        client.getActiveChar().sendPacket(ActionFailed.STATIC_PACKET);
     }
 
     public void onForcedAttack(L2PcInstance player)
     {
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
     }
 
     /**

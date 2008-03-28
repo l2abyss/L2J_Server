@@ -273,7 +273,7 @@ public class L2BoxInstance extends L2NpcInstance {
 		html.setHtml(content);
 		player.sendPacket(html);
 
-		player.sendPacket( new ActionFailed() );
+		player.sendPacket( ActionFailed.STATIC_PACKET );
 	}
 
 	private void showDepositWindow(L2PcInstance player, String command)
@@ -323,7 +323,7 @@ public class L2BoxInstance extends L2NpcInstance {
 		html.setHtml(content);
 		player.sendPacket(html);
 
-		player.sendPacket( new ActionFailed() );
+		player.sendPacket( ActionFailed.STATIC_PACKET );
 	}
 
 	private Set<L2BoxItem> getItems(String drawer)

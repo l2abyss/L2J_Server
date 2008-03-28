@@ -123,7 +123,7 @@ public class L2FolkInstance extends L2NpcInstance
             player.sendPacket(asl);
 		}
 
-		player.sendPacket(new ActionFailed());
+		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 
 	/**
@@ -207,7 +207,7 @@ public class L2FolkInstance extends L2NpcInstance
         {
             player.sendPacket(new SystemMessage(SystemMessageId.THERE_IS_NO_SKILL_THAT_ENABLES_ENCHANT));
         }
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
     }
     
     /**
@@ -285,7 +285,7 @@ public class L2FolkInstance extends L2NpcInstance
         {
             player.sendPacket(new SystemMessage(SystemMessageId.THERE_IS_NO_SKILL_THAT_ENABLES_ENCHANT));
         }
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
     }
     
     /**
@@ -363,7 +363,7 @@ public class L2FolkInstance extends L2NpcInstance
         {
             player.sendPacket(new SystemMessage(SystemMessageId.THERE_IS_NO_SKILL_THAT_ENABLES_ENCHANT));
         }
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
     }
 
 	@Override
@@ -443,7 +443,7 @@ public class L2FolkInstance extends L2NpcInstance
 						"</body></html>";
 
 					insertObjectIdAndShowChatWindow(player, text);
-					player.sendPacket( new ActionFailed() );
+					player.sendPacket( ActionFailed.STATIC_PACKET );
 				}
 			}
             else

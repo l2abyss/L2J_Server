@@ -433,7 +433,7 @@ public final class L2FestivalGuideInstance extends L2FolkInstance
         player.sendPacket(html);
 
         // Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-        player.sendPacket( new ActionFailed() );
+        player.sendPacket( ActionFailed.STATIC_PACKET );
     }
 
     private final String getStatsTable()

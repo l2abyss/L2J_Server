@@ -42,7 +42,7 @@ public class L2CastleWarehouseInstance extends L2FolkInstance
 
     private void showRetrieveWindow(L2PcInstance player)
     {
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
         player.setActiveWarehouse(player.getWarehouse());
 
         if (player.getActiveWarehouse().getSize() == 0)
@@ -56,7 +56,7 @@ public class L2CastleWarehouseInstance extends L2FolkInstance
 
     private void showDepositWindow(L2PcInstance player)
     {
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
         player.setActiveWarehouse(player.getWarehouse());
         player.tempInvetoryDisable();
 
@@ -65,7 +65,7 @@ public class L2CastleWarehouseInstance extends L2FolkInstance
 
     private void showDepositWindowClan(L2PcInstance player)
     {
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
         if (player.getClan() != null)
         {
             if (player.getClan().getLevel() == 0)
@@ -88,7 +88,7 @@ public class L2CastleWarehouseInstance extends L2FolkInstance
     }
 
     private void showWithdrawWindowClan(L2PcInstance player) {
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
         if ((player.getClanPrivileges() & L2Clan.CP_CL_VIEW_WAREHOUSE) != L2Clan.CP_CL_VIEW_WAREHOUSE) {
         	player.sendPacket(new SystemMessage(SystemMessageId.YOU_DO_NOT_HAVE_THE_RIGHT_TO_USE_CLAN_WAREHOUSE));
         	return;
@@ -135,7 +135,7 @@ public class L2CastleWarehouseInstance extends L2FolkInstance
 
     @Override
     public void showChatWindow(L2PcInstance player, int val) {
-        player.sendPacket( new ActionFailed() );
+        player.sendPacket( ActionFailed.STATIC_PACKET );
         String filename = "data/html/castlewarehouse/castlewarehouse-no.htm";
 
         int condition = validateCondition(player);

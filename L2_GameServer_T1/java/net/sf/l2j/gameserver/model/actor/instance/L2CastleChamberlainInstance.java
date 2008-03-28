@@ -98,7 +98,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
             }
         }
         // Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
     }
 
     @Override
@@ -247,7 +247,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
                                 + " attempting to buy from chamberlain that don't have buylist!");
                         _log.warning("buylist id:" + buy);
                     }
-                    player.sendPacket(new ActionFailed());
+                    player.sendPacket(ActionFailed.STATIC_PACKET);
                 }
                 else
                     player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
@@ -356,7 +356,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
              // manor_menu_select?ask=X&state=Y&time=X
                 if (CastleManorManager.getInstance().isUnderMaintenance())
                 {
-                    player.sendPacket(new ActionFailed());
+                    player.sendPacket(ActionFailed.STATIC_PACKET);
                     player.sendPacket(new SystemMessage(SystemMessageId.THE_MANOR_SYSTEM_IS_CURRENTLY_UNDER_MAINTENANCE));
                     return;
                 }
@@ -469,7 +469,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 
     private void showMessageWindow(L2PcInstance player)
     {
-        player.sendPacket( new ActionFailed() );
+        player.sendPacket( ActionFailed.STATIC_PACKET );
         String filename = "data/html/chamberlain/chamberlain-no.htm";
 
         int condition = validateCondition(player);

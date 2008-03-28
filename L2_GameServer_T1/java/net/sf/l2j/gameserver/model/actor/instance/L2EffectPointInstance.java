@@ -42,7 +42,7 @@ public class L2EffectPointInstance extends L2NpcInstance
 	public void onAction(L2PcInstance player)
 	{
 		// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-		player.sendPacket(new ActionFailed());
+		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	
 	@Override
@@ -50,6 +50,6 @@ public class L2EffectPointInstance extends L2NpcInstance
     {
         L2PcInstance player = client.getActiveChar();
         if (player == null) return;
-        player.sendPacket(new ActionFailed());
+        player.sendPacket(ActionFailed.STATIC_PACKET);
     }
 }

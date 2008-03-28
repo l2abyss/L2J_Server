@@ -99,7 +99,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 
 		if (_size < 1)
 		{
-			sendPacket(new ActionFailed());
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		L2ManorManagerInstance manorManager = (L2ManorManagerInstance) target;
