@@ -205,11 +205,17 @@ public abstract class L2Object
         	{
         		QuestState qs = null;
         		if (player instanceof L2Summon)
+        		{
         			qs = ((L2Summon)player).getOwner().getQuestState("255_Tutorial");
+            		if (qs != null)
+            			qs.getQuest().notifyEvent("CE"+itemId+"",null,((L2Summon)player).getOwner());
+        		}
         		else if (player instanceof L2PcInstance)
+        		{
         			qs = ((L2PcInstance)player).getQuestState("255_Tutorial");
-        		if (qs != null)
-        			qs.getQuest().notifyEvent("CE"+itemId+"",null,(L2PcInstance)player);
+            		if (qs != null)
+            			qs.getQuest().notifyEvent("CE"+itemId+"",null,(L2PcInstance)player);
+        		}
         	}
         }
 

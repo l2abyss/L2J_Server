@@ -211,6 +211,7 @@ public class Continuous implements ISkillHandler
 				if (target instanceof L2PcInstance && ((L2PcInstance)target).isInDuel()
 						&& (skill.getSkillType() == L2Skill.SkillType.DEBUFF ||
 						skill.getSkillType() == L2Skill.SkillType.BUFF)
+						&& player != null
 						&& player.getDuelId() == ((L2PcInstance)target).getDuelId())
 				{
 					DuelManager dm = DuelManager.getInstance();
