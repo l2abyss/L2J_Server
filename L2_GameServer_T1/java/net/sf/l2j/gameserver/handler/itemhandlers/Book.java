@@ -21,17 +21,17 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
-import net.sf.l2j.gameserver.serverpackets.RadarControl;
 
 public class Book implements IItemHandler {
 	private static final int[] ITEM_IDS =
 	{
-		5588,6317,7561,7064,7082,7083,
-		7084,7085,7086,7087,7088,7089,
-		7090,7091,7092,7093,7094,7095,
-		7096,7097,7098,7099,7100,7101,
-		7102,7103,7104,7105,7106,7107,
-		7108,7109,7110,7111,7112,8059
+		5588,6317,7561,7063,7064,7082,
+		7083,7084,7085,7086,7087,7088,
+		7089,7090,7091,7092,7093,7094,
+		7095,7096,7097,7098,7099,7100,
+		7101,7102,7103,7104,7105,7106,
+		7107,7108,7109,7110,7111,7112,
+		8059
 	};
 
 	public void useItem(L2PlayableInstance playable, L2ItemInstance item)
@@ -44,12 +44,6 @@ public class Book implements IItemHandler {
 		String filename = "data/html/help/" + itemId + ".htm";
 		String content = HtmCache.getInstance().getHtm(filename);
 
-		// Quest item: Lidia's diary
-		if (itemId == 7064 )
-		{
-			activeChar.sendPacket(new RadarControl(0, 2, 51995, -51265, -3104));
-		}
-
 		if (content == null)
 		{
 			NpcHtmlMessage html = new NpcHtmlMessage(1);
@@ -58,7 +52,7 @@ public class Book implements IItemHandler {
 		}
 		else
 		{
-			NpcHtmlMessage itemReply = new NpcHtmlMessage(5);
+			NpcHtmlMessage itemReply = new NpcHtmlMessage(5,itemId);
 			itemReply.setHtml(content);
 			activeChar.sendPacket(itemReply);
 		}
