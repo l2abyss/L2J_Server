@@ -964,7 +964,7 @@ public class L2Attackable extends L2NpcInstance
         int maxHate = 0;
         List<L2Character> result = new FastList<L2Character>();
 
-        // While Interating over This Map Removing Object is Not Allowed
+        // While iterating over this map removing objects is not allowed
         synchronized (getAggroList())
         {
             // Go through the aggroList of the L2Attackable

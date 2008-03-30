@@ -66,7 +66,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
     /** The L2Attackable AI task executed every 1s (call onEvtThink method)*/
     private Future<?> _aiTask;
 
-    /** The delay after wich the attacked is stopped */
+    /** The delay after which the attacked is stopped */
     private int _attackTimeout;
 
     /** The L2Attackable aggro counter */
@@ -155,6 +155,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
         if (target.isAlikeDead()
             || !me.isInsideRadius(target, me.getAggroRange(), false, false)
             || Math.abs(_actor.getZ() - target.getZ()) > 300) return false;
+        
+        if (_selfAnalysis.cannotMoveOnLand && !target.isInsideZone(L2Character.ZONE_WATER))
+            return false;
 
         // Check if the target is a L2PcInstance
         if (target instanceof L2PcInstance)
@@ -185,11 +188,23 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
                         && !DimensionalRiftManager.getInstance().getRoom(riftType, riftRoom).checkIfInZone(me.getX(), me.getY(), me.getZ()))
                     return false;
             }
-            
-            if (_selfAnalysis.cannotMoveOnLand && !target.isInsideZone(L2Character.ZONE_WATER))
-                return false;
         }
-
+        // Check if the target is a L2Summon
+        if (target instanceof L2Summon)
+        {
+        	L2PcInstance owner = ((L2Summon)target).getOwner();
+        	if (owner != null)
+        	{
+        		// Don't take the aggro if the GM has the access level below or equal to GM_DONT_TAKE_AGGRO
+                if (owner.isGM() && (owner.isInvul() || owner.getAccessLevel() <= Config.GM_DONT_TAKE_AGGRO))
+                    return false;
+                // Check if player is an ally (comparing mem addr)
+                if (me.getFactionId() == "varka" && owner.isAlliedWithVarka())
+                    return false;
+                if (me.getFactionId() == "ketra" && owner.isAlliedWithKetra())
+                    return false;
+        	}
+        }
         // Check if the actor is a L2GuardInstance
         if (_actor instanceof L2GuardInstance)
         {
@@ -476,6 +491,10 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
                 {
                 	if (_actor.getFirstEffect(sk.getId()) == null)
                 	{
+                		// if clan buffs, don't buff every time
+                		if (sk.getTargetType() != L2Skill.SkillTargetType.TARGET_SELF
+                				&& Rnd.nextInt(2) != 0) 
+                			continue;
                 		if (_actor.getCurrentMp() < sk.getMpConsume())
 							continue;
                 		if (_actor.isSkillDisabled(sk.getId()))
@@ -501,6 +520,10 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
             {
             	if (_actor.getFirstEffect(sk.getId()) == null)
             	{
+            		// if clan buffs, don't buff every time
+            		if (sk.getTargetType() != L2Skill.SkillTargetType.TARGET_SELF
+            				&& Rnd.nextInt(2) != 0) 
+            			continue;
             		if (_actor.getCurrentMp() < sk.getMpConsume())
 						continue;
             		if (_actor.isSkillDisabled(sk.getId()))
@@ -586,10 +609,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
         {
             // Stop hating this target after the attack timeout or if target is dead
             if (originalAttackTarget != null)
-            {
-                L2Attackable npc = (L2Attackable) _actor;
-                npc.stopHating(originalAttackTarget);
-            }
+                ((L2Attackable) _actor).stopHating(originalAttackTarget);
 
             // Set the AI Intention to AI_INTENTION_ACTIVE
             setIntention(AI_INTENTION_ACTIVE);
@@ -739,20 +759,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
         	setIntention(AI_INTENTION_ACTIVE);
         	return;
         }
-        // Reconsider target if _actor hasn't got hits in for last 14 sec
-		if (!_actor.isMuted()
-		        && _attackTimeout - 160 < GameTimeController.getGameTicks()
-		        && hated.get(1) != null)
-		{
-			if (Util.checkIfInRange(900, _actor, hated.get(1), true))
-			{
-				// take off 2* the amount the aggro is larger than second most
-				((L2Attackable) _actor).reduceHate(hated.get(0), 2 * (((L2Attackable) _actor).getHating(hated.get(0)) - ((L2Attackable) _actor).getHating(hated.get(1))));
-				// Calculate a new attack timeout
-				_attackTimeout = MAX_ATTACK_TIMEOUT
-				        + GameTimeController.getGameTicks();
-			}
-		}
         if (hated.get(0) != originalAttackTarget)
         {
         	setAttackTarget(hated.get(0));
@@ -766,6 +772,37 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
         int combinedCollision = _actor.getTemplate().collisionRadius + _mostHatedAnalysis.character.getTemplate().collisionRadius;
         int range = _actor.getPhysicalAttackRange() + combinedCollision;
 
+        // Reconsider target next round if _actor hasn't got hits in for last 14 seconds
+		if (!_actor.isMuted()
+		        && _attackTimeout - 160 < GameTimeController.getGameTicks()
+		        && _secondMostHatedAnalysis.character != null)
+		{
+			if (Util.checkIfInRange(900, _actor, hated.get(1), true))
+			{
+				// take off 2* the amount the aggro is larger than second most
+				((L2Attackable) _actor).reduceHate(hated.get(0), 2 * (((L2Attackable) _actor).getHating(hated.get(0)) - ((L2Attackable) _actor).getHating(hated.get(1))));
+				// Calculate a new attack timeout
+				_attackTimeout = MAX_ATTACK_TIMEOUT
+				        + GameTimeController.getGameTicks();
+			}
+		}
+		// Reconsider target during next round if actor is rooted and cannot reach mostHated but can
+		// reach secondMostHated
+		if (_actor.isRooted() && _secondMostHatedAnalysis.character != null)
+		{
+			if (_selfAnalysis.isMage 
+				&& dist2 > _selfAnalysis.maxCastRange*_selfAnalysis.maxCastRange
+				&& _actor.getPlanDistanceSq(_secondMostHatedAnalysis.character.getX(), _secondMostHatedAnalysis.character.getY()) < _selfAnalysis.maxCastRange*_selfAnalysis.maxCastRange)
+			{
+				((L2Attackable) _actor).reduceHate(hated.get(0), 1+(((L2Attackable) _actor).getHating(hated.get(0)) - ((L2Attackable) _actor).getHating(hated.get(1))));				
+			}
+			else if (dist2 > range*range && 
+				_actor.getPlanDistanceSq(_secondMostHatedAnalysis.character.getX(), _secondMostHatedAnalysis.character.getY()) < range*range)
+			{
+				((L2Attackable) _actor).reduceHate(hated.get(0), 1+(((L2Attackable) _actor).getHating(hated.get(0)) - ((L2Attackable) _actor).getHating(hated.get(1))));				
+			}
+		}
+        
         // Considering, if bigger range will be attempted
         if ( (dist2 < 10000 + combinedCollision*combinedCollision)
         	 && !_selfAnalysis.isFighter && !_selfAnalysis.isBalanced

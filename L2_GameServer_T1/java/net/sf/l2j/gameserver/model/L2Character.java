@@ -5865,22 +5865,13 @@ public abstract class L2Character extends L2Object
 		_castInterruptTime = 0;
 		enableAllSkills();
 		
-		//if the skill has changed the character's state to something other than STATE_CASTING
-		//then just leave it that way, otherwise switch back to STATE_IDLE.
-		//if(isCastingNow())
-		//  getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
-
-		// If the skill type is PDAM or DRAIN_SOUL, notify the AI of the target with AI_INTENTION_ATTACK
-		if (skill.getSkillType() == SkillType.PDAM || skill.getSkillType() == SkillType.BLOW 
-				|| skill.getSkillType() == SkillType.DRAIN_SOUL || skill.getSkillType() == SkillType.SOW 
-				|| skill.getSkillType() == SkillType.SPOIL)
+		// for offensive skills the nextintention is always null unless player wants action after skill
+		if (skill.isOffensive() && getAI().getNextIntention() == null && !(skill.getSkillType() == SkillType.UNLOCK) && !(skill.getSkillType() == SkillType.DELUXE_KEY_UNLOCK))
 		{
-			if ((getTarget() != null) && (getTarget() instanceof L2Character))
+			if (getTarget() != null && getTarget() instanceof L2Character)
 				getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, getTarget());
-		}
-
-        if (skill.isOffensive() && !(skill.getSkillType() == SkillType.UNLOCK) && !(skill.getSkillType() == SkillType.DELUXE_KEY_UNLOCK))
             getAI().clientStartAutoAttack();
+		}
 
         // Notify the AI of the L2Character with EVT_FINISH_CASTING
 		getAI().notifyEvent(CtrlEvent.EVT_FINISH_CASTING);

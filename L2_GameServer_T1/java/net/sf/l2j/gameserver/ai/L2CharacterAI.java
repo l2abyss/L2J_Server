@@ -58,12 +58,19 @@ import net.sf.l2j.util.Rnd;
  */
 public class L2CharacterAI extends AbstractAI
 {
-    @Override
-	protected void onEvtAttacked(L2Character attacker)
+    class IntentionCommand
     {
-        clientStartAutoAttack();
-    }
+    	protected CtrlIntention _crtlIntention;
+    	protected Object _arg0, _arg1;
 
+    	protected IntentionCommand(CtrlIntention pIntention, Object pArg0, Object pArg1)
+    	{
+    		_crtlIntention = pIntention;
+    		_arg0 = pArg0;
+    		_arg1 = pArg1;
+    	}
+    }
+    
     /**
      * Constructor of L2CharacterAI.<BR><BR>
      *
@@ -73,6 +80,17 @@ public class L2CharacterAI extends AbstractAI
     public L2CharacterAI(L2Character.AIAccessor accessor)
     {
         super(accessor);
+    }
+
+    public IntentionCommand getNextIntention()
+    {
+    	return null;
+    } 
+	
+    @Override
+	protected void onEvtAttacked(L2Character attacker)
+    {
+        clientStartAutoAttack();
     }
 
     /**
