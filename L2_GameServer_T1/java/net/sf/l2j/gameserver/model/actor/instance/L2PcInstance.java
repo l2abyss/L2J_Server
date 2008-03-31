@@ -4184,7 +4184,7 @@ public final class L2PcInstance extends L2PlayableInstance
         }
         catch (Exception e)
         {
-            _log.severe(e.toString());
+            _log.severe("Transformation insert info error:" + e.toString());
         }
         finally
         {
@@ -4214,7 +4214,7 @@ public final class L2PcInstance extends L2PlayableInstance
         }
         catch (Exception e)
         {
-            _log.severe(e.toString());
+            _log.severe("Transformation select info error:" + e.toString());
         }
         finally
         {
@@ -4239,7 +4239,7 @@ public final class L2PcInstance extends L2PlayableInstance
         }
         catch (Exception e)
         {
-            _log.severe(e.toString());
+            _log.severe("Transformation update info error:" + e.toString());
         }
         finally
         {
