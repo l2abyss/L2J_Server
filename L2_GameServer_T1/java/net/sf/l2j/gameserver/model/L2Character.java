@@ -5865,13 +5865,21 @@ public abstract class L2Character extends L2Object
 		_castInterruptTime = 0;
 		enableAllSkills();
 		
+		// If the skill type is listed here, notify the AI of the target with AI_INTENTION_ATTACK
 		// for offensive skills the nextintention is always null unless player wants action after skill
-		if (skill.isOffensive() && getAI().getNextIntention() == null && !(skill.getSkillType() == SkillType.UNLOCK) && !(skill.getSkillType() == SkillType.DELUXE_KEY_UNLOCK))
+		// Note: this might also work
+		// if (skill.isOffensive() && getAI().getNextIntention() == null 
+		// && !(skill.getSkillType() == SkillType.UNLOCK) && !(skill.getSkillType() == SkillType.DELUXE_KEY_UNLOCK) && !(skill.getSkillType() == SkillType.MDAM))
+		if (getAI().getNextIntention() == null && skill.getSkillType() == SkillType.PDAM || skill.getSkillType() == SkillType.BLOW 
+				|| skill.getSkillType() == SkillType.DRAIN_SOUL || skill.getSkillType() == SkillType.SOW 
+				|| skill.getSkillType() == SkillType.SPOIL)
 		{
-			if (getTarget() != null && getTarget() instanceof L2Character)
+			if ((getTarget() != null) && (getTarget() instanceof L2Character))
 				getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, getTarget());
-            getAI().clientStartAutoAttack();
 		}
+
+        if (skill.isOffensive() && !(skill.getSkillType() == SkillType.UNLOCK) && !(skill.getSkillType() == SkillType.DELUXE_KEY_UNLOCK))
+            getAI().clientStartAutoAttack();
 
         // Notify the AI of the L2Character with EVT_FINISH_CASTING
 		getAI().notifyEvent(CtrlEvent.EVT_FINISH_CASTING);
