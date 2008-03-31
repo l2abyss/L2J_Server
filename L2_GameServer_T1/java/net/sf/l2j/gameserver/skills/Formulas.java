@@ -1219,7 +1219,9 @@ public final class Formulas
 		}
 
 
-		if (crit) damage += attacker.getCriticalDmg(target, damage);
+		if (crit)
+			damage += (attacker.getCriticalDmg(target, damage) * target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, skill != null ? skill : null));
+		
 		if (shld && !Config.ALT_GAME_SHIELD_BLOCKS)
 		{
 			defence += target.getShldDef();

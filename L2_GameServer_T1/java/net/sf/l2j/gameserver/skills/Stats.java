@@ -123,6 +123,7 @@ public enum Stats
 	CANCEL_VULN     ("cancelVuln"), // Resistance for cancel type skills
 	DERANGEMENT_VULN("derangementVuln"),
 	DEBUFF_VULN		("debuffVuln"),
+	CRIT_VULN		("critVuln"), // Resistence to Crit DMG.
 
 	NONE_WPN_VULN 	("noneWpnVuln"), // Shields!!!
 	SWORD_WPN_VULN 	("swordWpnVuln"),
