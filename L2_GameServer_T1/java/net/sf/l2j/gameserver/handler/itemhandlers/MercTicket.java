@@ -21,6 +21,8 @@ import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
+import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 
 public class MercTicket implements IItemHandler
 {
@@ -71,7 +73,7 @@ public class MercTicket implements IItemHandler
 
         if (!activeChar.isCastleLord(castleId))
         {
-        	activeChar.sendMessage("You are not the lord of this castle!");
+        	activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_DO_NOT_HAVE_AUTHORITY_TO_POSITION_MERCENARIES));
             return;
         }
 
@@ -89,6 +91,11 @@ public class MercTicket implements IItemHandler
         if(MercTicketManager.getInstance().isAtTypeLimit(item.getItemId()))
         {
             activeChar.sendMessage("You cannot hire any more mercenaries of this type.  You may still hire other types of mercenaries");
+            return;
+        }
+        if(MercTicketManager.getInstance().isTooCloseToAnotherTicket(activeChar.getX(), activeChar.getY(), activeChar.getZ()))
+        {
+        	activeChar.sendPacket(new SystemMessage(SystemMessageId.POSITIONING_CANNOT_BE_DONE_BECAUSE_DISTANCE_BETWEEN_MERCENARIES_TOO_SHORT));
             return;
         }
 

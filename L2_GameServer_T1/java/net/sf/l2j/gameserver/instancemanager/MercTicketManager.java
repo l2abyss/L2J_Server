@@ -296,6 +296,19 @@ public class MercTicketManager
         return MERCS_MAX_PER_CASTLE[castleId-1]; 
     }
     
+    public boolean isTooCloseToAnotherTicket(int x, int y, int z)
+    {
+    	for (L2ItemInstance item : getDroppedTickets())
+    	{
+    		double dx = x - item.getX();
+            double dy = y - item.getY();
+            double dz = z - item.getZ();
+
+            if ((dx*dx + dy*dy + dz*dz) < 25*25) return true;
+    	}
+    	return false;
+    }
+    
     /**
      * addTicket actions
      * 1) find the npc that needs to be saved in the mercenary spawns, given this item
@@ -315,15 +328,6 @@ public class MercTicketManager
         if (castle == null)		//this should never happen at this point
         	return -1;
         
-        int count       =   0,
-        castleId    =   castle.getCastleId(); 
-        for (L2ItemInstance t : _droppedTickets)
-        {
-            if (getTicketCastleId(t.getItemId()) == castleId)
-                count++;
-        }
-        
-        //check if this item can be added here
         for (int i = 0; i < ITEM_IDS.length; i++)
         {
             if (ITEM_IDS[i] == itemId) // Find the index of the item used

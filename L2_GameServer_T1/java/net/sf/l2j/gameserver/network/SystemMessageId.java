@@ -1957,7 +1957,43 @@ public enum SystemMessageId
     * Message: You may not summon from your current location.
     */
     YOU_MAY_NOT_SUMMON_FROM_YOUR_CURRENT_LOCATION(650),
+    
+    /**
+     * ID: 653<br>
+     * Message: You do not have the authority to position mercenaries.
+     */
+    YOU_DO_NOT_HAVE_AUTHORITY_TO_POSITION_MERCENARIES(653),
+     
+    /**
+     * ID: 654<br>
+     * Message: You do not have the authority to cancel mercenary positioning.
+     */
+    YOU_DO_NOT_HAVE_AUTHORITY_TO_CANCEL_MERCENARY_POSITIONING(654),
+     
+     /**
+      * ID: 655<br>
+      * Message: Mercenaries cannot be positioned here.
+      */
+     MERCENARIES_CANNOT_BE_POSITIONED_HERE(655),
+       
+     /**
+      * ID: 656<br>
+      * Message: This mercenary cannot be positioned anymore.
+      */
+     THIS_MERCENARY_CANNOT_BE_POSITIONED_ANYMORE(656),
+        
+     /**
+      * ID: 657<br>
+      * Message: Positioning cannot be done here because the distance between mercenaries is too short.
+      */
+     POSITIONING_CANNOT_BE_DONE_BECAUSE_DISTANCE_BETWEEN_MERCENARIES_TOO_SHORT(657),
 
+     /**
+      * ID: 658<br>
+      * Message: This is not a mercenary of a castle that you own and so you cannot cancel its positioning.
+      */
+     THIS_IS_NOT_A_MERCENARY_OF_A_CASTLE_THAT_YOU_OWN_AND_SO_CANNOT_CANCEL_POSITIONING(658),
+    		
     /**
     * ID: 661<br>
     * Message: This character cannot be spoiled.
