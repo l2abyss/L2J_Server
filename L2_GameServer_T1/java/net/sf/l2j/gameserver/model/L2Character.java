@@ -44,6 +44,7 @@ import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.handler.SkillHandler;
 import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
 import net.sf.l2j.gameserver.instancemanager.TownManager;
+import net.sf.l2j.gameserver.model.L2Effect.EffectType;
 import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2ArtefactInstance;
@@ -5497,8 +5498,14 @@ public abstract class L2Character extends L2Object
 						abortCast();
 				}
 			}
-			removeStatsOwner(oldSkill);
-			stopSkillEffects(oldSkill.getId());
+			// for now, to support transformations, we have to let their
+			// effects stay when skill is removed
+			L2Effect e = getFirstEffect(oldSkill);
+			if (e == null || e.getEffectType() != EffectType.TRANSFORMATION)
+			{
+				removeStatsOwner(oldSkill);
+				stopSkillEffects(oldSkill.getId());
+			}
 		}
 
 		return oldSkill;
