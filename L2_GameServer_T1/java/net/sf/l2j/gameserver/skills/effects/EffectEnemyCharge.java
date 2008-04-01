@@ -22,12 +22,11 @@ import net.sf.l2j.gameserver.serverpackets.FlyToLocation;
 import net.sf.l2j.gameserver.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.serverpackets.FlyToLocation.FlyType;
 import net.sf.l2j.gameserver.skills.Env;
-import net.sf.l2j.gameserver.util.Util;
 
 public class EffectEnemyCharge extends L2Effect
 {
 
-	private int	x, y, z;
+	private int	_x, _y, _z;
 
 	public EffectEnemyCharge(Env env, EffectTemplate template)
 	{
@@ -43,33 +42,57 @@ public class EffectEnemyCharge extends L2Effect
 	@Override
 	public void onStart()
 	{
-		int _radius = getSkill().getFlyRadius();
-		double angle = Util.convertHeadingToDegree(getEffector().getHeading());
-		double radian = Math.toRadians(angle);
-		int x1 = (int) (Math.sin(radian) * _radius);
-		int y1 = (int) (Math.cos(radian) * _radius);
+		// Get current position of the L2Character
+		final int curX = getEffector().getX();
+		final int curY = getEffector().getY();
+		final int curZ = getEffector().getZ();
 		
-		x = getEffected().getX() + x1;
-		y = getEffected().getY() + y1;
-		z = getEffected().getZ();
+		// Calculate distance (dx,dy) between current position and destination
+		double dx = getEffected().getX() - curX;
+		double dy = getEffected().getY() - curY;
+		double dz = getEffected().getZ() - curZ;
+		double distance = Math.sqrt(dx*dx + dy*dy);
+		
+		int offset = Math.max((int)distance-getSkill().getFlyRadius(), 30);
+		
+		double cos;
+		double sin;
+			
+		// approximation for moving closer when z coordinates are different
+		// TODO: handle Z axis movement better
+		offset -= Math.abs(dz);  
+		if (offset < 5) offset = 5;
+			
+		// If no distance
+		if (distance < 1 || distance - offset  <= 0)
+			return;
+		
+		// Calculate movement angles needed
+		sin = dy/distance;
+		cos = dx/distance;
+		
+		// Calculate the new destination with offset included
+		_x = curX + (int)((distance-offset) * cos);
+		_y = curY + (int)((distance-offset) * sin);
+		_z = getEffected().getZ();
 
 		if (Config.GEODATA > 0)
 		{
-			Location destiny = GeoData.getInstance().moveCheck(getEffected().getX(), getEffected().getY(), getEffected().getZ(), x, y, z);
-			x = destiny.getX();
-			y = destiny.getY();
+			Location destiny = GeoData.getInstance().moveCheck(getEffector().getX(), getEffector().getY(), getEffector().getZ(), _x, _y, _z);
+			_x = destiny.getX();
+			_y = destiny.getY();
 		}
-		getEffected().broadcastPacket(new FlyToLocation(getEffected(), x, y, z, FlyType.CHARGE));
-		getEffected().abortAttack();
-		getEffected().abortCast();
+		getEffector().broadcastPacket(new FlyToLocation(getEffector(), _x, _y, _z, FlyType.CHARGE));
+		//getEffector().abortAttack();
+		//getEffector().abortCast();
 	}
 
 	@Override
 	public void onExit()
 	{
 		// maybe is need force set X,Y,Z
-		getEffected().setXYZ(x, y, z);
-		getEffected().broadcastPacket(new ValidateLocation(getEffected()));
+		getEffector().setXYZ(_x, _y, _z);
+		getEffector().broadcastPacket(new ValidateLocation(getEffector()));
 	}
 
 	@Override
