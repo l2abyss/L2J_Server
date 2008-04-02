@@ -4261,14 +4261,19 @@ public final class L2PcInstance extends L2PlayableInstance
 	@Override
 	public void setTarget(L2Object newTarget)
 	{
-		// Check if the new target is visible
-		if (newTarget != null && !newTarget.isVisible())
-			newTarget = null;
+		
+		if(newTarget!=null)
+		{
+			boolean isParty=(( (newTarget instanceof L2PcInstance) && isInParty() && getParty().getPartyMembers().contains(newTarget)));
+		
+			// Check if the new target is visible
+			if (!isParty && !newTarget.isVisible())
+				newTarget = null;
 
-        // Prevents /target exploiting
-		if (newTarget != null && Math.abs(newTarget.getZ() - getZ()) > 1000)
-            newTarget = null;
-
+			// Prevents /target exploiting
+			if (newTarget != null && !isParty && Math.abs(newTarget.getZ() - getZ()) > 1000)
+				newTarget = null;
+		}
 		if(!isGM())
 		{
 			// Can't target and attack festival monsters if not participant
