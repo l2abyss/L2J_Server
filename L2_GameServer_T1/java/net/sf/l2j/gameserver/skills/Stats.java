@@ -153,7 +153,14 @@ public enum Stats
 	PATK_UNDEAD 	("pAtk-undead"),
 	PATK_GIANTS    ("pAtk-giants"),
 	
+	PDEF_PLANTS 	("pDef-plants"),
+	PDEF_INSECTS	("pDef-insects"),
+	PDEF_ANIMALS 	("pDef-animals"),
+	PDEF_MONSTERS 	("pDef-monsters"),
+	PDEF_DRAGONS 	("pDef-dragons"),
 	PDEF_UNDEAD 	("pDef-undead"),
+	PDEF_GIANTS    ("pDef-giants"),
+
 
 
 	ATK_REUSE 		("atkReuse"),

@@ -1265,9 +1265,32 @@ public final class Formulas
 
 		if (attacker instanceof L2NpcInstance)
 		{
-			//Skill Race : Undead
-			if (((L2NpcInstance) attacker).getTemplate().getRace() == L2NpcTemplate.Race.UNDEAD)
-				damage /= attacker.getPDefUndead(target);
+			switch (((L2NpcInstance) target).getTemplate().getRace())
+			{
+				case UNDEAD:
+					damage /= attacker.getPDefUndead(target);
+					break;
+				case BEAST:
+					damage /= attacker.getPDefMonsters(target);
+					break;
+				case ANIMAL:
+					damage /= attacker.getPDefAnimals(target);
+					break;
+				case PLANT:
+					damage /= attacker.getPDefPlants(target);
+					break;
+				case DRAGON:
+					damage /= attacker.getPDefDragons(target);
+					break;
+				case BUG:
+					damage /= attacker.getPDefInsects(target);
+					break;
+				case GIANT:
+					damage /= attacker.getPDefGiants(target);
+					break;					
+				default:
+					break;
+			}
 		}
 		if (target instanceof L2NpcInstance)
 		{
@@ -1291,9 +1314,9 @@ public final class Formulas
 				case BUG:
 					damage *= attacker.getPAtkInsects(target);
 					break;
-               case GIANT:
-                   damage *= attacker.getPAtkGiants(target);
-                   break;					
+				case GIANT:
+					damage *= attacker.getPAtkGiants(target);
+					break;					
 				default:
 					// nothing
 					break;
