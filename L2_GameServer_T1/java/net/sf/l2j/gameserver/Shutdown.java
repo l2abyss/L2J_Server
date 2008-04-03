@@ -30,6 +30,7 @@ import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.serverpackets.ServerClose;
+import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 
 /**
  *
@@ -45,7 +46,6 @@ public class Shutdown extends Thread
 	private static Shutdown _counterInstance = null;
 
 	private int _secondsShut;
-
 	private int _shutdownMode;
 	public static final int SIGTERM = 0;
 	public static final int GM_SHUTDOWN = 1;
@@ -60,10 +60,20 @@ public class Shutdown extends Thread
      * @param seconds       seconds untill shutdown
      * @param restart       true if the server will restart after shutdown
      */
+		@SuppressWarnings("deprecation")
+        private void SendServerQuit(int seconds)
+		{
+			for (L2PcInstance player : L2World.getInstance().getAllPlayers())
+			{
+				SystemMessage sysm = new SystemMessage(1);
+				sysm.addNumber(seconds);
+				player.sendPacket(sysm);
+				
+			}
+		}
 
     public void startTelnetShutdown(String IP, int seconds, boolean restart)
     {
-        Announcements _an = Announcements.getInstance();
         _log.warning("IP: " + IP + " issued shutdown command. " + MODE_TEXT[_shutdownMode] + " in "+seconds+ " seconds!");
         //_an.announceToAll("Server is " + _modeText[shutdownMode] + " in "+seconds+ " seconds!");
 
@@ -75,13 +85,28 @@ public class Shutdown extends Thread
 
         if(_shutdownMode > 0)
         {
-            _an.announceToAll("Attention players!");
-            _an.announceToAll("Server is " + MODE_TEXT[_shutdownMode] + " in "+seconds+ " seconds!");
-            if(_shutdownMode == 1 || _shutdownMode == 2)
-            {
-                _an.announceToAll("Please, avoid to use Gatekeepers/SoE");
-                _an.announceToAll("during server " + MODE_TEXT[_shutdownMode] + " procedure.");
-            }
+			switch (seconds)
+			{
+			    case 540:
+			    case 480:
+			    case 420:
+			    case 360:
+				case 300:
+				case 240:
+				case 180:
+				case 120:
+				case 60:
+				case 30:
+				case 10:
+				case 5:
+				case 4:
+				case 3:
+				case 2:
+				case 1:
+					break;
+				default:
+					SendServerQuit(seconds);
+			}
         }
 
         if (_counterInstance != null) {
@@ -97,12 +122,12 @@ public class Shutdown extends Thread
      * @param IP            IP Which Issued shutdown command
      */
     public void telnetAbort(String IP) {
-        Announcements _an = Announcements.getInstance();
         _log.warning("IP: " + IP + " issued shutdown ABORT. " + MODE_TEXT[_shutdownMode] + " has been stopped!");
-        _an.announceToAll("Server aborts " + MODE_TEXT[_shutdownMode] + " and continues normal operation!");
 
         if (_counterInstance != null) {
             _counterInstance._abort();
+			Announcements _an = Announcements.getInstance();
+			_an.announceToAll("Server aborts " + MODE_TEXT[_shutdownMode] + " and continues normal operation!");
         }
     }
 
@@ -273,7 +298,6 @@ public class Shutdown extends Thread
 	 * @param restart		true if the server will restart after shutdown
 	 */
 	public void startShutdown(L2PcInstance activeChar, int seconds, boolean restart) {
-		Announcements _an = Announcements.getInstance();
 		_log.warning("GM: "+activeChar.getName()+"("+activeChar.getObjectId()+") issued shutdown command. " + MODE_TEXT[_shutdownMode] + " in "+seconds+ " seconds!");
 
 		if (restart) {
@@ -284,18 +308,33 @@ public class Shutdown extends Thread
 
         if(_shutdownMode > 0)
         {
-            _an.announceToAll("Attention players!");
-            _an.announceToAll("Server is " + MODE_TEXT[_shutdownMode] + " in "+seconds+ " seconds!");
-            if(_shutdownMode == 1 || _shutdownMode == 2)
-            {
-                _an.announceToAll("Please, avoid to use Gatekeepers/SoE");
-                _an.announceToAll("during server " + MODE_TEXT[_shutdownMode] + " procedure.");
-            }
+			switch (seconds)
+			{
+			    case 540:
+			    case 480:
+			    case 420:
+			    case 360:
+				case 300:
+				case 240:
+				case 180:
+				case 120:
+				case 60:
+				case 30:
+				case 10:
+				case 5:
+				case 4:
+				case 3:
+				case 2:
+				case 1:
+					break;
+				default:
+					SendServerQuit(seconds);
+			}
         }
 
 		if (_counterInstance != null) {
 			_counterInstance._abort();
-		}
+		}        	
 
 //		 the main instance should only run for shutdown hook, so we start a new instance
 		_counterInstance = new Shutdown(seconds, restart);
@@ -308,12 +347,11 @@ public class Shutdown extends Thread
 	 * @param activeChar	GM who issued the abort command
 	 */
 	public void abort(L2PcInstance activeChar) {
-		Announcements _an = Announcements.getInstance();
 		_log.warning("GM: "+activeChar.getName()+"("+activeChar.getObjectId()+") issued shutdown ABORT. " + MODE_TEXT[_shutdownMode] + " has been stopped!");
-		_an.announceToAll("Server aborts " + MODE_TEXT[_shutdownMode] + " and continues normal operation!");
-
 		if (_counterInstance != null) {
 			_counterInstance._abort();
+			Announcements _an = Announcements.getInstance();
+			_an.announceToAll("Server aborts " + MODE_TEXT[_shutdownMode] + " and continues normal operation!");
 		}
 	}
 
@@ -338,26 +376,30 @@ public class Shutdown extends Thread
 	 * countdown is aborted if mode changes to ABORT
 	 */
 	private void countdown() {
-		Announcements _an = Announcements.getInstance();
 
 		try {
 			while (_secondsShut > 0) {
 
 				switch (_secondsShut)
 				{
-				    case 540:_an.announceToAll("The server is " + MODE_TEXT[_shutdownMode] + " in 9 minutes.");break;
-				    case 480:_an.announceToAll("The server is " + MODE_TEXT[_shutdownMode] + " in 8 minutes.");break;
-				    case 420:_an.announceToAll("The server is " + MODE_TEXT[_shutdownMode] + " in 7 minutes.");break;
-				    case 360:_an.announceToAll("The server is " + MODE_TEXT[_shutdownMode] + " in 6 minutes.");break;
-					case 300:_an.announceToAll("The server is " + MODE_TEXT[_shutdownMode] + " in 5 minutes.");break;
-					case 240:_an.announceToAll("The server is " + MODE_TEXT[_shutdownMode] + " in 4 minutes.");break;
-					case 180:_an.announceToAll("The server is " + MODE_TEXT[_shutdownMode] + " in 3 minutes.");break;
-					case 120:_an.announceToAll("The server is " + MODE_TEXT[_shutdownMode] + " in 2 minutes.");break;
+				    case 540:SendServerQuit(540);break;
+				    case 480:SendServerQuit(480);break;
+				    case 420:SendServerQuit(420);break;
+				    case 360:SendServerQuit(360);break;
+					case 300:SendServerQuit(300);break;
+					case 240:SendServerQuit(240);break;
+					case 180:SendServerQuit(180);break;
+					case 120:SendServerQuit(120);break;
 					case 60:
 						LoginServerThread.getInstance().setServerStatus(ServerStatus.STATUS_DOWN); //avoids new players from logging in
-						_an.announceToAll("The server is " + MODE_TEXT[_shutdownMode] + " in 1 minute.");break;
-					case 30:_an.announceToAll("The server is " + MODE_TEXT[_shutdownMode] + " in 30 seconds.");break;
-					case 5:_an.announceToAll("The server is " + MODE_TEXT[_shutdownMode] + " in 5 seconds, please delog NOW !");break;
+						SendServerQuit(60);break;
+					case 30:SendServerQuit(30);break;
+					case 10:SendServerQuit(10);break;
+					case 5:SendServerQuit(5);break;
+					case 4:SendServerQuit(4);break;
+					case 3:SendServerQuit(3);break;
+					case 2:SendServerQuit(2);break;
+					case 1:SendServerQuit(1);break;
 				}
 
 				_secondsShut--;
@@ -377,7 +419,6 @@ public class Shutdown extends Thread
 	 *
 	 */
 	private void saveData() {
-		Announcements _an = Announcements.getInstance();
 		switch (_shutdownMode)
 		{
 			case SIGTERM:
@@ -395,7 +436,7 @@ public class Shutdown extends Thread
 			Universe.getInstance().implode(true);
 		try
 		{
-		    _an.announceToAll("Server is " + MODE_TEXT[_shutdownMode] + " NOW!");
+		
 		} catch (Throwable t) {
 			_log.log(Level.INFO, "", t);
 		}
@@ -454,10 +495,13 @@ public class Shutdown extends Thread
 	 * this disconnects all clients from the server
 	 *
 	 */
-	private void disconnectAllCharacters()
+	@SuppressWarnings("deprecation")
+    private void disconnectAllCharacters()
 	{
 		for (L2PcInstance player : L2World.getInstance().getAllPlayers())
 		{
+			SystemMessage sysm = new SystemMessage(0);
+			player.sendPacket(sysm);
 			//Logout Character
 			try {
 				L2GameClient.saveCharToDisk(player);
