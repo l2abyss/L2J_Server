@@ -1267,7 +1267,7 @@ public final class Formulas
 
 		if (attacker instanceof L2NpcInstance)
 		{
-			switch (((L2NpcInstance) target).getTemplate().getRace())
+			switch (((L2NpcInstance) attacker).getTemplate().getRace())
 			{
 				case UNDEAD:
 					damage /= attacker.getPDefUndead(target);
