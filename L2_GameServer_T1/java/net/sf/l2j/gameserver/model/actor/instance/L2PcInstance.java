@@ -6711,7 +6711,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 		catch (Exception e)
         {
-            _log.warning("Could not store char effect data: "+ e);
+			_log.log(Level.WARNING, "Could not store char effect data: ",e);
         }
 		finally
         {
