@@ -600,7 +600,7 @@ public class CharStat
 
 		// err we should be adding TO the persons run speed
 		// not making it a constant
-		int val =(int) calcStat(Stats.RUN_SPEED, _activeChar.getTemplate().baseRunSpd, null, null);
+		int val =(int) calcStat(Stats.RUN_SPEED, _activeChar.getTemplate().baseRunSpd, null, null) + Config.RUN_SPD_BOOST;
 
 		if (_activeChar.isFlying())
 		{
@@ -618,9 +618,15 @@ public class CharStat
 			return val;
 		}
 		// TODO: check if sharks/fish should be affected ;)
-		if (_activeChar.isInsideZone(L2Character.ZONE_WATER)) val /= 2;
+		if (_activeChar.isInsideZone(L2Character.ZONE_WATER))
+			val /= 2;
 		
 		val /= _activeChar.getArmourExpertisePenalty();
+		
+		// Apply max run speed cap.
+		if (val > Config.MAX_RUN_SPEED)
+			val = Config.MAX_RUN_SPEED;
+		
 		return val;
 	}
 
