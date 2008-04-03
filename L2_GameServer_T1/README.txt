@@ -1,14 +1,13 @@
- 
- NOTE: This short guide is for a L2J Server. http://l2jserver.com
+NOTE: This short guide is for a L2J Server. http://l2jserver.com
 
- If you received this file as a part of a packaged or bundled build:
+If you received this file as a part of a packaged or bundled build:
  
 L2J only supports L2J software obtained directly from L2J sources.
 
 What this means is, if you obtained L2J from a source other than our SVN or nightly distribution,
 you need to get support from where you got the files.
 We are unable to provide any technical assistance for unsupported software packages. 
-The software may have virii, cause security problems, 
+The software may have viruses, cause security problems, 
 or even send your personal information to remote servers without your express consent. 
 We cannot recommend the use of any of these packages on a server.
 
@@ -74,7 +73,7 @@ USA.
 Full GNU/GPL License is included in LICENSE.TXT file.
 
 Whereas L2J is distributed under the terms of GNU/GPL, we require you to:
-a) Preserve logon notice. This gives us, L2J Developers, appropriate
+a) Preserve login notice. This gives us, L2J Developers, appropriate
 credit for our hard work done during our free time without any
 revenues.
  
@@ -88,14 +87,14 @@ III. REQUIREMENTS
 ====================
 
 OS: 
-Any OS having Java JDK 1.5 installed and properly configured!
+Any OS having Java JDK 1.6 installed and properly configured!
     We recommend using SUN JDK available at java.sun.com
 
 Hardware: 
 Decent CPU & RAM
 
 Software:
-Java JDK 1.5
+Java JDK 1.6
 MySql
 Datapack
 
@@ -118,13 +117,10 @@ https://l2jserver.com/trac/wiki
 L2J-Datapack wiki: Datapack Guides, How-to's, bugtracker:
 http://www.l2jdp.com/trac/wiki
 
-L2J Community wiki: Guides, How-to's:
-http://l2j.jot.com
-
 This Server distribution does not contain any spawn/drop data or any world
 content. (Datapack)
 
-L2J Server has also a possibility to change xp/sp/drop rates relative
+L2J Server has also a possibility to change exp/sp/drop rates relative
 to data in spawnlist/droplist files. To do that, just change the rates 
 you need in server.properties file found in config folder.
 
@@ -163,7 +159,7 @@ VI. PLAYER's GUIDE
 ====================
 
 CLIENT COMPATIBILITY
-Our server is dependant on the official release of the North American lineage2 live client.
+Our server is dependent on the official release of the North American lineage2 live client.
 http://www.lineage2.com
 All help and support will only be for the official client. 
 Any clients obtained elsewhere, must obtain support from where it was obtained.
@@ -219,7 +215,7 @@ SOLUTION
 PROBLEM
 - I found a bug.
 SOLUTION
-- Please refer to BUG REPORTING section of this readme.
+- Please refer to BUG REPORTING section of this read-me.
 
 Further help available at the wiki sites and the forums.
 
@@ -228,7 +224,8 @@ Further help available at the wiki sites and the forums.
 IX. CONTACT
 ====================
 
-Web: http://l2jserver.com
+Website: http://www.l2jserver.com
+Forum: http://forum.l2jserver.com
 IRC: #l2j @ Freenode (irc.freenode.net)
 
 Please note that L2J Devs can't help players with connecting issues or
@@ -289,7 +286,7 @@ http://forum.l2jserver.com/team.php
 Have fun playing L2J ;)
 Dev Team
 
-    L2J Server, Copyright (C) 2006 
+    L2J Server, Copyright (C) 2006-2008 
     L2J Server comes with ABSOLUTELY NO WARRANTY.
     This is free software, and you are welcome to redistribute it
     under certain conditions.

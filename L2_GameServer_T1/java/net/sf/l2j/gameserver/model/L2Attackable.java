@@ -1370,16 +1370,28 @@ public class L2Attackable extends L2NpcInstance
     			 }
     		 }
     	 }
-
-    	 // Apply Special Item drop with rnd qty for champions
-    	 if (Config.L2JMOD_CHAMPION_ENABLE && isChampion() && (player.getLevel() <= getLevel()) && Config.L2JMOD_CHAMPION_REWARD > 0 && (Rnd.get(100) < Config.L2JMOD_CHAMPION_REWARD))
+    	 
+    	// Apply Special Item drop with random(rnd) quantity(qty) for champions.
+    	 if (Config.L2JMOD_CHAMPION_ENABLE && isChampion() && (Config.L2JMOD_CHAMPION_REWARD_LOWER_LVL_ITEM_CHANCE > 0 || Config.L2JMOD_CHAMPION_REWARD_HIGHER_LVL_ITEM_CHANCE > 0))
 		 {
     		 int champqty = Rnd.get(Config.L2JMOD_CHAMPION_REWARD_QTY);
-   			 champqty++; //quantity should actually vary between 1 and whatever admin specified as max, inclusive.
-
-    		 RewardItem item = new RewardItem(Config.L2JMOD_CHAMPION_REWARD_ID,champqty);
-    		 if (Config.AUTO_LOOT) player.addItem("ChampionLoot", item.getItemId(), item.getCount(), this, true); // Give this or these Item(s) to the L2PcInstance that has killed the L2Attackable
-             else dropItem(player, item);
+    		 champqty++; //quantity should actually vary between 1 and whatever admin specified as max, inclusive.
+   			 RewardItem item = new RewardItem(Config.L2JMOD_CHAMPION_REWARD_ID,champqty);
+   			 
+    		 if (player.getLevel() <= getLevel() && (Rnd.get(100) < Config.L2JMOD_CHAMPION_REWARD_LOWER_LVL_ITEM_CHANCE))
+    		 {
+        		 if (Config.AUTO_LOOT)
+        			 player.addItem("ChampionLoot", item.getItemId(), item.getCount(), this, true); // Give this or these Item(s) to the L2PcInstance that has killed the L2Attackable
+        		 else
+        			 dropItem(player, item);
+    		 }
+    		 else if (player.getLevel() > getLevel() && (Rnd.get(100) < Config.L2JMOD_CHAMPION_REWARD_HIGHER_LVL_ITEM_CHANCE))
+    		 {
+        		 if (Config.AUTO_LOOT)
+        			 player.addItem("ChampionLoot", item.getItemId(), item.getCount(), this, true); // Give this or these Item(s) to the L2PcInstance that has killed the L2Attackable
+        		 else
+        			 dropItem(player, item);
+    		 }
     	 }
 
          //Instant Item Drop :>

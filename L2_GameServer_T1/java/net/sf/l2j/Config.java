@@ -503,7 +503,8 @@ public final class Config
     public static float		L2JMOD_CHAMPION_HP_REGEN;
     public static float		L2JMOD_CHAMPION_ATK;
     public static float		L2JMOD_CHAMPION_SPD_ATK;
-    public static int		L2JMOD_CHAMPION_REWARD;
+    public static int		L2JMOD_CHAMPION_REWARD_LOWER_LVL_ITEM_CHANCE;
+    public static int		L2JMOD_CHAMPION_REWARD_HIGHER_LVL_ITEM_CHANCE;
     public static int		L2JMOD_CHAMPION_REWARD_ID;
     public static int		L2JMOD_CHAMPION_REWARD_QTY;
     public static boolean	TVT_EVENT_ENABLED;
@@ -1494,7 +1495,8 @@ public final class Config
                 L2JMOD_CHAMPION_ADENAS_REWARDS         	= Integer.parseInt(L2JModSettings.getProperty("ChampionAdenasRewards", "1"));
                 L2JMOD_CHAMPION_ATK                 	= Float.parseFloat(L2JModSettings.getProperty("ChampionAtk", "1."));
                 L2JMOD_CHAMPION_SPD_ATK             	= Float.parseFloat(L2JModSettings.getProperty("ChampionSpdAtk", "1."));
-                L2JMOD_CHAMPION_REWARD                 	= Integer.parseInt(L2JModSettings.getProperty("ChampionRewardItem", "0"));
+                L2JMOD_CHAMPION_REWARD_LOWER_LVL_ITEM_CHANCE = Integer.parseInt(L2JModSettings.getProperty("ChampionRewardLowerLvlItemChance", "0"));
+                L2JMOD_CHAMPION_REWARD_HIGHER_LVL_ITEM_CHANCE = Integer.parseInt(L2JModSettings.getProperty("ChampionRewardHigherLvlItemChance", "0"));
                 L2JMOD_CHAMPION_REWARD_ID             	= Integer.parseInt(L2JModSettings.getProperty("ChampionRewardItemID", "6393"));
                 L2JMOD_CHAMPION_REWARD_QTY            	= Integer.parseInt(L2JModSettings.getProperty("ChampionRewardItemQty", "1"));
 
@@ -2032,7 +2034,8 @@ public final class Config
         else if (pName.equalsIgnoreCase("ChampionAdenasRewards")) L2JMOD_CHAMPION_ADENAS_REWARDS = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("ChampionAtk")) L2JMOD_CHAMPION_ATK = Float.parseFloat(pValue);
         else if (pName.equalsIgnoreCase("ChampionSpdAtk")) L2JMOD_CHAMPION_SPD_ATK = Float.parseFloat(pValue);
-        else if (pName.equalsIgnoreCase("ChampionRewardItem")) L2JMOD_CHAMPION_REWARD = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("ChampionRewardLowerLvlItemChance")) L2JMOD_CHAMPION_REWARD_LOWER_LVL_ITEM_CHANCE = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("ChampionRewardHigherLvlItemChance")) L2JMOD_CHAMPION_REWARD_HIGHER_LVL_ITEM_CHANCE = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("ChampionRewardItemID")) L2JMOD_CHAMPION_REWARD_ID = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("ChampionRewardItemQty")) L2JMOD_CHAMPION_REWARD_QTY = Integer.parseInt(pValue);
 
