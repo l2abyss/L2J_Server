@@ -1264,66 +1264,45 @@ public final class Formulas
 			damage -= target.getShldDef();
 			if (damage < 0) damage = 0;
 		}
-
-		if (attacker instanceof L2NpcInstance)
-		{
-			switch (((L2NpcInstance) attacker).getTemplate().getRace())
-			{
-				case UNDEAD:
-					damage /= attacker.getPDefUndead(target);
-					break;
-				case BEAST:
-					damage /= attacker.getPDefMonsters(target);
-					break;
-				case ANIMAL:
-					damage /= attacker.getPDefAnimals(target);
-					break;
-				case PLANT:
-					damage /= attacker.getPDefPlants(target);
-					break;
-				case DRAGON:
-					damage /= attacker.getPDefDragons(target);
-					break;
-				case BUG:
-					damage /= attacker.getPDefInsects(target);
-					break;
-				case GIANT:
-					damage /= attacker.getPDefGiants(target);
-					break;					
-				default:
-					break;
-			}
-		}
+		
 		if (target instanceof L2NpcInstance)
 		{
 			switch (((L2NpcInstance) target).getTemplate().getRace())
 			{
 				case UNDEAD:
 					damage *= attacker.getPAtkUndead(target);
+					damage /= target.getPDefUndead(target);
 					break;
 				case BEAST:
 					damage *= attacker.getPAtkMonsters(target);
+					damage /= target.getPDefMonsters(target);
 					break;
 				case ANIMAL:
 					damage *= attacker.getPAtkAnimals(target);
+					damage /= target.getPDefAnimals(target);
 					break;
 				case PLANT:
 					damage *= attacker.getPAtkPlants(target);
+					damage /= target.getPDefPlants(target);
 					break;
 				case DRAGON:
 					damage *= attacker.getPAtkDragons(target);
+					damage /= target.getPDefDragons(target);
 					break;
 				case BUG:
 					damage *= attacker.getPAtkInsects(target);
+					damage /= target.getPDefInsects(target);
 					break;
 				case GIANT:
 					damage *= attacker.getPAtkGiants(target);
+					damage /= target.getPDefGiants(target);
 					break;					
 				default:
 					// nothing
 					break;
 			}
 		}
+		
 		if (damage > 0 && damage < 1)
 		{
 			damage = 1;
