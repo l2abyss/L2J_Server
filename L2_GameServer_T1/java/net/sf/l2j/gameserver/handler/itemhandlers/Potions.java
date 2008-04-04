@@ -67,11 +67,11 @@ public class Potions implements IItemHandler
 		}
 	}
 	private static final int[] ITEM_IDS =
-		{ 65, 725, 726, 727, 728, 734, 735, 1060, 1061, 1062, 1073, 1374, 1375,
+		{ 65, 725, 726, 727, 728, 734, 735, 1060, 1061, 1073, 1374, 1375,
 				1539, 1540, 5591, 5592, 6035, 6036, 6652, 6553, 6554, 6555,
 				8193, 8194, 8195, 8196, 8197, 8198, 8199, 8200, 8201, 8202,
 				8600, 8601, 8602, 8603, 8604, 8605, 8606, 8607, 8608, 8609,
-				8610, 8611, 8612, 8613, 8614,
+				8610, 8611, 8612, 8613, 8614, 10157,
 				 //Attribute Potion
 				9997, 9998, 9999, 10000, 10001,10002,
 				//elixir of life
@@ -142,8 +142,8 @@ public class Potions implements IItemHandler
 				if (!isEffectReplaceable(activeChar, L2Effect.EffectType.HEAL_OVER_TIME, itemId)) return;
 				res = usePotion(activeChar, 2032, 1);
 				break;
-			case 1062: // haste_potion, xml: 2033
-				res = usePotion(activeChar, 2033, 1);
+			case 10157: // instant haste_potion, xml: 2300
+				res = usePotion(activeChar, 2398, 1);
 				break;
 			case 1374: // adv_quick_step_potion, xml: 2034
 				res = usePotion(activeChar, 2034, 1);
