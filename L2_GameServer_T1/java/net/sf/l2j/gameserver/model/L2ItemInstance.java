@@ -94,12 +94,6 @@ public final class L2ItemInstance extends L2Object
 	/** Level of enchantment of the item */
 	private int _enchantLevel;
 	
-	/** Price of the item for selling */
-	private int _priceSell;
-	
-	/** Price of the item for buying */
-	private int _priceBuy;
-	
 	/** Wear Item */
 	private boolean _wear;
 	
@@ -446,46 +440,6 @@ public final class L2ItemInstance extends L2Object
 	public String getItemName()
 	{
 		return _item.getName();
-	}
-
-	/**
-	 * Returns the price of the item for selling
-	 * @return int
-	 */
-	public int getPriceToSell()
-	{
-        return (isConsumable() ? (int)(_priceSell * Config.RATE_CONSUMABLE_COST) : _priceSell);
-	}
-
-	/**
-	 * Sets the price of the item for selling
-	 * <U><I>Remark :</I></U> If loc and loc_data different from database, say datas not up-to-date
-	 * @param price : int designating the price
-	 */
-	public void setPriceToSell(int price)
-	{
-		_priceSell = price;
-		_storedInDb = false;
-	}
-
-	/**
-	 * Returns the price of the item for buying
-	 * @return int
-	 */
-	public int getPriceToBuy()
-	{
-        return (isConsumable() ? (int)(_priceBuy * Config.RATE_CONSUMABLE_COST) : _priceBuy);
-	}
-
-	/**
-	 * Sets the price of the item for buying
-	 * <U><I>Remark :</I></U> If loc and loc_data different from database, say datas not up-to-date
-	 * @param price : int
-	 */
-	public void setPriceToBuy(int price)
-	{
-		_priceBuy = price;
-		_storedInDb = false;
 	}
 
 	/**
@@ -956,7 +910,7 @@ public final class L2ItemInstance extends L2Object
 	public static L2ItemInstance restoreFromDb(int ownerId, ResultSet rs) 
 	{
 		L2ItemInstance inst = null;
-		int objectId, item_id, count, loc_data, enchant_level, custom_type1, custom_type2, price_sell, price_buy, manaLeft;
+		int objectId, item_id, count, loc_data, enchant_level, custom_type1, custom_type2, manaLeft;
 		ItemLocation loc;
 		try
 		{
@@ -968,8 +922,6 @@ public final class L2ItemInstance extends L2Object
 		    enchant_level = rs.getInt("enchant_level");
 		    custom_type1 =  rs.getInt("custom_type1");
 		    custom_type2 =  rs.getInt("custom_type2");
-		    price_sell = rs.getInt("price_sell");
-		    price_buy = rs.getInt("price_buy");
 		    manaLeft = rs.getInt("mana_left");
 		} catch (Exception e) {
 		    _log.log(Level.SEVERE, "Could not restore an item owned by "+ownerId+" from DB:", e);
@@ -988,8 +940,6 @@ public final class L2ItemInstance extends L2Object
 		inst._type2 = custom_type2;
 		inst._loc = loc;
 		inst._locData = loc_data;
-		inst._priceSell = price_sell;
-		inst._priceBuy  = price_buy;
         inst._existsInDb = true;
         inst._storedInDb = true;
 		
@@ -1108,19 +1058,17 @@ public final class L2ItemInstance extends L2Object
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(
-					"UPDATE items SET owner_id=?,count=?,loc=?,loc_data=?,enchant_level=?,price_sell=?,price_buy=?,custom_type1=?,custom_type2=?,mana_left=? " +
+					"UPDATE items SET owner_id=?,count=?,loc=?,loc_data=?,enchant_level=?,custom_type1=?,custom_type2=?,mana_left=? " +
 					"WHERE object_id = ?");
 			statement.setInt(1, _ownerId);
 			statement.setInt(2, getCount());
 			statement.setString(3, _loc.name());
 			statement.setInt(4, _locData);
 			statement.setInt(5, getEnchantLevel());
-			statement.setInt(6, _priceSell);
-			statement.setInt(7, _priceBuy);
-			statement.setInt(8, getCustomType1());
-			statement.setInt(9, getCustomType2());
-			statement.setInt(10, getMana());
-			statement.setInt(11, getObjectId());
+			statement.setInt(6, getCustomType1());
+			statement.setInt(7, getCustomType2());
+			statement.setInt(8, getMana());
+			statement.setInt(9, getObjectId());
 			statement.executeUpdate();
 			_existsInDb = true;
 			_storedInDb = true;
@@ -1148,20 +1096,18 @@ public final class L2ItemInstance extends L2Object
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(
-					"INSERT INTO items (owner_id,item_id,count,loc,loc_data,enchant_level,price_sell,price_buy,object_id,custom_type1,custom_type2,mana_left) " +
-					"VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+					"INSERT INTO items (owner_id,item_id,count,loc,loc_data,enchant_level,object_id,custom_type1,custom_type2,mana_left) " +
+					"VALUES (?,?,?,?,?,?,?,?,?,?)");
 			statement.setInt(1, _ownerId);
 			statement.setInt(2, _itemId);
 			statement.setInt(3, getCount());
 			statement.setString(4, _loc.name());
 			statement.setInt(5, _locData);
 			statement.setInt(6, getEnchantLevel());
-			statement.setInt(7, _priceSell);
-			statement.setInt(8, _priceBuy);
-			statement.setInt(9, getObjectId());
-			statement.setInt(10, _type1);
-			statement.setInt(11, _type2);
-			statement.setInt(12, getMana());
+			statement.setInt(7, getObjectId());
+			statement.setInt(8, _type1);
+			statement.setInt(9, _type2);
+			statement.setInt(10, getMana());
 
 			statement.executeUpdate();
 			_existsInDb = true;

@@ -308,8 +308,6 @@ CREATE TABLE items (
   enchant_level decimal(2) ,
   loc varchar(10) ,        -- inventory, paperdoll, npc, clan warehouse, pet, and so on
   loc_data decimal(10) , -- depending on location: equiped slot, npc id, pet id, etc
-  price_sell decimal(10) ,
-  price_buy decimal(10) ,
   PRIMARY KEY  (object_id)
 );
 

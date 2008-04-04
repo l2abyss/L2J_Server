@@ -1274,7 +1274,7 @@ public abstract class Inventory extends ItemContainer
 	    {
 	        con = L2DatabaseFactory.getInstance().getConnection();
 	        PreparedStatement statement = con.prepareStatement(
-	                "SELECT object_id, item_id, count, enchant_level, loc, loc_data, price_sell, price_buy, custom_type1, custom_type2, mana_left FROM items WHERE owner_id=? AND (loc=? OR loc=?) ");
+	                "SELECT object_id, item_id, count, enchant_level, loc, loc_data, custom_type1, custom_type2, mana_left FROM items WHERE owner_id=? AND (loc=? OR loc=?) ");
 	        statement.setInt(1, getOwner().getObjectId());
 	        statement.setString(2, getBaseLocation().name());
 	        statement.setString(3, getEquipLocation().name());
