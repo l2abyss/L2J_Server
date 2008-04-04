@@ -44,11 +44,7 @@ public final class L2GuardInstance extends L2Attackable
 	@SuppressWarnings("hiding")
 	private static Logger _log = Logger.getLogger(L2GuardInstance.class.getName());
 
-	private int _homeX;
-	private int _homeY;
-	private int _homeZ;
     private static final int RETURN_INTERVAL = 60000;
-
 
     public class ReturnTask implements Runnable
     {
@@ -95,36 +91,17 @@ public final class L2GuardInstance extends L2Attackable
 		return attacker instanceof L2MonsterInstance;
 	}
 
-	/**
-	 * Set home location of the L2GuardInstance.<BR><BR>
-	 *
-	 * <B><U> Concept</U> :</B><BR><BR>
-	 * Guard will always try to return to this location after it has killed all PK's in range <BR><BR>
-	 *
-	 */
-	public void getHomeLocation()
-	{
-		_homeX = getX();
-		_homeY = getY();
-		_homeZ = getZ();
-
-		if (Config.DEBUG)
-			_log.finer(getObjectId()+": Home location set to"+" X:" + _homeX + " Y:" + _homeY + " Z:" + _homeZ);
-	}
-    public int getHomeX() { return _homeX; }
 
 	/**
 	 * Notify the L2GuardInstance to return to its home location (AI_INTENTION_MOVE_TO) and clear its _aggroList.<BR><BR>
 	 */
 	public void returnHome()
 	{
-        if (!isInsideRadius(_homeX, _homeY, 150, false))
+        if (!isInsideRadius(getSpawn().getLocx(), getSpawn().getLocy(), 150, false))
 		{
-			if (Config.DEBUG) _log.fine(getObjectId()+": moving hometo" + " X:" + _homeX + " Y:" + _homeY + " Z:" + _homeZ);
-
 			clearAggroList();
 
-			getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(_homeX, _homeY, _homeZ, 0));
+			getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(getSpawn().getLocx(), getSpawn().getLocy(), getSpawn().getLocz(), 0));
 		}
 	}
 
@@ -135,12 +112,6 @@ public final class L2GuardInstance extends L2Attackable
 	public void onSpawn()
 	{
 		super.onSpawn();
-		_homeX = getX();
-		_homeY = getY();
-		_homeZ = getZ();
-
-		if (Config.DEBUG)
-			_log.finer(getObjectId()+": Home location set to"+" X:" + _homeX + " Y:" + _homeY + " Z:" + _homeZ);
 
         // check the region where this mob is, do not activate the AI if region is inactive.
         L2WorldRegion region = L2World.getInstance().getRegion(getX(),getY());

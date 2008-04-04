@@ -48,10 +48,6 @@ public class GuardKnownList extends AttackableKnownList
     {
         if (!super.addKnownObject(object, dropper)) return false;
 
-        // Set home location of the L2GuardInstance (if not already done)
-        if (getActiveChar().getHomeX() == 0) getActiveChar().getHomeLocation();
-
-
         if (object instanceof L2PcInstance)
         {
             // Check if the object added is a L2PcInstance that owns Karma
