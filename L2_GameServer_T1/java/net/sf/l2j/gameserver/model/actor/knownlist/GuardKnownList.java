@@ -62,7 +62,7 @@ public class GuardKnownList extends AttackableKnownList
                     getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
             }
         }
-        else if ((Config.GUARD_ATTACK_AGGRO_MOB) && (object instanceof L2MonsterInstance))
+        else if ((Config.GUARD_ATTACK_AGGRO_MOB && getActiveChar().isInActiveRegion()) && object instanceof L2MonsterInstance)
         {
             // Check if the object added is an aggressive L2MonsterInstance
             L2MonsterInstance mob = (L2MonsterInstance) object;
