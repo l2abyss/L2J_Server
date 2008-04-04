@@ -211,13 +211,30 @@ public abstract class L2Character extends L2Object
 	/**
 	 * This will return true if the player is transformed,<br>
 	 * but if the player is not transformed it will return false.
-	 * @return
+	 * @return transformation status
 	 */
 	public boolean charIsTransformed()
 	{
 		if (this instanceof L2PcInstance)
 		{
 			if (((L2PcInstance)this).isTransformed())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * This will return true if the player is GM,<br>
+	 * but if the player is not GM it will return false.
+	 * @return GM status
+	 */
+	public boolean charIsGM()
+	{
+		if (this instanceof L2PcInstance)
+		{
+			if (((L2PcInstance)this).isGM())
 			{
 				return true;
 			}
