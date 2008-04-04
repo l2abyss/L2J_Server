@@ -35,7 +35,8 @@ public class Harvester implements IItemHandler {
     L2PcInstance _activeChar;
     L2MonsterInstance _target;
 
-    public void useItem(L2PlayableInstance playable, L2ItemInstance _item) {
+    public void useItem(L2PlayableInstance playable, L2ItemInstance _item)
+    {
     	if (!(playable instanceof L2PcInstance))
             return;
 
@@ -44,7 +45,8 @@ public class Harvester implements IItemHandler {
 
         _activeChar = (L2PcInstance)playable;
 
-        if(_activeChar.getTarget() == null || !(_activeChar.getTarget() instanceof L2MonsterInstance)) {
+        if(_activeChar.getTarget() == null || !(_activeChar.getTarget() instanceof L2MonsterInstance))
+        {
             _activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
             _activeChar.sendPacket(ActionFailed.STATIC_PACKET);
             return;
@@ -52,7 +54,8 @@ public class Harvester implements IItemHandler {
 
         _target = (L2MonsterInstance)_activeChar.getTarget();
 
-        if (_target == null || !_target.isDead()) {
+        if (_target == null || !_target.isDead())
+        {
         	_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
         	return;
         }
@@ -61,7 +64,8 @@ public class Harvester implements IItemHandler {
     	_activeChar.useMagic(skill,false,false);
     }
 
-    public int[] getItemIds() {
+    public int[] getItemIds()
+    {
         return ITEM_IDS;
     }
 }

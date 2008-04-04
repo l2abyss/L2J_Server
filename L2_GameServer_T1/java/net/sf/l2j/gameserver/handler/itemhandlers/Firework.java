@@ -51,7 +51,7 @@ public class Firework implements IItemHandler
         }
 
         /*
-         * Elven Firecracker
+         * Elven Fire Cracker
          */
         if (itemId == 6403) // elven_firecracker, xml: 2023
         {
@@ -61,7 +61,7 @@ public class Firework implements IItemHandler
             useFw(activeChar, 2023, 1);
             playable.destroyItem("Consume", item.getObjectId(), 1, null, false);
         }
-          /*
+        /*
          * Firework
          */
         else if (itemId == 6406) // firework, xml: 2024
@@ -73,7 +73,7 @@ public class Firework implements IItemHandler
             playable.destroyItem("Consume", item.getObjectId(), 1, null, false);
         }
         /*
-         * Lage Firework
+         * Large Firework
          */
         else if (itemId == 6407) // large_firework, xml: 2025
         {
@@ -87,7 +87,8 @@ public class Firework implements IItemHandler
     public void useFw(L2PcInstance activeChar, int magicId,int level)
     {
         L2Skill skill = SkillTable.getInstance().getInfo(magicId,level);
-        if (skill != null) {
+        if (skill != null)
+        {
             activeChar.useMagic(skill, false, false);
         }
     }

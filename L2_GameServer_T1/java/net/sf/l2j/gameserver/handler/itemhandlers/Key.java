@@ -55,7 +55,7 @@ public class Key implements IItemHandler
 			case 6671:
 			case 6672:
 			{
-				L2Skill skill = SkillTable.getInstance().getInfo(2229, itemId - 6664);// box key skill
+				L2Skill skill = SkillTable.getInstance().getInfo(2229, itemId - 6664); // box key skill
 				L2Object target = activeChar.getTarget();
 				
 				if (!(target instanceof L2ChestInstance) || target == null)

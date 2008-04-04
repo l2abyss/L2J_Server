@@ -45,7 +45,7 @@ public class CompBlessedSpiritShotPacks implements IItemHandler
 	    if (itemId < 5200){ // Normal Compressed Package of SpiritShots
     		itemToCreateId = itemId - 1199; // Gives id of matching item for this pack
     		amount = 300;
-	    }else{  // Greater Compressed Package of Spirithots
+	    }else{  // Greater Compressed Package of SpiritShots
      		itemToCreateId = itemId - 1315; // Gives id of matching item for this pack
 	    	amount = 1000;
 	    }

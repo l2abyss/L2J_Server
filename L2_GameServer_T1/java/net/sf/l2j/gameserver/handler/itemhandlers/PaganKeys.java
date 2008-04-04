@@ -71,14 +71,17 @@ public class PaganKeys implements IItemHandler
 
 		switch (itemId){
 		case 8273: //AnteroomKey
-			  if (door.getDoorName().startsWith("Anteroom")){
-                	if (openChance > 0 && Rnd.get(100) < openChance) {
+			  if (door.getDoorName().startsWith("Anteroom"))
+			  {
+                	if (Rnd.get(100) < openChance)
+                	{
                 		activeChar.sendMessage("You opened Anterooms Door.");
                 		door.openMe();
                 		door.onOpen(); // Closes the door after 60sec
                 		activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 3));
                 	}
-                	else {
+                	else
+                	{
                 		//test with: activeChar.sendPacket(new SystemMessage(SystemMessage.FAILED_TO_UNLOCK_DOOR));
                 		activeChar.sendMessage("You failed to open Anterooms Door.");
                 		activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 13));
@@ -90,15 +93,18 @@ public class PaganKeys implements IItemHandler
 				  activeChar.sendMessage("Incorrect Door.");
 			  }
 			  break;
-		case 8274: //Chapelkey, Capel Door has a Gatekeeper?? I use this key for Altar Entrance
-			if (door.getDoorName().startsWith("Altar_Entrance")){
-            	if (openChance > 0 && Rnd.get(100) < openChance) {
+		case 8274: //Chapel key, Chapel Door has a Gatekeeper?? I use this key for Altar Entrance
+			if (door.getDoorName().startsWith("Altar_Entrance"))
+			{
+            	if (Rnd.get(100) < openChance)
+            	{
             		activeChar.sendMessage("You opened Altar Entrance.");
             		door.openMe();
             		door.onOpen();
             		activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 3));
             	}
-            	else {
+            	else
+            	{
             		activeChar.sendMessage("You failed to open Altar Entrance.");
             		activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 13));
     				PlaySound playSound = new PlaySound("interfacesound.system_close_01");
@@ -110,14 +116,17 @@ public class PaganKeys implements IItemHandler
 			}
 			break;
 		case 8275: //Key of Darkness
-			if (door.getDoorName().startsWith("Door_of_Darkness")){
-            	if (openChance > 0 && Rnd.get(100) < openChance) {
+			if (door.getDoorName().startsWith("Door_of_Darkness"))
+			{
+            	if (Rnd.get(100) < openChance)
+            	{
             		activeChar.sendMessage("You opened Door of Darkness.");
             		door.openMe();
             		door.onOpen();
             		activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 3));
             	}
-            	else {
+            	else
+            	{
             		activeChar.sendMessage("You failed to open Door of Darkness.");
             		activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 13));
     				PlaySound playSound = new PlaySound("interfacesound.system_close_01");

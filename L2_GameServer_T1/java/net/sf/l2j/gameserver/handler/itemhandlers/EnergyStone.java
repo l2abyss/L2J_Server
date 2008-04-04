@@ -50,7 +50,8 @@ public class EnergyStone implements IItemHandler
         }
         else return;
 
-        if (item.getItemId() != 5589) return;
+        if (item.getItemId() != 5589)
+        	return;
         int classid = activeChar.getClassId().getId();
 
         if (classid == 2 || classid == 48 || classid == 88 || classid == 114)
@@ -121,13 +122,15 @@ public class EnergyStone implements IItemHandler
 
     private L2SkillCharge getChargeSkill(L2PcInstance activeChar)
     {
-    L2Skill[] skills = activeChar.getAllSkills();
-    for (L2Skill s : skills) {
-        if (s.getId() == 50 || s.getId() == 8) {
-            return (L2SkillCharge)s;
-        }
-    }
-    return null;
+    	L2Skill[] skills = activeChar.getAllSkills();
+    	for (L2Skill s : skills)
+    	{
+    		if (s.getId() == 50 || s.getId() == 8)
+    		{
+    			return (L2SkillCharge)s;
+    		}
+    	}
+    	return null;
     }
 
     public int[] getItemIds()

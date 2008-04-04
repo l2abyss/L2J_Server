@@ -57,17 +57,27 @@ public class MercTicket implements IItemHandler
     	{
     		switch (castleId)
     		{
-    		case 1:activeChar.sendMessage("This Mercenary Ticket can only be used in Gludio.");return;
-    		case 2:activeChar.sendMessage("This Mercenary Ticket can only be used in Dion.");return;
-    		case 3:activeChar.sendMessage("This Mercenary Ticket can only be used in Giran.");return;
-    		case 4:activeChar.sendMessage("This Mercenary Ticket can only be used in Oren.");return;
-    		case 5:activeChar.sendMessage("This Mercenary Ticket can only be used in Aden.");return;
-    		case 6:activeChar.sendMessage("This Mercenary Ticket can only be used in Heine.");return;
-    		case 7:activeChar.sendMessage("This Mercenary Ticket can only be used in Goddard.");return;
-    		case 8:activeChar.sendMessage("This Mercenary Ticket can only be used in Rune.");return;
-    		case 9:activeChar.sendMessage("This Mercenary Ticket can only be used in Schuttgart.");return;
+    		case 1:activeChar.sendMessage("This Mercenary Ticket can only be used in Gludio.");
+    		return;
+    		case 2:activeChar.sendMessage("This Mercenary Ticket can only be used in Dion.");
+    		return;
+    		case 3:activeChar.sendMessage("This Mercenary Ticket can only be used in Giran.");
+    		return;
+    		case 4:activeChar.sendMessage("This Mercenary Ticket can only be used in Oren.");
+    		return;
+    		case 5:activeChar.sendMessage("This Mercenary Ticket can only be used in Aden.");
+    		return;
+    		case 6:activeChar.sendMessage("This Mercenary Ticket can only be used in Heine.");
+    		return;
+    		case 7:activeChar.sendMessage("This Mercenary Ticket can only be used in Goddard.");
+    		return;
+    		case 8:activeChar.sendMessage("This Mercenary Ticket can only be used in Rune.");
+    		return;
+    		case 9:activeChar.sendMessage("This Mercenary Ticket can only be used in Schuttgart.");
+    		return;
     		// player is not in a castle
-    		default: activeChar.sendMessage("Mercenary Tickets can only be used in a castle.");return;
+    		default: activeChar.sendMessage("Mercenary Tickets can only be used in a castle.");
+    		return;
     		}
     	}
 

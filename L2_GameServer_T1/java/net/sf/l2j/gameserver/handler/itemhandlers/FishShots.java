@@ -56,7 +56,7 @@ public class FishShots implements IItemHandler
 
 		if (weaponInst.getChargedFishshot())
 		{
-			// spiritshot is already active
+			// spirit shot is already active
 			return;
 		}
 

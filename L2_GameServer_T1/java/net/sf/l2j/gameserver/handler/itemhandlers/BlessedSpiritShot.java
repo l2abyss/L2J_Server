@@ -34,7 +34,7 @@ import net.sf.l2j.gameserver.util.Broadcast;
 
 public class BlessedSpiritShot implements IItemHandler
 {
-	// all the items ids that this handler knowns
+	// all the items ids that this handler knows
 	private static final int[] ITEM_IDS  = { 3947, 3948, 3949, 3950, 3951, 3952 };
 	private static final int[] SKILL_IDS = { 2061, 2160, 2161, 2162, 2163, 2164, 2164 };
 
@@ -59,7 +59,7 @@ public class BlessedSpiritShot implements IItemHandler
         	return;
         }
 
-        // Check if Blessed Spiritshot can be used
+        // Check if Blessed SpiritShot can be used
         if (weaponInst == null || weaponItem.getSpiritShotCount() == 0)
         {
             if(!activeChar.getAutoSoulShot().containsKey(itemId))
@@ -67,7 +67,7 @@ public class BlessedSpiritShot implements IItemHandler
             return;
         }
 
-        // Check if Blessed Spiritshot is already active (it can be charged over Spiritshot)
+        // Check if Blessed SpiritShot is already active (it can be charged over SpiritShot)
         if (weaponInst.getChargedSpiritshot() != L2ItemInstance.CHARGED_NONE) return;
 
         // Check for correct grade
@@ -85,7 +85,7 @@ public class BlessedSpiritShot implements IItemHandler
             return;
         }
 
-        // Consume Blessed Spiritshot if player has enough of them
+        // Consume Blessed SpiritShot if player has enough of them
         if (!activeChar.destroyItemWithoutTrace("Consume", item.getObjectId(), weaponItem.getSpiritShotCount(), null, false))
         {
             if(activeChar.getAutoSoulShot().containsKey(itemId))
@@ -101,12 +101,12 @@ public class BlessedSpiritShot implements IItemHandler
             return;
         }
 
-        // Charge Blessed Spiritshot
+        // Charge Blessed SpiritShot
         weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT);
 
         // Send message to client
         activeChar.sendPacket(new SystemMessage(SystemMessageId.ENABLED_SPIRITSHOT));
-        Broadcast.toSelfAndKnownPlayersInRadius(activeChar, new MagicSkillUse(activeChar, activeChar, SKILL_IDS[weaponGrade], 1, 0, 0), 360000/*600*/);
+        Broadcast.toSelfAndKnownPlayersInRadius(activeChar, new MagicSkillUse(activeChar, activeChar, SKILL_IDS[weaponGrade], 1, 0, 0), 360000);
 	}
 
 	public int[] getItemIds()

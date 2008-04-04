@@ -29,7 +29,7 @@ import net.sf.l2j.gameserver.serverpackets.ShowMiniMap;
 
 public class Maps implements IItemHandler
 {
-	// all the items ids that this handler knowns
+	// all the items id's that this handler knows
 	private static final int[] ITEM_IDS = { 1665, 1863};
 
 	/* (non-Javadoc)
@@ -40,7 +40,7 @@ public class Maps implements IItemHandler
 		if (!(playable instanceof L2PcInstance))
 			return;
 		final L2PcInstance activeChar = (L2PcInstance)playable;
-		final int itemId=item.getItemId();
+		final int itemId = item.getItemId();
 		activeChar.sendPacket(new ShowMiniMap(itemId));
 		return;
 	}

@@ -64,11 +64,9 @@ public class CompShotPacks implements IItemHandler
 
 	    	amount = 1000;
 	    }
-	    else if(itemId >= 5140 && itemId <= 5145) // SpS
+	    else if((itemId >= 5140 && itemId <= 5145) /*SpS*/ || (itemId >= 5256 && itemId <= 5261) /*Greater SpS*/) 
 	    {
-	    }
-	    else if(itemId >= 5256 && itemId <= 5261) // Greater SpS
-	    {
+	    	
 	    }
 
 		activeChar.getInventory().destroyItem("Extract", item, activeChar, null);
