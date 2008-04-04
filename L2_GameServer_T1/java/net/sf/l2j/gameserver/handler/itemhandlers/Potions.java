@@ -142,7 +142,7 @@ public class Potions implements IItemHandler
 				if (!isEffectReplaceable(activeChar, L2Effect.EffectType.HEAL_OVER_TIME, itemId)) return;
 				res = usePotion(activeChar, 2032, 1);
 				break;
-			case 10157: // instant haste_potion, xml: 2300
+			case 10157: // instant haste_potion, xml: 2398
 				res = usePotion(activeChar, 2398, 1);
 				break;
 			case 1374: // adv_quick_step_potion, xml: 2034

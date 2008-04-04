@@ -152,13 +152,7 @@ public class ScrollOfResurrection implements IItemHandler
                     {
                     	L2Skill skill = SkillTable.getInstance().getInfo(skillId, skillLevel);
                     	activeChar.useMagic(skill, true, true);
-                    	/* Micht : Unusefull, already done in useMagic()
-                    	MagicSkillUser msu = new MagicSkillUser(activeChar, skillId, skillLevel, skill.getHitTime(),0);
-                    	activeChar.broadcastPacket(msu);
-                    	SetupGauge sg = new SetupGauge(0, skill.getHitTime());
-                    	activeChar.sendPacket(sg);
-                    	*/
-
+                    	
                     	SystemMessage sm = new SystemMessage(SystemMessageId.S1_DISAPPEARED);
                     	sm.addItemName(itemId);
                     	activeChar.sendPacket(sm);

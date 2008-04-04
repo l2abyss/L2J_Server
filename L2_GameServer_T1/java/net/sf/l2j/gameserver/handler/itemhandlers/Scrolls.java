@@ -79,7 +79,7 @@ public class Scrolls implements IItemHandler
 			        (itemId == 8596 && expIndex==2) || // Scroll: Recovery (C Grade)
 			        (itemId == 8597 && expIndex==3) || // Scroll: Recovery (B Grade)
 			        (itemId == 8598 && expIndex==4) || // Scroll: Recovery (A Grade)
-			        (itemId == 8599 && (expIndex==5 || expIndex==6))) // Scroll: Recovery (S Grade)
+			        (itemId == 8599 && (expIndex==5 || expIndex==6))) // Scroll: Recovery (S/80 Grade)
        	 	{
 				if (!playable.destroyItem("Consume", item.getObjectId(), 1, null, false))
 					return;
@@ -100,7 +100,7 @@ public class Scrolls implements IItemHandler
 			        (itemId == 5804 && expIndex==2) || // Lucky Charm (C Grade)
 			        (itemId == 5805 && expIndex==3) || // Lucky Charm (B Grade)
 			        (itemId == 5806 && expIndex==4) || // Lucky Charm (A Grade)
-			        (itemId == 5807 && (expIndex==5 || expIndex==6))) // Lucky Charm (S Grade)
+			        (itemId == 5807 && (expIndex==5 || expIndex==6))) // Lucky Charm (S/80 Grade)
 			{
 				if (!playable.destroyItem("Consume", item.getObjectId(), 1, null, false))
 					return;
@@ -121,7 +121,7 @@ public class Scrolls implements IItemHandler
        	        (itemId == 8517 && expIndex <= 2) || // Charm of Courage (C Grade)
        	        (itemId == 8518 && expIndex <= 3) || // Charm of Courage (B Grade)
        	        (itemId == 8519 && expIndex <= 4) || // Charm of Courage (A Grade)
-       	        (itemId == 8520 && expIndex <= 6)) // Charm of Courage (S Grade)
+       	        (itemId == 8520 && expIndex <= 6)) // Charm of Courage (S/80 Grade)
        	  	{
 	   			if (!playable.destroyItem("Consume", item.getObjectId(), 1, null, false))
 	   				return;
@@ -140,7 +140,8 @@ public class Scrolls implements IItemHandler
             }
 	   	else if (itemId >= 8954 && itemId <= 8956)
 	   	{
-	   		if (activeChar.getLevel() < 76) return;
+	   		if (activeChar.getLevel() < 76)
+	   			return;
 	   		if (!playable.destroyItem("Consume", item.getObjectId(), 1, null, false))
 				return;
 	   		switch(itemId)
@@ -176,7 +177,7 @@ public class Scrolls implements IItemHandler
 				activeChar.broadcastPacket(new MagicSkillUse(playable, activeChar, 2050, 1, 1, 0));
          		useScroll(activeChar, 2050, 1);
          		break;
-         	case 3927: // Scroll of Death Whipser XML:2051
+         	case 3927: // Scroll of Death Whisper XML:2051
          		activeChar.broadcastPacket(new MagicSkillUse(playable, activeChar, 2051, 1, 1, 0));
          		useScroll(activeChar, 2051, 1);
          		break;
@@ -196,7 +197,7 @@ public class Scrolls implements IItemHandler
          		activeChar.broadcastPacket(new MagicSkillUse(playable, activeChar, 2055, 1, 1, 0));
          		useScroll(activeChar, 2055, 1);
          		break;
-         	case 3932: // Scroll of Mystic Enpower XML:2056
+         	case 3932: // Scroll of Mystic Empower XML:2056
          		activeChar.broadcastPacket(new MagicSkillUse(playable, activeChar, 2056, 1, 1, 0));
          		useScroll(activeChar, 2056, 1);
          		break;
@@ -239,7 +240,7 @@ public class Scrolls implements IItemHandler
          		activeChar.broadcastPacket(new MagicSkillUse(playable, activeChar, 2050, 1, 1, 0));
          		useScroll(activeChar, 2050, 1);
          		break;
-         	case 9147: // Scroll of Death Whipser - For Event XML:2051
+         	case 9147: // Scroll of Death Whisper - For Event XML:2051
          		activeChar.broadcastPacket(new MagicSkillUse(playable, activeChar, 2051, 1, 1, 0));
          		useScroll(activeChar, 2051, 1);
          		break;
@@ -259,7 +260,7 @@ public class Scrolls implements IItemHandler
          		activeChar.broadcastPacket(new MagicSkillUse(playable, activeChar, 2055, 1, 1, 0));
          		useScroll(activeChar, 2055, 1);
          		break;
-         	case 9152: // Scroll of Enpower - For Event XML:2056
+         	case 9152: // Scroll of Empower - For Event XML:2056
          		activeChar.broadcastPacket(new MagicSkillUse(playable, activeChar, 2056, 1, 1, 0));
          		useScroll(activeChar, 2056, 1);
          		break;

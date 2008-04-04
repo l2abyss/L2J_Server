@@ -50,7 +50,7 @@ public class SpiritShot implements IItemHandler
 		L2Weapon weaponItem = activeChar.getActiveWeaponItem();
         int itemId = item.getItemId();
 
-        // Check if Spiritshot can be used
+        // Check if Spirit shot can be used
         if (weaponInst == null || weaponItem.getSpiritShotCount() == 0)
         {
             if(!activeChar.getAutoSoulShot().containsKey(itemId))
@@ -58,7 +58,7 @@ public class SpiritShot implements IItemHandler
 			return;
 		}
 
-        // Check if Spiritshot is already active
+        // Check if Spirit shot is already active
         if (weaponInst.getChargedSpiritshot() != L2ItemInstance.CHARGED_NONE) return;
 
         // Check for correct grade
@@ -76,7 +76,7 @@ public class SpiritShot implements IItemHandler
 			return;
 		}
 
-        // Consume Spiritshot if player has enough of them
+        // Consume Spirit shot if player has enough of them
         if (!activeChar.destroyItemWithoutTrace("Consume", item.getObjectId(), weaponItem.getSpiritShotCount(), null, false))
 		{
             if(activeChar.getAutoSoulShot().containsKey(itemId))
@@ -92,12 +92,12 @@ public class SpiritShot implements IItemHandler
 			return;
 		}
 
-        // Charge Spiritshot
+        // Charge Spirit shot
 		weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_SPIRITSHOT);
 
         // Send message to client
 		activeChar.sendPacket(new SystemMessage(SystemMessageId.ENABLED_SPIRITSHOT));
-        Broadcast.toSelfAndKnownPlayersInRadius(activeChar, new MagicSkillUse(activeChar, activeChar, SKILL_IDS[weaponGrade], 1, 0, 0), 360000/*600*/);
+        Broadcast.toSelfAndKnownPlayersInRadius(activeChar, new MagicSkillUse(activeChar, activeChar, SKILL_IDS[weaponGrade], 1, 0, 0), 360000);
 	}
 
 	public int[] getItemIds()

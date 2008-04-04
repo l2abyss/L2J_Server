@@ -102,7 +102,7 @@ public class SummonItems implements IItemHandler
 
         switch (sitem.getType())
         {
-        case 0: // static summons (like christmas tree)
+        case 0: // static summons (like Christmas tree)
             try
             {
                 L2Spawn spawn = new L2Spawn(npcTemplate);

@@ -51,7 +51,7 @@ public class SoulShots implements IItemHandler
 		L2Weapon weaponItem = activeChar.getActiveWeaponItem();
         int itemId = item.getItemId();
 
-        // Check if Soulshot can be used
+        // Check if Soul shot can be used
 		if (weaponInst == null || weaponItem.getSoulShotCount() == 0)
 		{
             if(!activeChar.getAutoSoulShot().containsKey(itemId))
@@ -77,11 +77,11 @@ public class SoulShots implements IItemHandler
         activeChar.soulShotLock.lock();
         try
         {
-        	// Check if Soulshot is already active
+        	// Check if Soul shot is already active
         	if (weaponInst.getChargedSoulshot() != L2ItemInstance.CHARGED_NONE)
         		return;
 
-        	// Consume Soulshots if player has enough of them
+        	// Consume Soul shots if player has enough of them
         	int saSSCount = (int)activeChar.getStat().calcStat(Stats.SOULSHOT_COUNT, 0, null, null);
         	int SSCount = saSSCount == 0 ? weaponItem.getSoulShotCount() : saSSCount;
 
@@ -100,7 +100,7 @@ public class SoulShots implements IItemHandler
         		return;
         	}
 
-        	// Charge soulshot
+        	// Charge soul shot
         	weaponInst.setChargedSoulshot(L2ItemInstance.CHARGED_SOULSHOT);
         }
         finally
@@ -110,7 +110,7 @@ public class SoulShots implements IItemHandler
 
 		// Send message to client
         activeChar.sendPacket(new SystemMessage(SystemMessageId.ENABLED_SOULSHOT));
-        Broadcast.toSelfAndKnownPlayersInRadius(activeChar, new MagicSkillUse(activeChar, activeChar, SKILL_IDS[weaponGrade], 1, 0, 0), 360000/*600*/);
+        Broadcast.toSelfAndKnownPlayersInRadius(activeChar, new MagicSkillUse(activeChar, activeChar, SKILL_IDS[weaponGrade], 1, 0, 0), 360000);
 	}
 
 	public int[] getItemIds()

@@ -101,11 +101,16 @@ public class SoulCrystals implements IItemHandler
 		{
         	if (_activeChar.isDead() || _target.isDead())
                 return;
+        	
         	_activeChar.enableAllSkills();
-            try {
+        	
+            try
+            {
             	_target.addAbsorber(_activeChar, _crystalId);
             	_activeChar.setTarget(_target);
-            } catch (Throwable e) {
+            } 
+            catch (Throwable e)
+            {
                 e.printStackTrace();
             }
 		}

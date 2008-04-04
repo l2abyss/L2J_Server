@@ -72,7 +72,8 @@ public class Seed implements IItemHandler {
     private L2MonsterInstance _target;
     private L2PcInstance _activeChar;
 
-    public void useItem(L2PlayableInstance playable, L2ItemInstance item) {
+    public void useItem(L2PlayableInstance playable, L2ItemInstance item)
+    {
         if (!(playable instanceof L2PcInstance))
             return;
 
@@ -92,7 +93,8 @@ public class Seed implements IItemHandler {
         if ( !(target instanceof L2MonsterInstance)  ||
         		(target instanceof L2ChestInstance)  ||
         		(target instanceof L2GrandBossInstance)   ||
-        		(target instanceof L2RaidBossInstance)) {
+        		(target instanceof L2RaidBossInstance))
+        {
         	_activeChar.sendPacket(new SystemMessage(SystemMessageId.THE_TARGET_IS_UNAVAILABLE_FOR_SEEDING));
         	_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
         	return;
@@ -100,34 +102,41 @@ public class Seed implements IItemHandler {
 
         _target = (L2MonsterInstance) target;
 
-        if(_target == null || _target.isDead()) {
+        if(_target == null || _target.isDead())
+        {
         	_activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
         	_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
 
-        if(_target.isSeeded()) {
+        if(_target.isSeeded())
+        {
         	_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
         	return;
         }
 
         _seedId = item.getItemId();
 
-        if(areaValid(MapRegionTable.getInstance().getAreaCastle(_activeChar))) {
+        if(areaValid(MapRegionTable.getInstance().getAreaCastle(_activeChar)))
+        {
         	//TODO: get right skill level
         	_target.setSeeded(_seedId, _activeChar);
-        	L2Skill skill = SkillTable.getInstance().getInfo(2097, 3); //sowing skill
+        	L2Skill skill = SkillTable.getInstance().getInfo(2097, 3); // Sowing skill
         	_activeChar.useMagic(skill,false,false);
-        } else {
+        }
+        else
+        {
         	_activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_SEED_MAY_NOT_BE_SOWN_HERE));
         }
     }
 
-    private boolean areaValid(int castleId) {
+    private boolean areaValid(int castleId)
+    {
 		return (L2Manor.getInstance().getCastleIdForSeed(_seedId) == castleId);
     }
 
-    public int[] getItemIds() {
+    public int[] getItemIds()
+    {
         return _itemIds;
     }
 }
