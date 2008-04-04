@@ -115,14 +115,6 @@ public class Potions implements IItemHandler
 
 		switch(itemId)
 		{
-			// MANA POTIONS
-			case 726: // mana drug, xml: 2003
-				res = usePotion(activeChar, 2003, 1); // configurable through xml
-				break;
-			case 728: // mana_potion, xml: 2005
-				res = usePotion(activeChar, 2005, 1);
-				break;
-
 			// HEALING AND SPEED POTIONS
 			case 65: // red_potion, xml: 2001
 				res = usePotion(activeChar, 2001, 1);
