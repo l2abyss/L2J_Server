@@ -89,6 +89,9 @@ public class L2Spawn
 
 	/** If True a L2NpcInstance is respawned each time that another is killed */
     private boolean _doRespawn;
+    
+    /** If true then spawn is custom */
+    private boolean _customSpawn;
 
     private L2NpcInstance _lastSpawn;
     private static List<SpawnListener> _spawnListeners = new FastList<SpawnListener>();
@@ -322,6 +325,23 @@ public class L2Spawn
 	{
 		_heading = heading;
 	}
+	
+	/**
+     * Set the spawn as custom.<BR>
+     */
+    public void setCustom(boolean custom)
+    {
+        _customSpawn = custom;
+    }
+
+    /**
+     * Return type of spawn.<BR>
+     * <BR>
+     */
+    public boolean isCustom()
+    {
+        return _customSpawn;
+    }
 
 	/**
 	 * Decrease the current number of L2NpcInstance of this L2Spawn and if necessary create a SpawnTask to launch after the respawn Delay.<BR><BR>

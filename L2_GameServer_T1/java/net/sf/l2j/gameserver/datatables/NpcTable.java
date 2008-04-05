@@ -83,7 +83,23 @@ public class NpcTable
 			catch (Exception e) {
 				_log.severe("NPCTable: Error creating NPC table: " + e);
 			}
+			if (Config.CUSTOM_NPC_TABLE)
+			{
+				try
+				{
+					con = L2DatabaseFactory.getInstance().getConnection();
+					PreparedStatement statement;
+					statement = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] { "id", "idTemplate", "name", "serverSideName", "title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type", "attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con", "dex", "int", "wit", "men", "exp", "sp", "patk", "pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "walkspd", "runspd", "faction_id", "faction_range", "isUndead", "absorb_level", "absorb_type", "ss", "bss", "ss_rate", "AI"}) + " FROM custom_npc");
+					ResultSet npcdata = statement.executeQuery();
 
+					fillNpcTable(npcdata);
+					npcdata.close();
+					statement.close();
+				} catch (Exception e)
+				{
+					_log.severe("NPCTable: Error creating custom NPC table: " + e);
+				}
+			}
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
@@ -157,6 +173,42 @@ public class NpcTable
 			} 
 			catch (Exception e) {
 				_log.severe("NPCTable: Error reading NPC drop data: " + e);
+			}
+			
+			if (Config.CUSTOM_DROPLIST_TABLE)
+			{
+				try
+				{
+					PreparedStatement statement2 = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] { "mobId", "itemId", "min", "max", "category", "chance" }) + " FROM custom_droplist ORDER BY mobId, chance DESC");
+					ResultSet dropData = statement2.executeQuery();
+					L2DropData dropDat = null;
+					L2NpcTemplate npcDat = null;
+					int cCount = 0;
+					while (dropData.next())
+					{
+						int mobId = dropData.getInt("mobId");
+						npcDat = _npcs.get(mobId);
+						if (npcDat == null)
+						{
+							_log.severe("NPCTable: CUSTOM DROPLIST No npc correlating with id : " + mobId);
+							continue;
+						}
+						dropDat = new L2DropData();
+						dropDat.setItemId(dropData.getInt("itemId"));
+						dropDat.setMinDrop(dropData.getInt("min"));
+						dropDat.setMaxDrop(dropData.getInt("max"));
+						dropDat.setChance(dropData.getInt("chance"));
+						int category = dropData.getInt("category");
+						npcDat.addDropData(dropDat, category);
+						cCount++;
+					}
+					dropData.close();
+					statement2.close();
+					_log.info("CustomDropList : Added " + cCount + " custom droplist");
+				} catch (Exception e)
+				{
+					_log.severe("NPCTable: Error reading NPC CUSTOM drop data: " + e);
+				}
 			}
 
 			try 

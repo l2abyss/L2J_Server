@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
+import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.L2TeleportLocation;
 
@@ -87,6 +88,45 @@ public class TeleportLocationTable
 		finally
 		{
 			try { con.close(); } catch (Exception e) {}
+		}
+		
+		if (Config.CUSTOM_TELEPORT_TABLE)
+		{
+			try
+			{
+				con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement statement = con.prepareStatement("SELECT Description, id, loc_x, loc_y, loc_z, price, fornoble FROM custom_teleport");
+				ResultSet rset = statement.executeQuery();
+				L2TeleportLocation teleport;
+				int _cTeleCount = _teleports.size();
+				while (rset.next())
+				{
+					teleport = new L2TeleportLocation();
+					teleport.setTeleId(rset.getInt("id"));
+					teleport.setLocX(rset.getInt("loc_x"));
+					teleport.setLocY(rset.getInt("loc_y"));
+					teleport.setLocZ(rset.getInt("loc_z"));
+					teleport.setPrice(rset.getInt("price"));
+					teleport.setIsForNoble(rset.getInt("fornoble") == 1);
+					_teleports.put(teleport.getTeleId(), teleport);
+				}
+				rset.close();
+				statement.close();
+				_cTeleCount = _teleports.size() - _cTeleCount;
+				if (_cTeleCount > 0)
+					_log.config("TeleportLocationTable: Loaded " + _cTeleCount + " Custom Teleport Location Templates.");
+			} catch (Exception e)
+			{
+				_log.warning("error while creating custom teleport table " + e);
+			} finally
+			{
+				try
+				{
+					con.close();
+				} catch (Exception e)
+				{
+				}
+			}
 		}
 	}
 

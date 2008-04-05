@@ -225,6 +225,14 @@ public class ItemTable
 			con = L2DatabaseFactory.getInstance().getConnection();
             for (String selectQuery : SQL_ITEM_SELECTS)
             {
+            	// Don't load custom tables if disabled.
+            	if (selectQuery.endsWith("_etcitem") && !Config.CUSTOM_ETCITEM_TABLE)
+					continue;
+				else if (selectQuery.endsWith("_armor") && !Config.CUSTOM_ARMOR_TABLE)
+					continue;
+				else if (selectQuery.endsWith("_weapon") && !Config.CUSTOM_WEAPON_TABLE)
+					continue;
+            	
                 PreparedStatement statement = con.prepareStatement(selectQuery);
                 ResultSet rset = statement.executeQuery();
 

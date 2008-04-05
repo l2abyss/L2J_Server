@@ -37,17 +37,48 @@ public class L2DropCategory
 		_categoryBalancedChance = 0;
 	}
 
-    public void addDropData(L2DropData drop)
+	public void addDropData(L2DropData drop)
 	{
+        boolean found = false;
+        
 	    if (drop.isQuestDrop()) {
-//			if (_questDrops == null)
-//				_questDrops = new FastList<L2DropData>(0);
-//	        _questDrops.add(drop);
-	    } else {
-	        _drops.add(drop);
-	        _categoryChance += drop.getChance();
-	        // for drop selection inside a category: max 100 % chance for getting an item, scaling all values to that.
-	        _categoryBalancedChance += Math.min((drop.getChance()*Config.RATE_DROP_ITEMS),L2DropData.MAX_CHANCE);
+	    //if (_questDrops == null)
+	    //	_questDrops = new FastList<L2DropData>(0);
+	    //_questDrops.add(drop);
+	    } 
+	    else 
+	    {
+            if (Config.CUSTOM_DROPLIST_TABLE)
+            {
+                // If the drop exists is replaced
+                for (L2DropData d : _drops)
+                {
+                    if (d.getItemId() == drop.getItemId())
+                    {
+                        d.setMinDrop(drop.getMinDrop());
+                        d.setMaxDrop(drop.getMaxDrop());
+                        if (d.getChance() != drop.getChance())
+                        {
+                            // Re-calculate Chance
+                            _categoryChance -= d.getChance();
+                            _categoryBalancedChance -= Math.min((d.getChance() * Config.RATE_DROP_ITEMS), L2DropData.MAX_CHANCE);
+                            d.setChance(drop.getChance());
+                            _categoryChance += d.getChance();
+                            _categoryBalancedChance += Math.min((d.getChance() * Config.RATE_DROP_ITEMS), L2DropData.MAX_CHANCE);
+                        }
+                        found = true;
+                        break;
+                    }
+                }
+            }
+	        
+            if (!found)
+            {
+                _drops.add(drop);
+                _categoryChance += drop.getChance();
+                // for drop selection inside a category: max 100 % chance for getting an item, scaling all values to that.
+                _categoryBalancedChance += Math.min((drop.getChance()*Config.RATE_DROP_ITEMS),L2DropData.MAX_CHANCE);
+            }
 	    }
 	}
 

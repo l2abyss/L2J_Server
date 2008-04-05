@@ -195,6 +195,9 @@ public class AdminSpawn implements IAdminCommandHandler
 		try
 		{
 			L2Spawn spawn = new L2Spawn(template1);
+			if (Config.SAVE_GMSPAWN_ON_CUSTOM)
+				spawn.setCustom(true);
+			
 			spawn.setLocx(target.getX());
 			spawn.setLocy(target.getY());
 			spawn.setLocz(target.getZ());
