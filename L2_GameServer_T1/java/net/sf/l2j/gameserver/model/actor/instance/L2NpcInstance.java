@@ -1255,6 +1255,15 @@ public class L2NpcInstance extends L2Character
             
         	if (qs == null)
         	{
+        		if (q.getQuestIntId() >= 1 && q.getQuestIntId() < 1000)
+        		{
+        			Quest[] questList = player.getAllActiveQuests();
+        			if (questList.length >= 25) // if too many ongoing quests, don't show window and send message
+	                {
+        				player.sendPacket(new SystemMessage(SystemMessageId.TOO_MANY_QUESTS));
+	                    return;
+	                 }
+        		}
 	            // check for start point
 	            Quest[] qlst = getTemplate().getEventQuests(Quest.QuestEventType.QUEST_START);
 	            
