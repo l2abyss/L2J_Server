@@ -114,8 +114,8 @@ public class L2ClanHallZone extends L2ZoneType
 	{
 		for (L2Character temp : _characterList.values())
 		{
-			if(!(temp instanceof L2PcInstance)) return;
-			if (((L2PcInstance)temp).getClanId() != owningClanId) continue;
+			if (!(temp instanceof L2PcInstance)) continue;
+			if (((L2PcInstance)temp).getClanId() == owningClanId) continue;
 
 			((L2PcInstance)temp).teleToLocation(MapRegionTable.TeleportWhereType.Town);
 		}

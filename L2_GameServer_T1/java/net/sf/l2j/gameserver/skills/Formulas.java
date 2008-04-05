@@ -1271,31 +1271,24 @@ public final class Formulas
 			{
 				case UNDEAD:
 					damage *= attacker.getPAtkUndead(target);
-					damage /= target.getPDefUndead(target);
 					break;
 				case BEAST:
 					damage *= attacker.getPAtkMonsters(target);
-					damage /= target.getPDefMonsters(target);
 					break;
 				case ANIMAL:
 					damage *= attacker.getPAtkAnimals(target);
-					damage /= target.getPDefAnimals(target);
 					break;
 				case PLANT:
 					damage *= attacker.getPAtkPlants(target);
-					damage /= target.getPDefPlants(target);
 					break;
 				case DRAGON:
 					damage *= attacker.getPAtkDragons(target);
-					damage /= target.getPDefDragons(target);
 					break;
 				case BUG:
 					damage *= attacker.getPAtkInsects(target);
-					damage /= target.getPDefInsects(target);
 					break;
 				case GIANT:
 					damage *= attacker.getPAtkGiants(target);
-					damage /= target.getPDefGiants(target);
 					break;					
 				default:
 					// nothing
