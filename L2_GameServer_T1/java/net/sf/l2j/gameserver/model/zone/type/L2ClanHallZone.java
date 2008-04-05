@@ -79,9 +79,6 @@ public class L2ClanHallZone extends L2ZoneType
 			AgitDecoInfo deco = new AgitDecoInfo(clanHall);
 			((L2PcInstance)character).sendPacket(deco);
 
-			// Send a message
-			if (clanHall.getOwnerId() != 0 && clanHall.getOwnerId() == ((L2PcInstance)character).getClanId())
-				((L2PcInstance)character).sendMessage("You have entered your clan hall");
 		}
 	}
 
@@ -93,10 +90,6 @@ public class L2ClanHallZone extends L2ZoneType
 			// Unset clanhall zone
 			character.setInsideZone(L2Character.ZONE_CLANHALL, false);
 
-			// Send a message
-			if (((L2PcInstance)character).getClanId() != 0
-					&& ClanHallManager.getInstance().getClanHallById(_clanHallId).getOwnerId() == ((L2PcInstance)character).getClanId())
-				((L2PcInstance)character).sendMessage("You have left your clan hall");
 		}
 	}
 
