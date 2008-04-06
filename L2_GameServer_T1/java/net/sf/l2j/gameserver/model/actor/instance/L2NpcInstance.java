@@ -153,8 +153,6 @@ public class L2NpcInstance extends L2Character
                 {
                 	if (!isInActiveRegion()) // NPCs in inactive region don't run this task
                 		return;
-                	// update knownlist to remove playable which aren't in range any more
-                	getKnownList().updateKnownObjects();
                 }
 
                 if(!(isDead() || isStunned() || isSleeping() || isParalyzed()))

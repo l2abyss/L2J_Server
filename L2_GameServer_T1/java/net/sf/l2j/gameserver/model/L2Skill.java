@@ -1454,7 +1454,7 @@ public abstract class L2Skill
                 // Go through the L2Character _knownList
                 for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())
                 {
-                    if (obj != null && (obj instanceof L2Attackable || obj instanceof L2PlayableInstance))
+                    if (obj instanceof L2Attackable || obj instanceof L2PlayableInstance)
                     {
                         // Don't add this target if this is a Pc->Pc pvp casting and pvp condition not met
                         if (obj == activeChar || obj == src || ((L2Character)obj).isDead()) continue;

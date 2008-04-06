@@ -52,7 +52,7 @@ public class NpcKnownList extends CharKnownList
 	public int getDistanceToWatchObject(L2Object object)
     {
         if (object instanceof L2FestivalGuideInstance)
-            return 10000;
+            return 4000;
 
         if (object instanceof L2FolkInstance || !(object instanceof L2Character))
             return 0;

@@ -228,6 +228,7 @@ import net.sf.l2j.gameserver.network.L2GamePacketHandler;
 import net.sf.l2j.gameserver.pathfinding.geonodes.GeoPathFinding;
 import net.sf.l2j.gameserver.script.faenor.FaenorScriptEngine;
 import net.sf.l2j.gameserver.scripting.L2ScriptEngineManager;
+import net.sf.l2j.gameserver.taskmanager.KnownListUpdateTaskManager;
 import net.sf.l2j.gameserver.taskmanager.TaskManager;
 import net.sf.l2j.gameserver.util.DynamicExtension;
 import net.sf.l2j.gameserver.util.FloodProtector;
@@ -671,6 +672,7 @@ public class GameServer
 
         FloodProtector.getInstance();
         TvTManager.getInstance();
+        KnownListUpdateTaskManager.getInstance();
 		System.gc();
 		// maxMemory is the upper limit the jvm can use, totalMemory the size of the current allocation pool, freeMemory the unused memory in the allocation pool
 		long freeMem = (Runtime.getRuntime().maxMemory()-Runtime.getRuntime().totalMemory()+Runtime.getRuntime().freeMemory()) / 1048576; // 1024 * 1024 = 1048576;

@@ -1326,8 +1326,8 @@ public final class Config
                 MAX_MONSTER_ANIMATION						= Integer.parseInt(General.getProperty("MaxMonsterAnimation", "20"));
                 COORD_SYNCHRONIZE							= Integer.parseInt(General.getProperty("CoordSynchronize", "-1"));
                 GRIDS_ALWAYS_ON								= Boolean.parseBoolean(General.getProperty("GridsAlwaysOn", "False"));
-                GRID_NEIGHBOR_TURNON_TIME					= Integer.parseInt(General.getProperty("GridNeighborTurnOnTime", "30"));
-                GRID_NEIGHBOR_TURNOFF_TIME					= Integer.parseInt(General.getProperty("GridNeighborTurnOffTime", "300"));
+                GRID_NEIGHBOR_TURNON_TIME					= Integer.parseInt(General.getProperty("GridNeighborTurnOnTime", "1"));
+                GRID_NEIGHBOR_TURNOFF_TIME					= Integer.parseInt(General.getProperty("GridNeighborTurnOffTime", "90"));
                 GEODATA										= Integer.parseInt(General.getProperty("GeoData", "0"));
                 FORCE_GEODATA								= Boolean.parseBoolean(General.getProperty("ForceGeoData", "True"));
                 ZONE_TOWN									= Integer.parseInt(General.getProperty("ZoneTown", "0"));

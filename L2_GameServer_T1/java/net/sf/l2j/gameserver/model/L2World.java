@@ -27,6 +27,7 @@ import net.sf.l2j.gameserver.GmListTable;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.taskmanager.KnownListUpdateTaskManager;
 import net.sf.l2j.util.L2ObjectMap;
 import net.sf.l2j.util.Point3D;
 
@@ -349,7 +350,8 @@ public final class L2World
             	_allPlayers.put(player.getName().toLowerCase(), player);
             }
         }
-
+        if (!newRegion.isActive()) 
+        	return;
         // Get all visible objects contained in the _visibleObjects of L2WorldRegions
         // in a circular area of 2000 units
         FastList<L2Object> visibles = getVisibleObjects(object, 2000);
@@ -435,7 +437,7 @@ public final class L2World
                     // Remove the L2Object from the L2ObjectHashSet(L2Object) _knownObjects of the surrounding L2WorldRegion L2Characters
                     // If object is a L2PcInstance, remove the L2Object from the L2ObjectHashSet(L2PcInstance) _knownPlayer of the surrounding L2WorldRegion L2Characters
                     // If object is targeted by one of the surrounding L2WorldRegion L2Characters, cancel ATTACK and cast
-                    if (obj != null && obj.getKnownList() != null)
+                    if (obj.getKnownList() != null)
                         obj.getKnownList().removeKnownObject(object);
 
                     // Remove surrounding L2WorldRegion L2Characters from the L2ObjectHashSet(L2Object) _KnownObjects of object
@@ -496,8 +498,6 @@ public final class L2World
         	// Go through visible objects of the selected region
         	for (L2Object _object : regi.getVisibleObjects())
         	{
-        		if (_object == null)
-        			continue;
             	if (_object.equals(object))
             		continue;   // skip our own character
             	if (!_object.isVisible())
@@ -545,7 +545,6 @@ public final class L2World
             // Go through visible objects of the selected region
             for (L2Object _object : regi.getVisibleObjects())
             {
-                if (_object == null) continue;
                 if (_object.equals(object)) continue;   // skip our own character
 
                 int x1 = _object.getX();
@@ -603,7 +602,6 @@ public final class L2World
         {
         	for (L2Object _object : regi.getVisibleObjects())
             {
-        		if (_object == null) continue;
         		if (_object.equals(object)) continue;   // skip our own character
 
                 int x1 = _object.getX();

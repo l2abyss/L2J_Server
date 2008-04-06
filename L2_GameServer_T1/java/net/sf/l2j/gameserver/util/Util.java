@@ -143,33 +143,10 @@ public final class Util
         return result;
     }
 
-    // Micht: Removed this because UNUSED
+
     /*
-    public static boolean checkIfInRange(int range, int x1, int y1, int x2, int y2)
-    {
-        return checkIfInRange(range, x1, y1, 0, x2, y2, 0, false);
-    }
-
-    public static boolean checkIfInRange(int range, int x1, int y1, int z1, int x2, int y2, int z2, boolean includeZAxis)
-    {
-
-        if (includeZAxis)
-        {
-            return ((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2) + (z1 - z2)*(z1 - z2)) <= range * range;
-        }
-        else
-        {
-            return ((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2)) <= range * range;
-        }
-    }
-
-    public static boolean checkIfInRange(int range, L2Object obj1, L2Object obj2, boolean includeZAxis)
-    {
-        if (obj1 == null || obj2 == null) return false;
-
-        return checkIfInRange(range, obj1.getPosition().getX(), obj1.getPosition().getY(), obj1.getPosition().getZ(), obj2.getPosition().getX(), obj2.getPosition().getY(), obj2.getPosition().getZ(), includeZAxis);
-    }
-    */
+     *  Checks if object is within range, adding collisionRadius
+     */
     public static boolean checkIfInRange(int range, L2Object obj1, L2Object obj2, boolean includeZAxis)
     {
         if (obj1 == null || obj2 == null) return false;
@@ -196,6 +173,31 @@ public final class Util
         	double d = dx*dx + dy*dy;
 
             return d <= range*range + 2*range*rad +rad*rad;
+        }
+    }
+    
+    /*
+     *  Checks if object is within short (sqrt(int.max_value)) radius, 
+     *  not using collisionRadius. Faster calculation than checkIfInRange
+     *  if distance is short and collisionRadius isn't needed.
+     *  Not for long distance checks (potential teleports, far away castles etc)
+     */
+    public static boolean checkIfInShortRadius(int radius, L2Object obj1, L2Object obj2, boolean includeZAxis)
+    {
+        if (obj1 == null || obj2 == null) return false;
+        if (radius == -1) return true; // not limited
+
+        int dx = obj1.getX() - obj2.getX();
+        int dy = obj1.getY() - obj2.getY();
+
+        if (includeZAxis)
+        {
+        	int dz = obj1.getZ() - obj2.getZ();
+            return dx*dx + dy*dy + dz*dz <= radius*radius;
+        }
+        else
+        {
+        	return dx*dx + dy*dy <= radius*radius;
         }
     }
 

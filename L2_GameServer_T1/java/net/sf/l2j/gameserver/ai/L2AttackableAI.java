@@ -399,7 +399,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
             // Go through visible objects
             for (L2Object obj : npc.getKnownList().getKnownObjects().values())
             {
-                if (obj == null || !(obj instanceof L2Character)) continue;
+                if (!(obj instanceof L2Character)) continue;
                 L2Character target = (L2Character) obj;
 
                 /*
@@ -630,7 +630,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
         		{
         			L2NpcInstance npc = (L2NpcInstance) obj;
 
-        			if (npc == null || faction_id != npc.getFactionId())
+        			if (faction_id != npc.getFactionId())
         				continue;
 
         			// Check if the L2Object is inside the Faction Range of the actor
