@@ -459,6 +459,7 @@ public abstract class L2Skill
     private final SkillType _skillType;
     private final SkillType _effectType;
     private final int _effectPower;
+    private final int _effectId;
     private final int _effectLvl;
 
     private final boolean _ispotion;
@@ -570,6 +571,7 @@ public abstract class L2Skill
         _skillType = set.getEnum("skillType", SkillType.class);
         _effectType = set.getEnum("effectType", SkillType.class, null);
         _effectPower = set.getInteger("effectPower", 0);
+        _effectId = set.getInteger("effectId", 0);
         _effectLvl = set.getInteger("effectLevel", 0);
 
         _element = set.getInteger("element", 0);
@@ -781,6 +783,13 @@ public abstract class L2Skill
     }
 
     /**
+     * Return the additional effect Id.<BR><BR>
+     */
+    public final int getEffectId()
+    {
+        return _effectId;
+    }
+    /**
      * Return the additional effect level.<BR><BR>
      */
     public final int getEffectLvl()
@@ -989,12 +998,6 @@ public abstract class L2Skill
     public final int getReuseDelay()
     {
         return _reuseDelay;
-    }
-
-    @Deprecated
-    public final int getSkillTime()
-    {
-        return _hitTime;
     }
 
     public final int getHitTime()
