@@ -5766,13 +5766,16 @@ public final class L2PcInstance extends L2PlayableInstance
         	return false;
         
         Ride mount = new Ride(this, true, npcId);
-        this.setMount(npcId, mount.getMountType());
-        this.setMountObjectID(controlItemObjId);
-        this.broadcastPacket(mount);
+        if (setMount(npcId, mount.getMountType()))
+        {
+        	setMountObjectID(controlItemObjId);
+        	broadcastPacket(mount);
         
-        // Notify self and others about speed change
-        this.broadcastUserInfo();
-        return true;
+        	// Notify self and others about speed change
+        	broadcastUserInfo();
+        	return true;
+        }
+        return false;
     }
 	
 	public boolean dismount()

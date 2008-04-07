@@ -155,4 +155,9 @@ public class GeoData
     {
     	return false;
     }
+    
+    public boolean hasGeo(int x, int y)
+    {
+    	return false;
+    }
 }

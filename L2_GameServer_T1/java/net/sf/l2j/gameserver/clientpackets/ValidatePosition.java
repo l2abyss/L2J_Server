@@ -17,9 +17,11 @@ package net.sf.l2j.gameserver.clientpackets;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.TaskPriority;
 import net.sf.l2j.gameserver.Universe;
 import net.sf.l2j.gameserver.geoeditorcon.GeoEditorListener;
+import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.serverpackets.PartyMemberPosition;
 import net.sf.l2j.gameserver.serverpackets.ValidateLocation;
@@ -62,6 +64,20 @@ public class ValidatePosition extends L2GameClientPacket
         L2PcInstance activeChar = getClient().getActiveChar();
         if (activeChar == null || activeChar.isTeleporting()) return;
 
+        if (Config.GEODATA > 0 
+        		&& (activeChar.isInOlympiadMode() || activeChar.isInsideZone(L2Character.ZONE_SIEGE))
+        		&& !activeChar.isFlying()
+        		&& GeoData.getInstance().hasGeo(activeChar.getX(), activeChar.getY()))
+        {
+        	// check Z coordinate sent by client
+        	short geoHeight = GeoData.getInstance().getSpawnHeight(_x, _y, activeChar.getZ()-30, activeChar.getZ()+30, activeChar.getObjectId());
+        	if (Math.abs(geoHeight - _z) > 15)
+        	{
+        		// causes mild flashing in the middle of a drop from a castle wall for example
+        		_z = geoHeight;
+        		// System.out.println("Spawnheight validation diff="+Math.abs(geoHeight - _z));
+        	}
+        }
         if (Config.COORD_SYNCHRONIZE > 0)
         {
             activeChar.setClientX(_x);

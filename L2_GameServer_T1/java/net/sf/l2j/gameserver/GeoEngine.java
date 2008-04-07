@@ -216,6 +216,16 @@ public class GeoEngine extends GeoData
         return canSee((x - L2World.MAP_MIN_X) >> 4,(y - L2World.MAP_MIN_Y) >> 4,z,(tx - L2World.MAP_MIN_X) >> 4,(ty - L2World.MAP_MIN_Y) >> 4,tz);
     }
 
+    public boolean hasGeo(int x, int y)
+    {
+    	int gx = (x - L2World.MAP_MIN_X) >> 4;
+    	int gy = (y - L2World.MAP_MIN_Y) >> 4;
+        short region = getRegionOffset(gx,gy);
+        if (_geodata.get(region) != null)
+			return false;
+        return true;
+    }
+    
     private static boolean canSee(int x, int y, double z, int tx, int ty, int tz)
     {
     	int dx = (tx - x);
@@ -556,7 +566,10 @@ public class GeoEngine extends GeoData
             	}
             }
         }
-        return destiny; // should actually return correct z here instead of tz
+        if (z == startpoint.getZ()) // geodata hasn't modified Z in any coordinate, i.e. doesn't exist
+        	return destiny;
+        else
+        	return new Location(destiny.getX(),destiny.getY(),(int)z);
     }
 
     private static byte sign(int x)
@@ -923,7 +936,7 @@ public class GeoEngine extends GeoData
 		byte type = geo.get(index);
 		index++;
 	    if(type == 0) //flat
-	        return z;
+	        return geo.getShort(index);
 	    else if(type == 1) //complex
 	    {
 	    	cellX = getCell(x);
