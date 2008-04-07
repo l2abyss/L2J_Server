@@ -15,11 +15,13 @@
 package net.sf.l2j.gameserver.serverpackets;
 
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
+import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2SiegeClan;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
+import net.sf.l2j.gameserver.model.entity.Fort;
 
 /**
  * sample
@@ -85,7 +87,8 @@ public class Die extends L2GameServerPacket
             L2SiegeClan siegeClan = null;
             Boolean isInDefense = false;
             Castle castle = CastleManager.getInstance().getCastle(_activeChar);
-            if (castle != null && castle.getSiege().getIsInProgress())
+			Fort fort = FortManager.getInstance().getFort(_activeChar);
+			if (castle != null && castle.getSiege().getIsInProgress())
             {
             	//siege in progress
                 siegeClan = castle.getSiege().getAttackerClan(_clan);
@@ -93,9 +96,17 @@ public class Die extends L2GameServerPacket
                 	isInDefense = true;
                 }
             }
+            else if (fort != null && fort.getSiege().getIsInProgress())
+            {
+                //siege in progress
+                siegeClan = fort.getSiege().getAttackerClan(_clan);
+                if (siegeClan == null && fort.getSiege().checkIsDefender(_clan)){
+                    isInDefense = true;
+                }
+            }
 
             writeD(_clan.getHasHideout() > 0 ? 0x01 : 0x00);            // 6d 01 00 00 00 - to hide away
-            writeD(_clan.getHasCastle() > 0 ||
+            writeD((_clan.getHasCastle() > 0 || _clan.getHasFort() > 0)  ||
             	   isInDefense? 0x01 : 0x00);             				// 6d 02 00 00 00 - to castle
             writeD(siegeClan != null &&
             	   !isInDefense &&

@@ -52,6 +52,8 @@ public final class Config
     public static final String  EXTENSIONS_CONFIG_FILE							= "./config/extensions.properties";
     /** Properties file for Feature Extensions*/
     public static final String  FEATURE_CONFIG_FILE								= "./config/Feature.properties";
+    /** Properties file for Fortress Siege */
+    public static final String FORTSIEGE_CONFIGURATION_FILE						= "./config/fortsiege.properties"; 
     /** Properties file for General Configurations */
     public static final String  GENERAL_CONFIG_FILE								= "./config/General.properties";
     /** Properties file for GM access Configurations */

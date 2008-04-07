@@ -20,11 +20,13 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
+import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.model.L2SiegeClan;
 import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
+import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.util.IllegalPlayerAction;
@@ -63,7 +65,8 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		public void run()
 		{
 		    Location loc = null;
-		    Castle castle = null;
+            Castle castle = null;
+            Fort fort = null;
 		    
 		    // force jail
 		    if (activeChar.isInJail())
@@ -74,7 +77,6 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		    {
 		        _requestedPointType = 5;
 		    }
-		    
 		    switch (_requestedPointType)
 		    {
 		        case 1: // to clanhall
@@ -97,13 +99,20 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		        case 2: // to castle
 		            Boolean isInDefense = false;
 		            castle = CastleManager.getInstance().getCastle(activeChar);
+                    fort = FortManager.getInstance().getFort(activeChar);
 		            if (castle != null && castle.getSiege().getIsInProgress())
 		            {
 		                //siege in progress
 		                if (castle.getSiege().checkIsDefender(activeChar.getClan()))
 		                    isInDefense = true;
 		            }
-		            if (activeChar.getClan().getHasCastle() == 0 && !isInDefense)
+                    if (fort != null && fort.getSiege().getIsInProgress())
+                    {
+                        //siege in progress
+                        if (fort.getSiege().checkIsDefender(activeChar.getClan()))
+                            isInDefense = true;
+                    }
+		            if ((activeChar.getClan().getHasCastle() == 0 && activeChar.getClan().getHasFort() == 0 ) && !isInDefense )
 		            {
 		                //cheater
 		                activeChar.sendMessage("You may not use this respawn point!");
@@ -116,9 +125,12 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		        case 4: // to siege HQ
 		            L2SiegeClan siegeClan = null;
 		            castle = CastleManager.getInstance().getCastle(activeChar);
+                    fort = FortManager.getInstance().getFort(activeChar);
 		            
-		            if (castle != null && castle.getSiege().getIsInProgress())
-		                siegeClan = castle.getSiege().getAttackerClan(activeChar.getClan());
+                    if (castle != null && castle.getSiege().getIsInProgress())
+                        siegeClan = castle.getSiege().getAttackerClan(activeChar.getClan());
+                    else if (fort != null && fort.getSiege().getIsInProgress())
+                        siegeClan = fort.getSiege().getAttackerClan(activeChar.getClan());
 		            
 		            if (siegeClan == null || siegeClan.getFlag().size() == 0)
 		            {

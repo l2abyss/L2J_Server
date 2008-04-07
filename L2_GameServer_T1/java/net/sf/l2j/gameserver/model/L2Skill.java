@@ -118,6 +118,7 @@ public abstract class L2Skill
         TARGET_CORPSE_MOB,
         TARGET_UNLOCKABLE,
         TARGET_HOLY,
+        TARGET_FLAGPOLE,
         TARGET_PARTY_MEMBER,
         TARGET_PARTY_OTHER,
         TARGET_ENEMY_SUMMON,
@@ -189,6 +190,7 @@ public abstract class L2Skill
     	SPIRITSHOT,
     	SIEGEFLAG,
     	TAKECASTLE,
+    	TAKEFORT,
     	WEAPON_SA,
     	DELUXE_KEY_UNLOCK,
     	SOW,
@@ -1410,6 +1412,10 @@ public abstract class L2Skill
                 }
 
                 return null;
+            }
+            case TARGET_FLAGPOLE:
+            {
+                return new L2Character[] {activeChar};
             }
             case TARGET_PET:
             {

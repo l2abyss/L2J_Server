@@ -27,6 +27,7 @@ import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
 import net.sf.l2j.gameserver.ai.L2DoorAI;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
+import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
@@ -37,6 +38,7 @@ import net.sf.l2j.gameserver.model.actor.stat.DoorStat;
 import net.sf.l2j.gameserver.model.actor.status.DoorStatus;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
+import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.serverpackets.MyTargetSelected;
@@ -58,6 +60,8 @@ public class L2DoorInstance extends L2Character
     /** The castle index in the array of L2Castle this L2NpcInstance belongs to */
     private int _castleIndex = -2;
     private int _mapRegion = -1;
+    /** The fort index in the array of L2Fort this L2NpcInstance belongs to */
+    private int _fortIndex = -2;
 
     // when door is closed, the dimensions are
     private int _rangeXMin = 0;
@@ -274,6 +278,14 @@ public class L2DoorInstance extends L2Character
         if (_castleIndex < 0) return null;
         return CastleManager.getInstance().getCastles().get(_castleIndex);
     }
+
+    public final Fort getFort()
+    {
+        if (_fortIndex < 0) _fortIndex = FortManager.getInstance().getFortIndex(this);
+        if (_fortIndex < 0) return null;
+        return FortManager.getInstance().getForts().get(_fortIndex);
+    }
+    
     public void setClanHall(ClanHall clanhall)
     {
 	_clanHall = clanhall;
@@ -295,12 +307,19 @@ public class L2DoorInstance extends L2Character
             return true;
 
         // Attackable during siege by attacker only
+        boolean isCastle = (getCastle() != null
+                           && getCastle().getCastleId() > 0
+                           && getCastle().getSiege().getIsInProgress()
+                           && getCastle().getSiege().checkIsAttacker(((L2PcInstance)attacker).getClan()));
+
+        boolean isFort = (getFort() != null
+                && getFort().getFortId() > 0
+                && getFort().getSiege().getIsInProgress()
+                && getFort().getSiege().checkIsAttacker(((L2PcInstance)attacker).getClan()));
+                           
         return (attacker != null
                 && attacker instanceof L2PcInstance
-                && getCastle() != null
-                && getCastle().getCastleId() > 0
-                && getCastle().getSiege().getIsInProgress()
-                && getCastle().getSiege().checkIsAttacker(((L2PcInstance)attacker).getClan()));
+                && ( isCastle || isFort));
     }
 
     public boolean isAttackable(L2Character attacker)

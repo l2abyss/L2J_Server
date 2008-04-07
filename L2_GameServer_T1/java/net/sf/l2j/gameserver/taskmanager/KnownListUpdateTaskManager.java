@@ -16,14 +16,14 @@ package net.sf.l2j.gameserver.taskmanager;
 
 import java.util.logging.Logger;
 
-import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2WorldRegion;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2GuardInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 
 
 public class KnownListUpdateTaskManager

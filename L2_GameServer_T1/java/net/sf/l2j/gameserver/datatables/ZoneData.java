@@ -12,6 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+ 
 package net.sf.l2j.gameserver.datatables;
 
 import java.io.File;
@@ -43,6 +44,7 @@ import net.sf.l2j.gameserver.model.zone.type.L2ClanHallZone;
 import net.sf.l2j.gameserver.model.zone.type.L2DamageZone;
 import net.sf.l2j.gameserver.model.zone.type.L2DerbyTrackZone;
 import net.sf.l2j.gameserver.model.zone.type.L2FishingZone;
+import net.sf.l2j.gameserver.model.zone.type.L2FortZone;
 import net.sf.l2j.gameserver.model.zone.type.L2JailZone;
 import net.sf.l2j.gameserver.model.zone.type.L2MotherTreeZone;
 import net.sf.l2j.gameserver.model.zone.type.L2NoLandingZone;
@@ -150,6 +152,8 @@ public class ZoneData
 								temp = new L2OlympiadStadiumZone(zoneId);
 							else if (zoneType.equals("CastleZone"))
 								temp = new L2CastleZone(zoneId);
+			                else if (zoneType.equals("FortZone"))
+			                    temp = new L2FortZone(zoneId);              
 							else if (zoneType.equals("DamageZone"))
 								temp = new L2DamageZone(zoneId);
 							else if (zoneType.equals("Arena"))

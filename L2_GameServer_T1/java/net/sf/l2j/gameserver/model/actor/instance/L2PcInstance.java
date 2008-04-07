@@ -66,11 +66,13 @@ import net.sf.l2j.gameserver.handler.SkillHandler;
 import net.sf.l2j.gameserver.handler.skillhandlers.SiegeFlag;
 import net.sf.l2j.gameserver.handler.skillhandlers.StrSiegeAssault;
 import net.sf.l2j.gameserver.handler.skillhandlers.TakeCastle;
+import net.sf.l2j.gameserver.handler.skillhandlers.TakeFort;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.CoupleManager;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
 import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
 import net.sf.l2j.gameserver.instancemanager.DuelManager;
+import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
 import net.sf.l2j.gameserver.instancemanager.ItemsOnGroundManager;
 import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
@@ -677,6 +679,7 @@ public final class L2PcInstance extends L2PlayableInstance
     private boolean _IsWearingFormalWear = false;
 
 	private int _cursedWeaponEquippedId = 0;
+	private boolean _combatFlagEquippedId = false;
 
 	private int _reviveRequested = 0;
 	private double _revivePower = 0;
@@ -1773,7 +1776,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		{
 			for (L2Object object : getKnownList().getKnownObjects().values())
 			{
-				if (!(object instanceof L2GuardInstance)) continue;
+				if (object == null || !(object instanceof L2GuardInstance)) continue;
 
 				if (((L2GuardInstance)object).getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
 					((L2GuardInstance)object).getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
@@ -2769,6 +2772,10 @@ public final class L2PcInstance extends L2PlayableInstance
 			{
 				CursedWeaponsManager.getInstance().activate(this, newitem);
 			}
+			
+			// Combat Flag
+            else if(FortSiegeManager.getInstance().isCombat(item.getItemId()))
+                FortSiegeManager.getInstance().activateCombatFlag(this, item);
 
 		}
 	}
@@ -2868,6 +2875,9 @@ public final class L2PcInstance extends L2PlayableInstance
                 else if(CursedWeaponsManager.getInstance().isCursed(item.getItemId()))
 					CursedWeaponsManager.getInstance().activate(this, item);
 		    
+		    	// Combat Flag
+                else if(FortSiegeManager.getInstance().isCombat(item.getItemId()))
+                    FortSiegeManager.getInstance().activateCombatFlag(this, item);
             }
 		}
 	}
@@ -4004,6 +4014,14 @@ public final class L2PcInstance extends L2PlayableInstance
 
                 return;
             }
+            
+            // You can pickup only 1 combat flag
+            if(FortSiegeManager.getInstance().isCombat(target.getItemId()) )
+            {
+                if (!FortSiegeManager.getInstance().checkIfCanPickup(this))
+                    return ;
+            }
+            
 	        if(target.getItemLootShedule() != null
 	        		&& (target.getOwnerId() == getObjectId() || isInLooterParty(target.getOwnerId())))
 	        	target.resetOwnerTimer();
@@ -4030,6 +4048,10 @@ public final class L2PcInstance extends L2PlayableInstance
 		{
 			addItem("Pickup", target, null, true);
 		}
+		else if(FortSiegeManager.getInstance().isCombat(target.getItemId()) )
+        {
+            addItem("Pickup", target, null, true);
+        }
 		else
 		{
 			// if item is instance of L2ArmorType or L2WeaponType broadcast an "Attention" system message
@@ -4606,6 +4628,11 @@ public final class L2PcInstance extends L2PlayableInstance
 			{
 				CursedWeaponsManager.getInstance().drop(_cursedWeaponEquippedId, killer);
 			}
+			else if (isCombatFlagEquipped())
+            {
+                FortSiegeManager.getInstance().dropCombatFlag(this);
+                System.out.println("Player with combat flag die");
+            }
 			else
 			{
 				if (pk == null || !pk.isCursedWeaponEquipped())
@@ -7527,7 +7554,8 @@ public final class L2PcInstance extends L2PlayableInstance
 		// Check if it's ok to summon
         // siege golem (13), Wild Hog Cannon (299), Swoop Cannon (448)
         if ((skill.getId() == 13 || skill.getId() == 299 || skill.getId() == 448)
-        		&& !SiegeManager.getInstance().checkIfOkToSummon(this, false))
+        		&& !SiegeManager.getInstance().checkIfOkToSummon(this, false) 
+                && !FortSiegeManager.getInstance().checkIfOkToSummon(this, false))
 			return;
 
 
@@ -7935,6 +7963,14 @@ public final class L2PcInstance extends L2PlayableInstance
 
         if (sklTargetType == SkillTargetType.TARGET_HOLY &&
         		!TakeCastle.checkIfOkToCastSealOfRule(this, false))
+        {
+            sendPacket(ActionFailed.STATIC_PACKET);
+            abortCast();
+            return;
+        }
+        
+        if (sklTargetType == SkillTargetType.TARGET_FLAGPOLE &&
+                !TakeFort.checkIfOkToCastFlagDisplay(this, false))
         {
             sendPacket(ActionFailed.STATIC_PACKET);
             abortCast();
@@ -10680,6 +10716,16 @@ public final class L2PcInstance extends L2PlayableInstance
 	{
 		return _cursedWeaponEquippedId;
 	}
+	
+	public boolean isCombatFlagEquipped()
+    {
+        return _combatFlagEquippedId ;
+    }
+
+    public void setCombatFlagEquipped(boolean value)
+    {
+        _combatFlagEquippedId = value;
+    }
 
 	private boolean _charmOfCourage = false;
 

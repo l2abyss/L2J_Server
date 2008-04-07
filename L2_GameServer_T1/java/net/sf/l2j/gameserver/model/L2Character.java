@@ -49,6 +49,7 @@ import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2ArtefactInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2CommanderInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2ControlTowerInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DecoyInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
@@ -305,7 +306,8 @@ public abstract class L2Character extends L2Object
 			!(this instanceof L2TrapInstance) && !(this instanceof L2FriendlyMobInstance) &&
 			!(this instanceof L2DecoyInstance) && !(this instanceof L2SiegeSummonInstance) &&
 			!(this instanceof L2PetInstance) && !(this instanceof L2SummonInstance) &&
-			!(this instanceof L2SiegeFlagInstance) && !(this instanceof L2EffectPointInstance))
+			!(this instanceof L2SiegeFlagInstance) && !(this instanceof L2EffectPointInstance) &&
+			!(this instanceof L2CommanderInstance))
 			setIsInvul(true);
 	}
 

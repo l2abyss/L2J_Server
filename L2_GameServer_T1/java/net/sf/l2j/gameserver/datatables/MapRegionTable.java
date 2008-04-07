@@ -25,6 +25,7 @@ import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.instancemanager.ArenaManager;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
+import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.instancemanager.TownManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.Location;
@@ -32,6 +33,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
+import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.model.zone.type.L2ArenaZone;
 import net.sf.l2j.gameserver.model.zone.type.L2ClanHallZone;
 
@@ -276,6 +278,7 @@ public class MapRegionTable
                 return new Location(12661, 181687, -3560);
 
             Castle castle = null;
+            Fort fort = null;
             ClanHall clanhall = null;
 
             if (player.getClan() != null)
@@ -298,8 +301,9 @@ public class MapRegionTable
             	// If teleport to castle
             	if (teleportWhere == TeleportWhereType.Castle) castle = CastleManager.getInstance().getCastleByOwner(player.getClan());
 
-            	// Check if player is on castle ground
+            	// Check if player is on castle or fortress ground
                 if (castle == null) castle = CastleManager.getInstance().getCastle(player);
+                if (fort == null) fort = FortManager.getInstance().getFort(player);
 
             	if (castle != null && castle.getCastleId() > 0)
                 {
@@ -315,6 +319,28 @@ public class MapRegionTable
                     {
                         // Check if player's clan is attacker
                         List<L2NpcInstance> flags = castle.getSiege().getFlag(player.getClan());
+                        if (flags != null && !flags.isEmpty())
+                        {
+                            // Spawn to flag - Need more work to get player to the nearest flag
+                            L2NpcInstance flag = flags.get(0);
+                            return new Location(flag.getX(), flag.getY(), flag.getZ());
+                        }
+                    }
+                }
+            	else if (fort != null && fort.getFortId() > 0)
+                {
+                    // If Teleporting to castle or
+                    // If is on caslte with siege and player's clan is defender
+                    if (teleportWhere == TeleportWhereType.Castle || (teleportWhere == TeleportWhereType.Castle && fort.getSiege().getIsInProgress() && fort.getSiege().getDefenderClan(player.getClan()) != null))
+                    {
+                        coord = fort.getZone().getSpawn();
+                        return new Location(coord[0], coord[1], coord[2]);
+                    }
+
+                    if (teleportWhere == TeleportWhereType.SiegeFlag && fort.getSiege().getIsInProgress())
+                    {
+                        // Check if player's clan is attacker
+                        List<L2NpcInstance> flags = fort.getSiege().getFlag(player.getClan());
                         if (flags != null && !flags.isEmpty())
                         {
                             // Spawn to flag - Need more work to get player to the nearest flag
