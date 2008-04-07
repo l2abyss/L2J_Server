@@ -1524,16 +1524,65 @@ public final class Formulas
 		return (int) (skillTime * 333 / attacker.getPAtkSpd());
 	}
 
-	/** Returns true if hit missed (taget evaded) */
+	/** Returns true if hit missed (target evaded) 
+	 *  Formula based on http://l2p.l2wh.com/nonskillattacks.html
+	 **/
 	public boolean calcHitMiss(L2Character attacker, L2Character target)
 	{
-		// accuracy+dexterity => probability to hit in percents
-		int acc_attacker;
-		int evas_target;
-		acc_attacker = attacker.getAccuracy();
-		evas_target = target.getEvasionRate(attacker);
-		int d = 85 + acc_attacker - evas_target;
-		return d < Rnd.get(100);
+		int delta = attacker.getAccuracy() - target.getEvasionRate(attacker);
+		int chance;
+		if (delta >= 10) chance = 980;
+		else 
+		{
+			switch (delta)
+			{
+				case 9: chance = 975; break; 
+				case 8: chance = 970; break;
+				case 7: chance = 965; break;
+				case 6: chance = 960; break;
+				case 5: chance = 955; break;
+				case 4: chance = 945; break;
+				case 3: chance = 935; break;
+				case 2: chance = 925; break;
+				case 1: chance = 915; break;
+				case 0: chance = 905; break;
+				case -1: chance = 890; break;
+				case -2: chance = 875; break;
+				case -3: chance = 860; break;
+				case -4: chance = 845; break;
+				case -5: chance = 830; break;
+				case -6: chance = 815; break;
+				case -7: chance = 800; break;
+				case -8: chance = 785; break;
+				case -9: chance = 770; break;
+				case -10: chance = 755; break;
+				case -11: chance = 735; break;
+				case -12: chance = 715; break;
+				case -13: chance = 695; break;
+				case -14: chance = 675; break;
+				case -15: chance = 655; break;
+				case -16: chance = 625; break;
+				case -17: chance = 595; break;
+				case -18: chance = 565; break;
+				case -19: chance = 535; break;
+				case -20: chance = 505; break;
+				case -21: chance = 455; break;
+				case -22: chance = 405; break;
+				case -23: chance = 355; break;
+				case -24: chance = 305; break;
+				default: chance = 275;
+			}
+			if(!attacker.isInFrontOfTarget())
+			{
+				if(attacker.isBehindTarget())
+					chance *= 1.2;
+				else // side
+					chance *= 1.1;
+				if (chance > 980)
+					chance = 980;
+			}
+		}
+		return chance < Rnd.get(1000);
 	}
 
 	/** Returns true if shield defence successful */

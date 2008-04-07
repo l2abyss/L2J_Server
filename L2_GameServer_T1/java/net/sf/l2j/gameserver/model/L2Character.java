@@ -6272,7 +6272,7 @@ public abstract class L2Character extends L2Object
 	}
 
 	/**
-	 * Return True if the target is facing th L2Character.<BR><BR>
+	 * Return True if the target is facing the L2Character.<BR><BR>
 	 */
 	public boolean isInFrontOf(L2Character target)
 	{
