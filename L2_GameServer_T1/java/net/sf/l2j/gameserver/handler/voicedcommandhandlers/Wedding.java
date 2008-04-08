@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.GameTimeController;
+import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.SkillTable;
@@ -237,16 +238,17 @@ public class Wedding implements IVoicedCommandHandler
             activeChar.sendMessage("You're not married.");
             return false;
         }
-        if (GrandBossManager.getInstance().getZone(activeChar) != null)
-        {
-            activeChar.sendMessage("You are inside a Boss Zone.");
-            return false;
-        }
 
         if(activeChar.getPartnerId()==0)
         {
             activeChar.sendMessage("Couldn't find your fiance in the Database - Inform a Gamemaster.");
             _log.severe("Married but couldn't find parter for "+activeChar.getName());
+            return false;
+        }
+        
+        if (GrandBossManager.getInstance().getZone(activeChar) != null)
+        {
+            activeChar.sendMessage("You are inside a Boss Zone.");
             return false;
         }
 
@@ -303,7 +305,34 @@ public class Wedding implements IVoicedCommandHandler
         	activeChar.sendMessage("Your partner is in siege, you can't go to your partner.");
         	return false;
         }
-
+        else if (partner.isIn7sDungeon() && !activeChar.isIn7sDungeon())
+        {
+            int playerCabal = SevenSigns.getInstance().getPlayerCabal(activeChar);
+            boolean isSealValidationPeriod = SevenSigns.getInstance().isSealValidationPeriod();
+            int compWinner = SevenSigns.getInstance().getCabalHighestScore();
+            
+            if (isSealValidationPeriod)
+            {
+            	if (playerCabal != compWinner)
+            	{
+            		activeChar.sendMessage("Your Partner is in a Seven Signs Dungeon and you are not in the winner Cabal!");
+            		return false;
+            	}
+            }
+            else
+            {
+            	if (playerCabal == SevenSigns.CABAL_NULL)
+            	{
+            		activeChar.sendMessage("Your Partner is in a Seven Signs Dungeon and you are not registered!");
+            		return false;
+            	}
+            }
+        }
+        else if (!TvTEvent.onEscapeUse(partner.getName()))
+        {
+        	activeChar.sendMessage("Your partner is in an event.");
+        	return false;
+        }
         else if(activeChar.isInJail())
         {
             activeChar.sendMessage("You are in Jail!");
@@ -351,6 +380,11 @@ public class Wedding implements IVoicedCommandHandler
         	activeChar.sendPacket(ActionFailed.STATIC_PACKET);
         	return false;
         }
+        
+        if (partner.isIn7sDungeon())
+        	activeChar.setIsIn7sDungeon(true);
+        else
+        	activeChar.setIsIn7sDungeon(false);
 
 
         int teleportTimer = Config.L2JMOD_WEDDING_TELEPORT_DURATION*1000;
