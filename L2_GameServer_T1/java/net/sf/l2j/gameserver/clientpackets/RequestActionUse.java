@@ -244,7 +244,7 @@ public final class RequestActionUse extends L2GameClientPacket
                         activeChar.sendPacket(msg);
                         msg = null;
                     }
-                    else if (activeChar.isInCombat())
+                    else if (activeChar.isInCombat() || activeChar.getPvpFlag() != 0)
                     {
                         //A strider cannot be ridden while in battle
                         SystemMessage msg = new SystemMessage(SystemMessageId.STRIDER_CANT_BE_RIDDEN_WHILE_IN_BATTLE);
