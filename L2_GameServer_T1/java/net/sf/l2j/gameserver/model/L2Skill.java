@@ -2252,7 +2252,7 @@ public abstract class L2Skill
                         {
                             L2PcInstance newTarget = member.getPlayerInstance();
 
-                            if (newTarget == null) continue;
+                            if (newTarget == null || newTarget == player) continue;
 
                             if (targetType == SkillTargetType.TARGET_CORPSE_CLAN)
                             {
