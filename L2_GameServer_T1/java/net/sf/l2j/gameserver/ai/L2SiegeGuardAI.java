@@ -30,8 +30,10 @@ import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.actor.instance.L2CommanderInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2FortMerchantInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
@@ -126,6 +128,8 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
         // Check if the target isn't another guard, folk or a door
         if (target == null ||
         	target instanceof L2SiegeGuardInstance ||
+            target instanceof L2CommanderInstance ||
+            target instanceof L2FortMerchantInstance ||
             target instanceof L2FolkInstance ||
         	target instanceof L2DoorInstance ||
         	target.isAlikeDead()) return false;
