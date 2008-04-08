@@ -67,7 +67,7 @@ public class ValidatePosition extends L2GameClientPacket
         if (Config.GEODATA > 0 
         		&& (activeChar.isInOlympiadMode() || activeChar.isInsideZone(L2Character.ZONE_SIEGE))
         		&& !activeChar.isFlying()
-        		&& GeoData.getInstance().hasGeo(activeChar.getX(), activeChar.getY()))
+        		&& GeoData.getInstance().hasGeo(_x, _y))
         {
         	// check Z coordinate sent by client
         	short geoHeight = GeoData.getInstance().getSpawnHeight(_x, _y, activeChar.getZ()-30, activeChar.getZ()+30, activeChar.getObjectId());

@@ -1776,7 +1776,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		{
 			for (L2Object object : getKnownList().getKnownObjects().values())
 			{
-				if (object == null || !(object instanceof L2GuardInstance)) continue;
+				if (!(object instanceof L2GuardInstance)) continue;
 
 				if (((L2GuardInstance)object).getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
 					((L2GuardInstance)object).getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
