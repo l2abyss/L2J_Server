@@ -1098,8 +1098,9 @@ public final class Formulas
 			power *= skill.getSSBoost();
 
 		//Multiplier should be removed, it's false ??
-		damage += 1.5*attacker.calcStat(Stats.CRITICAL_DAMAGE, damage+power, target, skill);
-		//damage *= (double)attacker.getLevel()/target.getLevel();
+		// TODO: Check if CritVuln effects whole part of CritDmg.
+		damage += 1.5*(attacker.calcStat(Stats.CRITICAL_DAMAGE, damage+power, target, skill)
+				* target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, skill != null ? skill : null));
 
 		// get the natural vulnerability for the template
 		if (target instanceof L2NpcInstance)
@@ -1122,10 +1123,6 @@ public final class Formulas
 			{
 				if(((L2PcInstance)target).isWearingHeavyArmor())
 					damage /= 1.2; // 2
-				//if(((L2PcInstance)target).isWearingLightArmor())
-				//	damage /= 1.1; // 1.5
-				//if(((L2PcInstance)target).isWearingMagicArmor())
-				//	damage /= 1;   // 1.3
 			}
 		}
 		return damage < 1 ? 1. : damage;
