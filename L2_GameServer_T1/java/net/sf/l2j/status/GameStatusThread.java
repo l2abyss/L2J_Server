@@ -420,10 +420,11 @@ public class GameStatusThread extends Thread
                             L2ItemInstance item = player.getInventory().addItem("Status-Give", itemId, amount, null, null);
                             InventoryUpdate iu = new InventoryUpdate();
                             iu.addItem(item);
+                            player.sendPacket(iu);
                             SystemMessage sm = new SystemMessage(SystemMessageId.YOU_PICKED_UP_S1_S2);
                             sm.addItemName(itemId);
                             sm.addNumber(amount);
-                            player.sendPacket(iu);
+                            player.sendPacket(sm);
                             _print.println("ok");
                         }
                     }
