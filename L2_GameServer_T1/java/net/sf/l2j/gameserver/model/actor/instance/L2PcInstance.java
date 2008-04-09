@@ -8059,7 +8059,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			{
 				if(getClan() != null && ((L2PcInstance)target).getClan() != null)
 				{
-					if(getClan().isAtWarWith(((L2PcInstance)target).getClan().getClanId()))
+					if(getClan().isAtWarWith(((L2PcInstance)target).getClan().getClanId()) && ((L2PcInstance)target).getClan().isAtWarWith(getClan().getClanId()))
 						return true; // in clan war player can attack whites even with sleep etc.
 				}
 				if (
