@@ -1948,6 +1948,20 @@ public enum SystemMessageId
      */
     ALREADY_AT_WAR_WITH_S1_WAIT_5_DAYS(628),
 
+
+    /**
+     * ID: 638<br>
+     * Message: You have already requested a Siege Battle.
+     */
+    ALREADY_REQUESTED_SIEGE_BATTLE(638),
+    
+    /**
+     * ID: 639<br>
+     * Message: Your application has been denied because you have already submitted 
+     * a request for another Siege Battle.
+     */
+    APPLICATION_DENIED_BECAUSE_ALREADY_SUBMITTED_A_REQUEST_FOR_ANOTHER_SIEGE_BATTLE(639),
+
     /**
      * ID: 642<br>
      * Message: You are already registered to the attacker

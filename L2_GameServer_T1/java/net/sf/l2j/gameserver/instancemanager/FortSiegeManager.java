@@ -294,24 +294,18 @@ public class FortSiegeManager
 
     public final List<FortSiege> getSieges()
     {
-        if (_sieges == null) _sieges = new FastList<FortSiege>();
+        if (_sieges == null) 
+        	_sieges = new FastList<FortSiege>();
         return _sieges;
     }
 
     public final void addSiege(FortSiege fortSiege)
     {
-    if (_sieges == null)
-        _sieges = new FastList<FortSiege>();
-    _sieges.add(fortSiege);
+    	if (_sieges == null)
+    		_sieges = new FastList<FortSiege>();
+    	_sieges.add(fortSiege);
     }
 
-    public final void removeSiege(FortSiege fortSiege)
-    {
-    if (_sieges == null)
-        _sieges = new FastList<FortSiege>();
-    _sieges.remove(fortSiege);
-    }
-    
     public boolean isCombat(int itemId)
     {
         return ( itemId == 9819);

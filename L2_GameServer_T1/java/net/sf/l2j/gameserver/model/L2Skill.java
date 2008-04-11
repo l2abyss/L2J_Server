@@ -1528,7 +1528,7 @@ public abstract class L2Skill
                 // Go through the L2Character _knownList
                 for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())
                 {
-                    if (obj != null && (obj instanceof L2Attackable || obj instanceof L2PlayableInstance))
+                    if (obj instanceof L2Attackable || obj instanceof L2PlayableInstance)
                     {
                         // Don't add this target if this is a Pc->Pc pvp casting and pvp condition not met
                         if (obj == activeChar || obj == src || ((L2Character)obj).isDead()) continue;
@@ -1600,7 +1600,7 @@ public abstract class L2Skill
                 // Go through the L2Character _knownList
                 for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())
                 {
-                    if (obj != null && (obj instanceof L2Attackable || obj instanceof L2PlayableInstance))
+                    if (obj instanceof L2Attackable || obj instanceof L2PlayableInstance)
                     {
                         // Don't add this target if this is a Pc->Pc pvp casting and pvp condition not met
                         if (obj == activeChar || obj == src || ((L2Character)obj).isDead()) continue;
@@ -1691,7 +1691,6 @@ public abstract class L2Skill
 
                 for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())
                 {
-                    if (obj == null) continue;
                 	if (!(obj instanceof L2Attackable || obj instanceof L2PlayableInstance)) continue;
                     if (obj == cha) continue;
                     target = (L2Character) obj;
@@ -1808,7 +1807,7 @@ public abstract class L2Skill
 
                 for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())
                 {
-                    if (obj == null || obj == cha)
+                    if (obj == cha)
                     	continue;
 
                     if (!(obj instanceof L2Attackable
@@ -1931,7 +1930,6 @@ public abstract class L2Skill
 
                 for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())
                 {
-                    if (obj == null) continue;
                 	if (!(obj instanceof L2Attackable || obj instanceof L2PlayableInstance)) continue;
                     if (obj == cha) continue;
                     target = (L2Character) obj;
@@ -2033,7 +2031,6 @@ public abstract class L2Skill
 
                 for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())
                 {
-                    if (obj == null) continue;
                 	if (!Util.checkIfInRange(radius, activeChar, obj, true)) continue;
 
                     if (obj instanceof L2Attackable && obj != target) targetList.add((L2Character) obj);
@@ -2186,7 +2183,7 @@ public abstract class L2Skill
                         // Get Clan Members
                         for (L2Object newTarget : activeChar.getKnownList().getKnownObjects().values())
                         {
-                            if (newTarget == null || !(newTarget instanceof L2PcInstance)) continue;
+                            if (!(newTarget instanceof L2PcInstance)) continue;
                             if ((((L2PcInstance) newTarget).getAllyId() == 0 || ((L2PcInstance) newTarget).getAllyId() != player.getAllyId())
                                 && (((L2PcInstance) newTarget).getClan() == null || ((L2PcInstance) newTarget).getClanId() != player.getClanId()))
                                 continue;
@@ -2408,7 +2405,6 @@ public abstract class L2Skill
                 if (activeChar.getKnownList() != null)
                 	for (L2Object obj : activeChar.getKnownList().getKnownObjects().values())
                     {
-                        if (obj == null) continue;
                         if (!(obj instanceof L2Attackable || obj instanceof L2PlayableInstance) || ((L2Character) obj).isDead()
                             || ((L2Character) obj) == activeChar) continue;
 
@@ -2536,7 +2532,6 @@ public abstract class L2Skill
                 if (cha != null && cha.getKnownList() != null)
                     for (L2Object obj : cha.getKnownList().getKnownObjects().values())
                     {
-                        if (obj == null) continue;
                     	if (obj instanceof L2NpcInstance)
                     		target = (L2NpcInstance) obj;
                     	else if (obj instanceof L2SummonInstance)

@@ -5989,7 +5989,10 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	public void broadcastKarma()
 	{
-		sendPacket(new UserInfo(this));
+        StatusUpdate su = new StatusUpdate(getObjectId());
+        su.addAttribute(StatusUpdate.KARMA, getKarma());
+        sendPacket(su);
+
 		for (L2PcInstance player : getKnownList().getKnownPlayers().values()) {
 			player.sendPacket(new RelationChanged(this, getRelation(player), isAutoAttackable(player)));
 		}

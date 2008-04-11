@@ -912,20 +912,45 @@ public class Siege
      */
     private boolean checkIfCanRegister(L2PcInstance player)
     {
-        if (getIsRegistrationOver()) player.sendMessage("The deadline to register for the siege of "
+        if (getIsRegistrationOver()) 
+        	player.sendMessage("The deadline to register for the siege of "
             + getCastle().getName() + " has passed.");
-        else if (getIsInProgress()) player.sendMessage("This is not the time for siege registration and so registration and cancellation cannot be done.");
-        else if (player.getClan() == null
-            || player.getClan().getLevel() < SiegeManager.getInstance().getSiegeClanMinLevel()) player.sendMessage("Only clans with Level "
+        else if (getIsInProgress()) 
+        	player.sendMessage("This is not the time for siege registration and so registration and cancellation cannot be done.");
+        else if (player.getClan() == null || player.getClan().getLevel() < SiegeManager.getInstance().getSiegeClanMinLevel()) 
+        	player.sendMessage("Only clans with Level "
             + SiegeManager.getInstance().getSiegeClanMinLevel()
             + " and higher may register for a castle siege.");
-        else if (player.getClan().getHasCastle() > 0) player.sendMessage("You cannot register because your clan already own a castle.");
+        else if (player.getClan().getHasCastle() > 0) 
+        	player.sendMessage("You cannot register because your clan already owns a castle.");
         else if (player.getClan().getClanId() == getCastle().getOwnerId())
             player.sendPacket(new SystemMessage(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING));
-        else if (SiegeManager.getInstance().checkIsRegistered(player.getClan(), getCastle().getCastleId())) player.sendMessage("You are already registered in a Siege.");
+        else if (SiegeManager.getInstance().checkIsRegistered(player.getClan(), getCastle().getCastleId())) 
+        	player.sendPacket(new SystemMessage(SystemMessageId.ALREADY_REQUESTED_SIEGE_BATTLE));
+        else if (checkIfAlreadyRegisteredForSameDay(player.getClan())) 
+        	player.sendPacket(new SystemMessage(SystemMessageId.APPLICATION_DENIED_BECAUSE_ALREADY_SUBMITTED_A_REQUEST_FOR_ANOTHER_SIEGE_BATTLE));
         else return true;
 
         return false;
+    }
+
+    /**
+     * Return true if the clan has already registered to a siege for the same day.<BR><BR>
+     * @param clan The L2Clan of the player trying to register
+     */
+    public boolean checkIfAlreadyRegisteredForSameDay(L2Clan clan)
+    {
+    	for (Siege siege : SiegeManager.getInstance().getSieges())
+    	{
+    		if (siege == this) continue;
+    		if (siege.getSiegeDate().get(Calendar.DAY_OF_WEEK) == this.getSiegeDate().get(Calendar.DAY_OF_WEEK))
+    		{
+    			if (siege.checkIsAttacker(clan)) return true;
+    			if (siege.checkIsDefender(clan)) return true;
+    			if (siege.checkIsDefenderWaiting(clan)) return true;
+    		}
+    	}
+    	return false;
     }
 
     /**

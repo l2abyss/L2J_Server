@@ -71,7 +71,6 @@ public class SiegeManager
     private int _flagMaxCount                                   = 1; // Changeable in siege.config
     private int _siegeClanMinLevel                             = 4; // Changeable in siege.config
     private int _siegeLength                                    = 120; // Time in minute. Changeable in siege.config
-    private List<Siege> _sieges;
 
     // =========================================================
     // Constructor
@@ -293,8 +292,10 @@ public class SiegeManager
 
     public final List<Siege> getSieges()
     {
-        if (_sieges == null) _sieges = new FastList<Siege>();
-        return _sieges;
+        FastList<Siege> sieges = new FastList<Siege>();
+        for (Castle castle: CastleManager.getInstance().getCastles())
+        	sieges.add(castle.getSiege());
+        return sieges;
     }
 
     public class  SiegeSpawn
