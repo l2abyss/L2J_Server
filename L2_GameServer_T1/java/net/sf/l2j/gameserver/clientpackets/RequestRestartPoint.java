@@ -100,6 +100,8 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		            Boolean isInDefense = false;
 		            castle = CastleManager.getInstance().getCastle(activeChar);
                     fort = FortManager.getInstance().getFort(activeChar);
+                    MapRegionTable.TeleportWhereType teleportWhere = MapRegionTable.TeleportWhereType.Castle;
+                    
 		            if (castle != null && castle.getSiege().getIsInProgress())
 		            {
 		                //siege in progress
@@ -108,6 +110,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		            }
                     if (fort != null && fort.getSiege().getIsInProgress())
                     {
+                    	teleportWhere = MapRegionTable.TeleportWhereType.Fortress;	
                         //siege in progress
                         if (fort.getSiege().checkIsDefender(activeChar.getClan()))
                             isInDefense = true;
@@ -119,7 +122,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		                Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " used respawn cheat.", IllegalPlayerAction.PUNISH_KICK);
 		                return;
 		            }
-		            loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Castle);
+		            loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, teleportWhere);
 		            break;
 		            
 		        case 4: // to siege HQ

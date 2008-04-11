@@ -55,7 +55,8 @@ public class MapRegionTable
         Castle,
         ClanHall,
         SiegeFlag,
-        Town
+        Town,
+        Fortress
     }
 
 	public static MapRegionTable getInstance()
@@ -300,6 +301,8 @@ public class MapRegionTable
 
             	// If teleport to castle
             	if (teleportWhere == TeleportWhereType.Castle) castle = CastleManager.getInstance().getCastleByOwner(player.getClan());
+            	// If teleport to fort
+            	if (teleportWhere == TeleportWhereType.Fortress) fort = FortManager.getInstance().getFortByOwner(player.getClan());
 
             	// Check if player is on castle or fortress ground
                 if (castle == null) castle = CastleManager.getInstance().getCastle(player);
@@ -331,7 +334,7 @@ public class MapRegionTable
                 {
                     // If Teleporting to castle or
                     // If is on caslte with siege and player's clan is defender
-                    if (teleportWhere == TeleportWhereType.Castle || (teleportWhere == TeleportWhereType.Castle && fort.getSiege().getIsInProgress() && fort.getSiege().getDefenderClan(player.getClan()) != null))
+                    if (teleportWhere == TeleportWhereType.Fortress || (teleportWhere == TeleportWhereType.Fortress && fort.getSiege().getIsInProgress() && fort.getSiege().getDefenderClan(player.getClan()) != null))
                     {
                         coord = fort.getZone().getSpawn();
                         return new Location(coord[0], coord[1], coord[2]);

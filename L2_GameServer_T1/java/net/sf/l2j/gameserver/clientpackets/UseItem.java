@@ -135,12 +135,15 @@ public final class UseItem extends L2GameClientPacket
 			 * 7559  	Scroll of Escape to Giran Castle Town
 			 * 7618  	Scroll of Escape - Ketra Orc Village
 			 * 7619  	Scroll of Escape - Varka Silenos Village
+			 * 10129    Scroll of Escape : Fortress
+			 * 10130    Blessed Scroll of Escape : Fortress
 			 */
 			if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && activeChar.getKarma() > 0
 				&& (itemId == 736 || itemId == 1538 || itemId == 1829 || itemId == 1830
 				|| itemId == 3958 || itemId == 5858 || itemId == 5859 || itemId == 6663
 				|| itemId == 6664 || (itemId >= 7117 && itemId <= 7135)
-				|| (itemId >= 7554 && itemId <= 7559) || itemId == 7618 || itemId == 7619))
+				|| (itemId >= 7554 && itemId <= 7559) || itemId == 7618 || itemId == 7619
+				|| itemId == 10129 || itemId == 10130))
 				return;
 
 
