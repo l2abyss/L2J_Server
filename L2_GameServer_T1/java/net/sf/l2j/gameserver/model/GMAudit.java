@@ -45,7 +45,7 @@ public class GMAudit
 				File file = new File("log/GMAudit/" + gmName + ".txt");
 				FileWriter save = new FileWriter(file, true);
 				
-				String out = (today + ">" + gmName + ">" + action + ">" + target + ">" + params + "\n");
+				String out = (today + ">" + gmName + ">" + action + ">" + target + ">" + params + "\r\n");
 				
 				save.write(out);
 				save.flush();
