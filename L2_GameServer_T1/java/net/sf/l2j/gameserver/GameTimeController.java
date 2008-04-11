@@ -227,7 +227,8 @@ public class GameTimeController
         {
             try
             {
-                _ended.getAI().notifyEvent(CtrlEvent.EVT_ARRIVED);
+            	if (_ended.hasAI()) // AI could be just disabled due to region turn off
+            		_ended.getAI().notifyEvent(CtrlEvent.EVT_ARRIVED);
             }
             catch (NullPointerException e)
             {
