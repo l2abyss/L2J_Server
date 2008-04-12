@@ -163,7 +163,7 @@ public class ScrollOfEscape implements IItemHandler
                 { 
                 	_activeChar.teleToLocation(MapRegionTable.TeleportWhereType.Castle); 
                 }
-                if ((_itemId == 10129 || _itemId == 10130) && FortManager.getInstance().getFortByOwner(_activeChar.getClan()) != null) // escape to fortress if own's one
+                else if ((_itemId == 10129 || _itemId == 10130) && FortManager.getInstance().getFortByOwner(_activeChar.getClan()) != null) // escape to fortress if own's one
                 { 
                 	_activeChar.teleToLocation(MapRegionTable.TeleportWhereType.Fortress); 
                 }

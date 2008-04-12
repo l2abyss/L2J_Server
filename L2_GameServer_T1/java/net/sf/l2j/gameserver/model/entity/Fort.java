@@ -320,6 +320,7 @@ public class Fort
             if (getOwnerId() > 0)
             {
                 L2Clan clan = ClanTable.getInstance().getClan(getOwnerId());                        // Try to find clan instance
+                clan.setHasFort(getFortId());
                 ThreadPoolManager.getInstance().scheduleGeneral(new FortUpdater(clan, 1), 3600000);     // Schedule owner tasks to start running
             }
 

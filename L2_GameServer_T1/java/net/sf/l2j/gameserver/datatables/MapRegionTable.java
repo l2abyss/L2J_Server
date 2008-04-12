@@ -300,58 +300,77 @@ public class MapRegionTable
                 }
 
             	// If teleport to castle
-            	if (teleportWhere == TeleportWhereType.Castle) castle = CastleManager.getInstance().getCastleByOwner(player.getClan());
-            	// If teleport to fort
-            	if (teleportWhere == TeleportWhereType.Fortress) fort = FortManager.getInstance().getFortByOwner(player.getClan());
+            	if (teleportWhere == TeleportWhereType.Castle)
+            	{
+            		castle = CastleManager.getInstance().getCastleByOwner(player.getClan());
+                	// Check if player is on castle or fortress ground
+                    if (castle == null) castle = CastleManager.getInstance().getCastle(player);
 
-            	// Check if player is on castle or fortress ground
-                if (castle == null) castle = CastleManager.getInstance().getCastle(player);
-                if (fort == null) fort = FortManager.getInstance().getFort(player);
+                	if (castle != null && castle.getCastleId() > 0)
+                    {
+                		// If Teleporting to castle or
+                		// If is on caslte with siege and player's clan is defender
+                		if (teleportWhere == TeleportWhereType.Castle || (teleportWhere == TeleportWhereType.Castle && castle.getSiege().getIsInProgress() && castle.getSiege().getDefenderClan(player.getClan()) != null))
+                		{
+               				coord = castle.getZone().getSpawn();
+                			return new Location(coord[0], coord[1], coord[2]);
+                		}
+                    }
+            	}
 
-            	if (castle != null && castle.getCastleId() > 0)
-                {
-            		// If Teleporting to castle or
-            		// If is on caslte with siege and player's clan is defender
-            		if (teleportWhere == TeleportWhereType.Castle || (teleportWhere == TeleportWhereType.Castle && castle.getSiege().getIsInProgress() && castle.getSiege().getDefenderClan(player.getClan()) != null))
+            	// If teleport to fortress
+            	if (teleportWhere == TeleportWhereType.Fortress)
+            	{
+            		fort = FortManager.getInstance().getFortByOwner(player.getClan());	
+                    if (fort == null) fort = FortManager.getInstance().getFort(player);
+
+                    if (fort != null && fort.getFortId() > 0)
+                    {
+                        // If Teleporting to castle or
+                        // If is on caslte with siege and player's clan is defender
+                        if (teleportWhere == TeleportWhereType.Fortress || (teleportWhere == TeleportWhereType.Fortress && fort.getSiege().getIsInProgress() && fort.getSiege().getDefenderClan(player.getClan()) != null))
+                        {
+                            coord = fort.getZone().getSpawn();
+                            return new Location(coord[0], coord[1], coord[2]);
+                        }
+                    }
+            	}
+
+            	// If teleport to SiegeHQ
+            	if (teleportWhere == TeleportWhereType.SiegeFlag)
+            	{
+            		castle = CastleManager.getInstance().getCastle(player);
+            		fort = FortManager.getInstance().getFort(player);
+            		if ( castle != null)
             		{
-           				coord = castle.getZone().getSpawn();
-            			return new Location(coord[0], coord[1], coord[2]);
+            			if (castle.getSiege().getIsInProgress())
+            			{
+            				// Check if player's clan is attacker
+            				List<L2NpcInstance> flags = castle.getSiege().getFlag(player.getClan());
+            				if (flags != null && !flags.isEmpty())
+            				{
+            					// Spawn to flag - Need more work to get player to the nearest flag
+            					L2NpcInstance flag = flags.get(0);
+            					return new Location(flag.getX(), flag.getY(), flag.getZ());
+            				}
+            			}
+                	  
             		}
-
-            		if (teleportWhere == TeleportWhereType.SiegeFlag && castle.getSiege().getIsInProgress())
-                    {
-                        // Check if player's clan is attacker
-                        List<L2NpcInstance> flags = castle.getSiege().getFlag(player.getClan());
-                        if (flags != null && !flags.isEmpty())
-                        {
-                            // Spawn to flag - Need more work to get player to the nearest flag
-                            L2NpcInstance flag = flags.get(0);
-                            return new Location(flag.getX(), flag.getY(), flag.getZ());
-                        }
-                    }
-                }
-            	else if (fort != null && fort.getFortId() > 0)
-                {
-                    // If Teleporting to castle or
-                    // If is on caslte with siege and player's clan is defender
-                    if (teleportWhere == TeleportWhereType.Fortress || (teleportWhere == TeleportWhereType.Fortress && fort.getSiege().getIsInProgress() && fort.getSiege().getDefenderClan(player.getClan()) != null))
-                    {
-                        coord = fort.getZone().getSpawn();
-                        return new Location(coord[0], coord[1], coord[2]);
-                    }
-
-                    if (teleportWhere == TeleportWhereType.SiegeFlag && fort.getSiege().getIsInProgress())
-                    {
-                        // Check if player's clan is attacker
-                        List<L2NpcInstance> flags = fort.getSiege().getFlag(player.getClan());
-                        if (flags != null && !flags.isEmpty())
-                        {
-                            // Spawn to flag - Need more work to get player to the nearest flag
-                            L2NpcInstance flag = flags.get(0);
-                            return new Location(flag.getX(), flag.getY(), flag.getZ());
-                        }
-                    }
-                }
+            		else if ( fort != null)
+            		{
+            			if (fort.getSiege().getIsInProgress())
+            			{
+            				// Check if player's clan is attacker
+            				List<L2NpcInstance> flags = fort.getSiege().getFlag(player.getClan());
+            				if (flags != null && !flags.isEmpty())
+            				{
+            					// Spawn to flag - Need more work to get player to the nearest flag
+            					L2NpcInstance flag = flags.get(0);
+            					return new Location(flag.getX(), flag.getY(), flag.getZ());
+            				}
+            			}
+            		}
+            	}
             }
 
             // teleport RED PK 5+ to Floran Village
