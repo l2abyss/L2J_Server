@@ -105,6 +105,8 @@ public final class Config
     public static boolean	ALT_GAME_TIREDNESS;
     public static boolean	ENABLE_MODIFY_SKILL_DURATION;
     public static Map<Integer, Integer> SKILL_DURATION_LIST;
+    public static boolean   ENABLE_MODIFY_SKILL_REUSE;
+    public static Map<Integer, Integer> SKILL_REUSE_LIST;
     public static boolean	AUTO_LEARN_SKILLS;
     public static boolean	AUTO_LOOT_HERBS;
     public static byte		BUFFS_MAX_AMOUNT;
@@ -1077,6 +1079,36 @@ public final class Config
                         }
                     }
                 }
+                ENABLE_MODIFY_SKILL_REUSE = Boolean.parseBoolean(Character.getProperty("EnableModifySkillReuse", "false"));
+
+                // Create Map only if enabled
+                if (ENABLE_MODIFY_SKILL_REUSE)
+                {
+                    SKILL_REUSE_LIST = new FastMap<Integer, Integer>();
+                    String[] propertySplit;
+                    propertySplit = Character.getProperty("SkillReuseList", "").split(";");
+                    for (String skill : propertySplit)
+                    {
+                        String[] skillSplit = skill.split(",");
+                        if (skillSplit.length != 2)
+                        {
+                            System.out.println("[SkillReuseList]: invalid config property -> SkillReuseList \"" + skill + "\"");
+                        } else
+                        {
+                            try
+                            {
+                                SKILL_REUSE_LIST.put(Integer.valueOf(skillSplit[0]), Integer.valueOf(skillSplit[1]));
+                            } catch (NumberFormatException nfe)
+                            {
+                                if (!skill.equals(""))
+                                {
+                                    System.out.println("[SkillReuseList]: invalid config property -> SkillList \"" + skillSplit[0] + "\"" + skillSplit[1]);
+                                }
+                            }
+                        }
+                    }
+                }
+                
                 AUTO_LEARN_SKILLS					= Boolean.parseBoolean(Character.getProperty("AutoLearnSkills", "false"));
                 AUTO_LOOT_HERBS						= Boolean.parseBoolean(Character.getProperty("AutoLootHerbs", "true"));
                 BUFFS_MAX_AMOUNT					= Byte.parseByte(Character.getProperty("maxbuffamount","24"));

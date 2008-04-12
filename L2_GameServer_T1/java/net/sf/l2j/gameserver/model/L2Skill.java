@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.datatables.HeroSkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
@@ -554,8 +555,17 @@ public abstract class L2Skill
         _hitTime = set.getInteger("hitTime", 0);
         _coolTime = set.getInteger("coolTime", 0);
         
-        //_skillInterruptTime = set.getInteger("hitTime", _hitTime / 2);
-        _reuseDelay = set.getInteger("reuseDelay", 0);
+        if (Config.ENABLE_MODIFY_SKILL_REUSE && Config.SKILL_REUSE_LIST.containsKey(_id))
+        {
+                if ( Config.DEBUG )
+                        _log.info("*** Skill " + _name + " (" + _level + ") changed reuse from " + set.getInteger("reuseDelay", 0) + " to " + Config.SKILL_REUSE_LIST.get(_id) + " seconds.");
+                _reuseDelay = Config.SKILL_REUSE_LIST.get(_id);
+        }
+        else
+        {
+            _reuseDelay = set.getInteger("reuseDelay", 0);
+        }
+        
         _buffDuration = set.getInteger("buffDuration", 0);
 
         _skillRadius = set.getInteger("skillRadius", 80);
