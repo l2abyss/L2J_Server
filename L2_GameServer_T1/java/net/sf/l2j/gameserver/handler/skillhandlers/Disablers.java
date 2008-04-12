@@ -404,74 +404,65 @@ public class Disablers implements ISkillHandler
                 }
                 case MAGE_BANE:
             	{
-                    for(L2Object t: targets)
-                    {
-                    	L2Character target1 = (L2Character) t;
+            		if(target.reflectSkill(skill))
+            			target = activeChar;
 
-                        if(target1.reflectSkill(skill))
-                        	target1 = activeChar;
+            		if (! Formulas.getInstance().calcSkillSuccess(activeChar, target, skill, ss, sps, bss))
+            		{
+            			if (activeChar instanceof L2PcInstance)
+            			{
+            				SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
+            				sm.addString(target.getName());
+            				sm.addSkillName(skill.getId());
+            				activeChar.sendPacket(sm);
+            			}
+            			continue;
+            		}
 
-                        if (! Formulas.getInstance().calcSkillSuccess(activeChar, target1, skill, ss, sps, bss))
-                    	{
-                    		if (activeChar instanceof L2PcInstance)
-                            {
-                                SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
-                                sm.addString(target1.getName());
-                                sm.addSkillName(skill.getId());
-                                activeChar.sendPacket(sm);
-                            }
-                    		continue;
-                    	}
-
-                    	 L2Effect[] effects = target1.getAllEffects();
-                    	 for(L2Effect e: effects)
-                    	 {
-                    		 for(Func f: e.getStatFuncs())
-                    		 {
-                    			 if(f.stat == Stats.MAGIC_ATTACK || f.stat == Stats.MAGIC_ATTACK_SPEED)
-                    			 {
-                    				 e.exit();
-                    				 break;
-                    			 }
-                    		 }
-                    	 }
-                    }
+            		L2Effect[] effects = target.getAllEffects();
+            		for(L2Effect e: effects)
+            		{
+            			for(Func f: e.getStatFuncs())
+            			{
+            				if(f.stat == Stats.MAGIC_ATTACK || f.stat == Stats.MAGIC_ATTACK_SPEED)
+            				{
+            					e.exit();
+            					break;
+            				}
+            			}
+            		}
+                    
                     break;
             	}
                 case WARRIOR_BANE:
             	{
-                    for(L2Object t: targets)
-                    {
-                    	L2Character target1 = (L2Character) t;
+            		if(target.reflectSkill(skill))
+            			target = activeChar;
 
-                        if(target1.reflectSkill(skill))
-                        	target1 = activeChar;
+            		if (! Formulas.getInstance().calcSkillSuccess(activeChar, target, skill, ss, sps, bss))
+            		{
+            			if (activeChar instanceof L2PcInstance)
+            			{
+            				SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
+            				sm.addString(target.getName());
+            				sm.addSkillName(skill.getId());
+            				activeChar.sendPacket(sm);
+            			}
+            			continue;
+            		}
 
-                    	if (! Formulas.getInstance().calcSkillSuccess(activeChar, target1, skill, ss, sps, bss))
-                    	{
-                    		if (activeChar instanceof L2PcInstance)
-                            {
-                                SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
-                                sm.addString(target1.getName());
-                                sm.addSkillName(skill.getId());
-                                activeChar.sendPacket(sm);
-                            }
-                    		continue;
-                    	}
-
-                    	 L2Effect[] effects = target1.getAllEffects();
-                    	 for(L2Effect e: effects)
-                    	 {
-                    		 for(Func f: e.getStatFuncs())
-                    		 {
-                    			 if(f.stat == Stats.RUN_SPEED || f.stat == Stats.POWER_ATTACK_SPEED)
-                    			 {
-                    				 e.exit();
-                    				 break;
-                    			 }
-                    		 }
-                    	 }
-                    }
+            		L2Effect[] effects = target.getAllEffects();
+            		for(L2Effect e: effects)
+            		{
+            			for(Func f: e.getStatFuncs())
+            			{
+            				if(f.stat == Stats.RUN_SPEED || f.stat == Stats.POWER_ATTACK_SPEED)
+            				{
+            					e.exit();
+            					break;
+            				}
+            			}
+            		}
                     break;
             	}
                 case CANCEL:
