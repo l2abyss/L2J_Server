@@ -65,10 +65,8 @@ public class PcStat extends PlayableStat
             	activeChar.setKarma(activeChar.getKarma() - karmaLost);
         }
 
-        StatusUpdate su = new StatusUpdate(activeChar.getObjectId());
-        su.addAttribute(StatusUpdate.EXP, (int)getExp());
-        activeChar.sendPacket(su);
-        
+        // EXP status update currently not used in retail
+        activeChar.sendPacket(new UserInfo(activeChar));
         return true;
     }
 
