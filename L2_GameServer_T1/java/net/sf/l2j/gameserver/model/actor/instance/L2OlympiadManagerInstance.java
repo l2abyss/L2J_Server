@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import javolution.text.TextBuilder;
@@ -166,13 +167,24 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
         	int skillId = Integer.parseInt(params[1]);
         	int skillLvl;
         	
-        	if (params[2] == "")
-        		skillLvl = 1;
-        	else 
-        		skillLvl= Integer.parseInt(params[2]);
-        	
-        	if (skillId <= 0 || skillLvl <= 0)
-        		return;
+        	// Olympiad buff whitelist prevents bypass exploiters
+			HashMap<Integer,Integer> buffList = new HashMap<Integer,Integer>();
+			buffList.put(1086,2); //Haste Lv2
+			buffList.put(1204,2); //Wind Walk Lv2
+			buffList.put(1059,3); //Empower Lv3
+			buffList.put(1085,3); //Acumen Lv3
+			buffList.put(1078,6); //Concentration Lv6
+			buffList.put(1068,3); //Might Lv3
+			buffList.put(1240,3); //Guidance Lv3
+			buffList.put(1077,3); //Focus Lv3 
+			buffList.put(1242,3); //Death Whisper Lv3
+			buffList.put(1062,2); //Berserk Spirit Lv2
+			
+			if(!buffList.containsKey(skillId))
+				return;
+			
+			// get skill level from the hashmap
+			skillLvl = buffList.get(skillId);
         	
         	L2Skill skill;
         	skill = SkillTable.getInstance().getInfo(skillId,skillLvl);
