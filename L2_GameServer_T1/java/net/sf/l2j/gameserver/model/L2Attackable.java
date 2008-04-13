@@ -1030,7 +1030,7 @@ public class L2Attackable extends L2NpcInstance
      private RewardItem calculateRewardItem(L2PcInstance lastAttacker, L2DropData drop, int levelModifier, boolean isSweep)
      {
          // Get default drop chance
-         float dropChance = drop.getChance();
+         float dropChance = drop.getChance();                  
 
          int deepBlueDrop = 1;
          if (Config.DEEPBLUE_DROP_RULES)
@@ -1040,7 +1040,7 @@ public class L2Attackable extends L2NpcInstance
                  // We should multiply by the server's drop rate, so we always get a low chance of drop for deep blue mobs.
                  // NOTE: This is valid only for adena drops! Others drops will still obey server's rate
                  deepBlueDrop = 3;
-                 if (drop.getItemId() == 57) deepBlueDrop *= (int)Config.RATE_DROP_ITEMS;
+                 if (drop.getItemId() == 57) deepBlueDrop *= isRaid()? (int)Config.RATE_DROP_ITEMS_BY_RAID : (int)Config.RATE_DROP_ITEMS;
              }
          }
 
@@ -1052,7 +1052,7 @@ public class L2Attackable extends L2NpcInstance
          // Applies Drop rates
          if (drop.getItemId() == 57) dropChance *= Config.RATE_DROP_ADENA;
          else if (isSweep) dropChance *= Config.RATE_DROP_SPOIL;
-         else dropChance *= Config.RATE_DROP_ITEMS;
+         else dropChance *= isRaid() ? Config.RATE_DROP_ITEMS_BY_RAID : Config.RATE_DROP_ITEMS;
 
          if (Config.L2JMOD_CHAMPION_ENABLE && isChampion())
 	         dropChance *= Config.L2JMOD_CHAMPION_REWARDS;
@@ -1139,7 +1139,7 @@ public class L2Attackable extends L2NpcInstance
           if (Config.DEEPBLUE_DROP_RULES) categoryDropChance = ((categoryDropChance - ((categoryDropChance * levelModifier)/100)) / deepBlueDrop);
 
           // Applies Drop rates
-          categoryDropChance *= Config.RATE_DROP_ITEMS;
+          categoryDropChance *= isRaid() ? Config.RATE_DROP_ITEMS_BY_RAID : Config.RATE_DROP_ITEMS;
           if (Config.L2JMOD_CHAMPION_ENABLE && isChampion())
 			categoryDropChance *= Config.L2JMOD_CHAMPION_REWARDS;
 
@@ -1152,7 +1152,7 @@ public class L2Attackable extends L2NpcInstance
           // Check if an Item from this category must be dropped
           if (Rnd.get(L2DropData.MAX_CHANCE) < categoryDropChance)
           {
-        	  L2DropData drop = categoryDrops.dropOne();
+        	  L2DropData drop = categoryDrops.dropOne(isRaid());
         	  if (drop == null)
         		  return null;
 
@@ -1170,7 +1170,7 @@ public class L2Attackable extends L2NpcInstance
 
         	  int dropChance = drop.getChance();
               if (drop.getItemId() == 57) dropChance *= Config.RATE_DROP_ADENA;
-              else dropChance *= Config.RATE_DROP_ITEMS;
+              else dropChance *= isRaid() ? Config.RATE_DROP_ITEMS_BY_RAID : Config.RATE_DROP_ITEMS;
               if (Config.L2JMOD_CHAMPION_ENABLE && isChampion())
 				dropChance *= Config.L2JMOD_CHAMPION_REWARDS;
 

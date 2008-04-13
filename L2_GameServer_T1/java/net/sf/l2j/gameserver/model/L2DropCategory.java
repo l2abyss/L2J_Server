@@ -37,7 +37,7 @@ public class L2DropCategory
 		_categoryBalancedChance = 0;
 	}
 
-	public void addDropData(L2DropData drop)
+	public void addDropData(L2DropData drop, boolean raid)
 	{
         boolean found = false;
         
@@ -77,7 +77,7 @@ public class L2DropCategory
                 _drops.add(drop);
                 _categoryChance += drop.getChance();
                 // for drop selection inside a category: max 100 % chance for getting an item, scaling all values to that.
-                _categoryBalancedChance += Math.min((drop.getChance()*Config.RATE_DROP_ITEMS),L2DropData.MAX_CHANCE);
+                _categoryBalancedChance += Math.min((drop.getChance()*(raid?Config.RATE_DROP_ITEMS_BY_RAID : Config.RATE_DROP_ITEMS)),L2DropData.MAX_CHANCE);
             }
 	    }
 	}
@@ -190,13 +190,13 @@ public class L2DropCategory
  *
  * @return selected drop from category, or null if nothing is dropped.
  */
-    public synchronized L2DropData dropOne()
+    public synchronized L2DropData dropOne(boolean raid)
     {
         int randomIndex = Rnd.get(getCategoryBalancedChance());
         int sum = 0;
         for (L2DropData drop : getAllDrops())
         {
-        	sum += Math.min((drop.getChance()*Config.RATE_DROP_ITEMS),L2DropData.MAX_CHANCE);
+        	sum += Math.min((drop.getChance()*(raid?Config.RATE_DROP_ITEMS_BY_RAID : Config.RATE_DROP_ITEMS)),L2DropData.MAX_CHANCE);
 
         	if (sum >= randomIndex)       // drop this item and exit the function
         		return drop;
