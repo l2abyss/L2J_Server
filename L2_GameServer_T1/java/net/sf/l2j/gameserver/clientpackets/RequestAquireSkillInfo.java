@@ -23,9 +23,11 @@ import net.sf.l2j.gameserver.datatables.SkillTreeTable;
 import net.sf.l2j.gameserver.model.L2PledgeSkillLearn;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2SkillLearn;
+import net.sf.l2j.gameserver.model.L2TransformSkillLearn;
 import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2TransformManagerInstance;
 import net.sf.l2j.gameserver.serverpackets.AcquireSkillInfo;
 
 /**
@@ -77,6 +79,36 @@ public class RequestAquireSkillInfo extends L2GameClientPacket
 
 		if (_skillType == 0)
 		{
+			if (trainer instanceof L2TransformManagerInstance)
+			{
+            int itemId = 0;
+            L2TransformSkillLearn[] skillst = SkillTreeTable.getInstance().getAvailableTransformSkills(activeChar);
+
+			for (L2TransformSkillLearn s : skillst)
+			{
+				if (s.getId() == _id && s.getLevel() == _level)
+				{
+					canteach = true;
+					itemId = s.getItemId();
+					break;
+				}
+			}
+
+			if (!canteach)
+				return; // cheater
+
+			int requiredSp = 0;
+			AcquireSkillInfo asi = new AcquireSkillInfo(skill.getId(), skill.getLevel(), requiredSp,0);
+
+            if (Config.SP_BOOK_NEEDED)
+            {
+                asi.addRequirement(99, itemId, 1, 50);
+            }
+
+			sendPacket(asi);
+			return;
+		    }
+			
 			if (!trainer.getTemplate().canTeach(activeChar.getSkillLearningClassId()))
                 return; // cheater
 
