@@ -180,6 +180,7 @@ import net.sf.l2j.gameserver.serverpackets.Ride;
 import net.sf.l2j.gameserver.serverpackets.SetupGauge;
 import net.sf.l2j.gameserver.serverpackets.ShortBuffStatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.ShortCutInit;
+import net.sf.l2j.gameserver.serverpackets.SkillCoolTime;
 import net.sf.l2j.gameserver.serverpackets.SkillList;
 import net.sf.l2j.gameserver.serverpackets.Snoop;
 import net.sf.l2j.gameserver.serverpackets.SocialAction;
@@ -4171,7 +4172,8 @@ public final class L2PcInstance extends L2PlayableInstance
             restoreSkills();
             _transformation.onUntransform();
             _transformation = null;
-            this.broadcastUserInfo();
+            broadcastUserInfo();
+            sendPacket(new SkillCoolTime(this));
         }
     }
     
