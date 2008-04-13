@@ -436,7 +436,7 @@ public final class L2PcInstance extends L2PlayableInstance
     
     private L2Transformation _transformation;
     
-    private static int _transformationId;
+    private static int _transformationId = 0;
 
 	/** The table containing all L2RecipeList of the L2PcInstance */
 	private Map<Integer, L2RecipeList> _dwarvenRecipeBook = new FastMap<Integer, L2RecipeList>();
@@ -4190,19 +4190,27 @@ public final class L2PcInstance extends L2PlayableInstance
         return transformation.getId();
     }
     
+    // TODO: Clean code. Looks like this is used for non-cursedweapon transformations
+    public int transformId()
+    {
+       return _transformationId;
+    }
+    
     public void transformInsertInfo()
     {
-        java.sql.Connection con = null;
+    	_transformationId = getTranformationId();
+    	java.sql.Connection con = null;
         try
         {
             con = L2DatabaseFactory.getInstance().getConnection();
             PreparedStatement statement;
             
             statement = con.prepareStatement(UPDATE_CHAR_TRANSFORM);
-            statement.setInt(1, getTranformationId());
+            statement.setInt(1, _transformationId);
             statement.setInt(2, getObjectId());
             statement.execute();
             statement.close();
+            
         }
         catch (Exception e)
         {
@@ -4214,12 +4222,7 @@ public final class L2PcInstance extends L2PlayableInstance
         }
     }
     
-    public int transformId()
-    {
-       return transformSelectInfo();
-    }
-
-    private int transformSelectInfo()
+    public int transformSelectInfo()
     {
         java.sql.Connection con = null;
         try
@@ -4247,7 +4250,8 @@ public final class L2PcInstance extends L2PlayableInstance
 
     public void transformUpdateInfo()
     {
-        java.sql.Connection con = null;
+    	_transformationId = 0;
+    	java.sql.Connection con = null;
         try
         {
             con = L2DatabaseFactory.getInstance().getConnection();

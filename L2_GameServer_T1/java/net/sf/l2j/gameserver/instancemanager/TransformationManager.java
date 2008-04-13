@@ -37,11 +37,11 @@ public class TransformationManager
         return INSTANCE;
     }
     
-    private Map<Integer, L2Transformation> _transforamtions;
+    private Map<Integer, L2Transformation> _transformations;
     
     private TransformationManager()
     {
-        _transforamtions = new FastMap<Integer, L2Transformation>();
+        _transformations = new FastMap<Integer, L2Transformation>();
     }
     
     public void report()
@@ -82,16 +82,16 @@ public class TransformationManager
     
     public L2Transformation getTransformationById(int id)
     {
-        return _transforamtions.get(id);
+        return _transformations.get(id);
     }
     
     public L2Transformation registerTransformation(L2Transformation transformation)
     {
-        return _transforamtions.put(transformation.getId() , transformation);
+        return _transformations.put(transformation.getId() , transformation);
     }
     
     public Collection<L2Transformation> getAllTransformations()
     {
-        return _transforamtions.values();
+        return _transformations.values();
     }
 }
