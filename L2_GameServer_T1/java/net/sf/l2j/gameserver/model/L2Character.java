@@ -147,8 +147,8 @@ public abstract class L2Character extends L2Object
 	private boolean _isFakeDeath                            = false; // Fake death
 	private boolean _isFlying                               = false; //Is flying Wyvern?
 	private boolean _isMuted                                = false; // Cannot use magic
-	private boolean _isPhysicalMuted                       = false; // Cannot use physical skills
-	private boolean _isPhysicalAttackMuted                 = false; // Cannot use attack
+	private boolean _isPhysicalMuted                       	= false; // Cannot use physical skills
+	private boolean _isPhysicalAttackMuted                 	= false; // Cannot use attack
 	private boolean _isDead			                        = false;
 	private boolean _isImmobilized                          = false;
 	private boolean _isOverloaded                           = false; // the char is carrying too much

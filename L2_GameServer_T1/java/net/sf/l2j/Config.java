@@ -556,6 +556,9 @@ public final class Config
     public static boolean	L2JMOD_WEDDING_SAMESEX;
     public static boolean	L2JMOD_WEDDING_FORMALWEAR;
     public static int		L2JMOD_WEDDING_DIVORCE_COSTS;
+    public static boolean	BANKING_SYSTEM_ENABLED;
+    public static int		BANKING_SYSTEM_GOLDBARS;
+    public static int		BANKING_SYSTEM_ADENA;
     
     /** ************************************************** **/
 	/** L2JMods Settings -End                              **/
@@ -1678,6 +1681,10 @@ public final class Config
                         }
                     }
                 }
+                
+                BANKING_SYSTEM_ENABLED	= Boolean.parseBoolean(L2JModSettings.getProperty("BankingEnabled", "false"));
+                BANKING_SYSTEM_GOLDBARS	= Integer.parseInt(L2JModSettings.getProperty("BankingGoldbarCount", "1"));
+                BANKING_SYSTEM_ADENA	= Integer.parseInt(L2JModSettings.getProperty("BankingAdenaCount", "500000000"));
 
             }
             catch (Exception e)

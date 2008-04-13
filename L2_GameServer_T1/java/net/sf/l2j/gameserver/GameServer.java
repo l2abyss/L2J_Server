@@ -198,6 +198,7 @@ import net.sf.l2j.gameserver.handler.usercommandhandlers.Mount;
 import net.sf.l2j.gameserver.handler.usercommandhandlers.OlympiadStat;
 import net.sf.l2j.gameserver.handler.usercommandhandlers.PartyInfo;
 import net.sf.l2j.gameserver.handler.usercommandhandlers.Time;
+import net.sf.l2j.gameserver.handler.voicedcommandhandlers.Banking;
 import net.sf.l2j.gameserver.handler.voicedcommandhandlers.Wedding;
 import net.sf.l2j.gameserver.handler.voicedcommandhandlers.stats;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
@@ -625,9 +626,10 @@ public class GameServer
 		if(Config.L2JMOD_ALLOW_WEDDING)
 			_voicedCommandHandler.registerVoicedCommandHandler(new Wedding());
 
-		_log.config("VoicedCommandHandler: Loaded " + _voicedCommandHandler.size() + " handlers.");
-
+		if(Config.BANKING_SYSTEM_ENABLED)
+			_voicedCommandHandler.registerVoicedCommandHandler(new Banking());
 		
+		_log.config("VoicedCommandHandler: Loaded " + _voicedCommandHandler.size() + " handlers.");
 						
 		if(Config.L2JMOD_ALLOW_WEDDING)
 			CoupleManager.getInstance();
