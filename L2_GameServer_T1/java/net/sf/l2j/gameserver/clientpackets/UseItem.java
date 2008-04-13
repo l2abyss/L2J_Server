@@ -292,7 +292,7 @@ public final class UseItem extends L2GameClientPacket
                         }
                         
                         // Don't allow weapon/shield hero equipment during Olympiads
-                        if (activeChar.isInOlympiadMode() && item.isHeroItem())
+                        if (activeChar.isInOlympiadMode() && (item.isHeroItem() || item.isOlyRestrictedItem()))
                         {
                             activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
                             return;

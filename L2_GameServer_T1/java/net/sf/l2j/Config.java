@@ -375,6 +375,17 @@ public final class Config
     public static long		ALT_OLY_IWAIT;
     public static long		ALT_OLY_WPERIOD;
     public static long		ALT_OLY_VPERIOD;
+    public static int		ALT_OLY_CLASSED;
+    public static int		ALT_OLY_NONCLASSED;
+    public static int		ALT_OLY_BATTLE_REWARD_ITEM;
+    public static int		ALT_OLY_CLASSED_RITEM_C;
+    public static int		ALT_OLY_NONCLASSED_RITEM_C;
+    public static int		ALT_OLY_COMP_RITEM;
+    public static int		ALT_OLY_GP_PER_POINT;
+    public static int		ALT_OLY_MIN_POINT_FOR_EXCH;
+    public static int		ALT_OLY_HERO_POINTS;
+    public static String	ALT_OLY_RESTRICTED_ITEMS;
+    public static List<Integer> LIST_OLY_RESTRICTED_ITEMS = new FastList<Integer>();
     public static int		ALT_MANOR_REFRESH_TIME;
     public static int		ALT_MANOR_REFRESH_MIN;
     public static int		ALT_MANOR_APPROVE_TIME;
@@ -1406,6 +1417,21 @@ public final class Config
                 ALT_OLY_IWAIT								= Long.parseLong(General.getProperty("AltOlyIWait","300000"));
                 ALT_OLY_WPERIOD								= Long.parseLong(General.getProperty("AltOlyWPeriod","604800000"));
                 ALT_OLY_VPERIOD								= Long.parseLong(General.getProperty("AltOlyVPeriod","86400000"));
+                ALT_OLY_CLASSED								= Integer.parseInt(General.getProperty("AltOlyClassedParticipants","5"));
+                ALT_OLY_NONCLASSED							= Integer.parseInt(General.getProperty("AltOlyNonClassedParticipants","9"));
+                ALT_OLY_BATTLE_REWARD_ITEM					= Integer.parseInt(General.getProperty("AltOlyBattleRewItem","6651"));
+                ALT_OLY_CLASSED_RITEM_C						= Integer.parseInt(General.getProperty("AltOlyClassedRewItemCount","50"));
+                ALT_OLY_NONCLASSED_RITEM_C					= Integer.parseInt(General.getProperty("AltOlyNonClassedRewItemCount","30"));
+                ALT_OLY_COMP_RITEM							= Integer.parseInt(General.getProperty("AltOlyCompRewItem","6651"));
+                ALT_OLY_GP_PER_POINT						= Integer.parseInt(General.getProperty("AltOlyGPPerPoint","1000"));
+                ALT_OLY_MIN_POINT_FOR_EXCH					= Integer.parseInt(General.getProperty("AltOlyMinPointForExchange","50"));
+                ALT_OLY_HERO_POINTS							= Integer.parseInt(General.getProperty("AltOlyHeroPoints","300"));
+                ALT_OLY_RESTRICTED_ITEMS					= General.getProperty("AltOlyRestrictedItems");
+                LIST_OLY_RESTRICTED_ITEMS					= new FastList<Integer>();
+                                							for (String id : ALT_OLY_RESTRICTED_ITEMS.split(","))
+                                							{
+                                								LIST_OLY_RESTRICTED_ITEMS.add(Integer.parseInt(id));
+                                							}
                 ALT_MANOR_REFRESH_TIME						= Integer.parseInt(General.getProperty("AltManorRefreshTime","20"));
                 ALT_MANOR_REFRESH_MIN						= Integer.parseInt(General.getProperty("AltManorRefreshMin","00"));
                 ALT_MANOR_APPROVE_TIME						= Integer.parseInt(General.getProperty("AltManorApproveTime","6"));

@@ -509,6 +509,11 @@ public final class L2ItemInstance extends L2Object
     {
         return ((_itemId >= 6611 && _itemId <= 6621) || (_itemId >= 9388 && _itemId <= 9390) || _itemId == 6842);
     }
+    
+    public boolean isOlyRestrictedItem()
+    {
+        return Config.LIST_OLY_RESTRICTED_ITEMS.contains(_itemId);
+    }
 
     /**
      * Returns if item is available for manipulation

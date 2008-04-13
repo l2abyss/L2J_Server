@@ -147,7 +147,6 @@ import net.sf.l2j.gameserver.serverpackets.ExFishingEnd;
 import net.sf.l2j.gameserver.serverpackets.ExFishingStart;
 import net.sf.l2j.gameserver.serverpackets.ExOlympiadMode;
 import net.sf.l2j.gameserver.serverpackets.ExOlympiadSpelledInfo;
-import net.sf.l2j.gameserver.serverpackets.ExOlympiadUserInfo;
 import net.sf.l2j.gameserver.serverpackets.ExOlympiadUserInfoSpectator;
 import net.sf.l2j.gameserver.serverpackets.ExSetCompassZoneCode;
 import net.sf.l2j.gameserver.serverpackets.ExSpawnEmitter;
@@ -408,6 +407,8 @@ public final class L2PcInstance extends L2PlayableInstance
     private boolean _OlympiadStart = false;
     private int _olympiadGameId = -1;
     private int _olympiadSide = -1;
+    public int olyBuff = 0;
+    public int dmgDealt = 0;
 
     /** Duel */
     private boolean _isInDuel = false;
@@ -3620,13 +3621,13 @@ public final class L2PcInstance extends L2PlayableInstance
         {
         	// TODO: implement new OlympiadUserInfo
         	for (L2PcInstance player : getKnownList().getKnownPlayers().values()) {
-    			if (player.getOlympiadGameId()==getOlympiadGameId()){
+    			if (player.getOlympiadGameId()==getOlympiadGameId() && player.isOlympiadStart()){
     				if (Config.DEBUG)
 						_log.fine("Send status for Olympia window of " + getObjectId() + "(" + getName() + ") to " + player.getObjectId() + "(" + player.getName() +"). CP: " + getCurrentCp() + " HP: " + getCurrentHp() + " MP: " + getCurrentMp());
-    				player.sendPacket(new ExOlympiadUserInfo(this));
+    				player.sendPacket(new ExOlympiadUserInfoSpectator(this, 1));
     			}
     		}
-            if(Olympiad.getInstance().getSpectators(_olympiadGameId) != null)
+            if(Olympiad.getInstance().getSpectators(_olympiadGameId) != null && this.isOlympiadStart())
             {
                 for(L2PcInstance spectator : Olympiad.getInstance().getSpectators(_olympiadGameId))
                 {
@@ -3660,7 +3661,7 @@ public final class L2PcInstance extends L2PlayableInstance
         
         // Create the olympiad spectator packet if needed
         ExOlympiadSpelledInfo os = null;
-        if (this.isInOlympiadMode())
+        if (this.isInOlympiadMode() && this.isOlympiadStart())
         {
             os = new ExOlympiadSpelledInfo(this);
         }
@@ -9660,7 +9661,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		// Force a revalidation
 		revalidateZone(true);
 
-		if (Config.PLAYER_SPAWN_PROTECTION > 0)
+		if ((Config.PLAYER_SPAWN_PROTECTION > 0) && !isInOlympiadMode())
             setProtection(true);
 
 		// Modify the position of the tamed beast if necessary (normal pets are handled by super...though
@@ -11088,6 +11089,11 @@ public final class L2PcInstance extends L2PlayableInstance
         }
         if (mcrit)
             sendPacket(new SystemMessage(SystemMessageId.CRITICAL_HIT_MAGIC));
+        
+        if (isInOlympiadMode() && (target instanceof L2PcInstance))
+        {
+        	dmgDealt += damage;
+        }
 
 		SystemMessage sm = new SystemMessage(SystemMessageId.YOU_DID_S1_DMG);
 		sm.addNumber(damage);

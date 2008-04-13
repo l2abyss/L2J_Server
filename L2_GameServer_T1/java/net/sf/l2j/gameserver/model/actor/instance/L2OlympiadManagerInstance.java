@@ -14,19 +14,22 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import javolution.text.TextBuilder;
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.Olympiad;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Multisell;
+import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.ExHeroList;
 import net.sf.l2j.gameserver.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.util.L2FastList;
 
 /**
  * Olympiad Npc's Instance
@@ -38,7 +41,7 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
 {
     private static Logger _logOlymp = Logger.getLogger(L2OlympiadManagerInstance.class.getName());
 
-    private static final int GATE_PASS = 6651;
+    private static final int GATE_PASS = Config.ALT_OLY_COMP_RITEM;
 
     public L2OlympiadManagerInstance (int objectId, L2NpcTemplate template)
     {
@@ -156,6 +159,43 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
 
             }
         }
+        else if (command.startsWith("OlyBuff"))
+        {
+        	NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+        	String[] params = command.split( " " );
+        	int skillId = Integer.parseInt(params[1]);
+        	int skillLvl;
+        	
+        	if (params[2] == "")
+        		skillLvl = 1;
+        	else 
+        		skillLvl= Integer.parseInt(params[2]);
+        	
+        	if (skillId <= 0 || skillLvl <= 0)
+        		return;
+        	
+        	L2Skill skill;
+        	skill = SkillTable.getInstance().getInfo(skillId,skillLvl);
+        	
+        	if (player.olyBuff > 0)
+           	{
+        		skill.getEffects(player, player);
+            	player.olyBuff--;
+           	}
+        	
+        	if (player.olyBuff > 0)
+           	{
+            	html.setFile(Olympiad.OLYMPIAD_HTML_FILE + "olympiad_buffs.htm");
+            	html.replace("%objectId%", String.valueOf(getObjectId()));
+            	player.sendPacket(html);
+            } else
+            {
+            	html.setFile(Olympiad.OLYMPIAD_HTML_FILE + "olympiad_nobuffs.htm");
+            	html.replace("%objectId%", String.valueOf(getObjectId()));
+            	player.sendPacket(html);
+            	this.deleteMe();                    	
+            }
+        }
         else if (command.startsWith("Olympiad"))
         {
             int val = Integer.parseInt(command.substring(9,10));
@@ -167,7 +207,8 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
             {
                 case 1:
                     String[] matches = Olympiad.getInstance().getMatchList();
-
+                    int stad;
+                    int showbattle;
                     replyMSG.append("Grand Olympiad Games Overview<br><br>" +
                             "* Caution: Please note, if you watch an Olympiad " +
                             "game, the summoning of your Servitors or Pets will be " +
@@ -179,8 +220,13 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
                     {
                         for (int i = 0; i < matches.length; i++)
                         {
-                            replyMSG.append("<br><a action=\"bypass -h npc_"+getObjectId()+"_Olympiad 3_" + i + "\">" +
+                        	showbattle = Integer.parseInt(matches[i].substring(1,2));
+                        	stad = Integer.parseInt(matches[i].substring(4,5));
+                        	if (showbattle == 1) {
+                        		replyMSG.append("<br><a action=\"bypass -h npc_"+getObjectId()+"_Olympiad 3_" + stad + "\">" +
                                     matches[i] + "</a>");
+                        	}
+
                         }
                     }
                     replyMSG.append("</body></html>");
@@ -196,7 +242,7 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
                         replyMSG.append("<center>Grand Olympiad Ranking");
                         replyMSG.append("<img src=\"L2UI.SquareWhite\" width=270 height=1><img src=\"L2UI.SquareBlank\" width=1 height=3>");
 
-                        List<String> names = Olympiad.getInstance().getClassLeaderBoard(classId);
+                        L2FastList<String> names = Olympiad.getInstance().getClassLeaderBoard(classId);
                         if (names.size() != 0)
                         {
                             replyMSG.append("<table width=270 border=0 bgcolor=\"000000\">");
