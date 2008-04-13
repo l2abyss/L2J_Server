@@ -196,7 +196,7 @@ public class EnterWorld extends L2GameClientPacket
         activeChar.sendSkillList();
         
         activeChar.sendPacket(new HennaInfo(activeChar));
-
+        
         Quest.playerEnter(activeChar);
         activeChar.sendPacket(new QuestList());
         loadTutorial(activeChar);
@@ -211,11 +211,7 @@ public class EnterWorld extends L2GameClientPacket
         else if (L2Event.connectionLossData.containsKey(activeChar.getName()))
             L2Event.restoreAndTeleChar(activeChar);
 
-        // buff and status icons
-        if (Config.STORE_SKILL_COOLTIME)
-            activeChar.restoreEffects();
-
-        // engage and notify Partner
+         // engage and notify Partner
         if(Config.L2JMOD_ALLOW_WEDDING)
         {
             engage(activeChar);
@@ -254,6 +250,8 @@ public class EnterWorld extends L2GameClientPacket
                 }
             }
         }
+        
+        activeChar.updateEffectIcons();
 
         activeChar.sendPacket(new EtcStatusUpdate(activeChar));
 

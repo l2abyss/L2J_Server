@@ -6219,16 +6219,9 @@ public final class L2PcInstance extends L2PlayableInstance
 				player.setUptime(System.currentTimeMillis());
 
 				currentHp = rset.getDouble("curHp");
-				player.setCurrentHp(rset.getDouble("curHp"));
 				currentCp = rset.getDouble("curCp");
-				player.setCurrentCp(rset.getDouble("curCp"));
 				currentMp = rset.getDouble("curMp");
-				player.setCurrentMp(rset.getDouble("curMp"));
-				if (currentHp < 0.5) {
-					player.setIsDead(true);
-					player.stopHpMpRegeneration();
-				}
-				
+
 				//Check recs
 				player.checkRecom(rset.getInt("rec_have"),rset.getInt("rec_left"));
 
@@ -6304,11 +6297,20 @@ public final class L2PcInstance extends L2PlayableInstance
 			// Note that Clan, Noblesse and Hero skills are given separately and not here.
 			player.restoreCharData();
 			player.rewardSkills();
+			
+		    // buff and status icons
+	        if (Config.STORE_SKILL_COOLTIME)
+	            player.restoreEffects();
 
 			// Restore current Cp, HP and MP values
 			player.setCurrentCp(currentCp);
 			player.setCurrentHp(currentHp);
 			player.setCurrentMp(currentMp);
+			
+			if (currentHp < 0.5) {
+				player.setIsDead(true);
+				player.stopHpMpRegeneration();
+			}
 
 			// Restore pet if exists in the world
 			player.setPet(L2World.getInstance().getPet(player.getObjectId()));
@@ -7067,8 +7069,6 @@ public final class L2PcInstance extends L2PlayableInstance
 		finally {
 			try {con.close();} catch (Exception e) {}
 		}
-
-		updateEffectIcons();
 	}
 
 	/**
@@ -9294,6 +9294,7 @@ public final class L2PcInstance extends L2PlayableInstance
         regiveTemporarySkills();
         rewardSkills();
         restoreEffects();
+        updateEffectIcons();
         sendPacket(new EtcStatusUpdate(this));
         
         //if player has quest 422: Repent Your Sins, remove it
