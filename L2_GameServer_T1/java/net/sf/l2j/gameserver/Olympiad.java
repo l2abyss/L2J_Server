@@ -1514,7 +1514,7 @@ public class Olympiad
     			int classBasedPgCount = 0;
     			for(L2FastList<L2PcInstance> classList : _classBasedRegisters.values())
     				classBasedPgCount += classList.size();
-    			while((_gamesQueue.size() > 0 || classBasedPgCount > Config.ALT_OLY_CLASSED || _nonClassBasedRegisters.size() > Config.ALT_OLY_NONCLASSED) && inCompPeriod())
+    			while((_gamesQueue.size() > 0 || classBasedPgCount >= Config.ALT_OLY_CLASSED || _nonClassBasedRegisters.size() >= Config.ALT_OLY_NONCLASSED) && inCompPeriod())
     			{
     				//first cycle do nothing
     				int _gamesQueueSize = 0;
