@@ -1428,7 +1428,7 @@ public final class Config
                 ALT_OLY_GP_PER_POINT						= Integer.parseInt(General.getProperty("AltOlyGPPerPoint","1000"));
                 ALT_OLY_MIN_POINT_FOR_EXCH					= Integer.parseInt(General.getProperty("AltOlyMinPointForExchange","50"));
                 ALT_OLY_HERO_POINTS							= Integer.parseInt(General.getProperty("AltOlyHeroPoints","300"));
-                ALT_OLY_RESTRICTED_ITEMS					= General.getProperty("AltOlyRestrictedItems");
+                ALT_OLY_RESTRICTED_ITEMS					= General.getProperty("AltOlyRestrictedItems","0");
                 LIST_OLY_RESTRICTED_ITEMS					= new FastList<Integer>();
                                 							for (String id : ALT_OLY_RESTRICTED_ITEMS.split(","))
                                 							{
