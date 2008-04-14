@@ -4245,13 +4245,27 @@ public abstract class L2Character extends L2Object
 		final int curX = super.getX();
 		final int curY = super.getY();
 		final int curZ = super.getZ();
-
+		
 		// Calculate distance (dx,dy) between current position and destination
         // TODO: improve Z axis move/follow support when dx,dy are small compared to dz
 		double dx = (x - curX);
 		double dy = (y - curY);
 		double dz = (z - curZ);
 		double distance = Math.sqrt(dx*dx + dy*dy);
+		
+		// make water move short and use no geodata checks for swimming chars
+		// distance in a click can easily be over 3000
+		if (Config.GEODATA > 0 && isInsideZone(ZONE_WATER) && distance > 500) 
+        {
+			double divider = 500/distance;
+        	x = curX + (int)(divider * dx);
+        	y = curY + (int)(divider * dy);
+        	z = curZ + (int)(divider * dz);
+        	dx = (x - curX);
+    		dy = (y - curY);
+    		dz = (z - curZ);
+    		distance = Math.sqrt(dx*dx + dy*dy);
+        }
 
 		if (Config.DEBUG) _log.fine("distance to target:" + distance);
 
@@ -4318,6 +4332,7 @@ public abstract class L2Character extends L2Object
 		
 		if (Config.GEODATA > 0 
 			&& !isFlying() // flying chars not checked - even canSeeTarget doesn't work yet
+			&& !isInsideZone(ZONE_WATER) // swimming also not checked - but distance is limited
 			&& !(this instanceof L2NpcWalkerInstance)) // npc walkers not checked
 		{
 			double originalDistance = distance;
@@ -4357,8 +4372,7 @@ public abstract class L2Character extends L2Object
 				// location different if destination wasn't reached (or just z coord is different)
 				x = destiny.getX();
 				y = destiny.getY();
-				if (!isInsideZone(ZONE_WATER)) // check: perhaps should be inside moveCheck
-					z = destiny.getZ();
+				z = destiny.getZ();
 				distance = Math.sqrt((x - curX)*(x - curX) + (y - curY)*(y - curY));
 				
 			}
