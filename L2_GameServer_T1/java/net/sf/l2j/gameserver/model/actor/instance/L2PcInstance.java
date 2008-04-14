@@ -11090,7 +11090,10 @@ public final class L2PcInstance extends L2PlayableInstance
         if (mcrit)
             sendPacket(new SystemMessage(SystemMessageId.CRITICAL_HIT_MAGIC));
         
-        if (isInOlympiadMode() && (target instanceof L2PcInstance))
+        if (isInOlympiadMode() &&
+        		target instanceof L2PcInstance &&
+        		((L2PcInstance)target).isInOlympiadMode() &&
+        		((L2PcInstance)target).getOlympiadGameId() == getOlympiadGameId())
         {
         	dmgDealt += damage;
         }
