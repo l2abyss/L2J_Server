@@ -842,8 +842,7 @@ public abstract class L2Character extends L2Object
 
 		// Set the Attacking Body part to CHEST
 		setAttackingBodypart();
-		// Make sure that char is facing selected target
-		setHeading(Util.convertDegreeToClientHeading(Util.calculateAngleFrom(this, target)));
+		
 		// Get the Attack Reuse Delay of the L2Weapon
 		int reuse = calculateReuseTime(target, weaponItem);
 
@@ -4255,9 +4254,9 @@ public abstract class L2Character extends L2Object
 		
 		// make water move short and use no geodata checks for swimming chars
 		// distance in a click can easily be over 3000
-		if (Config.GEODATA > 0 && isInsideZone(ZONE_WATER) && distance > 500) 
+		if (Config.GEODATA > 0 && isInsideZone(ZONE_WATER) && distance > 700) 
         {
-			double divider = 500/distance;
+			double divider = 700/distance;
         	x = curX + (int)(divider * dx);
         	y = curY + (int)(divider * dy);
         	z = curZ + (int)(divider * dz);
@@ -4332,7 +4331,7 @@ public abstract class L2Character extends L2Object
 		
 		if (Config.GEODATA > 0 
 			&& !isFlying() // flying chars not checked - even canSeeTarget doesn't work yet
-			&& !isInsideZone(ZONE_WATER) // swimming also not checked - but distance is limited
+			&& (!isInsideZone(ZONE_WATER) || isInsideZone(ZONE_SIEGE)) // swimming also not checked unless in siege zone - but distance is limited
 			&& !(this instanceof L2NpcWalkerInstance)) // npc walkers not checked
 		{
 			double originalDistance = distance;
@@ -4984,6 +4983,9 @@ public abstract class L2Character extends L2Object
 			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
 			return;
 		}
+		// Make sure that char is facing selected target
+		// also works: setHeading(Util.convertDegreeToClientHeading(Util.calculateAngleFrom(this, target)));
+		setHeading(Util.calculateHeadingFrom(this, target));
 
 		if ((this instanceof L2NpcInstance && target.isAlikeDead()) || target.isDead()
                 || (!getKnownList().knowsObject(target) && !(this instanceof L2DoorInstance)))
