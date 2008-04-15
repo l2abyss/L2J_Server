@@ -109,6 +109,8 @@ public class GeoEngine extends GeoData
     @Override
     public boolean canSeeTarget(L2Object cha, Point3D target)
     {
+    	if (DoorTable.getInstance().checkIfDoorsBetween(cha.getX(),cha.getY(),cha.getZ(),target.getX(),target.getY(),target.getZ()))
+    		return false;
     	if(cha.getZ() >= target.getZ())
     		return canSeeTarget(cha.getX(),cha.getY(),cha.getZ(),target.getX(),target.getY(),target.getZ());
     	else
@@ -243,8 +245,8 @@ public class GeoEngine extends GeoData
         // it might not work when distance is small and path vertical
         else if (distance2 < 82)
         {
-        	// 200 too deep/high. This value should be in sync with NLOS
-        	if(dz*dz > 40000)
+        	// 150 should be too deep/high.
+        	if(dz*dz > 22500)
         	{
         		short region = getRegionOffset(x,y);
         		// geodata is loaded for region and mobs should have correct Z coordinate...
@@ -289,7 +291,7 @@ public class GeoEngine extends GeoData
             		next_y += inc_y;
             		z += inc_z_directiony;
             		//_log.warning("1: next_x:"+next_x+" next_y"+next_y);
-            		if (!nLOS(x,y,(int)z,inc_x,inc_y,tz,false))
+            		if (!nLOS(x,y,(int)z,inc_x,inc_y,inc_z_directionx+inc_z_directiony,tz,false))
             			return false;
             	}
             	else
@@ -298,7 +300,7 @@ public class GeoEngine extends GeoData
             		next_x += inc_x;
             		//_log.warning("2: next_x:"+next_x+" next_y"+next_y);
             		z += inc_z_directionx;
-            		if (!nLOS(x,y,(int)z,inc_x,0,tz,false))
+            		if (!nLOS(x,y,(int)z,inc_x,0,inc_z_directionx,tz,false))
             			return false;
             	}
             }
@@ -320,7 +322,7 @@ public class GeoEngine extends GeoData
             		next_x += inc_x;
             		z += inc_z_directionx;
             		//_log.warning("3: next_x:"+next_x+" next_y"+next_y);
-            		if (!nLOS(x,y,(int)z,inc_x,inc_y,tz,false))
+            		if (!nLOS(x,y,(int)z,inc_x,inc_y,inc_z_directionx+inc_z_directiony,tz,false))
             			return false;
             	}
             	else
@@ -329,7 +331,7 @@ public class GeoEngine extends GeoData
             		next_y += inc_y;
             		//_log.warning("4: next_x:"+next_x+" next_y"+next_y);
             		z += inc_z_directiony;
-            		if (!nLOS(x,y,(int)z,0,inc_y,tz,false))
+            		if (!nLOS(x,y,(int)z,0,inc_y,inc_z_directiony,tz,false))
             			return false;
             	}
             }
@@ -363,8 +365,8 @@ public class GeoEngine extends GeoData
         // it might not work when distance is small and path vertical
         else if (distance2 < 82)
         {
-        	// 200 too deep/high. This value should be in sync with NLOS
-        	if(dz*dz > 40000)
+        	// 150 should be too deep/high.
+        	if(dz*dz > 22500)
         	{
         		short region = getRegionOffset(x,y);
         		// geodata is loaded for region and mobs should have correct Z coordinate...
@@ -411,7 +413,7 @@ public class GeoEngine extends GeoData
             		next_y += inc_y;
             		z += inc_z_directiony;
             		//_log.warning("1: next_x:"+next_x+" next_y"+next_y);
-            		if (!nLOS(x,y,(int)z,inc_x,inc_y,tz,true))
+            		if (!nLOS(x,y,(int)z,inc_x,inc_y,inc_z_directionx+inc_z_directiony,tz,true))
             			return false;
             	}
             	else
@@ -420,7 +422,7 @@ public class GeoEngine extends GeoData
             		next_x += inc_x;
             		//_log.warning("2: next_x:"+next_x+" next_y"+next_y);
             		z += inc_z_directionx;
-            		if (!nLOS(x,y,(int)z,inc_x,0,tz,true))
+            		if (!nLOS(x,y,(int)z,inc_x,0,inc_z_directionx,tz,true))
             			return false;
             	}
             }
@@ -442,7 +444,7 @@ public class GeoEngine extends GeoData
             		next_x += inc_x;
             		z += inc_z_directionx;
             		//_log.warning("3: next_x:"+next_x+" next_y"+next_y);
-            		if (!nLOS(x,y,(int)z,inc_x,inc_y,tz,true))
+            		if (!nLOS(x,y,(int)z,inc_x,inc_y,inc_z_directionx+inc_z_directiony,tz,true))
             			return false;
             	}
             	else
@@ -451,7 +453,7 @@ public class GeoEngine extends GeoData
             		next_y += inc_y;
             		//_log.warning("4: next_x:"+next_x+" next_y"+next_y);
             		z += inc_z_directiony;
-            		if (!nLOS(x,y,(int)z,0,inc_y,tz,true))
+            		if (!nLOS(x,y,(int)z,0,inc_y,inc_z_directiony,tz,true))
             			return false;
             	}
             }
@@ -748,7 +750,7 @@ public class GeoEngine extends GeoData
 	 * @param x
 	 * @param y
 	 * @param z
-	 * @return Nearlest Z
+	 * @return Nearest Z
 	 */
 	private static short nGetHeight(int geox, int geoy, int z)
 	{
@@ -816,6 +818,79 @@ public class GeoEngine extends GeoData
 		 return temph;
 	    }
 	}
+	/**
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return One layer higher Z than parameter Z
+	 */
+	private static short nGetUpperHeight(int geox, int geoy, int z)
+	{
+	    short region = getRegionOffset(geox,geoy);
+	    int blockX = getBlock(geox);
+		int blockY = getBlock(geoy);
+		int cellX, cellY, index;
+		//Geodata without index - it is just empty so index can be calculated on the fly
+		if(_geodataIndex.get(region) == null) index = ((blockX << 8) + blockY)*3;
+		//Get Index for current block of current region geodata
+		else index = _geodataIndex.get(region).get(((blockX << 8))+(blockY));
+		//Buffer that Contains current Region GeoData
+		ByteBuffer geo = _geodata.get(region);
+		if(geo == null)
+		{
+			if(Config.DEBUG)
+				_log.warning("Geo Region - Region Offset: "+region+" dosnt exist!!");
+			return (short)z;
+		}
+		//Read current block type: 0-flat,1-complex,2-multilevel
+		byte type = geo.get(index);
+		index++;
+	    if(type == 0)//flat
+	        return geo.getShort(index);
+	    else if(type == 1)//complex
+	    {
+	    	cellX = getCell(geox);
+			cellY = getCell(geoy);
+	        index += ((cellX << 3) + cellY) << 1;
+	        short height = geo.getShort(index);
+			height = (short)(height&0x0fff0);
+			height = (short)(height >> 1); //height / 2
+			return height;
+	    }
+	    else //multilevel
+	    {
+	    	cellX = getCell(geox);
+			cellY = getCell(geoy);
+	        int offset = (cellX << 3) + cellY;
+	        while(offset > 0)
+	        {
+	            byte lc = geo.get(index);
+	            index += (lc << 1) + 1;
+	            offset--;
+	        }
+	        byte layers = geo.get(index);
+	        index++;
+	        short height=-1;
+			if(layers <= 0 || layers > 125)
+			{
+				_log.warning("Broken geofile (case1), region: "+region+" - invalid layer count: "+layers+" at: "+geox+" "+geoy);
+	            return (short)z;
+			}
+	        short temph = Short.MAX_VALUE;
+	        while(layers > 0) // from higher to lower
+	        {
+	            height = geo.getShort(index);
+	            height = (short)(height&0x0fff0);
+				height = (short)(height >> 1); //height / 2
+	            if (height < z) return temph;
+				temph = height;
+	            layers--;
+	            index += 2;
+	        }
+	        return temph;
+	    }
+	}
+	
 	/**
 	 * @param x
 	 * @param y
@@ -1000,7 +1075,7 @@ public class GeoEngine extends GeoData
 	 * @param tz
 	 * @return True if Char can see target
 	 */
-	private static boolean nLOS(int x, int y, int z, int inc_x, int inc_y, int tz, boolean debug)
+	private static boolean nLOS(int x, int y, int z, int inc_x, int inc_y, double inc_z, int tz, boolean debug)
 	{
 	    short region = getRegionOffset(x,y);
 	    int blockX = getBlock(x);
@@ -1038,16 +1113,21 @@ public class GeoEngine extends GeoData
 	        NSWE = (short)(height&0x0F);
 	        height = (short)(height&0x0fff0);
 			height = (short)(height >> 1); //height / 2
-			if(debug) {
-				_log.warning("height:"+height+" z"+z);
-				if(!checkNSWE(NSWE,x,y,x+inc_x,y+inc_y)) _log.warning("would block");
+			if (!checkNSWE(NSWE,x,y,x+inc_x,y+inc_y))
+			{
+				if(debug) _log.warning("height:"+height+" z"+z);	
+				if(z < nGetUpperHeight(x+inc_x,y+inc_y,height)) 
+					return false; // an obstacle high enough
+				return true;
 			}
-			if(z - height > 50) return true; // this value is just an approximate
+			else
+				return true;
 	    }
-	    else//multilevel, type == 2
+	    else //multilevel, type == 2
 	    {
 	    	cellX = getCell(x);
 			cellY = getCell(y);
+
 	        int offset = (cellX << 3) + cellY;
 	        while(offset > 0) // iterates (too many times?) to get to layer count
 	        {
@@ -1056,76 +1136,72 @@ public class GeoEngine extends GeoData
 	            offset--;
 	        }
 	        byte layers = geo.get(index);
-	        if (debug) _log.warning("layers"+layers);
+
 	        index++;
-	        short height=-1;
+	        short tempZ=-1;
 	        if(layers <= 0 || layers > 125)
 	        {
 	        	_log.warning("Broken geofile (case4), region: "+region+" - invalid layer count: "+layers+" at: "+x+" "+y);
 	            return false;
 	        }
-	        short tempz = Short.MIN_VALUE; // big negative value
+	        short upperHeight = Short.MAX_VALUE; // big positive value
+	        short lowerHeight = Short.MIN_VALUE; // big negative value
 	        byte temp_layers = layers;
-	        boolean highestlayer = true;
-
-	        z -= 25; // lowering level temporarily to avoid selecting ceiling
-	        while(temp_layers > 0)
+	        boolean highestlayer = false;
+	        while(temp_layers > 0) // from higher to lower
 	        {
-	            // reads height for current layer, result in world z coordinate
-	        	height = geo.getShort(index);
-	            height = (short)(height&0x0fff0);
-				height = (short)(height >> 1); //height / 2
-				//height -= 8; // old geo files had -8 around giran, new data seems better
+	            // reads tempZ for current layer, result in world z coordinate
+	        	tempZ = geo.getShort(index);
+	            tempZ = (short)(tempZ&0x0fff0);
+				tempZ = (short)(tempZ >> 1); //tempZ / 2
 
-				// searches the closest layer to current z coordinate
-				if ((z-tempz)*(z-tempz) > (z-height)*(z-height))
-	            {
-					if(tempz > Short.MIN_VALUE) highestlayer = false;
-					tempz = height;
-					if (debug) _log.warning("z"+(z+45)+" tempz"+tempz+" dz"+(z-tempz));
+				if (z > tempZ) {
+					lowerHeight = tempZ;
 	                NSWE = geo.getShort(index);
 	                NSWE = (short)(NSWE&0x0F);
-	            }
+	                break;
+				}
+				else {
+					highestlayer = false;
+					upperHeight = tempZ;
+				}
+	            
 				temp_layers--;
 	            index += 2;
 	        }
-	        z += 25; // level rises back
-
+	        if(debug) _log.warning("z:"+z+" x: "+cellX+" y:"+cellY+" la "+layers+" lo:"+lowerHeight+" up:"+upperHeight);
 	        // Check if LOS goes under a layer/floor
-	        if((z-tempz) < -20) return false; // -20 => clearly under, approximates also fence width
-
-	        // this helps in some cases (occasional under-highest-layer block which isn't wall)
-	        // but might also create problems in others (passes walls when you're standing high)
-	        if((z-tempz) > 250) return true;
-
+	        // clearly under layer but not too much under 
+	        // lowerheight here only for geodata bug checking, layers very close? maybe could be removed
+	        if((z-upperHeight) < -10 && (z-upperHeight) > inc_z-10 && (z-lowerHeight) > 40) {
+	        	if (debug) _log.warning("false, incz"+inc_z);
+	        	return false; 
+	        }
+	        
 	        // or there's a fence/wall ahead when we're not on highest layer
-	        // this part of the check is problematic
 	        if(!highestlayer)
 	        {
 	        	//a probable wall, there's movement block and layers above you
 	        	if(!checkNSWE(NSWE,x,y,x+inc_x,y+inc_y)) // cannot move
 	        	{
-	        		// the height after 2 inc_x,inc_y
-	        		short nextheight = nGetHeight(x+2*inc_x,y+2*inc_y,z-50);
-	        		if(debug)
-	        		{
-	        			_log.warning("0: z:"+z+" tz"+nGetHeight(x,y,z-60));
-	        			_log.warning("1: z:"+z+" tz"+nGetHeight(x+inc_x,y+inc_y,z-60));
-	        			_log.warning("2: z:"+z+" tz"+nGetHeight(x+2*inc_x,y+2*inc_y,z-60));
-	        			_log.warning("3: z:"+z+" tz"+nGetHeight(x+3*inc_x,y+3*inc_y,z-60));
-	        		}
-	        		// Probably a very thin fence (e.g. castle fences above artefact),
-	        		// where height instantly drops after 1-2 cells and layer ends.
-	        		if(z-nextheight>100) return true;
-	        		// layer continues so close we can see over it
-	        		if(nextheight-tempz>5 && nextheight-tempz<20) return true;
-	        		return false;
+	        		if(debug) _log.warning("block and next in x"+inc_x+" y"+inc_y+" is:"+nGetUpperHeight(x+inc_x,y+inc_y,lowerHeight));
+	        		// check one inc_x inc_y further, for the height there
+	        		if(z < nGetUpperHeight(x+inc_x,y+inc_y,lowerHeight)) 
+	        			return false; // a wall
+	        		return true; // we see over it, e.g. a fence 
 	        	}
 	        	else return true;
 	        }
-	        else return true;
+	        if (!checkNSWE(NSWE,x,y,x+inc_x,y+inc_y))
+			{
+				// check one inc_x inc_y further, for the height there
+	        	if(z < nGetUpperHeight(x+inc_x,y+inc_y,lowerHeight)) 
+					return false; // we hit an obstacle high enough
+				return true;
+			}
+			else
+				return true;
 	    }
-	    return checkNSWE(NSWE,x,y,x+inc_x,y+inc_y);
 	}
 	/**
 	 * @param x
