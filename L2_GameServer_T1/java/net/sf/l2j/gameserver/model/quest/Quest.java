@@ -366,9 +366,10 @@ public class Quest extends ManagedScript
 	/**
 	 * Show a message to player.<BR><BR>
 	 * <U><I>Concept : </I></U><BR>
-	 * 3 cases are managed according to the value of the parameter "res" :<BR>
+	 * 4 cases are managed according to the value of the parameter "res" :<BR>
 	 * <LI><U>"res" ends with string ".html" :</U> an HTML is opened in order to be shown in a dialog box</LI>
 	 * <LI><U>"res" starts with "<html>" :</U> the message hold in "res" is shown in a dialog box</LI>
+	 * <LI><U>"res" is equal to string "none" :</U> HTML will not be opened</LI>
 	 * <LI><U>otherwise :</U> the message hold in "res" is shown in chat box</LI>
 	 * @param qs : QuestState 
 	 * @param res : String pointing out the message to show at the player
@@ -386,6 +387,8 @@ public class Quest extends ManagedScript
 			player.sendPacket(npcReply);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 		}
+		else if (res.equalsIgnoreCase("none"))
+			player.sendPacket(ActionFailed.STATIC_PACKET);
 		else {
 			SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
 			sm.addString(res);
