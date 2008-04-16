@@ -92,7 +92,7 @@ public class Potions implements IItemHandler
 		else
 			return;
 
-		if (!TvTEvent.onPotionUse(playable.getName()))
+		if (!TvTEvent.onPotionUse(playable.getObjectId()))
 		{
 			playable.sendPacket(ActionFailed.STATIC_PACKET);
 			return;

@@ -44,7 +44,7 @@ public class L2TvTEventNpcInstance extends L2NpcInstance
 		{
 			String htmFile = "data/html/mods/";
 
-			if (!TvTEvent.isPlayerParticipant(playerInstance.getName()))
+			if (!TvTEvent.isPlayerParticipant(playerInstance.getObjectId()))
 				htmFile += "TvTEventParticipation";
 			else
 				htmFile += "TvTEventRemoveParticipation";

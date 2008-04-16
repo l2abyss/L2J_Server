@@ -3442,7 +3442,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	public void onAction(L2PcInstance player)
 	{
 		// See description in TvTEvent.java
-		if (!TvTEvent.onAction(player.getName(), getName()))
+		if (!TvTEvent.onAction( player, getObjectId()))
 		{
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -11117,7 +11117,8 @@ public final class L2PcInstance extends L2PlayableInstance
     @Override
     public boolean mustFallDownOnDeath()
     {
-        return super.mustFallDownOnDeath() && !TvTEvent.isPlayerParticipant(getName());
+        return	super.mustFallDownOnDeath() &&
+        		( !TvTEvent.isStarted() || !TvTEvent.isPlayerParticipant( getObjectId() ) );
     }
 
     public void setAgathionId(int npcId)

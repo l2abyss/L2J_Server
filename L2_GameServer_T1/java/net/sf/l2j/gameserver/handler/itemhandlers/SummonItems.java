@@ -48,7 +48,7 @@ public class SummonItems implements IItemHandler
 		if (!(playable instanceof L2PcInstance))
 			return;
 
-		if (!TvTEvent.onItemSummon(playable.getName()))
+		if (!TvTEvent.onItemSummon(playable.getObjectId()))
 			return;
 
 		L2PcInstance activeChar = (L2PcInstance)playable;

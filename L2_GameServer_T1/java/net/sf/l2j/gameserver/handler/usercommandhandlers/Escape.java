@@ -43,7 +43,7 @@ public class Escape implements IUserCommandHandler
     public boolean useUserCommand(@SuppressWarnings("unused") int id, L2PcInstance activeChar)
     {
     	// Thanks nbd
-    	if (!TvTEvent.onEscapeUse(activeChar.getName()))
+    	if (!TvTEvent.onEscapeUse(activeChar.getObjectId()))
     	{
     		activeChar.sendPacket(ActionFailed.STATIC_PACKET);
     		return false;

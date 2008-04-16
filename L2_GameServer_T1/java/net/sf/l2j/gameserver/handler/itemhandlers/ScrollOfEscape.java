@@ -60,7 +60,7 @@ public class ScrollOfEscape implements IItemHandler
         L2PcInstance activeChar = (L2PcInstance)playable;
 
         // Thanks nbd
-        if (!TvTEvent.onEscapeUse(activeChar.getName()))
+        if (!TvTEvent.onEscapeUse(activeChar.getObjectId()))
         {
         	activeChar.sendPacket(ActionFailed.STATIC_PACKET);
         	return;

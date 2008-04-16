@@ -328,7 +328,7 @@ public class Wedding implements IVoicedCommandHandler
             	}
             }
         }
-        else if (!TvTEvent.onEscapeUse(partner.getName()))
+        else if (!TvTEvent.onEscapeUse(partner.getObjectId()))
         {
         	activeChar.sendMessage("Your partner is in an event.");
         	return false;
@@ -375,7 +375,7 @@ public class Wedding implements IVoicedCommandHandler
             return false;
         }
         // Thanks nbd
-        else if (!TvTEvent.onEscapeUse(activeChar.getName()))
+        else if (!TvTEvent.onEscapeUse(activeChar.getObjectId()))
         {
         	activeChar.sendPacket(ActionFailed.STATIC_PACKET);
         	return false;

@@ -20,14 +20,14 @@ import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
-public class TvTEventTeleporter implements Runnable
-{
+public class TvTEventTeleporter
+implements Runnable {
 	/** The instance of the player to teleport */
-	private L2PcInstance _playerInstance;
+	private L2PcInstance _playerInstance = null;
 	/** Coordinates of the spot to teleport to */
-	private int[] _coordinates = new int[3];
+	private int[] _coordinates = new int[ 3 ];
 	/** Admin removed this player from event */
-	private boolean _adminRemove;
+	private boolean _adminRemove = false;
 
 	/**
 	 * Initialize the teleporter and start the delayed task<br><br>
@@ -37,19 +37,14 @@ public class TvTEventTeleporter implements Runnable
 	 * @param fastShedule as boolean<br>
 	 * @param adminRemove as boolean<br>
 	 */
-	public TvTEventTeleporter(L2PcInstance playerInstance, int[] coordinates, boolean fastSchedule, boolean adminRemove)
-	{
+	public TvTEventTeleporter( L2PcInstance playerInstance, int[] coordinates, boolean fastSchedule, boolean adminRemove ) {
 		_playerInstance = playerInstance;
 		_coordinates = coordinates;
 		_adminRemove = adminRemove;
 
-		// in config as seconds
-		long delay = (TvTEvent.isStarted() ? Config.TVT_EVENT_RESPAWN_TELEPORT_DELAY : Config.TVT_EVENT_START_LEAVE_TELEPORT_DELAY) * 1000;
+		long delay = ( TvTEvent.isStarted() ? Config.TVT_EVENT_RESPAWN_TELEPORT_DELAY : Config.TVT_EVENT_START_LEAVE_TELEPORT_DELAY ) * 1000;
 
-		if (fastSchedule)
-			delay = 0;
-
-		ThreadPoolManager.getInstance().scheduleGeneral(this, delay);
+		ThreadPoolManager.getInstance().scheduleGeneral( this, fastSchedule ? 0 : delay );
 	}
 
 	/**
@@ -62,32 +57,34 @@ public class TvTEventTeleporter implements Runnable
 	 *
 	 * @see java.lang.Runnable#run()<br>
 	 */
-	public void run()
-	{
-		if (_playerInstance == null)
+	public void run() {
+		if ( _playerInstance == null ) {
 			return;
+		}
 
 		L2Summon summon = _playerInstance.getPet();
 
-		if (summon != null)
-			summon.unSummon(_playerInstance);
+		if ( summon != null ) {
+			summon.unSummon( _playerInstance );
+		}
 
-		for (L2Effect effect : _playerInstance.getAllEffects())
-		{
-			if (effect != null)
+		for ( L2Effect effect : _playerInstance.getAllEffects() ) {
+			if ( effect != null ) {
 				effect.exit();
+			}
 		}
 
 		_playerInstance.doRevive();
-		_playerInstance.setCurrentCp(_playerInstance.getMaxCp());
-		_playerInstance.setCurrentHp(_playerInstance.getMaxHp());
-		_playerInstance.setCurrentMp(_playerInstance.getMaxMp());
-		_playerInstance.teleToLocation(_coordinates[0], _coordinates[1], _coordinates[2], false);
+		_playerInstance.setCurrentCp( _playerInstance.getMaxCp() );
+		_playerInstance.setCurrentHp( _playerInstance.getMaxHp() );
+		_playerInstance.setCurrentMp( _playerInstance.getMaxMp() );
+		_playerInstance.teleToLocation( _coordinates[ 0 ], _coordinates[ 1 ], _coordinates[ 2 ], false );
 
-		if (TvTEvent.isStarted() && !_adminRemove)
-			_playerInstance.setTeam(TvTEvent.getParticipantTeamId(_playerInstance.getName())+1);
-		else
-			_playerInstance.setTeam(0);
+		if (TvTEvent.isStarted() && !_adminRemove) {
+			_playerInstance.setTeam( TvTEvent.getParticipantTeamId( _playerInstance.getObjectId() ) + 1 );
+		} else {
+			_playerInstance.setTeam( 0 );
+		}
 
 		_playerInstance.broadcastStatusUpdate();
 		_playerInstance.broadcastUserInfo();
