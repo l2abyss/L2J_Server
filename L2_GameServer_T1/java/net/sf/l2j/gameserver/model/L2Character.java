@@ -842,6 +842,9 @@ public abstract class L2Character extends L2Object
 
 		// Set the Attacking Body part to CHEST
 		setAttackingBodypart();
+		// Make sure that char is facing selected target
+		// also works: setHeading(Util.convertDegreeToClientHeading(Util.calculateAngleFrom(this, target)));
+		setHeading(Util.calculateHeadingFrom(this, target));
 		
 		// Get the Attack Reuse Delay of the L2Weapon
 		int reuse = calculateReuseTime(target, weaponItem);
@@ -4983,9 +4986,6 @@ public abstract class L2Character extends L2Object
 			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
 			return;
 		}
-		// Make sure that char is facing selected target
-		// also works: setHeading(Util.convertDegreeToClientHeading(Util.calculateAngleFrom(this, target)));
-		setHeading(Util.calculateHeadingFrom(this, target));
 
 		if ((this instanceof L2NpcInstance && target.isAlikeDead()) || target.isDead()
                 || (!getKnownList().knowsObject(target) && !(this instanceof L2DoorInstance)))
@@ -6045,23 +6045,29 @@ public abstract class L2Character extends L2Object
 	{
 		try
 		{
-			// Do initial checkings for skills and set pvp flag/draw aggro when needed
+			// Get the skill handler corresponding to the skill type (PDAM, MDAM, SWEEP...) started in gameserver
+			ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
+			L2Weapon activeWeapon = getActiveWeaponItem();
+
+			L2PcInstance player = null;
+			if (this instanceof L2PcInstance)
+				player = (L2PcInstance)this;
+			else if (this instanceof L2Summon)
+				player = ((L2Summon)this).getOwner();
+			else if (this instanceof L2Trap)
+				player = ((L2Trap)this).getOwner();
+			
+			// Check if the toggle skill effects are already in progress on the L2Character
+			if(skill.isToggle() && getFirstEffect(skill.getId()) != null)
+				return;
+			
+			// Initial checks
 			for (L2Object trg : targets)
 			{
 				if (trg instanceof L2Character)
 				{
 					// Set some values inside target's instance for later use
 					L2Character target = (L2Character) trg;
-
-                    L2Weapon activeWeapon = getActiveWeaponItem();
-					// Launch weapon Special ability skill effect if available
-					if (activeWeapon != null && !target.isDead())
-					{
-						if (activeWeapon.getSkillEffects(this, target, skill).length > 0 && this instanceof L2PcInstance)
-						{
-							sendPacket(SystemMessage.sendString("Target affected by weapon special ability!"));
-						}
-					}
 
 					// Check Raidboss attack and
 					// check buffing chars who attack raidboss. Results in mute.
@@ -6074,56 +6080,68 @@ public abstract class L2Character extends L2Object
 						{
 							L2Skill tempSkill = SkillTable.getInstance().getInfo(4215, 1);
 							if(tempSkill != null)
-							{
 								tempSkill.getEffects(target, this);
-							}
 							else
-							{
 								_log.warning("Skill 4215 at level 1 is missing in DP.");
-							}
 						}
 						else
 						{
 							L2Skill tempSkill = SkillTable.getInstance().getInfo(4515, 1);
 							if(tempSkill != null)
-							{
 								tempSkill.getEffects(target, this);
-							}
 							else
-							{
 								_log.warning("Skill 4515 at level 1 is missing in DP.");
-							}
 						}
 						return;
 					}
+					
+					 // Check if over-hit is possible
+		            if(skill.isOverhit())
+		            {
+		            	if(target instanceof L2Attackable)
+		                        ((L2Attackable)target).overhitEnabled(true);
+		            }
 
-					L2PcInstance activeChar = null;
+					// Launch weapon Special ability skill effect if available
+					if (activeWeapon != null && !target.isDead())
+					{
+						if (activeWeapon.getSkillEffects(this, target, skill).length > 0 && this instanceof L2PcInstance)
+						{
+							sendPacket(SystemMessage.sendString("Target affected by weapon special ability!"));
+						}
+					}
+				}
+			}
 
-					if (this instanceof L2PcInstance)
-						activeChar = (L2PcInstance)this;
-					else if (this instanceof L2Summon)
-						activeChar = ((L2Summon)this).getOwner();
-					else if (this instanceof L2Trap)
-						activeChar = ((L2Trap)this).getOwner();
+			// Launch the magic skill and calculate its effects
+			if (handler != null)
+				handler.useSkill(this, skill, targets);
+			else
+				skill.useSkill(this, targets);
 
-					if (activeChar != null)
+			if (player != null)
+			{
+				for (L2Object target : targets)
+				{
+					// EVT_ATTACKED and PvPStatus
+					if (target instanceof L2Character)
 					{
 						if (skill.isOffensive())
 						{
 							if (target instanceof L2PcInstance || target instanceof L2Summon || target instanceof L2Trap)
-                            {
+							{
 								// Signets are a special case, casted on target_self but don't harm self
 								if (skill.getSkillType() != L2Skill.SkillType.SIGNET && skill.getSkillType() != L2Skill.SkillType.SIGNET_CASTTIME)
 								{
-									target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, activeChar);
-									activeChar.updatePvPStatus(target);
+									((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
+									player.updatePvPStatus((L2Character)target);
 								}
-                            }
+							}
 							else if (target instanceof L2Attackable)
-                            {
-                            	// notify the AI that she is attacked
-                            	target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, activeChar);
-                            }
+							{
+								// notify the AI that she is attacked
+								((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
+							}
 						}
 						else
 						{
@@ -6132,80 +6150,17 @@ public abstract class L2Character extends L2Object
 								// Casting non offensive skill on player with pvp flag set or with karma
 								if (!target.equals(this) &&
 										(((L2PcInstance)target).getPvpFlag() > 0 ||
-												((L2PcInstance)target).getKarma() > 0)) activeChar.updatePvPStatus();
+												((L2PcInstance)target).getKarma() > 0)) player.updatePvPStatus();
 							}
 							else if (target instanceof L2Attackable 
 									&& !(skill.getSkillType() == L2Skill.SkillType.SUMMON)
 									&& !(skill.getSkillType() == L2Skill.SkillType.BEAST_FEED) 
 									&& !(skill.getSkillType() == L2Skill.SkillType.UNLOCK)
 									&& !(skill.getSkillType() == L2Skill.SkillType.DELUXE_KEY_UNLOCK))
-								activeChar.updatePvPStatus();
+								player.updatePvPStatus();
 						}
 					}
-				}
-			}
-
-			ISkillHandler handler = null;
-
-			// TODO Remove this useless section
-			if(skill.isToggle())
-			{
-				// Check if the skill effects are already in progress on the L2Character
-				if(getFirstEffect(skill.getId()) != null)
-				{
-					handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
-
-					if (handler != null)
-						handler.useSkill(this, skill, targets);
-					else
-						skill.useSkill(this, targets);
-
-					if ((this instanceof L2PcInstance) || (this instanceof L2Summon))
-					{
-						L2PcInstance caster = (this instanceof L2PcInstance)? (L2PcInstance) this: ((L2Summon)this).getOwner();
-						for (L2Object target : targets)
-						{
-			                if (target instanceof L2NpcInstance)
-			                {
-			                	for (Quest quest: ((L2NpcInstance)target).getTemplate().getEventQuests(Quest.QuestEventType.MOB_TARGETED_BY_SKILL))
-			                		quest.notifySkillUse ( (L2NpcInstance) target, caster, skill);
-			                }
-						}
-					}
-
-					return;
-				}
-			}
-
-            // Check if over-hit is possible
-            if(skill.isOverhit())
-            {
-                // Set the "over-hit enabled" flag on each of the possible targets
-                for (L2Object target : targets)
-                {
-                    L2Character player = (L2Character) target;
-                    if(player instanceof L2Attackable)
-                    {
-                        ((L2Attackable)player).overhitEnabled(true);
-                    }
-                }
-            }
-
-			// Get the skill handler corresponding to the skill type (PDAM, MDAM, SWEEP...) started in gameserver
-			handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
-
-			// Launch the magic skill and calculate its effects
-			if (handler != null)
-				handler.useSkill(this, skill, targets);
-			else
-				skill.useSkill(this, targets);
-
-			if ((this instanceof L2PcInstance) || (this instanceof L2Summon))
-			{
-				L2PcInstance caster = (this instanceof L2PcInstance) ? (L2PcInstance) this
-						: ((L2Summon) this).getOwner();
-				for (L2Object target : targets)
-				{
+					// also quest events
 					if (target instanceof L2NpcInstance)
 					{
 						L2NpcInstance npc = (L2NpcInstance) target;
@@ -6215,25 +6170,28 @@ public abstract class L2Character extends L2Object
 									.getTemplate()
 									.getEventQuests(
 											Quest.QuestEventType.MOB_TARGETED_BY_SKILL))
-								quest.notifySkillUse(npc, caster, skill);
+								quest.notifySkillUse(npc, player, skill);
 					}
 				}
+				// Mobs in range 1000 see spell
 				if (skill.getAggroPoints() > 0)
-					for (L2Object spMob : caster.getKnownList()
+				{
+					for (L2Object spMob : player.getKnownList()
 							.getKnownObjects().values())
 						if (spMob instanceof L2NpcInstance)
 						{
 							L2NpcInstance npcMob = (L2NpcInstance) spMob;
-							if (npcMob.isInsideRadius(caster, 1000, true, true)
+							if (npcMob.isInsideRadius(player, 1000, true, true)	
 									&& npcMob.hasAI()
 									&& npcMob.getAI().getIntention() == AI_INTENTION_ATTACK)
 							{
 								L2Object npcTarget = npcMob.getTarget();
 								for (L2Object target : targets)
 									if (npcTarget == target || npcMob == target)
-										npcMob.seeSpell(caster, target, skill);
+										npcMob.seeSpell(player, target, skill);
 							}
 						}
+				}
 			}
 		}
 		catch (Exception e)
@@ -6242,7 +6200,8 @@ public abstract class L2Character extends L2Object
 		}
 	}
 	
-	public void seeSpell(L2PcInstance caster, L2Object target, L2Skill skill) {
+	public void seeSpell(L2PcInstance caster, L2Object target, L2Skill skill) 
+	{
 		if (this instanceof L2Attackable)
 			((L2Attackable)this).addDamageHate(caster, 0, -skill.getAggroPoints());
 	}
