@@ -216,7 +216,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE characters SET deletetime=? WHERE obj_id=?");
+			PreparedStatement statement = con.prepareStatement("UPDATE characters SET deletetime=? WHERE obj_Id=?");
 			statement.setLong(1, System.currentTimeMillis() + Config.DELETE_DAYS*86400000L); // 24*60*60*1000 = 86400000
 			statement.setInt(2, objid);
 			statement.execute();
@@ -293,7 +293,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 		try
 		{
 		con = L2DatabaseFactory.getInstance().getConnection();
-		PreparedStatement statement = con.prepareStatement("UPDATE characters SET deletetime=0 WHERE obj_id=?");
+		PreparedStatement statement = con.prepareStatement("UPDATE characters SET deletetime=0 WHERE obj_Id=?");
 		statement.setInt(1, objid);
 		statement.execute();
 		statement.close();

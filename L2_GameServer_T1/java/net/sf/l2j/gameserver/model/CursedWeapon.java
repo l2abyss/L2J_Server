@@ -146,7 +146,7 @@ public class CursedWeapon
 	    			}
 					*/
 	    			// Restore the karma
-	    			statement = con.prepareStatement("UPDATE characters SET karma=?, pkkills=? WHERE obj_id=?");
+	    			statement = con.prepareStatement("UPDATE characters SET karma=?, pkkills=? WHERE obj_Id=?");
 	    			statement.setInt(1, _playerKarma);
 	    			statement.setInt(2, _playerPkKills);
 	    			statement.setInt(3, _playerId);
