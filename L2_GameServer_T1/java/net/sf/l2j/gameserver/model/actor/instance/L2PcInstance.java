@@ -4173,6 +4173,7 @@ public final class L2PcInstance extends L2PlayableInstance
         if (this.isTransformed())
         {
             restoreSkills();
+            regiveTemporarySkills();
             _transformation.onUntransform();
             _transformation = null;
             broadcastUserInfo();
