@@ -221,10 +221,10 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
                     String[] matches = Olympiad.getInstance().getMatchList();
                     int stad;
                     int showbattle;
-                    replyMSG.append("Grand Olympiad Games Overview<br><br>" +
-                            "* Caution: Please note, if you watch an Olympiad " +
-                            "game, the summoning of your Servitors or Pets will be " +
-                            "cancelled. Be careful.<br>");
+                    replyMSG.append("Grand Olympiad Competition View<br>" +
+                            "Warning: If you watch an Olympiad game, the " +
+                            "summoning of your Servitors or Pets will be " +
+                            "cancelled.<br><br>");
 
                     if (matches == null)
                         replyMSG.append("<br>There are no matches at the moment");

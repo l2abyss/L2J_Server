@@ -98,21 +98,21 @@ public class AdminCursedWeapons implements IAdminCommandHandler {
 						replyMSG.append("<tr><td>Karma:</td><td>"+String.valueOf(cw.getPlayerKarma())+"</td></tr>");
 						replyMSG.append("<tr><td>Kills:</td><td>"+String.valueOf(cw.getPlayerPkKills())+"/"+String.valueOf(cw.getNbKills())+"</td></tr>");
 						replyMSG.append("<tr><td>Time remaining:</td><td>"+String.valueOf(cw.getTimeLeft()/60000)+" min.</td></tr>");
-						replyMSG.append("<tr><td><button value=\"Remove\" action=\"bypass -h admin_cw_remove "+String.valueOf(itemId)+"\" width=73 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\"></td>");
-						replyMSG.append("<td><button value=\"Go\" action=\"bypass -h admin_cw_goto "+String.valueOf(itemId)+"\" width=73 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\"></td></tr>");
+						replyMSG.append("<tr><td><button value=\"Remove\" action=\"bypass -h admin_cw_remove "+String.valueOf(itemId)+"\" width=73 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
+						replyMSG.append("<td><button value=\"Go\" action=\"bypass -h admin_cw_goto "+String.valueOf(itemId)+"\" width=73 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>");
 					}
 					else if (cw.isDropped())
 					{
 						replyMSG.append("<tr><td>Position:</td><td>Lying on the ground</td></tr>");
 						replyMSG.append("<tr><td>Time remaining:</td><td>"+String.valueOf(cw.getTimeLeft()/60000)+" min.</td></tr>");
 						replyMSG.append("<tr><td>Kills:</td><td>"+String.valueOf(cw.getNbKills())+"</td></tr>");
-						replyMSG.append("<tr><td><button value=\"Remove\" action=\"bypass -h admin_cw_remove "+String.valueOf(itemId)+"\" width=73 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\"></td>");
-						replyMSG.append("<td><button value=\"Go\" action=\"bypass -h admin_cw_goto "+String.valueOf(itemId)+"\" width=73 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\"></td></tr>");
+						replyMSG.append("<tr><td><button value=\"Remove\" action=\"bypass -h admin_cw_remove "+String.valueOf(itemId)+"\" width=73 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
+						replyMSG.append("<td><button value=\"Go\" action=\"bypass -h admin_cw_goto "+String.valueOf(itemId)+"\" width=73 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>");
 					}
 					else
 					{
 						replyMSG.append("<tr><td>Position:</td><td>Doesn't exist.</td></tr>");
-						replyMSG.append("<tr><td><button value=\"Give to Target\" action=\"bypass -h admin_cw_add "+String.valueOf(itemId)+"\" width=99 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\"></td><td></td></tr>");
+						replyMSG.append("<tr><td><button value=\"Give to Target\" action=\"bypass -h admin_cw_add "+String.valueOf(itemId)+"\" width=99 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df></td><td></td></tr>");
 					}
 					replyMSG.append("</table>");
 					replyMSG.append("<br>");
