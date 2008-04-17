@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
@@ -2240,6 +2241,8 @@ public final class L2PcInstance extends L2PlayableInstance
 		// Reload passive skills from armors / jewels / weapons
 		getInventory().reloadEquippedItems();
 		
+		// Add Death Penalty Buff Level
+		restoreDeathPenaltyBuffLevel();
 	}
 
 	/**
@@ -4162,6 +4165,7 @@ public final class L2PcInstance extends L2PlayableInstance
             // You already polymorphed and cannot polymorph again.
             SystemMessage msg = new SystemMessage(SystemMessageId.YOU_ALREADY_POLYMORPHED_AND_CANNOT_POLYMORPH_AGAIN);
             this.sendPacket(msg);
+            return;
         }
         _transformation = transformation;
         transformation.onTransform();
@@ -4186,6 +4190,12 @@ public final class L2PcInstance extends L2PlayableInstance
         return _transformation;
     }
     
+    /**
+     * This returns the transformation Id of the current transformation.
+     * For example, if a player is transformed as a Buffalo, and then picks up the Zariche,
+     * the transform Id returned will be that of the Zariche, and NOT the Buffalo.
+     * @return Transformation Id
+     */
     public int getTranformationId()
     {
         L2Transformation transformation = this.getTransformation();
@@ -4196,27 +4206,34 @@ public final class L2PcInstance extends L2PlayableInstance
         return transformation.getId();
     }
     
-    // TODO: Clean code. Looks like this is used for non-cursedweapon transformations
+    /**
+     * This returns the transformation Id stored inside the character table, selected by the method: transformSelectInfo()
+     * For example, if a player is transformed as a Buffalo, and then picks up the Zariche,
+     * the transform Id returned will be that of the Buffalo, and NOT the Zariche.
+     * @return Transformation Id
+     */
     public int transformId()
     {
        return _transformationId;
     }
     
+    /**
+     * This is a simple query that inserts the transform Id into the character table for future reference.
+     */
     public void transformInsertInfo()
     {
     	_transformationId = getTranformationId();
-    	java.sql.Connection con = null;
+    	Connection con = null;
         try
         {
             con = L2DatabaseFactory.getInstance().getConnection();
-            PreparedStatement statement;
+            PreparedStatement statement = con.prepareStatement(UPDATE_CHAR_TRANSFORM);
             
-            statement = con.prepareStatement(UPDATE_CHAR_TRANSFORM);
             statement.setInt(1, _transformationId);
             statement.setInt(2, getObjectId());
+            
             statement.execute();
             statement.close();
-            
         }
         catch (Exception e)
         {
@@ -4228,19 +4245,23 @@ public final class L2PcInstance extends L2PlayableInstance
         }
     }
     
+    /**
+     * This selects the current 
+     * @return transformation Id
+     */
     public int transformSelectInfo()
     {
-        java.sql.Connection con = null;
+    	Connection con = null;
         try
         {
             con = L2DatabaseFactory.getInstance().getConnection();
-            PreparedStatement statement;
-
-            statement = con.prepareStatement(SELECT_CHAR_TRANSFORM);
-            statement.setInt(1, getObjectId());
+            PreparedStatement statement = con.prepareStatement(SELECT_CHAR_TRANSFORM); 
             ResultSet rset = statement.executeQuery();
-            rset.next();
+            
+            statement.setInt(1, getObjectId());
             _transformationId = rset.getInt("transform_id");
+            
+            rset.close();
             statement.close();
         }
         catch (Exception e)
@@ -4257,15 +4278,15 @@ public final class L2PcInstance extends L2PlayableInstance
     public void transformUpdateInfo()
     {
     	_transformationId = 0;
-    	java.sql.Connection con = null;
+    	Connection con = null;
         try
         {
             con = L2DatabaseFactory.getInstance().getConnection();
-            PreparedStatement statement;
-
-            statement = con.prepareStatement(UPDATE_CHAR_TRANSFORM);
+            PreparedStatement statement = con.prepareStatement(UPDATE_CHAR_TRANSFORM);
+            
             statement.setInt(1, 0);
             statement.setInt(2, getObjectId());
+            
             statement.execute();
             statement.close();
         }
@@ -6861,8 +6882,9 @@ public final class L2PcInstance extends L2PlayableInstance
 			try { con.close(); } catch (Exception e) {}
 		}
 
-		if (this.transformId() == 0 && !this.isCursedWeaponEquipped())
-		{
+		if (this.transformId() > 0 || this.isCursedWeaponEquipped())
+			return oldSkill;
+
 		    L2ShortCut[] allShortCuts = getAllShortCuts();
 
 		    for (L2ShortCut sc : allShortCuts)
@@ -6870,7 +6892,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			    if (sc != null && skill != null && sc.getId() == skill.getId() && sc.getType() == L2ShortCut.TYPE_SKILL)
 			        deleteShortCut(sc.getSlot(), sc.getPage());
 		    }
-		}
+
 		return oldSkill;
 	}
 
@@ -10972,11 +10994,7 @@ public final class L2PcInstance extends L2PlayableInstance
     	if(getDeathPenaltyBuffLevel() > 0)
     	{
     		addSkill(SkillTable.getInstance().getInfo(5076, getDeathPenaltyBuffLevel()), false);
-    		// SystemMessage sm = new SystemMessage(SystemMessageId.DEATH_PENALTY_LEVEL_S1_ADDED);
-    		// sm.addNumber(getDeathPenaltyBuffLevel());
-    		// sendPacket(sm);
     	}
-    	// sendPacket(new EtcStatusUpdate(this));
     }
 
 	private FastMap<Integer, TimeStamp> _reuseTimeStamps = new FastMap<Integer, TimeStamp>().setShared(true);
