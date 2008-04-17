@@ -1718,7 +1718,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	{
 		if (Config.ALT_RECOMMEND)
 		{
-			java.sql.Connection con = null;
+			Connection con = null;
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
@@ -6051,8 +6051,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	public void updateOnlineStatus()
 	{
-		java.sql.Connection con = null;
-
+		Connection con = null;
 		try
         {
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -6078,12 +6077,12 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	private boolean createDb()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			statement = con.prepareStatement(INSERT_CHARACTER);
+			PreparedStatement statement = con.prepareStatement(INSERT_CHARACTER);
+			
 			statement.setString(1, _accountName);
 			statement.setInt(2, getObjectId());
 			statement.setString(3, getName());
@@ -6119,6 +6118,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			statement.setInt(33, isNoble() ? 1 :0);
 			statement.setLong(34, 0);
 			statement.setLong(35,System.currentTimeMillis());
+			
 			statement.executeUpdate();
 			statement.close();
 		}
@@ -6151,7 +6151,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	private static L2PcInstance restore(int objectId)
 	{
 		L2PcInstance player = null;
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try
 		{
@@ -6416,7 +6416,7 @@ public final class L2PcInstance extends L2PlayableInstance
      */
     private static boolean restoreSubClassData(L2PcInstance player)
     {
-        java.sql.Connection con = null;
+        Connection con = null;
 
         try
         {
@@ -6488,7 +6488,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		if (getCommonRecipeBook().length == 0 && getDwarvenRecipeBook().length == 0)
 			return;
 
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try {
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -6531,7 +6531,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	private void restoreRecipeBook()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try {
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -6577,7 +6577,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
 	private void storeCharBase()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try
 		{
@@ -6590,10 +6590,9 @@ public final class L2PcInstance extends L2PlayableInstance
 			_classIndex = currentClassIndex;
 
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-
 			// Update base class
-            statement = con.prepareStatement(UPDATE_CHARACTER);
+			PreparedStatement statement = con.prepareStatement(UPDATE_CHARACTER);
+			
 			statement.setInt(1, level);
 			statement.setInt(2, getMaxHp());
 			statement.setDouble(3, getCurrentHp());
@@ -6660,18 +6659,17 @@ public final class L2PcInstance extends L2PlayableInstance
 
     private void storeCharSub()
     {
-        java.sql.Connection con = null;
+        Connection con = null;
 
         try
         {
             con = L2DatabaseFactory.getInstance().getConnection();
-            PreparedStatement statement;
-
+            PreparedStatement statement = con.prepareStatement(UPDATE_CHAR_SUBCLASS);
+            
             if (getTotalSubClasses() > 0)
             {
             	for (SubClass subClass : getSubClasses().values())
             	{
-                	statement = con.prepareStatement(UPDATE_CHAR_SUBCLASS);
                     statement.setLong(1, subClass.getExp());
                     statement.setInt(2, subClass.getSp());
                     statement.setInt(3, subClass.getLevel());
@@ -6680,8 +6678,8 @@ public final class L2PcInstance extends L2PlayableInstance
                     statement.setInt(6, subClass.getClassIndex());
 
                     statement.execute();
-                    statement.close();
                 }
+            	statement.close();
             }
         }
         catch (Exception e) {
@@ -6694,14 +6692,14 @@ public final class L2PcInstance extends L2PlayableInstance
 	{
 		if (!Config.STORE_SKILL_COOLTIME) return;
 
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-
+			
 			// Delete all current stored effects for char to avoid dupe
-			statement = con.prepareStatement(DELETE_SKILL_SAVE);
+			PreparedStatement statement = con.prepareStatement(DELETE_SKILL_SAVE);
+			
 			statement.setInt(1, getObjectId());
 			statement.setInt(2, getClassIndex());
 			statement.execute();
@@ -6855,23 +6853,22 @@ public final class L2PcInstance extends L2PlayableInstance
 		// Remove a skill from the L2Character and its Func objects from calculator set of the L2Character
 		L2Skill oldSkill = super.removeSkill(skill);
 
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try
 		{
 			// Remove or update a L2PcInstance skill from the character_skills table of the database
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
+			PreparedStatement statement = con.prepareStatement(DELETE_SKILL_FROM_CHAR);
 
 			if (oldSkill != null)
 			{
-				statement = con.prepareStatement(DELETE_SKILL_FROM_CHAR);
 				statement.setInt(1, oldSkill.getId());
 				statement.setInt(2, getObjectId());
 				statement.setInt(3, getClassIndex());
 				statement.execute();
-				statement.close();
 			}
+			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -6908,7 +6905,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		if (newClassIndex > -1)
 			classIndex = newClassIndex;
 
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try
 		{
@@ -6956,13 +6953,14 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	private void restoreSkills()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try
 		{
 			// Retrieve all skills of this L2PcInstance from the database
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(RESTORE_SKILLS_FOR_CHAR);
+			
 			statement.setInt(1, getObjectId());
 			statement.setInt(2, getClassIndex());
 			ResultSet rset = statement.executeQuery();
@@ -7002,7 +7000,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	public void restoreEffects()
 	{
 		L2Object[] targets = new L2Character[]{this};
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try
 		{
@@ -7102,7 +7100,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	private void restoreHenna()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try
 		{
@@ -7159,7 +7157,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	private void restoreRecom()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try
 		{
@@ -7218,15 +7216,17 @@ public final class L2PcInstance extends L2PlayableInstance
 		L2HennaInstance henna = _henna[slot];
 		_henna[slot] = null;
 
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(DELETE_CHAR_HENNA);
+			
 			statement.setInt(1, getObjectId());
 			statement.setInt(2, slot+1);
 			statement.setInt(3, getClassIndex());
+			
 			statement.execute();
 			statement.close();
 		}
@@ -7280,16 +7280,18 @@ public final class L2PcInstance extends L2PlayableInstance
 				// Calculate Henna modifiers of this L2PcInstance
 				recalcHennaStats();
 
-				java.sql.Connection con = null;
+				Connection con = null;
 
 				try
 				{
 					con = L2DatabaseFactory.getInstance().getConnection();
 					PreparedStatement statement = con.prepareStatement(ADD_CHAR_HENNA);
+					
 					statement.setInt(1, getObjectId());
 					statement.setInt(2, henna.getSymbolId());
 					statement.setInt(3, i+1);
 					statement.setInt(4, getClassIndex());
+					
 					statement.execute();
 					statement.close();
 				}
@@ -9030,19 +9032,21 @@ public final class L2PcInstance extends L2PlayableInstance
         newClass.setClassId(classId);
         newClass.setClassIndex(classIndex);
 
-        java.sql.Connection con = null;
+        Connection con = null;
 
         try
         {
             // Store the basic info about this new sub-class.
             con = L2DatabaseFactory.getInstance().getConnection();
             PreparedStatement statement = con.prepareStatement(ADD_CHAR_SUBCLASS);
+            
             statement.setInt(1, getObjectId());
             statement.setInt(2, newClass.getClassId());
             statement.setLong(3, newClass.getExp());
             statement.setInt(4, newClass.getSp());
             statement.setInt(5, newClass.getLevel());
             statement.setInt(6, newClass.getClassIndex()); // <-- Added
+            
             statement.execute();
             statement.close();
         }
@@ -9105,7 +9109,7 @@ public final class L2PcInstance extends L2PlayableInstance
         if (Config.DEBUG)
 	    	_log.info(getName() + " has requested to modify sub class index " + classIndex + " from class ID " + oldClassId + " to " + newClassId + ".");
 
-    	java.sql.Connection con = null;
+    	Connection con = null;
 
         try
         {
@@ -9508,12 +9512,13 @@ public final class L2PcInstance extends L2PlayableInstance
 	{
 		if (Config.ALT_RECOMMEND)
 		{
-			java.sql.Connection con = null;
+			Connection con = null;
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
 				PreparedStatement statement = con.prepareStatement(DELETE_CHAR_RECOMS);
 				statement.setInt(1, getObjectId());
+				
 				statement.execute();
 				statement.close();
 
