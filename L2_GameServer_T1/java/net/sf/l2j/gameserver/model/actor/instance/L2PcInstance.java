@@ -3504,6 +3504,8 @@ public final class L2PcInstance extends L2PlayableInstance
 					}
 				} else
 				{
+					// This Action Failed packet avoids player getting stuck when clicking three or more times
+					player.sendPacket(ActionFailed.STATIC_PACKET);
 					if (Config.GEODATA > 0)
 					{
 						if(GeoData.getInstance().canSeeTarget(player, this))
