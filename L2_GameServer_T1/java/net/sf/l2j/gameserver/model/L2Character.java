@@ -6165,22 +6165,29 @@ public abstract class L2Character extends L2Object
 					{
 						L2NpcInstance npc = (L2NpcInstance) target;
 						if (npc.getTemplate().getEventQuests(
-								Quest.QuestEventType.MOB_TARGETED_BY_SKILL) != null)
+								Quest.QuestEventType.ON_SKILL_USE) != null)
 							for (Quest quest : npc
 									.getTemplate()
 									.getEventQuests(
-											Quest.QuestEventType.MOB_TARGETED_BY_SKILL))
-								quest.notifySkillUse(npc, player, skill);
+											Quest.QuestEventType.ON_SKILL_USE))
+								quest.notifySkillUse(npc, player, skill, this instanceof L2Summon);
 					}
 				}
 				// Mobs in range 1000 see spell
-				if (skill.getAggroPoints() > 0)
+				for (L2Object spMob : player.getKnownList()
+						.getKnownObjects().values())
 				{
-					for (L2Object spMob : player.getKnownList()
-							.getKnownObjects().values())
-						if (spMob instanceof L2NpcInstance)
+					if (spMob instanceof L2NpcInstance)
+					{
+						L2NpcInstance npcMob = (L2NpcInstance) spMob;
+						
+		                if (npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE) !=null)
+		                	for (Quest quest: npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE))
+		                		quest.notifySkillSee(npcMob, player, skill, targets, this instanceof L2Summon);
+						
+		                /**************** FULMINUS COMMENT START***************/
+						if (skill.getAggroPoints() > 0)
 						{
-							L2NpcInstance npcMob = (L2NpcInstance) spMob;
 							if (npcMob.isInsideRadius(player, 1000, true, true)	
 									&& npcMob.hasAI()
 									&& npcMob.getAI().getIntention() == AI_INTENTION_ATTACK)
@@ -6191,6 +6198,10 @@ public abstract class L2Character extends L2Object
 										npcMob.seeSpell(player, target, skill);
 							}
 						}
+		                /**************** FULMINUS COMMENT END ***************/
+						// the section within "Fulminus Comment" should be deleted from core and placed
+						// within the mob's AI Script's onSkillSee, which is called by quest.notifySkillSee
+					}
 				}
 			}
 		}
@@ -6202,6 +6213,8 @@ public abstract class L2Character extends L2Object
 	
 	public void seeSpell(L2PcInstance caster, L2Object target, L2Skill skill) 
 	{
+		// TODO: Aggro calculation due to spells ought to be inside the AI script's onSkillSee.
+		// when it is added there, this function will no longer be needed here.  (Fulminus)
 		if (this instanceof L2Attackable)
 			((L2Attackable)this).addDamageHate(caster, 0, -skill.getAggroPoints());
 	}

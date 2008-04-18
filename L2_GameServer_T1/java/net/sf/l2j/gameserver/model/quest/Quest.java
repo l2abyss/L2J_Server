@@ -125,13 +125,16 @@ public class Quest extends ManagedScript
 
 	public static enum QuestEventType 
     {
-    	NPC_FIRST_TALK(false),  // control the first dialog shown by NPCs when they are clicked (some quests must override the default npc action)
-        QUEST_START(true),	// onTalk action from start npcs
-        QUEST_TALK(true),		// onTalk action from npcs participating in a quest
-        MOBGOTATTACKED(true),	// onAttack action triggered when a mob gets attacked by someone
-        MOBKILLED(true),		// onKill action triggered when a mob gets killed. 
-    	MOB_TARGETED_BY_SKILL(true),  // onSkillUse action triggered when a character uses a skill on a mob
-    	NPC_SPAWNED(true);            // onSpawn action triggered when an NPC is spawned or respawned.
+    	ON_FIRST_TALK(false), 	// control the first dialog shown by NPCs when they are clicked (some quests must override the default npc action)
+        QUEST_START(true),		// onTalk action from start npcs
+        ON_TALK(true),			// onTalk action from npcs participating in a quest
+        ON_ATTACK(true),		// onAttack action triggered when a mob gets attacked by someone
+        ON_KILL(true),			// onKill action triggered when a mob gets killed. 
+    	ON_SKILL_USE(true),  	// onSkillUse action triggered when a character uses a skill on a mob
+    	ON_SPAWN(true),    		// onSpawn action triggered when an NPC is spawned or respawned.
+    	ON_SKILL_SEE(true),		// NPC or Mob saw a person casting a skill (regardless what the target is). 
+    	ON_FACTION_CALL(true),	// NPC or Mob saw a person casting a skill (regardless what the target is). 
+    	ON_AGGRO_RANGE_ENTER(true);			// a person came within the Npc/Mob's range 
         
         // control whether this event type is allowed for the same npc template in multiple quests
         // or if the npc must be registered in at most one quest for the specified event 
@@ -306,13 +309,29 @@ public class Quest extends ManagedScript
 		// if the quest returns text to display, display it.  Otherwise, use the default npc text.
 		if (res!=null && res.length()>0)
 			return showResult(player, res);
-		npc.showChatWindow(player);
+		// note: if the default html for this npc needs to be shown, onFirstTalk should 
+		// call npc.showChatWindow(player) and then return null.
 		return true;
 	}
-	public final boolean notifySkillUse (L2NpcInstance npc, L2PcInstance caster, L2Skill skill) {
+	public final boolean notifySkillUse (L2NpcInstance npc, L2PcInstance caster, L2Skill skill, boolean isPet) {
 		String res = null;
-		try { res = onSkillUse(npc, caster, skill); } catch (Exception e) { return showError(caster, e); }
+		try { res = onSkillUse(npc, caster, skill, isPet); } catch (Exception e) { return showError(caster, e); }
 		return showResult(caster, res);
+	}
+	public final boolean notifySkillSee (L2NpcInstance npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet) {
+		String res = null;
+		try { res = onSkillSee(npc, caster, skill, targets, isPet); } catch (Exception e) { return showError(caster, e); }
+		return showResult(caster, res);
+	}
+	public final boolean notifyFactionCall(L2NpcInstance npc, L2NpcInstance caller, L2PcInstance attacker, boolean isPet){
+		String res = null;
+		try { res = onFactionCall(npc, caller, attacker, isPet); } catch (Exception e) { return showError(attacker, e); }
+		return showResult(attacker, res);
+	}
+	public final boolean notifyAggroRangeEnter(L2NpcInstance npc, L2PcInstance player, boolean isPet){
+		String res = null;
+		try { res = onAggroRangeEnter(npc, player, isPet); } catch (Exception e) { return showError(player, e); }
+		return showResult(player, res);
 	}
 
 
@@ -341,8 +360,11 @@ public class Quest extends ManagedScript
     @SuppressWarnings("unused") public String onKill (L2NpcInstance npc, L2PcInstance killer, boolean isPet) { return null; }
     @SuppressWarnings("unused") public String onTalk (L2NpcInstance npc, L2PcInstance talker) { return null; }
     @SuppressWarnings("unused") public String onFirstTalk(L2NpcInstance npc, L2PcInstance player) { return null; } 
-    @SuppressWarnings("unused") public String onSkillUse (L2NpcInstance npc, L2PcInstance caster, L2Skill skill) { return null; }
+    @SuppressWarnings("unused") public String onSkillUse (L2NpcInstance npc, L2PcInstance caster, L2Skill skill, boolean isPet) { return null; }
+    @SuppressWarnings("unused") public String onSkillSee (L2NpcInstance npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet) { return null; }
     @SuppressWarnings("unused") public String onSpawn (L2NpcInstance npc) { return null; }
+    @SuppressWarnings("unused") public String onFactionCall (L2NpcInstance npc, L2NpcInstance caller, L2PcInstance attacker, boolean isPet) { return null; }
+    @SuppressWarnings("unused") public String onAggroRangeEnter (L2NpcInstance npc, L2PcInstance player, boolean isPet) { return null; }
     
 	/**
 	 * Show message error to player who has an access level greater than 0
@@ -366,11 +388,10 @@ public class Quest extends ManagedScript
 	/**
 	 * Show a message to player.<BR><BR>
 	 * <U><I>Concept : </I></U><BR>
-	 * 4 cases are managed according to the value of the parameter "res" :<BR>
+	 * 3 cases are managed according to the value of the parameter "res" :<BR>
 	 * <LI><U>"res" ends with string ".html" :</U> an HTML is opened in order to be shown in a dialog box</LI>
 	 * <LI><U>"res" starts with "<html>" :</U> the message hold in "res" is shown in a dialog box</LI>
-	 * <LI><U>"res" is equal to string "none" :</U> HTML will not be opened</LI>
-	 * <LI><U>otherwise :</U> the message hold in "res" is shown in chat box</LI>
+	 * <LI><U>otherwise :</U> the message held in "res" is shown in chat box</LI>
 	 * @param qs : QuestState 
 	 * @param res : String pointing out the message to show at the player
 	 * @return boolean
@@ -387,8 +408,6 @@ public class Quest extends ManagedScript
 			player.sendPacket(npcReply);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 		}
-		else if (res.equalsIgnoreCase("none"))
-			player.sendPacket(ActionFailed.STATIC_PACKET);
 		else {
 			SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
 			sm.addString(res);
@@ -767,7 +786,7 @@ public class Quest extends ManagedScript
      */
     public L2NpcTemplate addFirstTalkId(int npcId)
     {
-    	return addEventId(npcId, Quest.QuestEventType.NPC_FIRST_TALK);
+    	return addEventId(npcId, Quest.QuestEventType.ON_FIRST_TALK);
     }
 
     /**
@@ -776,7 +795,7 @@ public class Quest extends ManagedScript
      * @return int : attackId
      */
     public L2NpcTemplate addAttackId(int attackId) {
-    	return addEventId(attackId, Quest.QuestEventType.MOBGOTATTACKED);
+    	return addEventId(attackId, Quest.QuestEventType.ON_ATTACK);
     }
     
 	/**
@@ -785,7 +804,7 @@ public class Quest extends ManagedScript
 	 * @return int : killId
 	 */
 	public L2NpcTemplate addKillId(int killId) {
-    	return addEventId(killId, Quest.QuestEventType.MOBKILLED);
+    	return addEventId(killId, Quest.QuestEventType.ON_KILL);
 	}
 	
     /**
@@ -794,7 +813,7 @@ public class Quest extends ManagedScript
      * @return int : ID of the NPC
      */
     public L2NpcTemplate addTalkId(int talkId) {
-    	return addEventId(talkId, Quest.QuestEventType.QUEST_TALK);
+    	return addEventId(talkId, Quest.QuestEventType.ON_TALK);
     }
     
     /**
@@ -803,17 +822,44 @@ public class Quest extends ManagedScript
      * @return int : ID of the NPC
      */
     public L2NpcTemplate addSkillUseId(int npcId) {
-    	return addEventId(npcId, Quest.QuestEventType.MOB_TARGETED_BY_SKILL);
+    	return addEventId(npcId, Quest.QuestEventType.ON_SKILL_USE);
     }
     
     /**
-     * Add this quest to the list of quests that the passed npc will respond to for Talk Events.<BR><BR>
+     * Add this quest to the list of quests that the passed npc will respond to for Spawn Events.<BR><BR>
      * @param talkId : ID of the NPC
      * @return int : ID of the NPC
      */
     public L2NpcTemplate addSpawnId(int npcId) {
-        return addEventId(npcId, Quest.QuestEventType.NPC_SPAWNED);
+        return addEventId(npcId, Quest.QuestEventType.ON_SPAWN);
     }
+    
+    /**
+     * Add this quest to the list of quests that the passed npc will respond to for Skill-See Events.<BR><BR>
+     * @param talkId : ID of the NPC
+     * @return int : ID of the NPC
+     */
+    public L2NpcTemplate addSkillSeeId(int npcId) {
+        return addEventId(npcId, Quest.QuestEventType.ON_SKILL_SEE);
+    }
+    /**
+     * Add this quest to the list of quests that the passed npc will respond to for Faction Call Events.<BR><BR>
+     * @param talkId : ID of the NPC
+     * @return int : ID of the NPC
+     */
+    public L2NpcTemplate addFactionCallId(int npcId) {
+        return addEventId(npcId, Quest.QuestEventType.ON_FACTION_CALL);
+    }
+    
+    /**
+     * Add this quest to the list of quests that the passed npc will respond to for Character See Events.<BR><BR>
+     * @param talkId : ID of the NPC
+     * @return int : ID of the NPC
+     */
+    public L2NpcTemplate addAggroRangeEnterId(int npcId) {
+        return addEventId(npcId, Quest.QuestEventType.ON_AGGRO_RANGE_ENTER);
+    }
+    
     
     // returns a random party member's L2PcInstance for the passed player's party
     // returns the passed player if he has no party.

@@ -1296,7 +1296,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		QuestState[] states = null;
 
 		// Go through the QuestState of the L2PcInstance quests
-		for (Quest quest : npc.getTemplate().getEventQuests(Quest.QuestEventType.MOBGOTATTACKED))
+		for (Quest quest : npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK))
 		{
 			// Check if the Identifier of the L2Attackable attck is needed for the current quest
 			if (getQuestState(quest.getName())!=null)
@@ -1325,7 +1325,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		QuestState[] states = null;
 
 		// Go through the QuestState of the L2PcInstance quests
-		for (Quest quest : npc.getTemplate().getEventQuests(Quest.QuestEventType.MOBKILLED))
+		for (Quest quest : npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL))
 		{
 			// Check if the Identifier of the L2Attackable killed is needed for the current quest
 			if (getQuestState(quest.getName())!=null)
@@ -1354,7 +1354,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		QuestState[] states = null;
 
 		// Go through the QuestState of the L2PcInstance quests
-		Quest[] quests = NpcTable.getInstance().getTemplate(npcId).getEventQuests(Quest.QuestEventType.QUEST_TALK);
+		Quest[] quests = NpcTable.getInstance().getTemplate(npcId).getEventQuests(Quest.QuestEventType.ON_TALK);
 		if (quests != null)
 		{
 			for (Quest quest: quests)
@@ -4256,9 +4256,9 @@ public final class L2PcInstance extends L2PlayableInstance
         {
             con = L2DatabaseFactory.getInstance().getConnection();
             PreparedStatement statement = con.prepareStatement(SELECT_CHAR_TRANSFORM); 
-            ResultSet rset = statement.executeQuery();
             
             statement.setInt(1, getObjectId());
+            ResultSet rset = statement.executeQuery();
             _transformationId = rset.getInt("transform_id");
             
             rset.close();

@@ -465,8 +465,8 @@ public class L2Attackable extends L2NpcInstance
                 else if (killer instanceof L2Trap)
                 	player = ((L2Trap)killer).getOwner();
 
-            	if (getTemplate().getEventQuests(Quest.QuestEventType.MOBKILLED) != null)
-            		for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.MOBKILLED))
+            	if (getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL) != null)
+            		for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL))
             			quest.notifyKill(this, player, killer instanceof L2Summon);
             }
         }
@@ -811,6 +811,8 @@ public class L2Attackable extends L2NpcInstance
      */
     public void addDamageHate(L2Character attacker, int damage, int aggro)
     {
+    	// TODO: Agro calculation ought to be removed from here and placed within 
+    	// onAttack and onSkillSee in the AI Script (Fulminus)
         if (attacker == null /*|| _aggroList == null*/) return;
 
         // Get the AggroInfo of the attacker L2Character from the _aggroList of the L2Attackable
@@ -849,8 +851,8 @@ public class L2Attackable extends L2NpcInstance
                 {
                     L2PcInstance player = attacker instanceof L2PcInstance ? (L2PcInstance)attacker : ((L2Summon)attacker).getOwner();
 
-                    if (getTemplate().getEventQuests(Quest.QuestEventType.MOBGOTATTACKED) !=null)
-                    	for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.MOBGOTATTACKED))
+                    if (getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK) !=null)
+                    	for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK))
                     		quest.notifyAttack(this, player, damage, attacker instanceof L2Summon);
                 }
             }

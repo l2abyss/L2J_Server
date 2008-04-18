@@ -46,6 +46,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RaidBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RiftInvaderInstance;
+import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
 import net.sf.l2j.gameserver.util.Util;
 import net.sf.l2j.util.Rnd;
@@ -170,6 +171,11 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
             if (!(me instanceof L2RaidBossInstance) && ((L2PcInstance)target).isSilentMoving())
                 return false;
 
+            // TODO: Ideally, autoattack condition should be called from the AI script.  In that case,
+            // it should only implement the basic behaviors while the script will add more specific
+            // behaviors (like varka/ketra alliance, etc).  Once implemented, remove specialized stuff
+            // from this location.  (Fulminus)
+            
             // Check if player is an ally (comparing mem addr)
             if (me.getFactionId() == "varka" && ((L2PcInstance)target).isAlliedWithVarka())
                 return false;
@@ -414,6 +420,28 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
                     if (!(targetPlayer.isFestivalParticipant())) continue;
                 }
 
+                /*
+                 * Temporarily adding this commented code as a concept to be used eventually.
+                 * However, the way it is written below will NOT work correctly.  The NPC
+                 * should only notify Aggro Range Enter when someone enters the range from outside.
+                 * Instead, the below code will keep notifying even while someone remains within 
+                 * the range.  Perhaps we need a short knownlist of range = aggroRange for just
+                 * people who are actively within the npc's aggro range?...(Fulminus) 
+                // notify AI that a playable instance came within aggro range
+                if ((obj instanceof L2PcInstance) || (obj instanceof L2Summon))
+                {
+                    if ( !((L2Character)obj).isAlikeDead()
+                            && !npc.isInsideRadius(obj, npc.getAggroRange(), true, false) )
+                    {
+                    	L2PcInstance targetPlayer = (obj instanceof L2PcInstance)? (L2PcInstance) obj: ((L2Summon) obj).getOwner();
+                        if (npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER) !=null)
+                        	for (Quest quest: npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER))
+                        		quest.notifyAggroRangeEnter(npc, targetPlayer, (obj instanceof L2Summon));
+                    }
+                }
+                */
+                // TODO: The AI Script ought to handle aggro behaviors in onSee.  Once implemented, aggro behaviors ought
+                // to be removed from here.  (Fulminus)
                 // For each L2Character check if the target is autoattackable
                 if (autoAttackCondition(target)) // check aggression
                 {
@@ -656,8 +684,16 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
         							continue;
         					}
 
+        					// TODO: notifyEvent ought to be removed from here and added in the AI script, when implemented (Fulminus) 
         					// Notify the L2Object AI with EVT_AGGRESSION
         					npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, originalAttackTarget, 1);
+        					if ((originalAttackTarget instanceof L2PcInstance) || (originalAttackTarget instanceof L2Summon))
+        					{
+        						L2PcInstance player = (originalAttackTarget instanceof L2PcInstance)?
+        								(L2PcInstance)originalAttackTarget: ((L2Summon) originalAttackTarget).getOwner();
+        						for (Quest quest: npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_FACTION_CALL))
+        							quest.notifyFactionCall(npc, (L2NpcInstance) _actor, player, (originalAttackTarget instanceof L2Summon));
+        					}
         				}
         				// heal or resurrect friends
         				if (_selfAnalysis.hasHealOrResurrect && !_actor.isAttackingDisabled()

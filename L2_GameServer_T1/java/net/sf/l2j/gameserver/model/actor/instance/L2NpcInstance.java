@@ -668,7 +668,7 @@ public class L2NpcInstance extends L2Character
                     	Quest[] qlsa = getTemplate().getEventQuests(Quest.QuestEventType.QUEST_START);
                     	if ( (qlsa != null) && qlsa.length == 1)
                     		player.setLastQuestNpcObject(getNpcId());
-                        Quest[] qlst = getTemplate().getEventQuests(Quest.QuestEventType.NPC_FIRST_TALK);
+                        Quest[] qlst = getTemplate().getEventQuests(Quest.QuestEventType.ON_FIRST_TALK);
                         if ( (qlst != null) && qlst.length == 1)
                             qlst[0].notifyFirstTalk(this, player);
                         else
@@ -2219,8 +2219,8 @@ public class L2NpcInstance extends L2Character
         
         super.onSpawn();
     	
-        if (getTemplate().getEventQuests(Quest.QuestEventType.NPC_SPAWNED) != null)
-            for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.NPC_SPAWNED))
+        if (getTemplate().getEventQuests(Quest.QuestEventType.ON_SPAWN) != null)
+            for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_SPAWN))
                 quest.notifySpawn(this);
     }
     
