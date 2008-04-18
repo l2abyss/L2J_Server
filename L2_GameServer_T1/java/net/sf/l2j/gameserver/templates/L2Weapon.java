@@ -24,6 +24,7 @@ import net.sf.l2j.gameserver.handler.SkillHandler;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
+import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
@@ -386,12 +387,21 @@ public final class L2Weapon  extends L2Item
                 else
                     skill.useSkill(caster, targets);
 
-                if ((caster instanceof L2PcInstance) && (target instanceof L2NpcInstance))
+                // notify quests of a skill use
+                if (caster instanceof L2PcInstance)
                 {
-                	Quest[] quests = ((L2NpcInstance)target).getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_USE);
-                	if (quests != null)
-                		for (Quest quest: quests)
-                			quest.notifySkillUse ( (L2NpcInstance) target, (L2PcInstance) caster, skill, false);
+					// Mobs in range 1000 see spell
+					for (L2Object spMob : caster.getKnownList().getKnownObjects().values())
+					{
+						if (spMob instanceof L2NpcInstance)
+						{
+							L2NpcInstance npcMob = (L2NpcInstance) spMob;
+							
+			                if (npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE) !=null)
+			                	for (Quest quest: npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE))
+			                		quest.notifySkillSee(npcMob, (L2PcInstance) caster, skill, targets, false);
+						}
+					}
                 }
             }
             catch (IOException e)

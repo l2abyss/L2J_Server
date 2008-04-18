@@ -130,7 +130,6 @@ public class Quest extends ManagedScript
         ON_TALK(true),			// onTalk action from npcs participating in a quest
         ON_ATTACK(true),		// onAttack action triggered when a mob gets attacked by someone
         ON_KILL(true),			// onKill action triggered when a mob gets killed. 
-    	ON_SKILL_USE(true),  	// onSkillUse action triggered when a character uses a skill on a mob
     	ON_SPAWN(true),    		// onSpawn action triggered when an NPC is spawned or respawned.
     	ON_SKILL_SEE(true),		// NPC or Mob saw a person casting a skill (regardless what the target is). 
     	ON_FACTION_CALL(true),	// NPC or Mob saw a person casting a skill (regardless what the target is). 
@@ -313,11 +312,6 @@ public class Quest extends ManagedScript
 		// call npc.showChatWindow(player) and then return null.
 		return true;
 	}
-	public final boolean notifySkillUse (L2NpcInstance npc, L2PcInstance caster, L2Skill skill, boolean isPet) {
-		String res = null;
-		try { res = onSkillUse(npc, caster, skill, isPet); } catch (Exception e) { return showError(caster, e); }
-		return showResult(caster, res);
-	}
 	public final boolean notifySkillSee (L2NpcInstance npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet) {
 		String res = null;
 		try { res = onSkillSee(npc, caster, skill, targets, isPet); } catch (Exception e) { return showError(caster, e); }
@@ -360,7 +354,6 @@ public class Quest extends ManagedScript
     @SuppressWarnings("unused") public String onKill (L2NpcInstance npc, L2PcInstance killer, boolean isPet) { return null; }
     @SuppressWarnings("unused") public String onTalk (L2NpcInstance npc, L2PcInstance talker) { return null; }
     @SuppressWarnings("unused") public String onFirstTalk(L2NpcInstance npc, L2PcInstance player) { return null; } 
-    @SuppressWarnings("unused") public String onSkillUse (L2NpcInstance npc, L2PcInstance caster, L2Skill skill, boolean isPet) { return null; }
     @SuppressWarnings("unused") public String onSkillSee (L2NpcInstance npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet) { return null; }
     @SuppressWarnings("unused") public String onSpawn (L2NpcInstance npc) { return null; }
     @SuppressWarnings("unused") public String onFactionCall (L2NpcInstance npc, L2NpcInstance caller, L2PcInstance attacker, boolean isPet) { return null; }
@@ -814,15 +807,6 @@ public class Quest extends ManagedScript
      */
     public L2NpcTemplate addTalkId(int talkId) {
     	return addEventId(talkId, Quest.QuestEventType.ON_TALK);
-    }
-    
-    /**
-     * Add this quest to the list of quests that the passed npc will respond to for Skill-Use Events.<BR><BR>
-     * @param npcId : ID of the NPC
-     * @return int : ID of the NPC
-     */
-    public L2NpcTemplate addSkillUseId(int npcId) {
-    	return addEventId(npcId, Quest.QuestEventType.ON_SKILL_USE);
     }
     
     /**

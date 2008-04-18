@@ -6160,28 +6160,16 @@ public abstract class L2Character extends L2Object
 								player.updatePvPStatus();
 						}
 					}
-					// also quest events
-					if (target instanceof L2NpcInstance)
-					{
-						L2NpcInstance npc = (L2NpcInstance) target;
-						if (npc.getTemplate().getEventQuests(
-								Quest.QuestEventType.ON_SKILL_USE) != null)
-							for (Quest quest : npc
-									.getTemplate()
-									.getEventQuests(
-											Quest.QuestEventType.ON_SKILL_USE))
-								quest.notifySkillUse(npc, player, skill, this instanceof L2Summon);
-					}
 				}
 				// Mobs in range 1000 see spell
-				for (L2Object spMob : player.getKnownList()
-						.getKnownObjects().values())
+				for (L2Object spMob : player.getKnownList().getKnownObjects().values())
 				{
 					if (spMob instanceof L2NpcInstance)
 					{
 						L2NpcInstance npcMob = (L2NpcInstance) spMob;
 						
-		                if (npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE) !=null)
+		                if ( (npcMob.isInsideRadius(player, 1000, true, true)) &&
+		                		(npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE) !=null) )
 		                	for (Quest quest: npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE))
 		                		quest.notifySkillSee(npcMob, player, skill, targets, this instanceof L2Summon);
 						
