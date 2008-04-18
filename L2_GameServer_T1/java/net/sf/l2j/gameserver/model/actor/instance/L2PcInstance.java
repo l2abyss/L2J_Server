@@ -4259,6 +4259,7 @@ public final class L2PcInstance extends L2PlayableInstance
             
             statement.setInt(1, getObjectId());
             ResultSet rset = statement.executeQuery();
+            rset.next();
             _transformationId = rset.getInt("transform_id");
             
             rset.close();
