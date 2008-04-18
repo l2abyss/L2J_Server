@@ -132,7 +132,7 @@ public class Scrolls implements IItemHandler
 	   			activeChar.sendPacket(new SystemMessage(SystemMessageId.INCOMPATIBLE_ITEM_GRADE));
 	   		return;
 	   	}
-        else if (itemId >= 9648 && itemId <= 9655||itemId == 9897||itemId>=10131 &&itemId <=10138||itemId == 10151||itemId == 10274) //transformation scrolls
+        else if (itemId == 9897||itemId>=10131 &&itemId <=10138||itemId == 10151||itemId == 10274) //transformation scrolls
             if (activeChar.getPet() != null || activeChar.isTransformed())
             {
                 activeChar.sendPacket(new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED).addItemName(itemId));
