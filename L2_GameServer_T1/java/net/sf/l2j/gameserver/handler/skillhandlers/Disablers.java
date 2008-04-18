@@ -578,6 +578,7 @@ public class Disablers implements ISkillHandler
 	                    	 if (stat == "poison") negateEffect(target,SkillType.POISON,_negatePower);
 	                    	 if (stat == "bleed") negateEffect(target,SkillType.BLEED,_negatePower);
 	                    	 if (stat == "paralyze") negateEffect(target,SkillType.PARALYZE,-1);
+	                    	 if (stat == "root") negateEffect(target,SkillType.ROOT,-1);
 	                    	 if (stat == "heal")
 	                    	 {
 	                    		 ISkillHandler Healhandler = SkillHandler.getInstance().getSkillHandler(SkillType.HEAL);
