@@ -135,7 +135,7 @@ public class MacroList
 					sb.append(',').append(cmd.cmd);
 				sb.append(';');
 			}
-            statement.setString(7, sb.toString());
+            statement.setString(7, sb.length()>255 ? sb.toString().substring(0,254):sb.toString());
             statement.execute();
             statement.close();
         }
