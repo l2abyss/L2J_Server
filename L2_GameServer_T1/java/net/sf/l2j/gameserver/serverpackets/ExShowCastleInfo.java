@@ -15,8 +15,10 @@
 package net.sf.l2j.gameserver.serverpackets;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
+import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.model.entity.Castle;
 
 /**
@@ -29,6 +31,8 @@ public class ExShowCastleInfo extends L2GameServerPacket
     /**
      * @see net.sf.l2j.gameserver.serverpackets.L2GameServerPacket#getType()
      */
+	private static Logger _log = Logger.getLogger(ExShowCastleInfo.class.getName());
+
     @Override
     public String getType()
     {
@@ -48,9 +52,20 @@ public class ExShowCastleInfo extends L2GameServerPacket
         for (Castle castle : castles)
         {
             writeD(castle.getCastleId());
-            writeS(castle.getName());
+            if (castle.getOwnerId() > 0)
+            {
+                if (ClanTable.getInstance().getClan(castle.getOwnerId()) != null)
+                    writeS(ClanTable.getInstance().getClan(castle.getOwnerId()).getName());
+                else
+                {
+                    _log.warning("Null owner for castle: " + castle.getName());
+                    writeS("");
+                }
+            }
+            else
+                writeS("");
             writeD(castle.getTaxPercent());
-            writeD((int) (castle.getSiege().getSiegeDate().getTimeInMillis()/1000));
+            writeD((int)(castle.getSiege().getSiegeDate().getTimeInMillis()/1000));
         }
     }
     

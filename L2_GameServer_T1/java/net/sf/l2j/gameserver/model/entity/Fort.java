@@ -50,8 +50,7 @@ public class Fort
     private int _ownerId                     = 0;
     private FortSiege _siege                       = null;
     private Calendar _siegeDate;
-    private int _siegeDayOfWeek              = 7; // Default to saturday
-    private int _siegeHourOfDay              = 20; // Default to 8 pm server time
+    private Calendar _lastOwnedTime;             
     private L2FortZone _zone;
     private L2Clan _formerOwner                = null;
     
@@ -301,16 +300,9 @@ public class Fort
                 //_OwnerId = rs.getInt("ownerId");
 
                 _siegeDate = Calendar.getInstance();
+                _lastOwnedTime = Calendar.getInstance();
                 _siegeDate.setTimeInMillis(rs.getLong("siegeDate"));
-
-                _siegeDayOfWeek = rs.getInt("siegeDayOfWeek");
-                if (_siegeDayOfWeek < 1 || _siegeDayOfWeek > 7)
-                    _siegeDayOfWeek = 7;
-
-                _siegeHourOfDay = rs.getInt("siegeHourOfDay");
-                if (_siegeHourOfDay < 0 || _siegeHourOfDay > 23)
-                    _siegeHourOfDay = 20;
-
+                _lastOwnedTime.setTimeInMillis(rs.getLong("lastOwnedTime"));
                 _ownerId = rs.getInt("owner");
             }
 
@@ -456,15 +448,23 @@ public class Fort
         else
             _ownerId = 0;                   // Remove owner
 
+        if (_ownerId != 0)
+        	_lastOwnedTime.setTimeInMillis( System.currentTimeMillis());    
+        else
+        	_lastOwnedTime.setTimeInMillis(0);                   
+        
+        
+        
         java.sql.Connection con = null;
         try
         {
             con = L2DatabaseFactory.getInstance().getConnection();
             PreparedStatement statement;
 
-            statement = con.prepareStatement("UPDATE fort SET owner=? where id = ?");
+            statement = con.prepareStatement("UPDATE fort SET owner=?,lastOwnedTime=? where id = ?");
             statement.setInt(1, getOwnerId());
-            statement.setInt(2, getFortId());
+           	statement.setLong(2, _lastOwnedTime.getTimeInMillis());
+            statement.setInt(3, getFortId());
             statement.execute();
             statement.close();
 
@@ -528,8 +528,13 @@ public class Fort
     {
         _siegeDate = siegeDate;
     }
-    public final int getSiegeDayOfWeek() { return _siegeDayOfWeek; }
-    public final int getSiegeHourOfDay() { return _siegeHourOfDay; }
+    public final int getOwnedTime() 
+    {
+    	if (_lastOwnedTime.getTimeInMillis() == 0 )
+    		return 0;
+    	
+    	return (int)((System.currentTimeMillis() - _lastOwnedTime.getTimeInMillis())/1000); 
+    }
    
     public final String getName()
     {
