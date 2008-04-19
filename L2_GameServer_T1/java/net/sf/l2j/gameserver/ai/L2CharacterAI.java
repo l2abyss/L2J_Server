@@ -1161,8 +1161,8 @@ public class L2CharacterAI extends AbstractAI
             	
             	switch (npcId)
             	{
-            		case 20314:
-            		case 20849:
+            		case 20314: // great white shark
+            		case 20849: // Light Worm
             			cannotMoveOnLand = true;
             			break;
             		default:
