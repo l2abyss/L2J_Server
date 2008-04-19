@@ -58,7 +58,7 @@ public class ExShowCastleInfo extends L2GameServerPacket
                     writeS(ClanTable.getInstance().getClan(castle.getOwnerId()).getName());
                 else
                 {
-                    _log.warning("Null owner for castle: " + castle.getName());
+                    _log.warning("Castle owner with no name! Castle: " + castle.getName() + " has an OwnerId = " + castle.getOwnerId() + " who does not have a  name!");
                     writeS("");
                 }
             }
