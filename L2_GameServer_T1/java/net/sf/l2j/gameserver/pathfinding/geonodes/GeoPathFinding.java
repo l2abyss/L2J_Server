@@ -70,10 +70,10 @@ public class GeoPathFinding extends PathFinding
 	{
 		Node start = readNode(gx,gy,z);
 		Node end = readNode(gtx,gty,tz);
-		if (Math.abs(start.getLoc().getZ() - z) > 55) return null; // not correct layer
-		if (Math.abs(end.getLoc().getZ() - tz) > 55) return null; // not correct layer
 		if (start == null || end == null)
 			return null;
+		if (Math.abs(start.getLoc().getZ() - z) > 55) return null; // not correct layer
+		if (Math.abs(end.getLoc().getZ() - tz) > 55) return null; // not correct layer
 		if (start == end)
 			return null;
 
