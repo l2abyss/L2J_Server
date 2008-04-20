@@ -1357,7 +1357,7 @@ public class L2NpcInstance extends L2Character
         Quest[] starts = getTemplate().getEventQuests(Quest.QuestEventType.QUEST_START);
         
         // Quests are limited between 1 and 999 because those are the quests that are supported by the client.  
-        // By limitting them there, we are allowed to create custom quests at higher IDs without interfering  
+        // By limiting them there, we are allowed to create custom quests at higher IDs without interfering  
         if (awaits != null) 
         {
             for (QuestState x : awaits) 

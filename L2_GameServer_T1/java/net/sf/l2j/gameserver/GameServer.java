@@ -12,6 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package net.sf.l2j.gameserver;
 
 import java.io.File;
@@ -47,6 +48,7 @@ import net.sf.l2j.gameserver.datatables.LevelUpData;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.datatables.MerchantPriceConfigTable;
 import net.sf.l2j.gameserver.datatables.NobleSkillTable;
+import net.sf.l2j.gameserver.datatables.NpcBufferTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.NpcWalkerRoutesTable;
 import net.sf.l2j.gameserver.datatables.SkillSpellbookTable;
@@ -346,6 +348,9 @@ public class GameServer
 		// L2EMU_ADD by Rayan. L2J - BigBro
 		if(Config.ALLOW_NPC_WALKERS)
 		    NpcWalkerRoutesTable.getInstance().load();
+		
+		if (Config.NPC_BUFFER_ENABLED)
+			NpcBufferTable.getInstance();
 		
 		RecipeController.getInstance();
 
