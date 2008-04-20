@@ -17,8 +17,8 @@ package net.sf.l2j.gameserver.serverpackets;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.datatables.ClanTable;
+import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.model.entity.Castle;
 
 /**

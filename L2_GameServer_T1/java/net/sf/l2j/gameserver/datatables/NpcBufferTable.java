@@ -20,7 +20,6 @@ import java.sql.ResultSet;
 import java.util.Map;
 
 import javolution.util.FastMap;
-
 import net.sf.l2j.L2DatabaseFactory;
 
 public class NpcBufferTable
