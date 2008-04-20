@@ -349,8 +349,7 @@ public class GameServer
 		if(Config.ALLOW_NPC_WALKERS)
 		    NpcWalkerRoutesTable.getInstance().load();
 		
-		if (Config.NPC_BUFFER_ENABLED)
-			NpcBufferTable.getInstance();
+		NpcBufferTable.getInstance();
 		
 		RecipeController.getInstance();
 

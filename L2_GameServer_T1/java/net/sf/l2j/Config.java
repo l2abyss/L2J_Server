@@ -570,7 +570,6 @@ public final class Config
     public static boolean	BANKING_SYSTEM_ENABLED;
     public static int		BANKING_SYSTEM_GOLDBARS;
     public static int		BANKING_SYSTEM_ADENA;
-    public static boolean	NPC_BUFFER_ENABLED;
     
     /** ************************************************** **/
 	/** L2JMods Settings -End                              **/
@@ -1715,8 +1714,6 @@ public final class Config
                 BANKING_SYSTEM_ENABLED	= Boolean.parseBoolean(L2JModSettings.getProperty("BankingEnabled", "false"));
                 BANKING_SYSTEM_GOLDBARS	= Integer.parseInt(L2JModSettings.getProperty("BankingGoldbarCount", "1"));
                 BANKING_SYSTEM_ADENA	= Integer.parseInt(L2JModSettings.getProperty("BankingAdenaCount", "500000000"));
-                
-                NPC_BUFFER_ENABLED		= Boolean.parseBoolean(L2JModSettings.getProperty("NPCBufferEnabled", "false"));
 
             }
             catch (Exception e)
