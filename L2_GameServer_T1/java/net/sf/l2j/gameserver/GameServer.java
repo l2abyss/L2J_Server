@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -702,7 +704,37 @@ public class GameServer
         sc.setSelectorSleepTime(20);
         
 		_selectorThread = new SelectorThread<L2GameClient>(sc, gph, gph, null);
-		_selectorThread.openServerSocket(null, Config.PORT_GAME);
+		
+		InetAddress bindAddress = null;
+		if (!Config.GAMESERVER_HOSTNAME.equals("*"))
+		{
+			try
+			{
+				bindAddress = InetAddress.getByName(Config.GAMESERVER_HOSTNAME);
+			}
+			catch (UnknownHostException e1)
+			{
+				_log.severe("WARNING: The GameServer bind address is invalid, using all avaliable IPs. Reason: "+e1.getMessage());
+				if (Config.DEVELOPER)
+				{
+					e1.printStackTrace();
+				}
+			}
+		}
+		
+		try
+		{
+			_selectorThread.openServerSocket(bindAddress, Config.PORT_GAME);
+		}
+		catch (IOException e)
+		{
+			_log.severe("FATAL: Failed to open server socket. Reason: "+e.getMessage());
+			if (Config.DEVELOPER)
+			{
+				e.printStackTrace();
+			}
+			System.exit(1);
+		}
 		_selectorThread.start();
 		_log.config("Maximum Numbers of Connected Players: " + Config.MAXIMUM_ONLINE_USERS);
 	}
