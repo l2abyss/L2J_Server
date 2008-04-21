@@ -663,10 +663,9 @@ public class L2Party {
                             if (((L2PcInstance)member).getSkillLevel(467) > 0)
                             {
                                 L2Skill skill = SkillTable.getInstance().getInfo(467,((L2PcInstance)member).getSkillLevel(467));
-                                if (skill.getExpNeeded() <= addexp && Rnd.get(100) < 20)
-                                {
+                                
+                                if (skill.getExpNeeded() <= addexp)
                                     ((L2PcInstance)member).absorbSoul(skill,target);
-                                }
                             }
                         }
                         member.addExpAndSp(addexp,addsp);

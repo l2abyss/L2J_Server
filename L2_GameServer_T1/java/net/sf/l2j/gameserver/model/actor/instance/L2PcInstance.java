@@ -10809,7 +10809,7 @@ public final class L2PcInstance extends L2PlayableInstance
         increaseSouls(1);
 
         if (npc != null)
-            sendPacket(new ExSpawnEmitter(this, npc));
+        	broadcastPacket(new ExSpawnEmitter(this, npc), 500);
     }
     
     /**
