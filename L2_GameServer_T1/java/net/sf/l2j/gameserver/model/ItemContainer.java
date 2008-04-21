@@ -122,8 +122,13 @@ public abstract class ItemContainer
 	public L2ItemInstance getItemByObjectId(int objectId)
 	{
 	    for (L2ItemInstance item : _items)
-	        if (item.getObjectId() == objectId) return item;
+	    {
+	    	if (item == null)
+	    		continue;
 
+	    	if (item.getObjectId() == objectId)
+	    		return item;
+	    }
 	    return null;
 	}
 
