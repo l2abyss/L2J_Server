@@ -867,10 +867,15 @@ public final class Config
     /** Type of set object */
     public static ObjectSetType   SET_TYPE;
 
-    /** Chance that an item will succesfully be enchanted */
+    /** Chance that an item will successfully be enchanted */
     public static int ENCHANT_CHANCE_WEAPON;
     public static int ENCHANT_CHANCE_ARMOR;
     public static int ENCHANT_CHANCE_JEWELRY;
+    
+    public static int BLESSED_ENCHANT_CHANCE_WEAPON;
+    public static int BLESSED_ENCHANT_CHANCE_ARMOR;
+    public static int BLESSED_ENCHANT_CHANCE_JEWELRY;
+
     /** Maximum level of enchantment */
     public static int ENCHANT_MAX_WEAPON;
     public static int ENCHANT_MAX_ARMOR;
@@ -1169,6 +1174,9 @@ public final class Config
                 ENCHANT_CHANCE_WEAPON				= Integer.parseInt(Character.getProperty("EnchantChanceWeapon", "68"));
                 ENCHANT_CHANCE_ARMOR				= Integer.parseInt(Character.getProperty("EnchantChanceArmor", "52"));
                 ENCHANT_CHANCE_JEWELRY				= Integer.parseInt(Character.getProperty("EnchantChanceJewelry", "54"));
+                BLESSED_ENCHANT_CHANCE_WEAPON		= Integer.parseInt(Character.getProperty("BlessedEnchantChanceWeapon", "68"));
+                BLESSED_ENCHANT_CHANCE_ARMOR		= Integer.parseInt(Character.getProperty("BlessedEnchantChanceArmor", "52"));
+                BLESSED_ENCHANT_CHANCE_JEWELRY		= Integer.parseInt(Character.getProperty("BlessedEnchantChanceJewelry", "54"));
                 ENCHANT_MAX_WEAPON					= Integer.parseInt(Character.getProperty("EnchantMaxWeapon", "255"));
                 ENCHANT_MAX_ARMOR					= Integer.parseInt(Character.getProperty("EnchantMaxArmor", "255"));
                 ENCHANT_MAX_JEWELRY					= Integer.parseInt(Character.getProperty("EnchantMaxJewelry", "255"));
