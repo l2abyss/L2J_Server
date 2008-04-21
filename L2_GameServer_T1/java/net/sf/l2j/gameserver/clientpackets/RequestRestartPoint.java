@@ -96,7 +96,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		                activeChar.restoreExp(ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan()).getFunction(ClanHall.FUNC_RESTORE_EXP).getLvl());
 		            }
 		            break;
-		            
+
 		        case 2: // to castle
 		            castle = CastleManager.getInstance().getCastle(activeChar);
                     
@@ -104,16 +104,30 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		            {
 		                //siege in progress
 		                if (castle.getSiege().checkIsDefender(activeChar.getClan()))
-		                    isInDefense = true;
+		                	loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Castle);
+		                // Just in case you lost castle while beeing dead.. Port to nearest Town.
+		                else if (castle.getSiege().checkIsAttacker(activeChar.getClan()))
+		                	loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Town);
+		                else
+		                {
+		                	//cheater
+			                activeChar.sendMessage("You may not use this respawn point!");
+			                Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " used respawn cheat.", IllegalPlayerAction.PUNISH_KICK);
+			                return;
+		                }
 		            }
-		            if (activeChar.getClan().getHasCastle() == 0  && !isInDefense )
+		            else
 		            {
-		                //cheater
-		                activeChar.sendMessage("You may not use this respawn point!");
-		                Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " used respawn cheat.", IllegalPlayerAction.PUNISH_KICK);
-		                return;
+		            	if (activeChar.getClan().getHasCastle() == 0)
+			            {
+			                //cheater
+			                activeChar.sendMessage("You may not use this respawn point!");
+			                Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " used respawn cheat.", IllegalPlayerAction.PUNISH_KICK);
+			                return;
+			            }
+		            	else
+		            		loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Castle);
 		            }
-		            loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Castle);
 		            break;
 
 		        case 3: // to fortress
