@@ -1138,6 +1138,7 @@ public abstract class L2Skill
             case WARRIOR_BANE:
             case BETRAY:
             case DISARM:
+            case AGGDAMAGE:
                 return true;
             default:
                 return false;
