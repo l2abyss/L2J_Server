@@ -2904,7 +2904,8 @@ public abstract class L2Character extends L2Object
 		for(L2Effect e : effects)
 		{
 			// Stop active skills effects of the selected type
-			if (e.getEffectType() == type) e.exit();
+			if (e.getEffectType() == type)
+				e.exit();
 		}
 	}
 
@@ -3092,17 +3093,28 @@ public abstract class L2Character extends L2Object
     public final void stopTransformation(L2Effect effect)
     {
         if (effect == null)
+        {
             stopEffects(L2Effect.EffectType.TRANSFORMATION);
+        }
         else
+        {
             removeEffect(effect);
+        }
         
-        // if this is a player instance, then untransform.
+        // if this is a player instance, then untransform, also set the transform_id column equal to 0 if not cursed.
         if (this instanceof L2PcInstance)
         {
-            if (((L2PcInstance) this).getTransformation() != null) 
-            	// gm effect because removing skill didn't do it
+            if (((L2PcInstance) this).getTransformation() != null)
+            {
             	((L2PcInstance) this).untransform();
+            }
+
+            if(!((L2PcInstance) this).isCursedWeaponEquipped())
+            {
+            	((L2PcInstance) this).transformUpdateInfo();
+            }
         }
+        
         getAI().notifyEvent(CtrlEvent.EVT_THINK, null);
         updateAbnormalEffect();
     }

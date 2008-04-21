@@ -25,10 +25,10 @@ import net.sf.l2j.gameserver.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.serverpackets.PackageToList;
 import net.sf.l2j.gameserver.serverpackets.SortedWareHouseWithdrawalList;
-import net.sf.l2j.gameserver.serverpackets.SortedWareHouseWithdrawalList.WarehouseListType;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.serverpackets.WareHouseDepositList;
 import net.sf.l2j.gameserver.serverpackets.WareHouseWithdrawalList;
+import net.sf.l2j.gameserver.serverpackets.SortedWareHouseWithdrawalList.WarehouseListType;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 
 /**

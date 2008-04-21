@@ -62,15 +62,6 @@ public class EffectTransformation extends L2Effect
     }
     
     @Override
-    public void onExit()
-    {
-        L2PcInstance trg = (L2PcInstance) getEffected();
-        if (trg == null)
-            return;
-        trg.untransform();
-    }
-    
-    @Override
     public boolean onActionTime()
     {
        return true;
