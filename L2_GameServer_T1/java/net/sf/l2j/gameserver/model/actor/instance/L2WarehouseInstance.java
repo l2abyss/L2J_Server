@@ -17,11 +17,15 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.util.Map;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.PcFreight;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.ActionFailed;
+import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.serverpackets.PackageToList;
+import net.sf.l2j.gameserver.serverpackets.SortedWareHouseWithdrawalList;
+import net.sf.l2j.gameserver.serverpackets.SortedWareHouseWithdrawalList.WarehouseListType;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.serverpackets.WareHouseDepositList;
 import net.sf.l2j.gameserver.serverpackets.WareHouseWithdrawalList;
@@ -58,6 +62,23 @@ public final class L2WarehouseInstance extends L2FolkInstance
         }
         return "data/html/warehouse/" + pom + ".htm";
     }
+    
+    private void showRetrieveWindow(L2PcInstance player, WarehouseListType itemtype, byte sortorder)
+	{
+    	player.sendPacket(ActionFailed.STATIC_PACKET);
+    	player.setActiveWarehouse(player.getWarehouse());
+
+    	if (player.getActiveWarehouse().getSize() == 0)
+    	{
+    		player.sendPacket(new SystemMessage(SystemMessageId.NO_ITEM_DEPOSITED_IN_WH));
+    		return;
+    	}
+
+		if (Config.DEBUG)
+			_log.fine("Showing stored items");
+		
+		player.sendPacket(new SortedWareHouseWithdrawalList(player, WareHouseWithdrawalList.PRIVATE, itemtype, sortorder));
+	}
 
     private void showRetrieveWindow(L2PcInstance player)
     {
@@ -102,6 +123,27 @@ public final class L2WarehouseInstance extends L2FolkInstance
             }
     	}
     }
+    
+    private void showWithdrawWindowClan(L2PcInstance player, WarehouseListType itemtype, byte sortorder)
+    {
+    	player.sendPacket(ActionFailed.STATIC_PACKET);
+    	if ((player.getClanPrivileges() & L2Clan.CP_CL_VIEW_WAREHOUSE) != L2Clan.CP_CL_VIEW_WAREHOUSE)
+    	{
+    		player.sendPacket(new SystemMessage(SystemMessageId.YOU_DO_NOT_HAVE_THE_RIGHT_TO_USE_CLAN_WAREHOUSE));
+    		return;
+    	}
+    	else
+    	{
+    		if (player.getClan().getLevel() == 0)
+    			player.sendPacket(new SystemMessage(SystemMessageId.ONLY_LEVEL_1_CLAN_OR_HIGHER_CAN_USE_WAREHOUSE));
+    		else
+    		{
+    			player.setActiveWarehouse(player.getClan().getWarehouse());
+    			if (Config.DEBUG) _log.fine("Showing items to deposit - clan");
+    			player.sendPacket(new SortedWareHouseWithdrawalList(player, WareHouseWithdrawalList.CLAN, itemtype, sortorder));
+    		}
+    	}
+	}
 
     private void showWithdrawWindowClan(L2PcInstance player)
     {
@@ -123,6 +165,32 @@ public final class L2WarehouseInstance extends L2FolkInstance
             }
     	}
     }
+    
+    private void showWithdrawWindowFreight(L2PcInstance player, WarehouseListType itemtype, byte sortorder)
+	{
+    	player.sendPacket(ActionFailed.STATIC_PACKET);
+    	if (Config.DEBUG) _log.fine("Showing freightened items");
+
+    	PcFreight freight = player.getFreight();
+
+    	if (freight != null)
+    	{
+    		if (freight.getSize() > 0)
+    		{
+    			if (Config.ALT_GAME_FREIGHTS)
+    				freight.setActiveLocation(0);
+    			else
+    				freight.setActiveLocation(getWorldRegion().hashCode());
+    			
+    			player.setActiveWarehouse(freight);
+    			player.sendPacket(new SortedWareHouseWithdrawalList(player, WareHouseWithdrawalList.FREIGHT, itemtype, sortorder));
+    		}
+    		else
+    			player.sendPacket(new SystemMessage(SystemMessageId.NO_ITEM_DEPOSITED_IN_WH));
+    	}
+    	else
+    		if (Config.DEBUG) _log.fine("no items freightened");
+	}
 
     private void showWithdrawWindowFreight(L2PcInstance player)
     {
@@ -221,18 +289,72 @@ public final class L2WarehouseInstance extends L2FolkInstance
             player.closeNetConnection();
             return;
         }
+        
+        String param[] = command.split("_");
 
         if (command.startsWith("WithdrawP"))
         {
-            showRetrieveWindow(player);
+        	if (Config.L2JMOD_ENABLE_WAREHOUSESORTING_PRIVATE)
+        	{
+        		String htmFile = "data/html/mods/WhSortedP.htm";
+        		String htmContent = HtmCache.getInstance().getHtm(htmFile);
+        		if (htmContent != null)
+        		{
+        			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
+        			npcHtmlMessage.setHtml(htmContent);
+        			npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));
+        			player.sendPacket(npcHtmlMessage);
+        		}
+        		else
+        		{
+        			_log.warning("Missing htm: " + htmFile + " !");
+        		}
+        	}
+        	else
+        		showRetrieveWindow(player);
+        }
+        else if (command.startsWith("WithdrawSortedP"))
+        {
+        	if (param.length > 2)
+        		showRetrieveWindow(player, WarehouseListType.valueOf(param[1]), SortedWareHouseWithdrawalList.getOrder(param[2]));
+        	else if (param.length > 1)
+        		showRetrieveWindow(player, WarehouseListType.valueOf(param[1]), SortedWareHouseWithdrawalList.A2Z);
+        	else
+        		showRetrieveWindow(player, WarehouseListType.ALL, SortedWareHouseWithdrawalList.A2Z);
         }
         else if (command.equals("DepositP"))
         {
             showDepositWindow(player);
         }
-        else if (command.equals("WithdrawC"))
+        else if (command.startsWith("WithdrawC"))
         {
-            showWithdrawWindowClan(player);
+        	if (Config.L2JMOD_ENABLE_WAREHOUSESORTING_CLAN)
+        	{
+        		String htmFile = "data/html/mods/WhSortedC.htm";
+        		String htmContent = HtmCache.getInstance().getHtm(htmFile);
+        		if (htmContent != null)
+        		{
+        			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
+        			npcHtmlMessage.setHtml(htmContent);
+        			npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));
+        			player.sendPacket(npcHtmlMessage);
+        		}
+        		else
+        		{
+        			_log.warning("Missing htm: " + htmFile + " !");
+        		}
+        	}
+        	else
+        		showWithdrawWindowClan(player);
+        }
+        else if (command.startsWith("WithdrawSortedC"))
+        {
+        	if (param.length > 2)
+        		showWithdrawWindowClan(player, WarehouseListType.valueOf(param[1]), SortedWareHouseWithdrawalList.getOrder(param[2]));
+        	else if (param.length > 1)
+        		showWithdrawWindowClan(player, WarehouseListType.valueOf(param[1]), SortedWareHouseWithdrawalList.A2Z);
+        	else
+        		showWithdrawWindowClan(player, WarehouseListType.ALL, SortedWareHouseWithdrawalList.A2Z);
         }
         else if (command.equals("DepositC"))
         {
@@ -242,8 +364,37 @@ public final class L2WarehouseInstance extends L2FolkInstance
         {
             if (Config.ALLOW_FREIGHT)
             {
-                showWithdrawWindowFreight(player);
+            	if (Config.L2JMOD_ENABLE_WAREHOUSESORTING_FREIGHT)
+            	{
+            		String htmFile = "data/html/mods/WhSortedF.htm";
+            		String htmContent = HtmCache.getInstance().getHtm(htmFile);
+            		if (htmContent != null)
+            		{
+            			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
+            			npcHtmlMessage.setHtml(htmContent);
+            			npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));
+            			player.sendPacket(npcHtmlMessage);
+            		}
+            		else
+            		{
+            			_log.warning("Missing htm: " + htmFile + " !");
+            		}
+            	}
+            	else
+            		showWithdrawWindowFreight(player);
             }
+        }
+        else if (command.startsWith("WithdrawSortedF"))
+        {
+        	if (Config.ALLOW_FREIGHT)
+        	{
+        		if (param.length > 2) 
+        			showWithdrawWindowFreight(player, WarehouseListType.valueOf(param[1]), SortedWareHouseWithdrawalList.getOrder(param[2]));
+        		else if (param.length > 1)
+        			showWithdrawWindowFreight(player, WarehouseListType.valueOf(param[1]), SortedWareHouseWithdrawalList.A2Z);
+        		else
+        			showWithdrawWindowFreight(player, WarehouseListType.ALL, SortedWareHouseWithdrawalList.A2Z);
+        	}
         }
         else if (command.startsWith("DepositF"))
         {

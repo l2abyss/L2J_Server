@@ -570,6 +570,9 @@ public final class Config
     public static boolean	BANKING_SYSTEM_ENABLED;
     public static int		BANKING_SYSTEM_GOLDBARS;
     public static int		BANKING_SYSTEM_ADENA;
+    public static boolean	L2JMOD_ENABLE_WAREHOUSESORTING_CLAN;
+    public static boolean	L2JMOD_ENABLE_WAREHOUSESORTING_PRIVATE;
+    public static boolean	L2JMOD_ENABLE_WAREHOUSESORTING_FREIGHT;
     
     /** ************************************************** **/
 	/** L2JMods Settings -End                              **/
@@ -1612,6 +1615,10 @@ public final class Config
                 L2JMOD_WEDDING_SAMESEX                  = Boolean.parseBoolean(L2JModSettings.getProperty("WeddingAllowSameSex", "False"));
                 L2JMOD_WEDDING_FORMALWEAR               = Boolean.parseBoolean(L2JModSettings.getProperty("WeddingFormalWear", "True"));
                 L2JMOD_WEDDING_DIVORCE_COSTS            = Integer.parseInt(L2JModSettings.getProperty("WeddingDivorceCosts", "20"));
+                
+                L2JMOD_ENABLE_WAREHOUSESORTING_CLAN     = Boolean.valueOf(L2JModSettings.getProperty("EnableWarehouseSortingClan", "False"));
+                L2JMOD_ENABLE_WAREHOUSESORTING_PRIVATE  = Boolean.valueOf(L2JModSettings.getProperty("EnableWarehouseSortingPrivate", "False"));
+                L2JMOD_ENABLE_WAREHOUSESORTING_FREIGHT  = Boolean.valueOf(L2JModSettings.getProperty("EnableWarehouseSortingFreight", "False"));
 
                 if (TVT_EVENT_PARTICIPATION_NPC_ID == 0)
                 {
@@ -2155,6 +2162,11 @@ public final class Config
         else if (pName.equalsIgnoreCase("TvTEventParticipationTime")) TVT_EVENT_PARTICIPATION_TIME = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("TvTEventRunningTime")) TVT_EVENT_RUNNING_TIME = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("TvTEventParticipationNpcId")) TVT_EVENT_PARTICIPATION_NPC_ID = Integer.parseInt(pValue);
+        
+        // L2JMOD Warehouse Sorting
+        else if (pName.equalsIgnoreCase("EnableWarehouseSortingClan")) L2JMOD_ENABLE_WAREHOUSESORTING_CLAN = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("EnableWarehouseSortingPrivate")) L2JMOD_ENABLE_WAREHOUSESORTING_PRIVATE = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("EnableWarehouseSortingFreight")) L2JMOD_ENABLE_WAREHOUSESORTING_FREIGHT = Boolean.parseBoolean(pValue);
 
         // PvP settings
         else if (pName.equalsIgnoreCase("MinKarma")) KARMA_MIN_KARMA = Integer.parseInt(pValue);
