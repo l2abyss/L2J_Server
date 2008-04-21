@@ -9605,14 +9605,18 @@ public final class L2PcInstance extends L2PlayableInstance
 		if((Pet && getPet() != null && getPet().isDead()) || (!Pet && isDead()))
 		{
 			_reviveRequested = 1;
+			int restoreExp = 0;
 			if (isPhoenixBlessed())
-			    _revivePower=100;
+				_revivePower=100;
 			else
-			    _revivePower = Formulas.getInstance().calculateSkillResurrectRestorePercent(skill.getPower(), Reviver.getWIT());
+				_revivePower = Formulas.getInstance().calculateSkillResurrectRestorePercent(skill.getPower(), Reviver.getWIT());
+			
+			restoreExp = (int)Math.round((getExpBeforeDeath() - getExp()) * _revivePower / 100);
+			    
 			_revivePet = Pet;
 			
 			ConfirmDlg dlg = new ConfirmDlg(SystemMessageId.RESSURECTION_REQUEST.getId());
-			sendPacket(dlg.addString(Reviver.getName()).addString(((int) _revivePower)+" %"));
+			sendPacket(dlg.addString(Reviver.getName()).addString(""+restoreExp));
 		}
 	}
 
