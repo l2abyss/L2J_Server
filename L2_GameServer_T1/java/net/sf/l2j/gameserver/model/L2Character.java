@@ -359,6 +359,8 @@ public abstract class L2Character extends L2Object
 			getPet().setFollowStatus(false);
 			getPet().teleToLocation(getPosition().getX() + Rnd.get(-100,100), getPosition().getY() + Rnd.get(-100,100), getPosition().getZ(), false);
 			getPet().setFollowStatus(true);
+			getPet().broadcastPacket(new PetInfo(getPet()));
+			getPet().updateEffectIcons(true);
 		}
 
 	}
