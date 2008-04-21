@@ -24,6 +24,7 @@ import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
+import net.sf.l2j.gameserver.model.zone.type.L2ClanHallZone;
 
 /**
  *
@@ -213,13 +214,20 @@ public class ClanHallManager
 
     public final ClanHall getNearbyClanHall(int x, int y, int maxDist)
     {
+    	L2ClanHallZone zone = null;
 
     	for (Map.Entry<Integer, ClanHall> ch : _clanHall.entrySet())
-    		if (ch.getValue().getZone().getDistanceToZone(x, y) < maxDist) return ch.getValue();
-
+    	{
+    		zone = ch.getValue().getZone();
+    		if (zone != null && zone.getDistanceToZone(x, y) < maxDist)
+    			return ch.getValue();
+    	}
     	for (Map.Entry<Integer, ClanHall> ch : _freeClanHall.entrySet())
-    		if (ch.getValue().getZone().getDistanceToZone(x, y) < maxDist) return ch.getValue();
-
+    	{
+    		zone = ch.getValue().getZone();
+    		if (zone != null && zone.getDistanceToZone(x, y) < maxDist)
+    			return ch.getValue();
+    	}
         return null;
     }
 
