@@ -184,14 +184,14 @@ public final class RequestActionUse extends L2GameClientPacket
                 
                 break;
             case 19: // pet unsummon
-                if (pet != null && !activeChar.isBetrayed())
+                if (pet != null)
                 {
                     //returns pet to control item
                     if (pet.isDead())
                     {
                         activeChar.sendPacket(new SystemMessage(SystemMessageId.DEAD_PET_CANNOT_BE_RETURNED));
                     }
-                    else if (pet.isAttackingNow() || pet.isRooted())
+                    else if (pet.isAttackingNow() || pet.isRooted() || pet.isBetrayed())
                     {
                         activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_SENT_BACK_DURING_BATTLE));
                     }
