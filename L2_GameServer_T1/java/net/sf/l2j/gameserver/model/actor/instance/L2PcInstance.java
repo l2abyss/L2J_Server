@@ -4223,6 +4223,11 @@ public final class L2PcInstance extends L2PlayableInstance
     public void transformInsertInfo()
     {
     	_transformationId = getTranformationId();
+    	
+    	if (_transformationId == L2Transformation.TRANSFORM_AKAMANAH
+    			|| _transformationId == L2Transformation.TRANSFORM_ZARICHE)
+    		return;
+    	
     	Connection con = null;
         try
         {
@@ -4251,9 +4256,6 @@ public final class L2PcInstance extends L2PlayableInstance
      */
     public int transformSelectInfo()
     {
-    	if (isCursedWeaponEquipped())
-    		return 0;
-    	
     	Connection con = null;
         try
         {

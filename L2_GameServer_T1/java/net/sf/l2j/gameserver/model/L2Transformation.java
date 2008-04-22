@@ -31,6 +31,9 @@ public abstract class L2Transformation implements Cloneable, Runnable
     private final double _collisionHeight;
     private long _duration;
     
+    public static final int TRANSFORM_ZARICHE = 301;
+    public static final int TRANSFORM_AKAMANAH = 302;
+    
     private L2PcInstance _player;
     private long _startTime;
     private ScheduledFuture<?> _future;
