@@ -1030,7 +1030,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
         					|| (dist2 > castRange * castRange) 
         				)
         					continue;
-        				if (Rnd.nextInt(100) <= (_mostHatedAnalysis.isSlower ? 3 : 8));
+        				if (Rnd.nextInt(100) <= (_mostHatedAnalysis.isSlower ? 3 : 8))
         				{
         					clientStopMoving(null);
         					_accessor.doCast(sk);
