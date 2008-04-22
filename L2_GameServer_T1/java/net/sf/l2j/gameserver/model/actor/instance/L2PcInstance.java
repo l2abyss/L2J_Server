@@ -4631,26 +4631,25 @@ public final class L2PcInstance extends L2PlayableInstance
      * <li>Kill the L2PcInstance </li><BR><BR>
      *
      *
-     * @param i The HP decrease value
-     * @param attacker The L2Character who attacks
+     * @param deadPlayer - Player that has died.
      *
      *
 	 * @see net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance#doDie(net.sf.l2j.gameserver.model.L2Character)
 	 */
 	@Override
-	public boolean doDie(L2Character killer)
+	public boolean doDie(L2Character deadPlayer)
 	{
 		// Kill the L2PcInstance
-		if (!super.doDie(killer))
+		if (!super.doDie(deadPlayer))
 			return false;
 
-		if (killer != null)
+		if (deadPlayer != null)
 		{
 			L2PcInstance pk = null;
-			if (killer instanceof L2PcInstance)
-				pk = (L2PcInstance) killer;
+			if (deadPlayer instanceof L2PcInstance)
+				pk = (L2PcInstance) deadPlayer;
 
-			TvTEvent.onKill(killer, this);
+			TvTEvent.onKill(deadPlayer, this);
 
 			if (atEvent && pk != null)
 			{
@@ -4663,7 +4662,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			// Issues drop of Cursed Weapon.
 			if (isCursedWeaponEquipped())
 			{
-				CursedWeaponsManager.getInstance().drop(_cursedWeaponEquippedId, killer);
+				CursedWeaponsManager.getInstance().drop(_cursedWeaponEquippedId, deadPlayer);
 			}
 			else if (isCombatFlagEquipped())
             {
@@ -4675,21 +4674,17 @@ public final class L2PcInstance extends L2PlayableInstance
 				if (pk == null || !pk.isCursedWeaponEquipped())
 				{
 					//if (getKarma() > 0)
-						onDieDropItem(killer);  // Check if any item should be dropped
+						onDieDropItem(deadPlayer);  // Check if any item should be dropped
 
 					if (!(isInsideZone(ZONE_PVP) && !isInsideZone(ZONE_SIEGE)))
 					{
-						boolean isKillerPc = (killer instanceof L2PcInstance);
-		                if (isKillerPc && ((L2PcInstance)killer).getClan() != null
-		                               && getClan() != null
-                                   && !isAcademyMember()
-                                   && !(((L2PcInstance)killer).isAcademyMember())
-		                               && _clan.isAtWarWith(((L2PcInstance) killer).getClanId())
-		                               && ((L2PcInstance)killer).getClan().isAtWarWith(_clan.getClanId()))
+						boolean isDeadPlayerPc = (deadPlayer instanceof L2PcInstance);
+		                if (isDeadPlayerPc && ((L2PcInstance)deadPlayer).getClan() != null && getClan() != null && !isAcademyMember() && !(((L2PcInstance)deadPlayer).isAcademyMember()) && _clan.isAtWarWith(((L2PcInstance) deadPlayer).getClanId()) && ((L2PcInstance)deadPlayer).getClan().isAtWarWith(_clan.getClanId()))
 		                {
 		                    if (getClan().getReputationScore() > 0) // when your reputation score is 0 or below, the other clan cannot acquire any reputation points
-		                		((L2PcInstance) killer).getClan().setReputationScore(((L2PcInstance) killer).getClan().getReputationScore()+2, true);
-		                    if (((L2PcInstance)killer).getClan().getReputationScore() > 0) // when the opposing sides reputation score is 0 or below, your clans reputation score does not decrease
+		                		((L2PcInstance) deadPlayer).getClan().setReputationScore(((L2PcInstance) deadPlayer).getClan().getReputationScore()+2, true);
+		                    
+		                    if (((L2PcInstance)deadPlayer).getClan().getReputationScore() > 0) // when the opposing sides reputation score is 0 or below, your clans reputation score does not decrease
 		                    	_clan.setReputationScore(_clan.getReputationScore()-2, true);
 		                }
 						if (Config.ALT_GAME_DELEVEL)
@@ -4738,7 +4733,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			getParty().getDimensionalRift().getDeadMemberList().add(this);
 
 		// calculate death penalty buff
-		calculateDeathPenaltyBuffLevel(killer);
+		calculateDeathPenaltyBuffLevel(deadPlayer);
 
 		stopRentPet();
 		stopWaterTask();
