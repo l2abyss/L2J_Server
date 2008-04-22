@@ -4251,6 +4251,9 @@ public final class L2PcInstance extends L2PlayableInstance
      */
     public int transformSelectInfo()
     {
+    	if (isCursedWeaponEquipped())
+    		return 0;
+    	
     	Connection con = null;
         try
         {
@@ -6574,6 +6577,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		storeCharSub();
 		storeEffect();
 		storeRecipeBook();
+		transformInsertInfo();
 	}
 
 	private void storeCharBase()
