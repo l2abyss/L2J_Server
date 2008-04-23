@@ -167,12 +167,19 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
         	NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
         	String[] params = command.split(" ");
         	
+        	if (params[1] == null)
+        	{
+        		_log.warning("Olympiad Buffer Warning: npcId = " + npcId + " has no buffGroup set in the bypass for the buff selected.");
+        		return;
+        	}
         	int buffGroup = Integer.parseInt(params[1]);
+
     		int[] npcBuffGroupInfo = NpcBufferTable.getInstance().getSkillInfo(npcId, buffGroup);
     		
     		if (npcBuffGroupInfo == null)
     		{
     			_log.warning("Olympiad Buffer Warning: npcId = " + npcId + " Location: " + getX() + ", " + getY() + ", " + getZ() + " Player: " + player.getName() + " has tried to use skill group (" + buffGroup + ") not assigned to the NPC Buffer!");
+    			return;
     		}
     		
     		int skillId = npcBuffGroupInfo[0];

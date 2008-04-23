@@ -90,6 +90,12 @@ public class L2NpcBufferInstance extends L2NpcInstance
 
     		for (String buffGroupList : buffGroupArray)
     		{
+    			if (buffGroupList == null)
+            	{
+            		_log.warning("NPC Buffer Warning: npcId = " + npcId + " has no buffGroup set in the bypass for the buff selected.");
+            		return;
+            	}
+    			
     			int buffGroup = Integer.parseInt(buffGroupList);
 
     			int[] npcBuffGroupInfo = NpcBufferTable.getInstance().getSkillInfo(npcId, buffGroup);
@@ -97,6 +103,7 @@ public class L2NpcBufferInstance extends L2NpcInstance
     			if (npcBuffGroupInfo == null)
     			{
     				_log.warning("NPC Buffer Warning: npcId = " + npcId + " Location: " + getX() + ", " + getY() + ", " + getZ() + " Player: " + playerInstance.getName() + " has tried to use skill group (" + buffGroup + ") not assigned to the NPC Buffer!");
+    				return;
     			}
 
     			int skillId = npcBuffGroupInfo[0];
