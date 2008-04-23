@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlEvent;
 import net.sf.l2j.gameserver.instancemanager.DayNightSpawnManager;
 import net.sf.l2j.gameserver.model.L2Character;
@@ -228,7 +229,10 @@ public class GameTimeController
             try
             {
             	if (_ended.hasAI()) // AI could be just disabled due to region turn off
+            	{
+            		if (Config.MOVE_BASED_KNOWNLIST) _ended.getKnownList().findObjects();
             		_ended.getAI().notifyEvent(CtrlEvent.EVT_ARRIVED);
+            	}
             }
             catch (NullPointerException e)
             {

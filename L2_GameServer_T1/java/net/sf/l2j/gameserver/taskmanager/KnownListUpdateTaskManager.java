@@ -34,7 +34,10 @@ public class KnownListUpdateTaskManager
 
     public KnownListUpdateTaskManager()
     {
-    	ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new KnownListUpdate(),1000,750);
+    	if (Config.MOVE_BASED_KNOWNLIST)
+    		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new KnownListUpdate(),1000,2500);
+    	else
+    		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new KnownListUpdate(),1000,750);
     }
 
     public static KnownListUpdateTaskManager getInstance()
@@ -47,11 +50,15 @@ public class KnownListUpdateTaskManager
 
     private class KnownListUpdate implements Runnable
     {
-    	boolean toggle = false;
+    	boolean forgetObjects;
     	boolean fullUpdate = true;
     	protected KnownListUpdate()
     	{
-    		// Do nothing
+    		if (Config.MOVE_BASED_KNOWNLIST)
+    			forgetObjects = true;
+    		else
+    			forgetObjects = false;
+    		
     	}
 
         public void run()
@@ -64,12 +71,14 @@ public class KnownListUpdateTaskManager
             		{
             			if (r.isActive()) // and check only if the region is active
             			{
-        					updateRegion(r, fullUpdate, toggle);
+        					updateRegion(r, fullUpdate, forgetObjects);
             			}
             		}
             	}
-            	if (toggle) toggle = false;
-            	else toggle = true;
+            	if (forgetObjects && !Config.MOVE_BASED_KNOWNLIST) 
+            		forgetObjects = false;
+            	else 
+            		forgetObjects = true;
             	if (fullUpdate)
             		fullUpdate = false;
             				

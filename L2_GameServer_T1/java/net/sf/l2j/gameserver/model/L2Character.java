@@ -4166,6 +4166,7 @@ public abstract class L2Character extends L2Object
 			if (this instanceof L2PcInstance) ((L2PcInstance)this).revalidateZone(true);
 		}
 		sendPacket(new StopMove(this));
+		if (Config.MOVE_BASED_KNOWNLIST) this.getKnownList().findObjects();
 	}
 
 

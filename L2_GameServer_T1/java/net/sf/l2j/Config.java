@@ -339,6 +339,7 @@ public final class Config
     public static int		GRID_NEIGHBOR_TURNOFF_TIME;
     public static int		GEODATA;
     public static boolean	FORCE_GEODATA;
+    public static boolean 	MOVE_BASED_KNOWNLIST;
     public static int		ZONE_TOWN;
     public static boolean	ACTIVATE_POSITION_RECORDER;
     public static String	DEFAULT_GLOBAL_CHAT;
@@ -1391,6 +1392,7 @@ public final class Config
                 GRID_NEIGHBOR_TURNOFF_TIME					= Integer.parseInt(General.getProperty("GridNeighborTurnOffTime", "90"));
                 GEODATA										= Integer.parseInt(General.getProperty("GeoData", "0"));
                 FORCE_GEODATA								= Boolean.parseBoolean(General.getProperty("ForceGeoData", "True"));
+                MOVE_BASED_KNOWNLIST						= Boolean.parseBoolean(General.getProperty("MoveBasedKnownlist", "False"));
                 ZONE_TOWN									= Integer.parseInt(General.getProperty("ZoneTown", "0"));
                 ACTIVATE_POSITION_RECORDER					= Boolean.parseBoolean(General.getProperty("ActivatePositionRecorder", "False"));
                 DEFAULT_GLOBAL_CHAT							= General.getProperty("GlobalChat", "ON");
