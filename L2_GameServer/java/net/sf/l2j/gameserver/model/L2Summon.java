@@ -21,8 +21,10 @@ import net.sf.l2j.gameserver.ai.L2SummonAI;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.actor.knownlist.SummonKnownList;
 import net.sf.l2j.gameserver.model.actor.stat.SummonStat;
 import net.sf.l2j.gameserver.model.actor.status.SummonStatus;
@@ -723,6 +725,59 @@ public abstract class L2Summon extends L2PlayableInstance
 	{
 		_owner = newOwner;
 	}
+
+	@Override
+	public final void sendDamageMessage(L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
+	{
+		if (miss) return;
+
+		// Prevents the double spam of system messages, if the target is the owning player.
+		if (target.getObjectId() != getOwner().getObjectId())
+		{
+			if (pcrit || mcrit)
+				if (this instanceof L2SummonInstance)
+					getOwner().sendPacket(new SystemMessage(SystemMessageId.CRITICAL_HIT_BY_SUMMONED_MOB));
+				else
+					getOwner().sendPacket(new SystemMessage(SystemMessageId.CRITICAL_HIT_BY_PET));
+
+			if (getOwner().isInOlympiadMode() &&
+					target instanceof L2PcInstance &&
+					((L2PcInstance)target).isInOlympiadMode() &&
+					((L2PcInstance)target).getOlympiadGameId() == getOwner().getOlympiadGameId())
+			{
+				getOwner().dmgDealt += damage;
+			}
+
+			SystemMessage sm;
+			if (this instanceof L2SummonInstance)
+				sm = new SystemMessage(SystemMessageId.SUMMON_GAVE_DAMAGE_S1);
+			else
+				sm = new SystemMessage(SystemMessageId.PET_HIT_FOR_S1_DAMAGE);
+			sm.addNumber(damage);
+			getOwner().sendPacket(sm);
+		}
+	}
+
+	public void reduceCurrentHp(int damage, L2Character attacker)
+	{
+		super.reduceCurrentHp(damage, attacker);
+		SystemMessage sm;
+		if (this instanceof L2SummonInstance)
+			sm = new SystemMessage(SystemMessageId.SUMMON_RECEIVED_DAMAGE_S2_BY_S1);
+		else
+			sm = new SystemMessage(SystemMessageId.PET_RECEIVED_S2_DAMAGE_BY_S1);
+
+		if (attacker instanceof L2NpcInstance)
+		{
+			sm.addNpcName(((L2NpcInstance) attacker).getTemplate().npcId);
+		}
+		else
+		{
+			sm.addString(attacker.getName());
+		}
+		sm.addNumber(damage);
+		getOwner().sendPacket(sm);
+    }
 
 	/**
 	 * @return Returns the showSummonAnimation.

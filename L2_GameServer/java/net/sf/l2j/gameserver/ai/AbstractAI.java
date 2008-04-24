@@ -369,6 +369,9 @@ abstract class AbstractAI implements Ctrl
             case EVT_STUNNED:
                 onEvtStunned((L2Character) arg0);
                 break;
+            case EVT_PARALYZED:
+                onEvtParalyzed((L2Character) arg0);
+                break;
             case EVT_SLEEPING:
                 onEvtSleeping((L2Character) arg0);
                 break;
@@ -441,6 +444,8 @@ abstract class AbstractAI implements Ctrl
     protected abstract void onEvtAggression(L2Character target, int aggro);
 
     protected abstract void onEvtStunned(L2Character attacker);
+
+    protected abstract void onEvtParalyzed(L2Character attacker);
 
     protected abstract void onEvtSleeping(L2Character attacker);
 

@@ -2717,7 +2717,7 @@ public abstract class L2Character extends L2Object
 	public final void startFear()
 	{
 		setIsAfraid(true);
-		getAI().notifyEvent(CtrlEvent.EVT_AFFRAID);
+		getAI().notifyEvent(CtrlEvent.EVT_AFRAID);
 		updateAbnormalEffect();
 	}
 
@@ -2796,6 +2796,17 @@ public abstract class L2Character extends L2Object
 		getAI().notifyEvent(CtrlEvent.EVT_STUNNED, null);
 		updateAbnormalEffect();
 	}
+
+	public final void startParalyze()
+	{
+		setIsParalyzed(true);
+		/* Aborts any attacks/casts if paralyzed */
+		abortAttack();
+		abortCast();
+		getAI().notifyEvent(CtrlEvent.EVT_PARALYZED, null);
+		updateAbnormalEffect();
+	}
+
 	public final void startBetray()
 	{
 		setIsBetrayed(true);
@@ -3085,7 +3096,19 @@ public abstract class L2Character extends L2Object
 		getAI().notifyEvent(CtrlEvent.EVT_THINK, null);
 		updateAbnormalEffect();
 	}
-	
+
+	public final void stopParalyze(L2Effect effect)
+	{
+		if (effect == null)
+			stopEffects(L2Effect.EffectType.PARALYZE);
+		else
+			removeEffect(effect);
+
+		setIsParalyzed(false);
+		getAI().notifyEvent(CtrlEvent.EVT_THINK, null);
+		updateAbnormalEffect();
+	}
+
 	/**
      * Stop L2Effect: Transformation<BR><BR>
      *
@@ -4170,7 +4193,7 @@ public abstract class L2Character extends L2Object
 			setHeading(pos.heading);
 			if (this instanceof L2PcInstance) ((L2PcInstance)this).revalidateZone(true);
 		}
-		sendPacket(new StopMove(this));
+		broadcastPacket(new StopMove(this));
 		if (Config.MOVE_BASED_KNOWNLIST) this.getKnownList().findObjects();
 	}
 
@@ -5839,7 +5862,7 @@ public abstract class L2Character extends L2Object
 				if (skill.getSkillType() == L2Skill.SkillType.BUFF)
 				{
 					SystemMessage smsg = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
-					smsg.addString(skill.getName());
+					smsg.addSkillName(skill.getId());
 					target.sendPacket(smsg);
 				}
 
@@ -6631,19 +6654,20 @@ public abstract class L2Character extends L2Object
     {
         return isDead();
     }
-    
+
     public final void startPhysicalAttackMuted()
     {
-       setIsPhysicalAttackMuted(true);
-    }    
-    
+        setIsPhysicalAttackMuted(true);
+        abortAttack();
+    }
+
     public final void stopPhysicalAttackMuted(L2Effect effect)
     {
-       if (effect == null)
-           stopEffects(L2Effect.EffectType.PHYSICAL_ATTACK_MUTE);
-       else
+        if (effect == null)
+            stopEffects(L2Effect.EffectType.PHYSICAL_ATTACK_MUTE);
+        else
             removeEffect(effect);
   
-       setIsPhysicalAttackMuted(false);
-    }  
+        setIsPhysicalAttackMuted(false);
+    }
 }

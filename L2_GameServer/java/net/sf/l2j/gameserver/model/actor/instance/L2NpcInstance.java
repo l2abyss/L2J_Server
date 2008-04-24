@@ -350,11 +350,8 @@ public class L2NpcInstance extends L2Character
      * Send a packet NpcInfo with state of abnormal effect to all L2PcInstance in the _KnownPlayers of the L2NpcInstance.<BR><BR>
      */
     @Override
-	public void updateAbnormalEffect()
+    public void updateAbnormalEffect()
     {
-        //NpcInfo info = new NpcInfo(this);
-        //broadcastPacket(info);
-
         // Send a Server->Client packet NpcInfo with state of abnormal effect to all L2PcInstance in the _KnownPlayers of the L2NpcInstance
         for (L2PcInstance player : getKnownList().getKnownPlayers().values())
             if (player != null)
@@ -370,7 +367,7 @@ public class L2NpcInstance extends L2Character
      * <li> object is a L2PlayableInstance : 1500 </li>
      * <li> others : 500 </li><BR><BR>
      *
-     * <B><U> Overriden in </U> :</B><BR><BR>
+     * <B><U> Override in </U> :</B><BR><BR>
      * <li> L2Attackable</li><BR><BR>
      *
      * @param object The Object to add to _knownObject
@@ -2282,38 +2279,44 @@ public class L2NpcInstance extends L2Character
     public void setLHandId(int newWeaponId)
     {
         _currentLHandId = newWeaponId;
-        broadcastPacket(new NpcInfo(this, null));
+        updateAbnormalEffect();
     }
+
     public void setRHandId(int newWeaponId)
     {
         _currentRHandId = newWeaponId;
-        broadcastPacket(new NpcInfo(this, null));
+        updateAbnormalEffect();
     }
+
     public void setLRHandId(int newLWeaponId,int newRWeaponId)
     {
         _currentRHandId = newRWeaponId;
         _currentLHandId = newLWeaponId;
-        broadcastPacket(new NpcInfo(this, null));
+        updateAbnormalEffect();
     }
+
     public void setCollisionHeight(int height)
     {
         _currentCollisionHeight = height;
     }
+
     public void setCollisionRadius(int radius)
     {
-    	_currentCollisionRadius = radius;
+        _currentCollisionRadius = radius;
     }
+
     public int getCollisionHeight()
     {
-    	return _currentCollisionHeight;
+        return _currentCollisionHeight;
     }
+
     public int getCollisionRadius()
     {
-    	return _currentCollisionRadius;
+        return _currentCollisionRadius;
     }
     
     public boolean rechargeAutoSoulShot(boolean physical, boolean magic)
-	{
+    {
     	if (this.getTemplate().ssRate == 0) return false;
 
     	L2Weapon weaponItem = getActiveWeaponItem();

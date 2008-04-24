@@ -556,7 +556,25 @@ public class L2CharacterAI extends AbstractAI
      *
      */
     @Override
-	protected void onEvtStunned(L2Character attacker)
+    protected void onEvtStunned(L2Character attacker)
+    {
+        // Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)
+        _actor.broadcastPacket(new AutoAttackStop(_actor.getObjectId()));
+        if (AttackStanceTaskManager.getInstance().getAttackStanceTask(_actor))
+            AttackStanceTaskManager.getInstance().removeAttackStanceTask(_actor);
+
+        // Stop Server AutoAttack also
+        setAutoAttacking(false);
+
+        // Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)
+        clientStopMoving(null);
+
+        // Launch actions corresponding to the Event onAttacked (only for L2AttackableAI after the stunning periode)
+        onEvtAttacked(attacker);
+    }
+
+    @Override
+    protected void onEvtParalyzed(L2Character attacker)
     {
         // Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)
         _actor.broadcastPacket(new AutoAttackStop(_actor.getObjectId()));

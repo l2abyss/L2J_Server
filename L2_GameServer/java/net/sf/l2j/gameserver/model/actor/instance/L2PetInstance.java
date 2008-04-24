@@ -944,22 +944,5 @@ public class L2PetInstance extends L2Summon
     	L2World.getInstance().removePet(oldOwnerId);
     	L2World.getInstance().addPet(oldOwnerId, this);
     }
-
-    @Override
-	public final void sendDamageMessage(L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
-    {
-    	if (miss) return;
-
-    	// Prevents the double spam of system messages, if the target is the owning player.
-    	if (target.getObjectId() != getOwner().getObjectId())
-    	{
-    		if (pcrit || mcrit)
-    			getOwner().sendPacket(new SystemMessage(SystemMessageId.CRITICAL_HIT_BY_PET));
-
-    		SystemMessage sm = new SystemMessage(SystemMessageId.PET_HIT_FOR_S1_DAMAGE);
-    		sm.addNumber(damage);
-    		getOwner().sendPacket(sm);
-        }
-    }
 }
 

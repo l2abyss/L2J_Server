@@ -23,9 +23,7 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Summon;
-import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.SetSummonRemainTime;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 
 public class L2SummonInstance extends L2Summon
@@ -89,20 +87,17 @@ public class L2SummonInstance extends L2Summon
         if (Config.DEBUG) _log.warning("L2SummonInstance: Task Delay " + (delay / 1000) + " seconds.");
 
         _summonLifeTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(
-                                                                                     new SummonLifetime(
-                                                                                                        getOwner(),
-                                                                                                        this),
-                                                                                     delay, delay);
+               new SummonLifetime(getOwner(), this), delay, delay);
     }
 
     @Override
-	public final int getLevel()
+    public final int getLevel()
     {
         return (getTemplate() != null ? getTemplate().level : 0);
     }
 
     @Override
-	public int getSummonType()
+    public int getSummonType()
     {
         return 1;
     }
@@ -177,22 +172,6 @@ public class L2SummonInstance extends L2Summon
         getOwner().addExpAndSp(addToExp, addToSp);
     }
 
-    public void reduceCurrentHp(int damage, L2Character attacker)
-    {
-        super.reduceCurrentHp(damage, attacker);
-        SystemMessage sm = new SystemMessage(SystemMessageId.SUMMON_RECEIVED_DAMAGE_S2_BY_S1);
-        if (attacker instanceof L2NpcInstance)
-        {
-            sm.addNpcName(((L2NpcInstance) attacker).getTemplate().npcId);
-        }
-        else
-        {
-            sm.addString(attacker.getName());
-        }
-        sm.addNumber(damage);
-        getOwner().sendPacket(sm);
-    }
-
     @Override
 	public boolean doDie(L2Character killer)
     {
@@ -211,27 +190,6 @@ public class L2SummonInstance extends L2Summon
         return true;
 
     }
-
-    /*
-     protected void displayHitMessage(int damage, boolean crit, boolean miss)
-     {
-     if (crit)
-     {
-     getOwner().sendPacket(new SystemMessage(SystemMessage.SUMMON_CRITICAL_HIT));
-     }
-
-     if (miss)
-     {
-     getOwner().sendPacket(new SystemMessage(SystemMessage.MISSED_TARGET));
-     }
-     else
-     {
-     SystemMessage sm = new SystemMessage(SystemMessage.SUMMON_GAVE_DAMAGE_OF_S1);
-     sm.addNumber(damage);
-     getOwner().sendPacket(sm);
-     }
-     }
-     */
 
     static class SummonLifetime implements Runnable
     {
@@ -335,30 +293,4 @@ public class L2SummonInstance extends L2Summon
 
         return getOwner().destroyItemByItemId(process, itemId, count, reference, sendMessage);
     }
-
-    @Override
-	public final void sendDamageMessage(L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
-    {
-    	if (miss) return;
-
-    	// Prevents the double spam of system messages, if the target is the owning player.
-    	if (target.getObjectId() != getOwner().getObjectId())
-    	{
-    		if (pcrit || mcrit)
-    			getOwner().sendPacket(new SystemMessage(SystemMessageId.CRITICAL_HIT_BY_SUMMONED_MOB));
-    		
-    		if (getOwner().isInOlympiadMode() &&
-    				target instanceof L2PcInstance &&
-    				((L2PcInstance)target).isInOlympiadMode() &&
-    				((L2PcInstance)target).getOlympiadGameId() == getOwner().getOlympiadGameId())
-    		{
-    			getOwner().dmgDealt += damage;
-    		}
-
-    		SystemMessage sm = new SystemMessage(SystemMessageId.SUMMON_GAVE_DAMAGE_S1);
-    		sm.addNumber(damage);
-    		getOwner().sendPacket(sm);
-        }
-    }
-
 }
