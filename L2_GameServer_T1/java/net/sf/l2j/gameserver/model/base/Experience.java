@@ -102,15 +102,20 @@ public class Experience
         1151275834L,
         1511275834L,
         2099275834L,
-        4200000000L, //level 80
-        6299994999L
+        2807315058L, //level 80
+        3635393506L,
+        4583511178L,
+        5651668074L,
+        6839864194L,
+        8148099538L, //level 85
+        9576374106L
     };
 
 	/**
 	 * This is the first UNREACHABLE level.<BR>
 	 *   ex: If you want a max at 80 & 99.99%, you have to put 81.<BR><BR>
 	 */
-	public final static byte MAX_LEVEL = 81;
+	public final static byte MAX_LEVEL = 86;
 
 	public final static byte MIN_NEWBIE_LEVEL = 6;
 	public final static byte MAX_NEWBIE_LEVEL = 39;

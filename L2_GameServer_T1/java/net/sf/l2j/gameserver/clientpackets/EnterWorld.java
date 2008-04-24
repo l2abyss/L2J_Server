@@ -500,7 +500,7 @@ public class EnterWorld extends L2GameClientPacket
 
             if (apprentice != null)
             {
-                SystemMessage msg = new SystemMessage(SystemMessageId.YOUR_SPONSOR_S1_HAS_LOGGED_IN);
+                SystemMessage msg = new SystemMessage(SystemMessageId.YOUR_SPONSOR_C1_HAS_LOGGED_IN);
                 msg.addString(activeChar.getName());
                 apprentice.sendPacket(msg);
             }

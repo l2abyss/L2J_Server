@@ -2154,7 +2154,7 @@ public class L2Clan
                 break;
             case 8:
             	// Upgrade to 9
-                if(getReputationScore() >= 40000 && player.getInventory().getItemByItemId(9910) != null && getMembersCount() >= 140)
+                if(getReputationScore() >= 40000 && player.getInventory().getItemByItemId(9910) != null && getMembersCount() >= 120)
                 {
                 	// itemId 9910 == Blood Oath
                 	if (player.destroyItemByItemId("ClanLvl", 9910, 150, player.getTarget(), false))

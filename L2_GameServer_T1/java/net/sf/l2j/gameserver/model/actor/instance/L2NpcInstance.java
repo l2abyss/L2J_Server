@@ -2323,10 +2323,18 @@ public class L2NpcInstance extends L2Character
     public void setLHandId(int newWeaponId)
     {
         _currentLHandId = newWeaponId;
+        broadcastPacket(new NpcInfo(this, null));
     }
     public void setRHandId(int newWeaponId)
     {
         _currentRHandId = newWeaponId;
+        broadcastPacket(new NpcInfo(this, null));
+    }
+    public void setLRHandId(int newLWeaponId,int newRWeaponId)
+    {
+        _currentRHandId = newRWeaponId;
+        _currentLHandId = newLWeaponId;
+        broadcastPacket(new NpcInfo(this, null));
     }
     public void setCollisionHeight(int height)
     {

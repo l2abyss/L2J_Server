@@ -34,7 +34,6 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.base.Race;
 import net.sf.l2j.gameserver.skills.conditions.Condition;
 import net.sf.l2j.gameserver.skills.conditions.ConditionChangeWeapon;
-import net.sf.l2j.gameserver.skills.conditions.ConditionElementSeed;
 import net.sf.l2j.gameserver.skills.conditions.ConditionForceBuff;
 import net.sf.l2j.gameserver.skills.conditions.ConditionGameChance;
 import net.sf.l2j.gameserver.skills.conditions.ConditionGameTime;
@@ -359,7 +358,6 @@ abstract class DocumentBase
     protected Condition parsePlayerCondition(Node n)
     {
         Condition cond = null;
-        int[] ElementSeeds = new int[5];
         byte[] forces = new byte[2];
         NamedNodeMap attrs = n.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++)
@@ -420,26 +418,6 @@ abstract class DocumentBase
                 int hp = Integer.decode(getValue(a.getNodeValue(), null));
                 cond = joinAnd(cond, new ConditionPlayerMp(hp));
             }
-            else if ("seed_fire".equalsIgnoreCase(a.getNodeName()))
-            {
-                ElementSeeds[0] = Integer.decode(getValue(a.getNodeValue(), null));
-            }
-            else if ("seed_water".equalsIgnoreCase(a.getNodeName()))
-            {
-                ElementSeeds[1] = Integer.decode(getValue(a.getNodeValue(), null));
-            }
-            else if ("seed_wind".equalsIgnoreCase(a.getNodeName()))
-            {
-                ElementSeeds[2] = Integer.decode(getValue(a.getNodeValue(), null));
-            }
-            else if ("seed_various".equalsIgnoreCase(a.getNodeName()))
-            {
-                ElementSeeds[3] = Integer.decode(getValue(a.getNodeValue(), null));
-            }
-            else if ("seed_any".equalsIgnoreCase(a.getNodeName()))
-            {
-                ElementSeeds[4] = Integer.decode(getValue(a.getNodeValue(), null));
-            }
             else if ("battle_force".equalsIgnoreCase(a.getNodeName()))
             {
                 forces[0] = Byte.decode(getValue(a.getNodeValue(), null));
@@ -447,16 +425,6 @@ abstract class DocumentBase
             else if ("spell_force".equalsIgnoreCase(a.getNodeName()))
             {
                 forces[1] = Byte.decode(getValue(a.getNodeValue(), null));
-            }
-        }
-
-        // Elemental seed condition processing
-        for (int i = 0; i < ElementSeeds.length; i++)
-        {
-            if (ElementSeeds[i] > 0)
-            {
-                cond = joinAnd(cond, new ConditionElementSeed(ElementSeeds));
-                break;
             }
         }
 

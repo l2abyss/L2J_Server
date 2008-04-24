@@ -1452,7 +1452,6 @@ public abstract class L2Character extends L2Object
 					skill.getSkillType() == SkillType.COMBATPOINTHEAL ||
 					skill.getSkillType() == SkillType.MANAHEAL ||
 					skill.getSkillType() == SkillType.REFLECT ||
-					skill.getSkillType() == SkillType.SEED ||
 					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF ||
 					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PET ||
 					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PARTY ||
@@ -2665,6 +2664,12 @@ public abstract class L2Character extends L2Object
 				if (_effects.get(i) == effect)
 				{
 					_effects.remove(i);
+					if (this instanceof L2PcInstance)
+					{
+						SystemMessage sm = new SystemMessage(SystemMessageId.EFFECT_S1_DISAPPEARED);
+						sm.addString(effect.getSkill().getName());
+						sendPacket(sm);
+					}
 					break;
 				}
 			}
@@ -5831,7 +5836,7 @@ public abstract class L2Character extends L2Object
 			  {
 				L2Character target = (L2Character) targets[i];
 
-				if (skill.getSkillType() == L2Skill.SkillType.BUFF || skill.getSkillType() == L2Skill.SkillType.SEED)
+				if (skill.getSkillType() == L2Skill.SkillType.BUFF)
 				{
 					SystemMessage smsg = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
 					smsg.addString(skill.getName());

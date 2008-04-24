@@ -39,7 +39,6 @@ import net.sf.l2j.gameserver.model.L2SiegeClan;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2SiegeClan.SiegeClanType;
-import net.sf.l2j.gameserver.model.actor.instance.L2ArtefactInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2ControlTowerInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -239,7 +238,6 @@ public class Siege
     private int _defenderRespawnDelayPenalty;
 
     // Castle setting
-    private List<L2ArtefactInstance> _artifacts = new FastList<L2ArtefactInstance>();
     private List<L2ControlTowerInstance> _controlTowers = new FastList<L2ControlTowerInstance>();
     private Castle[] _castle;
     private boolean _isInProgress = false;
@@ -282,7 +280,6 @@ public class Siege
             updatePlayerSiegeStateFlags(true);
             saveCastleSiege(); // Save castle specific data
             clearSiegeClan(); // Clear siege clan from db
-            removeArtifact(); // Remove artifact from this castle
             removeControlTower(); // Remove all control tower from this castle
             _siegeGuardManager.unspawnSiegeGuard(); // Remove all spawned siege guard from this castle
             if (getCastle().getOwnerId() > 0) _siegeGuardManager.removeMercs();
@@ -427,7 +424,6 @@ public class Siege
             updatePlayerSiegeStateFlags(false);
             teleportPlayer(Siege.TeleportWhoType.Attacker, MapRegionTable.TeleportWhereType.Town); // Teleport to the closest town
 			//teleportPlayer(Siege.TeleportWhoType.Spectator, MapRegionTable.TeleportWhereType.Town);      // Teleport to the second closest town
-            spawnArtifact(getCastle().getCastleId()); // Spawn artifact
             spawnControlTower(getCastle().getCastleId()); // Spawn control tower
             getCastle().spawnDoor(); // Spawn door
             spawnSiegeGuard(); // Spawn siege guard
@@ -1037,20 +1033,6 @@ public class Siege
         }
     }
 
-    /** Remove artifacts spawned. */
-    private void removeArtifact()
-    {
-        if (_artifacts != null)
-        {
-            // Remove all instance of artifact for this castle
-            for (L2ArtefactInstance art : _artifacts)
-            {
-                if (art != null) art.decayMe();
-            }
-            _artifacts = null;
-        }
-    }
-
     /** Remove all control tower spawned. */
     private void removeControlTower()
     {
@@ -1217,26 +1199,6 @@ public class Siege
             getCastle().getSiegeDate().add(Calendar.DAY_OF_MONTH, 14); // Schedule to happen in 14 days
         }
         _isRegistrationOver = false; // Allow registration for next siege
-    }
-
-    /** Spawn artifact. */
-    private void spawnArtifact(int Id)
-    {
-        //Set artefact array size if one does not exist
-        if (_artifacts == null)
-            _artifacts = new FastList<L2ArtefactInstance>();
-
-        for (SiegeSpawn _sp: SiegeManager.getInstance().getArtefactSpawnList(Id))
-        {
-        	L2ArtefactInstance art;
-
-        	art = new L2ArtefactInstance(IdFactory.getInstance().getNextId(), NpcTable.getInstance().getTemplate(_sp.getNpcId()));
-        	art.setCurrentHpMp(art.getMaxHp(), art.getMaxMp());
-        	art.setHeading(_sp.getLocation().getHeading());
-        	art.spawnMe(_sp.getLocation().getX(),_sp.getLocation().getY(),_sp.getLocation().getZ() + 50);
-
-        	_artifacts.add(art);
-        }
     }
 
     /** Spawn control tower. */

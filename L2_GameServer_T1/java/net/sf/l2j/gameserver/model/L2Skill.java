@@ -54,7 +54,6 @@ import net.sf.l2j.gameserver.skills.l2skills.L2SkillCreateItem;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillDecoy;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillDefault;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillDrain;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillSeed;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSignet;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSignetCasttime;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSummon;
@@ -241,7 +240,6 @@ public abstract class L2Skill
     	UNBLEED,
     	UNPOISON,
     	UNDEAD_DEFENSE,
-    	SEED (L2SkillSeed.class),
     	BEAST_FEED,
     	FORCE_BUFF,
         CHARGESOUL,
@@ -1393,7 +1391,7 @@ public abstract class L2Skill
                     case BUFF: case HEAL: case HOT: case HEAL_PERCENT:
                     case MANARECHARGE: case MANAHEAL: case NEGATE:
                     case CANCEL: case REFLECT: case UNBLEED: case UNPOISON:
-                    case SEED: case COMBATPOINTHEAL: case MAGE_BANE: case WARRIOR_BANE:
+                    case COMBATPOINTHEAL: case MAGE_BANE: case WARRIOR_BANE:
                     case BETRAY: case BALANCE_LIFE: case FORCE_BUFF:
                         canTargetSelf = true;
                         break;
