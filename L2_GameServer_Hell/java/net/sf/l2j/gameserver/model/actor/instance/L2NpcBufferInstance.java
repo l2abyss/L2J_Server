@@ -145,7 +145,12 @@ public class L2NpcBufferInstance extends L2NpcInstance
     			if (skill != null)
     				skill.getEffects(playerInstance, playerInstance);
 				}
-    		}
-		showChatWindow(playerInstance, pageVal);
+    			
+    			showChatWindow(playerInstance, pageVal);
+    	}
+		else
+		{
+			super.onBypassFeedback(playerInstance, command);
+		}	
 	}
 }
