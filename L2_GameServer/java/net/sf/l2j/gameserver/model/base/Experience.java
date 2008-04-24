@@ -113,7 +113,7 @@ public class Experience
 
 	/**
 	 * This is the first UNREACHABLE level.<BR>
-	 *   ex: If you want a max at 80 & 99.99%, you have to put 81.<BR><BR>
+	 *   ex: If you want a max at 85 & 99.99%, you have to put 86.<BR><BR>
 	 */
 	public final static byte MAX_LEVEL = 86;
 
