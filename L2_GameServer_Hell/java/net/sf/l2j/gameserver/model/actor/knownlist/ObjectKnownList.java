@@ -17,12 +17,10 @@ package net.sf.l2j.gameserver.model.actor.knownlist;
 import java.util.Map;
 
 import javolution.util.FastMap;
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2WorldRegion;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2GuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.util.Util;
