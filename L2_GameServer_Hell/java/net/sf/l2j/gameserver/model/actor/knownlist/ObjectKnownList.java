@@ -104,7 +104,7 @@ public class ObjectKnownList
     }
     
     // Remove invisible and too far L2Object from _knowObject and if necessary from _knownPlayers of the L2Character
-    public final void forgetObjects(boolean fullCheck)
+    public void forgetObjects(boolean fullCheck)
     {
     	// Go through knownObjects
     	for (L2Object object: getKnownObjects().values())
@@ -112,8 +112,7 @@ public class ObjectKnownList
     		if (!fullCheck && !(object instanceof L2PlayableInstance))
     			continue;
 
-    		// Remove all invisible object
-    		// Remove all too far object
+    		// Remove all objects invisible or too far
     		if (
     				!object.isVisible() ||
     				!Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true)
@@ -126,11 +125,7 @@ public class ObjectKnownList
     				}
     				else if(((L2PcInstance)getActiveObject()).isInBoat())
     				{
-    					if(((L2PcInstance)getActiveObject()).getBoat() == object)
-    					{
-    						//
-    					}
-    					else
+    					if(((L2PcInstance)getActiveObject()).getBoat() != object)
     					{
     						removeKnownObject(object);
     					}

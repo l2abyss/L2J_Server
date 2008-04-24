@@ -68,7 +68,7 @@ public class MonsterKnownList extends AttackableKnownList
             //  setTarget(null);
         }
 
-        if (getActiveChar().isVisible() && getKnownPlayers().isEmpty())
+        if (getActiveChar().isVisible() && getKnownPlayers().isEmpty() && getKnownSummons().isEmpty())
         {
             // Clear the _aggroList of the L2MonsterInstance
             getActiveChar().clearAggroList();

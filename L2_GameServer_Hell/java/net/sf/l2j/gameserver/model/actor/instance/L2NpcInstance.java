@@ -206,46 +206,6 @@ public class L2NpcInstance extends L2Character
         return (Config.MAX_NPC_ANIMATION > 0);
     }
 
-    public class destroyTemporalNPC implements Runnable
-    {
-        private L2Spawn _oldSpawn;
-
-        public destroyTemporalNPC(L2Spawn spawn)
-        {
-            _oldSpawn = spawn;
-        }
-
-        public void run()
-        {
-            try
-            {
-                _oldSpawn.getLastSpawn().deleteMe();
-                _oldSpawn.stopRespawn();
-                SpawnTable.getInstance().deleteSpawn(_oldSpawn, false);
-            }
-            catch (Throwable t) {
-                t.printStackTrace();
-            }
-        }
-    }
-
-    public class destroyTemporalSummon implements Runnable
-    {
-        L2Summon _summon;
-        L2PcInstance _player;
-
-        public destroyTemporalSummon(L2Summon summon, L2PcInstance player)
-        {
-            _summon = summon;
-            _player = player;
-        }
-
-        public void run()
-        {
-            _summon.unSummon(_player);
-        }
-    }
-
     /**
      * Constructor of L2NpcInstance (use L2Character constructor).<BR><BR>
      *
