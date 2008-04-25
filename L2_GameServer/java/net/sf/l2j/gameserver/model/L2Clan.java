@@ -247,7 +247,7 @@ public class L2Clan
         newLeader.setClan(this);
         newLeader.setPledgeClass(member.calculatePledgeClass(newLeader));
         newLeader.setClanPrivileges(L2Clan.CP_ALL);
-        if (getLevel() >= 4)
+        if (getLevel() >= 5)
         {
         	SiegeManager.getInstance().addSiegeSkills(newLeader);
         }
@@ -2242,11 +2242,11 @@ public class L2Clan
         if (getLeader().isOnline())
         {
         	L2PcInstance leader = getLeader().getPlayerInstance();
-            if (3 < level)
+            if (4 < level)
             {
             	SiegeManager.getInstance().addSiegeSkills(leader);
             }
-            else if (4 > level)
+            else if (5 > level)
             {
             	SiegeManager.getInstance().removeSiegeSkills(leader);
             }
