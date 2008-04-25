@@ -246,6 +246,13 @@ public class GameStatusThread extends Thread
                     _print.print(this.getServerStatus());
                     _print.flush();
                 }
+                else if (_usrCommand.equals("forcegc"))
+                {
+                	System.gc();
+                	StringBuilder sb = new StringBuilder();
+                    sb.append("RAM Used: "+((Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576)); // 1024 * 1024 = 1048576
+                    _print.println(sb.toString());
+                }
                 else if (_usrCommand.equals("performance"))
                 {
                     for (String line : ThreadPoolManager.getInstance().getStats())
