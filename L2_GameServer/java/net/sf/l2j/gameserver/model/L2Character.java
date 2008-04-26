@@ -194,18 +194,92 @@ public abstract class L2Character extends L2Object
 	public static final int ZONE_JAIL = 256;
 	public static final int ZONE_MONSTERTRACK = 512;
 
-	private int _currentZones = 0;
+	private byte _currentPVPZones = 0;
+	private byte _currentPeaceZones = 0;
+	private byte _currentSiegeZones = 0;
+	private byte _currentMotherTreeZones = 0;
+	private byte _currentClanHallZones = 0;
+	private byte _currentUnusedZones = 0;
+	private byte _currentNoLandingZones = 0;
+	private byte _currentWaterZones = 0;
+	private byte _currentJailZones = 0;
+	private byte _currentMonsterTrackZones = 0;
 
 	public boolean isInsideZone(int zone)
 	{
-		return ((_currentZones & zone) != 0);
+		switch(zone)
+		{
+			case ZONE_PVP:
+				return (_currentPVPZones > 0);
+			case ZONE_PEACE:
+				return (_currentPeaceZones > 0);
+			case ZONE_SIEGE:
+				return (_currentSiegeZones > 0);
+			case ZONE_MOTHERTREE:
+				return (_currentMotherTreeZones > 0);
+			case ZONE_CLANHALL:
+				return (_currentClanHallZones > 0);
+			case ZONE_UNUSED:
+				return (_currentUnusedZones > 0);
+			case ZONE_NOLANDING:
+				return (_currentNoLandingZones > 0);
+			case ZONE_WATER:
+				return (_currentWaterZones > 0);
+			case ZONE_JAIL:
+				return (_currentJailZones > 0);
+			case ZONE_MONSTERTRACK:
+				return (_currentMonsterTrackZones > 0);
+			default:
+				return false;
+		}
 	}
 	public void setInsideZone(int zone, boolean state)
 	{
-		if (state)
-			_currentZones |= zone;
-		else if (isInsideZone(zone)) // zone overlap possible
-			_currentZones ^= zone;
+		switch(zone)
+		{
+			case ZONE_PVP:
+				if (state) _currentPVPZones++;
+				else _currentPVPZones--;
+				break;
+			case ZONE_PEACE:
+				if (state) _currentPeaceZones++;
+				else _currentPeaceZones--;
+				break; 
+			case ZONE_SIEGE:
+				if (state) _currentSiegeZones++;
+				else _currentSiegeZones--;
+				break;
+			case ZONE_MOTHERTREE:
+				if (state) _currentMotherTreeZones++;
+				else _currentMotherTreeZones--;
+				break;
+			case ZONE_CLANHALL:
+				if (state) _currentClanHallZones++;
+				else _currentClanHallZones--;
+				break;
+			case ZONE_UNUSED:
+				if (state) _currentUnusedZones++;
+				else _currentUnusedZones--;
+				break;
+			case ZONE_NOLANDING:
+				if (state) _currentNoLandingZones++;
+				else _currentNoLandingZones--;
+				break;
+			case ZONE_WATER:
+				if (state) _currentWaterZones++;
+				else _currentWaterZones--;
+				break;
+			case ZONE_JAIL:
+				if (state) _currentJailZones++;
+				else _currentJailZones--;
+				break;
+			case ZONE_MONSTERTRACK:
+				if (state) _currentMonsterTrackZones++;
+				else _currentMonsterTrackZones--;
+				break;
+			default:
+				return;
+		}
 	}
 	
 	/**
