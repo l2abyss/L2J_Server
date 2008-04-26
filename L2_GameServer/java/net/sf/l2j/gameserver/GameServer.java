@@ -176,6 +176,7 @@ import net.sf.l2j.gameserver.handler.skillhandlers.Mdam;
 import net.sf.l2j.gameserver.handler.skillhandlers.Pdam;
 import net.sf.l2j.gameserver.handler.skillhandlers.Recall;
 import net.sf.l2j.gameserver.handler.skillhandlers.Resurrect;
+import net.sf.l2j.gameserver.handler.skillhandlers.ShiftTarget;
 import net.sf.l2j.gameserver.handler.skillhandlers.SiegeFlag;
 import net.sf.l2j.gameserver.handler.skillhandlers.Soul;
 import net.sf.l2j.gameserver.handler.skillhandlers.Sow;
@@ -525,6 +526,7 @@ public class GameServer
 		_skillHandler.registerSkillHandler(new Charge());
 		_skillHandler.registerSkillHandler(new Continuous());
 		_skillHandler.registerSkillHandler(new Resurrect());
+		_skillHandler.registerSkillHandler(new ShiftTarget());
         _skillHandler.registerSkillHandler(new Spoil());
         _skillHandler.registerSkillHandler(new Sweep());
         _skillHandler.registerSkillHandler(new StrSiegeAssault());

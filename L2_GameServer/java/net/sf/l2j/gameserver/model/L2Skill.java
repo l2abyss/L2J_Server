@@ -248,7 +248,7 @@ public abstract class L2Skill
         SUMMON_TRAP (L2SkillTrap.class),
         DETECT_TRAP,
         REMOVE_TRAP,
-        
+        SHIFT_TARGET,
         // Kamael WeaponChange
         CHANGEWEAPON (L2SkillChangeWeapon.class),
 
