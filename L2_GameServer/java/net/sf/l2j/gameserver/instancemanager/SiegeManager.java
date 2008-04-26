@@ -69,7 +69,7 @@ public class SiegeManager
 
     private int _controlTowerLosePenalty                         = 20000; // Time in ms. Changeable in siege.config
     private int _flagMaxCount                                   = 1; // Changeable in siege.config
-    private int _siegeClanMinLevel                             = 4; // Changeable in siege.config
+    private int _siegeClanMinLevel                             = 5; // Changeable in siege.config
     private int _siegeLength                                    = 120; // Time in minute. Changeable in siege.config
 
     // =========================================================
@@ -175,7 +175,7 @@ public class SiegeManager
             _defenderMaxClans = Integer.decode(siegeSettings.getProperty("DefenderMaxClans", "500"));
             _defenderRespawnDelay = Integer.decode(siegeSettings.getProperty("DefenderRespawn", "20000"));
             _flagMaxCount = Integer.decode(siegeSettings.getProperty("MaxFlags", "1"));
-            _siegeClanMinLevel = Integer.decode(siegeSettings.getProperty("SiegeClanMinLevel", "4"));
+            _siegeClanMinLevel = Integer.decode(siegeSettings.getProperty("SiegeClanMinLevel", "5"));
             _siegeLength = Integer.decode(siegeSettings.getProperty("SiegeLength", "120"));
 
             // Siege spawns settings
