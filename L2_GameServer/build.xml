@@ -41,8 +41,16 @@
         </fileset>
     </path>
     
+	<target name="verifyRequirements" 
+		description="Checks if the necessary requirements for building L2J are fulfilled">
+		
+		<available classname="javax.script.ScriptContext" property="JDK6.present"/>
+		<fail unless="JDK6.present" message="JDK 6 or greater is required.">
+		</fail>
+	</target>
+	
     <target name="init"
-    	depends="clean"
+    	depends="clean, verifyRequirements"
         description="Create the output directories.">
 
         <mkdir dir="${build}"/>
@@ -60,8 +68,8 @@
         <javac destdir="${build.classes}"
                optimize="on"
                debug="on"
-               source="1.5"
-               target="1.5"
+               source="1.6"
+               target="1.6"
                nowarn="off">
             <src path="${src}"/>
             <classpath refid="classpath"/>   
@@ -91,14 +99,16 @@
 	</target>
     
 
-    <target name="compile.gcj"
+    <!--
+	<target name="compile.gcj"
             depends="jar"
             description="Build machine executable binary">  
             
         <exec dir="." executable="gcj" failifexecutionfails="false" os="linux:Linux:freebsd:FreeBSD" >
-            <arg line="-O3 ${build.dist}/l2jserver.jar  -o ${build.dist}/l2jserver --main=net.sf.l2j.Server"/>
+            <arg line="-O3 ${build.dist}/l2jserver.jar  -o ${build.dist}/l2jserver - -main=net.sf.l2j.Server"/>
         </exec>
     </target>
+	-->
  
  
     <target name="dist" depends="jar">
