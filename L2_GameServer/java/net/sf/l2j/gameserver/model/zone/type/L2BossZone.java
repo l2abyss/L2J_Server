@@ -41,12 +41,14 @@ public class L2BossZone extends L2ZoneType
     // after reboot/server downtime (outside of their control), within 30 
     // of server restart
     private L2FastList<Integer> _playersAllowed;
+    private int[] _oustLoc = {0,0,0};
     
     public L2BossZone(int id)
     {
         super(id);
         _playerAllowedReEntryTimes = new FastMap<Integer, Long>();
         _playersAllowed = new L2FastList<Integer>();
+        _oustLoc = new int[3];
     }
     
     @Override
@@ -57,14 +59,26 @@ public class L2BossZone extends L2ZoneType
             _zoneName = value;
         }
         
-        if (name.equals("InvadeTime"))
+        else if (name.equals("InvadeTime"))
         {
             _timeInvade = Integer.parseInt(value);
         }
-        if (name.equals("EnabledByDefault"))
+        else if (name.equals("EnabledByDefault"))
         {
         	_enabled = Boolean.parseBoolean(value);
         }
+		else if (name.equals("oustX"))
+		{
+			_oustLoc[0] = Integer.parseInt(value);
+		}
+		else if (name.equals("oustY"))
+		{
+			_oustLoc[1] = Integer.parseInt(value);
+		}
+		else if (name.equals("oustZ"))
+		{
+			_oustLoc[2] = Integer.parseInt(value);
+		}
         else
         {
             super.setParameter(name, value);
@@ -127,7 +141,10 @@ public class L2BossZone extends L2ZoneType
 	                _playersAllowed.remove(_playersAllowed.indexOf(character.getObjectId()));
 	            }
 	            // teleport out all players who attempt "illegal" (re-)entry
-	            player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+	            if (_oustLoc[0] != 0 && _oustLoc[1] != 0 && _oustLoc[2] != 0)
+	            	player.teleToLocation(_oustLoc[0], _oustLoc[1], _oustLoc[2]);
+	            else
+	            	player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
 	        }
     	}
     }
@@ -197,7 +214,10 @@ public class L2BossZone extends L2ZoneType
             return true;
         else
         {
-            player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+        	if (_oustLoc[0] != 0 && _oustLoc[1] != 0 && _oustLoc[2] != 0)
+            	player.teleToLocation(_oustLoc[0], _oustLoc[1], _oustLoc[2]);
+            else
+            	player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
             return false;
         }
      }
@@ -221,7 +241,10 @@ public class L2BossZone extends L2ZoneType
             {
                 L2PcInstance player = (L2PcInstance) character;
                 if (player.isOnline() == 1)
-                    player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+                	if (_oustLoc[0] != 0 && _oustLoc[1] != 0 && _oustLoc[2] != 0)
+    	            	player.teleToLocation(_oustLoc[0], _oustLoc[1], _oustLoc[2]);
+    	            else
+    	            	player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
             }
         }
         _playerAllowedReEntryTimes.clear();
