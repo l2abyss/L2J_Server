@@ -40,6 +40,7 @@ public class L2MotherTreeZone extends L2ZoneType
 		{
 			L2PcInstance player = (L2PcInstance)character;
 
+			// TODO: should be check affected
 			if (player.isInParty())
 			{
 				for (L2PcInstance member : player.getParty().getPartyMembers())

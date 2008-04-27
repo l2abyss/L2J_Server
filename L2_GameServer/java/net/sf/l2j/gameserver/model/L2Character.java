@@ -209,8 +209,8 @@ public abstract class L2Character extends L2Object
 	{
 		switch(zone)
 		{
-			case ZONE_PVP:
-				return (_currentPVPZones > 0);
+			case ZONE_PVP: // also overlap check for peace zones
+				return (_currentPVPZones > 0 && _currentPeaceZones == 0);
 			case ZONE_PEACE:
 				return (_currentPeaceZones > 0);
 			case ZONE_SIEGE:
@@ -240,42 +240,52 @@ public abstract class L2Character extends L2Object
 			case ZONE_PVP:
 				if (state) _currentPVPZones++;
 				else _currentPVPZones--;
+				if (_currentPVPZones < 0) _currentPVPZones = 0;
 				break;
 			case ZONE_PEACE:
 				if (state) _currentPeaceZones++;
 				else _currentPeaceZones--;
+				if (_currentPeaceZones < 0) _currentPeaceZones = 0;
 				break; 
 			case ZONE_SIEGE:
 				if (state) _currentSiegeZones++;
 				else _currentSiegeZones--;
+				if (_currentSiegeZones < 0) _currentSiegeZones = 0;
 				break;
 			case ZONE_MOTHERTREE:
 				if (state) _currentMotherTreeZones++;
 				else _currentMotherTreeZones--;
+				if (_currentMotherTreeZones < 0) _currentMotherTreeZones = 0;
 				break;
 			case ZONE_CLANHALL:
 				if (state) _currentClanHallZones++;
 				else _currentClanHallZones--;
+				if (_currentClanHallZones < 0) _currentClanHallZones = 0;
 				break;
 			case ZONE_UNUSED:
 				if (state) _currentUnusedZones++;
 				else _currentUnusedZones--;
+				if (_currentUnusedZones < 0) _currentUnusedZones = 0;
 				break;
 			case ZONE_NOLANDING:
 				if (state) _currentNoLandingZones++;
 				else _currentNoLandingZones--;
+				if (_currentNoLandingZones < 0) _currentNoLandingZones = 0;
 				break;
 			case ZONE_WATER:
 				if (state) _currentWaterZones++;
 				else _currentWaterZones--;
+				if (_currentWaterZones < 0) _currentWaterZones = 0;
 				break;
 			case ZONE_JAIL:
 				if (state) _currentJailZones++;
 				else _currentJailZones--;
+				if (_currentJailZones < 0) _currentJailZones = 0;
 				break;
 			case ZONE_MONSTERTRACK:
 				if (state) _currentMonsterTrackZones++;
 				else _currentMonsterTrackZones--;
+				if (_currentMonsterTrackZones < 0) _currentMonsterTrackZones = 0;
 				break;
 			default:
 				return;

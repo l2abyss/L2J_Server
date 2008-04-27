@@ -107,6 +107,7 @@ public class L2TownZone extends L2ZoneType
 	@Override
 	protected void onExit(L2Character character)
 	{
+		// TODO: there should be no exit if there was possibly no enter
 		if (!_noPeace) character.setInsideZone(L2Character.ZONE_PEACE, false);
 
 		// if (character instanceof L2PcInstance)
