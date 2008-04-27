@@ -40,6 +40,7 @@ import net.sf.l2j.gameserver.skills.conditions.ConditionGameTime;
 import net.sf.l2j.gameserver.skills.conditions.ConditionLogicAnd;
 import net.sf.l2j.gameserver.skills.conditions.ConditionLogicNot;
 import net.sf.l2j.gameserver.skills.conditions.ConditionLogicOr;
+import net.sf.l2j.gameserver.skills.conditions.ConditionPlayerCp;
 import net.sf.l2j.gameserver.skills.conditions.ConditionPlayerHp;
 import net.sf.l2j.gameserver.skills.conditions.ConditionPlayerHpPercentage;
 import net.sf.l2j.gameserver.skills.conditions.ConditionPlayerLevel;
@@ -417,6 +418,11 @@ abstract class DocumentBase
             {
                 int hp = Integer.decode(getValue(a.getNodeValue(), null));
                 cond = joinAnd(cond, new ConditionPlayerMp(hp));
+            }
+            else if ("cp".equalsIgnoreCase(a.getNodeName()))
+            {
+            	int cp = Integer.decode(getValue(a.getNodeValue(), null));
+            	cond = joinAnd(cond, new ConditionPlayerCp(cp));
             }
             else if ("battle_force".equalsIgnoreCase(a.getNodeName()))
             {

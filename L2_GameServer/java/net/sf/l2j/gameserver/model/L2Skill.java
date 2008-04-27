@@ -402,6 +402,7 @@ public abstract class L2Skill
     private final int _mpConsume;
     private final int _mpInitialConsume;
     private final int _hpConsume;
+    private final int _cpConsume;
     
     private final int _targetConsume;
     private final int _targetConsumeId;
@@ -531,6 +532,7 @@ public abstract class L2Skill
         _mpConsume = set.getInteger("mpConsume", 0);
         _mpInitialConsume = set.getInteger("mpInitialConsume", 0);
         _hpConsume = set.getInteger("hpConsume", 0);
+        _cpConsume = set.getInteger("cpConsume", 0);
         _targetConsume = set.getInteger("targetConsumeCount", 0);
         _targetConsumeId = set.getInteger("targetConsumeId", 0);
         _itemConsume = set.getInteger("itemConsumeCount", 0);
@@ -829,6 +831,14 @@ public abstract class L2Skill
     public final int getCastRange()
     {
         return _castRange;
+    }
+    
+    /**
+     * @return Returns the cpConsume;
+     */
+    public final int getCpConsume()
+    {
+    	return _cpConsume;
     }
 
     /**
