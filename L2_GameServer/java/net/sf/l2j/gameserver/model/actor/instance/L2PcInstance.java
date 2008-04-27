@@ -7726,17 +7726,6 @@ public final class L2PcInstance extends L2PlayableInstance
             sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
-        
-        // Check if the caster has enough CP
-        if (getCurrentCp() <= skill.getCpConsume())
-        {
-        	// send a System Message to the caster
-        	sendPacket(new SystemMessage(SystemMessageId.S1).addString("Not enough CP"));
-        	
-        	// Send a Server->Client packet ActionFailed to the L2PcInstance
-        	sendPacket(ActionFailed.STATIC_PACKET);
-        	return;
-        }
 
         // Check if the spell consummes an Item
         if (skill.getItemConsume() > 0)

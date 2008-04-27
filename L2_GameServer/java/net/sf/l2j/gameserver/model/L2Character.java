@@ -443,7 +443,7 @@ public abstract class L2Character extends L2Object
 			getPet().setFollowStatus(false);
 			getPet().teleToLocation(getPosition().getX() + Rnd.get(-100,100), getPosition().getY() + Rnd.get(-100,100), getPosition().getZ(), false);
 			getPet().setFollowStatus(true);
-			getPet().sendPacket(new PetInfo(getPet()));
+			sendPacket(new PetInfo(getPet()));
 			getPet().updateEffectIcons(true);
 		}
 
@@ -6002,6 +6002,7 @@ public abstract class L2Character extends L2Object
 				
 				getStatus().reduceCp((int)consumeCp);
 				su.addAttribute(StatusUpdate.CUR_CP, (int) getCurrentCp());
+				isSendStatus = true;
 			}
 
 			// Send a Server->Client packet StatusUpdate with MP modification to the L2PcInstance
