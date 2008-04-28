@@ -55,9 +55,9 @@ public final class L2Weapon  extends L2Item
 	private final int _atkReuse;
 	private final int _mpConsume;
 	private final int _mDam;
-    private L2Skill _itemSkill = null;     // for passive skill
     private L2Skill _enchant4Skill = null; // skill that activates when item is enchanted +4 (for duals)
     private final int _changeWeaponId;
+    private final String[] _skill;
 
     // Attached skills for Special Abilities
     protected L2Skill[] _skillsOnCast;
@@ -94,14 +94,11 @@ public final class L2Weapon  extends L2Item
 		_atkReuse        = set.getInteger("atk_reuse", (type==L2WeaponType.BOW) ? 1500 : (type==L2WeaponType.CROSSBOW) ? 1200 : 0);
 		_mpConsume       = set.getInteger("mp_consume");
 		_mDam            = set.getInteger("m_dam");
+		
+		_skill = set.getString("skill").split(";");
 
-		int sId = set.getInteger("item_skill_id");
-		int sLv = set.getInteger("item_skill_lvl");
-		if(sId > 0 && sLv > 0)
-			_itemSkill = SkillTable.getInstance().getInfo(sId,sLv);
-
-		sId = set.getInteger("enchant4_skill_id");
-		sLv = set.getInteger("enchant4_skill_lvl");
+		int sId = set.getInteger("enchant4_skill_id");
+		int sLv = set.getInteger("enchant4_skill_lvl");
 		if(sId > 0 && sLv > 0)
 			_enchant4Skill = SkillTable.getInstance().getInfo(sId, sLv);
 
@@ -268,9 +265,9 @@ public final class L2Weapon  extends L2Item
 	 * Returns passive skill linked to that weapon
 	 * @return
 	 */
-	public L2Skill getSkill()
+	public String[] getSkills()
 	{
-		return _itemSkill;
+		return _skill;
 	}
 
  	/**

@@ -17,10 +17,8 @@ package net.sf.l2j.gameserver.templates;
 import java.util.List;
 
 import javolution.util.FastList;
-import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
-import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.skills.funcs.FuncTemplate;
@@ -37,7 +35,7 @@ public final class L2Armor extends L2Item
 	private final int _mDef;
 	private final int _mpBonus;
 	private final int _hpBonus;
-	private L2Skill _itemSkill = null; // for passive skill
+	private final String[] _skill;
 
     /**
      * Constructor for Armor.<BR><BR>
@@ -58,10 +56,7 @@ public final class L2Armor extends L2Item
 		_mpBonus       = set.getInteger("mp_bonus", 0);
 		_hpBonus       = set.getInteger("hp_bonus", 0);
 
-		int sId = set.getInteger("item_skill_id");
-		int sLv = set.getInteger("item_skill_lvl");
-		if(sId > 0 && sLv > 0)
-			_itemSkill = SkillTable.getInstance().getInfo(sId,sLv);
+		_skill = set.getString("skill").split(";");
 	}
 
 	/**
@@ -133,9 +128,9 @@ public final class L2Armor extends L2Item
 	 * Returns passive skill linked to that armor
 	 * @return
 	 */
-	public L2Skill getSkill()
+	public String[] getSkills()
 	{
-		return _itemSkill;
+		return _skill;
 	}
 
 	/**

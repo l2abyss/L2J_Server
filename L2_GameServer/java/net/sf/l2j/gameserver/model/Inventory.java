@@ -75,6 +75,10 @@ public abstract class Inventory extends ItemContainer
     public static final int PAPERDOLL_RBRACELET = 22;
     public static final int PAPERDOLL_LBRACELET = 23;
     public static final int PAPERDOLL_DECO = 24;
+    
+    int skill_Id;
+    int skillLvl;
+    L2Skill _itemSkill = null;
 
     //Speed percentage mods
     public static final double MAX_ARMOR_WEIGHT = 12000;
@@ -251,7 +255,6 @@ public abstract class Inventory extends ItemContainer
 	        else
 	        	return;
 
-	        L2Skill passiveSkill = null;
 	        L2Skill enchant4Skill = null;
 
 			L2Item it = item.getItem();
@@ -262,17 +265,57 @@ public abstract class Inventory extends ItemContainer
                 if (item.isAugmented() && getOwner() instanceof L2PcInstance)
                     item.getAugmentation().removeBonus((L2PcInstance)getOwner());
 			    
-			    passiveSkill = ((L2Weapon)it).getSkill();
-				enchant4Skill= ((L2Weapon)it).getEnchant4Skill();
+                final String[] _skill = ((L2Weapon)it).getSkills();
+                
+			    if (_skill != null)
+				{
+					for (String skillInfo : _skill)
+					{
+						String[] skill = skillInfo.split("-");
+						
+						if (skill != null && skill.length == 2)
+						{
+							skill_Id = Integer.parseInt(skill[0]);
+							skillLvl = Integer.parseInt(skill[1]);
+							if (skill_Id > 0 && skillLvl > 0)
+								_itemSkill = SkillTable.getInstance().getInfo(skill_Id, skillLvl);
+							
+							if (_itemSkill != null)
+							{
+					    		player.removeSkill(_itemSkill, false);
+					    		player.sendSkillList(); 
+							}
+						}
+					}
+				}
 			}
 			else if(it instanceof L2Armor)
-				passiveSkill = ((L2Armor)it).getSkill();
-
-			if(passiveSkill != null)
 			{
-				player.removeSkill(passiveSkill, false);
-				player.sendSkillList();
+				final String[] _skill = ((L2Armor)it).getSkills();
+                
+			    if (_skill != null)
+				{
+					for (String skillInfo : _skill)
+					{
+						String[] skill = skillInfo.split("-");
+						
+						if (skill != null && skill.length == 2)
+						{
+							skill_Id = Integer.parseInt(skill[0]);
+							skillLvl = Integer.parseInt(skill[1]);
+							if (skill_Id > 0 && skillLvl > 0)
+								_itemSkill = SkillTable.getInstance().getInfo(skill_Id, skillLvl);
+							
+							if (_itemSkill != null)
+							{
+					    		player.removeSkill(_itemSkill, false);
+					    		player.sendSkillList(); 
+							}
+						}
+					}
+				}
 			}
+			
 			if(enchant4Skill != null)
 			{
 				player.removeSkill(enchant4Skill, false);
@@ -290,7 +333,6 @@ public abstract class Inventory extends ItemContainer
 	        else 
 	        	return;
 	        
-			L2Skill passiveSkill = null;
 			L2Skill enchant4Skill = null;
 			
 			L2Item it = item.getItem();
@@ -300,28 +342,69 @@ public abstract class Inventory extends ItemContainer
                 // Apply augmentation bonuses on equip
                 if (item.isAugmented() && getOwner() instanceof L2PcInstance)
                     item.getAugmentation().applyBonus((L2PcInstance)getOwner());
-
-			    passiveSkill = ((L2Weapon)it).getSkill();
+			    
+                final String[] _skill = ((L2Weapon)it).getSkills();
+                
+			    if (_skill != null)
+				{
+					for (String skillInfo : _skill)
+					{
+						String[] skill = skillInfo.split("-");
+						
+						if (skill != null && skill.length == 2)
+						{
+							skill_Id = Integer.parseInt(skill[0]);
+							skillLvl = Integer.parseInt(skill[1]);
+							if (skill_Id > 0 && skillLvl > 0)
+								_itemSkill = SkillTable.getInstance().getInfo(skill_Id, skillLvl);
+							
+							if (_itemSkill != null)
+							{
+					    		player.addSkill(_itemSkill, false);
+					    		player.sendSkillList(); 
+							}
+						}
+					}
+				}
 				
 				if(item.getEnchantLevel() >= 4)
 					enchant4Skill= ((L2Weapon)it).getEnchant4Skill();
+				
+				if(enchant4Skill != null)
+				{
+					player.addSkill(enchant4Skill, false);
+					player.sendSkillList(); 
+				}
 			}
 			else if(it instanceof L2Armor)
-				passiveSkill = ((L2Armor)it).getSkill();
-
-			if(passiveSkill != null)
 			{
-	    		player.addSkill(passiveSkill, false);
-	    		player.sendSkillList(); 
+				final String[] _skill = ((L2Armor)it).getSkills();
+                
+			    if (_skill != null)
+				{
+					for (String skillInfo : _skill)
+					{
+						String[] skill = skillInfo.split("-");
+						
+						if (skill != null && skill.length == 2)
+						{
+							skill_Id = Integer.parseInt(skill[0]);
+							skillLvl = Integer.parseInt(skill[1]);
+							if (skill_Id > 0 && skillLvl > 0)
+								_itemSkill = SkillTable.getInstance().getInfo(skill_Id, skillLvl);
+							
+							if (_itemSkill != null)
+							{
+					    		player.addSkill(_itemSkill, false);
+					    		player.sendSkillList(); 
+							}
+						}
+					}
+				}
 			}
-			if(enchant4Skill != null)
-			{
-				player.addSkill(enchant4Skill, false);
-				player.sendSkillList(); 
-			}
-
     	}
     }
+    
     final class ArmorSetListener implements PaperdollListener
     {
     	public void notifyEquiped(int slot, L2ItemInstance item)
@@ -368,7 +451,7 @@ public abstract class Inventory extends ItemContainer
     	    		}
     	    		if(armorSet.isEnchanted6(player)) // has all parts of set enchanted to 6 or more
     	    		{
-    	    			int skillId = armorSet.getEnchant6skillId();
+    	    			final int skillId = armorSet.getEnchant6skillId();
     	    			if(skillId > 0)
     	    			{
 	        	    		L2Skill skille = SkillTable.getInstance().getInfo(skillId,1);
