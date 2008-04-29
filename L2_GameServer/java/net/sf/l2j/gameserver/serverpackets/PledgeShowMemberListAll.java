@@ -82,7 +82,7 @@ public class PledgeShowMemberListAll extends L2GameServerPacket
 		SubPledge[] subPledge = _clan.getAllSubPledges();
 		for (int i = 0; i<subPledge.length; i++)
 		{
-			_activeChar.sendPacket(new PledgeReceiveSubPledgeCreated(subPledge[i]));
+			_activeChar.sendPacket(new PledgeReceiveSubPledgeCreated(subPledge[i], _clan));
 		}
 
 		for (L2ClanMember m : _members)
@@ -118,7 +118,7 @@ public class PledgeShowMemberListAll extends L2GameServerPacket
 		writeD(_clan.getAllyId());
 		writeS(_clan.getAllyName());
 		writeD(_clan.getAllyCrestId());
-        writeD(_clan.isAtWar());// new c3
+        writeD(_clan.isAtWar()? 0 : 1);// new c3
 		writeD(_clan.getSubPledgeMembersCount(_pledgeType));
 
 		for (L2ClanMember m : _members)

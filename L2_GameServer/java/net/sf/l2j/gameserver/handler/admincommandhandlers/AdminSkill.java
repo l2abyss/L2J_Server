@@ -477,7 +477,7 @@ public class AdminSkill implements IAdminCommandHandler {
 				activeChar.sendMessage("You gave the Clan Skill: "+skillname+" to the clan "+player.getClan().getName()+".");
 				
 				activeChar.getClan().broadcastToOnlineMembers(new PledgeSkillList(activeChar.getClan()));  
-				for(L2PcInstance member: activeChar.getClan().getOnlineMembers(""))  
+				for(L2PcInstance member: activeChar.getClan().getOnlineMembers(0))  
 				{  
 					member.sendSkillList();  
 				}  

@@ -59,7 +59,7 @@ public class AllyInfo extends L2GameServerPacket
 		for (L2Clan clan : ClanTable.getInstance().getClans()){
 		    if (clan.getAllyId() == _cha.getAllyId()){
 			clancount++;
-			online+=clan.getOnlineMembers("").length;
+			online+=clan.getOnlineMembers(0).length;
 			count+=clan.getMembers().length;
 		    }
 		}

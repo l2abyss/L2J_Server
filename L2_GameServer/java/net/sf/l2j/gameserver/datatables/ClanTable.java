@@ -233,7 +233,7 @@ public class ClanTable
 
 	    for (L2ClanMember member : clan.getMembers())
 	    {
-	    	clan.removeClanMember(member.getName(), 0);
+	    	clan.removeClanMember(member.getObjectId(), 0);
 	    }
 
 		_clans.remove(clanId);

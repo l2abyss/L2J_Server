@@ -481,7 +481,7 @@ public final class L2VillageMasterInstance extends L2FolkInstance
             player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISPERSE_THE_CLANS_IN_ALLY));
             return;
         }
-        if (clan.isAtWar() != 0)
+        if (clan.isAtWar())
         {
             player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_WAR));
             return;
@@ -638,7 +638,9 @@ public final class L2VillageMasterInstance extends L2FolkInstance
                 return;
             }
 
-        if (clan.createSubPledge(player, pledgeType, leaderName, clanName) == null)
+        int leaderId = pledgeType != L2Clan.SUBUNIT_ACADEMY ? clan.getClanMember(leaderName).getObjectId() : 0;
+        
+        if (clan.createSubPledge(player, pledgeType, leaderId, clanName) == null)
             return;
 
         SystemMessage sm;
@@ -721,7 +723,9 @@ public final class L2VillageMasterInstance extends L2FolkInstance
             return;
         }
 
-        subPledge.setLeaderName(leaderName);
+        int leaderId = clan.getClanMember(leaderName).getObjectId();
+        
+        subPledge.setLeaderId(leaderId);
         clan.updateSubPledgeInDB(subPledge.getId());
         L2ClanMember leaderSubPledge = clan.getClanMember(leaderName);
         leaderSubPledge.getPlayerInstance().setPledgeClass(leaderSubPledge.calculatePledgeClass(leaderSubPledge.getPlayerInstance()));

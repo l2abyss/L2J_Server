@@ -338,7 +338,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 
 				player.getClan().broadcastToOnlineMembers(new PledgeSkillList(player.getClan()));
 
-				for(L2PcInstance member: player.getClan().getOnlineMembers("")) 
+				for(L2PcInstance member: player.getClan().getOnlineMembers(0)) 
 	            {
 					member.sendSkillList();
 	            }

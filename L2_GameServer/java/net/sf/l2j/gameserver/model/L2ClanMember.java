@@ -42,6 +42,7 @@ public class L2ClanMember
 	private int _apprentice;
 	private int _sponsor;
 
+	
 	public L2ClanMember(L2Clan clan, String name, int level, int classId, int objectId, int pledgeType, int powerGrade, String title, boolean sex, int raceOrdinal)
 	{
 		if(clan == null)
@@ -59,6 +60,22 @@ public class L2ClanMember
 		_sex = sex;
         _raceOrdinal = raceOrdinal;
 
+	}
+	
+	public L2ClanMember(L2Clan clan, L2PcInstance player)
+	{
+		_clan = clan;
+		_name = player.getName();
+		_level = player.getLevel();
+		_classId = player.getClassId().getId();
+		_objectId = player.getObjectId();
+		_pledgeType = player.getPledgeType();
+		_powerGrade = player.getPowerGrade();
+		_title = player.getTitle();
+		_sponsor =  0;
+		_apprentice = 0;
+		_sex = player.getAppearance().getSex();
+		_raceOrdinal = player.getRace().ordinal();
 	}
 
 	public L2ClanMember(L2PcInstance player)
@@ -367,7 +384,7 @@ public class L2ClanMember
                            if (player.isClanLeader())
                                pledgeClass = 5;
                            else
-                               switch (clan.getLeaderSubPledge(player.getName()))
+                               switch (clan.getLeaderSubPledge(player.getObjectId()))
                                {
                                    case 100:
                                    case 200:
@@ -401,7 +418,7 @@ public class L2ClanMember
                            if (player.isClanLeader())
                                pledgeClass = 7;
                            else
-                               switch (clan.getLeaderSubPledge(player.getName()))
+                               switch (clan.getLeaderSubPledge(player.getObjectId()))
                                {
                                    case 100:
                                    case 200:
@@ -441,7 +458,7 @@ public class L2ClanMember
                            if (player.isClanLeader())
                                pledgeClass = 8;
                            else
-                               switch (clan.getLeaderSubPledge(player.getName()))
+                               switch (clan.getLeaderSubPledge(player.getObjectId()))
                                {
                                    case 100:
                                    case 200:
