@@ -215,7 +215,6 @@ public abstract class L2Skill
     	
     	// Cancel
     	CANCEL,
-    	CANCEL_DEBUFF,
     	MAGE_BANE,
     	WARRIOR_BANE,
     	NEGATE,
