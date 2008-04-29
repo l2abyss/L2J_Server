@@ -79,7 +79,9 @@ public class Potions implements IItemHandler
 				//elixir of Strength
 				8628, 8629, 8630, 8631, 8632, 8633,
 				//elixir of cp
-				8634, 8635, 8636, 8637, 8638, 8639};
+				8634, 8635, 8636, 8637, 8638, 8639,
+				// Endeavor Potion
+				733};
 
 	public synchronized void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
@@ -126,6 +128,9 @@ public class Potions implements IItemHandler
 			case 727: // _healing_potion, xml: 2032
 				if (!isEffectReplaceable(activeChar, L2Effect.EffectType.HEAL_OVER_TIME, itemId)) return;
 				res = usePotion(activeChar, 2032, 1);
+				break;
+			case 733: // Endeavor Potion, xml: 2010
+				res = usePotion(activeChar, 2010, 1);
 				break;
 			case 734: // quick_step_potion, xml: 2011
 				res = usePotion(activeChar, 2011, 1);
