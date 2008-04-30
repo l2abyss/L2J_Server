@@ -607,6 +607,17 @@ public abstract class L2Character extends L2Object
 	}
 
 	/**
+	 * Not Implemented.<BR><BR>
+	 *
+	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <li> L2PcInstance</li><BR><BR>
+	 */
+	public void sendMessage(@SuppressWarnings("unused") String text)
+	{
+		// default implementation
+	}
+
+	/**
 	 * Teleport a L2Character and its pet if necessary.<BR><BR>
 	 *
 	 * <B><U> Actions</U> :</B><BR><BR>
@@ -6257,7 +6268,7 @@ public abstract class L2Character extends L2Object
 					{
 						if (activeWeapon.getSkillEffects(this, target, skill).length > 0 && this instanceof L2PcInstance)
 						{
-							sendPacket(SystemMessage.sendString("Target affected by weapon special ability!"));
+							sendMessage("Target affected by weapon special ability!");
 						}
 					}
 				}

@@ -60,7 +60,7 @@ public final class RequestFriendList extends L2GameClientPacket
 			ResultSet rset = statement.executeQuery();
 
 			//======<Friend List>======
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.FRIEND_LIST_HEAD));
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.FRIEND_LIST_HEADER));
 
             L2PcInstance friend = null;
 			while (rset.next())
@@ -86,7 +86,7 @@ public final class RequestFriendList extends L2GameClientPacket
 			}
 
 			//=========================
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.FRIEND_LIST_FOOT));
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.FRIEND_LIST_FOOTER));
 			sm = null;
 			rset.close();
 			statement.close();

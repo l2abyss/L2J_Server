@@ -135,7 +135,8 @@ public class SummonFriend implements ISkillHandler
                     // Check for the the target's Inside Boss Zone
                     if (GrandBossManager.getInstance().getZone(targetChar) != null && !targetChar.isGM())
                     {
-                        activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_USE_SUMMON_SKILL_ON_SELECTED_TARGET));
+                        // SystemMessage doesn't exist?!
+                        activeChar.sendMessage("Cant summon target inside boss zone.");
                     	continue;
                     }
 
@@ -172,7 +173,7 @@ public class SummonFriend implements ISkillHandler
                         if(skill.getTargetConsume() != 0)
                     	targetChar.getInventory().destroyItemByItemId("Consume", skill.getTargetConsumeId(), skill.getTargetConsume(), targetChar, activeChar);
                     	
-                    	targetChar.sendPacket(SystemMessage.sendString("You are summoned to a party member."));
+                    	targetChar.sendMessage("You are summoned to a party member.");
 
                     	targetChar.teleToLocation(activeChar.getX(),activeChar.getY(),activeChar.getZ(), true);
                     }

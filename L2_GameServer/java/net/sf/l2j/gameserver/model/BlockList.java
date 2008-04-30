@@ -131,7 +131,7 @@ public class BlockList
     {
         for (String playerName : listOwner.getBlockList().getBlockList())
         {
-            listOwner.sendPacket(new SystemMessage(SystemMessageId.S1_S2).addString(playerName));
+            listOwner.sendMessage(playerName);
         }
     }
 }

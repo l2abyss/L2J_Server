@@ -1350,7 +1350,7 @@ public class L2Clan
         		((getReputationScore() < 5000 && pledgeType < L2Clan.SUBUNIT_KNIGHT1) ||
         		(getReputationScore() < 10000 && pledgeType > L2Clan.SUBUNIT_ROYAL2)))
         {
-        	SystemMessage sp = new SystemMessage(SystemMessageId.CLAN_REPUTATION_SCORE_IS_TOO_LOW);
+        	SystemMessage sp = new SystemMessage(SystemMessageId.THE_CLAN_REPUTATION_SCORE_IS_TOO_LOW);
         	player.sendPacket(sp);
         	return null;
         }
@@ -2075,7 +2075,7 @@ public class L2Clan
 	                    sp.addNumber(500000);
 	                    player.sendPacket(sp);
                         sp = null;
-                        SystemMessage sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
+                        SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
                         sm.addItemName(1419);
                         sm.addNumber(1);
                         player.sendPacket(sm);
@@ -2098,7 +2098,7 @@ public class L2Clan
 	                    sp.addNumber(1400000);
 	                    player.sendPacket(sp);
                         sp = null;
-                        SystemMessage sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
+                        SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
                         sm.addItemName(3874);
                         sm.addNumber(1);
                         player.sendPacket(sm);
@@ -2121,7 +2121,7 @@ public class L2Clan
 	                    sp.addNumber(3500000);
 	                    player.sendPacket(sp);
                         sp = null;
-                        SystemMessage sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
+                        SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
                         sm.addItemName(3870);
                         sm.addNumber(1);
                         player.sendPacket(sm);
@@ -2180,7 +2180,7 @@ public class L2Clan
                 		cr.addNumber(40000);
                 		player.sendPacket(cr);
                 		cr = null;
-                		SystemMessage sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
+                		SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
                         sm.addItemName(9910);
                         sm.addNumber(150);
                         player.sendPacket(sm);
@@ -2200,7 +2200,7 @@ public class L2Clan
                 		cr.addNumber(40000);
                 		player.sendPacket(cr);
                 		cr = null;
-                		SystemMessage sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
+                		SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
                         sm.addItemName(9911);
                         sm.addNumber(5);
                         player.sendPacket(sm);

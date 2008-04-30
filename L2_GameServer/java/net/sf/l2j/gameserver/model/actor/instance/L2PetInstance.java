@@ -336,10 +336,10 @@ public class L2PetInstance extends L2Summon
 
 		if (sendMessage)
 		{
-            SystemMessage sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
-            sm.addNumber(count);
-            sm.addItemName(item.getItemId());
-            getOwner().sendPacket(sm);
+			SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+			sm.addItemName(item.getItemId());
+			sm.addNumber(count);
+			getOwner().sendPacket(sm);
 		}
         return true;
     }
@@ -371,9 +371,9 @@ public class L2PetInstance extends L2Summon
 
 		if (sendMessage)
 		{
-            SystemMessage sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
-            sm.addNumber(count);
+            SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
             sm.addItemName(itemId);
+            sm.addNumber(count);
             getOwner().sendPacket(sm);
 		}
 

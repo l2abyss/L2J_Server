@@ -22,8 +22,6 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.templates.StatsSet;
 
@@ -60,9 +58,7 @@ public class L2SkillElemental extends L2Skill {
         {
 			if (weaponInst == null)
 			{
-				SystemMessage sm2 = new SystemMessage(SystemMessageId.S1_S2);
-				sm2.addString("You must equip one weapon before cast spell.");
-				activeChar.sendPacket(sm2);
+				activeChar.sendMessage("You must equip your weapon before casting a spell.");
 				return;
 			}
 		}
@@ -132,10 +128,9 @@ public class L2SkillElemental extends L2Skill {
 					}
 				}
 			}
-			if (!charged){
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-				sm.addString("Target is not charged by elements.");
-				activeChar.sendPacket(sm);
+			if (!charged)
+			{
+				activeChar.sendMessage("Target is not charged by elements.");
 				continue;
 			}
 

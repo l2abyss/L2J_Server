@@ -38,8 +38,6 @@ import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.model.entity.FortSiege;
-import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 
 public class FortSiegeManager
 {
@@ -97,20 +95,21 @@ public class FortSiegeManager
     {
         if (activeChar == null || !(activeChar instanceof L2PcInstance)) return false;
 
-        SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
+        String text = "";
         L2PcInstance player = (L2PcInstance)activeChar;
         Fort fort = FortManager.getInstance().getFort(player);
 
         if (fort == null || fort.getFortId() <= 0)
-            sm.addString("You must be on fort ground to summon this");
+            text = "You must be on fort ground to summon this";
         else if (!fort.getSiege().getIsInProgress())
-            sm.addString("You can only summon this during a siege.");
+            text = "You can only summon this during a siege.";
         else if (player.getClanId() != 0 && fort.getSiege().getAttackerClan(player.getClanId()) == null)
-            sm.addString("You can only summon this as a registered attacker.");
+            text = "You can only summon this as a registered attacker.";
         else
             return true;
 
-        if (!isCheckOnly) {player.sendPacket(sm);}
+        if (!isCheckOnly)
+            player.sendMessage(text);
         return false;
     }
 

@@ -93,9 +93,7 @@ public class Disablers implements ISkillHandler
         {
             if (weaponInst == null && skill.isOffensive())
             {
-                SystemMessage sm2 = new SystemMessage(SystemMessageId.S1_S2);
-                sm2.addString("You must equip a weapon before casting a spell.");
-                activeChar.sendPacket(sm2);
+                activeChar.sendMessage("You must equip a weapon before casting a spell.");
                 return;
             }
         }

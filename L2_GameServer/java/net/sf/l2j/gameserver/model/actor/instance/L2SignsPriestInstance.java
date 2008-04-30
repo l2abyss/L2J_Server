@@ -193,9 +193,9 @@ public class L2SignsPriestInstance extends L2FolkInstance
                                                                    SevenSigns.CERTIFICATE_OF_APPROVAL_ID,
                                                                    1, this, false))
                                     {
-                                        sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
-                                        sm.addNumber(1);
+                                        sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
                                         sm.addItemName(SevenSigns.CERTIFICATE_OF_APPROVAL_ID);
+                                        sm.addNumber(1);
                                         player.sendPacket(sm);
                                         allowJoinDawn = true;
                                     }
@@ -203,7 +203,7 @@ public class L2SignsPriestInstance extends L2FolkInstance
                                                                 SevenSigns.ADENA_JOIN_DAWN_COST, this,
                                                                 false))
                                     {
-                                        sm = new SystemMessage(SystemMessageId.DISSAPEARED_ADENA);
+                                        sm = new SystemMessage(SystemMessageId.DISAPPEARED_ADENA);
                                         sm.addNumber(SevenSigns.ADENA_JOIN_DAWN_COST);
                                         player.sendPacket(sm);
                                         allowJoinDawn = true;

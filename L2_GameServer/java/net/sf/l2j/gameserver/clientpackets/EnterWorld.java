@@ -261,36 +261,22 @@ public class EnterWorld extends L2GameClientPacket
         
         sendPacket(new FriendList(activeChar));
         
-        SystemMessage sm = new SystemMessage(SystemMessageId.WELCOME_TO_LINEAGE);
-        sendPacket(sm);
+        sendPacket(new SystemMessage(SystemMessageId.WELCOME_TO_LINEAGE));
 
-        sm = new SystemMessage(SystemMessageId.S1_S2);
-        sm.addString(getText("VGhpcyBzZXJ2ZXIgdXNlcyBMMkosIGEgcHJvamVjdCBmb3VuZGVkIGJ5IEwyQ2hlZg==\n")); 
-
-        sendPacket(sm);
-        sm = new SystemMessage(SystemMessageId.S1_S2);
-        sm.addString(getText("YW5kIGRldmVsb3BlZCBieSB0aGUgTDJKIERldiBUZWFtIGF0IGwyanNlcnZlci5jb20=\n")); 
-
-        sendPacket(sm);
+        activeChar.sendMessage(getText("VGhpcyBzZXJ2ZXIgdXNlcyBMMkosIGEgcHJvamVjdCBmb3VuZGVkIGJ5IEwyQ2hlZg==\n")); 
+        activeChar.sendMessage(getText("YW5kIGRldmVsb3BlZCBieSB0aGUgTDJKIERldiBUZWFtIGF0IGwyanNlcnZlci5jb20=\n")); 
 
         if (Config.SERVER_VERSION != null)
         {
-            sm = new SystemMessage(SystemMessageId.S1_S2);
-            sm.addString(getText("TDJKIFNlcnZlciBWZXJzaW9uOg==")+"      "+Config.SERVER_VERSION);
-            sendPacket(sm);
+            activeChar.sendMessage(getText("TDJKIFNlcnZlciBWZXJzaW9uOg==")+"      "+Config.SERVER_VERSION);
         }
 
         if (Config.DATAPACK_VERSION != null)
         {
-            sm = new SystemMessage(SystemMessageId.S1_S2);
-            sm.addString(getText("TDJKIERhdGFwYWNrIFZlcnNpb246")+"  "+Config.DATAPACK_VERSION);
-            sendPacket(sm);
+            activeChar.sendMessage(getText("TDJKIERhdGFwYWNrIFZlcnNpb246")+"  "+Config.DATAPACK_VERSION);
         }
-        sm = null;
 
-        sm = new SystemMessage(SystemMessageId.S1_S2);
-        sm.addString(getText("Q29weXJpZ2h0IDIwMDQtMjAwOA==\n"));
-        sendPacket(sm);
+        activeChar.sendMessage(getText("Q29weXJpZ2h0IDIwMDQtMjAwOA==\n"));
 
         SevenSigns.getInstance().sendCurrentPeriodMsg(activeChar);
         Announcements.getInstance().showAnnouncements(activeChar);

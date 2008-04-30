@@ -38,12 +38,10 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.scripting.ManagedScript;
 import net.sf.l2j.gameserver.scripting.ScriptManager;
 import net.sf.l2j.gameserver.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 import net.sf.l2j.util.Rnd;
 
@@ -390,21 +388,22 @@ public class Quest extends ManagedScript
 	 * @return boolean
 	 */
 	private boolean showResult(L2PcInstance player, String res) {
-		if (res == null)
+		if (res == null || res.equals(""))
 			return true;
-		if (res.endsWith(".htm")) {
+		if (res.endsWith(".htm"))
+		{
 			showHtmlFile(player, res);
 		}
-		else if (res.startsWith("<html>")) {
+		else if (res.startsWith("<html>"))
+		{
 			NpcHtmlMessage npcReply = new NpcHtmlMessage(5);
 			npcReply.setHtml(res);
 			player.sendPacket(npcReply);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 		}
-		else {
-			SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-			sm.addString(res);
-			player.sendPacket(sm);
+		else
+		{
+			player.sendMessage(res);
 		}
 		return false;
 	}

@@ -1562,8 +1562,9 @@ public class L2NpcInstance extends L2Character
             if (item == null || item.getItemId() != 4442 || item.getCustomType1() >= lotonumber) return;
             int[] check = Lottery.getInstance().checkTicket(item);
             
-            sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
+            sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
             sm.addItemName(4442);
+            sm.addNumber(1);
             player.sendPacket(sm);
             
             int adena = check[1];

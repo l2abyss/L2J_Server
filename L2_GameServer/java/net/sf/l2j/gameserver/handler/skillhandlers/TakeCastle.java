@@ -23,8 +23,6 @@ import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2ArtefactInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
-import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.util.Util;
 
 /**
@@ -79,26 +77,27 @@ public class TakeCastle implements ISkillHandler
         if (activeChar == null || !(activeChar instanceof L2PcInstance))
             return false;
 
-        SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
+        String text = "";
         L2PcInstance player = (L2PcInstance)activeChar;
 
         if (castle == null || castle.getCastleId() <= 0)
-            sm.addString("You must be on castle ground to use this skill");
+            text = "You must be on castle ground to use this skill";
         else if (player.getTarget() == null && !(player.getTarget() instanceof L2ArtefactInstance))
-            sm.addString("You can only use this skill on an artifact");
+            text = "You can only use this skill on an artifact";
         else if (!castle.getSiege().getIsInProgress())
-            sm.addString("You can only use this skill during a siege.");
+            text = "You can only use this skill during a siege.";
         else if (!Util.checkIfInRange(200, player, player.getTarget(), true))
-            sm.addString("You are not in range of the artifact.");
+            text = "You are not in range of the artifact.";
         else if (castle.getSiege().getAttackerClan(player.getClan()) == null)
-            sm.addString("You must be an attacker to use this skill");
+            text = "You must be an attacker to use this skill";
         else
         {
             if (!isCheckOnly) castle.getSiege().announceToPlayer("Clan " + player.getClan().getName() + " has begun to engrave the ruler.", true);
             return true;
         }
 
-        if (!isCheckOnly) {player.sendPacket(sm);}
+        if (!isCheckOnly)
+            player.sendMessage(text);
         return false;
     }
 }

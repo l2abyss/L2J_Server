@@ -52,7 +52,7 @@ public final class SystemMessage extends L2GameServerPacket
 
  	public static SystemMessage sendString(String msg)
 	{
- 		SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
+ 		SystemMessage sm = new SystemMessage(SystemMessageId.S1);
  		sm.addString(msg);
 
  		return sm;

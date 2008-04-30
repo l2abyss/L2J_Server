@@ -23,8 +23,6 @@ import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2ArtefactInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Fort;
-import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.util.Util;
 
 /**
@@ -79,26 +77,27 @@ public class TakeFort implements ISkillHandler
         if (activeChar == null || !(activeChar instanceof L2PcInstance))
             return false;
 
-        SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
+        String text = "";
         L2PcInstance player = (L2PcInstance)activeChar;
 
         if (fort == null || fort.getFortId() <= 0)
-            sm.addString("You must be on fort ground to use this skill");
+            text = "You must be on fort ground to use this skill";
         else if (player.getTarget() == null && !(player.getTarget() instanceof L2ArtefactInstance))
-            sm.addString("You can only use this skill on an flagpole");
+            text = "You can only use this skill on an flagpole";
         else if (!fort.getSiege().getIsInProgress())
-            sm.addString("You can only use this skill during a siege.");
+            text = "You can only use this skill during a siege.";
         else if (!Util.checkIfInRange(200, player, player.getTarget(), true))
-            sm.addString("You are not in range of the flagpole.");
+            text = "You are not in range of the flagpole.";
         else if (fort.getSiege().getAttackerClan(player.getClan()) == null)
-            sm.addString("You must be an attacker to use this skill");
+            text = "You must be an attacker to use this skill";
         else
         {
             if (!isCheckOnly) fort.getSiege().announceToPlayer("Clan " + player.getClan().getName() + " has begun to raise flag.", true);
             return true;
         }
 
-        if (!isCheckOnly) {player.sendPacket(sm);}
+        if (!isCheckOnly)
+            player.sendMessage(text);
         return false;
     }
 }

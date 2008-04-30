@@ -155,15 +155,15 @@ public class AdminMenu implements IAdminCommandHandler
 				st.nextToken();
 				String player = st.nextToken();
 				L2PcInstance plyr = L2World.getInstance().getPlayer(player);
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
+				String text;
 				if (plyr != null)
 				{
 					plyr.logout();
-					sm.addString("You kicked " + plyr.getName() + " from the game.");
+					text = "You kicked " + plyr.getName() + " from the game.";
 				}
 				else
-					sm.addString("Player " + player + " was not found in the game.");
-				activeChar.sendPacket(sm);
+					text = "Player " + player + " was not found in the game.";
+				activeChar.sendMessage(text);
 			}
 			showMainPage(activeChar);
 		}
@@ -287,15 +287,15 @@ public class AdminMenu implements IAdminCommandHandler
 			if (result.next())
 			{
 				String acc_name = result.getString(1);
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
+				String text;
 				if(acc_name.length() > 0)
 				{
 					LoginServerThread.getInstance().sendAccessLevel(acc_name, banLevel);
-					sm.addString("Account Access Level for "+player+" set to "+banLevel+".");
+					text = "Account Access Level for "+player+" set to "+banLevel+".";
 				}
 				else
-					sm.addString("Couldn't find player: "+player+".");
-				activeChar.sendPacket(sm);
+					text = "Couldn't find player: "+player+".";
+				activeChar.sendMessage(text);
 			}
 			else
 				activeChar.sendMessage("Specified player name didn't lead to a valid account.");

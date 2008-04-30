@@ -14,9 +14,6 @@
  */
 package net.sf.l2j.gameserver.clientpackets;
 
-import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
-
 public final class RequestDeleteMacro extends L2GameClientPacket
 {
 	private int _id;
@@ -33,12 +30,8 @@ public final class RequestDeleteMacro extends L2GameClientPacket
 	protected void runImpl()
 	{
 		if (getClient().getActiveChar() == null)
-		    return;
+			return;
 		getClient().getActiveChar().deleteMacro(_id);
-	    SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-	    sm.addString("Delete macro id="+_id);
-		sendPacket(sm);
-		sm = null;
 	}
 
 	/* (non-Javadoc)

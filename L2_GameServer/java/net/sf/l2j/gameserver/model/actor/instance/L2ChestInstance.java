@@ -128,7 +128,7 @@ public final class L2ChestInstance extends L2MonsterInstance
 			else trapSkillId = 129;//poison
 		}
 
-		player.sendPacket(SystemMessage.sendString("There was a trap!"));
+		player.sendMessage("There was a trap!");
 		handleCast(player, trapSkillId);
 	}
 	//<--

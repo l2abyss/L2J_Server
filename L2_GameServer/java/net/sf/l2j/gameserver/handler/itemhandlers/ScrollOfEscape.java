@@ -78,7 +78,10 @@ public class ScrollOfEscape implements IItemHandler
         if (GrandBossManager.getInstance().getZone(activeChar) != null && !activeChar.isGM())
         {
             activeChar.sendPacket(ActionFailed.STATIC_PACKET);
-            activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_USE_SCROLL_OF_ESCAPE_INSIDE_BOSS_ZONE));
+            //activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_USE_SCROLL_OF_ESCAPE_INSIDE_BOSS_ZONE));
+
+            // SystemMessage doesn't exist ??!
+            activeChar.sendMessage("Cant summon target inside boss zone.");
             return;
         }
 
@@ -91,20 +94,20 @@ public class ScrollOfEscape implements IItemHandler
         // Check to see if the player is in a festival.
         if (activeChar.isFestivalParticipant())
         {
-            activeChar.sendPacket(SystemMessage.sendString("You may not use an escape skill in a festival."));
+            activeChar.sendMessage("You may not use an escape skill in a festival.");
             return;
         }
 
         // Check to see if player is in jail
         if (activeChar.isInJail())
         {
-            activeChar.sendPacket(SystemMessage.sendString("You can not escape from jail."));
+            activeChar.sendMessage("You can not escape from jail.");
             return;
         }
         // Check to see if player is in a duel
         if (activeChar.isInDuel())
         {
-        	activeChar.sendPacket(SystemMessage.sendString("You cannot use escape skills during a duel."));
+        	activeChar.sendMessage("You cannot use escape skills during a duel.");
             return;
         }
 
@@ -173,17 +176,18 @@ public class ScrollOfEscape implements IItemHandler
                 }
                 else if(_itemId == 5858) // do nothing
                 {
-                	_activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_HAS_NO_CLAN_HALL));
+                	//_activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_HAS_NO_CLAN_HALL));
+                    _activeChar.sendMessage("Your clan does not own a clanhall.");
                     return;
                 }
                 else if(_itemId == 5859) // do nothing
                 {
-                	_activeChar.sendPacket(SystemMessage.sendString("Your clan does not own a castle."));
+                	_activeChar.sendMessage("Your clan does not own a castle.");
                     return;
                 }
                 else if(_itemId == 10130) // do nothing
                 {
-                	_activeChar.sendPacket(SystemMessage.sendString("Your clan does not own a fortress."));
+                	_activeChar.sendMessage("Your clan does not own a fortress.");
                     return;
                 }
                 else

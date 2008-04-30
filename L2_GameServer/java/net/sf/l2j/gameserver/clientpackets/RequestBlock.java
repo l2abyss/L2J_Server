@@ -71,7 +71,7 @@ protected void runImpl()
                if (_target.isGM())
                {
                    // Cannot block a GM character.
-                   activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_MAY_NOT_IMPOSE_A_BLOCK_AN_A_GM));
+                   activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_MAY_NOT_IMPOSE_A_BLOCK_ON_GM));
                    return;
                }
 

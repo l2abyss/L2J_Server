@@ -116,7 +116,7 @@ public class AdminFortSiege implements IAdminCommandHandler
             }
             else if (command.equalsIgnoreCase("admin_move_fortdefenders"))
             {
-                activeChar.sendPacket(SystemMessage.sendString("Not implemented yet."));
+                activeChar.sendMessage("Not implemented yet.");
             }
             else if (command.equalsIgnoreCase("admin_setfort"))
             {

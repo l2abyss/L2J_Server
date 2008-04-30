@@ -142,9 +142,9 @@ public class RequestAquireSkill extends L2GameClientPacket
 							return;
 						}
 
-						SystemMessage sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
-						sm.addNumber(1);
+						SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 						sm.addItemName(costid);
+						sm.addNumber(1);
 						sendPacket(sm);
 						sm = null;
 					}
@@ -250,9 +250,9 @@ public class RequestAquireSkill extends L2GameClientPacket
 						return;
 					}
 
-					SystemMessage sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
-					sm.addNumber(costcount);
+					SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 					sm.addItemName(costid);
+					sm.addNumber(costcount);
 					sendPacket(sm);
 					sm = null;
 				}
@@ -309,7 +309,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 							return;
 						}
 
-						SystemMessage sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
+						SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 						sm.addItemName(itemId);
 						sm.addNumber(1);
 						sendPacket(sm);

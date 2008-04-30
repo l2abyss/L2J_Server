@@ -71,8 +71,9 @@ public final class Logout extends L2GameClientPacket
 			return;
 		}
 
-		if(player.atEvent) {
-			player.sendPacket(SystemMessage.sendString("A superior power doesn't allow you to leave the event"));
+		if(player.atEvent)
+		{
+			player.sendMessage("A superior power doesn't allow you to leave the event");
 			return;
 		}
 

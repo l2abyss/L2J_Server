@@ -79,7 +79,7 @@ public final class RequestEvaluate extends L2GameClientPacket
 
         if (target.getRecomHave() >= 255)
         {
-            sm = new SystemMessage(SystemMessageId.YOU_NO_LONGER_RECIVE_A_RECOMMENDATION);
+            sm = new SystemMessage(SystemMessageId.YOUR_TARGET_NO_LONGER_RECEIVE_A_RECOMMENDATION);
             activeChar.sendPacket(sm);
             sm =null;
             return;

@@ -101,7 +101,7 @@ public class ScrollOfResurrection implements IItemHandler
                 			if (targetPet.getOwner().isRevivingPet())
                 				activeChar.sendPacket(new SystemMessage(SystemMessageId.RES_HAS_ALREADY_BEEN_PROPOSED)); // Resurrection is already been proposed.
                 			else
-                				activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_RES)); // A pet cannot be resurrected while it's owner is in the process of resurrecting.
+                				activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_RES_PET2)); // A pet cannot be resurrected while it's owner is in the process of resurrecting.
                             condGood = false;
                 		}
                     }
@@ -116,7 +116,7 @@ public class ScrollOfResurrection implements IItemHandler
                     if (targetPlayer.isFestivalParticipant()) // Check to see if the current player target is in a festival.
                     {
                         condGood = false;
-                        activeChar.sendPacket(SystemMessage.sendString("You may not resurrect participants in a festival."));
+                        activeChar.sendMessage("You may not resurrect participants in a festival.");
                     }
                 	if (targetPlayer.isReviveRequested())
                 	{

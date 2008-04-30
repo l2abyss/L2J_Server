@@ -53,7 +53,7 @@ public class L2SkillCreateItem extends L2Skill
         if (activeChar.isAlikeDead()) return;
         if (_createItemId == null || _createItemCount == 0)
         {
-            SystemMessage sm = new SystemMessage(SystemMessageId.SKILL_NOT_AVAILABLE);
+            SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
             activeChar.sendPacket(sm);
             return;
         }

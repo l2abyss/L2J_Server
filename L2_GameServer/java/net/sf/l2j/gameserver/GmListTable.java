@@ -155,7 +155,7 @@ public class GmListTable
 	{
 		for (L2PcInstance gm : getInstance().getAllGms(true))
 		{
-			gm.sendPacket(SystemMessage.sendString(message));
+			gm.sendMessage(message);
 		}
 	}
 }

@@ -53,7 +53,7 @@ public class Spoil implements ISkillHandler
                      L2MonsterInstance target = (L2MonsterInstance) targets[index];
 
 			if (target.isSpoil()) {
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.ALREDAY_SPOILED));
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.ALREADY_SPOILED));
 				continue;
 			}
 
@@ -75,7 +75,7 @@ public class Spoil implements ISkillHandler
 					sm.addString(target.getName());
 					sm.addSkillName(skill.getDisplayId());
 					activeChar.sendPacket(sm);
-				}				
+				}
 				target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, activeChar);
 			}
 		}

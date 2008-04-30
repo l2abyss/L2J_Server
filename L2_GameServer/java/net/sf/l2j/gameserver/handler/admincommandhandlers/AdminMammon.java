@@ -142,7 +142,7 @@ public class AdminMammon implements IAdminCommandHandler
 			}
 			catch (Exception e)
 			{
-				activeChar.sendPacket(SystemMessage.sendString("Command format is //list_spawns <npcId|npc_name> [tele_index]"));
+				activeChar.sendMessage("Command format is //list_spawns <npcId|npc_name> [tele_index]");
 			}
 
 			SpawnTable.getInstance().findNPCInstances(activeChar, npcId, teleportIndex);

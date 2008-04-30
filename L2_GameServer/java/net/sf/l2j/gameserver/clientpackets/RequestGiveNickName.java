@@ -82,20 +82,10 @@ public class RequestGiveNickName extends L2GameClientPacket
 					sm = null;
                 }
                 else
-                {
-                    SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-                    sm.addString("Target needs to be online to get a title");
-                    activeChar.sendPacket(sm);
-                    sm = null;
-                }
+                    activeChar.sendMessage("Target needs to be online to get a title");
 			}
             else
-            {
-                SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-                sm.addString("Target does not belong to your clan");
-                activeChar.sendPacket(sm);
-                sm = null;
-            }
+                activeChar.sendMessage("Target does not belong to your clan");
 		}
 	}
 

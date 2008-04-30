@@ -29,8 +29,6 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.Fort;
-import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 
 /**
  * @author _drunk_
@@ -116,23 +114,24 @@ public class SiegeFlag implements ISkillHandler
         if (activeChar == null || !(activeChar instanceof L2PcInstance))
             return false;
 
-        SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
+        String text = "";
         L2PcInstance player = (L2PcInstance)activeChar;
 
         if (castle == null || castle.getCastleId() <= 0)
-            sm.addString("You must be on castle ground to place a flag");
+            text = "You must be on castle ground to place a flag";
         else if (!castle.getSiege().getIsInProgress())
-            sm.addString("You can only place a flag during a siege.");
+            text = "You can only place a flag during a siege.";
         else if (castle.getSiege().getAttackerClan(player.getClan()) == null)
-            sm.addString("You must be an attacker to place a flag");
+            text = "You must be an attacker to place a flag";
         else if (player.getClan() == null || !player.isClanLeader())
-            sm.addString("You must be a clan leader to place a flag");
+            text = "You must be a clan leader to place a flag";
         else if (castle.getSiege().getAttackerClan(player.getClan()).getNumFlags() >= SiegeManager.getInstance().getFlagMaxCount())
-        	sm.addString("You have already placed the maximum number of flags possible");
+            text = "You have already placed the maximum number of flags possible";
         else
             return true;
 
-        if (!isCheckOnly) {player.sendPacket(sm);}
+        if (!isCheckOnly)
+            player.sendMessage(text);
         return false;
     }
     
@@ -141,24 +140,24 @@ public class SiegeFlag implements ISkillHandler
         if (activeChar == null || !(activeChar instanceof L2PcInstance))
             return false;
 
-        SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
+        String text = "";
         L2PcInstance player = (L2PcInstance)activeChar;
 
         if (fort == null || fort.getFortId() <= 0)
-            sm.addString("You must be on fort ground to place a flag");
+            text = "You must be on fort ground to place a flag";
         else if (!fort.getSiege().getIsInProgress())
-            sm.addString("You can only place a flag during a siege.");
+            text = "You can only place a flag during a siege.";
         else if (fort.getSiege().getAttackerClan(player.getClan()) == null)
-            sm.addString("You must be an attacker to place a flag");
+            text = "You must be an attacker to place a flag";
         else if (player.getClan() == null || !player.isClanLeader())
-            sm.addString("You must be a clan leader to place a flag");
+            text = "You must be a clan leader to place a flag";
         else if (fort.getSiege().getAttackerClan(player.getClan()).getNumFlags() >= FortSiegeManager.getInstance().getFlagMaxCount())
-            sm.addString("You have already placed the maximum number of flags possible");
+            text = "You have already placed the maximum number of flags possible";
         else
             return true;
 
-        if (!isCheckOnly) {player.sendPacket(sm);}
+        if (!isCheckOnly)
+            player.sendMessage(text);
         return false;
     }
-    
 }

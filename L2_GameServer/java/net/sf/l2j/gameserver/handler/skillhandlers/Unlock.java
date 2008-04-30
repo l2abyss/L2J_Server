@@ -60,10 +60,7 @@ public class Unlock implements ISkillHandler
 				{
 					door.openMe();
 					door.onOpen();
-					SystemMessage systemmessage = new SystemMessage(SystemMessageId.S1_S2);
-
-					systemmessage.addString("Unlock the door!");
-					activeChar.sendPacket(systemmessage);
+					activeChar.sendMessage("Unlock the door!");
 				}
 				else
 				{

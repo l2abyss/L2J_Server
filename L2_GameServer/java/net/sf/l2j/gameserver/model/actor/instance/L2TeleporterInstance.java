@@ -188,9 +188,7 @@ public final class L2TeleporterInstance extends L2FolkInstance
             }
             else if (!Config.ALT_GAME_KARMA_PLAYER_CAN_USE_GK && player.getKarma() > 0) //karma
             {
-                SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-                sm.addString("Go away, you're not welcome here.");
-                player.sendPacket(sm);
+                player.sendMessage("Go away, you're not welcome here.");
                 return;
             }
             else if (list.getIsForNoble() && !player.isNoble())

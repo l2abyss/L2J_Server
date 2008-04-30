@@ -256,10 +256,9 @@ public class AdminTeleport implements IAdminCommandHandler
             activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
             activeChar.teleToLocation(x, y, z, false);
 
-            SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-            sm.addString("You have been teleported to " + Cords);
-            activeChar.sendPacket(sm);
-        } catch (NoSuchElementException nsee)
+            activeChar.sendMessage("You have been teleported to " + Cords);
+        }
+        catch (NoSuchElementException nsee)
         {
             activeChar.sendMessage("Wrong or no Coordinates given.");
         }
@@ -430,9 +429,7 @@ public class AdminTeleport implements IAdminCommandHandler
                 SpawnTable.getInstance().addNewSpawn(spawn, true);
                 spawn.init();
 
-                SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-                sm.addString("Created " + template1.name + " on " + target.getObjectId() + ".");
-                activeChar.sendPacket(sm);
+                activeChar.sendMessage("Created " + template1.name + " on " + target.getObjectId() + ".");
 
                 if (Config.DEBUG)
                 {

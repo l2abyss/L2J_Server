@@ -77,9 +77,7 @@ public class Recipes implements IItemHandler
 			    {
         			activeChar.registerDwarvenRecipeList(rp);
         			activeChar.destroyItem("Consume", item.getObjectId(), 1, null, false);
-        			SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-        			sm.addString("Added recipe \"" + rp.getRecipeName() + "\" to Dwarven RecipeBook");
-        			activeChar.sendPacket(sm);
+        			activeChar.sendMessage("Added recipe \"" + rp.getRecipeName() + "\" to Dwarven RecipeBook");
 			    }
         		}
         		else
@@ -109,9 +107,7 @@ public class Recipes implements IItemHandler
 			    {
         			activeChar.registerCommonRecipeList(rp);
         			activeChar.destroyItem("Consume", item.getObjectId(), 1, null, false);
-        			SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-        			sm.addString("Added recipe \"" + rp.getRecipeName() + "\" to Common RecipeBook");
-        			activeChar.sendPacket(sm);
+        			activeChar.sendMessage("Added recipe \"" + rp.getRecipeName() + "\" to Common RecipeBook");
 			    }
         		}
         		else

@@ -26,8 +26,6 @@ import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.Fort;
-import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.templates.L2WeaponType;
 
@@ -107,7 +105,8 @@ public class StrSiegeAssault implements ISkillHandler
                 	activeChar.sendDamageMessage(target, damage, false, false, false);
 
                 }
-                else activeChar.sendPacket(SystemMessage.sendString(skill.getName() + " failed."));
+                else
+                    activeChar.sendMessage(skill.getName() + " failed.");
             }
         }
         catch (Exception e)
@@ -148,21 +147,22 @@ public class StrSiegeAssault implements ISkillHandler
         if (activeChar == null || !(activeChar instanceof L2PcInstance))
             return false;
 
-        SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
+        String text = "";
         L2PcInstance player = (L2PcInstance)activeChar;
 
         if (castle == null || castle.getCastleId() <= 0)
-            sm.addString("You must be on castle ground to use strider siege assault");
+            text = "You must be on castle ground to use strider siege assault";
         else if (!castle.getSiege().getIsInProgress())
-            sm.addString("You can only use strider siege assault during a siege.");
+            text = "You can only use strider siege assault during a siege.";
         else if (!(player.getTarget() instanceof L2DoorInstance))
-            sm.addString("You can only use strider siege assault on doors and walls.");
+            text = "You can only use strider siege assault on doors and walls.";
         else if (!activeChar.isRidingStrider())
-            sm.addString("You can only use strider siege assault when on strider.");
+            text = "You can only use strider siege assault when on strider.";
         else
             return true;
 
-        if (!isCheckOnly) {player.sendPacket(sm);}
+        if (!isCheckOnly)
+            player.sendMessage(text);
         return false;
     }
     
@@ -171,21 +171,22 @@ public class StrSiegeAssault implements ISkillHandler
         if (activeChar == null || !(activeChar instanceof L2PcInstance))
             return false;
 
-        SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
+        String text = "";
         L2PcInstance player = (L2PcInstance)activeChar;
 
         if (fort == null || fort.getFortId() <= 0)
-            sm.addString("You must be on fort ground to use strider siege assault");
+            text = "You must be on fort ground to use strider siege assault";
         else if (!fort.getSiege().getIsInProgress())
-            sm.addString("You can only use strider siege assault during a siege.");
+            text = "You can only use strider siege assault during a siege.";
         else if (!(player.getTarget() instanceof L2DoorInstance))
-            sm.addString("You can only use strider siege assault on doors and walls.");
+            text = "You can only use strider siege assault on doors and walls.";
         else if (!activeChar.isRidingStrider())
-            sm.addString("You can only use strider siege assault when on strider.");
+            text = "You can only use strider siege assault when on strider.";
         else
             return true;
 
-        if (!isCheckOnly) {player.sendPacket(sm);}
+        if (!isCheckOnly)
+            player.sendMessage(text);
         return false;
     }
     

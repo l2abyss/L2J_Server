@@ -397,9 +397,7 @@ public class AdminEffects implements IAdminCommandHandler
 						player.setTeam(0);
 						if (teamVal != 0)
 						{
-							SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-							sm.addString("You have joined team " + teamVal);
-							player.sendPacket(sm);
+							player.sendMessage("You have joined team " + teamVal);
 						}
 						player.broadcastUserInfo();
 					}
@@ -422,9 +420,7 @@ public class AdminEffects implements IAdminCommandHandler
 			player.setTeam(teamVal);
 			if (teamVal != 0)
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-				sm.addString("You have joined team " + teamVal);
-				player.sendPacket(sm);
+				player.sendMessage("You have joined team " + teamVal);
 			}
 			player.broadcastUserInfo();
 		}

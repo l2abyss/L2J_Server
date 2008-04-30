@@ -97,7 +97,7 @@ public final class RequestRestart extends L2GameClientPacket
         {
             if (SevenSignsFestival.getInstance().isFestivalInitialized())
             {
-                player.sendPacket(SystemMessage.sendString("You cannot restart while you are a participant in a festival."));
+                player.sendMessage("You cannot restart while you are a participant in a festival.");
                 player.sendPacket(ActionFailed.STATIC_PACKET);
                 return;
             }

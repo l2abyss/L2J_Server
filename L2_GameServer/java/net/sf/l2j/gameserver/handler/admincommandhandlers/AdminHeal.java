@@ -56,9 +56,7 @@ public class AdminHeal implements IAdminCommandHandler {
 			{
 				if (Config.DEVELOPER)
 					_log.warning("Heal error: "+e);
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-				sm.addString("Incorrect target/radius specified.");
-				activeChar.sendPacket(sm);
+				activeChar.sendMessage("Incorrect target/radius specified.");
 			}
 		}
 		return true;

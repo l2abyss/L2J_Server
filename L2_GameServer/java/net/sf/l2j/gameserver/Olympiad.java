@@ -2284,12 +2284,12 @@ public class Olympiad
             
     		for (int i=40;i>10;i-=10)
     		{
-    			_sm = new SystemMessage(SystemMessageId.YOU_WILL_GO_BACK_TO_THE_VILLAGE_IN_S1_SECOND_S);
+    			_sm = new SystemMessage(SystemMessageId.YOU_WILL_BE_MOVED_TO_TOWN_IN_S1_SECONDS);
     			_sm.addNumber(i);
     			broadcastMessage(_sm, false);
     			try{ Thread.sleep(10000); }catch (InterruptedException e){}
     			if (i==20) {
-    				_sm = new SystemMessage(SystemMessageId.YOU_WILL_GO_BACK_TO_THE_VILLAGE_IN_S1_SECOND_S);
+    				_sm = new SystemMessage(SystemMessageId.YOU_WILL_BE_MOVED_TO_TOWN_IN_S1_SECONDS);
     				_sm.addNumber(10);
     				broadcastMessage(_sm, false);
     				try{ Thread.sleep(5000); }catch (InterruptedException e){}
@@ -2297,9 +2297,9 @@ public class Olympiad
     		}
     		for (int i=5;i>0;i--)
     		{
-    			_sm = new SystemMessage(SystemMessageId.YOU_WILL_GO_BACK_TO_THE_VILLAGE_IN_S1_SECOND_S);
+    			_sm = new SystemMessage(SystemMessageId.YOU_WILL_BE_MOVED_TO_TOWN_IN_S1_SECONDS);
     			_sm.addNumber(i);
-    			broadcastMessage(_sm, false);  			
+    			broadcastMessage(_sm, false);
     			try{ Thread.sleep(1000); }catch (InterruptedException e){}
     		}
     	}

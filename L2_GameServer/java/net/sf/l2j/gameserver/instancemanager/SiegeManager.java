@@ -36,9 +36,6 @@ import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.Siege;
-import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
-
 public class SiegeManager
 {
     private static final Logger _log = Logger.getLogger(SiegeManager.class.getName());
@@ -94,20 +91,21 @@ public class SiegeManager
     {
         if (activeChar == null || !(activeChar instanceof L2PcInstance)) return false;
 
-        SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
+        String text = "";
         L2PcInstance player = (L2PcInstance)activeChar;
         Castle castle = CastleManager.getInstance().getCastle(player);
 
         if (castle == null || castle.getCastleId() <= 0)
-            sm.addString("You must be on castle ground to summon this");
+            text = "You must be on castle ground to summon this";
         else if (!castle.getSiege().getIsInProgress())
-            sm.addString("You can only summon this during a siege.");
+            text = "You can only summon this during a siege.";
         else if (player.getClanId() != 0 && castle.getSiege().getAttackerClan(player.getClanId()) == null)
-            sm.addString("You can only summon this as a registered attacker.");
+            text = "You can only summon this as a registered attacker.";
         else
             return true;
 
-        if (!isCheckOnly) {player.sendPacket(sm);}
+        if (!isCheckOnly)
+            player.sendMessage(text);
         return false;
     }
 

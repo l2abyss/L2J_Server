@@ -16,8 +16,6 @@ package net.sf.l2j.gameserver.handler.voicedcommandhandlers;
 
 import net.sf.l2j.gameserver.handler.IVoicedCommandHandler;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 
 /**
  *
@@ -35,9 +33,7 @@ public class set implements IVoicedCommandHandler
     		if(pc!=null){
     			if(activeChar.getClan().getClanId()==pc.getClan().getClanId()&&(activeChar.getClanPrivileges()>n)||activeChar.isClanLeader()){
     				pc.setClanPrivileges(n);
-    				SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-    	            sm.addString("Your clan privileges have been set to " + n + " by " + activeChar.getName());
-    	            activeChar.sendPacket(sm);
+    	            activeChar.sendMessage("Your clan privileges have been set to " + n + " by " + activeChar.getName());
     			}
 
     		}

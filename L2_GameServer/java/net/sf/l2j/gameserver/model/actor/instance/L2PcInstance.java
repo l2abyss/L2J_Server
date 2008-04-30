@@ -2625,7 +2625,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
 			if (sendMessage)
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.DISSAPEARED_ADENA);
+				SystemMessage sm = new SystemMessage(SystemMessageId.DISAPPEARED_ADENA);
 				sm.addNumber(count);
 				sendPacket(sm);
 			}
@@ -2702,9 +2702,9 @@ public final class L2PcInstance extends L2PlayableInstance
 
 	        if (sendMessage)
 	        {
-	            SystemMessage sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
-	            sm.addNumber(count);
+	            SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 	            sm.addItemName(PcInventory.ANCIENT_ADENA_ID);
+	            sm.addNumber(count);
 	            sendPacket(sm);
 	        }
 	    }
@@ -2941,9 +2941,9 @@ public final class L2PcInstance extends L2PlayableInstance
         // Sends message to client if requested
         if (sendMessage)
         {
-            SystemMessage sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
-            sm.addNumber(count);
+            SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
             sm.addItemName(item.getItemId());
+            sm.addNumber(count);
             sendPacket(sm);
         }
 
@@ -3042,9 +3042,9 @@ public final class L2PcInstance extends L2PlayableInstance
 		// Sends message to client if requested
 		if (sendMessage)
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.DISSAPEARED_ITEM);
-            sm.addNumber(count);
+			SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
             sm.addItemName(itemId);
+            sm.addNumber(count);
 			sendPacket(sm);
 		}
 
@@ -3857,19 +3857,6 @@ public final class L2PcInstance extends L2PlayableInstance
 		{
 			_client.sendPacket(packet);
 		}
-		/*
-		if(_isConnected)
-		{
-			try
-			{
-				if (_connection != null)
-					_connection.sendPacket(packet);
-			}
-			catch (Exception e)
-			{
-				_log.log(Level.INFO, "", e);
-			}
-		}*/
 	}
 
 	/**
@@ -7684,8 +7671,8 @@ public final class L2PcInstance extends L2PlayableInstance
         // Check if this skill is enabled (ex : reuse time)
         if (isSkillDisabled(skill.getId()) && (getAccessLevel() < Config.GM_PEACEATTACK))
         {
-            SystemMessage sm = new SystemMessage(SystemMessageId.SKILL_NOT_AVAILABLE);
-            sm.addString(skill.getName());
+            SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
+            sm.addSkillName(skill.getId());
             sendPacket(sm);
 
             // Send a Server->Client packet ActionFailed to the L2PcInstance
@@ -8562,6 +8549,7 @@ public final class L2PcInstance extends L2PlayableInstance
     	_sponsor = sponsor_id;
     }
 
+	@Override
 	public void sendMessage(String message)
 	{
 		sendPacket(SystemMessage.sendString(message));
@@ -9605,7 +9593,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			else
 			{
 				if (Pet)
-					Reviver.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_RES)); // A pet cannot be resurrected while it's owner is in the process of resurrecting.
+					Reviver.sendPacket(new SystemMessage(SystemMessageId.CANNOT_RES_PET2)); // A pet cannot be resurrected while it's owner is in the process of resurrecting.
 				else
 					Reviver.sendPacket(new SystemMessage(SystemMessageId.MASTER_CANNOT_RES)); // While a pet is attempting to resurrect, it cannot help in resurrecting its master.
 			}

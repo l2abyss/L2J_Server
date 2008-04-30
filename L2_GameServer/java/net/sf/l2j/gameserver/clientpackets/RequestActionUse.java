@@ -497,7 +497,7 @@ public final class RequestActionUse extends L2GameClientPacket
             
             if (_skills.size() == 0)
             {
-                activeChar.sendPacket(new SystemMessage(SystemMessageId.SKILL_NOT_AVAILABLE));
+                activeChar.sendPacket(new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE));
                 return;
             }
             

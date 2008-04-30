@@ -16,11 +16,9 @@ package net.sf.l2j.gameserver.model.actor.instance;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.SkillTable;
-import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 
@@ -46,16 +44,12 @@ public class L2WyvernManagerInstance extends L2CastleChamberlainInstance
         	{
         		if(player.isMounted())
         		{
-        			SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-        			sm.addString("You Already Have a Pet or Are Mounted.");
-        			player.sendPacket(sm);
+        			player.sendMessage("You already have a pet.");
         			return;
         		}
         		else
         		{
-        			SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-        			sm.addString("Summon your Strider first.");
-        			player.sendPacket(sm);
+        			player.sendMessage("Summon your Strider first.");
         			return;
         		}
         	}
@@ -65,9 +59,7 @@ public class L2WyvernManagerInstance extends L2CastleChamberlainInstance
         		{
         			if (player.getPet().getLevel() < 55)
         			{
-        				SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-                		sm.addString("Your Strider Has not reached the required level.");
-                		player.sendPacket(sm);
+                		player.sendMessage("Your Strider Has not reached the required level.");
                 		return;
         			}
         			else
@@ -77,26 +69,20 @@ public class L2WyvernManagerInstance extends L2CastleChamberlainInstance
         				{
         				    player.getInventory().destroyItemByItemId("Wyvern", 1460, 10, player, player.getTarget());
         				    player.addSkill(SkillTable.getInstance().getInfo(4289, 1));
-        				    SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-        				    sm.addString("The Wyvern has been summoned successfully!");
-        				    player.sendPacket(sm);
+        				    player.sendMessage("The Wyvern has been summoned successfully!");
         				}
                         return;
         			}
         		}
         		else
         		{
-        			SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-            		sm.addString("You need 10 Crystals: B Grade.");
-            		player.sendPacket(sm);
+            		player.sendMessage("You need 10 Crystals: B Grade.");
             		return;
         		}
             }
         	else
         	{
-        		SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2);
-        		sm.addString("Unsummon your pet.");
-        		player.sendPacket(sm);
+        		player.sendMessage("Unsummon your pet.");
         		return;
         	}
         }
