@@ -256,7 +256,7 @@ public abstract class Inventory extends ItemContainer
 	        	return;
 
 	        L2Skill enchant4Skill = null;
-
+	        int[] AGATHION_SKILLS = {3268, 3269, 3270, 3361, 3423, 3424, 3425};
 			L2Item it = item.getItem();
 
 			if(it instanceof L2Weapon)
@@ -279,9 +279,18 @@ public abstract class Inventory extends ItemContainer
 							skillLvl = Integer.parseInt(skill[1]);
 							if (skill_Id > 0 && skillLvl > 0)
 								_itemSkill = SkillTable.getInstance().getInfo(skill_Id, skillLvl);
-							
+
 							if (_itemSkill != null)
 							{
+								for (int agathionId : AGATHION_SKILLS)
+								{
+									if (agathionId == _itemSkill.getId())
+									{
+										player.setAgathionId(0);
+										player.broadcastUserInfo();
+										break;
+									}
+								}
 					    		player.removeSkill(_itemSkill, false);
 					    		player.sendSkillList(); 
 							}
