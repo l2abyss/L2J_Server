@@ -5725,12 +5725,14 @@ public abstract class L2Character extends L2Object
         if (effects != null) {
             for (L2Effect e : effects) {
                 if (e != null) {
-                    if ((e.getSkill().getSkillType() == L2Skill.SkillType.BUFF ||
-                        e.getSkill().getSkillType() == L2Skill.SkillType.DEBUFF ||
+                    if (e.getShowIcon() != false &&
+                       (e.getSkill().getSkillType() == L2Skill.SkillType.BUFF ||
                         e.getSkill().getSkillType() == L2Skill.SkillType.REFLECT ||
                         e.getSkill().getSkillType() == L2Skill.SkillType.HEAL_PERCENT ||
                         e.getSkill().getSkillType() == L2Skill.SkillType.MANAHEAL_PERCENT) &&
-                        !(e.getSkill().getId() > 4360  && e.getSkill().getId() < 4367)) { // 7s buffs
+                      !(e.getSkill().getId() > 4360  &&
+                        e.getSkill().getId() < 4367))
+                    { // 7s buffs
                         numBuffs++;
                     }
                 }
