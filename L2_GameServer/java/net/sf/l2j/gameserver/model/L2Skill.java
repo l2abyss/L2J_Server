@@ -215,6 +215,7 @@ public abstract class L2Skill
     	
     	// Cancel
     	CANCEL,
+    	CANCEL_DEBUFF,
     	MAGE_BANE,
     	WARRIOR_BANE,
     	NEGATE,
@@ -519,6 +520,8 @@ public abstract class L2Skill
     private final String _flyType;
     private final int _flyRadius;
 
+	private final boolean _isDebuff;
+
     protected L2Skill(StatsSet set)
     {
         _id = set.getInteger("skill_id");
@@ -554,6 +557,7 @@ public abstract class L2Skill
         
         _hitTime = set.getInteger("hitTime", 0);
         _coolTime = set.getInteger("coolTime", 0);
+        _isDebuff = set.getBool("isDebuff", false);
         
         if (Config.ENABLE_MODIFY_SKILL_REUSE && Config.SKILL_REUSE_LIST.containsKey(_id))
         {
@@ -863,6 +867,14 @@ public abstract class L2Skill
     public final int getId()
     {
         return _id;
+    }
+
+    /**
+     * @return Returns the id.
+     */
+    public final boolean isDebuff()
+    {
+        return _isDebuff;
     }
 
     public int getDisplayId()
