@@ -870,7 +870,7 @@ public abstract class L2Skill
     }
 
     /**
-     * @return Returns the id.
+     * @return Returns the boolean _isDebuff.
      */
     public final boolean isDebuff()
     {
