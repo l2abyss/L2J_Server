@@ -106,6 +106,7 @@ import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.skills.Stats;
 import net.sf.l2j.gameserver.skills.effects.EffectCharge;
 import net.sf.l2j.gameserver.skills.funcs.Func;
+import net.sf.l2j.gameserver.skills.l2skills.L2SkillAgathion;
 import net.sf.l2j.gameserver.templates.L2CharTemplate;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.L2Weapon;
@@ -5669,6 +5670,12 @@ public abstract class L2Character extends L2Object
 			{
 				removeStatsOwner(oldSkill);
 				stopSkillEffects(oldSkill.getId());
+			}
+
+			if (oldSkill instanceof L2SkillAgathion && this instanceof L2PcInstance && ((L2PcInstance)this).getAgathionId() > 0)
+			{
+				((L2PcInstance)this).setAgathionId(0);
+				((L2PcInstance)this).broadcastUserInfo();
 			}
 		}
 
