@@ -9475,7 +9475,7 @@ public enum SystemMessageId
 	* ID: 1584<br>
 	* Message: $s1's party has been dismissed from the Command Channel.
 	*/
-	S1_DISMISSED_FROM_COMMAND_CHANNEL(1584),
+	S1_PARTY_DISMISSED_FROM_COMMAND_CHANNEL(1584),
 
 	/**
 	* ID: 1585<br>

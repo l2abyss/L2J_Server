@@ -29,6 +29,8 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.entity.DimensionalRift;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.serverpackets.ExCloseMPCC;
+import net.sf.l2j.gameserver.serverpackets.ExOpenMPCC;
 import net.sf.l2j.gameserver.serverpackets.ExPartyPetWindowAdd;
 import net.sf.l2j.gameserver.serverpackets.ExPartyPetWindowDelete;
 import net.sf.l2j.gameserver.serverpackets.L2GameServerPacket;
@@ -287,6 +289,12 @@ public class L2Party {
         {
 			_dr.partyMemberInvited();
         }
+		
+		// open the CCInformationwindow
+		if (isInCommandChannel())
+		{
+			player.sendPacket(new ExOpenMPCC());
+		}
 	}
 
 	/**
@@ -334,9 +342,27 @@ public class L2Party {
 
 			if (isInDimensionalRift())
 				_dr.partyMemberExited(player);
+			
+			// Close the CCInfoWindow
+			if (isInCommandChannel())
+			{
+				player.sendPacket(new ExCloseMPCC());
+			}
 
 			if (getPartyMembers().size() == 1)
 			{
+				if (isInCommandChannel())
+				{
+					// delete the whole Commandchannel when the party who opened the channel is disbanded
+					if (getCommandChannel().getChannelLeader().equals(getLeader()))
+					{
+						getCommandChannel().disbandChannel();
+					}
+					else 
+					{
+						getCommandChannel().removeParty(this);
+					}
+				}
 				getLeader().setParty(null);
 				if (getLeader().isInDuel())
 					DuelManager.getInstance().onRemoveFromParty(getLeader());
@@ -374,9 +400,12 @@ public class L2Party {
 					msg.addString(getLeader().getName());
 					broadcastToPartyMembers(msg);
 					broadcastToPartyMembers(new PartySmallWindowUpdate(getLeader()));
-					if (isInCommandChannel())
+					if (isInCommandChannel() && temp.equals(_commandChannel.getChannelLeader()))
 					{
-						_commandChannel.setChannelLeader(getPartyMembers().get(0));
+						_commandChannel.setChannelLeader(getLeader());
+						msg = new SystemMessage(SystemMessageId.COMMAND_CHANNEL_LEADER_NOW_S1);
+						msg.addString(_commandChannel.getChannelLeader().getName());
+						_commandChannel.broadcastToChannelMembers(msg);
 					}
 				}
 			}

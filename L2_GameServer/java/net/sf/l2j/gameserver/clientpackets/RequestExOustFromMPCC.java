@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.clientpackets;
 
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 
 /**
@@ -51,11 +52,12 @@ public final class RequestExOustFromMPCC extends L2GameClientPacket
 		{
 			target.getParty().getCommandChannel().removeParty(target.getParty());
 
-			SystemMessage sm = SystemMessage.sendString("Your party was dismissed from the CommandChannel.");
+			SystemMessage sm = new SystemMessage(SystemMessageId.DISMISSED_FROM_COMMAND_CHANNEL);
 			target.getParty().broadcastToPartyMembers(sm);
 
-			sm = SystemMessage.sendString(target.getParty().getPartyMembers().get(0).getName()
-					+ "'s party was dismissed from the CommandChannel.");
+			sm = new SystemMessage(SystemMessageId.S1_PARTY_DISMISSED_FROM_COMMAND_CHANNEL);
+			sm.addString(target.getParty().getLeader().getName());
+			activeChar.getParty().getCommandChannel().broadcastToChannelMembers(sm);
 		}
 		else
 		{

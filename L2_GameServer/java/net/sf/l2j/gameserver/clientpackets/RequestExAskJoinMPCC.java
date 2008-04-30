@@ -55,12 +55,13 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 		if(activeChar.isInParty() && player.isInParty() && activeChar.getParty().equals(player.getParty()))
 			return;
 
+		SystemMessage sm;
 		//activeChar is in a Party?
 		if (activeChar.isInParty())
 		{
 			L2Party activeParty = activeChar.getParty();
 			//activeChar is PartyLeader? && activeChars Party is already in a CommandChannel?
-			if (activeParty.getPartyMembers().get(0).equals(activeChar))
+			if (activeParty.getLeader().equals(activeChar))
 			{
 				// if activeChars Party is in CC, is activeChar CCLeader?
 				if (activeParty.isInCommandChannel() && activeParty.getCommandChannel().getChannelLeader().equals(activeChar))
@@ -72,7 +73,9 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 						//targets party already in a CChannel?
 						if (player.getParty().isInCommandChannel())
 						{
-							activeChar.sendMessage("Your target is already in a CommandChannel");
+							sm = new SystemMessage(SystemMessageId.S1_ALREADY_MEMBER_OF_COMMAND_CHANNEL);
+							sm.addString(player.getName());
+							activeChar.sendPacket(sm);
 						}
 						else
 						{
@@ -90,7 +93,8 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 				else if (activeParty.isInCommandChannel() && !activeParty.getCommandChannel().getChannelLeader().equals(activeChar))
 				{
 					//in CC, but not the CCLeader
-					activeChar.sendMessage("Only the CommandChannelLeader can give out an invite.");
+					sm = new SystemMessage(SystemMessageId.CANNOT_INVITE_TO_COMMAND_CHANNEL);
+					activeChar.sendPacket(sm);
 				}
 				else
 				{
@@ -100,7 +104,9 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 						//targets party already in a CChannel?
 						if (player.getParty().isInCommandChannel())
 						{
-							activeChar.sendMessage("Your target is already in a CommandChannel");
+							sm = new SystemMessage(SystemMessageId.S1_ALREADY_MEMBER_OF_COMMAND_CHANNEL);
+							sm.addString(player.getName());
+							activeChar.sendPacket(sm);;
 						}
 						else
 						{
@@ -117,7 +123,8 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 			}
 			else
 			{
-				activeChar.sendMessage("Only the Partyleader can give out an invite.");
+				sm = new SystemMessage(SystemMessageId.CANNOT_INVITE_TO_COMMAND_CHANNEL);
+				activeChar.sendPacket(sm);
 			}
 		}
 
@@ -127,11 +134,12 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 	private void askJoinMPCC(L2PcInstance requestor, L2PcInstance target)
 	{
 		boolean hasRight = false;
-		if (requestor.getClan() != null && requestor.getClan().getLeaderId() == requestor.getObjectId()) // Clanleader
+		if (requestor.getClan() != null && requestor.getClan().getLeaderId() == requestor.getObjectId() 
+				&& requestor.getClan().getLevel() >= 5) // Clanleader of lvl5 Clan or higher
 			hasRight = true;
 		else if (requestor.getInventory().getItemByItemId(8871) != null) // 8871 Strategy Guide. Should destroyed after sucessfull invite?
 			hasRight = true;
-		else
+		else if(requestor.getPledgeClass() >= 5) // At least Baron or higher and the skill Clan Imperium
 		{
 			for (L2Skill skill : requestor.getAllSkills())
 			{
@@ -143,20 +151,27 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 				}
 			}
 		}
-		if (!hasRight && !requestor.getParty().isInCommandChannel())
+		
+		if (!hasRight)
 		{
-			requestor.sendMessage("You dont have the rights to open a Command Channel!");
+			requestor.sendPacket(new SystemMessage(SystemMessageId.COMMAND_CHANNEL_ONLY_BY_LEVEL_5_CLAN_LEADER_PARTY_LEADER));
 			return;
 		}
 		if (!target.isProcessingRequest())
 		{
 			requestor.onTransactionRequest(target);
-			target.getParty().getPartyMembers().get(0).sendPacket(new ExAskJoinMPCC(requestor.getName()));
+			SystemMessage sm = new SystemMessage(SystemMessageId.COMMAND_CHANNEL_CONFIRM);
+			sm.addString(requestor.getName());
+			target.getParty().getLeader().sendPacket(sm);
+			target.getParty().getLeader().sendPacket(new ExAskJoinMPCC(requestor.getName()));
+			
 		    requestor.sendMessage("You invited "+target.getName()+" to your Command Channel.");
 		}
 		else
 		{
-		    requestor.sendPacket(new SystemMessage(SystemMessageId.S1_IS_BUSY_TRY_LATER));
+			SystemMessage sm = new SystemMessage(SystemMessageId.S1_IS_BUSY_TRY_LATER);
+			sm.addString(target.getName());
+		    requestor.sendPacket(sm);
 
 		}
 	}
