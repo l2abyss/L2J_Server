@@ -5725,7 +5725,7 @@ public abstract class L2Character extends L2Object
         if (effects != null) {
             for (L2Effect e : effects) {
                 if (e != null) {
-                    if (!e.getShowIcon() &&
+                    if (e.getShowIcon() &&
                        (e.getSkill().getSkillType() == L2Skill.SkillType.BUFF ||
                         e.getSkill().getSkillType() == L2Skill.SkillType.REFLECT ||
                         e.getSkill().getSkillType() == L2Skill.SkillType.HEAL_PERCENT ||
