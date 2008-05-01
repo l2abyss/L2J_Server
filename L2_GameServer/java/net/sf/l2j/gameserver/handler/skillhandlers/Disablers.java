@@ -474,7 +474,6 @@ public class Disablers implements ISkillHandler
                 	{
                 		if (e.getSkill().isDebuff())
                 			e.exit();
-                		break;
                 	}
                 	
                 	break;
