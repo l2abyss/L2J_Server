@@ -3232,11 +3232,6 @@ public abstract class L2Character extends L2Object
             {
             	((L2PcInstance) this).untransform();
             }
-
-            if(!((L2PcInstance) this).isCursedWeaponEquipped())
-            {
-            	((L2PcInstance) this).transformUpdateInfo();
-            }
         }
         
         getAI().notifyEvent(CtrlEvent.EVT_THINK, null);

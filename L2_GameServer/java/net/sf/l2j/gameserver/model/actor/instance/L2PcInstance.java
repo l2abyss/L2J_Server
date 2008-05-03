@@ -4268,31 +4268,6 @@ public final class L2PcInstance extends L2PlayableInstance
         return _transformationId;
     }
 
-    public void transformUpdateInfo()
-    {
-    	_transformationId = 0;
-    	Connection con = null;
-        try
-        {
-            con = L2DatabaseFactory.getInstance().getConnection();
-            PreparedStatement statement = con.prepareStatement(UPDATE_CHAR_TRANSFORM);
-            
-            statement.setInt(1, 0);
-            statement.setInt(2, getObjectId());
-            
-            statement.execute();
-            statement.close();
-        }
-        catch (Exception e)
-        {
-        	_log.log(Level.SEVERE, "Transformation update info: ",e);
-        }
-        finally
-        {
-            try { con.close(); } catch (Exception e) {}
-        }
-    }
-
 	/**
 	 * Set a target.<BR><BR>
 	 *
