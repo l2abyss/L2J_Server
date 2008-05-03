@@ -1188,14 +1188,25 @@ public class L2NpcInstance extends L2Character
     public void showQuestChooseWindow(L2PcInstance player, Quest[] quests) 
     {
         TextBuilder sb = new TextBuilder();
-        
         sb.append("<html><body><title>Talk about:</title><br>");
-        
         for (Quest q : quests) 
         {
-            sb.append("<a action=\"bypass -h npc_").append(getObjectId())
-            .append("_Quest ").append(q.getName()).append("\">")
-            .append(q.getDescr()).append("</a><br>");
+        	sb.append("<a action=\"bypass -h npc_").append(getObjectId())
+        	.append("_Quest ").append(q.getName()).append("\">[").append(q.getDescr());
+        	
+        	QuestState qs = player.getQuestState(q.getScriptName());
+        	if (qs != null)
+        	{        		
+        		if (qs.getState() == State.STARTED && qs.getInt("cond") > 0)
+        		{
+        			sb.append("(in progress)");
+        		}
+        		else if (qs.getState() == State.COMPLETED )
+       			{
+        			sb.append("(done)");
+       			}
+        	}
+        	sb.append("]</a><br>");
         }
         
         sb.append("</body></html>");
