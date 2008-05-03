@@ -834,6 +834,12 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
 		                    case 0x49:
 		                    	msg = new RequestExEnchantSkillInfoDetail();
 		                    	break;
+		                    case 0x4b:
+		                    	//RequestFortressMapInfo
+		                    	break;
+		                    case 0x4d:
+		                    	//SetPrivateStoreWholeMsg
+		                    	break;
 		                    default: 
 		                     	this.printDebugDoubleOpcode(opcode, id2, buf, state, client);
 		                    	break;
