@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
@@ -53,8 +54,8 @@ public class DayNightSpawnManager {
         _dayCreatures = new FastMap<L2Spawn, L2NpcInstance>();
         _nightCreatures = new FastMap<L2Spawn, L2NpcInstance>();
         _bosses = new FastMap<L2Spawn, L2RaidBossInstance>();
-
-        _log.info("DayNightSpawnManager: Day/Night handler initialised");
+        
+        _log.info("DayNightSpawnManager: Day/Night handler initialized");
     }
 
     public void addDayCreature(L2Spawn spawnDat)
@@ -111,7 +112,8 @@ public class DayNightSpawnManager {
                     dayCreature.deleteMe();
                     i++;
                 }
-                _log.info("DayNightSpawnManager: Deleted " + i + " "+UnspawnLogInfo+" creatures");
+                if (Config.DEBUG)
+                	_log.info("DayNightSpawnManager: Deleted " + i + " "+UnspawnLogInfo+" creatures");
             }
 
             int i = 0;
@@ -144,7 +146,8 @@ public class DayNightSpawnManager {
                 i++;
             }
 
-            _log.info("DayNightSpawnManager: Spawning " + i + " "+SpawnLogInfo+" creatures");
+            if (Config.DEBUG)
+            	_log.info("DayNightSpawnManager: Spawning " + i + " "+SpawnLogInfo+" creatures");
         }catch(Exception e){e.printStackTrace();}
     }
     private void changeMode(int mode)

@@ -55,7 +55,8 @@ public class CastleUpdater implements Runnable
                         {
                             castle.saveSeedData();
                             castle.saveCropData();
-                            _log.info("Manor System: all data for " + castle.getName() + " saved");
+                            if (Config.DEBUG)
+                            	_log.info("Manor System: all data for " + castle.getName() + " saved");
                         }
                     }
                     _runCount++;

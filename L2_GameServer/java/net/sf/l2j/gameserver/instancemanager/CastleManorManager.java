@@ -232,7 +232,9 @@ public class CastleManorManager {
     }
 
 	public void updateManorRefresh() {
-		_log.info("Manor System: Manor refresh updated");
+		if (Config.DEBUG)
+			_log.info("Manor System: Manor refresh updated");
+		
 		_scheduledManorRefresh = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable(){
             public void run() {
             	if (!isDisabled()) {

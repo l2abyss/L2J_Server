@@ -165,11 +165,12 @@ public class Announcements
 				}
 			}
 
-			_log.config("Announcements: Loaded " + i + " Announcements.");
+			if(Config.DEBUG)
+				_log.config("Announcements: Loaded " + i + " Announcements.");
 		}
 		catch (IOException e1)
 		{
-			_log.log(Level.SEVERE, "Error reading announcements", e1);
+			_log.log(Level.SEVERE, "Error reading announcements: ", e1);
 		}
 		finally
 		{
@@ -203,7 +204,7 @@ public class Announcements
 		}
 		catch (IOException e)
 		{
-			_log.warning("saving the announcements file has failed: " + e);
+			_log.log(Level.SEVERE, "Saving to the announcements file has failed: ", e);
 		}
 	}
 
