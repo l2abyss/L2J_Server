@@ -202,7 +202,7 @@ public class CharSelectionInfo extends L2GameServerPacket
         try
         {
             con = L2DatabaseFactory.getInstance().getConnection();
-            PreparedStatement statement = con.prepareStatement("SELECT account_name, obj_Id, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, rec_have, rec_left, accesslevel, online, char_slot, lastAccess, base_class, transform_id FROM characters WHERE account_name=?");
+            PreparedStatement statement = con.prepareStatement("SELECT account_name, charId, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, rec_have, rec_left, accesslevel, online, char_slot, lastAccess, base_class, transform_id FROM characters WHERE account_name=?");
             statement.setString(1, _loginName);
             ResultSet charList = statement.executeQuery();
             
@@ -237,7 +237,7 @@ public class CharSelectionInfo extends L2GameServerPacket
         try
         {
             con = L2DatabaseFactory.getInstance().getConnection();
-            PreparedStatement statement = con.prepareStatement("SELECT exp, sp, level FROM character_subclasses WHERE char_obj_id=? && class_id=? ORDER BY char_obj_id");
+            PreparedStatement statement = con.prepareStatement("SELECT exp, sp, level FROM character_subclasses WHERE charId=? && class_id=? ORDER BY charId");
             statement.setInt(1, ObjectId);
             statement.setInt(2, activeClassId);
             ResultSet charList = statement.executeQuery();
@@ -267,7 +267,7 @@ public class CharSelectionInfo extends L2GameServerPacket
     
     private CharSelectInfoPackage restoreChar(ResultSet chardata) throws Exception
     {
-        int objectId = chardata.getInt("obj_id");
+        int objectId = chardata.getInt("charId");
         String name = chardata.getString("char_name");
 
         // See if the char must be deleted

@@ -78,7 +78,7 @@ public final class RequestFriendInvite extends L2GameClientPacket
 		try
 		{
 		    con = L2DatabaseFactory.getInstance().getConnection();
-		    PreparedStatement statement = con.prepareStatement("SELECT char_id FROM character_friends WHERE char_id=? AND friend_id=?");
+		    PreparedStatement statement = con.prepareStatement("SELECT charId FROM character_friends WHERE charId=? AND friendId=?");
 		    statement.setInt(1, activeChar.getObjectId());
 		    statement.setInt(2, friend.getObjectId());
 		    ResultSet rset = statement.executeQuery();

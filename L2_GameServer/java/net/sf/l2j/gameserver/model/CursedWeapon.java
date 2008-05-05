@@ -137,7 +137,7 @@ public class CursedWeapon
 	    			statement.close();
 	    			/* Yesod: Skill is not stored into database any more.
 	    			// Delete the skill
-	    			statement = con.prepareStatement("DELETE FROM character_skills WHERE char_obj_id=? AND skill_id=?");
+	    			statement = con.prepareStatement("DELETE FROM character_skills WHERE charId=? AND skill_id=?");
 	    			statement.setInt(1, _playerId);
 	    			statement.setInt(2, _skillId);
 	    			if (statement.executeUpdate() != 1)
@@ -146,7 +146,7 @@ public class CursedWeapon
 	    			}
 					*/
 	    			// Restore the karma
-	    			statement = con.prepareStatement("UPDATE characters SET karma=?, pkkills=? WHERE obj_Id=?");
+	    			statement = con.prepareStatement("UPDATE characters SET karma=?, pkkills=? WHERE charId=?");
 	    			statement.setInt(1, _playerKarma);
 	    			statement.setInt(2, _playerPkKills);
 	    			statement.setInt(3, _playerId);
@@ -510,7 +510,7 @@ public class CursedWeapon
 
             if (_isActivated)
             {
-	            statement = con.prepareStatement("INSERT INTO cursed_weapons (itemId, playerId, playerKarma, playerPkKills, nbKills, endTime) VALUES (?, ?, ?, ?, ?, ?)");
+	            statement = con.prepareStatement("INSERT INTO cursed_weapons (itemId, charId, playerKarma, playerPkKills, nbKills, endTime) VALUES (?, ?, ?, ?, ?, ?)");
 	            statement.setInt(1, _itemId);
 	            statement.setInt(2, _playerId);
 	            statement.setInt(3, _playerKarma);

@@ -644,16 +644,16 @@ public class SevenSigns
     	try
     	{
 	    	con = L2DatabaseFactory.getInstance().getConnection();
-		    statement = con.prepareStatement("SELECT char_obj_id, cabal, seal, red_stones, green_stones, blue_stones, " +
+		    statement = con.prepareStatement("SELECT charId, cabal, seal, red_stones, green_stones, blue_stones, " +
 		    	"ancient_adena_amount, contribution_score FROM seven_signs");
 		    rset = statement.executeQuery();
 
 		    while (rset.next())
 		    {
-		    	int charObjId = rset.getInt("char_obj_id");
+		    	int charObjId = rset.getInt("charId");
 
 		    	StatsSet sevenDat = new StatsSet();
-				sevenDat.set("char_obj_id", charObjId);
+				sevenDat.set("charId", charObjId);
 				sevenDat.set("cabal", rset.getString("cabal"));
 				sevenDat.set("seal", rset.getInt("seal"));
 				sevenDat.set("red_stones", rset.getInt("red_stones"));
@@ -751,14 +751,14 @@ public class SevenSigns
 			for (StatsSet sevenDat : _signsPlayerData.values())
 		    {
 		    	if (player != null)
-		    		if (sevenDat.getInteger("char_obj_id") != player.getObjectId())
+		    		if (sevenDat.getInteger("charId") != player.getObjectId())
 		    			continue;
 
 		    	statement = con.prepareStatement(
 		    		"UPDATE seven_signs SET cabal=?, seal=?, red_stones=?, " +
 		    		"green_stones=?, blue_stones=?, " +
 		    		"ancient_adena_amount=?, contribution_score=? " +
-		    		"WHERE char_obj_id=?");
+		    		"WHERE charId=?");
 		    	statement.setString(1, sevenDat.getString("cabal"));
 		    	statement.setInt(2, sevenDat.getInteger("seal"));
 		    	statement.setInt(3, sevenDat.getInteger("red_stones"));
@@ -766,13 +766,13 @@ public class SevenSigns
 		    	statement.setInt(5, sevenDat.getInteger("blue_stones"));
 		    	statement.setDouble(6, sevenDat.getDouble("ancient_adena_amount"));
 		    	statement.setDouble(7, sevenDat.getDouble("contribution_score"));
-		    	statement.setInt(8, sevenDat.getInteger("char_obj_id"));
+		    	statement.setInt(8, sevenDat.getInteger("charId"));
 		    	statement.execute();
 
 		    	statement.close();
 
 				if (Config.DEBUG)
-					_log.info("SevenSigns: Updated data in database for char ID " + sevenDat.getInteger("char_obj_id") + " (" + sevenDat.getString("cabal") + ")");
+					_log.info("SevenSigns: Updated data in database for char ID " + sevenDat.getInteger("charId") + " (" + sevenDat.getString("cabal") + ")");
 		    }
 
 	        if (updateSettings)
@@ -847,7 +847,7 @@ public class SevenSigns
 		// Reset each player's contribution data as well as seal and cabal.
 		for (StatsSet sevenDat : _signsPlayerData.values())
 		{
-		    int charObjId = sevenDat.getInteger("char_obj_id");
+		    int charObjId = sevenDat.getInteger("charId");
 
 			// Reset the player's cabal and seal information
 			sevenDat.set("cabal", "");
@@ -901,7 +901,7 @@ public class SevenSigns
 		else
 		{
 			currPlayerData = new StatsSet();
-			currPlayerData.set("char_obj_id", charObjId);
+			currPlayerData.set("charId", charObjId);
 			currPlayerData.set("cabal", getCabalShortName(chosenCabal));
 			currPlayerData.set("seal", chosenSeal);
 			currPlayerData.set("red_stones", 0);
@@ -917,7 +917,7 @@ public class SevenSigns
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
 				statement = con.prepareStatement(
-		    		"INSERT INTO seven_signs (char_obj_id, cabal, seal) VALUES (?,?,?)");
+		    		"INSERT INTO seven_signs (charId, cabal, seal) VALUES (?,?,?)");
 				statement.setInt(1, charObjId);
 				statement.setString(2, getCabalShortName(chosenCabal));
 				statement.setInt(3, chosenSeal);
@@ -927,7 +927,7 @@ public class SevenSigns
 				con.close();
 
 				if (Config.DEBUG)
-					_log.info("SevenSigns: Inserted data in DB for char ID " + currPlayerData.getInteger("char_obj_id") + " (" + currPlayerData.getString("cabal") + ")");
+					_log.info("SevenSigns: Inserted data in DB for char ID " + currPlayerData.getInteger("charId") + " (" + currPlayerData.getString("cabal") + ")");
 			}
 			catch (SQLException e)
 			{

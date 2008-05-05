@@ -295,18 +295,18 @@ public class Olympiad
 
     private static final String OLYMPIAD_DATA_FILE = "config/olympiad.properties";
     public static final String OLYMPIAD_HTML_FILE = "data/html/olympiad/";
-    private static final String OLYMPIAD_LOAD_NOBLES = "SELECT * from olympiad_nobles";
+    private static final String OLYMPIAD_LOAD_NOBLES = "SELECT * FROM olympiad_nobles";
     private static final String OLYMPIAD_SAVE_NOBLES = "INSERT INTO olympiad_nobles " +
-            "values (?,?,?,?,?)";
-    private static final String OLYMPIAD_UPDATE_NOBLES = "UPDATE olympiad_nobles set " +
-            "olympiad_points = ?, competitions_done = ? where char_id = ?";
-    private static final String OLYMPIAD_GET_HEROS = "SELECT char_id, char_name from " +
-    		"olympiad_nobles where class_id = ? and competitions_done >= 9 order by " +
-    		"olympiad_points desc, competitions_done desc";
-    private static final String GET_EACH_CLASS_LEADER = "SELECT char_name from " +
-    		"olympiad_nobles where class_id = ? order by olympiad_points desc, " +
-    		"competitions_done desc";
-    private static final String OLYMPIAD_DELETE_ALL = "DELETE from olympiad_nobles";
+            "VALUES (?,?,?,?,?)";
+    private static final String OLYMPIAD_UPDATE_NOBLES = "UPDATE olympiad_nobles SET " +
+            "olympiad_points = ?, competitions_done = ? WHERE charId = ?";
+    private static final String OLYMPIAD_GET_HEROS = "SELECT charId, char_name FROM " +
+    		"olympiad_nobles WHERE class_id = ? AND competitions_done >= 9 ORDER BY " +
+    		"olympiad_points DESC, competitions_done DESC";
+    private static final String GET_EACH_CLASS_LEADER = "SELECT char_name FROM " +
+    		"olympiad_nobles WHERE class_id = ? ORDER BY olympiad_points DESC, " +
+    		"competitions_done DESC";
+    private static final String OLYMPIAD_DELETE_ALL = "DELETE FROM olympiad_nobles";
     private static final int[] HERO_IDS = {88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,
         106,107,108,109,110,111,112,113,114,115,116,117,118,131,132,133,134};
 
@@ -333,7 +333,7 @@ public class Olympiad
     private static final int DEFAULT_POINTS = 18;
     protected static final int WEEKLY_POINTS = 3;
 
-    public static final String CHAR_ID = "char_id";
+    public static final String CHAR_ID = "charId";
     public static final String CLASS_ID = "class_id";
     public static final String CHAR_NAME = "char_name";
     public static final String POINTS = "olympiad_points";

@@ -423,10 +423,10 @@ public class Quest extends ManagedScript
             con = L2DatabaseFactory.getInstance().getConnection();
             PreparedStatement statement;
             
-            PreparedStatement invalidQuestData      = con.prepareStatement("DELETE FROM character_quests WHERE char_id=? and name=?");
-            PreparedStatement invalidQuestDataVar   = con.prepareStatement("delete FROM character_quests WHERE char_id=? and name=? and var=?");
+            PreparedStatement invalidQuestData      = con.prepareStatement("DELETE FROM character_quests WHERE charId=? and name=?");
+            PreparedStatement invalidQuestDataVar   = con.prepareStatement("delete FROM character_quests WHERE charId=? and name=? and var=?");
             
-            statement = con.prepareStatement("SELECT name,value FROM character_quests WHERE char_id=? AND var=?");
+            statement = con.prepareStatement("SELECT name,value FROM character_quests WHERE charId=? AND var=?");
             statement.setInt(1, player.getObjectId());
             statement.setString(2, "<state>");
 			ResultSet rs = statement.executeQuery();
@@ -456,7 +456,7 @@ public class Quest extends ManagedScript
             statement.close();
 
             // Get list of quests owned by the player from the DB in order to add variables used in the quest.
-            statement = con.prepareStatement("SELECT name,var,value FROM character_quests WHERE char_id=? AND var<>?");
+            statement = con.prepareStatement("SELECT name,var,value FROM character_quests WHERE charId=? AND var<>?");
             statement.setInt(1,player.getObjectId());
             statement.setString(2, "<state>");
 			rs = statement.executeQuery();
@@ -612,7 +612,7 @@ public class Quest extends ManagedScript
         {
             con = L2DatabaseFactory.getInstance().getConnection();
             PreparedStatement statement;
-            statement = con.prepareStatement("INSERT INTO character_quests (char_id,name,var,value) VALUES (?,?,?,?)");
+            statement = con.prepareStatement("INSERT INTO character_quests (charId,name,var,value) VALUES (?,?,?,?)");
             statement.setInt   (1, qs.getPlayer().getObjectId());
             statement.setString(2, qs.getQuestName());
             statement.setString(3, var);
@@ -630,7 +630,7 @@ public class Quest extends ManagedScript
 	 * Update the value of the variable "var" for the quest.<BR><BR>
 	 * <U><I>Actions :</I></U><BR>
 	 * The selection of the right record is made with :
-	 * <LI>char_id = qs.getPlayer().getObjectID()</LI>
+	 * <LI>charId = qs.getPlayer().getObjectID()</LI>
 	 * <LI>name = qs.getQuest().getName()</LI>
 	 * <LI>var = var</LI>
 	 * <BR><BR>
@@ -646,7 +646,7 @@ public class Quest extends ManagedScript
         {
             con = L2DatabaseFactory.getInstance().getConnection();
             PreparedStatement statement;
-            statement = con.prepareStatement("UPDATE character_quests SET value=? WHERE char_id=? AND name=? AND var = ?");
+            statement = con.prepareStatement("UPDATE character_quests SET value=? WHERE charId=? AND name=? AND var = ?");
             statement.setString(1, value);
             statement.setInt   (2, qs.getPlayer().getObjectId());
             statement.setString(3, qs.getQuestName());
@@ -671,7 +671,7 @@ public class Quest extends ManagedScript
         {
             con = L2DatabaseFactory.getInstance().getConnection();
             PreparedStatement statement;
-            statement = con.prepareStatement("DELETE FROM character_quests WHERE char_id=? AND name=? AND var=?");
+            statement = con.prepareStatement("DELETE FROM character_quests WHERE charId=? AND name=? AND var=?");
             statement.setInt   (1, qs.getPlayer().getObjectId());
             statement.setString(2, qs.getQuestName());
             statement.setString(3, var);
@@ -694,7 +694,7 @@ public class Quest extends ManagedScript
         {
             con = L2DatabaseFactory.getInstance().getConnection();
             PreparedStatement statement;
-            statement = con.prepareStatement("DELETE FROM character_quests WHERE char_id=? AND name=?");
+            statement = con.prepareStatement("DELETE FROM character_quests WHERE charId=? AND name=?");
             statement.setInt   (1, qs.getPlayer().getObjectId());
             statement.setString(2, qs.getQuestName());
 			statement.executeUpdate();
@@ -712,7 +712,7 @@ public class Quest extends ManagedScript
 	 * Use fucntion createQuestVarInDb() with following parameters :<BR>
 	 * <LI>QuestState : parameter sq that puts in fields of database :
 	 * 	 <UL type="square">
-	 *     <LI>char_id : ID of the player</LI>
+	 *     <LI>charId : ID of the player</LI>
 	 *     <LI>name : name of the quest</LI>
 	 *   </UL>
 	 * </LI>

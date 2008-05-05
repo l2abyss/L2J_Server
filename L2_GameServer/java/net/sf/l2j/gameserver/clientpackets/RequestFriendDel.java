@@ -60,7 +60,7 @@ public final class RequestFriendDel extends L2GameClientPacket{
 		    ResultSet rset;
 		    if (friend != null)
             {
-    			statement = con.prepareStatement("SELECT friend_id FROM character_friends WHERE char_id=? and friend_id=?");
+    			statement = con.prepareStatement("SELECT friendId FROM character_friends WHERE charId=? and friendId=?");
     			statement.setInt(1, activeChar.getObjectId());
     			statement.setInt(2, friend.getObjectId());
     			rset = statement.executeQuery();
@@ -76,7 +76,7 @@ public final class RequestFriendDel extends L2GameClientPacket{
     			}
 		    } else
             {
-    			statement = con.prepareStatement("SELECT friend_id FROM character_friends, characters WHERE char_id=? AND friend_id=obj_id AND char_name=?");
+    			statement = con.prepareStatement("SELECT friendId FROM character_friends AS cf, characters AS c WHERE cf.charId=? AND cf.friendId=c.charId AND char_name=?");
     			statement.setInt(1, activeChar.getObjectId());
     			statement.setString(2, _name);
     			rset = statement.executeQuery();
@@ -92,11 +92,11 @@ public final class RequestFriendDel extends L2GameClientPacket{
     			}
 		    }
 
-			int objectId = rset.getInt("friend_id");
+			int objectId = rset.getInt("friendId");
 			statement.close();
             rset.close();
 
-			statement = con.prepareStatement("DELETE FROM character_friends WHERE (char_id=? AND friend_id=?) OR (char_id=? AND friend_id=?)");
+			statement = con.prepareStatement("DELETE FROM character_friends WHERE (charId=? AND friendId=?) OR (charId=? AND friendId=?)");
 			statement.setInt(1, activeChar.getObjectId());
 			statement.setInt(2, objectId);
 			statement.setInt(3, objectId);

@@ -229,7 +229,7 @@ public class L2ClanMember
 		try
         {
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE characters SET subpledge=? WHERE obj_Id=?");
+			PreparedStatement statement = con.prepareStatement("UPDATE characters SET subpledge=? WHERE charId=?");
 			statement.setLong(1, _pledgeType);
 			statement.setInt(2, getObjectId());
 			statement.execute();
@@ -279,7 +279,7 @@ public class L2ClanMember
 		try
         {
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE characters SET power_grade=? WHERE obj_Id=?");
+			PreparedStatement statement = con.prepareStatement("UPDATE characters SET power_grade=? WHERE charId=?");
 			statement.setLong(1, _powerGrade);
 			statement.setInt(2, getObjectId());
 			statement.execute();
@@ -493,7 +493,7 @@ public class L2ClanMember
          try
          {
              con = L2DatabaseFactory.getInstance().getConnection();
-             PreparedStatement statement = con.prepareStatement("UPDATE characters SET apprentice=?,sponsor=? WHERE obj_Id=?");
+             PreparedStatement statement = con.prepareStatement("UPDATE characters SET apprentice=?,sponsor=? WHERE charId=?");
              statement.setInt(1, apprentice);
              statement.setInt(2, sponsor);
              statement.setInt(3, getObjectId());

@@ -189,13 +189,13 @@ public class CursedWeaponsManager
 			// Retrieve the L2PcInstance from the characters table of the database
 			con = L2DatabaseFactory.getInstance().getConnection();
 
-			PreparedStatement statement = con.prepareStatement("SELECT itemId, playerId, playerKarma, playerPkKills, nbKills, endTime FROM cursed_weapons");
+			PreparedStatement statement = con.prepareStatement("SELECT itemId, charId, playerKarma, playerPkKills, nbKills, endTime FROM cursed_weapons");
 			ResultSet rset = statement.executeQuery();
 
 			while(rset.next())
 			{
 				int itemId        = rset.getInt("itemId");
-				int playerId      = rset.getInt("playerId");
+				int playerId      = rset.getInt("charId");
 				int playerKarma   = rset.getInt("playerKarma");
 				int playerPkKills = rset.getInt("playerPkKills");
 				int nbKills       = rset.getInt("nbKills");
@@ -278,7 +278,7 @@ public class CursedWeaponsManager
 
 						// Delete the skill
 						/*
-						statement = con.prepareStatement("DELETE FROM character_skills WHERE char_obj_id=? AND skill_id=");
+						statement = con.prepareStatement("DELETE FROM character_skills WHERE charId=? AND skill_id=");
 						statement.setInt(1, playerId);
 						statement.setInt(2, cw.getSkillId());
 						if (statement.executeUpdate() != 1)
@@ -287,7 +287,7 @@ public class CursedWeaponsManager
 						}
 						*/
 						// Restore the player's old karma and pk count
-		    			statement = con.prepareStatement("UPDATE characters SET karma=?, pkkills=? WHERE obj_Id=?");
+		    			statement = con.prepareStatement("UPDATE characters SET karma=?, pkkills=? WHERE charId=?");
 		    			statement.setInt(1, cw.getPlayerKarma());
 		    			statement.setInt(2, cw.getPlayerPkKills());
 		    			statement.setInt(3, playerId);

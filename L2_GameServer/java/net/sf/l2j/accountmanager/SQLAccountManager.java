@@ -228,7 +228,7 @@ public class SQLAccountManager
             
             // Get Accounts ID
             ResultSet rcln;
-            statement = con.prepareStatement("SELECT obj_Id, char_name, clanid FROM characters WHERE account_name=?;");
+            statement = con.prepareStatement("SELECT charId, char_name, clanid FROM characters WHERE account_name=?;");
             statement.setEscapeProcessing(true);
             statement.setString(1, account);
             rset = statement.executeQuery();
@@ -239,7 +239,7 @@ public class SQLAccountManager
             
             while (rset.next())
             {
-                objIds.add(rset.getString("obj_Id"));
+                objIds.add(rset.getString("charId"));
                 charNames.add(rset.getString("char_name"));
                 clanIds.add(rset.getString("clanid"));
             }
@@ -319,25 +319,25 @@ public class SQLAccountManager
                 
                 // skills
                 statement.close();
-                statement = con.prepareStatement("DELETE FROM character_skills WHERE char_obj_id=?;");
+                statement = con.prepareStatement("DELETE FROM character_skills WHERE charId=?;");
                 statement.setString(1, objIds.get(index));
                 statement.executeUpdate();
                 
                 // skills save
                 statement.close();
-                statement = con.prepareStatement("DELETE FROM character_skills_save WHERE char_obj_id=?;");
+                statement = con.prepareStatement("DELETE FROM character_skills_save WHERE charId=?;");
                 statement.setString(1, objIds.get(index));
                 statement.executeUpdate();
                 
                 // subclasses
                 statement.close();
-                statement = con.prepareStatement("DELETE FROM character_subclasses WHERE char_obj_id=?;");
+                statement = con.prepareStatement("DELETE FROM character_subclasses WHERE charId=?;");
                 statement.setString(1, objIds.get(index));
                 statement.executeUpdate();
                 
                 // shortcuts
                 statement.close();
-                statement = con.prepareStatement("DELETE FROM character_shortcuts WHERE char_obj_id=?;");
+                statement = con.prepareStatement("DELETE FROM character_shortcuts WHERE charId=?;");
                 statement.setString(1, objIds.get(index));
                 statement.executeUpdate();
                 
@@ -349,25 +349,25 @@ public class SQLAccountManager
                 
                 // recipebook
                 statement.close();
-                statement = con.prepareStatement("DELETE FROM character_recipebook WHERE char_id=?;");
+                statement = con.prepareStatement("DELETE FROM character_recipebook WHERE charId=?;");
                 statement.setString(1, objIds.get(index));
                 statement.executeUpdate();
                 
                 // quests
                 statement.close();
-                statement = con.prepareStatement("DELETE FROM character_quests WHERE char_id=?;");
+                statement = con.prepareStatement("DELETE FROM character_quests WHERE charId=?;");
                 statement.setString(1, objIds.get(index));
                 statement.executeUpdate();
                 
                 // macroses
                 statement.close();
-                statement = con.prepareStatement("DELETE FROM character_macroses WHERE char_obj_id=?;");
+                statement = con.prepareStatement("DELETE FROM character_macroses WHERE charId=?;");
                 statement.setString(1, objIds.get(index));
                 statement.executeUpdate();
                 
                 // friends
                 statement.close();
-                statement = con.prepareStatement("DELETE FROM character_friends WHERE char_id=?;");
+                statement = con.prepareStatement("DELETE FROM character_friends WHERE charId=?;");
                 statement.setString(1, objIds.get(index));
                 statement.executeUpdate();
                 
@@ -385,19 +385,19 @@ public class SQLAccountManager
                 
                 // hennas
                 statement.close();
-                statement = con.prepareStatement("DELETE FROM character_hennas WHERE char_obj_id=?;");
+                statement = con.prepareStatement("DELETE FROM character_hennas WHERE charId=?;");
                 statement.setString(1, objIds.get(index));
                 statement.executeUpdate();
                 
                 // recommends
                 statement.close();
-                statement = con.prepareStatement("DELETE FROM character_recommends WHERE char_id=?;");
+                statement = con.prepareStatement("DELETE FROM character_recommends WHERE charId=?;");
                 statement.setString(1, objIds.get(index));
                 statement.executeUpdate();
                 
                 // characters
                 statement.close();
-                statement = con.prepareStatement("DELETE FROM characters WHERE obj_Id=?;");
+                statement = con.prepareStatement("DELETE FROM characters WHERE charId=?;");
                 statement.setString(1, objIds.get(index));
                 statement.executeUpdate();
                 

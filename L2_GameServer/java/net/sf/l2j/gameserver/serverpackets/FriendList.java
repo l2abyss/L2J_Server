@@ -97,8 +97,8 @@ public class FriendList extends L2GameServerPacket
         
         try
         {
-            String sqlQuery = "SELECT friend_id, friend_name FROM character_friends WHERE " +
-            "char_id=" + _activeChar.getObjectId() + " ORDER BY friend_name ASC";
+            String sqlQuery = "SELECT friendId, friend_name FROM character_friends WHERE " +
+            "charId=" + _activeChar.getObjectId() + " ORDER BY friend_name ASC";
             
             con = L2DatabaseFactory.getInstance().getConnection();
             PreparedStatement statement = con.prepareStatement(sqlQuery);
@@ -109,7 +109,7 @@ public class FriendList extends L2GameServerPacket
             FriendStatus fs;
             while (rset.next())
             {
-                friendId = rset.getInt("friend_id");
+                friendId = rset.getInt("friendId");
                 friendName = rset.getString("friend_name");
                 
                 if (friendId == _activeChar.getObjectId())

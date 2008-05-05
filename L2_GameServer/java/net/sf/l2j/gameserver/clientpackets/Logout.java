@@ -116,7 +116,7 @@ public final class Logout extends L2GameClientPacket
 		try {
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
-			statement = con.prepareStatement("SELECT friend_name FROM character_friends WHERE char_id=?");
+			statement = con.prepareStatement("SELECT friend_name FROM character_friends WHERE charId=?");
 			statement.setInt(1, cha.getObjectId());
 			ResultSet rset = statement.executeQuery();
 

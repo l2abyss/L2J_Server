@@ -54,7 +54,7 @@ public final class RequestFriendList extends L2GameClientPacket
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT friend_id, friend_name FROM character_friends WHERE char_id=?");
+			PreparedStatement statement = con.prepareStatement("SELECT friendId, friend_name FROM character_friends WHERE charId=?");
 			statement.setInt(1, activeChar.getObjectId());
 
 			ResultSet rset = statement.executeQuery();
@@ -65,7 +65,7 @@ public final class RequestFriendList extends L2GameClientPacket
             L2PcInstance friend = null;
 			while (rset.next())
 			{
-				// int friendId = rset.getInt("friend_id");
+				// int friendId = rset.getInt("friendId");
 				String friendName = rset.getString("friend_name");
 				friend = L2World.getInstance().getPlayer(friendName);
 

@@ -197,13 +197,13 @@ public class Wedding implements IVoicedCommandHandler
         {
             con = L2DatabaseFactory.getInstance().getConnection();
             PreparedStatement statement;
-            statement = con.prepareStatement("SELECT friend_id FROM character_friends WHERE char_id=?");
+            statement = con.prepareStatement("SELECT friendId FROM character_friends WHERE charId=?");
             statement.setInt(1, ptarget.getObjectId());
             ResultSet rset = statement.executeQuery();
 
             while (rset.next())
             {
-                objectId = rset.getInt("friend_id");
+                objectId = rset.getInt("friendId");
                 if(objectId == activeChar.getObjectId())
                     FoundOnFriendList = true;
             }
