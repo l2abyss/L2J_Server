@@ -87,7 +87,8 @@ public abstract class L2Effect
         DISARM,
         CHARMOFCOURAGE,
         SIGNET_EFFECT,
-        SIGNET_GROUND
+        SIGNET_GROUND,
+        WARP
     }
 
     private static final Func[] _emptyFunctionSet = new Func[0];
