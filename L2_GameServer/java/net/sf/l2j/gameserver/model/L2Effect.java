@@ -88,7 +88,8 @@ public abstract class L2Effect
         CHARMOFCOURAGE,
         SIGNET_EFFECT,
         SIGNET_GROUND,
-        WARP
+        WARP,
+        SPOIL
     }
 
     private static final Func[] _emptyFunctionSet = new Func[0];
@@ -100,7 +101,7 @@ public abstract class L2Effect
 
     //member _effected is the instance of L2Character that was affected
     //by this effect.  Do not confuse with the instance of L2Character that
-    //catsed/used this effect.
+    //casted/used this effect.
     private final L2Character _effected;
 
     //the skill that was used.
