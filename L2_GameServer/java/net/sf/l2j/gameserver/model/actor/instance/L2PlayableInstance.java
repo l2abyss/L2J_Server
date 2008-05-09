@@ -36,9 +36,11 @@ import net.sf.l2j.gameserver.templates.L2CharTemplate;
 public abstract class L2PlayableInstance extends L2Character
 {
 
-	private boolean _isNoblesseBlessed = false; // for Noblesse Blessing skill, restores buffs after death
-	private boolean _getCharmOfLuck = false; // Charm of Luck - During a Raid/Boss war, decreased chance for death penalty
-	private boolean _isPhoenixBlessed = false; // for Soul of The Phoenix or Salvation buffs
+	private boolean _isNoblesseBlessed = false; 	// for Noblesse Blessing skill, restores buffs after death
+	private boolean _getCharmOfLuck = false; 		// Charm of Luck - During a Raid/Boss war, decreased chance for death penalty
+	private boolean _isPhoenixBlessed = false; 		// for Soul of The Phoenix or Salvation buffs
+	private boolean _isSilentMoving = false;		// Silent Move
+	
 	/**
 	 * Constructor of L2PlayableInstance (use L2Character constructor).<BR><BR>
 	 *
@@ -198,6 +200,22 @@ public abstract class L2PlayableInstance extends L2Character
        setIsPhoenixBlessed(false);
        updateAbnormalEffect();
     }
+
+	/**
+	 * Set the Silent Moving mode Flag.<BR><BR>
+	 */
+	public void setSilentMoving(boolean flag)
+	{
+		_isSilentMoving = flag;
+	}
+
+	/**
+	 * Return True if the Silent Moving mode is active.<BR><BR>
+	 */
+	public boolean isSilentMoving()
+	{
+		return _isSilentMoving;
+	}
 
 	public abstract boolean destroyItemByItemId(String process, int itemId, int count, L2Object reference, boolean sendMessage);
 	public abstract boolean destroyItem(String process, int objectId, int count, L2Object reference, boolean sendMessage);

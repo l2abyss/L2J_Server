@@ -44,6 +44,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2MinionInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RaidBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RiftInvaderInstance;
 import net.sf.l2j.gameserver.model.quest.Quest;
@@ -160,15 +161,19 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
         if (_selfAnalysis.cannotMoveOnLand && !target.isInsideZone(L2Character.ZONE_WATER))
             return false;
 
+        // Check if the target is a L2PlayableInstance
+        if (target instanceof L2PlayableInstance)
+        {
+        	// Check if the AI isn't a Raid Boss and the target isn't in silent move mode
+            if (!(me instanceof L2RaidBossInstance) && ((L2PlayableInstance)target).isSilentMoving())
+                return false;
+        }
+        
         // Check if the target is a L2PcInstance
         if (target instanceof L2PcInstance)
         {
             // Don't take the aggro if the GM has the access level below or equal to GM_DONT_TAKE_AGGRO
             if (((L2PcInstance)target).isGM() && ((L2PcInstance)target).getAccessLevel() <= Config.GM_DONT_TAKE_AGGRO)
-                return false;
-
-            // Check if the AI isn't a Raid Boss and the target isn't in silent move mode
-            if (!(me instanceof L2RaidBossInstance) && ((L2PcInstance)target).isSilentMoving())
                 return false;
 
             // TODO: Ideally, autoattack condition should be called from the AI script.  In that case,

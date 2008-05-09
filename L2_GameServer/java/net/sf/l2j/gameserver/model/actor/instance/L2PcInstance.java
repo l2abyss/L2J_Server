@@ -431,7 +431,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
 	public boolean _exploring = false;
 
-	private boolean _isSilentMoving = false;
+	
 
 	private boolean _inCrystallize;
 
@@ -8281,22 +8281,6 @@ public final class L2PcInstance extends L2PlayableInstance
 	public L2FolkInstance getLastFolkNPC()
 	{
 		return _lastFolkNpc;
-	}
-
-	/**
-	 * Set the Silent Moving mode Flag.<BR><BR>
-	 */
-	public void setSilentMoving(boolean flag)
-	{
-		_isSilentMoving = flag;
-	}
-
-	/**
-	 * Return True if the Silent Moving mode is active.<BR><BR>
-	 */
-	public boolean isSilentMoving()
-	{
-		return _isSilentMoving;
 	}
 
 	/**

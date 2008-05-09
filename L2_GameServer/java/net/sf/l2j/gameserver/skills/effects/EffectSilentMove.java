@@ -17,7 +17,7 @@ package net.sf.l2j.gameserver.skills.effects;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2Skill.SkillType;
-import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
@@ -36,8 +36,8 @@ final class EffectSilentMove extends L2Effect
 		super.onStart();
 
 		L2Character effected = getEffected();
-		if (effected instanceof L2PcInstance)
-			((L2PcInstance)effected).setSilentMoving(true);
+		if (effected instanceof L2PlayableInstance)
+			((L2PlayableInstance)effected).setSilentMoving(true);
 	}
 
 	/** Notify exited */
@@ -47,8 +47,8 @@ final class EffectSilentMove extends L2Effect
 		super.onExit();
 
 		L2Character effected = getEffected();
-		if (effected instanceof L2PcInstance)
-			((L2PcInstance)effected).setSilentMoving(false);
+		if (effected instanceof L2PlayableInstance)
+			((L2PlayableInstance)effected).setSilentMoving(false);
 	}
 
 	@Override
