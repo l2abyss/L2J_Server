@@ -1438,6 +1438,17 @@ public abstract class L2Character extends L2Object
 					return;
 				break;
 			}
+			case SUMMON:
+			{
+				if (this instanceof L2PcInstance && (((L2PcInstance)this).getPet() != null || ((L2PcInstance)this).isMounted()))
+				{
+					if (Config.DEBUG)
+						_log.fine("player has a pet already. ignore summon skill");
+					
+					sendPacket(new SystemMessage(SystemMessageId.YOU_ALREADY_HAVE_A_PET));
+					return;
+				}
+			}
 		}
 
 		// Check if the skill is a magic spell and if the L2Character is not muted
