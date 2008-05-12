@@ -31,18 +31,18 @@ import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.StatsSet;
 
-public class L2SkillSummon extends L2Skill {
+public class L2SkillSummon extends L2Skill
+{
 
 	private int     _npcId;
 	private float   _expPenalty;
-	private boolean _isCubic;
 
-	public L2SkillSummon(StatsSet set) {
+	public L2SkillSummon(StatsSet set)
+	{
 		super(set);
 
 		_npcId      = set.getInteger("npcId", 0); // default for undescribed skills
 		_expPenalty = set.getFloat ("expPenalty", 0.f);
-		_isCubic    = set.getBool  ("isCubic", false);
 	}
 
 	public boolean checkCondition(L2Character activeChar)
@@ -50,7 +50,8 @@ public class L2SkillSummon extends L2Skill {
 		if (activeChar instanceof L2PcInstance)
 		{
 			L2PcInstance player = (L2PcInstance)activeChar;
-			if (_isCubic) {
+			if (isCubic())
+			{
 				if (getTargetType() != L2Skill.SkillTargetType.TARGET_SELF)
 				{
 					return true; //Player is always able to cast mass cubic skill
@@ -92,7 +93,8 @@ public class L2SkillSummon extends L2Skill {
 			return;
 		}
 
-		if (_isCubic) {
+		if (isCubic())
+		{
 			if (targets.length > 1) //Mass cubic skill
 			{
 				for (L2Object obj: targets)

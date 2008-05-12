@@ -1440,7 +1440,7 @@ public abstract class L2Character extends L2Object
 			}
 			case SUMMON:
 			{
-				if (this instanceof L2PcInstance && (((L2PcInstance)this).getPet() != null || ((L2PcInstance)this).isMounted()))
+				if (!skill.isCubic() && this instanceof L2PcInstance &&(((L2PcInstance)this).getPet() != null || ((L2PcInstance)this).isMounted()))
 				{
 					if (Config.DEBUG)
 						_log.fine("player has a pet already. ignore summon skill");
