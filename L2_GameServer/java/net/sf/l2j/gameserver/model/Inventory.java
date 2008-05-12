@@ -75,10 +75,6 @@ public abstract class Inventory extends ItemContainer
     public static final int PAPERDOLL_RBRACELET = 22;
     public static final int PAPERDOLL_LBRACELET = 23;
     public static final int PAPERDOLL_DECO = 24;
-    
-    int skill_Id;
-    int skillLvl;
-    L2Skill _itemSkill = null;
 
     //Speed percentage mods
     public static final double MAX_ARMOR_WEIGHT = 12000;
@@ -256,6 +252,9 @@ public abstract class Inventory extends ItemContainer
 	        	return;
 
 	        L2Skill enchant4Skill = null;
+	        L2Skill _itemSkill = null;
+	        int skill_Id = 0;
+	        int skillLvl = 0;
 			L2Item it = item.getItem();
 
 			if(it instanceof L2Weapon)
@@ -321,6 +320,7 @@ public abstract class Inventory extends ItemContainer
 				player.sendSkillList(); 
 			}
     	}
+    	
     	public void notifyEquiped(int slot, L2ItemInstance item)
     	{
 			L2PcInstance player;
@@ -333,7 +333,9 @@ public abstract class Inventory extends ItemContainer
 	        	return;
 	        
 			L2Skill enchant4Skill = null;
-			
+			L2Skill _itemSkill = null;
+			int skill_Id = 0;
+		    int skillLvl = 0;
 			L2Item it = item.getItem();
 			
 			if(it instanceof L2Weapon)
@@ -401,6 +403,7 @@ public abstract class Inventory extends ItemContainer
 					}
 				}
 			}
+			
     	}
     }
     
