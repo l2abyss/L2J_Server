@@ -440,14 +440,14 @@ public class Potions implements IItemHandler
 
 	public boolean usePotion(L2PcInstance activeChar, int magicId, int level)
 	{
-		if (activeChar.isCastingNow() && magicId>2277 && magicId<2285)
+		if (activeChar.isCastingNow() && magicId > 2277 && magicId < 2286)
 		{
 			_herbstask += 100;
 			ThreadPoolManager.getInstance().scheduleAi(new HerbTask(activeChar, magicId, level), _herbstask);
 		}
 		else
 		{
-			if (magicId>2277 && magicId<2285 && _herbstask>=100) _herbstask -= 100;
+			if (magicId > 2277 && magicId < 2286 && _herbstask >= 100) _herbstask -= 100;
 			L2Skill skill = SkillTable.getInstance().getInfo(magicId, level);
 			if (skill != null)
 			{
