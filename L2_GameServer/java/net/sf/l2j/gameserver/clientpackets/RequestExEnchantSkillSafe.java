@@ -163,7 +163,7 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
                     sm.addSkillName(_skillId);
                     player.sendPacket(sm);
                 }
-                trainer.showEnchantSkillList(player, false);
+                trainer.showEnchantSkillList(player, true);
                 
                 this.updateSkillShortcuts(player);
             }
