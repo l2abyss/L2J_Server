@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
+import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.entity.Fort;
 
 /**
@@ -27,16 +28,14 @@ import net.sf.l2j.gameserver.model.entity.Fort;
  */
 public class ExShowFortressInfo extends L2GameServerPacket
 {
-
-    /**
+    private static final Logger _log = Logger.getLogger(ExShowFortressInfo.class.getName());
+	
+	/**
      * @see net.sf.l2j.gameserver.serverpackets.L2GameServerPacket#getType()
      */
-	private static Logger _log = Logger.getLogger(ExShowFortressInfo.class.getName());
-	
     @Override
     public String getType()
     {
-        // TODO Auto-generated method stub
         return "[S] FE:15 ExShowFortressInfo";
     }
 
@@ -55,21 +54,30 @@ public class ExShowFortressInfo extends L2GameServerPacket
             writeD(fort.getFortId());
             if (fort.getOwnerId() > 0)
             {
-                if (ClanTable.getInstance().getClan(fort.getOwnerId()) != null)
-                    writeS(ClanTable.getInstance().getClan(fort.getOwnerId()).getName());
+                L2Clan clan = ClanTable.getInstance().getClan(fort.getOwnerId());
+                if (clan != null)
+                {
+                    writeS(clan.getName());
+                }
                 else
                 {
-                    _log.warning("Null owner for fortress: " + fort.getName());
+                    _log.warning("No owner clan for fortress: "+fort.getName()+" - Owner Id: "+fort.getOwnerId());
                     writeS("");
                 }
             }
             else
+            {
                 writeS("");
+            }
             
             if ((fort.getSiege().getIsScheduled()) || (fort.getSiege().getIsInProgress()))
+            {
                 writeD(1);
+            }
             else
+            {
             	writeD(0);
+            }
             
             // Time of possession
             writeD(fort.getOwnedTime());

@@ -137,7 +137,8 @@ public final class RequestActionUse extends L2GameClientPacket
                     _log.fine("new move type: "+(activeChar.isRunning() ? "RUNNING" : "WALKIN"));
                 break;
             case 10:
-                activeChar.tryOpenPrivateSellStore();
+                // Private Store Sell
+                activeChar.tryOpenPrivateSellStore(false);
                 break;
             case 28:
                 activeChar.tryOpenPrivateBuyStore();
@@ -380,6 +381,10 @@ public final class RequestActionUse extends L2GameClientPacket
                     pet.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO,
                             new L2CharPosition(target.getX(),target.getY(), target.getZ(), 0 ));
                 }
+                break;
+            case 61:
+                // Private Store Package Sell
+                activeChar.tryOpenPrivateSellStore(true);
                 break;
             case 96: // Quit Party Command Channel
                 _log.info("98 Accessed");

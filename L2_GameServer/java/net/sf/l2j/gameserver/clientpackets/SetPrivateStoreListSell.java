@@ -18,6 +18,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.TradeList;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.serverpackets.ExPrivateStoreSetWholeMsg;
 import net.sf.l2j.gameserver.serverpackets.PrivateStoreManageListSell;
 import net.sf.l2j.gameserver.serverpackets.PrivateStoreMsgSell;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
@@ -71,7 +72,7 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 	{
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null) return;
-
+		
         if (Config.GM_DISABLE_TRANSACTION && player.getAccessLevel() >= Config.GM_TRANSACTION_MIN && player.getAccessLevel() <= Config.GM_TRANSACTION_MAX)
         {
             player.sendMessage("Transactions are disable for your Access Level");
@@ -101,18 +102,30 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
         // Check maximum number of allowed slots for pvt shops
         if (_count > player.getPrivateSellStoreLimit())
         {
-        	player.sendPacket(new PrivateStoreManageListSell(player));
+        	player.sendPacket(new PrivateStoreManageListSell(player, _packageSale));
             player.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED));
             return;
         }
 
 		player.sitDown();
 		if (_packageSale)
+		{
 			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_PACKAGE_SELL);
+		}
 		else
+		{
 			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_SELL);
+		}
 		player.broadcastUserInfo();
-		player.broadcastPacket(new PrivateStoreMsgSell(player));
+		
+		if (_packageSale)
+		{
+		    player.broadcastPacket(new ExPrivateStoreSetWholeMsg(player));
+		}
+		else
+		{
+		    player.broadcastPacket(new PrivateStoreMsgSell(player));
+		}
 	}
 
 	@Override

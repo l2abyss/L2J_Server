@@ -4111,7 +4111,7 @@ public final class L2PcInstance extends L2PlayableInstance
         }
     }
     
-    public void tryOpenPrivateSellStore()
+    public void tryOpenPrivateSellStore(boolean isPackageSale)
     {
         // Player shouldn't be able to set stores if he/she is alike dead (dead or fake death)
         if (this.canOpenPrivateStore())
@@ -4131,7 +4131,7 @@ public final class L2PcInstance extends L2PlayableInstance
                     this.standUp();
                 }
                 this.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_SELL + 1);
-                this.sendPacket(new PrivateStoreManageListSell(this));
+                this.sendPacket(new PrivateStoreManageListSell(this, isPackageSale));
             }
         }
         else
