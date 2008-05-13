@@ -554,6 +554,7 @@ public final class Config
     public static int[]		TVT_EVENT_TEAM_2_COORDINATES = new int[3];
     public static List<int[]>	TVT_EVENT_REWARDS = new FastList<int[]>();
     public static boolean	TVT_EVENT_TARGET_TEAM_MEMBERS_ALLOWED;
+    public static boolean	TVT_EVENT_SCROLL_ALLOWED;
     public static boolean	TVT_EVENT_POTIONS_ALLOWED;
     public static boolean	TVT_EVENT_SUMMON_BY_ITEM_ALLOWED;
     public static List<Integer>	TVT_EVENT_DOOR_IDS = new FastList<Integer>();
@@ -1707,7 +1708,8 @@ public final class Config
                                 }
 
                                 TVT_EVENT_TARGET_TEAM_MEMBERS_ALLOWED	= Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventTargetTeamMembersAllowed", "true"));
-                        		TVT_EVENT_POTIONS_ALLOWED				= Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventPotionsAllowed", "false"));
+                                TVT_EVENT_SCROLL_ALLOWED				= Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventScrollAllowed", "false"));
+                                TVT_EVENT_POTIONS_ALLOWED				= Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventPotionsAllowed", "false"));
                         		TVT_EVENT_SUMMON_BY_ITEM_ALLOWED		= Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventSummonByItemAllowed", "false"));
                         		propertySplit							= L2JModSettings.getProperty("TvTEventDoorsCloseOpenOnStartEnd", "").split(";");
 
@@ -1731,7 +1733,6 @@ public final class Config
                 BANKING_SYSTEM_ENABLED	= Boolean.parseBoolean(L2JModSettings.getProperty("BankingEnabled", "false"));
                 BANKING_SYSTEM_GOLDBARS	= Integer.parseInt(L2JModSettings.getProperty("BankingGoldbarCount", "1"));
                 BANKING_SYSTEM_ADENA	= Integer.parseInt(L2JModSettings.getProperty("BankingAdenaCount", "500000000"));
-
             }
             catch (Exception e)
             {

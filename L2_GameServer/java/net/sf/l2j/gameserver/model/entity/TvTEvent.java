@@ -497,8 +497,26 @@ public class TvTEvent {
 			return false;
 		}
 
-		if (	playerTeamId != -1 && targetedPlayerTeamId != -1 && playerTeamId == targetedPlayerTeamId &&
-				!Config.TVT_EVENT_TARGET_TEAM_MEMBERS_ALLOWED ) {
+		if (playerTeamId != -1 && targetedPlayerTeamId != -1 && playerTeamId == targetedPlayerTeamId && playerInstance.getObjectId() != targetedPlayerObjectId && !Config.TVT_EVENT_TARGET_TEAM_MEMBERS_ALLOWED )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	
+	/**
+	 * Called on every scroll use<br><br>
+	 *
+	 * @param playerName as String<br>
+	 * @return boolean: true if player is allowed to use scroll, otherwise false<br>
+	 */
+	public static boolean onScrollUse( int playerObjectId ) {
+		if ( !isStarted() ) {
+			return true;
+		}
+
+		if ( isPlayerParticipant( playerObjectId ) && !Config.TVT_EVENT_POTIONS_ALLOWED ) {
 			return false;
 		}
 
