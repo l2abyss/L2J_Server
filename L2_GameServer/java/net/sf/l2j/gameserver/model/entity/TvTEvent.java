@@ -178,26 +178,27 @@ public class TvTEvent {
 	 */
 	public static String calculateRewards()
 	{
-		if (_teams[ 0 ].getPoints() == _teams[ 1 ].getPoints()) {
+		if (_teams[ 0 ].getPoints() == _teams[ 1 ].getPoints())
+		{
 			// Check if one of the teams have no more players left
-			if ( _teams[ 0 ].getParticipatedPlayerCount() == 0 || _teams[ 1 ].getParticipatedPlayerCount() == 0 ) {
+			if ( _teams[ 0 ].getParticipatedPlayerCount() == 0 || _teams[ 1 ].getParticipatedPlayerCount() == 0 )
+			{
 				// set state to rewarding
 				setState(EventState.REWARDING);
 				// return here, the fight can't be completed
-				return "TvT Event: Event finish. No team won, cause of inactivity!";
+				return "TvT Event: Event has ended. No team won due to inactivity!";
 			}
 
 			// Both teams have equals points
-			sysMsgToAllParticipants("TvT Event: Both teams are at a tie, next team to get a kill wins!");
-		}
-
-		// Wait till one of the teams make a kill
-		while ( _teams[ 0 ].getPoints() == _teams[ 1 ].getPoints() ) {
-			try {
-				// We don't want to stress CPU to much
-				Thread.sleep(1);
-			} catch ( InterruptedException ie ) {
+			sysMsgToAllParticipants("TvT Event: Event has ended, both teams have tied.");
+			if (Config.TVT_REWARD_TEAM_TIE)
+			{
+				rewardTeamOne();
+				rewardTeamTwo();
+				return "TvT Event: Event has ended with both teams tying.";
 			}
+			else 
+				return "TvT Event: Event has ended with both teams tying.";
 		}
 
 		// Set state REWARDING so nobody can point anymore
@@ -205,7 +206,70 @@ public class TvTEvent {
 
 		// Get team which has more points
 		TvTEventTeam team = _teams[ _teams[ 0 ].getPoints() > _teams[ 1 ].getPoints() ? 0 : 1 ];
+		
+		if (team == _teams[0])
+			rewardTeamOne();
+		else
+			rewardTeamTwo();
+			
+		return "TvT Event: Event finish. Team " + team.getName() + " won with " + team.getPoints() + " kills.";
+	}
+	
+	private static void rewardTeamOne()
+	{
+		TvTEventTeam team = _teams[0];
+		// Iterate over all participated player instances of the winning team
+		for ( L2PcInstance playerInstance : team.getParticipatedPlayers().values() ) {
+			// Check for nullpointer
+			if ( playerInstance == null )
+			{
+				continue;
+			}
 
+			SystemMessage systemMessage = null;
+
+			// Iterate over all tvt event rewards
+			for ( int[] reward : Config.TVT_EVENT_REWARDS ) {
+				PcInventory inv = playerInstance.getInventory();
+
+				// Check for stackable item, non stackabe items need to be added one by one
+				if ( ItemTable.getInstance().createDummyItem( reward[ 0 ] ).isStackable() ) {
+					inv.addItem( "TvT Event", reward[ 0 ], reward[ 1 ], playerInstance, playerInstance );
+
+					if ( reward[ 1 ] > 1 ) {
+						systemMessage = new SystemMessage( SystemMessageId.EARNED_S2_S1_S );
+						systemMessage.addItemName( reward[ 0 ] );
+						systemMessage.addNumber( reward[ 1 ] );
+					} else {
+						systemMessage = new SystemMessage( SystemMessageId.EARNED_ITEM );
+						systemMessage.addItemName( reward[ 0 ] );
+					}
+
+					playerInstance.sendPacket( systemMessage );
+				} else {
+					for ( int i = 0;i < reward[ 1 ];++ i ) {
+						inv.addItem( "TvT Event", reward[ 0 ], 1, playerInstance, playerInstance );
+						systemMessage = new SystemMessage( SystemMessageId.EARNED_ITEM );
+						systemMessage.addItemName( reward[ 0 ] );
+						playerInstance.sendPacket( systemMessage );
+					}
+				}
+			}
+
+			StatusUpdate statusUpdate = new StatusUpdate( playerInstance.getObjectId() );
+			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage( 0 );
+
+			statusUpdate.addAttribute( StatusUpdate.CUR_LOAD, playerInstance.getCurrentLoad() );
+			npcHtmlMessage.setHtml( "<html><head><title>TvT Event</title></head><body>Your team won the event. Look in your inventory, there should be your reward.</body></html>" );
+			playerInstance.sendPacket( statusUpdate );
+			playerInstance.sendPacket( npcHtmlMessage );
+		}
+	}
+	
+	private static void rewardTeamTwo()
+	{
+		TvTEventTeam team = _teams[1];
+		
 		// Iterate over all participated player instances of the winning team
 		for ( L2PcInstance playerInstance : team.getParticipatedPlayers().values() ) {
 			// Check for nullpointer
@@ -251,8 +315,6 @@ public class TvTEvent {
 			playerInstance.sendPacket( statusUpdate );
 			playerInstance.sendPacket( npcHtmlMessage );
 		}
-
-		return "TvT Event: Event finish. Team " + team.getName() + " won with " + team.getPoints() + " kills.";
 	}
 
 	/**

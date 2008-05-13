@@ -558,6 +558,7 @@ public final class Config
     public static boolean	TVT_EVENT_POTIONS_ALLOWED;
     public static boolean	TVT_EVENT_SUMMON_BY_ITEM_ALLOWED;
     public static List<Integer>	TVT_EVENT_DOOR_IDS = new FastList<Integer>();
+    public static boolean	TVT_REWARD_TEAM_TIE;
     public static byte		TVT_EVENT_MIN_LVL;
     public static byte		TVT_EVENT_MAX_LVL;
     public static boolean	L2JMOD_ALLOW_WEDDING;
@@ -1711,6 +1712,7 @@ public final class Config
                                 TVT_EVENT_SCROLL_ALLOWED				= Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventScrollAllowed", "false"));
                                 TVT_EVENT_POTIONS_ALLOWED				= Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventPotionsAllowed", "false"));
                         		TVT_EVENT_SUMMON_BY_ITEM_ALLOWED		= Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventSummonByItemAllowed", "false"));
+                        		TVT_REWARD_TEAM_TIE						= Boolean.parseBoolean(L2JModSettings.getProperty("TvTRewardTeamTie", "false"));
                         		propertySplit							= L2JModSettings.getProperty("TvTEventDoorsCloseOpenOnStartEnd", "").split(";");
 
                         		for (String door : propertySplit)
