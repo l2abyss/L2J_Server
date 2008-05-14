@@ -3771,6 +3771,45 @@ public final class L2PcInstance extends L2PlayableInstance
 		Broadcast.toKnownPlayers(this, new NicknameChanged(this));
 	}
 
+	@Override
+	public final void broadcastPacket(L2GameServerPacket mov)
+	{
+		if (!(mov instanceof CharInfo))
+			sendPacket(mov);
+
+		for (L2PcInstance player : getKnownList().getKnownPlayers().values())
+		{
+			player.sendPacket(mov);
+			if (mov instanceof CharInfo)
+			{
+				int relation = getRelation(player);
+				if (getKnownList().getKnownRelations().get(player.getObjectId()) != null && getKnownList().getKnownRelations().get(player.getObjectId()) != relation)
+				player.sendPacket(new RelationChanged(this, relation, player.isAutoAttackable(this)));
+			}
+		}
+	}
+
+	@Override
+	public void broadcastPacket(L2GameServerPacket mov, int radiusInKnownlist)
+	{
+		if (!(mov instanceof CharInfo))
+			sendPacket(mov);
+
+		for (L2PcInstance player : getKnownList().getKnownPlayers().values())
+		{
+			if (isInsideRadius(player, radiusInKnownlist, false, false))
+			{
+				player.sendPacket(mov);
+				if (mov instanceof CharInfo)
+				{
+					int relation = getRelation(player);
+					if (getKnownList().getKnownRelations().get(player.getObjectId()) != null && getKnownList().getKnownRelations().get(player.getObjectId()) != relation)
+					player.sendPacket(new RelationChanged(this, relation, player.isAutoAttackable(this)));
+				}
+			}
+		}
+	}
+
 	/**
 	 * Return the Alliance Identifier of the L2PcInstance.<BR><BR>
 	 */
