@@ -82,7 +82,6 @@ import net.sf.l2j.gameserver.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.serverpackets.Attack;
 import net.sf.l2j.gameserver.serverpackets.ChangeMoveType;
 import net.sf.l2j.gameserver.serverpackets.ChangeWaitType;
-import net.sf.l2j.gameserver.serverpackets.CharInfo;
 import net.sf.l2j.gameserver.serverpackets.EtcStatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.FlyToLocation;
 import net.sf.l2j.gameserver.serverpackets.L2GameServerPacket;
@@ -311,9 +310,9 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * This will return true if the player is transformed,<br>
-	 * but if the player is not transformed it will return false.
-	 * @return transformation status
+	 * This will untransform a player if they are an instance of L2Pcinstance
+	 * and if they are transformed.
+	 * @return untransform
 	 */
 	public void charUntransform()
 	{
