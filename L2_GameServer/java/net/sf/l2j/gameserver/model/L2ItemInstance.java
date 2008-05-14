@@ -205,6 +205,16 @@ public final class L2ItemInstance extends L2Object
 			record.setParameters(new Object[]{this, creator, reference});
 			_logItems.log(record);
 		}
+		
+		if (creator != null)
+		{
+			if (creator.isGM())
+			{
+				String targetName = (creator.getTarget() != null?creator.getTarget().getName():"no-target");
+				String referenceName = (reference.getName() != null?reference.getName():"no-name");
+				GMAudit.auditGMAction(creator.getName(), process + "(id: "+getItemId()+" name: "+getName()+")", targetName, "L2Object referencing this action is: " + referenceName);
+			}
+		}
 	}
 
 	/**
@@ -317,6 +327,16 @@ public final class L2ItemInstance extends L2Object
 			record.setLoggerName("item");
 			record.setParameters(new Object[]{this, creator, reference});
 			_logItems.log(record);
+		}
+		
+		if (creator != null)
+		{
+			if (creator.isGM())
+			{
+				String targetName = (creator.getTarget() != null?creator.getTarget().getName():"no-target");
+				String referenceName = (reference.getName() != null?reference.getName():"no-name");
+				GMAudit.auditGMAction(creator.getName(), process + "(id: "+getItemId()+" name: "+getName()+" count: "+count+")", targetName, "L2Object referencing this action is: " + referenceName);
+			}
 		}
 	}
 
