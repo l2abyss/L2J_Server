@@ -73,7 +73,7 @@ public abstract class L2ZoneType
 	{
 		_checkAffected = true;
 
-		// Minimum leve
+		// Minimum level
 		if (name.equals("affectedLvlMin"))
 		{
 			_minLvl = Integer.parseInt(value);
@@ -231,7 +231,7 @@ public abstract class L2ZoneType
 	}
 
 	/**
-	 * Checks if the given obejct is inside the zone.
+	 * Checks if the given object is inside the zone.
 	 *
 	 * @param object
 	 */
@@ -252,7 +252,7 @@ public abstract class L2ZoneType
 
 	public void revalidateInZone(L2Character character)
 	{
-		// If the character cant be affected by this zone return
+		// If the character can't be affected by this zone return
 		if (_checkAffected)
 		{
 			if (!isAffected(character)) return;

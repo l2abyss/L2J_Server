@@ -210,8 +210,12 @@ public final class L2ItemInstance extends L2Object
 		{
 			if (creator.isGM())
 			{
+				String referenceName = "no-reference";
+				if (reference != null)
+				{
+					referenceName = (reference.getName() != null?reference.getName():"no-name");
+				}
 				String targetName = (creator.getTarget() != null?creator.getTarget().getName():"no-target");
-				String referenceName = (reference.getName() != null?reference.getName():"no-name");
 				GMAudit.auditGMAction(creator.getName(), process + "(id: "+getItemId()+" name: "+getName()+")", targetName, "L2Object referencing this action is: " + referenceName);
 			}
 		}
@@ -333,8 +337,12 @@ public final class L2ItemInstance extends L2Object
 		{
 			if (creator.isGM())
 			{
+				String referenceName = "no-reference";
+				if (reference != null)
+				{
+					referenceName = (reference.getName() != null?reference.getName():"no-name");
+				}
 				String targetName = (creator.getTarget() != null?creator.getTarget().getName():"no-target");
-				String referenceName = (reference.getName() != null?reference.getName():"no-name");
 				GMAudit.auditGMAction(creator.getName(), process + "(id: "+getItemId()+" name: "+getName()+" count: "+count+")", targetName, "L2Object referencing this action is: " + referenceName);
 			}
 		}

@@ -729,8 +729,12 @@ public class ItemTable
 		{
 			if (actor.isGM())
 			{
+				String referenceName = "no-reference";
+				if (reference != null)
+				{
+					referenceName = (reference.getName() != null?reference.getName():"no-name");
+				}
 				String targetName = (actor.getTarget() != null?actor.getTarget().getName():"no-target");
-				String referenceName = (reference.getName() != null?reference.getName():"no-name");
 				GMAudit.auditGMAction(actor.getName(), process + "(id: " + itemId + " count: "+count+")", targetName, "L2Object referencing this action is: " + referenceName);
 			}
 		}
@@ -810,8 +814,12 @@ public class ItemTable
 			{
 				if (actor.isGM())
 				{
+					String referenceName = "no-reference";
+					if (reference != null)
+					{
+						referenceName = (reference.getName() != null?reference.getName():"no-name");
+					}
 					String targetName = (actor.getTarget() != null?actor.getTarget().getName():"no-target");
-					String referenceName = (reference.getName() != null?reference.getName():"no-name");
 					GMAudit.auditGMAction(actor.getName(), process + "(id: " + item.getItemId() + " count: "+item.getCount()+" itemObjId: " +item.getObjectId()+")", targetName, "L2Object referencing this action is: " + referenceName);
 				}
 			}
