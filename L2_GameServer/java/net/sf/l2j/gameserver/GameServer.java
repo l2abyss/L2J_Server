@@ -65,6 +65,7 @@ import net.sf.l2j.gameserver.datatables.TeleportLocationTable;
 import net.sf.l2j.gameserver.datatables.ZoneData;
 import net.sf.l2j.gameserver.geoeditorcon.GeoEditorListener;
 import net.sf.l2j.gameserver.handler.AdminCommandHandler;
+import net.sf.l2j.gameserver.handler.ChatHandler;
 import net.sf.l2j.gameserver.handler.ItemHandler;
 import net.sf.l2j.gameserver.handler.SkillHandler;
 import net.sf.l2j.gameserver.handler.UserCommandHandler;
@@ -124,6 +125,17 @@ import net.sf.l2j.gameserver.handler.admincommandhandlers.AdminTest;
 import net.sf.l2j.gameserver.handler.admincommandhandlers.AdminTvTEvent;
 import net.sf.l2j.gameserver.handler.admincommandhandlers.AdminUnblockIp;
 import net.sf.l2j.gameserver.handler.admincommandhandlers.AdminZone;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatAll;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatAlliance;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatClan;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatHeroVoice;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatParty;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatPartyRoomAll;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatPartyRoomCommander;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatPetition;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatShout;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatTell;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatTrade;
 import net.sf.l2j.gameserver.handler.itemhandlers.BeastSoulShot;
 import net.sf.l2j.gameserver.handler.itemhandlers.BeastSpice;
 import net.sf.l2j.gameserver.handler.itemhandlers.BeastSpiritShot;
@@ -271,6 +283,7 @@ public class GameServer
 	private final Shutdown _shutdownHandler;
 	private final UserCommandHandler _userCommandHandler;
     private final VoicedCommandHandler _voicedCommandHandler;
+    private final ChatHandler _chatHandler;
     private final DoorTable _doorTable;
     private final SevenSigns _sevenSignsEngine;
     private final AutoChatHandler _autoChatHandler;
@@ -643,6 +656,20 @@ public class GameServer
 
 		AccessLevels.getInstance();
 		AdminCommandAccessRights.getInstance();
+
+		_chatHandler = ChatHandler.getInstance();
+		_chatHandler.registerChatHandler(new ChatAll());
+		_chatHandler.registerChatHandler(new ChatAlliance());
+		_chatHandler.registerChatHandler(new ChatClan());
+		_chatHandler.registerChatHandler(new ChatHeroVoice());
+		_chatHandler.registerChatHandler(new ChatParty());
+		_chatHandler.registerChatHandler(new ChatPartyRoomAll());
+		_chatHandler.registerChatHandler(new ChatPartyRoomCommander());
+		_chatHandler.registerChatHandler(new ChatPetition());
+		_chatHandler.registerChatHandler(new ChatShout());
+		_chatHandler.registerChatHandler(new ChatTell());
+		_chatHandler.registerChatHandler(new ChatTrade());
+		_log.config("ChatHandler: Loaded " + _chatHandler.size() + " handlers.");
 						
 		if(Config.L2JMOD_ALLOW_WEDDING)
 			CoupleManager.getInstance();
