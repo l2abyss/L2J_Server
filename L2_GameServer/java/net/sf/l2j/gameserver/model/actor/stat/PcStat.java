@@ -89,7 +89,7 @@ public class PcStat extends PlayableStat
     	float ratioTakenByPet = 0;
     	// Allowd to gain exp/sp?
     	L2PcInstance activeChar = getActiveChar();
-    	if (activeChar.getAccessLevel().canGainExp() && activeChar.isInParty())
+    	if (!activeChar.getAccessLevel().canGainExp() && activeChar.isInParty())
      	     return false;
 
     	// if this player has a pet that takes from the owner's Exp, give the pet Exp now
