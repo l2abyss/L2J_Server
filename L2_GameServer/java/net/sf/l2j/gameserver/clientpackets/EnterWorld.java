@@ -29,8 +29,8 @@ import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.TaskPriority;
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
+import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
-import net.sf.l2j.gameserver.handler.AdminCommandHandler;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
 import net.sf.l2j.gameserver.instancemanager.CoupleManager;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
@@ -116,43 +116,19 @@ public class EnterWorld extends L2GameClientPacket
         
         if (activeChar.isGM())
         {
-            if (Config.GM_STARTUP_INVULNERABLE
-                    && (!Config.ALT_PRIVILEGES_ADMIN && activeChar.getAccessLevel() >= Config.GM_GODMODE
-                      || Config.ALT_PRIVILEGES_ADMIN && AdminCommandHandler.getInstance().checkPrivileges(activeChar, "admin_invul")))
-                activeChar.setIsInvul(true);
+            if (Config.GM_STARTUP_INVULNERABLE && AdminCommandAccessRights.getInstance().hasAccess("admin_invul", activeChar.getAccessLevel()))
+                 activeChar.setIsInvul(true);
 
-            if (Config.GM_STARTUP_INVISIBLE
-                    && (!Config.ALT_PRIVILEGES_ADMIN && activeChar.getAccessLevel() >= Config.GM_GODMODE
-                      || Config.ALT_PRIVILEGES_ADMIN && AdminCommandHandler.getInstance().checkPrivileges(activeChar, "admin_invisible")))
-                activeChar.getAppearance().setInvisible();
-
-            if (Config.GM_STARTUP_SILENCE
-                    && (!Config.ALT_PRIVILEGES_ADMIN && activeChar.getAccessLevel() >= Config.GM_MENU
-                      || Config.ALT_PRIVILEGES_ADMIN && AdminCommandHandler.getInstance().checkPrivileges(activeChar, "admin_silence")))
-                activeChar.setMessageRefusal(true);
-
-            if (Config.GM_STARTUP_AUTO_LIST
-                    && (!Config.ALT_PRIVILEGES_ADMIN && activeChar.getAccessLevel() >= Config.GM_MENU
-                      || Config.ALT_PRIVILEGES_ADMIN && AdminCommandHandler.getInstance().checkPrivileges(activeChar, "admin_gmliston")))
-                GmListTable.getInstance().addGm(activeChar, false);
-            else
-                GmListTable.getInstance().addGm(activeChar, true);
-
-            if (Config.GM_NAME_COLOR_ENABLED)
-            {
-                if (activeChar.getAccessLevel() >= 100)
-                    activeChar.getAppearance().setNameColor(Config.ADMIN_NAME_COLOR);
-                else if (activeChar.getAccessLevel() >= 75)
-                    activeChar.getAppearance().setNameColor(Config.GM_NAME_COLOR);
-            }
-            
-            if (Config.GM_TITLE_COLOR_ENABLED)
-            {
-                if (activeChar.getAccessLevel() >= 100)
-                    activeChar.getAppearance().setTitleColor(Config.ADMIN_TITLE_COLOR);
-                else if (activeChar.getAccessLevel() >= 75)
-                    activeChar.getAppearance().setTitleColor(Config.GM_TITLE_COLOR);
-            }
+            if (Config.GM_STARTUP_INVISIBLE && AdminCommandAccessRights.getInstance().hasAccess("admin_invisible", activeChar.getAccessLevel()))
+                 activeChar.getAppearance().setInvisible();
+ 
+            if (Config.GM_STARTUP_SILENCE && AdminCommandAccessRights.getInstance().hasAccess("admin_silence", activeChar.getAccessLevel()))
+                 activeChar.setMessageRefusal(true);
+ 
+            if (Config.GM_STARTUP_AUTO_LIST && AdminCommandAccessRights.getInstance().hasAccess("admin_gmliston", activeChar.getAccessLevel()))
+                 GmListTable.getInstance().addGm(activeChar, false);
+             else
+                 GmListTable.getInstance().addGm(activeChar, true);
         }
         
         if (activeChar.getCurrentHp() < 0.5) // is dead

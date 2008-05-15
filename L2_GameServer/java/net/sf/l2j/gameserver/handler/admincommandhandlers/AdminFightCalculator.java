@@ -17,7 +17,6 @@ package net.sf.l2j.gameserver.handler.admincommandhandlers;
 import java.util.StringTokenizer;
 
 import javolution.text.TextBuilder;
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
@@ -44,18 +43,13 @@ public class AdminFightCalculator implements IAdminCommandHandler {
 		"admin_fight_calculator_show",
 		"admin_fcs",
 		};
-	private static final int REQUIRED_LEVEL = Config.GM_MIN;
 
 	//TODO: remove from gm list etc etc
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
     {
         try
         {
-    		//don't check for gm status ;)
-            if (!Config.ALT_PRIVILEGES_ADMIN)
-                if (!checkLevel(activeChar.getAccessLevel())) return false;
-
-    		if (command.startsWith("admin_fight_calculator_show"))
+        	if (command.startsWith("admin_fight_calculator_show"))
     			handleShow(command.substring("admin_fight_calculator_show".length()), activeChar);
     		else if (command.startsWith("admin_fcs"))
     			handleShow(command.substring("admin_fcs".length()), activeChar);
@@ -69,10 +63,6 @@ public class AdminFightCalculator implements IAdminCommandHandler {
 
 	public String[] getAdminCommandList() {
 		return ADMIN_COMMANDS;
-	}
-
-	private boolean checkLevel(int level) {
-		return (level >= REQUIRED_LEVEL);
 	}
 
 	private void handleStart(String params, L2PcInstance activeChar) {

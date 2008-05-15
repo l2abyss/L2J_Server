@@ -16,7 +16,6 @@ package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
 import java.util.StringTokenizer;
 
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.GMAudit;
@@ -26,13 +25,9 @@ import net.sf.l2j.gameserver.serverpackets.LeaveWorld;
 
 public class AdminKick implements IAdminCommandHandler {
     private static final String[] ADMIN_COMMANDS = {"admin_kick" ,"admin_kick_non_gm"};
-    private static final int REQUIRED_LEVEL = Config.GM_KICK;
 
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
     {
-        if (!Config.ALT_PRIVILEGES_ADMIN)
-    		if (!(checkLevel(activeChar.getAccessLevel()) && activeChar.isGM()))
-                return false;
 
 		String target = (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target");
         GMAudit.auditGMAction(activeChar.getName(), command, target, "");
@@ -73,9 +68,5 @@ public class AdminKick implements IAdminCommandHandler {
 
     public String[] getAdminCommandList() {
         return ADMIN_COMMANDS;
-    }
-
-    private boolean checkLevel(int level) {
-        return (level >= REQUIRED_LEVEL);
     }
 }

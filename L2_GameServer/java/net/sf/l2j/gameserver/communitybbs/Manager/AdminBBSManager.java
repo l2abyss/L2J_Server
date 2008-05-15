@@ -38,7 +38,7 @@ public class AdminBBSManager extends BaseBBSManager
 	@Override
 	public void parsecmd(String command, L2PcInstance activeChar)
 	{
-		if(activeChar.getAccessLevel() < Config.GM_ACCESSLEVEL)
+		if(!activeChar.isGM())
 		{
 			return;
 		}
@@ -67,7 +67,7 @@ public class AdminBBSManager extends BaseBBSManager
 	@Override
 	public void parsewrite(String ar1, String ar2, String ar3, String ar4, String ar5, L2PcInstance activeChar)
 	{
-		if(activeChar.getAccessLevel() < Config.GM_ACCESSLEVEL)
+		if(!activeChar.isGM())
 		{
 			return;
 		}

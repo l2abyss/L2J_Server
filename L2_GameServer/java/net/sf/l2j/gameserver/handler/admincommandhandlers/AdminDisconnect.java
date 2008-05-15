@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.GMAudit;
@@ -30,13 +29,13 @@ import net.sf.l2j.gameserver.serverpackets.LeaveWorld;
  */
 public class AdminDisconnect implements IAdminCommandHandler {
 
-	private static final String[] ADMIN_COMMANDS = {"admin_character_disconnect"};
-	private static final int REQUIRED_LEVEL = Config.GM_KICK;
+	private static final String[] ADMIN_COMMANDS =
+	{
+		"admin_character_disconnect"
+	};
 
-	public boolean useAdminCommand(String command, L2PcInstance activeChar) {
-        if (!Config.ALT_PRIVILEGES_ADMIN)
-            if (!(checkLevel(activeChar.getAccessLevel()) && activeChar.isGM())) return false;
-
+	public boolean useAdminCommand(String command, L2PcInstance activeChar)
+	{
 		if (command.equals("admin_character_disconnect"))
 		{
 			disconnectCharacter(activeChar);
@@ -47,12 +46,9 @@ public class AdminDisconnect implements IAdminCommandHandler {
 		return true;
 	}
 
-	public String[] getAdminCommandList() {
+	public String[] getAdminCommandList()
+	{
 		return ADMIN_COMMANDS;
-	}
-
-	private boolean checkLevel(int level) {
-		return (level >= REQUIRED_LEVEL);
 	}
 
 	private void disconnectCharacter(L2PcInstance activeChar)

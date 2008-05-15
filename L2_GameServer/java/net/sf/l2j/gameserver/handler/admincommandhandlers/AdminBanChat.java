@@ -14,9 +14,6 @@
  */
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
-import java.util.logging.Logger;
-
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.GMAudit;
@@ -38,21 +35,10 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
  * @version $Revision: 1.1.6.3 $ $Date: 2005/04/11 10:06:06 $
  */
 public class AdminBanChat implements IAdminCommandHandler {
-	private static Logger _log = Logger.getLogger(AdminBan.class.getName());
 	private static final String[] ADMIN_COMMANDS = {"admin_banchat", "admin_unbanchat"};
-	private static final int REQUIRED_LEVEL = Config.GM_BAN_CHAT;
 
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
-		if (!Config.ALT_PRIVILEGES_ADMIN)
-		{
-			if (!(checkLevel(activeChar.getAccessLevel())))
-			{
-				_log.info("Not required level.");
-				return false;
-			}
-		}
-
 		String[] cmdParams = command.split(" ");
 		long banLength = -1;
 
@@ -112,10 +98,6 @@ public class AdminBanChat implements IAdminCommandHandler {
 
 	public String[] getAdminCommandList() {
 		return ADMIN_COMMANDS;
-	}
-
-	private boolean checkLevel(int level) {
-		return (level >= REQUIRED_LEVEL);
 	}
 
 	private class SchedChatUnban implements Runnable

@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.instancemanager.PetitionManager;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -32,14 +31,8 @@ public class AdminPetition implements IAdminCommandHandler
 	private static final String[] ADMIN_COMMANDS = {"admin_view_petitions", "admin_view_petition",
 		"admin_accept_petition", "admin_reject_petition", "admin_reset_petitions"};
 
-	private static final int REQUIRED_LEVEL = Config.GM_MIN;
-
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
-		if (!Config.ALT_PRIVILEGES_ADMIN)
-			if (!(checkLevel(activeChar.getAccessLevel()) && activeChar.isGM()))
-				return false;
-
 		int petitionId = -1;
 
 		try
@@ -88,9 +81,5 @@ public class AdminPetition implements IAdminCommandHandler
 
 	public String[] getAdminCommandList() {
 		return ADMIN_COMMANDS;
-	}
-
-	private boolean checkLevel(int level) {
-		return (level >= REQUIRED_LEVEL);
 	}
 }

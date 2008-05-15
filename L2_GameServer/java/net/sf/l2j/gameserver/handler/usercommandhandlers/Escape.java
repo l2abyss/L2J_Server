@@ -35,7 +35,6 @@ import net.sf.l2j.gameserver.util.Broadcast;
 public class Escape implements IUserCommandHandler
 {
     private static final int[] COMMAND_IDS = { 52 };
-    private static final int REQUIRED_LEVEL = Config.GM_ESCAPE;
 
     /* (non-Javadoc)
      * @see net.sf.l2j.gameserver.handler.IUserCommandHandler#useUserCommand(int, net.sf.l2j.gameserver.model.L2PcInstance)
@@ -53,7 +52,7 @@ public class Escape implements IUserCommandHandler
                 activeChar.isInOlympiadMode())
             return false;
 
-        int unstuckTimer = (activeChar.getAccessLevel() >= REQUIRED_LEVEL? 5000 : Config.UNSTUCK_INTERVAL*1000 );
+        int unstuckTimer = (activeChar.getAccessLevel().isGm()? 5000 : Config.UNSTUCK_INTERVAL*1000 );
 
         // Check to see if the player is in a festival.
         if (activeChar.isFestivalParticipant())
@@ -76,7 +75,7 @@ public class Escape implements IUserCommandHandler
             return false;
         }
 
-        if(activeChar.getAccessLevel() >= REQUIRED_LEVEL)
+        if(activeChar.getAccessLevel().isGm())
         {
         	activeChar.sendMessage("You use Fast Escape: 5 seconds.");
         }

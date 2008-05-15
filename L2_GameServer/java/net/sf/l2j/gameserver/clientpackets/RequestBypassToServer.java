@@ -18,8 +18,8 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
+import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.communitybbs.CommunityBoard;
 import net.sf.l2j.gameserver.handler.AdminCommandHandler;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
@@ -65,20 +65,29 @@ public final class RequestBypassToServer extends L2GameClientPacket
 		try {
 			if (_command.startsWith("admin_")) //&& activeChar.getAccessLevel() >= Config.GM_ACCESSLEVEL)
 			{
-                if (Config.ALT_PRIVILEGES_ADMIN && !AdminCommandHandler.getInstance().checkPrivileges(activeChar, _command))
-                {
-                    _log.info("<GM>" + activeChar + " does not have sufficient privileges for command '" + _command + "'.");
-                    return;
-                }
+				String command = _command.split(" ")[0];
 
-				IAdminCommandHandler ach = AdminCommandHandler.getInstance().getAdminCommandHandler(_command);
+				IAdminCommandHandler ach = AdminCommandHandler.getInstance().getAdminCommandHandler(command);
+				
+				if (ach == null)
+				{
+					if ( activeChar.isGM() )
+						activeChar.sendMessage("The command " + command.split("_")[0] + " does not exists!");
 
-				if (ach != null)
-					ach.useAdminCommand(_command, activeChar);
-				else
-					_log.warning("No handler registered for bypass '"+_command+"'");
+					_log.warning("No handler registered for admin command '" + command + "'");
+					return;
+				}
+
+				if (!AdminCommandAccessRights.getInstance().hasAccess(command, activeChar.getAccessLevel()))
+				{
+					activeChar.sendMessage("You don't have the access right to use this command!");
+					_log.warning("Character " + activeChar.getName() + " tryed to use admin command " + command + ", but have no access to it!");
+					return;
+				}
+
+				ach.useAdminCommand(_command, activeChar);
 			}
-			else if (_command.equals("come_here") && activeChar.getAccessLevel() >= Config.GM_ACCESSLEVEL)
+			else if (_command.equals("come_here") && ( activeChar.isGM()))
 			{
 				comeHere(activeChar);
 			}

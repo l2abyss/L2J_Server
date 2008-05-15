@@ -37,14 +37,9 @@ public class AdminExpSp implements IAdminCommandHandler {
 	private static Logger _log = Logger.getLogger(AdminExpSp.class.getName());
 
 	private static final String[] ADMIN_COMMANDS = {"admin_add_exp_sp_to_character","admin_add_exp_sp","admin_remove_exp_sp"};
-	private static final int REQUIRED_LEVEL = Config.GM_CHAR_EDIT;
 
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
-
-		if (!Config.ALT_PRIVILEGES_ADMIN)
-			if (!(checkLevel(activeChar.getAccessLevel()) && activeChar.isGM()))
-				return false;
 		GMAudit.auditGMAction(activeChar.getName(), command, (activeChar.getTarget()!=null ? activeChar.getTarget().getName() : "no-target"), "");
 		if (command.startsWith("admin_add_exp_sp"))
 		{
@@ -78,10 +73,6 @@ public class AdminExpSp implements IAdminCommandHandler {
 
 	public String[] getAdminCommandList() {
 		return ADMIN_COMMANDS;
-	}
-
-	private boolean checkLevel(int level) {
-		return (level >= REQUIRED_LEVEL);
 	}
 
 	private void addExpSp(L2PcInstance activeChar)

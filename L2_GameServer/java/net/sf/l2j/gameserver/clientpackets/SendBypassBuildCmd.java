@@ -14,11 +14,11 @@
  */
 package net.sf.l2j.gameserver.clientpackets;
 
-import net.sf.l2j.Config;
+import java.util.logging.Logger;
+import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.handler.AdminCommandHandler;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.util.Util;
 
 /**
  * This class handles all GM commands triggered by //command
@@ -27,6 +27,7 @@ import net.sf.l2j.gameserver.util.Util;
  */
 public final class SendBypassBuildCmd extends L2GameClientPacket
 {
+	private static Logger _log = Logger.getLogger(SendBypassBuildCmd.class.getName());
 	private static final String _C__5B_SENDBYPASSBUILDCMD = "[C] 5b SendBypassBuildCmd";
 	public final static int GM_MESSAGE = 9;
 	public final static int ANNOUNCEMENT = 10;
@@ -48,21 +49,27 @@ public final class SendBypassBuildCmd extends L2GameClientPacket
         if(activeChar == null)
             return;
 
-        if (Config.ALT_PRIVILEGES_ADMIN && !AdminCommandHandler.getInstance().checkPrivileges(activeChar,"admin_"+_command))
-            return;
+        String command = "admin_" + _command.split(" ")[0];
 
-        if(!activeChar.isGM() && !"gm".equalsIgnoreCase(_command))
-        {
-        	Util.handleIllegalPlayerAction(activeChar,"Warning!! Non-gm character "+activeChar.getName()+" requests gm bypass handler, hack?", Config.DEFAULT_PUNISH);
-        	return;
-        }
-
-		IAdminCommandHandler ach = AdminCommandHandler.getInstance().getAdminCommandHandler("admin_"+_command);
-
-		if (ach != null)
+		IAdminCommandHandler ach = AdminCommandHandler.getInstance().getAdminCommandHandler(command);
+				
+		if (ach == null)
 		{
-			ach.useAdminCommand("admin_"+_command, activeChar);
+			if ( activeChar.isGM() )
+				activeChar.sendMessage("The command " + command.split("_")[0] + " does not exists!");
+
+			_log.warning("No handler registered for admin command '" + command + "'");
+			return;
 		}
+
+		if (!AdminCommandAccessRights.getInstance().hasAccess(command , activeChar.getAccessLevel()))
+		{
+			activeChar.sendMessage("You don't have the access right to use this command!");
+			_log.warning("Character " + activeChar.getName() + " tryed to use admin command " + command + ", but have no access to it!");
+			return;
+		}
+
+		ach.useAdminCommand("admin_" + _command, activeChar);
 	}
 
 	/* (non-Javadoc)

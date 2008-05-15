@@ -32,6 +32,8 @@ import net.sf.l2j.Server;
 import net.sf.l2j.gameserver.cache.CrestCache;
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.communitybbs.Manager.ForumsBBSManager;
+import net.sf.l2j.gameserver.datatables.AccessLevels;
+import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.datatables.ArmorSetsTable;
 import net.sf.l2j.gameserver.datatables.AugmentationData;
 import net.sf.l2j.gameserver.datatables.CharNameTable;
@@ -638,6 +640,9 @@ public class GameServer
 			_voicedCommandHandler.registerVoicedCommandHandler(new Banking());
 		
 		_log.config("VoicedCommandHandler: Loaded " + _voicedCommandHandler.size() + " handlers.");
+
+		AccessLevels.getInstance();
+		AdminCommandAccessRights.getInstance();
 						
 		if(Config.L2JMOD_ALLOW_WEDDING)
 			CoupleManager.getInstance();

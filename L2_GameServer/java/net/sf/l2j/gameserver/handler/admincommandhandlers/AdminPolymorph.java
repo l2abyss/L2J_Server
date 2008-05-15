@@ -16,7 +16,6 @@ package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
 import java.util.StringTokenizer;
 
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.instancemanager.TransformationManager;
 import net.sf.l2j.gameserver.model.L2Character;
@@ -46,16 +45,8 @@ public class AdminPolymorph implements IAdminCommandHandler
         "admin_untransform_menu",
 	};
 
-	private static final int REQUIRED_LEVEL = Config.GM_NPC_EDIT;
-
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
-		if (!Config.ALT_PRIVILEGES_ADMIN)
-		{
-			if (!(checkLevel(activeChar.getAccessLevel()) && activeChar.isGM()))
-				return false;
-		}
-		
 		if (activeChar.isMounted())
 		{
 			activeChar.sendMessage("You can't transform while mounted, please dismount and try again.");
@@ -151,11 +142,6 @@ public class AdminPolymorph implements IAdminCommandHandler
 	public String[] getAdminCommandList()
 	{
 		return ADMIN_COMMANDS;
-	}
-
-	private boolean checkLevel(int level)
-	{
-		return (level >= REQUIRED_LEVEL);
 	}
 
 	/**

@@ -444,7 +444,7 @@ public class L2DoorInstance extends L2Character
         L2PcInstance player = client.getActiveChar();
         if (player == null) return;
 
-        if (player.getAccessLevel() >= Config.GM_ACCESSLEVEL)
+        if (player.getAccessLevel().isGm())
         {
             player.setTarget(this);
             MyTargetSelected my = new MyTargetSelected(getObjectId(), player

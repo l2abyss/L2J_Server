@@ -50,7 +50,7 @@ public final class TradeRequest extends L2GameClientPacket
 		L2PcInstance player = getClient().getActiveChar();
         if (player == null) return;
 
-        if (Config.GM_DISABLE_TRANSACTION && player.getAccessLevel() >= Config.GM_TRANSACTION_MIN && player.getAccessLevel() <= Config.GM_TRANSACTION_MAX)
+        if (player.getAccessLevel().allowTransaction())
         {
         	player.sendMessage("Transactions are disable for your Access Level");
             sendPacket(ActionFailed.STATIC_PACKET);

@@ -16,7 +16,6 @@ package net.sf.l2j.gameserver.clientpackets;
 
 import java.util.logging.Logger;
 
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.serverpackets.GMHennaInfo;
@@ -53,7 +52,7 @@ public final class RequestGMCommand extends L2GameClientPacket
 	protected void runImpl()
 	{
 		// prevent non gm or low level GMs from vieweing player stuff
-		if (!getClient().getActiveChar().isGM() || getClient().getActiveChar().getAccessLevel()<Config.GM_ALTG_MIN_LEVEL)
+		if (!getClient().getActiveChar().isGM() || !getClient().getActiveChar().getAccessLevel().allowAltG())
 			return;
 
 		L2PcInstance player = L2World.getInstance().getPlayer(_targetName);

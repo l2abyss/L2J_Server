@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.MonsterRace;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
@@ -37,19 +36,10 @@ public class AdminMonsterRace implements IAdminCommandHandler
 
     private static final String[] ADMIN_COMMANDS = {"admin_mons"};
 
-    private static final int REQUIRED_LEVEL = Config.GM_MONSTERRACE;
     protected static int state = -1;
 
     public boolean useAdminCommand(String command, L2PcInstance activeChar)
     {
-        if (!Config.ALT_PRIVILEGES_ADMIN)
-        {
-            if (!(checkLevel(activeChar.getAccessLevel()) && activeChar.isGM()))
-            {
-                return false;
-            }
-        }
-
         if (command.equalsIgnoreCase("admin_mons"))
         {
             handleSendPacket(activeChar);
@@ -60,11 +50,6 @@ public class AdminMonsterRace implements IAdminCommandHandler
     public String[] getAdminCommandList()
     {
         return ADMIN_COMMANDS;
-    }
-
-    private boolean checkLevel(int level)
-    {
-        return (level >= REQUIRED_LEVEL);
     }
 
     private void handleSendPacket(L2PcInstance activeChar)

@@ -281,7 +281,7 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.getAppearance().getHairStyle());
         writeD(_activeChar.getAppearance().getHairColor());
         writeD(_activeChar.getAppearance().getFace());
-        writeD((_activeChar.getAccessLevel() >= Config.GM_ALTG_MIN_LEVEL) ? 1 : 0); // builder level
+        writeD(_activeChar.isGM() ? 1 : 0); // builder level
 
         String title = _activeChar.getTitle();
         if (_activeChar.getAppearance().getInvisible() && _activeChar.isGM()) title = "Invisible";
@@ -337,7 +337,7 @@ public final class UserInfo extends L2GameServerPacket
 
         writeD(_activeChar.getClanCrestLargeId());
         writeC(_activeChar.isNoble() ? 1 : 0); //0x01: symbol on char menu ctrl+I
-        writeC((_activeChar.isHero() || (_activeChar.isGM() && Config.GM_HERO_AURA)) ? 1 : 0); //0x01: Hero Aura
+        writeC(_activeChar.isHero() || (_activeChar.isGM() && Config.GM_HERO_AURA) ? 1 : 0); //0x01: Hero Aura
 
         writeC(_activeChar.isFishing() ? 1 : 0); //Fishing Mode
         writeD(_activeChar.getFishx()); //fishing x

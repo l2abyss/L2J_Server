@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
@@ -32,13 +31,9 @@ public class AdminRide implements IAdminCommandHandler
         "admin_ride_wolf",
         "admin_unride_wolf",
     };
-    private static final int REQUIRED_LEVEL = Config.GM_RIDER;
     private int _petRideId;
 
     public boolean useAdminCommand(String command, L2PcInstance activeChar) {
-
-        if (!Config.ALT_PRIVILEGES_ADMIN)
-            if (!(checkLevel(activeChar.getAccessLevel()) && activeChar.isGM())) return false;
 
         if(command.startsWith("admin_ride"))
         {
@@ -77,7 +72,4 @@ public class AdminRide implements IAdminCommandHandler
         return ADMIN_COMMANDS;
     }
 
-    private boolean checkLevel(int level) {
-        return (level >= REQUIRED_LEVEL);
-    }
 }

@@ -91,7 +91,7 @@ public class CharacterSelect extends L2GameClientPacket
 						sendPacket(ActionFailed.STATIC_PACKET);
 						return;
 					}
-					if (cha.getAccessLevel() < 0)
+					if (cha.getAccessLevel().getLevel() < 0)
 					{
 						cha.closeNetConnection();
 						return;

@@ -257,7 +257,7 @@ public class L2MerchantInstance extends L2FolkInstance
         L2PcInstance player = client.getActiveChar();
         if (player == null) return;
 
-        if (player.getAccessLevel() >= Config.GM_ACCESSLEVEL)
+        if (player.isGM())
         {
             player.setTarget(this);
 

@@ -164,7 +164,7 @@ public final class RequestActionUse extends L2GameClientPacket
                         return;
                     }
                     
-                    if (activeChar.getAccessLevel() < Config.GM_PEACEATTACK &&
+                    if (!activeChar.getAccessLevel().allowPeaceAttack() &&
                             activeChar.isInsidePeaceZone(pet, target))
                     {
                         activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));

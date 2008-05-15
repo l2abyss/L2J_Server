@@ -64,16 +64,10 @@ public class AdminSkill implements IAdminCommandHandler {
 		"admin_remove_all_skills",
 		"admin_add_clan_skill"
 	};
-	private static final int REQUIRED_LEVEL = Config.GM_CHAR_EDIT;
-	private static final int REQUIRED_LEVEL2 = Config.GM_CHAR_EDIT_OTHER;
 
 	private static L2Skill[] adminSkills;
 
 	public boolean useAdminCommand(String command, L2PcInstance activeChar) {
-		if (!Config.ALT_PRIVILEGES_ADMIN)
-			if (!(checkLevel(activeChar.getAccessLevel()) && activeChar.isGM()))
-				return false;
-
 		GMAudit.auditGMAction(activeChar.getName(), command, (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target"), "");
 
 		if (command.equals("admin_show_skills"))
@@ -105,8 +99,7 @@ public class AdminSkill implements IAdminCommandHandler {
 			try
 			{
 				String val = command.substring(15);
-				if (activeChar == activeChar.getTarget() || activeChar.getAccessLevel() >= REQUIRED_LEVEL2)
-					adminAddSkill(activeChar, val);
+				adminAddSkill(activeChar, val);
 			}
 			catch (Exception e)
 			{
@@ -119,8 +112,7 @@ public class AdminSkill implements IAdminCommandHandler {
 			{
 				String id = command.substring(19);
 				int idval = Integer.parseInt(id);
-				if (activeChar == activeChar.getTarget() || activeChar.getAccessLevel() >= REQUIRED_LEVEL2)
-					adminRemoveSkill(activeChar, idval);
+				adminRemoveSkill(activeChar, idval);
 			}
 			catch (Exception e)
 			{
@@ -133,13 +125,11 @@ public class AdminSkill implements IAdminCommandHandler {
 		}
 		else if (command.equals("admin_reset_skills"))
 		{
-			if (activeChar == activeChar.getTarget() || activeChar.getAccessLevel() >= REQUIRED_LEVEL2)
-				adminResetSkills(activeChar);
+			adminResetSkills(activeChar);
 		}
 		else if (command.equals("admin_give_all_skills"))
 		{
-			if (activeChar == activeChar.getTarget() || activeChar.getAccessLevel() >= REQUIRED_LEVEL2)
-				adminGiveAllSkills(activeChar);
+			adminGiveAllSkills(activeChar);
 		}
 
 		else if (command.equals("admin_remove_all_skills"))
@@ -159,8 +149,7 @@ public class AdminSkill implements IAdminCommandHandler {
 			try
 			{
 				String[] val = command.split(" ");
-				if (activeChar == activeChar.getTarget() || activeChar.getAccessLevel() >= REQUIRED_LEVEL2)
-					adminAddClanSkill(activeChar, Integer.parseInt(val[1]),Integer.parseInt(val[2]));
+				adminAddClanSkill(activeChar, Integer.parseInt(val[1]),Integer.parseInt(val[2]));
 			}
 			catch (Exception e)
 			{
@@ -215,10 +204,6 @@ public class AdminSkill implements IAdminCommandHandler {
 
 	public String[] getAdminCommandList() {
 		return ADMIN_COMMANDS;
-	}
-
-	private boolean checkLevel(int level) {
-		return (level >= REQUIRED_LEVEL);
 	}
 
 	private void removeSkillsPage(L2PcInstance activeChar, int page)

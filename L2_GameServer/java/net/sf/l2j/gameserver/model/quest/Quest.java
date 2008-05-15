@@ -365,7 +365,7 @@ public class Quest extends ManagedScript
 	 */
 	private boolean showError(L2PcInstance player, Throwable t) {
 		_log.log(Level.WARNING, this.getScriptFile().getAbsolutePath(), t);
-		if (player.getAccessLevel() > 0) {
+		if (player.getAccessLevel().isGm()) {
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
 			t.printStackTrace(pw);

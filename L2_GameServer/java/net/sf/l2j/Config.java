@@ -47,8 +47,6 @@ public final class Config
 	
     /** Properties file for Character Configurations */
     public static final String  CHARACTER_CONFIG_FILE							= "./config/Character.properties";
-    /** Properties file for alternative configure GM commands access level.*/
-    public static final String  COMMAND_PRIVILEGES_FILE							= "./config/command-privileges.properties";
     /** Properties file for Dynamic Extensions*/
     public static final String  EXTENSIONS_CONFIG_FILE							= "./config/extensions.properties";
     /** Properties file for Feature Extensions*/
@@ -57,8 +55,6 @@ public final class Config
     public static final String FORTSIEGE_CONFIGURATION_FILE						= "./config/fortsiege.properties"; 
     /** Properties file for General Configurations */
     public static final String  GENERAL_CONFIG_FILE								= "./config/General.properties";
-    /** Properties file for GM access Configurations */
-    public static final String  GM_ACCESS_FILE									= "./config/GMAccess.properties";
     /** Text file containing hexadecimal value of server ID */
     public static final String  HEXID_FILE										= "./config/hexid.txt";
     /** Properties file for the ID factory */
@@ -274,15 +270,6 @@ public final class Config
 	public static boolean 	SERVER_LIST_BRACKET;
     public static boolean	SERVER_LIST_CLOCK;
     public static boolean	SERVER_GMONLY;
-    public static boolean	ALT_PRIVILEGES_ADMIN;
-    public static boolean	ALT_PRIVILEGES_SECURE_CHECK;
-    public static int		ALT_PRIVILEGES_DEFAULT_LEVEL;
-    public static boolean	GM_NAME_COLOR_ENABLED;
-    public static int		ADMIN_NAME_COLOR;
-    public static int		GM_NAME_COLOR;
-    public static boolean	GM_TITLE_COLOR_ENABLED;
-    public static int		ADMIN_TITLE_COLOR;
-    public static int		GM_TITLE_COLOR;
     public static boolean	GM_HERO_AURA;
     public static boolean	GM_STARTUP_INVULNERABLE;
     public static boolean	GM_STARTUP_INVISIBLE;
@@ -432,91 +419,6 @@ public final class Config
 	
 	/** ************************************************** **/
 	/** General Settings -End                              **/
-	/** ************************************************** **/
-    
-    /** ************************************************** **/
-	/** GM Access Settings -Begin                          **/
-	/** ************************************************** **/
-    
-    /** General GM access level */
-    public static int    	GM_ACCESSLEVEL;
-    /** General GM Minimal AccessLevel */
-    public static int     	GM_MIN;
-    /** Minimum privileges level for a GM to do Alt+G*/
-    public static int     	GM_ALTG_MIN_LEVEL;
-    /** General GM AccessLevel to change announcements */
-    public static int     	GM_ANNOUNCE;
-    /** General GM AccessLevel can /ban /unban */
-    public static int     	GM_BAN;
-    /** General GM AccessLevel can /ban /unban for chat */
-    public static int     	GM_BAN_CHAT;
-    /** General GM AccessLevel can /create_item and /gmshop */
-    public static int     	GM_CREATE_ITEM;
-    /** General GM AccessLevel can /delete */
-    public static int     	GM_DELETE;
-    /** General GM AccessLevel can /kick /disconnect */
-    public static int     	GM_KICK;
-    /** General GM AccessLevel for access to GMMenu */
-    public static int     	GM_MENU;
-    /** General GM AccessLevel to use god mode command */
-    public static int     	GM_GODMODE;
-    /** General GM AccessLevel with character edit rights */
-    public static int     	GM_CHAR_EDIT;
-    /** General GM AccessLevel with edit rights for other characters */
-    public static int     	GM_CHAR_EDIT_OTHER;
-    /** General GM AccessLevel with character view rights */
-    public static int     	GM_CHAR_VIEW;
-    /** General GM AccessLevel with NPC edit rights */
-    public static int     	GM_NPC_EDIT;
-    public static int     	GM_NPC_VIEW;
-    /** General GM AccessLevel to teleport to any location */
-    public static int     	GM_TELEPORT;
-    /** General GM AccessLevel to teleport character to any location */
-    public static int     	GM_TELEPORT_OTHER;
-    /** General GM AccessLevel to restart server */
-    public static int     	GM_RESTART;
-    /** General GM AccessLevel for MonsterRace */
-    public static int     	GM_MONSTERRACE;
-    /** General GM AccessLevel to ride Wyvern */
-    public static int     	GM_RIDER;
-    /** General GM AccessLevel to unstuck without 5min delay */
-    public static int     	GM_ESCAPE;
-    /** General GM AccessLevel to resurrect fixed after death */
-    public static int     	GM_FIXED;
-    /** General GM AccessLevel to create Path Nodes */
-    public static int     	GM_CREATE_NODES;
-    /** General GM AccessLevel with Enchant rights */
-    public static int     	GM_ENCHANT;
-    /** General GM AccessLevel to close/open Doors */
-    public static int     	GM_DOOR;
-    /** General GM AccessLevel with Resurrection rights */
-    public static int     	GM_RES;
-    /** General GM AccessLevel to attack in the peace zone */
-    public static int     	GM_PEACEATTACK;
-    /** General GM AccessLevel to heal */
-    public static int     	GM_HEAL;
-    /** General GM AccessLevel to unblock IPs detected as hack IPs */
-    public static int     	GM_UNBLOCK;
-    /** General GM AccessLevel to use Cache commands */
-    public static int     	GM_CACHE;
-    /** General GM AccessLevel to use test commands */
-    public static int     	GM_TALK_BLOCK;
-    public static int     	GM_TEST;
-    /** Disable transaction on AccessLevel **/
-    public static boolean 	GM_DISABLE_TRANSACTION;
-    /** GM transactions disabled from this range */
-    public static int     	GM_TRANSACTION_MIN;
-    /** GM transactions disabled to this range */
-    public static int     	GM_TRANSACTION_MAX;
-    /** Minimum level to allow a GM giving damage */
-    public static int     	GM_CAN_GIVE_DAMAGE;
-    /** Minimum level to don't give Exp/Sp in party */
-    public static int     	GM_DONT_TAKE_EXPSP;
-    /** Minimum level to don't take aggro */
-    public static int     	GM_DONT_TAKE_AGGRO;
-    
-    /** ************************************************** **/
-	/** GM Access Settings -End                            **/
 	/** ************************************************** **/
     
     /** ************************************************** **/
@@ -1326,15 +1228,6 @@ public final class Config
                 SERVER_LIST_BRACKET							= Boolean.parseBoolean(General.getProperty("ServerListBrackets", "false"));
                 SERVER_LIST_CLOCK							= Boolean.parseBoolean(General.getProperty("ServerListClock", "false"));
                 SERVER_GMONLY								= Boolean.parseBoolean(General.getProperty("ServerGMOnly", "false"));
-                ALT_PRIVILEGES_ADMIN						= Boolean.parseBoolean(General.getProperty("AltPrivilegesAdmin", "False"));
-                ALT_PRIVILEGES_SECURE_CHECK					= Boolean.parseBoolean(General.getProperty("AltPrivilegesSecureCheck", "True"));
-                ALT_PRIVILEGES_DEFAULT_LEVEL				= Integer.parseInt(General.getProperty("AltPrivilegesDefaultLevel", "100"));
-                GM_NAME_COLOR_ENABLED						= Boolean.parseBoolean(General.getProperty("GMNameColorEnabled", "False"));
-                ADMIN_NAME_COLOR							= Integer.decode("0x" + General.getProperty("AdminNameColor", "00FF00"));
-                GM_NAME_COLOR								= Integer.decode("0x" + General.getProperty("GMNameColor", "FFFF00"));
-                GM_TITLE_COLOR_ENABLED						= Boolean.parseBoolean(General.getProperty("GMTitleColorEnabled", "False"));
-                ADMIN_TITLE_COLOR							= Integer.decode("0x" + General.getProperty("AdminTitleColor", "00FF00"));
-                GM_TITLE_COLOR								= Integer.decode("0x" + General.getProperty("GMTitleColor", "FFFF00"));
                 GM_HERO_AURA								= Boolean.parseBoolean(General.getProperty("GMHeroAura", "True"));
                 GM_STARTUP_INVULNERABLE						= Boolean.parseBoolean(General.getProperty("GMStartupInvulnerable", "True"));
                 GM_STARTUP_INVISIBLE						= Boolean.parseBoolean(General.getProperty("GMStartupInvisible", "True"));
@@ -1799,72 +1692,6 @@ public final class Config
                 throw new Error("Failed to Load "+PVP_CONFIG_FILE+" File.");
             }
 
-            // access levels
-            try
-            {
-                Properties gmSettings   = new Properties();
-                InputStream is          = new FileInputStream(new File(GM_ACCESS_FILE));
-                gmSettings.load(is);
-                is.close();
-
-                GM_ACCESSLEVEL  = Integer.parseInt(gmSettings.getProperty("GMAccessLevel", "100"));
-                GM_MIN          = Integer.parseInt(gmSettings.getProperty("GMMinLevel", "100"));
-                GM_ALTG_MIN_LEVEL = Integer.parseInt(gmSettings.getProperty("GMCanAltG", "100"));
-                GM_ANNOUNCE     = Integer.parseInt(gmSettings.getProperty("GMCanAnnounce", "100"));
-                GM_BAN          = Integer.parseInt(gmSettings.getProperty("GMCanBan", "100"));
-                GM_BAN_CHAT     = Integer.parseInt(gmSettings.getProperty("GMCanBanChat", "100"));
-                GM_CREATE_ITEM  = Integer.parseInt(gmSettings.getProperty("GMCanShop", "100"));
-                GM_DELETE       = Integer.parseInt(gmSettings.getProperty("GMCanDelete", "100"));
-                GM_KICK         = Integer.parseInt(gmSettings.getProperty("GMCanKick", "100"));
-                GM_MENU         = Integer.parseInt(gmSettings.getProperty("GMMenu", "100"));
-                GM_GODMODE      = Integer.parseInt(gmSettings.getProperty("GMGodMode", "100"));
-                GM_CHAR_EDIT    = Integer.parseInt(gmSettings.getProperty("GMCanEditChar", "100"));
-                GM_CHAR_EDIT_OTHER    = Integer.parseInt(gmSettings.getProperty("GMCanEditCharOther", "100"));
-                GM_CHAR_VIEW    = Integer.parseInt(gmSettings.getProperty("GMCanViewChar", "100"));
-                GM_NPC_EDIT     = Integer.parseInt(gmSettings.getProperty("GMCanEditNPC", "100"));
-                GM_NPC_VIEW     = Integer.parseInt(gmSettings.getProperty("GMCanViewNPC", "100"));
-                GM_TELEPORT     = Integer.parseInt(gmSettings.getProperty("GMCanTeleport", "100"));
-                GM_TELEPORT_OTHER     = Integer.parseInt(gmSettings.getProperty("GMCanTeleportOther", "100"));
-                GM_RESTART      = Integer.parseInt(gmSettings.getProperty("GMCanRestart", "100"));
-                GM_MONSTERRACE  = Integer.parseInt(gmSettings.getProperty("GMMonsterRace", "100"));
-                GM_RIDER        = Integer.parseInt(gmSettings.getProperty("GMRider", "100"));
-                GM_ESCAPE       = Integer.parseInt(gmSettings.getProperty("GMFastUnstuck", "100"));
-                GM_FIXED        = Integer.parseInt(gmSettings.getProperty("GMResurectFixed", "100"));
-                GM_CREATE_NODES = Integer.parseInt(gmSettings.getProperty("GMCreateNodes", "100"));
-                GM_ENCHANT      = Integer.parseInt(gmSettings.getProperty("GMEnchant", "100"));
-                GM_DOOR         = Integer.parseInt(gmSettings.getProperty("GMDoor", "100"));
-                GM_RES          = Integer.parseInt(gmSettings.getProperty("GMRes", "100"));
-                GM_PEACEATTACK  = Integer.parseInt(gmSettings.getProperty("GMPeaceAttack", "100"));
-                GM_HEAL         = Integer.parseInt(gmSettings.getProperty("GMHeal", "100"));
-                GM_UNBLOCK      = Integer.parseInt(gmSettings.getProperty("GMUnblock", "100"));
-                GM_CACHE        = Integer.parseInt(gmSettings.getProperty("GMCache", "100"));
-                GM_TALK_BLOCK   = Integer.parseInt(gmSettings.getProperty("GMTalkBlock", "100"));
-                GM_TEST         = Integer.parseInt(gmSettings.getProperty("GMTest", "100"));
-
-                String gmTrans = gmSettings.getProperty("GMDisableTransaction", "False");
-
-                if (!gmTrans.equalsIgnoreCase("false"))
-                {
-                    String[] params = gmTrans.split(",");
-                    GM_DISABLE_TRANSACTION = true;
-                    GM_TRANSACTION_MIN = Integer.parseInt(params[0]);
-                    GM_TRANSACTION_MAX = Integer.parseInt(params[1]);
-                }
-                else
-                {
-                    GM_DISABLE_TRANSACTION = false;
-                }
-                GM_CAN_GIVE_DAMAGE = Integer.parseInt(gmSettings.getProperty("GMCanGiveDamage", "90"));
-                GM_DONT_TAKE_AGGRO = Integer.parseInt(gmSettings.getProperty("GMDontTakeAggro", "90"));
-                GM_DONT_TAKE_EXPSP = Integer.parseInt(gmSettings.getProperty("GMDontGiveExpSp", "90"));
-
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-                throw new Error("Failed to Load "+GM_ACCESS_FILE+" File.");
-            }
-
             try
             {
                 Properties Settings   = new Properties();
@@ -1905,7 +1732,6 @@ public final class Config
 
                 LOGIN_TRY_BEFORE_BAN    = Integer.parseInt(serverSettings.getProperty("LoginTryBeforeBan", "10"));
                 LOGIN_BLOCK_AFTER_BAN   = Integer.parseInt(serverSettings.getProperty("LoginBlockAfterBan", "600"));
-                GM_MIN          = Integer.parseInt(serverSettings.getProperty("GMMinLevel", "100"));
 
                 DATAPACK_ROOT    = new File(serverSettings.getProperty("DatapackRoot", ".")).getCanonicalFile(); //FIXME: in login?
 

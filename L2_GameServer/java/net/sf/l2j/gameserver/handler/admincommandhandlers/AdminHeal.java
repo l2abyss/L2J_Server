@@ -35,12 +35,8 @@ import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 public class AdminHeal implements IAdminCommandHandler {
 	private static Logger _log = Logger.getLogger(AdminRes.class.getName());
 	private static final String[] ADMIN_COMMANDS = { "admin_heal" };
-	private static final int REQUIRED_LEVEL = Config.GM_HEAL;
 
 	public boolean useAdminCommand(String command, L2PcInstance activeChar) {
-		if (!Config.ALT_PRIVILEGES_ADMIN)
-			if (!(checkLevel(activeChar.getAccessLevel()) && activeChar.isGM()))
-				return false;
 
 		GMAudit.auditGMAction(activeChar.getName(), command, (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target"), "");
 
@@ -64,10 +60,6 @@ public class AdminHeal implements IAdminCommandHandler {
 
 	public String[] getAdminCommandList() {
 		return ADMIN_COMMANDS;
-	}
-
-	private boolean checkLevel(int level) {
-		return (level >= REQUIRED_LEVEL);
 	}
 
 	private void handleRes(L2PcInstance activeChar)

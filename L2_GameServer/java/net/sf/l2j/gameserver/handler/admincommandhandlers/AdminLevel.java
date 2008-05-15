@@ -26,7 +26,6 @@ package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
 import java.util.StringTokenizer;
 
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.L2Object;
@@ -38,7 +37,6 @@ import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 
 public class AdminLevel implements IAdminCommandHandler
 {
-    private static final int REQUIRED_LEVEL = Config.GM_CHAR_EDIT;
     private static final String[] ADMIN_COMMANDS =
     {
         "admin_add_level",
@@ -51,9 +49,6 @@ public class AdminLevel implements IAdminCommandHandler
     public boolean useAdminCommand(String command, L2PcInstance activeChar)
     {
         if (activeChar == null) return false;
-
-        if (!Config.ALT_PRIVILEGES_ADMIN)
-            if (activeChar.getAccessLevel() < REQUIRED_LEVEL) return false;
 
 		L2Object targetChar = activeChar.getTarget();
 		String target = (targetChar != null ? targetChar.getName() : "no-target");

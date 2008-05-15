@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 
 import javolution.text.TextBuilder;
 import javolution.util.FastList;
-import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.TradeController;
 import net.sf.l2j.gameserver.cache.HtmCache;
@@ -67,14 +66,9 @@ public class AdminEditNpc implements IAdminCommandHandler {
 		"admin_editShopItem",
 		"admin_close_window"
 	};
-	private static final int REQUIRED_LEVEL = Config.GM_NPC_EDIT;
-	private static final int REQUIRED_LEVEL2 = Config.GM_NPC_VIEW;
 
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{//TODO: Tokenize and protect arguments parsing. Externalize HTML.
-		if (!Config.ALT_PRIVILEGES_ADMIN)
-			if (!((checkLevel(activeChar.getAccessLevel()) || checkLevel2(activeChar.getAccessLevel())) && activeChar.isGM()))
-				return false;
 
 		if (command.startsWith("admin_showShop "))
 		{
@@ -116,8 +110,6 @@ public class AdminEditNpc implements IAdminCommandHandler {
 			else
 				activeChar.sendMessage("Usage: //show_droplist <npc_id>");
 		}
-		else if (!Config.ALT_PRIVILEGES_ADMIN && !(checkLevel(activeChar.getAccessLevel()) && activeChar.isGM()))
-			return false;
 		else if(command.startsWith("admin_addShopItem "))
 		{
 			String[] args = command.split(" ");
@@ -673,13 +665,6 @@ public class AdminEditNpc implements IAdminCommandHandler {
 			}
 		}
 		return tradeLists;
-	}
-
-	private boolean checkLevel(int level) {
-		return (level >= REQUIRED_LEVEL);
-	}
-	private boolean checkLevel2(int level) {
-		return (level >= REQUIRED_LEVEL2);
 	}
 
 	public String[] getAdminCommandList() {

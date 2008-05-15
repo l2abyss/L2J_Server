@@ -49,6 +49,8 @@ import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.cache.WarehouseCacheManager;
 import net.sf.l2j.gameserver.communitybbs.BB.Forum;
 import net.sf.l2j.gameserver.communitybbs.Manager.ForumsBBSManager;
+import net.sf.l2j.gameserver.datatables.AccessLevel;
+import net.sf.l2j.gameserver.datatables.AccessLevels;
 import net.sf.l2j.gameserver.datatables.CharTemplateTable;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.FishTable;
@@ -580,9 +582,7 @@ public final class L2PcInstance extends L2PlayableInstance
     // WorldPosition used by TARGET_SIGNET_GROUND
     private Point3D _currentSkillWorldPosition;
     
-	//GM related variables
-	private boolean _isGm;
-	private int _accessLevel;
+    private AccessLevel _accessLevel;
 
 	private boolean _chatBanned = false; 		// Chat Banned
     private ScheduledFuture<?> _chatUnbanTask = null;
@@ -5927,19 +5927,11 @@ public final class L2PcInstance extends L2PlayableInstance
 	}
 
 	/**
-	 * Set the _isGm Flag of the L2PcInstance.<BR><BR>
-	 */
-	public void setIsGM(boolean status)
-	{
-		_isGm = status;
-	}
-
-	/**
 	 * Return True if the L2PcInstance is a GM.<BR><BR>
 	 */
 	public boolean isGM()
 	{
-		return _isGm;
+		return getAccessLevel().isGm();
 	}
 
 	/**
@@ -5971,10 +5963,30 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	public void setAccessLevel(int level)
 	{
-		_accessLevel = level;
+		if ( level == AccessLevels._masterAccessLevelNum ) {
+			_log.warning( "Setted master access level for character " + getName() + "! Just a warning to be carefull ;)" );
+			_accessLevel = AccessLevels._masterAccessLevel;
+		} else if ( level == AccessLevels._userAccessLevelNum ) {
+			_accessLevel = AccessLevels._userAccessLevel;
+		} else {
+			AccessLevel accessLevel = AccessLevels.getInstance().getAccessLevel( level );
 
-		if (_accessLevel > 0 || Config.EVERYBODY_HAS_ADMIN_RIGHTS)
-			setIsGM(true);
+			if ( accessLevel == null ) {
+				if ( level < 0 ) {
+					AccessLevels.getInstance().addBanAccessLevel( level );
+					_accessLevel = AccessLevels.getInstance().getAccessLevel( level );
+				} else {
+					_log.warning( "Tryed to set unregistered access level " + level + " to character " + getName() + ". Setting access level without privileges!" );
+					_accessLevel = AccessLevels._userAccessLevel;
+				}
+			} else {
+				_accessLevel = accessLevel;
+			}
+		}
+
+		getAppearance().setNameColor( _accessLevel.getNameColor() );
+		getAppearance().setTitleColor( _accessLevel.getTitleColor() );
+		broadcastUserInfo();
 	}
 
 	public void setAccountAccesslevel(int level)
@@ -5985,10 +5997,13 @@ public final class L2PcInstance extends L2PlayableInstance
 	/**
 	 * Return the _accessLevel of the L2PcInstance.<BR><BR>
 	 */
-	public int getAccessLevel()
+	public AccessLevel getAccessLevel()
 	{
-		if (Config.EVERYBODY_HAS_ADMIN_RIGHTS && _accessLevel <= 200)
-			return 200;
+		if (Config.EVERYBODY_HAS_ADMIN_RIGHTS) {
+			return AccessLevels._masterAccessLevel;
+		} else if ( _accessLevel == null ) { /* This is here because inventory etc. is loaded before access level on login, so it is not null */
+			setAccessLevel(AccessLevels._userAccessLevelNum);
+		}
 
 		return _accessLevel;
 	}
@@ -6115,7 +6130,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			statement.setLong(23, getDeleteTimer());
 			statement.setInt(24, hasDwarvenCraft() ? 1 : 0);
 			statement.setString(25, getTitle());
-			statement.setInt(26, getAccessLevel());
+			statement.setInt(26, getAccessLevel().getLevel());
 			statement.setInt(27, isOnline());
             statement.setInt(28, isIn7sDungeon() ? 1 : 0);
 			statement.setInt(29, getClanPrivileges());
@@ -6628,7 +6643,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			statement.setInt(25, getClassId().getId());
 			statement.setLong(26, getDeleteTimer());
 			statement.setString(27, getTitle());
-			statement.setInt(28, getAccessLevel());
+			statement.setInt(28, getAccessLevel().getLevel());
 			statement.setInt(29, isOnline());
             statement.setInt(30, isIn7sDungeon() ? 1 : 0);
 			statement.setInt(31, getClanPrivileges());
@@ -7683,7 +7698,7 @@ public final class L2PcInstance extends L2PlayableInstance
         //************************************* Check skill availability *******************************************
 
         // Check if this skill is enabled (ex : reuse time)
-        if (isSkillDisabled(skill.getId()) && (getAccessLevel() < Config.GM_PEACEATTACK))
+        if (isSkillDisabled(skill.getId()) && getAccessLevel().allowPeaceAttack())
         {
             SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
             sm.addSkillName(skill.getId());
@@ -7695,7 +7710,7 @@ public final class L2PcInstance extends L2PlayableInstance
         }
 
         // Check if all skills are disabled
-        if (isAllSkillsDisabled() && (getAccessLevel() < Config.GM_PEACEATTACK))
+        if (isAllSkillsDisabled() && getAccessLevel().allowPeaceAttack())
         {
             // Send a Server->Client packet ActionFailed to the L2PcInstance
             sendPacket(ActionFailed.STATIC_PACKET);
@@ -7820,7 +7835,7 @@ public final class L2PcInstance extends L2PlayableInstance
         // Check if this is offensive magic skill
         if (skill.isOffensive())
 		{
-			if ((isInsidePeaceZone(this, target)) && (getAccessLevel() < Config.GM_PEACEATTACK))
+			if ((isInsidePeaceZone(this, target)) && getAccessLevel().allowPeaceAttack())
 			{
 				// If L2Character or target is in a peace zone, send a system message TARGET_IN_PEACEZONE a Server->Client packet ActionFailed
 				sendPacket(new SystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
@@ -7835,7 +7850,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			}
 
             // Check if the target is attackable
-            if (!target.isAttackable() && (getAccessLevel() < Config.GM_PEACEATTACK))
+            if (!target.isAttackable() && getAccessLevel().allowPeaceAttack())
 			{
 				// If target is not attackable, send a Server->Client packet ActionFailed
 				sendPacket(ActionFailed.STATIC_PACKET);
@@ -7992,7 +8007,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			case TARGET_SELF:
 				break;
 			default:
-				if (!checkPvpSkill(target, skill) && (getAccessLevel() < Config.GM_PEACEATTACK))
+				if (!checkPvpSkill(target, skill) && getAccessLevel().allowPeaceAttack())
                 {
 					// Send a System Message to the L2PcInstance
 					sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));

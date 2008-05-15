@@ -29,15 +29,7 @@ public class AdminTvTEvent
 implements IAdminCommandHandler {
 	private static final String[] ADMIN_COMMANDS = {"admin_tvt_add", "admin_tvt_remove"};
 
-	private static final int REQUIRED_LEVEL = Config.GM_MIN;
-
 	public boolean useAdminCommand( String command, L2PcInstance adminInstance ) {
-		if ( !Config.ALT_PRIVILEGES_ADMIN ) {
-			if ( !checkLevel( adminInstance.getAccessLevel() ) || !adminInstance.isGM() ) {
-				return false;
-			}
-		}
-
 		GMAudit.auditGMAction( adminInstance.getName(), command, ( adminInstance.getTarget() != null ? adminInstance.getTarget().getName() : "no-target" ), "" );
 
 		if ( command.equals( "admin_tvt_add" ) ) {
@@ -65,10 +57,6 @@ implements IAdminCommandHandler {
 
 	public String[] getAdminCommandList() {
 		return ADMIN_COMMANDS;
-	}
-
-	private boolean checkLevel( int level ) {
-		return level >= REQUIRED_LEVEL;
 	}
 
 	private void add( L2PcInstance adminInstance, L2PcInstance playerInstance ) {
