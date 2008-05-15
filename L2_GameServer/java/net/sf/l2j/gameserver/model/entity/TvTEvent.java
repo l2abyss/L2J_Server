@@ -147,6 +147,8 @@ public class TvTEvent {
 			return false;
 		}
 
+		// Opens all doors specified in configs for tvt
+		openDoors();
 		// Closes all doors specified in configs for tvt
 		closeDoors();
 		// Set state STARTED
@@ -332,8 +334,10 @@ public class TvTEvent {
 		setState(EventState.INACTIVATING);
 		//Unspawn event npc
 		unSpawnNpc();
-		// Open alldoors specified in configs for tvt
+		// Opens all doors specified in configs for tvt
 		openDoors();
+		// Closes all doors specified in Configs for tvt
+		closeDoors();
 
 		// Iterate over all teams
 		for ( TvTEventTeam team : _teams ) {
@@ -425,7 +429,7 @@ public class TvTEvent {
 	 * Close doors specified in configs
 	 */
 	private static void closeDoors() {
-		for ( int doorId : Config.TVT_EVENT_DOOR_IDS ) {
+		for ( int doorId : Config.TVT_DOORS_IDS_TO_CLOSE ) {
 			L2DoorInstance doorInstance = DoorTable.getInstance().getDoor( doorId );
 
 			if ( doorInstance != null ) {
@@ -438,7 +442,7 @@ public class TvTEvent {
 	 * Open doors specified in configs
 	 */
 	private static void openDoors() {
-		for (int doorId : Config.TVT_EVENT_DOOR_IDS ) {
+		for (int doorId : Config.TVT_DOORS_IDS_TO_OPEN ) {
 			L2DoorInstance doorInstance = DoorTable.getInstance().getDoor( doorId );
 
 			if ( doorInstance != null ) {

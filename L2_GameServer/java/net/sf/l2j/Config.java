@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -557,7 +558,8 @@ public final class Config
     public static boolean	TVT_EVENT_SCROLL_ALLOWED;
     public static boolean	TVT_EVENT_POTIONS_ALLOWED;
     public static boolean	TVT_EVENT_SUMMON_BY_ITEM_ALLOWED;
-    public static List<Integer>	TVT_EVENT_DOOR_IDS = new FastList<Integer>();
+    public static List<Integer>	TVT_DOORS_IDS_TO_OPEN = new ArrayList<Integer>();
+    public static List<Integer>	TVT_DOORS_IDS_TO_CLOSE = new ArrayList<Integer>();
     public static boolean	TVT_REWARD_TEAM_TIE;
     public static byte		TVT_EVENT_MIN_LVL;
     public static byte		TVT_EVENT_MAX_LVL;
@@ -1713,18 +1715,33 @@ public final class Config
                                 TVT_EVENT_POTIONS_ALLOWED				= Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventPotionsAllowed", "false"));
                         		TVT_EVENT_SUMMON_BY_ITEM_ALLOWED		= Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventSummonByItemAllowed", "false"));
                         		TVT_REWARD_TEAM_TIE						= Boolean.parseBoolean(L2JModSettings.getProperty("TvTRewardTeamTie", "false"));
-                        		propertySplit							= L2JModSettings.getProperty("TvTEventDoorsCloseOpenOnStartEnd", "").split(";");
+                        		propertySplit							= L2JModSettings.getProperty("TvTDoorsToOpen", "").split(";");
 
                         		for (String door : propertySplit)
                         		{
                         			try
                         			{
-                        				TVT_EVENT_DOOR_IDS.add(Integer.parseInt(door));
+                        				TVT_DOORS_IDS_TO_OPEN.add(Integer.parseInt(door));
                         			}
                         			catch (NumberFormatException nfe)
                         			{
                         				if (!door.equals(""))
-                        				    _log.warning("TvTEventEngine[Config.load()]: invalid config property -> TvTEventDoorsCloseOpenOnStartEnd \"" + door + "\"");
+                        				    _log.warning("TvTEventEngine[Config.load()]: invalid config property -> TvTDoorsToOpen \"" + door + "\"");
+                        			}
+                        		}
+                        		
+                        		propertySplit							= L2JModSettings.getProperty("TvTDoorsToClose", "").split(";");
+                        		
+                        		for (String door : propertySplit)
+                        		{
+                        			try
+                        			{
+                        				TVT_DOORS_IDS_TO_CLOSE.add(Integer.parseInt(door));
+                        			}
+                        			catch (NumberFormatException nfe)
+                        			{
+                        				if (!door.equals(""))
+                        				    _log.warning("TvTEventEngine[Config.load()]: invalid config property -> TvTDoorsToClose \"" + door + "\"");
                         			}
                         		}
                             }
