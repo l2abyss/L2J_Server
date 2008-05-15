@@ -51,7 +51,7 @@ public class PcStat extends PlayableStat
     	L2PcInstance activeChar = getActiveChar();
 
         // Allowed to gain exp?
-    	if (getActiveChar().getAccessLevel().canGainExp() && getActiveChar().isInParty())
+    	if (!getActiveChar().getAccessLevel().canGainExp() && getActiveChar().isInParty())
               return false;
 
 		if (!super.addExp(value)) return false;
