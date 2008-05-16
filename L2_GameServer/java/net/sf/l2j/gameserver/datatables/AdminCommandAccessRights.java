@@ -26,9 +26,10 @@ import javolution.util.FastMap;
 /**
  * @author FBIagent<br>
  */
-public class AdminCommandAccessRights {
+public class AdminCommandAccessRights
+{
 	/** The logger<br> */
-	private static Logger _log = Logger.getLogger( AdminCommandAccessRights.class.getName() );
+	private static Logger _log = Logger.getLogger(AdminCommandAccessRights.class.getName());
 	/** The one and only instance of this class, retriveable by getInstance()<br> */
 	private static AdminCommandAccessRights _instance = null;
 
@@ -38,37 +39,44 @@ public class AdminCommandAccessRights {
 	/**
 	 * Loads admin command access rights from database<br>
 	 */
-	private AdminCommandAccessRights() {
+	private AdminCommandAccessRights()
+	{
 		java.sql.Connection con = null;
-
-		try {
+		
+		try
+		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-
-			PreparedStatement stmt = con.prepareStatement( "SELECT * FROM admin_command_access_rights" );
+			
+			PreparedStatement stmt = con.prepareStatement("SELECT * FROM admin_command_access_rights");
 			ResultSet rset = stmt.executeQuery();
 			String adminCommand = null;
 			String accessLevels = null;
-
-			while ( rset.next() ) {
-				adminCommand = rset.getString( "admin_command" );
-				accessLevels = rset.getString( "access_levels" );
-				_adminCommandAccessRights.put( adminCommand, new AdminCommandAccessRight( adminCommand, accessLevels ) );
+			
+			while (rset.next())
+			{
+				adminCommand = rset.getString("adminCommand");
+				accessLevels = rset.getString("accessLevels");
+				_adminCommandAccessRights.put(adminCommand, new AdminCommandAccessRight(adminCommand, accessLevels));
 			}
-
 			rset.close();
 			stmt.close();
 		}
-		catch ( SQLException e ) {
-			_log.warning( "AdminCommandAccessRights: Error loading from database:" + e );
+		catch (SQLException e)
+		{
+			_log.warning("AdminCommandAccessRights: Error loading from database:" + e);
 		}
-		finally {
-			try {
+		finally
+		{
+			try
+			{
 				con.close();
-			} catch ( Exception e ) {
+			}
+			catch (Exception e)
+			{
 			}
 		}
-
-		_log.info( "AdminCommandAccessRights: Loaded " + _adminCommandAccessRights.size() + " from database." );
+		
+		_log.info("AdminCommandAccessRights: Loaded " + _adminCommandAccessRights.size() + " from database.");
 	}
 
 	/**
@@ -76,26 +84,27 @@ public class AdminCommandAccessRights {
 	 * 
 	 * @return AdminCommandAccessRights: the one and only instance of this class<br>
 	 */
-	public static AdminCommandAccessRights getInstance() {
-		return _instance == null ? ( _instance = new AdminCommandAccessRights() ) : _instance;
+	public static AdminCommandAccessRights getInstance()
+	{
+		return _instance == null ? (_instance = new AdminCommandAccessRights()) : _instance;
 	}
 
-	public boolean hasAccess( String adminCommand, AccessLevel accessLevel ) {
-		if ( !accessLevel.isGm() ) {
+	public boolean hasAccess(String adminCommand, AccessLevel accessLevel)
+	{
+		if (!accessLevel.isGm())
 			return false;
-		}
-
-		if ( accessLevel.getLevel() == AccessLevels._masterAccessLevelNum ) {
+		
+		if (accessLevel.getLevel() == AccessLevels._masterAccessLevelNum)
 			return true;
-		}
-
-		AdminCommandAccessRight acar = _adminCommandAccessRights.get( adminCommand );
-
-		if ( acar == null ) {
-			_log.info( "AdminCommandAccessRights: No rights defined for admin command " + adminCommand + "." );
+		
+		AdminCommandAccessRight acar = _adminCommandAccessRights.get(adminCommand);
+		
+		if (acar == null)
+		{
+			_log.info("AdminCommandAccessRights: No rights defined for admin command " + adminCommand + ".");
 			return false;
 		}
-
-		return acar.hasAccess( accessLevel );
+		
+		return acar.hasAccess(accessLevel);
 	}
 }

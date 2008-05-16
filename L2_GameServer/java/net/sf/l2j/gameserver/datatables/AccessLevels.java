@@ -22,36 +22,40 @@ import java.util.logging.Logger;
 import net.sf.l2j.L2DatabaseFactory;
 
 import javolution.util.FastMap;
+import net.sf.l2j.Config;
 
 /**
  * @author FBIagent<br>
  */
-public class AccessLevels {
+public class AccessLevels
+{
 	/** The logger<br> */
-	private static Logger _log = Logger.getLogger( AccessLevels.class.getName() );
+	private static Logger _log = Logger.getLogger(AccessLevels.class.getName());
 	/** The one and only instance of this class, retriveable by getInstance()<br> */
 	private static AccessLevels _instance = null;
 	/** Reserved master access level<br> */
-	public static final int _masterAccessLevelNum = 127;
+	public static final int _masterAccessLevelNum = Config.MASTERACCESS_LEVEL;
 	/** The master access level which can use everything<br> */
-	public static AccessLevel _masterAccessLevel = new AccessLevel( _masterAccessLevelNum, "Master Access", Integer.decode( "0x000000" ), Integer.decode( "0x000000" ), null, true, true, true, true, true, true, true, true );
+	public static AccessLevel _masterAccessLevel = new AccessLevel(_masterAccessLevelNum, "Master Access", Config.MASTERACCESS_NAME_COLOR, Config.MASTERACCESS_TITLE_COLOR, null, true, true, true, true, true, true, true, true);
 	/** Reserved user access level<br> */
 	public static final int _userAccessLevelNum = 0;
 	/** The user access level which can do no administrative tasks<br> */
-	public static AccessLevel _userAccessLevel = new AccessLevel( _userAccessLevelNum, "User", Integer.decode( "0xFFFFFF" ), Integer.decode( "0xFFFFFF" ), null, false, false, false, true, false, true, true, true );
+	public static AccessLevel _userAccessLevel = new AccessLevel(_userAccessLevelNum, "User", Integer.decode("0xFFFFFF"), Integer.decode("0xFFFFFF"), null, false, false, false, true, false, true, true, true);
 	/** FastMap of access levels defined in database<br> */
-	private Map< Integer, AccessLevel > _accessLevels = new FastMap< Integer, AccessLevel >();
+	private Map<Integer, AccessLevel> _accessLevels = new FastMap<Integer, AccessLevel>();
 
 	/**
 	 * Loads the access levels from database<br>
 	 */
-	private AccessLevels() {
+	private AccessLevels()
+	{
 		java.sql.Connection con = null;
 
-		try {
+		try
+		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 
-			PreparedStatement stmt = con.prepareStatement( "SELECT * FROM `access_levels` ORDER BY `access_level` DESC" );
+			PreparedStatement stmt = con.prepareStatement("SELECT * FROM `access_levels` ORDER BY `accessLevel` DESC");
 			ResultSet rset = stmt.executeQuery();
 			int accessLevel = 0;
 			String name = null;
@@ -67,65 +71,91 @@ public class AccessLevels {
 			boolean takeAggro = false;
 			boolean gainExp = false;
 
-			while ( rset.next() ) {
-				accessLevel = rset.getInt( "access_level" );
-				name = rset.getString( "name" );
+			while (rset.next())
+			{
+				accessLevel = rset.getInt("accessLevel");
+				name = rset.getString("name");
 
-				if ( accessLevel == _userAccessLevelNum ) {
-					_log.warning( "AccessLevels: Access level with name " + name + " is using reserved user access level " + _userAccessLevelNum + ". Ignoring it!" );
+				if (accessLevel == _userAccessLevelNum)
+				{
+					_log.warning("AccessLevels: Access level with name " + name + " is using reserved user access level " + _userAccessLevelNum + ". Ignoring it!");
 					continue;
-				} else if ( accessLevel == _masterAccessLevelNum ) {
-					_log.warning( "AccessLevels: Access level with name " + name + " is using reserved master access level " + _masterAccessLevelNum + ". Ignoring it!" );
+				}
+				else if (accessLevel == _masterAccessLevelNum)
+				{
+					_log.warning("AccessLevels: Access level with name " + name + " is using reserved master access level " + _masterAccessLevelNum + ". Ignoring it!");
 					continue;
-				} else if ( accessLevel < 0 ) {
-					_log.warning( "AccessLevels: Access level with name " + name + " is using banned access level state(below 0). Ignoring it!" );
+				}
+				else if (accessLevel < 0)
+				{
+					_log.warning("AccessLevels: Access level with name " + name + " is using banned access level state(below 0). Ignoring it!");
 					continue;
 				}
 				
-				try {
-					nameColor = Integer.decode( "0x" + rset.getString( "name_color" ) );
-				} catch ( NumberFormatException nfe ) {
-					try {
-						nameColor = Integer.decode( "0xFFFFFF" );
-					} catch ( NumberFormatException nfe2 ) {
+				try
+				{
+					nameColor = Integer.decode("0x" + rset.getString("nameColor"));
+				}
+				catch ( NumberFormatException nfe )
+				{
+					try
+					{
+						nameColor = Integer.decode("0xFFFFFF");
+					}
+					catch ( NumberFormatException nfe2 )
+					{
+						
 					}
 				}
 
-				try {
-					titleColor = Integer.decode( "0x" + rset.getString( "title_color" ) );
-				} catch ( NumberFormatException nfe ) {
-					try {
-						titleColor = Integer.decode( "0xFFFFFF" );
-					} catch ( NumberFormatException nfe2 ) {
+				try
+				{
+					titleColor = Integer.decode("0x" + rset.getString( "titleColor" ));
+					
+				}
+				catch ( NumberFormatException nfe )
+				{
+					try
+					{
+						titleColor = Integer.decode( "0x77FFFF" );
+					}
+					catch ( NumberFormatException nfe2 )
+					{
+						
 					}
 				}
 
-				childs = rset.getString( "child_access" );
-				isGm = rset.getBoolean( "is_gm" );
-				allowPeaceAttack = rset.getBoolean( "allow_peace_attack" );
-				allowFixedRes = rset.getBoolean( "allow_fixed_res" );
-				allowTransaction = rset.getBoolean( "allow_transaction" );
-				allowAltG = rset.getBoolean( "allow_altg" );
-				giveDamage = rset.getBoolean( "give_damage" );
-				takeAggro = rset.getBoolean( "take_aggro" );
-				gainExp = rset.getBoolean( "gain_exp" );
+				childs = rset.getString("childAccess");
+				isGm = rset.getBoolean("isGm");
+				allowPeaceAttack = rset.getBoolean("allowPeaceAttack");
+				allowFixedRes = rset.getBoolean("allowFixedRes");
+				allowTransaction = rset.getBoolean("allowTransaction");
+				allowAltG = rset.getBoolean("allowAltg");
+				giveDamage = rset.getBoolean("giveDamage");
+				takeAggro = rset.getBoolean("takeAggro");
+				gainExp = rset.getBoolean("gainExp");
 
-				_accessLevels.put( accessLevel, new AccessLevel( accessLevel, name, nameColor, titleColor, childs.equals( "" ) ? null : childs, isGm, allowPeaceAttack, allowFixedRes, allowTransaction, allowAltG, giveDamage, takeAggro, gainExp  ) );
+				_accessLevels.put(accessLevel, new AccessLevel(accessLevel, name, nameColor, titleColor, childs.equals("") ? null : childs, isGm, allowPeaceAttack, allowFixedRes, allowTransaction, allowAltG, giveDamage, takeAggro, gainExp));
 			}
 
 			rset.close();
 			stmt.close();
 		}
-		catch ( SQLException e ) {
+		catch ( SQLException e )
+		{
 			_log.warning( "AccessLevels: Error loading from database:" + e );
 		}
-		finally {
-			try {
+		finally
+		{
+			try
+			{
 				con.close();
-			} catch ( Exception e ) {
+			}
+			catch ( Exception e )
+			{
+
 			}
 		}
-
 		_log.info( "AccessLevels: Loaded " + _accessLevels.size() + " from database." );
 	}
 
@@ -134,8 +164,9 @@ public class AccessLevels {
 	 * 
 	 * @return AccessLevels: the one and only instance of this class<br>
 	 */
-	public static AccessLevels getInstance() {
-		return _instance == null ? ( _instance = new AccessLevels() ) : _instance;
+	public static AccessLevels getInstance()
+	{
+		return _instance == null ? (_instance = new AccessLevels()) : _instance;
 	}
 
 	/**
@@ -145,23 +176,27 @@ public class AccessLevels {
 	 *
 	 * @return AccessLevel: AccessLevel instance by char access level<br>
 	 */
-	public AccessLevel getAccessLevel( int accessLevelNum ) {
+	public AccessLevel getAccessLevel(int accessLevelNum)
+	{
 		AccessLevel accessLevel = null;
 
-		synchronized ( _accessLevels ) {
-			accessLevel = _accessLevels.get( accessLevelNum );
+		synchronized (_accessLevels)
+		{
+			accessLevel = _accessLevels.get(accessLevelNum);
 		}
-
 		return accessLevel;
 	}
 
-	public void addBanAccessLevel( int accessLevel ) {
-		synchronized ( _accessLevels ) {
-			if ( accessLevel > -1 ) {
+	public void addBanAccessLevel( int accessLevel )
+	{
+		synchronized ( _accessLevels )
+		{
+			if ( accessLevel > -1 )
+			{
 				return;
 			}
 
-			_accessLevels.put( accessLevel, new AccessLevel( accessLevel, "Banned", Integer.decode( "0x000000" ), Integer.decode( "0x000000" ), null, false, false, false, false, false, false, false, false ) );
+			_accessLevels.put(accessLevel, new AccessLevel(accessLevel, "Banned", Integer.decode( "0x000000" ), Integer.decode( "0x000000" ), null, false, false, false, false, false, false, false, false));
 		}
 	}
 }

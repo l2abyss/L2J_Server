@@ -5964,30 +5964,40 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	public void setAccessLevel(int level)
 	{
-		if ( level == AccessLevels._masterAccessLevelNum ) {
+		if (level == AccessLevels._masterAccessLevelNum)
+		{
 			_log.warning( "Setted master access level for character " + getName() + "! Just a warning to be carefull ;)" );
 			_accessLevel = AccessLevels._masterAccessLevel;
-		} else if ( level == AccessLevels._userAccessLevelNum ) {
+		}
+		else if (level == AccessLevels._userAccessLevelNum)
 			_accessLevel = AccessLevels._userAccessLevel;
-		} else {
-			AccessLevel accessLevel = AccessLevels.getInstance().getAccessLevel( level );
+		else
+		{
+			AccessLevel accessLevel = AccessLevels.getInstance().getAccessLevel(level);
 
-			if ( accessLevel == null ) {
-				if ( level < 0 ) {
-					AccessLevels.getInstance().addBanAccessLevel( level );
-					_accessLevel = AccessLevels.getInstance().getAccessLevel( level );
-				} else {
+			if (accessLevel == null)
+			{
+				if (level < 0)
+				{
+					AccessLevels.getInstance().addBanAccessLevel(level);
+					_accessLevel = AccessLevels.getInstance().getAccessLevel(level);
+				}
+				else
+				{
 					_log.warning( "Tryed to set unregistered access level " + level + " to character " + getName() + ". Setting access level without privileges!" );
 					_accessLevel = AccessLevels._userAccessLevel;
 				}
-			} else {
-				_accessLevel = accessLevel;
 			}
+			else
+				_accessLevel = accessLevel;
 		}
 
-		getAppearance().setNameColor( _accessLevel.getNameColor() );
-		getAppearance().setTitleColor( _accessLevel.getTitleColor() );
-		broadcastUserInfo();
+		if (_accessLevel != AccessLevels._userAccessLevel)
+		{
+			getAppearance().setNameColor(_accessLevel.getNameColor());
+			getAppearance().setTitleColor(_accessLevel.getTitleColor());
+			broadcastUserInfo();
+		}
 	}
 
 	public void setAccountAccesslevel(int level)
@@ -6000,11 +6010,10 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	public AccessLevel getAccessLevel()
 	{
-		if (Config.EVERYBODY_HAS_ADMIN_RIGHTS) {
+		if (Config.EVERYBODY_HAS_ADMIN_RIGHTS)
 			return AccessLevels._masterAccessLevel;
-		} else if ( _accessLevel == null ) { /* This is here because inventory etc. is loaded before access level on login, so it is not null */
+		else if ( _accessLevel == null ) /* This is here because inventory etc. is loaded before access level on login, so it is not null */
 			setAccessLevel(AccessLevels._userAccessLevelNum);
-		}
 
 		return _accessLevel;
 	}

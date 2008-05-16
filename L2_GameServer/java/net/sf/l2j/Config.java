@@ -92,6 +92,9 @@ public final class Config
 	/** Character Settings -Begin                          **/
 	/** ************************************************** **/
 	
+    public static int		MASTERACCESS_LEVEL;
+    public static int		MASTERACCESS_NAME_COLOR;
+    public static int		MASTERACCESS_TITLE_COLOR;
 	public static boolean	ALT_GAME_DELEVEL;
     public static double	ALT_WEIGHT_LIMIT;
     public static int		RUN_SPD_BOOST;
@@ -971,6 +974,9 @@ public final class Config
                 Character.load(is);
                 is.close();
 
+                MASTERACCESS_LEVEL					= Integer.parseInt(Character.getProperty("MasterAccessLevel", "127"));
+                MASTERACCESS_NAME_COLOR				= Integer.decode("0x" + Character.getProperty("MasterNameColor", "00FF00"));
+                MASTERACCESS_TITLE_COLOR			= Integer.decode("0x" + Character.getProperty("MasterTitleColor", "00FF00"));
                 ALT_GAME_DELEVEL					= Boolean.parseBoolean(Character.getProperty("Delevel", "true"));
                 ALT_WEIGHT_LIMIT					= Double.parseDouble(Character.getProperty("AltWeightLimit", "1"));
                 RUN_SPD_BOOST						= Integer.parseInt(Character.getProperty("RunSpeedBoost", "0"));

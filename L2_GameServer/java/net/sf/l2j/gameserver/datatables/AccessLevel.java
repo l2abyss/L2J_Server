@@ -104,7 +104,8 @@ public class AccessLevel
 	 * 
 	 * @return String: access level name<br>
 	 */
-	public String getName() {
+	public String getName()
+	{
 		return _name;
 	}
 
@@ -113,7 +114,8 @@ public class AccessLevel
 	 * 
 	 * @return int: the name color for the access level<br>
 	 */
-	public int getNameColor() {
+	public int getNameColor()
+	{
 		return _nameColor;
 	}
 
@@ -122,7 +124,8 @@ public class AccessLevel
 	 * 
 	 * @return int: the title color for the access level<br>
 	 */
-	public int getTitleColor() {
+	public int getTitleColor()
+	{
 		return _titleColor;
 	}
 
@@ -131,7 +134,8 @@ public class AccessLevel
 	 * 
 	 * @return boolean: true if access level have gm access, otherwise false<br>
 	 */
-	public boolean isGm() {
+	public boolean isGm()
+	{
 		return _isGm;
 	}
 
@@ -140,7 +144,8 @@ public class AccessLevel
 	 * 
 	 * @return boolean: true if the access level is allowed to attack in peace zone, otherwise false<br>
 	 */
-	public boolean allowPeaceAttack() {
+	public boolean allowPeaceAttack()
+	{
 		return _allowPeaceAttack;
 	}
 
@@ -149,7 +154,8 @@ public class AccessLevel
 	 * 
 	 * @return: true if the access level is allowed to use fixed res, otherwise false<br>
 	 */
-	public boolean allowFixedRes() {
+	public boolean allowFixedRes()
+	{
 		return _allowFixedRes;
 	}
 
@@ -158,7 +164,8 @@ public class AccessLevel
 	 *  
 	 * @return boolean: true if access level is allowed to perform transactions, otherwise false<br>
 	 */
-	public boolean allowTransaction() {
+	public boolean allowTransaction()
+	{
 		return _allowTransaction;
 	}
 
@@ -167,7 +174,8 @@ public class AccessLevel
 	 *  
 	 * @return boolean: true if access level is allowed to use AltG commands, otherwise false<br>
 	 */
-	public boolean allowAltG() {
+	public boolean allowAltG()
+	{
 		return _allowAltG;
 	}
 
@@ -176,7 +184,8 @@ public class AccessLevel
 	 * 
 	 * @return boolean: true if the access level can give damage, otherwise false<br>
 	 */
-	public boolean canGiveDamage() {
+	public boolean canGiveDamage()
+	{
 		return _giveDamage;
 	}
 
@@ -185,7 +194,8 @@ public class AccessLevel
 	 * 
 	 * @return boolean: true if the access level can take aggro, otherwise false<br>
 	 */
-	public boolean canTakeAggro() {
+	public boolean canTakeAggro()
+	{
 		return _takeAggro;
 	}
 
@@ -194,7 +204,8 @@ public class AccessLevel
 	 * 
 	 * @return boolean: true if the access level can gain exp, otherwise false<br>
 	 */
-	public boolean canGainExp() {
+	public boolean canGainExp()
+	{
 		return _gainExp;
 	}
 
@@ -205,7 +216,7 @@ public class AccessLevel
 	 * 
 	 * @return boolean: true if a child access level is equals to allowedAccess, otherwise false<br>
 	 */
-	public boolean hasChildAccess( AccessLevel accessLevel )
+	public boolean hasChildAccess(AccessLevel accessLevel)
 	{
 		if (_childsAccessLevel == null)
 		{
@@ -213,17 +224,17 @@ public class AccessLevel
 				return false;
 			
 			setChildAccess(_childs);
-			for ( AccessLevel childAccess : _childsAccessLevel )
+			for (AccessLevel childAccess : _childsAccessLevel)
 			{
-				if ( childAccess != null && ( childAccess.getLevel() == accessLevel.getLevel() || childAccess.hasChildAccess( accessLevel ) ) )
+				if (childAccess != null && (childAccess.getLevel() == accessLevel.getLevel() || childAccess.hasChildAccess(accessLevel)))
 					return true;
 			}
 		}
 		else
 		{
-			for ( AccessLevel childAccess : _childsAccessLevel )
+			for (AccessLevel childAccess : _childsAccessLevel)
 			{
-				if ( childAccess != null && ( childAccess.getLevel() == accessLevel.getLevel() || childAccess.hasChildAccess( accessLevel ) ) )
+				if (childAccess != null && (childAccess.getLevel() == accessLevel.getLevel() || childAccess.hasChildAccess(accessLevel)))
 					return true;
 			}
 		}
@@ -232,25 +243,27 @@ public class AccessLevel
 	
 	private void setChildAccess(String childs)
 	{
-		String[] childsSplit = childs.split( ";" );
+		String[] childsSplit = childs.split(";");
 
-		_childsAccessLevel = new AccessLevel[ childsSplit.length ];
+		_childsAccessLevel = new AccessLevel[childsSplit.length];
 
-		for ( int i = 0;i < childsSplit.length;++ i )
+		for (int i = 0;i < childsSplit.length;++ i)
 		{
-			AccessLevel accessLevelInst = AccessLevels.getInstance().getAccessLevel( Integer.valueOf( childsSplit[ i ] ) );
+			AccessLevel accessLevelInst = AccessLevels.getInstance().getAccessLevel(Integer.valueOf(childsSplit[i]));
 
-			if ( accessLevelInst == null ) {
-				_log.warning( "AccessLevel: Undefined child access level " + childsSplit[ i ] );
+			if (accessLevelInst == null)
+			{
+				_log.warning("AccessLevel: Undefined child access level " + childsSplit[i]);
 				continue;
 			}
 
-			if ( accessLevelInst.hasChildAccess( this ) ) {
-				_log.warning( "AccessLevel: Child access tree overlapping for " + _name + " and " + accessLevelInst.getName() );
+			if (accessLevelInst.hasChildAccess(this))
+			{
+				_log.warning("AccessLevel: Child access tree overlapping for " + _name + " and " + accessLevelInst.getName());
 				continue;
 			}
 
-			_childsAccessLevel[ i ] = accessLevelInst;
+			_childsAccessLevel[i] = accessLevelInst;
 		}
 	}
 }

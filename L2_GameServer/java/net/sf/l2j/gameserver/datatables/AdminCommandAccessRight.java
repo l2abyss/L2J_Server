@@ -17,7 +17,8 @@ package net.sf.l2j.gameserver.datatables;
 /**
  * @author FBIagent<br>
  */
-public class AdminCommandAccessRight {
+public class AdminCommandAccessRight
+{
 	/** The admin command<br> */
 	private String _adminCommand = null;
 	/** The access levels which can use the admin command<br> */
@@ -29,19 +30,24 @@ public class AdminCommandAccessRight {
 	 * @param adminCommand as String
 	 * @param accessLevels as String
 	 */
-	public AdminCommandAccessRight( String adminCommand, String accessLevels ) {
+	public AdminCommandAccessRight(String adminCommand, String accessLevels)
+	{
 		_adminCommand = adminCommand;
-
-		String[] accessLevelsSplit = accessLevels.split( "," );
+		
+		String[] accessLevelsSplit = accessLevels.split(",");
 		int numLevels = accessLevelsSplit.length;
-
-		_accessLevels = new AccessLevel[ numLevels ];
-
-		for ( int i = 0;i < numLevels;++ i ) {
-			try {
-				_accessLevels[ i ] = AccessLevels.getInstance().getAccessLevel( Integer.valueOf( accessLevelsSplit[ i ] ) );
-			} catch ( NumberFormatException nfe ) {
-				_accessLevels[ i ] = null;
+		
+		_accessLevels = new AccessLevel[numLevels];
+		
+		for (int i = 0; i < numLevels; ++i)
+		{
+			try
+			{
+				_accessLevels[i] = AccessLevels.getInstance().getAccessLevel(Integer.valueOf(accessLevelsSplit[i]));
+			}
+			catch (NumberFormatException nfe)
+			{
+				_accessLevels[i] = null;
 			}
 		}
 	}
@@ -51,7 +57,8 @@ public class AdminCommandAccessRight {
 	 * 
 	 * @return String: the admin command the access right belongs to<br>
 	 */
-	public String getAdminCommand() {
+	public String getAdminCommand()
+	{
 		return _adminCommand;
 	}
 
@@ -62,15 +69,17 @@ public class AdminCommandAccessRight {
 	 * 
 	 * @return boolean: true if characterAccessLevel is allowed to use the admin command which belongs to this access right, otherwise false<br>
 	 */
-	public boolean hasAccess( AccessLevel characterAccessLevel ) {
-		for ( int i = 0;i < _accessLevels.length;++ i ) {
-			AccessLevel accessLevel = _accessLevels[ i ];
-
-			if ( accessLevel != null && ( accessLevel.getLevel() == characterAccessLevel.getLevel() || characterAccessLevel.hasChildAccess( accessLevel ) ) ) {
+	public boolean hasAccess(AccessLevel characterAccessLevel)
+	{
+		for (int i = 0; i < _accessLevels.length; ++i)
+		{
+			AccessLevel accessLevel = _accessLevels[i];
+			
+			if (accessLevel != null
+					&& (accessLevel.getLevel() == characterAccessLevel.getLevel() || characterAccessLevel.hasChildAccess(accessLevel)))
 				return true;
-			}
 		}
-
+		
 		return false;
 	}
 }
