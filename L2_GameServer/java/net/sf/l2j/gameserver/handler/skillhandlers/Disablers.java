@@ -303,6 +303,7 @@ public class Disablers implements ISkillHandler
                     	else if (aggdiff > 0)
                     		((L2Attackable)target).reduceHate(null, (int) aggdiff);
                     }
+            		// when fail, target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, activeChar);
                     break;
                 }
                 case AGGREDUCE_CHAR:
@@ -333,6 +334,7 @@ public class Disablers implements ISkillHandler
                 			sm.addSkillName(skill.getId());
                 			activeChar.sendPacket(sm);
                 		}
+                		target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, activeChar);
                 	}
                     break;
                 }
@@ -360,8 +362,11 @@ public class Disablers implements ISkillHandler
                 				sm.addSkillName(skill.getId());
                 				activeChar.sendPacket(sm);
                 			}
+                    		target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, activeChar);
                 		}
                 	}
+                	else
+                		target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, activeChar);
                     break;
                 }
                 case UNBLEED:

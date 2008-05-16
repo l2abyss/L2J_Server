@@ -6368,14 +6368,25 @@ public abstract class L2Character extends L2Object
 								// Signets are a special case, casted on target_self but don't harm self
 								if (skill.getSkillType() != L2Skill.SkillType.SIGNET && skill.getSkillType() != L2Skill.SkillType.SIGNET_CASTTIME)
 								{
-									((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
+									if (skill.getSkillType() != L2Skill.SkillType.AGGREDUCE
+											&& skill.getSkillType() != L2Skill.SkillType.AGGREDUCE_CHAR
+											&& skill.getSkillType() != L2Skill.SkillType.AGGREMOVE)
+									{
+										// notify target AI about the attack
+										((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
+									}
 									player.updatePvPStatus((L2Character)target);
 								}
 							}
 							else if (target instanceof L2Attackable)
 							{
-								// notify the AI that she is attacked
-								((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
+								if (skill.getSkillType() != L2Skill.SkillType.AGGREDUCE
+										&& skill.getSkillType() != L2Skill.SkillType.AGGREDUCE_CHAR
+										&& skill.getSkillType() != L2Skill.SkillType.AGGREMOVE)
+								{
+									// notify target AI about the attack
+									((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
+								}
 							}
 						}
 						else
