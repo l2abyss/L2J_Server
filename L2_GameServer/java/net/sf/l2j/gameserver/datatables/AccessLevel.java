@@ -19,7 +19,8 @@ import java.util.logging.Logger;
 /**
  * @author FBIagent<br>
  */
-public class AccessLevel {
+public class AccessLevel
+{
 	/** The logger<br> */
 	private static Logger _log = Logger.getLogger( AccessLevel.class.getName() );
 	/** The access level<br> */
@@ -27,7 +28,9 @@ public class AccessLevel {
 	/** The access level name<br> */
 	private String _name = null;
 	/** Child access levels */
-	AccessLevel[] _childs = null;
+	AccessLevel[] _childsAccessLevel = null;
+	/** Child access levels */
+	private String _childs = null;
 	/** The name color for the access level<br> */
 	private int _nameColor = 0;
 	/** The title color for the access level<br> */
@@ -66,34 +69,14 @@ public class AccessLevel {
 	 * @param takeAggro as boolean<br>
 	 * @param gainExp as boolean<br>
 	 */
-	public AccessLevel( int accessLevel, String name, int nameColor, int titleColor, String childs, boolean isGm, boolean allowPeaceAttack, boolean allowFixedRes, boolean allowTransaction, boolean allowAltG, boolean giveDamage, boolean takeAggro, boolean gainExp ) {
+	public AccessLevel(int accessLevel, String name, int nameColor, int titleColor, String childs, boolean isGm,
+			boolean allowPeaceAttack, boolean allowFixedRes, boolean allowTransaction, boolean allowAltG, boolean giveDamage, boolean takeAggro, boolean gainExp)
+	{
 		_accessLevel = accessLevel;
 		_name = name;
 		_nameColor = nameColor;
 		_titleColor = titleColor;
-
-		if ( childs != null ) {
-			String[] childsSplit = childs.split( ";" );
-
-			_childs = new AccessLevel[ childsSplit.length ];
-
-			for ( int i = 0;i < childsSplit.length;++ i ) {
-				AccessLevel accessLevelInst = AccessLevels.getInstance().getAccessLevel( Integer.valueOf( childsSplit[ i ] ) );
-
-				if ( accessLevelInst == null ) {
-					_log.warning( "AccessLevel: Undefined child access level " + childsSplit[ i ] );
-					continue;
-				}
-
-				if ( accessLevelInst.hasChildAccess( this ) ) {
-					_log.warning( "AccessLevel: Child access tree overlapping for " + _name + " and " + accessLevelInst.getName() );
-					continue;
-				}
-
-				_childs[ i ] = accessLevelInst;
-			}
-		}
-
+		_childs = childs;
 		_isGm = isGm;
 		_allowPeaceAttack = allowPeaceAttack;
 		_allowFixedRes = allowFixedRes;
@@ -103,13 +86,16 @@ public class AccessLevel {
 		_takeAggro = takeAggro;
 		_gainExp = gainExp;
 	}
+	
+	
 
 	/**
 	 * Returns the access level<br><br>
 	 * 
 	 * @return int: access level<br>
 	 */
-	public int getLevel() {
+	public int getLevel()
+	{
 		return _accessLevel;
 	}
 
@@ -219,17 +205,52 @@ public class AccessLevel {
 	 * 
 	 * @return boolean: true if a child access level is equals to allowedAccess, otherwise false<br>
 	 */
-	public boolean hasChildAccess( AccessLevel accessLevel ) {
-		if ( _childs == null ) {
-			return false;
-		}
-
-		for ( AccessLevel childAccess : _childs ) {
-			if ( childAccess != null && ( childAccess.getLevel() == accessLevel.getLevel() || childAccess.hasChildAccess( accessLevel ) ) ) {
-				return true;
+	public boolean hasChildAccess( AccessLevel accessLevel )
+	{
+		if (_childsAccessLevel == null)
+		{
+			if (_childs == null)
+				return false;
+			
+			setChildAccess(_childs);
+			for ( AccessLevel childAccess : _childsAccessLevel )
+			{
+				if ( childAccess != null && ( childAccess.getLevel() == accessLevel.getLevel() || childAccess.hasChildAccess( accessLevel ) ) )
+					return true;
 			}
 		}
-
+		else
+		{
+			for ( AccessLevel childAccess : _childsAccessLevel )
+			{
+				if ( childAccess != null && ( childAccess.getLevel() == accessLevel.getLevel() || childAccess.hasChildAccess( accessLevel ) ) )
+					return true;
+			}
+		}
 		return false;
+	}
+	
+	private void setChildAccess(String childs)
+	{
+		String[] childsSplit = childs.split( ";" );
+
+		_childsAccessLevel = new AccessLevel[ childsSplit.length ];
+
+		for ( int i = 0;i < childsSplit.length;++ i )
+		{
+			AccessLevel accessLevelInst = AccessLevels.getInstance().getAccessLevel( Integer.valueOf( childsSplit[ i ] ) );
+
+			if ( accessLevelInst == null ) {
+				_log.warning( "AccessLevel: Undefined child access level " + childsSplit[ i ] );
+				continue;
+			}
+
+			if ( accessLevelInst.hasChildAccess( this ) ) {
+				_log.warning( "AccessLevel: Child access tree overlapping for " + _name + " and " + accessLevelInst.getName() );
+				continue;
+			}
+
+			_childsAccessLevel[ i ] = accessLevelInst;
+		}
 	}
 }
