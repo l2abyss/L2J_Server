@@ -101,7 +101,7 @@ public final class RequestPrivateStoreSell extends L2GameClientPacket
 		TradeList storeList = storePlayer.getBuyList();
 		if (storeList == null) return;
 
-        if (player.getAccessLevel().allowTransaction())
+        if (!player.getAccessLevel().allowTransaction())
         {
         	player.sendMessage("Transactions are disable for your Access Level");
             sendPacket(ActionFailed.STATIC_PACKET);

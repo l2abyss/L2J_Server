@@ -85,14 +85,14 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 		TradeList storeList = storePlayer.getSellList();
 		if (storeList == null) return;
 
-        if (player.getAccessLevel().allowTransaction())
+        if (!player.getAccessLevel().allowTransaction())
         {
         	player.sendMessage("Transactions are disable for your Access Level");
             sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
 
-        // FIXME: this check should be (and most probabliy is) done in the TradeList mechanics
+        // FIXME: this check should be (and most probably is) done in the TradeList mechanics
 		long priceTotal = 0;
         for(ItemRequest ir : _items)
         {
@@ -118,7 +118,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 			priceTotal += ir.getPrice() * ir.getCount();
         }
 
-        // FIXME: this check should be (and most probabliy is) done in the TradeList mechanics
+        // FIXME: this check should be (and most probably is) done in the TradeList mechanics
 		if(priceTotal < 0 || priceTotal > Integer.MAX_VALUE)
         {
             String msgErr = "[RequestPrivateStoreBuy] player "+getClient().getActiveChar().getName()+" tried an overflow exploit, ban this player!";
