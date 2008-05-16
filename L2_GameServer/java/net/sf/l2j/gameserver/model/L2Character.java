@@ -6169,10 +6169,6 @@ public abstract class L2Character extends L2Object
         {
             L2PcInstance currPlayer = (L2PcInstance)this;
             SkillDat queuedSkill = currPlayer.getQueuedSkill();
-            
-         // Rescuing old skill cast task if exist
-         if (skill.isPotion())
-        	 queuedSkill = currPlayer.getCurrentSkill();
 
             currPlayer.setCurrentSkill(null, false, false);
 

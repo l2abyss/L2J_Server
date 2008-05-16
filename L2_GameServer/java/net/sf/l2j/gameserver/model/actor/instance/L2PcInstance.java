@@ -8021,11 +8021,8 @@ public final class L2PcInstance extends L2PlayableInstance
         	}
         }
 
-       /* If all conditions are checked, create a new SkillDat object and set the player _currentSkill
-        * If skill is potion, do not save data into _currentSkill so that previous casting
-        * intention can be easily retaken later
-        */
-        if (!skill.isPotion()) setCurrentSkill(skill, forceUse, dontMove);
+        // If all conditions are checked, create a new SkillDat object and set the player _currentSkill
+        setCurrentSkill(skill, forceUse, dontMove);
 
 		// Check if the active L2Skill can be casted (ex : not sleeping...), Check if the target is correct and Notify the AI with AI_INTENTION_CAST and target
         super.useMagic(skill);
