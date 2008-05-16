@@ -16,7 +16,6 @@ package net.sf.l2j.gameserver.model.actor.instance;
 
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
-import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.L2Trap;
 import net.sf.l2j.gameserver.model.actor.knownlist.PlayableKnownList;
@@ -216,9 +215,6 @@ public abstract class L2PlayableInstance extends L2Character
 	{
 		return _isSilentMoving;
 	}
-
-	public abstract boolean destroyItemByItemId(String process, int itemId, int count, L2Object reference, boolean sendMessage);
-	public abstract boolean destroyItem(String process, int objectId, int count, L2Object reference, boolean sendMessage);
 
 	//Charm of Luck - During a Raid/Boss war, decreased chance for death penalty
 	public final boolean getCharmOfLuck() { return _getCharmOfLuck; }

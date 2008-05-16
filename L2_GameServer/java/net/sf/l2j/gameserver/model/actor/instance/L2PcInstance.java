@@ -2385,6 +2385,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	/**
 	 * Return the PcInventory Inventory of the L2PcInstance contained in _inventory.<BR><BR>
 	 */
+	@Override
 	public PcInventory getInventory()
 	{
 		return _inventory;
@@ -7721,55 +7722,6 @@ public final class L2PcInstance extends L2PlayableInstance
 
         //************************************* Check Consumables *******************************************
 
-        // Check if the caster has enough MP
-        if (getCurrentMp() < getStat().getMpConsume(skill) + getStat().getMpInitialConsume(skill))
-        {
-            // Send a System Message to the caster
-            sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_MP));
-
-            // Send a Server->Client packet ActionFailed to the L2PcInstance
-            sendPacket(ActionFailed.STATIC_PACKET);
-            return;
-        }
-
-        // Check if the caster has enough HP
-        if (getCurrentHp() <= skill.getHpConsume())
-        {
-            // Send a System Message to the caster
-            sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_HP));
-
-            // Send a Server->Client packet ActionFailed to the L2PcInstance
-            sendPacket(ActionFailed.STATIC_PACKET);
-            return;
-        }
-
-        // Check if the spell consummes an Item
-        if (skill.getItemConsume() > 0)
-        {
-            // Get the L2ItemInstance consummed by the spell
-            L2ItemInstance requiredItems = getInventory().getItemByItemId(skill.getItemConsumeId());
-
-            // Check if the caster owns enought consummed Item to cast
-            if (requiredItems == null || requiredItems.getCount() < skill.getItemConsume())
-            {
-            	// Checked: when a summon skill failed, server show required consume item count
-            	if (sklType == L2Skill.SkillType.SUMMON)
-                {
-            		SystemMessage sm = new SystemMessage(SystemMessageId.SUMMONING_SERVITOR_COSTS_S2_S1);
-            		sm.addItemName(skill.getItemConsumeId());
-            		sm.addNumber(skill.getItemConsume());
-            		sendPacket(sm);
-            		return;
-                }
-            	else
-                {
-            		// Send a System Message to the caster
-            		sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
-            		return;
-                }
-            }
-        }
-
         // Check if spell consumes a Soul
         if (skill.getSoulConsumeCount() > 0)
         {
@@ -8136,16 +8088,6 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 
 		return true;
-	}
-
-	/**
-	 * Reduce Item quantity of the L2PcInstance Inventory and send it a Server->Client packet InventoryUpdate.<BR><BR>
-	 */
-	@Override
-	public void consumeItem(int itemConsumeId, int itemCount)
-	{
-		if (itemConsumeId != 0 && itemCount != 0)
-			destroyItemByItemId("Consume", itemConsumeId, itemCount, null, false);
 	}
 
 	/**

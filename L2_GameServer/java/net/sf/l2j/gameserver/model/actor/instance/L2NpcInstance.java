@@ -2382,5 +2382,11 @@ public class L2NpcInstance extends L2Character
     	if (!physical && _inventory.bshotInUse) return true;
     	return false;
     }
+    
+    @Override
+    public NpcInventory getInventory()
+    {
+    	return _inventory;
+    }
                 
 }

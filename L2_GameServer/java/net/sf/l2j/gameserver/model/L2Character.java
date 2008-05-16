@@ -204,6 +204,26 @@ public abstract class L2Character extends L2Object
 	private byte _currentWaterZones = 0;
 	private byte _currentJailZones = 0;
 	private byte _currentMonsterTrackZones = 0;
+	
+	/**
+	 * Returns character inventory, default null, overridden in L2Playable types and in L2NPcInstance
+	 */
+	public Inventory getInventory()
+	{
+		return null;
+	}
+	public boolean destroyItemByItemId(String process, int itemId, int count, L2Object reference, boolean sendMessage)
+	{
+		// Default: NPCs consume virtual items for their skills
+		// TODO: should be logged if even happens.. should be false
+		return true;
+	}
+	public boolean destroyItem(String process, int objectId, int count, L2Object reference, boolean sendMessage)
+	{
+		// Default: NPCs consume virtual items for their skills
+		// TODO: should be logged if even happens.. should be false
+		return true;
+	}
 
 	public boolean isInsideZone(int zone)
 	{
@@ -1411,6 +1431,28 @@ public abstract class L2Character extends L2Object
 			return;
 		}
 		
+		// Check if the caster has enough MP
+        if (getCurrentMp() < getStat().getMpConsume(skill) + getStat().getMpInitialConsume(skill))
+        {
+            // Send a System Message to the caster
+            sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_MP));
+
+            // Send a Server->Client packet ActionFailed to the L2PcInstance
+            sendPacket(ActionFailed.STATIC_PACKET);
+            return;
+        }
+
+        // Check if the caster has enough HP
+        if (getCurrentHp() <= skill.getHpConsume())
+        {
+            // Send a System Message to the caster
+            sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_HP));
+
+            // Send a Server->Client packet ActionFailed to the L2PcInstance
+            sendPacket(ActionFailed.STATIC_PACKET);
+            return;
+        }
+
 		switch (skill.getSkillType())
 		{
 			case SUMMON_TRAP:
@@ -1501,6 +1543,34 @@ public abstract class L2Character extends L2Object
 				return;
 			}
 		}
+        
+        // Check if the spell consumes an Item
+        // TODO: combine check and consume
+        if (skill.getItemConsume() > 0 && getInventory() != null)
+        {
+            // Get the L2ItemInstance consumed by the spell
+            L2ItemInstance requiredItems = getInventory().getItemByItemId(skill.getItemConsumeId());
+
+            // Check if the caster owns enough consumed Item to cast
+            if (requiredItems == null || requiredItems.getCount() < skill.getItemConsume())
+            {
+            	// Checked: when a summon skill failed, server show required consume item count
+            	if (skill.getSkillType() == L2Skill.SkillType.SUMMON)
+                {
+            		SystemMessage sm = new SystemMessage(SystemMessageId.SUMMONING_SERVITOR_COSTS_S2_S1);
+            		sm.addItemName(skill.getItemConsumeId());
+            		sm.addNumber(skill.getItemConsume());
+            		sendPacket(sm);
+            		return;
+                }
+            	else
+                {
+            		// Send a System Message to the caster
+            		sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
+            		return;
+                }
+            }
+        }
 
         //Recharge AutoSoulShot
         if (skill.useSoulShot())
@@ -1684,7 +1754,13 @@ public abstract class L2Character extends L2Object
 		{
 			// Consume Items if necessary and Send the Server->Client packet InventoryUpdate with Item modification to all the L2Character
 			if (skill.getItemConsume() > 0)
-				consumeItem(skill.getItemConsumeId(), skill.getItemConsume());
+			{
+				if (!destroyItemByItemId("Consume", skill.getItemConsumeId(), skill.getItemConsume(), null, false))
+				{
+					sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
+					return;
+				}
+			}
 
             // Consume Souls if necessary
             if (skill.getSoulConsumeCount() > 0)
@@ -6026,7 +6102,13 @@ public abstract class L2Character extends L2Object
 
 			// Consume Items if necessary and Send the Server->Client packet InventoryUpdate with Item modification to all the L2Character
 			if (skill.getItemConsume() > 0)
-				consumeItem(skill.getItemConsumeId(), skill.getItemConsume());
+			{
+				if (!destroyItemByItemId("Consume", skill.getItemConsumeId(), skill.getItemConsume(), null, false))
+				{
+					sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
+					return;
+				}
+			}
 
             // Consume Souls if necessary
             if (skill.getSoulConsumeCount() > 0)
@@ -6103,17 +6185,6 @@ public abstract class L2Character extends L2Object
                 ThreadPoolManager.getInstance().executeTask(new QueuedMagicUseTask(currPlayer, queuedSkill.getSkill(), queuedSkill.isCtrlPressed(), queuedSkill.isShiftPressed()) );
             }
         }
-	}
-
-	/**
-	 * Reduce the item number of the L2Character.<BR><BR>
-	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
-	 * <li> L2PcInstance</li><BR><BR>
-	 *
-	 */
-	public void consumeItem(@SuppressWarnings("unused") int itemConsumeId, @SuppressWarnings("unused") int itemCount)
-	{
 	}
 
 	/**
