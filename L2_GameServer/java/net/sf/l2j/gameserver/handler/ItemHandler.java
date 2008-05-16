@@ -16,6 +16,40 @@ package net.sf.l2j.gameserver.handler;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Logger;
+
+import net.sf.l2j.gameserver.handler.itemhandlers.BeastSoulShot;
+import net.sf.l2j.gameserver.handler.itemhandlers.BeastSpice;
+import net.sf.l2j.gameserver.handler.itemhandlers.BeastSpiritShot;
+import net.sf.l2j.gameserver.handler.itemhandlers.BlessedSpiritShot;
+import net.sf.l2j.gameserver.handler.itemhandlers.Book;
+import net.sf.l2j.gameserver.handler.itemhandlers.CharChangePotions;
+import net.sf.l2j.gameserver.handler.itemhandlers.CrystalCarol;
+import net.sf.l2j.gameserver.handler.itemhandlers.EnchantScrolls;
+import net.sf.l2j.gameserver.handler.itemhandlers.EnergyStone;
+import net.sf.l2j.gameserver.handler.itemhandlers.ExtractableItems;
+import net.sf.l2j.gameserver.handler.itemhandlers.Firework;
+import net.sf.l2j.gameserver.handler.itemhandlers.FishShots;
+import net.sf.l2j.gameserver.handler.itemhandlers.Harvester;
+import net.sf.l2j.gameserver.handler.itemhandlers.Key;
+import net.sf.l2j.gameserver.handler.itemhandlers.Maps;
+import net.sf.l2j.gameserver.handler.itemhandlers.MercTicket;
+import net.sf.l2j.gameserver.handler.itemhandlers.MysteryPotion;
+import net.sf.l2j.gameserver.handler.itemhandlers.PaganKeys;
+import net.sf.l2j.gameserver.handler.itemhandlers.Potions;
+import net.sf.l2j.gameserver.handler.itemhandlers.Recipes;
+import net.sf.l2j.gameserver.handler.itemhandlers.Remedy;
+import net.sf.l2j.gameserver.handler.itemhandlers.RollingDice;
+import net.sf.l2j.gameserver.handler.itemhandlers.ScrollOfEscape;
+import net.sf.l2j.gameserver.handler.itemhandlers.ScrollOfResurrection;
+import net.sf.l2j.gameserver.handler.itemhandlers.Scrolls;
+import net.sf.l2j.gameserver.handler.itemhandlers.Seed;
+import net.sf.l2j.gameserver.handler.itemhandlers.SevenSignsRecord;
+import net.sf.l2j.gameserver.handler.itemhandlers.SoulCrystals;
+import net.sf.l2j.gameserver.handler.itemhandlers.SoulShots;
+import net.sf.l2j.gameserver.handler.itemhandlers.SpecialXMas;
+import net.sf.l2j.gameserver.handler.itemhandlers.SpiritShot;
+import net.sf.l2j.gameserver.handler.itemhandlers.SummonItems;
 
 /**
  * This class manages handlers of items
@@ -24,7 +58,7 @@ import java.util.TreeMap;
  */
 public class ItemHandler
 {
-	//private static Logger _log = Logger.getLogger(ItemHandler.class.getName());
+	private static Logger _log = Logger.getLogger(ItemHandler.class.getName());
 
 	private static ItemHandler _instance;
 
@@ -58,6 +92,39 @@ public class ItemHandler
 	private ItemHandler()
 	{
 		_datatable = new TreeMap<Integer, IItemHandler>();
+		registerItemHandler(new ScrollOfEscape());
+		registerItemHandler(new ScrollOfResurrection());
+		registerItemHandler(new SoulShots());
+		registerItemHandler(new SpiritShot());
+		registerItemHandler(new BlessedSpiritShot());
+        registerItemHandler(new BeastSoulShot());
+        registerItemHandler(new BeastSpiritShot());
+        registerItemHandler(new Key());
+        registerItemHandler(new PaganKeys());
+		registerItemHandler(new Maps());
+		registerItemHandler(new Potions());
+		registerItemHandler(new Recipes());
+        registerItemHandler(new RollingDice());
+        registerItemHandler(new MysteryPotion());
+		registerItemHandler(new EnchantScrolls());
+        registerItemHandler(new EnergyStone());
+		registerItemHandler(new Book());
+		registerItemHandler(new Remedy());
+		registerItemHandler(new Scrolls());
+		registerItemHandler(new CrystalCarol());
+		registerItemHandler(new SoulCrystals());
+		registerItemHandler(new SevenSignsRecord());
+        registerItemHandler(new CharChangePotions());
+        registerItemHandler(new Firework());
+        registerItemHandler(new Seed());
+        registerItemHandler(new Harvester());
+        registerItemHandler(new MercTicket());
+		registerItemHandler(new FishShots());
+		registerItemHandler(new ExtractableItems());
+		registerItemHandler(new SpecialXMas());
+		registerItemHandler(new SummonItems());
+		registerItemHandler(new BeastSpice());
+        _log.config("ItemHandler: Loaded " + _datatable.size() + " handlers.");
 	}
 
 	/**

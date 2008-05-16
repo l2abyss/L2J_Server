@@ -19,6 +19,9 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.handler.voicedcommandhandlers.Banking;
+import net.sf.l2j.gameserver.handler.voicedcommandhandlers.Wedding;
+import net.sf.l2j.gameserver.handler.voicedcommandhandlers.stats;
 
 /**
  * This class ...
@@ -45,6 +48,13 @@ public class VoicedCommandHandler
 	private VoicedCommandHandler()
 	{
 		_datatable = new FastMap<String, IVoicedCommandHandler>();
+		registerVoicedCommandHandler(new stats());
+		if(Config.L2JMOD_ALLOW_WEDDING)
+			registerVoicedCommandHandler(new Wedding());
+		if(Config.BANKING_SYSTEM_ENABLED)
+			registerVoicedCommandHandler(new Banking());
+
+		_log.config("VoicedCommandHandler: Loaded " + _datatable.size() + " handlers.");
 	}
 
 	public void registerVoicedCommandHandler(IVoicedCommandHandler handler)
