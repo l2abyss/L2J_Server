@@ -48,7 +48,10 @@ public class PledgeReceiveSubPledgeCreated extends L2GameServerPacket
 		writeD(0x01);
         writeD(_subPledge.getId());
         writeS(_subPledge.getName());
-        writeS(_subPledge.getId() != L2Clan.SUBUNIT_ACADEMY ? _clan.getClanMember(_subPledge.getLeaderId()).getName() : "");
+        if (_subPledge.getId() == L2Clan.SUBUNIT_ACADEMY || _clan.getClanMember(_subPledge.getLeaderId()) == null)
+        	writeS("");
+        else
+        	writeS(_clan.getClanMember(_subPledge.getLeaderId()).getName());
 	}
 
 	/**
