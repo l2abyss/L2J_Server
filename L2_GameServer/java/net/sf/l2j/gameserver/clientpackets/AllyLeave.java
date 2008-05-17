@@ -63,6 +63,7 @@ public final class AllyLeave extends L2GameClientPacket
 		long currentTime = System.currentTimeMillis();
         clan.setAllyId(0);
         clan.setAllyName(null);
+        clan.setAllyCrestId(0);
         clan.setAllyPenaltyExpiryTime(
         		currentTime + Config.ALT_ALLY_JOIN_DAYS_WHEN_LEAVED * 86400000L,
         		L2Clan.PENALTY_TYPE_CLAN_LEAVED); //24*60*60*1000 = 86400000
