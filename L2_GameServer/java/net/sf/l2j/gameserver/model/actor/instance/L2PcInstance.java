@@ -7708,7 +7708,7 @@ public final class L2PcInstance extends L2PlayableInstance
         //************************************* Check skill availability *******************************************
 
         // Check if this skill is enabled (ex : reuse time)
-        if (isSkillDisabled(skill.getId()) && getAccessLevel().allowPeaceAttack())
+        if (isSkillDisabled(skill.getId()) && !getAccessLevel().allowPeaceAttack())
         {
             SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
             sm.addSkillName(skill.getId());
@@ -7720,7 +7720,7 @@ public final class L2PcInstance extends L2PlayableInstance
         }
 
         // Check if all skills are disabled
-        if (isAllSkillsDisabled() && getAccessLevel().allowPeaceAttack())
+        if (isAllSkillsDisabled() && !getAccessLevel().allowPeaceAttack())
         {
             // Send a Server->Client packet ActionFailed to the L2PcInstance
             sendPacket(ActionFailed.STATIC_PACKET);
@@ -7796,7 +7796,7 @@ public final class L2PcInstance extends L2PlayableInstance
         // Check if this is offensive magic skill
         if (skill.isOffensive())
 		{
-			if ((isInsidePeaceZone(this, target)) && getAccessLevel().allowPeaceAttack())
+			if ((isInsidePeaceZone(this, target)) && !getAccessLevel().allowPeaceAttack())
 			{
 				// If L2Character or target is in a peace zone, send a system message TARGET_IN_PEACEZONE a Server->Client packet ActionFailed
 				sendPacket(new SystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
@@ -7811,7 +7811,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			}
 
             // Check if the target is attackable
-            if (!target.isAttackable() && getAccessLevel().allowPeaceAttack())
+            if (!target.isAttackable() && !getAccessLevel().allowPeaceAttack())
 			{
 				// If target is not attackable, send a Server->Client packet ActionFailed
 				sendPacket(ActionFailed.STATIC_PACKET);
@@ -7968,7 +7968,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			case TARGET_SELF:
 				break;
 			default:
-				if (!checkPvpSkill(target, skill) && getAccessLevel().allowPeaceAttack())
+				if (!checkPvpSkill(target, skill) && !getAccessLevel().allowPeaceAttack())
                 {
 					// Send a System Message to the L2PcInstance
 					sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
