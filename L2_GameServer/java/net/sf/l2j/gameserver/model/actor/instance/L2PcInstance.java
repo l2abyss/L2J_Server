@@ -11059,14 +11059,14 @@ public final class L2PcInstance extends L2PlayableInstance
 		// Check if hit is missed
 		if (miss)
 		{
-			sendPacket(new SystemMessage(SystemMessageId.MISSED_TARGET));
+			sendPacket(new SystemMessage(SystemMessageId.S1_ATTACK_WENT_ASTRAY).addString(getName()));
 			return;
 		}
 
 		// Check if hit is critical
 		if (pcrit)
         {
-			sendPacket(new SystemMessage(SystemMessageId.CRITICAL_HIT));
+			sendPacket(new SystemMessage(SystemMessageId.S1_HAD_CRITICAL_HIT).addString(getName()));
             if (getSkillLevel(467) > 0 && target instanceof L2NpcInstance)
             {
                 L2Skill skill = SkillTable.getInstance().getInfo(467,getSkillLevel(467));
@@ -11087,7 +11087,9 @@ public final class L2PcInstance extends L2PlayableInstance
         	dmgDealt += damage;
         }
 
-		SystemMessage sm = new SystemMessage(SystemMessageId.YOU_DID_S1_DMG);
+		SystemMessage sm = new SystemMessage(SystemMessageId.S1_GAVE_S2_DAMAGE_OF_S3);
+		sm.addString(getName());
+		sm.addString((target instanceof L2PcInstance) ? ((L2PcInstance)target).getAppearance().getVisibleName() : target.getName());
 		sm.addNumber(damage);
 		sendPacket(sm);
 	}

@@ -179,8 +179,10 @@ public class Pdam implements ISkillHandler
                               player.setCurrentHp(player.getCurrentHp() - damage);
                         }
 
-                        SystemMessage smsg = new SystemMessage(SystemMessageId.S1_GAVE_YOU_S2_DMG);
-                        smsg.addString(activeChar.getName());
+                        SystemMessage smsg = new SystemMessage(SystemMessageId.S1_RECEIVED_DAMAGE_OF_S3_FROM_S2);
+                        String name = (activeChar instanceof L2PcInstance) ? ((L2PcInstance)activeChar).getAppearance().getVisibleName() : activeChar.getName();
+                        smsg.addString(player.getName());
+                        smsg.addString(name);
                         smsg.addNumber(damage);
                         player.sendPacket(smsg);
 
