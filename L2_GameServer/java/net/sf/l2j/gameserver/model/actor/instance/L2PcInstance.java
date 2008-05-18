@@ -4698,8 +4698,10 @@ public final class L2PcInstance extends L2PlayableInstance
 						{
 							// Reduce the Experience of the L2PcInstance in function of the calculated Death Penalty
 							// NOTE: deathPenalty +- Exp will update karma
+							// Penalty is lower if the player is at war with the pk (war has to be declared)
 							if (getSkillLevel(L2Skill.SKILL_LUCKY) < 0 || getStat().getLevel() > 9)
-								deathPenalty((pk != null && getClan() != null && pk.getClan() != null && pk.getClan().isAtWarWith(getClanId())));
+								deathPenalty(pk != null && getClan() != null && getClan().isAtWarWith(pk.getClanId()));										
+
 						} else
 						{
 							onDieUpdateKarma(); // Update karma if delevel is not allowed
