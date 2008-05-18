@@ -273,7 +273,7 @@ public class AdminAdmin implements IAdminCommandHandler {
 			catch(Exception e)
 			{
 				if (cmd.length==2)
-					activeChar.sendMessage("Usage: //set parameter=vaue");
+					activeChar.sendMessage("Usage: //set parameter=value");
 			}
 			finally
 			{
