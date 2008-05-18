@@ -47,9 +47,11 @@ public final class PartySmallWindowAll extends L2GameServerPacket
 {
 	private static final String _S__63_PARTYSMALLWINDOWALL = "[S] 4e PartySmallWindowAll";
 	private List<L2PcInstance> _partyMembers = new FastList<L2PcInstance>();
+	private L2PcInstance _exclude;
 
-	public void setPartyList(List<L2PcInstance> party)
+	public PartySmallWindowAll(L2PcInstance exclude, List<L2PcInstance> party)
 	{
+		_exclude = exclude;
 		_partyMembers = party;
 	}
 
@@ -57,15 +59,14 @@ public final class PartySmallWindowAll extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x4e);
-		L2PcInstance player =  getClient().getActiveChar();
-        writeD(_partyMembers.get(0).getObjectId()); // c3 party leader id
-        writeD(_partyMembers.get(0).getParty().getLootDistribution());//c3 party loot type (0,1,2,....)
+		writeD(_partyMembers.get(0).getObjectId()); // c3 party leader id
+		writeD(_partyMembers.get(0).getParty().getLootDistribution());//c3 party loot type (0,1,2,....)
 		writeD(_partyMembers.size()-1);
 
 		for(int i = 0; i < _partyMembers.size(); i++)
 		{
 			L2PcInstance member = _partyMembers.get(i);
-			if (!member.equals(player))
+			if (member != _exclude)
 			{
 				writeD(member.getObjectId());
 				writeS(member.getName());
@@ -81,7 +82,7 @@ public final class PartySmallWindowAll extends L2GameServerPacket
 				writeD(member.getClassId().getId());
 				writeD(0);//writeD(0x01); ??
 				writeD(member.getRace().ordinal());
-                writeD(0);
+				writeD(0);
 			}
 		}
 	}

@@ -226,7 +226,8 @@ public class L2Party {
 	{
 		for(L2PcInstance member : getPartyMembers())
 		{
-			if (member != null && !member.equals(player)) member.sendPacket(msg);
+			if (member != null && !member.equals(player))
+				member.sendPacket(msg);
 		}
 	}
 
@@ -238,9 +239,7 @@ public class L2Party {
 	{
 		//sends new member party window for all members
 		//we do all actions before adding member to a list, this speeds things up a little
-		PartySmallWindowAll window = new PartySmallWindowAll();
-		window.setPartyList(getPartyMembers());
-		player.sendPacket(window);
+		player.sendPacket(new PartySmallWindowAll(player, getPartyMembers()));
 
         // sends pets/summons of party members
         L2Summon summon;

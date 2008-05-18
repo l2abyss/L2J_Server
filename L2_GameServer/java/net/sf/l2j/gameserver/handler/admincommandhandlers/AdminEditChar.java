@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
+import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.GMAudit;
@@ -33,6 +34,8 @@ import net.sf.l2j.gameserver.model.base.ClassId;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.CharInfo;
 import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
+import net.sf.l2j.gameserver.serverpackets.PartySmallWindowAll;
+import net.sf.l2j.gameserver.serverpackets.PartySmallWindowDeleteAll;
 import net.sf.l2j.gameserver.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.serverpackets.UserInfo;
@@ -51,7 +54,7 @@ import net.sf.l2j.gameserver.util.Util;
  * - nokarma
  * - setkarma
  * - settitle
- * - setname
+ * - changename
  * - setsex
  * - setclass
  * - fullfood
@@ -274,22 +277,46 @@ public class AdminEditChar implements IAdminCommandHandler
 				activeChar.sendMessage("You need to specify the new title.");
 			}
 		}
-		else if (command.startsWith("admin_setname"))
+		else if (command.startsWith("admin_changename"))
 		{
 			try
 			{
-				String val = command.substring(14);
+				String val = command.substring(17);
 				L2Object target = activeChar.getTarget();
 				L2PcInstance player = null;
-				if (target instanceof L2PcInstance) {
+				if (target instanceof L2PcInstance)
+				{
 					player = (L2PcInstance)target;
-				} else {
+				}
+				else
+				{
 					return false;
 				}
+				L2World.getInstance().removeFromAllPlayers(player);
 				player.setName(val);
-				player.sendMessage("Your name has been changed by a GM");
-				player.broadcastUserInfo();
 				player.store();
+				L2World.getInstance().addToAllPlayers(player);
+
+				player.sendMessage("Your name has been changed by a GM.");
+				player.broadcastUserInfo();
+
+				if (player.isInParty())
+				{
+					// Delete party window for other party members
+					player.getParty().broadcastToPartyMembers(player, new PartySmallWindowDeleteAll());
+					for (L2PcInstance member : player.getParty().getPartyMembers())
+					{
+						// And re-add
+						if (member != player)
+							member.sendPacket(new PartySmallWindowAll(member, player.getParty().getPartyMembers()));
+					}
+				}
+				if (player.getClan() != null)
+				{
+					player.getClan().broadcastClanStatus();
+				}
+
+				RegionBBSManager.getInstance().changeCommunityBoard();
 			}
 			catch (StringIndexOutOfBoundsException e)
 			{   //Case of empty character name

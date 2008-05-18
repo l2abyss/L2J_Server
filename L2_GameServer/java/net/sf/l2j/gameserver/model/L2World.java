@@ -373,6 +373,14 @@ public final class L2World
         }
     }
 
+    /**
+     * Add the L2PcInstance to _allPlayers of L2World.<BR><BR>
+     *  
+     */
+    public void addToAllPlayers(L2PcInstance cha)
+    {
+        _allPlayers.put(cha.getName().toLowerCase(), cha);
+    }
 
     /**
      * Remove the L2PcInstance from _allPlayers of L2World.<BR><BR>
@@ -385,7 +393,6 @@ public final class L2World
     {
         _allPlayers.remove(cha.getName().toLowerCase());
     }
-
 
     /**
      * Remove a L2Object from the world.<BR><BR>
