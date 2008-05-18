@@ -102,7 +102,7 @@ public class AdminFightCalculator implements IAdminCommandHandler {
 			replyMSG.append("<tr><td>"+npc1.name+"</td><td>"+npc2.name+"</td></tr>");
 	        replyMSG.append("</table>");
 	        replyMSG.append("<center><br><br><br>");
-	        replyMSG.append("<button value=\"OK\" action=\"bypass -h admin_fight_calculator_show "+npc1.npcId+" "+npc2.npcId+"\"  width=100 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\">");
+	        replyMSG.append("<button value=\"OK\" action=\"bypass -h admin_fight_calculator_show "+npc1.npcId+" "+npc2.npcId+"\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
 	        replyMSG.append("</center>");
 	        replyMSG.append("</body></html>");
 		}
@@ -134,7 +134,7 @@ public class AdminFightCalculator implements IAdminCommandHandler {
 			replyMSG.append("<tr><td><edit var=\"lvl1\" width=80></td><td><edit var=\"lvl2\" width=80></td></tr>");
 	        replyMSG.append("</table>");
 	        replyMSG.append("<center><br><br><br>");
-	        replyMSG.append("<button value=\"OK\" action=\"bypass -h admin_fight_calculator lvl1 $lvl1 lvl2 $lvl2\"  width=100 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\">");
+	        replyMSG.append("<button value=\"OK\" action=\"bypass -h admin_fight_calculator lvl1 $lvl1 lvl2 $lvl2\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
 	        replyMSG.append("</center>");
 	        replyMSG.append("</body></html>");
 		}
@@ -300,9 +300,9 @@ public class AdminFightCalculator implements IAdminCommandHandler {
         replyMSG.append("</table>");
         replyMSG.append("<center><br>");
 		if (params.length() == 0) {
-			replyMSG.append("<button value=\"Retry\" action=\"bypass -h admin_fight_calculator_show\"  width=100 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\">");
+			replyMSG.append("<button value=\"Retry\" action=\"bypass -h admin_fight_calculator_show\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
 		} else {
-			replyMSG.append("<button value=\"Retry\" action=\"bypass -h admin_fight_calculator_show "+((L2NpcTemplate)npc1.getTemplate()).npcId+" "+((L2NpcTemplate)npc2.getTemplate()).npcId+"\"  width=100 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\">");
+			replyMSG.append("<button value=\"Retry\" action=\"bypass -h admin_fight_calculator_show "+((L2NpcTemplate)npc1.getTemplate()).npcId+" "+((L2NpcTemplate)npc2.getTemplate()).npcId+"\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
 		}
         replyMSG.append("</center>");
         replyMSG.append("</body></html>");

@@ -104,7 +104,7 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
                             "</table><br>" +
                             "<img src=\"L2UI.SquareWhite\" width=270 height=1> <img src=\"L2UI.SquareBlank\" width=1 height=3>" +
                             "<button value=\"Back\" action=\"bypass -h npc_"+getObjectId()+"_OlympiadDesc 2a\" " +
-                            "width=40 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\"></center>");
+                            "width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center>");
 
                     replyMSG.append("</body></html>");
 

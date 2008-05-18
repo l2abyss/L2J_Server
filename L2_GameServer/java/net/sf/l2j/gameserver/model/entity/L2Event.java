@@ -152,7 +152,7 @@ public class L2Event
             if (L2Event.participatingPlayers.contains(player.getName())) replyMSG.append("<br><center>You are already in the event players list !!</center></body></html>");
             else replyMSG.append("<br><center><button value=\"Participate !! \" action=\"bypass -h npc_"
                 + objectid
-                + "_event_participate\" width=90 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\"></center></body></html>");
+                + "_event_participate\" width=90 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center></body></html>");
 
             adminReply.setHtml(replyMSG.toString());
             player.sendPacket(adminReply);

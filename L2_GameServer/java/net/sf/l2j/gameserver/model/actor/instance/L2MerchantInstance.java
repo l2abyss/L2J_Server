@@ -292,26 +292,26 @@ public class L2MerchantInstance extends L2FolkInstance
             //changed by terry 2005-02-22 21:45
             html1.append("</table><table><tr><td><button value=\"Edit NPC\" action=\"bypass -h admin_edit_npc "
                 + getTemplate().npcId
-                + "\" width=100 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\"></td>");
-            html1.append("<td><button value=\"Kill\" action=\"bypass -h admin_kill\" width=40 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\"></td></tr>");
+                + "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
+            html1.append("<td><button value=\"Kill\" action=\"bypass -h admin_kill\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>");
             html1.append("<tr><td><button value=\"Show DropList\" action=\"bypass -h admin_show_droplist "
                 + getTemplate().npcId
-                + "\" width=100 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\"></td></tr>");
-            html1.append("<td><button value=\"Delete\" action=\"bypass -h admin_delete\" width=40 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\"></td></tr>");
+                + "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>");
+            html1.append("<td><button value=\"Delete\" action=\"bypass -h admin_delete\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>");
             html1.append("</table>");
 
             if (player.isGM())
             {
                 html1.append("<button value=\"View Shop\" action=\"bypass -h admin_showShop "
                     + getTemplate().npcId
-                    + "\" width=100 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\"></br>");
+                    + "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></br>");
                 html1.append("<button value=\"Lease next week\" action=\"bypass -h npc_" + getObjectId()
-                    + "_Lease\" width=100 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\">");
+                    + "_Lease\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
                 html1.append("<button value=\"Abort current leasing\" action=\"bypass -h npc_"
                     + getObjectId()
-                    + "_Lease next\" width=100 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\">");
+                    + "_Lease next\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
                 html1.append("<button value=\"Manage items\" action=\"bypass -h npc_" + getObjectId()
-                    + "_Lease manage\" width=100 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\">");
+                    + "_Lease manage\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
             }
 
             html1.append("</body></html>");
