@@ -292,13 +292,14 @@ public abstract class L2Object
 
             // Add the L2Object spawn in the _allobjects of L2World
             L2World.getInstance().storeObject(this);
-
-            // Add the L2Object spawn to _visibleObjects and if necessary to _allplayers of its L2WorldRegion
-            getPosition().getWorldRegion().addVisibleObject(this);
         }
 
-        // this can synchronize on others instancies, so it's out of
+        // these can synchronize on others instancies, so they're out of
         // synchronized, to avoid deadlocks
+
+        // Add the L2Object spawn to _visibleObjects and if necessary to _allplayers of its L2WorldRegion
+        getPosition().getWorldRegion().addVisibleObject(this);
+
         // Add the L2Object spawn in the world as a visible object
         L2World.getInstance().addVisibleObject(this, getPosition().getWorldRegion(), null);
 
