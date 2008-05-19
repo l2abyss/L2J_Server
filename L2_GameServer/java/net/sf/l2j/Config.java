@@ -129,8 +129,10 @@ public final class Config
     public static int		MAX_PCRIT_RATE;
     public static int		MAX_MCRIT_RATE;
     public static byte		MAX_SUBCLASS;
-    public static int		MAX_PVTSTORE_SLOTS_DWARF;
-    public static int		MAX_PVTSTORE_SLOTS_OTHER;
+    public static int		MAX_PVTSTORESELL_SLOTS_DWARF;
+    public static int		MAX_PVTSTORESELL_SLOTS_OTHER;
+    public static int		MAX_PVTSTOREBUY_SLOTS_DWARF;
+    public static int		MAX_PVTSTOREBUY_SLOTS_OTHER;
     public static int		INVENTORY_MAXIMUM_NO_DWARF;
     public static int		INVENTORY_MAXIMUM_DWARF;
     public static int		INVENTORY_MAXIMUM_GM;
@@ -1068,8 +1070,10 @@ public final class Config
                 MAX_PCRIT_RATE						= Integer.parseInt(Character.getProperty("MaxPCritRate", "500"));
                 MAX_MCRIT_RATE						= Integer.parseInt(Character.getProperty("MaxMCritRate", "300"));
                 MAX_SUBCLASS						= Byte.parseByte(Character.getProperty("MaxSubclass", "3"));
-                MAX_PVTSTORE_SLOTS_DWARF			= Integer.parseInt(Character.getProperty("MaxPvtStoreSlotsDwarf", "5"));
-                MAX_PVTSTORE_SLOTS_OTHER			= Integer.parseInt(Character.getProperty("MaxPvtStoreSlotsOther", "4"));
+                MAX_PVTSTORESELL_SLOTS_DWARF		= Integer.parseInt(Character.getProperty("MaxPvtStoreSellSlotsDwarf", "4"));
+                MAX_PVTSTORESELL_SLOTS_OTHER		= Integer.parseInt(Character.getProperty("MaxPvtStoreSellSlotsOther", "3"));
+                MAX_PVTSTOREBUY_SLOTS_DWARF			= Integer.parseInt(Character.getProperty("MaxPvtStoreBuySlotsDwarf", "5"));
+                MAX_PVTSTOREBUY_SLOTS_OTHER			= Integer.parseInt(Character.getProperty("MaxPvtStoreBuySlotsOther", "4"));
                 INVENTORY_MAXIMUM_NO_DWARF			= Integer.parseInt(Character.getProperty("MaximumSlotsForNoDwarf", "80"));
                 INVENTORY_MAXIMUM_DWARF				= Integer.parseInt(Character.getProperty("MaximumSlotsForDwarf", "100"));
                 INVENTORY_MAXIMUM_GM				= Integer.parseInt(Character.getProperty("MaximumSlotsForGMPlayer", "250"));
@@ -1929,8 +1933,10 @@ public final class Config
         else if (pName.equalsIgnoreCase("RespawnRestoreHP")) RESPAWN_RESTORE_HP = Double.parseDouble(pValue) / 100;
         else if (pName.equalsIgnoreCase("RespawnRestoreMP")) RESPAWN_RESTORE_MP = Double.parseDouble(pValue) / 100;
 
-        else if (pName.equalsIgnoreCase("MaxPvtStoreSlotsDwarf")) MAX_PVTSTORE_SLOTS_DWARF = Integer.parseInt(pValue);
-        else if (pName.equalsIgnoreCase("MaxPvtStoreSlotsOther")) MAX_PVTSTORE_SLOTS_OTHER = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("MaxPvtStoreSellSlotsDwarf")) MAX_PVTSTORESELL_SLOTS_DWARF = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("MaxPvtStoreSellSlotsOther")) MAX_PVTSTORESELL_SLOTS_OTHER = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("MaxPvtStoreBuySlotsDwarf")) MAX_PVTSTOREBUY_SLOTS_DWARF = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("MaxPvtStoreBuySlotsOther")) MAX_PVTSTOREBUY_SLOTS_OTHER = Integer.parseInt(pValue);
 
         else if (pName.equalsIgnoreCase("StoreSkillCooltime")) STORE_SKILL_COOLTIME = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AnnounceMammonSpawn")) ANNOUNCE_MAMMON_SPAWN = Boolean.parseBoolean(pValue);

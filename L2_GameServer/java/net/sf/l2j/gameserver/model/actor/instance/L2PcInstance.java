@@ -10452,9 +10452,9 @@ public final class L2PcInstance extends L2PlayableInstance
 		int pslim;
 	
 		if (getRace() == Race.Dwarf)
-			pslim = Config.MAX_PVTSTORE_SLOTS_DWARF;
+			pslim = Config.MAX_PVTSTORESELL_SLOTS_DWARF;
         else
-        	pslim = Config.MAX_PVTSTORE_SLOTS_OTHER;
+        	pslim = Config.MAX_PVTSTORESELL_SLOTS_OTHER;
 
 		pslim += (int)getStat().calcStat(Stats.P_SELL_LIM, 0, null, null);
 
@@ -10466,9 +10466,9 @@ public final class L2PcInstance extends L2PlayableInstance
 		int pblim;
 		
 		if (getRace() == Race.Dwarf)
-			pblim = Config.MAX_PVTSTORE_SLOTS_DWARF;
+			pblim = Config.MAX_PVTSTOREBUY_SLOTS_DWARF;
 		else
-			pblim = Config.MAX_PVTSTORE_SLOTS_OTHER;
+			pblim = Config.MAX_PVTSTOREBUY_SLOTS_OTHER;
 		pblim += (int)getStat().calcStat(Stats.P_BUY_LIM, 0, null, null);
 
 		return pblim;
