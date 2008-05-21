@@ -5286,7 +5286,7 @@ public abstract class L2Character extends L2Object
 			if (!miss && damage > 0)
 			{
 				L2Weapon weapon = getActiveWeaponItem();
-				boolean isBow = (weapon != null && weapon.getItemType().toString().equalsIgnoreCase("Bow"));
+				boolean isBow = (weapon != null && (weapon.getItemType() == L2WeaponType.BOW || weapon.getItemType() == L2WeaponType.CROSSBOW));
 
 				if (!isBow || charIsTransformed()) // Do not reflect or absorb if weapon is of type bow
 				{
