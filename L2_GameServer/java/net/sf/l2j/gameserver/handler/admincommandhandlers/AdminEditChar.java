@@ -486,7 +486,7 @@ public class AdminEditChar implements IAdminCommandHandler
 		adminReply.replace("%runspeed%", String.valueOf(player.getRunSpeed()));
 		adminReply.replace("%patkspd%", String.valueOf(player.getPAtkSpd()));
 		adminReply.replace("%matkspd%", String.valueOf(player.getMAtkSpd()));
-		adminReply.replace("%access%",String.valueOf(player.getAccessLevel()));
+		adminReply.replace("%access%",String.valueOf(player.getAccessLevel().getLevel()));
 		adminReply.replace("%account%",account);
 		adminReply.replace("%ip%",ip);
 		activeChar.sendPacket(adminReply);
