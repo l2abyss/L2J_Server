@@ -494,9 +494,6 @@ public class L2PetInstance extends L2Summon
     @Override
 	public void doRevive()
     {
-    	if (_curFed > (getMaxFed() / 10))
-    		_curFed = getMaxFed() / 10;
-
     	getOwner().removeReviving();
 
     	super.doRevive();
