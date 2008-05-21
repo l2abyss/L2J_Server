@@ -5109,17 +5109,44 @@ public final class L2PcInstance extends L2PlayableInstance
 		final int lvl = getLevel();
 
 		//The death steal you some Exp
-		double percentLost = 5.0;
-		if (getLevel() >= 76)
-			percentLost = 1.0;
-		else if (getLevel() >= 40)
-			percentLost = 3.0;
+		double percentLost = 1.0;
+		
+		byte level = (byte)getLevel();
+		
+		switch (level)
+		{
+			case 81:
+				percentLost = 1.25;
+				break;
+			case 80:
+				percentLost = 1.5;
+				break;
+			case 79:
+				percentLost = 1.75;
+				break;
+			case 78:
+				percentLost = 2.0;
+				break;
+			case 77:
+				percentLost = 2.25;
+				break;
+			case 76:
+				percentLost = 2.5;
+				break;
+			default:
+				if (level < 40)
+					percentLost = 7.0;
+				else if (level >= 40 && level <= 75)
+					percentLost = 4.0;
+				
+				break;
+		}
 
 		if (getKarma() > 0)
             percentLost *= Config.RATE_KARMA_EXP_LOST;
 
 		if (isFestivalParticipant() || atwar || isInsideZone(ZONE_SIEGE))
-            percentLost /= 3.0;
+            percentLost /= 4.0;
 
 		// Calculate the Experience loss
 		long lostExp = 0;
