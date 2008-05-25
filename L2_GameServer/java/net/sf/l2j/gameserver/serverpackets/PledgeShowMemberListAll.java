@@ -118,7 +118,7 @@ public class PledgeShowMemberListAll extends L2GameServerPacket
 		writeD(_clan.getAllyId());
 		writeS(_clan.getAllyName());
 		writeD(_clan.getAllyCrestId());
-        writeD(_clan.isAtWar()? 0 : 1);// new c3
+        writeD(_clan.isAtWar()? 1 : 0);// new c3
 		writeD(_clan.getSubPledgeMembersCount(_pledgeType));
 
 		for (L2ClanMember m : _members)
