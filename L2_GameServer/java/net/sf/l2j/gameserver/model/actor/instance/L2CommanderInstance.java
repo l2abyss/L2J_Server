@@ -40,15 +40,13 @@ public class L2CommanderInstance extends L2Attackable
     @Override
     public boolean isAutoAttackable(L2Character attacker)
     {
-
-        boolean isFort = ( getFort() != null && getFort().getFortId() > 0 
-                && getFort().getSiege().getIsInProgress()
-                && !getFort().getSiege().checkIsDefender(((L2PcInstance)attacker).getClan()));
+    	if ( attacker == null || !(attacker instanceof L2PcInstance) )
+    		return false;
+    	
+        boolean isFort = (getFort() != null && getFort().getFortId() > 0  && getFort().getSiege().getIsInProgress() && !getFort().getSiege().checkIsDefender(((L2PcInstance)attacker).getClan()));
         
         // Attackable during siege by all except defenders
-        return (attacker != null
-                && attacker instanceof L2PcInstance
-                && isFort );
+        return (isFort);
     }
     
     @Override
