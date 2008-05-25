@@ -124,8 +124,14 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 
             if (actualCommand.equalsIgnoreCase("banish_foreigner"))
             {
-                getCastle().banishForeigners();                    // Move non-clan members off castle area
-                return;
+                if ((player.getClanPrivileges() & L2Clan.CP_CS_DISMISS) == L2Clan.CP_CS_DISMISS)
+                {
+                	getCastle().banishForeigners();                    // Move non-clan members off castle area
+                	return;
+                }
+                else
+                	player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+            return;
             }
             else if (actualCommand.equalsIgnoreCase("list_siege_clans"))
             {
