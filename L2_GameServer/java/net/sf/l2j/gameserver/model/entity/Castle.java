@@ -40,6 +40,7 @@ import net.sf.l2j.gameserver.model.L2Manor;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.zone.type.L2CastleTeleportZone;
 import net.sf.l2j.gameserver.model.zone.type.L2CastleZone;
 import net.sf.l2j.gameserver.serverpackets.PlaySound;
 import net.sf.l2j.gameserver.serverpackets.PledgeShowInfoUpdate;
@@ -83,6 +84,7 @@ public class Castle
 	private double _taxRate                    = 0;
 	private int _treasury                      = 0;
     private L2CastleZone _zone;
+    private L2CastleTeleportZone _teleZone;
     private L2Clan _formerOwner				   = null;
     private int _nbArtifact					   = 1;
     private Map<Integer, Integer> _engrave	   = new FastMap<Integer, Integer>();
@@ -217,6 +219,21 @@ public class Castle
     {
     	return _zone;
     }
+
+    public void setTeleZone(L2CastleTeleportZone zone)
+	{
+    	_teleZone = zone;
+	}
+
+	public L2CastleTeleportZone getTeleZone()
+	{
+		return _teleZone;
+	}
+
+	public void oustAllPlayers()
+	{
+		_teleZone.oustAllPlayers();
+	}
 
     /**
      * Get the objects distance to this castle

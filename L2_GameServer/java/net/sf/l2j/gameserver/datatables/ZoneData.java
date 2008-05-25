@@ -39,6 +39,7 @@ import net.sf.l2j.gameserver.model.zone.form.ZoneNPoly;
 import net.sf.l2j.gameserver.model.zone.type.L2ArenaZone;
 import net.sf.l2j.gameserver.model.zone.type.L2BigheadZone;
 import net.sf.l2j.gameserver.model.zone.type.L2BossZone;
+import net.sf.l2j.gameserver.model.zone.type.L2CastleTeleportZone;
 import net.sf.l2j.gameserver.model.zone.type.L2CastleZone;
 import net.sf.l2j.gameserver.model.zone.type.L2ClanHallZone;
 import net.sf.l2j.gameserver.model.zone.type.L2DamageZone;
@@ -152,6 +153,8 @@ public class ZoneData
 								temp = new L2OlympiadStadiumZone(zoneId);
 							else if (zoneType.equals("CastleZone"))
 								temp = new L2CastleZone(zoneId);
+                            else if (zoneType.equals("CastleTeleportZone"))
+                                temp = new L2CastleTeleportZone(zoneId);
 			                else if (zoneType.equals("FortZone"))
 			                    temp = new L2FortZone(zoneId);              
 							else if (zoneType.equals("DamageZone"))
