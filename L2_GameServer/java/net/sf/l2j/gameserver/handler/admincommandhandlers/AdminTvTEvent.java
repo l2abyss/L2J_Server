@@ -29,22 +29,27 @@ public class AdminTvTEvent
 implements IAdminCommandHandler {
 	private static final String[] ADMIN_COMMANDS = {"admin_tvt_add", "admin_tvt_remove"};
 
-	public boolean useAdminCommand( String command, L2PcInstance adminInstance ) {
+	public boolean useAdminCommand( String command, L2PcInstance adminInstance )
+	{
 		GMAudit.auditGMAction( adminInstance.getName(), command, ( adminInstance.getTarget() != null ? adminInstance.getTarget().getName() : "no-target" ), "" );
 
 		if ( command.equals( "admin_tvt_add" ) ) {
 			L2Object target = adminInstance.getTarget();
 
-			if ( target == null || !( target instanceof L2PcInstance ) ) {
+			if (!( target instanceof L2PcInstance ) )
+			{
 				adminInstance.sendMessage( "You should select a player!" );
 				return true;
 			}
 
 			add( adminInstance, ( L2PcInstance )target );
-		} else if ( command.equals( "admin_tvt_remove" ) ) {
+		}
+		else if ( command.equals( "admin_tvt_remove" ) )
+		{
 			L2Object target = adminInstance.getTarget();
 
-			if ( target == null || !( target instanceof L2PcInstance ) ) {
+			if (!( target instanceof L2PcInstance ) )
+			{
 				adminInstance.sendMessage( "You should select a player!" );
 				return true;
 			}
@@ -55,7 +60,8 @@ implements IAdminCommandHandler {
 		return true;
 	}
 
-	public String[] getAdminCommandList() {
+	public String[] getAdminCommandList()
+	{
 		return ADMIN_COMMANDS;
 	}
 

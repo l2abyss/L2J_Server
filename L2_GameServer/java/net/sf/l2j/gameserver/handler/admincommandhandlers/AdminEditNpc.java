@@ -498,7 +498,7 @@ public class AdminEditNpc implements IAdminCommandHandler {
 
 		TextBuilder replyMSG = new TextBuilder("<html><title>Merchant Shop Lists</title>");
 		replyMSG.append("<body>");
-        if (activeChar.getTarget() != null && activeChar.getTarget() instanceof L2MerchantInstance)
+        if (activeChar.getTarget() instanceof L2MerchantInstance)
         {
             String mpcName = ((L2MerchantInstance) activeChar.getTarget()).getMpc().getName();
             replyMSG.append("<br>NPC: "+activeChar.getTarget().getName());

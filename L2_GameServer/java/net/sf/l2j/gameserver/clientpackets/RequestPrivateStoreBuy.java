@@ -74,7 +74,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 		if (player == null) return;
 
 		L2Object object = L2World.getInstance().findObject(_storePlayerId);
-		if (object == null || !(object instanceof L2PcInstance)) return;
+		if (!(object instanceof L2PcInstance)) return;
 
 		if(player.isCursedWeaponEquipped())
 			return;

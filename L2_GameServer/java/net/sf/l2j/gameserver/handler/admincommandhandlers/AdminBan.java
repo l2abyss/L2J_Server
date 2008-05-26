@@ -61,7 +61,7 @@ public class AdminBan implements IAdminCommandHandler {
 			catch(Exception e)
 			{
 				L2Object target = activeChar.getTarget();
-				if (target!=null && target instanceof L2PcInstance)
+				if (target instanceof L2PcInstance)
 					plyr = (L2PcInstance)target;
 				else
 					activeChar.sendMessage("Usage: //ban [account_name] (if none, target char's account gets banned)");

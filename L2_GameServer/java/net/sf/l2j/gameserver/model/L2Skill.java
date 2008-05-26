@@ -2598,7 +2598,7 @@ public abstract class L2Skill
             }
             case TARGET_ENEMY_SUMMON:
             {
-                if(target != null && target instanceof L2Summon)
+                if(target instanceof L2Summon)
                 {
                     L2Summon targetSummon = (L2Summon)target;
                     if (activeChar instanceof L2PcInstance && activeChar.getPet() != targetSummon && !targetSummon.isDead()

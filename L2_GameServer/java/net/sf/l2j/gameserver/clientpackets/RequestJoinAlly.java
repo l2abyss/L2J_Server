@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.clientpackets;
 
 import net.sf.l2j.gameserver.model.L2Clan;
+import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -48,26 +49,31 @@ public final class RequestJoinAlly extends L2GameClientPacket
 		{
 		    return;
 		}
-		if (!(L2World.getInstance().findObject(_id) instanceof L2PcInstance))
+
+		L2Object ob = L2World.getInstance().findObject(_id);
+
+		if (!(ob instanceof L2PcInstance))
 		{
-        	activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_INVITED_THE_WRONG_TARGET));
-		    return;
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_INVITED_THE_WRONG_TARGET));
+			return;
 		}
+
 		if(activeChar.getClan() == null)
-        {
+		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_A_CLAN_MEMBER));
-            return;
-        }
-		L2PcInstance target = (L2PcInstance) L2World.getInstance().findObject(_id);
-        L2Clan clan = activeChar.getClan();
-        if (!clan.checkAllyJoinCondition(activeChar, target))
-        {
-        	return;
-        }
-        if (!activeChar.getRequest().setRequest(target, this))
-        {
-        	return;
-        }
+			return;
+		}
+
+		L2PcInstance target = (L2PcInstance)ob;
+		L2Clan clan = activeChar.getClan();
+		if (!clan.checkAllyJoinCondition(activeChar, target))
+		{
+			return;
+		}
+		if (!activeChar.getRequest().setRequest(target, this))
+		{
+			return;
+		}
 
 		SystemMessage sm = new SystemMessage(SystemMessageId.S2_ALLIANCE_LEADER_OF_S1_REQUESTED_ALLIANCE);
 		sm.addString(activeChar.getClan().getAllyName());
@@ -76,7 +82,7 @@ public final class RequestJoinAlly extends L2GameClientPacket
 		sm = null;
 		AskJoinAlly aja = new AskJoinAlly(activeChar.getObjectId(), activeChar.getClan().getAllyName());
 		target.sendPacket(aja);
-	    return;
+		return;
 	}
 
 

@@ -38,7 +38,7 @@ public class TakeCastle implements ISkillHandler
 
     public void useSkill(L2Character activeChar, @SuppressWarnings("unused") L2Skill skill, @SuppressWarnings("unused") L2Object[] targets)
     {
-        if (activeChar == null || !(activeChar instanceof L2PcInstance)) return;
+        if (!(activeChar instanceof L2PcInstance)) return;
 
         L2PcInstance player = (L2PcInstance)activeChar;
 
@@ -74,7 +74,7 @@ public class TakeCastle implements ISkillHandler
 
     public static boolean checkIfOkToCastSealOfRule(L2Character activeChar, Castle castle, boolean isCheckOnly)
     {
-        if (activeChar == null || !(activeChar instanceof L2PcInstance))
+        if (!(activeChar instanceof L2PcInstance))
             return false;
 
         String text = "";
@@ -82,7 +82,7 @@ public class TakeCastle implements ISkillHandler
 
         if (castle == null || castle.getCastleId() <= 0)
             text = "You must be on castle ground to use this skill";
-        else if (player.getTarget() == null && !(player.getTarget() instanceof L2ArtefactInstance))
+        else if (!(player.getTarget() instanceof L2ArtefactInstance))
             text = "You can only use this skill on an artifact";
         else if (!castle.getSiege().getIsInProgress())
             text = "You can only use this skill during a siege.";

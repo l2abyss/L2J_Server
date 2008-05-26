@@ -111,7 +111,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 					L2Object object = L2World.getInstance().findObject(Integer.parseInt(id));
 
 					if (_command.substring(endOfId+1).startsWith("event_participate")) L2Event.inscribePlayer(activeChar);
-					else if (object != null && object instanceof L2NpcInstance && endOfId > 0 && activeChar.isInsideRadius(object, L2NpcInstance.INTERACTION_DISTANCE, false, false))
+					else if (object instanceof L2NpcInstance && endOfId > 0 && activeChar.isInsideRadius(object, L2NpcInstance.INTERACTION_DISTANCE, false, false))
 					{
 						((L2NpcInstance)object).onBypassFeedback(activeChar, _command.substring(endOfId+1));
 					}

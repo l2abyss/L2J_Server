@@ -242,7 +242,7 @@ public class AdminMenu implements IAdminCommandHandler
 	private void teleportToCharacter(L2PcInstance activeChar, L2Object target)
 	{
 		L2PcInstance player = null;
-		if (target != null && target instanceof L2PcInstance)
+		if (target instanceof L2PcInstance)
 			player = (L2PcInstance)target;
 		else
 		{

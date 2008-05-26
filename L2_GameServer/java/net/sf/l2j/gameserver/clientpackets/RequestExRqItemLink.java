@@ -55,7 +55,7 @@ public class RequestExRqItemLink extends L2GameClientPacket
         if (client != null)
         {
             L2Object object = L2World.getInstance().findObject(_objectId);
-            if (object != null && object instanceof L2ItemInstance)
+            if (object instanceof L2ItemInstance)
             {
                 L2ItemInstance item = (L2ItemInstance)object;
                 client.sendPacket(new ExRpItemLink(item));

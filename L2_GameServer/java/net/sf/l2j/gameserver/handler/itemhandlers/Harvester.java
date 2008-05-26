@@ -45,7 +45,7 @@ public class Harvester implements IItemHandler {
 
         _activeChar = (L2PcInstance)playable;
 
-        if(_activeChar.getTarget() == null || !(_activeChar.getTarget() instanceof L2MonsterInstance))
+        if(!(_activeChar.getTarget() instanceof L2MonsterInstance))
         {
             _activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
             _activeChar.sendPacket(ActionFailed.STATIC_PACKET);

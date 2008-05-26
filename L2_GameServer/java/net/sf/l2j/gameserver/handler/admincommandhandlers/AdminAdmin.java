@@ -123,8 +123,8 @@ public class AdminAdmin implements IAdminCommandHandler {
 		else if (command.startsWith("admin_manualhero") || command.startsWith("admin_sethero"))
 		{
 			L2PcInstance target = null;
-            
-			if (activeChar.getTarget() != null && activeChar.getTarget() instanceof L2PcInstance)
+
+			if (activeChar.getTarget() instanceof L2PcInstance)
 			{
 				target = (L2PcInstance)activeChar.getTarget();
 				target.setHero(target.isHero()? false : true);

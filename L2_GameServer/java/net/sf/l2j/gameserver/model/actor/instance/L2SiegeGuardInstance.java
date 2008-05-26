@@ -52,7 +52,7 @@ public final class L2SiegeGuardInstance extends L2Attackable
     @Override
 	public final SiegeGuardKnownList getKnownList()
     {
-    	if(super.getKnownList() == null || !(super.getKnownList() instanceof SiegeGuardKnownList))
+    	if(!(super.getKnownList() instanceof SiegeGuardKnownList))
     		setKnownList(new SiegeGuardKnownList(this));
     	return (SiegeGuardKnownList)super.getKnownList();
     }
@@ -77,7 +77,7 @@ public final class L2SiegeGuardInstance extends L2Attackable
     @Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
-    	if ( attacker == null || !(attacker instanceof L2PcInstance) )
+    	if (!(attacker instanceof L2PcInstance) )
     		return false;
     	
         boolean isCastle = ( getCastle() != null && getCastle().getCastleId() > 0 

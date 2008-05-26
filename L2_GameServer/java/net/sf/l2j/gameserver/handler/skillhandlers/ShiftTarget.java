@@ -37,7 +37,7 @@ public class ShiftTarget implements ISkillHandler
 		
 		for (L2Character obj : activeChar.getKnownList().getKnownCharactersInRadius(skill.getSkillRadius()))
 		{
-			if (obj == null || !(obj instanceof L2Attackable) || obj.isDead())
+			if (!(obj instanceof L2Attackable) || obj.isDead())
 				continue;
 			L2Attackable hater = ((L2Attackable) obj);
 			if (hater.getHating(activeChar) == 0)

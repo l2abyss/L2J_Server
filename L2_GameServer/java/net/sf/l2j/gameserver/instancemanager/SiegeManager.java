@@ -89,7 +89,7 @@ public class SiegeManager
      */
     public final boolean checkIfOkToSummon(L2Character activeChar, boolean isCheckOnly)
     {
-        if (activeChar == null || !(activeChar instanceof L2PcInstance)) return false;
+        if (!(activeChar instanceof L2PcInstance)) return false;
 
         String text = "";
         L2PcInstance player = (L2PcInstance)activeChar;

@@ -172,7 +172,7 @@ public class AdminCursedWeapons implements IAdminCommandHandler {
 				else
 				{
 					L2Object target = activeChar.getTarget();
-					if (target != null && target instanceof L2PcInstance)
+					if (target instanceof L2PcInstance)
 						((L2PcInstance)target).addItem("AdminCursedWeaponAdd", id, 1, target, true);
 					else
 						activeChar.addItem("AdminCursedWeaponAdd", id, 1, activeChar, true);

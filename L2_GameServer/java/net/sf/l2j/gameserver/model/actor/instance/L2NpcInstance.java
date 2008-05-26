@@ -250,7 +250,7 @@ public class L2NpcInstance extends L2Character
     @Override
 	public NpcKnownList getKnownList()
 	{
-    	if(super.getKnownList() == null || !(super.getKnownList() instanceof NpcKnownList))
+    	if(!(super.getKnownList() instanceof NpcKnownList))
     		setKnownList(new NpcKnownList(this));
     	return (NpcKnownList)super.getKnownList();
 	}
@@ -258,7 +258,7 @@ public class L2NpcInstance extends L2Character
 	@Override
 	public NpcStat getStat()
 	{
-		if(super.getStat() == null || !(super.getStat() instanceof NpcStat))
+		if(!(super.getStat() instanceof NpcStat))
 			setStat(new NpcStat(this));
 		return (NpcStat)super.getStat();
 	}
@@ -266,7 +266,7 @@ public class L2NpcInstance extends L2Character
 	@Override
 	public NpcStatus getStatus()
 	{
-		if(super.getStatus() == null || !(super.getStatus() instanceof NpcStatus))
+		if(!(super.getStatus() instanceof NpcStatus))
 			setStatus(new NpcStatus(this));
 		return (NpcStatus)super.getStatus();
 	}

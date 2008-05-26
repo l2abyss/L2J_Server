@@ -61,7 +61,7 @@ public abstract class L2PlayableInstance extends L2Character
     @Override
 	public PlayableKnownList getKnownList()
     {
-    	if(super.getKnownList() == null || !(super.getKnownList() instanceof PlayableKnownList))
+    	if(!(super.getKnownList() instanceof PlayableKnownList))
     		setKnownList(new PlayableKnownList(this));
     	return (PlayableKnownList)super.getKnownList();
     }
@@ -69,7 +69,7 @@ public abstract class L2PlayableInstance extends L2Character
     @Override
 	public PlayableStat getStat()
     {
-    	if(super.getStat() == null || !(super.getStat() instanceof PlayableStat))
+    	if(!(super.getStat() instanceof PlayableStat))
     		setStat(new PlayableStat(this));
     	return (PlayableStat)super.getStat();
     }
@@ -77,31 +77,30 @@ public abstract class L2PlayableInstance extends L2Character
     @Override
 	public PlayableStatus getStatus()
     {
-    	if(super.getStatus() == null || !(super.getStatus() instanceof PlayableStatus))
+    	if(!(super.getStatus() instanceof PlayableStatus))
     		setStatus(new PlayableStatus(this));
     	return (PlayableStatus)super.getStatus();
     }
 
-    @Override
+	@Override
 	public boolean doDie(L2Character killer)
-    {
-    	if (!super.doDie(killer))
-    		return false;
+	{
+		if (!super.doDie(killer))
+			return false;
 
-    	if (killer != null)
-        {
-            L2PcInstance player = null;
-            if (killer instanceof L2PcInstance)
-                player = (L2PcInstance)killer;
-            else if (killer instanceof L2Summon)
-                player = ((L2Summon)killer).getOwner();
-            else if (killer instanceof L2Trap)
-            	player = ((L2Trap)killer).getOwner();
+		L2PcInstance player = null;
+		if (killer instanceof L2PcInstance)
+			player = (L2PcInstance)killer;
+		else if (killer instanceof L2Summon)
+			player = ((L2Summon)killer).getOwner();
+		else if (killer instanceof L2Trap)
+			player = ((L2Trap)killer).getOwner();
 
-            if (player != null) player.onKillUpdatePvPKarma(this);
-        }
-    	return true;
-    }
+		if (player != null)
+			player.onKillUpdatePvPKarma(this);
+
+		return true;
+	}
 
     public boolean checkIfPvP(L2Character target)
     {

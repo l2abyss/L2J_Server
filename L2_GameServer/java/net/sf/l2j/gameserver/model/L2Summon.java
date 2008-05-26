@@ -115,7 +115,7 @@ public abstract class L2Summon extends L2PlayableInstance
     @Override
 	public final SummonKnownList getKnownList()
     {
-    	if(super.getKnownList() == null || !(super.getKnownList() instanceof SummonKnownList))
+    	if(!(super.getKnownList() instanceof SummonKnownList))
     		setKnownList(new SummonKnownList(this));
     	return (SummonKnownList)super.getKnownList();
     }
@@ -123,7 +123,7 @@ public abstract class L2Summon extends L2PlayableInstance
     @Override
 	public SummonStat getStat()
     {
-    	if(super.getStat() == null || !(super.getStat() instanceof SummonStat))
+    	if(!(super.getStat() instanceof SummonStat))
     		setStat(new SummonStat(this));
     	return (SummonStat)super.getStat();
     }
@@ -131,7 +131,7 @@ public abstract class L2Summon extends L2PlayableInstance
     @Override
 	public SummonStatus getStatus()
     {
-    	if(super.getStatus() == null || !(super.getStatus() instanceof SummonStatus))
+    	if(!(super.getStatus() instanceof SummonStatus))
     		setStatus(new SummonStatus(this));
     	return (SummonStatus)super.getStatus();
     }

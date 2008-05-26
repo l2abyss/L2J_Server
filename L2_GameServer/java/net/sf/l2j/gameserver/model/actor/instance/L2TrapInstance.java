@@ -84,7 +84,7 @@ public class L2TrapInstance extends L2Trap
 	@Override
 	public TrapKnownList getKnownList()
 	{
-		if (super.getKnownList() == null || !(super.getKnownList() instanceof TrapKnownList))
+		if (!(super.getKnownList() instanceof TrapKnownList))
 			setKnownList(new TrapKnownList(this));
 		return (TrapKnownList) super.getKnownList();
 	}	

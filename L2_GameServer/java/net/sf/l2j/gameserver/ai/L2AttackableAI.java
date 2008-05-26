@@ -144,7 +144,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
         if (target.isInvul())
         {
             // However EffectInvincible requires to check GMs specially
-        	if (target instanceof L2PcInstance && ((L2PcInstance)target).isGM())
+            if (target instanceof L2PcInstance && ((L2PcInstance)target).isGM())
                 return false;
             if (target instanceof L2Summon && ((L2Summon)target).getOwner().isGM())
                 return false;

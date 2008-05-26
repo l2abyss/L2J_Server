@@ -52,7 +52,7 @@ public class L2CommanderInstance extends L2Attackable
     @Override
     public final CommanderKnownList getKnownList()
     {
-        if(super.getKnownList() == null || !(super.getKnownList() instanceof CommanderKnownList))
+        if(!(super.getKnownList() instanceof CommanderKnownList))
             setKnownList(new CommanderKnownList(this));
         return (CommanderKnownList)super.getKnownList();
     }

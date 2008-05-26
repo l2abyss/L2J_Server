@@ -350,7 +350,7 @@ public class AdminTeleport implements IAdminCommandHandler
     private void teleportToCharacter(L2PcInstance activeChar, L2Object target)
     {
         L2PcInstance player = null;
-        if (target != null && target instanceof L2PcInstance)
+        if (target instanceof L2PcInstance)
         {
             player = (L2PcInstance)target;
         }
@@ -379,7 +379,7 @@ public class AdminTeleport implements IAdminCommandHandler
     private void recallNPC(L2PcInstance activeChar)
     {
         L2Object obj = activeChar.getTarget();
-        if ((obj != null) && (obj instanceof L2NpcInstance))
+        if (obj instanceof L2NpcInstance)
         {
             L2NpcInstance target = (L2NpcInstance) obj;
 

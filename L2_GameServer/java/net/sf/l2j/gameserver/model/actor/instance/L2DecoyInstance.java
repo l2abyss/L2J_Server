@@ -76,7 +76,7 @@ public class L2DecoyInstance extends L2Decoy
     @Override
     public DecoyKnownList getKnownList()
     {
-        if (super.getKnownList() == null || !(super.getKnownList() instanceof DecoyKnownList))
+        if (!(super.getKnownList() instanceof DecoyKnownList))
             setKnownList(new DecoyKnownList(this));
         return (DecoyKnownList) super.getKnownList();
     }

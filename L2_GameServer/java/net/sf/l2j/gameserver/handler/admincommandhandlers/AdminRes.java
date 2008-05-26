@@ -143,7 +143,7 @@ public class AdminRes implements IAdminCommandHandler
 			return;
 		}
 
-		if (obj == null || obj instanceof L2PcInstance || obj instanceof L2ControllableMobInstance)
+		if (obj instanceof L2PcInstance || obj instanceof L2ControllableMobInstance)
         {
 		    activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
 		    return;

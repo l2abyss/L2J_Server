@@ -324,7 +324,7 @@ public final class L2PcInstance extends L2PlayableInstance
 				default:
 				{
 					L2Object mainTarget = skill.getFirstOfTargetList(L2PcInstance.this);
-					if (mainTarget == null || !(mainTarget instanceof L2Character))
+					if (!(mainTarget instanceof L2Character))
 						return;
 					for (L2CubicInstance cubic : getCubics().values())
 						if (cubic.getId() != L2CubicInstance.LIFE_CUBIC)
@@ -976,7 +976,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	@Override
 	public final PcKnownList getKnownList()
 	{
-		if(super.getKnownList() == null || !(super.getKnownList() instanceof PcKnownList))
+		if(!(super.getKnownList() instanceof PcKnownList))
     		setKnownList(new PcKnownList(this));
 		return (PcKnownList)super.getKnownList();
 	}
@@ -984,7 +984,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	@Override
 	public final PcStat getStat()
 	{
-		if(super.getStat() == null || !(super.getStat() instanceof PcStat))
+		if(!(super.getStat() instanceof PcStat))
     		setStat(new PcStat(this));
 		return (PcStat)super.getStat();
 	}
@@ -992,7 +992,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	@Override
 	public final PcStatus getStatus()
 	{
-		if(super.getStatus() == null || !(super.getStatus() instanceof PcStatus))
+		if(!(super.getStatus() instanceof PcStatus))
     		setStatus(new PcStatus(this));
 		return (PcStatus)super.getStatus();
 	}
@@ -4373,7 +4373,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 
 		// Add the L2PcInstance to the _statusListener of the new target if it's a L2Character
-		if (newTarget != null && newTarget instanceof L2Character)
+		if (newTarget instanceof L2Character)
 		{
 			((L2Character) newTarget).addStatusListener(this);
 			TargetSelected my = new TargetSelected(getObjectId(), newTarget.getObjectId(), getX(), getY(), getZ());
@@ -9283,7 +9283,7 @@ public final class L2PcInstance extends L2PlayableInstance
          * 10.Unsummon any active servitor from the player.
          */
 
-        if (getPet() != null && getPet() instanceof L2SummonInstance)
+        if (getPet() instanceof L2SummonInstance)
         	getPet().unSummon(this);
 
         if (getCubics().size() > 0)

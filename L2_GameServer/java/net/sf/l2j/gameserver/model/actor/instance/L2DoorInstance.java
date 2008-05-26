@@ -182,7 +182,7 @@ public class L2DoorInstance extends L2Character
     @Override
 	public final DoorKnownList getKnownList()
     {
-    	if(super.getKnownList() == null || !(super.getKnownList() instanceof DoorKnownList))
+    	if(!(super.getKnownList() instanceof DoorKnownList))
     		setKnownList(new DoorKnownList(this));
     	return (DoorKnownList)super.getKnownList();
     }
@@ -190,7 +190,7 @@ public class L2DoorInstance extends L2Character
     @Override
 	public final DoorStat getStat()
     {
-    	if(super.getStat() == null || !(super.getStat() instanceof DoorStat))
+    	if(!(super.getStat() instanceof DoorStat))
     		setStat(new DoorStat(this));
     	return (DoorStat)super.getStat();
     }
@@ -198,7 +198,7 @@ public class L2DoorInstance extends L2Character
     @Override
 	public final DoorStatus getStatus()
     {
-    	if(super.getStatus() == null || !(super.getStatus() instanceof DoorStatus))
+    	if(!(super.getStatus() instanceof DoorStatus))
     		setStatus(new DoorStatus(this));
     	return (DoorStatus)super.getStatus();
     }
@@ -307,7 +307,7 @@ public class L2DoorInstance extends L2Character
             return true;
 
         // Doors can`t be attacked by NPCs
-        if (attacker == null || !(attacker instanceof L2PcInstance)) return false;
+        if (!(attacker instanceof L2PcInstance)) return false;
         
         // Attackable during siege by attacker only
         boolean isCastle = (getCastle() != null

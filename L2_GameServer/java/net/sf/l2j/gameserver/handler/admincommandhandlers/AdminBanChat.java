@@ -62,7 +62,7 @@ public class AdminBanChat implements IAdminCommandHandler {
 			{
 				targetObject = activeChar.getTarget();
 
-				if (targetObject != null && targetObject instanceof L2PcInstance)
+				if (targetObject instanceof L2PcInstance)
 					targetPlayer = (L2PcInstance)targetObject;
 			}
 		}

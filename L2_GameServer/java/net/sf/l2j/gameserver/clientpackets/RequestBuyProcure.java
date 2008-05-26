@@ -92,7 +92,7 @@ public class RequestBuyProcure extends L2GameClientPacket {
     	// Check for buylist validity and calculates summary values
         int slots = 0;
         int weight = 0;
-        L2ManorManagerInstance manor = (target != null && target instanceof L2ManorManagerInstance) ? (L2ManorManagerInstance)target : null;
+        L2ManorManagerInstance manor = (target instanceof L2ManorManagerInstance) ? (L2ManorManagerInstance)target : null;
 
 
 		for (int i = 0; i < _count; i++)

@@ -142,7 +142,7 @@ public class L2RaceManagerInstance extends L2NpcInstance
     @Override
 	public final RaceManagerKnownList getKnownList()
     {
-    	if(super.getKnownList() == null || !(super.getKnownList() instanceof RaceManagerKnownList))
+    	if(!(super.getKnownList() instanceof RaceManagerKnownList))
     		setKnownList(new RaceManagerKnownList(this));
         return (RaceManagerKnownList) super.getKnownList();
     }
