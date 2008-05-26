@@ -89,6 +89,7 @@ public class L2SiegeClan
 		}
 
 		flag.deleteMe();
+		_numFlagsAdded--;
 		return ret;
 	}
 
