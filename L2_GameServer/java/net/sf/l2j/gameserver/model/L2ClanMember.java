@@ -18,7 +18,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import net.sf.l2j.L2DatabaseFactory;
-import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -116,10 +115,8 @@ public class L2ClanMember
 		    _raceOrdinal = _player.getRace().ordinal();
 		}
 
-		if (player != null) {
-	        if (_clan.getLevel() > 3 && player.isClanLeader())
-	        	SiegeManager.getInstance().addSiegeSkills(player);
-
+		if (player != null)
+		{
 			if (_clan.getReputationScore() >= 0)
 			{
 				L2Skill[] skills = _clan.getAllSkills();

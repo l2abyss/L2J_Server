@@ -2227,15 +2227,22 @@ public final class L2PcInstance extends L2PlayableInstance
 		if (isHero())
 			setHero(true);
 
-		// Add clan skills
-		if (getClan() != null && getClan().getReputationScore() >= 0)
+		// Add clan skills 
+		if (getClan() != null)
 		{
-			L2Skill[] skills = getClan().getAllSkills();
-			for (L2Skill sk : skills)
+			L2Clan clan = getClan();
+			if (clan.getReputationScore() >= 0)
 			{
-				if(sk.getMinPledgeClass() <= getPledgeClass())
-					addSkill(sk, false);
+				L2Skill[] skills = getClan().getAllSkills();
+				for (L2Skill sk : skills)
+				{
+					if(sk.getMinPledgeClass() <= getPledgeClass())
+						addSkill(sk, false);
+				}
 			}
+			if (clan.getLevel() >= SiegeManager.getInstance().getSiegeClanMinLevel() &&
+					isClanLeader())
+				SiegeManager.getInstance().addSiegeSkills(this);
 		}
 		
 		// Reload passive skills from armors / jewels / weapons
