@@ -65,6 +65,11 @@ public class AdminZone implements IAdminCommandHandler
             else
             	activeChar.sendMessage("This is NOT a no landing zone.");
 
+            if (activeChar.isInsideZone(L2Character.ZONE_PEACE))
+            	activeChar.sendMessage("This is a peaceful zone.");
+            else
+            	activeChar.sendMessage("This is NOT a peaceful zone.");
+
             activeChar.sendMessage("MapRegion: x:" + MapRegionTable.getInstance().getMapRegionX(activeChar.getX()) + " y:" + MapRegionTable.getInstance().getMapRegionX(activeChar.getY()));
 
             activeChar.sendMessage("Closest Town: " + MapRegionTable.getInstance().getClosestTownName(activeChar));

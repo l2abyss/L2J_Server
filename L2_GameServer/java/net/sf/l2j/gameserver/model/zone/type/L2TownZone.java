@@ -31,7 +31,7 @@ public class L2TownZone extends L2ZoneType
 	private int _townId;
 	private int _redirectTownId;
 	private int _taxById;
-	private boolean _noPeace;
+	private boolean _isPeaceZone;
 	private int[] _spawnLoc;
 
 
@@ -46,7 +46,7 @@ public class L2TownZone extends L2ZoneType
 		_redirectTownId = 9;
 
 		// Default peace zone
-		_noPeace = false;
+		_isPeaceZone = true;
 	}
 
 	@Override
@@ -80,9 +80,9 @@ public class L2TownZone extends L2ZoneType
 		{
 			_spawnLoc[2] = Integer.parseInt(value);
 		}
-		else if (name.equals("noPeace"))
+		else if (name.equals("isPeaceZone"))
 		{
-			_noPeace = Boolean.parseBoolean(value);
+			_isPeaceZone = Boolean.parseBoolean(value);
 		}
 		else super.setParameter(name, value);
 	}
@@ -100,7 +100,7 @@ public class L2TownZone extends L2ZoneType
 			//((L2PcInstance)character).sendMessage("You entered "+_townName);
 		}
 
-		if (!_noPeace && Config.ZONE_TOWN != 2) character.setInsideZone(L2Character.ZONE_PEACE, true);
+		if (_isPeaceZone && Config.ZONE_TOWN != 2) character.setInsideZone(L2Character.ZONE_PEACE, true);
 
 	}
 
@@ -108,7 +108,7 @@ public class L2TownZone extends L2ZoneType
 	protected void onExit(L2Character character)
 	{
 		// TODO: there should be no exit if there was possibly no enter
-		if (!_noPeace) character.setInsideZone(L2Character.ZONE_PEACE, false);
+		if (_isPeaceZone) character.setInsideZone(L2Character.ZONE_PEACE, false);
 
 		// if (character instanceof L2PcInstance)
 			//((L2PcInstance)character).sendMessage("You left "+_townName);
@@ -168,4 +168,9 @@ public class L2TownZone extends L2ZoneType
     {
     	return _taxById;
     }
+
+	public final boolean isPeaceZone()
+	{
+		return _isPeaceZone;
+	}
 }
