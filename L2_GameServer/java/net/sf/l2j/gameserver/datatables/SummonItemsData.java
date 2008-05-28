@@ -26,6 +26,7 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2SummonItem;
 
 public class SummonItemsData
@@ -51,11 +52,11 @@ public class SummonItemsData
 
 		try
 		{
-			s = new Scanner(new File("./data/summon_items.csv"));
+			s = new Scanner(new File(Config.DATAPACK_ROOT + "/data/summon_items.csv"));
 		}
 		catch (Exception e)
 		{
-			_log.warning("Summon items data: Can not find './data/summon_items.csv'");
+			_log.warning("Summon items data: Can not find '" + Config.DATAPACK_ROOT + "/data/summon_items.csv'");
 			return;
 		}
 

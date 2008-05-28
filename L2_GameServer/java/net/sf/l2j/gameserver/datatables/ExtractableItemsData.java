@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ExtractableItem;
 import net.sf.l2j.gameserver.model.L2ExtractableProductItem;
 
@@ -54,11 +55,11 @@ public class ExtractableItemsData
 
 		try
 		{
-			s = new Scanner(new File("./data/extractable_items.csv"));
+			s = new Scanner(new File(Config.DATAPACK_ROOT + "/data/extractable_items.csv"));
 		}
 		catch (Exception e)
 		{
-			_log.warning("Extractable items data: Can not find './data/extractable_items.csv'");
+			_log.warning("Extractable items data: Can not find '" + Config.DATAPACK_ROOT + "/data/extractable_items.csv'");
 			return;
 		}
 

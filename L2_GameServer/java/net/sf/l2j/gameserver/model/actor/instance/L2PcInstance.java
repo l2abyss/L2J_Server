@@ -3956,7 +3956,8 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	public void doAutoLoot(L2Attackable target, L2Attackable.RewardItem item)
 	{
-		if (isInParty()) getParty().distributeItem(this, item, false, target);
+		if (isInParty()&&ItemTable.getInstance().getTemplate(item.getItemId()).getItemType() != L2EtcItemType.HERB)  
+			getParty().distributeItem(this, item, false, target);
 		else if (item.getItemId() == 57) addAdena("Loot", item.getCount(), target, true);
 		else addItem("Loot", item.getItemId(), item.getCount(), target, true);
 	}
