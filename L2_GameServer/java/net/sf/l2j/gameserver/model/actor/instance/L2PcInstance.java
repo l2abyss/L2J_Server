@@ -160,6 +160,7 @@ import net.sf.l2j.gameserver.serverpackets.ItemList;
 import net.sf.l2j.gameserver.serverpackets.L2GameServerPacket;
 import net.sf.l2j.gameserver.serverpackets.LeaveWorld;
 import net.sf.l2j.gameserver.serverpackets.MagicSkillCanceld;
+import net.sf.l2j.gameserver.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.serverpackets.NicknameChanged;
 import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
@@ -2019,7 +2020,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			getSubClasses().get(_classIndex).setClassId(Id);
 		}
 		setTarget(this);
-		doCast(SkillTable.getInstance().getInfo(5103,1));
+		broadcastPacket(new MagicSkillUse(this, 5103, 1, 1000, 0));
 		setClassTemplate(Id);
 		
 		// Update class icon in party and clan

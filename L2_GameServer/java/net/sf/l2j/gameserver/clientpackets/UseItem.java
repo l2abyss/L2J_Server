@@ -352,6 +352,156 @@ public final class UseItem extends L2GameClientPacket
                         }
                         break;
                     }
+                    //Race circlets can be used only if ur race is matching.
+                    case L2Item.SLOT_HAIRALL:
+                    {
+                    	if (itemId >= 9391 && itemId <= 9396)
+                    	{
+                    		switch (activeChar.getRace())
+                    		{
+                    			case Kamael:
+                    			{
+                    				if (itemId != 9396)
+                    				{
+                    					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+                    					return;
+                    				}
+                    			}
+                    			case Human:
+                    			{
+                    				if (itemId != 9391)
+                    				{
+                    					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+                    					return;
+                    				}
+                    			}
+                    			case Dwarf:
+                    			{
+                    				if (itemId != 9395)
+                    				{
+                    					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+                    					return;
+                    				};
+                    			}
+                    			case Elf:
+                    			{
+                    				if (itemId != 9392)
+                    				{
+                    					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+                    					return;
+                    				}	
+                    			}
+                    			case DarkElf:
+                    			{
+                    				if (itemId != 9393)
+                    				{
+                    					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+                    					return;
+                    				}	
+                    			}
+                    			case Orc:
+                    			{
+                    				if (itemId != 9394)
+                    				{
+                    					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+                    					return;
+                    				}
+                    			}
+                    		}
+                    		break;
+                    	}
+                    }
+                    case L2Item.SLOT_L_BRACELET:
+                    {
+                    	SystemMessage sm = new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
+                    	if ((item.getItemId() >= 9605 && item.getItemId() <= 9615)||item.getItemId() == 10018)
+                    	{
+                    		if (activeChar.getClan()!= null)
+                    		{
+                    			switch (item.getItemId())
+                    			{
+                    				case 9605:
+                    					if (activeChar.getClan().getHasHideout() != 62)
+                    					{
+                                            activeChar.sendPacket(sm);
+                                            return;
+                    					}
+                    				case 9606:
+                    					if (activeChar.getClan().getHasHideout() != 63)
+                    					{
+                                            activeChar.sendPacket(sm);
+                                            return;
+                    					}
+                    				case 9607:
+                    					if (activeChar.getClan().getHasCastle() != 1)
+                    					{
+                                            activeChar.sendPacket(sm);
+                                            return;
+                    					}
+                    				case 9608:
+                    					if (activeChar.getClan().getHasCastle() != 2)
+                    					{
+                                            activeChar.sendPacket(sm);
+                                            return;
+                    					}
+                    				case 9609:
+                    					if (activeChar.getClan().getHasCastle() != 3)
+                    					{
+                                            activeChar.sendPacket(sm);
+                                            return;
+                    					}
+                    				case 9610:
+                    					if (activeChar.getClan().getHasCastle() != 4)
+                    					{
+                                            activeChar.sendPacket(sm);
+                                            return;
+                    					}
+                    				case 9611:
+                    					if (activeChar.getClan().getHasCastle() != 5)
+                    					{
+                                            activeChar.sendPacket(sm);
+                                            return;
+                    					}
+                    				case 9612:
+                    					if (activeChar.getClan().getHasCastle() != 6)
+                    					{
+                                            activeChar.sendPacket(sm);
+                                            return;
+                    					}
+                    				case 9613:
+                    					if (activeChar.getClan().getHasCastle() != 7)
+                    					{
+                                            activeChar.sendPacket(sm);
+                                            return;
+                    					}
+                    				case 9614:
+                    					if (activeChar.getClan().getHasCastle() != 8)
+                    					{
+                                            activeChar.sendPacket(sm);
+                                            return;
+                    					}
+                    				case 9615:
+                    					if (activeChar.getClan().getHasCastle() != 9)
+                    					{
+                                            activeChar.sendPacket(sm);
+                                            return;
+                    					}
+                    				case 10018:
+                    					if (activeChar.getClan().getHasFort() == 0)
+                    					{
+                                            activeChar.sendPacket(sm);
+                                            return;
+                    					}
+                    			}
+                    			break;
+                    		}
+                    		else
+                    		{
+                                activeChar.sendPacket(sm);
+                                return;
+                    		}
+                    	}
+                    }
                 }
                 
                 if (activeChar.isCursedWeaponEquipped() && itemId == 6408) // Don't allow to put formal wear

@@ -27,8 +27,6 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.model.entity.Fort;
-import net.sf.l2j.gameserver.util.IllegalPlayerAction;
-import net.sf.l2j.gameserver.util.Util;
 
 /**
  * This class ...
@@ -58,6 +56,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 			activeChar = _activeChar;
 		}
 
+		@SuppressWarnings("synthetic-access")
 		public void run()
 		{
 			Location loc = null;
@@ -79,9 +78,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 				case 1: // to clanhall
 					if (activeChar.getClan() == null || activeChar.getClan().getHasHideout() == 0)
 					{
-						//cheater
-						activeChar.sendMessage("You may not use this respawn point!");
-						Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " used respawn cheat.", IllegalPlayerAction.PUNISH_KICK);
+						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Clanhall and he doesn't have Clanhall!");
 						return;
 					}
 					loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.ClanHall);
@@ -106,21 +103,14 @@ public final class RequestRestartPoint extends L2GameClientPacket
 							loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Town);
 						else
 						{
-							//cheater
-							activeChar.sendMessage("You may not use this respawn point!");
-							Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " used respawn cheat.", IllegalPlayerAction.PUNISH_KICK);
+							_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Castle and he doesn't have Castle!");
 							return;
 						}
 					}
 					else
 					{
 						if (activeChar.getClan() == null || activeChar.getClan().getHasCastle() == 0)
-						{
-							//cheater
-							activeChar.sendMessage("You may not use this respawn point!");
-							Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " used respawn cheat.", IllegalPlayerAction.PUNISH_KICK);
 							return;
-						}
 						else
 							loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Castle);
 					}
@@ -137,9 +127,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 					}
 					if ((activeChar.getClan() == null || activeChar.getClan().getHasFort() == 0) && !isInDefense)
 					{
-						//cheater
-						activeChar.sendMessage("You may not use this respawn point!");
-						Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " used respawn cheat.", IllegalPlayerAction.PUNISH_KICK);
+						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Fortress and he doesn't have Fortress!");
 						return;
 					}
 					loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Fortress);
@@ -157,9 +145,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 
 					if (siegeClan == null || siegeClan.getFlag().size() == 0)
 					{
-						//cheater
-						activeChar.sendMessage("You may not use this respawn point!");
-						Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " used respawn cheat.", IllegalPlayerAction.PUNISH_KICK);
+						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Siege HQ and he doesn't have Siege HQ!");
 						return;
 					}
 					loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.SiegeFlag);
@@ -168,9 +154,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 				case 5: // Fixed or Player is a festival participant
 					if (!activeChar.isGM() && !activeChar.isFestivalParticipant())
 					{
-						//cheater
-						activeChar.sendMessage("You may not use this respawn point!");
-						Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " used respawn cheat.", IllegalPlayerAction.PUNISH_KICK);
+						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - Fixed and he isn't festival participant!");
 						return;
 					}
 					loc = new Location(activeChar.getX(), activeChar.getY(), activeChar.getZ()); // spawn them where they died
