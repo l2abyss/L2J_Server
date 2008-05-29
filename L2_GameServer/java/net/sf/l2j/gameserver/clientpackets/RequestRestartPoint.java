@@ -95,10 +95,10 @@ public final class RequestRestartPoint extends L2GameClientPacket
 
 					if (castle != null && castle.getSiege().getIsInProgress())
 					{
-						//siege in progress
+						// Siege in progress
 						if (castle.getSiege().checkIsDefender(activeChar.getClan()))
 							loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Castle);
-						// Just in case you lost castle while beeing dead.. Port to nearest Town.
+						// Just in case you lost castle while being dead.. Port to nearest Town.
 						else if (castle.getSiege().checkIsAttacker(activeChar.getClan()))
 							loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Town);
 						else
@@ -163,13 +163,14 @@ public final class RequestRestartPoint extends L2GameClientPacket
 				case 27: // to jail
 					if (!activeChar.isInJail()) return;
 					loc = new Location(-114356, -249645, -2984);
+					break;
 
 				default:
 					loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Town);
-				break;
+					break;
 			}
 
-			//Teleport and revive
+			// Teleport and revive
 			activeChar.setIsPendingRevive(true);
 			activeChar.teleToLocation(loc, true);
 		}
@@ -201,7 +202,6 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		Castle castle = CastleManager.getInstance().getCastle(activeChar.getX(), activeChar.getY(), activeChar.getZ());
 		if (castle != null && castle.getSiege().getIsInProgress())
 		{
-			//DeathFinalizer df = new DeathFinalizer(10000);
 			if (activeChar.getClan() != null && castle.getSiege().checkIsAttacker(activeChar.getClan()))
 			{
 				// Schedule respawn delay for attacker
@@ -212,7 +212,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 			}
 		}
 
-		// run immediatelly (no need to schedule)
+		// run immediately (no need to schedule)
 		new DeathTask(activeChar).run();
 	}
 
