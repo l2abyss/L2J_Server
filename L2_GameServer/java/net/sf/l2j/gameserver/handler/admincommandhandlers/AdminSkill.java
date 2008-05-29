@@ -22,7 +22,6 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2SkillLearn;
@@ -67,9 +66,8 @@ public class AdminSkill implements IAdminCommandHandler {
 
 	private static L2Skill[] adminSkills;
 
-	public boolean useAdminCommand(String command, L2PcInstance activeChar) {
-		GMAudit.auditGMAction(activeChar.getName(), command, (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target"), "");
-
+	public boolean useAdminCommand(String command, L2PcInstance activeChar)
+	{
 		if (command.equals("admin_show_skills"))
 			showMainPage(activeChar);
 		else if (command.startsWith("admin_remove_skills"))

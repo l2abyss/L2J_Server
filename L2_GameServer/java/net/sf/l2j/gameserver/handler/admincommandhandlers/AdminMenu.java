@@ -23,7 +23,6 @@ import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.LoginServerThread;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2Object;
@@ -53,10 +52,8 @@ public class AdminMenu implements IAdminCommandHandler
 		"admin_unban_menu"
 	};
 
-	public boolean useAdminCommand(String command, L2PcInstance activeChar) {
-		String target = (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target");
-		GMAudit.auditGMAction(activeChar.getName(), command, target, "");
-
+	public boolean useAdminCommand(String command, L2PcInstance activeChar)
+	{
 		if (command.equals("admin_char_manage"))
 			showMainPage(activeChar);
 		else if (command.startsWith("admin_teleport_character_to_menu"))

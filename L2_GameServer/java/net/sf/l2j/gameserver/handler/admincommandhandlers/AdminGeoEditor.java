@@ -19,7 +19,6 @@ import java.util.StringTokenizer;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.geoeditorcon.GeoEditorListener;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -37,9 +36,6 @@ public class AdminGeoEditor implements IAdminCommandHandler
 
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
-		String target = (activeChar.getTarget() != null) ? activeChar.getTarget().getName() : "no-target";
-        GMAudit.auditGMAction(activeChar.getName(), command, target, "");
-
         if (!Config.ACCEPT_GEOEDITOR_CONN)
         {
         	activeChar.sendMessage("Server do not accepts geoeditor connections now.");

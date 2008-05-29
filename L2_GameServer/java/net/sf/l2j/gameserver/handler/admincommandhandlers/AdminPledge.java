@@ -19,7 +19,6 @@ import java.util.StringTokenizer;
 
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -58,7 +57,6 @@ public class AdminPledge implements IAdminCommandHandler
 		{
 			String action = null;
 			String parameter = null;
-			GMAudit.auditGMAction(activeChar.getName(), command, activeChar.getName(), "");
 			StringTokenizer st = new StringTokenizer(command);
 			try
 			{

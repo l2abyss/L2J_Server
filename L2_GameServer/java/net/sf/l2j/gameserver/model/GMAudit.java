@@ -32,32 +32,34 @@ public class GMAudit
 	
 	public static void auditGMAction(String gmName, String action, String target, String params)
 	{
-		if (Config.GMAUDIT)
+		new File("log/GMAudit").mkdirs();
+		
+		SimpleDateFormat formatter;
+		formatter = new SimpleDateFormat("dd/MM/yyyy H:mm:ss");
+		String today = formatter.format(new Date());
+		
+		try
 		{
-			new File("log/GMAudit").mkdirs();
+			File file = new File("log/GMAudit/" + gmName + ".txt");
+			FileWriter save = new FileWriter(file, true);
 			
-			SimpleDateFormat formatter;
-			formatter = new SimpleDateFormat("dd/MM/yyyy H:mm:ss");
-			String today = formatter.format(new Date());
+			String out = (today + ">" + gmName + ">" + action + ">" + target + ">" + params + "\r\n");
 			
-			try
-			{
-				File file = new File("log/GMAudit/" + gmName + ".txt");
-				FileWriter save = new FileWriter(file, true);
-				
-				String out = (today + ">" + gmName + ">" + action + ">" + target + ">" + params + "\r\n");
-				
-				save.write(out);
-				save.flush();
-				save.close();
-				
-				save = null;
-				file = null;
-			}
-			catch (IOException e)
-			{
-				_log.log(Level.SEVERE, "GMAudit for GM " + gmName +" could not be saved: ", e);
-			}
+			save.write(out);
+			save.flush();
+			save.close();
+			
+			save = null;
+			file = null;
 		}
+		catch (IOException e)
+		{
+			_log.log(Level.SEVERE, "GMAudit for GM " + gmName +" could not be saved: ", e);
+		}
+	}
+	
+	public static void auditGMAction(String gmName, String action, String target)
+	{
+		auditGMAction(gmName, action, target, "");
 	}
 }

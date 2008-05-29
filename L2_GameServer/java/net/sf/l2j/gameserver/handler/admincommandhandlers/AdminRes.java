@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
@@ -41,9 +40,6 @@ public class AdminRes implements IAdminCommandHandler
 
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
-		String target = (activeChar.getTarget() != null) ? activeChar.getTarget().getName() : "no-target";
-        GMAudit.auditGMAction(activeChar.getName(), command, target, "");
-
 		if (command.startsWith("admin_res "))
 			handleRes(activeChar, command.split(" ")[1]);
 		else if (command.equals("admin_res"))

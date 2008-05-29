@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.Inventory;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
@@ -180,9 +179,6 @@ public class AdminEnchant implements IAdminCommandHandler
                 + itemInstance.getItem().getName() + " from " + curEnchant + " to " + ench + ".");
             player.sendMessage("Admin has changed the enchantment of your "
                 + itemInstance.getItem().getName() + " from " + curEnchant + " to " + ench + ".");
-
-            // log
-            GMAudit.auditGMAction(activeChar.getName(), "enchant", player.getName(), itemInstance.getItem().getName() + "(" + itemInstance.getObjectId() + ")" + " from " + curEnchant + " to " + ench);
         }
     }
 

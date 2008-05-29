@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -37,9 +36,6 @@ public class AdminRepairChar implements IAdminCommandHandler
 
     public boolean useAdminCommand(String command, L2PcInstance activeChar)
     {
-		String target = (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target");
-        GMAudit.auditGMAction(activeChar.getName(), command, target, "");
-
         handleRepair(command);
         return true;
     }

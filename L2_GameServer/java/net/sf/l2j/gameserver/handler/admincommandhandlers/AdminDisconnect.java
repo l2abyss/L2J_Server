@@ -16,7 +16,6 @@ package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
 import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.serverpackets.LeaveWorld;
@@ -40,9 +39,6 @@ public class AdminDisconnect implements IAdminCommandHandler {
 		{
 			disconnectCharacter(activeChar);
 		}
-
-		String target = (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target");
-        GMAudit.auditGMAction(activeChar.getName(), command, target, "");
 		return true;
 	}
 

@@ -16,7 +16,6 @@ package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -91,8 +90,6 @@ public class AdminBanChat implements IAdminCommandHandler {
             activeChar.sendMessage(targetPlayer.getName() + "'s chat ban has now been lifted.");
 			targetPlayer.setChatBanned(false);
 		}
-
-		GMAudit.auditGMAction(activeChar.getName(), command,  targetPlayer.getName(), "");
 		return true;
 	}
 

@@ -18,7 +18,6 @@ import java.util.StringTokenizer;
 
 import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.serverpackets.LeaveWorld;
@@ -28,10 +27,6 @@ public class AdminKick implements IAdminCommandHandler {
 
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
     {
-
-		String target = (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target");
-        GMAudit.auditGMAction(activeChar.getName(), command, target, "");
-
         if (command.startsWith("admin_kick"))
         {
             StringTokenizer st = new StringTokenizer(command);

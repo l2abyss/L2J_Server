@@ -17,7 +17,6 @@ package net.sf.l2j.gameserver.handler.admincommandhandlers;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.instancemanager.RaidBossSpawnManager;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
@@ -37,8 +36,6 @@ public class AdminDelete implements IAdminCommandHandler
     public boolean useAdminCommand(String command, L2PcInstance activeChar)
     {
         if (command.equals("admin_delete")) handleDelete(activeChar);
-        String target = (activeChar.getTarget() != null ? activeChar.getTarget().getName() : "no-target");
-        GMAudit.auditGMAction(activeChar.getName(), command, target, "");
         return true;
     }
 

@@ -25,7 +25,6 @@ import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -90,9 +89,6 @@ public class AdminEditChar implements IAdminCommandHandler
 
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
-
-		GMAudit.auditGMAction(activeChar.getName(), command, (activeChar.getTarget() != null) ? activeChar.getTarget().getName() : "no-target", "");
-
 		if (command.equals("admin_current_player"))
 		{
 			showCharacterInfo(activeChar, null);
@@ -177,8 +173,6 @@ public class AdminEditChar implements IAdminCommandHandler
 			{
 				String val = command.substring(15);
 				int karma = Integer.parseInt(val);
-				if (activeChar == activeChar.getTarget())
-					GMAudit.auditGMAction(activeChar.getName(), command, activeChar.getName(), "");
 				setTargetKarma(activeChar, karma);
 			}
 			catch (Exception e)

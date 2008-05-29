@@ -16,7 +16,6 @@ package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
@@ -29,32 +28,30 @@ public class AdminTvTEvent
 implements IAdminCommandHandler {
 	private static final String[] ADMIN_COMMANDS = {"admin_tvt_add", "admin_tvt_remove"};
 
-	public boolean useAdminCommand( String command, L2PcInstance adminInstance )
+	public boolean useAdminCommand( String command, L2PcInstance activeChar )
 	{
-		GMAudit.auditGMAction( adminInstance.getName(), command, ( adminInstance.getTarget() != null ? adminInstance.getTarget().getName() : "no-target" ), "" );
-
 		if ( command.equals( "admin_tvt_add" ) ) {
-			L2Object target = adminInstance.getTarget();
+			L2Object target = activeChar.getTarget();
 
 			if (!( target instanceof L2PcInstance ) )
 			{
-				adminInstance.sendMessage( "You should select a player!" );
+				activeChar.sendMessage( "You should select a player!" );
 				return true;
 			}
 
-			add( adminInstance, ( L2PcInstance )target );
+			add( activeChar, ( L2PcInstance )target );
 		}
 		else if ( command.equals( "admin_tvt_remove" ) )
 		{
-			L2Object target = adminInstance.getTarget();
+			L2Object target = activeChar.getTarget();
 
 			if (!( target instanceof L2PcInstance ) )
 			{
-				adminInstance.sendMessage( "You should select a player!" );
+				activeChar.sendMessage( "You should select a player!" );
 				return true;
 			}
 
-			remove( adminInstance, ( L2PcInstance )target );
+			remove( activeChar, ( L2PcInstance )target );
 		}
 
 		return true;
@@ -65,14 +62,14 @@ implements IAdminCommandHandler {
 		return ADMIN_COMMANDS;
 	}
 
-	private void add( L2PcInstance adminInstance, L2PcInstance playerInstance ) {
+	private void add( L2PcInstance activeChar, L2PcInstance playerInstance ) {
 		if ( TvTEvent.isPlayerParticipant( playerInstance.getObjectId() ) ) {
-			adminInstance.sendMessage( "Player already participated in the event!" );
+			activeChar.sendMessage( "Player already participated in the event!" );
 			return;
 		}
 
 		if ( !TvTEvent.addParticipant( playerInstance ) ) {
-			adminInstance.sendMessage( "Player instance could not be added, it seems to be null!" );
+			activeChar.sendMessage( "Player instance could not be added, it seems to be null!" );
 			return;
 		}
 
@@ -81,9 +78,9 @@ implements IAdminCommandHandler {
 		}
 	}
 
-	private void remove( L2PcInstance adminInstance, L2PcInstance playerInstance ) {
+	private void remove( L2PcInstance activeChar, L2PcInstance playerInstance ) {
 		if ( !TvTEvent.removeParticipant( playerInstance.getObjectId() ) ) {
-			adminInstance.sendMessage( "Player is not part of the event!" );
+			activeChar.sendMessage( "Player is not part of the event!" );
 			return;
 		}
 

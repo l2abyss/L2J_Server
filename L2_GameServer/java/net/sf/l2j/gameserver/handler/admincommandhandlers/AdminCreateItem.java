@@ -18,7 +18,6 @@ import java.util.StringTokenizer;
 
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.serverpackets.ItemList;
 import net.sf.l2j.gameserver.templates.L2Item;
@@ -40,9 +39,6 @@ public class AdminCreateItem implements IAdminCommandHandler
 
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
-
-		GMAudit.auditGMAction(activeChar.getName(), command, (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target"), "");
-
 		if (command.equals("admin_itemcreate"))
 		{
 			AdminHelpPage.showHelpPage(activeChar, "itemcreation.htm");

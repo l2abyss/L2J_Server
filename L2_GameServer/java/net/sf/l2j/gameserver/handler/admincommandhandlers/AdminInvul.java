@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.GMAudit;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
@@ -33,8 +32,6 @@ public class AdminInvul implements IAdminCommandHandler {
 	private static final String[] ADMIN_COMMANDS = {"admin_invul", "admin_setinvul"};
 
 	public boolean useAdminCommand(String command, L2PcInstance activeChar) {
-
-        GMAudit.auditGMAction(activeChar.getName(), command, (activeChar.getTarget() != null ? activeChar.getTarget().getName() : "no-target"), "");
 
 		if (command.equals("admin_invul")) handleInvul(activeChar);
         if (command.equals("admin_setinvul")){
