@@ -353,6 +353,7 @@ public final class Config
     public static boolean	ALLOW_CURSED_WEAPONS;
     public static boolean	ALLOW_MANOR;
     public static boolean	ALLOW_NPC_WALKERS;
+    public static boolean	ALLOW_PET_WALKERS;
     public static boolean	SERVER_NEWS;
     public static String	COMMUNITY_TYPE;
     public static boolean	BBS_SHOW_PLAYERLIST;
@@ -1323,6 +1324,7 @@ public final class Config
                 ALLOW_CURSED_WEAPONS						= Boolean.parseBoolean(General.getProperty("AllowCursedWeapons", "False"));
                 ALLOW_MANOR									= Boolean.parseBoolean(General.getProperty("AllowManor", "False"));
                 ALLOW_NPC_WALKERS							= Boolean.parseBoolean(General.getProperty("AllowNpcWalkers", "true"));
+                ALLOW_PET_WALKERS							= Boolean.parseBoolean(General.getProperty("AllowPetWalkers", "False"));
                 SERVER_NEWS									= Boolean.parseBoolean(General.getProperty("ShowServerNews", "False"));
                 COMMUNITY_TYPE								= General.getProperty("CommunityType", "old").toLowerCase();
                 BBS_SHOW_PLAYERLIST							= Boolean.parseBoolean(General.getProperty("BBSShowPlayerList", "false"));
@@ -1856,7 +1858,8 @@ public final class Config
         else if (pName.equalsIgnoreCase("AllowRentPet")) ALLOW_RENTPET = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AllowBoat")) ALLOW_BOAT = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AllowCursedWeapons")) ALLOW_CURSED_WEAPONS = Boolean.parseBoolean(pValue);
-        else if (pName.equalsIgnoreCase("AllowManor")) ALLOW_MANOR = Boolean.parseBoolean(pValue);        
+        else if (pName.equalsIgnoreCase("AllowManor")) ALLOW_MANOR = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AllowPetWalkers")) ALLOW_PET_WALKERS = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("BypassValidation")) BYPASS_VALIDATION = Boolean.parseBoolean(pValue);
 
         else if (pName.equalsIgnoreCase("CommunityType")) COMMUNITY_TYPE = pValue.toLowerCase();
