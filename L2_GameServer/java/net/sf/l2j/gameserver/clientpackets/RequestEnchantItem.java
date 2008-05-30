@@ -56,6 +56,11 @@ public final class RequestEnchantItem extends L2GameClientPacket
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null || _objectId == 0)
 			return;
+		if (activeChar.isOnline() == 0)
+		{
+			activeChar.setActiveEnchantItem(null);
+			return;
+		}
 		
 		L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
 		L2ItemInstance scroll = activeChar.getActiveEnchantItem();

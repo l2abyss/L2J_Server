@@ -66,6 +66,11 @@ public final class RequestRestart extends L2GameClientPacket
             return;
         }
 
+        if (player.isTeleporting()) {
+        	player.abortCast();
+        	player.setIsTeleporting(false);
+        }
+        
         player.getInventory().updateDatabase();
 
         if (player.getPrivateStoreType() != 0)
