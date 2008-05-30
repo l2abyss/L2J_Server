@@ -131,7 +131,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
                 else
                 {
                     NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-                    html.setFile("data/html/chamberlain/chamberlain_noprivs.htm");
+                    html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
                     html.replace("%objectId%", String.valueOf(getObjectId()));
                     player.sendPacket(html);
                     return;
@@ -147,7 +147,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
                 else
                 {
                     NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-                    html.setFile("data/html/chamberlain/chamberlain_noprivs.htm");
+                    html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
                     html.replace("%objectId%", String.valueOf(getObjectId()));
                     player.sendPacket(html);
                     return;
@@ -231,7 +231,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
                 else
                 {
                     NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-                    html.setFile("data/html/chamberlain/chamberlain_noprivs.htm");
+                    html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
                     html.replace("%objectId%", String.valueOf(getObjectId()));
                     player.sendPacket(html);
                     return;
@@ -263,7 +263,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
                 else
                 {
                     NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-                    html.setFile("data/html/chamberlain/chamberlain_noprivs.htm");
+                    html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
                     html.replace("%objectId%", String.valueOf(getObjectId()));
                     player.sendPacket(html);
                     return;
@@ -279,7 +279,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
                 else
                 {
                     NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-                    html.setFile("data/html/chamberlain/chamberlain_noprivs.htm");
+                    html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
                     html.replace("%objectId%", String.valueOf(getObjectId()));
                     player.sendPacket(html);
                     return;
@@ -336,7 +336,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
                 else
                 {
                     NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-                    html.setFile("data/html/chamberlain/chamberlain_noprivs.htm");
+                    html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
                     html.replace("%objectId%", String.valueOf(getObjectId()));
                     player.sendPacket(html);
                     return;
@@ -380,7 +380,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
                 else
                 {
                     NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-                    html.setFile("data/html/chamberlain/chamberlain_noprivs.htm");
+                    html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
                     html.replace("%objectId%", String.valueOf(getObjectId()));
                     player.sendPacket(html);
                     return;
@@ -463,7 +463,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
                 else
                 {
                     NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-                    html.setFile("data/html/chamberlain/chamberlain_noprivs.htm");
+                    html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
                     html.replace("%objectId%", String.valueOf(getObjectId()));
                     player.sendPacket(html);
                     return;
@@ -495,7 +495,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
                 else
                 {
                     NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-                    html.setFile("data/html/chamberlain/chamberlain_tax.htm");
+                    html.setFile("data/html/chamberlain/chamberlain-tax.htm");
                     html.replace("%objectId%", String.valueOf(getObjectId()));
                     html.replace("%tax%", String.valueOf(getCastle().getTaxPercent()));
                     player.sendPacket(html);
@@ -505,7 +505,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
             else if(actualCommand.equalsIgnoreCase("manage_functions"))
             {
                 NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-                html.setFile("data/html/chamberlain/chamberlain_manage.htm");
+                html.setFile("data/html/chamberlain/chamberlain-manage.htm");
                 html.replace("%objectId%", String.valueOf(getObjectId()));
                 player.sendPacket(html);
                 return;
@@ -513,7 +513,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
             else if(actualCommand.equalsIgnoreCase("products"))
             {
                 NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-                html.setFile("data/html/chamberlain/chamberlain_products.htm");
+                html.setFile("data/html/chamberlain/chamberlain-products.htm");
                 html.replace("%objectId%", String.valueOf(getObjectId()));
                 html.replace("%npcId%", String.valueOf(getNpcId()));
                 player.sendPacket(html);
