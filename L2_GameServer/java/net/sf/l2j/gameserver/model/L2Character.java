@@ -2578,15 +2578,15 @@ public abstract class L2Character extends L2Object
 			}
 
 			// Remove first Buff if number of buffs > getMaxBuffCount()
-			L2Skill tempskill = newEffect.getSkill();
-			if (getBuffCount() > getMaxBuffCount() && !doesStack(tempskill) && ((
-				tempskill.getSkillType() == L2Skill.SkillType.BUFF ||
-                tempskill.getSkillType() == L2Skill.SkillType.DEBUFF ||
-                tempskill.getSkillType() == L2Skill.SkillType.REFLECT ||
-                tempskill.getSkillType() == L2Skill.SkillType.HEAL_PERCENT ||
-                tempskill.getSkillType() == L2Skill.SkillType.MANAHEAL_PERCENT)&&
-                !(tempskill.getId() > 4360  && tempskill.getId() < 4367))
-        	) 
+			L2Skill tempSkill = newEffect.getSkill();
+			if (getBuffCount() > getMaxBuffCount() && !doesStack(tempSkill) && ((
+				tempSkill.getSkillType() == L2Skill.SkillType.BUFF ||
+                tempSkill.getSkillType() == L2Skill.SkillType.REFLECT ||
+                tempSkill.getSkillType() == L2Skill.SkillType.HEAL_PERCENT ||
+                tempSkill.getSkillType() == L2Skill.SkillType.MANAHEAL_PERCENT) &&
+                !tempSkill.isDebuff() &&  !(tempSkill.getId() > 4360
+                		&& tempSkill.getId() < 4367))
+        	)
 			{
 				// if max buffs, no herb effects are used, even if they would replace one old
 				if (newEffect.isHerbEffect()) 
@@ -2594,7 +2594,7 @@ public abstract class L2Character extends L2Object
 					newEffect.stopEffectTask(); 
 					return; 
 				}
-				removeFirstBuff(tempskill.getId());
+				removeFirstBuff(tempSkill.getId());
 			}
 
 			// Add the L2Effect to all effect in progress on the L2Character
@@ -5817,12 +5817,16 @@ public abstract class L2Character extends L2Object
      *
      * @return The number of Buffs affecting this L2Character
      */
-    public int getBuffCount() {
+    public int getBuffCount()
+    {
         L2Effect[] effects = getAllEffects();
         int numBuffs=0;
-        if (effects != null) {
-            for (L2Effect e : effects) {
-                if (e != null) {
+        if (effects != null)
+        {
+            for (L2Effect e : effects)
+            {
+                if (e != null)
+                {
                     if (e.getShowIcon() &&
                        (e.getSkill().getSkillType() == L2Skill.SkillType.BUFF ||
                         e.getSkill().getSkillType() == L2Skill.SkillType.REFLECT ||
