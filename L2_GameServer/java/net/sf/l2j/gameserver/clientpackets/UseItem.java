@@ -352,7 +352,7 @@ public final class UseItem extends L2GameClientPacket
                         }
                         break;
                     }
-                    //Race circlets can be used only if ur race is matching.
+                    //Race circlets can be used only if your race is matching.
                     case L2Item.SLOT_HAIRALL:
                     {
                     	if (itemId >= 9391 && itemId <= 9396)
@@ -366,6 +366,7 @@ public final class UseItem extends L2GameClientPacket
                     					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
                     					return;
                     				}
+                    				break;
                     			}
                     			case Human:
                     			{
@@ -374,6 +375,7 @@ public final class UseItem extends L2GameClientPacket
                     					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
                     					return;
                     				}
+                    				break;
                     			}
                     			case Dwarf:
                     			{
@@ -381,7 +383,8 @@ public final class UseItem extends L2GameClientPacket
                     				{
                     					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
                     					return;
-                    				};
+                    				}
+                    				break;
                     			}
                     			case Elf:
                     			{
@@ -389,7 +392,8 @@ public final class UseItem extends L2GameClientPacket
                     				{
                     					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
                     					return;
-                    				}	
+                    				}
+                    				break;
                     			}
                     			case DarkElf:
                     			{
@@ -397,7 +401,8 @@ public final class UseItem extends L2GameClientPacket
                     				{
                     					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
                     					return;
-                    				}	
+                    				}
+                    				break;
                     			}
                     			case Orc:
                     			{
@@ -406,9 +411,9 @@ public final class UseItem extends L2GameClientPacket
                     					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
                     					return;
                     				}
+                    				break;
                     			}
                     		}
-                    		break;
                     	}
                     }
                     case L2Item.SLOT_L_BRACELET:
@@ -426,74 +431,85 @@ public final class UseItem extends L2GameClientPacket
                                             activeChar.sendPacket(sm);
                                             return;
                     					}
+                    					break;
                     				case 9606:
                     					if (activeChar.getClan().getHasHideout() != 63)
                     					{
                                             activeChar.sendPacket(sm);
                                             return;
                     					}
+                    					break;
                     				case 9607:
                     					if (activeChar.getClan().getHasCastle() != 1)
                     					{
                                             activeChar.sendPacket(sm);
                                             return;
                     					}
+                    					break;
                     				case 9608:
                     					if (activeChar.getClan().getHasCastle() != 2)
                     					{
                                             activeChar.sendPacket(sm);
                                             return;
                     					}
+                    					break;
                     				case 9609:
                     					if (activeChar.getClan().getHasCastle() != 3)
                     					{
                                             activeChar.sendPacket(sm);
                                             return;
                     					}
+                    					break;
                     				case 9610:
                     					if (activeChar.getClan().getHasCastle() != 4)
                     					{
                                             activeChar.sendPacket(sm);
                                             return;
                     					}
+                    					break;
                     				case 9611:
                     					if (activeChar.getClan().getHasCastle() != 5)
                     					{
                                             activeChar.sendPacket(sm);
                                             return;
                     					}
+                    					break;
                     				case 9612:
                     					if (activeChar.getClan().getHasCastle() != 6)
                     					{
                                             activeChar.sendPacket(sm);
                                             return;
                     					}
+                    					break;
                     				case 9613:
                     					if (activeChar.getClan().getHasCastle() != 7)
                     					{
                                             activeChar.sendPacket(sm);
                                             return;
                     					}
+                    					break;
                     				case 9614:
                     					if (activeChar.getClan().getHasCastle() != 8)
                     					{
                                             activeChar.sendPacket(sm);
                                             return;
                     					}
+                    					break;
                     				case 9615:
                     					if (activeChar.getClan().getHasCastle() != 9)
                     					{
                                             activeChar.sendPacket(sm);
                                             return;
                     					}
+                    					break;
                     				case 10018:
                     					if (activeChar.getClan().getHasFort() == 0)
                     					{
                                             activeChar.sendPacket(sm);
                                             return;
                     					}
+                    					break;
                     			}
-                    			break;
                     		}
                     		else
                     		{
