@@ -50,6 +50,9 @@ public class L2Fishing implements Runnable
 
 	public void run()
 	{
+		if (_fisher == null)
+			return;
+		
 		if (_fishCurHp >= _fishMaxHp * 2)
 		{
 			// The fish got away
@@ -121,6 +124,7 @@ public class L2Fishing implements Runnable
 
 	public synchronized void doDie(boolean win)
 	{
+		_fishAiTask.cancel(false);
 		_fishAiTask = null;
 
         if (_fisher == null) return;
