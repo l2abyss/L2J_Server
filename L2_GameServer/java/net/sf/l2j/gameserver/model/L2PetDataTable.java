@@ -146,6 +146,22 @@ public class L2PetDataTable
     {
         return npcId == 16030;
     }
+    public static boolean isWGreatWolf(int npcId)
+    {
+        return npcId == 16037;
+    }
+    public static boolean isBlackWolf(int npcId)
+    {
+        return npcId == 16025;
+    }
+    public static boolean isFenrirWolf(int npcId)
+    {
+        return npcId == 16041;
+    }
+    public static boolean isWFenrirWolf(int npcId)
+    {
+        return npcId == 16042;
+    }
     
     public static boolean isSinEater(int npcId)
     {
@@ -171,10 +187,14 @@ public class L2PetDataTable
     {
     	return npcId > 12779 && npcId < 12783;
     }
+    public static boolean isImprovedBaby(int npcId)
+    {
+    	return npcId > 16033 && npcId < 16037;
+    }
 
     public static boolean isPetFood(int itemId)
     {
-    	return (itemId == 2515) || (itemId == 4038) || (itemId == 5168) || (itemId == 6316) || (itemId == 7582) || (itemId == 9668);
+    	return (itemId == 2515) || (itemId == 4038) || (itemId == 5168) || (itemId == 6316) || (itemId == 7582) || (itemId == 9668) || (itemId == 10425);
     }
 
     public static boolean isWolfFood(int itemId)
@@ -182,6 +202,22 @@ public class L2PetDataTable
     	return itemId == 2515;
     }
     public static boolean isGreatWolfFood(int itemId)
+    {
+        return itemId == 9668;
+    }
+    public static boolean isWGreatWolfFood(int itemId)
+    {
+        return itemId == 9668;
+    }
+    public static boolean isBlackWolfFood(int itemId)
+    {
+        return itemId == 9668;
+    }
+    public static boolean isFenrirWolfFood(int itemId)
+    {
+        return itemId == 9668;
+    }
+    public static boolean isWFenrirWolfFood(int itemId)
     {
         return itemId == 9668;
     }
@@ -210,6 +246,10 @@ public class L2PetDataTable
     {
     	return itemId == 7582;
     }
+    public static boolean isImprovedBabyFood(int itemId)
+    {
+    	return itemId == 10425;
+    }
 
     public static int getFoodItemId(int npcId)
     {
@@ -218,7 +258,11 @@ public class L2PetDataTable
 			case 12077:// Wolf
 				return 2515;
             case 16030:// Great Wolf 
-                return 9668;
+            case 16025:// Black Wolf
+            case 16037:// White Great Wolf	
+            case 16041:// Fenrir  
+            case 16042:// White Fenrir  
+                return 9668;    
 			case 12564://Sin Eater
 				return 2515;
 
@@ -236,6 +280,10 @@ public class L2PetDataTable
 			case 12782:// Baby Cougar
 			case 12781:// Baby Kookaburra
 	    		return 7582;
+			case 16034:// Improved Baby Buffalo
+			case 16036:// Improved Baby Cougar	
+			case 16035:// Improved Baby Kookaburra
+	    		return 10425;	
 			default:
 				return 0;
 		}
@@ -244,7 +292,11 @@ public class L2PetDataTable
     public static boolean isPetItem(int itemId)
     {
     	return (itemId == 2375 // Wolf
-                || itemId == 9882 // Great Wolf
+                || itemId == 10163// Great Wolf
+                || itemId == 10307 // White Great Wolf
+                || itemId == 9882 // Black Wolf
+                || itemId == 10426 // Fenrir
+                || itemId == 10611 // White Fenrir
     			|| itemId == 4425 //Sin Eater
 				|| itemId == 3500 
 				|| itemId == 3501
@@ -255,7 +307,10 @@ public class L2PetDataTable
 				|| itemId == 8663 // Wyvern
 				|| itemId == 6648
 				|| itemId == 6649
-				|| itemId == 6650); // Babies
+				|| itemId == 6650
+				|| itemId == 10311
+				|| itemId == 10312
+				|| itemId == 10313); // Babies
     }
 
     public static int[] getPetItemsByNpc(int npcId)
@@ -264,8 +319,16 @@ public class L2PetDataTable
 		{
 			case 12077:// Wolf
 				return new int[]{2375};
-            case 16030:// Great Wolf 
+            case 16025:// Black Wolf 
                 return new int[]{9882};
+            case 16030:// Great Wolf 
+                return new int[]{10163};
+            case 16037:// White Great Wolf 
+                return new int[]{10307};    
+            case 16041:// Fenrir 
+                return new int[]{10426};
+            case 16042:// White Fenrir 
+                return new int[]{10611};
 			case 12564://Sin Eater
 				return new int[]{4425};
 
@@ -286,6 +349,11 @@ public class L2PetDataTable
 			case 12782:// Baby Cougar
 			case 12781:// Baby Kookaburra
 	    		return new int[]{6648, 6649, 6650};
+	    	
+			case 16034:// Improved Baby Buffalo
+			case 16036:// Improved Baby Cougar
+			case 16035:// Improved Baby Kookaburra	
+				return new int[]{10311, 10312, 10313};
 
 			// unknown item id.. should never happen
 			default:
@@ -300,6 +368,8 @@ public class L2PetDataTable
 		    	|| npcId == 12527	// star strider
 		    	|| npcId == 12528	// twilight strider
 		    	|| npcId == 12621	// wyvern
-                || npcId == 16030;  // Greatwolf
+		    	|| npcId == 16037 // Great Snow Wolf
+    	        || npcId == 16041 // Fenrir Wolf
+    	        || npcId == 16042; // White Fenrir Wolf
     }
 }

@@ -8163,7 +8163,9 @@ public final class L2PcInstance extends L2PlayableInstance
 		{
 			case 0:
                 setIsFlying(false);
-				setIsRidingGreatWolf(false);
+				setIsRidingFenrirWolf(false);
+				setIsRidingWFenrirWolf(false);
+				setIsRidingGreatSnowWolf(false);
 				setIsRidingStrider(false);
                 break; //Dismounted
 			case 1:
@@ -8178,8 +8180,11 @@ public final class L2PcInstance extends L2PlayableInstance
                 setIsFlying(true);
                 break; //Flying Wyvern
 			case 3:
-				setIsRidingGreatWolf(true);
-				break; // Riding a Great Wolf
+				setIsRidingFenrirWolf(true);
+				setIsRidingWFenrirWolf(true);
+				setIsRidingGreatSnowWolf(true);
+				break;	
+
 		}
 
 		_mountType = mountType;

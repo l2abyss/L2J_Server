@@ -49,8 +49,10 @@ public final class Ride extends L2GameServerPacket
                 break;
             case 12621: // Wyvern
                 _rideType = 2;
-                break;
-            case 16030: // Great Wolf
+                break;	
+            case 16037: // Great Snow Wolf    
+            case 16041: // Fenrir Wolf	
+            case 16042: // White Fenrir Wolf	
                 _rideType = 3;
                 break;
             default:

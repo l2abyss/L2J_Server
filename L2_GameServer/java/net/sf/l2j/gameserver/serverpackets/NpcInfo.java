@@ -47,6 +47,8 @@ public final class NpcInfo extends L2GameServerPacket
     private int _collisionHeight, _collisionRadius;
     private String _name = "";
     private String _title = "";
+    private L2Summon _summon;
+    private int form = 0;
 
 	/**
 	 * @param _characters
@@ -95,6 +97,7 @@ public final class NpcInfo extends L2GameServerPacket
 	public NpcInfo(L2Summon cha, L2Character attacker)
 	{
 		_activeChar = cha;
+		_summon = cha;
 		_idTemplate = cha.getTemplate().idTemplate;
 		_isAttackable = cha.isAutoAttackable(attacker); //(cha.getKarma() > 0);
 		_rhand = 0;
@@ -107,6 +110,15 @@ public final class NpcInfo extends L2GameServerPacket
             _name = _activeChar.getName();
     		_title = cha.getTitle();
     	}
+        if (_summon.getTemplate().npcId == 16025)
+        {
+			
+        	if(_summon.getLevel() >= 60 && _summon.getLevel() < 65){        		
+        		form = 1;
+        	}else if(_summon.getLevel() >= 65){ 
+        		form = 2;
+        	}
+        }
 
         _x = _activeChar.getX();
 		_y = _activeChar.getY();
@@ -404,7 +416,12 @@ public final class NpcInfo extends L2GameServerPacket
 		writeC(_isSummoned ? 2 : 0); // invisible ?? 0=false  1=true   2=summoned (only works if model has a summon animation)
 		writeS(_name);
 		writeS(_title);
-		writeD(0); // Title color 0=client default
+		if (_activeChar instanceof L2Summon){  
+			writeD(0x01);// Title color 0=client default  
+		}else{  
+			writeD(0x00);  
+		}  
+
 		writeD(0);
 		writeD(0000);  // hmm karma ??
 
@@ -421,7 +438,7 @@ public final class NpcInfo extends L2GameServerPacket
 		writeD(0x00);  // C4
 		writeD(0x00);  // C6
 		writeD(0x00);
-		writeD(0x00);
+        writeD(form);//CT1.5 Pet form and skills
 	    }
 	}
 

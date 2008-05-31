@@ -87,7 +87,31 @@ public final class RequestPetUseItem extends L2GameClientPacket
 				return;
 			}
             else if (L2PetDataTable.isGreatWolf(pet.getNpcId()) && // Greatwolf
-                    item.getItem().isForWolf())
+                    item.getItem().isForGreatWolf())
+            {
+                useItem(pet, item, activeChar);
+                return;
+            }
+            else if (L2PetDataTable.isWGreatWolf(pet.getNpcId()) && // White Greatwolf
+                    item.getItem().isForGreatWolf())
+            {
+                useItem(pet, item, activeChar);
+                return;
+            }
+            else if (L2PetDataTable.isBlackWolf(pet.getNpcId()) && // Blackwolf
+                    item.getItem().isForGreatWolf())
+            {
+                useItem(pet, item, activeChar);
+                return;
+            }
+            else if (L2PetDataTable.isFenrirWolf(pet.getNpcId()) && // Fenrir
+                    item.getItem().isForGreatWolf())
+            {
+                useItem(pet, item, activeChar);
+                return;
+            }
+            else if (L2PetDataTable.isWFenrirWolf(pet.getNpcId()) && // white fenrir
+                    item.getItem().isForGreatWolf())
             {
                 useItem(pet, item, activeChar);
                 return;
@@ -110,6 +134,12 @@ public final class RequestPetUseItem extends L2GameClientPacket
                 useItem(pet, item, activeChar);
                 return;
             }
+            else if (L2PetDataTable.isImprovedBaby(pet.getNpcId()) && // Improved baby pets (buffalo, cougar, kookaboora)
+                    item.getItem().isForBabyPet())
+            {
+                useItem(pet, item, activeChar);
+                return;
+            }
 			else
 			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.ITEM_NOT_FOR_PETS));
@@ -124,6 +154,26 @@ public final class RequestPetUseItem extends L2GameClientPacket
 				return;
 			}
             if (L2PetDataTable.isGreatWolf(pet.getNpcId()) && L2PetDataTable.isGreatWolfFood(itemId))
+            {
+                feed(activeChar, pet, item);
+                return;
+            }
+            if (L2PetDataTable.isWGreatWolf(pet.getNpcId()) && L2PetDataTable.isWGreatWolfFood(itemId))
+            {
+                feed(activeChar, pet, item);
+                return;
+            }
+            if (L2PetDataTable.isBlackWolf(pet.getNpcId()) && L2PetDataTable.isBlackWolfFood(itemId))
+            {
+                feed(activeChar, pet, item);
+                return;
+            }
+            if (L2PetDataTable.isFenrirWolf(pet.getNpcId()) && L2PetDataTable.isFenrirWolfFood(itemId))
+            {
+                feed(activeChar, pet, item);
+                return;
+            }
+            if (L2PetDataTable.isWFenrirWolf(pet.getNpcId()) && L2PetDataTable.isWFenrirWolfFood(itemId))
             {
                 feed(activeChar, pet, item);
                 return;
@@ -151,6 +201,12 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			else if (L2PetDataTable.isBaby(pet.getNpcId()) && L2PetDataTable.isBabyFood(itemId))
 			{
 				feed(activeChar, pet, item);
+				return;
+			}
+			else if (L2PetDataTable.isImprovedBaby(pet.getNpcId()) && L2PetDataTable.isImprovedBabyFood(itemId))
+			{
+				feed(activeChar, pet, item);
+				return;
 			}
 		}
 

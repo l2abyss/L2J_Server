@@ -114,7 +114,12 @@ public class PetInfo extends L2GameServerPacket
 		writeD(_summon.getStat().getSp()); //sp
 		writeD(_summon.getLevel());// lvl
 		writeQ(_summon.getStat().getExp());
-		writeQ(_summon.getExpForThisLevel());// 0%  absolute value
+		
+		if (_summon.getExpForThisLevel()>_summon.getStat().getExp())
+			writeQ(_summon.getStat().getExp());// 0%  absolute value
+		else
+			writeQ(_summon.getExpForThisLevel());// 0%  absolute value
+		
 		writeQ(_summon.getExpForNextLevel());// 100% absoulte value
 		writeD(_summon instanceof L2PetInstance ? _summon.getInventory().getTotalWeight() : 0);//weight
 		writeD(_summon.getMaxLoad());//max weight it can carry
@@ -132,18 +137,43 @@ public class PetInfo extends L2GameServerPacket
 		writeD(0);//c2  abnormal visual effect... bleed=1; poison=2; poison & bleed=3; flame=4;
 		int npcId = _summon.getTemplate().npcId;
 
-        if ((npcId >= 12526 && npcId <= 12528) || (npcId == 16030)) //  16025  16030 CT1 Great Wolf
+        if ((npcId >= 12526 && npcId <= 12528) || (npcId == 16037) || (npcId == 16041) || (npcId == 16042)) //  16041  16042 CT1.5 Fenrir
 			writeH(1);//c2    ride button
 		else
 			writeH(0);
 
         writeC(0); // c2
 
+
+        
         // Following all added in C4.
         writeH(0); // ??
         writeC(0); // team aura (1 = blue, 2 = red)
 		writeD(_summon.getSoulShotsPerHit()); // How many soulshots this servitor uses per hit
         writeD(_summon.getSpiritShotsPerHit()); // How many spiritshots this servitor uses per hit
+        
+        int form = 0;
+        if (npcId == 16041 || npcId == 16042)
+        {
+        	if(_summon.getLevel() >= 75 && _summon.getLevel() < 80){ 
+        		form = 1;
+        	}else if(_summon.getLevel() >= 80 && _summon.getLevel() < 85){ 
+        		form = 2;
+        	}else if(_summon.getLevel() >= 85){ 
+        		form = 3;
+        	}
+        }
+        if (npcId == 16025 || npcId == 16037)
+        {
+        	if(_summon.getLevel() >= 60 && _summon.getLevel() < 65){ 
+        		form = 1;
+        	}else if(_summon.getLevel() >= 65 && _summon.getLevel() < 70){ 
+        		form = 2;
+        	}else if(_summon.getLevel() >= 70){ 
+        		form = 3;
+        	}
+        }
+        writeD(form);//CT1.5 Pet form and skills
 	}
 
 	/* (non-Javadoc)

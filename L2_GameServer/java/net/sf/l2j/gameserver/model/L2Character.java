@@ -154,7 +154,9 @@ public abstract class L2Character extends L2Object
 	private boolean _isOverloaded                           = false; // the char is carrying too much
 	private boolean _isParalyzed                            = false;
     private boolean _isDisarmed                             = false;
-	private boolean _isRidingGreatWolf						= false;
+	private boolean _isRidingFenrirWolf						= false;
+	private boolean _isRidingWFenrirWolf					= false;
+	private boolean _isRidingGreatSnowWolf					= false;
 	private boolean _isRidingStrider						= false;
 	private boolean _isPendingRevive                        = false;
 	private boolean _isRooted                               = false; // Cannot move until root timed out
@@ -2147,16 +2149,26 @@ public abstract class L2Character extends L2Object
 	public L2Summon getPet() { return null; }
 
 	/** Return True if the L2Character is riding. */
-	public final boolean isRidingGreatWolf()
+	public final boolean isRidingFenrirWolf()
 	{ 
-		return _isRidingGreatWolf;
+		return _isRidingFenrirWolf;
+	}
+	public final boolean isRidingWFenrirWolf()
+	{ 
+		return _isRidingWFenrirWolf;
+	}
+	public final boolean isRidingGreatSnowWolf()
+	{ 
+		return _isRidingGreatSnowWolf;
 	}
 	public final boolean isRidingStrider()
 	{ 
 		return _isRidingStrider;
 	}
 	/** Set the L2Character riding mode to True. */
-	public final void setIsRidingGreatWolf(boolean mode) { _isRidingGreatWolf = mode; }
+	public final void setIsRidingFenrirWolf(boolean mode) { _isRidingFenrirWolf = mode; }
+	public final void setIsRidingWFenrirWolf(boolean mode) { _isRidingWFenrirWolf = mode; }
+	public final void setIsRidingGreatSnowWolf(boolean mode) { _isRidingGreatSnowWolf = mode; }
 	public final void setIsRidingStrider(boolean mode) { _isRidingStrider = mode; }
 
 	public final boolean isRooted() { return _isRooted; }

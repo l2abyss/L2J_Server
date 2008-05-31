@@ -612,11 +612,22 @@ public class CharStat
 			val += Config.STRIDER_SPEED;
 			return val;
 		}
-		if (_activeChar.isRidingGreatWolf())
+		if (_activeChar.isRidingFenrirWolf())
 		{
-			val += Config.GREAT_WOLF_SPEED;
+			val += Config.FENRIR_SPEED;
 			return val;
 		}
+		if (_activeChar.isRidingWFenrirWolf())
+		{
+			val += Config.SNOW_FENRIR_SPEED;
+			return val;
+		}
+		if (_activeChar.isRidingGreatSnowWolf())
+		{
+			val += Config.GREAT_SNOW_WOLF_SPEED;
+			return val;
+		}
+
 		// TODO: check if sharks/fish should be affected ;)
 		if (_activeChar.isInsideZone(L2Character.ZONE_WATER))
 			val /= 2;

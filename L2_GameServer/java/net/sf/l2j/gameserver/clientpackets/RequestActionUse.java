@@ -477,6 +477,21 @@ public final class RequestActionUse extends L2GameClientPacket
                 if (!(target instanceof L2DoorInstance))
                     useSkill(5111);
                 break;
+            case 1041: // Great Wolf - Bite Attack
+                useSkill(5442);
+                break;
+            case 1042: // Great Wolf - Maul
+                useSkill(5444);
+                break;
+            case 1043: // Great Wolf - Cry of the Wolf
+                useSkill(5443);
+                break;
+            case 1044: // Great Wolf - Awakening
+                useSkill(5445);
+                break;  
+            case 1045: // Great Wolf - Howl
+                useSkill(5584);
+                break;     
             default:
                 _log.warning(activeChar.getName()+": unhandled action type "+_actionId);
         }
