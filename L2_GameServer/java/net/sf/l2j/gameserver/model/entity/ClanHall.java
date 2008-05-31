@@ -122,7 +122,7 @@ public class ClanHall
                 {
                 	if(_isFree)
                 		return;
-                	if(ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().getAdena() >= _fee)
+                	if(ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().getAdena() >= _fee || !_cwh)
                 	{
                         int fee = _fee;
                         boolean newfc = true;
@@ -138,9 +138,11 @@ public class ClanHall
                 		setEndTime(System.currentTimeMillis()+getRate());
                 		dbSave(newfc);
 						if (_cwh)
+						{
                 			ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CH_function_fee", 57, fee, null, null);
-                		if (Config.DEBUG)
-                        	_log.warning("deducted "+fee+" adena from "+getName()+" owner's cwh for function id : "+getType());
+                			if (Config.DEBUG)
+                				_log.warning("deducted "+fee+" adena from "+getName()+" owner's cwh for function id : "+getType());
+						}
                         ThreadPoolManager.getInstance().scheduleGeneral(new FunctionTask(true), getRate());
                 	}else
                 		removeFunction(getType());

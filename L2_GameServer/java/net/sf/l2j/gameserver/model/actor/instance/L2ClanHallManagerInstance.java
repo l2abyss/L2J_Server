@@ -170,7 +170,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                         html.setFile("data/html/clanHallManager/chamberlain-nac.htm");
                     else{
                     	html.setFile("data/html/clanHallManager/support"+getClanHall().getFunction(ClanHall.FUNC_SUPPORT).getLvl()+".htm");
-                    	html.replace("%mp%", String.valueOf(getCurrentMp()));
+                    	html.replace("%mp%", String.valueOf((int)getCurrentMp()));
                     }
                     sendHtmlMessage(player, html);
                 }
@@ -1271,7 +1271,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                         	{
                         		NpcHtmlMessage html = new NpcHtmlMessage(1);
                         		html.setFile("data/html/clanHallManager/support-no_mana.htm");
-                                html.replace("%mp%", String.valueOf(getCurrentMp()));
+                                html.replace("%mp%", String.valueOf((int)getCurrentMp()));
                                 sendHtmlMessage(player, html);
                                 return;
                         	}
@@ -1282,7 +1282,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                         if(getClanHall().getFunction(ClanHall.FUNC_SUPPORT).getLvl() == 0)
                         	return;
                         html.setFile("data/html/clanHallManager/support-done.htm");
-                        html.replace("%mp%", String.valueOf(getCurrentMp()));
+                        html.replace("%mp%", String.valueOf((int)getCurrentMp()));
                         sendHtmlMessage(player, html);
                     }
                     catch (Exception e)
@@ -1310,7 +1310,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
             	if(getClanHall().getFunction(ClanHall.FUNC_SUPPORT).getLvl() == 0) 
             		return; 
             	html.setFile("data/html/clanHallManager/support" + getClanHall().getFunction(ClanHall.FUNC_SUPPORT).getLvl()+".htm"); 
-            	html.replace("%mp%", String.valueOf(getStatus().getCurrentMp())); 
+            	html.replace("%mp%", String.valueOf((int)getStatus().getCurrentMp())); 
             	sendHtmlMessage(player, html); 
             }
             else if (actualCommand.equalsIgnoreCase("goto"))

@@ -256,7 +256,40 @@ public final class Config
     /** ************************************************** **/
 	/** ClanHall Settings -End                             **/
 	/** ************************************************** **/
-	
+
+    /** ************************************************** **/
+	/** Castle Settings -Begin                           **/
+	/** ************************************************** **/
+
+    public static long 		CS_TELE_FEE_RATIO;
+    public static int 		CS_TELE1_FEE;
+    public static int 		CS_TELE2_FEE;
+    public static long 		CS_MPREG_FEE_RATIO;
+    public static int 		CS_MPREG1_FEE;
+    public static int 		CS_MPREG2_FEE;
+    public static int 		CS_MPREG3_FEE;
+    public static int 		CS_MPREG4_FEE;
+    public static long 		CS_HPREG_FEE_RATIO;
+    public static int 		CS_HPREG1_FEE;
+    public static int 		CS_HPREG2_FEE;
+    public static int 		CS_HPREG3_FEE;
+    public static int 		CS_HPREG4_FEE;
+    public static int 		CS_HPREG5_FEE;
+    public static long 		CS_EXPREG_FEE_RATIO;
+    public static int 		CS_EXPREG1_FEE;
+    public static int 		CS_EXPREG2_FEE;
+    public static int 		CS_EXPREG3_FEE;
+    public static int 		CS_EXPREG4_FEE;
+    public static long 		CS_SUPPORT_FEE_RATIO;
+    public static int 		CS_SUPPORT1_FEE;
+    public static int 		CS_SUPPORT2_FEE;
+    public static int 		CS_SUPPORT3_FEE;
+    public static int 		CS_SUPPORT4_FEE;
+    
+    /** ************************************************** **/
+	/** Castlel Settings -End                             **/
+	/** ************************************************** **/
+
     /** ************************************************** **/
 	/** Feature Settings -Begin                            **/
 	/** ************************************************** **/
@@ -950,6 +983,37 @@ public final class Config
                 CH_FRONT_FEE_RATIO                                	= Long.parseLong(Feature.getProperty("ClanHallFrontPlatformFunctionFeeRatio", "259200000"));
                 CH_FRONT1_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallFrontPlatformFunctionFeeLvl1", "1300"));
                 CH_FRONT2_FEE                                       = Integer.parseInt(Feature.getProperty("ClanHallFrontPlatformFunctionFeeLvl2", "4000"));
+                
+                
+                
+                //
+				CS_TELE_FEE_RATIO                                   = Long.parseLong(Feature.getProperty("CastleTeleportFunctionFeeRatio", "604800000"));
+                CS_TELE1_FEE                                        = Integer.parseInt(Feature.getProperty("CastleTeleportFunctionFeeLvl1", "7000"));
+                CS_TELE2_FEE                                        = Integer.parseInt(Feature.getProperty("CastleTeleportFunctionFeeLvl2", "14000"));
+                CS_SUPPORT_FEE_RATIO                                = Long.parseLong(Feature.getProperty("CastleSupportFunctionFeeRatio", "86400000"));
+                CS_SUPPORT1_FEE                                     = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl1", "7000"));
+                CS_SUPPORT2_FEE                                     = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl2", "21000"));
+                CS_SUPPORT3_FEE                                     = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl3", "37000"));
+                CS_SUPPORT4_FEE                                     = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl4", "52000"));
+                CS_MPREG_FEE_RATIO                                  = Long.parseLong(Feature.getProperty("CastleMpRegenerationFunctionFeeRatio", "86400000"));
+                CS_MPREG1_FEE                                       = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl1", "2000"));
+                CS_MPREG2_FEE                                       = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl2", "6500"));
+                CS_MPREG3_FEE                                       = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl3", "13750"));
+                CS_MPREG4_FEE                                       = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl4", "20000"));
+                CS_HPREG_FEE_RATIO                                  = Long.parseLong(Feature.getProperty("CastleHpRegenerationFunctionFeeRatio", "86400000"));
+                CS_HPREG1_FEE                                       = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl1", "1000"));
+                CS_HPREG2_FEE                                       = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl2", "1500"));
+                CS_HPREG3_FEE                                       = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl3", "2250"));
+                CS_HPREG4_FEE                                      = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl14", "3270"));
+                CS_HPREG5_FEE                                      = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl15", "5166"));
+                CS_EXPREG_FEE_RATIO                                 = Long.parseLong(Feature.getProperty("CastleExpRegenerationFunctionFeeRatio", "86400000"));
+                CS_EXPREG1_FEE                                      = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl1", "9000"));
+                CS_EXPREG2_FEE                                      = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl2", "15000"));
+                CS_EXPREG3_FEE                                      = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl3", "21000"));
+                CS_EXPREG4_FEE                                      = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl4", "30000"));
+                //
+                
+                
 				ALT_GAME_REQUIRE_CASTLE_DAWN    					= Boolean.parseBoolean(Feature.getProperty("AltRequireCastleForDawn", "False"));
                 ALT_GAME_REQUIRE_CLAN_CASTLE    					= Boolean.parseBoolean(Feature.getProperty("AltRequireClanCastle", "False"));
                 ALT_FESTIVAL_MIN_PLAYER         					= Integer.parseInt(Feature.getProperty("AltFestivalMinPlayer", "5"));

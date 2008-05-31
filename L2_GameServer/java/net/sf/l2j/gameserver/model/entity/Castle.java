@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -88,6 +89,134 @@ public class Castle
     private L2Clan _formerOwner				   = null;
     private int _nbArtifact					   = 1;
     private Map<Integer, Integer> _engrave	   = new FastMap<Integer, Integer>();
+    private Map<Integer,CastleFunction> _function;
+
+	/** Castle Functions */
+	public static final int FUNC_TELEPORT = 1;
+	public static final int FUNC_RESTORE_HP = 2;
+	public static final int FUNC_RESTORE_MP = 3;
+	public static final int FUNC_RESTORE_EXP = 4;
+	public static final int FUNC_SUPPORT = 5;
+
+	public class CastleFunction
+	{
+		private int _type;
+		private int _lvl;
+		protected int _fee;
+		protected int _tempFee;
+		private long _rate;
+		private long _endDate;
+		protected boolean _inDebt;
+		public boolean _cwh;
+
+		public CastleFunction(int type, int lvl, int lease, int tempLease, long rate, long time, boolean cwh)
+		{
+			_type = type;
+			_lvl = lvl;
+			_fee = lease;
+			_tempFee = tempLease;
+			_rate = rate;
+			_endDate = time;
+			initializeTask(cwh);
+		}
+
+		public int getType(){ return _type;}
+		public int getLvl(){ return _lvl;}
+		public int getLease(){return _fee;}
+		public long getRate(){return _rate;}
+		public long getEndTime(){ return _endDate;}
+		public void setLvl(int lvl){_lvl = lvl;}
+		public void setLease(int lease){_fee = lease;}
+		public void setEndTime(long time){_endDate = time;}
+
+		private void initializeTask(boolean cwh)
+		{
+			if (getOwnerId() <= 0)
+				return;
+			long currentTime = System.currentTimeMillis();
+			if(_endDate>currentTime)
+				ThreadPoolManager.getInstance().scheduleGeneral(new FunctionTask(cwh),  _endDate-currentTime);
+			else
+				ThreadPoolManager.getInstance().scheduleGeneral(new FunctionTask(cwh),  0);
+		}
+
+		private class FunctionTask implements Runnable
+		{
+			public FunctionTask(boolean cwh)
+			{
+				_cwh = cwh;
+			}
+			public void run()
+			{
+				try
+				{
+					if (getOwnerId() <= 0)
+						return;
+					if(ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().getAdena() >= _fee || !_cwh)
+					{
+						int fee = _fee;
+						boolean newfc = true;
+						if(getEndTime() == 0 || getEndTime() == -1)
+						{
+							if(getEndTime() == -1)
+							{
+								newfc = false;
+								fee = _tempFee;
+							}
+						}else
+							newfc = false;
+						setEndTime(System.currentTimeMillis()+getRate());
+						dbSave(newfc);
+						if (_cwh)
+						{
+							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CS_function_fee", 57, fee, null, null);
+							if (Config.DEBUG)
+								_log.warning("deducted "+fee+" adena from "+getName()+" owner's cwh for function id : "+getType());
+						}
+						ThreadPoolManager.getInstance().scheduleGeneral(new FunctionTask(true), getRate());
+					}else
+						removeFunction(getType());
+				} catch (Throwable t) { }
+			}
+		}
+
+		public void dbSave(boolean newFunction)
+		{
+			java.sql.Connection con = null;
+			try
+			{
+				PreparedStatement statement;
+
+				con = L2DatabaseFactory.getInstance().getConnection();
+				if (newFunction)
+				{
+					statement = con.prepareStatement("INSERT INTO castle_functions (castle_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)");
+					statement.setInt(1, getCastleId());
+					statement.setInt(2, getType());
+					statement.setInt(3, getLvl());
+					statement.setInt(4, getLease());
+					statement.setLong(5, getRate());
+					statement.setLong(6, getEndTime());
+				}
+				else
+				{
+					statement = con.prepareStatement("UPDATE castle_functions SET lvl=?, lease=?, endTime=? WHERE castle_id=? AND type=?");
+					statement.setInt(1, getLvl());
+					statement.setInt(2, getLease());
+					statement.setLong(3, getEndTime());
+					statement.setInt(4, getCastleId());
+					statement.setInt(5, getType());
+				}
+				statement.execute();
+				statement.close();
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "Exception: Castle.updateFunctions(int type, int lvl, int lease, long rate, long time, boolean addNew): " + e.getMessage(),e);
+			}
+			finally {try { con.close(); } catch (Exception e) {}}
+		}
+	}
 
 	// =========================================================
 	// Constructor
@@ -98,10 +227,23 @@ public class Castle
 			_nbArtifact = 2;
         load();
 		loadDoor();
+		_function = new FastMap<Integer,CastleFunction>();
+		if (getOwnerId() != 0)
+		{
+			loadFunctions();
+		}
 	}
 
 	// =========================================================
 	// Method - Public
+
+	/** Return function with id */
+	public CastleFunction getFunction(int type)
+	{
+    	if(_function.get(type) != null)
+        	return _function.get(type);
+        return null;
+	}
 
 	public void Engrave(L2Clan clan, int objId)
 	{
@@ -274,6 +416,9 @@ public class Castle
 	public void removeUpgrade()
 	{
 	    removeDoorUpgrade();
+        for (Map.Entry<Integer, CastleFunction> fc : _function.entrySet())
+        	removeFunction(fc.getKey());
+        _function.clear();
 	}
 
 	// This method updates the castle tax rate
@@ -325,6 +470,9 @@ public class Castle
 			getSiege().midVictory();
 
 		updateClansReputation();
+        for (Map.Entry<Integer, CastleFunction> fc : _function.entrySet())
+        	removeFunction(fc.getKey());
+        _function.clear();
 	}
 
     // This method updates the castle tax rate
@@ -483,6 +631,91 @@ public class Castle
             e.printStackTrace();
         }
         finally {try { con.close(); } catch (Exception e) {}}
+	}
+
+	/** Load All Functions */
+	private void loadFunctions()
+	{
+		java.sql.Connection con = null;
+		try
+		{
+			PreparedStatement statement;
+			ResultSet rs;
+			con = L2DatabaseFactory.getInstance().getConnection();
+			statement = con.prepareStatement("Select * from castle_functions where castle_id = ?");
+			statement.setInt(1, getCastleId());
+			rs = statement.executeQuery();
+			while (rs.next())
+			{
+				_function.put(rs.getInt("type"), new CastleFunction(rs.getInt("type"), rs.getInt("lvl"), rs.getInt("lease"),0, rs.getLong("rate"), rs.getLong("endTime"), true));
+			}
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "Exception: Castle.loadFunctions(): " + e.getMessage(),e);
+		}
+		finally {try { con.close(); } catch (Exception e) {}}
+	}
+
+	/** Remove function In List and in DB */
+	public void removeFunction(int functionType)
+	{
+		_function.remove(functionType);
+		java.sql.Connection con = null;
+		try
+		{
+			PreparedStatement statement;
+			con = L2DatabaseFactory.getInstance().getConnection();
+			statement = con.prepareStatement("DELETE FROM castle_functions WHERE castle_id=? AND type=?");
+			statement.setInt(1, getCastleId());
+			statement.setInt(2, functionType);
+			statement.execute();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "Exception: Castle.removeFunctions(int functionType): " + e.getMessage(),e);
+		}
+		finally {try { con.close(); } catch (Exception e) {}}
+	}
+
+	public boolean updateFunctions(L2PcInstance player,int type, int lvl, int lease, long rate, boolean addNew)
+	{
+		if (player == null) 
+			return false;
+		if (Config.DEBUG)
+			_log.warning("Called Castle.updateFunctions(int type, int lvl, int lease, long rate, boolean addNew) Owner : "+getOwnerId());
+		if (lease > 0)
+			if (!player.destroyItemByItemId("Consume", 57, lease, null, true))
+				return false;
+		if (addNew)
+		{
+			_function.put(type,new CastleFunction(type, lvl, lease,0, rate, 0, false));
+		}
+		else
+		{
+			if(lvl == 0 && lease == 0)
+				removeFunction(type);
+			else
+			{
+				int diffLease = lease-_function.get(type).getLease();
+				if (Config.DEBUG)
+					_log.warning("Called Castle.updateFunctions diffLease : "+diffLease);
+				if(diffLease>0)
+				{
+					_function.remove(type);
+					_function.put(type,new CastleFunction(type, lvl, lease,0, rate, -1,false));
+				}
+				else
+	        	{
+					_function.get(type).setLease(lease);
+					_function.get(type).setLvl(lvl);
+					_function.get(type).dbSave(false);
+	        	}
+			}
+		}
+		return true;
 	}
 
 	// This method loads castle door data from database
