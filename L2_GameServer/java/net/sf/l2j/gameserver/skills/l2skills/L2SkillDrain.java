@@ -14,13 +14,16 @@
  */
 package net.sf.l2j.gameserver.skills.l2skills;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
@@ -142,7 +145,7 @@ public class L2SkillDrain extends L2Skill {
                 	if (target.reflectSkill(this))
                 	{
                 		activeChar.stopSkillEffects(getId());
-    					getEffects(null, activeChar);
+    					getEffects((L2Character) null,activeChar);
     					SystemMessage sm = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
 						sm.addSkillName(getId());
 						activeChar.sendPacket(sm);
@@ -180,6 +183,46 @@ public class L2SkillDrain extends L2Skill {
         }
         // cast self effect if any
         getEffectsSelf(activeChar);
+	}
+	public void useCubicSkill(L2CubicInstance activeCubic, L2Object[] targets)
+    {
+		if (Config.DEBUG)
+			_log.info("L2SkillDrain: useCubicSkill()");
+		
+        for(int index = 0;index < targets.length;index++)
+        {
+			L2Character target = (L2Character)targets[index];
+			if (target.isAlikeDead() && getTargetType() != SkillTargetType.TARGET_CORPSE_MOB)
+				continue;
+
+			boolean mcrit = Formulas.getInstance().calcMCrit(activeCubic.getMCriticalHit(target, this));
+			int damage = (int)Formulas.getInstance().calcMagicDam(activeCubic, target, this, mcrit);
+			if (Config.DEBUG)
+    			_log.info("L2SkillDrain: useCubicSkill() -> damage = " + damage);
+			
+			double hpAdd = _absorbAbs + _absorbPart * damage;
+			L2PcInstance owner = activeCubic.getOwner();
+			double hp = ((owner.getCurrentHp() + hpAdd) > owner.getMaxHp() ? owner.getMaxHp() : (owner.getCurrentHp() + hpAdd));
+
+            owner.setCurrentHp(hp); 
+            
+			StatusUpdate suhp = new StatusUpdate(owner.getObjectId()); 
+			suhp.addAttribute(StatusUpdate.CUR_HP, (int)hp); 
+			owner.sendPacket(suhp);
+			
+            // Check to see if we should damage the target
+            if (damage > 0 && (!target.isDead() || getTargetType() != SkillTargetType.TARGET_CORPSE_MOB))
+            {
+    			target.reduceCurrentHp(damage, activeCubic.getOwner());
+                
+                // Manage attack or cast break of the target (calculating rate, sending message...)
+                if (!target.isRaid() && Formulas.getInstance().calcAtkBreak(target, damage)){
+                    target.breakAttack();
+                    target.breakCast();
+                }
+            	owner.sendDamageMessage(target, damage, mcrit, false, false);
+            }
+		}
 	}
 
 }

@@ -811,6 +811,26 @@ public class TvTEvent {
 	}
 
 	/**
+	 * Returns the team of a player, if player is not participant it returns null <br><br>
+	 *
+	 * @param player objectId as Integer<br>
+	 * @return TvTEventTeam: team of the given playerObjectId, if not in event null <br>
+	 */
+	public static TvTEventTeam getParticipantTeam( int playerObjectId ) {
+		return ( _teams[ 0 ].containsPlayer( playerObjectId ) ? _teams[ 0 ] : ( _teams[ 1 ].containsPlayer( playerObjectId ) ? _teams[ 1 ] : null ) );
+	}
+
+	/**
+	 * Returns the enemy team of a player, if player is not participant it returns null <br><br>
+	 *
+	 * @param player objectId as Integer<br>
+	 * @return TvTEventTeam: enemy team of the given playerObjectId, if not in event null <br>
+	 */
+	public static TvTEventTeam getParticipantEnemyTeam( int playerObjectId ) {
+		return ( _teams[ 0 ].containsPlayer( playerObjectId ) ? _teams[ 1 ] : ( _teams[ 1 ].containsPlayer( playerObjectId ) ? _teams[ 0 ] : null ) );
+	}
+
+	/**
 	 * Returns the team coordinates in which the player is in, if player is not in a team return null<br><br>
 	 *
 	 * @param playerName as String<br>

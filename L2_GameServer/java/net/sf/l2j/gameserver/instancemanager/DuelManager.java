@@ -62,7 +62,10 @@ public class DuelManager
 		return _currentDuelId;
 	}
 
-	private Duel getDuel(int duelId)
+	// =========================================================
+	// Method - Public
+
+	public Duel getDuel(int duelId)
 	{
 		for (FastList.Node<Duel> e = _duels.head(), end = _duels.tail(); (e = e.getNext()) != end;)
 		{
@@ -70,9 +73,6 @@ public class DuelManager
 		}
 		return null;
 	}
-
-	// =========================================================
-	// Method - Public
 
 	public void addDuel(L2PcInstance playerA, L2PcInstance playerB, int partyDuel)
 	{

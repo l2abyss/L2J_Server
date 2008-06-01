@@ -64,7 +64,7 @@ public class Blow implements ISkillHandler
 					if (target.reflectSkill(skill))
 					{
 						activeChar.stopSkillEffects(skill.getId());
-						skill.getEffects(null, activeChar);
+						skill.getEffects((L2Character) null, activeChar);
 						SystemMessage sm = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
 						sm.addSkillName(skill.getId());
 						activeChar.sendPacket(sm);

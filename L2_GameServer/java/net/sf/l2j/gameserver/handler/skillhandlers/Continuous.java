@@ -28,6 +28,7 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2ClanHallManagerInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -269,7 +270,41 @@ public class Continuous implements ISkillHandler
         }
         skill.getEffectsSelf(activeChar);
 	}
-
+	
+		public void useCubicSkill(L2CubicInstance activeCubic, L2Skill skill, L2Object[] targets)
+		{
+			L2Character target = null;
+			
+	        for(int index = 0;index < targets.length;index++)
+	        {
+	            target = (L2Character)targets[index];
+	            
+				if (skill.isOffensive())
+				{
+					boolean acted = Formulas.getInstance().calcCubicSkillSuccess(activeCubic, target, skill);
+					if (!acted) {
+						activeCubic.getOwner().sendPacket(new SystemMessage(SystemMessageId.ATTACK_FAILED));
+						continue;
+					}
+					
+				}
+				
+				// if this is a debuff let the duel manager know about it
+				// so the debuff can be removed after the duel
+				// (player & target must be in the same duel)
+				if (target instanceof L2PcInstance && ((L2PcInstance)target).isInDuel() &&
+						skill.getSkillType() == L2Skill.SkillType.DEBUFF &&
+						activeCubic.getOwner().getDuelId() == ((L2PcInstance)target).getDuelId())
+				{
+					DuelManager dm = DuelManager.getInstance();
+					for (L2Effect debuff : skill.getEffects(activeCubic.getOwner(), target))
+						if (debuff != null) dm.onBuff(((L2PcInstance)target), debuff);
+				}
+				else
+					skill.getEffects(activeCubic, target);
+	        }
+		}
+		
 	public SkillType[] getSkillIds()
 	{
 		return SKILL_IDS;

@@ -28,6 +28,7 @@ import net.sf.l2j.gameserver.model.L2SiegeClan;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.L2Skill.SkillType;
+import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -1419,6 +1420,58 @@ public final class Formulas
 		}
 		return damage;
 	}
+	
+	public final double calcMagicDam(L2CubicInstance attacker, L2Character target, L2Skill skill, boolean mcrit)
+	{
+		if (target.isInvul()) return 0;
+		
+		double mAtk = attacker.getMAtk();
+		double mDef = target.getMDef(attacker.getOwner(), skill);
+		
+		double damage = 91 * Math.sqrt(mAtk) / mDef * skill.getPower() * calcSkillVulnerability(target, skill);
+		L2PcInstance owner = attacker.getOwner();
+		
+		// Failure calculation
+		if (Config.ALT_GAME_MAGICFAILURES && !calcMagicSuccess(owner, target, skill))
+		{			
+			if (calcMagicSuccess(owner, target, skill) && (target.getLevel() - skill.getMagicLevel()) <= 9){
+				if (skill.getSkillType() == SkillType.DRAIN)
+					owner.sendPacket(new SystemMessage(SystemMessageId.DRAIN_HALF_SUCCESFUL));
+				else
+					owner.sendPacket(new SystemMessage(SystemMessageId.ATTACK_FAILED));
+	
+				damage /= 2;
+			}
+			else
+			{
+				SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
+				sm.addString(target.getName());
+				sm.addSkillName(skill.getId());
+				owner.sendPacket(sm);
+	
+				damage = 1;
+			}
+		
+			if (target instanceof L2PcInstance)
+			{
+				if (skill.getSkillType() == SkillType.DRAIN)
+				{
+					SystemMessage sm = new SystemMessage(SystemMessageId.RESISTED_S1_DRAIN);
+					sm.addString(owner.getName());
+					target.sendPacket(sm);
+				}
+				else
+				{
+					SystemMessage sm = new SystemMessage(SystemMessageId.RESISTED_S1_MAGIC);
+					sm.addString(owner.getName());
+					target.sendPacket(sm);
+				}
+			}
+		}
+		else if (mcrit) damage *= 4;
+		
+		return damage;
+	}
 
 	/** Returns true in case of critical hit */
 	public final boolean calcCrit(double rate)
@@ -1894,6 +1947,66 @@ public final class Formulas
 				+ ", "
 				+ ((int) (Math.pow((double) attacker.getMAtk(target, skill)
 					/ target.getMDef(attacker, skill), 0.2) * 100) - 100) + ", " + ssmodifier + " ==> "
+				+ rate);
+		return (Rnd.get(100) < rate);
+	}
+	
+	public boolean calcCubicSkillSuccess(L2CubicInstance attacker, L2Character target, L2Skill skill)
+	{
+		SkillType type = skill.getSkillType();
+		
+		if (target.isRaid()
+				&& (type == SkillType.CONFUSION || type == SkillType.MUTE || type == SkillType.PARALYZE
+					|| type == SkillType.ROOT || type == SkillType.FEAR || type == SkillType.SLEEP
+					|| type == SkillType.STUN || type == SkillType.DEBUFF || type == SkillType.AGGDEBUFF))
+				return false; // these skills should not work on RaidBoss
+		
+		// if target reflect this skill then the effect will fail
+		if (target.reflectSkill(skill)) return false;
+		
+		int value = (int) skill.getPower();
+		int lvlDepend = skill.getLevelDepend();
+		
+		if (type == SkillType.PDAM || type == SkillType.MDAM) // For additional effects on PDAM skills (like STUN, SHOCK,...)
+		{
+			value = skill.getEffectPower();
+			type = skill.getEffectType();
+		}
+
+		// TODO: Temporary fix for skills with Power = 0 or LevelDepend not set
+		if (value == 0) value = (type == SkillType.PARALYZE) ? 50 : (type == SkillType.FEAR) ? 40 : 80;
+		if (lvlDepend == 0) lvlDepend = (type == SkillType.PARALYZE || type == SkillType.FEAR) ? 1 : 2;
+
+		// TODO: Temporary fix for NPC skills with MagicLevel not set
+		// int lvlmodifier = (skill.getMagicLevel() - target.getLevel()) * lvlDepend;
+		int lvlmodifier = ((skill.getMagicLevel() > 0 ? skill.getMagicLevel() : attacker.getOwner().getLevel()) - target.getLevel())
+		* lvlDepend;
+		double statmodifier = calcSkillStatModifier(type, target);
+		double resmodifier = calcSkillVulnerability(target, skill);
+		
+		int rate = (int) ((value * statmodifier + lvlmodifier) * resmodifier);
+		if (skill.isMagic())
+			rate += (int) (Math.pow((double) attacker.getMAtk() / target.getMDef(attacker.getOwner(), skill), 0.2) * 100) - 100;
+		
+		if (rate > 99) 
+			rate = 99;
+		else 
+			if (rate < 1) 
+				rate = 1;
+		
+		if (Config.DEVELOPER)
+			_log.info(skill.getName()
+				+ ": "
+				+ value
+				+ ", "
+				+ statmodifier
+				+ ", "
+				+ lvlmodifier
+				+ ", "
+				+ resmodifier
+				+ ", "
+				+ ((int) (Math.pow((double) attacker.getMAtk()
+					/ target.getMDef(attacker.getOwner(), skill), 0.2) * 100) - 100) + " ==> "
 				+ rate);
 		return (Rnd.get(100) < rate);
 	}

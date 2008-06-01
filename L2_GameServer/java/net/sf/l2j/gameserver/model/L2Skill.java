@@ -28,6 +28,7 @@ import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
 import net.sf.l2j.gameserver.model.actor.instance.L2ArtefactInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2ChestInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -426,6 +427,10 @@ public abstract class L2Skill
     
     private final boolean _isCubic;
 
+    // cubic AI
+    private final int _activationtime;
+    private final int _activationchance;
+
     // item consume time in milliseconds
     private final int _itemConsumeTime;
     private final int _castRange;
@@ -517,7 +522,7 @@ public abstract class L2Skill
     protected FuncTemplate[] _funcTemplates;
     protected EffectTemplate[] _effectTemplates;
     protected EffectTemplate[] _effectTemplatesSelf;
-
+    
     // Flying support
     private final String _flyType;
     private final int _flyRadius;
@@ -553,6 +558,9 @@ public abstract class L2Skill
         
         _isCubic    = set.getBool("isCubic", false);
 
+        _activationtime= set.getInteger("activationtime", 8);
+        _activationchance= set.getInteger("activationchance", 30);
+        
         _castRange = set.getInteger("castRange", 0);
         _effectRange = set.getInteger("effectRange", -1);
         
@@ -995,6 +1003,22 @@ public abstract class L2Skill
         return _itemConsumeTime;
     }
 
+    /**
+     * @return Returns the activation time for a cubic.
+     */
+    public final int getActivationTime()
+    {
+        return _activationtime;
+    }
+
+    /**
+     * @return Returns the activation chance for a cubic.
+     */
+    public final int getActivationChance()
+    {
+        return _activationchance;
+    }
+    
     /**
      * @return Returns the level.
      */
@@ -2682,6 +2706,35 @@ public abstract class L2Skill
 
         return effects.toArray(new L2Effect[effects.size()]);
     }
+    
+    public final L2Effect[] getEffects(L2CubicInstance effector, L2Character effected)
+    {
+        if (isPassive()) return _emptyEffectSet;
+
+        if (_effectTemplates == null) 
+        	return _emptyEffectSet;
+        
+        if ((!effector.equals(effected)) && effected.isInvul())
+            return _emptyEffectSet;
+
+
+        List<L2Effect> effects = new FastList<L2Effect>();
+
+        for (EffectTemplate et : _effectTemplates)
+        {
+            Env env = new Env();
+            env.cubic = effector;
+            env.target = effected;
+            env.skill = this;
+            L2Effect e = et.getEffect(env);
+            if (e != null) effects.add(e);
+        }
+
+        if (effects.size() == 0) return _emptyEffectSet;
+
+        return effects.toArray(new L2Effect[effects.size()]);
+    }
+
     public final L2Effect[] getEffectsSelf(L2Character effector)
     {
         if (isPassive()) return _emptyEffectSet;

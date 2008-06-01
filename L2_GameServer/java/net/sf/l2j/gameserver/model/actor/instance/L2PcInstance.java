@@ -304,9 +304,6 @@ public final class L2PcInstance extends L2PlayableInstance
 
 			// cancel the recent fake-death protection instantly if the player attacks or casts spells
 			getPlayer().setRecentFakeDeath(false);
-			for (L2CubicInstance cubic : getCubics().values())
-				if (cubic.getId() != L2CubicInstance.LIFE_CUBIC)
-					cubic.doAction(target);
 		}
 
 		@Override
@@ -316,23 +313,6 @@ public final class L2PcInstance extends L2PlayableInstance
 
 			// cancel the recent fake-death protection instantly if the player attacks or casts spells
 			getPlayer().setRecentFakeDeath(false);
-			if(skill == null) return;
-			if(!skill.isOffensive()) return;
-			switch (skill.getTargetType())
-			{
-				case TARGET_GROUND:
-					return;
-				default:
-				{
-					L2Object mainTarget = skill.getFirstOfTargetList(L2PcInstance.this);
-					if (!(mainTarget instanceof L2Character))
-						return;
-					for (L2CubicInstance cubic : getCubics().values())
-						if (cubic.getId() != L2CubicInstance.LIFE_CUBIC)
-							cubic.doAction((L2Character)mainTarget);
-				}
-				break;
-			}
 		}
 	}
 
@@ -8256,9 +8236,12 @@ public final class L2PcInstance extends L2PlayableInstance
 	/**
 	 * Add a L2CubicInstance to the L2PcInstance _cubics.<BR><BR>
 	 */
-	public void addCubic(int id, int level)
+	public void addCubic(int id, int level, double matk, int activationtime, int activationchance)
 	{
-		L2CubicInstance cubic = new L2CubicInstance(this, id, level);
+		if (Config.DEBUG)
+			_log.info("L2PcInstance(" + getName() + "): addCubic(" + id + "|" + level + "|" + matk + ")");
+		L2CubicInstance cubic = new L2CubicInstance(this, id, level, (int) matk, activationtime, activationchance);
+
 		_cubics.put(id, cubic);
 	}
 

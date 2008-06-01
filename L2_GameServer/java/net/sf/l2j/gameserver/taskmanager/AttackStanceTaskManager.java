@@ -27,6 +27,9 @@ import java.util.logging.Logger;
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.serverpackets.AutoAttackStop;
 
 /**
@@ -59,6 +62,18 @@ public class AttackStanceTaskManager
     public void addAttackStanceTask(L2Character actor)
     {
         _attackStanceTasks.put(actor, System.currentTimeMillis());
+        if (actor instanceof L2Summon)
+        {
+        	L2Summon summon = (L2Summon) actor;
+        	actor = summon.getOwner();
+        }
+        if (actor instanceof L2PcInstance)
+        {
+        	L2PcInstance player = (L2PcInstance) actor;
+        	for (L2CubicInstance cubic : player.getCubics().values())
+				if (cubic.getId() != L2CubicInstance.LIFE_CUBIC)
+					cubic.doAction();
+        }
     }
 
     public void removeAttackStanceTask(L2Character actor)

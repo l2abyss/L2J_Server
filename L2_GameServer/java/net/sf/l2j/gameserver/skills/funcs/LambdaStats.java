@@ -28,6 +28,7 @@ public final class LambdaStats extends Lambda {
 	public enum StatsType
 	{
 		PLAYER_LEVEL,
+		CUBIC_LEVEL,
 		TARGET_LEVEL,
 		PLAYER_MAX_HP,
 		PLAYER_MAX_MP
@@ -47,6 +48,10 @@ public final class LambdaStats extends Lambda {
 			if (env.player == null)
 				return 1;
 			return env.player.getLevel();
+		case CUBIC_LEVEL:
+			if(env.cubic == null)
+				return 1;
+			return env.cubic.getOwner().getLevel();
 		case TARGET_LEVEL:
 			if (env.target == null)
 				return 1;

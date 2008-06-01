@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlEvent;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2AttackableAI;
@@ -31,6 +32,7 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.L2Skill.SkillType;
+import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeSummonInstance;
@@ -632,7 +634,86 @@ public class Disablers implements ISkillHandler
         skill.getEffectsSelf(activeChar);
 
     } //end void
+    
+    public void useCubicSkill(L2CubicInstance activeCubic, L2Skill skill, L2Object[] targets){
+    	if (Config.DEBUG)
+			_log.info("Disablers: useCubicSkill()");
+    	
+    	SkillType type = skill.getSkillType();
 
+        for (int index = 0; index < targets.length; index++)
+        {
+            // Get a target
+            if (!(targets[index] instanceof L2Character)) continue;
+
+            L2Character target = (L2Character) targets[index];
+            
+            if (target == null || target.isDead()) //bypass if target is null or dead
+        		continue;
+          
+            switch (type)
+            {
+	            case STUN:
+	                {
+	                    if (Formulas.getInstance().calcCubicSkillSuccess(activeCubic, target, skill)){                    
+	                    	skill.getEffects(activeCubic, target);
+	                    	SystemMessage sm = new SystemMessage(SystemMessageId.S1_SUCCEEDED);
+	                        sm.addString(skill.getName());
+	                        activeCubic.getOwner().sendPacket(sm);
+	                        if (Config.DEBUG)
+                    			_log.info("Disablers: useCubicSkill() -> success");
+	                    }
+	                    else
+	                    {
+	                        SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
+	                        sm.addString(target.getName());
+	                        sm.addSkillName(skill.getDisplayId());
+	                        activeCubic.getOwner().sendPacket(sm);
+	                        if (Config.DEBUG)
+                    			_log.info("Disablers: useCubicSkill() -> failed");
+	                    }
+	                    break;
+	                }
+                case PARALYZE: //use same as root for now
+                {
+                    if (Formulas.getInstance().calcCubicSkillSuccess(activeCubic, target, skill)){
+                    	skill.getEffects(activeCubic, target);
+
+                        SystemMessage sm = new SystemMessage(SystemMessageId.S1_SUCCEEDED);
+                        sm.addString(skill.getName());
+                        activeCubic.getOwner().sendPacket(sm);
+                        if (Config.DEBUG)
+                			_log.info("Disablers: useCubicSkill() -> success");
+                    }
+                    else
+                    {
+                        SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
+                        sm.addString(target.getName());
+                        sm.addSkillName(skill.getDisplayId());
+                        activeCubic.getOwner().sendPacket(sm);
+                        if (Config.DEBUG)
+                			_log.info("Disablers: useCubicSkill() -> failed");
+                    }
+                    break;
+                }
+                case CANCEL_DEBUFF:
+                {
+                	L2Effect[] effects = target.getAllEffects();
+                	
+                	if (effects.length == 0 || effects == null) break;
+                	
+                	for (L2Effect e : effects)
+                	{
+                		if (e.getSkill().isDebuff())
+                			e.exit();
+                	}
+                	
+                	break;
+                }
+            }//end switch
+        }//end for        
+    }
+    
     private void negateEffect(L2Character target, SkillType type, double power) {
     	negateEffect(target, type, power, 0);
     }
