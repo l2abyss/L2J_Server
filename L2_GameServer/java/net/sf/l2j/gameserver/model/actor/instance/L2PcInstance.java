@@ -7598,7 +7598,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 
 		// Check if the player use "Fake Death" skill
-		if (isAlikeDead() && !skill.isPotion())
+		if (isAlikeDead() && !skill.isPotion() && skill.getSkillType() != L2Skill.SkillType.FAKE_DEATH)
 		{
 			// Send a Server->Client packet ActionFailed to the L2PcInstance
 			sendPacket(ActionFailed.STATIC_PACKET);
@@ -7606,7 +7606,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 
 		// Check if the caster is sitting
-		if (isSitting() && !skill.isPotion())
+		if (isSitting() && !skill.isPotion() && !skill.isToggle())
 		{
 			// Send a System Message to the caster
 			sendPacket(new SystemMessage(SystemMessageId.CANT_MOVE_SITTING));
