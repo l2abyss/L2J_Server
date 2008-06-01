@@ -5984,7 +5984,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	{
 		if (level == AccessLevels._masterAccessLevelNum)
 		{
-			_log.warning( "Setted master access level for character " + getName() + "! Just a warning to be carefull ;)" );
+			_log.warning( "Master access level set for character " + getName() + "! Just a warning to be careful ;)" );
 			_accessLevel = AccessLevels._masterAccessLevel;
 		}
 		else if (level == AccessLevels._userAccessLevelNum)
