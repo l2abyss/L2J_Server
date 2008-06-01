@@ -577,15 +577,14 @@ public class TvTEvent {
 	 * @param playerName as String<br>
 	 * @return boolean: true if player is allowed to use scroll, otherwise false<br>
 	 */
-	public static boolean onScrollUse( int playerObjectId ) {
-		if ( !isStarted() ) {
+	public static boolean onScrollUse(int playerObjectId)
+	{
+		if (!isStarted())
 			return true;
-		}
-
-		if ( isPlayerParticipant( playerObjectId ) && !Config.TVT_EVENT_POTIONS_ALLOWED ) {
+		
+		if (isPlayerParticipant(playerObjectId) && !Config.TVT_EVENT_SCROLL_ALLOWED)
 			return false;
-		}
-
+		
 		return true;
 	}
 
@@ -595,15 +594,14 @@ public class TvTEvent {
 	 * @param playerName as String<br>
 	 * @return boolean: true if player is allowed to use potions, otherwise false<br>
 	 */
-	public static boolean onPotionUse( int playerObjectId ) {
-		if ( !isStarted() ) {
+	public static boolean onPotionUse(int playerObjectId)
+	{
+		if (!isStarted())
 			return true;
-		}
-
-		if ( isPlayerParticipant( playerObjectId ) && !Config.TVT_EVENT_POTIONS_ALLOWED ) {
+		
+		if (isPlayerParticipant(playerObjectId) && !Config.TVT_EVENT_POTIONS_ALLOWED)
 			return false;
-		}
-
+		
 		return true;
 	}
 
