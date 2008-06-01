@@ -18,7 +18,6 @@ import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_FOLLOW;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -27,7 +26,6 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
-import javolution.util.FastTable;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.GeoData;
@@ -2491,16 +2489,7 @@ public abstract class L2Character extends L2Object
 	/** Map 32 bits (0x0000) containing all abnormal effect in progress */
 	private int _AbnormalEffects;
 
-	/**
-	 * FastTable containing all active skills effects in progress of a L2Character.
-	 */
-	private FastTable<L2Effect> _effects;
-
-	/** The table containing the List of all stacked effect in progress for each Stack group Identifier */
-	protected Map<String, List<L2Effect>> _stackedEffects;
-
-	/** Table EMPTY_EFFECTS shared by all L2Character without effects in progress */
-	private static final L2Effect[] EMPTY_EFFECTS = new L2Effect[0];
+	private CharEffectList _effects = new CharEffectList(this);
 
 	public static final int ABNORMAL_EFFECT_BLEEDING		= 0x000001;
 	public static final int ABNORMAL_EFFECT_POISON 			= 0x000002;
@@ -2554,210 +2543,10 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void addEffect(L2Effect newEffect)
 	{
-		if(newEffect == null) return;
+		_effects.addEffect(newEffect);
 
-		synchronized (this)
-		{
-			if (_effects == null)
-				_effects = new FastTable<L2Effect>();
-
-			if (_stackedEffects == null)
-				_stackedEffects = new FastMap<String, List<L2Effect>>();
-		}
-		synchronized(_effects)
-		{
-			L2Effect tempEffect, tempEffect2;
-
-			// Check for same effects
-			for (int i=0; i<_effects.size(); i++)
-			{
-				if (_effects.get(i).getSkill().getId() == newEffect.getSkill().getId()
-						&& _effects.get(i).getEffectType() == newEffect.getEffectType()
-						&& _effects.get(i).getStackOrder() == newEffect.getStackOrder())
-				{
-					if (newEffect.getSkill().getSkillType() == L2Skill.SkillType.BUFF
-							|| newEffect.getEffectType() == L2Effect.EffectType.BUFF)
-					{
-						// renew buffs, exit old (could consider only reschedule and stop new but then effector would be wrong)
-						_effects.get(i).exit();
-					}
-					else
-					{
-						// Started scheduled timer needs to be canceled.
-						newEffect.stopEffectTask();
-						return;
-					}
-				}
-			}
-
-			// Remove first Buff if number of buffs > getMaxBuffCount()
-			L2Skill tempSkill = newEffect.getSkill();
-			if (getBuffCount() > getMaxBuffCount() && !doesStack(tempSkill) && ((
-				tempSkill.getSkillType() == L2Skill.SkillType.BUFF ||
-                tempSkill.getSkillType() == L2Skill.SkillType.REFLECT ||
-                tempSkill.getSkillType() == L2Skill.SkillType.HEAL_PERCENT ||
-                tempSkill.getSkillType() == L2Skill.SkillType.MANAHEAL_PERCENT) &&
-                !tempSkill.isDebuff() &&  !(tempSkill.getId() > 4360
-                		&& tempSkill.getId() < 4367))
-        	)
-			{
-				// if max buffs, no herb effects are used, even if they would replace one old
-				if (newEffect.isHerbEffect()) 
-				{ 
-					newEffect.stopEffectTask(); 
-					return; 
-				}
-				removeFirstBuff(tempSkill.getId());
-			}
-
-			// Add the L2Effect to all effect in progress on the L2Character
-			if (!newEffect.getSkill().isToggle())
-			{
-				int pos=0;
-            	for (int i=0; i<_effects.size(); i++)
-            	{
-            		if (_effects.get(i) != null)
-            		{
-            			int skillid = _effects.get(i).getSkill().getId();
-            			if (!_effects.get(i).getSkill().isToggle() &&
-            				(!(skillid > 4360  && skillid < 4367))
-            				) pos++;
-            		}
-            		else break;
-            	}
-            	_effects.add(pos, newEffect);
-			}
-			else _effects.addLast(newEffect);
-
-			// Check if a stack group is defined for this effect
-			if (newEffect.getStackType().equals("none"))
-			{
-				// Set this L2Effect to In Use
-				newEffect.setInUse(true);
-
-				// Add Funcs of this effect to the Calculator set of the L2Character
-				addStatFuncs(newEffect.getStatFuncs());
-
-				// Update active skills in progress icons on player client
-				updateEffectIcons();
-				return;
-			}
-
-			// Get the list of all stacked effects corresponding to the stack type of the L2Effect to add
-			List<L2Effect> stackQueue = _stackedEffects.get(newEffect.getStackType());
-
-			if (stackQueue == null)
-				stackQueue = new FastList<L2Effect>();
-
-			tempEffect = null;
-			if (stackQueue.size() > 0)
-			{
-				// Get the first stacked effect of the Stack group selected
-				for (int i=0; i<_effects.size(); i++)
-				{
-					if (_effects.get(i) == stackQueue.get(0))
-					{
-						tempEffect = _effects.get(i);
-						break;
-					}
-				}
-			}
-
-			// Add the new effect to the stack group selected at its position
-			stackQueue = effectQueueInsert(newEffect, stackQueue);
-
-			if (stackQueue == null) return;
-
-			// Update the Stack Group table _stackedEffects of the L2Character
-			_stackedEffects.put(newEffect.getStackType(), stackQueue);
-
-			// Get the first stacked effect of the Stack group selected
-			tempEffect2 = null;
-			for (int i=0; i<_effects.size(); i++)
-			{
-				if (_effects.get(i) == stackQueue.get(0))
-				{
-					tempEffect2 = _effects.get(i);
-					break;
-				}
-			}
-
-			if (tempEffect != tempEffect2)
-			{
-				if (tempEffect != null)
-				{
-					// Remove all Func objects corresponding to this stacked effect from the Calculator set of the L2Character
-					removeStatsOwner(tempEffect);
-
-					// Set the L2Effect to Not In Use
-					tempEffect.setInUse(false);
-				}
-				if (tempEffect2 != null)
-				{
-					// Set this L2Effect to In Use
-					tempEffect2.setInUse(true);
-
-					// Add all Func objects corresponding to this stacked effect to the Calculator set of the L2Character
-					addStatFuncs(tempEffect2.getStatFuncs());
-				}
-			}
-		}
 		// Update active skills in progress (In Use and Not In Use because stacked) icons on client
 		updateEffectIcons();
-	}
-
-	/**
-	 * Insert an effect at the specified position in a Stack Group.<BR><BR>
-	 *
-	 * <B><U> Concept</U> :</B><BR><BR>
-	 * Several same effect can't be used on a L2Character at the same time.
-	 * Indeed, effects are not stackable and the last cast will replace the previous in progress.
-	 * More, some effects belong to the same Stack Group (ex WindWald and Haste Potion).
-	 * If 2 effects of a same group are used at the same time on a L2Character, only the more efficient (identified by its priority order) will be preserve.<BR><BR>
-	 *
-	 * @param id The identifier of the stacked effect to add to the Stack Group
-	 * @param stackOrder The position of the effect in the Stack Group
-	 * @param stackQueue The Stack Group in wich the effect must be added
-	 *
-	 */
-	private List<L2Effect> effectQueueInsert(L2Effect newStackedEffect, List<L2Effect> stackQueue)
-	{
-		// Get the L2Effect corresponding to the Effect Identifier from the L2Character _effects
-		if(_effects == null)
-            return null;
-
-		// Create an Iterator to go through the list of stacked effects in progress on the L2Character
-		Iterator<L2Effect> queueIterator = stackQueue.iterator();
-
-		int i = 0;
-		while (queueIterator.hasNext()) {
-            L2Effect cur = queueIterator.next();
-            if (newStackedEffect.getStackOrder() < cur.getStackOrder())
-            	i++;
-            else break;
-        }
-
-		// Add the new effect to the Stack list in function of its position in the Stack group
-		stackQueue.add(i, newStackedEffect);
-
-		// skill.exit() could be used, if the users don't wish to see "effect
-		// removed" always when a timer goes off, even if the buff isn't active
-		// any more (has been replaced). but then check e.g. npc hold and raid petrify.
-		if (Config.EFFECT_CANCELING && !newStackedEffect.isHerbEffect() && stackQueue.size() > 1)
-		{
-			// only keep the current effect, cancel other effects
-			for (int n=0; n<_effects.size(); n++)
-			{
-				if (_effects.get(n) == stackQueue.get(1))
-				{
-					_effects.remove(n);
-					break;
-				}
-			}
-			stackQueue.remove(1);
-		}
-
-		return stackQueue;
 	}
 
 	/**
@@ -2781,86 +2570,8 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void removeEffect(L2Effect effect)
 	{
-		if(effect == null || _effects == null)
-			return;
+		_effects.removeEffect(effect);
 
-		synchronized(_effects)
-		{
-
-			if (effect.getStackType() == "none")
-			{
-				// Remove Func added by this effect from the L2Character Calculator
-				removeStatsOwner(effect);
-			}
-			else
-			{
-				if(_stackedEffects == null)
-					return;
-
-				// Get the list of all stacked effects corresponding to the stack type of the L2Effect to add
-				List<L2Effect> stackQueue = _stackedEffects.get(effect.getStackType());
-
-				if (stackQueue == null || stackQueue.size() < 1)
-					return;
-
-				// Get the Identifier of the first stacked effect of the Stack group selected
-				L2Effect frontEffect = stackQueue.get(0);
-
-				// Remove the effect from the Stack Group
-				boolean removed = stackQueue.remove(effect);
-
-				if (removed)
-				{
-					// Check if the first stacked effect was the effect to remove
-					if (frontEffect == effect)
-					{
-						// Remove all its Func objects from the L2Character calculator set
-						removeStatsOwner(effect);
-
-						// Check if there's another effect in the Stack Group
-						if (stackQueue.size() > 0)
-						{
-							// Add its list of Funcs to the Calculator set of the L2Character
-							for (int i=0; i<_effects.size(); i++)
-							{
-								if (_effects.get(i) == stackQueue.get(0))
-								{
-									// Add its list of Funcs to the Calculator set of the L2Character
-									addStatFuncs(_effects.get(i).getStatFuncs());
-									// Set the effect to In Use
-									_effects.get(i).setInUse(true);
-									break;
-								}
-							}
-						}
-					}
-					if (stackQueue.isEmpty())
-						_stackedEffects.remove(effect.getStackType());
-					else
-						// Update the Stack Group table _stackedEffects of the L2Character
-						_stackedEffects.put(effect.getStackType(), stackQueue);
-				}
-			}
-
-
-			// Remove the active skill L2effect from _effects of the L2Character
-			// The Integer key of _effects is the L2Skill Identifier that has created the effect
-			for (int i=0; i<_effects.size(); i++)
-			{
-				if (_effects.get(i) == effect)
-				{
-					_effects.remove(i);
-					if (this instanceof L2PcInstance)
-					{
-						SystemMessage sm = new SystemMessage(SystemMessageId.EFFECT_S1_DISAPPEARED);
-						sm.addString(effect.getSkill().getName());
-						sendPacket(sm);
-					}
-					break;
-				}
-			}
-
-		}
 		// Update active skills in progress (In Use and Not In Use because stacked) icons on client
 		updateEffectIcons();
 	}
@@ -3020,19 +2731,7 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void stopAllEffects()
 	{
-		// Get all active skills effects in progress on the L2Character
-		L2Effect[] effects = getAllEffects();
-		if (effects == null) return;
-
-		// Go through all active skills effects
-		for (L2Effect e : effects)
-		{
-			if (e != null)
-			{
-				e.exit(true);
-			}
-		}
-
+		_effects.stopAllEffects();
 		if (this instanceof L2PcInstance) ((L2PcInstance)this).updateAndBroadcastStatus(2);
  	}
 
@@ -3070,14 +2769,7 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void stopSkillEffects(int skillId)
 	{
-		// Get all skills effects on the L2Character
-		L2Effect[] effects = getAllEffects();
-		if (effects == null) return;
-
-		for(L2Effect e : effects)
-		{
-			if (e.getSkill().getId() == skillId) e.exit();
-		}
+		_effects.stopSkillEffects(skillId);
 	}
 
 	/**
@@ -3097,18 +2789,7 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void stopEffects(L2Effect.EffectType type)
 	{
-		// Get all active skills effects in progress on the L2Character
-		L2Effect[] effects = getAllEffects();
-
-		if (effects == null) return;
-
-		// Go through all active skills effects
-		for(L2Effect e : effects)
-		{
-			// Stop active skills effects of the selected type
-			if (e.getEffectType() == type)
-				e.exit();
-		}
+		_effects.stopEffects(type);
 	}
 
 	/**
@@ -3404,20 +3085,7 @@ public abstract class L2Character extends L2Object
 	 */
 	public final L2Effect[] getAllEffects()
 	{
-		// Create a copy of the effects set
-		FastTable<L2Effect> effects = _effects;
-
-		// If no effect found, return EMPTY_EFFECTS
-		if (effects == null || effects.isEmpty()) return EMPTY_EFFECTS;
-
-		// Return all effects in progress in a table
-        int ArraySize = effects.size();
-        L2Effect[] effectArray = new L2Effect[ArraySize];
-        for (int i=0; i<ArraySize; i++) {
-            if (i >= effects.size() || effects.get(i) == null) break;
-            effectArray[i] = effects.get(i);
-        }
-		return effectArray;
+		return _effects.getAllEffects();
 	}
 
 	/**
@@ -3433,20 +3101,7 @@ public abstract class L2Character extends L2Object
 	 */
 	public final L2Effect getFirstEffect(int index)
 	{
-		FastTable<L2Effect> effects = _effects;
-		if (effects == null) return null;
-
-		L2Effect e;
-		L2Effect eventNotInUse = null;
-        for (int i=0; i<effects.size(); i++) {
-            e = effects.get(i);
-            if (e.getSkill().getId() == index)
-            {
-            	if (e.getInUse()) return e;
-            	else eventNotInUse = e;
-            }
-        }
-        return eventNotInUse;
+		return _effects.getFirstEffect(index);
 	}
 
 	/**
@@ -3462,28 +3117,14 @@ public abstract class L2Character extends L2Object
 	 */
 	public final L2Effect getFirstEffect(L2Skill skill)
 	{
-		FastTable<L2Effect> effects = _effects;
-		if (effects == null) return null;
-
-        L2Effect e;
-        L2Effect eventNotInUse = null;
-        for (int i=0; i<effects.size(); i++) {
-            e = effects.get(i);
-            if (e.getSkill() == skill)
-            {
-            	if (e.getInUse()) return e;
-            	else eventNotInUse = e;
-            }
-        }
-        return eventNotInUse;
+		return _effects.getFirstEffect(skill);
 	}
 
 	/**
 	 * Return the first L2Effect in progress on the L2Character corresponding to the Effect Type (ex : BUFF, STUN, ROOT...).<BR><BR>
 	 *
 	 * <B><U> Concept</U> :</B><BR><BR>
-	 * All active skills effects in progress on the L2Character are identified in ConcurrentHashMap(Integer,L2Effect) <B>_effects</B>.
-	 * The Integer key of _effects is the L2Skill Identifier that has created the L2Effect.<BR><BR>
+	 * All active skills effects in progress on the L2Character are identified in <B>_effects</B>.
 	 *
 	 * @param tp The Effect Type of skills whose effect must be returned
 	 *
@@ -3492,33 +3133,12 @@ public abstract class L2Character extends L2Object
 	 */
 	public final L2Effect getFirstEffect(L2Effect.EffectType tp)
 	{
-		FastTable<L2Effect> effects = _effects;
-		if (effects == null) return null;
-
-        L2Effect e;
-        L2Effect eventNotInUse = null;
-        for (int i=0; i<effects.size(); i++) {
-            e = effects.get(i);
-            if (e.getEffectType() == tp)
-            {
-            	if (e.getInUse()) return e;
-            	else eventNotInUse = e;
-            }
-        }
-        return eventNotInUse;
+		return _effects.getFirstEffect(tp);
 	}
-	
+
 	public EffectCharge getChargeEffect()
 	{
-	    L2Effect[] effects = getAllEffects();
-	    for (L2Effect e : effects)
-	    {
-	        if (e.getSkill().getSkillType() == L2Skill.SkillType.CHARGE)
-	        {
-	            return (EffectCharge)e;    
-	        }
-	    }
-	    return null;
+		return _effects.getChargeEffect();
 	}
 	// =========================================================
 
@@ -5825,99 +5445,20 @@ public abstract class L2Character extends L2Object
 	}
 
 
-    /**
-     * Return the number of skills of type(Buff, Debuff, HEAL_PERCENT, MANAHEAL_PERCENT) affecting this L2Character.<BR><BR>
-     *
-     * @return The number of Buffs affecting this L2Character
-     */
-    public int getBuffCount()
-    {
-        L2Effect[] effects = getAllEffects();
-        int numBuffs=0;
-        if (effects != null)
-        {
-            for (L2Effect e : effects)
-            {
-                if (e != null)
-                {
-                    if (e.getShowIcon() &&
-                       (e.getSkill().getSkillType() == L2Skill.SkillType.BUFF ||
-                        e.getSkill().getSkillType() == L2Skill.SkillType.REFLECT ||
-                        e.getSkill().getSkillType() == L2Skill.SkillType.HEAL_PERCENT ||
-                        e.getSkill().getSkillType() == L2Skill.SkillType.MANAHEAL_PERCENT) &&
-                      !(e.getSkill().getId() > 4360  &&
-                        e.getSkill().getId() < 4367))
-                    { // 7s buffs
-                        numBuffs++;
-                    }
-                }
-            }
-        }
-        return numBuffs;
-    }
+	/**
+	 * Return the number of buffs affecting this L2Character.<BR><BR>
+	 *
+	 * @return The number of Buffs affecting this L2Character
+	 */
+	public int getBuffCount()
+	{
+		return _effects.getBuffCount();
+	}
 
-    /**
-     * Removes the first Buff of this L2Character.<BR><BR>
-     *
-     * @param preferSkill If != 0 the given skill Id will be removed instead of first
-     */
-    public void removeFirstBuff(int preferSkill) {
-        L2Effect[] effects = getAllEffects();
-        L2Effect removeMe=null;
-        if (effects != null) {
-            for (L2Effect e : effects) {
-                if (e != null) {
-                    if ((e.getSkill().getSkillType() == L2Skill.SkillType.BUFF ||
-                        e.getSkill().getSkillType() == L2Skill.SkillType.DEBUFF ||
-                        e.getSkill().getSkillType() == L2Skill.SkillType.REFLECT ||
-                        e.getSkill().getSkillType() == L2Skill.SkillType.HEAL_PERCENT ||
-                        e.getSkill().getSkillType() == L2Skill.SkillType.MANAHEAL_PERCENT) &&
-                        !(e.getSkill().getId() > 4360  && e.getSkill().getId() < 4367)) {
-                        if (preferSkill == 0) { removeMe=e; break; }
-                        else if (e.getSkill().getId() == preferSkill) { removeMe=e; break; }
-                        else if (removeMe==null) removeMe=e;
-                    }
-                }
-            }
-        }
-        if (removeMe != null) removeMe.exit();
-    }
-
-    public int getDanceCount()
-    {
-    	int danceCount = 0;
-    	L2Effect[] effects = getAllEffects();
-    	for (L2Effect effect : effects)
-		{
-    		if (effect == null)
-    			continue;
-    		if (effect.getSkill().isDance() && effect.getInUse())
-    			danceCount++;
-		}
-    	return danceCount;
-    }
-
-    /**
-     * Checks if the given skill stacks with an existing one.<BR><BR>
-     *
-     * @param checkSkill the skill to be checked
-     *
-     * @return Returns whether or not this skill will stack
-     */
-    public boolean doesStack(L2Skill checkSkill) {
-        if (_effects == null || _effects.size() < 1 ||
-                checkSkill._effectTemplates == null ||
-                checkSkill._effectTemplates.length < 1 ||
-                checkSkill._effectTemplates[0].stackType == null) return false;
-        String stackType=checkSkill._effectTemplates[0].stackType;
-        if (stackType.equals("none")) return false;
-
-        for (int i=0; i<_effects.size(); i++) {
-            if (_effects.get(i).getStackType() != null &&
-                    _effects.get(i).getStackType().equals(stackType)) return true;
-        }
-        return false;
-    }
+	public int getDanceCount()
+	{
+		return _effects.getDanceCount();
+	}
 
 	/**
 	 * Manage the magic skill launching task (MP, HP, Item consummation...) and display the magic skill animation on client.<BR><BR>
