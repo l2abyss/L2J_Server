@@ -241,8 +241,7 @@ public class EnterWorld extends L2GameClientPacket
         sendPacket(new SystemMessage(SystemMessageId.WELCOME_TO_LINEAGE));
 
         // Send client time
-		ClientSetTime cst = new ClientSetTime();
-		sendPacket(cst);
+        sendPacket(ClientSetTime.STATIC_PACKET);
 
         activeChar.sendMessage(getText("VGhpcyBzZXJ2ZXIgdXNlcyBMMkosIGEgcHJvamVjdCBmb3VuZGVkIGJ5IEwyQ2hlZg==\n")); 
         activeChar.sendMessage(getText("YW5kIGRldmVsb3BlZCBieSB0aGUgTDJKIERldiBUZWFtIGF0IGwyanNlcnZlci5jb20=\n")); 
