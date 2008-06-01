@@ -52,6 +52,7 @@ import net.sf.l2j.gameserver.model.entity.TvTEvent;
 import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.serverpackets.ClientSetTime;
 import net.sf.l2j.gameserver.serverpackets.Die;
 import net.sf.l2j.gameserver.serverpackets.EtcStatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.ExBasicActionList;
@@ -238,6 +239,10 @@ public class EnterWorld extends L2GameClientPacket
         sendPacket(new FriendList(activeChar));
         
         sendPacket(new SystemMessage(SystemMessageId.WELCOME_TO_LINEAGE));
+
+        // Send client time
+		ClientSetTime cst = new ClientSetTime();
+		sendPacket(cst);
 
         activeChar.sendMessage(getText("VGhpcyBzZXJ2ZXIgdXNlcyBMMkosIGEgcHJvamVjdCBmb3VuZGVkIGJ5IEwyQ2hlZg==\n")); 
         activeChar.sendMessage(getText("YW5kIGRldmVsb3BlZCBieSB0aGUgTDJKIERldiBUZWFtIGF0IGwyanNlcnZlci5jb20=\n")); 
