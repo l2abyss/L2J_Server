@@ -34,13 +34,13 @@ public class FuncEnchant extends Func
     {
         if (cond != null && !cond.test(env)) 
             return;
-        //
         L2ItemInstance item = (L2ItemInstance) funcOwner;
-        //
-        if (item.getItem().getCrystalType() == L2Item.CRYSTAL_NONE) 
-            return;
   
         int enchant = item.getEnchantLevel();
+        
+        if (enchant <= 0)
+        	return;
+        
         int overenchant = 0;
         
         if (enchant > 3)
@@ -80,7 +80,7 @@ public class FuncEnchant extends Func
         }
 
         
-        if (item.getItemType() instanceof L2WeaponType)
+        if (item.isWeapon())
         {
             L2WeaponType type = (L2WeaponType) item.getItemType();
             
