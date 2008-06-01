@@ -348,9 +348,9 @@ public class AdminEditChar implements IAdminCommandHandler
 				player.sendMessage("Your name color has been changed by a GM");
 				player.broadcastUserInfo();
 			}
-			catch (StringIndexOutOfBoundsException e)
-			{   //Case of empty color
-				activeChar.sendMessage("You need to specify the new color.");
+			catch (Exception e)
+			{   //Case of empty color or invalid hex string
+				activeChar.sendMessage("You need to specify a valid new color.");
 			}
 		}
 		else if (command.startsWith("admin_fullfood"))
