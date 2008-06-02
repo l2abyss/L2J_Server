@@ -444,7 +444,7 @@ public class CharEffectList
 			}
 
 			// Add the L2Effect to all effect in progress on the L2Character
-			if (!newEffect.getSkill().isToggle())
+			if (!newEffect.getSkill().isToggle() && !newEffect.getSkill().isDebuff())
 			{
 				int pos=0;
 				for (L2Effect e : effectList)
@@ -476,6 +476,7 @@ public class CharEffectList
 
 			// Get the list of all stacked effects corresponding to the stack type of the L2Effect to add
 			List<L2Effect> stackQueue = _stackedEffects.get(newEffect.getStackType());
+			L2Effect[] allEffects = getAllEffects();
 
 			if (stackQueue == null)
 				stackQueue = new FastList<L2Effect>();
@@ -484,7 +485,7 @@ public class CharEffectList
 			if (stackQueue.size() > 0)
 			{
 				// Get the first stacked effect of the Stack group selected
-				for (L2Effect e : effectList)
+				for (L2Effect e : allEffects)
 				{
 					if (e == stackQueue.get(0))
 					{
@@ -504,7 +505,7 @@ public class CharEffectList
 
 			// Get the first stacked effect of the Stack group selected
 			tempEffect2 = null;
-			for (L2Effect e : effectList)
+			for (L2Effect e : allEffects)
 			{
 				if (e == stackQueue.get(0))
 				{
