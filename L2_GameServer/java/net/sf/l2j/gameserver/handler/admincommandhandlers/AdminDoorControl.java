@@ -127,7 +127,6 @@ public class AdminDoorControl implements IAdminCommandHandler
         {
             e.printStackTrace();
         }
-		String target = (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target");
         return true;
 	}
 

@@ -17,8 +17,8 @@ package net.sf.l2j.gameserver.handler.admincommandhandlers;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.datatables.AccessLevels;
 import net.sf.l2j.gameserver.GmListTable;
+import net.sf.l2j.gameserver.datatables.AccessLevels;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 

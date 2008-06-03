@@ -75,8 +75,6 @@ public class AdminTeleport implements IAdminCommandHandler
 
     public boolean useAdminCommand(String command, L2PcInstance activeChar)
     {
-		String target = (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target");
-
         if (command.equals("admin_teleto"))
         {
             activeChar.setTeleMode(1);

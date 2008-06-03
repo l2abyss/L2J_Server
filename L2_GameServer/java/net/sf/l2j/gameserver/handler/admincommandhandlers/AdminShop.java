@@ -55,7 +55,6 @@ public class AdminShop implements IAdminCommandHandler {
 		{
 			AdminHelpPage.showHelpPage(activeChar, "gmshops.htm");
 		}
-		String target = (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target");
 		return true;
 	}
 
