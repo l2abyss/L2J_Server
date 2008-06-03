@@ -1203,7 +1203,7 @@ public final class Formulas
 		// defence modifier depending of the attacker weapon
 		L2Weapon weapon = attacker.getActiveWeaponItem();
 		Stats stat = null;
-		if (weapon != null && !attacker.charIsTransformed())
+		if (weapon != null && !attacker.isTransformed())
 		{
 			switch (weapon.getItemType())
 			{

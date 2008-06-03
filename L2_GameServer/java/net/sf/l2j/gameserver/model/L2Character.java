@@ -318,15 +318,8 @@ public abstract class L2Character extends L2Object
 	 * but if the player is not transformed it will return false.
 	 * @return transformation status
 	 */
-	public boolean charIsTransformed()
+	public boolean isTransformed()
 	{
-		if (this instanceof L2PcInstance)
-		{
-			if (((L2PcInstance)this).isTransformed())
-			{
-				return true;
-			}
-		}
 		return false;
 	}
 	
@@ -335,16 +328,9 @@ public abstract class L2Character extends L2Object
 	 * and if they are transformed.
 	 * @return untransform
 	 */
-	public void charUntransform()
+	public void untransform()
 	{
-		if (this instanceof L2PcInstance)
-		{
-			if (((L2PcInstance)this).isTransformed())
-			{
-				((L2PcInstance)this).untransform();
-				return;
-			}
-		}
+		// Just a place holder
 	}
 	
 	/**
@@ -352,15 +338,8 @@ public abstract class L2Character extends L2Object
 	 * but if the player is not GM it will return false.
 	 * @return GM status
 	 */
-	public boolean charIsGM()
+	public boolean isGM()
 	{
-		if (this instanceof L2PcInstance)
-		{
-			if (((L2PcInstance)this).isGM())
-			{
-				return true;
-			}
-		}
 		return false;
 	}
 
@@ -803,7 +782,7 @@ public abstract class L2Character extends L2Object
         }
 
 		// BOW and CROSSBOW checks
-		if (weaponItem != null  && !charIsTransformed())
+		if (weaponItem != null  && !isTransformed())
 		{
 			if (weaponItem.getItemType() == L2WeaponType.BOW)
 			{
@@ -949,7 +928,7 @@ public abstract class L2Character extends L2Object
 		int reuse = calculateReuseTime(target, weaponItem);
 		boolean hitted;
 		// Select the type of attack to start
-		if (weaponItem == null || charIsTransformed())
+		if (weaponItem == null || isTransformed())
 			hitted = doAttackHitSimple(attack, target, timeToHit);
 		else if (weaponItem.getItemType() == L2WeaponType.BOW)
 			hitted = doAttackHitByBow(attack, target, timeAtk, reuse);
@@ -1906,7 +1885,7 @@ public abstract class L2Character extends L2Object
         { 
 			((L2PlayableInstance)this).stopNoblesseBlessing(null); 
 	
-        	charUntransform(); // Untransforms character if transformed.
+        	untransform(); // Untransforms character if transformed.
 			
         	if (((L2PlayableInstance)this).getCharmOfLuck()) //remove Lucky Charm if player have Nobless blessing buff 
 				((L2PlayableInstance)this).stopCharmOfLuck(null); 
@@ -4921,7 +4900,7 @@ public abstract class L2Character extends L2Object
 				L2Weapon weapon = getActiveWeaponItem();
 				boolean isBow = (weapon != null && (weapon.getItemType() == L2WeaponType.BOW || weapon.getItemType() == L2WeaponType.CROSSBOW));
 
-				if (!isBow || charIsTransformed()) // Do not reflect or absorb if weapon is of type bow
+				if (!isBow || isTransformed()) // Do not reflect or absorb if weapon is of type bow
 				{
 					// Reduce HP of the target and calculate reflection damage to reduce HP of attacker if necessary
 					double reflectPercent = target.getStat().calcStat(Stats.REFLECT_DAMAGE_PERCENT,0,null,null);
@@ -5246,7 +5225,7 @@ public abstract class L2Character extends L2Object
     public int calculateTimeBetweenAttacks(L2Character target, L2Weapon weapon)
     {
         double atkSpd = 0;
-        if (weapon !=null && !charIsTransformed())
+        if (weapon !=null && !isTransformed())
         {
 		    switch (weapon.getItemType())
 		    {
@@ -5272,7 +5251,7 @@ public abstract class L2Character extends L2Object
 
     public int calculateReuseTime(L2Character target, L2Weapon weapon)
     {
-        if (weapon == null || charIsTransformed()) return 0;
+        if (weapon == null || isTransformed()) return 0;
 
         int reuse = weapon.getAttackReuseDelay();
         // only bows should continue for now
