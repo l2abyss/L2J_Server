@@ -110,7 +110,7 @@ public class PledgeShowMemberListAll extends L2GameServerPacket
 		writeD(_clan.getLevel());
 		writeD(_clan.getHasCastle());
 		writeD(_clan.getHasHideout());
-		writeD(0x00); // getHasFortress
+		writeD(_clan.getHasFort());
 		writeD(_clan.getRank());
 		writeD(_clan.getReputationScore());
 		writeD(0); //0

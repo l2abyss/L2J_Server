@@ -42,7 +42,8 @@ public class PledgeShowInfoUpdate extends L2GameServerPacket
 		writeD(_clan.getLevel()); //clan level
 		writeD(_clan.getHasCastle());
 		writeD(_clan.getHasHideout());
-		writeD(0); // displayed in the "tree" view (with the clan skills)
+		writeD(_clan.getHasFort());
+		writeD(_clan.getRank());
 		writeD(_clan.getReputationScore()); // clan reputation score
 		writeD(0);
 		writeD(0);
