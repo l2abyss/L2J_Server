@@ -118,7 +118,8 @@ public class GameStatusThread extends Thread
         // read and loop thru list of IPs, compare with newIP
         if ( Config.DEVELOPER ) telnetOutput(2, "");
 
-        try {
+        try 
+        {
             Properties telnetSettings = new Properties();
             InputStream telnetIS = new FileInputStream(new File(Config.TELNET_FILE));
             telnetSettings.load(telnetIS);
@@ -130,8 +131,10 @@ public class GameStatusThread extends Thread
 
             // compare
             String ipToCompare = null;
-            for (String ip:HostList.split(",")) {
-                if ( !result ) {
+            for (String ip:HostList.split(",")) 
+            {
+                if ( !result ) 
+                {
                     ipToCompare = InetAddress.getByName(ip).getHostAddress();
                     if ( clientStringIP.equals(ipToCompare) ) result = true;
                     if ( Config.DEVELOPER ) telnetOutput(3, clientStringIP + " = " + ipToCompare + "("+ip+") = " + result);
