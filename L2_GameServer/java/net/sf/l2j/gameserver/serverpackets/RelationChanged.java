@@ -15,6 +15,8 @@
 package net.sf.l2j.gameserver.serverpackets;
 
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 
 /**
  *
@@ -36,13 +38,22 @@ public final class RelationChanged extends L2GameServerPacket
 
 	private int _objId, _relation, _autoAttackable, _karma, _pvpFlag;
 
-	public RelationChanged(L2PcInstance cha, int relation, boolean autoattackable)
+	public RelationChanged(L2PlayableInstance activeChar, int relation, boolean autoattackable)
 	{
-		_objId = cha.getObjectId();
+		_objId = activeChar.getObjectId();
 		_relation = relation;
 		_autoAttackable = autoattackable ? 1 : 0;
-		_karma = cha.getKarma();
-		_pvpFlag = cha.getPvpFlag();
+
+		if (activeChar instanceof L2PcInstance)
+		{
+			_karma = ((L2PcInstance)activeChar).getKarma();
+			_pvpFlag = ((L2PcInstance)activeChar).getPvpFlag();
+		}
+		else if (activeChar instanceof L2SummonInstance)
+		{
+			_karma = 0;
+			_pvpFlag = ((L2SummonInstance)activeChar).getOwner().getPvpFlag();
+		}
 	}
 
 	/**
@@ -65,7 +76,6 @@ public final class RelationChanged extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		// TODO Auto-generated method stub
 		return _S__CE_RELATIONCHANGED;
 	}
 

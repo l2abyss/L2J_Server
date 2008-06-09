@@ -89,14 +89,12 @@ import net.sf.l2j.gameserver.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.serverpackets.MoveToLocation;
 import net.sf.l2j.gameserver.serverpackets.NpcInfo;
 import net.sf.l2j.gameserver.serverpackets.PetInfo;
-import net.sf.l2j.gameserver.serverpackets.RelationChanged;
 import net.sf.l2j.gameserver.serverpackets.Revive;
 import net.sf.l2j.gameserver.serverpackets.SetupGauge;
 import net.sf.l2j.gameserver.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.StopMove;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.serverpackets.TeleportToLocation;
-import net.sf.l2j.gameserver.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.serverpackets.FlyToLocation.FlyType;
 import net.sf.l2j.gameserver.skills.Calculator;
 import net.sf.l2j.gameserver.skills.Formulas;
@@ -6132,18 +6130,9 @@ public abstract class L2Character extends L2Object
 		_PvPRegTask = null;
 	}
 
-	public void updatePvPFlag(int value) {
-		if (!(this instanceof L2PcInstance))
-			return;
-		L2PcInstance player = (L2PcInstance)this;
-		if (player.getPvpFlag() == value)
-			return;
-		player.setPvpFlag(value);
-
-		player.sendPacket(new UserInfo(player));
-		for (L2PcInstance target : getKnownList().getKnownPlayers().values()) {
-			target.sendPacket(new RelationChanged(player, player.getRelation(player), player.isAutoAttackable(target)));
-		}
+	public void updatePvPFlag(int value)
+	{
+		// Overridden in L2PcInstance
 	}
 
 //	public void checkPvPFlag()

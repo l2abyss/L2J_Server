@@ -1512,6 +1512,25 @@ public final class L2PcInstance extends L2PlayableInstance
 		return _pvpFlag;
 	}
 
+	@Override
+	public void updatePvPFlag(int value)
+	{
+		if (getPvpFlag() == value)
+			return;
+		setPvpFlag(value);
+
+		sendPacket(new UserInfo(this));
+
+		// If this player has a pet update the pets pvp flag as well
+		if (getPet() != null) sendPacket(new RelationChanged(getPet(), getRelation(this), false));
+
+		for (L2PcInstance target : getKnownList().getKnownPlayers().values())
+		{
+			target.sendPacket(new RelationChanged(this, getRelation(this), isAutoAttackable(target)));
+			if (getPet() != null) target.sendPacket(new RelationChanged(getPet(), getRelation(this), isAutoAttackable(target)));
+		}
+	}
+
     public void revalidateZone(boolean force)
     {
     	// Cannot validate if not in  a world region (happens during teleport)
