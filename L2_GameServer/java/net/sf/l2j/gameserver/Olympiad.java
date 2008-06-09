@@ -2003,52 +2003,52 @@ public class Olympiad
 					ExAutoSoulShot atk = new ExAutoSoulShot(itemId, 0);
 					player.sendPacket(atk);
 				}
-				player.sendSkillList(); 
+				player.sendSkillList();
     		  }
     		  catch (Exception e) {}
     		}
     	}
-    	
+
     	protected boolean portPlayersToArena()
-    	{    		
+    	{
     		boolean _playerOneCrash = (_playerOne == null || _playerOneDisconnected);
     		boolean _playerTwoCrash = (_playerTwo == null || _playerTwoDisconnected);
-    		
+
     		if (_playerOneCrash || _playerTwoCrash || _aborted)
     		{
-    			_playerOne=null;  
-    			_playerTwo=null; 
+    			_playerOne=null;
+    			_playerTwo=null;
     			_aborted = true;
     			return false;
     		}
 
-    		try { 
+    		try {
     			x1 = _playerOne.getX();
     			y1 = _playerOne.getY();
     			z1 = _playerOne.getZ();
-    		
+
     			x2 = _playerTwo.getX();
     			y2 = _playerTwo.getY();
     			z2 = _playerTwo.getZ();
-            
+
     			if (_playerOne.isSitting())
     				_playerOne.standUp();
-            
+
     			if (_playerTwo.isSitting())
     				_playerTwo.standUp();
-            
+
     			_playerOne.setTarget(null);
     			_playerTwo.setTarget(null);
-    		
-    			_playerOne.teleToLocation(_stadiumPort[0]+1200, _stadiumPort[1], _stadiumPort[2], true);
-    			_playerTwo.teleToLocation(_stadiumPort[0]-1200, _stadiumPort[1], _stadiumPort[2], true);
-    			
+
+    			_playerOne.teleToLocation(_stadiumPort[0]+1200, _stadiumPort[1], _stadiumPort[2], false);
+    			_playerTwo.teleToLocation(_stadiumPort[0]-1200, _stadiumPort[1], _stadiumPort[2], false);
+
     			_playerOne.sendPacket(new ExOlympiadMode(2));
     			_playerTwo.sendPacket(new ExOlympiadMode(2));
-    			
+
     			_spawnOne = SpawnBuffer(_stadiumPort[0]+1100, _stadiumPort[1], _stadiumPort[2], OLY_BUFFER);
     			_spawnTwo = SpawnBuffer(_stadiumPort[0]-1100, _stadiumPort[1], _stadiumPort[2], OLY_BUFFER);
-            
+
     			_playerOne.setIsInOlympiadMode(true);
     			_playerOne.setIsOlympiadStart(false);
     			_playerOne.setOlympiadSide(1);

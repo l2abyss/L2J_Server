@@ -8589,7 +8589,7 @@ public final class L2PcInstance extends L2PlayableInstance
         setTarget(null);
         setIsInvul(true);
         getAppearance().setInvisible();
-        teleToLocation(x, y, z, true);
+        teleToLocation(x, y, z, false);
         sendPacket(new ExOlympiadMode(3));
         _observerMode = true;
 		broadcastUserInfo();
@@ -10637,7 +10637,7 @@ public final class L2PcInstance extends L2PlayableInstance
                 htmlMsg.setHtml("<html><body>You have been put in jail by an admin.</body></html>");
             sendPacket(htmlMsg);
 
-            teleToLocation(-114356, -249645, -2984, true);  // Jail
+            teleToLocation(-114356, -249645, -2984, false);  // Jail
         } else
         {
             // Open a Html message to inform the player
