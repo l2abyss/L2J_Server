@@ -2794,6 +2794,9 @@ public abstract class L2Character extends L2Object
 
 		ChangeWaitType revive = new ChangeWaitType(this,ChangeWaitType.WT_STOP_FAKEDEATH);
 		broadcastPacket(revive);
+		//TODO: Temp hack: players see FD on ppl that are moving: Teleport to someone who uses FD - if he gets up he will fall down again for that client -
+		// even tho he is actually standing... Probably bad info in CharInfo packet?
+		broadcastPacket(new Revive(this));
 		getAI().notifyEvent(CtrlEvent.EVT_THINK, null);
 	}
 
