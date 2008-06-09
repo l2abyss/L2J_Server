@@ -343,7 +343,7 @@ public final class L2ItemInstance extends L2Object
 					referenceName = (reference.getName() != null?reference.getName():"no-name");
 				}
 				String targetName = (creator.getTarget() != null?creator.getTarget().getName():"no-target");
-				GMAudit.auditGMAction(creator.getName(), process + "(id: "+getItemId()+" name: "+getName()+" count: "+count+")", targetName, "L2Object referencing this action is: " + referenceName);
+				GMAudit.auditGMAction(creator.getName(), process + "(id: "+getItemId()+" objId: "+getObjectId()+" name: "+getName()+" count: "+count+")", targetName, "L2Object referencing this action is: " + referenceName);
 			}
 		}
 	}

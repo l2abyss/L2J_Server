@@ -740,7 +740,7 @@ public class ItemTable
 					referenceName = (reference.getName() != null?reference.getName():"no-name");
 				}
 				String targetName = (actor.getTarget() != null?actor.getTarget().getName():"no-target");
-				GMAudit.auditGMAction(actor.getName(), process + "(id: " + itemId + " count: "+count+")", targetName, "L2Object referencing this action is: " + referenceName);
+				GMAudit.auditGMAction(actor.getName(), process+"(id: "+itemId+" count: "+count+" name: "+item.getItemName()+" objId: "+item.getObjectId()+")", targetName, "L2Object referencing this action is: " + referenceName);
 			}
 		}
 
