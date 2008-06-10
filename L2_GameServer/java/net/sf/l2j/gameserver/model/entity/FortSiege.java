@@ -205,6 +205,8 @@ public class FortSiege
     private FortSiegeGuardManager _siegeGuardManager;
     protected Calendar _siegeRegistrationEndDate;
 
+	private boolean _hasCastle = false;
+
     // =========================================================
     // Constructor
     public FortSiege(Fort[] fort)
@@ -214,6 +216,11 @@ public class FortSiege
 
         checkAutoTask();
         FortSiegeManager.getInstance().addSiege(this);
+    }
+
+    public void setHasCastle()
+    {
+    	_hasCastle = true;
     }
 
     // =========================================================
@@ -227,7 +234,7 @@ public class FortSiege
         {
             announceToPlayer("The siege of " + getFort().getName() + " has finished!", false);
 
-            if (getFort().getOwnerId() <= 0)
+            if (getFort().getOwnerId() <= 0 && !_hasCastle)
                 announceToPlayer("The siege of " + getFort().getName() + " has ended in a draw.",
                                  false);
 
@@ -289,9 +296,12 @@ public class FortSiege
             }
 
             // owner as defender
-            L2SiegeClan sc_newowner = getAttackerClan(getFort().getOwnerId());
-            removeAttacker(sc_newowner);
-            addDefender(sc_newowner, SiegeClanType.OWNER);
+            if (getFort().getOwnerId() >0)
+            {
+            	L2SiegeClan sc_newowner = getAttackerClan(getFort().getOwnerId());
+            	removeAttacker(sc_newowner);
+            	addDefender(sc_newowner, SiegeClanType.OWNER);
+            }
             endSiege();
             return;
 
@@ -864,8 +874,6 @@ public class FortSiege
         	player.sendMessage("Only clans with Level "
             + FortSiegeManager.getInstance().getSiegeClanMinLevel()
             + " and higher may register for a fort siege.");
-        else if (player.getClan().getHasFort() > 0) 
-        	player.sendMessage("You cannot register because your clan already own a fort.");
         else if (player.getClan().getClanId() == getFort().getOwnerId())
             player.sendPacket(new SystemMessage(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING));
         else if (FortSiegeManager.getInstance().checkIsRegistered(player.getClan(), getFort().getFortId())) 

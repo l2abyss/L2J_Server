@@ -28,6 +28,7 @@ import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.DoorTable;
+import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
@@ -180,7 +181,18 @@ public class Fort
             }
         }
 
-        updateOwnerInDB(clan);                                                          // Update in database
+	    // if clan have already fortress, remove it
+	    if (clan.getHasFort() > 0)
+	    	FortManager.getInstance().getFortByOwner(clan).removeOwner(clan);
+
+        //if clan already have castle, dont store him in fortress
+        if (clan.getHasCastle() <=0)
+        	updateOwnerInDB(clan);                                                          // Update in database
+        else
+        {
+        	getSiege().setHasCastle();
+        	updateOwnerInDB(null);
+        }
 
         if (getSiege().getIsInProgress())                                               // If siege in progress
             getSiege().midVictory();                                                    // Mid victory phase of siege

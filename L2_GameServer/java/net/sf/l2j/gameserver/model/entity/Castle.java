@@ -34,6 +34,7 @@ import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.DoorTable;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.CastleManorManager;
+import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.instancemanager.CastleManorManager.CropProcure;
 import net.sf.l2j.gameserver.instancemanager.CastleManorManager.SeedProduction;
 import net.sf.l2j.gameserver.model.L2Clan;
@@ -444,6 +445,10 @@ public class Castle
 	    }
 
 	    updateOwnerInDB(clan);															// Update in database
+
+	    // if clan have fortress, remove it
+	    if (clan.getHasFort() > 0)
+	    	FortManager.getInstance().getFortByOwner(clan).removeOwner(clan);
 
 	    if (getSiege().getIsInProgress())												// If siege in progress
         	getSiege().midVictory();													// Mid victory phase of siege

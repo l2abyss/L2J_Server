@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
@@ -74,10 +75,6 @@ public class Heal implements ISkillHandler
             // We should not heal if char is dead
             if (target == null || target.isDead())
                 continue;
-
-            // We should not heal walls and door
-            if(target instanceof L2DoorInstance)
-            	continue;
 
             // Player holding a cursed weapon can't be healed and can't heal
             if (target != activeChar)
@@ -142,6 +139,8 @@ public class Heal implements ISkillHandler
             // Healer proficiency (since CT1)
             hp *= activeChar.calcStat(Stats.HEAL_PROFICIENCY, 100, null, null) / 100;
 
+            if (target instanceof L2DoorInstance || target instanceof L2SiegeFlagInstance)
+            	hp = 0;
 			target.setCurrentHp(hp + target.getCurrentHp());
 			target.setLastHealAmount((int)hp);
 			StatusUpdate su = new StatusUpdate(target.getObjectId());

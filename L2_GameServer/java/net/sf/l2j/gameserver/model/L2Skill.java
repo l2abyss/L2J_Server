@@ -34,6 +34,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.base.ClassId;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -2684,6 +2685,10 @@ public abstract class L2Skill
         if (isPassive()) return _emptyEffectSet;
 
         if (_effectTemplates == null)
+        	return _emptyEffectSet;
+
+        // doors and siege flags cannot receive any effects
+        if (effected instanceof L2DoorInstance ||effected instanceof L2SiegeFlagInstance )
         	return _emptyEffectSet;
 
         if ((effector != effected) && effected.isInvul())

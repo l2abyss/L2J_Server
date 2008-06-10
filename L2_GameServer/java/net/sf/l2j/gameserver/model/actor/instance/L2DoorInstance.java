@@ -41,6 +41,7 @@ import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.serverpackets.ActionFailed;
+import net.sf.l2j.gameserver.serverpackets.DoorStatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.serverpackets.StaticObject;
@@ -295,9 +296,17 @@ public class L2DoorInstance extends L2Character
 	return _clanHall;
     }
 
-    public boolean isEnemyOf(@SuppressWarnings("unused") L2Character cha)
+    public boolean isEnemy()
     {
-        return true;
+    	if (getCastle() != null
+                && getCastle().getCastleId() > 0
+                && getCastle().getSiege().getIsInProgress())
+    		return true;
+    	if (getFort() != null
+                && getFort().getFortId() > 0
+                && getFort().getSiege().getIsInProgress())
+    		return true;
+    	return false;
     }
 
     @Override
@@ -309,16 +318,14 @@ public class L2DoorInstance extends L2Character
         // Doors can`t be attacked by NPCs
         if (!(attacker instanceof L2PcInstance)) return false;
         
-        // Attackable during siege by attacker only
+        // Attackable  only during siege by everyone
         boolean isCastle = (getCastle() != null
                            && getCastle().getCastleId() > 0
-                           && getCastle().getSiege().getIsInProgress()
-                           && getCastle().getSiege().checkIsAttacker(((L2PcInstance)attacker).getClan()));
+                           && getCastle().getSiege().getIsInProgress());
 
         boolean isFort = (getFort() != null
                 && getFort().getFortId() > 0
-                && getFort().getSiege().getIsInProgress()
-                && getFort().getSiege().checkIsAttacker(((L2PcInstance)attacker).getClan()));
+                && getFort().getSiege().getIsInProgress());
                            
         return (isCastle || isFort);
     }
@@ -327,7 +334,6 @@ public class L2DoorInstance extends L2Character
     {
         return isAutoAttackable(attacker);
     }
-
 
     @Override
 	public void updateAbnormalEffect() {}
@@ -398,11 +404,14 @@ public class L2DoorInstance extends L2Character
             MyTargetSelected my = new MyTargetSelected(getObjectId(), 0);
             player.sendPacket(my);
 
-            //if (isAutoAttackable(player))
-            //{
-            StaticObject su = new StaticObject(this);
-            player.sendPacket(su);
-            //}
+            StaticObject su = new StaticObject(this, false);
+
+            // send HP amount if doors are inside castle/fortress zone
+        	// TODO: needed to be added here doors from conquerable clanhalls
+            if (getCastle() != null && getCastle().getCastleId() > 0
+            		|| getFort() != null && getFort().getFortId() > 0)
+            	su = new StaticObject(this, true);
+			player.sendPacket(su);
 
             // Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
             player.sendPacket(new ValidateLocation(this));
@@ -451,11 +460,15 @@ public class L2DoorInstance extends L2Character
                     .getLevel());
             player.sendPacket(my);
 
-            if (isAutoAttackable(player))
-            {
-                StaticObject su = new StaticObject(this);
-                player.sendPacket(su);
-            }
+            StaticObject su = new StaticObject(this, false);
+
+            // send HP amount if doors are inside castle/fortress zone
+        	// TODO: needed to be added here doors from conquerable clanhalls
+            if (getCastle() != null && getCastle().getCastleId() > 0
+            		|| getFort() != null && getFort().getFortId() > 0)
+            	su = new StaticObject(this, true);
+
+            player.sendPacket(su);
 
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
             TextBuilder html1 = new TextBuilder("<html><body><table border=0>");
@@ -494,10 +507,17 @@ public class L2DoorInstance extends L2Character
         if (knownPlayers == null || knownPlayers.isEmpty())
             return;
 
-        StaticObject su = new StaticObject(this);
+        StaticObject su = new StaticObject(this, false);
+        DoorStatusUpdate dsu  = new DoorStatusUpdate(this);
+
         for (L2PcInstance player : knownPlayers)
         {
+            if (getCastle() != null && getCastle().getCastleId() > 0
+            		|| getFort() != null && getFort().getFortId() > 0)
+            	su = new StaticObject(this, true);
+
             player.sendPacket(su);
+            player.sendPacket(dsu);
         }
     }
 
