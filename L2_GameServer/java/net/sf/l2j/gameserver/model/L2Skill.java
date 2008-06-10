@@ -171,6 +171,9 @@ public abstract class L2Skill
     	MANAHEAL_PERCENT,
     	MANARECHARGE,
     	MPHOT,
+    	
+    	// sp
+    	GIVE_SP,
 
     	// Aggro
     	AGGDAMAGE,
