@@ -1614,7 +1614,7 @@ public class L2NpcInstance extends L2Character
         player.setCurrentCp(player.getMaxCp());
         //cp restored
         sm = new SystemMessage(SystemMessageId.S1_CP_WILL_BE_RESTORED);
-        sm.addString(player.getName());
+        sm.addPcName(player);
         player.sendPacket(sm);
     }
     

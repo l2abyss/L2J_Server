@@ -376,7 +376,7 @@ public class CharEffectList
 					if (_owner instanceof L2PcInstance)
 					{
 						SystemMessage sm = new SystemMessage(SystemMessageId.EFFECT_S1_DISAPPEARED);
-						sm.addString(effect.getSkill().getName());
+						sm.addSkillName(effect);
 						_owner.sendPacket(sm);
 					}
 					break;

@@ -214,7 +214,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 				itemToRemove);
 
 		SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
-		sm.addItemName(crystalId);
+		sm.addItemName(createditem);
 		sm.addNumber(crystalAmount);
 		activeChar.sendPacket(sm);
 		sm = null;

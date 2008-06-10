@@ -200,7 +200,7 @@ public class RequestBuySeed extends L2GameClientPacket
 			// Send Char Buy Messages
 			SystemMessage sm = null;
 			sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
-			sm.addItemName(seedId);
+			sm.addItemName(item);
 			sm.addNumber(count);
 			player.sendPacket(sm);
 		}

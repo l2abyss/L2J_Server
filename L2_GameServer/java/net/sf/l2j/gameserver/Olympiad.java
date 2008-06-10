@@ -1986,10 +1986,10 @@ public class Olympiad
 						if (unequiped[0].getEnchantLevel() > 0){
 							sm = new SystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
 							sm.addNumber(unequiped[0].getEnchantLevel());
-							sm.addItemName(unequiped[0].getItemId());
+							sm.addItemName(unequiped[0]);
 						}else{
 							sm = new SystemMessage(SystemMessageId.S1_DISARMED);
-							sm.addItemName(unequiped[0].getItemId());
+							sm.addItemName(unequiped[0]);
 						}
 						player.sendPacket(sm);
 					}
@@ -2255,7 +2255,7 @@ public class Olympiad
         			_playerOne.sendPacket(iu);
 
         			SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
-        			sm.addItemName(item.getItemId());
+        			sm.addItemName(item);
         			sm.addNumber(_gpreward);
         			_playerOne.sendPacket(sm);
                 } catch (Exception e) { }
@@ -2284,7 +2284,7 @@ public class Olympiad
                 	_playerTwo.sendPacket(iu);
 
                 	SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
-                	sm.addItemName(item.getItemId());
+                	sm.addItemName(item);
         			sm.addNumber(_gpreward);
                 	_playerTwo.sendPacket(sm);
                 } catch (Exception e) { }

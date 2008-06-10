@@ -453,7 +453,7 @@ public class AdminSkill implements IAdminCommandHandler {
 			{
 				String skillname = skill.getName();
 				SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_SKILL_S1_ADDED);
-				sm.addSkillName(id);
+				sm.addSkillName(skill);
 				player.sendPacket(sm);
 				player.getClan().broadcastToOnlineMembers(sm);
 				player.getClan().addNewSkill(skill);
@@ -461,9 +461,9 @@ public class AdminSkill implements IAdminCommandHandler {
 				
 				activeChar.getClan().broadcastToOnlineMembers(new PledgeSkillList(activeChar.getClan()));  
 				for(L2PcInstance member: activeChar.getClan().getOnlineMembers(0))  
-				{  
+				{
 					member.sendSkillList();  
-				}  
+				}
 
 				showMainPage(activeChar);
 				return;

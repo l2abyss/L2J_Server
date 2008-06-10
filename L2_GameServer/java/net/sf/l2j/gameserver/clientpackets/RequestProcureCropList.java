@@ -294,7 +294,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 			}
 
 			sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
-			sm.addItemName(rewardItem);
+			sm.addItemName(itemAdd);
 			sm.addNumber(rewardItemCount);
 			player.sendPacket(sm);
 		}

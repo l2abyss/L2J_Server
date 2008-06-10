@@ -154,7 +154,7 @@ public class ScrollOfResurrection implements IItemHandler
                     	activeChar.useMagic(skill, true, true);
                     	
                     	SystemMessage sm = new SystemMessage(SystemMessageId.S1_DISAPPEARED);
-                    	sm.addItemName(itemId);
+                    	sm.addItemName(item);
                     	activeChar.sendPacket(sm);
                     }
                 }

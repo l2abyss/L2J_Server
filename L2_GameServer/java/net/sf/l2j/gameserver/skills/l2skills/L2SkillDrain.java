@@ -159,8 +159,8 @@ public class L2SkillDrain extends L2Skill {
                         else
                         {
                             SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
-                            sm.addString(target.getName());
-                            sm.addSkillName(getDisplayId());
+                            sm.addCharName(target);
+                            sm.addSkillName(this);
                             activeChar.sendPacket(sm);
                         }
                 	}

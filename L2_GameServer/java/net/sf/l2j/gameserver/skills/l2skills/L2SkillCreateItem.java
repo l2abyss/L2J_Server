@@ -82,14 +82,14 @@ public class L2SkillCreateItem extends L2Skill
         if (count > 1)
         {
             SystemMessage smsg = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
-            smsg.addItemName(item.getItemId());
+            smsg.addItemName(item);
             smsg.addNumber(count);
             activeChar.sendPacket(smsg);
         }
         else
         {
             SystemMessage smsg = new SystemMessage(SystemMessageId.EARNED_ITEM);
-            smsg.addItemName(item.getItemId());
+            smsg.addItemName(item);
             activeChar.sendPacket(smsg);
         }
         ItemList il = new ItemList(activeChar, false);

@@ -313,14 +313,14 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				if (item.getEnchantLevel() == 0)
 				{
 					sm = new SystemMessage(SystemMessageId.S1_SUCCESSFULLY_ENCHANTED);
-					sm.addItemName(item.getItemId());
+					sm.addItemName(item);
 					activeChar.sendPacket(sm);
 				}
 				else
 				{
 					sm = new SystemMessage(SystemMessageId.S1_S2_SUCCESSFULLY_ENCHANTED);
 					sm.addNumber(item.getEnchantLevel());
-					sm.addItemName(item.getItemId());
+					sm.addItemName(item);
 					activeChar.sendPacket(sm);
 				}
 				item.setEnchantLevel(item.getEnchantLevel() + 1);
@@ -335,13 +335,13 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				{
 					sm = new SystemMessage(SystemMessageId.ENCHANTMENT_FAILED_S1_S2_EVAPORATED);
 					sm.addNumber(item.getEnchantLevel());
-					sm.addItemName(item.getItemId());
+					sm.addItemName(item);
 					activeChar.sendPacket(sm);
 				}
 				else
 				{
 					sm = new SystemMessage(SystemMessageId.ENCHANTMENT_FAILED_S1_EVAPORATED);
-					sm.addItemName(item.getItemId());
+					sm.addItemName(item);
 					activeChar.sendPacket(sm);
 				}
 			}
@@ -357,13 +357,13 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				{
 					sm = new SystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
 					sm.addNumber(item.getEnchantLevel());
-					sm.addItemName(item.getItemId());
+					sm.addItemName(item);
 					activeChar.sendPacket(sm);
 				}
 				else
 				{
 					sm = new SystemMessage(SystemMessageId.S1_DISARMED);
-					sm.addItemName(item.getItemId());
+					sm.addItemName(item);
 					activeChar.sendPacket(sm);
 				}
 				
@@ -394,7 +394,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				L2ItemInstance crystals = activeChar.getInventory().addItem("Enchant", crystalId, count, activeChar, destroyItem);
 				
 				sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
-				sm.addItemName(crystals.getItemId());
+				sm.addItemName(crystals);
 				sm.addNumber(count);
 				activeChar.sendPacket(sm);
 				

@@ -114,34 +114,8 @@ public class PcStatus extends PlayableStatus
         {
             // Send a System Message to the L2PcInstance
             SystemMessage smsg = new SystemMessage(SystemMessageId.S1_RECEIVED_DAMAGE_OF_S3_FROM_S2);
-            
             smsg.addString(getActiveChar().getName());
-
-            if (Config.DEBUG)
-                _log.fine("Attacker:" + attacker.getName());
-
-            if (attacker instanceof L2PcInstance)
-            	smsg.addString(((L2PcInstance)attacker).getAppearance().getVisibleName());
-            else if (attacker instanceof L2NpcInstance)
-            {
-                int mobId = ((L2NpcInstance)attacker).getTemplate().idTemplate;
-
-                if (Config.DEBUG)
-                    _log.fine("mob id:" + mobId);
-
-                smsg.addNpcName(mobId);
-            }
-            else if (attacker instanceof L2Summon)
-            {
-                int mobId = ((L2Summon)attacker).getTemplate().idTemplate;
-
-                smsg.addNpcName(mobId);
-            }
-            else
-            {
-                smsg.addString(attacker.getName());
-            }
-
+            smsg.addCharName(attacker);
             smsg.addNumber(fullValue);
             getActiveChar().sendPacket(smsg);
         }

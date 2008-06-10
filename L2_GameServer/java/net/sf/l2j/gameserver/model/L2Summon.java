@@ -616,7 +616,7 @@ public abstract class L2Summon extends L2PlayableInstance
         		&& (!getOwner().getAccessLevel().allowPeaceAttack()))
         {
             SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
-            sm.addSkillName(skill.getId());
+            sm.addSkillName(skill);
             getOwner().sendPacket(sm);
             return;
         }
@@ -768,14 +768,7 @@ public abstract class L2Summon extends L2PlayableInstance
 		else
 			sm = new SystemMessage(SystemMessageId.PET_RECEIVED_S2_DAMAGE_BY_S1);
 
-		if (attacker instanceof L2NpcInstance)
-		{
-			sm.addNpcName(((L2NpcInstance) attacker).getTemplate().npcId);
-		}
-		else
-		{
-			sm.addString(attacker.getName());
-		}
+		sm.addCharName(attacker);
 		sm.addNumber(damage);
 		getOwner().sendPacket(sm);
     }

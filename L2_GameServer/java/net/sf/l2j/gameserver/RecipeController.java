@@ -210,7 +210,7 @@ public class RecipeController
 		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1);
 			sm.addItemName(recipeList.getItemId());
-			sm.addString("You are busy creating ");
+			sm.addString("You are busy creating");
 			player.sendPacket(sm);
 			return;
 		}

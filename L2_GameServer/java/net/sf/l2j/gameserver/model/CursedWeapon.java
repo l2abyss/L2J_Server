@@ -462,7 +462,7 @@ public class CursedWeapon
 		//L2ItemInstance[] items =
 		_player.getInventory().equipItemAndRecord(_item);
 		SystemMessage sm = new SystemMessage(SystemMessageId.S1_EQUIPPED);
-		sm.addItemName(_item.getItemId());
+		sm.addItemName(_item);
 		_player.sendPacket(sm);
 
 		// Fully heal player
@@ -488,7 +488,7 @@ public class CursedWeapon
 
 		sm = new SystemMessage(SystemMessageId.THE_OWNER_OF_S2_HAS_APPEARED_IN_THE_S1_REGION);
 		sm.addZoneName(_player.getX(), _player.getY(), _player.getZ()); // Region Name
-		sm.addItemName(_item.getItemId());
+		sm.addItemName(_item);
 		CursedWeaponsManager.announce(sm);
 	}
 

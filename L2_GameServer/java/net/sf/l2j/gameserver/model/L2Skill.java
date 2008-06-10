@@ -1357,7 +1357,7 @@ public abstract class L2Skill
             }
         }
         SystemMessage message = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-        message.addString(getName());
+        message.addSkillName(this);
         activeChar.sendPacket(message);
 
         return false;

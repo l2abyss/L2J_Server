@@ -776,13 +776,13 @@ public class TradeList
             {
                 SystemMessage msg = new SystemMessage(SystemMessageId.S1_PURCHASED_S3_S2_S);
                 msg.addString(player.getName());
-                msg.addItemName(newItem.getItemId());
+                msg.addItemName(newItem);
                 msg.addNumber(item.getCount());
                 _owner.sendPacket(msg);
 
                 msg = new SystemMessage(SystemMessageId.PURCHASED_S3_S2_S_FROM_S1);
                 msg.addString(_owner.getName());
-                msg.addItemName(newItem.getItemId());
+                msg.addItemName(newItem);
                 msg.addNumber(item.getCount());
                 player.sendPacket(msg);
             }
@@ -790,12 +790,12 @@ public class TradeList
             {
                 SystemMessage msg = new SystemMessage(SystemMessageId.S1_PURCHASED_S2);
                 msg.addString(player.getName());
-                msg.addItemName(newItem.getItemId());
+                msg.addItemName(newItem);
                 _owner.sendPacket(msg);
 
                 msg = new SystemMessage(SystemMessageId.PURCHASED_S2_FROM_S1);
                 msg.addString(_owner.getName());
-                msg.addItemName(newItem.getItemId());
+                msg.addItemName(newItem);
                 player.sendPacket(msg);
             }
         }
@@ -865,13 +865,13 @@ public class TradeList
             {
                 SystemMessage msg = new SystemMessage(SystemMessageId.PURCHASED_S3_S2_S_FROM_S1);
                 msg.addString(player.getName());
-                msg.addItemName(newItem.getItemId());
+                msg.addItemName(newItem);
                 msg.addNumber(item.getCount());
                 _owner.sendPacket(msg);
 
                 msg = new SystemMessage(SystemMessageId.S1_PURCHASED_S3_S2_S);
                 msg.addString(_owner.getName());
-                msg.addItemName(newItem.getItemId());
+                msg.addItemName(newItem);
                 msg.addNumber(item.getCount());
                 player.sendPacket(msg);
             }
@@ -879,12 +879,12 @@ public class TradeList
             {
                 SystemMessage msg = new SystemMessage(SystemMessageId.PURCHASED_S2_FROM_S1);
                 msg.addString(player.getName());
-                msg.addItemName(newItem.getItemId());
+                msg.addItemName(newItem);
                 _owner.sendPacket(msg);
 
                 msg = new SystemMessage(SystemMessageId.S1_PURCHASED_S2);
                 msg.addString(_owner.getName());
-                msg.addItemName(newItem.getItemId());
+                msg.addItemName(newItem);
                 player.sendPacket(msg);
             }
         }

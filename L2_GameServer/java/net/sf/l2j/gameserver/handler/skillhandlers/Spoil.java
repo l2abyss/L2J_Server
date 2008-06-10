@@ -72,8 +72,8 @@ public class Spoil implements ISkillHandler
 				else 
 				{
 					SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
-					sm.addString(target.getName());
-					sm.addSkillName(skill.getDisplayId());
+					sm.addCharName(target);
+					sm.addSkillName(skill);
 					activeChar.sendPacket(sm);
 				}
 				target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, activeChar);

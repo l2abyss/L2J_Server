@@ -148,7 +148,7 @@ public class Wedding implements IVoicedCommandHandler
                 {
                     skill.getEffects(activeChar, activeChar);
                     SystemMessage sm = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
-                    sm.addSkillName(skillId);
+                    sm.addSkillName(skill);
                     activeChar.sendPacket(sm);
                 }
             }

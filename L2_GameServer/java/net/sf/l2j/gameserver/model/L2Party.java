@@ -538,7 +538,7 @@ public class L2Party {
 		{
 			SystemMessage msg = new SystemMessage(SystemMessageId.S1_PICKED_UP_S2_S3);
 			msg.addString(target.getName());
-			msg.addItemName(item.getItemId());
+			msg.addItemName(item);
 			msg.addNumber(item.getCount());
 			broadcastToPartyMembers(target, msg);
 		}
@@ -546,7 +546,7 @@ public class L2Party {
 		{
 			SystemMessage msg = new SystemMessage(SystemMessageId.S1_PICKED_UP_S2);
 			msg.addString(target.getName());
-			msg.addItemName(item.getItemId());
+			msg.addItemName(item);
 			broadcastToPartyMembers(target, msg);
 		}
 	}

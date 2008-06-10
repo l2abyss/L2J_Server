@@ -469,4 +469,9 @@ public final class L2NpcTemplate extends L2CharTemplate
 		
 		return race;
 	}
+
+	public boolean isCustom()
+	{
+		return npcId != idTemplate;
+	}
 }

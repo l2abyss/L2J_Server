@@ -139,28 +139,28 @@ public class RequestBuyProcure extends L2GameClientPacket {
 			int count  = _items[i * 2 + 1];
 			if (count < 0) count = 0;
 
-			int rewradItemId=L2Manor.getInstance().getRewardItem(
+			int rewardItemId=L2Manor.getInstance().getRewardItem(
 					itemId,manor.getCastle().getCrop(itemId, CastleManorManager.PERIOD_CURRENT).getReward());
 
-			int rewradItemCount = 1; //L2Manor.getInstance().getRewardAmount(itemId, manor.getCastle().getCropReward(itemId));
+			int rewardItemCount = 1; //L2Manor.getInstance().getRewardAmount(itemId, manor.getCastle().getCropReward(itemId));
 
-			rewradItemCount = count / rewradItemCount;
+			rewardItemCount = count / rewardItemCount;
 
 			// Add item to Inventory and adjust update packet
-			L2ItemInstance item = player.getInventory().addItem("Manor",rewradItemId,rewradItemCount,player,manor);
+			L2ItemInstance item = player.getInventory().addItem("Manor",rewardItemId,rewardItemCount,player,manor);
 			L2ItemInstance iteme = player.getInventory().destroyItemByItemId("Manor",itemId,count,player,manor);
 
 			if (item == null || iteme == null)
 				continue;
 
 			playerIU.addRemovedItem(iteme);
-			if (item.getCount() > rewradItemCount) playerIU.addModifiedItem(item);
+			if (item.getCount() > rewardItemCount) playerIU.addModifiedItem(item);
 			else playerIU.addNewItem(item);
 
 			// Send Char Buy Messages
 			SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
-			sm.addItemName(rewradItemId);
-			sm.addNumber(rewradItemCount);
+			sm.addItemName(item);
+			sm.addNumber(rewardItemCount);
 			player.sendPacket(sm);
 			sm = null;
 

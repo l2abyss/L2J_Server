@@ -420,7 +420,7 @@ public abstract class L2Effect
             if (_skill.isPvpSkill())
             {
                 SystemMessage smsg = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
-                smsg.addString(_skill.getName());
+                smsg.addSkillName(_skill);
                 getEffected().sendPacket(smsg);
             }
 
@@ -462,7 +462,7 @@ public abstract class L2Effect
             if (_count == 0)
             {
                 SystemMessage smsg3 = new SystemMessage(SystemMessageId.S1_HAS_WORN_OFF);
-                smsg3.addString(_skill.getName());
+                smsg3.addSkillName(_skill);
                 getEffected().sendPacket(smsg3);
             }
             // Stop the task of the L2Effect, remove it and update client magic icon

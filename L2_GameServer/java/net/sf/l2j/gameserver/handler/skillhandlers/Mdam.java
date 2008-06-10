@@ -183,7 +183,7 @@ public class Mdam implements ISkillHandler
                 		activeChar.stopSkillEffects(skill.getId());
     					skill.getEffects((L2Character) null, activeChar);
     					SystemMessage sm = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
-						sm.addSkillName(skill.getId());
+						sm.addSkillName(skill);
 						activeChar.sendPacket(sm);
                 	}
                 	else
@@ -195,8 +195,8 @@ public class Mdam implements ISkillHandler
                         else
                         {
                             SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
-                            sm.addString(target.getName());
-                            sm.addSkillName(skill.getDisplayId());
+                            sm.addCharName(target);
+                            sm.addSkillName(skill);
                             activeChar.sendPacket(sm);
                         }
                 	}
@@ -268,7 +268,7 @@ public class Mdam implements ISkillHandler
                     else
                     {
                         SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
-                        sm.addString(target.getName());
+                        sm.addCharName(target);
                         sm.addSkillName(skill.getDisplayId());
                         activeCubic.getOwner().sendPacket(sm);
                     }

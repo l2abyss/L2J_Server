@@ -1395,7 +1395,7 @@ public abstract class L2Character extends L2Object
 			if (this instanceof L2PcInstance)
 			{
 				SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
-				sm.addSkillName(skill.getId(),skill.getLevel());
+				sm.addSkillName(skill);
 				sendPacket(sm);
 			}
 
@@ -1496,7 +1496,7 @@ public abstract class L2Character extends L2Object
 					|| effect.getEffectType() == L2Effect.EffectType.SIGNET_GROUND)
 				{
 					SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-					sm.addSkillName(skill.getId());
+					sm.addSkillName(skill);
 					sendPacket(sm);
 					return;
 				}
@@ -1516,7 +1516,7 @@ public abstract class L2Character extends L2Object
 			if (!canCast)
 			{
 				SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-				sm.addSkillName(skill.getId());
+				sm.addSkillName(skill);
 				sendPacket(sm);
 				return;
 			}
@@ -1764,7 +1764,7 @@ public abstract class L2Character extends L2Object
 		if (this instanceof L2PcInstance && magicId != 1312)
         {
 			SystemMessage sm = new SystemMessage(SystemMessageId.USE_S1);
-			sm.addSkillName(magicId,skill.getLevel());
+			sm.addSkillName(skill);
 			sendPacket(sm);
 		}
 		
@@ -4826,18 +4826,8 @@ public abstract class L2Character extends L2Object
             if (target instanceof L2PcInstance)
             {
                 SystemMessage sm = new SystemMessage(SystemMessageId.AVOIDED_S1S_ATTACK);
-
-                if (this instanceof L2Summon)
-                {
-                    int mobId = ((L2Summon)this).getTemplate().npcId;
-                    sm.addNpcName(mobId);
-                }
-                else
-                {
-                    sm.addString(getName());
-                }
-
-                ((L2PcInstance)target).sendPacket(sm);
+                sm.addCharName(this);
+                target.sendPacket(sm);
             }
         }
 
@@ -5584,7 +5574,7 @@ public abstract class L2Character extends L2Object
 					if (skill.getSkillType() == L2Skill.SkillType.BUFF)
 					{
 						SystemMessage smsg = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
-						smsg.addSkillName(skill.getId());
+						smsg.addSkillName(skill);
 						target.sendPacket(smsg);
 					}
 					

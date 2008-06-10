@@ -45,7 +45,7 @@ public class Firework implements IItemHandler
         if (!FloodProtector.getInstance().tryPerformAction(activeChar.getObjectId(), FloodProtector.PROTECTED_FIREWORK))
         {
         	SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-        	sm.addItemName(itemId);
+        	sm.addItemName(item);
         	activeChar.sendPacket(sm);
         	return;
         }

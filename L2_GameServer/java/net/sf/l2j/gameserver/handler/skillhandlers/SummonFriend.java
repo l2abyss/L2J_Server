@@ -110,7 +110,7 @@ public class SummonFriend implements ISkillHandler
                     if (targetChar.isAlikeDead())
                     {
                     	SystemMessage sm = new SystemMessage(SystemMessageId.S1_IS_DEAD_AT_THE_MOMENT_AND_CANNOT_BE_SUMMONED);
-                    	sm.addString(targetChar.getName());
+                    	sm.addPcName(targetChar);
                     	activeChar.sendPacket(sm);
                     	continue;
                     }
@@ -118,7 +118,7 @@ public class SummonFriend implements ISkillHandler
                     if (targetChar.isInStoreMode())
                     {
                     	SystemMessage sm = new SystemMessage(SystemMessageId.S1_CURRENTLY_TRADING_OR_OPERATING_PRIVATE_STORE_AND_CANNOT_BE_SUMMONED);
-                    	sm.addString(targetChar.getName());
+                    	sm.addPcName(targetChar);
                     	activeChar.sendPacket(sm);
                     	continue;
                     }
@@ -127,7 +127,7 @@ public class SummonFriend implements ISkillHandler
                     if (targetChar.isRooted() || targetChar.isInCombat())
                     {
                     	SystemMessage sm = new SystemMessage(SystemMessageId.S1_IS_ENGAGED_IN_COMBAT_AND_CANNOT_BE_SUMMONED);
-                    	sm.addString(targetChar.getName());
+                    	sm.addPcName(targetChar);
                     	activeChar.sendPacket(sm);
                     	continue;
                     }
