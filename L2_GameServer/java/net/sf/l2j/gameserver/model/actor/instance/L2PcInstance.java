@@ -6765,8 +6765,9 @@ public final class L2PcInstance extends L2PlayableInstance
     
     private void storeEffect()
 	{
-		if (!Config.STORE_SKILL_COOLTIME) return;
-
+		if (!Config.STORE_SKILL_COOLTIME)
+			return;
+		
 		Connection con = null;
 		try
 		{
@@ -6779,44 +6780,52 @@ public final class L2PcInstance extends L2PlayableInstance
 			statement.setInt(2, getClassIndex());
 			statement.execute();
 			statement.close();
-
+			
 			int buff_index = 0;
-
+			
 			// Store all effect data along with calulated remaining
 			// reuse delays for matching skills. 'restore_type'= 0.
-            statement = con.prepareStatement(ADD_SKILL_SAVE);
-            
+			statement = con.prepareStatement(ADD_SKILL_SAVE);
+			
+			List<L2Skill> storedSkills = new FastList<L2Skill>();
+			
 			for (L2Effect effect : getAllEffects())
 			{
-				if (effect != null && !effect.isHerbEffect() && effect.getInUse() && !effect.getSkill().isToggle())
+				L2Skill skill = effect.getSkill();
+				
+				if (storedSkills.contains(skill))
+					continue;
+				
+				storedSkills.add(skill);
+				
+				if (effect != null && !effect.isHerbEffect() && effect.getInUse() && !skill.isToggle())
 				{
-					int skillId = effect.getSkill().getId();
+					int skillId = skill.getId();
 					buff_index++;
-
 					
 					statement.setInt(1, getObjectId());
 					statement.setInt(2, skillId);
-					statement.setInt(3, effect.getSkill().getLevel());
+					statement.setInt(3, skill.getLevel());
 					statement.setInt(4, effect.getCount());
 					statement.setInt(5, effect.getTime());
-
+					
 					if (_reuseTimeStamps.containsKey(skillId))
 					{
 						TimeStamp t = _reuseTimeStamps.remove(skillId);
-						statement.setLong(6, t.hasNotPassed() ? t.getReuse() : 0 );
+						statement.setLong(6, t.hasNotPassed() ? t.getReuse() : 0);
 					}
-                    else
+					else
 					{
 						statement.setLong(6, 0);
 					}
-
+					
 					statement.setInt(7, 0);
 					statement.setInt(8, getClassIndex());
 					statement.setInt(9, buff_index);
 					statement.execute();
 				}
 			}
-
+			
 			// Store the reuse delays of remaining skills which
 			// lost effect but still under reuse delay. 'restore_type' 1.
 			for (TimeStamp t : _reuseTimeStamps.values())
@@ -6824,41 +6833,42 @@ public final class L2PcInstance extends L2PlayableInstance
 				if (t.hasNotPassed())
 				{
 					buff_index++;
-					statement.setInt (1, getObjectId());
-					statement.setInt (2, t.getSkill());
-					statement.setInt (3, -1);
-					statement.setInt (4, -1);
-					statement.setInt (5, -1);
+					statement.setInt(1, getObjectId());
+					statement.setInt(2, t.getSkill());
+					statement.setInt(3, -1);
+					statement.setInt(4, -1);
+					statement.setInt(5, -1);
 					statement.setLong(6, t.getReuse());
-					statement.setInt (7, 1);
-					statement.setInt (8, getClassIndex());
+					statement.setInt(7, 1);
+					statement.setInt(8, getClassIndex());
 					statement.setInt(9, buff_index);
 					statement.execute();
 					
 				}
 			}
 			_reuseTimeStamps.clear();
-            
-            statement.close();
+			
+			statement.close();
 		}
 		catch (Exception e)
-        {
-			_log.log(Level.WARNING, "Could not store char effect data: ",e);
-        }
+		{
+			_log.log(Level.WARNING, "Could not store char effect data: ", e);
+		}
 		finally
-        {
-		    try
-            {
-                con.close(); 
-            }
-            catch (Exception e)
-            {  
-            }
-        }
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
 	}
 
 	/**
-	 * Return True if the L2PcInstance is on line.<BR><BR>
+	 * Return True if the L2PcInstance is on line.<BR>
+	 * <BR>
 	 */
 	public int isOnline()
 	{
