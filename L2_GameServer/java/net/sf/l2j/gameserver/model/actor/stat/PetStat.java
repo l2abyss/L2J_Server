@@ -106,7 +106,7 @@ public class PetStat extends SummonStat
     	catch (NullPointerException e)
     	{
     		_log.warning("Pet NPC ID "+getActiveChar().getNpcId()+", level "+level+" is missing data from pets_stats table!");
-    		return 5000000*level; // temp value calculated from lvl 81 wyvern, 395734658
+    		return 5000000L*level; // temp value calculated from lvl 81 wyvern, 395734658
     	}
     }
 
