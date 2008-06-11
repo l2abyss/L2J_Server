@@ -457,16 +457,13 @@ public class Universe implements java.io.Serializable
             //_log.info("Size of dump: "+count);
             data.writeInt(count);
 
-            if (_map != null)
+            for (Coord p : _map)
             {
-                for (Coord p : _map)
+                if (p != null)
                 {
-                    if (p != null)
-                    {
-                        data.writeInt(p._x);
-                        data.writeInt(p._y);
-                        data.writeInt(p._z);
-                    }
+                    data.writeInt(p._x);
+                    data.writeInt(p._y);
+                    data.writeInt(p._z);
                 }
             }
             data.flush();

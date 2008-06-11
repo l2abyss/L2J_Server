@@ -450,7 +450,7 @@ public class RecipeController
 			}
 
 			// validate recipe list
-			if ((_recipeList == null) || (_recipeList.getRecipes().length == 0))
+			if (_recipeList.getRecipes().length == 0)
 			{
 				_player.sendMessage("No such recipe");
 				_player.sendPacket(ActionFailed.STATIC_PACKET);

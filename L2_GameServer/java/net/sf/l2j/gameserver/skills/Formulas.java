@@ -1127,7 +1127,7 @@ public final class Formulas
 		//Multiplier should be removed, it's false ??
 		// TODO: Check if CritVuln effects whole part of CritDmg.
 		damage += 1.5*(attacker.calcStat(Stats.CRITICAL_DAMAGE, damage+power, target, skill)
-				* target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, skill != null ? skill : null));
+				* target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, skill));
 
 		// get the natural vulnerability for the template
 		if (target instanceof L2NpcInstance)
