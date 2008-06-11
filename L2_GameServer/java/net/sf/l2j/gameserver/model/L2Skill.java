@@ -2249,6 +2249,12 @@ public abstract class L2Skill
                         if (onlyFirst == false) targetList.add(player);
                         else return new L2Character[] {player};
                     }
+                    
+                    if (activeChar.getPet() != null)
+                    {
+                    	if ((targetType != SkillTargetType.TARGET_CORPSE_ALLY) && !(activeChar.getPet().isDead()))
+                    		targetList.add(activeChar.getPet());
+                    }
 
                     if (clan != null)
                     {
@@ -2283,7 +2289,14 @@ public abstract class L2Skill
                             // Don't add this target if this is a Pc->Pc pvp casting and pvp condition not met
                             if (!player.checkPvpSkill(newTarget, this)) continue;
 
-                            if (onlyFirst == false) targetList.add((L2Character) newTarget);
+                            if (onlyFirst == false)
+                            {
+                            	targetList.add((L2Character) newTarget);
+                            	if (((L2PcInstance) newTarget).getPet() != null)
+                            		if (!Util.checkIfInRange(radius, activeChar, ((L2PcInstance) newTarget).getPet(), true))
+                                        if ((targetType != SkillTargetType.TARGET_CORPSE_ALLY) && !(((L2PcInstance) newTarget).getPet().isDead()))
+                                            targetList.add(((L2PcInstance) newTarget).getPet());
+                            }
                             else return new L2Character[] {(L2Character) newTarget};
 
                         }
@@ -2312,6 +2325,12 @@ public abstract class L2Skill
                     {
                         if (onlyFirst == false) targetList.add(player);
                         else return new L2Character[] {player};
+                    }
+
+                    if (activeChar.getPet() != null)
+                    {
+                    	if ((targetType != SkillTargetType.TARGET_CORPSE_CLAN) && !(activeChar.getPet().isDead()))
+                    		targetList.add(activeChar.getPet());
                     }
 
                     if (clan != null)
@@ -2347,7 +2366,14 @@ public abstract class L2Skill
                             // Don't add this target if this is a Pc->Pc pvp casting and pvp condition not met
                             if (!player.checkPvpSkill(newTarget, this)) continue;
 
-                            if (onlyFirst == false) targetList.add(newTarget);
+                            if (onlyFirst == false)
+                            {
+                            	targetList.add(newTarget);
+                            	if (newTarget.getPet() != null)
+                            		if (!Util.checkIfInRange(radius, activeChar, newTarget.getPet(), true))
+                            			if ((targetType != SkillTargetType.TARGET_CORPSE_CLAN) && !(newTarget.getPet().isDead()))
+                            				targetList.add(newTarget.getPet());
+                            }
                             else return new L2Character[] {newTarget};
 
                         }
