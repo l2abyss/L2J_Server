@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.taskmanager.AttackStanceTaskManager;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 
 public class L2NpcBufferInstance extends L2NpcInstance
@@ -150,27 +151,27 @@ public class L2NpcBufferInstance extends L2NpcInstance
     	}
     	else if (command.startsWith("Heal"))
     	{
-    		if (!playerInstance.isInCombat())
+    		if (!playerInstance.isInCombat() && !AttackStanceTaskManager.getInstance().getAttackStanceTask(playerInstance))
     		{
 				String[] healArray = command.substring(5).split(" ");
 				
 				for (String healType: healArray)
 				{
-					if (healType == "HP")
+					if (healType.equalsIgnoreCase("HP"))
 		    		{
 		    			playerInstance.setCurrentHp(playerInstance.getMaxHp());
 		    		}
-					else if (healType == "MP")
+					else if (healType.equalsIgnoreCase("MP"))
 					{
 						playerInstance.setCurrentMp(playerInstance.getMaxMp());
 					}
-					else if (healType == "CP")
+					else if (healType.equalsIgnoreCase("CP"))
 					{
 						playerInstance.setCurrentCp(playerInstance.getMaxCp());
 					}
 				}
     		}
-    		showChatWindow(playerInstance, pageVal);
+    		showChatWindow(playerInstance, 0); // 0 = main window
     	}
 		else
 		{
