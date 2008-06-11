@@ -475,7 +475,7 @@ public class Hero
                         statement2.close();
                         con2.close();
 
-                        _heroes.remove(hero);
+                        _heroes.remove(heroId);
                         _heroes.put(heroId, hero);
 
                         _completeHeroes.put(heroId, hero);
