@@ -860,33 +860,19 @@ public class GameStatusThread extends Thread
     
     private boolean setEnchant(L2PcInstance activeChar, int ench, int armorType)
     {
-        // get the target
-        L2Object target = activeChar;
-        L2PcInstance player = null;
-        
-        if (target instanceof L2PcInstance)
-        {
-            player = (L2PcInstance) target;
-        }
-        else
-        {
-            activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
-            return false;
-        }
-
         // now we need to find the equipped weapon of the targeted character...
         int curEnchant = 0; // display purposes only
         L2ItemInstance itemInstance = null;
 
         // only attempt to enchant if there is a weapon equipped
-        L2ItemInstance parmorInstance = player.getInventory().getPaperdollItem(armorType);
+        L2ItemInstance parmorInstance = activeChar.getInventory().getPaperdollItem(armorType);
         if (parmorInstance != null && parmorInstance.getLocationSlot() == armorType)
         {
             itemInstance = parmorInstance;
         } else
         {
             // for bows/crossbows and double handed weapons
-            parmorInstance = player.getInventory().getPaperdollItem(Inventory.PAPERDOLL_LRHAND);
+            parmorInstance = activeChar.getInventory().getPaperdollItem(Inventory.PAPERDOLL_LRHAND);
             if (parmorInstance != null && parmorInstance.getLocationSlot() == Inventory.PAPERDOLL_LRHAND)
                 itemInstance = parmorInstance;
         }
@@ -896,25 +882,25 @@ public class GameStatusThread extends Thread
             curEnchant = itemInstance.getEnchantLevel();
 
             // set enchant value
-            player.getInventory().unEquipItemInSlotAndRecord(armorType);
+            activeChar.getInventory().unEquipItemInSlotAndRecord(armorType);
             itemInstance.setEnchantLevel(ench);
-            player.getInventory().equipItemAndRecord(itemInstance);
+            activeChar.getInventory().equipItemAndRecord(itemInstance);
 
             // send packets
             InventoryUpdate iu = new InventoryUpdate();
             iu.addModifiedItem(itemInstance);
-            player.sendPacket(iu);
-            player.broadcastPacket(new CharInfo(player));
-            player.sendPacket(new UserInfo(player));
+            activeChar.sendPacket(iu);
+            activeChar.broadcastPacket(new CharInfo(activeChar));
+            activeChar.sendPacket(new UserInfo(activeChar));
 
             // informations
-            activeChar.sendMessage("Changed enchantment of " + player.getName() + "'s "
+            activeChar.sendMessage("Changed enchantment of " + activeChar.getName() + "'s "
                 + itemInstance.getItem().getName() + " from " + curEnchant + " to " + ench + ".");
-            player.sendMessage("Admin has changed the enchantment of your "
+            activeChar.sendMessage("Admin has changed the enchantment of your "
                 + itemInstance.getItem().getName() + " from " + curEnchant + " to " + ench + ".");
 
             // log
-            GMAudit.auditGMAction("TelnetAdministrator", "enchant", player.getName(), itemInstance.getItem().getName() + "(" + itemInstance.getObjectId() + ")" + " from " + curEnchant + " to " + ench);
+            GMAudit.auditGMAction("TelnetAdministrator", "enchant", activeChar.getName(), itemInstance.getItem().getName() + "(" + itemInstance.getObjectId() + ")" + " from " + curEnchant + " to " + ench);
             return true;
         }
         return false;

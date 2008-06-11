@@ -15,7 +15,6 @@
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
@@ -25,8 +24,8 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
  *
  * @version $Revision: 1.2.4.3 $ $Date: 2005/04/11 10:05:56 $
  */
-public class AdminTarget implements IAdminCommandHandler {
-
+public class AdminTarget implements IAdminCommandHandler
+{
 	private static final String[] ADMIN_COMMANDS =
 	{
 		"admin_target"
@@ -38,7 +37,8 @@ public class AdminTarget implements IAdminCommandHandler {
 		return true;
 	}
 
-	public String[] getAdminCommandList() {
+	public String[] getAdminCommandList()
+	{
 		return ADMIN_COMMANDS;
 	}
 
@@ -47,10 +47,10 @@ public class AdminTarget implements IAdminCommandHandler {
 		try
 		{
 			String targetName = command.substring(13);
-			L2Object obj = L2World.getInstance().getPlayer(targetName);
-			if (obj instanceof L2PcInstance)
+			L2PcInstance player = L2World.getInstance().getPlayer(targetName);
+			if (player != null)
 			{
-				obj.onAction(activeChar);
+				player.onAction(activeChar);
 			}
 			else
 			{

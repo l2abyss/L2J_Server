@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlEvent;
 import net.sf.l2j.gameserver.model.L2CharPosition;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.serverpackets.PartyMemberPosition;
 
@@ -51,7 +50,7 @@ public final class CannotMoveAnymore extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2Character player = getClient().getActiveChar();
+		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;
 
@@ -64,11 +63,10 @@ public final class CannotMoveAnymore extends L2GameClientPacket
 			player.getAI().notifyEvent(CtrlEvent.EVT_ARRIVED_BLOCKED,
 					new L2CharPosition(_x, _y, _z, _heading));
 		}
-		if (player instanceof L2PcInstance
-				&& ((L2PcInstance) player).getParty() != null)
-			((L2PcInstance) player).getParty().broadcastToPartyMembers(
-					((L2PcInstance) player),
-					new PartyMemberPosition((L2PcInstance) player));
+		if (player.getParty() != null)
+		{
+			player.getParty().broadcastToPartyMembers(player, new PartyMemberPosition(player));
+		}
 
 		// player.stopMove();
 		//
