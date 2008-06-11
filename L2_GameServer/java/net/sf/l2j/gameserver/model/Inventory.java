@@ -644,6 +644,9 @@ public abstract class Inventory extends ItemContainer
 	 */
 	public L2ItemInstance dropItem(String process, L2ItemInstance item, L2PcInstance actor, L2Object reference)
 	{
+		if (item == null)
+			return null;
+		
 		synchronized (item)
 		{
 			if (!_items.contains(item))
