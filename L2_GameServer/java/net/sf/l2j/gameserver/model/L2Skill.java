@@ -87,8 +87,9 @@ public abstract class L2Skill
     public static final int SKILL_FAKE_DEX = 9005;
     public static final int SKILL_FAKE_STR = 9006;
 
-    public static enum SkillOpType {
-        OP_PASSIVE, OP_ACTIVE, OP_TOGGLE
+    public static enum SkillOpType
+    {
+        OP_PASSIVE, OP_ACTIVE, OP_TOGGLE, OP_CHANCE
     }
 
     /** Target types of skills : SELF, PARTY, CLAN, PET... */
@@ -526,13 +527,15 @@ public abstract class L2Skill
     protected FuncTemplate[] _funcTemplates;
     protected EffectTemplate[] _effectTemplates;
     protected EffectTemplate[] _effectTemplatesSelf;
-    
+
+    protected ChanceCondition _chanceCondition = null;
+
     // Flying support
     private final String _flyType;
     private final int _flyRadius;
     private final float _flyCourse;
 
-	private final boolean _isDebuff;
+    private final boolean _isDebuff;
 
     protected L2Skill(StatsSet set)
     {
@@ -625,6 +628,9 @@ public abstract class L2Skill
         _isOffensive = set.getBool("offensive", isSkillTypeOffensive());
         _numCharges = set.getInteger("num_charges", getLevel());
         _forceId = set.getInteger("forceId", 0);
+
+        if (_operateType == SkillOpType.OP_CHANCE)
+            _chanceCondition = ChanceCondition.parse(set);
 
         _numSouls = set.getInteger("num_souls", 0);
         _soulConsume = set.getInteger("soulConsumeCount", 0);
@@ -1104,6 +1110,16 @@ public abstract class L2Skill
         return _operateType == SkillOpType.OP_TOGGLE;
     }
 
+    public final boolean isChance()
+    {
+        return _operateType == SkillOpType.OP_CHANCE;
+    }
+
+    public ChanceCondition getChanceCondition()
+    {
+        return _chanceCondition;
+    }
+
     public final boolean isDance()
     {
         return _isDance;
@@ -1401,6 +1417,22 @@ public abstract class L2Skill
         return true;
     }
 
+    public final L2Object[] getTargetList(L2Character activeChar, boolean onlyFirst)
+    {
+        // Init to null the target of the skill
+        L2Character target = null;
+
+        // Get the L2Objcet targeted by the user of the skill at this moment
+        L2Object objTarget = activeChar.getTarget();
+        // If the L2Object targeted is a L2Character, it becomes the L2Character target
+        if (objTarget instanceof L2Character)
+        {
+            target = (L2Character) objTarget;
+        }
+
+        return getTargetList(activeChar, onlyFirst, target);
+    }
+
     /**
      * Return all targets of the skill in a table in function a the skill type.<BR><BR>
      *
@@ -1420,7 +1452,7 @@ public abstract class L2Skill
      * @param activeChar The L2Character who use the skill
      *
      */
-    public final L2Object[] getTargetList(L2Character activeChar, boolean onlyFirst)
+    public final L2Object[] getTargetList(L2Character activeChar, boolean onlyFirst, L2Character target)
     {
         List<L2Character> targetList = new FastList<L2Character>();
 
@@ -1428,21 +1460,9 @@ public abstract class L2Skill
         // (ex : ONE, SELF, HOLY, PET, AURA, AURA_CLOSE, AREA, MULTIFACE, PARTY, CLAN, CORPSE_PLAYER, CORPSE_MOB, CORPSE_CLAN, UNLOCKABLE, ITEM, UNDEAD)
         SkillTargetType targetType = getTargetType();
 
-        // Init to null the target of the skill
-        L2Character target = null;
-
-        // Get the L2Objcet targeted by the user of the skill at this moment
-        L2Object objTarget = activeChar.getTarget();
-
         // Get the type of the skill
         // (ex : PDAM, MDAM, DOT, BLEED, POISON, HEAL, HOT, MANAHEAL, MANARECHARGE, AGGDAMAGE, BUFF, DEBUFF, STUN, ROOT, RESURRECT, PASSIVE...)
         SkillType skillType = getSkillType();
-
-        // If the L2Object targeted is a L2Character, it becomes the L2Character target
-        if (objTarget instanceof L2Character)
-        {
-            target = (L2Character) objTarget;
-        }
 
         switch (targetType)
         {

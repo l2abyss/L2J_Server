@@ -179,6 +179,8 @@ public abstract class L2Character extends L2Object
 
 	/** FastMap(Integer, L2Skill) containing all skills of the L2Character */
 	protected final Map<Integer, L2Skill> _skills;
+	/** FastMap containing the active chance skills on this character */
+	protected ChanceSkillList _chanceSkills;
 
 	/** Zone system */
 	public static final int ZONE_PVP = 1;
@@ -1977,7 +1979,7 @@ public abstract class L2Character extends L2Object
 			return;
 		}
 		// Ignore the passive skill request. why does the client send it anyway ??
-		if (skill.isPassive())
+		if (skill.isPassive() || skill.isChance())
 			return;
 
 		// Get the target for the skill
@@ -4960,6 +4962,14 @@ public abstract class L2Character extends L2Object
 					target.breakAttack();
 					target.breakCast();
 				}
+
+				// Maybe launch chance skills on us
+				if (_chanceSkills != null)
+					_chanceSkills.onHit(target, false, crit);
+
+				// Maybe launch chance skills on target
+				if (target.getChanceSkills() != null)
+					target.getChanceSkills().onHit(this, true, crit);
 			}
 
 			// Launch weapon Special ability effect if available
@@ -5303,6 +5313,17 @@ public abstract class L2Character extends L2Object
 
 			// Add Func objects of newSkill to the calculator set of the L2Character
 			addStatFuncs(newSkill.getStatFuncs(null, this));
+
+			if (oldSkill != null && oldSkill.isChance() && _chanceSkills != null)
+			{
+				_chanceSkills.remove(oldSkill);
+			}
+			if (newSkill.isChance())
+			{
+				if (_chanceSkills == null)
+					_chanceSkills = new ChanceSkillList(this);
+				_chanceSkills.put(newSkill, newSkill.getChanceCondition());
+			}
 		}
 
 		return oldSkill;
@@ -5360,6 +5381,13 @@ public abstract class L2Character extends L2Object
 				((L2PcInstance)this).setAgathionId(0);
 				((L2PcInstance)this).broadcastUserInfo();
 			}
+
+			if (oldSkill.isChance() && _chanceSkills != null)
+			{
+				_chanceSkills.remove(oldSkill);
+				if (_chanceSkills.size() == 0)
+					_chanceSkills = null;
+			}
 		}
 
 		return oldSkill;
@@ -5378,6 +5406,11 @@ public abstract class L2Character extends L2Object
 			return new L2Skill[0];
 
 		return _skills.values().toArray(new L2Skill[_skills.values().size()]);
+	}
+
+	public ChanceSkillList getChanceSkills()
+	{
+		return _chanceSkills;
 	}
 
 	/**
@@ -5877,6 +5910,13 @@ public abstract class L2Character extends L2Object
 							sendMessage("Target affected by weapon special ability!");
 						}
 					}
+
+					// Maybe launch chance skills on us
+					if (_chanceSkills != null)
+						_chanceSkills.onSkillHit(target, false, skill.isMagic(), skill.isOffensive());
+					// Maybe launch chance skills on target
+					if (target.getChanceSkills() != null)
+						target.getChanceSkills().onSkillHit(this, true, skill.isMagic(), skill.isOffensive());
 				}
 			}
 
