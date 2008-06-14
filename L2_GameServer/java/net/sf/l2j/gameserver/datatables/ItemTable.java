@@ -171,7 +171,8 @@ public class ItemTable
 	/** Table of SQL request in order to obtain items from tables [etcitem], [armor], [weapon] */
     private static final String[] SQL_ITEM_SELECTS  =
     {
-        "SELECT item_id, name, crystallizable, item_type, weight, consume_type, material, crystal_type, duration, price, crystal_count, sellable, dropable, destroyable, tradeable FROM etcitem",
+        "SELECT item_id, name, crystallizable, item_type, weight, consume_type, material," +
+        " crystal_type, duration, price, crystal_count, sellable, dropable, destroyable, tradeable FROM etcitem",
 
         "SELECT item_id, name, bodypart, crystallizable, armor_type, weight," +
         	" material, crystal_type, avoid_modify, duration, p_def, m_def, mp_bonus," +
@@ -183,6 +184,23 @@ public class ItemTable
         	" sellable, dropable, destroyable, tradeable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl," +
         	" onCast_skill_chance, onCrit_skill_id, onCrit_skill_lvl, onCrit_skill_chance, change_weaponId FROM weapon"
      };
+    
+    private static final String[] SQL_CUSTOM_ITEM_SELECTS  =
+    {
+        "SELECT item_id, name, crystallizable, item_type, weight, consume_type, material," +
+        " crystal_type, duration, price, crystal_count, sellable, dropable, destroyable, tradeable FROM custom_etcitem",
+
+        "SELECT item_id, name, bodypart, crystallizable, armor_type, weight," +
+        	" material, crystal_type, avoid_modify, duration, p_def, m_def, mp_bonus," +
+        	" price, crystal_count, sellable, dropable, destroyable, tradeable, skill FROM custom_armor",
+
+        "SELECT item_id, name, bodypart, crystallizable, weight, soulshots, spiritshots," +
+        	" material, crystal_type, p_dam, rnd_dam, weaponType, critical, hit_modify, avoid_modify," +
+        	" shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, price, crystal_count," +
+        	" sellable, dropable, destroyable, tradeable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl," +
+        	" onCast_skill_chance, onCrit_skill_id, onCrit_skill_lvl, onCrit_skill_chance, change_weaponId FROM custom_weapon"
+     };
+    
     /** List of etcItem */
     private static final Map<Integer, Item> itemData    = new FastMap<Integer, Item>();
     /** List of weapons */
@@ -217,87 +235,149 @@ public class ItemTable
      */
 	public ItemTable()
 	{
-        _etcItems   = new FastMap<Integer, L2EtcItem>();
-        _armors     = new FastMap<Integer, L2Armor>();
-        _weapons    = new FastMap<Integer, L2Weapon>();
-
+		_etcItems = new FastMap<Integer, L2EtcItem>();
+		_armors = new FastMap<Integer, L2Armor>();
+		_weapons = new FastMap<Integer, L2Weapon>();
+		
 		java.sql.Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-            for (String selectQuery : SQL_ITEM_SELECTS)
-            {
-            	// Don't load custom tables if disabled.
-            	if (selectQuery.endsWith("_etcitem") && !Config.CUSTOM_ETCITEM_TABLE)
-					continue;
-				else if (selectQuery.endsWith("_armor") && !Config.CUSTOM_ARMOR_TABLE)
-					continue;
-				else if (selectQuery.endsWith("_weapon") && !Config.CUSTOM_WEAPON_TABLE)
-					continue;
-            	
-                PreparedStatement statement = con.prepareStatement(selectQuery);
-                ResultSet rset = statement.executeQuery();
-
-                // Add item in correct FastMap
-                while(rset.next())
-                {
-                    if (selectQuery.endsWith("etcitem"))
-                    {
-                        Item newItem    = readItem(rset);
-                        itemData.put(newItem.id, newItem);
-                    }
-                    else if (selectQuery.endsWith("armor"))
-                    {
-                        Item newItem    = readArmor(rset);
-                        armorData.put(newItem.id, newItem);
-                    }
-                    else if (selectQuery.endsWith("weapon"))
-                    {
-                        Item newItem    = readWeapon(rset);
-                        weaponData.put(newItem.id, newItem);
-                    }
-                }
-
-                rset.close();
-                statement.close();
-            }
-        }
-        catch (Exception e)
-        {
-            _log.log(Level.WARNING, "data error on item: ", e);
-        }
-        finally { try { con.close(); } catch (Exception e) {} }
-
-        for (L2Armor armor : SkillsEngine.getInstance().loadArmors(armorData))
-		{
-            _armors.put(armor.getItemId(), armor);
+			for (String selectQuery : SQL_ITEM_SELECTS)
+			{
+				PreparedStatement statement = con.prepareStatement(selectQuery);
+				ResultSet rset = statement.executeQuery();
+				
+				// Add item in correct FastMap
+				while (rset.next())
+				{
+					if (selectQuery.endsWith("etcitem"))
+					{
+						Item newItem = readItem(rset);
+						itemData.put(newItem.id, newItem);
+					}
+					else if (selectQuery.endsWith("armor"))
+					{
+						Item newItem = readArmor(rset);
+						armorData.put(newItem.id, newItem);
+					}
+					else if (selectQuery.endsWith("weapon"))
+					{
+						Item newItem = readWeapon(rset);
+						weaponData.put(newItem.id, newItem);
+					}
+				}
+				
+				rset.close();
+				statement.close();
+			}
 		}
-        _log.config("ItemTable: Loaded " + _armors.size() + " Armors.");
-
-        for (L2EtcItem item : SkillsEngine.getInstance().loadItems(itemData))
+		catch (Exception e)
 		{
-            _etcItems.put(item.getItemId(), item);
+			_log.log(Level.WARNING, "data error on item: ", e);
 		}
-        _log.config("ItemTable: Loaded " + _etcItems.size() + " Items.");
-
-        for (L2Weapon weapon : SkillsEngine.getInstance().loadWeapons(weaponData))
+		finally
 		{
-            _weapons.put(weapon.getItemId(), weapon);
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
 		}
-        _log.config("ItemTable: Loaded " + _weapons.size() + " Weapons.");
+		
+		if (Config.CUSTOM_ITEM_TABLES)
+		{
+			try
+			{
+				con = L2DatabaseFactory.getInstance().getConnection();
+				for (String selectQuery : SQL_CUSTOM_ITEM_SELECTS)
+				{
+					PreparedStatement statement = con.prepareStatement(selectQuery);
+					ResultSet rset = statement.executeQuery();
+					
+					// Add item in correct FastMap
+					while (rset.next())
+					{
+						if (selectQuery.endsWith("etcitem"))
+						{
+							Item newItem = readItem(rset);
+							
+							if (itemData.containsKey(newItem.id))
+								itemData.remove(newItem.id);
+							
+							itemData.put(newItem.id, newItem);
+						}
+						else if (selectQuery.endsWith("armor"))
+						{
+							Item newItem = readArmor(rset);
+							
+							if (armorData.containsKey(newItem.id))
+								armorData.remove(newItem.id);
+							
+							armorData.put(newItem.id, newItem);
+						}
+						else if (selectQuery.endsWith("weapon"))
+						{
+							Item newItem = readWeapon(rset);
+							
+							if (weaponData.containsKey(newItem.id))
+								weaponData.remove(newItem.id);
+							
+							weaponData.put(newItem.id, newItem);
+						}
+					}
+					rset.close();
+					statement.close();
+				}
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.WARNING, "data error on item: ", e);
+			}
+			finally
+			{
+				try
+				{
+					con.close();
+				}
+				catch (Exception e)
+				{
+				}
+			}
+		}
+		
+		for (L2Armor armor : SkillsEngine.getInstance().loadArmors(armorData))
+		{
+			_armors.put(armor.getItemId(), armor);
+		}
+		_log.config("ItemTable: Loaded " + _armors.size() + " Armors.");
+		
+		for (L2EtcItem item : SkillsEngine.getInstance().loadItems(itemData))
+		{
+			_etcItems.put(item.getItemId(), item);
+		}
+		_log.config("ItemTable: Loaded " + _etcItems.size() + " Items.");
+		
+		for (L2Weapon weapon : SkillsEngine.getInstance().loadWeapons(weaponData))
+		{
+			_weapons.put(weapon.getItemId(), weapon);
+		}
+		_log.config("ItemTable: Loaded " + _weapons.size() + " Weapons.");
 
-        //fillEtcItemsTable();
-		//fillArmorsTable();
-		//FillWeaponsTable();
 		buildFastLookupTable();
 	}
 
 	/**
-     * Returns object Item from the record of the database
-     * @param rset : ResultSet designating a record of the [weapon] table of database
-     * @return Item : object created from the database record
+	 * Returns object Item from the record of the database
+	 * 
+	 * @param rset :
+	 *            ResultSet designating a record of the [weapon] table of
+	 *            database
+	 * @return Item : object created from the database record
 	 * @throws SQLException
-     */
+	 */
     private Item readWeapon(ResultSet rset) throws SQLException
     {
         Item item   = new Item();
