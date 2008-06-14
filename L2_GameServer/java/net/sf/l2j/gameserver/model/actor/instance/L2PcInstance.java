@@ -10153,6 +10153,12 @@ public final class L2PcInstance extends L2PlayableInstance
 		for(L2PcInstance player : _snoopListener)
 			player.removeSnooped(this);
 
+		if (_chanceSkills != null)
+		{
+			_chanceSkills.setOwner(null);
+			_chanceSkills = null;
+		}
+
 		// Remove L2Object object from _allObjects of L2World
 		L2World.getInstance().removeObject(this);
 		L2World.getInstance().removeFromAllPlayers(this); // force remove in case of crash during teleport

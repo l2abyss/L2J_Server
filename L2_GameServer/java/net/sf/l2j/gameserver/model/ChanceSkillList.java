@@ -37,6 +37,16 @@ public class ChanceSkillList extends FastMap<L2Skill, ChanceCondition>
 		_owner = owner;
 	}
 
+	public L2Character getOwner()
+	{
+		return _owner;
+	}
+
+	public void setOwner(L2Character owner)
+	{
+		_owner = owner;
+	}
+
 	public void onHit(L2Character target, boolean ownerWasHit, boolean wasCrit)
 	{
 		int event;
@@ -95,14 +105,14 @@ public class ChanceSkillList extends FastMap<L2Skill, ChanceCondition>
 
 	private void makeCast(L2Skill skill, L2Character target)
 	{
-		ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
-		L2Object[] targets = skill.getTargetList(_owner, false, target);
-
-		_owner.broadcastPacket(new MagicSkillLaunched(_owner, skill.getDisplayId(), skill.getLevel(), targets));
-		_owner.broadcastPacket(new MagicSkillUse(_owner, (L2Character)targets[0], skill.getDisplayId(), skill.getLevel(), 0, 0));
-
 		try
 		{
+			ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
+			L2Object[] targets = skill.getTargetList(_owner, false, target);
+
+			_owner.broadcastPacket(new MagicSkillLaunched(_owner, skill.getDisplayId(), skill.getLevel(), targets));
+			_owner.broadcastPacket(new MagicSkillUse(_owner, (L2Character)targets[0], skill.getDisplayId(), skill.getLevel(), 0, 0));
+
 			// Launch the magic skill and calculate its effects
 			if (handler != null)
 				handler.useSkill(_owner, skill, targets);
@@ -111,7 +121,6 @@ public class ChanceSkillList extends FastMap<L2Skill, ChanceCondition>
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
 		}
 	}
 }
