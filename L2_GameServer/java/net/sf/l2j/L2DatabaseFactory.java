@@ -46,7 +46,7 @@ public class L2DatabaseFactory
 			if (Config.DATABASE_MAX_CONNECTIONS < 2)
             {
                 Config.DATABASE_MAX_CONNECTIONS = 2;
-                _log.warning("at least " + Config.DATABASE_MAX_CONNECTIONS + " db connections are required.");
+                _log.warning("A minimum of " + Config.DATABASE_MAX_CONNECTIONS + " db connections are required.");
             }
 
 			_source = new ComboPooledDataSource();
@@ -58,7 +58,7 @@ public class L2DatabaseFactory
 
 
 			_source.setAcquireRetryAttempts(0); // try to obtain connections indefinitely (0 = never quit)
-			_source.setAcquireRetryDelay(500);  // 500 miliseconds wait before try to acquire connection again
+			_source.setAcquireRetryDelay(500);  // 500 milliseconds wait before try to acquire connection again
 			_source.setCheckoutTimeout(0);      // 0 = wait indefinitely for new connection
 			// if pool is exhausted
 			_source.setAcquireIncrement(5);     // if pool is exhausted, get 5 more connections at a time
@@ -105,7 +105,7 @@ public class L2DatabaseFactory
 		catch (SQLException x)
 		{
 			if (Config.DEBUG) _log.fine("Database Connection FAILED");
-			// rethrow the exception
+			// re-throw the exception
 			throw x;
 		}
 		catch (Exception e)

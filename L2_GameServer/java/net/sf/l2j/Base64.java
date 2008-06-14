@@ -675,7 +675,7 @@ public class Base64
                 System.out.println("" + source[srcOffset + 3] + ": "
                     + (DECODABET[source[srcOffset + 3]]));
                 return -1;
-            } //e nd catch
+            } // end catch
         }
     } // end decodeToBytes
 

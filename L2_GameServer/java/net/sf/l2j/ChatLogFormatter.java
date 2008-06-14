@@ -42,8 +42,10 @@ public class ChatLogFormatter extends Formatter
 		output.append(dateFmt.format(new Date(record.getMillis())));
 		output.append(']');
 		output.append(' ');
-		if (params != null) {
-			for (Object p : params) {
+		if (params != null)
+		{
+			for (Object p : params)
+			{
 				output.append(p);
 				output.append(' ');
 			}
