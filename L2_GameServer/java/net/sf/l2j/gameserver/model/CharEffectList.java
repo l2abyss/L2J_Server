@@ -409,11 +409,8 @@ public class CharEffectList
 						&& e.getEffectType() == newEffect.getEffectType()
 						&& e.getStackOrder() == newEffect.getStackOrder())
 				{
-					if (newEffect.getSkill().getSkillType() == L2Skill.SkillType.BUFF
-							|| newEffect.getEffectType() == L2Effect.EffectType.BUFF)
-					{
+					if (!newEffect.getSkill().isDebuff())
 						e.exit();
-					}
 					else
 					{
 						// Started scheduled timer needs to be canceled.
