@@ -30,13 +30,14 @@ public final class L2ArmorSet
 	private final int _gloves;
 	private final int _feet;
 	private final int _skillId;
+	private final int _skillLvl;
 
 	private final int _shield;
 	private final int _shieldSkillId;
 
 	private final int _enchant6Skill;
 
-	public L2ArmorSet(int chest, int legs, int head, int gloves, int feet, int skill_id, int shield, int shield_skill_id, int enchant6skill)
+	public L2ArmorSet(int chest, int legs, int head, int gloves, int feet, int skill_id, int skill_lvl, int shield, int shield_skill_id, int enchant6skill)
 	{
 		_chest = chest;
 		_legs  = legs;
@@ -44,6 +45,7 @@ public final class L2ArmorSet
 		_gloves = gloves;
 		_feet  = feet;
 		_skillId = skill_id;
+		_skillLvl = skill_lvl;
 
 		_shield = shield;
 		_shieldSkillId = shield_skill_id;
@@ -110,10 +112,17 @@ public final class L2ArmorSet
 			return false;
 		}
 	}
+	
 	public int getSkillId()
 	{
 		return _skillId;
 	}
+	
+	public int getSkillLvl()
+	{
+		return _skillLvl;
+	}
+	
 	public boolean containShield(L2PcInstance player)
 	{
 		Inventory inv = player.getInventory();

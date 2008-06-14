@@ -59,7 +59,7 @@ public class ArmorSetsTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill_id, shield, shield_skill_id, enchant6skill FROM armorsets");
+			PreparedStatement statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill_id, skill_lvl, shield, shield_skill_id, enchant6skill FROM armorsets");
 			ResultSet rset = statement.executeQuery();
 
 			while(rset.next())
@@ -70,10 +70,11 @@ public class ArmorSetsTable
 				int gloves = rset.getInt("gloves");
 				int feet  = rset.getInt("feet");
 				int skill_id = rset.getInt("skill_id");
+				int skill_lvl = rset.getInt("skill_lvl");
 				int shield = rset.getInt("shield");
 				int shield_skill_id = rset.getInt("shield_skill_id");
 				int enchant6skill = rset.getInt("enchant6skill");
-				_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet,skill_id, shield, shield_skill_id, enchant6skill));
+				_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet,skill_id, skill_lvl, shield, shield_skill_id, enchant6skill));
 			}
 
 			_log.config("ArmorSetsTable: Loaded "+_armorSets.size()+" armor sets.");
@@ -92,7 +93,7 @@ public class ArmorSetsTable
 			{
 				int cSets = _armorSets.size();
 				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill_id, shield, shield_skill_id, enchant6skill FROM custom_armorsets");
+				PreparedStatement statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill_id, skill_lvl, shield, shield_skill_id, enchant6skill FROM custom_armorsets");
 				ResultSet rset = statement.executeQuery();
 				while (rset.next())
 				{
@@ -102,10 +103,11 @@ public class ArmorSetsTable
 					int gloves = rset.getInt("gloves");
 					int feet = rset.getInt("feet");
 					int skill_id = rset.getInt("skill_id");
+					int skill_lvl = rset.getInt("skill_lvl");
 					int shield = rset.getInt("shield");
 					int shield_skill_id = rset.getInt("shield_skill_id");
 					int enchant6skill = rset.getInt("enchant6skill");
-					_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet, skill_id, shield, shield_skill_id, enchant6skill));
+					_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet, skill_id, skill_lvl, shield, shield_skill_id, enchant6skill));
 				}
 				_log.config("ArmorSetsTable: Loaded " + (_armorSets.size() - cSets) + " Custom armor sets.");
 				rset.close();

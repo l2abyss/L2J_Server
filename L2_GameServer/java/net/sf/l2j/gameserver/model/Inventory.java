@@ -424,7 +424,7 @@ public abstract class Inventory extends ItemContainer
     		{
     			if(armorSet.containAll(player))
     			{
-    	    		L2Skill skill = SkillTable.getInstance().getInfo(armorSet.getSkillId(),1);
+    	    		L2Skill skill = SkillTable.getInstance().getInfo(armorSet.getSkillId(),armorSet.getSkillLvl());
     	    		if(skill != null)
     	    		{
     	    			player.addSkill(skill, false);
@@ -485,6 +485,7 @@ public abstract class Inventory extends ItemContainer
     		
     		boolean remove = false;
     		int removeSkillId1 = 0; // set skill
+    		int removeSkillLvl1 = 1; // set skillLvl
     		int removeSkillId2 = 0; // shield skill
     		int removeSkillId3 = 0; // enchant +6 skill
     		
@@ -496,6 +497,7 @@ public abstract class Inventory extends ItemContainer
     			
     			remove = true;
     			removeSkillId1 = armorSet.getSkillId();
+    			removeSkillLvl1 = armorSet.getSkillLvl();
     			removeSkillId2 = armorSet.getShieldSkillId();
     			removeSkillId3 = armorSet.getEnchant6skillId();
     		}
@@ -513,6 +515,7 @@ public abstract class Inventory extends ItemContainer
     			{
     				remove = true;
     				removeSkillId1 = armorSet.getSkillId();
+    				removeSkillLvl1 = armorSet.getSkillLvl();
     				removeSkillId2 = armorSet.getShieldSkillId();
     				removeSkillId3 = armorSet.getEnchant6skillId();
     			}
@@ -527,7 +530,7 @@ public abstract class Inventory extends ItemContainer
     		{
     			if(removeSkillId1 != 0)
     			{
-        			L2Skill skill = SkillTable.getInstance().getInfo(removeSkillId1,1);
+        			L2Skill skill = SkillTable.getInstance().getInfo(removeSkillId1,removeSkillLvl1);
         			if(skill != null)
         				player.removeSkill(skill);
         			else
