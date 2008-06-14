@@ -48,7 +48,7 @@ public abstract class PathFinding
 	}
 
 	public abstract boolean pathNodesExist(short regionoffset);
-	public abstract List<AbstractNodeLoc> findPath(int gx, int gy, short z, int gtx, int gtz, short tz);
+	public abstract List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz);
 	public abstract Node[] readNeighbors(short node_x,short node_y, int idx);
 
 	public List<AbstractNodeLoc> search(Node start, Node end)

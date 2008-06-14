@@ -57,7 +57,7 @@ public class WorldPathFinding extends PathFinding
 	 * @see net.sf.l2j.gameserver.pathfinding.PathFinding#FindPath(int, int, short, int, int, short)
 	 */
 	@Override
-	public List<AbstractNodeLoc> findPath(int gx, int gy, short z, int gtx,	int gtz, short tz)
+	public List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz)
 	{
 		return null;
 	}

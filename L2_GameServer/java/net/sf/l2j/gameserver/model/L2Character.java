@@ -4213,18 +4213,8 @@ public abstract class L2Character extends L2Object
 				// Overrides previous movement check
 				if(this instanceof L2PlayableInstance || this.isInCombat())
 				{
-					int gx = (curX - L2World.MAP_MIN_X) >> 4;
-					int gy = (curY - L2World.MAP_MIN_Y) >> 4;
-				
-                	// TODO: Find closest path node we can access, e.g.
-					// Node start = GeoPathFinding.getInstance().readNode(gx, gy, (short)curZ);
-					// if (start == null) 
-					//   no path node...
-					// Location temp = GeoData.getInstance().moveCheck(curX, curY, curZ, start.getLoc().getX(), start.getLoc().getY(), start.getLoc().getZ());
-					// if ((temp.getX() != start.getLoc().getX()) || (temp.getY() != start.getLoc().getY()))
-					//   cannot reach closest...
-							
-					m.geoPath = GeoPathFinding.getInstance().findPath(gx, gy, (short)curZ, gtx, gty, (short)originalZ);
+		
+					m.geoPath = GeoPathFinding.getInstance().findPath(curX, curY, curZ, originalX, originalY, originalZ);
                 	if (m.geoPath == null || m.geoPath.size() < 2) // No path found
                 	{
                 		// Even though there's no path found (remember geonodes aren't perfect), 
