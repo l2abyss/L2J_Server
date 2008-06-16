@@ -407,8 +407,7 @@ public final class Formulas
 			{
 				env.value *= DEXbonus[p.getDEX()];
 				env.value *= 10;
-				if(env.value > Config.MAX_PCRIT_RATE)
-					env.value = Config.MAX_PCRIT_RATE;
+
 			}
 		}
 	}
@@ -439,8 +438,7 @@ public final class Formulas
 			{
 				env.value *= WITbonus[p.getWIT()];
 				
-				if(env.value > Config.MAX_MCRIT_RATE)
-					env.value = Config.MAX_MCRIT_RATE;
+
 			}
 		}
 	}

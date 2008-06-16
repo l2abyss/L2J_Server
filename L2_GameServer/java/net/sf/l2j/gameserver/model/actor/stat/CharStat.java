@@ -77,38 +77,52 @@ public class CharStat
 	 *            (ex : Level...)
 	 *
 	 */
-	public final double calcStat(Stats stat, double init, L2Character target, L2Skill skill)
+	public final double calcStat(Stats stat, double init, L2Character target,
+	        L2Skill skill)
 	{
 		if (_activeChar == null)
 			return init;
-
+		
 		int id = stat.ordinal();
-
+		
 		Calculator c = _activeChar.getCalculators()[id];
-
+		
 		// If no Func object found, no modifier is applied
 		if (c == null || c.size() == 0)
 			return init;
-
+		
 		// Create and init an Env object to pass parameters to the Calculator
 		Env env = new Env();
 		env.player = _activeChar;
 		env.target = target;
 		env.skill = skill;
 		env.value = init;
-
+		
 		// Launch the calculation
 		c.calc(env);
-		// avoid some troubles with negative stats (some stats should never be negative)
+		// avoid some troubles with negative stats (some stats should never be
+		// negative)
 		if (env.value <= 0
-				&& ((stat == Stats.MAX_HP) || (stat == Stats.MAX_MP) || (stat == Stats.MAX_CP) || (stat == Stats.MAGIC_DEFENCE)
-						|| (stat == Stats.POWER_DEFENCE) || (stat == Stats.POWER_ATTACK) || (stat == Stats.MAGIC_ATTACK) || (stat == Stats.POWER_ATTACK_SPEED)
-						|| (stat == Stats.MAGIC_ATTACK_SPEED) || (stat == Stats.SHIELD_DEFENCE) || (stat == Stats.STAT_CON) || (stat == Stats.STAT_DEX)
-						|| (stat == Stats.STAT_INT) || (stat == Stats.STAT_MEN) || (stat == Stats.STAT_STR) || (stat == Stats.STAT_WIT)))
+		        && ((stat == Stats.MAX_HP)
+		        		|| (stat == Stats.MAX_MP)
+		                || (stat == Stats.MAX_CP)
+		                || (stat == Stats.MAGIC_DEFENCE)
+		                || (stat == Stats.POWER_DEFENCE)
+		                || (stat == Stats.POWER_ATTACK)
+		                || (stat == Stats.MAGIC_ATTACK)
+		                || (stat == Stats.POWER_ATTACK_SPEED)
+		                || (stat == Stats.MAGIC_ATTACK_SPEED)
+		                || (stat == Stats.SHIELD_DEFENCE)
+		                || (stat == Stats.STAT_CON)
+		                || (stat == Stats.STAT_DEX)
+		                || (stat == Stats.STAT_INT)
+		                || (stat == Stats.STAT_MEN)
+		                || (stat == Stats.STAT_STR)
+		                || (stat == Stats.STAT_WIT)))
 		{
 			env.value = 1;
 		}
-
+		
 		return env.value;
 	}
 
@@ -125,7 +139,7 @@ public class CharStat
 	{
 		if (_activeChar == null)
 			return 0;
-
+		
 		return (int) (calcStat(Stats.ACCURACY_COMBAT, 0, null, null) / _activeChar.getWeaponExpertisePenalty());
 	}
 
@@ -142,7 +156,7 @@ public class CharStat
 	{
 		if (_activeChar == null)
 			return 1;
-
+		
 		return (float) ((1.1) * getPAtkSpd() / _activeChar.getTemplate().basePAtkSpd);
 	}
 
@@ -151,7 +165,7 @@ public class CharStat
 	{
 		if (_activeChar == null)
 			return 1;
-
+		
 		return (int) calcStat(Stats.STAT_CON, _activeChar.getTemplate().baseCON, null, null);
 	}
 
@@ -166,13 +180,13 @@ public class CharStat
 	{
 		if (_activeChar == null)
 			return 1;
-
+		
 		int criticalHit = (int) calcStat(Stats.CRITICAL_RATE, _activeChar.getTemplate().baseCritRate, target, skill);
-
+		
 		// Set a cap of Critical Hit at 500
-		if(criticalHit > 500)
-			criticalHit = 500;
-
+		if (criticalHit > Config.MAX_PCRIT_RATE)
+			criticalHit = Config.MAX_PCRIT_RATE;
+		
 		return criticalHit;
 	}
 
@@ -367,6 +381,8 @@ public class CharStat
 			return 1;
 		
 		double mrate = calcStat(Stats.MCRITICAL_RATE, _activeChar.getTemplate().baseMCritRate, target, skill);
+		if(mrate > Config.MAX_MCRIT_RATE)
+			mrate = Config.MAX_MCRIT_RATE;
 		return (int) mrate;
 	}
 
@@ -569,18 +585,18 @@ public class CharStat
 	/** Return the Physical Attack range (base+modifier) of the L2Character. */
 	public final int getPhysicalAttackRange()
 	{
-    	if (_activeChar == null)
-    		return 1;
-    	
-    	if (_activeChar.isTransformed())
-    	    return _activeChar.getTemplate().baseAtkRange;
-    	// Polearm handled here for now. Basically L2PcInstance could have a function
-    	// similar to FuncBowAtkRange and NPC are defined in DP. 
-    	L2Weapon weaponItem = _activeChar.getActiveWeaponItem();
-        if (weaponItem != null && weaponItem.getItemType() == L2WeaponType.POLE)
-            return (int) calcStat(Stats.POWER_ATTACK_RANGE, 66, null, null);
-
-    	return (int) calcStat(Stats.POWER_ATTACK_RANGE, _activeChar.getTemplate().baseAtkRange, null, null);
+		if (_activeChar == null)
+			return 1;
+		
+		if (_activeChar.isTransformed())
+			return _activeChar.getTemplate().baseAtkRange;
+		// Polearm handled here for now. Basically L2PcInstance could have a function
+		// similar to FuncBowAtkRange and NPC are defined in DP.
+		L2Weapon weaponItem = _activeChar.getActiveWeaponItem();
+		if (weaponItem != null && weaponItem.getItemType() == L2WeaponType.POLE)
+			return (int) calcStat(Stats.POWER_ATTACK_RANGE, 66, null, null);
+		
+		return (int) calcStat(Stats.POWER_ATTACK_RANGE, _activeChar.getTemplate().baseAtkRange, null, null);
 	}
 
 	/** Return the weapon reuse modifier */
@@ -595,13 +611,13 @@ public class CharStat
 	 */
 	public int getRunSpeed()
 	{
-    	if (_activeChar == null)
-    		return 1;
-
+		if (_activeChar == null)
+			return 1;
+		
 		// err we should be adding TO the persons run speed
 		// not making it a constant
-		int val =(int) calcStat(Stats.RUN_SPEED, _activeChar.getTemplate().baseRunSpd, null, null) + Config.RUN_SPD_BOOST;
-
+		int val = (int) calcStat(Stats.RUN_SPEED, _activeChar.getTemplate().baseRunSpd, null, null) + Config.RUN_SPD_BOOST;
+		
 		if (_activeChar.isFlying())
 		{
 			val += Config.WYVERN_SPEED;
@@ -627,7 +643,7 @@ public class CharStat
 			val += Config.GREAT_SNOW_WOLF_SPEED;
 			return val;
 		}
-
+		
 		// TODO: check if sharks/fish should be affected ;)
 		if (_activeChar.isInsideZone(L2Character.ZONE_WATER))
 			val /= 2;
@@ -696,11 +712,12 @@ public class CharStat
 	/** Return the mpConsume. */
 	public final int getMpConsume(L2Skill skill)
 	{
-    	if (skill == null)
-    		return 1;
+		if (skill == null)
+			return 1;
 		int mpconsume = skill.getMpConsume();
 		if (skill.isDance() && _activeChar != null && _activeChar.getDanceCount() > 0)
 			mpconsume += _activeChar.getDanceCount() * skill.getNextDanceMpCost();
+		
 		return (int) calcStat(Stats.MP_CONSUME, mpconsume, null, skill);
 	}
 
