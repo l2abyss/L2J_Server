@@ -353,8 +353,13 @@ public class L2ClanMember
 		return _clan;
 	}
 
-	public int calculatePledgeClass(L2PcInstance player){
+	public int calculatePledgeClass(L2PcInstance player)
+	{
        int pledgeClass = 0;
+       
+       if (player == null)
+    	   return pledgeClass;
+       
        L2Clan clan = player.getClan();
        if (clan != null)
        {
