@@ -14,7 +14,8 @@
  */
 package net.sf.l2j.util;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
 *
@@ -26,7 +27,7 @@ import java.util.LinkedList;
 *      1.0.0 - Initial version.<br>
 *      1.0.1 - Made forEachP() final.<br>
 */
-public class L2FastList<T extends Object> extends LinkedList<T>
+public class L2FastList<T extends Object> extends ArrayList<T>
 {
 	static final long serialVersionUID = 1L;
 	
@@ -39,23 +40,21 @@ public class L2FastList<T extends Object> extends LinkedList<T>
 		public boolean ForEach(T obj);
 	}
 	
+	public L2FastList() {
+		super();
+	}
+	
+	public L2FastList(List<? extends T> list) {
+		super(list);
+	}
      /**
       * Public method that iterate entire collection.<br>
       * <br>
       * @param func - a class method that must be executed on every element of collection.<br>
-      * @param sync - if set to true, will lock entire collection.<br>
       * @return - returns true if entire collection is iterated, false if it`s been interrupted by<br>
       *             check method (I2ForEach.forEach())<br>
       */
-	public final boolean forEach(I2ForEach<T> func, boolean sync) {
-		if (sync)
-			synchronized(this) { return forEachP(func); }
-		else
-			return forEachP(func);
-	}
-	
-    // private method that implements forEach iteration
-	private final boolean forEachP(I2ForEach<T> func) {
+	public boolean forEach(I2ForEach<T> func) {
 		for (T e: this)
 			if (!func.ForEach(e)) return false;
 		return true;

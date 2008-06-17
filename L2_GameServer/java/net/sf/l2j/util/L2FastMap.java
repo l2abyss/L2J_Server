@@ -20,7 +20,6 @@ import java.util.Map;
 /**
  *
  * A custom version of HashMap with extension for iterating without using temporary collection<br>
- * It`s provide synchronization lock when iterating if needed<br>
  * <br>
  * @author  Julian Version 1.0.1 (2008-02-07)<br>
  * Changes:<br>
@@ -41,25 +40,36 @@ public class L2FastMap<K extends Object, V extends Object> extends HashMap<K,V>
 		public boolean forEach(K key, V val);
 	}
 
+	public interface I2ForEachKey<K> {
+		public boolean forEach(K key);
+	}
+
+	public interface I2ForEachValue<V> {
+		public boolean forEach(V val);
+	}
+
 	/**
 	 * Public method that iterate entire collection.<br>
 	 * <br>
 	 * @param func - a class method that must be executed on every element of collection.<br>
-	 * @param sync - if set to true, will lock entire collection.<br>
 	 * @return - returns true if entire collection is iterated, false if it`s been interrupted by<br>
 	 *             check method (I2ForEach.forEach())<br>
 	 */
-	public final boolean ForEach(I2ForEach<K,V> func, boolean sync) {
-		if (sync)
-			synchronized (this) { return forEachP(func); }
-		else
-			return forEachP(func);
-	}
-	
-	// private method that implements forEach iteration
-	private final boolean forEachP(I2ForEach<K,V> func) {
+	public boolean ForEach(I2ForEach<K,V> func) {
 		for (Map.Entry<K,V> e: this.entrySet())
 			if (!func.forEach(e.getKey(),e.getValue())) return false;
+		return true;
+	}
+
+	public boolean ForEachKey(I2ForEachKey<K> func) {
+		for (K k: this.keySet())
+			if (!func.forEach(k)) return false;
+		return true;
+	}
+
+	public boolean ForEachValue(I2ForEachValue<V> func) {
+		for (V v: this.values())
+			if (!func.forEach(v)) return false;
 		return true;
 	}
 }
