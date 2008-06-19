@@ -2319,7 +2319,7 @@ public abstract class L2Character extends L2Object
 						onMagicHitTimer(_targets, _skill, _coolTime, false);
 						break;
 					case 3:
-						onMagicFinalizer(_skill);
+						onMagicFinalizer(_skill, _targets[0]);
 						break;
 					default:
 						break;
@@ -5681,34 +5681,34 @@ public abstract class L2Character extends L2Object
 
 			// Launch the magic skill in order to calculate its effects
 			callSkill(skill, targets);
-		} 
-		catch (NullPointerException e) {} 
-		
+		}
+		catch (NullPointerException e) {}
+
 		if (instant || coolTime == 0)
-			onMagicFinalizer(skill);
-		else 
+			onMagicFinalizer(skill, targets[0]);
+		else
 			_skillCast = ThreadPoolManager.getInstance().scheduleEffect(new MagicUseTask(targets, skill, coolTime, 3), coolTime);
 	}
 	/*
-	 * Runs after skill hitTime+coolTime 
+	 * Runs after skill hitTime+coolTime
 	 */
-	public void onMagicFinalizer(L2Skill skill)
+	public void onMagicFinalizer(L2Skill skill, L2Object target)
 	{
 		_skillCast = null;
 		_castEndTime = 0;
 		_castInterruptTime = 0;
 		enableAllSkills();
-		
+
 		// If the skill type is listed here, notify the AI of the target with AI_INTENTION_ATTACK
 		// for offensive skills the nextintention is always null unless player wants action after skill
 		// Note: this might also work
-		// if (skill.isOffensive() && getAI().getNextIntention() == null 
+		// if (skill.isOffensive() && getAI().getNextIntention() == null
 		// && !(skill.getSkillType() == SkillType.UNLOCK) && !(skill.getSkillType() == SkillType.DELUXE_KEY_UNLOCK) && !(skill.getSkillType() == SkillType.MDAM))
-		if (getAI().getNextIntention() == null && skill.getSkillType() == SkillType.PDAM || skill.getSkillType() == SkillType.BLOW 
-				|| skill.getSkillType() == SkillType.DRAIN_SOUL || skill.getSkillType() == SkillType.SOW 
+		if (getAI().getNextIntention() == null && skill.getSkillType() == SkillType.PDAM || skill.getSkillType() == SkillType.BLOW
+				|| skill.getSkillType() == SkillType.DRAIN_SOUL || skill.getSkillType() == SkillType.SOW
 				|| skill.getSkillType() == SkillType.SPOIL)
 		{
-			if ((getTarget() != null) && (getTarget() instanceof L2Character))
+			if (getTarget() instanceof L2Character && getTarget() != this && target == getTarget())
 				getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, getTarget());
 		}
 
