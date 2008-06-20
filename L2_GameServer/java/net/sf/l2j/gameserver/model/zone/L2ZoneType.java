@@ -14,6 +14,9 @@
  */
 package net.sf.l2j.gameserver.model.zone;
 
+import java.util.List;
+
+import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
@@ -28,7 +31,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 public abstract class L2ZoneType
 {
     private final int _id;
-	protected L2ZoneForm _zone;
+	protected List<L2ZoneForm> _zone;
 	protected FastMap<Integer, L2Character> _characterList;
 
 	/** Parameters to affect specific characters */
@@ -206,7 +209,7 @@ public abstract class L2ZoneType
 	 */
 	public void setZone(L2ZoneForm zone)
 	{
-		_zone = zone;
+		getZones().add(zone);
 	}
 
 	/**
@@ -216,9 +219,18 @@ public abstract class L2ZoneType
 	 */
 	public L2ZoneForm getZone()
 	{
-		return _zone;
+		for (L2ZoneForm zone: getZones())
+		{
+			return zone;
+		}
+		return null;
 	}
 
+	public final List<L2ZoneForm> getZones()
+	{
+		if (_zone == null) _zone = new FastList<L2ZoneForm>();
+		return _zone;
+	}
 	/**
 	 * Checks if the given coordinates are within the zone
 	 * @param x
@@ -227,7 +239,11 @@ public abstract class L2ZoneType
 	 */
 	public boolean isInsideZone(int x, int y, int z)
 	{
-		return _zone.isInsideZone(x, y, z);
+		for (L2ZoneForm zone: getZones())
+		{
+			if (zone.isInsideZone(x, y, z)) return true;
+		}
+		return false;
 	}
 
 	/**
@@ -237,17 +253,17 @@ public abstract class L2ZoneType
 	 */
 	public boolean isInsideZone(L2Object object)
 	{
-		return _zone.isInsideZone(object.getX(), object.getY(), object.getZ());
+		return isInsideZone(object.getX(), object.getY(), object.getZ());
 	}
 
 	public double getDistanceToZone(int x, int y)
 	{
-		return _zone.getDistanceToZone(x, y);
+		return getZone().getDistanceToZone(x, y);
 	}
 
 	public double getDistanceToZone(L2Object object)
 	{
-		return _zone.getDistanceToZone(object.getX(), object.getY());
+		return getZone().getDistanceToZone(object.getX(), object.getY());
 	}
 
 	public void revalidateInZone(L2Character character)
@@ -259,7 +275,7 @@ public abstract class L2ZoneType
 		}
 
 		// If the object is inside the zone...
-		if (_zone.isInsideZone(character.getX(), character.getY(), character.getZ()))
+		if (isInsideZone(character.getX(), character.getY(), character.getZ()))
 		{
 			// Was the character not yet inside this zone?
 			if (!_characterList.containsKey(character.getObjectId()))
