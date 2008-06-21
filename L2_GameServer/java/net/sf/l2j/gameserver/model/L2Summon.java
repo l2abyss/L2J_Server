@@ -22,6 +22,7 @@ import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.actor.knownlist.SummonKnownList;
@@ -172,6 +173,11 @@ public abstract class L2Summon extends L2PlayableInstance
     public boolean isMountable()
     {
         return false;
+    }
+    
+    public boolean isMountableOverTime()
+    {
+    	return false;
     }
 
 	@Override
@@ -413,6 +419,9 @@ public abstract class L2Summon extends L2PlayableInstance
             getKnownList().removeAllKnownObjects();
 	        owner.setPet(null);
 	        setTarget(null);
+	        
+	        if (this instanceof L2PetInstance)
+	        	((L2PetInstance)this).setIsMountableOverTime(false);
 	    }
     }
 

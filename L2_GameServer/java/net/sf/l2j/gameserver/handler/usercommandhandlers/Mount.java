@@ -40,7 +40,7 @@ public class Mount implements IUserCommandHandler
         
         L2Summon pet = activeChar.getPet();
         
-        if ((pet != null) && pet.isMountable() && !activeChar.isMounted())
+        if (pet != null && pet.isMountable() && pet.isMountableOverTime() && !activeChar.isMounted())
         {
             if (activeChar.isTransformed())
             {

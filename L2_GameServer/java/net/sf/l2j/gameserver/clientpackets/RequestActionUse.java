@@ -220,7 +220,7 @@ public final class RequestActionUse extends L2GameClientPacket
                 break;
             case 38: // pet mount
                 // mount
-                if (pet != null && pet.isMountable() && !activeChar.isMounted() && !activeChar.isBetrayed())
+                if (pet != null && pet.isMountable() && pet.isMountableOverTime() && !activeChar.isMounted() && !activeChar.isBetrayed())
                 {
                     if (activeChar.isDead())
                     {
@@ -366,7 +366,14 @@ public final class RequestActionUse extends L2GameClientPacket
                 break;
             case 52: // unsummon
                 if (pet != null && pet instanceof L2SummonInstance)
-                    pet.unSummon(activeChar);
+                {
+                	if (pet.isInCombat() || pet.isBetrayed())
+                	{
+                		activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_REFUSING_ORDER));
+                	}
+                	else
+                		pet.unSummon(activeChar);
+                }
                 break;
             case 53: // move to target
                 if (target != null && pet != null && pet != target && !pet.isMovementDisabled())
