@@ -32,7 +32,6 @@ public class CharStat
 	private long _exp = 0;
 	private int _sp = 0;
 	private byte _level = 1;
-
 	// =========================================================
 	// Constructor
 	public CharStat(L2Character activeChar)
@@ -97,7 +96,6 @@ public class CharStat
 		env.target = target;
 		env.skill = skill;
 		env.value = init;
-		
 		// Launch the calculation
 		c.calc(env);
 		// avoid some troubles with negative stats (some stats should never be
@@ -181,8 +179,8 @@ public class CharStat
 		if (_activeChar == null)
 			return 1;
 		
-		int criticalHit = (int) calcStat(Stats.CRITICAL_RATE, _activeChar.getTemplate().baseCritRate, target, skill);
-		
+		int criticalHit = (int) (calcStat(Stats.CRITICAL_RATE, _activeChar.getTemplate().baseCritRate, target, skill)*10.0 + 0.5);
+		criticalHit /= 10;
 		// Set a cap of Critical Hit at 500
 		if (criticalHit > Config.MAX_PCRIT_RATE)
 			criticalHit = Config.MAX_PCRIT_RATE;

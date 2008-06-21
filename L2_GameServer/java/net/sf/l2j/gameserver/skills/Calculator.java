@@ -39,7 +39,6 @@ public final class Calculator
 
 	/** Table of Func object */
 	private Func[] _functions;
-
 	/**
 	 * Constructor of Calculator (Init value : emptyFuncs).<BR><BR>
 	 */
@@ -178,7 +177,6 @@ public final class Calculator
 
 		for (int i=0; i < funcs.length; i++)
 			funcs[i].calc(env);
-
 	}
 
 }

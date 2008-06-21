@@ -394,7 +394,7 @@ public final class Formulas
 
 		private FuncAtkCritical()
 		{
-			super(Stats.CRITICAL_RATE, 0x30, null);
+			super(Stats.CRITICAL_RATE, 0x09, null);
 		}
 
 		@Override
@@ -409,6 +409,7 @@ public final class Formulas
 				env.value *= 10;
 
 			}
+			env.baseValue = env.value;
 		}
 	}
 	
