@@ -4713,7 +4713,7 @@ public final class L2PcInstance extends L2PlayableInstance
 							// NOTE: deathPenalty +- Exp will update karma
 							// Penalty is lower if the player is at war with the pk (war has to be declared)
 							if (getSkillLevel(L2Skill.SKILL_LUCKY) < 0 || getStat().getLevel() > 9)
-								deathPenalty(pk != null && getClan() != null && getClan().isAtWarWith(pk.getClanId()));										
+								deathPenalty(pk != null && getClan() != null && getClan().isAtWarWith(pk.getClanId()), pk != null);										
 
 						} else
 						{
@@ -5115,42 +5115,74 @@ public final class L2PcInstance extends L2PlayableInstance
 	 * <li>Send a Server->Client StatusUpdate packet with its new Experience </li><BR><BR>
 	 *
 	 */
-	public void deathPenalty(boolean atwar)
+	public void deathPenalty(boolean atwar, boolean killed_by_pc)
 	{
 		// TODO Need Correct Penalty
 		// Get the level of the L2PcInstance
 		final int lvl = getLevel();
 
-		//The death steal you some Exp
-		double percentLost = 1.0;
-		
 		byte level = (byte)getLevel();
+		
+		int clan_luck = getSkillLevel(L2Skill.SKILL_CLAN_LUCK);
+		
+		double clan_luck_modificator = 1.0;	
+		
+		if (!killed_by_pc)
+		{
+			switch (clan_luck)
+			{
+				case 3:
+					clan_luck_modificator = 0.8;
+					break;
+				case 2:
+					clan_luck_modificator = 0.8;
+					break;
+				case 1:
+					clan_luck_modificator = 0.88;
+					break;
+				default:
+					clan_luck_modificator = 1.0;
+					break;				
+			}
+		}
+		else
+		{
+			switch (clan_luck)
+			{
+				case 3:
+					clan_luck_modificator = 0.5;
+					break;
+				case 2:
+					clan_luck_modificator = 0.5;
+					break;
+				case 1:
+					clan_luck_modificator = 0.5;
+					break;
+				default:
+					clan_luck_modificator = 1.0;
+					break;				
+			}
+		}	
+		
+		//The death steal you some Exp
+		double percentLost = (1.0*clan_luck_modificator);
 		
 		switch (level)
 		{
-			case 81:
-				percentLost = 1.25;
-				break;
-			case 80:
-				percentLost = 1.5;
-				break;
-			case 79:
-				percentLost = 1.75;
-				break;
 			case 78:
-				percentLost = 2.0;
+				percentLost = (1.5*clan_luck_modificator);
 				break;
 			case 77:
-				percentLost = 2.25;
+				percentLost = (2.0*clan_luck_modificator);
 				break;
 			case 76:
-				percentLost = 2.5;
+				percentLost = (2.5*clan_luck_modificator);
 				break;
 			default:
 				if (level < 40)
-					percentLost = 7.0;
+					percentLost = (7.0*clan_luck_modificator);
 				else if (level >= 40 && level <= 75)
-					percentLost = 4.0;
+					percentLost = (4.0*clan_luck_modificator);
 				
 				break;
 		}
