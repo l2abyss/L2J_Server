@@ -263,7 +263,7 @@ public class Disablers implements ISkillHandler
                     }
                     else
                     {
-                        if (activeChar instanceof L2PcInstance)
+                    	if (activeChar instanceof L2PcInstance)
                         {
                             SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
                             sm.addCharName(target);
@@ -274,19 +274,40 @@ public class Disablers implements ISkillHandler
                     break;
                 }
                 case CONFUSE_MOB_ONLY:
-                {
-                    // do nothing if not on mob
-                    if (target instanceof L2Attackable)
-                    	skill.getEffects(activeChar, target);
-                    else
-                    	activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-                    break;
-                }
+				{
+					// do nothing if not on mob
+					if (target instanceof L2Attackable)
+					{
+						if (Formulas.getInstance().calcSkillSuccess(activeChar, target, skill, ss, sps, bss))
+						{
+							L2Effect[] effects = target.getAllEffects();
+							for (L2Effect e : effects)
+							{
+								if (e.getSkill().getSkillType() == type)
+									e.exit();
+							}
+							skill.getEffects(activeChar, target);
+						}
+						else
+						{
+							if (activeChar instanceof L2PcInstance)
+							{
+								SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
+								sm.addCharName(target);
+								sm.addSkillName(skill);
+								activeChar.sendPacket(sm);
+							}
+						}
+					}
+					else
+						activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+					break;
+				}
                 case AGGDAMAGE:
                 {
                     if (target instanceof L2Attackable)
                         target.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, activeChar, (int) ((150*skill.getPower())/(target.getLevel()+7)));
-                    //TODO [Nemesiss] should this have 100% chance?
+                    // TODO [Nemesiss] should this have 100% chance?
                     skill.getEffects(activeChar, target);
                     break;
                 }
