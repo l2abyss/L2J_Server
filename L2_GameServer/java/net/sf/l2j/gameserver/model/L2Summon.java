@@ -3,18 +3,19 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package net.sf.l2j.gameserver.model;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.Olympiad;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
 import net.sf.l2j.gameserver.ai.L2SummonAI;
@@ -754,7 +755,7 @@ public abstract class L2Summon extends L2PlayableInstance
 					((L2PcInstance)target).isInOlympiadMode() &&
 					((L2PcInstance)target).getOlympiadGameId() == getOwner().getOlympiadGameId())
 			{
-				getOwner().dmgDealt += damage;
+				Olympiad.getInstance().notifyCompetitorDamage(getOwner().getObjectId(), damage, getOwner().getOlympiadGameId());
 			}
 
 			SystemMessage sm;

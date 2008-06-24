@@ -885,6 +885,15 @@ public class Olympiad
         _manager.getOlympiadInstance(player.getOlympiadGameId()).handleDisconnect(player);
     }
 
+    public void notifyCompetitorDamage(int objId, int damage, int gameId)
+    {
+    	if (_manager.getOlympiadGames().get(gameId) == null) return;
+
+    	if (_manager.getOlympiadGames().get(gameId)._playerOneID == objId)
+    		_manager.getOlympiadGames().get(gameId)._damageP1 += damage;
+    	else _manager.getOlympiadGames().get(gameId)._damageP2 += damage;
+    }
+
     private void updateCompStatus()
     {
     	//_compStarted = false;
@@ -1782,7 +1791,10 @@ public class Olympiad
     	public String _playerTwoName;
     	public int _playerOneID = 0;
     	public int _playerTwoID = 0;
-    	public int OLY_BUFFER = 36402;
+    	public static final int OLY_BUFFER = 36402;
+
+    	public int _damageP1 = 0;
+    	public int _damageP2 = 0;
 
     	public L2PcInstance _playerOne;
     	public L2PcInstance _playerTwo;
@@ -2217,21 +2229,27 @@ public class Olympiad
             _sm = new SystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
     		_sm2 = new SystemMessage(SystemMessageId.S1_HAS_GAINED_S2_OLYMPIAD_POINTS);
             _sm3 = new SystemMessage(SystemMessageId.S1_HAS_LOST_S2_OLYMPIAD_POINTS);
-            
+
             String result = "";
 
             // if players crashed, search if they've relogged
-            _playerOne =  L2World.getInstance().getPlayer(_playerOneName); 
+            _playerOne =  L2World.getInstance().getPlayer(_playerOneName);
             _players.set(0, _playerOne);
             _playerTwo =  L2World.getInstance().getPlayer(_playerTwoName);
             _players.set(1, _playerTwo);
-            
+
             switch(_type){
             	case NON_CLASSED: _div=5; _gpreward=Config.ALT_OLY_NONCLASSED_RITEM_C; break;
             	default: _div=3; _gpreward=Config.ALT_OLY_CLASSED_RITEM_C; break;
             }
 
-            if (_playerTwo.isOnline() == 0 || (playerTwoHp == 0 && playerOneHp != 0) || (_playerOne.dmgDealt > _playerTwo.dmgDealt && playerTwoHp != 0 && playerOneHp != 0))
+            if (_playerOne == null && _playerTwo == null)
+            {
+            	result=" tie";
+    			_sm = new SystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE);
+                broadcastMessage(_sm, true);
+            }
+            else if (_playerTwo == null || _playerTwo.isOnline() == 0 || (playerTwoHp == 0 && playerOneHp != 0) || (_damageP1 > _damageP2 && playerTwoHp != 0 && playerOneHp != 0))
     		{
             	int pointDiff;
             	pointDiff = playerTwoPoints / _div;
@@ -2248,7 +2266,7 @@ public class Olympiad
                 broadcastMessage(_sm3, true);
 
                 try {
-        			result=" ("+playerOneHp+"hp vs "+playerTwoHp+"hp - "+_playerOne.dmgDealt+"dmg vs "+_playerTwo.dmgDealt+"dmg) "+_playerOneName+" win "+pointDiff+" points";
+        			result=" ("+playerOneHp+"hp vs "+playerTwoHp+"hp - "+_damageP1+"dmg vs "+_damageP2+"dmg) "+_playerOneName+" win "+pointDiff+" points";
         			L2ItemInstance item = _playerOne.getInventory().addItem("Olympiad", Config.ALT_OLY_BATTLE_REWARD_ITEM, _gpreward, _playerOne, null);
         			InventoryUpdate iu = new InventoryUpdate();
         			iu.addModifiedItem(item);
@@ -2260,13 +2278,13 @@ public class Olympiad
         			_playerOne.sendPacket(sm);
                 } catch (Exception e) { }
     		}
-            else if (_playerOne.isOnline() == 0 || (playerOneHp == 0 && playerTwoHp != 0) || (_playerTwo.dmgDealt > _playerOne.dmgDealt && playerOneHp != 0 && playerTwoHp != 0))
+            else if (_playerOne == null || _playerOne.isOnline() == 0 || (playerOneHp == 0 && playerTwoHp != 0) || (_damageP2 > _damageP1 && playerOneHp != 0 && playerTwoHp != 0))
     		{
             	int pointDiff;
             	pointDiff = playerOnePoints / _div;
     			playerTwoStat.set(POINTS, playerTwoPoints + pointDiff);
     			playerOneStat.set(POINTS, playerOnePoints - pointDiff);
-                
+
                 _sm.addString(_playerTwoName);
                 broadcastMessage(_sm, true);
                 _sm2.addString(_playerTwoName);
@@ -2277,7 +2295,7 @@ public class Olympiad
                 broadcastMessage(_sm3, true);
 
                 try {
-                	result=" ("+playerOneHp+"hp vs "+playerTwoHp+"hp - "+_playerOne.dmgDealt+"dmg vs "+_playerTwo.dmgDealt+"dmg) "+_playerTwoName+" win "+pointDiff+" points";
+                	result=" ("+playerOneHp+"hp vs "+playerTwoHp+"hp - "+_damageP1+"dmg vs "+_damageP2+"dmg) "+_playerTwoName+" win "+pointDiff+" points";
                 	L2ItemInstance item = _playerTwo.getInventory().addItem("Olympiad", Config.ALT_OLY_BATTLE_REWARD_ITEM, _gpreward, _playerTwo, null);
                 	InventoryUpdate iu = new InventoryUpdate();
                 	iu.addModifiedItem(item);
@@ -2339,11 +2357,15 @@ public class Olympiad
     			player.setCurrentCp(player.getMaxCp());
     			player.setCurrentHp(player.getMaxHp());
     			player.setCurrentMp(player.getMaxMp());
-				player.dmgDealt = 0;
     		  } catch (Exception e) { }
+    		  finally
+    		  {
+    			  _damageP1 = 0;
+    			  _damageP2 = 0;
+    		  }
      		}
      	}
-    	
+
     	protected boolean makePlayersVisible()
     	{
             _sm = new SystemMessage(SystemMessageId.STARTS_THE_GAME);

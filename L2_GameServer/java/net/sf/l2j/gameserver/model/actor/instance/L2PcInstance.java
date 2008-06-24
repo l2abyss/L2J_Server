@@ -392,7 +392,6 @@ public final class L2PcInstance extends L2PlayableInstance
     private int _olympiadGameId = -1;
     private int _olympiadSide = -1;
     public int olyBuff = 0;
-    public int dmgDealt = 0;
 
     /** Duel */
     private boolean _isInDuel = false;
@@ -11174,13 +11173,13 @@ public final class L2PcInstance extends L2PlayableInstance
         }
         if (mcrit)
             sendPacket(new SystemMessage(SystemMessageId.CRITICAL_HIT_MAGIC));
-        
+
         if (isInOlympiadMode() &&
         		target instanceof L2PcInstance &&
         		((L2PcInstance)target).isInOlympiadMode() &&
         		((L2PcInstance)target).getOlympiadGameId() == getOlympiadGameId())
         {
-        	dmgDealt += damage;
+        	Olympiad.getInstance().notifyCompetitorDamage(getObjectId(), damage, getOlympiadGameId());
         }
 
 		SystemMessage sm = new SystemMessage(SystemMessageId.S1_GAVE_S2_DAMAGE_OF_S3);
