@@ -1478,16 +1478,29 @@ public abstract class L2Skill
             case TARGET_ONE:
             {
                 boolean canTargetSelf = false;
-                switch(skillType)
-                {
-                    case BUFF: case HEAL: case HOT: case HEAL_PERCENT:
-                    case MANARECHARGE: case MANAHEAL: case NEGATE:
-                    case CANCEL: case REFLECT: case UNBLEED: case UNPOISON:
-                    case COMBATPOINTHEAL: case MAGE_BANE: case WARRIOR_BANE:
-                    case BETRAY: case BALANCE_LIFE: case FORCE_BUFF:
-                        canTargetSelf = true;
-                        break;
-                }
+                switch (skillType)
+				{
+					case BUFF:
+					case HEAL:
+					case HOT:
+					case HEAL_PERCENT:
+					case MANARECHARGE:
+					case MANAHEAL:
+					case NEGATE:
+					case CANCEL:
+					case CANCEL_DEBUFF:
+					case REFLECT:
+					case UNBLEED:
+					case UNPOISON:
+					case COMBATPOINTHEAL:
+					case MAGE_BANE:
+					case WARRIOR_BANE:
+					case BETRAY:
+					case BALANCE_LIFE:
+					case FORCE_BUFF:
+						canTargetSelf = true;
+						break;
+				}
 
                 // Check for null target or any other invalid target
                 if (target == null || target.isDead() || (target == activeChar && !canTargetSelf))
