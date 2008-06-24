@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.model;
 import java.util.Collection;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.Olympiad;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
@@ -198,7 +199,7 @@ public abstract class L2Summon extends L2PlayableInstance
             player.sendPacket(new PetStatusShow(this));
             player.sendPacket(ActionFailed.STATIC_PACKET);
         }
-        else
+        else if (player.getTarget() != this)
         {
             if (Config.DEBUG) _log.fine("new target selected:"+getObjectId());
             player.setTarget(this);
@@ -211,6 +212,37 @@ public abstract class L2Summon extends L2PlayableInstance
 			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
 			player.sendPacket(su);
         }
+        else if (player.getTarget() == this)
+		{
+			if (isAutoAttackable(player))
+			{
+				if (Config.GEODATA > 0)
+				{
+					if (GeoData.getInstance().canSeeTarget(player, this))
+					{
+						player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
+						player.onActionRequest();
+					}
+				}
+				else
+				{
+					player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
+					player.onActionRequest();
+				}
+			}
+			else
+			{
+				// This Action Failed packet avoids player getting stuck when clicking three or more times
+				player.sendPacket(ActionFailed.STATIC_PACKET);
+				if (Config.GEODATA > 0)
+				{
+					if (GeoData.getInstance().canSeeTarget(player, this))
+						player.getAI().setIntention(CtrlIntention.AI_INTENTION_FOLLOW, this);
+				}
+				else
+					player.getAI().setIntention(CtrlIntention.AI_INTENTION_FOLLOW, this);
+			}
+		}
     }
 
 	public long getExpForThisLevel()
