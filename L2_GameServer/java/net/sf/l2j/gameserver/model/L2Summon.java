@@ -14,12 +14,15 @@
  */
 package net.sf.l2j.gameserver.model;
 
+import java.util.Collection;
+
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.Olympiad;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
 import net.sf.l2j.gameserver.ai.L2SummonAI;
 import net.sf.l2j.gameserver.datatables.SkillTable;
+import net.sf.l2j.gameserver.model.L2Attackable.AggroInfo;
 import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -308,6 +311,27 @@ public abstract class L2Summon extends L2PlayableInstance
     {
 		if (!super.doDie(killer))
 			return false;
+		
+		L2PcInstance owner = getOwner();
+		
+		if (owner != null)
+		{
+			Collection<L2Character> KnownTarget = this.getKnownList().getKnownCharacters();
+			for (L2Character TgMob : KnownTarget)
+			{
+				// get the mobs which have aggro on the this instance
+				if (TgMob instanceof L2Attackable)
+				{
+					if (((L2Attackable) TgMob).isDead())
+						continue;
+					
+					AggroInfo info = ((L2Attackable) TgMob).getAggroListRP().get(this);
+					if (info != null)
+						((L2Attackable) TgMob).addDamageHate(owner, info._damage, info._hate);
+				}
+			}
+		}
+		
 		DecayTaskManager.getInstance().addDecayTask(this);
 		return true;
 	}
