@@ -465,6 +465,7 @@ public abstract class L2Skill
     private final String[] _negateStats;
     private final float _negatePower;
     private final int _negateId;
+    private final int _maxNegatedEffect;
     private final int _levelDepend;
 
     // Effecting area of the skill, in radius.
@@ -601,6 +602,7 @@ public abstract class L2Skill
         _negateStats = set.getString("negateStats", "").split(" ");
         _negatePower = set.getFloat("negatePower", 0.f);
         _negateId = set.getInteger("negateId", 0);
+        _maxNegatedEffect = set.getInteger("maxNegated", 0);
         _magicLevel = set.getInteger("magicLvl", SkillTreeTable.getInstance().getMinSkillLevel(_id, _level));
         _levelDepend = set.getInteger("lvlDepend", 0);
         _stat = set.getEnum("stat", Stats.class, null);
@@ -809,6 +811,11 @@ public abstract class L2Skill
     {
         return _magicLevel;
     }
+    
+    public final int getMaxNegatedEffects()
+	{
+    	return _maxNegatedEffect;
+	}
 
     public final int getLevelDepend()
     {
