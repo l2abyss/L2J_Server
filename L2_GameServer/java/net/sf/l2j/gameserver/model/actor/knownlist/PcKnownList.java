@@ -165,11 +165,16 @@ public class PcKnownList extends PlayableKnownList
                 if(otherPlayer.isInBoat())
                 {
                 	otherPlayer.getPosition().setWorldPosition(otherPlayer.getBoat().getPosition().getWorldPosition());
-                	
+
                     getActiveChar().sendPacket(new CharInfo(otherPlayer));
                     int relation = otherPlayer.getRelation(getActiveChar());
                 	if (otherPlayer.getKnownList().getKnownRelations().get(getActiveChar().getObjectId()) != null && otherPlayer.getKnownList().getKnownRelations().get(getActiveChar().getObjectId()) != relation)
+                	{
                 		getActiveChar().sendPacket(new RelationChanged(otherPlayer, relation, getActiveChar().isAutoAttackable(otherPlayer)));
+                		if (otherPlayer.getPet() != null)
+                			getActiveChar().sendPacket(new RelationChanged(otherPlayer.getPet(), relation, getActiveChar().isAutoAttackable(otherPlayer)));
+                	}
+
                 	getActiveChar().sendPacket(new GetOnVehicle(otherPlayer, otherPlayer.getBoat(), otherPlayer.getInBoatPosition().getX(), otherPlayer.getInBoatPosition().getY(), otherPlayer.getInBoatPosition().getZ()));
                 	/*if(otherPlayer.getBoat().GetVehicleDeparture() == null)
                 	{
@@ -211,7 +216,11 @@ public class PcKnownList extends PlayableKnownList
                 	getActiveChar().sendPacket(new CharInfo(otherPlayer));
                 	int relation = otherPlayer.getRelation(getActiveChar());
                 	if (otherPlayer.getKnownList().getKnownRelations().get(getActiveChar().getObjectId()) != null && otherPlayer.getKnownList().getKnownRelations().get(getActiveChar().getObjectId()) != relation)
+                	{
                 		getActiveChar().sendPacket(new RelationChanged(otherPlayer, relation, getActiveChar().isAutoAttackable(otherPlayer)));
+                		if (otherPlayer.getPet() != null)
+                			getActiveChar().sendPacket(new RelationChanged(otherPlayer.getPet(), relation, getActiveChar().isAutoAttackable(otherPlayer)));
+                	}
                 }
 
                 if (otherPlayer.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_SELL)

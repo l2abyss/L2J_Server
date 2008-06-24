@@ -387,8 +387,11 @@ public class FortSiege
                  if (clear) member.setSiegeState((byte)0);
                  else member.setSiegeState((byte)1);
                  member.sendPacket(new UserInfo(member));
-                 for (L2PcInstance player : member.getKnownList().getKnownPlayers().values()) {
+                 for (L2PcInstance player : member.getKnownList().getKnownPlayers().values())
+                 {
                     player.sendPacket(new RelationChanged(member, member.getRelation(player), member.isAutoAttackable(player)));
+                    if(member.getPet() != null)
+                    	player.sendPacket(new RelationChanged(member.getPet(), member.getRelation(player), member.isAutoAttackable(player)));
                  }
              }
         }
@@ -400,8 +403,11 @@ public class FortSiege
                 if (clear) member.setSiegeState((byte)0);
                 else member.setSiegeState((byte)2);
                 member.sendPacket(new UserInfo(member));
-                for (L2PcInstance player : member.getKnownList().getKnownPlayers().values()) {
+                for (L2PcInstance player : member.getKnownList().getKnownPlayers().values())
+                {
                     player.sendPacket(new RelationChanged(member, member.getRelation(player), member.isAutoAttackable(player)));
+                    if(member.getPet() != null)
+                    	player.sendPacket(new RelationChanged(member.getPet(), member.getRelation(player), member.isAutoAttackable(player)));
                 }
             }
         }

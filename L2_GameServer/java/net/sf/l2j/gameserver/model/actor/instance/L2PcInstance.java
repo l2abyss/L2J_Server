@@ -3796,7 +3796,11 @@ public final class L2PcInstance extends L2PlayableInstance
 			{
 				int relation = getRelation(player);
 				if (getKnownList().getKnownRelations().get(player.getObjectId()) != null && getKnownList().getKnownRelations().get(player.getObjectId()) != relation)
-				player.sendPacket(new RelationChanged(this, relation, player.isAutoAttackable(this)));
+				{
+					player.sendPacket(new RelationChanged(this, relation, player.isAutoAttackable(this)));
+					if (getPet() != null)
+						player.sendPacket(new RelationChanged(getPet(), relation, player.isAutoAttackable(this)));
+				}
 			}
 		}
 	}
@@ -3816,7 +3820,11 @@ public final class L2PcInstance extends L2PlayableInstance
 				{
 					int relation = getRelation(player);
 					if (getKnownList().getKnownRelations().get(player.getObjectId()) != null && getKnownList().getKnownRelations().get(player.getObjectId()) != relation)
-					player.sendPacket(new RelationChanged(this, relation, player.isAutoAttackable(this)));
+					{
+						player.sendPacket(new RelationChanged(this, relation, player.isAutoAttackable(this)));
+						if (getPet() != null)
+							player.sendPacket(new RelationChanged(getPet(), relation, player.isAutoAttackable(this)));
+					}
 				}
 			}
 		}
@@ -6115,8 +6123,11 @@ public final class L2PcInstance extends L2PlayableInstance
 	public void setKarmaFlag(int flag)
 	{
 		sendPacket(new UserInfo(this));
-		for (L2PcInstance player : getKnownList().getKnownPlayers().values()) {
+		for (L2PcInstance player : getKnownList().getKnownPlayers().values())
+		{
 			player.sendPacket(new RelationChanged(this, getRelation(player), isAutoAttackable(player)));
+			if (getPet() != null)
+				player.sendPacket(new RelationChanged(getPet(), getRelation(player), isAutoAttackable(player)));
 		}
 	}
 
@@ -6129,8 +6140,11 @@ public final class L2PcInstance extends L2PlayableInstance
         su.addAttribute(StatusUpdate.KARMA, getKarma());
         sendPacket(su);
 
-		for (L2PcInstance player : getKnownList().getKnownPlayers().values()) {
+		for (L2PcInstance player : getKnownList().getKnownPlayers().values())
+		{
 			player.sendPacket(new RelationChanged(this, getRelation(player), isAutoAttackable(player)));
+			if (getPet() != null)
+				player.sendPacket(new RelationChanged(getPet(), getRelation(player), isAutoAttackable(player)));
 		}
 	}
 

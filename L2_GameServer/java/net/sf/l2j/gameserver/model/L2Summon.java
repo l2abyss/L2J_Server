@@ -42,6 +42,7 @@ import net.sf.l2j.gameserver.serverpackets.PetDelete;
 import net.sf.l2j.gameserver.serverpackets.PetInfo;
 import net.sf.l2j.gameserver.serverpackets.PetStatusShow;
 import net.sf.l2j.gameserver.serverpackets.PetStatusUpdate;
+import net.sf.l2j.gameserver.serverpackets.RelationChanged;
 import net.sf.l2j.gameserver.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
@@ -95,17 +96,22 @@ public abstract class L2Summon extends L2PlayableInstance
 
 		setXYZInvisible(owner.getX()+50, owner.getY()+100, owner.getZ()+100);
 	}
-    
+
     @Override
     public void onSpawn()
     {
         super.onSpawn();
-        
+
         this.setFollowStatus(true);
         this.setShowSummonAnimation(false); // addVisibleObject created the info packets with summon animation
                                               // if someone comes into range now, the animation shouldnt show any more
         this.getOwner().sendPacket(new PetInfo(this));
-        
+
+        getOwner().sendPacket(new RelationChanged(this, getOwner().getRelation(getOwner()), false));
+
+        for (L2PcInstance player : getOwner().getKnownList().getKnownPlayersInRadius(800))
+        	player.sendPacket(new RelationChanged(this, getOwner().getRelation(player), isAutoAttackable(player)));
+
         L2Party party = this.getOwner().getParty();
         if (party != null)
         {
