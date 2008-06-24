@@ -23,7 +23,7 @@ import net.sf.l2j.gameserver.taskmanager.TaskManager.ExecutedTask;
  */
 public final class TaskCleanUp extends Task
 {
-    public static final String NAME = "CleanUp";
+    public static final String NAME = "clean_up";
 
     @Override
 	public String getName()

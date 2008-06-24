@@ -30,7 +30,7 @@ import net.sf.l2j.gameserver.taskmanager.TaskManager.ExecutedTask;
 public class TaskOlympiadSave extends Task
 {
     private static final Logger _log = Logger.getLogger(TaskOlympiadSave.class.getName());
-    public static final String NAME = "OlympiadSave";
+    public static final String NAME = "olympiad_save";
 
     @Override
 	public String getName()
@@ -41,13 +41,16 @@ public class TaskOlympiadSave extends Task
     @Override
 	public void onTimeElapsed(ExecutedTask task)
     {
-        try {
-            Olympiad.getInstance().save();
-            _log.info("Olympiad System: Data updated successfully.");
-        }
-        catch (Exception e) {
-            _log.warning("Olympiad System: Failed to save Olympiad configuration: " + e);
-        }
+    	try {
+    		if (Olympiad.getInstance().inCompPeriod())
+    		{
+    			Olympiad.getInstance().save();
+    			_log.info("Olympiad System: Data updated successfully.");
+    		}
+    	}
+    	catch (Exception e) {
+    		_log.warning("Olympiad System: Failed to save Olympiad configuration: " + e);
+    	}
     }
 
     @Override
