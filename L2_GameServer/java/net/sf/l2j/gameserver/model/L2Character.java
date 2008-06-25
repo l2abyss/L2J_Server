@@ -5077,7 +5077,7 @@ public abstract class L2Character extends L2Object
 			player.sendPacket(new SystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 		}
-		else if (player.isInOlympiadMode() && player.getTarget() != null)
+		else if (player.isInOlympiadMode() && player.getTarget() != null && player.getTarget() instanceof L2PlayableInstance)
         {
         	L2PcInstance target;
         	if (player.getTarget() instanceof L2Summon)
