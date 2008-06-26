@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.ActionFailed;
@@ -22,6 +23,8 @@ import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.serverpackets.WareHouseDepositList;
 import net.sf.l2j.gameserver.serverpackets.WareHouseWithdrawalList;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.gameserver.util.IllegalPlayerAction;
+import net.sf.l2j.gameserver.util.Util;
 
 /**
  * @author  l3x
@@ -103,10 +106,11 @@ public class L2CastleWarehouseInstance extends L2FolkInstance
     }
 
     @Override
-    public void onBypassFeedback(L2PcInstance player, String command) {
-        if (player.getActiveEnchantItem() != null) {
-            _log.info("Player " + player.getName() + " trying to use enchant exploit, ban this player!");
-            player.closeNetConnection();
+    public void onBypassFeedback(L2PcInstance player, String command)
+    {
+        if (player.getActiveEnchantItem() != null)
+        {
+        	Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " trying to use enchant exploit, ban this player!", IllegalPlayerAction.PUNISH_KICK);
             return;
         }
 
