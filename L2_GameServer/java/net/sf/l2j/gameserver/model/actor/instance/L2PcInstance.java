@@ -4708,11 +4708,20 @@ public final class L2PcInstance extends L2PlayableInstance
                                    && !(((L2PcInstance)killer).isAcademyMember())
 		                               && _clan.isAtWarWith(((L2PcInstance) killer).getClanId())
 		                               && ((L2PcInstance)killer).getClan().isAtWarWith(_clan.getClanId()))
-		                {
-		                    if (getClan().getReputationScore() > 0) // when your reputation score is 0 or below, the other clan cannot acquire any reputation points
+		                {	
+		                	
+		                	// when your reputation score is 0 or below, the other clan cannot acquire any reputation points
+		                    if (getClan().getReputationScore() > 0) {
 		                		((L2PcInstance) killer).getClan().setReputationScore(((L2PcInstance) killer).getClan().getReputationScore()+2, true);
-		                    if (((L2PcInstance)killer).getClan().getReputationScore() > 0) // when the opposing sides reputation score is 0 or below, your clans reputation score does not decrease
+		                		getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
+		                		((L2PcInstance) killer).getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(((L2PcInstance) killer).getClan()));
+		                    }
+		                 // when the opposing sides reputation score is 0 or below, your clans reputation score does not decrease
+		                    if (((L2PcInstance)killer).getClan().getReputationScore() > 0) {
 		                    	_clan.setReputationScore(_clan.getReputationScore()-2, true);
+		                    	getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
+		                		((L2PcInstance) killer).getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(((L2PcInstance) killer).getClan()));
+		                    }
 		                }
 						if (Config.ALT_GAME_DELEVEL)
 						{
