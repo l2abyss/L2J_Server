@@ -403,32 +403,34 @@ public class Disablers implements ISkillHandler
                     break;
                 }
                 case ERASE:
-                {
-                	if (Formulas.getInstance().calcSkillSuccess(activeChar, target, skill, ss, sps, bss)
-                		// doesn't affect siege golem or wild hog cannon
-                		&& !(target instanceof L2SiegeSummonInstance)
-                		)
-                	{
-                		L2PcInstance summonOwner = null;
-                		L2Summon summonPet = null;
-                		summonOwner = ((L2Summon)target).getOwner();
-                		summonPet = summonOwner.getPet();
-                		summonPet.unSummon(summonOwner);
-                        SystemMessage sm = new SystemMessage(SystemMessageId.LETHAL_STRIKE);
-				        summonOwner.sendPacket(sm);
-                	}
-                	else
-                    {
-                        if (activeChar instanceof L2PcInstance)
-                        {
-                            SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
-                            sm.addCharName(target);
-                            sm.addSkillName(skill);
-                            activeChar.sendPacket(sm);
-                        }
-                    }
-                	break;
-                }
+				{
+					if (Formulas.getInstance().calcSkillSuccess(activeChar, target, skill, ss, sps, bss)
+					        // doesn't affect siege golem or wild hog cannon
+					        && !(target instanceof L2SiegeSummonInstance))
+					{
+						L2PcInstance summonOwner = null;
+						L2Summon summonPet = null;
+						summonOwner = ((L2Summon) target).getOwner();
+						summonPet = summonOwner.getPet();
+						if (summonPet != null)
+						{
+							summonPet.unSummon(summonOwner);
+							SystemMessage sm = new SystemMessage(SystemMessageId.LETHAL_STRIKE);
+							summonOwner.sendPacket(sm);
+						}
+					}
+					else
+					{
+						if (activeChar instanceof L2PcInstance)
+						{
+							SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
+							sm.addCharName(target);
+							sm.addSkillName(skill);
+							activeChar.sendPacket(sm);
+						}
+					}
+					break;
+				}
                 case MAGE_BANE:
             	{
             		if(target.reflectSkill(skill))
