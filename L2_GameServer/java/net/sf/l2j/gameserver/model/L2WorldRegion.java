@@ -28,6 +28,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneManager;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.gameserver.model.zone.type.L2DerbyTrackZone;
+import net.sf.l2j.gameserver.model.zone.type.L2PeaceZone;
 import net.sf.l2j.gameserver.model.zone.type.L2TownZone;
 import net.sf.l2j.gameserver.taskmanager.KnownListUpdateTaskManager;
 import net.sf.l2j.util.L2ObjectSet;
@@ -140,7 +141,7 @@ public final class L2WorldRegion
             
             for (L2ZoneType e : _zoneManager.getZones())
             {
-            	if ((e instanceof L2TownZone && ((L2TownZone)e).isPeaceZone()) || (e instanceof L2DerbyTrackZone))
+            	if ((e instanceof L2TownZone && ((L2TownZone)e).isPeaceZone()) || e instanceof L2DerbyTrackZone || e instanceof L2PeaceZone)
             	{
             		if (e.isInsideZone(x, up, z))
             			return false;
