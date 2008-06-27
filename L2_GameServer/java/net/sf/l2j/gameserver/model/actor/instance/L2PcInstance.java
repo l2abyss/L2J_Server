@@ -168,6 +168,7 @@ import net.sf.l2j.gameserver.serverpackets.ObservationMode;
 import net.sf.l2j.gameserver.serverpackets.ObservationReturn;
 import net.sf.l2j.gameserver.serverpackets.PartySmallWindowUpdate;
 import net.sf.l2j.gameserver.serverpackets.PartySpelled;
+import net.sf.l2j.gameserver.serverpackets.PetInfo;
 import net.sf.l2j.gameserver.serverpackets.PetInventoryUpdate;
 import net.sf.l2j.gameserver.serverpackets.PledgeShowInfoUpdate;
 import net.sf.l2j.gameserver.serverpackets.PledgeShowMemberListDelete;
@@ -9765,19 +9766,28 @@ public final class L2PcInstance extends L2PlayableInstance
 		
 		// Force a revalidation
 		revalidateZone(true);
-
+		
 		if ((Config.PLAYER_SPAWN_PROTECTION > 0) && !isInOlympiadMode())
-            setProtection(true);
-
-		// Modify the position of the tamed beast if necessary (normal pets are handled by super...though
-        // L2PcInstance is the only class that actually has pets!!! )
-		if(getTrainedBeast() != null)
+			setProtection(true);
+		
+		// Modify the position of the tamed beast if necessary
+		if (getTrainedBeast() != null)
 		{
 			getTrainedBeast().getAI().stopFollow();
-			getTrainedBeast().teleToLocation(getPosition().getX() + Rnd.get(-100,100), getPosition().getY() + Rnd.get(-100,100), getPosition().getZ(), false);
+			getTrainedBeast().teleToLocation(getPosition().getX() + Rnd.get(-100, 100), getPosition().getY() + Rnd.get(-100, 100), getPosition().getZ(), false);
 			getTrainedBeast().getAI().startFollow(this);
 		}
-
+		
+		// Modify the position of the pet if necessary
+		if (getPet() != null)
+		{
+			getPet().setFollowStatus(false);
+			getPet().teleToLocation(getPosition().getX() + Rnd.get(-100, 100), getPosition().getY() + Rnd.get(-100, 100), getPosition().getZ(), false);
+			getPet().setFollowStatus(true);
+			sendPacket(new PetInfo(getPet()));
+			getPet().updateEffectIcons(true);
+		}
+		
 	}
 
 	@Override
