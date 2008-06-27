@@ -138,6 +138,9 @@ public class Heal implements ISkillHandler
             
             // Healer proficiency (since CT1)
             hp *= activeChar.calcStat(Stats.HEAL_PROFICIENCY, 100, null, null) / 100;
+            // Extra bonus (since CT1.5)
+            if (!skill.isPotion())
+            	hp += target.calcStat(Stats.HEAL_STATIC_BONUS, 0, null, null);
 
             if (target instanceof L2DoorInstance || target instanceof L2SiegeFlagInstance)
             	hp = 0;

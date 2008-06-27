@@ -37,6 +37,7 @@ public enum Stats
     RECHARGE_MP_RATE	("gainMp"),
 	HEAL_EFFECTIVNESS 	("gainHp"),
 	HEAL_PROFICIENCY	("giveHp"),
+	HEAL_STATIC_BONUS	("bonusHp"),
 
 	// Atk & Def
 	POWER_DEFENCE 		("pDef"),
