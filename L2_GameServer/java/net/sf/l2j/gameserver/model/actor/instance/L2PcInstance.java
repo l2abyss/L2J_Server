@@ -9395,6 +9395,9 @@ public final class L2PcInstance extends L2PlayableInstance
         restoreSkills();
         regiveTemporarySkills();
         rewardSkills();
+        // Prevents some issues when changing between subclases that shares skills
+        if(_disabledSkills != null && !_disabledSkills.isEmpty()) 
+        	_disabledSkills.clear();
         restoreEffects();
         updateEffectIcons();
         sendPacket(new EtcStatusUpdate(this));
@@ -9432,6 +9435,7 @@ public final class L2PcInstance extends L2PlayableInstance
         sendPacket(new ShortCutInit(this));            
 
         broadcastPacket(new SocialAction(getObjectId(), 15));
+        sendPacket(new SkillCoolTime(this));
 
         //decayMe();
         //spawnMe(getX(), getY(), getZ());
