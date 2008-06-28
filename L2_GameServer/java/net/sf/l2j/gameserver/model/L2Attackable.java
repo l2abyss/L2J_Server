@@ -385,7 +385,7 @@ public class L2Attackable extends L2NpcInstance
     	// CommandChannel
         if (_commandChannelTimer == null && this.isRaid())
         {
-        	if (attacker.isInParty() && attacker.getParty().isInCommandChannel()
+        	if (attacker != null && attacker.isInParty() && attacker.getParty().isInCommandChannel()
         			&& attacker.getParty().getCommandChannel().meetRaidWarCondition(this))
         	{
         		_firstCommandChannelAttacked = attacker.getParty().getCommandChannel();
