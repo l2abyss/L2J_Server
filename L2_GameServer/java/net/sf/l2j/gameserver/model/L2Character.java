@@ -58,6 +58,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcWalkerInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance.TimeStamp;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RiftInvaderInstance;
@@ -1386,9 +1387,43 @@ public abstract class L2Character extends L2Object
 		{
 			if (this instanceof L2PcInstance)
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
+				SystemMessage sm = null;
+				FastMap<Integer, TimeStamp> timeStamp = ((L2PcInstance)this).getReuseTimeStamp();
+				
+				if (timeStamp != null && timeStamp.containsKey(skill.getId()))
+				{
+					int seconds = (int) (timeStamp.get(skill.getId()).getRemaining()/1000);
+					int minutes = (int) (timeStamp.get(skill.getId()).getRemaining()/60000);
+					int hours = (int) (timeStamp.get(skill.getId()).getRemaining()/3600000);
+					if (hours > 0)
+					{
+						sm = new SystemMessage(SystemMessageId.S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1);
+						sm.addNumber(hours);
+						if (minutes >= 60)
+							minutes = 59;
+
+						sm.addNumber(minutes);
+					}
+					else if (minutes > 0)
+					{
+						sm = new SystemMessage(SystemMessageId.S2_MINUTES_S3_SECONDS_REMAINING_FOR_REUSE_S1);
+						sm.addNumber(minutes);
+					}
+					else if (seconds > 0)
+					{
+						sm = new SystemMessage(SystemMessageId.S2_SECONDS_REMAIMNING_FOR_REUSE_S1);
+					}
+				
+					if (seconds >= 60)
+						seconds = 59;
+					
+					sm.addNumber(seconds);
+				}
+				else
+					sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
+				
 				sm.addSkillName(skill);
-				sendPacket(sm);
+                sendPacket(sm);
 			}
 
 			return;

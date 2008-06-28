@@ -11104,6 +11104,11 @@ public final class L2PcInstance extends L2PlayableInstance
         return _reuseTimeStamps.values();
     }
     
+    public FastMap<Integer, TimeStamp> getReuseTimeStamp()
+    {
+    	return _reuseTimeStamps;
+    }
+    
 	/**
 	 * Simple class containing all neccessary information to maintain
 	 * valid timestamps and reuse for skills upon relog. Filter this
