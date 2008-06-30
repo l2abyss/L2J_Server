@@ -1752,7 +1752,8 @@ public abstract class L2Character extends L2Object
 		}
 
 		// Make sure that char is facing selected target
-		setHeading(Util.calculateHeadingFrom(this, target));
+		if (target != this)
+			setHeading(Util.calculateHeadingFrom(this, target));
 		
 		// For force buff skills, start the effect as long as the player is casting.
 		if(effectWhileCasting)
