@@ -4147,12 +4147,6 @@ public abstract class L2Character extends L2Object
 			// If no distance to go through, the movement is canceled
 			if (distance < 1 || distance - offset  <= 0)
 			{
-				sin = 0;
-				cos = 1;
-				distance = 0;
-				x = curX;
-				y = curY;
-
 				if (Config.DEBUG) _log.fine("already in range, no movement needed.");
 
 				// Notify the AI that the L2Character is arrived at destination
@@ -4304,12 +4298,6 @@ public abstract class L2Character extends L2Object
 					|| this.isAfraid()
 					|| this instanceof L2RiftInvaderInstance))
 			{
-				sin = 0;
-				cos = 1;
-				distance = 0;
-				x = curX;
-				y = curY;
-
 				if(this instanceof L2Summon) ((L2Summon)this).setFollowStatus(false);
 				getAI().notifyEvent(CtrlEvent.EVT_ARRIVED, null);
 				getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE); //needed?
@@ -4326,13 +4314,11 @@ public abstract class L2Character extends L2Object
 		m._ySpeedTicks = (float)(sin * speed / GameTimeController.TICKS_PER_SECOND);
 
 		// Calculate and set the heading of the L2Character
-		int heading = (int) (Math.atan2(-sin, -cos) * 10430.378);
-		heading += 32768;
-		setHeading(heading);
+		setHeading(Util.calculateHeadingFrom(cos, sin));
 
 		if (Config.DEBUG)
 			_log.fine("dist:"+ distance +"speed:" + speed + " ttt:" +m._ticksToMove +
-			          " dx:"+(int)m._xSpeedTicks + " dy:"+(int)m._ySpeedTicks + " heading:" + heading);
+			          " dx:"+(int)m._xSpeedTicks + " dy:"+(int)m._ySpeedTicks + " heading:" + getHeading());
 
 		m._xDestination = x;
 		m._yDestination = y;
