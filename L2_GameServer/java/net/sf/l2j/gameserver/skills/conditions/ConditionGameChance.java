@@ -24,10 +24,9 @@ import net.sf.l2j.util.Rnd;
 public class ConditionGameChance extends Condition
 {
     private final int _chance;
-
     public ConditionGameChance(int chance)
     {
-        _chance = chance;
+		_chance = chance;
     }
 
     @Override

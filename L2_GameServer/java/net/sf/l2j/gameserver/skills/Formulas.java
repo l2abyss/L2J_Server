@@ -1875,16 +1875,10 @@ public final class Formulas
 	{
 		SkillType type = skill.getSkillType();
 
-		if (target.isRaid()
-			&& (type == SkillType.CONFUSION || type == SkillType.MUTE || type == SkillType.PARALYZE
-				|| type == SkillType.ROOT || type == SkillType.FEAR || type == SkillType.SLEEP
-				|| type == SkillType.STUN || type == SkillType.DEBUFF || type == SkillType.AGGDEBUFF))
-			return false; // these skills should not work on RaidBoss
-
 		int value = (int) skill.getPower();
 		int lvlDepend = skill.getLevelDepend();
 
-		if (type == SkillType.PDAM || type == SkillType.MDAM) // For additional effects on PDAM skills (like STUN, SHOCK,...)
+		if (type == SkillType.PDAM || type == SkillType.MDAM || type == SkillType.WEAPON_SA) // For additional effects on PDAM skills (like STUN, SHOCK,...)
 		{
 			value = skill.getEffectPower();
 			type = skill.getEffectType();

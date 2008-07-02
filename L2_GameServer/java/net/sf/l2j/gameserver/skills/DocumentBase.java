@@ -163,7 +163,7 @@ abstract class DocumentBase
             else if ("set".equalsIgnoreCase(n.getNodeName())) attachFunc(n, template, "Set", condition);
             else if ("enchant".equalsIgnoreCase(n.getNodeName())) attachFunc(n, template, "Enchant",
                                                                              condition);
-            else if ("skill".equalsIgnoreCase(n.getNodeName())) attachSkill(n, template, condition);
+            //else if ("skill".equalsIgnoreCase(n.getNodeName())) attachSkill(n, template, condition);
             else if ("effect".equalsIgnoreCase(n.getNodeName()))
             {
                 if (template instanceof EffectTemplate) throw new RuntimeException("Nested effects");
@@ -295,8 +295,8 @@ abstract class DocumentBase
             if (attrs.getNamedItem("onUse") != null
                 || (attrs.getNamedItem("onCrit") == null && attrs.getNamedItem("onCast") == null))
                 ((L2Weapon) template).attach(skill); // Attach as skill triggered on use
-            if (attrs.getNamedItem("onCrit") != null) ((L2Weapon) template).attachOnCrit(skill); // Attach as skill triggered on critical hit
-            if (attrs.getNamedItem("onCast") != null) ((L2Weapon) template).attachOnCast(skill); // Attach as skill triggered on cast
+            //if (attrs.getNamedItem("onCrit") != null) ((L2Weapon) template).attachOnCrit(skill); // Attach as skill triggered on critical hit
+            //if (attrs.getNamedItem("onCast") != null) ((L2Weapon) template).attachOnCast(skill); // Attach as skill triggered on cast
         }
         else if (template instanceof L2Item)
         {
