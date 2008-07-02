@@ -140,7 +140,7 @@ public class Scrolls implements IItemHandler
 	   		return;
 	   	}
         else if (itemId == 9897||itemId>=10131 &&itemId <=10138||itemId == 10151||itemId == 10274) //transformation scrolls
-            if (activeChar.getPet() != null || activeChar.isTransformed())
+            if (activeChar.isMounted() || activeChar.getPet() != null || activeChar.isTransformed())
             {
                 activeChar.sendPacket(new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED).addItemName(item));
                 return;
