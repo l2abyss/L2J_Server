@@ -533,7 +533,8 @@ public class GameStatusThread extends Thread
                 	StringTokenizer st = new StringTokenizer(_usrCommand.substring(5));
                     try
                     {
-                        L2PcInstance playerObj = L2World.getInstance().getPlayer(st.nextToken());
+                        String playerName = st.nextToken();
+                        L2PcInstance playerObj = L2World.getInstance().getPlayer(playerName);
                         int delay = 0;
                         try
                         {
@@ -547,7 +548,7 @@ public class GameStatusThread extends Thread
                             playerObj.setInJail(true, delay);
                             _print.println("Character "+playerObj.getName()+" jailed for "+(delay>0 ? delay+" minutes." : "ever!"));
                         } else
-                        	jailOfflinePlayer(playerObj.getName(), delay);
+                        	jailOfflinePlayer(playerName, delay);
                     } catch (NoSuchElementException nsee)
                     {
                     	_print.println("Specify a character name.");
@@ -561,7 +562,8 @@ public class GameStatusThread extends Thread
                 	StringTokenizer st = new StringTokenizer(_usrCommand.substring(7));
                 	try
                     {
-                        L2PcInstance playerObj = L2World.getInstance().getPlayer(st.nextToken());
+                        String playerName = st.nextToken();
+                        L2PcInstance playerObj = L2World.getInstance().getPlayer(playerName);
 
                         if (playerObj != null)
                         {
@@ -569,7 +571,7 @@ public class GameStatusThread extends Thread
                             playerObj.setInJail(false, 0);
                             _print.println("Character "+playerObj.getName()+" removed from jail");
                         } else
-                        	unjailOfflinePlayer(playerObj.getName());
+                        	unjailOfflinePlayer(playerName);
                     } catch (NoSuchElementException nsee)
                     {
                     	_print.println("Specify a character name.");
