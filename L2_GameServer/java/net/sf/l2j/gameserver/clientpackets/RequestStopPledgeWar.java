@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.clientpackets;
 
+import java.util.Collection;
+
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2World;
@@ -86,9 +88,12 @@ public final class RequestStopPledgeWar extends L2GameClientPacket
 		//        }
 
 		ClanTable.getInstance().deleteclanswars(playerClan.getClanId(), clan.getClanId());
-        for (L2PcInstance cha : L2World.getInstance().getAllPlayers()) {
-        	if (cha.getClan() == player.getClan() || cha.getClan() == clan)
-        		cha.broadcastUserInfo();
+		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+		synchronized (L2World.getInstance().getAllPlayers())
+		{
+			for (L2PcInstance cha : pls)
+				if (cha.getClan() == player.getClan() || cha.getClan() == clan)
+					cha.broadcastUserInfo();
         }
 	}
 

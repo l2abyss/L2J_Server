@@ -609,11 +609,15 @@ public class L2DoorInstance extends L2Character
     {
         FastList<L2SiegeGuardInstance> result = new FastList<L2SiegeGuardInstance>();
 
-        for (L2Object obj : getKnownList().getKnownObjects().values())
-        {
-            if (obj instanceof L2SiegeGuardInstance) result.add((L2SiegeGuardInstance) obj);
-        }
-
+        Collection<L2Object> objs = getKnownList().getKnownObjects().values();
+        synchronized (getKnownList().getKnownObjects())
+		{
+			for (L2Object obj : objs)
+			{
+				if (obj instanceof L2SiegeGuardInstance)
+					result.add((L2SiegeGuardInstance) obj);
+			}
+		}
         return result;
     }
 }

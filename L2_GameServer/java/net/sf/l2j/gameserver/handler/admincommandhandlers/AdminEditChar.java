@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
-
 import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
@@ -374,8 +373,12 @@ public class AdminEditChar implements IAdminCommandHandler
 
 	private void listCharacters(L2PcInstance activeChar, int page)
 	{
-		Collection<L2PcInstance> allPlayers = L2World.getInstance().getAllPlayers();
-		L2PcInstance[] players = allPlayers.toArray(new L2PcInstance[allPlayers.size()]);
+		Collection<L2PcInstance> allPlayers = L2World.getInstance().getAllPlayers().values();
+		L2PcInstance[] players;
+		synchronized (L2World.getInstance().getAllPlayers())
+		{
+			players = allPlayers.toArray(new L2PcInstance[allPlayers.size()]);
+		}
 
 		int MaxCharactersPerPage = 20;
 		int MaxPages = players.length / MaxCharactersPerPage;
@@ -605,8 +608,11 @@ public class AdminEditChar implements IAdminCommandHandler
 	{
 		int CharactersFound = 0;
 		String name;
-		Collection<L2PcInstance> allPlayers = L2World.getInstance().getAllPlayers();
-		L2PcInstance[] players = allPlayers.toArray(new L2PcInstance[allPlayers.size()]);
+		Collection<L2PcInstance> allPlayers = L2World.getInstance().getAllPlayers().values();
+		L2PcInstance[] players;
+		synchronized (L2World.getInstance().getAllPlayers()) {
+			players = allPlayers.toArray(new L2PcInstance[allPlayers.size()]);
+		}
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
 		adminReply.setFile("data/html/admin/charfind.htm");
 		TextBuilder replyMSG = new TextBuilder();
@@ -649,8 +655,12 @@ public class AdminEditChar implements IAdminCommandHandler
 	{
 		if (!IpAdress.matches("^(?:(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2(?:[0-4][0-9]|5[0-5]))\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2(?:[0-4][0-9]|5[0-5]))$"))
 			throw  new IllegalArgumentException("Malformed IPv4 number");
-		Collection<L2PcInstance> allPlayers = L2World.getInstance().getAllPlayers();
-		L2PcInstance[] players = allPlayers.toArray(new L2PcInstance[allPlayers.size()]);
+		Collection<L2PcInstance> allPlayers = L2World.getInstance().getAllPlayers().values();
+		L2PcInstance[] players;
+		synchronized (L2World.getInstance().getAllPlayers())
+		{
+			players = allPlayers.toArray(new L2PcInstance[allPlayers.size()]);
+		}
 		int CharactersFound = 0;
 		String name,ip="0.0.0.0";
 		TextBuilder replyMSG = new TextBuilder();

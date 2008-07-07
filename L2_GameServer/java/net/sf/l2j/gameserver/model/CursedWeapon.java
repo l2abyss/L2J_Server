@@ -35,6 +35,7 @@ import net.sf.l2j.gameserver.serverpackets.ItemList;
 import net.sf.l2j.gameserver.serverpackets.SocialAction;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.L2Item;
+import net.sf.l2j.gameserver.util.Broadcast;
 import net.sf.l2j.util.Point3D;
 import net.sf.l2j.util.Rnd;
 
@@ -253,10 +254,8 @@ public class CursedWeapon
 			// RedSky and Earthquake
 			ExRedSky packet = new ExRedSky(10);
 			Earthquake eq = new Earthquake(player.getX(), player.getY(), player.getZ(), 14, 3);
-			for (L2PcInstance aPlayer : L2World.getInstance().getAllPlayers()) {
-				aPlayer.sendPacket(packet);
-				aPlayer.sendPacket(eq);
-			}
+			Broadcast.toAllOnlinePlayers(packet);
+			Broadcast.toAllOnlinePlayers(eq);
 		} else
 		{
 			_player.dropItem("DieDrop", _item, killer, true);

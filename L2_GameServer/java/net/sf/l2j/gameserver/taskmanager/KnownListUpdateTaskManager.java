@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.taskmanager;
 
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -92,44 +93,41 @@ public class KnownListUpdateTaskManager
     
     public void updateRegion(L2WorldRegion region, boolean fullUpdate, boolean forgetObjects)
     {
-    	for (L2Object object : region.getVisibleObjects()) // and for all members in region
-		{
-        	if (!object.isVisible())
-        		continue;   // skip dying objects
-        	if (forgetObjects)
-        	{
-        		object.getKnownList().forgetObjects((object instanceof L2PlayableInstance || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate));
-        		continue;
-        	}
-        	if (object instanceof L2PlayableInstance || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate)
-        	{
-        		for (L2WorldRegion regi : region.getSurroundingRegions()) // offer members of this and surrounding regions
-        		{
-        			for (L2Object _object : regi.getVisibleObjects()) 
-        			{
-        				if (_object != object)
-        				{
-        					object.getKnownList().addKnownObject(_object);
-        				}
-        			}
-        		}
-        	}
-        	else if (object instanceof L2Character)
-        	{
-        		for (L2WorldRegion regi : region.getSurroundingRegions()) // offer members of this and surrounding regions
-        		{
-        			if (regi.isActive()) for (L2Object _object : regi.getVisiblePlayable()) 
-        			{
-        				if (_object != object)
-        				{
-        					object.getKnownList().addKnownObject(_object);
-        				}
-        			}
-        		}
-        	}
-		}
+    	Collection<L2Object> vObj = region.getVisibleObjects().values();
+    	synchronized (region.getVisibleObjects()) {
+    		for (L2Object object : vObj) // and for all members in region
+    		{
+    			if (!object.isVisible())
+    				continue;   // skip dying objects
+    			if (forgetObjects)
+    			{
+    				object.getKnownList().forgetObjects((object instanceof L2PlayableInstance || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate));
+    				continue;
+    			}
+    			if (object instanceof L2PlayableInstance || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate)
+    			{
+    				for (L2WorldRegion regi : region.getSurroundingRegions()) // offer members of this and surrounding regions
+    				{
+    					Collection<L2Object> inrObj = regi.getVisibleObjects().values();
+    					synchronized (regi.getVisibleObjects()) {
+    						for (L2Object _object : inrObj) 
+    							if (_object != object)
+    								object.getKnownList().addKnownObject(_object);
+    					}
+    				}
+    			}
+    			else if (object instanceof L2Character)
+    				for (L2WorldRegion regi : region.getSurroundingRegions()) // offer members of this and surrounding regions
+    				{
+    					Collection<L2PlayableInstance> inrPls = regi.getVisiblePlayable().values();
+    					synchronized (regi.getVisiblePlayable()) {
+    						if (regi.isActive())
+    							for (L2Object _object : inrPls) 
+    								if (_object != object)
+    									object.getKnownList().addKnownObject(_object);
+    					}
+    				}
+    		}
+    	}
     }
-    
-    
-
 }

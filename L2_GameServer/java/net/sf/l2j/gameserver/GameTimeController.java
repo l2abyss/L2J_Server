@@ -15,12 +15,14 @@
 package net.sf.l2j.gameserver;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlEvent;
@@ -98,7 +100,7 @@ public class GameTimeController
 	public void registerMovingObject(L2Character cha)
 	{
 		if(cha == null) return;
-		    if (!_movingObjects.containsKey(cha.getObjectId())) _movingObjects.put(cha.getObjectId(),cha);   
+		if (!_movingObjects.containsKey(cha.getObjectId())) _movingObjects.put(cha.getObjectId(),cha);   
 	}
 
 	/**
@@ -117,29 +119,29 @@ public class GameTimeController
 	{
 		// Create an FastList to contain all L2Character that are arrived to
 		// destination
-		FastList<L2Character> ended = null;
+		List<L2Character> ended = null;
 		
 		// Go throw the table containing L2Character in movement
-		for (L2Character ch : _movingObjects.values())
-		{
-			// If movement is finished, the L2Character is removed from
-			// movingObjects and added to the ArrayList ended
-			if (ch != null)
+		Collection<L2Character> mObjs = _movingObjects.values();
+		synchronized (_movingObjects) {
+			for (L2Character ch : mObjs)
+			{
+				// If movement is finished, the L2Character is removed from
+				// movingObjects and added to the ArrayList ended
 				if (ch.updatePosition(_gameTicks))
 				{
 					if (ended == null)
-						ended = new FastList<L2Character>();
-					
+						ended = new ArrayList<L2Character>();
 					ended.add(ch);
 				}
-		}
-		if (ended != null)
-		{
-			_movingObjects.values().removeAll(ended);
-			for (L2Character ch : ended)
-				if (ch != null) // Disconnected?
+			}
+			if (ended != null)
+			{
+				_movingObjects.values().removeAll(ended);
+				for (L2Character ch : ended)
 					ThreadPoolManager.getInstance().executeTask(new MovingObjectArrived(ch));
-			ended.clear();
+				ended.clear();
+			}
 		}
 	}
 
@@ -185,8 +187,7 @@ public class GameTimeController
 
 					//_log.finest("TICK: "+_gameTicks);
 
-					sleep(sleepTime); // hope other threads will have much more cpu time available now
-					// SelectorThread most of all
+					sleep(sleepTime);
 				}
 			}
 			catch (Exception e)

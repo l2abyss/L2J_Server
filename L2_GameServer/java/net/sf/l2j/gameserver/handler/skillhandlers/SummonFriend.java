@@ -14,7 +14,8 @@
  */
 package net.sf.l2j.gameserver.handler.skillhandlers;
 
-import javolution.util.FastList;
+import java.util.List;
+
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
@@ -64,7 +65,7 @@ public class SummonFriend implements ISkillHandler
         }
 
         // check for summoner not in raid areas
-       	FastList<L2Object> objects = L2World.getInstance().getVisibleObjects(activeChar, 5000);
+       	List<L2Object> objects = L2World.getInstance().getVisibleObjects(activeChar, 5000);
 
         if (objects != null)
         {

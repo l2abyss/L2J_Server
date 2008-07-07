@@ -14,12 +14,15 @@
  */
 package net.sf.l2j.gameserver.handler.chathandlers;
 
+import java.util.Collection;
+
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.handler.IChatHandler;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.serverpackets.CreatureSay;
+import net.sf.l2j.gameserver.util.Broadcast;
 
 /**
  * A chat handler
@@ -39,21 +42,15 @@ public class ChatTrade implements IChatHandler
 		CreatureSay cs = new CreatureSay(activeChar.getObjectId(), type, activeChar.getName(), text);
 
 		if (Config.DEFAULT_TRADE_CHAT.equalsIgnoreCase("on") || (Config.DEFAULT_TRADE_CHAT.equalsIgnoreCase("gm") && activeChar.isGM()))
-		{
-			for (L2PcInstance player : L2World.getInstance().getAllPlayers())
-			{
-					player.sendPacket(cs);
-			}
-		}
+			Broadcast.toAllOnlinePlayers(cs);
 		else if (Config.DEFAULT_TRADE_CHAT.equalsIgnoreCase("limited"))
 		{
 			int region = MapRegionTable.getInstance().getMapRegion(activeChar.getX(), activeChar.getY());
-			for (L2PcInstance player : L2World.getInstance().getAllPlayers())
-			{
+			Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+			synchronized (L2World.getInstance().getAllPlayers()) {
+			for (L2PcInstance player : pls)
 				if (region == MapRegionTable.getInstance().getMapRegion(player.getX(),player.getY()))
-				{
 					player.sendPacket(cs);
-				}
 			}
 		}
 	}

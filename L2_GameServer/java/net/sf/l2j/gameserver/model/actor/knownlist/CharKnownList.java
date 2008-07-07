@@ -128,36 +128,39 @@ public class CharKnownList extends ObjectKnownList
         	return;
     	}
     	// Go through knownObjects
-    	for (L2Object object: getKnownObjects().values())
-    	{
-    		// Remove all objects invisible or too far
-    		if (
-    				!object.isVisible() ||
-    				!Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true)
-    		)
-    			if (object instanceof L2BoatInstance && getActiveObject() instanceof L2PcInstance)
-    			{
-    				if(((L2BoatInstance)(object)).getVehicleDeparture() == null )
-    				{
-    					//
-    				}
-    				else if(((L2PcInstance)getActiveObject()).isInBoat())
-    				{
-    					if(((L2PcInstance)getActiveObject()).getBoat() != object)
-    					{
-    						removeKnownObject(object);
-    					}
-    				}
-    				else
-    				{
-    					removeKnownObject(object);
-    				}
-    			}
-    			else
-    			{
-    				removeKnownObject(object);
-    			}
-    	}
+    	Collection<L2Object> objs = getKnownObjects().values();
+    	synchronized (getKnownObjects())
+		{
+			for (L2Object object : objs)
+			{
+				// Remove all objects invisible or too far
+				if (!object.isVisible()
+				        || !Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true))
+					if (object instanceof L2BoatInstance
+					        && getActiveObject() instanceof L2PcInstance)
+					{
+						if (((L2BoatInstance) (object)).getVehicleDeparture() == null)
+						{
+							//
+						}
+						else if (((L2PcInstance) getActiveObject()).isInBoat())
+						{
+							if (((L2PcInstance) getActiveObject()).getBoat() != object)
+							{
+								removeKnownObject(object);
+							}
+						}
+						else
+						{
+							removeKnownObject(object);
+						}
+					}
+					else
+					{
+						removeKnownObject(object);
+					}
+			}
+		}
     }
 
     // =========================================================
@@ -177,11 +180,15 @@ public class CharKnownList extends ObjectKnownList
     {
         FastList<L2Character> result = new FastList<L2Character>();
 
-        for (L2Object obj : getKnownObjects().values())
-        {
-            if (obj instanceof L2Character) result.add((L2Character) obj);
-        }
-
+        Collection<L2Object> objs = getKnownObjects().values();
+        synchronized (getKnownObjects())
+		{
+			for (L2Object obj : objs)
+			{
+				if (obj instanceof L2Character)
+					result.add((L2Character) obj);
+			}
+		}
         return result;
     }
 
@@ -189,24 +196,28 @@ public class CharKnownList extends ObjectKnownList
     {
        FastList<L2Character> result = new FastList<L2Character>();
 
-       for (L2Object obj : getKnownObjects().values())
-       {
-           if (obj instanceof L2PcInstance)
-           {
-               if (Util.checkIfInRange((int)radius, getActiveChar(), obj, true))
-                   result.add((L2PcInstance)obj);
-           }
-           else if (obj instanceof L2MonsterInstance)
-           {
-               if (Util.checkIfInRange((int)radius, getActiveChar(), obj, true))
-                   result.add((L2MonsterInstance)obj);
-           }
-           else if (obj instanceof L2NpcInstance)
-           {
-               if (Util.checkIfInRange((int)radius, getActiveChar(), obj, true))
-                   result.add((L2NpcInstance)obj);
-           }
-       }
+       Collection<L2Object> objs = getKnownObjects().values();
+       synchronized (getKnownObjects())
+		{
+			for (L2Object obj : objs)
+			{
+				if (obj instanceof L2PcInstance)
+				{
+					if (Util.checkIfInRange((int) radius, getActiveChar(), obj, true))
+						result.add((L2PcInstance) obj);
+				}
+				else if (obj instanceof L2MonsterInstance)
+				{
+					if (Util.checkIfInRange((int) radius, getActiveChar(), obj, true))
+						result.add((L2MonsterInstance) obj);
+				}
+				else if (obj instanceof L2NpcInstance)
+				{
+					if (Util.checkIfInRange((int) radius, getActiveChar(), obj, true))
+						result.add((L2NpcInstance) obj);
+				}
+			}
+		}
 
        return result;
     }

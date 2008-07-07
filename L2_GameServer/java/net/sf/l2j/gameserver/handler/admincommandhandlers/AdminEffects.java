@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
+import java.util.Collection;
 import java.util.StringTokenizer;
 
 import net.sf.l2j.Config;
@@ -43,6 +44,7 @@ import net.sf.l2j.gameserver.serverpackets.SunRise;
 import net.sf.l2j.gameserver.serverpackets.SunSet;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.serverpackets.UserInfo;
+import net.sf.l2j.gameserver.util.Broadcast;
 
 /**
  * This class handles following admin commands:
@@ -438,9 +440,13 @@ public class AdminEffects implements IAdminCommandHandler
 							try
 							{
 								int radius = Integer.parseInt(target);
-								for (L2Object object : activeChar.getKnownList().getKnownObjects().values())
-									if (activeChar.isInsideRadius(object, radius, false, false))
-										performSocial(social,object,activeChar);
+								Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
+								synchronized (activeChar.getKnownList().getKnownObjects())
+								{
+									for (L2Object object : objs)
+										if (activeChar.isInsideRadius(object, radius, false, false))
+											performSocial(social, object, activeChar);
+								}
 								activeChar.sendMessage(radius+ " units radius affected by your request.");
 							}
 							catch (NumberFormatException nbe)
@@ -500,10 +506,15 @@ public class AdminEffects implements IAdminCommandHandler
 							try
 							{
 								int radius = Integer.parseInt(target);
-								for (L2Object object : activeChar.getKnownList().getKnownObjects().values())
-									if (activeChar.isInsideRadius(object, radius, false, false))
-										performAbnormal(abnormal,object);
-								activeChar.sendMessage(radius+ " units radius affected by your request.");
+								Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
+								synchronized (activeChar.getKnownList().getKnownObjects())
+								{
+									for (L2Object object : objs)
+										if (activeChar.isInsideRadius(object, radius, false, false))
+											performAbnormal(abnormal, object);
+									activeChar.sendMessage(radius
+									        + " units radius affected by your request.");
+								}
 							}
 							catch (NumberFormatException nbe)
 							{
@@ -655,8 +666,7 @@ public class AdminEffects implements IAdminCommandHandler
 		else
 			activeChar.sendMessage("Usage: //atmosphere <signsky dawn|dusk>|<sky day|night|red>");
 		if(packet != null)
-			for (L2PcInstance player : L2World.getInstance().getAllPlayers())
-				player.sendPacket(packet);
+			Broadcast.toAllOnlinePlayers(packet);
 	}
 
 	private void playAdminSound(L2PcInstance activeChar, String sound)

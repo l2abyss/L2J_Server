@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.taskmanager.tasks;
 
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import net.sf.l2j.gameserver.model.L2World;
@@ -48,11 +49,14 @@ public class TaskRecom extends Task
     @Override
     public void onTimeElapsed(ExecutedTask task)
     {
-        for (L2PcInstance player: L2World.getInstance().getAllPlayers())
-        {
-            player.restartRecom();
-            player.sendPacket(new UserInfo(player));
-        }
+    	Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+    	synchronized (L2World.getInstance().getAllPlayers()) {
+    		for (L2PcInstance player: pls)
+    		{
+    			player.restartRecom();
+    			player.sendPacket(new UserInfo(player));
+    		}
+    	}
         _log.config("Recommendation Global Task: launched.");
     }
 

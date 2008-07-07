@@ -24,13 +24,16 @@
  */
 package net.sf.l2j.gameserver.util;
 
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.clientpackets.Say2;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.serverpackets.CharInfo;
+import net.sf.l2j.gameserver.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.serverpackets.L2GameServerPacket;
 import net.sf.l2j.gameserver.serverpackets.RelationChanged;
 
@@ -183,12 +186,16 @@ public final class Broadcast
     {
         if (Config.DEBUG) _log.fine("Players to notify: " + L2World.getInstance().getAllPlayersCount() + " (with packet " + mov.getType() + ")");
 
-        for (L2PcInstance onlinePlayer : L2World.getInstance().getAllPlayers())
-        {
-            if (onlinePlayer == null)
-                continue;
-
-            onlinePlayer.sendPacket(mov);
+        Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+        synchronized (L2World.getInstance().getAllPlayers()) {
+        	for (L2PcInstance onlinePlayer : pls)
+        		if (onlinePlayer.isOnline() == 1)
+        			onlinePlayer.sendPacket(mov);
         }
+    }
+    
+    public static void announceToOnlinePlayers(String text) {
+    	CreatureSay cs = new CreatureSay(0, Say2.ANNOUNCEMENT, "", text);
+    	toAllOnlinePlayers(cs);
     }
 }

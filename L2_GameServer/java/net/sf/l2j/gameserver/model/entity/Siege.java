@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.model.entity;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -48,6 +49,7 @@ import net.sf.l2j.gameserver.serverpackets.SiegeInfo;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.gameserver.util.Broadcast;
 
 public class Siege
 {
@@ -455,12 +457,7 @@ public class Siege
     		getCastle().getZone().announceToPlayers(message);
     		return;
     	}
-
-        // Get all players
-        for (L2PcInstance player : L2World.getInstance().getAllPlayers())
-        {
-                player.sendMessage(message);
-        }
+    	Broadcast.announceToOnlinePlayers(message);
     }
 
     public void updatePlayerSiegeStateFlags(boolean clear)
@@ -683,12 +680,15 @@ public class Siege
     {
         List<L2PcInstance> players = new FastList<L2PcInstance>();
 
-        for (L2PcInstance player : L2World.getInstance().getAllPlayers())
-        {
-            // quick check from player states, which don't include siege number however
-        	if (!player.isInsideZone(L2Character.ZONE_SIEGE) || player.getSiegeState() != 0) continue;
-        	if ( checkIfInZone(player.getX(), player.getY(), player.getZ()))
-        		players.add(player);
+        Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+        synchronized (L2World.getInstance().getAllPlayers()) {
+        	for (L2PcInstance player : pls)
+        	{
+        		// quick check from player states, which don't include siege number however
+        		if (!player.isInsideZone(L2Character.ZONE_SIEGE) || player.getSiegeState() != 0) continue;
+        		if ( checkIfInZone(player.getX(), player.getY(), player.getZ()))
+        			players.add(player);
+        	}
         }
 
        return players;

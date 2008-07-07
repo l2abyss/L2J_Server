@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
@@ -432,21 +433,26 @@ public class AdminEventEngine implements IAdminCommandHandler {
         activeChar.sendPacket(adminReply);
     }
 
-    void muestraNpcConInfoAPlayers(L2PcInstance activeChar, int id){
+    void muestraNpcConInfoAPlayers(L2PcInstance activeChar, int id)
+    {
         L2Event.npcs.clear();
         LinkedList <L2PcInstance> temp = new LinkedList<L2PcInstance>();
         temp.clear();
-        for (L2PcInstance player : L2World.getInstance().getAllPlayers())
+        Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+        synchronized (L2World.getInstance().getAllPlayers())
         {
-
-            if(!temp.contains(player)) {
-
-                L2Event.spawn(player, id);
-
-            temp.add(player);}
-            for (L2PcInstance playertemp : player.getKnownList().getKnownPlayers().values()){
-              if( (Math.abs(playertemp.getX()-player.getX()) < 500) && (Math.abs(playertemp.getY()-player.getY()) < 500) &&  (Math.abs(playertemp.getZ()-player.getZ()) < 500) ) temp.add(playertemp);
-            }
+        	for (L2PcInstance player : pls)
+        	{
+        		if(!temp.contains(player))
+        		{
+        			L2Event.spawn(player, id);
+        			temp.add(player);
+        		}
+        		for (L2PcInstance playertemp : player.getKnownList().getKnownPlayers().values())
+        		{
+        			if( (Math.abs(playertemp.getX()-player.getX()) < 500) && (Math.abs(playertemp.getY()-player.getY()) < 500) &&  (Math.abs(playertemp.getZ()-player.getZ()) < 500) ) temp.add(playertemp);
+        		}
+        	}
 
         }
         L2Event.announceAllPlayers(activeChar.getName() + " wants to make an event !!! (you'll find a npc with the details around)");

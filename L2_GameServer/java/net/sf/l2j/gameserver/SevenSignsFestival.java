@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
@@ -1289,14 +1290,18 @@ public class SevenSignsFestival implements SpawnListener
         saveFestivalData(updateSettings);
 
         // Remove any unused blood offerings from online players.
-        for (L2PcInstance onlinePlayer : L2World.getInstance().getAllPlayers())
+        Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+        synchronized (L2World.getInstance().getAllPlayers())
         {
-            try {
-              L2ItemInstance bloodOfferings = onlinePlayer.getInventory().getItemByItemId(FESTIVAL_OFFERING_ID);
+        	for (L2PcInstance onlinePlayer : pls)
+        	{
+        		try {
+        			L2ItemInstance bloodOfferings = onlinePlayer.getInventory().getItemByItemId(FESTIVAL_OFFERING_ID);
 
-              if (bloodOfferings != null)
-                onlinePlayer.destroyItem("SevenSigns", bloodOfferings, null, false);
-            } catch (NullPointerException e) {}
+        			if (bloodOfferings != null)
+        				onlinePlayer.destroyItem("SevenSigns", bloodOfferings, null, false);
+        		} catch (NullPointerException e) {}
+        	}
         }
 
         _log.info("SevenSignsFestival: Reinitialized engine for next competition period.");

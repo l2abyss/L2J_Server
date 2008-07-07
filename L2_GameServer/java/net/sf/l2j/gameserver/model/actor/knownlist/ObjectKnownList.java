@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.actor.knownlist;
 
+import java.util.Collection;
 import java.util.Map;
 
 import javolution.util.FastMap;
@@ -78,12 +79,15 @@ public class ObjectKnownList
     	{
     		for (L2WorldRegion regi : region.getSurroundingRegions()) // offer members of this and surrounding regions
     		{
-    			for (L2Object _object : regi.getVisibleObjects()) 
-    			{
-    				if (_object != getActiveObject())
+    			Collection<L2Object> vObj = regi.getVisibleObjects().values();
+    			synchronized (regi.getVisibleObjects()) {
+    				for (L2Object _object : vObj) 
     				{
-    					addKnownObject(_object);
-    					if (_object instanceof L2Character) _object.getKnownList().addKnownObject(getActiveObject());
+    					if (_object != getActiveObject())
+    					{
+    						addKnownObject(_object);
+    						if (_object instanceof L2Character) _object.getKnownList().addKnownObject(getActiveObject());
+    					}
     				}
     			}
     		}
@@ -92,11 +96,12 @@ public class ObjectKnownList
     	{
     		for (L2WorldRegion regi : region.getSurroundingRegions()) // offer members of this and surrounding regions
     		{
-    			if (regi.isActive()) for (L2Object _object : regi.getVisiblePlayable()) 
-    			{
-    				if (_object != getActiveObject())
-    				{
-    					addKnownObject(_object);
+    			if (regi.isActive()) {
+    				Collection<L2PlayableInstance> vPls = regi.getVisiblePlayable().values();
+    				synchronized (regi.getVisiblePlayable()) {
+    					for (L2Object _object : vPls) 
+    						if (_object != getActiveObject())
+    							addKnownObject(_object);
     				}
     			}
     		}
@@ -107,39 +112,42 @@ public class ObjectKnownList
     public void forgetObjects(boolean fullCheck)
     {
     	// Go through knownObjects
-    	for (L2Object object: getKnownObjects().values())
-    	{
-    		if (!fullCheck && !(object instanceof L2PlayableInstance))
-    			continue;
-
-    		// Remove all objects invisible or too far
-    		if (
-    				!object.isVisible() ||
-    				!Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true)
-    		)
-    			if (object instanceof L2BoatInstance && getActiveObject() instanceof L2PcInstance)
-    			{
-    				if(((L2BoatInstance)(object)).getVehicleDeparture() == null )
-    				{
-    					//
-    				}
-    				else if(((L2PcInstance)getActiveObject()).isInBoat())
-    				{
-    					if(((L2PcInstance)getActiveObject()).getBoat() != object)
-    					{
-    						removeKnownObject(object);
-    					}
-    				}
-    				else
-    				{
-    					removeKnownObject(object);
-    				}
-    			}
-    			else
-    			{
-    				removeKnownObject(object);
-    			}
-    	}
+    	Collection<L2Object> objs = getKnownObjects().values();
+    	synchronized (getKnownObjects())
+		{
+			for (L2Object object : objs)
+			{
+				if (!fullCheck && !(object instanceof L2PlayableInstance))
+					continue;
+				
+				// Remove all objects invisible or too far
+				if (!object.isVisible()
+				        || !Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true))
+					if (object instanceof L2BoatInstance
+					        && getActiveObject() instanceof L2PcInstance)
+					{
+						if (((L2BoatInstance) (object)).getVehicleDeparture() == null)
+						{
+							//
+						}
+						else if (((L2PcInstance) getActiveObject()).isInBoat())
+						{
+							if (((L2PcInstance) getActiveObject()).getBoat() != object)
+							{
+								removeKnownObject(object);
+							}
+						}
+						else
+						{
+							removeKnownObject(object);
+						}
+					}
+					else
+					{
+						removeKnownObject(object);
+					}
+			}
+		}
     }
 
     // =========================================================

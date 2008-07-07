@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.model;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_FOLLOW;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -1264,35 +1265,46 @@ public abstract class L2Character extends L2Object
 		boolean hitted = doAttackHitSimple(attack, target, 100, sAtk);
 		double attackpercent = 85;
 		L2Character temp;
-		for (L2Object obj : getKnownList().getKnownObjects().values())
+		Collection<L2Object> objs = getKnownList().getKnownObjects().values();
+		synchronized (getKnownList().getKnownObjects())
 		{
-			if (obj == target) continue; // do not hit twice
-			//Check if the L2Object is a L2Character
-			if(obj instanceof L2Character)
+			for (L2Object obj : objs)
 			{
-				if (obj instanceof L2PetInstance &&
-						this instanceof L2PcInstance &&
-						((L2PetInstance)obj).getOwner() == ((L2PcInstance)this)) continue;
-
-				if (!Util.checkIfInRange(maxRadius, this, obj, false)) continue;
-
-				//otherwise hit too high/low. 650 because mob z coord sometimes wrong on hills
-                if(Math.abs(obj.getZ() - getZ()) > 650) continue;
-				if (!isFacing(obj, maxAngleDiff)) continue;
-
-				temp = (L2Character) obj;
-
-				// Launch a simple attack against the L2Character targeted
-				if(!temp.isAlikeDead())
+				if (obj == target)
+					continue; // do not hit twice
+				// Check if the L2Object is a L2Character
+				if (obj instanceof L2Character)
 				{
-					attackcount += 1;
-					if (attackcount <= attackRandomCountMax)
+					if (obj instanceof L2PetInstance
+					        && this instanceof L2PcInstance
+					        && ((L2PetInstance) obj).getOwner() == ((L2PcInstance) this))
+						continue;
+					
+					if (!Util.checkIfInRange(maxRadius, this, obj, false))
+						continue;
+					
+					// otherwise hit too high/low. 650 because mob z coord
+					// sometimes wrong on hills
+					if (Math.abs(obj.getZ() - getZ()) > 650)
+						continue;
+					if (!isFacing(obj, maxAngleDiff))
+						continue;
+					
+					temp = (L2Character) obj;
+					
+					// Launch a simple attack against the L2Character targeted
+					if (!temp.isAlikeDead())
 					{
-						if (temp == getAI().getAttackTarget() || temp.isAutoAttackable(this))
+						attackcount += 1;
+						if (attackcount <= attackRandomCountMax)
 						{
-
-							hitted |= doAttackHitSimple(attack, temp, attackpercent, sAtk);
-							attackpercent /= 1.15;
+							if (temp == getAI().getAttackTarget()
+							        || temp.isAutoAttackable(this))
+							{
+								
+								hitted |= doAttackHitSimple(attack, temp, attackpercent, sAtk);
+								attackpercent /= 1.15;
+							}
 						}
 					}
 				}
@@ -5982,33 +5994,44 @@ public abstract class L2Character extends L2Object
 					}
 				}
 				// Mobs in range 1000 see spell
-				for (L2Object spMob : player.getKnownList().getKnownObjects().values())
+				Collection<L2Object> objs = player.getKnownList().getKnownObjects().values();
+				synchronized (player.getKnownList().getKnownObjects())
 				{
-					if (spMob instanceof L2NpcInstance)
+					for (L2Object spMob : objs)
 					{
-						L2NpcInstance npcMob = (L2NpcInstance) spMob;
-						
-		                if ( (npcMob.isInsideRadius(player, 1000, true, true)) &&
-		                		(npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE) !=null) )
-		                	for (Quest quest: npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE))
-		                		quest.notifySkillSee(npcMob, player, skill, targets, this instanceof L2Summon);
-						
-		                /**************** FULMINUS COMMENT START***************/
-						if (skill.getAggroPoints() > 0)
+						if (spMob instanceof L2NpcInstance)
 						{
-							if (npcMob.isInsideRadius(player, 1000, true, true)	
-									&& npcMob.hasAI()
-									&& npcMob.getAI().getIntention() == AI_INTENTION_ATTACK)
+							L2NpcInstance npcMob = (L2NpcInstance) spMob;
+							
+							if ((npcMob.isInsideRadius(player, 1000, true, true))
+							        && (npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE) != null))
+								for (Quest quest : npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE))
+									quest.notifySkillSee(npcMob, player, skill, targets, this instanceof L2Summon);
+							
+							/**
+							 * ************** FULMINUS COMMENT START**************
+							 */
+							if (skill.getAggroPoints() > 0)
 							{
-								L2Object npcTarget = npcMob.getTarget();
-								for (L2Object target : targets)
-									if (npcTarget == target || npcMob == target)
-										npcMob.seeSpell(player, target, skill);
+								if (npcMob.isInsideRadius(player, 1000, true, true)
+								        && npcMob.hasAI()
+								        && npcMob.getAI().getIntention() == AI_INTENTION_ATTACK)
+								{
+									L2Object npcTarget = npcMob.getTarget();
+									for (L2Object target : targets)
+										if (npcTarget == target
+										        || npcMob == target)
+											npcMob.seeSpell(player, target, skill);
+								}
 							}
+							/**
+							 * ************** FULMINUS COMMENT END **************
+							 */
+							// the section within "Fulminus Comment" should be
+							// deleted from core and placed
+							// within the mob's AI Script's onSkillSee, which is
+							// called by quest.notifySkillSee
 						}
-		                /**************** FULMINUS COMMENT END ***************/
-						// the section within "Fulminus Comment" should be deleted from core and placed
-						// within the mob's AI Script's onSkillSee, which is called by quest.notifySkillSee
 					}
 				}
 			}

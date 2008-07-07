@@ -1777,12 +1777,17 @@ public final class L2PcInstance extends L2PlayableInstance
 		if (karma < 0) karma = 0;
 		if (_karma == 0 && karma > 0)
 		{
-			for (L2Object object : getKnownList().getKnownObjects().values())
+			Collection<L2Object> objs = getKnownList().getKnownObjects().values();
+			synchronized (getKnownList().getKnownObjects())
 			{
-				if (!(object instanceof L2GuardInstance)) continue;
-
-				if (((L2GuardInstance)object).getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
-					((L2GuardInstance)object).getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
+				for (L2Object object : objs)
+				{
+					if (!(object instanceof L2GuardInstance))
+						continue;
+					
+					if (((L2GuardInstance) object).getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
+						((L2GuardInstance) object).getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
+				}
 			}
 		}
 		else if (_karma > 0 && karma == 0)

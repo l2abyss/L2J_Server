@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
+import java.util.Collection;
+
 import net.sf.l2j.gameserver.Announcements;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.L2World;
@@ -60,8 +62,9 @@ public class AdminAnnouncements implements IAdminCommandHandler {
 		}
 		else if (command.equals("admin_announce_announcements"))
 		{
-			for (L2PcInstance player : L2World.getInstance().getAllPlayers())
-			{
+			Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+			synchronized (L2World.getInstance().getAllPlayers()) {
+				for (L2PcInstance player : pls)
 				Announcements.getInstance().showAnnouncements(player);
 			}
 			Announcements.getInstance().listAnnouncements(activeChar);

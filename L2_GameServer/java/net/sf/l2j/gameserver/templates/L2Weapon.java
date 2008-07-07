@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.templates;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import javolution.util.FastList;
@@ -391,17 +392,21 @@ public final class L2Weapon  extends L2Item
                 if (caster instanceof L2PcInstance)
                 {
 					// Mobs in range 1000 see spell
-					for (L2Object spMob : caster.getKnownList().getKnownObjects().values())
-					{
-						if (spMob instanceof L2NpcInstance)
-						{
-							L2NpcInstance npcMob = (L2NpcInstance) spMob;
+                	Collection<L2Object> objs = caster.getKnownList().getKnownObjects().values();
+                	synchronized (caster.getKnownList().getKnownObjects())
+                	{
+                		for (L2Object spMob : objs)
+                		{
+                			if (spMob instanceof L2NpcInstance)
+                			{
+                				L2NpcInstance npcMob = (L2NpcInstance) spMob;
 							
-			                if (npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE) !=null)
-			                	for (Quest quest: npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE))
-			                		quest.notifySkillSee(npcMob, (L2PcInstance) caster, _skillsOnCast, targets, false);
-						}
-					}
+                				if (npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE) != null)
+                					for (Quest quest : npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE))
+                						quest.notifySkillSee(npcMob, (L2PcInstance) caster, _skillsOnCast, targets, false);
+                			}
+                		}
+                	}
                 }
             }
             catch (IOException e)

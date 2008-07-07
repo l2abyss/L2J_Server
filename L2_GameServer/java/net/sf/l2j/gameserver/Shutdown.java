@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver;
 
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +32,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.serverpackets.ServerClose;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.util.Broadcast;
 
 /**
  *
@@ -63,13 +65,9 @@ public class Shutdown extends Thread
 		@SuppressWarnings("deprecation")
         private void SendServerQuit(int seconds)
 		{
-			for (L2PcInstance player : L2World.getInstance().getAllPlayers())
-			{
-				SystemMessage sysm = new SystemMessage(1);
-				sysm.addNumber(seconds);
-				player.sendPacket(sysm);
-				
-			}
+			SystemMessage sysm = new SystemMessage(1);
+			sysm.addNumber(seconds);
+			Broadcast.toAllOnlinePlayers(sysm);
 		}
 
     public void startTelnetShutdown(String IP, int seconds, boolean restart)
@@ -498,29 +496,37 @@ public class Shutdown extends Thread
 	@SuppressWarnings("deprecation")
     private void disconnectAllCharacters()
 	{
-		for (L2PcInstance player : L2World.getInstance().getAllPlayers())
+		SystemMessage sysm = new SystemMessage(0);
+		ServerClose ql = new ServerClose();
+		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+		synchronized (L2World.getInstance().getAllPlayers())
 		{
-			SystemMessage sysm = new SystemMessage(0);
-			player.sendPacket(sysm);
-			//Logout Character
-			try {
-				L2GameClient.saveCharToDisk(player);
-				//SystemMessage sm = new SystemMessage(SystemMessage.YOU_HAVE_WON_THE_WAR_OVER_THE_S1_CLAN);
-				//player.sendPacket(sm);
-				ServerClose ql = new ServerClose();
-				player.sendPacket(ql);
-			} catch (Throwable t)	{}
+			for (L2PcInstance player : pls)
+			{
+				player.sendPacket(sysm);
+				//Logout Character
+				try {
+					L2GameClient.saveCharToDisk(player);
+					//SystemMessage sm = new SystemMessage(SystemMessage.YOU_HAVE_WON_THE_WAR_OVER_THE_S1_CLAN);
+					//player.sendPacket(sm);
+					player.sendPacket(ql);
+				} catch (Throwable t)	{}
+			}
 		}
 		try { Thread.sleep(1000); } catch (Throwable t) {_log.log(Level.INFO, "", t);}
 		
-		
-		for (L2PcInstance player : L2World.getInstance().getAllPlayers())
+
+		pls = L2World.getInstance().getAllPlayers().values();
+		synchronized (L2World.getInstance().getAllPlayers())
 		{
-			try {
-				player.closeNetConnection();
-			} catch (Throwable t)	{
+			for (L2PcInstance player : pls)
+			{
+				try {
+					player.closeNetConnection();
+				} catch (Throwable t)	{
 				// just to make sure we try to kill the connection 
-			}				
+				}				
+			}
 		}
 	}
 

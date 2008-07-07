@@ -18,6 +18,7 @@ import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -408,55 +409,58 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
             // Get all visible objects inside its Aggro Range
             //L2Object[] objects = L2World.getInstance().getVisibleObjects(_actor, ((L2NpcInstance)_actor).getAggroRange());
             // Go through visible objects
-            for (L2Object obj : npc.getKnownList().getKnownObjects().values())
-            {
-                if (!(obj instanceof L2Character)) continue;
-                L2Character target = (L2Character) obj;
+        	Collection<L2Object> objs = npc.getKnownList().getKnownObjects().values();
+        	synchronized (npc.getKnownList().getKnownObjects()) {
+        		for (L2Object obj : objs)
+        		{
+        			if (!(obj instanceof L2Character)) continue;
+        			L2Character target = (L2Character) obj;
 
-                /*
-                 * Check to see if this is a festival mob spawn.
-                 * If it is, then check to see if the aggro trigger
-                 * is a festival participant...if so, move to attack it.
-                 */
-                if ((_actor instanceof L2FestivalMonsterInstance) && obj instanceof L2PcInstance)
-                {
-                    L2PcInstance targetPlayer = (L2PcInstance) obj;
+        			/*
+        			 * Check to see if this is a festival mob spawn.
+        			 * If it is, then check to see if the aggro trigger
+        			 * is a festival participant...if so, move to attack it.
+        			 */
+        			if ((_actor instanceof L2FestivalMonsterInstance) && obj instanceof L2PcInstance)
+        			{
+        				L2PcInstance targetPlayer = (L2PcInstance) obj;
 
-                    if (!(targetPlayer.isFestivalParticipant())) continue;
-                }
+        				if (!(targetPlayer.isFestivalParticipant())) continue;
+        			}
 
-                /*
-                 * Temporarily adding this commented code as a concept to be used eventually.
-                 * However, the way it is written below will NOT work correctly.  The NPC
-                 * should only notify Aggro Range Enter when someone enters the range from outside.
-                 * Instead, the below code will keep notifying even while someone remains within 
-                 * the range.  Perhaps we need a short knownlist of range = aggroRange for just
-                 * people who are actively within the npc's aggro range?...(Fulminus) 
-                // notify AI that a playable instance came within aggro range
-                if ((obj instanceof L2PcInstance) || (obj instanceof L2Summon))
-                {
-                    if ( !((L2Character)obj).isAlikeDead()
+        			/*
+        			 * Temporarily adding this commented code as a concept to be used eventually.
+        			 * However, the way it is written below will NOT work correctly.  The NPC
+        			 * should only notify Aggro Range Enter when someone enters the range from outside.
+        			 * Instead, the below code will keep notifying even while someone remains within 
+        			 * the range.  Perhaps we need a short knownlist of range = aggroRange for just
+        			 * people who are actively within the npc's aggro range?...(Fulminus) 
+                	// notify AI that a playable instance came within aggro range
+                	if ((obj instanceof L2PcInstance) || (obj instanceof L2Summon))
+                	{
+                    	if ( !((L2Character)obj).isAlikeDead()
                             && !npc.isInsideRadius(obj, npc.getAggroRange(), true, false) )
-                    {
-                    	L2PcInstance targetPlayer = (obj instanceof L2PcInstance)? (L2PcInstance) obj: ((L2Summon) obj).getOwner();
-                        if (npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER) !=null)
-                        	for (Quest quest: npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER))
-                        		quest.notifyAggroRangeEnter(npc, targetPlayer, (obj instanceof L2Summon));
-                    }
-                }
-                */
-                // TODO: The AI Script ought to handle aggro behaviors in onSee.  Once implemented, aggro behaviors ought
-                // to be removed from here.  (Fulminus)
-                // For each L2Character check if the target is autoattackable
-                if (autoAttackCondition(target)) // check aggression
-                {
-                    // Get the hate level of the L2Attackable against this L2Character target contained in _aggroList
-                    int hating = npc.getHating(target);
+                    	{
+                    		L2PcInstance targetPlayer = (obj instanceof L2PcInstance)? (L2PcInstance) obj: ((L2Summon) obj).getOwner();
+                        	if (npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER) !=null)
+                        		for (Quest quest: npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER))
+                        			quest.notifyAggroRangeEnter(npc, targetPlayer, (obj instanceof L2Summon));
+                    	}
+                	}
+        			 */
+        			// TODO: The AI Script ought to handle aggro behaviors in onSee.  Once implemented, aggro behaviors ought
+        			// to be removed from here.  (Fulminus)
+        			// For each L2Character check if the target is autoattackable
+        			if (autoAttackCondition(target)) // check aggression
+        			{
+        				// Get the hate level of the L2Attackable against this L2Character target contained in _aggroList
+        				int hating = npc.getHating(target);
 
-                    // Add the attacker to the L2Attackable _aggroList with 0 damage and 1 hate
-                    if (hating == 0) npc.addDamageHate(target, 0, 1);
-                }
-            }
+        				// Add the attacker to the L2Attackable _aggroList with 0 damage and 1 hate
+        				if (hating == 0) npc.addDamageHate(target, 0, 1);
+        			}
+        		}
+        	}
             
             // Chose a target from its aggroList
             L2Character hated;
@@ -657,129 +661,140 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
         	String faction_id = ((L2NpcInstance) _actor).getFactionId();
 
         	// Go through all L2Object that belong to its faction
-        	for (L2Object obj : _actor.getKnownList().getKnownObjects().values())
-        	{
-        		if (obj instanceof L2NpcInstance)
-        		{
-        			L2NpcInstance npc = (L2NpcInstance) obj;
+        	Collection<L2Object> objs = _actor.getKnownList().getKnownObjects().values();
+        	synchronized (_actor.getKnownList().getKnownObjects())
+			{
+				for (L2Object obj : objs)
+				{
+					if (obj instanceof L2NpcInstance)
+					{
+						L2NpcInstance npc = (L2NpcInstance) obj;
+						
+						if (faction_id != npc.getFactionId())
+							continue;
+						
+						// Check if the L2Object is inside the Faction Range of
+						// the actor
+						if (_actor.isInsideRadius(npc, npc.getFactionRange()
+						        + npc.getTemplate().collisionRadius, true, false)
+						        && npc.getAI() != null)
+						{
+							if (Math.abs(originalAttackTarget.getZ()
+							        - npc.getZ()) < 600
+							        && _actor.getAttackByList().contains(originalAttackTarget)
+							        && (npc.getAI()._intention == CtrlIntention.AI_INTENTION_IDLE || npc.getAI()._intention == CtrlIntention.AI_INTENTION_ACTIVE)
+							        && GeoData.getInstance().canSeeTarget(_actor, npc))
+							{
+								if (originalAttackTarget instanceof L2PcInstance
+								        && originalAttackTarget.isInParty()
+								        && originalAttackTarget.getParty().isInDimensionalRift())
+								{
+									byte riftType = originalAttackTarget.getParty().getDimensionalRift().getType();
+									byte riftRoom = originalAttackTarget.getParty().getDimensionalRift().getCurrentRoom();
+									
+									if (_actor instanceof L2RiftInvaderInstance
+									        && !DimensionalRiftManager.getInstance().getRoom(riftType, riftRoom).checkIfInZone(npc.getX(), npc.getY(), npc.getZ()))
+										continue;
+								}
+								
+								// TODO: notifyEvent ought to be removed from
+								// here and added in the AI script, when
+								// implemented (Fulminus)
+								// Notify the L2Object AI with EVT_AGGRESSION
+								npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, originalAttackTarget, 1);
+								if ((originalAttackTarget instanceof L2PcInstance)
+								        || (originalAttackTarget instanceof L2Summon))
+								{
+									if (npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_FACTION_CALL) != null)
+									{
+										L2PcInstance player = (originalAttackTarget instanceof L2PcInstance) ? (L2PcInstance) originalAttackTarget : ((L2Summon) originalAttackTarget).getOwner();
+										for (Quest quest : npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_FACTION_CALL))
+											quest.notifyFactionCall(npc, (L2NpcInstance) _actor, player, (originalAttackTarget instanceof L2Summon));
+									}
+								}
+							}
+							// heal or resurrect friends
+							if (_selfAnalysis.hasHealOrResurrect
+							        && !_actor.isAttackingDisabled()
+							        && npc.getCurrentHp() < npc.getMaxHp() * 0.6
+							        && _actor.getCurrentHp() > _actor.getMaxHp() / 2
+							        && _actor.getCurrentMp() > _actor.getMaxMp() / 2
 
-        			if (faction_id != npc.getFactionId())
-        				continue;
-
-        			// Check if the L2Object is inside the Faction Range of the actor
-        			if (_actor.isInsideRadius(npc, npc.getFactionRange()+npc.getTemplate().collisionRadius, true, false)
-        				&& npc.getAI() != null
-        				)
-        			{
-        				if (Math.abs(originalAttackTarget.getZ() - npc.getZ()) < 600
-        						&& _actor.getAttackByList().contains(originalAttackTarget)
-        						&& (npc.getAI()._intention == CtrlIntention.AI_INTENTION_IDLE
-        								|| npc.getAI()._intention == CtrlIntention.AI_INTENTION_ACTIVE)
-        						&& GeoData.getInstance().canSeeTarget(_actor, npc))
-        				{
-        					if (originalAttackTarget instanceof L2PcInstance
-        							&& originalAttackTarget.isInParty()
-        							&& originalAttackTarget.getParty().isInDimensionalRift())
-        					{
-        						byte riftType = originalAttackTarget.getParty().getDimensionalRift().getType();
-        						byte riftRoom = originalAttackTarget.getParty().getDimensionalRift().getCurrentRoom();
-
-        						if (_actor instanceof L2RiftInvaderInstance
-        								&& !DimensionalRiftManager.getInstance().getRoom(riftType, riftRoom).checkIfInZone(npc.getX(), npc.getY(), npc.getZ()))
-        							continue;
-        					}
-
-        					// TODO: notifyEvent ought to be removed from here and added in the AI script, when implemented (Fulminus) 
-        					// Notify the L2Object AI with EVT_AGGRESSION
-        					npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, originalAttackTarget, 1);
-        					if ((originalAttackTarget instanceof L2PcInstance) || (originalAttackTarget instanceof L2Summon))
-        					{
-        						if (npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_FACTION_CALL) != null)
-        						{
-        							L2PcInstance player = (originalAttackTarget instanceof L2PcInstance)?
-        								(L2PcInstance)originalAttackTarget: ((L2Summon) originalAttackTarget).getOwner();
-        							for (Quest quest: npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_FACTION_CALL))
-        								quest.notifyFactionCall(npc, (L2NpcInstance) _actor, player, (originalAttackTarget instanceof L2Summon));
-        						}
-        					}
-        				}
-        				// heal or resurrect friends
-        				if (_selfAnalysis.hasHealOrResurrect && !_actor.isAttackingDisabled()
-        				    && npc.getCurrentHp() < npc.getMaxHp()*0.6
-        					&& _actor.getCurrentHp() > _actor.getMaxHp()/2
-        					&& _actor.getCurrentMp() > _actor.getMaxMp()/2
-        					
-        				)
-        				{
-        					if (npc.isDead() && _actor instanceof L2MinionInstance)
-        					{
-        						if (((L2MinionInstance)_actor).getLeader() == npc)
-        						{
-        							for (L2Skill sk : _selfAnalysis.resurrectSkills)
-            						{
-            							if (_actor.getCurrentMp() < sk.getMpConsume())
-            								continue;
-            							if (_actor.isSkillDisabled(sk.getId()))
-            								continue;
-            							if (!Util.checkIfInRange(sk.getCastRange(), _actor, npc, true))
-            								continue;
-            						
-            							if (10 >= Rnd.get(100)) // chance
-            								continue;
-            							if (!GeoData.getInstance().canSeeTarget(_actor, npc))
-            								break;
-            						
-            							L2Object OldTarget = _actor.getTarget();
-                       		 			_actor.setTarget(npc);
-        								// would this ever be fast enough for the decay not to run?
-                       		 			// giving some extra seconds
-                       		 			DecayTaskManager.getInstance().cancelDecayTask(npc);
-                       		 			DecayTaskManager.getInstance().addDecayTask(npc); 
-                       		 			clientStopMoving(null);
-                       		 			_accessor.doCast(sk);
-                       		 			_actor.setTarget(OldTarget);
-                       		 			return;
-            						}
-        						}
-        					}
-        					else if (npc.isInCombat())
-        					{
-        						for (L2Skill sk : _selfAnalysis.healSkills)
-        						{
-        							if (_actor.getCurrentMp() < sk.getMpConsume())
-        								continue;
-        							if (_actor.isSkillDisabled(sk.getId()))
-        								continue;
-        							if (!Util.checkIfInRange(sk.getCastRange(), _actor, npc, true))
-        								continue;
-        						
-        							int chance = 4;
-        							if (_actor instanceof L2MinionInstance)
-        							{
-        								// minions support boss
-        								if (((L2MinionInstance)_actor).getLeader() == npc)
-        									chance = 6;
-        								else chance = 3;
-        							}
-        							if (npc instanceof L2GrandBossInstance)
-        								chance = 6;
-        							if (chance >= Rnd.get(100)) // chance
-        								continue;
-        							if (!GeoData.getInstance().canSeeTarget(_actor, npc))
-        								break;
-        						
-        							L2Object OldTarget = _actor.getTarget();
-                   		 			_actor.setTarget(npc);
-                   		 			clientStopMoving(null);
-                   		 			_accessor.doCast(sk);
-                   		 			_actor.setTarget(OldTarget);
-                   		 			return;
-        						}
-        					}
-        				}
-        			}
-        		}
-            }
+							)
+							{
+								if (npc.isDead()
+								        && _actor instanceof L2MinionInstance)
+								{
+									if (((L2MinionInstance) _actor).getLeader() == npc)
+									{
+										for (L2Skill sk : _selfAnalysis.resurrectSkills)
+										{
+											if (_actor.getCurrentMp() < sk.getMpConsume())
+												continue;
+											if (_actor.isSkillDisabled(sk.getId()))
+												continue;
+											if (!Util.checkIfInRange(sk.getCastRange(), _actor, npc, true))
+												continue;
+											
+											if (10 >= Rnd.get(100)) // chance
+												continue;
+											if (!GeoData.getInstance().canSeeTarget(_actor, npc))
+												break;
+											
+											L2Object OldTarget = _actor.getTarget();
+											_actor.setTarget(npc);
+											// would this ever be fast enough
+											// for the decay not to run?
+											// giving some extra seconds
+											DecayTaskManager.getInstance().cancelDecayTask(npc);
+											DecayTaskManager.getInstance().addDecayTask(npc);
+											clientStopMoving(null);
+											_accessor.doCast(sk);
+											_actor.setTarget(OldTarget);
+											return;
+										}
+									}
+								}
+								else if (npc.isInCombat())
+								{
+									for (L2Skill sk : _selfAnalysis.healSkills)
+									{
+										if (_actor.getCurrentMp() < sk.getMpConsume())
+											continue;
+										if (_actor.isSkillDisabled(sk.getId()))
+											continue;
+										if (!Util.checkIfInRange(sk.getCastRange(), _actor, npc, true))
+											continue;
+										
+										int chance = 4;
+										if (_actor instanceof L2MinionInstance)
+										{
+											// minions support boss
+											if (((L2MinionInstance) _actor).getLeader() == npc)
+												chance = 6;
+											else
+												chance = 3;
+										}
+										if (npc instanceof L2GrandBossInstance)
+											chance = 6;
+										if (chance >= Rnd.get(100)) // chance
+											continue;
+										if (!GeoData.getInstance().canSeeTarget(_actor, npc))
+											break;
+										
+										L2Object OldTarget = _actor.getTarget();
+										_actor.setTarget(npc);
+										clientStopMoving(null);
+										_accessor.doCast(sk);
+										_actor.setTarget(OldTarget);
+										return;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
         }
 
         if(_actor.isAttackingDisabled()) return;

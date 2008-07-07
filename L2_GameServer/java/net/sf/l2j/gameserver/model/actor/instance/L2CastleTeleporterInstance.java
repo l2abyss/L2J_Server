@@ -22,6 +22,7 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -120,12 +121,11 @@ public final class L2CastleTeleporterInstance extends L2FolkInstance
 			{
 				NpcSay cs = new NpcSay(getObjectId(), 1, getNpcId(), "The defenders of "+ getCastle().getName()+" castle will be teleported to the inner castle.");
 				int region = MapRegionTable.getInstance().getMapRegion(getX(), getY());
-				for (L2PcInstance player : L2World.getInstance().getAllPlayers())
-				{
-					if (region == MapRegionTable.getInstance().getMapRegion(player.getX(),player.getY()))
-					{
-						player.sendPacket(cs);
-					}
+				Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+				synchronized (L2World.getInstance().getAllPlayers()) {
+					for (L2PcInstance player : pls)
+						if (region == MapRegionTable.getInstance().getMapRegion(player.getX(),player.getY()))
+							player.sendPacket(cs);
 				}
 				oustAllPlayers();
 				setTask(false);

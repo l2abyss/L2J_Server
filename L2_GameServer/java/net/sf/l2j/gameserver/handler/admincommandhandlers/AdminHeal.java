@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -78,13 +79,18 @@ public class AdminHeal implements IAdminCommandHandler {
 				try
 				{
 					int radius  = Integer.parseInt(player);
-					for (L2Object object : activeChar.getKnownList().getKnownObjects().values())
+					Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
+					synchronized (activeChar.getKnownList().getKnownObjects())
 					{
-						if (object instanceof L2Character)
+						for (L2Object object : objs)
 						{
-							L2Character character = (L2Character) object;
-							character.setCurrentHpMp(character.getMaxHp(), character.getMaxMp());
-							if ( object instanceof L2PcInstance ) character.setCurrentCp(character.getMaxCp());
+							if (object instanceof L2Character)
+							{
+								L2Character character = (L2Character) object;
+								character.setCurrentHpMp(character.getMaxHp(), character.getMaxMp());
+								if (object instanceof L2PcInstance)
+									character.setCurrentCp(character.getMaxCp());
+							}
 						}
 					}
 					activeChar.sendMessage("Healed within " + radius + " unit radius.");

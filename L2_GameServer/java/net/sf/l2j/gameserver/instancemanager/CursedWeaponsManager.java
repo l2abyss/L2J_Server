@@ -34,7 +34,6 @@ import net.sf.l2j.gameserver.model.CursedWeapon;
 import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
-import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2FeedableBeastInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FestivalMonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
@@ -44,6 +43,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2RiftInvaderInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.util.Broadcast;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -392,14 +392,7 @@ public class CursedWeaponsManager
 
 	public static void announce(SystemMessage sm)
 	{
-		for (L2PcInstance player : L2World.getInstance().getAllPlayers())
-		{
-			if (player == null) continue;
-
-			player.sendPacket(sm);
-		}
-		if (Config.DEBUG)
-			_log.info("MessageID: "+sm.getMessageID());
+		Broadcast.toAllOnlinePlayers(sm);
 	}
 
 	public void checkPlayer(L2PcInstance player)

@@ -25,16 +25,15 @@ import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import javolution.text.TextBuilder;
-import net.sf.l2j.gameserver.clientpackets.Say2;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.gameserver.util.Broadcast;
 import net.sf.l2j.util.EventData;
 
 /**
@@ -209,13 +208,7 @@ public class L2Event
 
     public static void announceAllPlayers(String text)
     {
-        CreatureSay cs = new CreatureSay(0, Say2.ANNOUNCEMENT, "", text);
-
-        for (L2PcInstance player : L2World.getInstance().getAllPlayers())
-        {
-            player.sendPacket(cs);
-        }
-
+        Broadcast.announceToOnlinePlayers(text);
     }
 
     public static boolean isOnEvent(L2PcInstance player)

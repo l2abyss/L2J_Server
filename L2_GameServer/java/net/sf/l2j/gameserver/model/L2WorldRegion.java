@@ -14,11 +14,14 @@
  */
 package net.sf.l2j.gameserver.model;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
+import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.L2AttackableAI;
@@ -31,8 +34,6 @@ import net.sf.l2j.gameserver.model.zone.type.L2DerbyTrackZone;
 import net.sf.l2j.gameserver.model.zone.type.L2PeaceZone;
 import net.sf.l2j.gameserver.model.zone.type.L2TownZone;
 import net.sf.l2j.gameserver.taskmanager.KnownListUpdateTaskManager;
-import net.sf.l2j.util.L2ObjectSet;
-
 
 /**
  * This class ...
@@ -44,12 +45,12 @@ public final class L2WorldRegion
     private static Logger _log = Logger.getLogger(L2WorldRegion.class.getName());
 
     /** L2ObjectHashSet(L2PlayableInstance) containing L2PlayableInstance of all player & summon in game in this L2WorldRegion */
-    private L2ObjectSet<L2PlayableInstance> _allPlayable;
+    private Map<Integer,L2PlayableInstance> _allPlayable;
 
     /** L2ObjectHashSet(L2Object) containing L2Object visible in this L2WorldRegion */
-    private L2ObjectSet<L2Object> _visibleObjects;
+    private Map<Integer,L2Object> _visibleObjects;
 
-    private FastList<L2WorldRegion> _surroundingRegions;
+    private List<L2WorldRegion> _surroundingRegions;
     private int _tileX, _tileY;
     private Boolean _active = false;
     private ScheduledFuture<?> _neighborsTask = null;
@@ -58,10 +59,9 @@ public final class L2WorldRegion
 
     public L2WorldRegion(int pTileX, int pTileY)
     {
-        _allPlayable = L2ObjectSet.createL2PlayerSet(); //new L2ObjectHashSet<L2PcInstance>();
-        _visibleObjects = L2ObjectSet.createL2ObjectSet(); // new L2ObjectHashSet<L2Object>();
-        _surroundingRegions = new FastList<L2WorldRegion>();
-        //_surroundingRegions.add(this); //done in L2World.initRegions()
+        _allPlayable = new FastMap<Integer, L2PlayableInstance>().setShared(true);
+        _visibleObjects = new FastMap<Integer, L2Object>().setShared(true);
+        _surroundingRegions = new ArrayList<L2WorldRegion>();
 
         _tileX = pTileX;
         _tileY = pTileY;
@@ -220,58 +220,52 @@ public final class L2WorldRegion
         int c = 0;
         if (!isOn)
         {
-            for(L2Object o: _visibleObjects)
-            {
-                if (o instanceof L2Attackable)
-                {
-                    c++;
-                    L2Attackable mob = (L2Attackable)o;
+        	Collection<L2Object> vObj = _visibleObjects.values();
+        	synchronized (_visibleObjects) {
+        		for(L2Object o: vObj)
+        		{
+        			if (o instanceof L2Attackable)
+        			{
+        				c++;
+        				L2Attackable mob = (L2Attackable)o;
 
-                    // Set target to null and cancel Attack or Cast
-                    mob.setTarget(null);
+        				// Set target to null and cancel Attack or Cast
+        				mob.setTarget(null);
 
-                    // Stop movement
-                    mob.stopMove(null);
+        				// Stop movement
+        				mob.stopMove(null);
 
-                    // Stop all active skills effects in progress on the L2Character
-                    mob.stopAllEffects();
+        				// Stop all active skills effects in progress on the L2Character
+        				mob.stopAllEffects();
 
-                    mob.clearAggroList();
-                    mob.getKnownList().removeAllKnownObjects();
+        				mob.clearAggroList();
+        				mob.getKnownList().removeAllKnownObjects();
 
-                    mob.getAI().setIntention(net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE);
+        				mob.getAI().setIntention(net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE);
 
-                    // stop the ai tasks
-                    ((L2AttackableAI) mob.getAI()).stopAITask();
-
-                    // Stop HP/MP/CP Regeneration task
-                    // try this: allow regen, but only until mob is 100% full...then stop
-                    // it until the grid is made active.
-                    //mob.getStatus().stopHpMpRegeneration();
-                }
-            }
+        				// stop the ai tasks
+        				((L2AttackableAI) mob.getAI()).stopAITask();
+        			}
+        		}
+        	}
             _log.fine(c+ " mobs were turned off");
         }
         else
         {
-            for(L2Object o: _visibleObjects)
-            {
-            	if (o instanceof L2Attackable)
-                {
-                    c++;
-                    // Start HP/MP/CP Regeneration task
-                    ((L2Attackable)o).getStatus().startHpMpRegeneration();
-
-                    // start the ai
-                    //((L2AttackableAI) mob.getAI()).startAITask();
-                }
-            	else if (o instanceof L2NpcInstance)
-                {
-                    // Create a RandomAnimation Task that will be launched after the calculated delay if the server allow it
-                    // L2Monsterinstance/L2Attackable socials are handled by AI (TODO: check the instances)
-            		((L2NpcInstance)o).startRandomAnimationTimer();
-                }
-            }
+        	Collection<L2Object> vObj = _visibleObjects.values();
+        	synchronized (_visibleObjects) {
+        		for(L2Object o: vObj)
+        		{
+        			if (o instanceof L2Attackable)
+        			{
+        				c++;
+        				// Start HP/MP/CP Regeneration task
+        				((L2Attackable)o).getStatus().startHpMpRegeneration();
+        			}
+        			else if (o instanceof L2NpcInstance)
+        				((L2NpcInstance)o).startRandomAnimationTimer();
+        		}
+        	}
             KnownListUpdateTaskManager.getInstance().updateRegion(this, true, false);
             _log.fine(c+ " mobs were turned on");
             
@@ -374,11 +368,11 @@ public final class L2WorldRegion
         if (Config.ASSERT) assert object.getWorldRegion() == this;
         
         if (object == null) return;
-        _visibleObjects.put(object);
+        _visibleObjects.put(object.getObjectId(),object);
 
         if (object instanceof L2PlayableInstance)
         {
-            _allPlayable.put((L2PlayableInstance) object);
+            _allPlayable.put(object.getObjectId(),(L2PlayableInstance) object);
 
             // if this is the first player to enter the region, activate self & neighbors
             if ((_allPlayable.size() == 1) && (!Config.GRIDS_ALWAYS_ON))
@@ -397,11 +391,11 @@ public final class L2WorldRegion
         if (Config.ASSERT) assert object.getWorldRegion() == this || object.getWorldRegion() == null;
 
         if (object == null) return;
-        _visibleObjects.remove(object);
+        _visibleObjects.remove(object.getObjectId());
 
         if (object instanceof L2PlayableInstance)
         {
-            _allPlayable.remove((L2PlayableInstance) object);
+            _allPlayable.remove(object.getObjectId());
 
             if ((_allPlayable.size() == 0 ) && (!Config.GRIDS_ALWAYS_ON))
                 startDeactivation();
@@ -416,27 +410,19 @@ public final class L2WorldRegion
     /**
      * Return the FastList _surroundingRegions containing all L2WorldRegion around the current L2WorldRegion
      */
-    public FastList<L2WorldRegion> getSurroundingRegions()
+    public List<L2WorldRegion> getSurroundingRegions()
     {
-        //change to return L2WorldRegion[] ?
-        //this should not change after initialization, so maybe changes are not necessary
-
         return _surroundingRegions;
     }
 
-    public Iterator<L2PlayableInstance> iterateAllPlayers()
-    {
-        return _allPlayable.iterator();
-    }
-
-    public L2ObjectSet<L2Object> getVisibleObjects()
-    {
-        return _visibleObjects;
-    }
-
-    public L2ObjectSet<L2PlayableInstance> getVisiblePlayable()
+    public Map<Integer,L2PlayableInstance> getVisiblePlayable()
     {
         return _allPlayable;
+    }
+
+    public Map<Integer,L2Object> getVisibleObjects()
+    {
+        return _visibleObjects;
     }
    
     public String getName()
@@ -447,23 +433,26 @@ public final class L2WorldRegion
     /**
      * Deleted all spawns in the world.
      */
-    public synchronized void deleteVisibleNpcSpawns()
+    public void deleteVisibleNpcSpawns()
     {
         _log.fine("Deleting all visible NPC's in Region: " + getName());
-        for (L2Object obj : _visibleObjects)
-        {
-            if (obj instanceof L2NpcInstance)
-            {
-                L2NpcInstance target = (L2NpcInstance) obj;
-                target.deleteMe();
-                L2Spawn spawn = target.getSpawn();
-                if (spawn != null)
-                {
-                    spawn.stopRespawn();
-                    SpawnTable.getInstance().deleteSpawn(spawn, false);
-                }
-                _log.finest("Removed NPC " + target.getObjectId());
-            }
+        Collection<L2Object> vNPC = _visibleObjects.values();
+        synchronized (_visibleObjects) {
+        	for (L2Object obj : vNPC)
+        	{
+        		if (obj instanceof L2NpcInstance)
+        		{
+        			L2NpcInstance target = (L2NpcInstance) obj;
+        			target.deleteMe();
+        			L2Spawn spawn = target.getSpawn();
+        			if (spawn != null)
+        			{
+        				spawn.stopRespawn();
+        				SpawnTable.getInstance().deleteSpawn(spawn, false);
+        			}
+        			_log.finest("Removed NPC " + target.getObjectId());
+        		}
+        	}
         }
         _log.info("All visible NPC's deleted in Region: " + getName());
     }

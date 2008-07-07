@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.ai;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 
+import java.util.Collection;
 import java.util.List;
 
 import javolution.util.FastList;
@@ -298,21 +299,26 @@ public class L2ControllableMobAI extends L2AttackableAI
             {
 				String faction_id = ((L2NpcInstance) _actor).getFactionId();
 
-				for (L2Object obj : _actor.getKnownList().getKnownObjects().values())
-                {
-                    if (!(obj instanceof L2NpcInstance))
-                        continue;
-
-                    L2NpcInstance npc = (L2NpcInstance) obj;
-
-                    if (faction_id != npc.getFactionId())
-                        continue;
-
-                    if (_actor.isInsideRadius(npc, npc.getFactionRange(), false, true)
-                            && Math.abs(getAttackTarget().getZ() - npc.getZ()) < 200)
-                    {
-                        npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, getAttackTarget(), 1);
-                    }
+				Collection<L2Object> objs = _actor.getKnownList().getKnownObjects().values();
+				synchronized (_actor.getKnownList().getKnownObjects())
+				{
+					for (L2Object obj : objs)
+					{
+						if (!(obj instanceof L2NpcInstance))
+							continue;
+						
+						L2NpcInstance npc = (L2NpcInstance) obj;
+						
+						if (faction_id != npc.getFactionId())
+							continue;
+						
+						if (_actor.isInsideRadius(npc, npc.getFactionRange(), false, true)
+						        && Math.abs(getAttackTarget().getZ()
+						                - npc.getZ()) < 200)
+						{
+							npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, getAttackTarget(), 1);
+						}
+					}
 				}
 			}
 
@@ -453,26 +459,30 @@ public class L2ControllableMobAI extends L2AttackableAI
 
 		List<L2Character> potentialTarget = new FastList<L2Character>();
 
-		for (L2Object obj : npc.getKnownList().getKnownObjects().values())
-        {
-			if (!(obj instanceof L2Character))
-				continue;
-
-            npcX    = npc.getX();
-            npcY    = npc.getY();
-            targetX = obj.getX();
-            targetY = obj.getY();
-
-            dx      = npcX - targetX;
-            dy      = npcY - targetY;
-
-            if (dx*dx + dy*dy > dblAggroRange)
-                continue;
-
-			L2Character target = (L2Character) obj;
-
-            if (autoAttackCondition(target)) // check aggression
-				potentialTarget.add(target);
+		Collection<L2Object> objs = npc.getKnownList().getKnownObjects().values();
+		synchronized (npc.getKnownList().getKnownObjects())
+		{
+			for (L2Object obj : objs)
+			{
+				if (!(obj instanceof L2Character))
+					continue;
+				
+				npcX = npc.getX();
+				npcY = npc.getY();
+				targetX = obj.getX();
+				targetY = obj.getY();
+				
+				dx = npcX - targetX;
+				dy = npcY - targetY;
+				
+				if (dx * dx + dy * dy > dblAggroRange)
+					continue;
+				
+				L2Character target = (L2Character) obj;
+				
+				if (autoAttackCondition(target)) // check aggression
+					potentialTarget.add(target);
+			}
 		}
 
 		if (potentialTarget.size() == 0) // nothing to do

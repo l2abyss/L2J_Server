@@ -30,6 +30,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
@@ -749,38 +750,56 @@ public class GameStatusThread extends Thread
                 		// name;type;x;y;itemId:enchant:price...
                 		if(type.equals("privatestore"))
                 		{
-                			for(L2PcInstance player : L2World.getInstance().getAllPlayers())
-                			{
-                				if(player.getPrivateStoreType() == 0)
-                					continue;
-
-                				TradeList list = null;
-                				String content = "";
-
-                				if(player.getPrivateStoreType() == 1) // sell
-                				{
-                					list = player.getSellList();
-                					for(TradeItem item : list.getItems())
-                					{
-                						content += item.getItem().getItemId()+":"+item.getEnchant()+":"+item.getPrice()+":";
-                					}
-                					content = player.getName()+";"+"sell;"+player.getX()+";"+player.getY()+";"+content;
-                					_print.println(content);
-                					continue;
-                				}
-                				else if(player.getPrivateStoreType() == 3) // buy
-                				{
-                					list = player.getBuyList();
-                					for(TradeItem item : list.getItems())
-                					{
-                						content += item.getItem().getItemId()+":"+item.getEnchant()+":"+item.getPrice()+":";
-                					}
-                					content = player.getName()+";"+"buy;"+player.getX()+";"+player.getY()+";"+content;
-                					_print.println(content);
-                					continue;
-                				}
-
-                			}
+                			Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+							synchronized (L2World.getInstance().getAllPlayers())
+							{
+								for (L2PcInstance player : pls)
+								{
+									if (player.getPrivateStoreType() == 0)
+										continue;
+									
+									TradeList list = null;
+									String content = "";
+									
+									if (player.getPrivateStoreType() == 1) // sell
+									{
+										list = player.getSellList();
+										for (TradeItem item : list.getItems())
+										{
+											content += item.getItem().getItemId()
+											        + ":"
+											        + item.getEnchant()
+											        + ":"
+											        + item.getPrice()
+											        + ":";
+										}
+										content = player.getName() + ";"
+										        + "sell;" + player.getX() + ";"
+										        + player.getY() + ";" + content;
+										_print.println(content);
+										continue;
+									}
+									else if (player.getPrivateStoreType() == 3) // buy
+									{
+										list = player.getBuyList();
+										for (TradeItem item : list.getItems())
+										{
+											content += item.getItem().getItemId()
+											        + ":"
+											        + item.getEnchant()
+											        + ":"
+											        + item.getPrice()
+											        + ":";
+										}
+										content = player.getName() + ";"
+										        + "buy;" + player.getX() + ";"
+										        + player.getY() + ";" + content;
+										_print.println(content);
+										continue;
+									}
+									
+								}
+							}
                 		}
                 	}
                 	catch(Exception e){}
@@ -1023,35 +1042,38 @@ public class GameStatusThread extends Thread
         int summonCount=0;
         int AICount=0;
 
-        for (L2Object obj : L2World.getInstance().getAllVisibleObjects())
-        {
-            if(obj == null)
-                continue;
-            if (obj instanceof L2Character)
-                if (((L2Character)obj).hasAI())
-                    AICount++;
-            if (obj instanceof L2ItemInstance)
-                if (((L2ItemInstance)obj).getLocation() == L2ItemInstance.ItemLocation.VOID)
-                    itemVoidCount++;
-                else
-                    itemCount++;
+        Collection<L2Object> objs = L2World.getInstance().getAllVisibleObjects().values();
+        synchronized (L2World.getInstance().getAllVisibleObjects()) {
+        	for (L2Object obj : objs)
+        	{
+        		if(obj == null)
+        			continue;
+        		if (obj instanceof L2Character)
+        			if (((L2Character)obj).hasAI())
+        				AICount++;
+        		if (obj instanceof L2ItemInstance)
+        			if (((L2ItemInstance)obj).getLocation() == L2ItemInstance.ItemLocation.VOID)
+        				itemVoidCount++;
+        			else
+        				itemCount++;
 
-            else if (obj instanceof L2MonsterInstance)
-            {
-                monsterCount++;
-                minionCount += ((L2MonsterInstance)obj).getTotalSpawnedMinionsInstances();
-                minionsGroupCount += ((L2MonsterInstance)obj).getTotalSpawnedMinionsGroups();
-            }
-            else if (obj instanceof L2NpcInstance)
-                npcCount++;
-            else if (obj instanceof L2PcInstance)
-                pcCount++;
-            else if (obj instanceof L2Summon)
-                summonCount++;
-            else if (obj instanceof L2DoorInstance)
-                doorCount++;
-            else if (obj instanceof L2Character)
-                charCount++;
+        		else if (obj instanceof L2MonsterInstance)
+        		{
+        			monsterCount++;
+        			minionCount += ((L2MonsterInstance)obj).getTotalSpawnedMinionsInstances();
+        			minionsGroupCount += ((L2MonsterInstance)obj).getTotalSpawnedMinionsGroups();
+        		}
+        		else if (obj instanceof L2NpcInstance)
+        			npcCount++;
+        		else if (obj instanceof L2PcInstance)
+        			pcCount++;
+        		else if (obj instanceof L2Summon)
+        			summonCount++;
+        		else if (obj instanceof L2DoorInstance)
+        			doorCount++;
+        		else if (obj instanceof L2Character)
+        			charCount++;
+        	}
         }
         StringBuilder sb = new StringBuilder();
         sb.append("Server Status: ");

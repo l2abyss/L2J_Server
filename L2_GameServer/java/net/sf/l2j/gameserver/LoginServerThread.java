@@ -26,6 +26,7 @@ import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -281,9 +282,11 @@ public class LoginServerThread extends Thread
 						if(L2World.getInstance().getAllPlayersCount() > 0)
 						{
 							FastList<String> playerList = new FastList<String>();
-							for(L2PcInstance player : L2World.getInstance().getAllPlayers())
+							Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+							synchronized (L2World.getInstance().getAllPlayers())
 							{
-								playerList.add(player.getAccountName());
+								for(L2PcInstance player : pls)
+									playerList.add(player.getAccountName());
 							}
 							PlayerInGame pig = new PlayerInGame(playerList);
 							sendPacket(pig);

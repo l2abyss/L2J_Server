@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.communitybbs.Manager;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.StringTokenizer;
@@ -277,10 +276,11 @@ public class RegionBBSManager extends BaseBBSManager
 
 	public synchronized void changeCommunityBoard()
 	{
-		Collection<L2PcInstance> players = L2World.getInstance().getAllPlayers();
 		FastList<L2PcInstance> sortedPlayers = new FastList<L2PcInstance>();
-		sortedPlayers.addAll(players);
-		players = null;
+		synchronized (L2World.getInstance().getAllPlayers())
+		{
+			sortedPlayers.addAll(L2World.getInstance().getAllPlayers().values());
+		}
 
 		Collections.sort(sortedPlayers, new Comparator<L2PcInstance>()
 				{

@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -36,6 +37,7 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.serverpackets.SSQInfo;
 import net.sf.l2j.gameserver.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.StatsSet;
+import net.sf.l2j.gameserver.util.Broadcast;
 
 /**
  *  Seven Signs Engine
@@ -1096,9 +1098,7 @@ public class SevenSigns
 	public void sendMessageToAll(SystemMessageId sysMsgId)
 	{
         SystemMessage sm = new SystemMessage(sysMsgId);
-
-		for (L2PcInstance player : L2World.getInstance().getAllPlayers())
-			player.sendPacket(sm);
+        Broadcast.toAllOnlinePlayers(sm);
 	}
 
     /**
@@ -1280,29 +1280,33 @@ public class SevenSigns
      */
     protected void teleLosingCabalFromDungeons(String compWinner)
     {
-        for (L2PcInstance onlinePlayer : L2World.getInstance().getAllPlayers())
-        {
-			StatsSet currPlayer = getPlayerData(onlinePlayer);
+    	Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+    	synchronized (L2World.getInstance().getAllPlayers())
+    	{
+    		for (L2PcInstance onlinePlayer : pls)
+    		{
+    			StatsSet currPlayer = getPlayerData(onlinePlayer);
 
-            if (isSealValidationPeriod() || isCompResultsPeriod())
-            {
-                if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && !currPlayer.getString("cabal").equals(compWinner))
-                {
-                    onlinePlayer.teleToLocation(MapRegionTable.TeleportWhereType.Town);
-                    onlinePlayer.setIsIn7sDungeon(false);
-                    onlinePlayer.sendMessage("You have been teleported to the nearest town due to the beginning of the Seal Validation period.");
-                }
-            }
-            else
-            {
-                if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && !currPlayer.getString("cabal").equals(""))
-                {
-                    onlinePlayer.teleToLocation(MapRegionTable.TeleportWhereType.Town);
-                    onlinePlayer.setIsIn7sDungeon(false);
-                    onlinePlayer.sendMessage("You have been teleported to the nearest town because you have not signed for any cabal.");
-                }
-            }
-        }
+    			if (isSealValidationPeriod() || isCompResultsPeriod())
+    			{
+    				if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && !currPlayer.getString("cabal").equals(compWinner))
+    				{
+    					onlinePlayer.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+    					onlinePlayer.setIsIn7sDungeon(false);
+    					onlinePlayer.sendMessage("You have been teleported to the nearest town due to the beginning of the Seal Validation period.");
+    				}
+    			}
+    			else
+    			{
+    				if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && !currPlayer.getString("cabal").equals(""))
+    				{
+    					onlinePlayer.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+    					onlinePlayer.setIsIn7sDungeon(false);
+    					onlinePlayer.sendMessage("You have been teleported to the nearest town because you have not signed for any cabal.");
+    				}
+    			}
+    		}
+    	}
     }
 
 	/**
@@ -1400,9 +1404,7 @@ public class SevenSigns
 
             SSQInfo ss = new SSQInfo();
 
-	        for (L2PcInstance player : L2World.getInstance().getAllPlayers())
-	            player.sendPacket(ss);
-
+            Broadcast.toAllOnlinePlayers(ss);
             spawnSevenSignsNPC();
 
             _log.info("SevenSigns: The " + getCurrentPeriodName() + " period has begun!");

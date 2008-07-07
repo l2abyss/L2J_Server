@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.skills.effects;
 
+import java.util.Collection;
 import java.util.List;
 
 import javolution.util.FastList;
@@ -66,11 +67,15 @@ final class EffectConfusion extends L2Effect {
 
 		// Getting the possible targets
 
-        for (L2Object obj : getEffected().getKnownList().getKnownObjects().values())
-        {
-            if ((obj instanceof L2Character) && (obj != getEffected()))
-                targetList.add((L2Character)obj);
-        }
+		Collection<L2Object> objs = getEffected().getKnownList().getKnownObjects().values();
+		synchronized (getEffected().getKnownList().getKnownObjects())
+		{
+			for (L2Object obj : objs)
+			{
+				if ((obj instanceof L2Character) && (obj != getEffected()))
+					targetList.add((L2Character) obj);
+			}
+		}
 		// if there is no target, exit function
 		if (targetList.size()==0){
 			return true;

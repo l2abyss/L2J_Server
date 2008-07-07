@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.clientpackets;
 
+import java.util.Collection;
+
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.model.L2Clan;
@@ -132,9 +134,12 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
         //        leader.sendPacket(new StartPledgeWar(_clan.getName(),player.getName()));
 
         ClanTable.getInstance().storeclanswars(player.getClanId(), clan.getClanId());
-        for (L2PcInstance cha : L2World.getInstance().getAllPlayers()) {
-        	if (cha.getClan() == player.getClan() || cha.getClan() == clan)
-        		cha.broadcastUserInfo();
+        Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+        synchronized (L2World.getInstance().getAllPlayers())
+        {
+        	for (L2PcInstance cha : pls)
+        		if (cha.getClan() == player.getClan() || cha.getClan() == clan)
+        			cha.broadcastUserInfo();
         }
     }
 
