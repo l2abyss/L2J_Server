@@ -24,6 +24,7 @@ import net.sf.l2j.gameserver.model.L2WorldRegion;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.taskmanager.KnownListUpdateTaskManager;
 import net.sf.l2j.gameserver.util.Util;
 
 public class ObjectKnownList
@@ -72,6 +73,8 @@ public class ObjectKnownList
     // moving monsters
     public final void findObjects()
     {
+    	if (KnownListUpdateTaskManager.getInstance().isRunning()) return;
+    	
     	L2WorldRegion region = getActiveObject().getWorldRegion();
     	if (region == null) return;
     	
@@ -111,6 +114,7 @@ public class ObjectKnownList
     // Remove invisible and too far L2Object from _knowObject and if necessary from _knownPlayers of the L2Character
     public void forgetObjects(boolean fullCheck)
     {
+    	if (KnownListUpdateTaskManager.getInstance().isRunning()) return;
     	// Go through knownObjects
     	Collection<L2Object> objs = getKnownObjects().values();
     	synchronized (getKnownObjects())

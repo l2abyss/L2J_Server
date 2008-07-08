@@ -30,12 +30,14 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 public class KnownListUpdateTaskManager
 {
     protected static final Logger _log = Logger.getLogger(DecayTaskManager.class.getName());
+    private boolean _isrunning;
 
     private static KnownListUpdateTaskManager _instance;
 
     public KnownListUpdateTaskManager()
     {
     	//if (Config.MOVE_BASED_KNOWNLIST)
+    	_isrunning = false;
     		ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(),1000);
     	//else
     		//ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new KnownListUpdate(),1000,750);
@@ -49,6 +51,16 @@ public class KnownListUpdateTaskManager
         return _instance;
     }
 
+    public boolean isRunning()
+    {
+    	return _isrunning;
+    }
+    
+    public void setRunning(boolean val)
+    {
+    	_isrunning = val;
+    }
+    
     private class KnownListUpdate implements Runnable
     {
     	boolean forgetObjects;
@@ -64,6 +76,7 @@ public class KnownListUpdateTaskManager
 
         public void run()
         {
+        	setRunning(true);
         	try
             {
             	for (L2WorldRegion regions[] : L2World.getInstance().getAllWorldRegions())
@@ -92,6 +105,7 @@ public class KnownListUpdateTaskManager
         		ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(),2500);
         	else
         		ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(),750);
+        	setRunning(false);
         }
     }
     

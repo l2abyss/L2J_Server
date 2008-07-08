@@ -266,7 +266,8 @@ public final class L2WorldRegion
         				((L2NpcInstance)o).startRandomAnimationTimer();
         		}
         	}
-            KnownListUpdateTaskManager.getInstance().updateRegion(this, true, false);
+        	if (!KnownListUpdateTaskManager.getInstance().isRunning())
+        		KnownListUpdateTaskManager.getInstance().updateRegion(this, true, false);
             _log.fine(c+ " mobs were turned on");
             
         }
