@@ -35,10 +35,10 @@ public class KnownListUpdateTaskManager
 
     public KnownListUpdateTaskManager()
     {
-    	if (Config.MOVE_BASED_KNOWNLIST)
-    		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new KnownListUpdate(),1000,2500);
-    	else
-    		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new KnownListUpdate(),1000,750);
+    	//if (Config.MOVE_BASED_KNOWNLIST)
+    		ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(),1000);
+    	//else
+    		//ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new KnownListUpdate(),1000,750);
     }
 
     public static KnownListUpdateTaskManager getInstance()
@@ -88,6 +88,10 @@ public class KnownListUpdateTaskManager
             {
             	_log.warning(e.toString());
 			}
+        	if (Config.MOVE_BASED_KNOWNLIST)
+        		ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(),2500);
+        	else
+        		ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(),750);
         }
     }
     
