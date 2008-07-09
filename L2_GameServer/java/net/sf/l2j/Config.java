@@ -313,6 +313,7 @@ public final class Config
     public static boolean	GM_STARTUP_INVISIBLE;
     public static boolean	GM_STARTUP_SILENCE;
     public static boolean	GM_STARTUP_AUTO_LIST;
+    public static boolean 	GM_STARTUP_DIET_MODE;
     public static String	GM_ADMIN_MENU_STYLE;
     public static boolean	BYPASS_VALIDATION;
     public static boolean	GAMEGUARD_ENFORCE;
@@ -1303,11 +1304,12 @@ public final class Config
                 SERVER_LIST_BRACKET							= Boolean.parseBoolean(General.getProperty("ServerListBrackets", "false"));
                 SERVER_LIST_CLOCK							= Boolean.parseBoolean(General.getProperty("ServerListClock", "false"));
                 SERVER_GMONLY								= Boolean.parseBoolean(General.getProperty("ServerGMOnly", "false"));
-                GM_HERO_AURA								= Boolean.parseBoolean(General.getProperty("GMHeroAura", "True"));
-                GM_STARTUP_INVULNERABLE						= Boolean.parseBoolean(General.getProperty("GMStartupInvulnerable", "True"));
-                GM_STARTUP_INVISIBLE						= Boolean.parseBoolean(General.getProperty("GMStartupInvisible", "True"));
-                GM_STARTUP_SILENCE							= Boolean.parseBoolean(General.getProperty("GMStartupSilence", "True"));
-                GM_STARTUP_AUTO_LIST						= Boolean.parseBoolean(General.getProperty("GMStartupAutoList", "True"));
+                GM_HERO_AURA								= Boolean.parseBoolean(General.getProperty("GMHeroAura", "False"));
+                GM_STARTUP_INVULNERABLE						= Boolean.parseBoolean(General.getProperty("GMStartupInvulnerable", "False"));
+                GM_STARTUP_INVISIBLE						= Boolean.parseBoolean(General.getProperty("GMStartupInvisible", "False"));
+                GM_STARTUP_SILENCE							= Boolean.parseBoolean(General.getProperty("GMStartupSilence", "False"));
+                GM_STARTUP_AUTO_LIST						= Boolean.parseBoolean(General.getProperty("GMStartupAutoList", "False"));
+                GM_STARTUP_DIET_MODE						= Boolean.parseBoolean(General.getProperty("GMStartupDietMode", "False"));
                 GM_ADMIN_MENU_STYLE							= General.getProperty("GMAdminMenuStyle", "modern");
                 BYPASS_VALIDATION							= Boolean.parseBoolean(General.getProperty("BypassValidation", "True"));
                 GAMEGUARD_ENFORCE							= Boolean.parseBoolean(General.getProperty("GameGuardEnforce", "False"));
@@ -1325,7 +1327,7 @@ public final class Config
                 ALT_DEV_NO_SPAWNS							= Boolean.parseBoolean(General.getProperty("AltDevNoSpawns", "False"));
                 THREAD_P_EFFECTS							= Integer.parseInt(General.getProperty("ThreadPoolSizeEffects", "6"));
                 THREAD_P_GENERAL							= Integer.parseInt(General.getProperty("ThreadPoolSizeGeneral", "15"));
-                IO_PACKET_THREAD_CORE_SIZE					=Integer.parseInt(General.getProperty("UrgentPacketThreadCoreSize", "2"));
+                IO_PACKET_THREAD_CORE_SIZE					= Integer.parseInt(General.getProperty("UrgentPacketThreadCoreSize", "2"));
                 GENERAL_PACKET_THREAD_CORE_SIZE				= Integer.parseInt(General.getProperty("GeneralPacketThreadCoreSize", "4"));
                 GENERAL_THREAD_CORE_SIZE					= Integer.parseInt(General.getProperty("GeneralThreadCoreSize", "4"));
                 AI_MAX_THREAD								= Integer.parseInt(General.getProperty("AiMaxThread", "10"));

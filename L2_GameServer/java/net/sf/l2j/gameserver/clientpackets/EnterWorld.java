@@ -124,7 +124,13 @@ public class EnterWorld extends L2GameClientPacket
                  activeChar.getAppearance().setInvisible();
  
             if (Config.GM_STARTUP_SILENCE && AdminCommandAccessRights.getInstance().hasAccess("admin_silence", activeChar.getAccessLevel()))
-                 activeChar.setMessageRefusal(true);
+                 activeChar.setMessageRefusal(true);            
+            
+            if (Config.GM_STARTUP_DIET_MODE && AdminCommandAccessRights.getInstance().hasAccess("admin_diet", activeChar.getAccessLevel()))
+            {
+            	activeChar.setDietMode(true);
+            	activeChar.refreshOverloaded();
+            }
  
             if (Config.GM_STARTUP_AUTO_LIST && AdminCommandAccessRights.getInstance().hasAccess("admin_gmliston", activeChar.getAccessLevel()))
                  GmListTable.getInstance().addGm(activeChar, false);
