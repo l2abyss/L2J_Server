@@ -63,15 +63,8 @@ public class KnownListUpdateTaskManager
     
     private class KnownListUpdate implements Runnable
     {
-    	boolean forgetObjects;
-    	boolean fullUpdate = true;
     	protected KnownListUpdate()
     	{
-    		if (Config.MOVE_BASED_KNOWNLIST)
-    			forgetObjects = true;
-    		else
-    			forgetObjects = false;
-    		
     	}
 
         public void run()
@@ -89,17 +82,10 @@ public class KnownListUpdateTaskManager
             		{
             			if (r.isActive()) // and check only if the region is active
             			{
-        					updateRegion(r, fullUpdate, forgetObjects);
+        					updateRegion(r, true, true);
             			}
             		}
             	}
-            	if (forgetObjects && !Config.MOVE_BASED_KNOWNLIST) 
-            		forgetObjects = false;
-            	else 
-            		forgetObjects = true;
-            	if (fullUpdate)
-            		fullUpdate = false;
-            				
             } 
             catch (Throwable e) 
             {
