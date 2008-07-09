@@ -369,9 +369,13 @@ public class L2FolkInstance extends L2NpcInstance
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
-		if (player.isTransformed())
-        	return;
-		
+		/*
+		 * Commented out by DrHouse. Latest retail info shows that transformed players 
+		 * can interact with FolkInstance as well
+		 */  
+		//if (player.isTransformed())
+        //	return; 
+        		
 		if (command.startsWith("SkillList"))
 		{
 			if (Config.ALT_GAME_SKILL_LEARN)
