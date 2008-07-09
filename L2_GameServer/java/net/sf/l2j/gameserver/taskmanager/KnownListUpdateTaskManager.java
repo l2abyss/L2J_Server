@@ -76,6 +76,10 @@ public class KnownListUpdateTaskManager
 
         public void run()
         {
+        	while(isRunning())
+        	{
+        		// wait till we can continue, because some thread is requested manual update
+        	}
         	setRunning(true);
         	try
             {
@@ -111,6 +115,9 @@ public class KnownListUpdateTaskManager
     
     public void updateRegion(L2WorldRegion region, boolean fullUpdate, boolean forgetObjects)
     {
+    	// save running status in case some thread had requested manual update
+    	boolean oldRun = isRunning();
+    	setRunning(true);
     	Collection<L2Object> vObj = region.getVisibleObjects().values();
     	synchronized (region.getVisibleObjects()) {
     		for (L2Object object : vObj) // and for all members in region
@@ -147,5 +154,6 @@ public class KnownListUpdateTaskManager
     				}
     		}
     	}
+    	setRunning(oldRun);
     }
 }
