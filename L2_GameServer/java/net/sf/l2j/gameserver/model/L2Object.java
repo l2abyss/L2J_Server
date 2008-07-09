@@ -291,8 +291,9 @@ public abstract class L2Object
             getPosition().setWorldRegion(L2World.getInstance().getRegion(getPosition().getWorldPosition()));
 
             // Add the L2Object spawn in the _allobjects of L2World
-            L2World.getInstance().storeObject(this);
         }
+
+        L2World.getInstance().storeObject(this);
 
         // these can synchronize on others instancies, so they're out of
         // synchronized, to avoid deadlocks
