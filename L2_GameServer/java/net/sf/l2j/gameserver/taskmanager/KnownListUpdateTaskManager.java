@@ -26,120 +26,113 @@ import net.sf.l2j.gameserver.model.L2WorldRegion;
 import net.sf.l2j.gameserver.model.actor.instance.L2GuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 
-
 public class KnownListUpdateTaskManager
 {
-    protected static final Logger _log = Logger.getLogger(DecayTaskManager.class.getName());
-    private boolean _isrunning;
-
-    private static KnownListUpdateTaskManager _instance;
-
-    public KnownListUpdateTaskManager()
-    {
-    	//if (Config.MOVE_BASED_KNOWNLIST)
-    	_isrunning = false;
-    		ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(),1000);
-    	//else
-    		//ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new KnownListUpdate(),1000,750);
-    }
-
-    public static KnownListUpdateTaskManager getInstance()
-    {
-        if(_instance == null)
-            _instance = new KnownListUpdateTaskManager();
-
-        return _instance;
-    }
-
-    public boolean isRunning()
-    {
-    	return _isrunning;
-    }
-    
-    public void setRunning(boolean val)
-    {
-    	_isrunning = val;
-    }
-    
-    private class KnownListUpdate implements Runnable
-    {
-    	protected KnownListUpdate()
-    	{
-    	}
-
-        public void run()
-        {
-        	while(isRunning())
-        	{
-        		// wait till we can continue, because some thread is requested manual update
-        	}
-        	setRunning(true);
-        	try
-            {
-            	for (L2WorldRegion regions[] : L2World.getInstance().getAllWorldRegions())
-            	{
-            		for (L2WorldRegion r : regions) // go through all world regions
-            		{
-            			if (r.isActive()) // and check only if the region is active
-            			{
-        					updateRegion(r, true, true);
-            			}
-            		}
-            	}
-            } 
-            catch (Throwable e) 
-            {
-            	_log.warning(e.toString());
+	protected static final Logger _log = Logger.getLogger(DecayTaskManager.class.getName());
+	
+	private Object syncObject = new Object();
+	
+	private static KnownListUpdateTaskManager _instance;
+	
+	public KnownListUpdateTaskManager()
+	{
+		ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(), 1000);
+	}
+	
+	public static KnownListUpdateTaskManager getInstance()
+	{
+		if (_instance == null)
+			_instance = new KnownListUpdateTaskManager();
+		
+		return _instance;
+	}
+	
+	public Object getSync()
+	{
+		return syncObject;
+	}
+	
+	private class KnownListUpdate implements Runnable
+	{
+		public KnownListUpdate()
+		{
+		}
+		
+		public void run()
+		{
+			try
+			{
+				for (L2WorldRegion regions[] : L2World.getInstance().getAllWorldRegions())
+				{
+					for (L2WorldRegion r : regions) // go through all world
+					// regions
+					{
+						if (r.isActive()) // and check only if the region
+						// is active
+						{
+							updateRegion(r, true, true);
+						}
+					}
+				}
 			}
-        	if (Config.MOVE_BASED_KNOWNLIST)
-        		ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(),2500);
-        	else
-        		ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(),750);
-        	setRunning(false);
-        }
-    }
-    
-    public void updateRegion(L2WorldRegion region, boolean fullUpdate, boolean forgetObjects)
-    {
-    	// save running status in case some thread had requested manual update
-    	boolean oldRun = isRunning();
-    	setRunning(true);
-    	Collection<L2Object> vObj = region.getVisibleObjects().values();
-    	synchronized (region.getVisibleObjects()) {
-    		for (L2Object object : vObj) // and for all members in region
-    		{
-    			if (!object.isVisible())
-    				continue;   // skip dying objects
-    			if (forgetObjects)
-    			{
-    				object.getKnownList().forgetObjects((object instanceof L2PlayableInstance || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate));
-    				continue;
-    			}
-    			if (object instanceof L2PlayableInstance || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate)
-    			{
-    				for (L2WorldRegion regi : region.getSurroundingRegions()) // offer members of this and surrounding regions
-    				{
-    					Collection<L2Object> inrObj = regi.getVisibleObjects().values();
-    					synchronized (regi.getVisibleObjects()) {
-    						for (L2Object _object : inrObj) 
-    							if (_object != object)
-    								object.getKnownList().addKnownObject(_object);
-    					}
-    				}
-    			}
-    			else if (object instanceof L2Character)
-    				for (L2WorldRegion regi : region.getSurroundingRegions()) // offer members of this and surrounding regions
-    				{
-    					Collection<L2PlayableInstance> inrPls = regi.getVisiblePlayable().values();
-    					synchronized (regi.getVisiblePlayable()) {
-    						if (regi.isActive())
-    							for (L2Object _object : inrPls) 
-    								if (_object != object)
-    									object.getKnownList().addKnownObject(_object);
-    					}
-    				}
-    		}
-    	}
-    	setRunning(oldRun);
-    }
+			catch (Throwable e)
+			{
+				_log.warning(e.toString());
+			}
+			if (Config.MOVE_BASED_KNOWNLIST)
+				ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(), 2500);
+			else
+				ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(), 750);
+		}
+	}
+	
+	public void updateRegion(L2WorldRegion region, boolean fullUpdate,
+	        boolean forgetObjects)
+	{
+		synchronized (syncObject)
+		{
+			Collection<L2Object> vObj = region.getVisibleObjects().values();
+			synchronized (region.getVisibleObjects())
+			{
+				for (L2Object object : vObj) // and for all members in region
+				{
+					if (!object.isVisible())
+						continue; // skip dying objects
+					if (forgetObjects)
+					{
+						object.getKnownList().forgetObjects((object instanceof L2PlayableInstance
+						        || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate));
+						continue;
+					}
+					if (object instanceof L2PlayableInstance
+					        || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance)
+					        || fullUpdate)
+					{
+						for (L2WorldRegion regi : region.getSurroundingRegions()) 
+						{
+							Collection<L2Object> inrObj = regi.getVisibleObjects().values();
+							synchronized (regi.getVisibleObjects())
+							{
+								for (L2Object _object : inrObj)
+									if (_object != object)
+										object.getKnownList().addKnownObject(_object);
+							}
+						}
+					}
+					else if (object instanceof L2Character)
+						for (L2WorldRegion regi : region.getSurroundingRegions())
+						{
+							Collection<L2PlayableInstance> inrPls = regi.getVisiblePlayable().values();
+							synchronized (regi.getVisiblePlayable())
+							{
+								if (regi.isActive())
+									for (L2Object _object : inrPls)
+										if (_object != object)
+											object.getKnownList().addKnownObject(_object);
+							}
+						}
+				}
+			}
+		}
+	}
 }

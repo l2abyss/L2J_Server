@@ -73,8 +73,6 @@ public class ObjectKnownList
     // moving monsters
     public final void findObjects()
     {
-    	if (KnownListUpdateTaskManager.getInstance().isRunning()) return;
-    	
     	L2WorldRegion region = getActiveObject().getWorldRegion();
     	if (region == null) return;
     	
@@ -83,16 +81,21 @@ public class ObjectKnownList
     		for (L2WorldRegion regi : region.getSurroundingRegions()) // offer members of this and surrounding regions
     		{
     			Collection<L2Object> vObj = regi.getVisibleObjects().values();
-    			synchronized (regi.getVisibleObjects()) {
-    				for (L2Object _object : vObj) 
-    				{
-    					if (_object != getActiveObject())
-    					{
-    						addKnownObject(_object);
-    						if (_object instanceof L2Character) _object.getKnownList().addKnownObject(getActiveObject());
-    					}
-    				}
-    			}
+    	    	synchronized (KnownListUpdateTaskManager.getInstance().getSync())
+				{
+					synchronized (regi.getVisibleObjects())
+					{
+						for (L2Object _object : vObj)
+						{
+							if (_object != getActiveObject())
+							{
+								addKnownObject(_object);
+								if (_object instanceof L2Character)
+									_object.getKnownList().addKnownObject(getActiveObject());
+							}
+						}
+					}
+				}
     		}
     	}
     	else if (getActiveObject() instanceof L2Character)
@@ -101,11 +104,15 @@ public class ObjectKnownList
     		{
     			if (regi.isActive()) {
     				Collection<L2PlayableInstance> vPls = regi.getVisiblePlayable().values();
-    				synchronized (regi.getVisiblePlayable()) {
-    					for (L2Object _object : vPls) 
-    						if (_object != getActiveObject())
-    							addKnownObject(_object);
-    				}
+    		    	synchronized (KnownListUpdateTaskManager.getInstance().getSync())
+					{
+						synchronized (regi.getVisiblePlayable())
+						{
+							for (L2Object _object : vPls)
+								if (_object != getActiveObject())
+									addKnownObject(_object);
+						}
+					}
     			}
     		}
     	}
@@ -114,29 +121,35 @@ public class ObjectKnownList
     // Remove invisible and too far L2Object from _knowObject and if necessary from _knownPlayers of the L2Character
     public void forgetObjects(boolean fullCheck)
     {
-    	if (KnownListUpdateTaskManager.getInstance().isRunning()) return;
-    	// Go through knownObjects
-    	Collection<L2Object> objs = getKnownObjects().values();
-    	synchronized (getKnownObjects())
+    	synchronized (KnownListUpdateTaskManager.getInstance().getSync())
 		{
-			for (L2Object object : objs)
+			// Go through knownObjects
+			Collection<L2Object> objs = getKnownObjects().values();
+			synchronized (getKnownObjects())
 			{
-				if (!fullCheck && !(object instanceof L2PlayableInstance))
-					continue;
-				
-				// Remove all objects invisible or too far
-				if (!object.isVisible()
-				        || !Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true))
-					if (object instanceof L2BoatInstance
-					        && getActiveObject() instanceof L2PcInstance)
-					{
-						if (((L2BoatInstance) (object)).getVehicleDeparture() == null)
+				for (L2Object object : objs)
+				{
+					if (!fullCheck && !(object instanceof L2PlayableInstance))
+						continue;
+					
+					// Remove all objects invisible or too far
+					if (!object.isVisible()
+					        || !Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true))
+						if (object instanceof L2BoatInstance
+						        && getActiveObject() instanceof L2PcInstance)
 						{
-							//
-						}
-						else if (((L2PcInstance) getActiveObject()).isInBoat())
-						{
-							if (((L2PcInstance) getActiveObject()).getBoat() != object)
+							if (((L2BoatInstance) (object)).getVehicleDeparture() == null)
+							{
+								//
+							}
+							else if (((L2PcInstance) getActiveObject()).isInBoat())
+							{
+								if (((L2PcInstance) getActiveObject()).getBoat() != object)
+								{
+									removeKnownObject(object);
+								}
+							}
+							else
 							{
 								removeKnownObject(object);
 							}
@@ -145,11 +158,7 @@ public class ObjectKnownList
 						{
 							removeKnownObject(object);
 						}
-					}
-					else
-					{
-						removeKnownObject(object);
-					}
+				}
 			}
 		}
     }
