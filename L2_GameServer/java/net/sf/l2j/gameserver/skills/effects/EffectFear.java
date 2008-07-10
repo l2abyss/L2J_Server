@@ -33,6 +33,9 @@ import net.sf.l2j.gameserver.skills.Env;
 final class EffectFear extends L2Effect
 {
 	public static final int FEAR_RANGE = 500;
+	
+	private int _dX = -1;
+	private int _dY = -1;
 
 	public EffectFear(Env env, EffectTemplate template)
 	{
@@ -49,8 +52,30 @@ final class EffectFear extends L2Effect
 	@Override
 	public void onStart()
 	{
+		// Fear skills cannot be used l2pcinstance to l2pcinstance. Heroic Dread, Curse: Fear, Fear, Horror, Sword Symphony, Word of Fear and Mass Curse Fear are the exceptions.
+		if(getEffected() instanceof L2PcInstance && getEffector() instanceof L2PcInstance 				
+				&& getSkill().getId() != 1376 
+				&& getSkill().getId() != 1169 
+				&& getSkill().getId() != 65 
+				&& getSkill().getId() != 1092 
+				&& getSkill().getId() != 98 
+				&& getSkill().getId() != 1272 
+				&& getSkill().getId() != 1381) 
+			return;
+		
+		if(getEffected() instanceof L2FolkInstance
+				|| getEffected() instanceof L2SiegeGuardInstance
+				|| getEffected() instanceof L2SiegeFlagInstance
+				|| getEffected() instanceof L2SiegeSummonInstance) 
+			return;
+		
 		if (!getEffected().isAfraid())
 		{
+			if (getEffected().getX() > getEffector().getX())
+				_dX = 1;
+			if (getEffected().getY() > getEffector().getY())
+				_dY = 1;
+			
 			getEffected().startFear();
 			onActionTime();
 		}
@@ -66,28 +91,13 @@ final class EffectFear extends L2Effect
 	@Override
 	public boolean onActionTime()
 	{
-		// Fear skills cannot be used l2pcinstance to l2pcinstance. Heroic Dread, Curse: Fear, Fear, Horror, Sword Symphony, Word of Fear and Mass Curse Fear are the exceptions.
-		if(getEffected() instanceof L2PcInstance && getEffector() instanceof L2PcInstance && getSkill().getId() != 1376 && getSkill().getId() != 1169 && getSkill().getId() != 65 && getSkill().getId() != 1092 && getSkill().getId() != 98 && getSkill().getId() != 1272 && getSkill().getId() != 1381) return false;
-		if(getEffected() instanceof L2FolkInstance) return false;
-		if(getEffected() instanceof L2SiegeGuardInstance) return false;
-		// Fear skills cannot be used on Headquarters Flag.
-		if(getEffected() instanceof L2SiegeFlagInstance) return false;
-
-		if(getEffected() instanceof L2SiegeSummonInstance) 
-			return false;
-
 		int posX = getEffected().getX();
 		int posY = getEffected().getY();
 		int posZ = getEffected().getZ();
 		
-		int signx=-1;
-		int signy=-1;
-		if (getEffected().getX() > getEffector().getX())
-			signx=1;
-		if (getEffected().getY() > getEffector().getY())
-			signy=1;
-		posX += signx*FEAR_RANGE;
-		posY += signy*FEAR_RANGE;
+		posX += _dX*FEAR_RANGE;
+		posY += _dY*FEAR_RANGE;
+		
 		getEffected().setRunning();
 		getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO,new L2CharPosition(posX,posY,posZ,0));
 		return true;
