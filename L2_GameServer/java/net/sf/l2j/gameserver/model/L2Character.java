@@ -3997,7 +3997,7 @@ public abstract class L2Character extends L2Object
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T send Server->Client packet StopMove/StopRotation </B></FONT><BR><BR>
 	 *
 	 */
-	public void stopMove(L2CharPosition pos) { stopMove(pos, true); }
+	public void stopMove(L2CharPosition pos) { stopMove(pos, false); }
 	public void stopMove(L2CharPosition pos, boolean updateKnownObjects)
 	{
 		// Delete movement data of the L2Character
@@ -4015,7 +4015,7 @@ public abstract class L2Character extends L2Object
 			if (this instanceof L2PcInstance) ((L2PcInstance)this).revalidateZone(true);
 		}
 		broadcastPacket(new StopMove(this));
-		if (Config.MOVE_BASED_KNOWNLIST) this.getKnownList().findObjects();
+		if (Config.MOVE_BASED_KNOWNLIST && updateKnownObjects) this.getKnownList().findObjects();
 	}
 
 
