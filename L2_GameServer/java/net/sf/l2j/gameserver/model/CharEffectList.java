@@ -60,8 +60,10 @@ public class CharEffectList
 		FastList<L2Effect> temp = new FastList<L2Effect>();
 
 		// Add all buffs and all debuffs
-		if (_buffs != null) temp.addAll(_buffs);
-		if (_debuffs != null) temp.addAll(_debuffs);
+		if (_buffs != null && !_buffs.isEmpty()) 
+			temp.addAll(_buffs);
+		if (_debuffs != null && !_debuffs.isEmpty()) 
+			temp.addAll(_debuffs);
 
 		// Return all effects in an array
 		L2Effect[] tempArray = new L2Effect[temp.size()];
