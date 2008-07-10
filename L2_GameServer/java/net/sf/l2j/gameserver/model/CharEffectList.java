@@ -117,9 +117,13 @@ public class CharEffectList
 		L2Effect[] effects = getAllEffects();
 
 		L2Effect eventNotInUse = null;
+		
+		if (effects == null || effects.length < 1)
+			return eventNotInUse;
+		
 		for (L2Effect e : effects)
 		{
-			if (e.getSkill() == skill)
+			if (e != null && e.getSkill() == skill)
 			{
 				if (e.getInUse()) return e;
 				else eventNotInUse = e;
@@ -138,9 +142,13 @@ public class CharEffectList
 		L2Effect[] effects = getAllEffects();
 
 		L2Effect eventNotInUse = null;
+		
+		if (effects == null || effects.length < 1)
+			return eventNotInUse;
+		
 		for (L2Effect e : effects)
 		{
-			if (e.getSkill().getId() == skillId)
+			if (e!= null && e.getSkill().getId() == skillId)
 			{
 				if (e.getInUse()) return e;
 				else eventNotInUse = e;
