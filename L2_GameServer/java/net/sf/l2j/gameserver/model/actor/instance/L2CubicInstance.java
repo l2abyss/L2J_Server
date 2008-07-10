@@ -432,7 +432,7 @@ public class L2CubicInstance
     				// get target in pvp or in siege
     				enemy = null;
 
-    				if (_owner.getPvpFlag() > 0 || _owner.isInsideZone(L2Character.ZONE_SIEGE) || _owner.isInsideZone(L2Character.ZONE_PVP))
+    				if ((_owner.getPvpFlag() > 0 && !_owner.isInsideZone(L2Character.ZONE_PEACE)) || _owner.isInsideZone(L2Character.ZONE_SIEGE) || _owner.isInsideZone(L2Character.ZONE_PVP))
     				{
     					if (_owner.getTarget() instanceof L2Summon)
     					{
@@ -452,23 +452,29 @@ public class L2CubicInstance
     			
     					if (enemy != null)
     					{
-    						boolean TargetIt = true;
+    						boolean targetIt = true;
+    						
     						if (_owner.getParty() != null)
     						{
     							if (_owner.getParty().getPartyMembers().contains(enemy))
-    								TargetIt = false;
+    								targetIt = false;
+    							else if (_owner.getParty().getCommandChannel() != null)
+    							{
+    								if (_owner.getParty().getCommandChannel().getMembers().contains(enemy))
+    									targetIt = false;
+    							}
     						}
-    						else if (_owner.getClan() != null && !_owner.isInsideZone(L2Character.ZONE_PVP))
-    						{
+    						if (_owner.getClan() != null && !_owner.isInsideZone(L2Character.ZONE_PVP))
     							if (_owner.getClan().isMember(enemy.getCharId()))
-    								TargetIt = false;
-    						}
-    						else if (enemy.getPvpFlag() == 0 && !enemy.isInsideZone(L2Character.ZONE_SIEGE) && !enemy.isInsideZone(L2Character.ZONE_PVP))
-    							TargetIt = false;
-    						else if (_owner.getSiegeState() == enemy.getSiegeState() && _owner.getSiegeState() > 0)
-    							TargetIt = false;
+    								targetIt = false;
+    						if (enemy.getPvpFlag() == 0 && !enemy.isInsideZone(L2Character.ZONE_SIEGE) && !enemy.isInsideZone(L2Character.ZONE_PVP))
+    							targetIt = false;
+    						if (enemy.isInsideZone(L2Character.ZONE_PEACE))
+    							targetIt = false;
+    						if (_owner.getSiegeState() == enemy.getSiegeState() && _owner.getSiegeState() > 0)
+    							targetIt = false;
 
-    						if (TargetIt)    					
+    						if (targetIt)    					
    							{
    								_target = (L2Character) _owner.getTarget();
    								return;
@@ -479,60 +485,66 @@ public class L2CubicInstance
     		// cubic can not attack owner target, so now we look for a random target 
     		List<L2Character> potentialTarget = new FastList<L2Character>();
     		List<L2Character> potentialPvPTarget = new FastList<L2Character>();
-    		Collection<L2Character> KnownTarget = _owner.getKnownList().getKnownCharactersInRadius(MAX_MAGIC_RANGE);
+    		Collection<L2Character> knownTarget = _owner.getKnownList().getKnownCharactersInRadius(MAX_MAGIC_RANGE);
    		
-   		   	for (L2Character TgMob : KnownTarget)
+   		   	for (L2Character tgMob : knownTarget)
    			{
    		   		// get the mobs which have aggro on the owner or his/her summon
-        		if (TgMob instanceof L2Attackable)
+        		if (tgMob instanceof L2Attackable)
 				{
-        			if (((L2Attackable)TgMob).isDead()) continue;
-        			if (((L2Attackable)TgMob).getAggroListRP().get(_owner) != null)
-        				potentialTarget.add(TgMob);
+        			if (((L2Attackable)tgMob).isDead()) continue;
+        			if (((L2Attackable)tgMob).getAggroListRP().get(_owner) != null)
+        				potentialTarget.add(tgMob);
         			if (_owner.getPet() != null)
-        				if (((L2Attackable)TgMob).getAggroListRP().get(_owner.getPet()) != null)
-        					potentialTarget.add(TgMob);
+        				if (((L2Attackable)tgMob).getAggroListRP().get(_owner.getPet()) != null)
+        					potentialTarget.add(tgMob);
 				}
         		// get enemy pvp targets
-        		else if (_owner.getPvpFlag() > 0 || _owner.isInsideZone(L2Character.ZONE_SIEGE) || _owner.isInsideZone(L2Character.ZONE_PVP))
+        		else if ((_owner.getPvpFlag() > 0 && !_owner.isInsideZone(L2Character.ZONE_PEACE)) || _owner.isInsideZone(L2Character.ZONE_SIEGE) || _owner.isInsideZone(L2Character.ZONE_PVP))
 				{
         			enemy = null;
-					if (TgMob instanceof L2Summon)
+					if (tgMob instanceof L2Summon)
 					{
-						if (!((L2Summon)TgMob).isDead())
-							enemy = ((L2Summon)TgMob).getOwner();
+						if (!((L2Summon)tgMob).isDead())
+							enemy = ((L2Summon)tgMob).getOwner();
 					}
-					else if (TgMob instanceof L2Trap)
+					else if (tgMob instanceof L2Trap)
 					{
-						if (!((L2Trap)TgMob).isDead())
-							enemy = ((L2Trap)TgMob).getOwner();
+						if (!((L2Trap)tgMob).isDead())
+							enemy = ((L2Trap)tgMob).getOwner();
 					}
-					else if (TgMob instanceof L2PcInstance)
+					else if (tgMob instanceof L2PcInstance)
 					{
-						if (!((L2PcInstance)TgMob).isDead())
-							enemy = (L2PcInstance) TgMob;
+						if (!((L2PcInstance)tgMob).isDead())
+							enemy = (L2PcInstance) tgMob;
 					}
 			
 					if (enemy != null)
 					{
-						boolean TargetIt = true;
+						boolean targetIt = true;
 						if (_owner.getParty() != null)
 						{
 							if (_owner.getParty().getPartyMembers().contains(enemy))
-								TargetIt = false;
+								targetIt = false;							
+							else if (_owner.getParty().getCommandChannel() != null)
+							{
+								if (_owner.getParty().getCommandChannel().getMembers().contains(enemy))
+									targetIt = false;
+							}							
 						}
-						else if (_owner.getClan() != null && !_owner.isInsideZone(L2Character.ZONE_PVP))
-						{
+						
+						if (_owner.getClan() != null && !_owner.isInsideZone(L2Character.ZONE_PVP))
 							if (_owner.getClan().isMember(enemy.getCharId()))
-								TargetIt = false;
-						}
-						else if (enemy.getPvpFlag() == 0 && !enemy.isInsideZone(L2Character.ZONE_SIEGE) && !enemy.isInsideZone(L2Character.ZONE_PVP))
-							TargetIt = false;
-						else if (_owner.getSiegeState() == enemy.getSiegeState() && _owner.getSiegeState() > 0)
-							TargetIt = false;
+								targetIt = false;
+						if (enemy.getPvpFlag() == 0 && !enemy.isInsideZone(L2Character.ZONE_SIEGE) && !enemy.isInsideZone(L2Character.ZONE_PVP))
+							targetIt = false;
+						if (enemy.isInsideZone(L2Character.ZONE_PEACE))
+							targetIt = false;
+						if (_owner.getSiegeState() == enemy.getSiegeState() && _owner.getSiegeState() > 0)
+							targetIt = false;
 
-						if (TargetIt)    					
-							potentialPvPTarget.add(TgMob);
+						if (targetIt)    					
+							potentialPvPTarget.add(tgMob);
 					}
 				}
 			}
@@ -753,10 +765,10 @@ public class L2CubicInstance
                 }
                 if (partyMember.getPet() != null)
                 {
-                   	if (!partyMember.getPet().isDead()) continue;
+                   	if (partyMember.getPet().isDead()) continue;
                     	
                     //if party member's pet not dead, check if it is in castrange of heal cubic
-                    if (isInCubicRange(_owner,partyMember.getPet())) continue;
+                    if (!isInCubicRange(_owner,partyMember.getPet())) continue;
 
                     // member's pet is in cubic casting range, check if he need heal and if he have the lowest HP                               
                     if (partyMember.getPet().getCurrentHp() < partyMember.getPet().getMaxHp())
@@ -778,18 +790,16 @@ public class L2CubicInstance
             	target = _owner;
             }
             if (_owner.getPet() != null)
-                if ((percentleft > (_owner.getPet().getCurrentHp() / _owner.getPet().getMaxHp()))
-                		&& !(_owner.getPet().isDead()) && isInCubicRange(_owner,_owner.getPet()))
+                if (!_owner.getPet().isDead() && _owner.getPet().getCurrentHp() < _owner.getPet().getMaxHp() 
+                		&& percentleft > (_owner.getPet().getCurrentHp() / _owner.getPet().getMaxHp())
+                		&& isInCubicRange(_owner,_owner.getPet()))
                 {
                 	target = _owner.getPet();
                 	percentleft = (_owner.getPet().getCurrentHp() / _owner.getPet().getMaxHp());
                 }
         }
-        if (percentleft == 100.0)
-        	_target = null;
-        else
-        	_target = target;
-        return;
+
+        _target = target;
     }
 
     private class Heal implements Runnable
@@ -832,9 +842,10 @@ public class L2CubicInstance
                 if (skill != null)
                 {
                     CubicTargetForHeal();
-                    if (_target != null && !_target.isDead())
+                    L2Character target = _target;
+                    if (target != null && !target.isDead())
                     {
-                    	double percentleft = _target.getCurrentHp() / _target.getMaxHp();
+                    	double percentleft = (target.getCurrentHp() / target.getMaxHp())* 100.0;
                     
                     	int typeHeal = 1; //1 = 60%+; 2= 30-60%; 3=30%-
                     
@@ -854,8 +865,9 @@ public class L2CubicInstance
                     		default:chance = _chanceAb60;
                     	}
                     
-                    	if (Rnd.get(1,100) < chance){
-                   			L2Character[] targets = {_target};
+                    	if (Rnd.get(1,100) < chance)
+                    	{
+                   			L2Character[] targets = {target};
                    			ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
                    			if (handler != null)
                    			{
@@ -865,8 +877,9 @@ public class L2CubicInstance
                    			{
                    				skill.useSkill(_owner, targets);
                    			}
-                   			MagicSkillUse msu = new MagicSkillUse(_owner, _target, skill.getId(),
-                   															skill.getLevel(), 0, 0);
+                   			
+                   			MagicSkillUse msu = new MagicSkillUse(_owner, target, skill.getId(),
+                   					skill.getLevel(), 0, 0);
                    			_owner.broadcastPacket(msu);
                    		}
                     }
