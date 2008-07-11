@@ -81,7 +81,9 @@ public class Potions implements IItemHandler
 				//elixir of cp
 				8634, 8635, 8636, 8637, 8638, 8639,
 				// Endeavor Potion
-				733};
+				733,
+				// Juices
+				10260, 10261, 10262, 10263, 10264, 10265, 10266, 10267, 10268, 10269};
 
 	public synchronized void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
@@ -410,6 +412,39 @@ public class Potions implements IItemHandler
 				break;
 			case 8202: // Fishing Potion
 				res = usePotion(activeChar, 2275, 1);
+				break;
+			
+			// Juices
+			// added by Z0mbie!
+			case 10260: // Haste Juice,xml:2429
+				res = usePotion(activeChar, 2429, 1);
+				break;
+			case 10261: // Accuracy Juice,xml:2430
+				res = usePotion(activeChar, 2430, 1);
+				break;
+			case 10262: // Critical Power Juice,xml:2431
+				res = usePotion(activeChar, 2431, 1);
+				break;
+			case 10263: // Critical Attack Juice,xml:2432
+				res = usePotion(activeChar, 2432, 1);
+				break;
+			case 10264: // Casting Speed Juice,xml:2433
+				res = usePotion(activeChar, 2433, 1);
+				break;
+			case 10265: // Evasion Juice,xml:2434
+				res = usePotion(activeChar, 2434, 1);
+				break;
+			case 10266: // Magic Power Juice,xml:2435
+				res = usePotion(activeChar, 2435, 1);
+				break;
+			case 10267: // Power Juice,xml:2436
+				res = usePotion(activeChar, 2436, 1);
+				break;
+			case 10268: // Speed Juice,xml:2437
+				res = usePotion(activeChar, 2437, 1);
+				break;
+			case 10269: // Defense Juice,xml:2438
+				res = usePotion(activeChar, 2438, 1);
 				break;
 			default:
 		}
