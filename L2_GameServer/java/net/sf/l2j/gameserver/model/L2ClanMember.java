@@ -483,10 +483,91 @@ public class L2ClanMember
                            break;
                    }
                    break;
-               default:
-                   pledgeClass = 1;
+           case 9:
+               switch (player.getPledgeType())
+               {
+                   case -1:
+                     pledgeClass = 1;
+                     break;
+                   case 100:
+                   case 200:
+                           pledgeClass = 5;
+                       break;
+                   case 1001:
+                   case 1002:
+                   case 2001:
+                   case 2002:
+                           pledgeClass = 4;
+                       break;
+                   case 0:
+                       if (player.isClanLeader())
+                           pledgeClass = 9;
+                       else
+                           switch (clan.getLeaderSubPledge(player.getObjectId()))
+                           {
+                               case 100:
+                               case 200:
+                                   pledgeClass = 8;
+                                   break;
+                               case 1001:
+                               case 1002:
+                               case 2001:
+                               case 2002:
+                                   pledgeClass = 7;
+                                   break;
+                               case -1:
+                               default:
+                                   pledgeClass = 6;
+                                   break;
+                           }
+                       break;
+               }
+               break;   
+           case 10:
+               switch (player.getPledgeType())
+               {
+                   case -1:
+                     pledgeClass = 1;
+                     break;
+                   case 100:
+                   case 200:
+                           pledgeClass = 6;
+                       break;
+                   case 1001:
+                   case 1002:
+                   case 2001:
+                   case 2002:
+                           pledgeClass = 5;
+                       break;
+                   case 0:
+                       if (player.isClanLeader())
+                           pledgeClass = 10;
+                       else
+                           switch (clan.getLeaderSubPledge(player.getObjectId()))
+                           {
+                               case 100:
+                               case 200:
+                                   pledgeClass = 9;
+                                   break;
+                               case 1001:
+                               case 1002:
+                               case 2001:
+                               case 2002:
+                                   pledgeClass = 8;
+                                   break;
+                               case -1:
+                               default:
+                                   pledgeClass = 7;
+                                   break;
+                           }
+                       break;
+               }
                break;
-           }
+         
+           default:
+               pledgeClass = 1;
+           break;
+       }
        }
        return pledgeClass;
 	}
