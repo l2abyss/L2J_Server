@@ -44,6 +44,7 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.Universe;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
+import net.sf.l2j.gameserver.ai.L2SummonAI;
 import net.sf.l2j.gameserver.ai.L2PlayerAI;
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.cache.WarehouseCacheManager;
@@ -9792,6 +9793,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		{
 			getPet().setFollowStatus(false);
 			getPet().teleToLocation(getPosition().getX() + Rnd.get(-100, 100), getPosition().getY() + Rnd.get(-100, 100), getPosition().getZ(), false);
+			((L2SummonAI)getPet().getAI()).setStartFollowController(true);
 			getPet().setFollowStatus(true);
 			sendPacket(new PetInfo(getPet()));
 			getPet().updateEffectIcons(true);
