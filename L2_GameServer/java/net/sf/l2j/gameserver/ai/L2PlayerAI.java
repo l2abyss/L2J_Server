@@ -340,12 +340,4 @@ public class L2PlayerAI extends L2CharacterAI
             _thinking = false;
         }
     }
-
-    @Override
-	protected void onEvtArrivedRevalidate()
-    {
-    	if (Config.MOVE_BASED_KNOWNLIST) getActor().getKnownList().findObjects();
-    	super.onEvtArrivedRevalidate();
-    }
-
 }

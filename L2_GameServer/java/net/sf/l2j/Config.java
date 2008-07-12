@@ -1371,8 +1371,7 @@ public final class Config
                  * will not be considered and move based knownlist is forced to true. Please 
                  * wait until it is fixed. Remove this at your own risk
                  */
-                //MOVE_BASED_KNOWNLIST						= Boolean.parseBoolean(General.getProperty("MoveBasedKnownlist", "True"));
-                MOVE_BASED_KNOWNLIST						= true;
+                MOVE_BASED_KNOWNLIST						= Boolean.parseBoolean(General.getProperty("MoveBasedKnownlist", "False"));
                 ZONE_TOWN									= Integer.parseInt(General.getProperty("ZoneTown", "0"));
                 ACTIVATE_POSITION_RECORDER					= Boolean.parseBoolean(General.getProperty("ActivatePositionRecorder", "False"));
                 DEFAULT_GLOBAL_CHAT							= General.getProperty("GlobalChat", "ON");
