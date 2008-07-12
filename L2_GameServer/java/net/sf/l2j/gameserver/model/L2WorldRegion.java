@@ -33,7 +33,6 @@ import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.gameserver.model.zone.type.L2DerbyTrackZone;
 import net.sf.l2j.gameserver.model.zone.type.L2PeaceZone;
 import net.sf.l2j.gameserver.model.zone.type.L2TownZone;
-import net.sf.l2j.gameserver.taskmanager.KnownListUpdateTaskManager;
 
 /**
  * This class ...
@@ -266,7 +265,7 @@ public final class L2WorldRegion
         				((L2NpcInstance)o).startRandomAnimationTimer();
         		}
         	}
-        	KnownListUpdateTaskManager.getInstance().updateRegion(this, true, true);
+        	//KnownListUpdateTaskManager.getInstance().updateRegion(this, true, true);
             _log.fine(c+ " mobs were turned on");
             
         }

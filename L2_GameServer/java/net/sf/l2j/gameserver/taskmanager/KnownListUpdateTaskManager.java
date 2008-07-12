@@ -67,10 +67,18 @@ public class KnownListUpdateTaskManager
 					for (L2WorldRegion r : regions) // go through all world
 					// regions
 					{
-						if (r.isActive()) // and check only if the region
-						// is active
+						// avoid stopping update if something went wrong in updateRegion()
+						try
 						{
-							updateRegion(r, true, true);
+							if (r.isActive()) // and check only if the region
+							// is active
+							{
+								updateRegion(r, true, true);
+							}
+						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
 						}
 					}
 				}
