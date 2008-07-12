@@ -83,7 +83,8 @@ public class Potions implements IItemHandler
 				// Endeavor Potion
 				733,
 				// Juices
-				10260, 10261, 10262, 10263, 10264, 10265, 10266, 10267, 10268, 10269};
+				10260, 10261, 10262, 10263, 10264, 10265,
+				10266, 10267, 10268, 10269, 10270};
 
 	public synchronized void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
@@ -445,6 +446,9 @@ public class Potions implements IItemHandler
 				break;
 			case 10269: // Defense Juice,xml:2438
 				res = usePotion(activeChar, 2438, 1);
+				break;
+			case 10270: // MP Consumption Juice,xml: 2439
+				res = usePotion(activeChar, 2439, 1);
 				break;
 			default:
 		}
