@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
+
 import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
