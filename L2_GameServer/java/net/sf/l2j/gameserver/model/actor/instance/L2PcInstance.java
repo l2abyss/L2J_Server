@@ -6859,7 +6859,7 @@ public final class L2PcInstance extends L2PlayableInstance
 				
 				storedSkills.add(skill);
 				
-				if (!effect.isHerbEffect() && effect.getInUse() && !skill.isToggle())
+				if (effect != null && !effect.isHerbEffect() && effect.getInUse() && !skill.isToggle())
 				{
 					int skillId = skill.getId();
 					buff_index++;

@@ -461,10 +461,15 @@ public class AdminEffects implements IAdminCommandHandler
 					int social = Integer.parseInt(st.nextToken());
 					if (obj == null)
 						obj = activeChar;
-					if (performSocial(social,obj,activeChar))
-						activeChar.sendMessage(obj.getName()+ " was affected by your request.");
+					if (obj != null)
+					{
+						if (performSocial(social,obj,activeChar))
+							activeChar.sendMessage(obj.getName()+ " was affected by your request.");
+						else
+							activeChar.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
+					}
 					else
-						activeChar.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
+						activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
 				}
 				else if (!command.contains("menu"))
 					activeChar.sendMessage("Usage: //social <social_id> [player_name|radius]");
@@ -523,10 +528,15 @@ public class AdminEffects implements IAdminCommandHandler
 					int abnormal = Integer.decode("0x"+st.nextToken());
 					if (obj == null)
 						obj = activeChar;
-					if (performAbnormal(abnormal,obj))
-						activeChar.sendMessage(obj.getName()+ "'s abnormal status was affected by your request.");
+					if (obj != null)
+					{
+						if (performAbnormal(abnormal,obj))
+							activeChar.sendMessage(obj.getName()+ "'s abnormal status was affected by your request.");
+						else
+							activeChar.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
+					}
 					else
-						activeChar.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
+						activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
 				}
 				else if (!command.contains("menu"))
 					activeChar.sendMessage("Usage: //abnormal <abnormal_mask> [player_name|radius]");
@@ -550,15 +560,19 @@ public class AdminEffects implements IAdminCommandHandler
 					hittime = Integer.parseInt(st.nextToken());
 				if (obj == null)
 					obj = activeChar;
-
-				if (!(obj instanceof L2Character))
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
-				else
+				if (obj != null)
 				{
-					L2Character target = (L2Character)obj;
-					target.broadcastPacket(new MagicSkillUse(target,activeChar,skill,level,hittime,0));
-					activeChar.sendMessage(obj.getName()+" performs MSU "+skill+"/"+level+" by your request.");
+					if (!(obj instanceof L2Character))
+						activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
+					else
+					{
+						L2Character target = (L2Character)obj;
+						target.broadcastPacket(new MagicSkillUse(target,activeChar,skill,level,hittime,0));
+						activeChar.sendMessage(obj.getName()+" performs MSU "+skill+"/"+level+" by your request.");
+					}
 				}
+				else
+					activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
 			}
 			catch(Exception e)
 			{

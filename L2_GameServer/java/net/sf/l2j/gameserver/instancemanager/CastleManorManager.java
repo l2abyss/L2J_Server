@@ -372,8 +372,9 @@ public class CastleManorManager {
 			}
 
 			// Sending notification to a clan leader
-			L2PcInstance clanLeader = L2World.getInstance().getPlayer(clan.getLeader().getName());
-			
+			L2PcInstance clanLeader = null;
+			if (clan != null)
+				clanLeader = L2World.getInstance().getPlayer(clan.getLeader().getName());
 			if (clanLeader != null)
 				clanLeader.sendPacket(new SystemMessage(SystemMessageId.THE_MANOR_INFORMATION_HAS_BEEN_UPDATED));
 

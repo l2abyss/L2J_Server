@@ -350,7 +350,7 @@ public class MultiSellChoose extends L2GameClientPacket
         su = null;
 
         // finally, give the tax to the castle...
-		if (merchant.getIsInTown() && merchant.getCastle().getOwnerId() > 0)
+		if (merchant != null && merchant.getIsInTown() && merchant.getCastle().getOwnerId() > 0)
 		    merchant.getCastle().addToTreasury(_transactionTax * _amount);
     }
 
