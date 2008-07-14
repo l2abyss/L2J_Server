@@ -200,7 +200,7 @@ abstract class AbstractAI implements Ctrl
      *
      * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method is USED by AI classes</B></FONT><BR><BR>
      *
-     * <B><U> Overriden in </U> : </B><BR>
+     * <B><U> Overridden in </U> : </B><BR>
      * <B>L2AttackableAI</B> : Create an AI Task executed every 1s (if necessary)<BR>
      * <B>L2PlayerAI</B> : Stores the current AI intention parameters to later restore it if necessary<BR><BR>
      *

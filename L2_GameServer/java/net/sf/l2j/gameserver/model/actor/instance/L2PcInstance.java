@@ -6985,7 +6985,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 * <li>Remove the skill from the L2Character _skills </li>
 	 * <li>Remove all its Func objects from the L2Character calculator set</li><BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance : Save update in the character_skills table of the database</li><BR><BR>
 	 *
 	 * @param skill The L2Skill to remove from the L2Character

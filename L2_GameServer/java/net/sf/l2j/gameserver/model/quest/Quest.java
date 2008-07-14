@@ -63,7 +63,7 @@ public class Quest extends ManagedScript
 	private final String _name;
 	private final String _descr;
     private final byte _initialState = State.CREATED;
-    // NOTE: questItemIds will be overriden by child classes.  Ideally, it should be
+    // NOTE: questItemIds will be overridden by child classes.  Ideally, it should be
     // protected instead of public.  However, quest scripts written in Jython will
     // have trouble with protected, as Jython only knows private and public...
     // In fact, protected will typically be considered private thus breaking the scripts.
@@ -339,7 +339,7 @@ public class Quest extends ManagedScript
     
     @SuppressWarnings("unused") public String onAdvEvent(String event, L2NpcInstance npc, L2PcInstance player) 
     {
-    	// if not overriden by a subclass, then default to the returned value of the simpler (and older) onEvent override
+    	// if not overridden by a subclass, then default to the returned value of the simpler (and older) onEvent override
     	// if the player has a state, use it as parameter in the next call, else return null
     	QuestState qs = player.getQuestState(getName());
     	if (qs != null )

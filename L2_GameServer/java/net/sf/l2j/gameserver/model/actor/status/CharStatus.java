@@ -106,7 +106,7 @@ public class CharStatus
     /**
      * Reduce the current HP of the L2Character and launch the doDie Task if necessary.<BR><BR>
      *
-     * <B><U> Overriden in </U> :</B><BR><BR>
+     * <B><U> Overridden in </U> :</B><BR><BR>
      * <li> L2Attackable : Update the attacker AggroInfo of the L2Attackable _aggroList</li><BR><BR>
      *
      * @param i The HP decrease value

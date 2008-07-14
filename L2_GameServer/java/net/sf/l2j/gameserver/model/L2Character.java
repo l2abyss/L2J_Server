@@ -544,7 +544,7 @@ public abstract class L2Character extends L2Object
 	 *
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T SEND CP information</B></FONT><BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance : Send current HP,MP and CP to the L2PcInstance and only current HP, MP and Level to all other L2PcInstance of the Party</li><BR><BR>
 	 *
 	 */
@@ -578,7 +578,7 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Not Implemented.<BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
 	 */
 	public void sendPacket(@SuppressWarnings("unused") L2GameServerPacket mov)
@@ -589,7 +589,7 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Not Implemented.<BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
 	 */
 	public void sendMessage(@SuppressWarnings("unused") String text)
@@ -1849,7 +1849,7 @@ public abstract class L2Character extends L2Object
 	 *
 	 * @param skill id
 	 * @param reuse delay
-	 * <BR><B>Overriden in :</B>  (L2PcInstance)
+	 * <BR><B>Overridden in :</B>  (L2PcInstance)
 	 */
 	public void addTimeStamp(int s, int r) {/***/}
 
@@ -1857,7 +1857,7 @@ public abstract class L2Character extends L2Object
 	 * Index according to skill id the current timestamp of use.<br><br>
 	 *
 	 * @param skill id
-	 * <BR><B>Overriden in :</B>  (L2PcInstance)
+	 * <BR><B>Overridden in :</B>  (L2PcInstance)
 	 */
 	public void removeTimeStamp(int s) {/***/}
 
@@ -1866,7 +1866,7 @@ public abstract class L2Character extends L2Object
 	* 
 	* @param caster
 	* @param force type
-	* <BR><B>Overriden in :</B>  (L2PcInstance)
+	* <BR><B>Overridden in :</B>  (L2PcInstance)
 	*/
 	public void startForceBuff(L2Character caster, L2Skill skill) {/***/}
 
@@ -1881,7 +1881,7 @@ public abstract class L2Character extends L2Object
 	 * <li>Send the Server->Client packet StatusUpdate with current HP and MP to all other L2PcInstance to inform </li>
 	 * <li>Notify L2Character AI </li><BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2NpcInstance : Create a DecayTask to remove the corpse of the L2NpcInstance after 7 seconds </li>
 	 * <li> L2Attackable : Distribute rewards (EXP, SP, Drops...) and notify Quest Engine </li>
 	 * <li> L2PcInstance : Apply Death Penalty, Manage gain/loss Karma and Item Drop </li><BR><BR>
@@ -2158,7 +2158,7 @@ public abstract class L2Character extends L2Object
 
 	/**
 	 * Return the L2Summon of the L2Character.<BR><BR>
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
 	 */
 	public L2Summon getPet() { return null; }
@@ -3058,7 +3058,7 @@ public abstract class L2Character extends L2Object
     /**
      * Updates Effect Icons for this character(palyer/summon) and his party if any<BR>
      * 
-     * Overriden in:<BR>
+     * Overridden in:<BR>
      * L2PcInstance<BR>
      * L2Summon<BR>
      * 
@@ -3066,7 +3066,7 @@ public abstract class L2Character extends L2Object
      */
 	public void updateEffectIcons(boolean partyOnly)
 	{
-        // overriden
+        // overridden
 	}
 
 	// Property - Public
@@ -4031,7 +4031,7 @@ public abstract class L2Character extends L2Object
 	 * <li>If necessary, add L2Character to _KnownObject of the L2Object </li>
 	 * <li>If object==null, cancel Attak or Cast </li><BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance : Remove the L2PcInstance from the old target _statusListener and add it to the new target if it was a L2Character</li><BR><BR>
 	 *
 	 * @param object L2object to target
@@ -4729,7 +4729,7 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Retun True if arrows are available.<BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
 	 *
 	 */
@@ -4741,7 +4741,7 @@ public abstract class L2Character extends L2Object
     /**
      * Retun True if bolts are available.<BR><BR>
      *
-     * <B><U> Overriden in </U> :</B><BR><BR>
+     * <B><U> Overridden in </U> :</B><BR><BR>
      * <li> L2PcInstance</li><BR><BR>
      *
      */
@@ -4753,7 +4753,7 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Add Exp and Sp to the L2Character.<BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li>
 	 * <li> L2PetInstance</li><BR><BR>
 	 *
@@ -4766,7 +4766,7 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Return the active weapon instance (always equiped in the right hand).<BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
 	 *
 	 */
@@ -4775,7 +4775,7 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Return the active weapon item (always equiped in the right hand).<BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
 	 *
 	 */
@@ -4784,7 +4784,7 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Return the secondary weapon instance (always equiped in the left hand).<BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
 	 *
 	 */
@@ -4793,7 +4793,7 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Return the secondary weapon item (always equiped in the left hand).<BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
 	 *
 	 */
@@ -5071,7 +5071,7 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Reduce the arrow number of the L2Character.<BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
 	 *
 	 */
@@ -5304,7 +5304,7 @@ public abstract class L2Character extends L2Object
 	 * <li>If an old skill has been replaced, remove all its Func objects of L2Character calculator set</li>
 	 * <li>Add Func objects of newSkill to the calculator set of the L2Character </li><BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance : Save update in the character_skills table of the database</li><BR><BR>
 	 *
 	 * @param newSkill The L2Skill to add to the L2Character
@@ -5354,7 +5354,7 @@ public abstract class L2Character extends L2Object
 	 * <li>Remove the skill from the L2Character _skills </li>
 	 * <li>Remove all its Func objects from the L2Character calculator set</li><BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance : Save update in the character_skills table of the database</li><BR><BR>
 	 *
 	 * @param skill The L2Skill to remove from the L2Character
@@ -6383,7 +6383,7 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Send system message about damage.<BR><BR>
 	 *
-	 * <B><U> Overriden in </U> :</B><BR><BR>
+	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance
 	 * <li> L2SummonInstance
 	 * <li> L2PetInstance</li><BR><BR>
