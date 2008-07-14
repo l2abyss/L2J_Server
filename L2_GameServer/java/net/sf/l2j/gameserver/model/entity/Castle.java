@@ -563,7 +563,7 @@ public class Castle
 	    if (door == null)
 	        return;
 
-        if (door != null && door.getDoorId() == doorId)
+        if (door.getDoorId() == doorId)
         {
         	door.setCurrentHp(door.getMaxHp() + hp);
 

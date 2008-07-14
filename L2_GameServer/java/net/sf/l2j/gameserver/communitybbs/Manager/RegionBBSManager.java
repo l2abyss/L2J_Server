@@ -217,8 +217,7 @@ public class RegionBBSManager extends BaseBBSManager
             		_logChat.log(record);
 				}
             	CreatureSay cs = new CreatureSay(activeChar.getObjectId(), Say2.TELL, activeChar.getName(), ar3);
-            	if (receiver != null &&
-            			!BlockList.isBlocked(receiver, activeChar))
+            	if (!BlockList.isBlocked(receiver, activeChar))
 				{
             		if (!receiver.getMessageRefusal())
             		{

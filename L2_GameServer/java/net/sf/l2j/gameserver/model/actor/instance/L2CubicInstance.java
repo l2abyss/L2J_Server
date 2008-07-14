@@ -428,9 +428,6 @@ public class L2CubicInstance
     							return;
     						}
     				}
-    			
-    				// get target in pvp or in siege
-    				enemy = null;
 
     				if ((_owner.getPvpFlag() > 0 && !_owner.isInsideZone(L2Character.ZONE_PEACE)) || _owner.isInsideZone(L2Character.ZONE_SIEGE) || _owner.isInsideZone(L2Character.ZONE_PVP))
     				{
