@@ -87,10 +87,7 @@ public class KnownListUpdateTaskManager
 			{
 				_log.warning(e.toString());
 			}
-			if (Config.MOVE_BASED_KNOWNLIST)
-				ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(), 2500);
-			else
-				ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(), 750);
+			ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(), Config.KNOWNLIST_UPDATE_INTERVAL);
 		}
 	}
 	

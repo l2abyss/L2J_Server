@@ -367,6 +367,7 @@ public final class Config
     public static int		GEODATA;
     public static boolean	FORCE_GEODATA;
     public static boolean 	MOVE_BASED_KNOWNLIST;
+    public static long		KNOWNLIST_UPDATE_INTERVAL;
     public static int		ZONE_TOWN;
     public static boolean	ACTIVATE_POSITION_RECORDER;
     public static String	DEFAULT_GLOBAL_CHAT;
@@ -1366,12 +1367,8 @@ public final class Config
                 GRID_NEIGHBOR_TURNOFF_TIME					= Integer.parseInt(General.getProperty("GridNeighborTurnOffTime", "90"));
                 GEODATA										= Integer.parseInt(General.getProperty("GeoData", "0"));
                 FORCE_GEODATA								= Boolean.parseBoolean(General.getProperty("ForceGeoData", "True"));
-                /*
-                 * Time based knownlist is now under analysis so configuration 
-                 * will not be considered and move based knownlist is forced to true. Please 
-                 * wait until it is fixed. Remove this at your own risk
-                 */
                 MOVE_BASED_KNOWNLIST						= Boolean.parseBoolean(General.getProperty("MoveBasedKnownlist", "False"));
+                KNOWNLIST_UPDATE_INTERVAL					= Long.parseLong(General.getProperty("KnownListUpdateInterval", "1250"));
                 ZONE_TOWN									= Integer.parseInt(General.getProperty("ZoneTown", "0"));
                 ACTIVATE_POSITION_RECORDER					= Boolean.parseBoolean(General.getProperty("ActivatePositionRecorder", "False"));
                 DEFAULT_GLOBAL_CHAT							= General.getProperty("GlobalChat", "ON");
