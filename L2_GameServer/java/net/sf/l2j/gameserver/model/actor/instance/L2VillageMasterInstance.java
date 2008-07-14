@@ -279,8 +279,7 @@ public final class L2VillageMasterInstance extends L2FolkInstance
                     if (Olympiad.getInstance().isRegisteredInComp(player)
                         || player.getOlympiadGameId() > 0)
                     {
-                        player.sendPacket(new SystemMessage(
-                                                            SystemMessageId.YOU_HAVE_ALREADY_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_AN_EVENT));
+                        player.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_ALREADY_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_AN_EVENT));
                         return;
                     }
 

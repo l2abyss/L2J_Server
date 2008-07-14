@@ -2227,7 +2227,7 @@ public class L2NpcInstance extends L2Character
      * 
      * <B><U> Actions</U> :</B><BR><BR>
      * <li>Remove the L2NpcInstance from the world and update its spawn object </li>
-     * <li>Remove all L2Object from _knownObjects and _knownPlayer of the L2NpcInstance then cancel Attak or Cast and notify AI </li>
+     * <li>Remove all L2Object from _knownObjects and _knownPlayer of the L2NpcInstance then cancel Attack or Cast and notify AI </li>
      * <li>Remove L2Object object from _allObjects of L2World </li><BR><BR>
      * 
      * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T SEND Server->Client packets to players</B></FONT><BR><BR>

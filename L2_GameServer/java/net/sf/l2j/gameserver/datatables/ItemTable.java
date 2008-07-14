@@ -334,7 +334,7 @@ public class ItemTable
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.WARNING, "data error on item: ", e);
+				_log.log(Level.WARNING, "data error on custom_item: ", e);
 			}
 			finally
 			{
