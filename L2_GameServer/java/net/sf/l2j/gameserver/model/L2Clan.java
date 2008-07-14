@@ -2035,9 +2035,9 @@ public class L2Clan
                 {
                     if (player.reduceAdena("ClanLvl", 650000, player.getTarget(), true))
                     {
-	                    player.setSp(player.getSp() - 30000);
+	                    player.setSp(player.getSp() - 20000);
 	                    SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
-	                    sp.addNumber(30000);
+	                    sp.addNumber(20000);
 	                    player.sendPacket(sp);
                         sp = null;
 	                    increaseClanLevel = true;
@@ -2052,9 +2052,9 @@ public class L2Clan
                 {
                     if (player.reduceAdena("ClanLvl", 2500000, player.getTarget(), true))
                     {
-	                    player.setSp(player.getSp() - 150000);
+	                    player.setSp(player.getSp() - 100000);
 	                    SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
-	                    sp.addNumber(150000);
+	                    sp.addNumber(100000);
 	                    player.sendPacket(sp);
                         sp = null;
 	                    increaseClanLevel = true;
@@ -2070,9 +2070,9 @@ public class L2Clan
                     // itemId 1419 == Blood Mark
                     if (player.destroyItemByItemId("ClanLvl", 1419, 1, player.getTarget(), false))
                     {
-	                    player.setSp(player.getSp() - 500000);
+	                    player.setSp(player.getSp() - 350000);
 	                    SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
-	                    sp.addNumber(500000);
+	                    sp.addNumber(350000);
 	                    player.sendPacket(sp);
                         sp = null;
                         SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
@@ -2093,9 +2093,9 @@ public class L2Clan
                     // itemId 3874 == Alliance Manifesto
                 	if (player.destroyItemByItemId("ClanLvl", 3874, 1, player.getTarget(), false))
                 	{
-	                    player.setSp(player.getSp() - 1400000);
+	                    player.setSp(player.getSp() - 1000000);
 	                    SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
-	                    sp.addNumber(1400000);
+	                    sp.addNumber(1000000);
 	                    player.sendPacket(sp);
                         sp = null;
                         SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
@@ -2116,9 +2116,9 @@ public class L2Clan
                     // itemId 3870 == Seal of Aspiration
                 	if (player.destroyItemByItemId("ClanLvl", 3870, 1, player.getTarget(), false))
                 	{
-                		player.setSp(player.getSp() - 3500000);
+                		player.setSp(player.getSp() - 2500000);
 	                    SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
-	                    sp.addNumber(3500000);
+	                    sp.addNumber(2500000);
 	                    player.sendPacket(sp);
                         sp = null;
                         SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
