@@ -76,6 +76,9 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
                     case 0x2b:
                         msg = new AuthLogin();
                         break;
+                    case 0x54:
+                    	// client send this packet when u are on boat and u relog game X_x
+                    	break;
                     default:
                         printDebug(opcode, buf, state, client);
                         break;
