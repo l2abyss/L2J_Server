@@ -32,6 +32,9 @@ public class DecayTaskManager
     protected static final Logger _log = Logger.getLogger(DecayTaskManager.class.getName());
 	protected Map<L2Character,Long> _decayTasks = new FastMap<L2Character,Long>().setShared(true);
 
+	public static final int RAID_BOSS_DECAY_TIME = 30000;
+	public static final int ATTACKABLE_DECAY_TIME = 8500;
+	
     private static DecayTaskManager _instance;
 
     public DecayTaskManager()
@@ -82,8 +85,11 @@ public class DecayTaskManager
             	if (_decayTasks != null)
             		for(L2Character actor : _decayTasks.keySet())
             		{
-            			if(actor instanceof L2RaidBossInstance) delay = 30000;
-            			else delay = 8500;
+            			if(actor instanceof L2RaidBossInstance) 
+            				delay = RAID_BOSS_DECAY_TIME;
+            			else 
+            				delay = ATTACKABLE_DECAY_TIME;
+            			
             			if((current - _decayTasks.get(actor)) > delay)
             			{
             				actor.onDecay();
@@ -112,5 +118,13 @@ public class DecayTaskManager
         }
 
         return ret;
+    }
+    
+    /**
+     * <u><b><font color="FF0000">Read only</font></b></u>
+     */
+    public Map<L2Character, Long> getTasks()
+    {
+    	return _decayTasks;
     }
 }
