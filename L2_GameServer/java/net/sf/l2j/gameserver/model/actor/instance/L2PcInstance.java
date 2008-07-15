@@ -11181,7 +11181,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 * instance for restoration purposes only.
 	 * @param TimeStamp
 	 */
-	private void addTimeStamp(TimeStamp ts)
+	public void addTimeStamp(TimeStamp ts)
 	{
 		_reuseTimeStamps.put(ts.getSkill(), ts);
 	}

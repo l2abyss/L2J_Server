@@ -16,7 +16,9 @@ package net.sf.l2j.gameserver.datatables;
 
 import java.util.Map;
 
+import javolution.util.FastList;
 import javolution.util.FastMap;
+
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.skills.SkillsEngine;
 import net.sf.l2j.gameserver.templates.L2WeaponType;
@@ -128,5 +130,24 @@ public class SkillTable
 				weaponsAllowed |= weaponDbMasks[i].mask();
 
         return weaponsAllowed;
+	}
+	
+	/**
+	 * Returns an array with siege skills. If addNoble == true, will add also Advanced headquarters.
+	 */
+	public L2Skill[] getSiegeSkills(boolean addNoble)
+	{
+		FastList<L2Skill> list = new FastList<L2Skill>();
+		
+		list.add(_skills.get(SkillTable.getSkillHashCode(246, 1))); 
+		list.add(_skills.get(SkillTable.getSkillHashCode(247, 1)));
+		
+		if (addNoble)
+			list.add(_skills.get(SkillTable.getSkillHashCode(326, 1)));
+		
+		L2Skill[] temp = new L2Skill[list.size()];
+		list.toArray(temp);
+		
+		return temp;
 	}
 }

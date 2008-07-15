@@ -33,6 +33,7 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.Location;
+import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.Siege;
@@ -79,8 +80,10 @@ public class SiegeManager
     // Method - Public
     public final void addSiegeSkills(L2PcInstance character)
     {
-        character.addSkill(SkillTable.getInstance().getInfo(246, 1), false);
-        character.addSkill(SkillTable.getInstance().getInfo(247, 1), false);
+    	for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble()))
+    	{
+    		character.addSkill(sk, false);
+    	}
     }
 
     /**
@@ -152,8 +155,10 @@ public class SiegeManager
 
     public final void removeSiegeSkills(L2PcInstance character)
     {
-        character.removeSkill(SkillTable.getInstance().getInfo(246, 1));
-        character.removeSkill(SkillTable.getInstance().getInfo(247, 1));
+    	for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble()))
+    	{
+    		character.removeSkill(sk);
+    	}
     }
 
     // =========================================================
