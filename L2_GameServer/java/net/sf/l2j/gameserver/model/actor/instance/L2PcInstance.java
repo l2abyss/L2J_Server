@@ -8445,67 +8445,84 @@ public final class L2PcInstance extends L2PlayableInstance
 
 		if (_activeSoulShots == null || _activeSoulShots.size() == 0)
 			return;
-
-		for (int itemId : _activeSoulShots.values())
+		
+		Collection<Integer> vals = _activeSoulShots.values();
+		
+		synchronized (_activeSoulShots)
 		{
-			item = getInventory().getItemByItemId(itemId);
-
-			if (item != null)
+			for (int itemId : vals)
 			{
-                if (magic)
-                {
-                    if (!summon)
-                    {
-                        if (itemId == 2509 || itemId == 2510 || itemId == 2511 ||
-                                itemId == 2512 || itemId == 2513 || itemId == 2514 ||
-                                itemId == 3947 || itemId == 3948 || itemId == 3949 ||
-                                itemId == 3950 || itemId == 3951 || itemId == 3952 ||
-                                itemId == 5790)
-                        {
-                            handler = ItemHandler.getInstance().getItemHandler(itemId);
-
-                            if (handler != null)
-                                handler.useItem(this, item);
-                        }
-                    } else
-                    {
-                        if (itemId == 6646 || itemId == 6647)
-                        {
-                            handler = ItemHandler.getInstance().getItemHandler(itemId);
-
-                            if (handler != null)
-                                handler.useItem(this, item);
-                        }
-                    }
-                }
-
-                if (physical)
-                {
-                    if (!summon)
-                    {
-                    	if (itemId == 1463 || itemId == 1464 || itemId == 1465 || itemId == 1466 || itemId == 1467 || itemId == 1835 || itemId == 5789 /*||
-                    		itemId == 6535 || itemId == 6536 || itemId == 6537 || itemId == 6538 || itemId == 6539 || itemId == 6540*/)
-                        {
-                            handler = ItemHandler.getInstance().getItemHandler(itemId);
-
-                            if (handler != null)
-                                handler.useItem(this, item);
-                        }
-                    } else
-                    {
-                        if (itemId == 6645)
-                        {
-                            handler = ItemHandler.getInstance().getItemHandler(itemId);
-
-                            if (handler != null)
-                                handler.useItem(this, item);
-                        }
-                    }
-                }
-			}
-			else
-			{
-				removeAutoSoulShot(itemId);
+				item = getInventory().getItemByItemId(itemId);
+				
+				if (item != null)
+				{
+					if (magic)
+					{
+						if (!summon)
+						{
+							if (itemId == 2509 || itemId == 2510
+							        || itemId == 2511 || itemId == 2512
+							        || itemId == 2513 || itemId == 2514
+							        || itemId == 3947 || itemId == 3948
+							        || itemId == 3949 || itemId == 3950
+							        || itemId == 3951 || itemId == 3952
+							        || itemId == 5790)
+							{
+								handler = ItemHandler.getInstance().getItemHandler(itemId);
+								
+								if (handler != null)
+									handler.useItem(this, item);
+							}
+						}
+						else
+						{
+							if (itemId == 6646 || itemId == 6647)
+							{
+								handler = ItemHandler.getInstance().getItemHandler(itemId);
+								
+								if (handler != null)
+									handler.useItem(this, item);
+							}
+						}
+					}
+					
+					if (physical)
+					{
+						if (!summon)
+						{
+							if (itemId == 1463 || itemId == 1464
+							        || itemId == 1465 || itemId == 1466
+							        || itemId == 1467 || itemId == 1835
+							        || itemId == 5789 /*
+													 * || itemId == 6535 ||
+													 * itemId == 6536 || itemId
+													 * == 6537 || itemId == 6538
+													 * || itemId == 6539 ||
+													 * itemId == 6540
+													 */)
+							{
+								handler = ItemHandler.getInstance().getItemHandler(itemId);
+								
+								if (handler != null)
+									handler.useItem(this, item);
+							}
+						}
+						else
+						{
+							if (itemId == 6645)
+							{
+								handler = ItemHandler.getInstance().getItemHandler(itemId);
+								
+								if (handler != null)
+									handler.useItem(this, item);
+							}
+						}
+					}
+				}
+				else
+				{
+					removeAutoSoulShot(itemId);
+				}
 			}
 		}
 	}
