@@ -4669,6 +4669,12 @@ public final class L2PcInstance extends L2PlayableInstance
 	@Override
 	public boolean doDie(L2Character killer)
 	{
+		/* Since L2Character.doDie() calls stopAllEffects(), which includes
+		 * setting charm of curage and other blessings as false, this stores value 
+		 * before calling superclass method
+		 */
+		boolean charmOfCourage = getCharmOfCourage();
+		
 		// Kill the L2PcInstance
 		if (!super.doDie(killer))
 			return false;
@@ -4736,7 +4742,7 @@ public final class L2PcInstance extends L2PlayableInstance
 							// NOTE: deathPenalty +- Exp will update karma
 							// Penalty is lower if the player is at war with the pk (war has to be declared)
 							if (getSkillLevel(L2Skill.SKILL_LUCKY) < 0 || getStat().getLevel() > 9)
-								deathPenalty(pk != null && getClan() != null && getClan().isAtWarWith(pk.getClanId()), pk != null);										
+								deathPenalty(pk != null && getClan() != null && getClan().isAtWarWith(pk.getClanId()), pk != null, charmOfCourage);										
 
 						} else
 						{
@@ -5138,7 +5144,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 * <li>Send a Server->Client StatusUpdate packet with its new Experience </li><BR><BR>
 	 *
 	 */
-	public void deathPenalty(boolean atwar, boolean killed_by_pc)
+	public void deathPenalty(boolean atwar, boolean killed_by_pc, boolean charmOfCourage)
 	{
 		// TODO Need Correct Penalty
 		// Get the level of the L2PcInstance
@@ -5227,7 +5233,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		// Get the Experience before applying penalty
 		setExpBeforeDeath(getExp());
 
-		if(getCharmOfCourage())
+		if(charmOfCourage)
 		{
 		    if (getSiegeState() > 0 && isInsideZone(ZONE_SIEGE))
 		    	lostExp = 0;
@@ -5238,6 +5244,11 @@ public final class L2PcInstance extends L2PlayableInstance
 
 		// Set the new Experience value of the L2PcInstance
 		getStat().addExp(-lostExp);
+	}
+	
+	public void deathPenalty(boolean atwar, boolean killed_by_pc)
+	{
+		deathPenalty(atwar, killed_by_pc, getCharmOfCourage());
 	}
 
 	/**
