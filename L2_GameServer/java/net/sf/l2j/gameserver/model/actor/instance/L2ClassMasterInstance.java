@@ -212,7 +212,7 @@ public final class L2ClassMasterInstance extends L2FolkInstance
             {
             	changeClass(player, val);
 
-                if((val >= 88 && val <= 118) || (val >= 131 && val <= 134) || val == 136)
+                if(player.getClassId().level() == 3)
                 	player.sendPacket(new SystemMessage(SystemMessageId.THIRD_CLASS_TRANSFER)); // system sound 3rd occupation
                 else
                 	player.sendPacket(new SystemMessage(SystemMessageId.CLASS_TRANSFER));    // system sound for 1st and 2nd occupation
@@ -271,7 +271,7 @@ public final class L2ClassMasterInstance extends L2FolkInstance
 
             changeClass(player, val);
 
-            if((val >= 88 && val <= 118) || (val >= 131 && val <= 134) || val == 136)
+            if(player.getClassId().level() == 3)
             	player.sendPacket(new SystemMessage(SystemMessageId.THIRD_CLASS_TRANSFER)); // system sound 3rd occupation
             else
             	player.sendPacket(new SystemMessage(SystemMessageId.CLASS_TRANSFER));    // system sound for 1st and 2nd occupation

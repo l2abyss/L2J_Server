@@ -79,7 +79,7 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
         if ((trainer == null || !player.isInsideRadius(trainer, L2NpcInstance.INTERACTION_DISTANCE, false, false)) && !player.isGM())
             return;
         
-        if (player.getClassId().getId() < 88 ||(player.getClassId().getId() >= 123 && player.getClassId().getId() < 132 )||player.getClassId().getId() == 135) // requires to have 3rd class quest completed
+        if (player.getClassId().level() < 3) // requires to have 3rd class quest completed
             return;
         
         if (player.getLevel() < 76) 
