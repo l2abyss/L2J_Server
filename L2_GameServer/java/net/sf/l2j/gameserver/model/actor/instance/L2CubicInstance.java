@@ -465,8 +465,15 @@ public class L2CubicInstance
     							}
     						}
     						if (_owner.getClan() != null && !_owner.isInsideZone(L2Character.ZONE_PVP))
-    							if (_owner.getClan().isMember(enemy.getCharId()))
+    						{
+    							if (_owner.getClan().isMember(enemy.getObjectId()))
     								targetIt = false;
+    							if (_owner.getAllyId() > 0 && enemy.getAllyId() > 0)
+    							{
+    								if (_owner.getAllyId() == enemy.getAllyId())
+    									targetIt = false;
+    							}
+    						}
     						if (enemy.getPvpFlag() == 0 && !enemy.isInsideZone(L2Character.ZONE_SIEGE) && !enemy.isInsideZone(L2Character.ZONE_PVP))
     							targetIt = false;
     						if (enemy.isInsideZone(L2Character.ZONE_PEACE))
@@ -534,8 +541,15 @@ public class L2CubicInstance
 						}
 						
 						if (_owner.getClan() != null && !_owner.isInsideZone(L2Character.ZONE_PVP))
-							if (_owner.getClan().isMember(enemy.getCharId()))
+						{
+							if (_owner.getClan().isMember(enemy.getObjectId()))
 								targetIt = false;
+							if (_owner.getAllyId() > 0 && enemy.getAllyId() > 0)
+							{
+								if (_owner.getAllyId() == enemy.getAllyId())
+									targetIt = false;
+							}
+						}
 						if (enemy.getPvpFlag() == 0 && !enemy.isInsideZone(L2Character.ZONE_SIEGE) && !enemy.isInsideZone(L2Character.ZONE_PVP))
 							targetIt = false;
 						if (enemy.isInsideZone(L2Character.ZONE_PEACE))
