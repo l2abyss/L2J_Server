@@ -3,7 +3,6 @@
 	<classpathentry excluding="**/.svn/*|.svn" kind="src" path="java"/>
 	<classpathentry excluding="**/.svn/*|.svn" kind="src" path="javaTest"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/javolution.jar"/>
 	<classpathentry kind="lib" path="lib/jython.jar"/>
 	<classpathentry kind="lib" path="lib/bsh-2.0b4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
@@ -14,5 +13,6 @@
 	<classpathentry kind="lib" path="lib/ecj.jar"/>
 	<classpathentry kind="lib" path="lib/java-engine.jar"/>
 	<classpathentry kind="lib" path="lib/mmocore.jar"/>
+	<classpathentry kind="lib" path="lib/javolution.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -14,12 +14,12 @@
  */
 package net.sf.l2j.gameserver.cache;
 
+import javolution.context.ObjectFactory;
 import javolution.lang.Reusable;
 import javolution.util.FastCollection;
 import javolution.util.FastComparator;
 import javolution.util.FastList;
 import javolution.util.FastMap;
-;
 
 /**
  * @author Layane
@@ -64,7 +64,7 @@ public class FastMRUCache<K,V> extends FastCollection implements Reusable
      * Holds the set factory.
      */
     @SuppressWarnings("unchecked")
-    private static final Factory FACTORY = new Factory() {
+    private static final ObjectFactory FACTORY = new ObjectFactory() {
 
         @Override
 		public Object create() {
