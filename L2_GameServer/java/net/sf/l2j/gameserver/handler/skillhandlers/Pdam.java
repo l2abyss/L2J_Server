@@ -64,7 +64,9 @@ public class Pdam implements ISkillHandler
         int damage = 0;
 
         if (Config.DEBUG)
-            if (Config.DEBUG) _log.fine("Begin Skill processing in Pdam.java " + skill.getSkillType());
+        {
+            _log.fine("Begin Skill processing in Pdam.java " + skill.getSkillType());
+        }
 
         for (int index = 0; index < targets.length; index++)
         {
