@@ -22,6 +22,7 @@ import net.sf.l2j.gameserver.ai.L2NpcWalkerAI;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.gameserver.util.Broadcast;
 
 /**
  * This class manages some npcs can walk in the city. <br>
@@ -81,12 +82,7 @@ public class L2NpcWalkerInstance extends L2NpcInstance
 		if(_knownPlayers.size() > 0)
 		{
 			CreatureSay cs = new CreatureSay(getObjectId(), 0, getName(), chat);
-
-			//we interact and list players here
-			for(L2PcInstance players : _knownPlayers.values())
-
-				//finally send packet :D
-				players.sendPacket(cs);
+			Broadcast.toKnownPlayers(this, cs);
 		}
 	}
 

@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.handler.chathandlers;
 
+import java.util.Collection;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
@@ -71,11 +72,16 @@ public class ChatAll implements IChatHandler
 		{
 			CreatureSay cs = new CreatureSay(activeChar.getObjectId(), type, activeChar.getAppearance().getVisibleName(), text);
 
-			for (L2PcInstance player : activeChar.getKnownList().getKnownPlayers().values())
+			Collection<L2PcInstance> plrs = activeChar.getKnownList().getKnownPlayers().values();
+			synchronized (activeChar.getKnownList().getKnownPlayers())
 			{
-				if (player != null && activeChar.isInsideRadius(player, 1250, false, true))
+				for (L2PcInstance player : plrs)
 				{
-					player.sendPacket(cs);
+					if (player != null
+					        && activeChar.isInsideRadius(player, 1250, false, true))
+					{
+						player.sendPacket(cs);
+					}
 				}
 			}
 

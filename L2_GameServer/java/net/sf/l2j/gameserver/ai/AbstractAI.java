@@ -258,6 +258,24 @@ abstract class AbstractAI implements Ctrl
      * @param arg1 The second parameter of the Intention (optional target)
      *
      */
+    public final void informAIIntention(CtrlIntention intent, Object arg0) {
+    	ThreadPoolManager.getInstance().executeAi(new InformAIMsg(this, intent, arg0));
+    }
+    
+    public class InformAIMsg implements Runnable {
+    	private AbstractAI _ai;
+    	private CtrlIntention _intent;
+    	private Object _arg0;
+    	public InformAIMsg(AbstractAI ai, CtrlIntention intention, Object arg0) {
+    		_ai=ai;
+    		_intent = intention;
+    		_arg0 = arg0;
+    	}
+    	public final void run() {
+    		_ai.setIntention(_intent, _arg0, null);
+    	}
+    }
+    
     public final void setIntention(CtrlIntention intention, Object arg0, Object arg1)
     {
         if (!_actor.isVisible() || !_actor.hasAI()) return;

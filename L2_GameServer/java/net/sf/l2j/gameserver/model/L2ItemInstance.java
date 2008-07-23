@@ -1122,7 +1122,7 @@ public final class L2ItemInstance extends L2Object
             y = dropDest.getY();
             z = dropDest.getZ();
         }
-
+        
         synchronized (this)
         {
             // Set the x,y,z position of the L2ItemInstance dropped and update its _worldregion
@@ -1131,8 +1131,9 @@ public final class L2ItemInstance extends L2Object
             getPosition().setWorldRegion(L2World.getInstance().getRegion(getPosition().getWorldPosition()));
 
             // Add the L2ItemInstance dropped to _visibleObjects of its L2WorldRegion
-            getPosition().getWorldRegion().addVisibleObject(this);
+            
         }
+        getPosition().getWorldRegion().addVisibleObject(this);
         setDropTime(System.currentTimeMillis());
 
         // this can synchronize on others instancies, so it's out of

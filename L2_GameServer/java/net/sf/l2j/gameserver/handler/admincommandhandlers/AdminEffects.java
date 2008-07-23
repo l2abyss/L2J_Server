@@ -208,15 +208,19 @@ public class AdminEffects implements IAdminCommandHandler
 		{
 			try
 			{
-				for (L2PcInstance player : activeChar.getKnownList().getKnownPlayers().values())
+				Collection<L2PcInstance> plrs = activeChar.getKnownList().getKnownPlayers().values();
+				synchronized (activeChar.getKnownList().getKnownPlayers())
 				{
-					if (!player.isGM())
+					for (L2PcInstance player : plrs)
 					{
-						player.startAbnormalEffect(0x0400);
-						player.setIsParalyzed(true);
-						StopMove sm = new StopMove(player);
-						player.sendPacket(sm);
-						player.broadcastPacket(sm);
+						if (!player.isGM())
+						{
+							player.startAbnormalEffect(0x0400);
+							player.setIsParalyzed(true);
+							StopMove sm = new StopMove(player);
+							player.sendPacket(sm);
+							player.broadcastPacket(sm);
+						}
 					}
 				}
 			}
@@ -228,10 +232,14 @@ public class AdminEffects implements IAdminCommandHandler
 		{
 			try
 			{
-				for (L2PcInstance player : activeChar.getKnownList().getKnownPlayers().values())
+				Collection<L2PcInstance> plrs = activeChar.getKnownList().getKnownPlayers().values();
+				synchronized (activeChar.getKnownList().getKnownPlayers())
 				{
-					player.stopAbnormalEffect(0x0400);
-					player.setIsParalyzed(false);
+					for (L2PcInstance player : plrs)
+					{
+						player.stopAbnormalEffect(0x0400);
+						player.setIsParalyzed(false);
+					}
 				}
 			}
 			catch (Exception e)
@@ -369,10 +377,14 @@ public class AdminEffects implements IAdminCommandHandler
 		{
 			try
 			{
-				for (L2PcInstance player : activeChar.getKnownList().getKnownPlayers().values())
+				Collection<L2PcInstance> plrs = activeChar.getKnownList().getKnownPlayers().values();
+				synchronized (activeChar.getKnownList().getKnownPlayers())
 				{
-					player.setTeam(0);
-					player.broadcastUserInfo();
+					for (L2PcInstance player : plrs)
+					{
+						player.setTeam(0);
+						player.broadcastUserInfo();
+					}
 				}
 			}
 			catch (Exception e){}
@@ -383,16 +395,21 @@ public class AdminEffects implements IAdminCommandHandler
 			{
 				String val = st.nextToken();
 				int teamVal = Integer.parseInt(val);
-				for (L2PcInstance player : activeChar.getKnownList().getKnownPlayers().values())
+				Collection<L2PcInstance> plrs = activeChar.getKnownList().getKnownPlayers().values();
+				synchronized (activeChar.getKnownList().getKnownPlayers())
 				{
-					if (activeChar.isInsideRadius(player, 400, false, true))
+					for (L2PcInstance player : plrs)
 					{
-						player.setTeam(0);
-						if (teamVal != 0)
+						if (activeChar.isInsideRadius(player, 400, false, true))
 						{
-							player.sendMessage("You have joined team " + teamVal);
+							player.setTeam(0);
+							if (teamVal != 0)
+							{
+								player.sendMessage("You have joined team "
+								        + teamVal);
+							}
+							player.broadcastUserInfo();
 						}
-						player.broadcastUserInfo();
 					}
 				}
 			}

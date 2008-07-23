@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.model.zone.type;
 
+import java.util.Collection;
+
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -49,16 +51,19 @@ public class L2WaterZone extends L2ZoneType
 		}
 		else if (character instanceof L2NpcInstance)
 		{
-            for (L2PcInstance player : character.getKnownList().getKnownPlayers().values())
-                if (player != null)
-                    player.sendPacket(new NpcInfo((L2NpcInstance)character, player));
+			Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
+			synchronized (character.getKnownList().getKnownPlayers())
+			{
+				for (L2PcInstance player : plrs)
+					player.sendPacket(new NpcInfo((L2NpcInstance) character, player));
+			}
 		}
 
 		
-		/*if (character instanceof L2PcInstance)
-		{
-			((L2PcInstance)character).sendMessage("You entered water!");
-		}*/
+		/*
+		 * if (character instanceof L2PcInstance) {
+		 * ((L2PcInstance)character).sendMessage("You entered water!"); }
+		 */
 	}
 
 	@Override
@@ -78,9 +83,11 @@ public class L2WaterZone extends L2ZoneType
         }
         else if (character instanceof L2NpcInstance)
         {
-            for (L2PcInstance player : character.getKnownList().getKnownPlayers().values())
-                if (player != null)
+        	Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
+        	synchronized (character.getKnownList().getKnownPlayers()) {
+            for (L2PcInstance player : plrs)
                     player.sendPacket(new NpcInfo((L2NpcInstance)character, player));
+        	}
         }
 	}
 

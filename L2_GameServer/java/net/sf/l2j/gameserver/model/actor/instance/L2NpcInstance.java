@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
 
 import java.text.DateFormat;
+import java.util.Collection;
 import java.util.List;
 
 import javolution.text.TextBuilder;
@@ -353,26 +354,38 @@ public class L2NpcInstance extends L2Character
     public void updateAbnormalEffect()
     {
         // Send a Server->Client packet NpcInfo with state of abnormal effect to all L2PcInstance in the _KnownPlayers of the L2NpcInstance
-        for (L2PcInstance player : getKnownList().getKnownPlayers().values())
-            if (player != null)
-                player.sendPacket(new NpcInfo(this, player));
+    	Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
+    	synchronized (getKnownList().getKnownPlayers())
+		{
+			for (L2PcInstance player : plrs)
+				player.sendPacket(new NpcInfo(this, player));
+		}
     }
 
     /**
-     * Return the distance under which the object must be add to _knownObject in function of the object type.<BR><BR>
-     *
-     * <B><U> Values </U> :</B><BR><BR>
-     * <li> object is a L2FolkInstance : 0 (don't remember it) </li>
-     * <li> object is a L2Character : 0 (don't remember it) </li>
-     * <li> object is a L2PlayableInstance : 1500 </li>
-     * <li> others : 500 </li><BR><BR>
-     *
-     * <B><U> Override in </U> :</B><BR><BR>
-     * <li> L2Attackable</li><BR><BR>
-     *
-     * @param object The Object to add to _knownObject
-     *
-     */
+	 * Return the distance under which the object must be add to _knownObject in
+	 * function of the object type.<BR>
+	 * <BR>
+	 * 
+	 * <B><U> Values </U> :</B><BR>
+	 * <BR>
+	 * <li> object is a L2FolkInstance : 0 (don't remember it) </li>
+	 * <li> object is a L2Character : 0 (don't remember it) </li>
+	 * <li> object is a L2PlayableInstance : 1500 </li>
+	 * <li> others : 500 </li>
+	 * <BR>
+	 * <BR>
+	 * 
+	 * <B><U> Override in </U> :</B><BR>
+	 * <BR>
+	 * <li> L2Attackable</li>
+	 * <BR>
+	 * <BR>
+	 * 
+	 * @param object
+	 *            The Object to add to _knownObject
+	 * 
+	 */
     public int getDistanceToWatchObject(L2Object object)
     {
         if (object instanceof L2FestivalGuideInstance)

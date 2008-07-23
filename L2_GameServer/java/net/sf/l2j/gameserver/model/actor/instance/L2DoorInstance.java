@@ -510,15 +510,17 @@ public class L2DoorInstance extends L2Character
         StaticObject su = new StaticObject(this, false);
         DoorStatusUpdate dsu  = new DoorStatusUpdate(this);
 
+        synchronized (getKnownList().getKnownPlayers()) {
         for (L2PcInstance player : knownPlayers)
-        {
-            if (getCastle() != null && getCastle().getCastleId() > 0
-            		|| getFort() != null && getFort().getFortId() > 0)
-            	su = new StaticObject(this, true);
-
-            player.sendPacket(su);
-            player.sendPacket(dsu);
-        }
+			{
+				if (getCastle() != null && getCastle().getCastleId() > 0
+				        || getFort() != null && getFort().getFortId() > 0)
+					su = new StaticObject(this, true);
+				
+				player.sendPacket(su);
+				player.sendPacket(dsu);
+			}
+		}
     }
 
     public void onOpen()

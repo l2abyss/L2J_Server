@@ -41,6 +41,7 @@ import net.sf.l2j.gameserver.serverpackets.VehicleInfo;
 import net.sf.l2j.gameserver.serverpackets.VehicleStarted;
 import net.sf.l2j.gameserver.templates.L2CharTemplate;
 import net.sf.l2j.gameserver.templates.L2Weapon;
+import net.sf.l2j.gameserver.util.Util;
 
 /**
  * @author Maktakien
@@ -203,17 +204,15 @@ public class L2BoatInstance extends L2Character
 			if (state < max)
 			{
 				L2BoatPoint bp = _path.get(state);
-				double dx = (bp.x - _boat.getX());
-				double dy = (bp.y - _boat.getX());
+				double dx = (_boat.getX() - bp.x);
+				double dy = (_boat.getX() - bp.y);
 				double distance = Math.sqrt(dx * dx + dy * dy);
 				double cos;
 				double sin;
 				sin = dy / distance;
 				cos = dx / distance;
 				
-				int heading = (int) (Math.atan2(-sin, -cos) * 10430.378350470452724949566316381);
-				heading += 32768;
-				_boat.getPosition().setHeading(heading);
+				_boat.getPosition().setHeading(Util.calculateHeadingFrom(cos, sin));
 				
 				_boat._vd = new VehicleDeparture(_boat, bp.speed1, bp.speed2, bp.x, bp.y, bp.z);
 				// _boat.getTemplate().baseRunSpd = bp.speed1;
@@ -221,9 +220,12 @@ public class L2BoatInstance extends L2Character
 				Collection<L2PcInstance> knownPlayers = _boat.getKnownList().getKnownPlayers().values();
 				if (knownPlayers == null || knownPlayers.isEmpty())
 					return bp.time;
-				for (L2PcInstance player : knownPlayers)
+				synchronized (_boat.getKnownList().getKnownPlayers())
 				{
-					player.sendPacket(_boat._vd);
+					for (L2PcInstance player : knownPlayers)
+					{
+						player.sendPacket(_boat._vd);
+					}
 				}
 				if (bp.time == 0)
 				{
@@ -593,31 +595,34 @@ public class L2BoatInstance extends L2Character
 			{
 				_inboat = new FastMap<Integer, L2PcInstance>();
 				int i = 0;
-				for (L2PcInstance player : knownPlayers)
+				synchronized (getKnownList().getKnownPlayers())
 				{
-					if (player.isInBoat())
+					for (L2PcInstance player : knownPlayers)
 					{
-						L2ItemInstance it;
-						it = player.getInventory().getItemByItemId(_t1.idWTicket1);
-						if ((it != null) && (it.getCount() >= 1))
+						if (player.isInBoat())
 						{
-							player.getInventory().destroyItem("Boat", it.getObjectId(), 1, player, this);
-							InventoryUpdate iu = new InventoryUpdate();
-							iu.addModifiedItem(it);
-							player.sendPacket(iu);
-							player.sendPacket(new VehicleStarted(this, 1));
-							_inboat.put(i, player);
-							i++;
-						}
-						else if (it == null && _t1.idWTicket1 == 0)
-						{
-							_inboat.put(i, player);
-							player.sendPacket(new VehicleStarted(this, 1));
-							i++;
-						}
-						else
-						{
-							player.teleToLocation(_t1.ntx1, _t1.nty1, _t1.ntz1, false);
+							L2ItemInstance it;
+							it = player.getInventory().getItemByItemId(_t1.idWTicket1);
+							if ((it != null) && (it.getCount() >= 1))
+							{
+								player.getInventory().destroyItem("Boat", it.getObjectId(), 1, player, this);
+								InventoryUpdate iu = new InventoryUpdate();
+								iu.addModifiedItem(it);
+								player.sendPacket(iu);
+								player.sendPacket(new VehicleStarted(this, 1));
+								_inboat.put(i, player);
+								i++;
+							}
+							else if (it == null && _t1.idWTicket1 == 0)
+							{
+								_inboat.put(i, player);
+								player.sendPacket(new VehicleStarted(this, 1));
+								i++;
+							}
+							else
+							{
+								player.teleToLocation(_t1.ntx1, _t1.nty1, _t1.ntz1, false);
+							}
 						}
 					}
 				}
@@ -632,32 +637,35 @@ public class L2BoatInstance extends L2Character
 			{
 				_inboat = new FastMap<Integer, L2PcInstance>();
 				int i = 0;
-				for (L2PcInstance player : knownPlayers)
+				synchronized (getKnownList().getKnownPlayers())
 				{
-					if (player.isInBoat())
+					for (L2PcInstance player : knownPlayers)
 					{
-						L2ItemInstance it;
-						it = player.getInventory().getItemByItemId(_t2.idWTicket1);
-						if ((it != null) && (it.getCount() >= 1))
+						if (player.isInBoat())
 						{
-							
-							player.getInventory().destroyItem("Boat", it.getObjectId(), 1, player, this);
-							InventoryUpdate iu = new InventoryUpdate();
-							iu.addModifiedItem(it);
-							player.sendPacket(iu);
-							player.sendPacket(new VehicleStarted(this, 1));
-							_inboat.put(i, player);
-							i++;
-						}
-						else if (it == null && _t2.idWTicket1 == 0)
-						{
-							_inboat.put(i, player);
-							player.sendPacket(new VehicleStarted(this, 1));
-							i++;
-						}
-						else
-						{
-							player.teleToLocation(_t2.ntx1, _t2.nty1, _t2.ntz1, false);
+							L2ItemInstance it;
+							it = player.getInventory().getItemByItemId(_t2.idWTicket1);
+							if ((it != null) && (it.getCount() >= 1))
+							{
+								
+								player.getInventory().destroyItem("Boat", it.getObjectId(), 1, player, this);
+								InventoryUpdate iu = new InventoryUpdate();
+								iu.addModifiedItem(it);
+								player.sendPacket(iu);
+								player.sendPacket(new VehicleStarted(this, 1));
+								_inboat.put(i, player);
+								i++;
+							}
+							else if (it == null && _t2.idWTicket1 == 0)
+							{
+								_inboat.put(i, player);
+								player.sendPacket(new VehicleStarted(this, 1));
+								i++;
+							}
+							else
+							{
+								player.teleToLocation(_t2.ntx1, _t2.nty1, _t2.ntz1, false);
+							}
 						}
 					}
 				}

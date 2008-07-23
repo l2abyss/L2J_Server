@@ -480,8 +480,12 @@ public abstract class L2Character extends L2Object
 	 */
 	public void broadcastPacket(L2GameServerPacket mov)
 	{
-		for (L2PcInstance player : getKnownList().getKnownPlayers().values())
-			player.sendPacket(mov);
+		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
+		synchronized (getKnownList().getKnownPlayers())
+		{
+			for (L2PcInstance player : plrs)
+				player.sendPacket(mov);
+		}
 	}
 
 	/**
@@ -494,10 +498,14 @@ public abstract class L2Character extends L2Object
 	 */
 	public void broadcastPacket(L2GameServerPacket mov, int radiusInKnownlist)
 	{
-		for (L2PcInstance player : getKnownList().getKnownPlayers().values())
+		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
+		synchronized (getKnownList().getKnownPlayers())
 		{
-			if (isInsideRadius(player, radiusInKnownlist, false, false))
-				player.sendPacket(mov);
+			for (L2PcInstance player : plrs)
+			{
+				if (isInsideRadius(player, radiusInKnownlist, false, false))
+					player.sendPacket(mov);
+			}
 		}
 	}
 
@@ -3655,9 +3663,19 @@ public abstract class L2Character extends L2Object
 					((L2PcInstance)this).updateAndBroadcastStatus(1);
 					if (su != null)
 					{
-						for (L2PcInstance player : getKnownList().getKnownPlayers().values())
+						Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
+						synchronized (getKnownList().getKnownPlayers())
 						{
-							try { player.sendPacket(su); } catch (NullPointerException e) {}
+							for (L2PcInstance player : plrs)
+							{
+								try
+								{
+									player.sendPacket(su);
+								}
+								catch (NullPointerException e)
+								{
+								}
+							}
 						}
 					}
 				}
@@ -3668,9 +3686,11 @@ public abstract class L2Character extends L2Object
 		{
 			if (broadcastFull)
 			{
-				for (L2PcInstance player : getKnownList().getKnownPlayers().values())
-					if (player != null)
+				Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
+				synchronized (getKnownList().getKnownPlayers()) {
+				for (L2PcInstance player : plrs)
 						player.sendPacket(new NpcInfo((L2NpcInstance)this, player));
+				}
 			}
 			else if (su != null) 
 				broadcastPacket(su);
@@ -3679,9 +3699,11 @@ public abstract class L2Character extends L2Object
 		{
 			if (broadcastFull)
 			{
-				for (L2PcInstance player : getKnownList().getKnownPlayers().values())
-					if (player != null)
+				Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
+				synchronized (getKnownList().getKnownPlayers()) {
+				for (L2PcInstance player : plrs)
 						player.sendPacket(new NpcInfo((L2Summon)this, player));
+				}
 			}
 			else if (su != null) 
 				broadcastPacket(su);

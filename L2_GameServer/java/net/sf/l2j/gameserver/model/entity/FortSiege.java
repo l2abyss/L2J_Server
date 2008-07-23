@@ -389,12 +389,16 @@ public class FortSiege
                  if (clear) member.setSiegeState((byte)0);
                  else member.setSiegeState((byte)1);
                  member.sendPacket(new UserInfo(member));
-                 for (L2PcInstance player : member.getKnownList().getKnownPlayers().values())
-                 {
-                    player.sendPacket(new RelationChanged(member, member.getRelation(player), member.isAutoAttackable(player)));
-                    if(member.getPet() != null)
-                    	player.sendPacket(new RelationChanged(member.getPet(), member.getRelation(player), member.isAutoAttackable(player)));
-                 }
+                 Collection<L2PcInstance> plrs = member.getKnownList().getKnownPlayers().values();
+                 synchronized (member.getKnownList().getKnownPlayers())
+				{
+					for (L2PcInstance player : plrs)
+					{
+						player.sendPacket(new RelationChanged(member, member.getRelation(player), member.isAutoAttackable(player)));
+						if (member.getPet() != null)
+							player.sendPacket(new RelationChanged(member.getPet(), member.getRelation(player), member.isAutoAttackable(player)));
+					}
+				}
              }
         }
         for(L2SiegeClan siegeclan : getDefenderClans())
@@ -405,20 +409,27 @@ public class FortSiege
                 if (clear) member.setSiegeState((byte)0);
                 else member.setSiegeState((byte)2);
                 member.sendPacket(new UserInfo(member));
-                for (L2PcInstance player : member.getKnownList().getKnownPlayers().values())
-                {
-                    player.sendPacket(new RelationChanged(member, member.getRelation(player), member.isAutoAttackable(player)));
-                    if(member.getPet() != null)
-                    	player.sendPacket(new RelationChanged(member.getPet(), member.getRelation(player), member.isAutoAttackable(player)));
-                }
+                Collection<L2PcInstance> plrs = member.getKnownList().getKnownPlayers().values();
+                synchronized (member.getKnownList().getKnownPlayers())
+				{
+					for (L2PcInstance player : plrs)
+					{
+						player.sendPacket(new RelationChanged(member, member.getRelation(player), member.isAutoAttackable(player)));
+						if (member.getPet() != null)
+							player.sendPacket(new RelationChanged(member.getPet(), member.getRelation(player), member.isAutoAttackable(player)));
+					}
+				}
             }
         }
     }
 
     /**
-     * Approve clan as defender for siege<BR><BR>
-     * @param clanId The int of player's clan id
-     */
+	 * Approve clan as defender for siege<BR>
+	 * <BR>
+	 * 
+	 * @param clanId
+	 *            The int of player's clan id
+	 */
     public void approveSiegeDefenderClan(int clanId)
     {
         if (clanId <= 0) return;

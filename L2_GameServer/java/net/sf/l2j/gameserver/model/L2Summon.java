@@ -174,8 +174,12 @@ public abstract class L2Summon extends L2PlayableInstance
 	@Override
 	public void updateAbnormalEffect()
     {
-		for (L2PcInstance player : getKnownList().getKnownPlayers().values())
-			player.sendPacket(new NpcInfo(this, player));
+		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
+		synchronized (getKnownList().getKnownPlayers())
+		{
+			for (L2PcInstance player : plrs)
+				player.sendPacket(new NpcInfo(this, player));
+		}
     }
 
     /**

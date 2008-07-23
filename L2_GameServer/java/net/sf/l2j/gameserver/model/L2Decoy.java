@@ -15,6 +15,8 @@
 
 package net.sf.l2j.gameserver.model;
 
+import java.util.Collection;
+
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.serverpackets.NpcInfo;
@@ -56,8 +58,12 @@ public abstract class L2Decoy extends L2Character
     @Override
     public void updateAbnormalEffect()
     {
-        for (L2PcInstance player : getKnownList().getKnownPlayers().values())
-            player.sendPacket(new NpcInfo(this));
+    	Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
+    	synchronized (getKnownList().getKnownPlayers())
+		{
+			for (L2PcInstance player : plrs)
+				player.sendPacket(new NpcInfo(this));
+		}
     }
     
     public void stopDecay()

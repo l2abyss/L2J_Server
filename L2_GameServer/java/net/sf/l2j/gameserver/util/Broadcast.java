@@ -61,49 +61,68 @@ public final class Broadcast
     {
         if (Config.DEBUG) _log.fine("players to notify:" + character.getKnownList().getKnownPlayers().size() + " packet:"+mov.getType());
 
-        for (L2PcInstance player : character.getKnownList().getKnownPlayers().values())
-        {
-            if (player == null || player.getTarget() != character)
-                continue;
-
-            player.sendPacket(mov);
-        }
+        Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
+        synchronized (character.getKnownList().getKnownPlayers())
+		{
+			for (L2PcInstance player : plrs)
+			{
+				if (player.getTarget() != character)
+					continue;
+				
+				player.sendPacket(mov);
+			}
+		}
     }
 
     /**
-     * Send a packet to all L2PcInstance in the _KnownPlayers of the L2Character.<BR><BR>
-     *
-     * <B><U> Concept</U> :</B><BR>
-     * L2PcInstance in the detection area of the L2Character are identified in <B>_knownPlayers</B>.<BR>
-     * In order to inform other players of state modification on the L2Character, server just need to go through _knownPlayers to send Server->Client Packet<BR><BR>
-     *
-     * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T SEND Server->Client packet to this L2Character (to do this use method toSelfAndKnownPlayers)</B></FONT><BR><BR>
-     *
-     */
+	 * Send a packet to all L2PcInstance in the _KnownPlayers of the
+	 * L2Character.<BR>
+	 * <BR>
+	 * 
+	 * <B><U> Concept</U> :</B><BR>
+	 * L2PcInstance in the detection area of the L2Character are identified in
+	 * <B>_knownPlayers</B>.<BR>
+	 * In order to inform other players of state modification on the
+	 * L2Character, server just need to go through _knownPlayers to send
+	 * Server->Client Packet<BR>
+	 * <BR>
+	 * 
+	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T SEND
+	 * Server->Client packet to this L2Character (to do this use method
+	 * toSelfAndKnownPlayers)</B></FONT><BR>
+	 * <BR>
+	 * 
+	 */
     public static void toKnownPlayers(L2Character character,
 	        L2GameServerPacket mov)
 	{
 		if (Config.DEBUG)
 			_log.fine("players to notify:" + character.getKnownList().getKnownPlayers().size() + " packet:" + mov.getType());
 		
-		for (L2PcInstance player : character.getKnownList().getKnownPlayers().values())
+		Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
+		synchronized (character.getKnownList().getKnownPlayers())
 		{
-			try
+			for (L2PcInstance player : plrs)
 			{
-				player.sendPacket(mov);
-				if (mov instanceof CharInfo && character instanceof L2PcInstance)
+				try
 				{
-					int relation = ((L2PcInstance) character).getRelation(player);
-					if (character.getKnownList().getKnownRelations().get(player.getObjectId()) != null && character.getKnownList().getKnownRelations().get(player.getObjectId()) != relation)
+					player.sendPacket(mov);
+					if (mov instanceof CharInfo
+					        && character instanceof L2PcInstance)
 					{
-						player.sendPacket(new RelationChanged((L2PcInstance) character, relation, player.isAutoAttackable(character)));
-						if (((L2PcInstance) character).getPet() != null)
-							player.sendPacket(new RelationChanged(((L2PcInstance) character).getPet(), relation, player.isAutoAttackable(character)));
+						int relation = ((L2PcInstance) character).getRelation(player);
+						if (character.getKnownList().getKnownRelations().get(player.getObjectId()) != null
+						        && character.getKnownList().getKnownRelations().get(player.getObjectId()) != relation)
+						{
+							player.sendPacket(new RelationChanged((L2PcInstance) character, relation, player.isAutoAttackable(character)));
+							if (((L2PcInstance) character).getPet() != null)
+								player.sendPacket(new RelationChanged(((L2PcInstance) character).getPet(), relation, player.isAutoAttackable(character)));
+						}
 					}
 				}
-			}
-			catch (NullPointerException e)
-			{
+				catch (NullPointerException e)
+				{
+				}
 			}
 		}
 	}
@@ -132,14 +151,15 @@ public final class Broadcast
     	if (radius < 0)
     		radius = 1500;
 
-    	for (L2PcInstance player : character.getKnownList().getKnownPlayers().values())
-        {
-            if (player == null)
-                continue;
-
-            if (character.isInsideRadius(player, radius, false, false))
-    			player.sendPacket(mov);
-        }
+    	Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
+    	synchronized (character.getKnownList().getKnownPlayers())
+		{
+			for (L2PcInstance player : plrs)
+			{
+				if (character.isInsideRadius(player, radius, false, false))
+					player.sendPacket(mov);
+			}
+		}
     }
 
     /**
@@ -167,10 +187,16 @@ public final class Broadcast
 
        if (character instanceof L2PcInstance) character.sendPacket(mov);
 
-       for (L2PcInstance player : character.getKnownList().getKnownPlayers().values())
-       {
-          if (player != null && character.getDistanceSq(player) <= radiusSq) player.sendPacket(mov);
-       }
+       Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
+       synchronized (character.getKnownList().getKnownPlayers())
+		{
+			for (L2PcInstance player : plrs)
+			{
+				if (player != null
+				        && character.getDistanceSq(player) <= radiusSq)
+					player.sendPacket(mov);
+			}
+		}
     }
 
     /**

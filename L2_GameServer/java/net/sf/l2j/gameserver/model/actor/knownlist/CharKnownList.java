@@ -107,24 +107,28 @@ public class CharKnownList extends ObjectKnownList
     {
     	if (!fullCheck)
     	{
-        	for (L2PcInstance player: getKnownPlayers().values())
-        	{
-        		// Remove all objects invisible or too far
-        		if (
-        				!player.isVisible() ||
-        				!Util.checkIfInShortRadius(getDistanceToForgetObject(player), getActiveObject(), player, true)
-        		)
-        				removeKnownObject(player);
-        	}
-        	for (L2Summon summon: getKnownSummons().values())
-        	{
-        		// Remove all objects invisible or too far
-        		if (
-        				!summon.isVisible() ||
-        				!Util.checkIfInShortRadius(getDistanceToForgetObject(summon), getActiveObject(), summon, true)
-        		)
-        				removeKnownObject(summon);
-        	}
+    		Collection<L2PcInstance> plrs = getKnownPlayers().values();
+    		synchronized (getKnownPlayers())
+			{
+				for (L2PcInstance player : plrs)
+				{
+					// Remove all objects invisible or too far
+					if (!player.isVisible()
+					        || !Util.checkIfInShortRadius(getDistanceToForgetObject(player), getActiveObject(), player, true))
+						removeKnownObject(player);
+				}
+			}
+    		Collection<L2Summon> sums = getKnownSummons().values();
+    		synchronized (sums)
+			{
+				for (L2Summon summon : sums)
+				{
+					// Remove all objects invisible or too far
+					if (!summon.isVisible()
+					        || !Util.checkIfInShortRadius(getDistanceToForgetObject(summon), getActiveObject(), summon, true))
+						removeKnownObject(summon);
+				}
+			}
         	return;
     	}
     	// Go through knownObjects
@@ -244,10 +248,13 @@ public class CharKnownList extends ObjectKnownList
     {
         FastList<L2PcInstance> result = new FastList<L2PcInstance>();
 
-        for (L2PcInstance player : getKnownPlayers().values())
-            if (Util.checkIfInRange((int)radius, getActiveChar(), player, true))
-                result.add(player);
-
+        Collection<L2PcInstance> plrs = getKnownPlayers().values();
+        synchronized (getKnownPlayers())
+		{
+			for (L2PcInstance player : plrs)
+				if (Util.checkIfInRange((int) radius, getActiveChar(), player, true))
+					result.add(player);
+		}
         return result;
     }
 }

@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
+import java.util.Collection;
 import java.util.concurrent.ScheduledFuture;
 
 import net.sf.l2j.gameserver.ThreadPoolManager;
@@ -44,11 +45,15 @@ public class L2XmassTreeInstance extends L2NpcInstance
 
         public void run()
         {
-            for (L2PcInstance player : getKnownList().getKnownPlayers().values())
-            {
-                int i = Rnd.nextInt(3);
-                handleCast(player, (4262 + i));
-            }
+        	Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
+        	synchronized (getKnownList().getKnownPlayers())
+			{
+				for (L2PcInstance player : plrs)
+				{
+					int i = Rnd.nextInt(3);
+					handleCast(player, (4262 + i));
+				}
+			}
         }
 
         private boolean handleCast(L2PcInstance player, int skillId)

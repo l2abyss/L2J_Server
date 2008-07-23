@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
+import java.util.Collection;
 import java.util.concurrent.ScheduledFuture;
 
 import net.sf.l2j.gameserver.SevenSigns;
@@ -105,52 +106,60 @@ public class L2CabaleBufferInstance extends L2NpcInstance
              *  - Fighters: +25% Max Load, +25% Effect Resistance<BR>
              *  - Mystics: +25% Magic Cancel Resist, +25% Effect Resistance<BR>
              */
-            for (L2PcInstance player : getKnownList().getKnownPlayers().values())
-            {
-                final int playerCabal = SevenSigns.getInstance().getPlayerCabal(player);
-
-                if (playerCabal == winningCabal && playerCabal != SevenSigns.CABAL_NULL && _caster.getNpcId() == SevenSigns.ORATOR_NPC_ID)
-                {
-                    if (!player.isMageClass())
-                    {
-                        if (handleCast(player, 4364))
-                        {
-                            isBuffAWinner = true;
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        if (handleCast(player, 4365))
-                        {
-                            isBuffAWinner = true;
-                            continue;
-                        }
-                    }
-                }
-                else if (playerCabal == losingCabal && playerCabal != SevenSigns.CABAL_NULL && _caster.getNpcId() == SevenSigns.PREACHER_NPC_ID)
-                {
-                    if (!player.isMageClass())
-                    {
-                        if (handleCast(player, 4361))
-                        {
-                            isBuffALoser = true;
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        if (handleCast(player, 4362))
-                        {
-                            isBuffALoser = true;
-                            continue;
-                        }
-                    }
-                }
-
-                if (isBuffAWinner && isBuffALoser)
-                    break;
-            }
+            Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
+            synchronized (getKnownList().getKnownPlayers())
+			{
+				for (L2PcInstance player : plrs)
+				{
+					final int playerCabal = SevenSigns.getInstance().getPlayerCabal(player);
+					
+					if (playerCabal == winningCabal
+					        && playerCabal != SevenSigns.CABAL_NULL
+					        && _caster.getNpcId() == SevenSigns.ORATOR_NPC_ID)
+					{
+						if (!player.isMageClass())
+						{
+							if (handleCast(player, 4364))
+							{
+								isBuffAWinner = true;
+								continue;
+							}
+						}
+						else
+						{
+							if (handleCast(player, 4365))
+							{
+								isBuffAWinner = true;
+								continue;
+							}
+						}
+					}
+					else if (playerCabal == losingCabal
+					        && playerCabal != SevenSigns.CABAL_NULL
+					        && _caster.getNpcId() == SevenSigns.PREACHER_NPC_ID)
+					{
+						if (!player.isMageClass())
+						{
+							if (handleCast(player, 4361))
+							{
+								isBuffALoser = true;
+								continue;
+							}
+						}
+						else
+						{
+							if (handleCast(player, 4362))
+							{
+								isBuffALoser = true;
+								continue;
+							}
+						}
+					}
+					
+					if (isBuffAWinner && isBuffALoser)
+						break;
+				}
+			}
         }
 
         private boolean handleCast(L2PcInstance player, int skillId)
