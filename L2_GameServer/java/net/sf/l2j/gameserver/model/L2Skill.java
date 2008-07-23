@@ -2734,12 +2734,19 @@ public abstract class L2Skill
                     return null;
                 }
                 
-                // Corpse mob only available for half time 
-                if (DecayTaskManager.getInstance().getTasks().containsKey(target) 
-                		&& (System.currentTimeMillis() - DecayTaskManager.getInstance().getTasks().get(target)) > DecayTaskManager.ATTACKABLE_DECAY_TIME / 2)
+                // Corpse mob only available for half time
+                switch (getSkillType())
                 {
-                	activeChar.sendPacket(new SystemMessage(SystemMessageId.CORPSE_TOO_OLD_SKILL_NOT_USED));
-                	return null;
+                	case DRAIN:
+                	case SUMMON:
+                	{
+                		if (DecayTaskManager.getInstance().getTasks().containsKey(target) 
+                        		&& (System.currentTimeMillis() - DecayTaskManager.getInstance().getTasks().get(target)) > DecayTaskManager.ATTACKABLE_DECAY_TIME / 2)
+                        {
+                        	activeChar.sendPacket(new SystemMessage(SystemMessageId.CORPSE_TOO_OLD_SKILL_NOT_USED));
+                        	return null;
+                        }
+                	}
                 }
 
                 if (onlyFirst == false)
