@@ -297,6 +297,7 @@ public class Wedding implements IVoicedCommandHandler
         else if (partner.inObserverMode())
         {
         	activeChar.sendMessage("Your partner is in the observation.");
+        	return false;
         }
         else if(partner.getClan() != null
         		&& CastleManager.getInstance().getCastleByOwner(partner.getClan()) != null
@@ -356,6 +357,7 @@ public class Wedding implements IVoicedCommandHandler
         else if (activeChar.inObserverMode())
         {
         	activeChar.sendMessage("You are in the observation.");
+            return false;
         }
         else if(activeChar.getClan() != null
         		&& CastleManager.getInstance().getCastleByOwner(activeChar.getClan()) != null
@@ -452,3 +454,4 @@ public class Wedding implements IVoicedCommandHandler
         return _voicedCommands;
     }
 }
+        
