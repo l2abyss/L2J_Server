@@ -310,10 +310,29 @@ public class Quest extends ManagedScript
 		// call npc.showChatWindow(player) and then return null.
 		return true;
 	}
+	public class tmpOnSkillSee implements Runnable {
+		private L2NpcInstance _npc;
+		private L2PcInstance _caster;
+		private L2Skill _skill;
+		private L2Object[] _targets;
+		private boolean _isPet;
+		public tmpOnSkillSee(L2NpcInstance npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet) {
+			_npc = npc;
+			_caster = caster;
+			_skill = skill;
+			_targets = targets;
+			_isPet = isPet;
+		}
+		public void run() {
+			String res = null;
+			try { res = onSkillSee(_npc, _caster, _skill, _targets, _isPet); } catch (Exception e) { showError(_caster, e); }
+			showResult(_caster, res);
+			
+		}
+	}
 	public final boolean notifySkillSee (L2NpcInstance npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet) {
-		String res = null;
-		try { res = onSkillSee(npc, caster, skill, targets, isPet); } catch (Exception e) { return showError(caster, e); }
-		return showResult(caster, res);
+		ThreadPoolManager.getInstance().executeAi(new tmpOnSkillSee(npc, caster, skill, targets, isPet));
+		return true;
 	}
 	public final boolean notifyFactionCall(L2NpcInstance npc, L2NpcInstance caller, L2PcInstance attacker, boolean isPet){
 		String res = null;
@@ -363,7 +382,7 @@ public class Quest extends ManagedScript
 	 * @param t : Throwable
 	 * @return boolean
 	 */
-	private boolean showError(L2PcInstance player, Throwable t) {
+	public boolean showError(L2PcInstance player, Throwable t) {
 		_log.log(Level.WARNING, this.getScriptFile().getAbsolutePath(), t);
 		if (player.getAccessLevel().isGm()) {
 			StringWriter sw = new StringWriter();
@@ -387,7 +406,7 @@ public class Quest extends ManagedScript
 	 * @param res : String pointing out the message to show at the player
 	 * @return boolean
 	 */
-	private boolean showResult(L2PcInstance player, String res) {
+	public boolean showResult(L2PcInstance player, String res) {
 		if (res == null || res.equals(""))
 			return true;
 		if (res.endsWith(".htm"))
