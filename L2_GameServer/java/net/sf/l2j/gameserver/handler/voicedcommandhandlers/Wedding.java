@@ -382,12 +382,6 @@ public class Wedding implements IVoicedCommandHandler
         	activeChar.sendPacket(ActionFailed.STATIC_PACKET);
         	return false;
         }
-        
-        if (partner.isIn7sDungeon())
-        	activeChar.setIsIn7sDungeon(true);
-        else
-        	activeChar.setIsIn7sDungeon(false);
-
 
         int teleportTimer = Config.L2JMOD_WEDDING_TELEPORT_DURATION*1000;
 
