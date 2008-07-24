@@ -107,7 +107,7 @@ public class AdminCursedWeapons implements IAdminCommandHandler {
 					else
 					{
 						replyMSG.append("<tr><td>Position:</td><td>Doesn't exist.</td></tr>");
-						replyMSG.append("<tr><td><button value=\"Give to Target\" action=\"bypass -h admin_cw_add "+String.valueOf(itemId)+"\" width=99 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df></td><td></td></tr>");
+						replyMSG.append("<tr><td><button value=\"Give to Target\" action=\"bypass -h admin_cw_add "+String.valueOf(itemId)+"\" width=99 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td><td></td></tr>");
 					}
 					replyMSG.append("</table>");
 					replyMSG.append("<br>");
