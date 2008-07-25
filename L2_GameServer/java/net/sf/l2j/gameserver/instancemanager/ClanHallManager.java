@@ -99,26 +99,27 @@ public class ClanHallManager
                 paidUntil = rs.getLong("paidUntil");
                 grade = rs.getInt("Grade");
                 paid = rs.getBoolean("paid");
-                
+
+                ClanHall ch = new ClanHall(id, Name, ownerId, lease, Desc, Location, paidUntil, grade, paid);
             	if(ownerId == 0)
                 {
-                    _freeClanHall.put(id,new ClanHall(id,Name,ownerId,lease,Desc,Location,paidUntil,grade,paid));
+                    _freeClanHall.put(id, ch);
                 }
             	else
                 {
             		if(ClanTable.getInstance().getClan(rs.getInt("ownerId")) != null)
             		{
-            			_clanHall.put(id,new ClanHall(id,Name,ownerId,lease,Desc,Location,paidUntil,grade,paid));
+            			_clanHall.put(id, ch);
             			ClanTable.getInstance().getClan(rs.getInt("ownerId")).setHasHideout(id);
             		}
                     else
             		{
-            			_freeClanHall.put(id,new ClanHall(id,Name,ownerId,lease,Desc,Location,paidUntil,grade,paid));
+            			_freeClanHall.put(id, ch);
             			_freeClanHall.get(id).free();
             			AuctionManager.getInstance().initNPC(id);
             		}
             	}
-                _allClanHalls.put(id,new ClanHall(id,Name,ownerId,lease,Desc,Location,paidUntil,grade,paid));
+                _allClanHalls.put(id, ch);
                 
             }
             statement.close();
