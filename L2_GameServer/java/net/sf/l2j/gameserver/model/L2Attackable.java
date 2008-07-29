@@ -465,9 +465,13 @@ public class L2Attackable extends L2NpcInstance
                 else if (killer instanceof L2Trap)
                 	player = ((L2Trap)killer).getOwner();
 
-            	if (getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL) != null)
-            		for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL))
-            			quest.notifyKill(this, player, killer instanceof L2Summon);
+                //only 1 randomly choosen quest of all quests registered to this character can be applied 
+                Quest[] allOnKillQuests = getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL);
+            	if (allOnKillQuests != null)
+            	{
+            		Quest randomQuest = allOnKillQuests[Rnd.get(allOnKillQuests.length)];
+            		ThreadPoolManager.getInstance().scheduleEffect(new OnKillNotifyTask(this, randomQuest, player, killer instanceof L2Summon), 5000);
+            	}
             }
         }
         catch (Exception e) { _log.log(Level.SEVERE, "", e); }
@@ -488,7 +492,25 @@ public class L2Attackable extends L2NpcInstance
         return true;
 
     }
+	class OnKillNotifyTask implements Runnable
+	{
+        private L2Attackable _attackable;
+		private Quest _quest;
+		private L2PcInstance _killer;
+		private boolean _isPet;
 
+		public OnKillNotifyTask(L2Attackable attackable, Quest quest, L2PcInstance killer, boolean isPet)
+        {
+	        _attackable = attackable;
+	        _quest = quest;
+	        _killer = killer;
+	        _isPet = isPet;
+        }
+		public void run()
+		{
+			_quest.notifyKill(_attackable, _killer, _isPet);
+		}
+	}
     /**
      * Distribute Exp and SP rewards to L2PcInstance (including Summon owner) that hit the L2Attackable and to their Party members.<BR><BR>
      *
