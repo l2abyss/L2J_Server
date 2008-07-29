@@ -294,6 +294,10 @@ public class ZoneData
 								continue;
 							}
 
+							if (temp instanceof L2WaterZone)
+							{
+								FishingZoneManager.getInstance().addWaterZone((L2WaterZone)temp);
+							}
 							// Register the zone into any world region it intersects with...
 							// currently 11136 test for each zone :>
 							int ax,ay,bx,by;

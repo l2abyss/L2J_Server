@@ -212,8 +212,8 @@ public class GeoEngine extends GeoData
 		}
     }
 
-    // Private Methods
-    private boolean canSeeTarget(int x, int y, int z, int tx, int ty, int tz)
+    @Override
+    public boolean canSeeTarget(int x, int y, int z, int tx, int ty, int tz)
     {
         return canSee((x - L2World.MAP_MIN_X) >> 4,(y - L2World.MAP_MIN_Y) >> 4,z,(tx - L2World.MAP_MIN_X) >> 4,(ty - L2World.MAP_MIN_Y) >> 4,tz);
     }

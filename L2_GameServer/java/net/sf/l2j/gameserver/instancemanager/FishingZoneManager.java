@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import net.sf.l2j.gameserver.model.zone.type.L2FishingZone;
+import net.sf.l2j.gameserver.model.zone.type.L2WaterZone;
 
 public class FishingZoneManager
 {
@@ -39,6 +40,7 @@ public class FishingZoneManager
 	// =========================================================
 	// Data Field
 	private FastList<L2FishingZone> _fishingZones;
+	private FastList<L2WaterZone> _waterZones;
 
 	// =========================================================
 	// Constructor
@@ -56,7 +58,13 @@ public class FishingZoneManager
 
 		_fishingZones.add(fishingZone);
 	}
+	public void addWaterZone(L2WaterZone waterZone)
+	{
+		if (_waterZones == null)
+			_waterZones = new FastList<L2WaterZone>();
 
+		_waterZones.add(waterZone);
+	}
 	/* isInsideFishingZone() - This function was modified to check the coordinates without caring for Z.
 	 * This allows for the player to fish off bridges, into the water, or from other similar high places. One
 	 * should be able to cast the line from up into the water, not only fishing whith one's feet wet. :)
@@ -68,6 +76,12 @@ public class FishingZoneManager
 	{
 		for (L2FishingZone temp : _fishingZones)
 			if (temp.isInsideZone(x, y, temp.getWaterZ() - 10)) return temp;
+		return null;
+	}
+	public final L2WaterZone isInsideWaterZone(int x, int y, int z)
+	{
+		for (L2WaterZone temp : _waterZones)
+			if (temp.isInsideZone(x, y, temp.getWaterZ())) return temp;
 		return null;
 	}
 }
