@@ -185,28 +185,19 @@ public abstract class L2Character extends L2Object
 	protected ChanceSkillList _chanceSkills;
 
 	/** Zone system */
-	public static final int ZONE_PVP = 1;
-	public static final int ZONE_PEACE = 2;
-	public static final int ZONE_SIEGE = 4;
-	public static final int ZONE_MOTHERTREE = 8;
-	public static final int ZONE_CLANHALL = 16;
-	public static final int ZONE_UNUSED = 32;
-	public static final int ZONE_NOLANDING = 64;
-	public static final int ZONE_WATER = 128;
-	public static final int ZONE_JAIL = 256;
-	public static final int ZONE_MONSTERTRACK = 512;
-	public static final int ZONE_CASTLE = 1024;
+	public static final byte ZONE_PVP = 0;
+	public static final byte ZONE_PEACE = 1;
+	public static final byte ZONE_SIEGE = 2;
+	public static final byte ZONE_MOTHERTREE = 3;
+	public static final byte ZONE_CLANHALL = 4;
+	public static final byte ZONE_UNUSED = 5;
+	public static final byte ZONE_NOLANDING = 6;
+	public static final byte ZONE_WATER = 7;
+	public static final byte ZONE_JAIL = 8;
+	public static final byte ZONE_MONSTERTRACK = 9;
+	public static final byte ZONE_CASTLE = 10;
 
-	private byte _currentPVPZones = 0;
-	private byte _currentPeaceZones = 0;
-	private byte _currentSiegeZones = 0;
-	private byte _currentMotherTreeZones = 0;
-	private byte _currentClanHallZones = 0;
-	private byte _currentUnusedZones = 0;
-	private byte _currentNoLandingZones = 0;
-	private byte _currentWaterZones = 0;
-	private byte _currentJailZones = 0;
-	private byte _currentMonsterTrackZones = 0;
+	private final byte[] _zones = new byte[11];
 	
 	/**
 	 * Returns character inventory, default null, overridden in L2Playable types and in L2NPcInstance
@@ -228,90 +219,19 @@ public abstract class L2Character extends L2Object
 		return true;
 	}
 
-	public boolean isInsideZone(int zone)
+	public final boolean isInsideZone(final byte zone)
 	{
-		switch(zone)
-		{
-			case ZONE_PVP: // also overlap check for peace zones
-				return (_currentPVPZones > 0 && _currentPeaceZones == 0);
-			case ZONE_PEACE:
-				return (_currentPeaceZones > 0);
-			case ZONE_SIEGE:
-				return (_currentSiegeZones > 0);
-			case ZONE_MOTHERTREE:
-				return (_currentMotherTreeZones > 0);
-			case ZONE_CLANHALL:
-				return (_currentClanHallZones > 0);
-			case ZONE_UNUSED:
-				return (_currentUnusedZones > 0);
-			case ZONE_NOLANDING:
-				return (_currentNoLandingZones > 0);
-			case ZONE_WATER:
-				return (_currentWaterZones > 0);
-			case ZONE_JAIL:
-				return (_currentJailZones > 0);
-			case ZONE_MONSTERTRACK:
-				return (_currentMonsterTrackZones > 0);
-			default:
-				return false;
-		}
+		return zone == ZONE_PVP ? _zones[ZONE_PVP] > 0 && _zones[ZONE_PEACE] == 0 : _zones[zone] > 0;
 	}
-	public void setInsideZone(int zone, boolean state)
+	public final void setInsideZone(final byte zone, final boolean state)
 	{
-		switch(zone)
+		if (state)
+			_zones[zone]++;
+		else
 		{
-			case ZONE_PVP:
-				if (state) _currentPVPZones++;
-				else _currentPVPZones--;
-				if (_currentPVPZones < 0) _currentPVPZones = 0;
-				break;
-			case ZONE_PEACE:
-				if (state) _currentPeaceZones++;
-				else _currentPeaceZones--;
-				if (_currentPeaceZones < 0) _currentPeaceZones = 0;
-				break; 
-			case ZONE_SIEGE:
-				if (state) _currentSiegeZones++;
-				else _currentSiegeZones--;
-				if (_currentSiegeZones < 0) _currentSiegeZones = 0;
-				break;
-			case ZONE_MOTHERTREE:
-				if (state) _currentMotherTreeZones++;
-				else _currentMotherTreeZones--;
-				if (_currentMotherTreeZones < 0) _currentMotherTreeZones = 0;
-				break;
-			case ZONE_CLANHALL:
-				if (state) _currentClanHallZones++;
-				else _currentClanHallZones--;
-				if (_currentClanHallZones < 0) _currentClanHallZones = 0;
-				break;
-			case ZONE_UNUSED:
-				if (state) _currentUnusedZones++;
-				else _currentUnusedZones--;
-				if (_currentUnusedZones < 0) _currentUnusedZones = 0;
-				break;
-			case ZONE_NOLANDING:
-				if (state) _currentNoLandingZones++;
-				else _currentNoLandingZones--;
-				if (_currentNoLandingZones < 0) _currentNoLandingZones = 0;
-				break;
-			case ZONE_WATER:
-				if (state) _currentWaterZones++;
-				else _currentWaterZones--;
-				if (_currentWaterZones < 0) _currentWaterZones = 0;
-				break;
-			case ZONE_JAIL:
-				if (state) _currentJailZones++;
-				else _currentJailZones--;
-				if (_currentJailZones < 0) _currentJailZones = 0;
-				break;
-			case ZONE_MONSTERTRACK:
-				if (state) _currentMonsterTrackZones++;
-				else _currentMonsterTrackZones--;
-				if (_currentMonsterTrackZones < 0) _currentMonsterTrackZones = 0;
-				break;
-			default:
-				return;
+			_zones[zone]--;
+			if (_zones[zone] < 0)
+				_zones[zone] = 0;
 		}
 	}
 	
