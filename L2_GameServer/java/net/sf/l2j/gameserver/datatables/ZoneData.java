@@ -51,6 +51,8 @@ import net.sf.l2j.gameserver.model.zone.type.L2MotherTreeZone;
 import net.sf.l2j.gameserver.model.zone.type.L2NoLandingZone;
 import net.sf.l2j.gameserver.model.zone.type.L2OlympiadStadiumZone;
 import net.sf.l2j.gameserver.model.zone.type.L2PeaceZone;
+import net.sf.l2j.gameserver.model.zone.type.L2PoisonZone;
+import net.sf.l2j.gameserver.model.zone.type.L2SwampZone;
 import net.sf.l2j.gameserver.model.zone.type.L2TownZone;
 import net.sf.l2j.gameserver.model.zone.type.L2WaterZone;
 
@@ -159,6 +161,10 @@ public class ZoneData
 			                    temp = new L2FortZone(zoneId);              
 							else if (zoneType.equals("DamageZone"))
 								temp = new L2DamageZone(zoneId);
+							else if (zoneType.equals("PoisonZone"))
+								temp = new L2PoisonZone(zoneId);
+							else if (zoneType.equals("SwampZone"))
+								temp = new L2SwampZone(zoneId);
 							else if (zoneType.equals("Arena"))
 								temp = new L2ArenaZone(zoneId);
 							else if (zoneType.equals("MotherTree"))

@@ -196,8 +196,9 @@ public abstract class L2Character extends L2Object
 	public static final byte ZONE_JAIL = 8;
 	public static final byte ZONE_MONSTERTRACK = 9;
 	public static final byte ZONE_CASTLE = 10;
+	public static final byte ZONE_SWAMP = 11;
 
-	private final byte[] _zones = new byte[11];
+	private final byte[] _zones = new byte[12];
 	
 	/**
 	 * Returns character inventory, default null, overridden in L2Playable types and in L2NPcInstance
@@ -219,10 +220,21 @@ public abstract class L2Character extends L2Object
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param zone
+	 * @return
+	 */
 	public final boolean isInsideZone(final byte zone)
 	{
 		return zone == ZONE_PVP ? _zones[ZONE_PVP] > 0 && _zones[ZONE_PEACE] == 0 : _zones[zone] > 0;
 	}
+	
+	/**
+	 * 
+	 * @param zone
+	 * @param state
+	 */
 	public final void setInsideZone(final byte zone, final boolean state)
 	{
 		if (state)
@@ -3255,6 +3267,8 @@ public abstract class L2Character extends L2Object
 
 	/** Table of calculators containing all standard NPC calculator (ex : ACCURACY_COMBAT, EVASION_RATE */
 	private static final Calculator[] NPC_STD_CALCULATOR;
+
+
 	static {NPC_STD_CALCULATOR = Formulas.getInstance().getStdNPCCalculators();}
 
 	protected L2CharacterAI _ai;

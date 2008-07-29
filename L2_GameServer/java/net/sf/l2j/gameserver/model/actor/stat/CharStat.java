@@ -18,6 +18,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.skills.Calculator;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.Stats;
@@ -642,8 +643,12 @@ public class CharStat
 			return val;
 		}
 		
-		// TODO: check if sharks/fish should be affected ;)
-		if (_activeChar.isInsideZone(L2Character.ZONE_WATER))
+		// TODO: base speed must be 80 (without buffs/passive skills) ;)
+		if (_activeChar instanceof L2PlayableInstance && _activeChar.isInsideZone(L2Character.ZONE_WATER))
+			val /= 2;
+
+		// TODO: get value from zone ;)
+		if (_activeChar instanceof L2PlayableInstance && _activeChar.isInsideZone(L2Character.ZONE_SWAMP))
 			val /= 2;
 		
 		val /= _activeChar.getArmourExpertisePenalty();

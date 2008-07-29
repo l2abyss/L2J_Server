@@ -19,38 +19,49 @@ import java.util.concurrent.Future;
 
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
+import net.sf.l2j.util.Rnd;
 
 /**
- * A damage zone
+ * another type of damage zone with skills
  *
- * @author  durgus
+ * @author  kerberos
  */
-public class L2DamageZone extends L2ZoneType
+public class L2PoisonZone extends L2ZoneType
 {
-	private int _damageHPPerSec;
-	private int _damageMPPerSec;
+	private int _skillId;
+
 	private Future<?> _task;
 
-	public L2DamageZone(int id)
+	private int _chance;
+
+	private int _initialDelay;
+
+	public L2PoisonZone(int id)
 	{
 		super(id);
 
-		// Setup default damage
-		_damageHPPerSec = 200;
-		_damageMPPerSec = 0;
+		// Setup default skill
+		_skillId = 4070;
+		_chance = 100;
+		_initialDelay = 0;
 	}
 
 	@Override
 	public void setParameter(String name, String value)
 	{
-		if (name.equals("dmgHPSec"))
+		if (name.equals("skillId"))
 		{
-			_damageHPPerSec = Integer.parseInt(value);
+			_skillId = Integer.parseInt(value);
 		}
-		else if (name.equals("dmgMPSec"))
+		else if (name.equals("chance"))
 		{
-			_damageMPPerSec = Integer.parseInt(value);
+			_chance = Integer.parseInt(value);
+		}
+		else if (name.equals("initialDelay"))
+		{
+			_initialDelay = Integer.parseInt(value);
 		}
 		else super.setParameter(name, value);
 	}
@@ -58,9 +69,9 @@ public class L2DamageZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (_task == null && (_damageHPPerSec != 0 || _damageMPPerSec != 0))
+		if (_task == null && Rnd.get(100) < _chance)
 		{
-			_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplyDamage(this), 10, 3300);
+			_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplySkill(this), _initialDelay, 10000);
 		}
 	}
 
@@ -74,39 +85,35 @@ public class L2DamageZone extends L2ZoneType
 		}
 	}
 
+	public int getSkillId()
+	{
+		return _skillId;
+	}
 	protected Collection<L2Character> getCharacterList()
 	{
 		return _characterList.values();
 	}
 
-	protected int getHPDamagePerSecond()
+	class ApplySkill implements Runnable
 	{
-		return _damageHPPerSec;
-	}
-
-	protected int getMPDamagePerSecond()
-	{
-		return _damageMPPerSec;
-	}
-
-	class ApplyDamage implements Runnable
-	{
-		private L2DamageZone _dmgZone;
-		ApplyDamage(L2DamageZone zone)
+		private L2PoisonZone _poisonZone;
+		ApplySkill(L2PoisonZone zone)
 		{
-			_dmgZone = zone;
+			_poisonZone = zone;
 		}
 
 		public void run()
 		{
-			for (L2Character temp : _dmgZone.getCharacterList())
+			for (L2Character temp : _poisonZone.getCharacterList())
 			{
 				if (temp != null && !temp.isDead())
 				{
-					if (getHPDamagePerSecond() != 0)
-						temp.reduceCurrentHp(_dmgZone.getHPDamagePerSecond(), null);
-					if (getMPDamagePerSecond() != 0)
-						temp.reduceCurrentMp(_dmgZone.getMPDamagePerSecond());
+                    L2Effect[] effects = temp.getAllEffects();
+                    for (L2Effect e : effects)
+                    {
+                    	if (e.getSkill().getId() != getSkillId())
+                    		e.getSkill().getEffects(temp, temp);
+                    }
 				}
 			}
 		}
