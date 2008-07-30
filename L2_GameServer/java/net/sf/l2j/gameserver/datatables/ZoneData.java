@@ -35,6 +35,7 @@ import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2WorldRegion;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.gameserver.model.zone.form.ZoneCuboid;
+import net.sf.l2j.gameserver.model.zone.form.ZoneCylinder;
 import net.sf.l2j.gameserver.model.zone.form.ZoneNPoly;
 import net.sf.l2j.gameserver.model.zone.type.L2ArenaZone;
 import net.sf.l2j.gameserver.model.zone.type.L2BigheadZone;
@@ -203,7 +204,7 @@ public class ZoneData
 
 								// Create this zone.  Parsing for cuboids is a bit different than for other polygons
 								// cuboids need exactly 2 points to be defined.  Other polygons need at least 3 (one per vertex)
-								if (zoneShape.equals("Cuboid"))
+								if (zoneShape.equalsIgnoreCase("Cuboid"))
 								{
 									int[] x = {0,0};
 									int[] y = {0,0};
@@ -231,7 +232,7 @@ public class ZoneData
 									else
 										continue;
 								}
-								else if (zoneShape.equals("NPoly"))
+								else if (zoneShape.equalsIgnoreCase("NPoly"))
 								{
 									FastList<Integer> fl_x = new FastList<Integer>(), fl_y = new FastList<Integer>();
 
@@ -254,6 +255,27 @@ public class ZoneData
 	
 										// Create the zone
 										temp.setZone(new ZoneNPoly(aX, aY, minZ, maxZ));
+									}
+									else
+									{
+										_log.warning("ZoneData: Bad sql data for zone: "+zoneId);
+										rset.close();
+										statement.close();
+										continue;
+									}
+								}
+								else if (zoneShape.equalsIgnoreCase("Cylinder"))
+								{
+									// A Cylinder zone requires a centre point
+									// at x,y and a radius
+									int zoneRad = Integer.parseInt(attrs.getNamedItem("rad").getNodeValue());
+									if (rset.next() && zoneRad > 0)
+									{
+										int zoneX = rset.getInt("x");
+										int zoneY = rset.getInt("y");
+										
+										// create the zone
+										temp.setZone(new ZoneCylinder(zoneX, zoneY, minZ, maxZ, zoneRad));
 									}
 									else
 									{
