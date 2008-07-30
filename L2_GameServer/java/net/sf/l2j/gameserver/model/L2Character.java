@@ -4175,7 +4175,7 @@ public abstract class L2Character extends L2Object
 						_move.onGeodataPathIndex = -1; // Set not on geodata path
 				}
 				
-				if (curX < L2World.MAP_MIN_X || curX > L2World.MAP_MAX_X || curY < L2World.MAP_MIN_Y  || curY > L2World.MAP_MAX_Y)
+				if (curX < L2World.MAP_MIN_X || curX > L2World.MAP_MAX_X || curY < L2World.MAP_MIN_Y  || curY > 294912)
 				{
 					// Temporary fix for character outside world region errors
 					_log.warning("Character "+this.getName()+" outside world area, in coordinates x:"+curX+" y:"+curY);
