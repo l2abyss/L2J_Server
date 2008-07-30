@@ -261,7 +261,11 @@ abstract class AbstractAI implements Ctrl
     public final void informAIIntention(CtrlIntention intent, Object arg0) {
     	ThreadPoolManager.getInstance().executeAi(new InformAIMsg(this, intent, arg0));
     }
-    
+
+    public final void informAIIntention(CtrlIntention intent) {
+    	ThreadPoolManager.getInstance().executeAi(new InformAIMsg(this, intent, null));
+    }
+
     public class InformAIMsg implements Runnable {
     	private AbstractAI _ai;
     	private CtrlIntention _intent;
@@ -351,6 +355,35 @@ abstract class AbstractAI implements Ctrl
     public final void notifyEvent(CtrlEvent evt, Object arg0)
     {
         notifyEvent(evt, arg0, null);
+    }
+
+    public final void informAIEvent(CtrlEvent evt) {
+    	ThreadPoolManager.getInstance().executeAi(new InformAIEvent(this, evt, null, null));
+    }
+
+    public final void informAIEvent(CtrlEvent evt, Object arg0) {
+    	ThreadPoolManager.getInstance().executeAi(new InformAIEvent(this, evt, arg0, null));
+    }
+
+    public final void informAIEvent(CtrlEvent evt, Object arg0, Object arg1) {
+    	ThreadPoolManager.getInstance().executeAi(new InformAIEvent(this, evt, arg0, arg1));
+    }
+
+    public class InformAIEvent implements Runnable {
+    	private AbstractAI _ai;
+    	private CtrlEvent _evt;
+    	private Object _arg0, _arg1;
+
+    	public InformAIEvent(AbstractAI ai, CtrlEvent evt, Object arg0, Object arg1) {
+    		_ai=ai;
+    		_evt = evt;
+    		_arg0 = arg0;
+    		_arg1 = arg1;
+    	}
+
+    	public final void run() {
+    		_ai.notifyEvent(_evt, _arg0, _arg1);
+    	}
     }
 
     /**

@@ -27,6 +27,7 @@ import net.sf.l2j.gameserver.GmListTable;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.taskmanager.KnownListUpdateTaskManager;
 import net.sf.l2j.util.Point3D;
 
 /**
@@ -333,7 +334,7 @@ public final class L2World
             	_allPlayers.put(player.getName().toLowerCase(), player);
             }
         }
-        /*
+        
         if (!newRegion.isActive()) 
         	return;
         // Get all visible objects contained in the _visibleObjects of L2WorldRegions
@@ -355,7 +356,7 @@ public final class L2World
             // Add the visible L2Object in L2ObjectHashSet(L2Object) _knownObjects of the object according to conditions
             // If visible L2Object is a L2PcInstance, add visible L2Object in L2ObjectHashSet(L2PcInstance) _knownPlayer of the object
             object.getKnownList().addKnownObject(visible, dropper);
-        }*/
+        }
     }
 
     /**
@@ -420,22 +421,26 @@ public final class L2World
             // If object is a L2PcInstance, remove it from the L2ObjectHashSet(L2PcInstance) _allPlayers of this L2WorldRegion
             oldRegion.removeVisibleObject(object);
 
-            /*
+            
             // Go through all surrounding L2WorldRegion L2Characters
             for (L2WorldRegion reg : oldRegion.getSurroundingRegions()) 
             {
-            	Collection<L2Object> vObj = reg.getVisibleObjects().values();
-            	synchronized (reg.getVisibleObjects()) {
-            		for (L2Object obj : vObj)
-            		{
-            			if (obj.getKnownList() != null)
-            				obj.getKnownList().removeKnownObject(object);
-            			if (object.getKnownList() != null)
-            				object.getKnownList().removeKnownObject(obj);
-            		}
-            	}
+            	synchronized (KnownListUpdateTaskManager.getInstance().getSync())
+				{
+					Collection<L2Object> vObj = reg.getVisibleObjects().values();
+					synchronized (reg.getVisibleObjects())
+					{
+						for (L2Object obj : vObj)
+						{
+							if (obj.getKnownList() != null)
+								obj.getKnownList().removeKnownObject(object);
+							if (object.getKnownList() != null)
+								object.getKnownList().removeKnownObject(obj);
+						}
+					}
+				}
             }
-             */
+            
             // If object is a L2Character :
             // Remove all L2Object from L2ObjectHashSet(L2Object) containing all L2Object detected by the L2Character
             // Remove all L2PcInstance from L2ObjectHashSet(L2PcInstance) containing all player ingame detected by the L2Character

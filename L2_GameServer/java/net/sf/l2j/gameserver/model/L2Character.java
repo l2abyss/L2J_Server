@@ -638,7 +638,7 @@ public abstract class L2Character extends L2Object
                 || (target instanceof L2PcInstance && ((L2PcInstance)target).getDuelState() == Duel.DUELSTATE_DEAD))
 		{
 			// If L2PcInstance is dead or the target is dead, the action is stoped
-			getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+			getAI().informAIIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -673,7 +673,7 @@ public abstract class L2Character extends L2Object
 			// Checking if target has moved to peace zone
 			if (target.isInsidePeaceZone((L2PcInstance)this))
 			{
-				getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+				getAI().informAIIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
@@ -681,7 +681,7 @@ public abstract class L2Character extends L2Object
 		}
 		else if (isInsidePeaceZone(this, target))
 		{
-			getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+			getAI().informAIIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -697,7 +697,7 @@ public abstract class L2Character extends L2Object
 		{
 			//	You can't make an attack with a fishing pole.
 			((L2PcInstance)this).sendPacket(new SystemMessage(SystemMessageId.CANNOT_ATTACK_WITH_FISHING_POLE));
-			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+			getAI().informAIIntention(CtrlIntention.AI_INTENTION_IDLE);
 
             ActionFailed af = ActionFailed.STATIC_PACKET;
             sendPacket(af);
@@ -708,7 +708,7 @@ public abstract class L2Character extends L2Object
         if (!GeoData.getInstance().canSeeTarget(this, target))
         {
             sendPacket(new SystemMessage(SystemMessageId.CANT_SEE_TARGET));
-            getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+            getAI().informAIIntention(CtrlIntention.AI_INTENTION_ACTIVE);
             sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
@@ -754,7 +754,7 @@ public abstract class L2Character extends L2Object
 					if (!checkAndEquipArrows())
 					{
 						// Cancel the action because the L2PcInstance have no arrow
-						getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+						getAI().informAIIntention(CtrlIntention.AI_INTENTION_IDLE);
 						sendPacket(ActionFailed.STATIC_PACKET);
 						sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ARROWS));
 						return;
@@ -770,7 +770,7 @@ public abstract class L2Character extends L2Object
 					// Other melee is checked in movement code and for offensive spells a check is done every time
 					if (target.isInsidePeaceZone((L2PcInstance)this))
 					{
-						getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+						getAI().informAIIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 						sendPacket(ActionFailed.STATIC_PACKET);
 						return;
 					}
@@ -793,7 +793,7 @@ public abstract class L2Character extends L2Object
 					if (!checkAndEquipBolts())
 					{
 						// Cancel the action because the L2PcInstance have no arrow
-						getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+						getAI().informAIIntention(CtrlIntention.AI_INTENTION_IDLE);
 						sendPacket(ActionFailed.STATIC_PACKET);
 						sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_BOLTS));
 						return;
@@ -1331,7 +1331,7 @@ public abstract class L2Character extends L2Object
 	{
 		if (skill == null)
 		{
-			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+			getAI().informAIEvent(CtrlEvent.EVT_CANCEL);
 			return;
 		}
 
@@ -1437,7 +1437,7 @@ public abstract class L2Character extends L2Object
 			{
 				if(isMuted())
 				{
-					getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+					getAI().informAIEvent(CtrlEvent.EVT_CANCEL);
 					return;
 				}
 			}
@@ -1446,7 +1446,7 @@ public abstract class L2Character extends L2Object
 				// Check if the skill is physical and if the L2Character is not physical_muted
 				if (isPhysicalMuted())
 				{
-					getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+					getAI().informAIEvent(CtrlEvent.EVT_CANCEL);
 					return;
 				} 
 				else if (isPhysicalAttackMuted()) // Prevent use attack
@@ -1564,7 +1564,7 @@ public abstract class L2Character extends L2Object
         {
 			if (targets == null || targets.length == 0)  
 			{
-				getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+				getAI().informAIEvent(CtrlEvent.EVT_CANCEL);
 				return;
 			}
 			
@@ -1598,7 +1598,7 @@ public abstract class L2Character extends L2Object
 
 		if (target == null)
 		{
-			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+			getAI().informAIEvent(CtrlEvent.EVT_CANCEL);
 			return;
 		}
 
@@ -1878,7 +1878,7 @@ public abstract class L2Character extends L2Object
 		broadcastStatusUpdate();
 
 		// Notify L2Character AI
-		getAI().notifyEvent(CtrlEvent.EVT_DEAD, null);
+		getAI().informAIEvent(CtrlEvent.EVT_DEAD);
 		
 		if (getWorldRegion() != null)
 				getWorldRegion().onDeath(this);
@@ -2548,7 +2548,7 @@ public abstract class L2Character extends L2Object
 	public final void startConfused()
 	{
 		setIsConfused(true);
-		getAI().notifyEvent(CtrlEvent.EVT_CONFUSED);
+		getAI().informAIEvent(CtrlEvent.EVT_CONFUSED);
 		updateAbnormalEffect();
 	}
 
@@ -2561,7 +2561,7 @@ public abstract class L2Character extends L2Object
         /* Aborts any attacks/casts if fake dead */
 		abortAttack();
         abortCast();
-		getAI().notifyEvent(CtrlEvent.EVT_FAKE_DEATH, null);
+		getAI().informAIEvent(CtrlEvent.EVT_FAKE_DEATH);
 		broadcastPacket(new ChangeWaitType(this,ChangeWaitType.WT_START_FAKEDEATH));
 	}
 
@@ -2571,7 +2571,7 @@ public abstract class L2Character extends L2Object
 	public final void startFear()
 	{
 		setIsAfraid(true);
-		getAI().notifyEvent(CtrlEvent.EVT_AFRAID);
+		getAI().informAIEvent(CtrlEvent.EVT_AFRAID);
 		updateAbnormalEffect();
 	}
 
@@ -2583,7 +2583,7 @@ public abstract class L2Character extends L2Object
 		setIsMuted(true);
         /* Aborts any casts if muted */
         abortCast();
-		getAI().notifyEvent(CtrlEvent.EVT_MUTED);
+		getAI().informAIEvent(CtrlEvent.EVT_MUTED);
 		updateAbnormalEffect();
 	}
 
@@ -2593,7 +2593,7 @@ public abstract class L2Character extends L2Object
     public final void startPsychicalMuted()
     {
         setIsPhysicalMuted(true);
-        getAI().notifyEvent(CtrlEvent.EVT_MUTED);
+        getAI().informAIEvent(CtrlEvent.EVT_MUTED);
         updateAbnormalEffect();
     }
 
@@ -2603,7 +2603,7 @@ public abstract class L2Character extends L2Object
 	public final void startRooted()
 	{
 		setIsRooted(true);
-        getAI().notifyEvent(CtrlEvent.EVT_ROOTED, null);
+        getAI().informAIEvent(CtrlEvent.EVT_ROOTED);
 		updateAbnormalEffect();
 	}
 	
@@ -2615,7 +2615,7 @@ public abstract class L2Character extends L2Object
 		setIsImmobileUntilAttacked(true);
         abortAttack();
 		abortCast();
-		getAI().notifyEvent(CtrlEvent.EVT_SLEEPING, null);
+		getAI().informAIEvent(CtrlEvent.EVT_SLEEPING);
 		updateAbnormalEffect();
 	}
 
@@ -2628,7 +2628,7 @@ public abstract class L2Character extends L2Object
 		/* Aborts any attacks/casts if sleeped */
         abortAttack();
 		abortCast();
-		getAI().notifyEvent(CtrlEvent.EVT_SLEEPING, null);
+		getAI().informAIEvent(CtrlEvent.EVT_SLEEPING);
 		updateAbnormalEffect();
 	}
 
@@ -2647,7 +2647,7 @@ public abstract class L2Character extends L2Object
 		/* Aborts any attacks/casts if stunned */
 		abortAttack();
 		abortCast();
-		getAI().notifyEvent(CtrlEvent.EVT_STUNNED, null);
+		getAI().informAIEvent(CtrlEvent.EVT_STUNNED);
 		updateAbnormalEffect();
 	}
 
@@ -2657,14 +2657,14 @@ public abstract class L2Character extends L2Object
 		/* Aborts any attacks/casts if paralyzed */
 		abortAttack();
 		abortCast();
-		getAI().notifyEvent(CtrlEvent.EVT_PARALYZED, null);
+		getAI().informAIEvent(CtrlEvent.EVT_PARALYZED);
 		updateAbnormalEffect();
 	}
 
 	public final void startBetray()
 	{
 		setIsBetrayed(true);
-		getAI().notifyEvent(CtrlEvent.EVT_BETRAYED, null);
+		getAI().informAIEvent(CtrlEvent.EVT_BETRAYED);
 		updateAbnormalEffect();
 	}
 
@@ -2710,7 +2710,7 @@ public abstract class L2Character extends L2Object
 			removeEffect(effect);
 
 		setIsConfused(false);
-		getAI().notifyEvent(CtrlEvent.EVT_THINK, null);
+		getAI().informAIEvent(CtrlEvent.EVT_THINK);
 		updateAbnormalEffect();
 	}
 
@@ -2777,7 +2777,7 @@ public abstract class L2Character extends L2Object
 		//TODO: Temp hack: players see FD on ppl that are moving: Teleport to someone who uses FD - if he gets up he will fall down again for that client -
 		// even tho he is actually standing... Probably bad info in CharInfo packet?
 		broadcastPacket(new Revive(this));
-		getAI().notifyEvent(CtrlEvent.EVT_THINK, null);
+		getAI().informAIEvent(CtrlEvent.EVT_THINK);
 	}
 
 	/**
@@ -2851,7 +2851,7 @@ public abstract class L2Character extends L2Object
 			removeEffect(effect);
 
 		setIsRooted(false);
-		getAI().notifyEvent(CtrlEvent.EVT_THINK, null);
+		getAI().informAIEvent(CtrlEvent.EVT_THINK);
 		updateAbnormalEffect();
 	}
 	
@@ -2876,7 +2876,7 @@ public abstract class L2Character extends L2Object
         }
 		 	
         setIsImmobileUntilAttacked(false);
-        getAI().notifyEvent(CtrlEvent.EVT_THINK, null);
+        getAI().informAIEvent(CtrlEvent.EVT_THINK);
         updateAbnormalEffect();
     }
 
@@ -2898,7 +2898,7 @@ public abstract class L2Character extends L2Object
 			removeEffect(effect);
 
 		setIsSleeping(false);
-		getAI().notifyEvent(CtrlEvent.EVT_THINK, null);
+		getAI().informAIEvent(CtrlEvent.EVT_THINK);
 		updateAbnormalEffect();
 	}
 
@@ -2920,7 +2920,7 @@ public abstract class L2Character extends L2Object
 			removeEffect(effect);
 
 		setIsStunned(false);
-		getAI().notifyEvent(CtrlEvent.EVT_THINK, null);
+		getAI().informAIEvent(CtrlEvent.EVT_THINK);
 		updateAbnormalEffect();
 	}
 
@@ -2932,7 +2932,7 @@ public abstract class L2Character extends L2Object
 			removeEffect(effect);
 
 		setIsParalyzed(false);
-		getAI().notifyEvent(CtrlEvent.EVT_THINK, null);
+		getAI().informAIEvent(CtrlEvent.EVT_THINK);
 		updateAbnormalEffect();
 	}
 
@@ -2965,7 +2965,7 @@ public abstract class L2Character extends L2Object
             }
         }
         
-        getAI().notifyEvent(CtrlEvent.EVT_THINK, null);
+        getAI().informAIEvent(CtrlEvent.EVT_THINK);
         updateAbnormalEffect();
     }
 
@@ -4118,7 +4118,7 @@ public abstract class L2Character extends L2Object
 				if (Config.DEBUG) _log.fine("already in range, no movement needed.");
 
 				// Notify the AI that the L2Character is arrived at destination
-				getAI().notifyEvent(CtrlEvent.EVT_ARRIVED, null);
+				getAI().informAIEvent(CtrlEvent.EVT_ARRIVED);
 
 				return;
 			}
@@ -4179,7 +4179,7 @@ public abstract class L2Character extends L2Object
 				{
 					// Temporary fix for character outside world region errors
 					_log.warning("Character "+this.getName()+" outside world area, in coordinates x:"+curX+" y:"+curY);
-					getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+					getAI().informAIIntention(CtrlIntention.AI_INTENTION_IDLE);
 					if (this instanceof L2PcInstance) ((L2PcInstance)this).deleteMe();
 					else this.onDecay();
         			return;
@@ -4212,7 +4212,7 @@ public abstract class L2Character extends L2Object
                 				|| (!(this instanceof L2PlayableInstance) && Math.abs(z - curZ) > 140)
                 				|| (this instanceof L2Summon && !((L2Summon)this).getFollowStatus())) 
                 		{
-                			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+                			getAI().informAIIntention(CtrlIntention.AI_INTENTION_IDLE);
                 			return;
                 		}
                 		else
@@ -4247,7 +4247,7 @@ public abstract class L2Character extends L2Object
                 			if (DoorTable.getInstance().checkIfDoorsBetween(m.geoPath.get(i),m.geoPath.get(i+1)))
                 			{
                 				m.geoPath = null;
-                				getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+                				getAI().informAIIntention(CtrlIntention.AI_INTENTION_IDLE);
                 				return;
                 			}
                 		}
@@ -4267,8 +4267,8 @@ public abstract class L2Character extends L2Object
 					|| this instanceof L2RiftInvaderInstance))
 			{
 				if(this instanceof L2Summon) ((L2Summon)this).setFollowStatus(false);
-				getAI().notifyEvent(CtrlEvent.EVT_ARRIVED, null);
-				getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE); //needed?
+				getAI().informAIEvent(CtrlEvent.EVT_ARRIVED);
+				getAI().informAIIntention(CtrlIntention.AI_INTENTION_IDLE); //needed?
 				return;
 			}
 		}
@@ -4779,7 +4779,7 @@ public abstract class L2Character extends L2Object
 		// and send a Server->Client packet ActionFailed (if attacker is a L2PcInstance)
 		if (target == null || isAlikeDead() ||(this instanceof L2NpcInstance && ((L2NpcInstance) this).isEventMob))
 		{
-			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+			getAI().informAIEvent(CtrlEvent.EVT_CANCEL);
 			return;
 		}
 
@@ -4787,7 +4787,7 @@ public abstract class L2Character extends L2Object
                 || (!getKnownList().knowsObject(target) && !(this instanceof L2DoorInstance)))
 		{
 			//getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
-			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+			getAI().informAIEvent(CtrlEvent.EVT_CANCEL);
 
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -4923,7 +4923,7 @@ public abstract class L2Character extends L2Object
 				target.reduceCurrentHp(damage, this);
 
                 // Notify AI with EVT_ATTACKED
-                target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
+                target.getAI().informAIEvent(CtrlEvent.EVT_ATTACKED, this);
                 getAI().clientStartAutoAttack();
 
 				// Manage attack or cast break of the target (calculating rate, sending message...)
@@ -4980,7 +4980,7 @@ public abstract class L2Character extends L2Object
             return;
 		}
 
-		getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+		getAI().informAIEvent(CtrlEvent.EVT_CANCEL);
 	}
 
 	/**
@@ -5455,7 +5455,7 @@ public abstract class L2Character extends L2Object
 		{
 			_skillCast = null;
 			enableAllSkills();
-			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+			getAI().informAIEvent(CtrlEvent.EVT_CANCEL);
 			return;
 		}
 
@@ -5510,7 +5510,7 @@ public abstract class L2Character extends L2Object
 			_skillCast = null;
 			enableAllSkills();
 			
-			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+			getAI().informAIEvent(CtrlEvent.EVT_CANCEL);
 
 			_castEndTime = 0;
 			_castInterruptTime = 0;
@@ -5546,7 +5546,7 @@ public abstract class L2Character extends L2Object
 		{
 			_skillCast = null;
 			enableAllSkills();
-			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+			getAI().informAIEvent(CtrlEvent.EVT_CANCEL);
 			return;
 		}
 		if(getForceBuff() != null)
@@ -5696,7 +5696,7 @@ public abstract class L2Character extends L2Object
             getAI().clientStartAutoAttack();
 
         // Notify the AI of the L2Character with EVT_FINISH_CASTING
-		getAI().notifyEvent(CtrlEvent.EVT_FINISH_CASTING);
+		getAI().informAIEvent(CtrlEvent.EVT_FINISH_CASTING);
 
         /*
          * If character is a player, then wipe their current cast state and
@@ -5915,7 +5915,7 @@ public abstract class L2Character extends L2Object
 											&& skill.getSkillType() != L2Skill.SkillType.AGGREMOVE)
 									{
 										// notify target AI about the attack
-										((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
+										((L2Character)target).getAI().informAIEvent(CtrlEvent.EVT_ATTACKED, player);
 									}
 									player.updatePvPStatus((L2Character)target);
 								}
@@ -5927,7 +5927,7 @@ public abstract class L2Character extends L2Object
 										&& skill.getSkillType() != L2Skill.SkillType.AGGREMOVE)
 								{
 									// notify target AI about the attack
-									((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
+									((L2Character)target).getAI().informAIEvent(CtrlEvent.EVT_ATTACKED, player);
 								}
 							}
 						}

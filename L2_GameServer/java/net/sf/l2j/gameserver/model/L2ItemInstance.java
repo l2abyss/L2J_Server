@@ -1111,37 +1111,53 @@ public final class L2ItemInstance extends L2Object
      * <li> Call Pet</li><BR>
      *
      */
+	public class doItemDropTask implements Runnable {
+		private int _x,_y,_z;
+		private L2Character _dropper;
+		private L2ItemInstance _itm;
+		public doItemDropTask(L2ItemInstance item, L2Character dropper, int x, int y, int z) {
+			_x = x;
+			_y = y;
+			_z = z;
+			_dropper = dropper;
+			_itm = item;
+		}
+		public final void run() {
+	        if (Config.ASSERT) assert _itm.getPosition().getWorldRegion() == null;
+
+	        if (Config.GEODATA > 0 && _dropper != null)
+	        {
+	            Location dropDest = GeoData.getInstance().moveCheck(_dropper.getX(), _dropper.getY(), _dropper.getZ(), _x, _y, _z);
+	            _x = dropDest.getX();
+	            _y = dropDest.getY();
+	            _z = dropDest.getZ();
+	        }
+	        
+	        synchronized (this)
+	        {
+	            // Set the x,y,z position of the L2ItemInstance dropped and update its _worldregion
+	            _itm.setIsVisible(true);
+	            _itm.getPosition().setWorldPosition(_x, _y ,_z);
+	            _itm.getPosition().setWorldRegion(L2World.getInstance().getRegion(getPosition().getWorldPosition()));
+
+	            // Add the L2ItemInstance dropped to _visibleObjects of its L2WorldRegion
+	            
+	        }
+	        _itm.getPosition().getWorldRegion().addVisibleObject(_itm);
+	        _itm.setDropTime(System.currentTimeMillis());
+
+	        // this can synchronize on others instancies, so it's out of
+	        // synchronized, to avoid deadlocks
+	        // Add the L2ItemInstance dropped in the world as a visible object
+	        L2World.getInstance().addVisibleObject(_itm, _itm.getPosition().getWorldRegion(), _dropper);
+	        if (Config.SAVE_DROPPED_ITEM)
+	        	ItemsOnGroundManager.getInstance().save(_itm);
+			
+		}
+	}
     public final void dropMe(L2Character dropper, int x, int y, int z)
     {
-        if (Config.ASSERT) assert getPosition().getWorldRegion() == null;
-
-        if (Config.GEODATA > 0 && dropper != null)
-        {
-            Location dropDest = GeoData.getInstance().moveCheck(dropper.getX(), dropper.getY(), dropper.getZ(), x, y, z);
-            x = dropDest.getX();
-            y = dropDest.getY();
-            z = dropDest.getZ();
-        }
-        
-        synchronized (this)
-        {
-            // Set the x,y,z position of the L2ItemInstance dropped and update its _worldregion
-            setIsVisible(true);
-            getPosition().setWorldPosition(x, y ,z);
-            getPosition().setWorldRegion(L2World.getInstance().getRegion(getPosition().getWorldPosition()));
-
-            // Add the L2ItemInstance dropped to _visibleObjects of its L2WorldRegion
-            
-        }
-        getPosition().getWorldRegion().addVisibleObject(this);
-        setDropTime(System.currentTimeMillis());
-
-        // this can synchronize on others instancies, so it's out of
-        // synchronized, to avoid deadlocks
-        // Add the L2ItemInstance dropped in the world as a visible object
-        L2World.getInstance().addVisibleObject(this, getPosition().getWorldRegion(), dropper);
-        if (Config.SAVE_DROPPED_ITEM)
-        	ItemsOnGroundManager.getInstance().save(this);
+    	ThreadPoolManager.getInstance().executeTask(new doItemDropTask(this, dropper, x, y, z));
     }
 
 	/**
