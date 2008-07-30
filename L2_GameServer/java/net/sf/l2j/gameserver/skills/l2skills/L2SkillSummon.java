@@ -50,6 +50,13 @@ public class L2SkillSummon extends L2Skill
 		if (activeChar instanceof L2PcInstance)
 		{
 			L2PcInstance player = (L2PcInstance)activeChar;
+			
+			if (player.isInCombat())
+			{
+				player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_SUMMON_IN_COMBAT));
+				return false;
+			}
+			
 			if (isCubic())
 			{
 				if (getTargetType() != L2Skill.SkillTargetType.TARGET_SELF)
