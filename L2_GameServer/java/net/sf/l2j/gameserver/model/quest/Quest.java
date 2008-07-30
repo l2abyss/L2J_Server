@@ -417,6 +417,7 @@ public class Quest extends ManagedScript
 		{
 			NpcHtmlMessage npcReply = new NpcHtmlMessage(5);
 			npcReply.setHtml(res);
+			npcReply.replace("%playername%", player.getName());
 			player.sendPacket(npcReply);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 		}
@@ -1025,6 +1026,7 @@ public class Quest extends ManagedScript
          {
              NpcHtmlMessage npcReply = new NpcHtmlMessage(5);
              npcReply.setHtml(content);
+             npcReply.replace("%playername%", player.getName());
              player.sendPacket(npcReply);
              player.sendPacket(ActionFailed.STATIC_PACKET);
          }
