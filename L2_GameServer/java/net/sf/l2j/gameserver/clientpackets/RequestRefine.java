@@ -90,22 +90,63 @@ public final class RequestRefine extends L2GameClientPacket
 
 	boolean TryAugmentItem(L2PcInstance player, L2ItemInstance targetItem,L2ItemInstance refinerItem, L2ItemInstance gemstoneItem)
 	{
-		if (targetItem.isAugmented() || targetItem.isWear()) return false;
-
+		if (targetItem.isAugmented() || targetItem.isWear())
+			return false;
+		
+		if (player.isDead())
+		{
+			player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_DEAD));
+			return false;
+		}
+		if (player.isSitting())
+		{
+			player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_SITTING_DOWN));
+			return false;
+		}
+		if (player.isFishing())
+		{
+			player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_FISHING));
+			return false;
+		}
+		if (player.isParalyzed())
+		{
+			player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_PARALYZED));
+			return false;
+		}
+		if (player.getActiveTradeList() != null)
+		{
+			player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_TRADING));
+			return false;
+		}
+		if (player.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
+		{
+			player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_A_PRIVATE_STORE_OR_PRIVATE_WORKSHOP_IS_IN_OPERATION));
+			return false;
+		}
+		
 		// check for the items to be in the inventory of the owner
-		if ( player.getInventory().getItemByObjectId(refinerItem.getObjectId())==null )
+		if (player.getInventory().getItemByObjectId(refinerItem.getObjectId()) == null)
 		{
-			Util.handleIllegalPlayerAction(player,"Warning!! Character "+player.getName()+" of account "+player.getAccountName()+" tried to refine an item with wrong LifeStone-id.",Config.DEFAULT_PUNISH);
+			Util.handleIllegalPlayerAction(player, "Warning!! Character "
+			        + player.getName() + " of account "
+			        + player.getAccountName()
+			        + " tried to refine an item with wrong LifeStone-id.", Config.DEFAULT_PUNISH);
 			return false;
 		}
-		if ( player.getInventory().getItemByObjectId(targetItem.getObjectId())==null )
+		if (player.getInventory().getItemByObjectId(targetItem.getObjectId()) == null)
 		{
-			Util.handleIllegalPlayerAction(player,"Warning!! Character "+player.getName()+" of account "+player.getAccountName()+" tried to refine an item with wrong Weapon-id.",Config.DEFAULT_PUNISH);
+			Util.handleIllegalPlayerAction(player, "Warning!! Character "
+			        + player.getName() + " of account "
+			        + player.getAccountName()
+			        + " tried to refine an item with wrong Weapon-id.", Config.DEFAULT_PUNISH);
 			return false;
 		}
-		if ( player.getInventory().getItemByObjectId(gemstoneItem.getObjectId())==null )
+		if (player.getInventory().getItemByObjectId(gemstoneItem.getObjectId()) == null)
 		{
-			Util.handleIllegalPlayerAction(player,"Warning!! Character "+player.getName()+" of account "+player.getAccountName()+" tried to refine an item with wrong Gemstone-id.",Config.DEFAULT_PUNISH);
+			Util.handleIllegalPlayerAction(player, "Warning!! Character "
+			        + player.getName() + " of account "
+			        + player.getAccountName()
+			        + " tried to refine an item with wrong Gemstone-id.", Config.DEFAULT_PUNISH);
 			return false;
 		}
 
