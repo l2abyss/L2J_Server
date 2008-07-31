@@ -701,7 +701,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 								// here and added in the AI script, when
 								// implemented (Fulminus)
 								// Notify the L2Object AI with EVT_AGGRESSION
-								npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, originalAttackTarget, 1);
+								npc.getAI().informAIEvent(CtrlEvent.EVT_AGGRESSION, originalAttackTarget, 1);
 								if ((originalAttackTarget instanceof L2PcInstance)
 								        || (originalAttackTarget instanceof L2Summon))
 								{
