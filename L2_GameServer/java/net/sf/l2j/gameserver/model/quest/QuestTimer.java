@@ -97,7 +97,9 @@ public class QuestTimer
     		return false;
     	if ( (quest != getQuest()) || name.compareToIgnoreCase(getName())!=0 )
     		return false;
-    	return (( npc==null || getNpc()==null || npc==getNpc() ) && ( player==null || getPlayer()==null || player==getPlayer() ));
+    	if (((npc == null && getNpc() == null) || (getNpc() != null && npc == getNpc())) && ((player == null && getPlayer() == null) || (getPlayer() != null && player == getPlayer())))
+    		return true;
+    	return false;
     }
 
     // =========================================================
