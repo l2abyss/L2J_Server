@@ -24,6 +24,7 @@ import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2AttackableAI;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.handler.SkillHandler;
+import net.sf.l2j.gameserver.instancemanager.DuelManager;
 import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
@@ -705,8 +706,21 @@ public class Disablers implements ISkillHandler
             {
 	            case STUN:
 	                {
-	                    if (Formulas.getInstance().calcCubicSkillSuccess(activeCubic, target, skill)){                    
-	                    	skill.getEffects(activeCubic, target);
+	                    if (Formulas.getInstance().calcCubicSkillSuccess(activeCubic, target, skill))
+	                    {                    
+	                    	// if this is a debuff let the duel manager know about it
+	        				// so the debuff can be removed after the duel
+	        				// (player & target must be in the same duel)
+	        				if (target instanceof L2PcInstance && ((L2PcInstance)target).isInDuel() &&
+	        						skill.getSkillType() == L2Skill.SkillType.DEBUFF &&
+	        						activeCubic.getOwner().getDuelId() == ((L2PcInstance)target).getDuelId())
+	        				{
+	        					DuelManager dm = DuelManager.getInstance();
+	        					for (L2Effect debuff : skill.getEffects(activeCubic.getOwner(), target))
+	        						if (debuff != null) dm.onBuff(((L2PcInstance)target), debuff);
+	        				}
+	        				else
+	        					skill.getEffects(activeCubic, target);
 	                    	SystemMessage sm = new SystemMessage(SystemMessageId.S1_SUCCEEDED);
 	                        sm.addSkillName(skill);
 	                        activeCubic.getOwner().sendPacket(sm);
@@ -726,8 +740,21 @@ public class Disablers implements ISkillHandler
 	                }
                 case PARALYZE: //use same as root for now
                 {
-                    if (Formulas.getInstance().calcCubicSkillSuccess(activeCubic, target, skill)){
-                    	skill.getEffects(activeCubic, target);
+                    if (Formulas.getInstance().calcCubicSkillSuccess(activeCubic, target, skill))
+                    {
+                    	// if this is a debuff let the duel manager know about it
+        				// so the debuff can be removed after the duel
+        				// (player & target must be in the same duel)
+        				if (target instanceof L2PcInstance && ((L2PcInstance)target).isInDuel() &&
+        						skill.getSkillType() == L2Skill.SkillType.DEBUFF &&
+        						activeCubic.getOwner().getDuelId() == ((L2PcInstance)target).getDuelId())
+        				{
+        					DuelManager dm = DuelManager.getInstance();
+        					for (L2Effect debuff : skill.getEffects(activeCubic.getOwner(), target))
+        						if (debuff != null) dm.onBuff(((L2PcInstance)target), debuff);
+        				}
+        				else
+        					skill.getEffects(activeCubic, target);
 
                         SystemMessage sm = new SystemMessage(SystemMessageId.S1_SUCCEEDED);
                         sm.addSkillName(skill);
