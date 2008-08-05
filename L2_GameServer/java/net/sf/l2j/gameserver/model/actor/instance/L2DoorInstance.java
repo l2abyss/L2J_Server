@@ -510,7 +510,8 @@ public class L2DoorInstance extends L2Character
         StaticObject su = new StaticObject(this, false);
         DoorStatusUpdate dsu  = new DoorStatusUpdate(this);
 
-        synchronized (getKnownList().getKnownPlayers()) {
+        //synchronized (getKnownList().getKnownPlayers())
+        {
         for (L2PcInstance player : knownPlayers)
 			{
 				if (getCastle() != null && getCastle().getCastleId() > 0
@@ -612,7 +613,7 @@ public class L2DoorInstance extends L2Character
         FastList<L2SiegeGuardInstance> result = new FastList<L2SiegeGuardInstance>();
 
         Collection<L2Object> objs = getKnownList().getKnownObjects().values();
-        synchronized (getKnownList().getKnownObjects())
+        //synchronized (getKnownList().getKnownObjects())
 		{
 			for (L2Object obj : objs)
 			{

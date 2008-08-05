@@ -49,7 +49,8 @@ public class ChatHeroVoice implements IChatHandler
 			CreatureSay cs = new CreatureSay(activeChar.getObjectId(), type, activeChar.getName(), text);
 
 			Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-			synchronized (L2World.getInstance().getAllPlayers()) {
+			//synchronized (L2World.getInstance().getAllPlayers())
+			{
 				for (L2PcInstance player : pls)
 					if (!BlockList.isBlocked(player, activeChar))
 						player.sendPacket(cs);

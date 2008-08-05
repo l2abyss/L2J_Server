@@ -1575,7 +1575,7 @@ public abstract class L2Skill
 
                 // Go through the L2Character _knownList
                 Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
-                synchronized (activeChar.getKnownList().getKnownObjects())
+                //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
 					for (L2Object obj : objs)
 					{
@@ -1673,7 +1673,7 @@ public abstract class L2Skill
                 
                 // Go through the L2Character _knownList
                 Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
-                synchronized (activeChar.getKnownList().getKnownObjects())
+                //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
 					for (L2Object obj : objs)
 					{
@@ -1775,7 +1775,7 @@ public abstract class L2Skill
                 
                 // Go through the L2Character _knownList
                 Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
-                synchronized (activeChar.getKnownList().getKnownObjects())
+                //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
 					for (L2Object obj : objs)
 					{
@@ -1907,7 +1907,7 @@ public abstract class L2Skill
                 boolean srcInArena = (activeChar.isInsideZone(L2Character.ZONE_PVP) && !activeChar.isInsideZone(L2Character.ZONE_SIEGE));
 
                 Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
-                synchronized (activeChar.getKnownList().getKnownObjects())
+                //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
 					for (L2Object obj : objs)
 					{
@@ -2060,7 +2060,7 @@ public abstract class L2Skill
                 boolean srcInArena = (activeChar.isInsideZone(L2Character.ZONE_PVP) && !activeChar.isInsideZone(L2Character.ZONE_SIEGE));
 
                 Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
-                synchronized (activeChar.getKnownList().getKnownObjects())
+                //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
 					for (L2Object obj : objs)
 					{
@@ -2217,7 +2217,7 @@ public abstract class L2Skill
                 boolean srcInArena = (activeChar.isInsideZone(L2Character.ZONE_PVP) && !activeChar.isInsideZone(L2Character.ZONE_SIEGE));
 
                 Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
-                synchronized (activeChar.getKnownList().getKnownObjects())
+                //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
 					for (L2Object obj : objs)
 					{
@@ -2343,7 +2343,7 @@ public abstract class L2Skill
                 int radius = getSkillRadius();
 
                 Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
-                synchronized (activeChar.getKnownList().getKnownObjects())
+                //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
 					for (L2Object obj : objs)
 					{
@@ -2507,7 +2507,7 @@ public abstract class L2Skill
                         // Get all visible objects in a spherical area near the L2Character
                         // Get Clan Members
                     	Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
-                    	synchronized (activeChar.getKnownList().getKnownObjects())
+                    	//synchronized (activeChar.getKnownList().getKnownObjects())
 						{
 							for (L2Object newTarget : objs)
 							{
@@ -2638,7 +2638,7 @@ public abstract class L2Skill
                 	// for buff purposes, returns one unbuffed friendly mob nearby or mob itself?
                 	L2NpcInstance npc = (L2NpcInstance) activeChar;
                 	Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
-                	synchronized (activeChar.getKnownList().getKnownObjects())
+                	//synchronized (activeChar.getKnownList().getKnownObjects())
 					{
 						for (L2Object newTarget : objs)
 						{
@@ -2776,7 +2776,7 @@ public abstract class L2Skill
 
                 int radius = getSkillRadius();
                 Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
-                synchronized (activeChar.getKnownList().getKnownObjects())
+                //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
 					for (L2Object obj : objs)
 					{
@@ -2915,7 +2915,7 @@ public abstract class L2Skill
                 else cha = activeChar;
 
                 Collection<L2Object> objs = cha.getKnownList().getKnownObjects().values();
-                synchronized (cha.getKnownList().getKnownObjects())
+                //synchronized (cha.getKnownList().getKnownObjects())
 				{
 					for (L2Object obj : objs)
 					{

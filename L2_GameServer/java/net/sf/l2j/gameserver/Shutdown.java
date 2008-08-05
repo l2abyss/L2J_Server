@@ -499,7 +499,7 @@ public class Shutdown extends Thread
 		SystemMessage sysm = new SystemMessage(0);
 		ServerClose ql = new ServerClose();
 		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-		synchronized (L2World.getInstance().getAllPlayers())
+		//synchronized (L2World.getInstance().getAllPlayers())
 		{
 			for (L2PcInstance player : pls)
 			{
@@ -517,7 +517,7 @@ public class Shutdown extends Thread
 		
 
 		pls = L2World.getInstance().getAllPlayers().values();
-		synchronized (L2World.getInstance().getAllPlayers())
+		//synchronized (L2World.getInstance().getAllPlayers())
 		{
 			for (L2PcInstance player : pls)
 			{

@@ -62,7 +62,7 @@ public final class Broadcast
         if (Config.DEBUG) _log.fine("players to notify:" + character.getKnownList().getKnownPlayers().size() + " packet:"+mov.getType());
 
         Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
-        synchronized (character.getKnownList().getKnownPlayers())
+        //synchronized (character.getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
 			{
@@ -100,7 +100,7 @@ public final class Broadcast
 			_log.fine("players to notify:" + character.getKnownList().getKnownPlayers().size() + " packet:" + mov.getType());
 		
 		Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
-		synchronized (character.getKnownList().getKnownPlayers())
+		//synchronized (character.getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
 			{
@@ -152,7 +152,7 @@ public final class Broadcast
     		radius = 1500;
 
     	Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
-    	synchronized (character.getKnownList().getKnownPlayers())
+    	//synchronized (character.getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
 			{
@@ -188,8 +188,8 @@ public final class Broadcast
        if (character instanceof L2PcInstance) character.sendPacket(mov);
 
        Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
-       synchronized (character.getKnownList().getKnownPlayers())
-		{
+       //synchronized (character.getKnownList().getKnownPlayers())
+       {
 			for (L2PcInstance player : plrs)
 			{
 				if (player != null
@@ -213,7 +213,8 @@ public final class Broadcast
         if (Config.DEBUG) _log.fine("Players to notify: " + L2World.getInstance().getAllPlayersCount() + " (with packet " + mov.getType() + ")");
 
         Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-        synchronized (L2World.getInstance().getAllPlayers()) {
+        //synchronized (L2World.getInstance().getAllPlayers())
+        {
         	for (L2PcInstance onlinePlayer : pls)
         		if (onlinePlayer.isOnline() == 1)
         			onlinePlayer.sendPacket(mov);

@@ -300,7 +300,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 				String faction_id = ((L2NpcInstance) _actor).getFactionId();
 
 				Collection<L2Object> objs = _actor.getKnownList().getKnownObjects().values();
-				synchronized (_actor.getKnownList().getKnownObjects())
+				//synchronized (_actor.getKnownList().getKnownObjects())
 				{
 					for (L2Object obj : objs)
 					{
@@ -460,7 +460,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 		List<L2Character> potentialTarget = new FastList<L2Character>();
 
 		Collection<L2Object> objs = npc.getKnownList().getKnownObjects().values();
-		synchronized (npc.getKnownList().getKnownObjects())
+		//synchronized (npc.getKnownList().getKnownObjects())
 		{
 			for (L2Object obj : objs)
 			{

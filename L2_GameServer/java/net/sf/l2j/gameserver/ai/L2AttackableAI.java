@@ -410,7 +410,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
             //L2Object[] objects = L2World.getInstance().getVisibleObjects(_actor, ((L2NpcInstance)_actor).getAggroRange());
             // Go through visible objects
         	Collection<L2Object> objs = npc.getKnownList().getKnownObjects().values();
-        	synchronized (npc.getKnownList().getKnownObjects()) {
+        	//synchronized (npc.getKnownList().getKnownObjects())
+        	{
         		for (L2Object obj : objs)
         		{
         			if (!(obj instanceof L2Character)) continue;
@@ -662,7 +663,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 
         	// Go through all L2Object that belong to its faction
         	Collection<L2Object> objs = _actor.getKnownList().getKnownObjects().values();
-        	synchronized (_actor.getKnownList().getKnownObjects())
+        	//synchronized (_actor.getKnownList().getKnownObjects())
 			{
 				for (L2Object obj : objs)
 				{
@@ -701,7 +702,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 								// here and added in the AI script, when
 								// implemented (Fulminus)
 								// Notify the L2Object AI with EVT_AGGRESSION
-								npc.getAI().informAIEvent(CtrlEvent.EVT_AGGRESSION, originalAttackTarget, 1);
+								npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, originalAttackTarget, 1);
 								if ((originalAttackTarget instanceof L2PcInstance)
 								        || (originalAttackTarget instanceof L2Summon))
 								{

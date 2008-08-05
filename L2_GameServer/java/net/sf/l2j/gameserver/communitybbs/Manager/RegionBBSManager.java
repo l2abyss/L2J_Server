@@ -277,7 +277,7 @@ public class RegionBBSManager extends BaseBBSManager
 	public synchronized void changeCommunityBoard()
 	{
 		FastList<L2PcInstance> sortedPlayers = new FastList<L2PcInstance>();
-		synchronized (L2World.getInstance().getAllPlayers())
+		//synchronized (L2World.getInstance().getAllPlayers())
 		{
 			sortedPlayers.addAll(L2World.getInstance().getAllPlayers().values());
 		}

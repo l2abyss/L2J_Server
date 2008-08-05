@@ -59,7 +59,7 @@ public abstract class L2Decoy extends L2Character
     public void updateAbnormalEffect()
     {
     	Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-    	synchronized (getKnownList().getKnownPlayers())
+    	//synchronized (getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
 				player.sendPacket(new NpcInfo(this));

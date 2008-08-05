@@ -393,7 +393,7 @@ public final class L2Weapon  extends L2Item
                 {
 					// Mobs in range 1000 see spell
                 	Collection<L2Object> objs = caster.getKnownList().getKnownObjects().values();
-                	synchronized (caster.getKnownList().getKnownObjects())
+                	//synchronized (caster.getKnownList().getKnownObjects())
                 	{
                 		for (L2Object spMob : objs)
                 		{

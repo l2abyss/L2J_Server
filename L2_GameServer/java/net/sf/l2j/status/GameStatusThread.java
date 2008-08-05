@@ -751,7 +751,7 @@ public class GameStatusThread extends Thread
                 		if(type.equals("privatestore"))
                 		{
                 			Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-							synchronized (L2World.getInstance().getAllPlayers())
+							//synchronized (L2World.getInstance().getAllPlayers())
 							{
 								for (L2PcInstance player : pls)
 								{
@@ -1043,7 +1043,8 @@ public class GameStatusThread extends Thread
         int AICount=0;
 
         Collection<L2Object> objs = L2World.getInstance().getAllVisibleObjects().values();
-        synchronized (L2World.getInstance().getAllVisibleObjects()) {
+        //synchronized (L2World.getInstance().getAllVisibleObjects())
+        {
         	for (L2Object obj : objs)
         	{
         		if(obj == null)

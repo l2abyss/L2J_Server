@@ -372,7 +372,8 @@ public class FortSiege
 
         // Get all players
         Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-        synchronized (L2World.getInstance().getAllPlayers()) {
+        //synchronized (L2World.getInstance().getAllPlayers())
+        {
         	for (L2PcInstance player : pls)
                 player.sendMessage(message);
         }
@@ -390,8 +391,8 @@ public class FortSiege
                  else member.setSiegeState((byte)1);
                  member.sendPacket(new UserInfo(member));
                  Collection<L2PcInstance> plrs = member.getKnownList().getKnownPlayers().values();
-                 synchronized (member.getKnownList().getKnownPlayers())
-				{
+                 //synchronized (member.getKnownList().getKnownPlayers())
+                 {
 					for (L2PcInstance player : plrs)
 					{
 						player.sendPacket(new RelationChanged(member, member.getRelation(player), member.isAutoAttackable(player)));
@@ -410,7 +411,7 @@ public class FortSiege
                 else member.setSiegeState((byte)2);
                 member.sendPacket(new UserInfo(member));
                 Collection<L2PcInstance> plrs = member.getKnownList().getKnownPlayers().values();
-                synchronized (member.getKnownList().getKnownPlayers())
+                //synchronized (member.getKnownList().getKnownPlayers())
 				{
 					for (L2PcInstance player : plrs)
 					{
@@ -617,7 +618,8 @@ public class FortSiege
         List<L2PcInstance> players = new FastList<L2PcInstance>();
 
         Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-        synchronized (L2World.getInstance().getAllPlayers()) {
+        //synchronized (L2World.getInstance().getAllPlayers())
+        {
         	for (L2PcInstance player : pls)
         	{
         		// quick check from player states, which don't include siege number however

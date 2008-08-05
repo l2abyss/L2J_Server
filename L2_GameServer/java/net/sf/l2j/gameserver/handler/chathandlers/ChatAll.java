@@ -73,7 +73,7 @@ public class ChatAll implements IChatHandler
 			CreatureSay cs = new CreatureSay(activeChar.getObjectId(), type, activeChar.getAppearance().getVisibleName(), text);
 
 			Collection<L2PcInstance> plrs = activeChar.getKnownList().getKnownPlayers().values();
-			synchronized (activeChar.getKnownList().getKnownPlayers())
+			//synchronized (activeChar.getKnownList().getKnownPlayers())
 			{
 				for (L2PcInstance player : plrs)
 				{

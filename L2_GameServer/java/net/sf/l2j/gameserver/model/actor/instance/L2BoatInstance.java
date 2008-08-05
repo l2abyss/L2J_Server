@@ -220,7 +220,7 @@ public class L2BoatInstance extends L2Character
 				Collection<L2PcInstance> knownPlayers = _boat.getKnownList().getKnownPlayers().values();
 				if (knownPlayers == null || knownPlayers.isEmpty())
 					return bp.time;
-				synchronized (_boat.getKnownList().getKnownPlayers())
+				//synchronized (_boat.getKnownList().getKnownPlayers())
 				{
 					for (L2PcInstance player : knownPlayers)
 					{
@@ -595,7 +595,7 @@ public class L2BoatInstance extends L2Character
 			{
 				_inboat = new FastMap<Integer, L2PcInstance>();
 				int i = 0;
-				synchronized (getKnownList().getKnownPlayers())
+				//synchronized (getKnownList().getKnownPlayers())
 				{
 					for (L2PcInstance player : knownPlayers)
 					{
@@ -637,7 +637,7 @@ public class L2BoatInstance extends L2Character
 			{
 				_inboat = new FastMap<Integer, L2PcInstance>();
 				int i = 0;
-				synchronized (getKnownList().getKnownPlayers())
+				//synchronized (getKnownList().getKnownPlayers())
 				{
 					for (L2PcInstance player : knownPlayers)
 					{

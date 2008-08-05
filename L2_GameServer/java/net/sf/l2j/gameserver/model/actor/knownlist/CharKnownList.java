@@ -108,7 +108,7 @@ public class CharKnownList extends ObjectKnownList
     	if (!fullCheck)
     	{
     		Collection<L2PcInstance> plrs = getKnownPlayers().values();
-    		synchronized (getKnownPlayers())
+    		//synchronized (getKnownPlayers())
 			{
 				for (L2PcInstance player : plrs)
 				{
@@ -119,7 +119,7 @@ public class CharKnownList extends ObjectKnownList
 				}
 			}
     		Collection<L2Summon> sums = getKnownSummons().values();
-    		synchronized (sums)
+    		//synchronized (sums)
 			{
 				for (L2Summon summon : sums)
 				{
@@ -133,7 +133,7 @@ public class CharKnownList extends ObjectKnownList
     	}
     	// Go through knownObjects
     	Collection<L2Object> objs = getKnownObjects().values();
-    	synchronized (getKnownObjects())
+    	//synchronized (getKnownObjects())
 		{
 			for (L2Object object : objs)
 			{
@@ -185,7 +185,7 @@ public class CharKnownList extends ObjectKnownList
         FastList<L2Character> result = new FastList<L2Character>();
 
         Collection<L2Object> objs = getKnownObjects().values();
-        synchronized (getKnownObjects())
+        //synchronized (getKnownObjects())
 		{
 			for (L2Object obj : objs)
 			{
@@ -201,8 +201,8 @@ public class CharKnownList extends ObjectKnownList
        FastList<L2Character> result = new FastList<L2Character>();
 
        Collection<L2Object> objs = getKnownObjects().values();
-       synchronized (getKnownObjects())
-		{
+       //synchronized (getKnownObjects())
+       {
 			for (L2Object obj : objs)
 			{
 				if (obj instanceof L2PcInstance)
@@ -249,7 +249,7 @@ public class CharKnownList extends ObjectKnownList
         FastList<L2PcInstance> result = new FastList<L2PcInstance>();
 
         Collection<L2PcInstance> plrs = getKnownPlayers().values();
-        synchronized (getKnownPlayers())
+        //synchronized (getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
 				if (Util.checkIfInRange((int) radius, getActiveChar(), player, true))

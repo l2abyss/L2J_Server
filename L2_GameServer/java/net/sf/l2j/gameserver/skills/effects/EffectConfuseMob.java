@@ -66,7 +66,7 @@ final class EffectConfuseMob extends L2Effect {
 		// Getting the possible targets
 
 		Collection<L2Object> objs = getEffected().getKnownList().getKnownObjects().values();
-		synchronized (getEffected().getKnownList().getKnownObjects())
+		//synchronized (getEffected().getKnownList().getKnownObjects())
 		{
 			for (L2Object obj : objs)
 			{

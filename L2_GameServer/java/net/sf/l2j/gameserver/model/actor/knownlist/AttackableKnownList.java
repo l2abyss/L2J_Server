@@ -54,7 +54,7 @@ public class AttackableKnownList extends NpcKnownList
         L2CharacterAI ai = getActiveChar().getAI();
         if (ai != null && (known == null || known.isEmpty()))
         {
-            ai.informAIIntention(CtrlIntention.AI_INTENTION_IDLE, null);
+            ai.setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
         }
 
         return true;

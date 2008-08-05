@@ -81,9 +81,9 @@ public class ObjectKnownList
     		for (L2WorldRegion regi : region.getSurroundingRegions()) // offer members of this and surrounding regions
     		{
     			Collection<L2Object> vObj = regi.getVisibleObjects().values();
-    	    	synchronized (KnownListUpdateTaskManager.getInstance().getSync())
+    	    	//synchronized (KnownListUpdateTaskManager.getInstance().getSync())
 				{
-					synchronized (regi.getVisibleObjects())
+					//synchronized (regi.getVisibleObjects())
 					{
 						for (L2Object _object : vObj)
 						{
@@ -104,9 +104,9 @@ public class ObjectKnownList
     		{
     			if (regi.isActive()) {
     				Collection<L2PlayableInstance> vPls = regi.getVisiblePlayable().values();
-    		    	synchronized (KnownListUpdateTaskManager.getInstance().getSync())
+    		    	//synchronized (KnownListUpdateTaskManager.getInstance().getSync())
 					{
-						synchronized (regi.getVisiblePlayable())
+						//synchronized (regi.getVisiblePlayable())
 						{
 							for (L2Object _object : vPls)
 								if (_object != getActiveObject())
@@ -121,11 +121,11 @@ public class ObjectKnownList
     // Remove invisible and too far L2Object from _knowObject and if necessary from _knownPlayers of the L2Character
     public void forgetObjects(boolean fullCheck)
     {
-    	synchronized (KnownListUpdateTaskManager.getInstance().getSync())
+    	//synchronized (KnownListUpdateTaskManager.getInstance().getSync())
 		{
 			// Go through knownObjects
 			Collection<L2Object> objs = getKnownObjects().values();
-			synchronized (getKnownObjects())
+			//synchronized (getKnownObjects())
 			{
 				for (L2Object object : objs)
 				{

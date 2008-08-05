@@ -31,6 +31,7 @@ public class KnownListUpdateTaskManager
 	protected static final Logger _log = Logger.getLogger(DecayTaskManager.class.getName());
 	
 	private Object syncObject = new Object();
+	public static boolean updatePass = true;
 	
 	private static KnownListUpdateTaskManager _instance;
 	
@@ -73,7 +74,7 @@ public class KnownListUpdateTaskManager
 							if (r.isActive()) // and check only if the region
 							// is active
 							{
-								updateRegion(r, true, true);
+								updateRegion(r, true, updatePass);
 							}
 						}
 						catch (Exception e)
@@ -87,6 +88,7 @@ public class KnownListUpdateTaskManager
 			{
 				_log.warning(e.toString());
 			}
+			updatePass = !updatePass;
 			ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(), Config.KNOWNLIST_UPDATE_INTERVAL);
 		}
 	}
@@ -94,10 +96,10 @@ public class KnownListUpdateTaskManager
 	public void updateRegion(L2WorldRegion region, boolean fullUpdate,
 	        boolean forgetObjects)
 	{
-		synchronized (syncObject)
+		//synchronized (syncObject)
 		{
 			Collection<L2Object> vObj = region.getVisibleObjects().values();
-			synchronized (region.getVisibleObjects())
+			//synchronized (region.getVisibleObjects())
 			{
 				for (L2Object object : vObj) // and for all members in region
 				{
@@ -115,7 +117,7 @@ public class KnownListUpdateTaskManager
 						for (L2WorldRegion regi : region.getSurroundingRegions()) 
 						{
 							Collection<L2Object> inrObj = regi.getVisibleObjects().values();
-							synchronized (regi.getVisibleObjects())
+							//synchronized (regi.getVisibleObjects())
 							{
 								for (L2Object _object : inrObj)
 									if (_object != object)
@@ -127,7 +129,7 @@ public class KnownListUpdateTaskManager
 						for (L2WorldRegion regi : region.getSurroundingRegions())
 						{
 							Collection<L2PlayableInstance> inrPls = regi.getVisiblePlayable().values();
-							synchronized (regi.getVisiblePlayable())
+							//synchronized (regi.getVisiblePlayable())
 							{
 								if (regi.isActive())
 									for (L2Object _object : inrPls)

@@ -425,10 +425,10 @@ public final class L2World
             // Go through all surrounding L2WorldRegion L2Characters
             for (L2WorldRegion reg : oldRegion.getSurroundingRegions()) 
             {
-            	synchronized (KnownListUpdateTaskManager.getInstance().getSync())
+            	//synchronized (KnownListUpdateTaskManager.getInstance().getSync())
 				{
 					Collection<L2Object> vObj = reg.getVisibleObjects().values();
-					synchronized (reg.getVisibleObjects())
+					//synchronized (reg.getVisibleObjects())
 					{
 						for (L2Object obj : vObj)
 						{
@@ -490,7 +490,8 @@ public final class L2World
         {
         	// Go through visible objects of the selected region
         	Collection<L2Object> vObj = regi.getVisibleObjects().values();
-        	synchronized (regi.getVisibleObjects()) {
+        	//synchronized (regi.getVisibleObjects())
+        	{
         		for (L2Object _object : vObj)
         		{
         			if (_object.equals(object))
@@ -539,7 +540,8 @@ public final class L2World
         {
             // Go through visible objects of the selected region
         	Collection<L2Object> vObj = regi.getVisibleObjects().values();
-        	synchronized (regi.getVisibleObjects()) {
+        	//synchronized (regi.getVisibleObjects())
+        	{
         		for (L2Object _object : vObj)
         		{
         			if (_object.equals(object)) continue;   // skip our own character
@@ -593,7 +595,8 @@ public final class L2World
         for (L2WorldRegion regi : object.getWorldRegion().getSurroundingRegions())
         {
         	Collection<L2Object> vObj = regi.getVisibleObjects().values();
-        	synchronized (regi.getVisibleObjects()) {
+        	//synchronized (regi.getVisibleObjects())
+        	{
         		for (L2Object _object : vObj)
         		{
         			if (_object.equals(object)) continue;   // skip our own character
@@ -645,7 +648,8 @@ public final class L2World
         	Map<Integer,L2PlayableInstance> _allpls = regi.getVisiblePlayable();
         	Collection<L2PlayableInstance> _playables = _allpls.values();
             // Go through visible object of the selected region
-        	synchronized (_allpls) {
+        	//synchronized (_allpls)
+        	{
         		for (L2PlayableInstance _object: _playables)
         		{
         			if (_object.equals(object))

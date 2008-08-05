@@ -258,10 +258,11 @@ abstract class AbstractAI implements Ctrl
      * @param arg1 The second parameter of the Intention (optional target)
      *
      */
+    /*
     public final void informAIIntention(CtrlIntention intent, Object arg0) {
     	ThreadPoolManager.getInstance().executeAi(new InformAIMsg(this, intent, arg0));
     }
-
+	
     public final void informAIIntention(CtrlIntention intent) {
     	ThreadPoolManager.getInstance().executeAi(new InformAIMsg(this, intent, null));
     }
@@ -279,7 +280,7 @@ abstract class AbstractAI implements Ctrl
     		_ai.setIntention(_intent, _arg0, null);
     	}
     }
-    
+    */
     public final void setIntention(CtrlIntention intention, Object arg0, Object arg1)
     {
         if (!_actor.isVisible() || !_actor.hasAI()) return;
@@ -356,7 +357,7 @@ abstract class AbstractAI implements Ctrl
     {
         notifyEvent(evt, arg0, null);
     }
-
+    /*
     public final void informAIEvent(CtrlEvent evt) {
     	ThreadPoolManager.getInstance().executeAi(new InformAIEvent(this, evt, null, null));
     }
@@ -385,7 +386,7 @@ abstract class AbstractAI implements Ctrl
     		_ai.notifyEvent(_evt, _arg0, _arg1);
     	}
     }
-
+	*/
     /**
      * Launch the L2CharacterAI onEvt method corresponding to the Event.<BR><BR>
      *

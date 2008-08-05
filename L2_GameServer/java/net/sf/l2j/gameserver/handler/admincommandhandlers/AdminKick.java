@@ -48,7 +48,7 @@ public class AdminKick implements IAdminCommandHandler {
         {
         	int counter = 0;
         	Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-        	synchronized (L2World.getInstance().getAllPlayers())
+        	//synchronized (L2World.getInstance().getAllPlayers())
         	{
         		for (L2PcInstance player : pls)
         			if(!player.isGM())

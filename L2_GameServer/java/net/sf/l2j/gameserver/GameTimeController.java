@@ -123,7 +123,8 @@ public class GameTimeController
 		
 		// Go throw the table containing L2Character in movement
 		Collection<L2Character> mObjs = _movingObjects.values();
-		synchronized (_movingObjects) {
+		//synchronized (_movingObjects)
+		{
 			for (L2Character ch : mObjs)
 			{
 				// If movement is finished, the L2Character is removed from

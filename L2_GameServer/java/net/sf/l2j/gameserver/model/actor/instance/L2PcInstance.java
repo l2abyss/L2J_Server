@@ -1522,7 +1522,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		if (getPet() != null) sendPacket(new RelationChanged(getPet(), getRelation(this), false));
 
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-		synchronized (getKnownList().getKnownPlayers())
+		//synchronized (getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance target : plrs)
 			{
@@ -1780,7 +1780,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		if (_karma == 0 && karma > 0)
 		{
 			Collection<L2Object> objs = getKnownList().getKnownObjects().values();
-			synchronized (getKnownList().getKnownObjects())
+			//synchronized (getKnownList().getKnownObjects())
 			{
 				for (L2Object object : objs)
 				{
@@ -3646,7 +3646,7 @@ public final class L2PcInstance extends L2PlayableInstance
         {
         	// TODO: implement new OlympiadUserInfo
         	Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-        	synchronized (getKnownList().getKnownPlayers())
+        	//synchronized (getKnownList().getKnownPlayers())
 			{
 				for (L2PcInstance player : plrs)
 				{
@@ -3810,7 +3810,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			sendPacket(mov);
 
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-		synchronized (getKnownList().getKnownPlayers())
+		//synchronized (getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
 			{
@@ -3837,7 +3837,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			sendPacket(mov);
 
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-		synchronized (getKnownList().getKnownPlayers())
+		//synchronized (getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
 			{
@@ -6174,7 +6174,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	{
 		sendPacket(new UserInfo(this));
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-		synchronized (getKnownList().getKnownPlayers())
+		//synchronized (getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
 			{
@@ -6195,7 +6195,7 @@ public final class L2PcInstance extends L2PlayableInstance
         sendPacket(su);
 
         Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-        synchronized (getKnownList().getKnownPlayers())
+        //synchronized (getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
 			{

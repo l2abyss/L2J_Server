@@ -43,7 +43,7 @@ public class FriendlyMobKnownList extends AttackableKnownList
         if (!super.addKnownObject(object, dropper)) return false;
 
         if (object instanceof L2PcInstance && getActiveChar().getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
-            getActiveChar().getAI().informAIIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
+            getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
 
         return true;
     }
@@ -65,7 +65,7 @@ public class FriendlyMobKnownList extends AttackableKnownList
         {
             getActiveChar().clearAggroList();
             //removeAllKnownObjects();
-            if (getActiveChar().hasAI()) getActiveChar().getAI().informAIIntention(CtrlIntention.AI_INTENTION_IDLE, null);
+            if (getActiveChar().hasAI()) getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
         }
 
         return true;

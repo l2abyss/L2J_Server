@@ -46,7 +46,7 @@ public class L2XmassTreeInstance extends L2NpcInstance
         public void run()
         {
         	Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-        	synchronized (getKnownList().getKnownPlayers())
+        	//synchronized (getKnownList().getKnownPlayers())
 			{
 				for (L2PcInstance player : plrs)
 				{

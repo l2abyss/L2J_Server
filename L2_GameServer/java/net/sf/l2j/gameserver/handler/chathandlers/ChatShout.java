@@ -45,7 +45,8 @@ public class ChatShout implements IChatHandler
 		{
 			int region = MapRegionTable.getInstance().getMapRegion(activeChar.getX(), activeChar.getY());
 			Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-			synchronized (L2World.getInstance().getAllPlayers()) {
+			//synchronized (L2World.getInstance().getAllPlayers())
+			{
 				for (L2PcInstance player : pls)
 					if (region == MapRegionTable.getInstance().getMapRegion(player.getX(),player.getY()))
 						player.sendPacket(cs);

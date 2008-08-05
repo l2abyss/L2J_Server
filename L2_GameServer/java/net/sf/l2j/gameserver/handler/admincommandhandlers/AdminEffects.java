@@ -209,7 +209,7 @@ public class AdminEffects implements IAdminCommandHandler
 			try
 			{
 				Collection<L2PcInstance> plrs = activeChar.getKnownList().getKnownPlayers().values();
-				synchronized (activeChar.getKnownList().getKnownPlayers())
+				//synchronized (activeChar.getKnownList().getKnownPlayers())
 				{
 					for (L2PcInstance player : plrs)
 					{
@@ -233,7 +233,7 @@ public class AdminEffects implements IAdminCommandHandler
 			try
 			{
 				Collection<L2PcInstance> plrs = activeChar.getKnownList().getKnownPlayers().values();
-				synchronized (activeChar.getKnownList().getKnownPlayers())
+				//synchronized (activeChar.getKnownList().getKnownPlayers())
 				{
 					for (L2PcInstance player : plrs)
 					{
@@ -378,7 +378,7 @@ public class AdminEffects implements IAdminCommandHandler
 			try
 			{
 				Collection<L2PcInstance> plrs = activeChar.getKnownList().getKnownPlayers().values();
-				synchronized (activeChar.getKnownList().getKnownPlayers())
+				//synchronized (activeChar.getKnownList().getKnownPlayers())
 				{
 					for (L2PcInstance player : plrs)
 					{
@@ -396,7 +396,7 @@ public class AdminEffects implements IAdminCommandHandler
 				String val = st.nextToken();
 				int teamVal = Integer.parseInt(val);
 				Collection<L2PcInstance> plrs = activeChar.getKnownList().getKnownPlayers().values();
-				synchronized (activeChar.getKnownList().getKnownPlayers())
+				//synchronized (activeChar.getKnownList().getKnownPlayers())
 				{
 					for (L2PcInstance player : plrs)
 					{
@@ -458,7 +458,7 @@ public class AdminEffects implements IAdminCommandHandler
 							{
 								int radius = Integer.parseInt(target);
 								Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
-								synchronized (activeChar.getKnownList().getKnownObjects())
+								//synchronized (activeChar.getKnownList().getKnownObjects())
 								{
 									for (L2Object object : objs)
 										if (activeChar.isInsideRadius(object, radius, false, false))
@@ -524,7 +524,7 @@ public class AdminEffects implements IAdminCommandHandler
 							{
 								int radius = Integer.parseInt(target);
 								Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
-								synchronized (activeChar.getKnownList().getKnownObjects())
+								//synchronized (activeChar.getKnownList().getKnownObjects())
 								{
 									for (L2Object object : objs)
 										if (activeChar.isInsideRadius(object, radius, false, false))

@@ -52,7 +52,7 @@ public class L2WaterZone extends L2ZoneType
 		else if (character instanceof L2NpcInstance)
 		{
 			Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
-			synchronized (character.getKnownList().getKnownPlayers())
+			//synchronized (character.getKnownList().getKnownPlayers())
 			{
 				for (L2PcInstance player : plrs)
 					player.sendPacket(new NpcInfo((L2NpcInstance) character, player));
@@ -84,7 +84,8 @@ public class L2WaterZone extends L2ZoneType
         else if (character instanceof L2NpcInstance)
         {
         	Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
-        	synchronized (character.getKnownList().getKnownPlayers()) {
+        	//synchronized (character.getKnownList().getKnownPlayers())
+        	{
             for (L2PcInstance player : plrs)
                     player.sendPacket(new NpcInfo((L2NpcInstance)character, player));
         	}

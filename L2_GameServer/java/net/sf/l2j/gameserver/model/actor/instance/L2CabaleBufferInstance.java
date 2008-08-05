@@ -107,7 +107,7 @@ public class L2CabaleBufferInstance extends L2NpcInstance
              *  - Mystics: +25% Magic Cancel Resist, +25% Effect Resistance<BR>
              */
             Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-            synchronized (getKnownList().getKnownPlayers())
+            //synchronized (getKnownList().getKnownPlayers())
 			{
 				for (L2PcInstance player : plrs)
 				{

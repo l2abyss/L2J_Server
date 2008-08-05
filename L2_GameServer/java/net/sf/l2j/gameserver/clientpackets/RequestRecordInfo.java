@@ -63,7 +63,7 @@ public class RequestRecordInfo extends L2GameClientPacket
 		_activeChar.sendPacket(new UserInfo(_activeChar));
 
 		Collection<L2Object> objs = _activeChar.getKnownList().getKnownObjects().values();
-		synchronized (_activeChar.getKnownList().getKnownObjects())
+		//synchronized (_activeChar.getKnownList().getKnownObjects())
 		{
 			for (L2Object object : objs)
 			{

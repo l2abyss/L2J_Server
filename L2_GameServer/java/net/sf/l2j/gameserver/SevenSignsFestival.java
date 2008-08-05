@@ -1291,7 +1291,7 @@ public class SevenSignsFestival implements SpawnListener
 
         // Remove any unused blood offerings from online players.
         Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-        synchronized (L2World.getInstance().getAllPlayers())
+        //synchronized (L2World.getInstance().getAllPlayers())
         {
         	for (L2PcInstance onlinePlayer : pls)
         	{

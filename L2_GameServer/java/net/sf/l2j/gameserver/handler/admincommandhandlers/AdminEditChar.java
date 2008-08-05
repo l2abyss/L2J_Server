@@ -376,7 +376,7 @@ public class AdminEditChar implements IAdminCommandHandler
 	{
 		Collection<L2PcInstance> allPlayers = L2World.getInstance().getAllPlayers().values();
 		L2PcInstance[] players;
-		synchronized (L2World.getInstance().getAllPlayers())
+		//synchronized (L2World.getInstance().getAllPlayers())
 		{
 			players = allPlayers.toArray(new L2PcInstance[allPlayers.size()]);
 		}
@@ -611,7 +611,8 @@ public class AdminEditChar implements IAdminCommandHandler
 		String name;
 		Collection<L2PcInstance> allPlayers = L2World.getInstance().getAllPlayers().values();
 		L2PcInstance[] players;
-		synchronized (L2World.getInstance().getAllPlayers()) {
+		//synchronized (L2World.getInstance().getAllPlayers())
+		{
 			players = allPlayers.toArray(new L2PcInstance[allPlayers.size()]);
 		}
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
@@ -658,7 +659,7 @@ public class AdminEditChar implements IAdminCommandHandler
 			throw  new IllegalArgumentException("Malformed IPv4 number");
 		Collection<L2PcInstance> allPlayers = L2World.getInstance().getAllPlayers().values();
 		L2PcInstance[] players;
-		synchronized (L2World.getInstance().getAllPlayers())
+		//synchronized (L2World.getInstance().getAllPlayers())
 		{
 			players = allPlayers.toArray(new L2PcInstance[allPlayers.size()]);
 		}

@@ -59,7 +59,7 @@ public class GuardKnownList extends AttackableKnownList
 
                 // Set the L2GuardInstance Intention to AI_INTENTION_ACTIVE
                 if (getActiveChar().getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
-                    getActiveChar().getAI().informAIIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
+                    getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
             }
         }
         else if ((Config.GUARD_ATTACK_AGGRO_MOB && getActiveChar().isInActiveRegion()) && object instanceof L2MonsterInstance)
@@ -73,7 +73,7 @@ public class GuardKnownList extends AttackableKnownList
 
                 // Set the L2GuardInstance Intention to AI_INTENTION_ACTIVE
                 if (getActiveChar().getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
-                    getActiveChar().getAI().informAIIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
+                    getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
             }
         }
 
@@ -92,7 +92,7 @@ public class GuardKnownList extends AttackableKnownList
 
             // Set the L2GuardInstance to AI_INTENTION_IDLE
             L2CharacterAI ai = getActiveChar().getAI();
-            if (ai != null) ai.informAIIntention(CtrlIntention.AI_INTENTION_IDLE, null);
+            if (ai != null) ai.setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
         }
 
         return true;

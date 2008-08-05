@@ -50,7 +50,8 @@ public class TaskRecom extends Task
     public void onTimeElapsed(ExecutedTask task)
     {
     	Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-    	synchronized (L2World.getInstance().getAllPlayers()) {
+    	//synchronized (L2World.getInstance().getAllPlayers())
+    	{
     		for (L2PcInstance player: pls)
     		{
     			player.restartRecom();

@@ -135,7 +135,7 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
 
         ClanTable.getInstance().storeclanswars(player.getClanId(), clan.getClanId());
         Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-        synchronized (L2World.getInstance().getAllPlayers())
+        //synchronized (L2World.getInstance().getAllPlayers())
         {
         	for (L2PcInstance cha : pls)
         		if (cha.getClan() == player.getClan() || cha.getClan() == clan)

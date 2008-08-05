@@ -1281,7 +1281,7 @@ public class SevenSigns
     protected void teleLosingCabalFromDungeons(String compWinner)
     {
     	Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-    	synchronized (L2World.getInstance().getAllPlayers())
+    	//synchronized (L2World.getInstance().getAllPlayers())
     	{
     		for (L2PcInstance onlinePlayer : pls)
     		{

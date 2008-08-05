@@ -80,7 +80,7 @@ public class AdminHeal implements IAdminCommandHandler {
 				{
 					int radius  = Integer.parseInt(player);
 					Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
-					synchronized (activeChar.getKnownList().getKnownObjects())
+					//synchronized (activeChar.getKnownList().getKnownObjects())
 					{
 						for (L2Object object : objs)
 						{

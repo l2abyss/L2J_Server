@@ -439,7 +439,7 @@ public class AdminEventEngine implements IAdminCommandHandler {
         LinkedList <L2PcInstance> temp = new LinkedList<L2PcInstance>();
         temp.clear();
         Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-        synchronized (L2World.getInstance().getAllPlayers())
+        //synchronized (L2World.getInstance().getAllPlayers())
         {
         	for (L2PcInstance player : pls)
         	{
@@ -449,7 +449,7 @@ public class AdminEventEngine implements IAdminCommandHandler {
         			temp.add(player);
         		}
         		Collection<L2PcInstance> plrs = player.getKnownList().getKnownPlayers().values();
-        		synchronized (player.getKnownList().getKnownPlayers())
+        		//synchronized (player.getKnownList().getKnownPlayers())
 				{
 					for (L2PcInstance playertemp : plrs)
 					{
