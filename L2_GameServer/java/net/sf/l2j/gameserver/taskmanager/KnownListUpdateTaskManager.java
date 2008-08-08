@@ -109,6 +109,7 @@ public class KnownListUpdateTaskManager
 					{
 						object.getKnownList().forgetObjects((object instanceof L2PlayableInstance
 						        || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate));
+						continue;
 					}
 					if (object instanceof L2PlayableInstance
 					        || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance)
