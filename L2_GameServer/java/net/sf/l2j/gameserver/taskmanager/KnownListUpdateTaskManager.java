@@ -29,9 +29,11 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 public class KnownListUpdateTaskManager
 {
 	protected static final Logger _log = Logger.getLogger(DecayTaskManager.class.getName());
-	
+
+	private final static int FULL_UPDATE_TIMER = 100;
 	private Object syncObject = new Object();
 	public static boolean updatePass = true;
+	public static int _fullUpdateTimer = FULL_UPDATE_TIMER; // Do full update every FULL_UPDATE_TIMER * KNOWNLIST_UPDATE_INTERVAL
 	
 	private static KnownListUpdateTaskManager _instance;
 	
@@ -74,7 +76,7 @@ public class KnownListUpdateTaskManager
 							if (r.isActive()) // and check only if the region
 							// is active
 							{
-								updateRegion(r, true, updatePass);
+								updateRegion(r, (_fullUpdateTimer == FULL_UPDATE_TIMER), updatePass);
 							}
 						}
 						catch (Exception e)
@@ -89,6 +91,8 @@ public class KnownListUpdateTaskManager
 				_log.warning(e.toString());
 			}
 			updatePass = !updatePass;
+			if (_fullUpdateTimer > 0) _fullUpdateTimer--;
+			else _fullUpdateTimer = FULL_UPDATE_TIMER;
 			ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(), Config.KNOWNLIST_UPDATE_INTERVAL);
 		}
 	}
