@@ -1864,6 +1864,7 @@ public abstract class L2Character extends L2Object
 			((L2PlayableInstance)this).stopNoblesseBlessing(null); 
 	
         	untransform(); // Untransforms character if transformed.
+        	stopTransformation(null);
 			
         	if (((L2PlayableInstance)this).getCharmOfLuck()) //remove Lucky Charm if player have Nobless blessing buff 
 				((L2PlayableInstance)this).stopCharmOfLuck(null); 
