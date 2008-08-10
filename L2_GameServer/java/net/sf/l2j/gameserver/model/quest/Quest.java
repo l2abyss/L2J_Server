@@ -242,8 +242,13 @@ public class Quest extends ManagedScript
 			return null;
 		
 		for (QuestTimer timer : qt)
-			if (timer.isMatch(this, name, npc, player))
-				return timer;
+		{
+			if (timer != null)
+			{
+				if (timer.isMatch(this, name, npc, player))
+					return timer;
+			}
+		}
 		
 		return null;
     }

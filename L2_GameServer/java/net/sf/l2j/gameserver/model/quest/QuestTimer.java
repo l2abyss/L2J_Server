@@ -32,9 +32,9 @@ public class QuestTimer
 
             try
             {
-            	getQuest().notifyEvent(getName(), getNpc(), getPlayer());
             	if (!getIsRepeating())
             	    cancel();
+            	getQuest().notifyEvent(getName(), getNpc(), getPlayer());
             }
             catch (Throwable t)
             {
@@ -88,16 +88,20 @@ public class QuestTimer
         getQuest().removeQuestTimer(this);
     }
 
-    // public method to compare if this timer matches with the key attributes passed.
-    // a quest and a name are required.
-    // null npc or player act as wildcards for the match
+    /**
+     * public method to compare if this timer matches with the key attributes passed.
+     * @param quest : Quest instance to which the timer is attached
+     * @param name : Name of the timer
+     * @param npc : Npc instance attached to the desired timer (null if no npc attached)
+     * @param player : Player instance attached to the desired timer (null if no player attached)
+     */
     public boolean isMatch(Quest quest, String name, L2NpcInstance npc, L2PcInstance player)
     {
     	if ((quest == null) || (name == null))
     		return false;
     	if ( (quest != getQuest()) || name.compareToIgnoreCase(getName())!=0 )
     		return false;
-    	return (( npc==null || getNpc()==null || npc==getNpc() ) && ( player==null || getPlayer()==null || player==getPlayer() ));
+    	return (( npc==getNpc() ) && ( player==getPlayer() ));
     }
 
     // =========================================================
