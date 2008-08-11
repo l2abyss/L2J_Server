@@ -137,7 +137,7 @@ public class Fishing implements ISkillHandler
 			// Player Z:" + z + ", " + player.getZ()); //debug line, shows hook
 			// landing related coordinates. Uncoment if needed.
 		}
-		else if (aimingTo != null && GeoData.getInstance().canSeeTarget(player.getX(), player.getY(), player.getZ()+50, x, y, water.getWaterZ()-50))
+		else if (aimingTo != null && GeoData.getInstance().canSeeTarget(player.getX(), player.getY(), player.getZ()+50, x, y, aimingTo.getWaterZ()-50))
 			z = aimingTo.getWaterZ() +10;
 		else
 		{
