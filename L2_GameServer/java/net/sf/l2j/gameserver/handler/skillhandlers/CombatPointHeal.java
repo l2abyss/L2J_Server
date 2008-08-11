@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.handler.skillhandlers;
 
 import net.sf.l2j.gameserver.handler.ISkillHandler;
+import net.sf.l2j.gameserver.handler.SkillHandler;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
@@ -43,6 +44,14 @@ public class CombatPointHeal implements ISkillHandler
     public void useSkill(@SuppressWarnings("unused") L2Character actChar, L2Skill skill, L2Object[] targets)
     {
 //      L2Character activeChar = actChar;
+    	//check for other effects
+	    try {
+	        ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(SkillType.BUFF);
+
+            if (handler != null)
+                handler.useSkill(actChar, skill, targets);
+	    }
+        catch (Exception e) {}
 
         L2Character target = null;
 
