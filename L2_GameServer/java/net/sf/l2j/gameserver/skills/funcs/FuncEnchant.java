@@ -86,6 +86,19 @@ public class FuncEnchant extends Func
             
             switch (item.getItem().getCrystalType())
             {
+            	case L2Item.CRYSTAL_S:
+                case L2Item.CRYSTAL_S80:
+                    switch(type)
+                    {
+                        case BOW:
+                        case CROSSBOW:
+                            env.value += 10 * enchant + 20 * overenchant;
+                            break;
+                        default:
+                            env.value += 5 * enchant + 10 * overenchant;
+                            break;
+                    }
+                    break;
                 case L2Item.CRYSTAL_A:
                     switch(type)
                     {
@@ -93,15 +106,6 @@ public class FuncEnchant extends Func
                         case CROSSBOW:
                             env.value += 8 * enchant + 16 * overenchant; 
                             break;
-                        case DUALFIST:
-                        case DUAL:
-                        case SWORD:
-                        case RAPIER:
-                            if (item.getItem().getBodyPart() == L2Item.SLOT_LR_HAND)
-                            {
-                                env.value += 5 * enchant + 10 * overenchant;
-                                break;
-                            }
                         default:
                             env.value += 4 * enchant + 8 * overenchant;
                             break;
@@ -114,15 +118,6 @@ public class FuncEnchant extends Func
                         case CROSSBOW:
                             env.value += 6 * enchant + 12 * overenchant;
                             break;
-                        case DUALFIST:
-                        case DUAL:
-                        case SWORD:
-                        case RAPIER:
-                            if (item.getItem().getBodyPart() == L2Item.SLOT_LR_HAND)
-                            {
-                                env.value += 4 * enchant + 8 * overenchant;
-                                break;
-                            }
                         default:
                             env.value += 3 * enchant + 6 * overenchant;
                             break;
@@ -135,21 +130,13 @@ public class FuncEnchant extends Func
                         case CROSSBOW:
                             env.value += 6 * enchant + 12 * overenchant;
                             break;
-                        case DUALFIST:
-                        case DUAL:
-                        case SWORD:
-                        case RAPIER:
-                            if (item.getItem().getBodyPart() == L2Item.SLOT_LR_HAND)
-                            {
-                                env.value += 4 * enchant + 8 * overenchant;
-                                break;
-                            }
                         default:
                             env.value += 3 * enchant + 6 * overenchant;
                             break;
                     }
                     break;
                 case L2Item.CRYSTAL_D:
+                case L2Item.CRYSTAL_NONE:
                     switch(type)
                     {
                         case BOW:
@@ -158,38 +145,8 @@ public class FuncEnchant extends Func
                             env.value += 4 * enchant + 8 * overenchant;
                             break;
                         }
-                        //case DUALFIST:
-                        //case DUAL:
-                        //case SWORD:
-                        //case RAPIER:
-                        //    if (item.getItem().getBodyPart() == L2Item.SLOT_LR_HAND)
-                        //    {
-                        //        break;
-                        //    }
                         default:
                             env.value += 2 * enchant + 4 * overenchant;
-                            break;
-                    }
-                    break;
-                case L2Item.CRYSTAL_S:
-                case L2Item.CRYSTAL_S80:
-                    switch(type)
-                    {
-                        case BOW:
-                        case CROSSBOW:
-                            env.value += 10 * enchant + 20 * overenchant;
-                            break;
-                        case DUALFIST:
-                        case DUAL:
-                        case SWORD:
-                        case RAPIER:
-                            if (item.getItem().getBodyPart() == L2Item.SLOT_LR_HAND)
-                            {
-                                env.value += 4 * enchant + 12 * overenchant;
-                                break;
-                            }
-                        default:
-                            env.value += 4 * enchant + 10 * overenchant;
                             break;
                     }
                     break;
