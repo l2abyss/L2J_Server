@@ -172,6 +172,7 @@ public final class Config
     public static boolean	ALT_GAME_NEW_CHAR_ALWAYS_IS_NEWBIE;
     public static boolean	ALT_MEMBERS_CAN_WITHDRAW_FROM_CLANWH;
     public static boolean	REMOVE_CASTLE_CIRCLETS;
+    public static int		ALT_REPUTATION_SCORE_PER_KILL;
     public static int		ALT_PARTY_RANGE;
     public static int		ALT_PARTY_RANGE2;
     public static int		STARTING_ADENA;
@@ -1192,6 +1193,7 @@ public final class Config
                 //ALT_GAME_NEW_CHAR_ALWAYS_IS_NEWBIE	= Boolean.parseBoolean(Character.getProperty("AltNewCharAlwaysIsNewbie", "False"));
                 ALT_MEMBERS_CAN_WITHDRAW_FROM_CLANWH= Boolean.parseBoolean(Character.getProperty("AltMembersCanWithdrawFromClanWH", "false"));
                 REMOVE_CASTLE_CIRCLETS				= Boolean.parseBoolean(Character.getProperty("RemoveCastleCirclets", "true"));
+                ALT_REPUTATION_SCORE_PER_KILL		= Integer.parseInt(Character.getProperty("ReputationScorePerKill", "1"));
                 ALT_PARTY_RANGE						= Integer.parseInt(Character.getProperty("AltPartyRange", "1600"));
                 ALT_PARTY_RANGE2					= Integer.parseInt(Character.getProperty("AltPartyRange2", "1400"));
                 STARTING_ADENA						= Integer.parseInt(Character.getProperty("StartingAdena", "100"));
@@ -2024,6 +2026,7 @@ public final class Config
         else if (pName.equalsIgnoreCase("AltBlacksmithUseRecipes")) ALT_BLACKSMITH_USE_RECIPES = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltGameSkillLearn")) ALT_GAME_SKILL_LEARN = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("RemoveCastleCirclets")) REMOVE_CASTLE_CIRCLETS = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("ReputationScorePerKill")) ALT_REPUTATION_SCORE_PER_KILL = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("AltGameCancelByHit"))
         {
             ALT_GAME_CANCEL_BOW     = pValue.equalsIgnoreCase("bow") || pValue.equalsIgnoreCase("all");
