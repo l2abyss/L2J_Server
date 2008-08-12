@@ -2527,6 +2527,15 @@ public abstract class L2Skill
 								if (player.isInDuel()
 								        && (player.getDuelId() != ((L2PcInstance) newTarget).getDuelId() || (player.getParty() != null && !player.getParty().getPartyMembers().contains(newTarget))))
 									continue;
+								
+								if (((L2PcInstance) newTarget).getPet() != null)
+									if (Util.checkIfInRange(radius, activeChar, ((L2PcInstance) newTarget).getPet(), true))
+										if ((targetType != SkillTargetType.TARGET_CORPSE_ALLY)
+												&& !(((L2PcInstance) newTarget).getPet().isDead())
+												&& player.checkPvpSkill(newTarget, this)
+												&& onlyFirst == false)
+											targetList.add(((L2PcInstance) newTarget).getPet());
+
 								if (targetType == SkillTargetType.TARGET_CORPSE_ALLY)
 								{
 									if (!((L2PcInstance) newTarget).isDead())
@@ -2548,17 +2557,8 @@ public abstract class L2Skill
 								if (!player.checkPvpSkill(newTarget, this))
 									continue;
 								
-								if (onlyFirst == false)
-								{
-									targetList.add((L2Character) newTarget);
-									if (((L2PcInstance) newTarget).getPet() != null)
-										if (!Util.checkIfInRange(radius, activeChar, ((L2PcInstance) newTarget).getPet(), true))
-											if ((targetType != SkillTargetType.TARGET_CORPSE_ALLY)
-											        && !(((L2PcInstance) newTarget).getPet().isDead()))
-												targetList.add(((L2PcInstance) newTarget).getPet());
-								}
-								else
-									return new L2Character[] { (L2Character) newTarget };
+								if (onlyFirst == false) targetList.add((L2Character) newTarget);
+								else return new L2Character[] { (L2Character) newTarget };
 								
 							}
 						}
@@ -2605,6 +2605,17 @@ public abstract class L2Skill
 
                             if (newTarget == null || newTarget == player) continue;
 
+                            if (player.isInDuel() && (player.getDuelId() != newTarget.getDuelId() || (player.getParty() != null 
+                            		&& !player.getParty().getPartyMembers().contains(newTarget))))
+                            	continue;
+                            
+                        	if (newTarget.getPet() != null)
+                        		if (Util.checkIfInRange(radius, activeChar, newTarget.getPet(), true))
+                        			if ((targetType != SkillTargetType.TARGET_CORPSE_CLAN) && !(newTarget.getPet().isDead())
+                        					&& player.checkPvpSkill(newTarget, this)
+									        && onlyFirst == false)
+                        				targetList.add(newTarget.getPet());
+
                             if (targetType == SkillTargetType.TARGET_CORPSE_CLAN)
                             {
                             	if (!newTarget.isDead())
@@ -2616,26 +2627,13 @@ public abstract class L2Skill
                                  		continue;
                             	}
                             }
-                            if (player.isInDuel() && 
-                              	  (
-                              		player.getDuelId() != newTarget.getDuelId() ||
-                              		(player.getParty() != null && !player.getParty().getPartyMembers().contains(newTarget))
-                              	  )
-                              	) continue;
                             
                             if (!Util.checkIfInRange(radius, activeChar, newTarget, true)) continue;
 
                             // Don't add this target if this is a Pc->Pc pvp casting and pvp condition not met
                             if (!player.checkPvpSkill(newTarget, this)) continue;
 
-                            if (onlyFirst == false)
-                            {
-                            	targetList.add(newTarget);
-                            	if (newTarget.getPet() != null)
-                            		if (Util.checkIfInRange(radius, activeChar, newTarget.getPet(), true))
-                            			if ((targetType != SkillTargetType.TARGET_CORPSE_CLAN) && !(newTarget.getPet().isDead()))
-                            				targetList.add(newTarget.getPet());
-                            }
+                            if (onlyFirst == false) targetList.add(newTarget);
                             else return new L2Character[] {newTarget};
 
                         }
