@@ -96,7 +96,7 @@ public class ChanceSkillList extends FastMap<L2Skill, ChanceCondition>
 	{
 		for (FastMap.Entry<L2Skill, ChanceCondition> e = head(), end = tail(); (e = e.getNext()) != end;)
 		{
-			if (e.getValue().trigger(event))
+			if (e.getValue() != null && e.getValue().trigger(event))
 			{
 				makeCast(e.getKey(), target);
 			}

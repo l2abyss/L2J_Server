@@ -505,7 +505,8 @@ public abstract class L2Skill
 
     private final boolean _isOffensive;
     private final int _numCharges;
-    private final int _forceId;
+    private final int _triggeredId;
+    private final int _triggeredLevel;
 
     private final int _soulConsume;
     private final int _numSouls;
@@ -632,7 +633,8 @@ public abstract class L2Skill
         _minPledgeClass = set.getInteger("minPledgeClass", 0);
         _isOffensive = set.getBool("offensive", isSkillTypeOffensive());
         _numCharges = set.getInteger("num_charges", getLevel());
-        _forceId = set.getInteger("forceId", 0);
+        _triggeredId = set.getInteger("triggeredId", 0);
+        _triggeredLevel = set.getInteger("triggeredLevel", 0);
 
         if (_operateType == SkillOpType.OP_CHANCE)
             _chanceCondition = ChanceCondition.parse(set);
@@ -921,10 +923,16 @@ public abstract class L2Skill
         _displayId = id;
     }
 
-    public int getForceId()
+    public int getTriggeredId()
     {
-        return _forceId;
+        return _triggeredId;
     }
+
+    public int getTriggeredLevel()
+    {
+        return _triggeredLevel;
+    }
+
     
     /**
      * Return the skill type (ex : BLEED, SLEEP, WATER...).<BR><BR>

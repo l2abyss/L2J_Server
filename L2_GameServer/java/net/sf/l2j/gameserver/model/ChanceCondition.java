@@ -91,10 +91,15 @@ public final class ChanceCondition
 
 	public static ChanceCondition parse(StatsSet set)
 	{
-		TriggerType trigger = set.getEnum("chanceType", TriggerType.class);
-		int chance = set.getInteger("activationChance", 0);
-		if (trigger != null && chance > 0)
-			return new ChanceCondition(trigger, chance);
+		try
+		{
+			TriggerType trigger = set.getEnum("chanceType", TriggerType.class, null);
+			int chance = set.getInteger("activationChance", 0);
+			if (trigger != null && chance > 0)
+				return new ChanceCondition(trigger, chance);
+		}
+		catch (Exception e)
+		{}
 		return null;
 	}
 

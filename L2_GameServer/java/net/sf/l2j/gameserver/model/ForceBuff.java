@@ -16,11 +16,12 @@
 package net.sf.l2j.gameserver.model;
 
 import java.util.concurrent.Future;
+import java.util.logging.Logger;
 
 import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.SkillTable;
-import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.skills.effects.EffectForce;
 import net.sf.l2j.gameserver.util.Util;
 
@@ -29,39 +30,48 @@ import net.sf.l2j.gameserver.util.Util;
  */
 public final class ForceBuff
 {
-    final int _skillCastRange;
-    final int _forceId;
-    L2PcInstance _caster;
-    L2PcInstance _target;
-    Future<?> _geoCheckTask;
-    
-    public L2PcInstance getCaster()
+    protected static final Logger _log = Logger.getLogger(ForceBuff.class.getName());
+
+    protected int _skillCastRange;
+    protected int _forceId;
+    protected int _forceLevel;
+    protected L2Character _caster;
+    protected L2Character _target;
+    protected Future<?> _geoCheckTask;
+
+    public L2Character getCaster()
     {
         return _caster;
     }
     
-    public L2PcInstance getTarget()
+    public L2Character getTarget()
     {
         return _target;
     }
     
-    public ForceBuff(L2PcInstance caster, L2PcInstance target, L2Skill skill)
+    public ForceBuff(L2Character caster, L2Character target, L2Skill skill)
     {
         _skillCastRange = skill.getCastRange();
         _caster = caster;
         _target = target;
-        _forceId = skill.getForceId();
+        _forceId = skill.getTriggeredId();
+        _forceLevel = skill.getTriggeredLevel();
         
         L2Effect effect = _target.getFirstEffect(_forceId);
         if (effect != null)
             ((EffectForce)effect).increaseForce();
         else
-            SkillTable.getInstance().getInfo(_forceId, 1).getEffects(_caster, _target);
-        
+        {
+            L2Skill force = SkillTable.getInstance().getInfo(_forceId, _forceLevel);
+            if (force != null)
+                force.getEffects(_caster, _target);
+            else
+                _log.warning("Triggered skill ["+_forceId+";"+_forceLevel+"] not found!");
+        }
         _geoCheckTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new GeoCheckTask(), 1000, 1000);
     }
-    
-    public void delete()
+
+    public void onCastAbort()
     {
         _caster.setForceBuff(null);
         L2Effect effect = _target.getFirstEffect(_forceId);
@@ -70,18 +80,18 @@ public final class ForceBuff
         
         _geoCheckTask.cancel(true);
     }
-    
-    class GeoCheckTask implements Runnable
+
+    public class GeoCheckTask implements Runnable
     {
         public void run()
         {
             try
             {
                 if (!Util.checkIfInRange(_skillCastRange, _caster, _target, true))
-                    delete();
+                    _caster.abortCast();
                 
                 if (!GeoData.getInstance().canSeeTarget(_caster, _target))
-                    delete();
+                    _caster.abortCast();
             }
             catch (Exception e)
             {

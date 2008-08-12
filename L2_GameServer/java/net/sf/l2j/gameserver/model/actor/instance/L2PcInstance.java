@@ -82,7 +82,6 @@ import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.BlockList;
 import net.sf.l2j.gameserver.model.FishData;
-import net.sf.l2j.gameserver.model.ForceBuff;
 import net.sf.l2j.gameserver.model.Inventory;
 import net.sf.l2j.gameserver.model.ItemContainer;
 import net.sf.l2j.gameserver.model.L2Attackable;
@@ -316,24 +315,6 @@ public final class L2PcInstance extends L2PlayableInstance
 			// cancel the recent fake-death protection instantly if the player attacks or casts spells
 			getPlayer().setRecentFakeDeath(false);
 		}
-	}
-
-	/**
-	* Starts battle force / spell force on target.<br><br>
-	*
-	* @param caster
-	* @param force type
-	*/
-	@Override
-	public void startForceBuff(L2Character target, L2Skill skill)
-	{
-		if(!(target instanceof L2PcInstance))return;
-
-		if(skill.getSkillType() != SkillType.FORCE_BUFF)
-			return;
-
-		if(_forceBuff == null)
-			_forceBuff = new ForceBuff(this, (L2PcInstance)target, skill);
 	}
 
 	private L2GameClient _client;
@@ -738,9 +719,6 @@ public final class L2PcInstance extends L2PlayableInstance
 	private int _engageid = 0;
 	private boolean _marryrequest = false;
 	private boolean _marryaccepted = false;
-
-	// Current force buff this caster is casting to a target
-	protected ForceBuff _forceBuff;
 
     /** Skill casting information (used to queue when several skills are cast in a short time) **/
     public class SkillDat
@@ -4797,7 +4775,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 
 		if (_forceBuff != null)
-			_forceBuff.delete();
+			abortCast();
 
 		for (L2Character character : getKnownList().getKnownCharacters())
 			if (character.getForceBuff() != null && character.getForceBuff().getTarget() == this)
@@ -9371,7 +9349,7 @@ public final class L2PcInstance extends L2PlayableInstance
         
         // Delete a force buff upon class change.
         if(_forceBuff != null)
-			_forceBuff.delete();
+            abortCast();
 
         // Stop casting for any player that may be casting a force buff on this l2pcinstance.
 		for(L2Character character : getKnownList().getKnownCharacters())
@@ -10183,9 +10161,8 @@ public final class L2PcInstance extends L2PlayableInstance
 		try
 		{
 			if(_forceBuff != null)
-			{
-				_forceBuff.delete();
-			}
+				abortCast();
+
 			for(L2Character character : getKnownList().getKnownCharacters())
 				if(character.getForceBuff() != null && character.getForceBuff().getTarget() == this)
 					character.abortCast();
@@ -11291,17 +11268,6 @@ public final class L2PcInstance extends L2PlayableInstance
 		sm.addCharName(target);
 		sm.addNumber(damage);
 		sendPacket(sm);
-	}
-
-	@Override
-	public ForceBuff getForceBuff()
-	{
-		return _forceBuff;
-	}
-
-	public void setForceBuff(ForceBuff fb)
-	{
-		_forceBuff = fb;
 	}
 
     @Override
