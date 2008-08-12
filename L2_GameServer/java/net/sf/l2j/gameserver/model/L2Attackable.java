@@ -465,13 +465,9 @@ public class L2Attackable extends L2NpcInstance
                 else if (killer instanceof L2Trap)
                 	player = ((L2Trap)killer).getOwner();
 
-                //only 1 randomly choosen quest of all quests registered to this character can be applied 
-                Quest[] allOnKillQuests = getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL);
-            	if (allOnKillQuests != null)
-            	{
-            		Quest randomQuest = allOnKillQuests[Rnd.get(allOnKillQuests.length)];
-            		ThreadPoolManager.getInstance().scheduleEffect(new OnKillNotifyTask(this, randomQuest, player, killer instanceof L2Summon), 5000);
-            	}
+                if (getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL) != null)
+                	for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL))
+                		ThreadPoolManager.getInstance().scheduleEffect(new OnKillNotifyTask(this, quest, player, killer instanceof L2Summon), 5000);
             }
         }
         catch (Exception e) { _log.log(Level.SEVERE, "", e); }
