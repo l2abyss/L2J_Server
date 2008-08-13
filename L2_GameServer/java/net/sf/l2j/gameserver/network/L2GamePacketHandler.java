@@ -843,6 +843,24 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
 		                    case 0x4d:
 		                    	msg = new SetPrivateStoreWholeMsg();
 		                    	break;
+		                    case 0x4e:
+		                    	msg = new RequestDispel();
+		                    	break;
+		                    case 0x4f:
+		                    	msg = new RequestExTryToPutEnchantTargetItem();
+		                    	break;
+		                    case 0x50:
+		                    	msg = new RequestExTryToPutEnchantSupportItem();
+		                    	break;
+		                    case 0x51:
+		                    	msg = new RequestExCancelEnchantItem();
+		                    	break;
+		                    case 0x52:
+		                    	msg = new RequestChangeNicknameColor();
+		                    	break;
+		                    case 0x53:
+		                    	msg = new RequestResetNickname();
+		                    	break;
 		                    default: 
 		                     	this.printDebugDoubleOpcode(opcode, id2, buf, state, client);
 		                    	break;

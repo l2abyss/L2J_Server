@@ -371,6 +371,11 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.getDefAttrUnholy());
         
         writeD(_activeChar.getAgathionId());
+        
+        // T2 Starts
+        writeD(_activeChar.getFame());  // Fame
+        writeD(0x01); // Unknown
+        writeD(_activeChar.getVitalityLevel());  // Vitality Level
     }
 
     /* (non-Javadoc)

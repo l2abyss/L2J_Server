@@ -436,11 +436,7 @@ public final class Formulas
 			else if (p instanceof L2PcInstance && p.getActiveWeaponInstance() == null)
 				env.value = 8;
 			else
-			{
 				env.value *= WITbonus[p.getWIT()];
-				
-
-			}
 		}
 	}
 
@@ -1406,7 +1402,7 @@ public final class Formulas
 				}
 			}
 		}
-		else if (mcrit) damage *= 4;
+		else if (mcrit) damage *= 3;
 
 		// Pvp bonusses for dmg
 		if((attacker instanceof L2PcInstance || attacker instanceof L2Summon)

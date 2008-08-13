@@ -119,7 +119,7 @@ public class L2CharTemplate
 		baseAtkRange       = set.getInteger("baseAtkRange");
 		baseShldRate       = set.getInteger("baseShldRate");
 		baseCritRate       = set.getInteger("baseCritRate");
-        baseMCritRate      = set.getInteger("baseMCritRate" , 8);
+        baseMCritRate      = set.getInteger("baseMCritRate" , 80); // CT2: The magic critical rate has been increased to 10 times.
 		baseWalkSpd 	   = set.getInteger("baseWalkSpd");
 		baseRunSpd         = set.getInteger("baseRunSpd");
 		

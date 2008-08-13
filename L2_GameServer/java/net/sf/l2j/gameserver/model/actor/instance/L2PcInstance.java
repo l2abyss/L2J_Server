@@ -354,6 +354,9 @@ public final class L2PcInstance extends L2PlayableInstance
 
 	/** The PvP Flag state of the L2PcInstance (0=White, 1=Purple) */
 	private byte _pvpFlag;
+	
+	/** The Fame of this L2PcInstance */
+	private int _fame;
 
 	/** The Siege state of the L2PcInstance */
 	private byte _siegeState = 0;
@@ -395,11 +398,11 @@ public final class L2PcInstance extends L2PlayableInstance
 	public int _telemode = 0;
 
 	public boolean _exploring = false;
-
 	
-
+	/** Vitality Level of this L2PcInstance */
+	private int _vitalityLevel = 5;
+	
 	private boolean _inCrystallize;
-
 	private boolean _inCraftMode;
     
     private L2Transformation _transformation;
@@ -1962,6 +1965,24 @@ public final class L2PcInstance extends L2PlayableInstance
 	public void setPvpKills(int pvpKills)
 	{
 		_pvpKills = pvpKills;
+	}
+	
+	/**
+	 * Return the Fame of this L2PcInstance <BR><BR>
+	 * @return
+	 */
+	public int getFame()
+	{
+		return _fame;
+	}
+	
+	/**
+	 * Set the Fame of this L2PcInstane <BR><BR>
+	 * @param fame
+	 */
+	public void setFame(int fame)
+	{
+		_fame = fame;
 	}
 
 	/**
@@ -11277,12 +11298,44 @@ public final class L2PcInstance extends L2PlayableInstance
         		( !TvTEvent.isStarted() || !TvTEvent.isPlayerParticipant( getObjectId() ) );
     }
 
+    /**
+     * 
+     * @param npcId
+     */
     public void setAgathionId(int npcId)
     {
     	_agathionId = npcId;
     }
+    
+    /**
+     * 
+     * @return
+     */
     public int getAgathionId()
     {
 	    return _agathionId;
+    }
+    
+    /**
+     * Returns the VL <BR><BR>
+     * @return
+     */
+    public int getVitalityLevel()
+    {
+    	return _vitalityLevel;
+    }
+    
+    /**
+     * Sets VL of this L2PcInstance<BR><BR>
+     * @param level
+     */
+    public void setVitalityLevel(int level)
+    {
+    	if (level > 5)
+    		level = 5;
+    	else if (level < 0)
+    		level = 0;
+    	
+    	_vitalityLevel = level;
     }
 }

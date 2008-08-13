@@ -2379,15 +2379,11 @@ public abstract class L2Character extends L2Object
 		{
 			try
 			{
-				// _log.fine("Checking pvp time: " + getlastPvpAttack());
-				// "lastattack: " _lastAttackTime "currenttime: "
-				// System.currentTimeMillis());
 				if (System.currentTimeMillis() > getPvpFlagLasts())
 				{
-					//  _log.fine("Stopping PvP");
 					stopPvPFlag();
 				}
-				else if (System.currentTimeMillis() > (getPvpFlagLasts() - 5000))
+				else if (System.currentTimeMillis() > (getPvpFlagLasts() - 20000))
 				{
 					updatePvPFlag(2);
 				}
@@ -6178,16 +6174,6 @@ public abstract class L2Character extends L2Object
 	{
 		// Overridden in L2PcInstance
 	}
-
-//	public void checkPvPFlag()
-//	{
-//	if (Config.DEBUG) _log.fine("Checking PvpFlag");
-//	_PvPRegTask = ThreadPoolManager.getInstance().scheduleLowAtFixedRate(
-//	new PvPFlag(), 1000, 5000);
-//	_PvPRegActive = true;
-//	//  _log.fine("PvP recheck");
-//	}
-//
 
 	/**
 	 * Return a Random Damage in function of the weapon.<BR><BR>

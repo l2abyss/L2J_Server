@@ -914,8 +914,8 @@ public final class Config
                 MAX_CHARACTERS_NUMBER_PER_ACCOUNT = Integer.parseInt(serverSettings.getProperty("CharMaxNumber", "0"));
                 MAXIMUM_ONLINE_USERS        = Integer.parseInt(serverSettings.getProperty("MaximumOnlineUsers", "100"));
 
-                MIN_PROTOCOL_REVISION   = Integer.parseInt(serverSettings.getProperty("MinProtocolRevision", "660"));
-                MAX_PROTOCOL_REVISION   = Integer.parseInt(serverSettings.getProperty("MaxProtocolRevision", "665"));
+                MIN_PROTOCOL_REVISION   = Integer.parseInt(serverSettings.getProperty("MinProtocolRevision", "851"));
+                MAX_PROTOCOL_REVISION   = Integer.parseInt(serverSettings.getProperty("MaxProtocolRevision", "851"));
 
                 if (MIN_PROTOCOL_REVISION > MAX_PROTOCOL_REVISION)
                 {
@@ -1136,7 +1136,7 @@ public final class Config
                 ALT_GAME_SUBCLASS_WITHOUT_QUESTS	= Boolean.parseBoolean(Character.getProperty("AltSubClassWithoutQuests", "False"));
                 MAX_RUN_SPEED						= Integer.parseInt(Character.getProperty("MaxRunSpeed", "250"));
                 MAX_PCRIT_RATE						= Integer.parseInt(Character.getProperty("MaxPCritRate", "500"));
-                MAX_MCRIT_RATE						= Integer.parseInt(Character.getProperty("MaxMCritRate", "300"));
+                MAX_MCRIT_RATE						= Integer.parseInt(Character.getProperty("MaxMCritRate", "200"));
                 MAX_SUBCLASS						= Byte.parseByte(Character.getProperty("MaxSubclass", "3"));
                 MAX_PVTSTORESELL_SLOTS_DWARF		= Integer.parseInt(Character.getProperty("MaxPvtStoreSellSlotsDwarf", "4"));
                 MAX_PVTSTORESELL_SLOTS_OTHER		= Integer.parseInt(Character.getProperty("MaxPvtStoreSellSlotsOther", "3"));
@@ -1765,8 +1765,8 @@ public final class Config
                     KARMA_LIST_NONDROPPABLE_ITEMS.add(Integer.parseInt(id));
                 }
 
-                PVP_NORMAL_TIME = Integer.parseInt(pvpSettings.getProperty("PvPVsNormalTime", "15000"));
-                PVP_PVP_TIME = Integer.parseInt(pvpSettings.getProperty("PvPVsPvPTime", "30000"));
+                PVP_NORMAL_TIME = Integer.parseInt(pvpSettings.getProperty("PvPVsNormalTime", "120000"));
+                PVP_PVP_TIME = Integer.parseInt(pvpSettings.getProperty("PvPVsPvPTime", "60000"));
             }
             catch (Exception e)
             {
