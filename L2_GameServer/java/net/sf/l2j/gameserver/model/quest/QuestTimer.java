@@ -83,7 +83,7 @@ public class QuestTimer
     {
         _isActive = false;
 
-        if (_schedular != null) _schedular.cancel(true);
+        if (_schedular != null) _schedular.cancel(false);
 
         getQuest().removeQuestTimer(this);
     }
