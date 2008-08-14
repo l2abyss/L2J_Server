@@ -15,10 +15,10 @@
 package net.sf.l2j.gameserver.model;
 
 import net.sf.l2j.gameserver.ThreadPoolManager;
-import net.sf.l2j.gameserver.clientpackets.L2GameClientPacket;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * This class manages requests (transactions) between two L2PcInstance.

@@ -21,7 +21,7 @@ import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
-import net.sf.l2j.gameserver.serverpackets.AgitDecoInfo;
+import net.sf.l2j.gameserver.network.serverpackets.AgitDecoInfo;
 
 /**
  * A clan hall zone

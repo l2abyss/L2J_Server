@@ -20,7 +20,7 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
-import net.sf.l2j.gameserver.serverpackets.NpcInfo;
+import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
 
 public class L2WaterZone extends L2ZoneType
 {

@@ -23,8 +23,8 @@ package net.sf.l2j.gameserver;
 
 import java.nio.ByteBuffer;
 
-import net.sf.l2j.gameserver.clientpackets.L2GameClientPacket;
 import net.sf.l2j.gameserver.network.L2GameClient;
+import net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket;
 
 /**
  * This interface can be implemented by custom extensions to l2j to get packets

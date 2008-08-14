@@ -24,17 +24,17 @@ import net.sf.l2j.gameserver.instancemanager.CastleManorManager.SeedProduction;
 import net.sf.l2j.gameserver.model.L2TradeList;
 import net.sf.l2j.gameserver.model.L2TradeList.L2TradeItem;
 import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.serverpackets.ActionFailed;
-import net.sf.l2j.gameserver.serverpackets.BuyListSeed;
-import net.sf.l2j.gameserver.serverpackets.ExShowCropInfo;
-import net.sf.l2j.gameserver.serverpackets.ExShowManorDefaultInfo;
-import net.sf.l2j.gameserver.serverpackets.ExShowProcureCropDetail;
-import net.sf.l2j.gameserver.serverpackets.ExShowSeedInfo;
-import net.sf.l2j.gameserver.serverpackets.ExShowSellCropList;
-import net.sf.l2j.gameserver.serverpackets.MyTargetSelected;
-import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.serverpackets.ValidateLocation;
+import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
+import net.sf.l2j.gameserver.network.serverpackets.BuyListSeed;
+import net.sf.l2j.gameserver.network.serverpackets.ExShowCropInfo;
+import net.sf.l2j.gameserver.network.serverpackets.ExShowManorDefaultInfo;
+import net.sf.l2j.gameserver.network.serverpackets.ExShowProcureCropDetail;
+import net.sf.l2j.gameserver.network.serverpackets.ExShowSeedInfo;
+import net.sf.l2j.gameserver.network.serverpackets.ExShowSellCropList;
+import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
+import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 
 public class L2ManorManagerInstance extends L2MerchantInstance

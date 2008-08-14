@@ -17,8 +17,8 @@ package net.sf.l2j.gameserver.model;
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.handler.SkillHandler;
-import net.sf.l2j.gameserver.serverpackets.MagicSkillLaunched;
-import net.sf.l2j.gameserver.serverpackets.MagicSkillUse;
+import net.sf.l2j.gameserver.network.serverpackets.MagicSkillLaunched;
+import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 
 /**
  *

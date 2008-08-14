@@ -18,7 +18,7 @@ import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.serverpackets.LeaveWorld;
+import net.sf.l2j.gameserver.network.serverpackets.LeaveWorld;
 
 /**
  * This class handles following admin commands:

@@ -18,7 +18,7 @@ import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
-import net.sf.l2j.gameserver.serverpackets.MagicSkillUse;
+import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 
 /**
  * This class ...

@@ -28,7 +28,7 @@ import javolution.util.FastMap;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.L2Macro.L2MacroCmd;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.serverpackets.SendMacroList;
+import net.sf.l2j.gameserver.network.serverpackets.SendMacroList;
 
 /**
  * This class ...

@@ -20,9 +20,9 @@ import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.Location;
-import net.sf.l2j.gameserver.serverpackets.FlyToLocation;
-import net.sf.l2j.gameserver.serverpackets.ValidateLocation;
-import net.sf.l2j.gameserver.serverpackets.FlyToLocation.FlyType;
+import net.sf.l2j.gameserver.network.serverpackets.FlyToLocation;
+import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
+import net.sf.l2j.gameserver.network.serverpackets.FlyToLocation.FlyType;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.util.Util;
 

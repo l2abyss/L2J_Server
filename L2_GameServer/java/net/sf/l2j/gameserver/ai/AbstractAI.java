@@ -30,15 +30,15 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.serverpackets.ActionFailed;
-import net.sf.l2j.gameserver.serverpackets.AutoAttackStart;
-import net.sf.l2j.gameserver.serverpackets.AutoAttackStop;
-import net.sf.l2j.gameserver.serverpackets.Die;
-import net.sf.l2j.gameserver.serverpackets.MoveToLocation;
-import net.sf.l2j.gameserver.serverpackets.MoveToLocationInVehicle;
-import net.sf.l2j.gameserver.serverpackets.MoveToPawn;
-import net.sf.l2j.gameserver.serverpackets.StopMove;
-import net.sf.l2j.gameserver.serverpackets.StopRotation;
+import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
+import net.sf.l2j.gameserver.network.serverpackets.AutoAttackStart;
+import net.sf.l2j.gameserver.network.serverpackets.AutoAttackStop;
+import net.sf.l2j.gameserver.network.serverpackets.Die;
+import net.sf.l2j.gameserver.network.serverpackets.MoveToLocation;
+import net.sf.l2j.gameserver.network.serverpackets.MoveToLocationInVehicle;
+import net.sf.l2j.gameserver.network.serverpackets.MoveToPawn;
+import net.sf.l2j.gameserver.network.serverpackets.StopMove;
+import net.sf.l2j.gameserver.network.serverpackets.StopRotation;
 import net.sf.l2j.gameserver.taskmanager.AttackStanceTaskManager;
 
 /**

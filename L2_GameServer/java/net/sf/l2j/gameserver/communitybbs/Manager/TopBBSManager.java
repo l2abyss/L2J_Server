@@ -18,7 +18,7 @@ import java.util.StringTokenizer;
 
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.serverpackets.ShowBoard;
+import net.sf.l2j.gameserver.network.serverpackets.ShowBoard;
 
 public class TopBBSManager extends BaseBBSManager
 {

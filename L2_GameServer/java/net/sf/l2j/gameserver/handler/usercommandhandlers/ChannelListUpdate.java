@@ -17,7 +17,7 @@ package net.sf.l2j.gameserver.handler.usercommandhandlers;
 import net.sf.l2j.gameserver.handler.IUserCommandHandler;
 import net.sf.l2j.gameserver.model.L2CommandChannel;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.serverpackets.ExMultiPartyCommandChannelInfo;
+import net.sf.l2j.gameserver.network.serverpackets.ExMultiPartyCommandChannelInfo;
 
 /**
  *

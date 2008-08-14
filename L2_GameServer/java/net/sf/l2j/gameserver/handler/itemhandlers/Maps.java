@@ -18,7 +18,7 @@ import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
-import net.sf.l2j.gameserver.serverpackets.ShowMiniMap;
+import net.sf.l2j.gameserver.network.serverpackets.ShowMiniMap;
 
 /**
  * This class provides handling for items that should display a map 

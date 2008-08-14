@@ -19,7 +19,7 @@ import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
-import net.sf.l2j.gameserver.serverpackets.SSQStatus;
+import net.sf.l2j.gameserver.network.serverpackets.SSQStatus;
 
 /**
  * Item Handler for Seven Signs Record

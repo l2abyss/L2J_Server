@@ -26,7 +26,7 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Trap;
 import net.sf.l2j.gameserver.model.actor.knownlist.TrapKnownList;
-import net.sf.l2j.gameserver.serverpackets.SocialAction;
+import net.sf.l2j.gameserver.network.serverpackets.SocialAction;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
 import net.sf.l2j.gameserver.templates.L2CharTemplate;
 

@@ -23,7 +23,7 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Summon;
-import net.sf.l2j.gameserver.serverpackets.SetSummonRemainTime;
+import net.sf.l2j.gameserver.network.serverpackets.SetSummonRemainTime;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 
 public class L2SummonInstance extends L2Summon

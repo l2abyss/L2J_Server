@@ -21,7 +21,7 @@ import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.serverpackets.LeaveWorld;
+import net.sf.l2j.gameserver.network.serverpackets.LeaveWorld;
 
 public class AdminKick implements IAdminCommandHandler {
     private static final String[] ADMIN_COMMANDS = {"admin_kick" ,"admin_kick_non_gm"};

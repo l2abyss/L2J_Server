@@ -30,21 +30,21 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2StaticObjectInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2TrapInstance;
-import net.sf.l2j.gameserver.serverpackets.CharInfo;
-import net.sf.l2j.gameserver.serverpackets.DeleteObject;
-import net.sf.l2j.gameserver.serverpackets.DropItem;
-import net.sf.l2j.gameserver.serverpackets.ExPrivateStoreSetWholeMsg;
-import net.sf.l2j.gameserver.serverpackets.GetOnVehicle;
-import net.sf.l2j.gameserver.serverpackets.NpcInfo;
-import net.sf.l2j.gameserver.serverpackets.PetInfo;
-import net.sf.l2j.gameserver.serverpackets.PetItemList;
-import net.sf.l2j.gameserver.serverpackets.PrivateStoreMsgBuy;
-import net.sf.l2j.gameserver.serverpackets.PrivateStoreMsgSell;
-import net.sf.l2j.gameserver.serverpackets.RecipeShopMsg;
-import net.sf.l2j.gameserver.serverpackets.RelationChanged;
-import net.sf.l2j.gameserver.serverpackets.SpawnItem;
-import net.sf.l2j.gameserver.serverpackets.StaticObject;
-import net.sf.l2j.gameserver.serverpackets.VehicleInfo;
+import net.sf.l2j.gameserver.network.serverpackets.CharInfo;
+import net.sf.l2j.gameserver.network.serverpackets.DeleteObject;
+import net.sf.l2j.gameserver.network.serverpackets.DropItem;
+import net.sf.l2j.gameserver.network.serverpackets.ExPrivateStoreSetWholeMsg;
+import net.sf.l2j.gameserver.network.serverpackets.GetOnVehicle;
+import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
+import net.sf.l2j.gameserver.network.serverpackets.PetInfo;
+import net.sf.l2j.gameserver.network.serverpackets.PetItemList;
+import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreMsgBuy;
+import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreMsgSell;
+import net.sf.l2j.gameserver.network.serverpackets.RecipeShopMsg;
+import net.sf.l2j.gameserver.network.serverpackets.RelationChanged;
+import net.sf.l2j.gameserver.network.serverpackets.SpawnItem;
+import net.sf.l2j.gameserver.network.serverpackets.StaticObject;
+import net.sf.l2j.gameserver.network.serverpackets.VehicleInfo;
 
 public class PcKnownList extends PlayableKnownList
 {

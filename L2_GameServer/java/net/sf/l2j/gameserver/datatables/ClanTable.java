@@ -30,11 +30,11 @@ import net.sf.l2j.gameserver.model.L2ClanMember;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Siege;
 import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.serverpackets.PledgeShowInfoUpdate;
-import net.sf.l2j.gameserver.serverpackets.PledgeShowMemberListAll;
-import net.sf.l2j.gameserver.serverpackets.PledgeShowMemberListUpdate;
-import net.sf.l2j.gameserver.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.serverpackets.UserInfo;
+import net.sf.l2j.gameserver.network.serverpackets.PledgeShowInfoUpdate;
+import net.sf.l2j.gameserver.network.serverpackets.PledgeShowMemberListAll;
+import net.sf.l2j.gameserver.network.serverpackets.PledgeShowMemberListUpdate;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.util.Util;
 
 /**

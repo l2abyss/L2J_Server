@@ -17,7 +17,7 @@ package net.sf.l2j.gameserver.model;
 import java.util.Vector;
 
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.serverpackets.RadarControl;
+import net.sf.l2j.gameserver.network.serverpackets.RadarControl;
 
 /**
  * @author dalrond

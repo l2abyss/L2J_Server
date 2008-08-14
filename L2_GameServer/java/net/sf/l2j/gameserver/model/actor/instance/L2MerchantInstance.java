@@ -24,13 +24,13 @@ import net.sf.l2j.gameserver.datatables.MerchantPriceConfigTable.MerchantPriceCo
 import net.sf.l2j.gameserver.model.L2Multisell;
 import net.sf.l2j.gameserver.model.L2TradeList;
 import net.sf.l2j.gameserver.network.L2GameClient;
-import net.sf.l2j.gameserver.serverpackets.ActionFailed;
-import net.sf.l2j.gameserver.serverpackets.BuyList;
-import net.sf.l2j.gameserver.serverpackets.MyTargetSelected;
-import net.sf.l2j.gameserver.serverpackets.NpcHtmlMessage;
-import net.sf.l2j.gameserver.serverpackets.SellList;
-import net.sf.l2j.gameserver.serverpackets.ShopPreviewList;
-import net.sf.l2j.gameserver.serverpackets.StatusUpdate;
+import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
+import net.sf.l2j.gameserver.network.serverpackets.BuyList;
+import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
+import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
+import net.sf.l2j.gameserver.network.serverpackets.SellList;
+import net.sf.l2j.gameserver.network.serverpackets.ShopPreviewList;
+import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 
 /**

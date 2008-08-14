@@ -20,7 +20,7 @@ import javolution.util.FastList;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Duel;
-import net.sf.l2j.gameserver.serverpackets.L2GameServerPacket;
+import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
 
 public class DuelManager
 {
