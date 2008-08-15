@@ -62,6 +62,13 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			return;
 		}
 		
+		if (activeChar.isProcessingTransaction())
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_ENCHANT_WHILE_STORE));
+			activeChar.setActiveEnchantItem(null);
+			return;
+		}
+		
 		L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
 		L2ItemInstance scroll = activeChar.getActiveEnchantItem();
 		if (item == null || scroll == null)
