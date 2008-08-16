@@ -61,7 +61,7 @@ public class RequestSocialAction extends L2GameClientPacket
         }
 
         // check if its the actionId is allowed
-        if (_actionId < 2 || _actionId > 13)
+        if (_actionId < 2 || _actionId > 14)
         {
         	Util.handleIllegalPlayerAction(activeChar, "Warning!! Character "+activeChar.getName()+" of account "+activeChar.getAccountName()+" requested an internal Social Action.", Config.DEFAULT_PUNISH);
         	return;
