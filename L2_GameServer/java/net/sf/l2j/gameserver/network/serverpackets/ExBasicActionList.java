@@ -34,16 +34,18 @@ public final class ExBasicActionList extends L2GameServerPacket
     
     public static int[] getDefaultActionList()
     {
-        int count1 = 62; // 0 <-> (count1 - 1)
-        int count2 = 51; // 1000 <-> (1000 + count2 - 1)
-        int[] actionIds = new int[count1 + 1 + 51];
-        for (int i = 0; i < actionIds.length; i++)
+        int count1 = 63; // 0 <-> (count1 - 1)
+        int count2 = 61; // 1000 <-> (1000 + count2 - 1)
+        int[] actionIds = new int[count1 + count2];
+        
+        int index = 0;
+        for (int i = 0; i < count1; i++)
         {
-            actionIds[i] = 0 + i;
+            actionIds[index++] = i;
         }
-        for (int i = 1000; i < 1000+count2; i++)
+        for (int i = 0; i < count2; i++)
         {
-            actionIds[i - 1000 + count1] = i;
+            actionIds[index++] = 1000 + i;
         }
         return actionIds;
     }
