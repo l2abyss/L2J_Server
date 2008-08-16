@@ -350,6 +350,11 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 			
 			FourSepulchersManager.getInstance().spawnKeyBox(_activeChar);
 			broadcastPacket(new NpcSay(getObjectId(), 0, getNpcId(), "Many thanks for rescue me."));
+			if (_victimShout != null)
+			{
+				_victimShout.cancel(true);
+			}
+				
 		}
 	}
 
