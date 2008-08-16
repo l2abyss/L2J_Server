@@ -16,9 +16,11 @@ package net.sf.l2j.gameserver.datatables;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -80,8 +82,9 @@ public class NpcTable
 				npcdata.close();
 				statement.close();
 			}
-			catch (Exception e) {
-				_log.severe("NPCTable: Error creating NPC table: " + e);
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "NPCTable: Error creating NPC table.", e);
 			}
 			if (Config.CUSTOM_NPC_TABLE)
 			{
@@ -95,9 +98,10 @@ public class NpcTable
 					fillNpcTable(npcdata);
 					npcdata.close();
 					statement.close();
-				} catch (Exception e)
+				}
+				catch (Exception e)
 				{
-					_log.severe("NPCTable: Error creating custom NPC table: " + e);
+					_log.log(Level.SEVERE, "NPCTable: Error creating custom NPC table.", e);
 				}
 			}
 			try
@@ -136,8 +140,9 @@ public class NpcTable
 				npcskills.close();
 				statement.close();
 			} 
-			catch (Exception e) {
-				_log.severe("NPCTable: Error reading NPC skills table: " + e);
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "NPCTable: Error reading NPC skills table.", e);
 			}
 
 			try 
@@ -153,7 +158,7 @@ public class NpcTable
 					npcDat = _npcs.get(mobId);
 					if (npcDat == null)
 					{
-						_log.severe("NPCTable: No npc correlating with id : " + mobId);
+						_log.warning("NPCTable: Drop data for undefined NPC. npcId: " + mobId);
 						continue;
 					}
 					dropDat = new L2DropData();
@@ -171,8 +176,9 @@ public class NpcTable
 				dropData.close();
 				statement2.close();
 			} 
-			catch (Exception e) {
-				_log.severe("NPCTable: Error reading NPC drop data: " + e);
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "NPCTable: Error reading NPC dropdata. ", e);
 			}
 			
 			if (Config.CUSTOM_DROPLIST_TABLE)
@@ -190,7 +196,7 @@ public class NpcTable
 						npcDat = _npcs.get(mobId);
 						if (npcDat == null)
 						{
-							_log.severe("NPCTable: CUSTOM DROPLIST No npc correlating with id : " + mobId);
+							_log.warning("NPCTable: CUSTOM DROPLIST: Drop data for undefined NPC. npcId: " + mobId);
 							continue;
 						}
 						dropDat = new L2DropData();
@@ -204,10 +210,11 @@ public class NpcTable
 					}
 					dropData.close();
 					statement2.close();
-					_log.info("CustomDropList : Added " + cCount + " custom droplist");
-				} catch (Exception e)
+					_log.info("CustomDropList: Added " + cCount + " custom droplist.");
+				}
+				catch (Exception e)
 				{
-					_log.severe("NPCTable: Error reading NPC CUSTOM drop data: " + e);
+					_log.log(Level.SEVERE, "NPCTable: Error reading NPC custom dropdata.", e);
 				}
 			}
 
@@ -234,8 +241,9 @@ public class NpcTable
 				learndata.close();
 				statement3.close();
 			} 
-			catch (Exception e) {
-				_log.severe("NPCTable: Error reading NPC trainer data: " + e);
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "NPCTable: Error reading NPC trainer data.", e);
 			}
 
 			try 
@@ -250,6 +258,11 @@ public class NpcTable
 				{
 					int raidId = minionData.getInt("boss_id");
 					npcDat = _npcs.get(raidId);
+					if (npcDat == null)
+					{
+						_log.warning("Minion references undefined boss NPC. Boss NpcId: "+raidId);
+						continue;
+					}
 					minionDat = new L2MinionData();					
 					minionDat.setMinionId(minionData.getInt("minion_id"));
 					minionDat.setAmountMin(minionData.getInt("amount_min"));
@@ -262,19 +275,27 @@ public class NpcTable
 				statement4.close();
 				_log.config("NpcTable: Loaded " + cnt + " Minions.");
 			} 
-			catch (Exception e) {
-				_log.severe("Error loading minion data: " + e);
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "NPCTable: Error loading minion data.", e);
 			}				 
 		} 
-		finally {
-			try { con.close(); } catch (Exception e) {}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (SQLException e)
+			{
+				// nothing
+			}
 		}
 
 		_initialized = true;
 	}
 
-	private void fillNpcTable(ResultSet NpcData)
-	throws Exception
+	private void fillNpcTable(ResultSet NpcData) throws Exception
 	{
 		while (NpcData.next())
 		{
