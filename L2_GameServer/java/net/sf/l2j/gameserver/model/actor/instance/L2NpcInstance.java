@@ -139,6 +139,7 @@ public class L2NpcInstance extends L2Character
     private int _currentRHandId;  // normally this shouldn't change from the template, but there exist exceptions
     private int _currentCollisionHeight; // used for npc grow effect skills
     private int _currentCollisionRadius; // used for npc grow effect skills
+
     /** Task launching the function onRandomAnimation() */
     protected class RandomAnimationTask implements Runnable
     {
@@ -428,7 +429,7 @@ public class L2NpcInstance extends L2Character
      * <li> L2PcInstance</li><BR><BR>
      */
     @Override
-	public boolean isAutoAttackable(@SuppressWarnings("unused") L2Character attacker)
+	public boolean isAutoAttackable(L2Character attacker)
     {
         return false;
     }
@@ -1212,11 +1213,11 @@ public class L2NpcInstance extends L2Character
         	{        		
         		if (qs.getState() == State.STARTED && qs.getInt("cond") > 0)
         		{
-        			sb.append("(in progress)");
+        			sb.append(" (In Progress)");
         		}
         		else if (qs.getState() == State.COMPLETED )
        			{
-        			sb.append("(done)");
+        			sb.append(" (Done)");
        			}
         	}
         	sb.append("]</a><br>");
@@ -2087,7 +2088,14 @@ public class L2NpcInstance extends L2Character
                         (npcId >= 31239 && npcId <= 31254))
                     return;
             // Get the text of the selected HTML file in function of the npcId and of the page number
-            filename = (getHtmlPath(npcId, val));
+            if (getTemplate().type == "L2Teleporter" && val==1 && player.getLevel() <=40)
+            {
+            	filename = "data/html/teleporter/free/" + npcId + ".htm";
+            	if (!HtmCache.getInstance().isLoadable(filename))
+            		filename = (getHtmlPath(npcId, val));
+            }
+            else
+            	filename = (getHtmlPath(npcId, val));
             break;
         }
         

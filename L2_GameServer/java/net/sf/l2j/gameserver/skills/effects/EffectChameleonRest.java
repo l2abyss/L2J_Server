@@ -23,90 +23,108 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
 
-
 class EffectChameleonRest extends L2Effect
 {
 	public EffectChameleonRest(Env env, EffectTemplate template)
 	{
 		super(env, template);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
 	@Override
 	public EffectType getEffectType()
 	{
 		return EffectType.RELAXING;
 	}
-
-	/** Notify started */
+	
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
 	@Override
-	public void onStart() {
-
+	public void onStart()
+	{
+		
 		L2Character effected = getEffected();
-        if(effected instanceof L2PcInstance)
-        {
-        	setChameleon(true);
-        	((L2PcInstance)effected).setSilentMoving(true);
-        	((L2PcInstance)effected).sitDown();
-        }
-        else
-        	effected.getAI().setIntention(CtrlIntention.AI_INTENTION_REST);
+		if (effected instanceof L2PcInstance)
+		{
+			setChameleon(true);
+			((L2PcInstance) effected).setSilentMoving(true);
+			((L2PcInstance) effected).sitDown();
+		}
+		else
+			effected.getAI().setIntention(CtrlIntention.AI_INTENTION_REST);
 		super.onStart();
 	}
-
-	/* (non-Javadoc)
+	
+	/**
+	 * 
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
 	 */
 	@Override
-	public void onExit() {
-        setChameleon(false);
-        
+	public void onExit()
+	{
+		setChameleon(false);
+		
 		L2Character effected = getEffected();
 		if (effected instanceof L2PcInstance)
-			((L2PcInstance)effected).setSilentMoving(false);
+			((L2PcInstance) effected).setSilentMoving(false);
 		
 		super.onExit();
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
 	@Override
 	public boolean onActionTime()
 	{
 		L2Character effected = getEffected();
-        boolean retval = true;
+		boolean retval = true;
 		
-        if(effected.isDead())
-            retval = false;
-        
-		 // Only cont skills shouldn't end
-		if(getSkill().getSkillType() != SkillType.CONT)
-			return false;        
-
-		if(effected instanceof L2PcInstance)
+		if (effected.isDead())
+			retval = false;
+		
+		// Only cont skills shouldn't end
+		if (getSkill().getSkillType() != SkillType.CONT)
+			return false;
+		
+		if (effected instanceof L2PcInstance)
 		{
-			if(!((L2PcInstance)effected).isSitting())
+			if (!((L2PcInstance) effected).isSitting())
 				retval = false;
 		}
-
+		
 		double manaDam = calc();
-
-		if(manaDam > effected.getCurrentMp())
+		
+		if (manaDam > effected.getCurrentMp())
 		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP);
 			effected.sendPacket(sm);
 			return false;
 		}
-
-        if (!retval)
-            setChameleon(retval);
-        else
-        	effected.reduceCurrentMp(manaDam);
-
-        return retval;
+		
+		if (!retval)
+			setChameleon(retval);
+		else
+			effected.reduceCurrentMp(manaDam);
+		
+		return retval;
 	}
-
-    private void setChameleon(boolean val)
-    {
-    	L2Character effected = getEffected();
-        if(effected instanceof L2PcInstance)
-        	((L2PcInstance)effected).setRelax(val);
-    }
+	
+	/**
+	 * 
+	 * @param val
+	 */
+	private void setChameleon(boolean val)
+	{
+		L2Character effected = getEffected();
+		if (effected instanceof L2PcInstance)
+			((L2PcInstance) effected).setRelax(val);
+	}
 }

@@ -33,7 +33,6 @@ import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.entity.Castle;
-import net.sf.l2j.gameserver.model.zone.L2ZoneManager;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -44,7 +43,6 @@ import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 public final class L2CastleTeleporterInstance extends L2FolkInstance
 {
 	private boolean _currentTask = false;
-	L2ZoneManager _zoneManager;
 
 	/**
 	* @param template

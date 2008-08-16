@@ -114,7 +114,7 @@ public class SummonItems implements IItemHandler
                 spawn.setLocx(activeChar.getX());
                 spawn.setLocy(activeChar.getY());
                 spawn.setLocz(activeChar.getZ());
-                L2World.getInstance().storeObject(spawn.spawnOne());
+                L2World.getInstance().storeObject(spawn.spawnOne(true));
                 activeChar.destroyItem("Summon", item.getObjectId(), 1, null, false);
                 activeChar.sendMessage("Created " + npcTemplate.name + " at x: " + spawn.getLocx() + " y: " + spawn.getLocy() + " z: " + spawn.getLocz());
             }

@@ -37,6 +37,7 @@ import net.sf.l2j.gameserver.model.base.SubClass;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.AcquireSkillDone;
 import net.sf.l2j.gameserver.network.serverpackets.AcquireSkillList;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -823,11 +824,19 @@ public final class L2VillageMasterInstance extends L2FolkInstance
     {
         if (Config.DEBUG)
             _log.fine("PledgeSkillList activated on: "+getObjectId());
-        if(player.getClan() == null)
+        NpcHtmlMessage html = new NpcHtmlMessage(1);
+        if(player.getClan() == null || !player.isClanLeader())
+        {
+            TextBuilder sb = new TextBuilder();
+            sb.append("<html><body>");
+            sb.append("<br><br>You're not qualified to learn Clan skills.");
+            sb.append("</body></html>");
+            html.setHtml(sb.toString());
+            player.sendPacket(html);
+            player.sendPacket(ActionFailed.STATIC_PACKET);
         	return;
-        
-        if (player.isTransformed())
-        	return;
+        }
+        	
 
         L2PledgeSkillLearn[] skills = SkillTreeTable.getInstance().getAvailablePledgeSkills(player);
         AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.skillType.Clan);
@@ -843,13 +852,16 @@ public final class L2VillageMasterInstance extends L2FolkInstance
 
         if (counts == 0)
         {
-            NpcHtmlMessage html = new NpcHtmlMessage(1);
 
             if (player.getClan().getLevel() < 8)
             {
                 SystemMessage sm = new SystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN);
-                sm.addNumber(player.getClan().getLevel()+1);
+                if (player.getClan().getLevel() < 5)
+                	sm.addNumber(5);
+                else
+                	sm.addNumber(player.getClan().getLevel()+1);
                 player.sendPacket(sm);
+                player.sendPacket(new AcquireSkillDone());
             }
             else
             {

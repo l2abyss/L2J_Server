@@ -106,7 +106,7 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 						{
 							sm = new SystemMessage(SystemMessageId.S1_ALREADY_MEMBER_OF_COMMAND_CHANNEL);
 							sm.addString(player.getName());
-							activeChar.sendPacket(sm);;
+							activeChar.sendPacket(sm);
 						}
 						else
 						{

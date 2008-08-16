@@ -3,12 +3,12 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- *
+ * 
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,20 +25,28 @@ import net.sf.l2j.gameserver.skills.Env;
 
 public class EffectEnemyCharge extends L2Effect
 {
-
-	private int	_x, _y, _z;
-
+	
+	private int _x, _y, _z;
+	
 	public EffectEnemyCharge(Env env, EffectTemplate template)
 	{
 		super(env, template);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
 	@Override
 	public EffectType getEffectType()
 	{
 		return EffectType.BUFF;
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
 	@Override
 	public void onStart()
 	{
@@ -51,31 +59,32 @@ public class EffectEnemyCharge extends L2Effect
 		double dx = getEffected().getX() - curX;
 		double dy = getEffected().getY() - curY;
 		double dz = getEffected().getZ() - curZ;
-		double distance = Math.sqrt(dx*dx + dy*dy);
+		double distance = Math.sqrt(dx * dx + dy * dy);
 		
-		int offset = Math.max((int)distance-getSkill().getFlyRadius(), 30);
+		int offset = Math.max((int) distance - getSkill().getFlyRadius(), 30);
 		
 		double cos;
 		double sin;
-			
+		
 		// approximation for moving closer when z coordinates are different
 		// TODO: handle Z axis movement better
-		offset -= Math.abs(dz);  
-		if (offset < 5) offset = 5;
-			
+		offset -= Math.abs(dz);
+		if (offset < 5)
+			offset = 5;
+		
 		// If no distance
-		if (distance < 1 || distance - offset  <= 0)
+		if (distance < 1 || distance - offset <= 0)
 			return;
 		
 		// Calculate movement angles needed
-		sin = dy/distance;
-		cos = dx/distance;
+		sin = dy / distance;
+		cos = dx / distance;
 		
 		// Calculate the new destination with offset included
-		_x = curX + (int)((distance-offset) * cos);
-		_y = curY + (int)((distance-offset) * sin);
+		_x = curX + (int) ((distance - offset) * cos);
+		_y = curY + (int) ((distance - offset) * sin);
 		_z = getEffected().getZ();
-
+		
 		if (Config.GEODATA > 0)
 		{
 			Location destiny = GeoData.getInstance().moveCheck(getEffector().getX(), getEffector().getY(), getEffector().getZ(), _x, _y, _z);
@@ -83,10 +92,14 @@ public class EffectEnemyCharge extends L2Effect
 			_y = destiny.getY();
 		}
 		getEffector().broadcastPacket(new FlyToLocation(getEffector(), _x, _y, _z, FlyType.CHARGE));
-		//getEffector().abortAttack();
-		//getEffector().abortCast();
+		// getEffector().abortAttack();
+		// getEffector().abortCast();
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
+	 */
 	@Override
 	public void onExit()
 	{
@@ -94,7 +107,11 @@ public class EffectEnemyCharge extends L2Effect
 		getEffector().setXYZ(_x, _y, _z);
 		getEffector().broadcastPacket(new ValidateLocation(getEffector()));
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
 	@Override
 	public boolean onActionTime()
 	{

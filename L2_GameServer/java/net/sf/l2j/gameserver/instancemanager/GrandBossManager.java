@@ -26,6 +26,7 @@ import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.zone.type.L2BossZone;
 import net.sf.l2j.gameserver.templates.StatsSet;
 import net.sf.l2j.util.L2FastList;
@@ -78,7 +79,7 @@ public class GrandBossManager
 
 	private static final String UPDATE_GRAND_BOSS_DATA2 = "UPDATE grandboss_data set status = ? where boss_id = ?";
 	
-	private static Logger _log = Logger.getLogger(GrandBossManager.class.getName());
+	protected static Logger _log = Logger.getLogger(GrandBossManager.class.getName());
 
 	private static GrandBossManager _instance;
 
@@ -90,7 +91,7 @@ public class GrandBossManager
 
 	private L2FastList<L2BossZone> _zones;
 
-	public static final GrandBossManager getInstance()
+	public static GrandBossManager getInstance()
 	{
 		if (_instance == null)
 		{
@@ -285,6 +286,16 @@ public class GrandBossManager
 		return temp.getZoneName().equalsIgnoreCase(zoneType);
 	}
 
+	public boolean checkIfInZone(L2PcInstance player)
+	{
+		if (player == null) return false;
+		L2BossZone temp = getZone(player.getX(), player.getY(), player.getZ());
+		if (temp == null)
+		{
+			return false;
+		}
+		return true;
+	}
 	/*
 	 * The rest
 	 */
@@ -425,5 +436,4 @@ public class GrandBossManager
 		 _bossStatus.clear();
 		 _zones.clear();
 	}
-
 }

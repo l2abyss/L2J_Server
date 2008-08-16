@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.datatables;
+package net.sf.l2j.gameserver.model;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,16 +22,18 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 import net.sf.l2j.L2DatabaseFactory;
+import net.sf.l2j.gameserver.datatables.AccessLevels;
+import net.sf.l2j.gameserver.datatables.AdminCommandAccessRight;
 
 /**
  * @author FBIagent<br>
  */
-public class AdminCommandAccessRights
+public class L2AdminCommandAccessRights
 {
 	/** The logger<br> */
-	private static Logger _log = Logger.getLogger(AdminCommandAccessRights.class.getName());
+	private static Logger _log = Logger.getLogger(L2AdminCommandAccessRights.class.getName());
 	/** The one and only instance of this class, retriveable by getInstance()<br> */
-	private static AdminCommandAccessRights _instance = null;
+	private static L2AdminCommandAccessRights _instance = null;
 
 	/** The access rights<br> */
 	private Map< String, AdminCommandAccessRight > _adminCommandAccessRights = new FastMap< String, AdminCommandAccessRight >();
@@ -39,7 +41,7 @@ public class AdminCommandAccessRights
 	/**
 	 * Loads admin command access rights from database<br>
 	 */
-	private AdminCommandAccessRights()
+	private L2AdminCommandAccessRights()
 	{
 		java.sql.Connection con = null;
 		
@@ -84,12 +86,12 @@ public class AdminCommandAccessRights
 	 * 
 	 * @return AdminCommandAccessRights: the one and only instance of this class<br>
 	 */
-	public static AdminCommandAccessRights getInstance()
+	public static L2AdminCommandAccessRights getInstance()
 	{
-		return _instance == null ? (_instance = new AdminCommandAccessRights()) : _instance;
+		return _instance == null ? (_instance = new L2AdminCommandAccessRights()) : _instance;
 	}
 
-	public boolean hasAccess(String adminCommand, AccessLevel accessLevel)
+	public boolean hasAccess(String adminCommand, L2AccessLevel accessLevel)
 	{
 		if (!accessLevel.isGm())
 			return false;

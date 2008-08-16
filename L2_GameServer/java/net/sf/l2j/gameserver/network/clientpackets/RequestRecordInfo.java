@@ -51,7 +51,6 @@ public class RequestRecordInfo extends L2GameClientPacket
 		// trigger
 	}
 
-	@SuppressWarnings("cast")
     @Override
 	protected void runImpl()
 	{

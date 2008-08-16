@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-
 public final class ChooseInventoryItem extends L2GameServerPacket
 {
 	private static final String _S__6F_CHOOSEINVENTORYITEM = "[S] 7c ChooseInventoryItem";

@@ -27,21 +27,29 @@ class EffectDamOverTime extends L2Effect
 	{
 		super(env, template);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
 	@Override
 	public EffectType getEffectType()
 	{
 		return EffectType.DMG_OVER_TIME;
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
 	@Override
 	public boolean onActionTime()
 	{
 		if (getEffected().isDead())
 			return false;
-
+		
 		double damage = calc();
-
+		
 		if (damage >= getEffected().getCurrentHp())
 		{
 			if (getSkill().isToggle())
@@ -50,18 +58,17 @@ class EffectDamOverTime extends L2Effect
 				getEffected().sendPacket(sm);
 				return false;
 			}
-
-            // For DOT skills that will not kill effected player.
-            if (!getSkill().killByDOT()) damage = getEffected().getCurrentHp() - 1;
+			
+			// For DOT skills that will not kill effected player.
+			if (!getSkill().killByDOT())
+				damage = getEffected().getCurrentHp() - 1;
 		}
-
-        boolean awake = !(getEffected() instanceof L2Attackable)
-        					&& !(getSkill().getTargetType() == SkillTargetType.TARGET_SELF
-        							&& getSkill().isToggle());
-
-
-        getEffected().reduceCurrentHp(damage, getEffector(),awake);
-
+		
+		boolean awake = !(getEffected() instanceof L2Attackable)
+		        && !(getSkill().getTargetType() == SkillTargetType.TARGET_SELF && getSkill().isToggle());
+		
+		getEffected().reduceCurrentHp(damage, getEffector(), awake);
+		
 		return true;
 	}
 }

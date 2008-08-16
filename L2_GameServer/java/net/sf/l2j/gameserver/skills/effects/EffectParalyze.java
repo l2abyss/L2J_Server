@@ -24,30 +24,46 @@ final class EffectParalyze extends L2Effect
 	{
 		super(env, template);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
 	@Override
 	public EffectType getEffectType()
 	{
 		return EffectType.PARALYZE;
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
 	@Override
 	public void onStart()
 	{
 		getEffected().startAbnormalEffect(L2Character.ABNORMAL_EFFECT_HOLD_1);
 		getEffected().startParalyze();
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
+	 */
 	@Override
 	public void onExit()
 	{
 		getEffected().stopAbnormalEffect(L2Character.ABNORMAL_EFFECT_HOLD_1);
 		getEffected().stopParalyze(this);
 	}
-
-    @Override
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
+	@Override
 	public boolean onActionTime()
-    {
-    	return false;
-    }
+	{
+		return false;
+	}
 }

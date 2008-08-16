@@ -322,7 +322,11 @@ public abstract class L2ZoneType
 
 	protected abstract void onEnter(L2Character character);
 	protected abstract void onExit(L2Character character);
-	protected abstract void onDieInside(L2Character character);
-	protected abstract void onReviveInside(L2Character character);
+	public abstract void onDieInside(L2Character character);
+	public abstract void onReviveInside(L2Character character);
 
+	public FastMap<Integer, L2Character> getCharactersInside()
+	{
+		return _characterList;
+	}
 }

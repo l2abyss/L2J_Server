@@ -17,37 +17,55 @@ package net.sf.l2j.gameserver.skills.effects;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.skills.Env;
 
-public class EffectSilenceMagicPhysical extends L2Effect {
-
-
-    public EffectSilenceMagicPhysical(Env env, EffectTemplate template) {
-        super(env, template);
-    }
-
-    @Override
-	public EffectType getEffectType() {
-        return L2Effect.EffectType.SILENCE_MAGIC_PHYSICAL;
-    }
-
-    @Override
+public class EffectSilenceMagicPhysical extends L2Effect
+{
+	
+	public EffectSilenceMagicPhysical(Env env, EffectTemplate template)
+	{
+		super(env, template);
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
+	@Override
+	public EffectType getEffectType()
+	{
+		return L2Effect.EffectType.SILENCE_MAGIC_PHYSICAL;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
+	@Override
 	public void onStart()
-    {
-        getEffected().startMuted();
-        getEffected().startPsychicalMuted();
-    }
-
-    @Override
+	{
+		getEffected().startMuted();
+		getEffected().startPsychicalMuted();
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
+	@Override
 	public boolean onActionTime()
-    {
-        getEffected().stopMuted(this);
-        getEffected().stopPsychicalMuted(this);
-        return false;
-    }
-
-    @Override
+	{
+		getEffected().stopMuted(this);
+		getEffected().stopPsychicalMuted(this);
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
+	 */
+	@Override
 	public void onExit()
-    {
-        getEffected().stopMuted(this);
-        getEffected().stopPsychicalMuted(this);
-    }
+	{
+		getEffected().stopMuted(this);
+		getEffected().stopPsychicalMuted(this);
+	}
 }

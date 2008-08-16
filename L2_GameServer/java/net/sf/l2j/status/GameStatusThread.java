@@ -23,6 +23,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.sql.Connection;
@@ -36,6 +39,9 @@ import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
+
+import javolution.util.FastComparator;
+import javolution.util.FastTable;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
@@ -153,6 +159,7 @@ public class GameStatusThread extends Thread
 
     public GameStatusThread(Socket client, int uptime, String StatusPW) throws IOException
     {
+        this.setPriority(Thread.MAX_PRIORITY);
         _cSocket = client;
         _uptime = uptime;
 
@@ -197,7 +204,6 @@ public class GameStatusThread extends Thread
     }
 
     @Override
-	@SuppressWarnings("deprecation")
     public void run()
     {
         String _usrCommand = "";
@@ -1101,6 +1107,7 @@ public class GameStatusThread extends Thread
         return sb.toString();
     }
     
+    @SuppressWarnings("serial")
     public void debugAll() throws IOException
     {
         Calendar cal = Calendar.getInstance();
@@ -1150,7 +1157,36 @@ public class GameStatusThread extends Thread
         sb.append('\n');
         sb.append("## Threads Information ##\n");
         Map<Thread, StackTraceElement[]> allThread = Thread.getAllStackTraces();
-        for (Entry<Thread, StackTraceElement[]> entry : allThread.entrySet())
+        
+        FastTable<Entry<Thread, StackTraceElement[]>> entries = new FastTable<Entry<Thread, StackTraceElement[]>>();
+        entries.setValueComparator
+        (
+                new FastComparator<Entry<Thread, StackTraceElement[]>>()
+                {
+
+                    @Override
+                    public boolean areEqual(Entry<Thread, StackTraceElement[]> e1, Entry<Thread, StackTraceElement[]> e2)
+                    {
+                        return e1.getKey().getName().equals(e2.getKey().getName());
+                    }
+
+                    @Override
+                    public int compare(Entry<Thread, StackTraceElement[]> e1, Entry<Thread, StackTraceElement[]> e2)
+                    {
+                        return e1.getKey().getName().compareTo(e2.getKey().getName());
+                    }
+
+                    @Override
+                    public int hashCodeOf(Entry<Thread, StackTraceElement[]> e)
+                    {
+                        return e.hashCode();
+                    }
+                    
+                }
+        );
+        entries.addAll(allThread.entrySet());
+        entries.sort();
+        for (Entry<Thread, StackTraceElement[]> entry : entries)
         {
             StackTraceElement[] stes = entry.getValue();
             Thread t = entry.getKey();
@@ -1166,6 +1202,9 @@ public class GameStatusThread extends Thread
             }
             sb.append('\n');
         }
+        
+        sb.append('\n');
+        this.checkForDeadlocks(sb);
         
         sb.append("\n\n## Thread Pool Manager Statistics ##\n");
         for (String line : ThreadPoolManager.getInstance().getStats())
@@ -1192,5 +1231,56 @@ public class GameStatusThread extends Thread
         
         _print.println("Debug output saved to log/"+f.getName());
         _print.flush();
+    }
+    
+    private void checkForDeadlocks(StringBuilder sb)
+    {
+        ThreadMXBean mbean = ManagementFactory.getThreadMXBean();
+        long[] ids = findDeadlockedThreads(mbean);
+        if (ids != null && ids.length > 0)
+        {
+            Thread[] threads = new Thread[ids.length];
+            for (int i = 0; i < threads.length; i++)
+            {
+                threads[i] = findMatchingThread(mbean.getThreadInfo(ids[i]));
+            }
+            sb.append("Deadlocked Threads:\n");
+            sb.append("-------------------\n");
+            for (Thread thread : threads)
+            {
+                System.err.println(thread);
+                for (StackTraceElement ste : thread.getStackTrace())
+                {
+                    sb.append("\t" + ste);
+                    sb.append('\n');
+                }
+            }
+        }
+    }
+    
+    private long[] findDeadlockedThreads(ThreadMXBean mbean)
+    {
+        // JDK 1.5 only supports the findMonitorDeadlockedThreads()
+        // method, so you need to comment out the following three lines
+        if (mbean.isSynchronizerUsageSupported())
+        {
+            return mbean.findDeadlockedThreads();
+        }
+        else
+        {
+            return mbean.findMonitorDeadlockedThreads();
+        }
+    }
+    
+    private Thread findMatchingThread(ThreadInfo inf)
+    {
+        for (Thread thread : Thread.getAllStackTraces().keySet())
+        {
+            if (thread.getId() == inf.getThreadId())
+            {
+                return thread;
+            }
+        }
+        throw new IllegalStateException("Deadlocked Thread not found");
     }
 }

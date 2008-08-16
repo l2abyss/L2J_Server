@@ -13,8 +13,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package net.sf.l2j.gameserver.network.clientpackets;
-
-
 /**
  * Format chS
  * c (id) 0xD0

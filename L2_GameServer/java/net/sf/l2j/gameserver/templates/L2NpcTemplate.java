@@ -341,27 +341,41 @@ public final class L2NpcTemplate extends L2CharTemplate
 			// then only register this NPC if not already registered for the specified event.
 			// if a quest allows multiple registrations, then register regardless of count
 			// In all cases, check if this new registration is replacing an older copy of the SAME quest
+			// Finally, check quest class hierarchy: a parent class should never replace a child class.
+			// a child class should always replace a parent class.
 			if (!EventType.isMultipleRegistrationAllowed())
 			{
-				if (_quests[0].getName().equals(q.getName()))
+				// if it is the same quest (i.e. reload) or the existing is a superclass of the new one, replace the existing.
+				if ( _quests[0].getName().equals(q.getName()) || L2NpcTemplate.isAssignableTo(q, _quests[0].getClass()))
+				{
 					_quests[0] = q;
+				}
 				else 
+				{
 					_log.warning("Quest event not allowed in multiple quests.  Skipped addition of Event Type \""+EventType+"\" for NPC \""+name +"\" and quest \""+q.getName()+"\".");
+				}
 			}
 			else
 			{
 				// be ready to add a new quest to a new copy of the list, with larger size than previously.
 				Quest[] tmp = new Quest[len+1];
+				
 				// loop through the existing quests and copy them to the new list.  While doing so, also 
 				// check if this new quest happens to be just a replacement for a previously loaded quest.  
-				// If so, just save the updated reference and do NOT use the new list. Else, add the new
-				// quest to the end of the new list
-				for (int i=0; i < len; i++) {
-					if (_quests[i].getName().equals(q.getName())) 
+				// Replace existing if the new quest is the same (reload) or a child of the existing quest.
+				// Do nothing if the new quest is a superclass of an existing quest.
+				// Add the new quest in the end of the list otherwise.
+				for (int i=0; i < len; i++) 
+				{
+					if (_quests[i].getName().equals(q.getName()) || L2NpcTemplate.isAssignableTo(q, _quests[i].getClass())) 
 					{
 						_quests[i] = q;
 						return;
 		            }
+					else if (L2NpcTemplate.isAssignableTo(_quests[i], q.getClass()))
+					{
+						return;
+					}
 					tmp[i] = _quests[i];
 		        }
 				tmp[len] = q;
@@ -369,10 +383,60 @@ public final class L2NpcTemplate extends L2CharTemplate
 			}
 		}
     }
+    
+    /**
+     * Checks if obj can be assigned to the Class represented by clazz.<br>
+     * This is true if, and only if, obj is the same class represented by clazz, 
+     * or a subclass of it or obj implements the interface represented by clazz. 
+     * 
+     * 
+     * @param obj
+     * @param clazz
+     * @return
+     */
+    public static boolean isAssignableTo(Object obj, Class<?> clazz)
+    {
+    	return L2NpcTemplate.isAssignableTo(obj.getClass(), clazz);
+    }
+    
+    public static boolean isAssignableTo(Class<?> sub, Class<?> clazz)
+    {
+    	// if clazz represents an interface
+    	if (clazz.isInterface())
+    	{
+    		// check if obj implements the clazz interface
+    		Class<?>[] interfaces = sub.getInterfaces();
+    		for (int i = 0; i < interfaces.length; i++)
+    		{
+    			if (clazz.getName().equals(interfaces[i].getName()))
+    			{
+    				return true;
+    			}
+    		}
+    	}
+    	else
+    	{
+    		do
+        	{
+        		if (sub.getName().equals(clazz.getName()))
+        		{
+        			return true;
+        		}
+        		
+        		sub = sub.getSuperclass();
+        	}
+        	while (sub != null);
+    	}
     	
-	public Quest[] getEventQuests(Quest.QuestEventType EventType) {
+    	return false;
+    }
+    	
+	public Quest[] getEventQuests(Quest.QuestEventType EventType)
+	{
 		if (_questEvents == null)
+		{
 			return null;
+		}
 		return _questEvents.get(EventType);
 	}
 	
@@ -473,4 +537,12 @@ public final class L2NpcTemplate extends L2CharTemplate
 	{
 		return npcId != idTemplate;
 	}
+
+	/**
+     * @return name
+     */
+    public String getName()
+    {
+	    return name;
+    }
 }

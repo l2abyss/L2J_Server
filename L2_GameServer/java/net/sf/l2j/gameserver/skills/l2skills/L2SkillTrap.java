@@ -52,7 +52,7 @@ public class L2SkillTrap extends L2Skill
      * @see net.sf.l2j.gameserver.model.L2Skill#useSkill(net.sf.l2j.gameserver.model.L2Character, net.sf.l2j.gameserver.model.L2Object[])
      */
     @Override
-    public void useSkill(L2Character caster, @SuppressWarnings("unused") L2Object[] targets)
+    public void useSkill(L2Character caster, L2Object[] targets)
     {
     	if (caster.isAlikeDead() || !(caster instanceof L2PcInstance))
     		return;

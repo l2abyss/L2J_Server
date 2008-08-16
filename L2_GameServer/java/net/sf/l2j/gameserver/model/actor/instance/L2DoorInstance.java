@@ -90,19 +90,14 @@ public class L2DoorInstance extends L2Character
         @Override
 		public L2DoorInstance getActor() { return L2DoorInstance.this; }
         @Override
-		@SuppressWarnings("unused")
         public void moveTo(int x, int y, int z, int offset) {}
         @Override
-		@SuppressWarnings("unused")
         public void moveTo(int x, int y, int z) {}
         @Override
-		@SuppressWarnings("unused")
         public void stopMove(L2CharPosition pos) {}
         @Override
-		@SuppressWarnings("unused")
         public void doAttack(L2Character target) {}
         @Override
-		@SuppressWarnings("unused")
         public void doCast(L2Skill skill) {}
     }
 

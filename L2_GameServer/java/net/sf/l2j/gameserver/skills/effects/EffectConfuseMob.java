@@ -26,47 +26,63 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.util.Rnd;
 
-
 /**
  * @author littlecrow
- *
- * Implementation of the Confusion Effect
+ * 
+ *         Implementation of the Confusion Effect
  */
-final class EffectConfuseMob extends L2Effect {
-
+final class EffectConfuseMob extends L2Effect
+{
+	
 	public EffectConfuseMob(Env env, EffectTemplate template)
 	{
 		super(env, template);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
 	@Override
 	public EffectType getEffectType()
 	{
 		return EffectType.CONFUSE_MOB_ONLY;
 	}
-
-	/** Notify started */
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
 	@Override
-	public void onStart() {
+	public void onStart()
+	{
 		getEffected().startConfused();
 		onActionTime();
 	}
-
-	/** Notify exited */
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
+	 */
 	@Override
-	public void onExit() {
+	public void onExit()
+	{
 		getEffected().stopConfused(this);
 	}
-
-    @Override
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
+	@Override
 	public boolean onActionTime()
-    {
+	{
 		List<L2Character> targetList = new FastList<L2Character>();
-
+		
 		// Getting the possible targets
-
+		
 		Collection<L2Object> objs = getEffected().getKnownList().getKnownObjects().values();
-		//synchronized (getEffected().getKnownList().getKnownObjects())
+		// synchronized (getEffected().getKnownList().getKnownObjects())
 		{
 			for (L2Object obj : objs)
 			{
@@ -75,21 +91,20 @@ final class EffectConfuseMob extends L2Effect {
 			}
 		}
 		// if there is no target, exit function
-		if (targetList.size()==0){
+		if (targetList.size() == 0)
+		{
 			return true;
 		}
-
+		
 		// Choosing randomly a new target
 		int nextTargetIdx = Rnd.nextInt(targetList.size());
 		L2Object target = targetList.get(nextTargetIdx);
-
+		
 		// Attacking the target
-		//getEffected().setTarget(target);
+		// getEffected().setTarget(target);
 		getEffected().setTarget(target);
-		getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK,target);
-
-
-    	return true;
-    }
+		getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, target);
+		
+		return true;
+	}
 }
-

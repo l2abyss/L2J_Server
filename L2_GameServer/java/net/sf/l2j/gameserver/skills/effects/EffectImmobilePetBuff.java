@@ -21,49 +21,65 @@ import net.sf.l2j.gameserver.skills.Env;
 
 /**
  * @author demonia
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * 
+ *         TODO To change the template for this generated type comment go to
+ *         Window - Preferences - Java - Code Style - Code Templates
  */
-final class EffectImmobilePetBuff extends L2Effect {
-     private L2Summon _pet;
-
+final class EffectImmobilePetBuff extends L2Effect
+{
+	private L2Summon _pet;
+	
 	public EffectImmobilePetBuff(Env env, EffectTemplate template)
 	{
 		super(env, template);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
 	@Override
 	public EffectType getEffectType()
 	{
 		return EffectType.BUFF;
 	}
-
-	/** Notify started */
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
 	@Override
-	public void onStart() {
+	public void onStart()
+	{
 		_pet = null;
-
+		
 		if (getEffected() instanceof L2Summon
-			    && getEffector() instanceof L2PcInstance
-				&& ((L2Summon)getEffected()).getOwner() == getEffector())
+		        && getEffector() instanceof L2PcInstance
+		        && ((L2Summon) getEffected()).getOwner() == getEffector())
 		{
-			_pet = (L2Summon)getEffected();
+			_pet = (L2Summon) getEffected();
 			_pet.setIsImmobilized(true);
 		}
 	}
-
-	/** Notify exited */
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
+	 */
 	@Override
-	public void onExit() {
+	public void onExit()
+	{
 		if (_pet != null)
 			_pet.setIsImmobilized(false);
 	}
-
-	@Override
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
 	public boolean onActionTime()
-    {
-    	// just stop this effect
-    	return false;
-    }
+	{
+		// just stop this effect
+		return false;
+	}
 }

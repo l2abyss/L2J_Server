@@ -54,7 +54,6 @@ public final class L2EnchantSkillLearn
         return _baseLvl;
     }
     
-    @SuppressWarnings("unchecked")
     public void addEnchantDetail(EnchantSkillDetail esd)
     {
         int enchantType = L2EnchantSkillLearn.getEnchantType(esd.getLevel());

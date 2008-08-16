@@ -418,6 +418,7 @@ public final class UseItem extends L2GameClientPacket
                     			}
                     		}
                     	}
+                        break;
                     }
                     case L2Item.SLOT_L_BRACELET:
                     {

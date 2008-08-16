@@ -27,9 +27,9 @@ import net.sf.l2j.gameserver.skills.Formulas;
  * 
  * @author Ahmed
  * 
- * This is the Effect support for spoil.
+ *         This is the Effect support for spoil.
  * 
- * This was originally done by _drunk_
+ *         This was originally done by _drunk_
  */
 public class EffectSpoil extends L2Effect
 {
@@ -38,12 +38,20 @@ public class EffectSpoil extends L2Effect
 		super(env, template);
 	}
 	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
 	@Override
 	public EffectType getEffectType()
 	{
 		return EffectType.SPOIL;
 	}
 	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
 	@Override
 	public void onStart()
 	{
@@ -89,6 +97,10 @@ public class EffectSpoil extends L2Effect
 		
 	}
 	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
 	@Override
 	public boolean onActionTime()
 	{

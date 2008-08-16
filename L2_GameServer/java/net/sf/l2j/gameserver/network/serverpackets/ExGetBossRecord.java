@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
+import java.util.Map;
 
 /**
  * Format: ch ddd [ddd]
@@ -22,12 +23,15 @@ package net.sf.l2j.gameserver.network.serverpackets;
 public class ExGetBossRecord extends L2GameServerPacket
 {
 	private static final String _S__FE_33_EXGETBOSSRECORD = "[S] FE:34 ExGetBossRecord";
-	private int _unk1, _unk2;
+	private Map<Integer, Integer> _bossRecordInfo;
+	private int _ranking;
+	private int _totalPoints;
 
-	public ExGetBossRecord(int val1, int val2)
+	public ExGetBossRecord(int ranking, int totalScore, Map<Integer, Integer> list)
 	{
-		_unk1 = val1;
-		_unk2 = val2;
+		_ranking = ranking;
+		_totalPoints = totalScore;
+		_bossRecordInfo = list;
 	}
 
 	/**
@@ -38,9 +42,25 @@ public class ExGetBossRecord extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x34);
-		writeD(_unk1);
-		writeD(_unk2);
-		writeD(0x00); //list size
+		writeD(_ranking);
+		writeD(_totalPoints);
+		if (_bossRecordInfo == null)
+		{
+			writeD(0x00);
+			writeD(0x00);
+			writeD(0x00);
+			writeD(0x00);			
+		}
+		else
+		{
+			writeD(_bossRecordInfo.size()); //list size
+			for (int bossId : _bossRecordInfo.keySet())
+			{
+				writeD(bossId);
+				writeD(_bossRecordInfo.get(bossId));
+				writeD(0x00); //??
+			}
+		}
 	}
 
 	/**
@@ -51,5 +71,4 @@ public class ExGetBossRecord extends L2GameServerPacket
 	{
 		return _S__FE_33_EXGETBOSSRECORD;
 	}
-
 }

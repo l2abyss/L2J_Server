@@ -188,7 +188,7 @@ public enum Stats
     
     //Shield Stats
     SHIELD_DEFENCE_ANGLE	("shieldDefAngle");
-	;
+	
 
 	public static final int NUM_STATS = values().length;
 

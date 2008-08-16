@@ -52,7 +52,7 @@ public class CharTemplateTable
                                                 "Titan", "Grand Khauatari", "Dominator", "Doomcryer",
                                                 "Fortune Seeker", "Maestro",
                                                 "dummyEntry31", "dummyEntry32", "dummyEntry33", "dummyEntry34",
-                                                "Male Soldier", "Female Soldier", "Trooper", "Warder", "Berserker", "Male Soulbreaker", "Female Souldbreaker", "Arbalester", "Doombringer", "Male Soulhound", "Female Soulhound", "Trickster", "Inspector", "Judicator" 
+                                                "Male Soldier", "Female Soldier", "Trooper", "Warder", "Berserker", "Male Soulbreaker", "Female Soulbreaker", "Arbalester", "Doombringer", "Male Soulhound", "Female Soulhound", "Trickster", "Inspector", "Judicator" 
     };
 
 	private Map<Integer, L2PcTemplate> _templates;

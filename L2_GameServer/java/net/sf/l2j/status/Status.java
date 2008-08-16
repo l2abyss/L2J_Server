@@ -46,6 +46,8 @@ public class Status extends Thread
     @Override
 	public void run()
     {
+        this.setPriority(Thread.MAX_PRIORITY);
+        
         while (true)
         {
             try

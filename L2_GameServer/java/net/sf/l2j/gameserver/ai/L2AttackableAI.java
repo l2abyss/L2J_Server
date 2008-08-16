@@ -685,29 +685,11 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 							        && _actor.getAttackByList().contains(originalAttackTarget)
 							        && (npc.getAI()._intention == CtrlIntention.AI_INTENTION_IDLE || npc.getAI()._intention == CtrlIntention.AI_INTENTION_ACTIVE)
 							        && GeoData.getInstance().canSeeTarget(_actor, npc))
-							{
-								if (originalAttackTarget instanceof L2PcInstance
-								        && originalAttackTarget.isInParty()
-								        && originalAttackTarget.getParty().isInDimensionalRift())
-								{
-									byte riftType = originalAttackTarget.getParty().getDimensionalRift().getType();
-									byte riftRoom = originalAttackTarget.getParty().getDimensionalRift().getCurrentRoom();
-									
-									if (_actor instanceof L2RiftInvaderInstance
-									        && !DimensionalRiftManager.getInstance().getRoom(riftType, riftRoom).checkIfInZone(npc.getX(), npc.getY(), npc.getZ()))
-										continue;
-								}
-								
-								// TODO: notifyEvent ought to be removed from
-								// here and added in the AI script, when
-								// implemented (Fulminus)
-								// Notify the L2Object AI with EVT_AGGRESSION
-								npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, originalAttackTarget, 1);
-								if ((originalAttackTarget instanceof L2PcInstance)
-								        || (originalAttackTarget instanceof L2Summon))
-								{
-									if (npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_FACTION_CALL) != null)
-									{
+        					{
+	        					if ((originalAttackTarget instanceof L2PcInstance) || (originalAttackTarget instanceof L2Summon))
+	        					{
+	        						if (npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_FACTION_CALL) != null)
+	        						{
 										L2PcInstance player = (originalAttackTarget instanceof L2PcInstance) ? (L2PcInstance) originalAttackTarget : ((L2Summon) originalAttackTarget).getOwner();
 										for (Quest quest : npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_FACTION_CALL))
 											quest.notifyFactionCall(npc, (L2NpcInstance) _actor, player, (originalAttackTarget instanceof L2Summon));

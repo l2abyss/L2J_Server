@@ -32,7 +32,7 @@ public class FaenorQuestParser extends FaenorParser
 {
     protected static final Logger _log = Logger.getLogger(FaenorQuestParser.class.getName());
     @Override
-	public void parseScript(Node questNode, @SuppressWarnings("unused") ScriptContext context)
+	public void parseScript(Node questNode, ScriptContext context)
     {
         if (DEBUG) 
             _log.info("Parsing Quest.");

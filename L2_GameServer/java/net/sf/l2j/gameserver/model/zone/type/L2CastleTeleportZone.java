@@ -82,10 +82,10 @@ public class L2CastleTeleportZone extends L2ZoneType
 	protected void onExit(L2Character character) {}
 
 	@Override
-	protected void onDieInside(L2Character character) {}
+    public void onDieInside(L2Character character) {}
 
 	@Override
-	protected void onReviveInside(L2Character character) {}
+    public void onReviveInside(L2Character character) {}
 
 	/**
 	 * Returns all players within this zone

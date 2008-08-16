@@ -58,11 +58,12 @@ public final class Broadcast
      *
      */
     public static void toPlayersTargettingMyself(L2Character character, L2GameServerPacket mov)
-    {
-        if (Config.DEBUG) _log.fine("players to notify:" + character.getKnownList().getKnownPlayers().size() + " packet:"+mov.getType());
-
-        Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
-        //synchronized (character.getKnownList().getKnownPlayers())
+	{
+		if (Config.DEBUG)
+			_log.fine("players to notify:" + character.getKnownList().getKnownPlayers().size() + " packet:" + mov.getType());
+		
+		Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
+		// synchronized (character.getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
 			{
@@ -72,7 +73,7 @@ public final class Broadcast
 				player.sendPacket(mov);
 			}
 		}
-    }
+	}
 
     /**
 	 * Send a packet to all L2PcInstance in the _KnownPlayers of the
@@ -93,8 +94,7 @@ public final class Broadcast
 	 * <BR>
 	 * 
 	 */
-    public static void toKnownPlayers(L2Character character,
-	        L2GameServerPacket mov)
+    public static void toKnownPlayers(L2Character character, L2GameServerPacket mov)
 	{
 		if (Config.DEBUG)
 			_log.fine("players to notify:" + character.getKnownList().getKnownPlayers().size() + " packet:" + mov.getType());
@@ -209,20 +209,24 @@ public final class Broadcast
      *
      */
     public static void toAllOnlinePlayers(L2GameServerPacket mov)
-    {
-        if (Config.DEBUG) _log.fine("Players to notify: " + L2World.getInstance().getAllPlayersCount() + " (with packet " + mov.getType() + ")");
-
-        Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-        //synchronized (L2World.getInstance().getAllPlayers())
-        {
-        	for (L2PcInstance onlinePlayer : pls)
-        		if (onlinePlayer.isOnline() == 1)
-        			onlinePlayer.sendPacket(mov);
-        }
-    }
-    
-    public static void announceToOnlinePlayers(String text) {
-    	CreatureSay cs = new CreatureSay(0, Say2.ANNOUNCEMENT, "", text);
-    	toAllOnlinePlayers(cs);
-    }
+	{
+		if (Config.DEBUG)
+			_log.fine("Players to notify: "
+			        + L2World.getInstance().getAllPlayersCount()
+			        + " (with packet " + mov.getType() + ")");
+		
+		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+		// synchronized (L2World.getInstance().getAllPlayers())
+		{
+			for (L2PcInstance onlinePlayer : pls)
+				if (onlinePlayer.isOnline() == 1)
+					onlinePlayer.sendPacket(mov);
+		}
+	}
+	
+	public static void announceToOnlinePlayers(String text)
+	{
+		CreatureSay cs = new CreatureSay(0, Say2.ANNOUNCEMENT, "", text);
+		toAllOnlinePlayers(cs);
+	}
 }

@@ -84,7 +84,10 @@ public class Potions implements IItemHandler
 				733,
 				// Juices
 				10260, 10261, 10262, 10263, 10264, 10265,
-				10266, 10267, 10268, 10269, 10270};
+				10266, 10267, 10268, 10269, 10270,
+				// CT2 herbs
+				10655,10656,10657
+				};
 
 	public synchronized void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
@@ -342,6 +345,15 @@ public class Potions implements IItemHandler
 				res = usePotion(activeChar, 2278, 3);// Superior Herb of Life
 				res = usePotion(activeChar, 2279, 3);// Superior Herb of Mana
 				break;
+			case 10655:
+				res = usePotion(activeChar, 2512, 1);
+				break;
+			case 10656:
+				res = usePotion(activeChar, 2514, 1);
+				break;
+			case 10657:
+				res = usePotion(activeChar, 2513, 1);
+				break;
 
 			// FISHERMAN POTIONS
 			case 8193: // Fisherman's Potion - Green
@@ -482,14 +494,14 @@ public class Potions implements IItemHandler
 
 	public boolean usePotion(L2PcInstance activeChar, int magicId, int level)
 	{
-		if (activeChar.isCastingNow() && magicId > 2277 && magicId < 2286)
+		if (activeChar.isCastingNow() && (magicId > 2277 && magicId < 2286 || magicId >= 2512 && magicId <= 2514))
 		{
 			_herbstask += 100;
 			ThreadPoolManager.getInstance().scheduleAi(new HerbTask(activeChar, magicId, level), _herbstask);
 		}
 		else
 		{
-			if (magicId > 2277 && magicId < 2286 && _herbstask >= 100) _herbstask -= 100;
+			if ((magicId > 2277 && magicId < 2286 || magicId >= 2512 && magicId <= 2514) && _herbstask >= 100) _herbstask -= 100;
 			L2Skill skill = SkillTable.getInstance().getInfo(magicId, level);
 			if (skill != null)
 			{

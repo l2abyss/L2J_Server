@@ -56,7 +56,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	 * IN_GAME		- client has selected a char and is in game
 	 * @author  KenM
 	 */
-	public static enum GameClientState { CONNECTED, AUTHED, IN_GAME };
+	public static enum GameClientState { CONNECTED, AUTHED, IN_GAME }
 
 	public GameClientState state;
 

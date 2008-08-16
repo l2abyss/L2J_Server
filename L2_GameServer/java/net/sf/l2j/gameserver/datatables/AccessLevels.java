@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
+import net.sf.l2j.gameserver.model.L2AccessLevel;
 
 /**
  * @author FBIagent<br>
@@ -36,13 +37,13 @@ public class AccessLevels
 	/** Reserved master access level<br> */
 	public static final int _masterAccessLevelNum = Config.MASTERACCESS_LEVEL;
 	/** The master access level which can use everything<br> */
-	public static AccessLevel _masterAccessLevel = new AccessLevel(_masterAccessLevelNum, "Master Access", Config.MASTERACCESS_NAME_COLOR, Config.MASTERACCESS_TITLE_COLOR, null, true, true, true, true, true, true, true, true);
+	public static L2AccessLevel _masterAccessLevel = new L2AccessLevel(_masterAccessLevelNum, "Master Access", Config.MASTERACCESS_NAME_COLOR, Config.MASTERACCESS_TITLE_COLOR, null, true, true, true, true, true, true, true, true);
 	/** Reserved user access level<br> */
 	public static final int _userAccessLevelNum = 0;
 	/** The user access level which can do no administrative tasks<br> */
-	public static AccessLevel _userAccessLevel = new AccessLevel(_userAccessLevelNum, "User", Integer.decode("0xFFFFFF"), Integer.decode("0xFFFFFF"), null, false, false, false, true, false, true, true, true);
+	public static L2AccessLevel _userAccessLevel = new L2AccessLevel(_userAccessLevelNum, "User", Integer.decode("0xFFFFFF"), Integer.decode("0xFFFFFF"), null, false, false, false, true, false, true, true, true);
 	/** FastMap of access levels defined in database<br> */
-	private Map<Integer, AccessLevel> _accessLevels = new FastMap<Integer, AccessLevel>();
+	private Map<Integer, L2AccessLevel> _accessLevels = new FastMap<Integer, L2AccessLevel>();
 
 	/**
 	 * Loads the access levels from database<br>
@@ -135,7 +136,7 @@ public class AccessLevels
 				takeAggro = rset.getBoolean("takeAggro");
 				gainExp = rset.getBoolean("gainExp");
 
-				_accessLevels.put(accessLevel, new AccessLevel(accessLevel, name, nameColor, titleColor, childs.equals("") ? null : childs, isGm, allowPeaceAttack, allowFixedRes, allowTransaction, allowAltG, giveDamage, takeAggro, gainExp));
+				_accessLevels.put(accessLevel, new L2AccessLevel(accessLevel, name, nameColor, titleColor, childs.equals("") ? null : childs, isGm, allowPeaceAttack, allowFixedRes, allowTransaction, allowAltG, giveDamage, takeAggro, gainExp));
 			}
 
 			rset.close();
@@ -176,9 +177,9 @@ public class AccessLevels
 	 *
 	 * @return AccessLevel: AccessLevel instance by char access level<br>
 	 */
-	public AccessLevel getAccessLevel(int accessLevelNum)
+	public L2AccessLevel getAccessLevel(int accessLevelNum)
 	{
-		AccessLevel accessLevel = null;
+		L2AccessLevel accessLevel = null;
 
 		synchronized (_accessLevels)
 		{
@@ -196,7 +197,7 @@ public class AccessLevels
 				return;
 			}
 
-			_accessLevels.put(accessLevel, new AccessLevel(accessLevel, "Banned", Integer.decode( "0x000000" ), Integer.decode( "0x000000" ), null, false, false, false, false, false, false, false, false));
+			_accessLevels.put(accessLevel, new L2AccessLevel(accessLevel, "Banned", Integer.decode( "0x000000" ), Integer.decode( "0x000000" ), null, false, false, false, false, false, false, false, false));
 		}
 	}
 }

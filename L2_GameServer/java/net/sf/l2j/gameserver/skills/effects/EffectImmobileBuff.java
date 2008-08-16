@@ -19,40 +19,56 @@ import net.sf.l2j.gameserver.skills.Env;
 
 /**
  * @author mkizub
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * 
+ *         TODO To change the template for this generated type comment go to
+ *         Window - Preferences - Java - Code Style - Code Templates
  */
-final class EffectImmobileBuff extends L2Effect {
-
+final class EffectImmobileBuff extends L2Effect
+{
+	
 	public EffectImmobileBuff(Env env, EffectTemplate template)
 	{
 		super(env, template);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
 	@Override
 	public EffectType getEffectType()
 	{
 		return EffectType.BUFF;
 	}
-
-	/** Notify started */
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
 	@Override
-	public void onStart() {
+	public void onStart()
+	{
 		getEffector().setIsImmobilized(true);
 	}
-
-	/** Notify exited */
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
+	 */
 	@Override
-	public void onExit() {
+	public void onExit()
+	{
 		getEffector().setIsImmobilized(false);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
 	@Override
 	public boolean onActionTime()
-    {
-    	// just stop this effect
-    	return false;
-    }
+	{
+		// just stop this effect
+		return false;
+	}
 }
-

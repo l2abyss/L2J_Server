@@ -898,7 +898,7 @@ public final class L2ItemInstance extends L2Object
 	 * @return boolean false
 	 */
     @Override
-	public boolean isAutoAttackable(@SuppressWarnings("unused") L2Character attacker)
+	public boolean isAutoAttackable(L2Character attacker)
     {
         return false;
     }

@@ -29,12 +29,13 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 public class KnownListUpdateTaskManager
 {
 	protected static final Logger _log = Logger.getLogger(DecayTaskManager.class.getName());
-
+	
 	private final static int FULL_UPDATE_TIMER = 100;
 	private Object syncObject = new Object();
 	public static boolean updatePass = true;
-	public static int _fullUpdateTimer = FULL_UPDATE_TIMER; // Do full update every FULL_UPDATE_TIMER * KNOWNLIST_UPDATE_INTERVAL
 	
+	// Do full update every FULL_UPDATE_TIMER * KNOWNLIST_UPDATE_INTERVAL
+	public static int _fullUpdateTimer = FULL_UPDATE_TIMER; 
 	private static KnownListUpdateTaskManager _instance;
 	
 	public KnownListUpdateTaskManager()
@@ -67,14 +68,12 @@ public class KnownListUpdateTaskManager
 			{
 				for (L2WorldRegion regions[] : L2World.getInstance().getAllWorldRegions())
 				{
-					for (L2WorldRegion r : regions) // go through all world
-					// regions
+					for (L2WorldRegion r : regions) // go through all world regions
 					{
 						// avoid stopping update if something went wrong in updateRegion()
 						try
 						{
-							if (r.isActive()) // and check only if the region
-							// is active
+							if (r.isActive()) // and check only if the region is active
 							{
 								updateRegion(r, (_fullUpdateTimer == FULL_UPDATE_TIMER), updatePass);
 							}
@@ -91,8 +90,12 @@ public class KnownListUpdateTaskManager
 				_log.warning(e.toString());
 			}
 			updatePass = !updatePass;
-			if (_fullUpdateTimer > 0) _fullUpdateTimer--;
-			else _fullUpdateTimer = FULL_UPDATE_TIMER;
+			
+			if (_fullUpdateTimer > 0)
+				_fullUpdateTimer--;
+			else
+				_fullUpdateTimer = FULL_UPDATE_TIMER;
+			
 			ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(), Config.KNOWNLIST_UPDATE_INTERVAL);
 		}
 	}
@@ -100,29 +103,27 @@ public class KnownListUpdateTaskManager
 	public void updateRegion(L2WorldRegion region, boolean fullUpdate,
 	        boolean forgetObjects)
 	{
-		//synchronized (syncObject)
+		// synchronized (syncObject)
 		{
 			Collection<L2Object> vObj = region.getVisibleObjects().values();
-			//synchronized (region.getVisibleObjects())
+			// synchronized (region.getVisibleObjects())
 			{
 				for (L2Object object : vObj) // and for all members in region
 				{
 					if (!object.isVisible())
 						continue; // skip dying objects
+					
 					if (forgetObjects)
 					{
-						object.getKnownList().forgetObjects((object instanceof L2PlayableInstance
-						        || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate));
+						object.getKnownList().forgetObjects((object instanceof L2PlayableInstance || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate));
 						continue;
 					}
-					if (object instanceof L2PlayableInstance
-					        || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance)
-					        || fullUpdate)
+					if (object instanceof L2PlayableInstance || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate)
 					{
-						for (L2WorldRegion regi : region.getSurroundingRegions()) 
+						for (L2WorldRegion regi : region.getSurroundingRegions())
 						{
 							Collection<L2Object> inrObj = regi.getVisibleObjects().values();
-							//synchronized (regi.getVisibleObjects())
+							// synchronized (regi.getVisibleObjects())
 							{
 								for (L2Object _object : inrObj)
 									if (_object != object)
@@ -131,10 +132,11 @@ public class KnownListUpdateTaskManager
 						}
 					}
 					else if (object instanceof L2Character)
+					{
 						for (L2WorldRegion regi : region.getSurroundingRegions())
 						{
 							Collection<L2PlayableInstance> inrPls = regi.getVisiblePlayable().values();
-							//synchronized (regi.getVisiblePlayable())
+							// synchronized (regi.getVisiblePlayable())
 							{
 								if (regi.isActive())
 									for (L2Object _object : inrPls)
@@ -142,6 +144,7 @@ public class KnownListUpdateTaskManager
 											object.getKnownList().addKnownObject(_object);
 							}
 						}
+					}
 				}
 			}
 		}

@@ -18,8 +18,12 @@ import java.util.Collection;
 import java.util.concurrent.Future;
 
 import net.sf.l2j.gameserver.ThreadPoolManager;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2Character;
-import net.sf.l2j.gameserver.model.L2Effect;
+import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.util.Rnd;
 
@@ -31,12 +35,13 @@ import net.sf.l2j.util.Rnd;
 public class L2PoisonZone extends L2ZoneType
 {
 	private int _skillId;
-
-	private Future<?> _task;
-
 	private int _chance;
-
 	private int _initialDelay;
+	private int _skillLvl;
+	private int _reuse;
+	private boolean _enabled;
+	private String _target;
+	private Future<?> _task;
 
 	public L2PoisonZone(int id)
 	{
@@ -44,8 +49,12 @@ public class L2PoisonZone extends L2ZoneType
 
 		// Setup default skill
 		_skillId = 4070;
+		_skillLvl = 1;
 		_chance = 100;
 		_initialDelay = 0;
+		_reuse = 30;
+		_enabled = true;
+		_target = "pc";
 	}
 
 	@Override
@@ -55,6 +64,10 @@ public class L2PoisonZone extends L2ZoneType
 		{
 			_skillId = Integer.parseInt(value);
 		}
+		else if (name.equals("skillLvl"))
+		{
+			_skillLvl = Integer.parseInt(value);
+		}
 		else if (name.equals("chance"))
 		{
 			_chance = Integer.parseInt(value);
@@ -63,15 +76,32 @@ public class L2PoisonZone extends L2ZoneType
 		{
 			_initialDelay = Integer.parseInt(value);
 		}
+		else if (name.equals("default_enabled"))
+		{
+			_enabled = Boolean.parseBoolean(value);
+		}
+		else if (name.equals("target"))
+		{
+			_target = String.valueOf(value);
+		}
+		else if (name.equals("reuse"))
+		{
+			_reuse = Integer.parseInt(value);
+		}
 		else super.setParameter(name, value);
 	}
 
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (_task == null && Rnd.get(100) < _chance)
+		if (((character instanceof L2PlayableInstance) && _target.equalsIgnoreCase("pc"))
+				||((character instanceof L2PcInstance) && _target.equalsIgnoreCase("pc_only"))
+				||((character instanceof L2MonsterInstance) && _target.equalsIgnoreCase("npc")))
 		{
-			_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplySkill(this), _initialDelay, 10000);
+			if (_task == null)
+			{
+				_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplySkill(this), _initialDelay, _reuse);
+			}
 		}
 	}
 
@@ -85,10 +115,31 @@ public class L2PoisonZone extends L2ZoneType
 		}
 	}
 
-	public int getSkillId()
+	public L2Skill getSkill()
 	{
-		return _skillId;
+		return SkillTable.getInstance().getInfo(_skillId,_skillLvl);
 	}
+
+	public String getTargetType()
+	{
+		return _target;
+	}
+
+	public boolean isEnabled()
+	{
+		return _enabled;
+	}
+
+    public int getChance()
+    {
+        return _chance;
+    }
+
+    public void setZoneEnabled(boolean val)
+    {
+    	_enabled = val;
+    }
+
 	protected Collection<L2Character> getCharacterList()
 	{
 		return _characterList.values();
@@ -104,25 +155,28 @@ public class L2PoisonZone extends L2ZoneType
 
 		public void run()
 		{
-			for (L2Character temp : _poisonZone.getCharacterList())
-			{
-				if (temp != null && !temp.isDead())
-				{
-                    L2Effect[] effects = temp.getAllEffects();
-                    for (L2Effect e : effects)
-                    {
-                    	if (e.getSkill().getId() != getSkillId())
-                    		e.getSkill().getEffects(temp, temp);
-                    }
-				}
-			}
+			if (isEnabled())
+            {
+	            for (L2Character temp : _poisonZone.getCharacterList())
+	            {
+	            	if (temp != null && !temp.isDead())
+	            	{
+	            		if (((temp instanceof L2PlayableInstance && getTargetType().equalsIgnoreCase("pc"))
+	            				||(temp instanceof L2PcInstance && getTargetType().equalsIgnoreCase("pc_only"))
+	            				||(temp instanceof L2MonsterInstance && getTargetType().equalsIgnoreCase("npc"))) && Rnd.get(100) < getChance())
+	            		{
+	            			getSkill().getEffects(temp, temp);
+	            		}
+	            	}
+	            }
+            }
 		}
 	}
 
 	@Override
-	protected void onDieInside(L2Character character) {}
+    public void onDieInside(L2Character character) {}
 
 	@Override
-	protected void onReviveInside(L2Character character) {}
+    public void onReviveInside(L2Character character) {}
 
 }

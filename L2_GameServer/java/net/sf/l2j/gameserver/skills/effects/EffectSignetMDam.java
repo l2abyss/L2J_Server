@@ -49,146 +49,164 @@ final class EffectSignetMDam extends L2Effect
 	private L2EffectPointInstance _actor;
 	
 	public EffectSignetMDam(Env env, EffectTemplate template)
-    {
-        super(env, template);
-    }
-    
-    @Override
-    public EffectType getEffectType()
-    {
-        return EffectType.SIGNET_GROUND;
-    }
-    
-    @Override
- 	public void onStart()
- 	{
-    	L2NpcTemplate template;
-    	if (getSkill() instanceof L2SkillSignetCasttime)
- 	    	template = NpcTable.getInstance().getTemplate(((L2SkillSignetCasttime)getSkill())._effectNpcId);
-    	else return;
-        
-        L2EffectPointInstance effectPoint = new L2EffectPointInstance(IdFactory.getInstance().getNextId(),  template,  getEffector());
-        effectPoint.setCurrentHp(effectPoint.getMaxHp());
-        effectPoint.setCurrentMp(effectPoint.getMaxMp());
-        L2World.getInstance().storeObject(effectPoint);
-        
-        int x = getEffector().getX();
-        int y = getEffector().getY();
-        int z = getEffector().getZ();
-        
-        if (getEffector() instanceof L2PcInstance && getSkill().getTargetType() == L2Skill.SkillTargetType.TARGET_GROUND)
-        {
-            Point3D wordPosition = ((L2PcInstance)getEffector()).getCurrentSkillWorldPosition();
-            
-            if (wordPosition != null)
-            {
-                x = wordPosition.getX();
-                y = wordPosition.getY();
-                z = wordPosition.getZ();
-            }
-        }
-        effectPoint.setIsInvul(true);
-        effectPoint.spawnMe(x, y, z);
-    	
-    	_actor = effectPoint;
-    	
- 	}
-
-    @Override
-    public boolean onActionTime()
-    {
-    	if (getCount() >= getTotalCount() - 2) return true; // do nothing first 2 times      
-        int mpConsume = getSkill().getMpConsume();
-        
-        L2PcInstance caster = (L2PcInstance)getEffector();
-        
-        boolean ss = false;
-        boolean bss = false;
-        
-        L2ItemInstance weaponInst = caster.getActiveWeaponInstance();
-        if (weaponInst != null)
-        {
-            switch (weaponInst.getChargedSpiritshot())
-            {
-                case L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT:
-                        weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
-                        bss = true;
-                    break;
-                case L2ItemInstance.CHARGED_SPIRITSHOT:
-                        weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
-                        ss = true;
-                    break;
-            }
-        }
-        
-        // if (!bss && !ss)
-        //    caster.rechargeAutoSoulShot(false, true, false);
-        
-        FastList<L2Character> targets = new FastList<L2Character>();
-        
-        for (L2Character cha : _actor.getKnownList().getKnownCharactersInRadius(getSkill().getSkillRadius()))
-        {
-            if (cha == null || cha == caster)
-                continue;
-            
-            if (cha instanceof L2Attackable || cha instanceof L2PlayableInstance)
-            {
-                if (cha.isAlikeDead())
-                    continue;
-                
-                if (mpConsume > caster.getCurrentMp())
-                {
-                    caster.sendPacket(new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP));
-                    return false;
-                }
-                else
-                    caster.reduceCurrentMp(mpConsume);
-                
-                if (cha instanceof L2PcInstance || cha instanceof L2Summon)
-                	caster.updatePvPStatus(cha);
-                
-                targets.add(cha);
-            }
-        }
-        
-        if (targets.size() > 0)
-        {
-            caster.broadcastPacket(new MagicSkillLaunched(caster, getSkill().getId(), getSkill().getLevel(), targets.toArray(new L2Character[targets.size()])));
-            for (L2Character target : targets)
-            {
-                boolean mcrit = Formulas.getInstance().calcMCrit(caster.getMCriticalHit(target, getSkill()));
-                int mdam = (int)Formulas.getInstance().calcMagicDam(caster, target, getSkill(), ss, bss, mcrit);
-                
-                if (target instanceof L2Summon)
-                {
-                    if (caster.equals(((L2Summon)target).getOwner()))
-                        caster.sendPacket(new PetInfo((L2Summon)target));
-                    else
-                        caster.sendPacket(new NpcInfo((L2Summon)target, caster));
-                }
-                
-                if (mdam > 0)
-                {
-                    if (!target.isRaid() && Formulas.getInstance().calcAtkBreak(target, mdam))
-                    {
-                        target.breakAttack();
-                        target.breakCast();
-                    }
-                    caster.sendDamageMessage(target, mdam, mcrit, false, false);
-                    target.reduceCurrentHp(mdam, caster);
-                }
-                target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, caster);
-            }
-        }
-        return true;
-    }
-    
-    @Override
-    public void onExit()
-    {
-    	if (_actor != null)
-        {
-            _actor.deleteMe();
-        }
-    }
+	{
+		super(env, template);
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
+	@Override
+	public EffectType getEffectType()
+	{
+		return EffectType.SIGNET_GROUND;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
+	@Override
+	public void onStart()
+	{
+		L2NpcTemplate template;
+		if (getSkill() instanceof L2SkillSignetCasttime)
+			template = NpcTable.getInstance().getTemplate(((L2SkillSignetCasttime) getSkill())._effectNpcId);
+		else
+			return;
+		
+		L2EffectPointInstance effectPoint = new L2EffectPointInstance(IdFactory.getInstance().getNextId(), template, getEffector());
+		effectPoint.setCurrentHp(effectPoint.getMaxHp());
+		effectPoint.setCurrentMp(effectPoint.getMaxMp());
+		L2World.getInstance().storeObject(effectPoint);
+		
+		int x = getEffector().getX();
+		int y = getEffector().getY();
+		int z = getEffector().getZ();
+		
+		if (getEffector() instanceof L2PcInstance
+		        && getSkill().getTargetType() == L2Skill.SkillTargetType.TARGET_GROUND)
+		{
+			Point3D wordPosition = ((L2PcInstance) getEffector()).getCurrentSkillWorldPosition();
+			
+			if (wordPosition != null)
+			{
+				x = wordPosition.getX();
+				y = wordPosition.getY();
+				z = wordPosition.getZ();
+			}
+		}
+		effectPoint.setIsInvul(true);
+		effectPoint.spawnMe(x, y, z);
+		
+		_actor = effectPoint;
+		
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
+	@Override
+	public boolean onActionTime()
+	{
+		if (getCount() >= getTotalCount() - 2)
+			return true; // do nothing first 2 times
+		int mpConsume = getSkill().getMpConsume();
+		
+		L2PcInstance caster = (L2PcInstance) getEffector();
+		
+		boolean ss = false;
+		boolean bss = false;
+		
+		L2ItemInstance weaponInst = caster.getActiveWeaponInstance();
+		if (weaponInst != null)
+		{
+			switch (weaponInst.getChargedSpiritshot())
+			{
+				case L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT:
+					weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
+					bss = true;
+					break;
+				case L2ItemInstance.CHARGED_SPIRITSHOT:
+					weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
+					ss = true;
+					break;
+			}
+		}
+		
+		FastList<L2Character> targets = new FastList<L2Character>();
+		
+		for (L2Character cha : _actor.getKnownList().getKnownCharactersInRadius(getSkill().getSkillRadius()))
+		{
+			if (cha == null || cha == caster)
+				continue;
+			
+			if (cha instanceof L2Attackable
+			        || cha instanceof L2PlayableInstance)
+			{
+				if (cha.isAlikeDead())
+					continue;
+				
+				if (mpConsume > caster.getCurrentMp())
+				{
+					caster.sendPacket(new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP));
+					return false;
+				}
+				else
+					caster.reduceCurrentMp(mpConsume);
+				
+				if (cha instanceof L2PcInstance || cha instanceof L2Summon)
+					caster.updatePvPStatus(cha);
+				
+				targets.add(cha);
+			}
+		}
+		
+		if (targets.size() > 0)
+		{
+			caster.broadcastPacket(new MagicSkillLaunched(caster, getSkill().getId(), getSkill().getLevel(), targets.toArray(new L2Character[targets.size()])));
+			for (L2Character target : targets)
+			{
+				boolean mcrit = Formulas.getInstance().calcMCrit(caster.getMCriticalHit(target, getSkill()));
+				int mdam = (int) Formulas.getInstance().calcMagicDam(caster, target, getSkill(), ss, bss, mcrit);
+				
+				if (target instanceof L2Summon)
+				{
+					if (caster.equals(((L2Summon) target).getOwner()))
+						caster.sendPacket(new PetInfo((L2Summon) target));
+					else
+						caster.sendPacket(new NpcInfo((L2Summon) target, caster));
+				}
+				
+				if (mdam > 0)
+				{
+					if (!target.isRaid()
+					        && Formulas.getInstance().calcAtkBreak(target, mdam))
+					{
+						target.breakAttack();
+						target.breakCast();
+					}
+					caster.sendDamageMessage(target, mdam, mcrit, false, false);
+					target.reduceCurrentHp(mdam, caster);
+				}
+				target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, caster);
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
+	 */
+	@Override
+	public void onExit()
+	{
+		if (_actor != null)
+		{
+			_actor.deleteMe();
+		}
+	}
 }

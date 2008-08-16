@@ -391,9 +391,9 @@ public class L2Spawn
 	/**
 	 * Create a L2NpcInstance in this L2Spawn.<BR><BR>
 	 */
-	public L2NpcInstance spawnOne()
+	public L2NpcInstance spawnOne(boolean val)
 	{
-		return doSpawn();
+		return doSpawn(val);
 	}
 
 	/**
@@ -412,6 +412,10 @@ public class L2Spawn
         _doRespawn = true;
     }
 
+    public L2NpcInstance doSpawn()
+    {
+    	return doSpawn(false);
+    }
 	/**
 	 * Create the L2NpcInstance, add it to the world and lauch its OnSpawn action.<BR><BR>
 	 *
@@ -432,7 +436,7 @@ public class L2Spawn
 	 * <li>Increase the current number of L2NpcInstance managed by this L2Spawn  </li><BR><BR>
 	 *
 	 */
-	public L2NpcInstance doSpawn()
+	public L2NpcInstance doSpawn(boolean isSummonSpawn)
 	{
 		L2NpcInstance mob = null;
 		try
@@ -453,7 +457,8 @@ public class L2Spawn
 			// (can be a L2ArtefactInstance, L2FriendlyMobInstance, L2GuardInstance, L2MonsterInstance, L2SiegeGuardInstance, L2BoxInstance,
 			// L2FeedableBeastInstance, L2TamedBeastInstance, L2FolkInstance or L2TvTEventNpcInstance)
 			Object  tmp = _constructor.newInstance(parameters);
-
+			if (isSummonSpawn && tmp instanceof L2Character)
+				((L2Character)tmp).setShowSummonAnimation(isSummonSpawn);
 			// Check if the Instance is a L2NpcInstance
 			if (!(tmp instanceof L2NpcInstance))
 				return mob;

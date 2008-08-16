@@ -23,8 +23,7 @@ import net.sf.l2j.gameserver.templates.L2WeaponType;
 public class FuncEnchant extends Func
 {
 
-    public FuncEnchant(Stats pStat, int pOrder, Object owner, @SuppressWarnings("unused")
-    Lambda lambda)
+    public FuncEnchant(Stats pStat, int pOrder, Object owner, Lambda lambda)
     {
         super(pStat, pOrder, owner);
     }

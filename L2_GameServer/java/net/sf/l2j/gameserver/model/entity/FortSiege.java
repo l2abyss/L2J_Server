@@ -834,7 +834,7 @@ public class FortSiege
             default:
                 players = getPlayersInZone();
         }
-        ;
+        
 
         for (L2PcInstance player : players)
         {

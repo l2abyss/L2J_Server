@@ -16,7 +16,6 @@ package net.sf.l2j.gameserver.network.clientpackets;
 
 import java.util.logging.Logger;
 
-
 /**
  * Format (ch) dd
  * @author -Wooden-

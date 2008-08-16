@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-
 /**
  * Fromat: (ch)
  * (just a trigger)

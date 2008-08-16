@@ -21,49 +21,61 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.skills.Env;
 
 /**
-*
-* @author nBd
-*/
+ * 
+ * @author nBd
+ */
 public class EffectTransformation extends L2Effect
 {
-    public EffectTransformation(Env env, EffectTemplate template)
-    {
-        super(env, template);
-    }
-    
-    @Override
-    public EffectType getEffectType()
-    {
-        return L2Effect.EffectType.TRANSFORMATION;
-    }
-    
-    @Override
-    public void onStart()
-    {
-        if (getEffected().isAlikeDead())
-            return;
-        
-        if (!(getEffected() instanceof L2PcInstance))
-            return;
-        
-        L2PcInstance trg = (L2PcInstance) getEffected();
-        if (trg == null)
-            return;
-        
-        if (trg.isAlikeDead() || trg.isCursedWeaponEquipped())
-            return;
-        
-        int transformId = getSkill().getTransformId();
-        
-        if (!trg.isTransformed())
-        {
-            TransformationManager.getInstance().transformPlayer(transformId, trg);
-        }
-    }
-    
-    @Override
-    public boolean onActionTime()
-    {
-       return true;
-    }
+	public EffectTransformation(Env env, EffectTemplate template)
+	{
+		super(env, template);
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
+	@Override
+	public EffectType getEffectType()
+	{
+		return L2Effect.EffectType.TRANSFORMATION;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
+	@Override
+	public void onStart()
+	{
+		if (getEffected().isAlikeDead())
+			return;
+		
+		if (!(getEffected() instanceof L2PcInstance))
+			return;
+		
+		L2PcInstance trg = (L2PcInstance) getEffected();
+		if (trg == null)
+			return;
+		
+		if (trg.isAlikeDead() || trg.isCursedWeaponEquipped())
+			return;
+		
+		int transformId = getSkill().getTransformId();
+		
+		if (!trg.isTransformed())
+		{
+			TransformationManager.getInstance().transformPlayer(transformId, trg);
+		}
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
+	@Override
+	public boolean onActionTime()
+	{
+		return true;
+	}
 }

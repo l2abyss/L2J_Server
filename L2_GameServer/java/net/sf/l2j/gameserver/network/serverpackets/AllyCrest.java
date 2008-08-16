@@ -15,7 +15,6 @@
 package net.sf.l2j.gameserver.network.serverpackets;
 
 
-
 /**
  * <code>
  * sample

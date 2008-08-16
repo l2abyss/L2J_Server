@@ -40,79 +40,98 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 public final class Util
 {
     public static void handleIllegalPlayerAction(L2PcInstance actor, String message, int punishment)
-    {
-    	ThreadPoolManager.getInstance().scheduleGeneral(new IllegalPlayerAction(actor,message, punishment), 5000);
-    }
-
-    public static String getRelativePath(File base,File file)
-    {
-        return file.toURI().getPath().substring(base.toURI().getPath().length());
-    }
-
-    /** Return degree value of object 2 to the horizontal line with object 1 being the origin */
-    public static double calculateAngleFrom(L2Object obj1, L2Object obj2)
-    {
-    	return calculateAngleFrom(obj1.getX(), obj1.getY(), obj2.getX(), obj2.getY()); 
-    }
-
-    /** Return degree value of object 2 to the horizontal line with object 1 being the origin */
-    public final static double calculateAngleFrom(int obj1X, int obj1Y, int obj2X, int obj2Y)
-    {
-        double angleTarget = Math.toDegrees(Math.atan2(obj2Y - obj1Y, obj2X - obj1X));
-        if (angleTarget < 0) angleTarget = 360 + angleTarget;
-        return angleTarget;
-    }
-    public final static double convertHeadingToDegree(int clientHeading)
-    {
-    	double degree = clientHeading / 182.044444444;
-    	return degree;
-    }
-    public final static int convertDegreeToClientHeading(double degree)
-    {
-    	if (degree < 0) degree = 360 + degree;
-    	return (int)(degree*182.044444444);
-    }
-
-    public final static int calculateHeadingFrom(L2Object obj1, L2Object obj2)
-    { 
-    	return calculateHeadingFrom(obj1.getX(), obj1.getY(), obj2.getX(), obj2.getY()); 
-    }
-    
-    public final static int calculateHeadingFrom(int obj1X, int obj1Y, int obj2X, int obj2Y)
-    {
-        double angleTarget = Math.toDegrees(Math.atan2(obj2Y - obj1Y, obj2X - obj1X));
-        if (angleTarget < 0) angleTarget = 360 + angleTarget;
-        return (int)(angleTarget*182.044444444);
-    }
+	{
+		ThreadPoolManager.getInstance().scheduleGeneral(new IllegalPlayerAction(actor, message, punishment), 5000);
+	}
+	
+	public static String getRelativePath(File base, File file)
+	{
+		return file.toURI().getPath().substring(base.toURI().getPath().length());
+	}
+	
+	/**
+	 * Return degree value of object 2 to the horizontal line with object 1
+	 * being the origin
+	 */
+	public static double calculateAngleFrom(L2Object obj1, L2Object obj2)
+	{
+		return calculateAngleFrom(obj1.getX(), obj1.getY(), obj2.getX(), obj2.getY());
+	}
+	
+	/**
+	 * Return degree value of object 2 to the horizontal line with object 1
+	 * being the origin
+	 */
+	public final static double calculateAngleFrom(int obj1X, int obj1Y, int obj2X, int obj2Y)
+	{
+		double angleTarget = Math.toDegrees(Math.atan2(obj2Y - obj1Y, obj2X - obj1X));
+		if (angleTarget < 0)
+			angleTarget = 360 + angleTarget;
+		return angleTarget;
+	}
+	
+	public final static double convertHeadingToDegree(int clientHeading)
+	{
+		double degree = clientHeading / 182.044444444;
+		return degree;
+	}
+	
+	public final static int convertDegreeToClientHeading(double degree)
+	{
+		if (degree < 0)
+			degree = 360 + degree;
+		return (int) (degree * 182.044444444);
+	}
+	
+	public final static int calculateHeadingFrom(L2Object obj1, L2Object obj2)
+	{
+		return calculateHeadingFrom(obj1.getX(), obj1.getY(), obj2.getX(), obj2.getY());
+	}
+	
+	public final static int calculateHeadingFrom(int obj1X, int obj1Y,
+	        int obj2X, int obj2Y)
+	{
+		double angleTarget = Math.toDegrees(Math.atan2(obj2Y - obj1Y, obj2X
+		        - obj1X));
+		if (angleTarget < 0)
+			angleTarget = 360 + angleTarget;
+		return (int) (angleTarget * 182.044444444);
+	}
 
     public final static int calculateHeadingFrom(double dx, double dy)
-    {
-        double angleTarget = Math.toDegrees(Math.atan2(dy, dx));
-        if (angleTarget < 0) angleTarget = 360 + angleTarget;
-        return (int)(angleTarget*182.044444444);
-    }
+	{
+		double angleTarget = Math.toDegrees(Math.atan2(dy, dx));
+		if (angleTarget < 0)
+			angleTarget = 360 + angleTarget;
+		return (int) (angleTarget * 182.044444444);
+	}
 
-    public static double calculateDistance(int x1, int y1, int z1, int x2, int y2) { return calculateDistance(x1, y1, 0, x2, y2, 0, false); }
+    public static double calculateDistance(int x1, int y1, int z1, int x2, int y2)
+	{
+		return calculateDistance(x1, y1, 0, x2, y2, 0, false);
+	}
 
     public static double calculateDistance(int x1, int y1, int z1, int x2, int y2, int z2, boolean includeZAxis)
-    {
-        double dx = (double)x1 - x2;
-        double dy = (double)y1 - y2;
-
-        if (includeZAxis)
-        {
-            double dz = z1 - z2;
-            return Math.sqrt((dx*dx) + (dy*dy) + (dz*dz));
-        }
-        else
-            return Math.sqrt((dx*dx) + (dy*dy));
-    }
+	{
+		double dx = (double) x1 - x2;
+		double dy = (double) y1 - y2;
+		
+		if (includeZAxis)
+		{
+			double dz = z1 - z2;
+			return Math.sqrt((dx * dx) + (dy * dy) + (dz * dz));
+		}
+		else
+			return Math.sqrt((dx * dx) + (dy * dy));
+	}
 
     public static double calculateDistance(L2Object obj1, L2Object obj2, boolean includeZAxis)
-    {
-        if (obj1 == null || obj2 == null) return 1000000;
-        return calculateDistance(obj1.getPosition().getX(), obj1.getPosition().getY(), obj1.getPosition().getZ(), obj2.getPosition().getX(), obj2.getPosition().getY(), obj2.getPosition().getZ(), includeZAxis);
-    }
+	{
+		if (obj1 == null || obj2 == null)
+			return 1000000;
+		
+		return calculateDistance(obj1.getPosition().getX(), obj1.getPosition().getY(), obj1.getPosition().getZ(), obj2.getPosition().getX(), obj2.getPosition().getY(), obj2.getPosition().getZ(), includeZAxis);
+	}
 
     /**
      * Capitalizes the first letter of a string, and returns the result.<BR>
@@ -122,14 +141,14 @@ public final class Util
      * @return String containing the modified string.
      */
     public static String capitalizeFirst(String str)
-    {
-        str = str.trim();
-
-        if (str.length() > 0 && Character.isLetter(str.charAt(0)))
-            return str.substring(0, 1).toUpperCase() + str.substring(1);
-
-        return str;
-    }
+	{
+		str = str.trim();
+		
+		if (str.length() > 0 && Character.isLetter(str.charAt(0)))
+			return str.substring(0, 1).toUpperCase() + str.substring(1);
+		
+		return str;
+	}
 
      /**
      * Capitalizes the first letter of every "word" in a string.<BR>
@@ -139,56 +158,58 @@ public final class Util
      * @return String containing the modified string.
      */
     public static String capitalizeWords(String str)
-    {
-        char[] charArray = str.toCharArray();
-        String result = "";
-
-        // Capitalize the first letter in the given string!
-        charArray[0] = Character.toUpperCase(charArray[0]);
-
-        for (int i = 0; i < charArray.length; i++)
-        {
-            if (Character.isWhitespace(charArray[i]))
-                charArray[i + 1] = Character.toUpperCase(charArray[i + 1]);
-
-            result += Character.toString(charArray[i]);
-        }
-
-        return result;
-    }
+	{
+		char[] charArray = str.toCharArray();
+		String result = "";
+		
+		// Capitalize the first letter in the given string!
+		charArray[0] = Character.toUpperCase(charArray[0]);
+		
+		for (int i = 0; i < charArray.length; i++)
+		{
+			if (Character.isWhitespace(charArray[i]))
+				charArray[i + 1] = Character.toUpperCase(charArray[i + 1]);
+			
+			result += Character.toString(charArray[i]);
+		}
+		
+		return result;
+	}
 
 
     /*
      *  Checks if object is within range, adding collisionRadius
      */
     public static boolean checkIfInRange(int range, L2Object obj1, L2Object obj2, boolean includeZAxis)
-    {
-        if (obj1 == null || obj2 == null) return false;
-        if (range == -1) return true; // not limited
-
-        int rad = 0;
-        if(obj1 instanceof L2Character)
-        	rad += ((L2Character)obj1).getTemplate().collisionRadius;
-        if(obj2 instanceof L2Character)
-        	rad += ((L2Character)obj2).getTemplate().collisionRadius;
-
-        double dx = obj1.getX() - obj2.getX();
-        double dy = obj1.getY() - obj2.getY();
-
-        if (includeZAxis)
-        {
-        	double dz = obj1.getZ() - obj2.getZ();
-        	double d = dx*dx + dy*dy +dz*dz;
-
-            return d <= range*range + 2*range*rad + rad*rad;
-        }
-        else
-        {
-        	double d = dx*dx + dy*dy;
-
-            return d <= range*range + 2*range*rad +rad*rad;
-        }
-    }
+	{
+		if (obj1 == null || obj2 == null)
+			return false;
+		if (range == -1)
+			return true; // not limited
+			
+		int rad = 0;
+		if (obj1 instanceof L2Character)
+			rad += ((L2Character) obj1).getTemplate().collisionRadius;
+		if (obj2 instanceof L2Character)
+			rad += ((L2Character) obj2).getTemplate().collisionRadius;
+		
+		double dx = obj1.getX() - obj2.getX();
+		double dy = obj1.getY() - obj2.getY();
+		
+		if (includeZAxis)
+		{
+			double dz = obj1.getZ() - obj2.getZ();
+			double d = dx * dx + dy * dy + dz * dz;
+			
+			return d <= range * range + 2 * range * rad + rad * rad;
+		}
+		else
+		{
+			double d = dx * dx + dy * dy;
+			
+			return d <= range * range + 2 * range * rad + rad * rad;
+		}
+	}
     
     /*
      *  Checks if object is within short (sqrt(int.max_value)) radius, 
@@ -197,23 +218,25 @@ public final class Util
      *  Not for long distance checks (potential teleports, far away castles etc)
      */
     public static boolean checkIfInShortRadius(int radius, L2Object obj1, L2Object obj2, boolean includeZAxis)
-    {
-        if (obj1 == null || obj2 == null) return false;
-        if (radius == -1) return true; // not limited
-
-        int dx = obj1.getX() - obj2.getX();
-        int dy = obj1.getY() - obj2.getY();
-
-        if (includeZAxis)
-        {
-        	int dz = obj1.getZ() - obj2.getZ();
-            return dx*dx + dy*dy + dz*dz <= radius*radius;
-        }
-        else
-        {
-        	return dx*dx + dy*dy <= radius*radius;
-        }
-    }
+	{
+		if (obj1 == null || obj2 == null)
+			return false;
+		if (radius == -1)
+			return true; // not limited
+			
+		int dx = obj1.getX() - obj2.getX();
+		int dy = obj1.getY() - obj2.getY();
+		
+		if (includeZAxis)
+		{
+			int dz = obj1.getZ() - obj2.getZ();
+			return dx * dx + dy * dy + dz * dz <= radius * radius;
+		}
+		else
+		{
+			return dx * dx + dy * dy <= radius * radius;
+		}
+	}
 
     /**
      * Returns the number of "words" in a given string.
@@ -222,9 +245,9 @@ public final class Util
      * @return int numWords
      */
     public static int countWords(String str)
-    {
-        return str.trim().split(" ").length;
-    }
+	{
+		return str.trim().split(" ").length;
+	}
 
     /**
      * Returns a delimited string for an given array of string elements.<BR>
@@ -235,14 +258,14 @@ public final class Util
      * @return String implodedString
      */
     public static String implodeString(String[] strArray, String strDelim)
-    {
-        String result = "";
-
-        for (String strValue : strArray)
-            result += strValue + strDelim;
-
-        return result;
-    }
+	{
+		String result = "";
+		
+		for (String strValue : strArray)
+			result += strValue + strDelim;
+		
+		return result;
+	}
 
     /**
      * Returns a delimited string for an given collection of string elements.<BR>
@@ -253,9 +276,9 @@ public final class Util
      * @return String implodedString
      */
     public static String implodeString(Collection<String> strCollection, String strDelim)
-    {
-        return implodeString(strCollection.toArray(new String[strCollection.size()]), strDelim);
-    }
+	{
+		return implodeString(strCollection.toArray(new String[strCollection.size()]), strDelim);
+	}
 
     /**
      * Returns the rounded value of val to specified number of digits
@@ -267,18 +290,19 @@ public final class Util
      * @return float roundedVal
      */
     public static float roundTo(float val, int numPlaces)
-    {
-        if (numPlaces <= 1)
-            return Math.round(val);
-
-        float exponent = (float) Math.pow(10, numPlaces);
-
-        return (Math.round(val * exponent) / exponent);
-    }
+	{
+		if (numPlaces <= 1)
+			return Math.round(val);
+		
+		float exponent = (float) Math.pow(10, numPlaces);
+		
+		return (Math.round(val * exponent) / exponent);
+	}
 
 	public static boolean isAlphaNumeric(String text)
 	{
-		if (text == null) return false;
+		if (text == null)
+			return false;
 		boolean result = true;
 		char[] chars = text.toCharArray();
 		for (int i = 0; i < chars.length; i++)
@@ -297,21 +321,22 @@ public final class Util
      * @param amount
      * @return String formatted adena amount
      */
-    public static String formatAdena(int amount) {
-    	String s = "";
-    	int rem = amount % 1000;
-    	s = Integer.toString(rem);
-    	amount = (amount - rem)/1000;
-    	while (amount > 0) {
-    		if (rem < 99)
-    			s = '0' + s;
-    		if (rem < 9)
-    			s = '0' + s;
-    		rem = amount % 1000;
-        	s = Integer.toString(rem) + "," + s;
-        	amount = (amount - rem)/1000;
-    	}
-    	return s;
-    }
-
+    public static String formatAdena(int amount)
+	{
+		String s = "";
+		int rem = amount % 1000;
+		s = Integer.toString(rem);
+		amount = (amount - rem) / 1000;
+		while (amount > 0)
+		{
+			if (rem < 99)
+				s = '0' + s;
+			if (rem < 9)
+				s = '0' + s;
+			rem = amount % 1000;
+			s = Integer.toString(rem) + "," + s;
+			amount = (amount - rem) / 1000;
+		}
+		return s;
+	}
 }

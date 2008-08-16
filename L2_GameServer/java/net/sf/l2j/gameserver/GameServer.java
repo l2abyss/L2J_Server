@@ -33,7 +33,6 @@ import net.sf.l2j.gameserver.cache.CrestCache;
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.communitybbs.Manager.ForumsBBSManager;
 import net.sf.l2j.gameserver.datatables.AccessLevels;
-import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.datatables.ArmorSetsTable;
 import net.sf.l2j.gameserver.datatables.AugmentationData;
 import net.sf.l2j.gameserver.datatables.CharNameTable;
@@ -62,7 +61,6 @@ import net.sf.l2j.gameserver.datatables.SpawnTable;
 import net.sf.l2j.gameserver.datatables.StaticObjects;
 import net.sf.l2j.gameserver.datatables.SummonItemsData;
 import net.sf.l2j.gameserver.datatables.TeleportLocationTable;
-import net.sf.l2j.gameserver.datatables.ZoneData;
 import net.sf.l2j.gameserver.geoeditorcon.GeoEditorListener;
 import net.sf.l2j.gameserver.handler.AdminCommandHandler;
 import net.sf.l2j.gameserver.handler.ChatHandler;
@@ -82,16 +80,20 @@ import net.sf.l2j.gameserver.instancemanager.DayNightSpawnManager;
 import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
+import net.sf.l2j.gameserver.instancemanager.FourSepulchersManager;
 import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
 import net.sf.l2j.gameserver.instancemanager.ItemsOnGroundManager;
 import net.sf.l2j.gameserver.instancemanager.MercTicketManager;
 import net.sf.l2j.gameserver.instancemanager.PetitionManager;
 import net.sf.l2j.gameserver.instancemanager.QuestManager;
+import net.sf.l2j.gameserver.instancemanager.RaidBossPointsManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossSpawnManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.instancemanager.TransformationManager;
+import net.sf.l2j.gameserver.instancemanager.ZoneManager;
 import net.sf.l2j.gameserver.model.AutoChatHandler;
 import net.sf.l2j.gameserver.model.AutoSpawnHandler;
+import net.sf.l2j.gameserver.model.L2AdminCommandAccessRights;
 import net.sf.l2j.gameserver.model.L2Manor;
 import net.sf.l2j.gameserver.model.L2PetDataTable;
 import net.sf.l2j.gameserver.model.L2World;
@@ -101,6 +103,7 @@ import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.network.L2GamePacketHandler;
 import net.sf.l2j.gameserver.pathfinding.geonodes.GeoPathFinding;
 import net.sf.l2j.gameserver.script.faenor.FaenorScriptEngine;
+import net.sf.l2j.gameserver.scripting.CompiledScriptCache;
 import net.sf.l2j.gameserver.scripting.L2ScriptEngineManager;
 import net.sf.l2j.gameserver.taskmanager.KnownListUpdateTaskManager;
 import net.sf.l2j.gameserver.taskmanager.TaskManager;
@@ -156,6 +159,8 @@ public class GameServer
 	}
 	public GameServer() throws Exception
 	{
+		long serverLoadStart = System.currentTimeMillis();
+		
         gameServer = this;
 		_log.finest("used mem:" + getUsedMemoryMB()+"MB" );
 
@@ -178,7 +183,8 @@ public class GameServer
 
 		new File(Config.DATAPACK_ROOT, "data/clans").mkdirs();
 		new File(Config.DATAPACK_ROOT, "data/crests").mkdirs();
-
+		
+		
         // load script engines
         L2ScriptEngineManager.getInstance();
         
@@ -188,18 +194,6 @@ public class GameServer
 		// keep the references of Singletons to prevent garbage collection
 		CharNameTable.getInstance();
 
-		_itemTable = ItemTable.getInstance();
-		if (!_itemTable.isInitialized())
-		{
-		    _log.severe("Could not find the extraced files. Please Check Your Data.");
-		    throw new Exception("Could not initialize the item table");
-		}
-
-		ExtractableItemsData.getInstance();
-		SummonItemsData.getInstance();
-
-		MerchantPriceConfigTable.getInstance();
-		TradeController.getInstance();
 		_skillTable = SkillTable.getInstance();
 		if (!_skillTable.isInitialized())
 		{
@@ -207,9 +201,30 @@ public class GameServer
 		    throw new Exception("Could not initialize the skill table");
 		}
 		
-		// L2EMU_ADD by Rayan. L2J - BigBro
+		_itemTable = ItemTable.getInstance();
+		if (!_itemTable.isInitialized())
+		{
+		    _log.severe("Could not find the extraced files. Please Check Your Data.");
+		    throw new Exception("Could not initialize the item table");
+		}
+		
+		// Load clan hall data before zone data and doors table
+        _cHManager = ClanHallManager.getInstance();
+        
+		_doorTable = DoorTable.getInstance();
+		_doorTable.parseData();
+        StaticObjects.getInstance();
+
+		ExtractableItemsData.getInstance();
+		SummonItemsData.getInstance();
+
+		MerchantPriceConfigTable.getInstance();
+		TradeController.getInstance();
+		
 		if(Config.ALLOW_NPC_WALKERS)
+		{
 		    NpcWalkerRoutesTable.getInstance().load();
+		}
 		
 		NpcBufferTable.getInstance();
 		
@@ -260,8 +275,7 @@ public class GameServer
         if (Config.GEODATA == 2)
         	GeoPathFinding.getInstance();
 
-        // Load clan hall data before zone data
-        _cHManager = ClanHallManager.getInstance();
+        
 		CastleManager.getInstance();
 		SiegeManager.getInstance();
 		FortManager.getInstance();
@@ -270,11 +284,13 @@ public class GameServer
 		TeleportLocationTable.getInstance();
 		LevelUpData.getInstance();
 		L2World.getInstance();
-		ZoneData.getInstance();
         SpawnTable.getInstance();
+		ZoneManager.getInstance();
         RaidBossSpawnManager.getInstance();
         DayNightSpawnManager.getInstance().notifyChangeMode();
         GrandBossManager.getInstance();
+        RaidBossPointsManager.init();
+        FourSepulchersManager.getInstance().init();
         DimensionalRiftManager.getInstance();
 		Announcements.getInstance();
 		MapRegionTable.getInstance();
@@ -303,7 +319,33 @@ public class GameServer
         {
             _log.severe("Failed loading scripts.cfg, no script going to be loaded");
         }
-        
+        try
+        {
+        	CompiledScriptCache compiledScriptCache = L2ScriptEngineManager.getInstance().getCompiledScriptCache();
+        	if (compiledScriptCache == null)
+        	{
+        		_log.info("Compiled Scripts Cache is disabled.");
+        	}
+        	else
+        	{
+        		compiledScriptCache.purge();
+        		
+        		if (compiledScriptCache.isModified())
+        		{
+        			compiledScriptCache.save();
+        			_log.info("Compiled Scripts Cache was saved.");
+        		}
+        		else
+        		{
+        			_log.info("Compiled Scripts Cache is up-to-date.");
+        		}
+        	}
+        	
+        }
+        catch (IOException e)
+        {
+        	_log.log(Level.SEVERE, "Failed to store Compiled Scripts Cache.", e);
+        }
         QuestManager.getInstance().report();
         TransformationManager.getInstance().report();
         
@@ -315,10 +357,6 @@ public class GameServer
     	    ItemsAutoDestroy.getInstance();
 
         MonsterRace.getInstance();
-
-		_doorTable = DoorTable.getInstance();
-		_doorTable.parseData();
-        StaticObjects.getInstance();
 
 		_sevenSignsEngine = SevenSigns.getInstance();
         SevenSignsFestival.getInstance();
@@ -346,7 +384,7 @@ public class GameServer
 		VoicedCommandHandler.getInstance();
 
 		AccessLevels.getInstance();
-		AdminCommandAccessRights.getInstance();
+		L2AdminCommandAccessRights.getInstance();
 		
 		if(Config.L2JMOD_ALLOW_WEDDING)
 			CoupleManager.getInstance();
@@ -453,6 +491,8 @@ public class GameServer
 		}
 		_selectorThread.start();
 		_log.config("Maximum Numbers of Connected Players: " + Config.MAXIMUM_ONLINE_USERS);
+		long serverLoadEnd = System.currentTimeMillis();
+		_log.info("Server Loaded in "+((serverLoadEnd - serverLoadStart) / 1000)+" seconds");
 	}
 
 	public static void main(String[] args) throws Exception

@@ -14,8 +14,11 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
+import net.sf.l2j.gameserver.instancemanager.RaidBossPointsManager;
 import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.util.Rnd;
 
 /**
  * This class manages all Grand Bosses.
@@ -61,4 +64,35 @@ public final class L2GrandBossInstance extends L2MonsterInstance
     {
         return true;
     }
+
+    /**
+     * 
+     * @see net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance#doDie(net.sf.l2j.gameserver.model.L2Character)
+     */
+    @Override
+    public boolean doDie(L2Character killer)
+	{
+		if (!super.doDie(killer))
+			return false;
+		L2PcInstance player = null;
+		
+		if (killer instanceof L2PcInstance)
+			player = (L2PcInstance) killer;
+		else if (killer instanceof L2Summon)
+			player = ((L2Summon) killer).getOwner();
+		
+		if (player != null)
+		{
+			if (player.getParty() != null)
+			{
+				for (L2PcInstance member : player.getParty().getPartyMembers())
+				{
+					RaidBossPointsManager.addPoints(member, getNpcId(), (getLevel() / 2) + Rnd.get(-5, 5));
+				}
+			}
+			else
+				RaidBossPointsManager.addPoints(player, getNpcId(), (getLevel() / 2) + Rnd.get(-5, 5));
+		}
+		return true;
+	}
 }

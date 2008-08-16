@@ -172,5 +172,5 @@ public class Topic
 	public long getDate()
 	{
 		return _date;
-	};
+	}
 }

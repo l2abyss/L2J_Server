@@ -26,9 +26,9 @@ package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
 import java.util.StringTokenizer;
 
-import net.sf.l2j.gameserver.GmListTable;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
+import net.sf.l2j.gameserver.instancemanager.ZoneManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -89,8 +89,8 @@ public class AdminZone implements IAdminCommandHandler
             activeChar.sendMessage("TeleToLocation (Town): x:" + loc.getX() + " y:" + loc.getY() + " z:" + loc.getZ());
         } else if (actualCommand.equalsIgnoreCase("admin_zone_reload"))
         {
-        	//TODO: ZONETODO ZoneManager.getInstance().reload();
-        	GmListTable.broadcastMessageToGMs("Zones can not be reloaded in this version.");
+        	ZoneManager.getInstance().reload();
+        	activeChar.sendMessage("Reloading zones...");
         }
         return true;
     }

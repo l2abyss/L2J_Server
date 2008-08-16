@@ -49,13 +49,13 @@ public class L2BigheadZone extends L2ZoneType
 	}
 
 	@Override
-	protected void onDieInside(L2Character character)
+    public void onDieInside(L2Character character)
 	{
 		onExit(character);
 	}
 
 	@Override
-	protected void onReviveInside(L2Character character)
+    public void onReviveInside(L2Character character)
 	{
 		onEnter(character);
 	}

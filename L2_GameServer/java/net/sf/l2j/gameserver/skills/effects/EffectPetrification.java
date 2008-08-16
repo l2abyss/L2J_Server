@@ -23,34 +23,50 @@ public class EffectPetrification extends L2Effect
 {
 	public EffectPetrification(Env env, EffectTemplate template)
 	{
-        super(env, template);
-    }
-
-    @Override
+		super(env, template);
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
+	@Override
 	public EffectType getEffectType()
-    {
-        return L2Effect.EffectType.PETRIFICATION;
-    }
-
-    @Override
+	{
+		return L2Effect.EffectType.PETRIFICATION;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
+	@Override
 	public void onStart()
-    {
-    	getEffected().startAbnormalEffect(L2Character.ABNORMAL_EFFECT_HOLD_2);
-    	getEffected().startParalyze();
-    	getEffected().setIsInvul(true);
-    }
-
-    @Override
+	{
+		getEffected().startAbnormalEffect(L2Character.ABNORMAL_EFFECT_HOLD_2);
+		getEffected().startParalyze();
+		getEffected().setIsInvul(true);
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
+	 */
+	@Override
 	public void onExit()
-    {
-		 getEffected().stopAbnormalEffect(L2Character.ABNORMAL_EFFECT_HOLD_2);
-		 getEffected().stopParalyze(this);
-		 getEffected().setIsInvul(false);
-    }
-
-    @Override
+	{
+		getEffected().stopAbnormalEffect(L2Character.ABNORMAL_EFFECT_HOLD_2);
+		getEffected().stopParalyze(this);
+		getEffected().setIsInvul(false);
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
+	@Override
 	public boolean onActionTime()
-    {
-    	return false;
-    }
+	{
+		return false;
+	}
 }

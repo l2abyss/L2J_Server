@@ -35,7 +35,7 @@ public class TakeFort implements ISkillHandler
     //private static Logger _log = Logger.getLogger(TakeFort.class.getName());
     private static final SkillType[] SKILL_IDS = {SkillType.TAKEFORT};
 
-    public void useSkill(L2Character activeChar, @SuppressWarnings("unused") L2Skill skill, @SuppressWarnings("unused") L2Object[] targets)
+    public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
     {
         if (!(activeChar instanceof L2PcInstance)) return;
 

@@ -508,6 +508,7 @@ public abstract class L2Skill
     private final int _triggeredId;
     private final int _triggeredLevel;
 
+    private final int _soulMaxConsume;
     private final int _soulConsume;
     private final int _numSouls;
     private final int _expNeeded;
@@ -640,6 +641,7 @@ public abstract class L2Skill
             _chanceCondition = ChanceCondition.parse(set);
 
         _numSouls = set.getInteger("num_souls", 0);
+        _soulMaxConsume = set.getInteger("soulMaxConsumeCount", 0);
         _soulConsume = set.getInteger("soulConsumeCount", 0);
         _expNeeded = set.getInteger("expNeeded", 0);
         _critChance = set.getInteger("critChance", 0);
@@ -1256,6 +1258,11 @@ public abstract class L2Skill
     public final int getNumSouls()
     {
         return _numSouls;
+    }
+
+    public final int getMaxSoulConsumeCount()
+    {
+        return _soulMaxConsume;
     }
 
     public final int getSoulConsumeCount()
@@ -2990,8 +2997,7 @@ public abstract class L2Skill
         else return targets[0];
     }
 
-    public final Func[] getStatFuncs(@SuppressWarnings("unused")
-    L2Effect effect, L2Character player)
+    public final Func[] getStatFuncs(L2Effect effect, L2Character player)
     {
         if (!(player instanceof L2PcInstance) && !(player instanceof L2Attackable)
             && !(player instanceof L2Summon)) return _emptyFunctionSet;

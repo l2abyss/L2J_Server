@@ -14,10 +14,10 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-import net.sf.l2j.gameserver.datatables.AccessLevel;
 import net.sf.l2j.gameserver.datatables.AccessLevels;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
+import net.sf.l2j.gameserver.model.L2AccessLevel;
 import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2SiegeClan;
@@ -42,7 +42,7 @@ public class Die extends L2GameServerPacket
     private int _charObjId;
     private boolean _fallDown;
     private boolean _sweepable;
-    private AccessLevel _access = AccessLevels._userAccessLevel;
+    private L2AccessLevel _access = AccessLevels._userAccessLevel;
     private net.sf.l2j.gameserver.model.L2Clan _clan;
     L2Character _activeChar;
 

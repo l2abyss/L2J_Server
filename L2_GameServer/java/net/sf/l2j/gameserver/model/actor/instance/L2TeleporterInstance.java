@@ -160,7 +160,9 @@ public final class L2TeleporterInstance extends L2FolkInstance
         {
             if (condition == COND_BUSY_BECAUSE_OF_SIEGE) filename = "data/html/teleporter/castleteleporter-busy.htm"; // Busy because of siege
             else if (condition == COND_OWNER) // Clan owns castle
+            {
                 filename = getHtmlPath(getNpcId(), 0); // Owner message window
+            }
         }
 
         NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
@@ -173,6 +175,9 @@ public final class L2TeleporterInstance extends L2FolkInstance
     private void doTeleport(L2PcInstance player, int val)
     {
         L2TeleportLocation list = TeleportLocationTable.getInstance().getTemplate(val);
+        // from CT2 all players up to lvl 40 have all ports for free
+        if (player.getLevel() <=40)
+        	list.setPrice(0);
         if (list != null)
         {
             //you cannot teleport to village that is in siege

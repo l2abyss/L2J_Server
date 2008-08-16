@@ -17,7 +17,6 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-
 public class ExRegMax extends L2GameServerPacket
 {
 

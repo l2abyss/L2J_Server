@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.model;
 
-import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_FOLLOW;
 
 import java.util.Collection;
@@ -163,6 +162,7 @@ public abstract class L2Character extends L2Object
 	private boolean _isSleeping                             = false; // Cannot move/attack until sleep timed out or monster is attacked
 	private boolean _isStunned                              = false; // Cannot move/attack until stun timed out
 	private boolean _isBetrayed                             = false; // Betrayed by own summon
+	protected boolean _showSummonAnimation                    = false;
 	protected boolean _isTeleporting                        = false;
 	private L2Character _lastBuffer							= null;
 	protected boolean _isInvul                              = false;
@@ -200,7 +200,7 @@ public abstract class L2Character extends L2Object
 	public static final byte ZONE_MONSTERTRACK = 9;
 	public static final byte ZONE_CASTLE = 10;
 	public static final byte ZONE_SWAMP = 11;
-
+	
 	private final byte[] _zones = new byte[12];
 	
 	/**
@@ -524,7 +524,7 @@ public abstract class L2Character extends L2Object
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
 	 */
-	public void sendPacket(@SuppressWarnings("unused") L2GameServerPacket mov)
+	public void sendPacket(L2GameServerPacket mov)
 	{
 		// default implementation
 	}
@@ -535,7 +535,7 @@ public abstract class L2Character extends L2Object
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
 	 */
-	public void sendMessage(@SuppressWarnings("unused") String text)
+	public void sendMessage(String text)
 	{
 		// default implementation
 	}
@@ -1724,11 +1724,11 @@ public abstract class L2Character extends L2Object
 			}
 
             // Consume Souls if necessary
-            if (skill.getSoulConsumeCount() > 0)
+            if (skill.getSoulConsumeCount() > 0 || skill.getMaxSoulConsumeCount() > 0)
             {
                 if (this instanceof L2PcInstance)
                 {
-                    ((L2PcInstance)this).decreaseSouls(skill.getSoulConsumeCount());
+                    ((L2PcInstance)this).decreaseSouls(skill.getSoulConsumeCount(),skill);
                     sendPacket(new EtcStatusUpdate((L2PcInstance)this));
                 }
             }
@@ -3976,6 +3976,21 @@ public abstract class L2Character extends L2Object
 		if (Config.MOVE_BASED_KNOWNLIST && updateKnownObjects) this.getKnownList().findObjects();
 	}
 
+	/**
+	 * @return Returns the showSummonAnimation.
+	 */
+	public boolean isShowSummonAnimation()
+	{
+	    return _showSummonAnimation;
+	}
+
+	/**
+	 * @param showSummonAnimation The showSummonAnimation to set.
+	 */
+	public void setShowSummonAnimation(boolean showSummonAnimation)
+	{
+	    _showSummonAnimation = showSummonAnimation;
+	}
 
 	/**
 	 * Target a L2Object (add the target to the L2Character _target, _knownObject and L2Character to _KnownObject of the L2Object).<BR><BR>
@@ -4716,7 +4731,7 @@ public abstract class L2Character extends L2Object
 	 * <li> L2PetInstance</li><BR><BR>
 	 *
 	 */
-	public void addExpAndSp(@SuppressWarnings("unused") long addToExp, @SuppressWarnings("unused") int addToSp)
+	public void addExpAndSp(long addToExp, int addToSp)
 	{
 		// Dummy method (overridden by players and pets)
 	}
@@ -4844,7 +4859,7 @@ public abstract class L2Character extends L2Object
 		           if (100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100))
 		           {  
 		                     damage = 1;  
-		                     enemy.sendPacket(new SystemMessage(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS));; //SHIELD_DEFENCE faultless 
+		                     enemy.sendPacket(new SystemMessage(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS)); //SHIELD_DEFENCE faultless 
 		           }
 		            else
 		              enemy.sendPacket(new SystemMessage(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL)); 
@@ -5676,11 +5691,11 @@ public abstract class L2Character extends L2Object
 			}
 
             // Consume Souls if necessary
-            if (skill.getSoulConsumeCount() > 0)
+            if (skill.getSoulConsumeCount() > 0 || skill.getMaxSoulConsumeCount() > 0)
             {
                 if (this instanceof L2PcInstance)
                 {
-                    ((L2PcInstance)this).decreaseSouls(skill.getSoulConsumeCount());
+                    ((L2PcInstance)this).decreaseSouls(skill.getSoulConsumeCount(),skill);
                     sendPacket(new EtcStatusUpdate((L2PcInstance)this));
                 }
             }
@@ -5989,30 +6004,6 @@ public abstract class L2Character extends L2Object
 							        && (npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE) != null))
 								for (Quest quest : npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE))
 									quest.notifySkillSee(npcMob, player, skill, targets, this instanceof L2Summon);
-							
-							/**
-							 * ************** FULMINUS COMMENT START**************
-							 */
-							if (skill.getAggroPoints() > 0)
-							{
-								if (npcMob.isInsideRadius(player, 1000, true, true)
-								        && npcMob.hasAI()
-								        && npcMob.getAI().getIntention() == AI_INTENTION_ATTACK)
-								{
-									L2Object npcTarget = npcMob.getTarget();
-									for (L2Object target : targets)
-										if (npcTarget == target
-										        || npcMob == target)
-											npcMob.seeSpell(player, target, skill);
-								}
-							}
-							/**
-							 * ************** FULMINUS COMMENT END **************
-							 */
-							// the section within "Fulminus Comment" should be
-							// deleted from core and placed
-							// within the mob's AI Script's onSkillSee, which is
-							// called by quest.notifySkillSee
 						}
 					}
 				}
@@ -6022,14 +6013,6 @@ public abstract class L2Character extends L2Object
 		{
 			_log.log(Level.WARNING, "", e);
 		}
-	}
-	
-	public void seeSpell(L2PcInstance caster, L2Object target, L2Skill skill) 
-	{
-		// TODO: Aggro calculation due to spells ought to be inside the AI script's onSkillSee.
-		// when it is added there, this function will no longer be needed here.  (Fulminus)
-		if (this instanceof L2Attackable)
-			((L2Attackable)this).addDamageHate(caster, 0, -skill.getAggroPoints());
 	}
 	
 	/**
@@ -6178,7 +6161,7 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Return a Random Damage in function of the weapon.<BR><BR>
 	 */
-	public final int getRandomDamage(@SuppressWarnings("unused") L2Character target)
+	public final int getRandomDamage(L2Character target)
 	{
 		L2Weapon weaponItem = getActiveWeaponItem();
 
@@ -6361,7 +6344,7 @@ public abstract class L2Character extends L2Object
 	 * <li> L2PetInstance</li><BR><BR>
 	 *
 	 */
-	public void sendDamageMessage(@SuppressWarnings("unused") L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
+	public void sendDamageMessage(L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
 	{
 	}
 

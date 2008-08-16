@@ -19,35 +19,55 @@ import net.sf.l2j.gameserver.skills.Env;
 
 /**
  * @author -Rnn-
- *
+ * 
  */
-public class EffectPhysicalAttackMute extends L2Effect {
-
-
-    public EffectPhysicalAttackMute(Env env, EffectTemplate template) {
-        super(env, template);
-    }
-
-
-    @Override
-	public EffectType getEffectType() {
-        return L2Effect.EffectType.PHYSICAL_ATTACK_MUTE;
-    }
-
-    @Override
-	public void onStart() {
-        getEffected().startPhysicalAttackMuted();
-    }
-
-    @Override
-	public boolean onActionTime() {
-        // Simply stop the effect
-        getEffected().stopPhysicalAttackMuted(this);
-        return false;
-    }
-
-    @Override
-	public void onExit() {
-        getEffected().stopPhysicalAttackMuted(this);
-    }
+public class EffectPhysicalAttackMute extends L2Effect
+{
+	
+	public EffectPhysicalAttackMute(Env env, EffectTemplate template)
+	{
+		super(env, template);
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
+	@Override
+	public EffectType getEffectType()
+	{
+		return L2Effect.EffectType.PHYSICAL_ATTACK_MUTE;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
+	@Override
+	public void onStart()
+	{
+		getEffected().startPhysicalAttackMuted();
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
+	@Override
+	public boolean onActionTime()
+	{
+		// Simply stop the effect
+		getEffected().stopPhysicalAttackMuted(this);
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
+	 */
+	@Override
+	public void onExit()
+	{
+		getEffected().stopPhysicalAttackMuted(this);
+	}
 }

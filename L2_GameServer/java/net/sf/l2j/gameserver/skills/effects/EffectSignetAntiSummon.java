@@ -34,66 +34,83 @@ final class EffectSignetAntiSummon extends L2Effect
 	private L2EffectPointInstance _actor;
 	
 	public EffectSignetAntiSummon(Env env, EffectTemplate template)
-    {
-        super(env, template);
-    }
-    
-    @Override
-    public EffectType getEffectType()
-    {
-        return EffectType.SIGNET_GROUND;
-    }
-    
-    @Override
- 	public void onStart()
- 	{
- 		_actor = (L2EffectPointInstance)getEffected();
- 	}
-    
-    @Override
-    public boolean onActionTime()
-    {
-    	if (getCount() == getTotalCount() - 1) return true; // do nothing first time
-    	int mpConsume = getSkill().getMpConsume();
-        
-        for (L2Character cha : _actor.getKnownList().getKnownCharactersInRadius(getSkill().getSkillRadius()))
-        {
-            if (cha == null)
-                continue;
-            
-            if (cha instanceof L2PlayableInstance)
-            {
-                L2PcInstance owner = null;
-                
-                if (cha instanceof L2Summon)
-                    owner = ((L2Summon)cha).getOwner();
-                else
-                    owner = (L2PcInstance)cha;
-                
-                if (owner != null && owner.getPet() != null)
-                {
-                    if (mpConsume > getEffector().getCurrentMp())
-                    {
-                    	getEffector().sendPacket(new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP));
-                        return false;
-                    }
-                    else
-                    	getEffector().reduceCurrentMp(mpConsume);
-                    
-                    owner.getPet().unSummon(owner);
-                    owner.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, getEffector());
-                }
-            }
-        }
-        return true;
-    }
-    
-    @Override
-    public void onExit()
-    {
-    	if (_actor != null)
-        {
-            _actor.deleteMe();
-        }
-    }
+	{
+		super(env, template);
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
+	@Override
+	public EffectType getEffectType()
+	{
+		return EffectType.SIGNET_GROUND;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
+	@Override
+	public void onStart()
+	{
+		_actor = (L2EffectPointInstance) getEffected();
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
+	@Override
+	public boolean onActionTime()
+	{
+		if (getCount() == getTotalCount() - 1)
+			return true; // do nothing first time
+		int mpConsume = getSkill().getMpConsume();
+		
+		for (L2Character cha : _actor.getKnownList().getKnownCharactersInRadius(getSkill().getSkillRadius()))
+		{
+			if (cha == null)
+				continue;
+			
+			if (cha instanceof L2PlayableInstance)
+			{
+				L2PcInstance owner = null;
+				
+				if (cha instanceof L2Summon)
+					owner = ((L2Summon) cha).getOwner();
+				else
+					owner = (L2PcInstance) cha;
+				
+				if (owner != null && owner.getPet() != null)
+				{
+					if (mpConsume > getEffector().getCurrentMp())
+					{
+						getEffector().sendPacket(new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP));
+						return false;
+					}
+					else
+						getEffector().reduceCurrentMp(mpConsume);
+					
+					owner.getPet().unSummon(owner);
+					owner.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, getEffector());
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
+	 */
+	@Override
+	public void onExit()
+	{
+		if (_actor != null)
+		{
+			_actor.deleteMe();
+		}
+	}
 }

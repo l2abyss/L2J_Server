@@ -23,18 +23,31 @@ public class EffectMute extends L2Effect
 	{
 		super(env, template);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
 	@Override
 	public EffectType getEffectType()
 	{
 		return L2Effect.EffectType.MUTE;
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
 	@Override
-	public void onStart() {
+	public void onStart()
+	{
 		getEffected().startMuted();
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
 	@Override
 	public boolean onActionTime()
 	{
@@ -42,8 +55,11 @@ public class EffectMute extends L2Effect
 		getEffected().stopMuted(this);
 		return false;
 	}
-
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
+	 */
 	@Override
 	public void onExit()
 	{

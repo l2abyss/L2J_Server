@@ -98,7 +98,7 @@ public class L2DynamicZone extends L2ZoneType
 	}
 
 	@Override
-	protected void onDieInside(L2Character character)
+    public void onDieInside(L2Character character)
 	{
 		if(character == _owner)
 			remove();
@@ -107,7 +107,7 @@ public class L2DynamicZone extends L2ZoneType
 	}
 
 	@Override
-	protected void onReviveInside(L2Character character)
+    public void onReviveInside(L2Character character)
 	{
 		_skill.getEffects(_owner, character);
 	}

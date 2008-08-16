@@ -12,23 +12,25 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.datatables;
+package net.sf.l2j.gameserver.model;
 
 import java.util.logging.Logger;
+
+import net.sf.l2j.gameserver.datatables.AccessLevels;
 
 /**
  * @author FBIagent<br>
  */
-public class AccessLevel
+public class L2AccessLevel
 {
 	/** The logger<br> */
-	private static Logger _log = Logger.getLogger( AccessLevel.class.getName() );
+	private static Logger _log = Logger.getLogger( L2AccessLevel.class.getName() );
 	/** The access level<br> */
 	private int _accessLevel = 0;
 	/** The access level name<br> */
 	private String _name = null;
 	/** Child access levels */
-	AccessLevel[] _childsAccessLevel = null;
+	L2AccessLevel[] _childsAccessLevel = null;
 	/** Child access levels */
 	private String _childs = null;
 	/** The name color for the access level<br> */
@@ -69,7 +71,7 @@ public class AccessLevel
 	 * @param takeAggro as boolean<br>
 	 * @param gainExp as boolean<br>
 	 */
-	public AccessLevel(int accessLevel, String name, int nameColor, int titleColor, String childs, boolean isGm,
+	public L2AccessLevel(int accessLevel, String name, int nameColor, int titleColor, String childs, boolean isGm,
 			boolean allowPeaceAttack, boolean allowFixedRes, boolean allowTransaction, boolean allowAltG, boolean giveDamage, boolean takeAggro, boolean gainExp)
 	{
 		_accessLevel = accessLevel;
@@ -216,7 +218,7 @@ public class AccessLevel
 	 * 
 	 * @return boolean: true if a child access level is equals to allowedAccess, otherwise false<br>
 	 */
-	public boolean hasChildAccess(AccessLevel accessLevel)
+	public boolean hasChildAccess(L2AccessLevel accessLevel)
 	{
 		if (_childsAccessLevel == null)
 		{
@@ -224,7 +226,7 @@ public class AccessLevel
 				return false;
 			
 			setChildAccess(_childs);
-			for (AccessLevel childAccess : _childsAccessLevel)
+			for (L2AccessLevel childAccess : _childsAccessLevel)
 			{
 				if (childAccess != null && (childAccess.getLevel() == accessLevel.getLevel() || childAccess.hasChildAccess(accessLevel)))
 					return true;
@@ -232,7 +234,7 @@ public class AccessLevel
 		}
 		else
 		{
-			for (AccessLevel childAccess : _childsAccessLevel)
+			for (L2AccessLevel childAccess : _childsAccessLevel)
 			{
 				if (childAccess != null && (childAccess.getLevel() == accessLevel.getLevel() || childAccess.hasChildAccess(accessLevel)))
 					return true;
@@ -245,11 +247,11 @@ public class AccessLevel
 	{
 		String[] childsSplit = childs.split(";");
 
-		_childsAccessLevel = new AccessLevel[childsSplit.length];
+		_childsAccessLevel = new L2AccessLevel[childsSplit.length];
 
 		for (int i = 0;i < childsSplit.length;++ i)
 		{
-			AccessLevel accessLevelInst = AccessLevels.getInstance().getAccessLevel(Integer.valueOf(childsSplit[i]));
+			L2AccessLevel accessLevelInst = AccessLevels.getInstance().getAccessLevel(Integer.valueOf(childsSplit[i]));
 
 			if (accessLevelInst == null)
 			{

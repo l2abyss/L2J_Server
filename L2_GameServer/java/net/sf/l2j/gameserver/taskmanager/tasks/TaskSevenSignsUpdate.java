@@ -24,42 +24,57 @@ import net.sf.l2j.gameserver.taskmanager.TaskTypes;
 import net.sf.l2j.gameserver.taskmanager.TaskManager.ExecutedTask;
 
 /**
- * Updates all data for the Seven Signs and Festival of Darkness engines,
- * when time is elapsed.
- *
+ * Updates all data for the Seven Signs and Festival of Darkness engines, when
+ * time is elapsed.
+ * 
  * @author Tempy
  */
 public class TaskSevenSignsUpdate extends Task
 {
-    private static final Logger _log = Logger.getLogger(TaskSevenSignsUpdate.class.getName());
-    public static final String NAME = "seven_signs_update";
-
-    @Override
+	private static final Logger _log = Logger.getLogger(TaskSevenSignsUpdate.class.getName());
+	public static final String NAME = "seven_signs_update";
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.taskmanager.Task#getName()
+	 */
+	@Override
 	public String getName()
-    {
-        return NAME;
-    }
-
-    @Override
+	{
+		return NAME;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.taskmanager.Task#onTimeElapsed(net.sf.l2j.gameserver.taskmanager.TaskManager.ExecutedTask)
+	 */
+	@Override
 	public void onTimeElapsed(ExecutedTask task)
-    {
-        try {
-            SevenSigns.getInstance().saveSevenSignsData(null, true);
-
-            if (!SevenSigns.getInstance().isSealValidationPeriod())
-                SevenSignsFestival.getInstance().saveFestivalData(false);
-
-            _log.info("SevenSigns: Data updated successfully.");
-        }
-        catch (Exception e) {
-            _log.warning("SevenSigns: Failed to save Seven Signs configuration: " + e);
-        }
-    }
-
-    @Override
+	{
+		try
+		{
+			SevenSigns.getInstance().saveSevenSignsData(null, true);
+			
+			if (!SevenSigns.getInstance().isSealValidationPeriod())
+				SevenSignsFestival.getInstance().saveFestivalData(false);
+			
+			_log.info("SevenSigns: Data updated successfully.");
+		}
+		catch (Exception e)
+		{
+			_log.warning("SevenSigns: Failed to save Seven Signs configuration: "
+			        + e);
+		}
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.taskmanager.Task#initializate()
+	 */
+	@Override
 	public void initializate()
-    {
-        super.initializate();
-        TaskManager.addUniqueTask(NAME, TaskTypes.TYPE_FIXED_SHEDULED, "1800000", "1800000", "");
-    }
+	{
+		super.initializate();
+		TaskManager.addUniqueTask(NAME, TaskTypes.TYPE_FIXED_SHEDULED, "1800000", "1800000", "");
+	}
 }

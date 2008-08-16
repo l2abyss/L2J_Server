@@ -144,7 +144,27 @@ public class Mdam implements ISkillHandler
 
             int damage = (int) Formulas.getInstance().calcMagicDam(activeChar, target, skill, ss, bss,
                                                                    mcrit);
-
+            if (skill.getMaxSoulConsumeCount() > 0 && activeChar instanceof L2PcInstance && ((L2PcInstance) activeChar).getSouls() > 0)
+            {
+            	switch (((L2PcInstance) activeChar).getSouls())
+            	{
+            		case 1:
+            			damage *= 1.10;
+            			break;
+            		case 2:
+            			damage *= 1.12;
+            			break;
+            		case 3:
+            			damage *= 1.15;
+            			break;
+            		case 4:
+            			damage *= 1.18;
+            			break;
+            		default:
+            			damage *= 1.20;
+            			break;
+            	}
+            }
             if (damage > 5000 && activeChar instanceof L2PcInstance)
             {
                 String name = "";

@@ -28,56 +28,70 @@ final class EffectSilentMove extends L2Effect
 	{
 		super(env, template);
 	}
-
-	/** Notify started */
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
 	@Override
 	public void onStart()
 	{
 		super.onStart();
-
+		
 		L2Character effected = getEffected();
 		if (effected instanceof L2PlayableInstance)
-			((L2PlayableInstance)effected).setSilentMoving(true);
+			((L2PlayableInstance) effected).setSilentMoving(true);
 	}
-
-	/** Notify exited */
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
+	 */
 	@Override
 	public void onExit()
 	{
 		super.onExit();
-
+		
 		L2Character effected = getEffected();
 		if (effected instanceof L2PlayableInstance)
-			((L2PlayableInstance)effected).setSilentMoving(false);
+			((L2PlayableInstance) effected).setSilentMoving(false);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
 	@Override
 	public EffectType getEffectType()
 	{
 		return EffectType.SILENT_MOVE;
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
 	@Override
 	public boolean onActionTime()
 	{
-		 // Only cont skills shouldn't end
-		if(getSkill().getSkillType() != SkillType.CONT)
+		// Only cont skills shouldn't end
+		if (getSkill().getSkillType() != SkillType.CONT)
 			return false;
-
-		if(getEffected().isDead())
+		
+		if (getEffected().isDead())
 			return false;
-
+		
 		double manaDam = calc();
-
-		if(manaDam > getEffected().getCurrentMp())
+		
+		if (manaDam > getEffected().getCurrentMp())
 		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP);
 			getEffected().sendPacket(sm);
 			return false;
 		}
-
+		
 		getEffected().reduceCurrentMp(manaDam);
 		return true;
 	}
-
+	
 }

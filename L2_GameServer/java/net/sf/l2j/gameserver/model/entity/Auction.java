@@ -512,5 +512,5 @@ public class Auction
 	public final String getSellerName() { return _sellerName; }
     public final String getSellerClanName() { return _sellerClanName; }
 	public final int getStartingBid() { return _startingBid; }
-    public final Map<Integer, Bidder> getBidders(){ return _bidders; };
+    public final Map<Integer, Bidder> getBidders(){ return _bidders; }
 }

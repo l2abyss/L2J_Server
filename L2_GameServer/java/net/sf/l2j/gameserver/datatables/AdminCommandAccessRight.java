@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import net.sf.l2j.gameserver.model.L2AccessLevel;
+
 /**
  * @author FBIagent<br>
  */
@@ -22,7 +24,7 @@ public class AdminCommandAccessRight
 	/** The admin command<br> */
 	private String _adminCommand = null;
 	/** The access levels which can use the admin command<br> */
-	private AccessLevel[] _accessLevels = null;
+	private L2AccessLevel[] _accessLevels = null;
 
 	/**
 	 * Initialized members
@@ -37,7 +39,7 @@ public class AdminCommandAccessRight
 		String[] accessLevelsSplit = accessLevels.split(",");
 		int numLevels = accessLevelsSplit.length;
 		
-		_accessLevels = new AccessLevel[numLevels];
+		_accessLevels = new L2AccessLevel[numLevels];
 		
 		for (int i = 0; i < numLevels; ++i)
 		{
@@ -69,11 +71,11 @@ public class AdminCommandAccessRight
 	 * 
 	 * @return boolean: true if characterAccessLevel is allowed to use the admin command which belongs to this access right, otherwise false<br>
 	 */
-	public boolean hasAccess(AccessLevel characterAccessLevel)
+	public boolean hasAccess(L2AccessLevel characterAccessLevel)
 	{
 		for (int i = 0; i < _accessLevels.length; ++i)
 		{
-			AccessLevel accessLevel = _accessLevels[i];
+			L2AccessLevel accessLevel = _accessLevels[i];
 			
 			if (accessLevel != null
 					&& (accessLevel.getLevel() == characterAccessLevel.getLevel() || characterAccessLevel.hasChildAccess(accessLevel)))

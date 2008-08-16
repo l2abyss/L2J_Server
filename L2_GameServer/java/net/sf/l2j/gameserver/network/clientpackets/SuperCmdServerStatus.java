@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
-
 /**
  * Format ch
  * c: (id) 0x39

@@ -25,38 +25,52 @@ import net.sf.l2j.gameserver.skills.Env;
  */
 public class EffectImmobileUntilAttacked extends L2Effect
 {
-    static final Logger _log = Logger.getLogger(EffectImmobileUntilAttacked.class.getName());
-    
-    public EffectImmobileUntilAttacked(Env env, EffectTemplate template)
-    {
-        super(env, template);
-    }
-    
-    @Override
-    public EffectType getEffectType()
-    {
-        return EffectType.IMMOBILEUNTILATTACKED;
-    }
-    
-    /** Notify started */
-    @Override
-    public void onStart()
-    {
-    	getEffected().startImmobileUntilAttacked();
-    }
-    
-    /** Notify exited */
-    @Override
-    public void onExit()
-    {
-    	getEffected().stopImmobileUntilAttacked(this);
-    }
-    
-    @Override
-    public boolean onActionTime()
-    {
-    	getEffected().stopImmobileUntilAttacked(this);
-        // just stop this effect
-        return false;
-    }
+	static final Logger _log = Logger.getLogger(EffectImmobileUntilAttacked.class.getName());
+	
+	public EffectImmobileUntilAttacked(Env env, EffectTemplate template)
+	{
+		super(env, template);
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
+	@Override
+	public EffectType getEffectType()
+	{
+		return EffectType.IMMOBILEUNTILATTACKED;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
+	 */
+	@Override
+	public void onStart()
+	{
+		getEffected().startImmobileUntilAttacked();
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
+	 */
+	@Override
+	public void onExit()
+	{
+		getEffected().stopImmobileUntilAttacked(this);
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
+	@Override
+	public boolean onActionTime()
+	{
+		getEffected().stopImmobileUntilAttacked(this);
+		// just stop this effect
+		return false;
+	}
 }

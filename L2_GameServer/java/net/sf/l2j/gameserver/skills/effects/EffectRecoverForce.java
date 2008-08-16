@@ -30,48 +30,56 @@ import net.sf.l2j.gameserver.skills.Env;
 
 public class EffectRecoverForce extends L2Effect
 {
-    public EffectRecoverForce(Env env, EffectTemplate template)
-    {
-        super(env, template);
-    }
-
-    @Override
-    public EffectType getEffectType()
-    {
-        return EffectType.BUFF;
-    }
-
-    @Override
+	public EffectRecoverForce(Env env, EffectTemplate template)
+	{
+		super(env, template);
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
+	 */
+	@Override
+	public EffectType getEffectType()
+	{
+		return EffectType.BUFF;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
+	 */
+	@Override
 	public boolean onActionTime()
 	{
-    	if (getEffected() instanceof L2PcInstance)
-    	{
-    		L2PcInstance player = (L2PcInstance)getEffected();
-    		L2Skill skill = null;
-
-    		if (player.getSkillLevel(8) > 0)
-    			skill = SkillTable.getInstance().getInfo(8, player.getSkillLevel(8));
-    		else if (player.getSkillLevel(50) > 0)
-    			skill = SkillTable.getInstance().getInfo(50, player.getSkillLevel(50));
-
-    		if (skill != null)
-    		{
-    			EffectCharge effect = (EffectCharge)player.getFirstEffect(skill);
-    			if (effect != null)
-    			{
-    				if (effect.numCharges < skill.getNumCharges())
-    				{
-    					effect.numCharges++;
-    					player.sendPacket(new EtcStatusUpdate(player));
-    					SystemMessage sm = new SystemMessage(SystemMessageId.FORCE_INCREASED_TO_S1);
-    					sm.addNumber(effect.numCharges);
-    					player.sendPacket(sm);
-    				}
-    			}
-    			else
-    				skill.getEffects(player, player);
-    		}
-    	}
-    	return true;
+		if (getEffected() instanceof L2PcInstance)
+		{
+			L2PcInstance player = (L2PcInstance) getEffected();
+			L2Skill skill = null;
+			
+			if (player.getSkillLevel(8) > 0)
+				skill = SkillTable.getInstance().getInfo(8, player.getSkillLevel(8));
+			else if (player.getSkillLevel(50) > 0)
+				skill = SkillTable.getInstance().getInfo(50, player.getSkillLevel(50));
+			
+			if (skill != null)
+			{
+				EffectCharge effect = (EffectCharge) player.getFirstEffect(skill);
+				if (effect != null)
+				{
+					if (effect.numCharges < skill.getNumCharges())
+					{
+						effect.numCharges++;
+						player.sendPacket(new EtcStatusUpdate(player));
+						SystemMessage sm = new SystemMessage(SystemMessageId.FORCE_INCREASED_TO_S1);
+						sm.addNumber(effect.numCharges);
+						player.sendPacket(sm);
+					}
+				}
+				else
+					skill.getEffects(player, player);
+			}
+		}
+		return true;
 	}
 }

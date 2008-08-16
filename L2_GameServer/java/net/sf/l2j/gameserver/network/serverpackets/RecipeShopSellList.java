@@ -27,7 +27,6 @@ public class RecipeShopSellList extends L2GameServerPacket
 {
 
     private static final String _S__D9_RecipeShopSellList = "[S] df RecipeShopSellList";
-    @SuppressWarnings("unused")
     private L2PcInstance _buyer,_manufacturer;
 
     public RecipeShopSellList(L2PcInstance buyer,L2PcInstance manufacturer)

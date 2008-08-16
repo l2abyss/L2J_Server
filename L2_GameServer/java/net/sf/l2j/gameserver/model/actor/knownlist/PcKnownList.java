@@ -88,7 +88,6 @@ public class PcKnownList extends PlayableKnownList
      */
     @Override
 	public boolean addKnownObject(L2Object object) { return addKnownObject(object, null); }
-    @SuppressWarnings("cast")
     @Override
 	public boolean addKnownObject(L2Object object, L2Character dropper)
     {

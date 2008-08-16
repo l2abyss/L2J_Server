@@ -14,9 +14,12 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
-import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.instancemanager.RaidBossPointsManager;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.serverpackets.ExGetBossRecord;
 /**
  * Format: (ch) d
  * @author  -Wooden-
@@ -40,11 +43,22 @@ public class RequestGetBossRecord extends L2GameClientPacket
     @Override
     protected void runImpl()
     {
-        if (Config.DEBUG)
+    	L2PcInstance activeChar = getClient().getActiveChar();
+    	if(activeChar == null)
+    		return;
+
+        if (_bossId != 0)
         {
-            // TODO
-            _log.info("C5: RequestGetBossRecord: d: "+_bossId);
+            _log.info("C5: RequestGetBossRecord: d: "+_bossId+" ActiveChar: "+activeChar); // should be always 0, log it if isnt 0 for furture research
         }
+
+        int points = RaidBossPointsManager.getPointsByOwnerId(activeChar.getObjectId());
+        int ranking = RaidBossPointsManager.calculateRanking(activeChar);
+        
+        Map<Integer, Integer> list = RaidBossPointsManager.getList(activeChar);
+
+        // trigger packet
+       	activeChar.sendPacket(new ExGetBossRecord(ranking, points, list));
     }
 
     /**

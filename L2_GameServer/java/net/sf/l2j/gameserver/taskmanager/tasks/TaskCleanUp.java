@@ -19,22 +19,30 @@ import net.sf.l2j.gameserver.taskmanager.TaskManager.ExecutedTask;
 
 /**
  * @author Tempy
- *
+ * 
  */
 public final class TaskCleanUp extends Task
 {
-    public static final String NAME = "clean_up";
-
-    @Override
+	public static final String NAME = "clean_up";
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.taskmanager.Task#getName()
+	 */
+	@Override
 	public String getName()
-    {
-        return NAME;
-    }
-
-    @Override
+	{
+		return NAME;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.taskmanager.Task#onTimeElapsed(net.sf.l2j.gameserver.taskmanager.TaskManager.ExecutedTask)
+	 */
+	@Override
 	public void onTimeElapsed(ExecutedTask task)
-    {
-        System.runFinalization();
-        System.gc();
-    }
+	{
+		System.runFinalization();
+		System.gc();
+	}
 }

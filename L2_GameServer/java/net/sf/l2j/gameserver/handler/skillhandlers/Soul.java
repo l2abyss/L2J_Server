@@ -33,7 +33,7 @@ public class Soul implements ISkillHandler
 {
     private static final SkillType[] SKILL_IDS = { SkillType.CHARGESOUL };
     
-    public void useSkill(L2Character activeChar, L2Skill skill, @SuppressWarnings("unused") L2Object[] targets)
+    public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
     {
         if (!(activeChar instanceof L2PcInstance) || activeChar.isAlikeDead())
             return;

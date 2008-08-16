@@ -29,15 +29,16 @@ import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.TaskPriority;
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
-import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
 import net.sf.l2j.gameserver.instancemanager.CoupleManager;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
 import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
 import net.sf.l2j.gameserver.instancemanager.PetitionManager;
+import net.sf.l2j.gameserver.instancemanager.RaidBossPointsManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.instancemanager.TransformationManager;
+import net.sf.l2j.gameserver.model.L2AdminCommandAccessRights;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2Effect;
@@ -117,22 +118,22 @@ public class EnterWorld extends L2GameClientPacket
         
         if (activeChar.isGM())
         {
-            if (Config.GM_STARTUP_INVULNERABLE && AdminCommandAccessRights.getInstance().hasAccess("admin_invul", activeChar.getAccessLevel()))
+            if (Config.GM_STARTUP_INVULNERABLE && L2AdminCommandAccessRights.getInstance().hasAccess("admin_invul", activeChar.getAccessLevel()))
                  activeChar.setIsInvul(true);
 
-            if (Config.GM_STARTUP_INVISIBLE && AdminCommandAccessRights.getInstance().hasAccess("admin_invisible", activeChar.getAccessLevel()))
+            if (Config.GM_STARTUP_INVISIBLE && L2AdminCommandAccessRights.getInstance().hasAccess("admin_invisible", activeChar.getAccessLevel()))
                  activeChar.getAppearance().setInvisible();
  
-            if (Config.GM_STARTUP_SILENCE && AdminCommandAccessRights.getInstance().hasAccess("admin_silence", activeChar.getAccessLevel()))
+            if (Config.GM_STARTUP_SILENCE && L2AdminCommandAccessRights.getInstance().hasAccess("admin_silence", activeChar.getAccessLevel()))
                  activeChar.setMessageRefusal(true);            
             
-            if (Config.GM_STARTUP_DIET_MODE && AdminCommandAccessRights.getInstance().hasAccess("admin_diet", activeChar.getAccessLevel()))
+            if (Config.GM_STARTUP_DIET_MODE && L2AdminCommandAccessRights.getInstance().hasAccess("admin_diet", activeChar.getAccessLevel()))
             {
             	activeChar.setDietMode(true);
             	activeChar.refreshOverloaded();
             }
  
-            if (Config.GM_STARTUP_AUTO_LIST && AdminCommandAccessRights.getInstance().hasAccess("admin_gmliston", activeChar.getAccessLevel()))
+            if (Config.GM_STARTUP_AUTO_LIST && L2AdminCommandAccessRights.getInstance().hasAccess("admin_gmliston", activeChar.getAccessLevel()))
                  GmListTable.getInstance().addGm(activeChar, false);
              else
                  GmListTable.getInstance().addGm(activeChar, true);
@@ -200,7 +201,9 @@ public class EnterWorld extends L2GameClientPacket
             engage(activeChar);
             notifyPartner(activeChar,activeChar.getPartnerId());
         }
-        
+
+        // load points for that character
+        RaidBossPointsManager.loadPoints(activeChar);
         if(activeChar.isCursedWeaponEquipped()) 
         {
             CursedWeaponsManager.getInstance().getCursedWeapon(activeChar.getCursedWeaponEquippedId()).cursedOnLogin();

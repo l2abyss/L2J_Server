@@ -143,7 +143,6 @@ public abstract class Inventory extends ItemContainer
     	/**
     	 * Add alteration in inventory when item equiped
     	 */
-        @SuppressWarnings("unused")
     	public void notifyEquiped(int slot, L2ItemInstance item) {
     		if (!_changed.contains(item))
     			_changed.add(item);
@@ -152,7 +151,6 @@ public abstract class Inventory extends ItemContainer
     	/**
     	 * Add alteration in inventory when item unequiped
     	 */
-        @SuppressWarnings("unused")
     	public void notifyUnequiped(int slot, L2ItemInstance item) {
     		if (!_changed.contains(item))
     			_changed.add(item);

@@ -31,6 +31,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2MercManagerInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MerchantInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PetManagerInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
@@ -111,6 +112,10 @@ public final class RequestBuyItem extends L2GameClientPacket
             else if (target instanceof L2MerchantInstance)
             {
                 htmlFolder = "merchant";
+            }
+            else if (target instanceof L2PetManagerInstance)
+            {
+                htmlFolder = "petmanager";
             }
         	else
             {

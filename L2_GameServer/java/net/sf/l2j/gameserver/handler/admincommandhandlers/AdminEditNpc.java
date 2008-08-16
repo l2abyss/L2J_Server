@@ -31,10 +31,8 @@ import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.L2DropCategory;
 import net.sf.l2j.gameserver.model.L2DropData;
-import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2TradeList;
 import net.sf.l2j.gameserver.model.L2TradeList.L2TradeItem;
-import net.sf.l2j.gameserver.model.actor.instance.L2BoxInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MerchantInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -62,7 +60,6 @@ public class AdminEditNpc implements IAdminCommandHandler {
 		"admin_showShopList",
 		"admin_addShopItem",
 		"admin_delShopItem",
-		"admin_box_access",
 		"admin_editShopItem",
 		"admin_close_window"
 	};
@@ -249,42 +246,6 @@ public class AdminEditNpc implements IAdminCommandHandler {
 				deleteDropData(activeChar, npcId, itemId, category);
 			else
 				activeChar.sendMessage("Usage: //del_drop <npc_id> <item_id> <category>");
-		}
-		else if(command.startsWith("admin_box_access"))
-		{
-			L2Object target = activeChar.getTarget();
-			String[] players = command.split(" ");
-			if (target instanceof L2BoxInstance)
-			{
-				L2BoxInstance box = (L2BoxInstance) target;
-				if (players.length > 1)
-				{
-					boolean access = true;
-					for (int i = 1; i < players.length; i++)
-					{
-						if (players[i].equals("no"))
-						{
-							access = false;
-							continue;
-						}
-						box.grantAccess(players[i],access);
-					}
-				}
-				else
-				{
-					try
-					{
-						String msg = "Access:";
-						for (Object p : box.getAccess())
-							msg += " "+(String)p;
-						activeChar.sendMessage(msg);
-					}
-					catch (Exception e)
-					{
-						_log.info("box_access: "+e);
-					}
-				}
-			}
 		}
 
 		return true;

@@ -738,7 +738,7 @@ public class TradeList
             lock();
             return false;
         }
-        ;
+        
         L2ItemInstance adenaItem = playerInventory.getAdenaInstance();
         playerInventory.reduceAdena("PrivateStore", price, player, _owner);
         playerIU.addItem(adenaItem);

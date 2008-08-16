@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
@@ -28,7 +29,6 @@ import net.sf.l2j.gameserver.ai.L2AttackableAI;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
-import net.sf.l2j.gameserver.model.zone.L2ZoneManager;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.gameserver.model.zone.type.L2DerbyTrackZone;
 import net.sf.l2j.gameserver.model.zone.type.L2PeaceZone;
@@ -53,8 +53,7 @@ public final class L2WorldRegion
     private int _tileX, _tileY;
     private Boolean _active = false;
     private ScheduledFuture<?> _neighborsTask = null;
-
-    private L2ZoneManager _zoneManager;
+    private final FastList<L2ZoneType>			_zones;
 
     public L2WorldRegion(int pTileX, int pTileY)
     {
@@ -70,118 +69,104 @@ public final class L2WorldRegion
             _active = true;
         else
             _active = false;
+        _zones = new FastList<L2ZoneType>();
     }
 
+	public FastList<L2ZoneType> getZones()
+	{
+		return _zones;
+	}
+	
     public void addZone(L2ZoneType zone)
     {
-    	if (_zoneManager == null)
-    	{
-    		_zoneManager = new L2ZoneManager();
-    	}
-    	_zoneManager.registerNewZone(zone);
+    	_zones.add(zone);
     }
 
     public void removeZone(L2ZoneType zone)
     {
-    	if (_zoneManager == null)
-    		return;
-    	_zoneManager.unregisterZone(zone);
+    	_zones.remove(zone);
     }
 
     public void revalidateZones(L2Character character)
     {
-    	if (_zoneManager == null) return;
         // do NOT update the world region while the character is still in the process of teleporting
     	// Once the teleport is COMPLETED, revalidation occurs safely, at that time.
-        if (character.isTeleporting())
-            return;
 
-    	if (_zoneManager != null)
-    	{
-    		_zoneManager.revalidateZones(character);
-    	}
-    }
+		if (character.isTeleporting())
+			return;
+
+		for (L2ZoneType z : getZones())
+		{
+			if(z != null) z.revalidateInZone(character);
+		}
+	}
 
     public void removeFromZones(L2Character character)
-    {
-    	if (_zoneManager == null) return;
-
-    	if (_zoneManager != null)
-    	{
-    		_zoneManager.removeCharacter(character);
-    	}
-    }
+	{
+		for (L2ZoneType z : getZones())
+		{
+			if(z != null) z.removeCharacter(character);
+		}
+	}
     
     public boolean containsZone(int zoneId)
-    {
-        if (_zoneManager != null)
-        {
-            for (L2ZoneType e : _zoneManager.getZones())
-            {
-                if (e != null && e.getId() == zoneId)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        return false;
-    }
+	{
+		for (L2ZoneType z : getZones())
+		{
+			if (z.getId() == zoneId)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
     
     public boolean checkEffectRangeInsidePeaceZone(L2Skill skill, final int x, final int y, final int z)
     {
-        if (_zoneManager != null)
-        {
-            final int range = skill.getEffectRange();
-            final int up = y + range;
-            final int down = y - range;
-            final int left = x + range;
-            final int right = x - range;
-            
-            for (L2ZoneType e : _zoneManager.getZones())
-            {
-            	if ((e instanceof L2TownZone && ((L2TownZone)e).isPeaceZone()) || e instanceof L2DerbyTrackZone || e instanceof L2PeaceZone)
-            	{
-            		if (e.isInsideZone(x, up, z))
-            			return false;
-                        
-            		if (e.isInsideZone(x, down, z))
-            			return false;
-                        	
-            		if (e.isInsideZone(left, y, z))
-            			return false;
-            		
-            		if (e.isInsideZone(right, y, z))
-            			return false;
-                        
-            		if (e.isInsideZone(x, y, z))
-            			return false;
-            	}
-            }
-            return true;
-        }
-        return true;
+    	final int range = skill.getEffectRange();
+    	final int up = y + range;
+    	final int down = y - range;
+    	final int left = x + range;
+    	final int right = x - range;
+
+    	for (L2ZoneType e : getZones())
+    	{
+    		if ((e instanceof L2TownZone && ((L2TownZone)e).isPeaceZone()) || e instanceof L2DerbyTrackZone || e instanceof L2PeaceZone)
+    		{
+    			if (e.isInsideZone(x, up, z))
+    				return false;
+
+    			if (e.isInsideZone(x, down, z))
+    				return false;
+
+    			if (e.isInsideZone(left, y, z))
+    				return false;
+
+    			if (e.isInsideZone(right, y, z))
+    				return false;
+
+    			if (e.isInsideZone(x, y, z))
+    				return false;
+    		}
+    	}
+    	return true;
     }
 
     public void onDeath(L2Character character)
-    {
-    	if (_zoneManager == null) return;
-
-    	if (_zoneManager != null)
-    	{
-    		_zoneManager.onDeath(character);
-    	}
-    }
+	{
+		for (L2ZoneType z : getZones())
+		{
+			if(z != null) z.onDieInside(character);
+		}
+	}
 
     public void onRevive(L2Character character)
-    {
-    	if (_zoneManager == null) return;
-
-    	if (_zoneManager != null)
-    	{
-    		_zoneManager.onRevive(character);
-    	}
-    }
+	{
+		for (L2ZoneType z : getZones())
+		{
+			if(z != null) z.onReviveInside(character);
+		}
+	}
 
     /** Task of AI notification */
     public class NeighborsTask implements Runnable

@@ -21,10 +21,10 @@ import java.util.logging.Logger;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.communitybbs.CommunityBoard;
-import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.handler.AdminCommandHandler;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.GMAudit;
+import net.sf.l2j.gameserver.model.L2AdminCommandAccessRights;
 import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
@@ -80,7 +80,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 					return;
 				}
 
-				if (!AdminCommandAccessRights.getInstance().hasAccess(command, activeChar.getAccessLevel()))
+				if (!L2AdminCommandAccessRights.getInstance().hasAccess(command, activeChar.getAccessLevel()))
 				{
 					activeChar.sendMessage("You don't have the access right to use this command!");
 					_log.warning("Character " + activeChar.getName() + " tryed to use admin command " + command + ", but have no access to it!");

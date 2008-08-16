@@ -20,10 +20,14 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javolution.util.FastList;
+import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.L2ItemInstance.ItemLocation;
 import net.sf.l2j.gameserver.model.TradeList.TradeItem;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
+import net.sf.l2j.gameserver.network.serverpackets.ItemList;
+import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.templates.L2EtcItemType;
 
 public class PcInventory extends Inventory
@@ -330,6 +334,23 @@ public class PcInventory extends Inventory
 
     	if (item != null && item.getItemId() == ANCIENT_ADENA_ID && !item.equals(_ancientAdena))
     		_ancientAdena = item;
+    	if (item != null)
+    	{
+			// Send inventory update packet
+			if (!Config.FORCE_INVENTORY_UPDATE)
+			{
+				InventoryUpdate playerIU = new InventoryUpdate();
+				playerIU.addItem(item);
+				actor.sendPacket(playerIU);
+			}
+			else
+				actor.sendPacket(new ItemList(actor, false));
+
+			// Update current load as well
+			StatusUpdate su = new StatusUpdate(actor.getObjectId());
+			su.addAttribute(StatusUpdate.CUR_LOAD, actor.getCurrentLoad());
+			actor.sendPacket(su);
+    	}
 
     	return item;
     }

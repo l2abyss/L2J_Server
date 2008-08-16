@@ -42,7 +42,6 @@ public class L2MonsterInstance extends L2Attackable
 
     protected final MinionList _minionList;
 
-    @SuppressWarnings("unused")
     protected ScheduledFuture<?> _minionMaintainTask = null;
 
     private static final int MONSTER_MAINTENANCE_INTERVAL = 1000;

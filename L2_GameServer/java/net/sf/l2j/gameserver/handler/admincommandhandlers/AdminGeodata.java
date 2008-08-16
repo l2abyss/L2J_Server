@@ -38,7 +38,6 @@ public class AdminGeodata implements IAdminCommandHandler
 		"admin_geo_unload"
 		};
 
-	@SuppressWarnings("deprecation")
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
         if (Config.GEODATA < 1)

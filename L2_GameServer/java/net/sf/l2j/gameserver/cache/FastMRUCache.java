@@ -63,7 +63,6 @@ public class FastMRUCache<K,V> extends FastCollection implements Reusable
     /**
      * Holds the set factory.
      */
-    @SuppressWarnings("unchecked")
     private static final ObjectFactory FACTORY = new ObjectFactory() {
 
         @Override

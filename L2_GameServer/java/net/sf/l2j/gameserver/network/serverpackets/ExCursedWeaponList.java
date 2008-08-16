@@ -16,7 +16,6 @@ package net.sf.l2j.gameserver.network.serverpackets;
 
 import java.util.List;
 
-
 /**
  * Format: (ch) d[d]
  *

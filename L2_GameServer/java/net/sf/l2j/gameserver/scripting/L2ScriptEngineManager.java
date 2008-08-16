@@ -21,10 +21,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InvalidClassException;
 import java.io.LineNumberReader;
+import java.io.ObjectInputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.script.Compilable;
@@ -35,6 +38,8 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.script.SimpleScriptContext;
+
+import com.l2jserver.script.jython.JythonScriptEngine;
 
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
@@ -67,6 +72,9 @@ public final class L2ScriptEngineManager
     private final Map<String, ScriptEngine> _nameEngines = new FastMap<String, ScriptEngine>();
     private final Map<String, ScriptEngine> _extEngines = new FastMap<String, ScriptEngine>();
     private final List<ScriptManager<?>> _scriptManagers = new LinkedList<ScriptManager<?>>();
+    
+    private final CompiledScriptCache _cache;
+    
     private File _currentLoadingScript;
     
     // Configs
@@ -80,7 +88,13 @@ public final class L2ScriptEngineManager
     /**
      * If the script engine supports compilation the script is compiled before execution.<BR>
      */
-    private final boolean ATTEMPT_COMPILATION = false;
+    private final boolean ATTEMPT_COMPILATION = true;
+    
+    /**
+     * Use Compiled Scripts Cache.<BR>
+     * Only works if ATTEMPT_COMPILATION is true.<BR>
+     */
+    private final boolean USE_COMPILED_CACHE = true;
     
     /**
      * Clean an previous error log(if such exists) for the script being loaded before trying to load.<BR>
@@ -92,19 +106,46 @@ public final class L2ScriptEngineManager
     {
         ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
         List<ScriptEngineFactory> factories = scriptEngineManager.getEngineFactories();
-        _log.severe("Initializing Script Engine Manager");
+        if (USE_COMPILED_CACHE)
+        {
+        	_cache = this.loadCompiledScriptCache();
+        }
+        else
+        {
+        	_cache = null;
+        }
+        _log.info("Initializing Script Engine Manager");
         
         for (ScriptEngineFactory factory : factories)
         {
             try
             {
-                _log.info("Script Engine: "+factory.getEngineName()+" "+factory.getEngineVersion()+" - Language: "+factory.getLanguageName()+" - Language Version: "+factory.getLanguageVersion());
                 ScriptEngine engine = factory.getScriptEngine();
-                
+                boolean reg = false;
                 for (String name : factory.getNames())
                 {
-                    _nameEngines.put(name, engine);
+                	ScriptEngine existentEngine = _nameEngines.get(name);
+                	
+                	if (existentEngine != null)
+                	{
+                		double engineVer = Double.parseDouble(factory.getEngineVersion());
+                		double existentEngVer = Double.parseDouble(existentEngine.getFactory().getEngineVersion());
+                		
+                		if (engineVer <= existentEngVer)
+                		{
+                			continue;
+                		}
+                	}
+                	
+                	reg = true;
+                	_nameEngines.put(name, engine);
                 }
+                
+                if (reg)
+                {
+                	_log.info("Script Engine: "+factory.getEngineName()+" "+factory.getEngineVersion()+" - Language: "+factory.getLanguageName()+" - Language Version: "+factory.getLanguageVersion());
+                }
+                
                 for (String ext : factory.getExtensions())
                 {
                     if (!ext.equals("java") || factory.getLanguageName().equals("java"))
@@ -272,6 +313,46 @@ public final class L2ScriptEngineManager
         }
     }
     
+    public CompiledScriptCache getCompiledScriptCache() throws IOException
+    {
+    	return _cache;
+    }
+    
+    public CompiledScriptCache loadCompiledScriptCache()
+    {
+    	if (USE_COMPILED_CACHE)
+        {
+    		File file = new File(SCRIPT_FOLDER, "CompiledScripts.cache");
+    		if (file.isFile())
+    		{
+    			try
+    			{
+    				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+    				CompiledScriptCache cache = (CompiledScriptCache) ois.readObject();
+    				return cache;
+    			}
+    			catch (InvalidClassException e)
+                {
+                	_log.log(Level.SEVERE, "Failed loading Compiled Scripts Cache, invalid class (Possibly outdated).", e);
+                }
+    			catch (IOException e)
+    			{
+    				_log.log(Level.SEVERE, "Failed loading Compiled Scripts Cache from file.", e);
+    			}
+                catch (ClassNotFoundException e)
+                {
+                	_log.log(Level.SEVERE, "Failed loading Compiled Scripts Cache, class not found.", e);
+                }
+                return new CompiledScriptCache();
+    		}
+    		else
+    		{
+    			return new CompiledScriptCache();
+    		}
+        }
+    	return null;
+    }
+    
     public void executeScript(File file) throws ScriptException, FileNotFoundException
     {
         String name = file.getName();
@@ -336,16 +417,19 @@ public final class L2ScriptEngineManager
             context.setAttribute(ScriptEngine.FILENAME, file.getName(), ScriptContext.ENGINE_SCOPE);
             context.setAttribute("classpath", SCRIPT_FOLDER.getAbsolutePath(), ScriptContext.ENGINE_SCOPE);
             context.setAttribute("sourcepath", SCRIPT_FOLDER.getAbsolutePath(), ScriptContext.ENGINE_SCOPE);
+            context.setAttribute(JythonScriptEngine.JYTHON_ENGINE_INSTANCE, engine, ScriptContext.ENGINE_SCOPE);
             
             this.setCurrentLoadingScript(file);
+            ScriptContext ctx = engine.getContext();
             try
             {
-                Compilable eng = (Compilable) engine;
-                CompiledScript cs = eng.compile(reader);
-                cs.eval(context);
+            	engine.setContext(context);
+            	CompiledScript cs = _cache.loadCompiledScript(engine, file);
+        		cs.eval(context);
             }
             finally
             {
+            	engine.setContext(ctx);
                 this.setCurrentLoadingScript(null);
                 context.removeAttribute(ScriptEngine.FILENAME, ScriptContext.ENGINE_SCOPE);
                 context.removeAttribute("mainClass", ScriptContext.ENGINE_SCOPE);

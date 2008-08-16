@@ -23,7 +23,6 @@ import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ItemsAutoDestroy;
 import net.sf.l2j.gameserver.ThreadPoolManager;
-import net.sf.l2j.gameserver.ai.CtrlEvent;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2AttackableAI;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
@@ -33,6 +32,8 @@ import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.EventDroplist.DateDrop;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
+import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.L2Attackable.OnKillNotifyTask;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
@@ -816,55 +817,9 @@ public class L2Attackable extends L2NpcInstance
      */
     public void addDamage(L2Character attacker, int damage)
     {
-        addDamageHate(attacker, damage, damage);
-    }
-
-    /**
-     * Add damage and hate to the attacker AggroInfo of the L2Attackable _aggroList.<BR><BR>
-     *
-     * @param attacker The L2Character that gave damages to this L2Attackable
-     * @param damage The number of damages given by the attacker L2Character
-     * @param aggro The hate (=damage) given by the attacker L2Character
-     *
-     */
-    public void addDamageHate(L2Character attacker, int damage, int aggro)
-    {
-    	// TODO: Agro calculation ought to be removed from here and placed within 
-    	// onAttack and onSkillSee in the AI Script (Fulminus)
-        if (attacker == null /*|| _aggroList == null*/) return;
-
-        // Get the AggroInfo of the attacker L2Character from the _aggroList of the L2Attackable
-        AggroInfo ai = getAggroListRP().get(attacker);
-        if (ai == null)
-        {
-            ai = new AggroInfo(attacker);
-            ai._damage = 0;
-            ai._hate = 0;
-            getAggroListRP().put(attacker, ai);
-        }
-
-        // If aggro is negative, its comming from SEE_SPELL, buffs use constant 150
-        if (aggro < 0) {
-        	ai._hate -= (aggro*150)/(getLevel()+7);
-        	aggro = -aggro;
-        }
-        // if damage == 0 -> this is case of adding only to aggro list, dont apply formula on it
-        else if (damage == 0) ai._hate += aggro;
-        // else its damage that must be added using constant 100
-        else ai._hate += (aggro*100)/(getLevel()+7);
-
-        // Add new damage and aggro (=damage) to the AggroInfo object
-        ai._damage += damage;
-
-        // Set the intention to the L2Attackable to AI_INTENTION_ACTIVE
-        if (aggro > 0 && getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
-        	getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-
         // Notify the L2Attackable AI with EVT_ATTACKED
         if (damage > 0)
         {
-        	getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, attacker);
-
             try {
                 if (attacker instanceof L2PcInstance || attacker instanceof L2Summon)
                 {
@@ -877,6 +832,36 @@ public class L2Attackable extends L2NpcInstance
             }
             catch (Exception e) { _log.log(Level.SEVERE, "", e); }
         }
+    }
+
+    /**
+     * Add damage and hate to the attacker AggroInfo of the L2Attackable _aggroList.<BR><BR>
+     *
+     * @param attacker The L2Character that gave damages to this L2Attackable
+     * @param damage The number of damages given by the attacker L2Character
+     * @param aggro The hate (=damage) given by the attacker L2Character
+     *
+     */
+    public void addDamageHate(L2Character attacker, int damage, int aggro)
+    {
+        if (attacker == null /*|| _aggroList == null*/) return;
+
+        // Get the AggroInfo of the attacker L2Character from the _aggroList of the L2Attackable
+        AggroInfo ai = getAggroListRP().get(attacker);
+        if (ai == null)
+        {
+            ai = new AggroInfo(attacker);
+            ai._damage = 0;
+            ai._hate = 0;
+            getAggroListRP().put(attacker, ai);
+        }
+
+        ai._hate += aggro;
+        ai._damage += damage;
+
+        // Set the intention to the L2Attackable to AI_INTENTION_ACTIVE
+        if (aggro > 0 && getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
+        	getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
     }
 
     public void reduceHate(L2Character target, int amount)
@@ -1436,7 +1421,7 @@ public class L2Attackable extends L2NpcInstance
                  else dropItem(player, item);
                  _spec = true;
              }
-             else for (int i = 0; i < 3; i++)
+             else for (int i = 0; i < 5; i++)
              {
             	 random = Rnd.get(100);
             	 if (random < Config.RATE_DROP_COMMON_HERBS)
@@ -1444,7 +1429,9 @@ public class L2Attackable extends L2NpcInstance
             		 RewardItem item = null;
             		 if (i == 0) item = new RewardItem(8606, 1); // Herb of Power
             		 if (i == 1) item = new RewardItem(8608, 1); // Herb of Atk. Spd.
-            		 if (i == 2) item = new RewardItem(8610, 1); // Herb of Critical Attack
+            		 if (i == 2) item = new RewardItem(8610, 1); // Herb of Critical Attack - Rate
+            		 if (i == 3) item = new RewardItem(10655, 1); // Herb of Life Force Absorption
+            		 if (i == 4) item = new RewardItem(10656, 1); // Herb of Critical Attack - Power
 
             		 if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS) player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
             		 else dropItem(player, item);
@@ -1558,6 +1545,14 @@ public class L2Attackable extends L2NpcInstance
              if (random < Config.RATE_DROP_COMMON_HERBS)
              {
                  RewardItem item = new RewardItem(8611, 1);  // Herb of Speed
+                 if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS) player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
+                 else dropItem(player, item);
+             }
+             // Enlarge Head type
+             random = Rnd.get(100);
+             if (random < Config.RATE_DROP_COMMON_HERBS)
+             {
+                 RewardItem item = new RewardItem(10657, 1);  // Herb of Doubt
                  if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS) player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
                  else dropItem(player, item);
              }

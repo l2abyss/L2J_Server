@@ -92,6 +92,27 @@ public class Pdam implements ISkillHandler
 
             if (!crit && (skill.getCondition() & L2Skill.COND_CRIT) != 0) damage = 0;
             else damage = (int) f.calcPhysDam(activeChar, target, skill, shld, false, dual, soul);
+            if (skill.getMaxSoulConsumeCount() > 0 && activeChar instanceof L2PcInstance && ((L2PcInstance) activeChar).getSouls() > 0)
+            {
+            	switch (((L2PcInstance) activeChar).getSouls())
+            	{
+            		case 1:
+            			damage *= 1.10;
+            			break;
+            		case 2:
+            			damage *= 1.12;
+            			break;
+            		case 3:
+            			damage *= 1.15;
+            			break;
+            		case 4:
+            			damage *= 1.18;
+            			break;
+            		default:
+            			damage *= 1.20;
+            			break;
+            	}
+            }
             if (crit) damage *= 2; // PDAM Critical damage always 2x and not affected by buffs
 
             if (damage > 5000 && activeChar instanceof L2PcInstance)

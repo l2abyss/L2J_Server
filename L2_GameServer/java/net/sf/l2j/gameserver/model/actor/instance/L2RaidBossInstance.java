@@ -15,9 +15,11 @@
 package net.sf.l2j.gameserver.model.actor.instance;
 
 import net.sf.l2j.gameserver.ThreadPoolManager;
+import net.sf.l2j.gameserver.instancemanager.RaidBossPointsManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossSpawnManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Spawn;
+import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
@@ -62,24 +64,39 @@ public final class L2RaidBossInstance extends L2MonsterInstance
 
     @Override
     public boolean doDie(L2Character killer)
-    {
-    	if (!super.doDie(killer))
-    		return false;
-    	if(killer instanceof L2PlayableInstance)
-        {
-        	SystemMessage msg = new SystemMessage(SystemMessageId.RAID_WAS_SUCCESSFUL);
-        	broadcastPacket(msg);
-        }
-
-        RaidBossSpawnManager.getInstance().updateStatus(this, true);
-        return true;
-    }
+	{
+		if (!super.doDie(killer))
+			return false;
+		
+		L2PcInstance player = null;
+		if (killer instanceof L2PcInstance)
+			player = (L2PcInstance) killer;
+		else if (killer instanceof L2Summon)
+			player = ((L2Summon) killer).getOwner();
+		
+		if (player != null)
+		{
+			broadcastPacket(new SystemMessage(SystemMessageId.RAID_WAS_SUCCESSFUL));
+			if (player.getParty() != null)
+			{
+				for (L2PcInstance member : player.getParty().getPartyMembers())
+				{
+					RaidBossPointsManager.addPoints(member, this.getNpcId(), (this.getLevel() / 2) + Rnd.get(-5, 5));
+				}
+			}
+			else
+				RaidBossPointsManager.addPoints(player, this.getNpcId(), (this.getLevel() / 2) + Rnd.get(-5, 5));
+		}
+		
+		RaidBossSpawnManager.getInstance().updateStatus(this, true);
+		return true;
+	}
 
     /**
-     * Spawn all minions at a regular interval
-     * Also if boss is too far from home location at the time of this check, teleport it home
-     *
-     */
+	 * Spawn all minions at a regular interval Also if boss is too far from home
+	 * location at the time of this check, teleport it home
+	 * 
+	 */
     @Override
     protected void manageMinions()
     {

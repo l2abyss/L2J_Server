@@ -430,6 +430,11 @@ public final class Config
     public static float		ALT_LOTTERY_4_NUMBER_RATE;
     public static float		ALT_LOTTERY_3_NUMBER_RATE;
     public static int		ALT_LOTTERY_2_AND_1_NUMBER_PRIZE;
+	public static int		FS_TIME_ATTACK;
+	public static int		FS_TIME_COOLDOWN;
+	public static int		FS_TIME_ENTRY;
+	public static int		FS_TIME_WARMUP;
+	public static int		FS_PARTY_MEMBER_COUNT;
     public static int		RIFT_MIN_PARTY_SIZE;
     public static int		RIFT_SPAWN_DELAY;
     public static int		RIFT_MAX_JUMPS;
@@ -914,8 +919,8 @@ public final class Config
                 MAX_CHARACTERS_NUMBER_PER_ACCOUNT = Integer.parseInt(serverSettings.getProperty("CharMaxNumber", "0"));
                 MAXIMUM_ONLINE_USERS        = Integer.parseInt(serverSettings.getProperty("MaximumOnlineUsers", "100"));
 
-                MIN_PROTOCOL_REVISION   = Integer.parseInt(serverSettings.getProperty("MinProtocolRevision", "851"));
-                MAX_PROTOCOL_REVISION   = Integer.parseInt(serverSettings.getProperty("MaxProtocolRevision", "851"));
+                MIN_PROTOCOL_REVISION   = Integer.parseInt(serverSettings.getProperty("MinProtocolRevision", "660"));
+                MAX_PROTOCOL_REVISION   = Integer.parseInt(serverSettings.getProperty("MaxProtocolRevision", "665"));
 
                 if (MIN_PROTOCOL_REVISION > MAX_PROTOCOL_REVISION)
                 {
@@ -1439,6 +1444,21 @@ public final class Config
                 ALT_LOTTERY_4_NUMBER_RATE					= Float.parseFloat(General.getProperty("AltLottery4NumberRate","0.2"));
                 ALT_LOTTERY_3_NUMBER_RATE					= Float.parseFloat(General.getProperty("AltLottery3NumberRate","0.2"));
                 ALT_LOTTERY_2_AND_1_NUMBER_PRIZE			= Integer.parseInt(General.getProperty("AltLottery2and1NumberPrize","200"));
+    			FS_TIME_ATTACK								= Integer.parseInt(General.getProperty("TimeOfAttack", "50"));
+    			FS_TIME_COOLDOWN 							= Integer.parseInt(General.getProperty("TimeOfCoolDown", "5"));
+    			FS_TIME_ENTRY 								= Integer.parseInt(General.getProperty("TimeOfEntry", "3"));
+    			FS_TIME_WARMUP 								= Integer.parseInt(General.getProperty("TimeOfWarmUp", "2"));
+    			FS_PARTY_MEMBER_COUNT 						= Integer.parseInt(General.getProperty("NumberOfNecessaryPartyMembers", "4"));
+    			if (FS_TIME_ATTACK <= 0)
+    				FS_TIME_ATTACK = 50;
+    			if (FS_TIME_COOLDOWN <= 0)
+    				FS_TIME_COOLDOWN = 5;
+    			if (FS_TIME_ENTRY <= 0)
+    				FS_TIME_ENTRY = 3;
+    			if (FS_TIME_ENTRY <= 0)
+    				FS_TIME_ENTRY = 3;
+    			if (FS_TIME_ENTRY <= 0)
+    				FS_TIME_ENTRY = 3;
                 RIFT_MIN_PARTY_SIZE							= Integer.parseInt(General.getProperty("RiftMinPartySize", "5"));
                 RIFT_MAX_JUMPS								= Integer.parseInt(General.getProperty("MaxRiftJumps", "4"));
                 RIFT_SPAWN_DELAY							= Integer.parseInt(General.getProperty("RiftSpawnDelay", "10000"));

@@ -50,7 +50,6 @@ import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.cache.WarehouseCacheManager;
 import net.sf.l2j.gameserver.communitybbs.BB.Forum;
 import net.sf.l2j.gameserver.communitybbs.Manager.ForumsBBSManager;
-import net.sf.l2j.gameserver.datatables.AccessLevel;
 import net.sf.l2j.gameserver.datatables.AccessLevels;
 import net.sf.l2j.gameserver.datatables.CharTemplateTable;
 import net.sf.l2j.gameserver.datatables.ClanTable;
@@ -84,6 +83,7 @@ import net.sf.l2j.gameserver.model.BlockList;
 import net.sf.l2j.gameserver.model.FishData;
 import net.sf.l2j.gameserver.model.Inventory;
 import net.sf.l2j.gameserver.model.ItemContainer;
+import net.sf.l2j.gameserver.model.L2AccessLevel;
 import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Character;
@@ -548,7 +548,7 @@ public final class L2PcInstance extends L2PlayableInstance
     // WorldPosition used by TARGET_SIGNET_GROUND
     private Point3D _currentSkillWorldPosition;
     
-    private AccessLevel _accessLevel;
+    private L2AccessLevel _accessLevel;
 
 	private boolean _chatBanned = false; 		// Chat Banned
     private ScheduledFuture<?> _chatUnbanTask = null;
@@ -2026,6 +2026,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 		setTarget(this);
 		broadcastPacket(new MagicSkillUse(this, 5103, 1, 1000, 0));
+		sendPacket(new SystemMessage(SystemMessageId.CLASS_TRANSFER));
 		setClassTemplate(Id);
 		
 		// Update class icon in party and clan
@@ -2875,21 +2876,6 @@ public final class L2PcInstance extends L2PlayableInstance
 			{
 				// Add the item to inventory
 				L2ItemInstance createdItem = _inventory.addItem(process, itemId, count, this, reference);
-
-				// Send inventory update packet
-				if (!Config.FORCE_INVENTORY_UPDATE)
-				{
-					InventoryUpdate playerIU = new InventoryUpdate();
-					playerIU.addItem(createdItem);
-					sendPacket(playerIU);
-				}
-				else
-					sendPacket(new ItemList(this, false));
-
-				// Update current load as well
-				StatusUpdate su = new StatusUpdate(getObjectId());
-				su.addAttribute(StatusUpdate.CUR_LOAD, getCurrentLoad());
-				sendPacket(su);
 
 				// If over capacity, drop the item
 				if (!isGM() && !_inventory.validateCapacity(0))
@@ -4697,12 +4683,6 @@ public final class L2PcInstance extends L2PlayableInstance
 	@Override
 	public boolean doDie(L2Character killer)
 	{
-		/* Since L2Character.doDie() calls stopAllEffects(), which includes
-		 * setting charm of curage and other blessings as false, this stores value 
-		 * before calling superclass method
-		 */
-		boolean charmOfCourage = getCharmOfCourage();
-		
 		// Kill the L2PcInstance
 		if (!super.doDie(killer))
 			return false;
@@ -4770,7 +4750,7 @@ public final class L2PcInstance extends L2PlayableInstance
 							// NOTE: deathPenalty +- Exp will update karma
 							// Penalty is lower if the player is at war with the pk (war has to be declared)
 							if (getSkillLevel(L2Skill.SKILL_LUCKY) < 0 || getStat().getLevel() > 9)
-								deathPenalty(pk != null && getClan() != null && getClan().isAtWarWith(pk.getClanId()), pk != null, charmOfCourage);										
+								deathPenalty(pk != null && getClan() != null && getClan().isAtWarWith(pk.getClanId()), pk != null);										
 
 						} else
 						{
@@ -4839,7 +4819,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		{
 			boolean isKarmaDrop = false;
 			boolean isKillerNpc = (killer instanceof L2NpcInstance);
-			int pkLimit = Config.KARMA_PK_LIMIT;;
+			int pkLimit = Config.KARMA_PK_LIMIT;
 
 			int dropEquip           = 0;
 			int dropEquipWeapon     = 0;
@@ -5172,7 +5152,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 * <li>Send a Server->Client StatusUpdate packet with its new Experience </li><BR><BR>
 	 *
 	 */
-	public void deathPenalty(boolean atwar, boolean killed_by_pc, boolean charmOfCourage)
+	public void deathPenalty(boolean atwar, boolean killed_by_pc)
 	{
 		// TODO Need Correct Penalty
 		// Get the level of the L2PcInstance
@@ -5261,7 +5241,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		// Get the Experience before applying penalty
 		setExpBeforeDeath(getExp());
 
-		if(charmOfCourage)
+		if(getCharmOfCourage())
 		{
 		    if (getSiegeState() > 0 && isInsideZone(ZONE_SIEGE))
 		    	lostExp = 0;
@@ -5272,11 +5252,6 @@ public final class L2PcInstance extends L2PlayableInstance
 
 		// Set the new Experience value of the L2PcInstance
 		getStat().addExp(-lostExp);
-	}
-	
-	public void deathPenalty(boolean atwar, boolean killed_by_pc)
-	{
-		deathPenalty(atwar, killed_by_pc, getCharmOfCourage());
 	}
 
 	/**
@@ -6109,7 +6084,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			_accessLevel = AccessLevels._userAccessLevel;
 		else
 		{
-			AccessLevel accessLevel = AccessLevels.getInstance().getAccessLevel(level);
+			L2AccessLevel accessLevel = AccessLevels.getInstance().getAccessLevel(level);
 
 			if (accessLevel == null)
 			{
@@ -6144,7 +6119,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	/**
 	 * Return the _accessLevel of the L2PcInstance.<BR><BR>
 	 */
-	public AccessLevel getAccessLevel()
+	public L2AccessLevel getAccessLevel()
 	{
 		if (Config.EVERYBODY_HAS_ADMIN_RIGHTS)
 			return AccessLevels._masterAccessLevel;
@@ -10996,9 +10971,9 @@ public final class L2PcInstance extends L2PlayableInstance
      * Decreases existing Souls.
      * @param count
      */
-    public void decreaseSouls(int count)
+    public void decreaseSouls(int count, L2Skill skill)
     {
-        if (getSouls() <= 0)
+        if (getSouls() <= 0 && skill.getSoulConsumeCount() > 0)
             return;
 
         _souls -= count;

@@ -2089,7 +2089,7 @@ public class Olympiad
             try {    		
             	for (L2PcInstance player : _players)
             		player.sendPacket(_sm);
-            } catch (Exception e) {};
+            } catch (Exception e) {}
     	}
     	
     	protected void portPlayersBack()
