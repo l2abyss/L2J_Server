@@ -116,12 +116,13 @@ import org.mmocore.network.SelectorThread;
 
 /**
  * This class ...
- *
+ * 
  * @version $Revision: 1.29.2.15.2.19 $ $Date: 2005/04/05 19:41:23 $
  */
 public class GameServer
 {
 	private static final Logger _log = Logger.getLogger(GameServer.class.getName());
+	
 	private final SelectorThread<L2GameClient> _selectorThread;
 	private final SkillTable _skillTable;
 	private final ItemTable _itemTable;
@@ -131,105 +132,101 @@ public class GameServer
 	public static GameServer gameServer;
 	private static ClanHallManager _cHManager;
 	private final Shutdown _shutdownHandler;
-    private final DoorTable _doorTable;
-    private final SevenSigns _sevenSignsEngine;
-    private final AutoChatHandler _autoChatHandler;
+	private final DoorTable _doorTable;
+	private final SevenSigns _sevenSignsEngine;
+	private final AutoChatHandler _autoChatHandler;
 	private final AutoSpawnHandler _autoSpawnHandler;
 	private LoginServerThread _loginThread;
-    private final HelperBuffTable _helperBuffTable;
-
+	private final HelperBuffTable _helperBuffTable;
 	private static Status _statusServer;
 	@SuppressWarnings("unused")
 	private final ThreadPoolManager _threadpools;
-
-    public static final Calendar dateTimeServerStarted = Calendar.getInstance();
-
-    public long getUsedMemoryMB()
+	public static final Calendar dateTimeServerStarted = Calendar.getInstance();
+	
+	public long getUsedMemoryMB()
 	{
-		return (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/1048576; // 1024 * 1024 = 1048576;
+		return (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576;																				   // ;
 	}
-
-    public SelectorThread<L2GameClient> getSelectorThread()
-    {
-    	return _selectorThread;
-    }
-
-	public ClanHallManager getCHManager(){
+	
+	public SelectorThread<L2GameClient> getSelectorThread()
+	{
+		return _selectorThread;
+	}
+	
+	public ClanHallManager getCHManager()
+	{
 		return _cHManager;
 	}
+	
 	public GameServer() throws Exception
 	{
 		long serverLoadStart = System.currentTimeMillis();
 		
-        gameServer = this;
-		_log.finest("used mem:" + getUsedMemoryMB()+"MB" );
-
-        if (Config.SERVER_VERSION != null)
-        {
-            _log.info("L2J Server Version:    "+Config.SERVER_VERSION);
-        }
-        if (Config.DATAPACK_VERSION != null)
-        {
-            _log.info("L2J Datapack Version:  "+Config.DATAPACK_VERSION);
-        }
+		gameServer = this;
+		_log.finest("used mem:" + getUsedMemoryMB() + "MB");
+		
+		if (Config.SERVER_VERSION != null)
+		{
+			_log.info("L2J Server Version:    " + Config.SERVER_VERSION);
+		}
+		if (Config.DATAPACK_VERSION != null)
+		{
+			_log.info("L2J Datapack Version:  " + Config.DATAPACK_VERSION);
+		}
 		_idFactory = IdFactory.getInstance();
-        if (!_idFactory.isInitialized())
-        {
-            _log.severe("Could not read object IDs from DB. Please Check Your Data.");
-            throw new Exception("Could not initialize the ID factory");
-        }
-
-        _threadpools = ThreadPoolManager.getInstance();
-
+		
+		if (!_idFactory.isInitialized())
+		{
+			_log.severe("Could not read object IDs from DB. Please Check Your Data.");
+			throw new Exception("Could not initialize the ID factory");
+		}
+		
+		_threadpools = ThreadPoolManager.getInstance();
+		
 		new File(Config.DATAPACK_ROOT, "data/clans").mkdirs();
 		new File(Config.DATAPACK_ROOT, "data/crests").mkdirs();
 		
+		// load script engines
+		L2ScriptEngineManager.getInstance();
 		
-        // load script engines
-        L2ScriptEngineManager.getInstance();
-        
 		// start game time control early
 		GameTimeController.getInstance();
-
+		
 		// keep the references of Singletons to prevent garbage collection
 		CharNameTable.getInstance();
-
+		
 		_skillTable = SkillTable.getInstance();
 		if (!_skillTable.isInitialized())
 		{
-		    _log.severe("Could not find the extraced files. Please Check Your Data.");
-		    throw new Exception("Could not initialize the skill table");
+			_log.severe("Could not find the extraced files. Please Check Your Data.");
+			throw new Exception("Could not initialize the skill table");
 		}
 		
 		_itemTable = ItemTable.getInstance();
 		if (!_itemTable.isInitialized())
 		{
-		    _log.severe("Could not find the extraced files. Please Check Your Data.");
-		    throw new Exception("Could not initialize the item table");
+			_log.severe("Could not find the extraced files. Please Check Your Data.");
+			throw new Exception("Could not initialize the item table");
 		}
 		
 		// Load clan hall data before zone data and doors table
-        _cHManager = ClanHallManager.getInstance();
-        
-		_doorTable = DoorTable.getInstance();
-		_doorTable.parseData();
-        StaticObjects.getInstance();
-
+		_cHManager = ClanHallManager.getInstance();
+		
 		ExtractableItemsData.getInstance();
 		SummonItemsData.getInstance();
-
+		
 		MerchantPriceConfigTable.getInstance();
 		TradeController.getInstance();
 		
-		if(Config.ALLOW_NPC_WALKERS)
+		if (Config.ALLOW_NPC_WALKERS)
 		{
-		    NpcWalkerRoutesTable.getInstance().load();
+			NpcWalkerRoutesTable.getInstance().load();
 		}
 		
 		NpcBufferTable.getInstance();
 		
 		RecipeController.getInstance();
-
+		
 		SkillTreeTable.getInstance();
 		ArmorSetsTable.getInstance();
 		FishTable.getInstance();
@@ -237,144 +234,147 @@ public class GameServer
 		CharTemplateTable.getInstance();
 		NobleSkillTable.getInstance();
 		HeroSkillTable.getInstance();
-
-        //Call to load caches
-        HtmCache.getInstance();
-        CrestCache.getInstance();
-        ClanTable.getInstance();
+		
+		// Call to load caches
+		HtmCache.getInstance();
+		CrestCache.getInstance();
+		ClanTable.getInstance();
 		_npcTable = NpcTable.getInstance();
-
+		
 		if (!_npcTable.isInitialized())
 		{
-		    _log.severe("Could not find the extraced files. Please Check Your Data.");
-		    throw new Exception("Could not initialize the npc table");
+			_log.severe("Could not find the extraced files. Please Check Your Data.");
+			throw new Exception("Could not initialize the npc table");
 		}
-
+		
 		_hennaTable = HennaTable.getInstance();
-
+		
 		if (!_hennaTable.isInitialized())
 		{
-		   throw new Exception("Could not initialize the Henna Table");
+			throw new Exception("Could not initialize the Henna Table");
 		}
-
+		
 		HennaTreeTable.getInstance();
-
+		
 		if (!_hennaTable.isInitialized())
 		{
-		   throw new Exception("Could not initialize the Henna Tree Table");
+			throw new Exception("Could not initialize the Henna Tree Table");
 		}
-
-        _helperBuffTable = HelperBuffTable.getInstance();
-
-        if (!_helperBuffTable.isInitialized())
-        {
-           throw new Exception("Could not initialize the Helper Buff Table");
-        }
-
-        GeoData.getInstance();
-        if (Config.GEODATA == 2)
-        	GeoPathFinding.getInstance();
-
-        
+		
+		_helperBuffTable = HelperBuffTable.getInstance();
+		
+		if (!_helperBuffTable.isInitialized())
+		{
+			throw new Exception("Could not initialize the Helper Buff Table");
+		}
+		
+		GeoData.getInstance();
+		if (Config.GEODATA == 2)
+			GeoPathFinding.getInstance();
+		
 		CastleManager.getInstance();
 		SiegeManager.getInstance();
 		FortManager.getInstance();
-        FortSiegeManager.getInstance();
-
+		FortSiegeManager.getInstance();
+		
 		TeleportLocationTable.getInstance();
 		LevelUpData.getInstance();
 		L2World.getInstance();
-        SpawnTable.getInstance();
+		SpawnTable.getInstance();
 		ZoneManager.getInstance();
-        RaidBossSpawnManager.getInstance();
-        DayNightSpawnManager.getInstance().notifyChangeMode();
-        GrandBossManager.getInstance();
-        RaidBossPointsManager.init();
-        FourSepulchersManager.getInstance().init();
-        DimensionalRiftManager.getInstance();
+		RaidBossSpawnManager.getInstance();
+		DayNightSpawnManager.getInstance().notifyChangeMode();
+		GrandBossManager.getInstance();
+		RaidBossPointsManager.init();
+		FourSepulchersManager.getInstance().init();
+		DimensionalRiftManager.getInstance();
 		Announcements.getInstance();
 		MapRegionTable.getInstance();
 		EventDroplist.getInstance();
-
+		
+		_doorTable = DoorTable.getInstance();
+		_doorTable.parseData();
+		StaticObjects.getInstance();
+		
 		/** Load Manor data */
 		L2Manor.getInstance();
-
+		
 		/** Load Manager */
 		AuctionManager.getInstance();
 		BoatManager.getInstance();
 		CastleManorManager.getInstance();
 		MercTicketManager.getInstance();
-		//PartyCommandManager.getInstance();
+		// PartyCommandManager.getInstance();
 		PetitionManager.getInstance();
 		QuestManager.getInstance();
-        TransformationManager.getInstance();
-        
-        try
-        {
-            _log.info("Loading Server Scripts");
-            File scripts = new File(Config.DATAPACK_ROOT + "/data/scripts.cfg");
-            L2ScriptEngineManager.getInstance().executeScriptList(scripts);
-        }
-        catch (IOException ioe)
-        {
-            _log.severe("Failed loading scripts.cfg, no script going to be loaded");
-        }
-        try
-        {
-        	CompiledScriptCache compiledScriptCache = L2ScriptEngineManager.getInstance().getCompiledScriptCache();
-        	if (compiledScriptCache == null)
-        	{
-        		_log.info("Compiled Scripts Cache is disabled.");
-        	}
-        	else
-        	{
-        		compiledScriptCache.purge();
-        		
-        		if (compiledScriptCache.isModified())
-        		{
-        			compiledScriptCache.save();
-        			_log.info("Compiled Scripts Cache was saved.");
-        		}
-        		else
-        		{
-        			_log.info("Compiled Scripts Cache is up-to-date.");
-        		}
-        	}
-        	
-        }
-        catch (IOException e)
-        {
-        	_log.log(Level.SEVERE, "Failed to store Compiled Scripts Cache.", e);
-        }
-        QuestManager.getInstance().report();
-        TransformationManager.getInstance().report();
-        
+		TransformationManager.getInstance();
+		
+		try
+		{
+			_log.info("Loading Server Scripts");
+			File scripts = new File(Config.DATAPACK_ROOT + "/data/scripts.cfg");
+			L2ScriptEngineManager.getInstance().executeScriptList(scripts);
+		}
+		catch (IOException ioe)
+		{
+			_log.severe("Failed loading scripts.cfg, no script going to be loaded");
+		}
+		try
+		{
+			CompiledScriptCache compiledScriptCache = L2ScriptEngineManager.getInstance().getCompiledScriptCache();
+			if (compiledScriptCache == null)
+			{
+				_log.info("Compiled Scripts Cache is disabled.");
+			}
+			else
+			{
+				compiledScriptCache.purge();
+				
+				if (compiledScriptCache.isModified())
+				{
+					compiledScriptCache.save();
+					_log.info("Compiled Scripts Cache was saved.");
+				}
+				else
+				{
+					_log.info("Compiled Scripts Cache is up-to-date.");
+				}
+			}
+			
+		}
+		catch (IOException e)
+		{
+			_log.log(Level.SEVERE, "Failed to store Compiled Scripts Cache.", e);
+		}
+		QuestManager.getInstance().report();
+		TransformationManager.getInstance().report();
+		
 		AugmentationData.getInstance();
 		if (Config.SAVE_DROPPED_ITEM)
 			ItemsOnGroundManager.getInstance();
-
-		if (Config.AUTODESTROY_ITEM_AFTER > 0 || Config.HERB_AUTO_DESTROY_TIME > 0)
-    	    ItemsAutoDestroy.getInstance();
-
-        MonsterRace.getInstance();
-
+		
+		if (Config.AUTODESTROY_ITEM_AFTER > 0
+		        || Config.HERB_AUTO_DESTROY_TIME > 0)
+			ItemsAutoDestroy.getInstance();
+		
+		MonsterRace.getInstance();
+		
 		_sevenSignsEngine = SevenSigns.getInstance();
-        SevenSignsFestival.getInstance();
+		SevenSignsFestival.getInstance();
 		_autoSpawnHandler = AutoSpawnHandler.getInstance();
 		_autoChatHandler = AutoChatHandler.getInstance();
-
-        // Spawn the Orators/Preachers if in the Seal Validation period.
-        _sevenSignsEngine.spawnSevenSignsNPC();
-
-        Olympiad.getInstance();
-        Hero.getInstance();
-        FaenorScriptEngine.getInstance();
-        // Init of a cursed weapon manager
-        CursedWeaponsManager.getInstance();
-
+		
+		// Spawn the Orators/Preachers if in the Seal Validation period.
+		_sevenSignsEngine.spawnSevenSignsNPC();
+		
+		Olympiad.getInstance();
+		Hero.getInstance();
+		FaenorScriptEngine.getInstance();
+		// Init of a cursed weapon manager
+		CursedWeaponsManager.getInstance();
+		
 		_log.config("AutoChatHandler: Loaded " + _autoChatHandler.size() + " handlers in total.");
 		_log.config("AutoSpawnHandler: Loaded " + _autoSpawnHandler.size() + " handlers in total.");
-
 		
 		AdminCommandHandler.getInstance();
 		ChatHandler.getInstance();
@@ -382,81 +382,84 @@ public class GameServer
 		SkillHandler.getInstance();
 		UserCommandHandler.getInstance();
 		VoicedCommandHandler.getInstance();
-
+		
 		AccessLevels.getInstance();
 		AdminCommandAccessRights.getInstance();
 		
-		if(Config.L2JMOD_ALLOW_WEDDING)
+		if (Config.L2JMOD_ALLOW_WEDDING)
 			CoupleManager.getInstance();
-
-        TaskManager.getInstance();
-
+		
+		TaskManager.getInstance();
+		
 		GmListTable.getInstance();
-
-        // read pet stats from db
-        L2PetDataTable.getInstance().loadPetsData();
-
-        Universe.getInstance();
-
+		
+		// read pet stats from db
+		L2PetDataTable.getInstance().loadPetsData();
+		
+		Universe.getInstance();
+		
 		if (Config.ACCEPT_GEOEDITOR_CONN)
 			GeoEditorListener.getInstance();
-
+		
 		_shutdownHandler = Shutdown.getInstance();
 		Runtime.getRuntime().addShutdownHook(_shutdownHandler);
-
+		
 		try
-        {
-            _doorTable.getDoor(24190001).openMe();
-            _doorTable.getDoor(24190002).openMe();
-            _doorTable.getDoor(24190003).openMe();
-            _doorTable.getDoor(24190004).openMe();
-            _doorTable.getDoor(23180001).openMe();
-            _doorTable.getDoor(23180002).openMe();
-            _doorTable.getDoor(23180003).openMe();
-            _doorTable.getDoor(23180004).openMe();
-            _doorTable.getDoor(23180005).openMe();
-            _doorTable.getDoor(23180006).openMe();
-
-            _doorTable.checkAutoOpen();
-        }
-        catch (NullPointerException e)
-        {
-            _log.warning("There is errors in your Door.csv file. Update door.csv");
-            if (Config.DEBUG)
-            	e.printStackTrace();
-        }
-        
-        ForumsBBSManager.getInstance();
-        
-        _log.config("IdFactory: Free ObjectID's remaining: " + IdFactory.getInstance().size());
-
-        // initialize the dynamic extension loader
-        try
-        {
-            DynamicExtension.getInstance();
-        }
-        catch (Exception ex)
-        {
-            _log.log(Level.WARNING, "DynamicExtension could not be loaded and initialized", ex);
-        }
-
-        FloodProtector.getInstance();
-        TvTManager.getInstance();
-        KnownListUpdateTaskManager.getInstance();
+		{
+			_doorTable.getDoor(24190001).openMe();
+			_doorTable.getDoor(24190002).openMe();
+			_doorTable.getDoor(24190003).openMe();
+			_doorTable.getDoor(24190004).openMe();
+			_doorTable.getDoor(23180001).openMe();
+			_doorTable.getDoor(23180002).openMe();
+			_doorTable.getDoor(23180003).openMe();
+			_doorTable.getDoor(23180004).openMe();
+			_doorTable.getDoor(23180005).openMe();
+			_doorTable.getDoor(23180006).openMe();
+			
+			_doorTable.checkAutoOpen();
+		}
+		catch (NullPointerException e)
+		{
+			_log.warning("There is errors in your Door.csv file. Update door.csv");
+			if (Config.DEBUG)
+				e.printStackTrace();
+		}
+		
+		ForumsBBSManager.getInstance();
+		
+		_log.config("IdFactory: Free ObjectID's remaining: "
+		        + IdFactory.getInstance().size());
+		
+		// initialize the dynamic extension loader
+		try
+		{
+			DynamicExtension.getInstance();
+		}
+		catch (Exception ex)
+		{
+			_log.log(Level.WARNING, "DynamicExtension could not be loaded and initialized", ex);
+		}
+		
+		FloodProtector.getInstance();
+		TvTManager.getInstance();
+		KnownListUpdateTaskManager.getInstance();
 		System.gc();
-		// maxMemory is the upper limit the jvm can use, totalMemory the size of the current allocation pool, freeMemory the unused memory in the allocation pool
-		long freeMem = (Runtime.getRuntime().maxMemory()-Runtime.getRuntime().totalMemory()+Runtime.getRuntime().freeMemory()) / 1048576; // 1024 * 1024 = 1048576;
+		// maxMemory is the upper limit the jvm can use, totalMemory the size of
+		// the current allocation pool, freeMemory the unused memory in the
+		// allocation pool
+		long freeMem = (Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory() + Runtime.getRuntime().freeMemory()) / 1048576;
 		long totalMem = Runtime.getRuntime().maxMemory() / 1048576;
-		_log.info("GameServer Started, free memory "+freeMem+" Mb of "+totalMem+" Mb");
-
+		_log.info("GameServer Started, free memory " + freeMem + " Mb of " + totalMem + " Mb");
+		
 		_loginThread = LoginServerThread.getInstance();
 		_loginThread.start();
-        
-        L2GamePacketHandler gph = new L2GamePacketHandler();
+		
+		L2GamePacketHandler gph = new L2GamePacketHandler();
 		SelectorConfig<L2GameClient> sc = new SelectorConfig<L2GameClient>(null, null, gph, gph);
-        sc.setMaxSendPerPass(12);
-        sc.setSelectorSleepTime(20);
-        
+		sc.setMaxSendPerPass(12);
+		sc.setSelectorSleepTime(20);
+		
 		_selectorThread = new SelectorThread<L2GameClient>(sc, gph, gph, null);
 		
 		InetAddress bindAddress = null;
@@ -468,7 +471,8 @@ public class GameServer
 			}
 			catch (UnknownHostException e1)
 			{
-				_log.severe("WARNING: The GameServer bind address is invalid, using all avaliable IPs. Reason: "+e1.getMessage());
+				_log.severe("WARNING: The GameServer bind address is invalid, using all avaliable IPs. Reason: " + e1.getMessage());
+				
 				if (Config.DEVELOPER)
 				{
 					e1.printStackTrace();
@@ -482,7 +486,7 @@ public class GameServer
 		}
 		catch (IOException e)
 		{
-			_log.severe("FATAL: Failed to open server socket. Reason: "+e.getMessage());
+			_log.severe("FATAL: Failed to open server socket. Reason: " + e.getMessage());
 			if (Config.DEVELOPER)
 			{
 				e.printStackTrace();
@@ -492,37 +496,39 @@ public class GameServer
 		_selectorThread.start();
 		_log.config("Maximum Numbers of Connected Players: " + Config.MAXIMUM_ONLINE_USERS);
 		long serverLoadEnd = System.currentTimeMillis();
-		_log.info("Server Loaded in "+((serverLoadEnd - serverLoadStart) / 1000)+" seconds");
+		_log.info("Server Loaded in " + ((serverLoadEnd - serverLoadStart) / 1000) + " seconds");
 	}
-
+	
 	public static void main(String[] args) throws Exception
-    {
+	{
 		Server.serverMode = Server.MODE_GAMESERVER;
-//      Local Constants
+		// Local Constants
 		final String LOG_FOLDER = "log"; // Name of folder for log file
-		final String LOG_NAME   = "./log.cfg"; // Name of log file
-
+		final String LOG_NAME = "./log.cfg"; // Name of log file
+		
 		/*** Main ***/
 		// Create log folder
 		File logFolder = new File(Config.DATAPACK_ROOT, LOG_FOLDER);
 		logFolder.mkdir();
-
+		
 		// Create input stream for log file -- or store file data into memory
-		InputStream is =  new FileInputStream(new File(LOG_NAME));
+		InputStream is = new FileInputStream(new File(LOG_NAME));
 		LogManager.getLogManager().readConfiguration(is);
 		is.close();
-
+		
 		// Initialize config
 		Config.load();
 		L2DatabaseFactory.getInstance();
 		gameServer = new GameServer();
-
-		if ( Config.IS_TELNET_ENABLED ) {
-		    _statusServer = new Status(Server.serverMode);
-		    _statusServer.start();
+		
+		if (Config.IS_TELNET_ENABLED)
+		{
+			_statusServer = new Status(Server.serverMode);
+			_statusServer.start();
 		}
-		else {
-		    _log.info("Telnet server is currently disabled.");
+		else
+		{
+			_log.info("Telnet server is currently disabled.");
 		}
-    }
+	}
 }
