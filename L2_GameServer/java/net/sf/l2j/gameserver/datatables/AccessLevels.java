@@ -32,7 +32,7 @@ public class AccessLevels
 {
 	/** The logger<br> */
 	private static Logger _log = Logger.getLogger(AccessLevels.class.getName());
-	/** The one and only instance of this class, retriveable by getInstance()<br> */
+	/** The one and only instance of this class, retrievable by getInstance()<br> */
 	private static AccessLevels _instance = null;
 	/** Reserved master access level<br> */
 	public static final int _masterAccessLevelNum = Config.MASTERACCESS_LEVEL;
@@ -43,13 +43,33 @@ public class AccessLevels
 	/** The user access level which can do no administrative tasks<br> */
 	public static L2AccessLevel _userAccessLevel = new L2AccessLevel(_userAccessLevelNum, "User", Integer.decode("0xFFFFFF"), Integer.decode("0xFFFFFF"), null, false, false, false, true, false, true, true, true);
 	/** FastMap of access levels defined in database<br> */
-	private Map<Integer, L2AccessLevel> _accessLevels = new FastMap<Integer, L2AccessLevel>();
+	private Map<Integer, L2AccessLevel> _accessLevels;
 
+	/**
+	 * Returns the one and only instance of this class<br><br>
+	 * 
+	 * @return AccessLevels: the one and only instance of this class<br>
+	 */
+	public static AccessLevels getInstance()
+	{
+		if (_instance == null)
+			_instance = new AccessLevels();
+
+		return _instance;
+	}
+
+	private AccessLevels()
+	{
+		loadAccessLevels();
+	}
+	
 	/**
 	 * Loads the access levels from database<br>
 	 */
-	private AccessLevels()
+	private void loadAccessLevels()
 	{
+		_accessLevels = new FastMap<Integer, L2AccessLevel>();
+		
 		java.sql.Connection con = null;
 
 		try
@@ -161,16 +181,6 @@ public class AccessLevels
 	}
 
 	/**
-	 * Returns the one and only instance of this class<br><br>
-	 * 
-	 * @return AccessLevels: the one and only instance of this class<br>
-	 */
-	public static AccessLevels getInstance()
-	{
-		return _instance == null ? (_instance = new AccessLevels()) : _instance;
-	}
-
-	/**
 	 * Returns the access level by characterAccessLevel<br><br>
 	 * 
 	 * @param accessLevelNum as int<br><br>
@@ -199,5 +209,10 @@ public class AccessLevels
 
 			_accessLevels.put(accessLevel, new L2AccessLevel(accessLevel, "Banned", Integer.decode( "0x000000" ), Integer.decode( "0x000000" ), null, false, false, false, false, false, false, false, false));
 		}
+	}
+	
+	public void reloadAccessLevels()
+	{
+		loadAccessLevels();
 	}
 }

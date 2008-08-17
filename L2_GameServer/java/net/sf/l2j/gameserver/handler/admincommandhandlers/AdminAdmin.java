@@ -20,6 +20,8 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GmListTable;
 import net.sf.l2j.gameserver.Olympiad;
 import net.sf.l2j.gameserver.cache.HtmCache;
+import net.sf.l2j.gameserver.datatables.AccessLevels;
+import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.NpcWalkerRoutesTable;
@@ -244,7 +246,12 @@ public class AdminAdmin implements IAdminCommandHandler {
 				{
 					NpcWalkerRoutesTable.getInstance().load();
 					activeChar.sendMessage("All NPC walker routes have been reloaded");
-					
+				}
+				else if(type.startsWith("access"))
+				{
+					AccessLevels.getInstance().reloadAccessLevels();
+					AdminCommandAccessRights.getInstance().reloadAdminCommandAccessRights();
+					activeChar.sendMessage("Access Rights have been reloaded");
 				}
 				
 			}

@@ -32,17 +32,37 @@ public class AdminCommandAccessRights
 {
 	/** The logger<br> */
 	private static Logger _log = Logger.getLogger(AdminCommandAccessRights.class.getName());
-	/** The one and only instance of this class, retriveable by getInstance()<br> */
+	
+	/** The one and only instance of this class, retrievable by getInstance()<br> */
 	private static AdminCommandAccessRights _instance = null;
+	private Map< String, L2AdminCommandAccessRight > _adminCommandAccessRights;
+	
+	/**
+	 * Returns the one and only instance of this class<br><br>
+	 * 
+	 * @return AdminCommandAccessRights: the one and only instance of this class<br>
+	 */
+	public static AdminCommandAccessRights getInstance()
+	{
+		if (_instance == null)
+			_instance = new AdminCommandAccessRights();
+
+		return _instance;
+	}
 
 	/** The access rights<br> */
-	private Map< String, L2AdminCommandAccessRight > _adminCommandAccessRights = new FastMap< String, L2AdminCommandAccessRight >();
+	private AdminCommandAccessRights()
+	{
+		loadAdminCommandAccessRights();
+	}
 
 	/**
 	 * Loads admin command access rights from database<br>
 	 */
-	private AdminCommandAccessRights()
+	private void loadAdminCommandAccessRights()
 	{
+		_adminCommandAccessRights = new FastMap< String, L2AdminCommandAccessRight >();
+		
 		java.sql.Connection con = null;
 		
 		try
@@ -81,16 +101,6 @@ public class AdminCommandAccessRights
 		_log.info("AdminCommandAccessRights: Loaded " + _adminCommandAccessRights.size() + " from database.");
 	}
 
-	/**
-	 * Returns the one and only instance of this class<br><br>
-	 * 
-	 * @return AdminCommandAccessRights: the one and only instance of this class<br>
-	 */
-	public static AdminCommandAccessRights getInstance()
-	{
-		return _instance == null ? (_instance = new AdminCommandAccessRights()) : _instance;
-	}
-
 	public boolean hasAccess(String adminCommand, L2AccessLevel accessLevel)
 	{
 		if (!accessLevel.isGm())
@@ -108,5 +118,10 @@ public class AdminCommandAccessRights
 		}
 		
 		return acar.hasAccess(accessLevel);
+	}
+	
+	public void reloadAdminCommandAccessRights()
+	{
+		loadAdminCommandAccessRights();
 	}
 }
