@@ -48,7 +48,8 @@ final class EffectStun extends L2Effect
 	@Override
 	public void onStart()
 	{
-		getEffected().startStunning();
+		if (getEffected() != null)
+			getEffected().startStunning();
 	}
 	
 	/**
@@ -58,7 +59,8 @@ final class EffectStun extends L2Effect
 	@Override
 	public void onExit()
 	{
-		getEffected().stopStunning(this);
+		if (getEffected() != null)
+			getEffected().stopStunning(this);
 	}
 	
 	/**
