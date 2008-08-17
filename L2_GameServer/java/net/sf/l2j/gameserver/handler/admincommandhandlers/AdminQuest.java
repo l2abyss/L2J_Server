@@ -37,7 +37,8 @@ public class AdminQuest implements IAdminCommandHandler
 {
     private static final String[] ADMIN_COMMANDS =
     {
-        "admin_quest_reload"
+        "admin_quest_reload",
+        "admin_script_load"
     };
 
     /* (non-Javadoc)
@@ -97,7 +98,7 @@ public class AdminQuest implements IAdminCommandHandler
         // did not at all exist during server boot.  Using script_load to re-load a previously
         // loaded script may cause unpredictable script flow, minor loss of data, and more.
         // This provides a way to load new scripts without having to reboot the server.
-        if (command.startsWith("admin_script_load"))
+        else if (command.startsWith("admin_script_load"))
         {
             String[] parts = command.split(" ");
             if (parts.length < 2)
