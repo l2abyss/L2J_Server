@@ -47,6 +47,7 @@ import net.sf.l2j.gameserver.datatables.HennaTable;
 import net.sf.l2j.gameserver.datatables.HennaTreeTable;
 import net.sf.l2j.gameserver.datatables.HeroSkillTable;
 import net.sf.l2j.gameserver.datatables.ItemTable;
+import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.datatables.LevelUpData;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.datatables.MerchantPriceConfigTable;
@@ -93,7 +94,6 @@ import net.sf.l2j.gameserver.instancemanager.TransformationManager;
 import net.sf.l2j.gameserver.instancemanager.ZoneManager;
 import net.sf.l2j.gameserver.model.AutoChatHandler;
 import net.sf.l2j.gameserver.model.AutoSpawnHandler;
-import net.sf.l2j.gameserver.model.L2AdminCommandAccessRights;
 import net.sf.l2j.gameserver.model.L2Manor;
 import net.sf.l2j.gameserver.model.L2PetDataTable;
 import net.sf.l2j.gameserver.model.L2World;
@@ -384,7 +384,7 @@ public class GameServer
 		VoicedCommandHandler.getInstance();
 
 		AccessLevels.getInstance();
-		L2AdminCommandAccessRights.getInstance();
+		AdminCommandAccessRights.getInstance();
 		
 		if(Config.L2JMOD_ALLOW_WEDDING)
 			CoupleManager.getInstance();

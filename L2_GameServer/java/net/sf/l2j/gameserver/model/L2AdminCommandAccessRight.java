@@ -12,14 +12,14 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.datatables;
+package net.sf.l2j.gameserver.model;
 
-import net.sf.l2j.gameserver.model.L2AccessLevel;
+import net.sf.l2j.gameserver.datatables.AccessLevels;
 
 /**
  * @author FBIagent<br>
  */
-public class AdminCommandAccessRight
+public class L2AdminCommandAccessRight
 {
 	/** The admin command<br> */
 	private String _adminCommand = null;
@@ -32,7 +32,7 @@ public class AdminCommandAccessRight
 	 * @param adminCommand as String
 	 * @param accessLevels as String
 	 */
-	public AdminCommandAccessRight(String adminCommand, String accessLevels)
+	public L2AdminCommandAccessRight(String adminCommand, String accessLevels)
 	{
 		_adminCommand = adminCommand;
 		
