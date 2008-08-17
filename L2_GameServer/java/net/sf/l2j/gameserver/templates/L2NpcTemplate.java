@@ -74,6 +74,7 @@ public final class L2NpcTemplate extends L2CharTemplate
     public Race race;
     public final String jClass;
     public final AIType AI;
+	public final boolean dropherb;
     public boolean isQuestMonster; 	// doesn't include all mobs that are involved in 
     								// quests, just plain quest monsters for preventing champion spawn 
     
@@ -176,6 +177,7 @@ public final class L2NpcTemplate extends L2CharTemplate
     	bss  = (short)set.getInteger("bss", 0);
     	ssRate  = (short)set.getInteger("ssRate", 0);
     	race = null;
+    	dropherb = set.getBool("drop_herbs", false);
 		//_npcStatsSet = set;
 		_teachInfo = null;
 		jClass = set.getString("jClass");
