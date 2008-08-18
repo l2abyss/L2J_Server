@@ -93,8 +93,9 @@ public final class L2ScriptEngineManager
     /**
      * Use Compiled Scripts Cache.<BR>
      * Only works if ATTEMPT_COMPILATION is true.<BR>
+     * DISABLED DUE ISSUES (if a superclass file changes subclasses are not recompiled where they should)
      */
-    private final boolean USE_COMPILED_CACHE = true;
+    private final boolean USE_COMPILED_CACHE = false;
     
     /**
      * Clean an previous error log(if such exists) for the script being loaded before trying to load.<BR>
@@ -424,8 +425,17 @@ public final class L2ScriptEngineManager
             try
             {
             	engine.setContext(context);
-            	CompiledScript cs = _cache.loadCompiledScript(engine, file);
-        		cs.eval(context);
+            	if (USE_COMPILED_CACHE)
+            	{
+            	    CompiledScript cs = _cache.loadCompiledScript(engine, file);
+            	    cs.eval(context);
+            	}
+            	else
+            	{
+            	    Compilable eng = (Compilable) engine;
+            	    CompiledScript cs = eng.compile(reader);
+            	    cs.eval(context);
+            	}
             }
             finally
             {
