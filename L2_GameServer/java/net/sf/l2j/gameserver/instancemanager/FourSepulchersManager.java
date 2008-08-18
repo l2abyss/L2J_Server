@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
+import java.util.logging.Level;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
@@ -33,6 +34,7 @@ import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Spawn;
+import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SepulcherMonsterInstance;
@@ -862,7 +864,7 @@ public class FourSepulchersManager extends GrandBossManager
 				}
 				catch (Exception e)
 				{
-					_log.warning(e.getMessage());
+				    _log.log(Level.SEVERE, "Error on InitLocationShadowSpawns", e);
 				}
 			}
 			else
@@ -1472,7 +1474,7 @@ public class FourSepulchersManager extends GrandBossManager
 			}
 			catch (Exception e)
 			{
-				_log.warning(e.getMessage());
+			    _log.log(Level.SEVERE, "FourSepulchersManager: Failed deleting mob.", e);
 			}
 		}
 		_allMobs.clear();
@@ -1487,11 +1489,19 @@ public class FourSepulchersManager extends GrandBossManager
 		{
 			try
 			{
-				DoorTable.getInstance().getDoor(doorId).closeMe();
+				L2DoorInstance door = DoorTable.getInstance().getDoor(doorId);
+				if (door != null)
+				{
+				    door.closeMe();
+				}
+				else
+				{
+				    _log.warning("FourSepulchersManager: Attempted to close undefined door. doorId: "+doorId);
+				}
 			}
 			catch (Exception e)
 			{
-				_log.warning(e.getMessage());
+			    _log.log(Level.SEVERE, "FourSepulchersManager: Failed closing door", e);
 			}
 		}
 	}
