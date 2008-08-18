@@ -1713,7 +1713,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			}
 			catch (Exception e)
 			{
-				_log.warning("could not update char recommendations:"+e);
+				_log.log(Level.SEVERE, "Failed updating character recommendations.", e);
 			}
 			finally
 			{
@@ -6221,7 +6221,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 		catch (Exception e)
 		{
-			_log.warning("could not set char online status:"+e);
+			_log.log(Level.SEVERE, "Failed updating character online status.", e);
 		}
 		finally
 		{
@@ -6503,7 +6503,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 		catch (Exception e)
 		{
-			_log.severe("Could not restore char data: " + e);
+			_log.log(Level.SEVERE, "Failed loading character.", e);
 		}
 		finally
 		{
@@ -7318,7 +7318,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 		catch (Exception e)
 		{
-			_log.warning("could not restore henna: "+e);
+		    _log.log(Level.SEVERE, "Failed restoing character hennas.", e);
 		}
 		finally
 		{
@@ -7352,7 +7352,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 		catch (Exception e)
 		{
-			_log.warning("could not restore recommendations: "+e);
+			_log.log(Level.SEVERE, "Failed restoring character recommendations.", e);
 		}
 		finally
 		{
@@ -7409,7 +7409,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 		catch (Exception e)
 		{
-			_log.warning("could not remove char henna: "+e);
+			_log.log(Level.SEVERE, "Failed remocing character henna.", e);
 		}
 		finally
 		{
@@ -7474,7 +7474,7 @@ public final class L2PcInstance extends L2PlayableInstance
 				}
 				catch (Exception e)
 				{
-					_log.warning("could not save char henna: "+e);
+					_log.log(Level.SEVERE, "Failed saving character henna.", e);
 				}
 				finally
 				{
@@ -9652,7 +9652,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			}
 			catch (Exception e)
 			{
-				_log.warning("could not clear char recommendations: "+e);
+				_log.log(Level.SEVERE, "Failed cleaning character recommendations.", e);
 			}
 			finally
 			{

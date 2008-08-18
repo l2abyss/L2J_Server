@@ -18,6 +18,7 @@ package net.sf.l2j.gameserver.datatables;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -98,7 +99,7 @@ public class MapRegionTable
 		}
 		catch (Exception e)
 		{
-			_log.warning("error while creating map region data: "+e);
+			_log.log(Level.SEVERE, "Error loading Map Region Table.", e);
 		}
 		finally
 		{

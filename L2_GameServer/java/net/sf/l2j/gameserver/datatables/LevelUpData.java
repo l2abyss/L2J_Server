@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.datatables;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
@@ -96,11 +97,17 @@ public class LevelUpData
 		}
 		catch (Exception e)
 		{
-			_log.warning("error while creating Lvl up data table "+e);
+			_log.log(Level.SEVERE, "Error loading Level Up data.", e);
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			try
+            {
+                con.close();
+            }
+            catch (Exception e)
+            {
+            }
 		}
 	}
 

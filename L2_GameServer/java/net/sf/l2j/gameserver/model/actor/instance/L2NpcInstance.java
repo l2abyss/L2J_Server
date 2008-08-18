@@ -19,6 +19,7 @@ import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
 import java.text.DateFormat;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 
 import javolution.text.TextBuilder;
 import javolution.util.FastList;
@@ -2258,12 +2259,26 @@ public class L2NpcInstance extends L2Character
     {
     	L2WorldRegion oldRegion = getWorldRegion();
         
-        try { decayMe(); } catch (Throwable t) {_log.severe("deletedMe(): " + t); }
+        try
+        {
+            decayMe();
+        }
+        catch (Throwable t)
+        {
+            _log.log(Level.SEVERE, "Failed decayMe().", t);
+        }
         
         if (oldRegion != null) oldRegion.removeFromZones(this);
         
         // Remove all L2Object from _knownObjects and _knownPlayer of the L2Character then cancel Attak or Cast and notify AI
-        try { getKnownList().removeAllKnownObjects(); } catch (Throwable t) {_log.severe("deletedMe(): " + t); }
+        try
+        {
+            getKnownList().removeAllKnownObjects();
+        }
+        catch (Throwable t)
+        {
+            _log.log(Level.SEVERE, "Failed removing cleaning knownlist.", t);
+        }
         
         // Remove L2Object object from _allObjects of L2World
         L2World.getInstance().removeObject(this);

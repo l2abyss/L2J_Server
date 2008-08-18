@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
@@ -33,29 +34,11 @@ import net.sf.l2j.gameserver.templates.StatsSet;
  */
 public class CharTemplateTable
 {
-	private static Logger _log = Logger.getLogger(CharTemplateTable.class.getName());
+	private static final Logger LOG = Logger.getLogger(CharTemplateTable.class.getName());
 
 	private static CharTemplateTable _instance;
-
-    private static final String[] CHAR_CLASSES = {
-                                                "Human Fighter", "Warrior", "Gladiator", "Warlord", "Human Knight", "Paladin", "Dark Avenger", "Rogue", "Treasure Hunter", "Hawkeye", "Human Mystic", "Human Wizard", "Sorceror", "Necromancer", "Warlock", "Cleric", "Bishop", "Prophet",
-                                                "Elven Fighter", "Elven Knight", "Temple Knight", "Swordsinger", "Elven Scout", "Plainswalker", "Silver Ranger", "Elven Mystic", "Elven Wizard", "Spellsinger", "Elemental Summoner", "Elven Oracle", "Elven Elder",
-                                                "Dark Fighter", "Palus Knight", "Shillien Knight", "Bladedancer", "Assassin", "Abyss Walker", "Phantom Ranger", "Dark Elven Mystic", "Dark Elven Wizard", "Spellhowler", "Phantom Summoner", "Shillien Oracle", "Shillien Elder",
-                                                "Orc Fighter", "Orc Raider", "Destroyer", "Orc Monk", "Tyrant", "Orc Mystic", "Orc Shaman", "Overlord", "Warcryer",
-                                                "Dwarven Fighter", "Dwarven Scavenger", "Bounty Hunter", "Dwarven Artisan", "Warsmith",
-                                                "dummyEntry1", "dummyEntry2", "dummyEntry3", "dummyEntry4", "dummyEntry5", "dummyEntry6", "dummyEntry7", "dummyEntry8", "dummyEntry9", "dummyEntry10", "dummyEntry11", "dummyEntry12", "dummyEntry13", "dummyEntry14", "dummyEntry15",
-                                                "dummyEntry16", "dummyEntry17", "dummyEntry18", "dummyEntry19", "dummyEntry20", "dummyEntry21", "dummyEntry22", "dummyEntry23", "dummyEntry24", "dummyEntry25", "dummyEntry26", "dummyEntry27", "dummyEntry28", "dummyEntry29", "dummyEntry30",
-                                                "Duelist", "DreadNought", "Phoenix Knight", "Hell Knight", "Sagittarius", "Adventurer",
-                                                "Archmage", "Soultaker", "Arcana Lord", "Cardinal", "Hierophant",
-                                                "Eva Templar", "Sword Muse", "Wind Rider", "Moonlight Sentinel", "Mystic Muse", "Elemental Master", "Eva's Saint",
-                                                "Shillien Templar", "Spectral Dancer", "Ghost Hunter", "Ghost Sentinel", "Storm Screamer", "Spectral Master", "Shillien Saint",
-                                                "Titan", "Grand Khauatari", "Dominator", "Doomcryer",
-                                                "Fortune Seeker", "Maestro",
-                                                "dummyEntry31", "dummyEntry32", "dummyEntry33", "dummyEntry34",
-                                                "Male Soldier", "Female Soldier", "Trooper", "Warder", "Berserker", "Male Soulbreaker", "Female Soulbreaker", "Arbalester", "Doombringer", "Male Soulhound", "Female Soulhound", "Trickster", "Inspector", "Judicator" 
-    };
-
-	private Map<Integer, L2PcTemplate> _templates;
+	
+	private final Map<Integer, L2PcTemplate> _templates = new FastMap<Integer, L2PcTemplate>();
 
 	public static CharTemplateTable getInstance()
 	{
@@ -68,7 +51,6 @@ public class CharTemplateTable
 
 	private CharTemplateTable()
 	{
-		_templates = new FastMap<Integer, L2PcTemplate>();
 		java.sql.Connection con = null;
 
 		try
@@ -84,7 +66,6 @@ public class CharTemplateTable
 			while (rset.next())
 			{
 				StatsSet set = new StatsSet();
-				//ClassId classId = ClassId.values()[rset.getInt("id")];
 				set.set("classId", rset.getInt("id"));
 				set.set("className", rset.getString("className"));
 				set.set("raceId", rset.getInt("raceId"));
@@ -128,65 +109,108 @@ public class CharTemplateTable
 				set.set("collision_radius", rset.getDouble("m_col_r"));
 				set.set("collision_height", rset.getDouble("m_col_h"));
 				ct = new L2PcTemplate(set);
-				//5items must go here
-				for (int x=1; x < 6 ;x++)
-				{
-					if (rset.getInt("items"+x) != 0)
-					{
-						ct.addItem(rset.getInt("items"+x));
-					}
-				}
+				
 				_templates.put(ct.classId.getId(), ct);
 			}
 
 			rset.close();
 			statement.close();
+			
+			LOG.info("CharTemplateTable: Loaded " + _templates.size() + " Character Templates.");
 		}
 		catch (SQLException e)
 		{
-			_log.warning("error while loading char templates "+e.getMessage());
+			LOG.log(Level.SEVERE, "Failed loading char templates", e);
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			try
+            {
+                con.close();
+            }
+            catch (Exception e)
+            {
+                // nothing
+            }
 		}
-
-		_log.config("CharTemplateTable: Loaded " + _templates.size() + " Character Templates.");
+		
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT classId, itemId, amount, equipped FROM char_creation_items");
+			ResultSet rset = statement.executeQuery();
+			
+			int classId, itemId, amount;
+			boolean equipped;
+			while (rset.next())
+			{
+				classId = rset.getInt("classId");
+				itemId = rset.getInt("itemId");
+				amount = rset.getInt("amount");
+				equipped = rset.getString("equipped").equals("true");
+				
+				if (ItemTable.getInstance().getTemplate(itemId) != null)
+				{
+					if (classId == -1)
+					{
+						for (L2PcTemplate pct : _templates.values())
+						{
+							pct.addItem(itemId, amount, equipped);
+						}
+					}
+					else
+					{
+					    L2PcTemplate pct = _templates.get(classId);
+					    if (pct != null)
+					    {
+					        pct.addItem(itemId, amount, equipped);
+					    }
+					    else
+					    {
+					        LOG.warning("char_creation_items: Entry for undefined class, classId: "+classId);
+					    }
+					}
+				}
+				else
+				{
+				    LOG.warning("char_creation_items: No data for itemId: "+itemId+" defined for classId "+classId);
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+		    LOG.log(Level.SEVERE, "Failed loading char creation items.", e);
+        }
+        finally
+        {
+            try
+            {
+                con.close();
+            }
+            catch (Exception e)
+            {
+                // nothing
+            }
+        }
 	}
 
 	public L2PcTemplate getTemplate(ClassId classId)
 	{
-		return getTemplate(classId.getId());
+		return this.getTemplate(classId.getId());
 	}
 
 	public L2PcTemplate getTemplate(int classId)
 	{
-		int key = classId;
-		return _templates.get(key);
+		return _templates.get(classId);
 	}
 
-    public static final String getClassNameById(int classId)
+    public final String getClassNameById(int classId)
     {
-        return CHAR_CLASSES[classId];
+    	L2PcTemplate pcTemplate = _templates.get(classId);
+    	if (pcTemplate == null)
+    	{
+    		throw new IllegalArgumentException("No template for classId: "+classId);
+    	}
+        return pcTemplate.className;
     }
-
-    public static final int getClassIdByName(String className)
-    {
-        int currId = 1;
-
-        for (String name : CHAR_CLASSES)
-        {
-            if (name.equalsIgnoreCase(className))
-                break;
-
-            currId++;
-        }
-
-        return currId;
-    }
-
-//	public L2CharTemplate[] getAllTemplates()
-//	{
-//		return _templates.values().toArray(new L2CharTemplate[_templates.size()]);
-//	}
 }

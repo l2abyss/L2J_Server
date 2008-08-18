@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.model.actor.instance;
 
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -254,8 +255,7 @@ public class L2SummonInstance extends L2Summon
 			}
             catch (Throwable e)
             {
-            	if (Config.DEBUG)
-            		log.warning("Summon of player [#"+_activeChar.getName()+"] has encountered item consumption errors: "+e);
+                log.log(Level.SEVERE, "Error on player ["+_activeChar.getName()+"] summon item consume task.", e);
             }
         }
     }

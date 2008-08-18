@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -105,20 +106,16 @@ public class HennaTreeTable
 			classlist.close();
 			statement.close();
 
-
+			_log.config("HennaTreeTable: Loaded " + count + " Henna Tree Templates.");
 		}
 		catch (Exception e)
 		{
-			_log.warning("error while creating henna tree for classId "+classId + "  "+e);
-			e.printStackTrace();
+			_log.log(Level.SEVERE, "Error loading Henna Tree Table.", e);
 		}
 		finally
 		{
 			try { con.close(); } catch (Exception e) {}
 		}
-
-        _log.config("HennaTreeTable: Loaded " + count + " Henna Tree Templates.");
-
 	}
 
 

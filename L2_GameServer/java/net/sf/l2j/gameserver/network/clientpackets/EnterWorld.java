@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.network.clientpackets;
 import java.io.UnsupportedEncodingException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Base64;
@@ -428,10 +429,12 @@ public class EnterWorld extends L2GameClientPacket
             rset.close();
             statement.close();
         }
-        catch (Exception e) {
-            _log.warning("could not restore friend data:"+e);
+        catch (Exception e)
+        {
+            _log.log(Level.SEVERE, "Error restoring friend data.", e);
         }
-        finally {
+        finally
+        {
             try {con.close();} catch (Exception e){}
         }
     }

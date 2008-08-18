@@ -224,7 +224,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 		}
 		catch (Exception e)
 		{
-			_log.warning("Data error on update delete time of char: " + e);
+			_log.log(Level.SEVERE, "Error updating delete time of character.", e);
 		}
 		finally
 		{
@@ -272,7 +272,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
         }
         catch(Exception e)
         {
-            _log.severe("Error saving player character: "+e);
+            _log.log(Level.SEVERE, "Error saving character..", e);
         }
 	}
 
@@ -300,7 +300,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 		}
 		catch (Exception e)
 		{
-			_log.severe("Data error on restoring char: " + e);
+			_log.log(Level.SEVERE, "Error restoring character.", e);
 		}
 		finally
 		{
@@ -412,7 +412,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 		}
 		catch (Exception e)
 		{
-			_log.warning("Data error on deleting char: " + e);
+			_log.log(Level.SEVERE, "Error deleting character.", e);
 		}
 		finally
 		{
@@ -578,7 +578,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 			}
 			catch (Exception e1)
 			{
-				_log.log(Level.WARNING, "error while disconnecting client", e1);
+				_log.log(Level.WARNING, "Error while disconnecting client.", e1);
 			}
 			finally
 			{
@@ -601,7 +601,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 			}
 			catch (Throwable e)
 			{
-				_log.severe(e.toString());
+			    _log.log(Level.SEVERE, "Error on AutoSaveTask.", e);
 			}
 		}
 	}

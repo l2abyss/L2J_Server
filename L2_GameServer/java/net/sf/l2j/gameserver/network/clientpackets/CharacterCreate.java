@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,6 +40,7 @@ import net.sf.l2j.gameserver.network.serverpackets.CharCreateOk;
 import net.sf.l2j.gameserver.network.serverpackets.CharSelectionInfo;
 import net.sf.l2j.gameserver.templates.L2Item;
 import net.sf.l2j.gameserver.templates.L2PcTemplate;
+import net.sf.l2j.gameserver.templates.L2PcTemplate.PcTemplateItem;
 import net.sf.l2j.gameserver.util.Util;
 
 /**
@@ -186,21 +188,23 @@ public final class CharacterCreate extends L2GameClientPacket
 		//add sit shortcut
 		shortcut = new L2ShortCut(10,0,3,0,-1,1);
 		newChar.registerShortCut(shortcut);
-
-		L2Item[] items = template.getItems();
-		for (int i = 0; i < items.length; i++)
-		{
-			L2ItemInstance item = newChar.getInventory().addItem("Init", items[i].getItemId(), 1, newChar, null);
-			if (item.getItemId()==5588){
-			    //add tutbook shortcut
-			    shortcut = new L2ShortCut(11,0,1,item.getObjectId(),-1,1);
-			    newChar.registerShortCut(shortcut);
-			}
-			if (item.isEquipable()){
-			  if (newChar.getActiveWeaponItem() == null || !(item.getItem().getType2() != L2Item.TYPE2_WEAPON))
-			    newChar.getInventory().equipItemAndRecord(item);
-			}
-		}
+		
+		for (PcTemplateItem ia : template.getItems())
+        {
+            L2ItemInstance item = newChar.getInventory().addItem("Init", ia.getItemId(), ia.getAmount(), newChar, null);
+            
+            // add tutbook shortcut
+            if (item.getItemId() == 5588)
+            {
+                shortcut = new L2ShortCut(11, 0, 1, item.getObjectId(), -1, 1);
+                newChar.registerShortCut(shortcut);
+            }
+            
+            if (item.isEquipable() && ia.isEquipped())
+            {
+                newChar.getInventory().equipItemAndRecord(item);
+            }
+        }
 
 		L2SkillLearn[] startSkills = SkillTreeTable.getInstance().getAvailableSkills(newChar, newChar.getClassId());
 		for (int i = 0; i < startSkills.length; i++)

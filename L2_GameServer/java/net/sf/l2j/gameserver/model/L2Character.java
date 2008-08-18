@@ -2225,7 +2225,7 @@ public abstract class L2Character extends L2Object
 			}
             catch (Throwable e)
             {
-				_log.log(Level.SEVERE, "", e);
+				_log.log(Level.SEVERE, "Failed executing enableSkill().", e);
 			}
 		}
 	}
@@ -2267,7 +2267,7 @@ public abstract class L2Character extends L2Object
 			}
 			catch (Throwable e)
 			{
-				_log.severe(e.toString());
+				_log.log(Level.SEVERE, "Failed executing HitTask.", e);
 			}
 		}
 	}
@@ -2309,7 +2309,7 @@ public abstract class L2Character extends L2Object
 			}
 			catch (Throwable e)
 			{
-				_log.log(Level.SEVERE, "", e);
+				_log.log(Level.SEVERE, "Failed executing MagicUseTask.", e);
 				enableAllSkills();
 			}
 		}
@@ -2339,7 +2339,7 @@ public abstract class L2Character extends L2Object
             }
             catch (Throwable e)
             {
-                _log.log(Level.SEVERE, "", e);
+                _log.log(Level.SEVERE, "Failed executing QueuedMagicUseTask.", e);
             }
         }
     }
@@ -2431,7 +2431,7 @@ public abstract class L2Character extends L2Object
 			}
 			catch (Throwable e)
 			{
-				_log.log(Level.SEVERE, "", e);
+				_log.log(Level.SEVERE, "Failed executing FlyToLocationTask.", e);
 			}
 		}
 	}

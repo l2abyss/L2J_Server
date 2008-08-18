@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -678,11 +679,17 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			_log.warning("error while saving new clan leader to db "+e);
+			_log.log(Level.SEVERE, "Error saving new clan leader.", e);
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			try
+            {
+                con.close();
+            }
+            catch (Exception e)
+            {
+            }
 		}
 	}
 
@@ -710,7 +717,7 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			_log.warning("error while saving new clan to db "+e);
+			_log.log(Level.SEVERE, "Error saving new clan.", e);
 		}
 		finally
 		{
@@ -745,7 +752,7 @@ public class L2Clan
         }
         catch (Exception e)
         {
-            _log.warning("error while removing clan member in db "+e);
+            _log.log(Level.SEVERE, "Error removing clan member.", e);
         }
         finally
         {
@@ -771,7 +778,7 @@ public class L2Clan
         }
         catch (Exception e)
         {
-            _log.warning("could not update clans wars data:" + e);
+            _log.log(Level.SEVERE, "Error updating clan wars data.", e);
         }
         finally
         {
@@ -863,7 +870,7 @@ public class L2Clan
         }
         catch (Exception e)
         {
-            _log.warning("error while restoring clan "+e);
+            _log.log(Level.SEVERE, "Error restoring clan data.", e);
         }
         finally
         {
@@ -900,7 +907,7 @@ public class L2Clan
         }
         catch (Exception e)
         {
-            _log.warning("Could not restore clan skills: " + e);
+            _log.log(Level.SEVERE, "Error restoring clan skills.", e);
         }
         finally
         {
@@ -1396,7 +1403,7 @@ public class L2Clan
 	        }
 	        catch (Exception e)
 	        {
-	            _log.warning("error while saving new sub_clan to db "+e);
+	            _log.log(Level.SEVERE, "Error saving sub clan data.", e);
 	        }
 	        finally
 	        {
@@ -1455,7 +1462,7 @@ public class L2Clan
  	   }
  	   catch (Exception e)
  	   {
- 		   _log.warning("error while saving new clan leader to db "+e);
+ 	      _log.log(Level.SEVERE, "Error saving new sub clan leader.", e);
  	   }
  	   finally
  	   {
@@ -1493,7 +1500,7 @@ public class L2Clan
         }
         catch (Exception e)
         {
-            _log.warning("Could not restore clan privs by rank: " + e);
+            _log.log(Level.SEVERE, "Error restoring clan privs by rank.", e);
         }
         finally
         {

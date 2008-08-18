@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -157,8 +158,7 @@ public class L2PetInstance extends L2Summon
 			}
             catch (Throwable e)
             {
-            	if (Config.DEBUG)
-            		_logPet.warning("Pet [#"+getObjectId()+"] a feed task error has occurred: "+e);
+                _logPet.log(Level.SEVERE, "Pet [ObjectId: "+getObjectId()+"] a feed task error has occurred", e);
             }
         }
     }
@@ -653,7 +653,7 @@ public class L2PetInstance extends L2Summon
 		}
 		catch (Exception e)
 		{
-			_logPet.warning("could not delete pet:"+e);
+			_logPet.log(Level.SEVERE, "Failed to delete Pet [ObjectId: "+getObjectId()+"]", e);
 		}
 		finally
 		{
@@ -802,11 +802,21 @@ public class L2PetInstance extends L2Summon
 			statement.executeUpdate();
 			statement.close();
 			_respawned = true;
-		} catch (Exception e) {
-			_logPet.warning("could not store pet data: "+e);
-		} finally {
-			try { con.close(); } catch (Exception e) {}
 		}
+        catch (Exception e)
+        {
+            _logPet.log(Level.SEVERE, "Failed to store Pet [ObjectId: "+getObjectId()+"] data", e);
+        }
+        finally
+        {
+            try
+            {
+                con.close();
+            }
+            catch (Exception e)
+            {
+            }
+        }
 
 		L2ItemInstance itemInst = getControlItem();
 		if (itemInst != null && itemInst.getEnchantLevel() != getStat().getLevel())
@@ -844,7 +854,10 @@ public class L2PetInstance extends L2Summon
 	    		_feedTime = _data.getPetFeedNormal();
 	    	}
 	    	//  pet feed time must be different than 0. Changing time to bypass divide by 0
-	    	if (_feedTime <= 0) { _feedTime = 1; }
+            if (_feedTime <= 0)
+            {
+                _feedTime = 1;
+            }
 
 	    	_feedTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new FeedTask(), 60000/_feedTime, 60000/_feedTime);
 	    }

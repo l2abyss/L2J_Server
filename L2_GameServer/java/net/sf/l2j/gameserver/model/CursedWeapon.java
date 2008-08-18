@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.concurrent.ScheduledFuture;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -518,13 +519,10 @@ public class CursedWeapon
 	            statement.setLong(6, _endTime);
 	            statement.executeUpdate();
             }
-
-            statement.close();
-        	con.close();
         }
         catch (SQLException e)
         {
-        	_log.severe("CursedWeapon: Failed to save data: " + e);
+        	_log.log(Level.SEVERE, "CursedWeapon: Failed to save data.", e);
         }
         finally
         {
