@@ -39,7 +39,8 @@ public class DoorTable
 	private static Logger _log = Logger.getLogger(DoorTable.class.getName());
 
 	private Map<Integer,L2DoorInstance> _staticItems;
-
+	private boolean _initialized;
+	
 	private static DoorTable _instance;
 
 	public static DoorTable getInstance()
@@ -50,10 +51,11 @@ public class DoorTable
 		return _instance;
 	}
 
-	public DoorTable()
+	private DoorTable()
 	{
 		_staticItems = new FastMap<Integer,L2DoorInstance>();
-		//parseData();
+		_initialized = true;
+		parseData();
 	}
 
 	public void reloadAll()
@@ -62,9 +64,7 @@ public class DoorTable
 	}
 	public void respawn()
 	{
-//	    L2DoorInstance[] currentDoors = getDoors();
 	    _staticItems = null;
-	    _instance = null;
 	    _instance = new DoorTable();
 	}
 
@@ -214,8 +214,6 @@ public class DoorTable
 	{
 		return _initialized;
 	}
-
-	private boolean _initialized = true;
 
 	public L2DoorInstance getDoor(Integer id)
 	{

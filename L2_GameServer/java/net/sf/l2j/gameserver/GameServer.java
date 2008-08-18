@@ -293,7 +293,6 @@ public class GameServer
 		EventDroplist.getInstance();
 		
 		_doorTable = DoorTable.getInstance();
-		_doorTable.parseData();
 		StaticObjects.getInstance();
 		
 		/** Load Manor data */
