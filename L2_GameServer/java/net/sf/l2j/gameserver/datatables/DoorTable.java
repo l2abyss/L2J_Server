@@ -64,7 +64,6 @@ public class DoorTable
 	}
 	public void respawn()
 	{
-	    _staticItems = null;
 	    _instance = new DoorTable();
 	}
 

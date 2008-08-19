@@ -214,7 +214,7 @@ public class GameServer
 		
 		ExtractableItemsData.getInstance();
 		SummonItemsData.getInstance();
-		
+		ZoneManager.getInstance();
 		MerchantPriceConfigTable.getInstance();
 		TradeController.getInstance();
 		
@@ -281,7 +281,6 @@ public class GameServer
 		LevelUpData.getInstance();
 		L2World.getInstance();
 		SpawnTable.getInstance();
-		ZoneManager.getInstance();
 		RaidBossSpawnManager.getInstance();
 		DayNightSpawnManager.getInstance().notifyChangeMode();
 		GrandBossManager.getInstance();
