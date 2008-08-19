@@ -52,7 +52,7 @@ public class L2PoisonZone extends L2ZoneType
 		_skillLvl = 1;
 		_chance = 100;
 		_initialDelay = 0;
-		_reuse = 30;
+		_reuse = 30000;
 		_enabled = true;
 		_target = "pc";
 	}
