@@ -104,6 +104,9 @@ public class CharEffectList
 		L2Effect eventNotInUse = null;
 		for (L2Effect e : effects)
 		{
+			if (e == null)
+				continue;
+			
 			if (e.getEffectType() == tp)
 			{
 				if (e.getInUse()) return e;
