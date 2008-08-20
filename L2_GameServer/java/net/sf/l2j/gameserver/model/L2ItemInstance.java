@@ -607,6 +607,11 @@ public final class L2ItemInstance extends L2Object
     {
         return ((_itemId >= 6611 && _itemId <= 6621) || (_itemId >= 9388 && _itemId <= 9390) || _itemId == 6842);
     }
+
+    public boolean isCommonItem()
+    {
+        return ((_itemId >= 12006 && _itemId <= 12361) || (_itemId >= 11605 && _itemId <= 12308));
+    }
     
     public boolean isOlyRestrictedItem()
     {

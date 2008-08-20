@@ -69,6 +69,12 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
 			return;
 		}
+		// check if target is common item
+		if (targetItem.isCommonItem())
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
+			return;
+		}
 
 		int gemstoneCount=0;
 		int gemstoneItemId=0;
