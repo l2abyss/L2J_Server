@@ -193,6 +193,9 @@ public class RaidBossPointsManager
 		tmpPoint = _points.get(ownerId);
 		int totalPoints = 0;
 		
+		if (tmpPoint == null || tmpPoint.isEmpty())
+			return 0;
+		
 		for(int bossId : tmpPoint.keySet())
 		{
 			totalPoints += tmpPoint.get(bossId);
