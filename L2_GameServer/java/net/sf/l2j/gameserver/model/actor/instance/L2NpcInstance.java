@@ -1789,13 +1789,6 @@ public class L2NpcInstance extends L2Character
     	
     	if (getTemplate().type == "L2Auctioneer" && val==0)
             return;
-    	
-    	if (getTemplate().type == "L2Teleporter" && val == 1 && player.getLevel() < 41)
-    	{
-    		getHtmlPath(getTemplate().npcId, 1000);
-    		return;
-    	}
-    		
 
         int npcId = getTemplate().npcId;
         

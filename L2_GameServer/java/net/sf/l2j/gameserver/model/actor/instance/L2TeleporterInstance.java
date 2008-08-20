@@ -127,7 +127,25 @@ public final class L2TeleporterInstance extends L2FolkInstance
 				return;
 			}
 		}
-		
+		else if (command.startsWith("Chat"))
+		{
+			int val = 0;
+			try
+			{
+				val = Integer.parseInt(command.substring(5));
+			}
+			catch (IndexOutOfBoundsException ioobe)
+			{}
+			catch (NumberFormatException nfe)
+			{}
+			
+			if (val == 1 && player.getLevel() < 41)
+			{
+				showNewbieHtml(player);
+				return;
+			}
+			showChatWindow(player, val);
+		}
 		super.onBypassFeedback(player, command);
 	}
 	
@@ -139,20 +157,29 @@ public final class L2TeleporterInstance extends L2FolkInstance
 		{
 			pom = "" + npcId;
 		}
-		else if (val == 1000)
-		{
-			pom = "data/html/teleporter/free/" + npcId + ".htm";
-			if (!HtmCache.getInstance().isLoadable(pom))
-				return "data/html/teleporter/" + npcId + "-1.htm";
-			else
-				return pom;
-		}
 		else
 		{
 			pom = npcId + "-" + val;
 		}
 		
 		return "data/html/teleporter/" + pom + ".htm";
+	}
+	
+	private void showNewbieHtml(L2PcInstance player)
+	{
+		if (player == null)
+			return;
+		
+		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		
+		String filename = "data/html/teleporter/free/" + getTemplate().npcId + ".htm";
+		if (!HtmCache.getInstance().isLoadable(filename))
+			filename = "data/html/teleporter/" + getTemplate().npcId + "-1.htm";
+		
+		html.setFile(filename);
+		html.replace("%objectId%", String.valueOf(getObjectId()));
+		html.replace("%npcname%", getName());
+		player.sendPacket(html);
 	}
 	
 	@Override
