@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.util.StringTokenizer;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.datatables.TeleportLocationTable;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
@@ -140,7 +141,11 @@ public final class L2TeleporterInstance extends L2FolkInstance
 		}
 		else if (val == 1000)
 		{
-			return "data/html/teleporter/free/" + npcId + ".htm";
+			pom = "data/html/teleporter/free/" + npcId + ".htm";
+			if (!HtmCache.getInstance().isLoadable(pom))
+				return "data/html/teleporter/" + npcId + "-1.htm";
+			else
+				return pom;
 		}
 		else
 		{
