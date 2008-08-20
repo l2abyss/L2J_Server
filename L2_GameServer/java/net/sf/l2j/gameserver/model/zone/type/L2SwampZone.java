@@ -26,15 +26,15 @@ import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 public class L2SwampZone extends L2ZoneType
 {
 	private int _move_bonus;
-
+	
 	public L2SwampZone(int id)
 	{
 		super(id);
-
+		
 		// Setup default speed reduce (in %)
 		_move_bonus = -50;
 	}
-
+	
 	@Override
 	public void setParameter(String name, String value)
 	{
@@ -42,9 +42,10 @@ public class L2SwampZone extends L2ZoneType
 		{
 			_move_bonus = Integer.parseInt(value);
 		}
-		else super.setParameter(name, value);
+		else
+			super.setParameter(name, value);
 	}
-
+	
 	@Override
 	protected void onEnter(L2Character character)
 	{
@@ -54,7 +55,7 @@ public class L2SwampZone extends L2ZoneType
 			((L2PcInstance) character).broadcastUserInfo();
 		}
 	}
-
+	
 	@Override
 	protected void onExit(L2Character character)
 	{
@@ -64,16 +65,20 @@ public class L2SwampZone extends L2ZoneType
 			((L2PcInstance) character).broadcastUserInfo();
 		}
 	}
-
+	
 	public int getMoveBonus()
 	{
 		return _move_bonus;
 	}
-
+	
 	@Override
-    public void onDieInside(L2Character character) {}
-
+	public void onDieInside(L2Character character)
+	{
+	}
+	
 	@Override
-    public void onReviveInside(L2Character character) {}
-
+	public void onReviveInside(L2Character character)
+	{
+	}
+	
 }

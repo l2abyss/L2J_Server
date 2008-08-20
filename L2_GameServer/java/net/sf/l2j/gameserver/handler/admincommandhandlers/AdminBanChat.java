@@ -33,81 +33,92 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
  *
  * @version $Revision: 1.1.6.3 $ $Date: 2005/04/11 10:06:06 $
  */
-public class AdminBanChat implements IAdminCommandHandler {
-	private static final String[] ADMIN_COMMANDS = {"admin_banchat", "admin_unbanchat"};
-
+public class AdminBanChat implements IAdminCommandHandler
+{
+	private static final String[] ADMIN_COMMANDS =
+	{
+		"admin_banchat",
+		"admin_unbanchat"
+	};
+	
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
 		String[] cmdParams = command.split(" ");
 		long banLength = -1;
-
+		
 		L2Object targetObject = null;
 		L2PcInstance targetPlayer = null;
-
+		
 		if (cmdParams.length > 1)
-        {
+		{
 			targetPlayer = L2World.getInstance().getPlayer(cmdParams[1]);
-
-            if (cmdParams.length > 2)
-            {
-                try
-                {
-                    banLength = Integer.parseInt(cmdParams[2]) * 60000L;
-                } catch (NumberFormatException nfe) {}
-            }
-		} else
+			
+			if (cmdParams.length > 2)
+			{
+				try
+				{
+					banLength = Integer.parseInt(cmdParams[2]) * 60000L;
+				}
+				catch (NumberFormatException nfe)
+				{
+				}
+			}
+		}
+		else
 		{
 			if (activeChar.getTarget() != null)
 			{
 				targetObject = activeChar.getTarget();
-
+				
 				if (targetObject instanceof L2PcInstance)
-					targetPlayer = (L2PcInstance)targetObject;
+					targetPlayer = (L2PcInstance) targetObject;
 			}
 		}
-
+		
 		if (targetPlayer == null)
 		{
 			activeChar.sendMessage("Incorrect parameter or target.");
 			return false;
 		}
-
+		
 		if (command.startsWith("admin_banchat"))
 		{
-            String banLengthStr = "";
-
+			String banLengthStr = "";
+			
 			if (banLength > -1)
-            {
-                targetPlayer.setChatUnbanTask(ThreadPoolManager.getInstance().scheduleGeneral(new SchedChatUnban(targetPlayer, activeChar), banLength));
-                banLengthStr = " for " + banLength + " seconds.";
-            }
-
-            activeChar.sendMessage(targetPlayer.getName() + " is now chat banned" + banLengthStr + ".");
-            targetPlayer.setChatBanned(true);
+			{
+				targetPlayer.setChatUnbanTask(ThreadPoolManager.getInstance().scheduleGeneral(new SchedChatUnban(targetPlayer, activeChar), banLength));
+				banLengthStr = " for " + banLength + " seconds.";
+			}
+			
+			activeChar.sendMessage(targetPlayer.getName() + " is now chat banned" + banLengthStr + ".");
+			targetPlayer.setChatBanned(true);
 		}
 		else if (command.startsWith("admin_unbanchat"))
 		{
-            activeChar.sendMessage(targetPlayer.getName() + "'s chat ban has now been lifted.");
+			activeChar.sendMessage(targetPlayer.getName() + "'s chat ban has now been lifted.");
 			targetPlayer.setChatBanned(false);
 		}
 		return true;
 	}
-
-	public String[] getAdminCommandList() {
+	
+	public String[] getAdminCommandList()
+	{
 		return ADMIN_COMMANDS;
 	}
-
+	
 	private class SchedChatUnban implements Runnable
 	{
 		L2PcInstance _player;
+		
 		L2PcInstance _banner;
-
+		
 		protected SchedChatUnban(L2PcInstance player, L2PcInstance banner)
 		{
 			_player = player;
 			_banner = banner;
 		}
-
+		
 		public void run()
 		{
 			_player.setChatBanned(false);

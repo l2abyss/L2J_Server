@@ -19,49 +19,54 @@ import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Formulas;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 
 /**
  * @author _drunk_
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class Spoil implements ISkillHandler
 {
-    //private static Logger _log = Logger.getLogger(Spoil.class.getName());
-	private static final SkillType[] SKILL_IDS = {SkillType.SPOIL};
-
-    public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
-    {
-        if (!(activeChar instanceof L2PcInstance))
+	private static final L2SkillType[] SKILL_IDS =
+	{
+		L2SkillType.SPOIL
+	};
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#useSkill(net.sf.l2j.gameserver.model.L2Character, net.sf.l2j.gameserver.model.L2Skill, net.sf.l2j.gameserver.model.L2Object[])
+	 */
+	public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
+	{
+		if (!(activeChar instanceof L2PcInstance))
 			return;
-
-        if (targets == null)
-            return;
-
-              for (int index = 0; index < targets.length; index++)
+		
+		if (targets == null)
+			return;
+		
+		for (int index = 0; index < targets.length; index++)
 		{
-                     if (!(targets[index] instanceof L2MonsterInstance))
+			if (!(targets[index] instanceof L2MonsterInstance))
 				continue;
-
-                     L2MonsterInstance target = (L2MonsterInstance) targets[index];
-
-			if (target.isSpoil()) {
+			
+			L2MonsterInstance target = (L2MonsterInstance) targets[index];
+			
+			if (target.isSpoil())
+			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.ALREADY_SPOILED));
 				continue;
 			}
-
+			
 			// SPOIL SYSTEM by Lbaldi
 			boolean spoil = false;
-			if ( target.isDead() == false ) 
+			if (target.isDead() == false)
 			{
-                            spoil = Formulas.getInstance().calcMagicSuccess(activeChar, (L2Character)targets[index], skill);
+				spoil = Formulas.getInstance().calcMagicSuccess(activeChar, (L2Character) targets[index], skill);
 				
 				if (spoil)
 				{
@@ -69,7 +74,7 @@ public class Spoil implements ISkillHandler
 					target.setIsSpoiledBy(activeChar.getObjectId());
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.SPOIL_SUCCESS));
 				}
-				else 
+				else
 				{
 					SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
 					sm.addCharName(target);
@@ -79,10 +84,14 @@ public class Spoil implements ISkillHandler
 				target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, activeChar);
 			}
 		}
-    } 
-    
-    public SkillType[] getSkillIds()
-    { 
-        return SKILL_IDS; 
-    } 
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#getSkillIds()
+	 */
+	public L2SkillType[] getSkillIds()
+	{
+		return SKILL_IDS;
+	}
 }

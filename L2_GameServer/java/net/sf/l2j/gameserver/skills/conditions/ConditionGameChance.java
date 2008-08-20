@@ -23,15 +23,20 @@ import net.sf.l2j.util.Rnd;
  */
 public class ConditionGameChance extends Condition
 {
-    private final int _chance;
-    public ConditionGameChance(int chance)
-    {
+	private final int _chance;
+	
+	public ConditionGameChance(int chance)
+	{
 		_chance = chance;
-    }
-
-    @Override
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.skills.conditions.Condition#testImpl(net.sf.l2j.gameserver.skills.Env)
+	 */
+	@Override
 	public boolean testImpl(Env env)
-    {
-        return Rnd.get(100) < _chance;
-    }
+	{
+		return Rnd.get(100) < _chance;
+	}
 }

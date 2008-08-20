@@ -23,35 +23,36 @@ import net.sf.l2j.gameserver.templates.L2Weapon;
  */
 public class ConditionChangeWeapon extends Condition
 {
-    private final boolean _required;
-    /**
-     * 
-     */
-    public ConditionChangeWeapon(boolean required)
-    {
-        _required = required;
-    }
-    
-    /**
-     * @see net.sf.l2j.gameserver.skills.conditions.Condition#testImpl(net.sf.l2j.gameserver.skills.Env)
-     */
-    @Override
-    boolean testImpl(Env env)
-    {
-        if (!(env.player instanceof L2PcInstance))
-            return false;
-        
-        if (_required)
-        {
-            L2Weapon weaponItem = env.player.getActiveWeaponItem();
-            
-            if (weaponItem == null)
-                return false;
-            
-            if (weaponItem.getChangeWeaponId() == 0)
-                return false;
-        }
-        return true;
-    }
-    
+	private final boolean _required;
+	
+	/**
+	 * 
+	 */
+	public ConditionChangeWeapon(boolean required)
+	{
+		_required = required;
+	}
+	
+	/**
+	 * @see net.sf.l2j.gameserver.skills.conditions.Condition#testImpl(net.sf.l2j.gameserver.skills.Env)
+	 */
+	@Override
+	boolean testImpl(Env env)
+	{
+		if (!(env.player instanceof L2PcInstance))
+			return false;
+		
+		if (_required)
+		{
+			L2Weapon weaponItem = env.player.getActiveWeaponItem();
+			
+			if (weaponItem == null)
+				return false;
+			
+			if (weaponItem.getChangeWeaponId() == 0)
+				return false;
+		}
+		return true;
+	}
+	
 }

@@ -41,11 +41,11 @@ import net.sf.l2j.gameserver.handler.usercommandhandlers.Time;
 public class UserCommandHandler
 {
 	private static Logger _log = Logger.getLogger(UserCommandHandler.class.getName());
-
+	
 	private static UserCommandHandler _instance;
-
+	
 	private Map<Integer, IUserCommandHandler> _datatable;
-
+	
 	public static UserCommandHandler getInstance()
 	{
 		if (_instance == null)
@@ -54,18 +54,18 @@ public class UserCommandHandler
 		}
 		return _instance;
 	}
-
+	
 	private UserCommandHandler()
 	{
 		_datatable = new FastMap<Integer, IUserCommandHandler>();
 		registerUserCommandHandler(new ClanPenalty());
-        registerUserCommandHandler(new ClanWarsList());
-        registerUserCommandHandler(new DisMount());
-        registerUserCommandHandler(new Escape());
-        registerUserCommandHandler(new InstanceZone());
-        registerUserCommandHandler(new Loc());
-        registerUserCommandHandler(new Mount());
-        registerUserCommandHandler(new PartyInfo());
+		registerUserCommandHandler(new ClanWarsList());
+		registerUserCommandHandler(new DisMount());
+		registerUserCommandHandler(new Escape());
+		registerUserCommandHandler(new InstanceZone());
+		registerUserCommandHandler(new Loc());
+		registerUserCommandHandler(new Mount());
+		registerUserCommandHandler(new PartyInfo());
 		registerUserCommandHandler(new Time());
 		registerUserCommandHandler(new OlympiadStat());
 		registerUserCommandHandler(new ChannelLeave());
@@ -73,28 +73,30 @@ public class UserCommandHandler
 		registerUserCommandHandler(new ChannelListUpdate());
 		_log.config("UserCommandHandler: Loaded " + _datatable.size() + " handlers.");
 	}
-
+	
 	public void registerUserCommandHandler(IUserCommandHandler handler)
 	{
 		int[] ids = handler.getUserCommandList();
 		for (int i = 0; i < ids.length; i++)
 		{
-			if (Config.DEBUG) _log.fine("Adding handler for user command "+ids[i]);
+			if (Config.DEBUG)
+				_log.fine("Adding handler for user command " + ids[i]);
 			_datatable.put(new Integer(ids[i]), handler);
 		}
 	}
-
+	
 	public IUserCommandHandler getUserCommandHandler(int userCommand)
 	{
-		if (Config.DEBUG) _log.fine("getting handler for user command: "+userCommand);
+		if (Config.DEBUG)
+			_log.fine("getting handler for user command: " + userCommand);
 		return _datatable.get(new Integer(userCommand));
 	}
-
-    /**
-     * @return
-     */
-    public int size()
-    {
-        return _datatable.size();
-    }
+	
+	/**
+	 * @return
+	 */
+	public int size()
+	{
+		return _datatable.size();
+	}
 }

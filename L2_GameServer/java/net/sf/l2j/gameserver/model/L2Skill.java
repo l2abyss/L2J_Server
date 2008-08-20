@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.model;
 
-import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -48,20 +47,8 @@ import net.sf.l2j.gameserver.skills.effects.EffectCharge;
 import net.sf.l2j.gameserver.skills.effects.EffectTemplate;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.skills.funcs.FuncTemplate;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillAgathion;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillChangeWeapon;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillCharge;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillChargeDmg;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillChargeEffect;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillCreateItem;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillDecoy;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillDefault;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillDrain;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillSignet;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillSignetCasttime;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillSummon;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillTrap;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.gameserver.templates.L2WeaponType;
 import net.sf.l2j.gameserver.templates.StatsSet;
 import net.sf.l2j.gameserver.util.Util;
@@ -130,169 +117,6 @@ public abstract class L2Skill
         TARGET_ENEMY_SUMMON,
         TARGET_OWNER_PET,
         TARGET_GROUND
-    }
-
-    public static enum SkillType
-    {
-    	// Damage
-    	PDAM,
-    	MDAM,
-    	CPDAM,
-    	MANADAM,
-    	DOT,
-    	MDOT,
-    	DRAIN_SOUL,
-    	DRAIN(L2SkillDrain.class),
-    	DEATHLINK,
-    	BLOW,
-    	SIGNET(L2SkillSignet.class),
-    	SIGNET_CASTTIME(L2SkillSignetCasttime.class),
-
-    	// Disablers
-    	BLEED,
-    	POISON,
-    	STUN,
-    	ROOT,
-    	CONFUSION,
-    	FEAR,
-    	SLEEP,
-    	CONFUSE_MOB_ONLY,
-    	MUTE,
-    	PARALYZE,
-    	WEAKNESS,
-        DISARM,
-
-    	// hp, mp, cp
-    	HEAL,
-    	HOT,
-    	BALANCE_LIFE,
-    	HEAL_PERCENT,
-    	HEAL_STATIC,
-    	COMBATPOINTHEAL,
-    	CPHOT,
-    	MANAHEAL,
-    	MANA_BY_LEVEL,
-    	MANAHEAL_PERCENT,
-    	MANARECHARGE,
-    	MPHOT,
-    	
-    	// sp
-    	GIVE_SP,
-
-    	// Aggro
-    	AGGDAMAGE,
-    	AGGREDUCE,
-    	AGGREMOVE,
-    	AGGREDUCE_CHAR,
-    	AGGDEBUFF,
-
-    	// Fishing
-    	FISHING,
-    	PUMPING,
-    	REELING,
-
-    	// MISC
-    	UNLOCK,
-    	ENCHANT_ARMOR,
-    	ENCHANT_WEAPON,
-    	SOULSHOT,
-    	SPIRITSHOT,
-    	SIEGEFLAG,
-    	TAKECASTLE,
-    	TAKEFORT,
-    	WEAPON_SA,
-    	DELUXE_KEY_UNLOCK,
-    	SOW,
-        HARVEST,
-        GET_PLAYER,
-        AGATHION(L2SkillAgathion.class),
-
-    	// Creation
-    	COMMON_CRAFT,
-    	DWARVEN_CRAFT,
-    	CREATE_ITEM(L2SkillCreateItem.class),
-    	SUMMON_TREASURE_KEY,
-
-    	// Summons
-    	SUMMON(L2SkillSummon.class),
-    	FEED_PET,
-    	DEATHLINK_PET,
-    	STRSIEGEASSAULT,
-    	ERASE,
-    	BETRAY,
-    	DECOY(L2SkillDecoy.class),
-    	
-    	// Cancel
-    	CANCEL,
-    	CANCEL_DEBUFF,
-    	MAGE_BANE,
-    	WARRIOR_BANE,
-    	NEGATE,
-
-    	BUFF,
-    	DEBUFF,
-    	PASSIVE,
-    	CONT,
-
-    	RESURRECT,
-    	CHARGE(L2SkillCharge.class),
-    	CHARGE_EFFECT(L2SkillChargeEffect.class),
-    	CHARGEDAM(L2SkillChargeDmg.class),
-    	MHOT,
-    	DETECT_WEAKNESS,
-    	LUCK,
-    	RECALL,
-    	SUMMON_FRIEND,
-    	REFLECT,
-    	SPOIL,
-    	SWEEP,
-    	FAKE_DEATH,
-    	UNBLEED,
-    	UNPOISON,
-    	UNDEAD_DEFENSE,
-    	BEAST_FEED,
-    	FORCE_BUFF,
-        CHARGESOUL,
-        TRANSFORM,
-        TRANSFORMDISPEL,
-        SUMMON_TRAP (L2SkillTrap.class),
-        DETECT_TRAP,
-        REMOVE_TRAP,
-        SHIFT_TARGET,
-        // Kamael WeaponChange
-        CHANGEWEAPON (L2SkillChangeWeapon.class),
-
-		// Skill is done within the core.
-		COREDONE,
-		
-        // unimplemented
-        NOTDONE;
-
-        private final Class<? extends L2Skill> _class;
-
-        public L2Skill makeSkill(StatsSet set)
-        {
-            try
-            {
-                Constructor<? extends L2Skill> c = _class.getConstructor(StatsSet.class);
-
-                return c.newInstance(set);
-            }
-            catch (Exception e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-
-        private SkillType()
-        {
-            _class = L2SkillDefault.class;
-        }
-
-        private SkillType(Class<? extends L2Skill> classType)
-        {
-            _class = classType;
-        }
     }
 
     //elements
@@ -475,8 +299,8 @@ public abstract class L2Skill
     // "caster" if targetType = AURA/PARTY/CLAN or "target" if targetType = AREA
     private final int _skillRadius;
 
-    private final SkillType _skillType;
-    private final SkillType _effectType;
+    private final L2SkillType _skillType;
+    private final L2SkillType _effectType;
     private final int _effectPower;
     private final int _effectId;
     private final int _effectLvl;
@@ -611,8 +435,8 @@ public abstract class L2Skill
         _levelDepend = set.getInteger("lvlDepend", 0);
         _stat = set.getEnum("stat", Stats.class, null);
 
-        _skillType = set.getEnum("skillType", SkillType.class);
-        _effectType = set.getEnum("effectType", SkillType.class, null);
+        _skillType = set.getEnum("skillType", L2SkillType.class);
+        _effectType = set.getEnum("effectType", L2SkillType.class, null);
         _effectPower = set.getInteger("effectPower", 0);
         _effectId = set.getInteger("effectId", 0);
         _effectLvl = set.getInteger("effectLevel", 0);
@@ -651,7 +475,7 @@ public abstract class L2Skill
 
         _isHeroSkill = HeroSkillTable.isHeroSkill(_id);
 
-        _baseCritRate = set.getInteger("baseCritRate", (_skillType == SkillType.PDAM  || _skillType == SkillType.BLOW) ? 0 : -1);
+        _baseCritRate = set.getInteger("baseCritRate", (_skillType == L2SkillType.PDAM  || _skillType == L2SkillType.BLOW) ? 0 : -1);
         _lethalEffect1 = set.getInteger("lethal1",0);
         _lethalEffect2 = set.getInteger("lethal2",0);
 
@@ -729,7 +553,7 @@ public abstract class L2Skill
         return _conditionValue;
     }
 
-    public final SkillType getSkillType()
+    public final L2SkillType getSkillType()
     {
         return _skillType;
     }
@@ -783,7 +607,7 @@ public abstract class L2Skill
      */
     public final double getPower(L2Character activeChar)
     {
-        if (_skillType == SkillType.DEATHLINK && activeChar != null) return _power
+        if (_skillType == L2SkillType.DEATHLINK && activeChar != null) return _power
             * Math.pow(1.7165 - activeChar.getCurrentHp() / activeChar.getMaxHp(), 2) * 0.577;
         else return _power;
     }
@@ -854,7 +678,7 @@ public abstract class L2Skill
     /**
      * Return the additional effect skill type (ex : STUN, PARALYZE,...).<BR><BR>
      */
-    public final SkillType getEffectType()
+    public final L2SkillType getEffectType()
     {
         return _effectType;
     }
@@ -1162,7 +986,7 @@ public abstract class L2Skill
     
     public final boolean useSoulShot()
     {
-        return ((getSkillType() == SkillType.PDAM) || (getSkillType() == SkillType.STUN) || (getSkillType() == SkillType.CHARGEDAM));
+        return ((getSkillType() == L2SkillType.PDAM) || (getSkillType() == L2SkillType.STUN) || (getSkillType() == L2SkillType.CHARGEDAM));
     }
 
     public final boolean useSpiritShot()
@@ -1171,7 +995,7 @@ public abstract class L2Skill
     }
     public final boolean useFishShot()
     {
-        return ((getSkillType() == SkillType.PUMPING) || (getSkillType() == SkillType.REELING) );
+        return ((getSkillType() == L2SkillType.PUMPING) || (getSkillType() == L2SkillType.REELING) );
     }
     public final int getWeaponsAllowed()
     {
@@ -1487,7 +1311,7 @@ public abstract class L2Skill
 
         // Get the type of the skill
         // (ex : PDAM, MDAM, DOT, BLEED, POISON, HEAL, HOT, MANAHEAL, MANARECHARGE, AGGDAMAGE, BUFF, DEBUFF, STUN, ROOT, RESURRECT, PASSIVE...)
-        SkillType skillType = getSkillType();
+        L2SkillType skillType = getSkillType();
 
         switch (targetType)
         {
@@ -2547,7 +2371,7 @@ public abstract class L2Skill
 								{
 									if (!((L2PcInstance) newTarget).isDead())
 										continue;
-									if (getSkillType() == SkillType.RESURRECT)
+									if (getSkillType() == L2SkillType.RESURRECT)
 									{
 										// check target is not in a active siege
 										// zone
@@ -2627,7 +2451,7 @@ public abstract class L2Skill
                             {
                             	if (!newTarget.isDead())
                             		continue;
-                            	if (getSkillType() == SkillType.RESURRECT)
+                            	if (getSkillType() == L2SkillType.RESURRECT)
                             	{
                             		// check target is not in a active siege zone
                                  	if (newTarget.isInsideZone(L2Character.ZONE_SIEGE))
@@ -2694,7 +2518,7 @@ public abstract class L2Skill
                     {
                         boolean condGood = true;
 
-                        if (getSkillType() == SkillType.RESURRECT)
+                        if (getSkillType() == L2SkillType.RESURRECT)
                         {
                             // check target is not in a active siege zone
                         	if (target.isInsideZone(L2Character.ZONE_SIEGE))

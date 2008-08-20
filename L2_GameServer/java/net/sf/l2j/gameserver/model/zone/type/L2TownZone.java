@@ -19,7 +19,6 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 
-
 /**
  * A Town zone
  *
@@ -33,22 +32,21 @@ public class L2TownZone extends L2ZoneType
 	private int _taxById;
 	private boolean _isPeaceZone;
 	private int[] _spawnLoc;
-
-
+	
 	public L2TownZone(int id)
 	{
 		super(id);
-
+		
 		_taxById = 0;
 		_spawnLoc = new int[3];
-
+		
 		// Default to Giran
 		_redirectTownId = 9;
-
+		
 		// Default peace zone
 		_isPeaceZone = true;
 	}
-
+	
 	@Override
 	public void setParameter(String name, String value)
 	{
@@ -84,9 +82,10 @@ public class L2TownZone extends L2ZoneType
 		{
 			_isPeaceZone = Boolean.parseBoolean(value);
 		}
-		else super.setParameter(name, value);
+		else
+			super.setParameter(name, value);
 	}
-
+	
 	@Override
 	protected void onEnter(L2Character character)
 	{
@@ -94,34 +93,39 @@ public class L2TownZone extends L2ZoneType
 		{
 			// PVP possible during siege, now for siege participants only
 			// Could also check if this town is in siege, or if any siege is going on
-			if (((L2PcInstance)character).getSiegeState() != 0 && Config.ZONE_TOWN == 1)
+			if (((L2PcInstance) character).getSiegeState() != 0 && Config.ZONE_TOWN == 1)
 				return;
-
+			
 			//((L2PcInstance)character).sendMessage("You entered "+_townName);
 		}
-
-		if (_isPeaceZone && Config.ZONE_TOWN != 2) character.setInsideZone(L2Character.ZONE_PEACE, true);
-
+		
+		if (_isPeaceZone && Config.ZONE_TOWN != 2)
+			character.setInsideZone(L2Character.ZONE_PEACE, true);
+		
 	}
-
+	
 	@Override
 	protected void onExit(L2Character character)
 	{
 		// TODO: there should be no exit if there was possibly no enter
-		if (_isPeaceZone) character.setInsideZone(L2Character.ZONE_PEACE, false);
-
+		if (_isPeaceZone)
+			character.setInsideZone(L2Character.ZONE_PEACE, false);
+		
 		// if (character instanceof L2PcInstance)
-			//((L2PcInstance)character).sendMessage("You left "+_townName);
-
+		//((L2PcInstance)character).sendMessage("You left "+_townName);
+		
 	}
-
+	
 	@Override
-    public void onDieInside(L2Character character) {}
-
+	public void onDieInside(L2Character character)
+	{
+	}
+	
 	@Override
-    public void onReviveInside(L2Character character) {}
-
-
+	public void onReviveInside(L2Character character)
+	{
+	}
+	
 	/**
 	 * Returns this town zones name
 	 * @return
@@ -131,7 +135,7 @@ public class L2TownZone extends L2ZoneType
 	{
 		return _townName;
 	}
-
+	
 	/**
 	 * Returns this zones town id (if any)
 	 * @return
@@ -140,7 +144,7 @@ public class L2TownZone extends L2ZoneType
 	{
 		return _townId;
 	}
-
+	
 	/**
 	 * Gets the id for this town zones redir town
 	 * @return
@@ -150,25 +154,25 @@ public class L2TownZone extends L2ZoneType
 	{
 		return _redirectTownId;
 	}
-
+	
 	/**
 	 * Returns this zones spawn location
 	 * @return
 	 */
 	public final int[] getSpawnLoc()
-    {
-    	return _spawnLoc;
-    }
-
+	{
+		return _spawnLoc;
+	}
+	
 	/**
 	 * Returns this town zones castle id
 	 * @return
 	 */
 	public final int getTaxById()
-    {
-    	return _taxById;
-    }
-
+	{
+		return _taxById;
+	}
+	
 	public final boolean isPeaceZone()
 	{
 		return _isPeaceZone;

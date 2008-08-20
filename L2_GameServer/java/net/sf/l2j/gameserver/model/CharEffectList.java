@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.effects.EffectCharge;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 
 public class CharEffectList
 {
@@ -83,7 +84,7 @@ public class CharEffectList
 		L2Effect[] effects = getAllEffects();
 		for (L2Effect e : effects)
 		{
-			if (e.getSkill().getSkillType() == L2Skill.SkillType.CHARGE)
+			if (e.getSkill().getSkillType() == L2SkillType.CHARGE)
 			{
 				return (EffectCharge)e;
 			}
@@ -205,10 +206,10 @@ public class CharEffectList
 		for (L2Effect e : _buffs)
 		{
 			if (e != null && e.getShowIcon() &&
-					(e.getSkill().getSkillType() == L2Skill.SkillType.BUFF ||
-					e.getSkill().getSkillType() == L2Skill.SkillType.REFLECT ||
-					e.getSkill().getSkillType() == L2Skill.SkillType.HEAL_PERCENT ||
-					e.getSkill().getSkillType() == L2Skill.SkillType.MANAHEAL_PERCENT) &&
+					(e.getSkill().getSkillType() == L2SkillType.BUFF ||
+					e.getSkill().getSkillType() == L2SkillType.REFLECT ||
+					e.getSkill().getSkillType() == L2SkillType.HEAL_PERCENT ||
+					e.getSkill().getSkillType() == L2SkillType.MANAHEAL_PERCENT) &&
 					!(e.getSkill().getId() > 4360  && e.getSkill().getId() < 4367)) // Seven Signs buffs
 			{
 				buffCount++;
@@ -299,11 +300,11 @@ public class CharEffectList
 		for (L2Effect e : effects)
 		{
 			if ( e != null &&
-					(e.getSkill().getSkillType() == L2Skill.SkillType.BUFF ||
-					 e.getSkill().getSkillType() == L2Skill.SkillType.DEBUFF ||
-					 e.getSkill().getSkillType() == L2Skill.SkillType.REFLECT ||
-					 e.getSkill().getSkillType() == L2Skill.SkillType.HEAL_PERCENT ||
-					 e.getSkill().getSkillType() == L2Skill.SkillType.MANAHEAL_PERCENT) &&
+					(e.getSkill().getSkillType() == L2SkillType.BUFF ||
+					 e.getSkill().getSkillType() == L2SkillType.DEBUFF ||
+					 e.getSkill().getSkillType() == L2SkillType.REFLECT ||
+					 e.getSkill().getSkillType() == L2SkillType.HEAL_PERCENT ||
+					 e.getSkill().getSkillType() == L2SkillType.MANAHEAL_PERCENT) &&
 					!(e.getSkill().getId() > 4360  && e.getSkill().getId() < 4367)) // Seven Signs buff
 			{
 				if (preferSkill == 0) { removeMe = e; break; }
@@ -437,10 +438,10 @@ public class CharEffectList
 			// Remove first Buff if number of buffs > getMaxBuffCount()
 			L2Skill tempSkill = newEffect.getSkill();
 			if (getBuffCount() >= _owner.getMaxBuffCount() && !doesStack(tempSkill) && ((
-				tempSkill.getSkillType() == L2Skill.SkillType.BUFF ||
-                tempSkill.getSkillType() == L2Skill.SkillType.REFLECT ||
-                tempSkill.getSkillType() == L2Skill.SkillType.HEAL_PERCENT ||
-                tempSkill.getSkillType() == L2Skill.SkillType.MANAHEAL_PERCENT) &&
+				tempSkill.getSkillType() == L2SkillType.BUFF ||
+                tempSkill.getSkillType() == L2SkillType.REFLECT ||
+                tempSkill.getSkillType() == L2SkillType.HEAL_PERCENT ||
+                tempSkill.getSkillType() == L2SkillType.MANAHEAL_PERCENT) &&
                 !tempSkill.isDebuff() &&  !(tempSkill.getId() > 4360 && tempSkill.getId() < 4367))
         	)
 			{

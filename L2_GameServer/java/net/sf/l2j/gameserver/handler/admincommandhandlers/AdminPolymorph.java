@@ -33,18 +33,18 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
  */
 public class AdminPolymorph implements IAdminCommandHandler
 {
-	private static final String[] ADMIN_COMMANDS = 
-	{ 
-	    "admin_polymorph", 
-	    "admin_unpolymorph", 
-	    "admin_polymorph_menu", 
-	    "admin_unpolymorph_menu",
-        "admin_transform",
-        "admin_untransform",
-        "admin_transform_menu",
-        "admin_untransform_menu",
+	private static final String[] ADMIN_COMMANDS =
+	{
+		"admin_polymorph",
+		"admin_unpolymorph",
+		"admin_polymorph_menu",
+		"admin_unpolymorph_menu",
+		"admin_transform",
+		"admin_untransform",
+		"admin_transform_menu",
+		"admin_untransform_menu",
 	};
-
+	
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
 		if (activeChar.isMounted())
@@ -53,58 +53,58 @@ public class AdminPolymorph implements IAdminCommandHandler
 			return false;
 		}
 		
-        if (command.startsWith("admin_untransform"))
-        {
-            L2Object obj = activeChar.getTarget();
-            if (obj instanceof L2Character)
-            {
-                ((L2Character)obj).stopTransformation(null);
-            }
-            else
-            {
-                activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
-            }
-        }
-        else if (command.startsWith("admin_transform"))
-        {
-            L2Object obj = activeChar.getTarget();
-            if (obj instanceof L2PcInstance)
-            {
-                L2PcInstance cha = (L2PcInstance) obj;
-                
-                String[] parts = command.split(" ");
-                if (parts.length >= 2)
-                {
-                    try
-                    {
-                        int id = Integer.parseInt(parts[1]);
-                        long duration = Long.MAX_VALUE; // forever by default
-                        if (parts.length > 2)
-                        {
-                            duration = Long.parseLong(parts[2]);
-                        }
-                        if (!TransformationManager.getInstance().transformPlayer(id, cha, duration))
-                        {
-                            cha.sendMessage("Unknow transformation id: "+id);
-                        }
-                    }
-                    catch (NumberFormatException e)
-                    {
-                        activeChar.sendMessage("Usage: //transform <id> [duration (secs)]");
-                    }
-                }
-                else if (parts.length == 1)
-                    cha.untransform();
-                else
-                {
-                    activeChar.sendMessage("Usage: //transform <id>");
-                }
-            }
-            else
-            {
-                activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
-            }
-        }
+		if (command.startsWith("admin_untransform"))
+		{
+			L2Object obj = activeChar.getTarget();
+			if (obj instanceof L2Character)
+			{
+				((L2Character) obj).stopTransformation(null);
+			}
+			else
+			{
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
+			}
+		}
+		else if (command.startsWith("admin_transform"))
+		{
+			L2Object obj = activeChar.getTarget();
+			if (obj instanceof L2PcInstance)
+			{
+				L2PcInstance cha = (L2PcInstance) obj;
+				
+				String[] parts = command.split(" ");
+				if (parts.length >= 2)
+				{
+					try
+					{
+						int id = Integer.parseInt(parts[1]);
+						long duration = Long.MAX_VALUE; // forever by default
+						if (parts.length > 2)
+						{
+							duration = Long.parseLong(parts[2]);
+						}
+						if (!TransformationManager.getInstance().transformPlayer(id, cha, duration))
+						{
+							cha.sendMessage("Unknow transformation id: " + id);
+						}
+					}
+					catch (NumberFormatException e)
+					{
+						activeChar.sendMessage("Usage: //transform <id> [duration (secs)]");
+					}
+				}
+				else if (parts.length == 1)
+					cha.untransform();
+				else
+				{
+					activeChar.sendMessage("Usage: //transform <id>");
+				}
+			}
+			else
+			{
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
+			}
+		}
 		if (command.startsWith("admin_polymorph"))
 		{
 			StringTokenizer st = new StringTokenizer(command);
@@ -121,29 +121,28 @@ public class AdminPolymorph implements IAdminCommandHandler
 				else
 					doPolymorph(activeChar, target, p1, "npc");
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				activeChar.sendMessage("Usage: //polymorph [type] <id>");
 			}
 		}
 		else if (command.equals("admin_unpolymorph"))
 		{
-			doUnpoly(activeChar,activeChar.getTarget());
+			doUnpoly(activeChar, activeChar.getTarget());
 		}
 		if (command.contains("_menu"))
-        {
-			showMainPage(activeChar,command);
-        }
-        
-        
+		{
+			showMainPage(activeChar, command);
+		}
+		
 		return true;
 	}
-
+	
 	public String[] getAdminCommandList()
 	{
 		return ADMIN_COMMANDS;
 	}
-
+	
 	/**
 	 * @param activeChar
 	 * @param target
@@ -156,7 +155,7 @@ public class AdminPolymorph implements IAdminCommandHandler
 		{
 			obj.getPoly().setPolyInfo(type, id);
 			//animation
-			if(obj instanceof L2Character)
+			if (obj instanceof L2Character)
 			{
 				L2Character Char = (L2Character) obj;
 				MagicSkillUse msk = new MagicSkillUse(Char, 1008, 1, 4000, 0);
@@ -166,37 +165,37 @@ public class AdminPolymorph implements IAdminCommandHandler
 			}
 			//end of animation
 			obj.decayMe();
-			obj.spawnMe(obj.getX(),obj.getY(),obj.getZ());
+			obj.spawnMe(obj.getX(), obj.getY(), obj.getZ());
 			activeChar.sendMessage("Polymorph succeed");
 		}
 		else
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
 	}
-
+	
 	/**
 	 * @param activeChar
 	 * @param target
 	 */
 	private void doUnpoly(L2PcInstance activeChar, L2Object target)
 	{
-		if (target !=null)
+		if (target != null)
 		{
 			target.getPoly().setPolyInfo(null, "1");
 			target.decayMe();
-			target.spawnMe(target.getX(),target.getY(),target.getZ());
+			target.spawnMe(target.getX(), target.getY(), target.getZ());
 			activeChar.sendMessage("Unpolymorph succeed");
 		}
 		else
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
 	}
-
-	private void showMainPage(L2PcInstance activeChar,String command)
+	
+	private void showMainPage(L2PcInstance activeChar, String command)
 	{
-        if (command.contains("transform"))
-            AdminHelpPage.showHelpPage(activeChar, "transform.htm");
-        else if (command.contains("abnormal"))
-            AdminHelpPage.showHelpPage(activeChar, "abnormal.htm");
-        else
-            AdminHelpPage.showHelpPage(activeChar, "effects_menu.htm");
+		if (command.contains("transform"))
+			AdminHelpPage.showHelpPage(activeChar, "transform.htm");
+		else if (command.contains("abnormal"))
+			AdminHelpPage.showHelpPage(activeChar, "abnormal.htm");
+		else
+			AdminHelpPage.showHelpPage(activeChar, "effects_menu.htm");
 	}
 }

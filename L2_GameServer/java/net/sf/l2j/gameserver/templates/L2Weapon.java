@@ -27,7 +27,6 @@ import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.quest.Quest;
@@ -361,7 +360,7 @@ public final class L2Weapon  extends L2Item
             if (trigger.isOffensive() != _skillsOnCast.isOffensive())
                 return _emptyEffectSet; // Trigger only same type of skill
 
-            if (trigger.isToggle() && _skillsOnCast.getSkillType() == SkillType.BUFF)
+            if (trigger.isToggle() && _skillsOnCast.getSkillType() == L2SkillType.BUFF)
             	return _emptyEffectSet; // No buffing with toggle skills
 
             Env env = new Env();

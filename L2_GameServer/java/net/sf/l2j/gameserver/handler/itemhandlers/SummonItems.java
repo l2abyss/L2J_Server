@@ -43,150 +43,155 @@ import net.sf.l2j.gameserver.util.FloodProtector;
 
 public class SummonItems implements IItemHandler
 {
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#useItem(net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance, net.sf.l2j.gameserver.model.L2ItemInstance)
+	 */
 	public void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
 		if (!(playable instanceof L2PcInstance))
 			return;
-
+		
 		if (!TvTEvent.onItemSummon(playable.getObjectId()))
 			return;
-
-		L2PcInstance activeChar = (L2PcInstance)playable;
-
-		if ( !FloodProtector.getInstance().tryPerformAction(activeChar.getObjectId(), FloodProtector.PROTECTED_ITEMPETSUMMON) ) return;
-
-		if(activeChar.isSitting())
+		
+		L2PcInstance activeChar = (L2PcInstance) playable;
+		
+		if (!FloodProtector.getInstance().tryPerformAction(activeChar.getObjectId(), FloodProtector.PROTECTED_ITEMPETSUMMON))
+			return;
+		
+		if (activeChar.isSitting())
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_MOVE_SITTING));
 			return;
 		}
-
+		
 		if (activeChar.inObserverMode())
 			return;
-
+		
 		if (activeChar.isInOlympiadMode())
-        {
-            activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
-            return;
-        }
-
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
+			return;
+		}
+		
 		L2SummonItem sitem = SummonItemsData.getInstance().getSummonItem(item.getItemId());
-
+		
 		if ((activeChar.getPet() != null || activeChar.isMounted()) && sitem.isPetSummon())
 		{
-            activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_ALREADY_HAVE_A_PET));
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_ALREADY_HAVE_A_PET));
 			return;
 		}
-
+		
 		if (activeChar.isAttackingNow())
 		{
-            activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_SUMMON_IN_COMBAT));
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_SUMMON_IN_COMBAT));
 			return;
 		}
-
-        if (activeChar.isCursedWeaponEquipped() && sitem.isPetSummon())
-        {
-        	activeChar.sendPacket(new SystemMessage(SystemMessageId.STRIDER_CANT_BE_RIDDEN_WHILE_IN_BATTLE));
-        	return;
-        }
-
-        int npcID = sitem.getNpcId();
-
-        if (npcID == 0)
-        	return;
-
+		
+		if (activeChar.isCursedWeaponEquipped() && sitem.isPetSummon())
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.STRIDER_CANT_BE_RIDDEN_WHILE_IN_BATTLE));
+			return;
+		}
+		
+		int npcID = sitem.getNpcId();
+		
+		if (npcID == 0)
+			return;
+		
 		L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(npcID);
-
-        if (npcTemplate == null)
-            return;
-
-        switch (sitem.getType())
-        {
-        case 0: // static summons (like Christmas tree)
-            try
-            {
-                L2Spawn spawn = new L2Spawn(npcTemplate);
-
-                if (spawn == null)
-                	return;
-
-                spawn.setId(IdFactory.getInstance().getNextId());
-                spawn.setLocx(activeChar.getX());
-                spawn.setLocy(activeChar.getY());
-                spawn.setLocz(activeChar.getZ());
-                L2World.getInstance().storeObject(spawn.spawnOne(true));
-                activeChar.destroyItem("Summon", item.getObjectId(), 1, null, false);
-                activeChar.sendMessage("Created " + npcTemplate.name + " at x: " + spawn.getLocx() + " y: " + spawn.getLocy() + " z: " + spawn.getLocz());
-            }
-            catch (Exception e)
-            {
-                activeChar.sendMessage("Target is not ingame.");
-            }
-
-        	break;
-        case 1: // pet summons
-        	L2PetInstance petSummon = L2PetInstance.spawnPet(npcTemplate, activeChar, item);
-
-    		if (petSummon == null)
-    			break;
-
-    		petSummon.setTitle(activeChar.getName());
-
-    		if (!petSummon.isRespawned())
-    		{
-    			petSummon.setCurrentHp(petSummon.getMaxHp());
-    			petSummon.setCurrentMp(petSummon.getMaxMp());
-    			petSummon.getStat().setExp(petSummon.getExpForThisLevel());
-    			petSummon.setCurrentFed(petSummon.getMaxFed());
-    		}
-
-    		petSummon.setRunning();
-
-    		if (!petSummon.isRespawned())
-    			petSummon.store();
-
-            activeChar.setPet(petSummon);
-
-    		activeChar.sendPacket(new MagicSkillUse(activeChar, 2046, 1, 1000, 600000));
-    		activeChar.sendPacket(new SystemMessage(SystemMessageId.SUMMON_A_PET));
-            L2World.getInstance().storeObject(petSummon);
-    		petSummon.spawnMe(activeChar.getX()+50, activeChar.getY()+100, activeChar.getZ());
-    		petSummon.startFeed(false);
-    		item.setEnchantLevel(petSummon.getLevel());
-
-    		ThreadPoolManager.getInstance().scheduleGeneral(new PetSummonFinalizer(activeChar, petSummon), 900);
-
-    		if (petSummon.getCurrentFed() <= 0)
-    			ThreadPoolManager.getInstance().scheduleGeneral(new PetSummonFeedWait(activeChar, petSummon), 60000);
-    		else
-    			petSummon.startFeed(false);
-
-        	break;
-        case 2: // wyvern
-            activeChar.mount(sitem.getNpcId(), item.getObjectId());
-            break;
-        case 3: // Great Wolf
-        	activeChar.mount(sitem.getNpcId(), item.getObjectId());
-        	break;
-        }
+		
+		if (npcTemplate == null)
+			return;
+		
+		switch (sitem.getType())
+		{
+			case 0: // static summons (like Christmas tree)
+				try
+				{
+					L2Spawn spawn = new L2Spawn(npcTemplate);
+					
+					if (spawn == null)
+						return;
+					
+					spawn.setId(IdFactory.getInstance().getNextId());
+					spawn.setLocx(activeChar.getX());
+					spawn.setLocy(activeChar.getY());
+					spawn.setLocz(activeChar.getZ());
+					L2World.getInstance().storeObject(spawn.spawnOne(true));
+					activeChar.destroyItem("Summon", item.getObjectId(), 1, null, false);
+					activeChar.sendMessage("Created " + npcTemplate.name + " at x: " + spawn.getLocx() + " y: " + spawn.getLocy() + " z: " + spawn.getLocz());
+				}
+				catch (Exception e)
+				{
+					activeChar.sendMessage("Target is not ingame.");
+				}
+				
+				break;
+			case 1: // pet summons
+				L2PetInstance petSummon = L2PetInstance.spawnPet(npcTemplate, activeChar, item);
+				
+				if (petSummon == null)
+					break;
+				
+				petSummon.setTitle(activeChar.getName());
+				
+				if (!petSummon.isRespawned())
+				{
+					petSummon.setCurrentHp(petSummon.getMaxHp());
+					petSummon.setCurrentMp(petSummon.getMaxMp());
+					petSummon.getStat().setExp(petSummon.getExpForThisLevel());
+					petSummon.setCurrentFed(petSummon.getMaxFed());
+				}
+				
+				petSummon.setRunning();
+				
+				if (!petSummon.isRespawned())
+					petSummon.store();
+				
+				activeChar.setPet(petSummon);
+				
+				activeChar.sendPacket(new MagicSkillUse(activeChar, 2046, 1, 1000, 600000));
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.SUMMON_A_PET));
+				L2World.getInstance().storeObject(petSummon);
+				petSummon.spawnMe(activeChar.getX() + 50, activeChar.getY() + 100, activeChar.getZ());
+				petSummon.startFeed(false);
+				item.setEnchantLevel(petSummon.getLevel());
+				
+				ThreadPoolManager.getInstance().scheduleGeneral(new PetSummonFinalizer(activeChar, petSummon), 900);
+				
+				if (petSummon.getCurrentFed() <= 0)
+					ThreadPoolManager.getInstance().scheduleGeneral(new PetSummonFeedWait(activeChar, petSummon), 60000);
+				else
+					petSummon.startFeed(false);
+				
+				break;
+			case 2: // wyvern
+				activeChar.mount(sitem.getNpcId(), item.getObjectId());
+				break;
+			case 3: // Great Wolf
+				activeChar.mount(sitem.getNpcId(), item.getObjectId());
+				break;
+		}
 	}
-
+	
 	static class PetSummonFeedWait implements Runnable
 	{
 		private L2PcInstance _activeChar;
 		private L2PetInstance _petSummon;
-
+		
 		PetSummonFeedWait(L2PcInstance activeChar, L2PetInstance petSummon)
 		{
 			_activeChar = activeChar;
 			_petSummon = petSummon;
 		}
-
+		
 		public void run()
 		{
 			try
 			{
-				if (_petSummon.getCurrentFed() <= 0 )
+				if (_petSummon.getCurrentFed() <= 0)
 					_petSummon.unSummon(_activeChar);
 				else
 					_petSummon.startFeed(false);
@@ -196,34 +201,38 @@ public class SummonItems implements IItemHandler
 			}
 		}
 	}
-
+	
 	static class PetSummonFinalizer implements Runnable
 	{
 		private L2PcInstance _activeChar;
 		private L2PetInstance _petSummon;
-
+		
 		PetSummonFinalizer(L2PcInstance activeChar, L2PetInstance petSummon)
 		{
 			_activeChar = activeChar;
 			_petSummon = petSummon;
 		}
-
+		
 		public void run()
 		{
 			try
 			{
 				_activeChar.sendPacket(new MagicSkillLaunched(_activeChar, 2046, 1));
 				_petSummon.setFollowStatus(true);
-		        _petSummon.setShowSummonAnimation(false);
+				_petSummon.setShowSummonAnimation(false);
 			}
 			catch (Throwable e)
 			{
 			}
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#getItemIds()
+	 */
 	public int[] getItemIds()
-    {
-    	return SummonItemsData.getInstance().itemIDs();
-    }
+	{
+		return SummonItemsData.getInstance().itemIDs();
+	}
 }

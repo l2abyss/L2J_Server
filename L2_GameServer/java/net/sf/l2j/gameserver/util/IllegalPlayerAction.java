@@ -47,8 +47,7 @@ public final class IllegalPlayerAction implements Runnable
 	public static final int PUNISH_KICKBAN = 3;
 	public static final int PUNISH_JAIL = 4;
 	
-	public IllegalPlayerAction(L2PcInstance actor, String message,
-	        int punishment)
+	public IllegalPlayerAction(L2PcInstance actor, String message, int punishment)
 	{
 		_message = message;
 		_punishment = punishment;
@@ -73,7 +72,10 @@ public final class IllegalPlayerAction implements Runnable
 	{
 		LogRecord record = new LogRecord(Level.INFO, "AUDIT:" + _message);
 		record.setLoggerName("audit");
-		record.setParameters(new Object[] { _actor, _punishment });
+		record.setParameters(new Object[]
+		{
+			_actor, _punishment
+		});
 		_logAudit.log(record);
 		
 		GmListTable.broadcastMessageToGMs(_message);

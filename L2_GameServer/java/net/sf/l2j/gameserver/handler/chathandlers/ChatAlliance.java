@@ -20,8 +20,11 @@ import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 
 public class ChatAlliance implements IChatHandler
 {
-	private static final int[] COMMAND_IDS = { 9 };
-
+	private static final int[] COMMAND_IDS =
+	{
+		9
+	};
+	
 	/**
 	 * Handle chat type 'alliance'
 	 * @see net.sf.l2j.gameserver.handler.IChatHandler#handleChat(int, net.sf.l2j.gameserver.model.actor.instance.L2PcInstance, java.lang.String)
@@ -34,7 +37,7 @@ public class ChatAlliance implements IChatHandler
 			activeChar.getClan().broadcastToOnlineAllyMembers(cs);
 		}
 	}
-
+	
 	/**
 	 * Returns the chat types registered to this handler
 	 * @see net.sf.l2j.gameserver.handler.IChatHandler#getChatTypeList()

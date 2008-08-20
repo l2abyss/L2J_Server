@@ -21,12 +21,12 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 
 /**
  * @author _drunk_
@@ -36,36 +36,45 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
  */
 public class Sweep implements ISkillHandler
 {
-    //private static Logger _log = Logger.getLogger(Sweep.class.getName());
-	private static final SkillType[] SKILL_IDS = {SkillType.SWEEP};
-
-    public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
-    {
-        if (!(activeChar instanceof L2PcInstance))
-        {
-            return;
-        }
-
-        L2PcInstance player = (L2PcInstance)activeChar;
+	//private static Logger _log = Logger.getLogger(Sweep.class.getName());
+	
+	private static final L2SkillType[] SKILL_IDS =
+	{
+		L2SkillType.SWEEP
+	};
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#useSkill(net.sf.l2j.gameserver.model.L2Character, net.sf.l2j.gameserver.model.L2Skill, net.sf.l2j.gameserver.model.L2Object[])
+	 */
+	public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
+	{
+		if (!(activeChar instanceof L2PcInstance))
+		{
+			return;
+		}
+		
+		L2PcInstance player = (L2PcInstance) activeChar;
 		InventoryUpdate iu = Config.FORCE_INVENTORY_UPDATE ? null : new InventoryUpdate();
 		boolean send = false;
-
-        for(int index = 0;index < targets.length;index++)
-        {
-            if (!(targets[index] instanceof L2Attackable))
-            	continue;
-	        L2Attackable target = (L2Attackable)targets[index];
-        	L2Attackable.RewardItem[] items = null;
-            boolean isSweeping = false;
-	        synchronized (target) {
-	        	if (target.isSweepActive())
-	        	{
-	        		items = target.takeSweep();
-	        		isSweeping = true;
-	        	}
-	        }
-            if (isSweeping)
-            {
+		
+		for (int index = 0; index < targets.length; index++)
+		{
+			if (!(targets[index] instanceof L2Attackable))
+				continue;
+			L2Attackable target = (L2Attackable) targets[index];
+			L2Attackable.RewardItem[] items = null;
+			boolean isSweeping = false;
+			synchronized (target)
+			{
+				if (target.isSweepActive())
+				{
+					items = target.takeSweep();
+					isSweeping = true;
+				}
+			}
+			if (isSweeping)
+			{
 				if (items == null || items.length == 0)
 					continue;
 				for (L2Attackable.RewardItem ritem : items)
@@ -75,15 +84,16 @@ public class Sweep implements ISkillHandler
 					else
 					{
 						L2ItemInstance item = player.getInventory().addItem("Sweep", ritem.getItemId(), ritem.getCount(), player, target);
-						if (iu != null) iu.addItem(item);
+						if (iu != null)
+							iu.addItem(item);
 						send = true;
-
+						
 						SystemMessage smsg;
 						if (ritem.getCount() > 1)
 						{
 							smsg = new SystemMessage(SystemMessageId.EARNED_S2_S1_S); // earned $s2$s1
 							smsg.addItemName(ritem.getItemId());
-                            smsg.addNumber(ritem.getCount());
+							smsg.addNumber(ritem.getCount());
 						}
 						else
 						{
@@ -93,21 +103,25 @@ public class Sweep implements ISkillHandler
 						player.sendPacket(smsg);
 					}
 				}
-            }
-            target.endDecayTask();
-
-    		if (send)
-    		{
-                if (iu != null)
-                	player.sendPacket(iu);
-        		else
-        			player.sendPacket(new ItemList(player, false));
-    		}
-        }
-    }
-
-    public SkillType[] getSkillIds()
-    {
-        return SKILL_IDS;
-    }
+			}
+			target.endDecayTask();
+			
+			if (send)
+			{
+				if (iu != null)
+					player.sendPacket(iu);
+				else
+					player.sendPacket(new ItemList(player, false));
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#getSkillIds()
+	 */
+	public L2SkillType[] getSkillIds()
+	{
+		return SKILL_IDS;
+	}
 }

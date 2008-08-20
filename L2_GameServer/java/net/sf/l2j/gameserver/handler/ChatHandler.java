@@ -30,19 +30,19 @@ import net.sf.l2j.gameserver.handler.chathandlers.ChatShout;
 import net.sf.l2j.gameserver.handler.chathandlers.ChatTell;
 import net.sf.l2j.gameserver.handler.chathandlers.ChatTrade;
 
- /**
-  * This class handles all chat handlers
-  *
-  * @author  durgus
-  */
+/**
+ * This class handles all chat handlers
+ *
+ * @author  durgus
+ */
 public class ChatHandler
 {
 	private static Logger _log = Logger.getLogger(ChatHandler.class.getName());
-
+	
 	private static ChatHandler _instance;
-
+	
 	private FastMap<Integer, IChatHandler> _datatable;
-
+	
 	public static ChatHandler getInstance()
 	{
 		if (_instance == null)
@@ -51,7 +51,7 @@ public class ChatHandler
 		}
 		return _instance;
 	}
-
+	
 	/**
 	 * Singleton constructor
 	 */
@@ -71,7 +71,7 @@ public class ChatHandler
 		registerChatHandler(new ChatTrade());
 		_log.config("ChatHandler: Loaded " + _datatable.size() + " handlers.");
 	}
-
+	
 	/**
 	 * Register a new chat handler
 	 * @param handler
@@ -81,11 +81,12 @@ public class ChatHandler
 		int[] ids = handler.getChatTypeList();
 		for (int i = 0; i < ids.length; i++)
 		{
-			if (Config.DEBUG) _log.fine("Adding handler for chat type "+ids[i]);
+			if (Config.DEBUG)
+				_log.fine("Adding handler for chat type " + ids[i]);
 			_datatable.put(ids[i], handler);
 		}
 	}
-
+	
 	/**
 	 * Get the chat handler for the given chat type
 	 * @param chatType
@@ -95,7 +96,7 @@ public class ChatHandler
 	{
 		return _datatable.get(chatType);
 	}
-
+	
 	/**
 	 * Returns the size
 	 * @return

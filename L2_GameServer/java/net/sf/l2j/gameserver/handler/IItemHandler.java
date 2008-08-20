@@ -32,7 +32,7 @@ public interface IItemHandler
 	 * @param item : L2ItemInstance designating the item to use
 	 */
 	public void useItem(L2PlayableInstance playable, L2ItemInstance item);
-
+	
 	/**
 	 * Returns the list of item IDs corresponding to the type of item.<BR><BR>
 	 * <B><I>Use :</I></U><BR>

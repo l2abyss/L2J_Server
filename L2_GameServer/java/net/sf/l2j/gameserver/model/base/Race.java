@@ -24,5 +24,10 @@ package net.sf.l2j.gameserver.model.base;
 
 public enum Race
 {
-	Human, Elf, DarkElf, Orc, Dwarf, Kamael;
+	Human,
+	Elf,
+	DarkElf,
+	Orc,
+	Dwarf,
+	Kamael;
 }

@@ -22,44 +22,53 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 
-public class Book implements IItemHandler {
+public class Book implements IItemHandler
+{
 	private static final int[] ITEM_IDS =
 	{
-		5588,6317,7561,7063,7064,7065,
-		7082,7083,7084,7085,7086,7087,
-		7088,7089,7090,7091,7092,7093,
-		7094,7095,7096,7097,7098,7099,
-		7100,7101,7102,7103,7104,7105,
-		7106,7107,7108,7109,7110,7111,
-		7112,8059
+		5588, 6317, 7561, 7063, 7064, 7065,
+		7082, 7083, 7084, 7085, 7086, 7087,
+		7088, 7089, 7090, 7091, 7092, 7093,
+		7094, 7095, 7096, 7097, 7098, 7099,
+		7100, 7101, 7102, 7103, 7104, 7105,
+		7106, 7107, 7108, 7109, 7110, 7111,
+		7112, 8059
 	};
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#useItem(net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance, net.sf.l2j.gameserver.model.L2ItemInstance)
+	 */
 	public void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
 		if (!(playable instanceof L2PcInstance))
 			return;
 		L2PcInstance activeChar = (L2PcInstance) playable;
-		final int itemId=item.getItemId();
-
+		final int itemId = item.getItemId();
+		
 		String filename = "data/html/help/" + itemId + ".htm";
 		String content = HtmCache.getInstance().getHtm(filename);
-
+		
 		if (content == null)
 		{
 			NpcHtmlMessage html = new NpcHtmlMessage(1);
-			html.setHtml("<html><body>My Text is missing:<br>"+filename+"</body></html>");
+			html.setHtml("<html><body>My Text is missing:<br>" + filename + "</body></html>");
 			activeChar.sendPacket(html);
 		}
 		else
 		{
-			NpcHtmlMessage itemReply = new NpcHtmlMessage(5,itemId);
+			NpcHtmlMessage itemReply = new NpcHtmlMessage(5, itemId);
 			itemReply.setHtml(content);
 			activeChar.sendPacket(itemReply);
 		}
-
-		activeChar.sendPacket( ActionFailed.STATIC_PACKET );
+		
+		activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#getItemIds()
+	 */
 	public int[] getItemIds()
 	{
 		return ITEM_IDS;

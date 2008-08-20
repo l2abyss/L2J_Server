@@ -32,40 +32,45 @@ public class L2MotherTreeZone extends L2ZoneType
 	{
 		super(id);
 	}
-
+	
 	@Override
 	protected void onEnter(L2Character character)
 	{
 		if (character instanceof L2PcInstance)
 		{
-			L2PcInstance player = (L2PcInstance)character;
-
+			L2PcInstance player = (L2PcInstance) character;
+			
 			// TODO: should be check affected
 			if (player.isInParty())
 			{
 				for (L2PcInstance member : player.getParty().getPartyMembers())
-					if (member.getRace() != Race.Elf) return;
+					if (member.getRace() != Race.Elf)
+						return;
 			}
-
+			
 			player.setInsideZone(L2Character.ZONE_MOTHERTREE, true);
 			player.sendPacket(new SystemMessage(SystemMessageId.ENTER_SHADOW_MOTHER_TREE));
 		}
 	}
-
+	
 	@Override
 	protected void onExit(L2Character character)
 	{
 		if (character instanceof L2PcInstance && character.isInsideZone(L2Character.ZONE_MOTHERTREE))
 		{
 			character.setInsideZone(L2Character.ZONE_MOTHERTREE, false);
-			((L2PcInstance)character).sendPacket(new SystemMessage(SystemMessageId.EXIT_SHADOW_MOTHER_TREE));
+			((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.EXIT_SHADOW_MOTHER_TREE));
 		}
 	}
-
+	
 	@Override
-    public void onDieInside(L2Character character) {}
-
+	public void onDieInside(L2Character character)
+	{
+	}
+	
 	@Override
-    public void onReviveInside(L2Character character) {}
-
+	public void onReviveInside(L2Character character)
+	{
+	}
+	
 }

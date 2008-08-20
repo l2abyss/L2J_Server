@@ -48,7 +48,10 @@ public class FloodProtector
 	// =========================================================
 	
 	// reuse delays for protected actions (in game ticks 1 tick = 100ms)
-	private static final int[] REUSEDELAY = new int[] { 4, 42, 42, 16, 100 };
+	private static final int[] REUSEDELAY = new int[]
+	{
+		4, 42, 42, 16, 100
+	};
 	
 	// protected actions
 	public static final int PROTECTED_USEITEM = 0;
@@ -119,8 +122,7 @@ public class FloodProtector
 		
 		if (value[action] < GameTimeController.getGameTicks())
 		{
-			value[action] = GameTimeController.getGameTicks()
-			        + REUSEDELAY[action];
+			value[action] = GameTimeController.getGameTicks() + REUSEDELAY[action];
 			entry.setValue(value);
 			return true;
 		}

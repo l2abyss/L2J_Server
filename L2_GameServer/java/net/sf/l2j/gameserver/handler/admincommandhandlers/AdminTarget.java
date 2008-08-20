@@ -30,18 +30,19 @@ public class AdminTarget implements IAdminCommandHandler
 	{
 		"admin_target"
 	};
-
+	
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
-		if (command.startsWith("admin_target")) handleTarget(command, activeChar);
+		if (command.startsWith("admin_target"))
+			handleTarget(command, activeChar);
 		return true;
 	}
-
+	
 	public String[] getAdminCommandList()
 	{
 		return ADMIN_COMMANDS;
 	}
-
+	
 	private void handleTarget(String command, L2PcInstance activeChar)
 	{
 		try
@@ -54,7 +55,7 @@ public class AdminTarget implements IAdminCommandHandler
 			}
 			else
 			{
-				activeChar.sendMessage("Player "+targetName+" not found");
+				activeChar.sendMessage("Player " + targetName + " not found");
 			}
 		}
 		catch (IndexOutOfBoundsException e)

@@ -25,29 +25,31 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
  */
 public class InstanceZone implements IUserCommandHandler
 {
-    
-    private static final int[] COMMAND_IDS = { 114 };
-    
-    /**
-     * @see net.sf.l2j.gameserver.handler.IUserCommandHandler#getUserCommandList()
-     */
-    public int[] getUserCommandList()
-    {
-        
-        return COMMAND_IDS;
-    }
-    
-    /**
-     * @see net.sf.l2j.gameserver.handler.IUserCommandHandler#useUserCommand(int,
-     *      net.sf.l2j.gameserver.model.actor.instance.L2PcInstance)
-     */
-    public boolean useUserCommand(int id, L2PcInstance activeChar)
-    {
-        if (id != COMMAND_IDS[0])
-            return false;
-        
-        activeChar.sendPacket(new SystemMessage(SystemMessageId.NO_INSTANCEZONE_TIME_LIMIT));
-        
-        return true;
-    }
+	
+	private static final int[] COMMAND_IDS =
+	{
+		114
+	};
+	
+	/**
+	 * @see net.sf.l2j.gameserver.handler.IUserCommandHandler#getUserCommandList()
+	 */
+	public int[] getUserCommandList()
+	{
+		
+		return COMMAND_IDS;
+	}
+	
+	/**
+	 * @see net.sf.l2j.gameserver.handler.IUserCommandHandler#useUserCommand(int, net.sf.l2j.gameserver.model.actor.instance.L2PcInstance)
+	 */
+	public boolean useUserCommand(int id, L2PcInstance activeChar)
+	{
+		if (id != COMMAND_IDS[0])
+			return false;
+		
+		activeChar.sendPacket(new SystemMessage(SystemMessageId.NO_INSTANCEZONE_TIME_LIMIT));
+		
+		return true;
+	}
 }

@@ -28,41 +28,52 @@ import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
  */
 public class stats implements IVoicedCommandHandler
 {
-    private static final String[] VOICED_COMMANDS = { "stats" };
-
-    public boolean useVoicedCommand(String command, L2PcInstance activeChar, String target)
-    {
-        if (command.equalsIgnoreCase("stats"))
-        {
-            L2PcInstance pc = L2World.getInstance().getPlayer(target);
-            if(pc!=null){
-                NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
-
-                TextBuilder replyMSG = new TextBuilder("<html><body>");
-
-                replyMSG.append("<center><font color=\"LEVEL\">[ L2J EVENT ENGINE ]</font></center><br>");
-                replyMSG.append("<br>Statistics for player <font color=\"LEVEL\">" + pc.getName() + "</font><br>");
-                replyMSG.append("Total kills <font color=\"FF0000\">" + pc.kills.size() + "</font><br>");
-                replyMSG.append("<br>Detailed list: <br>");
-                Iterator<String> it = pc.kills.iterator();
-                while(it.hasNext()){
-                    replyMSG.append("<font color=\"FF0000\">" + it.next() + "</font><br>");
-                }
-                replyMSG.append("</body></html>");
-
-                adminReply.setHtml(replyMSG.toString());
-                activeChar.sendPacket(adminReply);
-            }
-
-
-        }
-    	return true;
-    }
-
-
-    public String[] getVoicedCommandList()
-    {
-        return VOICED_COMMANDS;
-    }
-
+	private static final String[] VOICED_COMMANDS =
+	{
+		"stats"
+	};
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IVoicedCommandHandler#useVoicedCommand(java.lang.String, net.sf.l2j.gameserver.model.actor.instance.L2PcInstance, java.lang.String)
+	 */
+	public boolean useVoicedCommand(String command, L2PcInstance activeChar, String target)
+	{
+		if (command.equalsIgnoreCase("stats"))
+		{
+			L2PcInstance pc = L2World.getInstance().getPlayer(target);
+			if (pc != null)
+			{
+				NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
+				
+				TextBuilder replyMSG = new TextBuilder("<html><body>");
+				
+				replyMSG.append("<center><font color=\"LEVEL\">[ L2J EVENT ENGINE ]</font></center><br>");
+				replyMSG.append("<br>Statistics for player <font color=\"LEVEL\">" + pc.getName() + "</font><br>");
+				replyMSG.append("Total kills <font color=\"FF0000\">" + pc.kills.size() + "</font><br>");
+				replyMSG.append("<br>Detailed list: <br>");
+				Iterator<String> it = pc.kills.iterator();
+				while (it.hasNext())
+				{
+					replyMSG.append("<font color=\"FF0000\">" + it.next() + "</font><br>");
+				}
+				replyMSG.append("</body></html>");
+				
+				adminReply.setHtml(replyMSG.toString());
+				activeChar.sendPacket(adminReply);
+			}
+			
+		}
+		return true;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IVoicedCommandHandler#getVoicedCommandList()
+	 */
+	public String[] getVoicedCommandList()
+	{
+		return VOICED_COMMANDS;
+	}
+	
 }

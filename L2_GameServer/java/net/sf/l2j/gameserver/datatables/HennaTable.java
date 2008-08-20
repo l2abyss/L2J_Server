@@ -32,12 +32,12 @@ import net.sf.l2j.gameserver.templates.StatsSet;
 public class HennaTable
 {
 	private static Logger _log = Logger.getLogger(HennaTable.class.getName());
-
+	
 	private static HennaTable _instance;
-
+	
 	private Map<Integer, L2Henna> _henna;
 	private boolean _initialized = true;
-
+	
 	public static HennaTable getInstance()
 	{
 		if (_instance == null)
@@ -46,14 +46,14 @@ public class HennaTable
 		}
 		return _instance;
 	}
-
+	
 	private HennaTable()
 	{
 		_henna = new FastMap<Integer, L2Henna>();
 		restoreHennaData();
-
+		
 	}
-
+	
 	/**
 	 *
 	 */
@@ -62,32 +62,42 @@ public class HennaTable
 		java.sql.Connection con = null;
 		try
 		{
-			try {
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT symbol_id, symbol_name, dye_id, dye_amount, price, stat_INT, stat_STR, stat_CON, stat_MEM, stat_DEX, stat_WIT FROM henna");
-			ResultSet hennadata = statement.executeQuery();
-
-			fillHennaTable(hennadata);
-			hennadata.close();
-			statement.close();
-			} catch (Exception e) {
+			try
+			{
+				con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement statement = con.prepareStatement("SELECT symbol_id, symbol_name, dye_id, dye_amount, price, stat_INT, stat_STR, stat_CON, stat_MEM, stat_DEX, stat_WIT FROM henna");
+				ResultSet hennadata = statement.executeQuery();
+				
+				fillHennaTable(hennadata);
+				hennadata.close();
+				statement.close();
+			}
+			catch (Exception e)
+			{
 				_log.severe("error while creating henna table " + e);
 				e.printStackTrace();
 			}
-
-		} finally {
-			try { con.close(); } catch (Exception e) {}
+			
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
 		}
 	}
-
-	private void fillHennaTable(ResultSet HennaData)
-			throws Exception
+	
+	private void fillHennaTable(ResultSet HennaData) throws Exception
 	{
 		while (HennaData.next())
 		{
 			StatsSet hennaDat = new StatsSet();
 			int id = HennaData.getInt("symbol_id");
-
+			
 			hennaDat.set("symbol_id", id);
 			//hennaDat.set("symbol_name", HennaData.getString("symbol_name"));
 			hennaDat.set("dye", HennaData.getInt("dye_id"));
@@ -100,24 +110,21 @@ public class HennaTable
 			hennaDat.set("stat_MEM", HennaData.getInt("stat_MEM"));
 			hennaDat.set("stat_DEX", HennaData.getInt("stat_DEX"));
 			hennaDat.set("stat_WIT", HennaData.getInt("stat_WIT"));
-
-
+			
 			L2Henna template = new L2Henna(hennaDat);
 			_henna.put(id, template);
 		}
 		_log.config("HennaTable: Loaded " + _henna.size() + " Templates.");
 	}
-
-
+	
 	public boolean isInitialized()
 	{
 		return _initialized;
 	}
-
-
+	
 	public L2Henna getTemplate(int id)
 	{
 		return _henna.get(id);
 	}
-
-	}
+	
+}

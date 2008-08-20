@@ -35,11 +35,11 @@ import net.sf.l2j.gameserver.templates.StatsSet;
 public class CharTemplateTable
 {
 	private static final Logger LOG = Logger.getLogger(CharTemplateTable.class.getName());
-
+	
 	private static CharTemplateTable _instance;
 	
 	private final Map<Integer, L2PcTemplate> _templates = new FastMap<Integer, L2PcTemplate>();
-
+	
 	public static CharTemplateTable getInstance()
 	{
 		if (_instance == null)
@@ -48,21 +48,17 @@ public class CharTemplateTable
 		}
 		return _instance;
 	}
-
+	
 	private CharTemplateTable()
 	{
 		java.sql.Connection con = null;
-
+		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(
-					"SELECT * FROM class_list, char_templates, lvlupgain" +
-					" WHERE class_list.id = char_templates.classId" +
-					" AND class_list.id = lvlupgain.classId" +
-					" ORDER BY class_list.id");
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM class_list, char_templates, lvlupgain" + " WHERE class_list.id = char_templates.classId" + " AND class_list.id = lvlupgain.classId" + " ORDER BY class_list.id");
 			ResultSet rset = statement.executeQuery();
-
+			
 			while (rset.next())
 			{
 				StatsSet set = new StatsSet();
@@ -79,40 +75,40 @@ public class CharTemplateTable
 				set.set("lvlHpAdd", rset.getFloat("defaultHpAdd"));
 				set.set("lvlHpMod", rset.getFloat("defaultHpMod"));
 				set.set("baseMpMax", rset.getFloat("defaultMpBase"));
-                set.set("baseCpMax", rset.getFloat("defaultCpBase"));
-                set.set("lvlCpAdd", rset.getFloat("defaultCpAdd"));
-                set.set("lvlCpMod", rset.getFloat("defaultCpMod"));
+				set.set("baseCpMax", rset.getFloat("defaultCpBase"));
+				set.set("lvlCpAdd", rset.getFloat("defaultCpAdd"));
+				set.set("lvlCpMod", rset.getFloat("defaultCpMod"));
 				set.set("lvlMpAdd", rset.getFloat("defaultMpAdd"));
 				set.set("lvlMpMod", rset.getFloat("defaultMpMod"));
 				set.set("baseHpReg", 1.5);
 				set.set("baseMpReg", 0.9);
 				set.set("basePAtk", rset.getInt("p_atk"));
-				set.set("basePDef", /*classId.isMage()? 77 : 129*/ rset.getInt("p_def"));
+				set.set("basePDef", /*classId.isMage()? 77 : 129*/rset.getInt("p_def"));
 				set.set("baseMAtk", rset.getInt("m_atk"));
 				set.set("baseMDef", rset.getInt("char_templates.m_def"));
 				set.set("classBaseLevel", rset.getInt("class_lvl"));
 				set.set("basePAtkSpd", rset.getInt("p_spd"));
-				set.set("baseMAtkSpd", /*classId.isMage()? 166 : 333*/ rset.getInt("char_templates.m_spd"));
-				set.set("baseCritRate", rset.getInt("char_templates.critical")/10);
+				set.set("baseMAtkSpd", /*classId.isMage()? 166 : 333*/rset.getInt("char_templates.m_spd"));
+				set.set("baseCritRate", rset.getInt("char_templates.critical") / 10);
 				set.set("baseRunSpd", rset.getInt("move_spd"));
-				set.set("baseWalkSpd",0);
+				set.set("baseWalkSpd", 0);
 				set.set("baseShldDef", 0);
 				set.set("baseShldRate", 0);
 				set.set("baseAtkRange", 40);
-
+				
 				set.set("spawnX", rset.getInt("x"));
 				set.set("spawnY", rset.getInt("y"));
 				set.set("spawnZ", rset.getInt("z"));
-
+				
 				L2PcTemplate ct;
-
+				
 				set.set("collision_radius", rset.getDouble("m_col_r"));
 				set.set("collision_height", rset.getDouble("m_col_h"));
 				ct = new L2PcTemplate(set);
 				
 				_templates.put(ct.classId.getId(), ct);
 			}
-
+			
 			rset.close();
 			statement.close();
 			
@@ -125,13 +121,13 @@ public class CharTemplateTable
 		finally
 		{
 			try
-            {
-                con.close();
-            }
-            catch (Exception e)
-            {
-                // nothing
-            }
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+				// nothing
+			}
 		}
 		
 		try
@@ -160,57 +156,57 @@ public class CharTemplateTable
 					}
 					else
 					{
-					    L2PcTemplate pct = _templates.get(classId);
-					    if (pct != null)
-					    {
-					        pct.addItem(itemId, amount, equipped);
-					    }
-					    else
-					    {
-					        LOG.warning("char_creation_items: Entry for undefined class, classId: "+classId);
-					    }
+						L2PcTemplate pct = _templates.get(classId);
+						if (pct != null)
+						{
+							pct.addItem(itemId, amount, equipped);
+						}
+						else
+						{
+							LOG.warning("char_creation_items: Entry for undefined class, classId: " + classId);
+						}
 					}
 				}
 				else
 				{
-				    LOG.warning("char_creation_items: No data for itemId: "+itemId+" defined for classId "+classId);
+					LOG.warning("char_creation_items: No data for itemId: " + itemId + " defined for classId " + classId);
 				}
 			}
 		}
 		catch (SQLException e)
 		{
-		    LOG.log(Level.SEVERE, "Failed loading char creation items.", e);
-        }
-        finally
-        {
-            try
-            {
-                con.close();
-            }
-            catch (Exception e)
-            {
-                // nothing
-            }
-        }
+			LOG.log(Level.SEVERE, "Failed loading char creation items.", e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+				// nothing
+			}
+		}
 	}
-
+	
 	public L2PcTemplate getTemplate(ClassId classId)
 	{
 		return this.getTemplate(classId.getId());
 	}
-
+	
 	public L2PcTemplate getTemplate(int classId)
 	{
 		return _templates.get(classId);
 	}
-
-    public final String getClassNameById(int classId)
-    {
-    	L2PcTemplate pcTemplate = _templates.get(classId);
-    	if (pcTemplate == null)
-    	{
-    		throw new IllegalArgumentException("No template for classId: "+classId);
-    	}
-        return pcTemplate.className;
-    }
+	
+	public final String getClassNameById(int classId)
+	{
+		L2PcTemplate pcTemplate = _templates.get(classId);
+		if (pcTemplate == null)
+		{
+			throw new IllegalArgumentException("No template for classId: " + classId);
+		}
+		return pcTemplate.className;
+	}
 }

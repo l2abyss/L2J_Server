@@ -17,11 +17,11 @@ package net.sf.l2j.gameserver.skills.effects;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 
 class EffectChameleonRest extends L2Effect
 {
@@ -91,7 +91,7 @@ class EffectChameleonRest extends L2Effect
 			retval = false;
 		
 		// Only cont skills shouldn't end
-		if (getSkill().getSkillType() != SkillType.CONT)
+		if (getSkill().getSkillType() != L2SkillType.CONT)
 			return false;
 		
 		if (effected instanceof L2PcInstance)

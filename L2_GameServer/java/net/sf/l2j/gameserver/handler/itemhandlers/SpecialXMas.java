@@ -26,22 +26,29 @@ import net.sf.l2j.gameserver.network.serverpackets.ShowXMasSeal;
  */
 public class SpecialXMas implements IItemHandler
 {
-	private static int[] _itemIds = { 5555 };
-
+	private static int[] _itemIds =
+	{
+		5555
+	};
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#useItem(net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance, net.sf.l2j.gameserver.model.L2ItemInstance)
+	 */
 	public void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
 		if (!(playable instanceof L2PcInstance))
 			return;
-		L2PcInstance activeChar = (L2PcInstance)playable;
-	    int itemId = item.getItemId();
-
-	    if (itemId == 5555) // Token of Love
-	    {
-	    	ShowXMasSeal SXS = new ShowXMasSeal(5555);
+		L2PcInstance activeChar = (L2PcInstance) playable;
+		int itemId = item.getItemId();
+		
+		if (itemId == 5555) // Token of Love
+		{
+			ShowXMasSeal SXS = new ShowXMasSeal(5555);
 			activeChar.broadcastPacket(SXS);
 		}
 	}
-
+	
 	/**
 	 * @see net.sf.l2j.gameserver.handler.IItemHandler#getItemIds()
 	 */

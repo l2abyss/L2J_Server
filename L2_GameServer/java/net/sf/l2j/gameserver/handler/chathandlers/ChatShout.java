@@ -31,8 +31,11 @@ import net.sf.l2j.gameserver.util.Broadcast;
  */
 public class ChatShout implements IChatHandler
 {
-	private static final int[] COMMAND_IDS = { 1 };
-
+	private static final int[] COMMAND_IDS =
+	{
+		1
+	};
+	
 	/**
 	 * Handle chat type 'shout'
 	 * @see net.sf.l2j.gameserver.handler.IChatHandler#handleChat(int, net.sf.l2j.gameserver.model.actor.instance.L2PcInstance, java.lang.String)
@@ -40,7 +43,7 @@ public class ChatShout implements IChatHandler
 	public void handleChat(int type, L2PcInstance activeChar, String target, String text)
 	{
 		CreatureSay cs = new CreatureSay(activeChar.getObjectId(), type, activeChar.getName(), text);
-
+		
 		if (Config.DEFAULT_GLOBAL_CHAT.equalsIgnoreCase("on") || (Config.DEFAULT_GLOBAL_CHAT.equalsIgnoreCase("gm") && activeChar.isGM()))
 		{
 			int region = MapRegionTable.getInstance().getMapRegion(activeChar.getX(), activeChar.getY());
@@ -48,14 +51,14 @@ public class ChatShout implements IChatHandler
 			//synchronized (L2World.getInstance().getAllPlayers())
 			{
 				for (L2PcInstance player : pls)
-					if (region == MapRegionTable.getInstance().getMapRegion(player.getX(),player.getY()))
+					if (region == MapRegionTable.getInstance().getMapRegion(player.getX(), player.getY()))
 						player.sendPacket(cs);
 			}
 		}
 		else if (Config.DEFAULT_GLOBAL_CHAT.equalsIgnoreCase("global"))
 			Broadcast.toAllOnlinePlayers(cs);
 	}
-
+	
 	/**
 	 * Returns the chat types registered to this handler
 	 * @see net.sf.l2j.gameserver.handler.IChatHandler#getChatTypeList()

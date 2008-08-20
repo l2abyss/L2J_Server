@@ -20,13 +20,13 @@ import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Summon;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Formulas;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 
 /**
  * Class handling the Mana damage skill
@@ -35,8 +35,15 @@ import net.sf.l2j.gameserver.skills.Formulas;
  */
 public class Manadam implements ISkillHandler
 {
-	private static final SkillType[] SKILL_IDS = { SkillType.MANADAM };
+	private static final L2SkillType[] SKILL_IDS =
+	{
+		L2SkillType.MANADAM
+	};
 	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#useSkill(net.sf.l2j.gameserver.model.L2Character, net.sf.l2j.gameserver.model.L2Skill, net.sf.l2j.gameserver.model.L2Object[])
+	 */
 	public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
 	{
 		L2Character target = null;
@@ -136,9 +143,13 @@ public class Manadam implements ISkillHandler
 			}
 		}
 	}
-
-public SkillType[] getSkillIds()
-{
-	return SKILL_IDS;
-}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#getSkillIds()
+	 */
+	public L2SkillType[] getSkillIds()
+	{
+		return SKILL_IDS;
+	}
 }

@@ -36,7 +36,7 @@ public class AdminCreateItem implements IAdminCommandHandler
 		"admin_itemcreate",
 		"admin_create_item"
 	};
-
+	
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
 		if (command.equals("admin_itemcreate"))
@@ -49,19 +49,19 @@ public class AdminCreateItem implements IAdminCommandHandler
 			{
 				String val = command.substring(17);
 				StringTokenizer st = new StringTokenizer(val);
-				if (st.countTokens()== 2)
+				if (st.countTokens() == 2)
 				{
 					String id = st.nextToken();
 					int idval = Integer.parseInt(id);
 					String num = st.nextToken();
 					int numval = Integer.parseInt(num);
-					createItem(activeChar,idval,numval);
+					createItem(activeChar, idval, numval);
 				}
-				else if (st.countTokens()== 1)
+				else if (st.countTokens() == 1)
 				{
 					String id = st.nextToken();
 					int idval = Integer.parseInt(id);
-					createItem(activeChar,idval,1);
+					createItem(activeChar, idval, 1);
 				}
 			}
 			catch (StringIndexOutOfBoundsException e)
@@ -76,20 +76,20 @@ public class AdminCreateItem implements IAdminCommandHandler
 		}
 		return true;
 	}
-
+	
 	public String[] getAdminCommandList()
 	{
 		return ADMIN_COMMANDS;
 	}
-
+	
 	private void createItem(L2PcInstance activeChar, int id, int num)
 	{
-        L2Item template = ItemTable.getInstance().getTemplate(id);
-        if (template == null)
-        {
-            activeChar.sendMessage("This item doesn't exist."); 
-            return;
-        }
+		L2Item template = ItemTable.getInstance().getTemplate(id);
+		if (template == null)
+		{
+			activeChar.sendMessage("This item doesn't exist.");
+			return;
+		}
 		if (num > 20)
 		{
 			if (!template.isStackable())
@@ -98,12 +98,12 @@ public class AdminCreateItem implements IAdminCommandHandler
 				return;
 			}
 		}
-
+		
 		activeChar.getInventory().addItem("Admin", id, num, activeChar, null);
-
+		
 		ItemList il = new ItemList(activeChar, true);
 		activeChar.sendPacket(il);
-
+		
 		activeChar.sendMessage("You have spawned " + num + " item(s) number " + id + " in your inventory.");
 	}
 }

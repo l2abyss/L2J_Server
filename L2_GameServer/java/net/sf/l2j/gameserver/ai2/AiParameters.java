@@ -35,22 +35,22 @@ public class AiParameters
 	private L2NpcInstance _actor;
 	private List<Hated> _hated;
 	private List<Liked> _liked;
-
+	
 	public class Hated
 	{
 		public L2Character character;
 		public HateReason reason;
 		public int degree;
-
+		
 	}
-
+	
 	public class Liked
 	{
 		public L2Character character;
 		public LikeReason reason;
 		public int degree;
 	}
-
+	
 	public enum HateReason
 	{
 		GAVE_DAMMAGE,
@@ -58,7 +58,7 @@ public class AiParameters
 		GAVE_DAMMAGE_TO_FRIEND,
 		IS_ENNEMY
 	}
-
+	
 	public enum LikeReason
 	{
 		FRIEND,
@@ -66,7 +66,7 @@ public class AiParameters
 		HEALED_FRIEND,
 		GAVE_DAMMAGE_TO_ENNEMY
 	}
-
+	
 	public AiParameters(L2NpcInstance actor)
 	{
 		_eventQueue = new PriorityBlockingQueue<AiEvent>();
@@ -75,7 +75,7 @@ public class AiParameters
 		_actor = actor;
 		_inhibitions = EnumSet.noneOf(AiEventType.class);
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -83,7 +83,7 @@ public class AiParameters
 	{
 		return _eventQueue.isEmpty();
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -91,37 +91,37 @@ public class AiParameters
 	{
 		return _eventQueue.poll();
 	}
-
+	
 	public void queueEvents(AiEvent set)
 	{
 		_eventQueue.offer(set);
 	}
-
+	
 	public L2NpcInstance getActor()
 	{
 		return _actor;
 	}
-
+	
 	public List<Hated> getHated()
 	{
 		return _hated;
 	}
-
+	
 	public List<Liked> getLiked()
 	{
 		return _liked;
 	}
-
+	
 	public void addLiked(Liked cha)
 	{
 		_liked.add(cha);
 	}
-
+	
 	public void addHated(Hated cha)
 	{
 		_hated.add(cha);
 	}
-
+	
 	public void clear()
 	{
 		_hated.clear();
@@ -139,7 +139,7 @@ public class AiParameters
 	{
 		_inhibitions.remove(type);
 	}
-
+	
 	/**
 	 * @param type
 	 * @return

@@ -18,7 +18,8 @@ package net.sf.l2j.gameserver.ai;
  * This class contains an enum of each possibles evenements that can happen on an AI character.
  */
 
-public enum CtrlEvent {
+public enum CtrlEvent
+{
 	/** Something has changed, usually a previous step has being completed
 	 * or maybe was completed, the AI must thing on next action
 	 */
@@ -64,8 +65,8 @@ public enum CtrlEvent {
 	EVT_CANCEL,
 	/** The character is dead */
 	EVT_DEAD,
-    /** The character looks like dead */
-    EVT_FAKE_DEATH,
+	/** The character looks like dead */
+	EVT_FAKE_DEATH,
 	/** The character attack anyone randomly **/
 	EVT_CONFUSED,
 	/** The character cannot cast spells anymore **/

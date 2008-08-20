@@ -21,6 +21,7 @@ import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 
 /**
  * This class ...
@@ -79,7 +80,7 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 			// _log.fine("	currentState:"+activeChar.getCurrentState());	//for debug
 
 			// If Alternate rule Karma punishment is set to true, forbid skill Return to player with Karma
-			if (skill.getSkillType() == L2Skill.SkillType.RECALL && !Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && activeChar.getKarma() > 0)
+			if (skill.getSkillType() == L2SkillType.RECALL && !Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && activeChar.getKarma() > 0)
 				return;
 
 			// activeChar.stopMove();

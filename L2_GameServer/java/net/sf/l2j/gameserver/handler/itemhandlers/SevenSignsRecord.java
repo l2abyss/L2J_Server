@@ -26,26 +26,38 @@ import net.sf.l2j.gameserver.network.serverpackets.SSQStatus;
  *
  * @author Tempy
  */
-public class SevenSignsRecord implements IItemHandler {
-private static final int[] ITEM_IDS = {5707};
-
+public class SevenSignsRecord implements IItemHandler
+{
+	private static final int[] ITEM_IDS =
+	{
+		5707
+	};
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#useItem(net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance, net.sf.l2j.gameserver.model.L2ItemInstance)
+	 */
 	public void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
 		L2PcInstance activeChar;
-
+		
 		if (playable instanceof L2PcInstance)
-			activeChar = (L2PcInstance)playable;
+			activeChar = (L2PcInstance) playable;
 		else if (playable instanceof L2PetInstance)
-			activeChar = ((L2PetInstance)playable).getOwner();
+			activeChar = ((L2PetInstance) playable).getOwner();
 		else
 			return;
-
+		
 		SSQStatus ssqs = new SSQStatus(activeChar, 1);
 		activeChar.sendPacket(ssqs);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#getItemIds()
+	 */
 	public int[] getItemIds()
 	{
-       return ITEM_IDS;
+		return ITEM_IDS;
 	}
 }

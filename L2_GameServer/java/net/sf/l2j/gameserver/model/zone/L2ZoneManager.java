@@ -25,7 +25,7 @@ import net.sf.l2j.gameserver.model.L2Character;
 public class L2ZoneManager
 {
 	private final FastList<L2ZoneType> _zones;
-
+	
 	/**
 	 * The Constructor creates an initial zone list
 	 * use registerNewZone() / unregisterZone() to
@@ -36,7 +36,7 @@ public class L2ZoneManager
 	{
 		_zones = new FastList<L2ZoneType>();
 	}
-
+	
 	/**
 	 * Register a new zone object into the manager
 	 * @param zone
@@ -45,12 +45,12 @@ public class L2ZoneManager
 	{
 		_zones.add(zone);
 	}
-    
-    public FastList<L2ZoneType> getZones()
-    {
-        return _zones;
-    }
-
+	
+	public FastList<L2ZoneType> getZones()
+	{
+		return _zones;
+	}
+	
 	/**
 	 * Unregister a given zone from the manager (e.g. dynamic zones)
 	 * @param zone
@@ -59,37 +59,41 @@ public class L2ZoneManager
 	{
 		_zones.remove(zone);
 	}
-
+	
 	public void revalidateZones(L2Character character)
 	{
 		for (L2ZoneType e : _zones)
 		{
-			if(e != null) e.revalidateInZone(character);
+			if (e != null)
+				e.revalidateInZone(character);
 		}
 	}
-
+	
 	public void removeCharacter(L2Character character)
 	{
 		for (L2ZoneType e : _zones)
 		{
-			if(e != null) e.removeCharacter(character);
+			if (e != null)
+				e.removeCharacter(character);
 		}
 	}
-
+	
 	public void onDeath(L2Character character)
 	{
 		for (L2ZoneType e : _zones)
 		{
-			if(e != null) e.onDieInside(character);
+			if (e != null)
+				e.onDieInside(character);
 		}
 	}
-
+	
 	public void onRevive(L2Character character)
 	{
 		for (L2ZoneType e : _zones)
 		{
-			if(e != null) e.onReviveInside(character);
+			if (e != null)
+				e.onReviveInside(character);
 		}
 	}
-
+	
 }

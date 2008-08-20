@@ -30,38 +30,54 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
 public class CompBlessedSpiritShotPacks implements IItemHandler
 {
-	private static final int[] ITEM_IDS = { 5146, 5147, 5148, 5149, 5150, 5151, 5262, 5263, 5264, 5265, 5266, 5267 };
-
+	private static final int[] ITEM_IDS =
+	{
+		5146, 5147, 5148, 5149, 5150,
+		5151, 5262, 5263, 5264, 5265,
+		5266, 5267
+	};
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#useItem(net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance, net.sf.l2j.gameserver.model.L2ItemInstance)
+	 */
 	public void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
 		if (!(playable instanceof L2PcInstance))
 			return;
-		L2PcInstance activeChar = (L2PcInstance)playable;
-
-	    int itemId = item.getItemId();
-	    int itemToCreateId;
-	    int amount;
-
-	    if (itemId < 5200){ // Normal Compressed Package of SpiritShots
-    		itemToCreateId = itemId - 1199; // Gives id of matching item for this pack
-    		amount = 300;
-	    }else{  // Greater Compressed Package of SpiritShots
-     		itemToCreateId = itemId - 1315; // Gives id of matching item for this pack
-	    	amount = 1000;
-	    }
-
-	    activeChar.getInventory().destroyItem("Extract", item, activeChar, null);
-	    activeChar.getInventory().addItem("Extract", itemToCreateId, amount, activeChar, item);
-
-	    SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
-	    sm.addItemName(itemToCreateId);
-	    sm.addNumber(amount);
-        activeChar.sendPacket(sm);
-
-        ItemList playerUI = new ItemList(activeChar, false);
+		L2PcInstance activeChar = (L2PcInstance) playable;
+		
+		int itemId = item.getItemId();
+		int itemToCreateId;
+		int amount;
+		
+		if (itemId < 5200)
+		{ // Normal Compressed Package of SpiritShots
+			itemToCreateId = itemId - 1199; // Gives id of matching item for this pack
+			amount = 300;
+		}
+		else
+		{ // Greater Compressed Package of SpiritShots
+			itemToCreateId = itemId - 1315; // Gives id of matching item for this pack
+			amount = 1000;
+		}
+		
+		activeChar.getInventory().destroyItem("Extract", item, activeChar, null);
+		activeChar.getInventory().addItem("Extract", itemToCreateId, amount, activeChar, item);
+		
+		SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
+		sm.addItemName(itemToCreateId);
+		sm.addNumber(amount);
+		activeChar.sendPacket(sm);
+		
+		ItemList playerUI = new ItemList(activeChar, false);
 		activeChar.sendPacket(playerUI);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#getItemIds()
+	 */
 	public int[] getItemIds()
 	{
 		return ITEM_IDS;

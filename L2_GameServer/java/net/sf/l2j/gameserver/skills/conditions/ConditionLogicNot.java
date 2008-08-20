@@ -16,24 +16,26 @@ package net.sf.l2j.gameserver.skills.conditions;
 
 import net.sf.l2j.gameserver.skills.Env;
 
-
 /**
  * @author mkizub
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
-public class ConditionLogicNot extends Condition {
-
+public class ConditionLogicNot extends Condition
+{
+	
 	private Condition _condition;
-
+	
 	public ConditionLogicNot(Condition condition)
 	{
 		_condition = condition;
 		if (getListener() != null)
 			_condition.setListener(this);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.skills.conditions.Condition#setListener(net.sf.l2j.gameserver.skills.conditions.ConditionListener)
+	 */
 	@Override
 	void setListener(ConditionListener listener)
 	{
@@ -43,9 +45,14 @@ public class ConditionLogicNot extends Condition {
 			_condition.setListener(null);
 		super.setListener(listener);
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.skills.conditions.Condition#testImpl(net.sf.l2j.gameserver.skills.Env)
+	 */
 	@Override
-	public boolean testImpl(Env env) {
+	public boolean testImpl(Env env)
+	{
 		return !_condition.test(env);
 	}
 }

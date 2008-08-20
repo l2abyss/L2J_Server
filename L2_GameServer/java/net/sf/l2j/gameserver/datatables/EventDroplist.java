@@ -29,14 +29,14 @@ import net.sf.l2j.gameserver.script.DateRange;
 
 public class EventDroplist
 {
-
-    //private static Logger _log = Logger.getLogger(EventDroplist.class.getName());
-
+	
+	//private static Logger _log = Logger.getLogger(EventDroplist.class.getName());
+	
 	private static EventDroplist _instance;
-
+	
 	/** The table containing all DataDrop object */
 	private List<DateDrop> _allNpcDateDrops;
-
+	
 	public static EventDroplist getInstance()
 	{
 		if (_instance == null)
@@ -45,29 +45,26 @@ public class EventDroplist
 		}
 		return _instance;
 	}
-
-
+	
 	public class DateDrop
 	{
 		/** Start and end date of the Event */
-        public DateRange dateRange;
-
+		public DateRange dateRange;
+		
 		/** The table containing Item identifier that can be dropped as extra Items during the Event */
-	    public int[] items;
-
+		public int[] items;
+		
 		/** The min number of Item dropped in one time during this Event */
-	    public int min;
-
+		public int min;
+		
 		/** The max number of Item dropped in one time during this Event */
-	    public int max;
-
+		public int max;
+		
 		/** The rate of drop for this Event */
-	    public int chance;
-
-
+		public int chance;
+		
 	}
-
-
+	
 	/**
 	 * Constructor of EventDroplist.<BR><BR>
 	 */
@@ -75,8 +72,7 @@ public class EventDroplist
 	{
 		_allNpcDateDrops = new FastList<DateDrop>();
 	}
-
-
+	
 	/**
 	 * Create and Init a new DateDrop then add it to the allNpcDateDrops of EventDroplist .<BR><BR>
 	 *
@@ -88,36 +84,36 @@ public class EventDroplist
 	 */
 	public void addGlobalDrop(int[] items, int[] count, int chance, DateRange range)
 	{
-
-	    DateDrop date = new DateDrop();
-
-	    date.dateRange = range;
-	    date.items = items;
-	    date.min = count[0];
-	    date.max = count[1];
-	    date.chance = chance;
-
-	    _allNpcDateDrops.add(date);
+		
+		DateDrop date = new DateDrop();
+		
+		date.dateRange = range;
+		date.items = items;
+		date.min = count[0];
+		date.max = count[1];
+		date.chance = chance;
+		
+		_allNpcDateDrops.add(date);
 	}
-
+	
 	/**
 	 * Return all DateDrop of EventDroplist allNpcDateDrops within the date range.<BR><BR>
 	 */
 	public List<DateDrop> getAllDrops()
 	{
-	    List<DateDrop> list = new FastList<DateDrop>();
-
-	    for (DateDrop drop : _allNpcDateDrops)
-	    {
-	        Date currentDate = new Date();
-	        //_log.info("From: "+drop.from+" To: "+drop.to+" Now: "+ currentDate);
-	        if (drop.dateRange.isWithinRange(currentDate))
-	        {
-	            list.add(drop);
-	        }
-	    }
-
-	    return list;
+		List<DateDrop> list = new FastList<DateDrop>();
+		
+		for (DateDrop drop : _allNpcDateDrops)
+		{
+			Date currentDate = new Date();
+			//_log.info("From: "+drop.from+" To: "+drop.to+" Now: "+ currentDate);
+			if (drop.dateRange.isWithinRange(currentDate))
+			{
+				list.add(drop);
+			}
+		}
+		
+		return list;
 	}
-
+	
 }

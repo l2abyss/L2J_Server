@@ -19,86 +19,86 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Trap;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2TrapInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 
 public class Trap implements ISkillHandler
 {
-    private static final SkillType[] SKILL_IDS =
-    {
-        SkillType.DETECT_TRAP,
-        SkillType.REMOVE_TRAP
-    };
-    
-    /**
-     * 
-     * @see net.sf.l2j.gameserver.handler.ISkillHandler#useSkill(net.sf.l2j.gameserver.model.L2Character, net.sf.l2j.gameserver.model.L2Skill, net.sf.l2j.gameserver.model.L2Object[])
-     */
-    public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
-    {
-        if (activeChar == null || skill == null)
-            return;
-        
-        switch (skill.getSkillType())
-        {
-            case DETECT_TRAP:
-            {
-            	for (int index = 0; index < targets.length; index++)
-            	{
-            		L2Character target = (L2Character) targets[index];
-            		
-            		if (!(target instanceof L2TrapInstance))
-                        continue;
-            		
-            		if (target.isAlikeDead())
-                        continue;
-            		
-            		if (((L2Trap)target).getLevel() <= skill.getPower())
-            		{
-            			(((L2Trap)target)).setDetected();
-            			if (activeChar instanceof L2PcInstance)
-            				activeChar.sendMessage("A Trap has been detected!");
-            		}
-            	}
-                break;
-            }
-            case REMOVE_TRAP:
-            {
-            	for (int index = 0; index < targets.length; index++)
-            	{
-            		L2Character target = (L2Character) targets[index];
-            		
-            		if (!(target instanceof L2Trap))
-            			continue;
-            		
-            		if (!((L2Trap)target).isDetected())
-            			continue;
-            		
-            		if (((L2Trap)target).getLevel() > skill.getPower())
-            			continue;
-            		
-            		L2PcInstance trapOwner = null;
-                	L2Trap trap = null;
-                	trapOwner = ((L2Trap)target).getOwner();
-                	trap = trapOwner.getTrap();
-                	
-                	trap.unSummon(trapOwner);
-                	if (activeChar instanceof L2PcInstance)
-                		((L2PcInstance)activeChar).sendPacket(new SystemMessage(SystemMessageId.A_TRAP_DEVICE_HAS_BEEN_STOPPED));
-            	}
-            }
-        }
-    }
-    
-    /**
-     * 
-     * @see net.sf.l2j.gameserver.handler.ISkillHandler#getSkillIds()
-     */
-    public SkillType[] getSkillIds()
-    {
-        return SKILL_IDS;
-    }
+	private static final L2SkillType[] SKILL_IDS =
+	{
+		L2SkillType.DETECT_TRAP,
+		L2SkillType.REMOVE_TRAP
+	};
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#useSkill(net.sf.l2j.gameserver.model.L2Character, net.sf.l2j.gameserver.model.L2Skill, net.sf.l2j.gameserver.model.L2Object[])
+	 */
+	public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
+	{
+		if (activeChar == null || skill == null)
+			return;
+		
+		switch (skill.getSkillType())
+		{
+			case DETECT_TRAP:
+			{
+				for (int index = 0; index < targets.length; index++)
+				{
+					L2Character target = (L2Character) targets[index];
+					
+					if (!(target instanceof L2TrapInstance))
+						continue;
+					
+					if (target.isAlikeDead())
+						continue;
+					
+					if (((L2Trap) target).getLevel() <= skill.getPower())
+					{
+						(((L2Trap) target)).setDetected();
+						if (activeChar instanceof L2PcInstance)
+							activeChar.sendMessage("A Trap has been detected!");
+					}
+				}
+				break;
+			}
+			case REMOVE_TRAP:
+			{
+				for (int index = 0; index < targets.length; index++)
+				{
+					L2Character target = (L2Character) targets[index];
+					
+					if (!(target instanceof L2Trap))
+						continue;
+					
+					if (!((L2Trap) target).isDetected())
+						continue;
+					
+					if (((L2Trap) target).getLevel() > skill.getPower())
+						continue;
+					
+					L2PcInstance trapOwner = null;
+					L2Trap trap = null;
+					trapOwner = ((L2Trap) target).getOwner();
+					trap = trapOwner.getTrap();
+					
+					trap.unSummon(trapOwner);
+					if (activeChar instanceof L2PcInstance)
+						((L2PcInstance) activeChar).sendPacket(new SystemMessage(SystemMessageId.A_TRAP_DEVICE_HAS_BEEN_STOPPED));
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#getSkillIds()
+	 */
+	public L2SkillType[] getSkillIds()
+	{
+		return SKILL_IDS;
+	}
 }

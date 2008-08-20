@@ -22,6 +22,7 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.util.Rnd;
 
 /**
@@ -49,18 +50,18 @@ public final class L2BabyPetInstance extends L2PetInstance
 		{
 			// just in case, also allow cp heal and mp recharges to be considered here...you never know ;)
 			if ( skill.isActive() && (skill.getTargetType() == L2Skill.SkillTargetType.TARGET_OWNER_PET) &&
-					((skill.getSkillType() == L2Skill.SkillType.HEAL) ||
-					(skill.getSkillType() == L2Skill.SkillType.HOT) ||
-					(skill.getSkillType() == L2Skill.SkillType.BALANCE_LIFE) ||
-					(skill.getSkillType() == L2Skill.SkillType.HEAL_PERCENT) ||
-					(skill.getSkillType() == L2Skill.SkillType.HEAL_STATIC) ||
-					(skill.getSkillType() == L2Skill.SkillType.COMBATPOINTHEAL) ||
-					(skill.getSkillType() == L2Skill.SkillType.CPHOT) ||
-					(skill.getSkillType() == L2Skill.SkillType.MANAHEAL) ||
-					(skill.getSkillType() == L2Skill.SkillType.MANA_BY_LEVEL) ||
-					(skill.getSkillType() == L2Skill.SkillType.MANAHEAL_PERCENT) ||
-					(skill.getSkillType() == L2Skill.SkillType.MANARECHARGE) ||
-					(skill.getSkillType() == L2Skill.SkillType.MPHOT) )
+					((skill.getSkillType() == L2SkillType.HEAL) ||
+					(skill.getSkillType() == L2SkillType.HOT) ||
+					(skill.getSkillType() == L2SkillType.BALANCE_LIFE) ||
+					(skill.getSkillType() == L2SkillType.HEAL_PERCENT) ||
+					(skill.getSkillType() == L2SkillType.HEAL_STATIC) ||
+					(skill.getSkillType() == L2SkillType.COMBATPOINTHEAL) ||
+					(skill.getSkillType() == L2SkillType.CPHOT) ||
+					(skill.getSkillType() == L2SkillType.MANAHEAL) ||
+					(skill.getSkillType() == L2SkillType.MANA_BY_LEVEL) ||
+					(skill.getSkillType() == L2SkillType.MANAHEAL_PERCENT) ||
+					(skill.getSkillType() == L2SkillType.MANARECHARGE) ||
+					(skill.getSkillType() == L2SkillType.MPHOT) )
 				)
 			{
 				// only consider two skills.  If the pet has more, too bad...they won't be used by its AI.

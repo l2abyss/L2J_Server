@@ -19,14 +19,20 @@ import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 
 public class ShiftTarget implements ISkillHandler
 {
-	private static final SkillType[] SKILL_IDS = { SkillType.SHIFT_TARGET };
+	private static final L2SkillType[] SKILL_IDS =
+	{
+		L2SkillType.SHIFT_TARGET
+	};
 	
-	public void useSkill(L2Character activeChar, L2Skill skill,
-	        L2Object[] targets)
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#useSkill(net.sf.l2j.gameserver.model.L2Character, net.sf.l2j.gameserver.model.L2Skill, net.sf.l2j.gameserver.model.L2Object[])
+	 */
+	public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
 	{
 		if (targets == null)
 			return;
@@ -47,7 +53,11 @@ public class ShiftTarget implements ISkillHandler
 		}
 	}
 	
-	public SkillType[] getSkillIds()
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#getSkillIds()
+	 */
+	public L2SkillType[] getSkillIds()
 	{
 		return SKILL_IDS;
 	}

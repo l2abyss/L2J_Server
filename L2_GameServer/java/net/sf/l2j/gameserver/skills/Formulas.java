@@ -27,7 +27,6 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2SiegeClan;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Summon;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
@@ -44,6 +43,7 @@ import net.sf.l2j.gameserver.skills.conditions.ConditionPlayerState.CheckPlayerS
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.templates.L2Armor;
 import net.sf.l2j.gameserver.templates.L2PcTemplate;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.gameserver.templates.L2Weapon;
 import net.sf.l2j.gameserver.templates.L2WeaponType;
 import net.sf.l2j.gameserver.util.Util;
@@ -1368,7 +1368,7 @@ public final class Formulas
 				if (calcMagicSuccess(attacker, target, skill)
 					&& (target.getLevel() - attacker.getLevel()) <= 9)
 				{
-					if (skill.getSkillType() == SkillType.DRAIN)
+					if (skill.getSkillType() == L2SkillType.DRAIN)
 						attacker.sendPacket(new SystemMessage(SystemMessageId.DRAIN_HALF_SUCCESFUL));
 					else
 						attacker.sendPacket(new SystemMessage(SystemMessageId.ATTACK_FAILED));
@@ -1388,7 +1388,7 @@ public final class Formulas
 
 			if (target instanceof L2PcInstance)
 			{
-				if (skill.getSkillType() == SkillType.DRAIN)
+				if (skill.getSkillType() == L2SkillType.DRAIN)
 				{
 					SystemMessage sm = new SystemMessage(SystemMessageId.RESISTED_S1_DRAIN);
 					sm.addCharName(attacker);
@@ -1430,7 +1430,7 @@ public final class Formulas
 		if (Config.ALT_GAME_MAGICFAILURES && !calcMagicSuccess(owner, target, skill))
 		{			
 			if (calcMagicSuccess(owner, target, skill) && (target.getLevel() - skill.getMagicLevel()) <= 9){
-				if (skill.getSkillType() == SkillType.DRAIN)
+				if (skill.getSkillType() == L2SkillType.DRAIN)
 					owner.sendPacket(new SystemMessage(SystemMessageId.DRAIN_HALF_SUCCESFUL));
 				else
 					owner.sendPacket(new SystemMessage(SystemMessageId.ATTACK_FAILED));
@@ -1449,7 +1449,7 @@ public final class Formulas
 		
 			if (target instanceof L2PcInstance)
 			{
-				if (skill.getSkillType() == SkillType.DRAIN)
+				if (skill.getSkillType() == L2SkillType.DRAIN)
 				{
 					SystemMessage sm = new SystemMessage(SystemMessageId.RESISTED_S1_DRAIN);
 					sm.addCharName(owner);
@@ -1675,7 +1675,7 @@ public final class Formulas
 	public boolean calcMagicAffected(L2Character actor, L2Character target, L2Skill skill)
 	{
 		// TODO: CHECK/FIX THIS FORMULA UP!!
-		SkillType type = skill.getSkillType();
+		L2SkillType type = skill.getSkillType();
 		double defence = 0;
 		if (skill.isActive() && skill.isOffensive()) 
 			defence = target.getMDef(actor, skill);
@@ -1683,9 +1683,9 @@ public final class Formulas
 		double attack = 2 * actor.getMAtk(target, skill) * calcSkillVulnerability(target, skill);
 		double d = (attack - defence)/(attack + defence);
 		if (target.isRaid()
-				&& (type == SkillType.CONFUSION || type == SkillType.MUTE || type == SkillType.PARALYZE
-					|| type == SkillType.ROOT || type == SkillType.FEAR || type == SkillType.SLEEP
-					|| type == SkillType.STUN || type == SkillType.DEBUFF || type == SkillType.AGGDEBUFF))
+				&& (type == L2SkillType.CONFUSION || type == L2SkillType.MUTE || type == L2SkillType.PARALYZE
+					|| type == L2SkillType.ROOT || type == L2SkillType.FEAR || type == L2SkillType.SLEEP
+					|| type == L2SkillType.STUN || type == L2SkillType.DEBUFF || type == L2SkillType.AGGDEBUFF))
 		{
 			if ( d > 0 && Rnd.get(1000) == 1)
 				return true;
@@ -1780,10 +1780,10 @@ public final class Formulas
 			}
 			
 			// Finally, calculate skilltype vulnerabilities
-			SkillType type = skill.getSkillType();
+			L2SkillType type = skill.getSkillType();
 			
 			// For additional effects on PDAM and MDAM skills (like STUN, SHOCK, PARALYZE...)
-			if (type != null && (type == SkillType.PDAM || type == SkillType.MDAM))
+			if (type != null && (type == L2SkillType.PDAM || type == L2SkillType.MDAM))
 				type = skill.getEffectType();
 
 			if (type != null)
@@ -1831,7 +1831,7 @@ public final class Formulas
 		return multiplier;
 	}
 
-	public double calcSkillStatModifier(SkillType type, L2Character target)
+	public double calcSkillStatModifier(L2SkillType type, L2Character target)
 	{
 		double multiplier = 1;
 		if (type == null) return multiplier;
@@ -1866,12 +1866,12 @@ public final class Formulas
 
 	public boolean calcSkillSuccess(L2Character attacker, L2Character target, L2Skill skill, boolean ss, boolean sps, boolean bss)
 	{
-		SkillType type = skill.getSkillType();
+		L2SkillType type = skill.getSkillType();
 
 		int value = (int) skill.getPower();
 		int lvlDepend = skill.getLevelDepend();
 
-		if (type == SkillType.PDAM || type == SkillType.MDAM || type == SkillType.WEAPON_SA) // For additional effects on PDAM skills (like STUN, SHOCK,...)
+		if (type == L2SkillType.PDAM || type == L2SkillType.MDAM || type == L2SkillType.WEAPON_SA) // For additional effects on PDAM skills (like STUN, SHOCK,...)
 		{
 			value = skill.getEffectPower();
 			type = skill.getEffectType();
@@ -1879,21 +1879,21 @@ public final class Formulas
 		// TODO: Temporary fix for skills with EffectPower = 0 or EffectType not set
 		if (value == 0 || type == null)
 		{
-			if (skill.getSkillType() == SkillType.PDAM)
+			if (skill.getSkillType() == L2SkillType.PDAM)
 			{
 				value = 50;
-				type = SkillType.STUN;
+				type = L2SkillType.STUN;
 			}
-			if (skill.getSkillType() == SkillType.MDAM)
+			if (skill.getSkillType() == L2SkillType.MDAM)
 			{
 				value = 30;
-				type = SkillType.PARALYZE;
+				type = L2SkillType.PARALYZE;
 			}
 		}
 
 		// TODO: Temporary fix for skills with Power = 0 or LevelDepend not set
-		if (value == 0) value = (type == SkillType.PARALYZE) ? 50 : (type == SkillType.FEAR)? 40 : 80;
-		if (lvlDepend == 0) lvlDepend = (type == SkillType.PARALYZE || type == SkillType.FEAR) ? 1 : 2;
+		if (value == 0) value = (type == L2SkillType.PARALYZE) ? 50 : (type == L2SkillType.FEAR)? 40 : 80;
+		if (lvlDepend == 0) lvlDepend = (type == L2SkillType.PARALYZE || type == L2SkillType.FEAR) ? 1 : 2;
 
 		// TODO: Temporary fix for NPC skills with MagicLevel not set
 		// int lvlmodifier = (skill.getMagicLevel() - target.getLevel()) * lvlDepend;
@@ -1946,12 +1946,12 @@ public final class Formulas
 	
 	public boolean calcCubicSkillSuccess(L2CubicInstance attacker, L2Character target, L2Skill skill)
 	{
-		SkillType type = skill.getSkillType();
+		L2SkillType type = skill.getSkillType();
 		
 		if (target.isRaid()
-				&& (type == SkillType.CONFUSION || type == SkillType.MUTE || type == SkillType.PARALYZE
-					|| type == SkillType.ROOT || type == SkillType.FEAR || type == SkillType.SLEEP
-					|| type == SkillType.STUN || type == SkillType.DEBUFF || type == SkillType.AGGDEBUFF))
+				&& (type == L2SkillType.CONFUSION || type == L2SkillType.MUTE || type == L2SkillType.PARALYZE
+					|| type == L2SkillType.ROOT || type == L2SkillType.FEAR || type == L2SkillType.SLEEP
+					|| type == L2SkillType.STUN || type == L2SkillType.DEBUFF || type == L2SkillType.AGGDEBUFF))
 				return false; // these skills should not work on RaidBoss
 		
 		// if target reflect this skill then the effect will fail
@@ -1960,15 +1960,15 @@ public final class Formulas
 		int value = (int) skill.getPower();
 		int lvlDepend = skill.getLevelDepend();
 		
-		if (type == SkillType.PDAM || type == SkillType.MDAM) // For additional effects on PDAM skills (like STUN, SHOCK,...)
+		if (type == L2SkillType.PDAM || type == L2SkillType.MDAM) // For additional effects on PDAM skills (like STUN, SHOCK,...)
 		{
 			value = skill.getEffectPower();
 			type = skill.getEffectType();
 		}
 
 		// TODO: Temporary fix for skills with Power = 0 or LevelDepend not set
-		if (value == 0) value = (type == SkillType.PARALYZE) ? 50 : (type == SkillType.FEAR) ? 40 : 80;
-		if (lvlDepend == 0) lvlDepend = (type == SkillType.PARALYZE || type == SkillType.FEAR) ? 1 : 2;
+		if (value == 0) value = (type == L2SkillType.PARALYZE) ? 50 : (type == L2SkillType.FEAR) ? 40 : 80;
+		if (lvlDepend == 0) lvlDepend = (type == L2SkillType.PARALYZE || type == L2SkillType.FEAR) ? 1 : 2;
 
 		// TODO: Temporary fix for NPC skills with MagicLevel not set
 		// int lvlmodifier = (skill.getMagicLevel() - target.getLevel()) * lvlDepend;

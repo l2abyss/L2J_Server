@@ -43,6 +43,7 @@ import net.sf.l2j.gameserver.model.entity.TvTEventTeam;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillDrain;
 import net.sf.l2j.gameserver.taskmanager.AttackStanceTaskManager;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.util.Rnd;
 
 public class L2CubicInstance
@@ -670,24 +671,24 @@ public class L2CubicInstance
             					_log.info("Cubic Id: " + _id + " Target: " + _target.getName() + " distance: " + Math.sqrt(_target.getDistanceSq(_owner.getX(), _owner.getY(), _owner.getZ())));
             				}
 
-            				L2Skill.SkillType type = skill.getSkillType();
+            				L2SkillType type = skill.getSkillType();
             				ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
             				L2Character[] targets = {_target};
 
             				if (handler != null)
             				{
-            					if((type == L2Skill.SkillType.PARALYZE) || (type == L2Skill.SkillType.STUN))
+            					if((type == L2SkillType.PARALYZE) || (type == L2SkillType.STUN))
             					{
             						if (Config.DEBUG)
             							_log.info("L2CubicInstance: Action.run() handler " + type);
             						((Disablers)handler).useCubicSkill(L2CubicInstance.this, skill, targets);
             					}
-            					else if(type == L2Skill.SkillType.MDAM){
+            					else if(type == L2SkillType.MDAM){
             						if (Config.DEBUG)
             							_log.info("L2CubicInstance: Action.run() handler " + type);
             						((Mdam)handler).useCubicSkill(L2CubicInstance.this, skill, targets);
             					}
-            					else if((type == L2Skill.SkillType.POISON) || (type == L2Skill.SkillType.DEBUFF) || (type == L2Skill.SkillType.DOT) ){
+            					else if((type == L2SkillType.POISON) || (type == L2SkillType.DEBUFF) || (type == L2SkillType.DOT) ){
             						if (Config.DEBUG)
             							_log.info("L2CubicInstance: Action.run() handler " + type);
             						((Continuous)handler).useCubicSkill(L2CubicInstance.this, skill, targets);
@@ -700,7 +701,7 @@ public class L2CubicInstance
             				}
             				else
             				{
-            					if(type == L2Skill.SkillType.DRAIN){
+            					if(type == L2SkillType.DRAIN){
             						if (Config.DEBUG)
             							_log.info("L2CubicInstance: Action.run() skill " + type);
             						((L2SkillDrain)skill).useCubicSkill(L2CubicInstance.this, targets);

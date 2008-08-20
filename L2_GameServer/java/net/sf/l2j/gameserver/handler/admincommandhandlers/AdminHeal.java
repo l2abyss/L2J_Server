@@ -32,13 +32,19 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
  *
  * @version $Revision: 1.2.4.5 $ $Date: 2005/04/11 10:06:06 $
  */
-public class AdminHeal implements IAdminCommandHandler {
+public class AdminHeal implements IAdminCommandHandler
+{
 	private static Logger _log = Logger.getLogger(AdminRes.class.getName());
-	private static final String[] ADMIN_COMMANDS = { "admin_heal" };
-
-	public boolean useAdminCommand(String command, L2PcInstance activeChar) {
-
-		if (command.equals("admin_heal")) handleRes(activeChar);
+	private static final String[] ADMIN_COMMANDS =
+	{
+		"admin_heal"
+	};
+	
+	public boolean useAdminCommand(String command, L2PcInstance activeChar)
+	{
+		
+		if (command.equals("admin_heal"))
+			handleRes(activeChar);
 		else if (command.startsWith("admin_heal"))
 		{
 			try
@@ -49,36 +55,38 @@ public class AdminHeal implements IAdminCommandHandler {
 			catch (StringIndexOutOfBoundsException e)
 			{
 				if (Config.DEVELOPER)
-					_log.warning("Heal error: "+e);
+					_log.warning("Heal error: " + e);
 				activeChar.sendMessage("Incorrect target/radius specified.");
 			}
 		}
 		return true;
 	}
-
-	public String[] getAdminCommandList() {
+	
+	public String[] getAdminCommandList()
+	{
 		return ADMIN_COMMANDS;
 	}
-
+	
 	private void handleRes(L2PcInstance activeChar)
 	{
 		handleRes(activeChar, null);
 	}
-
-	private void handleRes(L2PcInstance activeChar, String player) {
-
+	
+	private void handleRes(L2PcInstance activeChar, String player)
+	{
+		
 		L2Object obj = activeChar.getTarget();
 		if (player != null)
 		{
 			L2PcInstance plyr = L2World.getInstance().getPlayer(player);
-
+			
 			if (plyr != null)
 				obj = plyr;
 			else
 			{
 				try
 				{
-					int radius  = Integer.parseInt(player);
+					int radius = Integer.parseInt(player);
 					Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
 					//synchronized (activeChar.getKnownList().getKnownObjects())
 					{
@@ -96,19 +104,21 @@ public class AdminHeal implements IAdminCommandHandler {
 					activeChar.sendMessage("Healed within " + radius + " unit radius.");
 					return;
 				}
-				catch (NumberFormatException nbe) {}
+				catch (NumberFormatException nbe)
+				{
+				}
 			}
 		}
 		if (obj == null)
 			obj = activeChar;
 		if (obj instanceof L2Character)
 		{
-			L2Character target = (L2Character)obj;
+			L2Character target = (L2Character) obj;
 			target.setCurrentHpMp(target.getMaxHp(), target.getMaxMp());
-			if ( target instanceof L2PcInstance )
+			if (target instanceof L2PcInstance)
 				target.setCurrentCp(target.getMaxCp());
 			if (Config.DEBUG)
-				_log.fine("GM: "+activeChar.getName()+"("+activeChar.getObjectId()+") healed character "+target.getName());
+				_log.fine("GM: " + activeChar.getName() + "(" + activeChar.getObjectId() + ") healed character " + target.getName());
 		}
 		else
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));

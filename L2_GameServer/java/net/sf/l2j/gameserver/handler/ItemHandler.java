@@ -59,11 +59,11 @@ import net.sf.l2j.gameserver.handler.itemhandlers.SummonItems;
 public class ItemHandler
 {
 	private static Logger _log = Logger.getLogger(ItemHandler.class.getName());
-
+	
 	private static ItemHandler _instance;
-
+	
 	private Map<Integer, IItemHandler> _datatable;
-
+	
 	/**
 	 * Create ItemHandler if doesn't exist and returns ItemHandler
 	 * @return ItemHandler
@@ -76,19 +76,19 @@ public class ItemHandler
 		}
 		return _instance;
 	}
-
+	
 	/**
 	 * Returns the number of elements contained in datatable
 	 * @return int : Size of the datatable
 	 */
-    public int size()
-    {
-        return _datatable.size();
-    }
-
-    /**
-     * Constructor of ItemHandler
-     */
+	public int size()
+	{
+		return _datatable.size();
+	}
+	
+	/**
+	 * Constructor of ItemHandler
+	 */
 	private ItemHandler()
 	{
 		_datatable = new TreeMap<Integer, IItemHandler>();
@@ -97,36 +97,36 @@ public class ItemHandler
 		registerItemHandler(new SoulShots());
 		registerItemHandler(new SpiritShot());
 		registerItemHandler(new BlessedSpiritShot());
-        registerItemHandler(new BeastSoulShot());
-        registerItemHandler(new BeastSpiritShot());
-        registerItemHandler(new Key());
-        registerItemHandler(new PaganKeys());
+		registerItemHandler(new BeastSoulShot());
+		registerItemHandler(new BeastSpiritShot());
+		registerItemHandler(new Key());
+		registerItemHandler(new PaganKeys());
 		registerItemHandler(new Maps());
 		registerItemHandler(new Potions());
 		registerItemHandler(new Recipes());
-        registerItemHandler(new RollingDice());
-        registerItemHandler(new MysteryPotion());
+		registerItemHandler(new RollingDice());
+		registerItemHandler(new MysteryPotion());
 		registerItemHandler(new EnchantScrolls());
-        registerItemHandler(new EnergyStone());
+		registerItemHandler(new EnergyStone());
 		registerItemHandler(new Book());
 		registerItemHandler(new Remedy());
 		registerItemHandler(new Scrolls());
 		registerItemHandler(new CrystalCarol());
 		registerItemHandler(new SoulCrystals());
 		registerItemHandler(new SevenSignsRecord());
-        registerItemHandler(new CharChangePotions());
-        registerItemHandler(new Firework());
-        registerItemHandler(new Seed());
-        registerItemHandler(new Harvester());
-        registerItemHandler(new MercTicket());
+		registerItemHandler(new CharChangePotions());
+		registerItemHandler(new Firework());
+		registerItemHandler(new Seed());
+		registerItemHandler(new Harvester());
+		registerItemHandler(new MercTicket());
 		registerItemHandler(new FishShots());
 		registerItemHandler(new ExtractableItems());
 		registerItemHandler(new SpecialXMas());
 		registerItemHandler(new SummonItems());
 		registerItemHandler(new BeastSpice());
-        _log.config("ItemHandler: Loaded " + _datatable.size() + " handlers.");
+		_log.config("ItemHandler: Loaded " + _datatable.size() + " handlers.");
 	}
-
+	
 	/**
 	 * Adds handler of item type in <I>datatable</I>.<BR><BR>
 	 * <B><I>Concept :</I></U><BR>
@@ -144,7 +144,7 @@ public class ItemHandler
 			_datatable.put(new Integer(ids[i]), handler);
 		}
 	}
-
+	
 	/**
 	 * Returns the handler of the item
 	 * @param itemId : int designating the itemID

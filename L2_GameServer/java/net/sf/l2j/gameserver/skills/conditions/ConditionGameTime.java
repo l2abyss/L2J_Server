@@ -20,30 +20,36 @@ import net.sf.l2j.gameserver.skills.Env;
 /**
  * @author mkizub
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
-public class ConditionGameTime extends Condition {
-
-	public enum CheckGameTime { NIGHT }
-
+public class ConditionGameTime extends Condition
+{
+	
+	public enum CheckGameTime
+	{
+		NIGHT
+	}
+	
 	private final CheckGameTime _check;
 	private final boolean _required;
-
+	
 	public ConditionGameTime(CheckGameTime check, boolean required)
 	{
 		_check = check;
 		_required = required;
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.skills.conditions.Condition#testImpl(net.sf.l2j.gameserver.skills.Env)
+	 */
 	@Override
-	public boolean testImpl(Env env) {
+	public boolean testImpl(Env env)
+	{
 		switch (_check)
 		{
-		case NIGHT:
-			return GameTimeController.getInstance().isNowNight() == _required;
+			case NIGHT:
+				return GameTimeController.getInstance().isNowNight() == _required;
 		}
 		return !_required;
 	}
 }
-

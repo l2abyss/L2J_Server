@@ -47,8 +47,9 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
  * - manualhero = cycles olympiad and calculate new heroes.
  * @version $Revision: 1.3.2.1.2.4 $ $Date: 2007/07/28 10:06:06 $
  */
-public class AdminAdmin implements IAdminCommandHandler {
-
+public class AdminAdmin implements IAdminCommandHandler
+{
+	
 	private static final String[] ADMIN_COMMANDS =
 	{
 		"admin_admin",
@@ -71,25 +72,25 @@ public class AdminAdmin implements IAdminCommandHandler {
 		"admin_sethero",
 		"admin_endolympiad"
 	};
-
+	
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
-
+		
 		if (command.startsWith("admin_admin"))
 		{
-			showMainPage(activeChar,command);
+			showMainPage(activeChar, command);
 		}
-		else if(command.startsWith("admin_gmliston"))
+		else if (command.startsWith("admin_gmliston"))
 		{
 			GmListTable.getInstance().showGm(activeChar);
 			activeChar.sendMessage("Registered into gm list");
 		}
-		else if(command.startsWith("admin_gmlistoff"))
+		else if (command.startsWith("admin_gmlistoff"))
 		{
 			GmListTable.getInstance().hideGm(activeChar);
 			activeChar.sendMessage("Removed from gm list");
 		}
-		else if(command.startsWith("admin_silence"))
+		else if (command.startsWith("admin_silence"))
 		{
 			if (activeChar.getMessageRefusal()) // already in message refusal mode
 			{
@@ -102,59 +103,65 @@ public class AdminAdmin implements IAdminCommandHandler {
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.MESSAGE_REFUSAL_MODE));
 			}
 		}
-		else if(command.startsWith("admin_saveolymp"))
+		else if (command.startsWith("admin_saveolymp"))
 		{
 			try
 			{
 				Olympiad.getInstance().save();
 			}
-			catch(Exception e){e.printStackTrace();}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 			activeChar.sendMessage("olympiad stuff saved!!");
 		}
-		else if(command.startsWith("admin_endolympiad"))
+		else if (command.startsWith("admin_endolympiad"))
 		{
 			try
 			{
 				Olympiad.getInstance().manualSelectHeroes();
 			}
-			catch(Exception e){e.printStackTrace();}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 			activeChar.sendMessage("Heroes formed");
 		}
 		else if (command.startsWith("admin_manualhero") || command.startsWith("admin_sethero"))
 		{
 			L2PcInstance target = null;
-
+			
 			if (activeChar.getTarget() instanceof L2PcInstance)
 			{
-				target = (L2PcInstance)activeChar.getTarget();
-				target.setHero(target.isHero()? false : true);
+				target = (L2PcInstance) activeChar.getTarget();
+				target.setHero(target.isHero() ? false : true);
 			}
 			else
 			{
 				target = activeChar;
-				target.setHero(target.isHero()? false : true);
+				target.setHero(target.isHero() ? false : true);
 			}
 		}
-		else if(command.startsWith("admin_diet"))
+		else if (command.startsWith("admin_diet"))
 		{
 			try
 			{
 				StringTokenizer st = new StringTokenizer(command);
 				st.nextToken();
-				if(st.nextToken().equalsIgnoreCase("on"))
+				if (st.nextToken().equalsIgnoreCase("on"))
 				{
 					activeChar.setDietMode(true);
 					activeChar.sendMessage("Diet mode on");
 				}
-				else if(st.nextToken().equalsIgnoreCase("off"))
+				else if (st.nextToken().equalsIgnoreCase("off"))
 				{
 					activeChar.setDietMode(false);
 					activeChar.sendMessage("Diet mode off");
 				}
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
-				if(activeChar.getDietMode())
+				if (activeChar.getDietMode())
 				{
 					activeChar.setDietMode(false);
 					activeChar.sendMessage("Diet mode off");
@@ -170,7 +177,7 @@ public class AdminAdmin implements IAdminCommandHandler {
 				activeChar.refreshOverloaded();
 			}
 		}
-		else if(command.startsWith("admin_tradeoff"))
+		else if (command.startsWith("admin_tradeoff"))
 		{
 			try
 			{
@@ -186,9 +193,9 @@ public class AdminAdmin implements IAdminCommandHandler {
 					activeChar.sendMessage("Trade refusal disabled");
 				}
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
-				if(activeChar.getTradeRefusal())
+				if (activeChar.getTradeRefusal())
 				{
 					activeChar.setTradeRefusal(false);
 					activeChar.sendMessage("Trade refusal disabled");
@@ -200,54 +207,54 @@ public class AdminAdmin implements IAdminCommandHandler {
 				}
 			}
 		}
-		else if(command.startsWith("admin_reload"))
+		else if (command.startsWith("admin_reload"))
 		{
 			StringTokenizer st = new StringTokenizer(command);
 			st.nextToken();
 			try
 			{
 				String type = st.nextToken();
-				if(type.equals("multisell"))
+				if (type.equals("multisell"))
 				{
 					L2Multisell.getInstance().reload();
 					activeChar.sendMessage("multisell reloaded");
 				}
-				else if(type.startsWith("teleport"))
+				else if (type.startsWith("teleport"))
 				{
 					TeleportLocationTable.getInstance().reloadAll();
 					activeChar.sendMessage("teleport location table reloaded");
 				}
-				else if(type.startsWith("skill"))
+				else if (type.startsWith("skill"))
 				{
 					SkillTable.getInstance().reload();
 					activeChar.sendMessage("skills reloaded");
 				}
-				else if(type.equals("npc"))
+				else if (type.equals("npc"))
 				{
 					NpcTable.getInstance().reloadAllNpc();
 					activeChar.sendMessage("npcs reloaded");
 				}
-				else if(type.startsWith("htm"))
+				else if (type.startsWith("htm"))
 				{
 					HtmCache.getInstance().reload();
-					activeChar.sendMessage("Cache[HTML]: " + HtmCache.getInstance().getMemoryUsage()  + " megabytes on " + HtmCache.getInstance().getLoadedFiles() + " files loaded");
+					activeChar.sendMessage("Cache[HTML]: " + HtmCache.getInstance().getMemoryUsage() + " megabytes on " + HtmCache.getInstance().getLoadedFiles() + " files loaded");
 				}
-				else if(type.startsWith("item"))
+				else if (type.startsWith("item"))
 				{
 					ItemTable.getInstance().reload();
 					activeChar.sendMessage("Item templates reloaded");
 				}
-				else if(type.startsWith("instancemanager"))
+				else if (type.startsWith("instancemanager"))
 				{
 					Manager.reloadAll();
 					activeChar.sendMessage("All instance manager has been reloaded");
 				}
-				else if(type.startsWith("npcwalkers"))
+				else if (type.startsWith("npcwalkers"))
 				{
 					NpcWalkerRoutesTable.getInstance().load();
 					activeChar.sendMessage("All NPC walker routes have been reloaded");
 				}
-				else if(type.startsWith("access"))
+				else if (type.startsWith("access"))
 				{
 					AccessLevels.getInstance().reloadAccessLevels();
 					AdminCommandAccessRights.getInstance().reloadAdminCommandAccessRights();
@@ -255,34 +262,34 @@ public class AdminAdmin implements IAdminCommandHandler {
 				}
 				
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				activeChar.sendMessage("Usage:  //reload <multisell|skill|npc|htm|item|instancemanager>");
 			}
 		}
-
-		else if(command.startsWith("admin_set"))
+		
+		else if (command.startsWith("admin_set"))
 		{
 			StringTokenizer st = new StringTokenizer(command);
-			String[] cmd=st.nextToken().split("_");
+			String[] cmd = st.nextToken().split("_");
 			try
 			{
 				String[] parameter = st.nextToken().split("=");
 				String pName = parameter[0].trim();
 				String pValue = parameter[1].trim();
 				if (Config.setParameterValue(pName, pValue))
-					activeChar.sendMessage("parameter "+pName+" succesfully set to "+pValue);
+					activeChar.sendMessage("parameter " + pName + " succesfully set to " + pValue);
 				else
 					activeChar.sendMessage("Invalid parameter!");
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
-				if (cmd.length==2)
+				if (cmd.length == 2)
 					activeChar.sendMessage("Usage: //set parameter=value");
 			}
 			finally
 			{
-				if (cmd.length==3)
+				if (cmd.length == 3)
 				{
 					if (cmd[2].equalsIgnoreCase("menu"))
 						AdminHelpPage.showHelpPage(activeChar, "settings.htm");
@@ -293,45 +300,47 @@ public class AdminAdmin implements IAdminCommandHandler {
 		}
 		return true;
 	}
-
+	
 	public String[] getAdminCommandList()
 	{
 		return ADMIN_COMMANDS;
 	}
-
+	
 	private void showMainPage(L2PcInstance activeChar, String command)
 	{
 		int mode = 0;
-		String filename=null;
+		String filename = null;
 		try
 		{
 			mode = Integer.parseInt(command.substring(11));
 		}
-		catch (Exception e) {}
+		catch (Exception e)
+		{
+		}
 		switch (mode)
 		{
-		case 1:
-			filename="main";
-			break;
-		case 2:
-			filename="game";
-			break;
-		case 3:
-			filename="effects";
-			break;
-		case 4:
-			filename="server";
-			break;
-		case 5:
-			filename="mods";
-			break;
-		default:
-			if (Config.GM_ADMIN_MENU_STYLE.equals("modern"))
-				filename="main";
-			else
-				filename="classic";
-		break;
+			case 1:
+				filename = "main";
+				break;
+			case 2:
+				filename = "game";
+				break;
+			case 3:
+				filename = "effects";
+				break;
+			case 4:
+				filename = "server";
+				break;
+			case 5:
+				filename = "mods";
+				break;
+			default:
+				if (Config.GM_ADMIN_MENU_STYLE.equals("modern"))
+					filename = "main";
+				else
+					filename = "classic";
+				break;
 		}
-		AdminHelpPage.showHelpPage(activeChar, filename+"_menu.htm");
+		AdminHelpPage.showHelpPage(activeChar, filename + "_menu.htm");
 	}
 }

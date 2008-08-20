@@ -35,7 +35,7 @@ public class AdminCommandAccessRights
 	
 	/** The one and only instance of this class, retrievable by getInstance()<br> */
 	private static AdminCommandAccessRights _instance = null;
-	private Map< String, L2AdminCommandAccessRight > _adminCommandAccessRights;
+	private Map<String, L2AdminCommandAccessRight> _adminCommandAccessRights;
 	
 	/**
 	 * Returns the one and only instance of this class<br><br>
@@ -46,22 +46,22 @@ public class AdminCommandAccessRights
 	{
 		if (_instance == null)
 			_instance = new AdminCommandAccessRights();
-
+		
 		return _instance;
 	}
-
+	
 	/** The access rights<br> */
 	private AdminCommandAccessRights()
 	{
 		loadAdminCommandAccessRights();
 	}
-
+	
 	/**
 	 * Loads admin command access rights from database<br>
 	 */
 	private void loadAdminCommandAccessRights()
 	{
-		_adminCommandAccessRights = new FastMap< String, L2AdminCommandAccessRight >();
+		_adminCommandAccessRights = new FastMap<String, L2AdminCommandAccessRight>();
 		
 		java.sql.Connection con = null;
 		
@@ -100,7 +100,7 @@ public class AdminCommandAccessRights
 		
 		_log.info("AdminCommandAccessRights: Loaded " + _adminCommandAccessRights.size() + " from database.");
 	}
-
+	
 	public boolean hasAccess(String adminCommand, L2AccessLevel accessLevel)
 	{
 		if (!accessLevel.isGm())

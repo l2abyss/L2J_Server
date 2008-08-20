@@ -39,10 +39,10 @@ public class Forum
 	public static final int ALL = 1;
 	public static final int CLANMEMBERONLY = 2;
 	public static final int OWNERONLY = 3;
-
+	
 	private static Logger _log = Logger.getLogger(Forum.class.getName());
 	private List<Forum> _children;
-	private Map<Integer,Topic> _topic;
+	private Map<Integer, Topic> _topic;
 	private int _forumId;
 	private String _forumName;
 	//private int _ForumParent;
@@ -52,6 +52,7 @@ public class Forum
 	private Forum _fParent;
 	private int _ownerID;
 	private boolean _loaded = false;
+	
 	/**
 	 * @param i
 	 */
@@ -60,14 +61,14 @@ public class Forum
 		_forumId = Forumid;
 		_fParent = FParent;
 		_children = new FastList<Forum>();
-		_topic = new FastMap<Integer,Topic>();
-
+		_topic = new FastMap<Integer, Topic>();
+		
 		/*load();
 		getChildren();	*/
 		ForumsBBSManager.getInstance().addForum(this);
-
+		
 	}
-
+	
 	/**
 	 * @param name
 	 * @param parent
@@ -85,12 +86,12 @@ public class Forum
 		_fParent = parent;
 		_ownerID = OwnerID;
 		_children = new FastList<Forum>();
-		_topic = new FastMap<Integer,Topic>();
+		_topic = new FastMap<Integer, Topic>();
 		parent._children.add(this);
 		ForumsBBSManager.getInstance().addForum(this);
 		_loaded = true;
 	}
-
+	
 	/**
 	 *
 	 */
@@ -103,7 +104,7 @@ public class Forum
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM forums WHERE forum_id=?");
 			statement.setInt(1, _forumId);
 			ResultSet result = statement.executeQuery();
-
+			
 			if (result.next())
 			{
 				_forumName = result.getString("forum_name");
@@ -137,14 +138,14 @@ public class Forum
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM topic WHERE topic_forum_id=? ORDER BY topic_id DESC");
 			statement.setInt(1, _forumId);
 			ResultSet result = statement.executeQuery();
-
+			
 			while (result.next())
 			{
-				Topic t = new Topic(Topic.ConstructorType.RESTORE,Integer.parseInt(result.getString("topic_id")),Integer.parseInt(result.getString("topic_forum_id")),result.getString("topic_name"),Long.parseLong(result.getString("topic_date")),result.getString("topic_ownername"),Integer.parseInt(result.getString("topic_ownerid")),Integer.parseInt(result.getString("topic_type")),Integer.parseInt(result.getString("topic_reply")));
-				_topic.put(t.getID(),t);
-				if(t.getID() > TopicBBSManager.getInstance().getMaxID(this))
+				Topic t = new Topic(Topic.ConstructorType.RESTORE, Integer.parseInt(result.getString("topic_id")), Integer.parseInt(result.getString("topic_forum_id")), result.getString("topic_name"), Long.parseLong(result.getString("topic_date")), result.getString("topic_ownername"), Integer.parseInt(result.getString("topic_ownerid")), Integer.parseInt(result.getString("topic_type")), Integer.parseInt(result.getString("topic_reply")));
+				_topic.put(t.getID(), t);
+				if (t.getID() > TopicBBSManager.getInstance().getMaxID(this))
 				{
-					TopicBBSManager.getInstance().setMaxID(t.getID(),this);
+					TopicBBSManager.getInstance().setMaxID(t.getID(), this);
 				}
 			}
 			result.close();
@@ -166,7 +167,7 @@ public class Forum
 			}
 		}
 	}
-
+	
 	/**
 	 *
 	 */
@@ -179,10 +180,10 @@ public class Forum
 			PreparedStatement statement = con.prepareStatement("SELECT forum_id FROM forums WHERE forum_parent=?");
 			statement.setInt(1, _forumId);
 			ResultSet result = statement.executeQuery();
-
+			
 			while (result.next())
 			{
-
+				
 				_children.add(new Forum(Integer.parseInt(result.getString("forum_id")), this));
 			}
 			result.close();
@@ -203,12 +204,12 @@ public class Forum
 			{
 			}
 		}
-
+		
 	}
-
+	
 	public int getTopicSize()
 	{
-		if(_loaded == false)
+		if (_loaded == false)
 		{
 			load();
 			getChildren();
@@ -216,9 +217,10 @@ public class Forum
 		}
 		return _topic.size();
 	}
+	
 	public Topic gettopic(int j)
 	{
-		if(_loaded == false)
+		if (_loaded == false)
 		{
 			load();
 			getChildren();
@@ -226,16 +228,18 @@ public class Forum
 		}
 		return _topic.get(j);
 	}
+	
 	public void addtopic(Topic t)
 	{
-		if(_loaded == false)
+		if (_loaded == false)
 		{
 			load();
 			getChildren();
 			_loaded = true;
 		}
-		_topic.put(t.getID(),t);
+		_topic.put(t.getID(), t);
 	}
+	
 	/**
 	* @return
 	*/
@@ -243,10 +247,10 @@ public class Forum
 	{
 		return _forumId;
 	}
-
+	
 	public String getName()
 	{
-		if(_loaded == false)
+		if (_loaded == false)
 		{
 			load();
 			getChildren();
@@ -254,9 +258,10 @@ public class Forum
 		}
 		return _forumName;
 	}
+	
 	public int getType()
 	{
-		if(_loaded == false)
+		if (_loaded == false)
 		{
 			load();
 			getChildren();
@@ -264,13 +269,14 @@ public class Forum
 		}
 		return _forumType;
 	}
+	
 	/**
 	 * @param name
 	 * @return
 	 */
 	public Forum getChildByName(String name)
 	{
-		if(_loaded == false)
+		if (_loaded == false)
 		{
 			load();
 			getChildren();
@@ -285,14 +291,16 @@ public class Forum
 		}
 		return null;
 	}
+	
 	/**
 	 * @param id
 	 */
 	public void rmTopicByID(int id)
 	{
 		_topic.remove(id);
-
+		
 	}
+	
 	/**
 	 *
 	 */
@@ -312,7 +320,7 @@ public class Forum
 			statement.setInt(7, _ownerID);
 			statement.execute();
 			statement.close();
-
+			
 		}
 		catch (Exception e)
 		{
@@ -328,27 +336,18 @@ public class Forum
 			{
 			}
 		}
-
 	}
-
+	
 	/**
 	 *
 	 */
 	public void vload()
 	{
-		if(_loaded == false)
+		if (_loaded == false)
 		{
 			load();
 			getChildren();
 			_loaded = true;
 		}
 	}
-
-
-
-	/**
-	 * @return
-	 */
-
-
 }

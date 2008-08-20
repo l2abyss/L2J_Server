@@ -31,16 +31,16 @@ public class L2DamageZone extends L2ZoneType
 	private int _damageHPPerSec;
 	private int _damageMPPerSec;
 	private Future<?> _task;
-
+	
 	public L2DamageZone(int id)
 	{
 		super(id);
-
+		
 		// Setup default damage
 		_damageHPPerSec = 200;
 		_damageMPPerSec = 0;
 	}
-
+	
 	@Override
 	public void setParameter(String name, String value)
 	{
@@ -52,9 +52,10 @@ public class L2DamageZone extends L2ZoneType
 		{
 			_damageMPPerSec = Integer.parseInt(value);
 		}
-		else super.setParameter(name, value);
+		else
+			super.setParameter(name, value);
 	}
-
+	
 	@Override
 	protected void onEnter(L2Character character)
 	{
@@ -63,7 +64,7 @@ public class L2DamageZone extends L2ZoneType
 			_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplyDamage(this), 10, 3300);
 		}
 	}
-
+	
 	@Override
 	protected void onExit(L2Character character)
 	{
@@ -73,30 +74,31 @@ public class L2DamageZone extends L2ZoneType
 			_task = null;
 		}
 	}
-
+	
 	protected Collection<L2Character> getCharacterList()
 	{
 		return _characterList.values();
 	}
-
+	
 	protected int getHPDamagePerSecond()
 	{
 		return _damageHPPerSec;
 	}
-
+	
 	protected int getMPDamagePerSecond()
 	{
 		return _damageMPPerSec;
 	}
-
+	
 	class ApplyDamage implements Runnable
 	{
 		private L2DamageZone _dmgZone;
+		
 		ApplyDamage(L2DamageZone zone)
 		{
 			_dmgZone = zone;
 		}
-
+		
 		public void run()
 		{
 			for (L2Character temp : _dmgZone.getCharacterList())
@@ -111,11 +113,15 @@ public class L2DamageZone extends L2ZoneType
 			}
 		}
 	}
-
+	
 	@Override
-    public void onDieInside(L2Character character) {}
-
+	public void onDieInside(L2Character character)
+	{
+	}
+	
 	@Override
-    public void onReviveInside(L2Character character) {}
-
+	public void onReviveInside(L2Character character)
+	{
+	}
+	
 }

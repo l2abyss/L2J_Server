@@ -117,7 +117,6 @@ import net.sf.l2j.gameserver.model.PetInventory;
 import net.sf.l2j.gameserver.model.ShortCuts;
 import net.sf.l2j.gameserver.model.TradeList;
 import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.appearance.PcAppearance;
 import net.sf.l2j.gameserver.model.actor.knownlist.PcKnownList;
 import net.sf.l2j.gameserver.model.actor.stat.PcStat;
@@ -205,6 +204,7 @@ import net.sf.l2j.gameserver.templates.L2EtcItemType;
 import net.sf.l2j.gameserver.templates.L2Henna;
 import net.sf.l2j.gameserver.templates.L2Item;
 import net.sf.l2j.gameserver.templates.L2PcTemplate;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.gameserver.templates.L2Weapon;
 import net.sf.l2j.gameserver.templates.L2WeaponType;
 import net.sf.l2j.gameserver.util.Broadcast;
@@ -1905,7 +1905,7 @@ public final class L2PcInstance extends L2PlayableInstance
             L2Skill effectSkill = currenteffect.getSkill();
 
             // Ignore all buff skills that are party related (ie. songs, dances) while still remaining weapon dependant on cast though.
-            if (!effectSkill.isOffensive() && !(effectSkill.getTargetType() == SkillTargetType.TARGET_PARTY && effectSkill.getSkillType() == SkillType.BUFF))
+            if (!effectSkill.isOffensive() && !(effectSkill.getTargetType() == SkillTargetType.TARGET_PARTY && effectSkill.getSkillType() == L2SkillType.BUFF))
             {
                 // Check to rest to assure current effect meets weapon requirements.
             	if (!effectSkill.getWeaponDependancy(this))
@@ -7799,7 +7799,7 @@ public final class L2PcInstance extends L2PlayableInstance
         // Create and set a L2Object containing the target of the skill
         L2Object target = null;
         SkillTargetType sklTargetType = skill.getTargetType();
-        SkillType sklType = skill.getSkillType();
+        L2SkillType sklType = skill.getSkillType();
 
         Point3D worldPosition = getCurrentSkillWorldPosition();
         
@@ -7926,8 +7926,8 @@ public final class L2PcInstance extends L2PlayableInstance
             return;
         }
 
-        if (isFishing() && (sklType != SkillType.PUMPING &&
-        		sklType != SkillType.REELING && sklType != SkillType.FISHING))
+        if (isFishing() && (sklType != L2SkillType.PUMPING &&
+        		sklType != L2SkillType.REELING && sklType != L2SkillType.FISHING))
         {
             //Only fishing skills are available
             sendPacket(new SystemMessage(SystemMessageId.ONLY_FISHING_SKILLS_NOW));
@@ -8045,7 +8045,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 
 		// Check if the skill is Spoil type and if the target isn't already spoiled
-		if (sklType == SkillType.SPOIL)
+		if (sklType == L2SkillType.SPOIL)
 		{
 			if (!(target instanceof L2MonsterInstance))
 			{
@@ -8057,9 +8057,9 @@ public final class L2PcInstance extends L2PlayableInstance
 				return;
 			}
 		}
-
+		
         // Check if the skill is Sweep type and if conditions not apply
-        if (sklType == SkillType.SWEEP && target instanceof L2Attackable)
+        if (sklType == L2SkillType.SWEEP && target instanceof L2Attackable)
 		{
 			int spoilerId = ((L2Attackable) target).getIsSpoiledBy();
 			
@@ -8088,7 +8088,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 
 		// Check if the skill is Drain Soul (Soul Crystals) and if the target is a MOB
-		if (sklType == SkillType.DRAIN_SOUL)
+		if (sklType == L2SkillType.DRAIN_SOUL)
 		{
 			if (!(target instanceof L2MonsterInstance))
 			{
@@ -8139,13 +8139,13 @@ public final class L2PcInstance extends L2PlayableInstance
             return;
         }
 
-        if (sklType == SkillType.SIEGEFLAG && !SiegeFlag.checkIfOkToPlaceFlag(this, false))
+        if (sklType == L2SkillType.SIEGEFLAG && !SiegeFlag.checkIfOkToPlaceFlag(this, false))
         {
             sendPacket(ActionFailed.STATIC_PACKET);
             abortCast();
             return;
         }
-        else if (sklType == SkillType.STRSIEGEASSAULT && !StrSiegeAssault.checkIfOkToUseStriderSiegeAssault(this, false))
+        else if (sklType == L2SkillType.STRSIEGEASSAULT && !StrSiegeAssault.checkIfOkToUseStriderSiegeAssault(this, false))
         {
         	sendPacket(ActionFailed.STATIC_PACKET);
         	abortCast();

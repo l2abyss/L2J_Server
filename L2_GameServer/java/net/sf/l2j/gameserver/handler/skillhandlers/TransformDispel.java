@@ -18,41 +18,51 @@ import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 
 /**
  * @author Ahmed
  */
 public class TransformDispel implements ISkillHandler
 {
-    private static final SkillType[] SKILL_IDS = { SkillType.TRANSFORMDISPEL };
-    
-    public void useSkill(L2Character activeChar, L2Skill skill,
-            L2Object[] targets)
-    {
-        if (activeChar.isAlikeDead())
-            return;
-        
-        for (L2Object target : targets)
-        {
-            if (!(target instanceof L2PcInstance))
-                continue;
-            
-            L2PcInstance trg = (L2PcInstance) target;
-            
-            if (trg.isAlikeDead() || trg.isCursedWeaponEquipped())
-                continue;
-            
-            if (trg.isTransformed())
-            {
-                activeChar.stopTransformation(null);
-            }
-        }
-    }
-    
-    public SkillType[] getSkillIds()
-    {
-        return SKILL_IDS;
-    }
+	private static final L2SkillType[] SKILL_IDS =
+	{
+		L2SkillType.TRANSFORMDISPEL
+	};
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#useSkill(net.sf.l2j.gameserver.model.L2Character, net.sf.l2j.gameserver.model.L2Skill, net.sf.l2j.gameserver.model.L2Object[])
+	 */
+	public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
+	{
+		if (activeChar.isAlikeDead())
+			return;
+		
+		for (L2Object target : targets)
+		{
+			if (!(target instanceof L2PcInstance))
+				continue;
+			
+			L2PcInstance trg = (L2PcInstance) target;
+			
+			if (trg.isAlikeDead() || trg.isCursedWeaponEquipped())
+				continue;
+			
+			if (trg.isTransformed())
+			{
+				activeChar.stopTransformation(null);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#getSkillIds()
+	 */
+	public L2SkillType[] getSkillIds()
+	{
+		return SKILL_IDS;
+	}
 }

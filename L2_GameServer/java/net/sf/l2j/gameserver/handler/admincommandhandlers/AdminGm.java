@@ -28,32 +28,38 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
  *
  * @version $Revision: 1.2.4.4 $ $Date: 2005/04/11 10:06:06 $
  */
-public class AdminGm implements IAdminCommandHandler {
+public class AdminGm implements IAdminCommandHandler
+{
 	private static Logger _log = Logger.getLogger(AdminGm.class.getName());
-	private static final String[] ADMIN_COMMANDS = { "admin_gm" };
-
-	public boolean useAdminCommand(String command, L2PcInstance activeChar) {
-
+	private static final String[] ADMIN_COMMANDS =
+	{
+		"admin_gm"
+	};
+	
+	public boolean useAdminCommand(String command, L2PcInstance activeChar)
+	{
+		
 		if (command.equals("admin_gm"))
-            handleGm(activeChar);
-
+			handleGm(activeChar);
+		
 		return true;
 	}
-
-	public String[] getAdminCommandList() {
+	
+	public String[] getAdminCommandList()
+	{
 		return ADMIN_COMMANDS;
 	}
-
+	
 	private void handleGm(L2PcInstance activeChar)
-    {
+	{
 		if (activeChar.isGM())
 		{
-            GmListTable.getInstance().deleteGm(activeChar);
-			activeChar.setAccessLevel( AccessLevels._userAccessLevelNum );
-            activeChar.sendMessage("You no longer have GM status.");
-
+			GmListTable.getInstance().deleteGm(activeChar);
+			activeChar.setAccessLevel(AccessLevels._userAccessLevelNum);
+			activeChar.sendMessage("You no longer have GM status.");
+			
 			if (Config.DEBUG)
-				_log.fine("GM: "+activeChar.getName()+"("+activeChar.getObjectId()+") turned his GM status off");
+				_log.fine("GM: " + activeChar.getName() + "(" + activeChar.getObjectId() + ") turned his GM status off");
 		}
 	}
 }

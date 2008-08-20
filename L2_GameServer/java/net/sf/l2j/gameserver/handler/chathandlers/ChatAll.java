@@ -32,9 +32,13 @@ import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
  */
 public class ChatAll implements IChatHandler
 {
-	private static final int[] COMMAND_IDS = { 0 };
+	private static final int[] COMMAND_IDS =
+	{
+		0
+	};
+	
 	private static Logger _log = Logger.getLogger(ChatAll.class.getName());
-
+	
 	/**
 	 * Handle chat type 'all'
 	 * @see net.sf.l2j.gameserver.handler.IChatHandler#handleChat(int, net.sf.l2j.gameserver.model.actor.instance.L2PcInstance, java.lang.String)
@@ -46,7 +50,7 @@ public class ChatAll implements IChatHandler
 			StringTokenizer st = new StringTokenizer(text);
 			IVoicedCommandHandler vch;
 			String command = "";
-
+			
 			if (st.countTokens() > 1)
 			{
 				command = st.nextToken().substring(1);
@@ -56,7 +60,8 @@ public class ChatAll implements IChatHandler
 			else
 			{
 				command = text.substring(1);
-				if (Config.DEBUG) _log.info("Command: "+command);
+				if (Config.DEBUG)
+					_log.info("Command: " + command);
 				vch = VoicedCommandHandler.getInstance().getVoicedCommandHandler(command);
 			}
 			if (vch != null)
@@ -65,30 +70,30 @@ public class ChatAll implements IChatHandler
 			}
 			else
 			{
-				if (Config.DEBUG) _log.warning("No handler registered for bypass '"+command+"'");
+				if (Config.DEBUG)
+					_log.warning("No handler registered for bypass '" + command + "'");
 			}
 		}
 		else
 		{
 			CreatureSay cs = new CreatureSay(activeChar.getObjectId(), type, activeChar.getAppearance().getVisibleName(), text);
-
+			
 			Collection<L2PcInstance> plrs = activeChar.getKnownList().getKnownPlayers().values();
 			//synchronized (activeChar.getKnownList().getKnownPlayers())
 			{
 				for (L2PcInstance player : plrs)
 				{
-					if (player != null
-					        && activeChar.isInsideRadius(player, 1250, false, true))
+					if (player != null && activeChar.isInsideRadius(player, 1250, false, true))
 					{
 						player.sendPacket(cs);
 					}
 				}
 			}
-
+			
 			activeChar.sendPacket(cs);
 		}
 	}
-
+	
 	/**
 	 * Returns the chat types registered to this handler
 	 * @see net.sf.l2j.gameserver.handler.IChatHandler#getChatTypeList()

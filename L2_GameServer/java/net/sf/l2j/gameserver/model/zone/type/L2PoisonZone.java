@@ -42,11 +42,11 @@ public class L2PoisonZone extends L2ZoneType
 	private boolean _enabled;
 	private String _target;
 	private Future<?> _task;
-
+	
 	public L2PoisonZone(int id)
 	{
 		super(id);
-
+		
 		// Setup default skill
 		_skillId = 4070;
 		_skillLvl = 1;
@@ -56,7 +56,7 @@ public class L2PoisonZone extends L2ZoneType
 		_enabled = true;
 		_target = "pc";
 	}
-
+	
 	@Override
 	public void setParameter(String name, String value)
 	{
@@ -88,15 +88,15 @@ public class L2PoisonZone extends L2ZoneType
 		{
 			_reuse = Integer.parseInt(value);
 		}
-		else super.setParameter(name, value);
+		else
+			super.setParameter(name, value);
 	}
-
+	
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (((character instanceof L2PlayableInstance) && _target.equalsIgnoreCase("pc"))
-				||((character instanceof L2PcInstance) && _target.equalsIgnoreCase("pc_only"))
-				||((character instanceof L2MonsterInstance) && _target.equalsIgnoreCase("npc")))
+		if (((character instanceof L2PlayableInstance) && _target.equalsIgnoreCase("pc")) || ((character instanceof L2PcInstance) && _target.equalsIgnoreCase("pc_only"))
+				|| ((character instanceof L2MonsterInstance) && _target.equalsIgnoreCase("npc")))
 		{
 			if (_task == null)
 			{
@@ -104,7 +104,7 @@ public class L2PoisonZone extends L2ZoneType
 			}
 		}
 	}
-
+	
 	@Override
 	protected void onExit(L2Character character)
 	{
@@ -114,69 +114,73 @@ public class L2PoisonZone extends L2ZoneType
 			_task = null;
 		}
 	}
-
+	
 	public L2Skill getSkill()
 	{
-		return SkillTable.getInstance().getInfo(_skillId,_skillLvl);
+		return SkillTable.getInstance().getInfo(_skillId, _skillLvl);
 	}
-
+	
 	public String getTargetType()
 	{
 		return _target;
 	}
-
+	
 	public boolean isEnabled()
 	{
 		return _enabled;
 	}
-
-    public int getChance()
-    {
-        return _chance;
-    }
-
-    public void setZoneEnabled(boolean val)
-    {
-    	_enabled = val;
-    }
-
+	
+	public int getChance()
+	{
+		return _chance;
+	}
+	
+	public void setZoneEnabled(boolean val)
+	{
+		_enabled = val;
+	}
+	
 	protected Collection<L2Character> getCharacterList()
 	{
 		return _characterList.values();
 	}
-
+	
 	class ApplySkill implements Runnable
 	{
 		private L2PoisonZone _poisonZone;
+		
 		ApplySkill(L2PoisonZone zone)
 		{
 			_poisonZone = zone;
 		}
-
+		
 		public void run()
 		{
 			if (isEnabled())
-            {
-	            for (L2Character temp : _poisonZone.getCharacterList())
-	            {
-	            	if (temp != null && !temp.isDead())
-	            	{
-	            		if (((temp instanceof L2PlayableInstance && getTargetType().equalsIgnoreCase("pc"))
-	            				||(temp instanceof L2PcInstance && getTargetType().equalsIgnoreCase("pc_only"))
-	            				||(temp instanceof L2MonsterInstance && getTargetType().equalsIgnoreCase("npc"))) && Rnd.get(100) < getChance())
-	            		{
-	            			getSkill().getEffects(temp, temp);
-	            		}
-	            	}
-	            }
-            }
+			{
+				for (L2Character temp : _poisonZone.getCharacterList())
+				{
+					if (temp != null && !temp.isDead())
+					{
+						if (((temp instanceof L2PlayableInstance && getTargetType().equalsIgnoreCase("pc")) || (temp instanceof L2PcInstance && getTargetType().equalsIgnoreCase("pc_only")) || (temp instanceof L2MonsterInstance && getTargetType().equalsIgnoreCase("npc")))
+								&& Rnd.get(100) < getChance())
+						{
+							getSkill().getEffects(temp, temp);
+						}
+					}
+				}
+			}
 		}
 	}
-
+	
 	@Override
-    public void onDieInside(L2Character character) {}
-
+	public void onDieInside(L2Character character)
+	{
+	}
+	
 	@Override
-    public void onReviveInside(L2Character character) {}
-
+	public void onReviveInside(L2Character character)
+	{
+	}
+	
 }

@@ -35,26 +35,29 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
  */
 public class AdminChangeAccessLevel implements IAdminCommandHandler
 {
-
-	private static final String[] ADMIN_COMMANDS = { "admin_changelvl" };
-
+	
+	private static final String[] ADMIN_COMMANDS =
+	{
+		"admin_changelvl"
+	};
+	
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
-
+		
 		handleChangeLevel(command, activeChar);
 		return true;
 	}
-
+	
 	public String[] getAdminCommandList()
 	{
 		return ADMIN_COMMANDS;
 	}
-
+	
 	/**
-	 * If no character name is specified, tries to change GM's target access level. Else
-	 * if a character name is provided, will try to reach it either from L2World or from
-	 * a database connection.
-	 *
+	 * If no character name is specified, tries to change GM's target access
+	 * level. Else if a character name is provided, will try to reach it either
+	 * from L2World or from a database connection.
+	 * 
 	 * @param command
 	 * @param activeChar
 	 */
@@ -67,7 +70,7 @@ public class AdminChangeAccessLevel implements IAdminCommandHandler
 			{
 				int lvl = Integer.parseInt(parts[1]);
 				if (activeChar.getTarget() instanceof L2PcInstance)
-					onLineChange(activeChar, (L2PcInstance)activeChar.getTarget(), lvl);
+					onLineChange(activeChar, (L2PcInstance) activeChar.getTarget(), lvl);
 				else
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
 			}
@@ -98,7 +101,7 @@ public class AdminChangeAccessLevel implements IAdminCommandHandler
 					if (count == 0)
 						activeChar.sendMessage("Character not found or access level unaltered.");
 					else
-						activeChar.sendMessage("Character's access level is now set to "+lvl);
+						activeChar.sendMessage("Character's access level is now set to " + lvl);
 				}
 				catch (SQLException se)
 				{
@@ -112,12 +115,14 @@ public class AdminChangeAccessLevel implements IAdminCommandHandler
 					{
 						con.close();
 					}
-					catch (Exception e) {}
+					catch (Exception e)
+					{
+					}
 				}
 			}
 		}
 	}
-
+	
 	/**
 	 * @param activeChar
 	 * @param player
@@ -126,13 +131,13 @@ public class AdminChangeAccessLevel implements IAdminCommandHandler
 	private void onLineChange(L2PcInstance activeChar, L2PcInstance player, int lvl)
 	{
 		player.setAccessLevel(lvl);
-		if (lvl>0)
-			player.sendMessage("Your access level has been changed to "+lvl);
+		if (lvl > 0)
+			player.sendMessage("Your access level has been changed to " + lvl);
 		else
 		{
 			player.sendMessage("Your character has been banned. Bye.");
 			player.logout();
 		}
-		activeChar.sendMessage("Character's access level is now set to "+lvl+". Effects won't be noticeable until next session.");
+		activeChar.sendMessage("Character's access level is now set to " + lvl + ". Effects won't be noticeable until next session.");
 	}
 }

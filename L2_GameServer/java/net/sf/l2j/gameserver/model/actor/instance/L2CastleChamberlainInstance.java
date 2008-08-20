@@ -30,7 +30,6 @@ import net.sf.l2j.gameserver.instancemanager.CastleManorManager;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2TeleportLocation;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
@@ -44,6 +43,7 @@ import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.gameserver.util.Util;
 
 /**
@@ -1201,7 +1201,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 						if (st.countTokens() >= 1)
 							skill_lvl = Integer.parseInt(st.nextToken());
 						skill = SkillTable.getInstance().getInfo(skill_id, skill_lvl);
-						if (skill.getSkillType() == SkillType.SUMMON)
+						if (skill.getSkillType() == L2SkillType.SUMMON)
 							player.doCast(skill);
 						else
 						{

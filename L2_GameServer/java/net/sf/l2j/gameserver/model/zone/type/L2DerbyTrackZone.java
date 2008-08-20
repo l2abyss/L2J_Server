@@ -29,7 +29,7 @@ public class L2DerbyTrackZone extends L2ZoneType
 	{
 		super(id);
 	}
-
+	
 	@Override
 	protected void onEnter(L2Character character)
 	{
@@ -39,7 +39,7 @@ public class L2DerbyTrackZone extends L2ZoneType
 			character.setInsideZone(L2Character.ZONE_PEACE, true);
 		}
 	}
-
+	
 	@Override
 	protected void onExit(L2Character character)
 	{
@@ -49,11 +49,15 @@ public class L2DerbyTrackZone extends L2ZoneType
 			character.setInsideZone(L2Character.ZONE_PEACE, false);
 		}
 	}
-
+	
 	@Override
-    public void onDieInside(L2Character character) {}
-
+	public void onDieInside(L2Character character)
+	{
+	}
+	
 	@Override
-    public void onReviveInside(L2Character character) {}
-
+	public void onReviveInside(L2Character character)
+	{
+	}
+	
 }

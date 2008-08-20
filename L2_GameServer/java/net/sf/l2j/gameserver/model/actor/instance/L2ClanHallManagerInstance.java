@@ -24,7 +24,6 @@ import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2TeleportLocation;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.AgitDecoInfo;
@@ -34,6 +33,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.network.serverpackets.WareHouseDepositList;
 import net.sf.l2j.gameserver.network.serverpackets.WareHouseWithdrawalList;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 
 public class L2ClanHallManagerInstance extends L2MerchantInstance
 {
@@ -1261,7 +1261,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                         int skill_lvl = 0;
                         if (st.countTokens() >= 1) skill_lvl = Integer.parseInt(st.nextToken());
                         skill = SkillTable.getInstance().getInfo(skill_id,skill_lvl);
-                        if (skill.getSkillType() == SkillType.SUMMON)
+                        if (skill.getSkillType() == L2SkillType.SUMMON)
                             player.doCast(skill);
                         else
                         {

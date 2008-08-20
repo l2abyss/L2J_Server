@@ -30,14 +30,14 @@ public class L2ArenaZone extends L2ZoneType
 	@SuppressWarnings("unused")
 	private String _arenaName;
 	private int[] _spawnLoc;
-
+	
 	public L2ArenaZone(int id)
 	{
 		super(id);
-
+		
 		_spawnLoc = new int[3];
 	}
-
+	
 	@Override
 	public void setParameter(String name, String value)
 	{
@@ -57,39 +57,44 @@ public class L2ArenaZone extends L2ZoneType
 		{
 			_spawnLoc[2] = Integer.parseInt(value);
 		}
-		else super.setParameter(name, value);
+		else
+			super.setParameter(name, value);
 	}
-
+	
 	@Override
 	protected void onEnter(L2Character character)
 	{
 		character.setInsideZone(L2Character.ZONE_PVP, true);
-
+		
 		if (character instanceof L2PcInstance)
 		{
-			((L2PcInstance)character).sendPacket(new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
+			((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
 		}
 	}
-
+	
 	@Override
 	protected void onExit(L2Character character)
 	{
 		character.setInsideZone(L2Character.ZONE_PVP, false);
-
+		
 		if (character instanceof L2PcInstance)
 		{
-			((L2PcInstance)character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
+			((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
 		}
 	}
-
+	
 	@Override
-    public void onDieInside(L2Character character) {}
-
+	public void onDieInside(L2Character character)
+	{
+	}
+	
 	@Override
-    public void onReviveInside(L2Character character) {}
-
+	public void onReviveInside(L2Character character)
+	{
+	}
+	
 	public final int[] getSpawnLoc()
-    {
-    	return _spawnLoc;
-    }
+	{
+		return _spawnLoc;
+	}
 }

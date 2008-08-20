@@ -32,14 +32,14 @@ public class L2ClanHallZone extends L2ZoneType
 {
 	private int _clanHallId;
 	private int[] _spawnLoc;
-
+	
 	public L2ClanHallZone(int id)
 	{
 		super(id);
-
+		
 		_spawnLoc = new int[3];
 	}
-
+	
 	@Override
 	public void setParameter(String name, String value)
 	{
@@ -61,9 +61,10 @@ public class L2ClanHallZone extends L2ZoneType
 		{
 			_spawnLoc[2] = Integer.parseInt(value);
 		}
-		else super.setParameter(name, value);
+		else
+			super.setParameter(name, value);
 	}
-
+	
 	@Override
 	protected void onEnter(L2Character character)
 	{
@@ -71,17 +72,18 @@ public class L2ClanHallZone extends L2ZoneType
 		{
 			// Set as in clan hall
 			character.setInsideZone(L2Character.ZONE_CLANHALL, true);
-
+			
 			ClanHall clanHall = ClanHallManager.getInstance().getClanHallById(_clanHallId);
-			if (clanHall == null) return;
-
+			if (clanHall == null)
+				return;
+			
 			// Send decoration packet
 			AgitDecoInfo deco = new AgitDecoInfo(clanHall);
-			((L2PcInstance)character).sendPacket(deco);
-
+			((L2PcInstance) character).sendPacket(deco);
+			
 		}
 	}
-
+	
 	@Override
 	protected void onExit(L2Character character)
 	{
@@ -89,16 +91,20 @@ public class L2ClanHallZone extends L2ZoneType
 		{
 			// Unset clanhall zone
 			character.setInsideZone(L2Character.ZONE_CLANHALL, false);
-
+			
 		}
 	}
-
+	
 	@Override
-    public void onDieInside(L2Character character) {}
-
+	public void onDieInside(L2Character character)
+	{
+	}
+	
 	@Override
-    public void onReviveInside(L2Character character) {}
-
+	public void onReviveInside(L2Character character)
+	{
+	}
+	
 	/**
 	 * Removes all foreigners from the clan hall
 	 * @param owningClanId
@@ -107,13 +113,15 @@ public class L2ClanHallZone extends L2ZoneType
 	{
 		for (L2Character temp : _characterList.values())
 		{
-			if (!(temp instanceof L2PcInstance)) continue;
-			if (((L2PcInstance)temp).getClanId() == owningClanId) continue;
-
-			((L2PcInstance)temp).teleToLocation(MapRegionTable.TeleportWhereType.Town);
+			if (!(temp instanceof L2PcInstance))
+				continue;
+			if (((L2PcInstance) temp).getClanId() == owningClanId)
+				continue;
+			
+			((L2PcInstance) temp).teleToLocation(MapRegionTable.TeleportWhereType.Town);
 		}
 	}
-
+	
 	/**
 	 * Get the clan hall's spawn
 	 * @return

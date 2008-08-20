@@ -30,18 +30,22 @@ public class Key implements IItemHandler
 {
 	public static final int INTERACTION_DISTANCE = 100;
 	
-	
 	private static final int[] ITEM_IDS =
 	{
-		6665, 6666, 6667, 6668, 6669, 6670, 6671, 6672, // deluxe chest key
-		8060
+		6665, 6666, 6667, 6668, 6669,
+		6670, 6671, 6672, 8060
 	};
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#useItem(net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance, net.sf.l2j.gameserver.model.L2ItemInstance)
+	 */
 	public void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
-		if (!(playable instanceof L2PcInstance)) return;
+		if (!(playable instanceof L2PcInstance))
+			return;
 		L2PcInstance activeChar = (L2PcInstance) playable;
-
+		
 		int itemId = item.getItemId();
 		
 		switch (itemId)
@@ -78,14 +82,17 @@ public class Key implements IItemHandler
 			}
 			case 8060:
 			{
-				L2Skill skill = SkillTable.getInstance().getInfo(2260,1);
+				L2Skill skill = SkillTable.getInstance().getInfo(2260, 1);
 				activeChar.doCast(skill);
 				break;
 			}
 		}
 	}
 	
-	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#getItemIds()
+	 */
 	public int[] getItemIds()
 	{
 		return ITEM_IDS;

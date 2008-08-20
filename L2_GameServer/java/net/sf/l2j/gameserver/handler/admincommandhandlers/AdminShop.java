@@ -30,14 +30,16 @@ import net.sf.l2j.gameserver.network.serverpackets.BuyList;
  * - buy id = shows shop with respective id
  * @version $Revision: 1.2.4.4 $ $Date: 2005/04/11 10:06:06 $
  */
-public class AdminShop implements IAdminCommandHandler {
+public class AdminShop implements IAdminCommandHandler
+{
 	private static Logger _log = Logger.getLogger(AdminShop.class.getName());
-
-	private static final String[] ADMIN_COMMANDS = {
+	
+	private static final String[] ADMIN_COMMANDS =
+	{
 		"admin_buy",
 		"admin_gmshop"
 	};
-
+	
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
 		if (command.startsWith("admin_buy"))
@@ -57,11 +59,12 @@ public class AdminShop implements IAdminCommandHandler {
 		}
 		return true;
 	}
-
-	public String[] getAdminCommandList() {
+	
+	public String[] getAdminCommandList()
+	{
 		return ADMIN_COMMANDS;
 	}
-
+	
 	private void handleBuyRequest(L2PcInstance activeChar, String command)
 	{
 		int val = -1;
@@ -71,21 +74,21 @@ public class AdminShop implements IAdminCommandHandler {
 		}
 		catch (Exception e)
 		{
-			_log.warning("admin buylist failed:"+command);
+			_log.warning("admin buylist failed:" + command);
 		}
-
+		
 		L2TradeList list = TradeController.getInstance().getBuyList(val);
-
+		
 		if (list != null)
 		{
 			activeChar.sendPacket(new BuyList(list, activeChar.getAdena()));
 			if (Config.DEBUG)
-				_log.fine("GM: "+activeChar.getName()+"("+activeChar.getObjectId()+") opened GM shop id "+val);
+				_log.fine("GM: " + activeChar.getName() + "(" + activeChar.getObjectId() + ") opened GM shop id " + val);
 		}
 		else
 		{
-			_log.warning("no buylist with id:" +val);
+			_log.warning("no buylist with id:" + val);
 		}
-		activeChar.sendPacket( ActionFailed.STATIC_PACKET );
+		activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 }

@@ -25,12 +25,17 @@ import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
  *
  * @version $Revision: 1.2.4.3 $ $Date: 2005/04/11 10:06:02 $
  */
-public class AdminHelpPage implements IAdminCommandHandler {
-
-	private static final String[] ADMIN_COMMANDS = {"admin_help"};
-
-	public boolean useAdminCommand(String command, L2PcInstance activeChar) {
-
+public class AdminHelpPage implements IAdminCommandHandler
+{
+	
+	private static final String[] ADMIN_COMMANDS =
+	{
+		"admin_help"
+	};
+	
+	public boolean useAdminCommand(String command, L2PcInstance activeChar)
+	{
+		
 		if (command.startsWith("admin_help"))
 		{
 			try
@@ -43,21 +48,22 @@ public class AdminHelpPage implements IAdminCommandHandler {
 				//case of empty filename
 			}
 		}
-
+		
 		return true;
 	}
-
-	public String[] getAdminCommandList() {
+	
+	public String[] getAdminCommandList()
+	{
 		return ADMIN_COMMANDS;
 	}
-
+	
 	//FIXME: implement method to send html to player in L2PcInstance directly
 	//PUBLIC & STATIC so other classes from package can include it directly
 	public static void showHelpPage(L2PcInstance targetChar, String filename)
 	{
-        String content = HtmCache.getInstance().getHtmForce("data/html/admin/" + filename);
-        NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
-        adminReply.setHtml(content);
-        targetChar.sendPacket(adminReply);
+		String content = HtmCache.getInstance().getHtmForce("data/html/admin/" + filename);
+		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
+		adminReply.setHtml(content);
+		targetChar.sendPacket(adminReply);
 	}
 }

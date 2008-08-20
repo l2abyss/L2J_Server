@@ -31,11 +31,17 @@ import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
  */
 public class CharChangePotions implements IItemHandler
 {
-	private static final int[] ITEM_IDS = { 5235, 5236, 5237, // Face
-	        5238, 5239, 5240, 5241, // Hair Color
-	        5242, 5243, 5244, 5245, 5246, 5247, 5248 // Hair Style
+	private static final int[] ITEM_IDS =
+	{
+		5235, 5236, 5237, // Face
+		5238, 5239, 5240, 5241, // Hair Color
+		5242, 5243, 5244, 5245, 5246, 5247, 5248 // Hair Style
 	};
 	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#useItem(net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance, net.sf.l2j.gameserver.model.L2ItemInstance)
+	 */
 	public void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
 		int itemId = item.getItemId();
@@ -119,6 +125,10 @@ public class CharChangePotions implements IItemHandler
 		activeChar.broadcastPacket(ui);
 	}
 	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#getItemIds()
+	 */
 	public int[] getItemIds()
 	{
 		return ITEM_IDS;

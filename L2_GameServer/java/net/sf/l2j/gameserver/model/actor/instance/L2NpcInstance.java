@@ -56,7 +56,6 @@ import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2WorldRegion;
 import net.sf.l2j.gameserver.model.MobGroupTable;
 import net.sf.l2j.gameserver.model.NpcInventory;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.knownlist.NpcKnownList;
 import net.sf.l2j.gameserver.model.actor.stat.NpcStat;
 import net.sf.l2j.gameserver.model.actor.status.NpcStatus;
@@ -87,6 +86,7 @@ import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
 import net.sf.l2j.gameserver.templates.L2HelperBuff;
 import net.sf.l2j.gameserver.templates.L2Item;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.gameserver.templates.L2Weapon;
 import net.sf.l2j.util.Rnd;
 /**
@@ -1705,7 +1705,7 @@ public class L2NpcInstance extends L2Character
               if(player_level>=helperBuffItem.getLowerLevel() && player_level<=helperBuffItem.getUpperLevel())
               {
                   skill = SkillTable.getInstance().getInfo(helperBuffItem.getSkillID(),helperBuffItem.getSkillLevel());
-                  if (skill.getSkillType() == SkillType.SUMMON)
+                  if (skill.getSkillType() == L2SkillType.SUMMON)
                       player.doCast(skill);
                   else
                       doCast(skill);

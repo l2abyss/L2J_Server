@@ -27,39 +27,39 @@ public class SkillSpellbookTable
 {
 	private static Logger _log = Logger.getLogger(SkillTreeTable.class.getName());
 	private static SkillSpellbookTable _instance;
-
+	
 	private static Map<Integer, Integer> _skillSpellbooks;
-
+	
 	public static SkillSpellbookTable getInstance()
 	{
 		if (_instance == null)
 			_instance = new SkillSpellbookTable();
-
+		
 		return _instance;
 	}
-
+	
 	private SkillSpellbookTable()
 	{
 		_skillSpellbooks = new FastMap<Integer, Integer>();
 		java.sql.Connection con = null;
-
+		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT skill_id, item_id FROM skill_spellbooks");
 			ResultSet spbooks = statement.executeQuery();
-
+			
 			while (spbooks.next())
-				_skillSpellbooks.put(spbooks.getInt("skill_id") , spbooks.getInt("item_id"));
-
+				_skillSpellbooks.put(spbooks.getInt("skill_id"), spbooks.getInt("item_id"));
+			
 			spbooks.close();
 			statement.close();
-
+			
 			_log.config("SkillSpellbookTable: Loaded " + _skillSpellbooks.size() + " Spellbooks.");
 		}
 		catch (Exception e)
 		{
-			_log.warning("Error while loading spellbook data: " +  e);
+			_log.warning("Error while loading spellbook data: " + e);
 		}
 		finally
 		{
@@ -67,21 +67,28 @@ public class SkillSpellbookTable
 			{
 				con.close();
 			}
-			catch (Exception e) {}
+			catch (Exception e)
+			{
+			}
 		}
 	}
-
+	
 	public int getBookForSkill(int skillId, int level)
 	{
-		if(skillId == L2Skill.SKILL_DIVINE_INSPIRATION && level != -1)
+		if (skillId == L2Skill.SKILL_DIVINE_INSPIRATION && level != -1)
 		{
-			switch(level)
+			switch (level)
 			{
-				case 1: return 8618;	// Ancient Book - Divine Inspiration (Modern Language Version)
-				case 2: return 8619;	// Ancient Book - Divine Inspiration (Original Language Version)
-				case 3: return 8620;	// Ancient Book - Divine Inspiration (Manuscript)
-				case 4: return 8621;	// Ancient Book - Divine Inspiration (Original Version)
-				default: return -1;
+				case 1:
+					return 8618; // Ancient Book - Divine Inspiration (Modern Language Version)
+				case 2:
+					return 8619; // Ancient Book - Divine Inspiration (Original Language Version)
+				case 3:
+					return 8620; // Ancient Book - Divine Inspiration (Manuscript)
+				case 4:
+					return 8621; // Ancient Book - Divine Inspiration (Original Version)
+				default:
+					return -1;
 			}
 		}
 		
@@ -90,7 +97,7 @@ public class SkillSpellbookTable
 		
 		return _skillSpellbooks.get(skillId);
 	}
-
+	
 	public int getBookForSkill(L2Skill skill)
 	{
 		return getBookForSkill(skill.getId(), -1);

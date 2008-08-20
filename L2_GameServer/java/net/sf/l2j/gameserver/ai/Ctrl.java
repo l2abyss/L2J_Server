@@ -57,26 +57,30 @@ import net.sf.l2j.gameserver.model.L2Character;
  * to stop the avatar/mob.
  *
  */
-public interface Ctrl {
-
+public interface Ctrl
+{
+	
 	/** the character this AI serves */
 	L2Character getActor();
-
+	
 	/** get current intention */
 	CtrlIntention getIntention();
-
+	
 	/** get current ATTACK target */
 	L2Character getAttackTarget();
-
+	
 	/** Set general state/intention for AI, with optional data */
 	void setIntention(CtrlIntention intention);
+	
 	void setIntention(CtrlIntention intention, Object arg0);
+	
 	void setIntention(CtrlIntention intention, Object arg0, Object arg1);
-
+	
 	/** Event, that notifies about previous step result, or user command,
 	 * that does not change current general intention */
 	void notifyEvent(CtrlEvent evt);
+	
 	void notifyEvent(CtrlEvent evt, Object arg0);
+	
 	void notifyEvent(CtrlEvent evt, Object arg0, Object arg1);
 }
-

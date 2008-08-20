@@ -24,6 +24,6 @@ import java.util.List;
 public interface ISpecificAiManager
 {
 	List<EventHandler> getEventHandlers();
-
+	
 	void load();
 }

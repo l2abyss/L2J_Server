@@ -32,7 +32,7 @@ public final class Action extends L2GameClientPacket
 {
 	private static final String ACTION__C__04 = "[C] 04 Action";
 	private static Logger _log = Logger.getLogger(Action.class.getName());
-
+	
 	// cddddc
 	private int _objectId;
 	@SuppressWarnings("unused")
@@ -42,36 +42,38 @@ public final class Action extends L2GameClientPacket
 	@SuppressWarnings("unused")
 	private int _originZ;
 	private int _actionId;
-
+	
 	@Override
 	protected void readImpl()
 	{
-		_objectId  = readD();   // Target object Identifier
-		_originX   = readD();
-		_originY   = readD();
-		_originZ   = readD();
-		_actionId  = readC();   // Action identifier : 0-Simple click, 1-Shift click
+		_objectId = readD(); // Target object Identifier
+		_originX = readD();
+		_originY = readD();
+		_originZ = readD();
+		_actionId = readC(); // Action identifier : 0-Simple click, 1-Shift click
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
-		if (Config.DEBUG) _log.fine("Action:" + _actionId);
-		if (Config.DEBUG) _log.fine("oid:" + _objectId);
-
+		if (Config.DEBUG)
+			_log.fine("Action:" + _actionId);
+		if (Config.DEBUG)
+			_log.fine("oid:" + _objectId);
+		
 		// Get the current L2PcInstance of the player
 		L2PcInstance activeChar = getClient().getActiveChar();
-
+		
 		if (activeChar == null)
 			return;
-
+		
 		L2Object obj;
-
+		
 		if (activeChar.getTargetId() == _objectId)
 			obj = activeChar.getTarget();
 		else
 			obj = L2World.getInstance().findObject(_objectId);
-
+		
 		// If object requested does not exist, add warn msg into logs
 		if (obj == null)
 		{
@@ -80,9 +82,9 @@ public final class Action extends L2GameClientPacket
 			getClient().sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		// Check if the target is valid, if the player haven't a shop or isn't the requester of a transaction (ex : FriendInvite, JoinAlly, JoinParty...)
-		if (activeChar.getPrivateStoreType()==0 && activeChar.getActiveRequester()==null)
+		if (activeChar.getPrivateStoreType() == 0 && activeChar.getActiveRequester() == null)
 		{
 			switch (_actionId)
 			{
@@ -90,7 +92,7 @@ public final class Action extends L2GameClientPacket
 					obj.onAction(activeChar);
 					break;
 				case 1:
-					if (obj instanceof L2Character && ((L2Character)obj).isAlikeDead())
+					if (obj instanceof L2Character && ((L2Character) obj).isAlikeDead())
 						obj.onAction(activeChar);
 					else
 						obj.onActionShift(getClient());
@@ -106,7 +108,7 @@ public final class Action extends L2GameClientPacket
 			// Actions prohibited when in trade
 			getClient().sendPacket(ActionFailed.STATIC_PACKET);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see net.sf.l2j.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

@@ -19,7 +19,7 @@ import java.io.IOException;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 
 /**
  * an IItemHandler implementation has to be stateless
@@ -38,10 +38,10 @@ public interface ISkillHandler
 	 * @throws IOException
 	 */
 	public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets) throws IOException;
-
+	
 	/**
 	 * this method is called at initialization to register all the item ids automatically
 	 * @return all known itemIds
 	 */
-	public SkillType[] getSkillIds();
+	public L2SkillType[] getSkillIds();
 }

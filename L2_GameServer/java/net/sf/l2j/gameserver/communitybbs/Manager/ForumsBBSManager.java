@@ -33,7 +33,7 @@ public class ForumsBBSManager extends BaseBBSManager
 	private List<Forum> _table;
 	private static ForumsBBSManager _instance;
 	private int _lastid = 1;
-
+	
 	/**
 	 * @return
 	 */
@@ -46,23 +46,23 @@ public class ForumsBBSManager extends BaseBBSManager
 		}
 		return _instance;
 	}
-
+	
 	public ForumsBBSManager()
 	{
 		_root = new FastMap<Integer, Forum>();
 		_table = new FastList<Forum>();
 	}
-
+	
 	public void addForum(Forum ff)
 	{
 		_table.add(ff);
-
+		
 		if (ff.getID() > _lastid)
 		{
 			_lastid = ff.getID();
 		}
 	}
-
+	
 	/**
 	 *
 	 */
@@ -76,7 +76,7 @@ public class ForumsBBSManager extends BaseBBSManager
 			ResultSet result = statement.executeQuery();
 			while (result.next())
 			{
-
+				
 				Forum f = new Forum(Integer.parseInt(result.getString("forum_id")), null);
 				_root.put(Integer.parseInt(result.getString("forum_id")), f);
 			}
@@ -99,7 +99,7 @@ public class ForumsBBSManager extends BaseBBSManager
 			}
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see net.sf.l2j.gameserver.communitybbs.Manager.BaseBBSManager#parsecmd(java.lang.String, net.sf.l2j.gameserver.model.actor.instance.L2PcInstance)
 	 */
@@ -107,9 +107,9 @@ public class ForumsBBSManager extends BaseBBSManager
 	public void parsecmd(String command, L2PcInstance activeChar)
 	{
 		// TODO Auto-generated method stub
-
+		
 	}
-
+	
 	/**
 	 * @param string
 	 * @return
@@ -123,10 +123,10 @@ public class ForumsBBSManager extends BaseBBSManager
 				return f;
 			}
 		}
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * @param name
 	 * @param forumByName
@@ -139,7 +139,7 @@ public class ForumsBBSManager extends BaseBBSManager
 		forum.insertindb();
 		return forum;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -148,7 +148,7 @@ public class ForumsBBSManager extends BaseBBSManager
 		_lastid++;
 		return _lastid;
 	}
-
+	
 	/**
 	 * @param idf
 	 * @return
@@ -164,7 +164,7 @@ public class ForumsBBSManager extends BaseBBSManager
 		}
 		return null;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see net.sf.l2j.gameserver.communitybbs.Manager.BaseBBSManager#parsewrite(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, net.sf.l2j.gameserver.model.actor.instance.L2PcInstance)
 	 */
@@ -172,6 +172,6 @@ public class ForumsBBSManager extends BaseBBSManager
 	public void parsewrite(String ar1, String ar2, String ar3, String ar4, String ar5, L2PcInstance activeChar)
 	{
 		// TODO Auto-generated method stub
-
+		
 	}
 }

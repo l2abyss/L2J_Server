@@ -37,17 +37,17 @@ public class L2CastleTeleportZone extends L2ZoneType
 	public L2CastleTeleportZone(int id)
 	{
 		super(id);
-
+		
 		_spawnLoc = new int[5];
 	}
-
+	
 	@Override
 	public void setParameter(String name, String value)
 	{
 		if (name.equals("castleId"))
 		{
 			_castleId = Integer.parseInt(value);
-
+			
 			// Register self to the correct castle
 			_castle = CastleManager.getInstance().getCastleById(_castleId);
 			_castle.setTeleZone(this);
@@ -72,21 +72,30 @@ public class L2CastleTeleportZone extends L2ZoneType
 		{
 			_spawnLoc[4] = Integer.parseInt(value);
 		}
-		else super.setParameter(name, value);
+		else
+			super.setParameter(name, value);
 	}
-
+	
 	@Override
-	protected void onEnter(L2Character character) {}
-
+	protected void onEnter(L2Character character)
+	{
+	}
+	
 	@Override
-	protected void onExit(L2Character character) {}
-
+	protected void onExit(L2Character character)
+	{
+	}
+	
 	@Override
-    public void onDieInside(L2Character character) {}
-
+	public void onDieInside(L2Character character)
+	{
+	}
+	
 	@Override
-    public void onReviveInside(L2Character character) {}
-
+	public void onReviveInside(L2Character character)
+	{
+	}
+	
 	/**
 	 * Returns all players within this zone
 	 * @return
@@ -94,32 +103,35 @@ public class L2CastleTeleportZone extends L2ZoneType
 	public FastList<L2PcInstance> getAllPlayers()
 	{
 		FastList<L2PcInstance> players = new FastList<L2PcInstance>();
-
+		
 		for (L2Character temp : _characterList.values())
 		{
 			if (temp instanceof L2PcInstance)
-				players.add((L2PcInstance)temp);
+				players.add((L2PcInstance) temp);
 		}
-
+		
 		return players;
 	}
-
-    public void oustAllPlayers()
-    {
-        if (_characterList == null) return;
-        if (_characterList.isEmpty()) return;
-        for (L2Character character : _characterList.values())
-        {
-            if (character == null) continue;
-            if (character instanceof L2PcInstance)
-            {
-                L2PcInstance player = (L2PcInstance) character;
-                if (player.isOnline() == 1)
-                	player.teleToLocation(Rnd.get(_spawnLoc[0], _spawnLoc[1]), Rnd.get(_spawnLoc[2], _spawnLoc[3]), _spawnLoc[4]);
-            }
-        }
-    }
-
+	
+	public void oustAllPlayers()
+	{
+		if (_characterList == null)
+			return;
+		if (_characterList.isEmpty())
+			return;
+		for (L2Character character : _characterList.values())
+		{
+			if (character == null)
+				continue;
+			if (character instanceof L2PcInstance)
+			{
+				L2PcInstance player = (L2PcInstance) character;
+				if (player.isOnline() == 1)
+					player.teleToLocation(Rnd.get(_spawnLoc[0], _spawnLoc[1]), Rnd.get(_spawnLoc[2], _spawnLoc[3]), _spawnLoc[4]);
+			}
+		}
+	}
+	
 	/**
 	 * Get the spawn locations
 	 * @return

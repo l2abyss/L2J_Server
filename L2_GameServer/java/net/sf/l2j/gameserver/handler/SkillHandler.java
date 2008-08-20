@@ -55,8 +55,7 @@ import net.sf.l2j.gameserver.handler.skillhandlers.TakeFort;
 import net.sf.l2j.gameserver.handler.skillhandlers.TransformDispel;
 import net.sf.l2j.gameserver.handler.skillhandlers.Trap;
 import net.sf.l2j.gameserver.handler.skillhandlers.Unlock;
-import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 
 /**
  * This class ...
@@ -66,11 +65,11 @@ import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 public class SkillHandler
 {
 	private static Logger _log = Logger.getLogger(SkillHandler.class.getName());
-
+	
 	private static SkillHandler _instance;
-
-	private Map<L2Skill.SkillType, ISkillHandler> _datatable;
-
+	
+	private Map<L2SkillType, ISkillHandler> _datatable;
+	
 	public static SkillHandler getInstance()
 	{
 		if (_instance == null)
@@ -79,69 +78,69 @@ public class SkillHandler
 		}
 		return _instance;
 	}
-
+	
 	private SkillHandler()
 	{
-		_datatable = new TreeMap<SkillType, ISkillHandler>();
+		_datatable = new TreeMap<L2SkillType, ISkillHandler>();
 		registerSkillHandler(new Blow());
 		registerSkillHandler(new Pdam());
 		registerSkillHandler(new Mdam());
 		registerSkillHandler(new CpDam());
 		registerSkillHandler(new Manadam());
 		registerSkillHandler(new Heal());
-        registerSkillHandler(new CombatPointHeal());
+		registerSkillHandler(new CombatPointHeal());
 		registerSkillHandler(new ManaHeal());
 		registerSkillHandler(new BalanceLife());
 		registerSkillHandler(new Charge());
 		registerSkillHandler(new Continuous());
 		registerSkillHandler(new Resurrect());
 		registerSkillHandler(new ShiftTarget());
-        registerSkillHandler(new Spoil());
-        registerSkillHandler(new Sweep());
-        registerSkillHandler(new StrSiegeAssault());
-        registerSkillHandler(new SummonFriend());
-        registerSkillHandler(new SummonTreasureKey());
-        registerSkillHandler(new Disablers());
+		registerSkillHandler(new Spoil());
+		registerSkillHandler(new Sweep());
+		registerSkillHandler(new StrSiegeAssault());
+		registerSkillHandler(new SummonFriend());
+		registerSkillHandler(new SummonTreasureKey());
+		registerSkillHandler(new Disablers());
 		registerSkillHandler(new Recall());
-        registerSkillHandler(new SiegeFlag());
-        registerSkillHandler(new TakeCastle());
-        registerSkillHandler(new TakeFort());
-        registerSkillHandler(new Unlock());
-        registerSkillHandler(new DrainSoul());
-        registerSkillHandler(new Craft());
+		registerSkillHandler(new SiegeFlag());
+		registerSkillHandler(new TakeCastle());
+		registerSkillHandler(new TakeFort());
+		registerSkillHandler(new Unlock());
+		registerSkillHandler(new DrainSoul());
+		registerSkillHandler(new Craft());
 		registerSkillHandler(new Fishing());
 		registerSkillHandler(new FishingSkill());
-        registerSkillHandler(new BeastFeed());
-        registerSkillHandler(new DeluxeKey());
-        registerSkillHandler(new Sow());
-        registerSkillHandler(new Soul());
-        registerSkillHandler(new Harvest());
-        registerSkillHandler(new GetPlayer());
-        registerSkillHandler(new TransformDispel());
-        registerSkillHandler(new Trap());
-        registerSkillHandler(new GiveSp());
-        _log.config("SkillHandler: Loaded " + _datatable.size() + " handlers.");
+		registerSkillHandler(new BeastFeed());
+		registerSkillHandler(new DeluxeKey());
+		registerSkillHandler(new Sow());
+		registerSkillHandler(new Soul());
+		registerSkillHandler(new Harvest());
+		registerSkillHandler(new GetPlayer());
+		registerSkillHandler(new TransformDispel());
+		registerSkillHandler(new Trap());
+		registerSkillHandler(new GiveSp());
+		_log.config("SkillHandler: Loaded " + _datatable.size() + " handlers.");
 	}
-
+	
 	public void registerSkillHandler(ISkillHandler handler)
 	{
-		SkillType[] types = handler.getSkillIds();
-		for (SkillType t : types)
+		L2SkillType[] types = handler.getSkillIds();
+		for (L2SkillType t : types)
 		{
 			_datatable.put(t, handler);
 		}
 	}
-
-	public ISkillHandler getSkillHandler(SkillType skillType)
+	
+	public ISkillHandler getSkillHandler(L2SkillType skillType)
 	{
 		return _datatable.get(skillType);
 	}
-
-    /**
-     * @return
-     */
-    public int size()
-    {
-        return _datatable.size();
-    }
+	
+	/**
+	 * @return
+	 */
+	public int size()
+	{
+		return _datatable.size();
+	}
 }

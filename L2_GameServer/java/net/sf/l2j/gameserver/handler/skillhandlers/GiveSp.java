@@ -19,7 +19,7 @@ import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 
 /**
  * @author Forsaiken
@@ -27,24 +27,34 @@ import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 
 public class GiveSp implements ISkillHandler
 {
-	private static final SkillType[] SKILL_IDS = {SkillType.GIVE_SP};
+	private static final L2SkillType[] SKILL_IDS =
+	{
+		L2SkillType.GIVE_SP
+	};
 	
-    public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
-    {
-        for (L2Object obj : targets)
-        {
-        	L2Character target = (L2Character)obj;
-        	if (target != null)
-        	{
-        		int spToAdd = (int)skill.getPower();
-            	target.addExpAndSp(0, spToAdd);
-        	}
-        }
-    }
-
-
-    public SkillType[] getSkillIds()
-    {
-        return SKILL_IDS;
-    }
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#useSkill(net.sf.l2j.gameserver.model.L2Character, net.sf.l2j.gameserver.model.L2Skill, net.sf.l2j.gameserver.model.L2Object[])
+	 */
+	public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
+	{
+		for (L2Object obj : targets)
+		{
+			L2Character target = (L2Character) obj;
+			if (target != null)
+			{
+				int spToAdd = (int) skill.getPower();
+				target.addExpAndSp(0, spToAdd);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#getSkillIds()
+	 */
+	public L2SkillType[] getSkillIds()
+	{
+		return SKILL_IDS;
+	}
 }

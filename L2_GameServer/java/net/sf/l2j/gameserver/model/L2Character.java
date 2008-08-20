@@ -44,7 +44,6 @@ import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
 import net.sf.l2j.gameserver.instancemanager.TownManager;
 import net.sf.l2j.gameserver.model.L2Effect.EffectType;
 import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2ArtefactInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2CommanderInstance;
@@ -105,6 +104,7 @@ import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillAgathion;
 import net.sf.l2j.gameserver.templates.L2CharTemplate;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.gameserver.templates.L2Weapon;
 import net.sf.l2j.gameserver.templates.L2WeaponType;
 import net.sf.l2j.gameserver.util.Util;
@@ -1462,7 +1462,7 @@ public abstract class L2Character extends L2Object
 
         // Can't use Hero and resurrect skills during Olympiad
         if (this instanceof L2PcInstance && ((L2PcInstance)this).isInOlympiadMode() &&
-        		(skill.isHeroSkill() || skill.getSkillType() == SkillType.RESURRECT))
+        		(skill.isHeroSkill() || skill.getSkillType() == L2SkillType.RESURRECT))
         {
         	SystemMessage sm = new SystemMessage(SystemMessageId.THIS_SKILL_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT);
         	sendPacket(sm);
@@ -1470,20 +1470,8 @@ public abstract class L2Character extends L2Object
         }
         
         // prevent casting signets to peace zone
-        if (skill.getSkillType() == SkillType.SIGNET || skill.getSkillType() == SkillType.SIGNET_CASTTIME)
-		{
-			/*for (L2Effect effect : getAllEffects())
-			{
-				if (effect.getEffectType() == L2Effect.EffectType.SIGNET_EFFECT
-					|| effect.getEffectType() == L2Effect.EffectType.SIGNET_GROUND)
-				{
-					SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-					sm.addSkillName(skill);
-					sendPacket(sm);
-					return;
-				}
-			}*/
-			
+        if (skill.getSkillType() == L2SkillType.SIGNET || skill.getSkillType() == L2SkillType.SIGNET_CASTTIME)
+		{			
 			L2WorldRegion region = getWorldRegion();
 			if (region == null) return;
 			boolean canCast = true;
@@ -1515,7 +1503,7 @@ public abstract class L2Character extends L2Object
             if (requiredItems == null || requiredItems.getCount() < skill.getItemConsume())
             {
             	// Checked: when a summon skill failed, server show required consume item count
-            	if (skill.getSkillType() == L2Skill.SkillType.SUMMON)
+            	if (skill.getSkillType() == L2SkillType.SUMMON)
                 {
             		SystemMessage sm = new SystemMessage(SystemMessageId.SUMMONING_SERVITOR_COSTS_S2_S1);
             		sm.addItemName(skill.getItemConsumeId());
@@ -1571,11 +1559,11 @@ public abstract class L2Character extends L2Object
 				return;
 			}
 			
-			if(     skill.getSkillType() == SkillType.BUFF ||
-					skill.getSkillType() == SkillType.HEAL ||
-					skill.getSkillType() == SkillType.COMBATPOINTHEAL ||
-					skill.getSkillType() == SkillType.MANAHEAL ||
-					skill.getSkillType() == SkillType.REFLECT ||
+			if(     skill.getSkillType() == L2SkillType.BUFF ||
+					skill.getSkillType() == L2SkillType.HEAL ||
+					skill.getSkillType() == L2SkillType.COMBATPOINTHEAL ||
+					skill.getSkillType() == L2SkillType.MANAHEAL ||
+					skill.getSkillType() == L2SkillType.REFLECT ||
 					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF ||
 					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PET ||
 					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PARTY ||
@@ -1586,7 +1574,7 @@ public abstract class L2Character extends L2Object
 
 				if (this instanceof L2PcInstance && target instanceof L2PcInstance && target.getAI().getIntention() == CtrlIntention.AI_INTENTION_ATTACK)
 				{
-					if(skill.getSkillType() == SkillType.BUFF || skill.getSkillType() == SkillType.HOT || skill.getSkillType() == SkillType.HEAL || skill.getSkillType() == SkillType.HEAL_PERCENT || skill.getSkillType() == SkillType.MANAHEAL || skill.getSkillType() == SkillType.MANAHEAL_PERCENT || skill.getSkillType() == SkillType.BALANCE_LIFE)
+					if(skill.getSkillType() == L2SkillType.BUFF || skill.getSkillType() == L2SkillType.HOT || skill.getSkillType() == L2SkillType.HEAL || skill.getSkillType() == L2SkillType.HEAL_PERCENT || skill.getSkillType() == L2SkillType.MANAHEAL || skill.getSkillType() == L2SkillType.MANAHEAL_PERCENT || skill.getSkillType() == L2SkillType.BALANCE_LIFE)
 						target.setLastBuffer(this);
 
 					if (((L2PcInstance)this).isInParty() && skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PARTY)
@@ -1623,8 +1611,8 @@ public abstract class L2Character extends L2Object
 		int hitTime = skill.getHitTime();
 		int coolTime = skill.getCoolTime();
 
-		boolean effectWhileCasting = skill.getSkillType() == SkillType.FORCE_BUFF
-			|| skill.getSkillType() == SkillType.SIGNET_CASTTIME;
+		boolean effectWhileCasting = skill.getSkillType() == L2SkillType.FORCE_BUFF
+			|| skill.getSkillType() == L2SkillType.SIGNET_CASTTIME;
 
 		// Calculate the casting time of the skill (base + modifier of MAtkSpd)
 		// Don't modify the skill time for FORCE_BUFF skills. The skill time for those skills represent the buff time.
@@ -1733,7 +1721,7 @@ public abstract class L2Character extends L2Object
                 }
             }
             
-			if (skill.getSkillType() == SkillType.FORCE_BUFF)
+			if (skill.getSkillType() == L2SkillType.FORCE_BUFF)
 				startForceBuff(target, skill);
 			else
 				callSkill(skill, targets);
@@ -1806,7 +1794,7 @@ public abstract class L2Character extends L2Object
 	
 	public void startForceBuff(L2Character target, L2Skill skill)
 	{
-		if (skill.getSkillType() != SkillType.FORCE_BUFF)
+		if (skill.getSkillType() != L2SkillType.FORCE_BUFF)
 			return;
 		
 		if (_forceBuff == null)
@@ -5615,7 +5603,7 @@ public abstract class L2Character extends L2Object
 				{
 					L2Character target = (L2Character) targets[i];
 					
-					if (skill.getSkillType() == L2Skill.SkillType.BUFF)
+					if (skill.getSkillType() == L2SkillType.BUFF)
 					{
 						SystemMessage smsg = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
 						smsg.addSkillName(skill);
@@ -5725,15 +5713,15 @@ public abstract class L2Character extends L2Object
 		// Note: this might also work
 		// if (skill.isOffensive() && getAI().getNextIntention() == null
 		// && !(skill.getSkillType() == SkillType.UNLOCK) && !(skill.getSkillType() == SkillType.DELUXE_KEY_UNLOCK) && !(skill.getSkillType() == SkillType.MDAM))
-		if (getAI().getNextIntention() == null && skill.getSkillType() == SkillType.PDAM || skill.getSkillType() == SkillType.BLOW
-				|| skill.getSkillType() == SkillType.DRAIN_SOUL || skill.getSkillType() == SkillType.SOW
-				|| skill.getSkillType() == SkillType.SPOIL)
+		if (getAI().getNextIntention() == null && skill.getSkillType() == L2SkillType.PDAM || skill.getSkillType() == L2SkillType.BLOW
+				|| skill.getSkillType() == L2SkillType.DRAIN_SOUL || skill.getSkillType() == L2SkillType.SOW
+				|| skill.getSkillType() == L2SkillType.SPOIL)
 		{
 			if (getTarget() instanceof L2Character && getTarget() != this && target == getTarget())
 				getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, getTarget());
 		}
 
-        if (skill.isOffensive() && !(skill.getSkillType() == SkillType.UNLOCK) && !(skill.getSkillType() == SkillType.DELUXE_KEY_UNLOCK))
+        if (skill.isOffensive() && !(skill.getSkillType() == L2SkillType.UNLOCK) && !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK))
             getAI().clientStartAutoAttack();
 
         // Notify the AI of the L2Character with EVT_FINISH_CASTING
@@ -5949,11 +5937,11 @@ public abstract class L2Character extends L2Object
 							if (target instanceof L2PcInstance || target instanceof L2Summon || target instanceof L2Trap)
 							{
 								// Signets are a special case, casted on target_self but don't harm self
-								if (skill.getSkillType() != L2Skill.SkillType.SIGNET && skill.getSkillType() != L2Skill.SkillType.SIGNET_CASTTIME)
+								if (skill.getSkillType() != L2SkillType.SIGNET && skill.getSkillType() != L2SkillType.SIGNET_CASTTIME)
 								{
-									if (skill.getSkillType() != L2Skill.SkillType.AGGREDUCE
-											&& skill.getSkillType() != L2Skill.SkillType.AGGREDUCE_CHAR
-											&& skill.getSkillType() != L2Skill.SkillType.AGGREMOVE)
+									if (skill.getSkillType() != L2SkillType.AGGREDUCE
+											&& skill.getSkillType() != L2SkillType.AGGREDUCE_CHAR
+											&& skill.getSkillType() != L2SkillType.AGGREMOVE)
 									{
 										// notify target AI about the attack
 										((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
@@ -5963,9 +5951,9 @@ public abstract class L2Character extends L2Object
 							}
 							else if (target instanceof L2Attackable)
 							{
-								if (skill.getSkillType() != L2Skill.SkillType.AGGREDUCE
-										&& skill.getSkillType() != L2Skill.SkillType.AGGREDUCE_CHAR
-										&& skill.getSkillType() != L2Skill.SkillType.AGGREMOVE)
+								if (skill.getSkillType() != L2SkillType.AGGREDUCE
+										&& skill.getSkillType() != L2SkillType.AGGREDUCE_CHAR
+										&& skill.getSkillType() != L2SkillType.AGGREMOVE)
 								{
 									// notify target AI about the attack
 									((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
@@ -5982,10 +5970,10 @@ public abstract class L2Character extends L2Object
 												((L2PcInstance)target).getKarma() > 0)) player.updatePvPStatus();
 							}
 							else if (target instanceof L2Attackable 
-									&& !(skill.getSkillType() == L2Skill.SkillType.SUMMON)
-									&& !(skill.getSkillType() == L2Skill.SkillType.BEAST_FEED) 
-									&& !(skill.getSkillType() == L2Skill.SkillType.UNLOCK)
-									&& !(skill.getSkillType() == L2Skill.SkillType.DELUXE_KEY_UNLOCK))
+									&& !(skill.getSkillType() == L2SkillType.SUMMON)
+									&& !(skill.getSkillType() == L2SkillType.BEAST_FEED) 
+									&& !(skill.getSkillType() == L2SkillType.UNLOCK)
+									&& !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK))
 								player.updatePvPStatus();
 						}
 					}

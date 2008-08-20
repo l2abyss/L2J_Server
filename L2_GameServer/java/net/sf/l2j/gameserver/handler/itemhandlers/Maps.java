@@ -30,21 +30,29 @@ import net.sf.l2j.gameserver.network.serverpackets.ShowMiniMap;
 public class Maps implements IItemHandler
 {
 	// all the items id's that this handler knows
-	private static final int[] ITEM_IDS = { 1665, 1863};
-
-	/* (non-Javadoc)
-	 * @see net.sf.l2j.gameserver.handler.IItemHandler#useItem(net.sf.l2j.gameserver.model.L2PcInstance, net.sf.l2j.gameserver.model.L2ItemInstance)
+	private static final int[] ITEM_IDS =
+	{
+		1665, 1863
+	};
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#useItem(net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance, net.sf.l2j.gameserver.model.L2ItemInstance)
 	 */
 	public void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
 		if (!(playable instanceof L2PcInstance))
 			return;
-		final L2PcInstance activeChar = (L2PcInstance)playable;
+		final L2PcInstance activeChar = (L2PcInstance) playable;
 		final int itemId = item.getItemId();
 		activeChar.sendPacket(new ShowMiniMap(itemId));
 		return;
 	}
-
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.IItemHandler#getItemIds()
+	 */
 	public int[] getItemIds()
 	{
 		return ITEM_IDS;

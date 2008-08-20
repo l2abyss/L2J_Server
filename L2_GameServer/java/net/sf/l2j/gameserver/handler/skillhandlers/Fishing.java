@@ -23,13 +23,13 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Skill.SkillType;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.zone.type.L2FishingZone;
 import net.sf.l2j.gameserver.model.zone.type.L2WaterZone;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.gameserver.templates.L2Weapon;
 import net.sf.l2j.gameserver.templates.L2WeaponType;
 import net.sf.l2j.gameserver.util.Util;
@@ -37,18 +37,22 @@ import net.sf.l2j.util.Rnd;
 
 public class Fishing implements ISkillHandler
 {
-	// private static Logger _log = Logger.getLogger(SiegeFlag.class.getName());
-	// protected SkillType[] _skillIds = {SkillType.FISHING};
-	private static final SkillType[] SKILL_IDS = { SkillType.FISHING };
-
-
+	private static final L2SkillType[] SKILL_IDS =
+	{
+		L2SkillType.FISHING
+	};
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#useSkill(net.sf.l2j.gameserver.model.L2Character, net.sf.l2j.gameserver.model.L2Skill, net.sf.l2j.gameserver.model.L2Object[])
+	 */
 	public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
 	{
 		if (!(activeChar instanceof L2PcInstance))
 			return;
-
+		
 		L2PcInstance player = (L2PcInstance) activeChar;
-
+		
 		/*
 		 * If fishing is disabled, there isn't much point in doing anything
 		 * else, unless you are GM. so this got moved up here, before anything
@@ -127,16 +131,15 @@ public class Fishing implements ISkillHandler
 		 */
 		L2FishingZone aimingTo = FishingZoneManager.getInstance().isInsideFishingZone(x, y, z);
 		L2WaterZone water = FishingZoneManager.getInstance().isInsideWaterZone(x, y, z);
-		if (aimingTo != null && water != null
-				&& (GeoData.getInstance().canSeeTarget(player.getX(), player.getY(), player.getZ()+50, x, y, water.getWaterZ()-50)))
+		if (aimingTo != null && water != null && (GeoData.getInstance().canSeeTarget(player.getX(), player.getY(), player.getZ() + 50, x, y, water.getWaterZ() - 50)))
 		{
 			z = water.getWaterZ() + 10;
 			// player.sendMessage("Hook x,y: " + x + "," + y + " - Water Z,
 			// Player Z:" + z + ", " + player.getZ()); //debug line, shows hook
 			// landing related coordinates. Uncoment if needed.
 		}
-		else if (aimingTo != null && GeoData.getInstance().canSeeTarget(player.getX(), player.getY(), player.getZ()+50, x, y, aimingTo.getWaterZ()-50))
-			z = aimingTo.getWaterZ() +10;
+		else if (aimingTo != null && GeoData.getInstance().canSeeTarget(player.getX(), player.getY(), player.getZ() + 50, x, y, aimingTo.getWaterZ() - 50))
+			z = aimingTo.getWaterZ() + 10;
 		else
 		{
 			// You can't fish here
@@ -169,8 +172,12 @@ public class Fishing implements ISkillHandler
 		// fishing... :P
 		player.startFishing(x, y, z);
 	}
-
-	public SkillType[] getSkillIds()
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#getSkillIds()
+	 */
+	public L2SkillType[] getSkillIds()
 	{
 		return SKILL_IDS;
 	}
