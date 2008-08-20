@@ -214,9 +214,6 @@ public final class L2TeleporterInstance extends L2FolkInstance
 	private void doTeleport(L2PcInstance player, int val)
 	{
 		L2TeleportLocation list = TeleportLocationTable.getInstance().getTemplate(val);
-		// from CT2 all players up to lvl 40 have all ports for free
-		if (player.getLevel() <= 40)
-			list.setPrice(0);
 		if (list != null)
 		{
 			//you cannot teleport to village that is in siege
@@ -249,7 +246,7 @@ public final class L2TeleporterInstance extends L2FolkInstance
 			{
 				return;
 			}
-			else if (!list.getIsForNoble() && (Config.ALT_GAME_FREE_TELEPORT || player.reduceAdena("Teleport", list.getPrice(), this, true)))
+			else if (!list.getIsForNoble() && (Config.ALT_GAME_FREE_TELEPORT || player.getLevel() < 41 || player.reduceAdena("Teleport", list.getPrice(), this, true)))
 			{
 				if (Config.DEBUG)
 					_log.fine("Teleporting player " + player.getName() + " to new location: " + list.getLocX() + ":" + list.getLocY() + ":" + list.getLocZ());
