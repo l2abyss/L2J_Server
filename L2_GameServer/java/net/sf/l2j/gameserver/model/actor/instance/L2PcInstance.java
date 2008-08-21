@@ -1365,7 +1365,7 @@ public final class L2PcInstance extends L2PlayableInstance
 					{
 						for (QuestState state : states)
 						{
-							if ((state.getQuest().getQuestIntId() == qs.getQuest().getQuestIntId()) && !qs.isCompleted())
+							if ((state.getQuest().getQuestIntId() == qs.getQuest().getQuestIntId()))
 							{
 								if (qs.getQuest().notifyEvent(event, npc, this))
 									showQuestWindow(quest, State.getStateName(qs.getState()));

@@ -5727,6 +5727,21 @@ public abstract class L2Character extends L2Object
         // Notify the AI of the L2Character with EVT_FINISH_CASTING
 		getAI().notifyEvent(CtrlEvent.EVT_FINISH_CASTING);
 
+		if (this instanceof L2NpcInstance)
+		{
+			if (((L2NpcTemplate) getTemplate()).getEventQuests(Quest.QuestEventType.ON_SPELL_FINISHED) != null)
+			{
+				L2PcInstance player = null;
+				if (target instanceof L2PcInstance)
+					player = (L2PcInstance)target;
+				else if (target instanceof L2Summon)
+					player = ((L2Summon)target).getOwner();
+				for (Quest quest: ((L2NpcTemplate) getTemplate()).getEventQuests(Quest.QuestEventType.ON_SPELL_FINISHED))
+				{
+					quest.notifySpellFinished(((L2NpcInstance)this), player, skill);
+				}
+			}
+		}
         /*
          * If character is a player, then wipe their current cast state and
          * check if a skill is queued.
