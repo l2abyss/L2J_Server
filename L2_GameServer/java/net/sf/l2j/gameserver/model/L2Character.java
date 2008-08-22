@@ -4340,9 +4340,12 @@ public abstract class L2Character extends L2Object
 			return false;
 		}
 
+		if (_move == null)
+			return false;
+		
 		// Create and Init a MoveData object
 		MoveData m = new MoveData();
-
+		
 		// Update MoveData object
     	m.onGeodataPathIndex = _move.onGeodataPathIndex + 1; // next segment
     	m.geoPath = _move.geoPath;
