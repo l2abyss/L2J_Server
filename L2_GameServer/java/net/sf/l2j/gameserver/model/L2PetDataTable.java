@@ -65,7 +65,7 @@ public class L2PetDataTable
     			L2PetData petData = new L2PetData();
     			petData.setPetID(petId);
                 petData.setPetLevel(petLevel);
-                petData.setPetMaxExp(rset.getInt("expMax"));
+                petData.setPetMaxExp(rset.getLong("expMax"));
                 petData.setPetMaxHP(rset.getInt("hpMax"));
                 petData.setPetMaxMP(rset.getInt("mpMax"));
                 petData.setPetPAtk( rset.getInt("patk") );
