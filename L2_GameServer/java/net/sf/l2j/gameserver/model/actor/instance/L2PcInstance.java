@@ -2296,7 +2296,13 @@ public final class L2PcInstance extends L2PlayableInstance
 	}
 
 	/** Set the Experience value of the L2PcInstance. */
-	public void setExp(long exp) { getStat().setExp(exp); }
+	public void setExp(long exp)
+	{
+		if (exp < 0)
+			exp = 0;
+		
+		getStat().setExp(exp);
+	}
 
 	/**
 	 * Return the Race object of the L2PcInstance.<BR><BR>
@@ -2319,7 +2325,13 @@ public final class L2PcInstance extends L2PlayableInstance
 	public int getSp() { return getStat().getSp(); }
 
 	/** Set the SP amount of the L2PcInstance. */
-	public void setSp(int sp) { super.getStat().setSp(sp); }
+	public void setSp(int sp)
+	{
+		if (sp < 0)
+			sp = 0;
+		
+		super.getStat().setSp(sp);
+	}
 
 	/**
 	 * Return true if this L2PcInstance is a clan leader in
