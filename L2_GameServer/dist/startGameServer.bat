@@ -5,7 +5,7 @@ echo Starting L2J Game Server.
 echo.
 REM -------------------------------------
 REM Default parameters for a basic server.
-java -Xmx768m -cp ./../libs/*;l2jserver.jar net.sf.l2j.gameserver.GameServer
+java -Xmx1024 -cp ./../libs/*;l2jserver.jar net.sf.l2j.gameserver.GameServer
 REM
 REM If you have a big server and lots of memory, you could experiment for example with
 REM java -server -Xmx1536m -Xms1024m -Xmn512m -XX:PermSize=256m -XX:SurvivorRatio=8 -Xnoclassgc -XX:+AggressiveOpts
