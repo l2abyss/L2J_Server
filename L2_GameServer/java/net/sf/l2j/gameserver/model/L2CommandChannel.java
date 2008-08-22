@@ -126,7 +126,7 @@ public class L2CommandChannel
 	 */
 	public void broadcastToChannelMembers(L2GameServerPacket gsp)
 	{
-		if (!_partys.isEmpty())
+		if (_partys != null && !_partys.isEmpty())
 		{
 			for (L2Party party : _partys)
 			{
