@@ -507,19 +507,39 @@ public class Quest extends ManagedScript
 		}
 		return showResult(attacker, res);
 	}
-	
+
+	public class tmpOnAggroEnter implements Runnable
+	{
+		private L2NpcInstance _npc;
+		private L2PcInstance _pc;
+		private boolean _isPet;
+		
+		public tmpOnAggroEnter(L2NpcInstance npc, L2PcInstance pc, boolean isPet)
+		{
+			_npc = npc;
+			_pc = pc;
+			_isPet = isPet;
+		}
+		
+		public void run()
+		{
+			String res = null;
+			try
+			{
+				res = onAggroRangeEnter(_npc, _pc, _isPet);
+			}
+			catch (Exception e)
+			{
+				showError(_pc, e);
+			}
+			showResult(_pc, res);
+			
+		}
+	}
 	public final boolean notifyAggroRangeEnter(L2NpcInstance npc, L2PcInstance player, boolean isPet)
 	{
-		String res = null;
-		try
-		{
-			res = onAggroRangeEnter(npc, player, isPet);
-		}
-		catch (Exception e)
-		{
-			return showError(player, e);
-		}
-		return showResult(player, res);
+		ThreadPoolManager.getInstance().executeAi(new tmpOnAggroEnter(npc, player, isPet));
+		return true;
 	}
 	
 	// these are methods that java calls to invoke scripts
