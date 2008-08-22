@@ -69,6 +69,7 @@ import net.sf.l2j.gameserver.model.zone.type.L2TownZone;
 import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
+import net.sf.l2j.gameserver.network.serverpackets.EtcStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ExShowVariationCancelWindow;
 import net.sf.l2j.gameserver.network.serverpackets.ExShowVariationMakeWindow;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
@@ -1056,6 +1057,51 @@ public class L2NpcInstance extends L2Character
                     DimensionalRiftManager.getInstance().handleCheat(player, this);
                 }
             }
+			else if (command.startsWith("remove_dp"))
+			{	
+                int cmdChoice = Integer.parseInt(command.substring(10, 11).trim());
+                int[] pen_clear_price = { 3600, 8640, 25200, 50400, 86400, 144000 };
+                switch (cmdChoice)
+                {
+                    case 1:
+                        String filename = "data/html/default/30981-1.htm";
+                        NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+                        html.setFile(filename);
+                        html.replace("%objectId%", String.valueOf(getObjectId()));
+                        html.replace("%dp_price%", String.valueOf(pen_clear_price[player.getExpertiseIndex()]));
+                        player.sendPacket(html);
+                        break;
+                    case 2:
+        				NpcHtmlMessage Reply = new NpcHtmlMessage(getObjectId());
+        				TextBuilder replyMSG = new TextBuilder("<html><body>Black Judge:<br>");
+
+        				if (player.getDeathPenaltyBuffLevel() > 0)
+        				{
+        								
+        					if (player.getAdena() >= pen_clear_price[player.getExpertiseIndex()])
+        					{
+        						if (!player.reduceAdena("DeathPenality", pen_clear_price[player.getExpertiseIndex()], this, true))
+        							return;
+        						player.setDeathPenaltyBuffLevel(player.getDeathPenaltyBuffLevel() - 1);
+        						player.sendPacket(new SystemMessage(SystemMessageId.DEATH_PENALTY_LIFTED));
+        						player.sendPacket(new EtcStatusUpdate(player));
+        						return;
+        					}
+        					else
+        						replyMSG.append("The wound you have received from death's touch is too deep to be healed for the money you have to give me. Find more money if you wish death's mark to be fully removed from you.");
+        				}
+        				else
+        				{
+        					replyMSG.append("You have no more death wounds that require healing.<br>");
+        					replyMSG.append("Go forth and fight, both for this world and your own glory.");
+        				}
+
+        				replyMSG.append("</body></html>");
+        				Reply.setHtml(replyMSG.toString());
+        				player.sendPacket(Reply);
+                        break;
+                }
+			}
             else if (command.startsWith("ExitRift"))
             {
                 if(player.isInParty() && player.getParty().isInDimensionalRift())
