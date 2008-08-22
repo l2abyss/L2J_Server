@@ -334,7 +334,7 @@ public class PcInventory extends Inventory
 
     	if (item != null && item.getItemId() == ANCIENT_ADENA_ID && !item.equals(_ancientAdena))
     		_ancientAdena = item;
-    	if (item != null)
+    	if (item != null && actor != null)
     	{
 			// Send inventory update packet
 			if (!Config.FORCE_INVENTORY_UPDATE)
