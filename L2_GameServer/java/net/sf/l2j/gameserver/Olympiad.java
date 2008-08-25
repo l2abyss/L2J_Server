@@ -1258,6 +1258,9 @@ public class Olympiad
             for (Integer nobleId : _nobles.keySet())
             {
                 StatsSet nobleInfo = _nobles.get(nobleId);
+                
+                if (nobleInfo == null)
+                	continue;
 
                 int charId = nobleId;
                 int classId = nobleInfo.getInteger(CLASS_ID);
