@@ -90,7 +90,8 @@ public class L2CharacterAI extends AbstractAI
 	@Override
 	protected void onEvtAttacked(L2Character attacker)
 	{
-		clientStartAutoAttack();
+		if (attacker instanceof L2Attackable && !((L2Attackable) attacker).isCoreAIDisabled())
+			clientStartAutoAttack();
 	}
 	
 	/**
