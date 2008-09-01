@@ -1616,7 +1616,7 @@ public abstract class L2Character extends L2Object
 
 		// Calculate the casting time of the skill (base + modifier of MAtkSpd)
 		// Don't modify the skill time for FORCE_BUFF skills. The skill time for those skills represent the buff time.
-		if(!effectWhileCasting)
+		if(!effectWhileCasting  && !skill.isStaticReuse())
 		{
 			hitTime = Formulas.getInstance().calcMAtkSpd(this, skill, hitTime);
 			if (coolTime > 0) 
@@ -1665,15 +1665,22 @@ public abstract class L2Character extends L2Object
 		// Init the reuse time of the skill
 		int reuseDelay;
 		
-		if(skill.isMagic())
+		if (skill.isStaticReuse())
 		{
-			reuseDelay = (int)(skill.getReuseDelay() * getStat().getMReuseRate(skill));
+			reuseDelay = (skill.getReuseDelay());
 		}
 		else
 		{
-			reuseDelay = (int)(skill.getReuseDelay() * getStat().getPReuseRate(skill));
+			if(skill.isMagic())
+			{
+				reuseDelay = (int)(skill.getReuseDelay() * getStat().getMReuseRate(skill));
+			}
+			else
+			{
+				reuseDelay = (int)(skill.getReuseDelay() * getStat().getPReuseRate(skill));
+			}
+			reuseDelay *= 333.0 / (skill.isMagic() ? getMAtkSpd() : getPAtkSpd());
 		}
-        reuseDelay *= 333.0 / (skill.isMagic() ? getMAtkSpd() : getPAtkSpd());
 
 		// Skill reuse check
 		if (reuseDelay > 30000) addTimeStamp(skill.getId(),reuseDelay);
