@@ -5746,7 +5746,7 @@ public abstract class L2Character extends L2Object
 		// if (skill.isOffensive() && getAI().getNextIntention() == null
 		// && !(skill.getSkillType() == SkillType.UNLOCK) && !(skill.getSkillType() == SkillType.DELUXE_KEY_UNLOCK) && !(skill.getSkillType() == SkillType.MDAM))
 		if (getAI().getNextIntention() == null && skill.getSkillType() == L2SkillType.PDAM || skill.getSkillType() == L2SkillType.BLOW
-				|| skill.getSkillType() == L2SkillType.DRAIN_SOUL || skill.getSkillType() == L2SkillType.SOW
+				|| skill.getSkillType() == L2SkillType.DRAIN_SOUL || skill.getSkillType() == L2SkillType.SOW || skill.getSkillType() == L2SkillType.CHARGEDAM
 				|| skill.getSkillType() == L2SkillType.SPOIL)
 		{
 			if (getTarget() instanceof L2Character && getTarget() != this && target == getTarget())
