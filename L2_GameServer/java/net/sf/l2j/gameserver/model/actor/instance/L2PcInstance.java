@@ -7674,6 +7674,7 @@ public final class L2PcInstance extends L2PlayableInstance
 				// Check if clan is at war
 				if (getClan() != null && ((L2PcInstance)attacker).getClan() != null
 				                           && (getClan().isAtWarWith(((L2PcInstance)attacker).getClanId())
+				                           && ((L2PcInstance)attacker).getClan().isAtWarWith(getClanId())
 				                           && getWantsPeace() == 0
 				                           && ((L2PcInstance)attacker).getWantsPeace() == 0
 				                           && !isAcademyMember()))
