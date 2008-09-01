@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.handler.itemhandlers;
 
 import java.util.logging.Logger;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.ExtractableItemsData;
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.handler.IItemHandler;
@@ -66,7 +67,15 @@ public class ExtractableItems implements IItemHandler
 			if (rndNum >= chanceFrom && rndNum <= chance + chanceFrom)
 			{
 				createItemID = expi.getId();
-				createAmount = expi.getAmmount();
+
+				if ((itemID >= 6411 && itemID <= 6518) || (itemID >= 7726 && itemID <= 7860) || (itemID >= 8403 && itemID <= 8483)) 
+				{
+					createAmount = (int)(expi.getAmmount()* Config.RATE_EXTR_FISH);
+				} 
+				else 
+				{
+					createAmount = expi.getAmmount();
+				}
 				break;
 			}
 			
