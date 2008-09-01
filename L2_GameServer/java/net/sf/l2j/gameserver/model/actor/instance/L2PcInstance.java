@@ -2007,7 +2007,7 @@ public final class L2PcInstance extends L2PlayableInstance
         {
 			if(getLvlJoinedAcademy() <= 16) _clan.setReputationScore(_clan.getReputationScore()+650, true);
             else if(getLvlJoinedAcademy() >= 39) _clan.setReputationScore(_clan.getReputationScore()+190, true);
-            else _clan.setReputationScore(_clan.getReputationScore()+(400-(getLvlJoinedAcademy()-16)*20), true);
+            else _clan.setReputationScore(_clan.getReputationScore()+(650-(getLvlJoinedAcademy()-16)*20), true);
 			_clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
 			setLvlJoinedAcademy(0);
             //oust pledge member from the academy, cuz he has finished his 2nd class transfer
