@@ -99,9 +99,6 @@ public class L2PetManagerInstance extends L2MerchantInstance
     
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
-		if (!Config.ALLOW_RENTPET)
-			return;
-		
 		if (command.startsWith("exchange"))
         {
         	String[] params = command.split( " " );
