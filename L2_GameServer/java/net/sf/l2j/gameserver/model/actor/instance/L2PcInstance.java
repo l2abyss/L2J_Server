@@ -6945,8 +6945,6 @@ public final class L2PcInstance extends L2PlayableInstance
 					
 				}
 			}
-			_reuseTimeStamps.clear();
-			
 			statement.close();
 		}
 		catch (Exception e)
@@ -7186,8 +7184,6 @@ public final class L2PcInstance extends L2PlayableInstance
 		L2Object[] targets = new L2Character[]{this};
 		Connection con = null;
 		
-		long delaytime = System.currentTimeMillis() - this.getLastAccess();
-
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -7216,6 +7212,8 @@ public final class L2PcInstance extends L2PlayableInstance
 				double reuseDelay = rset.getInt("reuse_delay");
 				double systime = rset.getDouble("systime");
 
+				double remainingTime = systime - System.currentTimeMillis();
+
 				// Just incase the admin minipulated this table incorrectly :x
 				if(skillId == -1 || effectCount == -1 || effectCurTime == -1 || reuseDelay < 0) continue;
 
@@ -7226,9 +7224,9 @@ public final class L2PcInstance extends L2PlayableInstance
 				else
 					skill.useSkill(this, targets);
 
-				if (reuseDelay > 10)
+				if (remainingTime > 10)
 				{
-					disableSkill(skillId, (long)reuseDelay);
+					disableSkill(skillId, (long)remainingTime);
 					addTimeStamp(new TimeStamp(skillId, (long)reuseDelay, (long)systime));
 				}
 
@@ -7261,11 +7259,12 @@ public final class L2PcInstance extends L2PlayableInstance
 				double reuseDelay = rset.getDouble("reuse_delay");
 				double systime = rset.getDouble("systime");
 
-				reuseDelay = reuseDelay - delaytime;
+				double remainingTime = systime - System.currentTimeMillis();
 
-				if (reuseDelay <= 0) continue;
+				if (remainingTime < 10)
+					continue;
 
-				disableSkill(skillId, (long)reuseDelay);
+				disableSkill(skillId, (long)remainingTime);
 				addTimeStamp(new TimeStamp(skillId, (long)reuseDelay, (long)systime));
 			}
 			rset.close();
@@ -9388,6 +9387,7 @@ public final class L2PcInstance extends L2PlayableInstance
          * 2. Register the correct _classId against applied 'classIndex'.
          */
         store();
+        _reuseTimeStamps.clear();
 
         if (classIndex == 0)
         {
