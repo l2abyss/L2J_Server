@@ -17,6 +17,7 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.NpcTable;
@@ -89,6 +90,8 @@ public class L2PetManagerInstance extends L2MerchantInstance
 
         NpcHtmlMessage html = new NpcHtmlMessage(1);
         html.setFile(filename);
+        if (Config.ALLOW_RENTPET && Config.LIST_PET_RENT_NPC.contains(getNpcId()))
+        	html.replace("_Quest", "_RentPet\">Rent Pet</a><br><a action=\"bypass -h npc_%objectId%_Quest");
         html.replace("%objectId%", String.valueOf(getObjectId()));
         html.replace("%npcname%", getName());
         player.sendPacket(html);
@@ -96,7 +99,10 @@ public class L2PetManagerInstance extends L2MerchantInstance
     
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
-        if (command.startsWith("exchange"))
+		if (!Config.ALLOW_RENTPET)
+			return;
+		
+		if (command.startsWith("exchange"))
         {
         	String[] params = command.split( " " );
         	int val = Integer.parseInt(params[1]);
