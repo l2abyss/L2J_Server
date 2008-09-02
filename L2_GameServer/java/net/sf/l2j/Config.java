@@ -323,6 +323,7 @@ public final class Config
     public static boolean	LOG_CHAT;
     public static boolean	LOG_ITEMS;
     public static boolean	GMAUDIT;
+    public static boolean	LOG_GAME;
     public static boolean	DEBUG;
     public static boolean	ASSERT;
     public static boolean	DEVELOPER;
@@ -1329,6 +1330,7 @@ public final class Config
                 LOG_CHAT									= Boolean.parseBoolean(General.getProperty("LogChat", "false"));
                 LOG_ITEMS									= Boolean.parseBoolean(General.getProperty("LogItems", "false"));
                 GMAUDIT										= Boolean.parseBoolean(General.getProperty("GMAudit", "False"));
+                LOG_GAME									= Boolean.parseBoolean(General.getProperty("LogGame", "False"));
                 DEBUG										= Boolean.parseBoolean(General.getProperty("Debug", "false"));
                 ASSERT										= Boolean.parseBoolean(General.getProperty("Assert", "false"));
                 DEVELOPER									= Boolean.parseBoolean(General.getProperty("Developer", "false"));

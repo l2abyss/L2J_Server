@@ -38,37 +38,39 @@ public class Log
 	
 	public static final void add(String text, String cat)
 	{
-		/*		Logger _log = logs.get(cat);
+		if(Config.LOG_GAME) {
+			/*		Logger _log = logs.get(cat);
 				if(_log == null)
 				{
 					_log = Logger.getLogger(cat);
 					logs.put(cat, _log);
 				}*/
 
-		String date = (new SimpleDateFormat("yy.MM.dd H:mm:ss")).format(new Date());
+			String date = (new SimpleDateFormat("yy.MM.dd H:mm:ss")).format(new Date());
 		
-		new File("log/game").mkdirs();
+			new File("log/game").mkdirs();
 		
-		try
-		{
-			File file = new File("log/game/" + (cat != null ? cat : "_all") + ".txt");
-			//			file.getAbsolutePath().mkdirs();
-			FileWriter save = new FileWriter(file, true);
-			String out = "[" + date + "] '---': " + text + "\n"; // "+char_name()+"
-			save.write(out);
-			save.flush();
-			save.close();
-			save = null;
-			file = null;
+			try
+			{
+				File file = new File("log/game/" + (cat != null ? cat : "_all") + ".txt");
+				//			file.getAbsolutePath().mkdirs();
+				FileWriter save = new FileWriter(file, true);
+				String out = "[" + date + "] '---': " + text + "\n"; // "+char_name()+"
+				save.write(out);
+				save.flush();
+				save.close();
+				save = null;
+				file = null;
+			}
+			catch (IOException e)
+			{
+				_log.warning("saving chat log failed: " + e);
+				e.printStackTrace();
+			}
+		
+			if (cat != null)
+				add(text, null);
 		}
-		catch (IOException e)
-		{
-			_log.warning("saving chat log failed: " + e);
-			e.printStackTrace();
-		}
-		
-		if (cat != null)
-			add(text, null);
 	}
 	
 	@Deprecated
