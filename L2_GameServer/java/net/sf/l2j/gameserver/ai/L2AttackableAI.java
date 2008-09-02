@@ -687,9 +687,27 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					{
 						L2NpcInstance npc = (L2NpcInstance) obj;
 						
-						if (faction_id != npc.getFactionId())
-							continue;
-						
+						//Handle SevenSigns mob Factions
+	        			String npcfaction = npc.getFactionId();
+	        			boolean sevenSignFaction = false;
+	        			
+	        			// TODO: Unhardcode this by AI scripts (DrHouse)
+	        			//Catacomb mobs should assist lilim and nephilim other than dungeon
+	        			if ( (faction_id == "c_dungeon_clan") && 
+	        				((npcfaction == "c_dungeon_lilim") || npcfaction == "c_dungeon_nephi")) 
+	        				sevenSignFaction = true;
+	        			//Lilim mobs should assist other Lilim and catacomb mobs
+	        			else if ( (faction_id == "c_dungeon_lilim") &&
+	        				(npcfaction == "c_dungeon_clan"))
+	        				sevenSignFaction = true;
+	        			//Nephilim mobs should assist other Nephilim and catacomb mobs
+	        			else if ( (faction_id == "c_dungeon_nephi") &&
+	        				(npcfaction == "c_dungeon_clan")) 
+	        				sevenSignFaction = true;
+	        			
+	        			if (faction_id != npc.getFactionId() && !sevenSignFaction)
+	        				continue;
+	        				
 						// Check if the L2Object is inside the Faction Range of
 						// the actor
 						if (_actor.isInsideRadius(npc, npc.getFactionRange() + npc.getTemplate().collisionRadius, true, false) && npc.getAI() != null)
