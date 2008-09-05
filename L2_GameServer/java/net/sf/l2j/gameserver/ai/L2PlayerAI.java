@@ -138,11 +138,13 @@ public class L2PlayerAI extends L2CharacterAI
 		if (getIntention() == AI_INTENTION_CAST)
 		{
 			// run interrupted or next intention
-			if (_nextIntention != null)
+			
+			IntentionCommand nextIntention = _nextIntention;
+			if (nextIntention != null)
 			{
-				if (_nextIntention._crtlIntention != AI_INTENTION_CAST) // previous state shouldn't be casting
+				if (nextIntention._crtlIntention != AI_INTENTION_CAST) // previous state shouldn't be casting
 				{
-					setIntention(_nextIntention._crtlIntention, _nextIntention._arg0, _nextIntention._arg1);
+					setIntention(nextIntention._crtlIntention, nextIntention._arg0, nextIntention._arg1);
 				}
 				else
 					setIntention(AI_INTENTION_IDLE);
