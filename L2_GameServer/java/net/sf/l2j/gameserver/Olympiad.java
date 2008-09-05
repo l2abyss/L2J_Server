@@ -2103,7 +2103,10 @@ public class Olympiad
     	
     	protected void portPlayersBack()
     	{
-    		_playerOne.teleToLocation(x1, y1, z1, true);
+    		if (_playerOne != null)
+    			_playerOne.teleToLocation(x1, y1, z1, true);
+    		
+    		if (_playerTwo != null)
     		_playerTwo.teleToLocation(x2, y2, z2, true);
     	}
     	
