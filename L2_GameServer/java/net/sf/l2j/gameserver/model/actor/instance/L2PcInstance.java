@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -1952,6 +1953,98 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
     }
 
+    public synchronized void useEquippableItem(L2ItemInstance item, boolean abortAttack)
+	{
+		// Equip or unEquip
+        L2ItemInstance[] items = null;
+        boolean isEquiped = item.isEquipped();
+        SystemMessage sm = null;
+        L2ItemInstance old = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LRHAND);
+        if (old == null)
+        	old = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
+
+        checkSSMatch(item, old);
+
+        if (isEquiped)
+        {
+            if (item.getEnchantLevel() > 0)
+            {
+            	sm = new SystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
+            	sm.addNumber(item.getEnchantLevel());
+            	sm.addItemName(item);
+            }
+            else
+            {
+	            sm = new SystemMessage(SystemMessageId.S1_DISARMED);
+	            sm.addItemName(item);
+            }
+            sendPacket(sm);
+
+            int slot = getInventory().getSlotFromItem(item);
+        	items = getInventory().unEquipItemInBodySlotAndRecord(slot);
+        }
+        else
+        {
+        	int tempBodyPart = item.getItem().getBodyPart();
+        	L2ItemInstance tempItem = getInventory().getPaperdollItemByL2ItemId(tempBodyPart);
+
+        	//check if the item replaces a wear-item
+        	if (tempItem != null && tempItem.isWear())
+        	{
+        		// dont allow an item to replace a wear-item
+        		return;
+        	}
+        	else if (tempBodyPart == 0x4000) // left+right hand equipment
+        	{
+        		// this may not remove left OR right hand equipment
+        		tempItem = getInventory().getPaperdollItem(7);
+        		if (tempItem != null && tempItem.isWear()) return;
+
+        		tempItem = getInventory().getPaperdollItem(8);
+        		if (tempItem != null && tempItem.isWear()) return;
+        	}
+        	else if (tempBodyPart == 0x8000) // fullbody armor
+        	{
+        		// this may not remove chest or leggins
+        		tempItem = getInventory().getPaperdollItem(10);
+        		if (tempItem != null && tempItem.isWear()) return;
+
+        		tempItem = getInventory().getPaperdollItem(11);
+        		if (tempItem != null && tempItem.isWear()) return;
+        	}
+
+			if (item.getEnchantLevel() > 0)
+			{
+				sm = new SystemMessage(SystemMessageId.S1_S2_EQUIPPED);
+				sm.addNumber(item.getEnchantLevel());
+				sm.addItemName(item);
+			}
+			else
+			{
+				sm = new SystemMessage(SystemMessageId.S1_EQUIPPED);
+				sm.addItemName(item);
+			}
+			sendPacket(sm);
+
+			items = getInventory().equipItemAndRecord(item);
+
+            // Consume mana - will start a task if required; returns if item is not a shadow item
+            item.decreaseMana(false);
+        }
+        sm = null;
+
+        refreshExpertisePenalty();
+
+		if (item.getItem().getType2() == L2Item.TYPE2_WEAPON)
+			checkIfWeaponIsAllowed();
+
+		InventoryUpdate iu = new InventoryUpdate();
+		iu.addItems(Arrays.asList(items));
+		sendPacket(iu);
+		if (abortAttack) abortAttack();
+		broadcastUserInfo();		
+	}
+    
 	/**
 	 * Return the the PvP Kills of the L2PcInstance (Number of player killed during a PvP).<BR><BR>
 	 */
@@ -7714,7 +7807,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 * @param dontMove used to prevent movement, if not in range
 	 *
 	 */
-	public void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
+	public synchronized void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
 	{
         // Check if the skill is active
         if (skill.isPassive())
