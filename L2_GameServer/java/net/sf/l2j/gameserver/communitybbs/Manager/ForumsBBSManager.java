@@ -55,6 +55,9 @@ public class ForumsBBSManager extends BaseBBSManager
 	
 	public void addForum(Forum ff)
 	{
+		if (ff == null)
+			return;
+			
 		_table.add(ff);
 		
 		if (ff.getID() > _lastid)
