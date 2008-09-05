@@ -128,6 +128,9 @@ public final class Config
     public static int		MAX_RUN_SPEED;
     public static int		MAX_PCRIT_RATE;
     public static int		MAX_MCRIT_RATE;
+    public static int		MAX_PATK_SPEED;
+    public static int		MAX_MATK_SPEED;
+    public static int		MAX_EVASION;
     public static byte		MAX_SUBCLASS;
     public static int		MAX_PVTSTORESELL_SLOTS_DWARF;
     public static int		MAX_PVTSTORESELL_SLOTS_OTHER;
@@ -1145,6 +1148,9 @@ public final class Config
                 MAX_RUN_SPEED						= Integer.parseInt(Character.getProperty("MaxRunSpeed", "250"));
                 MAX_PCRIT_RATE						= Integer.parseInt(Character.getProperty("MaxPCritRate", "500"));
                 MAX_MCRIT_RATE						= Integer.parseInt(Character.getProperty("MaxMCritRate", "200"));
+                MAX_PATK_SPEED						= Integer.parseInt(Character.getProperty("MaxPAtkSpeed", "1500"));
+                MAX_MATK_SPEED						= Integer.parseInt(Character.getProperty("MaxMAtkSpeed", "1999"));
+                MAX_EVASION							= Integer.parseInt(Character.getProperty("MaxEvasion", "200"));
                 MAX_SUBCLASS						= Byte.parseByte(Character.getProperty("MaxSubclass", "3"));
                 MAX_PVTSTORESELL_SLOTS_DWARF		= Integer.parseInt(Character.getProperty("MaxPvtStoreSellSlotsDwarf", "4"));
                 MAX_PVTSTORESELL_SLOTS_OTHER		= Integer.parseInt(Character.getProperty("MaxPvtStoreSellSlotsOther", "3"));

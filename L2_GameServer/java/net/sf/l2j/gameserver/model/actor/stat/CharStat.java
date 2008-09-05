@@ -204,7 +204,10 @@ public class CharStat
     	if (_activeChar == null)
     		return 1;
 
-		return (int) (calcStat(Stats.EVASION_RATE, 0, target, null) / _activeChar.getArmourExpertisePenalty());
+		int val = (int) (calcStat(Stats.EVASION_RATE, 0, target, null) / _activeChar.getArmourExpertisePenalty());
+		if (val > Config.MAX_EVASION && !_activeChar.isGM())
+			val = Config.MAX_EVASION;
+		return val;
 	}
 
 	public long getExp()
@@ -370,6 +373,8 @@ public class CharStat
     		bonusSpdAtk = Config.L2JMOD_CHAMPION_SPD_ATK;
 		double val = calcStat(Stats.MAGIC_ATTACK_SPEED, _activeChar.getTemplate().baseMAtkSpd * bonusSpdAtk, null, null);
 		val /= _activeChar.getArmourExpertisePenalty();
+		if (val > Config.MAX_MATK_SPEED && !_activeChar.isGM())
+			val = Config.MAX_MATK_SPEED;
 		return (int) val;
 	}
 
@@ -523,7 +528,10 @@ public class CharStat
     	float bonusAtk = 1;
         if  (Config.L2JMOD_CHAMPION_ENABLE && _activeChar.isChampion())
     		bonusAtk = Config.L2JMOD_CHAMPION_SPD_ATK;
-		return (int) (calcStat(Stats.POWER_ATTACK_SPEED, _activeChar.getTemplate().basePAtkSpd * bonusAtk, null, null) / _activeChar.getArmourExpertisePenalty());
+		int val = (int) (calcStat(Stats.POWER_ATTACK_SPEED, _activeChar.getTemplate().basePAtkSpd * bonusAtk, null, null) / _activeChar.getArmourExpertisePenalty());
+		if (val > Config.MAX_PATK_SPEED && !_activeChar.isGM())
+			val = Config.MAX_PATK_SPEED;
+		return val;
 	}
 
 	/** Return the PAtk Modifier against undead. */
