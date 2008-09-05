@@ -110,7 +110,6 @@ public final class Config
     public static boolean	AUTO_LEARN_SKILLS;
     public static boolean	AUTO_LOOT_HERBS;
     public static byte		BUFFS_MAX_AMOUNT;
-    public static byte		DANCES_MAX_AMOUNT;
     public static boolean	AUTO_LEARN_DIVINE_INSPIRATION;
     public static boolean	ALT_GAME_CANCEL_BOW;
     public static boolean	ALT_GAME_CANCEL_CAST;
@@ -1127,8 +1126,7 @@ public final class Config
                 
                 AUTO_LEARN_SKILLS					= Boolean.parseBoolean(Character.getProperty("AutoLearnSkills", "false"));
                 AUTO_LOOT_HERBS						= Boolean.parseBoolean(Character.getProperty("AutoLootHerbs", "true"));
-                BUFFS_MAX_AMOUNT					= Byte.parseByte(Character.getProperty("maxbuffamount","20"));
-                DANCES_MAX_AMOUNT					= Byte.parseByte(Character.getProperty("maxdanceamount","12"));
+                BUFFS_MAX_AMOUNT					= Byte.parseByte(Character.getProperty("maxbuffamount","24"));
                 AUTO_LEARN_DIVINE_INSPIRATION		= Boolean.parseBoolean(Character.getProperty("AutoLearnDivineInspiration", "false"));
                 ALT_GAME_CANCEL_BOW					= Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("bow") || Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("all");
                 ALT_GAME_CANCEL_CAST				= Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("cast") || Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("all");
