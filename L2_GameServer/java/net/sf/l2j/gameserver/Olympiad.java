@@ -412,7 +412,7 @@ public class Olympiad
     
     protected static final Stadia[] STADIUMS = 
     {
-    	new Stadia(-20838, -21075, -3000, 19170001, 19170002),
+    	new Stadia(-20838, -21075, -3028, 19170001, 19170002),
     	new Stadia(-88000, -252637, -3331, 17100001, 17100002),
     	new Stadia(-83760, -252637, -3331, 17100003, 17100004),
     	new Stadia(-79600, -252637, -3331, 17100005, 17100006),
