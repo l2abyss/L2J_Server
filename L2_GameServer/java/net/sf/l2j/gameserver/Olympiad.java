@@ -740,6 +740,9 @@ public class Olympiad
 
         for (L2OlympiadGame g : _manager.getOlympiadGames().values())
         {
+        	if (g == null)
+        		continue;
+        	
         	for(L2PcInstance player : g.getPlayers())
         	{
         		if(player.getObjectId() == noble.getObjectId())
@@ -865,6 +868,9 @@ public class Olympiad
         
         for(L2OlympiadGame game: _manager.getOlympiadGames().values())
         {
+        	if (game == null)
+        		continue;
+        	
         	if(game._playerOne.getObjectId() == noble.getObjectId() || game._playerTwo.getObjectId() == noble.getObjectId())
         	{
         		noble.sendMessage("Cant Unregister whilst you are already selected for a game");
