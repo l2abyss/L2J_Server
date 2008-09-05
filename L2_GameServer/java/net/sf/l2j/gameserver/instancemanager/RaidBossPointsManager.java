@@ -256,13 +256,14 @@ public class RaidBossPointsManager
 		for(Map.Entry<Integer, Integer> entry : list)
 		{
 			Map<Integer, Integer> tmpPoint = new FastMap<Integer, Integer>();
-			tmpPoint = tmpPoints.get(entry.getKey());
 			
-			tmpPoint.remove(-1);
+			if (tmpPoints.get(entry.getKey()) != null)
+				tmpPoint = tmpPoints.get(entry.getKey());
+			
 			tmpPoint.put(-1, ranking);
 			
-			tmpPoints.remove(entry.getKey());
 			tmpPoints.put(entry.getKey(), tmpPoint);
+			
 			ranking++;
 		}
 		Map<Integer, Integer> rank = tmpPoints.get(player.getObjectId());
