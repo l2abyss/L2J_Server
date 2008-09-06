@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.ai;
 
+import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_FOLLOW;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE;
 import net.sf.l2j.gameserver.model.L2Summon;
@@ -139,7 +140,8 @@ public class L2SummonAI extends L2CharacterAI
 	@Override
 	protected void onEvtFinishCasting()
 	{
-		((L2Summon) _actor).setFollowStatus(_startFollow);
+		if (_actor.getAI().getIntention() != AI_INTENTION_ATTACK)
+			((L2Summon) _actor).setFollowStatus(_startFollow);
 	}
 	
 	public void notifyFollowStatusChange()
