@@ -51,7 +51,6 @@ import net.sf.l2j.gameserver.network.serverpackets.PetInfo;
 import net.sf.l2j.gameserver.network.serverpackets.PetInventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.PetItemList;
 import net.sf.l2j.gameserver.network.serverpackets.PetStatusShow;
-import net.sf.l2j.gameserver.network.serverpackets.PetStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.StopMove;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
