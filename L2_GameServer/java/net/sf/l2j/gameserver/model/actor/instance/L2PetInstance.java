@@ -24,6 +24,9 @@ import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
+import net.sf.l2j.gameserver.datatables.ItemTable;
+import net.sf.l2j.gameserver.handler.IItemHandler;
+import net.sf.l2j.gameserver.handler.ItemHandler;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
 import net.sf.l2j.gameserver.instancemanager.ItemsOnGroundManager;
@@ -44,13 +47,16 @@ import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
+import net.sf.l2j.gameserver.network.serverpackets.PetInfo;
 import net.sf.l2j.gameserver.network.serverpackets.PetInventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.PetItemList;
 import net.sf.l2j.gameserver.network.serverpackets.PetStatusShow;
+import net.sf.l2j.gameserver.network.serverpackets.PetStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.StopMove;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
+import net.sf.l2j.gameserver.templates.L2EtcItemType;
 import net.sf.l2j.gameserver.templates.L2Item;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.L2Weapon;
@@ -386,6 +392,8 @@ public class L2PetInstance extends L2Summon
 	@Override
 	protected void doPickupItem(L2Object object)
 	{
+		boolean follow = getFollowStatus();
+		
 		getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 		StopMove sm = new StopMove(getObjectId(), getX(), getY(), getZ(), getHeading());
 
@@ -404,14 +412,6 @@ public class L2PetInstance extends L2Summon
 
 		L2ItemInstance target = (L2ItemInstance) object;
 
-		// Herbs
-		if ( target.getItemId() > 8599 && target.getItemId() < 8615 )
-		{
-	        SystemMessage smsg = new SystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1);
-            smsg.addItemName(target.getItemId());
-            getOwner().sendPacket(smsg);
-			return;
-		}
 		// Cursed weapons
 		if ( CursedWeaponsManager.getInstance().isCursed(target.getItemId()) )
 		{
@@ -427,9 +427,9 @@ public class L2PetInstance extends L2Summon
 			{
 				getOwner().sendPacket(ActionFailed.STATIC_PACKET);
 				return;
-			}
-
-            if (target.getOwnerId() != 0 && target.getOwnerId() != getOwner().getObjectId() && !getOwner().isInLooterParty(target.getOwnerId()))
+			}		
+			
+			if (target.getOwnerId() != 0 && target.getOwnerId() != getOwner().getObjectId() && !getOwner().isInLooterParty(target.getOwnerId()))
             {
                 getOwner().sendPacket(ActionFailed.STATIC_PACKET);
 
@@ -462,17 +462,72 @@ public class L2PetInstance extends L2Summon
             target.pickupMe(this);
 
             if(Config.SAVE_DROPPED_ITEM) // item must be removed from ItemsOnGroundManager if is active
-        	ItemsOnGroundManager.getInstance().removeObject(target);
+            	ItemsOnGroundManager.getInstance().removeObject(target);
 		}
-
-		getInventory().addItem("Pickup", target, getOwner(), this);
-		//FIXME Just send the updates if possible (old way wasn't working though)
-		PetItemList iu = new PetItemList(this);
-		getOwner().sendPacket(iu);
+		
+		// Herbs
+		if (target.getItemType() == L2EtcItemType.HERB)
+		{
+			IItemHandler handler = ItemHandler.getInstance().getItemHandler(target.getItemId());
+			if (handler == null)
+				_log.fine("No item handler registered for item ID " + target.getItemId() + ".");
+			else
+				handler.useItem(this, target);
+            
+			ItemTable.getInstance().destroyItem("Consume", target, getOwner(), null);
+	        
+			broadcastStatusUpdate();
+			
+			PetInfo pi = new PetInfo(this);
+			getOwner().sendPacket(pi);
+			
+			// Commented out and moved below synchronized block by DrHouse. 
+			// It seems that pets get full effect of herbs when picking them up by themselves
+			/*
+			SystemMessage smsg = new SystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1);
+            smsg.addItemName(target.getItemId());
+            getOwner().sendPacket(smsg);
+			return; 
+			*/
+		}
+		else
+		{
+			getInventory().addItem("Pickup", target, getOwner(), this);
+			//FIXME Just send the updates if possible (old way wasn't working though)
+			PetItemList iu = new PetItemList(this);
+			getOwner().sendPacket(iu);
+			
+			if (target.getItemId() == 57)
+			{
+				SystemMessage sm2 = new SystemMessage(SystemMessageId.PET_PICKED_S1_ADENA);
+				sm2.addNumber(target.getCount());
+				getOwner().sendPacket(sm2);
+			}
+			else if (target.getEnchantLevel() > 0)
+			{
+				SystemMessage sm2 = new SystemMessage(SystemMessageId.PET_PICKED_S1_S2);
+				sm2.addNumber(target.getEnchantLevel());
+				sm2.addString(target.getName());
+				getOwner().sendPacket(sm2);
+			}
+			else if (target.getCount() > 1)
+			{
+				SystemMessage sm2 = new SystemMessage(SystemMessageId.PET_PICKED_S2_S1_S);
+				sm2.addNumber(target.getCount());
+				sm2.addString(target.getName());
+				getOwner().sendPacket(sm2);
+			}
+			else
+			{
+				SystemMessage sm2 = new SystemMessage(SystemMessageId.PET_PICKED_S1);
+				sm2.addString(target.getName());
+				getOwner().sendPacket(sm2);
+			}
+		}
 
 		getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 
-		if (getFollowStatus())
+		if (follow)
 			followOwner();
 	}
 
