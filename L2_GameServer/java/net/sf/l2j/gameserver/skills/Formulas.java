@@ -32,6 +32,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.model.entity.Siege;
@@ -1147,6 +1148,19 @@ public final class Formulas
 					damage /= 1.2; // 2
 			}
 		}
+		
+		// Dmg bonusses in PvP fight
+		if((attacker instanceof L2PlayableInstance)
+				&& (target instanceof L2PlayableInstance))
+		{
+			if(skill == null)
+				damage *= attacker.calcStat(Stats.PVP_PHYSICAL_DMG, 1, null, null);
+			else
+				damage *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);	
+		}
+		
+		
+		
 		return damage < 1 ? 1. : damage;
 	}
 	/** Calculated damage caused by ATTACK of attacker on target,
@@ -1325,8 +1339,8 @@ public final class Formulas
 		}
 		
 		// Dmg bonusses in PvP fight
-		if((attacker instanceof L2PcInstance || attacker instanceof L2Summon)
-				&& (target instanceof L2PcInstance || target instanceof L2Summon))
+		if((attacker instanceof L2PlayableInstance) 
+				&& (target instanceof L2PlayableInstance))
 		{
 			if(skill == null)
 				damage *= attacker.calcStat(Stats.PVP_PHYSICAL_DMG, 1, null, null);
@@ -1405,8 +1419,8 @@ public final class Formulas
 		else if (mcrit) damage *= 3;
 		damage += Rnd.get() * attacker.getRandomDamage(target);
 		// Pvp bonusses for dmg
-		if((attacker instanceof L2PcInstance || attacker instanceof L2Summon)
-				&& (target instanceof L2PcInstance || target instanceof L2Summon))
+		if((attacker instanceof L2PlayableInstance)
+				&& (target instanceof L2PlayableInstance))
 		{
 			if(skill.isMagic())
 				damage *= attacker.calcStat(Stats.PVP_MAGICAL_DMG, 1, null, null);
