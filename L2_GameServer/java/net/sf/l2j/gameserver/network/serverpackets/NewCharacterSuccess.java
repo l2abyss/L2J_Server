@@ -48,6 +48,9 @@ public class NewCharacterSuccess extends L2GameServerPacket
 
 		for (L2PcTemplate temp : _chars)
 		{
+			if (temp == null)
+				continue;
+			
 			writeD(temp.race.ordinal());
 			writeD(temp.classId.getId());
 			writeD(0x46);
