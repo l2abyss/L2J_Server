@@ -569,14 +569,16 @@ public class CursedWeapon
 	{
 		_nbKills++;
 
-		_player.setPkKills(_nbKills);
-		_player.broadcastUserInfo();
-
-		if (_nbKills % _stageKills == 0 && _nbKills <= _stageKills*(_skillMaxLevel-1))
+		if (_player != null && _player.isOnline() > 0)
 		{
-			giveSkill();
-		}
+			_player.setPkKills(_nbKills);
+			_player.broadcastUserInfo();
 
+			if (_nbKills % _stageKills == 0 && _nbKills <= _stageKills*(_skillMaxLevel-1))
+			{
+				giveSkill();
+			}
+		}
 		// Reduce time-to-live
 		_endTime -= _durationLost * 60000L;
 		saveData();
