@@ -314,14 +314,17 @@ public final class L2WorldRegion
         setActive(true);
 
         // if the timer to deactivate neighbors is running, cancel it.
-        if(_neighborsTask !=null)
+        synchronized(_neighborsTask)
         {
-            _neighborsTask.cancel(true);
-            _neighborsTask = null;
-        }
+        	if(_neighborsTask !=null)
+        	{
+        		_neighborsTask.cancel(true);
+        		_neighborsTask = null;
+        	}
 
-        // then, set a timer to activate the neighbors
-        _neighborsTask = ThreadPoolManager.getInstance().scheduleGeneral(new NeighborsTask(true), 1000*Config.GRID_NEIGHBOR_TURNON_TIME);
+        	// then, set a timer to activate the neighbors
+        	_neighborsTask = ThreadPoolManager.getInstance().scheduleGeneral(new NeighborsTask(true), 1000*Config.GRID_NEIGHBOR_TURNON_TIME);
+        }
     }
 
     /** starts a timer to set neighbors (including self) as inactive
@@ -332,15 +335,18 @@ public final class L2WorldRegion
     private void startDeactivation()
     {
         // if the timer to activate neighbors is running, cancel it.
-        if(_neighborsTask !=null)
+    	synchronized(_neighborsTask)
         {
-            _neighborsTask.cancel(true);
-            _neighborsTask = null;
-        }
+    		if(_neighborsTask !=null)
+    		{
+    			_neighborsTask.cancel(true);
+    			_neighborsTask = null;
+    		}
 
-        // start a timer to "suggest" a deactivate to self and neighbors.
-        // suggest means: first check if a neighbor has L2PcInstances in it.  If not, deactivate.
-        _neighborsTask = ThreadPoolManager.getInstance().scheduleGeneral(new NeighborsTask(false), 1000*Config.GRID_NEIGHBOR_TURNOFF_TIME);
+    		// start a timer to "suggest" a deactivate to self and neighbors.
+    		// suggest means: first check if a neighbor has L2PcInstances in it.  If not, deactivate.
+    		_neighborsTask = ThreadPoolManager.getInstance().scheduleGeneral(new NeighborsTask(false), 1000*Config.GRID_NEIGHBOR_TURNOFF_TIME);
+        }
     }
 
     /**
