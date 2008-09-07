@@ -314,7 +314,7 @@ public final class L2WorldRegion
         setActive(true);
 
         // if the timer to deactivate neighbors is running, cancel it.
-        synchronized(_neighborsTask)
+        synchronized(this)
         {
         	if(_neighborsTask !=null)
         	{
@@ -335,7 +335,7 @@ public final class L2WorldRegion
     private void startDeactivation()
     {
         // if the timer to activate neighbors is running, cancel it.
-    	synchronized(_neighborsTask)
+    	synchronized(this)
         {
     		if(_neighborsTask !=null)
     		{
