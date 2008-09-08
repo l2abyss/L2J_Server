@@ -20,14 +20,18 @@ import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.Formulas;
+import net.sf.l2j.gameserver.skills.Stats;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.gameserver.templates.L2WeaponType;
+import net.sf.l2j.gameserver.util.Util;
 
 /**
  *
@@ -111,7 +115,21 @@ public class Blow implements ISkillHandler
 				{
 					L2PcInstance player = (L2PcInstance) target;
 					if (!player.isInvul())
-					{
+					{   
+						// Check and calculate transfered damage
+			            L2Summon summon = player.getPet();
+			            if (summon != null && summon instanceof L2SummonInstance && Util.checkIfInRange(900, player, summon, true))
+			            {
+			                int tDmg = (int)damage * (int)player.getStat().calcStat(Stats.TRANSFER_DAMAGE_PERCENT, 0, null, null) /100;
+
+			                // Only transfer dmg up to current HP, it should not be killed
+			                if (summon.getCurrentHp() < tDmg) tDmg = (int)summon.getCurrentHp() - 1;
+			                if (tDmg > 0)
+			                {
+			                    summon.reduceCurrentHp(tDmg, activeChar );
+			                    damage -= tDmg;
+			                }
+			            }
 						if (damage >= player.getCurrentHp())
 						{
 							if (player.isInDuel())
@@ -134,16 +152,22 @@ public class Blow implements ISkillHandler
 						else
 							player.setCurrentHp(player.getCurrentHp() - damage);
 					}
-					SystemMessage smsg = new SystemMessage(SystemMessageId.S1_RECEIVED_DAMAGE_OF_S3_FROM_S2);
-					smsg.addPcName(player);
-					smsg.addCharName(activeChar);
-					smsg.addNumber((int) damage);
-					player.sendPacket(smsg);
-				}
-				else
-					target.reduceCurrentHp(damage, activeChar);
-				if (activeChar instanceof L2PcInstance)
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.S1_HAD_CRITICAL_HIT).addPcName((L2PcInstance) activeChar));
+	        		SystemMessage smsg = new SystemMessage(SystemMessageId.S1_RECEIVED_DAMAGE_OF_S3_FROM_S2);
+	        		smsg.addPcName(player);
+	        		smsg.addCharName(activeChar);
+	        		smsg.addNumber((int)damage);
+	        		player.sendPacket(smsg);
+	        	}
+	        	else
+	        		target.reduceCurrentHp(damage, activeChar);
+				// Manage attack or cast break of the target (calculating rate, sending message...)
+                if (!target.isRaid() && Formulas.getInstance().calcAtkBreak(target, damage))
+                {
+                	target.breakAttack();
+                	target.breakCast();
+                }
+				if(activeChar instanceof L2PcInstance)
+					activeChar.sendPacket(new SystemMessage(SystemMessageId.S1_HAD_CRITICAL_HIT).addPcName((L2PcInstance)activeChar));
 				SystemMessage sm = new SystemMessage(SystemMessageId.YOU_DID_S1_DMG);
 				sm.addNumber((int) damage);
 				activeChar.sendPacket(sm);
