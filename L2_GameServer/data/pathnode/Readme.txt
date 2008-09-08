@@ -10,8 +10,8 @@
 #        /gameserver/data/pathnode           #
 #                 folder                     #
 #                                            #
-#       Current link to pathnode files:      #
-#         http://geodata.devcod.com/         #
+#       Current link to geodata files:       #
+#       svn://l2jfree.com/repo/geodata       #
 #                                            #
 ##############################################
 

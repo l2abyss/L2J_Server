@@ -11,7 +11,7 @@
 #                 folder                     #
 #                                            #
 #       Current link to geodata files:       #
-#         http://geodata.devcod.com/         #
+#       svn://l2jfree.com/repo/geodata       #
 #                                            #
 ##############################################
 
