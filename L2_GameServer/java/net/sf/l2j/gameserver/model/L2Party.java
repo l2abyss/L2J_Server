@@ -851,6 +851,6 @@ public class L2Party {
 
 	public synchronized L2PcInstance getLeader() 
 	{		
-		return _members.head().getValue(); 
+		return _members.getFirst(); 
 	}
 }
