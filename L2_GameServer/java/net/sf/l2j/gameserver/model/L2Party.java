@@ -55,7 +55,7 @@ public class L2Party {
 
 	//private static Logger _log = Logger.getLogger(L2Party.class.getName());
 
-	private List<L2PcInstance> _members = null;
+	private FastList<L2PcInstance> _members = null;
     private int _pendingInvitation = 0;       // Number of players that already have been invited (but not replied yet)
 	private int _partyLvl = 0;
 	private int _itemDistribution = 0;
@@ -109,9 +109,11 @@ public class L2Party {
 	 * returns all party members
 	 * @return
 	 */
-	public List<L2PcInstance> getPartyMembers()
+	public synchronized FastList<L2PcInstance> getPartyMembers()
 	{
-		if (_members == null) _members = new FastList<L2PcInstance>();
+		if (_members == null)
+			_members = new FastList<L2PcInstance>();
+		
 		return _members;
 	}
 
@@ -847,5 +849,8 @@ public class L2Party {
 
 	public DimensionalRift getDimensionalRift() { return _dr; }
 
-	public L2PcInstance getLeader() { return getPartyMembers().get(0); }
+	public synchronized L2PcInstance getLeader() 
+	{		
+		return _members.head().getValue(); 
+	}
 }
