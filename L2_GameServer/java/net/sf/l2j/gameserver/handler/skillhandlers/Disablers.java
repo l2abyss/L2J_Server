@@ -456,14 +456,10 @@ public class Disablers implements ISkillHandler
 					L2Effect[] effects = target.getAllEffects();
 					for (L2Effect e : effects)
 					{
-						for (Func f : e.getStatFuncs())
-						{
-							if (f.stat == Stats.MAGIC_ATTACK || f.stat == Stats.MAGIC_ATTACK_SPEED)
-							{
-								e.exit();
-								break;
-							}
-						}
+						// TODO: Unhardcode this SkillType, maybe on its own child class
+						// only Acumen and Greater Empower
+						if (e.getSkill().getId() == 1085 || e.getSkill().getId() == 1059)
+							e.exit();
 					}
 					
 					break;
@@ -488,14 +484,10 @@ public class Disablers implements ISkillHandler
 					L2Effect[] effects = target.getAllEffects();
 					for (L2Effect e : effects)
 					{
-						for (Func f : e.getStatFuncs())
-						{
-							if (f.stat == Stats.RUN_SPEED || f.stat == Stats.POWER_ATTACK_SPEED)
-							{
-								e.exit();
-								break;
-							}
-						}
+						// TODO: Unhardcode this SkillType, maybe on its own child class
+						// only Wind Walk and Haste
+						if (e.getSkill().getId() == 1204 || e.getSkill().getId() == 1086)
+							e.exit();
 					}
 					break;
 				}
