@@ -740,7 +740,7 @@ public class Olympiad
 
         for (L2OlympiadGame g : _manager.getOlympiadGames().values())
         {
-        	if (g == null)
+        	if (g == null || g.getPlayers() == null)
         		continue;
         	
         	for(L2PcInstance player : g.getPlayers())
