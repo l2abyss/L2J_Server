@@ -153,6 +153,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadSpelledInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadUserInfoSpectator;
 import net.sf.l2j.gameserver.network.serverpackets.ExSetCompassZoneCode;
 import net.sf.l2j.gameserver.network.serverpackets.ExSpawnEmitter;
+import net.sf.l2j.gameserver.network.serverpackets.GMHide;
 import net.sf.l2j.gameserver.network.serverpackets.GameGuardQuery;
 import net.sf.l2j.gameserver.network.serverpackets.HennaInfo;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
@@ -8796,6 +8797,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		setIsParalyzed(true);
         setIsInvul(true);
 		getAppearance().setInvisible();
+		sendPacket(new GMHide(1));
 		sendPacket(new ObservationMode(x, y, z));
 		setXYZ(x, y, z);
 
@@ -8828,6 +8830,7 @@ public final class L2PcInstance extends L2PlayableInstance
         setTarget(null);
         setIsInvul(true);
         getAppearance().setInvisible();
+        sendPacket(new GMHide(1));
         teleToLocation(x, y, z, false);
         sendPacket(new ExOlympiadMode(3));
         _observerMode = true;
@@ -8840,6 +8843,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		setXYZ(_obsX, _obsY, _obsZ);
 		setIsParalyzed(false);
 		getAppearance().setVisible();
+		sendPacket(new GMHide(0));
         setIsInvul(false);
 
 		if (getAI() != null)
@@ -8856,6 +8860,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		sendPacket(new ExOlympiadMode(0));
         teleToLocation(_obsX, _obsY, _obsZ, true);
         getAppearance().setVisible();
+        sendPacket(new GMHide(0));
         setIsInvul(false);
         if (getAI() != null)
 		{

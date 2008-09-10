@@ -68,7 +68,7 @@ public class L2DamageZone extends L2ZoneType
 	@Override
 	protected void onExit(L2Character character)
 	{
-		if (_characterList.isEmpty())
+		if (_characterList.isEmpty() && _task != null)
 		{
 			_task.cancel(true);
 			_task = null;

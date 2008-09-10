@@ -433,6 +433,16 @@ public final class QuestState
 	}
 	
 	/**
+	 * Give adena to the player
+	 * @param count
+	 * @param applyRates
+	 */
+	public void giveAdena(int count, boolean applyRates)
+	{
+		giveItems(57, count, applyRates ? 0 : 1);
+	}
+
+	/**
 	 * Give item/reward to the player
 	 * @param itemId
 	 * @param count
@@ -447,18 +457,18 @@ public final class QuestState
 		if (count <= 0)
 			return;
 		
-		int questId = getQuest().getQuestIntId();
-		// If item for reward is gold (ID=57), modify count with rate for quest reward
-		if (itemId == 57 && !(questId >= 217 && questId <= 233) && !(questId >= 401 && questId <= 418))
+		// If item for reward is adena (ID=57), modify count with rate for quest reward if rates available
+		if (itemId == 57 && !(enchantlevel > 0))
 			count = (int) (count * Config.RATE_QUESTS_REWARD);
-		// Set quantity of item
 		
 		// Add items to player's inventory
 		L2ItemInstance item = getPlayer().getInventory().addItem("Quest", itemId, count, getPlayer(), getPlayer().getTarget());
 		
 		if (item == null)
 			return;
-		if (enchantlevel > 0)
+
+		// set enchant level for item if that item is not adena
+		if (enchantlevel > 0 && itemId != 57)
 			item.setEnchantLevel(enchantlevel);
 		
 		// If item for reward is gold, send message of gold reward to client
