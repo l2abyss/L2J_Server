@@ -3799,10 +3799,8 @@ public final class L2PcInstance extends L2PlayableInstance
         L2Effect[] effects = getAllEffects();
         if (effects != null && effects.length > 0)
         {
-            for (int i = 0; i < effects.length; i++)
+            for (L2Effect effect : effects)
             {
-                L2Effect effect = effects[i];
-
                 if (effect == null || !effect.getShowIcon())
                 {
                     continue;
