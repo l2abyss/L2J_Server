@@ -52,7 +52,7 @@ public class Escape implements IUserCommandHandler
 			return false;
 		}
 		
-		if (activeChar.isCastingNow() || activeChar.isMovementDisabled() || activeChar.isMuted() || activeChar.isAlikeDead() || activeChar.isInOlympiadMode())
+		if (activeChar.isCastingNow() || activeChar.isMovementDisabled() || activeChar.isMuted() || activeChar.isAlikeDead() || activeChar.isInOlympiadMode() || activeChar.inObserverMode())
 			return false;
 		
 		int unstuckTimer = (activeChar.getAccessLevel().isGm() ? 5000 : Config.UNSTUCK_INTERVAL * 1000);
