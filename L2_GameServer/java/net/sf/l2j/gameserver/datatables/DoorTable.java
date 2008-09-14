@@ -295,27 +295,52 @@ public class DoorTable
 			return false;
 		}
 		
+		// there are quite many doors, maybe they should be splitted
 		for (L2DoorInstance doorInst : getDoors())
 		{
-			if (doorInst.getMapRegion() != region)
+			if (doorInst.getMapRegion() != region) 
 				continue;
 			if (doorInst.getXMax() == 0)
 				continue;
 			
 			// line segment goes through box
-			// heavy approximation disabling some shooting angles especially near 2-piece doors
-			// but most calculations should stop short
+			// first basic checks to stop most calculations short
 			// phase 1, x
 			if (x <= doorInst.getXMax() && tx >= doorInst.getXMin() || tx <= doorInst.getXMax() && x >= doorInst.getXMin())
 			{
 				//phase 2, y
 				if (y <= doorInst.getYMax() && ty >= doorInst.getYMin() || ty <= doorInst.getYMax() && y >= doorInst.getYMin())
 				{
-					// phase 3, z (there's a small problem when the other is above/under door level..)
-					if (z >= doorInst.getZMin() && z <= doorInst.getZMax() && tz >= doorInst.getZMin() && tz <= doorInst.getZMax())
+					// phase 3, basically only z remains but now we calculate it with another formula (by rage)
+					// in some cases the direct line check (only) in the beginning isn't sufficient, 
+					// when char z changes a lot along the path
+					if (doorInst.getCurrentHp() > 0 && doorInst.getOpen() != 0) 
 					{
-						if (!(doorInst.getCurrentHp() <= 0 || doorInst.getOpen() == 0))
-							return true;
+						int px1 = doorInst.getXMin();
+						int py1 = doorInst.getYMin();
+						int pz1 = doorInst.getZMin();
+						int px2 = doorInst.getXMax();
+						int py2 = doorInst.getYMax();
+						int pz2 = doorInst.getZMax();
+						
+						int l = tx - x;
+						int m = ty - y;
+						int n = tz - z;
+						
+						int dk;
+						
+						if ((dk = (doorInst.getA() * l + doorInst.getB() * m + doorInst.getC() * n)) == 0) continue; // Parallel
+						
+						float p = (float)(doorInst.getA() * x + doorInst.getB() * y + doorInst.getC() * z + doorInst.getD()) / (float)dk;
+						
+						int fx = (int)(x - l * p);
+						int fy = (int)(y - m * p);
+						int fz = (int)(z - n * p);
+						
+						if (((fx >= px1 && fx <= px2) || (fx >= px2 && fx <= px1)) &&
+								((fy >= py1 && fy <= py2) || (fy >= py2 && fy <= py1)) &&
+								((fz >= pz1 && fz <= pz2) || (fz >= pz2 && fz <= pz1)))
+							return true; // Door between
 					}
 				}
 			}
