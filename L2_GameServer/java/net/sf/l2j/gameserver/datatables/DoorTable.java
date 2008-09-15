@@ -337,10 +337,16 @@ public class DoorTable
 						int fy = (int)(y - m * p);
 						int fz = (int)(z - n * p);
 						
-						if (((fx >= px1 && fx <= px2) || (fx >= px2 && fx <= px1)) &&
-								((fy >= py1 && fy <= py2) || (fy >= py2 && fy <= py1)) &&
-								((fz >= pz1 && fz <= pz2) || (fz >= pz2 && fz <= pz1)))
-							return true; // Door between
+						if((Math.min(x,tx) <= fx && fx <= Math.max(x,tx)) &&
+								(Math.min(y,ty) <= fy && fy <= Math.max(y,ty)) &&
+								(Math.min(z,tz) <= fz && fz <= Math.max(z,tz)))
+						{
+
+							if (((fx >= px1 && fx <= px2) || (fx >= px2 && fx <= px1)) &&
+									((fy >= py1 && fy <= py2) || (fy >= py2 && fy <= py1)) &&
+									((fz >= pz1 && fz <= pz2) || (fz >= pz2 && fz <= pz1)))
+								return true; // Door between
+						}
 					}
 				}
 			}
