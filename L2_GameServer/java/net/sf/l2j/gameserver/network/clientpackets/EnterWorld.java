@@ -381,14 +381,26 @@ public class EnterWorld extends L2GameClientPacket
         if(cha.getPartnerId()!=0)
         {
             L2PcInstance partner;
-            partner = (L2PcInstance)L2World.getInstance().findObject(cha.getPartnerId());
-
-            if (partner != null)
+            int objId = cha.getPartnerId();
+            
+            try
             {
-                partner.sendMessage("Your Partner has logged in");
+            	partner = (L2PcInstance)L2World.getInstance().findObject(cha.getPartnerId());
+            	
+            	if (partner != null)
+                {
+                    partner.sendMessage("Your Partner has logged in");
+                }
+
+                partner = null;
+            }
+            catch (ClassCastException cce)
+            {
+            	_log.warning("Wedding mod error. This ID: "+objId+" is now owned by an "+
+            			L2World.getInstance().findObject(objId).getClass().getSimpleName());
             }
 
-            partner = null;
+            
         }
     }
 
