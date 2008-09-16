@@ -32,6 +32,7 @@ import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
 import net.sf.l2j.gameserver.instancemanager.CoupleManager;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
@@ -159,6 +160,20 @@ public class EnterWorld extends L2GameClientPacket
                 Hero.getInstance().getHeroes().containsKey(activeChar.getObjectId()))
             activeChar.setHero(true);
 
+        //Updating Seal of Strife Buff/Debuff 
+        if (SevenSigns.getInstance().isSealValidationPeriod()){
+        	if (SevenSigns.getInstance().getPlayerCabal(activeChar) != SevenSigns.CABAL_NULL)
+        		if (SevenSigns.getInstance().getPlayerCabal(activeChar) == SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE))
+        			activeChar.addSkill(SkillTable.getInstance().getInfo(5074,1));
+        		else
+        			activeChar.addSkill(SkillTable.getInstance().getInfo(5075,1));
+        }
+        else
+        {
+        	activeChar.removeSkill(SkillTable.getInstance().getInfo(5074,1));
+        	activeChar.removeSkill(SkillTable.getInstance().getInfo(5075,1));        	
+        }
+        
         setPledgeClass(activeChar);
 
         activeChar.sendPacket(new UserInfo(activeChar));

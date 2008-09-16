@@ -692,7 +692,11 @@ public final class Config
     public static long		ALT_FESTIVAL_SECOND_SPAWN;
     public static long		ALT_FESTIVAL_SECOND_SWARM;
     public static long		ALT_FESTIVAL_CHEST_SPAWN;
-	
+    public static double	ALT_SIEGE_DAWN_GATES_PDEF_MULT;
+    public static double	ALT_SIEGE_DUSK_GATES_PDEF_MULT;
+    public static double	ALT_SIEGE_DAWN_GATES_MDEF_MULT;
+    public static double	ALT_SIEGE_DUSK_GATES_MDEF_MULT;    
+    
     /** ************************************************** **/
 	/** SevinSigns Settings -End                           **/
 	/** ************************************************** **/
@@ -1089,7 +1093,10 @@ public final class Config
                 ALT_FESTIVAL_FIRST_SWARM       						= Long.parseLong(Feature.getProperty("AltFestivalFirstSwarm", "300000"));                ALT_FESTIVAL_SECOND_SPAWN       = Long.parseLong(Feature.getProperty("AltFestivalSecondSpawn", "540000"));
                 ALT_FESTIVAL_SECOND_SWARM       					= Long.parseLong(Feature.getProperty("AltFestivalSecondSwarm", "720000"));
                 ALT_FESTIVAL_CHEST_SPAWN       						= Long.parseLong(Feature.getProperty("AltFestivalChestSpawn", "900000"));
-
+                ALT_SIEGE_DAWN_GATES_PDEF_MULT						= Double.parseDouble(Feature.getProperty("AltDawnGatesPdefMult", "1.1"));
+                ALT_SIEGE_DUSK_GATES_PDEF_MULT						= Double.parseDouble(Feature.getProperty("AltDuskGatesPdefMult", "0.8"));
+                ALT_SIEGE_DAWN_GATES_MDEF_MULT						= Double.parseDouble(Feature.getProperty("AltDawnGatesMdefMult", "1.1"));
+                ALT_SIEGE_DUSK_GATES_MDEF_MULT						= Double.parseDouble(Feature.getProperty("AltDuskGatesMdefMult", "0.8"));
             }
             catch (Exception e)
             {

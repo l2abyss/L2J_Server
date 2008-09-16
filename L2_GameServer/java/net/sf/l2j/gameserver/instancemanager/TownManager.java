@@ -114,6 +114,60 @@ public class TownManager
         return getTown(16); // Default to floran
     }
 
+    public final L2TownZone getSecondClosestTown(L2Object activeObject)
+    {
+        switch (MapRegionTable.getInstance().getMapRegion(activeObject.getPosition().getX(), activeObject.getPosition().getY()))
+		{
+			case 0:
+				return getTown(5); // TI
+			case 1:
+				return getTown(5); // Elven
+			case 2:
+				return getTown(5); // DE
+			case 3:
+				return getTown(4); // Orc
+			case 4:
+				return getTown(6); // Dwarven
+			case 5:
+				return getTown(5); // Gludio
+			case 6:
+				return getTown(5); // Gludin
+			case 7:
+				return getTown(7); // Dion
+			case 8:
+				return getTown(11); // Giran
+			case 9:
+				return getTown(11); // Oren
+			case 10:
+				return getTown(11); // Aden
+			case 11:
+				return getTown(11); // HV
+			case 12:
+				return getTown(16); // Giran Harbour
+			case 13:
+				return getTown(16); // Heine
+			case 14:
+				return getTown(13); // Rune
+			case 15:
+				return getTown(12); // Goddard
+			case 16:
+				return getTown(6); // Schuttgart
+			case 17:
+				return getTown(16); // Floran
+			case 18:
+				return getTown(19); //Primeval Isle
+            case 19:
+                return getTown(20); //Kamael Village
+            case 20:
+                return getTown(21); //South of Wastelands Camp
+            case 21:
+                return getTown(22); //Fantasy Island
+		}
+
+        return getTown(16); // Default to floran
+    }
+    
+    
     public final boolean townHasCastleInSiege(int townId)
     {
     	//int[] castleidarray = {0,0,0,0,0,0,0,1,2,3,4,0,5,0,0,6,0};

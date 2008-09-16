@@ -36,6 +36,7 @@ import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.model.zone.type.L2ArenaZone;
 import net.sf.l2j.gameserver.model.zone.type.L2ClanHallZone;
+import net.sf.l2j.gameserver.SevenSigns;
 
 /**
  * This class ...
@@ -396,19 +397,21 @@ public class MapRegionTable
 				if (teleportWhere == TeleportWhereType.Castle)
 				{
 					castle = CastleManager.getInstance().getCastleByOwner(player.getClan());
-					// Check if player is on castle or fortress ground
+					// Otherwise check if player is on castle or fortress ground
+					// and player's clan is defender
 					if (castle == null)
+					{
 						castle = CastleManager.getInstance().getCastle(player);
+						if (!(castle != null 
+								&& castle.getSiege().getIsInProgress() 
+								&& castle.getSiege().getDefenderClan(player.getClan()) != null))
+							castle = null;
+					}
 					
 					if (castle != null && castle.getCastleId() > 0)
 					{
-						// If Teleporting to castle or
-						// If is on caslte with siege and player's clan is defender
-						if (teleportWhere == TeleportWhereType.Castle || (teleportWhere == TeleportWhereType.Castle && castle.getSiege().getIsInProgress() && castle.getSiege().getDefenderClan(player.getClan()) != null))
-						{
 							coord = castle.getZone().getSpawn();
 							return new Location(coord[0], coord[1], coord[2]);
-						}
 					}
 				}
 				
@@ -416,18 +419,21 @@ public class MapRegionTable
 				if (teleportWhere == TeleportWhereType.Fortress)
 				{
 					fort = FortManager.getInstance().getFortByOwner(player.getClan());
+					// Otherwise check if player is on castle or fortress ground
+					// and player's clan is defender
 					if (fort == null)
+					{
 						fort = FortManager.getInstance().getFort(player);
+						if (!(fort != null 
+								&& fort.getSiege().getIsInProgress() 
+								&& fort.getSiege().getDefenderClan(player.getClan()) != null))
+							fort = null;
+					}
 					
 					if (fort != null && fort.getFortId() > 0)
 					{
-						// If Teleporting to castle or
-						// If is on caslte with siege and player's clan is defender
-						if (teleportWhere == TeleportWhereType.Fortress || (teleportWhere == TeleportWhereType.Fortress && fort.getSiege().getIsInProgress() && fort.getSiege().getDefenderClan(player.getClan()) != null))
-						{
-							coord = fort.getZone().getSpawn();
-							return new Location(coord[0], coord[1], coord[2]);
-						}
+						coord = fort.getZone().getSpawn();
+						return new Location(coord[0], coord[1], coord[2]);
 					}
 				}
 				
@@ -488,6 +494,21 @@ public class MapRegionTable
 				coord = arena.getSpawnLoc();
 				return new Location(coord[0], coord[1], coord[2]);
 			}
+			//Checking if needed to be respawned in "far" town from the castle;
+			castle = CastleManager.getInstance().getCastle(player);
+			if ( castle != null)
+			{
+				if (castle.getSiege().getIsInProgress())
+				{
+					// Check if player's clan is participating
+					if ((castle.getSiege().checkIsDefender(player.getClan()) ||	castle.getSiege().checkIsAttacker(player.getClan())) 
+							&& SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE) == SevenSigns.CABAL_DAWN)
+					{
+						coord = TownManager.getInstance().getSecondClosestTown(activeChar).getSpawnLoc();
+						return new Location(coord[0], coord[1], coord[2]);
+					}
+				}
+			}    
 		}
 		
 		// Get the nearest town

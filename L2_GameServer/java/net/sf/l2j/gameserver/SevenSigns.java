@@ -28,6 +28,7 @@ import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.model.AutoChatHandler;
 import net.sf.l2j.gameserver.model.AutoSpawnHandler;
@@ -44,8 +45,8 @@ import net.sf.l2j.gameserver.util.Broadcast;
 /**
  *  Seven Signs Engine
  *
- *  TODO:
- *  - Implementation of the Seal of Strife for sieges.
+ * 
+ *  
  *
  *  @author Tempy
  */
@@ -1406,7 +1407,8 @@ public class SevenSigns
 
                     // Perform initial Seal Validation set up.
                     initializeSeals();
-
+                    //Buff/Debuff members of the event when Seal of Strife captured. 
+                    GiveCPMult(getSealOwner(SEAL_STRIFE));
                     // Send message that Seal Validation has begun.
                     sendMessageToAll(SystemMessageId.SEAL_VALIDATION_PERIOD_BEGUN);
 
@@ -1421,7 +1423,8 @@ public class SevenSigns
 
 	                // Send message that Seal Validation has ended.
 	                sendMessageToAll(SystemMessageId.SEAL_VALIDATION_PERIOD_ENDED);
-
+	                //Clear Seal of Strife influence.
+	                RemoveCPMult();
 	                // Reset all data
 	                resetPlayerData();
 	                resetSeals();
@@ -1462,7 +1465,59 @@ public class SevenSigns
             }
 
 	        SevenSignsPeriodChange sspc = new SevenSignsPeriodChange();
-	        ThreadPoolManager.getInstance().scheduleGeneral(sspc, getMilliToPeriodChange());
-	    }
+ 	        ThreadPoolManager.getInstance().scheduleGeneral(sspc, getMilliToPeriodChange());
+ 	    }
+ 	}
+	public boolean CheckIsDawnPostingTicket(int itemId){
+		//TODO I think it should be some kind of a list in the datapack for compare;
+		if (itemId > 6114 && itemId < 6175) return true;
+		if (itemId > 6801 && itemId < 6812) return true;
+		if (itemId > 7997 && itemId < 8008) return true;
+		if (itemId > 7940 && itemId < 7951) return true;
+		if (itemId > 6294 && itemId < 6307) return true;
+		if (itemId > 6831 && itemId < 6834) return true;
+		if (itemId > 8027 && itemId < 8030) return true;
+		if (itemId > 7970 && itemId < 7973) return true;
+		return false;	
 	}
-}
+	public boolean CheckIsRookiePostingTicket(int itemId){
+		//TODO I think it should be some kind of a list in the datapack for compare;
+		if (itemId > 6174 && itemId < 6295) return true;
+		if (itemId > 6811 && itemId < 6832) return true;
+		if (itemId > 7950 && itemId < 7971) return true;
+		if (itemId > 8007 && itemId < 8028) return true;
+		return false;	
+		}
+	public void GiveCPMult(int StrifeOwner){
+		//Gives "Victor of War" passive skill to all online characters with Cabal, which controls Seal of Strife 
+	for (L2PcInstance character : L2World.getInstance().getAllPlayers().values()){
+    	if (getPlayerCabal(character) != SevenSigns.CABAL_NULL)
+    		if (getPlayerCabal(character) == StrifeOwner)
+    			character.addSkill(SkillTable.getInstance().getInfo(5074,1));
+    		else
+    			//Gives "The Vanquished of War" passive skill to all online characters with Cabal, which does not control Seal of Strife
+    			character.addSkill(SkillTable.getInstance().getInfo(5075,1));		
+		}			
+	}
+	public void RemoveCPMult(){
+		for (L2PcInstance character : L2World.getInstance().getAllPlayers().values()){
+			//Remove SevenSigns' buffs/debuffs.
+        	character.removeSkill(SkillTable.getInstance().getInfo(5074,1));
+        	character.removeSkill(SkillTable.getInstance().getInfo(5075,1));   			
+		}
+	}
+	public boolean CheckSummonConditions(L2PcInstance activeChar){
+	if (activeChar == null) return true;
+	//Golems cannot be summoned by Dusk when the Seal of Strife is controlled by the Dawn
+	if (isSealValidationPeriod())
+		if (getSealOwner(SEAL_STRIFE) == CABAL_DAWN)
+			if (getPlayerCabal(activeChar) == CABAL_DUSK)
+			{
+				activeChar.sendMessage("You cannot summon Siege Golem or Cannon while Seal of Strife posessed by Lords of Dawn.");
+				return true;	
+			}
+					
+	return false;	
+	}
+ }
+

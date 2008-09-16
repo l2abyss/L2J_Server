@@ -7870,11 +7870,10 @@ public final class L2PcInstance extends L2PlayableInstance
 		// Check if it's ok to summon
         // siege golem (13), Wild Hog Cannon (299), Swoop Cannon (448)
         if ((skill.getId() == 13 || skill.getId() == 299 || skill.getId() == 448)
-        		&& !SiegeManager.getInstance().checkIfOkToSummon(this, false) 
-                && !FortSiegeManager.getInstance().checkIfOkToSummon(this, false))
+        		&& ((!SiegeManager.getInstance().checkIfOkToSummon(this, false) 
+                && !FortSiegeManager.getInstance().checkIfOkToSummon(this, false))||(SevenSigns.getInstance().CheckSummonConditions(this))))
 			return;
-
-
+        
         //************************************* Check Casting in Progress *******************************************
 
         // If a skill is currently being used, queue this one if this is not the same

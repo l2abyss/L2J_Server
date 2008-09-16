@@ -316,8 +316,11 @@ public abstract class L2Character extends L2Object
 		if (template != null && this instanceof L2NpcInstance)
 		{
 			// Copy the Standard Calcultors of the L2NPCInstance in _calculators
-			_calculators = NPC_STD_CALCULATOR;
-
+			if (this instanceof L2DoorInstance)
+				_calculators = Formulas.getInstance().getStdDoorCalculators();
+			else
+				_calculators = NPC_STD_CALCULATOR;
+			
 			// Copy the skills of the L2NPCInstance from its template to the L2Character Instance
 			// The skills list can be affected by spell effects so it's necessary to make a copy
 			// to avoid that a spell affecting a L2NPCInstance, affects others L2NPCInstance of the same type too.

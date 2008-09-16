@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.handler.itemhandlers;
 
+import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.MercTicketManager;
@@ -53,15 +54,22 @@ public class MercTicket implements IItemHandler
 		int castleId = -1;
 		if (castle != null)
 			castleId = castle.getCastleId();
-		
+
 		//add check that certain tickets can only be placed in certain castles
 		if (MercTicketManager.getInstance().getTicketCastleId(itemId) != castleId)
 		{
-			switch (castleId)
+			if (castleId == -1)
+			{
+				// player is not in a castle
+				activeChar.sendMessage("Mercenary Tickets can only be used in a castle.");
+				return;  			
+			}
+
+			switch (MercTicketManager.getInstance().getTicketCastleId(itemId))
 			{
 				case 1:
 					activeChar.sendMessage("This Mercenary Ticket can only be used in Gludio.");
-					return;
+		     		return;
 				case 2:
 					activeChar.sendMessage("This Mercenary Ticket can only be used in Dion.");
 					return;
@@ -86,10 +94,6 @@ public class MercTicket implements IItemHandler
 				case 9:
 					activeChar.sendMessage("This Mercenary Ticket can only be used in Schuttgart.");
 					return;
-					// player is not in a castle
-				default:
-					activeChar.sendMessage("Mercenary Tickets can only be used in a castle.");
-					return;
 			}
 		}
 		
@@ -103,13 +107,44 @@ public class MercTicket implements IItemHandler
 		{
 			activeChar.sendMessage("You cannot hire mercenary while siege is in progress!");
 			return;
-		}
-		
-		if (MercTicketManager.getInstance().isAtCasleLimit(item.getItemId()))
-		{
-			activeChar.sendMessage("You cannot hire any more mercenaries");
+         }
+ 
+        //Checking Seven Signs Quest Period
+        if (SevenSigns.getInstance().getCurrentPeriod() != SevenSigns.PERIOD_SEAL_VALIDATION) 
+        {
+        	//_log.warning("Someone has tried to spawn a guardian during Quest Event Period of The Seven Signs.");       	
+        	activeChar.sendMessage("You cannot position any Mercenaries during Quest Period.");
+        	return;
+        }
+        //Checking the Seal of Strife status
+        switch (SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE))
+        {
+        	case SevenSigns.CABAL_NULL:
+        		if (SevenSigns.getInstance().CheckIsDawnPostingTicket(itemId))
+        		{
+                	//_log.warning("Someone has tried to spawn a Dawn Mercenary though the Seal of Strife is not controlled by anyone.");       	
+                	activeChar.sendMessage("You cannot position any Dawn Mercenaries at this time.");        		
+        			return;
+        		}        			
+        		break;
+        	case SevenSigns.CABAL_DUSK:
+        		if (!SevenSigns.getInstance().CheckIsRookiePostingTicket(itemId))
+        		{
+                	//_log.warning("Someone has tried to spawn a non-Rookie Mercenary though the Seal of Strife is controlled by Revolutionaries of Dusk.");       	
+                	activeChar.sendMessage("You can position only Rookie Mercenaries at this time.");        		
+        			return;
+        		}          		
+        		break;
+        	case SevenSigns.CABAL_DAWN:        	
+        		break;
+        }                
+        
+        if(MercTicketManager.getInstance().isAtCasleLimit(item.getItemId()))
+        {
+        	activeChar.sendMessage("You cannot hire any more mercenaries");
 			return;
 		}
+		
 		if (MercTicketManager.getInstance().isAtTypeLimit(item.getItemId()))
 		{
 			activeChar.sendMessage("You cannot hire any more mercenaries of this type.  You may still hire other types of mercenaries");

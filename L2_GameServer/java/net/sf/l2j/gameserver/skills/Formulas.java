@@ -285,6 +285,54 @@ public final class Formulas
 		}
 	}
 
+	static class FuncGatesPDefMod extends Func
+	{
+		static final FuncGatesPDefMod _fmm_instance = new FuncGatesPDefMod();
+
+		static Func getInstance()
+		{
+			return _fmm_instance;
+		}
+
+		private FuncGatesPDefMod()
+		{
+			super(Stats.POWER_DEFENCE, 0x20, null);
+		}
+
+		@Override
+		public void calc(Env env)
+		{
+			if (SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE) == SevenSigns.CABAL_DAWN)
+				env.value *= Config.ALT_SIEGE_DAWN_GATES_PDEF_MULT; 
+			else if (SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE) == SevenSigns.CABAL_DUSK)
+				env.value *= Config.ALT_SIEGE_DUSK_GATES_PDEF_MULT;
+		}
+	}
+	
+	static class FuncGatesMDefMod extends Func
+	{
+		static final FuncGatesMDefMod _fmm_instance = new FuncGatesMDefMod();
+
+		static Func getInstance()
+		{
+			return _fmm_instance;
+		}
+
+		private FuncGatesMDefMod()
+		{
+			super(Stats.MAGIC_DEFENCE, 0x20, null);
+		}
+
+		@Override
+		public void calc(Env env)
+		{
+			if (SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE) == SevenSigns.CABAL_DAWN)
+				env.value *= Config.ALT_SIEGE_DAWN_GATES_MDEF_MULT;
+			else if (SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE) == SevenSigns.CABAL_DUSK)
+				env.value *= Config.ALT_SIEGE_DUSK_GATES_MDEF_MULT;
+		}
+	}
+
 	static class FuncBowAtkRange extends Func
 	{
 		private static final FuncBowAtkRange _fbar_instance = new FuncBowAtkRange();
@@ -836,6 +884,27 @@ public final class Formulas
 
 		return std;
 	}
+
+	public Calculator[] getStdDoorCalculators()
+	{
+		Calculator[] std = new Calculator[Stats.NUM_STATS];
+
+		// Add the FuncAtkAccuracy to the Standard Calculator of ACCURACY_COMBAT
+		std[Stats.ACCURACY_COMBAT.ordinal()] = new Calculator();
+		std[Stats.ACCURACY_COMBAT.ordinal()].addFunc(FuncAtkAccuracy.getInstance());
+
+		// Add the FuncAtkEvasion to the Standard Calculator of EVASION_RATE
+		std[Stats.EVASION_RATE.ordinal()] = new Calculator();
+		std[Stats.EVASION_RATE.ordinal()].addFunc(FuncAtkEvasion.getInstance());
+		
+		//SevenSigns PDEF Modifier
+		std[Stats.POWER_DEFENCE.ordinal()].addFunc(FuncGatesPDefMod.getInstance());
+		
+		//SevenSigns MDEF Modifier
+		std[Stats.MAGIC_DEFENCE.ordinal()].addFunc(FuncGatesMDefMod.getInstance());		
+		
+		return std;
+	}	
 
 	/**
 	 * Add basics Func objects to L2PcInstance and L2Summon.<BR><BR>
