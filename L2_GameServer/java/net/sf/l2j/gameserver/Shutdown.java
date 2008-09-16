@@ -209,6 +209,8 @@ public class Shutdown extends Thread
 			try
 			{
 				GameTimeController.getInstance().stopTimer();
+				if (Config.DEADLOCK_DETECTOR)
+					GameServer.gameServer.getDeadLockDetectorThread().interrupt();
 			}
 			catch (Throwable t)
 			{

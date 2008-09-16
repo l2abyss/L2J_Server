@@ -110,6 +110,7 @@ import net.sf.l2j.gameserver.taskmanager.TaskManager;
 import net.sf.l2j.gameserver.util.DynamicExtension;
 import net.sf.l2j.gameserver.util.FloodProtector;
 import net.sf.l2j.status.Status;
+import net.sf.l2j.util.DeadLockDetector;
 
 import org.mmocore.network.SelectorConfig;
 import org.mmocore.network.SelectorThread;
@@ -124,6 +125,7 @@ public class GameServer
 	private static final Logger _log = Logger.getLogger(GameServer.class.getName());
 	
 	private final SelectorThread<L2GameClient> _selectorThread;
+	private final DeadLockDetector _deadDetectThread;
 	private final SkillTable _skillTable;
 	private final ItemTable _itemTable;
 	private final NpcTable _npcTable;
@@ -151,6 +153,11 @@ public class GameServer
 	public SelectorThread<L2GameClient> getSelectorThread()
 	{
 		return _selectorThread;
+	}
+	
+	public DeadLockDetector getDeadLockDetectorThread()
+	{
+		return _deadDetectThread;
 	}
 	
 	public ClanHallManager getCHManager()
@@ -442,6 +449,10 @@ public class GameServer
 		FloodProtector.getInstance();
 		TvTManager.getInstance();
 		KnownListUpdateTaskManager.getInstance();
+		if (Config.DEADLOCK_DETECTOR)
+			_deadDetectThread = new DeadLockDetector(20, DeadLockDetector.RESTART);
+		else
+			_deadDetectThread = null;
 		System.gc();
 		// maxMemory is the upper limit the jvm can use, totalMemory the size of
 		// the current allocation pool, freeMemory the unused memory in the
