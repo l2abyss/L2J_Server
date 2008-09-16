@@ -15,6 +15,8 @@
 package net.sf.l2j.gameserver.model.actor.instance;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
@@ -57,6 +59,8 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 	protected static final int COND_ALL_FALSE = 0;
 	protected static final int COND_BUSY_BECAUSE_OF_SIEGE = 1;
 	protected static final int COND_OWNER = 2;
+	private int _preDay;
+	private int _preHour;
 
 	public L2CastleChamberlainInstance(int objectId, L2NpcTemplate template)
 	{
@@ -1246,8 +1250,142 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 				doTeleport(player, whereTo);
 				return;
 			}
+			else if (actualCommand.equalsIgnoreCase("siege_change")) // siege day set
+			{
+				if (Config.CL_SET_SIEGE_TIME_LIST.isEmpty())
+				{
+					NpcHtmlMessage html = new NpcHtmlMessage(1);
+					html.setFile("data/html/chamberlain/chamberlain-noadmin.htm");
+					sendHtmlMessage(player, html);
+				}
+				else if (player.isClanLeader())
+				{
+					if (getCastle().getSiege().getTimeRegistrationOverDate().getTimeInMillis() < Calendar.getInstance().getTimeInMillis())
+					{
+						NpcHtmlMessage html = new NpcHtmlMessage(1);
+						html.setFile("data/html/chamberlain/siegetime1.htm");
+						sendHtmlMessage(player, html);						
+					}
+					else if (getCastle().getSiege().getIsTimeRegistrationOver()) 
+					{
+						NpcHtmlMessage html = new NpcHtmlMessage(1);
+						html.setFile("data/html/chamberlain/siegetime2.htm");
+						sendHtmlMessage(player, html);						
+					}
+					else
+					{
+						NpcHtmlMessage html = new NpcHtmlMessage(1);
+						html.setFile("data/html/chamberlain/siegetime3.htm");
+						html.replace("%time%", String.valueOf(getCastle().getSiegeDate().getTime()));
+						sendHtmlMessage(player, html);						
+					}
+				}
+				else
+				{
+					NpcHtmlMessage html = new NpcHtmlMessage(1);
+					html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
+					sendHtmlMessage(player, html);
+				}
+			}
+			else if (actualCommand.equalsIgnoreCase("siege_time_set")) // set preDay
+			{
+				boolean isAfternoon = Config.SIEGE_HOUR_LIST_MORNING.isEmpty();
+				switch (Integer.parseInt(val))
+				{
+					case 0:
+					case 4:
+						break;
+					case 1:
+						_preDay = Integer.parseInt(st.nextToken());
+						break;
+					case 2:
+						isAfternoon = Boolean.parseBoolean(st.nextToken());
+						break;
+					case 3:
+						_preHour = Integer.parseInt(st.nextToken());
+						break;
+					default:
+						break;
+				}
+				NpcHtmlMessage html = getNextSiegeTimePage(Integer.parseInt(val),isAfternoon);
+				
+				if (html == null)
+				{
+					if (Config.CL_SET_SIEGE_TIME_LIST.contains("day"))
+						getCastle().getSiegeDate().set(Calendar.DAY_OF_WEEK, _preDay);
+					if (Config.CL_SET_SIEGE_TIME_LIST.contains("hour"))
+						getCastle().getSiegeDate().set(Calendar.HOUR_OF_DAY, _preHour);
+					if (Config.CL_SET_SIEGE_TIME_LIST.contains("minute"))
+						getCastle().getSiegeDate().set(Calendar.MINUTE, Integer.parseInt(st.nextToken()));
+					// now store the changed time and finished next Siege Time registration
+					getCastle().getSiege().endTimeRegistration(false);
+					
+					html = new NpcHtmlMessage(1);
+					html.setFile("data/html/chamberlain/siegetime8.htm");
+					html.replace("%time%", String.valueOf(getCastle().getSiegeDate().getTime()));
+				}
+				sendHtmlMessage(player, html);				
+			}
+
 			super.onBypassFeedback(player, command);
 		}
+	}
+	
+	private NpcHtmlMessage getNextSiegeTimePage(int now, boolean isAfternoon)
+	{
+		NpcHtmlMessage ret = new NpcHtmlMessage(1);
+		if (now == 0 && Config.CL_SET_SIEGE_TIME_LIST.contains("day"))
+		{
+			ret.setFile("data/html/chamberlain/siegetime4.htm");
+			return ret;
+		}
+		if (now < 3 && Config.CL_SET_SIEGE_TIME_LIST.contains("hour"))
+		{
+			switch (now)
+			{
+				case 0:
+				case 1:
+					if (!Config.SIEGE_HOUR_LIST_MORNING.isEmpty() && !Config.SIEGE_HOUR_LIST_AFTERNOON.isEmpty())
+					{
+						ret.setFile("data/html/chamberlain/siegetime5.htm");
+						return ret;
+					}
+				case 2:
+					ret.setFile("data/html/chamberlain/siegetime6.htm");
+					List<Integer> list;
+					int inc = 0;
+					String ampm = "";
+					
+					if (!isAfternoon)
+					{
+						if (Config.SIEGE_HOUR_LIST_AFTERNOON.isEmpty()) ampm = "AM";
+						list = Config.SIEGE_HOUR_LIST_MORNING;
+					}
+					else
+					{
+						if (Config.SIEGE_HOUR_LIST_MORNING.isEmpty()) ampm = "PM";
+						inc = 12;
+						list = Config.SIEGE_HOUR_LIST_AFTERNOON;
+					}
+					TextBuilder tList = new TextBuilder();
+					for (Integer hour : list)
+					{
+						if (hour == 0) 
+							tList.append("<a action=\"bypass -h npc_%objectId%_siege_time_set 3 " + String.valueOf(hour + inc) + "\">" + String.valueOf(hour + 12) + ":00 " + ampm + "</a><br>");
+						else
+							tList.append("<a action=\"bypass -h npc_%objectId%_siege_time_set 3 " + String.valueOf(hour + inc) + "\">" + String.valueOf(hour) + ":00 " + ampm + "</a><br>");
+					}
+					ret.replace("%links%", tList.toString());
+			}
+			return ret;
+		}
+		if (now < 4 && Config.CL_SET_SIEGE_TIME_LIST.contains("minute"))
+		{
+			ret.setFile("data/html/chamberlain/siegetime7.htm");
+			return ret;
+		}
+		
+		return null;
 	}
 
 	private void sendHtmlMessage(L2PcInstance player, String htmlMessage)

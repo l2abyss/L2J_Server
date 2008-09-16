@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -33,6 +34,7 @@ import net.sf.l2j.gameserver.model.AutoSpawnHandler;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.AutoSpawnHandler.AutoSpawnInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SSQInfo;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
@@ -481,6 +483,47 @@ public class SevenSigns
 	public final boolean isCompResultsPeriod()
 	{
 		return (_activePeriod == PERIOD_COMP_RESULTS);
+	}
+	
+	/**
+	 * returns true if the given date is in Seal Validation or in Quest Event Results period 
+	 * @param date
+	 */
+	public boolean isDateInSealValidPeriod(Calendar date)
+	{
+        long nextPeriodChange = getMilliToPeriodChange();
+        long nextQuestStart = 0;
+        long nextValidStart = 0;
+        long tillDate = date.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+        while ((2 * PERIOD_MAJOR_LENGTH + 2 * PERIOD_MINOR_LENGTH) < tillDate)
+        	tillDate -= (2 * PERIOD_MAJOR_LENGTH + 2 * PERIOD_MINOR_LENGTH);
+        while (tillDate < 0)
+        	tillDate += (2 * PERIOD_MAJOR_LENGTH + 2 * PERIOD_MINOR_LENGTH);
+        
+		switch (getCurrentPeriod())
+		{
+			case PERIOD_COMP_RECRUITING:
+				nextValidStart = nextPeriodChange + PERIOD_MAJOR_LENGTH;
+				nextQuestStart = nextValidStart + PERIOD_MAJOR_LENGTH + PERIOD_MINOR_LENGTH;
+				break;
+			case PERIOD_COMPETITION:
+				nextValidStart = nextPeriodChange;
+				nextQuestStart = nextPeriodChange + PERIOD_MAJOR_LENGTH + PERIOD_MINOR_LENGTH;
+				break;
+			case PERIOD_COMP_RESULTS:
+				nextQuestStart = nextPeriodChange + PERIOD_MAJOR_LENGTH;
+				nextValidStart = nextQuestStart + PERIOD_MAJOR_LENGTH + PERIOD_MINOR_LENGTH;
+				break;
+			case PERIOD_SEAL_VALIDATION:
+				nextQuestStart = nextPeriodChange;
+				nextValidStart = nextPeriodChange + PERIOD_MAJOR_LENGTH + PERIOD_MINOR_LENGTH;				
+				break;
+		}
+		
+		if ((nextQuestStart < tillDate && tillDate < nextValidStart) ||
+				(nextValidStart < nextQuestStart && (tillDate < nextValidStart || nextQuestStart < tillDate)))
+			return false;
+		return true;
 	}
 
 	public final int getCurrentScore(int cabal)
@@ -1410,6 +1453,13 @@ public class SevenSigns
             _log.info("SevenSigns: The " + getCurrentPeriodName() + " period has begun!");
 
             setCalendarForNextPeriodChange();
+            
+            // make sure that all the scheduled siege dates are in the Seal Validation period
+            List<Castle> castles = CastleManager.getInstance().getCastles();
+            for (Castle castle : castles)
+            {
+            	castle.getSiege().correctSiegeDateTime();
+            }
 
 	        SevenSignsPeriodChange sspc = new SevenSignsPeriodChange();
 	        ThreadPoolManager.getInstance().scheduleGeneral(sspc, getMilliToPeriodChange());

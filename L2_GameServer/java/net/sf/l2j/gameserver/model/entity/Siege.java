@@ -19,11 +19,13 @@ import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.Announcements;
+import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
@@ -167,42 +169,57 @@ public class Siege
 		
 		public void run()
 		{
+			_scheduledStartSiegeTask.cancel(false);
 			if (getIsInProgress())
 				return;
 			
 			try
 			{
+	           	if (!getIsTimeRegistrationOver())
+            	{
+                	long regTimeRemaining = getTimeRegistrationOverDate().getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+                	if (regTimeRemaining > 0)
+                	{
+                		_scheduledStartSiegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), regTimeRemaining);
+                		return;
+                	}
+                	else
+                	{
+                		endTimeRegistration(true);
+                	}
+            	}
+
 				long timeRemaining = getSiegeDate().getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
 				if (timeRemaining > 86400000)
 				{
-					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), timeRemaining - 86400000); // Prepare task for 24 before siege start to end registration
+					_scheduledStartSiegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), timeRemaining - 86400000); // Prepare task for 24 before siege start to end registration
 				}
 				else if ((timeRemaining <= 86400000) && (timeRemaining > 13600000))
 				{
 					announceToPlayer("The registration term for " + getCastle().getName() + " has ended.", false);
 					_isRegistrationOver = true;
 					clearSiegeWaitingClan();
-					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), timeRemaining - 13600000); // Prepare task for 1 hr left before siege start.
+					_scheduledStartSiegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), timeRemaining - 13600000); // Prepare task for 1 hr left before siege start.
 				}
 				else if ((timeRemaining <= 13600000) && (timeRemaining > 600000))
 				{
 					announceToPlayer(Math.round(timeRemaining / 60000) + " minute(s) until " + getCastle().getName() + " siege begin.", false);
-					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), timeRemaining - 600000); // Prepare task for 10 minute left.
+					_scheduledStartSiegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), timeRemaining - 600000); // Prepare task for 10 minute left.
 				}
 				else if ((timeRemaining <= 600000) && (timeRemaining > 300000))
 				{
 					announceToPlayer(Math.round(timeRemaining / 60000) + " minute(s) until " + getCastle().getName() + " siege begin.", false);
-					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), timeRemaining - 300000); // Prepare task for 5 minute left.
+					_scheduledStartSiegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), timeRemaining - 300000); // Prepare task for 5 minute left.
 				}
 				else if ((timeRemaining <= 300000) && (timeRemaining > 10000))
 				{
 					announceToPlayer(Math.round(timeRemaining / 60000) + " minute(s) until " + getCastle().getName() + " siege begin.", false);
-					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), timeRemaining - 10000); // Prepare task for 10 seconds count down
+					_scheduledStartSiegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), timeRemaining - 10000); // Prepare task for 10 seconds count down
 				}
 				else if ((timeRemaining <= 10000) && (timeRemaining > 0))
 				{
 					announceToPlayer(getCastle().getName() + " siege " + Math.round(timeRemaining / 1000) + " second(s) to start!", false);
-					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), timeRemaining); // Prepare task for second count down
+					_scheduledStartSiegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), timeRemaining); // Prepare task for second count down
 				}
 				else
 				{
@@ -233,7 +250,7 @@ public class Siege
 	protected boolean _isRegistrationOver = false;
 	protected Calendar _siegeEndDate;
 	private SiegeGuardManager _siegeGuardManager;
-	protected Calendar _siegeRegistrationEndDate;
+	protected ScheduledFuture<?> _scheduledStartSiegeTask = null;
 	
 	// =========================================================
 	// Constructor
@@ -416,6 +433,7 @@ public class Siege
 					sm = new SystemMessage(SystemMessageId.S1_SIEGE_WAS_CANCELED_BECAUSE_NO_CLANS_PARTICIPATED);
 				sm.addString(getCastle().getName());
 				Announcements.getInstance().announceToAll(sm);
+				saveCastleSiege();
 				return;
 			}
 			
@@ -859,13 +877,10 @@ public class Siege
 		
 		loadSiegeClan();
 		
-		// Schedule registration end
-		_siegeRegistrationEndDate = Calendar.getInstance();
-		_siegeRegistrationEndDate.setTimeInMillis(getCastle().getSiegeDate().getTimeInMillis());
-		_siegeRegistrationEndDate.add(Calendar.DAY_OF_MONTH, -1);
-		
 		// Schedule siege auto start
-		ThreadPoolManager.getInstance().scheduleGeneral(new Siege.ScheduleStartSiegeTask(getCastle()), 1000);
+		if (_scheduledStartSiegeTask != null)
+			_scheduledStartSiegeTask.cancel(false);
+		_scheduledStartSiegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new Siege.ScheduleStartSiegeTask(getCastle()), 1000);
 	}
 	
 	/**
@@ -992,31 +1007,25 @@ public class Siege
 	 * Return the correct siege date as Calendar.<BR><BR>
 	 * @param siegeDate The Calendar siege date and time
 	 */
-	private void correctSiegeDateTime()
+	public void correctSiegeDateTime()
 	{
 		boolean corrected = false;
 		
 		if (getCastle().getSiegeDate().getTimeInMillis() < Calendar.getInstance().getTimeInMillis())
 		{
-			// Since siege has past reschedule it to the next one (14 days)
+			// Since siege has past reschedule it to the next one
 			// This is usually caused by server being down
 			corrected = true;
 			setNextSiegeDate();
 		}
 		
-		if (getCastle().getSiegeDate().get(Calendar.DAY_OF_WEEK) != getCastle().getSiegeDayOfWeek())
+		if (!SevenSigns.getInstance().isDateInSealValidPeriod(getCastle().getSiegeDate()))
 		{
+			// no sieges in Quest period! reschedule it to the next SealValidationPeriod
+			// This is usually caused by server being down
 			corrected = true;
-			getCastle().getSiegeDate().set(Calendar.DAY_OF_WEEK, getCastle().getSiegeDayOfWeek());
+			setNextSiegeDate();
 		}
-		
-		if (getCastle().getSiegeDate().get(Calendar.HOUR_OF_DAY) != getCastle().getSiegeHourOfDay())
-		{
-			corrected = true;
-			getCastle().getSiegeDate().set(Calendar.HOUR_OF_DAY, getCastle().getSiegeHourOfDay());
-		}
-		
-		getCastle().getSiegeDate().set(Calendar.MINUTE, 0);
 		
 		if (corrected)
 			saveSiegeDate();
@@ -1121,20 +1130,32 @@ public class Siege
 	private void saveCastleSiege()
 	{
 		setNextSiegeDate(); // Set the next set date for 2 weeks from now
+		// Schedule Time registration end
+		getTimeRegistrationOverDate().setTimeInMillis(Calendar.getInstance().getTimeInMillis());
+		getTimeRegistrationOverDate().add(Calendar.DAY_OF_MONTH, 1);
+		getCastle().setIsTimeRegistrationOver(false);
+
 		saveSiegeDate(); // Save the new date
 		startAutoTask(); // Prepare auto start siege and end registration
 	}
 	
 	/** Save siege date to database. */
-	private void saveSiegeDate()
+	public void saveSiegeDate()
 	{
+		if (_scheduledStartSiegeTask != null)
+		{
+			_scheduledStartSiegeTask.cancel(true);
+			_scheduledStartSiegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new Siege.ScheduleStartSiegeTask(getCastle()), 1000);
+		}
 		java.sql.Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("Update castle set siegeDate = ? where id = ?");
+			PreparedStatement statement = con.prepareStatement("Update castle set siegeDate = ?, regTimeEnd = ?, regTimeOver = ?  where id = ?");
 			statement.setLong(1, getSiegeDate().getTimeInMillis());
-			statement.setInt(2, getCastle().getCastleId());
+			statement.setLong(2, getTimeRegistrationOverDate().getTimeInMillis());
+			statement.setString(3, String.valueOf(getIsTimeRegistrationOver()));
+			statement.setInt(4, getCastle().getCastleId());
 			statement.execute();
 			
 			statement.close();
@@ -1239,9 +1260,16 @@ public class Siege
 	{
 		while (getCastle().getSiegeDate().getTimeInMillis() < Calendar.getInstance().getTimeInMillis())
 		{
-			// Set next siege date if siege has passed
-			getCastle().getSiegeDate().add(Calendar.DAY_OF_MONTH, 14); // Schedule to happen in 14 days
+			if (getCastle().getSiegeDate().get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY &&
+					getCastle().getSiegeDate().get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY)
+				getCastle().getSiegeDate().set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+			// set the next siege day to the next weekend
+			getCastle().getSiegeDate().add(Calendar.DAY_OF_MONTH, 7);
 		}
+		
+		if (!SevenSigns.getInstance().isDateInSealValidPeriod(getCastle().getSiegeDate()))
+			getCastle().getSiegeDate().add(Calendar.DAY_OF_MONTH, 7);
+
 		_isRegistrationOver = false; // Allow registration for next siege
 	}
 	
@@ -1407,9 +1435,26 @@ public class Siege
 		return _isRegistrationOver;
 	}
 	
+	public final boolean getIsTimeRegistrationOver()
+	{
+		return getCastle().getIsTimeRegistrationOver();
+	}
+	
 	public final Calendar getSiegeDate()
 	{
 		return getCastle().getSiegeDate();
+	}
+	
+	public final Calendar getTimeRegistrationOverDate()
+	{
+		return getCastle().getTimeRegistrationOverDate();
+	}
+	
+	public void endTimeRegistration(boolean automatic)
+	{
+		getCastle().setIsTimeRegistrationOver(true);
+		if (!automatic)
+			saveSiegeDate();
 	}
 	
 	public List<L2NpcInstance> getFlag(L2Clan clan)

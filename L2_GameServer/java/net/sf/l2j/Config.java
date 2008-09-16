@@ -290,6 +290,9 @@ public final class Config
     public static int 		CS_SUPPORT2_FEE;
     public static int 		CS_SUPPORT3_FEE;
     public static int 		CS_SUPPORT4_FEE;
+    public static List<String> CL_SET_SIEGE_TIME_LIST;
+    public static List<Integer> SIEGE_HOUR_LIST_MORNING;
+    public static List<Integer> SIEGE_HOUR_LIST_AFTERNOON;
     
     /** ************************************************** **/
 	/** Castlel Settings -End                             **/
@@ -1003,7 +1006,52 @@ public final class Config
                 
                 
                 //
-				CS_TELE_FEE_RATIO                                   = Long.parseLong(Feature.getProperty("CastleTeleportFunctionFeeRatio", "604800000"));
+                CL_SET_SIEGE_TIME_LIST = new FastList<String>();
+                SIEGE_HOUR_LIST_MORNING = new FastList<Integer>();
+        		SIEGE_HOUR_LIST_AFTERNOON = new FastList<Integer>();
+        		String[] sstl = Feature.getProperty("CLSetSiegeTimeList", "").split(",");
+                if (sstl.length != 0)
+                {
+                	boolean isHour = false;
+                	for (String st : sstl)
+                	{
+                		if (st.equalsIgnoreCase("day") || st.equalsIgnoreCase("hour") || st.equalsIgnoreCase("minute"))
+                		{
+                			if (st.equalsIgnoreCase("hour")) isHour = true;
+                			CL_SET_SIEGE_TIME_LIST.add(st.toLowerCase());
+                		}
+                		else
+                		{
+                			System.out.println("[CLSetSiegeTimeList]: invalid config property -> CLSetSiegeTimeList \"" + st + "\"");
+                		}
+                	}
+                	if (isHour)
+                	{
+                		String[] shl = Feature.getProperty("SiegeHourList", "").split(","); 
+                    	for (String st : shl)
+                    	{
+                    		if (!st.equalsIgnoreCase(""))
+                    		{
+                        		int val = Integer.valueOf(st);
+                        		if (val > 23 || val < 0)
+                        			System.out.println("[SiegeHourList]: invalid config property -> SiegeHourList \"" + st + "\"");
+                        		else if (val < 12)
+                        			SIEGE_HOUR_LIST_MORNING.add(val);
+                        		else
+                        		{
+                        			val -= 12;
+                        			SIEGE_HOUR_LIST_AFTERNOON.add(val);
+                        		}	
+                    		}                    			
+                    	}                			
+                    	if (Config.SIEGE_HOUR_LIST_AFTERNOON.isEmpty() && Config.SIEGE_HOUR_LIST_AFTERNOON.isEmpty())
+                    	{
+                			System.out.println("[SiegeHourList]: invalid config property -> SiegeHourList is empty");
+                    		CL_SET_SIEGE_TIME_LIST.remove("hour");
+                    	}
+                	}
+                }
+                CS_TELE_FEE_RATIO                                   = Long.parseLong(Feature.getProperty("CastleTeleportFunctionFeeRatio", "604800000"));
                 CS_TELE1_FEE                                        = Integer.parseInt(Feature.getProperty("CastleTeleportFunctionFeeLvl1", "7000"));
                 CS_TELE2_FEE                                        = Integer.parseInt(Feature.getProperty("CastleTeleportFunctionFeeLvl2", "14000"));
                 CS_SUPPORT_FEE_RATIO                                = Long.parseLong(Feature.getProperty("CastleSupportFunctionFeeRatio", "86400000"));
