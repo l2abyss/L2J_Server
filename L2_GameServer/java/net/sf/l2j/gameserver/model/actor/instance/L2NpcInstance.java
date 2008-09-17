@@ -1662,21 +1662,23 @@ public class L2NpcInstance extends L2Character
     
     public void makeCPRecovery(L2PcInstance player)
     {
-        if (getNpcId() != 31225 && getNpcId() != 31226) return;
+        if (getNpcId() != 31225) return;
         if (player.isCursedWeaponEquipped())
         {
         	player.sendMessage("Go away, you're not welcome here.");
+        	player.sendPacket(ActionFailed.STATIC_PACKET);
         	return;
         }
 
         int neededmoney = 100;
-        SystemMessage sm;
         if (!player.reduceAdena("RestoreCP", neededmoney, player.getLastFolkNPC(), true)) return;
-        player.setCurrentCp(player.getMaxCp());
-        //cp restored
-        sm = new SystemMessage(SystemMessageId.S1_CP_WILL_BE_RESTORED);
-        sm.addPcName(player);
-        player.sendPacket(sm);
+        L2Skill skill = SkillTable.getInstance().getInfo(4380, 1);
+        if (skill != null)
+        {
+        	setTarget(player);
+        	doCast(skill);
+        }
+        player.sendPacket(ActionFailed.STATIC_PACKET);
     }
     
    

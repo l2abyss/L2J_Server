@@ -19,8 +19,10 @@ import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.handler.IUserCommandHandler;
 import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
+import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
@@ -55,7 +57,7 @@ public class Escape implements IUserCommandHandler
 		if (activeChar.isCastingNow() || activeChar.isMovementDisabled() || activeChar.isMuted() || activeChar.isAlikeDead() || activeChar.isInOlympiadMode() || activeChar.inObserverMode())
 			return false;
 		
-		int unstuckTimer = (activeChar.getAccessLevel().isGm() ? 5000 : Config.UNSTUCK_INTERVAL * 1000);
+		int unstuckTimer = (activeChar.getAccessLevel().isGm() ? 1000 : Config.UNSTUCK_INTERVAL * 1000);
 		
 		// Check to see if the player is in a festival.
 		if (activeChar.isFestivalParticipant())
@@ -79,15 +81,34 @@ public class Escape implements IUserCommandHandler
 		
 		if (activeChar.getAccessLevel().isGm())
 		{
-			activeChar.sendMessage("You use Fast Escape: 5 seconds.");
+			L2Skill GM_escape = SkillTable.getInstance().getInfo(2100, 1); // 1 second escape
+			
+			if (GM_escape != null)
+			{
+				activeChar.doCast(GM_escape);
+				activeChar.sendMessage("You use Escape: 1 second.");
+				return true;
+			}
 		}
-		else if (Config.UNSTUCK_INTERVAL > 100)
+		else if (Config.UNSTUCK_INTERVAL == 300)
 		{
-			activeChar.sendMessage("You use Escape: " + unstuckTimer / 60000 + " minutes.");
+			L2Skill escape = SkillTable.getInstance().getInfo(2099, 1); // 5 minutes escape
+			
+			if (escape != null)
+			{
+				activeChar.doCast(escape);
+				return true;
+			}
 		}
 		else
-			activeChar.sendMessage("You use Escape: " + unstuckTimer / 1000 + " seconds.");
-		
+		{
+			if (Config.UNSTUCK_INTERVAL > 100)
+			{
+				activeChar.sendMessage("You use Escape: " + unstuckTimer / 60000 + " minutes.");
+			}
+			else
+				activeChar.sendMessage("You use Escape: " + unstuckTimer / 1000 + " seconds.");
+		}
 		activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 		//SoE Animation section
 		activeChar.setTarget(activeChar);

@@ -14,11 +14,14 @@
  */
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import javolution.text.TextBuilder;
+import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GmListTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
@@ -26,14 +29,17 @@ import net.sf.l2j.gameserver.datatables.SpawnTable;
 import net.sf.l2j.gameserver.datatables.TeleportLocationTable;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.instancemanager.DayNightSpawnManager;
+import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossSpawnManager;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.scripting.L2ScriptEngineManager;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 import net.sf.l2j.gameserver.util.Broadcast;
 
@@ -160,6 +166,29 @@ public class AdminSpawn implements IAdminCommandHandler
 			NpcTable.getInstance().reloadAllNpc();
 			SpawnTable.getInstance().reloadAll();
 			RaidBossSpawnManager.getInstance().reloadBosses();
+			
+			// make sure all quests are reloaded
+			FastMap<String, Quest> quests = QuestManager.getInstance().getQuests();
+			if (quests != null && quests.size() != 0)
+			{
+				_log.info("Reloading Server Scripts");
+				try
+				{
+					// unload all scripts
+					for (Quest quest : quests.values())
+					{
+						quest.unload();
+					}
+					// now load all scripts
+					File scripts = new File(Config.DATAPACK_ROOT + "/data/scripts.cfg");
+					L2ScriptEngineManager.getInstance().executeScriptList(scripts);
+					QuestManager.getInstance().report();
+				}
+				catch (IOException ioe)
+				{
+					_log.severe("Failed loading scripts.cfg, no script going to be loaded");
+				}
+			}
 			GmListTable.broadcastMessageToGMs("NPC Respawn completed!");
 		}
 		else if (command.startsWith("admin_teleport_reload"))

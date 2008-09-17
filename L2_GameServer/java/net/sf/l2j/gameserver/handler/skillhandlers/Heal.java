@@ -150,7 +150,7 @@ public class Heal implements ISkillHandler
 				hp = 0;
 			
 			//from CT2 u will receive exact HP, u can't go over it, if u have full HP and u get HP buff, u will receive 0HP restored message
-			if (target.getCurrentHp() + hp >= target.getMaxHp())
+			if ((target.getCurrentHp() + hp) >= target.getMaxHp())
 			{
 				hp = target.getMaxHp() - target.getCurrentHp();
 			}
