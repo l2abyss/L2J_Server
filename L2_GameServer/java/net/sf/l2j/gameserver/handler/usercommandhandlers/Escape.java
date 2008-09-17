@@ -79,26 +79,21 @@ public class Escape implements IUserCommandHandler
 			return false;
 		}
 		
+		L2Skill escape = SkillTable.getInstance().getInfo(2099, 1); // 5 minutes escape
+		L2Skill GM_escape = SkillTable.getInstance().getInfo(2100, 1); // 1 second escape
 		if (activeChar.getAccessLevel().isGm())
 		{
-			L2Skill GM_escape = SkillTable.getInstance().getInfo(2100, 1); // 1 second escape
-			
 			if (GM_escape != null)
 			{
 				activeChar.doCast(GM_escape);
-				activeChar.sendMessage("You use Escape: 1 second.");
 				return true;
 			}
+			activeChar.sendMessage("You use Escape: 1 second.");
 		}
-		else if (Config.UNSTUCK_INTERVAL == 300)
+		else if (Config.UNSTUCK_INTERVAL == 300 && escape  != null)
 		{
-			L2Skill escape = SkillTable.getInstance().getInfo(2099, 1); // 5 minutes escape
-			
-			if (escape != null)
-			{
-				activeChar.doCast(escape);
-				return true;
-			}
+			activeChar.doCast(escape);
+			return true;
 		}
 		else
 		{
