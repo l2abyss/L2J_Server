@@ -71,6 +71,7 @@ import net.sf.l2j.gameserver.handler.skillhandlers.SiegeFlag;
 import net.sf.l2j.gameserver.handler.skillhandlers.StrSiegeAssault;
 import net.sf.l2j.gameserver.handler.skillhandlers.TakeCastle;
 import net.sf.l2j.gameserver.handler.skillhandlers.TakeFort;
+import net.sf.l2j.gameserver.handler.skillhandlers.SummonFriend;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.CoupleManager;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
@@ -761,6 +762,32 @@ public final class L2PcInstance extends L2PlayableInstance
         }
     }
 
+    //summon friend
+    private summonRequest _summonRequest = new summonRequest();
+
+    public class summonRequest
+    {
+    	private L2PcInstance _target = null;
+    	private L2Skill _skill = null;
+
+    	public void setTarget(L2PcInstance destination, L2Skill skill)
+    	{
+    		_target = destination;
+    		_skill = skill;
+    		return;
+    	}
+
+    	public L2PcInstance getTarget()
+    	{
+    		return _target;
+    	}
+    	
+    	public L2Skill getSkill()
+    	{
+    		return _skill;
+    	}
+    }
+    
 	/**
 	 * Create a new L2PcInstance and add it in the characters table of the database.<BR><BR>
 	 *
@@ -11448,5 +11475,29 @@ public final class L2PcInstance extends L2PlayableInstance
     		level = 0;
     	
     	_vitalityLevel = level;
+    }
+
+    /*
+     * Function for skill summon friend or Gate Chant.
+     */
+    /** Request Teleport **/
+    public boolean teleportRequest(L2PcInstance requester, L2Skill skill)
+    {
+    	if (_summonRequest.getTarget() != null && requester != null)
+    		return false;
+    	_summonRequest.setTarget(requester, skill);
+    	return true;
+    }
+
+    /** Action teleport **/
+    public void teleportAnswer(int answer, int requesterId)
+    {
+    	if (_summonRequest.getTarget() == null)
+    		return;
+    	if (answer == 1 && _summonRequest.getTarget().getCharId() == requesterId)
+    	{
+    		SummonFriend.teleToTarget(this, _summonRequest.getTarget(), _summonRequest.getSkill());
+    	}
+    	_summonRequest.setTarget(null, null);
     }
 }

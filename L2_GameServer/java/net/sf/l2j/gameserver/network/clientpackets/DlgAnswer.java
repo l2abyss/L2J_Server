@@ -30,23 +30,25 @@ public final class DlgAnswer extends L2GameClientPacket
 
 	private int _messageId;
 	private int _answer;
-	private int _unk;
+	private int _requesterId;
 
 	@Override
 	protected void readImpl()
 	{
 		_messageId = readD();
 		_answer = readD();
-		_unk = readD();
+		_requesterId = readD();
 	}
 
 	@Override
 	public void runImpl()
 	{
 		if (Config.DEBUG)
-			_log.fine(getType()+": Answer accepted. Message ID "+_messageId+", answer "+_answer+", unknown field "+_unk);
+			_log.fine(getType()+": Answer accepted. Message ID "+_messageId+", answer "+_answer+", Requester ID "+_requesterId);
 		if (_messageId == SystemMessageId.RESSURECTION_REQUEST.getId())
 			getClient().getActiveChar().reviveAnswer(_answer);
+		else if (_messageId==SystemMessageId.S1_WISHES_TO_SUMMON_YOU_FROM_S2_DO_YOU_ACCEPT.getId())
+			getClient().getActiveChar().teleportAnswer(_answer, _requesterId);
 		else if (_messageId == SystemMessageId.S1.getId() && Config.L2JMOD_ALLOW_WEDDING)
 						getClient().getActiveChar().EngageAnswer(_answer);
 

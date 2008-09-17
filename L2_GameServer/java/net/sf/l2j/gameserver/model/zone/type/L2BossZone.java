@@ -109,6 +109,7 @@ public class L2BossZone extends L2ZoneType
 			if (character instanceof L2PcInstance)
 			{
 				//Thread.dumpStack();
+				character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
 				L2PcInstance player = (L2PcInstance) character;
 				if (player.isGM())
 				{
@@ -159,6 +160,7 @@ public class L2BossZone extends L2ZoneType
 			if (character instanceof L2PcInstance)
 			{
 				//Thread.dumpStack();
+				character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
 				L2PcInstance player = (L2PcInstance) character;
 				if (player.isGM())
 				{

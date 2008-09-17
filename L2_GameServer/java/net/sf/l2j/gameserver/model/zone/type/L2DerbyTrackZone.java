@@ -37,6 +37,7 @@ public class L2DerbyTrackZone extends L2ZoneType
 		{
 			character.setInsideZone(L2Character.ZONE_MONSTERTRACK, true);
 			character.setInsideZone(L2Character.ZONE_PEACE, true);
+			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
 		}
 	}
 	
@@ -47,6 +48,7 @@ public class L2DerbyTrackZone extends L2ZoneType
 		{
 			character.setInsideZone(L2Character.ZONE_MONSTERTRACK, false);
 			character.setInsideZone(L2Character.ZONE_PEACE, false);
+			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
 		}
 	}
 	

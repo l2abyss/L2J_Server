@@ -79,11 +79,13 @@ public class L2CastleTeleportZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
+		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
+		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
 	}
 	
 	@Override

@@ -200,8 +200,9 @@ public abstract class L2Character extends L2Object
 	public static final byte ZONE_MONSTERTRACK = 9;
 	public static final byte ZONE_CASTLE = 10;
 	public static final byte ZONE_SWAMP = 11;
+	public static final byte ZONE_NOSUMMONFRIEND = 12;
 	
-	private final byte[] _zones = new byte[12];
+	private final byte[] _zones = new byte[13];
 	
 	/**
 	 * Returns character inventory, default null, overridden in L2Playable types and in L2NPcInstance

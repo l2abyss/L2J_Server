@@ -47,6 +47,8 @@ public class ConfirmDlg extends L2GameServerPacket
 	private Vector<Integer> _types = new Vector<Integer>();
 	private Vector<Object> _values = new Vector<Object>();
 
+	private int _time = 0;
+	private int _requesterId = 0;
 
 	public ConfirmDlg(int messageId)
 	{
@@ -158,6 +160,18 @@ public class ConfirmDlg extends L2GameServerPacket
 		return this;
 	}
 
+	public ConfirmDlg addTime(int time)
+	{
+		_time = time;
+		return this;
+	}
+
+	public ConfirmDlg addRequesterId(int id)
+	{
+		_requesterId = id;
+		return this;
+	}
+
 	@Override
 	protected final void writeImpl()
 	{
@@ -205,6 +219,11 @@ public class ConfirmDlg extends L2GameServerPacket
 				}
 			}
 		}
+		// timed dialog (Summon Friend skill request)
+		if (_time != 0)
+			writeD(_time);
+		if (_requesterId != 0)
+			writeD(_requesterId);
 	}
 
 	/* (non-Javadoc)

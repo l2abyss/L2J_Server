@@ -65,6 +65,7 @@ public class L2ArenaZone extends L2ZoneType
 	protected void onEnter(L2Character character)
 	{
 		character.setInsideZone(L2Character.ZONE_PVP, true);
+		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
 		
 		if (character instanceof L2PcInstance)
 		{
@@ -76,6 +77,7 @@ public class L2ArenaZone extends L2ZoneType
 	protected void onExit(L2Character character)
 	{
 		character.setInsideZone(L2Character.ZONE_PVP, false);
+		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
 		
 		if (character instanceof L2PcInstance)
 		{
