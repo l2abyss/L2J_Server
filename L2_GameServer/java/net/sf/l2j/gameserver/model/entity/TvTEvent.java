@@ -547,7 +547,7 @@ public class TvTEvent
 	 */
 	public static void onLogout(L2PcInstance playerInstance)
 	{
-		if (playerInstance != null && (isStarting() || isStarted()))
+		if (playerInstance != null && (isStarting() || isStarted() || isParticipating()))
 		{
 			removeParticipant(playerInstance.getObjectId());
 		}

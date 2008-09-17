@@ -1739,7 +1739,6 @@ public final class Formulas
 	/** Returns true if shield defence successful */
 	public boolean calcShldUse(L2Character attacker, L2Character target)
 	{
-		L2Weapon at_weapon = attacker.getActiveWeaponItem();
 		double shldRate = target.calcStat(Stats.SHIELD_RATE, 0, attacker, null)
 			* DEXbonus[target.getDEX()];
 		if (shldRate == 0.0) return false;
@@ -1750,7 +1749,8 @@ public final class Formulas
         }
         // if attacker 
 		// if attacker use bow and target wear shield, shield block rate is multiplied by 1.3 (30%)
-		if (at_weapon != null && at_weapon.getItemType() == L2WeaponType.BOW)
+        L2Weapon at_weapon = attacker.getActiveWeaponItem();
+        if (at_weapon != null && at_weapon.getItemType() == L2WeaponType.BOW)
 			shldRate *= 1.3;
 		return shldRate > Rnd.get(100);
 	}
