@@ -518,7 +518,7 @@ public class SkillTreeTable
 		
 		for (L2TransformSkillLearn temp : skills)
 		{
-			if (temp.getMinLevel() <= cha.getLevel() && temp.getRace() == cha.getRace().ordinal())
+			if (temp.getMinLevel() <= cha.getLevel() && (temp.getRace() == cha.getRace().ordinal() || temp.getRace() == -1))
 			{
 				boolean knownSkill = false;
 				
