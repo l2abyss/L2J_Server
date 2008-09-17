@@ -212,10 +212,16 @@ public class AdminSpawn implements IAdminCommandHandler
 			else
 			{
 				if (RaidBossSpawnManager.getInstance().getValidTemplate(spawn.getNpcid()) != null)
+				{
+					spawn.setRespawnMinDelay(43200);
+					spawn.setRespawnMaxDelay(129600);
 					RaidBossSpawnManager.getInstance().addNewSpawn(spawn, 0, template1.baseHpMax, template1.baseMpMax, permanent);
+				}
 				else
+				{
 					SpawnTable.getInstance().addNewSpawn(spawn, permanent);
-				spawn.init();
+					spawn.init();
+				}
 				if (!permanent)
 					spawn.stopRespawn();
 				activeChar.sendMessage("Created " + template1.name + " on " + target.getObjectId());
