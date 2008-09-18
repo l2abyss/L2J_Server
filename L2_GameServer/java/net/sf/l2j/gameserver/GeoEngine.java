@@ -198,7 +198,7 @@ public class GeoEngine extends GeoData
     	int by = getBlock(gy);
     	int cx = getCell(gx);
     	int cy = getCell(gy);
-    	int rx = (gx >> 11) + 16;
+    	int rx = (gx >> 11) + 15;
 	    int ry = (gy >> 11) + 10;
     	String out = rx+";"+ry+";"+bx+";"+by+";"+cx+";"+cy+";"+gm.getZ()+";"+comment+"\n";
     	try
@@ -698,7 +698,7 @@ public class GeoEngine extends GeoData
 	{
 	    int rx = x >> 11; // =/(256 * 8)
 	    int ry = y >> 11;
-	    return (short)(((rx+16) << 5) + (ry+10));
+	    return (short)(((rx+15) << 5) + (ry+10));
 	}
 
 	/**

@@ -46,10 +46,10 @@ public final class L2World
     public static final int SHIFT_BY = 12;
 
     /** Map dimensions */
-    public static final int MAP_MIN_X = -131072;
-    public static final int MAP_MAX_X = 228608;
+    public static final int MAP_MIN_X = -163840;
+    public static final int MAP_MAX_X = 229376;
     public static final int MAP_MIN_Y = -262144;
-    public static final int MAP_MAX_Y = 262144;
+    public static final int MAP_MAX_Y = 294912;
 
     /** calculated offset used so top left region is 0,0 */
     public static final int OFFSET_X = Math.abs(MAP_MIN_X >> SHIFT_BY);

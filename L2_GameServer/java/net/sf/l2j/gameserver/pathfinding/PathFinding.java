@@ -267,7 +267,7 @@ public abstract class PathFinding
 
 	public byte getRegionX(int node_pos)
 	{
-		return (byte)((node_pos >> 8) + 16);
+		return (byte)((node_pos >> 8) + 15);
 	}
 
 	public byte getRegionY(int node_pos)
