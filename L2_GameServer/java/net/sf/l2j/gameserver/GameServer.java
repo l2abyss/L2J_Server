@@ -450,7 +450,11 @@ public class GameServer
 		TvTManager.getInstance();
 		KnownListUpdateTaskManager.getInstance();
 		if (Config.DEADLOCK_DETECTOR)
-			_deadDetectThread = new DeadLockDetector(20, DeadLockDetector.RESTART);
+		{
+			_deadDetectThread = new DeadLockDetector();
+			_deadDetectThread.setDaemon(true);
+			_deadDetectThread.start();
+		}
 		else
 			_deadDetectThread = null;
 		System.gc();

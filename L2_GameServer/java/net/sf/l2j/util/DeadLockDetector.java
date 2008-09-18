@@ -22,6 +22,7 @@ import java.lang.management.ThreadMXBean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.Shutdown;
 import net.sf.l2j.gameserver.Announcements;
 
@@ -33,28 +34,21 @@ public class DeadLockDetector extends Thread
 {
 	private static Logger _log = Logger.getLogger(DeadLockDetector.class.getName());
 
-	public static final byte NOTHING = 0;
-	public static final byte RESTART = 1;
-	public static final byte REPAIR = 2;
-
-	private final int _sleepTime;
+	private static final int _sleepTime = Config.DEADLOCK_CHECK_INTERVAL*1000;
 
 	private final ThreadMXBean tmx;
 
-	private final byte _doWhenDL;
-	public DeadLockDetector(int sleepTime, byte doWhenDL)
+	public DeadLockDetector()
 	{
 		super("DeadLockDetector");
-		_sleepTime = sleepTime*1000;
 		tmx = ManagementFactory.getThreadMXBean();
-		_doWhenDL = doWhenDL;
 	}
 
 	@Override 
 	public final void run()
 	{
 		boolean deadlock = false;
-		while(!deadlock && !this.isInterrupted())
+		while(!deadlock)
 		{
 			try
 			{
@@ -89,13 +83,7 @@ public class DeadLockDetector extends Thread
 					}
 					_log.warning(info);
 
-					if(_doWhenDL == RESTART)
-					{
-						Announcements an = Announcements.getInstance();
-						an.announceToAll("Server has stability issues - restarting now.");
-						Shutdown.getInstance().startTelnetShutdown("DeadLockDetector - Auto Restart",60,true);
-					}
-					else if(_doWhenDL == REPAIR)
+					if(Config.RESTART_ON_DEADLOCK)
 					{
 						Announcements an = Announcements.getInstance();
 						an.announceToAll("Server has stability issues - restarting now.");
@@ -104,10 +92,6 @@ public class DeadLockDetector extends Thread
 					
 				}
 				Thread.sleep(_sleepTime); 
-			}
-			catch(InterruptedException e)
-			{
-				//
 			}
 			catch(Exception e)
 			{

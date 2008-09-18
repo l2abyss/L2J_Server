@@ -346,6 +346,8 @@ public final class Config
     public static int		AI_MAX_THREAD;
     public static int		PACKET_LIFETIME;
     public static boolean	DEADLOCK_DETECTOR;
+    public static int		DEADLOCK_CHECK_INTERVAL;
+    public static boolean	RESTART_ON_DEADLOCK;
     public static int		FLOODPROTECTOR_INITIALSIZE;
     public static boolean	ALLOW_DISCARDITEM;
     public static int		AUTODESTROY_ITEM_AFTER;
@@ -1409,6 +1411,8 @@ public final class Config
                 AI_MAX_THREAD								= Integer.parseInt(General.getProperty("AiMaxThread", "10"));
                 PACKET_LIFETIME								= Integer.parseInt(General.getProperty("PacketLifeTime", "0"));
                 DEADLOCK_DETECTOR							= Boolean.parseBoolean(General.getProperty("DeadLockDetector", "False"));
+                DEADLOCK_CHECK_INTERVAL						= Integer.parseInt(General.getProperty("DeadLockCheckInterval", "20"));
+                RESTART_ON_DEADLOCK							= Boolean.parseBoolean(General.getProperty("RestartOnDeadlock", "False"));
                 FLOODPROTECTOR_INITIALSIZE					= Integer.parseInt(General.getProperty("FloodProtectorInitialSize", "50"));
                 ALLOW_DISCARDITEM							= Boolean.parseBoolean(General.getProperty("AllowDiscardItem", "True"));
                 AUTODESTROY_ITEM_AFTER						= Integer.parseInt(General.getProperty("AutoDestroyDroppedItemAfter", "0"));
