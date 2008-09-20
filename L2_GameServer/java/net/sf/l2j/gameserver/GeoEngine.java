@@ -224,8 +224,8 @@ public class GeoEngine extends GeoData
     	int gy = (y - L2World.MAP_MIN_Y) >> 4;
         short region = getRegionOffset(gx,gy);
         if (_geodata.get(region) != null)
-			return false;
-        return true;
+			return true;
+        return false;
     }
     
     private static boolean canSee(int x, int y, double z, int tx, int ty, int tz)
@@ -288,10 +288,12 @@ public class GeoEngine extends GeoData
             		d += delta_B;
             		next_x += inc_x;
             		z += inc_z_directionx;
+            		if (!nLOS(x,y,(int)z,inc_x,0,inc_z_directionx,tz,false))
+            			return false;
             		next_y += inc_y;
             		z += inc_z_directiony;
             		//_log.warning("1: next_x:"+next_x+" next_y"+next_y);
-            		if (!nLOS(x,y,(int)z,inc_x,inc_y,inc_z_directionx+inc_z_directiony,tz,false))
+            		if (!nLOS(next_x,y,(int)z,0,inc_y,inc_z_directiony,tz,false))
             			return false;
             	}
             	else
@@ -319,10 +321,12 @@ public class GeoEngine extends GeoData
             		d += delta_B;
             		next_y += inc_y;
             		z += inc_z_directiony;
+            		if (!nLOS(x,y,(int)z,0,inc_y,inc_z_directiony,tz,false))
+            			return false;
             		next_x += inc_x;
             		z += inc_z_directionx;
             		//_log.warning("3: next_x:"+next_x+" next_y"+next_y);
-            		if (!nLOS(x,y,(int)z,inc_x,inc_y,inc_z_directionx+inc_z_directiony,tz,false))
+            		if (!nLOS(x,next_y,(int)z,inc_x,0,inc_z_directionx,tz,false))
             			return false;
             	}
             	else
@@ -410,10 +414,12 @@ public class GeoEngine extends GeoData
             		d += delta_B;
             		next_x += inc_x;
             		z += inc_z_directionx;
+            		if (!nLOS(x,y,(int)z,inc_x,0,inc_z_directionx,tz,true))
+            			return false;
             		next_y += inc_y;
             		z += inc_z_directiony;
             		//_log.warning("1: next_x:"+next_x+" next_y"+next_y);
-            		if (!nLOS(x,y,(int)z,inc_x,inc_y,inc_z_directionx+inc_z_directiony,tz,true))
+            		if (!nLOS(next_x,y,(int)z,0,inc_y,inc_z_directiony,tz,true))
             			return false;
             	}
             	else
@@ -441,10 +447,12 @@ public class GeoEngine extends GeoData
             		d += delta_B;
             		next_y += inc_y;
             		z += inc_z_directiony;
+            		if (!nLOS(x,y,(int)z,0,inc_y,inc_z_directiony,tz,true))
+            			return false;
             		next_x += inc_x;
             		z += inc_z_directionx;
             		//_log.warning("3: next_x:"+next_x+" next_y"+next_y);
-            		if (!nLOS(x,y,(int)z,inc_x,inc_y,inc_z_directionx+inc_z_directiony,tz,true))
+            		if (!nLOS(x,next_y,(int)z,inc_x,0,inc_z_directionx,tz,true))
             			return false;
             	}
             	else
@@ -517,9 +525,13 @@ public class GeoEngine extends GeoData
             	{
             		d += delta_B;
             		next_x += inc_x;
+            		tempz = nCanMoveNext(x,y,(int)z,next_x,next_y,tz);
+            		if (tempz == Double.MIN_VALUE)
+            			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z);
+            		else z = tempz;
             		next_y += inc_y;
             		//_log.warning("2: next_x:"+next_x+" next_y"+next_y);
-            		tempz = nCanMoveNext(x,y,(int)z,next_x,next_y,tz);
+            		tempz = nCanMoveNext(next_x,y,(int)z,next_x,next_y,tz);
             		if (tempz == Double.MIN_VALUE)
             			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z);
             		else z = tempz;
@@ -549,9 +561,13 @@ public class GeoEngine extends GeoData
             	{
             		d += delta_B;
             		next_y += inc_y;
+            		tempz = nCanMoveNext(x,y,(int)z,next_x,next_y,tz);
+            		if (tempz == Double.MIN_VALUE)
+            			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z);
+            		else z = tempz;
             		next_x += inc_x;
             		//_log.warning("5: next_x:"+next_x+" next_y"+next_y);
-            		tempz = nCanMoveNext(x,y,(int)z,next_x,next_y,tz);
+            		tempz = nCanMoveNext(x,next_y,(int)z,next_x,next_y,tz);
             		if (tempz == Double.MIN_VALUE)
             			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z);
             		else z = tempz;
