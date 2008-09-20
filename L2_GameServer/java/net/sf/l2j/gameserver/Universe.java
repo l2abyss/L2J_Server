@@ -222,9 +222,10 @@ public class Universe implements java.io.Serializable
     public void loadAscii()
     {
         int initialSize = _coordList.size();
+        BufferedReader r = null;
         try
         {
-            BufferedReader r = new BufferedReader(new FileReader("data/universe.txt"));
+            r = new BufferedReader(new FileReader("data/universe.txt"));
             String line;
             while ((line = r.readLine()) != null)
             {
@@ -239,12 +240,21 @@ public class Universe implements java.io.Serializable
                 //                int f = Integer.parseInt(f1);
                 _coordList.add(new Coord(x, y, z));
             }
-            r.close();
             _log.info((_coordList.size() - initialSize) + " additional nodes loaded from text file.");
         }
         catch (Exception e)
         {
             _log.info("could not read text file universe.txt");
+        }
+        finally
+        {
+        	try
+        	{
+        		r.close();
+        	}
+        	catch (Exception e)
+        	{
+        	}
         }
     }
 
@@ -446,12 +456,14 @@ public class Universe implements java.io.Serializable
 
     public void dump(List<Coord> _map, boolean b)
     {
+    	FileOutputStream fos = null;
+    	DataOutputStream data = null;
         try
         {
             String pad = "";
             if (b) pad = "" + System.currentTimeMillis();
-            FileOutputStream fos = new FileOutputStream("data/universe" + pad + ".fin"); // Save to file
-            DataOutputStream data = new DataOutputStream(fos);
+            fos = new FileOutputStream("data/universe" + pad + ".fin"); // Save to file
+            data = new DataOutputStream(fos);
             int count = _map.size();
             //_log.info("Size of dump: "+count);
             data.writeInt(count);
@@ -465,13 +477,29 @@ public class Universe implements java.io.Serializable
                     data.writeInt(p._z);
                 }
             }
-            data.flush();
-            data.close();
             _log.info("Universe Map saved to: " + "data/universe" + pad + ".fin");
         }
         catch (Exception e)
         {
             e.printStackTrace();
+        }
+        finally
+        {
+        	try
+        	{
+        		data.close();
+        	}
+        	catch (Exception e)
+        	{
+        	}
+        	
+        	try
+        	{
+        		fos.close();
+        	}
+        	catch (Exception e)
+        	{
+        	}
         }
     }
 

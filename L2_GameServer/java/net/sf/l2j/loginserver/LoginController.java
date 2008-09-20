@@ -410,8 +410,6 @@ public class LoginController
 				finally
 				{
 					try { con.close(); } catch (Exception e) { }
-					try { statement.close(); }
-					catch (Exception e) { }
 				}
 			}
 			return loginOk;
@@ -483,13 +481,6 @@ public class LoginController
 			try
 			{
 				con.close();
-			}
-			catch (Exception e)
-			{
-			}
-			try
-			{
-				statement.close();
 			}
 			catch (Exception e)
 			{

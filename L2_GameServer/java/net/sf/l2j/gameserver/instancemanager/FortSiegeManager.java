@@ -162,12 +162,12 @@ public class FortSiegeManager
     // Method - Private
     private final void load()
     {
+    	InputStream is = null;
         try {
-            InputStream is              = new FileInputStream(new File(Config.FORTSIEGE_CONFIGURATION_FILE));
-            Properties siegeSettings    = new Properties();
+            is = new FileInputStream(new File(Config.FORTSIEGE_CONFIGURATION_FILE));
+            Properties siegeSettings = new Properties();
             siegeSettings.load(is);
-            is.close();
-
+            
             // Siege setting
             _attackerMaxClans = Integer.decode(siegeSettings.getProperty("AttackerMaxClans", "500"));
             _attackerRespawnDelay = Integer.decode(siegeSettings.getProperty("AttackerRespawn", "30000"));
@@ -239,10 +239,22 @@ public class FortSiegeManager
                 
             }
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             //_initialized = false;
             System.err.println("Error while loading fortsiege data.");
             e.printStackTrace();
+        }
+        finally
+        {
+        	try
+        	{
+        		is.close();
+        	}
+        	catch (Exception e)
+        	{
+        	}
         }
     }
 

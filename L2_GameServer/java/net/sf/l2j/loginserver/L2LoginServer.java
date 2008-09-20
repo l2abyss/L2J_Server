@@ -79,7 +79,6 @@ public class L2LoginServer
 		{
 			is = new FileInputStream(new File(LOG_NAME));
 			LogManager.getLogManager().readConfiguration(is);
-			is.close();
 		}
 		catch (IOException e)
 		{
@@ -90,12 +89,9 @@ public class L2LoginServer
 		{
 			try
 			{
-				if (is != null)
-				{
-					is.close();
-				}
+				is.close();
 			}
-			catch (IOException e)
+			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
@@ -277,13 +273,13 @@ public class L2LoginServer
 				}
 				return;
 			}
-
-			LineNumberReader reader = new LineNumberReader(new InputStreamReader(fis));
-
+			
+			LineNumberReader reader = null;
 			String line;
 			String[] parts;
 			try
 			{
+				reader = new LineNumberReader(new InputStreamReader(fis));
 
 				while ((line = reader.readLine()) != null)
 				{
@@ -333,6 +329,24 @@ public class L2LoginServer
 				if (Config.DEVELOPER)
 				{
 					e.printStackTrace();
+				}
+			}
+			finally
+			{
+				try
+				{
+					reader.close();
+				}
+				catch (Exception e)
+				{
+				}
+				
+				try
+				{
+					fis.close();
+				}
+				catch (Exception e)
+				{
 				}
 			}
 			_log.config("Loaded "+LoginController.getInstance().getBannedIps().size()+" IP Bans.");

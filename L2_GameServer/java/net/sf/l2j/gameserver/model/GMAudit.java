@@ -36,24 +36,28 @@ public class GMAudit
 		SimpleDateFormat formatter;
 		formatter = new SimpleDateFormat("dd/MM/yyyy H:mm:ss");
 		String today = formatter.format(new Date());
-		
+		FileWriter save = null;
 		try
 		{
 			File file = new File("log/GMAudit/" + gmName + ".txt");
-			FileWriter save = new FileWriter(file, true);
+			save = new FileWriter(file, true);
 			
 			String out = (today + ">" + gmName + ">" + action + ">" + target + ">" + params + "\r\n");
-			
 			save.write(out);
-			save.flush();
-			save.close();
-			
-			save = null;
-			file = null;
 		}
 		catch (IOException e)
 		{
 			_log.log(Level.SEVERE, "GMAudit for GM " + gmName +" could not be saved: ", e);
+		}
+		finally
+		{
+			try
+			{
+				save.close();
+			}
+			catch (Exception e)
+			{
+			}
 		}
 	}
 	

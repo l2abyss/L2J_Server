@@ -165,11 +165,11 @@ public class SiegeManager
     // Method - Private
     private final void load()
     {
+    	InputStream is = null;
         try {
-            InputStream is              = new FileInputStream(new File(Config.SIEGE_CONFIGURATION_FILE));
-            Properties siegeSettings    = new Properties();
+            is = new FileInputStream(new File(Config.SIEGE_CONFIGURATION_FILE));
+            Properties siegeSettings = new Properties();
             siegeSettings.load(is);
-            is.close();
 
             // Siege setting
             _attackerMaxClans = Integer.decode(siegeSettings.getProperty("AttackerMaxClans", "500"));
@@ -243,10 +243,22 @@ public class SiegeManager
             	_artefactSpawnList.put(castle.getCastleId(), _artefactSpawns);
             }
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             //_initialized = false;
             System.err.println("Error while loading siege data.");
             e.printStackTrace();
+        }
+        finally
+        {
+        	try
+        	{
+                is.close();
+        	}
+        	catch (Exception e)
+        	{	
+        	}
         }
     }
 

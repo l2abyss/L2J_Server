@@ -113,7 +113,13 @@ public class FaenorScriptEngine extends ScriptEngine
             {
                 _scripts.add(script);
             }
-
+            try
+            {
+            	zipPack.close();
+            }
+            catch (IOException e)
+            {
+            }
         }
         /*for (ScriptDocument script : scripts)
          {

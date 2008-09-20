@@ -629,6 +629,16 @@ public class GeoEngine extends GeoData
 			e.printStackTrace();
 			throw new Error("Failed to Read geo_index File.");
 		}
+		finally
+		{
+			try
+			{
+				lnr.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
 		try
 		{
 			File geo_bugs = new File("./data/geodata/geo_bugs.txt");
@@ -652,9 +662,10 @@ public class GeoEngine extends GeoData
 		_log.info("Geo Engine: - Loading: "+fname+" -> region offset: "+regionoffset+"X: "+rx+" Y: "+ry);
 		File Geo = new File(fname);
 		int size, index = 0, block = 0, flor = 0;
+		FileChannel roChannel = null;
 		try {
 	        // Create a read-only memory-mapped file
-	        FileChannel roChannel = new RandomAccessFile(Geo, "r").getChannel();
+	        roChannel = new RandomAccessFile(Geo, "r").getChannel();
 			size = (int)roChannel.size();
 			MappedByteBuffer geo;
 			if (Config.FORCE_GEODATA) //Force O/S to Loads this buffer's content into physical memory.
@@ -700,6 +711,16 @@ public class GeoEngine extends GeoData
 			e.printStackTrace();
 			_log.warning("Failed to Load GeoFile at block: "+block+"\n");
 			return false;
+	    }
+	    finally
+	    {
+	    	try
+	    	{
+	    		roChannel.close();
+	    	}
+	    	catch (Exception e)
+	    	{
+	    	}
 	    }
 	    return true;
 	}

@@ -113,13 +113,16 @@ public class CastleManager
             e.printStackTrace();
         }
 
-        finally {
-                try { 
-                    con.close(); 
-                    } catch (Exception e) {
-                    
-                    }
-                }
+        finally
+        {
+            try
+            { 
+                con.close(); 
+            }
+            catch (Exception e)
+            {
+            }
+        }
     }
 
     // =========================================================
@@ -261,7 +264,8 @@ public class CastleManager
 						player.destroyItemByItemId("CastleCircletRemoval", circletId, 1, player, true);
 					}
 					return;
-				} catch (NullPointerException e)
+				}
+				catch (NullPointerException e)
 				{
 					// continue removing offline
 				}
@@ -284,11 +288,13 @@ public class CastleManager
 			}
 			finally
 			{
-				try { 
+				try
+				{ 
 				    con.close(); 
-				    } catch (Exception e) {
-				        
-				    }
+				}
+				catch (Exception e)
+				{
+				}
 			}
 		}
 	}

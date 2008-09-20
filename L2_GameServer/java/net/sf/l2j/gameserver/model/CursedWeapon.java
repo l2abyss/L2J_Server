@@ -501,13 +501,12 @@ public class CursedWeapon
             _log.info("CursedWeapon: Saving data to disk.");
 
     	Connection con = null;
-    	PreparedStatement statement = null;
-        try
+    	try
         {
         	con = L2DatabaseFactory.getInstance().getConnection();
 
         	// Delete previous datas
-            statement = con.prepareStatement("DELETE FROM cursed_weapons WHERE itemId = ?");
+        	PreparedStatement statement = con.prepareStatement("DELETE FROM cursed_weapons WHERE itemId = ?");
             statement.setInt(1, _itemId);
             statement.executeUpdate();
 
@@ -521,6 +520,7 @@ public class CursedWeapon
 	            statement.setInt(5, _nbKills);
 	            statement.setLong(6, _endTime);
 	            statement.executeUpdate();
+	            statement.close();
             }
         }
         catch (SQLException e)
@@ -529,11 +529,6 @@ public class CursedWeapon
         }
         finally
         {
-        	try
-        	{
-        	    statement.close();
-        	}
-        	catch (Exception e) {}
         	try
         	{
         	    con.close();

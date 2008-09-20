@@ -204,40 +204,36 @@ public final class TaskManager
 		java.sql.Connection con = null;
 		try
 		{
-			try
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(SQL_STATEMENTS[0]);
+			ResultSet rset = statement.executeQuery();
+			
+			while (rset.next())
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement(SQL_STATEMENTS[0]);
-				ResultSet rset = statement.executeQuery();
+				Task task = _tasks.get(rset.getString("task").trim().toLowerCase().hashCode());
 				
-				while (rset.next())
+				if (task == null)
+					continue;
+				
+				TaskTypes type = TaskTypes.valueOf(rset.getString("type"));
+				
+				if (type != TYPE_NONE)
 				{
-					Task task = _tasks.get(rset.getString("task").trim().toLowerCase().hashCode());
-					
-					if (task == null)
-						continue;
-					
-					TaskTypes type = TaskTypes.valueOf(rset.getString("type"));
-					
-					if (type != TYPE_NONE)
-					{
-						ExecutedTask current = new ExecutedTask(task, type, rset);
-						if (launchTask(current))
-							_currentTasks.add(current);
-					}
-					
+					ExecutedTask current = new ExecutedTask(task, type, rset);
+					if (launchTask(current))
+						_currentTasks.add(current);
 				}
 				
-				rset.close();
-				statement.close();
-				
-			}
-			catch (Exception e)
-			{
-				_log.severe("error while loading Global Task table " + e);
-				e.printStackTrace();
 			}
 			
+			rset.close();
+			statement.close();
+			
+		}
+		catch (Exception e)
+		{
+			_log.severe("error while loading Global Task table " + e);
+			e.printStackTrace();
 		}
 		finally
 		{

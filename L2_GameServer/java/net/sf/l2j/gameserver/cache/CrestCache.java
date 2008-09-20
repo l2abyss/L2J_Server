@@ -274,11 +274,11 @@ public class CrestCache
 	public boolean savePledgeCrest(int newId, byte[] data)
 	{
 		File crestFile = new File(Config.DATAPACK_ROOT, "data/crests/Crest_" + newId + ".bmp");
+		FileOutputStream out = null;
 		try
 		{
-			FileOutputStream out = new FileOutputStream(crestFile);
+			out = new FileOutputStream(crestFile);
 			out.write(data);
-			out.close();
 			_cachePledge.getContentMap().put(newId, data);
 			return true;
 		}
@@ -287,16 +287,26 @@ public class CrestCache
 			_log.log(Level.INFO, "Error saving pledge crest" + crestFile + ":", e);
 			return false;
 		}
+		finally
+		{
+			try
+			{
+				out.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
 	}
 	
 	public boolean savePledgeCrestLarge(int newId, byte[] data)
 	{
 		File crestFile = new File(Config.DATAPACK_ROOT, "data/crests/Crest_Large_" + newId + ".bmp");
+		FileOutputStream out = null;
 		try
 		{
-			FileOutputStream out = new FileOutputStream(crestFile);
+			out = new FileOutputStream(crestFile);
 			out.write(data);
-			out.close();
 			_cachePledgeLarge.getContentMap().put(newId, data);
 			return true;
 		}
@@ -305,16 +315,26 @@ public class CrestCache
 			_log.log(Level.INFO, "Error saving Large pledge crest" + crestFile + ":", e);
 			return false;
 		}
+		finally
+		{
+			try
+			{
+				out.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
 	}
 	
 	public boolean saveAllyCrest(int newId, byte[] data)
 	{
 		File crestFile = new File(Config.DATAPACK_ROOT, "data/crests/AllyCrest_" + newId + ".bmp");
+		FileOutputStream out = null;
 		try
 		{
-			FileOutputStream out = new FileOutputStream(crestFile);
+			out = new FileOutputStream(crestFile);
 			out.write(data);
-			out.close();
 			_cacheAlly.getContentMap().put(newId, data);
 			return true;
 		}
@@ -322,6 +342,16 @@ public class CrestCache
 		{
 			_log.log(Level.INFO, "Error saving ally crest" + crestFile + ":", e);
 			return false;
+		}
+		finally
+		{
+			try
+			{
+				out.close();
+			}
+			catch (Exception e)
+			{
+			}
 		}
 	}
 	

@@ -192,7 +192,7 @@ public class Shutdown extends Thread
 	@Override
 	public void run()
 	{
-		// disallow new logins
+		/* disallow new logins
 		try
 		{
             //Doesnt actually do anything
@@ -201,7 +201,7 @@ public class Shutdown extends Thread
 		catch (Throwable t)
 		{
 			// ignore
-		}
+		}*/
 
 		if (this == _instance)
 		{
@@ -432,13 +432,7 @@ public class Shutdown extends Thread
 		}
 		if (Config.ACTIVATE_POSITION_RECORDER)
 			Universe.getInstance().implode(true);
-		try
-		{
 		
-		} catch (Throwable t) {
-			_log.log(Level.INFO, "", t);
-		}
-
 		// we cannt abort shutdown anymore, so i removed the "if"
 		disconnectAllCharacters();
 
@@ -507,8 +501,6 @@ public class Shutdown extends Thread
 				//Logout Character
 				try {
 					L2GameClient.saveCharToDisk(player);
-					//SystemMessage sm = new SystemMessage(SystemMessage.YOU_HAVE_WON_THE_WAR_OVER_THE_S1_CLAN);
-					//player.sendPacket(sm);
 					player.sendPacket(ql);
 				} catch (Throwable t)	{}
 			}

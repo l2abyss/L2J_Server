@@ -87,11 +87,11 @@ public final class L2CastleTeleporterInstance extends L2FolkInstance
 
 	private void doTeleport(L2PcInstance player)
 	{
+		InputStream is = null;
 		try {
-			InputStream is              = new FileInputStream(new File(Config.SIEGE_CONFIGURATION_FILE));
-			Properties siegeSettings    = new Properties();
+			is = new FileInputStream(new File(Config.SIEGE_CONFIGURATION_FILE));
+			Properties siegeSettings = new Properties();
 			siegeSettings.load(is);
-			is.close();
 
 			long delay = Integer.decode(siegeSettings.getProperty("DefenderRespawn", "30000"));
 
@@ -102,9 +102,21 @@ public final class L2CastleTeleporterInstance extends L2FolkInstance
 				delay = 480000;
 			setTask(true);
 			ThreadPoolManager.getInstance().scheduleGeneral(new oustAllPlayers(), delay );
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
             e.printStackTrace();
         }
+		finally
+		{
+			try
+			{
+				is.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
 	}
 	void oustAllPlayers()
 	{

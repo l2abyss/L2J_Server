@@ -280,6 +280,16 @@ public class GeoPathFinding extends PathFinding
 			e.printStackTrace();
 			throw new Error("Failed to Read pn_index File.");
 		}
+		finally
+		{
+			try
+			{
+				lnr.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
 	}
 
 	private void LoadPathNodeFile(byte rx,byte ry)
@@ -289,9 +299,10 @@ public class GeoPathFinding extends PathFinding
 		_log.info("PathFinding Engine: - Loading: "+fname+" -> region offset: "+regionoffset+"X: "+rx+" Y: "+ry);
 		File Pn = new File(fname);
 		int node = 0,size, index = 0;
+		FileChannel roChannel = null;
 		try {
 	        // Create a read-only memory-mapped file
-	        FileChannel roChannel = new RandomAccessFile(Pn, "r").getChannel();
+	        roChannel = new RandomAccessFile(Pn, "r").getChannel();
 			size = (int)roChannel.size();
 			MappedByteBuffer nodes;
 			if (Config.FORCE_GEODATA) //Force O/S to Loads this buffer's content into physical memory.
@@ -317,6 +328,16 @@ public class GeoPathFinding extends PathFinding
 			e.printStackTrace();
 			_log.warning("Failed to Load PathNode File: "+fname+"\n");
 	    }
+		finally
+		{
+			try
+			{
+				roChannel.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
 
 	}
 }

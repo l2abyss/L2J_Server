@@ -111,57 +111,54 @@ public class ItemsOnGroundManager
 		java.sql.Connection con = null;
 		try
 		{
-			try
+			con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet result;
+			int count = 0;
+			result = s.executeQuery("select object_id,item_id,count,enchant_level,x,y,z,drop_time,equipable from itemsonground");
+			while (result.next())
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				Statement s = con.createStatement();
-				ResultSet result;
-				int count = 0;
-				result = s.executeQuery("select object_id,item_id,count,enchant_level,x,y,z,drop_time,equipable from itemsonground");
-				while (result.next())
+				L2ItemInstance item = new L2ItemInstance(result.getInt(1), result.getInt(2));
+				L2World.getInstance().storeObject(item);
+				if (item.isStackable() && result.getInt(3) > 1) //this check and..
+					item.setCount(result.getInt(3));
+				if (result.getInt(4) > 0) // this, are really necessary?
+					item.setEnchantLevel(result.getInt(4));
+				item.getPosition().setWorldPosition(result.getInt(5), result.getInt(6), result.getInt(7));
+				item.getPosition().setWorldRegion(L2World.getInstance().getRegion(item.getPosition().getWorldPosition()));
+				item.getPosition().getWorldRegion().addVisibleObject(item);
+				item.setDropTime(result.getLong(8));
+				if (result.getLong(8) == -1)
+					item.setProtected(true);
+				else
+					item.setProtected(false);
+				item.setIsVisible(true);
+				L2World.getInstance().addVisibleObject(item, item.getPosition().getWorldRegion(), null);
+				_items.add(item);
+				count++;
+				// add to ItemsAutoDestroy only items not protected
+				if (!Config.LIST_PROTECTED_ITEMS.contains(item.getItemId()))
 				{
-					L2ItemInstance item = new L2ItemInstance(result.getInt(1), result.getInt(2));
-					L2World.getInstance().storeObject(item);
-					if (item.isStackable() && result.getInt(3) > 1) //this check and..
-						item.setCount(result.getInt(3));
-					if (result.getInt(4) > 0) // this, are really necessary?
-						item.setEnchantLevel(result.getInt(4));
-					item.getPosition().setWorldPosition(result.getInt(5), result.getInt(6), result.getInt(7));
-					item.getPosition().setWorldRegion(L2World.getInstance().getRegion(item.getPosition().getWorldPosition()));
-					item.getPosition().getWorldRegion().addVisibleObject(item);
-					item.setDropTime(result.getLong(8));
-					if (result.getLong(8) == -1)
-						item.setProtected(true);
-					else
-						item.setProtected(false);
-					item.setIsVisible(true);
-					L2World.getInstance().addVisibleObject(item, item.getPosition().getWorldRegion(), null);
-					_items.add(item);
-					count++;
-					// add to ItemsAutoDestroy only items not protected
-					if (!Config.LIST_PROTECTED_ITEMS.contains(item.getItemId()))
+					if (result.getLong(8) > -1)
 					{
-						if (result.getLong(8) > -1)
-						{
-							if ((Config.AUTODESTROY_ITEM_AFTER > 0 && item.getItemType() != L2EtcItemType.HERB)
-							        || (Config.HERB_AUTO_DESTROY_TIME > 0 && item.getItemType() == L2EtcItemType.HERB))
-								ItemsAutoDestroy.getInstance().addItem(item);
-						}
+						if ((Config.AUTODESTROY_ITEM_AFTER > 0 && item.getItemType() != L2EtcItemType.HERB)
+						        || (Config.HERB_AUTO_DESTROY_TIME > 0 && item.getItemType() == L2EtcItemType.HERB))
+							ItemsAutoDestroy.getInstance().addItem(item);
 					}
 				}
-				result.close();
-				s.close();
-				if (count > 0)
-					_log.info("ItemsOnGroundManager: restored " + count
-					        + " items.");
-				else
-					_log.info("Initializing ItemsOnGroundManager.");
 			}
-			catch (Exception e)
-			{
-				_log.log(Level.SEVERE, "error while loading ItemsOnGround " + e);
-				e.printStackTrace();
-			}
+			result.close();
+			s.close();
+			if (count > 0)
+				_log.info("ItemsOnGroundManager: restored " + count
+				        + " items.");
+			else
+				_log.info("Initializing ItemsOnGroundManager.");
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "error while loading ItemsOnGround " + e);
+			e.printStackTrace();
 		}
 		finally
 		{

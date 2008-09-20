@@ -44,21 +44,24 @@ public class SqlUtils
 		String query = "";
 		Integer res = null;
 		
-		PreparedStatement statement = null;
-		ResultSet rset = null;
+		java.sql.Connection con = null;
 		
 		try
 		{
+			con = L2DatabaseFactory.getInstance().getConnection();
 			query = L2DatabaseFactory.getInstance().prepQuerySelect(new String[]
 			{
 				resultField
 			}, tableName, whereClause, true);
 			
-			statement = L2DatabaseFactory.getInstance().getConnection().prepareStatement(query);
-			rset = statement.executeQuery();
+			PreparedStatement statement = con.prepareStatement(query);
+			ResultSet rset = statement.executeQuery();
 			
 			if (rset.next())
 				res = rset.getInt(1);
+			
+			rset.close();
+			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -69,14 +72,7 @@ public class SqlUtils
 		{
 			try
 			{
-				rset.close();
-			}
-			catch (Exception e)
-			{
-			}
-			try
-			{
-				statement.close();
+				con.close();
 			}
 			catch (Exception e)
 			{
@@ -91,17 +87,17 @@ public class SqlUtils
 		String query = "";
 		Integer[] res = null;
 		
-		PreparedStatement statement = null;
-		ResultSet rset = null;
+		java.sql.Connection con = null;
 		
 		try
 		{
+			con = L2DatabaseFactory.getInstance().getConnection();
 			query = L2DatabaseFactory.getInstance().prepQuerySelect(new String[]
 			{
 				resultField
 			}, tableName, whereClause, false);
-			statement = L2DatabaseFactory.getInstance().getConnection().prepareStatement(query);
-			rset = statement.executeQuery();
+			PreparedStatement statement = con.prepareStatement(query);
+			ResultSet rset = statement.executeQuery();
 			
 			int rows = 0;
 			
@@ -120,6 +116,8 @@ public class SqlUtils
 			{
 				res[row] = rset.getInt(1);
 			}
+			rset.close();
+			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -130,14 +128,7 @@ public class SqlUtils
 		{
 			try
 			{
-				rset.close();
-			}
-			catch (Exception e)
-			{
-			}
-			try
-			{
-				statement.close();
+				con.close();
 			}
 			catch (Exception e)
 			{
@@ -153,16 +144,16 @@ public class SqlUtils
 		
 		String query = "";
 		
-		PreparedStatement statement = null;
-		ResultSet rset = null;
+		java.sql.Connection con = null;
 		
 		Integer res[][] = null;
 		
 		try
 		{
+			con = L2DatabaseFactory.getInstance().getConnection();
 			query = L2DatabaseFactory.getInstance().prepQuerySelect(resultFields, usedTables, whereClause, false);
-			statement = L2DatabaseFactory.getInstance().getConnection().prepareStatement(query);
-			rset = statement.executeQuery();
+			PreparedStatement statement = con.prepareStatement(query);
+			ResultSet rset = statement.executeQuery();
 			
 			int rows = 0;
 			while (rset.next())
@@ -179,6 +170,8 @@ public class SqlUtils
 					res[row][i] = rset.getInt(i + 1);
 				row++;
 			}
+			rset.close();
+			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -189,14 +182,7 @@ public class SqlUtils
 		{
 			try
 			{
-				rset.close();
-			}
-			catch (Exception e)
-			{
-			}
-			try
-			{
-				statement.close();
+				con.close();
 			}
 			catch (Exception e)
 			{

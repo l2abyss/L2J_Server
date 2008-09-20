@@ -65,11 +65,11 @@ public class LoginStatusThread extends Thread
 		// read and loop thru list of IPs, compare with newIP
 		if ( Config.DEVELOPER ) telnetOutput(2, "");
 
+		InputStream telnetIS = null;
 		try {
 			Properties telnetSettings = new Properties();
-			InputStream telnetIS = new FileInputStream(new File(Config.TELNET_FILE));
+			telnetIS = new FileInputStream(new File(Config.TELNET_FILE));
 			telnetSettings.load(telnetIS);
-			telnetIS.close();
 
 			String HostList = telnetSettings.getProperty("ListOfHosts", "127.0.0.1,localhost");
 
@@ -88,6 +88,16 @@ public class LoginStatusThread extends Thread
 		catch ( IOException e) {
 			if ( Config.DEVELOPER ) telnetOutput(4, "");
 			telnetOutput(1, "Error: "+e);
+		}
+		finally
+		{
+			try
+			{
+				telnetIS.close();
+			}
+			catch (Exception e)
+			{
+			}
 		}
 
 		if ( Config.DEVELOPER ) telnetOutput(4, "Allow IP: "+result);

@@ -132,236 +132,240 @@ public class SkillTreeTable
 	{
 		int classId = 0;
 		int count = 0;
-		
+		int count2 = 0;
+		int count3 = 0;
+		int count4 = 0;
+		int count5 = 0;
+		int count6 = 0;
 		java.sql.Connection con = null;
 		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM class_list ORDER BY id");
-			ResultSet classlist = statement.executeQuery();
-			
-			Map<Integer, L2SkillLearn> map;
-			int parentClassId;
-			L2SkillLearn skillLearn;
-			
-			while (classlist.next())
+			try
 			{
-				map = new FastMap<Integer, L2SkillLearn>();
-				parentClassId = classlist.getInt("parent_id");
-				classId = classlist.getInt("id");
-				PreparedStatement statement2 = con.prepareStatement("SELECT class_id, skill_id, level, name, sp, min_level FROM skill_trees where class_id=? ORDER BY skill_id, level");
-				statement2.setInt(1, classId);
-				ResultSet skilltree = statement2.executeQuery();
+				PreparedStatement statement = con.prepareStatement("SELECT * FROM class_list ORDER BY id");
+				ResultSet classlist = statement.executeQuery();
 				
-				if (parentClassId != -1)
+				Map<Integer, L2SkillLearn> map;
+				int parentClassId;
+				L2SkillLearn skillLearn;
+				
+				while (classlist.next())
 				{
-					Map<Integer, L2SkillLearn> parentMap = getSkillTrees().get(ClassId.values()[parentClassId]);
-					map.putAll(parentMap);
+					map = new FastMap<Integer, L2SkillLearn>();
+					parentClassId = classlist.getInt("parent_id");
+					classId = classlist.getInt("id");
+					PreparedStatement statement2 = con.prepareStatement("SELECT class_id, skill_id, level, name, sp, min_level FROM skill_trees where class_id=? ORDER BY skill_id, level");
+					statement2.setInt(1, classId);
+					ResultSet skilltree = statement2.executeQuery();
+					
+					if (parentClassId != -1)
+					{
+						Map<Integer, L2SkillLearn> parentMap = getSkillTrees().get(ClassId.values()[parentClassId]);
+						map.putAll(parentMap);
+					}
+					
+					int prevSkillId = -1;
+					
+					while (skilltree.next())
+					{
+						int id = skilltree.getInt("skill_id");
+						int lvl = skilltree.getInt("level");
+						String name = skilltree.getString("name");
+						int minLvl = skilltree.getInt("min_level");
+						int cost = skilltree.getInt("sp");
+						
+						if (prevSkillId != id)
+							prevSkillId = id;
+						
+						skillLearn = new L2SkillLearn(id, lvl, minLvl, name, cost, 0, 0);
+						map.put(SkillTable.getSkillHashCode(id, lvl), skillLearn);
+					}
+					
+					getSkillTrees().put(ClassId.values()[classId], map);
+					skilltree.close();
+					statement2.close();
+					
+					count += map.size();
+					_log.fine("SkillTreeTable: skill tree for class " + classId + " has " + map.size() + " skills");
 				}
+				
+				classlist.close();
+				statement.close();
+			}
+			catch (Exception e)
+			{
+				_log.severe("Error while creating skill tree (Class ID " + classId + "):" + e);
+			}
+			
+			_log.config("SkillTreeTable: Loaded " + count + " skills.");
+			
+			//Skill tree for fishing skill (from Fisherman)
+			try
+			{
+				_fishingSkillTrees = new FastList<L2SkillLearn>();
+				_expandDwarfCraftSkillTrees = new FastList<L2SkillLearn>();
+				
+				PreparedStatement statement = con.prepareStatement("SELECT skill_id, level, name, sp, min_level, costid, cost, isfordwarf FROM fishing_skill_trees ORDER BY skill_id, level");
+				ResultSet skilltree2 = statement.executeQuery();
 				
 				int prevSkillId = -1;
 				
-				while (skilltree.next())
+				while (skilltree2.next())
 				{
-					int id = skilltree.getInt("skill_id");
-					int lvl = skilltree.getInt("level");
-					String name = skilltree.getString("name");
-					int minLvl = skilltree.getInt("min_level");
-					int cost = skilltree.getInt("sp");
+					int id = skilltree2.getInt("skill_id");
+					int lvl = skilltree2.getInt("level");
+					String name = skilltree2.getString("name");
+					int minLvl = skilltree2.getInt("min_level");
+					int cost = skilltree2.getInt("sp");
+					int costId = skilltree2.getInt("costid");
+					int costCount = skilltree2.getInt("cost");
+					int isDwarven = skilltree2.getInt("isfordwarf");
 					
 					if (prevSkillId != id)
 						prevSkillId = id;
 					
-					skillLearn = new L2SkillLearn(id, lvl, minLvl, name, cost, 0, 0);
-					map.put(SkillTable.getSkillHashCode(id, lvl), skillLearn);
+					L2SkillLearn skill = new L2SkillLearn(id, lvl, minLvl, name, cost, costId, costCount);
+					
+					if (isDwarven == 0)
+						_fishingSkillTrees.add(skill);
+					else
+						_expandDwarfCraftSkillTrees.add(skill);
 				}
 				
-				getSkillTrees().put(ClassId.values()[classId], map);
-				skilltree.close();
-				statement2.close();
+				skilltree2.close();
+				statement.close();
 				
-				count += map.size();
-				_log.fine("SkillTreeTable: skill tree for class " + classId + " has " + map.size() + " skills");
+				count2 = _fishingSkillTrees.size();
+				count3 = _expandDwarfCraftSkillTrees.size();
+			}
+			catch (Exception e)
+			{
+				_log.severe("Error while creating fishing skill table: " + e);
 			}
 			
-			classlist.close();
-			statement.close();
-		}
-		catch (Exception e)
-		{
-			_log.severe("Error while creating skill tree (Class ID " + classId + "):" + e);
-		}
-		
-		_log.config("SkillTreeTable: Loaded " + count + " skills.");
-		
-		//Skill tree for fishing skill (from Fisherman)
-		int count2 = 0;
-		int count3 = 0;
-		
-		try
-		{
-			_fishingSkillTrees = new FastList<L2SkillLearn>();
-			_expandDwarfCraftSkillTrees = new FastList<L2SkillLearn>();
-			
-			PreparedStatement statement = con.prepareStatement("SELECT skill_id, level, name, sp, min_level, costid, cost, isfordwarf FROM fishing_skill_trees ORDER BY skill_id, level");
-			ResultSet skilltree2 = statement.executeQuery();
-			
-			int prevSkillId = -1;
-			
-			while (skilltree2.next())
+			try
 			{
-				int id = skilltree2.getInt("skill_id");
-				int lvl = skilltree2.getInt("level");
-				String name = skilltree2.getString("name");
-				int minLvl = skilltree2.getInt("min_level");
-				int cost = skilltree2.getInt("sp");
-				int costId = skilltree2.getInt("costid");
-				int costCount = skilltree2.getInt("cost");
-				int isDwarven = skilltree2.getInt("isfordwarf");
+				_enchantSkillTrees = new FastMap<Integer, L2EnchantSkillLearn>();
 				
-				if (prevSkillId != id)
-					prevSkillId = id;
+				PreparedStatement statement = con.prepareStatement("SELECT skill_id, level, name, base_lvl, sp, min_skill_lvl, exp, success_rate76, success_rate77, success_rate78 FROM enchant_skill_trees ORDER BY skill_id, level");
+				ResultSet skilltree3 = statement.executeQuery();
 				
-				L2SkillLearn skill = new L2SkillLearn(id, lvl, minLvl, name, cost, costId, costCount);
+				int prevSkillId = -1;
 				
-				if (isDwarven == 0)
-					_fishingSkillTrees.add(skill);
-				else
-					_expandDwarfCraftSkillTrees.add(skill);
-			}
-			
-			skilltree2.close();
-			statement.close();
-			
-			count2 = _fishingSkillTrees.size();
-			count3 = _expandDwarfCraftSkillTrees.size();
-		}
-		catch (Exception e)
-		{
-			_log.severe("Error while creating fishing skill table: " + e);
-		}
-		
-		int count4 = 0;
-		try
-		{
-			_enchantSkillTrees = new FastMap<Integer, L2EnchantSkillLearn>();
-			
-			PreparedStatement statement = con.prepareStatement("SELECT skill_id, level, name, base_lvl, sp, min_skill_lvl, exp, success_rate76, success_rate77, success_rate78 FROM enchant_skill_trees ORDER BY skill_id, level");
-			ResultSet skilltree3 = statement.executeQuery();
-			
-			int prevSkillId = -1;
-			
-			while (skilltree3.next())
-			{
-				int id = skilltree3.getInt("skill_id");
-				int lvl = skilltree3.getInt("level");
-				String name = skilltree3.getString("name");
-				int baseLvl = skilltree3.getInt("base_lvl");
-				int minSkillLvl = skilltree3.getInt("min_skill_lvl");
-				int sp = skilltree3.getInt("sp");
-				int exp = skilltree3.getInt("exp");
-				byte rate76 = skilltree3.getByte("success_rate76");
-				byte rate77 = skilltree3.getByte("success_rate77");
-				byte rate78 = skilltree3.getByte("success_rate78");
-				
-				if (prevSkillId != id)
-					prevSkillId = id;
-				
-				L2EnchantSkillLearn skill = _enchantSkillTrees.get(id);
-				if (skill == null)
+				while (skilltree3.next())
 				{
-					skill = new L2EnchantSkillLearn(id, baseLvl);
-					_enchantSkillTrees.put(id, skill);
+					int id = skilltree3.getInt("skill_id");
+					int lvl = skilltree3.getInt("level");
+					String name = skilltree3.getString("name");
+					int baseLvl = skilltree3.getInt("base_lvl");
+					int minSkillLvl = skilltree3.getInt("min_skill_lvl");
+					int sp = skilltree3.getInt("sp");
+					int exp = skilltree3.getInt("exp");
+					byte rate76 = skilltree3.getByte("success_rate76");
+					byte rate77 = skilltree3.getByte("success_rate77");
+					byte rate78 = skilltree3.getByte("success_rate78");
+					
+					if (prevSkillId != id)
+						prevSkillId = id;
+					
+					L2EnchantSkillLearn skill = _enchantSkillTrees.get(id);
+					if (skill == null)
+					{
+						skill = new L2EnchantSkillLearn(id, baseLvl);
+						_enchantSkillTrees.put(id, skill);
+					}
+					EnchantSkillDetail esd = new EnchantSkillDetail(lvl, minSkillLvl, name, sp, exp, rate76, rate77, rate78);
+					skill.addEnchantDetail(esd);
 				}
-				EnchantSkillDetail esd = new EnchantSkillDetail(lvl, minSkillLvl, name, sp, exp, rate76, rate77, rate78);
-				skill.addEnchantDetail(esd);
+				
+				skilltree3.close();
+				statement.close();
+				
+				count4 = _enchantSkillTrees.size();
 			}
-			
-			skilltree3.close();
-			statement.close();
-			
-			count4 = _enchantSkillTrees.size();
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "Error while creating enchant skill table ", e);
-		}
-		
-		int count5 = 0;
-		try
-		{
-			_pledgeSkillTrees = new FastList<L2PledgeSkillLearn>();
-			
-			PreparedStatement statement = con.prepareStatement("SELECT skill_id, level, name, clan_lvl, repCost, itemId FROM pledge_skill_trees ORDER BY skill_id, level");
-			ResultSet skilltree4 = statement.executeQuery();
-			
-			int prevSkillId = -1;
-			
-			while (skilltree4.next())
+			catch (Exception e)
 			{
-				int id = skilltree4.getInt("skill_id");
-				int lvl = skilltree4.getInt("level");
-				String name = skilltree4.getString("name");
-				int baseLvl = skilltree4.getInt("clan_lvl");
-				int sp = skilltree4.getInt("repCost");
-				int itemId = skilltree4.getInt("itemId");
-				
-				if (prevSkillId != id)
-					prevSkillId = id;
-				
-				L2PledgeSkillLearn skill = new L2PledgeSkillLearn(id, lvl, baseLvl, name, sp, itemId);
-				
-				_pledgeSkillTrees.add(skill);
+				_log.log(Level.SEVERE, "Error while creating enchant skill table ", e);
 			}
 			
-			skilltree4.close();
-			statement.close();
-			
-			count5 = _pledgeSkillTrees.size();
-		}
-		catch (Exception e)
-		{
-			_log.severe("Error while creating fishing skill table: " + e);
-		}
-		int count6 = 0;
-		try
-		{
-			_TransformSkillTrees = new FastList<L2TransformSkillLearn>();
-			
-			PreparedStatement statement = con.prepareStatement("SELECT race_id, skill_id, item_id, level, name, sp, min_level FROM transform_skill_trees ORDER BY race_id, skill_id, level");
-			ResultSet skilltree5 = statement.executeQuery();
-			
-			int prevSkillId = -1;
-			
-			while (skilltree5.next())
+			try
 			{
-				int race_id = skilltree5.getInt("race_id");
-				int skill_id = skilltree5.getInt("skill_id");
-				int item_id = skilltree5.getInt("item_id");
-				int level = skilltree5.getInt("level");
-				String name = skilltree5.getString("name");
-				int sp = skilltree5.getInt("sp");
-				int min_level = skilltree5.getInt("min_level");
+				_pledgeSkillTrees = new FastList<L2PledgeSkillLearn>();
 				
-				if (prevSkillId != skill_id)
-					prevSkillId = skill_id;
+				PreparedStatement statement = con.prepareStatement("SELECT skill_id, level, name, clan_lvl, repCost, itemId FROM pledge_skill_trees ORDER BY skill_id, level");
+				ResultSet skilltree4 = statement.executeQuery();
 				
-				L2TransformSkillLearn skill = new L2TransformSkillLearn(race_id, skill_id, item_id, level, name, sp, min_level);
+				int prevSkillId = -1;
 				
-				_TransformSkillTrees.add(skill);
+				while (skilltree4.next())
+				{
+					int id = skilltree4.getInt("skill_id");
+					int lvl = skilltree4.getInt("level");
+					String name = skilltree4.getString("name");
+					int baseLvl = skilltree4.getInt("clan_lvl");
+					int sp = skilltree4.getInt("repCost");
+					int itemId = skilltree4.getInt("itemId");
+					
+					if (prevSkillId != id)
+						prevSkillId = id;
+					
+					L2PledgeSkillLearn skill = new L2PledgeSkillLearn(id, lvl, baseLvl, name, sp, itemId);
+					
+					_pledgeSkillTrees.add(skill);
+				}
+				
+				skilltree4.close();
+				statement.close();
+				
+				count5 = _pledgeSkillTrees.size();
 			}
-			
-			skilltree5.close();
-			statement.close();
-			
-			count6 = _TransformSkillTrees.size();
+			catch (Exception e)
+			{
+				_log.severe("Error while creating fishing skill table: " + e);
+			}
+			try
+			{
+				_TransformSkillTrees = new FastList<L2TransformSkillLearn>();
+				
+				PreparedStatement statement = con.prepareStatement("SELECT race_id, skill_id, item_id, level, name, sp, min_level FROM transform_skill_trees ORDER BY race_id, skill_id, level");
+				ResultSet skilltree5 = statement.executeQuery();
+				
+				int prevSkillId = -1;
+				
+				while (skilltree5.next())
+				{
+					int race_id = skilltree5.getInt("race_id");
+					int skill_id = skilltree5.getInt("skill_id");
+					int item_id = skilltree5.getInt("item_id");
+					int level = skilltree5.getInt("level");
+					String name = skilltree5.getString("name");
+					int sp = skilltree5.getInt("sp");
+					int min_level = skilltree5.getInt("min_level");
+					
+					if (prevSkillId != skill_id)
+						prevSkillId = skill_id;
+					
+					L2TransformSkillLearn skill = new L2TransformSkillLearn(race_id, skill_id, item_id, level, name, sp, min_level);
+					
+					_TransformSkillTrees.add(skill);
+				}
+				
+				skilltree5.close();
+				statement.close();
+				
+				count6 = _TransformSkillTrees.size();
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "Error while creating Transformation skill table ", e);
+			}
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error while creating Transformation skill table ", e);
+			_log.log(Level.SEVERE, "Error while skill tables ", e);
 		}
-		
 		finally
 		{
 			try

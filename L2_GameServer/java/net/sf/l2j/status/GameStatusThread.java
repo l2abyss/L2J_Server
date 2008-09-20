@@ -125,12 +125,12 @@ public class GameStatusThread extends Thread
         // read and loop thru list of IPs, compare with newIP
         if ( Config.DEVELOPER ) telnetOutput(2, "");
 
+        InputStream telnetIS = null;
         try 
         {
             Properties telnetSettings = new Properties();
-            InputStream telnetIS = new FileInputStream(new File(Config.TELNET_FILE));
+            telnetIS = new FileInputStream(new File(Config.TELNET_FILE));
             telnetSettings.load(telnetIS);
-            telnetIS.close();
 
             String HostList = telnetSettings.getProperty("ListOfHosts", "127.0.0.1,localhost");
 
@@ -151,6 +151,16 @@ public class GameStatusThread extends Thread
         catch ( IOException e) {
             if ( Config.DEVELOPER ) telnetOutput(4, "");
             telnetOutput(1, "Error: "+e);
+        }
+        finally
+        {
+        	try
+        	{
+                telnetIS.close();
+        	}
+        	catch (Exception e)
+        	{
+        	}
         }
 
         if ( Config.DEVELOPER ) telnetOutput(4, "Allow IP: "+result);
@@ -590,6 +600,8 @@ public class GameStatusThread extends Thread
                 else if (_usrCommand.startsWith("debug") && _usrCommand.length() > 6)
                 {
                 	StringTokenizer st = new StringTokenizer(_usrCommand.substring(6));
+                	FileOutputStream fos = null;
+                	OutputStreamWriter out = null;
                 	try
                 	{
                 		String dbg = st.nextToken();
@@ -624,12 +636,9 @@ public class GameStatusThread extends Thread
                 				f = new File("./log/StackTrace-PacketTP-"+i+".txt");
                 			}
                 			f.getParentFile().mkdirs();
-                			FileOutputStream fos = new FileOutputStream(f);
-                			OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
+                			fos = new FileOutputStream(f);
+                			out = new OutputStreamWriter(fos, "UTF-8");
                 			out.write(str);
-                			out.flush();
-                			out.close();
-                			fos.close();
                 		}
                 		else if(dbg.equals("IOPacketTP"))
                 		{
@@ -643,12 +652,9 @@ public class GameStatusThread extends Thread
                 				f = new File("./log/StackTrace-IOPacketTP-"+i+".txt");
                 			}
                 			f.getParentFile().mkdirs();
-                			FileOutputStream fos = new FileOutputStream(f);
-                			OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
+                			fos = new FileOutputStream(f);
+                			out = new OutputStreamWriter(fos, "UTF-8");
                 			out.write(str);
-                			out.flush();
-                			out.close();
-                			fos.close();
                 		}
                 		else if(dbg.equals("GeneralTP"))
                 		{
@@ -662,12 +668,9 @@ public class GameStatusThread extends Thread
                 				f = new File("./log/StackTrace-GeneralTP-"+i+".txt");
                 			}
                 			f.getParentFile().mkdirs();
-                			FileOutputStream fos = new FileOutputStream(f);
-                			OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
+                			fos = new FileOutputStream(f);
+                			out = new OutputStreamWriter(fos, "UTF-8");
                 			out.write(str);
-                			out.flush();
-                			out.close();
-                			fos.close();
                 		}
                         else if(dbg.equals("full"))
                         {
@@ -675,6 +678,25 @@ public class GameStatusThread extends Thread
                         }
                 	}
                 	catch(Exception e){}
+                	finally
+                	{
+                		try
+                		{
+                			out.close();
+                		}
+                		catch (Exception e)
+                		{
+                		}
+                		
+                		try
+                		{
+                			fos.close();
+                		}
+                		catch (Exception e)
+                		{
+                		}
+                	}
+                	
                 }
                 else if (_usrCommand.startsWith("reload"))
                 {

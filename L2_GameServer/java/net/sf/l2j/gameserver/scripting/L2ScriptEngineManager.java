@@ -326,9 +326,10 @@ public final class L2ScriptEngineManager
     		File file = new File(SCRIPT_FOLDER, "CompiledScripts.cache");
     		if (file.isFile())
     		{
+    			ObjectInputStream ois = null;
     			try
     			{
-    				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+    				ois = new ObjectInputStream(new FileInputStream(file));
     				CompiledScriptCache cache = (CompiledScriptCache) ois.readObject();
     				return cache;
     			}
@@ -343,6 +344,16 @@ public final class L2ScriptEngineManager
                 catch (ClassNotFoundException e)
                 {
                 	_log.log(Level.SEVERE, "Failed loading Compiled Scripts Cache, class not found.", e);
+                }
+                finally
+                {
+                	try
+                	{
+                		ois.close();
+                	}
+                	catch (Exception e)
+                	{
+                	}
                 }
                 return new CompiledScriptCache();
     		}
@@ -541,7 +552,7 @@ public final class L2ScriptEngineManager
         if (dir != null)
         {
             File file = new File(dir+"/"+name);
-            
+            FileOutputStream fos = null;
             try
             {
                 if (!file.exists())
@@ -549,18 +560,26 @@ public final class L2ScriptEngineManager
                     file.createNewFile();
                 }
                 
-                FileOutputStream fos = new FileOutputStream(file);
+                fos = new FileOutputStream(file);
                 String errorHeader = "Error on: "+file.getCanonicalPath()+"\r\nLine: "+e.getLineNumber()+" - Column: "+e.getColumnNumber()+"\r\n\r\n";
                 fos.write(errorHeader.getBytes());
                 fos.write(e.getMessage().getBytes());
-                fos.flush();
-                fos.close();
                 _log.warning("Failed executing script: "+script.getAbsolutePath()+". See "+file.getName()+" for details.");
             }
             catch (IOException ioe)
             {
                 _log.warning("Failed executing script: "+script.getAbsolutePath()+"\r\n"+e.getMessage()+"Additionally failed when trying to write an error report on script directory. Reason: "+ioe.getMessage());
                 ioe.printStackTrace();
+            }
+            finally
+            {
+            	try
+            	{
+            		fos.close();
+            	}
+            	catch (Exception e1)
+            	{
+            	}
             }
         }
         else

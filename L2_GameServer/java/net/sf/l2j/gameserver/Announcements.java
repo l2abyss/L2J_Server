@@ -198,13 +198,20 @@ public class Announcements
 				save.write(_announcements.get(i));
 				save.write("\r\n");
 			}
-			save.flush();
-			save.close();
-			save = null;
 		}
 		catch (IOException e)
 		{
 			_log.log(Level.SEVERE, "Saving to the announcements file has failed: ", e);
+		}
+		finally
+		{
+			try
+			{
+				save.close();
+			}
+			catch (Exception e)
+			{
+			}
 		}
 	}
 

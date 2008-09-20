@@ -56,7 +56,7 @@ public class ArmorSetsTable
 	
 	private void loadData()
 	{
-		Connection con;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -82,11 +82,20 @@ public class ArmorSetsTable
 			
 			rset.close();
 			statement.close();
-			con.close();
 		}
 		catch (Exception e)
 		{
 			_log.severe("ArmorSetsTable: Error reading ArmorSets table: " + e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
 		}
 		if (Config.CUSTOM_ARMORSETS_TABLE)
 		{
@@ -113,11 +122,20 @@ public class ArmorSetsTable
 				_log.config("ArmorSetsTable: Loaded " + (_armorSets.size() - cSets) + " Custom armor sets.");
 				rset.close();
 				statement.close();
-				con.close();
 			}
 			catch (Exception e)
 			{
 				_log.severe("ArmorSetsTable: Error reading Custom ArmorSets table: " + e);
+			}
+			finally
+			{
+				try
+				{
+					con.close();
+				}
+				catch (Exception e)
+				{
+				}
 			}
 		}
 	}
