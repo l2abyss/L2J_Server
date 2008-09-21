@@ -12,34 +12,31 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.pathfinding.worldnodes;
+package net.sf.l2j.gameserver.pathfinding.cellnodes;
 
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
+
 import java.util.List;
-import java.util.Map;
 
-import javolution.util.FastMap;
+import net.sf.l2j.gameserver.GeoData;
+import net.sf.l2j.gameserver.model.L2World;
+
 import net.sf.l2j.gameserver.pathfinding.AbstractNodeLoc;
 import net.sf.l2j.gameserver.pathfinding.Node;
 import net.sf.l2j.gameserver.pathfinding.PathFinding;
 
 /**
  *
- * @author -Nemesiss-
+ * @author Sami
  */
-public class WorldPathFinding extends PathFinding
+public class CellPathFinding extends PathFinding
 {
 	//private static Logger _log = Logger.getLogger(WorldPathFinding.class.getName());
-	private static WorldPathFinding _instance;
-    @SuppressWarnings("unused")
-	private static Map<Short, ByteBuffer> _pathNodes = new FastMap<Short, ByteBuffer>();
-	private static Map<Short, IntBuffer> _pathNodesIndex = new FastMap<Short, IntBuffer>();
-
-	public static WorldPathFinding getInstance()
+	private static CellPathFinding _instance;
+  	
+	public static CellPathFinding getInstance()
 	{
 		if (_instance == null)
-			_instance = new WorldPathFinding();
+			_instance = new CellPathFinding();
 		return _instance;
 	}
 
@@ -49,33 +46,47 @@ public class WorldPathFinding extends PathFinding
 	@Override
 	public boolean pathNodesExist(short regionoffset)
 	{
-		return _pathNodesIndex.containsKey(regionoffset);
+		return false;
 	}
 
-    //TODO! [Nemesiss]
 	/**
 	 * @see net.sf.l2j.gameserver.pathfinding.PathFinding#FindPath(int, int, short, int, int, short)
 	 */
 	@Override
 	public List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz)
 	{
-		return null;
+		int gx = (x - L2World.MAP_MIN_X) >> 4;
+		int gy = (y - L2World.MAP_MIN_Y) >> 4;
+		if (!GeoData.getInstance().hasGeo(x, y)) return null;
+		short gz = GeoData.getInstance().getHeight(x, y, z); 
+		int gtx = (tx - L2World.MAP_MIN_X) >> 4;
+		int gty = (ty - L2World.MAP_MIN_Y) >> 4;
+		if (!GeoData.getInstance().hasGeo(tx, ty)) return null;
+		short gtz = GeoData.getInstance().getHeight(tx, ty, tz);
+		Node start = readNode(gx,gy,gz);
+		Node end = readNode(gtx,gty,gtz);
+		return searchByClosest(start, end);
 	}
 
 	/**
 	 * @see net.sf.l2j.gameserver.pathfinding.PathFinding#ReadNeighbors(short, short)
 	 */
 	@Override
-	public Node[] readNeighbors(short node_x,short node_y, int idx)
+	public Node[] readNeighbors(Node n, int idx)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return GeoData.getInstance().getNeighbors(n);
 	}
 
+	
 	//Private
 
-	private WorldPathFinding()
+	public Node readNode(int gx, int gy, short z)
 	{
-		//TODO! {Nemesiss] Load PathNodes.
+		return new Node(new NodeLoc(gx,gy,z), 0);
+	}
+	
+	private CellPathFinding()
+	{
+		//
 	}
 }

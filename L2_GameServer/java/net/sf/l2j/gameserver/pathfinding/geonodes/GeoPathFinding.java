@@ -98,15 +98,19 @@ public class GeoPathFinding extends PathFinding
 			return null; //   cannot reach closest...
 
 		//return searchAStar(start, end);
-		return searchByClosest(start, end);
+		return searchByClosest2(start, end);
 	}
 
 	/**
 	 * @see net.sf.l2j.gameserver.pathfinding.PathFinding#ReadNeighbors(short, short)
 	 */
 	@Override
-	public Node[] readNeighbors(short node_x,short node_y, int idx)
+	public Node[] readNeighbors(Node n, int idx)
 	{
+		int node_x = n.getLoc().getNodeX();
+		int node_y = n.getLoc().getNodeY();
+		//short node_z = n.getLoc().getZ();
+			
 		short regoffset = getRegionOffset(getRegionX(node_x),getRegionY(node_y));
 		ByteBuffer pn = _pathNodes.get(regoffset);
 
@@ -120,7 +124,7 @@ public class GeoPathFinding extends PathFinding
 		if(neighbor > 0)
 		{
 			neighbor--;
-			new_node_x = node_x;
+			new_node_x = (short)node_x;
 			new_node_y = (short)(node_y-1);
 			newNode = readNode(new_node_x,new_node_y,neighbor);
 			if (newNode != null) Neighbors.add(newNode);
@@ -141,7 +145,7 @@ public class GeoPathFinding extends PathFinding
 		{
 			neighbor--;
 			new_node_x = (short)(node_x+1);
-			new_node_y = node_y;
+			new_node_y = (short)node_y;
 			newNode = readNode(new_node_x,new_node_y,neighbor);
 			if (newNode != null) Neighbors.add(newNode);
 		}
@@ -160,7 +164,7 @@ public class GeoPathFinding extends PathFinding
 		if(neighbor > 0)
 		{
 			neighbor--;
-			new_node_x = node_x;
+			new_node_x = (short)node_x;
 			new_node_y = (short)(node_y+1);
 			newNode = readNode(new_node_x,new_node_y,neighbor);
 			if (newNode != null) Neighbors.add(newNode);
@@ -181,7 +185,7 @@ public class GeoPathFinding extends PathFinding
 		{
 			neighbor--;
 			new_node_x = (short)(node_x-1);
-			new_node_y = node_y;
+			new_node_y = (short)node_y;
 			newNode = readNode(new_node_x,new_node_y,neighbor);
 			if (newNode != null) Neighbors.add(newNode);
 		}

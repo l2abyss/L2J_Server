@@ -26,10 +26,12 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.DoorTable;
@@ -39,6 +41,8 @@ import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
+import net.sf.l2j.gameserver.pathfinding.Node;
+import net.sf.l2j.gameserver.pathfinding.cellnodes.CellPathFinding;
 import net.sf.l2j.util.Point3D;
 
 /**
@@ -172,6 +176,12 @@ public class GeoEngine extends GeoData
     public short getNSWE(int x, int y, int z)
     {
         return nGetNSWE((x - L2World.MAP_MIN_X) >> 4,(y - L2World.MAP_MIN_Y) >> 4,z);
+    }
+    @Override
+    public boolean canMoveFromToTarget(int x, int y, int z, int tx, int ty, int tz)
+    {
+    	Location destiny = moveCheck(x,y,z,tx,ty,tz);
+    	return (destiny.getX() == tx && destiny.getY() == ty && destiny.getZ() == tz);
     }
     /**
      * @see net.sf.l2j.gameserver.GeoData#moveCheck(int, int, int, int, int, int)
@@ -1317,6 +1327,167 @@ public class GeoEngine extends GeoData
 	        }
 	    }
 	    return NSWE;
+	}
+	
+	/**
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return NSWE: 0-15
+	 */
+	@Override
+	public Node[] getNeighbors(Node n)
+	{
+		List<Node> Neighbors = new FastList<Node>(4);
+		Node newNode;
+		int x = n.getLoc().getNodeX();
+		int y = n.getLoc().getNodeY();
+		int parentdirection = 0;
+		if (n.getParent() != null) // check for not adding parent again
+		{
+			if (n.getParent().getLoc().getNodeX() > x) parentdirection = 1;
+			if (n.getParent().getLoc().getNodeX() < x) parentdirection = -1;
+			if (n.getParent().getLoc().getNodeY() > y) parentdirection = 2;
+			if (n.getParent().getLoc().getNodeY() < y) parentdirection = -2;
+		}
+		short z = n.getLoc().getZ();
+		short region = getRegionOffset(x,y);
+	    int blockX = getBlock(x);
+		int blockY = getBlock(y);
+		int cellX, cellY;
+	    short NSWE = 0;
+		int index = 0;
+		//Geodata without index - it is just empty so index can be calculated on the fly
+		if(_geodataIndex.get(region) == null) index = ((blockX << 8) + blockY)*3;
+		//Get Index for current block of current region geodata
+		else index = _geodataIndex.get(region).get(((blockX << 8))+(blockY));
+		//Buffer that Contains current Region GeoData
+		ByteBuffer geo = _geodata.get(region);
+		if(geo == null)
+		{
+			if(Config.DEBUG)
+				_log.warning("Geo Region - Region Offset: "+region+" dosnt exist!!");
+			return null;
+		}
+		//Read current block type: 0-flat,1-complex,2-multilevel
+		byte type = geo.get(index);
+		index++;
+	    if(type == 0)//flat
+	    {
+			short height = geo.getShort(index);
+			n.getLoc().setZ(height);
+			if (parentdirection != 1) {
+				newNode = CellPathFinding.getInstance().readNode(x+1,y,height); 
+				//newNode.setCost(0);
+				Neighbors.add(newNode);
+			}
+			if (parentdirection != 2) {
+				newNode = CellPathFinding.getInstance().readNode(x,y+1,height); 
+				Neighbors.add(newNode);
+			}
+			if (parentdirection != -2) {
+				newNode = CellPathFinding.getInstance().readNode(x,y-1,height); 
+				Neighbors.add(newNode);
+			}
+			if (parentdirection != -1) {
+				newNode = CellPathFinding.getInstance().readNode(x-1,y,height); 
+				Neighbors.add(newNode);
+			}
+	    }
+	    else if(type == 1)//complex
+	    {
+	    	cellX = getCell(x);
+			cellY = getCell(y);
+	        index += ((cellX << 3) + cellY) << 1;
+	        short height = geo.getShort(index);
+			NSWE = (short)(height&0x0F);
+			height = (short)(height&0x0fff0);
+			height = (short)(height >> 1); //height / 2
+			n.getLoc().setZ(height);
+			if (NSWE != 15 && parentdirection != 0) return null; // no node with a block will be used
+			if (parentdirection != 1 && checkNSWE(NSWE,x,y,x+1,y)) 
+			{
+				newNode = CellPathFinding.getInstance().readNode(x+1,y,height); 
+				//newNode.setCost(basecost+50);
+				Neighbors.add(newNode);
+			}
+			if (parentdirection != 2 && checkNSWE(NSWE,x,y,x,y+1))
+			{
+				newNode = CellPathFinding.getInstance().readNode(x,y+1,height); 
+				Neighbors.add(newNode);
+			}
+			if (parentdirection != -2 && checkNSWE(NSWE,x,y,x,y-1))
+			{
+				newNode = CellPathFinding.getInstance().readNode(x,y-1,height); 
+				Neighbors.add(newNode);
+			}
+			if (parentdirection != -1 && checkNSWE(NSWE,x,y,x-1,y)) 
+			{
+				newNode = CellPathFinding.getInstance().readNode(x-1,y,height); 
+				Neighbors.add(newNode);
+			}
+	    }
+	    else//multilevel
+	    {
+	    	cellX = getCell(x);
+			cellY = getCell(y);
+	        int offset = (cellX << 3) + cellY;
+	        while(offset > 0)
+	        {
+	        	byte lc = geo.get(index);
+	            index += (lc << 1) + 1;
+	            offset--;
+	        }
+	        byte layers = geo.get(index);
+	        index++;
+	        short height=-1;
+	        if(layers <= 0 || layers > 125)
+	        {
+	        	_log.warning("Broken geofile (case5), region: "+region+" - invalid layer count: "+layers+" at: "+x+" "+y);
+	            return null;
+	        }
+	        short tempz = Short.MIN_VALUE;
+	        while(layers > 0)
+	        {
+	            height = geo.getShort(index);
+	            height = (short)(height&0x0fff0);
+				height = (short)(height >> 1); //height / 2
+
+	            if ((z-tempz)*(z-tempz) > (z-height)*(z-height))
+	            {
+	                tempz = height;
+	                NSWE = geo.get(index);
+	                NSWE = (short)(NSWE&0x0F);
+	            }
+	            layers--;
+	            index += 2;
+	        }
+	        n.getLoc().setZ(tempz);
+	        if (NSWE != 15 && parentdirection != 0) return null; // no node with a block will be used
+	        if (parentdirection != 1 && checkNSWE(NSWE,x,y,x+1,y)) 
+			{
+				newNode = CellPathFinding.getInstance().readNode(x+1,y,tempz); 
+				//newNode.setCost(basecost+50);
+				Neighbors.add(newNode);
+			}
+			if (parentdirection != 2 && checkNSWE(NSWE,x,y,x,y+1))
+			{
+				newNode = CellPathFinding.getInstance().readNode(x,y+1,tempz); 
+				Neighbors.add(newNode);
+			}
+			if (parentdirection != -2 && checkNSWE(NSWE,x,y,x,y-1))
+			{
+				newNode = CellPathFinding.getInstance().readNode(x,y-1,tempz); 
+				Neighbors.add(newNode);
+			}
+			if (parentdirection != -1 && checkNSWE(NSWE,x,y,x-1,y)) 
+			{
+				newNode = CellPathFinding.getInstance().readNode(x-1,y,tempz); 
+				Neighbors.add(newNode);
+			}	    
+		}
+		Node[] result = new Node[Neighbors.size()];
+		return Neighbors.toArray(result);
 	}
 
 	/**

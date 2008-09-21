@@ -20,6 +20,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.pathfinding.Node;
 import net.sf.l2j.util.Point3D;
 
 /**
@@ -145,6 +146,10 @@ public class GeoData
     {
         return new Location(tx,ty,tz);
     }
+    public boolean canMoveFromToTarget(int x, int y, int z, int tx, int ty, int tz)
+    {
+    	return true;
+    }
     /**
      * @param gm
      * @param comment
@@ -167,4 +172,10 @@ public class GeoData
     {
     	return false;
     }
+    
+    public Node[] getNeighbors(Node n)
+    {
+    	return null;
+    }
+    
 }

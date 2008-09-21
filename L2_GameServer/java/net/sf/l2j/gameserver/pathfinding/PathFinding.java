@@ -17,7 +17,12 @@ package net.sf.l2j.gameserver.pathfinding;
 import java.util.LinkedList;
 import java.util.List;
 
+import javolution.util.FastList;
+
+import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.model.L2World;
+import net.sf.l2j.gameserver.pathfinding.cellnodes.CellPathFinding;
 import net.sf.l2j.gameserver.pathfinding.geonodes.GeoPathFinding;
 import net.sf.l2j.gameserver.pathfinding.utils.BinaryNodeHeap;
 import net.sf.l2j.gameserver.pathfinding.utils.FastNodeList;
@@ -34,14 +39,14 @@ public abstract class PathFinding
 	{
 		if (_instance == null)
 		{
-			if (true /*Config.GEODATA_PATHFINDING*/)
+			if (!Config.GEODATA_CELLFINDING)
 			{
-				//Smaler Memory Usage, Higher Cpu Usage (CalculatedOnTheFly)
+				//Higher Memory Usage, Smaller Cpu Usage
 				return GeoPathFinding.getInstance();
 			}
-			else // WORLD_PATHFINDING
+			else // Cell pathfinding, calculated directly from geodata files
 			{
-				//Higher Memoru Usage, Lower Cpu Usage (PreCalculated)
+				return CellPathFinding.getInstance();
 			}
 		}
 		return _instance;
@@ -49,7 +54,7 @@ public abstract class PathFinding
 
 	public abstract boolean pathNodesExist(short regionoffset);
 	public abstract List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz);
-	public abstract Node[] readNeighbors(short node_x,short node_y, int idx);
+	public abstract Node[] readNeighbors(Node n, int idx);
 
 	public List<AbstractNodeLoc> search(Node start, Node end)
 	{
@@ -65,7 +70,7 @@ public abstract class PathFinding
 		to_visit.add(start);
 
 		int i = 0;
-		while (i < 800)//TODO! Add limit to cfg. Worst case max distance is 1810..
+		while (i < 800)
 		{
 			Node node;
 			try
@@ -83,7 +88,7 @@ public abstract class PathFinding
 			{
 				i++;
 				visited.add(node);
-				node.attacheNeighbors();
+				node.attachNeighbors();
 				Node[] neighbors = node.getNeighbors();
 				if (neighbors == null) continue;
 				for (Node n : neighbors)
@@ -102,6 +107,87 @@ public abstract class PathFinding
 
 	public List<AbstractNodeLoc> searchByClosest(Node start, Node end)
 	{
+		// Note: This is the version for cell-based calculation, maybe 10x harder 
+		// on cpu than from block-based pathnode files. However produces better routes.
+		
+		// Always continues checking from the closest to target non-blocked
+		// node from to_visit list. There's extra length in path if needed
+		// to go backwards/sideways but when moving generally forwards, this is extra fast
+		// and accurate. And can reach insane distances (try it with 8000 nodes..).
+		// Minimum required node count would be around 300-400.
+		// Generally returns a bit (only a bit) more intelligent looking routes than
+		// the basic version. Not a true distance image (which would increase CPU
+		// load) level of intelligence though.
+
+		// List of Visited Nodes
+		FastNodeList visited = new FastNodeList(3500);
+
+		// List of Nodes to Visit
+		LinkedList<Node> to_visit = new LinkedList<Node>();
+		to_visit.add(start);
+		int targetx = end.getLoc().getNodeX();
+		int targety = end.getLoc().getNodeY();
+		int targetz = end.getLoc().getZ();
+
+		int dx, dy, dz;
+		boolean added;
+		int i = 0;
+		while (i < 3500)
+		{
+			Node node;
+			try
+			{
+				 node = to_visit.removeFirst();
+			}
+			catch (Exception e)
+			{
+				// No Path found
+				return null;
+			}
+			i++;
+			visited.add(node);
+			node.attachNeighbors();
+			if (node.equals(end)) { 
+				//path found! note that node z coordinate is updated only in attach
+				//to improve performance (alternative: much more checks)
+				//System.out.println("path found, i:"+i);
+				return constructPath(node);
+			}
+
+			Node[] neighbors = node.getNeighbors();
+			if (neighbors == null) continue;
+			for (Node n : neighbors)
+			{
+				if (!visited.containsRev(n) && !to_visit.contains(n))
+				{
+
+					added = false;
+					n.setParent(node);
+					dx = targetx - n.getLoc().getNodeX();
+					dy = targety - n.getLoc().getNodeY();
+					dz = targetz - n.getLoc().getZ();
+					n.setCost(dx*dx+dy*dy+dz*dz/*+n.getCost()*/);
+					for (int index = 0; index < to_visit.size(); index++)
+					{
+						// supposed to find it quite early..
+						if (to_visit.get(index).getCost() > n.getCost())
+						{
+							to_visit.add(index, n);
+							added = true;
+							break;
+						}
+					}
+					if (!added) to_visit.addLast(n);
+				}
+			}
+		}
+		//No Path found
+		//System.out.println("no path found");
+		return null;
+	}
+
+	public List<AbstractNodeLoc> searchByClosest2(Node start, Node end)
+	{
 		// Always continues checking from the closest to target non-blocked
 		// node from to_visit list. There's extra length in path if needed
 		// to go backwards/sideways but when moving generally forwards, this is extra fast
@@ -117,8 +203,8 @@ public abstract class PathFinding
 		// List of Nodes to Visit
 		LinkedList<Node> to_visit = new LinkedList<Node>();
 		to_visit.add(start);
-		short targetx = end.getLoc().getNodeX();
-		short targety = end.getLoc().getNodeY();
+		int targetx = end.getLoc().getNodeX();
+		int targety = end.getLoc().getNodeY();
 		int dx, dy;
 		boolean added;
 		int i = 0;
@@ -135,12 +221,12 @@ public abstract class PathFinding
 				return null;
 			}
 			if (node.equals(end)) //path found!
-				return constructPath(node);
+				return constructPath2(node);
 			else
 			{
 				i++;
 				visited.add(node);
-				node.attacheNeighbors();
+				node.attachNeighbors();
 				Node[] neighbors = node.getNeighbors();
 				if (neighbors == null) continue;
 				for (Node n : neighbors)
@@ -171,7 +257,7 @@ public abstract class PathFinding
 		return null;
 	}
 
-
+	
 	public List<AbstractNodeLoc> searchAStar(Node start, Node end)
 	{
 		// Not operational yet?
@@ -204,7 +290,7 @@ public abstract class PathFinding
 			else
 			{
 				visited.add(node);
-				node.attacheNeighbors();
+				node.attachNeighbors();
 				for (Node n : node.getNeighbors())
 				{
 					if (!visited.contains(n) && !to_visit.contains(n))
@@ -223,6 +309,60 @@ public abstract class PathFinding
 	}
 
 	public List<AbstractNodeLoc> constructPath(Node node)
+	{
+		LinkedList<AbstractNodeLoc> path = new LinkedList<AbstractNodeLoc>();
+		int previousdirectionx = -1000;
+		int previousdirectiony = -1000;
+		int directionx;
+		int directiony;
+		while (node.getParent() != null)
+		{
+			// only add a new route point if moving direction changes
+			if (node.getParent().getParent() != null // to check and clean diagonal movement
+					&& Math.abs(node.getLoc().getNodeX() - node.getParent().getParent().getLoc().getNodeX()) == 1
+					&& Math.abs(node.getLoc().getNodeY() - node.getParent().getParent().getLoc().getNodeY()) == 1)
+			{
+				directionx = node.getLoc().getNodeX() - node.getParent().getParent().getLoc().getNodeX();
+				directiony = node.getLoc().getNodeY() - node.getParent().getParent().getLoc().getNodeY();
+			}
+			else
+			{
+				directionx = node.getLoc().getNodeX() - node.getParent().getLoc().getNodeX();
+				directiony = node.getLoc().getNodeY() - node.getParent().getLoc().getNodeY();
+			}
+			if(directionx != previousdirectionx || directiony != previousdirectiony)
+			{
+				previousdirectionx = directionx;
+				previousdirectiony = directiony;
+				path.addFirst(node.getLoc());
+			}
+			node = node.getParent();
+		}
+		// then LOS based filtering to reduce the number of route points
+		if (path.size() > 4)
+		{
+			//System.out.println("pathsize:"+path.size());
+			List<Integer> valueList = new FastList<Integer>();
+			for (int index = 0; index < path.size()-3; index = index +3)
+			{
+				//System.out.println("Attempt filter");
+				if (GeoData.getInstance().canMoveFromToTarget(path.get(index).getNodeX(), path.get(index).getNodeY(), path.get(index).getZ(), path.get(index+3).getNodeX(), path.get(index+3).getNodeY(), path.get(index+3).getZ()))
+				{
+					//System.out.println("filtering i:"+(index+1));
+					valueList.add(index+1);
+					valueList.add(index+2);
+				}
+			}
+			for (int index = valueList.size()-1; index >= 0; index--)
+			{
+				path.remove(valueList.get(index).intValue());
+			}
+			//System.out.println("pathsize:"+path.size());
+		}
+		return path;
+	}
+	
+	public List<AbstractNodeLoc> constructPath2(Node node)
 	{
 		LinkedList<AbstractNodeLoc> path = new LinkedList<AbstractNodeLoc>();
 		int previousdirectionx = -1000;

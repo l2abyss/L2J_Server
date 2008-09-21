@@ -18,10 +18,9 @@ import java.util.List;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
-import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.pathfinding.AbstractNodeLoc;
-import net.sf.l2j.gameserver.pathfinding.geonodes.GeoPathFinding;
+import net.sf.l2j.gameserver.pathfinding.PathFinding;
 
 public class AdminPathNode implements IAdminCommandHandler
 {
@@ -61,11 +60,7 @@ public class AdminPathNode implements IAdminCommandHandler
 			}
 			if (activeChar.getTarget() != null)
 			{
-				int gx = (activeChar.getX() - L2World.MAP_MIN_X) >> 4;
-				int gy = (activeChar.getY() - L2World.MAP_MIN_Y) >> 4;
-				int gtx = (activeChar.getTarget().getX() - L2World.MAP_MIN_X) >> 4;
-				int gty = (activeChar.getTarget().getY() - L2World.MAP_MIN_Y) >> 4;
-				List<AbstractNodeLoc> path = GeoPathFinding.getInstance().findPath(gx, gy, (short) activeChar.getZ(), gtx, gty, (short) activeChar.getTarget().getZ());
+				List<AbstractNodeLoc> path = PathFinding.getInstance().findPath(activeChar.getX(), activeChar.getY(), (short) activeChar.getZ(), activeChar.getTarget().getX(), activeChar.getTarget().getY(), (short) activeChar.getTarget().getZ());
 				if (path == null)
 				{
 					activeChar.sendMessage("No Route!");

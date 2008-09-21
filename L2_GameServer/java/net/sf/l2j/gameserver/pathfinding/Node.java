@@ -43,10 +43,10 @@ public class Node
 		_cost = (short)cost;
 	}
 
-	public void attacheNeighbors()
+	public void attachNeighbors()
 	{
 		if(_loc == null) _neighbors = null;
-		else _neighbors = PathFinding.getInstance().readNeighbors(_loc.getNodeX(),_loc.getNodeY(), _neighborsIdx);
+		else _neighbors = PathFinding.getInstance().readNeighbors(this, _neighborsIdx);
 	}
 
 	public Node[] getNeighbors()
@@ -78,7 +78,7 @@ public class Node
 		if(!(arg0 instanceof Node))
 			return false;
 		Node n = (Node)arg0;
-		//Check if x,y,z are the same
+		
 		return _loc.getX() == n.getLoc().getX() && _loc.getY() == n.getLoc().getY()
 		&& _loc.getZ() == n.getLoc().getZ();
 	}

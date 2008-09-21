@@ -429,18 +429,20 @@ public final class L2PcInstance extends L2PlayableInstance
 	private boolean _observerMode = false;
 
 	/** Stored from last ValidatePosition **/
-	private Point3D _lastClientPosition = new Point3D(0, 0, 0);
 	private Point3D _lastServerPosition = new Point3D(0, 0, 0);
 
-	/** The number of recommandation obtained by the L2PcInstance */
+	/** Previous coordinate sent to party in ValidatePosition **/
+	private Point3D _lastPartyPosition = new Point3D(0, 0, 0);
+	
+	/** The number of recommendation obtained by the L2PcInstance */
 	private int _recomHave; // how much I was recommended by others
 
-	/** The number of recommandation that the L2PcInstance can give */
-	private int _recomLeft; // how many recomendations I can give to others
+	/** The number of recommendation that the L2PcInstance can give */
+	private int _recomLeft; // how many recommendations I can give to others
 
-	/** Date when recom points were updated last time */
+	/** Date when recommendation points were updated last time */
 	private long _lastRecomUpdate;
-	/** List with the recomendations that I've give */
+	/** List with the recommendations that I've give */
 	private List<Integer> _recomChars = new FastList<Integer>();
 
 	/** The random number of the L2PcInstance */
@@ -10034,21 +10036,16 @@ public final class L2PcInstance extends L2PlayableInstance
 		return (distFraction > 1);
 	}
 
-	public void setLastClientPosition(int x, int y, int z)
+	public void setLastPartyPosition(int x, int y, int z)
 	{
-		_lastClientPosition.setXYZ(x,y,z);
+		_lastPartyPosition.setXYZ(x,y,z);
 	}
 
-	public boolean checkLastClientPosition(int x, int y, int z)
+	public int getLastPartyPositionDistance(int x, int y, int z)
 	{
-		return _lastClientPosition.equals(x,y,z);
-	}
-
-	public int getLastClientDistance(int x, int y, int z)
-	{
-		double dx = (x - _lastClientPosition.getX());
-		double dy = (y - _lastClientPosition.getY());
-		double dz = (z - _lastClientPosition.getZ());
+		double dx = (x - _lastPartyPosition.getX());
+		double dy = (y - _lastPartyPosition.getY());
+		double dz = (z - _lastPartyPosition.getZ());
 
 		return (int)Math.sqrt(dx*dx + dy*dy + dz*dz);
 	}

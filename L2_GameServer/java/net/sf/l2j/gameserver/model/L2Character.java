@@ -95,7 +95,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.TeleportToLocation;
 import net.sf.l2j.gameserver.network.serverpackets.FlyToLocation.FlyType;
 import net.sf.l2j.gameserver.pathfinding.AbstractNodeLoc;
-import net.sf.l2j.gameserver.pathfinding.geonodes.GeoPathFinding;
+import net.sf.l2j.gameserver.pathfinding.PathFinding;
 import net.sf.l2j.gameserver.skills.Calculator;
 import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.skills.Stats;
@@ -4240,7 +4240,7 @@ public abstract class L2Character extends L2Object
 				if(this instanceof L2PlayableInstance || this.isInCombat())
 				{
 		
-					m.geoPath = GeoPathFinding.getInstance().findPath(curX, curY, curZ, originalX, originalY, originalZ);
+					m.geoPath = PathFinding.getInstance().findPath(curX, curY, curZ, originalX, originalY, originalZ);
                 	if (m.geoPath == null || m.geoPath.size() < 2) // No path found
                 	{
                 		// Even though there's no path found (remember geonodes aren't perfect), 

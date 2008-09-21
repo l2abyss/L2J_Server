@@ -377,6 +377,7 @@ public final class Config
     public static int		GRID_NEIGHBOR_TURNON_TIME;
     public static int		GRID_NEIGHBOR_TURNOFF_TIME;
     public static int		GEODATA;
+    public static boolean	GEODATA_CELLFINDING;
     public static boolean	FORCE_GEODATA;
     public static boolean 	MOVE_BASED_KNOWNLIST;
     public static long		KNOWNLIST_UPDATE_INTERVAL;
@@ -1441,6 +1442,7 @@ public final class Config
 	                GRID_NEIGHBOR_TURNON_TIME					= Integer.parseInt(General.getProperty("GridNeighborTurnOnTime", "1"));
 	                GRID_NEIGHBOR_TURNOFF_TIME					= Integer.parseInt(General.getProperty("GridNeighborTurnOffTime", "90"));
 	                GEODATA										= Integer.parseInt(General.getProperty("GeoData", "0"));
+	                GEODATA_CELLFINDING							= Boolean.parseBoolean(General.getProperty("CellPathFinding", "False"));
 	                FORCE_GEODATA								= Boolean.parseBoolean(General.getProperty("ForceGeoData", "True"));
 	                MOVE_BASED_KNOWNLIST						= Boolean.parseBoolean(General.getProperty("MoveBasedKnownlist", "False"));
 	                KNOWNLIST_UPDATE_INTERVAL					= Long.parseLong(General.getProperty("KnownListUpdateInterval", "1250"));

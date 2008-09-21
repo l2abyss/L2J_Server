@@ -101,7 +101,7 @@ import net.sf.l2j.gameserver.model.entity.Hero;
 import net.sf.l2j.gameserver.model.entity.TvTManager;
 import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.network.L2GamePacketHandler;
-import net.sf.l2j.gameserver.pathfinding.geonodes.GeoPathFinding;
+import net.sf.l2j.gameserver.pathfinding.PathFinding;
 import net.sf.l2j.gameserver.script.faenor.FaenorScriptEngine;
 import net.sf.l2j.gameserver.scripting.CompiledScriptCache;
 import net.sf.l2j.gameserver.scripting.L2ScriptEngineManager;
@@ -277,7 +277,7 @@ public class GameServer
 		
 		GeoData.getInstance();
 		if (Config.GEODATA == 2)
-			GeoPathFinding.getInstance();
+			PathFinding.getInstance();
 		
 		CastleManager.getInstance();
 		SiegeManager.getInstance();

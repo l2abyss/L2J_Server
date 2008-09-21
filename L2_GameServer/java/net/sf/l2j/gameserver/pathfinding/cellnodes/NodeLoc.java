@@ -12,8 +12,8 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.pathfinding.worldnodes;
-
+package net.sf.l2j.gameserver.pathfinding.cellnodes;
+import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.pathfinding.AbstractNodeLoc;
 
 /**
@@ -24,7 +24,7 @@ public class NodeLoc extends AbstractNodeLoc
 {
 	private final int _x;
 	private final int _y;
-	private final short _z;
+	private short _z;
 
 	public NodeLoc(int x, int y, short z)
 	{
@@ -39,7 +39,7 @@ public class NodeLoc extends AbstractNodeLoc
 	@Override
 	public int getX()
 	{
-		return _x;
+		return (_x << 4) + L2World.MAP_MIN_X;
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class NodeLoc extends AbstractNodeLoc
 	@Override
 	public int getY()
 	{
-		return _y;
+		return (_y << 4) + L2World.MAP_MIN_Y;
 	}
 
 	/**
@@ -60,24 +60,30 @@ public class NodeLoc extends AbstractNodeLoc
 		return _z;
 	}
 
+	@Override
+	public void setZ(short z)
+	{
+		_z = z;
+	}
+	
 	/**
 	 * @see net.sf.l2j.gameserver.pathfinding.AbstractNodeLoc#getNodeX()
 	 */
 	@Override
-	public short getNodeX()
+	public int getNodeX()
 	{
 		// TODO Auto-generated method stub
-		return 0;
+		return _x;
 	}
 
 	/**
 	 * @see net.sf.l2j.gameserver.pathfinding.AbstractNodeLoc#getNodeY()
 	 */
 	@Override
-	public short getNodeY()
+	public int getNodeY()
 	{
 		// TODO Auto-generated method stub
-		return 0;
+		return _y;
 	}
 
 }
