@@ -1080,7 +1080,7 @@ public class L2Clan
 		for (L2ClanMember member : _members.values())
 		{
 			try {
-				if (member.isOnline() && BlockList.isBlocked(member.getPlayerInstance(), broadcaster))
+				if (member.isOnline() && !BlockList.isBlocked(member.getPlayerInstance(), broadcaster))
 					member.getPlayerInstance().sendPacket(packet);
 			} catch (NullPointerException e) {}
 		}
