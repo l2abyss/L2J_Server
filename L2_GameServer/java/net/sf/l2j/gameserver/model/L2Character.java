@@ -881,14 +881,7 @@ public abstract class L2Character extends L2Object
 			hitted = doAttackHitSimple(attack, target, timeToHit);
 
         // Flag the attacker if it's a L2PcInstance outside a PvP area
-        L2PcInstance player = null;
-
-        if (this instanceof L2PcInstance)
-            player = (L2PcInstance)this;
-        else if (this instanceof L2Summon)
-            player = ((L2Summon)this).getOwner();
-        else if (this instanceof L2Trap)
-        	player = ((L2Trap)this).getOwner();
+        L2PcInstance player = getActingPlayer();
 
         if (player != null)
             player.updatePvPStatus(target);
@@ -5159,40 +5152,28 @@ public abstract class L2Character extends L2Object
 
 	public boolean isInsidePeaceZone(L2Object attacker, L2Object target)
 	{
-		if (target == null) return false;
-		if (target instanceof L2MonsterInstance) return false;
-		if (attacker instanceof L2MonsterInstance) return false;
-		if (target instanceof L2NpcInstance) return false;
-		if (attacker instanceof L2NpcInstance) return false;
+		if (target == null)
+			return false;
+		if (!(target instanceof L2PlayableInstance && attacker instanceof L2PlayableInstance))
+			return false;
+
 		if (Config.ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE)
 		{
 			// allows red to be attacked and red to attack flagged players
-			if (target instanceof L2PcInstance && ((L2PcInstance)target).getKarma() > 0)
+			if (target.getActingPlayer() != null && target.getActingPlayer().getKarma() > 0)
 				return false;
-			if (target instanceof L2Summon && ((L2Summon)target).getOwner().getKarma() > 0)
+			if (attacker.getActingPlayer() != null && attacker.getActingPlayer().getKarma() > 0
+					&& target.getActingPlayer() != null && target.getActingPlayer().getPvpFlag() > 0)
 				return false;
-			if (attacker instanceof L2PcInstance && ((L2PcInstance)attacker).getKarma() > 0)
+
+			if (attacker instanceof L2Character && target instanceof L2Character)
 			{
-				if(target instanceof L2PcInstance && ((L2PcInstance)target).getPvpFlag() > 0)
-					return false;
-				if(target instanceof L2Summon && ((L2Summon)target).getOwner().getPvpFlag() > 0)
-					return false;
+				return (((L2Character)target).isInsideZone(ZONE_PEACE) || ((L2Character)attacker).isInsideZone(ZONE_PEACE));
 			}
-			if (attacker instanceof L2Summon && ((L2Summon)attacker).getOwner().getKarma() > 0)
+			if (attacker instanceof L2Character)
 			{
-				if(target instanceof L2PcInstance && ((L2PcInstance)target).getPvpFlag() > 0)
-					return false;
-				if(target instanceof L2Summon && ((L2Summon)target).getOwner().getPvpFlag() > 0)
-					return false;
+				return (TownManager.getInstance().getTown(target.getX(), target.getY(), target.getZ()) != null || ((L2Character)attacker).isInsideZone(ZONE_PEACE));
 			}
-			if (attacker instanceof L2Character && target instanceof L2Character) 
-			{ 
-				return (((L2Character)target).isInsideZone(ZONE_PEACE) || ((L2Character)attacker).isInsideZone(ZONE_PEACE)); 
-			} 
-			if (attacker instanceof L2Character) 
-			{ 
-				return (TownManager.getInstance().getTown(target.getX(), target.getY(), target.getZ()) != null || ((L2Character)attacker).isInsideZone(ZONE_PEACE)); 
-			} 
 		}
 
 		if (attacker instanceof L2Character && target instanceof L2Character)
@@ -5884,14 +5865,6 @@ public abstract class L2Character extends L2Object
 			ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
 			L2Weapon activeWeapon = getActiveWeaponItem();
 
-			L2PcInstance player = null;
-			if (this instanceof L2PcInstance)
-				player = (L2PcInstance)this;
-			else if (this instanceof L2Summon)
-				player = ((L2Summon)this).getOwner();
-			else if (this instanceof L2Trap)
-				player = ((L2Trap)this).getOwner();
-			
 			// Check if the toggle skill effects are already in progress on the L2Character
 			if(skill.isToggle() && getFirstEffect(skill.getId()) != null)
 				return;
@@ -5970,6 +5943,7 @@ public abstract class L2Character extends L2Object
 			else
 				skill.useSkill(this, targets);
 
+			L2PcInstance player = getActingPlayer();
 			if (player != null)
 			{
 				for (L2Object target : targets)

@@ -883,4 +883,10 @@ public abstract class L2Summon extends L2PlayableInstance
     	else
     		super.doCast(skill);
 	}
+
+	@Override
+	public L2PcInstance getActingPlayer()
+	{
+		return getOwner();
+	}
 }

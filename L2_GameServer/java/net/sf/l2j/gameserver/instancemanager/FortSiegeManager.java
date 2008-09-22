@@ -49,7 +49,7 @@ public class FortSiegeManager
     {
         if (_instance == null)
         {
-            _log.info("Initializing SiegeManager");
+            _log.info("Initializing FortSiegeManager");
             _instance = new FortSiegeManager();
             _instance.load();
         }

@@ -390,8 +390,13 @@ public abstract class L2Object
         return getPosition().getWorldRegion();
     }
 
+    public L2PcInstance getActingPlayer()
+    {
+        return null;
+    }
+
     @Override
-	public String toString()
+    public String toString()
     {
         return "" + getObjectId();
     }

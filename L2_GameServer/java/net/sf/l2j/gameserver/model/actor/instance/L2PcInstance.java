@@ -5052,11 +5052,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		if (target == null) return;
 		if (!(target instanceof L2PlayableInstance)) return;
 
-		L2PcInstance targetPlayer = null;
-		if (target instanceof L2PcInstance)
-			targetPlayer = (L2PcInstance)target;
-		else if (target instanceof L2Summon)
-			targetPlayer = ((L2Summon)target).getOwner();
+		L2PcInstance targetPlayer = target.getActingPlayer();
 
 		if (targetPlayer == null) return;                                          // Target player is null
 		if (targetPlayer == this) return;                                          // Target player is self
@@ -5240,12 +5236,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
 	public void updatePvPStatus(L2Character target)
 	{
-		L2PcInstance player_target = null;
-
-        if (target instanceof L2PcInstance)
-        	player_target = (L2PcInstance)target;
-        else if (target instanceof L2Summon)
-        	player_target = ((L2Summon) target).getOwner();
+		L2PcInstance player_target = target.getActingPlayer();
 
         if (player_target == null)
            return;
@@ -11383,6 +11374,12 @@ public final class L2PcInstance extends L2PlayableInstance
 	public void removeTimeStamp(int s)
 	{
 		_reuseTimeStamps.remove(s);
+	}
+	
+	@Override
+	public L2PcInstance getActingPlayer()
+	{
+		return this;
 	}
 
 	@Override

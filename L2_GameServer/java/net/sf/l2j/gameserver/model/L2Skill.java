@@ -1416,11 +1416,7 @@ public abstract class L2Skill
                 int radius = getSkillRadius();
                 boolean srcInArena = (activeChar.isInsideZone(L2Character.ZONE_PVP) && !activeChar.isInsideZone(L2Character.ZONE_SIEGE));
 
-                L2PcInstance src = null;
-                if (activeChar instanceof L2PcInstance) src = (L2PcInstance)activeChar;
-                else if (activeChar instanceof L2Summon) src = ((L2Summon)activeChar).getOwner();
-                else if (activeChar instanceof L2Decoy) src = ((L2Decoy)activeChar).getOwner();
-                else if (activeChar instanceof L2Trap) src = ((L2Trap)activeChar).getOwner();
+                L2PcInstance src = activeChar.getActingPlayer();
 
                 // Go through the L2Character _knownList
                 Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
@@ -1515,10 +1511,7 @@ public abstract class L2Skill
                 int radius = getSkillRadius();
                 boolean srcInArena = (activeChar.isInsideZone(L2Character.ZONE_PVP) && !activeChar.isInsideZone(L2Character.ZONE_SIEGE));
 
-                L2PcInstance src = null;
-                if (activeChar instanceof L2PcInstance) src = (L2PcInstance)activeChar;
-                else if (activeChar instanceof L2Summon) src = ((L2Summon)activeChar).getOwner();
-                else if (activeChar instanceof L2Trap) src = ((L2Trap)activeChar).getOwner();
+                L2PcInstance src = activeChar.getActingPlayer();
                 
                 // Go through the L2Character _knownList
                 Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
@@ -1617,10 +1610,7 @@ public abstract class L2Skill
                 int radius = getSkillRadius();
                 boolean srcInArena = (activeChar.isInsideZone(L2Character.ZONE_PVP) && !activeChar.isInsideZone(L2Character.ZONE_SIEGE));
 
-                L2PcInstance src = null;
-                if (activeChar instanceof L2PcInstance) src = (L2PcInstance)activeChar;
-                else if (activeChar instanceof L2Summon) src = ((L2Summon)activeChar).getOwner();
-                else if (activeChar instanceof L2Trap) src = ((L2Trap)activeChar).getOwner();
+                L2PcInstance src = activeChar.getActingPlayer();
                 
                 // Go through the L2Character _knownList
                 Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
@@ -1747,9 +1737,7 @@ public abstract class L2Skill
 
                 boolean effectOriginIsL2PlayableInstance = (cha instanceof L2PlayableInstance);
 
-                L2PcInstance src = null;
-                if (activeChar instanceof L2PcInstance) src = (L2PcInstance)activeChar;
-                else if (activeChar instanceof L2Summon) src = ((L2Summon)activeChar).getOwner();
+                L2PcInstance src = activeChar.getActingPlayer();
 
                 int radius = getSkillRadius();
 
@@ -1900,9 +1888,7 @@ public abstract class L2Skill
 
                 boolean effectOriginIsL2PlayableInstance = (cha instanceof L2PlayableInstance);
 
-                L2PcInstance src = null;
-                if (activeChar instanceof L2PcInstance) src = (L2PcInstance)activeChar;
-                else if (activeChar instanceof L2Summon) src = ((L2Summon)activeChar).getOwner();
+                L2PcInstance src = activeChar.getActingPlayer();
 
                 int radius = getSkillRadius();
 
@@ -2057,9 +2043,7 @@ public abstract class L2Skill
 
                 boolean effectOriginIsL2PlayableInstance = (cha instanceof L2PlayableInstance);
 
-                L2PcInstance src = null;
-                if (activeChar instanceof L2PcInstance) src = (L2PcInstance)activeChar;
-                else if (activeChar instanceof L2Summon) src = ((L2Summon)activeChar).getOwner();
+                L2PcInstance src = activeChar.getActingPlayer();
 
                 int radius = getSkillRadius();
 

@@ -36,8 +36,6 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2Party;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Summon;
-import net.sf.l2j.gameserver.model.L2Trap;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
 import net.sf.l2j.gameserver.model.entity.TvTEventTeam;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
@@ -287,27 +285,10 @@ public class L2CubicInstance
     		{
     			TvTEventTeam enemyTeam = TvTEvent.getParticipantEnemyTeam(_owner.getObjectId());
     			
-    			if (_owner.getTarget() instanceof L2PcInstance)
+    			if (_owner.getTarget() != null && _owner.getTarget().getActingPlayer() != null)
     			{
-    				if (enemyTeam.containsPlayer(_owner.getTargetId()) && !((L2PcInstance)_owner.getTarget()).isDead())
-    				{
-    					_target = (L2Character) _owner.getTarget();
-    					return;
-    				}
-    			}
-    			else if (_owner.getTarget() instanceof L2Summon)
-    			{
-    				if (enemyTeam.containsPlayer(((L2Summon)_owner.getTarget()).getOwner().getObjectId())
-    						&& !((L2Summon)_owner.getTarget()).isDead())
-    				{
-    					_target = (L2Character) _owner.getTarget();
-    					return;
-    				}
-    			} 
-    			else if (_owner.getTarget() instanceof L2Trap)
-    			{
-    				if (enemyTeam.containsPlayer(((L2Trap)_owner.getTarget()).getOwner().getObjectId())
-    						&& !((L2Trap)_owner.getTarget()).isDead())
+    				L2PcInstance target = _owner.getTarget().getActingPlayer();
+    				if (enemyTeam.containsPlayer(target.getObjectId()) && !((L2PcInstance)_owner.getTarget()).isDead())
     				{
     					_target = (L2Character) _owner.getTarget();
     					return;
@@ -435,22 +416,9 @@ public class L2CubicInstance
 
     				if ((_owner.getPvpFlag() > 0 && !_owner.isInsideZone(L2Character.ZONE_PEACE)) || _owner.isInsideZone(L2Character.ZONE_SIEGE) || _owner.isInsideZone(L2Character.ZONE_PVP))
     				{
-    					if (_owner.getTarget() instanceof L2Summon)
-    					{
-    						if (!((L2Summon)_owner.getTarget()).isDead())
-    							enemy = ((L2Summon)_owner.getTarget()).getOwner();
-    					}
-    					else if (_owner.getTarget() instanceof L2Trap)
-    					{
-    						if (!((L2Trap)_owner.getTarget()).isDead())
-    							enemy = ((L2Trap)_owner.getTarget()).getOwner();
-    					}
-    					else if (_owner.getTarget() instanceof L2PcInstance)
-    					{
-    						if (!((L2PcInstance)_owner.getTarget()).isDead())
-    							enemy = (L2PcInstance) _owner.getTarget();
-    					}
-    			
+    					if (_owner.getTarget() instanceof L2Character && !((L2Character)_owner.getTarget()).isDead())
+    						enemy = _owner.getTarget().getActingPlayer();
+
     					if (enemy != null)
     					{
     						boolean targetIt = true;
@@ -510,22 +478,7 @@ public class L2CubicInstance
         		// get enemy pvp targets
         		else if ((_owner.getPvpFlag() > 0 && !_owner.isInsideZone(L2Character.ZONE_PEACE)) || _owner.isInsideZone(L2Character.ZONE_SIEGE) || _owner.isInsideZone(L2Character.ZONE_PVP))
 				{
-        			enemy = null;
-					if (tgMob instanceof L2Summon)
-					{
-						if (!((L2Summon)tgMob).isDead())
-							enemy = ((L2Summon)tgMob).getOwner();
-					}
-					else if (tgMob instanceof L2Trap)
-					{
-						if (!((L2Trap)tgMob).isDead())
-							enemy = ((L2Trap)tgMob).getOwner();
-					}
-					else if (tgMob instanceof L2PcInstance)
-					{
-						if (!((L2PcInstance)tgMob).isDead())
-							enemy = (L2PcInstance) tgMob;
-					}
+        			enemy = tgMob.isDead() ? null : tgMob.getActingPlayer();
 			
 					if (enemy != null)
 					{
