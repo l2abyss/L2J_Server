@@ -71,7 +71,8 @@ public class AdminTeleport implements IAdminCommandHandler
 		"admin_goup",
 		"admin_godown",
 		"admin_tele",
-		"admin_teleto"
+		"admin_teleto",
+		"admin_instant_move"
 	};
 	
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
@@ -80,6 +81,10 @@ public class AdminTeleport implements IAdminCommandHandler
 		{
 			activeChar.setTeleMode(1);
 		}
+		if (command.equals("admin_instant_move"))
+        {
+            activeChar.setTeleMode(1);
+        }
 		if (command.equals("admin_teleto r"))
 		{
 			activeChar.setTeleMode(2);
