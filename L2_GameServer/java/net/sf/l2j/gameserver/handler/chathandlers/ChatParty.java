@@ -40,7 +40,7 @@ public class ChatParty implements IChatHandler
 		{
 			CreatureSay cs = new CreatureSay(activeChar.getObjectId(), type, activeChar.getName(), text);
 			
-			activeChar.getParty().broadcastToPartyMembers(cs);
+			activeChar.getParty().broadcastCSToPartyMembers(cs, activeChar);
 		}
 	}
 	

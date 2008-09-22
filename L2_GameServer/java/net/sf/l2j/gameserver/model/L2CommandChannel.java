@@ -20,6 +20,7 @@ import javolution.util.FastList;
 import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RaidBossInstance;
+import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.network.serverpackets.ExCloseMPCC;
 import net.sf.l2j.gameserver.network.serverpackets.ExMPCCPartyInfoUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ExOpenMPCC;
@@ -132,6 +133,18 @@ public class L2CommandChannel
 			{
 				if(party != null)
 					party.broadcastToPartyMembers(gsp);
+			}
+		}
+	}
+	
+	public void broadcastCSToChannelMembers(CreatureSay gsp, L2PcInstance broadcaster)
+	{
+		if (_partys != null && !_partys.isEmpty())
+		{
+			for (L2Party party : _partys)
+			{
+				if(party != null)
+					party.broadcastCSToPartyMembers(gsp, broadcaster);
 			}
 		}
 	}

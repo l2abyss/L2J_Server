@@ -39,7 +39,7 @@ public class ChatClan implements IChatHandler
 		if (activeChar.getClan() != null)
 		{
 			CreatureSay cs = new CreatureSay(activeChar.getObjectId(), type, activeChar.getName(), text);
-			activeChar.getClan().broadcastToOnlineMembers(cs);
+			activeChar.getClan().broadcastCSToOnlineMembers(cs, activeChar);
 		}
 	}
 	

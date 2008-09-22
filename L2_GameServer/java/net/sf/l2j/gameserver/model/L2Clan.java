@@ -33,6 +33,7 @@ import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
 import net.sf.l2j.gameserver.network.serverpackets.PledgeReceiveSubPledgeCreated;
@@ -1069,6 +1070,17 @@ public class L2Clan
 		{
 			try {
 				if (member.isOnline())
+					member.getPlayerInstance().sendPacket(packet);
+			} catch (NullPointerException e) {}
+		}
+	}
+	
+	public void broadcastCSToOnlineMembers(CreatureSay packet, L2PcInstance broadcaster)
+	{
+		for (L2ClanMember member : _members.values())
+		{
+			try {
+				if (member.isOnline() && BlockList.isBlocked(member.getPlayerInstance(), broadcaster))
 					member.getPlayerInstance().sendPacket(packet);
 			} catch (NullPointerException e) {}
 		}

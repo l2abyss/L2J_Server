@@ -29,6 +29,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.entity.DimensionalRift;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.network.serverpackets.ExCloseMPCC;
 import net.sf.l2j.gameserver.network.serverpackets.ExOpenMPCC;
 import net.sf.l2j.gameserver.network.serverpackets.ExPartyPetWindowAdd;
@@ -217,6 +218,15 @@ public class L2Party {
 		for (L2PcInstance member : getPartyMembers())
 		{
 			member.sendPacket(msg);
+		}
+	}
+	
+	public void broadcastCSToPartyMembers(CreatureSay msg, L2PcInstance broadcaster)
+	{
+		for (L2PcInstance member : getPartyMembers())
+		{
+			if (!BlockList.isBlocked(member, broadcaster))
+				member.sendPacket(msg);
 		}
 	}
 

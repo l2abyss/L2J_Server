@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.network.clientpackets;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.model.BlockList;
 import net.sf.l2j.gameserver.model.L2Party;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -71,6 +72,14 @@ public final class RequestJoinParty extends L2GameClientPacket
 			msg.addString(target.getName());
 			requestor.sendPacket(msg);
 			return;
+		}
+		
+		if (BlockList.isBlocked(target, requestor))
+		{
+			SystemMessage sm = new SystemMessage(SystemMessageId.S1_HAS_ADDED_YOU_TO_IGNORE_LIST);
+        	sm.addCharName(target);
+        	requestor.sendPacket(sm);
+        	return;
 		}
 
 		if (target == requestor)

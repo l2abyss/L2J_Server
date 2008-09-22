@@ -55,8 +55,7 @@ public class ChatHeroVoice implements IChatHandler
 			//synchronized (L2World.getInstance().getAllPlayers())
 			{
 				for (L2PcInstance player : pls)
-					if (!BlockList.isBlocked(player, activeChar))
-						player.sendPacket(cs);
+					player.sendPacket(cs);
 			}
 		}
 	}

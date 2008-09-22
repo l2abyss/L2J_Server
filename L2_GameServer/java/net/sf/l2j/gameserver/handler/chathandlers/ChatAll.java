@@ -22,6 +22,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.handler.IChatHandler;
 import net.sf.l2j.gameserver.handler.IVoicedCommandHandler;
 import net.sf.l2j.gameserver.handler.VoicedCommandHandler;
+import net.sf.l2j.gameserver.model.BlockList;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 
@@ -83,7 +84,7 @@ public class ChatAll implements IChatHandler
 			{
 				for (L2PcInstance player : plrs)
 				{
-					if (player != null && activeChar.isInsideRadius(player, 1250, false, true))
+					if (player != null && activeChar.isInsideRadius(player, 1250, false, true) && !BlockList.isBlocked(player, activeChar))
 					{
 						player.sendPacket(cs);
 					}

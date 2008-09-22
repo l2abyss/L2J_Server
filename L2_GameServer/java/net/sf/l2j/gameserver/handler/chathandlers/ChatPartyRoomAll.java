@@ -41,7 +41,7 @@ public class ChatPartyRoomAll implements IChatHandler
 			if (activeChar.getParty().isInCommandChannel() && activeChar.getParty().isLeader(activeChar))
 			{
 				CreatureSay cs = new CreatureSay(activeChar.getObjectId(), type, activeChar.getName(), text);
-				activeChar.getParty().getCommandChannel().broadcastToChannelMembers(cs);
+				activeChar.getParty().getCommandChannel().broadcastCSToChannelMembers(cs, activeChar);
 			}
 		}
 	}
