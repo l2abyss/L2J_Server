@@ -108,7 +108,8 @@ public class ValidatePosition extends L2GameClientPacket
             	activeChar.setXYZ(realX,realY,_z);
             	return;
             }
-            if (Config.COORD_SYNCHRONIZE == 1 && !activeChar.isMoving()) // Trusting client coordinates (should not be used with geodata)
+            if (Config.COORD_SYNCHRONIZE == 1 && (!activeChar.isMoving() // Trusting client coordinates (should not be used with geodata)
+            		|| !activeChar.validateMovementHeading(_heading))) 	 // Heading changed on client = possible obstacle
             {
             	// character is not moving, take coordinates from client
             	if (diffSq < 2500) // 50*50 - attack won't work fluently if even small differences are corrected
