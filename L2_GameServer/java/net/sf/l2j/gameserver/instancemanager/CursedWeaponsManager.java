@@ -308,10 +308,8 @@ public class CursedWeaponsManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Could not check CursedWeapons data: " + e);
-
-	    	if (Config.DEBUG)
-	    		_log.warning("ERROR");
+			if (Config.DEBUG)
+		    	_log.warning("Could not check CursedWeapons data: " + e);
 			return;
 		}
 		finally
