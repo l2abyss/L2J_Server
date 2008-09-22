@@ -93,7 +93,7 @@ public class CharacterSelect extends L2GameClientPacket
 					}
 					if (cha.getAccessLevel().getLevel() < 0)
 					{
-						cha.closeNetConnection();
+						cha.deleteMe();
 						return;
 					}
 					
