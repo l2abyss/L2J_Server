@@ -78,6 +78,12 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 		if (item.isAugmented())
 			return;
 		
+		if (!item.isDropable() || !item.isDestroyable() || !item.isTradeable())
+		{
+			sendPacket(new SystemMessage(SystemMessageId.ITEM_NOT_FOR_PETS));
+			return;
+		}
+		
 		L2PetInstance pet = (L2PetInstance) player.getPet();
 		if (pet.isDead())
 		{
