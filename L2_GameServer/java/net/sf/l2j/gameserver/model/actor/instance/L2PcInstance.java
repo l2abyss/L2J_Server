@@ -1983,7 +1983,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
     }
 
-    public synchronized void useEquippableItem(L2ItemInstance item, boolean abortAttack)
+    public void useEquippableItem(L2ItemInstance item, boolean abortAttack)
 	{
 		// Equip or unEquip
         L2ItemInstance[] items = null;
