@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.pathfinding.cellnodes.CellPathFinding;
 import net.sf.l2j.gameserver.pathfinding.geonodes.GeoPathFinding;
 import net.sf.l2j.gameserver.pathfinding.utils.BinaryNodeHeap;
+import net.sf.l2j.gameserver.pathfinding.utils.CellNodeMap;
 import net.sf.l2j.gameserver.pathfinding.utils.FastNodeList;
 
 /**
@@ -107,7 +108,7 @@ public abstract class PathFinding
 
 	public List<AbstractNodeLoc> searchByClosest(Node start, Node end)
 	{
-		// Note: This is the version for cell-based calculation, maybe 10x harder 
+		// Note: This is the version for cell-based calculation, harder 
 		// on cpu than from block-based pathnode files. However produces better routes.
 		
 		// Always continues checking from the closest to target non-blocked
@@ -120,11 +121,12 @@ public abstract class PathFinding
 		// load) level of intelligence though.
 
 		// List of Visited Nodes
-		FastNodeList visited = new FastNodeList(3500);
+		CellNodeMap known = new CellNodeMap();
 
 		// List of Nodes to Visit
 		LinkedList<Node> to_visit = new LinkedList<Node>();
 		to_visit.add(start);
+		known.add(start);
 		int targetx = end.getLoc().getNodeX();
 		int targety = end.getLoc().getNodeY();
 		int targetz = end.getLoc().getZ();
@@ -145,7 +147,7 @@ public abstract class PathFinding
 				return null;
 			}
 			i++;
-			visited.add(node);
+			
 			node.attachNeighbors();
 			if (node.equals(end)) { 
 				//path found! note that node z coordinate is updated only in attach
@@ -158,7 +160,7 @@ public abstract class PathFinding
 			if (neighbors == null) continue;
 			for (Node n : neighbors)
 			{
-				if (!visited.containsRev(n) && !to_visit.contains(n))
+				if (!known.contains(n))
 				{
 
 					added = false;
@@ -178,6 +180,7 @@ public abstract class PathFinding
 						}
 					}
 					if (!added) to_visit.addLast(n);
+					known.add(n);
 				}
 			}
 		}
@@ -185,7 +188,8 @@ public abstract class PathFinding
 		//System.out.println("no path found");
 		return null;
 	}
-
+	
+	
 	public List<AbstractNodeLoc> searchByClosest2(Node start, Node end)
 	{
 		// Always continues checking from the closest to target non-blocked
