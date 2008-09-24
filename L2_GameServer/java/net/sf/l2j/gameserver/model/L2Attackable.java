@@ -453,7 +453,8 @@ public class L2Attackable extends L2NpcInstance
         // Notify the Quest Engine of the L2Attackable death if necessary
         try
         {
-        	L2PcInstance player = killer.getActingPlayer();
+        	L2PcInstance player = null;
+        	if (killer != null) player = killer.getActingPlayer();
         	if (player != null)
             {
                 if (getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL) != null)
@@ -1304,7 +1305,9 @@ public class L2Attackable extends L2NpcInstance
       */
      public void doItemDrop(L2NpcTemplate npcTemplate, L2Character lastAttacker)
      {
-         L2PcInstance player = lastAttacker.getActingPlayer();
+         if (lastAttacker == null) return;
+         
+    	 L2PcInstance player = lastAttacker.getActingPlayer();
 
          if (player == null) return; // Don't drop anything if the last attacker or ownere isn't L2PcInstance
 

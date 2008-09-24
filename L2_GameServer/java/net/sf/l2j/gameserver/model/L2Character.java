@@ -3346,34 +3346,35 @@ public abstract class L2Character extends L2Object
 	 *
 	 * @param f The Func object to add to the Calculator corresponding to the state affected
 	 */
-	public final synchronized void addStatFunc(Func f)
+	public final void addStatFunc(Func f)
 	{
 		if (f == null)
 			return;
 
-
-		// Check if Calculator set is linked to the standard Calculator set of NPC
-		if (_calculators == NPC_STD_CALCULATOR)
+		synchronized(_calculators)
 		{
-			// Create a copy of the standard NPC Calculator set
-			_calculators = new Calculator[Stats.NUM_STATS];
-
-			for (int i=0; i < Stats.NUM_STATS; i++)
+			// Check if Calculator set is linked to the standard Calculator set of NPC
+			if (_calculators == NPC_STD_CALCULATOR)
 			{
-				if (NPC_STD_CALCULATOR[i] != null)
-					_calculators[i] = new Calculator(NPC_STD_CALCULATOR[i]);
+				// Create a copy of the standard NPC Calculator set
+				_calculators = new Calculator[Stats.NUM_STATS];
+
+				for (int i=0; i < Stats.NUM_STATS; i++)
+				{	
+					if (NPC_STD_CALCULATOR[i] != null)
+						_calculators[i] = new Calculator(NPC_STD_CALCULATOR[i]);
+				}
 			}
+
+			// Select the Calculator of the affected state in the Calculator set
+			int stat = f.stat.ordinal();
+
+			if (_calculators[stat] == null)
+				_calculators[stat] = new Calculator();
+
+			// Add the Func to the calculator corresponding to the state
+			_calculators[stat].addFunc(f);
 		}
-
-		// Select the Calculator of the affected state in the Calculator set
-		int stat = f.stat.ordinal();
-
-		if (_calculators[stat] == null)
-			_calculators[stat] = new Calculator();
-
-		// Add the Func to the calculator corresponding to the state
-		_calculators[stat].addFunc(f);
-
 	}
 	
 
@@ -3394,7 +3395,7 @@ public abstract class L2Character extends L2Object
 	 *
 	 * @param funcs The list of Func objects to add to the Calculator corresponding to the state affected
 	 */
-	public final synchronized void addStatFuncs(Func[] funcs)
+	public final void addStatFuncs(Func[] funcs)
 	{
 		
 		FastList<Stats> modifiedStats = new FastList<Stats>();
@@ -3427,7 +3428,7 @@ public abstract class L2Character extends L2Object
 	 *
 	 * @param f The Func object to remove from the Calculator corresponding to the state affected
 	 */
-	public final synchronized void removeStatFunc(Func f)
+	public final void removeStatFunc(Func f)
 	{
 		if (f == null)
 			return;
@@ -3435,28 +3436,31 @@ public abstract class L2Character extends L2Object
 		// Select the Calculator of the affected state in the Calculator set
 		int stat = f.stat.ordinal();
 
-		if (_calculators[stat] == null)
-			return;
-
-		// Remove the Func object from the Calculator
-		_calculators[stat].removeFunc(f);
-
-		if (_calculators[stat].size() == 0)
-			_calculators[stat] = null;
-
-
-		// If possible, free the memory and just create a link on NPC_STD_CALCULATOR
-		if (this instanceof L2NpcInstance)
+		synchronized(_calculators)
 		{
-			int i = 0;
-			for (; i < Stats.NUM_STATS; i++)
-			{
-				if (!Calculator.equalsCals(_calculators[i], NPC_STD_CALCULATOR[i]))
-					break;
-			}
+			if (_calculators[stat] == null)
+				return;
 
-			if (i >= Stats.NUM_STATS)
-				_calculators = NPC_STD_CALCULATOR;
+			// Remove the Func object from the Calculator
+			_calculators[stat].removeFunc(f);
+
+			if (_calculators[stat].size() == 0)
+				_calculators[stat] = null;
+
+
+			// If possible, free the memory and just create a link on NPC_STD_CALCULATOR
+			if (this instanceof L2NpcInstance)
+			{
+				int i = 0;
+				for (; i < Stats.NUM_STATS; i++)
+				{
+					if (!Calculator.equalsCals(_calculators[i], NPC_STD_CALCULATOR[i]))
+						break;
+				}
+
+				if (i >= Stats.NUM_STATS)
+					_calculators = NPC_STD_CALCULATOR;
+			}
 		}
 	}
 
@@ -3477,7 +3481,7 @@ public abstract class L2Character extends L2Object
 	 *
 	 * @param funcs The list of Func objects to add to the Calculator corresponding to the state affected
 	 */
-	public final synchronized void removeStatFuncs(Func[] funcs)
+	public final void removeStatFuncs(Func[] funcs)
 	{
 		
 		FastList<Stats> modifiedStats = new FastList<Stats>();
@@ -3515,43 +3519,46 @@ public abstract class L2Character extends L2Object
 	 *
 	 * @param owner The Object(Skill, Item...) that has created the effect
 	 */
-	public final synchronized void removeStatsOwner(Object owner)
+	public final void removeStatsOwner(Object owner)
 	{
 
 		FastList<Stats> modifiedStats = null;
+		
 		// Go through the Calculator set
-		for (int i=0; i < _calculators.length; i++)
+		synchronized(_calculators)
 		{
-			if (_calculators[i] != null)
+			for (int i=0; i < _calculators.length; i++)
 			{
-				// Delete all Func objects of the selected owner
-				if (modifiedStats != null)
-					modifiedStats.addAll(_calculators[i].removeOwner(owner));
-				else
-					modifiedStats = _calculators[i].removeOwner(owner);
+				if (_calculators[i] != null)
+				{
+					// Delete all Func objects of the selected owner
+					if (modifiedStats != null)
+						modifiedStats.addAll(_calculators[i].removeOwner(owner));
+					else
+						modifiedStats = _calculators[i].removeOwner(owner);
 
-				if (_calculators[i].size() == 0)
-					_calculators[i] = null;
-			}
-		}
-
-		// If possible, free the memory and just create a link on NPC_STD_CALCULATOR
-		if (this instanceof L2NpcInstance)
-		{
-			int i = 0;
-			for (; i < Stats.NUM_STATS; i++)
-			{
-				if (!Calculator.equalsCals(_calculators[i], NPC_STD_CALCULATOR[i]))
-					break;
+					if (_calculators[i].size() == 0)
+						_calculators[i] = null;
+				}
 			}
 
-			if (i >= Stats.NUM_STATS)
-				_calculators = NPC_STD_CALCULATOR;
-		}
+			// If possible, free the memory and just create a link on NPC_STD_CALCULATOR
+			if (this instanceof L2NpcInstance)
+			{
+				int i = 0;
+				for (; i < Stats.NUM_STATS; i++)
+				{
+					if (!Calculator.equalsCals(_calculators[i], NPC_STD_CALCULATOR[i]))
+						break;
+				}
+
+				if (i >= Stats.NUM_STATS)
+					_calculators = NPC_STD_CALCULATOR;
+			}
 		
-		if (owner instanceof L2Effect && !((L2Effect)owner).preventExitUpdate)
+			if (owner instanceof L2Effect && !((L2Effect)owner).preventExitUpdate)
 				broadcastModifiedStats(modifiedStats);
-		
+		}
 	}
 	
 	private void broadcastModifiedStats(FastList<Stats> stats)
