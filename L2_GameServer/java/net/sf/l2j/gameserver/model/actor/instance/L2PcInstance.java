@@ -10045,6 +10045,11 @@ public final class L2PcInstance extends L2PlayableInstance
 	{
 		_lastServerPosition.setXYZ(x,y,z);
 	}
+	
+	public Point3D getLastServerPosition()
+	{
+		return _lastServerPosition;
+	}
 
 	public boolean checkLastServerPosition(int x, int y, int z)
 	{

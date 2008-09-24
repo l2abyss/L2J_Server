@@ -20,6 +20,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.TaskPriority;
 import net.sf.l2j.gameserver.Universe;
 import net.sf.l2j.gameserver.geoeditorcon.GeoEditorListener;
+import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.PartyMemberPosition;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
@@ -62,14 +63,9 @@ public class ValidatePosition extends L2GameClientPacket
         L2PcInstance activeChar = getClient().getActiveChar();
         if (activeChar == null || activeChar.isTeleporting()) return;
 
-        activeChar.setClientX(_x);
-        activeChar.setClientY(_y);
-        activeChar.setClientZ(_z);
-        activeChar.setClientHeading(_heading); // No real need to validate heading.
         int realX = activeChar.getX();
         int realY = activeChar.getY();
         int realZ = activeChar.getZ();
-        activeChar.setLastServerPosition(realX, realY, realZ);
         
         if(activeChar.getParty() != null && activeChar.getLastPartyPositionDistance(_x, _y, _z) > 150)
         {
@@ -79,7 +75,7 @@ public class ValidatePosition extends L2GameClientPacket
         
         double dx = _x - realX;
         double dy = _y - realY;
-        double dz = Math.abs(_z - realZ);
+        double dz = _z - realZ;
         double diffSq = (dx*dx + dy*dy);
         
         if (Config.DEVELOPER) {
@@ -97,7 +93,7 @@ public class ValidatePosition extends L2GameClientPacket
         		&& Universe.getInstance().shouldLog(activeChar.getObjectId()))
             Universe.getInstance().registerHeight(realX, realY, _z);
        
-        if (activeChar.isFlying())
+        if (activeChar.isFlying() || activeChar.isInsideZone(L2Character.ZONE_WATER))
         {
         	activeChar.setXYZ(_x, _y, _z);
         }
@@ -108,41 +104,64 @@ public class ValidatePosition extends L2GameClientPacket
             	activeChar.setXYZ(realX,realY,_z);
             	return;
             }
-            if (Config.COORD_SYNCHRONIZE == 1 && (!activeChar.isMoving() // Trusting client coordinates (should not be used with geodata)
-            		|| !activeChar.validateMovementHeading(_heading))) 	 // Heading changed on client = possible obstacle
+            if (Config.COORD_SYNCHRONIZE == 1) // Trusting also client x,y coordinates (should not be used with geodata)
             {
-            	// character is not moving, take coordinates from client
-            	if (diffSq < 2500) // 50*50 - attack won't work fluently if even small differences are corrected
-            		activeChar.setXYZ(realX, realY, _z);
+            	if (!activeChar.isMoving() 
+            			|| !activeChar.validateMovementHeading(_heading)) 	 // Heading changed on client = possible obstacle
+            	{
+            		// character is not moving, take coordinates from client
+            		if (diffSq < 2500) // 50*50 - attack won't work fluently if even small differences are corrected
+            			activeChar.setXYZ(realX, realY, _z);
+            		else
+            			activeChar.setXYZ(_x, _y, _z);
+            	}
             	else
-            		activeChar.setXYZ(_x, _y, _z);
+            	{
+            		activeChar.setXYZ(realX, realY, _z);
+            	}
             	activeChar.setHeading(_heading);
             	return;
             }
-        	if (Config.GEODATA > 0 
-        		&& (diffSq > 10000 || dz > 500)) // Sync 2 (or other), 
-        										 // intended for geodata. Only sends a validation packet to client 
-            {								     // when too far from server calculated true coordinate.
-        		// a new geodata check seems unnecessary
+            // Sync 2 (or other), 
+            // intended for geodata. Sends a validation packet to client 
+            // when too far from server calculated true coordinate.
+            // Due to geodata "holes", some Z axis checks are made.
+            if (Config.GEODATA > 0  
+        		&& (diffSq > 8000 || dz > 150 || dz < -150))
+            {
+            	//Note: a new geodata check for Z is generally unnecessary
             	//short geoHeight = GeoData.getInstance().getSpawnHeight(realX, realY, realZ-30, realZ+30, activeChar.getObjectId()); 
             	//if (realZ != geoHeight) System.out.println("realZ:"+realZ+" spawnheight:"+geoHeight);
             	//activeChar.setXYZ(realX, realY, geoHeight);
-
-            	//System.out.println("validating pos diffsq:"+diffSq+" dz:"+dz);
-            	if (Config.DEVELOPER)
-                     _log.info(activeChar.getName() + ": Synchronizing position Server --> Client");
-            	if (activeChar.isInBoat())
+            	
+            	//if ((_z - activeChar.getClientZ()) < 200 && Math.abs(activeChar.getLastServerPosition().getZ()-realZ) > 70)
+            	
+            	// temporary solution:
+            	if (Math.abs(dz) > 150 && Math.abs(_z - activeChar.getClientZ()) < 800 )
             	{
-            		sendPacket(new ValidateLocationInVehicle(activeChar));
+            		activeChar.setXYZ(realX, realY, _z);
+            		realZ = _z;
             	}
             	else
             	{
-            		activeChar.sendPacket(new ValidateLocation(activeChar));
+            		if (Config.DEVELOPER)
+            			_log.info(activeChar.getName() + ": Synchronizing position Server --> Client");
+            		if (activeChar.isInBoat())
+            		{
+            			sendPacket(new ValidateLocationInVehicle(activeChar));
+            		}
+            		else
+            		{
+            			activeChar.sendPacket(new ValidateLocation(activeChar));
+            		}
             	}
             }
-        	
         }
-		
+        activeChar.setClientX(_x);
+        activeChar.setClientY(_y);
+        activeChar.setClientZ(_z);
+        activeChar.setClientHeading(_heading); // No real need to validate heading.
+        activeChar.setLastServerPosition(realX, realY, realZ);
     }
 
     /* (non-Javadoc)
