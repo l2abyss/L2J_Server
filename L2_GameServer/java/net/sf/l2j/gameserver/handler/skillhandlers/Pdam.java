@@ -273,7 +273,7 @@ public class Pdam implements ISkillHandler
 		}
 		
 		if (skill.isSuicideAttack())
-			activeChar.doDie(null);
+			activeChar.doDie(activeChar);
 	}
 	
 	/**
