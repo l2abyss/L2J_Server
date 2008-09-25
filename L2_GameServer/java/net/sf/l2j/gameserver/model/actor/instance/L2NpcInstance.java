@@ -1662,7 +1662,7 @@ public class L2NpcInstance extends L2Character
     
     public void makeCPRecovery(L2PcInstance player)
     {
-        if (getNpcId() != 31225) return;
+        if (getNpcId() != 31225 && getNpcId() != 31226) return;
         if (player.isCursedWeaponEquipped())
         {
         	player.sendMessage("Go away, you're not welcome here.");
