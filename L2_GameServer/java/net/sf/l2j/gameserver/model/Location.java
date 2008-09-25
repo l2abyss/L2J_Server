@@ -26,6 +26,7 @@ public final class Location
 	private int _y;
 	private int _z;
 	private int _heading;
+	private int _maxDZtoDirectLine;
 
 
 	public Location(int x, int y, int z)
@@ -33,6 +34,14 @@ public final class Location
 		_x = x;
 		_y = y;
 		_z = z;
+	}
+	
+	public Location(int x, int y, int z, double maxDZtoDirectLine)
+	{
+		_x = x;
+		_y = y;
+		_z = z;
+		_maxDZtoDirectLine = (int)maxDZtoDirectLine;
 	}
 
 	public Location(int x, int y, int z, int heading)
@@ -61,5 +70,10 @@ public final class Location
 	public int getHeading()
 	{
 		return _heading;
+	}
+	
+	public int getMaxDZtoDirect()
+	{
+		return _maxDZtoDirectLine;
 	}
 }

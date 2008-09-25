@@ -4112,6 +4112,7 @@ public abstract class L2Character extends L2Object
 		double dy = (y - curY);
 		double dz = (z - curZ);
 		double distance = Math.sqrt(dx*dx + dy*dy);
+		double geoFactor = -1;
 		
 		// make water move short and use no geodata checks for swimming chars
 		// distance in a click can easily be over 3000
@@ -4228,6 +4229,9 @@ public abstract class L2Character extends L2Object
 				y = destiny.getY();
 				z = destiny.getZ();
 				distance = Math.sqrt((x - curX)*(x - curX) + (y - curY)*(y - curY));
+				// approximation for longer distance to travel than the direct line
+				if (distance > 10)
+					geoFactor = distance/(2*Math.sqrt((distance/2)*(distance/2) + destiny.getMaxDZtoDirect()*destiny.getMaxDZtoDirect()));
 				
 			}
 			// Pathfinding checks. Only when geodata setting is 2, the LoS check gives shorter result
@@ -4259,6 +4263,7 @@ public abstract class L2Character extends L2Object
                 			y = originalY;
                 			z = originalZ;
                 			distance = originalDistance;
+                			geoFactor = -1;
                 		}
                 	}
                 	else
@@ -4295,6 +4300,7 @@ public abstract class L2Character extends L2Object
                 		distance = Math.sqrt(dx*dx + dy*dy);
                 		sin = dy/distance;
                 		cos = dx/distance;
+                		geoFactor = -1;
                 	}
 				}
 			}
@@ -4313,11 +4319,26 @@ public abstract class L2Character extends L2Object
 
 		// Caclulate the Nb of ticks between the current position and the destination
 		// One tick added for rounding reasons
-		m._ticksToMove = 1+(int)(GameTimeController.TICKS_PER_SECOND * distance / speed);
+		if (geoFactor > 0)
+		{
+			// a factor calculated from geodata indicating there's no
+			// straight line to the target
+			if (geoFactor < 0.8) // probably some drop and short distance (which is fast)
+				geoFactor = 0.8;
+			m._ticksToMove = 1+(int)(GameTimeController.TICKS_PER_SECOND * distance / (speed*geoFactor));
+			// Calculate the xspeed and yspeed in unit/ticks in function of the movement speed
+			m._xSpeedTicks = (float)(cos * (speed*geoFactor) / GameTimeController.TICKS_PER_SECOND);
+			m._ySpeedTicks = (float)(sin * (speed*geoFactor) / GameTimeController.TICKS_PER_SECOND);
+		}
+		else
+		{
+			m._ticksToMove = 1+(int)(GameTimeController.TICKS_PER_SECOND * distance / speed);
+			// Calculate the xspeed and yspeed in unit/ticks in function of the movement speed
+			m._xSpeedTicks = (float)(cos * speed / GameTimeController.TICKS_PER_SECOND);
+			m._ySpeedTicks = (float)(sin * speed / GameTimeController.TICKS_PER_SECOND);
+		}
 
-		// Calculate the xspeed and yspeed in unit/ticks in function of the movement speed
-		m._xSpeedTicks = (float)(cos * speed / GameTimeController.TICKS_PER_SECOND);
-		m._ySpeedTicks = (float)(sin * speed / GameTimeController.TICKS_PER_SECOND);
+		
 
 		// Calculate and set the heading of the L2Character
 		setHeading(Util.calculateHeadingFrom(cos, sin));

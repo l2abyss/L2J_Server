@@ -485,7 +485,7 @@ public class GeoEngine extends GeoData
     {
     	int dx = (tx - x);
         int dy = (ty - y);
-        final int distance2 = dx*dx+dy*dy;
+        int distance2 = dx*dx+dy*dy;
 
         if (distance2 == 0)
         	return destiny;
@@ -501,8 +501,14 @@ public class GeoEngine extends GeoData
         	tz = startpoint.getZ() + (int)(divider * dz);
         	dx = (tx - x);
         	dy = (ty - y);
+        	distance2 = dx*dx+dy*dy;
             //return startpoint;
         }
+        
+        // required to compare Z axis movement compared to direct movement
+        final double dz = (tz - z);
+        double maxDZtoDirectLine = 0;
+        double linearMovementZ = z;
 
         // Increment in Z coordinate when moving along X or Y axis
         // and not straight to the target. This is done because
@@ -511,7 +517,9 @@ public class GeoEngine extends GeoData
         final int inc_y = sign(dy);
         dx = Math.abs(dx);
         dy = Math.abs(dy);
-
+        final double inc_z_directionx = dz*dx / (distance2);
+        final double inc_z_directiony = dz*dy / (distance2);
+        
         //gm.sendMessage("MoveCheck: from X: "+x+ "Y: "+y+ "--->> X: "+tx+" Y: "+ty);
 
         // next_* are used in NcanMoveNext check from x,y
@@ -537,14 +545,16 @@ public class GeoEngine extends GeoData
             		next_x += inc_x;
             		tempz = nCanMoveNext(x,y,(int)z,next_x,next_y,tz);
             		if (tempz == Double.MIN_VALUE)
-            			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z);
+            			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z, maxDZtoDirectLine);
             		else z = tempz;
             		next_y += inc_y;
             		//_log.warning("2: next_x:"+next_x+" next_y"+next_y);
             		tempz = nCanMoveNext(next_x,y,(int)z,next_x,next_y,tz);
             		if (tempz == Double.MIN_VALUE)
-            			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z);
+            			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z, maxDZtoDirectLine);
             		else z = tempz;
+            		linearMovementZ += inc_z_directiony + inc_z_directionx;
+            		maxDZtoDirectLine = Math.max(maxDZtoDirectLine, Math.abs(z-linearMovementZ));
             	}
             	else
             	{
@@ -553,8 +563,10 @@ public class GeoEngine extends GeoData
             		//_log.warning("3: next_x:"+next_x+" next_y"+next_y);
             		tempz = nCanMoveNext(x,y,(int)z,next_x,next_y,tz);
             		if (tempz == Double.MIN_VALUE)
-            			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z);
+            			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z, maxDZtoDirectLine);
             		else z = tempz;
+            		linearMovementZ += inc_z_directionx;
+            		maxDZtoDirectLine = Math.max(maxDZtoDirectLine, Math.abs(z-linearMovementZ));
             	}
             }
         }
@@ -573,14 +585,16 @@ public class GeoEngine extends GeoData
             		next_y += inc_y;
             		tempz = nCanMoveNext(x,y,(int)z,next_x,next_y,tz);
             		if (tempz == Double.MIN_VALUE)
-            			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z);
+            			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z, maxDZtoDirectLine);
             		else z = tempz;
             		next_x += inc_x;
             		//_log.warning("5: next_x:"+next_x+" next_y"+next_y);
             		tempz = nCanMoveNext(x,next_y,(int)z,next_x,next_y,tz);
             		if (tempz == Double.MIN_VALUE)
-            			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z);
+            			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z, maxDZtoDirectLine);
             		else z = tempz;
+            		linearMovementZ += inc_z_directiony + inc_z_directionx;
+            		maxDZtoDirectLine = Math.max(maxDZtoDirectLine, Math.abs(z-linearMovementZ));
             	}
             	else
             	{
@@ -589,15 +603,17 @@ public class GeoEngine extends GeoData
             		//_log.warning("6: next_x:"+next_x+" next_y"+next_y);
             		tempz = nCanMoveNext(x,y,(int)z,next_x,next_y,tz);
             		if (tempz == Double.MIN_VALUE)
-            			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z);
+            			return new Location((x << 4) + L2World.MAP_MIN_X,(y << 4) + L2World.MAP_MIN_Y,(int)z, maxDZtoDirectLine);
             		else z = tempz;
+            		linearMovementZ += inc_z_directiony;
+            		maxDZtoDirectLine = Math.max(maxDZtoDirectLine, Math.abs(z-linearMovementZ));
             	}
             }
         }
         if (z == startpoint.getZ()) // geodata hasn't modified Z in any coordinate, i.e. doesn't exist
         	return destiny;
         else
-        	return new Location(destiny.getX(),destiny.getY(),(int)z);
+        	return new Location(destiny.getX(),destiny.getY(),(int)z, maxDZtoDirectLine);
     }
 
     private static byte sign(int x)
