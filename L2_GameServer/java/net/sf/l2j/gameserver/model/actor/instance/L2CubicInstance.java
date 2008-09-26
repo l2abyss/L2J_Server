@@ -288,7 +288,7 @@ public class L2CubicInstance
     			if (_owner.getTarget() != null && _owner.getTarget().getActingPlayer() != null)
     			{
     				L2PcInstance target = _owner.getTarget().getActingPlayer();
-    				if (enemyTeam.containsPlayer(target.getObjectId()) && !((L2PcInstance)_owner.getTarget()).isDead())
+    				if (enemyTeam.containsPlayer(target.getObjectId()) && !(target.isDead()))
     				{
     					_target = (L2Character) _owner.getTarget();
     					return;
