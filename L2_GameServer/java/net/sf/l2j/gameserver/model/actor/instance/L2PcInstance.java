@@ -367,7 +367,6 @@ public final class L2PcInstance extends L2PlayableInstance
 	private int _curWeightPenalty = 0;
 
 	private int _lastCompassZone; // the last compass zone update send to the client
-	private byte _zoneValidateCounter = 4;
 
 	private boolean _isIn7sDungeon = false;
 
@@ -1546,12 +1545,13 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 	}
 
+	@Override
     public void revalidateZone(boolean force)
     {
     	// Cannot validate if not in  a world region (happens during teleport)
     	if (getWorldRegion() == null) return;
 
-    	// This function is called very often from movement code
+    	// This function is called too often from movement code
     	if (force) _zoneValidateCounter = 4;
     	else
     	{
@@ -9972,59 +9972,6 @@ public final class L2PcInstance extends L2PlayableInstance
 			getPet().updateEffectIcons(true);
 		}
 		
-	}
-
-	@Override
-	public final boolean updatePosition(int gameTicks)
-	{
-		// Disables custom movement for L2PCInstance when Old Synchronization is selected
-		if (Config.COORD_SYNCHRONIZE == -1)
-			return super.updatePosition(gameTicks);
-
-		// Get movement data
-		MoveData m = _move;
-
-		if (_move == null)
-			return true;
-
-		if (!isVisible())
-		{
-			_move = null;
-			return true;
-		}
-
-		// Check if the position has alreday be calculated
-		if (m._moveTimestamp == 0)
-			m._moveTimestamp = m._moveStartTime;
-
-		// Check if the position has alreday be calculated
-		if (m._moveTimestamp == gameTicks)
-			return false;
-
-		double dx = m._xDestination - getX();
-		double dy = m._yDestination - getY();
-		double dz = m._zDestination - getZ();
-		int distPassed = (int)getStat().getMoveSpeed() * (gameTicks - m._moveTimestamp) / GameTimeController.TICKS_PER_SECOND;
-		double distFraction = (distPassed) / Math.sqrt(dx*dx + dy*dy + dz*dz);
-//		if (Config.DEVELOPER) _log.warning("Move Ticks:" + (gameTicks - m._moveTimestamp) + ", distPassed:" + distPassed + ", distFraction:" + distFraction);
-		
-		if (distFraction > 1)
-		{
-			// Set the position of the L2Character to the destination
-			super.setXYZ(m._xDestination, m._yDestination, m._zDestination);
-		}
-		else
-		{
-			// Set the position of the L2Character to estimated after parcial move
-			super.setXYZ(getX() + (int)(dx * distFraction + 0.5), getY() + (int)(dy * distFraction + 0.5), getZ() + (int)(dz * distFraction));
-		}
-
-		// Set the timer of last position update to now
-		m._moveTimestamp = gameTicks;
-		
-		revalidateZone(false);
-
-		return (distFraction > 1);
 	}
 
 	public void setLastPartyPosition(int x, int y, int z)

@@ -706,14 +706,11 @@ public class L2CharacterAI extends AbstractAI
 	protected void onEvtArrived()
 	{
 		// Launch an explore task if necessary
-		if (_accessor.getActor() instanceof L2PcInstance)
+		if (Config.ACTIVATE_POSITION_RECORDER && _accessor.getActor() instanceof L2PcInstance)
 		{
-			if (Config.ACTIVATE_POSITION_RECORDER)
-				((L2PcInstance) _accessor.getActor()).explore();
-			((L2PcInstance) _accessor.getActor()).revalidateZone(true);
+			((L2PcInstance) _accessor.getActor()).explore();
 		}
-		else
-			_accessor.getActor().revalidateZone();
+		_accessor.getActor().revalidateZone(true);
 		
 		if (_accessor.getActor().moveToNextRoutePoint())
 			return;

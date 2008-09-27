@@ -273,7 +273,6 @@ public class L2BoatInstance extends L2Character
 	{
 		final int curX = getX();
 		final int curY = getY();
-		final int curZ = getZ();
 		
 		// Calculate distance (dx,dy) between current position and destination
 		final int dx = (x - curX);
@@ -302,12 +301,7 @@ public class L2BoatInstance extends L2Character
 		
 		// Caclulate the Nb of ticks between the current position and the
 		// destination
-		m._ticksToMove = (int) (GameTimeController.TICKS_PER_SECOND * distance / speed);
-		
-		// Calculate the xspeed and yspeed in unit/ticks in function of the
-		// movement speed
-		m._xSpeedTicks = (float) (cos * speed / GameTimeController.TICKS_PER_SECOND);
-		m._ySpeedTicks = (float) (sin * speed / GameTimeController.TICKS_PER_SECOND);
+		int ticksToMove = (int) (GameTimeController.TICKS_PER_SECOND * distance / speed);
 		
 		// Calculate and set the heading of the L2Character
 		int heading = (int) (Math.atan2(-sin, -cos) * 10430.378350470452724949566316381);
@@ -316,26 +310,17 @@ public class L2BoatInstance extends L2Character
 		
 		if (Config.DEBUG)
 			_logBoat.fine("dist:" + distance + "speed:" + speed + " ttt:"
-			        + m._ticksToMove + " dx:" + (int) m._xSpeedTicks + " dy:"
-			        + (int) m._ySpeedTicks + " heading:" + heading);
+			        + ticksToMove + " heading:" + heading);
 		
 		m._xDestination = x;
 		m._yDestination = y;
 		m._zDestination = z; // this is what was requested from client
-		m._heading = 0;
+		m._heading = 0; // initial value for coordinate sync
 		
 		m._moveStartTime = GameTimeController.getGameTicks();
-		m._xMoveFrom = curX;
-		m._yMoveFrom = curY;
-		m._zMoveFrom = curZ;
-		
-		// If necessary set Nb ticks needed to a min value to ensure small
-		// distancies movements
-		if (m._ticksToMove < 1)
-			m._ticksToMove = 1;
 		
 		if (Config.DEBUG)
-			_logBoat.fine("time to target:" + m._ticksToMove);
+			_logBoat.fine("time to target:" + ticksToMove);
 		
 		// Set the L2Character _move object to MoveData object
 		_move = m;

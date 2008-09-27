@@ -168,7 +168,7 @@ public abstract class PathFinding
 					dx = targetx - n.getLoc().getNodeX();
 					dy = targety - n.getLoc().getNodeY();
 					dz = targetz - n.getLoc().getZ();
-					n.setCost(dx*dx+dy*dy+dz*dz/*+n.getCost()*/);
+					n.setCost(dx*dx+dy*dy+dz/2*dz/*+n.getCost()*/);
 					for (int index = 0; index < to_visit.size(); index++)
 					{
 						// supposed to find it quite early..

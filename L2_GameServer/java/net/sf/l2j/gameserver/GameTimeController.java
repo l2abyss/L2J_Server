@@ -176,10 +176,7 @@ public class GameTimeController
 
 					_gameTicks = (int) (runtime / MILLIS_IN_TICK); // new ticks value (ticks now)
 
-					if (_oldTicks != _gameTicks) moveObjects(); // XXX: if this makes objects go slower, remove it
-					// but I think it can't make that effect. is it better to call moveObjects() twice in same
-					// tick to make-up for missed tick ?   or is it better to ignore missed tick ?
-					// (will happen very rarely but it will happen ... on garbage collection definitely)
+					if (_oldTicks != _gameTicks) moveObjects(); // Runs possibly too often
 
 					runtime = (System.currentTimeMillis() - _gameStartTime) - runtime;
 

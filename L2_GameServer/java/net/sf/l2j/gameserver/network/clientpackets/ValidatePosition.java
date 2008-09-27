@@ -99,7 +99,8 @@ public class ValidatePosition extends L2GameClientPacket
         }
         else if (diffSq < 250000) // if too large, messes observation
         {
-            if (Config.COORD_SYNCHRONIZE == -1) // Only Z coordinate synched to server, mainly used when no geodata
+            if (Config.COORD_SYNCHRONIZE == -1) // Only Z coordinate synched to server, 
+            									// mainly used when no geodata but can be used also with geodata
             {
             	activeChar.setXYZ(realX,realY,_z);
             	return;
@@ -107,7 +108,7 @@ public class ValidatePosition extends L2GameClientPacket
             if (Config.COORD_SYNCHRONIZE == 1) // Trusting also client x,y coordinates (should not be used with geodata)
             {
             	if (!activeChar.isMoving() 
-            			|| !activeChar.validateMovementHeading(_heading)) 	 // Heading changed on client = possible obstacle
+            			|| !activeChar.validateMovementHeading(_heading)) // Heading changed on client = possible obstacle
             	{
             		// character is not moving, take coordinates from client
             		if (diffSq < 2500) // 50*50 - attack won't work fluently if even small differences are corrected
@@ -125,19 +126,14 @@ public class ValidatePosition extends L2GameClientPacket
             // Sync 2 (or other), 
             // intended for geodata. Sends a validation packet to client 
             // when too far from server calculated true coordinate.
-            // Due to geodata "holes", some Z axis checks are made.
+            // Due to geodata/zone errors, some Z axis checks are made. (maybe a temporary solution)
+            // Important: this code part must work together with L2Character.updatePosition
             if (Config.GEODATA > 0  
-        		&& (diffSq > 8000 || dz > 150 || dz < -150))
+        		&& (diffSq > 10000 || Math.abs(dz) > 200))
             {
-            	//Note: a new geodata check for Z is generally unnecessary
-            	//short geoHeight = GeoData.getInstance().getSpawnHeight(realX, realY, realZ-30, realZ+30, activeChar.getObjectId()); 
-            	//if (realZ != geoHeight) System.out.println("realZ:"+realZ+" spawnheight:"+geoHeight);
-            	//activeChar.setXYZ(realX, realY, geoHeight);
-            	
             	//if ((_z - activeChar.getClientZ()) < 200 && Math.abs(activeChar.getLastServerPosition().getZ()-realZ) > 70)
             	
-            	// temporary solution:
-            	if (Math.abs(dz) > 150 && Math.abs(_z - activeChar.getClientZ()) < 800 )
+            	if (Math.abs(dz) > 200 && Math.abs(_z - activeChar.getClientZ()) < 800 )
             	{
             		activeChar.setXYZ(realX, realY, _z);
             		realZ = _z;
