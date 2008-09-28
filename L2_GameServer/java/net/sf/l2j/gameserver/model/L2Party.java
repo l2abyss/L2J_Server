@@ -217,7 +217,8 @@ public class L2Party {
 	{
 		for (L2PcInstance member : getPartyMembers())
 		{
-			member.sendPacket(msg);
+			if (member != null)
+				member.sendPacket(msg);
 		}
 	}
 	
