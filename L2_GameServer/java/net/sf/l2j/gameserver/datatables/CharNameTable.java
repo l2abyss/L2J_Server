@@ -41,7 +41,7 @@ public class CharNameTable
 		return _instance;
 	}
 	
-	public boolean doesCharNameExist(String name)
+	public synchronized boolean doesCharNameExist(String name)
 	{
 		boolean result = true;
 		java.sql.Connection con = null;
