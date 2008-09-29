@@ -3936,12 +3936,13 @@ public abstract class L2Character extends L2Object
 		if (Config.GEODATA > 0 && Config.COORD_SYNCHRONIZE == 2 
 			&& !isFlying() && !isInsideZone(L2Character.ZONE_WATER)
 			&& GameTimeController.getGameTicks() % 10 == 0 // once a second to reduce possible cpu load
-			&& GeoData.getInstance().hasGeo(xPrev, yPrev))
+			&& GeoData.getInstance().hasGeo(xPrev, yPrev)
+			&& !(this instanceof L2BoatInstance))
 		{
 			short geoHeight = GeoData.getInstance().getSpawnHeight(xPrev, yPrev, zPrev-30, zPrev+30, this.getObjectId());
 			dz = m._zDestination - geoHeight;
 			// quite a big difference, compare to validatePosition packet
-			if (this instanceof L2PcInstance && Math.abs(((L2PcInstance)this).getClientZ()-geoHeight) > 200)
+			if (this instanceof L2PcInstance && Math.abs(((L2PcInstance)this).getClientZ()-geoHeight) > 200 && Math.abs(((L2PcInstance)this).getClientZ()-geoHeight) < 1500)
 			{	
 				dz = m._zDestination - zPrev; // allow diff 
 			}
