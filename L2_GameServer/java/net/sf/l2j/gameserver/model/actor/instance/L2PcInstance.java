@@ -7115,12 +7115,21 @@ public final class L2PcInstance extends L2PlayableInstance
 
 		return oldSkill;
 	}
+	
 	public L2Skill removeSkill(L2Skill skill, boolean store)
 	{
 		if (store)
 			return removeSkill(skill);
 		else
-			return super.removeSkill(skill);
+			return super.removeSkill(skill, true);
+	}
+	
+	public L2Skill removeSkill(L2Skill skill, boolean store, boolean cancelEffect)
+	{
+		if (store)
+			return removeSkill(skill);
+		else
+			return super.removeSkill(skill, cancelEffect);
 	}
 
 	/**
