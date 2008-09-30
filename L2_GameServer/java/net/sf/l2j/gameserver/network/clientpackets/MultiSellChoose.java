@@ -36,6 +36,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.L2Armor;
 import net.sf.l2j.gameserver.templates.L2Item;
 import net.sf.l2j.gameserver.templates.L2Weapon;
+import net.sf.l2j.gameserver.util.FloodProtector;
 
 
 public class MultiSellChoose extends L2GameClientPacket
@@ -84,6 +85,9 @@ public class MultiSellChoose extends L2GameClientPacket
 
     private void doExchange(L2PcInstance player, MultiSellEntry templateEntry, boolean applyTaxes, boolean maintainEnchantment, int enchantment)
     {
+    	if (!FloodProtector.getInstance().tryPerformAction(player.getObjectId(), FloodProtector.PROTECTED_MULTISELL))
+    		return;
+
     	PcInventory inv = player.getInventory();
 
         // given the template entry and information about maintaining enchantment and applying taxes
