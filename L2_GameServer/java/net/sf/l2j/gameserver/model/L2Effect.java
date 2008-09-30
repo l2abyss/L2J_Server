@@ -23,6 +23,8 @@ import java.util.logging.Logger;
 import javolution.util.FastList;
 import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.ThreadPoolManager;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.AbnormalStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadSpelledInfo;
@@ -185,7 +187,20 @@ public abstract class L2Effect
         _funcTemplates = template.funcTemplates;
         _count = template.counter;
         _totalCount = _count;
-        _period = template.period;
+        
+        // TODO DrHouse: This should be reworked, we need to be able to change effect time out of Effect Constructor
+        // maybe using a child class
+        // Support for retail herbs duration when _effected has a Summon 
+        int temp = template.period;
+        if ((_skill.getId() > 2277 && _skill.getId() < 2286) || (_skill.getId() >= 2512 && _skill.getId() <= 2514))
+        {
+        	if (_effected instanceof L2SummonInstance 
+        		|| (_effected instanceof L2PcInstance && ((L2PcInstance)_effected).getPet() != null && ((L2PcInstance)_effected).getPet() instanceof L2SummonInstance))
+        	{
+        		temp /= 2;
+        	}
+        }
+        _period = temp; 
         _abnormalEffect = template.abnormalEffect;
         _stackType = template.stackType;
         _stackOrder = template.stackOrder;

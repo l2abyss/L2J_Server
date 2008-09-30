@@ -23,6 +23,7 @@ import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
@@ -554,6 +555,12 @@ public class Potions implements IItemHandler
 					if (magicId == 2031 || magicId == 2032 || magicId == 2037)
 					{
 						player.shortBuffStatusUpdate(magicId, level, 15);
+					}
+					// Summons should be affected by herbs too, self time effect is handled at L2Effect constructor 
+					else if (((magicId > 2277 && magicId < 2286) || (magicId >= 2512 && magicId <= 2514))
+						&& (player.getPet() != null && player.getPet() instanceof L2SummonInstance))
+					{
+						player.getPet().doCast(skill);
 					}
 				
 					if (!(player.isSitting() && !skill.isPotion()))
