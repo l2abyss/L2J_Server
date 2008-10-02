@@ -7835,7 +7835,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 * @param dontMove used to prevent movement, if not in range
 	 *
 	 */
-	public synchronized void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
+	public void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
 	{
         // Check if the skill is active
         if (skill.isPassive())
