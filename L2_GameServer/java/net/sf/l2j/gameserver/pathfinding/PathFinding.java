@@ -350,7 +350,7 @@ public abstract class PathFinding
 			for (int index = 0; index < path.size()-3; index = index +3)
 			{
 				//System.out.println("Attempt filter");
-				if (GeoData.getInstance().canMoveFromToTarget(path.get(index).getNodeX(), path.get(index).getNodeY(), path.get(index).getZ(), path.get(index+3).getNodeX(), path.get(index+3).getNodeY(), path.get(index+3).getZ()))
+				if (GeoData.getInstance().canMoveFromToTarget(path.get(index).getX(), path.get(index).getY(), path.get(index).getZ(), path.get(index+3).getX(), path.get(index+3).getY(), path.get(index+3).getZ()))
 				{
 					//System.out.println("filtering i:"+(index+1));
 					valueList.add(index+1);
