@@ -822,7 +822,8 @@ public class ItemTable
 					referenceName = (reference.getName() != null ? reference.getName() : "no-name");
 				}
 				String targetName = (actor.getTarget() != null ? actor.getTarget().getName() : "no-target");
-				GMAudit.auditGMAction(actor.getName(), process + "(id: " + itemId + " count: " + count + " name: " + item.getItemName() + " objId: " + item.getObjectId() + ")", targetName, "L2Object referencing this action is: "
+				if (Config.GMAUDIT)
+					GMAudit.auditGMAction(actor.getName(), process + "(id: " + itemId + " count: " + count + " name: " + item.getItemName() + " objId: " + item.getObjectId() + ")", targetName, "L2Object referencing this action is: "
 						+ referenceName);
 			}
 		}
@@ -911,7 +912,8 @@ public class ItemTable
 						referenceName = (reference.getName() != null ? reference.getName() : "no-name");
 					}
 					String targetName = (actor.getTarget() != null ? actor.getTarget().getName() : "no-target");
-					GMAudit.auditGMAction(actor.getName(), process + "(id: " + item.getItemId() + " count: " + item.getCount() + " itemObjId: " + item.getObjectId() + ")", targetName, "L2Object referencing this action is: " + referenceName);
+					if (Config.GMAUDIT)
+						GMAudit.auditGMAction(actor.getName(), process + "(id: " + item.getItemId() + " count: " + item.getCount() + " itemObjId: " + item.getObjectId() + ")", targetName, "L2Object referencing this action is: " + referenceName);
 				}
 			}
 			
