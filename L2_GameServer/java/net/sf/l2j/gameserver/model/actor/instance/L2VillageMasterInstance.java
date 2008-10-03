@@ -44,6 +44,7 @@ import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.gameserver.util.FloodProtector;
 import net.sf.l2j.gameserver.util.Util;
 
 /**
@@ -376,6 +377,17 @@ public final class L2VillageMasterInstance extends L2FolkInstance
                         player.sendPacket(new SystemMessage(
                                                             SystemMessageId.YOU_HAVE_ALREADY_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_AN_EVENT));
                         return;
+                    }
+                    
+                    /*
+                     * DrHouse: Despite this is not 100% retail like, it is here to avoid some exploits during subclass changes, specially
+                     * on small servers. TODO: On retail, each village master doesn't offer any subclass that is not given by itself so player
+                     * always has to move to other location to change subclass after changing previously. Thanks Aikimaniac for this info.
+                     */
+                    if (!FloodProtector.getInstance().tryPerformAction(player.getObjectId(), FloodProtector.PROTECTED_SUBCLASS))
+                    {
+                    	_log.warning("Player "+player.getName()+" has performed a subclass change too fast");
+                    	return;
                     }
 
                     player.setActiveClass(paramOne);
