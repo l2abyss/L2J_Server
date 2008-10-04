@@ -15,12 +15,14 @@
 package net.sf.l2j.gameserver.handler.skillhandlers;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.entity.TvTEvent;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ConfirmDlg;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
@@ -50,6 +52,17 @@ public class SummonFriend implements ISkillHandler
 			return false;
 		}
 
+		if (summonerChar.inObserverMode())
+		{
+			return false;
+		}
+
+		if (!TvTEvent.onEscapeUse(summonerChar.getObjectId()))
+		{
+			summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_IS_IN_AN_AREA_WHICH_BLOCKS_SUMMONING));
+			return false;			
+		}
+		
 		if (summonerChar.isInsideZone(L2Character.ZONE_NOSUMMONFRIEND))
 		{
 			summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_IS_IN_AN_AREA_WHICH_BLOCKS_SUMMONING));
@@ -99,6 +112,18 @@ public class SummonFriend implements ISkillHandler
 			return false;
 		}
 
+		if (targetChar.inObserverMode())
+		{
+			summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_IS_IN_AN_AREA_WHICH_BLOCKS_SUMMONING));
+			return false;
+		}
+
+		if (!TvTEvent.onEscapeUse(targetChar.getObjectId()))
+		{
+			summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_IS_IN_AN_AREA_WHICH_BLOCKS_SUMMONING));
+			return false;			
+		}
+
 		if (targetChar.isInsideZone(L2Character.ZONE_NOSUMMONFRIEND))
 		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.S1_IN_SUMMON_BLOCKING_AREA);
@@ -107,7 +132,31 @@ public class SummonFriend implements ISkillHandler
 			return false;
 		}
 
-	return true;	
+		// on retail character can enter 7s dungeon with summon friend,
+		// but will be teleported away by mobs
+		// because currently this is not working in L2J we do not allowing summoning
+		if (summonerChar.isIn7sDungeon())
+		{
+			int targetCabal = SevenSigns.getInstance().getPlayerCabal(targetChar);
+			if (SevenSigns.getInstance().isSealValidationPeriod())
+			{
+				if (targetCabal != SevenSigns.getInstance().getCabalHighestScore())
+				{
+					summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_IS_IN_AN_AREA_WHICH_BLOCKS_SUMMONING));
+					return false;					
+				}
+			}
+			else
+			{
+				if (targetCabal == SevenSigns.CABAL_NULL)
+				{
+					summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_IS_IN_AN_AREA_WHICH_BLOCKS_SUMMONING));
+					return false;					
+				}
+			}
+		}
+
+		return true;	
 	}
 
 	public static void teleToTarget(L2PcInstance targetChar, L2PcInstance summonerChar, L2Skill summonSkill)
