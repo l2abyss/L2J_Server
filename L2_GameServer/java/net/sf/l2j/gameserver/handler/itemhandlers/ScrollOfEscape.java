@@ -44,7 +44,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
 public class ScrollOfEscape implements IItemHandler
 {
-	// all the items ids that this handler knowns
+	// all the items IDs that this handler knows
 	private static final int[] ITEM_IDS =
 	{
 		736, 1830, 1829, 1538, 3958, 5858,
@@ -147,7 +147,7 @@ public class ScrollOfEscape implements IItemHandler
 		EscapeFinalizer ef = new EscapeFinalizer(activeChar, itemId);
 		// continue execution later
 		activeChar.setSkillCast(ThreadPoolManager.getInstance().scheduleEffect(ef, skill.getHitTime()));
-		activeChar.setSkillCastEndTime(10 + GameTimeController.getGameTicks() + skill.getHitTime() / GameTimeController.MILLIS_IN_TICK);
+		activeChar.forceIsCasting(GameTimeController.getGameTicks() + skill.getHitTime() / GameTimeController.MILLIS_IN_TICK);
 	}
 	
 	static class EscapeFinalizer implements Runnable
@@ -166,7 +166,6 @@ public class ScrollOfEscape implements IItemHandler
 			if (_activeChar.isDead())
 				return;
 			_activeChar.enableAllSkills();
-			
 			_activeChar.setIsIn7sDungeon(false);
 			
 			try

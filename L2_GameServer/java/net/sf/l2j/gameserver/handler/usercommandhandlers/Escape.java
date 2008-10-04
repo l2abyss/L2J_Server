@@ -118,7 +118,7 @@ public class Escape implements IUserCommandHandler
 		EscapeFinalizer ef = new EscapeFinalizer(activeChar);
 		// continue execution later
 		activeChar.setSkillCast(ThreadPoolManager.getInstance().scheduleGeneral(ef, unstuckTimer));
-		activeChar.setSkillCastEndTime(10 + GameTimeController.getGameTicks() + unstuckTimer / GameTimeController.MILLIS_IN_TICK);
+		activeChar.forceIsCasting(GameTimeController.getGameTicks() + unstuckTimer / GameTimeController.MILLIS_IN_TICK);
 		
 		return true;
 	}
@@ -138,7 +138,6 @@ public class Escape implements IUserCommandHandler
 				return;
 			
 			_activeChar.setIsIn7sDungeon(false);
-			
 			_activeChar.enableAllSkills();
 			
 			try

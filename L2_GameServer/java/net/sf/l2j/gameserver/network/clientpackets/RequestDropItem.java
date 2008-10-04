@@ -127,7 +127,7 @@ public final class RequestDropItem extends L2GameClientPacket
             return;
         }
 
-		// Cannot discard item that the skill is consumming
+		// Cannot discard item that the skill is consuming
 		if (activeChar.isCastingNow())
 		{
 			if (activeChar.getCurrentSkill() != null && activeChar.getCurrentSkill().getSkill().getItemConsumeId() == item.getItemId())

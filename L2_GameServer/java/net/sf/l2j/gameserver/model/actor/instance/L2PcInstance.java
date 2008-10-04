@@ -643,7 +643,8 @@ public final class L2PcInstance extends L2PlayableInstance
 	private Forum _forumMail;
 	private Forum _forumMemo;
 
-    /** Current skill in use */
+    /** Current skill in use. Note that L2Character has _lastSkillCast, but
+     * this has the button presses */
     private SkillDat _currentSkill;
 
     /** Skills queued because a skill is already in progress */
@@ -7837,39 +7838,122 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	public void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
 	{
-        // Check if the skill is active
-        if (skill.isPassive())
+		// Check if the skill is active
+        if (skill.isPassive() || skill.isChance())
         {
             // just ignore the passive skill request. why does the client send it anyway ??
             // Send a Server->Client packet ActionFailed to the L2PcInstance
             sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
-        
-		if (isDead())
+		
+		//************************************* Check Casting in Progress *******************************************
+
+		// If a skill is currently being used, queue this one if this is not the same
+        if (isCastingNow())
         {
-            abortCast();
+        	// Check if new skill different from current skill in progress
+
+        	if (getCurrentSkill() != null && skill.getId() == getCurrentSkill().getSkillId())
+            {
+            	sendPacket(ActionFailed.STATIC_PACKET);
+            	return;
+            }
+
+            if (Config.DEBUG && getQueuedSkill() != null)
+                _log.info(getQueuedSkill().getSkill().getName() + " is already queued for " + getName() + ".");
+
+            // Create a new SkillDat object and queue it in the player _queuedSkill
+            setQueuedSkill(skill, forceUse, dontMove);
             sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
+        setIsCastingNow(true);
+        // Create a new SkillDat object and set the player _currentSkill
+        // This is used mainly to save & queue the button presses, since L2Character has
+        // _lastSkillCast which could otherwise replace it
+        setCurrentSkill(skill, forceUse, dontMove);
 
-        if (inObserverMode() && !skill.isPotion())
+        if (getQueuedSkill() != null) // wiping out previous values, after casting has been aborted
+        	setQueuedSkill(null, false, false);
+        
+        if (!checkUseMagicConditions(skill, forceUse, dontMove))
+        {
+        	setIsCastingNow(false);
+        	return;
+        }
+        
+		// Check if the target is correct and Notify the AI with AI_INTENTION_CAST and target
+		L2Object target = null;
+
+		switch (skill.getTargetType())
+		{
+			case TARGET_AURA:    // AURA, SELF should be cast even if no target has been found
+			case TARGET_FRONT_AURA:
+			case TARGET_BEHIND_AURA:
+			case TARGET_GROUND:
+			case TARGET_SELF:
+				target = this;
+				break;
+			default:
+
+                // Get the first target of the list
+			    target = skill.getFirstOfTargetList(this);
+			    break;
+		}
+
+		// Notify the AI with AI_INTENTION_CAST and target
+		getAI().setIntention(CtrlIntention.AI_INTENTION_CAST, skill, target);
+    }
+	
+	private boolean checkUseMagicConditions(L2Skill skill, boolean forceUse, boolean dontMove)
+	{
+		L2SkillType sklType = skill.getSkillType();
+	    
+        //************************************* Check Player State *******************************************
+
+        // Abnormal effects(ex : Stun, Sleep...) are checked in L2Character useMagic()
+
+      	if (isOutOfControl())
+		{
+			sendPacket(ActionFailed.STATIC_PACKET);
+			return false;
+		}
+
+    	// Check if the player is dead or uses "Fake Death" skill
+        if (isAlikeDead())
+        {
+        	abortCast();
+        	// Send a Server->Client packet ActionFailed to the L2PcInstance
+            sendPacket(ActionFailed.STATIC_PACKET);
+            return false;
+        }
+        
+        if (isFishing() && (sklType != L2SkillType.PUMPING &&
+        		sklType != L2SkillType.REELING && sklType != L2SkillType.FISHING))
+        {
+            //Only fishing skills are available
+            sendPacket(new SystemMessage(SystemMessageId.ONLY_FISHING_SKILLS_NOW));
+            return false;
+        }
+        
+        if (inObserverMode())
         {
         	sendPacket(new SystemMessage(SystemMessageId.OBSERVERS_CANNOT_PARTICIPATE));
             abortCast();
             sendPacket(ActionFailed.STATIC_PACKET);
-            return;
+            return false;
         }
         
         // Check if the caster is sitting
-        if (isSitting() && !skill.isPotion())
+        if (isSitting())
         {
             // Send a System Message to the caster
             sendPacket(new SystemMessage(SystemMessageId.CANT_MOVE_SITTING));
 
             // Send a Server->Client packet ActionFailed to the L2PcInstance
             sendPacket(ActionFailed.STATIC_PACKET);
-            return;
+            return false;
         }
 
 		// Check if the skill type is TOGGLE
@@ -7884,63 +7968,21 @@ public final class L2PcInstance extends L2PlayableInstance
 
 				// Send a Server->Client packet ActionFailed to the L2PcInstance
 				sendPacket(ActionFailed.STATIC_PACKET);
-				return;
+				return false;
 			}
 		}
 
-		if(_disabledSkills != null && _disabledSkills.contains(skill.getId()))
-		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
-			sm.addSkillName(skill);
-			sendPacket(sm);
-			return;
-		}
-
-		// Check if it's ok to summon
-        // siege golem (13), Wild Hog Cannon (299), Swoop Cannon (448)
-        if ((skill.getId() == 13 || skill.getId() == 299 || skill.getId() == 448)
-        		&& ((!SiegeManager.getInstance().checkIfOkToSummon(this, false) 
-                && !FortSiegeManager.getInstance().checkIfOkToSummon(this, false))||(SevenSigns.getInstance().CheckSummonConditions(this))))
-			return;
-        
-        //************************************* Check Casting in Progress *******************************************
-
-        // If a skill is currently being used, queue this one if this is not the same
-		// Note that this check is currently imperfect: getCurrentSkill() isn't always null when a skill has
-		// failed to cast, or the casting is not yet in progress when this is rechecked
-        if (getCurrentSkill() != null && isCastingNow())
-        {
-            // Check if new skill different from current skill in progress
-            if (skill.getId() == getCurrentSkill().getSkillId())
-            {
-            	sendPacket(ActionFailed.STATIC_PACKET);
-            	return;
-            }
-
-            if (Config.DEBUG && getQueuedSkill() != null)
-                _log.info(getQueuedSkill().getSkill().getName() + " is already queued for " + getName() + ".");
-
-            // Create a new SkillDat object and queue it in the player _queuedSkill
-            setQueuedSkill(skill, forceUse, dontMove);
-            sendPacket(ActionFailed.STATIC_PACKET);
-            return;
-        }
-        if (getQueuedSkill() != null) // wiping out previous values, after casting has been aborted
-        	setQueuedSkill(null, false, false);
-
-        //************************************* Check Target *******************************************
+	    //************************************* Check Target *******************************************
         // Create and set a L2Object containing the target of the skill
         L2Object target = null;
         SkillTargetType sklTargetType = skill.getTargetType();
-        L2SkillType sklType = skill.getSkillType();
-
         Point3D worldPosition = getCurrentSkillWorldPosition();
         
         if (sklTargetType == SkillTargetType.TARGET_GROUND && worldPosition == null)
         {
         	_log.info("WorldPosition is null for skill: "+skill.getName() + ", player: " + getName() + ".");
         	sendPacket(ActionFailed.STATIC_PACKET);
-        	return;
+        	return false;
         }
         
         switch (sklTargetType)
@@ -7969,10 +8011,10 @@ public final class L2PcInstance extends L2PlayableInstance
         {
             sendPacket(new SystemMessage(SystemMessageId.TARGET_CANT_FOUND));
             sendPacket(ActionFailed.STATIC_PACKET);
-            return;
+            return false;
         }
 
-        // skills can be used on Walls and Doors only durring siege
+        // skills can be used on Walls and Doors only during siege
         if(target instanceof L2DoorInstance )
         {
         	boolean isCastle = (((L2DoorInstance) target).getCastle() != null
@@ -7982,7 +8024,7 @@ public final class L2PcInstance extends L2PlayableInstance
                     && ((L2DoorInstance) target).getFort().getFortId() > 0
                     && ((L2DoorInstance) target).getFort().getSiege().getIsInProgress());
         	if (!isCastle && !isFort)
-        		return;
+        		return false;
         }
 
         // Are the target and the player in the same duel?
@@ -7992,30 +8034,60 @@ public final class L2PcInstance extends L2PlayableInstance
         	{
         		sendMessage("You cannot do this while duelling.");
         		sendPacket(ActionFailed.STATIC_PACKET);
-        		return;
+        		return false;
         	}
         }
 
         //************************************* Check skill availability *******************************************
 
+  		// Check if it's ok to summon
+        // siege golem (13), Wild Hog Cannon (299), Swoop Cannon (448)
+        if ((skill.getId() == 13 || skill.getId() == 299 || skill.getId() == 448)
+        		&& ((!SiegeManager.getInstance().checkIfOkToSummon(this, false) 
+                && !FortSiegeManager.getInstance().checkIfOkToSummon(this, false))||(SevenSigns.getInstance().CheckSummonConditions(this))))
+			return false;
+        
         // Check if this skill is enabled (ex : reuse time)
-        if (isSkillDisabled(skill.getId()) && !getAccessLevel().allowPeaceAttack())
+        if (isSkillDisabled(skill.getId()))
         {
-            SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
-            sm.addSkillName(skill);
-            sendPacket(sm);
+        	SystemMessage sm = null;
+        	FastMap<Integer, TimeStamp> timeStamp = getReuseTimeStamp();
+				
+        	if (timeStamp != null && timeStamp.containsKey(skill.getId()))
+        	{
+        		int seconds = (int) (timeStamp.get(skill.getId()).getRemaining()/1000);
+        		int minutes = (int) (timeStamp.get(skill.getId()).getRemaining()/60000);
+        		int hours = (int) (timeStamp.get(skill.getId()).getRemaining()/3600000);
+        		if (hours > 0)
+        		{
+        			sm = new SystemMessage(SystemMessageId.S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1);
+        			sm.addNumber(hours);
+        			if (minutes >= 60)
+        				minutes = 59;
 
-            // Send a Server->Client packet ActionFailed to the L2PcInstance
-            sendPacket(ActionFailed.STATIC_PACKET);
-            return;
-        }
-
-        // Check if all skills are disabled
-        if (isAllSkillsDisabled() && !getAccessLevel().allowPeaceAttack() && !skill.isPotion())
-        {
-            // Send a Server->Client packet ActionFailed to the L2PcInstance
-            sendPacket(ActionFailed.STATIC_PACKET);
-            return;
+        			sm.addNumber(minutes);
+        		}
+        		else if (minutes > 0)
+        		{
+        			sm = new SystemMessage(SystemMessageId.S2_MINUTES_S3_SECONDS_REMAINING_FOR_REUSE_S1);
+        			sm.addNumber(minutes);
+        		}
+        		else if (seconds > 0)
+        		{
+        			sm = new SystemMessage(SystemMessageId.S2_SECONDS_REMAIMNING_FOR_REUSE_S1);
+        		}
+				
+        		if (seconds >= 60)
+        			seconds = 59;
+					
+        		sm.addNumber(seconds);
+        	}
+        	else
+        		sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
+				
+        	sm.addSkillName(skill);
+        	sendPacket(sm);
+        	return false;
         }
 
         //************************************* Check Consumables *******************************************
@@ -8026,45 +8098,25 @@ public final class L2PcInstance extends L2PlayableInstance
             if (getSouls() < skill.getSoulConsumeCount())
             {
                 sendPacket(new SystemMessage(SystemMessageId.THERE_IS_NOT_ENOUGH_SOUL));
-                return;
+                return false;
             }
         }
-        //************************************* Check Casting Conditions *******************************************
+        //************************************* Check weapon and casting conditions *******************************************
 
-        // Check if the caster own the weapon needed
+        // Check if the caster owns the weapon needed
         if (!skill.getWeaponDependancy(this))
         {
             // Send a Server->Client packet ActionFailed to the L2PcInstance
             sendPacket(ActionFailed.STATIC_PACKET);
-            return;
+            return false;
         }
-
+        
         // Check if all casting conditions are completed
         if (!skill.checkCondition(this, target, false))
         {
-            // Send a Server->Client packet ActionFailed to the L2PcInstance
-            sendPacket(ActionFailed.STATIC_PACKET);
-            return;
-        }
-
-        //************************************* Check Player State *******************************************
-
-        // Abnormal effects(ex : Stun, Sleep...) are checked in L2Character useMagic()
-
-        // Check if the player use "Fake Death" skill
-        if (isAlikeDead())
-        {
-            // Send a Server->Client packet ActionFailed to the L2PcInstance
-            sendPacket(ActionFailed.STATIC_PACKET);
-            return;
-        }
-
-        if (isFishing() && (sklType != L2SkillType.PUMPING &&
-        		sklType != L2SkillType.REELING && sklType != L2SkillType.FISHING))
-        {
-            //Only fishing skills are available
-            sendPacket(new SystemMessage(SystemMessageId.ONLY_FISHING_SKILLS_NOW));
-            return;
+        	// Send a Server->Client packet ActionFailed to the L2PcInstance
+        	sendPacket(ActionFailed.STATIC_PACKET);
+        	return false;
         }
 
         //************************************* Check Skill Type *******************************************
@@ -8077,13 +8129,13 @@ public final class L2PcInstance extends L2PlayableInstance
 				// If L2Character or target is in a peace zone, send a system message TARGET_IN_PEACEZONE a Server->Client packet ActionFailed
 				sendPacket(new SystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
 				sendPacket(ActionFailed.STATIC_PACKET);
-				return;
+				return false;
 			}
 
 			if (isInOlympiadMode() && !isOlympiadStart()){
 				// if L2PcInstance is in Olympia and the match isn't already start, send a Server->Client packet ActionFailed
 				sendPacket(ActionFailed.STATIC_PACKET);
-				return;
+				return false;
 			}
 
             // Check if the target is attackable
@@ -8091,7 +8143,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			{
 				// If target is not attackable, send a Server->Client packet ActionFailed
 				sendPacket(ActionFailed.STATIC_PACKET);
-				return;
+				return false;
 			}
 
 			// Check if a Forced ATTACK is in progress on non-attackable target
@@ -8110,7 +8162,7 @@ public final class L2PcInstance extends L2PlayableInstance
 						break;
 					default: // Send a Server->Client packet ActionFailed to the L2PcInstance
 						sendPacket(ActionFailed.STATIC_PACKET);
-						return;
+						return false;
 				}
 			}
 
@@ -8127,7 +8179,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
 						// Send a Server->Client packet ActionFailed to the L2PcInstance
 						sendPacket(ActionFailed.STATIC_PACKET);
-						return;
+						return false;
 					}
 				}
 				else if (skill.getCastRange() > 0 && !isInsideRadius(target, skill.getCastRange()+getTemplate().collisionRadius, false, false))
@@ -8137,7 +8189,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
 					// Send a Server->Client packet ActionFailed to the L2PcInstance
 					sendPacket(ActionFailed.STATIC_PACKET);
-					return;
+					return false;
 				}
 			}
 		}
@@ -8170,7 +8222,7 @@ public final class L2PcInstance extends L2PlayableInstance
 							break;
 						default:
 							sendPacket(ActionFailed.STATIC_PACKET);
-						return;
+						return false;
 					}
 					break;
 				}
@@ -8187,7 +8239,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
 				// Send a Server->Client packet ActionFailed to the L2PcInstance
 				sendPacket(ActionFailed.STATIC_PACKET);
-				return;
+				return false;
 			}
 		}
 		
@@ -8205,7 +8257,7 @@ public final class L2PcInstance extends L2PlayableInstance
 					
 					// Send a Server->Client packet ActionFailed to the L2PcInstance
 					sendPacket(ActionFailed.STATIC_PACKET);
-					return;
+					return false;
 				}
 				
 				if (getObjectId() != spoilerId && !isInLooterParty(spoilerId))
@@ -8215,7 +8267,7 @@ public final class L2PcInstance extends L2PlayableInstance
 					
 					// Send a Server->Client packet ActionFailed to the L2PcInstance
 					sendPacket(ActionFailed.STATIC_PACKET);
-					return;
+					return false;
 				}
 			}
 		}
@@ -8230,7 +8282,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
 				// Send a Server->Client packet ActionFailed to the L2PcInstance
 				sendPacket(ActionFailed.STATIC_PACKET);
-				return;
+				return false;
 			}
 		}
 
@@ -8254,35 +8306,18 @@ public final class L2PcInstance extends L2PlayableInstance
 
 					// Send a Server->Client packet ActionFailed to the L2PcInstance
 					sendPacket(ActionFailed.STATIC_PACKET);
-					return;
+					return false;
 				}
 		}
 
-        if (sklTargetType == SkillTargetType.TARGET_HOLY && !TakeCastle.checkIfOkToCastSealOfRule(this, false))
+        if ((sklTargetType == SkillTargetType.TARGET_HOLY && !TakeCastle.checkIfOkToCastSealOfRule(this, false))
+        		|| (sklTargetType == SkillTargetType.TARGET_FLAGPOLE && !TakeFort.checkIfOkToCastFlagDisplay(this, false))
+        		|| (sklType == L2SkillType.SIEGEFLAG && !SiegeFlag.checkIfOkToPlaceFlag(this, false))
+        		|| (sklType == L2SkillType.STRSIEGEASSAULT && !StrSiegeAssault.checkIfOkToUseStriderSiegeAssault(this, false)))
         {
             sendPacket(ActionFailed.STATIC_PACKET);
             abortCast();
-            return;
-        }
-        
-        if (sklTargetType == SkillTargetType.TARGET_FLAGPOLE && !TakeFort.checkIfOkToCastFlagDisplay(this, false))
-        {
-            sendPacket(ActionFailed.STATIC_PACKET);
-            abortCast();
-            return;
-        }
-
-        if (sklType == L2SkillType.SIEGEFLAG && !SiegeFlag.checkIfOkToPlaceFlag(this, false))
-        {
-            sendPacket(ActionFailed.STATIC_PACKET);
-            abortCast();
-            return;
-        }
-        else if (sklType == L2SkillType.STRSIEGEASSAULT && !StrSiegeAssault.checkIfOkToUseStriderSiegeAssault(this, false))
-        {
-        	sendPacket(ActionFailed.STATIC_PACKET);
-        	abortCast();
-        	return;
+            return false;
         }
 
         // GeoData Los Check here
@@ -8294,24 +8329,19 @@ public final class L2PcInstance extends L2PlayableInstance
         		{
         			sendPacket(new SystemMessage(SystemMessageId.CANT_SEE_TARGET));
         			sendPacket(ActionFailed.STATIC_PACKET);
-	        			return;
+	        			return false;
         		}
         	}
         	else if (!GeoData.getInstance().canSeeTarget(this, target))
         	{
         		sendPacket(new SystemMessage(SystemMessageId.CANT_SEE_TARGET));
         		sendPacket(ActionFailed.STATIC_PACKET);
-        		return;
+        		return false;
         	}
         }
-
-        // If all conditions are checked, create a new SkillDat object and set the player _currentSkill
-        setCurrentSkill(skill, forceUse, dontMove);
-
-		// Check if the active L2Skill can be casted (ex : not sleeping...), Check if the target is correct and Notify the AI with AI_INTENTION_CAST and target
-        super.useMagic(skill);
-
-    }
+        // finally, after passing all conditions
+        return true;
+	}
 
     public boolean isInLooterParty(int LooterId)
     {
@@ -9119,7 +9149,11 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 		else
 		{
-			if (_duelState == Duel.DUELSTATE_DEAD) { enableAllSkills(); getStatus().startHpMpRegeneration(); }
+			if (_duelState == Duel.DUELSTATE_DEAD) 
+			{ 
+				enableAllSkills(); 
+				getStatus().startHpMpRegeneration(); 
+			}
 			_isInDuel = false;
 			_duelState = Duel.DUELSTATE_NODUEL;
 			_duelId = 0;

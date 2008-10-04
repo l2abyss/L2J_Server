@@ -695,8 +695,7 @@ public abstract class L2Summon extends L2PlayableInstance
 
         // Check if this skill is enabled (ex : reuse time)
         if (isSkillDisabled(skill.getId())
-        		&& getOwner() != null
-        		&& (!getOwner().getAccessLevel().allowPeaceAttack()))
+        		&& getOwner() != null)
         {
             SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
             sm.addSkillName(skill);
@@ -706,8 +705,7 @@ public abstract class L2Summon extends L2PlayableInstance
 
         // Check if all skills are disabled
         if (isAllSkillsDisabled()
-        		&& getOwner() != null
-        		&& (!getOwner().getAccessLevel().allowPeaceAttack()))
+        		&& getOwner() != null)
         {
             return;
         }
