@@ -52,14 +52,12 @@ public final class TradeOtherAdd extends L2GameServerPacket
 		writeH(0x00);
 		
 		// T1
-        writeD(_item.getAttackAttrElement());
-        writeD(_item.getAttackAttrElementVal());
-        writeD(_item.getDefAttrFire());
-        writeD(_item.getDefAttrWater());
-        writeD(_item.getDefAttrWind());
-        writeD(_item.getDefAttrEarth());
-        writeD(_item.getDefAttrHoly());
-        writeD(_item.getDefAttrUnholy());
+		writeD(_item.getAttackElementType());
+		writeD(_item.getAttackElementPower());
+		for (byte i = 0; i < 6; i++)
+		{
+			writeD(_item.getElementDefAttr(i));
+		}
 	}
 
 	/* (non-Javadoc)

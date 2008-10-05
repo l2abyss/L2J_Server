@@ -26,25 +26,23 @@ public class PrivateStoreListBuy extends L2GameServerPacket
 {
 //	private static final String _S__D1_PRIVATEBUYLISTBUY = "[S] b8 PrivateBuyListBuy";
 	private static final String _S__D1_PRIVATESTORELISTBUY = "[S] be PrivateStoreListBuy";
-	private L2PcInstance _storePlayer;
-	private L2PcInstance _activeChar;
+	private int _objId;
 	private int _playerAdena;
 	private TradeList.TradeItem[] _items;
 
 	public PrivateStoreListBuy(L2PcInstance player, L2PcInstance storePlayer)
 	{
-		_storePlayer = storePlayer;
-		_activeChar = player;
-		_playerAdena = _activeChar.getAdena();
-		_storePlayer.getSellList().updateItems(); // Update SellList for case inventory content has changed
-		_items = _storePlayer.getBuyList().getAvailableItems(_activeChar.getInventory());
+		_objId = storePlayer.getObjectId();
+		_playerAdena = player.getAdena();
+		storePlayer.getSellList().updateItems(); // Update SellList for case inventory content has changed
+		_items = storePlayer.getBuyList().getAvailableItems(player.getInventory());
 	}
 
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0xbe);
-		writeD(_storePlayer.getObjectId());
+		writeD(_objId);
 		writeD(_playerAdena);
 
 		writeD(_items.length);
@@ -66,14 +64,12 @@ public class PrivateStoreListBuy extends L2GameServerPacket
 			writeD(item.getCount());  // maximum possible tradecount
 			
 			// T1
-            writeD(item.getAttackAttrElement());
-            writeD(item.getAttackAttrElementVal());
-            writeD(item.getDefAttrFire());
-            writeD(item.getDefAttrWater());
-            writeD(item.getDefAttrWind());
-            writeD(item.getDefAttrEarth());
-            writeD(item.getDefAttrHoly());
-            writeD(item.getDefAttrUnholy());
+			writeD(item.getAttackElementType());
+			writeD(item.getAttackElementPower());
+			for (byte i = 0; i < 6; i++)
+			{
+				writeD(item.getElementDefAttr(i));
+			}
 		}
 	}
 

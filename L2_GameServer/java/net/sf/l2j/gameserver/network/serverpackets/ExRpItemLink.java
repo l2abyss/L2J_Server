@@ -58,15 +58,11 @@ public final class ExRpItemLink extends L2GameServerPacket
         writeD(_item.isAugmented() ? _item.getAugmentation().getAugmentationId() : 0x00);
         writeD(_item.getMana());
         // T1
-        writeD(-2);
-        writeD(0x00);
-        writeD(0x00);
-        writeD(0x00);
-        writeD(0x00);
-        writeD(0x00);
-        writeD(0x00);
-        writeD(0x00);
-        
+        writeD(_item.getAttackElementType());
+        writeD(_item.getAttackElementPower());
+        for (byte i = 0; i < 6; i++)
+        {
+            writeD(_item.getElementDefAttr(i));
+        }
     }
-    
 }

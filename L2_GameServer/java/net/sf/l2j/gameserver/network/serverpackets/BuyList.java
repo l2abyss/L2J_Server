@@ -127,14 +127,10 @@ public final class BuyList extends L2GameServerPacket
 	                writeD((int)(item.getPrice() * (1 + _taxRate)));
                 
                 // T1
-                writeD(-2);
-                writeD(0x00);
-                writeD(0x00);
-                writeD(0x00);
-                writeD(0x00);
-                writeD(0x00);
-                writeD(0x00);
-                writeD(0x00);
+				for (byte i = 0; i < 8; i++)
+				{
+					writeD(0x00);
+				}
 			}
 		}
 	}

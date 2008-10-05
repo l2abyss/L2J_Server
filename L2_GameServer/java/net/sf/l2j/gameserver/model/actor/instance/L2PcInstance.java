@@ -590,6 +590,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	private int _expertisePenalty = 0;
 
 	private L2ItemInstance _activeEnchantItem = null;
+	private L2ItemInstance _activeEnchantAttrItem = null;
 
 	protected boolean _inventoryDisable = false;
 
@@ -2165,6 +2166,15 @@ public final class L2PcInstance extends L2PlayableInstance
 	/** Return the Experience of the L2PcInstance. */
 	public long getExp() { return getStat().getExp(); }
 
+	public void setActiveEnchantAttrItem(L2ItemInstance stone)
+	{
+		_activeEnchantAttrItem = stone;
+	}
+
+	public L2ItemInstance getActiveEnchantAttrItem()
+	{
+		return _activeEnchantAttrItem;
+	}
 
 	public void setActiveEnchantItem(L2ItemInstance scroll)
 	{
@@ -4399,7 +4409,7 @@ public final class L2PcInstance extends L2PlayableInstance
      * the transform Id returned will be that of the Zariche, and NOT the Buffalo.
      * @return Transformation Id
      */
-    public int getTranformationId()
+    public int getTransformationId()
     {
         L2Transformation transformation = this.getTransformation();
         if (transformation == null)
@@ -4425,7 +4435,7 @@ public final class L2PcInstance extends L2PlayableInstance
      */
     public void transformInsertInfo()
     {
-    	_transformationId = getTranformationId();
+    	_transformationId = getTransformationId();
     	
     	if (_transformationId == L2Transformation.TRANSFORM_AKAMANAH
     			|| _transformationId == L2Transformation.TRANSFORM_ZARICHE)

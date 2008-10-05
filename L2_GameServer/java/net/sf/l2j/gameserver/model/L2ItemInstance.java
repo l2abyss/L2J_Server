@@ -14,7 +14,7 @@
  */
 package net.sf.l2j.gameserver.model;
 
-
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.concurrent.ScheduledFuture;
@@ -135,15 +135,7 @@ public final class L2ItemInstance extends L2Object
 	private boolean _existsInDb; // if a record exists in DB.
 	private boolean _storedInDb; // if DB data is up-to-date.
 
-    private int                 ae_enchantLvl               = 0;
-    private int                 ae_enchantElement           = -1;
-    private int                 ae_enchantVal               = 0;
-    private int                 ad_fire                     = 0;
-    private int                 ad_water                    = 0;
-    private int                 ad_earth                    = 0;
-    private int                 ad_wind                     = 0;
-    private int                 ad_holy                     = 0;
-    private int                 ad_unholy                   = 0;
+	private Elementals _elementals = null;
 
 	private ScheduledFuture<?> itemLootShedule = null;
 	/**
@@ -723,8 +715,10 @@ public final class L2ItemInstance extends L2Object
 	public boolean setAugmentation(L2Augmentation augmentation)
 	{
 		// there shall be no previous augmentation..
-		if (_augmentation != null) return false;
+		if (_augmentation != null)
+			return false;
 		_augmentation = augmentation;
+		updateItemAttributes();
 		return true;
 	}
 
@@ -734,11 +728,210 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public void removeAugmentation()
 	{
-		if (_augmentation == null) return;
-		_augmentation.deleteAugmentationData();
+		if (_augmentation == null)
+			return;
 		_augmentation = null;
+
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+
+			PreparedStatement statement = null;
+			if (_elementals != null)
+			{
+				// Item still has elemental enchant, only update the DB
+				statement = con.prepareStatement("UPDATE item_attributes SET augAttributes = -1, augSkillId = -1, augSkillLevel = -1 WHERE itemId = ?");
+			}
+			else
+			{
+				// Remove the entry since the item also has no elemental enchant
+				statement = con.prepareStatement("DELETE FROM item_attributes WHERE itemId = ?");
+			}
+
+			statement.setInt(1, getObjectId());
+			statement.executeUpdate();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "Could not remove augmentation for item: "+getObjectId()+" from DB:", e);
+		}
+		finally
+		{
+			try { con.close(); } catch (Exception e) {}
+		}
 	}
 
+	public void restoreAttributes()
+	{
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT augAttributes,augSkillId,augSkillLevel,elemType,elemValue FROM item_attributes WHERE itemId=?");
+			statement.setInt(1, getObjectId());
+			ResultSet rs = statement.executeQuery();
+			rs = statement.executeQuery();
+			if (rs.next())
+			{
+				int aug_attributes = rs.getInt(1);
+				int aug_skillId = rs.getInt(2);
+				int aug_skillLevel = rs.getInt(3);
+				byte elem_type = rs.getByte(4);
+				int elem_value = rs.getInt(5);
+				if (elem_type != -1 && elem_value != -1)
+					_elementals = new Elementals(elem_type, elem_value);
+				if (aug_attributes != -1 && aug_skillId != -1 && aug_skillLevel != -1)
+					_augmentation = new L2Augmentation(rs.getInt("augAttributes"), rs.getInt("augSkillId"), rs.getInt("augSkillLevel"));
+			}
+			rs.close();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "Could not restore augmentation and elemental data for item " + getObjectId() + " from DB: "+e.getMessage(), e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
+	}
+
+	public void updateItemAttributes()
+	{
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("REPLACE INTO item_attributes VALUES(?,?,?,?,?,?)");
+			statement.setInt(1, getObjectId());
+			if (_augmentation == null)
+			{
+				statement.setInt(2, -1);
+				statement.setInt(3, -1);
+				statement.setInt(4, -1);
+			}
+			else
+			{
+				statement.setInt(2, _augmentation.getAttributes());
+				if(_augmentation.getSkill() == null)
+				{
+					statement.setInt(3, -1);
+					statement.setInt(4, -1);
+				}
+				else
+				{
+					statement.setInt(3, _augmentation.getSkill().getId());
+					statement.setInt(4, _augmentation.getSkill().getLevel());
+				}
+			}
+			if (_elementals == null)
+			{
+				statement.setByte(5, (byte) -1);
+				statement.setInt(6, -1);
+			}
+			else
+			{
+				statement.setByte(5, _elementals.getElement());
+				statement.setInt(6, _elementals.getValue());
+			}
+			statement.executeUpdate();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "Could not remove elemental enchant for item: "+getObjectId()+" from DB:", e);
+		}
+		finally
+		{
+			try { con.close(); } catch (Exception e) {}
+		}
+	}
+
+	public Elementals getElementals()
+	{
+		return _elementals;
+	}
+
+	public int getAttackElementType()
+	{
+		if (isWeapon() && _elementals != null)
+			return _elementals.getElement();
+		return -2;
+	}
+
+	public int getAttackElementPower()
+	{
+		if (isWeapon() && _elementals != null)
+			return _elementals.getValue();
+		return 0;
+	}
+
+	public int getElementDefAttr(byte element)
+	{
+		if (isArmor() && _elementals != null && _elementals.getElement() == element)
+			return _elementals.getValue();
+		return 0;
+	}
+
+	public void setElementAttr(byte element, int value)
+	{
+		if (_elementals == null)
+		{
+			_elementals = new Elementals(element, value);
+		}
+		else
+		{
+			_elementals.setElement(element);
+			_elementals.setValue(value);
+		}
+		updateItemAttributes();
+	}
+
+	public void clearElementAttr()
+	{
+		if (_elementals != null)
+		{
+			_elementals = null;
+		}
+
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+
+			PreparedStatement statement = null;
+			if (_augmentation != null)
+			{
+				// Item still has augmentation, only update the DB
+				statement = con.prepareStatement("UPDATE item_attributes SET elemType = -1, elemValue = -1 WHERE itemId = ?");
+			}
+			else
+			{
+				// Remove the entry since the item also has no augmentation
+				statement = con.prepareStatement("DELETE FROM item_attributes WHERE itemId = ?");
+			}
+
+			statement.setInt(1, getObjectId());
+			statement.executeUpdate();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "Could not remove elemental enchant for item: "+getObjectId()+" from DB:", e);
+		}
+		finally
+		{
+			try { con.close(); } catch (Exception e) {}
+		}
+	}
 
 	/**
 	 * Used to decrease mana
@@ -1069,34 +1262,12 @@ public final class L2ItemInstance extends L2Object
 		else if (inst._mana > 0 && inst.getLocation() == ItemLocation.PAPERDOLL)
 		    inst.scheduleConsumeManaTask();
 
-		//load augmentation
+		//load augmentation and elemental enchant
 		if (inst.isEquipable())
 		{
-		    java.sql.Connection con = null;
-		    try
-		    {
-		        con = L2DatabaseFactory.getInstance().getConnection();
-		        PreparedStatement statement = con.prepareStatement("SELECT attributes,skill,level FROM augmentations WHERE item_id=?");
-                statement.setInt(1, objectId);
-                rs = statement.executeQuery();
-                if (rs.next())
-                {
-                    inst._augmentation = new L2Augmentation(inst, rs.getInt("attributes"), rs.getInt("skill"), rs.getInt("level"), false);
-                }
-
-                rs.close();
-                statement.close();
-		    }
-            catch (Exception e)
-            {
-		        _log.log(Level.SEVERE, "Could not restore augmentation for item "+objectId+" from DB: "+e.getMessage(), e);
-		    }
-            finally
-            {
-		        try { con.close(); } catch (Exception e) {}
-		    }
+			inst.restoreAttributes();
 		}
-        
+
 		return inst;
 	}
 
@@ -1260,27 +1431,28 @@ public final class L2ItemInstance extends L2Object
 			return;
 		if (Config.ASSERT) assert _existsInDb;
 
-		// delete augmentation data
-		if (isAugmented()) _augmentation.deleteAugmentationData();
-
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(
-					"DELETE FROM items WHERE object_id=?");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM items WHERE object_id=?");
 			statement.setInt(1, getObjectId());
 			statement.executeUpdate();
 			_existsInDb = false;
 			_storedInDb = false;
-            statement.close();
-        }
-        catch (Exception e)
-        {
+			statement.close();
+
+			statement = con.prepareStatement("DELETE FROM item_attributes WHERE itemId = ?");
+			statement.setInt(1, getObjectId());
+			statement.executeUpdate();
+			statement.close();
+		}
+		catch (Exception e)
+		{
 			_log.log(Level.SEVERE, "Could not delete item "+getObjectId()+" in DB: "+e.getMessage(), e);
 		}
-        finally
-        {
+		finally
+		{
 			try { con.close(); } catch (Exception e) {}
 		}
 	}
@@ -1355,147 +1527,5 @@ public final class L2ItemInstance extends L2Object
     public int getTime()
     {
     	return _time;
-    }
-    
-    public int getAttackAttrElement()
-    {
-        return ae_enchantElement;
-    }
-    
-    public int getAttackAttrElementVal() 
-    {
-        return ae_enchantVal;
-    }
-    
-    public int getDefAttrFire()
-    {
-        return ad_fire;  
-    }
-    
-    public int getDefAttrWater()
-    {
-        return ad_water;
-    }
-    
-    public int getDefAttrEarth()
-    {
-        return ad_earth;
-    }
-    
-    public int getDefAttrWind()
-    {
-        return ad_wind;
-    }
-    
-    public int getDefAttrHoly()
-    {
-        return ad_holy;
-    }
-    
-    public int getDefAttrUnholy()
-    {
-        return ad_unholy;
-    }
-    
-    public int getEnchantAttrLevel()
-    {
-        return ae_enchantLvl;
-    }
-    
-    public boolean canBeAttrEnchanted(int element)
-    {
-        return ae_enchantElement == -1 || ae_enchantElement == element;
-    }
-    
-    public void setEnchantAttrLevel(int lv)
-    {
-        ae_enchantLvl = lv;
-    }
-    
-    public void setEnchantAttrElement(int element)
-    {
-        ae_enchantElement = element;
-    }
-    
-    public int getEnchantAttrElement()
-    {
-        return ae_enchantElement;
-    }
-    
-    public void setEnchantAttrValue(int val)
-    {
-        ae_enchantVal = val;
-    }
-    
-    public int getEnchantAttrValue() 
-    {
-        return ae_enchantVal;
-    }
-    
-    public int getEnchantAttrDef(int element)
-    {
-        int value = 0;
-        switch (element)
-        {
-            case 0:
-                value = ad_fire;
-                break;
-            case 1:
-                value = ad_water;
-                break;
-            case 2:
-                value = ad_wind;
-                break;
-            case 3:
-                value = ad_earth;
-                break;
-            case 4:
-                value = ad_holy;
-                break;
-            case 5:
-                value = ad_unholy;
-                break;
-            default:
-                break;
-        }
-        return value;
-    }
-    public void setEnchantAttrDef(int element, int value)
-    {
-        switch (element)
-        {
-            case 0:
-                ad_fire = value;
-                break;
-            case 1:
-                ad_water = value;
-                break;
-            case 2:
-                ad_wind = value;
-                break;
-            case 3:
-                ad_earth = value;
-                break;
-            case 4:
-                ad_holy = value;
-                break;
-            case 5:
-                ad_unholy = value;
-                break;
-            default:
-                break;
-        }
-    }
-    public void clearEnchantAttr()
-    {
-        ae_enchantLvl = 0;
-        ae_enchantElement = -1;
-        ae_enchantVal = 0;
-        ad_fire = 0;
-        ad_water = 0;
-        ad_wind = 0;
-        ad_earth = 0;
-        ad_holy = 0;
-        ad_unholy = 0;
     }
 }

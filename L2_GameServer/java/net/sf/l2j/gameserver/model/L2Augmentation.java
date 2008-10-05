@@ -15,12 +15,7 @@
 
 package net.sf.l2j.gameserver.model;
 
-import java.sql.PreparedStatement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javolution.util.FastList;
-import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.datatables.AugmentationData;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -35,39 +30,32 @@ import net.sf.l2j.gameserver.skills.funcs.LambdaConst;
  */
 public final class L2Augmentation
 {
-	private static final Logger _log = Logger.getLogger(L2Augmentation.class.getName());
-
-	private L2ItemInstance _item;
 	private int _effectsId = 0;
-	private augmentationStatBoni _boni = null;
+	private AugmentationStatBoni _boni = null;
 	private L2Skill _skill = null;
 
-	public L2Augmentation(L2ItemInstance item, int effects, L2Skill skill, boolean save)
+	public L2Augmentation(int effects, L2Skill skill)
 	{
-		_item = item;
 		_effectsId = effects;
-		_boni = new augmentationStatBoni(_effectsId);
+		_boni = new AugmentationStatBoni(_effectsId);
 		_skill = skill;
-
-		// write to DB if save is true
-		if (save) saveAugmentationData();
 	}
 
-	public L2Augmentation(L2ItemInstance item, int effects, int skill, int skillLevel, boolean save)
+	public L2Augmentation(int effects, int skill, int skillLevel)
 	{
-		this(item, effects, SkillTable.getInstance().getInfo(skill, skillLevel), save);
+		this(effects, SkillTable.getInstance().getInfo(skill, skillLevel));
 	}
 
 	// =========================================================
 	// Nested Class
 
-	public class augmentationStatBoni
+	public class AugmentationStatBoni
 	{
 		private Stats _stats[];
 		private float _values[];
 		private boolean _active;
 
-		public augmentationStatBoni(int augmentationId)
+		public AugmentationStatBoni(int augmentationId)
 		{
 			_active = false;
 			FastList <AugmentationData.AugStat> as = AugmentationData.getInstance().getAugStatsById(augmentationId);
@@ -106,53 +94,9 @@ public final class L2Augmentation
 		}
 	}
 
-	private void saveAugmentationData()
+	public int getAttributes()
 	{
-		java.sql.Connection con = null;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-
-			PreparedStatement statement = con.prepareStatement("INSERT INTO augmentations (item_id,attributes,skill,level) VALUES (?,?,?,?)");
-			statement.setInt(1, _item.getObjectId());
-			statement.setInt(2, _effectsId);
-			if (_skill != null)
-			{
-				statement.setInt(3, _skill.getId());
-				statement.setInt(4, _skill.getLevel());
-			} else
-			{
-				statement.setInt(3, 0);
-				statement.setInt(4, 0);
-			}
-
-			statement.executeUpdate();
-			statement.close();
-		} catch (Exception e) {
-			_log.log(Level.SEVERE, "Could not save augmentation for item: "+_item.getObjectId()+" from DB:", e);
-		} finally {
-			try { con.close(); } catch (Exception e) {}
-		}
-	}
-
-	public void deleteAugmentationData()
-	{
-		if (!_item.isAugmented()) return;
-
-		// delete the augmentation from the database
-		java.sql.Connection con = null;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM augmentations WHERE item_id=?");
-			statement.setInt(1, _item.getObjectId());
-			statement.executeUpdate();
-			statement.close();
-		} catch (Exception e) {
-			_log.log(Level.SEVERE, "Could not delete augmentation for item: "+_item.getObjectId()+" from DB:", e);
-		} finally {
-			try { con.close(); } catch (Exception e) {}
-		}
+		return _effectsId;
 	}
 
 	/**

@@ -41,14 +41,10 @@ public class L2WarehouseItem
     private int _customType1;
     private int _customType2;
     private int _mana;
-    private int _attackAttrElement;
-    private int _attackAttrElementVal;
-    private int _defAttrFire;
-    private int _defAttrWater;
-    private int _defAttrWind;
-    private int _defAttrEarth;
-    private int _defAttrHoly;
-    private int _defAttrUnholy;
+
+    private int _elemAtkType = -2;
+    private int _elemAtkPower = 0;
+    private int[] _elemDefAttr = {0, 0, 0, 0, 0, 0};
 
     public L2WarehouseItem(L2ItemInstance item)
     {
@@ -68,14 +64,11 @@ public class L2WarehouseItem
         else
             _isAugmented = false;
         _mana = item.getMana();
-        _attackAttrElement = item.getAttackAttrElement();
-        _attackAttrElementVal = item.getAttackAttrElementVal();
-        _defAttrFire = item.getDefAttrFire();
-        _defAttrWater = item.getDefAttrWater();
-        _defAttrWind = item.getDefAttrWind();
-        _defAttrEarth = item.getDefAttrEarth();
-        _defAttrHoly = item.getDefAttrHoly();
-        _defAttrUnholy = item.getDefAttrUnholy();
+
+        _elemAtkType = item.getAttackElementType();
+        _elemAtkPower = item.getAttackElementPower();
+        for (byte i = 0; i < 6; i++)
+            _elemDefAttr[i] = item.getElementDefAttr(i);
     }
 
     /**
@@ -246,37 +239,20 @@ public class L2WarehouseItem
     {
         return _mana;
     }
-    public final int getAttackAttrElement()
+
+    public int getAttackElementType()
     {
-        return _attackAttrElement;
+        return _elemAtkType;
     }
-    public final int getAttackAttrElementVal()
+
+    public int getAttackElementPower()
     {
-        return _attackAttrElementVal;
+        return _elemAtkPower;
     }
-    public final int getDefAttrFire()
+
+    public int getElementDefAttr(byte i)
     {
-        return _defAttrFire;
-    }
-    public final int getDefAttrWater()
-    {
-        return _defAttrWater;
-    }
-    public final int getDefAttrWind()
-    {
-        return _defAttrWind;
-    }
-    public final int getDefAttrEarth()
-    {
-        return _defAttrEarth;
-    }
-    public final int getDefAttrHoly()
-    {
-        return _defAttrHoly;
-    }
-    public final int getDefAttrUnholy()
-    {
-        return _defAttrUnholy;
+        return _elemDefAttr[i];
     }
 
     /**

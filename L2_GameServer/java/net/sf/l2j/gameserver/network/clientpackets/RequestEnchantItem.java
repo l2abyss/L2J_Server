@@ -35,7 +35,7 @@ import net.sf.l2j.util.Rnd;
 
 public final class RequestEnchantItem extends L2GameClientPacket
 {
-	protected static final Logger _log = Logger.getLogger(Inventory.class.getName());
+	protected static final Logger _log = Logger.getLogger(RequestEnchantItem.class.getName());
 	
 	private static final String _C__58_REQUESTENCHANTITEM = "[C] 58 RequestEnchantItem";
 

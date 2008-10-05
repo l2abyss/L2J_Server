@@ -373,7 +373,7 @@ public final class NpcInfo extends L2GameServerPacket
          // T1 
             writeD(0x00); 
             
-            writeD(((L2Decoy)_activeChar).getOwner().getTranformationId()); 
+            writeD(((L2Decoy)_activeChar).getOwner().getTransformationId()); 
         }
         else
 	    {

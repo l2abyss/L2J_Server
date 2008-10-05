@@ -24,21 +24,21 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 public class PrivateStoreMsgBuy extends L2GameServerPacket
 {
 	private static final String _S__D2_PRIVATESTOREMSGBUY = "[S] bf PrivateStoreMsgBuy";
-	private L2PcInstance _activeChar;
-    private String _storeMsg;
+	private int _objId;
+	private String _storeMsg;
 
 	public PrivateStoreMsgBuy(L2PcInstance player)
 	{
-		_activeChar = player;
-		if (_activeChar.getBuyList() != null)
-        	_storeMsg = _activeChar.getBuyList().getTitle();
+		_objId = player.getObjectId();
+		if (player.getBuyList() != null) 
+			_storeMsg = player.getBuyList().getTitle();
 	}
 
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0xbf);
-		writeD(_activeChar.getObjectId());
+		writeD(_objId);
 		writeS(_storeMsg);
 	}
 

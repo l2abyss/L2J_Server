@@ -14,40 +14,27 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-
-/**
- * This class ...
- *
- * @version $Revision: 1.2.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- */
-public class PrivateStoreMsgSell extends L2GameServerPacket
+public class ExAttributeEnchantResult extends L2GameServerPacket
 {
-	private static final String _S__B5_PRIVATESTOREMSGSELL = "[S] a2 PrivateStoreMsgSell";
-	private int _objId;
-	private String _storeMsg;
-
-	public PrivateStoreMsgSell(L2PcInstance player)
+	private static final String _S__FE_61_EXATTRIBUTEENCHANTRESULT = "[S] FE:61 ExAttributeEnchantResult [d]";
+	
+	private int _result;
+	
+	public ExAttributeEnchantResult (int result)
 	{
-		_objId = player.getObjectId();
-		if (player.getSellList() != null) 
-			_storeMsg = player.getSellList().getTitle();
+		_result = result;
 	}
-
-	@Override
+	
 	protected final void writeImpl()
 	{
-		writeC(0xa2);
-		writeD(_objId);
-		writeS(_storeMsg);
+		writeC(0xfe);
+		writeH(0x61);
+		
+		writeD(_result);
 	}
-
-	/* (non-Javadoc)
-	 * @see net.sf.l2j.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
-	@Override
+	
 	public String getType()
 	{
-		return _S__B5_PRIVATESTOREMSGSELL;
+		return _S__FE_61_EXATTRIBUTEENCHANTRESULT;
 	}
 }

@@ -120,14 +120,12 @@ public final class ItemList extends L2GameServerPacket
 			writeD(temp.getMana());
 			
 			// T1
-            writeD(temp.getAttackAttrElement());
-            writeD(temp.getAttackAttrElementVal());
-            writeD(temp.getDefAttrFire());
-            writeD(temp.getDefAttrWater());
-            writeD(temp.getDefAttrWind());
-            writeD(temp.getDefAttrEarth());
-            writeD(temp.getDefAttrHoly());
-            writeD(temp.getDefAttrUnholy());
+			writeD(temp.getAttackElementType());
+			writeD(temp.getAttackElementPower());
+			for (byte i = 0; i < 6; i++)
+			{
+				writeD(temp.getElementDefAttr(i));
+			}
 		}
 	}
 	

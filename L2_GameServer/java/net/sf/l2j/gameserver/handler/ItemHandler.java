@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.handler.itemhandlers.BlessedSpiritShot;
 import net.sf.l2j.gameserver.handler.itemhandlers.Book;
 import net.sf.l2j.gameserver.handler.itemhandlers.CharChangePotions;
 import net.sf.l2j.gameserver.handler.itemhandlers.CrystalCarol;
+import net.sf.l2j.gameserver.handler.itemhandlers.EnchantAttribute;
 import net.sf.l2j.gameserver.handler.itemhandlers.EnchantScrolls;
 import net.sf.l2j.gameserver.handler.itemhandlers.EnergyStone;
 import net.sf.l2j.gameserver.handler.itemhandlers.ExtractableItems;
@@ -106,6 +107,7 @@ public class ItemHandler
 		registerItemHandler(new Recipes());
 		registerItemHandler(new RollingDice());
 		registerItemHandler(new MysteryPotion());
+		registerItemHandler(new EnchantAttribute());
 		registerItemHandler(new EnchantScrolls());
 		registerItemHandler(new EnergyStone());
 		registerItemHandler(new Book());

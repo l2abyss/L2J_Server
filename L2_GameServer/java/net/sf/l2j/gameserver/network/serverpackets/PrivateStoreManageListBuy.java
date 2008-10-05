@@ -26,17 +26,17 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 public class PrivateStoreManageListBuy extends L2GameServerPacket
 {
 	private static final String _S__D0_PRIVATESELLLISTBUY = "[S] bd PrivateStoreManageListBuy";
-	private L2PcInstance _activeChar;
+	private int _objId;
 	private int _playerAdena;
 	private L2ItemInstance[] _itemList;
 	private TradeList.TradeItem[] _buyList;
 
 	public PrivateStoreManageListBuy(L2PcInstance player)
 	{
-		_activeChar = player;
-		_playerAdena = _activeChar.getAdena();
-		_itemList = _activeChar.getInventory().getUniqueItems(false,true);
-		_buyList = _activeChar.getBuyList().getItems();
+		_objId = player.getObjectId();
+		_playerAdena = player.getAdena();
+		_itemList = player.getInventory().getUniqueItems(false,true);
+		_buyList = player.getBuyList().getItems();
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class PrivateStoreManageListBuy extends L2GameServerPacket
 	{
 		writeC(0xbd);
 		//section 1
-		writeD(_activeChar.getObjectId());
+		writeD(_objId);
 		writeD(_playerAdena);
 
 		//section2
@@ -60,14 +60,12 @@ public class PrivateStoreManageListBuy extends L2GameServerPacket
 			writeH(item.getItem().getType2());
 
 			// T1
-			writeD(item.getAttackAttrElement());
-			writeD(item.getAttackAttrElementVal());
-			writeD(item.getDefAttrFire());
-			writeD(item.getDefAttrWater());
-			writeD(item.getDefAttrWind());
-			writeD(item.getDefAttrEarth());
-			writeD(item.getDefAttrHoly());
-			writeD(item.getDefAttrUnholy());
+			writeD(item.getAttackElementType());
+			writeD(item.getAttackElementPower());
+			for (byte i = 0; i < 6; i++)
+			{
+				writeD(item.getElementDefAttr(i));
+			}
 		}
 
 		//section 3
@@ -85,14 +83,12 @@ public class PrivateStoreManageListBuy extends L2GameServerPacket
 			writeD(item.getItem().getReferencePrice());//fixed store price
 			
 			// T1
-            writeD(item.getAttackAttrElement());
-            writeD(item.getAttackAttrElementVal());
-            writeD(item.getDefAttrFire());
-            writeD(item.getDefAttrWater());
-            writeD(item.getDefAttrWind());
-            writeD(item.getDefAttrEarth());
-            writeD(item.getDefAttrHoly());
-            writeD(item.getDefAttrUnholy());
+			writeD(item.getAttackElementType());
+			writeD(item.getAttackElementPower());
+			for (byte i = 0; i < 6; i++)
+			{
+				writeD(item.getElementDefAttr(i));
+			}
 		}
 	}
 

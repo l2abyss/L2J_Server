@@ -66,15 +66,13 @@ public class PetItemList extends L2GameServerPacket
 			writeD(temp.getItem().getBodyPart());	// rev 415  slot    0006-lr.ear  0008-neck  0030-lr.finger  0040-head  0080-??  0100-l.hand  0200-gloves  0400-chest  0800-pants  1000-feet  2000-??  4000-r.hand  8000-r.hand
 			writeH(temp.getEnchantLevel());	// enchant level
 			writeH(0x00);	// ?
-            
-            writeD(0x00); // T1
-            writeD(0x00); // T1
-            writeD(0x00); // T1
-            writeD(0x00); // T1
-            writeD(0x00); // T1
-            writeD(0x00); // T1
-            writeD(0x00); // T1
-            writeD(0x00); // T1
+
+			writeD(temp.getAttackElementType());
+			writeD(temp.getAttackElementPower());
+			for (byte i = 0; i < 6; i++)
+			{
+				writeD(temp.getElementDefAttr(i));
+			}
 		}
 	}
 

@@ -359,7 +359,7 @@ public final class UserInfo extends L2GameServerPacket
         	writeD(0x00);
         
         // T1 Starts
-        writeD(_activeChar.getTranformationId());
+        writeD(_activeChar.getTransformationId());
         
         writeD(_activeChar.getAttackElement());
         writeD(_activeChar.getAttackElementValue());

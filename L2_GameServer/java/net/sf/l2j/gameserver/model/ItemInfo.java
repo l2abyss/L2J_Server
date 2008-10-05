@@ -55,14 +55,9 @@ public class ItemInfo
     
     private int _location;
 
-    private int _element;
-    private int _val;
-    private int _fire;
-    private int _water;
-    private int _earth;
-    private int _wind;
-    private int _holy;
-    private int _unholy;
+    private int _elemAtkType = -2;
+    private int _elemAtkPower = 0;
+    private int[] _elemDefAttr = {0, 0, 0, 0, 0, 0};
 
     /**
      * Get all information from L2ItemInstance to generate ItemInfo.<BR><BR>
@@ -107,6 +102,11 @@ public class ItemInfo
 		_mana = item.getMana();
 		
 		_location = item.getLocationSlot();
+
+		_elemAtkType = item.getAttackElementType();
+		_elemAtkPower = item.getAttackElementPower();
+		for (byte i = 0; i < 6; i++)
+			_elemDefAttr[i] = item.getElementDefAttr(i);
 	}
 
 	public ItemInfo(L2ItemInstance item, int change)
@@ -143,15 +143,11 @@ public class ItemInfo
 		_mana = item.getMana();
 		
 		_location = item.getLocationSlot();
-        
-        _element = item.getAttackAttrElement();
-        _val = item.getAttackAttrElementVal();
-        _fire = item.getDefAttrFire();
-        _water = item.getDefAttrWater();
-        _wind = item.getDefAttrWind();
-        _earth = item.getDefAttrEarth();
-        _holy = item.getDefAttrHoly();
-        _unholy = item.getDefAttrUnholy();
+
+		_elemAtkType = item.getAttackElementType();
+		_elemAtkPower = item.getAttackElementPower();
+		for (byte i = 0; i < 6; i++)
+			_elemDefAttr[i] = item.getElementDefAttr(i);
 	}
 	
     
@@ -167,13 +163,7 @@ public class ItemInfo
 	public int getChange(){return _change;}
 	public int getMana(){return _mana;}
 	public int getLocation(){return _location;}
-    public int getAttackAttrElement(){return _element;}
-    public int getAttackAttrElementVal(){return _val;}
-    public int getDefAttrFire(){return _fire;}
-    public int getDefAttrWater(){return _water;}
-    public int getDefAttrWind(){return _wind;}
-    public int getDefAttrEarth(){return _earth;}
-    public int getDefAttrHoly(){return _holy;}
-    public int getDefAttrUnholy(){return _unholy;}
-    
+	public int getAttackElementType(){return _elemAtkType;}
+	public int getAttackElementPower(){return _elemAtkPower;}
+	public int getElementDefAttr(byte i){return _elemDefAttr[i];}
 }

@@ -12837,7 +12837,7 @@ public enum SystemMessageId
 	* ID: 2143<br>
 	* Message: You cannot add elemental power while operating a Private Store or Private Workshop.
 	*/
-	CANNOT_ADD_ELEMTAL_POWER_WHILE_OPERATING_PRIVATE_STORE_OR_WORKSHOP(2143),
+	CANNOT_ADD_ELEMENTAL_POWER_WHILE_OPERATING_PRIVATE_STORE_OR_WORKSHOP(2143),
 
 	/**
 	* ID: 2144<br>

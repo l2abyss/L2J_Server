@@ -804,6 +804,9 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
                             case 0x36:
                                 msg = new ExGetOnAirShip();
                                 break;
+                            case 0x38:
+                                msg = new RequestExEnchantItemAttribute();
+                                break;
                             case 0x3f:
                                 msg = new RequestAllCastleInfo();
                                 break;

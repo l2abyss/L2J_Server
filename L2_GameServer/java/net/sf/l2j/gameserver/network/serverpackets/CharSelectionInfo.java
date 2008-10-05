@@ -343,13 +343,13 @@ public class CharSelectionInfo extends L2GameServerPacket
             try
             {
                 con = L2DatabaseFactory.getInstance().getConnection();
-                PreparedStatement statement = con.prepareStatement("SELECT attributes FROM augmentations WHERE item_id=?");
+                PreparedStatement statement = con.prepareStatement("SELECT augAttributes FROM item_attributes WHERE itemId=?");
                 statement.setInt(1, weaponObjId);
                 ResultSet result = statement.executeQuery();
-                
                 if (result.next())
                 {
-                    charInfopackage.setAugmentationId(result.getInt("attributes"));
+                    int augment = result.getInt("augAttributes");
+                    charInfopackage.setAugmentationId(augment == -1 ? 0 : augment);
                 }
                 
                 result.close();
