@@ -260,7 +260,10 @@ public class L2PlayerAI extends L2CharacterAI
 		if (_skill.getTargetType() == SkillTargetType.TARGET_GROUND && _actor instanceof L2PcInstance)
 		{
 			if (maybeMoveToPosition(((L2PcInstance) _actor).getCurrentSkillWorldPosition(), _actor.getMagicalAttackRange(_skill)))
+			{
+				_actor.setIsCastingNow(false);
 				return;
+			}
 		}
 		else
 		{
@@ -271,10 +274,14 @@ public class L2PlayerAI extends L2CharacterAI
 					//Notify the target
 					setCastTarget(null);
 				}
+				_actor.setIsCastingNow(false);
 				return;
 			}
 			if (target != null && maybeMoveToPawn(target, _actor.getMagicalAttackRange(_skill)))
+			{
+				_actor.setIsCastingNow(false);
 				return;
+			}
 		}
 		
 		if (_skill.getHitTime() > 50)

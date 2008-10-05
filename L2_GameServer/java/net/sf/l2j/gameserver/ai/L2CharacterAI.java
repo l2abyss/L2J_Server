@@ -266,6 +266,7 @@ public class L2CharacterAI extends AbstractAI
 		if (getIntention() == AI_INTENTION_REST && skill.isMagic())
 		{
 			clientActionFailed();
+			_actor.setIsCastingNow(false);
 			return;
 		}
 		
@@ -273,6 +274,7 @@ public class L2CharacterAI extends AbstractAI
 		{
 			// Cancel action client side by sending Server->Client packet ActionFailed to the L2PcInstance actor
 			clientActionFailed();
+			_actor.setIsCastingNow(false);
 			return;
 		}
 		
@@ -281,6 +283,7 @@ public class L2CharacterAI extends AbstractAI
 		{
 			// Cancel action client side by sending Server->Client packet ActionFailed to the L2PcInstance actor
 			clientActionFailed();
+			_actor.setIsCastingNow(false);
 			return;
 		}
 		

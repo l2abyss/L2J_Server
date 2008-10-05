@@ -3724,7 +3724,7 @@ public abstract class L2Character extends L2Object
 		return _isCastingNow;
 	}
 
-	protected void setIsCastingNow(boolean value)
+	public void setIsCastingNow(boolean value)
 	{
 		_isCastingNow = value;
 	}
