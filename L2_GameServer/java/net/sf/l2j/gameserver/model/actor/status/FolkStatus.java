@@ -15,17 +15,17 @@
 package net.sf.l2j.gameserver.model.actor.status;
 
 import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
-public class NpcStatus extends CharStatus
+public class FolkStatus extends NpcStatus
 {
     // =========================================================
     // Data Field
 
     // =========================================================
     // Constructor
-    public NpcStatus(L2NpcInstance activeChar)
+    public FolkStatus(L2NpcInstance activeChar)
     {
         super(activeChar);
     }
@@ -33,31 +33,20 @@ public class NpcStatus extends CharStatus
     // =========================================================
     // Method - Public
     @Override
-	public void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true); }
+	public final void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true); }
 
     @Override
-	public void reduceHp(double value, L2Character attacker, boolean awake)
+	public final void reduceHp(double value, L2Character attacker, boolean awake)
     {
-        if (getActiveChar().isDead()) return;
-        
-        if (attacker instanceof L2PcInstance)
-		{
-			L2PcInstance pcInst = (L2PcInstance)attacker;
-			if (pcInst.isGM() && !pcInst.getAccessLevel().canGiveDamage())
-				return;
-		}
-
-        // Add attackers to npc's attacker list
-        if (attacker != null) getActiveChar().addAttackerToAttackByList(attacker);
-
-        super.reduceHp(value, attacker, awake);
+        return;
+    }
+    
+    @Override
+    public final void reduceMp(double value)
+    {
+    	return;
     }
 
-    // =========================================================
-    // Method - Private
-
-    // =========================================================
-    // Property - Public
     @Override
-	public L2NpcInstance getActiveChar() { return (L2NpcInstance)super.getActiveChar(); }
+	public L2FolkInstance getActiveChar() { return (L2FolkInstance)super.getActiveChar(); }
 }

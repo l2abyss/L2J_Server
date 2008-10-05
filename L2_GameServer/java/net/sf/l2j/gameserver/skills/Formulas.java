@@ -1178,7 +1178,6 @@ public final class Formulas
 	/** Calculate blow damage based on cAtk */
 	public double calcBlowDamage(L2Character attacker, L2Character target, L2Skill skill, boolean shld, boolean ss)
 	{
-		if (target.isInvul()) return 0;
 		double power = skill.getPower();
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
@@ -1246,14 +1245,6 @@ public final class Formulas
 	public final double calcPhysDam(L2Character attacker, L2Character target, L2Skill skill,
 									boolean shld, boolean crit, boolean dual, boolean ss)
 	{
-		if (target.isInvul()) return 0;
-		if (attacker instanceof L2PcInstance)
-		{
-			L2PcInstance pcInst = (L2PcInstance)attacker;
-			if (pcInst.isGM() && !pcInst.getAccessLevel().canGiveDamage())
-					return 0;
-		}
-
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
 		if (ss) damage *= 2;
@@ -1423,14 +1414,6 @@ public final class Formulas
 	public final double calcMagicDam(L2Character attacker, L2Character target, L2Skill skill,
 										boolean ss, boolean bss, boolean mcrit)
 	{
-		if (target.isInvul()) return 0;
-		if (attacker instanceof L2PcInstance)
-		{
-			L2PcInstance pcInst = (L2PcInstance)attacker;
-			if (pcInst.isGM() && !pcInst.getAccessLevel().canGiveDamage())
-				return 0;
-		}
-		
 		double mAtk = attacker.getMAtk(target, skill);
 		double mDef = target.getMDef(attacker, skill);
 		if (bss) mAtk *= 4;
@@ -1501,8 +1484,6 @@ public final class Formulas
 	
 	public final double calcMagicDam(L2CubicInstance attacker, L2Character target, L2Skill skill, boolean mcrit)
 	{
-		if (target.isInvul()) return 0;
-		
 		double mAtk = attacker.getMAtk();
 		double mDef = target.getMDef(attacker.getOwner(), skill);
 		
@@ -1584,8 +1565,12 @@ public final class Formulas
                     L2PcInstance player = (L2PcInstance) target;
                     if (!player.isInvul())
                     {
-                        player.setCurrentHp(1);
-                        player.setCurrentCp(1);
+                    	if (!(activeChar instanceof L2PcInstance && 
+                        	(((L2PcInstance)activeChar).isGM() && !((L2PcInstance)activeChar).getAccessLevel().canGiveDamage())))
+                    	{
+                    		player.setCurrentHp(1);
+                    		player.setCurrentCp(1);
+                    	}
                     }
                 }
                 activeChar.sendPacket(new SystemMessage(SystemMessageId.LETHAL_STRIKE));
@@ -1596,7 +1581,13 @@ public final class Formulas
                 {
                     L2PcInstance player = (L2PcInstance) target;
                     if (!player.isInvul())
-                        player.setCurrentCp(1); // Set CP to 1
+                    {
+                    	if (!(activeChar instanceof L2PcInstance && 
+                            	(((L2PcInstance)activeChar).isGM() && !((L2PcInstance)activeChar).getAccessLevel().canGiveDamage())))
+                        {
+                    		player.setCurrentCp(1); // Set CP to 1
+                        }
+                    }
                 }
                 else if (target instanceof L2NpcInstance) // If is a monster remove first damage and after 50% of current hp
                     target.reduceCurrentHp(target.getCurrentHp() / 2, activeChar);

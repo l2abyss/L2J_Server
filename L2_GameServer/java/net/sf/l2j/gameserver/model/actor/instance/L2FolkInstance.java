@@ -18,10 +18,14 @@ import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
+import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2EnchantSkillLearn;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2SkillLearn;
+import net.sf.l2j.gameserver.model.actor.status.FolkStatus;
 import net.sf.l2j.gameserver.model.base.ClassId;
+import net.sf.l2j.gameserver.skills.effects.EffectBuff;
+import net.sf.l2j.gameserver.skills.effects.EffectDebuff;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.AcquireSkillList;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
@@ -46,6 +50,23 @@ public class L2FolkInstance extends L2NpcInstance
 	{
 		player.setLastFolkNPC(this);
 		super.onAction(player);
+	}
+	
+	@Override
+	public FolkStatus getStatus()
+	{
+		if(!(super.getStatus() instanceof FolkStatus))
+			setStatus(new FolkStatus(this));
+		return (FolkStatus)super.getStatus();
+	}
+	
+	@Override
+	public void addEffect(L2Effect newEffect)
+	{
+		if (newEffect instanceof EffectDebuff || newEffect instanceof EffectBuff)
+			super.addEffect(newEffect);
+		else if (newEffect != null)
+			newEffect.stopEffectTask();
 	}
 
 	/**

@@ -124,7 +124,14 @@ public class CharStatus
         if (getActiveChar().isInvul())
             return;
         if (getActiveChar().isDead())
-            return; 
+            return;
+        
+        if (attacker instanceof L2PcInstance)
+		{
+			L2PcInstance pcInst = (L2PcInstance)attacker;
+			if (pcInst.isGM() && !pcInst.getAccessLevel().canGiveDamage())
+				return ;
+		}
 
         if (getActiveChar() instanceof L2PcInstance)
         {
@@ -246,7 +253,7 @@ public class CharStatus
         }
     }
     
-    public final void reduceMp(double value)
+    public void reduceMp(double value)
     {
         value = getCurrentMp() - value;
         if (value < 0)
