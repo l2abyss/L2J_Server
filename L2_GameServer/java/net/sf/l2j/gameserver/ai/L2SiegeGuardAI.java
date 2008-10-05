@@ -282,7 +282,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 			// Chose a target from its aggroList
 			L2Character hated;
 			if (_actor.isConfused())
-				hated = _attackTarget; // Force mobs to attak anybody if confused
+				hated = getAttackTarget(); // Force mobs to attack anybody if confused
 			else
 				hated = npc.getMostHated();
 			//_mostHatedAnalysis.Update(hated);
@@ -342,19 +342,20 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 			}
 		}
 		
+		L2Character attackTarget = getAttackTarget();
 		// Check if target is dead or if timeout is expired to stop this attack
-		if (_attackTarget == null || _attackTarget.isAlikeDead() || _attackTimeout < GameTimeController.getGameTicks())
+		if (attackTarget == null || attackTarget.isAlikeDead() || _attackTimeout < GameTimeController.getGameTicks())
 		{
 			// Stop hating this target after the attack timeout or if target is dead
-			if (_attackTarget != null)
+			if (attackTarget != null)
 			{
 				L2Attackable npc = (L2Attackable) _actor;
-				npc.stopHating(_attackTarget);
+				npc.stopHating(attackTarget);
 			}
 			
 			// Cancel target and timeout
 			_attackTimeout = Integer.MAX_VALUE;
-			_attackTarget = null;
+			setAttackTarget(null);
 			
 			// Set the AI Intention to AI_INTENTION_ACTIVE
 			setIntention(AI_INTENTION_ACTIVE, null, null);
@@ -376,6 +377,8 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		
 		if (target.isInvul())
 			return; // speeding it up for siege guards
+		
+		if (Rnd.get(10) > 4) return; // test for reducing CPU load
 			
 		String faction_id = ((L2NpcInstance) _actor).getFactionId();
 		
@@ -474,14 +477,15 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		double dist_2 = 0;
 		int range = 0;
 		L2SiegeGuardInstance sGuard = (L2SiegeGuardInstance) _actor;
+		L2Character attackTarget = getAttackTarget();
 		
 		try
 		{
-			_actor.setTarget(_attackTarget);
+			_actor.setTarget(attackTarget);
 			skills = _actor.getAllSkills();
-			dist_2 = _actor.getPlanDistanceSq(_attackTarget.getX(), _attackTarget.getY());
-			range = _actor.getPhysicalAttackRange() + _actor.getTemplate().collisionRadius + _attackTarget.getTemplate().collisionRadius;
-			if (_attackTarget.isMoving())
+			dist_2 = _actor.getPlanDistanceSq(attackTarget.getX(), attackTarget.getY());
+			range = _actor.getPhysicalAttackRange() + _actor.getTemplate().collisionRadius + attackTarget.getTemplate().collisionRadius;
+			if (attackTarget.isMoving())
 				range += 50;
 		}
 		catch (NullPointerException e)
@@ -493,20 +497,20 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		}
 		
 		// never attack defenders
-		if (_attackTarget instanceof L2PcInstance && sGuard.getCastle().getSiege().checkIsDefender(((L2PcInstance) _attackTarget).getClan()))
+		if (attackTarget instanceof L2PcInstance && sGuard.getCastle().getSiege().checkIsDefender(((L2PcInstance) attackTarget).getClan()))
 		{
 			// Cancel the target
-			sGuard.stopHating(_attackTarget);
+			sGuard.stopHating(attackTarget);
 			_actor.setTarget(null);
 			setIntention(AI_INTENTION_IDLE, null, null);
 			return;
 		}
 		
-		if (!GeoData.getInstance().canSeeTarget(_actor, _attackTarget))
+		if (!GeoData.getInstance().canSeeTarget(_actor, attackTarget))
 		{
 			// Siege guards differ from normal mobs currently:
 			// If target cannot seen, don't attack any more
-			sGuard.stopHating(_attackTarget);
+			sGuard.stopHating(attackTarget);
 			_actor.setTarget(null);
 			setIntention(AI_INTENTION_IDLE, null, null);
 			return;
@@ -557,27 +561,27 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 			}
 			
 			// Check if the L2SiegeGuardInstance is attacking, knows the target and can't run
-			if (!(_actor.isAttackingNow()) && (_actor.getRunSpeed() == 0) && (_actor.getKnownList().knowsObject(_attackTarget)))
+			if (!(_actor.isAttackingNow()) && (_actor.getRunSpeed() == 0) && (_actor.getKnownList().knowsObject(attackTarget)))
 			{
 				// Cancel the target
-				_actor.getKnownList().removeKnownObject(_attackTarget);
+				_actor.getKnownList().removeKnownObject(attackTarget);
 				_actor.setTarget(null);
 				setIntention(AI_INTENTION_IDLE, null, null);
 			}
 			else
 			{
-				double dx = _actor.getX() - _attackTarget.getX();
-				double dy = _actor.getY() - _attackTarget.getY();
-				double dz = _actor.getZ() - _attackTarget.getZ();
-				double homeX = _attackTarget.getX() - sGuard.getSpawn().getLocx();
-				double homeY = _attackTarget.getY() - sGuard.getSpawn().getLocy();
+				double dx = _actor.getX() - attackTarget.getX();
+				double dy = _actor.getY() - attackTarget.getY();
+				double dz = _actor.getZ() - attackTarget.getZ();
+				double homeX = attackTarget.getX() - sGuard.getSpawn().getLocx();
+				double homeY = attackTarget.getY() - sGuard.getSpawn().getLocy();
 				
 				// Check if the L2SiegeGuardInstance isn't too far from it's home location
 				if ((dx * dx + dy * dy > 10000) && (homeX * homeX + homeY * homeY > 3240000) // 1800 * 1800
-						&& (_actor.getKnownList().knowsObject(_attackTarget)))
+						&& (_actor.getKnownList().knowsObject(attackTarget)))
 				{
 					// Cancel the target
-					_actor.getKnownList().removeKnownObject(_attackTarget);
+					_actor.getKnownList().removeKnownObject(attackTarget);
 					_actor.setTarget(null);
 					setIntention(AI_INTENTION_IDLE, null, null);
 				}
@@ -590,10 +594,10 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 					{
 						if (_selfAnalysis.isMage)
 							range = _selfAnalysis.maxCastRange - 50;
-						if (_attackTarget.isMoving())
-							moveToPawn(_attackTarget, range - 70);
+						if (attackTarget.isMoving())
+							moveToPawn(attackTarget, range - 70);
 						else
-							moveToPawn(_attackTarget, range);
+							moveToPawn(attackTarget, range);
 					}
 				}
 			}
@@ -606,15 +610,15 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		{
 			// Temporary hack for preventing guards jumping off towers,
 			// before replacing this with effective geodata checks and AI modification
-			double dz = _actor.getZ() - _attackTarget.getZ();
+			double dz = _actor.getZ() - attackTarget.getZ();
 			if (dz * dz < 170 * 170) // normally 130 if guard z coordinates correct
 			{
 				if (_selfAnalysis.isMage)
 					range = _selfAnalysis.maxCastRange - 50;
-				if (_attackTarget.isMoving())
-					moveToPawn(_attackTarget, range - 70);
+				if (attackTarget.isMoving())
+					moveToPawn(attackTarget, range - 70);
 				else
-					moveToPawn(_attackTarget, range);
+					moveToPawn(attackTarget, range);
 			}
 			return;
 		}
@@ -624,7 +628,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 			// Force mobs to attack anybody if confused
 			L2Character hated = null;
 			if (_actor.isConfused())
-				hated = _attackTarget;
+				hated = attackTarget;
 			else
 				hated = ((L2Attackable) _actor).getMostHated();
 			
@@ -633,8 +637,8 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 				setIntention(AI_INTENTION_ACTIVE, null, null);
 				return;
 			}
-			if (hated != _attackTarget)
-				_attackTarget = hated;
+			if (hated != attackTarget)
+				attackTarget = hated;
 			
 			_attackTimeout = MAX_ATTACK_TIMEOUT + GameTimeController.getGameTicks();
 			
@@ -681,7 +685,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 				}
 			}
 			// Finally, do the physical attack itself
-			_accessor.doAttack(_attackTarget);
+			_accessor.doAttack(attackTarget);
 		}
 	}
 	

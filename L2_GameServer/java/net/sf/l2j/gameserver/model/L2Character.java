@@ -1754,6 +1754,14 @@ public abstract class L2Character extends L2Object
 			}
 		}
         
+        // Check if the caster owns the weapon needed
+        if (!skill.getWeaponDependancy(this))
+        {
+            // Send a Server->Client packet ActionFailed to the L2PcInstance
+            sendPacket(ActionFailed.STATIC_PACKET);
+            return false;
+        }
+        
         // Check if the spell consumes an Item
         // TODO: combine check and consume
         if (skill.getItemConsume() > 0 && getInventory() != null)

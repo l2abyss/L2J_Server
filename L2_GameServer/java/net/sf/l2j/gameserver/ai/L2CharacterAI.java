@@ -270,23 +270,6 @@ public class L2CharacterAI extends AbstractAI
 			return;
 		}
 		
-		if (_actor.isAllSkillsDisabled())
-		{
-			// Cancel action client side by sending Server->Client packet ActionFailed to the L2PcInstance actor
-			clientActionFailed();
-			_actor.setIsCastingNow(false);
-			return;
-		}
-		
-		// can't cast if muted
-		if (_actor.isMuted() && skill.isMagic())
-		{
-			// Cancel action client side by sending Server->Client packet ActionFailed to the L2PcInstance actor
-			clientActionFailed();
-			_actor.setIsCastingNow(false);
-			return;
-		}
-		
 		// Set the AI cast target
 		setCastTarget((L2Character) target);
 		

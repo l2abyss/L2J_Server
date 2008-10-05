@@ -8101,16 +8101,8 @@ public final class L2PcInstance extends L2PlayableInstance
                 return false;
             }
         }
-        //************************************* Check weapon and casting conditions *******************************************
+        //************************************* Check casting conditions *******************************************
 
-        // Check if the caster owns the weapon needed
-        if (!skill.getWeaponDependancy(this))
-        {
-            // Send a Server->Client packet ActionFailed to the L2PcInstance
-            sendPacket(ActionFailed.STATIC_PACKET);
-            return false;
-        }
-        
         // Check if all casting conditions are completed
         if (!skill.checkCondition(this, target, false))
         {

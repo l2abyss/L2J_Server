@@ -120,11 +120,6 @@ public class L2DoorInstance extends L2Character
         return _ai;
     }
 
-    @Override
-	public boolean hasAI() {
-        return (_ai != null);
-    }
-
     class CloseTask implements Runnable
     {
         public void run()
