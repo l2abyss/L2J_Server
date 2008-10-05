@@ -8055,37 +8055,37 @@ public final class L2PcInstance extends L2PlayableInstance
 				
         	if (timeStamp != null && timeStamp.containsKey(skill.getId()))
         	{
-        		int seconds = (int) (timeStamp.get(skill.getId()).getRemaining()/1000);
-        		int minutes = (int) (timeStamp.get(skill.getId()).getRemaining()/60000);
-        		int hours = (int) (timeStamp.get(skill.getId()).getRemaining()/3600000);
+        		int remainingTime = (int)(_reuseTimeStamps.get(skill.getId()).getRemaining()/1000);
+        		int hours = remainingTime/3600;
+        		int minutes = (remainingTime%3600)/60;
+        		int seconds = (remainingTime%60);
         		if (hours > 0)
         		{
         			sm = new SystemMessage(SystemMessageId.S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1);
+        			sm.addSkillName(skill);
         			sm.addNumber(hours);
-        			if (minutes >= 60)
-        				minutes = 59;
-
         			sm.addNumber(minutes);
         		}
         		else if (minutes > 0)
         		{
         			sm = new SystemMessage(SystemMessageId.S2_MINUTES_S3_SECONDS_REMAINING_FOR_REUSE_S1);
+        			sm.addSkillName(skill);
         			sm.addNumber(minutes);
         		}
-        		else if (seconds > 0)
+        		else
         		{
         			sm = new SystemMessage(SystemMessageId.S2_SECONDS_REMAIMNING_FOR_REUSE_S1);
+        			sm.addSkillName(skill);
         		}
-				
-        		if (seconds >= 60)
-        			seconds = 59;
 					
         		sm.addNumber(seconds);
         	}
         	else
+        	{
         		sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
+        		sm.addSkillName(skill);
+        	}
 				
-        	sm.addSkillName(skill);
         	sendPacket(sm);
         	return false;
         }
