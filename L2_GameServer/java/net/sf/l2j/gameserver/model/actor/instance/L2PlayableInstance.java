@@ -38,6 +38,7 @@ public abstract class L2PlayableInstance extends L2Character
 	private boolean _getCharmOfLuck = false; 		// Charm of Luck - During a Raid/Boss war, decreased chance for death penalty
 	private boolean _isPhoenixBlessed = false; 		// for Soul of The Phoenix or Salvation buffs
 	private boolean _isSilentMoving = false;		// Silent Move
+	private boolean _ProtectionBlessing = false;
 	
 	/**
 	 * Constructor of L2PlayableInstance (use L2Character constructor).<BR><BR>
@@ -206,6 +207,28 @@ public abstract class L2PlayableInstance extends L2Character
 	public boolean isSilentMoving()
 	{
 		return _isSilentMoving;
+	}
+
+	// for Newbie Protection Blessing skill, keeps you safe from an attack by a chaotic character >= 10 levels apart from you 
+	public final boolean getProtectionBlessing() { return _ProtectionBlessing; } 
+	public final void setProtectionBlessing(boolean value) { _ProtectionBlessing = value; }  
+	public void startProtectionBlessing() 
+		{ 
+		       setProtectionBlessing(true); 
+		       updateAbnormalEffect(); 
+		 }
+	 /** 
+	 * @param blessing 
+	 */ 
+     public void stopProtectionBlessing(L2Effect effect) 
+		       { 
+		       if (effect == null) 
+		          stopEffects(L2Effect.EffectType.PROTECTION_BLESSING); 
+		       else 
+		          removeEffect(effect); 
+		              
+		       setProtectionBlessing(false); 
+		       updateAbnormalEffect(); 
 	}
 
 	//Charm of Luck - During a Raid/Boss war, decreased chance for death penalty

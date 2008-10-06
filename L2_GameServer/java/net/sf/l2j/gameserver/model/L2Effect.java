@@ -91,7 +91,8 @@ public abstract class L2Effect
         SIGNET_EFFECT,
         SIGNET_GROUND,
         WARP,
-        SPOIL
+        SPOIL,
+        PROTECTION_BLESSING
     }
 
     private static final Func[] _emptyFunctionSet = new Func[0];

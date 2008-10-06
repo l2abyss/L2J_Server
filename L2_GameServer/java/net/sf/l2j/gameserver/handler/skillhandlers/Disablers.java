@@ -552,7 +552,7 @@ public class Disablers implements ISkillHandler
 										continue;
 								}
 								
-								if (e.getSkill().getId() != 4082 && e.getSkill().getId() != 4215 && e.getSkill().getId() != 4515 && e.getSkill().getId() != 110 && e.getSkill().getId() != 111 && e.getSkill().getId() != 1323
+								if (e.getSkill().getId() != 4082 && e.getSkill().getId() != 4215 && e.getSkill().getId() != 4515  && e.getSkill().getId() != 5182 && e.getSkill().getId() != 110 && e.getSkill().getId() != 111 && e.getSkill().getId() != 1323
 										&& e.getSkill().getId() != 1325) // Cannot cancel skills 4082, 4215, 4515, 110, 111, 1323, 1325
 								{
 									if (e.getSkill().getSkillType() != L2SkillType.BUFF) //sleep, slow, surrenders etc
