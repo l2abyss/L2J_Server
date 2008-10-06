@@ -47,6 +47,7 @@ public enum L2SkillType
 	DRAIN_SOUL,
 	DRAIN(L2SkillDrain.class),
 	DEATHLINK,
+	FATAL,
 	BLOW,
 	SIGNET(L2SkillSignet.class),
 	SIGNET_CASTTIME(L2SkillSignetCasttime.class),

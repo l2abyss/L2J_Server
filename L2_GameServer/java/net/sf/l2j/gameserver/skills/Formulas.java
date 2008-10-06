@@ -1250,7 +1250,7 @@ public final class Formulas
 		if (ss) damage *= 2;
 		if (skill != null)
 		{
-			double skillpower = skill.getPower();
+			double skillpower = skill.getPower(attacker);
 			float ssboost = skill.getSSBoost();
 			if (ssboost <= 0)
 				damage += skillpower;
