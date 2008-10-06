@@ -105,14 +105,17 @@ public final class RequestSellItem extends L2GameClientPacket
 	protected void processSell()
 	{
 		L2PcInstance player = getClient().getActiveChar();
-        if (player == null) return;
+        
+		if (player == null)
+        	return;
 
         // Alt game - Karma punishment
-        if (!Config.ALT_GAME_KARMA_PLAYER_CAN_SHOP && player.getKarma() > 0) return;
+        if (!Config.ALT_GAME_KARMA_PLAYER_CAN_SHOP && player.getKarma() > 0)
+        	return;
 
         L2Object target = player.getTarget();
         if (!player.isGM() && (target == null								// No target (ie GM Shop)
-        		|| !(target instanceof L2MerchantInstance || target instanceof L2MercManagerInstance)	// Target not a merchant and not mercmanager
+        		|| !(target instanceof L2MerchantInstance)	// Target not a merchant and not mercmanager
 			    || !player.isInsideRadius(target, L2NpcInstance.INTERACTION_DISTANCE, false, false) 	// Distance is too far
 			        )) return;
 
@@ -138,7 +141,7 @@ public final class RequestSellItem extends L2GameClientPacket
         if (ok)
         	merchant = (L2NpcInstance)target;
 
-		if (_listId > 1000000) // lease
+		if (merchant != null && _listId > 1000000) // lease
 		{
 			if (merchant.getTemplate().npcId != _listId-1000000)
 			{
