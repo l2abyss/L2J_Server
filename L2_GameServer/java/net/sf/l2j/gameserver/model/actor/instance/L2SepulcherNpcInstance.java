@@ -336,7 +336,6 @@ public class L2SepulcherNpcInstance extends L2NpcInstance
 					case 31939:
 					case 31944:
 						FourSepulchersManager.getInstance().spawnShadow(getNpcId());
-                        break;
 					default:
 					{
 						openNextDoor(getNpcId());
