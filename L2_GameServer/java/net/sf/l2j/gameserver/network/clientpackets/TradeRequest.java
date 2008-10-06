@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.SendTradeRequest;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.util.Util;
 
 /**
  *
@@ -114,6 +115,13 @@ public final class TradeRequest extends L2GameClientPacket
         {
         	SystemMessage sm = new SystemMessage(SystemMessageId.S1_HAS_ADDED_YOU_TO_IGNORE_LIST);
         	sm.addCharName(partner);
+        	player.sendPacket(sm);
+        	return;
+        }
+        
+        if (Util.calculateDistance(player, partner, true) > 150)
+        {
+        	SystemMessage sm = new SystemMessage(SystemMessageId.TARGET_TOO_FAR);
         	player.sendPacket(sm);
         	return;
         }
