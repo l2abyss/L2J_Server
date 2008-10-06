@@ -623,8 +623,7 @@ public abstract class L2Skill
     		}
     		case FATAL:
     		{
-    			if(activeChar.getCurrentHp()/activeChar.getMaxHp() > 0.005)
-            		return _power*3.5*(1-activeChar.getCurrentHp()/activeChar.getMaxHp());
+    			return _power*3.5*(1-activeChar.getCurrentHp()/activeChar.getMaxHp());
     		}
     		default:
     			return _power;
