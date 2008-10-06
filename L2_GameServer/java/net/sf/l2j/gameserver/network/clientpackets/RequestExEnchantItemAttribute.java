@@ -15,9 +15,7 @@
 package net.sf.l2j.gameserver.network.clientpackets;
 
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.Shutdown;
 import net.sf.l2j.gameserver.model.Elementals;
-import net.sf.l2j.gameserver.model.Inventory;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -88,9 +86,6 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 		}
 		if ((item.getLocation() != L2ItemInstance.ItemLocation.INVENTORY) && (item.getLocation() != L2ItemInstance.ItemLocation.PAPERDOLL))
 			return;
-
-		int itemId = item.getItemId();
-		String itemName = item.getItemName();
 
 		if (item.isWear())
 		{

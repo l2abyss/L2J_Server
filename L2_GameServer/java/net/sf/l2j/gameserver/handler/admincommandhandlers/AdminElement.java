@@ -18,9 +18,6 @@
  */
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
-import java.util.StringTokenizer;
-
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.Elementals;
 import net.sf.l2j.gameserver.model.Inventory;
@@ -82,7 +79,7 @@ public class AdminElement implements IAdminCommandHandler
 					return false;
 				}
 
-				setElement(activeChar, (byte) element, value, armorType);
+				setElement(activeChar, element, value, armorType);
 			}
 			catch (Exception e)
 			{
