@@ -19,6 +19,7 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.util.Rnd;
 
 public class TvTEventTeleporter implements Runnable
 {
@@ -84,7 +85,7 @@ public class TvTEventTeleporter implements Runnable
 		_playerInstance.setCurrentCp(_playerInstance.getMaxCp());
 		_playerInstance.setCurrentHp(_playerInstance.getMaxHp());
 		_playerInstance.setCurrentMp(_playerInstance.getMaxMp());
-		_playerInstance.teleToLocation(_coordinates[0], _coordinates[1], _coordinates[2], false);
+		_playerInstance.teleToLocation( _coordinates[ 0 ] + Rnd.get(101)-50, _coordinates[ 1 ] + Rnd.get(101)-50, _coordinates[ 2 ], false );
 		
 		if (TvTEvent.isStarted() && !_adminRemove)
 		{

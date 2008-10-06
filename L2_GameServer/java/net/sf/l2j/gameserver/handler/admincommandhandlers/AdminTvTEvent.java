@@ -20,6 +20,7 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
 import net.sf.l2j.gameserver.model.entity.TvTEventTeleporter;
+import net.sf.l2j.gameserver.model.entity.TvTManager;
 
 /**
  * @author FBIagent
@@ -29,7 +30,8 @@ public class AdminTvTEvent implements IAdminCommandHandler
 	private static final String[] ADMIN_COMMANDS =
 	{
 		"admin_tvt_add",
-		"admin_tvt_remove"
+		"admin_tvt_remove",
+		"admin_tvt_advance"
 	};
 	
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
@@ -57,6 +59,10 @@ public class AdminTvTEvent implements IAdminCommandHandler
 			}
 			
 			remove(activeChar, (L2PcInstance) target);
+		}
+		else if ( command.equals( "admin_tvt_advance" ) )
+		{
+			TvTManager.getInstance().skipDelay();
 		}
 		
 		return true;

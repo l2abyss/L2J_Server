@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.model.entity;
 
+import java.util.Calendar;
+import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -66,8 +68,35 @@ public class TvTManager
 	 */
 	public void scheduleEventStart()
 	{
-		_task = new TvTStartTask(System.currentTimeMillis() + 60000L * Config.TVT_EVENT_INTERVAL);
-		ThreadPoolManager.getInstance().executeTask(_task);
+		try {
+			Calendar currentTime = Calendar.getInstance();
+			Calendar nextStartTime = null;
+			Calendar testStartTime = null;
+			for (String timeOfDay : Config.TVT_EVENT_INTERVAL) {
+				// Creating a Calendar object from the specified interval value
+				testStartTime = Calendar.getInstance();
+				testStartTime.setLenient(true);
+				String[] splitTimeOfDay = timeOfDay.split(":");
+				testStartTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(splitTimeOfDay[0]));
+				testStartTime.set(Calendar.MINUTE, Integer.parseInt(splitTimeOfDay[1]));
+				// If the date is in the past, make it the next day (Example: Checking for "1:00", when the time is 23:57.)
+				if (testStartTime.getTimeInMillis() < currentTime.getTimeInMillis())
+				{
+					testStartTime.add(Calendar.DAY_OF_MONTH, 1);
+				}
+				// Check for the test date to be the minimum (smallest in the specified list)
+				if (nextStartTime == null || testStartTime.getTimeInMillis() < nextStartTime.getTimeInMillis())
+				{
+					nextStartTime = testStartTime;
+				}
+			}
+			_task = new TvTStartTask(nextStartTime.getTimeInMillis());
+			ThreadPoolManager.getInstance().executeTask(_task);
+		}
+		catch (Exception e)
+		{
+			_log.warning("TvTEventEngine[TvTManager.scheduleEventStart()]: Error figuring out a start time. Check TvTEventInterval in config file.");
+		}
 	}
 	
 	/**
@@ -123,13 +152,23 @@ public class TvTManager
 		
 		this.scheduleEventStart();
 	}
-	
+
+	public void skipDelay()
+	{
+		if (_task.nextRun.cancel(false))
+		{
+			_task.setStartTime(System.currentTimeMillis());
+			ThreadPoolManager.getInstance().executeTask(_task);
+		}
+	}
+
 	/**
 	 * Class for TvT cycles
 	 */
 	class TvTStartTask implements Runnable
 	{
 		private long _startTime;
+		public ScheduledFuture<?> nextRun;
 		
 		public TvTStartTask(long startTime)
 		{
@@ -205,7 +244,7 @@ public class TvTManager
 			
 			if (delay > 0)
 			{
-				ThreadPoolManager.getInstance().scheduleGeneral(this, nextMsg * 1000);
+				nextRun = ThreadPoolManager.getInstance().scheduleGeneral(this, nextMsg*1000);
 			}
 		}
 		

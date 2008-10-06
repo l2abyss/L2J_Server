@@ -14,7 +14,9 @@
  */
 package net.sf.l2j.gameserver.model.entity;
 
+import java.util.Map;
 import java.util.logging.Logger;
+import javolution.util.FastMap;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.DoorTable;
@@ -128,7 +130,21 @@ public class TvTEvent
 		setState(EventState.PARTICIPATING);
 		return true;
 	}
-	
+
+	private static int highestLevelPcInstanceOf(Map< Integer, L2PcInstance > players)
+	{
+		int maxLevel = Integer.MIN_VALUE, maxLevelId = -1;
+		for (L2PcInstance player : players.values())
+		{
+			if (player.getLevel() >= maxLevel)
+			{
+				maxLevel = player.getLevel();
+				maxLevelId = player.getObjectId();
+			}
+		}
+		return maxLevelId;
+	}
+
 	/**
 	 * Starts the TvTEvent fight<br>
 	 * 1. Set state EventState.STARTING<br>
@@ -143,7 +159,39 @@ public class TvTEvent
 	{
 		// Set state to STARTING
 		setState(EventState.STARTING);
-		
+
+		// Randomize and balance team distribution
+		Map< Integer, L2PcInstance > allParticipants = new FastMap< Integer, L2PcInstance >();
+		allParticipants.putAll(_teams[0].getParticipatedPlayers());
+		allParticipants.putAll(_teams[1].getParticipatedPlayers());
+		System.out.println(allParticipants.size());
+		_teams[0].cleanMe();
+		_teams[1].cleanMe();
+		System.out.println(allParticipants.size());
+		int balance[] = { 0, 0 }, priority = 0, highestLevelPlayerId;
+		L2PcInstance highestLevelPlayer;
+		// XXX: allParticipants should be sorted by level instead of using highestLevelPcInstanceOf for every fetch
+		while (allParticipants.size() > 0)
+		{
+			// Priority team gets one player
+			highestLevelPlayerId = highestLevelPcInstanceOf(allParticipants);
+			highestLevelPlayer = allParticipants.get(highestLevelPlayerId);
+			allParticipants.remove(highestLevelPlayerId);
+			_teams[priority].addPlayer(highestLevelPlayer);
+			balance[priority] += highestLevelPlayer.getLevel();
+			// Exiting if no more players
+			if (allParticipants.size() == 0) break;
+			// The other team gets one player
+			// XXX: Code not dry
+			highestLevelPlayerId = highestLevelPcInstanceOf(allParticipants);
+			highestLevelPlayer = allParticipants.get(highestLevelPlayerId);
+			allParticipants.remove(highestLevelPlayerId);
+			_teams[priority].addPlayer(highestLevelPlayer);
+			balance[priority] += highestLevelPlayer.getLevel();
+			// Recalculating priority
+			priority = balance[0] > balance[1] ? 1 : 0;
+		}
+
 		// Check for enought participants
 		if (_teams[0].getParticipatedPlayerCount() < Config.TVT_EVENT_MIN_PLAYERS_IN_TEAMS || _teams[1].getParticipatedPlayerCount() < Config.TVT_EVENT_MIN_PLAYERS_IN_TEAMS)
 		{

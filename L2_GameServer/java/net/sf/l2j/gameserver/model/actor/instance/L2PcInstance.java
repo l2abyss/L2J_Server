@@ -7765,6 +7765,10 @@ public final class L2PcInstance extends L2PlayableInstance
 				return false;
 		}
 
+		// Check if the attacker is in TvT and TvT is started
+		if (TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getObjectId()))
+			return true;
+
 		// Check if the attacker is not in the same clan
 		if (getClan() != null && attacker != null && getClan().isMember(attacker.getObjectId()))
 			return false;
