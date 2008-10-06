@@ -44,7 +44,7 @@ public class PcStatus extends PlayableStatus
     @Override
 	public final void reduceHp(double value, L2Character attacker, boolean awake)
     {
-        if (getActiveChar().isInvul())
+        if (getActiveChar().isInvul() && getActiveChar() != attacker)
         	return;
 		if (getActiveChar().isDead())
 			return;
