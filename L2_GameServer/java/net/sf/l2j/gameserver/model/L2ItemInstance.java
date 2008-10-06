@@ -823,8 +823,8 @@ public final class L2ItemInstance extends L2Object
 				statement.setInt(2, _augmentation.getAttributes());
 				if(_augmentation.getSkill() == null)
 				{
-					statement.setInt(3, -1);
-					statement.setInt(4, -1);
+					statement.setInt(3, 0);
+					statement.setInt(4, 0);
 				}
 				else
 				{
