@@ -1950,15 +1950,16 @@ public abstract class L2Character extends L2Object
      */
 	public L2CharacterAI getAI()
 	{
-		if (_ai == null)
+		L2CharacterAI ai = _ai; // copy handle
+		if (ai == null)
 		{
 			synchronized(this)
 			{
 				if (_ai == null) _ai = new L2CharacterAI(new AIAccessor());
+				return _ai;
 			}
 		}
-
-		return _ai;
+		return ai;
 	}
 
 
