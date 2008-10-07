@@ -123,6 +123,8 @@ public abstract class L2Effect
     private final int _period;
     private int _periodStartTicks;
     private int _periodfirsttime;
+    
+    private EffectTemplate _template;
 
     // function templates
     private final FuncTemplate[] _funcTemplates;
@@ -182,6 +184,7 @@ public abstract class L2Effect
         _state = EffectState.CREATED;
         _skill = env.skill;
         //_item = env._item == null ? null : env._item.getItem();
+        _template = template;
         _effected = env.target;
         _effector = env.player;
         _lambda = template.lambda;
@@ -209,6 +212,34 @@ public abstract class L2Effect
         _periodfirsttime = 0;
         _icon = template.icon;
         scheduleEffect();
+    }
+    
+    /**
+     * Special constructor to "steal" buffs. Must be implemented on
+     * every child class that can be stolen.
+     *
+     * @param env
+     * @param effect
+     */
+    protected L2Effect(Env env, L2Effect effect)
+    {
+    	_template = effect._template;
+    	_state = EffectState.CREATED;
+    	_skill = env.skill;
+    	_effected = env.target;
+    	_effector = env.player;
+    	_lambda = _template.lambda;
+    	_funcTemplates = _template.funcTemplates;
+    	_count = effect.getCount();
+    	_totalCount = _template.counter;
+    	_period = _template.period - effect.getTime();
+    	_abnormalEffect = _template.abnormalEffect;
+    	_stackType = _template.stackType;
+    	_stackOrder = _template.stackOrder;
+    	_periodStartTicks = effect.getPeriodStartTicks();
+    	_periodfirsttime = effect.getPeriodfirsttime();
+    	_icon = _template.icon;
+    	scheduleEffect();
     }
 
     public int getCount()
@@ -562,5 +593,10 @@ public abstract class L2Effect
     public void setPeriodStartTicks(int periodStartTicks)
     {
         _periodStartTicks = periodStartTicks;
+    }
+    
+    public EffectTemplate getEffectTemplate()
+    {
+    	return _template;
     }
 }

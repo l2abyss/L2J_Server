@@ -31,6 +31,12 @@ public final class EffectBuff extends L2Effect
 		super(env, template);
 	}
 	
+	// Special constructor to steal this effect
+	public EffectBuff(Env env, L2Effect effect)
+	{
+		super(env, effect);
+	}
+	
 	/**
 	 * 
 	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()

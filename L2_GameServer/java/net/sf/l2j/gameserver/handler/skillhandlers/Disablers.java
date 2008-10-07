@@ -15,8 +15,13 @@
 package net.sf.l2j.gameserver.handler.skillhandlers;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javolution.util.FastList;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlEvent;
@@ -35,10 +40,12 @@ import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import net.sf.l2j.gameserver.model.base.Experience;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.skills.Stats;
 import net.sf.l2j.gameserver.templates.L2SkillType;
@@ -73,7 +80,8 @@ public class Disablers implements ISkillHandler
 		L2SkillType.MAGE_BANE,
 		L2SkillType.WARRIOR_BANE,
 		L2SkillType.BETRAY,
-		L2SkillType.DISARM
+		L2SkillType.DISARM,
+		L2SkillType.STEAL_BUFF
 	};
 	
 	protected static final Logger _log = Logger.getLogger(L2Skill.class.getName());
@@ -510,6 +518,54 @@ public class Disablers implements ISkillHandler
 					
 					break;
 				}
+				case STEAL_BUFF:
+				{
+					if (!(target instanceof L2PlayableInstance))
+						return;
+							
+					L2Effect[] effects = target.getAllEffects();
+						
+					if (effects == null || effects.length < 1)
+						return;
+						
+						// Reversing array
+						List<L2Effect> list = Arrays.asList(effects);
+						Collections.reverse(list);
+						list.toArray(effects);
+						
+						FastList<L2Effect> toSteal = new FastList<L2Effect>();
+						int count = 0;
+						int lastSkill = 0;
+						
+						for (L2Effect e : effects)
+						{
+							if (e == null || (e.getEffectType() != L2Effect.EffectType.BUFF && e.getEffectType() != L2Effect.EffectType.TRANSFORMATION)
+									|| e.getSkill().getSkillType() == L2SkillType.HEAL
+									|| e.getSkill().isToggle()
+									|| e.getSkill().isDebuff()
+									|| e.getSkill().isHeroSkill()
+									|| e.getSkill().isPotion()
+									|| e.isHerbEffect())
+								continue;
+							
+							if (e.getSkill().getId() == lastSkill)
+							{
+								if (count == 0) count = 1;
+									toSteal.add(e);
+							}
+							else if (count < skill.getPower())
+							{
+								toSteal.add(e);
+								count++;
+							}
+							else
+								break;
+						}
+						if (!toSteal.isEmpty())
+							stealEffects(activeChar, target, toSteal);
+						
+					break;
+				}
 				case CANCEL:
 				case NEGATE:
 				{
@@ -877,6 +933,36 @@ public class Disablers implements ISkillHandler
 		}
 		
 		return (maxRemoved <= 0) ? count + 2 : count;
+	}
+	
+	private void stealEffects(L2Character stealer, L2Character stolen, FastList<L2Effect> stolenEffects)
+	{
+		if (stolen == null || stolenEffects == null || stolenEffects.isEmpty()) return;
+		
+		for (L2Effect eff : stolenEffects)
+		{
+			// if eff time is smaller than 1 sec, will not be stolen, just to save CPU,
+			// avoid synchronization(?) problems and NPEs
+			if (eff.getPeriod() - eff.getTime() < 1)
+				continue;
+			
+			Env env = new Env();
+			env.player = stolen;
+			env.target = stealer;
+			env.skill = eff.getSkill();
+			L2Effect e = eff.getEffectTemplate().getStolenEffect(env, eff);
+			
+			// Since there is a previous check that limits allowed effects to those which come from SkillType.BUFF,
+			// it is not needed another check for SkillType
+			if (stealer instanceof L2PcInstance && e != null)
+			{
+				SystemMessage smsg = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
+				smsg.addSkillName(eff);
+				stealer.sendPacket(smsg);
+			}
+			// Finishing stolen effect
+				eff.exit();
+		}
 	}
 	
 	/**

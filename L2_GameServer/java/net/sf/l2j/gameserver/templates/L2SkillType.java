@@ -166,6 +166,8 @@ public enum L2SkillType
 	// Kamael WeaponChange
 	CHANGEWEAPON(L2SkillChangeWeapon.class),
 	
+	STEAL_BUFF,
+	
 	// Skill is done within the core.
 	COREDONE,
 	

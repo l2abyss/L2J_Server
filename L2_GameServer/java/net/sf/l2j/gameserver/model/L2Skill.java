@@ -1221,6 +1221,7 @@ public abstract class L2Skill
             case SOW:
             case HARVEST:
             case DISARM:
+            case STEAL_BUFF:
                 return true;
             default:
                 return false;

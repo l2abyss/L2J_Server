@@ -31,6 +31,12 @@ public class EffectTransformation extends L2Effect
 		super(env, template);
 	}
 	
+	// Special constructor to steal this effect
+	public EffectTransformation(Env env, L2Effect effect)
+	{
+		super(env, effect);
+	}
+	
 	/**
 	 * 
 	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
