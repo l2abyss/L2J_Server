@@ -118,6 +118,23 @@ public class ScrollOfEscape implements IItemHandler
 			return;
 		}
 		
+		// blessed scrolls don't do anything if hideout target it is null
+		switch(item.getItemId())
+		{
+			case 5859:
+				if (activeChar.getClan() != null && CastleManager.getInstance().getCastleByOwner(activeChar.getClan()) != null)
+					return;
+				break;
+			case 10130:
+				if (activeChar.getClan() != null && FortManager.getInstance().getFortByOwner(activeChar.getClan()) != null)
+					return;
+				break;
+			case 5858:
+				if (activeChar.getClan() != null && ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan()) != null)
+					return;
+				break;
+		}
+		
 		//activeChar.abortCast();
 		activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 		//SoE Animation section
@@ -176,22 +193,16 @@ public class ScrollOfEscape implements IItemHandler
 					case 5859:
 						if (_activeChar.getClan() != null && CastleManager.getInstance().getCastleByOwner(_activeChar.getClan()) != null)
 							_activeChar.teleToLocation(MapRegionTable.TeleportWhereType.Castle);
-						else
-							_activeChar.teleToLocation(MapRegionTable.TeleportWhereType.Town);
 						break;
 					case 10129:
 					case 10130:
 						if (_activeChar.getClan() != null && FortManager.getInstance().getFortByOwner(_activeChar.getClan()) != null)
 							_activeChar.teleToLocation(MapRegionTable.TeleportWhereType.Fortress);
-						else
-							_activeChar.teleToLocation(MapRegionTable.TeleportWhereType.Town);
 						break;
 					case 1829:
 					case 5858:
 						if (_activeChar.getClan() != null && ClanHallManager.getInstance().getClanHallByOwner(_activeChar.getClan()) != null)
 							_activeChar.teleToLocation(MapRegionTable.TeleportWhereType.ClanHall);
-						else
-							_activeChar.teleToLocation(MapRegionTable.TeleportWhereType.Town);
 						break;
 					case 7117:
 						_activeChar.teleToLocation(-84318, 244579, -3730, true); // Talking Island
