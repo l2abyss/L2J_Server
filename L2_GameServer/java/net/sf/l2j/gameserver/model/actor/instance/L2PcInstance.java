@@ -7934,8 +7934,8 @@ public final class L2PcInstance extends L2PlayableInstance
 			return false;
 		}
 
-    	// Check if the player is dead or uses "Fake Death" skill
-        if (isAlikeDead())
+    	// Check if the player is dead
+        if (isDead())
         {
         	abortCast();
         	// Send a Server->Client packet ActionFailed to the L2PcInstance
@@ -7985,6 +7985,15 @@ public final class L2PcInstance extends L2PlayableInstance
 				return false;
 			}
 		}
+		
+    	// Check if the player uses "Fake Death" skill 
+		// Note: do not check this before TOGGLE reset
+        if (isFakeDeath())
+        {
+        	// Send a Server->Client packet ActionFailed to the L2PcInstance
+            sendPacket(ActionFailed.STATIC_PACKET);
+            return false;
+        }
 
 	    //************************************* Check Target *******************************************
         // Create and set a L2Object containing the target of the skill
