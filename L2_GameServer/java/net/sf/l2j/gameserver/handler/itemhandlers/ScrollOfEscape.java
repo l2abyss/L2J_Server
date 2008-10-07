@@ -119,20 +119,28 @@ public class ScrollOfEscape implements IItemHandler
 		}
 		
 		// blessed scrolls don't do anything if hideout target it is null
+		boolean ret = false;
 		switch(item.getItemId())
 		{
 			case 5859:
-				if (activeChar.getClan() != null && CastleManager.getInstance().getCastleByOwner(activeChar.getClan()) != null)
-					return;
+				if (activeChar.getClan() != null && CastleManager.getInstance().getCastleByOwner(activeChar.getClan()) == null)
+					ret = true;
 				break;
 			case 10130:
-				if (activeChar.getClan() != null && FortManager.getInstance().getFortByOwner(activeChar.getClan()) != null)
-					return;
+				if (activeChar.getClan() != null && FortManager.getInstance().getFortByOwner(activeChar.getClan()) == null)
+					ret = true;
 				break;
 			case 5858:
-				if (activeChar.getClan() != null && ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan()) != null)
-					return;
+				if (activeChar.getClan() != null && ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan()) == null)
+					ret = true;
 				break;
+		}		
+		if (ret)
+		{
+			SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+			sm.addItemName(item);
+			activeChar.sendPacket(sm);
+			return;
 		}
 		
 		//activeChar.abortCast();
