@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.network.clientpackets;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
+import net.sf.l2j.gameserver.instancemanager.MercTicketManager;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
@@ -46,6 +47,13 @@ public final class RequestPetGetItem extends L2GameClientPacket
 		L2ItemInstance item = (L2ItemInstance)world.findObject(_objectId);
 		if (item == null || getClient().getActiveChar() == null)
 		    return;
+		
+		int castleId = MercTicketManager.getInstance().getTicketCastleId(item.getItemId());		
+		if (castleId > 0) {
+			sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}			
+		
 		if(getClient().getActiveChar().getPet() instanceof L2SummonInstance)
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
