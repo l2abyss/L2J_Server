@@ -164,10 +164,8 @@ public class TvTEvent
 		Map< Integer, L2PcInstance > allParticipants = new FastMap< Integer, L2PcInstance >();
 		allParticipants.putAll(_teams[0].getParticipatedPlayers());
 		allParticipants.putAll(_teams[1].getParticipatedPlayers());
-		System.out.println(allParticipants.size());
 		_teams[0].cleanMe();
 		_teams[1].cleanMe();
-		System.out.println(allParticipants.size());
 		int balance[] = { 0, 0 }, priority = 0, highestLevelPlayerId;
 		L2PcInstance highestLevelPlayer;
 		// XXX: allParticipants should be sorted by level instead of using highestLevelPcInstanceOf for every fetch
