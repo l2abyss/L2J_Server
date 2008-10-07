@@ -5362,7 +5362,7 @@ public abstract class L2Character extends L2Object
 					abortCast();
 			}
 			
-			if (cancelEffect)
+			if (cancelEffect || oldSkill.isToggle())
 			{
 				// for now, to support transformations, we have to let their
 				// effects stay when skill is removed

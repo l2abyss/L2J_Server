@@ -78,4 +78,10 @@ public class EffectTransformation extends L2Effect
 	{
 		return true;
 	}
+	
+	@Override
+	public void onExit()
+	{
+		getEffected().stopTransformation(this);
+	}
 }
