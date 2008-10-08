@@ -178,7 +178,7 @@ public class ConfirmDlg extends L2GameServerPacket
 		writeC(0xf3);
 		writeD(_messageId);
 
-		if (_types == null || _types.size() == 0)
+		if (_types != null && _types.size() > 0)
 		{
 			writeD(_types.size());
 			for (int i = 0; i < _types.size(); i++)
