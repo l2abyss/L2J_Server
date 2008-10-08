@@ -103,6 +103,7 @@ public class ZoneManager
 				count++;
 			}
 		}
+		GrandBossManager.getInstance().getZones().clear();
 		_log.info("Removed zones in "+ count+ " regions.");
 		// Load the zones
 		load();

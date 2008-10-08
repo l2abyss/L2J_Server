@@ -436,4 +436,9 @@ public class GrandBossManager
 		 _bossStatus.clear();
 		 _zones.clear();
 	}
+	
+	public L2FastList<L2BossZone> getZones()
+	{
+		return _zones;
+	}
 }
