@@ -1940,7 +1940,10 @@ public class Olympiad
 				if (player.isCastingNow())
 				{
 					player.abortCast();  
-				}  
+				}
+				
+				//Force the character to be vissible
+				player.getAppearance().setVisible();
 
 				//Remove Hero Skills
 				if (player.isHero())
