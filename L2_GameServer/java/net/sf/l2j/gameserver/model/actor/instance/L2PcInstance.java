@@ -791,6 +791,22 @@ public final class L2PcInstance extends L2PlayableInstance
     	}
     }
     
+    // open/close gates
+    private gatesRequest _gatesRequest = new gatesRequest();
+    
+    public class gatesRequest
+    {
+    	private L2DoorInstance _target = null;
+    	public void setTarget(L2DoorInstance door)
+    	{
+    		_target = door;
+    		return;
+    	}
+    	public L2DoorInstance getDoor()
+    	{
+    		return _target;
+    	}
+    }
 	/**
 	 * Create a new L2PcInstance and add it in the characters table of the database.<BR><BR>
 	 *
@@ -11503,5 +11519,27 @@ public final class L2PcInstance extends L2PlayableInstance
     		SummonFriend.teleToTarget(this, _summonRequest.getTarget(), _summonRequest.getSkill());
     	}
     	_summonRequest.setTarget(null, null);
+    }
+    
+
+    public void gatesRequest(L2DoorInstance door)
+    {
+    	_gatesRequest.setTarget(door);
+    }
+
+
+    public void gatesAnswer(int answer, int type)
+    {
+    	if (_gatesRequest.getDoor() == null)
+    		return;
+    	if (answer == 1 && getTarget() == _gatesRequest.getDoor() && type == 1)
+    	{
+    		_gatesRequest.getDoor().openMe();
+    	}
+    	else if (answer == 1 && getTarget() == _gatesRequest.getDoor() && type == 0)
+    	{
+    		_gatesRequest.getDoor().closeMe();
+    	}
+    	_gatesRequest.setTarget(null);
     }
 }

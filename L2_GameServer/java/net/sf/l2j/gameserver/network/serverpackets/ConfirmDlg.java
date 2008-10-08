@@ -178,52 +178,61 @@ public class ConfirmDlg extends L2GameServerPacket
 		writeC(0xf3);
 		writeD(_messageId);
 
-		writeD(_types.size());
-		for (int i = 0; i < _types.size(); i++)
+		if (_types == null || _types.size() == 0)
 		{
-			int t = _types.get(i).intValue();
-
-			writeD(t);
-
-			switch (t)
+			writeD(_types.size());
+			for (int i = 0; i < _types.size(); i++)
 			{
-				case TYPE_TEXT:
+				int t = _types.get(i).intValue();
+
+				writeD(t);
+
+				switch (t)
 				{
-					writeS( (String)_values.get(i));
-					break;
-				}
-				case TYPE_NUMBER:
-				case TYPE_NPC_NAME:
-				case TYPE_ITEM_NAME:
-				{
-					int t1 = ((Integer)_values.get(i)).intValue();
-					writeD(t1);
-					break;
-				}
-				case TYPE_SKILL_NAME:
-				{
-					int t1 = ((Integer)_values.get(i)).intValue();
-					writeD(t1); // Skill Id
-					writeD(_skillLvL); // Skill lvl
-					break;
-				}
-				case TYPE_ZONE_NAME:
-				{
-					int t1 = ((int[])_values.get(i))[0];
-					int t2 = ((int[])_values.get(i))[1];
-					int t3 = ((int[])_values.get(i))[2];
-					writeD(t1);
-					writeD(t2);
-					writeD(t3);
-					break;
+					case TYPE_TEXT:
+					{
+						writeS( (String)_values.get(i));
+						break;
+					}
+					case TYPE_NUMBER:
+					case TYPE_NPC_NAME:
+					case TYPE_ITEM_NAME:
+					{
+						int t1 = ((Integer)_values.get(i)).intValue();
+						writeD(t1);
+						break;
+					}
+					case TYPE_SKILL_NAME:
+					{
+						int t1 = ((Integer)_values.get(i)).intValue();
+						writeD(t1); // Skill Id
+						writeD(_skillLvL); // Skill lvl
+						break;
+					}
+					case TYPE_ZONE_NAME:
+					{
+						int t1 = ((int[])_values.get(i))[0];
+						int t2 = ((int[])_values.get(i))[1];
+						int t3 = ((int[])_values.get(i))[2];
+						writeD(t1);
+						writeD(t2);
+						writeD(t3);
+						break;
+					}
 				}
 			}
+			// timed dialog (Summon Friend skill request)
+			if (_time != 0)
+				writeD(_time);
+			if (_requesterId != 0)
+				writeD(_requesterId);
 		}
-		// timed dialog (Summon Friend skill request)
-		if (_time != 0)
-			writeD(_time);
-		if (_requesterId != 0)
-			writeD(_requesterId);
+		else
+		{
+			writeD(0x00);
+			writeD(0x00);
+			writeD(0x00);
+		}
 	}
 
 	/* (non-Javadoc)

@@ -41,6 +41,7 @@ import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
+import net.sf.l2j.gameserver.network.serverpackets.ConfirmDlg;
 import net.sf.l2j.gameserver.network.serverpackets.DoorStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -431,11 +432,15 @@ public class L2DoorInstance extends L2Character
                 }
                 else
                 {
-                    //need find serverpacket which ask open/close gate. now auto
-                        //if (getOpen() == 1) player.sendPacket(new SystemMessage(1140));
-                        //else player.sendPacket(new SystemMessage(1141));
-                    if (getOpen() == 1) openMe();
-                    else closeMe();
+                	player.gatesRequest(this);
+                    if (getOpen() == 1)
+                    {
+                    	player.sendPacket(new ConfirmDlg(1140));
+                    }
+                    else
+                    {
+                    	player.sendPacket(new ConfirmDlg(1141));;
+                    }
                 }
             }
         }
