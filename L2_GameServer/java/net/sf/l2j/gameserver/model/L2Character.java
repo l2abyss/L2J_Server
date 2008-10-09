@@ -1438,11 +1438,11 @@ public abstract class L2Character extends L2Object
 
 		// Calculate the casting time of the skill (base + modifier of MAtkSpd)
 		// Don't modify the skill time for FORCE_BUFF skills. The skill time for those skills represent the buff time.
-		if(!effectWhileCasting  && !skill.isStaticReuse())
+		if(!effectWhileCasting)
 		{
-			hitTime = Formulas.getInstance().calcMAtkSpd(this, skill, hitTime);
+			hitTime = Formulas.getInstance().calcAtkSpd(this, skill, hitTime);
 			if (coolTime > 0) 
-				coolTime = Formulas.getInstance().calcMAtkSpd(this, skill, coolTime);
+				coolTime = Formulas.getInstance().calcAtkSpd(this, skill, coolTime);
 		}
 			
 		// Calculate altered Cast Speed due to BSpS/SpS
@@ -1480,6 +1480,13 @@ public abstract class L2Character extends L2Object
     		}
         }
 
+		// Don't modify skills HitTime if staticHitTime is specified for skill in datapack.
+		if (skill.isStaticHitTime())
+		{
+			hitTime = skill.getHitTime();
+			coolTime = skill.getCoolTime();
+		}
+		
 		// Set the _castInterruptTime and casting status (L2PcInstance already has this true)
 		setIsCastingNow(true);
 		// Note: _castEndTime = GameTimeController.getGameTicks() + (coolTime + hitTime) / GameTimeController.MILLIS_IN_TICK;
