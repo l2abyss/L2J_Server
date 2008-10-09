@@ -234,6 +234,7 @@ public abstract class L2Skill
     private final SkillOpType _operateType;
     private final boolean _magic;
     private final boolean _staticReuse;
+    private final boolean _staticHitTime;
     private final int _mpConsume;
     private final int _mpInitialConsume;
     private final int _hpConsume;
@@ -378,6 +379,7 @@ public abstract class L2Skill
         _operateType = set.getEnum("operateType", SkillOpType.class);
         _magic = set.getBool("isMagic", false);
         _staticReuse = set.getBool("staticReuse", false);
+        _staticHitTime = set.getBool("staticHitTime", false);
         _ispotion = set.getBool("isPotion", false);
         _mpConsume = set.getInteger("mpConsume", 0);
         _mpInitialConsume = set.getInteger("mpInitialConsume", 0);
@@ -908,11 +910,19 @@ public abstract class L2Skill
     }
 
     /**
-     * @return Returns true to to set static reuse/hittime.
+     * @return Returns true to set static reuse.
      */
     public final boolean isStaticReuse()
     {
         return _staticReuse;
+    }
+
+    /**
+     * @return Returns true to set static hittime.
+     */
+    public final boolean isStaticHitTime()
+    {
+        return _staticHitTime;
     }
 
     /**

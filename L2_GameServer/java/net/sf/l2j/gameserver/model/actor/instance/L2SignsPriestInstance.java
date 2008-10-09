@@ -348,18 +348,22 @@ public class L2SignsPriestInstance extends L2FolkInstance
                     }
                     catch (NumberFormatException e)
                     {
-                        player.sendMessage("You must enter an integer amount.");
+                    	showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "blkmrkt_3.htm");
                         break;
                     }
                     catch (StringIndexOutOfBoundsException e)
                     {
-                        player.sendMessage("You must enter an amount.");
+                    	showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "blkmrkt_3.htm");
                         break;
                     }
-
-                    if (ancientAdenaAmount < ancientAdenaConvert || ancientAdenaConvert < 1)
+                    if (ancientAdenaConvert < 1)
                     {
-                        player.sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+                    	showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "blkmrkt_3.htm");
+                        break;
+                    }
+                    if (ancientAdenaAmount < ancientAdenaConvert)
+                    {
+                    	showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "blkmrkt_4.htm");
                         break;
                     }
 
