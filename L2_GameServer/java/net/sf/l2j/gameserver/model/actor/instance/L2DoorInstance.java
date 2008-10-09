@@ -309,7 +309,7 @@ public class L2DoorInstance extends L2Character
     @Override
 	public boolean isAutoAttackable(L2Character attacker)
     {
-        if (isUnlockable())
+        if (isUnlockable() && getFort() == null)
             return true;
 
         // Doors can`t be attacked by NPCs
@@ -425,6 +425,25 @@ public class L2DoorInstance extends L2Character
                 }
             }
             else if (player.getClan()!=null && getClanHall() != null && player.getClanId() == getClanHall().getOwnerId())
+            {
+                if (!isInsideRadius(player, L2NpcInstance.INTERACTION_DISTANCE, false, false))
+                {
+                    player.getAI().setIntention(CtrlIntention.AI_INTENTION_INTERACT, this);
+                }
+                else
+                {
+                	player.gatesRequest(this);
+                    if (getOpen() == 1)
+                    {
+                    	player.sendPacket(new ConfirmDlg(1140));
+                    }
+                    else
+                    {
+                    	player.sendPacket(new ConfirmDlg(1141));;
+                    }
+                }
+            }
+            else if (player.getClan()!=null && getFort() != null && player.getClanId() == getFort().getOwnerId() && isUnlockable())
             {
                 if (!isInsideRadius(player, L2NpcInstance.INTERACTION_DISTANCE, false, false))
                 {

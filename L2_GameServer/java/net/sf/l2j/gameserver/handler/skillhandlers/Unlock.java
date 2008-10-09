@@ -55,7 +55,7 @@ public class Unlock implements ISkillHandler
 			if (target instanceof L2DoorInstance)
 			{
 				L2DoorInstance door = (L2DoorInstance) target;
-				if (!door.isUnlockable())
+				if (!door.isUnlockable() || door.getFort() != null)
 				{
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.UNABLE_TO_UNLOCK_DOOR));
 					activeChar.sendPacket(ActionFailed.STATIC_PACKET);
