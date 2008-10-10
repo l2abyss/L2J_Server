@@ -215,4 +215,10 @@ public abstract class L2Transformation implements Cloneable, Runnable
             return null;
         }
     }
+    
+    // Override if necessary
+    public void onLevelUp()
+    {
+    	return;
+    }
 }

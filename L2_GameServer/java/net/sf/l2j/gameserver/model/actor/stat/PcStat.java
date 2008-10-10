@@ -170,6 +170,9 @@ public class PcStat extends PlayableStat
         }
         if (getActiveChar().isInParty()) getActiveChar().getParty().recalculatePartyLevel(); // Recalculate the party level
 
+        if (getActiveChar().isTransformed())
+        	getActiveChar().getTransformation().onLevelUp();
+        
         StatusUpdate su = new StatusUpdate(getActiveChar().getObjectId());
         su.addAttribute(StatusUpdate.LEVEL, getLevel());
         su.addAttribute(StatusUpdate.MAX_CP, getMaxCp());
