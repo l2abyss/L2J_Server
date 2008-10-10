@@ -313,15 +313,16 @@ public class L2Attackable extends L2NpcInstance
     @Override
 	public L2CharacterAI getAI()
     {
-        if (_ai == null)
-        {
-            synchronized(this)
-            {
-                if (_ai == null)
-                    _ai = new L2AttackableAI(new AIAccessor());
-            }
-        }
-        return _ai;
+        L2CharacterAI ai = _ai; // copy handle
+		if (ai == null)
+		{
+			synchronized(this)
+			{
+				if (_ai == null) _ai = new L2AttackableAI(new AIAccessor());
+				return _ai;
+			}
+		}
+		return ai;
     }
 
     // get condition to hate, actually isAggressive() is checked

@@ -149,16 +149,16 @@ public abstract class L2Summon extends L2PlayableInstance
 	@Override
 	public L2CharacterAI getAI()
     {
-		if (_ai == null)
+		L2CharacterAI ai = _ai; // copy handle
+		if (ai == null)
 		{
 			synchronized(this)
 			{
-				if (_ai == null)
-					_ai = new L2SummonAI(new L2Summon.AIAccessor());
+				if (_ai == null) _ai = new L2SummonAI(new L2Summon.AIAccessor());
+				return _ai;
 			}
 		}
-
-		return _ai;
+		return ai;
 	}
 
 	@Override

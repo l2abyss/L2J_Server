@@ -269,7 +269,8 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 
 	public int getPowerToAdd(int stoneId, int oldValue, L2ItemInstance item)
 	{
-		boolean stone = false, crystal = false, jewel = false, energy = false;
+		boolean stone = false, crystal = false;
+		// boolean jewel = false, energy = false;
 		for (int id : Elementals.STONES)
 		{
 			if (id == stoneId)
@@ -294,12 +295,12 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 				{
 					if (id == stoneId)
 					{
-						jewel = true;
+						//jewel = true;
 						break;
 					}
 				}
-				if (!jewel)
-					energy = true;
+				//if (!jewel)
+				//	energy = true;
 			}
 		}
 
