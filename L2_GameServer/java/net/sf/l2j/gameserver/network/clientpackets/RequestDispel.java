@@ -18,6 +18,7 @@ import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.templates.L2SkillType;
 
 /**
  *
@@ -58,7 +59,7 @@ public class RequestDispel extends L2GameClientPacket
 		if (activeChar != null)
 		{
 			L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLevel);
-			if (skill != null && !skill.isDance() && !skill.isDebuff())
+			if (skill != null && !skill.isDance() && !skill.isDebuff() && skill.getSkillType() != L2SkillType.TRANSFORM)
 			{
 				for (L2Effect e : activeChar.getAllEffects())
 				{
