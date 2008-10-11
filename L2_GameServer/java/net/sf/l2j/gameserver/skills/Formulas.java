@@ -1902,29 +1902,35 @@ public final class Formulas
 	{
 		double multiplier = 1;
 		if (type == null) return multiplier;
-		switch (type)
+		try 
 		{
-			case STUN:
-			case BLEED:
-				multiplier = 2 - Math.sqrt(CONbonus[target.getCON()]);
-				break;
-			case POISON:
-			case SLEEP:
-			case DEBUFF:
-			case WEAKNESS:
-			case ERASE:
-			case ROOT:
-			case MUTE:
-			case FEAR:
-			case BETRAY:
-			case CONFUSION:
-			case CONFUSE_MOB_ONLY:
-			case AGGREDUCE_CHAR:
-			case PARALYZE:
-				multiplier = 2 - Math.sqrt(MENbonus[target.getMEN()]);
-				break;
-			default:
-				return multiplier;
+			switch (type)
+			{
+				case STUN:
+				case BLEED:
+					multiplier = 2 - Math.sqrt(CONbonus[target.getCON()]);
+					break;
+				case POISON:
+				case SLEEP:
+				case DEBUFF:
+				case WEAKNESS:
+				case ERASE:
+				case ROOT:
+				case MUTE:
+				case FEAR:
+				case BETRAY:
+				case CONFUSION:
+				case CONFUSE_MOB_ONLY:
+				case AGGREDUCE_CHAR:
+				case PARALYZE:
+					multiplier = 2 - Math.sqrt(MENbonus[target.getMEN()]);
+					break;
+				default:
+					return multiplier;
+			}
+		} catch (ArrayIndexOutOfBoundsException e)
+		{
+			_log.warning("Character "+target.getName()+" has been set (by a GM?) a MEN or CON stat value out of accepted range");
 		}
 		if (multiplier < 0)
 			multiplier = 0;
