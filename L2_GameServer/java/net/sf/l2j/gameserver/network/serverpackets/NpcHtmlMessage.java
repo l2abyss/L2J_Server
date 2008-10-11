@@ -219,9 +219,9 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 			i = start;
 			int finish2 = _html.indexOf("$",start);
 			if (finish2 < finish && finish2 > 0)
-                activeChar.addBypass2(_html.substring(start, finish2));
+                activeChar.addBypass2(_html.substring(start, finish2).trim());
 			else
-                activeChar.addBypass(_html.substring(start, finish));
+                activeChar.addBypass(_html.substring(start, finish).trim());
 			//System.err.println("["+_html.substring(start, finish)+"]");
 		}
 	}
