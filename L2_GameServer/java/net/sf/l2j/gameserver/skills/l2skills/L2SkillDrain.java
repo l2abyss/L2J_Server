@@ -145,7 +145,7 @@ public class L2SkillDrain extends L2Skill {
                 	if (target.reflectSkill(this))
                 	{
                 		activeChar.stopSkillEffects(getId());
-    					getEffects((L2Character) null,activeChar);
+    					getEffects(target,activeChar);
     					SystemMessage sm = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
 						sm.addSkillName(getId());
 						activeChar.sendPacket(sm);

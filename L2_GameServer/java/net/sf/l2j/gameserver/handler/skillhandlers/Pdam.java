@@ -128,7 +128,7 @@ public class Pdam implements ISkillHandler
 					if (target.reflectSkill(skill))
 					{
 						activeChar.stopSkillEffects(skill.getId());
-						skill.getEffects((L2Character) null, activeChar);
+						skill.getEffects(target, activeChar);
 						SystemMessage sm = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
 						sm.addSkillName(skill);
 						activeChar.sendPacket(sm);
