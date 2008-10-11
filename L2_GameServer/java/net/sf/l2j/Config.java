@@ -683,7 +683,8 @@ public final class Config
 	/** SevinSigns Settings -Begin                         **/
 	/** ************************************************** **/
     
-    public static boolean 	ALT_GAME_REQUIRE_CASTLE_DAWN;
+    public static boolean 	ALT_GAME_CASTLE_DAWN;
+    public static boolean 	ALT_GAME_CASTLE_DUSK;
     public static boolean 	ALT_GAME_REQUIRE_CLAN_CASTLE;
     public static int 		ALT_FESTIVAL_MIN_PLAYER;
     public static int 		ALT_MAXIMUM_PLAYER_CONTRIB;
@@ -1086,7 +1087,8 @@ public final class Config
 	                //
 	                
 	                
-					ALT_GAME_REQUIRE_CASTLE_DAWN    					= Boolean.parseBoolean(Feature.getProperty("AltRequireCastleForDawn", "False"));
+					ALT_GAME_CASTLE_DAWN    					= Boolean.parseBoolean(Feature.getProperty("AltCastleForDawn", "True"));
+					ALT_GAME_CASTLE_DUSK    					= Boolean.parseBoolean(Feature.getProperty("AltCastleForDusk", "True"));
 	                ALT_GAME_REQUIRE_CLAN_CASTLE    					= Boolean.parseBoolean(Feature.getProperty("AltRequireClanCastle", "False"));
 	                ALT_FESTIVAL_MIN_PLAYER         					= Integer.parseInt(Feature.getProperty("AltFestivalMinPlayer", "5"));
 	                ALT_MAXIMUM_PLAYER_CONTRIB      					= Integer.parseInt(Feature.getProperty("AltMaxPlayerContrib", "1000000"));
@@ -2169,7 +2171,8 @@ public final class Config
         else if (pName.equalsIgnoreCase("AltKarmaPlayerCanTeleport")) ALT_GAME_KARMA_PLAYER_CAN_TELEPORT = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltKarmaPlayerCanTrade")) ALT_GAME_KARMA_PLAYER_CAN_TRADE = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltKarmaPlayerCanUseWareHouse")) ALT_GAME_KARMA_PLAYER_CAN_USE_WAREHOUSE = Boolean.parseBoolean(pValue);
-        else if (pName.equalsIgnoreCase("AltRequireCastleForDawn")) ALT_GAME_REQUIRE_CASTLE_DAWN = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltCastleForDawn")) ALT_GAME_CASTLE_DAWN = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AltCastleForDusk")) ALT_GAME_CASTLE_DUSK = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltRequireClanCastle")) ALT_GAME_REQUIRE_CLAN_CASTLE = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltFreeTeleporting")) ALT_GAME_FREE_TELEPORT = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltSubClassWithoutQuests")) ALT_GAME_SUBCLASS_WITHOUT_QUESTS = Boolean.parseBoolean(pValue);

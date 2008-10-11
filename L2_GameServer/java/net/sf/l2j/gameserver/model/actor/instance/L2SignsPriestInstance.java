@@ -20,8 +20,6 @@ import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.cache.HtmCache;
-import net.sf.l2j.gameserver.datatables.ClanTable;
-import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
@@ -134,6 +132,36 @@ public class L2SignsPriestInstance extends L2FolkInstance
                     sm.addItemName(SevenSigns.RECORD_SEVEN_SIGNS_ID);
                     player.sendPacket(sm);
                     break;
+                case 34: // Pay the participation fee request
+                	boolean fee = true;
+                	L2ItemInstance adena = player.getInventory().getItemByItemId(57); //adena
+                	L2ItemInstance certif = player.getInventory().getItemByItemId(5708); //Lord of the Manor's Certificate of Approval
+                	if ((adena != null && adena.getCount() >= 50000) || (certif != null && certif.getCount() >= 1))
+                		fee = false;
+                	if (fee)
+                	{
+            			showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn_no.htm");
+            			break;
+                	}
+                case 33: // "I want to participate" request
+                	if (cabal == 1 && Config.ALT_GAME_CASTLE_DUSK) //dusk
+                	{
+                		// castle owners cannot participate with dusk side
+                		if (player.getClan() != null && player.getClan().getHasHideout() > 0)
+                		{
+                			showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dusk_no.htm");
+                			break;
+                		}
+                	}
+                	else if(cabal == 2 && Config.ALT_GAME_CASTLE_DAWN) //dawn
+                	{
+                		// clans without castle need to pay participation fee
+                		if (player.getClan() == null || (player.getClan() != null && player.getClan().getHasHideout() == 0)) // even if in htmls is said that ally can have castle too, but its not
+                		{
+                			showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn_fee.htm");
+                			break;
+                		}
+                	}
                 case 3: // Join Cabal Intro 1
                 case 8: // Festival of Darkness Intro - SevenSigns x [0]1
                 case 10: // Teleport Locations List
@@ -157,68 +185,56 @@ public class L2SignsPriestInstance extends L2FolkInstance
                     }
                     else if (player.getClassId().level() >= 2)
                     {
-                        if (Config.ALT_GAME_REQUIRE_CASTLE_DAWN)
+                        if (Config.ALT_GAME_CASTLE_DUSK)
                         {
-                            if (getPlayerAllyHasCastle(player))
+                        	if (player.getClan() != null && player.getClan().getHasHideout() >= 0) // even if in htmls is said that ally can have castle too, but its not
                             {
                                 if (cabal == SevenSigns.CABAL_DUSK)
                                 {
-                                    player.sendMessage("You must not be a member of a castle-owning clan to join the Revolutionaries of Dusk.");
+                                	showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dusk_no.htm");
                                     return;
                                 }
                             }
-                            /*if (!getPlayerAllyHasCastle(player))
-                            {
-                            	if (cabal == SevenSigns.CABAL_DAWN)
-                            	{
-                            		player.sendMessage("You must be a member of a castle-owning clan to join the Lords Of Dawn.");
-                            		return;
-                            	}
-                            }
-*/
-                            else
-                            {
-                                /*
-                                 * If the player is trying to join the Lords of Dawn, check if they are
-                                 * carrying a Lord's certificate.
-                                 *
-                                 * If not then try to take the required amount of adena instead.
-                                 */
-                                if (cabal == SevenSigns.CABAL_DAWN)
+                        }
+                        /*
+                         * If the player is trying to join the Lords of Dawn, check if they are
+                         * carrying a Lord's certificate.
+                         *
+                         * If not then try to take the required amount of adena instead.
+                         */
+                        if (Config.ALT_GAME_CASTLE_DAWN)
+                        {
+                        	if (cabal == SevenSigns.CABAL_DAWN)
+                        	{
+                        		boolean allowJoinDawn = false;
+
+                            	if (player.getClan() != null && player.getClan().getHasHideout() >= 0) // castle owner don't need to pay anything
                                 {
-                                    boolean allowJoinDawn = false;
-
-                                    if (player.destroyItemByItemId(
-                                                                   "SevenSigns",
-                                                                   SevenSigns.CERTIFICATE_OF_APPROVAL_ID,
-                                                                   1, this, false))
-                                    {
-                                        sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-                                        sm.addItemName(SevenSigns.CERTIFICATE_OF_APPROVAL_ID);
-                                        sm.addNumber(1);
-                                        player.sendPacket(sm);
-                                        allowJoinDawn = true;
-                                    }
-                                    else if (player.reduceAdena("SevenSigns",
-                                                                SevenSigns.ADENA_JOIN_DAWN_COST, this,
-                                                                false))
-                                    {
-                                        sm = new SystemMessage(SystemMessageId.DISAPPEARED_ADENA);
-                                        sm.addNumber(SevenSigns.ADENA_JOIN_DAWN_COST);
-                                        player.sendPacket(sm);
-                                        allowJoinDawn = true;
-                                    }
-
-                                    if (!allowJoinDawn)
-                                    {
-                                        player.sendMessage("You must be a member of a castle-owning clan, have a Certificate of Lord's Approval, or pay 50000 adena to join the Lords of Dawn.");
-                                        return;
-                                    }
+                            		allowJoinDawn = true;
                                 }
-                            }
+                            	else if (player.destroyItemByItemId("SevenSigns",SevenSigns.CERTIFICATE_OF_APPROVAL_ID,1, this, false))
+                        		{
+                        			sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+                        			sm.addItemName(SevenSigns.CERTIFICATE_OF_APPROVAL_ID);
+                        			sm.addNumber(1);
+                        			player.sendPacket(sm);
+                        			allowJoinDawn = true;
+                        		}
+                        		else if (player.reduceAdena("SevenSigns",SevenSigns.ADENA_JOIN_DAWN_COST, this,false))
+                        		{
+                        			sm = new SystemMessage(SystemMessageId.DISAPPEARED_ADENA);
+                        			sm.addNumber(SevenSigns.ADENA_JOIN_DAWN_COST);
+                        			player.sendPacket(sm);
+                        			allowJoinDawn = true;
+                        		}
+                        		if (!allowJoinDawn)
+                        		{
+                        			showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn_fee.htm");
+                        			return;
+                        		}
+                        	}
                         }
                     }
-
                     SevenSigns.getInstance().setPlayerInfo(player, cabal, newSeal);
 
                     if (cabal == SevenSigns.CABAL_DAWN) player.sendPacket(new SystemMessage(
@@ -373,6 +389,7 @@ public class L2SignsPriestInstance extends L2FolkInstance
                     iu = new InventoryUpdate();
                     iu.addModifiedItem(player.getInventory().getAncientAdenaInstance());
                     iu.addModifiedItem(player.getInventory().getAdenaInstance());
+                    showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "blkmrkt_5.htm");
                     player.sendPacket(iu);
                     break;
                 case 9: // Receive Contribution Rewards
@@ -588,34 +605,6 @@ public class L2SignsPriestInstance extends L2FolkInstance
         {
             super.onBypassFeedback(player, command);
         }
-    }
-
-    private final boolean getPlayerAllyHasCastle(L2PcInstance player)
-    {
-        L2Clan playerClan = player.getClan();
-
-        // The player is not in a clan, so return false.
-        if (playerClan == null) return false;
-
-        // If castle ownage check is clan-based rather than ally-based,
-        // check if the player's clan has a castle and return the result.
-        if (!Config.ALT_GAME_REQUIRE_CLAN_CASTLE)
-        {
-            int allyId = playerClan.getAllyId();
-
-            // The player's clan is not in an alliance, so return false.
-            if (allyId != 0)
-            {
-                // Check if another clan in the same alliance owns a castle,
-                // by traversing the list of clans and act accordingly.
-                L2Clan[] clanList = ClanTable.getInstance().getClans();
-
-                for (L2Clan clan : clanList)
-                    if (clan.getAllyId() == allyId) if (clan.getHasCastle() > 0) return true;
-            }
-        }
-
-        return (playerClan.getHasCastle() > 0);
     }
 
     private void showChatWindow(L2PcInstance player, int val, String suffix, boolean isDescription)
