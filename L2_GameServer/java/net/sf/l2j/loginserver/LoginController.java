@@ -510,7 +510,8 @@ public class LoginController
 		boolean ok = false;
 		InetAddress address = client.getConnection().getSocket().getInetAddress();
 		// log it anyway
-		Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()), "logins_ip");
+		if (Config.LOG_LOGIN_CONTROLLER)
+			Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()), "logins_ip");
 
 		// player disconnected meanwhile
 		if (address == null)
@@ -621,7 +622,8 @@ public class LoginController
 
 		if (!ok)
 		{
-			Log.add("'" + user + "' " + address.getHostAddress(), "logins_ip_fails");
+			if (Config.LOG_LOGIN_CONTROLLER)
+				Log.add("'" + user + "' " + address.getHostAddress(), "logins_ip_fails");
 
 			FailedLoginAttempt failedAttempt = _hackProtection.get(address);
 			int failedCount;
@@ -645,7 +647,8 @@ public class LoginController
 		else
 		{
 			_hackProtection.remove(address);
-			Log.add("'" + user + "' " + address.getHostAddress(), "logins_ip");
+			if (Config.LOG_LOGIN_CONTROLLER)
+				Log.add("'" + user + "' " + address.getHostAddress(), "logins_ip");
 		}
 
 		return ok;

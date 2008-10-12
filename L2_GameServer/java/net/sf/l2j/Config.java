@@ -329,7 +329,7 @@ public final class Config
     public static boolean	LOG_CHAT;
     public static boolean	LOG_ITEMS;
     public static boolean	GMAUDIT;
-    public static boolean	LOG_GAME;
+    public static boolean	LOG_GAME_DAMAGE;
     public static boolean	DEBUG;
     public static boolean	ASSERT;
     public static boolean	DEVELOPER;
@@ -750,6 +750,8 @@ public final class Config
     public static int		MIN_PROTOCOL_REVISION;
     /** Maximal protocol revision */
     public static int		MAX_PROTOCOL_REVISION;
+    /** Log LoginController.loginValid(...) */
+    public static boolean 	LOG_LOGIN_CONTROLLER;
 	
     /** ************************************************** **/
 	/** Server Settings -End                           **/
@@ -1392,7 +1394,7 @@ public final class Config
 	                LOG_CHAT									= Boolean.parseBoolean(General.getProperty("LogChat", "false"));
 	                LOG_ITEMS									= Boolean.parseBoolean(General.getProperty("LogItems", "false"));
 	                GMAUDIT										= Boolean.parseBoolean(General.getProperty("GMAudit", "False"));
-	                LOG_GAME									= Boolean.parseBoolean(General.getProperty("LogGame", "False"));
+	                LOG_GAME_DAMAGE								= Boolean.parseBoolean(General.getProperty("LogGameDamage", "False"));
 	                DEBUG										= Boolean.parseBoolean(General.getProperty("Debug", "false"));
 	                ASSERT										= Boolean.parseBoolean(General.getProperty("Assert", "false"));
 	                DEVELOPER									= Boolean.parseBoolean(General.getProperty("Developer", "false"));
@@ -1915,7 +1917,9 @@ public final class Config
 	
 	                LOGIN_TRY_BEFORE_BAN    = Integer.parseInt(serverSettings.getProperty("LoginTryBeforeBan", "10"));
 	                LOGIN_BLOCK_AFTER_BAN   = Integer.parseInt(serverSettings.getProperty("LoginBlockAfterBan", "600"));
-	
+	                
+	                LOG_LOGIN_CONTROLLER 	= Boolean.parseBoolean(serverSettings.getProperty("LogLoginController", "true"));
+	                
 	                DATAPACK_ROOT    = new File(serverSettings.getProperty("DatapackRoot", ".")).getCanonicalFile(); //FIXME: in login?
 	
 	                INTERNAL_HOSTNAME   = serverSettings.getProperty("InternalHostname", "localhost");

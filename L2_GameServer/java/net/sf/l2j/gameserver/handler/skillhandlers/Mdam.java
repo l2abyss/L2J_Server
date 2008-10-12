@@ -177,7 +177,7 @@ public class Mdam implements ISkillHandler
 				target.reduceCurrentHp(damage, activeChar);
 				
 				// Logging damage
-				if (Config.LOG_GAME && damage > 5000 && activeChar instanceof L2PcInstance)
+				if (Config.LOG_GAME_DAMAGE && damage > 5000 && activeChar instanceof L2PcInstance)
 				{
 					String name = "";
 					if (target instanceof L2RaidBossInstance)
