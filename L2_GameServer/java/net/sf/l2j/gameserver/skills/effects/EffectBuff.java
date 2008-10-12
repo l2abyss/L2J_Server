@@ -23,7 +23,7 @@ import net.sf.l2j.gameserver.skills.Env;
  *         TODO To change the template for this generated type comment go to
  *         Window - Preferences - Java - Code Style - Code Templates
  */
-public final class EffectBuff extends L2Effect
+public class EffectBuff extends L2Effect
 {
 	
 	public EffectBuff(Env env, EffectTemplate template)

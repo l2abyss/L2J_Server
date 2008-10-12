@@ -16,19 +16,23 @@ package net.sf.l2j.gameserver.skills.effects;
 
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.skills.effects.EffectBuff;
 
 /**
  * @author mkizub
- * 
- *         TODO To change the template for this generated type comment go to
- *         Window - Preferences - Java - Code Style - Code Templates
  */
-final class EffectImmobileBuff extends L2Effect
+final class EffectImmobileBuff extends EffectBuff
 {
 	
 	public EffectImmobileBuff(Env env, EffectTemplate template)
 	{
 		super(env, template);
+	}
+	
+	// Special constructor to steal this effect
+	public EffectImmobileBuff(Env env, L2Effect effect)
+	{
+		super(env, effect);
 	}
 	
 	/**
