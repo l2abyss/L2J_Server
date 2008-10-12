@@ -55,6 +55,7 @@ public enum Stats
 
 	// Atk & Def rates
 	EVASION_RATE 		("rEvas"),
+	P_SKILL_EVASION		("pSkillEvas"),
 	SHIELD_RATE 		("rShld"),
 	CRITICAL_RATE 		("rCrit" ),
 	BLOW_RATE 			("blowRate" ),

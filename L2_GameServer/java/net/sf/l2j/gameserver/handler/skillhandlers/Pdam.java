@@ -119,109 +119,132 @@ public class Pdam implements ISkillHandler
 			if (soul && weapon != null)
 				weapon.setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
 			
-			if (damage > 0)
+			boolean skillIsEvaded = f.calcPhysicalSkillEvasion(target, skill);
+			
+			if (!skillIsEvaded)
 			{
-				activeChar.sendDamageMessage(target, damage, false, crit, false);
-				
-				if (skill.hasEffects())
+				if (damage > 0)
 				{
-					if (target.reflectSkill(skill))
+					activeChar.sendDamageMessage(target, damage, false, crit, false);
+				
+					if (skill.hasEffects())
 					{
-						activeChar.stopSkillEffects(skill.getId());
-						skill.getEffects(target, activeChar);
-						SystemMessage sm = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
-						sm.addSkillName(skill);
-						activeChar.sendPacket(sm);
-					}
-					else
-					{
-						// activate attacked effects, if any
-						target.stopSkillEffects(skill.getId());
-						if (f.calcSkillSuccess(activeChar, target, skill, false, false, false))
+						if (target.reflectSkill(skill))
 						{
-							skill.getEffects(activeChar, target);
-							
+							activeChar.stopSkillEffects(skill.getId());
+							skill.getEffects(target, activeChar);
 							SystemMessage sm = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
-							sm.addSkillName(skill);
-							target.sendPacket(sm);
-						}
-						else
-						{
-							SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
-							sm.addCharName(target);
 							sm.addSkillName(skill);
 							activeChar.sendPacket(sm);
 						}
-					}
-					
-					if (Config.LOG_GAME && damage > 5000 && activeChar instanceof L2PcInstance)
-					{
-						String name = "";
-						if (target instanceof L2RaidBossInstance)
-							name = "RaidBoss ";
-						if (target instanceof L2NpcInstance)
-							name += target.getName() + "(" + ((L2NpcInstance) target).getTemplate().npcId + ")";
-						if (target instanceof L2PcInstance)
-							name = target.getName() + "(" + target.getObjectId() + ") ";
-						name += target.getLevel() + " lvl";
-						Log.add(activeChar.getName() + "(" + activeChar.getObjectId() + ") " + activeChar.getLevel() + " lvl did damage " + damage + " with skill " + skill.getName() + "(" + skill.getId() + ") to " + name, "damage_pdam");
-					}
-				}
-				
-				// Possibility of a lethal strike
-				boolean lethal = Formulas.getInstance().calcLethalHit(activeChar, target, skill);
-				
-				// Make damage directly to HP
-				if (!lethal && skill.getDmgDirectlyToHP())
-				{
-					if (target instanceof L2PcInstance)
-					{
-						L2PcInstance player = (L2PcInstance) target;
-						if (!player.isInvul())
+						else
 						{
-							if (damage >= player.getCurrentHp())
+							// activate attacked effects, if any
+							target.stopSkillEffects(skill.getId());
+							if (f.calcSkillSuccess(activeChar, target, skill, false, false, false))
 							{
-								if (player.isInDuel())
-									player.setCurrentHp(1);
-								else
-								{
-									player.setCurrentHp(0);
-									if (player.isInOlympiadMode())
-									{
-										player.abortAttack();
-										player.abortCast();
-										player.getStatus().stopHpMpRegeneration();
-										player.setIsDead(true);
-										player.setIsPendingRevive(true);
-									}
-									else
-										player.doDie(activeChar);
-								}
+								skill.getEffects(activeChar, target);
+							
+								SystemMessage sm = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
+								sm.addSkillName(skill);
+								target.sendPacket(sm);
 							}
 							else
-								player.setCurrentHp(player.getCurrentHp() - damage);
+							{
+								SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
+								sm.addCharName(target);
+								sm.addSkillName(skill);
+								activeChar.sendPacket(sm);
+							}
 						}
+					
+						if (Config.LOG_GAME && damage > 5000 && activeChar instanceof L2PcInstance)
+						{
+							String name = "";
+							if (target instanceof L2RaidBossInstance)
+								name = "RaidBoss ";
+							if (target instanceof L2NpcInstance)
+								name += target.getName() + "(" + ((L2NpcInstance) target).getTemplate().npcId + ")";
+							if (target instanceof L2PcInstance)
+								name = target.getName() + "(" + target.getObjectId() + ") ";
+							name += target.getLevel() + " lvl";
+							Log.add(activeChar.getName() + "(" + activeChar.getObjectId() + ") " + activeChar.getLevel() + " lvl did damage " + damage + " with skill " + skill.getName() + "(" + skill.getId() + ") to " + name, "damage_pdam");
+						}
+					}
+				
+					// Possibility of a lethal strike
+					boolean lethal = Formulas.getInstance().calcLethalHit(activeChar, target, skill);
+				
+					// Make damage directly to HP
+					if (!lethal && skill.getDmgDirectlyToHP())
+					{
+						if (target instanceof L2PcInstance)
+						{
+							L2PcInstance player = (L2PcInstance) target;
+							if (!player.isInvul())
+							{
+								if (damage >= player.getCurrentHp())
+								{
+									if (player.isInDuel())
+										player.setCurrentHp(1);
+									else
+									{
+										player.setCurrentHp(0);
+										if (player.isInOlympiadMode())
+										{
+											player.abortAttack();
+											player.abortCast();
+											player.getStatus().stopHpMpRegeneration();
+											player.setIsDead(true);
+											player.setIsPendingRevive(true);
+										}
+										else
+											player.doDie(activeChar);
+									}
+								}
+								else
+									player.setCurrentHp(player.getCurrentHp() - damage);
+							}
 						
-						SystemMessage smsg = new SystemMessage(SystemMessageId.S1_RECEIVED_DAMAGE_OF_S3_FROM_S2);
-						smsg.addPcName(player);
-						smsg.addCharName(activeChar);
-						smsg.addNumber(damage);
-						player.sendPacket(smsg);
+							SystemMessage smsg = new SystemMessage(SystemMessageId.S1_RECEIVED_DAMAGE_OF_S3_FROM_S2);
+							smsg.addPcName(player);
+							smsg.addCharName(activeChar);
+							smsg.addNumber(damage);
+							player.sendPacket(smsg);
 						
+						}
+						else
+							target.reduceCurrentHp(damage, activeChar);
 					}
 					else
+					{
 						target.reduceCurrentHp(damage, activeChar);
+					}
+				
 				}
 				else
+				// No - damage
 				{
-					target.reduceCurrentHp(damage, activeChar);
+					activeChar.sendPacket(new SystemMessage(SystemMessageId.ATTACK_FAILED));
 				}
-				
 			}
 			else
-			// No - damage
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.ATTACK_FAILED));
+				if (activeChar instanceof L2PcInstance)
+				{
+					SystemMessage sm = new SystemMessage(SystemMessageId.S1_DODGES_ATTACK);
+					sm.addString(target.getName());
+					((L2PcInstance) activeChar).sendPacket(sm);
+				}
+				if (target instanceof L2PcInstance)
+				{
+					SystemMessage sm = new SystemMessage(SystemMessageId.AVOIDED_S1_ATTACK);
+					sm.addString(activeChar.getName());
+					((L2PcInstance) target).sendPacket(sm);
+				}
+				
+				// Possibility of a lethal strike despite skill is evaded
+				Formulas.getInstance().calcLethalHit(activeChar, target, skill);
 			}
 			
 			if (skill.getId() == 345 || skill.getId() == 346) // Sonic Rage or Raging Force
