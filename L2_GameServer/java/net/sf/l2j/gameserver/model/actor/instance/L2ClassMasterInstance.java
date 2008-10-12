@@ -307,6 +307,7 @@ public final class L2ClassMasterInstance extends L2FolkInstance
         sb.append("<tr><td><a action=\"bypass -h npc_"+getObjectId()+"_3rdClass\">3rd Classes.</a></td></tr>");
         sb.append("<tr><td><br></td></tr>");
         sb.append("</table>");
+        sb.append("<br><font color=\"LEVEL\">Please notice this menu is only available for Game Masters, not for normal players ;)</font>");
         sb.append("</body>");
         sb.append("</html>");
         html.setHtml(sb.toString());
