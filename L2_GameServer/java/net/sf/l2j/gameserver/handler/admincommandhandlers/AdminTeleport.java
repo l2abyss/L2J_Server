@@ -151,6 +151,11 @@ public class AdminTeleport implements IAdminCommandHandler
 				//Case of empty or missing coordinates
 				AdminHelpPage.showHelpPage(activeChar, "teleports.htm");
 			}
+			catch (NumberFormatException nfe)
+			{
+				activeChar.sendMessage("Usage: //move_to <x> <y> <z>");
+				AdminHelpPage.showHelpPage(activeChar, "teleports.htm");
+			}
 		}
 		else if (command.startsWith("admin_teleport_character"))
 		{
