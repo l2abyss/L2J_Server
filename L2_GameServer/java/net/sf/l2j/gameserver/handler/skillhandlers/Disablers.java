@@ -427,7 +427,7 @@ public class Disablers implements ISkillHandler
 						if (summonPet != null)
 						{
 							summonPet.unSummon(summonOwner);
-							SystemMessage sm = new SystemMessage(SystemMessageId.LETHAL_STRIKE);
+							SystemMessage sm = new SystemMessage(SystemMessageId.YOUR_SERVITOR_HAS_VANISHED);
 							summonOwner.sendPacket(sm);
 						}
 					}
