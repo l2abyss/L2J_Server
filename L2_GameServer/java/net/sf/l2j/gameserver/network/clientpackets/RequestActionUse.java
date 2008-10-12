@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.network.clientpackets;
 
 import java.util.Map;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -86,11 +87,15 @@ public final class RequestActionUse extends L2GameClientPacket
 			return;
 		}
 		
-		// don't do anything if player is transformed
+		// don't allow to do some action if player is transformed
 		if (activeChar.isTransformed())
 		{
-			getClient().sendPacket(ActionFailed.STATIC_PACKET);
-			return;
+			int[] notAllowedActions = {0, 10, 28, 37, 51, 61};
+			if (Arrays.binarySearch(notAllowedActions,_actionId) >= 0)
+			{
+				getClient().sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
 		}
 		
 		L2Summon pet = activeChar.getPet();
