@@ -140,9 +140,11 @@ public class DoorTable
 		int pdef = Integer.parseInt(st.nextToken());
 		int mdef = Integer.parseInt(st.nextToken());
 		boolean unlockable = false;
-		
 		if (st.hasMoreTokens())
 			unlockable = Boolean.parseBoolean(st.nextToken());
+		boolean startOpen = false;
+		if (st.hasMoreTokens())
+			startOpen = Boolean.parseBoolean(st.nextToken());
 		
 		if (rangeXMin > rangeXMax)
 			_log.severe("Error in door data, ID:" + id);
@@ -213,7 +215,7 @@ public class DoorTable
 			_log.severe("Error in door data, ID:" + id);
 		}
 		door.setCurrentHpMp(door.getMaxHp(), door.getMaxMp());
-		door.setOpen(1);
+		door.setOpen(startOpen);
 		door.setXYZInvisible(x, y, z);
 		
 		return door;
@@ -314,7 +316,7 @@ public class DoorTable
 					// phase 3, basically only z remains but now we calculate it with another formula (by rage)
 					// in some cases the direct line check (only) in the beginning isn't sufficient, 
 					// when char z changes a lot along the path
-					if (doorInst.getCurrentHp() > 0 && doorInst.getOpen() != 0) 
+					if (doorInst.getCurrentHp() > 0 && !doorInst.getOpen()) 
 					{
 						int px1 = doorInst.getXMin();
 						int py1 = doorInst.getYMin();

@@ -621,7 +621,7 @@ public class Castle
 				door.spawnMe(door.getX(), door.getY(), door.getZ());
 				getDoors().set(i, door);
 			}
-			else if (door.getOpen() == 0)
+			else if (door.getOpen())
 				door.closeMe();
 		}
 		loadDoorUpgrade(); // Check for any upgrade the doors may have

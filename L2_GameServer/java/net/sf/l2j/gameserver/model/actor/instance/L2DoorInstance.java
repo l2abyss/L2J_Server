@@ -81,7 +81,7 @@ public class L2DoorInstance extends L2Character
 
     protected final int _doorId;
     protected final String _name;
-    private int _open;
+    private boolean _open;
     private boolean _unlockable;
 
     private ClanHall _clanHall;
@@ -148,7 +148,7 @@ public class L2DoorInstance extends L2Character
             try {
                 String doorAction;
 
-                if (getOpen() == 1) {
+                if (!getOpen()) {
                     doorAction = "opened";
                     openMe();
                 }
@@ -225,14 +225,14 @@ public class L2DoorInstance extends L2Character
     /**
      * @return Returns the open.
      */
-    public int getOpen()
+    public boolean getOpen()
     {
         return _open;
     }
     /**
      * @param open The open to set.
      */
-    public void setOpen(int open)
+    public void setOpen(boolean open)
     {
         _open = open;
     }
@@ -435,7 +435,7 @@ public class L2DoorInstance extends L2Character
                 else
                 {
                 	player.gatesRequest(this);
-                    if (getOpen() == 1)
+                    if (!getOpen())
                     {
                     	player.sendPacket(new ConfirmDlg(1140));
                     }
@@ -454,7 +454,7 @@ public class L2DoorInstance extends L2Character
                 else
                 {
                 	player.gatesRequest(this);
-                    if (getOpen() == 1)
+                    if (!getOpen())
                     {
                     	player.sendPacket(new ConfirmDlg(1140));
                     }
@@ -563,13 +563,13 @@ public class L2DoorInstance extends L2Character
 
     public final void closeMe()
     {
-        setOpen(1);
+        setOpen(false);
         broadcastStatusUpdate();
     }
 
     public final void openMe()
     {
-        setOpen(0);
+        setOpen(true);
         broadcastStatusUpdate();
     }
 
