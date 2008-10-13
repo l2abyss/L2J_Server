@@ -14,7 +14,7 @@
  */
 package net.sf.l2j.gameserver.skills.conditions;
 
-import net.sf.l2j.gameserver.model.Inventory;
+import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.templates.L2Armor;
 import net.sf.l2j.gameserver.templates.L2Item;

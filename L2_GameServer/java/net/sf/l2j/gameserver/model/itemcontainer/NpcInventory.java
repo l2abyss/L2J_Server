@@ -15,11 +15,12 @@
  *
  * http://www.gnu.org/copyleft/gpl.html
  */
-package net.sf.l2j.gameserver.model;
+package net.sf.l2j.gameserver.model.itemcontainer;
 
 import java.util.List;
 
 import javolution.util.FastList;
+import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2ItemInstance.ItemLocation;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 

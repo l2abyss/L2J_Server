@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.model;
+package net.sf.l2j.gameserver.model.itemcontainer;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,6 +24,11 @@ import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.datatables.ArmorSetsTable;
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
+import net.sf.l2j.gameserver.model.L2ArmorSet;
+import net.sf.l2j.gameserver.model.L2ItemInstance;
+import net.sf.l2j.gameserver.model.L2Object;
+import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2ItemInstance.ItemLocation;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;

@@ -17,10 +17,10 @@ package net.sf.l2j.gameserver.network.clientpackets;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.l2j.gameserver.model.Inventory;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2ItemInstance.ItemLocation;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 
 /**
  * Format:(ch) d[dd]

@@ -18,11 +18,11 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.ClanWarehouse;
-import net.sf.l2j.gameserver.model.ItemContainer;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.itemcontainer.ItemContainer;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;

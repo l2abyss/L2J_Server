@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.model;
+package net.sf.l2j.gameserver.model.itemcontainer;
 
 import net.sf.l2j.gameserver.model.L2ItemInstance.ItemLocation;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;

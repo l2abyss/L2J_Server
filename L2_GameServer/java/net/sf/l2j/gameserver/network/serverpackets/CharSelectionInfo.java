@@ -24,8 +24,8 @@ import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
 import net.sf.l2j.gameserver.model.CharSelectInfoPackage;
-import net.sf.l2j.gameserver.model.Inventory;
 import net.sf.l2j.gameserver.model.L2Clan;
+import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 import net.sf.l2j.gameserver.network.L2GameClient;
 
 /**

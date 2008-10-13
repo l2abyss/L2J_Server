@@ -34,6 +34,7 @@ import net.sf.l2j.gameserver.model.actor.knownlist.SummonKnownList;
 import net.sf.l2j.gameserver.model.actor.stat.SummonStat;
 import net.sf.l2j.gameserver.model.actor.status.SummonStatus;
 import net.sf.l2j.gameserver.model.base.Experience;
+import net.sf.l2j.gameserver.model.itemcontainer.PetInventory;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ExPartyPetWindowAdd;

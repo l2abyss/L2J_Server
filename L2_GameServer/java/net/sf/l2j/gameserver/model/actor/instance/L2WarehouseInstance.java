@@ -19,7 +19,7 @@ import java.util.Map;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.model.L2Clan;
-import net.sf.l2j.gameserver.model.PcFreight;
+import net.sf.l2j.gameserver.model.itemcontainer.PcFreight;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;

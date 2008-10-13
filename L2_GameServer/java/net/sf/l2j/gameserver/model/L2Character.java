@@ -71,6 +71,7 @@ import net.sf.l2j.gameserver.model.actor.knownlist.CharKnownList;
 import net.sf.l2j.gameserver.model.actor.stat.CharStat;
 import net.sf.l2j.gameserver.model.actor.status.CharStatus;
 import net.sf.l2j.gameserver.model.entity.Duel;
+import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.network.SystemMessageId;

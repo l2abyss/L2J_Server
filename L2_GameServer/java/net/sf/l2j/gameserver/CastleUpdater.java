@@ -18,9 +18,9 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
-import net.sf.l2j.gameserver.model.ItemContainer;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.entity.Castle;
+import net.sf.l2j.gameserver.model.itemcontainer.ItemContainer;
 
 /**
  *
