@@ -128,6 +128,7 @@ import net.sf.l2j.gameserver.model.entity.Duel;
 import net.sf.l2j.gameserver.model.entity.L2Event;
 import net.sf.l2j.gameserver.model.entity.Siege;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
+import net.sf.l2j.gameserver.model.entity.TvTManager;
 import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 import net.sf.l2j.gameserver.model.itemcontainer.ItemContainer;
 import net.sf.l2j.gameserver.model.itemcontainer.PcFreight;
@@ -11233,7 +11234,9 @@ public final class L2PcInstance extends L2PlayableInstance
     {
     	if(Rnd.get(100) <= Config.DEATH_PENALTY_CHANCE 
     			&& !(killer instanceof L2PcInstance) && !(this.isGM())
-    			&& !(this.getCharmOfLuck() && (killer instanceof L2GrandBossInstance || killer instanceof L2RaidBossInstance))) 
+    			&& !(this.getCharmOfLuck() && (killer instanceof L2GrandBossInstance || killer instanceof L2RaidBossInstance))
+    			&& !isPhoenixBlessed()
+    			&& !(TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getObjectId()))) 
     		
     		increaseDeathPenaltyBuffLevel();
 	}
