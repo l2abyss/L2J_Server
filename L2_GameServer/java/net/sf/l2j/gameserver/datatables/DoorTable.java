@@ -296,7 +296,7 @@ public class DoorTable
 		}
 		
 		// there are quite many doors, maybe they should be splitted
-		for (L2DoorInstance doorInst : getDoors())
+		for (L2DoorInstance doorInst : _staticItems.values())
 		{
 			if (doorInst.getMapRegion() != region) 
 				continue;

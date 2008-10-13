@@ -96,7 +96,7 @@ public class ValidatePosition extends L2GameClientPacket
         if (activeChar.isFlying() || activeChar.isInsideZone(L2Character.ZONE_WATER))
         {
         	activeChar.setXYZ(realX, realY, _z);
-        	if (diffSq > 40000) // validate packet, may also cause z bounce if close to land
+        	if (diffSq > 90000) // validate packet, may also cause z bounce if close to land
         	{
         		if (activeChar.isInBoat())
         		{
