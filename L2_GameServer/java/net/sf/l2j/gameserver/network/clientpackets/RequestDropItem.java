@@ -28,6 +28,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.L2EtcItemType;
 import net.sf.l2j.gameserver.templates.L2Item;
+import net.sf.l2j.gameserver.util.FloodProtector;
 import net.sf.l2j.gameserver.util.IllegalPlayerAction;
 import net.sf.l2j.gameserver.util.Util;
 
@@ -62,7 +63,11 @@ public final class RequestDropItem extends L2GameClientPacket
 	{
         L2PcInstance activeChar = getClient().getActiveChar();
     	if (activeChar == null) return;
-        L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
+		// Flood protect drop to avoid packet lag
+		if (!FloodProtector.getInstance().tryPerformAction(activeChar.getObjectId(), FloodProtector.PROTECTED_DROPITEM))
+			return;
+    	
+    	L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
 
         if (item == null
         		|| _count == 0
