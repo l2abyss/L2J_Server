@@ -402,10 +402,9 @@ public abstract class ItemContainer
 	{
         synchronized(item)
         {
-            // Adjust item quantity
+        	// Adjust item quantity
             if (item.getCount() > count)
             {
-                
                 item.changeCount(process, -count, actor, reference);
                 item.setLastChange(L2ItemInstance.MODIFIED);
                 
@@ -419,13 +418,14 @@ public abstract class ItemContainer
                 
                 return item;
             }
-            else 
+            else
             {
-                boolean removed = this.removeItem(item);
+            	if (item.getCount() < count)
+            		return null;
+
+            	boolean removed = this.removeItem(item);
                 if (!removed)
-                {
                     return null;
-                }
                 
                 ItemTable.getInstance().destroyItem(process, item, actor, reference);
                 
