@@ -75,13 +75,22 @@ public class NpcTable
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
 				PreparedStatement statement;
-				statement = con.prepareStatement("SELECT "
-						+ L2DatabaseFactory.getInstance().safetyString(new String[]
-						{
-							"id", "idTemplate", "name", "serverSideName", "title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type", "attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con",
-							"dex", "int", "wit", "men", "exp", "sp", "patk", "pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "walkspd", "runspd", "faction_id", "faction_range", "isUndead", "absorb_level",
-							"absorb_type", "ss", "bss", "ss_rate", "AI", "drop_herbs"
-						}) + " FROM npc");
+				if (Config.CUSTOM_NPC_TABLE)
+					statement = con.prepareStatement("SELECT "
+							+ L2DatabaseFactory.getInstance().safetyString(new String[]
+							{
+								"id", "idTemplate", "name", "serverSideName", "title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type", "attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con",
+								"dex", "int", "wit", "men", "exp", "sp", "patk", "pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "walkspd", "runspd", "faction_id", "faction_range", "isUndead",
+								"absorb_level", "absorb_type", "ss", "bss", "ss_rate", "AI", "drop_herbs"
+							}) + " FROM custom_npc");
+				else
+					statement = con.prepareStatement("SELECT "
+							+ L2DatabaseFactory.getInstance().safetyString(new String[]
+							{
+								"id", "idTemplate", "name", "serverSideName", "title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type", "attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con",
+								"dex", "int", "wit", "men", "exp", "sp", "patk", "pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "walkspd", "runspd", "faction_id", "faction_range", "isUndead", "absorb_level",
+								"absorb_type", "ss", "bss", "ss_rate", "AI", "drop_herbs"
+							}) + " FROM npc");
 				ResultSet npcdata = statement.executeQuery();
 				
 				fillNpcTable(npcdata);
@@ -90,31 +99,10 @@ public class NpcTable
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "NPCTable: Error creating NPC table.", e);
-			}
-			if (Config.CUSTOM_NPC_TABLE)
-			{
-				try
-				{
-					con = L2DatabaseFactory.getInstance().getConnection();
-					PreparedStatement statement;
-					statement = con.prepareStatement("SELECT "
-							+ L2DatabaseFactory.getInstance().safetyString(new String[]
-							{
-								"id", "idTemplate", "name", "serverSideName", "title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type", "attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con",
-								"dex", "int", "wit", "men", "exp", "sp", "patk", "pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "walkspd", "runspd", "faction_id", "faction_range", "isUndead",
-								"absorb_level", "absorb_type", "ss", "bss", "ss_rate", "AI", "drop_herbs"
-							}) + " FROM custom_npc");
-					ResultSet npcdata = statement.executeQuery();
-					
-					fillNpcTable(npcdata);
-					npcdata.close();
-					statement.close();
-				}
-				catch (Exception e)
-				{
+				if (Config.CUSTOM_NPC_TABLE) 
 					_log.log(Level.SEVERE, "NPCTable: Error creating custom NPC table.", e);
-				}
+				else 
+					_log.log(Level.SEVERE, "NPCTable: Error creating NPC table.", e); 
 			}
 			try
 			{
@@ -443,6 +431,14 @@ public class NpcTable
 						"int", "wit", "men", "exp", "sp", "patk", "pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "walkspd", "runspd", "faction_id", "faction_range", "isUndead", "absorb_level",
 						"absorb_type", "ss", "bss", "ss_rate", "AI", "drop_herbs"
 					}) + " FROM npc WHERE id=?");
+			if (Config.CUSTOM_NPC_TABLE)
+				st = con.prepareStatement("SELECT "
+						+ L2DatabaseFactory.getInstance().safetyString(new String[]
+						{
+							"id", "idTemplate", "name", "serverSideName", "title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type", "attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con",
+							"dex", "int", "wit", "men", "exp", "sp", "patk", "pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "walkspd", "runspd", "faction_id", "faction_range", "isUndead",
+							"absorb_level", "absorb_type", "ss", "bss", "ss_rate", "AI", "drop_herbs"
+						}) + " FROM custom_npc");
 			st.setInt(1, id);
 			ResultSet rs = st.executeQuery();
 			fillNpcTable(rs);
