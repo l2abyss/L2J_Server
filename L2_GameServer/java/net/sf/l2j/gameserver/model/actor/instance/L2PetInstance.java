@@ -204,6 +204,7 @@ public class L2PetInstance extends L2Summon
            getStat().setLevel(template.level);
 
 		_inventory = new PetInventory(this);
+		_inventory.restore();
 
         int npcId = template.npcId;
         _mountable = L2PetDataTable.isMountable(npcId);

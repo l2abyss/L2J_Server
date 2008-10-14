@@ -31,6 +31,22 @@ public class PetInventory extends Inventory
     {
         return _owner;
     }
+	
+	@Override
+	public int getOwnerId()
+	{
+		// gets the L2PcInstance-owner's ID
+		int id;
+		try
+		{
+			id = _owner.getOwner().getObjectId();
+		}
+		catch (NullPointerException e) 
+		{
+			return 0;
+		}
+		return id;
+	}
 
 	@Override
 	protected ItemLocation getBaseLocation()
