@@ -143,20 +143,25 @@ public class L2SignsPriestInstance extends L2FolkInstance
             			showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn_no.htm");
             			break;
                 	}
+                	else
+                	{
+                		showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn.htm");
+                		break;
+                	}
                 case 33: // "I want to participate" request
-                	if (cabal == 1 && Config.ALT_GAME_CASTLE_DUSK) //dusk
+                	if (cabal == SevenSigns.CABAL_DUSK && Config.ALT_GAME_CASTLE_DUSK) //dusk
                 	{
                 		// castle owners cannot participate with dusk side
-                		if (player.getClan() != null && player.getClan().getHasHideout() > 0)
+                		if (player.getClan() != null && player.getClan().getHasCastle() > 0)
                 		{
                 			showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dusk_no.htm");
                 			break;
                 		}
                 	}
-                	else if(cabal == 2 && Config.ALT_GAME_CASTLE_DAWN) //dawn
+                	else if (cabal == SevenSigns.CABAL_DAWN && Config.ALT_GAME_CASTLE_DAWN) //dawn
                 	{
                 		// clans without castle need to pay participation fee
-                		if (player.getClan() == null || (player.getClan() != null && player.getClan().getHasHideout() == 0)) // even if in htmls is said that ally can have castle too, but its not
+                		if (player.getClan() == null || (player.getClan() != null && player.getClan().getHasCastle() == 0)) // even if in htmls is said that ally can have castle too, but its not
                 		{
                 			showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn_fee.htm");
                 			break;
@@ -185,61 +190,51 @@ public class L2SignsPriestInstance extends L2FolkInstance
                     }
                     else if (player.getClassId().level() >= 2)
                     {
-                        if (Config.ALT_GAME_CASTLE_DUSK)
+                        if (cabal == SevenSigns.CABAL_DUSK && Config.ALT_GAME_CASTLE_DUSK)
                         {
-                        	if (player.getClan() != null && player.getClan().getHasHideout() >= 0) // even if in htmls is said that ally can have castle too, but its not
+                        	if (player.getClan() != null && player.getClan().getHasCastle() > 0) // even if in htmls is said that ally can have castle too, but its not
                             {
-                                if (cabal == SevenSigns.CABAL_DUSK)
-                                {
-                                	showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dusk_no.htm");
-                                    return;
-                                }
+                                showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dusk_no.htm");
+                                return;
                             }
                         }
+                        
                         /*
                          * If the player is trying to join the Lords of Dawn, check if they are
                          * carrying a Lord's certificate.
                          *
                          * If not then try to take the required amount of adena instead.
                          */
-                        if (Config.ALT_GAME_CASTLE_DAWN)
+                        if (cabal == SevenSigns.CABAL_DAWN && Config.ALT_GAME_CASTLE_DAWN)
                         {
-                        	if (cabal == SevenSigns.CABAL_DAWN)
-                        	{
-                        		boolean allowJoinDawn = false;
+                    		boolean allowJoinDawn = false;
 
-                            	if (player.getClan() != null && player.getClan().getHasHideout() >= 0) // castle owner don't need to pay anything
-                                {
-                            		allowJoinDawn = true;
-                                }
-                            	else if (player.destroyItemByItemId("SevenSigns",SevenSigns.CERTIFICATE_OF_APPROVAL_ID,1, this, false))
-                        		{
-                        			sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-                        			sm.addItemName(SevenSigns.CERTIFICATE_OF_APPROVAL_ID);
-                        			sm.addNumber(1);
-                        			player.sendPacket(sm);
-                        			allowJoinDawn = true;
-                        		}
-                        		else if (player.reduceAdena("SevenSigns",SevenSigns.ADENA_JOIN_DAWN_COST, this,false))
-                        		{
-                        			sm = new SystemMessage(SystemMessageId.DISAPPEARED_ADENA);
-                        			sm.addNumber(SevenSigns.ADENA_JOIN_DAWN_COST);
-                        			player.sendPacket(sm);
-                        			allowJoinDawn = true;
-                        		}
-                        		if (!allowJoinDawn)
-                        		{
-                        			showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn_fee.htm");
-                        			return;
-                        		}
-                        	}
+                        	if (player.getClan() != null && player.getClan().getHasCastle() > 0) // castle owner don't need to pay anything
+                            {
+                        		allowJoinDawn = true;
+                            }
+                        	else if (player.destroyItemByItemId("SevenSigns",SevenSigns.CERTIFICATE_OF_APPROVAL_ID,1, this, true))
+                    		{
+                    			allowJoinDawn = true;
+                    		}
+                    		else if (player.reduceAdena("SevenSigns",SevenSigns.ADENA_JOIN_DAWN_COST, this, true))
+                    		{
+                    			allowJoinDawn = true;
+                    		}
+                        	
+                    		if (!allowJoinDawn)
+                    		{
+                    			showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn_fee.htm");
+                    			return;
+                    		}
                         }
                     }
                     SevenSigns.getInstance().setPlayerInfo(player, cabal, newSeal);
 
-                    if (cabal == SevenSigns.CABAL_DAWN) player.sendPacket(new SystemMessage(
-                                                                                            SystemMessageId.SEVENSIGNS_PARTECIPATION_DAWN)); // Joined Dawn
-                    else player.sendPacket(new SystemMessage(SystemMessageId.SEVENSIGNS_PARTECIPATION_DUSK)); // Joined Dusk
+                    if (cabal == SevenSigns.CABAL_DAWN)
+                    	player.sendPacket(new SystemMessage(SystemMessageId.SEVENSIGNS_PARTECIPATION_DAWN)); // Joined Dawn
+                    else
+                    	player.sendPacket(new SystemMessage(SystemMessageId.SEVENSIGNS_PARTECIPATION_DUSK)); // Joined Dusk
 
                     // Show a confirmation message to the user, indicating which seal they chose.
                     switch (newSeal)
