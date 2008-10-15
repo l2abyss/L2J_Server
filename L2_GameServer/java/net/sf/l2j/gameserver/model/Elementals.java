@@ -28,7 +28,7 @@ public final class Elementals
 
 	public final static int FIRST_WEAPON_BONUS = 20;
 	public final static int NEXT_WEAPON_BONUS = 5;
-	public final static int ARMOR_BONUS = 3;
+	public final static int ARMOR_BONUS = 6;
 
 	public final static int[] WEAPON_VALUES =
 	{
@@ -41,7 +41,8 @@ public final class Elementals
 		300, // Level 7
 		325, // Level 8
 		375, // Level 9
-		450  // Level 10
+		450, // Level 10
+		Integer.MAX_VALUE  // TODO: Higher stones
 	};
 
 	public final static int[] ARMOR_VALUES =
@@ -55,7 +56,8 @@ public final class Elementals
 		60, // Level 7
 		66, // Level 8
 		75, // Level 9
-		90  // Level 10
+		90, // Level 10
+		Integer.MAX_VALUE  // TODO: Higher stones
 	};
 
 	public final static int[] STONES = 

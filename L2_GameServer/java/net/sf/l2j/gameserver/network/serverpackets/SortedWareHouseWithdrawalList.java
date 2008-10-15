@@ -87,8 +87,6 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
     public static final byte WEAR = 5;
     /** Maximum Items to put into list */
     public static final int MAX_SORT_LIST_ITEMS = 300;
-    
-    private int ENDmarker = 0x00;
 
     /**
      * This will instantiate the Warehouselist the Player asked for
@@ -703,15 +701,15 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
            writeD(item.getItem().getBodyPart());   // ?
            writeH(item.getEnchantLevel()); // enchant level -confirmed
            writeH(item.getCustomType2());  // ?
-           writeH(ENDmarker);  // ?
+           writeH(0x00);  // ?
            writeD(item.getObjectId()); // item id - confimed       
            if (item.isAugmented())
            {
                writeD(0x0000FFFF&item.getAugmentationId());
                writeD(item.getAugmentationId()>>16);
            }
-           else writeQ(0x00);
-           writeD(item.getMana());
+           else
+               writeQ(0x00);
 
            writeD(item.getAttackElementType());
            writeD(item.getAttackElementPower());
@@ -719,6 +717,8 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
            {
                writeD(item.getElementDefAttr(i));
            }
+
+           writeD(item.getMana());
        }
    }
 
