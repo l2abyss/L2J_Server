@@ -122,8 +122,10 @@ public class L2SkillSummon extends L2Skill
                     }
                     else
                     {
-
-						player.addCubic(_npcId, getLevel(), getPower(), getActivationTime(), getActivationChance());
+						if (player == activeChar)
+							player.addCubic(_npcId, getLevel(), getPower(), getActivationTime(), getActivationChance(), false);
+						else // given by other player
+							player.addCubic(_npcId, getLevel(), getPower(), getActivationTime(), getActivationChance(), true);
 						player.broadcastUserInfo();
                     }
 				}
@@ -145,7 +147,7 @@ public class L2SkillSummon extends L2Skill
                     activeChar.sendMessage("You already have such cubic");
                     return;
                 }
-                activeChar.addCubic(_npcId, getLevel(), getPower(), getActivationTime(), getActivationChance());
+                activeChar.addCubic(_npcId, getLevel(), getPower(), getActivationTime(), getActivationChance(), false);
 				activeChar.broadcastUserInfo();
 				return;
 			}

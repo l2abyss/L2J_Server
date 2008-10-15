@@ -8575,11 +8575,11 @@ public final class L2PcInstance extends L2PlayableInstance
 	/**
 	 * Add a L2CubicInstance to the L2PcInstance _cubics.<BR><BR>
 	 */
-	public void addCubic(int id, int level, double matk, int activationtime, int activationchance)
+	public void addCubic(int id, int level, double matk, int activationtime, int activationchance, boolean givenByOther)
 	{
 		if (Config.DEBUG)
 			_log.info("L2PcInstance(" + getName() + "): addCubic(" + id + "|" + level + "|" + matk + ")");
-		L2CubicInstance cubic = new L2CubicInstance(this, id, level, (int) matk, activationtime, activationchance);
+		L2CubicInstance cubic = new L2CubicInstance(this, id, level, (int) matk, activationtime, activationchance, givenByOther);
 
 		_cubics.put(id, cubic);
 	}

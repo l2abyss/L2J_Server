@@ -48,6 +48,7 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.L2World;
+import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.entity.Hero;
@@ -1968,15 +1969,20 @@ public class Olympiad
 						summon.unSummon(player);
 		    	}
                 
-                /*if (player.getCubics() != null)
+                if (player.getCubics() != null)
                 {
+                    boolean removed = false;
                     for(L2CubicInstance cubic : player.getCubics().values())
                     {
-                        cubic.stopAction();
-                        player.delCubic(cubic.getId());
+                        if (cubic.givenByOther())
+                        {
+                        	cubic.stopAction();
+                        	player.delCubic(cubic.getId());
+                        	removed = true;
+                        }
                     }
-                    player.getCubics().clear();
-                }*/
+                    if (removed) player.broadcastUserInfo();
+                }
 				
 				//Remove player from his party
 				if (player.getParty() != null)

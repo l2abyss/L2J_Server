@@ -80,13 +80,14 @@ public class L2CubicInstance
     protected int _activationtime;
     protected int _activationchance;
     protected boolean _active;
+    private boolean _givenByOther;
     
     protected List<L2Skill> _skills = new FastList<L2Skill>();
     
     private Future<?> _disappearTask;
     private Future<?> _actionTask;
     
-    public L2CubicInstance(L2PcInstance owner, int id, int level, int mAtk, int activationtime, int activationchance)
+    public L2CubicInstance(L2PcInstance owner, int id, int level, int mAtk, int activationtime, int activationchance, boolean givenByOther)
     {
         _owner = owner;
         _id = id;
@@ -94,6 +95,7 @@ public class L2CubicInstance
         _activationtime = activationtime * 1000;
         _activationchance = activationchance;
         _active = false;
+        _givenByOther = givenByOther;
 
         switch (_id)
         {
@@ -768,6 +770,11 @@ public class L2CubicInstance
         }
 
         _target = target;
+    }
+    
+    public boolean givenByOther()
+    {
+    	return _givenByOther;
     }
 
     private class Heal implements Runnable
