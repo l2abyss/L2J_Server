@@ -1468,7 +1468,7 @@ public class SevenSignsFestival implements SpawnListener
             {
                 L2DarknessFestival festivalInst = _managerInstance.getFestivalInstance(oracle, festivalId);
 
-                if (festivalParty == null)
+                if (festivalParty == null) // leader has left
                     for (L2PcInstance partyMember : getParticipants(oracle, festivalId))
                         festivalInst.relocatePlayer(partyMember, true);
                 else
@@ -1477,10 +1477,10 @@ public class SevenSignsFestival implements SpawnListener
 
             setParticipants(oracle, festivalId, festivalParty);
 
-            // Check on disconect if min player in party
-            if (festivalParty.getMemberCount() < Config.ALT_FESTIVAL_MIN_PLAYER)
+            // Check on disconnect if min player in party
+            if (festivalParty != null && festivalParty.getMemberCount() < Config.ALT_FESTIVAL_MIN_PLAYER)
             {
-              updateParticipants(player, festivalParty);
+              updateParticipants(player, null); // under minimum count
               festivalParty.removePartyMember(player);
             }
         }

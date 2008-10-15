@@ -369,15 +369,18 @@ public final class L2FestivalGuideInstance extends L2FolkInstance
                     if (isLeader)
                     {
                         SevenSignsFestival.getInstance().updateParticipants(player, null);
-                    }
-
-                    if (playerParty.getMemberCount() > Config.ALT_FESTIVAL_MIN_PLAYER)
-                    {
-                    	SevenSignsFestival.getInstance().updateParticipants(player, playerParty);
-                    	playerParty.removePartyMember(player);
+                        playerParty.removePartyMember(player);
                     }
                     else
-                    player.sendMessage("Only partyleader can leave festival, if minmum party member is reached.");
+                    {
+                    	if (playerParty.getMemberCount() > Config.ALT_FESTIVAL_MIN_PLAYER)
+                    	{
+                    		//SevenSignsFestival.getInstance().updateParticipants(player, playerParty);
+                    		playerParty.removePartyMember(player);
+                    	}
+                    	else
+                    		player.sendMessage("Only the party leader can leave a festival when a party has minimum number of members.");
+                    }
                     break;
                 case 0: // Distribute Accumulated Bonus
                     if (!SevenSigns.getInstance().isSealValidationPeriod())
