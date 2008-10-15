@@ -60,12 +60,18 @@ public class ValidatePosition extends L2GameClientPacket
     @Override
 	protected void runImpl()
     {
-        L2PcInstance activeChar = getClient().getActiveChar();
+    	L2PcInstance activeChar = getClient().getActiveChar();
         if (activeChar == null || activeChar.isTeleporting()) return;
 
         int realX = activeChar.getX();
         int realY = activeChar.getY();
         int realZ = activeChar.getZ();
+
+        if (_x == 0 && _y == 0) 
+        {
+        	if (realX != 0) // in this case this seems like a client error
+        		return;
+        }
         
         if(activeChar.getParty() != null && activeChar.getLastPartyPositionDistance(_x, _y, _z) > 150)
         {

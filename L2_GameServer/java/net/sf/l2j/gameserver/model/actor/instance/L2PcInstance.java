@@ -8422,6 +8422,11 @@ public final class L2PcInstance extends L2PlayableInstance
 			}
 			else if (getCurrentSkill() != null && !getCurrentSkill().isCtrlPressed() && skill.isOffensive())
 			{
+				if(getClan() != null && ((L2PcInstance)target).getClan() != null)
+				{
+					if(getClan().isAtWarWith(((L2PcInstance)target).getClan().getClanId()) && ((L2PcInstance)target).getClan().isAtWarWith(getClan().getClanId()))
+						return true; // in clan war player can attack whites even without ctrl
+				}
 				if (
 						((L2PcInstance)target).getPvpFlag() == 0 &&             //   target's pvp flag is not set and
 						((L2PcInstance)target).getKarma() == 0                  //   target has no karma

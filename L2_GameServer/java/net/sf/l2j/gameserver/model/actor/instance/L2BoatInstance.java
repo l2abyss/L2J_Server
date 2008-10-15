@@ -316,7 +316,7 @@ public class L2BoatInstance extends L2Character
 		m._yDestination = y;
 		m._zDestination = z; // this is what was requested from client
 		m._heading = 0; // initial value for coordinate sync
-		
+		m.onGeodataPathIndex = -1; // Initialize not on geodata path
 		m._moveStartTime = GameTimeController.getGameTicks();
 		
 		if (Config.DEBUG)
