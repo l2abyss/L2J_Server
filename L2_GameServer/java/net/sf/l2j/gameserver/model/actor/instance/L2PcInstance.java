@@ -3365,7 +3365,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			return false;
 		}
 
-		item.dropMe(this, getClientX() + Rnd.get(50) - 25, getClientY() + Rnd.get(50) - 25, getClientZ() + 20);
+		item.dropMe(this, getX() + Rnd.get(50) - 25, getY() + Rnd.get(50) - 25, getZ() + 20);
 
 		 if (Config.AUTODESTROY_ITEM_AFTER >0 && Config.DESTROY_DROPPED_PLAYER_ITEM && !Config.LIST_PROTECTED_ITEMS.contains(item.getItemId()))
 			 {
@@ -7883,8 +7883,19 @@ public final class L2PcInstance extends L2PlayableInstance
 		// If a skill is currently being used, queue this one if this is not the same
         if (isCastingNow())
         {
+        	if ((getCastInterruptTime()+50) < GameTimeController.getGameTicks()) 
+        	{ 
+        		// temporary fix for skill use getting stuck
+        		if (getLastSkillCast() != null)
+        			_log.warning("Debug msg: fixing skill use stuck for a player, last skill cast was: "+getLastSkillCast().getName());
+        		else
+        			_log.warning("Debug msg: fixing skill use stuck for a player, last skill cast was: null");
+        		if (getCurrentSkill() != null)
+        			_log.warning("and current skill: "+getCurrentSkill().getSkill().getName());
+        		abortCast();
+        		return;
+        	}
         	// Check if new skill different from current skill in progress
-
         	if (getCurrentSkill() != null && skill.getId() == getCurrentSkill().getSkillId())
             {
             	sendPacket(ActionFailed.STATIC_PACKET);

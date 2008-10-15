@@ -3753,6 +3753,11 @@ public abstract class L2Character extends L2Object
 	{
 		return _castInterruptTime > GameTimeController.getGameTicks();
 	}
+	
+	public int getCastInterruptTime()
+	{
+		return _castInterruptTime;
+	}
 
 	/**
 	 * Return True if the L2Character is attacking.<BR><BR>
