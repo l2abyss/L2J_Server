@@ -438,7 +438,7 @@ public class NpcTable
 							"id", "idTemplate", "name", "serverSideName", "title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type", "attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con",
 							"dex", "int", "wit", "men", "exp", "sp", "patk", "pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "walkspd", "runspd", "faction_id", "faction_range", "isUndead",
 							"absorb_level", "absorb_type", "ss", "bss", "ss_rate", "AI", "drop_herbs"
-						}) + " FROM custom_npc");
+						}) + " FROM custom_npc WHERE id=?");
 			st.setInt(1, id);
 			ResultSet rs = st.executeQuery();
 			fillNpcTable(rs);
