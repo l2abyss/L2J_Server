@@ -148,8 +148,7 @@ public class ForumsBBSManager extends BaseBBSManager
 	 */
 	public int getANewID()
 	{
-		_lastid++;
-		return _lastid;
+		return ++_lastid;
 	}
 	
 	/**

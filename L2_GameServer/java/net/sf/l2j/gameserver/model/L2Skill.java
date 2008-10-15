@@ -2969,8 +2969,7 @@ public abstract class L2Skill
                     	int effectcharge = effect.getLevel();
                         if (effectcharge < _numCharges)
                         {
-                        	effectcharge++;
-                            effect.addNumCharges(effectcharge);
+                        	effect.addNumCharges(++effectcharge);
                             if (env.target instanceof L2PcInstance)
                             {
                             	env.target.sendPacket(new EtcStatusUpdate((L2PcInstance)env.target));

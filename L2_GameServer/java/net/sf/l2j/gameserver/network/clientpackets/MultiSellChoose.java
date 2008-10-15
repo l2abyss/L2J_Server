@@ -262,11 +262,11 @@ public class MultiSellChoose extends L2GameClientPacket
 								// +0 is lowest by default...
 								if (itemToTake.getEnchantLevel() > 0)
 								{
-									for (int j = 0; j < inventoryContents.length; j++)
+									for (L2ItemInstance item: inventoryContents)
 									{
-										if (inventoryContents[j].getEnchantLevel() < itemToTake.getEnchantLevel())
+										if (item.getEnchantLevel() < itemToTake.getEnchantLevel())
 										{
-											itemToTake = inventoryContents[j];
+											itemToTake = item;
 											// nothing will have enchantment less than 0. If a zero-enchanted
 											// item is found, just take it
 											if (itemToTake.getEnchantLevel() == 0)

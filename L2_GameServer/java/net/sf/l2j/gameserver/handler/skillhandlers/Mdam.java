@@ -99,10 +99,8 @@ public class Mdam implements ISkillHandler
 			ss = ((L2NpcInstance) activeChar).isUsingShot(true);
 		}
 		
-		for (int index = 0; index < targets.length; index++)
+		for (L2Character target: (L2Character[]) targets)
 		{
-			L2Character target = (L2Character) targets[index];
-			
 			if (activeChar instanceof L2PcInstance && target instanceof L2PcInstance && target.isFakeDeath())
 			{
 				target.stopFakeDeath(null);
@@ -215,10 +213,8 @@ public class Mdam implements ISkillHandler
 	 */
 	public void useCubicSkill(L2CubicInstance activeCubic, L2Skill skill, L2Object[] targets)
 	{
-		for (int index = 0; index < targets.length; index++)
+		for (L2Character target: (L2Character[]) targets)
 		{
-			L2Character target = (L2Character) targets[index];
-			
 			if (target instanceof L2PcInstance && target.isAlikeDead() && target.isFakeDeath())
 			{
 				target.stopFakeDeath(null);

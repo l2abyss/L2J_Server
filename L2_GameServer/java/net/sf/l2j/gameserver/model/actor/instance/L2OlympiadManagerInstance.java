@@ -267,10 +267,9 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
                             for (String name : names)
                             {
                                 replyMSG.append("<tr>");
-                                replyMSG.append("<td align=\"left\">" + index + "</td>");
+                                replyMSG.append("<td align=\"left\">" + index++ + "</td>");
                                 replyMSG.append("<td align=\"right\">" + name + "</td>");
                                 replyMSG.append("</tr>");
-                                index++;
                             }
 
                             replyMSG.append("</table>");

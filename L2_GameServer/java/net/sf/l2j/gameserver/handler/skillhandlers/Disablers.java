@@ -172,14 +172,8 @@ public class Disablers implements ISkillHandler
 			ss = ((L2NpcInstance) activeChar).isUsingShot(true);
 		}
 		
-		for (int index = 0; index < targets.length; index++)
+		for (L2Character target: (L2Character[]) targets)
 		{
-			// Get a target
-			if (!(targets[index] instanceof L2Character))
-				continue;
-			
-			L2Character target = (L2Character) targets[index];
-			
 			if (target == null || target.isDead() || target.isInvul()) //bypass if target is null, invul or dead
 				continue;
 			
@@ -759,14 +753,8 @@ public class Disablers implements ISkillHandler
 		
 		L2SkillType type = skill.getSkillType();
 		
-		for (int index = 0; index < targets.length; index++)
+		for (L2Character target: (L2Character[]) targets)
 		{
-			// Get a target
-			if (!(targets[index] instanceof L2Character))
-				continue;
-			
-			L2Character target = (L2Character) targets[index];
-			
 			if (target == null || target.isDead()) //bypass if target is null or dead
 				continue;
 			

@@ -59,8 +59,7 @@ public class CastleUpdater implements Runnable
                             	_log.info("Manor System: all data for " + castle.getName() + " saved");
                         }
                     }
-                    _runCount++;
-                    CastleUpdater cu = new CastleUpdater(_clan, _runCount);
+                    CastleUpdater cu = new CastleUpdater(_clan, ++_runCount);
                     ThreadPoolManager.getInstance().scheduleGeneral(cu, 3600000);
                 }
             } catch (Throwable e) {

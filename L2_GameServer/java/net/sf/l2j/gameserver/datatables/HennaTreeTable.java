@@ -133,9 +133,8 @@ public class HennaTreeTable
 			return new L2HennaInstance[0];
 		}
 		
-		for (int i = 0; i < henna.size(); i++)
+		for (L2HennaInstance temp: henna)
 		{
-			L2HennaInstance temp = henna.get(i);
 			result.add(temp);
 		}
 		

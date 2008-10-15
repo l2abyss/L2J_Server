@@ -49,12 +49,12 @@ public class Spoil implements ISkillHandler
 		if (targets == null)
 			return;
 		
-		for (int index = 0; index < targets.length; index++)
+		for (L2Object tgt: targets)
 		{
-			if (!(targets[index] instanceof L2MonsterInstance))
+			if (!(tgt instanceof L2MonsterInstance))
 				continue;
 			
-			L2MonsterInstance target = (L2MonsterInstance) targets[index];
+			L2MonsterInstance target = (L2MonsterInstance) tgt;
 			
 			if (target.isSpoil())
 			{
@@ -66,7 +66,7 @@ public class Spoil implements ISkillHandler
 			boolean spoil = false;
 			if (target.isDead() == false)
 			{
-				spoil = Formulas.getInstance().calcMagicSuccess(activeChar, (L2Character) targets[index], skill);
+				spoil = Formulas.getInstance().calcMagicSuccess(activeChar, (L2Character) tgt, skill);
 				
 				if (spoil)
 				{

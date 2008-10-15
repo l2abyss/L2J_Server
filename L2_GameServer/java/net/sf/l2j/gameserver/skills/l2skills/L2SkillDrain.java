@@ -52,9 +52,8 @@ public class L2SkillDrain extends L2Skill {
 		boolean ss = false;
 		boolean bss = false;
 
-        for(int index = 0;index < targets.length;index++)
+        for(L2Character target: (L2Character[]) targets)
         {
-			L2Character target = (L2Character)targets[index];
 			if (target.isAlikeDead() && getTargetType() != SkillTargetType.TARGET_CORPSE_MOB)
 				continue;
 
@@ -189,9 +188,8 @@ public class L2SkillDrain extends L2Skill {
 		if (Config.DEBUG)
 			_log.info("L2SkillDrain: useCubicSkill()");
 		
-        for(int index = 0;index < targets.length;index++)
+        for(L2Character target: (L2Character[]) targets)
         {
-			L2Character target = (L2Character)targets[index];
 			if (target.isAlikeDead() && getTargetType() != SkillTargetType.TARGET_CORPSE_MOB)
 				continue;
 

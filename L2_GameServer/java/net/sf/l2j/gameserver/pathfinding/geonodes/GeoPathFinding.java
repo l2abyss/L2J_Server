@@ -119,8 +119,7 @@ public class GeoPathFinding extends PathFinding
 		short new_node_x, new_node_y;
 
 		//Region for sure will change, we must read from correct file
-		byte neighbor = pn.get(idx); //N
-		idx++;
+		byte neighbor = pn.get(idx++); //N
 		if(neighbor > 0)
 		{
 			neighbor--;
@@ -129,8 +128,7 @@ public class GeoPathFinding extends PathFinding
 			newNode = readNode(new_node_x,new_node_y,neighbor);
 			if (newNode != null) Neighbors.add(newNode);
 		}
-		neighbor = pn.get(idx); //NE
-		idx++;
+		neighbor = pn.get(idx++); //NE
 		if(neighbor > 0)
 		{
 			neighbor--;
@@ -139,8 +137,7 @@ public class GeoPathFinding extends PathFinding
 			newNode = readNode(new_node_x,new_node_y,neighbor);
 			if (newNode != null) Neighbors.add(newNode);
 		}
-		neighbor = pn.get(idx); //E
-		idx++;
+		neighbor = pn.get(idx++); //E
 		if(neighbor > 0)
 		{
 			neighbor--;
@@ -149,8 +146,7 @@ public class GeoPathFinding extends PathFinding
 			newNode = readNode(new_node_x,new_node_y,neighbor);
 			if (newNode != null) Neighbors.add(newNode);
 		}
-		neighbor = pn.get(idx); //SE
-		idx++;
+		neighbor = pn.get(idx++); //SE
 		if(neighbor > 0)
 		{
 			neighbor--;
@@ -159,8 +155,7 @@ public class GeoPathFinding extends PathFinding
 			newNode = readNode(new_node_x,new_node_y,neighbor);
 			if (newNode != null) Neighbors.add(newNode);
 		}
-		neighbor = pn.get(idx); //S
-		idx++;
+		neighbor = pn.get(idx++); //S
 		if(neighbor > 0)
 		{
 			neighbor--;
@@ -169,8 +164,7 @@ public class GeoPathFinding extends PathFinding
 			newNode = readNode(new_node_x,new_node_y,neighbor);
 			if (newNode != null) Neighbors.add(newNode);
 		}
-		neighbor = pn.get(idx); //SW
-		idx++;
+		neighbor = pn.get(idx++); //SW
 		if(neighbor > 0)
 		{
 			neighbor--;
@@ -179,8 +173,7 @@ public class GeoPathFinding extends PathFinding
 			newNode = readNode(new_node_x,new_node_y,neighbor);
 			if (newNode != null) Neighbors.add(newNode);
 		}
-		neighbor = pn.get(idx); //W
-		idx++;
+		neighbor = pn.get(idx++); //W
 		if(neighbor > 0)
 		{
 			neighbor--;
@@ -189,8 +182,7 @@ public class GeoPathFinding extends PathFinding
 			newNode = readNode(new_node_x,new_node_y,neighbor);
 			if (newNode != null) Neighbors.add(newNode);
 		}
-		neighbor = pn.get(idx); //NW
-		idx++;
+		neighbor = pn.get(idx++); //NW
 		if(neighbor > 0)
 		{
 			neighbor--;
@@ -236,8 +228,7 @@ public class GeoPathFinding extends PathFinding
 		int idx = _pathNodesIndex.get(regoffset).get((nby << 8)+nbx);
 		ByteBuffer pn = _pathNodes.get(regoffset);
 		//reading
-		byte nodes = pn.get(idx);
-		idx++;//byte
+		byte nodes = pn.get(idx++);
 		int idx2 = 0; //create index to nearlest node by z
 		short last_z = Short.MIN_VALUE;
 		while (nodes > 0)
@@ -321,8 +312,7 @@ public class GeoPathFinding extends PathFinding
 			while(node < 65536)
 			{
 				byte layer = nodes.get(index);
-		        indexs.put(node, index);
-				node++;
+		        indexs.put(node++, index);
 				index += layer*10+1;
 			}
 			_pathNodesIndex.put(regionoffset, indexs);

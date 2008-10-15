@@ -130,9 +130,9 @@ public class FaenorInterface implements EngineInterface
         	int maxCategory = -1;
 
         	if (npc.getDropData()!=null)
-	    	for(L2DropCategory cat:npc.getDropData())
+	    	for(L2DropCategory cat: npc.getDropData())
 	    	{
-	    		if(maxCategory<cat.getCategoryType())
+	    		if(maxCategory < cat.getCategoryType())
 	    			maxCategory = cat.getCategoryType();
 	    	}
 	    	maxCategory++;

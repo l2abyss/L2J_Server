@@ -314,10 +314,10 @@ public class AdminSkill implements IAdminCommandHandler
 		{
 			L2Skill[] skills = player.getAllSkills();
 			adminSkills = activeChar.getAllSkills();
-			for (int i = 0; i < adminSkills.length; i++)
-				activeChar.removeSkill(adminSkills[i]);
-			for (int i = 0; i < skills.length; i++)
-				activeChar.addSkill(skills[i], true);
+			for (L2Skill skill: adminSkills)
+				activeChar.removeSkill(skill);
+			for (L2Skill skill: skills)
+				activeChar.addSkill(skill, true);
 			activeChar.sendMessage("You now have all the skills of " + player.getName() + ".");
 			activeChar.sendSkillList();
 		}
@@ -340,14 +340,14 @@ public class AdminSkill implements IAdminCommandHandler
 		else
 		{
 			L2Skill[] skills = player.getAllSkills();
-			for (int i = 0; i < skills.length; i++)
-				player.removeSkill(skills[i]);
-			for (int i = 0; i < activeChar.getAllSkills().length; i++)
-				player.addSkill(activeChar.getAllSkills()[i], true);
-			for (int i = 0; i < skills.length; i++)
-				activeChar.removeSkill(skills[i]);
-			for (int i = 0; i < adminSkills.length; i++)
-				activeChar.addSkill(adminSkills[i], true);
+			for (L2Skill skill: skills)
+				player.removeSkill(skill);
+			for (L2Skill skill: activeChar.getAllSkills())
+				player.addSkill(skill, true);
+			for (L2Skill skill: skills)
+				activeChar.removeSkill(skill);
+			for (L2Skill skill: adminSkills)
+				activeChar.addSkill(skill, true);
 			player.sendMessage("[GM]" + activeChar.getName() + " updated your skills.");
 			activeChar.sendMessage("You now have all your skills back.");
 			adminSkills = null;

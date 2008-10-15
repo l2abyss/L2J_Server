@@ -79,8 +79,8 @@ public class L2SkillChargeEffect extends L2Skill
 
 		// apply effects
 		if (hasEffects())
-			for (int index = 0; index < targets.length; index++)
-				getEffects(activeChar, (L2Character)targets[index]);
+			for (L2Character target: (L2Character[]) targets)
+				getEffects(activeChar, target);
 		if (activeChar instanceof L2PcInstance)
 		{
 			activeChar.sendPacket(new EtcStatusUpdate((L2PcInstance)activeChar));

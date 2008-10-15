@@ -113,11 +113,11 @@ public class Attack extends L2GameServerPacket
 		writeD(_y);
 		writeD(_z);
 		writeH(_hits.length-1);
-		for (int i=1; i < _hits.length; i++)
+		for (Hit temp: _hits)
 		{
-			writeD(_hits[i]._targetId);
-			writeD(_hits[i]._damage);
-			writeC(_hits[i]._flags);
+			writeD(temp._targetId);
+			writeD(temp._damage);
+			writeC(temp._flags);
 		}
 	}
 

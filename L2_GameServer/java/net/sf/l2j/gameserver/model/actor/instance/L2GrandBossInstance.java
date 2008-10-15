@@ -17,6 +17,8 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import net.sf.l2j.gameserver.instancemanager.RaidBossPointsManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 import net.sf.l2j.util.Rnd;
 
@@ -85,7 +87,8 @@ public final class L2GrandBossInstance extends L2MonsterInstance
 		
 		if (player != null)
 		{
-			if (player.getParty() != null)
+			broadcastPacket(new SystemMessage(SystemMessageId.RAID_WAS_SUCCESSFUL));
+	        if (player.getParty() != null)
 			{
 				for (L2PcInstance member : player.getParty().getPartyMembers())
 				{

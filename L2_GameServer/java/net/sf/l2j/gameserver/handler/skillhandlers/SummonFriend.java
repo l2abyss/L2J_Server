@@ -204,26 +204,21 @@ public class SummonFriend implements ISkillHandler
 		
 		try
 		{
-			for (int index = 0; index < targets.length; index++)
+			for (L2Character target: (L2Character[]) targets)
 			{
-				if (!(targets[index] instanceof L2Character))
-					continue;
-				
-				L2Character target = (L2Character) targets[index];
-				
 				if (activeChar == target)
 					continue;
 				
 				if (target instanceof L2PcInstance)
 				{
-					L2PcInstance targetChar = (L2PcInstance) target;
+					L2PcInstance targetPlayer = (L2PcInstance) target;
 					
-					if (!checkTargetStatus(targetChar, activePlayer))
+					if (!checkTargetStatus(targetPlayer, activePlayer))
 						continue;
 										
 					if (!Util.checkIfInRange(0, activeChar, target, false))
 					{
-						if(!targetChar.teleportRequest(activePlayer, skill))
+						if(!targetPlayer.teleportRequest(activePlayer, skill))
 						{
 							SystemMessage sm = new SystemMessage(SystemMessageId.S1_ALREADY_SUMMONED);
 							sm.addString(target.getName());
@@ -242,8 +237,8 @@ public class SummonFriend implements ISkillHandler
 						}
 						else
 						{
-							teleToTarget(targetChar, activePlayer, skill);
-							targetChar.teleportRequest(null, null);
+							teleToTarget(targetPlayer, activePlayer, skill);
+							targetPlayer.teleportRequest(null, null);
 						}
 					}
 				}

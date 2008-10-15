@@ -45,7 +45,7 @@ public final class TradeStart extends L2GameServerPacket
 		//writeD((_activeChar != null || _activeChar.getTransactionRequester() != null)? _activeChar.getTransactionRequester().getObjectId() : 0);
 
 		writeH(_itemList.length);
-		for (L2ItemInstance item : _itemList)//int i = 0; i < count; i++)
+		for (L2ItemInstance item : _itemList)
 		{
 			writeH(item.getItem().getType1()); // item type1
 			writeD(item.getObjectId());

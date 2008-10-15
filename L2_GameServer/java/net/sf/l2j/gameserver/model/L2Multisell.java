@@ -237,8 +237,7 @@ public class L2Multisell
 		{
 			if (temp.getEntries().size() == 40)
 			{
-				player.sendPacket(new MultiSellList(temp, page, 0));
-				page++;
+				player.sendPacket(new MultiSellList(temp, page++, 0));
 				temp = new MultiSellListContainer();
 				temp.setListId(list.getListId());
 			}

@@ -52,10 +52,8 @@ public class ShowBoard extends L2GameServerPacket
 			data[i] = _id.getBytes()[j];
 			data[i + 1] = 0;
 		}
-		data[i] = 8;
-		i++;
-		data[i] = 0;
-		i++;
+		data[i++] = 8;
+		data[i++] = 0;
 		for (String arg : _arg)
 		{
 			for (int j = 0; j < arg.getBytes().length; j++, i += 2)
@@ -63,14 +61,10 @@ public class ShowBoard extends L2GameServerPacket
 				data[i] = arg.getBytes()[j];
 				data[i + 1] = 0;
 			}
-			data[i] = 0x20;
-			i++;
-			data[i] = 0x0;
-			i++;
-			data[i] = 0x8;
-			i++;
-			data[i] = 0x0;
-			i++;
+			data[i++] = 0x20;
+			data[i++] = 0x0;
+			data[i++] = 0x8;
+			data[i++] = 0x0;
 		}
 		return data;
 	}
@@ -90,7 +84,7 @@ public class ShowBoard extends L2GameServerPacket
 		writeS("bypass bbs_add_fav"); // add fav.
 		if (!_id.equals("1002"))
 		{
-			// getBytes is a very costy operation, and should only be called once
+			// getBytes is a very costly operation, and should only be called once
 			byte htmlBytes[] = null;
 			if (_htmlCode != null)
 				htmlBytes = _htmlCode.getBytes();
@@ -102,10 +96,8 @@ public class ShowBoard extends L2GameServerPacket
 				data[i] = _id.getBytes()[j];
 				data[i + 1] = 0;
 			}
-			data[i] = 8;
-			i++;
-			data[i] = 0;
-			i++;
+			data[i++] = 8;
+			data[i++] = 0;
 			if (_htmlCode == null)
 			{
 
@@ -118,8 +110,7 @@ public class ShowBoard extends L2GameServerPacket
 					data[i + 1] = 0;
 				}
 			}
-			data[i] = 0;
-			i++;
+			data[i++] = 0;
 			data[i] = 0;
 			//writeS(_htmlCode); // current page
 			writeB(data);

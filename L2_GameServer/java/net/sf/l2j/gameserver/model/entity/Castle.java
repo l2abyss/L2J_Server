@@ -1019,9 +1019,8 @@ public class Castle
 		if (doorId <= 0)
 			return null;
 		
-		for (int i = 0; i < getDoors().size(); i++)
+		for (L2DoorInstance door: getDoors())
 		{
-			L2DoorInstance door = getDoors().get(i);
 			if (door.getDoorId() == doorId)
 				return door;
 		}
@@ -1197,15 +1196,14 @@ public class Castle
 				String values[] = new String[_production.size()];
 				for (SeedProduction s : _production)
 				{
-					values[count] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + "," + s.getPrice() + "," + CastleManorManager.PERIOD_CURRENT + ")";
-					count++;
+					values[count++] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + "," + s.getPrice() + "," + CastleManorManager.PERIOD_CURRENT + ")";
 				}
 				if (values.length > 0)
 				{
 					query += values[0];
-					for (int i = 1; i < values.length; i++)
+					for (String value: values)
 					{
-						query += "," + values[i];
+						query += "," + value;
 					}
 					statement = con.prepareStatement(query);
 					statement.execute();
@@ -1220,15 +1218,14 @@ public class Castle
 				String values[] = new String[_productionNext.size()];
 				for (SeedProduction s : _productionNext)
 				{
-					values[count] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + "," + s.getPrice() + "," + CastleManorManager.PERIOD_NEXT + ")";
-					count++;
+					values[count++] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + "," + s.getPrice() + "," + CastleManorManager.PERIOD_NEXT + ")";
 				}
 				if (values.length > 0)
 				{
 					query += values[0];
-					for (int i = 1; i < values.length; i++)
+					for (String value: values)
 					{
-						query += "," + values[i];
+						query += "," + value;
 					}
 					statement = con.prepareStatement(query);
 					statement.execute();
@@ -1277,15 +1274,14 @@ public class Castle
 				String values[] = new String[prod.size()];
 				for (SeedProduction s : prod)
 				{
-					values[count] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + "," + s.getPrice() + "," + period + ")";
-					count++;
+					values[count++] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + "," + s.getPrice() + "," + period + ")";
 				}
 				if (values.length > 0)
 				{
 					query += values[0];
-					for (int i = 1; i < values.length; i++)
+					for (String value: values)
 					{
-						query += "," + values[i];
+						query += "," + value;
 					}
 					statement = con.prepareStatement(query);
 					statement.execute();
@@ -1329,15 +1325,14 @@ public class Castle
 				String values[] = new String[_procure.size()];
 				for (CropProcure cp : _procure)
 				{
-					values[count] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + "," + cp.getPrice() + "," + cp.getReward() + "," + CastleManorManager.PERIOD_CURRENT + ")";
-					count++;
+					values[count++] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + "," + cp.getPrice() + "," + cp.getReward() + "," + CastleManorManager.PERIOD_CURRENT + ")";
 				}
 				if (values.length > 0)
 				{
 					query += values[0];
-					for (int i = 1; i < values.length; i++)
+					for (String value: values)
 					{
-						query += "," + values[i];
+						query += "," + value;
 					}
 					statement = con.prepareStatement(query);
 					statement.execute();
@@ -1351,15 +1346,14 @@ public class Castle
 				String values[] = new String[_procureNext.size()];
 				for (CropProcure cp : _procureNext)
 				{
-					values[count] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + "," + cp.getPrice() + "," + cp.getReward() + "," + CastleManorManager.PERIOD_NEXT + ")";
-					count++;
+					values[count++] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + "," + cp.getPrice() + "," + cp.getReward() + "," + CastleManorManager.PERIOD_NEXT + ")";
 				}
 				if (values.length > 0)
 				{
 					query += values[0];
-					for (int i = 1; i < values.length; i++)
+					for (String value: values)
 					{
-						query += "," + values[i];
+						query += "," + value;
 					}
 					statement = con.prepareStatement(query);
 					statement.execute();
@@ -1409,15 +1403,14 @@ public class Castle
 				
 				for (CropProcure cp : proc)
 				{
-					values[count] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + "," + cp.getPrice() + "," + cp.getReward() + "," + period + ")";
-					count++;
+					values[count++] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + "," + cp.getPrice() + "," + cp.getReward() + "," + period + ")";
 				}
 				if (values.length > 0)
 				{
 					query += values[0];
-					for (int i = 1; i < values.length; i++)
+					for (String value: values)
 					{
-						query += "," + values[i];
+						query += "," + value;
 					}
 					statement = con.prepareStatement(query);
 					statement.execute();

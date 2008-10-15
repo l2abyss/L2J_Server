@@ -1382,9 +1382,7 @@ public class SevenSignsFestival implements SpawnListener
                 return playerFestivalInfo;
             }
 
-            festivalId++;
-
-            participants = _duskFestivalParticipants.get(festivalId);
+            participants = _duskFestivalParticipants.get(++festivalId);
 
             if (participants != null && participants.contains(player))
             {

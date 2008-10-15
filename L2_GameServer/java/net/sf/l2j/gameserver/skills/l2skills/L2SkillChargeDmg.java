@@ -83,10 +83,9 @@ public class L2SkillChargeDmg extends L2Skill
 			caster.sendPacket(new EtcStatusUpdate((L2PcInstance)caster));
         if (effect.numCharges == 0)
         	{effect.exit();}
-        for (int index = 0;index < targets.length;index++)
+        for (L2Character target: (L2Character[]) targets)
         {
         	L2ItemInstance weapon = caster.getActiveWeaponInstance();
-        	L2Character target = (L2Character)targets[index];
         	if (target.isAlikeDead())
         		continue;
 

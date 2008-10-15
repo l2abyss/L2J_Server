@@ -410,9 +410,8 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	    		// if the skill is a buff, check if the owner has it already [  owner.getEffect(L2Skill skill) ]
     			if (skill.getSkillType() == L2SkillType.BUFF)
     			{
-    				if (i==rand)
+    				if (i++==rand)
     					buffToGive = skill;
-    				i++;
     				if(owner.getFirstEffect(skill) != null)
     				{
     					totalBuffsOnOwner++;

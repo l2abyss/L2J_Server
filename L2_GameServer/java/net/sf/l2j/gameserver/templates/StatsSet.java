@@ -232,8 +232,7 @@ public final class StatsSet  {
 		for(String v: vals)
 		{
 			try {
-				result[c] = Integer.parseInt(v);
-				c++;
+				result[c++] = Integer.parseInt(v);
 			} catch (Exception e) {
 				throw new IllegalArgumentException("Integer value required, but found: "+val);
 			}

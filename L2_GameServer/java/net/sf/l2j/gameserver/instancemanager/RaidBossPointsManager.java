@@ -260,11 +260,9 @@ public class RaidBossPointsManager
 			if (tmpPoints.get(entry.getKey()) != null)
 				tmpPoint = tmpPoints.get(entry.getKey());
 			
-			tmpPoint.put(-1, ranking);
+			tmpPoint.put(-1, ranking++);
 			
 			tmpPoints.put(entry.getKey(), tmpPoint);
-			
-			ranking++;
 		}
 		Map<Integer, Integer> rank = tmpPoints.get(player.getObjectId());
 		if (rank != null)

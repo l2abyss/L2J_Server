@@ -91,10 +91,8 @@ public class CpDam implements ISkillHandler
 			ss = ((L2NpcInstance) activeChar).isUsingShot(true);
 		}
 		
-		for (int index = 0; index < targets.length; index++)
+		for (L2Character target: (L2Character[]) targets)
 		{
-			L2Character target = (L2Character) targets[index];
-			
 			if (activeChar instanceof L2PcInstance && target instanceof L2PcInstance && target.isFakeDeath())
 			{
 				target.stopFakeDeath(null);

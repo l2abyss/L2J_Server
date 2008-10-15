@@ -91,8 +91,7 @@ public class SkillTable
 		
 		while (level < 100)
 		{
-			level++;
-			temp = _skills.get(SkillTable.getSkillHashCode(magicId, level));
+			temp = _skills.get(SkillTable.getSkillHashCode(magicId, ++level));
 			
 			if (temp == null)
 				return level - 1;

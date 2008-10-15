@@ -47,10 +47,9 @@ public final class ShortCutInit extends L2GameServerPacket
 		writeC(0x45);
 		writeD(_shortCuts.length);
 
-		for (int i = 0; i < _shortCuts.length; i++)
+		for (L2ShortCut sc: _shortCuts)
 		{
-		    L2ShortCut sc = _shortCuts[i];
-            writeD(sc.getType());
+		    writeD(sc.getType());
             writeD(sc.getSlot() + sc.getPage() * 12);
 
             switch(sc.getType())

@@ -31,8 +31,7 @@ public class FastNodeList
 	}
 	public void add(Node n)
 	{
-		_list[_size] = n;
-		_size++;
+		_list[_size++] = n;
 	}
 	public boolean contains(Node n)
 	{

@@ -58,13 +58,8 @@ public class Recall implements ISkillHandler
 		
 		try
 		{
-			for (int index = 0; index < targets.length; index++)
+			for (L2Character target: (L2Character[]) targets)
 			{
-				if (!(targets[index] instanceof L2Character))
-					continue;
-				
-				L2Character target = (L2Character) targets[index];
-				
 				if (target instanceof L2PcInstance)
 				{
 					L2PcInstance targetChar = (L2PcInstance) target;

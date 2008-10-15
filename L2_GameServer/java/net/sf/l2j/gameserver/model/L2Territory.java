@@ -35,7 +35,14 @@ public class L2Territory
 	protected class Point
 	{
 		protected int _x, _y, _zmin, _zmax, _proc;
-		Point (int x, int y, int zmin, int zmax, int proc) {_x=x; _y=y; _zmin=zmin; _zmax=zmax; _proc=proc;}
+		Point (int x, int y, int zmin, int zmax, int proc)
+		{
+			_x=x;
+			_y=y;
+			_zmin=zmin;
+			_zmax=zmax;
+			_proc=proc;
+		}
 	}
 
 	private List<Point> _points;
@@ -76,7 +83,7 @@ public class L2Territory
 	public void print()
 	{
 		for(Point p : _points)
-			_log.info("("+p._x+","+p._y+")");
+			_log.info("(" + p._x + "," + p._y + ")");
 	}
 
 	public boolean isIntersect(int x, int y, Point p1, Point p2)
@@ -118,38 +125,44 @@ public class L2Territory
 
 	public int[] getRandomPoint()
 	{
-		int i;
 		int[] p = new int[4];
-		if ( _procMax>0) {
+		if ( _procMax>0)
+		{
 		    int pos = 0;
 		    int rnd = Rnd.nextInt(_procMax);
-		    for( i=0; i<_points.size(); i++){
-			Point p1 = _points.get(i);
-			pos += p1._proc;
-			if ( rnd <= pos ){
-			    p[0] = p1._x; p[1] = p1._y;
-			    p[2] = p1._zmin; p[3] = p1._zmax;
-			    return p;
-			}
+		    for(Point p1: _points)
+		    {
+				pos += p1._proc;
+				if ( rnd <= pos )
+				{
+				    p[0] = p1._x;
+				    p[1] = p1._y;
+				    p[2] = p1._zmin;
+				    p[3] = p1._zmax;
+				    return p;
+				}
 		    }
 
 		}
-		for( i=0; i<100; i++)
+		for(int i=0; i<100; i++)
 		{
 			p[0] = Rnd.get(_xMin, _xMax);
 			p[1] = Rnd.get(_yMin, _yMax);
-			if(isInside(p[0],p[1])){
+			if(isInside(p[0],p[1]))
+			{
 			    double curdistance = 0;
-			    p[2] = _zMin+100;p[3] = _zMax;
-			    for( i=0; i<_points.size(); i++){
-				Point p1 = _points.get(i);
-				double dx = p1._x-p[0];
-				double dy = p1._y-p[1];
-				double distance = Math.sqrt(dx*dx+dy*dy);
-				if (curdistance == 0 || distance<curdistance){
-				    curdistance = distance;
-				    p[2] = p1._zmin+100;
-				}
+			    p[2] = _zMin+100;
+			    p[3] = _zMax;
+			    for(Point p1: _points)
+			    {
+					double dx = p1._x-p[0];
+					double dy = p1._y-p[1];
+					double distance = Math.sqrt(dx*dx+dy*dy);
+					if (curdistance == 0 || distance < curdistance)
+					{
+					    curdistance = distance;
+					    p[2] = p1._zmin+100;
+					}
 			    }
 			    return p;
 			}
@@ -157,9 +170,8 @@ public class L2Territory
 		_log.warning("Can't make point for territory"+_terr);
 		return p;
 	}
-    	public int getProcMax()
+    public int getProcMax()
 	{
 	    return _procMax;
 	}
-
 }

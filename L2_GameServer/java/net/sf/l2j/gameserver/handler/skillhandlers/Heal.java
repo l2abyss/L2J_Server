@@ -64,7 +64,6 @@ public class Heal implements ISkillHandler
 		{
 		}
 		
-		L2Character target = null;
 		L2ItemInstance weaponInst = activeChar.getActiveWeaponInstance();
 		
 		L2PcInstance player = null;
@@ -72,10 +71,8 @@ public class Heal implements ISkillHandler
 			player = (L2PcInstance) activeChar;
 		boolean clearSpiritShot = false;
 		
-		for (int index = 0; index < targets.length; index++)
+		for (L2Character target: (L2Character[]) targets)
 		{
-			target = (L2Character) targets[index];
-			
 			// We should not heal if char is dead
 			if (target == null || target.isDead())
 				continue;

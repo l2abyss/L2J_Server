@@ -46,11 +46,8 @@ public class ManaHeal implements ISkillHandler
 	 */
 	public void useSkill(L2Character actChar, L2Skill skill, L2Object[] targets)
 	{
-		L2Character target = null;
-		
-		for (int index = 0; index < targets.length; index++)
+		for (L2Character target: (L2Character[]) targets)
 		{
-			target = (L2Character) targets[index];
 			double mp = skill.getPower();
 			if (skill.getSkillType() == L2SkillType.MANAHEAL_PERCENT)
 			{

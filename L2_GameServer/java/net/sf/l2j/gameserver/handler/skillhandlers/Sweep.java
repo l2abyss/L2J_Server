@@ -58,11 +58,11 @@ public class Sweep implements ISkillHandler
 		InventoryUpdate iu = Config.FORCE_INVENTORY_UPDATE ? null : new InventoryUpdate();
 		boolean send = false;
 		
-		for (int index = 0; index < targets.length; index++)
+		for (L2Object tgt: targets)
 		{
-			if (!(targets[index] instanceof L2Attackable))
+			if (!(tgt instanceof L2Attackable))
 				continue;
-			L2Attackable target = (L2Attackable) targets[index];
+			L2Attackable target = (L2Attackable) tgt;
 			L2Attackable.RewardItem[] items = null;
 			boolean isSweeping = false;
 			synchronized (target)

@@ -150,8 +150,7 @@ public class L2Party {
 	{
 		for (int i = 0; i < getMemberCount(); i++)
 		{
-			_itemLastLoot++;
-			if (_itemLastLoot >= getMemberCount()) _itemLastLoot = 0;
+			if (++_itemLastLoot >= getMemberCount()) _itemLastLoot = 0;
 			L2PcInstance member;
 			try
 			{

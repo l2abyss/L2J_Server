@@ -106,10 +106,8 @@ public final class StatusUpdate extends L2GameServerPacket
         writeD(_objectId);
         writeD(_attributes.size());
 
-        for (int i = 0; i < _attributes.size(); i++)
+        for (Attribute temp: _attributes)
         {
-            Attribute temp = _attributes.get(i);
-
             writeD(temp.id);
             writeD(temp.value);
         }

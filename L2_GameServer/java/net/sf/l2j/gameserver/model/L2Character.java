@@ -3472,18 +3472,18 @@ public abstract class L2Character extends L2Object
 		// Go through the Calculator set
 		synchronized(_calculators)
 		{
-			for (int i=0; i < _calculators.length; i++)
+			for (Calculator calc: _calculators)
 			{
-				if (_calculators[i] != null)
+				if (calc != null)
 				{
 					// Delete all Func objects of the selected owner
 					if (modifiedStats != null)
-						modifiedStats.addAll(_calculators[i].removeOwner(owner));
+						modifiedStats.addAll(calc.removeOwner(owner));
 					else
-						modifiedStats = _calculators[i].removeOwner(owner);
+						modifiedStats = calc.removeOwner(owner);
 
-					if (_calculators[i].size() == 0)
-						_calculators[i] = null;
+					if (calc.size() == 0)
+						calc = null;
 				}
 			}
 
@@ -5524,26 +5524,26 @@ public abstract class L2Character extends L2Object
 		if (escapeRange > 0)
 		{
 			List<L2Character> targetList = new FastList<L2Character>();
-			for (int i = 0; i < targets.length; i++)
+			for (L2Object target: targets)
 			{
-				if (targets[i] instanceof L2Character)
+				if (target instanceof L2Character)
 				{
-					if (!Util.checkIfInRange(escapeRange, this, targets[i], true))
+					if (!Util.checkIfInRange(escapeRange, this, target, true))
 						continue;
 					if(skill.isOffensive())
 					{
 						if(this instanceof L2PcInstance)
 						{
-							if(((L2Character)targets[i]).isInsidePeaceZone((L2PcInstance)this)) 
+							if(((L2Character)target).isInsidePeaceZone((L2PcInstance)this)) 
 								continue;
 						}
 						else
 						{
-							if(((L2Character)targets[i]).isInsidePeaceZone(this, targets[i])) 
+							if(((L2Character)target).isInsidePeaceZone(this, target)) 
 								continue;
 						}
 					}
-					targetList.add((L2Character)targets[i]);
+					targetList.add((L2Character)target);
 				}
 				//else
 				//{
@@ -5619,11 +5619,11 @@ public abstract class L2Character extends L2Object
 		try
 		{
 			// Go through targets table
-			for (int i = 0; i < targets.length; i++)
+			for (L2Object tgt: targets)
 			{
-				if (targets[i] instanceof L2PlayableInstance)
+				if (tgt instanceof L2PlayableInstance)
 				{
-					L2Character target = (L2Character) targets[i];
+					L2Character target = (L2Character) tgt;
 					
 					if (skill.getSkillType() == L2SkillType.BUFF)
 					{
@@ -5635,7 +5635,7 @@ public abstract class L2Character extends L2Object
 					if (this instanceof L2PcInstance
 					        && target instanceof L2Summon)
 					{
-						((L2Summon) target).getOwner().sendPacket(new PetInfo((L2Summon) target));
+						target.getActingPlayer().sendPacket(new PetInfo((L2Summon) target));
 						sendPacket(new NpcInfo((L2Summon) target, this));
 						
 						// The PetInfo packet wipes the PartySpelled (list of

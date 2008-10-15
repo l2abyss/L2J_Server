@@ -751,9 +751,9 @@ public class Siege
 	{
 		if (flag == null)
 			return;
-		for (int i = 0; i < getAttackerClans().size(); i++)
+		for (L2SiegeClan clan: getAttackerClans())
 		{
-			if (getAttackerClan(i).removeFlag(flag))
+			if (clan.removeFlag(flag))
 				return;
 		}
 	}

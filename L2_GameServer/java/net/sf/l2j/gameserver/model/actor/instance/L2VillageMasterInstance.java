@@ -256,12 +256,10 @@ public final class L2VillageMasterInstance extends L2FolkInstance
                     {
                         SubClass subClass = subList.next();
 
-                        content.append("Sub-class " + classIndex + "<br1>");
+                        content.append("Sub-class " + classIndex++ + "<br1>");
                         content.append("<a action=\"bypass -h npc_" + getObjectId() + "_Subclass 6 "
                             + subClass.getClassIndex() + "\">"
                             + CharTemplateTable.getInstance().getClassNameById(subClass.getClassId()) + "</a><br>");
-
-                        classIndex++;
                     }
 
                     content.append("<br>If you change a sub class, you'll start at level 40 after the 2nd class transfer.");

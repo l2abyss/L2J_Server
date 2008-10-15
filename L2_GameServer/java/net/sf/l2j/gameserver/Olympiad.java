@@ -1714,8 +1714,7 @@ public class Olympiad
     		int tmpIndex = 0;
     		for(L2FastList<L2PcInstance> l : list.values())
     		{
-    			tmp.put(tmpIndex, l);
-    			tmpIndex ++;
+    			tmp.put(tmpIndex++, l);
     		}
     		
     		L2FastList<L2PcInstance> rndList = new L2FastList<L2PcInstance>();
@@ -1780,8 +1779,7 @@ public class Olympiad
     		for (L2OlympiadGame instance : _olympiadInstances.values())
     		{
     			if (instance._gamestarted == true) { showbattle = 1; } else { showbattle = 0; }
-    			msg[count] = "<"+showbattle+"><"+instance._stadiumID+"> In Progress " + instance.getTitle();
-    			count++;
+    			msg[count++] = "<"+showbattle+"><"+instance._stadiumID+"> In Progress " + instance.getTitle();
     			match++;
     		}
 

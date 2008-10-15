@@ -1326,9 +1326,9 @@ public class L2NpcInstance extends L2Character
 	            
 	            if (qlst != null && qlst.length > 0) 
 	            {
-	                for (int i=0; i < qlst.length; i++) 
+	                for (Quest temp: qlst) 
 	                {
-	                    if (qlst[i] == q) 
+	                    if (temp == q) 
 	                    {
 	                        qs = q.newQuestState(player);
 	                        break;

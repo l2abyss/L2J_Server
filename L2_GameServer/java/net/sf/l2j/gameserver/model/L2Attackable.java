@@ -1381,8 +1381,7 @@ public class L2Attackable extends L2NpcInstance
     	 if (Config.L2JMOD_CHAMPION_ENABLE && isChampion() && (Config.L2JMOD_CHAMPION_REWARD_LOWER_LVL_ITEM_CHANCE > 0 || Config.L2JMOD_CHAMPION_REWARD_HIGHER_LVL_ITEM_CHANCE > 0))
 		 {
     		 int champqty = Rnd.get(Config.L2JMOD_CHAMPION_REWARD_QTY);
-    		 champqty++; //quantity should actually vary between 1 and whatever admin specified as max, inclusive.
-   			 RewardItem item = new RewardItem(Config.L2JMOD_CHAMPION_REWARD_ID,champqty);
+   			 RewardItem item = new RewardItem(Config.L2JMOD_CHAMPION_REWARD_ID,++champqty);
    			 
     		 if (player.getLevel() <= getLevel() && (Rnd.get(100) < Config.L2JMOD_CHAMPION_REWARD_LOWER_LVL_ITEM_CHANCE))
     		 {
@@ -1933,9 +1932,8 @@ public class L2Attackable extends L2NpcInstance
                     // Find any of the 39 possible crystals.
                     if (id == itemId)
                     {
-                        crystalQTY++;
                         // Keep count but make sure the player has no more than 1 crystal
-                        if (crystalQTY > 1)
+                        if (++crystalQTY > 1)
                         {
                             isSuccess = false; break;
                         }

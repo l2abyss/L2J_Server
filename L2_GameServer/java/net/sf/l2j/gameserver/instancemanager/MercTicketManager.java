@@ -244,10 +244,8 @@ public class MercTicketManager
     		return true;
 
     	int count = 0;
-    	L2ItemInstance ticket;
-    	for(int i=0; i<getDroppedTickets().size(); i++)
+    	for(L2ItemInstance ticket: getDroppedTickets())
     	{
-    		ticket = getDroppedTickets().get(i);
     		if ( ticket != null && ticket.getItemId() == itemId)
     			count++;
     	}
@@ -270,10 +268,8 @@ public class MercTicketManager
     		return true;
 
     	int count = 0;
-    	L2ItemInstance ticket;
-    	for(int i=0; i<getDroppedTickets().size(); i++)
+    	for(L2ItemInstance ticket: getDroppedTickets())
     	{
-    		ticket = getDroppedTickets().get(i);
     		if ( (ticket != null) && (getTicketCastleId(ticket.getItemId()) == castleId) )
     			count++;
     	}
@@ -374,20 +370,16 @@ public class MercTicketManager
      */
     public void deleteTickets(int castleId)
     {
-    	int i = 0;
-    	while ( i<getDroppedTickets().size() )
+    	for (L2ItemInstance item: getDroppedTickets())
     	{
-    		L2ItemInstance item = getDroppedTickets().get(i);
     		if ((item != null) && (getTicketCastleId(item.getItemId()) == castleId))
     		{
     			item.decayMe();
     			L2World.getInstance().removeObject(item);
 
     			// remove from the list
-    			getDroppedTickets().remove(i);
+    			getDroppedTickets().remove(item);
     		}
-    		else
-    			i++;
     	}
     }
 

@@ -388,7 +388,7 @@ public class TopicBBSManager extends BaseBBSManager
 			Topic t = forum.gettopic(j);
 			if (t != null)
 			{
-				if (i >= 12 * (index - 1))
+				if (i++ >= 12 * (index - 1))
 				{
 					html.append("<table border=0 cellspacing=0 cellpadding=5 WIDTH=610>");
 					html.append("<tr>");
@@ -400,7 +400,6 @@ public class TopicBBSManager extends BaseBBSManager
 					html.append("</table>");
 					html.append("<img src=\"L2UI.Squaregray\" width=\"610\" height=\"1\">");
 				}
-				i++;
 			}
 		}
 		

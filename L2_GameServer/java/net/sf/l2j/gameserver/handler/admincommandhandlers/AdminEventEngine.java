@@ -346,8 +346,7 @@ public class AdminEventEngine implements IAdminCommandHandler
 				temp2 = st.nextToken();
 				if (!temp2.equals(" "))
 				{
-					L2Event.names.put(i, temp2.substring(1, temp2.length() - 1));
-					i++;
+					L2Event.names.put(i++, temp2.substring(1, temp2.length() - 1));
 				}
 			}
 			

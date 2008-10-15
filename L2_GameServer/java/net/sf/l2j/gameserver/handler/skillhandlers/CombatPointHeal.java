@@ -55,12 +55,8 @@ public class CombatPointHeal implements ISkillHandler
 		{
 		}
 		
-		L2Character target = null;
-		
-		for (int index = 0; index < targets.length; index++)
+		for (L2Character target: (L2Character[]) targets)
 		{
-			target = (L2Character) targets[index];
-			
 			double cp = skill.getPower();
 			//int cLev = activeChar.getLevel();
 			//hp += skill.getPower()/*+(Math.sqrt(cLev)*cLev)+cLev*/;

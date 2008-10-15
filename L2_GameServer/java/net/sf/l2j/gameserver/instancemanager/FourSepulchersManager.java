@@ -1599,15 +1599,14 @@ public class FourSepulchersManager extends GrandBossManager
 			if (min == 90)
 				msg = "Game over. The teleport will appear momentarily";
 			
-			int i = 0;
-			for (int k = _managers.size(); i < k; i++)
+			for (L2Spawn temp: _managers)
 			{
-				if (_managers.get(i) == null)
+				if (temp == null)
 				{
 					_log.warning("FourSepulchersManager: managerSay(): manager is null");
 					continue;
 				}
-				if (!(_managers.get(i).getLastSpawn() instanceof L2SepulcherNpcInstance))
+				if (!(temp.getLastSpawn() instanceof L2SepulcherNpcInstance))
 				{
 					_log.warning("FourSepulchersManager: managerSay(): manager is not Sepulcher instance");
 					continue;
@@ -1615,10 +1614,10 @@ public class FourSepulchersManager extends GrandBossManager
 				// hall not used right now, so its manager will not tell you
 				// anything :)
 				// if you don't need this - delete next two lines.
-				if (!_hallInUse.get(_managers.get(i).getNpcid()).booleanValue())
+				if (!_hallInUse.get(temp.getNpcid()).booleanValue())
 					continue;
 				
-				((L2SepulcherNpcInstance) _managers.get(i).getLastSpawn()).sayInShout(msg);
+				((L2SepulcherNpcInstance) temp.getLastSpawn()).sayInShout(msg);
 			}
 		}
 		
@@ -1627,21 +1626,20 @@ public class FourSepulchersManager extends GrandBossManager
 			String msg1 = "You may now enter the Sepulcher";
 			String msg2 = "If you place your hand on the stone statue in front of each sepulcher,"
 			        + " you will be able to enter";
-			int i = 0;
-			for (int k = _managers.size(); i < k; i++)
+			for (L2Spawn temp: _managers)
 			{
-				if (_managers.get(i) == null)
+				if (temp == null)
 				{
 					_log.warning("FourSepulchersManager: Something goes wrong in managerSay()...");
 					continue;
 				}
-				if (!(_managers.get(i).getLastSpawn() instanceof L2SepulcherNpcInstance))
+				if (!(temp.getLastSpawn() instanceof L2SepulcherNpcInstance))
 				{
 					_log.warning("FourSepulchersManager: Something goes wrong in managerSay()...");
 					continue;
 				}
-				((L2SepulcherNpcInstance) _managers.get(i).getLastSpawn()).sayInShout(msg1);
-				((L2SepulcherNpcInstance) _managers.get(i).getLastSpawn()).sayInShout(msg2);
+				((L2SepulcherNpcInstance) temp.getLastSpawn()).sayInShout(msg1);
+				((L2SepulcherNpcInstance) temp.getLastSpawn()).sayInShout(msg2);
 			}
 		}
 	}

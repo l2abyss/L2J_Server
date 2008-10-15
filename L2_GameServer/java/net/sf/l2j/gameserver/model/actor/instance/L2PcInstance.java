@@ -2427,9 +2427,8 @@ public final class L2PcInstance extends L2PlayableInstance
 		L2SkillLearn[] skills = SkillTreeTable.getInstance().getAvailableSkills(this, getClassId());
 		while (skills.length > unLearnable)
 		{
-			for (int i = 0; i < skills.length; i++)
+			for (L2SkillLearn s: skills)
 			{
-				L2SkillLearn s = skills[i];
 				L2Skill sk = SkillTable.getInstance().getInfo(s.getId(), s.getLevel());
 				if (sk == null || !sk.getCanLearn(getClassId()) || (sk.getId() == L2Skill.SKILL_DIVINE_INSPIRATION && !Config.AUTO_LEARN_DIVINE_INSPIRATION))
 				{
@@ -5155,10 +5154,10 @@ public final class L2PcInstance extends L2PlayableInstance
 					L2ItemInstance invItem = getInventory().getItemByItemId(getInventory().getPaperdollItemId(7));
 					if(invItem.isEquipped()) 
 					{
-						L2ItemInstance unequiped[] = getInventory().unEquipItemInSlotAndRecord(invItem.getLocationSlot());
+						L2ItemInstance[] unequiped = getInventory().unEquipItemInSlotAndRecord(invItem.getLocationSlot());
 						InventoryUpdate iu = new InventoryUpdate();
-						for(int i = 0; i < unequiped.length; i++)
-							iu.addModifiedItem(unequiped[i]);
+						for(L2ItemInstance itm: unequiped)
+							iu.addModifiedItem(itm);
 						sendPacket(iu);
 					}
 					refreshExpertisePenalty();			
@@ -5981,8 +5980,8 @@ public final class L2PcInstance extends L2PlayableInstance
 
             L2ItemInstance[] unequiped = getInventory().unEquipItemInBodySlotAndRecord(wpn.getItem().getBodyPart());
             InventoryUpdate iu = new InventoryUpdate();
-            for (int i = 0; i < unequiped.length; i++)
-                iu.addModifiedItem(unequiped[i]);
+            for (L2ItemInstance itm: unequiped)
+                iu.addModifiedItem(itm);
             sendPacket(iu);
 
             abortAttack();
@@ -6016,8 +6015,8 @@ public final class L2PcInstance extends L2PlayableInstance
 
             L2ItemInstance[] unequiped = getInventory().unEquipItemInBodySlotAndRecord(sld.getItem().getBodyPart());
             InventoryUpdate iu = new InventoryUpdate();
-            for (int i = 0; i < unequiped.length; i++)
-                iu.addModifiedItem(unequiped[i]);
+            for (L2ItemInstance itm: unequiped)
+                iu.addModifiedItem(itm);
             sendPacket(iu);
 
             abortAttack();
@@ -6812,21 +6811,21 @@ public final class L2PcInstance extends L2PlayableInstance
 
 			L2RecipeList[] recipes = getCommonRecipeBook();
 
-			for (int count = 0; count < recipes.length; count++)
+			for (L2RecipeList recipe: recipes)
 			{
 				statement = con.prepareStatement("INSERT INTO character_recipebook (charId, id, type) values(?,?,0)");
 				statement.setInt(1, getObjectId());
-				statement.setInt(2, recipes[count].getId());
+				statement.setInt(2, recipe.getId());
 				statement.execute();
 				statement.close();
 			}
 
 			recipes = getDwarvenRecipeBook();
-			for (int count = 0; count < recipes.length; count++)
+			for (L2RecipeList recipe: recipes)
 			{
 				statement = con.prepareStatement("INSERT INTO character_recipebook (charId, id, type) values(?,?,1)");
 				statement.setInt(1, getObjectId());
-				statement.setInt(2, recipes[count].getId());
+				statement.setInt(2, recipe.getId());
 				statement.execute();
 				statement.close();
 			}
@@ -7040,7 +7039,6 @@ public final class L2PcInstance extends L2PlayableInstance
 				if (effect != null && !effect.isHerbEffect() && effect.getInUse() && !skill.isToggle())
 				{
 					int skillId = skill.getId();
-					buff_index++;
 					
 					statement.setInt(1, getObjectId());
 					statement.setInt(2, skillId);
@@ -7062,7 +7060,7 @@ public final class L2PcInstance extends L2PlayableInstance
 					
 					statement.setInt(8, 0);
 					statement.setInt(9, getClassIndex());
-					statement.setInt(10, buff_index);
+					statement.setInt(10, ++buff_index);
 					statement.execute();
 				}
 			}
@@ -7073,7 +7071,6 @@ public final class L2PcInstance extends L2PlayableInstance
 			{
 				if (t.hasNotPassed())
 				{
-					buff_index++;
 					statement.setInt(1, getObjectId());
 					statement.setInt(2, t.getSkill());
 					statement.setInt(3, -1);
@@ -7083,7 +7080,7 @@ public final class L2PcInstance extends L2PlayableInstance
 					statement.setDouble(7, t.getStamp());
 					statement.setInt(8, 1);
 					statement.setInt(9, getClassIndex());
-					statement.setInt(10, buff_index);
+					statement.setInt(10, ++buff_index);
 					statement.execute();
 					
 				}

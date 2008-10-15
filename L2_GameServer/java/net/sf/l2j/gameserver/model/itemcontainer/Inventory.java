@@ -1417,12 +1417,10 @@ public abstract class Inventory extends ItemContainer
 	 */
 	public void reloadEquippedItems() 
 	{
-		L2ItemInstance item;
 		int slot;
 		
-		for (int i = 0; i < _paperdoll.length; i++)
+		for (L2ItemInstance item: _paperdoll)
 		{
-			item = _paperdoll[i];
 			if (item == null) continue;
 			slot = item.getLocationSlot();
 			

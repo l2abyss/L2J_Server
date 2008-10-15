@@ -69,10 +69,9 @@ public class EffectRecoverForce extends L2Effect
 				{
 					if (effect.numCharges < skill.getNumCharges())
 					{
-						effect.numCharges++;
 						player.sendPacket(new EtcStatusUpdate(player));
 						SystemMessage sm = new SystemMessage(SystemMessageId.FORCE_INCREASED_TO_S1);
-						sm.addNumber(effect.numCharges);
+						sm.addNumber(++effect.numCharges);
 						player.sendPacket(sm);
 					}
 				}

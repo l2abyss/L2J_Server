@@ -102,11 +102,10 @@ public class QuestStateManager
 	 */
 	public QuestState getQuestState(L2PcInstance player)
 	{
-		for (int i = 0; i < getQuestStates().size(); i++)
+		for (QuestState q: getQuestStates())
 		{
-			if (getQuestStates().get(i).getPlayer() != null && getQuestStates().get(i).getPlayer().getObjectId() == player.getObjectId())
-				return getQuestStates().get(i);
-			
+			if (q.getPlayer() != null && q.getPlayer().getObjectId() == player.getObjectId())
+				return q;
 		}
 		
 		return null;

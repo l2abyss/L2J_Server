@@ -73,7 +73,6 @@ public class Continuous implements ISkillHandler
 	 */
 	public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
 	{
-		L2Character target = null;
 		boolean acted = true;
 		
 		L2PcInstance player = null;
@@ -96,10 +95,8 @@ public class Continuous implements ISkillHandler
 				skill = _skill;
 		}
 		
-		for (int index = 0; index < targets.length; index++)
+		for (L2Character target: (L2Character[]) targets)
 		{
-			target = (L2Character) targets[index];
-			
 			switch (skill.getSkillType())
 			{
 				case BUFF:
@@ -264,12 +261,8 @@ public class Continuous implements ISkillHandler
 	
 	public void useCubicSkill(L2CubicInstance activeCubic, L2Skill skill, L2Object[] targets)
 	{
-		L2Character target = null;
-		
-		for (int index = 0; index < targets.length; index++)
+		for (L2Character target: (L2Character[]) targets)
 		{
-			target = (L2Character) targets[index];
-			
 			if (skill.isOffensive())
 			{
 				boolean acted = Formulas.getInstance().calcCubicSkillSuccess(activeCubic, target, skill);

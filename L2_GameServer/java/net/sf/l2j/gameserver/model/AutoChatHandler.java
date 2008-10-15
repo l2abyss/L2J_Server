@@ -88,8 +88,7 @@ public class AutoChatHandler implements SpawnListener
 
                 while (rs2.next())
                 {
-                    chatTexts[i] = rs2.getString("chatText");
-                    i++;
+                    chatTexts[i++] = rs2.getString("chatText");
                 }
 
                 registerGlobalChat(rs.getInt("npcId"), chatTexts, rs.getLong("chatDelay"));
@@ -719,8 +718,7 @@ public class AutoChatHandler implements SpawnListener
 
                         if (!chatDef.isRandomChat())
                         {
-                            lastIndex = chatDef._chatIndex;
-                            lastIndex++;
+                            lastIndex = chatDef._chatIndex + 1;
 
                             if (lastIndex == maxIndex) lastIndex = 0;
 

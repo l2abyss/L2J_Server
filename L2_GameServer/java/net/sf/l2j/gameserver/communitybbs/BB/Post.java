@@ -106,11 +106,10 @@ public class Post
 		int i = 0;
 		for(CPost cp : _post)
 		{
-			if(i == id)
+			if(i++ == id)
 			{
 				return cp;
 			}
-			i++;
 		}
 		return null;
 	}

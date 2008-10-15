@@ -45,11 +45,11 @@ public class PledgePowerGradeList extends L2GameServerPacket
         writeC(0xFE);
         writeH(0x3c);
         writeD(_privs.length);
-        for (int i =0; i<_privs.length; i++)
+        for (RankPrivs temp: _privs)
         {
-            writeD(_privs[i].getRank());
-            writeD(_privs[i].getParty());
-            //_log.warning("rank: "+_privs[i].getRank()+" party: "+_privs[i].getParty());
+            writeD(temp.getRank());
+            writeD(temp.getParty());
+            //_log.warning("rank: "+temp.getRank()+" party: "+temp.getParty());
         }
 
 	}

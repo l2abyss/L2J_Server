@@ -152,15 +152,14 @@ public final class Calculator
 	 */
 	public synchronized FastList<Stats> removeOwner(Object owner)
 	{
-		Func[] funcs = _functions;
 		FastList<Stats> modifiedStats = new FastList<Stats>();
 
-		for (int i=0; i < funcs.length; i++)
+		for (Func func: _functions)
 		{
-			if (funcs[i].funcOwner == owner)
+			if (func.funcOwner == owner)
 			{
-				modifiedStats.add(funcs[i].stat);
-				removeFunc(funcs[i]);
+				modifiedStats.add(func.stat);
+				removeFunc(func);
 			}
 		}
 		return modifiedStats;
@@ -173,10 +172,8 @@ public final class Calculator
 	 */
 	public void calc(Env env)
 	{
-		Func[] funcs = _functions;
-
-		for (int i=0; i < funcs.length; i++)
-			funcs[i].calc(env);
+		for (Func func: _functions)
+			func.calc(env);
 	}
 
 }

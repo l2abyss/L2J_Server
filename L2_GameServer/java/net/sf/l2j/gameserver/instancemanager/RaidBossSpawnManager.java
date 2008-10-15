@@ -392,8 +392,7 @@ public class RaidBossSpawnManager {
         {
             L2RaidBossInstance boss = _bosses.get(i);
 
-            msg[index] = boss.getName() + ": " + boss.getRaidStatus().name();
-            index++;
+            msg[index++] = boss.getName() + ": " + boss.getRaidStatus().name();
         }
 
         return msg;

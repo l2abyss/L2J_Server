@@ -326,9 +326,8 @@ public class ClanHall
 	{
 		if (doorId <= 0)
 			return null;
-		for (int i = 0; i < getDoors().size(); i++)
+		for (L2DoorInstance door: getDoors())
 		{
-			L2DoorInstance door = getDoors().get(i);
 			if (door.getDoorId() == doorId)
 				return door;
 		}
