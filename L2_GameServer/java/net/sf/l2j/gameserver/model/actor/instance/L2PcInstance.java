@@ -7883,7 +7883,8 @@ public final class L2PcInstance extends L2PlayableInstance
 		// If a skill is currently being used, queue this one if this is not the same
         if (isCastingNow())
         {
-        	if ((getCastInterruptTime()+40) < GameTimeController.getGameTicks()) 
+        	int interrupt = getCastInterruptTime();
+        	if (interrupt != 0 && ((interrupt+40) < GameTimeController.getGameTicks())) 
         	{ 
         		// temporary fix for skill use getting stuck
         		/*
