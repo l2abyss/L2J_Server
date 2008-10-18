@@ -707,10 +707,7 @@ public class Disablers implements ISkillHandler
 									_log.severe("Couldn't find skill handler for HEAL.");
 									continue;
 								}
-								L2Object tgts[] = new L2Object[]
-								{
-									target
-								};
+								L2Character tgts[] = new L2Character[]{target};
 								try
 								{
 									Healhandler.useSkill(activeChar, skill, tgts);
