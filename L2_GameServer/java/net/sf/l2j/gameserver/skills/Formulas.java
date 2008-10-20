@@ -2170,27 +2170,4 @@ public final class Formulas
     	
     	return Rnd.get(100) < target.calcStat(Stats.P_SKILL_EVASION, 0, null, skill);
     }
-    
-    public double calcRangeDamageMod(double initDam, L2Character attacker, L2Character target, L2WeaponType type)
-    {
-    	int baseRange; // base range in which damage = 100%
-    	
-    	switch (type)
-    	{
-    		case BOW:
-    			baseRange = 800;
-    			break;
-    		case CROSSBOW:
-    			baseRange = 600;
-    			break;
-    		default:
-    			return initDam;
-    	}
-    	
-    	double distance = Util.calculateDistance(attacker, target, true);
-    	
-    	double coef = Math.abs(1-distance/baseRange);
-    	
-    	return 0.0;
-    }
 }
