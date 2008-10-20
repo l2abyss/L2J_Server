@@ -48,6 +48,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.skills.Stats;
+import net.sf.l2j.gameserver.skills.effects.EffectBuff;
 import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.util.Rnd;
 
@@ -533,7 +534,7 @@ public class Disablers implements ISkillHandler
 						
 						for (L2Effect e : effects)
 						{
-							if (e == null || (e.getEffectType() != L2Effect.EffectType.BUFF && e.getEffectType() != L2Effect.EffectType.TRANSFORMATION)
+							if (e == null || (!(e instanceof EffectBuff) && e.getEffectType() != L2Effect.EffectType.TRANSFORMATION)
 									|| e.getSkill().getSkillType() == L2SkillType.HEAL
 									|| e.getSkill().isToggle()
 									|| e.getSkill().isDebuff()
