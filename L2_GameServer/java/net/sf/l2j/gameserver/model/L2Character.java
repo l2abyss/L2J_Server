@@ -54,6 +54,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2EffectPointInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FriendlyMobInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2GuardInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2MinionInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcWalkerInstance;
@@ -4259,17 +4260,24 @@ public abstract class L2Character extends L2Object
 			{
 				// Path calculation
 				// Overrides previous movement check
-				if(this instanceof L2PlayableInstance || this.isInCombat())
+				if(this instanceof L2PlayableInstance || this.isInCombat() || this instanceof L2MinionInstance)
 				{
 		
 					m.geoPath = PathFinding.getInstance().findPath(curX, curY, curZ, originalX, originalY, originalZ);
                 	if (m.geoPath == null || m.geoPath.size() < 2) // No path found
                 	{
-                		// Even though there's no path found (remember geonodes aren't perfect), 
+                		// * Even though there's no path found (remember geonodes aren't perfect), 
                 		// the mob is attacking and right now we set it so that the mob will go
-                		// after target anyway, is dz is small enough. Summons will follow their masters no matter what.
+                		// after target anyway, is dz is small enough. 
+                		// * With cellpathfinding this approach could be changed but would require taking
+                		// off the geonodes and some more checks.
+                		// * Summons will follow their masters no matter what.
+                		// * Currently minions also must move freely since L2AttackableAI commands
+                		// them to move along with their leader
                 		if (this instanceof L2PcInstance 
-                				|| (!(this instanceof L2PlayableInstance) && Math.abs(z - curZ) > 140)
+                				|| (!(this instanceof L2PlayableInstance) 
+                						&& !(this instanceof L2MinionInstance)
+                						&& Math.abs(z - curZ) > 140)
                 				|| (this instanceof L2Summon && !((L2Summon)this).getFollowStatus())) 
                 		{
                 			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
