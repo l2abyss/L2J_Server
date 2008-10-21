@@ -3469,6 +3469,7 @@ public abstract class L2Character extends L2Object
 
 		FastList<Stats> modifiedStats = null;
 		
+		int i = 0;
 		// Go through the Calculator set
 		synchronized(_calculators)
 		{
@@ -3483,14 +3484,15 @@ public abstract class L2Character extends L2Object
 						modifiedStats = calc.removeOwner(owner);
 
 					if (calc.size() == 0)
-						calc = null;
+						_calculators[i] = null;
 				}
+				i++;
 			}
 
 			// If possible, free the memory and just create a link on NPC_STD_CALCULATOR
 			if (this instanceof L2NpcInstance)
 			{
-				int i = 0;
+				i = 0;
 				for (; i < Stats.NUM_STATS; i++)
 				{
 					if (!Calculator.equalsCals(_calculators[i], NPC_STD_CALCULATOR[i]))
