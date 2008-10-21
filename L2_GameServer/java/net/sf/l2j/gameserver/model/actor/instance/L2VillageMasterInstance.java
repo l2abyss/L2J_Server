@@ -270,6 +270,13 @@ public final class L2VillageMasterInstance extends L2FolkInstance
                      * If the character is less than level 75 on any of their previously chosen
                      * classes then disallow them to change to their most recently added sub-class choice.
                      */
+                    
+                    if (!FloodProtector.getInstance().tryPerformAction(player.getObjectId(), FloodProtector.PROTECTED_SUBCLASS))
+                    {
+                    	_log.warning("Player "+player.getName()+" has performed a subclass change too fast");
+                    	return;
+                    }
+                    
                     if (player.getLevel() < 75)
                     {
                         player.sendMessage("You may not add a new sub class before you are level 75 on your previous class.");
@@ -420,6 +427,13 @@ public final class L2VillageMasterInstance extends L2FolkInstance
                      * Warning: the information about this subclass will be removed from the
                      * subclass list even if false!
                      */
+                	
+                	if (!FloodProtector.getInstance().tryPerformAction(player.getObjectId(), FloodProtector.PROTECTED_SUBCLASS))
+                    {
+                    	_log.warning("Player "+player.getName()+" has performed a subclass change too fast");
+                    	return;
+                    }
+                	
                     if (player.modifySubClass(paramOne, paramTwo))
                     {
                     	player.stopAllEffects(); // all effects from old subclass stopped!
