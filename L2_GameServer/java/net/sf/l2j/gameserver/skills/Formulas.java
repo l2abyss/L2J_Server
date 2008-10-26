@@ -378,8 +378,8 @@ public final class Formulas
         {
             if (!cond.test(env)) 
                 return;
-            // default is 40 and with crossbow should be 200
-            env.value += 160;
+            // default is 40 and with crossbow should be 400
+            env.value += 360;
         }
     }
 
