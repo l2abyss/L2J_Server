@@ -139,6 +139,7 @@ public enum Stats
 	FIST_WPN_VULN 	("fistWpnVuln"),
 	DUAL_WPN_VULN 	("dualWpnVuln"),
 	DUALFIST_WPN_VULN("dualFistWpnVuln"),
+	BIGSWORD_WPN_VULN("bigSwordWpnVuln"),
 
 	REFLECT_DAMAGE_PERCENT 	("reflectDam"),
 	REFLECT_SKILL_MAGIC     ("reflectSkillMagic"),

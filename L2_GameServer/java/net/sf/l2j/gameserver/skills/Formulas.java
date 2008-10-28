@@ -1307,8 +1307,8 @@ public final class Formulas
 				case SWORD:
 					stat = Stats.SWORD_WPN_VULN;
 					break;
-				case BIGSWORD: //TODO: have a proper resistance/vulnerability for Big swords
-					stat = Stats.SWORD_WPN_VULN;
+				case BIGSWORD:
+					stat = Stats.BIGSWORD_WPN_VULN;
 					break;
 			}
 		}
