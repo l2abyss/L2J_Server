@@ -1,7 +1,7 @@
-#Tue Apr 01 23:09:20 EDT 2008
+#Mon Aug 18 01:51:05 CEST 2008
 eclipse.preferences.version=1
-formatter_profile=_KenM
-formatter_settings_version=10
+formatter_profile=_L2J
+formatter_settings_version=11
 org.eclipse.jdt.ui.exception.name=e
 org.eclipse.jdt.ui.gettersetter.use.is=true
 org.eclipse.jdt.ui.javadoc=true
