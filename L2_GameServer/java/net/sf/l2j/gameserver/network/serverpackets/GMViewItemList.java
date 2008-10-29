@@ -17,7 +17,6 @@ package net.sf.l2j.gameserver.network.serverpackets;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  *
  * @version $Revision: 1.1.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
@@ -29,16 +28,14 @@ public class GMViewItemList extends L2GameServerPacket
 	private L2ItemInstance[] _items;
 	private L2PcInstance _cha;
 	private String _playerName;
-
-
-
+	
 	public GMViewItemList(L2PcInstance cha)
 	{
 		_items = cha.getInventory().getItems();
 		_playerName = cha.getName();
 		_cha = cha;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -47,17 +44,17 @@ public class GMViewItemList extends L2GameServerPacket
 		writeD(_cha.getInventoryLimit()); // inventory limit
 		writeH(0x01); // show window ??
 		writeH(_items.length);
-
+		
 		for (L2ItemInstance temp : _items)
 		{
 			if (temp == null || temp.getItem() == null)
 				continue;
-
+			
 			writeH(temp.getItem().getType1());
-
+			
 			writeD(temp.getObjectId());
 			writeD(temp.getItemId());
-            writeD(temp.getLocationSlot()); // T1
+			writeD(temp.getLocationSlot()); // T1
 			writeD(temp.getCount());
 			writeH(temp.getItem().getType2());
 			writeH(temp.getCustomType1());
@@ -70,7 +67,7 @@ public class GMViewItemList extends L2GameServerPacket
 			else
 				writeD(0x00);
 			writeD(temp.getMana());
-
+			
 			// T1
 			writeD(temp.getAttackElementType());
 			writeD(temp.getAttackElementPower());
@@ -78,9 +75,11 @@ public class GMViewItemList extends L2GameServerPacket
 			{
 				writeD(temp.getElementDefAttr(i));
 			}
+			// T2
+			writeD(0x00);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see net.sf.l2j.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

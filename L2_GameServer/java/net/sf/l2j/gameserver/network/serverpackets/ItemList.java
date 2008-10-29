@@ -20,7 +20,6 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  *
  *
@@ -53,7 +52,7 @@ public final class ItemList extends L2GameServerPacket
 	private static final String _S__27_ITEMLIST = "[S] 11 ItemList";
 	private L2ItemInstance[] _items;
 	private boolean _showWindow;
-
+	
 	public ItemList(L2PcInstance cha, boolean showWindow)
 	{
 		_items = cha.getInventory().getItems();
@@ -63,7 +62,7 @@ public final class ItemList extends L2GameServerPacket
 			showDebug();
 		}
 	}
-
+	
 	public ItemList(L2ItemInstance[] items, boolean showWindow)
 	{
 		_items = items;
@@ -73,44 +72,43 @@ public final class ItemList extends L2GameServerPacket
 			showDebug();
 		}
 	}
-
+	
 	private void showDebug()
 	{
 		for (L2ItemInstance temp : _items)
 		{
-			_log.fine("item:" + temp.getItem().getName() +
-					" type1:" + temp.getItem().getType1() + " type2:" + temp.getItem().getType2());
+			_log.fine("item:" + temp.getItem().getName() + " type1:" + temp.getItem().getType1() + " type2:" + temp.getItem().getType2());
 		}
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x11);
 		writeH(_showWindow ? 0x01 : 0x00);
-
+		
 		int count = _items.length;
 		writeH(count);
-
+		
 		for (L2ItemInstance temp : _items)
 		{
 			if (temp == null || temp.getItem() == null)
 				continue;
-
+			
 			writeH(temp.getItem().getType1()); // item type1
-
+			
 			writeD(temp.getObjectId());
 			writeD(temp.getItemId());
 			writeD(temp.getLocationSlot()); // T1
-            writeD(temp.getCount());
-			writeH(temp.getItem().getType2());	// item type2
-			writeH(temp.getCustomType1());	// item type3
+			writeD(temp.getCount());
+			writeH(temp.getItem().getType2()); // item type2
+			writeH(temp.getCustomType1()); // item type3
 			writeH(temp.isEquipped() ? 0x01 : 0x00);
 			writeD(temp.getItem().getBodyPart());
-
-			writeH(temp.getEnchantLevel());	// enchant level
+			
+			writeH(temp.getEnchantLevel()); // enchant level
 			//race tickets
-			writeH(temp.getCustomType2());	// item type3
+			writeH(temp.getCustomType2()); // item type3
 			
 			if (temp.isAugmented())
 				writeD(temp.getAugmentation().getAugmentationId());
@@ -126,6 +124,8 @@ public final class ItemList extends L2GameServerPacket
 			{
 				writeD(temp.getElementDefAttr(i));
 			}
+			// T2
+			writeD(0x00);
 		}
 	}
 	
@@ -133,7 +133,7 @@ public final class ItemList extends L2GameServerPacket
 	 * @see net.sf.l2j.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
 	@Override
-    public String getType()
+	public String getType()
 	{
 		return _S__27_ITEMLIST;
 	}

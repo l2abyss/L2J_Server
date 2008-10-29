@@ -38,42 +38,43 @@ public final class WareHouseDepositList extends L2GameServerPacket
 	private int _playerAdena;
 	private FastList<L2ItemInstance> _items;
 	private int _whType;
-
+	
 	public WareHouseDepositList(L2PcInstance player, int type)
 	{
 		_activeChar = player;
 		_whType = type;
 		_playerAdena = _activeChar.getAdena();
 		_items = new FastList<L2ItemInstance>();
-
+		
 		for (L2ItemInstance temp : _activeChar.getInventory().getAvailableItems(true))
 			_items.add(temp);
-
+		
 		// augmented and shadow items can be stored in private wh
 		if (_whType == PRIVATE)
 		{
-			for (L2ItemInstance temp :player.getInventory().getItems())
+			for (L2ItemInstance temp : player.getInventory().getItems())
 			{
 				if (temp != null && !temp.isEquipped() && (temp.isShadowItem() || temp.isAugmented()))
 					_items.add(temp);
 			}
 		}
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x41);
 		/* 0x01-Private Warehouse
-        * 0x02-Clan Warehouse
-        * 0x03-Castle Warehouse
-        * 0x04-Warehouse */
-        writeH(_whType);
+		* 0x02-Clan Warehouse
+		* 0x03-Castle Warehouse
+		* 0x04-Warehouse */
+		writeH(_whType);
 		writeD(_playerAdena);
 		int count = _items.size();
-		if (Config.DEBUG) _log.fine("count:"+count);
+		if (Config.DEBUG)
+			_log.fine("count:" + count);
 		writeH(count);
-
+		
 		for (L2ItemInstance item : _items)
 		{
 			writeH(item.getItem().getType1());
@@ -85,27 +86,29 @@ public final class WareHouseDepositList extends L2GameServerPacket
 			writeD(item.getItem().getBodyPart());
 			writeH(item.getEnchantLevel());
 			writeH(item.getCustomType2());
-			writeH(0x00);	// ? 200
+			writeH(0x00); // ? 200
 			writeD(item.getObjectId());
 			if (item.isAugmented())
 			{
-				writeD(0x0000FFFF&item.getAugmentation().getAugmentationId());
-				writeD(item.getAugmentation().getAugmentationId()>>16);
+				writeD(0x0000FFFF & item.getAugmentation().getAugmentationId());
+				writeD(item.getAugmentation().getAugmentationId() >> 16);
 			}
 			else
 				writeQ(0x00);
-
+			
 			writeD(item.getAttackElementType());
 			writeD(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 			{
 				writeD(item.getElementDefAttr(i));
 			}
-
+			
 			writeD(item.getMana());
+			// T2
+			writeD(0x00);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see net.sf.l2j.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

@@ -37,39 +37,39 @@ public final class WareHouseWithdrawalList extends L2GameServerPacket
 	private int _playerAdena;
 	private L2ItemInstance[] _items;
 	private int _whType;
-
+	
 	public WareHouseWithdrawalList(L2PcInstance player, int type)
 	{
 		_activeChar = player;
 		_whType = type;
-
+		
 		_playerAdena = _activeChar.getAdena();
 		if (_activeChar.getActiveWarehouse() == null)
 		{
-            // Something went wrong!
-            _log.warning("error while sending withdraw request to: " + _activeChar.getName());
-            return;
+			// Something went wrong!
+			_log.warning("error while sending withdraw request to: " + _activeChar.getName());
+			return;
 		}
-		else _items = _activeChar.getActiveWarehouse().getItems();
-
+		else
+			_items = _activeChar.getActiveWarehouse().getItems();
+		
 		if (Config.DEBUG)
 			for (L2ItemInstance item : _items)
-				_log.fine("item:" + item.getItem().getName() +
-						" type1:" + item.getItem().getType1() + " type2:" + item.getItem().getType2());
+				_log.fine("item:" + item.getItem().getName() + " type1:" + item.getItem().getType1() + " type2:" + item.getItem().getType2());
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x42);
 		/* 0x01-Private Warehouse
-	    * 0x02-Clan Warehouse
-	    * 0x03-Castle Warehouse
-	    * 0x04-Warehouse */
-	    writeH(_whType);
+		* 0x02-Clan Warehouse
+		* 0x03-Castle Warehouse
+		* 0x04-Warehouse */
+		writeH(_whType);
 		writeD(_playerAdena);
 		writeH(_items.length);
-
+		
 		for (L2ItemInstance item : _items)
 		{
 			writeH(item.getItem().getType1());
@@ -77,31 +77,33 @@ public final class WareHouseWithdrawalList extends L2GameServerPacket
 			writeD(item.getItemId());
 			writeD(item.getCount());
 			writeH(item.getItem().getType2());
-			writeH(item.getCustomType1()); 
+			writeH(item.getCustomType1());
 			writeD(item.getItem().getBodyPart());
 			writeH(item.getEnchantLevel());
 			writeH(item.getCustomType2());
-			writeH(0x00);	// ?
+			writeH(0x00); // ?
 			writeD(item.getObjectId());
 			if (item.isAugmented())
 			{
-				writeD(0x0000FFFF&item.getAugmentation().getAugmentationId());
-				writeD(item.getAugmentation().getAugmentationId()>>16);
+				writeD(0x0000FFFF & item.getAugmentation().getAugmentationId());
+				writeD(item.getAugmentation().getAugmentationId() >> 16);
 			}
 			else
 				writeQ(0x00);
-
+			
 			writeD(item.getAttackElementType());
 			writeD(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 			{
 				writeD(item.getElementDefAttr(i));
 			}
-
+			
 			writeD(item.getMana());
+			// T2
+			writeD(0x00);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see net.sf.l2j.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

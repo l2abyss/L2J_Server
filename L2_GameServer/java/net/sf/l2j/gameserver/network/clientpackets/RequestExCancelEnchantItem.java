@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.network.clientpackets;
 
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.serverpackets.ExPutEnchantTargetItemResult;
 
 /**
  *
@@ -22,36 +23,35 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
  */
 public class RequestExCancelEnchantItem extends L2GameClientPacket
 {
-
 	/**
-     * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#getType()
-     */
-    @Override
-    public String getType()
-    {
-	    return "[C] D0:51 RequestExCancelEnchantItem";
-    }
-
-	/**
-     * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-     */
-    @Override
-    protected void readImpl()
-    {
-	    // nothing (trigger)
-    }
-
-	/**
-     * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-     */
-    @Override
-    protected void runImpl()
-    {
-    	L2PcInstance activeChar = this.getClient().getActiveChar();
-	    if (activeChar != null)
-	    {
-	    	activeChar.sendMessage("RequestExCancelEnchantItem");
-	    }
-    }
+	 * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return "[C] D0:51 RequestExCancelEnchantItem";
+	}
 	
+	/**
+	 * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
+	 */
+	@Override
+	protected void readImpl()
+	{
+		// nothing (trigger)
+	}
+	
+	/**
+	 * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
+	 */
+	@Override
+	protected void runImpl()
+	{
+		L2PcInstance activeChar = this.getClient().getActiveChar();
+		if (activeChar != null)
+		{
+			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2));
+			activeChar.setActiveEnchantItem(null);
+		}
+	}
 }
