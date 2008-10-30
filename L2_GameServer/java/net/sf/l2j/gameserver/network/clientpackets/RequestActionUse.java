@@ -395,6 +395,10 @@ public final class RequestActionUse extends L2GameClientPacket
 				// Private Store Package Sell
 				activeChar.tryOpenPrivateSellStore(true);
 				break;
+			case 65:
+				// Bot report Button.
+				activeChar.sendMessage("Action not handled yet.");
+				break;
 			case 96: // Quit Party Command Channel
 				_log.info("98 Accessed");
 				break;
