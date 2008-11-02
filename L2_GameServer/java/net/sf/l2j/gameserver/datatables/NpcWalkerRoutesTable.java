@@ -36,7 +36,7 @@ public class NpcWalkerRoutesTable
 	
 	private static NpcWalkerRoutesTable _instance;
 	
-	private FastList<L2NpcWalkerNode> _routes;
+	private FastList<L2NpcWalkerNode> _routes = new FastList<L2NpcWalkerNode>();;
 	
 	public static NpcWalkerRoutesTable getInstance()
 	{
@@ -53,10 +53,9 @@ public class NpcWalkerRoutesTable
 	{
 	}
 	
-	//FIXME: NPE while loading. :S
 	public void load()
 	{
-		_routes = new FastList<L2NpcWalkerNode>();
+		_routes.clear();
 		java.sql.Connection con = null;
 		try
 		{
