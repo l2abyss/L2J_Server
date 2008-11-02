@@ -374,9 +374,13 @@ public class L2Party {
 						getCommandChannel().removeParty(this);
 					}
 				}
-				getLeader().setParty(null);
-				if (getLeader().isInDuel())
-					DuelManager.getInstance().onRemoveFromParty(getLeader());
+				L2PcInstance leader = getLeader();
+				if (leader != null)
+				{
+					leader.setParty(null);
+					if (leader.isInDuel())
+						DuelManager.getInstance().onRemoveFromParty(leader);
+				}
 			}
 		}
 	}

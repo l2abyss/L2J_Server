@@ -3809,7 +3809,12 @@ public abstract class L2Character extends L2Object
 			_castInterruptTime = 0;
 			if (_skillCast != null)
 			{
-				_skillCast.cancel(true);
+				try 
+				{
+					_skillCast.cancel(true);
+				}
+				catch (NullPointerException e) {}
+				
 				_skillCast = null;
 			}
 
