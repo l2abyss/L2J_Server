@@ -181,6 +181,7 @@ public class TvTEvent
 			if (allParticipants.size() == 0) break;
 			// The other team gets one player
 			// XXX: Code not dry
+			priority = 1-priority;
 			highestLevelPlayerId = highestLevelPcInstanceOf(allParticipants);
 			highestLevelPlayer = allParticipants.get(highestLevelPlayerId);
 			allParticipants.remove(highestLevelPlayerId);
