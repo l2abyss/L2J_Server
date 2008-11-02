@@ -403,7 +403,7 @@ public final class Config
     public static boolean	ALLOW_NPC_WALKERS;
     public static boolean	ALLOW_PET_WALKERS;
     public static boolean	SERVER_NEWS;
-    public static String	COMMUNITY_TYPE;
+    public static int		COMMUNITY_TYPE;
     public static boolean	BBS_SHOW_PLAYERLIST;
     public static String	BBS_DEFAULT;
     public static boolean	SHOW_LEVEL_COMMUNITYBOARD;
@@ -1475,7 +1475,7 @@ public final class Config
 	                ALLOW_NPC_WALKERS							= Boolean.parseBoolean(General.getProperty("AllowNpcWalkers", "true"));
 	                ALLOW_PET_WALKERS							= Boolean.parseBoolean(General.getProperty("AllowPetWalkers", "False"));
 	                SERVER_NEWS									= Boolean.parseBoolean(General.getProperty("ShowServerNews", "False"));
-	                COMMUNITY_TYPE								= General.getProperty("CommunityType", "old").toLowerCase();
+	                COMMUNITY_TYPE								= Integer.parseInt(General.getProperty("CommunityType", "1"));
 	                BBS_SHOW_PLAYERLIST							= Boolean.parseBoolean(General.getProperty("BBSShowPlayerList", "false"));
 	                BBS_DEFAULT									= General.getProperty("BBSDefault", "_bbshome");
 	                SHOW_LEVEL_COMMUNITYBOARD					= Boolean.parseBoolean(General.getProperty("ShowLevelOnCommunityBoard", "False"));
@@ -2047,7 +2047,7 @@ public final class Config
         else if (pName.equalsIgnoreCase("AllowPetWalkers")) ALLOW_PET_WALKERS = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("BypassValidation")) BYPASS_VALIDATION = Boolean.parseBoolean(pValue);
 
-        else if (pName.equalsIgnoreCase("CommunityType")) COMMUNITY_TYPE = pValue.toLowerCase();
+        else if (pName.equalsIgnoreCase("CommunityType")) COMMUNITY_TYPE = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("BBSShowPlayerList")) BBS_SHOW_PLAYERLIST = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("BBSDefault")) BBS_DEFAULT = pValue;
         else if (pName.equalsIgnoreCase("ShowLevelOnCommunityBoard")) SHOW_LEVEL_COMMUNITYBOARD = Boolean.parseBoolean(pValue);
