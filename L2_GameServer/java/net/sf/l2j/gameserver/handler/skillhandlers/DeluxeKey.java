@@ -29,7 +29,7 @@ import net.sf.l2j.gameserver.templates.L2SkillType;
  */
 public class DeluxeKey implements ISkillHandler
 {
-	private static Logger _log = Logger.getLogger(BeastFeed.class.getName());
+	private static Logger _log = Logger.getLogger(DeluxeKey.class.getName());
 	
 	private static final L2SkillType[] SKILL_IDS =
 	{
