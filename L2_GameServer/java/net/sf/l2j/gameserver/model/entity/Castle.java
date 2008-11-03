@@ -674,7 +674,7 @@ public class Castle
 				_taxPercent = rs.getInt("taxPercent");
 				_treasury = rs.getInt("treasury");
 			}
-			
+			rs.close();
 			statement.close();
 			
 			_taxRate = _taxPercent / 100.0;
@@ -693,7 +693,7 @@ public class Castle
 				L2Clan clan = ClanTable.getInstance().getClan(getOwnerId()); // Try to find clan instance
 				ThreadPoolManager.getInstance().scheduleGeneral(new CastleUpdater(clan, 1), 3600000); // Schedule owner tasks to start running
 			}
-			
+			rs.close();
 			statement.close();
 		}
 		catch (Exception e)
@@ -729,6 +729,7 @@ public class Castle
 			{
 				_function.put(rs.getInt("type"), new CastleFunction(rs.getInt("type"), rs.getInt("lvl"), rs.getInt("lease"), 0, rs.getLong("rate"), rs.getLong("endTime"), true));
 			}
+			rs.close();
 			statement.close();
 		}
 		catch (Exception e)
@@ -838,7 +839,7 @@ public class Castle
 				_doors.add(door);
 				DoorTable.getInstance().putDoor(door);
 			}
-			
+			rs.close();
 			statement.close();
 		}
 		catch (Exception e)
@@ -873,7 +874,7 @@ public class Castle
 			{
 				upgradeDoor(rs.getInt("id"), rs.getInt("hp"), rs.getInt("pDef"), rs.getInt("mDef"));
 			}
-			
+			rs.close();
 			statement.close();
 		}
 		catch (Exception e)
