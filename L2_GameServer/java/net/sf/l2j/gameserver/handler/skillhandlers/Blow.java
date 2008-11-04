@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.handler.skillhandlers;
 
+import net.sf.l2j.gameserver.Olympiad;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
@@ -69,7 +70,12 @@ public class Blow implements ISkillHandler
 				_successChance = SIDE;
 			//If skill requires Crit or skill requires behind,
 			//calculate chance based on DEX, Position and on self BUFF
-			if (!skillIsEvaded && ((skill.getCondition() & L2Skill.COND_BEHIND) != 0) && _successChance == BEHIND || ((skill.getCondition() & L2Skill.COND_CRIT) != 0) && Formulas.getInstance().calcBlow(activeChar, target, _successChance))
+			boolean success = true;
+			if ((skill.getCondition() & L2Skill.COND_BEHIND) != 0)
+				success = (_successChance == BEHIND);
+			if ((skill.getCondition() & L2Skill.COND_CRIT) != 0)
+				success = (success && Formulas.getInstance().calcBlow(activeChar, target, _successChance));
+			if (!skillIsEvaded && success)
 			{
 				if (skill.hasEffects())
 				{
@@ -170,10 +176,20 @@ public class Blow implements ISkillHandler
                 	target.breakCast();
                 }
 				if(activeChar instanceof L2PcInstance)
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.S1_HAD_CRITICAL_HIT).addPcName((L2PcInstance)activeChar));
-				SystemMessage sm = new SystemMessage(SystemMessageId.YOU_DID_S1_DMG);
-				sm.addNumber((int) damage);
-				activeChar.sendPacket(sm);
+				{
+					L2PcInstance activePlayer = (L2PcInstance) activeChar; 
+					activePlayer.sendPacket(new SystemMessage(SystemMessageId.S1_HAD_CRITICAL_HIT).addPcName(activePlayer));
+					SystemMessage sm = new SystemMessage(SystemMessageId.YOU_DID_S1_DMG);
+					sm.addNumber((int) damage);
+					activePlayer.sendPacket(sm);
+					if (activePlayer.isInOlympiadMode() &&
+			        		target instanceof L2PcInstance &&
+			        		((L2PcInstance)target).isInOlympiadMode() &&
+			        		((L2PcInstance)target).getOlympiadGameId() == activePlayer.getOlympiadGameId())
+			        {
+			        	Olympiad.getInstance().notifyCompetitorDamage(activePlayer.getObjectId(), (int) damage, activePlayer.getOlympiadGameId());
+			        }
+				}
 			}
 			
 			// Sending system messages
