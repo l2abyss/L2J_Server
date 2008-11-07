@@ -430,7 +430,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 			
 			if (npc.getAI() != null) // TODO: possibly check not needed
 			{
-				if (Math.abs(target.getZ() - npc.getZ()) < 600
+				if (!npc.isDead() && Math.abs(target.getZ() - npc.getZ()) < 600
 				//&& _actor.getAttackByList().contains(getAttackTarget())
 						&& (npc.getAI()._intention == CtrlIntention.AI_INTENTION_IDLE || npc.getAI()._intention == CtrlIntention.AI_INTENTION_ACTIVE)
 						//limiting aggro for siege guards
