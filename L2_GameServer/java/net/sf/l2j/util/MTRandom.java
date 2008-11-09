@@ -14,27 +14,27 @@
  */
 package net.sf.l2j.util;
 
-import java.security.SecureRandom;
+import java.util.Random;
 
 public class MTRandom
 {
-    private SecureRandom _random = new SecureRandom();
-    
-    private static MTRandom _instance;
-    
-    public SecureRandom getSecureRandom()
-    {
-    	return _random;
-    }
-    
-    public static final MTRandom getInstance()
-    {
-        if (_instance == null)
-            _instance = new MTRandom();
-        return _instance;
-    }
-    
-    private MTRandom()
-    {
-    }
+	private Random _random = new Random();
+	
+	private static MTRandom _instance;
+	
+	public Random getSecureRandom()
+	{
+		return _random;
+	}
+	
+	public static final MTRandom getInstance()
+	{
+		if (_instance == null)
+			_instance = new MTRandom();
+		return _instance;
+	}
+	
+	private MTRandom()
+	{
+	}
 }
