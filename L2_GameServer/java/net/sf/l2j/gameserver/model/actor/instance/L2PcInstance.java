@@ -1872,7 +1872,6 @@ public final class L2PcInstance extends L2PlayableInstance
 		int maxLoad = getMaxLoad();
 		if (maxLoad > 0)
 		{
-			setIsOverloaded(getCurrentLoad() > maxLoad);
 			int weightproc = getCurrentLoad() * 1000 / maxLoad;
 			int newWeightPenalty;
 			if (weightproc < 500 || _dietMode)
@@ -1902,10 +1901,12 @@ public final class L2PcInstance extends L2PlayableInstance
 				if (newWeightPenalty > 0 && !_dietMode)
 				{
 					super.addSkill(SkillTable.getInstance().getInfo(4270,newWeightPenalty));
+					setIsOverloaded(getCurrentLoad() > maxLoad);
 				}
 				else
 				{
 					super.removeSkill(getKnownSkill(4270));
+					setIsOverloaded(false);
 				}
 
 				sendPacket(new EtcStatusUpdate(this));
