@@ -442,11 +442,11 @@ public final class UseItem extends L2GameClientPacket
                     case L2Item.SLOT_L_BRACELET:
                     {
                     	SystemMessage sm = new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
-                    	if ((item.getItemId() >= 9605 && item.getItemId() <= 9615)||item.getItemId() == 10018)
+                    	if ((itemId >= 9605 && itemId <= 9615) || itemId == 10018)
                     	{
                     		if (activeChar.getClan()!= null)
                     		{
-                    			switch (item.getItemId())
+                    			switch (itemId)
                     			{
                     				case 9605:
                     					if (activeChar.getClan().getHasHideout() != 62)
