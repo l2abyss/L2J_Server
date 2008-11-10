@@ -49,12 +49,7 @@ public class SoulCrystal
    };
 
    public static final int MAX_CRYSTALS_LEVEL = 14;
-   public static final int BREAK_CHANCE = 10;
    public static final int LEVEL_CHANCE = 32;
-
-   public static final int RED_BROKEN_CRYSTAL = 4662;
-   public static final int GRN_BROKEN_CYRSTAL = 4663;
-   public static final int BLU_BROKEN_CRYSTAL = 4664;
 
    public static final int RED_NEW_CRYSTAL = 4629;
    public static final int GRN_NEW_CYRSTAL = 4640;

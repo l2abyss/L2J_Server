@@ -1901,8 +1901,7 @@ public class L2Attackable extends L2NpcInstance
         // Now we have four choices:
         // 1- The Monster level is too low for the crystal. Nothing happens.
         // 2- Everything is correct, but it failed. Nothing happens. (57.5%)
-        // 3- Everything is correct, but it failed. The crystal scatters. A sound event is played. (10%)
-        // 4- Everything is correct, the crystal level up. A sound event is played. (32.5%)
+        // 3- Everything is correct, the crystal level up. A sound event is played. (32.5%)
 
         List<L2PcInstance> players = new FastList<L2PcInstance>();
 
@@ -2043,18 +2042,6 @@ public class L2Attackable extends L2NpcInstance
                 exchangeCrystal(player, crystalOLD, crystalNEW, false);
             }
 
-            // If true and not a last-hit mob, break the crystal.
-            else if ((!isBossMob) && dice >= (100.0 - SoulCrystal.BREAK_CHANCE))
-            {
-                // Remove current crystal an give a broken open.
-                if      (crystalNME.startsWith("red"))
-                	exchangeCrystal(player, crystalOLD, SoulCrystal.RED_BROKEN_CRYSTAL, true);
-                else if (crystalNME.startsWith("gre"))
-                    exchangeCrystal(player, crystalOLD, SoulCrystal.GRN_BROKEN_CYRSTAL, true);
-                else if (crystalNME.startsWith("blu"))
-                    exchangeCrystal(player, crystalOLD, SoulCrystal.BLU_BROKEN_CRYSTAL, true);
-                resetAbsorbList();
-            }
             else
                 player.sendPacket(new SystemMessage(SystemMessageId.SOUL_CRYSTAL_ABSORBING_FAILED));
         }
