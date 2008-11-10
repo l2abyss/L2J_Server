@@ -1618,7 +1618,7 @@ public final class Formulas
 	    
         double init = 0;
 
-		if (Config.ALT_GAME_CANCEL_CAST && target.isCastingNow()) init = 50;
+		if (Config.ALT_GAME_CANCEL_CAST && target.isCastingNow()) init = 15;
 		if (Config.ALT_GAME_CANCEL_BOW && target.isAttackingNow())
 		{
 			L2Weapon wpn = target.getActiveWeaponItem();
