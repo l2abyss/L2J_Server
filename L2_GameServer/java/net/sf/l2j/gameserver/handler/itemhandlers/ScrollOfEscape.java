@@ -73,7 +73,7 @@ public class ScrollOfEscape implements IItemHandler
 			return;
 		}
 		
-		if (activeChar.isMovementDisabled() || activeChar.isMuted() || activeChar.isAlikeDead() || activeChar.isAllSkillsDisabled())
+		if (checkConditions(activeChar))
 			return;
 		
 		if (activeChar.isSitting())
@@ -313,6 +313,12 @@ public class ScrollOfEscape implements IItemHandler
 					e.printStackTrace();
 			}
 		}
+	}
+	
+	private static boolean checkConditions(L2PcInstance actor)
+	{
+		 return actor.isStunned() || actor.isSleeping() || actor.isParalyzed() || actor.isFakeDeath() || actor.isTeleporting()
+		 || actor.isMuted() || actor.isAlikeDead() || actor.isAllSkillsDisabled();
 	}
 	
 	/**
