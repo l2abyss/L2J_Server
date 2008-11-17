@@ -62,6 +62,7 @@ import net.sf.l2j.gameserver.skills.conditions.ConditionUsingSkill;
 import net.sf.l2j.gameserver.skills.conditions.ConditionWithSkill;
 import net.sf.l2j.gameserver.skills.conditions.ConditionGameTime.CheckGameTime;
 import net.sf.l2j.gameserver.skills.conditions.ConditionPlayerState.CheckPlayerState;
+import net.sf.l2j.gameserver.skills.conditions.ConditionMinDistance;
 import net.sf.l2j.gameserver.skills.effects.EffectTemplate;
 import net.sf.l2j.gameserver.skills.funcs.FuncTemplate;
 import net.sf.l2j.gameserver.skills.funcs.Lambda;
@@ -487,6 +488,11 @@ abstract class DocumentBase
             {
                 int skill_id = Integer.decode(getValue(a.getNodeValue(), template));
                 cond = joinAnd(cond, new ConditionTargetActiveSkillId(skill_id));
+            }
+            else if("mindistance".equalsIgnoreCase(a.getNodeName()))
+            {
+            	int distance = Integer.decode(getValue(a.getNodeValue(),null));
+            	cond = joinAnd(cond, new ConditionMinDistance(distance*distance));
             }
             else if ("race_id".equalsIgnoreCase(a.getNodeName()))
             {
