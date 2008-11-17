@@ -1192,9 +1192,7 @@ public final class Formulas
 		if(ss && skill.getSSBoost()>0)
 			power *= skill.getSSBoost();
 
-		//Multiplier should be removed, it's false ??
-		// TODO: Check if CritVuln effects whole part of CritDmg.
-		damage += 1.5*(attacker.calcStat(Stats.CRITICAL_DAMAGE, damage+power, target, skill)
+		damage = 1.5*(attacker.calcStat(Stats.CRITICAL_DAMAGE, damage+power, target, skill)
 				* target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, skill));
 
 		// get the natural vulnerability for the template
