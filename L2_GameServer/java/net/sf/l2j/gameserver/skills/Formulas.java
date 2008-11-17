@@ -404,6 +404,8 @@ public final class Formulas
 			//[Square(DEX)]*6 + lvl + weapon hitbonus;
 			env.value += Math.sqrt(p.getDEX()) * 6;
 			env.value += p.getLevel();
+			if (p.getLevel() > 77) env.value += (p.getLevel() - 77);
+			if (p.getLevel() > 69) env.value += (p.getLevel() - 69);
 			if( p instanceof L2Summon) env.value += (p.getLevel() < 60) ? 4 : 5;
 		}
 	}
@@ -429,6 +431,8 @@ public final class Formulas
 			//[Square(DEX)]*6 + lvl;
 			env.value += Math.sqrt(p.getDEX()) * 6;
 			env.value += p.getLevel();
+			if (p.getLevel() > 77) env.value += (p.getLevel() - 77);
+			if (p.getLevel() > 69) env.value += (p.getLevel() - 69);
 		}
 	}
 
