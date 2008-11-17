@@ -540,6 +540,15 @@ public final class UseItem extends L2GameClientPacket
                                 return;
                     		}
                     	}
+                    	break;
+                    }
+                    case L2Item.SLOT_DECO:
+                    {
+                        if (!item.isEquipped() && activeChar.getInventory().getMaxTalismanCount() == 0)
+                        {
+                            activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+                            return;
+                        }
                     }
                 }
                 

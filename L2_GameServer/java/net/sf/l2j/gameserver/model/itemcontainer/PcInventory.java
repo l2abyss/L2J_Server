@@ -547,7 +547,7 @@ public class PcInventory extends Inventory
 
 	public static int[][] restoreVisibleInventory(int objectId)
     {
-    	int[][] paperdoll = new int[25][3];
+    	int[][] paperdoll = new int[30][3];
         java.sql.Connection con = null;
 
         try

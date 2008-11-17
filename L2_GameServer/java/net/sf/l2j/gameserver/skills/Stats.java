@@ -187,6 +187,7 @@ public enum Stats
     
     //T1 stats
     transformId 		("transformId"),
+    TALISMAN_SLOTS		("talisman"),
     
     //Shield Stats
     SHIELD_DEFENCE_ANGLE	("shieldDefAngle");
