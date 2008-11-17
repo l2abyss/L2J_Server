@@ -4916,36 +4916,46 @@ public abstract class L2Character extends L2Object
 			{
 				L2Weapon weapon = getActiveWeaponItem();
 				boolean isBow = (weapon != null && (weapon.getItemType() == L2WeaponType.BOW || weapon.getItemType() == L2WeaponType.CROSSBOW));
+				int reflectedDamage = 0;
 
-				if (!isBow || isTransformed()) // Do not reflect or absorb if weapon is of type bow
+				if (!isBow || isTransformed()) // Do not reflect if weapon is of type bow
 				{
 					// Reduce HP of the target and calculate reflection damage to reduce HP of attacker if necessary
 					double reflectPercent = target.getStat().calcStat(Stats.REFLECT_DAMAGE_PERCENT,0,null,null);
 
 					if (reflectPercent > 0)
 					{
-						int reflectedDamage = (int)(reflectPercent / 100. * damage);
+						reflectedDamage = (int)(reflectPercent / 100. * damage);
 						damage -= reflectedDamage;
 
 						if(reflectedDamage > target.getMaxHp()) // to prevent extreme damage when hitting a low lvl char...
 							reflectedDamage = target.getMaxHp();
-
-						getStatus().reduceHp(reflectedDamage, target, true);
-
-						// Custom messages - nice but also more network load
-						/*
-						if (target instanceof L2PcInstance)
-                            ((L2PcInstance)target).sendMessage("You reflected " + reflectedDamage + " damage.");
-                        else if (target instanceof L2Summon)
-                            ((L2Summon)target).getOwner().sendMessage("Summon reflected " + reflectedDamage + " damage.");
-
-                        if (this instanceof L2PcInstance)
-                            ((L2PcInstance)this).sendMessage("Target reflected to you " + reflectedDamage + " damage.");
-                        else if (this instanceof L2Summon)
-                            ((L2Summon)this).getOwner().sendMessage("Target reflected to your summon " + reflectedDamage + " damage.");
-                        */
 					}
+				}
+				
+				// reduce targets HP
+				target.reduceCurrentHp(damage, this);
+				
+				if (reflectedDamage > 0)
+				{
+					reduceCurrentHp(reflectedDamage, target, true);
+	
+					// Custom messages - nice but also more network load
+					/*
+					if (target instanceof L2PcInstance)
+	                    ((L2PcInstance)target).sendMessage("You reflected " + reflectedDamage + " damage.");
+	                else if (target instanceof L2Summon)
+	                    ((L2Summon)target).getOwner().sendMessage("Summon reflected " + reflectedDamage + " damage.");
+	
+	                if (this instanceof L2PcInstance)
+	                    ((L2PcInstance)this).sendMessage("Target reflected to you " + reflectedDamage + " damage.");
+	                else if (this instanceof L2Summon)
+	                    ((L2Summon)this).getOwner().sendMessage("Target reflected to your summon " + reflectedDamage + " damage.");
+	                */
+				}
 
+				if (!isBow || isTransformed()) // Do not absorb if weapon is of type bow
+				{
 					// Absorb HP from the damage inflicted
 					double absorbPercent = getStat().calcStat(Stats.ABSORB_DAMAGE_PERCENT,0, null,null);
 
@@ -4973,8 +4983,6 @@ public abstract class L2Character extends L2Object
                         }
 					}
 				}
-
-				target.reduceCurrentHp(damage, this);
 
                 // Notify AI with EVT_ATTACKED
                 target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
