@@ -1754,7 +1754,7 @@ public class L2NpcInstance extends L2Character
               {
                   skill = SkillTable.getInstance().getInfo(helperBuffItem.getSkillID(),helperBuffItem.getSkillLevel());
                   if (skill.getSkillType() == L2SkillType.SUMMON)
-                      player.doCast(skill);
+                	  player.doSimultaneousCast(skill);
                   else
                       doCast(skill);
               }

@@ -329,7 +329,7 @@ public class AdminEffects implements IAdminCommandHandler
 				else if ((val >= 1) && (val <= 4))
 				{
 					L2Skill gmSpeedSkill = SkillTable.getInstance().getInfo(7029, val);
-					activeChar.doCast(gmSpeedSkill);
+					activeChar.doSimultaneousCast(gmSpeedSkill);
 				}
 			}
 			catch (Exception e)

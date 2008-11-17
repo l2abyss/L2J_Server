@@ -698,8 +698,8 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		//      if(getIntention() != AI_INTENTION_IDLE && (!_actor.isVisible() || !_actor.hasAI() || !_actor.isKnownPlayers()))
 		//          setIntention(AI_INTENTION_IDLE);
 		
-		// Check if the actor can't use skills and if a thinking action isn't already in progress
-		if (_thinking || _actor.isAllSkillsDisabled())
+		// Check if the thinking action is already in progress
+		if (_thinking)
 			return;
 		
 		// Start thinking action

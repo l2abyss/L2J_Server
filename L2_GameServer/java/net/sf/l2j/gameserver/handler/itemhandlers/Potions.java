@@ -14,10 +14,8 @@
  */
 package net.sf.l2j.gameserver.handler.itemhandlers;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.model.L2Effect;
@@ -41,34 +39,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 public class Potions implements IItemHandler
 {
 	protected static final Logger _log = Logger.getLogger(Potions.class.getName());
-	private int _herbstask = 0;
 	
-	/** Task for Herbs */
-	private class HerbTask implements Runnable
-	{
-		private L2PlayableInstance _activeChar;
-		private int _magicId;
-		private int _level;
-		
-		HerbTask(L2PlayableInstance activeChar, int magicId, int level)
-		{
-			_activeChar = activeChar;
-			_magicId = magicId;
-			_level = level;
-		}
-		
-		public void run()
-		{
-			try
-			{
-				usePotion(_activeChar, _magicId, _level);
-			}
-			catch (Throwable t)
-			{
-				_log.log(Level.WARNING, "", t);
-			}
-		}
-	}
 	private static final int[] ITEM_IDS =
 	{
 		65, 725, 726, 727, 728, 734, 735, 1060, 1061, 1073,
@@ -521,57 +492,47 @@ public class Potions implements IItemHandler
 	 */
 	public boolean usePotion(L2PlayableInstance activeChar, int magicId, int level)
 	{
-		if (activeChar.isCastingNow() && (magicId > 2277 && magicId < 2286 || magicId >= 2512 && magicId <= 2514))
-		{
-			_herbstask += 100;
-			ThreadPoolManager.getInstance().scheduleAi(new HerbTask(activeChar, magicId, level), _herbstask);
-		}
-		else
-		{
-			if ((magicId > 2277 && magicId < 2286 || magicId >= 2512 && magicId <= 2514) && _herbstask >= 100)
-				_herbstask -= 100;
+		
+		L2Skill skill = SkillTable.getInstance().getInfo(magicId, level);
 			
-			L2Skill skill = SkillTable.getInstance().getInfo(magicId, level);
-			
-			if (skill != null)
+		if (skill != null)
+		{
+			// Return false if potion is in reuse
+			// so is not destroyed from inventory
+			if (activeChar.isSkillDisabled(skill.getId()))
 			{
-				// Return false if potion is in reuse
-				// so is not destroyed from inventory
-				if (activeChar.isSkillDisabled(skill.getId()))
+				SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
+				sm.addSkillName(skill);
+				activeChar.sendPacket(sm);
+				
+				return false;
+			}
+				
+			activeChar.doSimultaneousCast(skill);
+				
+			if (activeChar instanceof L2PcInstance)
+			{
+				L2PcInstance player = (L2PcInstance)activeChar;
+				//only for Heal potions
+				if (magicId == 2031 || magicId == 2032 || magicId == 2037)
 				{
-					SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
-					sm.addSkillName(skill);
-					activeChar.sendPacket(sm);
-					
-					return false;
+					player.shortBuffStatusUpdate(magicId, level, 15);
+				}
+				// Summons should be affected by herbs too, self time effect is handled at L2Effect constructor 
+				else if (((magicId > 2277 && magicId < 2286) || (magicId >= 2512 && magicId <= 2514))
+					&& (player.getPet() != null && player.getPet() instanceof L2SummonInstance))
+				{
+					player.getPet().doSimultaneousCast(skill);
 				}
 				
-				activeChar.doCast(skill);
-				
-				if (activeChar instanceof L2PcInstance)
-				{
-					L2PcInstance player = (L2PcInstance)activeChar;
-					//only for Heal potions
-					if (magicId == 2031 || magicId == 2032 || magicId == 2037)
-					{
-						player.shortBuffStatusUpdate(magicId, level, 15);
-					}
-					// Summons should be affected by herbs too, self time effect is handled at L2Effect constructor 
-					else if (((magicId > 2277 && magicId < 2286) || (magicId >= 2512 && magicId <= 2514))
-						&& (player.getPet() != null && player.getPet() instanceof L2SummonInstance))
-					{
-						player.getPet().doCast(skill);
-					}
-				
-					if (!(player.isSitting() && !skill.isPotion()))
-						return true;
-				}
-				else if (activeChar instanceof L2PetInstance)
-				{
-					SystemMessage sm = new SystemMessage(SystemMessageId.PET_USES_S1);
-					sm.addString(skill.getName());
-					((L2PetInstance)(activeChar)).getOwner().sendPacket(sm);
-				}
+				if (!(player.isSitting() && !skill.isPotion()))
+					return true;
+			}
+			else if (activeChar instanceof L2PetInstance)
+			{
+				SystemMessage sm = new SystemMessage(SystemMessageId.PET_USES_S1);
+				sm.addString(skill.getName());
+				((L2PetInstance)(activeChar)).getOwner().sendPacket(sm);
 			}
 		}
 		return false;

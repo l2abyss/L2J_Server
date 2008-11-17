@@ -141,6 +141,16 @@ public final class RequestDropItem extends L2GameClientPacket
 	            return;
 			}
 		}
+		
+		// Cannot discard item that the skill is consuming
+		if (activeChar.isCastingSimultaneouslyNow())
+		{
+			if (activeChar.getLastSimultaneousSkillCast() != null && activeChar.getLastSimultaneousSkillCast().getItemConsumeId() == item.getItemId())
+			{
+	            activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
+	            return;
+			}
+		}
 
 		if (L2Item.TYPE2_QUEST == item.getItem().getType2() && !activeChar.isGM())
 		{

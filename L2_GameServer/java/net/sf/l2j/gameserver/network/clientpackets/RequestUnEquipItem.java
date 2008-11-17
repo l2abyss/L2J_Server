@@ -79,7 +79,7 @@ public class RequestUnEquipItem extends L2GameClientPacket
             activeChar.sendMessage("Your status does not allow you to do that.");
             return;
         }
-        if (activeChar.isAttackingNow() || activeChar.isCastingNow())
+        if (activeChar.isAttackingNow() || activeChar.isCastingNow() || activeChar.isCastingSimultaneouslyNow())
         	return;
 
 		L2ItemInstance[] unequiped =

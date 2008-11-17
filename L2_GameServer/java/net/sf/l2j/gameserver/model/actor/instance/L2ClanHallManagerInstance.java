@@ -1268,7 +1268,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                         if (st.countTokens() >= 1) skill_lvl = Integer.parseInt(st.nextToken());
                         skill = SkillTable.getInstance().getInfo(skill_id,skill_lvl);
                         if (skill.getSkillType() == L2SkillType.SUMMON)
-                            player.doCast(skill);
+                        	player.doSimultaneousCast(skill);
                         else
                         {
                         	if (!((skill.getMpConsume() + skill.getMpInitialConsume()) > this.getCurrentMp()))

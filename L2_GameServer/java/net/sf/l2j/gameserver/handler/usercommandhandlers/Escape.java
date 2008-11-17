@@ -54,11 +54,9 @@ public class Escape implements IUserCommandHandler
 			return false;
 		}
 		
-		if (activeChar.isCastingNow() || activeChar.isMovementDisabled() || activeChar.isMuted() || activeChar.isAlikeDead() || activeChar.isInOlympiadMode() || activeChar.inObserverMode())
-			return false;
 		
 		int unstuckTimer = (activeChar.getAccessLevel().isGm() ? 1000 : Config.UNSTUCK_INTERVAL * 1000);
-		
+
 		// Check to see if the player is in a festival.
 		if (activeChar.isFestivalParticipant())
 		{
@@ -78,6 +76,12 @@ public class Escape implements IUserCommandHandler
 			activeChar.sendMessage("You may not use an escape command in a Boss Zone.");
 			return false;
 		}
+
+		if (activeChar.isCastingNow() || activeChar.isMovementDisabled() || activeChar.isMuted() 
+				|| activeChar.isAlikeDead() || activeChar.isInOlympiadMode() || activeChar.inObserverMode())
+			return false;
+		activeChar.forceIsCasting(GameTimeController.getGameTicks() + unstuckTimer / GameTimeController.MILLIS_IN_TICK);
+
 		
 		L2Skill escape = SkillTable.getInstance().getInfo(2099, 1); // 5 minutes escape
 		L2Skill GM_escape = SkillTable.getInstance().getInfo(2100, 1); // 1 second escape
@@ -118,7 +122,6 @@ public class Escape implements IUserCommandHandler
 		EscapeFinalizer ef = new EscapeFinalizer(activeChar);
 		// continue execution later
 		activeChar.setSkillCast(ThreadPoolManager.getInstance().scheduleGeneral(ef, unstuckTimer));
-		activeChar.forceIsCasting(GameTimeController.getGameTicks() + unstuckTimer / GameTimeController.MILLIS_IN_TICK);
 		
 		return true;
 	}
@@ -139,6 +142,7 @@ public class Escape implements IUserCommandHandler
 			
 			_activeChar.setIsIn7sDungeon(false);
 			_activeChar.enableAllSkills();
+			_activeChar.setIsCastingNow(false);
 			
 			try
 			{

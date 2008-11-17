@@ -191,6 +191,7 @@ public class ScrollOfEscape implements IItemHandler
 			if (_activeChar.isDead())
 				return;
 			_activeChar.enableAllSkills();
+			_activeChar.setIsCastingNow(false);
 			_activeChar.setIsIn7sDungeon(false);
 			
 			try
@@ -318,7 +319,7 @@ public class ScrollOfEscape implements IItemHandler
 	private static boolean checkConditions(L2PcInstance actor)
 	{
 		 return actor.isStunned() || actor.isSleeping() || actor.isParalyzed() || actor.isFakeDeath() || actor.isTeleporting()
-		 || actor.isMuted() || actor.isAlikeDead() || actor.isAllSkillsDisabled();
+		 || actor.isMuted() || actor.isAlikeDead() || actor.isAllSkillsDisabled() || actor.isCastingNow();
 	}
 	
 	/**

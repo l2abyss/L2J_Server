@@ -291,7 +291,7 @@ public final class UseItem extends L2GameClientPacket
                     case L2Item.SLOT_R_HAND:
                     {
                         // Prevent player to remove the weapon on special conditions
-                    	if (activeChar.isCastingNow())
+                    	if (activeChar.isCastingNow() || activeChar.isCastingSimultaneouslyNow())
                     	{
                     		activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_USE_ITEM_WHILE_USING_MAGIC));
                     		return;

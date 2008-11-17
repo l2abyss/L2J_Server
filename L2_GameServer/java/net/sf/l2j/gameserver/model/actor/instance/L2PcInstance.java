@@ -161,7 +161,6 @@ import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
 import net.sf.l2j.gameserver.network.serverpackets.LeaveWorld;
-import net.sf.l2j.gameserver.network.serverpackets.MagicSkillCanceld;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NicknameChanged;
@@ -2604,7 +2603,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	public void sitDown()
 	{
-		if (isCastingNow() && !_relax)
+		if ((isCastingNow() || isCastingSimultaneouslyNow()) && !_relax)
 		{
 			sendMessage("Cannot sit while casting");
 			return;
@@ -3533,7 +3532,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 		
 		// We cannot put a Weapon with Augmention in WH while casting (Possible Exploit)
-		if (item.isAugmented() && isCastingNow())
+		if (item.isAugmented() && (isCastingNow() || this.isCastingSimultaneouslyNow()))
 			return null;
 
 		return item;
@@ -6207,30 +6206,6 @@ public final class L2PcInstance extends L2PlayableInstance
 	}
 
 	/**
-	 * Manage a cancel cast task for the L2PcInstance.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Set the Intention of the AI to AI_INTENTION_IDLE </li>
-	 * <li>Enable all skills (set _allSkillsDisabled to False) </li>
-	 * <li>Send a Server->Client Packet MagicSkillCanceld to the L2PcInstance and all L2PcInstance in the _KnownPlayers of the L2Character (broadcast) </li><BR><BR>
-	 *
-	 */
-	public void cancelCastMagic()
-	{
-		// Set the Intention of the AI to AI_INTENTION_IDLE
-		getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-
-		// Enable all skills (set _allSkillsDisabled to False)
-		enableAllSkills();
-
-		// Send a Server->Client Packet MagicSkillCanceld to the L2PcInstance and all L2PcInstance in the _KnownPlayers of the L2Character (broadcast)
-		MagicSkillCanceld msc = new MagicSkillCanceld(getObjectId());
-
-        // Broadcast the packet to self and known players.
-        Broadcast.toSelfAndKnownPlayersInRadius(this, msc, 810000/*900*/);
-	}
-
-	/**
 	 * Set the _accessLevel of the L2PcInstance.<BR><BR>
 	 */
 	public void setAccessLevel(int level)
@@ -7903,8 +7878,9 @@ public final class L2PcInstance extends L2PlayableInstance
         		abortCast();
         		return;
         	}
+        	SkillDat currentSkill = getCurrentSkill();
         	// Check if new skill different from current skill in progress
-        	if (getCurrentSkill() != null && skill.getId() == getCurrentSkill().getSkillId())
+        	if (currentSkill != null && skill.getId() == currentSkill.getSkillId())
             {
             	sendPacket(ActionFailed.STATIC_PACKET);
             	return;
@@ -11595,5 +11571,15 @@ public final class L2PcInstance extends L2PlayableInstance
     		_gatesRequest.getDoor().closeMe();
     	}
     	_gatesRequest.setTarget(null);
+    }
+    
+    @Override
+    public void setIsCastingNow(boolean value)
+    {
+    	if (value == false)
+    	{
+    		_currentSkill = null;
+    	}
+    	super.setIsCastingNow(value);
     }
 }

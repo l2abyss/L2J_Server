@@ -438,16 +438,21 @@ abstract class AbstractAI implements Ctrl
 				onEvtMuted((L2Character) arg0);
 				break;
 			case EVT_READY_TO_ACT:
-				onEvtReadyToAct();
+				if (!_actor.isCastingNow() && !_actor.isCastingSimultaneouslyNow()) 
+					onEvtReadyToAct();
 				break;
 			case EVT_USER_CMD:
 				onEvtUserCmd(arg0, arg1);
 				break;
 			case EVT_ARRIVED:
-				onEvtArrived();
+				// happens e.g. from stopmove but we don't process it if we're casting
+				if (!_actor.isCastingNow() && !_actor.isCastingSimultaneouslyNow())
+					onEvtArrived();
 				break;
 			case EVT_ARRIVED_REVALIDATE:
-				onEvtArrivedRevalidate();
+				// this is disregarded if the char is not moving any more
+				if (_actor.isMoving())
+					onEvtArrivedRevalidate();
 				break;
 			case EVT_ARRIVED_BLOCKED:
 				onEvtArrivedBlocked((L2CharPosition) arg0);

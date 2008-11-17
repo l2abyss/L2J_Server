@@ -76,7 +76,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 	@Override
 	protected void onEvtThink()
 	{
-		if (isThinking() || _actor.isAllSkillsDisabled())
+		if (isThinking())
 			return;
 		
 		setThinking(true);
