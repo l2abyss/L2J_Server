@@ -1539,15 +1539,37 @@ public final class Formulas
 	{
 		return rate > Rnd.get(1000);
 	}
-	/** Calcul value of blow success */
+	/** Calculate value of blow success */
 	public final boolean calcBlow(L2Character activeChar, L2Character target, int chance)
 	{
 		return activeChar.calcStat(Stats.BLOW_RATE, chance*(1.0+(activeChar.getDEX()-20)/100), target, null)>Rnd.get(100);
 	}
-	/** Calcul value of lethal chance */
-	public final double calcLethal(L2Character activeChar, L2Character target, int baseLethal)
+	/** Calculate value of lethal chance */
+	public final double calcLethal(L2Character activeChar, L2Character target, int baseLethal, int magiclvl)
 	{
-		return activeChar.calcStat(Stats.LETHAL_RATE, (baseLethal*((double)activeChar.getLevel()/target.getLevel())), target, null);
+		double chance = 0;
+		if(magiclvl > 0)
+		{
+			int delta = ((magiclvl+activeChar.getLevel())/2) - 1 - target.getLevel();
+		            
+			if((delta+3)>=0)
+			{
+				chance = (baseLethal*((double)activeChar.getLevel()/target.getLevel()));
+			}
+			else if((delta+3)<0 && (delta+3)>=-9)
+			{
+				chance = (-1)*(baseLethal/(delta*1.5));
+			}
+			else
+			{
+				chance = baseLethal/15;
+			}
+		}
+		else
+		{
+			chance = (baseLethal*((double)activeChar.getLevel()/target.getLevel()));
+		}
+		return 10*activeChar.calcStat(Stats.LETHAL_RATE, chance, target, null);
 	}
     
     public final boolean calcLethalHit(L2Character activeChar, L2Character target, L2Skill skill)
@@ -1556,9 +1578,14 @@ public final class Formulas
                 && !(target instanceof L2DoorInstance)
                 && !(target instanceof L2NpcInstance && ((L2NpcInstance) target).getNpcId() == 35062))
         {
-            int chance = Rnd.get(100);
+            int chance = Rnd.get(1000);
+            
+            //activeChar.sendMessage(Double.toString(chance));
+            //activeChar.sendMessage(Double.toString(calcLethal(activeChar, target, skill.getLethalChance2(),skill.getMagicLevel())));
+            //activeChar.sendMessage(Double.toString(calcLethal(activeChar, target, skill.getLethalChance1(),skill.getMagicLevel())));
+            
             // 2nd lethal effect activate (cp,hp to 1 or if target is npc then hp to 1)
-            if (skill.getLethalChance2() > 0 && chance < calcLethal(activeChar, target, skill.getLethalChance2()))
+            if (skill.getLethalChance2() > 0 && chance < calcLethal(activeChar, target, skill.getLethalChance2(),skill.getMagicLevel()))
             {
                 if (target instanceof L2NpcInstance)
                     target.reduceCurrentHp(target.getCurrentHp() - 1, activeChar);
@@ -1578,7 +1605,7 @@ public final class Formulas
                 }
                 activeChar.sendPacket(new SystemMessage(SystemMessageId.LETHAL_STRIKE));
             }
-            else if (skill.getLethalChance1() > 0 && chance < calcLethal(activeChar, target, skill.getLethalChance1()))
+            else if (skill.getLethalChance1() > 0 && chance < calcLethal(activeChar, target, skill.getLethalChance1(),skill.getMagicLevel()))
             {
                 if (target instanceof L2PcInstance)
                 {
