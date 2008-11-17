@@ -52,27 +52,30 @@ public class EffectTransformation extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		if (getEffected().isAlikeDead())
-			return;
+			return false;
 		
 		if (!(getEffected() instanceof L2PcInstance))
-			return;
+			return false;
 		
 		L2PcInstance trg = (L2PcInstance) getEffected();
 		if (trg == null)
-			return;
+			return false;
 		
 		if (trg.isAlikeDead() || trg.isCursedWeaponEquipped())
-			return;
+			return false;
 		
 		int transformId = getSkill().getTransformId();
 		
 		if (!trg.isTransformed())
 		{
 			TransformationManager.getInstance().transformPlayer(transformId, trg);
+			return true;
 		}
+		return false;
+		
 	}
 	
 	/**

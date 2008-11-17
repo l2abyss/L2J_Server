@@ -44,9 +44,10 @@ final class EffectSleep extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		getEffected().startSleeping();
+		return true;
 	}
 	
 	/**
@@ -66,7 +67,6 @@ final class EffectSleep extends L2Effect
 	@Override
 	public boolean onActionTime()
 	{
-		getEffected().stopSleeping(this);
 		// just stop this effect
 		return false;
 	}

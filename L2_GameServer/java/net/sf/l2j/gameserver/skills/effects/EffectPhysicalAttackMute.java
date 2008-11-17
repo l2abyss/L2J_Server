@@ -44,9 +44,10 @@ public class EffectPhysicalAttackMute extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		getEffected().startPhysicalAttackMuted();
+		return true;
 	}
 	
 	/**
@@ -57,7 +58,6 @@ public class EffectPhysicalAttackMute extends L2Effect
 	public boolean onActionTime()
 	{
 		// Simply stop the effect
-		getEffected().stopPhysicalAttackMuted(this);
 		return false;
 	}
 	

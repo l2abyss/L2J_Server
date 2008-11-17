@@ -45,10 +45,14 @@ public class EffectCharmOfCourage extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		if (getEffected() instanceof L2PcInstance)
+		{
 			((L2PcInstance) getEffected()).setCharmOfCourage(true);
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -58,8 +62,7 @@ public class EffectCharmOfCourage extends L2Effect
 	@Override
 	public void onExit()
 	{
-		if (getEffected() instanceof L2PcInstance)
-			((L2PcInstance) getEffected()).setCharmOfCourage(false);
+		((L2PcInstance) getEffected()).setCharmOfCourage(false);
 	}
 	
 	/**

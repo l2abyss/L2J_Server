@@ -46,10 +46,10 @@ final class EffectStun extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
-		if (getEffected() != null)
-			getEffected().startStunning();
+		getEffected().startStunning();
+		return true;
 	}
 	
 	/**
@@ -59,8 +59,7 @@ final class EffectStun extends L2Effect
 	@Override
 	public void onExit()
 	{
-		if (getEffected() != null)
-			getEffected().stopStunning(this);
+		getEffected().stopStunning(this);
 	}
 	
 	/**

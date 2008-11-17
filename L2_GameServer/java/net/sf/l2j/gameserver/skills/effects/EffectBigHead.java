@@ -44,9 +44,10 @@ final class EffectBigHead extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		getEffected().startAbnormalEffect(0x02000);
+		return true;
 	}
 	
 	/**

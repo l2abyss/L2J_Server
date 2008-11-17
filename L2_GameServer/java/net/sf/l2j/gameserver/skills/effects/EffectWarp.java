@@ -72,7 +72,7 @@ public class EffectWarp extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		
 		if (isSelfEffect())
@@ -108,6 +108,7 @@ public class EffectWarp extends L2Effect
 		_actor.broadcastPacket(new FlyToLocation(_actor, x, y, z, FlyType.DUMMY));
 		_actor.abortAttack();
 		_actor.abortCast();
+		return true;
 	}
 	
 	/**

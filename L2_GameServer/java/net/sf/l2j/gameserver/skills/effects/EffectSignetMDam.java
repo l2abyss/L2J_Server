@@ -68,13 +68,13 @@ final class EffectSignetMDam extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		L2NpcTemplate template;
 		if (getSkill() instanceof L2SkillSignetCasttime)
 			template = NpcTable.getInstance().getTemplate(((L2SkillSignetCasttime) getSkill())._effectNpcId);
 		else
-			return;
+			return false;
 		
 		L2EffectPointInstance effectPoint = new L2EffectPointInstance(IdFactory.getInstance().getNextId(), template, getEffector());
 		effectPoint.setCurrentHp(effectPoint.getMaxHp());
@@ -101,6 +101,7 @@ final class EffectSignetMDam extends L2Effect
 		effectPoint.spawnMe(x, y, z);
 		
 		_actor = effectPoint;
+		return true;
 		
 	}
 	

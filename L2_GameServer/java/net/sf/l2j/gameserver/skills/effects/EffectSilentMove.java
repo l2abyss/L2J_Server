@@ -34,13 +34,14 @@ final class EffectSilentMove extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		super.onStart();
 		
 		L2Character effected = getEffected();
 		if (effected instanceof L2PlayableInstance)
 			((L2PlayableInstance) effected).setSilentMoving(true);
+		return true;
 	}
 	
 	/**

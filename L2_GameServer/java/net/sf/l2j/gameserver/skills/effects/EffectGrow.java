@@ -42,7 +42,7 @@ public class EffectGrow extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		if (getEffected() instanceof L2NpcInstance)
 		{
@@ -51,7 +51,9 @@ public class EffectGrow extends L2Effect
 			npc.setCollisionRadius((int) (npc.getCollisionRadius() * 1.19));
 			
 			getEffected().startAbnormalEffect(L2Character.ABNORMAL_EFFECT_GROW);
+			return true;
 		}
+		return false;
 	}
 	
 	/**
@@ -61,14 +63,6 @@ public class EffectGrow extends L2Effect
 	@Override
 	public boolean onActionTime()
 	{
-		if (getEffected() instanceof L2NpcInstance)
-		{
-			L2NpcInstance npc = (L2NpcInstance) getEffected();
-			npc.setCollisionHeight(npc.getTemplate().collisionHeight);
-			npc.setCollisionRadius(npc.getTemplate().collisionRadius);
-			
-			getEffected().stopAbnormalEffect(L2Character.ABNORMAL_EFFECT_GROW);
-		}
 		return false;
 	}
 	

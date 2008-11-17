@@ -53,24 +53,24 @@ public class EffectSpoil extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		
 		if (!(getEffector() instanceof L2PcInstance))
-			return;
+			return false;
 		
 		if (!(getEffected() instanceof L2MonsterInstance))
-			return;
+			return false;
 		
 		L2MonsterInstance target = (L2MonsterInstance) getEffected();
 		
 		if (target == null)
-			return;
+			return false;
 		
 		if (target.isSpoil())
 		{
 			getEffector().sendPacket(new SystemMessage(SystemMessageId.ALREADY_SPOILED));
-			return;
+			return false;
 		}
 		
 		// SPOIL SYSTEM by Lbaldi
@@ -94,6 +94,7 @@ public class EffectSpoil extends L2Effect
 			}
 			target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, getEffector());
 		}
+		return true;
 		
 	}
 	

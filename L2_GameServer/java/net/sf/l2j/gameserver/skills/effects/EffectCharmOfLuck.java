@@ -44,10 +44,14 @@ public class EffectCharmOfLuck extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		if (getEffected() instanceof L2PlayableInstance)
+		{
 			((L2PlayableInstance) getEffected()).startCharmOfLuck();
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -57,8 +61,7 @@ public class EffectCharmOfLuck extends L2Effect
 	@Override
 	public void onExit()
 	{
-		if (getEffected() instanceof L2PlayableInstance)
-			((L2PlayableInstance) getEffected()).stopCharmOfLuck(this);
+		((L2PlayableInstance) getEffected()).stopCharmOfLuck(this);
 	}
 	
 	/**

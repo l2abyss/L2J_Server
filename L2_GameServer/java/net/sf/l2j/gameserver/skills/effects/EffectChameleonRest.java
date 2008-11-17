@@ -46,7 +46,7 @@ class EffectChameleonRest extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		
 		L2Character effected = getEffected();
@@ -58,7 +58,7 @@ class EffectChameleonRest extends L2Effect
 		}
 		else
 			effected.getAI().setIntention(CtrlIntention.AI_INTENTION_REST);
-		super.onStart();
+		return super.onStart();
 	}
 	
 	/**

@@ -47,9 +47,10 @@ public class EffectImmobileUntilAttacked extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		getEffected().startImmobileUntilAttacked();
+		return true;
 	}
 	
 	/**
@@ -69,7 +70,6 @@ public class EffectImmobileUntilAttacked extends L2Effect
 	@Override
 	public boolean onActionTime()
 	{
-		getEffected().stopImmobileUntilAttacked(this);
 		// just stop this effect
 		return false;
 	}

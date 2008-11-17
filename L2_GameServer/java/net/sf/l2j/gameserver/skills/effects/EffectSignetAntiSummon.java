@@ -53,9 +53,10 @@ final class EffectSignetAntiSummon extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		_actor = (L2EffectPointInstance) getEffected();
+		return true;
 	}
 	
 	/**

@@ -45,13 +45,14 @@ final class EffectDisarm extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		if (!(getEffected() instanceof L2PcInstance))
-			return;
+			return false;
 		
 		((L2PcInstance) getEffected()).disarmWeapons();
 		getEffected().setIsDisarmed(true);
+		return true;
 		
 	}
 	

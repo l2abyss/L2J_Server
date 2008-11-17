@@ -50,9 +50,10 @@ final class EffectImmobileBuff extends EffectBuff
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		getEffector().setIsImmobilized(true);
+		return true;
 	}
 	
 	/**

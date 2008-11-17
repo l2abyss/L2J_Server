@@ -46,7 +46,7 @@ public class EffectTargetMe extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		// Should only work on PC?
 		if (getEffected() instanceof L2PcInstance)
@@ -55,7 +55,9 @@ public class EffectTargetMe extends L2Effect
 			MyTargetSelected my = new MyTargetSelected(getEffector().getObjectId(), 0);
 			getEffected().sendPacket(my);
 			getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, getEffector());
+			return true;
 		}
+		return false;
 	}
 	
 	/**

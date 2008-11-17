@@ -51,7 +51,7 @@ public class EffectEnemyCharge extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		// Get current position of the L2Character
 		final int curX = getEffector().getX();
@@ -66,7 +66,7 @@ public class EffectEnemyCharge extends L2Effect
 		if (distance > 2000)
 		{
 			_log.info("EffectEnemyCharge was going to use invalid coordinates for characters, getEffector: "+curX+","+curY+" and getEffected: "+getEffected().getX()+","+getEffected().getY());
-			return;
+			return false;
 		}
 		int offset = Math.max((int) distance - getSkill().getFlyRadius(), 30);
 		
@@ -81,7 +81,7 @@ public class EffectEnemyCharge extends L2Effect
 		
 		// If no distance
 		if (distance < 1 || distance - offset <= 0)
-			return;
+			return false;
 		
 		// Calculate movement angles needed
 		sin = dy / distance;
@@ -101,6 +101,7 @@ public class EffectEnemyCharge extends L2Effect
 		getEffector().broadcastPacket(new FlyToLocation(getEffector(), _x, _y, _z, FlyType.CHARGE));
 		// getEffector().abortAttack();
 		// getEffector().abortCast();
+		return true;
 	}
 	
 	/**

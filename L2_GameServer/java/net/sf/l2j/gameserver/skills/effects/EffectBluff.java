@@ -50,18 +50,18 @@ final class EffectBluff extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		getEffected().startFear();
 		if (getEffected() instanceof L2FolkInstance)
-			return;
+			return false;
 		
 		if (getEffected() instanceof L2NpcInstance && ((L2NpcInstance) getEffected()).getNpcId() == 35062 || getSkill().getId() != 358)
-			return;
+			return false;
 		
 		if (getEffected() instanceof L2SiegeSummonInstance)
 		{
-			return;
+			return false;
 		}
 		int posX = getEffected().getX();
 		int posY = getEffected().getY();
@@ -77,7 +77,7 @@ final class EffectBluff extends L2Effect
 		getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(posX + (signx * 40), posY + (signy * 40), posZ, 0));
 		getEffected().sendMessage("You can feel Bluff's effect");
 		getEffected().setTarget(null);
-		onActionTime();
+		return true;
 	}
 	
 	/**

@@ -178,6 +178,7 @@ public abstract class L2Effect
     private final float _stackOrder;
 
     private boolean _inUse = false;
+    private boolean _startConditionsCorrect = true;
 
     protected L2Effect(Env env, EffectTemplate template)
     {
@@ -309,7 +310,8 @@ public abstract class L2Effect
     public void setInUse(boolean inUse)
     {
         _inUse = inUse;
-        if (_inUse) onStart();
+        if (_inUse) 
+        	_startConditionsCorrect = onStart();
         else onExit();
     }
 
@@ -421,9 +423,10 @@ public abstract class L2Effect
     public abstract EffectType getEffectType();
 
     /** Notify started */
-    public void onStart()
+    public boolean onStart()
     {
         if (_abnormalEffect != 0) getEffected().startAbnormalEffect(_abnormalEffect);
+        return true;
     }
 
     /**
@@ -482,7 +485,7 @@ public abstract class L2Effect
                 return;
             }
             // effects not having count or period should start
-            onStart();
+            _startConditionsCorrect = onStart();
         }
 
         if (_state == EffectState.ACTING)
@@ -490,7 +493,7 @@ public abstract class L2Effect
         	if (_count-- > 0)
             {
             	if (getInUse()) { // effect has to be in use
-            		if (onActionTime()) return; // false causes effect to finish right away
+            		if (onActionTime() && _startConditionsCorrect) return; // false causes effect to finish right away
             	}
             	else if (_count > 0) { // do not finish it yet, in case reactivated
             		return;
@@ -503,7 +506,7 @@ public abstract class L2Effect
         {
             // Cancel the effect in the the abnormal effect map of the L2Character
         	if (getInUse() || !(_count > 1 || _period > 0))		
-        		onExit();
+        		if (_startConditionsCorrect) onExit();
 
             //If the time left is equal to zero, send the message
             if (_count == 0)

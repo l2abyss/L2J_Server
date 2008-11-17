@@ -39,9 +39,10 @@ public class EffectMute extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		getEffected().startMuted();
+		return true;
 	}
 	
 	/**
@@ -52,7 +53,6 @@ public class EffectMute extends L2Effect
 	public boolean onActionTime()
 	{
 		// Simply stop the effect
-		getEffected().stopMuted(this);
 		return false;
 	}
 	

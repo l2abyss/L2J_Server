@@ -49,7 +49,7 @@ final class EffectImmobilePetBuff extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
 	 */
 	@Override
-	public void onStart()
+	public boolean onStart()
 	{
 		_pet = null;
 		
@@ -59,7 +59,9 @@ final class EffectImmobilePetBuff extends L2Effect
 		{
 			_pet = (L2Summon) getEffected();
 			_pet.setIsImmobilized(true);
+			return true;
 		}
+		return false;
 	}
 	
 	/**
@@ -69,8 +71,7 @@ final class EffectImmobilePetBuff extends L2Effect
 	@Override
 	public void onExit()
 	{
-		if (_pet != null)
-			_pet.setIsImmobilized(false);
+		_pet.setIsImmobilized(false);
 	}
 	
 	/**
