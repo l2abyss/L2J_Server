@@ -1574,6 +1574,7 @@ public final class Formulas
                     	{
                     		player.setCurrentHp(1);
                     		player.setCurrentCp(1);
+                    		player.sendPacket(new SystemMessage(SystemMessageId.LETHAL_STRIKE_SUCCESSFUL));
                     	}
                     }
                 }
@@ -1590,12 +1591,14 @@ public final class Formulas
                             	(((L2PcInstance)activeChar).isGM() && !((L2PcInstance)activeChar).getAccessLevel().canGiveDamage())))
                         {
                     		player.setCurrentCp(1); // Set CP to 1
+                    		player.sendPacket(new SystemMessage(SystemMessageId.CP_DISAPPEARS_WHEN_HIT_WITH_A_HALF_KILL_SKILL));
                         }
                     }
                 }
                 else if (target instanceof L2NpcInstance) // If is a monster remove first damage and after 50% of current hp
                     target.reduceCurrentHp(target.getCurrentHp() / 2, activeChar);
-                activeChar.sendPacket(new SystemMessage(SystemMessageId.LETHAL_STRIKE));
+                activeChar.sendPacket(new SystemMessage(SystemMessageId.HALF_KILL));
+                
             }
             else
                 return false;

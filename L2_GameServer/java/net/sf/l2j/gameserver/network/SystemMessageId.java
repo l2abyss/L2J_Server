@@ -13649,8 +13649,21 @@ public enum SystemMessageId
 	* ID: 2305<br>
 	* Message: There are $s2 hour(s), $s3 minute(s), and $s4 second(s) remaining in $s1's re-use time.
 	*/
-	S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1(2305);
+	S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1(2305),
 
+	/**
+	* ID: 2336<br>
+	* Message: Half Kill!
+	*/
+	HALF_KILL(2336),
+	
+	/**
+	* ID: 2337<br>
+	* Message: CP disappears when hit with a half kill skill.
+	*/
+	CP_DISAPPEARS_WHEN_HIT_WITH_A_HALF_KILL_SKILL(2337);
+	
+	
 	private int _id;
 
 	private SystemMessageId(int id)
