@@ -15,21 +15,19 @@
 package net.sf.l2j.gameserver.handler.skillhandlers;
 
 import java.util.Random;
-import java.util.logging.Logger;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.FlyToLocation;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.network.serverpackets.FlyToLocation.FlyType;
+import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.templates.L2SkillType;
-import net.sf.l2j.gameserver.util.Util; //needed when Gracia Final comes out
 
 /**
  *

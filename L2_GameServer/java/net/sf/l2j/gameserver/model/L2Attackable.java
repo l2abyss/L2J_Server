@@ -71,8 +71,6 @@ import net.sf.l2j.util.Rnd;
  */
 public class L2Attackable extends L2NpcInstance
 {
-    //protected static Logger _log = Logger.getLogger(L2Attackable.class.getName());
-
     /**
      * This class contains all AggroInfo of the L2Attackable against the attacker L2Character.<BR><BR>
      *
@@ -92,8 +90,7 @@ public class L2Attackable extends L2NpcInstance
 
         /** Number of damages that the attaker L2Character gave to this L2Attackable */
         protected int _damage;
-
-
+        
         /**
          * Constructor of AggroInfo.<BR><BR>
          */
@@ -1889,7 +1886,6 @@ public class L2Attackable extends L2NpcInstance
 
         // ********
         String[] crystalNFO = null;
-        String   crystalNME = "";
 
         int dice = Rnd.get(100);
         int crystalQTY = 0;
@@ -1950,16 +1946,12 @@ public class L2Attackable extends L2NpcInstance
                             		crystalNFO = item.getItem().getName().trim().replace(" Grade ", "-").split("-");
                             		// Set Level to 13
                             		crystalLVL = 13;
-                            		// Get Name
-                            		crystalNME = crystalNFO[0].toLowerCase();
                             	} else
                             	{
 	                                // Split the name of the crystal into 'name' & 'level'
 	                                crystalNFO = item.getItem().getName().trim().replace(" Stage ", "").split("-");
 	                                // Get Level
 	                                crystalLVL = Integer.parseInt(crystalNFO[1].trim());
-	                                // Get Name
-	                                crystalNME  = crystalNFO[0].toLowerCase();
                             	}
                                 // Allocate current and levelup ids' for higher level crystals
                                 if(crystalLVL > 9)
@@ -1994,10 +1986,7 @@ public class L2Attackable extends L2NpcInstance
                             }
                         }
                         else
-                        {
-                            crystalNME = item.getItem().getName().toLowerCase().trim();
                             crystalNEW = id+1;
-                        }
 
                         // Done
                         crystalOLD = id;
