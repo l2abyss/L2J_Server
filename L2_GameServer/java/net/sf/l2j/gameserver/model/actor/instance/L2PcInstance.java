@@ -7005,20 +7005,20 @@ public final class L2PcInstance extends L2PlayableInstance
 			// reuse delays for matching skills. 'restore_type'= 0.
 			statement = con.prepareStatement(ADD_SKILL_SAVE);
 			
-			List<L2Skill> storedSkills = new FastList<L2Skill>();
+			List<Integer> storedSkills = new FastList<Integer>();
 			
 			for (L2Effect effect : getAllEffects())
 			{
 				L2Skill skill = effect.getSkill();
+				int skillId = skill.getId();
 				
-				if (storedSkills.contains(skill))
+				if (storedSkills.contains(skillId))
 					continue;
 				
-				storedSkills.add(skill);
+				storedSkills.add(skillId);
 				
 				if (effect != null && !effect.isHerbEffect() && effect.getInUse() && !skill.isToggle())
 				{
-					int skillId = skill.getId();
 					
 					statement.setInt(1, getObjectId());
 					statement.setInt(2, skillId);
@@ -7028,7 +7028,7 @@ public final class L2PcInstance extends L2PlayableInstance
 					
 					if (_reuseTimeStamps.containsKey(skillId))
 					{
-						TimeStamp t = _reuseTimeStamps.remove(skillId);
+						TimeStamp t = _reuseTimeStamps.get(skillId);
 						statement.setLong(6, t.hasNotPassed() ? t.getReuse() : 0);
 						statement.setDouble(7, t.hasNotPassed() ? t.getStamp() : 0 );
 					}
@@ -7051,8 +7051,13 @@ public final class L2PcInstance extends L2PlayableInstance
 			{
 				if (t.hasNotPassed())
 				{
+					int skillId = t.getSkill();
+					if (storedSkills.contains(skillId))
+						continue;
+					storedSkills.add(skillId);
+
 					statement.setInt(1, getObjectId());
-					statement.setInt(2, t.getSkill());
+					statement.setInt(2, skillId);
 					statement.setInt(3, -1);
 					statement.setInt(4, -1);
 					statement.setInt(5, -1);
