@@ -8240,7 +8240,35 @@ public final class L2PcInstance extends L2PlayableInstance
 				}
 			}
 		}
-
+        
+        if(skill.getSkillType() == L2SkillType.INSTANT_JUMP)
+        {
+        	// You cannot jump while rooted right ;)
+        	if(this.isRooted())
+        	{
+        		// Sends message that skill cannot be used...
+        		SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+        		sm.addSkillName(skill.getId());
+        		sendPacket(sm);
+        		
+        		// Send a Server->Client packet ActionFailed to the L2PcInstance
+        		sendPacket(ActionFailed.STATIC_PACKET);
+        		
+				return false;
+        	}
+        	// And this skill cannot be used in peace zone, not even on NPCs!
+        	if(this.isInsideZone(L2Character.ZONE_PEACE))
+        	{
+        		//Sends a sys msg to client
+        		sendPacket(new SystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
+        		
+        		// Send a Server->Client packet ActionFailed to the L2PcInstance
+				sendPacket(ActionFailed.STATIC_PACKET);
+				
+				return false;
+        	}
+        	
+        }
 		// Check if the skill is defensive
         if (!skill.isOffensive() && target instanceof L2MonsterInstance && !forceUse)
 		{

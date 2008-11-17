@@ -110,6 +110,7 @@ public enum L2SkillType
 	HARVEST,
 	GET_PLAYER,
 	AGATHION(L2SkillAgathion.class),
+	INSTANT_JUMP,
 	
 	// Creation
 	COMMON_CRAFT,
