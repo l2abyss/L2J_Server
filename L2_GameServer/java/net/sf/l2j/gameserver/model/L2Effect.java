@@ -462,64 +462,67 @@ public abstract class L2Effect
     }
 
     public final void scheduleEffect()
-    {
-        if (_state == EffectState.CREATED)
-        {
-            _state = EffectState.ACTING;
-
-            if (_skill.isPvpSkill())
-            {
-                SystemMessage smsg = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
-                smsg.addSkillName(_skill);
-                getEffected().sendPacket(smsg);
-            }
-
-            if (_count > 1)
-            {
-                startEffectTaskAtFixedRate(5, _period * 1000);
-                return;
-            }
-            if (_period > 0)
-            {
-                startEffectTask(_period * 1000);
-                return;
-            }
-            // effects not having count or period should start
-            _startConditionsCorrect = onStart();
-        }
-
-        if (_state == EffectState.ACTING)
-        {
-        	if (_count-- > 0)
-            {
-            	if (getInUse()) { // effect has to be in use
-            		if (onActionTime() && _startConditionsCorrect) return; // false causes effect to finish right away
-            	}
-            	else if (_count > 0) { // do not finish it yet, in case reactivated
-            		return;
-            	}
-            }
-            _state = EffectState.FINISHING;
-        }
-
-        if (_state == EffectState.FINISHING)
-        {
-            // Cancel the effect in the the abnormal effect map of the L2Character
-        	if (getInUse() || !(_count > 1 || _period > 0))		
-        		if (_startConditionsCorrect) onExit();
-
-            //If the time left is equal to zero, send the message
-            if (_count == 0)
-            {
-                SystemMessage smsg3 = new SystemMessage(SystemMessageId.S1_HAS_WORN_OFF);
-                smsg3.addSkillName(_skill);
-                getEffected().sendPacket(smsg3);
-            }
-            // Stop the task of the L2Effect, remove it and update client magic icon
-            stopEffectTask();
-
-        }
-    }
+	{
+		if (_state == EffectState.CREATED)
+		{
+			_state = EffectState.ACTING;
+			
+			if (_skill.isPvpSkill())
+			{
+				SystemMessage smsg = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
+				smsg.addSkillName(_skill);
+				getEffected().sendPacket(smsg);
+			}
+			
+			if (_count > 1)
+			{
+				startEffectTaskAtFixedRate(5, _period * 1000);
+				return;
+			}
+			if (_period > 0)
+			{
+				startEffectTask(_period * 1000);
+				return;
+			}
+			// effects not having count or period should start
+			_startConditionsCorrect = onStart();
+		}
+		
+		if (_state == EffectState.ACTING)
+		{
+			if (_count-- > 0)
+			{
+				if (getInUse())
+				{ // effect has to be in use
+					if (onActionTime() && _startConditionsCorrect)
+						return; // false causes effect to finish right away
+				}
+				else if (_count > 0)
+				{ // do not finish it yet, in case reactivated
+					return;
+				}
+			}
+			_state = EffectState.FINISHING;
+		}
+		
+		if (_state == EffectState.FINISHING)
+		{
+			// Cancel the effect in the the abnormal effect map of the L2Character
+			if (getInUse() || !(_count > 1 || _period > 0))
+				if (_startConditionsCorrect)
+					onExit();
+			
+			//If the time left is equal to zero, send the message
+			if (_count == 0 && getEffected() != null)
+			{
+				SystemMessage smsg3 = new SystemMessage(SystemMessageId.S1_HAS_WORN_OFF);
+				smsg3.addSkillName(_skill);
+				getEffected().sendPacket(smsg3);
+			}
+			// Stop the task of the L2Effect, remove it and update client magic icon
+			stopEffectTask();
+		}
+	}
 
     public Func[] getStatFuncs()
     {
