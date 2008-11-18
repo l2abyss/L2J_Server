@@ -180,7 +180,9 @@ public enum Stats
 	REC_C_LIM 		("CommonRecipeLimit"),
 
     //C4 Stats
-    MP_CONSUME_RATE 	("MpConsumeRate"),
+    PHYSICAL_MP_CONSUME_RATE 	("PhysicalMpConsumeRate"),
+    MAGICAL_MP_CONSUME_RATE		("MagicalMpConsumeRate"),
+    DANCE_MP_CONSUME_RATE		("DanceMpConsumeRate"),
     HP_CONSUME_RATE		("HpConsumeRate"),
     MP_CONSUME 			("MpConsume"),
     SOULSHOT_COUNT 		("soulShotCount"),

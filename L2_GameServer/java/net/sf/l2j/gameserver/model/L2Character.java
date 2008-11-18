@@ -1550,7 +1550,18 @@ public abstract class L2Character extends L2Object
 		if (initmpcons > 0)
 		{
 			StatusUpdate su = new StatusUpdate(getObjectId());
-			getStatus().reduceMp(calcStat(Stats.MP_CONSUME_RATE,initmpcons,null,null));
+			if (skill.isDance())
+			{
+				getStatus().reduceMp(calcStat(Stats.DANCE_MP_CONSUME_RATE, initmpcons, null, null));
+			}
+			else if (skill.isMagic())
+			{
+				getStatus().reduceMp(calcStat(Stats.MAGICAL_MP_CONSUME_RATE, initmpcons, null, null));
+			}
+			else
+			{
+				getStatus().reduceMp(calcStat(Stats.PHYSICAL_MP_CONSUME_RATE, initmpcons, null, null));
+			}
 			su.addAttribute(StatusUpdate.CUR_MP, (int) getCurrentMp());
 			sendPacket(su);
 		}
@@ -5759,7 +5770,18 @@ public abstract class L2Character extends L2Object
 			
 			if (mpConsume > 0)
 			{
-				getStatus().reduceMp(calcStat(Stats.MP_CONSUME_RATE, mpConsume, null, null));
+				if (skill.isDance())
+				{
+					getStatus().reduceMp(calcStat(Stats.DANCE_MP_CONSUME_RATE, mpConsume, null, null));
+				}
+				else if (skill.isMagic())
+				{
+					getStatus().reduceMp(calcStat(Stats.MAGICAL_MP_CONSUME_RATE, mpConsume, null, null));
+				}
+				else
+				{
+					getStatus().reduceMp(calcStat(Stats.PHYSICAL_MP_CONSUME_RATE, mpConsume, null, null));
+				}
 				su.addAttribute(StatusUpdate.CUR_MP, (int) getCurrentMp());
 				isSendStatus = true;
 			}
