@@ -23,16 +23,17 @@ public class ExPutEnchantTargetItemResult extends L2GameServerPacket
 	private static final String _S__87_EXPUTENCHANTTARGETITEMRESULT = "[S] 87 ExPutEnchantTargetItemResult";
 	
 	private int _result;
-	private int _unk1;
-	private int _unk2;
+	private int _crystal;
+	private int _count;
+	
 	/**
 	 * 
 	 */
-	public ExPutEnchantTargetItemResult(int result)
+	public ExPutEnchantTargetItemResult(int result, int crystal, int count)
 	{
 		_result = result;
-		_unk1 = 0;
-		_unk2 = 0;
+		_crystal = crystal;
+		_count = count;
 	}
 	
 	/**
@@ -52,7 +53,7 @@ public class ExPutEnchantTargetItemResult extends L2GameServerPacket
 	{
 		writeC(0x87);
 		writeD(_result);
-		writeD(_unk1);
-		writeD(_unk2);
+		writeD(_crystal);
+		writeD(_count);
 	}
 }

@@ -90,7 +90,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
 			activeChar.setActiveEnchantItem(null);
-			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2));
+			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 			return;
 		}
 		
@@ -108,7 +108,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				if (item.getOwnerId() != activeChar.getObjectId())
 				{
 					activeChar.setActiveEnchantItem(null);
-					activeChar.sendPacket(new ExPutEnchantTargetItemResult(2));
+					activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 					return;
 				}
 				break;
@@ -225,7 +225,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
 			activeChar.setActiveEnchantItem(null);
-			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2));
+			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 			return;
 		}
 		
@@ -239,7 +239,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
 			Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to enchant with a scroll he doesn't have", Config.DEFAULT_PUNISH);
 			activeChar.setActiveEnchantItem(null);
-			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2));
+			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 			return;
 		}
 		
@@ -322,78 +322,43 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				{
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
 					activeChar.setActiveEnchantItem(null);
-					activeChar.sendPacket(new ExPutEnchantTargetItemResult(2));
+					activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 					return;
 				}
 				if (item.getLocation() != L2ItemInstance.ItemLocation.INVENTORY && item.getLocation() != L2ItemInstance.ItemLocation.PAPERDOLL)
 				{
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
 					activeChar.setActiveEnchantItem(null);
-					activeChar.sendPacket(new ExPutEnchantTargetItemResult(2));
+					activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 					return;
 				}
 				
-				if (item.getEnchantLevel() == 0)
-				{
-					sm = new SystemMessage(SystemMessageId.S1_SUCCESSFULLY_ENCHANTED);
-					sm.addItemName(item);
-					activeChar.sendPacket(sm);
-				}
-				else
-				{
-					sm = new SystemMessage(SystemMessageId.S1_S2_SUCCESSFULLY_ENCHANTED);
-					sm.addNumber(item.getEnchantLevel());
-					sm.addItemName(item);
-					activeChar.sendPacket(sm);
-				}
 				item.setEnchantLevel(item.getEnchantLevel() + 1);
 				item.updateDatabase();
 			}
 		}
 		else
 		{
-			if (!blessedScroll)
-			{
-				if (item.getEnchantLevel() > 0)
-				{
-					sm = new SystemMessage(SystemMessageId.ENCHANTMENT_FAILED_S1_S2_EVAPORATED);
-					sm.addNumber(item.getEnchantLevel());
-					sm.addItemName(item);
-					activeChar.sendPacket(sm);
-				}
-				else
-				{
-					sm = new SystemMessage(SystemMessageId.ENCHANTMENT_FAILED_S1_EVAPORATED);
-					sm.addItemName(item);
-					activeChar.sendPacket(sm);
-				}
-			}
-			else
-			{
-				sm = new SystemMessage(SystemMessageId.BLESSED_ENCHANT_FAILED);
-				activeChar.sendPacket(sm);
-			}
-			
 			failed = true;
 			
 			if (!blessedScroll)
 			{
-				if (item.getEnchantLevel() > 0)
-				{
-					sm = new SystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
-					sm.addNumber(item.getEnchantLevel());
-					sm.addItemName(item);
-					activeChar.sendPacket(sm);
-				}
-				else
-				{
-					sm = new SystemMessage(SystemMessageId.S1_DISARMED);
-					sm.addItemName(item);
-					activeChar.sendPacket(sm);
-				}
-				
 				if (item.isEquipped())
 				{
+					if (item.getEnchantLevel() > 0)
+					{
+						sm = new SystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
+						sm.addNumber(item.getEnchantLevel());
+						sm.addItemName(item);
+						activeChar.sendPacket(sm);
+					}
+					else
+					{
+						sm = new SystemMessage(SystemMessageId.S1_DISARMED);
+						sm.addItemName(item);
+						activeChar.sendPacket(sm);
+					}
+					
 					L2ItemInstance[] unequiped = activeChar.getInventory().unEquipItemInSlotAndRecord(item.getLocationSlot());
 					InventoryUpdate iu = new InventoryUpdate();
 					for (L2ItemInstance itm : unequiped)
@@ -445,11 +410,16 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				
 				L2World world = L2World.getInstance();
 				world.removeObject(destroyItem);
+				activeChar.sendPacket(new ExPutEnchantTargetItemResult(1, crystalId, count));
 			}
 			else
 			{
+				sm = new SystemMessage(SystemMessageId.BLESSED_ENCHANT_FAILED);
+				activeChar.sendPacket(sm);
+				
 				item.setEnchantLevel(0);
 				item.updateDatabase();
+				activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 			}
 		}
 		sm = null;
@@ -459,12 +429,9 @@ public final class RequestEnchantItem extends L2GameClientPacket
 		activeChar.sendPacket(su);
 		su = null;
 		
-		int result = 0;
+		if (!failed)
+			activeChar.sendPacket(new ExPutEnchantTargetItemResult(0, 0, 0));
 		
-		if (failed)
-			result = 1;
-		
-		activeChar.sendPacket(new ExPutEnchantTargetItemResult(result));
 		activeChar.sendPacket(new ItemList(activeChar, false));
 		activeChar.broadcastUserInfo();
 		activeChar.setActiveEnchantItem(null);

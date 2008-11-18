@@ -50,7 +50,7 @@ public class RequestExCancelEnchantItem extends L2GameClientPacket
 		L2PcInstance activeChar = this.getClient().getActiveChar();
 		if (activeChar != null)
 		{
-			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2));
+			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 			activeChar.setActiveEnchantItem(null);
 		}
 	}

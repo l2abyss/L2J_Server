@@ -72,7 +72,7 @@ public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS));
 				activeChar.setActiveEnchantItem(null);
-				activeChar.sendPacket(new ExPutEnchantTargetItemResult(2));
+				activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 				return;
 			}
 			
@@ -174,7 +174,7 @@ public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS));
 				activeChar.setActiveEnchantItem(null);
-				activeChar.sendPacket(new ExPutEnchantTargetItemResult(2));
+				activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 				return;
 			}
 			activeChar.sendPacket(new RequestEnchant(1));
