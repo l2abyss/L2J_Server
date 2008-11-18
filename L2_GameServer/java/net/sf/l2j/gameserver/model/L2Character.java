@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model;
 
+import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_FOLLOW;
 
 import java.util.Collection;
@@ -1349,6 +1350,10 @@ public abstract class L2Character extends L2Object
 				setIsCastingSimultaneouslyNow(false);
 			else
 				setIsCastingNow(false);
+			if (this instanceof L2PcInstance)
+            {
+				getAI().setIntention(AI_INTENTION_ACTIVE);
+            }
 			return;
 		}
 		
@@ -1387,8 +1392,16 @@ public abstract class L2Character extends L2Object
         {
 			if (targets == null || targets.length == 0)  
 			{
-				// now cancels both, simultaneous and normal
-				getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+				if (simultaneously)
+					setIsCastingSimultaneouslyNow(false);
+				else
+					setIsCastingNow(false);
+				// Send a Server->Client packet ActionFailed to the L2PcInstance
+	            if (this instanceof L2PcInstance)
+	            {
+	            	sendPacket(ActionFailed.STATIC_PACKET);
+					getAI().setIntention(AI_INTENTION_ACTIVE);
+	            }
 				return;
 			}
 			
@@ -1426,8 +1439,15 @@ public abstract class L2Character extends L2Object
 
 		if (target == null)
 		{
-			// now cancels both, simultaneous and normal
-			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+			if (simultaneously)
+				setIsCastingSimultaneouslyNow(false);
+			else
+				setIsCastingNow(false);
+			if (this instanceof L2PcInstance)
+            {
+            	sendPacket(ActionFailed.STATIC_PACKET);
+				getAI().setIntention(AI_INTENTION_ACTIVE);
+            }
 			return;
 		}
 
@@ -1589,6 +1609,8 @@ public abstract class L2Character extends L2Object
 						setIsCastingSimultaneouslyNow(false);
 					else
 						setIsCastingNow(false);
+					if (this instanceof L2PcInstance)
+						getAI().setIntention(AI_INTENTION_ACTIVE);
 					return;
 				}
 			}
@@ -1677,14 +1699,10 @@ public abstract class L2Character extends L2Object
 
 	private boolean checkDoCastConditions(L2Skill skill)
 	{
-		if (skill == null)
+		if (skill == null || isSkillDisabled(skill.getId()))
 		{
-			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
-			return false;
-		}
-
-		if (isSkillDisabled(skill.getId()))
-		{
+			// Send a Server->Client packet ActionFailed to the L2PcInstance
+            sendPacket(ActionFailed.STATIC_PACKET);
 			return false;
 		}
 		
@@ -1721,7 +1739,11 @@ public abstract class L2Character extends L2Object
 					return false;
 				}
 				if (this instanceof L2PcInstance && ((L2PcInstance)this).getTrap() != null)
+				{
+					// Send a Server->Client packet ActionFailed to the L2PcInstance
+		            sendPacket(ActionFailed.STATIC_PACKET);
 					return false;
+				}
 				break;
 			}
 			case SUMMON:
@@ -1744,7 +1766,8 @@ public abstract class L2Character extends L2Object
 			{
 				if(isMuted())
 				{
-					getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+					// Send a Server->Client packet ActionFailed to the L2PcInstance
+		            sendPacket(ActionFailed.STATIC_PACKET);
 					return false;
 				}
 			}
@@ -1753,12 +1776,14 @@ public abstract class L2Character extends L2Object
 				// Check if the skill is physical and if the L2Character is not physical_muted
 				if (isPhysicalMuted())
 				{
-					getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+					// Send a Server->Client packet ActionFailed to the L2PcInstance
+		            sendPacket(ActionFailed.STATIC_PACKET);
 					return false;
 				} 
 				else if (isPhysicalAttackMuted()) // Prevent use attack
 				{
-					sendPacket(ActionFailed.STATIC_PACKET);
+					// Send a Server->Client packet ActionFailed to the L2PcInstance
+		            sendPacket(ActionFailed.STATIC_PACKET);
 					return false;
 				} 
 			}

@@ -7868,21 +7868,6 @@ public final class L2PcInstance extends L2PlayableInstance
 		// If a skill is currently being used, queue this one if this is not the same
         if (isCastingNow())
         {
-        	int interrupt = getCastInterruptTime();
-        	if (interrupt != 0 && ((interrupt+40) < GameTimeController.getGameTicks())) 
-        	{ 
-        		// temporary fix for skill use getting stuck
-        		/*
-        		if (getLastSkillCast() != null)
-        			_log.warning("Debug msg: fixing skill use stuck for a player, last skill cast was: "+getLastSkillCast().getName());
-        		else
-        			_log.warning("Debug msg: fixing skill use stuck for a player, last skill cast was: null");
-        		if (getCurrentSkill() != null)
-        			_log.warning("and current skill: "+getCurrentSkill().getSkill().getName());
-        		*/
-        		abortCast();
-        		return;
-        	}
         	SkillDat currentSkill = getCurrentSkill();
         	// Check if new skill different from current skill in progress
         	if (currentSkill != null && skill.getId() == currentSkill.getSkillId())
