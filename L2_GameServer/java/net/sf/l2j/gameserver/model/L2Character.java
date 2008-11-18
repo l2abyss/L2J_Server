@@ -3258,6 +3258,7 @@ public abstract class L2Character extends L2Object
 		public double _zAccurate;
 		public int _heading;
 		
+		public boolean disregardingGeodata;
 		public int onGeodataPathIndex;
 		public List<AbstractNodeLoc> geoPath;
 		public int geoPathAccurateTx;
@@ -3988,6 +3989,7 @@ public abstract class L2Character extends L2Object
 		// Z coordinate will follow geodata or client values
 		if (Config.GEODATA > 0 && Config.COORD_SYNCHRONIZE == 2 
 			&& !isFlying() && !isInsideZone(L2Character.ZONE_WATER)
+			&& !m.disregardingGeodata
 			&& GameTimeController.getGameTicks() % 10 == 0 // once a second to reduce possible cpu load
 			&& GeoData.getInstance().hasGeo(xPrev, yPrev)
 			&& !(this instanceof L2BoatInstance))
@@ -4296,6 +4298,7 @@ public abstract class L2Character extends L2Object
 
 		// GEODATA MOVEMENT CHECKS AND PATHFINDING
 		m.onGeodataPathIndex = -1; // Initialize not on geodata path
+		m.disregardingGeodata = false;
 		
 		if (Config.GEODATA > 0 
 			&& !isFlying() // flying chars not checked - even canSeeTarget doesn't work yet
@@ -4380,6 +4383,7 @@ public abstract class L2Character extends L2Object
                 		}
                 		else
                 		{
+                			m.disregardingGeodata = true;
                 			x = originalX;
                 			y = originalY;
                 			z = originalZ;
