@@ -214,56 +214,43 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_HAIR));
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_HAIR2));
 			// T1 new d's
-			writeD(0x00);
-			writeD(0x00);
-			writeD(0x00);
-			writeD(0x00);
-			writeD(0x00);
-			writeD(0x00);
-			writeD(0x00);
-			writeD(0x00);
+	        writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_RBRACELET));
+	        writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_LBRACELET));
+	        writeD(0x00); //Talisman 1
+	        writeD(0x00); //Talisman 2
+	        writeD(0x00); //Talisman 3
+	        writeD(0x00); //Talisman 4
+	        writeD(0x00); //Talisman 5
+	        writeD(0x00); //Talisman 6
 			// end of t1 new d's
 			
 			// c6 new h's
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_RHAND));
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_LRHAND));
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_HAIRALL));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_REAR));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_LEAR));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_NECK));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_RFINGER));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_LFINGER));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_HEAD));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_RHAND));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_LHAND));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_GLOVES));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_CHEST));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_LEGS));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_FEET));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_BACK));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_LRHAND));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_HAIR));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_HAIR2));
 			// T1 new h's
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_RBRACELET));
+	        writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_LBRACELET));
+	        writeD(0x00); //Talisman 1
+	        writeD(0x00); //Talisman 2
+	        writeD(0x00); //Talisman 3
+	        writeD(0x00); //Talisman 4
+	        writeD(0x00); //Talisman 5
+	        writeD(0x00); //Talisman 6
 			// end of t1 new h's
 			
 			writeD(_activeChar.getPvpFlag());
