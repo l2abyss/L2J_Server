@@ -9345,6 +9345,9 @@ public final class L2PcInstance extends L2PlayableInstance
     				continue;  
     			if (s.getId() > 9000)  
     				continue; // Fake skills to change base stats  
+    			if (s.bestowed())
+    				continue;
+    			
     			sl.addSkill(s.getId(), s.getLevel(), s.isPassive());  
     		}  
     	}  

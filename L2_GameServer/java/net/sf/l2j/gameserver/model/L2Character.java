@@ -5424,8 +5424,14 @@ public abstract class L2Character extends L2Object
 
 			// If an old skill has been replaced, remove all its Func objects
 			if (oldSkill != null)
+		    {
+				// if skill came with another one, we should delete the other one too.
+				if((oldSkill.bestowTriggered() || oldSkill.triggerAnotherSkill()) && oldSkill.getTriggeredId() > 0 )
+				{
+					removeSkill(oldSkill.getTriggeredId(),true);
+				}
 				removeStatsOwner(oldSkill);
-
+		    }
 			// Add Func objects of newSkill to the calculator set of the L2Character
 			addStatFuncs(newSkill.getStatFuncs(null, this));
 
@@ -5436,6 +5442,20 @@ public abstract class L2Character extends L2Object
 			if (newSkill.isChance())
 			{
 				addChanceSkill(newSkill);
+			}
+			
+			if (!newSkill.isChance() && newSkill.getTriggeredId() > 0 && newSkill.bestowTriggered())
+			{
+				L2Skill bestowed = SkillTable.getInstance().getInfo(newSkill.getTriggeredId(), newSkill.getTriggeredLevel());
+				addSkill(bestowed); 
+				//bestowed skills are invisible for player. Visible for gm's looking thru gm window. 
+				//those skills should always be chance or passive, to prevent hlapex.
+			}
+			            
+			if(newSkill.isChance() && newSkill.getTriggeredId() > 0 && !newSkill.bestowTriggered() && newSkill.triggerAnotherSkill())
+			{
+				L2Skill triggeredSkill = SkillTable.getInstance().getInfo(newSkill.getTriggeredId(),newSkill.getTriggeredLevel());
+				addSkill(triggeredSkill);
 			}
 		}
 
@@ -5487,6 +5507,11 @@ public abstract class L2Character extends L2Object
 		// Remove all its Func objects from the L2Character calculator set
 		if (oldSkill != null)
 		{
+			//this is just a fail-safe againts buggers and gm dummies...
+			if((oldSkill.bestowTriggered() || oldSkill.triggerAnotherSkill()) && oldSkill.getTriggeredId()>0)
+			{
+				removeSkill(oldSkill.getTriggeredId(),true);
+			}
 			// Stop casting if this skill is used right now
 			if (getLastSkillCast() != null && isCastingNow())
 			{

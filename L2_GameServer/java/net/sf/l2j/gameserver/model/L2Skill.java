@@ -333,7 +333,10 @@ public abstract class L2Skill
     private final int _numCharges;
     private final int _triggeredId;
     private final int _triggeredLevel;
-
+	private final boolean _bestow;
+	private final boolean _bestowed;
+	private final boolean _triggerAnotherSkill;
+    
     private final int _soulMaxConsume;
     private final int _soulConsume;
     private final int _numSouls;
@@ -464,7 +467,10 @@ public abstract class L2Skill
         _numCharges = set.getInteger("num_charges", getLevel());
         _triggeredId = set.getInteger("triggeredId", 0);
         _triggeredLevel = set.getInteger("triggeredLevel", 0);
-
+        _bestow = set.getBool("bestowTriggered", false);
+        _bestowed = set.getBool("bestowed", false);
+        _triggerAnotherSkill = set.getBool("triggerAnotherSkill",false);
+      
         if (_operateType == SkillOpType.OP_CHANCE)
             _chanceCondition = ChanceCondition.parse(set);
 
@@ -785,6 +791,20 @@ public abstract class L2Skill
         return _triggeredLevel;
     }
 
+	public boolean bestowTriggered()
+	{
+		return _bestow;
+	}
+   
+	public boolean bestowed()
+	{
+		return _bestowed;
+	}
+   
+	public boolean triggerAnotherSkill()
+	{
+		return _triggerAnotherSkill;
+	}
     
     /**
      * Return the skill type (ex : BLEED, SLEEP, WATER...).<BR><BR>
@@ -1261,7 +1281,23 @@ public abstract class L2Skill
 
     public final boolean getWeaponDependancy(L2Character activeChar)
     {
-        int weaponsAllowed = getWeaponsAllowed();
+    	if(getWeaponDependancy(activeChar,false))
+    	{
+    		return true;
+    	}
+    	else
+    	{
+    		SystemMessage message = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+    		message.addSkillName(this);
+    		activeChar.sendPacket(message);
+
+    		return false;
+    	}
+	}
+    
+	public final boolean getWeaponDependancy(L2Character activeChar,boolean chance)
+	{
+		int weaponsAllowed = getWeaponsAllowed();
         //check to see if skill has a weapon dependency.
         if (weaponsAllowed == 0) return true;
         if (activeChar.getActiveWeaponItem() != null)
@@ -1278,10 +1314,6 @@ public abstract class L2Skill
                 if ((mask & weaponsAllowed) != 0) return true;
             }
         }
-        SystemMessage message = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-        message.addSkillName(this);
-        activeChar.sendPacket(message);
-
         return false;
     }
 
