@@ -4857,9 +4857,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
 		if (killer != null)
 		{
-			L2PcInstance pk = null;
-			if (killer instanceof L2PcInstance)
-				pk = (L2PcInstance) killer;
+			L2PcInstance pk = killer.getActingPlayer();
 
 			TvTEvent.onKill(killer, this);
 
@@ -4885,45 +4883,44 @@ public final class L2PcInstance extends L2PlayableInstance
 			{
 				if (pk == null || !pk.isCursedWeaponEquipped())
 				{
-					//if (getKarma() > 0)
-						onDieDropItem(killer);  // Check if any item should be dropped
+					onDieDropItem(killer);  // Check if any item should be dropped
 
 					if (!(isInsideZone(ZONE_PVP) && !isInsideZone(ZONE_SIEGE)))
 					{
-						boolean isKillerPc = (killer instanceof L2PcInstance);
-		                if (isKillerPc && ((L2PcInstance)killer).getClan() != null
-		                               && getClan() != null
-                                   && !isAcademyMember()
-                                   && !(((L2PcInstance)killer).isAcademyMember())
-		                               && _clan.isAtWarWith(((L2PcInstance) killer).getClanId())
-		                               && ((L2PcInstance)killer).getClan().isAtWarWith(_clan.getClanId()))
+		                if (pk != null && pk.getClan() != null 
+		                		&& getClan() != null
+		                		&& !isAcademyMember()
+		                		&& !(pk.isAcademyMember())
+		                		&& _clan.isAtWarWith(pk.getClanId())
+		                		&& pk.getClan().isAtWarWith(_clan.getClanId()))
 		                {	
 		                	
 		                	// when your reputation score is 0 or below, the other clan cannot acquire any reputation points
 		                    if (getClan().getReputationScore() > 0) {
-		                		((L2PcInstance) killer).getClan().setReputationScore(((L2PcInstance) killer).getClan().getReputationScore()+Config.ALT_REPUTATION_SCORE_PER_KILL, true);
+		                    	pk.getClan().setReputationScore(pk.getClan().getReputationScore()+Config.ALT_REPUTATION_SCORE_PER_KILL, true);
 		                		getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
-		                		((L2PcInstance) killer).getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(((L2PcInstance) killer).getClan()));
+		                		pk.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(pk.getClan()));
 		                    }
 		                 // when the opposing sides reputation score is 0 or below, your clans reputation score does not decrease
-		                    if (((L2PcInstance)killer).getClan().getReputationScore() > 0) {
+		                    if (pk.getClan().getReputationScore() > 0) {
 		                    	_clan.setReputationScore(_clan.getReputationScore()-Config.ALT_REPUTATION_SCORE_PER_KILL, true);
 		                    	getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
-		                		((L2PcInstance) killer).getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(((L2PcInstance) killer).getClan()));
+		                    	pk.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(pk.getClan()));
 		                    }
 		                }
-						if (Config.ALT_GAME_DELEVEL)
-						{
-							// Reduce the Experience of the L2PcInstance in function of the calculated Death Penalty
-							// NOTE: deathPenalty +- Exp will update karma
-							// Penalty is lower if the player is at war with the pk (war has to be declared)
-							if (getSkillLevel(L2Skill.SKILL_LUCKY) < 0 || getStat().getLevel() > 9)
-								deathPenalty(pk != null && getClan() != null && getClan().isAtWarWith(pk.getClanId()), pk != null);										
+					}
+					if (Config.ALT_GAME_DELEVEL)
+					{
+						// Reduce the Experience of the L2PcInstance in function of the calculated Death Penalty
+						// NOTE: deathPenalty +- Exp will update karma
+						// Penalty is lower if the player is at war with the pk (war has to be declared)
+						if (getSkillLevel(L2Skill.SKILL_LUCKY) < 0 || getStat().getLevel() > 9)
+							deathPenalty(pk != null && getClan() != null && getClan().isAtWarWith(pk.getClanId()), pk != null);										
 
-						} else
-						{
+					} else
+					{
+						if (!(isInsideZone(ZONE_PVP) && !isInsideZone(ZONE_SIEGE)) || pk == null)
 							onDieUpdateKarma(); // Update karma if delevel is not allowed
-						}
 					}
 				}
 			}
@@ -4972,18 +4969,17 @@ public final class L2PcInstance extends L2PlayableInstance
 		if (atEvent || killer == null)
             return;
 
-		if (getKarma()<=0
-                && killer instanceof L2PcInstance
-                && ((L2PcInstance)killer).getClan()!=null
-                && getClan()!=null
+		L2PcInstance pk = killer.getActingPlayer();
+		if (getKarma() <= 0 && pk != null
+                && pk.getClan() != null && getClan() != null
                 && (
-                        ((L2PcInstance)killer).getClan().isAtWarWith(getClanId())
-//                      || this.getClan().isAtWarWith(((L2PcInstance)killer).getClanId())
+                		pk.getClan().isAtWarWith(getClanId())
+                        // || this.getClan().isAtWarWith(((L2PcInstance)killer).getClanId())
                    )
            )
 			return;
 
-		if (!isInsideZone(ZONE_PVP) && (!isGM() || Config.KARMA_DROP_GM))
+		if ((!isInsideZone(ZONE_PVP) || pk == null) && (!isGM() || Config.KARMA_DROP_GM))
 		{
 			boolean isKarmaDrop = false;
 			boolean isKillerNpc = (killer instanceof L2NpcInstance);
@@ -5405,6 +5401,9 @@ public final class L2PcInstance extends L2PlayableInstance
 		    if (getSiegeState() > 0 && isInsideZone(ZONE_SIEGE))
 		    	lostExp = 0;
 		}
+
+		if (isInsideZone(ZONE_PVP) && !isInsideZone(ZONE_SIEGE) && killed_by_pc)
+			lostExp = 0;
 
         if (Config.DEBUG)
             _log.fine(getName() + " died and lost " + lostExp + " experience.");
