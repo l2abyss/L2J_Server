@@ -1548,28 +1548,28 @@ public final class Formulas
 	public final double calcLethal(L2Character activeChar, L2Character target, int baseLethal, int magiclvl)
 	{
 		double chance = 0;
-		if(magiclvl > 0)
+		if (magiclvl > 0)
 		{
-			int delta = ((magiclvl+activeChar.getLevel())/2) - 1 - target.getLevel();
-		            
-			if((delta+3)>=0)
+			int delta = ((magiclvl + activeChar.getLevel()) / 2) - 1 - target.getLevel();
+			
+			if ((delta + 3) >= 0)
 			{
-				chance = (baseLethal*((double)activeChar.getLevel()/target.getLevel()));
+				chance = (baseLethal * ((double) activeChar.getLevel() / target.getLevel()));
 			}
-			else if((delta+3)<0 && (delta+3)>=-9)
+			else if (delta < 0 && delta >= -9)
 			{
-				chance = (-1)*(baseLethal/(delta*1.5));
+				chance = (-1) * (baseLethal / (delta * 1.5));
 			}
 			else
 			{
-				chance = baseLethal/15;
+				chance = baseLethal / 15;
 			}
 		}
 		else
 		{
-			chance = (baseLethal*((double)activeChar.getLevel()/target.getLevel()));
+			chance = (baseLethal * ((double) activeChar.getLevel() / target.getLevel()));
 		}
-		return 10*activeChar.calcStat(Stats.LETHAL_RATE, chance, target, null);
+		return 10 * activeChar.calcStat(Stats.LETHAL_RATE, chance, target, null);
 	}
     
     public final boolean calcLethalHit(L2Character activeChar, L2Character target, L2Skill skill)
