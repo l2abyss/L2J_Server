@@ -3779,7 +3779,7 @@ public abstract class L2Character extends L2Object
 	 */
 	public final boolean isInCombat()
 	{
-		return (getAI().getAttackTarget() != null);
+		return (getAI().getAttackTarget() != null || getAI().isAutoAttacking());
 	}
 
 	/**
@@ -4984,7 +4984,8 @@ public abstract class L2Character extends L2Object
 			if (target instanceof L2PcInstance)
 			{
 				L2PcInstance enemy = (L2PcInstance)target;
-	
+				enemy.getAI().clientStartAutoAttack();
+
 				if (shld)
 				{
 		           if (100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100))
@@ -4999,11 +5000,16 @@ public abstract class L2Character extends L2Object
             else if (target instanceof L2Summon)
             {
                 L2Summon activeSummon = (L2Summon)target;
+                L2PcInstance owner = activeSummon.getOwner();
 
-                SystemMessage sm = new SystemMessage(SystemMessageId.PET_RECEIVED_S2_DAMAGE_BY_S1);
-                sm.addString(getName());
-                sm.addNumber(damage);
-                activeSummon.getOwner().sendPacket(sm);
+                if (owner != null)
+                {
+                	owner.getAI().clientStartAutoAttack();
+                	SystemMessage sm = new SystemMessage(SystemMessageId.PET_RECEIVED_S2_DAMAGE_BY_S1);
+                	sm.addString(getName());
+                	sm.addNumber(damage);
+                	owner.sendPacket(sm);
+                }
             }
 
 			if (!miss && damage > 0)
@@ -5081,6 +5087,14 @@ public abstract class L2Character extends L2Object
                 // Notify AI with EVT_ATTACKED
                 target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
                 getAI().clientStartAutoAttack();
+                if (this instanceof L2Summon)
+                {
+                	L2PcInstance owner = ((L2Summon)this).getOwner();
+                	if (owner != null)
+                	{
+                    	owner.getAI().clientStartAutoAttack();
+                	}
+                }
 
 				// Manage attack or cast break of the target (calculating rate, sending message...)
 				if (!target.isRaid() && Formulas.getInstance().calcAtkBreak(target, damage))
@@ -6187,6 +6201,18 @@ public abstract class L2Character extends L2Object
 									{
 										// notify target AI about the attack
 										((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
+									}
+									if (target instanceof L2PcInstance)
+									{
+										((L2PcInstance)target).getAI().clientStartAutoAttack();
+									}
+									else if (target instanceof L2Summon)
+									{
+										L2PcInstance owner =((L2Summon)target).getOwner();
+										if (owner != null)
+										{
+											owner.getAI().clientStartAutoAttack();
+										}
 									}
 									player.updatePvPStatus((L2Character)target);
 								}
