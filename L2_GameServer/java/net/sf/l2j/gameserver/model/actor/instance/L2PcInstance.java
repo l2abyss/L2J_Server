@@ -5382,7 +5382,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		if (getKarma() > 0)
             percentLost *= Config.RATE_KARMA_EXP_LOST;
 
-		if (isFestivalParticipant() || atwar || isInsideZone(ZONE_SIEGE))
+		if (isFestivalParticipant() || atwar)
             percentLost /= 4.0;
 
 		// Calculate the Experience loss
@@ -5396,14 +5396,20 @@ public final class L2PcInstance extends L2PlayableInstance
 		// Get the Experience before applying penalty
 		setExpBeforeDeath(getExp());
 
-		if(getCharmOfCourage())
+		// No xp loss inside pvp zone unless
+		// - it's a siege zone and you're NOT participating
+		// - you're killed by a non-pc
+		if (isInsideZone(ZONE_PVP))
 		{
-		    if (getSiegeState() > 0 && isInsideZone(ZONE_SIEGE))
-		    	lostExp = 0;
+			// No xp loss for siege participants inside siege zone
+			if (isInsideZone(ZONE_SIEGE))
+			{
+				if (getSiegeState() > 0 && killed_by_pc)
+					lostExp = 0;
+			}
+			else if (killed_by_pc)
+				lostExp = 0;
 		}
-
-		if (isInsideZone(ZONE_PVP) && !isInsideZone(ZONE_SIEGE) && killed_by_pc)
-			lostExp = 0;
 
         if (Config.DEBUG)
             _log.fine(getName() + " died and lost " + lostExp + " experience.");
@@ -9977,7 +9983,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		if (answer == 0 && isPhoenixBlessed())
 		{
 		    stopPhoenixBlessing(null);
-		    stopAllEffects();
+		    stopAllEffectsExceptThoseThatLastThroughDeath();
 		}
 		if (answer == 1)
 		{

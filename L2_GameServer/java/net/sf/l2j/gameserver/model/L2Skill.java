@@ -2443,10 +2443,15 @@ public abstract class L2Skill
 										continue;
 									if (getSkillType() == L2SkillType.RESURRECT)
 									{
-										// check target is not in a active siege
-										// zone
+										// check for charm of courage and caster being a siege participant, otherwise do not allow resurrection
+										// on siege battlefield
 										if (((L2PcInstance) newTarget).isInsideZone(L2Character.ZONE_SIEGE))
-											continue;
+										{
+											// could/should be a more accurate check for siege clans	
+											if (!((L2PcInstance) newTarget).getCharmOfCourage() || player.getSiegeState() == 0)
+													continue;	
+										}		
+										
 									}
 								}
 								

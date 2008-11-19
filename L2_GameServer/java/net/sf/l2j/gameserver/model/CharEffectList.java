@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.effects.EffectCharge;
+import net.sf.l2j.gameserver.skills.effects.EffectCharmOfCourage;
 import net.sf.l2j.gameserver.templates.L2SkillType;
 
 public class CharEffectList
@@ -251,6 +252,26 @@ public class CharEffectList
 		{
 			if (e != null)
 			{
+				e.exit(true);
+			}
+		}
+ 	}
+	
+	/**
+	 * Exits all effects in this CharEffectList
+	 */
+	public final void stopAllEffectsExceptThoseThatLastThroughDeath()
+	{
+		// Get all active skills effects from this list
+		L2Effect[] effects = getAllEffects();
+
+		// Exit them
+		for (L2Effect e : effects)
+		{
+			if (e != null)
+			{
+				if (e instanceof EffectCharmOfCourage)
+					continue;
 				e.exit(true);
 			}
 		}

@@ -1947,7 +1947,7 @@ public abstract class L2Character extends L2Object
 				((L2PlayableInstance)this).stopCharmOfLuck(null); 
 		} 
 		else
-			stopAllEffects();
+			stopAllEffectsExceptThoseThatLastThroughDeath();
         if (this instanceof L2PcInstance && ((L2PcInstance)this).getAgathionId() != 0)
         	((L2PcInstance)this).setAgathionId(0);
 		calculateRewards(killer);
@@ -2725,6 +2725,12 @@ public abstract class L2Character extends L2Object
 		if (this instanceof L2PcInstance) ((L2PcInstance)this).updateAndBroadcastStatus(2);
  	}
 
+	public final void stopAllEffectsExceptThoseThatLastThroughDeath()
+	{
+		_effects.stopAllEffectsExceptThoseThatLastThroughDeath();
+		if (this instanceof L2PcInstance) ((L2PcInstance)this).updateAndBroadcastStatus(2);
+	}
+	
 	/**
 	 * Stop a specified/all Confused abnormal L2Effect.<BR><BR>
 	 *
