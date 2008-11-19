@@ -699,7 +699,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		//          setIntention(AI_INTENTION_IDLE);
 		
 		// Check if the thinking action is already in progress
-		if (_thinking)
+		if (_thinking || _actor.isCastingNow())
 			return;
 		
 		// Start thinking action

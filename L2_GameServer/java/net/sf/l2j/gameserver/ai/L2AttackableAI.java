@@ -1384,7 +1384,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	protected void onEvtThink()
 	{
 		// Check if the thinking action is already in progress
-		if (_thinking)
+		if (_thinking || _actor.isCastingNow())
 			return;
 		
 		// Start thinking action

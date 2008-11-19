@@ -110,7 +110,7 @@ public class L2SummonAI extends L2CharacterAI
 	@Override
 	protected void onEvtThink()
 	{
-		if (_thinking)
+		if (_thinking || _actor.isCastingNow())
 			return;
 		_thinking = true;
 		try
