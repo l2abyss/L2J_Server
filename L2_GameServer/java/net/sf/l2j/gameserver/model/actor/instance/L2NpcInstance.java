@@ -997,6 +997,10 @@ public class L2NpcInstance extends L2Character
             {
                 makeSupportMagic(player);
             }
+            else if (command.startsWith("GiveBlessing")) 
+            { 
+            	  giveBlessingSupport(player); 
+            } 
             else if (command.startsWith("multisell"))
             {
                 L2Multisell.getInstance().separateAndSend(Integer.parseInt(command.substring(9).trim()), player, false, getCastle().getTaxRate());
@@ -1146,7 +1150,29 @@ public class L2NpcInstance extends L2Character
         
         return (L2Weapon)item;
     }
-    
+    public void giveBlessingSupport(L2PcInstance player) 
+    { 
+      if (player == null) 
+              return; 
+     
+           // Blessing of protection - author kerberos_20. Used codes from Rayan - L2Emu project.
+           // Prevent a cursed weapon weilder of being buffed - I think no need of that becouse karma check > 0
+           // if (player.isCursedWeaponEquiped()) 
+           //   return; 
+     
+           int player_level = player.getLevel(); 
+            // Select the player 
+            setTarget(player); 
+            // If the player is too high level, display a message and return 
+            if (player_level > 39 || player.getClassId().level() >= 2) 
+            { 
+                String content = "<html><body>Newbie Guide:<br>I'm sorry, but you are not eligible to receive the protection blessing.<br1>It can only be bestowed on <font color=\"LEVEL\">characters below level 39 who have not made a seccond transfer.</font></body></html>"; 
+                insertObjectIdAndShowChatWindow(player, content); 
+                return; 
+            } 
+            L2Skill skill = SkillTable.getInstance().getInfo(5182,1); 
+            doCast(skill); 
+       }
     /**
      * Return null (regular NPCs don't have weapons instancies).<BR><BR>
      */
