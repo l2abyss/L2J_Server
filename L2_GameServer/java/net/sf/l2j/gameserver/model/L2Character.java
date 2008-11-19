@@ -1969,14 +1969,26 @@ public abstract class L2Character extends L2Object
 		getNotifyQuestOfDeath().clear();
 
 		getAttackByList().clear();
-		//If character is PhoenixBlessed a resurrection popup will show up
-        if (this instanceof L2PlayableInstance && ((L2PlayableInstance)this).isPhoenixBlessed())
+		// If character is PhoenixBlessed 
+		// or has charm of courage inside siege battlefield (exact operation to be confirmed)
+		// a resurrection popup will show up
+        if (this instanceof L2Summon)
         {
-           if (this instanceof L2Summon) {
-              ((L2Summon)this).getOwner().reviveRequest(((L2Summon)this).getOwner(), null, true);
-           }
-           else ((L2PcInstance)this).reviveRequest(((L2PcInstance)this),null,false);
+        	if (((L2Summon)this).isPhoenixBlessed() && ((L2Summon)this).getOwner() != null)
+        		((L2Summon)this).getOwner().reviveRequest(((L2Summon)this).getOwner(), null, true);
         }
+		if (this instanceof L2PcInstance)
+        {
+			if(((L2PlayableInstance)this).isPhoenixBlessed())
+				((L2PcInstance)this).reviveRequest(((L2PcInstance)this),null,false);
+			else if (((L2PcInstance)this).getCharmOfCourage() 
+					&& this.isInsideZone(ZONE_SIEGE)
+					&& ((L2PcInstance)this).getSiegeState() != 0) // could check it more accurately too
+			{
+				((L2PcInstance)this).reviveRequest(((L2PcInstance)this),null,false);
+			}
+        }
+        
 		return true;
 	}
 

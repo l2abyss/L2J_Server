@@ -543,6 +543,9 @@ public final class L2PcInstance extends L2PlayableInstance
 
 	//Death Penalty Buff Level
 	private int _deathPenaltyBuffLevel = 0;
+	
+	// self resurrect during siege
+	private boolean _charmOfCourage = false;
 
 	// Absorbed Souls
     private int _souls = 0;
@@ -9979,7 +9982,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	{
 		if (_reviveRequested != 1 || (!isDead() && !_revivePet) || (_revivePet && getPet() != null && !getPet().isDead()))
 			return;
-		//If character refuses a PhoenixBless autoress, cancell all buffs he had
+		//If character refuses a PhoenixBless autoress, cancel all buffs he had
 		if (answer == 0 && isPhoenixBlessed())
 		{
 		    stopPhoenixBlessing(null);
@@ -11085,8 +11088,6 @@ public final class L2PcInstance extends L2PlayableInstance
     {
         _combatFlagEquippedId = value;
     }
-
-	private boolean _charmOfCourage = false;
 
 	public boolean getCharmOfCourage()
 	{

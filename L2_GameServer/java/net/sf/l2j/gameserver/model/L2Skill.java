@@ -2441,17 +2441,11 @@ public abstract class L2Skill
 								{
 									if (!((L2PcInstance) newTarget).isDead())
 										continue;
+									// Siege battlefield resurrect has been made possible for participants
 									if (getSkillType() == L2SkillType.RESURRECT)
 									{
-										// check for charm of courage and caster being a siege participant, otherwise do not allow resurrection
-										// on siege battlefield
-										if (((L2PcInstance) newTarget).isInsideZone(L2Character.ZONE_SIEGE))
-										{
-											// could/should be a more accurate check for siege clans	
-											if (!((L2PcInstance) newTarget).getCharmOfCourage() || player.getSiegeState() == 0)
-													continue;	
-										}		
-										
+										if (((L2PcInstance) newTarget).isInsideZone(L2Character.ZONE_SIEGE) && ((L2PcInstance) newTarget).getSiegeState() == 0)
+													continue;
 									}
 								}
 								
