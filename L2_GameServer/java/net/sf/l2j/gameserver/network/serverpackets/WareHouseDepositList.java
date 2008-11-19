@@ -49,12 +49,12 @@ public final class WareHouseDepositList extends L2GameServerPacket
 		for (L2ItemInstance temp : _activeChar.getInventory().getAvailableItems(true))
 			_items.add(temp);
 		
-		// augmented and shadow items can be stored in private wh
+		// non-tradeable, augmented and shadow items can be stored in private wh
 		if (_whType == PRIVATE)
 		{
 			for (L2ItemInstance temp : player.getInventory().getItems())
 			{
-				if (temp != null && !temp.isEquipped() && (temp.isShadowItem() || temp.isAugmented()))
+				if (temp != null && !temp.isEquipped() && (temp.isShadowItem() || temp.isAugmented() || !temp.isTradeable()))
 					_items.add(temp);
 			}
 		}
