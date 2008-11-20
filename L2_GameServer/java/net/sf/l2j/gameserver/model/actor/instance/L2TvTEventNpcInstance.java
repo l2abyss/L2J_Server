@@ -64,6 +64,7 @@ public class L2TvTEventNpcInstance extends L2NpcInstance
 				npcHtmlMessage.replace("%team1playercount%", String.valueOf(teamsPlayerCounts[0]));
 				npcHtmlMessage.replace("%team2name%", Config.TVT_EVENT_TEAM_2_NAME);
 				npcHtmlMessage.replace("%team2playercount%", String.valueOf(teamsPlayerCounts[1]));
+				npcHtmlMessage.replace("%playercount%", String.valueOf(teamsPlayerCounts[0]+teamsPlayerCounts[1]));
 	    		playerInstance.sendPacket(npcHtmlMessage);
 	    	}
 		}
