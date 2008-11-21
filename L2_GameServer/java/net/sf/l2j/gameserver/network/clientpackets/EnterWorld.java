@@ -227,10 +227,6 @@ public class EnterWorld extends L2GameClientPacket
         {
             CursedWeaponsManager.getInstance().getCursedWeapon(activeChar.getCursedWeaponEquippedId()).cursedOnLogin();
         }
-        else if (activeChar.transformSelectInfo() > 0)
-        {
-            TransformationManager.getInstance().transformPlayer(activeChar.transformId(), activeChar, Long.MAX_VALUE);
-        }
 
         if (activeChar.getAllEffects() != null)
         {
