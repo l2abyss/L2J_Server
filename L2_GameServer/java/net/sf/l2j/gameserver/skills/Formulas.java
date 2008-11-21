@@ -1192,8 +1192,9 @@ public final class Formulas
 		if(ss && skill.getSSBoost()>0)
 			power *= skill.getSSBoost();
 
-		damage = 1.5*(attacker.calcStat(Stats.CRITICAL_DAMAGE, damage+power, target, skill)
-				* target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, skill));
+		damage = (attacker.calcStat(Stats.CRITICAL_DAMAGE, (damage+power), target, skill)
+				+ (attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.5))
+				* (target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, skill));
 
 		// get the natural vulnerability for the template
 		if (target instanceof L2NpcInstance)
