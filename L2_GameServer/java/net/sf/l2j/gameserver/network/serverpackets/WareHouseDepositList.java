@@ -54,7 +54,9 @@ public final class WareHouseDepositList extends L2GameServerPacket
 		{
 			for (L2ItemInstance temp : player.getInventory().getItems())
 			{
-				if (temp != null && !temp.isEquipped() && (temp.isShadowItem() || temp.isAugmented() || !temp.isTradeable()))
+				if (temp != null && !temp.isEquipped()
+						&& (temp.isShadowItem() || temp.isAugmented() || !temp.isTradeable())
+						&& temp.getItem().getType2() != 3) // exclude quest items
 					_items.add(temp);
 			}
 		}
