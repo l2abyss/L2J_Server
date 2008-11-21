@@ -62,10 +62,13 @@ public class CharEffectList
 		FastList<L2Effect> temp = new FastList<L2Effect>();
 
 		// Add all buffs and all debuffs
-		synchronized (this)
+		synchronized (_buffs)
 		{
 			if (_buffs != null && !_buffs.isEmpty()) 
 				temp.addAll(_buffs);
+		}
+		synchronized (_debuffs)
+		{
 			if (_debuffs != null && !_debuffs.isEmpty()) 
 				temp.addAll(_debuffs);
 		}
@@ -207,16 +210,19 @@ public class CharEffectList
 		if (_buffs == null) return 0;
 		int buffCount=0;
 		
-		for (L2Effect e : _buffs)
+		synchronized(_buffs)
 		{
-			if (e != null && e.getShowIcon() && !e.getSkill().isDance() && !e.getSkill().isDebuff() &&
+			for (L2Effect e : _buffs)
+			{
+				if (e != null && e.getShowIcon() && !e.getSkill().isDance() && !e.getSkill().isDebuff() &&
 					(e.getSkill().getSkillType() == L2SkillType.BUFF ||
 					e.getSkill().getSkillType() == L2SkillType.REFLECT ||
 					e.getSkill().getSkillType() == L2SkillType.HEAL_PERCENT ||
 					e.getSkill().getSkillType() == L2SkillType.MANAHEAL_PERCENT) &&
 					!(e.getSkill().getId() > 4360  && e.getSkill().getId() < 4367)) // Seven Signs buffs
-			{
-				buffCount++;
+				{
+					buffCount++;
+				}
 			}
 		}
 		return buffCount;
@@ -231,10 +237,13 @@ public class CharEffectList
 		if (_buffs == null) return 0;
 		int danceCount = 0;
 
-		for (L2Effect e : _buffs)
+		synchronized(_buffs)
 		{
-			if (e != null && e.getSkill().isDance() && e.getInUse())
-				danceCount++;
+			for (L2Effect e : _buffs)
+			{
+				if (e != null && e.getSkill().isDance() && e.getInUse())
+					danceCount++;
+			}
 		}
 		return danceCount;
 	}
@@ -604,10 +613,10 @@ public class CharEffectList
 	 */
 	private List<L2Effect> effectQueueInsert(L2Effect newStackedEffect, List<L2Effect> stackQueue)
 	{
-		FastList<L2Effect> effectList = newStackedEffect.getSkill().isDebuff() ? _debuffs : _buffs;
-
 		// Get the L2Effect corresponding to the effect identifier from the L2Character _effects
 		if (_buffs == null && _debuffs == null) return null;
+
+		FastList<L2Effect> effectList = newStackedEffect.getSkill().isDebuff() ? _debuffs : _buffs;
 
 		// Create an Iterator to go through the list of stacked effects in progress on the L2Character
 		Iterator<L2Effect> queueIterator = stackQueue.iterator();
@@ -630,12 +639,15 @@ public class CharEffectList
 		if (Config.EFFECT_CANCELING && !newStackedEffect.isHerbEffect() && stackQueue.size() > 1)
 		{
 			// only keep the current effect, cancel other effects
-			for (L2Effect e : effectList)
+			synchronized(effectList)
 			{
-				if (e == stackQueue.get(1))
+				for (L2Effect e : effectList)
 				{
-					effectList.remove(e);
-					break;
+					if (e == stackQueue.get(1))
+					{
+						effectList.remove(e);
+						break;
+					}
 				}
 			}
 			stackQueue.remove(1);
