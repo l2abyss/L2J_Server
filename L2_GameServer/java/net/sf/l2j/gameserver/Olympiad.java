@@ -225,8 +225,10 @@ public class Olympiad
 		    		{
 	    				_game.sendMessageToPlayers(true,i);	    				
 		    			try{ Thread.sleep(10000); }catch (InterruptedException e){}		    			
-	    				if (i==20) { 
-	    					_game.additions();
+	    				if (i==20) 
+	    				{ 
+	    					_game._damageP1 = 0;
+	    					_game._damageP2 = 0;
 	    					_game.openDoors();
 	    					_game.sendMessageToPlayers(true,10);
 	    					try{ Thread.sleep(5000); }catch (InterruptedException e){}
@@ -2331,6 +2333,18 @@ public class Olympiad
     			result=" tie";
     			_sm = new SystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE);
                 broadcastMessage(_sm, true);
+                int pointOneDiff = playerOnePoints / 5;
+                int pointTwoDiff = playerTwoPoints / 5;
+                playerOneStat.set(POINTS, playerOnePoints - pointOneDiff);
+                playerTwoStat.set(POINTS, playerTwoPoints - pointTwoDiff);
+                _sm2 = new SystemMessage(SystemMessageId.S1_HAS_LOST_S2_OLYMPIAD_POINTS);
+                _sm2.addString(_playerOneName);
+                _sm2.addNumber(pointOneDiff);
+                broadcastMessage(_sm2, true);
+                _sm3 = new SystemMessage(SystemMessageId.S1_HAS_LOST_S2_OLYMPIAD_POINTS);
+                _sm3.addString(_playerTwoName);
+                _sm3.addNumber(pointTwoDiff);
+                broadcastMessage(_sm3, true);
     		}
             
             if (Config.DEBUG)
@@ -2367,40 +2381,6 @@ public class Olympiad
     		}
     	}
     	
-    	protected void additions()
-    	{
-    		for (L2PcInstance player : _players)
-    		{
-    		  try {
-    			//Set HP/CP/MP to Max
-    			player.setCurrentCp(player.getMaxCp());
-    			player.setCurrentHp(player.getMaxHp());
-    			player.setCurrentMp(player.getMaxMp());
-    		  } catch (Exception e) { }
-    		  finally
-    		  {
-    			  _damageP1 = 0;
-    			  _damageP2 = 0;
-    		  }
-     		}
-     	}
-
-    	protected boolean makePlayersVisible()
-    	{
-            _sm = new SystemMessage(SystemMessageId.STARTS_THE_GAME);
-            try {
-            	for (L2PcInstance player : _players)
-            	{
-            		player.getAppearance().setVisible();
-            		player.broadcastUserInfo();
-            		player.sendPacket(_sm);
-            		if (player.getPet() != null)
-            			player.getPet().updateAbnormalEffect();
-            	}
-            } catch (NullPointerException e) { _aborted = true; return false; }
-            return true;
-    	}
-
     	protected boolean makeCompetitionStart()
     	{
     	    if (_aborted) return false;
