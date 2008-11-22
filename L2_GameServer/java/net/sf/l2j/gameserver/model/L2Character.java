@@ -709,7 +709,7 @@ public abstract class L2Character extends L2Object
 		if (weaponItem != null && weaponItem.getItemType() == L2WeaponType.ROD)
 		{
 			//	You can't make an attack with a fishing pole.
-			((L2PcInstance)this).sendPacket(new SystemMessage(SystemMessageId.CANNOT_ATTACK_WITH_FISHING_POLE));
+			sendPacket(new SystemMessage(SystemMessageId.CANNOT_ATTACK_WITH_FISHING_POLE));
 			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 
             ActionFailed af = ActionFailed.STATIC_PACKET;
