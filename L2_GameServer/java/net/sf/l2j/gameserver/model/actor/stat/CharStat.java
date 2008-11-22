@@ -662,7 +662,7 @@ public class CharStat
 		val /= _activeChar.getArmourExpertisePenalty();
 		
 		// Apply max run speed cap.
-		if (val > Config.MAX_RUN_SPEED && !_activeChar.isGM())
+		if (val > Config.MAX_RUN_SPEED && _activeChar instanceof L2PcInstance && !_activeChar.isGM())
 			val = Config.MAX_RUN_SPEED;
 		
 		return val;

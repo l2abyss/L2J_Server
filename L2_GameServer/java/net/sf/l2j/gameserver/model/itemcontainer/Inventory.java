@@ -1117,19 +1117,14 @@ public abstract class Inventory extends ItemContainer
         {
             L2PcInstance player = (L2PcInstance)getOwner();
 
-
             if(player.getPkKills() > 0 && item.getItemId() >= 7816 && item.getItemId() <= 7831)
             {
                 player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_UNABLE_TO_EQUIP_THIS_ITEM_WHEN_YOUR_PK_COUNT_IS_GREATER_THAN_OR_EQUAL_TO_ONE));
                 return;
             }
 
-            if(!player.isGM())
-                if (!player.isHero())
-                {
-                    if (item.isHeroItem())
-                        return;
-                }
+            if (!player.isGM() && !player.isHero() && item.isHeroItem())
+            	return;
         }
 
 		int targetSlot = item.getItem().getBodyPart();
