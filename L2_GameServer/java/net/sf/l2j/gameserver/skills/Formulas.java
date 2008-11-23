@@ -2003,7 +2003,7 @@ public final class Formulas
 
 		// TODO: Temporary fix for NPC skills with MagicLevel not set
 		// int lvlmodifier = (skill.getMagicLevel() - target.getLevel()) * lvlDepend;
-		int lvlmodifier = ((skill.getMagicLevel() > 0 ? skill.getMagicLevel() : attacker.getLevel()) - target.getLevel()) * lvlDepend;
+		// int lvlmodifier = ((skill.getMagicLevel() > 0 ? skill.getMagicLevel() : attacker.getLevel()) - target.getLevel()) * lvlDepend;
 		
 		double statmodifier = calcSkillStatModifier(type, target);
 		double resmodifier = calcSkillVulnerability(target, skill);
@@ -2014,7 +2014,7 @@ public final class Formulas
 		else if (ss) ssmodifier = 150;
 
 		// Calculate BaseRate.
-		int rate = (int) ((value * statmodifier + lvlmodifier));
+		int rate = (int) ((value * statmodifier));// + lvlmodifier));
 
 		// Add Matk/Mdef Bonus
 		if (skill.isMagic())
@@ -2027,6 +2027,46 @@ public final class Formulas
 			else rate = rate * ssmodifier / 100;
 		}
 
+		//lvl modifier.
+		if (lvlDepend > 0)
+		{
+			double delta = 0;
+			int attackerLvlmod = attacker.getLevel();
+			int targetLvlmod = target.getLevel();
+					
+			if (attackerLvlmod >= 70)
+				attackerLvlmod = ((attackerLvlmod - 69) * 2) + 70;
+			if (targetLvlmod >= 70)
+				targetLvlmod = ((targetLvlmod - 69) * 2) + 70;
+					
+			if (skill.getMagicLevel() == 0)
+				delta = attackerLvlmod - targetLvlmod;
+			else
+				delta = ((skill.getMagicLevel() + attackerLvlmod) / 2) - targetLvlmod;
+			
+			//double delta = ((skill.getMagicLevel() > 0 ? skill.getMagicLevel() : 0)+attacker.getLevel() )/2 - target.getLevel();
+			double deltamod = 1;
+		
+			if (delta + 3 < 0)
+			{
+				if (delta <= -20)
+					deltamod = 0.05;
+				else
+				{
+					deltamod = 1 - ((-1) * (delta / 20));
+					if (deltamod >= 1)
+						deltamod = 0.05;
+				}
+			}
+			else
+				deltamod = 1 + ((delta + 3) / 75); //(double) attacker.getLevel()/target.getLevel();
+			
+			if (deltamod < 0)
+				deltamod *= -1;
+
+			rate *= deltamod;
+		}
+		
 		if (rate > 99) rate = 99;
 		else if (rate < 1) rate = 1;
 
@@ -2039,8 +2079,6 @@ public final class Formulas
 				+ value
 				+ ", "
 				+ statmodifier
-				+ ", "
-				+ lvlmodifier
 				+ ", "
 				+ resmodifier
 				+ ", "
