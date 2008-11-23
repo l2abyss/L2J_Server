@@ -21,14 +21,15 @@ import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 
 /**
  * This class ...
@@ -107,12 +108,12 @@ public class Potions implements IItemHandler
 				res = usePotion(activeChar, 2001, 1);
 				break;
 			case 725: // healing_drug, xml: 2002
-				if (!isEffectReplaceable(activeChar, L2Effect.EffectType.HEAL_OVER_TIME, itemId))
+				if (!isEffectReplaceable(activeChar, L2EffectType.HEAL_OVER_TIME, itemId))
 					return;
 				res = usePotion(activeChar, 2002, 1);
 				break;
 			case 727: // _healing_potion, xml: 2032
-				if (!isEffectReplaceable(activeChar, L2Effect.EffectType.HEAL_OVER_TIME, itemId))
+				if (!isEffectReplaceable(activeChar, L2EffectType.HEAL_OVER_TIME, itemId))
 					return;
 				res = usePotion(activeChar, 2032, 1);
 				break;
@@ -127,12 +128,12 @@ public class Potions implements IItemHandler
 				break;
 			case 1060: // lesser_healing_potion,
 			case 1073: // beginner's potion, xml: 2031
-				if (!isEffectReplaceable(activeChar, L2Effect.EffectType.HEAL_OVER_TIME, itemId))
+				if (!isEffectReplaceable(activeChar, L2EffectType.HEAL_OVER_TIME, itemId))
 					return;
 				res = usePotion(activeChar, 2031, 1);
 				break;
 			case 1061: // healing_potion, xml: 2032
-				if (!isEffectReplaceable(activeChar, L2Effect.EffectType.HEAL_OVER_TIME, itemId))
+				if (!isEffectReplaceable(activeChar, L2EffectType.HEAL_OVER_TIME, itemId))
 					return;
 				res = usePotion(activeChar, 2032, 1);
 				break;
@@ -146,18 +147,18 @@ public class Potions implements IItemHandler
 				res = usePotion(activeChar, 2035, 1);
 				break;
 			case 1539: // greater_healing_potion, xml: 2037
-				if (!isEffectReplaceable(activeChar, L2Effect.EffectType.HEAL_OVER_TIME, itemId))
+				if (!isEffectReplaceable(activeChar, L2EffectType.HEAL_OVER_TIME, itemId))
 					return;
 				res = usePotion(activeChar, 2037, 1);
 				break;
 			case 1540: // quick_healing_potion, xml: 2038
-				if (!isEffectReplaceable(activeChar, L2Effect.EffectType.HEAL_OVER_TIME, itemId))
+				if (!isEffectReplaceable(activeChar, L2EffectType.HEAL_OVER_TIME, itemId))
 					return;
 				res = usePotion(activeChar, 2038, 1);
 				break;
 			case 5591:
 			case 5592: // CP and Greater CP
-				if (!isEffectReplaceable(activeChar, L2Effect.EffectType.COMBAT_POINT_HEAL_OVER_TIME, itemId))
+				if (!isEffectReplaceable(activeChar, L2EffectType.COMBAT_POINT_HEAL_OVER_TIME, itemId))
 					return;
 				res = usePotion(activeChar, 2166, (itemId == 5591) ? 1 : 2);
 				break;

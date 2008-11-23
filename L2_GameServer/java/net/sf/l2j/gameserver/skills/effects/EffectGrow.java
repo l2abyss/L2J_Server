@@ -18,6 +18,7 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 
 public class EffectGrow extends L2Effect
 {
@@ -32,9 +33,9 @@ public class EffectGrow extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
 	 */
 	@Override
-	public EffectType getEffectType()
+	public L2EffectType getEffectType()
 	{
-		return EffectType.BUFF;
+		return L2EffectType.BUFF;
 	}
 	
 	/**

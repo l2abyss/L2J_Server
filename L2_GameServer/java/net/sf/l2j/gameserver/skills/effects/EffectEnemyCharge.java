@@ -24,6 +24,7 @@ import net.sf.l2j.gameserver.network.serverpackets.FlyToLocation;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.network.serverpackets.FlyToLocation.FlyType;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 
 public class EffectEnemyCharge extends L2Effect
 {
@@ -41,9 +42,9 @@ public class EffectEnemyCharge extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
 	 */
 	@Override
-	public EffectType getEffectType()
+	public L2EffectType getEffectType()
 	{
-		return EffectType.BUFF;
+		return L2EffectType.BUFF;
 	}
 	
 	/**

@@ -26,6 +26,7 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.effects.EffectCharge;
 import net.sf.l2j.gameserver.skills.effects.EffectCharmOfCourage;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 import net.sf.l2j.gameserver.templates.L2SkillType;
 
 public class CharEffectList
@@ -101,7 +102,7 @@ public class CharEffectList
 	 * @param tp
 	 * @return
 	 */
-	public final L2Effect getFirstEffect(L2Effect.EffectType tp)
+	public final L2Effect getFirstEffect(L2EffectType tp)
 	{
 		L2Effect[] effects = getAllEffects();
 
@@ -290,7 +291,7 @@ public class CharEffectList
 	 * Exit all effects having a specified type
 	 * @param type
 	 */
-	public final void stopEffects(L2Effect.EffectType type)
+	public final void stopEffects(L2EffectType type)
 	{
 		// Get all active skills effects from this list
 		L2Effect[] effects = getAllEffects();

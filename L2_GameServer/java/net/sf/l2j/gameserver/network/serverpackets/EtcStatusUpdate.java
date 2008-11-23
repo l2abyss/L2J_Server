@@ -14,9 +14,9 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.skills.effects.EffectCharge;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 
 /* Packet format: F3 XX000000 YY000000 ZZ000000 */
 
@@ -34,7 +34,7 @@ public class EtcStatusUpdate extends L2GameServerPacket
 	public EtcStatusUpdate(L2PcInstance activeChar)
 	{
 		 _activeChar = activeChar;
-		 _effect = (EffectCharge)_activeChar.getFirstEffect(L2Effect.EffectType.CHARGE);
+		 _effect = (EffectCharge)_activeChar.getFirstEffect(L2EffectType.CHARGE);
 	}
 
 	/**

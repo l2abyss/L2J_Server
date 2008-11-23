@@ -43,7 +43,6 @@ import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.handler.SkillHandler;
 import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
 import net.sf.l2j.gameserver.instancemanager.TownManager;
-import net.sf.l2j.gameserver.model.L2Effect.EffectType;
 import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.model.actor.instance.L2ArtefactInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
@@ -106,6 +105,7 @@ import net.sf.l2j.gameserver.skills.effects.EffectCharge;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillAgathion;
 import net.sf.l2j.gameserver.templates.L2CharTemplate;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.gameserver.templates.L2Weapon;
@@ -2725,7 +2725,7 @@ public abstract class L2Character extends L2Object
 
 	public final void stopBetray()
 	{
-		stopEffects(L2Effect.EffectType.BETRAY);
+		stopEffects(L2EffectType.BETRAY);
 		setIsBetrayed(false);
 		updateAbnormalEffect();
 	}
@@ -2766,7 +2766,7 @@ public abstract class L2Character extends L2Object
 	public final void stopConfused(L2Effect effect)
 	{
 		if (effect == null)
-			stopEffects(L2Effect.EffectType.CONFUSION);
+			stopEffects(L2EffectType.CONFUSION);
 		else
 			removeEffect(effect);
 
@@ -2805,7 +2805,7 @@ public abstract class L2Character extends L2Object
 	 * @param type The type of effect to stop ((ex : BUFF, DMG_OVER_TIME...)
 	 *
 	 */
-	public final void stopEffects(L2Effect.EffectType type)
+	public final void stopEffects(L2EffectType type)
 	{
 		_effects.stopEffects(type);
 	}
@@ -2822,7 +2822,7 @@ public abstract class L2Character extends L2Object
 	public final void stopFakeDeath(L2Effect effect)
 	{
 		if (effect == null)
-			stopEffects(L2Effect.EffectType.FAKE_DEATH);
+			stopEffects(L2EffectType.FAKE_DEATH);
 		else
 			removeEffect(effect);
 
@@ -2854,7 +2854,7 @@ public abstract class L2Character extends L2Object
 	public final void stopFear(L2Effect effect)
 	{
 		if (effect == null)
-			stopEffects(L2Effect.EffectType.FEAR);
+			stopEffects(L2EffectType.FEAR);
 		else
 			removeEffect(effect);
 
@@ -2875,7 +2875,7 @@ public abstract class L2Character extends L2Object
 	public final void stopMuted(L2Effect effect)
 	{
 		if (effect == null)
-			stopEffects(L2Effect.EffectType.MUTE);
+			stopEffects(L2EffectType.MUTE);
 		else
 			removeEffect(effect);
 
@@ -2886,7 +2886,7 @@ public abstract class L2Character extends L2Object
 	public final void stopPsychicalMuted(L2Effect effect)
     {
         if (effect == null)
-            stopEffects(L2Effect.EffectType.PHYSICAL_MUTE);
+            stopEffects(L2EffectType.PHYSICAL_MUTE);
         else
             removeEffect(effect);
 
@@ -2907,7 +2907,7 @@ public abstract class L2Character extends L2Object
 	public final void stopRooting(L2Effect effect)
 	{
 		if (effect == null)
-			stopEffects(L2Effect.EffectType.ROOT);
+			stopEffects(L2EffectType.ROOT);
 		else
 			removeEffect(effect);
 
@@ -2929,7 +2929,7 @@ public abstract class L2Character extends L2Object
 	public final void stopImmobileUntilAttacked(L2Effect effect)
 	{
 		 if (effect == null)
-            stopEffects(L2Effect.EffectType.IMMOBILEUNTILATTACKED);
+            stopEffects(L2EffectType.IMMOBILEUNTILATTACKED);
         else
         {
             removeEffect(effect);
@@ -2954,7 +2954,7 @@ public abstract class L2Character extends L2Object
 	public final void stopSleeping(L2Effect effect)
 	{
 		if (effect == null)
-			stopEffects(L2Effect.EffectType.SLEEP);
+			stopEffects(L2EffectType.SLEEP);
 		else
 			removeEffect(effect);
 
@@ -2976,7 +2976,7 @@ public abstract class L2Character extends L2Object
 	public final void stopStunning(L2Effect effect)
 	{
 		if (effect == null)
-			stopEffects(L2Effect.EffectType.STUN);
+			stopEffects(L2EffectType.STUN);
 		else
 			removeEffect(effect);
 
@@ -2988,7 +2988,7 @@ public abstract class L2Character extends L2Object
 	public final void stopParalyze(L2Effect effect)
 	{
 		if (effect == null)
-			stopEffects(L2Effect.EffectType.PARALYZE);
+			stopEffects(L2EffectType.PARALYZE);
 		else
 			removeEffect(effect);
 
@@ -3010,7 +3010,7 @@ public abstract class L2Character extends L2Object
     {
         if (effect == null)
         {
-            stopEffects(L2Effect.EffectType.TRANSFORMATION);
+            stopEffects(L2EffectType.TRANSFORMATION);
         }
         else
         {
@@ -3152,7 +3152,7 @@ public abstract class L2Character extends L2Object
 	 * @return The first L2Effect corresponding to the Effect Type
 	 *
 	 */
-	public final L2Effect getFirstEffect(L2Effect.EffectType tp)
+	public final L2Effect getFirstEffect(L2EffectType tp)
 	{
 		return _effects.getFirstEffect(tp);
 	}
@@ -3162,30 +3162,6 @@ public abstract class L2Character extends L2Object
 		return _effects.getChargeEffect();
 	}
 	// =========================================================
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	// =========================================================
 	// NEED TO ORGANIZE AND MOVE TO PROPER PLACE
 	/** This class permit to the L2Character AI to obtain informations and uses L2Character method */
@@ -3937,7 +3913,7 @@ public abstract class L2Character extends L2Object
 			if (getForceBuff() != null)
 				getForceBuff().onCastAbort();
 			
-			L2Effect mog = getFirstEffect(L2Effect.EffectType.SIGNET_GROUND);
+			L2Effect mog = getFirstEffect(L2EffectType.SIGNET_GROUND);
 			if (mog != null)
 				mog.exit();
 			
@@ -5571,7 +5547,7 @@ public abstract class L2Character extends L2Object
 				// for now, to support transformations, we have to let their
 				// effects stay when skill is removed
 				L2Effect e = getFirstEffect(oldSkill);
-				if (e == null || e.getEffectType() != EffectType.TRANSFORMATION)
+				if (e == null || e.getEffectType() != L2EffectType.TRANSFORMATION)
 				{
 					removeStatsOwner(oldSkill);
 					stopSkillEffects(oldSkill.getId());
@@ -5811,7 +5787,7 @@ public abstract class L2Character extends L2Object
 			notifyQuestEventSkillFinished(skill, targets[0]);
 			return;
 		}
-		L2Effect mog = getFirstEffect(L2Effect.EffectType.SIGNET_GROUND);
+		L2Effect mog = getFirstEffect(L2EffectType.SIGNET_GROUND);
 		if (mog != null)
 		{
 			if (simultaneously)
@@ -6698,7 +6674,7 @@ public abstract class L2Character extends L2Object
     public final void stopPhysicalAttackMuted(L2Effect effect)
     {
         if (effect == null)
-            stopEffects(L2Effect.EffectType.PHYSICAL_ATTACK_MUTE);
+            stopEffects(L2EffectType.PHYSICAL_ATTACK_MUTE);
         else
             removeEffect(effect);
   

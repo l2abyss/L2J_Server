@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.skills.effects;
 
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 
 /**
  * @author mkizub
@@ -42,9 +43,9 @@ public class EffectBuff extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
 	 */
 	@Override
-	public EffectType getEffectType()
+	public L2EffectType getEffectType()
 	{
-		return EffectType.BUFF;
+		return L2EffectType.BUFF;
 	}
 	
 	/**

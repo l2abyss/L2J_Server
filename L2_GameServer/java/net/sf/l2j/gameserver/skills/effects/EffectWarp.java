@@ -24,6 +24,7 @@ import net.sf.l2j.gameserver.network.serverpackets.FlyToLocation;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.network.serverpackets.FlyToLocation.FlyType;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 import net.sf.l2j.gameserver.util.Util;
 
 /**
@@ -62,9 +63,9 @@ public class EffectWarp extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
 	 */
 	@Override
-	public EffectType getEffectType()
+	public L2EffectType getEffectType()
 	{
-		return EffectType.WARP;
+		return L2EffectType.WARP;
 	}
 	
 	/**

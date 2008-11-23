@@ -18,6 +18,7 @@ package net.sf.l2j.gameserver.skills.effects;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 
 public class EffectPetrification extends L2Effect
 {
@@ -31,9 +32,9 @@ public class EffectPetrification extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
 	 */
 	@Override
-	public EffectType getEffectType()
+	public L2EffectType getEffectType()
 	{
-		return L2Effect.EffectType.PETRIFICATION;
+		return L2EffectType.PETRIFICATION;
 	}
 	
 	/**

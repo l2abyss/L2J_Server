@@ -19,6 +19,7 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.actor.instance.L2EffectPointInstance;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 
 /**
  * @authors Forsaiken, Sami
@@ -38,9 +39,9 @@ final class EffectSignetNoise extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
 	 */
 	@Override
-	public EffectType getEffectType()
+	public L2EffectType getEffectType()
 	{
-		return EffectType.SIGNET_GROUND;
+		return L2EffectType.SIGNET_GROUND;
 	}
 	
 	/**

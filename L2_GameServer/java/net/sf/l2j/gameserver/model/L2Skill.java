@@ -48,6 +48,7 @@ import net.sf.l2j.gameserver.skills.effects.EffectTemplate;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.skills.funcs.FuncTemplate;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.gameserver.templates.L2WeaponType;
 import net.sf.l2j.gameserver.templates.StatsSet;
@@ -3007,10 +3008,10 @@ public abstract class L2Skill
             if (e != null)
             {
                 //Implements effect charge
-                if (e.getEffectType()== L2Effect.EffectType.CHARGE)
+                if (e.getEffectType()== L2EffectType.CHARGE)
                 {
                 	env.skill = SkillTable.getInstance().getInfo(8, effector.getSkillLevel(8));
-                    EffectCharge effect = (EffectCharge) env.target.getFirstEffect(L2Effect.EffectType.CHARGE);
+                    EffectCharge effect = (EffectCharge) env.target.getFirstEffect(L2EffectType.CHARGE);
                     if (effect != null)
                     {
                     	int effectcharge = effect.getLevel();

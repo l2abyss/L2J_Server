@@ -20,47 +20,48 @@ package net.sf.l2j.gameserver.skills.effects;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 
 /**
  * @author kerberos_20
  *
  */
 public class EffectProtectionBlessing extends L2Effect
-{ 
-       public EffectProtectionBlessing(Env env, EffectTemplate template)
-       {
-              super(env, template);
-       }
-
-       @Override
-       public EffectType getEffectType()
-       {
-              return EffectType.PROTECTION_BLESSING;
-       }
-
-       /** Notify started */
-       @Override
-       public boolean onStart() 
-       {
-    	   if (getEffected() instanceof L2PlayableInstance)
-    	   {
-    		   ((L2PlayableInstance)getEffected()).startProtectionBlessing();
-    		   return true;
-    	   }
-    	   return false;
-       }
-
-       /** Notify exited */
-       @Override
-       public void onExit() 
-       {
-    	   ((L2PlayableInstance)getEffected()).stopProtectionBlessing (this);
-       }
-
-    @Override
-       public boolean onActionTime()
-    {
-       // just stop this effect
-       return false;
-    }
+{
+	public EffectProtectionBlessing(Env env, EffectTemplate template)
+	{
+		super(env, template);
+	}
+	
+	@Override
+	public L2EffectType getEffectType()
+	{
+		return L2EffectType.PROTECTION_BLESSING;
+	}
+	
+	/** Notify started */
+	@Override
+	public boolean onStart()
+	{
+		if (getEffected() instanceof L2PlayableInstance)
+		{
+			((L2PlayableInstance) getEffected()).startProtectionBlessing();
+			return true;
+		}
+		return false;
+	}
+	
+	/** Notify exited */
+	@Override
+	public void onExit()
+	{
+		((L2PlayableInstance) getEffected()).stopProtectionBlessing(this);
+	}
+	
+	@Override
+	public boolean onActionTime()
+	{
+		// just stop this effect
+		return false;
+	}
 }

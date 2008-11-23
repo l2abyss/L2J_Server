@@ -20,6 +20,7 @@ import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 
 class EffectDamOverTime extends L2Effect
 {
@@ -33,9 +34,9 @@ class EffectDamOverTime extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
 	 */
 	@Override
-	public EffectType getEffectType()
+	public L2EffectType getEffectType()
 	{
-		return EffectType.DMG_OVER_TIME;
+		return L2EffectType.DMG_OVER_TIME;
 	}
 	
 	/**

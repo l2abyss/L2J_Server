@@ -19,6 +19,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.network.serverpackets.ExRegMax;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 
 class EffectHealOverTime extends L2Effect
 {
@@ -32,9 +33,9 @@ class EffectHealOverTime extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
 	 */
 	@Override
-	public EffectType getEffectType()
+	public L2EffectType getEffectType()
 	{
-		return EffectType.HEAL_OVER_TIME;
+		return L2EffectType.HEAL_OVER_TIME;
 	}
 	
 	/**

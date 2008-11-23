@@ -23,6 +23,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 import net.sf.l2j.gameserver.templates.L2SkillType;
 
 /**
@@ -138,7 +139,7 @@ public class Remedy implements IItemHandler
 						e.exit();
 				}
 				activeChar.setIsImmobilized(false);
-				if (activeChar.getFirstEffect(L2Effect.EffectType.ROOT) == null)
+				if (activeChar.getFirstEffect(L2EffectType.ROOT) == null)
 					activeChar.stopRooting(null);
 				MagicSkillUse MSU = new MagicSkillUse(playable, playable, 2042, 1, 0, 0);
 				activeChar.sendPacket(MSU);

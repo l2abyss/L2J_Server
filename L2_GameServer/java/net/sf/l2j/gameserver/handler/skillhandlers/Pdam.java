@@ -33,6 +33,7 @@ import net.sf.l2j.gameserver.network.serverpackets.EtcStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.skills.effects.EffectCharge;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.gameserver.templates.L2WeaponType;
 
@@ -248,7 +249,7 @@ public class Pdam implements ISkillHandler
 			
 			if (skill.getId() == 345 || skill.getId() == 346) // Sonic Rage or Raging Force
 			{
-				EffectCharge effect = (EffectCharge) activeChar.getFirstEffect(L2Effect.EffectType.CHARGE);
+				EffectCharge effect = (EffectCharge) activeChar.getFirstEffect(L2EffectType.CHARGE);
 				if (effect != null)
 				{
 					int effectcharge = effect.getLevel();

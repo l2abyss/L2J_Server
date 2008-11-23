@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSignet;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSignetCasttime;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 
 /**
  * @authors Forsaiken, Sami
@@ -45,9 +46,9 @@ final class EffectSignet extends L2Effect
 	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
 	 */
 	@Override
-	public EffectType getEffectType()
+	public L2EffectType getEffectType()
 	{
-		return EffectType.SIGNET_EFFECT;
+		return L2EffectType.SIGNET_EFFECT;
 	}
 	
 	/**

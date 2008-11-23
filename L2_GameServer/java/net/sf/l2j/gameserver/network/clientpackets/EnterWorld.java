@@ -72,6 +72,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ShortCutInit;
 import net.sf.l2j.gameserver.network.serverpackets.SkillCoolTime;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 import net.sf.l2j.gameserver.util.FloodProtector;
 /**
  * Enter World Packet Handler<p>
@@ -231,20 +232,20 @@ public class EnterWorld extends L2GameClientPacket
         {
             for (L2Effect e : activeChar.getAllEffects())
             {
-                if (e.getEffectType() == L2Effect.EffectType.HEAL_OVER_TIME)
+                if (e.getEffectType() == L2EffectType.HEAL_OVER_TIME)
                 {
-                    activeChar.stopEffects(L2Effect.EffectType.HEAL_OVER_TIME);
+                    activeChar.stopEffects(L2EffectType.HEAL_OVER_TIME);
                     activeChar.removeEffect(e);
                 }
 
-                if (e.getEffectType() == L2Effect.EffectType.COMBAT_POINT_HEAL_OVER_TIME)
+                if (e.getEffectType() == L2EffectType.COMBAT_POINT_HEAL_OVER_TIME)
                 {
-                    activeChar.stopEffects(L2Effect.EffectType.COMBAT_POINT_HEAL_OVER_TIME);
+                    activeChar.stopEffects(L2EffectType.COMBAT_POINT_HEAL_OVER_TIME);
                     activeChar.removeEffect(e);
                 }
                 
                 //  Charges are gone after relog.
-                if (e.getEffectType() == L2Effect.EffectType.CHARGE)
+                if (e.getEffectType() == L2EffectType.CHARGE)
                 {
                     e.exit();
                 }

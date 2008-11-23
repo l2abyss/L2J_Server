@@ -22,7 +22,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
-
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlEvent;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
@@ -49,6 +48,7 @@ import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.skills.Stats;
 import net.sf.l2j.gameserver.skills.effects.EffectBuff;
+import net.sf.l2j.gameserver.templates.L2EffectType;
 import net.sf.l2j.gameserver.templates.L2SkillType;
 import net.sf.l2j.util.Rnd;
 
@@ -534,7 +534,7 @@ public class Disablers implements ISkillHandler
 						
 						for (L2Effect e : effects)
 						{
-							if (e == null || (!(e instanceof EffectBuff) && e.getEffectType() != L2Effect.EffectType.TRANSFORMATION)
+							if (e == null || (!(e instanceof EffectBuff) && e.getEffectType() != L2EffectType.TRANSFORMATION)
 									|| e.getSkill().getSkillType() == L2SkillType.HEAL
 									|| e.getSkill().isToggle()
 									|| e.getSkill().isDebuff()
