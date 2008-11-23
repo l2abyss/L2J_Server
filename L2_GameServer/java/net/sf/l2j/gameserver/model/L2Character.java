@@ -2004,12 +2004,22 @@ public abstract class L2Character extends L2Object
 		{
 			setIsPendingRevive(false);
 			setIsDead(false);
+			boolean restorefull = false;
+			
 			if (this instanceof L2PlayableInstance && ((L2PlayableInstance)this).isPhoenixBlessed())
 			{
+				restorefull = true;
 			    ((L2PlayableInstance)this).stopPhoenixBlessing(null);
 			}
+			if(restorefull)
+			{
+				//_status.setCurrentCp(getMaxCp()); //this is not confirmed... 
+				_status.setCurrentHp(getMaxHp()); //confirmed
+				_status.setCurrentMp(getMaxMp()); //and also confirmed
+			}
+			else
+				_status.setCurrentHp(getMaxHp() * Config.RESPAWN_RESTORE_HP);
 			//_status.setCurrentCp(getMaxCp() * Config.RESPAWN_RESTORE_CP);
-			_status.setCurrentHp(getMaxHp() * Config.RESPAWN_RESTORE_HP);
 		 	//_Status.setCurrentMp(getMaxMp() * Config.RESPAWN_RESTORE_MP);
 			
 			// Start broadcast status
@@ -2020,7 +2030,7 @@ public abstract class L2Character extends L2Object
 		else
 			setIsPendingRevive(true);
 	}
-
+	
 	/** Revives the L2Character using skill. */
 	public void doRevive(double revivePower) { doRevive(); }
 

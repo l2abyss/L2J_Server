@@ -2198,7 +2198,7 @@ public final class Formulas
     
     public boolean calcPhysicalSkillEvasion(L2Character target, L2Skill skill)
     {
-    	if (skill.isMagic())
+    	if (skill.isMagic() && skill.getSkillType() != L2SkillType.BLOW)
     		return false;
     	
     	return Rnd.get(100) < target.calcStat(Stats.P_SKILL_EVASION, 0, null, skill);
