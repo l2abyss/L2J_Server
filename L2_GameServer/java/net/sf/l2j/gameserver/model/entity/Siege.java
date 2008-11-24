@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -151,9 +152,9 @@ public class Siege
 					_castleInst.getSiege().endSiege();
 				}
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
-				
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}
@@ -175,20 +176,20 @@ public class Siege
 			
 			try
 			{
-	           	if (!getIsTimeRegistrationOver())
-            	{
-                	long regTimeRemaining = getTimeRegistrationOverDate().getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
-                	if (regTimeRemaining > 0)
-                	{
-                		_scheduledStartSiegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), regTimeRemaining);
-                		return;
-                	}
-                	else
-                	{
-                		endTimeRegistration(true);
-                	}
-            	}
-
+				if (!getIsTimeRegistrationOver())
+				{
+					long regTimeRemaining = getTimeRegistrationOverDate().getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+					if (regTimeRemaining > 0)
+					{
+						_scheduledStartSiegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), regTimeRemaining);
+						return;
+					}
+					else
+					{
+						endTimeRegistration(true);
+					}
+				}
+				
 				long timeRemaining = getSiegeDate().getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
 				if (timeRemaining > 86400000)
 				{
@@ -226,9 +227,9 @@ public class Siege
 					_castleInst.getSiege().startSiege();
 				}
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
-				
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}
@@ -751,7 +752,7 @@ public class Siege
 	{
 		if (flag == null)
 			return;
-		for (L2SiegeClan clan: getAttackerClans())
+		for (L2SiegeClan clan : getAttackerClans())
 		{
 			if (clan.removeFlag(flag))
 				return;
@@ -1134,7 +1135,7 @@ public class Siege
 		getTimeRegistrationOverDate().setTimeInMillis(Calendar.getInstance().getTimeInMillis());
 		getTimeRegistrationOverDate().add(Calendar.DAY_OF_MONTH, 1);
 		getCastle().setIsTimeRegistrationOver(false);
-
+		
 		saveSiegeDate(); // Save the new date
 		startAutoTask(); // Prepare auto start siege and end registration
 	}
@@ -1260,8 +1261,7 @@ public class Siege
 	{
 		while (getCastle().getSiegeDate().getTimeInMillis() < Calendar.getInstance().getTimeInMillis())
 		{
-			if (getCastle().getSiegeDate().get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY &&
-					getCastle().getSiegeDate().get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY)
+			if (getCastle().getSiegeDate().get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && getCastle().getSiegeDate().get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY)
 				getCastle().getSiegeDate().set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
 			// set the next siege day to the next weekend
 			getCastle().getSiegeDate().add(Calendar.DAY_OF_MONTH, 7);
@@ -1269,7 +1269,7 @@ public class Siege
 		
 		if (!SevenSigns.getInstance().isDateInSealValidPeriod(getCastle().getSiegeDate()))
 			getCastle().getSiegeDate().add(Calendar.DAY_OF_MONTH, 7);
-
+		
 		_isRegistrationOver = false; // Allow registration for next siege
 	}
 	

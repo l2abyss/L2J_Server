@@ -121,7 +121,7 @@ public abstract class L2Effect
 					setPeriodfirsttime(0);
 				L2Effect.this.scheduleEffect();
 			}
-			catch (Throwable e)
+			catch (Exception e)
 			{
 				_log.log(Level.SEVERE, "", e);
 			}

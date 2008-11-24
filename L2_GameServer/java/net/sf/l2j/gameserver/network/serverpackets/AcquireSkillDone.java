@@ -21,8 +21,9 @@ package net.sf.l2j.gameserver.network.serverpackets;
 
 public class AcquireSkillDone extends L2GameServerPacket
 {
-	public void AcquireSkilldone()
+	public AcquireSkillDone()
 	{
+		
 	}
 
 	@Override

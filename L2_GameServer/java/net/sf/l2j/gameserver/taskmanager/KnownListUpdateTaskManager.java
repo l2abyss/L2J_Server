@@ -35,7 +35,7 @@ public class KnownListUpdateTaskManager
 	public static boolean updatePass = true;
 	
 	// Do full update every FULL_UPDATE_TIMER * KNOWNLIST_UPDATE_INTERVAL
-	public static int _fullUpdateTimer = FULL_UPDATE_TIMER; 
+	public static int _fullUpdateTimer = FULL_UPDATE_TIMER;
 	private static KnownListUpdateTaskManager _instance;
 	
 	public KnownListUpdateTaskManager()
@@ -85,7 +85,7 @@ public class KnownListUpdateTaskManager
 					}
 				}
 			}
-			catch (Throwable e)
+			catch (Exception e)
 			{
 				_log.warning(e.toString());
 			}
@@ -100,8 +100,7 @@ public class KnownListUpdateTaskManager
 		}
 	}
 	
-	public void updateRegion(L2WorldRegion region, boolean fullUpdate,
-	        boolean forgetObjects)
+	public void updateRegion(L2WorldRegion region, boolean fullUpdate, boolean forgetObjects)
 	{
 		// synchronized (syncObject)
 		{
@@ -112,7 +111,7 @@ public class KnownListUpdateTaskManager
 				{
 					if (!object.isVisible())
 						continue; // skip dying objects
-					
+						
 					if (forgetObjects)
 					{
 						object.getKnownList().forgetObjects((object instanceof L2PlayableInstance || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate));

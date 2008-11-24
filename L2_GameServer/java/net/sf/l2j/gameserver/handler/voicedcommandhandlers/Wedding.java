@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.handler.voicedcommandhandlers;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -444,9 +445,9 @@ public class Wedding implements IVoicedCommandHandler
 			{
 				_activeChar.teleToLocation(_partnerx, _partnery, _partnerz);
 			}
-			catch (Throwable e)
+			catch (Exception e)
 			{
-				_log.severe(e.toString());
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}

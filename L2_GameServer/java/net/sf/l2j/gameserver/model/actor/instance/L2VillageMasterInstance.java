@@ -863,7 +863,7 @@ public final class L2VillageMasterInstance extends L2FolkInstance
         	
 
         L2PledgeSkillLearn[] skills = SkillTreeTable.getInstance().getAvailablePledgeSkills(player);
-        AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.skillType.Clan);
+        AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.SkillType.Clan);
         int counts = 0;
 
         for (L2PledgeSkillLearn s: skills)

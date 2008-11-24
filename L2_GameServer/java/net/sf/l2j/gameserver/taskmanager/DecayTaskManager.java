@@ -98,7 +98,7 @@ public class DecayTaskManager
 						}
 					}
 			}
-			catch (Throwable e)
+			catch (Exception e)
 			{
 				// TODO: Find out the reason for exception. Unless caught here,
 				// mob decay would stop.
@@ -117,9 +117,7 @@ public class DecayTaskManager
 		Long current = System.currentTimeMillis();
 		for (L2Character actor : _decayTasks.keySet())
 		{
-			ret += "Class/Name: " + actor.getClass().getSimpleName() + "/"
-			        + actor.getName() + " decay timer: "
-			        + (current - _decayTasks.get(actor)) + "\r\n";
+			ret += "Class/Name: " + actor.getClass().getSimpleName() + "/" + actor.getName() + " decay timer: " + (current - _decayTasks.get(actor)) + "\r\n";
 		}
 		
 		return ret;

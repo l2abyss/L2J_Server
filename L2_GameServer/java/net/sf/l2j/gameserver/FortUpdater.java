@@ -26,25 +26,26 @@ import net.sf.l2j.gameserver.model.L2Clan;
  */
 public class FortUpdater implements Runnable
 {
-    protected static Logger _log = Logger.getLogger(FortUpdater.class.getName());
-    @SuppressWarnings("unused")
-    private L2Clan _clan;
-    @SuppressWarnings("unused")
-    private int _runCount = 0;
-
-    public FortUpdater(L2Clan clan, int runCount)
-    {
-        _clan = clan;
-        _runCount = runCount;
-    }
-
-    public void run()
-    {
-        try
-        {
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
-    
+	protected static Logger _log = Logger.getLogger(FortUpdater.class.getName());
+	@SuppressWarnings("unused")
+	private L2Clan _clan;
+	@SuppressWarnings("unused")
+	private int _runCount = 0;
+	
+	public FortUpdater(L2Clan clan, int runCount)
+	{
+		_clan = clan;
+		_runCount = runCount;
+	}
+	
+	public void run()
+	{
+		try
+		{
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
 }

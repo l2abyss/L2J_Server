@@ -15,6 +15,8 @@
 package net.sf.l2j.gameserver.model.quest;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import net.sf.l2j.gameserver.ThreadPoolManager;
@@ -22,6 +24,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
 public class QuestStateManager
 {
+	protected static final Logger _log = Logger.getLogger(QuestStateManager.class.getName());
 	// =========================================================
 	// Schedule Task
 	public class ScheduleTimerTask implements Runnable
@@ -33,8 +36,9 @@ public class QuestStateManager
 				cleanUp();
 				ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTimerTask(), 60000);
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}

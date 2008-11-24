@@ -15,9 +15,8 @@
 package net.sf.l2j.gameserver.model.actor.instance;
 
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2Character;
@@ -29,18 +28,11 @@ import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 
 public class L2DecoyInstance extends L2Decoy
 {
-    protected static final Logger log = Logger.getLogger(L2DecoyInstance.class.getName());
-    
     private int _totalLifeTime;
-    
     private int _timeRemaining;
-    
     private Future<?> _DecoyLifeTask;
-    
     private Future<?> _HateSpam;
-    
-    public L2DecoyInstance(int objectId, L2NpcTemplate template,
-            L2PcInstance owner, L2Skill skill)
+    public L2DecoyInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2Skill skill)
     {
         super(objectId, template, owner);
         if (skill != null)
@@ -105,10 +97,9 @@ public class L2DecoyInstance extends L2Decoy
                     _Decoy.unSummon(_activeChar);
                 }
             }
-            catch (Throwable e)
+            catch (Exception e)
             {
-                if (Config.DEBUG)
-                    log.warning("Decoy Error:" + e);
+            	_log.log(Level.SEVERE, "Decoy Error: ", e);
             }
         }
     }
@@ -134,8 +125,7 @@ public class L2DecoyInstance extends L2Decoy
             }
             catch (Throwable e)
             {
-                if (Config.DEBUG)
-                    log.warning("Decoy Error:" + e);
+            	_log.log(Level.SEVERE, "Decoy Error: ", e);
             }
         }
     }

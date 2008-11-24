@@ -387,7 +387,6 @@ public class L2SepulcherNpcInstance extends L2NpcInstance
 			_DoorId = doorId;
 		}
 
-		@SuppressWarnings("synthetic-access")
 		public void run()
 		{
 			try

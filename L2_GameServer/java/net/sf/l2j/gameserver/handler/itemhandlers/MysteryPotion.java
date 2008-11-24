@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.handler.itemhandlers;
 
+import java.util.logging.Level;
+
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
@@ -35,6 +37,7 @@ public class MysteryPotion implements IItemHandler
 	{
 		5234
 	};
+	
 	private static final int BIGHEAD_EFFECT = 0x2000;
 	private static final int MYSTERY_POTION_SKILL = 2103;
 	private static final int EFFECT_DURATION = 1200000; // 20 mins
@@ -83,8 +86,9 @@ public class MysteryPotion implements IItemHandler
 				
 				((L2PcInstance) _playable).stopAbnormalEffect(BIGHEAD_EFFECT);
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}

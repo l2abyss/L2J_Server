@@ -549,7 +549,7 @@ public class CharStatus
                 else
                     getActiveChar().broadcastStatusUpdate(); //send the StatusUpdate packet
             }
-            catch (Throwable e)
+            catch (Exception e)
             {
                 _log.log(Level.SEVERE, "", e);
             }

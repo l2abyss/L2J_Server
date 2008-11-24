@@ -21,6 +21,8 @@
 
 package net.sf.l2j.gameserver.handler.itemhandlers;
 
+import java.util.logging.Level;
+
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SummonItemsData;
@@ -196,8 +198,9 @@ public class SummonItems implements IItemHandler
 				else
 					_petSummon.startFeed(false);
 			}
-			catch (Throwable e)
+			catch (Exception e)
 			{
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}
@@ -221,8 +224,9 @@ public class SummonItems implements IItemHandler
 				_petSummon.setFollowStatus(true);
 				_petSummon.setShowSummonAnimation(false);
 			}
-			catch (Throwable e)
+			catch (Exception e)
 			{
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}

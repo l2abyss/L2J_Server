@@ -609,7 +609,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 					saveCharToDisk(player);
 				}
 			}
-			catch (Throwable e)
+			catch (Exception e)
 			{
 			    _log.log(Level.SEVERE, "Error on AutoSaveTask.", e);
 			}

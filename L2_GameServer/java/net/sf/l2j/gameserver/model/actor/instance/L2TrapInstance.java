@@ -18,6 +18,7 @@
 package net.sf.l2j.gameserver.model.actor.instance;
 
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.model.L2Attackable;
@@ -136,9 +137,9 @@ public class L2TrapInstance extends L2Trap
 					}
 				}
 			}
-			catch (Throwable e)
+			catch (Exception e)
 			{
-				
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}

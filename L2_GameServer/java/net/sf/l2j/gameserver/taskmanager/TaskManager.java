@@ -53,11 +53,9 @@ public final class TaskManager
 	
 	private static TaskManager _instance;
 	
-	protected static final String[] SQL_STATEMENTS = 
+	protected static final String[] SQL_STATEMENTS =
 	{
-		"SELECT id,task,type,last_activation,param1,param2,param3 FROM global_tasks",
-		"UPDATE global_tasks SET last_activation=? WHERE id=?",
-		"SELECT id FROM global_tasks WHERE task=?",
+		"SELECT id,task,type,last_activation,param1,param2,param3 FROM global_tasks", "UPDATE global_tasks SET last_activation=? WHERE id=?", "SELECT id FROM global_tasks WHERE task=?",
 		"INSERT INTO global_tasks (task,type,last_activation,param1,param2,param3) VALUES(?,?,?,?,?,?)"
 	};
 	
@@ -79,7 +77,10 @@ public final class TaskManager
 			type = ptype;
 			id = rset.getInt("id");
 			lastActivation = rset.getLong("last_activation");
-			params = new String[] { rset.getString("param1"), rset.getString("param2"), rset.getString("param3") };
+			params = new String[]
+			{
+				rset.getString("param1"), rset.getString("param2"), rset.getString("param3")
+			};
 		}
 		
 		public void run()
@@ -100,8 +101,7 @@ public final class TaskManager
 			}
 			catch (SQLException e)
 			{
-				_log.warning("cannot updated the Global Task " + id + ": "
-				        + e.getMessage());
+				_log.warning("cannot updated the Global Task " + id + ": " + e.getMessage());
 			}
 			finally
 			{
@@ -304,8 +304,7 @@ public final class TaskManager
 			
 			if (hour.length != 3)
 			{
-				_log.warning("Task " + task.getId()
-				        + " has incorrect parameters");
+				_log.warning("Task " + task.getId() + " has incorrect parameters");
 				return false;
 			}
 			
@@ -321,8 +320,7 @@ public final class TaskManager
 			}
 			catch (Exception e)
 			{
-				_log.warning("Bad parameter on task " + task.getId() + ": "
-				        + e.getMessage());
+				_log.warning("Bad parameter on task " + task.getId() + ": " + e.getMessage());
 				return false;
 			}
 			

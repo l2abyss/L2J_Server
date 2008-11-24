@@ -14,7 +14,8 @@
  */
 package net.sf.l2j.gameserver.handler.skillhandlers;
 
-import net.sf.l2j.Config;
+import java.util.logging.Level;
+
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.model.L2Character;
@@ -89,10 +90,9 @@ public class Recall implements ISkillHandler
 				target.teleToLocation(MapRegionTable.TeleportWhereType.Town);
 			}
 		}
-		catch (Throwable e)
+		catch (Exception e)
 		{
-			if (Config.DEBUG)
-				e.printStackTrace();
+			_log.log(Level.SEVERE, "", e);
 		}
 	}
 	

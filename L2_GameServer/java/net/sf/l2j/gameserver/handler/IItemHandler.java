@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.handler;
 
+import java.util.logging.Logger;
+
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 
@@ -26,6 +28,8 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 
 public interface IItemHandler
 {
+	public static Logger _log = Logger.getLogger(IItemHandler.class.getName());
+	
 	/**
 	 * Launch task associated to the item.
 	 * @param activeChar : L2PlayableInstance designating the player

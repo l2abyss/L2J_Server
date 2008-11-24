@@ -689,16 +689,15 @@ public final class L2PcInstance extends L2PlayableInstance
 			_reference = reference;
 			_sendMessage = sendMessage;
 		}
-		@SuppressWarnings("synthetic-access")
 		public void run()
 		{
 			try
 			{
 				addItem(_process, _itemId, _count, _reference, _sendMessage);
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
-				_log.log(Level.WARNING, "", t);
+				_log.log(Level.WARNING, "", e);
 			}
 		}
 	}
@@ -4076,11 +4075,9 @@ public final class L2PcInstance extends L2PlayableInstance
     
     class GameGuardCheck implements Runnable
     {
-        
         /**
          * @see java.lang.Runnable#run()
          */
-        @SuppressWarnings("synthetic-access")
         public void run()
         {
             L2GameClient client = L2PcInstance.this.getClient();
@@ -7018,6 +7015,9 @@ public final class L2PcInstance extends L2PlayableInstance
 			
 			for (L2Effect effect : getAllEffects())
 			{
+				if (effect == null)
+					continue;
+				
 				L2Skill skill = effect.getSkill();
 				int skillId = skill.getId();
 				
@@ -10336,29 +10336,60 @@ public final class L2PcInstance extends L2PlayableInstance
 		// Check if the L2PcInstance is in observer mode to set its position to its position before entering in observer mode
 		if (inObserverMode())
 			setXYZ(_obsX, _obsY, _obsZ);
-
+		
 		// Set the online Flag to True or False and update the characters table of the database with online status and lastAccess (called when login and logout)
-		try { setOnlineStatus(false); } catch (Throwable t) {_log.log(Level.SEVERE, "deleteMe()", t); }
-
+		try
+		{
+			setOnlineStatus(false);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+		
 		// Stop the HP/MP/CP Regeneration task (scheduled tasks)
-		try { stopAllTimers(); } catch (Throwable t) {_log.log(Level.SEVERE, "deleteMe()", t); }
-
+		try
+		{
+			stopAllTimers();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+		
 		// Stop crafting, if in progress
-		try { RecipeController.getInstance().requestMakeItemAbort(this); } catch (Throwable t) {_log.log(Level.SEVERE, "deleteMe()", t); }
-
+		try
+		{
+			RecipeController.getInstance().requestMakeItemAbort(this);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+		
 		// Cancel Attak or Cast
-		try { setTarget(null); } catch (Throwable t) {_log.log(Level.SEVERE, "deleteMe()", t); }
+		try
+		{
+			setTarget(null);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
 		
 		try
 		{
-			if(_forceBuff != null)
+			if (_forceBuff != null)
 				abortCast();
-
-			for(L2Character character : getKnownList().getKnownCharacters())
-				if(character.getForceBuff() != null && character.getForceBuff().getTarget() == this)
+			
+			for (L2Character character : getKnownList().getKnownCharacters())
+				if (character.getForceBuff() != null && character.getForceBuff().getTarget() == this)
 					character.abortCast();
 		}
-		catch(Throwable t) {_log.log(Level.SEVERE, "deleteMe()", t); }
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
 		
 		try
 		{
@@ -10373,90 +10404,153 @@ public final class L2PcInstance extends L2PlayableInstance
 				}
 			}
 		}
-		catch (Throwable t)
+		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "deleteMe()", t);
+			_log.log(Level.SEVERE, "deleteMe()", e);
 		}
-
+		
 		// Remove from world regions zones
-        L2WorldRegion oldRegion = getWorldRegion();
+		L2WorldRegion oldRegion = getWorldRegion();
 		
 		// Remove the L2PcInstance from the world
 		if (isVisible())
-			try { decayMe(); } catch (Throwable t) {_log.log(Level.SEVERE, "deleteMe()", t); }
-
-	    if (oldRegion != null) oldRegion.removeFromZones(this);
-			
+			try
+			{
+				decayMe();
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "deleteMe()", e);
+			}
+		
+		if (oldRegion != null)
+			oldRegion.removeFromZones(this);
+		
 		// If a Party is in progress, leave it (and festival party)
-		if (isInParty()) try { leaveParty(); } catch (Throwable t) {_log.log(Level.SEVERE, "deleteMe()", t); }
-
+		if (isInParty())
+			try
+			{
+				leaveParty();
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "deleteMe()", e);
+			}
+		
 		if (getOlympiadGameId() != -1) // handle removal from olympiad game
-		    Olympiad.getInstance().removeDisconnectedCompetitor(this);
+			Olympiad.getInstance().removeDisconnectedCompetitor(this);
 		
 		// If the L2PcInstance has Pet, unsummon it
 		if (getPet() != null)
 		{
-			try { getPet().unSummon(this); } catch (Throwable t) {_log.log(Level.SEVERE, "deleteMe()", t); }// returns pet to control item
+			try
+			{
+				getPet().unSummon(this);
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "deleteMe()", e);
+			}// returns pet to control item
 		}
-
+		
 		if (getClanId() != 0 && getClan() != null)
 		{
 			// set the status for pledge member list to OFFLINE
 			try
 			{
 				L2ClanMember clanMember = getClan().getClanMember(getName());
-				if (clanMember != null) clanMember.setPlayerInstance(null);
-			} catch (Throwable t) {_log.log(Level.SEVERE, "deleteMe()", t); }
+				if (clanMember != null)
+					clanMember.setPlayerInstance(null);
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "deleteMe()", e);
+			}
 		}
-
+		
 		if (getActiveRequester() != null)
 		{
 			// deals with sudden exit in the middle of transaction
 			setActiveRequester(null);
 		}
-
+		
 		// If the L2PcInstance is a GM, remove it from the GM List
 		if (isGM())
 		{
-			try { GmListTable.getInstance().deleteGm(this); } catch (Throwable t) {_log.log(Level.SEVERE, "deleteMe()", t); }
+			try
+			{
+				GmListTable.getInstance().deleteGm(this);
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "deleteMe()", e);
+			}
 		}
-
+		
 		// Update database with items in its inventory and remove them from the world
-		try { getInventory().deleteMe(); } catch (Throwable t) {_log.log(Level.SEVERE, "deleteMe()", t); }
-
+		try
+		{
+			getInventory().deleteMe();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+		
 		// Update database with items in its warehouse and remove them from the world
-		try { clearWarehouse(); } catch (Throwable t) {_log.log(Level.SEVERE, "deleteMe()", t); }
-		if(Config.WAREHOUSE_CACHE)
+		try
+		{
+			clearWarehouse();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+		if (Config.WAREHOUSE_CACHE)
 			WarehouseCacheManager.getInstance().remCacheTask(this);
-
+		
 		// Update database with items in its freight and remove them from the world
-		try { getFreight().deleteMe(); } catch (Throwable t) {_log.log(Level.SEVERE, "deleteMe()", t); }
-
+		try
+		{
+			getFreight().deleteMe();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+		
 		// Remove all L2Object from _knownObjects and _knownPlayer of the L2Character then cancel Attak or Cast and notify AI
-		try { getKnownList().removeAllKnownObjects(); } catch (Throwable t) {_log.log(Level.SEVERE, "deleteMe()", t); }
-
+		try
+		{
+			getKnownList().removeAllKnownObjects();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+		
 		// Close the connection with the client
 		closeNetConnection();
-
+		
 		// remove from flood protector
 		FloodProtector.getInstance().removePlayer(getObjectId());
-
+		
 		if (getClanId() > 0)
 			getClan().broadcastToOtherOnlineMembers(new PledgeShowMemberListUpdate(this), this);
-			//ClanTable.getInstance().getClan(getClanId()).broadcastToOnlineMembers(new PledgeShowMemberListAdd(this));
-
-		for(L2PcInstance player : _snoopedPlayer)
+		//ClanTable.getInstance().getClan(getClanId()).broadcastToOnlineMembers(new PledgeShowMemberListAdd(this));
+		
+		for (L2PcInstance player : _snoopedPlayer)
 			player.removeSnooper(this);
-
-		for(L2PcInstance player : _snoopListener)
+		
+		for (L2PcInstance player : _snoopListener)
 			player.removeSnooped(this);
-
+		
 		if (_chanceSkills != null)
 		{
 			_chanceSkills.setOwner(null);
 			_chanceSkills = null;
 		}
-
+		
 		// Remove L2Object object from _allObjects of L2World
 		L2World.getInstance().removeObject(this);
 		L2World.getInstance().removeFromAllPlayers(this); // force remove in case of crash during teleport

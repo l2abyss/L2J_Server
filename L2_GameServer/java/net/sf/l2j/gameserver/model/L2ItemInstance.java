@@ -51,7 +51,7 @@ import net.sf.l2j.gameserver.templates.L2Weapon;
  */
 public final class L2ItemInstance extends L2Object
 {
-	private static final Logger _log = Logger.getLogger(L2ItemInstance.class.getName());
+	protected static final Logger _log = Logger.getLogger(L2ItemInstance.class.getName());
 	private static final Logger _logItems = Logger.getLogger("item");
 
 	/** Enumeration of locations for item */
@@ -941,21 +941,23 @@ public final class L2ItemInstance extends L2Object
 	public class ScheduleConsumeManaTask implements Runnable
 	{
 		private L2ItemInstance _shadowItem;
-
+		
 		public ScheduleConsumeManaTask(L2ItemInstance item)
 		{
 			_shadowItem = item;
 		}
-
+		
 		public void run()
 		{
 			try
 			{
 				// decrease mana
-				if (_shadowItem != null) _shadowItem.decreaseMana(true);
+				if (_shadowItem != null)
+					_shadowItem.decreaseMana(true);
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}

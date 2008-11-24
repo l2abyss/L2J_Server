@@ -206,8 +206,9 @@ public class Castle
 					else
 						removeFunction(getType());
 				}
-				catch (Throwable t)
+				catch (Exception e)
 				{
+					_log.log(Level.SEVERE, "", e);
 				}
 			}
 		}

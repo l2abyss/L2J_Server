@@ -121,8 +121,9 @@ public class Auction
 			{
 				endAuction();
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}

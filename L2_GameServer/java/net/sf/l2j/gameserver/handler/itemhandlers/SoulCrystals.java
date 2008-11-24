@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.handler.itemhandlers;
 
+import java.util.logging.Level;
+
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.handler.IItemHandler;
@@ -119,9 +121,9 @@ public class SoulCrystals implements IItemHandler
 				_target.addAbsorber(_activeChar, _crystalId);
 				_activeChar.setTarget(_target);
 			}
-			catch (Throwable e)
+			catch (Exception e)
 			{
-				e.printStackTrace();
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}

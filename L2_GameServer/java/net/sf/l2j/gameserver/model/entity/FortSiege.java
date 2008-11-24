@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -110,9 +111,9 @@ public class FortSiege
 					_fortInst.getSiege().endSiege();
 				}
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
-				
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}
@@ -168,9 +169,9 @@ public class FortSiege
 					_fortInst.getSiege().startSiege();
 				}
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
-				
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}
@@ -661,7 +662,7 @@ public class FortSiege
 	{
 		if (flag == null)
 			return;
-		for (L2SiegeClan clan: getAttackerClans())
+		for (L2SiegeClan clan : getAttackerClans())
 		{
 			if (clan.removeFlag(flag))
 				return;

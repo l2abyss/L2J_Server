@@ -110,7 +110,7 @@ public class AttackStanceTaskManager
 						}
 					}
 			}
-			catch (Throwable e)
+			catch (Exception e)
 			{
 				// TODO: Find out the reason for exception. Unless caught here,
 				// players remain in attack positions.

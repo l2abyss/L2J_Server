@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.handler;
 
+import java.util.logging.Logger;
+
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -23,6 +25,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
  */
 public interface IVoicedCommandHandler
 {
+	public static Logger _log = Logger.getLogger(IVoicedCommandHandler.class.getName());
 	/**
 	 * this is the worker method that is called when someone uses an admin command.
 	 * @param activeChar

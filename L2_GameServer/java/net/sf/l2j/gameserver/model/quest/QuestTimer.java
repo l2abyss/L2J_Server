@@ -15,6 +15,8 @@
 package net.sf.l2j.gameserver.model.quest;
 
 import java.util.concurrent.ScheduledFuture;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
@@ -22,6 +24,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
 public class QuestTimer
 {
+	protected static final Logger _log = Logger.getLogger(QuestTimer.class.getName());
 	// =========================================================
 	// Schedule Task
 	public class ScheduleTimerTask implements Runnable
@@ -37,8 +40,9 @@ public class QuestTimer
 					cancel();
 				getQuest().notifyEvent(getName(), getNpc(), getPlayer());
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}

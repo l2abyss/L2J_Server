@@ -74,7 +74,7 @@ public class L2TransformManagerInstance extends L2MerchantInstance
         	return;
 
         L2TransformSkillLearn[] skills = SkillTreeTable.getInstance().getAvailableTransformSkills(player);
-        AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.skillType.Usual);
+        AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.SkillType.Usual);
         int counts = 0;
 
         for (L2TransformSkillLearn s: skills)

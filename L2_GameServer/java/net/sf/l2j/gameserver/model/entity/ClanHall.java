@@ -182,8 +182,9 @@ public class ClanHall
 					else
 						removeFunction(getType());
 				}
-				catch (Throwable t)
+				catch (Exception e)
 				{
+					_log.log(Level.SEVERE, "", e);
 				}
 			}
 		}
@@ -326,7 +327,7 @@ public class ClanHall
 	{
 		if (doorId <= 0)
 			return null;
-		for (L2DoorInstance door: getDoors())
+		for (L2DoorInstance door : getDoors())
 		{
 			if (door.getDoorId() == doorId)
 				return door;
@@ -664,8 +665,9 @@ public class ClanHall
 					}
 				}
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}

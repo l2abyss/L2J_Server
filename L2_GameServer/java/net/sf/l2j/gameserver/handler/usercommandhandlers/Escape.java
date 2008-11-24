@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.handler.usercommandhandlers;
 
+import java.util.logging.Level;
+
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.ThreadPoolManager;
@@ -148,10 +150,9 @@ public class Escape implements IUserCommandHandler
 			{
 				_activeChar.teleToLocation(MapRegionTable.TeleportWhereType.Town);
 			}
-			catch (Throwable e)
+			catch (Exception e)
 			{
-				if (Config.DEBUG)
-					e.printStackTrace();
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}

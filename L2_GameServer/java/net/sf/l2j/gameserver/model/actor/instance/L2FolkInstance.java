@@ -107,7 +107,7 @@ public class L2FolkInstance extends L2NpcInstance
 		}
 
 		L2SkillLearn[] skills = SkillTreeTable.getInstance().getAvailableSkills(player, classId);
-		AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.skillType.Usual);
+		AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.SkillType.Usual);
 		int counts = 0;
 
 		for (L2SkillLearn s: skills)

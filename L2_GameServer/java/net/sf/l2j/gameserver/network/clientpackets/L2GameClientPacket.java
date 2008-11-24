@@ -41,10 +41,10 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 			readImpl();
 			return true;
 		}
-		catch (Throwable t)
+		catch (Exception e)
 		{
 			_log.severe("Client: "+getClient().toString()+" - Failed reading: "+getType()+" - L2J Server Version: "+Config.SERVER_VERSION+" - DP Revision: "+Config.DATAPACK_VERSION);
-			t.printStackTrace();
+			e.printStackTrace();
 		}
 		return false;
 	}

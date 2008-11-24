@@ -161,7 +161,7 @@ public class L2PetInstance extends L2Summon
 
 				broadcastStatusUpdate();
 			}
-            catch (Throwable e)
+            catch (Exception e)
             {
                 _logPet.log(Level.SEVERE, "Pet [ObjectId: "+getObjectId()+"] a feed task error has occurred", e);
             }

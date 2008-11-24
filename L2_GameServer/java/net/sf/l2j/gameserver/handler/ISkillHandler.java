@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.handler;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
@@ -29,6 +30,7 @@ import net.sf.l2j.gameserver.templates.L2SkillType;
 
 public interface ISkillHandler
 {
+	public static Logger _log = Logger.getLogger(ISkillHandler.class.getName());
 	/**
 	 * this is the worker method that is called when using an item.
 	 * @param activeChar

@@ -500,8 +500,6 @@ public class NpcTable
 	public void saveNpc(StatsSet npc)
 	{
 		java.sql.Connection con = null;
-		String query = "";
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -523,7 +521,7 @@ public class NpcTable
 				}
 			}
 			
-			query = "UPDATE npc SET " + values + " WHERE id = ?";
+			String query = "UPDATE npc SET " + values + " WHERE id = ?";
 			PreparedStatement statement = con.prepareStatement(query);
 			statement.setInt(1, npc.getInteger("npcId"));
 			statement.execute();

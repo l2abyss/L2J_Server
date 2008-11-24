@@ -135,7 +135,7 @@ import net.sf.l2j.util.Rnd;
  */
 public abstract class L2Character extends L2Object
 {
-	protected static final Logger _log = Logger.getLogger(L2Character.class.getName());
+	public static final Logger _log = Logger.getLogger(L2Character.class.getName());
 
 	// =========================================================
 	// Data Field
@@ -2273,7 +2273,7 @@ public abstract class L2Character extends L2Object
 			{
 				enableSkill(_skillId);
 			}
-            catch (Throwable e)
+            catch (Exception e)
             {
 				_log.log(Level.SEVERE, "Failed executing enableSkill().", e);
 			}
@@ -2315,7 +2315,7 @@ public abstract class L2Character extends L2Object
 			{
 				onHitTimer(_hitTarget, _damage, _crit, _miss, _soulshot, _shld);
 			}
-			catch (Throwable e)
+			catch (Exception e)
 			{
 				_log.log(Level.SEVERE, "Failed executing HitTask.", e);
 			}
@@ -2359,7 +2359,7 @@ public abstract class L2Character extends L2Object
 						break;
 				}
 			}
-			catch (Throwable e)
+			catch (Exception e)
 			{
 				_log.log(Level.SEVERE, "Failed executing MagicUseTask.", e);
 				if (_simultaneously) 
@@ -2392,7 +2392,7 @@ public abstract class L2Character extends L2Object
             {
                 _currPlayer.useMagic(_queuedSkill, _isCtrlPressed, _isShiftPressed);
             }
-            catch (Throwable e)
+            catch (Exception e)
             {
                 _log.log(Level.SEVERE, "Failed executing QueuedMagicUseTask.", e);
             }
@@ -2415,9 +2415,9 @@ public abstract class L2Character extends L2Object
 			{
 				getAI().notifyEvent(_evt, null);
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
-				_log.log(Level.WARNING, "", t);
+				_log.log(Level.WARNING, "", e);
 			}
 		}
 	}
@@ -2484,7 +2484,7 @@ public abstract class L2Character extends L2Object
 
 				broadcastPacket(new FlyToLocation(_actor,_target,_flyType));
 			}
-			catch (Throwable e)
+			catch (Exception e)
 			{
 				_log.log(Level.SEVERE, "Failed executing FlyToLocationTask.", e);
 			}
@@ -5999,13 +5999,16 @@ public abstract class L2Character extends L2Object
 				if (((L2NpcTemplate) getTemplate()).getEventQuests(Quest.QuestEventType.ON_SPELL_FINISHED) != null)
 				{
 					L2PcInstance player = target.getActingPlayer();
-					for (Quest quest: ((L2NpcTemplate) getTemplate()).getEventQuests(Quest.QuestEventType.ON_SPELL_FINISHED))
+					for (Quest quest : ((L2NpcTemplate) getTemplate()).getEventQuests(Quest.QuestEventType.ON_SPELL_FINISHED))
 					{
-						quest.notifySpellFinished(((L2NpcInstance)this), player, skill);
+						quest.notifySpellFinished(((L2NpcInstance) this), player, skill);
 					}
 				}
-			} 
-			catch (Throwable e) {}
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "", e);
+			}
 		}
 	}
 	
@@ -6708,9 +6711,9 @@ public abstract class L2Character extends L2Object
 			{
 				_activeChar.doSimultaneousCast(_skill);
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
-				_log.log(Level.WARNING, "", t);
+				_log.log(Level.WARNING, "", e);
 			}
 		}
 	}

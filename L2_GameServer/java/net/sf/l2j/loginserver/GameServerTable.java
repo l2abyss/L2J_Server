@@ -132,7 +132,13 @@ public class GameServerTable
 		}
 		finally
 		{
-			try { in.close(); } catch (Exception e) {}
+			try
+			{
+				in.close();
+			}
+			catch (Exception e)
+			{
+			}
 		}
 	}
 
@@ -226,12 +232,26 @@ public class GameServerTable
 		}
 		catch (SQLException e)
 		{
-			_log.warning("SQL error while saving gameserver: "+e);
+			_log.warning("SQL error while saving gameserver: " + e);
 		}
 		finally
 		{
-			try { statement.close();} catch (Exception e) {}
-			try { con.close();} catch (Exception e) {}
+			try
+			{
+				statement.close();
+			}
+			catch (Exception e)
+			{
+				
+			}
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+				
+			}
 		}
 	}
 

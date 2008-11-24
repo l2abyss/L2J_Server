@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.model.entity;
 
 import java.util.Calendar;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -203,8 +204,9 @@ public class Duel
 				else
 					ThreadPoolManager.getInstance().scheduleGeneral(this, 1000);
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}
@@ -242,8 +244,9 @@ public class Duel
 				else
 					_duel.startDuel();
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}
@@ -265,8 +268,9 @@ public class Duel
 			{
 				_duel.endDuel(_result);
 			}
-			catch (Throwable t)
+			catch (Exception e)
 			{
+				_log.log(Level.SEVERE, "", e);
 			}
 		}
 	}

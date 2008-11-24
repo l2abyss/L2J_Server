@@ -14,7 +14,8 @@
  */
 package net.sf.l2j.gameserver.handler.skillhandlers;
 
-import net.sf.l2j.Config;
+import java.util.logging.Level;
+
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
@@ -244,10 +245,9 @@ public class SummonFriend implements ISkillHandler
 				}
 			}
 		}
-		catch (Throwable e)
+		catch (Exception e)
 		{
-			if (Config.DEBUG)
-				e.printStackTrace();
+			_log.log(Level.SEVERE, "", e);
 		}
 	}
 	

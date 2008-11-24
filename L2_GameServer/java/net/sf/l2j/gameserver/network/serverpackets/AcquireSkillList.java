@@ -43,7 +43,7 @@ import javolution.util.FastList;
 public final class AcquireSkillList extends L2GameServerPacket
 {
 	//private static Logger _log = Logger.getLogger(AquireSkillList.class.getName());
-    public enum skillType
+    public enum SkillType
     {
     	Usual,
     	Fishing,
@@ -53,7 +53,7 @@ public final class AcquireSkillList extends L2GameServerPacket
 	private static final String _S__A3_AQUIRESKILLLIST = "[S] 90 AquireSkillList";
 
 	private List<Skill> _skills;
-	private skillType _fishingSkills;
+	private SkillType _fishingSkills;
 
 	private class Skill
 	{
@@ -73,7 +73,7 @@ public final class AcquireSkillList extends L2GameServerPacket
 		}
 	}
 
-	public AcquireSkillList(skillType type)
+	public AcquireSkillList(SkillType type)
 	{
 		_skills = new FastList<Skill>();
 		_fishingSkills = type;

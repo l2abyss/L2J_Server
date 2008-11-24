@@ -69,7 +69,7 @@ public final class SystemMessage extends L2GameServerPacket
 
 	public SystemMessage addString(String text)
 	{
-		_types.add(new Integer(TYPE_TEXT));
+		_types.add(Integer.valueOf(TYPE_TEXT));
 		_values.add(text);
 
 		return this;
@@ -77,8 +77,8 @@ public final class SystemMessage extends L2GameServerPacket
 
 	public SystemMessage addNumber(int number)
 	{
-		_types.add(new Integer(TYPE_NUMBER));
-		_values.add(new Integer(number));
+		_types.add(Integer.valueOf(TYPE_NUMBER));
+		_values.add(Integer.valueOf(number));
 		return this;
 	}
 
@@ -117,8 +117,8 @@ public final class SystemMessage extends L2GameServerPacket
 
 	public SystemMessage addNpcName(int id)
 	{
-		_types.add(new Integer(TYPE_NPC_NAME));
-		_values.add(new Integer(1000000 + id));
+		_types.add(Integer.valueOf(TYPE_NPC_NAME));
+		_values.add(Integer.valueOf(1000000 + id));
 
 		return this;
 	}
@@ -136,15 +136,15 @@ public final class SystemMessage extends L2GameServerPacket
 
 	public SystemMessage addItemName(int id)
 	{
-		_types.add(new Integer(TYPE_ITEM_NAME));
-		_values.add(new Integer(id));
+		_types.add(Integer.valueOf(TYPE_ITEM_NAME));
+		_values.add(Integer.valueOf(id));
 
 		return this;
 	}
 
 	public SystemMessage addZoneName(int x, int y, int z)
 	{
-		_types.add(new Integer(TYPE_ZONE_NAME));
+		_types.add(Integer.valueOf(TYPE_ZONE_NAME));
 		int[] coord = {x, y, z};
 		_values.add(coord);
 
@@ -170,8 +170,8 @@ public final class SystemMessage extends L2GameServerPacket
 
 	public SystemMessage addSkillName(int id, int lvl)
 	{
-		_types.add(new Integer(TYPE_SKILL_NAME));
-		_values.add(new Integer(id));
+		_types.add(Integer.valueOf(TYPE_SKILL_NAME));
+		_values.add(Integer.valueOf(id));
 		_skillLvL = lvl;
 
 		return this;
