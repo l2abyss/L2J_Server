@@ -1658,7 +1658,7 @@ public final class Formulas
 			if (wpn != null && wpn.getItemType() == L2WeaponType.BOW) init = 15;
 		}
 
-        if (init <= 0) return false; // No attack break
+		if (target.isRaid() || target.isInvul() || init <= 0) return false; // No attack break
 
         // Chance of break is higher with higher dmg
         init += Math.sqrt(13*dmg);  
