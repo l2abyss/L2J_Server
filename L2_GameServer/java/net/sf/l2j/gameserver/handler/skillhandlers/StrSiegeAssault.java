@@ -52,7 +52,7 @@ public class StrSiegeAssault implements ISkillHandler
 		
 		L2PcInstance player = (L2PcInstance) activeChar;
 		
-		if (!activeChar.isRidingStrider())
+		if (!player.isRidingStrider())
 			return;
 		if (!(player.getTarget() instanceof L2DoorInstance))
 			return;
@@ -170,7 +170,7 @@ public class StrSiegeAssault implements ISkillHandler
 			text = "You can only use strider siege assault during a siege.";
 		else if (!(player.getTarget() instanceof L2DoorInstance))
 			text = "You can only use strider siege assault on doors and walls.";
-		else if (!activeChar.isRidingStrider())
+		else if (!player.isRidingStrider())
 			text = "You can only use strider siege assault when on strider.";
 		else
 			return true;
@@ -201,7 +201,7 @@ public class StrSiegeAssault implements ISkillHandler
 			text = "You can only use strider siege assault during a siege.";
 		else if (!(player.getTarget() instanceof L2DoorInstance))
 			text = "You can only use strider siege assault on doors and walls.";
-		else if (!activeChar.isRidingStrider())
+		else if (!player.isRidingStrider())
 			text = "You can only use strider siege assault when on strider.";
 		else
 			return true;

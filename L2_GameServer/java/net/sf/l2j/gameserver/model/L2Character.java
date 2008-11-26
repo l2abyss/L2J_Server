@@ -147,7 +147,6 @@ public abstract class L2Character extends L2Object
 	private boolean _isAfraid                               = false; // Flee in a random direction
 	private boolean _isConfused                             = false; // Attack anyone randomly
 	private boolean _isFakeDeath                            = false; // Fake death
-	private boolean _isFlying                               = false; //Is flying Wyvern?
 	private boolean _isMuted                                = false; // Cannot use magic
 	private boolean _isPhysicalMuted                       	= false; // Cannot use physical skills
 	private boolean _isPhysicalAttackMuted                 	= false; // Cannot use attack
@@ -155,11 +154,7 @@ public abstract class L2Character extends L2Object
 	private boolean _isImmobilized                          = false;
 	private boolean _isOverloaded                           = false; // the char is carrying too much
 	private boolean _isParalyzed                            = false;
-    private boolean _isDisarmed                             = false;
-	private boolean _isRidingFenrirWolf						= false;
-	private boolean _isRidingWFenrirWolf					= false;
-	private boolean _isRidingGreatSnowWolf					= false;
-	private boolean _isRidingStrider						= false;
+    private boolean _isDisarmed                             = false;	
 	private boolean _isPendingRevive                        = false;
 	private boolean _isRooted                               = false; // Cannot move until root timed out
 	private boolean _isRunning                              = false;
@@ -2109,11 +2104,6 @@ public abstract class L2Character extends L2Object
 	public final boolean isFakeDeath() { return _isFakeDeath; }
 	public final void setIsFakeDeath(boolean value) { _isFakeDeath = value; }
 
-	/** Return True if the L2Character is flying. */
-	public final boolean isFlying() { return _isFlying; }
-	/** Set the L2Character flying mode to True. */
-	public final void setIsFlying(boolean mode) { _isFlying = mode; }
-
 	public boolean isImmobilized() { return _isImmobilized; }
 	public void setIsImmobilized(boolean value){ _isImmobilized = value; }
 
@@ -2157,29 +2147,6 @@ public abstract class L2Character extends L2Object
 	 */
 	public L2Summon getPet() { return null; }
 
-	/** Return True if the L2Character is riding. */
-	public final boolean isRidingFenrirWolf()
-	{ 
-		return _isRidingFenrirWolf;
-	}
-	public final boolean isRidingWFenrirWolf()
-	{ 
-		return _isRidingWFenrirWolf;
-	}
-	public final boolean isRidingGreatSnowWolf()
-	{ 
-		return _isRidingGreatSnowWolf;
-	}
-	public final boolean isRidingStrider()
-	{ 
-		return _isRidingStrider;
-	}
-	/** Set the L2Character riding mode to True. */
-	public final void setIsRidingFenrirWolf(boolean mode) { _isRidingFenrirWolf = mode; }
-	public final void setIsRidingWFenrirWolf(boolean mode) { _isRidingWFenrirWolf = mode; }
-	public final void setIsRidingGreatSnowWolf(boolean mode) { _isRidingGreatSnowWolf = mode; }
-	public final void setIsRidingStrider(boolean mode) { _isRidingStrider = mode; }
-
 	public final boolean isRooted() { return _isRooted; }
 	public final void setIsRooted(boolean value) { _isRooted = value; }
 
@@ -2210,6 +2177,8 @@ public abstract class L2Character extends L2Object
 	public void setIsInvul(boolean b){_isInvul = b;}
 	public boolean isInvul(){return _isInvul  || _isTeleporting;}
 	public boolean isUndead() { return _template.isUndead; }
+	
+	public boolean isFlying() { return false; }
 
 	@Override
 	public CharKnownList getKnownList()
@@ -3992,7 +3961,8 @@ public abstract class L2Character extends L2Object
 		}
 		// Z coordinate will follow geodata or client values
 		if (Config.GEODATA > 0 && Config.COORD_SYNCHRONIZE == 2 
-			&& !isFlying() && !isInsideZone(L2Character.ZONE_WATER)
+			&& !isFlying()
+			&& !isInsideZone(L2Character.ZONE_WATER)
 			&& !m.disregardingGeodata
 			&& GameTimeController.getGameTicks() % 10 == 0 // once a second to reduce possible cpu load
 			&& GeoData.getInstance().hasGeo(xPrev, yPrev)
@@ -6557,12 +6527,12 @@ public abstract class L2Character extends L2Object
 	public void setChampion(boolean champ)
 	{
 		_champion = champ;
-    	}
+    }
 
 	public boolean isChampion()
 	{
 		return _champion;
-    	}
+    }
 
 	public int getLastHealAmount()
 	{

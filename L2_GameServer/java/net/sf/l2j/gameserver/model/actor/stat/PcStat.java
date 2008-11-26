@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.actor.stat;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
@@ -301,4 +302,75 @@ public class PcStat extends PlayableStat
         else
             super.setSp(value);
     }
+    
+    @Override
+    public final int getRunSpeed()
+    {
+    	int val = super.getRunSpeed();
+    	
+    	if (getActiveChar().isFlying())
+		{
+			val += Config.WYVERN_SPEED;
+			return val;
+		}
+    	else if (getActiveChar().isRidingStrider())
+		{
+			val += Config.STRIDER_SPEED;
+			return val;
+		}
+    	else if (getActiveChar().isRidingFenrirWolf())
+		{
+			val += Config.FENRIR_SPEED;
+			return val;
+		}
+    	else if (getActiveChar().isRidingWFenrirWolf())
+		{
+			val += Config.SNOW_FENRIR_SPEED;
+			return val;
+		}
+    	else if (getActiveChar().isRidingGreatSnowWolf())
+		{
+			val += Config.GREAT_SNOW_WOLF_SPEED;
+			return val;
+		}
+    	
+    	// Apply max run speed cap.
+		if (val > Config.MAX_RUN_SPEED && !getActiveChar().isGM())
+			return Config.MAX_RUN_SPEED;
+    	
+    	return val;
+    }
+    
+    @Override
+    public int getPAtkSpd()
+    {
+    	int val = super.getPAtkSpd();
+    	
+    	if (val > Config.MAX_PATK_SPEED && !getActiveChar().isGM())
+			return Config.MAX_PATK_SPEED;
+    	
+    	return val;
+    }
+    
+    @Override
+    public int getEvasionRate(L2Character target)
+	{
+    	int val = super.getEvasionRate(target);
+		
+    	if (val > Config.MAX_EVASION && !getActiveChar().isGM())
+			return  Config.MAX_EVASION;
+		
+    	return val;
+	}
+    
+    @Override
+    public int getMAtkSpd()
+	{
+    	int val = super.getMAtkSpd();
+		
+    	if (val > Config.MAX_MATK_SPEED && !getActiveChar().isGM())
+			return Config.MAX_MATK_SPEED;
+		
+    	return val;
+	}
 }

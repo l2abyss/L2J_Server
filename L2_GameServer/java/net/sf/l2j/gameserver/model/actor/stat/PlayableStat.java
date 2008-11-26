@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.model.actor.stat;
 
 import java.util.logging.Logger;
 
+import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.base.Experience;
@@ -167,6 +168,21 @@ public class PlayableStat extends CharStat
     }
 
     public long getExpForLevel(int level) { return level; }
+    
+    @Override
+    public int getRunSpeed()
+    {
+    	int val = super.getRunSpeed();
+    	// TODO: base speed must be 80 (without buffs/passive skills) ;)
+		if (getActiveChar().isInsideZone(L2Character.ZONE_WATER))
+			val /= 2;
+
+		// TODO: get value from zone ;)
+		if (getActiveChar().isInsideZone(L2Character.ZONE_SWAMP))
+			val /= 2;
+		
+		return val;
+    }
 
     // =========================================================
     // Method - Private

@@ -18,7 +18,6 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.skills.Calculator;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.Stats;
@@ -101,25 +100,28 @@ public class CharStat
 		c.calc(env);
 		// avoid some troubles with negative stats (some stats should never be
 		// negative)
-		if (env.value <= 0
-		        && ((stat == Stats.MAX_HP)
-		        		|| (stat == Stats.MAX_MP)
-		                || (stat == Stats.MAX_CP)
-		                || (stat == Stats.MAGIC_DEFENCE)
-		                || (stat == Stats.POWER_DEFENCE)
-		                || (stat == Stats.POWER_ATTACK)
-		                || (stat == Stats.MAGIC_ATTACK)
-		                || (stat == Stats.POWER_ATTACK_SPEED)
-		                || (stat == Stats.MAGIC_ATTACK_SPEED)
-		                || (stat == Stats.SHIELD_DEFENCE)
-		                || (stat == Stats.STAT_CON)
-		                || (stat == Stats.STAT_DEX)
-		                || (stat == Stats.STAT_INT)
-		                || (stat == Stats.STAT_MEN)
-		                || (stat == Stats.STAT_STR)
-		                || (stat == Stats.STAT_WIT)))
+		if (env.value <= 0 && stat != null)
 		{
-			env.value = 1;
+			switch(stat)
+			{
+				case MAX_HP:
+				case MAX_MP:
+				case MAX_CP:
+				case MAGIC_DEFENCE:
+				case POWER_DEFENCE:
+				case POWER_ATTACK:
+				case MAGIC_ATTACK:
+				case POWER_ATTACK_SPEED:
+				case MAGIC_ATTACK_SPEED:
+				case SHIELD_DEFENCE:
+				case STAT_CON:
+				case STAT_DEX:
+				case STAT_INT:
+				case STAT_MEN:
+				case STAT_STR:
+				case STAT_WIT:
+					env.value = 1;
+			}			
 		}
 		
 		return env.value;
@@ -529,8 +531,7 @@ public class CharStat
         if  (Config.L2JMOD_CHAMPION_ENABLE && _activeChar.isChampion())
     		bonusAtk = Config.L2JMOD_CHAMPION_SPD_ATK;
 		int val = (int) (calcStat(Stats.POWER_ATTACK_SPEED, _activeChar.getTemplate().basePAtkSpd * bonusAtk, null, null) / _activeChar.getArmourExpertisePenalty());
-		if (val > Config.MAX_PATK_SPEED && !_activeChar.isGM())
-			val = Config.MAX_PATK_SPEED;
+		
 		return val;
 	}
 
@@ -625,45 +626,7 @@ public class CharStat
 		// not making it a constant
 		int val = (int) calcStat(Stats.RUN_SPEED, _activeChar.getTemplate().baseRunSpd, null, null) + Config.RUN_SPD_BOOST;
 		
-		if (_activeChar.isFlying())
-		{
-			val += Config.WYVERN_SPEED;
-			return val;
-		}
-		if (_activeChar.isRidingStrider())
-		{
-			val += Config.STRIDER_SPEED;
-			return val;
-		}
-		if (_activeChar.isRidingFenrirWolf())
-		{
-			val += Config.FENRIR_SPEED;
-			return val;
-		}
-		if (_activeChar.isRidingWFenrirWolf())
-		{
-			val += Config.SNOW_FENRIR_SPEED;
-			return val;
-		}
-		if (_activeChar.isRidingGreatSnowWolf())
-		{
-			val += Config.GREAT_SNOW_WOLF_SPEED;
-			return val;
-		}
-		
-		// TODO: base speed must be 80 (without buffs/passive skills) ;)
-		if (_activeChar instanceof L2PlayableInstance && _activeChar.isInsideZone(L2Character.ZONE_WATER))
-			val /= 2;
-
-		// TODO: get value from zone ;)
-		if (_activeChar instanceof L2PlayableInstance && _activeChar.isInsideZone(L2Character.ZONE_SWAMP))
-			val /= 2;
-		
 		val /= _activeChar.getArmourExpertisePenalty();
-		
-		// Apply max run speed cap.
-		if (val > Config.MAX_RUN_SPEED && _activeChar instanceof L2PcInstance && !_activeChar.isGM())
-			val = Config.MAX_RUN_SPEED;
 		
 		return val;
 	}

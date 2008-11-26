@@ -670,6 +670,12 @@ public final class L2PcInstance extends L2PlayableInstance
 	private double _mpUpdateIncCheck = .0;
 	private double _mpUpdateDecCheck = .0;
 	private double _mpUpdateInterval = .0;
+	
+	private boolean _isRidingFenrirWolf	= false;
+	private boolean _isRidingWFenrirWolf = false;
+	private boolean _isRidingGreatSnowWolf = false;
+	private boolean _isRidingStrider = false;
+	private boolean _isFlyingWyvern = false;
 
 	/** Herbs Task Time **/
 	private int _herbstask = 0;
@@ -11194,6 +11200,56 @@ public final class L2PcInstance extends L2PlayableInstance
 		_charmOfCourage = val;
 		sendPacket(new EtcStatusUpdate(this));
 	}
+	
+	public final void setIsRidingFenrirWolf(boolean mode)
+	{
+		_isRidingFenrirWolf = mode;
+	}
+	public final void setIsRidingWFenrirWolf(boolean mode)
+	{
+		_isRidingWFenrirWolf = mode;
+	}
+	public final void setIsRidingGreatSnowWolf(boolean mode)
+	{
+		_isRidingGreatSnowWolf = mode;
+	}
+	public final void setIsRidingStrider(boolean mode)
+	{
+		_isRidingStrider = mode;
+	}
+	public final void setIsFlying(boolean mode)
+	{ 
+		_isFlyingWyvern = mode;
+	}
+	
+	public final boolean isRidingFenrirWolf()
+	{ 
+		return _isRidingFenrirWolf;
+	}
+	public final boolean isRidingWFenrirWolf()
+	{ 
+		return _isRidingWFenrirWolf;
+	}
+	public final boolean isRidingGreatSnowWolf()
+	{ 
+		return _isRidingGreatSnowWolf;
+	}
+	public final boolean isRidingStrider()
+	{ 
+		return _isRidingStrider;
+	}
+	/**
+	 * PcInstance flying wyvern 
+	 * @return
+	 */
+	@Override
+	public final boolean isFlying()
+	{
+		return _isFlyingWyvern;
+	}
+	
+	
+
 
     /**
      * Returns the Number of Souls this L2PcInstance got.
