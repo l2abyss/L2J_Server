@@ -17,8 +17,8 @@ package net.sf.l2j.gameserver.skills.funcs;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.Stats;
-import net.sf.l2j.gameserver.templates.L2Item;
-import net.sf.l2j.gameserver.templates.L2WeaponType;
+import net.sf.l2j.gameserver.templates.item.L2Item;
+import net.sf.l2j.gameserver.templates.item.L2WeaponType;
 
 public class FuncEnchant extends Func
 {

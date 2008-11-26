@@ -35,7 +35,7 @@ import net.sf.l2j.gameserver.skills.effects.EffectTemplate;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.skills.funcs.FuncTemplate;
 import net.sf.l2j.gameserver.skills.funcs.Lambda;
-import net.sf.l2j.gameserver.templates.L2EffectType;
+import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
 /**
  * This class ...

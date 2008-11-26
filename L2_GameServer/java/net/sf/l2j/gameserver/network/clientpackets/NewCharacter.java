@@ -20,7 +20,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.CharTemplateTable;
 import net.sf.l2j.gameserver.model.base.ClassId;
 import net.sf.l2j.gameserver.network.serverpackets.NewCharacterSuccess;
-import net.sf.l2j.gameserver.templates.L2PcTemplate;
+import net.sf.l2j.gameserver.templates.chars.L2PcTemplate;
 
 /**
  * This class ...

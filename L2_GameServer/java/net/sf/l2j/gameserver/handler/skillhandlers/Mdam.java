@@ -32,7 +32,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2RaidBossInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Formulas;
-import net.sf.l2j.gameserver.templates.L2SkillType;
+import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
 /**
  * This class ...
@@ -101,7 +101,7 @@ public class Mdam implements ISkillHandler
 		
 		for (L2Character target: (L2Character[]) targets)
 		{
-			if (activeChar instanceof L2PcInstance && target instanceof L2PcInstance && target.isFakeDeath())
+			if (activeChar instanceof L2PcInstance && target instanceof L2PcInstance && ((L2PcInstance)target).isFakeDeath())
 			{
 				target.stopFakeDeath(null);
 			}
@@ -215,7 +215,7 @@ public class Mdam implements ISkillHandler
 	{
 		for (L2Character target: (L2Character[]) targets)
 		{
-			if (target instanceof L2PcInstance && target.isAlikeDead() && target.isFakeDeath())
+			if (target instanceof L2PcInstance && target.isAlikeDead())
 			{
 				target.stopFakeDeath(null);
 			}

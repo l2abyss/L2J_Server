@@ -14,7 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
-import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 // This class is here mostly for convinience and for avoidance of hardcoded IDs.
 // It refers to Beast (mobs) that can be attacked but can also be fed

@@ -51,8 +51,8 @@ import net.sf.l2j.gameserver.network.serverpackets.RelationChanged;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
-import net.sf.l2j.gameserver.templates.L2NpcTemplate;
-import net.sf.l2j.gameserver.templates.L2Weapon;
+import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
+import net.sf.l2j.gameserver.templates.item.L2Weapon;
 
 public abstract class L2Summon extends L2PlayableInstance
 {
@@ -344,7 +344,7 @@ public abstract class L2Summon extends L2PlayableInstance
 
 	@Override
 	public boolean doDie(L2Character killer)
-    {
+	{
 		if (!super.doDie(killer))
 			return false;
 		
@@ -367,6 +367,9 @@ public abstract class L2Summon extends L2PlayableInstance
 				}
 			}
 		}
+		
+		if (isPhoenixBlessed() && (getOwner() != null))
+			getOwner().reviveRequest(getOwner(), null, true);
 		
 		DecayTaskManager.getInstance().addDecayTask(this);
 		return true;

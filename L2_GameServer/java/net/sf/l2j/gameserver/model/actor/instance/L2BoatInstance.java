@@ -39,8 +39,8 @@ import net.sf.l2j.gameserver.network.serverpackets.VehicleCheckLocation;
 import net.sf.l2j.gameserver.network.serverpackets.VehicleDeparture;
 import net.sf.l2j.gameserver.network.serverpackets.VehicleInfo;
 import net.sf.l2j.gameserver.network.serverpackets.VehicleStarted;
-import net.sf.l2j.gameserver.templates.L2CharTemplate;
-import net.sf.l2j.gameserver.templates.L2Weapon;
+import net.sf.l2j.gameserver.templates.chars.L2CharTemplate;
+import net.sf.l2j.gameserver.templates.item.L2Weapon;
 import net.sf.l2j.gameserver.util.Util;
 
 /**

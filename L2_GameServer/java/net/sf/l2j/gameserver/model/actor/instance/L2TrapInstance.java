@@ -29,7 +29,7 @@ import net.sf.l2j.gameserver.model.L2Trap;
 import net.sf.l2j.gameserver.model.actor.knownlist.TrapKnownList;
 import net.sf.l2j.gameserver.network.serverpackets.SocialAction;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
-import net.sf.l2j.gameserver.templates.L2CharTemplate;
+import net.sf.l2j.gameserver.templates.chars.L2CharTemplate;
 
 public class L2TrapInstance extends L2Trap
 {

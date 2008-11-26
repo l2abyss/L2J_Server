@@ -38,10 +38,10 @@ import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.funcs.Func;
-import net.sf.l2j.gameserver.templates.L2Armor;
-import net.sf.l2j.gameserver.templates.L2EtcItem;
-import net.sf.l2j.gameserver.templates.L2Item;
-import net.sf.l2j.gameserver.templates.L2Weapon;
+import net.sf.l2j.gameserver.templates.item.L2Armor;
+import net.sf.l2j.gameserver.templates.item.L2EtcItem;
+import net.sf.l2j.gameserver.templates.item.L2Item;
+import net.sf.l2j.gameserver.templates.item.L2Weapon;
 
 
 /**

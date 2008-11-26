@@ -69,11 +69,11 @@ import net.sf.l2j.gameserver.skills.funcs.Lambda;
 import net.sf.l2j.gameserver.skills.funcs.LambdaCalc;
 import net.sf.l2j.gameserver.skills.funcs.LambdaConst;
 import net.sf.l2j.gameserver.skills.funcs.LambdaStats;
-import net.sf.l2j.gameserver.templates.L2ArmorType;
-import net.sf.l2j.gameserver.templates.L2Item;
-import net.sf.l2j.gameserver.templates.L2Weapon;
-import net.sf.l2j.gameserver.templates.L2WeaponType;
 import net.sf.l2j.gameserver.templates.StatsSet;
+import net.sf.l2j.gameserver.templates.item.L2ArmorType;
+import net.sf.l2j.gameserver.templates.item.L2Item;
+import net.sf.l2j.gameserver.templates.item.L2Weapon;
+import net.sf.l2j.gameserver.templates.item.L2WeaponType;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;

@@ -14,7 +14,7 @@
  */
 package net.sf.l2j.gameserver.model;
 
-import net.sf.l2j.gameserver.templates.L2Henna;
+import net.sf.l2j.gameserver.templates.item.L2Henna;
 
 /**
  * This class represents a Non-Player-Character in the world. it can be

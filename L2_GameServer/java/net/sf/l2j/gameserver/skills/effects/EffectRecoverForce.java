@@ -23,7 +23,7 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.EtcStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
-import net.sf.l2j.gameserver.templates.L2EffectType;
+import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
 /**
  * @author Forsaiken

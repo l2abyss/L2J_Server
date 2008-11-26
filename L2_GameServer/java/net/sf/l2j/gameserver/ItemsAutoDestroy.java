@@ -22,7 +22,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.instancemanager.ItemsOnGroundManager;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2World;
-import net.sf.l2j.gameserver.templates.L2EtcItemType;
+import net.sf.l2j.gameserver.templates.item.L2EtcItemType;
 
 public class ItemsAutoDestroy
 {

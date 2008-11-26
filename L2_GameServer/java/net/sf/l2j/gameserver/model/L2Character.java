@@ -104,12 +104,12 @@ import net.sf.l2j.gameserver.skills.Stats;
 import net.sf.l2j.gameserver.skills.effects.EffectCharge;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillAgathion;
-import net.sf.l2j.gameserver.templates.L2CharTemplate;
-import net.sf.l2j.gameserver.templates.L2EffectType;
-import net.sf.l2j.gameserver.templates.L2NpcTemplate;
-import net.sf.l2j.gameserver.templates.L2SkillType;
-import net.sf.l2j.gameserver.templates.L2Weapon;
-import net.sf.l2j.gameserver.templates.L2WeaponType;
+import net.sf.l2j.gameserver.templates.chars.L2CharTemplate;
+import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
+import net.sf.l2j.gameserver.templates.item.L2Weapon;
+import net.sf.l2j.gameserver.templates.item.L2WeaponType;
+import net.sf.l2j.gameserver.templates.skills.L2EffectType;
+import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 import net.sf.l2j.gameserver.util.Util;
 import net.sf.l2j.util.Point3D;
 import net.sf.l2j.util.Rnd;
@@ -146,7 +146,6 @@ public abstract class L2Character extends L2Object
 	private L2Skill _lastSimultaneousSkillCast;
 	private boolean _isAfraid                               = false; // Flee in a random direction
 	private boolean _isConfused                             = false; // Attack anyone randomly
-	private boolean _isFakeDeath                            = false; // Fake death
 	private boolean _isMuted                                = false; // Cannot use magic
 	private boolean _isPhysicalMuted                       	= false; // Cannot use physical skills
 	private boolean _isPhysicalAttackMuted                 	= false; // Cannot use attack
@@ -639,19 +638,26 @@ public abstract class L2Character extends L2Object
 		if (Config.DEBUG)
             _log.fine(getName()+" doAttack: target="+target);
 
-		if (isAlikeDead() || target == null || (this instanceof L2NpcInstance && target.isAlikeDead())
-                || (this instanceof L2PcInstance && target.isDead() && !target.isFakeDeath())
-                || !getKnownList().knowsObject(target)
-                || (this instanceof L2PcInstance && isDead())
-                || (target instanceof L2PcInstance && ((L2PcInstance)target).getDuelState() == Duel.DUELSTATE_DEAD))
+		if (!isAlikeDead() && target != null)
 		{
-			// If L2PcInstance is dead or the target is dead, the action is stoped
-			getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-
-			sendPacket(ActionFailed.STATIC_PACKET);
-			return;
+			if (this instanceof L2NpcInstance && target.isAlikeDead()
+					|| !getKnownList().knowsObject(target))
+			{
+				getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
+			else if (this instanceof L2PcInstance)
+			{
+				if (target.isDead() && !(target instanceof L2PcInstance && (((L2PcInstance) target).isFakeDeath()) || ((L2PcInstance)target).getDuelState() == Duel.DUELSTATE_DEAD))
+				{
+					getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+					sendPacket(ActionFailed.STATIC_PACKET);
+					return;
+				}
+			}
 		}
-
+		
 		if (isAttackingDisabled())
             return;
 
@@ -1909,9 +1915,9 @@ public abstract class L2Character extends L2Object
             if (isDead()) return false;
             // now reset currentHp to zero
             setCurrentHp(0);
-            if (isFakeDeath()) stopFakeDeath(null);
             setIsDead(true);
         }
+        
 		// Set target to null and cancel Attack or Cast
 		setTarget(null);
 
@@ -1943,6 +1949,7 @@ public abstract class L2Character extends L2Object
 		} 
 		else
 			stopAllEffectsExceptThoseThatLastThroughDeath();
+        
         if (this instanceof L2PcInstance && ((L2PcInstance)this).getAgathionId() != 0)
         	((L2PcInstance)this).setAgathionId(0);
 		calculateRewards(killer);
@@ -2086,8 +2093,7 @@ public abstract class L2Character extends L2Object
 	public final boolean isAllSkillsDisabled() { return _allSkillsDisabled || isImmobileUntilAttacked() || isStunned() || isSleeping() || isParalyzed(); }
 
 	/** Return True if the L2Character can't attack (stun, sleep, attackEndTime, fakeDeath, paralyse, attackMute). */
-	public boolean isAttackingDisabled() { return isStunned() || isImmobileUntilAttacked() || isSleeping() || _attackEndTime > GameTimeController.getGameTicks() || isFakeDeath() || isParalyzed() || isPhysicalAttackMuted(); }
-
+	public boolean isAttackingDisabled() { return isStunned() || isImmobileUntilAttacked() || isSleeping() || _attackEndTime > GameTimeController.getGameTicks() || isAlikeDead() || isParalyzed() || isPhysicalAttackMuted(); }
 
 	public final Calculator[] getCalculators() { return _calculators; }
 
@@ -2095,14 +2101,11 @@ public abstract class L2Character extends L2Object
 	public final void setIsConfused(boolean value) { _isConfused = value; }
 
 	/** Return True if the L2Character is dead or use fake death.  */
-	public final boolean isAlikeDead() { return isFakeDeath() || _isDead; }
+	public boolean isAlikeDead() { return _isDead; }
 
 	/** Return True if the L2Character is dead. */
 	public final boolean isDead() { return _isDead; }
 	public final void setIsDead(boolean value) { _isDead = value; }
-	
-	public final boolean isFakeDeath() { return _isFakeDeath; }
-	public final void setIsFakeDeath(boolean value) { _isFakeDeath = value; }
 
 	public boolean isImmobilized() { return _isImmobilized; }
 	public void setIsImmobilized(boolean value){ _isImmobilized = value; }
@@ -2117,11 +2120,11 @@ public abstract class L2Character extends L2Object
     public final void setIsPhysicalAttackMuted(boolean value) { _isPhysicalAttackMuted = value; } 
 
 	/** Return True if the L2Character can't move (stun, root, sleep, overload, paralyzed). */
-	public boolean isMovementDisabled() 
+	public boolean isMovementDisabled()
 	{ 
 		// check for isTeleporting to prevent teleport cheating (if appear packet not received)
 		return isStunned() || isRooted() || isSleeping() || isOverloaded() || isParalyzed() 
-			|| isImmobilized() || isFakeDeath() || isTeleporting(); 
+			|| isImmobilized() || isAlikeDead() || isTeleporting(); 
 	}
 
 	/** Return True if the L2Character can not be controlled by the player (confused, afraid). */
@@ -2581,7 +2584,10 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void startFakeDeath()
 	{
-		setIsFakeDeath(true);
+		if (!(this instanceof L2PcInstance))
+			return;
+
+		((L2PcInstance)this).setIsFakeDeath(true);
         /* Aborts any attacks/casts if fake dead */
 		abortAttack();
         abortCast();
@@ -2795,10 +2801,10 @@ public abstract class L2Character extends L2Object
 		else
 			removeEffect(effect);
 
-		setIsFakeDeath(false);
 		// if this is a player instance, start the grace period for this character (grace from mobs only)!
 		if (this instanceof L2PcInstance)
 		{
+			((L2PcInstance) this).setIsFakeDeath(false);
 			((L2PcInstance) this).setRecentFakeDeath(true);
 		}
 

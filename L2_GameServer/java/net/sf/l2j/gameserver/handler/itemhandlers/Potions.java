@@ -29,7 +29,7 @@ import net.sf.l2j.gameserver.model.entity.TvTEvent;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.templates.L2EffectType;
+import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
 /**
  * This class ...

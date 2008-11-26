@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.templates;
+package net.sf.l2j.gameserver.templates.skills;
 
 import java.lang.reflect.Constructor;
 
@@ -30,6 +30,7 @@ import net.sf.l2j.gameserver.skills.l2skills.L2SkillSignet;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSignetCasttime;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSummon;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillTrap;
+import net.sf.l2j.gameserver.templates.StatsSet;
 
 /**
  *

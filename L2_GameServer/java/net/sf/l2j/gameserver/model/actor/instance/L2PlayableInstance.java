@@ -14,14 +14,16 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
+import net.sf.l2j.gameserver.ai.CtrlEvent;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.actor.knownlist.PlayableKnownList;
 import net.sf.l2j.gameserver.model.actor.stat.PlayableStat;
 import net.sf.l2j.gameserver.model.actor.status.PlayableStatus;
-import net.sf.l2j.gameserver.templates.L2CharTemplate;
-import net.sf.l2j.gameserver.templates.L2EffectType;
+import net.sf.l2j.gameserver.model.quest.QuestState;
+import net.sf.l2j.gameserver.templates.chars.L2CharTemplate;
+import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
 /**
  * This class represents all Playable characters in the world.<BR><BR>
@@ -86,14 +88,69 @@ public abstract class L2PlayableInstance extends L2Character
 	@Override
 	public boolean doDie(L2Character killer)
 	{
-		if (!super.doDie(killer))
-			return false;
+		// killing is only possible one time
+		synchronized (this)
+		{
+			if (isDead())
+				return false;
+			// now reset currentHp to zero
+			setCurrentHp(0);
+			setIsDead(true);
+		}
+		
+		// Set target to null and cancel Attack or Cast
+		setTarget(null);
+		
+		// Stop movement
+		stopMove(null);
+		
+		// Stop HP/MP/CP Regeneration task
+		getStatus().stopHpMpRegeneration();
+		
+		// Stop all active skills effects in progress on the L2Character,
+		// if the Character isn't affected by Soul of The Phoenix or Salvation
+		if (isPhoenixBlessed())
+		{
+			if (getCharmOfLuck()) //remove Lucky Charm if player has SoulOfThePhoenix/Salvation buff
+				stopCharmOfLuck(null);
+			if (isNoblesseBlessed())
+				stopNoblesseBlessing(null);
+		}
+		// Same thing if the Character isn't a Noblesse Blessed L2PlayableInstance
+		else if (isNoblesseBlessed())
+		{
+			stopNoblesseBlessing(null);
+			
+			untransform(); // Untransforms character if transformed.
+			stopTransformation(null);
+			
+			if (getCharmOfLuck()) //remove Lucky Charm if player have Nobless blessing buff 
+				stopCharmOfLuck(null);
+		}
+		else
+			stopAllEffectsExceptThoseThatLastThroughDeath();
 
+		// Send the Server->Client packet StatusUpdate with current HP and MP to all other L2PcInstance to inform
+		broadcastStatusUpdate();
+		
+		// Notify L2Character AI
+		getAI().notifyEvent(CtrlEvent.EVT_DEAD);
+		
+		if (getWorldRegion() != null)
+			getWorldRegion().onDeath(this);
+		
+		// Notify Quest of character's death
+		for (QuestState qs : getNotifyQuestOfDeath())
+		{
+			qs.getQuest().notifyDeath((killer == null ? this : killer), this, qs);
+		}
+		getNotifyQuestOfDeath().clear();
+		
 		L2PcInstance player = killer.getActingPlayer();
-
+		
 		if (player != null)
 			player.onKillUpdatePvPKarma(this);
-
+		
 		return true;
 	}
 

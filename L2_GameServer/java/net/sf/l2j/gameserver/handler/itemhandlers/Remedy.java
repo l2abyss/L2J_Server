@@ -23,8 +23,8 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.templates.L2EffectType;
-import net.sf.l2j.gameserver.templates.L2SkillType;
+import net.sf.l2j.gameserver.templates.skills.L2EffectType;
+import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
 /**
  * This class ...

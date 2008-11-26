@@ -24,11 +24,11 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.Item;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.templates.L2Armor;
-import net.sf.l2j.gameserver.templates.L2EtcItem;
-import net.sf.l2j.gameserver.templates.L2EtcItemType;
-import net.sf.l2j.gameserver.templates.L2Item;
-import net.sf.l2j.gameserver.templates.L2Weapon;
+import net.sf.l2j.gameserver.templates.item.L2Armor;
+import net.sf.l2j.gameserver.templates.item.L2EtcItem;
+import net.sf.l2j.gameserver.templates.item.L2EtcItemType;
+import net.sf.l2j.gameserver.templates.item.L2Item;
+import net.sf.l2j.gameserver.templates.item.L2Weapon;
 
 /**
  * @author mkizub

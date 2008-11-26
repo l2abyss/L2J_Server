@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
-import net.sf.l2j.gameserver.templates.L2Item;
+import net.sf.l2j.gameserver.templates.item.L2Item;
 
 /**
  * 5e

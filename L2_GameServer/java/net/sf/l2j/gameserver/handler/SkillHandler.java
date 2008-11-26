@@ -19,7 +19,7 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import net.sf.l2j.gameserver.handler.skillhandlers.*;
-import net.sf.l2j.gameserver.templates.L2SkillType;
+import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
 /**
  * This class ...

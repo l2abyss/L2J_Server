@@ -18,8 +18,8 @@ import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 import net.sf.l2j.gameserver.skills.Env;
-import net.sf.l2j.gameserver.templates.L2ArmorType;
-import net.sf.l2j.gameserver.templates.L2Item;
+import net.sf.l2j.gameserver.templates.item.L2ArmorType;
+import net.sf.l2j.gameserver.templates.item.L2Item;
 
 /**
  * @author mkizub

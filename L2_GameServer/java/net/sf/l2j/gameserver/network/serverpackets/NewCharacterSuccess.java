@@ -17,7 +17,7 @@ package net.sf.l2j.gameserver.network.serverpackets;
 import java.util.List;
 
 import javolution.util.FastList;
-import net.sf.l2j.gameserver.templates.L2PcTemplate;
+import net.sf.l2j.gameserver.templates.chars.L2PcTemplate;
 
 /**
  * This class ...

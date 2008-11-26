@@ -26,7 +26,7 @@ import javolution.util.FastMap;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.L2HennaInstance;
 import net.sf.l2j.gameserver.model.base.ClassId;
-import net.sf.l2j.gameserver.templates.L2Henna;
+import net.sf.l2j.gameserver.templates.item.L2Henna;
 
 /**
  * This class ...

@@ -23,7 +23,7 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Stats;
-import net.sf.l2j.gameserver.templates.L2SkillType;
+import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
 /**
  * This class ...

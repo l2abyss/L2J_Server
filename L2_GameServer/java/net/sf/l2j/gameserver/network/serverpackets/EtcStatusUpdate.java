@@ -16,7 +16,7 @@ package net.sf.l2j.gameserver.network.serverpackets;
 
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.skills.effects.EffectCharge;
-import net.sf.l2j.gameserver.templates.L2EffectType;
+import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
 /* Packet format: F3 XX000000 YY000000 ZZ000000 */
 

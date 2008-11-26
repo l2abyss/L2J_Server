@@ -40,9 +40,9 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.AutoAttackStop;
 import net.sf.l2j.gameserver.taskmanager.AttackStanceTaskManager;
-import net.sf.l2j.gameserver.templates.L2NpcTemplate;
-import net.sf.l2j.gameserver.templates.L2Weapon;
-import net.sf.l2j.gameserver.templates.L2WeaponType;
+import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
+import net.sf.l2j.gameserver.templates.item.L2Weapon;
+import net.sf.l2j.gameserver.templates.item.L2WeaponType;
 import net.sf.l2j.util.Point3D;
 import net.sf.l2j.util.Rnd;
 
@@ -1064,7 +1064,7 @@ public class L2CharacterAI extends AbstractAI
 		if (target == null || target.isAlikeDead())
 		{
 			//check if player is fakedeath
-			if (target != null && target.isFakeDeath())
+			if (target instanceof L2PcInstance && ((L2PcInstance)target).isFakeDeath())
 			{
 				target.stopFakeDeath(null);
 				return false;

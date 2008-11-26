@@ -38,9 +38,9 @@ import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.network.serverpackets.CharCreateFail;
 import net.sf.l2j.gameserver.network.serverpackets.CharCreateOk;
 import net.sf.l2j.gameserver.network.serverpackets.CharSelectionInfo;
-import net.sf.l2j.gameserver.templates.L2Item;
-import net.sf.l2j.gameserver.templates.L2PcTemplate;
-import net.sf.l2j.gameserver.templates.L2PcTemplate.PcTemplateItem;
+import net.sf.l2j.gameserver.templates.chars.L2PcTemplate;
+import net.sf.l2j.gameserver.templates.chars.L2PcTemplate.PcTemplateItem;
+import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.util.Util;
 
 /**

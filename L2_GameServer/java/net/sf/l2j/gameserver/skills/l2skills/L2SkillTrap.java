@@ -25,8 +25,8 @@ import net.sf.l2j.gameserver.model.L2Trap;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2TrapInstance;
-import net.sf.l2j.gameserver.templates.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.StatsSet;
+import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 public class L2SkillTrap extends L2Skill
 {

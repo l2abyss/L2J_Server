@@ -26,8 +26,8 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.skills.Formulas;
-import net.sf.l2j.gameserver.templates.L2SkillType;
-import net.sf.l2j.gameserver.templates.L2WeaponType;
+import net.sf.l2j.gameserver.templates.item.L2WeaponType;
+import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
 /**
  * @author _tomciaaa_
@@ -82,7 +82,7 @@ public class StrSiegeAssault implements ISkillHandler
 			for (L2Character target: (L2Character[]) targets)
 			{
 				L2ItemInstance weapon = activeChar.getActiveWeaponInstance();
-				if (activeChar instanceof L2PcInstance && target instanceof L2PcInstance && target.isFakeDeath())
+				if (activeChar instanceof L2PcInstance && target instanceof L2PcInstance && ((L2PcInstance)target).isFakeDeath())
 				{
 					target.stopFakeDeath(null);
 				}

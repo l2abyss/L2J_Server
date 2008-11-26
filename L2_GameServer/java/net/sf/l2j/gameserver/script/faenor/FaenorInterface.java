@@ -31,7 +31,7 @@ import net.sf.l2j.gameserver.model.L2PetData;
 import net.sf.l2j.gameserver.script.DateRange;
 import net.sf.l2j.gameserver.script.EngineInterface;
 import net.sf.l2j.gameserver.script.Expression;
-import net.sf.l2j.gameserver.templates.L2NpcTemplate;
+import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  * @author Luis Arias

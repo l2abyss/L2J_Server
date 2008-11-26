@@ -19,7 +19,7 @@ import net.sf.l2j.gameserver.datatables.HennaTable;
 import net.sf.l2j.gameserver.model.L2HennaInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.HennaItemInfo;
-import net.sf.l2j.gameserver.templates.L2Henna;
+import net.sf.l2j.gameserver.templates.item.L2Henna;
 
 /**
  * This class ...

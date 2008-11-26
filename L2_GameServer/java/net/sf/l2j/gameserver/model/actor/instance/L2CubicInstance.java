@@ -41,7 +41,7 @@ import net.sf.l2j.gameserver.model.entity.TvTEventTeam;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillDrain;
 import net.sf.l2j.gameserver.taskmanager.AttackStanceTaskManager;
-import net.sf.l2j.gameserver.templates.L2SkillType;
+import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 import net.sf.l2j.util.Rnd;
 
 public class L2CubicInstance

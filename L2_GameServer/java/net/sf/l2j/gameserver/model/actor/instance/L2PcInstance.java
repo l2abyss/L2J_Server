@@ -200,16 +200,16 @@ import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.skills.Stats;
-import net.sf.l2j.gameserver.templates.L2Armor;
-import net.sf.l2j.gameserver.templates.L2ArmorType;
-import net.sf.l2j.gameserver.templates.L2EffectType;
-import net.sf.l2j.gameserver.templates.L2EtcItemType;
-import net.sf.l2j.gameserver.templates.L2Henna;
-import net.sf.l2j.gameserver.templates.L2Item;
-import net.sf.l2j.gameserver.templates.L2PcTemplate;
-import net.sf.l2j.gameserver.templates.L2SkillType;
-import net.sf.l2j.gameserver.templates.L2Weapon;
-import net.sf.l2j.gameserver.templates.L2WeaponType;
+import net.sf.l2j.gameserver.templates.chars.L2PcTemplate;
+import net.sf.l2j.gameserver.templates.item.L2Armor;
+import net.sf.l2j.gameserver.templates.item.L2ArmorType;
+import net.sf.l2j.gameserver.templates.item.L2EtcItemType;
+import net.sf.l2j.gameserver.templates.item.L2Henna;
+import net.sf.l2j.gameserver.templates.item.L2Item;
+import net.sf.l2j.gameserver.templates.item.L2Weapon;
+import net.sf.l2j.gameserver.templates.item.L2WeaponType;
+import net.sf.l2j.gameserver.templates.skills.L2EffectType;
+import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 import net.sf.l2j.gameserver.util.Broadcast;
 import net.sf.l2j.gameserver.util.FloodProtector;
 import net.sf.l2j.util.Point3D;
@@ -580,6 +580,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
 	// protects a char from agro mobs when getting up from fake death
 	private long _recentFakeDeathEndTime = 0;
+	private boolean _isFakeDeath;
 
 	/** The fists L2Weapon of the L2PcInstance (used when no weapon is equiped) */
 	private L2Weapon _fistsWeaponItem;
@@ -3570,6 +3571,25 @@ public final class L2PcInstance extends L2PlayableInstance
 	{
 		return _recentFakeDeathEndTime > GameTimeController.getGameTicks();
 	}
+	
+	public final boolean isFakeDeath()
+	{
+		return _isFakeDeath;
+	}
+	
+	public final void setIsFakeDeath(boolean value)
+	{
+		_isFakeDeath = value;
+	}
+	
+	@Override
+	public final boolean isAlikeDead()
+	{
+		if (super.isAlikeDead())
+			return true;
+		
+		return isFakeDeath();
+	}
 
 	/**
 	 * Get the client owner of this char.<BR><BR>
@@ -4861,18 +4881,24 @@ public final class L2PcInstance extends L2PlayableInstance
 		// Kill the L2PcInstance
 		if (!super.doDie(killer))
 			return false;
-
+		
+		synchronized (this)
+		{
+			if (isFakeDeath())
+				stopFakeDeath(null);
+		}
+		
 		if (killer != null)
 		{
 			L2PcInstance pk = killer.getActingPlayer();
-
+			
 			TvTEvent.onKill(killer, this);
-
+			
 			if (atEvent && pk != null)
 			{
 				pk.kills.add(getName());
 			}
-
+			
 			// Clear resurrect xp calculation
 			setExpBeforeDeath(0);
 			
@@ -4882,39 +4908,36 @@ public final class L2PcInstance extends L2PlayableInstance
 				CursedWeaponsManager.getInstance().drop(_cursedWeaponEquippedId, killer);
 			}
 			else if (isCombatFlagEquipped())
-            {
-                FortSiegeManager.getInstance().dropCombatFlag(this);
-                System.out.println("Player with combat flag die");
-            }
+			{
+				FortSiegeManager.getInstance().dropCombatFlag(this);
+				System.out.println("Player with combat flag die");
+			}
 			else
 			{
 				if (pk == null || !pk.isCursedWeaponEquipped())
 				{
-					onDieDropItem(killer);  // Check if any item should be dropped
-
+					onDieDropItem(killer); // Check if any item should be dropped
+					
 					if (!(isInsideZone(ZONE_PVP) && !isInsideZone(ZONE_SIEGE)))
 					{
-		                if (pk != null && pk.getClan() != null 
-		                		&& getClan() != null
-		                		&& !isAcademyMember()
-		                		&& !(pk.isAcademyMember())
-		                		&& _clan.isAtWarWith(pk.getClanId())
-		                		&& pk.getClan().isAtWarWith(_clan.getClanId()))
-		                {	
-		                	
-		                	// when your reputation score is 0 or below, the other clan cannot acquire any reputation points
-		                    if (getClan().getReputationScore() > 0) {
-		                    	pk.getClan().setReputationScore(pk.getClan().getReputationScore()+Config.ALT_REPUTATION_SCORE_PER_KILL, true);
-		                		getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
-		                		pk.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(pk.getClan()));
-		                    }
-		                 // when the opposing sides reputation score is 0 or below, your clans reputation score does not decrease
-		                    if (pk.getClan().getReputationScore() > 0) {
-		                    	_clan.setReputationScore(_clan.getReputationScore()-Config.ALT_REPUTATION_SCORE_PER_KILL, true);
-		                    	getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
-		                    	pk.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(pk.getClan()));
-		                    }
-		                }
+						if (pk != null && pk.getClan() != null && getClan() != null && !isAcademyMember() && !(pk.isAcademyMember()) && _clan.isAtWarWith(pk.getClanId()) && pk.getClan().isAtWarWith(_clan.getClanId()))
+						{
+							
+							// when your reputation score is 0 or below, the other clan cannot acquire any reputation points
+							if (getClan().getReputationScore() > 0)
+							{
+								pk.getClan().setReputationScore(pk.getClan().getReputationScore() + Config.ALT_REPUTATION_SCORE_PER_KILL, true);
+								getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
+								pk.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(pk.getClan()));
+							}
+							// when the opposing sides reputation score is 0 or below, your clans reputation score does not decrease
+							if (pk.getClan().getReputationScore() > 0)
+							{
+								_clan.setReputationScore(_clan.getReputationScore() - Config.ALT_REPUTATION_SCORE_PER_KILL, true);
+								getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
+								pk.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(pk.getClan()));
+							}
+						}
 					}
 					if (Config.ALT_GAME_DELEVEL)
 					{
@@ -4922,9 +4945,10 @@ public final class L2PcInstance extends L2PlayableInstance
 						// NOTE: deathPenalty +- Exp will update karma
 						// Penalty is lower if the player is at war with the pk (war has to be declared)
 						if (getSkillLevel(L2Skill.SKILL_LUCKY) < 0 || getStat().getLevel() > 9)
-							deathPenalty(pk != null && getClan() != null && getClan().isAtWarWith(pk.getClanId()), pk != null);										
-
-					} else
+							deathPenalty(pk != null && getClan() != null && getClan().isAtWarWith(pk.getClanId()), pk != null);
+						
+					}
+					else
 					{
 						if (!(isInsideZone(ZONE_PVP) && !isInsideZone(ZONE_SIEGE)) || pk == null)
 							onDieUpdateKarma(); // Update karma if delevel is not allowed
@@ -4934,40 +4958,48 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 		
 		// Untransforms character.
-	    if (isTransformed())
-	        untransform();
-
-
-		setPvpFlag(0);              // Clear the pvp flag
-
-
+		if (isTransformed())
+			untransform();
+		
+		setPvpFlag(0); // Clear the pvp flag
+		
 		// Unsummon Cubics
 		if (_cubics.size() > 0)
-        {
+		{
 			for (L2CubicInstance cubic : _cubics.values())
 			{
 				cubic.stopAction();
 				cubic.cancelDisappear();
 			}
-
+			
 			_cubics.clear();
 		}
-
+		
 		if (_forceBuff != null)
 			abortCast();
-
+		
 		for (L2Character character : getKnownList().getKnownCharacters())
 			if (character.getForceBuff() != null && character.getForceBuff().getTarget() == this)
 				character.abortCast();
-
+		
 		if (isInParty() && getParty().isInDimensionalRift())
 			getParty().getDimensionalRift().getDeadMemberList().add(this);
-
+		
+		if (getAgathionId() != 0)
+			setAgathionId(0);
+		
 		// calculate death penalty buff
 		calculateDeathPenaltyBuffLevel(killer);
-
+		
 		stopRentPet();
 		stopWaterTask();
+		
+		if (isPhoenixBlessed())
+			reviveRequest(this, null, false);
+		else if (getCharmOfCourage() && this.isInsideZone(ZONE_SIEGE) && getSiegeState() != 0) // could check it more accurately too
+		{
+			reviveRequest(this, null, false);
+		}
 		return true;
 	}
 

@@ -12,7 +12,9 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.templates;
+package net.sf.l2j.gameserver.templates.item;
+
+import net.sf.l2j.gameserver.templates.StatsSet;
 
 /**
  * This class ...
@@ -21,7 +23,6 @@ package net.sf.l2j.gameserver.templates;
  */
 public class L2Henna
 {
-
 	public final int symbolId;
 	public final String symbolName;
 	public final int dye;
@@ -33,28 +34,29 @@ public class L2Henna
 	public final int statMEM;
 	public final int statDEX;
 	public final int statWIT;
-
+	
 	public L2Henna(StatsSet set)
 	{
-
-		symbolId          = set.getInteger("symbol_id");
-		symbolName		   = ""; //set.getString("symbol_name");
-		dye                = set.getInteger("dye");
-		price              = set.getInteger("price");
-		amount			   = set.getInteger("amount");
-		statINT           = set.getInteger("stat_INT");
-		statSTR           = set.getInteger("stat_STR");
-		statCON           = set.getInteger("stat_CON");
-		statMEM           = set.getInteger("stat_MEM");
-		statDEX	       = set.getInteger("stat_DEX");
-		statWIT           = set.getInteger("stat_WIT");
-
+		
+		symbolId = set.getInteger("symbol_id");
+		symbolName = ""; //set.getString("symbol_name");
+		dye = set.getInteger("dye");
+		price = set.getInteger("price");
+		amount = set.getInteger("amount");
+		statINT = set.getInteger("stat_INT");
+		statSTR = set.getInteger("stat_STR");
+		statCON = set.getInteger("stat_CON");
+		statMEM = set.getInteger("stat_MEM");
+		statDEX = set.getInteger("stat_DEX");
+		statWIT = set.getInteger("stat_WIT");
+		
 	}
-
+	
 	public int getSymbolId()
 	{
 		return symbolId;
 	}
+	
 	/**
 	 * @return
 	 */
@@ -62,6 +64,7 @@ public class L2Henna
 	{
 		return dye;
 	}
+	
 	/**
 	 * @return
 	 */
@@ -69,6 +72,7 @@ public class L2Henna
 	{
 		return price;
 	}
+	
 	/**
 	 * @return
 	 */
@@ -76,6 +80,7 @@ public class L2Henna
 	{
 		return amount;
 	}
+	
 	/**
 	 * @return
 	 */
@@ -83,6 +88,7 @@ public class L2Henna
 	{
 		return statINT;
 	}
+	
 	/**
 	 * @return
 	 */
@@ -90,6 +96,7 @@ public class L2Henna
 	{
 		return statSTR;
 	}
+	
 	/**
 	 * @return
 	 */
@@ -97,6 +104,7 @@ public class L2Henna
 	{
 		return statCON;
 	}
+	
 	/**
 	 * @return
 	 */
@@ -104,6 +112,7 @@ public class L2Henna
 	{
 		return statMEM;
 	}
+	
 	/**
 	 * @return
 	 */
@@ -111,6 +120,7 @@ public class L2Henna
 	{
 		return statDEX;
 	}
+	
 	/**
 	 * @return
 	 */

@@ -12,7 +12,9 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.templates;
+package net.sf.l2j.gameserver.templates.item;
+
+import net.sf.l2j.gameserver.templates.StatsSet;
 
 /**
  * This class is dedicated to the management of EtcItem.

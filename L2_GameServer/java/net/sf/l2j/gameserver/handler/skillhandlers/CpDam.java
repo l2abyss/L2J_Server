@@ -23,7 +23,7 @@ import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.skills.Formulas;
-import net.sf.l2j.gameserver.templates.L2SkillType;
+import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
 /*
  * Just a quick draft to support Wrath skill. Missing angle based calculation etc.
@@ -93,7 +93,7 @@ public class CpDam implements ISkillHandler
 		
 		for (L2Character target: (L2Character[]) targets)
 		{
-			if (activeChar instanceof L2PcInstance && target instanceof L2PcInstance && target.isFakeDeath())
+			if (activeChar instanceof L2PcInstance && target instanceof L2PcInstance && ((L2PcInstance)target).isFakeDeath())
 			{
 				target.stopFakeDeath(null);
 			}

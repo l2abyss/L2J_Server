@@ -28,7 +28,7 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
-import net.sf.l2j.gameserver.templates.L2EtcItemType;
+import net.sf.l2j.gameserver.templates.item.L2EtcItemType;
 
 /**
  * This class manage all items on ground
