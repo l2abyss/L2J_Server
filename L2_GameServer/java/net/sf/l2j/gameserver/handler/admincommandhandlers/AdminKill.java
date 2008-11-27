@@ -132,7 +132,10 @@ public class AdminKill implements IAdminCommandHandler
 		else if (Config.L2JMOD_CHAMPION_ENABLE && target.isChampion())
 			target.reduceCurrentHp(target.getMaxHp() * Config.L2JMOD_CHAMPION_HP + 1, activeChar);
 		else
+		{
+			if(target.isInvul()) target.setIsInvul(false);
 			target.reduceCurrentHp(target.getMaxHp() + 1, activeChar);
+		}
 		if (Config.DEBUG)
 			_log.fine("GM: " + activeChar.getName() + "(" + activeChar.getObjectId() + ")" + " killed character " + target.getObjectId());
 	}
