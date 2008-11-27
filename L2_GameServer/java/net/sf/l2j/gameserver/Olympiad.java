@@ -52,6 +52,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.entity.Hero;
+import net.sf.l2j.gameserver.model.entity.TvTEvent;
 import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExAutoSoulShot;
@@ -1162,31 +1163,17 @@ public class Olympiad
 
     public void addSpectator(int id, L2PcInstance spectator)
     {
-    	for(L2PcInstance player : _nonClassBasedRegisters)
-    	{
-    		if(spectator.getObjectId() == player.getObjectId())
-    		{
-    			spectator.sendMessage("You are already registered for a competition");
-        		return;
-    		}	
-    	}
-    	for(L2FastList<L2PcInstance> list : _classBasedRegisters.values())
-    	{
-    		for(L2PcInstance player : list)
-    		{
-    			if(spectator.getObjectId() == player.getObjectId())
-        		{
-        			spectator.sendMessage("You are already registered for a competition");
-            		return;
-        		}	
-    		}
-    	}
-    	if(spectator.getOlympiadGameId() != -1)
+    	if (isRegistered(spectator) || spectator.getOlympiadGameId() != -1)
     	{
     		spectator.sendMessage("You are already registered for a competition");
-    		return;
+        	return;
+    	}	
+    	if (!TvTEvent.isInactive() && TvTEvent.isPlayerParticipant(spectator.getObjectId()))
+    	{
+    		spectator.sendMessage("You can not observe games while registered for TvT");
+        	return;
     	}
-        if (_manager == null || (_manager.getOlympiadInstance(id) == null))
+    	if (_manager == null || (_manager.getOlympiadInstance(id) == null))
         {
             spectator.sendPacket(new SystemMessage(SystemMessageId.THE_OLYMPIAD_GAME_IS_NOT_CURRENTLY_IN_PROGRESS));
             return;

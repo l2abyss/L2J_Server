@@ -11091,6 +11091,11 @@ public final class L2PcInstance extends L2PlayableInstance
                 _jailTask = ThreadPoolManager.getInstance().scheduleGeneral(new JailTask(this), _jailTimer);
                 sendMessage("You are in jail for "+delayInMinutes+" minutes.");
             }
+            
+            if (!TvTEvent.isInactive() && TvTEvent.isPlayerParticipant(getObjectId()))
+                TvTEvent.removeParticipant(getObjectId());
+            if (Olympiad.getInstance().isRegisteredInComp(this))
+                Olympiad.getInstance().removeDisconnectedCompetitor(this);
 
             // Open a Html message to inform the player
             NpcHtmlMessage htmlMsg = new NpcHtmlMessage(0);

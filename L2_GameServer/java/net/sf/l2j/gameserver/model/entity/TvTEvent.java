@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import javolution.util.FastMap;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.Olympiad;
 import net.sf.l2j.gameserver.datatables.DoorTable;
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
@@ -622,6 +623,10 @@ public class TvTEvent
 			if (playerInstance.isCursedWeaponEquipped())
 			{
 				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>Cursed weapon owners are not allowed to participate.</body></html>");
+			}
+			else if (Olympiad.getInstance().isRegistered(playerInstance))
+			{
+				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>You can not participate when registered for Olympiad.</body></html>");
 			}
 			else if (playerInstance.getKarma() > 0)
 			{
