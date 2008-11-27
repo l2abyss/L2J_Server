@@ -467,10 +467,10 @@ public class CharEffectList
 		}
 
 		FastList<L2Effect> effectList = newEffect.getSkill().isDebuff() ? _debuffs : _buffs;
+		L2Effect tempEffect, tempEffect2;
+
 		synchronized(effectList)
 		{
-			L2Effect tempEffect, tempEffect2;
-
 			// Check for same effects
 			for (L2Effect e : effectList)
 			{
@@ -489,111 +489,114 @@ public class CharEffectList
 					}
 				}
 			}
+		}
 
-			// if max buffs, no herb effects are used, even if they would replace one old
-			if (getBuffCount() >= _owner.getMaxBuffCount() && newEffect.isHerbEffect())
-			{ 
-				newEffect.stopEffectTask(); 
-				return; 
-			}
+		// if max buffs, no herb effects are used, even if they would replace one old
+		if (getBuffCount() >= _owner.getMaxBuffCount() && newEffect.isHerbEffect())
+		{ 
+			newEffect.stopEffectTask(); 
+			return; 
+		}
 			
-			// Remove first buff when buff list is full
-			L2Skill tempSkill = newEffect.getSkill();
-			if (!doesStack(tempSkill) && !tempSkill.isDebuff() &&
-					!(tempSkill.getId() > 4360 && tempSkill.getId() < 4367))
-			{
-				removeFirstBuff(tempSkill);
-			}
+		// Remove first buff when buff list is full
+		L2Skill tempSkill = newEffect.getSkill();
+		if (!doesStack(tempSkill) && !tempSkill.isDebuff() &&
+				!(tempSkill.getId() > 4360 && tempSkill.getId() < 4367))
+		{
+			removeFirstBuff(tempSkill);
+		}
 			
+		synchronized(effectList)
+		{
 			// Add the L2Effect to all effect in progress on the L2Character
 			if (!newEffect.getSkill().isToggle() && !newEffect.getSkill().isDebuff())
 			{
 				int pos=0;
 				for (L2Effect e : effectList)
-            	{
-            		if (e != null)
-            		{
-            			int skillid = e.getSkill().getId();
-            			if (!e.getSkill().isToggle() && (!(skillid > 4360  && skillid < 4367))) pos++;
-            		}
-            		else break;
-            	}
+				{
+					if (e != null)
+					{
+						int skillid = e.getSkill().getId();
+						if (!e.getSkill().isToggle() && (!(skillid > 4360  && skillid < 4367))) pos++;
+					}
+					else break;
+				}
 				effectList.add(pos, newEffect);
 			}
 			else effectList.addLast(newEffect);
+		}
 
-			// Check if a stack group is defined for this effect
-			if (newEffect.getStackType().equals("none"))
-			{
-				// Set this L2Effect to In Use
-				newEffect.setInUse(true);
+		// Check if a stack group is defined for this effect
+		if (newEffect.getStackType().equals("none"))
+		{
+			// Set this L2Effect to In Use
+			newEffect.setInUse(true);
 
-				// Add Funcs of this effect to the Calculator set of the L2Character
-				_owner.addStatFuncs(newEffect.getStatFuncs());
+			// Add Funcs of this effect to the Calculator set of the L2Character
+			_owner.addStatFuncs(newEffect.getStatFuncs());
+			
+			// Update active skills in progress icons on player client
+			_owner.updateEffectIcons();
+			return;
+		}
 
-				// Update active skills in progress icons on player client
-				_owner.updateEffectIcons();
-				return;
-			}
+		// Get the list of all stacked effects corresponding to the stack type of the L2Effect to add
+		List<L2Effect> stackQueue = _stackedEffects.get(newEffect.getStackType());
+		L2Effect[] allEffects = getAllEffects();
 
-			// Get the list of all stacked effects corresponding to the stack type of the L2Effect to add
-			List<L2Effect> stackQueue = _stackedEffects.get(newEffect.getStackType());
-			L2Effect[] allEffects = getAllEffects();
+		if (stackQueue == null)
+			stackQueue = new FastList<L2Effect>();
 
-			if (stackQueue == null)
-				stackQueue = new FastList<L2Effect>();
-
-			tempEffect = null;
-			if (stackQueue.size() > 0)
-			{
-				// Get the first stacked effect of the Stack group selected
-				for (L2Effect e : allEffects)
-				{
-					if (e == stackQueue.get(0))
-					{
-						tempEffect = e;
-						break;
-					}
-				}
-			}
-
-			// Add the new effect to the stack group selected at its position
-			stackQueue = effectQueueInsert(newEffect, stackQueue);
-
-			if (stackQueue == null) return;
-
-			// Update the Stack Group table _stackedEffects of the L2Character
-			_stackedEffects.put(newEffect.getStackType(), stackQueue);
-
+		tempEffect = null;
+		if (stackQueue.size() > 0)
+		{
 			// Get the first stacked effect of the Stack group selected
-			tempEffect2 = null;
 			for (L2Effect e : allEffects)
 			{
 				if (e == stackQueue.get(0))
 				{
-					tempEffect2 = e;
+					tempEffect = e;
 					break;
 				}
 			}
+		}
+		
+		// Add the new effect to the stack group selected at its position
+		stackQueue = effectQueueInsert(newEffect, stackQueue);
 
-			if (tempEffect != tempEffect2)
+		if (stackQueue == null) return;
+
+		// Update the Stack Group table _stackedEffects of the L2Character
+		_stackedEffects.put(newEffect.getStackType(), stackQueue);
+
+		// Get the first stacked effect of the Stack group selected
+		tempEffect2 = null;
+		for (L2Effect e : allEffects)
+		{
+			if (e == stackQueue.get(0))
 			{
-				if (tempEffect != null)
-				{
-					// Remove all Func objects corresponding to this stacked effect from the Calculator set of the L2Character
-					_owner.removeStatsOwner(tempEffect);
+				tempEffect2 = e;
+				break;
+			}
+		}
 
-					// Set the L2Effect to Not In Use
-					tempEffect.setInUse(false);
-				}
-				if (tempEffect2 != null)
-				{
-					// Set this L2Effect to In Use
-					tempEffect2.setInUse(true);
+		if (tempEffect != tempEffect2)
+		{
+			if (tempEffect != null)
+			{
+				// Remove all Func objects corresponding to this stacked effect from the Calculator set of the L2Character
+				_owner.removeStatsOwner(tempEffect);
 
-					// Add all Func objects corresponding to this stacked effect to the Calculator set of the L2Character
-					_owner.addStatFuncs(tempEffect2.getStatFuncs());
-				}
+				// Set the L2Effect to Not In Use
+				tempEffect.setInUse(false);
+			}
+			if (tempEffect2 != null)
+			{
+				// Set this L2Effect to In Use
+				tempEffect2.setInUse(true);
+
+				// Add all Func objects corresponding to this stacked effect to the Calculator set of the L2Character
+				_owner.addStatFuncs(tempEffect2.getStatFuncs());
 			}
 		}
 	}
