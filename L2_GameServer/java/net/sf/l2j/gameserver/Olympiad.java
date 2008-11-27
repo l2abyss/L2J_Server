@@ -1499,7 +1499,7 @@ public class Olympiad
         saveNobleData();
 
         Properties OlympiadProperties = new Properties();
-        FileOutputStream fos = new FileOutputStream(new File(Config.DATAPACK_ROOT, OLYMPIAD_DATA_FILE));
+        FileOutputStream fos = new FileOutputStream(new File("./" + OLYMPIAD_DATA_FILE));
 
         OlympiadProperties.setProperty("CurrentCycle", String.valueOf(_currentCycle));
         OlympiadProperties.setProperty("Period", String.valueOf(_period));

@@ -351,6 +351,12 @@ public class MapRegionTable
 			case 19:
 				nearestTown = "Kamael Village";
 				break;
+			case 20:
+				nearestTown = "South of Wastelands Camp";
+				break;
+			case 21:
+				nearestTown = "Fantasy Island";
+				break;
 			default:
 				nearestTown = "Town of Aden";
 				break;
