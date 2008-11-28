@@ -27,7 +27,6 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2RaidBossInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.EtcStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
@@ -161,7 +160,7 @@ public class Pdam implements ISkillHandler
 						if (Config.LOG_GAME_DAMAGE && damage > 5000 && activeChar instanceof L2PcInstance)
 						{
 							String name = "";
-							if (target instanceof L2RaidBossInstance)
+							if (target.isRaid())
 								name = "RaidBoss ";
 							if (target instanceof L2NpcInstance)
 								name += target.getName() + "(" + ((L2NpcInstance) target).getTemplate().npcId + ")";

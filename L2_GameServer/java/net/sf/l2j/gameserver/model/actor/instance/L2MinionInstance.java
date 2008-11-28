@@ -53,7 +53,7 @@ public final class L2MinionInstance extends L2MonsterInstance
 	@Override
 	public boolean isRaid()
 	{
-		return (getLeader() instanceof L2RaidBossInstance);
+		return (getLeader().isRaid());
 	}
 
 	/**

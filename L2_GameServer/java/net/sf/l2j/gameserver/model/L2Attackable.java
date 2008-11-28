@@ -41,7 +41,6 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2RaidBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.actor.knownlist.AttackableKnownList;
@@ -807,7 +806,7 @@ public class L2Attackable extends L2NpcInstance
     public void addDamage(L2Character attacker, int damage)
     {
         // Notify the L2Attackable AI with EVT_ATTACKED
-        if (damage > 0)
+        if (damage > 0 && !this.isDead())
         {
             try {
                 if (attacker instanceof L2PcInstance || attacker instanceof L2Summon)
@@ -1361,7 +1360,7 @@ public class L2Attackable extends L2NpcInstance
 					 else dropItem(player, item); // drop the item on the ground
 
 					 // Broadcast message if RaidBoss was defeated
-		             if(this instanceof L2RaidBossInstance)
+		             if(isRaid() && !(this instanceof L2MinionInstance))
 		             {
 		                 SystemMessage sm;
 		                 sm = new SystemMessage(SystemMessageId.S1_DIED_DROPPED_S3_S2);

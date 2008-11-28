@@ -47,7 +47,6 @@ import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2RaidBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RiftInvaderInstance;
 import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
@@ -168,7 +167,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		if (target instanceof L2PlayableInstance)
 		{
 			// Check if the AI isn't a Raid Boss and the target isn't in silent move mode
-			if (!(me instanceof L2RaidBossInstance) && ((L2PlayableInstance) target).isSilentMoving())
+			if (!(me.isRaid()) && ((L2PlayableInstance) target).isSilentMoving())
 				return false;
 		}
 		
@@ -566,7 +565,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			}
 		}
 		// Order to the L2MonsterInstance to random walk (1/100)
-		else if (npc.getSpawn() != null && Rnd.nextInt(RANDOM_WALK_RATE) == 0 && !(_actor instanceof L2RaidBossInstance || _actor instanceof L2MinionInstance || _actor instanceof L2GrandBossInstance))
+		else if (npc.getSpawn() != null && Rnd.nextInt(RANDOM_WALK_RATE) == 0 && !(_actor.isRaid() || _actor instanceof L2MinionInstance))
 		{
 			int x1, y1, z1;
 			int range = Config.MAX_DRIFT_RANGE;

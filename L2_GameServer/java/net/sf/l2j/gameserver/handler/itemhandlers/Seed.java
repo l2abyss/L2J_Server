@@ -18,17 +18,16 @@ import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.instancemanager.CastleManorManager;
+import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Manor;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2ChestInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2RaidBossInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
@@ -89,16 +88,16 @@ public class Seed implements IItemHandler
 			return;
 		
 		_activeChar = (L2PcInstance) playable;
-		L2Object target = _activeChar.getTarget();
+		L2Object target_ = _activeChar.getTarget();
 		
-		if (!(target instanceof L2NpcInstance))
+		if (!(target_ instanceof L2NpcInstance))
 		{
 			_activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
 			_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-		
-		if (!(target instanceof L2MonsterInstance) || (target instanceof L2ChestInstance) || (target instanceof L2GrandBossInstance) || (target instanceof L2RaidBossInstance))
+		L2Character target = ((L2Character)target_);
+		if (!(target instanceof L2MonsterInstance) || target instanceof L2ChestInstance || target.isRaid())
 		{
 			_activeChar.sendPacket(new SystemMessage(SystemMessageId.THE_TARGET_IS_UNAVAILABLE_FOR_SEEDING));
 			_activeChar.sendPacket(ActionFailed.STATIC_PACKET);

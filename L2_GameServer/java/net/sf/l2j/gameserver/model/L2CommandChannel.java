@@ -17,9 +17,7 @@ package net.sf.l2j.gameserver.model;
 import java.util.List;
 
 import javolution.util.FastList;
-import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2RaidBossInstance;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.network.serverpackets.ExCloseMPCC;
 import net.sf.l2j.gameserver.network.serverpackets.ExMPCCPartyInfoUpdate;
@@ -205,7 +203,7 @@ public class L2CommandChannel
 	 */
 	public boolean meetRaidWarCondition(L2Object obj)
 	{
-		if (!(obj instanceof L2RaidBossInstance) || !(obj instanceof L2GrandBossInstance))
+		if (!(obj instanceof L2Character && ((L2Character)obj).isRaid()))
 			return false;
 		int npcId = ((L2Attackable)obj).getNpcId();
 		switch(npcId)

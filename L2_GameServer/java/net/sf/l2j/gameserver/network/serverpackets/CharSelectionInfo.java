@@ -184,8 +184,7 @@ public class CharSelectionInfo extends L2GameServerPacket
             
             writeC(charInfoPackage.getEnchantEffect() > 127 ? 127 : charInfoPackage.getEnchantEffect());
             
-            writeH(charInfoPackage.getAugmentationId());
-            writeH(0x00); // this is for augmentation too
+            writeD(charInfoPackage.getAugmentationId());
             
             //writeD(charInfoPackage.getTransformId()); // Used to display Transformations
             writeD(0x00); // Currently on retail when you are on character select you don't see your transformation.
