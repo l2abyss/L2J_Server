@@ -1559,7 +1559,7 @@ public final class Formulas
 			}
 			else if (delta < 0 && delta >= -9)
 			{
-				chance = (-1) * (baseLethal / (delta * 1.5));
+				chance = (-1) * (baseLethal / (delta / 3));
 			}
 			else
 			{
