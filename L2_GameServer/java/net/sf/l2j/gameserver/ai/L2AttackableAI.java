@@ -520,7 +520,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		{
 			int offset;
 			
-			if (_actor.isRaid())
+			if (_actor.isRaidMinion())
 				offset = 500; // for Raids - need correction
 			else
 				offset = 200; // for normal minions - need correction :)

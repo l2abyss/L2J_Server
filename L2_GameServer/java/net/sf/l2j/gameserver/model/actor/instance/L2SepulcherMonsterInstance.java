@@ -104,6 +104,12 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 				break;
 			case 18256:
 				break;
+			case 25339:
+			case 25342:
+			case 25346:
+			case 25349:
+				setIsRaid(true);
+				break;
 		}
 	}
 	
@@ -247,21 +253,6 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 		}
 		
 		super.deleteMe();
-	}
-	
-	@Override
-	public boolean isRaid()
-	{
-		switch (getNpcId())
-		{
-			case 25339:
-			case 25342:
-			case 25346:
-			case 25349:
-				return true;
-			default:
-				return false;
-		}
 	}
 	
 	private void giveCup(L2PcInstance player)

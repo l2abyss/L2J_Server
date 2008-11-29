@@ -48,6 +48,7 @@ public final class L2GrandBossInstance extends L2MonsterInstance
     @Override
 	public void onSpawn()
     {
+    	setIsRaid(true);
     	if (getNpcId() == 29020 || getNpcId() == 29028) // baium and valakas are all the time in passive mode, theirs attack AI handled in AI scripts
     		super.disableCoreAI(true);
     	super.onSpawn();
@@ -61,12 +62,6 @@ public final class L2GrandBossInstance extends L2MonsterInstance
 	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT)
     {
         super.reduceCurrentHp(damage, attacker, awake, isDOT);
-    }
-
-    @Override
-	public boolean isRaid()
-    {
-        return true;
     }
 
     /**

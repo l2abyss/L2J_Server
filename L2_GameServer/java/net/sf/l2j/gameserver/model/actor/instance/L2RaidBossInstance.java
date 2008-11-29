@@ -54,11 +54,11 @@ public final class L2RaidBossInstance extends L2MonsterInstance
 	}
 
     @Override
-    public boolean isRaid()
+	public void onSpawn()
     {
-        return true;
+    	setIsRaid(true);
+    	super.onSpawn();
     }
-
     @Override
     protected int getMaintenanceInterval() { return RAIDBOSS_MAINTENANCE_INTERVAL; }
 

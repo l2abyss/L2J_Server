@@ -17,8 +17,10 @@ package net.sf.l2j.gameserver.model.zone.type;
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.GameServer;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
+import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.util.L2FastList;
 
@@ -45,6 +47,7 @@ public class L2BossZone extends L2ZoneType
 	{
 		0, 0, 0
 	};
+	protected L2FastList<L2Character> _raidList= new L2FastList<L2Character>();
 	
 	public L2BossZone(int id)
 	{
@@ -176,6 +179,39 @@ public class L2BossZone extends L2ZoneType
 					// mark the time that the player left the zone
 					_playerAllowedReEntryTimes.put(character.getObjectId(), System.currentTimeMillis() + _timeInvade);
 				}
+			}
+			if (character instanceof L2PlayableInstance)
+			{
+				if (getCharactersInside() != null && getCharactersInside().size() > 0)
+				{
+					_raidList.clear();
+					int count = 0;
+					for (L2Character obj : getCharactersInside().values())
+					{
+						if (obj == null)
+							continue;
+						if (obj instanceof L2PlayableInstance)
+							count++;
+						else if (obj instanceof L2Attackable && obj.isRaid())
+						{
+							_raidList.add(obj);
+						}
+					}
+					// if inside zone isnt any player, force all boss instance return to its spawn points
+					if (count == 0 && !_raidList.isEmpty())
+					{
+						for (int i = 0; i < _raidList.size(); i++)
+						{
+							L2Attackable raid = (L2Attackable) _raidList.get(i);
+							if (!raid.isInsideRadius(raid.getSpawn().getLocx(), raid.getSpawn().getLocy(), 150, false))
+								raid.returnHome();
+						}
+					}
+				}
+			}
+			if (character instanceof L2Attackable && character.isRaid())
+			{
+				((L2Attackable) character).returnHome();
 			}
 		}
 	}

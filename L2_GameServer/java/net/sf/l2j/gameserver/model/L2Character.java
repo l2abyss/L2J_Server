@@ -203,6 +203,8 @@ public abstract class L2Character extends L2Object
 	
 	private final byte[] _zones = new byte[13];
 	protected byte _zoneValidateCounter = 4;
+
+	private boolean _isRaid = false;
 	
 	/**
 	 * Returns character inventory, default null, overridden in L2Playable types and in L2NPcInstance
@@ -2069,9 +2071,18 @@ public abstract class L2Character extends L2Object
 
 	/** Return True if the L2Character is RaidBoss or his minion. */
 	public boolean isRaid()
-	{
-		return false;
-	}
+    {
+        return _isRaid  ;
+    }
+    
+	/**
+	 * Set this Npc as a Raid instance.<BR><BR>
+	 * @param isRaid
+	 */
+    public void setIsRaid(boolean isRaid)
+    {
+    	_isRaid = isRaid;
+    }
 
 	/** Return a list of L2Character that attacked. */
 	public final List<L2Character> getAttackByList ()
@@ -6363,6 +6374,8 @@ public abstract class L2Character extends L2Object
 
 	private boolean _AIdisabled = false;
 
+	private boolean _isMinion = false;
+
 	public void setPvpFlagLasts(long time)
 	{
 		_pvpFlagLasts = time;
@@ -6694,4 +6707,18 @@ public abstract class L2Character extends L2Object
 			}
 		}
 	}
+	public boolean isRaidMinion()
+    {
+        return _isMinion ;
+    }
+    
+	/**
+	 * Set this Npc as a Minion instance.<BR><BR>
+	 * @param val
+	 */
+    public void setIsRaidMinion(boolean val)
+    {
+    	_isRaid = val;
+    	_isMinion = val;
+    }
 }

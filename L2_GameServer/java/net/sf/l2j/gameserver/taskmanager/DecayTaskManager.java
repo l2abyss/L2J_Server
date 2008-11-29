@@ -86,7 +86,7 @@ public class DecayTaskManager
 				if (_decayTasks != null)
 					for (L2Character actor : _decayTasks.keySet())
 					{
-						if (actor.isRaid())
+						if (actor.isRaid()&& !actor.isRaidMinion())
 							delay = RAID_BOSS_DECAY_TIME;
 						else
 							delay = ATTACKABLE_DECAY_TIME;
