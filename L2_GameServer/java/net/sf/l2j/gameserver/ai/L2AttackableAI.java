@@ -870,8 +870,12 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		}
 		
 		// Considering, if bigger range will be attempted
-		if ((dist2 < 10000 + combinedCollision * combinedCollision) && !_selfAnalysis.isFighter && !_selfAnalysis.isBalanced && (_selfAnalysis.hasLongRangeSkills || _selfAnalysis.isArcher)
-				&& (_mostHatedAnalysis.isBalanced || _mostHatedAnalysis.isFighter) && (_mostHatedAnalysis.character.isRooted() || _mostHatedAnalysis.isSlower) && (Config.GEODATA == 2 ? 20 : 12) >= Rnd.get(100) // chance
+		if ((dist2 < 10000 + combinedCollision * combinedCollision) 
+				&& !_selfAnalysis.isFighter && !_selfAnalysis.isBalanced 
+				&& (_selfAnalysis.hasLongRangeSkills || _selfAnalysis.isArcher || _selfAnalysis.isHealer)
+				&& (_mostHatedAnalysis.isBalanced || _mostHatedAnalysis.isFighter) 
+				&& (_mostHatedAnalysis.character.isRooted() || _mostHatedAnalysis.isSlower) 
+				&& (Config.GEODATA == 2 ? 20 : 12) >= Rnd.get(100) // chance
 		)
 		{
 			int posX = _actor.getX();
@@ -892,7 +896,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		}
 		
 		// Cannot see target, needs to go closer, currently just goes to range 300 if mage
-		if ((dist2 > 310 * 310 + combinedCollision * combinedCollision) && this._selfAnalysis.hasLongRangeSkills && !GeoData.getInstance().canSeeTarget(_actor, _mostHatedAnalysis.character))
+		if ((dist2 > 310 * 310 + combinedCollision * combinedCollision) 
+				&& this._selfAnalysis.hasLongRangeSkills 
+				&& !GeoData.getInstance().canSeeTarget(_actor, _mostHatedAnalysis.character))
 		{
 			if (!(_selfAnalysis.isMage && _actor.isMuted()))
 			{
@@ -940,6 +946,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 							chance = 12;
 						if (_selfAnalysis.isMage && !_mostHatedAnalysis.isMage)
 							chance = 10;
+						if (_selfAnalysis.isHealer)
+							chance = 12;
 						if (_mostHatedAnalysis.isMagicResistant)
 							chance /= 2;
 						
@@ -997,7 +1005,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						int castRange = sk.getCastRange() + combinedCollision;
 						if (_actor.isSkillDisabled(sk.getId()) || _actor.getCurrentMp() < _actor.getStat().getMpConsume(sk) || (dist2 > castRange * castRange))
 							continue;
-						if (Rnd.nextInt(100) <= 1)
+						if (Rnd.nextInt(100) <= (_selfAnalysis.isHealer ? 10 : 1))
 						{
 							clientStopMoving(null);
 							_accessor.doCast(sk);
@@ -1014,7 +1022,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						int castRange = sk.getCastRange() + combinedCollision;
 						if (_actor.isSkillDisabled(sk.getId()) || _actor.getCurrentMp() < _actor.getStat().getMpConsume(sk) || (secondHatedDist2 > castRange * castRange))
 							continue;
-						if (Rnd.nextInt(100) <= 3)
+						if (Rnd.nextInt(100) <= (_selfAnalysis.isHealer ? 10 : 3))
 						{
 							_actor.setTarget(_secondMostHatedAnalysis.character);
 							clientStopMoving(null);
@@ -1080,7 +1088,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				
 				// chance decision for launching long range skills
 				int castingChance = 5;
-				if (_selfAnalysis.isMage)
+				if (_selfAnalysis.isMage || _selfAnalysis.isHealer)
 					castingChance = 50; // mages
 				if (_selfAnalysis.isBalanced)
 				{
@@ -1116,12 +1124,20 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			}
 			
 			// Move the actor to Pawn server side AND client side by sending Server->Client packet MoveToPawn (broadcast)
-			if (_selfAnalysis.isMage)
+			if (_selfAnalysis.isMage && !_actor.isMuted())
 			{
-				if (_actor.isMuted())
-					return;
-				range = _selfAnalysis.maxCastRange;
+				// mages stay a bit further away if not muted or low mana
+				if ((_actor.getMaxMp() / 3) < _actor.getCurrentMp())
+				{
+					range = _selfAnalysis.maxCastRange;
+					if (dist2 < range * range) // don't move backwards here
+						return;
+				}
 			}
+			// healers do not even follow
+			if (_selfAnalysis.isHealer)
+					return;
+				
 			if (_mostHatedAnalysis.character.isMoving())
 				range -= 100;
 			if (range < 5)
@@ -1192,6 +1208,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						chance = 3;
 					if (_selfAnalysis.isMage && !_mostHatedAnalysis.isMage)
 						chance = 4;
+					if (_selfAnalysis.isHealer)
+						chance = 12;
 					if (_mostHatedAnalysis.isMagicResistant)
 						chance /= 2;
 					if (sk.getCastRange() < 200)
@@ -1242,6 +1260,22 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					}
 				}
 			}
+			if (!_mostHatedAnalysis.character.isSleeping() && _selfAnalysis.isHealer)
+			{
+				for (L2Skill sk : _selfAnalysis.sleepSkills)
+				{
+					int castRange = sk.getCastRange() + combinedCollision;
+					if (_actor.isSkillDisabled(sk.getId()) || _actor.getCurrentMp() < _actor.getStat().getMpConsume(sk) || (dist2 > castRange * castRange))
+						continue;
+					if (Rnd.nextInt(100) <= 10)
+					{
+						clientStopMoving(null);
+						_accessor.doCast(sk);
+						_attackTimeout = MAX_ATTACK_TIMEOUT + GameTimeController.getGameTicks();
+						return;
+					}
+				}
+			}
 			if (_secondMostHatedAnalysis.character != null && !_secondMostHatedAnalysis.character.isSleeping())
 			{
 				double secondHatedDist2 = _actor.getPlanDistanceSq(_secondMostHatedAnalysis.character.getX(), _secondMostHatedAnalysis.character.getY());
@@ -1252,7 +1286,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					int castRange = sk.getCastRange() + combinedCollision;
 					if (_actor.isSkillDisabled(sk.getId()) || _actor.getCurrentMp() < _actor.getStat().getMpConsume(sk) || (secondHatedDist2 > castRange * castRange))
 						continue;
-					if (Rnd.nextInt(100) <= 4)
+					if (Rnd.nextInt(100) <= (_selfAnalysis.isHealer ? 10 : 4))
 					{
 						_actor.setTarget(_secondMostHatedAnalysis.character);
 						clientStopMoving(null);
@@ -1271,7 +1305,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					int castRange = sk.getCastRange() + combinedCollision;
 					if (_actor.isSkillDisabled(sk.getId()) || _actor.getCurrentMp() < _actor.getStat().getMpConsume(sk) || (dist2 > castRange * castRange))
 						continue;
-					if (Rnd.nextInt(100) <= 4)
+					if (Rnd.nextInt(100) <= (_selfAnalysis.isHealer ? 10 : 4))
 					{
 						clientStopMoving(null);
 						_accessor.doCast(sk);
@@ -1296,7 +1330,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					}
 				}
 			}
-			if (_actor.getCurrentHp() < _actor.getMaxHp() * 0.4)
+			if (_actor.getCurrentHp() < _actor.getMaxHp() * (_selfAnalysis.isHealer ? 0.7 : 0.4))
 			{
 				for (L2Skill sk : _selfAnalysis.healSkills)
 				{
@@ -1304,7 +1338,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						continue;
 					if (_actor.isSkillDisabled(sk.getId()) || _actor.getCurrentMp() < _actor.getStat().getMpConsume(sk))
 						continue;
-					int chance = 7;
+					int chance = (_selfAnalysis.isHealer ? 15 : 7);
 					if (_mostHatedAnalysis.character.isAttackingDisabled())
 						chance += 10;
 					if (_secondMostHatedAnalysis.character == null || _secondMostHatedAnalysis.character.isAttackingDisabled())
@@ -1330,7 +1364,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				// chance decision for launching general skills in melee fight
 				// close range skills should be higher, long range lower
 				int castingChance = 5;
-				if (_selfAnalysis.isMage)
+				if (_selfAnalysis.isMage || _selfAnalysis.isHealer)
 				{
 					if (sk.getCastRange() < 200)
 						castingChance = 35;
@@ -1371,8 +1405,11 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			}
 			
 			// Finally, physical attacks
-			clientStopMoving(null);
-			_accessor.doAttack(getAttackTarget());
+			if (!_selfAnalysis.isHealer)
+			{
+				clientStopMoving(null);
+				_accessor.doAttack(getAttackTarget());
+			}
 		}
 	}
 	

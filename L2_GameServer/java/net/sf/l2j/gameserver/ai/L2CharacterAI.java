@@ -1120,6 +1120,7 @@ public class L2CharacterAI extends AbstractAI
 		public boolean isMage = false;
 		public boolean isBalanced;
 		public boolean isArcher = false;
+		public boolean isHealer = false;
 		public boolean isFighter = false;
 		public boolean cannotMoveOnLand = false;
 		public List<L2Skill> generalSkills = new FastList<L2Skill>();
@@ -1159,6 +1160,9 @@ public class L2CharacterAI extends AbstractAI
 					break;
 				case ARCHER:
 					isArcher = true;
+					break;
+				case HEALER:
+					isHealer = true;
 					break;
 				default:
 					isFighter = true;

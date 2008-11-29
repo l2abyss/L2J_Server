@@ -91,7 +91,9 @@ public final class L2NpcTemplate extends L2CharTemplate
 		FIGHTER,
 		ARCHER,
 		BALANCED,
-		MAGE
+		MAGE,
+		HEALER
+		
 	}
 	
 	public static enum Race
@@ -189,6 +191,8 @@ public final class L2NpcTemplate extends L2CharTemplate
 			AI = AIType.BALANCED;
 		else if (ai.equalsIgnoreCase("mage"))
 			AI = AIType.MAGE;
+		else if (ai.equalsIgnoreCase("healer"))
+			AI = AIType.HEALER;
 		else
 			AI = AIType.FIGHTER;
 	}

@@ -592,6 +592,8 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 					// before replacing this with effective geodata checks and AI modification
 					if (dz * dz < 170 * 170) // normally 130 if guard z coordinates correct
 					{
+						if (_selfAnalysis.isHealer)
+							return;
 						if (_selfAnalysis.isMage)
 							range = _selfAnalysis.maxCastRange - 50;
 						if (attackTarget.isMoving())
@@ -606,7 +608,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 			
 		}
 		// Else, if the actor is muted and far from target, just "move to pawn"
-		else if (_actor.isMuted() && dist_2 > range * range)
+		else if (_actor.isMuted() && dist_2 > range * range && !_selfAnalysis.isHealer)
 		{
 			// Temporary hack for preventing guards jumping off towers,
 			// before replacing this with effective geodata checks and AI modification
@@ -685,7 +687,8 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 				}
 			}
 			// Finally, do the physical attack itself
-			_accessor.doAttack(attackTarget);
+			if (!_selfAnalysis.isHealer)
+				_accessor.doAttack(attackTarget);
 		}
 	}
 	
