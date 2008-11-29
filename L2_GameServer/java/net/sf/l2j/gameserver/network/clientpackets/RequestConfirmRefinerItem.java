@@ -64,7 +64,7 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 		int refinerItemId = refinerItem.getItem().getItemId();
 
 		// is the item a life stone?
-		if (refinerItemId < 8723 || (refinerItemId > 8762 && refinerItemId < 9573) || refinerItemId > 9576)
+		if (refinerItemId < 8723 || (refinerItemId > 8762 && refinerItemId < 9573) || (refinerItemId > 9576 && refinerItemId < 10483) || refinerItemId > 10486)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
 			return;
@@ -78,7 +78,6 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 
 		int gemstoneCount=0;
 		int gemstoneItemId=0;
-		int lifeStoneLevel = getLifeStoneLevel(refinerItemId);
 		SystemMessage sm = new SystemMessage(SystemMessageId.REQUIRES_S1_S2);
 		switch (itemGrade)
 		{
@@ -89,22 +88,12 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 				sm.addString("Gemstone D");
 				break;
 			case L2Item.CRYSTAL_B:
-				if (lifeStoneLevel < 3)
-				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
-					return;
-				}
 				gemstoneCount = 30;
 				gemstoneItemId = GEMSTONE_D;
 				sm.addNumber(gemstoneCount);
 				sm.addString("Gemstone D");
 				break;
 			case L2Item.CRYSTAL_A:
-				if (lifeStoneLevel < 6)
-				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
-					return;
-				}
 				gemstoneCount = 20;
 				gemstoneItemId = GEMSTONE_C;
 				sm.addNumber(gemstoneCount);
@@ -112,11 +101,6 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 				break;
 			case L2Item.CRYSTAL_S:
 			case L2Item.CRYSTAL_S80:
-				if (lifeStoneLevel != 10)
-				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
-					return;
-				}
 				gemstoneCount = 25;
 				gemstoneItemId = GEMSTONE_C;
 				sm.addNumber(gemstoneCount);
@@ -127,23 +111,6 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 		activeChar.sendPacket(new ExPutIntensiveResultForVariationMake(_refinerItemObjId, refinerItemId, gemstoneItemId, gemstoneCount));
 
 		activeChar.sendPacket(sm);
-	}
-
-	private int getLifeStoneGrade(int itemId)
-	{
-		itemId -= 8723;
-        if (itemId < 10 || itemId == 850) return 0; // normal grade
-        if (itemId < 20 || itemId == 851) return 1; // mid grade
-        if (itemId < 30 || itemId == 852) return 2; // high grade
-		return 3; // top grade
-	}
-
-	private int getLifeStoneLevel(int itemId)
-	{
-		itemId -= 10 * getLifeStoneGrade(itemId);
-		itemId -= 8722;
-		if (itemId > 823) return 10;
-		return itemId;
 	}
 
 	/**

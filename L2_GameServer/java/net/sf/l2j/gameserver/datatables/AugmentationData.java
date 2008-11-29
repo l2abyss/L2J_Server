@@ -35,7 +35,8 @@ import org.w3c.dom.Node;
 /**
  * This class manages the augmentation data and can also create new augmentations.
  *
- * @author  durgus
+ * @author  durgus 
+ * edited by Gigiikun
  */
 public class AugmentationData
 {
@@ -56,11 +57,6 @@ public class AugmentationData
 	// =========================================================
 	// Data Field
 	
-	// chances
-	//private static final int CHANCE_STAT = 88;
-	private static final int CHANCE_SKILL = 11;
-	private static final int CHANCE_BASESTAT = 1;
-	
 	// stats
 	private static final int STAT_START = 1;
 	private static final int STAT_END = 14560;
@@ -68,6 +64,11 @@ public class AugmentationData
 	//private static final int STAT_NUMBEROF_BLOCKS = 4;
 	private static final int STAT_SUBBLOCKSIZE = 91;
 	//private static final int STAT_NUMBEROF_SUBBLOCKS = 40;
+
+	// skills
+	// private static final int BLUE_START = 14561;
+	private static final int PURPLE_START = 14578;
+	private static final int RED_START = 14685;
 	
 	// basestats
 	private static final int BASESTAT_STR = 16341;
@@ -76,9 +77,10 @@ public class AugmentationData
 	private static final int BASESTAT_MEN = 16344;
 	
 	private FastList<?> _augmentationStats[];
-	private FastList<augmentationSkill> _activeSkills;
-	private FastList<augmentationSkill> _passiveSkills;
-	private FastList<augmentationSkill> _chanceSkills;
+	private FastList<augmentationSkill> _blueSkills;
+	private FastList<augmentationSkill> _purpleSkills;
+	private FastList<augmentationSkill> _redSkills;
+	private int _skillsCount;
 	
 	// =========================================================
 	// Constructor
@@ -92,15 +94,17 @@ public class AugmentationData
 		_augmentationStats[2] = new FastList<augmentationStat>();
 		_augmentationStats[3] = new FastList<augmentationStat>();
 		
-		_activeSkills = new FastList<augmentationSkill>();
-		_passiveSkills = new FastList<augmentationSkill>();
-		_chanceSkills = new FastList<augmentationSkill>();
+		_blueSkills = new FastList<augmentationSkill>();
+		_purpleSkills = new FastList<augmentationSkill>();
+		_redSkills = new FastList<augmentationSkill>();
 		
 		load();
 		
+		_skillsCount = _blueSkills.size() + _purpleSkills.size() + _redSkills.size();
+		
 		// Use size*4: since theres 4 blocks of stat-data with equivalent size
 		_log.info("AugmentationData: Loaded: " + (_augmentationStats[0].size() * 4) + " augmentation stats.");
-		_log.info("AugmentationData: Loaded: " + _activeSkills.size() + " active, " + _passiveSkills.size() + " passive and " + _chanceSkills.size() + " chance skills");
+		_log.info("AugmentationData: Loaded: " + _blueSkills.size() + " blue, " + _purpleSkills.size() + " purple and " + _redSkills.size() + " red skills");
 	}
 	
 	// =========================================================
@@ -216,7 +220,9 @@ public class AugmentationData
 						{
 							NamedNodeMap attrs = d.getAttributes();
 							int skillId = 0, augmentationId = Integer.parseInt(attrs.getNamedItem("id").getNodeValue());
-							String type = "passive";
+							// type of the skill is not needed anymore but I do not erase the code.
+							// maybe someone can use it for something
+							// String type = "passive";
 							
 							for (Node cd = d.getFirstChild(); cd != null; cd = cd.getNextSibling())
 							{
@@ -225,19 +231,19 @@ public class AugmentationData
 									attrs = cd.getAttributes();
 									skillId = Integer.parseInt(attrs.getNamedItem("val").getNodeValue());
 								}
-								else if ("type".equalsIgnoreCase(cd.getNodeName()))
+								/* else if ("type".equalsIgnoreCase(cd.getNodeName()))
 								{
 									attrs = cd.getAttributes();
 									type = attrs.getNamedItem("val").getNodeValue();
-								}
+								}*/
 							}
 							
-							if (type.equalsIgnoreCase("active"))
-								_activeSkills.add(new augmentationSkill(skillId, st.getMaxLevel(skillId, 1), augmentationId));
-							else if (type.equalsIgnoreCase("passive"))
-								_passiveSkills.add(new augmentationSkill(skillId, st.getMaxLevel(skillId, 1), augmentationId));
+							if (augmentationId < PURPLE_START)
+								_blueSkills.add(new augmentationSkill(skillId, st.getMaxLevel(skillId, 1), augmentationId));
+							else if (augmentationId < RED_START)
+								_purpleSkills.add(new augmentationSkill(skillId, st.getMaxLevel(skillId, 1), augmentationId));
 							else
-								_chanceSkills.add(new augmentationSkill(skillId, st.getMaxLevel(skillId, 1), augmentationId));
+								_redSkills.add(new augmentationSkill(skillId, st.getMaxLevel(skillId, 1), augmentationId));
 						}
 					}
 				}
@@ -325,7 +331,7 @@ public class AugmentationData
 	
 	// =========================================================
 	// Properties - Public
-	
+
 	/**
 	 * Generate a new random augmentation
 	 * @param item
@@ -339,49 +345,112 @@ public class AugmentationData
 		// this is because a value can contain up to 2 stat modifications
 		// (there are two short values packed in one integer value, meaning 4 stat modifications at max)
 		// for more info take a look at getAugStatsById(...)
-		
+
 		// Note: lifeStoneGrade: (0 means low grade, 3 top grade)
-		// First: decide which grade the augmentation result is going to have:
-		// 0:yellow, 1:blue, 2:purple, 3:red
-		int resultColor = 0;
-		// The chances used here are most likely custom,
-		// whats known is: u can also get a red result from a normal grade lifeStone
-		// however I will make it so that a higher grade lifeStone will more likely result in a
-		// higher grade augmentation... and the augmentation result will at least have the grade
-		// of the life stone
-		resultColor = Rnd.get(0, 100);
-		if (lifeStoneGrade == 3 || resultColor <= (15 * lifeStoneGrade) + 10)
-			resultColor = 3;
-		else if (lifeStoneGrade == 2 || resultColor <= (15 * lifeStoneGrade) + 20)
-			resultColor = 2;
-		else if (lifeStoneGrade == 1 || resultColor <= (15 * lifeStoneGrade) + 30)
-			resultColor = 1;
-		else
-			resultColor = 0;
-		
-		// Second: Calculate the subblock offset for the choosen color,
-		// and the level of the lifeStone
-		int colorOffset = (resultColor * (STAT_SUBBLOCKSIZE * 10)) + ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE);
-		
-		int offset = ((3 - lifeStoneGrade) * STAT_BLOCKSIZE) + colorOffset;
-		
-		int stat12 = Rnd.get(offset, offset + STAT_SUBBLOCKSIZE);
+		// First: determine whether we will add a skill/baseStatModifier or not
+		//        because this determine which color could be the result 
+		int skill_Chance = 0;
 		int stat34 = 0;
 		boolean generateSkill = false;
-		
-		// use a chance to determine whether we will add a skill or not
-		if (Rnd.get(1, 100) <= CHANCE_SKILL)
+		int resultColor = 0;
+		boolean generateGlow = false;
+		//lifestonelevel is used for stat Id and skill level, but here the max level is 10
+		if (lifeStoneLevel > 10) lifeStoneLevel = 10;
+		switch (lifeStoneGrade)
+		{
+			case 0:
+				skill_Chance = Config.AUGMENTATION_NG_SKILL_CHANCE;
+				if (Rnd.get(1,100) <= Config.AUGMENTATION_NG_GLOW_CHANCE)
+					generateGlow = true;
+				break;
+			case 1:
+				skill_Chance = Config.AUGMENTATION_MID_SKILL_CHANCE;
+				if (Rnd.get(1,100) <= Config.AUGMENTATION_MID_GLOW_CHANCE)
+					generateGlow = true;
+				break;
+			case 2:
+				skill_Chance = Config.AUGMENTATION_HIGH_SKILL_CHANCE;
+				if (Rnd.get(1,100) <= Config.AUGMENTATION_HIGH_GLOW_CHANCE)
+					generateGlow = true;
+				break;
+			case 3:
+				skill_Chance = Config.AUGMENTATION_TOP_SKILL_CHANCE;
+				if (Rnd.get(1,100) <= Config.AUGMENTATION_TOP_GLOW_CHANCE)
+					generateGlow = true;
+		}
+
+		if (Rnd.get(1, 100) <= skill_Chance)
 			generateSkill = true;
-		// only if no skill is going to be applyed
-		else if (Rnd.get(1, 100) <= CHANCE_BASESTAT)
+		else if (Rnd.get(1, 100) <= Config.AUGMENTATION_BASESTAT_CHANCE)
 			stat34 = Rnd.get(BASESTAT_STR, BASESTAT_MEN);
-		
-		// is neither a skill nor basestat used for stat34? then generate a normal stat
+
+		// Second: decide which grade the augmentation result is going to have:
+		// 0:yellow, 1:blue, 2:purple, 3:red
+		// The chances used here are most likely custom,
+		// whats known is: you cant have yellow with skill(or baseStatModifier)
+		//                 noGrade stone can not have glow, mid only with skill, high has a chance(custom), top allways glow
 		if (stat34 == 0 && !generateSkill)
 		{
-			offset = (lifeStoneGrade * STAT_BLOCKSIZE) + colorOffset;
+			resultColor = Rnd.get(0, 100);
+			if (resultColor <= (15 * lifeStoneGrade) + 40)
+				resultColor = 1;
+			else
+				resultColor = 0;
+		}
+		else
+		{
+			resultColor = Rnd.get(0, 100);
+			if (resultColor <= (10 * lifeStoneGrade) + 5 || stat34 != 0)
+				resultColor = 3;
+			else if (resultColor <= (10 * lifeStoneGrade) + 10)
+				resultColor = 1;
+			else
+				resultColor = 2;
+		}
+		
+		// Third: Calculate the subblock offset for the choosen color,
+		// and the level of the lifeStone
+		// from large number of retail augmentations:
+		// no skill part
+		// Id for stat12:
+		// A:1-910 B:911-1820 C:1821-2730 D:2731-3640 E:3641-4550 F:4551-5460 G:5461-6370 H:6371-7280
+		// Id for stat34(this defines the color):
+		// I:7281-8190(yellow) K:8191-9100(blue) L:10921-11830(yellow) M:11831-12740(blue)
+		// you can combine I-K with A-D and L-M with E-H
+		// using C-D or G-H Id you will get a glow effect
+		// there seems no correlation in which grade use which Id except for the glowing restriction
+		// skill part
+		// Id for stat12:
+		// same for no skill part
+		// A same as E, B same as F, C same as G, D same as H
+		// A - no glow, no grade LS
+		// B - weak glow, mid grade LS?
+		// C - glow, high grade LS?
+		// D - strong glow, top grade LS?
+		
+		// is neither a skill nor basestat used for stat34? then generate a normal stat
+		int stat12 = 0;
+		if (stat34 == 0 && !generateSkill)
+		{
+			int temp = Rnd.get(2,3);
+			int colorOffset = resultColor * (10 * STAT_SUBBLOCKSIZE) + temp * STAT_BLOCKSIZE + 1;
+			int offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + colorOffset;
 			
-			stat34 = Rnd.get(offset, offset + STAT_SUBBLOCKSIZE);
+			stat34 = Rnd.get(offset, offset + STAT_SUBBLOCKSIZE - 1);
+			if (generateGlow && lifeStoneGrade >= 2)
+				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + (temp - 2) * STAT_BLOCKSIZE + lifeStoneGrade * (10 * STAT_SUBBLOCKSIZE) + 1;
+			else
+				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + (temp - 2) * STAT_BLOCKSIZE + Rnd.get(0, 1) * (10 * STAT_SUBBLOCKSIZE) + 1;
+			stat12 = Rnd.get(offset, offset + STAT_SUBBLOCKSIZE - 1);
+		}
+		else
+		{
+			int offset;
+			if (!generateGlow)
+				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + Rnd.get(0, 1) * STAT_BLOCKSIZE + 1;
+			else
+				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + Rnd.get(0, 1) * STAT_BLOCKSIZE + (lifeStoneGrade + resultColor) / 2 * (10 * STAT_SUBBLOCKSIZE) + 1;
+			stat12 = Rnd.get(offset, offset + STAT_SUBBLOCKSIZE - 1);
 		}
 		
 		// generate a skill if neccessary
@@ -389,26 +458,28 @@ public class AugmentationData
 		if (generateSkill)
 		{
 			augmentationSkill temp = null;
-			switch (Rnd.get(1, 3))
+			switch (resultColor)
 			{
-				case 1: // chance skill
-					temp = _chanceSkills.get(Rnd.get(0, _chanceSkills.size() - 1));
+				case 1: // blue skill
+					temp = _blueSkills.get(Rnd.get(0, _blueSkills.size() - 1));
 					skill = temp.getSkill(lifeStoneLevel);
-					stat34 = temp.getAugmentationSkillId();
+					stat34 = temp.getAugmentationSkillId() + (lifeStoneLevel - 1) * _skillsCount;
 					break;
-				case 2: // active skill
-					temp = _activeSkills.get(Rnd.get(0, _activeSkills.size() - 1));
+				case 2: // purple skill
+					temp = _purpleSkills.get(Rnd.get(0, _purpleSkills.size() - 1));
 					skill = temp.getSkill(lifeStoneLevel);
-					stat34 = temp.getAugmentationSkillId();
+					stat34 = temp.getAugmentationSkillId() + (lifeStoneLevel - 1) * _skillsCount;
 					break;
-				case 3: // passive skill
-					temp = _passiveSkills.get(Rnd.get(0, _passiveSkills.size() - 1));
+				case 3: // red skill
+					temp = _redSkills.get(Rnd.get(0, _redSkills.size() - 1));
 					skill = temp.getSkill(lifeStoneLevel);
-					stat34 = temp.getAugmentationSkillId();
+					stat34 = temp.getAugmentationSkillId() + (lifeStoneLevel - 1) * _skillsCount;
 					break;
 			}
 		}
 		
+		if (Config.DEBUG)
+			_log.info("Augmentation success: stat12=" + stat12 + "; stat34=" + stat34 + "; resultColor=" + resultColor + "; level=" + lifeStoneLevel + "; grade=" + lifeStoneGrade);
 		return new L2Augmentation(((stat34 << 16) + stat12), skill);
 	}
 	

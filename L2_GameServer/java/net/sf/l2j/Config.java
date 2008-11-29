@@ -860,6 +860,33 @@ public final class Config
     /** maximum level of safe enchantment for full body armor*/
     public static int ENCHANT_SAFE_MAX_FULL;
 
+    /** Chance to get a skill while using a NoGrade Life Stone*/
+    public static int AUGMENTATION_NG_SKILL_CHANCE;
+
+    /** Chance to get a Glow effect while using a NoGrade Life Stone(only if you get a skill)*/
+    public static int AUGMENTATION_NG_GLOW_CHANCE;
+
+    /** Chance to get a skill while using a MidGrade Life Stone*/
+    public static int AUGMENTATION_MID_SKILL_CHANCE;
+
+    /** Chance to get a Glow effect while using a MidGrade Life Stone(only if you get a skill)*/
+    public static int AUGMENTATION_MID_GLOW_CHANCE;
+
+    /** Chance to get a skill while using a HighGrade Life Stone*/
+    public static int AUGMENTATION_HIGH_SKILL_CHANCE;
+
+    /** Chance to get a Glow effect while using a HighGrade Life Stone*/
+    public static int AUGMENTATION_HIGH_GLOW_CHANCE;
+
+    /** Chance to get a skill while using a TopGrade Life Stone*/
+    public static int AUGMENTATION_TOP_SKILL_CHANCE;
+
+    /** Chance to get a Glow effect while using a TopGrade Life Stone*/
+    public static int AUGMENTATION_TOP_GLOW_CHANCE;
+
+    /** Chance to get a BaseStatModifier in the augmentation process*/
+    public static int AUGMENTATION_BASESTAT_CHANCE;
+
     // Character multipliers
     /** Multiplier for character HP regeneration */
     public static double  HP_REGEN_MULTIPLIER;
@@ -1246,6 +1273,15 @@ public final class Config
 	                ENCHANT_MAX_JEWELRY					= Integer.parseInt(Character.getProperty("EnchantMaxJewelry", "255"));
 	                ENCHANT_SAFE_MAX					= Integer.parseInt(Character.getProperty("EnchantSafeMax", "3"));
 	                ENCHANT_SAFE_MAX_FULL				= Integer.parseInt(Character.getProperty("EnchantSafeMaxFull", "4"));
+	                AUGMENTATION_NG_SKILL_CHANCE		= Integer.parseInt(Character.getProperty("AugmentationNGSkillChance", "15"));
+	                AUGMENTATION_NG_GLOW_CHANCE			= Integer.parseInt(Character.getProperty("AugmentationNGGlowChance", "0"));
+	                AUGMENTATION_MID_SKILL_CHANCE		= Integer.parseInt(Character.getProperty("AugmentationMidSkillChance", "30"));
+	                AUGMENTATION_MID_GLOW_CHANCE		= Integer.parseInt(Character.getProperty("AugmentationMidGlowChance", "40"));
+	                AUGMENTATION_HIGH_SKILL_CHANCE		= Integer.parseInt(Character.getProperty("AugmentationHighSkillChance", "45"));
+	                AUGMENTATION_HIGH_GLOW_CHANCE		= Integer.parseInt(Character.getProperty("AugmentationHighGlowChance", "70"));
+	                AUGMENTATION_TOP_SKILL_CHANCE		= Integer.parseInt(Character.getProperty("AugmentationTopSkillChance", "60"));
+	                AUGMENTATION_TOP_GLOW_CHANCE		= Integer.parseInt(Character.getProperty("AugmentationTopGlowChance", "100"));
+	                AUGMENTATION_BASESTAT_CHANCE		= Integer.parseInt(Character.getProperty("AugmentationBaseStatChance", "1"));
 	                ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE	= Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanBeKilledInPeaceZone", "false"));
 	                ALT_GAME_KARMA_PLAYER_CAN_SHOP		= Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanShop", "true"));
 	                ALT_GAME_KARMA_PLAYER_CAN_TELEPORT	= Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanTeleport", "true"));
@@ -2098,6 +2134,16 @@ public final class Config
         else if (pName.equalsIgnoreCase("EnchantMaxJewelry")) ENCHANT_MAX_JEWELRY = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("EnchantSafeMax")) ENCHANT_SAFE_MAX = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("EnchantSafeMaxFull")) ENCHANT_SAFE_MAX_FULL = Integer.parseInt(pValue);
+
+        else if (pName.equalsIgnoreCase("AugmentationNGSkillChance")) AUGMENTATION_NG_SKILL_CHANCE = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("AugmentationNGGlowChance")) AUGMENTATION_NG_GLOW_CHANCE = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("AugmentationMidSkillChance")) AUGMENTATION_MID_SKILL_CHANCE = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("AugmentationMidGlowChance")) AUGMENTATION_MID_GLOW_CHANCE = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("AugmentationHighSkillChance")) AUGMENTATION_HIGH_SKILL_CHANCE = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("AugmentationHighGlowChance")) AUGMENTATION_HIGH_GLOW_CHANCE = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("AugmentationTopSkillChance")) AUGMENTATION_TOP_SKILL_CHANCE = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("AugmentationTopGlowChance")) AUGMENTATION_TOP_GLOW_CHANCE = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("AugmentationBaseStatChance")) AUGMENTATION_BASESTAT_CHANCE = Integer.parseInt(pValue);
 
         else if (pName.equalsIgnoreCase("HpRegenMultiplier")) HP_REGEN_MULTIPLIER = Double.parseDouble(pValue);
         else if (pName.equalsIgnoreCase("MpRegenMultiplier")) MP_REGEN_MULTIPLIER = Double.parseDouble(pValue);
