@@ -94,6 +94,7 @@ public class ItemHandler
 		registerItemHandler(new SpecialXMas());
 		registerItemHandler(new SummonItems());
 		registerItemHandler(new BeastSpice());
+		registerItemHandler(new SpiritLake());
 		_log.config("ItemHandler: Loaded " + _datatable.size() + " handlers.");
 	}
 	
