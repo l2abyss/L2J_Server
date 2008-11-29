@@ -2093,7 +2093,7 @@ public abstract class L2Character extends L2Object
 	public final boolean isAllSkillsDisabled() { return _allSkillsDisabled || isImmobileUntilAttacked() || isStunned() || isSleeping() || isParalyzed(); }
 
 	/** Return True if the L2Character can't attack (stun, sleep, attackEndTime, fakeDeath, paralyse, attackMute). */
-	public boolean isAttackingDisabled() { return isStunned() || isImmobileUntilAttacked() || isSleeping() || _attackEndTime > GameTimeController.getGameTicks() || isAlikeDead() || isParalyzed() || isPhysicalAttackMuted(); }
+	public boolean isAttackingDisabled() { return isStunned() || isImmobileUntilAttacked() || isSleeping() || _attackEndTime > GameTimeController.getGameTicks() || isAlikeDead() || isParalyzed() || isPhysicalAttackMuted() || isCoreAIDisabled(); }
 
 	public final Calculator[] getCalculators() { return _calculators; }
 
@@ -4998,7 +4998,7 @@ public abstract class L2Character extends L2Object
 				boolean isBow = (weapon != null && (weapon.getItemType() == L2WeaponType.BOW || weapon.getItemType() == L2WeaponType.CROSSBOW));
 				int reflectedDamage = 0;
 
-				if (!isBow || isTransformed()) // Do not reflect if weapon is of type bow
+				if (!isBow) // Do not reflect if weapon is of type bow
 				{
 					// Reduce HP of the target and calculate reflection damage to reduce HP of attacker if necessary
 					double reflectPercent = target.getStat().calcStat(Stats.REFLECT_DAMAGE_PERCENT,0,null,null);
@@ -5018,7 +5018,7 @@ public abstract class L2Character extends L2Object
 				
 				if (reflectedDamage > 0)
 				{
-					reduceCurrentHp(reflectedDamage, target, true);
+					reduceCurrentHp(reflectedDamage, target, true, false);
 	
 					// Custom messages - nice but also more network load
 					/*
@@ -5034,7 +5034,7 @@ public abstract class L2Character extends L2Object
 	                */
 				}
 
-				if (!isBow || isTransformed()) // Do not absorb if weapon is of type bow
+				if (!isBow) // Do not absorb if weapon is of type bow
 				{
 					// Absorb HP from the damage inflicted
 					double absorbPercent = getStat().calcStat(Stats.ABSORB_DAMAGE_PERCENT,0, null,null);
@@ -6491,13 +6491,14 @@ public abstract class L2Character extends L2Object
 	// Status - NEED TO REMOVE ONCE L2CHARTATUS IS COMPLETE
 	// Method - Public
 	public void addStatusListener(L2Character object) { getStatus().addStatusListener(object); }
-	public void reduceCurrentHp(double i, L2Character attacker) { reduceCurrentHp(i, attacker, true); }
-	public void reduceCurrentHp(double i, L2Character attacker, boolean awake)
+	public void reduceCurrentHp(double i, L2Character attacker) { reduceCurrentHp(i, attacker, true, false); }
+	public void reduceCurrentHpByDOT(double i, L2Character attacker) { reduceCurrentHp(i, attacker, false, true); }
+	public void reduceCurrentHp(double i, L2Character attacker, boolean awake, boolean isDOT)
 	{
 		if (Config.L2JMOD_CHAMPION_ENABLE && isChampion() && Config.L2JMOD_CHAMPION_HP != 0)
-			getStatus().reduceHp(i/Config.L2JMOD_CHAMPION_HP, attacker, awake);
+			getStatus().reduceHp(i/Config.L2JMOD_CHAMPION_HP, attacker, awake, isDOT);
 		else
-			getStatus().reduceHp(i, attacker, awake);
+			getStatus().reduceHp(i, attacker, awake, isDOT);
 	}
 	public void reduceCurrentMp(double i) { getStatus().reduceMp(i); }
 	public void removeStatusListener(L2Character object) { getStatus().removeStatusListener(object); }

@@ -93,7 +93,7 @@ public class L2NpcWalkerInstance extends L2NpcInstance
 	 * @param awake  ignore it
 	 */
 	@Override
-    public void reduceCurrentHp(double i, L2Character attacker, boolean awake)
+    public void reduceCurrentHp(double i, L2Character attacker, boolean awake, boolean isDOT)
 	{}
 
 	/**

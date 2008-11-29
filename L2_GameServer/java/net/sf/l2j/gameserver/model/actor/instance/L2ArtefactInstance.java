@@ -107,5 +107,5 @@ public final class L2ArtefactInstance extends L2NpcInstance
 	@Override
 	public void reduceCurrentHp(double damage, L2Character attacker){}
 	@Override
-	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake){}
+	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT){}
 }

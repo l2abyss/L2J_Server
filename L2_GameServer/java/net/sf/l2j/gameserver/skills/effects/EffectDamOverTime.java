@@ -14,9 +14,7 @@
  */
 package net.sf.l2j.gameserver.skills.effects;
 
-import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2Effect;
-import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
@@ -63,12 +61,8 @@ class EffectDamOverTime extends L2Effect
 			// For DOT skills that will not kill effected player.
 			if (!getSkill().killByDOT())
 				damage = getEffected().getCurrentHp() - 1;
-		}
-		
-		boolean awake = !(getEffected() instanceof L2Attackable)
-		        && !(getSkill().getTargetType() == SkillTargetType.TARGET_SELF && getSkill().isToggle());
-		
-		getEffected().reduceCurrentHp(damage, getEffector(), awake);
+		}	
+		getEffected().reduceCurrentHpByDOT(damage, getEffector());
 		
 		return true;
 	}

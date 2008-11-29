@@ -40,9 +40,9 @@ public class PcStatus extends PlayableStatus
     // =========================================================
     // Method - Public
     @Override
-	public final void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true); }
+	public final void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true, false); }
     @Override
-	public final void reduceHp(double value, L2Character attacker, boolean awake)
+	public final void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT)
     {
         if (getActiveChar().isInvul() && getActiveChar() != attacker)
         	return;
@@ -109,15 +109,15 @@ public class PcStatus extends PlayableStatus
             }
         }
 
-        super.reduceHp(value, attacker, awake);
+        super.reduceHp(value, attacker, awake, isDOT);
 
-        if (!getActiveChar().isDead() && getActiveChar().isSitting())
+        if (!getActiveChar().isDead() && getActiveChar().isSitting() && !isDOT)
             getActiveChar().standUp();
 
-        if (getActiveChar().isFakeDeath())
+        if (getActiveChar().isFakeDeath() && !isDOT)
             getActiveChar().stopFakeDeath(null);
 
-        if (attacker != null && attacker != getActiveChar() && fullValue > 0)
+        if (attacker != null && attacker != getActiveChar() && fullValue > 0 && !isDOT)
         {
             // Send a System Message to the L2PcInstance
             SystemMessage smsg = new SystemMessage(SystemMessageId.S1_RECEIVED_DAMAGE_OF_S3_FROM_S2);

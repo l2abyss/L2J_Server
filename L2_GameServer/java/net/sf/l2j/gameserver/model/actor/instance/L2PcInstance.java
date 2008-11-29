@@ -8840,7 +8840,7 @@ public final class L2PcInstance extends L2PlayableInstance
 			if (reduceHp < 1)
 				reduceHp = 1;
 
-			reduceCurrentHp(reduceHp,L2PcInstance.this,false);
+			reduceCurrentHp(reduceHp,L2PcInstance.this,false, false);
 			//reduced hp, becouse not rest
 			SystemMessage sm = new SystemMessage(SystemMessageId.DROWN_DAMAGE_S1);
 			sm.addNumber((int)reduceHp);
@@ -10168,9 +10168,9 @@ public final class L2PcInstance extends L2PlayableInstance
     		getTrainedBeast().onOwnerGotAttacked(attacker);
     }
 	@Override
-	public void reduceCurrentHp(double value, L2Character attacker, boolean awake)
+	public void reduceCurrentHp(double value, L2Character attacker, boolean awake, boolean isDOT)
 	{
-		getStatus().reduceHp(value, attacker, awake);
+		getStatus().reduceHp(value, attacker, awake, isDOT);
 
     	// notify the tamed beast of attacks
     	if (getTrainedBeast() != null )

@@ -354,7 +354,7 @@ public class L2Attackable extends L2NpcInstance
     @Override
 	public void reduceCurrentHp(double damage, L2Character attacker)
     {
-        reduceCurrentHp(damage, attacker, true);
+        reduceCurrentHp(damage, attacker, true, false);
     }
 
     /**
@@ -366,7 +366,7 @@ public class L2Attackable extends L2NpcInstance
      *
      */
     @Override
-	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake)
+	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT)
     {
     	/*
         if ((this instanceof L2SiegeGuardInstance) && (attacker instanceof L2SiegeGuardInstance))
@@ -393,7 +393,7 @@ public class L2Attackable extends L2NpcInstance
         if (isEventMob) return;
 
         // Add damage and hate to the attacker AggroInfo of the L2Attackable _aggroList
-        if (attacker != null) addDamage(attacker, (int)damage);
+        if (attacker != null && !isDOT) addDamage(attacker, (int)damage);
 
         // If this L2Attackable is a L2MonsterInstance and it has spawned minions, call its minions to battle
         if (this instanceof L2MonsterInstance)
@@ -409,7 +409,7 @@ public class L2Attackable extends L2NpcInstance
         }
 
         // Reduce the current HP of the L2Attackable and launch the doDie Task if necessary
-        super.reduceCurrentHp(damage, attacker, awake);
+        super.reduceCurrentHp(damage, attacker, awake, isDOT);
     }
 
     public synchronized void setMustRewardExpSp(boolean value) {

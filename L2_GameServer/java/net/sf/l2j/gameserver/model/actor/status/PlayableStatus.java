@@ -32,13 +32,13 @@ public class PlayableStatus extends CharStatus
     // =========================================================
     // Method - Public
     @Override
-	public void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true); }
+	public void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true, false); }
     @Override
-	public void reduceHp(double value, L2Character attacker, boolean awake)
+	public void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT)
     {
         if (getActiveChar().isDead()) return;
 
-        super.reduceHp(value, attacker, awake);
+        super.reduceHp(value, attacker, awake, isDOT);
         /*
         if (attacker != null && attacker != getActiveChar())
         {

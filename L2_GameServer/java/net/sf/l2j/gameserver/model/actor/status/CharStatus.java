@@ -116,10 +116,10 @@ public class CharStatus
      */
     public void reduceHp(double value, L2Character attacker)
     {
-        reduceHp(value, attacker, true);
+        reduceHp(value, attacker, true, false);
     }
     
-    public void reduceHp(double value, L2Character attacker, boolean awake)
+    public void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT)
     {
         if (getActiveChar().isInvul())
             return;
@@ -160,11 +160,11 @@ public class CharStatus
                 ((L2PcInstance) attacker).setDuelState(Duel.DUELSTATE_INTERRUPTED);
             }
         }
-        if (awake && getActiveChar().isSleeping())
+        if (awake && getActiveChar().isSleeping() && !isDOT)
             getActiveChar().stopSleeping(null);
-        if (getActiveChar().isStunned() && Rnd.get(10) == 0)
+        if (getActiveChar().isStunned() && Rnd.get(10) == 0 && !isDOT)
             getActiveChar().stopStunning(null);
-        if (getActiveChar().isImmobileUntilAttacked())
+        if (getActiveChar().isImmobileUntilAttacked() && !isDOT)
             getActiveChar().stopImmobileUntilAttacked(null);
         
         // Add attackers to npc's attacker list

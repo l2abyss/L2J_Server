@@ -131,9 +131,9 @@ public final class L2RaidBossInstance extends L2MonsterInstance
      *
      */
     @Override
-    public void reduceCurrentHp(double damage, L2Character attacker, boolean awake)
+    public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT)
     {
-        super.reduceCurrentHp(damage, attacker, awake);
+        super.reduceCurrentHp(damage, attacker, awake, isDOT);
     }
 
     public void healFull()
