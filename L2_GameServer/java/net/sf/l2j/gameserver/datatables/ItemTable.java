@@ -500,19 +500,35 @@ public class ItemTable
 		
 		if (item.type == L2ArmorType.PET)
 		{
-			item.set.set("type1", L2Item.TYPE1_SHIELD_ARMOR);
-			if (item.set.getInteger("bodypart") == L2Item.SLOT_WOLF)
-				item.set.set("type2", L2Item.TYPE2_PET_WOLF);
-			else if (item.set.getInteger("bodypart") == L2Item.SLOT_GREATWOLF)
-				item.set.set("type2", L2Item.TYPE2_PET_GREATWOLF);
-			else if (item.set.getInteger("bodypart") == L2Item.SLOT_HATCHLING)
-				item.set.set("type2", L2Item.TYPE2_PET_HATCHLING);
-			else if (item.set.getInteger("bodypart") == L2Item.SLOT_BABYPET)
-				item.set.set("type2", L2Item.TYPE2_PET_BABY);
+			if (bodypart == L2Item.SLOT_NECK)
+			{
+				item.set.set("type1", L2Item.TYPE1_WEAPON_RING_EARRING_NECKLACE);
+				item.set.set("type2", L2Item.TYPE2_ACCESSORY);
+				item.set.set("bodypart", L2Item.SLOT_NECK);
+			}
 			else
-				item.set.set("type2", L2Item.TYPE2_PET_STRIDER);
-			
-			item.set.set("bodypart", L2Item.SLOT_CHEST);
+			{
+				item.set.set("type1", L2Item.TYPE1_SHIELD_ARMOR);
+				switch (item.set.getInteger("bodypart"))
+				{
+					case L2Item.SLOT_WOLF:
+						item.set.set("type2", L2Item.TYPE2_PET_WOLF);
+						break;
+					case L2Item.SLOT_GREATWOLF:
+						item.set.set("type2", L2Item.TYPE2_PET_GREATWOLF);
+						break;
+					case L2Item.SLOT_HATCHLING:
+						item.set.set("type2", L2Item.TYPE2_PET_HATCHLING);
+						break;
+					case L2Item.SLOT_BABYPET:
+						item.set.set("type2", L2Item.TYPE2_PET_BABY);
+						break;
+					default:
+						item.set.set("type2", L2Item.TYPE2_PET_STRIDER);
+						break;
+				}
+				item.set.set("bodypart", L2Item.SLOT_CHEST);
+			}
 		}
 		
 		return item;

@@ -27,6 +27,8 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.PetInfo;
 import net.sf.l2j.gameserver.network.serverpackets.PetItemList;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.templates.item.L2ArmorType;
+import net.sf.l2j.gameserver.templates.item.L2Item;
 
 public final class RequestPetUseItem extends L2GameClientPacket
 {
@@ -80,6 +82,14 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		//check if the item matches the pet
 		if (item.isEquipable())
 		{
+			if (item.getItem().getBodyPart() == L2Item.SLOT_NECK)
+			{
+				if (item.getItem().getItemType() == L2ArmorType.PET)
+				{
+					useItem(pet, item, activeChar);
+					return;
+				}
+			}
 			if (L2PetDataTable.isWolf(pet.getNpcId()) && // wolf
                     item.getItem().isForWolf())
 			{
@@ -87,31 +97,31 @@ public final class RequestPetUseItem extends L2GameClientPacket
 				return;
 			}
             else if (L2PetDataTable.isGreatWolf(pet.getNpcId()) && // Greatwolf
-                    item.getItem().isForGreatWolf())
+                    (item.getItem().isForGreatWolf()||item.getItem().isForWolf()))
             {
                 useItem(pet, item, activeChar);
                 return;
             }
             else if (L2PetDataTable.isWGreatWolf(pet.getNpcId()) && // White Greatwolf
-                    item.getItem().isForGreatWolf())
+            		(item.getItem().isForGreatWolf()||item.getItem().isForWolf()))
             {
                 useItem(pet, item, activeChar);
                 return;
             }
             else if (L2PetDataTable.isBlackWolf(pet.getNpcId()) && // Blackwolf
-                    item.getItem().isForGreatWolf())
+            		(item.getItem().isForGreatWolf()||item.getItem().isForWolf()))
             {
                 useItem(pet, item, activeChar);
                 return;
             }
             else if (L2PetDataTable.isFenrirWolf(pet.getNpcId()) && // Fenrir
-                    item.getItem().isForGreatWolf())
+            		(item.getItem().isForGreatWolf()||item.getItem().isForWolf()))
             {
                 useItem(pet, item, activeChar);
                 return;
             }
             else if (L2PetDataTable.isWFenrirWolf(pet.getNpcId()) && // white fenrir
-                    item.getItem().isForGreatWolf())
+            		(item.getItem().isForGreatWolf()||item.getItem().isForWolf()))
             {
                 useItem(pet, item, activeChar);
                 return;
