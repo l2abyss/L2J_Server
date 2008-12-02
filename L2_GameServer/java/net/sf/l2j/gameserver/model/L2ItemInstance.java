@@ -589,12 +589,12 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns if item is salable
+	 * Returns if item is sellable
 	 * @return boolean
 	 */
-	public boolean isSalable()
+	public boolean isSellable()
 	{
-		return isAugmented() ? false : _item.isSalable();
+		return isAugmented() ? false : _item.isSellable();
 	}
 	
     /**

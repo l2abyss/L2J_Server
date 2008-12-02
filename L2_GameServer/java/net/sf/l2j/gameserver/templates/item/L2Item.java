@@ -144,7 +144,7 @@ public abstract class L2Item
 	private final int _bodyPart;
 	private final int _referencePrice;
 	private final int _crystalCount;
-	private final boolean _salable;
+	private final boolean _sellable;
 	private final boolean _dropable;
 	private final boolean _destroyable;
 	private final boolean _tradeable;
@@ -193,7 +193,7 @@ public abstract class L2Item
 		_bodyPart = set.getInteger("bodypart");
 		_referencePrice = set.getInteger("price");
 		_crystalCount = set.getInteger("crystal_count", 0);
-		_salable = set.getBool("sellable", true);
+		_sellable = set.getBool("sellable", true);
 		_dropable = set.getBool("dropable", true);
 		_destroyable = set.getBool("destroyable", true);
 		_tradeable = set.getBool("tradeable", true);
@@ -398,9 +398,9 @@ public abstract class L2Item
 	 * Returns if the item can be sold
 	 * @return boolean
 	 */
-	public final boolean isSalable()
+	public final boolean isSellable()
 	{
-		return _salable;
+		return _sellable;
 	}
 	
 	/**
