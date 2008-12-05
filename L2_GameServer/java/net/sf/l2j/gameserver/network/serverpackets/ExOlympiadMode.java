@@ -27,7 +27,7 @@ public class ExOlympiadMode extends L2GameServerPacket
 {
 	// chc
 	private static final String _S__FE_2B_OLYMPIADMODE = "[S] FE:7c ExOlympiadMode";
-	private static int _mode;
+	private int _mode;
 
 
 	/**
