@@ -18,7 +18,6 @@ import java.util.Map;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
-
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.skills.SkillsEngine;
 import net.sf.l2j.gameserver.templates.item.L2WeaponType;

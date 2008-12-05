@@ -23,8 +23,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.Shutdown;
 import net.sf.l2j.gameserver.Announcements;
+import net.sf.l2j.gameserver.Shutdown;
 
 /**
  * @author -Nemesiss- L2M

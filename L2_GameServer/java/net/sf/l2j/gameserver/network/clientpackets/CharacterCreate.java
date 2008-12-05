@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
-import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,7 +39,6 @@ import net.sf.l2j.gameserver.network.serverpackets.CharCreateOk;
 import net.sf.l2j.gameserver.network.serverpackets.CharSelectionInfo;
 import net.sf.l2j.gameserver.templates.chars.L2PcTemplate;
 import net.sf.l2j.gameserver.templates.chars.L2PcTemplate.PcTemplateItem;
-import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.util.Util;
 
 /**

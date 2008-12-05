@@ -19,7 +19,6 @@ import java.util.List;
 
 import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.model.L2World;
-
 import net.sf.l2j.gameserver.pathfinding.AbstractNodeLoc;
 import net.sf.l2j.gameserver.pathfinding.Node;
 import net.sf.l2j.gameserver.pathfinding.PathFinding;

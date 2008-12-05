@@ -16,8 +16,8 @@ package net.sf.l2j.gameserver.model.entity;
 
 import java.util.Map;
 import java.util.logging.Logger;
-import javolution.util.FastMap;
 
+import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.Olympiad;
 import net.sf.l2j.gameserver.datatables.DoorTable;

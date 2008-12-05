@@ -16,8 +16,8 @@ package net.sf.l2j.gameserver.pathfinding.utils;
 
 import java.util.ArrayList;
 import java.util.Map;
-import javolution.util.FastMap;
 
+import javolution.util.FastMap;
 import net.sf.l2j.gameserver.pathfinding.Node;
 
 /**

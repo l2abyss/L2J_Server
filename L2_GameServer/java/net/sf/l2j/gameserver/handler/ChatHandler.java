@@ -18,7 +18,17 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.handler.chathandlers.*;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatAll;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatAlliance;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatClan;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatHeroVoice;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatParty;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatPartyRoomAll;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatPartyRoomCommander;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatPetition;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatShout;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatTell;
+import net.sf.l2j.gameserver.handler.chathandlers.ChatTrade;
 
 /**
  * This class handles all chat handlers

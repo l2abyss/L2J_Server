@@ -42,7 +42,6 @@ import java.util.Map.Entry;
 
 import javolution.util.FastComparator;
 import javolution.util.FastTable;
-
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.Announcements;

@@ -39,10 +39,10 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.script.SimpleScriptContext;
 
-import com.l2jserver.script.jython.JythonScriptEngine;
-
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
+
+import com.l2jserver.script.jython.JythonScriptEngine;
 
 /**
  * Caches script engines and provides funcionality for executing and managing scripts.<BR>

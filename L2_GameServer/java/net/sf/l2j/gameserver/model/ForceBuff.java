@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.SkillTable;
-import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.skills.effects.EffectForce;
 import net.sf.l2j.gameserver.util.Util;
 

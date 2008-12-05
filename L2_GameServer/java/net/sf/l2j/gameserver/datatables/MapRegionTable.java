@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
+import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.instancemanager.ArenaManager;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
@@ -36,7 +37,6 @@ import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.model.zone.type.L2ArenaZone;
 import net.sf.l2j.gameserver.model.zone.type.L2ClanHallZone;
-import net.sf.l2j.gameserver.SevenSigns;
 
 /**
  * This class ...

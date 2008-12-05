@@ -14,8 +14,8 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
-import java.util.Map;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
