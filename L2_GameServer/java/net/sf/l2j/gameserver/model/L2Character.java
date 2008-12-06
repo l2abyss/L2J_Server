@@ -4425,8 +4425,7 @@ public abstract class L2Character extends L2Object
 					|| this instanceof L2RiftInvaderInstance))
 			{
 				if(this instanceof L2Summon) ((L2Summon)this).setFollowStatus(false);
-				getAI().notifyEvent(CtrlEvent.EVT_ARRIVED);
-				getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE); //needed?
+				getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 				return;
 			}
 		}
