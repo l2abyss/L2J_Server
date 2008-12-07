@@ -185,7 +185,11 @@ public class L2TrapInstance extends L2Trap
 		}
 		unSummon(getOwner());
 		
-		for (L2Object atked : _skill.getTargetList(this))
+		L2Object[] targetList = _skill.getTargetList(this);
+		if (targetList == null) 
+			return;
+		
+		for (L2Object atked : targetList)
 		{
 			if (atked == getOwner())
 				continue;
@@ -193,13 +197,8 @@ public class L2TrapInstance extends L2Trap
 			if (atked instanceof L2PcInstance)
 				continue;
 			
-			else if (atked != null)
-			{
-				if (atked instanceof L2Attackable)
-				{
-					((L2Attackable)atked).addDamage(getOwner(), 1);
-				}
-			}
+			if (atked instanceof L2Attackable)
+				((L2Attackable)atked).addDamage(getOwner(), 1);
 		}
 	}
 	
