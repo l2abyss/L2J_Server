@@ -1408,7 +1408,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			if (!_selfAnalysis.isHealer)
 			{
 				clientStopMoving(null);
-				_accessor.doAttack(getAttackTarget());
+				_accessor.doAttack(_mostHatedAnalysis.character);
 			}
 		}
 	}
