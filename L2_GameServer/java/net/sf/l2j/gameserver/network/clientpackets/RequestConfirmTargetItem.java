@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -21,6 +22,7 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExPutItemResultForVariationMake;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.item.L2Item;
+import net.sf.l2j.gameserver.util.Util;
 
 /**
  * Format:(ch) d
@@ -51,7 +53,11 @@ public final class RequestConfirmTargetItem extends L2GameClientPacket
 		L2ItemInstance item = (L2ItemInstance)L2World.getInstance().findObject(_itemObjId);
 
 		if (item == null) return;
-
+		if (item.getOwnerId() != activeChar.getObjectId())
+		{
+			Util.handleIllegalPlayerAction(getClient().getActiveChar(),"Warning!! Character "+getClient().getActiveChar().getName()+" of account "+getClient().getActiveChar().getAccountName()+" tryied to use augment on weapon that doesn't own.",Config.DEFAULT_PUNISH);
+			return;
+		}
 		if (activeChar.getLevel() < 46)
 		{
 			activeChar.sendMessage("You have to be level 46 in order to augment an item");

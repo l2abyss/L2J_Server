@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -22,6 +23,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ExVariationCancelResult;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.item.L2Item;
+import net.sf.l2j.gameserver.util.Util;
 
 /**
  * Format(ch) d
@@ -53,7 +55,11 @@ public final class RequestRefineCancel extends L2GameClientPacket
 			activeChar.sendPacket(new ExVariationCancelResult(0));
 			return;
 		}
-
+		if (targetItem.getOwnerId() != activeChar.getObjectId())
+		{
+			Util.handleIllegalPlayerAction(getClient().getActiveChar(),"Warning!! Character "+getClient().getActiveChar().getName()+" of account "+getClient().getActiveChar().getAccountName()+" tryied to augment item that doesn't own.",Config.DEFAULT_PUNISH);
+			return;
+		}
 		// cannot remove augmentation from a not augmented item
 		if (!targetItem.isAugmented())
 		{

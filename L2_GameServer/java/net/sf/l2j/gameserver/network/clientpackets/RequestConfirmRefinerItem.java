@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -21,6 +22,7 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExPutIntensiveResultForVariationMake;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.item.L2Item;
+import net.sf.l2j.gameserver.util.Util;
 
 /**
  * Fromat(ch) dd
@@ -59,7 +61,12 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 		L2ItemInstance refinerItem = (L2ItemInstance)L2World.getInstance().findObject(_refinerItemObjId);
 
 		if (targetItem == null || refinerItem == null) return;
-
+		if (targetItem.getOwnerId() != activeChar.getObjectId()
+				|| refinerItem.getOwnerId() != activeChar.getObjectId())
+		{
+			Util.handleIllegalPlayerAction(getClient().getActiveChar(),"Warning!! Character "+getClient().getActiveChar().getName()+" of account "+getClient().getActiveChar().getAccountName()+" tryied to augment item that doesn't own.",Config.DEFAULT_PUNISH);
+			return;
+		}
 		int itemGrade = targetItem.getItem().getItemGrade();
 		int refinerItemId = refinerItem.getItem().getItemId();
 
