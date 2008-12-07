@@ -467,7 +467,8 @@ public class CharEffectList
 		}
 
 		FastList<L2Effect> effectList = newEffect.getSkill().isDebuff() ? _debuffs : _buffs;
-		L2Effect tempEffect, tempEffect2;
+		L2Effect tempEffect = null, tempEffect2 = null;
+		boolean stopNewEffect = false;
 
 		synchronized(effectList)
 		{
@@ -480,19 +481,25 @@ public class CharEffectList
 						&& e.getStackOrder() == newEffect.getStackOrder())
 				{
 					if (!newEffect.getSkill().isDebuff())
-						e.exit();
+					{
+						tempEffect = e; // exit this
+						break;
+					}
 					else
 					{
 						// Started scheduled timer needs to be canceled.
-						newEffect.stopEffectTask();
-						return;
+						stopNewEffect = true;
+						break;
 					}
 				}
 			}
 		}
 
+		if (tempEffect != null) 
+			tempEffect.exit();
+		
 		// if max buffs, no herb effects are used, even if they would replace one old
-		if (getBuffCount() >= _owner.getMaxBuffCount() && newEffect.isHerbEffect())
+		if (stopNewEffect || (getBuffCount() >= _owner.getMaxBuffCount() && newEffect.isHerbEffect()))
 		{ 
 			newEffect.stopEffectTask(); 
 			return; 
