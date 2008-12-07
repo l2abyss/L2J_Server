@@ -276,7 +276,7 @@ public class L2PetInstance extends L2Summon
 	{
 		for (L2ItemInstance item : getInventory().getItems())
 		    if (item.getLocation() == L2ItemInstance.ItemLocation.PET_EQUIP &&
-                    item.getItem().getType1() == L2Item.TYPE2_WEAPON)
+                    item.getItem().getType2() == L2Item.TYPE2_WEAPON)
                 return item;
 
         return null;
