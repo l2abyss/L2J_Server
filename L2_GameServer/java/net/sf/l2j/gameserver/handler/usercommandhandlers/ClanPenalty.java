@@ -15,6 +15,8 @@
 
 package net.sf.l2j.gameserver.handler.usercommandhandlers;
 
+import java.text.SimpleDateFormat;
+
 import javolution.text.TextBuilder;
 import net.sf.l2j.gameserver.handler.IUserCommandHandler;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -40,16 +42,34 @@ public class ClanPenalty implements IUserCommandHandler
 		if (id != COMMAND_IDS[0])
 			return false;
 		
-		String penaltyStr = "No current penalties in effect.";
-		
+		boolean penalty = false;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TextBuilder htmlContent = new TextBuilder("<html><body>");
-		htmlContent.append("<center><table width=\"270\" border=\"0\" bgcolor=\"111111\">");
-		htmlContent.append("<tr><td width=\"170\">Penalty</td>");
-		htmlContent.append("<td width=\"100\" align=\"center\">Expiration Date</td></tr>");
-		htmlContent.append("</table><table width=\"270\" border=\"0\">");
-		htmlContent.append("<tr><td>" + penaltyStr + "</td></tr>");
-		htmlContent.append("</table></center>");
-		htmlContent.append("</body></html>");
+		htmlContent.append("<center><table width=270 border=0 bgcolor=111111>");
+		htmlContent.append("<tr><td width=170>Penalty</td>");
+		htmlContent.append("<td width=100 align=center>Expiration Date</td></tr>");
+		htmlContent.append("</table><table width=270 border=0><tr>");
+		
+		if (activeChar.getClanJoinExpiryTime() > System.currentTimeMillis())
+		{
+			htmlContent.append("<td width=170>Unable to join a clan.</td>");
+			htmlContent.append("<td width=100 align=center>"+format.format(activeChar.getClanJoinExpiryTime())+"</td>");
+			penalty = true;
+		}
+		if (activeChar.getClanCreateExpiryTime() > System.currentTimeMillis())
+		{
+			htmlContent.append("<td width=170>Unable to create a clan.</td>");
+			htmlContent.append("<td width=100 align=center>"+format.format(activeChar.getClanCreateExpiryTime())+"</td>");
+			penalty = true;
+		}
+		if (!penalty)
+		{
+			htmlContent.append("<td width=170>No penalty is imposed.</td>");
+			htmlContent.append("<td width=100 align=center> </td>");
+		}
+		
+		htmlContent.append("</tr></table><img src=\"L2UI.SquareWhite\" width=270 height=1>");
+		htmlContent.append("</center></body></html>");
 		
 		NpcHtmlMessage penaltyHtml = new NpcHtmlMessage(0);
 		penaltyHtml.setHtml(htmlContent.toString());

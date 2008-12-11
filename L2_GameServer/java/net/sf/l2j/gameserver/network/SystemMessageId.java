@@ -13652,6 +13652,12 @@ public enum SystemMessageId
 	S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1(2305),
 
 	/**
+	 *  ID: 2326<br>
+	 *  Message: You have acquired 50 Clan's Fame Points..
+	 */
+	ACQUIRED_50_CLAN_FAME_POINTS(2326),
+	
+	/**
 	 *  ID: 2327<br>
 	 *  Message: You don't have enough reputation score.
 	 */

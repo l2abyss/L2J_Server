@@ -38,7 +38,7 @@ public class PledgeShowInfoUpdate extends L2GameServerPacket
 		writeC(0x8e);
 		//sending empty data so client will ask all the info in response ;)
 		writeD(_clan.getClanId());
-		writeD(0);
+		writeD(_clan.getCrestId());
 		writeD(_clan.getLevel()); //clan level
 		writeD(_clan.getHasCastle());
 		writeD(_clan.getHasHideout());
@@ -47,12 +47,10 @@ public class PledgeShowInfoUpdate extends L2GameServerPacket
 		writeD(_clan.getReputationScore()); // clan reputation score
 		writeD(0);
 		writeD(0);
-		writeD(0x00);
-		writeD(0); //c5
-		writeS(""); //c5
-		writeD(0); //c5
-		writeD(0); //c5
-        writeD(0x00);
+		writeD(_clan.getAllyId());
+		writeS(_clan.getAllyName()); //c5
+		writeD(_clan.getAllyCrestId()); //c5
+		writeD(_clan.isAtWar() ? 1 : 0); //c5
 	}
 
 	/* (non-Javadoc)
