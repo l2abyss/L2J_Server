@@ -13652,6 +13652,12 @@ public enum SystemMessageId
 	S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1(2305),
 
 	/**
+	 *  ID: 2327<br>
+	 *  Message: You don't have enough reputation score.
+	 */
+	NOT_ENOUGH_FAME_POINTS(2327),
+	
+	/**
 	* ID: 2336<br>
 	* Message: Half Kill!
 	*/
