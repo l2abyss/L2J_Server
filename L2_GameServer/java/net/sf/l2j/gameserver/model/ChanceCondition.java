@@ -36,6 +36,7 @@ public final class ChanceCondition
 	public static final int EVT_HIT_BY_SKILL = 1024;
 	public static final int EVT_HIT_BY_OFFENSIVE_SKILL = 2048;
 	public static final int EVT_HIT_BY_GOOD_MAGIC = 4096;
+	public static final int EVT_EVADED_HIT = 8192;
 
 	public static enum TriggerType
 	{
@@ -64,7 +65,9 @@ public final class ChanceCondition
 		// An evil skill was casted on you
 		ON_HIT_BY_OFFENSIVE_SKILL(2048),
 		// A good skill was casted on you
-		ON_HIT_BY_GOOD_MAGIC(4096);
+		ON_HIT_BY_GOOD_MAGIC(4096),
+		// Evading melee attack
+		ON_EVADED_HIT(8192);
 
 		private int _mask;
 

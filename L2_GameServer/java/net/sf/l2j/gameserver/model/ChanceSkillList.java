@@ -65,6 +65,11 @@ public class ChanceSkillList extends FastMap<L2Skill, ChanceCondition>
 
 		onEvent(event, target);
 	}
+	
+	public void onEvadedHit(L2Character attacker)
+	{
+		onEvent(ChanceCondition.EVT_EVADED_HIT, attacker);
+	}
 
 	public void onSkillHit(L2Character target, boolean ownerWasHit, boolean wasMagic, boolean wasOffensive)
 	{
