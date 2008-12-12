@@ -8535,7 +8535,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	// returns false if the change of mount type fails.
 	public boolean setMount(int npcId, int mountType)
 	{
-		if (checkLandingState() && mountType == 2)
+		if (checkLandingState() && mountType == 0 && isFlying())
 			return false;
 
 		switch(mountType)
