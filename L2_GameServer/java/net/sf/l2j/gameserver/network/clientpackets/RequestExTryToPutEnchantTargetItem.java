@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -24,7 +23,6 @@ import net.sf.l2j.gameserver.network.serverpackets.RequestEnchant;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.templates.item.L2WeaponType;
-import net.sf.l2j.gameserver.util.Util;
 
 /**
  *
@@ -68,11 +66,7 @@ public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 			
 			if (targetItem == null || enchantScroll == null)
 				return;
-			if (targetItem.getOwnerId() != activeChar.getObjectId())
-			{
-				Util.handleIllegalPlayerAction(getClient().getActiveChar(),"Warning!! Character "+getClient().getActiveChar().getName()+" of account "+getClient().getActiveChar().getAccountName()+" tryied to to enchant item that doesn't owns.",Config.DEFAULT_PUNISH);
-				return;
-			}
+
 			if (targetItem.isEtcItem() || targetItem.isWear() || targetItem.getItem().getItemType() == L2WeaponType.ROD || targetItem.isHeroItem() || targetItem.getItemId() >= 7816 && targetItem.getItemId() <= 7831
 					|| targetItem.isShadowItem() || targetItem.isCommonItem())
 			{
@@ -80,6 +74,29 @@ public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 				activeChar.setActiveEnchantItem(null);
 				activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 				return;
+			}
+			
+			switch (targetItem.getLocation())
+			{
+				case INVENTORY:
+				case PAPERDOLL:
+				{
+					if (targetItem.getOwnerId() != activeChar.getObjectId())
+					{
+						activeChar.sendPacket(new SystemMessage(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS));
+						activeChar.setActiveEnchantItem(null);
+						activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
+						return;
+					}
+					break;
+				}
+				default:
+				{
+					activeChar.sendPacket(new SystemMessage(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS));
+					activeChar.setActiveEnchantItem(null);
+					activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
+					return;
+				}
 			}
 			
 			int itemType2 = targetItem.getItem().getType2();
