@@ -110,8 +110,9 @@ public class Mdam implements ISkillHandler
 			}
 			
 			boolean mcrit = Formulas.getInstance().calcMCrit(activeChar.getMCriticalHit(target, skill));
+			byte shld = Formulas.getInstance().calcShldUse(activeChar, target);
 			
-			int damage = (int) Formulas.getInstance().calcMagicDam(activeChar, target, skill, ss, bss, mcrit);
+			int damage = (int) Formulas.getInstance().calcMagicDam(activeChar, target, skill, shld, ss, bss, mcrit);
 			if (skill.getMaxSoulConsumeCount() > 0 && activeChar instanceof L2PcInstance && ((L2PcInstance) activeChar).getSouls() > 0)
 			{
 				switch (((L2PcInstance) activeChar).getSouls())
@@ -159,7 +160,7 @@ public class Mdam implements ISkillHandler
 					{
 						// activate attacked effects, if any
 						target.stopSkillEffects(skill.getId());
-						if (Formulas.getInstance().calcSkillSuccess(activeChar, target, skill, false, ss, bss))
+						if (Formulas.getInstance().calcSkillSuccess(activeChar, target, skill, shld, false, ss, bss))
 							skill.getEffects(activeChar, target);
 						else
 						{
@@ -224,7 +225,8 @@ public class Mdam implements ISkillHandler
 			}
 			
 			boolean mcrit = Formulas.getInstance().calcMCrit(activeCubic.getMCriticalHit(target, skill));
-			int damage = (int) Formulas.getInstance().calcMagicDam(activeCubic, target, skill, mcrit);
+			byte shld = Formulas.getInstance().calcShldUse(activeCubic.getOwner(), target);
+			int damage = (int) Formulas.getInstance().calcMagicDam(activeCubic, target, skill, mcrit, shld);
 			
 			// if target is reflecting the skill then no damage is done
 			if (target.reflectSkill(skill))
@@ -250,7 +252,7 @@ public class Mdam implements ISkillHandler
 					target.stopSkillEffects(skill.getId());
 					if (target.getFirstEffect(skill) != null)
 						target.removeEffect(target.getFirstEffect(skill));
-					if (Formulas.getInstance().calcCubicSkillSuccess(activeCubic, target, skill))
+					if (Formulas.getInstance().calcCubicSkillSuccess(activeCubic, target, skill, shld))
 						skill.getEffects(activeCubic, target);
 					else
 					{

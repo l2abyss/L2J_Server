@@ -36,13 +36,13 @@ public class Attack extends L2GameServerPacket
     	protected int _damage;
     	protected int _flags;
 
-        Hit(L2Object target, int damage, boolean miss, boolean crit, boolean shld)
+        Hit(L2Object target, int damage, boolean miss, boolean crit, byte shld)
         {
             _targetId = target.getObjectId();
             _damage = damage;
-            if (soulshot) _flags |= 0x10 | _grade;
+            if (soulshot)  _flags |= 0x10 | _grade;
             if (crit)      _flags |= 0x20;
-            if (shld)      _flags |= 0x40;
+            if (shld > 0)  _flags |= 0x40;
             if (miss)      _flags |= 0x80;
 
         }
@@ -77,7 +77,7 @@ public class Attack extends L2GameServerPacket
 	/**
 	 * Add this hit (target, damage, miss, critical, shield) to the Server-Client packet Attack.<BR><BR>
 	 */
-	public void addHit(L2Object target, int damage, boolean miss, boolean crit, boolean shld)
+	public void addHit(L2Object target, int damage, boolean miss, boolean crit, byte shld)
 	{
 		// Get the last position in the hits table
 		int pos = _hits.length;

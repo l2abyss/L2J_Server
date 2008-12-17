@@ -99,8 +99,9 @@ public class L2SkillDrain extends L2Skill {
             	
 
 			boolean mcrit = Formulas.getInstance().calcMCrit(activeChar.getMCriticalHit(target, this));
+			byte shld = Formulas.getInstance().calcShldUse(activeChar, target);
 			int damage = (int)Formulas.getInstance().calcMagicDam(
-					activeChar, target, this, ss, bss, mcrit);
+					activeChar, target, this, shld, ss, bss, mcrit);
 			
 			int _drain = 0;
 			int _cp = (int)target.getCurrentCp();
@@ -153,7 +154,7 @@ public class L2SkillDrain extends L2Skill {
                 	{
                 		// activate attacked effects, if any
                         target.stopSkillEffects(getId());
-                        if (Formulas.getInstance().calcSkillSuccess(activeChar, target, this, false, ss, bss))
+                        if (Formulas.getInstance().calcSkillSuccess(activeChar, target, this, shld, false, ss, bss))
                             getEffects(activeChar, target);
                         else
                         {
@@ -194,7 +195,9 @@ public class L2SkillDrain extends L2Skill {
 				continue;
 
 			boolean mcrit = Formulas.getInstance().calcMCrit(activeCubic.getMCriticalHit(target, this));
-			int damage = (int)Formulas.getInstance().calcMagicDam(activeCubic, target, this, mcrit);
+			byte shld = Formulas.getInstance().calcShldUse(activeCubic.getOwner(), target);
+			
+			int damage = (int)Formulas.getInstance().calcMagicDam(activeCubic, target, this, mcrit, shld);
 			if (Config.DEBUG)
     			_log.info("L2SkillDrain: useCubicSkill() -> damage = " + damage);
 			
@@ -202,9 +205,9 @@ public class L2SkillDrain extends L2Skill {
 			L2PcInstance owner = activeCubic.getOwner();
 			double hp = ((owner.getCurrentHp() + hpAdd) > owner.getMaxHp() ? owner.getMaxHp() : (owner.getCurrentHp() + hpAdd));
 
-            owner.setCurrentHp(hp); 
+            owner.setCurrentHp(hp);
             
-			StatusUpdate suhp = new StatusUpdate(owner.getObjectId()); 
+			StatusUpdate suhp = new StatusUpdate(owner.getObjectId());
 			suhp.addAttribute(StatusUpdate.CUR_HP, (int)hp); 
 			owner.sendPacket(suhp);
 			

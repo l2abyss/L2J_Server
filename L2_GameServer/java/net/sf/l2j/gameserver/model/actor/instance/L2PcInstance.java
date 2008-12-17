@@ -4084,7 +4084,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 *
 	 */
 	@Override
-	protected void onHitTimer(L2Character target, int damage, boolean crit, boolean miss, boolean soulshot, boolean shld)
+	protected void onHitTimer(L2Character target, int damage, boolean crit, boolean miss, boolean soulshot, byte shld)
 	{
 		super.onHitTimer(target, damage, crit, miss, soulshot, shld);
 	}

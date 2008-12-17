@@ -964,7 +964,7 @@ public abstract class L2Character extends L2Object
 	private boolean doAttackHitByBow(Attack attack, L2Character target, int sAtk, int reuse)
 	{
 		int damage1 = 0;
-		boolean shld1 = false;
+		byte shld1 = 0;
 		boolean crit1 = false;
 
 		// Calculate if hit is missed or not
@@ -1036,7 +1036,7 @@ public abstract class L2Character extends L2Object
     private boolean doAttackHitByCrossBow(Attack attack, L2Character target, int sAtk, int reuse)
     {
         int damage1 = 0;
-        boolean shld1 = false;
+        byte shld1 = 0;
         boolean crit1 = false;
 
         // Calculate if hit is missed or not
@@ -1105,8 +1105,8 @@ public abstract class L2Character extends L2Object
 	{
 		int damage1 = 0;
 		int damage2 = 0;
-		boolean shld1 = false;
-		boolean shld2 = false;
+		byte shld1 = 0;
+		byte shld2 = 0;
 		boolean crit1 = false;
 		boolean crit2 = false;
 
@@ -1289,7 +1289,7 @@ public abstract class L2Character extends L2Object
 	private boolean doAttackHitSimple(Attack attack, L2Character target, double attackpercent, int sAtk)
 	{
 		int damage1 = 0;
-		boolean shld1 = false;
+		byte shld1 = 0;
 		boolean crit1 = false;
 
 		// Calculate if hit is missed or not
@@ -2279,10 +2279,10 @@ public abstract class L2Character extends L2Object
 		int _damage;
 		boolean _crit;
 		boolean _miss;
-		boolean _shld;
+		byte _shld;
 		boolean _soulshot;
 
-		public HitTask(L2Character target, int damage, boolean crit, boolean miss, boolean soulshot, boolean shld)
+		public HitTask(L2Character target, int damage, boolean crit, boolean miss, boolean soulshot, byte shld)
 		{
 			_hitTarget = target;
 			_damage = damage;
@@ -4911,7 +4911,7 @@ public abstract class L2Character extends L2Object
 	 * @param shld True if shield is efficient
 	 *
 	 */
-	protected void onHitTimer(L2Character target, int damage, boolean crit, boolean miss, boolean soulshot, boolean shld)
+	protected void onHitTimer(L2Character target, int damage, boolean crit, boolean miss, boolean soulshot, byte shld)
 	{
 		// If the attacker/target is dead or use fake death, notify the AI with EVT_CANCEL
 		// and send a Server->Client packet ActionFailed (if attacker is a L2PcInstance)
@@ -4975,12 +4975,12 @@ public abstract class L2Character extends L2Object
 			sendDamageMessage(target, damage, false, crit, miss);
 
 			// If L2Character target is a L2PcInstance, send a system message
-			if (target instanceof L2PcInstance)
+			/*if (target instanceof L2PcInstance)
 			{
 				L2PcInstance enemy = (L2PcInstance)target;
 				enemy.getAI().clientStartAutoAttack();
 
-				if (shld)
+				if (shld && 100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100))
 				{
 		           if (100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100))
 		           {  
@@ -4991,7 +4991,7 @@ public abstract class L2Character extends L2Object
 		              enemy.sendPacket(new SystemMessage(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL)); 
 				}
 			}
-            else if (target instanceof L2Summon)
+            else */if (target instanceof L2Summon)
             {
                 L2Summon activeSummon = (L2Summon)target;
                 L2PcInstance owner = activeSummon.getOwner();

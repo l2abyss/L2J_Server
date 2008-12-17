@@ -1180,15 +1180,22 @@ public final class Formulas
 		return 1.5; // If all is true, then modifer will be 50% more
 	}
 	/** Calculate blow damage based on cAtk */
-	public double calcBlowDamage(L2Character attacker, L2Character target, L2Skill skill, boolean shld, boolean ss)
+	public double calcBlowDamage(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss)
 	{
 		double power = skill.getPower();
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
 		if(ss)
 			damage *= 2.;
-		if(shld)
-			defence += target.getShldDef();
+		switch(shld)
+		{
+			case 1:
+				defence += target.getShldDef();
+				break;
+			case 2: // perfect block
+				return 1;
+		}
+		
 		if(ss && skill.getSSBoost()>0)
 			power *= skill.getSSBoost();
 
@@ -1246,10 +1253,23 @@ public final class Formulas
 	 * @return damage points
 	 */
 	public final double calcPhysDam(L2Character attacker, L2Character target, L2Skill skill,
-									boolean shld, boolean crit, boolean dual, boolean ss)
+									byte shld, boolean crit, boolean dual, boolean ss)
 	{
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
+		
+		switch (shld)
+		{
+			case 1:
+			{
+				if (!Config.ALT_GAME_SHIELD_BLOCKS)
+					defence += target.getShldDef();
+				break;
+			}
+			case 2: // perfect block
+				return 1.;
+		}
+		
 		if (ss) damage *= 2;
 		if (skill != null)
 		{
@@ -1320,10 +1340,10 @@ public final class Formulas
 		if (crit)
 			damage += attacker.getCriticalDmg(target, damage) * target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, skill != null ? skill : null) + attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill);
 		
-		if (shld && !Config.ALT_GAME_SHIELD_BLOCKS)
+		/*if (shld && !Config.ALT_GAME_SHIELD_BLOCKS)
 		{
 			defence += target.getShldDef();
-		}
+		}*/
 		//if (!(attacker instanceof L2RaidBossInstance) &&
 		/*
 		if ((attacker instanceof L2NpcInstance || attacker instanceof L2SiegeGuardInstance))
@@ -1355,7 +1375,7 @@ public final class Formulas
 		damage += Rnd.nextDouble() * damage / 10;
 		//		damage += _rnd.nextDouble()* attacker.getRandomDamage(target);
 		//		}
-		if (shld && Config.ALT_GAME_SHIELD_BLOCKS)
+		if (shld > 0 && Config.ALT_GAME_SHIELD_BLOCKS)
 		{
 			damage -= target.getShldDef();
 			if (damage < 0) damage = 0;
@@ -1415,10 +1435,20 @@ public final class Formulas
 	}
 
 	public final double calcMagicDam(L2Character attacker, L2Character target, L2Skill skill,
-										boolean ss, boolean bss, boolean mcrit)
-	{
+										byte shld, boolean ss, boolean bss, boolean mcrit)
+	{	
 		double mAtk = attacker.getMAtk(target, skill);
 		double mDef = target.getMDef(attacker, skill);
+		
+		switch (shld)
+		{
+			case 1:
+				mDef += target.getShldDef(); // kamael
+				break;
+			case 2: // perfect block
+				return 1;
+		}
+		
 		if (bss) mAtk *= 4;
 		else if (ss) mAtk *= 2;
 
@@ -1485,10 +1515,19 @@ public final class Formulas
 		return damage;
 	}
 	
-	public final double calcMagicDam(L2CubicInstance attacker, L2Character target, L2Skill skill, boolean mcrit)
+	public final double calcMagicDam(L2CubicInstance attacker, L2Character target, L2Skill skill, boolean mcrit, byte shld)
 	{
 		double mAtk = attacker.getMAtk();
 		double mDef = target.getMDef(attacker.getOwner(), skill);
+		
+		switch (shld)
+		{
+			case 1:
+				mDef += target.getShldDef(); // kamael
+				break;
+			case 2: // perfect block
+				return 1;
+		}
 		
 		double damage = 91 * Math.sqrt(mAtk) / mDef * skill.getPower() * calcSkillVulnerability(target, skill);
 		L2PcInstance owner = attacker.getOwner();
@@ -1759,23 +1798,65 @@ public final class Formulas
 		return chance < Rnd.get(1000);
 	}
 
-	/** Returns true if shield defence successful */
-	public boolean calcShldUse(L2Character attacker, L2Character target)
+	/**
+	 * Returns:<br>
+	 * 0 = shield defense doesn't succeed<br>
+	 * 1 = shield defense succeed<br>
+	 * 2 = perfect block<br>
+	 * 
+	 * @param attacker
+	 * @param target
+	 * @param sendSysMsg
+	 * @return
+	 */
+	public byte calcShldUse(L2Character attacker, L2Character target, boolean sendSysMsg)
 	{
 		double shldRate = target.calcStat(Stats.SHIELD_RATE, 0, attacker, null)
 			* DEXbonus[target.getDEX()];
-		if (shldRate == 0.0) return false;
+		if (shldRate == 0.0) return 0;
         int degreeside = (int)target.calcStat(Stats.SHIELD_DEFENCE_ANGLE, 0, null, null) + 120;
         if (degreeside < 360 && (!target.isFacing(attacker, degreeside)))
         {
-            return false;
+            return 0;
         }
+        
+        byte shldSuccess = 0;
         // if attacker 
 		// if attacker use bow and target wear shield, shield block rate is multiplied by 1.3 (30%)
         L2Weapon at_weapon = attacker.getActiveWeaponItem();
         if (at_weapon != null && at_weapon.getItemType() == L2WeaponType.BOW)
 			shldRate *= 1.3;
-		return shldRate > Rnd.get(100);
+        
+        if (shldRate > 0 && 100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100))
+        {
+        	shldSuccess = 2;
+        }
+        else if (shldRate > Rnd.get(100))
+        {
+        	shldSuccess = 1;
+        }
+        
+        if (sendSysMsg && target instanceof L2PcInstance)
+		{
+			L2PcInstance enemy = (L2PcInstance)target;
+			
+			switch (shldSuccess)
+			{
+				case 1:
+					enemy.sendPacket(new SystemMessage(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL));
+					break;
+				case 2:
+					enemy.sendPacket(new SystemMessage(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS));
+					break;
+			}
+		}
+        
+		return shldSuccess;
+	}
+	
+	public byte calcShldUse(L2Character attacker, L2Character target)
+	{
+		return calcShldUse(attacker, target, true);
 	}
 
 	public boolean calcMagicAffected(L2Character actor, L2Character target, L2Skill skill)
@@ -1976,8 +2057,13 @@ public final class Formulas
 		return multiplier;
 	}
 
-	public boolean calcSkillSuccess(L2Character attacker, L2Character target, L2Skill skill, boolean ss, boolean sps, boolean bss)
+	public boolean calcSkillSuccess(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
 	{
+		if (shld == 2) // perfect block
+		{
+			return false;
+		}
+		
 		L2SkillType type = skill.getSkillType();
 
 		int value = (int) skill.getPower();
@@ -2024,7 +2110,7 @@ public final class Formulas
 
 		// Add Matk/Mdef Bonus
 		if (skill.isMagic())
-			rate = (int) (rate * Math.pow((double) attacker.getMAtk(target, skill) / target.getMDef(attacker, skill), 0.2));
+			rate = (int) (rate * Math.pow((double) attacker.getMAtk(target, skill) / (target.getMDef(attacker, skill)+(shld==1 ? target.getShldDef() : 0)), 0.2));
 
 		// Add Bonus for Sps/SS
 		if (ssmodifier != 100)
@@ -2094,8 +2180,12 @@ public final class Formulas
 		return (Rnd.get(100) < rate);
 	}
 	
-	public boolean calcCubicSkillSuccess(L2CubicInstance attacker, L2Character target, L2Skill skill)
+	public boolean calcCubicSkillSuccess(L2CubicInstance attacker, L2Character target, L2Skill skill, byte shld)
 	{
+		if (shld == 2) // perfect block
+		{
+			return false;
+		}
 		L2SkillType type = skill.getSkillType();
 		
 		if (target.isRaid()
@@ -2129,7 +2219,7 @@ public final class Formulas
 		
 		int rate = (int) ((value * statmodifier + lvlmodifier) * resmodifier);
 		if (skill.isMagic())
-			rate += (int) (Math.pow((double) attacker.getMAtk() / target.getMDef(attacker.getOwner(), skill), 0.2) * 100) - 100;
+			rate += (int) (Math.pow((double) attacker.getMAtk() / (target.getMDef(attacker.getOwner(), skill) + (shld == 1 ? target.getShldDef() : 0)), 0.2) * 100) - 100;
 		
 		if (rate > 99) 
 			rate = 99;

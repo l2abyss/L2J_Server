@@ -134,9 +134,10 @@ public class L2SkillElemental extends L2Skill {
 			}
 
 			boolean mcrit = Formulas.getInstance().calcMCrit(activeChar.getMCriticalHit(target, this));
-
+			byte shld = Formulas.getInstance().calcShldUse(activeChar, target);
+			
 			int damage = (int)Formulas.getInstance().calcMagicDam(
-					activeChar, target, this, ss, bss, mcrit);
+					activeChar, target, this, shld, ss, bss, mcrit);
 
 			if (damage > 0)
 			{

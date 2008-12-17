@@ -102,7 +102,8 @@ public class CpDam implements ISkillHandler
 				continue;
 			}
 			
-			if (!Formulas.getInstance().calcSkillSuccess(activeChar, target, skill, ss, sps, bss))
+			byte shld = Formulas.getInstance().calcShldUse(activeChar, target);
+			if (!Formulas.getInstance().calcSkillSuccess(activeChar, target, skill, shld, ss, sps, bss))
 				return;
 			int damage = (int) (target.getCurrentCp() * (1 - skill.getPower()));
 			

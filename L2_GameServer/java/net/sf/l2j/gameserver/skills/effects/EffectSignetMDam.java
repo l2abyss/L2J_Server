@@ -172,7 +172,8 @@ final class EffectSignetMDam extends L2Effect
 			for (L2Character target : targets)
 			{
 				boolean mcrit = Formulas.getInstance().calcMCrit(caster.getMCriticalHit(target, getSkill()));
-				int mdam = (int) Formulas.getInstance().calcMagicDam(caster, target, getSkill(), ss, bss, mcrit);
+				byte shld = Formulas.getInstance().calcShldUse(caster, target);
+				int mdam = (int) Formulas.getInstance().calcMagicDam(caster, target, getSkill(), shld, ss, bss, mcrit);
 				
 				if (target instanceof L2Summon)
 				{

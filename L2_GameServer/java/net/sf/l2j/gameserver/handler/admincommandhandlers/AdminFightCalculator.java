@@ -219,8 +219,8 @@ public class AdminFightCalculator implements IAdminCommandHandler
 			boolean _miss1 = f.calcHitMiss(npc1, npc2);
 			if (_miss1)
 				miss1++;
-			boolean _shld1 = f.calcShldUse(npc1, npc2);
-			if (_shld1)
+			byte _shld1 = f.calcShldUse(npc1, npc2, false);
+			if (_shld1 > 0)
 				shld1++;
 			boolean _crit1 = f.calcCrit(npc1.getCriticalHit(npc2, null));
 			if (_crit1)
@@ -247,8 +247,8 @@ public class AdminFightCalculator implements IAdminCommandHandler
 			boolean _miss2 = f.calcHitMiss(npc2, npc1);
 			if (_miss2)
 				miss2++;
-			boolean _shld2 = f.calcShldUse(npc2, npc1);
-			if (_shld2)
+			byte _shld2 = f.calcShldUse(npc2, npc1, false);
+			if (_shld2 > 0)
 				shld2++;
 			boolean _crit2 = f.calcCrit(npc2.getCriticalHit(npc1, null));
 			if (_crit2)
