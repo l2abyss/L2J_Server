@@ -18,13 +18,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
+import javolution.util.FastMap;
+import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.Announcements;
 import net.sf.l2j.gameserver.FortUpdater;
-import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.DoorTable;
@@ -53,6 +56,180 @@ public class Fort
 	private Calendar _lastOwnedTime;
 	private L2FortZone _zone;
 	private L2Clan _formerOwner = null;
+	private Map<Integer, FortFunction> _function;
+	
+	/** Fortress Functions */
+	public static final int FUNC_TELEPORT = 1;
+	public static final int FUNC_RESTORE_HP = 2;
+	public static final int FUNC_RESTORE_MP = 3;
+	public static final int FUNC_RESTORE_EXP = 4;
+	public static final int FUNC_SUPPORT = 5;
+	
+	public class FortFunction
+	{
+		private int _type;
+		private int _lvl;
+		protected int _fee;
+		protected int _tempFee;
+		private long _rate;
+		private long _endDate;
+		protected boolean _inDebt;
+		public boolean _cwh;
+		
+		public FortFunction(int type, int lvl, int lease, int tempLease, long rate, long time, boolean cwh)
+		{
+			_type = type;
+			_lvl = lvl;
+			_fee = lease;
+			_tempFee = tempLease;
+			_rate = rate;
+			_endDate = time;
+			initializeTask(cwh);
+		}
+		
+		public int getType()
+		{
+			return _type;
+		}
+		
+		public int getLvl()
+		{
+			return _lvl;
+		}
+		
+		public int getLease()
+		{
+			return _fee;
+		}
+		
+		public long getRate()
+		{
+			return _rate;
+		}
+		
+		public long getEndTime()
+		{
+			return _endDate;
+		}
+		
+		public void setLvl(int lvl)
+		{
+			_lvl = lvl;
+		}
+		
+		public void setLease(int lease)
+		{
+			_fee = lease;
+		}
+		
+		public void setEndTime(long time)
+		{
+			_endDate = time;
+		}
+		
+		private void initializeTask(boolean cwh)
+		{
+			if (getOwnerId() <= 0)
+				return;
+			long currentTime = System.currentTimeMillis();
+			if (_endDate > currentTime)
+				ThreadPoolManager.getInstance().scheduleGeneral(new FunctionTask(cwh), _endDate - currentTime);
+			else
+				ThreadPoolManager.getInstance().scheduleGeneral(new FunctionTask(cwh), 0);
+		}
+		
+		private class FunctionTask implements Runnable
+		{
+			public FunctionTask(boolean cwh)
+			{
+				_cwh = cwh;
+			}
+			
+			public void run()
+			{
+				try
+				{
+					if (getOwnerId() <= 0)
+						return;
+					if (ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().getAdena() >= _fee || !_cwh)
+					{
+						int fee = _fee;
+						boolean newfc = true;
+						if (getEndTime() == 0 || getEndTime() == -1)
+						{
+							if (getEndTime() == -1)
+							{
+								newfc = false;
+								fee = _tempFee;
+							}
+						}
+						else
+							newfc = false;
+						setEndTime(System.currentTimeMillis() + getRate());
+						dbSave(newfc);
+						if (_cwh)
+						{
+							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CS_function_fee", 57, fee, null, null);
+							if (Config.DEBUG)
+								_log.warning("deducted " + fee + " adena from " + getName() + " owner's cwh for function id : " + getType());
+						}
+						ThreadPoolManager.getInstance().scheduleGeneral(new FunctionTask(true), getRate());
+					}
+					else
+						removeFunction(getType());
+				}
+				catch (Throwable t)
+				{
+				}
+			}
+		}
+		
+		public void dbSave(boolean newFunction)
+		{
+			java.sql.Connection con = null;
+			try
+			{
+				PreparedStatement statement;
+				
+				con = L2DatabaseFactory.getInstance().getConnection();
+				if (newFunction)
+				{
+					statement = con.prepareStatement("INSERT INTO fort_functions (fort_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)");
+					statement.setInt(1, getFortId());
+					statement.setInt(2, getType());
+					statement.setInt(3, getLvl());
+					statement.setInt(4, getLease());
+					statement.setLong(5, getRate());
+					statement.setLong(6, getEndTime());
+				}
+				else
+				{
+					statement = con.prepareStatement("UPDATE fort_functions SET lvl=?, lease=?, endTime=? WHERE fort_id=? AND type=?");
+					statement.setInt(1, getLvl());
+					statement.setInt(2, getLease());
+					statement.setLong(3, getEndTime());
+					statement.setInt(4, getFortId());
+					statement.setInt(5, getType());
+				}
+				statement.execute();
+				statement.close();
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "Exception: Fort.updateFunctions(int type, int lvl, int lease, long rate, long time, boolean addNew): " + e.getMessage(), e);
+			}
+			finally
+			{
+				try
+				{
+					con.close();
+				}
+				catch (Exception e)
+				{
+				}
+			}
+		}
+	}
 	
 	// =========================================================
 	// Constructor
@@ -61,6 +238,19 @@ public class Fort
 		_fortId = fortId;
 		load();
 		loadDoor();
+		_function = new FastMap<Integer, FortFunction>();
+		if (getOwnerId() != 0)
+		{
+			loadFunctions();
+		}
+	}
+	
+	/** Return function with id */
+	public FortFunction getFunction(int type)
+	{
+		if (_function.get(type) != null)
+			return _function.get(type);
+		return null;
 	}
 	
 	// =========================================================
@@ -76,19 +266,6 @@ public class Fort
 	{
 		getSiege().announceToPlayer("Clan " + clan.getName() + " has finished to raise the flag.", true);
 		setOwner(clan);
-	}
-	
-	// This method add to the treasury
-	/** Add amount to fort instance's treasury (warehouse). */
-	public void addToTreasury(int amount)
-	{
-		return;
-	}
-	
-	/** Add amount to fort instance's treasury (warehouse), no tax paying. */
-	public boolean addToTreasuryNoTax(int amount)
-	{
-		return true;
 	}
 	
 	/**
@@ -217,31 +394,6 @@ public class Fort
 		updateClansReputation();
 	}
 	
-	// This method updates the fort tax rate
-	public void setTaxPercent(L2PcInstance activeChar, int taxPercent)
-	{
-		int maxTax;
-		switch (SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE))
-		{
-			case SevenSigns.CABAL_DAWN:
-				maxTax = 25;
-				break;
-			case SevenSigns.CABAL_DUSK:
-				maxTax = 5;
-				break;
-			default: // no owner
-				maxTax = 15;
-		}
-		
-		if (taxPercent < 0 || taxPercent > maxTax)
-		{
-			activeChar.sendMessage("Tax value must be between 0 and " + maxTax + ".");
-			return;
-		}
-		
-		activeChar.sendMessage(getName() + " fort tax changed to " + taxPercent + "%.");
-	}
-	
 	/**
 	 * Respawn all doors on fort grounds<BR><BR>
 	 */
@@ -344,6 +496,109 @@ public class Fort
 			{
 			}
 		}
+	}
+	
+	/** Load All Functions */
+	private void loadFunctions()
+	{
+		java.sql.Connection con = null;
+		try
+		{
+			PreparedStatement statement;
+			ResultSet rs;
+			con = L2DatabaseFactory.getInstance().getConnection();
+			statement = con.prepareStatement("Select * from fort_functions where fort_id = ?");
+			statement.setInt(1, getFortId());
+			rs = statement.executeQuery();
+			while (rs.next())
+			{
+				_function.put(rs.getInt("type"), new FortFunction(rs.getInt("type"), rs.getInt("lvl"), rs.getInt("lease"), 0, rs.getLong("rate"), rs.getLong("endTime"), true));
+			}
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "Exception: Fort.loadFunctions(): " + e.getMessage(), e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
+	}
+	
+	/** Remove function In List and in DB */
+	public void removeFunction(int functionType)
+	{
+		_function.remove(functionType);
+		java.sql.Connection con = null;
+		try
+		{
+			PreparedStatement statement;
+			con = L2DatabaseFactory.getInstance().getConnection();
+			statement = con.prepareStatement("DELETE FROM fort_functions WHERE fort_id=? AND type=?");
+			statement.setInt(1, getFortId());
+			statement.setInt(2, functionType);
+			statement.execute();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "Exception: Fort.removeFunctions(int functionType): " + e.getMessage(), e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
+	}
+	
+	public boolean updateFunctions(L2PcInstance player, int type, int lvl, int lease, long rate, boolean addNew)
+	{
+		if (player == null)
+			return false;
+		if (Config.DEBUG)
+			_log.warning("Called Fort.updateFunctions(int type, int lvl, int lease, long rate, boolean addNew) Owner : " + getOwnerId());
+		if (lease > 0)
+			if (!player.destroyItemByItemId("Consume", 57, lease, null, true))
+				return false;
+		if (addNew)
+		{
+			_function.put(type, new FortFunction(type, lvl, lease, 0, rate, 0, false));
+		}
+		else
+		{
+			if (lvl == 0 && lease == 0)
+				removeFunction(type);
+			else
+			{
+				int diffLease = lease - _function.get(type).getLease();
+				if (Config.DEBUG)
+					_log.warning("Called Fort.updateFunctions diffLease : " + diffLease);
+				if (diffLease > 0)
+				{
+					_function.remove(type);
+					_function.put(type, new FortFunction(type, lvl, lease, 0, rate, -1, false));
+				}
+				else
+				{
+					_function.get(type).setLease(lease);
+					_function.get(type).setLvl(lvl);
+					_function.get(type).dbSave(false);
+				}
+			}
+		}
+		return true;
 	}
 	
 	// This method loads fort door data from database

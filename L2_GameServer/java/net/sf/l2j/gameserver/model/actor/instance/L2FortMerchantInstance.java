@@ -129,7 +129,7 @@ public class L2FortMerchantInstance extends L2NpcWalkerInstance
         else
             html.replace("%clanname%", "NPC");
         
-        html.replace("%castleid%", Integer.toString(getCastle().getCastleId()));
+        html.replace("%castleid%", Integer.toString(getFort().getFortId()));
         player.sendPacket(html);
     }
     

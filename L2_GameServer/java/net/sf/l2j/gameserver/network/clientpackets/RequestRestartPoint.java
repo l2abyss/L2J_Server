@@ -136,6 +136,11 @@ public final class RequestRestartPoint extends L2GameClientPacket
 						return;
 					}
 					loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Fortress);
+					if (FortManager.getInstance().getFortByOwner(activeChar.getClan())!= null &&
+							FortManager.getInstance().getFortByOwner(activeChar.getClan()).getFunction(Fort.FUNC_RESTORE_EXP) != null)
+					{
+						activeChar.restoreExp(FortManager.getInstance().getFortByOwner(activeChar.getClan()).getFunction(Fort.FUNC_RESTORE_EXP).getLvl());
+					}
 					break;
 
 				case 4: // to siege HQ

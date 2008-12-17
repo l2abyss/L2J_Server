@@ -20,6 +20,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.SevenSignsFestival;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
+import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.L2Character;
@@ -34,6 +35,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
+import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.model.entity.Siege;
 import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -1027,6 +1029,18 @@ public final class Formulas
             				hpRegenMultiplier *= 1+ castle.getFunction(Castle.FUNC_RESTORE_HP).getLvl()/100;
             	}
             }
+            
+            if (player.isInsideZone(L2Character.ZONE_FORT) && player.getClan() != null)
+            {
+            	int fortIndex = player.getClan().getHasFort();
+            	if (fortIndex > 0)
+            	{
+            		Fort fort = FortManager.getInstance().getFortById(fortIndex);
+            		if (fort != null)
+            			if (fort.getFunction(Fort.FUNC_RESTORE_HP) != null)
+            				hpRegenMultiplier *= 1+ fort.getFunction(Fort.FUNC_RESTORE_HP).getLvl()/100;
+            	}
+            }
 
 			// Mother Tree effect is calculated at last
 			if (player.isInsideZone(L2Character.ZONE_MOTHERTREE)) hpRegenBonus += 2;
@@ -1089,6 +1103,18 @@ public final class Formulas
             		if(castle != null)
             			if (castle.getFunction(Castle.FUNC_RESTORE_MP) != null)
             				mpRegenMultiplier *= 1+ castle.getFunction(Castle.FUNC_RESTORE_MP).getLvl()/100;
+            	}
+            }
+            
+            if (player.isInsideZone(L2Character.ZONE_FORT) && player.getClan() != null)
+            {
+            	int fortIndex = player.getClan().getHasFort();
+            	if (fortIndex > 0)
+            	{
+            		Fort fort = FortManager.getInstance().getFortById(fortIndex);
+            		if(fort != null)
+            			if (fort.getFunction(Fort.FUNC_RESTORE_MP) != null)
+            				mpRegenMultiplier *= 1+ fort.getFunction(Fort.FUNC_RESTORE_MP).getLvl()/100;
             	}
             }
 

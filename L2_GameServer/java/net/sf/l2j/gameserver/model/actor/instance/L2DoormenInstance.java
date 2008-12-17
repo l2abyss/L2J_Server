@@ -39,6 +39,7 @@ public class L2DoormenInstance extends L2FolkInstance
     private static int COND_BUSY_BECAUSE_OF_SIEGE = 1;
     private static int COND_CASTLE_OWNER = 2;
     private static int COND_HALL_OWNER = 3;
+    private static int COND_FORT_OWNER = 4;
 
     /**
      * @param template
@@ -64,7 +65,7 @@ public class L2DoormenInstance extends L2FolkInstance
         int condition = validateCondition(player);
         if (condition <= COND_ALL_FALSE) return;
         if (condition == COND_BUSY_BECAUSE_OF_SIEGE) return;
-        else if (condition == COND_CASTLE_OWNER || condition == COND_HALL_OWNER)
+        else if (condition == COND_CASTLE_OWNER || condition == COND_HALL_OWNER || condition == COND_FORT_OWNER)
         {
             if (command.startsWith("Chat"))
             {
@@ -80,11 +81,11 @@ public class L2DoormenInstance extends L2FolkInstance
                         "<html><body>You have <font color=\"FF9955\">opened</font> the clan hall door.<br>Outsiders may enter the clan hall while the door is open. Please close it when you've finished your business.<br><center><button value=\"Close\" action=\"bypass -h npc_"
                        + getObjectId() + "_close_doors\" width=80 height=27 back=\"L2UI_CT1.Button_DF_Down\" fore=\"L2UI_CT1.Button_DF\"></center></body></html>"));
                 }
-                else
+                else if (condition == COND_CASTLE_OWNER)
                 {
                     //DoorTable doorTable = DoorTable.getInstance();
                     StringTokenizer st = new StringTokenizer(command.substring(10), ", ");
-                    st.nextToken(); // Bypass first value since its castleid/hallid
+                    st.nextToken(); // Bypass first value since its castleid/hallid/fortid
 
                     if (condition == 2)
                     {
@@ -94,7 +95,21 @@ public class L2DoormenInstance extends L2FolkInstance
                         }
                         return;
                     }
+                }
+                else
+                {
+                	//DoorTable doorTable = DoorTable.getInstance();
+                    StringTokenizer st = new StringTokenizer(command.substring(10), ", ");
+                    st.nextToken(); // Bypass first value since its castleid/hallid/fortid
 
+                    if (condition == 4)
+                    {
+                        while (st.hasMoreTokens())
+                        {
+                            getFort().openDoor(player, Integer.parseInt(st.nextToken()));
+                        }
+                        return;
+                    }
                 }
             }
             else if (command.startsWith("close_doors"))
@@ -106,11 +121,11 @@ public class L2DoormenInstance extends L2FolkInstance
                         "<html><body>You have <font color=\"FF9955\">closed</font> the clan hall door.<br>Good day!<br><center><button value=\"To Beginning\" action=\"bypass -h npc_"
                         + getObjectId() + "_Chat\" width=80 height=27 back=\"L2UI_CT1.Button_DF_Down\" fore=\"L2UI_CT1.Button_DF\"></center></body></html>"));
                 }
-                else
+                else if (condition == COND_CASTLE_OWNER)
                 {
                     //DoorTable doorTable = DoorTable.getInstance();
                     StringTokenizer st = new StringTokenizer(command.substring(11), ", ");
-                    st.nextToken(); // Bypass first value since its castleid/hallid
+                    st.nextToken(); // Bypass first value since its castleid/hallid/fortid
 
                     //L2Clan playersClan = player.getClan();
 
@@ -119,6 +134,23 @@ public class L2DoormenInstance extends L2FolkInstance
                         while (st.hasMoreTokens())
                         {
                             getCastle().closeDoor(player, Integer.parseInt(st.nextToken()));
+                        }
+                        return;
+                    }
+                }
+                else
+                {
+                	//DoorTable doorTable = DoorTable.getInstance();
+                    StringTokenizer st = new StringTokenizer(command.substring(11), ", ");
+                    st.nextToken(); // Bypass first value since its castleid/hallid/fortid
+
+                    //L2Clan playersClan = player.getClan();
+
+                    if (condition == 4)
+                    {
+                        while (st.hasMoreTokens())
+                        {
+                            getFort().closeDoor(player, Integer.parseInt(st.nextToken()));
                         }
                         return;
                     }
@@ -176,9 +208,9 @@ public class L2DoormenInstance extends L2FolkInstance
         int condition = validateCondition(player);
         if (condition == COND_BUSY_BECAUSE_OF_SIEGE) filename = "data/html/doormen/"
             + getTemplate().npcId + "-busy.htm"; // Busy because of siege
-        else if (condition == COND_CASTLE_OWNER) // Clan owns castle
+        else if (condition == COND_CASTLE_OWNER || condition == COND_FORT_OWNER) // Clan owns castle or fort
             filename = "data/html/doormen/" + getTemplate().npcId + ".htm"; // Owner message window
-
+        
         // Prepare doormen for clan hall
         NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
         String str;
@@ -231,6 +263,12 @@ public class L2DoormenInstance extends L2FolkInstance
                 //		        else
                 if (getCastle().getOwnerId() == player.getClanId()) // Clan owns castle
                     return COND_CASTLE_OWNER; // Owner
+            }
+            
+            if (getFort() != null && getFort().getFortId() > 0)
+            {
+            	if (getFort().getOwnerId() == player.getClanId()) // Clan owns fortress
+            		return COND_FORT_OWNER; // Owner
             }
         }
 

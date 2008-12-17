@@ -77,11 +77,14 @@ public class L2FortZone extends L2ZoneType
 		{
 			character.setInsideZone(L2Character.ZONE_PVP, true);
 			character.setInsideZone(L2Character.ZONE_SIEGE, true);
+			character.setInsideZone(L2Character.ZONE_FORT, true);
 			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
 			
 			if (character instanceof L2PcInstance)
 				((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
 		}
+		else
+			character.setInsideZone(L2Character.ZONE_FORT, true);
 	}
 	
 	@Override
@@ -91,6 +94,7 @@ public class L2FortZone extends L2ZoneType
 		{
 			character.setInsideZone(L2Character.ZONE_PVP, false);
 			character.setInsideZone(L2Character.ZONE_SIEGE, false);
+			character.setInsideZone(L2Character.ZONE_FORT, false);
 			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
 			
 			if (character instanceof L2PcInstance)
@@ -102,6 +106,9 @@ public class L2FortZone extends L2ZoneType
 					((L2PcInstance) character).startPvPFlag();
 			}
 		}
+		else
+			character.setInsideZone(L2Character.ZONE_FORT, true);
+		
 		if (character instanceof L2SiegeSummonInstance)
 		{
 			((L2SiegeSummonInstance) character).unSummon(((L2SiegeSummonInstance) character).getOwner());
@@ -141,6 +148,8 @@ public class L2FortZone extends L2ZoneType
 				{
 					character.setInsideZone(L2Character.ZONE_PVP, false);
 					character.setInsideZone(L2Character.ZONE_SIEGE, false);
+					character.setInsideZone(L2Character.ZONE_FORT, false);
+					character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
 					
 					if (character instanceof L2PcInstance)
 						((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));

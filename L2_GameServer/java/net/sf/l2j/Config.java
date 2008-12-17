@@ -263,7 +263,7 @@ public final class Config
 	/** ************************************************** **/
 
     /** ************************************************** **/
-	/** Castle Settings -Begin                           **/
+	/** Castle Settings -Begin                             **/
 	/** ************************************************** **/
 
     public static long 		CS_TELE_FEE_RATIO;
@@ -295,9 +295,33 @@ public final class Config
     public static List<Integer> SIEGE_HOUR_LIST_AFTERNOON;
     
     /** ************************************************** **/
-	/** Castlel Settings -End                             **/
+	/** Castle Settings -End                               **/
+	/** ************************************************** **/
+    
+    /** ************************************************** **/
+	/** Fortress Settings -Begin                           **/
 	/** ************************************************** **/
 
+    public static long 		FS_TELE_FEE_RATIO;
+    public static int 		FS_TELE1_FEE;
+    public static int 		FS_TELE2_FEE;
+    public static long 		FS_MPREG_FEE_RATIO;
+    public static int 		FS_MPREG1_FEE;
+    public static int 		FS_MPREG2_FEE;
+    public static long 		FS_HPREG_FEE_RATIO;
+    public static int 		FS_HPREG1_FEE;
+    public static int 		FS_HPREG2_FEE;
+    public static long 		FS_EXPREG_FEE_RATIO;
+    public static int 		FS_EXPREG1_FEE;
+    public static int 		FS_EXPREG2_FEE;
+    public static long 		FS_SUPPORT_FEE_RATIO;
+    public static int 		FS_SUPPORT1_FEE;
+    public static int 		FS_SUPPORT2_FEE;
+    
+    /** ************************************************** **/
+	/** Fortress Settings -End                             **/
+	/** ************************************************** **/
+    
     /** ************************************************** **/
 	/** Feature Settings -Begin                            **/
 	/** ************************************************** **/
@@ -1115,7 +1139,24 @@ public final class Config
 	                CS_EXPREG4_FEE                                      = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl4", "30000"));
 	                //
 	                
-	                
+	                //
+	                FS_TELE_FEE_RATIO                                   = Long.parseLong(Feature.getProperty("FortressTeleportFunctionFeeRatio", "604800000"));
+	                FS_TELE1_FEE                                        = Integer.parseInt(Feature.getProperty("FortressTeleportFunctionFeeLvl1", "1000"));
+	                FS_TELE2_FEE                                        = Integer.parseInt(Feature.getProperty("FortressTeleportFunctionFeeLvl2", "10000"));
+	                FS_SUPPORT_FEE_RATIO                                = Long.parseLong(Feature.getProperty("FortressSupportFunctionFeeRatio", "86400000"));
+	                FS_SUPPORT1_FEE                                     = Integer.parseInt(Feature.getProperty("FortressSupportFeeLvl1", "7000"));
+	                FS_SUPPORT2_FEE                                     = Integer.parseInt(Feature.getProperty("FortressSupportFeeLvl2", "17000"));
+	                FS_MPREG_FEE_RATIO                                  = Long.parseLong(Feature.getProperty("FortressMpRegenerationFunctionFeeRatio", "86400000"));
+	                FS_MPREG1_FEE                                       = Integer.parseInt(Feature.getProperty("FortressMpRegenerationFeeLvl1", "6500"));
+	                FS_MPREG2_FEE                                       = Integer.parseInt(Feature.getProperty("FortressMpRegenerationFeeLvl2", "9300"));
+	                FS_HPREG_FEE_RATIO                                  = Long.parseLong(Feature.getProperty("FortressHpRegenerationFunctionFeeRatio", "86400000"));
+	                FS_HPREG1_FEE                                       = Integer.parseInt(Feature.getProperty("FortressHpRegenerationFeeLvl1", "2000"));
+	                FS_HPREG2_FEE                                       = Integer.parseInt(Feature.getProperty("FortressHpRegenerationFeeLvl2", "3500"));
+	                FS_EXPREG_FEE_RATIO                                 = Long.parseLong(Feature.getProperty("FortressExpRegenerationFunctionFeeRatio", "86400000"));
+	                FS_EXPREG1_FEE                                      = Integer.parseInt(Feature.getProperty("FortressExpRegenerationFeeLvl1", "9000"));
+	                FS_EXPREG2_FEE                                      = Integer.parseInt(Feature.getProperty("FortressExpRegenerationFeeLvl2", "10000"));
+	                //
+	                	                
 					ALT_GAME_CASTLE_DAWN    					= Boolean.parseBoolean(Feature.getProperty("AltCastleForDawn", "True"));
 					ALT_GAME_CASTLE_DUSK    					= Boolean.parseBoolean(Feature.getProperty("AltCastleForDusk", "True"));
 	                ALT_GAME_REQUIRE_CLAN_CASTLE    					= Boolean.parseBoolean(Feature.getProperty("AltRequireClanCastle", "False"));
