@@ -11671,12 +11671,6 @@ public final class L2PcInstance extends L2PlayableInstance
 		sendPacket(sm);
 	}
 
-    @Override
-    public boolean mustFallDownOnDeath()
-    {
-        return	super.mustFallDownOnDeath() &&
-        		( !TvTEvent.isStarted() || !TvTEvent.isPlayerParticipant( getObjectId() ) );
-    }
 
     /**
      * 

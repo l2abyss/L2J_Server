@@ -24,6 +24,7 @@ import net.sf.l2j.gameserver.model.L2SiegeClan;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.Fort;
+import net.sf.l2j.gameserver.model.entity.TvTEvent;
 
 /**
  * sample
@@ -40,7 +41,7 @@ public class Die extends L2GameServerPacket
 {
     private static final String _S__0B_DIE = "[S] 00 Die";
     private int _charObjId;
-    private boolean _fallDown;
+    private boolean _canTeleport;
     private boolean _sweepable;
     private L2AccessLevel _access = AccessLevels._userAccessLevel;
     private net.sf.l2j.gameserver.model.L2Clan _clan;
@@ -59,7 +60,7 @@ public class Die extends L2GameServerPacket
 
         }
         _charObjId = cha.getObjectId();
-        _fallDown = cha instanceof L2PcInstance ? ((L2PcInstance)cha).mustFallDownOnDeath() : cha.mustFallDownOnDeath();
+        _canTeleport = !(cha instanceof L2PcInstance && TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(_charObjId));
         if (cha instanceof L2Attackable)
             _sweepable = ((L2Attackable)cha).isSweepActive();
 
@@ -68,8 +69,6 @@ public class Die extends L2GameServerPacket
     @Override
 	protected final void writeImpl()
     {
-        if (!_fallDown)
-            return;
 
         writeC(0x00);
 
@@ -82,8 +81,8 @@ public class Die extends L2GameServerPacket
         // sweepable
         // 6d 04 00 00 00 - FIXED
 
-        writeD(0x01);                                                   // 6d 00 00 00 00 - to nearest village
-        if (_clan != null)
+        writeD(_canTeleport ? 0x01 : 0);                                                   // 6d 00 00 00 00 - to nearest village
+        if (_canTeleport && _clan != null)
         {
             Boolean isInCastleDefense = false;
             Boolean isInFortDefense = false;

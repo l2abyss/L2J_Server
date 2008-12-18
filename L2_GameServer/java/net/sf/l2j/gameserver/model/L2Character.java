@@ -6668,10 +6668,6 @@ public abstract class L2Character extends L2Object
         return (int)getStat().getElementAttributeUnholy();
     }
 
-    public boolean mustFallDownOnDeath()
-    {
-        return isDead();
-    }
 
     public final void startPhysicalAttackMuted()
     {
