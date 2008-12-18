@@ -71,7 +71,6 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance.SkillDat;
 import net.sf.l2j.gameserver.model.actor.knownlist.CharKnownList;
 import net.sf.l2j.gameserver.model.actor.stat.CharStat;
 import net.sf.l2j.gameserver.model.actor.status.CharStatus;
-import net.sf.l2j.gameserver.model.entity.Duel;
 import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.model.quest.QuestState;
@@ -652,7 +651,7 @@ public abstract class L2Character extends L2Object
 			}
 			else if (this instanceof L2PcInstance)
 			{
-				if (target.isDead() && !(target instanceof L2PcInstance && (((L2PcInstance) target).isFakeDeath()) || ((L2PcInstance)target).getDuelState() == Duel.DUELSTATE_DEAD))
+				if (target.isDead())
 				{
 					getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 					sendPacket(ActionFailed.STATIC_PACKET);
