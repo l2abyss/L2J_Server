@@ -1911,11 +1911,13 @@ public final class L2PcInstance extends L2PlayableInstance
 				{
 					super.addSkill(SkillTable.getInstance().getInfo(4270,newWeightPenalty));
 					setIsOverloaded(getCurrentLoad() > maxLoad);
+					sendPacket(new UserInfo(this));
 				}
 				else
 				{
 					super.removeSkill(getKnownSkill(4270));
 					setIsOverloaded(false);
+					sendPacket(new UserInfo(this));
 				}
 
 				sendPacket(new EtcStatusUpdate(this));
