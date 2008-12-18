@@ -36,4 +36,5 @@ public final class Env {
 	public L2Effect       effect;
 	public double value;
 	public double baseValue;
+	public boolean skillMastery = false;
 }

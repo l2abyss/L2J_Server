@@ -41,6 +41,7 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.EtcStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.skills.Stats;
 import net.sf.l2j.gameserver.skills.conditions.Condition;
 import net.sf.l2j.gameserver.skills.effects.EffectCharge;
@@ -2939,12 +2940,18 @@ public abstract class L2Skill
             
         List<L2Effect> effects = new FastList<L2Effect>();
 
+        boolean skillMastery = false;
+        
+        if (!isToggle() && Formulas.getInstance().calcSkillMastery(effector))
+        	skillMastery = true;
+        
         for (EffectTemplate et : _effectTemplates)
         {
             Env env = new Env();
             env.player = effector;
             env.target = effected;
             env.skill = this;
+            env.skillMastery = skillMastery;
             L2Effect e = et.getEffect(env);
             if (e != null) effects.add(e);
         }

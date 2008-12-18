@@ -192,7 +192,10 @@ public enum Stats
 	TALISMAN_SLOTS("talisman"),
 	
 	//Shield Stats
-	SHIELD_DEFENCE_ANGLE("shieldDefAngle");
+	SHIELD_DEFENCE_ANGLE("shieldDefAngle"),
+	
+	//Skill mastery
+	SKILL_MASTERY			("skillMastery");
 	
 	public static final int NUM_STATS = values().length;
 	

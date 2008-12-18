@@ -164,6 +164,8 @@ public abstract class L2Effect
 				temp /= 2;
 			}
 		}
+		if (env.skillMastery)
+			temp *= 2;
 		_period = temp;
 		_abnormalEffect = template.abnormalEffect;
 		_stackType = template.stackType;

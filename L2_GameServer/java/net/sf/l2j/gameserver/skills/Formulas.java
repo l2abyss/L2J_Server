@@ -2355,12 +2355,23 @@ public final class Formulas
     {
     	return STRbonus[activeChar.getSTR()];
     }
-    
-    public boolean calcPhysicalSkillEvasion(L2Character target, L2Skill skill)
+   public boolean calcPhysicalSkillEvasion(L2Character target, L2Skill skill)
     {
     	if (skill.isMagic() && skill.getSkillType() != L2SkillType.BLOW)
     		return false;
     	
     	return Rnd.get(100) < target.calcStat(Stats.P_SKILL_EVASION, 0, null, skill);
+    }
+    
+    public boolean calcSkillMastery(L2Character actor)
+    {
+    	double val = actor.getStat().calcStat(Stats.SKILL_MASTERY, 0, null, null);
+    	
+    	if (actor instanceof L2PcInstance && ((L2PcInstance)actor).isMageClass())
+    		val *= INTbonus[actor.getINT()];
+    	else
+    		val*= STRbonus[actor.getSTR()];
+    		
+    	return Rnd.get(100) < val;
     }
 }
