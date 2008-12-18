@@ -2054,9 +2054,9 @@ public final class Formulas
 			{
 				case STUN:
 				case BLEED:
+				case POISON:
 					multiplier = 2 - Math.sqrt(CONbonus[target.getCON()]);
 					break;
-				case POISON:
 				case SLEEP:
 				case DEBUFF:
 				case WEAKNESS:
