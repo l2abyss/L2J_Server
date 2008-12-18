@@ -10005,6 +10005,8 @@ public final class L2PcInstance extends L2PlayableInstance
 			int restoreExp = 0;
 			if (isPhoenixBlessed())
 				_revivePower=100;
+			else if (getCharmOfCourage())
+				_revivePower=0;
 			else
 				_revivePower = Formulas.getInstance().calculateSkillResurrectRestorePercent(skill.getPower(), Reviver.getWIT());
 			
