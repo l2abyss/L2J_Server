@@ -2363,8 +2363,11 @@ public final class Formulas
     	return Rnd.get(100) < target.calcStat(Stats.P_SKILL_EVASION, 0, null, skill);
     }
     
-    public boolean calcSkillMastery(L2Character actor)
+    public boolean calcSkillMastery(L2Character actor, L2Skill sk)
     {
+    	if (sk.getSkillType() == L2SkillType.FISHING)
+    		return false;
+    	
     	double val = actor.getStat().calcStat(Stats.SKILL_MASTERY, 0, null, null);
     	
     	if (actor instanceof L2PcInstance && ((L2PcInstance)actor).isMageClass())

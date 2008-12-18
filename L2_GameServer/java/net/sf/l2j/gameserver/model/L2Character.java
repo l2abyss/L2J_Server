@@ -1565,7 +1565,7 @@ public abstract class L2Character extends L2Object
 			reuseDelay *= 333.0 / (skill.isMagic() ? getMAtkSpd() : getPAtkSpd());
 		}
 		
-		boolean skillMastery = Formulas.getInstance().calcSkillMastery(this);
+		boolean skillMastery = Formulas.getInstance().calcSkillMastery(this, skill);
 
 		// Skill reuse check
 		if (reuseDelay > 30000 && !skillMastery) addTimeStamp(skill.getId(),reuseDelay);
