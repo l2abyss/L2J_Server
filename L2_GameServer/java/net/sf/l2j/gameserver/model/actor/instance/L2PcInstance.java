@@ -11107,6 +11107,7 @@ public final class L2PcInstance extends L2PlayableInstance
             else
                 htmlMsg.setHtml("<html><body>You have been put in jail by an admin.</body></html>");
             sendPacket(htmlMsg);
+            setInstanceId(0);
 
             teleToLocation(-114356, -249645, -2984, false);  // Jail
         } else

@@ -53,7 +53,7 @@ public abstract class PathFinding
 	}
 
 	public abstract boolean pathNodesExist(short regionoffset);
-	public abstract List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz);
+	public abstract List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz, int instanceId);
 	public abstract Node[] readNeighbors(Node n, int idx);
 
 	public List<AbstractNodeLoc> search(Node start, Node end)
@@ -349,7 +349,7 @@ public abstract class PathFinding
 			for (int index = 0; index < path.size()-3; index = index +3)
 			{
 				//System.out.println("Attempt filter");
-				if (GeoData.getInstance().canMoveFromToTarget(path.get(index).getX(), path.get(index).getY(), path.get(index).getZ(), path.get(index+3).getX(), path.get(index+3).getY(), path.get(index+3).getZ()))
+				if (GeoData.getInstance().canMoveFromToTarget(path.get(index).getX(), path.get(index).getY(), path.get(index).getZ(), path.get(index+3).getX(), path.get(index+3).getY(), path.get(index+3).getZ(), 0))
 				{
 					//System.out.println("filtering i:"+(index+1));
 					valueList.add(index+1);

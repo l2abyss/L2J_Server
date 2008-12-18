@@ -1317,11 +1317,16 @@ public final class L2ItemInstance extends L2Object
 
 	        if (Config.GEODATA > 0 && _dropper != null)
 	        {
-	            Location dropDest = GeoData.getInstance().moveCheck(_dropper.getX(), _dropper.getY(), _dropper.getZ(), _x, _y, _z);
+	            Location dropDest = GeoData.getInstance().moveCheck(_dropper.getX(), _dropper.getY(), _dropper.getZ(), _x, _y, _z, _dropper.getInstanceId());
 	            _x = dropDest.getX();
 	            _y = dropDest.getY();
 	            _z = dropDest.getZ();
 	        }
+	        
+	        if(_dropper != null)
+		        setInstanceId(_dropper.getInstanceId()); // Inherit instancezone when dropped in visible world
+	        else
+		        setInstanceId(0); // No dropper? Make it a global item...
 	        
 	        synchronized (this)
 	        {

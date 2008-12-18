@@ -2056,6 +2056,9 @@ public class Olympiad
 
     			_playerOne.setTarget(null);
     			_playerTwo.setTarget(null);
+    			
+    			_playerOne.setInstanceId(0);
+    			_playerTwo.setInstanceId(0);
 
     			_playerOne.teleToLocation(_stadiumPort[0]+1200, _stadiumPort[1], _stadiumPort[2], false);
     			_playerTwo.teleToLocation(_stadiumPort[0]-1200, _stadiumPort[1], _stadiumPort[2], false);

@@ -163,7 +163,7 @@ public class MinionList
 				double delay = Config.RAID_MINION_RESPAWN_TIMER;
 				if ((current - deathTime) > delay)
 				{
-					spawnSingleMinion(_respawnTasks.get(deathTime));
+					spawnSingleMinion(_respawnTasks.get(deathTime), master.getInstanceId());
 					_respawnTasks.remove(deathTime);
 				}
 			}
@@ -199,7 +199,7 @@ public class MinionList
 				
 				for (int i = 0; i < minionsToSpawn; i++)
 				{
-					spawnSingleMinion(minionId);
+					spawnSingleMinion(minionId, master.getInstanceId());
 				}
 			}
 		}
@@ -218,10 +218,10 @@ public class MinionList
 	 * @param minionid The I2NpcTemplate Identifier of the Minion to spawn
 	 *
 	 */
-	public void spawnSingleMinion(int minionid)
+	public void spawnSingleMinion(int minionId, int instanceId)
 	{
 		// Get the template of the Minion to spawn
-		L2NpcTemplate minionTemplate = NpcTable.getInstance().getTemplate(minionid);
+		L2NpcTemplate minionTemplate = NpcTable.getInstance().getTemplate(minionId);
 		
 		// Create and Init the Minion and generate its Identifier
 		L2MinionInstance monster = new L2MinionInstance(IdFactory.getInstance().getNextId(), minionTemplate);
@@ -232,6 +232,9 @@ public class MinionList
 		
 		// Set the Minion leader to this RaidBoss
 		monster.setLeader(master);
+		
+		//move monster to masters instance
+		monster.setInstanceId(instanceId);
 		
 		// Init the position of the Minion and add it in the world as a visible object
 		int spawnConstant;

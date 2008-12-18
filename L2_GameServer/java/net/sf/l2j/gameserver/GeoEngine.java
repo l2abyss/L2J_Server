@@ -113,7 +113,7 @@ public class GeoEngine extends GeoData
     @Override
     public boolean canSeeTarget(L2Object cha, Point3D target)
     {
-    	if (DoorTable.getInstance().checkIfDoorsBetween(cha.getX(),cha.getY(),cha.getZ(),target.getX(),target.getY(),target.getZ()))
+    	if (DoorTable.getInstance().checkIfDoorsBetween(cha.getX(),cha.getY(),cha.getZ(),target.getX(),target.getY(),target.getZ(),cha.getInstanceId()))
     		return false;
     	if(cha.getZ() >= target.getZ())
     		return canSeeTarget(cha.getX(),cha.getY(),cha.getZ(),target.getX(),target.getY(),target.getZ());
@@ -140,7 +140,7 @@ public class GeoEngine extends GeoData
     	if(cha instanceof L2SiegeGuardInstance) z += 30; // well they don't move closer to balcony fence at the moment :(
     	int z2 = target.getZ()+45;
     	if (!(target instanceof L2DoorInstance)
-    			&& DoorTable.getInstance().checkIfDoorsBetween(cha.getX(),cha.getY(),z,target.getX(),target.getY(),z2))
+    			&& DoorTable.getInstance().checkIfDoorsBetween(cha.getX(),cha.getY(),z,target.getX(),target.getY(),z2,cha.getInstanceId()))
     		return false;
     	if(target instanceof L2DoorInstance) return true; // door coordinates are hinge coords..
     	if(target instanceof L2SiegeGuardInstance) z2 += 30; // well they don't move closer to balcony fence at the moment :(
@@ -178,19 +178,19 @@ public class GeoEngine extends GeoData
         return nGetNSWE((x - L2World.MAP_MIN_X) >> 4,(y - L2World.MAP_MIN_Y) >> 4,z);
     }
     @Override
-    public boolean canMoveFromToTarget(int x, int y, int z, int tx, int ty, int tz)
+    public boolean canMoveFromToTarget(int x, int y, int z, int tx, int ty, int tz, int instanceId)
     {
-    	Location destiny = moveCheck(x,y,z,tx,ty,tz);
+    	Location destiny = moveCheck(x,y,z,tx,ty,tz,instanceId);
     	return (destiny.getX() == tx && destiny.getY() == ty && destiny.getZ() == tz);
     }
     /**
-     * @see net.sf.l2j.gameserver.GeoData#moveCheck(int, int, int, int, int, int)
+     * @see net.sf.l2j.gameserver.GeoData#moveCheck(int, int, int, int, int, int, int)
      */
     @Override
-    public Location moveCheck(int x, int y, int z, int tx, int ty, int tz)
+    public Location moveCheck(int x, int y, int z, int tx, int ty, int tz, int instanceId)
     {
     	Location startpoint = new Location(x,y,z);
-    	if (DoorTable.getInstance().checkIfDoorsBetween(x,y,z,tx,ty,tz))
+    	if (DoorTable.getInstance().checkIfDoorsBetween(x,y,z,tx,ty,tz,instanceId))
     		return startpoint;
 
     	Location destiny = new Location(tx,ty,tz);

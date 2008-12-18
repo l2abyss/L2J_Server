@@ -84,6 +84,8 @@ public class L2Spawn
 	/** Maximum delay RaidBoss */
 	private int _respawnMaxDelay;
 
+	private int _instanceId = 0;
+
 	/** The generic constructor of L2NpcInstance managed by this L2Spawn */
 	private Constructor<?> _constructor;
 
@@ -443,7 +445,8 @@ public class L2Spawn
 		{
 			// Check if the L2Spawn is not a L2Pet or L2Minion or L2Decoy spawn
             if (_template.type.equalsIgnoreCase("L2Pet") || _template.type.equalsIgnoreCase("L2Minion") 
-                    || _template.type.equalsIgnoreCase("L2Decoy") || _template.type.equalsIgnoreCase("L2EffectPoint"))
+                    || _template.type.equalsIgnoreCase("L2Decoy") || _template.type.equalsIgnoreCase("L2Trap")
+                    || _template.type.equalsIgnoreCase("L2EffectPoint"))
             {
                 _currentCount++;
 
@@ -457,6 +460,7 @@ public class L2Spawn
 			// (can be a L2ArtefactInstance, L2FriendlyMobInstance, L2GuardInstance, L2MonsterInstance, L2SiegeGuardInstance, L2BoxInstance,
 			// L2FeedableBeastInstance, L2TamedBeastInstance, L2FolkInstance or L2TvTEventNpcInstance)
 			Object  tmp = _constructor.newInstance(parameters);
+			((L2Object)tmp).setInstanceId(_instanceId); // Must be done before object is spawned into visible world
 			if (isSummonSpawn && tmp instanceof L2Character)
 				((L2Character)tmp).setShowSummonAnimation(isSummonSpawn);
 			// Check if the Instance is a L2NpcInstance
@@ -603,4 +607,14 @@ public class L2Spawn
     {
 	    return _template;
     }
+
+    public int getInstanceId()
+	{
+		return _instanceId;
+	}
+
+    public void setInstanceId(int instanceId)
+	{
+		_instanceId = instanceId;
+	}
 }

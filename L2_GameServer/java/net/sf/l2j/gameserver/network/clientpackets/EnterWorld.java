@@ -37,6 +37,7 @@ import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
 import net.sf.l2j.gameserver.instancemanager.CoupleManager;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
 import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
+import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.PetitionManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossPointsManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
@@ -108,6 +109,16 @@ public class EnterWorld extends L2GameClientPacket
             return;
         }
         
+        // restore instance
+        if(Config.RESTORE_PLAYER_INSTANCE)
+ 	 		activeChar.setInstanceId(InstanceManager.getInstance().getPlayerInstance(activeChar.getObjectId()));
+        else
+        {
+           	int instanceId = InstanceManager.getInstance().getPlayerInstance(activeChar.getObjectId());
+           	if (instanceId > 0)
+           		InstanceManager.getInstance().getInstance(instanceId).removePlayer(activeChar.getObjectId());
+        }
+ 	 	
         // Register in flood protector
         FloodProtector.getInstance().registerNewPlayer(activeChar.getObjectId());
 

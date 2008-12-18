@@ -16,13 +16,16 @@ package net.sf.l2j.gameserver.handler.skillhandlers;
 
 import java.util.logging.Level;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
+import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.entity.Instance;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ConfirmDlg;
@@ -132,6 +135,17 @@ public class SummonFriend implements ISkillHandler
 			summonerChar.sendPacket(sm);
 			return false;
 		}
+		
+		if (summonerChar.getInstanceId() > 0)
+		{
+			Instance summonerInstance = InstanceManager.getInstance().getInstance(summonerChar.getInstanceId());
+			if (!Config.ALLOW_SUMMON_TO_INSTANCE || !summonerInstance.isSummonAllowed())
+			{
+				SystemMessage sm = new SystemMessage(SystemMessageId.YOU_MAY_NOT_SUMMON_FROM_YOUR_CURRENT_LOCATION);
+				summonerChar.sendPacket(sm);
+				return false;
+			}
+		}
 
 		// on retail character can enter 7s dungeon with summon friend,
 		// but will be teleported away by mobs
@@ -187,6 +201,9 @@ public class SummonFriend implements ISkillHandler
 			sm.addString(ItemName);
 			targetChar.sendPacket(sm);
 		}
+		// set correct instance id
+		targetChar.setInstanceId(summonerChar.getInstanceId());
+	
 		targetChar.teleToLocation(summonerChar.getX(), summonerChar.getY(), summonerChar.getZ(), true);
 	}
 

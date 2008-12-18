@@ -140,13 +140,14 @@ public class GeoData
      * @param tx
      * @param ty
      * @param tz
-     * @return Last Location (x,y,z) where player can walk - just befor wall
+     * @param instanceId
+     * @return Last Location (x,y,z) where player can walk - just before wall
      */
-    public Location moveCheck(int x, int y, int z, int tx, int ty, int tz)
+    public Location moveCheck(int x, int y, int z, int tx, int ty, int tz, int instanceId)
     {
         return new Location(tx,ty,tz);
     }
-    public boolean canMoveFromToTarget(int x, int y, int z, int tx, int ty, int tz)
+    public boolean canMoveFromToTarget(int x, int y, int z, int tx, int ty, int tz, int instanceId)
     {
     	return true;
     }

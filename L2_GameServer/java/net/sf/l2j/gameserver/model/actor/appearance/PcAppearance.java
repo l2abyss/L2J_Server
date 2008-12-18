@@ -32,7 +32,8 @@ public class PcAppearance
     
     /** true if the player is invisible */
     private boolean _invisible = false;
-    
+    private boolean _ghostmode = false;
+
     /** The current visible name of this player, not necessarily the real one */
     private String _visibleName;
     
@@ -176,6 +177,16 @@ public class PcAppearance
         return _invisible;
     }
     
+    public void setGhostMode(boolean b)
+    {
+        _ghostmode = b;
+    }
+    
+    public boolean isGhost()
+    {
+        return _ghostmode;
+    }
+
     public int getNameColor()
     {
         return _nameColor;

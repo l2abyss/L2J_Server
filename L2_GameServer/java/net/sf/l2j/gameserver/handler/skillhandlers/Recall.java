@@ -86,6 +86,7 @@ public class Recall implements ISkillHandler
 						continue;
 					}
 				}
+				target.setInstanceId(0);
 				
 				target.teleToLocation(MapRegionTable.TeleportWhereType.Town);
 			}

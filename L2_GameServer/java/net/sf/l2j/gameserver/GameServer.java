@@ -83,6 +83,7 @@ import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
 import net.sf.l2j.gameserver.instancemanager.FourSepulchersManager;
 import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
+import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.ItemsOnGroundManager;
 import net.sf.l2j.gameserver.instancemanager.MercTicketManager;
 import net.sf.l2j.gameserver.instancemanager.PetitionManager;
@@ -224,6 +225,7 @@ public class GameServer
 		ZoneManager.getInstance();
 		MerchantPriceConfigTable.getInstance();
 		TradeController.getInstance();
+		InstanceManager.getInstance();
 		
 		if (Config.ALLOW_NPC_WALKERS)
 		{

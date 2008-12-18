@@ -271,6 +271,11 @@ public class Wedding implements IVoicedCommandHandler
 			activeChar.sendMessage("Your partner is not online.");
 			return false;
 		}
+		else if (activeChar.getInstanceId() != partner.getInstanceId())
+		{
+			activeChar.sendMessage("Your partner is in another World!");
+			return false;
+		}
 		else if (partner.isInJail())
 		{
 			activeChar.sendMessage("Your partner is in Jail.");

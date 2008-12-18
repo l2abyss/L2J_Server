@@ -221,8 +221,12 @@ public class Announcements
 	public void announceToAll(SystemMessage sm) {
 		Broadcast.toAllOnlinePlayers(sm);
 	}
-
-	// Method fo handling announcements from admin
+	
+	public void announceToInstance(SystemMessage sm, int instanceId) {
+		Broadcast.toPlayersInInstance(sm, instanceId);
+	}
+	
+	// Method for handling announcements from admin
 	public void handleAnnounce(String command, int lengthToTrim)
 	{
 		try

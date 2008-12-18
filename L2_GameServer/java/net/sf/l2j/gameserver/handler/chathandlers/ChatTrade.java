@@ -61,7 +61,7 @@ public class ChatTrade implements IChatHandler
 			//synchronized (L2World.getInstance().getAllPlayers())
 			{
 				for (L2PcInstance player : pls)
-					if (region == MapRegionTable.getInstance().getMapRegion(player.getX(), player.getY()) && !BlockList.isBlocked(player, activeChar))
+					if (region == MapRegionTable.getInstance().getMapRegion(player.getX(), player.getY()) && !BlockList.isBlocked(player, activeChar) && player.getInstanceId() == activeChar.getInstanceId())
 						player.sendPacket(cs);
 			}
 		}

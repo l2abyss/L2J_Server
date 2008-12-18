@@ -46,7 +46,15 @@ public class ObjectKnownList
     public boolean addKnownObject(L2Object object, L2Character dropper)
     {
         if (object == null) return false;
+        
+        // Instance -1 is for GMs that can see everything on all instances
+        if(getActiveObject().getInstanceId() != -1 && (object.getInstanceId() != getActiveObject().getInstanceId()))
+        	return false;
 
+        // Check if the object is an L2PcInstance in ghost mode
+        if(object instanceof L2PcInstance && ((L2PcInstance)object).getAppearance().isGhost())
+        	return false;
+ 	 	
         // Check if already know object
         if (knowsObject(object))
             return false;

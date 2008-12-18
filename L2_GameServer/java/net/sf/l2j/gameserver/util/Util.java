@@ -181,6 +181,8 @@ public final class Util
 	{
 		if (obj1 == null || obj2 == null)
 			return false;
+		if (obj1.getInstanceId() != obj2.getInstanceId())
+			return false;
 		if (range == -1)
 			return true; // not limited
 			

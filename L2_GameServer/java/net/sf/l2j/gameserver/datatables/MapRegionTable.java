@@ -27,6 +27,7 @@ import net.sf.l2j.gameserver.instancemanager.ArenaManager;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
+import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.TownManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.Location;
@@ -35,6 +36,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.model.entity.Fort;
+import net.sf.l2j.gameserver.model.entity.Instance;
 import net.sf.l2j.gameserver.model.zone.type.L2ArenaZone;
 import net.sf.l2j.gameserver.model.zone.type.L2ClanHallZone;
 
@@ -515,6 +517,17 @@ public class MapRegionTable
 					}
 				}
 			}    
+			
+			// Checking if in an instance
+			if (player.getInstanceId() > 0)
+			{
+				Instance playerInstance = InstanceManager.getInstance().getInstance(player.getInstanceId());
+				if (playerInstance.getSpawnLoc() != null)
+				{
+					coord = playerInstance.getSpawnLoc();
+					return new Location(coord[0], coord[1], coord[2]);
+				}
+			}
 		}
 		
 		// Get the nearest town

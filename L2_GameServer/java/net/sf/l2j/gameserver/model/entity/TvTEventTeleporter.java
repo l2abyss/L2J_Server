@@ -85,6 +85,7 @@ public class TvTEventTeleporter implements Runnable
 		_playerInstance.setCurrentCp(_playerInstance.getMaxCp());
 		_playerInstance.setCurrentHp(_playerInstance.getMaxHp());
 		_playerInstance.setCurrentMp(_playerInstance.getMaxMp());
+		_playerInstance.setInstanceId(0);
 		_playerInstance.teleToLocation( _coordinates[ 0 ] + Rnd.get(101)-50, _coordinates[ 1 ] + Rnd.get(101)-50, _coordinates[ 2 ], false );
 		
 		if (TvTEvent.isStarted() && !_adminRemove)

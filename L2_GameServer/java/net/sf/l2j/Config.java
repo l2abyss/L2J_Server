@@ -185,6 +185,8 @@ public final class Config
     public static int		PLAYER_SPAWN_PROTECTION;
     public static boolean	RESPAWN_RANDOM_ENABLED;
     public static int		RESPAWN_RANDOM_MAX_OFFSET;
+    public static boolean	RESTORE_PLAYER_INSTANCE;
+    public static boolean	ALLOW_SUMMON_TO_INSTANCE;
     public static boolean	PETITIONING_ALLOWED;
     public static int		MAX_PETITIONS_PER_PLAYER;
     public static int		MAX_PETITIONS_PENDING;
@@ -1358,6 +1360,8 @@ public final class Config
 	                PLAYER_SPAWN_PROTECTION				= Integer.parseInt(Character.getProperty("PlayerSpawnProtection", "0"));
 	                RESPAWN_RANDOM_ENABLED				= Boolean.parseBoolean(Character.getProperty("RespawnRandomInTown", "False"));
 	                RESPAWN_RANDOM_MAX_OFFSET			= Integer.parseInt(Character.getProperty("RespawnRandomMaxOffset", "50"));
+	                RESTORE_PLAYER_INSTANCE				= Boolean.parseBoolean(Character.getProperty("RestorePlayerInstance", "False"));
+	                ALLOW_SUMMON_TO_INSTANCE			= Boolean.parseBoolean(Character.getProperty("AllowSummonToInstance", "True"));
 	                PETITIONING_ALLOWED					= Boolean.parseBoolean(Character.getProperty("PetitioningAllowed", "True"));
 	                MAX_PETITIONS_PER_PLAYER			= Integer.parseInt(Character.getProperty("MaxPetitionsPerPlayer", "5"));
 	                MAX_PETITIONS_PENDING				= Integer.parseInt(Character.getProperty("MaxPetitionsPending", "25"));
@@ -2202,6 +2206,9 @@ public final class Config
         else if (pName.equalsIgnoreCase("PlayerSpawnProtection")) PLAYER_SPAWN_PROTECTION = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("PlayerFakeDeathUpProtection")) PLAYER_FAKEDEATH_UP_PROTECTION = Integer.parseInt(pValue);
 
+        else if (pName.equalsIgnoreCase("RestorePlayerInstance")) RESTORE_PLAYER_INSTANCE = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("AllowSummonToInstance")) ALLOW_SUMMON_TO_INSTANCE = Boolean.parseBoolean(pValue);
+        
         else if (pName.equalsIgnoreCase("PartyXpCutoffMethod")) PARTY_XP_CUTOFF_METHOD = pValue;
         else if (pName.equalsIgnoreCase("PartyXpCutoffPercent")) PARTY_XP_CUTOFF_PERCENT = Double.parseDouble(pValue);
         else if (pName.equalsIgnoreCase("PartyXpCutoffLevel")) PARTY_XP_CUTOFF_LEVEL = Integer.parseInt(pValue);

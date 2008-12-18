@@ -1434,6 +1434,11 @@ public class Quest extends ManagedScript
 	
 	public L2NpcInstance addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
 	{
+		return addSpawn(npcId, x, y, z, heading, randomOffset, despawnDelay, isSummonSpawn, 0);
+	}
+	
+	public L2NpcInstance addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn, int instanceId)
+	{
 		L2NpcInstance result = null;
 		try
 		{
@@ -1471,6 +1476,7 @@ public class Quest extends ManagedScript
 					y += offset;
 				}
 				L2Spawn spawn = new L2Spawn(template);
+				spawn.setInstanceId(instanceId);
 				spawn.setHeading(heading);
 				spawn.setLocx(x);
 				spawn.setLocy(y);

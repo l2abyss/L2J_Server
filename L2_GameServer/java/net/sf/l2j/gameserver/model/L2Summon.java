@@ -94,6 +94,8 @@ public abstract class L2Summon extends L2PlayableInstance
         getStat();			// init stats
         getStatus();		// init status
 
+        setInstanceId(owner.getInstanceId()); // set instance to same as owner
+        
         _showSummonAnimation = true;
 		_owner = owner;
 		_ai = new L2SummonAI(new L2Summon.AIAccessor());

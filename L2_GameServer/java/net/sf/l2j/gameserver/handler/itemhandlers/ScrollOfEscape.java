@@ -194,6 +194,7 @@ public class ScrollOfEscape implements IItemHandler
 			_activeChar.enableAllSkills();
 			_activeChar.setIsCastingNow(false);
 			_activeChar.setIsIn7sDungeon(false);
+			_activeChar.setInstanceId(0);
 			
 			try
 			{

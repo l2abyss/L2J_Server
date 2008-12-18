@@ -181,6 +181,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 			}
 
 			// Teleport and revive
+			activeChar.setInstanceId(0);
 			activeChar.setIsPendingRevive(true);
 			activeChar.teleToLocation(loc, true);
 		}

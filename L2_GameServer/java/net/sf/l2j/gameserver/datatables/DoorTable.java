@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.util.Collection;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
@@ -28,6 +29,7 @@ import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
+import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.pathfinding.AbstractNodeLoc;
@@ -280,12 +282,12 @@ public class DoorTable
 		*/
 	}
 	
-	public boolean checkIfDoorsBetween(AbstractNodeLoc start, AbstractNodeLoc end)
+	public boolean checkIfDoorsBetween(AbstractNodeLoc start, AbstractNodeLoc end, int instanceId)
 	{
-		return checkIfDoorsBetween(start.getX(), start.getY(), start.getZ(), end.getX(), end.getY(), end.getZ());
+		return checkIfDoorsBetween(start.getX(), start.getY(), start.getZ(), end.getX(), end.getY(), end.getZ(), instanceId);
 	}
 	
-	public boolean checkIfDoorsBetween(int x, int y, int z, int tx, int ty, int tz)
+	public boolean checkIfDoorsBetween(int x, int y, int z, int tx, int ty, int tz, int instanceId)
 	{
 		int region;
 		try
@@ -297,8 +299,14 @@ public class DoorTable
 			return false;
 		}
 		
+		Collection<L2DoorInstance> allDoors;
+		if (instanceId > 0)
+			allDoors = InstanceManager.getInstance().getInstance(instanceId).getDoors();
+		else
+			allDoors = _staticItems.values();
+		
 		// there are quite many doors, maybe they should be splitted
-		for (L2DoorInstance doorInst : _staticItems.values())
+		for (L2DoorInstance doorInst : allDoors)
 		{
 			if (doorInst.getMapRegion() != region) 
 				continue;

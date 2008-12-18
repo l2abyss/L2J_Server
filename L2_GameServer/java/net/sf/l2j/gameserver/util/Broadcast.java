@@ -226,4 +226,17 @@ public final class Broadcast
 		CreatureSay cs = new CreatureSay(0, Say2.ANNOUNCEMENT, "", text);
 		toAllOnlinePlayers(cs);
 	}
+	
+	public static void toPlayersInInstance(L2GameServerPacket mov, int instanceId)
+	{
+		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+		//synchronized (character.getKnownList().getKnownPlayers())
+		{
+			for (L2PcInstance onlinePlayer : pls)
+			{
+				if (onlinePlayer.isOnline() == 1 && onlinePlayer.getInstanceId() == instanceId)
+					onlinePlayer.sendPacket(mov);
+			}
+		}
+	}
 }

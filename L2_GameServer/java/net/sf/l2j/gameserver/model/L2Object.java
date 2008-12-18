@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.model;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
+import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.ItemsOnGroundManager;
 import net.sf.l2j.gameserver.instancemanager.MercTicketManager;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -49,6 +50,7 @@ public abstract class L2Object
     private int _objectId;                      // Object identifier
     private ObjectPoly _poly;
     private ObjectPosition _position;
+	private int _instanceId = 0;
 
     // =========================================================
     // Constructor
@@ -103,6 +105,53 @@ public abstract class L2Object
         if (Config.ASSERT) assert getPosition().getWorldRegion() != null || _isVisible;
         return getPosition().getX();
     }
+	/**
+	* @return The id of the instance zone the object is in - id 0 is global
+	* since everything like dropped items, mobs, players can be in a instanciated area, it must be in l2object
+	*/
+	public int getInstanceId()
+	{
+		return _instanceId;
+	}
+
+	/**
+	* @param instanceId The id of the instance zone the object is in - id 0 is global
+	*/
+	public void setInstanceId(int instanceId)
+	{
+		if (_instanceId == instanceId)
+			return;
+		
+		if (this instanceof L2PcInstance)
+		{
+			if (_instanceId > 0)
+				InstanceManager.getInstance().getInstance(_instanceId).removePlayer(getObjectId());
+			if (instanceId > 0)
+				InstanceManager.getInstance().getInstance(instanceId).addPlayer(getObjectId());
+			
+			if (((L2PcInstance)this).getPet() != null)
+				((L2PcInstance)this).getPet().setInstanceId(instanceId);
+		} 
+		
+		_instanceId = instanceId;
+
+		// If we change it for visible objects, me must clear & revalidate knownlists
+		if (_isVisible && _knownList != null)
+		{
+			if (this instanceof L2PcInstance)
+			{
+				
+				// We don't want some ugly looking disappear/appear effects, so don't update
+				// the knownlist here, but players usually enter instancezones through teleporting
+				// and the teleport will do the revalidation for us.
+			}
+			else
+			{
+				decayMe();
+				spawnMe();
+			}
+		}
+	}
 
     public final int getY()
     {
@@ -152,7 +201,7 @@ public abstract class L2Object
         L2World.getInstance().removeVisibleObject(this, reg);
         L2World.getInstance().removeObject(this);
         if (Config.SAVE_DROPPED_ITEM)
-        ItemsOnGroundManager.getInstance().removeObject(this);
+        	ItemsOnGroundManager.getInstance().removeObject(this);
     }
 
 

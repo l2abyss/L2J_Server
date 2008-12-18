@@ -145,6 +145,7 @@ public class Escape implements IUserCommandHandler
 			_activeChar.setIsIn7sDungeon(false);
 			_activeChar.enableAllSkills();
 			_activeChar.setIsCastingNow(false);
+			_activeChar.setInstanceId(0);
 			
 			try
 			{

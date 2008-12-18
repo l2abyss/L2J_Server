@@ -191,7 +191,7 @@ public class AdminTeleport implements IAdminCommandHandler
 				String targetName = command.substring(13);
 				L2PcInstance player = L2World.getInstance().getPlayer(targetName);
 				
-				teleportCharacter(player, activeChar.getX(), activeChar.getY(), activeChar.getZ());
+				teleportCharacter(player, activeChar.getX(), activeChar.getY(), activeChar.getZ(), activeChar);
 			}
 			catch (StringIndexOutOfBoundsException e)
 			{
@@ -334,7 +334,7 @@ public class AdminTeleport implements IAdminCommandHandler
 				int y = Integer.parseInt(y1);
 				String z1 = st.nextToken();
 				int z = Integer.parseInt(z1);
-				teleportCharacter(player, x, y, z);
+				teleportCharacter(player, x, y, z, null);
 			}
 			catch (NoSuchElementException nsee)
 			{
@@ -348,10 +348,15 @@ public class AdminTeleport implements IAdminCommandHandler
 	 * @param y
 	 * @param z
 	 */
-	private void teleportCharacter(L2PcInstance player, int x, int y, int z)
+	private void teleportCharacter(L2PcInstance player, int x, int y, int z, L2PcInstance activeChar)
 	{
 		if (player != null)
 		{
+			// Set player to same instance as GM teleporting.
+			if (activeChar != null && activeChar.getInstanceId() >= 0)
+				player.setInstanceId(activeChar.getInstanceId());
+			else
+				player.setInstanceId(0);
 			//Common character information
 			player.sendMessage("Admin is teleporting you.");
 			
@@ -362,6 +367,12 @@ public class AdminTeleport implements IAdminCommandHandler
 	
 	private void teleportToCharacter(L2PcInstance activeChar, L2Object target)
 	{
+		if (target == null)
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
+			return;
+		}
+		
 		L2PcInstance player = null;
 		if (target instanceof L2PcInstance)
 		{
@@ -379,6 +390,9 @@ public class AdminTeleport implements IAdminCommandHandler
 		}
 		else
 		{
+			// move to targets instance
+			activeChar.setInstanceId(target.getInstanceId());
+			
 			int x = player.getX();
 			int y = player.getY();
 			int z = player.getZ();
@@ -430,6 +444,10 @@ public class AdminTeleport implements IAdminCommandHandler
 				spawn.setAmount(1);
 				spawn.setHeading(activeChar.getHeading());
 				spawn.setRespawnDelay(respawnTime);
+				if (activeChar.getInstanceId() >= 0)
+					spawn.setInstanceId(activeChar.getInstanceId());
+				else
+					spawn.setInstanceId(0);
 				SpawnTable.getInstance().addNewSpawn(spawn, true);
 				spawn.init();
 				
