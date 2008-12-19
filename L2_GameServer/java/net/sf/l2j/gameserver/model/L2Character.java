@@ -1592,21 +1592,23 @@ public abstract class L2Character extends L2Object
 		}
 
 		// Disable the skill during the re-use delay and create a task EnableSkill with Medium priority to enable it at the end of the re-use delay
-		if (reuseDelay > 10 && !skillMastery)
+		if (reuseDelay > 10)
 		{
+			if (skillMastery)
+			{
+				reuseDelay = 100;
+				
+				if (getActingPlayer() != null)
+				{	
+					SystemMessage sm = new SystemMessage(SystemMessageId.SKILL_READY_TO_USE_AGAIN);
+					getActingPlayer().sendPacket(sm);
+					sm = null;
+				}
+			}
+			
 			disableSkill(skill.getId(), reuseDelay);
 		}
 		
-		if (skillMastery && getActingPlayer() != null) // only possible for L2PcInstance
-		{	
-			reuseDelay = 0;
-			
-			SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
-			sm.addSkillName(skill);
-			getActingPlayer().sendPacket(sm);
-			sm = null;
-		}
-
 		// Make sure that char is facing selected target
 		if (target != this)
 			setHeading(Util.calculateHeadingFrom(this, target));
