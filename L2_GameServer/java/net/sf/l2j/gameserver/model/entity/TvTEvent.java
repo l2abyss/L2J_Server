@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.entity;
 
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -206,9 +207,9 @@ public class TvTEvent
 		}
 		
 		// Opens all doors specified in configs for tvt
-		openDoors();
+		openDoors(Config.TVT_DOORS_IDS_TO_OPEN);
 		// Closes all doors specified in configs for tvt
-		closeDoors();
+		closeDoors(Config.TVT_DOORS_IDS_TO_CLOSE);
 		// Set state STARTED
 		setState(EventState.STARTED);
 		
@@ -415,9 +416,9 @@ public class TvTEvent
 		//Unspawn event npc
 		unSpawnNpc();
 		// Opens all doors specified in configs for tvt
-		openDoors();
+		openDoors(Config.TVT_DOORS_IDS_TO_CLOSE);
 		// Closes all doors specified in Configs for tvt
-		closeDoors();
+		closeDoors(Config.TVT_DOORS_IDS_TO_OPEN);
 		
 		// Iterate over all teams
 		for (TvTEventTeam team : _teams)
@@ -523,9 +524,9 @@ public class TvTEvent
 	/**
 	 * Close doors specified in configs
 	 */
-	private static void closeDoors()
+	private static void closeDoors(List<Integer> doors)
 	{
-		for (int doorId : Config.TVT_DOORS_IDS_TO_CLOSE)
+		for (int doorId : doors)
 		{
 			L2DoorInstance doorInstance = DoorTable.getInstance().getDoor(doorId);
 			
@@ -539,9 +540,9 @@ public class TvTEvent
 	/**
 	 * Open doors specified in configs
 	 */
-	private static void openDoors()
+	private static void openDoors(List<Integer> doors)
 	{
-		for (int doorId : Config.TVT_DOORS_IDS_TO_OPEN)
+		for (int doorId : doors)
 		{
 			L2DoorInstance doorInstance = DoorTable.getInstance().getDoor(doorId);
 			
