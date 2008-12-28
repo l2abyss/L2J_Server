@@ -8561,11 +8561,19 @@ public final class L2PcInstance extends L2PlayableInstance
                 setIsFlying(true);
                 break; //Flying Wyvern
 			case 3:
-				setIsRidingFenrirWolf(true);
-				setIsRidingWFenrirWolf(true);
-				setIsRidingGreatSnowWolf(true);
-				break;	
-
+				switch (npcId)
+				{
+					case 16041:
+						setIsRidingFenrirWolf(true);
+						break;
+					case 16042:
+						setIsRidingWFenrirWolf(true);
+						break;
+					case 16037:
+						setIsRidingGreatSnowWolf(true);
+						break;
+				}
+				break;
 		}
 
 		_mountType = mountType;
@@ -8575,7 +8583,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	}
 
 	/**
-	 * Return the type of Pet mounted (0 : none, 1 : Stridder, 2 : Wyvern).<BR><BR>
+	 * Return the type of Pet mounted (0 : none, 1 : Strider, 2 : Wyvern, 3: Wolf).<BR><BR>
 	 */
 	public int getMountType()
 	{
