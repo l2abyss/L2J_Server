@@ -18,40 +18,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
-import net.sf.l2j.gameserver.handler.itemhandlers.BeastSoulShot;
-import net.sf.l2j.gameserver.handler.itemhandlers.BeastSpice;
-import net.sf.l2j.gameserver.handler.itemhandlers.BeastSpiritShot;
-import net.sf.l2j.gameserver.handler.itemhandlers.BlessedSpiritShot;
-import net.sf.l2j.gameserver.handler.itemhandlers.Book;
-import net.sf.l2j.gameserver.handler.itemhandlers.CharChangePotions;
-import net.sf.l2j.gameserver.handler.itemhandlers.CrystalCarol;
-import net.sf.l2j.gameserver.handler.itemhandlers.EnchantAttribute;
-import net.sf.l2j.gameserver.handler.itemhandlers.EnchantScrolls;
-import net.sf.l2j.gameserver.handler.itemhandlers.EnergyStone;
-import net.sf.l2j.gameserver.handler.itemhandlers.ExtractableItems;
-import net.sf.l2j.gameserver.handler.itemhandlers.Firework;
-import net.sf.l2j.gameserver.handler.itemhandlers.FishShots;
-import net.sf.l2j.gameserver.handler.itemhandlers.Harvester;
-import net.sf.l2j.gameserver.handler.itemhandlers.Key;
-import net.sf.l2j.gameserver.handler.itemhandlers.Maps;
-import net.sf.l2j.gameserver.handler.itemhandlers.MercTicket;
-import net.sf.l2j.gameserver.handler.itemhandlers.MysteryPotion;
-import net.sf.l2j.gameserver.handler.itemhandlers.PaganKeys;
-import net.sf.l2j.gameserver.handler.itemhandlers.Potions;
-import net.sf.l2j.gameserver.handler.itemhandlers.Recipes;
-import net.sf.l2j.gameserver.handler.itemhandlers.Remedy;
-import net.sf.l2j.gameserver.handler.itemhandlers.RollingDice;
-import net.sf.l2j.gameserver.handler.itemhandlers.ScrollOfEscape;
-import net.sf.l2j.gameserver.handler.itemhandlers.ScrollOfResurrection;
-import net.sf.l2j.gameserver.handler.itemhandlers.Scrolls;
-import net.sf.l2j.gameserver.handler.itemhandlers.Seed;
-import net.sf.l2j.gameserver.handler.itemhandlers.SevenSignsRecord;
-import net.sf.l2j.gameserver.handler.itemhandlers.SoulCrystals;
-import net.sf.l2j.gameserver.handler.itemhandlers.SoulShots;
-import net.sf.l2j.gameserver.handler.itemhandlers.SpecialXMas;
-import net.sf.l2j.gameserver.handler.itemhandlers.SpiritLake;
-import net.sf.l2j.gameserver.handler.itemhandlers.SpiritShot;
-import net.sf.l2j.gameserver.handler.itemhandlers.SummonItems;
+import net.sf.l2j.gameserver.handler.itemhandlers.*;
 
 /**
  * This class manages handlers of items

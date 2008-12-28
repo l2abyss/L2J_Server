@@ -19,9 +19,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.handler.voicedcommandhandlers.Banking;
-import net.sf.l2j.gameserver.handler.voicedcommandhandlers.Wedding;
-import net.sf.l2j.gameserver.handler.voicedcommandhandlers.stats;
+import net.sf.l2j.gameserver.handler.voicedcommandhandlers.*;
 
 /**
  * This class ...
