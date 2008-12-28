@@ -27,6 +27,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.model.entity.Fort;
+import net.sf.l2j.gameserver.model.entity.TvTEvent;
 
 /**
  * This class ...
@@ -193,6 +194,9 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		L2PcInstance activeChar = getClient().getActiveChar();
 
 		if (activeChar == null)
+			return;
+
+		if (TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(activeChar.getObjectId()))
 			return;
 
 		//SystemMessage sm2 = new SystemMessage(SystemMessage.S1_S2);
