@@ -99,7 +99,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			!(item.getItem().getCrystalType() == L2Item.CRYSTAL_S || item.getItem().getCrystalType() == L2Item.CRYSTAL_S80))
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.ELEMENTAL_ENHANCE_REQUIREMENT_NOT_SUFFICIENT));
-			player.setActiveEnchantItem(null);
+			player.setActiveEnchantAttrItem(null);
 			return;
 		}
 
@@ -144,14 +144,14 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 		if (oldElement != null && oldElement.getElement() != elementToAdd)
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.ANOTHER_ELEMENTAL_POWER_ALREADY_ADDED));
-			player.setActiveEnchantItem(null);
+			player.setActiveEnchantAttrItem(null);
 			return;
 		}
 
 		if (powerToAdd == 0)
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.ELEMENTAL_ENHANCE_REQUIREMENT_NOT_SUFFICIENT));
-			player.setActiveEnchantItem(null);
+			player.setActiveEnchantAttrItem(null);
 			return;
 		}
 
@@ -190,7 +190,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 
 		player.sendPacket(new ExAttributeEnchantResult(powerToAdd));
 		player.sendPacket(new UserInfo(player));
-		player.setActiveEnchantItem(null);
+		player.setActiveEnchantAttrItem(null);
 	}
 
 	public byte getElementFromItemId(int itemId)
