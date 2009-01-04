@@ -1314,9 +1314,6 @@ public final class Formulas
 					damage += skillpower;
 			}
 		}
-		// In C5 summons make 10 % less dmg in PvP.
-		if(attacker instanceof L2Summon && target instanceof L2PcInstance) 
-			damage *= 0.9;
 
 		// defence modifier depending of the attacker weapon
 		L2Weapon weapon = attacker.getActiveWeaponItem();
@@ -1363,9 +1360,6 @@ public final class Formulas
 		}
 
 
-		if (crit)
-			damage += attacker.getCriticalDmg(target, damage) * target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, skill != null ? skill : null) + attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill);
-		
 		/*if (shld && !Config.ALT_GAME_SHIELD_BLOCKS)
 		{
 			defence += target.getShldDef();
@@ -1385,7 +1379,20 @@ public final class Formulas
 		*/
 		//		else {
 		//if (skill == null)
-		damage = 70 * damage / defence;
+		
+		if (crit)
+		{
+			//Finally retail like formula 
+			damage = 2 * attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill) * target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, null) * (70 * damage / defence);
+			//Crit dmg add is almost useless in normal hits... 
+			damage += (attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 70 / defence);
+		}
+		else
+			damage = 70 * damage / defence;
+		
+		// In C5 summons make 10 % less dmg in PvP.
+		if (attacker instanceof L2Summon && target instanceof L2PcInstance)
+			damage *= 0.9;
 
 		if (stat != null)
 		{
