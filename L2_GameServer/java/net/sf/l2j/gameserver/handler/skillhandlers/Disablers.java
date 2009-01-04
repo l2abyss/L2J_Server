@@ -559,9 +559,9 @@ public class Disablers implements ISkillHandler
 					//int landrate = 90;
 					//if ((target.getLevel() - lvlmodifier) > 0)
 					//	landrate = 90 - 4 * (target.getLevel() - lvlmodifier);
-						
+					
 					//landrate = (int) activeChar.calcStat(Stats.CANCEL_VULN, landrate, target, null);
-						
+					
 					//if (Rnd.get(100) < landrate)
 					
 					if (target.reflectSkill(skill))
@@ -570,7 +570,19 @@ public class Disablers implements ISkillHandler
 					if (Formulas.getInstance().calcSkillSuccess(activeChar, target, skill, shld, ss, sps, bss))
 					{
 						L2Effect[] effects = target.getAllEffects();
-						int maxfive = skill.getMaxNegatedEffects();
+						
+						double max = skill.getMaxNegatedEffects();
+						if (max == 0)
+							max = 24; //this is for RBcancells and stuff...
+							
+						if (effects.length >= max)
+							effects = SortEffects(effects);
+						
+						//for(int i = 0; i < effects.length;i++)
+						//    activeChar.sendMessage(Integer.toString(effects[i].getSkill().getMagicLevel()));
+						
+						double count = 1;
+						
 						for (L2Effect e : effects)
 						{
 							// do not delete signet effects!
@@ -581,28 +593,27 @@ public class Disablers implements ISkillHandler
 									continue;
 							}
 							
-							if (e.getSkill().getId() != 4082 && e.getSkill().getId() != 4215 && e.getSkill().getId() != 4515  && e.getSkill().getId() != 5182 && e.getSkill().getId() != 110 && e.getSkill().getId() != 111 && e.getSkill().getId() != 1323
-									&& e.getSkill().getId() != 1325) // Cannot cancel skills 4082, 4215, 4515, 110, 111, 1323, 1325
+							if (e.getSkill().getId() != 4082 && e.getSkill().getId() != 4215 && e.getSkill().getId() != 4515 && e.getSkill().getId() != 5182 && e.getSkill().getId() != 110 && e.getSkill().getId() != 111
+									&& e.getSkill().getId() != 1323 && e.getSkill().getId() != 1325) // Cannot cancel skills 4082, 4215, 4515, 110, 111, 1323, 1325
 							{
-								if (e.getSkill().getSkillType() != L2SkillType.BUFF) //sleep, slow, surrenders etc
-									e.exit();
-								else
+								//if (e.getSkill().getSkillType() != L2SkillType.BUFF) //sleep, slow, surrenders etc
+								//    e.exit();
+								//else
+								if (e.getSkill().getSkillType() == L2SkillType.BUFF || 
+										e.getSkill().getSkillType() == L2SkillType.HEAL_PERCENT ||
+											e.getSkill().getSkillType() == L2SkillType.REFLECT ||
+												e.getSkill().getSkillType() == L2SkillType.COMBATPOINTHEAL)
 								{
-									int rate = 100;
-									int level = e.getLevel();
-									if (level > 0)
-										rate = Integer.valueOf(150 / (1 + level));
-									if (rate > 95)
-										rate = 95;
-									else if (rate < 5)
-										rate = 5;
-									if (Rnd.get(100) < rate)
-									{
+									double rate = 1 - (count / max);
+									if (rate < 0.33)
+										rate = 0.33;
+									else if (rate > 0.95)
+										rate = 0.95;
+									if (Rnd.get(1000) < (rate * 1000))
 										e.exit();
-										maxfive--;
-										if (maxfive == 0)
-											break;
-									}
+									if (count == max)
+										break;
+									count++;
 								}
 							}
 						}
@@ -617,6 +628,7 @@ public class Disablers implements ISkillHandler
 							activeChar.sendPacket(sm);
 						}
 					}
+					
 					break;
 				}
 				case NEGATE:
@@ -950,6 +962,31 @@ public class Disablers implements ISkillHandler
 				eff.exit();
 		}
 	}
+	
+	private L2Effect[] SortEffects(L2Effect[] initial)
+	{
+		//this is just classic insert sort
+		//If u can find better sort for max 20-30 units, rewrite this... :)
+		int min, index = 0;
+		L2Effect pom;
+		for (int i = 0; i < initial.length; i++)
+		{
+			min = initial[i].getSkill().getMagicLevel();
+			for (int j = i; j < initial.length; j++)
+				if (initial[j].getSkill().getMagicLevel() <= min)
+				{
+					min = initial[j].getSkill().getMagicLevel();
+					index = j;
+					
+				}
+			pom = initial[i];
+			initial[i] = initial[index];
+			initial[index] = pom;
+		}
+		
+		return initial;
+	}
+	    
 	
 	/**
 	 * 
