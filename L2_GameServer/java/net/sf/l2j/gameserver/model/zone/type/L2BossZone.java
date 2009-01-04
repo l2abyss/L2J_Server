@@ -209,10 +209,10 @@ public class L2BossZone extends L2ZoneType
 					}
 				}
 			}
-			if (character instanceof L2Attackable && character.isRaid())
-			{
-				((L2Attackable) character).returnHome();
-			}
+		}
+		if (character instanceof L2Attackable && character.isRaid())
+		{
+			((L2Attackable) character).returnHome();
 		}
 	}
 	
