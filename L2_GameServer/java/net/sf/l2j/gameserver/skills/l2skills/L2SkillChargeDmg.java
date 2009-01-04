@@ -114,10 +114,12 @@ public class L2SkillChargeDmg extends L2Skill
 			// TODO: should we use dual or not?
 			// because if so, damage are lowered but we dont do anything special with dual then
 			// like in doAttackHitByDual which in fact does the calcPhysDam call twice
-
+        	Formulas f = Formulas.getInstance();
 			//boolean dual  = caster.isUsingDualWeapon();
 			byte shld = Formulas.getInstance().calcShldUse(caster, target);
-			boolean crit = Formulas.getInstance().calcCrit(caster.getCriticalHit(target, this));
+			boolean crit = false;
+			if (this.getBaseCritRate() > 0)
+				crit = f.calcCrit(this.getBaseCritRate() * 10 * f.getSTRBonus(caster));
 			boolean soul = (weapon != null
 							&& weapon.getChargedSoulshot() == L2ItemInstance.CHARGED_SOULSHOT
 							&& weapon.getItemType() != L2WeaponType.DAGGER );
