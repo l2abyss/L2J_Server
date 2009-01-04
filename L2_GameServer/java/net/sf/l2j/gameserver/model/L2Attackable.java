@@ -393,7 +393,7 @@ public class L2Attackable extends L2NpcInstance
         if (isEventMob) return;
 
         // Add damage and hate to the attacker AggroInfo of the L2Attackable _aggroList
-        if (attacker != null && !isDOT) addDamage(attacker, (int)damage);
+        if (attacker != null) addDamage(attacker, (int)damage);
 
         // If this L2Attackable is a L2MonsterInstance and it has spawned minions, call its minions to battle
         if (this instanceof L2MonsterInstance)

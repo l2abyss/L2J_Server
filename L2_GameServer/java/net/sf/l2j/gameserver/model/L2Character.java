@@ -6522,7 +6522,7 @@ public abstract class L2Character extends L2Object
 	// Method - Public
 	public void addStatusListener(L2Character object) { getStatus().addStatusListener(object); }
 	public void reduceCurrentHp(double i, L2Character attacker) { reduceCurrentHp(i, attacker, true, false); }
-	public void reduceCurrentHpByDOT(double i, L2Character attacker) { reduceCurrentHp(i, attacker, false, true); }
+	public void reduceCurrentHpByDOT(double i, L2Character attacker) { reduceCurrentHp(i, attacker, true, true); }
 	public void reduceCurrentHp(double i, L2Character attacker, boolean awake, boolean isDOT)
 	{
 		if (Config.L2JMOD_CHAMPION_ENABLE && isChampion() && Config.L2JMOD_CHAMPION_HP != 0)

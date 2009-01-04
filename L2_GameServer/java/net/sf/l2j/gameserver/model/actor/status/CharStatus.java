@@ -160,7 +160,7 @@ public class CharStatus
                 ((L2PcInstance) attacker).setDuelState(Duel.DUELSTATE_INTERRUPTED);
             }
         }
-        if (awake && getActiveChar().isSleeping() && !isDOT)
+        if (awake && getActiveChar().isSleeping() && (!isDOT || getActiveChar() instanceof L2PcInstance))
             getActiveChar().stopSleeping(null);
         if (getActiveChar().isStunned() && Rnd.get(10) == 0 && !isDOT)
             getActiveChar().stopStunning(null);
