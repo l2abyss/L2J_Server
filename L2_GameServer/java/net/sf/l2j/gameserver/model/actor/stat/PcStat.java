@@ -36,6 +36,7 @@ public class PcStat extends PlayableStat
 
     private int _oldMaxHp;      // stats watch
     private int _oldMaxMp;      // stats watch
+    private int _oldMaxCp;		// stats watch
 
     // =========================================================
     // Constructor
@@ -252,6 +253,21 @@ public class PcStat extends PlayableStat
             super.setLevel(value);
     }
 
+    @Override
+    public final int getMaxCp()
+    {
+    	// Get the Max CP (base+modifier) of the L2PcInstance
+    	int val = super.getMaxCp();
+    	if (val != _oldMaxCp)
+    	{
+    		_oldMaxCp = val;
+    		
+    		// Launch a regen task if the new Max CP is higher than the old one
+    		if (getActiveChar().getStatus().getCurrentCp() != val) getActiveChar().getStatus().setCurrentCp(getActiveChar().getStatus().getCurrentCp()); // trigger start of regeneration
+    	}
+    	return val;
+    }
+    
     @Override
 	public final int getMaxHp()
     {
