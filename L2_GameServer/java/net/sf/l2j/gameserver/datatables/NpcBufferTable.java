@@ -18,12 +18,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 import net.sf.l2j.L2DatabaseFactory;
 
 public class NpcBufferTable
 {
+	protected static Logger _log = Logger.getLogger(NpcBufferTable.class.getName());
+	
 	private class NpcBufferSkills
 	{
 		private int _npcId = 0;
@@ -115,7 +119,7 @@ public class NpcBufferTable
 		}
 		catch (Exception e)
 		{
-			System.out.println("NpcBufferSkillIdsTable: Error reading npc_buffer table: " + e);
+			_log.log(Level.SEVERE, "NpcBufferSkillIdsTable: Error reading npc_buffer table: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -128,7 +132,7 @@ public class NpcBufferTable
 			}
 		}
 		
-		System.out.println("NpcBufferSkillIdsTable: Loaded " + _buffers.size() + " buffers and " + skillCount + " skills.");
+		_log.info("NpcBufferSkillIdsTable: Loaded " + _buffers.size() + " buffers and " + skillCount + " skills.");
 	}
 	
 	public static NpcBufferTable getInstance()
