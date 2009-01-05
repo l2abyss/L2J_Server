@@ -489,14 +489,18 @@ public class Disablers implements ISkillHandler
 					if (effects.length == 0 || effects == null)
 						break;
 					
-					int count = (skill.getMaxNegatedEffects() > 0) ? skill.getMaxNegatedEffects() : -2;
+					int count = (skill.getMaxNegatedEffects() > 0) ? 0 : -2;
 					for (L2Effect e : effects)
 					{
 						if (e.getSkill().isDebuff() && count < skill.getMaxNegatedEffects())
 						{
-							e.exit();
-							if (count > -1)
-								count++;
+							//Do not remove raid curse skills
+							if (e.getSkill().getId() != 4215 && e.getSkill().getId() != 4515 && e.getSkill().getId() != 4082)
+							{
+								e.exit();
+								if (count > -1)
+									count++;
+							}
 						}
 					}
 					
@@ -837,9 +841,13 @@ public class Disablers implements ISkillHandler
 					{
 						if (e.getSkill().isDebuff() && count < skill.getMaxNegatedEffects())
 						{
-							e.exit();
-							if (count > -1)
-								count++;
+							//Do not remove raid curse skills
+							if (e.getSkill().getId() != 4215 && e.getSkill().getId() != 4515 && e.getSkill().getId() != 4082)
+							{
+								e.exit();
+								if (count > -1)
+									count++;
+							}
 						}
 					}
 					
