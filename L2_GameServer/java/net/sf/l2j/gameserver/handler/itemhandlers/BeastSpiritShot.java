@@ -50,20 +50,21 @@ public class BeastSpiritShot implements IItemHandler
 		if (playable == null)
 			return;
 		
-		L2PcInstance activeOwner = null;
+		L2PcInstance activeOwner = playable.getActingPlayer();
+		
 		if (playable instanceof L2Summon)
 		{
-			activeOwner = ((L2Summon) playable).getOwner();
 			activeOwner.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
 			return;
 		}
-		else if (playable instanceof L2PcInstance)
-		{
-			activeOwner = (L2PcInstance) playable;
-		}
 		
-		if (activeOwner == null)
+		// Blessed Beast Spirit Shot cannot be used in olympiad.
+        if (item.getItemId() == 6647 && activeOwner.isInOlympiadMode())
+        {
+        	activeOwner.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
 			return;
+        }
+		
 		L2Summon activePet = activeOwner.getPet();
 		
 		if (activePet == null)
