@@ -46,7 +46,7 @@ public class Instance
 	private FastSet<Integer> _players = new FastSet<Integer>();
 	private FastList<L2NpcInstance> _npcs = new FastList<L2NpcInstance>();
 	private FastList<L2DoorInstance> _doors = new FastList<L2DoorInstance>();
-	private int[] _spawnLoc;
+	private int[] _spawnLoc = new int[3];
 	private boolean _allowSummon = true;
 
 	protected ScheduledFuture<?> _CheckTimeUpTask = null;
@@ -148,7 +148,10 @@ public class Instance
 		{
 			player.setInstanceId(0);
 			player.sendMessage("You were removed from the instance");
-			player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+			if (getSpawnLoc()[0] != 0 && getSpawnLoc()[1] != 0 && getSpawnLoc()[2] != 0)
+				player.teleToLocation(getSpawnLoc()[0], getSpawnLoc()[1], getSpawnLoc()[2]);
+			else
+				player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
 		}
 	}
 
@@ -388,7 +391,6 @@ public class Instance
 			{
 				try
 				{
-					_spawnLoc = new int[3];
 					_spawnLoc[0] = Integer.parseInt(n.getAttributes().getNamedItem("spawnX").getNodeValue());
 					_spawnLoc[1] = Integer.parseInt(n.getAttributes().getNamedItem("spawnY").getNodeValue());
 					_spawnLoc[2] = Integer.parseInt(n.getAttributes().getNamedItem("spawnZ").getNodeValue());
@@ -396,6 +398,7 @@ public class Instance
 				catch (Exception e)
 				{
 					_log.warning("Error parsing instance xml: " + e);
+					_spawnLoc = new int[3];
 				}
 			}
 		}
