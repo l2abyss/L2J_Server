@@ -7336,7 +7336,7 @@ public final class L2PcInstance extends L2PlayableInstance
 				int id = rset.getInt("skill_id");
 				int level = rset.getInt("skill_level");
 
-				if (id > 9000)
+				if (id > 9000 && id < 9007)
 					continue; // fake skills for base stats
 
 				// Create a L2Skill object for each record
@@ -9400,7 +9400,7 @@ public final class L2PcInstance extends L2PlayableInstance
     		{  
     			if (s == null)   
     				continue;  
-    			if (s.getId() > 9000)  
+    			if (s.getId() > 9000 && s.getId() < 9007)  
     				continue; // Fake skills to change base stats  
     			if (s.bestowed())
     				continue;
