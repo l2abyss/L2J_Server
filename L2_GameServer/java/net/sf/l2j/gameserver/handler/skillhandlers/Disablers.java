@@ -778,18 +778,11 @@ public class Disablers implements ISkillHandler
 						}
 						else
 							skill.getEffects(activeCubic, target);
-						SystemMessage sm = new SystemMessage(SystemMessageId.S1_SUCCEEDED);
-						sm.addSkillName(skill);
-						activeCubic.getOwner().sendPacket(sm);
 						if (Config.DEBUG)
 							_log.info("Disablers: useCubicSkill() -> success");
 					}
 					else
 					{
-						SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
-						sm.addCharName(target);
-						sm.addSkillName(skill);
-						activeCubic.getOwner().sendPacket(sm);
 						if (Config.DEBUG)
 							_log.info("Disablers: useCubicSkill() -> failed");
 					}
@@ -812,18 +805,11 @@ public class Disablers implements ISkillHandler
 						else
 							skill.getEffects(activeCubic, target);
 						
-						SystemMessage sm = new SystemMessage(SystemMessageId.S1_SUCCEEDED);
-						sm.addSkillName(skill);
-						activeCubic.getOwner().sendPacket(sm);
 						if (Config.DEBUG)
 							_log.info("Disablers: useCubicSkill() -> success");
 					}
 					else
 					{
-						SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
-						sm.addCharName(target);
-						sm.addSkillName(skill);
-						activeCubic.getOwner().sendPacket(sm);
 						if (Config.DEBUG)
 							_log.info("Disablers: useCubicSkill() -> failed");
 					}
@@ -851,6 +837,51 @@ public class Disablers implements ISkillHandler
 						}
 					}
 					
+					break;
+				}
+				case ROOT:
+				{
+					if (Formulas.getInstance().calcCubicSkillSuccess(activeCubic, target, skill, shld))
+					{
+						// if this is a debuff let the duel manager know about it
+						// so the debuff can be removed after the duel
+						// (player & target must be in the same duel)
+						if (target instanceof L2PcInstance && ((L2PcInstance) target).isInDuel() && skill.getSkillType() == L2SkillType.DEBUFF && activeCubic.getOwner().getDuelId() == ((L2PcInstance) target).getDuelId())
+						{
+							DuelManager dm = DuelManager.getInstance();
+							for (L2Effect debuff : skill.getEffects(activeCubic.getOwner(), target))
+								if (debuff != null)
+									dm.onBuff(((L2PcInstance) target), debuff);
+						}
+						else
+							skill.getEffects(activeCubic, target);
+
+						if (Config.DEBUG)
+							_log.info("Disablers: useCubicSkill() -> success");
+					}
+					else
+					{
+						if (Config.DEBUG)
+							_log.info("Disablers: useCubicSkill() -> failed");
+					}
+					break;
+				}
+				case AGGDAMAGE:
+				{
+					if (Formulas.getInstance().calcCubicSkillSuccess(activeCubic, target, skill, shld))
+					{
+						if (target instanceof L2Attackable)
+							target.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, activeCubic.getOwner(), (int) ((150 * skill.getPower()) / (target.getLevel() + 7)));
+						skill.getEffects(activeCubic, target);
+
+						if (Config.DEBUG)
+							_log.info("Disablers: useCubicSkill() -> success");
+					}
+					else
+					{
+						if (Config.DEBUG)
+							_log.info("Disablers: useCubicSkill() -> failed");
+					}
 					break;
 				}
 			}//end switch

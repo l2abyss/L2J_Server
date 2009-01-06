@@ -254,13 +254,6 @@ public class Mdam implements ISkillHandler
 						target.removeEffect(target.getFirstEffect(skill));
 					if (Formulas.getInstance().calcCubicSkillSuccess(activeCubic, target, skill, shld))
 						skill.getEffects(activeCubic, target);
-					else
-					{
-						SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
-						sm.addCharName(target);
-						sm.addSkillName(skill.getDisplayId());
-						activeCubic.getOwner().sendPacket(sm);
-					}
 				}
 				
 				target.reduceCurrentHp(damage, activeCubic.getOwner());

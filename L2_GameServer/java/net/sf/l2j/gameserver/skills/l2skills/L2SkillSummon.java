@@ -115,19 +115,20 @@ public class L2SkillSummon extends L2Skill
                         }
 						player.getCubics().clear();
 					}
-					if (player.getCubics().size() > mastery) continue;
+                    //TODO: Should remove first cubic summoned and replace with new cubic
                     if (player.getCubics().containsKey(_npcId))
                     {
-                        player.sendMessage("You already have such cubic");
+                        L2CubicInstance cubic = player.getCubic(_npcId);
+                        cubic.stopAction();
+                        cubic.cancelDisappear();
+                        player.delCubic(_npcId);
                     }
-                    else
-                    {
-						if (player == activeChar)
-							player.addCubic(_npcId, getLevel(), getPower(), getActivationTime(), getActivationChance(), false);
-						else // given by other player
-							player.addCubic(_npcId, getLevel(), getPower(), getActivationTime(), getActivationChance(), true);
-						player.broadcastUserInfo();
-                    }
+					if (player.getCubics().size() > mastery) continue;
+					if (player == activeChar)
+						player.addCubic(_npcId, getLevel(), getPower(), getActivationTime(), getActivationChance(), getTotalLifeTime(), false);
+					else // given by other player
+						player.addCubic(_npcId, getLevel(), getPower(), getActivationTime(), getActivationChance(), getTotalLifeTime(), true);
+					player.broadcastUserInfo();
 				}
 				return;
 			}
@@ -136,18 +137,20 @@ public class L2SkillSummon extends L2Skill
 				int mastery = activeChar.getSkillLevel(L2Skill.SKILL_CUBIC_MASTERY);
 				if (mastery < 0)
 					mastery = 0;
+                if (activeChar.getCubics().containsKey(_npcId))
+                {
+                    L2CubicInstance cubic = activeChar.getCubic(_npcId);
+                    cubic.stopAction();
+                    cubic.cancelDisappear();
+                    activeChar.delCubic(_npcId);
+                }
 				if (activeChar.getCubics().size() > mastery) {
 					if (Config.DEBUG)
 						_log.fine("player can't summon any more cubics. ignore summon skill");
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.CUBIC_SUMMONING_FAILED));
 					return;
 				}
-                if (activeChar.getCubics().containsKey(_npcId))
-                {
-                    activeChar.sendMessage("You already have such cubic");
-                    return;
-                }
-                activeChar.addCubic(_npcId, getLevel(), getPower(), getActivationTime(), getActivationChance(), false);
+                activeChar.addCubic(_npcId, getLevel(), getPower(), getActivationTime(), getActivationChance(), getTotalLifeTime(), false);
 				activeChar.broadcastUserInfo();
 				return;
 			}
