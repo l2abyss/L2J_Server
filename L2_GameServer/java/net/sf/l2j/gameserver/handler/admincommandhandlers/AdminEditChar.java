@@ -79,7 +79,7 @@ public class AdminEditChar implements IAdminCommandHandler
 		"admin_save_modifications", //consider it deprecated...
 		"admin_rec", // gives recommendation points
 		"admin_settitle", // changes char title
-		"admin_setname", // changes char name
+		"admin_changename", // changes char name
 		"admin_setsex", // changes characters' sex
 		"admin_setcolor", // change charnames' color display
 		"admin_setclass", // changes chars' classId
