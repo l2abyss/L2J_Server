@@ -22,6 +22,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExVariationResult;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
+import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.util.Util;
@@ -232,35 +233,29 @@ public final class RequestRefine extends L2GameClientPacket
                 break;
 		}
 
-		if (gemstoneItem.getCount()-modifyGemstoneCount < 0) return false;
-
 		// consume the life stone
-        if (!player.destroyItem("RequestRefine", refinerItem.getObjectId(), 1, null, false))
-        {
-            return false;
-        }
-
-		// Prepare inventory update
-		InventoryUpdate iu = new InventoryUpdate();
-
-		if (gemstoneItem.getCount()-modifyGemstoneCount == 0)
+		if (!player.destroyItem("RequestRefine", refinerItem, 1, null, false))
 		{
-			player.destroyItem("RequestRefine", gemstoneItem, null, false);
-			iu.addRemovedItem(gemstoneItem);
+			return false;
 		}
-		else
+
+		// consume the gemstones
+		if (!player.destroyItem("RequestRefine", gemstoneItem, modifyGemstoneCount, null, false))
 		{
-			player.destroyItem("RequestRefine", _gemstoneItemObjId, modifyGemstoneCount, null, false);
-			iu.addModifiedItem(gemstoneItem);
+			return false;
 		}
 
 		// generate augmentation
 		targetItem.setAugmentation(AugmentationData.getInstance().generateRandomAugmentation(lifeStoneLevel, lifeStoneGrade));
 
 		// finish and send the inventory update packet
+		InventoryUpdate iu = new InventoryUpdate();
 		iu.addModifiedItem(targetItem);
-		iu.addRemovedItem(refinerItem);
 		player.sendPacket(iu);
+
+		StatusUpdate su = new StatusUpdate(player.getObjectId());
+		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
+		player.sendPacket(su);
 
 		return true;
 	}
