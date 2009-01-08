@@ -120,7 +120,7 @@ public class EnterWorld extends L2GameClientPacket
         }
  	 	
         // Register in flood protector
-        FloodProtector.getInstance().registerNewPlayer(activeChar.getObjectId());
+        FloodProtector.registerNewPlayer(activeChar.getObjectId());
 
         if (L2World.getInstance().findObject(activeChar.getObjectId()) != null)
         {

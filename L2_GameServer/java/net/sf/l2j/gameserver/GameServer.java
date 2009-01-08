@@ -109,7 +109,6 @@ import net.sf.l2j.gameserver.scripting.L2ScriptEngineManager;
 import net.sf.l2j.gameserver.taskmanager.KnownListUpdateTaskManager;
 import net.sf.l2j.gameserver.taskmanager.TaskManager;
 import net.sf.l2j.gameserver.util.DynamicExtension;
-import net.sf.l2j.gameserver.util.FloodProtector;
 import net.sf.l2j.status.Status;
 import net.sf.l2j.util.DeadLockDetector;
 
@@ -448,7 +447,6 @@ public class GameServer
 			_log.log(Level.WARNING, "DynamicExtension could not be loaded and initialized", ex);
 		}
 		
-		FloodProtector.getInstance();
 		TvTManager.getInstance();
 		KnownListUpdateTaskManager.getInstance();
 		if (Config.DEADLOCK_DETECTOR)

@@ -14,8 +14,6 @@
  */
 package net.sf.l2j.gameserver.util;
 
-import java.util.logging.Logger;
-
 import javolution.util.FastMap;
 import javolution.util.FastMap.Entry;
 import net.sf.l2j.Config;
@@ -28,22 +26,8 @@ import net.sf.l2j.gameserver.GameTimeController;
  */
 public class FloodProtector
 {
-	private static final Logger _log = Logger.getLogger(FloodProtector.class.getName());
-	
-	private static FloodProtector _instance;
-	
-	public static final FloodProtector getInstance()
-	{
-		if (_instance == null)
-		{
-			_instance = new FloodProtector();
-		}
-		return _instance;
-	}
-	
-	// =========================================================
 	// Data Field
-	private FastMap<Integer, Integer[]> _floodClient;
+	private static FastMap<Integer, Integer[]> _floodClient = new FastMap<Integer, Integer[]>(Config.FLOODPROTECTOR_INITIALSIZE).setShared(true);
 	
 	// =========================================================
 	
@@ -54,21 +38,13 @@ public class FloodProtector
 	};
 	
 	// protected actions
-	public static final int PROTECTED_USEITEM = 0;
-	public static final int PROTECTED_ROLLDICE = 1;
-	public static final int PROTECTED_FIREWORK = 2;
-	public static final int PROTECTED_ITEMPETSUMMON = 3;
-	public static final int PROTECTED_HEROVOICE = 4;
-	public static final int PROTECTED_SUBCLASS = 5;
-	public static final int PROTECTED_DROPITEM = 6;
-	
-	// =========================================================
-	// Constructor
-	private FloodProtector()
-	{
-		_log.info("Initializing FloodProtector");
-		_floodClient = new FastMap<Integer, Integer[]>(Config.FLOODPROTECTOR_INITIALSIZE).setShared(true);
-	}
+	public static final byte PROTECTED_USEITEM = 0;
+	public static final byte PROTECTED_ROLLDICE = 1;
+	public static final byte PROTECTED_FIREWORK = 2;
+	public static final byte PROTECTED_ITEMPETSUMMON = 3;
+	public static final byte PROTECTED_HEROVOICE = 4;
+	public static final byte PROTECTED_SUBCLASS = 5;
+	public static final byte PROTECTED_DROPITEM = 6;
 	
 	/**
 	 * Add a new player to the flood protector (should be done for all players
@@ -76,7 +52,7 @@ public class FloodProtector
 	 * 
 	 * @param playerObjId
 	 */
-	public void registerNewPlayer(int playerObjId)
+	public static void registerNewPlayer(int playerObjId)
 	{
 		// create a new array
 		Integer[] array = new Integer[REUSEDELAY.length];
@@ -93,7 +69,7 @@ public class FloodProtector
 	 * 
 	 * @param playerObjId
 	 */
-	public void removePlayer(int playerObjId)
+	public static void removePlayer(int playerObjId)
 	{
 		_floodClient.remove(playerObjId);
 	}
@@ -103,7 +79,7 @@ public class FloodProtector
 	 * 
 	 * @return size
 	 */
-	public int getSize()
+	public static int getSize()
 	{
 		return _floodClient.size();
 	}
@@ -115,7 +91,7 @@ public class FloodProtector
 	 * @param action
 	 * @return true if the action may be performed
 	 */
-	public boolean tryPerformAction(int playerObjId, int action)
+	public static boolean tryPerformAction(int playerObjId, int action)
 	{
 		Entry<Integer, Integer[]> entry = _floodClient.getEntry(playerObjId);
 		if (entry == null)

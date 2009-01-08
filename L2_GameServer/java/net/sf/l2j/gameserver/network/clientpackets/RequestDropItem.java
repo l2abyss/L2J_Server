@@ -64,7 +64,7 @@ public final class RequestDropItem extends L2GameClientPacket
         L2PcInstance activeChar = getClient().getActiveChar();
     	if (activeChar == null) return;
 		// Flood protect drop to avoid packet lag
-		if (!FloodProtector.getInstance().tryPerformAction(activeChar.getObjectId(), FloodProtector.PROTECTED_DROPITEM))
+		if (!FloodProtector.tryPerformAction(activeChar.getObjectId(), FloodProtector.PROTECTED_DROPITEM))
 			return;
     	
     	L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);

@@ -50,7 +50,7 @@ public class Firework implements IItemHandler
 		L2PcInstance activeChar = (L2PcInstance) playable;
 		int itemId = item.getItemId();
 		
-		if (!FloodProtector.getInstance().tryPerformAction(activeChar.getObjectId(), FloodProtector.PROTECTED_FIREWORK))
+		if (!FloodProtector.tryPerformAction(activeChar.getObjectId(), FloodProtector.PROTECTED_FIREWORK))
 		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addItemName(item);
