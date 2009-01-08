@@ -50,7 +50,7 @@ import net.sf.l2j.gameserver.util.Broadcast;
 public class Wedding implements IVoicedCommandHandler
 {
 	static final Logger _log = Logger.getLogger(Wedding.class.getName());
-	private static String[] _voicedCommands =
+	private static final String[] _voicedCommands =
 	{
 		"divorce",
 		"engage",

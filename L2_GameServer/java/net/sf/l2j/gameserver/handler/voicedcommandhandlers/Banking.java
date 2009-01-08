@@ -26,7 +26,7 @@ import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
  */
 public class Banking implements IVoicedCommandHandler
 {
-	private static String[] _voicedCommands =
+	private static final String[] _voicedCommands =
 	{
 		"bank",
 		"withdraw",
