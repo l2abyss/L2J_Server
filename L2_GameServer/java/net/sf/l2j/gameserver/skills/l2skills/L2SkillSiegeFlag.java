@@ -12,10 +12,9 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.handler.skillhandlers;
+package net.sf.l2j.gameserver.skills.l2skills;
 
 import net.sf.l2j.gameserver.datatables.NpcTable;
-import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
@@ -28,14 +27,19 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.Fort;
+import net.sf.l2j.gameserver.templates.StatsSet;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
-/**
- * @author _drunk_
- *
- */
-public class SiegeFlag implements ISkillHandler
+public class L2SkillSiegeFlag extends L2Skill
 {
+	private final boolean _isAdvanced;
+	
+	protected L2SkillSiegeFlag(StatsSet set)
+	{
+		super(set);
+		_isAdvanced = set.getBool("advanced", false);
+	}
+
 	private static final L2SkillType[] SKILL_IDS =
 	{
 		L2SkillType.SIEGEFLAG
@@ -75,7 +79,7 @@ public class SiegeFlag implements ISkillHandler
 		try
 		{
 			// Spawn a new flag
-			L2SiegeFlagInstance flag = new L2SiegeFlagInstance(player, IdFactory.getInstance().getNextId(), NpcTable.getInstance().getTemplate(35062));
+			L2SiegeFlagInstance flag = new L2SiegeFlagInstance(player, IdFactory.getInstance().getNextId(), NpcTable.getInstance().getTemplate(35062), _isAdvanced);
 			flag.setTitle(player.getClan().getName());
 			flag.setCurrentHpMp(flag.getMaxHp(), flag.getMaxMp());
 			flag.setHeading(player.getHeading());
@@ -185,5 +189,15 @@ public class SiegeFlag implements ISkillHandler
 		if (!isCheckOnly)
 			player.sendMessage(text);
 		return false;
+	}
+
+	/**
+	 * @see net.sf.l2j.gameserver.model.L2Skill#useSkill(net.sf.l2j.gameserver.model.L2Character, net.sf.l2j.gameserver.model.L2Object[])
+	 */
+	@Override
+	public void useSkill(L2Character caster, L2Object[] targets)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

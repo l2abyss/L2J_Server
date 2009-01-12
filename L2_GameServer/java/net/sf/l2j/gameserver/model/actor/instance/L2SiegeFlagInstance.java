@@ -18,6 +18,7 @@ import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2SiegeClan;
+import net.sf.l2j.gameserver.model.actor.status.SiegeFlagStatus;
 import net.sf.l2j.gameserver.model.entity.Siege;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
@@ -29,12 +30,13 @@ public class L2SiegeFlagInstance extends L2NpcInstance
 {
     private L2PcInstance _player;
     private Siege _siege;
+    private final boolean _isAdvanced;
 
-	public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template)
-	{
-		super(objectId, template);
-
-        _player = player;
+    public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template, boolean advanced)
+    {
+    	super(objectId, template);
+    	
+    	_player = player;
         _siege = SiegeManager.getInstance().getSiege(_player.getX(), _player.getY(), _player.getZ());
         if (_player.getClan() == null || _siege == null)
         {
@@ -48,6 +50,20 @@ public class L2SiegeFlagInstance extends L2NpcInstance
             else
                 sc.addFlag(this);
         }
+        
+        _isAdvanced = advanced;
+        
+        getStatus();
+    }
+    
+    /**
+     * Use L2SiegeFlagInstance(L2PcInstance, int, L2NpcTemplate, boolean) instead
+     */
+    @Deprecated
+    public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template)
+	{
+		super(objectId, template);
+		_isAdvanced = false;
 	}
 
     @Override
@@ -122,5 +138,18 @@ public class L2SiegeFlagInstance extends L2NpcInstance
 				player.sendPacket(ActionFailed.STATIC_PACKET);
 			}
 		}
+	}
+	
+	public boolean isAdvancedHeadquarter()
+	{
+		return _isAdvanced;
+	}
+	
+	@Override
+	public SiegeFlagStatus getStatus()
+	{
+		if (!(super.getStatus() instanceof SiegeFlagStatus))
+			setStatus(new SiegeFlagStatus(this));
+		return (SiegeFlagStatus) super.getStatus();
 	}
 }
