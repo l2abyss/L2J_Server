@@ -34,7 +34,7 @@ public class L2SkillSiegeFlag extends L2Skill
 {
 	private final boolean _isAdvanced;
 	
-	protected L2SkillSiegeFlag(StatsSet set)
+	public L2SkillSiegeFlag(StatsSet set)
 	{
 		super(set);
 		_isAdvanced = set.getBool("advanced", false);
@@ -46,10 +46,9 @@ public class L2SkillSiegeFlag extends L2Skill
 	};
 	
 	/**
-	 * 
-	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#useSkill(net.sf.l2j.gameserver.model.L2Character, net.sf.l2j.gameserver.model.L2Skill, net.sf.l2j.gameserver.model.L2Object[])
+	 * @see net.sf.l2j.gameserver.model.L2Skill#useSkill(net.sf.l2j.gameserver.model.L2Character, net.sf.l2j.gameserver.model.L2Object[])
 	 */
-	public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets)
+	public void useSkill(L2Character activeChar, L2Object[] targets)
 	{
 		if (!(activeChar instanceof L2PcInstance))
 			return;
@@ -96,10 +95,6 @@ public class L2SkillSiegeFlag extends L2Skill
 		}
 	}
 	
-	/**
-	 * 
-	 * @see net.sf.l2j.gameserver.handler.ISkillHandler#getSkillIds()
-	 */
 	public L2SkillType[] getSkillIds()
 	{
 		return SKILL_IDS;
@@ -191,13 +186,4 @@ public class L2SkillSiegeFlag extends L2Skill
 		return false;
 	}
 
-	/**
-	 * @see net.sf.l2j.gameserver.model.L2Skill#useSkill(net.sf.l2j.gameserver.model.L2Character, net.sf.l2j.gameserver.model.L2Object[])
-	 */
-	@Override
-	public void useSkill(L2Character caster, L2Object[] targets)
-	{
-		// TODO Auto-generated method stub
-		
-	}
 }
