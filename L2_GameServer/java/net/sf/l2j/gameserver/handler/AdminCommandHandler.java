@@ -99,6 +99,7 @@ public class AdminCommandHandler
 		registerAdminCommandHandler(new AdminSiege());
 		registerAdminCommandHandler(new AdminSkill());
 		registerAdminCommandHandler(new AdminSpawn());
+		registerAdminCommandHandler(new AdminSummon());
 		registerAdminCommandHandler(new AdminTarget());
 		registerAdminCommandHandler(new AdminTeleport());
 		registerAdminCommandHandler(new AdminTest());

@@ -34,8 +34,7 @@ public class AdminCreateItem implements IAdminCommandHandler
 	private static final String[] ADMIN_COMMANDS =
 	{
 		"admin_itemcreate",
-		"admin_create_item",
-		"admin_summon"
+		"admin_create_item"
 	};
 	
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
@@ -44,24 +43,22 @@ public class AdminCreateItem implements IAdminCommandHandler
 		{
 			AdminHelpPage.showHelpPage(activeChar, "itemcreation.htm");
 		}
-		else if (command.startsWith("admin_create_item") || command.startsWith("admin_summon"))
+		else if (command.startsWith("admin_create_item"))
 		{
 			try
 			{
-				StringTokenizer st = new StringTokenizer(command);
-				
-				if (st.countTokens() == 3)
+				String val = command.substring(17);
+				StringTokenizer st = new StringTokenizer(val);
+				if (st.countTokens() == 2)
 				{
-					st.nextToken();
 					String id = st.nextToken();
 					int idval = Integer.parseInt(id);
 					String num = st.nextToken();
 					int numval = Integer.parseInt(num);
 					createItem(activeChar, idval, numval);
 				}
-				else if (st.countTokens() == 2)
+				else if (st.countTokens() == 1)
 				{
-					st.nextToken();
 					String id = st.nextToken();
 					int idval = Integer.parseInt(id);
 					createItem(activeChar, idval, 1);
