@@ -49,7 +49,7 @@ class EffectDamOverTime extends L2Effect
 		
 		double damage = calc();
 		
-		if (damage >= getEffected().getCurrentHp())
+		if (damage >= getEffected().getCurrentHp() - 1)
 		{
 			if (getSkill().isToggle())
 			{
@@ -60,7 +60,13 @@ class EffectDamOverTime extends L2Effect
 			
 			// For DOT skills that will not kill effected player.
 			if (!getSkill().killByDOT())
+			{
+				// Fix for players dying by DOTs if HP < 1 since reduceCurrentHP method will kill them
+				if (getEffected().getCurrentHp() <= 1)
+					return true;
+				
 				damage = getEffected().getCurrentHp() - 1;
+			}
 		}	
 		getEffected().reduceCurrentHpByDOT(damage, getEffector());
 		
