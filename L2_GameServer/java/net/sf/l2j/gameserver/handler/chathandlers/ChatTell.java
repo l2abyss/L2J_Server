@@ -41,6 +41,20 @@ public class ChatTell implements IChatHandler
 	 */
 	public void handleChat(int type, L2PcInstance activeChar, String target, String text)
 	{
+		//Return if player is chat banned
+		if (activeChar.isChatBanned())
+		{
+			activeChar.sendMessage("You are currently banned from chat");
+			return;
+		}
+		
+		//return if player is in jail
+		if (Config.JAIL_DISABLE_CHAT && activeChar.isInJail())
+		{
+			activeChar.sendMessage("You are currently in jail and cannot chat.");
+			return;
+		}
+		
 		// Return if no target is set
 		if (target == null)
 			return;

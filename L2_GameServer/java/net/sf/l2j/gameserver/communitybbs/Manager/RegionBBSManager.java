@@ -214,6 +214,11 @@ public class RegionBBSManager extends BaseBBSManager
 					activeChar.sendMessage("You can not chat while in jail.");
 					return;
 				}
+				if (activeChar.isChatBanned())
+				{
+					activeChar.sendMessage("You are banned from using chat");
+					return;
+				}
 				
 				if (Config.LOG_CHAT)
 				{

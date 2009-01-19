@@ -561,7 +561,7 @@ public class GameStatusThread extends Thread
 
                         if (playerObj != null)
                         {
-                            playerObj.setInJail(true, delay);
+                            playerObj.setPunishLevel(L2PcInstance.PunishLevel.JAIL, delay);
                             _print.println("Character "+playerObj.getName()+" jailed for "+(delay>0 ? delay+" minutes." : "ever!"));
                         } else
                         	jailOfflinePlayer(playerName, delay);
@@ -583,8 +583,7 @@ public class GameStatusThread extends Thread
 
                         if (playerObj != null)
                         {
-                            playerObj.stopJailTask(false);
-                            playerObj.setInJail(false, 0);
+                            playerObj.setPunishLevel(L2PcInstance.PunishLevel.NONE, 0);
                             _print.println("Character "+playerObj.getName()+" removed from jail");
                         } else
                         	unjailOfflinePlayer(playerName);
@@ -962,11 +961,11 @@ public class GameStatusThread extends Thread
        	{
        		con = L2DatabaseFactory.getInstance().getConnection();
 
-       		PreparedStatement statement = con.prepareStatement("UPDATE characters SET x=?, y=?, z=?, in_jail=?, jail_timer=? WHERE char_name=?");
+       		PreparedStatement statement = con.prepareStatement("UPDATE characters SET x=?, y=?, z=?, punish_level=?, punish_timer=? WHERE char_name=?");
        		statement.setInt(1, -114356);
        		statement.setInt(2, -249645);
        		statement.setInt(3, -2984);
-       		statement.setInt(4, 1);
+       		statement.setInt(4, L2PcInstance.PunishLevel.JAIL.value());
        		statement.setLong(5, delay * 60000L);
        		statement.setString(6, name);
 
@@ -995,7 +994,7 @@ public class GameStatusThread extends Thread
        	{
        		con = L2DatabaseFactory.getInstance().getConnection();
 
-       		PreparedStatement statement = con.prepareStatement("UPDATE characters SET x=?, y=?, z=?, in_jail=?, jail_timer=? WHERE char_name=?");
+       		PreparedStatement statement = con.prepareStatement("UPDATE characters SET x=?, y=?, z=?, punish_level=?, punish_timer=? WHERE char_name=?");
        		statement.setInt(1, 17836);
        		statement.setInt(2, 170178);
        		statement.setInt(3, -3507);

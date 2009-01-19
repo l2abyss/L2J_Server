@@ -14,14 +14,12 @@
  */
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
-import net.sf.l2j.L2DatabaseFactory;
-import net.sf.l2j.gameserver.LoginServerThread;
+import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
+import net.sf.l2j.gameserver.handler.AdminCommandHandler;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Clan;
@@ -176,14 +174,15 @@ public class AdminMenu implements IAdminCommandHandler
 			StringTokenizer st = new StringTokenizer(command);
 			if (st.countTokens() > 1)
 			{
-				st.nextToken();
-				String player = st.nextToken();
-				L2PcInstance plyr = L2World.getInstance().getPlayer(player);
-				if (plyr != null)
+				String subCommand = "admin_ban_char";
+				if (!AdminCommandAccessRights.getInstance().hasAccess(subCommand, activeChar.getAccessLevel()))
 				{
-					plyr.logout();
+					activeChar.sendMessage("You don't have the access right to use this command!");
+					_log.warning("Character " + activeChar.getName() + " tryed to use admin command " + subCommand + ", but have no access to it!");
+					return false;
 				}
-				setAccountAccessLevel(player, activeChar, -100);
+				IAdminCommandHandler ach = AdminCommandHandler.getInstance().getAdminCommandHandler(subCommand);
+				ach.useAdminCommand(subCommand+command.substring(14), activeChar);
 			}
 			showMainPage(activeChar);
 		}
@@ -192,9 +191,15 @@ public class AdminMenu implements IAdminCommandHandler
 			StringTokenizer st = new StringTokenizer(command);
 			if (st.countTokens() > 1)
 			{
-				st.nextToken();
-				String player = st.nextToken();
-				setAccountAccessLevel(player, activeChar, 0);
+				String subCommand = "admin_unban_char";
+				if (!AdminCommandAccessRights.getInstance().hasAccess(subCommand, activeChar.getAccessLevel()))
+				{
+					activeChar.sendMessage("You don't have the access right to use this command!");
+					_log.warning("Character " + activeChar.getName() + " tryed to use admin command " + subCommand + ", but have no access to it!");
+					return false;
+				}
+				IAdminCommandHandler ach = AdminCommandHandler.getInstance().getAdminCommandHandler(subCommand);
+				ach.useAdminCommand(subCommand+command.substring(16), activeChar);
 			}
 			showMainPage(activeChar);
 		}
@@ -278,50 +283,5 @@ public class AdminMenu implements IAdminCommandHandler
 	private void showMainPage(L2PcInstance activeChar)
 	{
 		AdminHelpPage.showHelpPage(activeChar, "charmanage.htm");
-	}
-	
-	private void setAccountAccessLevel(String player, L2PcInstance activeChar, int banLevel)
-	{
-		java.sql.Connection con = null;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			String stmt = "SELECT account_name FROM characters WHERE char_name = ?";
-			PreparedStatement statement = con.prepareStatement(stmt);
-			statement.setString(1, player);
-			ResultSet result = statement.executeQuery();
-			if (result.next())
-			{
-				String acc_name = result.getString(1);
-				String text;
-				if (acc_name.length() > 0)
-				{
-					LoginServerThread.getInstance().sendAccessLevel(acc_name, banLevel);
-					text = "Account Access Level for " + player + " set to " + banLevel + ".";
-				}
-				else
-					text = "Couldn't find player: " + player + ".";
-				activeChar.sendMessage(text);
-			}
-			else
-				activeChar.sendMessage("Specified player name didn't lead to a valid account.");
-			statement.close();
-		}
-		catch (Exception e)
-		{
-			_log.warning("Could not set accessLevel:" + e);
-			if (Config.DEBUG)
-				e.printStackTrace();
-		}
-		finally
-		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
-		}
 	}
 }

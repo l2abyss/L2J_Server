@@ -49,7 +49,6 @@ public class AdminCommandHandler
 		registerAdminCommandHandler(new AdminAdmin());
 		registerAdminCommandHandler(new AdminAnnouncements());
 		registerAdminCommandHandler(new AdminBan());
-		registerAdminCommandHandler(new AdminBanChat());
 		registerAdminCommandHandler(new AdminBBS());
 		registerAdminCommandHandler(new AdminBuffs());
 		registerAdminCommandHandler(new AdminCache());

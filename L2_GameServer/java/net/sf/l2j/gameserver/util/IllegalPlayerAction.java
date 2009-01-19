@@ -93,8 +93,8 @@ public final class IllegalPlayerAction implements Runnable
 				_actor.closeNetConnection();
 				break;
 			case PUNISH_JAIL:
-				_actor.setInJail(true, Config.DEFAULT_PUNISH_PARAM);
-				break;
+				_actor.setPunishLevel(L2PcInstance.PunishLevel.JAIL, Config.DEFAULT_PUNISH_PARAM);
+                break;
 		}
 	}
 }
