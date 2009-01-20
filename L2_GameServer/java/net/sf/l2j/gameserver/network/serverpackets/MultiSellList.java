@@ -85,7 +85,7 @@ public final class MultiSellList extends L2GameServerPacket
             	for(MultiSellIngredient i: ent.getProducts())
             	{
 	            	writeD(i.getItemId());
-	            	writeD(0);
+	            	writeD(ItemTable.getInstance().getTemplate(i.getItemId()).getBodyPart());
 	            	writeH(ItemTable.getInstance().getTemplate(i.getItemId()).getType2());
 	            	writeD(i.getItemCount());
 	        	    writeH(i.getEnchantmentLevel()); //enchtant lvl
