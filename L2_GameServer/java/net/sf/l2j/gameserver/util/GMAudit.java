@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.model;
+package net.sf.l2j.gameserver.util;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -26,16 +26,18 @@ import net.sf.l2j.gameserver.lib.Log;
 
 public class GMAudit
 {
+	static
+	{
+		new File("log/GMAudit").mkdirs();
+	}
 	
 	private static final Logger _log = Logger.getLogger(Log.class.getName());
+	private static final SimpleDateFormat _formatter = new SimpleDateFormat("dd/MM/yyyy H:mm:ss");
 	
 	public static void auditGMAction(String gmName, String action, String target, String params)
 	{
-		new File("log/GMAudit").mkdirs();
+		String today = _formatter.format(new Date());
 		
-		SimpleDateFormat formatter;
-		formatter = new SimpleDateFormat("dd/MM/yyyy H:mm:ss");
-		String today = formatter.format(new Date());
 		FileWriter save = null;
 		try
 		{

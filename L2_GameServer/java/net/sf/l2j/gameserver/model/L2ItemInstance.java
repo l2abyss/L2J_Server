@@ -42,6 +42,7 @@ import net.sf.l2j.gameserver.templates.item.L2Armor;
 import net.sf.l2j.gameserver.templates.item.L2EtcItem;
 import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
+import net.sf.l2j.gameserver.util.GMAudit;
 
 
 /**
