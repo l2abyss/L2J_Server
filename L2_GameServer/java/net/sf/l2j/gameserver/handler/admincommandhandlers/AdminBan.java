@@ -111,9 +111,9 @@ public class AdminBan implements IAdminCommandHandler {
 				activeChar.sendMessage("Usage: //ban_acc <account_name> (if none, target char's account gets banned)");
 				return false;
 			}
-			else if (targetPlayer==null)
+			else if (targetPlayer == null)
 			{
-				LoginServerThread.getInstance().sendAccessLevel(player, 0);
+				LoginServerThread.getInstance().sendAccessLevel(player, -100);
 				activeChar.sendMessage("Ban request sent for account "+player);
 			}
 			else
