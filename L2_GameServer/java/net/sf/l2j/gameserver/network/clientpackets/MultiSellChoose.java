@@ -154,7 +154,7 @@ public class MultiSellChoose extends L2GameClientPacket
 						player.sendPacket(new SystemMessage(SystemMessageId.ONLY_THE_CLAN_LEADER_IS_ENABLED));
 						return;
 					}
-					if (player.getClan().getReputationScore() < e.getItemCount())
+					if (player.getClan().getReputationScore() < e.getItemCount() * _amount)
 					{
 						player.sendPacket(new SystemMessage(SystemMessageId.THE_CLAN_REPUTATION_SCORE_IS_TOO_LOW));
 						return;
@@ -163,7 +163,7 @@ public class MultiSellChoose extends L2GameClientPacket
 				}
 				case -300: // Player Fame
 				{
-					if (player.getFame() < e.getItemCount())
+					if (player.getFame() < e.getItemCount() * _amount)
 					{
 						player.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_FAME_POINTS));
 						return;
@@ -197,17 +197,17 @@ public class MultiSellChoose extends L2GameClientPacket
 			{
 				case -200: // Clan Reputation Score
 				{
-					int repCost = player.getClan().getReputationScore() - e.getItemCount();
+					int repCost = player.getClan().getReputationScore() - (e.getItemCount() * _amount);
 					player.getClan().setReputationScore(repCost, true);
 					SystemMessage smsg = new SystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
-					smsg.addNumber(e.getItemCount());
+					smsg.addNumber(e.getItemCount() * _amount);
 					player.sendPacket(smsg);
 					player.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(player.getClan()));
 					break;
 				}
 				case -300: // Player Fame
 				{
-					int fameCost = player.getFame() - e.getItemCount();
+					int fameCost = player.getFame() - (e.getItemCount() * _amount);
 					player.setFame(fameCost);
 					player.sendPacket(new UserInfo(player));
 					break;
