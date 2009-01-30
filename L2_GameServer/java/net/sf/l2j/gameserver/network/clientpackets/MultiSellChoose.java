@@ -360,10 +360,10 @@ public class MultiSellChoose extends L2GameClientPacket
 			}
 			else
 			{
-				if (maintainEnchantment && _enchantment > 0)
+				if (maintainEnchantment && e.getEnchantmentLevel() > 0)
 				{
 					sm = new SystemMessage(SystemMessageId.ACQUIRED);
-					sm.addNumber(_enchantment);
+					sm.addNumber(e.getEnchantmentLevel());
 					sm.addItemName(e.getItemId());
 				}
 				else
@@ -401,6 +401,7 @@ public class MultiSellChoose extends L2GameClientPacket
 		MultiSellEntry newEntry = L2Multisell.getInstance().new MultiSellEntry();
 		newEntry.setEntryId(templateEntry.getEntryId());
 		int totalAdenaCount = 0;
+		boolean hasIngredient = false;
 		
 		for (MultiSellIngredient ing : templateEntry.getIngredients())
 		{
@@ -430,7 +431,10 @@ public class MultiSellChoose extends L2GameClientPacket
 			{
 				L2Item tempItem = ItemTable.getInstance().createDummyItem(newIngredient.getItemId()).getItem();
 				if ((tempItem instanceof L2Armor) || (tempItem instanceof L2Weapon))
+				{
 					newIngredient.setEnchantmentLevel(enchantLevel);
+					hasIngredient = true;
+				}
 			}
 			
 			// finally, add this ingredient to the entry
@@ -446,7 +450,7 @@ public class MultiSellChoose extends L2GameClientPacket
 			// load the ingredient from the template
 			MultiSellIngredient newIngredient = L2Multisell.getInstance().new MultiSellIngredient(ing);
 			
-			if (maintainEnchantment)
+			if (maintainEnchantment && hasIngredient)
 			{
 				// if it is an armor/weapon, modify the enchantment level appropriately
 				// (note, if maintain enchantment is "false" this modification will result to a +0)
