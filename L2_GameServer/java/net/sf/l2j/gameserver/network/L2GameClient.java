@@ -72,6 +72,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 
 	// Task
 	protected final ScheduledFuture<?> _autoSaveInDB;
+	protected ScheduledFuture<?> _cleanupTask = null;
 
 	// Crypt
 	private GameCrypt _crypt;
@@ -79,6 +80,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	// Flood protection
 	public byte packetsSentInSec = 0;
 	public int packetsSentStartTick = 0;
+	
+	private boolean _isDetached = false;
 
 	public L2GameClient(MMOConnection<L2GameClient> con)
 	{
@@ -187,8 +190,20 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 
 	public void sendPacket(L2GameServerPacket gsp)
 	{
+		if (_isDetached) return;
+		
 		getConnection().sendPacket(gsp);
 		gsp.runImpl();
+	}
+	
+	public boolean isDetached()
+	{
+		return _isDetached;
+	}
+	
+	public void isDetached(boolean b)
+	{
+		_isDetached = b;
 	}
 
 	public L2PcInstance markToDeleteChar(int charslot) throws Exception
@@ -508,6 +523,13 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
     	}
     }
 
+    @Override
+    public void closeNow()
+    {
+    	super.closeNow();
+    	cleanMe(true);
+    }
+    
     /**
      * Produces the best possible string representation of this client.
      */
@@ -538,6 +560,50 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	class DisconnectTask implements Runnable
 	{
 
+		/**
+		 * @see java.lang.Runnable#run()
+		 */
+		public void run()
+		{
+			boolean fast = true;
+
+			try
+			{
+				isDetached(true);
+				L2PcInstance player = L2GameClient.this.getActiveChar();
+				if (player != null && player.isInCombat())
+				{
+					fast = false;
+				}
+				cleanMe(fast);
+			}
+			catch (Exception e1)
+			{
+				_log.log(Level.WARNING, "Error while disconnecting client.", e1);
+			}
+		}
+	}
+	
+	public void cleanMe(boolean fast)
+	{
+		try
+		{
+			synchronized(this)
+			{
+	            if (_cleanupTask == null)
+				{
+	            	_cleanupTask = ThreadPoolManager.getInstance().scheduleGeneral(new CleanupTask(), fast ? 5 : 15000L);
+				}			
+			}
+		}
+		catch (Exception e1)
+		{
+			_log.log(Level.WARNING, "Error during cleanup.", e1);			
+		}
+	}
+		
+	class CleanupTask implements Runnable
+	{
 		/**
 		 * @see java.lang.Runnable#run()
 		 */
@@ -575,6 +641,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	                {
 	                	player.removeSkill(SkillTable.getInstance().getInfo(4289, 1));
 	                }
+	                // to prevent call cleanMe() again
+					isDetached(false);
 					// notify the world about our disconnect
 					player.deleteMe();
 
@@ -588,7 +656,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 			}
 			catch (Exception e1)
 			{
-				_log.log(Level.WARNING, "Error while disconnecting client.", e1);
+				_log.log(Level.WARNING, "Error while cleanup client.", e1);
 			}
 			finally
 			{

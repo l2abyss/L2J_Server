@@ -57,6 +57,9 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
 	// implementation
 	public ReceivablePacket<L2GameClient> handlePacket(ByteBuffer buf, L2GameClient client)
 	{
+		if (client.isDetached())
+			return null;
+
 		int opcode = buf.get() & 0xFF;
 
 		ReceivablePacket<L2GameClient> msg = null;

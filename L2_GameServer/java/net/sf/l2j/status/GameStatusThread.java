@@ -1064,6 +1064,7 @@ public class GameStatusThread extends Thread
         int npcCount=0;
         int charCount=0;
         int pcCount=0;
+        int detachedCount=0;
         int doorCount=0;
         int summonCount=0;
         int AICount=0;
@@ -1093,7 +1094,11 @@ public class GameStatusThread extends Thread
         		else if (obj instanceof L2NpcInstance)
         			npcCount++;
         		else if (obj instanceof L2PcInstance)
+        		{
         			pcCount++;
+        			if (((L2PcInstance)obj).getClient().isDetached())
+        				detachedCount++;
+        		}
         		else if (obj instanceof L2Summon)
         			summonCount++;
         		else if (obj instanceof L2DoorInstance)
@@ -1105,6 +1110,7 @@ public class GameStatusThread extends Thread
         StringBuilder sb = new StringBuilder();
         sb.append("Server Status: ");
         sb.append("\r\n  --->  Player Count: " + playerCount + "/" + max);
+        sb.append("\r\n  ---> Offline Count: " + detachedCount + "/" + playerCount);
         sb.append("\r\n  +-->  Object Count: " + objectCount);
         sb.append("\r\n  +-->      AI Count: " + AICount);
         sb.append("\r\n  +.... L2Item(Void): " + itemVoidCount);
