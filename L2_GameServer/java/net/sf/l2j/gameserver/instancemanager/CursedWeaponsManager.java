@@ -36,6 +36,8 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FeedableBeastInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FestivalMonsterInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2FortCommanderInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2FortSiegeGuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2GuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -332,6 +334,8 @@ public class CursedWeaponsManager
 			|| attackable instanceof L2GuardInstance
 			|| attackable instanceof L2GrandBossInstance
 			|| attackable instanceof L2FeedableBeastInstance
+			|| attackable instanceof L2FortSiegeGuardInstance
+			|| attackable instanceof L2FortCommanderInstance
 			)return;
 
 		for (CursedWeapon cw : _cursedWeapons.values())

@@ -26,6 +26,7 @@ import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.instancemanager.DuelManager;
 import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.actor.instance.L2FortBallistaInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
@@ -121,7 +122,8 @@ public class CharStatus
     
     public void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT)
     {
-        if (getActiveChar().isInvul())
+    	if (getActiveChar() instanceof L2FortBallistaInstance && getActiveChar().getMaxHp() == value){}
+    	else if (getActiveChar().isInvul())
             return;
         if (getActiveChar().isDead())
             return;

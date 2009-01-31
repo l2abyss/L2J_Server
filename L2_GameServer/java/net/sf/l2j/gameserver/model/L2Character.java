@@ -46,12 +46,13 @@ import net.sf.l2j.gameserver.instancemanager.TownManager;
 import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.model.actor.instance.L2ArtefactInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2CommanderInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2ControlTowerInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DecoyInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2EffectPointInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2FortCommanderInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2FortSiegeGuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FriendlyMobInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2GuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MinionInstance;
@@ -351,7 +352,8 @@ public abstract class L2Character extends L2Object
 			!(this instanceof L2DecoyInstance) && !(this instanceof L2SiegeSummonInstance) &&
 			!(this instanceof L2PetInstance) && !(this instanceof L2SummonInstance) &&
 			!(this instanceof L2SiegeFlagInstance) && !(this instanceof L2EffectPointInstance) &&
-			!(this instanceof L2CommanderInstance) && !(this instanceof L2FolkInstance))
+			!(this instanceof L2FortCommanderInstance) && !(this instanceof L2FolkInstance) &&
+			!(this instanceof L2FortSiegeGuardInstance))
 			setIsInvul(true);
 	}
 
@@ -692,6 +694,13 @@ public abstract class L2Character extends L2Object
 				getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
+			}
+			// TODO: unhardcode this to support boolean if with that weapon u can attack or not (for ex transform weapons)
+			if (((L2PcInstance)this).getActiveWeaponItem() != null && ((L2PcInstance)this).getActiveWeaponItem().getItemId() == 9819)
+			{
+	            sendPacket(new SystemMessage(SystemMessageId.THAT_WEAPON_CANT_ATTACK));
+	            sendPacket(ActionFailed.STATIC_PACKET);
+	            return;
 			}
 
 		}

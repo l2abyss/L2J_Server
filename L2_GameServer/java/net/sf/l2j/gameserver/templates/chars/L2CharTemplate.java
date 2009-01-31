@@ -30,7 +30,7 @@ public class L2CharTemplate
 	public final int baseINT;
 	public final int baseWIT;
 	public final int baseMEN;
-	public final float baseHpMax;
+	public float baseHpMax;
 	public final float baseCpMax;
 	public final float baseMpMax;
 	

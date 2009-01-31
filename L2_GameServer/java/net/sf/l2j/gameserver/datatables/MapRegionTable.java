@@ -433,7 +433,7 @@ public class MapRegionTable
 						fort = FortManager.getInstance().getFort(player);
 						if (!(fort != null 
 								&& fort.getSiege().getIsInProgress() 
-								&& fort.getSiege().getDefenderClan(player.getClan()) != null))
+								&& fort.getOwnerClan() == player.getClan()))
 							fort = null;
 					}
 					

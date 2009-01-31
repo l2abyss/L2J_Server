@@ -18,17 +18,18 @@ import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Summon;
-import net.sf.l2j.gameserver.model.actor.instance.L2CommanderInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2FortCommanderInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2FortSiegeGuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
-public class CommanderKnownList extends AttackableKnownList
+public class FortSiegeGuardKnownList extends AttackableKnownList
 {
     // =========================================================
     // Data Field
 
     // =========================================================
     // Constructor
-    public CommanderKnownList(L2CommanderInstance activeChar)
+    public FortSiegeGuardKnownList(L2FortSiegeGuardInstance activeChar)
     {
         super(activeChar);
     }
@@ -36,9 +37,9 @@ public class CommanderKnownList extends AttackableKnownList
     // =========================================================
     // Method - Public
     @Override
-    public boolean addKnownObject(L2Object object) { return addKnownObject(object, null); }
+	public boolean addKnownObject(L2Object object) { return addKnownObject(object, null); }
     @Override
-    public boolean addKnownObject(L2Object object, L2Character dropper)
+	public boolean addKnownObject(L2Object object, L2Character dropper)
     {
         if (!super.addKnownObject(object, dropper)) return false;
 
@@ -54,21 +55,20 @@ public class CommanderKnownList extends AttackableKnownList
             // Check if player is not the defender
             if (player != null && (player.getClan() == null || getActiveChar().getFort().getSiege().getAttackerClan(player.getClan()) != null))
             {
-                //System.out.println(getActiveChar().getName()+": PK "+player.getObjectId()+" entered scan range");
                 if (getActiveChar().getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
-                    getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);//(L2Character)object);
+                    getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
             }
-
         }
-
         return true;
     }
 
     // =========================================================
-    // Method - Private
-
-    // =========================================================
     // Property - Public
     @Override
-    public final L2CommanderInstance getActiveChar() { return (L2CommanderInstance)super.getActiveChar(); }
+	public final L2FortSiegeGuardInstance getActiveChar()
+    {
+    	if (super.getActiveChar() instanceof L2FortCommanderInstance)
+    		return (L2FortCommanderInstance)super.getActiveChar();
+    	return (L2FortSiegeGuardInstance)super.getActiveChar();
+    }
 }

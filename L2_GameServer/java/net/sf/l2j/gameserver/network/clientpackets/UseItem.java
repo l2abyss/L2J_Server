@@ -22,6 +22,7 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.handler.ItemHandler;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
+import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -292,6 +293,12 @@ public final class UseItem extends L2GameClientPacket
                     case L2Item.SLOT_L_HAND:
                     case L2Item.SLOT_R_HAND:
                     {
+                    	// prevent players to equip weapon while wearing combat flag
+                    	if (activeChar.getActiveWeaponItem() != null && activeChar.getActiveWeaponItem().getItemId() == 9819)
+                    	{
+                    		activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+                        	return;
+                    	}
                         // Prevent player to remove the weapon on special conditions
                     	if (activeChar.isCastingNow() || activeChar.isCastingSimultaneouslyNow())
                     	{
@@ -300,7 +307,10 @@ public final class UseItem extends L2GameClientPacket
                     	}
                     	
                         if (activeChar.isMounted())
+                        {
+                        	activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
                         	return;
+                        }
                         
                        
                         if (activeChar.isDisarmed())
@@ -563,6 +573,8 @@ public final class UseItem extends L2GameClientPacket
                 	return;
                 }
                 // Equip or unEquip
+                if(FortSiegeManager.getInstance().isCombat(item.getItemId()))
+                		return;	//no message
                 activeChar.useEquippableItem(item, true);
 			}
 			else

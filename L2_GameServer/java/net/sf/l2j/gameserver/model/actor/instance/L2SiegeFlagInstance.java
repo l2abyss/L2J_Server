@@ -14,46 +14,52 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
+import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2SiegeClan;
 import net.sf.l2j.gameserver.model.actor.status.SiegeFlagStatus;
 import net.sf.l2j.gameserver.model.entity.Siege;
+import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 public class L2SiegeFlagInstance extends L2NpcInstance
 {
+    private L2Clan _clan;
     private L2PcInstance _player;
     private Siege _siege;
     private final boolean _isAdvanced;
+    private boolean _canTalk;
 
     public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template, boolean advanced)
-    {
-    	super(objectId, template);
-    	
-    	_player = player;
-        _siege = SiegeManager.getInstance().getSiege(_player.getX(), _player.getY(), _player.getZ());
-        if (_player.getClan() == null || _siege == null)
-        {
-            deleteMe();
-        }
-        else
-        {
-            L2SiegeClan sc = _siege.getAttackerClan(_player.getClan());
-            if (sc == null)
-                deleteMe();
-            else
-                sc.addFlag(this);
-        }
-        
-        _isAdvanced = advanced;
-        
-        getStatus();
+	{
+		super(objectId, template);
+		
+		_clan = player.getClan();
+		_player = player;
+		_canTalk = true;
+		_siege = SiegeManager.getInstance().getSiege(_player.getX(), _player.getY(), _player.getZ());
+		if (_clan == null || _siege == null)
+		{
+			deleteMe();
+		}
+		else
+		{
+			L2SiegeClan sc = _siege.getAttackerClan(_player.getClan());
+			if (sc == null)
+				deleteMe();
+			else
+				sc.addFlag(this);
+		}
+		_isAdvanced = advanced;
+		getStatus();
     }
     
     /**
@@ -69,21 +75,13 @@ public class L2SiegeFlagInstance extends L2NpcInstance
     @Override
 	public boolean isAttackable()
     {
-        // Attackable during siege by attacker only
-        return (getCastle() != null
-                && getCastle().getCastleId() > 0
-                && getCastle().getSiege().getIsInProgress());
+        return true;
     }
 
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
-		// Attackable during siege by attacker only
-		return (attacker != null
-		        && attacker instanceof L2PcInstance
-		        && getCastle() != null
-		        && getCastle().getCastleId() > 0
-		        && getCastle().getSiege().getIsInProgress());
+		return true;
 	}
 
     @Override
@@ -151,5 +149,54 @@ public class L2SiegeFlagInstance extends L2NpcInstance
 		if (!(super.getStatus() instanceof SiegeFlagStatus))
 			setStatus(new SiegeFlagStatus(this));
 		return (SiegeFlagStatus) super.getStatus();
+	}
+	
+    @Override
+	public void reduceCurrentHp(double damage, L2Character attacker)
+    {
+    	super.reduceCurrentHp(damage, attacker);
+    	if(canTalk())
+    	{
+    		if (getCastle() != null && getCastle().getSiege().getIsInProgress())
+    		{
+    			if (_clan != null)
+    			{
+    				// send warning to owners of headquarters that theirs base is under attack
+    				_clan.broadcastToOnlineMembers(new SystemMessage(SystemMessageId.BASE_UNDER_ATTACK));
+    	    		setCanTalk(false);
+    				ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTalkTask(), 20000);
+    			}
+    		}
+    		else if (getFort() != null && getFort().getSiege().getIsInProgress())
+    		{
+    			if (_clan != null)
+    			{
+    				// send warning to owners of headquarters that theirs base is under attack
+    				_clan.broadcastToOnlineMembers(new SystemMessage(SystemMessageId.BASE_UNDER_ATTACK));
+    	    		setCanTalk(false);
+    				ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTalkTask(), 20000);
+    			}
+    		}
+    	}
+    }
+	private class ScheduleTalkTask implements Runnable
+	{
+		
+		public ScheduleTalkTask() {}
+		
+		public void run()
+		{
+			setCanTalk(true);
+		}
+	}
+	
+	void setCanTalk(boolean val)
+	{
+		_canTalk = val;
+	}
+	
+	private boolean canTalk()
+	{
+		return _canTalk;
 	}
 }

@@ -15,9 +15,16 @@
 package net.sf.l2j.gameserver.model.zone.type;
 
 import javolution.util.FastList;
+import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
+import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
 import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.L2Clan;
+import net.sf.l2j.gameserver.model.L2Effect;
+import net.sf.l2j.gameserver.model.L2SiegeClan;
+import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import net.sf.l2j.gameserver.model.entity.Fort;
@@ -73,29 +80,25 @@ public class L2FortZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
+		character.setInsideZone(L2Character.ZONE_FORT, true);
 		if (_fort.getSiege().getIsInProgress())
 		{
 			character.setInsideZone(L2Character.ZONE_PVP, true);
 			character.setInsideZone(L2Character.ZONE_SIEGE, true);
-			character.setInsideZone(L2Character.ZONE_FORT, true);
-			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
 			
 			if (character instanceof L2PcInstance)
 				((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
 		}
-		else
-			character.setInsideZone(L2Character.ZONE_FORT, true);
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
+		character.setInsideZone(L2Character.ZONE_FORT, false);
 		if (_fort.getSiege().getIsInProgress())
 		{
 			character.setInsideZone(L2Character.ZONE_PVP, false);
 			character.setInsideZone(L2Character.ZONE_SIEGE, false);
-			character.setInsideZone(L2Character.ZONE_FORT, false);
-			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
 			
 			if (character instanceof L2PcInstance)
 			{
@@ -106,25 +109,80 @@ public class L2FortZone extends L2ZoneType
 					((L2PcInstance) character).startPvPFlag();
 			}
 		}
-		else
-			character.setInsideZone(L2Character.ZONE_FORT, true);
-		
 		if (character instanceof L2SiegeSummonInstance)
 		{
 			((L2SiegeSummonInstance) character).unSummon(((L2SiegeSummonInstance) character).getOwner());
+		}
+		if (character instanceof L2PcInstance)
+		{
+			L2PcInstance activeChar = ((L2PcInstance)character);
+	        if (activeChar.getInventory().getItemByItemId(9819) != null)
+	        {
+	        	Fort fort = FortManager.getInstance().getFort(activeChar);
+	        	if (fort != null)
+	        	{
+	        		FortSiegeManager.getInstance().dropCombatFlag(activeChar);
+	        	}
+	        	else
+	        	{
+	        		int slot = activeChar.getInventory().getSlotFromItem(activeChar.getInventory().getItemByItemId(9819));
+	            	activeChar.getInventory().unEquipItemInBodySlotAndRecord(slot);
+	        		activeChar.destroyItem("CombatFlag", activeChar.getInventory().getItemByItemId(9819), null, true);
+	        	}
+	        }
 		}
 	}
 	
 	@Override
 	public void onDieInside(L2Character character)
 	{
+		if (_fort.getSiege().getIsInProgress())
+		{
+			// debuff participants only if they die inside siege zone
+			if (character instanceof L2PcInstance && ((L2PcInstance) character).getClan() != null)
+			{
+				int lvl = 1;
+				for (L2Effect effect: character.getAllEffects())
+				{
+					if (effect != null && effect.getSkill().getId() == 5660)
+					{
+						lvl = lvl+effect.getLevel();
+						if (lvl > 5)
+							lvl = 5;
+						break;
+					}
+				}
+				L2Clan clan;
+				L2Skill skill;
+				if (_fort.getOwnerClan() == ((L2PcInstance)character).getClan())
+				{
+					skill = SkillTable.getInstance().getInfo(5660, lvl);
+					if (skill != null)
+						skill.getEffects(character, character);
+				}
+				else
+				{
+					for (L2SiegeClan siegeclan : _fort.getSiege().getAttackerClans())
+					{
+						if (siegeclan == null)
+							continue;
+						clan = ClanTable.getInstance().getClan(siegeclan.getClanId());
+						if (((L2PcInstance) character).getClan() == clan)
+						{
+							skill = SkillTable.getInstance().getInfo(5660, lvl);
+							if (skill != null)
+								skill.getEffects(character, character);
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
-	
+
 	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
-	
+	public void onReviveInside(L2Character character) {}
+
 	public void updateZoneStatusForCharactersInside()
 	{
 		if (_fort.getSiege().getIsInProgress())
@@ -137,6 +195,7 @@ public class L2FortZone extends L2ZoneType
 				}
 				catch (NullPointerException e)
 				{
+					e.printStackTrace();
 				}
 			}
 		}
@@ -148,8 +207,6 @@ public class L2FortZone extends L2ZoneType
 				{
 					character.setInsideZone(L2Character.ZONE_PVP, false);
 					character.setInsideZone(L2Character.ZONE_SIEGE, false);
-					character.setInsideZone(L2Character.ZONE_FORT, false);
-					character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
 					
 					if (character instanceof L2PcInstance)
 						((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
@@ -160,6 +217,7 @@ public class L2FortZone extends L2ZoneType
 				}
 				catch (NullPointerException e)
 				{
+					e.printStackTrace();
 				}
 			}
 		}
@@ -167,18 +225,18 @@ public class L2FortZone extends L2ZoneType
 	
 	/**
 	 * Removes all foreigners from the fort
-	 * @param owningClanId
+	 * @param owningClan
 	 */
-	public void banishForeigners(int owningClanId)
+	public void banishForeigners(L2Clan owningClan)
 	{
 		for (L2Character temp : _characterList.values())
 		{
 			if (!(temp instanceof L2PcInstance))
 				continue;
-			if (((L2PcInstance) temp).getClanId() == owningClanId)
+			if (((L2PcInstance) temp).getClan() == owningClan)
 				continue;
 			
-			((L2PcInstance) temp).teleToLocation(MapRegionTable.TeleportWhereType.Town);
+			((L2PcInstance) temp).teleToLocation(MapRegionTable.TeleportWhereType.Town); // TODO: shouldnt be town, its outside of fort
 		}
 	}
 	

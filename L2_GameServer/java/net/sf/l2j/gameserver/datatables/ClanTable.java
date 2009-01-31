@@ -25,10 +25,14 @@ import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
+import net.sf.l2j.gameserver.instancemanager.FortManager;
+import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2ClanMember;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.entity.Fort;
+import net.sf.l2j.gameserver.model.entity.FortSiege;
 import net.sf.l2j.gameserver.model.entity.Siege;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.PledgeShowInfoUpdate;
@@ -234,7 +238,14 @@ public class ClanTable
 				siege.removeSiegeClan(clanId);
 			}
 		}
-		
+		int fortId = clan.getHasFort();
+		if (fortId == 0)
+		{
+			for (FortSiege siege : FortSiegeManager.getInstance().getSieges())
+			{
+				siege.removeSiegeClan(clanId);
+			}
+		}
 		L2ClanMember leaderMember = clan.getLeader();
 		if (leaderMember == null)
 			clan.getWarehouse().destroyAllItems("ClanRemove", null, null);
@@ -286,7 +297,16 @@ public class ClanTable
 				statement.execute();
 				statement.close();
 			}
-			
+			if (fortId != 0)
+			{
+				Fort fort = FortManager.getInstance().getFortById(fortId);
+				if (fort != null)
+				{
+					L2Clan owner = fort.getOwnerClan();
+					if (clan == owner)
+						fort.removeOwner(true);
+				}
+			}
 			if (Config.DEBUG)
 				_log.fine("clan removed in db: " + clanId);
 		}

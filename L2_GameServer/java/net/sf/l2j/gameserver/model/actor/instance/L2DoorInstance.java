@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.util.Collection;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javolution.text.TextBuilder;
 import javolution.util.FastList;
@@ -29,6 +30,7 @@ import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
@@ -39,12 +41,14 @@ import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.network.L2GameClient;
+import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ConfirmDlg;
 import net.sf.l2j.gameserver.network.serverpackets.DoorStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.StaticObject;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.chars.L2CharTemplate;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
@@ -56,7 +60,7 @@ import net.sf.l2j.gameserver.templates.item.L2Weapon;
  */
 public class L2DoorInstance extends L2Character
 {
-	//protected static final Logger _log = Logger.getLogger(L2DoorInstance.class.getName());
+	protected static final Logger log = Logger.getLogger(L2DoorInstance.class.getName());
 	
 	/** The castle index in the array of L2Castle this L2NpcInstance belongs to */
 	private int _castleIndex = -2;
@@ -81,6 +85,7 @@ public class L2DoorInstance extends L2Character
 	protected final int _doorId;
 	protected final String _name;
 	private boolean _open;
+	private boolean _isCommanderDoor;
 	private boolean _unlockable;
 	
 	private ClanHall _clanHall;
@@ -263,6 +268,23 @@ public class L2DoorInstance extends L2Character
 	}
 	
 	/**
+	 * @param val Used for Fortresses to determine if doors can be attacked during siege or not
+	 */
+	public void setIsCommanderDoor(boolean val)
+	{
+		_isCommanderDoor = val;
+	}
+	
+	/**
+	 * @return Doors that cannot be attacked during siege
+	 * these doors will be auto opened if u take control of all commanders buildings
+	 */
+	public boolean getIsCommanderDoor()
+	{
+		return _isCommanderDoor;
+	}
+	
+	/**
 	 * Sets the delay in milliseconds for automatic opening/closing
 	 * of this door instance.
 	 * <BR>
@@ -331,7 +353,7 @@ public class L2DoorInstance extends L2Character
 	{
 		if (getCastle() != null && getCastle().getCastleId() > 0 && getCastle().getSiege().getIsInProgress())
 			return true;
-		if (getFort() != null && getFort().getFortId() > 0 && getFort().getSiege().getIsInProgress())
+		if (getFort() != null && getFort().getFortId() > 0 && getFort().getSiege().getIsInProgress() && !getIsCommanderDoor())
 			return true;
 		return false;
 	}
@@ -343,14 +365,43 @@ public class L2DoorInstance extends L2Character
 			return true;
 		
 		// Doors can`t be attacked by NPCs
-		if (!(attacker instanceof L2PcInstance))
+		if (!(attacker instanceof L2PlayableInstance))
 			return false;
 		
-		// Attackable  only during siege by everyone
+		// Attackable  only during siege by everyone (not owner)
 		boolean isCastle = (getCastle() != null && getCastle().getCastleId() > 0 && getCastle().getSiege().getIsInProgress());
+        boolean isFort = (getFort() != null && getFort().getFortId() > 0 && getFort().getSiege().getIsInProgress() && !getIsCommanderDoor());
 		
-		boolean isFort = (getFort() != null && getFort().getFortId() > 0 && getFort().getSiege().getIsInProgress());
-		
+		if (isFort)
+		{
+			if (attacker instanceof L2SummonInstance)
+			{
+				L2Clan clan = ((L2SummonInstance)attacker).getOwner().getClan();
+				if (clan != null && clan == getFort().getOwnerClan())
+					return false;
+			}
+			else if (attacker instanceof L2PcInstance)
+			{
+				L2Clan clan = ((L2PcInstance)attacker).getClan();
+				if (clan != null && clan == getFort().getOwnerClan())
+					return false;
+			}
+		}
+		else if (isCastle)
+		{
+			if (attacker instanceof L2SummonInstance)
+			{
+				L2Clan clan = ((L2SummonInstance)attacker).getOwner().getClan();
+				if (clan != null && clan.getClanId() == getCastle().getOwnerId())
+					return false;
+			}
+			else if (attacker instanceof L2PcInstance)
+			{
+				L2Clan clan = ((L2PcInstance)attacker).getClan();
+				if (clan != null && clan.getClanId() == getCastle().getOwnerId())
+					return false;
+			}
+		}
 		return (isCastle || isFort);
 	}
 	
@@ -434,7 +485,7 @@ public class L2DoorInstance extends L2Character
 			
 			// send HP amount if doors are inside castle/fortress zone
 			// TODO: needed to be added here doors from conquerable clanhalls
-			if (getCastle() != null && getCastle().getCastleId() > 0 || getFort() != null && getFort().getFortId() > 0)
+			if ((getCastle() != null && getCastle().getCastleId() > 0) || (getFort() != null && getFort().getFortId() > 0 && !getIsCommanderDoor()))
 				su = new StaticObject(this, true);
 			player.sendPacket(su);
 			
@@ -468,11 +519,10 @@ public class L2DoorInstance extends L2Character
 					else
 					{
 						player.sendPacket(new ConfirmDlg(1141));
-						;
 					}
 				}
 			}
-			else if (player.getClan() != null && getFort() != null && player.getClanId() == getFort().getOwnerId() && isUnlockable())
+			else if (player.getClan() != null && getFort() != null && player.getClan() == getFort().getOwnerClan() && isUnlockable() && !getFort().getSiege().getIsInProgress())
 			{
 				if (!isInsideRadius(player, L2NpcInstance.INTERACTION_DISTANCE, false, false))
 				{
@@ -488,7 +538,6 @@ public class L2DoorInstance extends L2Character
 					else
 					{
 						player.sendPacket(new ConfirmDlg(1141));
-						;
 					}
 				}
 			}
@@ -514,7 +563,7 @@ public class L2DoorInstance extends L2Character
 			
 			// send HP amount if doors are inside castle/fortress zone
 			// TODO: needed to be added here doors from conquerable clanhalls
-			if (getCastle() != null && getCastle().getCastleId() > 0 || getFort() != null && getFort().getFortId() > 0)
+			if ((getCastle() != null && getCastle().getCastleId() > 0) || (getFort() != null && getFort().getFortId() > 0 && !getIsCommanderDoor()))
 				su = new StaticObject(this, true);
 			
 			player.sendPacket(su);
@@ -524,14 +573,14 @@ public class L2DoorInstance extends L2Character
 			html1.append("<tr><td>S.Y.L. Says:</td></tr>");
 			html1.append("<tr><td>Current HP  " + getCurrentHp() + "</td></tr>");
 			html1.append("<tr><td>Max HP      " + getMaxHp() + "</td></tr>");
-			html1.append("<tr><td>Max X      " + getXMax() + "</td></tr>");
-			html1.append("<tr><td>Max Y      " + getYMax() + "</td></tr>");
-			html1.append("<tr><td>Max Z      " + getZMax() + "</td></tr>");
-			html1.append("<tr><td>Min X      " + getXMin() + "</td></tr>");
-			html1.append("<tr><td>Min Y      " + getYMin() + "</td></tr>");
-			html1.append("<tr><td>Min Z      " + getZMin() + "</td></tr>");
-			html1.append("<tr><td>Object ID: " + getObjectId() + "</td></tr>");
-			html1.append("<tr><td>Door ID:<br>" + getDoorId() + "</td></tr>");
+			html1.append("<tr><td>Max X       " + getXMax() + "</td></tr>");
+			html1.append("<tr><td>Max Y       " + getYMax() + "</td></tr>");
+			html1.append("<tr><td>Max Z       " + getZMax() + "</td></tr>");
+			html1.append("<tr><td>Min X       " + getXMin() + "</td></tr>");
+			html1.append("<tr><td>Min Y       " + getYMin() + "</td></tr>");
+			html1.append("<tr><td>Min Z       " + getZMin() + "</td></tr>");
+			html1.append("<tr><td>Object ID:  " + getObjectId() + "</td></tr>");
+			html1.append("<tr><td>Door ID: <br>" + getDoorId() + "</td></tr>");
 			html1.append("<tr><td><br></td></tr>");
 			
 			html1.append("<tr><td>Class: " + getClass().getName() + "</td></tr>");
@@ -570,7 +619,7 @@ public class L2DoorInstance extends L2Character
 		{
 			for (L2PcInstance player : knownPlayers)
 			{
-				if (getCastle() != null && getCastle().getCastleId() > 0 || getFort() != null && getFort().getFortId() > 0)
+				if ((getCastle() != null && getCastle().getCastleId() > 0) || (getFort() != null && getFort().getFortId() > 0 && !getIsCommanderDoor()))
 					su = new StaticObject(this, true);
 				
 				player.sendPacket(su);
@@ -684,6 +733,22 @@ public class L2DoorInstance extends L2Character
 		return result;
 	}
 	
+	public Collection<L2FortSiegeGuardInstance> getKnownFortSiegeGuards()
+	{
+		FastList<L2FortSiegeGuardInstance> result = new FastList<L2FortSiegeGuardInstance>();
+		
+		Collection<L2Object> objs = getKnownList().getKnownObjects().values();
+		//synchronized (getKnownList().getKnownObjects())
+		{
+			for (L2Object obj : objs)
+			{
+				if (obj instanceof L2FortSiegeGuardInstance)
+					result.add((L2FortSiegeGuardInstance) obj);
+			}
+		}
+		return result;
+	}
+	
 	public int getA()
 	{
 		return _A;
@@ -702,5 +767,19 @@ public class L2DoorInstance extends L2Character
 	public int getD()
 	{
 		return _D;
+	}
+	
+	@Override
+	public boolean doDie(L2Character killer) 
+	{
+		if (!super.doDie(killer))
+			return false;
+		
+		boolean isFort = (getFort() != null && getFort().getFortId() > 0 && getFort().getSiege().getIsInProgress()) && !getIsCommanderDoor();
+		boolean isCastle = (getCastle() != null	&& getCastle().getCastleId() > 0 && getCastle().getSiege().getIsInProgress());
+		
+		if (isFort || isCastle)
+			broadcastPacket(new SystemMessage(SystemMessageId.CASTLE_GATE_BROKEN_DOWN));
+		return true;
 	}
 }

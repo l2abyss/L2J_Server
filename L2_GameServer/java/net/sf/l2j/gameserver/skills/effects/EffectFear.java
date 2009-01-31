@@ -18,6 +18,8 @@ import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2FortCommanderInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2FortSiegeGuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
@@ -72,6 +74,8 @@ final class EffectFear extends L2Effect
 		
 		if (getEffected() instanceof L2FolkInstance
 		        || getEffected() instanceof L2SiegeGuardInstance
+		        || getEffected() instanceof L2FortSiegeGuardInstance
+		        || getEffected() instanceof L2FortCommanderInstance
 		        || getEffected() instanceof L2SiegeFlagInstance
 		        || getEffected() instanceof L2SiegeSummonInstance)
 			return false;

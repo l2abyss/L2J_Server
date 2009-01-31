@@ -21,7 +21,6 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.util.StringTokenizer;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
-import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -31,13 +30,14 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 /**
  * @author Vice 
  */
-public class L2FortMerchantInstance extends L2NpcWalkerInstance
+public class L2FortSiegeNpcInstance extends L2NpcInstance
 {
-    public L2FortMerchantInstance(int objectID, L2NpcTemplate template)
+    public L2FortSiegeNpcInstance(int objectID, L2NpcTemplate template)
     {
         super(objectID, template);
     }
 
+    @Override
     public void onAction(L2PcInstance player)
     {
         if (!canTarget(player)) return;
@@ -91,18 +91,29 @@ public class L2FortMerchantInstance extends L2NpcWalkerInstance
             catch (NumberFormatException nfe){}
             showMessageWindow(player, val);
         }
-        else if (actualCommand.equalsIgnoreCase("showSiegeInfo"))
+        else if (actualCommand.equalsIgnoreCase("register"))
         {
-            showSiegeInfoWindow(player);
+            if (player.getClan() == null || !player.isClanLeader()
+            		|| (getFort().getOwnerClan() != null && player.getClan().getHasCastle() != getFort().getCastleId())
+            		|| player.getClan().getLevel() < 4)
+            {
+            	player.sendMessage("ure not able to participate"); // replace me with html
+            }
+            else if (getFort().getSiege().getAttackerClans().size() == 0 && player.getInventory().getAdena() < 250000)
+            {
+            	player.sendMessage("u need 250.000 adena to register"); // replace me with html
+            }
+            else
+            {
+            	if (getFort().getSiege().registerAttacker(player, false))
+            		player.sendMessage("registered on siege :)");
+            }
         }
         else
         {
             super.onBypassFeedback(player, command);
         }
-        
-
     }
-    
     
     private void showMessageWindow(L2PcInstance player)
     {
@@ -124,41 +135,17 @@ public class L2FortMerchantInstance extends L2NpcWalkerInstance
         html.setFile(filename);
         html.replace("%objectId%", String.valueOf(getObjectId()));
         html.replace("%npcId%", String.valueOf(getNpcId()));
-        if ( getFort().getOwnerId() > 0 ) 
-            html.replace("%clanname%", ClanTable.getInstance().getClan(getFort().getOwnerId()).getName());
+        if ( getFort().getOwnerClan() != null ) 
+            html.replace("%clanname%", getFort().getOwnerClan().getName());
         else
             html.replace("%clanname%", "NPC");
         
-        html.replace("%castleid%", Integer.toString(getFort().getFortId()));
         player.sendPacket(html);
-    }
-    
-    /**
-     * If siege is in progress shows the Busy HTML<BR>
-     * else Shows the SiegeInfo window
-     * 
-     * @param player
-     */
-    public void showSiegeInfoWindow(L2PcInstance player)
-    {
-        if (validateCondition(player))
-            getFort().getSiege().listRegisterClan(player);
-        else
-        {
-            NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-            html.setFile("data/html/fortress/merchant-busy.htm");
-            html.replace("%fortname%", getFort().getName());
-            html.replace("%objectId%", String.valueOf(getObjectId()));
-            player.sendPacket(html);
-            player.sendPacket(ActionFailed.STATIC_PACKET);
-        }
-    }
+    } 
 
-    private boolean validateCondition(L2PcInstance player)
-    {
-        if (getFort().getSiege().getIsInProgress())
-            return false; // Busy because of siege
-        return true;
-    }    
-
+    @Override
+	public boolean hasRandomAnimation()
+	{
+		return false;
+	}
 }

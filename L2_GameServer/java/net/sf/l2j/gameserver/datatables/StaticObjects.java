@@ -27,6 +27,8 @@ import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
 import net.sf.l2j.gameserver.model.actor.instance.L2StaticObjectInstance;
+import net.sf.l2j.gameserver.templates.StatsSet;
+import net.sf.l2j.gameserver.templates.chars.L2CharTemplate;
 
 public class StaticObjects
 {
@@ -102,13 +104,62 @@ public class StaticObjects
 		int map_x = Integer.parseInt(st.nextToken());
 		int map_y = Integer.parseInt(st.nextToken());
 		
-		L2StaticObjectInstance obj = new L2StaticObjectInstance(IdFactory.getInstance().getNextId());
+		StatsSet npcDat = new StatsSet();
+		npcDat.set("npcId", id);
+		npcDat.set("level", 0);
+		npcDat.set("jClass", "staticobject");
+		
+		npcDat.set("baseSTR", 0);
+		npcDat.set("baseCON", 0);
+		npcDat.set("baseDEX", 0);
+		npcDat.set("baseINT", 0);
+		npcDat.set("baseWIT", 0);
+		npcDat.set("baseMEN", 0);
+		
+		npcDat.set("baseShldDef", 0);
+		npcDat.set("baseShldRate", 0);
+		npcDat.set("baseAccCombat", 38);
+		npcDat.set("baseEvasRate", 38);
+		npcDat.set("baseCritRate", 38);
+		
+		//npcDat.set("name", "");
+		npcDat.set("collision_radius", 10);
+		npcDat.set("collision_height", 10);
+		npcDat.set("sex", "male");
+		npcDat.set("type", "");
+		npcDat.set("baseAtkRange", 0);
+		npcDat.set("baseMpMax", 0);
+		npcDat.set("baseCpMax", 0);
+		npcDat.set("rewardExp", 0);
+		npcDat.set("rewardSp", 0);
+		npcDat.set("basePAtk", 0);
+		npcDat.set("baseMAtk", 0);
+		npcDat.set("basePAtkSpd", 0);
+		npcDat.set("aggroRange", 0);
+		npcDat.set("baseMAtkSpd", 0);
+		npcDat.set("rhand", 0);
+		npcDat.set("lhand", 0);
+		npcDat.set("armor", 0);
+		npcDat.set("baseWalkSpd", 0);
+		npcDat.set("baseRunSpd", 0);
+		npcDat.set("name", "");
+		npcDat.set("baseHpMax", 1);
+		npcDat.set("baseHpReg", 3.e-3f);
+		npcDat.set("baseMpReg", 3.e-3f);
+		npcDat.set("basePDef", 1);
+		npcDat.set("baseMDef", 1);
+		
+		L2CharTemplate template = new L2CharTemplate(npcDat);
+		L2StaticObjectInstance obj = new L2StaticObjectInstance(IdFactory.getInstance().getNextId(), template, id);
 		obj.setType(type);
-		obj.setStaticObjectId(id);
 		obj.setXYZ(x, y, z);
 		obj.setMap(texture, map_x, map_y);
 		obj.spawnMe();
 		
 		return obj;
+	}
+	public void putObject(L2StaticObjectInstance obj)
+	{
+		_staticObjects.put(obj.getStaticObjectId(), obj);
 	}
 }

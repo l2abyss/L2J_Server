@@ -20,32 +20,66 @@ package net.sf.l2j.gameserver.model.actor.instance;
 
 import java.util.logging.Logger;
 
+import javolution.text.TextBuilder;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
+import net.sf.l2j.gameserver.ai.L2CharacterAI;
 import net.sf.l2j.gameserver.cache.HtmCache;
+import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Character;
-import net.sf.l2j.gameserver.model.L2Object;
-import net.sf.l2j.gameserver.model.actor.knownlist.NullKnownList;
+import net.sf.l2j.gameserver.model.L2ItemInstance;
+import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.actor.knownlist.StaticObjectKnownList;
+import net.sf.l2j.gameserver.model.actor.stat.StaticObjStat;
+import net.sf.l2j.gameserver.model.actor.status.StaticObjStatus;
+import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ShowTownMap;
+import net.sf.l2j.gameserver.network.serverpackets.StaticObject;
+import net.sf.l2j.gameserver.templates.chars.L2CharTemplate;
+import net.sf.l2j.gameserver.templates.item.L2Weapon;
 
 /**
  * GODSON ROX!
  */
-public class L2StaticObjectInstance extends L2Object
+public class L2StaticObjectInstance extends L2Character
 {
-    private static Logger _log = Logger.getLogger(L2StaticObjectInstance.class.getName());
+	protected static final Logger log = Logger.getLogger(L2StaticObjectInstance.class.getName());
 
     /** The interaction distance of the L2StaticObjectInstance */
     public static final int INTERACTION_DISTANCE = 150;
 
     private int _staticObjectId;
+    private int _meshIndex = 0;     // 0 - static objects, alternate static objects
     private int _type = -1;         // 0 - map signs, 1 - throne , 2 - arena signs
     private int _x;
     private int _y;
     private String _texture;
 
+    /** This class may be created only by L2Character and only for AI */
+    public class AIAccessor extends L2Character.AIAccessor
+    {
+        protected AIAccessor() {}
+        @Override
+		public L2StaticObjectInstance getActor() { return L2StaticObjectInstance.this; }
+        @Override
+        public void moveTo(int x, int y, int z, int offset) {}
+        @Override
+        public void moveTo(int x, int y, int z) {}
+        @Override
+        public void stopMove(L2CharPosition pos) {}
+        @Override
+        public void doAttack(L2Character target) {}
+        @Override
+        public void doCast(L2Skill skill) {}
+    }
+
+    @Override
+	public L2CharacterAI getAI() 
+    {
+    	return null;
+    }
     /**
      * @return Returns the StaticObjectId.
      */
@@ -53,19 +87,40 @@ public class L2StaticObjectInstance extends L2Object
     {
         return _staticObjectId;
     }
+
     /**
-     * @param doorId The doorId to set.
      */
-    public void setStaticObjectId(int StaticObjectId)
+    public L2StaticObjectInstance(int objectId,L2CharTemplate template, int staticId)
     {
-        _staticObjectId = StaticObjectId;
+    	super(objectId, template);
+    	getKnownList();
+    	getStat();
+    	getStatus();
+    	_staticObjectId = staticId;
     }
-    /**
-     */
-    public L2StaticObjectInstance(int objectId)
+
+    @Override
+	public final StaticObjectKnownList getKnownList()
     {
-        super(objectId);
-        setKnownList(new NullKnownList(this));
+    	if(!(super.getKnownList() instanceof StaticObjectKnownList))
+    		setKnownList(new StaticObjectKnownList(this));
+    	return (StaticObjectKnownList)super.getKnownList();
+    }
+
+    @Override
+	public final StaticObjStat getStat()
+    {
+    	if(!(super.getStat() instanceof StaticObjStat))
+    		setStat(new StaticObjStat(this));
+    	return (StaticObjStat)super.getStat();
+    }
+
+    @Override
+	public final StaticObjStatus getStatus()
+    {
+    	if(!(super.getStatus() instanceof StaticObjStatus))
+    		setStatus(new StaticObjStatus(this));
+    	return (StaticObjStatus)super.getStatus();
     }
 
     public int getType()
@@ -93,6 +148,39 @@ public class L2StaticObjectInstance extends L2Object
     private int getMapY()
     {
 	return _y;
+    }
+
+    @Override
+	public final int getLevel()
+    {
+        return 1;
+    }
+
+    /**
+     * Return null.<BR><BR>
+     */
+    @Override
+	public L2ItemInstance getActiveWeaponInstance()
+    {
+        return null;
+    }
+
+    @Override
+	public L2Weapon getActiveWeaponItem()
+    {
+        return null;
+    }
+
+    @Override
+	public L2ItemInstance getSecondaryWeaponInstance()
+    {
+        return null;
+    }
+
+    @Override
+    public L2Weapon getSecondaryWeaponItem()
+    {
+        return null;
     }
 
     /**
@@ -142,6 +230,47 @@ public class L2StaticObjectInstance extends L2Object
 
     }
 
+    @Override
+    public void onActionShift(L2GameClient client)
+    {
+        L2PcInstance player = client.getActiveChar();
+        if (player == null) return;
+
+        if (player.getAccessLevel().isGm())
+        {
+            player.setTarget(this);
+            MyTargetSelected my = new MyTargetSelected(getObjectId(), player
+                    .getLevel());
+            player.sendPacket(my);
+
+            StaticObject su = new StaticObject(this);
+
+            player.sendPacket(su);
+
+            NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+            TextBuilder html1 = new TextBuilder("<html><body><table border=0>");
+            html1.append("<tr><td>S.Y.L. Says:</td></tr>");
+            html1.append("<tr><td>X: "+getX()+ "</td></tr>");
+            html1.append("<tr><td>Y: "+getY()+"</td></tr>");
+            html1.append("<tr><td>Z: "+getZ()+"</td></tr>");
+            html1.append("<tr><td>Object ID: " + getObjectId() + "</td></tr>");
+            html1.append("<tr><td>Static Object ID: "+getStaticObjectId()+"</td></tr>");
+            html1.append("<tr><td>Mesh Index: "+getMeshIndex()+"</td></tr>");
+            html1.append("<tr><td><br></td></tr>");
+
+            html1.append("<tr><td>Class: " + getClass().getName() + "</td></tr>");
+            html1.append("<tr><td><br></td></tr>");
+            html1.append("</table></body></html>");
+
+            html.setHtml(html1.toString());
+            player.sendPacket(html);
+        } else {
+            // ATTACK the mob without moving?
+        }
+
+        player.sendPacket(ActionFailed.STATIC_PACKET);
+    }
+
     /* (non-Javadoc)
      * @see net.sf.l2j.gameserver.model.L2Object#isAttackable()
      */
@@ -150,4 +279,34 @@ public class L2StaticObjectInstance extends L2Object
     {
         return false;
     }
+
+    /**
+     * Set the meshIndex of the object<BR><BR>
+     * 
+     * <B><U> Values </U> :</B><BR><BR>
+     * <li> default textures : 0</li>
+     * <li> alternate textures : 1 </li><BR><BR>
+     * @param meshIndex
+     */
+    public void setMeshIndex (int meshIndex)
+    {
+    	_meshIndex = meshIndex;
+    	this.broadcastPacket(new StaticObject(this));
+    }
+
+    /**
+     * Return the meshIndex of the object.<BR><BR>
+     *
+     * <B><U> Values </U> :</B><BR><BR>
+     * <li> default textures : 0</li>
+     * <li> alternate textures : 1 </li><BR><BR>
+     *
+     */
+    public int getMeshIndex()
+    {
+    	return _meshIndex;
+    }
+
+	@Override
+	public void updateAbnormalEffect() {}
 }

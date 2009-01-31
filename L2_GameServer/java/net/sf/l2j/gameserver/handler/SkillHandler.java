@@ -66,6 +66,7 @@ public class SkillHandler
 		registerSkillHandler(new SummonTreasureKey());
 		registerSkillHandler(new Disablers());
 		registerSkillHandler(new Recall());
+		registerSkillHandler(new BallistaBomb());
 		registerSkillHandler(new TakeCastle());
 		registerSkillHandler(new TakeFort());
 		registerSkillHandler(new Unlock());

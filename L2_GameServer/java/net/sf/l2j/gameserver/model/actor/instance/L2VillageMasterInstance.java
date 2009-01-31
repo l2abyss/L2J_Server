@@ -24,6 +24,8 @@ import net.sf.l2j.gameserver.datatables.CharTemplateTable;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
+import net.sf.l2j.gameserver.instancemanager.FortManager;
+import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2ClanMember;
@@ -35,6 +37,7 @@ import net.sf.l2j.gameserver.model.base.PlayerClass;
 import net.sf.l2j.gameserver.model.base.Race;
 import net.sf.l2j.gameserver.model.base.SubClass;
 import net.sf.l2j.gameserver.model.entity.Castle;
+import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.AcquireSkillDone;
@@ -510,7 +513,7 @@ public final class L2VillageMasterInstance extends L2FolkInstance
             player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_WAR));
             return;
         }
-        if (clan.getHasCastle() !=0 || clan.getHasHideout() != 0)
+        if (clan.getHasCastle() !=0 || clan.getHasHideout() != 0 || clan.getHasFort() != 0)
         {
             player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_OWNING_CLAN_HALL_OR_CASTLE));
             return;
@@ -519,9 +522,17 @@ public final class L2VillageMasterInstance extends L2FolkInstance
         {
             if (SiegeManager.getInstance().checkIsRegistered(clan, castle.getCastleId()))
             {
-                player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISSOLVE_CAUSE_CLAN_WILL_PARTICIPATE_IN_CASTLE_SIEGE));
+                player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_SIEGE));
                 return;
             }
+        }
+        for (Fort fort : FortManager.getInstance().getForts())
+        {
+        	if (FortSiegeManager.getInstance().checkIsRegistered(clan, fort.getFortId()))
+        	{
+        		player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_SIEGE));
+                return;
+        	}
         }
         if (player.isInsideZone(L2PcInstance.ZONE_SIEGE))
         {

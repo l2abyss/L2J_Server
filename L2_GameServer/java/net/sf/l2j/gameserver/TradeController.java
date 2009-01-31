@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
@@ -41,7 +42,7 @@ public class TradeController
     private static TradeController _instance;
     
     private int _nextListId;
-    private Map<Integer, L2TradeList> _lists;
+    private Map<Integer, L2TradeList> _lists= new FastMap<Integer, L2TradeList>();
     
     /** Task launching the function for restore count of Item (Clan Hall) */
     /*public class RestoreCount implements Runnable
@@ -72,8 +73,8 @@ public class TradeController
     
     private TradeController()
     {
-        _lists = new FastMap<Integer, L2TradeList>();
-        java.sql.Connection con = null;
+        _lists.clear();
+        Connection con = null;
         
         /*
          * Initialize Shop buylist

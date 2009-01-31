@@ -15,9 +15,7 @@
 package net.sf.l2j.gameserver.network.serverpackets;
 
 import java.util.List;
-import java.util.logging.Logger;
 
-import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.entity.Fort;
@@ -28,7 +26,7 @@ import net.sf.l2j.gameserver.model.entity.Fort;
  */
 public class ExShowFortressInfo extends L2GameServerPacket
 {
-    private static final Logger _log = Logger.getLogger(ExShowFortressInfo.class.getName());
+    //private static final Logger _log = Logger.getLogger(ExShowFortressInfo.class.getName());
 	
 	/**
      * @see net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket#getType()
@@ -51,26 +49,18 @@ public class ExShowFortressInfo extends L2GameServerPacket
         writeD(forts.size());
         for (Fort fort : forts)
         {
+        	L2Clan clan = fort.getOwnerClan();
             writeD(fort.getFortId());
-            if (fort.getOwnerId() > 0)
+            if (clan != null)
             {
-                L2Clan clan = ClanTable.getInstance().getClan(fort.getOwnerId());
-                if (clan != null)
-                {
-                    writeS(clan.getName());
-                }
-                else
-                {
-                    _log.warning("No owner clan for fortress: "+fort.getName()+" - Owner Id: "+fort.getOwnerId());
-                    writeS("");
-                }
+            	writeS(clan.getName());
             }
             else
             {
                 writeS("");
             }
             
-            if ((fort.getSiege().getIsScheduled()) || (fort.getSiege().getIsInProgress()))
+            if (fort.getSiege().getIsInProgress())
             {
                 writeD(1);
             }

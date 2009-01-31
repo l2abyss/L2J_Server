@@ -258,7 +258,8 @@ public class PcKnownList extends PlayableKnownList
             {
                 // Update the state of the L2Character object client side by sending Server->Client packet MoveToPawn/CharMoveToLocation and AutoAttackStart to the L2PcInstance
                 L2Character obj = (L2Character) object;
-                obj.getAI().describeStateToPlayer(getActiveChar());
+                if (obj.getAI() != null)
+                	obj.getAI().describeStateToPlayer(getActiveChar());
             }
         }
 

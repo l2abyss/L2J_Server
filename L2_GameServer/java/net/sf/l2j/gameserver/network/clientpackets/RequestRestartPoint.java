@@ -125,12 +125,6 @@ public final class RequestRestartPoint extends L2GameClientPacket
 				case 3: // to fortress
 					fort = FortManager.getInstance().getFort(activeChar);
 
-					if (fort != null && fort.getSiege().getIsInProgress())
-					{
-						//siege in progress
-						if (fort.getSiege().checkIsDefender(activeChar.getClan()))
-							isInDefense = true;
-					}
 					if ((activeChar.getClan() == null || activeChar.getClan().getHasFort() == 0) && !isInDefense)
 					{
 						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Fortress and he doesn't have Fortress!");

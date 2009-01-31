@@ -20,6 +20,7 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2FortSiegeGuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
 
 /**
@@ -171,6 +172,13 @@ public class L2DoorAI extends L2CharacterAI
 		public void run()
 		{
 			for (L2SiegeGuardInstance guard : _door.getKnownSiegeGuards())
+			{
+				if (_actor.isInsideRadius(guard, guard.getFactionRange(), false, true) && Math.abs(_attacker.getZ() - guard.getZ()) < 200)
+				{
+					guard.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, _attacker, 15);
+				}
+			}
+			for (L2FortSiegeGuardInstance guard : _door.getKnownFortSiegeGuards())
 			{
 				if (_actor.isInsideRadius(guard, guard.getFactionRange(), false, true) && Math.abs(_attacker.getZ() - guard.getZ()) < 200)
 				{

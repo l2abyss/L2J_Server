@@ -21,6 +21,8 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Fort;
+import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 import net.sf.l2j.gameserver.util.Util;
 
@@ -45,12 +47,12 @@ public class TakeFort implements ISkillHandler
 			return;
 		
 		L2PcInstance player = (L2PcInstance) activeChar;
-		
+		L2Object target = player.getTarget();
 		if (player.getClan() == null)
 			return;
 		
 		Fort fort = FortManager.getInstance().getFort(player);
-		if (fort == null || !checkIfOkToCastFlagDisplay(player, fort, true))
+		if (fort == null || !checkIfOkToCastFlagDisplay(player, fort, true, skill, target))
 			return;
 		
 		try
@@ -77,9 +79,9 @@ public class TakeFort implements ISkillHandler
 	 * @param activeChar The L2Character of the character placing the flag
 	 *
 	 */
-	public static boolean checkIfOkToCastFlagDisplay(L2Character activeChar, boolean isCheckOnly)
+	public static boolean checkIfOkToCastFlagDisplay(L2Character activeChar, boolean isCheckOnly, L2Skill skill, L2Object target)
 	{
-		return checkIfOkToCastFlagDisplay(activeChar, FortManager.getInstance().getFort(activeChar), isCheckOnly);
+		return checkIfOkToCastFlagDisplay(activeChar, FortManager.getInstance().getFort(activeChar), isCheckOnly, skill, target);
 	}
 	
 	/**
@@ -89,31 +91,42 @@ public class TakeFort implements ISkillHandler
 	 * @param isCheckOnly
 	 * @return
 	 */
-	public static boolean checkIfOkToCastFlagDisplay(L2Character activeChar, Fort fort, boolean isCheckOnly)
+	public static boolean checkIfOkToCastFlagDisplay(L2Character activeChar, Fort fort, boolean isCheckOnly,L2Skill skill, L2Object target)
 	{
 		if (!(activeChar instanceof L2PcInstance))
 			return false;
 		
-		String text = "";
+		SystemMessage sm;
 		L2PcInstance player = (L2PcInstance) activeChar;
 		
 		if (fort == null || fort.getFortId() <= 0)
-			text = "You must be on fort ground to use this skill";
+		{
+			sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+			sm.addSkillName(skill);
+		}
 		else if (!fort.getSiege().getIsInProgress())
-			text = "You can only use this skill during a siege.";
+		{
+			sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+			sm.addSkillName(skill);
+		}
 		else if (!Util.checkIfInRange(200, player, player.getTarget(), true))
-			text = "You are not in range of the flagpole.";
+		{
+			sm = new SystemMessage(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED);
+		}
 		else if (fort.getSiege().getAttackerClan(player.getClan()) == null)
-			text = "You must be an attacker to use this skill";
+		{
+			sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+			sm.addSkillName(skill);
+		}
 		else
 		{
 			if (!isCheckOnly)
-				fort.getSiege().announceToPlayer("Clan " + player.getClan().getName() + " has begun to raise flag.", true);
+				fort.getSiege().announceToPlayer(new SystemMessage(SystemMessageId.S1_TRYING_RAISE_FLAG),player.getClan().getName());
 			return true;
 		}
 		
 		if (!isCheckOnly)
-			player.sendMessage(text);
+			player.sendPacket(sm);
 		return false;
 	}
 }

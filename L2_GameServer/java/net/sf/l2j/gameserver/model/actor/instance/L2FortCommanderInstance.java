@@ -14,21 +14,29 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
+import javolution.util.FastList;
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
-import net.sf.l2j.gameserver.model.L2Attackable;
+import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
+import net.sf.l2j.gameserver.instancemanager.FortSiegeManager.SiegeSpawn;
 import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Character;
-import net.sf.l2j.gameserver.model.actor.knownlist.CommanderKnownList;
+import net.sf.l2j.gameserver.model.L2Spawn;
+import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.network.serverpackets.NpcSay;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
-public class L2CommanderInstance extends L2Attackable
+public class L2FortCommanderInstance extends L2FortSiegeGuardInstance
 {
 
-	public L2CommanderInstance(int objectId, L2NpcTemplate template)
+	private boolean _canTalk;
+
+	public L2FortCommanderInstance(int objectId, L2NpcTemplate template)
     {
         super(objectId, template);
         getKnownList(); // init knownlist
+        _canTalk = true;
     }
 
     /**
@@ -48,22 +56,14 @@ public class L2CommanderInstance extends L2Attackable
         // Attackable during siege by all except defenders
         return (isFort);
     }
-    
-    @Override
-    public final CommanderKnownList getKnownList()
-    {
-        if(!(super.getKnownList() instanceof CommanderKnownList))
-            setKnownList(new CommanderKnownList(this));
-        return (CommanderKnownList)super.getKnownList();
-    }
-    
+   
     @Override
     public void addDamageHate(L2Character attacker, int damage, int aggro)
     {
         if (attacker == null)
             return;
 
-        if (!(attacker instanceof L2CommanderInstance))
+        if (!(attacker instanceof L2FortCommanderInstance))
         {
             super.addDamageHate(attacker, damage, aggro);
         }
@@ -90,9 +90,9 @@ public class L2CommanderInstance extends L2Attackable
      */
     public void returnHome()
     {
-        if (!isInsideRadius(getSpawn().getLocx(), getSpawn().getLocy(), 40, false))
+        if (!isInsideRadius(getSpawn().getLocx(), getSpawn().getLocy(), 200, false))
         {
-            if (Config.DEBUG) _log.fine(getObjectId()+": moving home");
+            if (Config.DEBUG) _log.info(getObjectId()+": moving home");
             setisReturningToSpawnPoint(true);    
             clearAggroList();
             
@@ -100,5 +100,70 @@ public class L2CommanderInstance extends L2Attackable
                 getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(getSpawn().getLocx(), getSpawn().getLocy(), getSpawn().getLocz(), 0));
         }
     }
+    @Override
+    public final void addDamage(L2Character attacker, int damage)
+    {
+    	L2Spawn spawn = getSpawn();
+    	if (spawn != null && canTalk())
+		{
+			FastList<SiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId());
+			for (SiegeSpawn spawn2 : commanders)
+			{
+				if (spawn2.getNpcId() == spawn.getNpcid())
+				{
+					String text = "";
+					switch (spawn2.getId())
+					{
+						case 1:
+							text = "Attacking the enemy's reinforcements is necesary. Time to Die!";
+							break;
+						case 2:
+							if (attacker instanceof L2Summon)
+								attacker = ((L2Summon) attacker).getOwner();
+							text = "Everyone, concentrate your attacks on "+attacker.getName()+"! Show the enemy your resolve!";
+							break;
+						case 3:
+							text = "Spirit of Fire, unleash your power! Burn the enemy!!";
+							break;
+					}
+					if (text != "")
+					{
+						broadcastPacket(new NpcSay(getObjectId(), 1, getNpcId(), text));
+						setCanTalk(false);
+						ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTalkTask(), 10000);
+					}
+				}
+			}
+		}
+    	super.addDamage(attacker, damage);
+    }
     
+	private class ScheduleTalkTask implements Runnable
+	{
+		
+		public ScheduleTalkTask()
+		{
+		}
+		
+		public void run()
+		{
+			setCanTalk(true);
+		}
+	}
+	
+	void setCanTalk(boolean val)
+	{
+		_canTalk = val;
+	}
+	
+	private boolean canTalk()
+	{
+		return _canTalk;
+	}
+
+    @Override
+	public boolean hasRandomAnimation()
+	{
+		return false;
+	}
 }

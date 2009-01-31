@@ -509,7 +509,7 @@ public class Castle
 		
 		// if clan have fortress, remove it
 		if (clan.getHasFort() > 0)
-			FortManager.getInstance().getFortByOwner(clan).removeOwner(clan);
+			FortManager.getInstance().getFortByOwner(clan).removeOwner(true);
 		
 		if (getSiege().getIsInProgress()) // If siege in progress
 			getSiege().midVictory(); // Mid victory phase of siege

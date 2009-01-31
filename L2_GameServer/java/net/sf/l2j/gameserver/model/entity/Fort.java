@@ -17,8 +17,8 @@ package net.sf.l2j.gameserver.model.entity;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,19 +26,23 @@ import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
-import net.sf.l2j.gameserver.Announcements;
 import net.sf.l2j.gameserver.FortUpdater;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.DoorTable;
+import net.sf.l2j.gameserver.datatables.StaticObjects;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2Object;
+import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2StaticObjectInstance;
 import net.sf.l2j.gameserver.model.zone.type.L2FortZone;
+import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.PlaySound;
 import net.sf.l2j.gameserver.network.serverpackets.PledgeShowInfoUpdate;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
 public class Fort
 {
@@ -48,15 +52,20 @@ public class Fort
 	// Data Field
 	private int _fortId = 0;
 	private List<L2DoorInstance> _doors = new FastList<L2DoorInstance>();
+	private L2StaticObjectInstance _flagPole = null;
 	private List<String> _doorDefault = new FastList<String>();
+	private List<String> _flagPoleStats = new FastList<String>();
 	private String _name = "";
-	private int _ownerId = 0;
+	private FortManager	_spawnManager;
 	private FortSiege _siege = null;
 	private Calendar _siegeDate;
 	private Calendar _lastOwnedTime;
 	private L2FortZone _zone;
-	private L2Clan _formerOwner = null;
-	private Map<Integer, FortFunction> _function;
+	private L2Clan _fortOwner = null;
+	private int _fortType = 0;
+	private int _state = 0;
+	private int _castleId = 0;
+	private FastMap<Integer, FortFunction> _function;
 	
 	/** Fortress Functions */
 	public static final int FUNC_TELEPORT = 1;
@@ -129,7 +138,7 @@ public class Fort
 		
 		private void initializeTask(boolean cwh)
 		{
-			if (getOwnerId() <= 0)
+			if (getOwnerClan() == null)
 				return;
 			long currentTime = System.currentTimeMillis();
 			if (_endDate > currentTime)
@@ -149,9 +158,9 @@ public class Fort
 			{
 				try
 				{
-					if (getOwnerId() <= 0)
+					if (getOwnerClan() == null)
 						return;
-					if (ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().getAdena() >= _fee || !_cwh)
+					if (getOwnerClan().getWarehouse().getAdena() >= _fee || !_cwh)
 					{
 						int fee = _fee;
 						boolean newfc = true;
@@ -169,7 +178,7 @@ public class Fort
 						dbSave(newfc);
 						if (_cwh)
 						{
-							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CS_function_fee", 57, fee, null, null);
+							getOwnerClan().getWarehouse().destroyItemByItemId("CS_function_fee", 57, fee, null, null);
 							if (Config.DEBUG)
 								_log.warning("deducted " + fee + " adena from " + getName() + " owner's cwh for function id : " + getType());
 						}
@@ -226,6 +235,7 @@ public class Fort
 				}
 				catch (Exception e)
 				{
+					e.printStackTrace();
 				}
 			}
 		}
@@ -238,13 +248,16 @@ public class Fort
 		_fortId = fortId;
 		load();
 		loadDoor();
+		loadFlagPoles();
 		_function = new FastMap<Integer, FortFunction>();
-		if (getOwnerId() != 0)
+		if (getOwnerClan() != null)
 		{
+			setVisibleFlag(true);
 			loadFunctions();
 		}
+		_spawnManager = new FortManager(this);
 	}
-	
+		
 	/** Return function with id */
 	public FortFunction getFunction(int type)
 	{
@@ -253,19 +266,42 @@ public class Fort
 		return null;
 	}
 	
+	public class ScheduleSpecialEnvoysDeSpawn implements Runnable
+	{
+		private Fort _fortInst;
+		
+		public ScheduleSpecialEnvoysDeSpawn(Fort pFort)
+		{
+			_fortInst = pFort;
+		}
+		
+		public void run()
+		{
+			try
+			{
+				// if state not decided, change state to indenpendent
+				if (_fortInst.getFortState() == 0)
+					_fortInst.setFortState(1,0);
+				_fortInst.getSpawnManager().despawnSpecialEnvoys();
+			}
+			catch (Exception e)
+			{
+				_log.warning("Exception: ScheduleSpecialEnvoysSpawn() for Fort: "+_fortInst.getName()+" " + e.getMessage());
+				e.printStackTrace();
+			}
+		}
+	}	
 	// =========================================================
 	// Method - Public
 	
 	public void EndOfSiege(L2Clan clan)
 	{
 		ThreadPoolManager.getInstance().scheduleGeneral(new endFortressSiege(this, clan), 1000);
-		
 	}
 	
-	public void Engrave(L2Clan clan, int objId)
+	public void Engrave(L2Clan clan)
 	{
-		getSiege().announceToPlayer("Clan " + clan.getName() + " has finished to raise the flag.", true);
-		setOwner(clan);
+		setOwner(clan, true);
 	}
 	
 	/**
@@ -273,7 +309,7 @@ public class Fort
 	 */
 	public void banishForeigners()
 	{
-		_zone.banishForeigners(getOwnerId());
+		_zone.banishForeigners(getOwnerClan());
 	}
 	
 	/**
@@ -300,7 +336,7 @@ public class Fort
 	
 	/**
 	 * Get the objects distance to this fort
-	 * @param obj
+	 * @param object
 	 * @return
 	 */
 	public double getDistance(L2Object obj)
@@ -320,7 +356,7 @@ public class Fort
 	
 	public void openCloseDoor(L2PcInstance activeChar, int doorId, boolean open)
 	{
-		if (activeChar.getClanId() != getOwnerId())
+		if (activeChar.getClan() != getOwnerClan())
 			return;
 		
 		L2DoorInstance door = getDoor(doorId);
@@ -339,88 +375,83 @@ public class Fort
 		removeDoorUpgrade();
 	}
 	
-	// This method updates the fort tax rate
-	public void setOwner(L2Clan clan)
+	/**
+	 * This method will set owner for Fort
+	 * @param clan
+	 * @param updateClanPoints
+	 */
+	public boolean setOwner(L2Clan clan, boolean updateClansReputation)
 	{
-		// Remove old owner
-		if (getOwnerId() > 0 && (clan == null || clan.getClanId() != getOwnerId()))
+		if (updateClansReputation)
 		{
-			L2Clan oldOwner = ClanTable.getInstance().getClan(getOwnerId()); // Try to find clan instance
-			if (oldOwner != null)
-			{
-				if (_formerOwner == null)
-				{
-					_formerOwner = oldOwner;
-				}
-				oldOwner.setHasFort(0); // Unset has fort flag for old owner
-				Announcements.getInstance().announceToAll(oldOwner.getName() + " has lost " + getName() + " fortress!");
-				
-			}
+			// update reputation first
+			updateClansReputation(clan);
 		}
-		
-		// if clan have already fortress, remove it
-		if (clan.getHasFort() > 0)
-			FortManager.getInstance().getFortByOwner(clan).removeOwner(clan);
-		
-		//if clan already have castle, dont store him in fortress
-		if (clan.getHasCastle() <= 0)
-			updateOwnerInDB(clan); // Update in database
+		// Remove old owner
+		if (getOwnerClan() != null && (clan != null && clan != getOwnerClan()))
+		{
+			removeOwner(true);
+		}
+		setFortState(0,0); // initialize fort state
+		//	if clan already have castle, don't store him in fortress
+		if (clan.getHasCastle() > 0)
+		{
+			getSiege().announceToPlayer(new SystemMessage(SystemMessageId.NPCS_RECAPTURED_FORTRESS),0,false);
+			return false;
+		}
 		else
 		{
-			getSiege().setHasCastle();
-			updateOwnerInDB(null);
+			getSpawnManager().spawnSpecialEnvoys();
+			ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSpecialEnvoysDeSpawn(this), 1*60*60*1000); // Prepare 1hr task for special envoys despawn
+			// if clan have already fortress, remove it
+			if (clan.getHasFort() > 0)
+				FortManager.getInstance().getFortByOwner(clan).removeOwner(true);
+
+			setOwnerClan(clan);
+			updateOwnerInDB(); // Update in database
+
+			if (getSiege().getIsInProgress()) // If siege in progress
+				getSiege().endSiege();
+			return true;
 		}
-		
-		if (getSiege().getIsInProgress()) // If siege in progress
-			getSiege().midVictory(); // Mid victory phase of siege
-			
-		updateClansReputation();
 	}
 	
-	public void removeOwner(L2Clan clan)
+	public void removeOwner(boolean updateDB)
 	{
+		L2Clan clan = getOwnerClan();
 		if (clan != null)
 		{
-			_formerOwner = clan;
 			clan.setHasFort(0);
-			Announcements.getInstance().announceToAll(clan.getName() + " has lost " + getName() + " fort");
 			clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
+			setOwnerClan(null);
+			if (updateDB)
+				updateOwnerInDB();
+
 		}
-		
-		updateOwnerInDB(null);
-		if (getSiege().getIsInProgress())
-			getSiege().midVictory();
-		
-		updateClansReputation();
 	}
-	
 	/**
-	 * Respawn all doors on fort grounds<BR><BR>
+	 * Show or hide flag inside flagpole<BR><BR>
 	 */
-	public void spawnDoor()
+	public void setVisibleFlag(boolean val)
 	{
-		spawnDoor(false);
+			L2StaticObjectInstance flagPole = getFlagPole();
+			if (flagPole != null)
+				flagPole.setMeshIndex(val ? 1:0);
 	}
-	
 	/**
 	 * Respawn all doors on fort grounds<BR><BR>
 	 */
-	public void spawnDoor(boolean isDoorWeak)
+	public void resetDoors()
 	{
 		for (int i = 0; i < getDoors().size(); i++)
 		{
 			L2DoorInstance door = getDoors().get(i);
-			if (door.getCurrentHp() <= 0)
-			{
-				door.decayMe(); // Kill current if not killed already
-				door = DoorTable.parseList(_doorDefault.get(i));
-				if (isDoorWeak)
-					door.setCurrentHp(door.getMaxHp() / 2);
-				door.spawnMe(door.getX(), door.getY(), door.getZ());
-				getDoors().set(i, door);
-			}
-			else if (door.getOpen())
+			if (door.getOpen())
 				door.closeMe();
+			if (door.getCurrentHp() <= 0)
+				door.doRevive();
+			if (door.getCurrentHp() < door.getMaxHp())
+				door.setCurrentHp(door.getMaxHp());
 		}
 		loadDoorUpgrade(); // Check for any upgrade the doors may have
 	}
@@ -457,28 +488,34 @@ public class Fort
 			statement = con.prepareStatement("Select * from fort where id = ?");
 			statement.setInt(1, getFortId());
 			rs = statement.executeQuery();
+			int ownerId = 0;
 			
 			while (rs.next())
 			{
 				_name = rs.getString("name");
-				//_OwnerId = rs.getInt("ownerId");
 				
 				_siegeDate = Calendar.getInstance();
 				_lastOwnedTime = Calendar.getInstance();
 				_siegeDate.setTimeInMillis(rs.getLong("siegeDate"));
 				_lastOwnedTime.setTimeInMillis(rs.getLong("lastOwnedTime"));
-				_ownerId = rs.getInt("owner");
+				ownerId = rs.getInt("owner");
+				_fortType = rs.getInt("fortType");
+				_state = rs.getInt("state");
+				_castleId = rs.getInt("castleId");
 			}
 			
 			rs.close();
 			statement.close();
 			
-			if (getOwnerId() > 0)
+			if (ownerId > 0)
 			{
-				L2Clan clan = ClanTable.getInstance().getClan(getOwnerId()); // Try to find clan instance
+				L2Clan clan = ClanTable.getInstance().getClan(ownerId); // Try to find clan instance
 				clan.setHasFort(getFortId());
+				setOwnerClan(clan);
 				ThreadPoolManager.getInstance().scheduleGeneral(new FortUpdater(clan, 1), 3600000); // Schedule owner tasks to start running
 			}
+			else
+				setOwnerClan(null);
 			
 		}
 		catch (Exception e)
@@ -494,6 +531,8 @@ public class Fort
 			}
 			catch (Exception e)
 			{
+            	_log.warning(""+e.getMessage());
+            	e.printStackTrace();
 			}
 		}
 	}
@@ -568,7 +607,7 @@ public class Fort
 		if (player == null)
 			return false;
 		if (Config.DEBUG)
-			_log.warning("Called Fort.updateFunctions(int type, int lvl, int lease, long rate, boolean addNew) Owner : " + getOwnerId());
+			_log.warning("Called Fort.updateFunctions(int type, int lvl, int lease, long rate, boolean addNew) Owner : " + getOwnerClan());
 		if (lease > 0)
 			if (!player.destroyItemByItemId("Consume", 57, lease, null, true))
 				return false;
@@ -608,19 +647,19 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("Select * from fort_door where fortId = ?");
+			PreparedStatement statement = con.prepareStatement("Select * from fort_staticobjects where fortId = ? and objectType = ?");
 			statement.setInt(1, getFortId());
+			statement.setInt(2, 0);
 			ResultSet rs = statement.executeQuery();
 			
 			while (rs.next())
 			{
 				// Create list of the door default for use when respawning dead doors
 				_doorDefault.add(rs.getString("name") + ";" + rs.getInt("id") + ";" + rs.getInt("x") + ";" + rs.getInt("y") + ";" + rs.getInt("z") + ";" + rs.getInt("range_xmin") + ";" + rs.getInt("range_ymin") + ";"
-						+ rs.getInt("range_zmin") + ";" + rs.getInt("range_xmax") + ";" + rs.getInt("range_ymax") + ";" + rs.getInt("range_zmax") + ";" + rs.getInt("hp") + ";" + rs.getInt("pDef") + ";" + rs.getInt("mDef")+ ";" + rs.getBoolean("openType"));
-				
-				L2DoorInstance door = DoorTable.parseList(_doorDefault.get(_doorDefault.size() - 1));
+						+ rs.getInt("range_zmin") + ";" + rs.getInt("range_xmax") + ";" + rs.getInt("range_ymax") + ";" + rs.getInt("range_zmax") + ";" + rs.getInt("hp") + ";" + rs.getInt("pDef") + ";" + rs.getInt("mDef")+ ";" + rs.getBoolean("openType")+ ";" + rs.getBoolean("commanderDoor"));
+				L2DoorInstance door;
+				_doors.add(door = DoorTable.parseList(_doorDefault.get(_doorDefault.size() - 1)));
 				door.spawnMe(door.getX(), door.getY(), door.getZ());
-				_doors.add(door);
 				DoorTable.getInstance().putDoor(door);
 			}
 			
@@ -640,10 +679,52 @@ public class Fort
 			}
 			catch (Exception e)
 			{
+            	_log.warning(""+e.getMessage());
+            	e.printStackTrace();
 			}
 		}
 	}
 	
+	// This method loads fort flagpoles data from database
+	private void loadFlagPoles()
+	{
+		java.sql.Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("Select * from fort_staticobjects where fortId = ? and objectType = ?");
+			statement.setInt(1, getFortId());
+			statement.setInt(2, 1);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next())
+			{
+				//Create list of the door default for use when respawning dead doors
+				_flagPoleStats.add(rs.getString("name") + ";" + rs.getInt("id") + ";" + rs.getInt("x") + ";" + rs.getInt("y") + ";" + rs.getInt("z") + ";3;none;0;0");
+				_flagPole = StaticObjects.parse(_flagPoleStats.get(_flagPoleStats.size() - 1));
+				StaticObjects.getInstance().putObject(_flagPole);
+			}
+			rs.close();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.warning("Exception: loadFlagPoles(): " + e.getMessage());
+			e.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+            	_log.warning(""+e.getMessage());
+            	e.printStackTrace();
+			}
+		}
+	}
+
 	// This method loads fort door upgrade data from database
 	private void loadDoorUpgrade()
 	{
@@ -651,8 +732,9 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("Select * from fort_doorupgrade where doorId in (Select Id from fort_door where fortId = ?)");
+			PreparedStatement statement = con.prepareStatement("Select * from fort_doorupgrade where doorId in (Select Id from fort_staticobjects where fortId = ? and objectType = ?)");
 			statement.setInt(1, getFortId());
+			statement.setInt(2, 0);
 			ResultSet rs = statement.executeQuery();
 			
 			while (rs.next())
@@ -675,6 +757,8 @@ public class Fort
 			}
 			catch (Exception e)
 			{
+            	_log.warning(""+e.getMessage());
+            	e.printStackTrace();
 			}
 		}
 	}
@@ -685,8 +769,9 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("delete from fort_doorupgrade where doorId in (select id from fort_door where fortId=?)");
+			PreparedStatement statement = con.prepareStatement("delete from fort_doorupgrade where doorId in (select id from fort_staticobjects where fortId=? and objectType = ?)");
 			statement.setInt(1, getFortId());
+			statement.setInt(2, 0);
 			statement.execute();
 			statement.close();
 		}
@@ -703,6 +788,8 @@ public class Fort
 			}
 			catch (Exception e)
 			{
+            	_log.warning(""+e.getMessage());
+            	e.printStackTrace();
 			}
 		}
 	}
@@ -734,42 +821,53 @@ public class Fort
 			}
 			catch (Exception e)
 			{
+            	_log.warning(""+e.getMessage());
+            	e.printStackTrace();
 			}
 		}
 	}
 	
-	private void updateOwnerInDB(L2Clan clan)
+	private void updateOwnerInDB()
 	{
+		L2Clan clan = getOwnerClan();
+		int clanId = 0;
 		if (clan != null)
-			_ownerId = clan.getClanId(); // Update owner id property
-		else
-			_ownerId = 0; // Remove owner
-			
-		if (_ownerId != 0)
+		{
+			clanId = clan.getClanId();
 			_lastOwnedTime.setTimeInMillis(System.currentTimeMillis());
+		}
 		else
 			_lastOwnedTime.setTimeInMillis(0);
-		
+
 		java.sql.Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
-			
-			statement = con.prepareStatement("UPDATE fort SET owner=?,lastOwnedTime=? where id = ?");
-			statement.setInt(1, getOwnerId());
+
+			statement = con.prepareStatement("UPDATE fort SET owner=?,lastOwnedTime=?,state=?,castleId=? where id = ?");
+			statement.setInt(1, clanId);
 			statement.setLong(2, _lastOwnedTime.getTimeInMillis());
-			statement.setInt(3, getFortId());
+			statement.setInt(3, 0);
+			statement.setInt(4, 0);
+			statement.setInt(5, getFortId());
 			statement.execute();
 			statement.close();
-			
+
 			// ============================================================================
-			
 			// Announce to clan memebers
 			if (clan != null)
 			{
 				clan.setHasFort(getFortId()); // Set has fort flag for new owner
-				Announcements.getInstance().announceToAll(clan.getName() + " has taken " + getName() + " fort!");
+				SystemMessage sm;
+				sm = new SystemMessage(SystemMessageId.S1_CLAN_IS_VICTORIOUS_IN_THE_FORTRESS_BATTLE_OF_S2);
+				sm.addString(clan.getName());
+				sm.addFortId(getFortId());
+				Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
+				for (L2PcInstance player : pls)
+				{
+						player.sendPacket(sm);
+				}
 				clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 				clan.broadcastToOnlineMembers(new PlaySound(1, "Siege_Victory", 0, 0, 0, 0, 0));
 				ThreadPoolManager.getInstance().scheduleGeneral(new FortUpdater(clan, 1), 3600000); // Schedule owner tasks to start running
@@ -788,22 +886,28 @@ public class Fort
 			}
 			catch (Exception e)
 			{
+            	_log.warning(""+e.getMessage());
+            	e.printStackTrace();
 			}
 		}
 	}
-	
-	// =========================================================
-	// Property
+
 	public final int getFortId()
 	{
 		return _fortId;
 	}
 	
-	public final int getOwnerId()
+	public final L2Clan getOwnerClan()
 	{
-		return _ownerId;
+		return _fortOwner;
 	}
-	
+
+	public final void setOwnerClan(L2Clan clan)
+	{
+		setVisibleFlag(clan != null ? true : false);
+		_fortOwner = clan;
+	}
+
 	public final L2DoorInstance getDoor(int doorId)
 	{
 		if (doorId <= 0)
@@ -821,7 +925,12 @@ public class Fort
 	{
 		return _doors;
 	}
-	
+
+	public final L2StaticObjectInstance getFlagPole()
+	{
+		return _flagPole;
+	}
+
 	public final FortSiege getSiege()
 	{
 		if (_siege == null)
@@ -855,33 +964,12 @@ public class Fort
 		return _name;
 	}
 	
-	public void updateClansReputation()
+	public void updateClansReputation(L2Clan owner)
 	{
-		if (_formerOwner != null)
+		if (owner != null)
 		{
-			if (_formerOwner != ClanTable.getInstance().getClan(getOwnerId()))
-			{
-				int maxreward = Math.max(0, _formerOwner.getReputationScore());
-				L2Clan owner = ClanTable.getInstance().getClan(getOwnerId());
-				if (owner != null)
-				{
-					owner.setReputationScore(owner.getReputationScore() + Math.min(500, maxreward), true);
-					owner.broadcastToOnlineMembers(new PledgeShowInfoUpdate(owner));
-				}
-			}
-			else
-				_formerOwner.setReputationScore(_formerOwner.getReputationScore() + 250, true);
-			
-			_formerOwner.broadcastToOnlineMembers(new PledgeShowInfoUpdate(_formerOwner));
-		}
-		else
-		{
-			L2Clan owner = ClanTable.getInstance().getClan(getOwnerId());
-			if (owner != null)
-			{
-				owner.setReputationScore(owner.getReputationScore() + 500, true);
-				owner.broadcastToOnlineMembers(new PledgeShowInfoUpdate(owner));
-			}
+			owner.setReputationScore(owner.getReputationScore() + 200, true);
+			owner.broadcastToOnlineMembers(new PledgeShowInfoUpdate(owner));
 		}
 	}
 	private class endFortressSiege implements Runnable
@@ -897,8 +985,106 @@ public class Fort
 		
 		public void run()
 		{
-			_f.Engrave(_clan, 0);
+			try
+			{
+				_f.Engrave(_clan);
+			}
+			catch (Exception e)
+			{
+            	_log.warning("Exception in endFortressSiege "+e.getMessage());
+            	e.printStackTrace();
+			}
 		}
 		
+	}
+
+	/**
+	 * @return Returns state of fortress.<BR><BR>
+	 * 0 - not decided yet<BR>
+	 * 1 - independent<BR>
+	 * 2 - contracted with castle<BR>
+	 */
+	public final int getFortState()
+	{
+		return _state;
+	}
+
+	/**
+	 * @param State.<BR>
+	 * 0 - not decided yet<BR>
+	 * 1 - independent<BR>
+	 * 2 - contracted with castle<BR><BR>
+	 * @param CastleId.<BR>
+	 * set Castle Id for contracted fort
+	 */
+	public final void setFortState(int state, int castleId)
+	{
+		_state = state;
+		_castleId = castleId;
+		java.sql.Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement;
+
+			statement = con.prepareStatement("UPDATE fort SET state=?,castleId=? where id = ?");
+			statement.setInt(1, getFortState());
+			statement.setInt(2, getCastleId());
+			statement.setInt(3, getFortId());
+			statement.execute();
+			statement.close();
+
+		}
+		catch (Exception e)
+		{
+			_log.warning("Exception: setFortState(int state, int castleId): " + e.getMessage());
+			e.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+            	_log.warning(""+e.getMessage());
+            	e.printStackTrace();
+			}
+		}
+	}
+	/**
+	 * @return Returns Castle Id of fortress contracted with castle.
+	 */
+	public final int getCastleId()
+	{
+		return _castleId;
+	}
+
+	/**
+	 * @return Returns fortress type.<BR><BR>
+	 * 0 - small (3 commanders) <BR>
+	 * 1 - big (4 commanders + control room)
+	 */
+	public final int getFortType()
+	{
+		return _fortType;
+	}
+
+	public final int getCastleIdFromEnvoy(int npcId)
+	{
+		return getSpawnManager().getEnvoyCastle(npcId);
+	}
+	/**
+	 * @return Returns amount of barracks.
+	 */
+	public final int getFortSize()
+	{
+		return getFortType() == 0 ? 3 : 5;
+	}
+	
+	public FortManager getSpawnManager()
+	{
+		return _spawnManager;
 	}
 }

@@ -42,7 +42,7 @@ public class StaticObject extends L2GameServerPacket
         _objectId = staticObject.getObjectId();
         _type = 0;
         _isTargetable = true;
-        _meshIndex = 0;
+        _meshIndex = staticObject.getMeshIndex();
         _isClosed = false;
         _isEnemy = false;
         _maxHp = 0;

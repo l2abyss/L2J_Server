@@ -66,6 +66,7 @@ public class ItemHandler
 		registerItemHandler(new SoulShots());
 		registerItemHandler(new SpiritShot());
 		registerItemHandler(new BlessedSpiritShot());
+		registerItemHandler(new BallistaBomb());
 		registerItemHandler(new BeastSoulShot());
 		registerItemHandler(new BeastSpiritShot());
 		registerItemHandler(new Key());

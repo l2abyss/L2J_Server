@@ -202,6 +202,7 @@ public class CharKnownList extends ObjectKnownList
 
        Collection<L2Object> objs = getKnownObjects().values();
        //synchronized (getKnownObjects())
+       if (objs != null && objs.size() > 0)
        {
 			for (L2Object obj : objs)
 			{

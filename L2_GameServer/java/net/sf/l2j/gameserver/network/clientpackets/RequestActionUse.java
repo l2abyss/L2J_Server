@@ -280,6 +280,11 @@ public final class RequestActionUse extends L2GameClientPacket
 						SystemMessage msg = new SystemMessage(SystemMessageId.STRIDER_CANT_BE_RIDDEN_WHILE_IN_BATTLE);
 						activeChar.sendPacket(msg);
 					}
+					else if (activeChar.getInventory().getItemByItemId(9819) != null)
+			        {
+						SystemMessage msg = new SystemMessage(SystemMessageId.YOU_CANNOT_MOUNT_A_STEED_WHILE_HOLDING_A_FLAG);
+						activeChar.sendPacket(msg);
+			        }
 					else if (!pet.isDead() && !activeChar.isMounted())
 					{
 						activeChar.mount(pet);

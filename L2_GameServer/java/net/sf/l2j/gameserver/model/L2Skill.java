@@ -376,6 +376,8 @@ public abstract class L2Skill
 
     private final boolean _isDebuff;
 
+	private boolean _isAdvancedFlag;
+
     protected L2Skill(StatsSet set)
     {
         _id = set.getInteger("skill_id");
@@ -406,6 +408,7 @@ public abstract class L2Skill
         
         _isCubic    = set.getBool("isCubic", false);
 
+         _isAdvancedFlag = set.getBool("isAdvancedFlag", false);
         _activationtime= set.getInteger("activationtime", 8);
         _activationchance= set.getInteger("activationchance", 30);
         
@@ -3103,4 +3106,12 @@ public abstract class L2Skill
     {
         return "" + _name + "[id=" + _id + ",lvl=" + _level + "]";
     }
+
+	/**
+	 * @return
+	 */
+	public boolean isAdvancedFlag()
+	{
+		return _isAdvancedFlag;
+	}
 }

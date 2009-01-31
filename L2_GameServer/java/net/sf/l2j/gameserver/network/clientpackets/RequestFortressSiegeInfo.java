@@ -14,6 +14,11 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import net.sf.l2j.gameserver.instancemanager.FortManager;
+import net.sf.l2j.gameserver.model.entity.Fort;
+import net.sf.l2j.gameserver.network.L2GameClient;
+import net.sf.l2j.gameserver.network.serverpackets.ExShowFortressSiegeInfo;
+
 /**
  *
  * @author  KenM
@@ -45,7 +50,16 @@ public class RequestFortressSiegeInfo extends L2GameClientPacket
     @Override
     protected void runImpl()
     {
-        // send ExShowFortressSiegeInfo for fortress that are under siege now
+        L2GameClient client = this.getClient();
+        if (client != null)
+        {
+        	for (Fort fort : FortManager.getInstance().getForts())
+        	{
+        		if (fort != null && fort.getSiege().getIsInProgress())
+        		{
+        			client.sendPacket(new ExShowFortressSiegeInfo(fort));
+        		}
+        	}
+        }
     }
-    
 }

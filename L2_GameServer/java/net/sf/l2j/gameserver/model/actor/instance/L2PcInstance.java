@@ -76,6 +76,7 @@ import net.sf.l2j.gameserver.instancemanager.CoupleManager;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
 import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
 import net.sf.l2j.gameserver.instancemanager.DuelManager;
+import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
 import net.sf.l2j.gameserver.instancemanager.ItemsOnGroundManager;
 import net.sf.l2j.gameserver.instancemanager.QuestManager;
@@ -124,6 +125,7 @@ import net.sf.l2j.gameserver.model.base.Race;
 import net.sf.l2j.gameserver.model.base.SubClass;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.Duel;
+import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.model.entity.L2Event;
 import net.sf.l2j.gameserver.model.entity.Siege;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
@@ -1160,6 +1162,18 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	public void logout()
 	{
+		if (getInventory().getItemByItemId(9819) != null)
+		{
+			Fort fort = FortManager.getInstance().getFort(this);
+			if (fort != null)
+				FortSiegeManager.getInstance().dropCombatFlag(this);
+			else
+			{
+				int slot = getInventory().getSlotFromItem(getInventory().getItemByItemId(9819));
+				getInventory().unEquipItemInBodySlotAndRecord(slot);
+				destroyItem("CombatFlag", getInventory().getItemByItemId(9819), null, true);
+			}
+		}
 		closeNetConnection();
 	}
 
@@ -2991,8 +3005,13 @@ public final class L2PcInstance extends L2PlayableInstance
 			
 			// Combat Flag
             else if(FortSiegeManager.getInstance().isCombat(item.getItemId()))
-                FortSiegeManager.getInstance().activateCombatFlag(this, item);
-
+            {
+            	if(FortSiegeManager.getInstance().activateCombatFlag(this, item))
+            	{
+            		Fort fort = FortManager.getInstance().getFort(this);
+            		fort.getSiege().announceToPlayer(new SystemMessage(SystemMessageId.S1_ACQUIRED_THE_FLAG), this.getName());
+            	}
+            }
 		}
 	}
 
@@ -3083,7 +3102,13 @@ public final class L2PcInstance extends L2PlayableInstance
 
 				// Combat Flag
 				else if(FortSiegeManager.getInstance().isCombat(createdItem.getItemId()))
-					FortSiegeManager.getInstance().activateCombatFlag(this, createdItem);
+				{
+					if( FortSiegeManager.getInstance().activateCombatFlag(this, item))
+					{
+						Fort fort = FortManager.getInstance().getFort(this);
+						fort.getSiege().announceToPlayer(new SystemMessage(SystemMessageId.S1_ACQUIRED_THE_FLAG), this.getName());
+					}
+				}
 			}
 		}
 	}
@@ -4936,7 +4961,6 @@ public final class L2PcInstance extends L2PlayableInstance
 			else if (isCombatFlagEquipped())
 			{
 				FortSiegeManager.getInstance().dropCombatFlag(this);
-				System.out.println("Player with combat flag die");
 			}
 			else
 			{
@@ -7892,7 +7916,7 @@ public final class L2PcInstance extends L2PlayableInstance
 				return true;
 			}
 		}
-		else if (attacker instanceof L2SiegeGuardInstance)
+		else if (attacker instanceof L2SiegeGuardInstance || attacker instanceof L2FortSiegeGuardInstance)
 		{
 			if (getClan() != null)
 			{
@@ -8120,7 +8144,8 @@ public final class L2PcInstance extends L2PlayableInstance
                     && ((L2DoorInstance) target).getCastle().getSiege().getIsInProgress());
         	boolean isFort = (((L2DoorInstance) target).getFort() != null
                     && ((L2DoorInstance) target).getFort().getFortId() > 0
-                    && ((L2DoorInstance) target).getFort().getSiege().getIsInProgress());
+                    && ((L2DoorInstance) target).getFort().getSiege().getIsInProgress()
+                    && !((L2DoorInstance) target).getIsCommanderDoor());
         	if ((!isCastle && !isFort)&&(((L2DoorInstance) target).isUnlockable() && skill.getSkillType() != L2SkillType.UNLOCK))
         		return false;
         }
@@ -8429,7 +8454,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 
         if ((sklTargetType == SkillTargetType.TARGET_HOLY && !TakeCastle.checkIfOkToCastSealOfRule(this, false))
-        		|| (sklTargetType == SkillTargetType.TARGET_FLAGPOLE && !TakeFort.checkIfOkToCastFlagDisplay(this, false))
+        		|| (sklTargetType == SkillTargetType.TARGET_FLAGPOLE && !TakeFort.checkIfOkToCastFlagDisplay(this, false, skill, getTarget()))
         		|| (sklType == L2SkillType.SIEGEFLAG && !L2SkillSiegeFlag.checkIfOkToPlaceFlag(this, false))
         		|| (sklType == L2SkillType.STRSIEGEASSAULT && !StrSiegeAssault.checkIfOkToUseStriderSiegeAssault(this, false)))
         {
@@ -11548,7 +11573,8 @@ public final class L2PcInstance extends L2PlayableInstance
     			&& !(killer instanceof L2PcInstance) && !(this.isGM())
     			&& !(this.getCharmOfLuck() && killer.isRaid())
     			&& !isPhoenixBlessed()
-    			&& !(TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getObjectId()))) 
+    			&& !(TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getObjectId()))
+    			&& !(this.isInsideZone(L2Character.ZONE_PVP)||this.isInsideZone(L2Character.ZONE_SIEGE))) 
     		
     		increaseDeathPenaltyBuffLevel();
 	}

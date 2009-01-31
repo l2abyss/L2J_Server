@@ -26,6 +26,7 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2AttackableAI;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
+import net.sf.l2j.gameserver.ai.L2FortSiegeGuardAI;
 import net.sf.l2j.gameserver.ai.L2SiegeGuardAI;
 import net.sf.l2j.gameserver.datatables.EventDroplist;
 import net.sf.l2j.gameserver.datatables.ItemTable;
@@ -34,6 +35,7 @@ import net.sf.l2j.gameserver.datatables.EventDroplist.DateDrop;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2FortSiegeGuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MinionInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
@@ -2163,10 +2165,14 @@ public class L2Attackable extends L2NpcInstance
 
         // check the region where this mob is, do not activate the AI if region is inactive.
         if (!isInActiveRegion())
+        {
             if (this instanceof L2SiegeGuardInstance)
                 ((L2SiegeGuardAI) getAI()).stopAITask();
+            else if (this instanceof L2FortSiegeGuardInstance)
+            	((L2FortSiegeGuardAI) getAI()).stopAITask();
             else
                 ((L2AttackableAI) getAI()).stopAITask();
+        }
     }
 
     /**

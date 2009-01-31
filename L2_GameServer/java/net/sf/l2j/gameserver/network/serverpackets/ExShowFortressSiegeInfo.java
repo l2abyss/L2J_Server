@@ -14,6 +14,11 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
+import javolution.util.FastList;
+import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
+import net.sf.l2j.gameserver.instancemanager.FortSiegeManager.SiegeSpawn;
+import net.sf.l2j.gameserver.model.entity.Fort;
+
 /**
  *
  * @author  KenM
@@ -21,7 +26,21 @@ package net.sf.l2j.gameserver.network.serverpackets;
 public class ExShowFortressSiegeInfo extends L2GameServerPacket
 {
 
-    /**
+    private int _fortId;
+	private int _size;
+	private Fort _fort;
+
+	/**
+	 * @param fortId
+	 */
+	public ExShowFortressSiegeInfo(Fort fort)
+	{
+		_fort = fort;
+		_fortId = fort.getFortId();
+		_size = fort.getFortSize();
+	}
+
+	/**
      * @see net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket#getType()
      */
     @Override
@@ -39,9 +58,57 @@ public class ExShowFortressSiegeInfo extends L2GameServerPacket
         writeC(0xfe);
         writeH(0x17);
         
-        writeD(0x00); // Fortress Id
-        writeD(0x00); // Total Barracks Count
-        writeD(0x00); // Captured Barracks Count
+        writeD(_fortId); // Fortress Id
+        writeD(_size); // Total Barracks Count
+        FastList<SiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(_fortId);
+        if (commanders != null && commanders.size() != 0)
+        {
+        	switch (commanders.size())
+        	{
+        		case 3:
+        			switch (_fort.getSiege().getCommanders().get(_fortId).size())
+        			{
+        				case 0:
+        					writeD(0x03);
+        					break;
+        				case 1:
+        					writeD(0x02);
+        					break;
+        				case 2:
+        					writeD(0x01);
+        					break;
+        				case 3:
+        					writeD(0x00);
+        					break;
+        			}
+        			break;
+        		case 4: // TODO: change 4 to 5 once control room supported
+        			switch (_fort.getSiege().getCommanders().get(_fortId).size()) // TODO: once control room supported, update writeD(0x0x) to support 5th room
+        			{
+        				case 0:
+        					writeD(0x05);
+        					break;
+        				case 1:
+        					writeD(0x04);
+        					break;
+        				case 2:
+        					writeD(0x03);
+        					break;
+        				case 3:
+        					writeD(0x02);
+        					break;
+        				case 4:
+        					writeD(0x01);
+        					break;
+        			}
+        			break;
+        	}
+        }
+        else
+        {
+        	for(int i=0;i<_size;i++)
+        		writeD(0x00);
+        }
     }
     
 }

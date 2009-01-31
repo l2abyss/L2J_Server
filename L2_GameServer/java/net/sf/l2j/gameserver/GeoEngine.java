@@ -39,6 +39,7 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2FortSiegeGuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
 import net.sf.l2j.gameserver.pathfinding.Node;
@@ -137,13 +138,13 @@ public class GeoEngine extends GeoData
     	// If this is going to be improved, use e.g.
     	// ((L2Character)cha).getTemplate().collisionHeight
     	int z = cha.getZ()+45;
-    	if(cha instanceof L2SiegeGuardInstance) z += 30; // well they don't move closer to balcony fence at the moment :(
+    	if(cha instanceof L2SiegeGuardInstance || cha instanceof L2FortSiegeGuardInstance) z += 30; // well they don't move closer to balcony fence at the moment :(
     	int z2 = target.getZ()+45;
     	if (!(target instanceof L2DoorInstance)
     			&& DoorTable.getInstance().checkIfDoorsBetween(cha.getX(),cha.getY(),z,target.getX(),target.getY(),z2,cha.getInstanceId()))
     		return false;
     	if(target instanceof L2DoorInstance) return true; // door coordinates are hinge coords..
-    	if(target instanceof L2SiegeGuardInstance) z2 += 30; // well they don't move closer to balcony fence at the moment :(
+    	if(target instanceof L2SiegeGuardInstance || target instanceof L2FortSiegeGuardInstance) z2 += 30; // well they don't move closer to balcony fence at the moment :(
     	if(cha.getZ() >= target.getZ())
     		return canSeeTarget(cha.getX(),cha.getY(),z,target.getX(),target.getY(),z2);
     	else

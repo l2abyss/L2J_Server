@@ -16,7 +16,6 @@ package net.sf.l2j.gameserver.model;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.ItemTable;
-import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
@@ -73,27 +72,18 @@ public class CombatFlag
         }
     }
     
-    public void activate(L2PcInstance player, L2ItemInstance item)
+    public boolean activate(L2PcInstance player, L2ItemInstance item)
     {
-        // if the player is mounted, attempt to unmount first.  Only allow picking up 
-        // the comabt flag if unmounting is successful.
         if (player.isMounted())
         {
-            if (!player.dismount())
-            {
-                // TODO: correct this custom message.
-                player.sendMessage("You may not pick up this item while riding in this territory");
-                return;
-            }
+        	player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+        	return false;
         }
 
         // Player holding it data
         _player = player;
         playerId = _player.getObjectId();
         itemInstance = null;
-
-        // Add skill
-        giveSkill();
 
         // Equip with the weapon
         _item = item;
@@ -114,34 +104,19 @@ public class CombatFlag
         // Refresh player stats
         _player.broadcastUserInfo();
         _player.setCombatFlagEquipped(true);
-
+        return true;
     }
 
     public void dropIt()
     {
         // Reset player stats
         _player.setCombatFlagEquipped(false);
-        removeSkill();
-        _player.destroyItem("DieDrop", _item, null, false);
+        int slot = _player.getInventory().getSlotFromItem(_item);
+        _player.getInventory().unEquipItemInBodySlotAndRecord(slot);
+        _player.destroyItem("CombatFlag", _item, null, true);
         _item = null;
         _player.broadcastUserInfo();
         _player = null;
         playerId = 0;
     }
-    
-    public void giveSkill()
-    {
-        _player.addSkill(SkillTable.getInstance().getInfo(3318, 1), false);
-        _player.addSkill(SkillTable.getInstance().getInfo(3358, 1), false);
-        _player.sendSkillList();
-    }
-
-    public void removeSkill()
-    {
-        _player.removeSkill(SkillTable.getInstance().getInfo(3318, 1), false);
-        _player.removeSkill(SkillTable.getInstance().getInfo(3358, 1), false);
-        _player.sendSkillList();
-    }
-    
-    
 }

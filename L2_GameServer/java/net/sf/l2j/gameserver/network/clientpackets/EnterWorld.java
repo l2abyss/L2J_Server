@@ -37,6 +37,8 @@ import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
 import net.sf.l2j.gameserver.instancemanager.CoupleManager;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
 import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
+import net.sf.l2j.gameserver.instancemanager.FortManager;
+import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.PetitionManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossPointsManager;
@@ -48,6 +50,8 @@ import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.model.entity.Couple;
+import net.sf.l2j.gameserver.model.entity.Fort;
+import net.sf.l2j.gameserver.model.entity.FortSiege;
 import net.sf.l2j.gameserver.model.entity.Hero;
 import net.sf.l2j.gameserver.model.entity.L2Event;
 import net.sf.l2j.gameserver.model.entity.Siege;
@@ -158,6 +162,14 @@ public class EnterWorld extends L2GameClientPacket
         if (activeChar.getClan() != null)
         {
             for (Siege siege : SiegeManager.getInstance().getSieges())
+            {
+                if (!siege.getIsInProgress()) continue;
+                if (siege.checkIsAttacker(activeChar.getClan()))
+                    activeChar.setSiegeState((byte)1);
+                else if (siege.checkIsDefender(activeChar.getClan()))
+                    activeChar.setSiegeState((byte)2);
+            }
+            for (FortSiege siege : FortSiegeManager.getInstance().getSieges())
             {
                 if (!siege.getIsInProgress()) continue;
                 if (siege.checkIsAttacker(activeChar.getClan()))
@@ -357,14 +369,27 @@ public class EnterWorld extends L2GameClientPacket
                 }
             }
         }
-
+        // remove combat flag before teleporting
+        if (activeChar.getInventory().getItemByItemId(9819) != null)
+        {
+        	Fort fort = FortManager.getInstance().getFort(activeChar);
+        	if (fort != null)
+        	{
+        		FortSiegeManager.getInstance().dropCombatFlag(activeChar);
+        	}
+        	else
+        	{
+        		int slot = activeChar.getInventory().getSlotFromItem(activeChar.getInventory().getItemByItemId(9819));
+            	activeChar.getInventory().unEquipItemInBodySlotAndRecord(slot);
+        		activeChar.destroyItem("CombatFlag", activeChar.getInventory().getItemByItemId(9819), null, true);
+        	}
+        }
         if (!activeChar.isGM() && activeChar.getSiegeState() < 2 && activeChar.isInsideZone(L2Character.ZONE_SIEGE))
         {
             // Attacker or spectator logging in to a siege zone. Actually should be checked for inside castle only?
             activeChar.teleToLocation(MapRegionTable.TeleportWhereType.Town);
-            activeChar.sendMessage("You have been teleported to the nearest town due to you being in siege zone");
+            //activeChar.sendMessage("You have been teleported to the nearest town due to you being in siege zone"); - custom
         }
-        
         RegionBBSManager.getInstance().changeCommunityBoard();
         
         TvTEvent.onLogin(activeChar);

@@ -15,19 +15,19 @@
 package net.sf.l2j.gameserver.model.actor.knownlist;
 
 import net.sf.l2j.gameserver.model.L2Object;
-import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FortSiegeGuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2StaticObjectInstance;
 
-public class DoorKnownList extends CharKnownList
+public class StaticObjectKnownList extends CharKnownList
 {
     // =========================================================
     // Data Field
 
     // =========================================================
     // Constructor
-    public DoorKnownList(L2DoorInstance activeChar)
+    public StaticObjectKnownList(L2StaticObjectInstance activeChar)
     {
         super(activeChar);
     }
@@ -41,7 +41,7 @@ public class DoorKnownList extends CharKnownList
     // =========================================================
     // Property - Public
     @Override
-	public final L2DoorInstance getActiveChar() { return (L2DoorInstance)super.getActiveChar(); }
+	public final L2StaticObjectInstance getActiveChar() { return (L2StaticObjectInstance)super.getActiveChar(); }
 
     @Override
 	public int getDistanceToForgetObject(L2Object object)

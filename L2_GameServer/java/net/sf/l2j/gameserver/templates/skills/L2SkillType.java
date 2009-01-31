@@ -172,7 +172,7 @@ public enum L2SkillType
 	COREDONE,
 	
 	// unimplemented
-	NOTDONE;
+	NOTDONE, BALLISTA;
 	
 	private final Class<? extends L2Skill> _class;
 	

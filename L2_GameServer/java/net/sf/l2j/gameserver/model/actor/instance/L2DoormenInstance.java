@@ -267,7 +267,7 @@ public class L2DoormenInstance extends L2FolkInstance
             
             if (getFort() != null && getFort().getFortId() > 0)
             {
-            	if (getFort().getOwnerId() == player.getClanId()) // Clan owns fortress
+            	if (getFort().getOwnerClan()!= null && getFort().getOwnerClan().getClanId()== player.getClanId()) // Clan owns fortress
             		return COND_FORT_OWNER; // Owner
             }
         }

@@ -17,7 +17,6 @@ package net.sf.l2j.gameserver.handler.admincommandhandlers;
 import java.util.StringTokenizer;
 
 import javolution.text.TextBuilder;
-import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.model.L2Clan;
@@ -42,11 +41,8 @@ public class AdminFortSiege implements IAdminCommandHandler
 	{
 		"admin_fortsiege",
 		"admin_add_fortattacker",
-		"admin_add_fortdefender",
-		"admin_add_fortguard",
 		"admin_list_fortsiege_clans",
 		"admin_clear_fortsiege_list",
-		"admin_move_fortdefenders",
 		"admin_spawn_fortdoors",
 		"admin_endfortsiege",
 		"admin_startfortsiege",
@@ -61,14 +57,14 @@ public class AdminFortSiege implements IAdminCommandHandler
 		
 		// Get fort
 		Fort fort = null;
+		int fortId = 0;
 		if (st.hasMoreTokens())
-			fort = FortManager.getInstance().getFort(st.nextToken());
+		{
+			fortId = Integer.valueOf(st.nextToken());
+			fort = FortManager.getInstance().getFortById(fortId);
+		}
 		// Get fort
-		@SuppressWarnings("unused")
-		String val = "";
-		if (st.hasMoreTokens())
-			val = st.nextToken();
-		if ((fort == null || fort.getFortId() < 0))
+		if ((fort == null || fortId == 0))
 			// No fort specified
 			showFortSelectPage(activeChar);
 		else
@@ -83,14 +79,10 @@ public class AdminFortSiege implements IAdminCommandHandler
 				if (player == null)
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 				else
-					fort.getSiege().registerAttacker(player, true);
-			}
-			else if (command.equalsIgnoreCase("admin_add_fortdefender"))
-			{
-				if (player == null)
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-				else
-					fort.getSiege().registerDefender(player, true);
+				{
+					if (fort.getSiege().checkIfCanRegister(player))
+						fort.getSiege().registerAttacker(player, true);
+				}
 			}
 			else if (command.equalsIgnoreCase("admin_clear_fortsiege_list"))
 			{
@@ -102,11 +94,6 @@ public class AdminFortSiege implements IAdminCommandHandler
 			}
 			else if (command.equalsIgnoreCase("admin_list_fortsiege_clans"))
 			{
-				fort.getSiege().listRegisterClan(activeChar);
-				return true;
-			}
-			else if (command.equalsIgnoreCase("admin_move_fortdefenders"))
-			{
 				activeChar.sendMessage("Not implemented yet.");
 			}
 			else if (command.equalsIgnoreCase("admin_setfort"))
@@ -114,26 +101,26 @@ public class AdminFortSiege implements IAdminCommandHandler
 				if (player == null || player.getClan() == null)
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 				else
-					fort.setOwner(player.getClan());
+					fort.setOwner(player.getClan(), false);
 			}
 			else if (command.equalsIgnoreCase("admin_removefort"))
 			{
-				L2Clan clan = ClanTable.getInstance().getClan(fort.getOwnerId());
+				L2Clan clan = fort.getOwnerClan();
 				if (clan != null)
-					fort.removeOwner(clan);
+					fort.removeOwner(true);
 				else
 					activeChar.sendMessage("Unable to remove fort");
 			}
 			else if (command.equalsIgnoreCase("admin_spawn_fortdoors"))
 			{
-				fort.spawnDoor();
+				fort.resetDoors();
 			}
 			else if (command.equalsIgnoreCase("admin_startfortsiege"))
 			{
 				fort.getSiege().startSiege();
 			}
 			
-			showFortSiegePage(activeChar, fort.getName());
+			showFortSiegePage(activeChar, fort);
 		}
 		return true;
 	}
@@ -149,7 +136,7 @@ public class AdminFortSiege implements IAdminCommandHandler
 			if (fort != null)
 			{
 				String name = fort.getName();
-				cList.append("<td fixwidth=90><a action=\"bypass -h admin_fortsiege " + name + "\">" + name + "</a></td>");
+				cList.append("<td fixwidth=90><a action=\"bypass -h admin_fortsiege " + String.valueOf(fort.getFortId()) + "\">" + name + " id: "+fort.getFortId()+"</a></td>");
 				i++;
 			}
 			if (i > 2)
@@ -162,11 +149,12 @@ public class AdminFortSiege implements IAdminCommandHandler
 		activeChar.sendPacket(adminReply);
 	}
 	
-	private void showFortSiegePage(L2PcInstance activeChar, String fortName)
+	private void showFortSiegePage(L2PcInstance activeChar, Fort fort)
 	{
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
 		adminReply.setFile("data/html/admin/fort.htm");
-		adminReply.replace("%fortName%", fortName);
+		adminReply.replace("%fortName%", fort.getName());
+		adminReply.replace("%fortId%", String.valueOf(fort.getFortId()));
 		activeChar.sendPacket(adminReply);
 	}
 	

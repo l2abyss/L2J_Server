@@ -16,10 +16,8 @@
 package net.sf.l2j.gameserver.network.clientpackets;
 
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
-import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
-import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
@@ -29,80 +27,51 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestJoinSiege extends L2GameClientPacket
 {
-    private static final String _C__A4_RequestJoinSiege = "[C] a4 RequestJoinSiege";
-    //private static Logger _log = Logger.getLogger(RequestJoinSiege.class.getName());
+	private static final String _C__A4_RequestJoinSiege = "[C] a4 RequestJoinSiege";
+	//private static Logger _log = Logger.getLogger(RequestJoinSiege.class.getName());
 
-    private int _castleId;
-    private int _isAttacker;
-    private int _isJoining;
+	private int _castleId;
+	private int _isAttacker;
+	private int _isJoining;
 
-    @Override
+	@Override
 	protected void readImpl()
-    {
-        _castleId = readD();
-        _isAttacker = readD();
-        _isJoining = readD();
-    }
+	{
+		_castleId = readD();
+		_isAttacker = readD();
+		_isJoining = readD();
+	}
 
-    @Override
+	@Override
 	protected void runImpl()
-    {
-        L2PcInstance activeChar = getClient().getActiveChar();
-        if(activeChar == null) return;
-        if (!activeChar.isClanLeader()) return;
+	{
+		L2PcInstance activeChar = getClient().getActiveChar();
+		if(activeChar == null) return;
+		if (!activeChar.isClanLeader()) return;
 
-        if (_castleId < 100)
-        {
-            Castle castle = CastleManager.getInstance().getCastleById(_castleId);
-            if (castle == null) return;
-    
-            if (_isJoining == 1)
-            {
-            	if (System.currentTimeMillis() < activeChar.getClan().getDissolvingExpiryTime())
-            	{
-            		activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_PARTICIPATE_IN_SIEGE_WHILE_DISSOLUTION_IN_PROGRESS));
-            		return;
-            	}
-                if (_isAttacker == 1)
-                    castle.getSiege().registerAttacker(activeChar);
-                else
-                    castle.getSiege().registerDefender(activeChar);
-            }
-            else
-                castle.getSiege().removeSiegeClan(activeChar);
-    
-            castle.getSiege().listRegisterClan(activeChar);
-        }
-        else
-        {
-            Fort fort = FortManager.getInstance().getFortById(_castleId);
-            if (fort == null) return;
-    
-            if (_isJoining == 1)
-            {
-                if (System.currentTimeMillis() < activeChar.getClan().getDissolvingExpiryTime())
-                {
-                    activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_PARTICIPATE_IN_SIEGE_WHILE_DISSOLUTION_IN_PROGRESS));
-                    return;
-                }
-                if (_isAttacker == 1)
-                    fort.getSiege().registerAttacker(activeChar);
-                else
-                    fort.getSiege().registerDefender(activeChar);
-            }
-            else
-                fort.getSiege().removeSiegeClan(activeChar);
-    
-            fort.getSiege().listRegisterClan(activeChar);
-        }
-            
+		Castle castle = CastleManager.getInstance().getCastleById(_castleId);
+		if (castle == null) return;
 
-    }
+		if (_isJoining == 1)
+		{
+			if (System.currentTimeMillis() < activeChar.getClan().getDissolvingExpiryTime())
+			{
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_PARTICIPATE_IN_SIEGE_WHILE_DISSOLUTION_IN_PROGRESS));
+				return;
+			}
+			if (_isAttacker == 1)
+				castle.getSiege().registerAttacker(activeChar);
+			else
+				castle.getSiege().registerDefender(activeChar);
+		}
+		else
+			castle.getSiege().removeSiegeClan(activeChar);
+		castle.getSiege().listRegisterClan(activeChar);
+	}
 
-
-    @Override
+	@Override
 	public String getType()
-    {
-        return _C__A4_RequestJoinSiege;
-    }
+	{
+		return _C__A4_RequestJoinSiege;
+	}
 }
