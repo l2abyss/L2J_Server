@@ -96,7 +96,8 @@ public class L2FortSiegeNpcInstance extends L2NpcInstance
         else if (actualCommand.equalsIgnoreCase("register"))
         {
             if (player.getClan() == null || !player.isClanLeader()
-            		|| (getFort().getOwnerClan() != null && player.getClan().getHasFort() == getFort().getCastleId())
+            		|| (getFort().getOwnerClan() != null && player.getClan().getHasCastle() > 0
+            				&& player.getClan().getHasCastle() != getFort().getCastleId())
             		|| player.getClan().getLevel() < 4)
             {
             	player.sendMessage("You are not able to participate"); // replace me with html
