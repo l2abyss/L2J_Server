@@ -12992,7 +12992,7 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2169<br>
-	* Message: It has been registered to $s1's fortress battle.
+	* Message: Your clan has been registered to $s1's fortress battle.
 	*/
 	REGISTERED_TO_S1_FORTRESS_BATTLE(2169),
 

@@ -21,9 +21,11 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.util.StringTokenizer;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
+import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
@@ -94,19 +96,23 @@ public class L2FortSiegeNpcInstance extends L2NpcInstance
         else if (actualCommand.equalsIgnoreCase("register"))
         {
             if (player.getClan() == null || !player.isClanLeader()
-            		|| (getFort().getOwnerClan() != null && player.getClan().getHasCastle() != getFort().getCastleId())
+            		|| (getFort().getOwnerClan() != null && player.getClan().getHasFort() == getFort().getCastleId())
             		|| player.getClan().getLevel() < 4)
             {
-            	player.sendMessage("ure not able to participate"); // replace me with html
+            	player.sendMessage("You are not able to participate"); // replace me with html
             }
             else if (getFort().getSiege().getAttackerClans().size() == 0 && player.getInventory().getAdena() < 250000)
             {
-            	player.sendMessage("u need 250.000 adena to register"); // replace me with html
+            	player.sendMessage("You need 250,000 adena to register"); // replace me with html
             }
             else
             {
             	if (getFort().getSiege().registerAttacker(player, false))
-            		player.sendMessage("registered on siege :)");
+            	{
+            		SystemMessage sm = new SystemMessage(SystemMessageId.REGISTERED_TO_S1_FORTRESS_BATTLE);
+            		sm.addString(getFort().getName());
+            		player.sendPacket(sm);
+            	}
             }
         }
         else
