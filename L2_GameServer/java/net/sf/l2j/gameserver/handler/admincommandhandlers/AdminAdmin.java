@@ -29,6 +29,7 @@ import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.TeleportLocationTable;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.instancemanager.Manager;
+import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.model.L2Multisell;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -232,6 +233,7 @@ public class AdminAdmin implements IAdminCommandHandler
 				else if (type.equals("npc"))
 				{
 					NpcTable.getInstance().reloadAllNpc();
+					QuestManager.getInstance().reloadAllQuests();
 					activeChar.sendMessage("npcs reloaded");
 				}
 				else if (type.startsWith("htm"))
@@ -259,6 +261,11 @@ public class AdminAdmin implements IAdminCommandHandler
 					AccessLevels.getInstance().reloadAccessLevels();
 					AdminCommandAccessRights.getInstance().reloadAdminCommandAccessRights();
 					activeChar.sendMessage("Access Rights have been reloaded");
+				}
+				else if (type.startsWith("quests"))
+				{
+					QuestManager.getInstance().reloadAllQuests();
+					activeChar.sendMessage("All Quests have been reloaded");
 				}
 				
 			}

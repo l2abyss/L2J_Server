@@ -58,6 +58,7 @@ import net.sf.l2j.gameserver.datatables.SpawnTable;
 import net.sf.l2j.gameserver.datatables.TeleportLocationTable;
 import net.sf.l2j.gameserver.instancemanager.DayNightSpawnManager;
 import net.sf.l2j.gameserver.instancemanager.Manager;
+import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossSpawnManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
@@ -719,6 +720,7 @@ public class GameStatusThread extends Thread
                 		{
                 			_print.print("Reloading npc templates... ");
                 			NpcTable.getInstance().reloadAllNpc();
+                			QuestManager.getInstance().reloadAllQuests();
                 			_print.print("done\n");
                 		}
                 		else if(type.equals("html"))
