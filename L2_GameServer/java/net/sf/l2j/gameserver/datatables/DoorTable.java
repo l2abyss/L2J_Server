@@ -144,9 +144,9 @@ public class DoorTable
 		boolean unlockable = false;
 		if (st.hasMoreTokens())
 			unlockable = Boolean.parseBoolean(st.nextToken());
-		boolean startOpen = false;
+		boolean isCommanderDoor = false;
 		if (st.hasMoreTokens())
-			startOpen = Boolean.parseBoolean(st.nextToken());
+			isCommanderDoor = Boolean.parseBoolean(st.nextToken());
 		
 		if (rangeXMin > rangeXMax)
 			_log.severe("Error in door data, ID:" + id);
@@ -217,12 +217,8 @@ public class DoorTable
 			_log.severe("Error in door data, ID:" + id);
 		}
 		door.setCurrentHpMp(door.getMaxHp(), door.getMaxMp());
+		door.setIsCommanderDoor(isCommanderDoor);
 		door.setXYZInvisible(x, y, z);
-		
-		if (door.getFort() != null)
-			door.setIsCommanderDoor(startOpen);
-		else
-			door.setOpen(startOpen);
 		
 		return door;
 	}
