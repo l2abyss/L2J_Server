@@ -130,6 +130,26 @@ public enum Stats
 	DEBUFF_VULN("debuffVuln"),
 	CRIT_VULN("critVuln"), // Resistence to Crit DMG.
 	
+	AGGRESSION_PROF("aggressionProf"),
+	BLEED_PROF("bleedProf"),
+	POISON_PROF("poisonProf"),
+	STUN_PROF("stunProf"),
+	PARALYZE_PROF("paralyzeProf"),
+	ROOT_PROF("rootProf"),
+	SLEEP_PROF("sleepProf"),
+	CONFUSION_PROF("confusionProf"),
+	PROF("movementProf"),
+	FIRE_PROF("fireProf"),
+	WIND_PROF("windProf"),
+	WATER_PROF("waterProf"),
+	EARTH_PROF("earthProf"),
+	HOLY_PROF("holyProf"),
+	DARK_PROF("darkProf"),
+	CANCEL_PROF("cancelProf"),
+	DERANGEMENT_PROF("derangementProf"),
+	DEBUFF_PROF("debuffProf"),
+	CRIT_PROF("critProf"),
+	
 	NONE_WPN_VULN("noneWpnVuln"), // Shields!!!
 	SWORD_WPN_VULN("swordWpnVuln"),
 	BLUNT_WPN_VULN("bluntWpnVuln"),
