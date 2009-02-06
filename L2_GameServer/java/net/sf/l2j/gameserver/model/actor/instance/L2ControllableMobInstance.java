@@ -19,6 +19,7 @@ import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
 import net.sf.l2j.gameserver.ai.L2ControllableMobAI;
 import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 /**
@@ -93,7 +94,7 @@ public class L2ControllableMobInstance extends L2MonsterInstance
 	}
 
 	@Override
-	public void reduceCurrentHp(double i, L2Character attacker, boolean awake, boolean isDOT)
+	public void reduceCurrentHp(double i, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
     {
 		if (isInvul() || isDead())
 			return;

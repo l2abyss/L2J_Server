@@ -1667,7 +1667,7 @@ public final class Formulas
             if (skill.getLethalChance2() > 0 && chance < calcLethal(activeChar, target, skill.getLethalChance2(),skill.getMagicLevel()))
             {
                 if (target instanceof L2NpcInstance)
-                    target.reduceCurrentHp(target.getCurrentHp() - 1, activeChar);
+                    target.reduceCurrentHp(target.getCurrentHp() - 1, activeChar, skill);
                 else if (target instanceof L2PcInstance) // If is a active player set his HP and CP to 1
                 {
                     L2PcInstance player = (L2PcInstance) target;
@@ -1700,7 +1700,7 @@ public final class Formulas
                     }
                 }
                 else if (target instanceof L2NpcInstance) // If is a monster remove first damage and after 50% of current hp
-                    target.reduceCurrentHp(target.getCurrentHp() / 2, activeChar);
+                    target.reduceCurrentHp(target.getCurrentHp() / 2, activeChar, skill);
                 activeChar.sendPacket(new SystemMessage(SystemMessageId.HALF_KILL));
                 
             }

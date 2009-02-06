@@ -172,7 +172,7 @@ public class Mdam implements ISkillHandler
 					}
 				}
 				
-				target.reduceCurrentHp(damage, activeChar);
+				target.reduceCurrentHp(damage, activeChar, skill);
 				
 				// Logging damage
 				if (Config.LOG_GAME_DAMAGE && damage > 5000 && activeChar instanceof L2PcInstance)
@@ -256,7 +256,7 @@ public class Mdam implements ISkillHandler
 						skill.getEffects(activeCubic, target);
 				}
 				
-				target.reduceCurrentHp(damage, activeCubic.getOwner());
+				target.reduceCurrentHp(damage, activeCubic.getOwner(), skill);
 			}
 		}
 	}

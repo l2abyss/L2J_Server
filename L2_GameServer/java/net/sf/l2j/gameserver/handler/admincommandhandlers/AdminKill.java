@@ -127,14 +127,14 @@ public class AdminKill implements IAdminCommandHandler
 		{
 			if (!((L2PcInstance) target).isGM())
 				target.stopAllEffects(); // e.g. invincibility effect
-			target.reduceCurrentHp(target.getMaxHp() + target.getMaxCp() + 1, activeChar);
+			target.reduceCurrentHp(target.getMaxHp() + target.getMaxCp() + 1, activeChar, null);
 		}
 		else if (Config.L2JMOD_CHAMPION_ENABLE && target.isChampion())
-			target.reduceCurrentHp(target.getMaxHp() * Config.L2JMOD_CHAMPION_HP + 1, activeChar);
+			target.reduceCurrentHp(target.getMaxHp() * Config.L2JMOD_CHAMPION_HP + 1, activeChar, null);
 		else
 		{
 			if(target.isInvul()) target.setIsInvul(false);
-			target.reduceCurrentHp(target.getMaxHp() + 1, activeChar);
+			target.reduceCurrentHp(target.getMaxHp() + 1, activeChar, null);
 		}
 		if (Config.DEBUG)
 			_log.fine("GM: " + activeChar.getName() + "(" + activeChar.getObjectId() + ")" + " killed character " + target.getObjectId());

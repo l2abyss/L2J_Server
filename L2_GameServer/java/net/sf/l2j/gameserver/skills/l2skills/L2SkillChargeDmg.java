@@ -132,7 +132,7 @@ public class L2SkillChargeDmg extends L2Skill
             {
                 double finalDamage = damage;
                 finalDamage = finalDamage*modifier;
-				target.reduceCurrentHp(finalDamage, caster);
+				target.reduceCurrentHp(finalDamage, caster, this);
 
 				caster.sendDamageMessage(target, (int)finalDamage, false, crit, false);
 

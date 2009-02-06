@@ -141,7 +141,7 @@ public class L2SkillElemental extends L2Skill {
 
 			if (damage > 0)
 			{
-				target.reduceCurrentHp(damage, activeChar);
+				target.reduceCurrentHp(damage, activeChar, this);
 
 	            // Manage attack or cast break of the target (calculating rate, sending message...)
 	            if (!target.isRaid() && Formulas.getInstance().calcAtkBreak(target, damage))

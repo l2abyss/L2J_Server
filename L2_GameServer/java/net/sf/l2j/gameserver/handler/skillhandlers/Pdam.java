@@ -213,11 +213,11 @@ public class Pdam implements ISkillHandler
 						
 						}
 						else
-							target.reduceCurrentHp(damage, activeChar);
+							target.reduceCurrentHp(damage, activeChar, skill);
 					}
 					else
 					{
-						target.reduceCurrentHp(damage, activeChar);
+						target.reduceCurrentHp(damage, activeChar, skill);
 					}
 				
 				}

@@ -232,13 +232,13 @@ public class AdminMenu implements IAdminCommandHandler
 		{
 			if (target instanceof L2PcInstance)
 			{
-				target.reduceCurrentHp(target.getMaxHp() + target.getMaxCp() + 1, activeChar);
+				target.reduceCurrentHp(target.getMaxHp() + target.getMaxCp() + 1, activeChar, null);
 				filename = "charmanage.htm";
 			}
 			else if (Config.L2JMOD_CHAMPION_ENABLE && target.isChampion())
-				target.reduceCurrentHp(target.getMaxHp() * Config.L2JMOD_CHAMPION_HP + 1, activeChar);
+				target.reduceCurrentHp(target.getMaxHp() * Config.L2JMOD_CHAMPION_HP + 1, activeChar, null);
 			else
-				target.reduceCurrentHp(target.getMaxHp() + 1, activeChar);
+				target.reduceCurrentHp(target.getMaxHp() + 1, activeChar, null);
 		}
 		else
 		{

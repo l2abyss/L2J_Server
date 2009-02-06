@@ -18,6 +18,7 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossPointsManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossSpawnManager;
 import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -131,9 +132,9 @@ public final class L2RaidBossInstance extends L2MonsterInstance
      *
      */
     @Override
-    public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT)
+    public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
     {
-        super.reduceCurrentHp(damage, attacker, awake, isDOT);
+        super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
     }
 
     public void healFull()

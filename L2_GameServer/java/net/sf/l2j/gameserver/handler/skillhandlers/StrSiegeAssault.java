@@ -101,7 +101,7 @@ public class StrSiegeAssault implements ISkillHandler
 				
 				if (damage > 0)
 				{
-					target.reduceCurrentHp(damage, activeChar);
+					target.reduceCurrentHp(damage, activeChar, skill);
 					if (soul && weapon != null)
 						weapon.setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
 					

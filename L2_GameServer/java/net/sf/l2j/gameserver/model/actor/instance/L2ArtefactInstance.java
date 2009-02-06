@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.model.actor.instance;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
@@ -105,7 +106,7 @@ public final class L2ArtefactInstance extends L2NpcInstance
 	}
 
 	@Override
-	public void reduceCurrentHp(double damage, L2Character attacker){}
+	public void reduceCurrentHp(double damage, L2Character attacker, L2Skill skill){}
 	@Override
-	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT){}
+	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill){}
 }

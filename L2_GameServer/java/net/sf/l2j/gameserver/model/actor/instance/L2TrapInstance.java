@@ -198,7 +198,7 @@ public class L2TrapInstance extends L2Trap
 				continue;
 			
 			if (atked instanceof L2Attackable)
-				((L2Attackable)atked).addDamage(getOwner(), 1);
+				((L2Attackable)atked).addDamage(getOwner(), 1, null);
 		}
 	}
 	

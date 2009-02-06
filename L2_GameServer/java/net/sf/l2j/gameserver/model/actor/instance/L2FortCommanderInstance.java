@@ -22,6 +22,7 @@ import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
 import net.sf.l2j.gameserver.instancemanager.FortSiegeManager.SiegeSpawn;
 import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.network.serverpackets.NpcSay;
@@ -101,7 +102,7 @@ public class L2FortCommanderInstance extends L2FortSiegeGuardInstance
         }
     }
     @Override
-    public final void addDamage(L2Character attacker, int damage)
+    public final void addDamage(L2Character attacker, int damage, L2Skill skill)
     {
     	L2Spawn spawn = getSpawn();
     	if (spawn != null && canTalk())
@@ -135,7 +136,7 @@ public class L2FortCommanderInstance extends L2FortSiegeGuardInstance
 				}
 			}
 		}
-    	super.addDamage(attacker, damage);
+    	super.addDamage(attacker, damage, skill);
     }
     
 	private class ScheduleTalkTask implements Runnable

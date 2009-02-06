@@ -5051,11 +5051,11 @@ public abstract class L2Character extends L2Object
 				}
 				
 				// reduce targets HP
-				target.reduceCurrentHp(damage, this);
+				target.reduceCurrentHp(damage, this, null);
 				
 				if (reflectedDamage > 0)
 				{
-					reduceCurrentHp(reflectedDamage, target, true, false);
+					reduceCurrentHp(reflectedDamage, target, true, false, null);
 	
 					// Custom messages - nice but also more network load
 					/*
@@ -6530,9 +6530,9 @@ public abstract class L2Character extends L2Object
 	// Status - NEED TO REMOVE ONCE L2CHARTATUS IS COMPLETE
 	// Method - Public
 	public void addStatusListener(L2Character object) { getStatus().addStatusListener(object); }
-	public void reduceCurrentHp(double i, L2Character attacker) { reduceCurrentHp(i, attacker, true, false); }
-	public void reduceCurrentHpByDOT(double i, L2Character attacker) { reduceCurrentHp(i, attacker, true, true); }
-	public void reduceCurrentHp(double i, L2Character attacker, boolean awake, boolean isDOT)
+	public void reduceCurrentHp(double i, L2Character attacker, L2Skill skill) { reduceCurrentHp(i, attacker, true, false, skill); }
+	public void reduceCurrentHpByDOT(double i, L2Character attacker, L2Skill skill) { reduceCurrentHp(i, attacker, true, true, skill); }
+	public void reduceCurrentHp(double i, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
 	{
 		if (Config.L2JMOD_CHAMPION_ENABLE && isChampion() && Config.L2JMOD_CHAMPION_HP != 0)
 			getStatus().reduceHp(i/Config.L2JMOD_CHAMPION_HP, attacker, awake, isDOT);

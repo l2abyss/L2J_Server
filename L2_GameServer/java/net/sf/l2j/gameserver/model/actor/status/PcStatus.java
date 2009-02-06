@@ -89,7 +89,7 @@ public class PcStatus extends PlayableStatus
                 if (summon.getCurrentHp() < tDmg) tDmg = (int)summon.getCurrentHp() - 1;
                 if (tDmg > 0)
                 {
-                    summon.reduceCurrentHp(tDmg, attacker);
+                    summon.reduceCurrentHp(tDmg, attacker, null);
                     value -= tDmg;
                     fullValue = (int) value; // reduce the annouced value here as player will get a message about summon dammage
                 }

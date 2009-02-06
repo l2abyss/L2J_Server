@@ -634,7 +634,7 @@ public class AdminEventEngine implements IAdminCommandHandler
 			try
 			{
 				L2PcInstance target = L2World.getInstance().getPlayer(it.next());
-				target.reduceCurrentHp(target.getMaxHp() + target.getMaxCp() + 1, activeChar);
+				target.reduceCurrentHp(target.getMaxHp() + target.getMaxCp() + 1, activeChar, null);
 			}
 			catch (Exception e)
 			{

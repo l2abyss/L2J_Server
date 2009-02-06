@@ -184,8 +184,8 @@ public class L2MonsterInstance extends L2Attackable
                     if (minion != null && !minion.isDead())
                     {
                         if(isRaid()&&!isRaidMinion())
-                        	minion.addDamage(attacker, 100);
-                        else minion.addDamage(attacker, 1);
+                        	minion.addDamage(attacker, 100, null);
+                        else minion.addDamage(attacker, 1, null);
                     }
                 }
             }

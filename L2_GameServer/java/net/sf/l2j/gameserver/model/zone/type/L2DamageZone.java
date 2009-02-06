@@ -106,7 +106,7 @@ public class L2DamageZone extends L2ZoneType
 				if (temp != null && !temp.isDead())
 				{
 					if (getHPDamagePerSecond() != 0)
-						temp.reduceCurrentHp(_dmgZone.getHPDamagePerSecond(), null);
+						temp.reduceCurrentHp(_dmgZone.getHPDamagePerSecond(), null, null);
 					if (getMPDamagePerSecond() != 0)
 						temp.reduceCurrentMp(_dmgZone.getMPDamagePerSecond());
 				}

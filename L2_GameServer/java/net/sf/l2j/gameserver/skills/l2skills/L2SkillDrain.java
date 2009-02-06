@@ -166,7 +166,7 @@ public class L2SkillDrain extends L2Skill {
                 	}
                 }
                 
-                target.reduceCurrentHp(damage, activeChar);
+                target.reduceCurrentHp(damage, activeChar, this);
             }
 
             // Check to see if we should do the decay right after the cast
@@ -214,7 +214,7 @@ public class L2SkillDrain extends L2Skill {
             // Check to see if we should damage the target
             if (damage > 0 && (!target.isDead() || getTargetType() != SkillTargetType.TARGET_CORPSE_MOB))
             {
-    			target.reduceCurrentHp(damage, activeCubic.getOwner());
+    			target.reduceCurrentHp(damage, activeCubic.getOwner(), this);
                 
                 // Manage attack or cast break of the target (calculating rate, sending message...)
                 if (!target.isRaid() && Formulas.getInstance().calcAtkBreak(target, damage)){

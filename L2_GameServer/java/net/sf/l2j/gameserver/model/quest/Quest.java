@@ -334,12 +334,12 @@ public class Quest extends ManagedScript
 	}
 	
 	// these are methods to call from java
-	public final boolean notifyAttack(L2NpcInstance npc, L2PcInstance attacker, int damage, boolean isPet)
+	public final boolean notifyAttack(L2NpcInstance npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
 	{
 		String res = null;
 		try
 		{
-			res = onAttack(npc, attacker, damage, isPet);
+			res = onAttack(npc, attacker, damage, isPet, skill);
 		}
 		catch (Exception e)
 		{
@@ -546,6 +546,11 @@ public class Quest extends ManagedScript
 	public String onAttack(L2NpcInstance npc, L2PcInstance attacker, int damage, boolean isPet)
 	{
 		return null;
+	}
+	
+	public String onAttack(L2NpcInstance npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
+	{
+		return onAttack(npc, attacker, damage, isPet);
 	}
 	
 	public String onDeath(L2Character killer, L2Character victim, QuestState qs)

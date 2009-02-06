@@ -354,9 +354,9 @@ public class L2Attackable extends L2NpcInstance
      *
      */
     @Override
-	public void reduceCurrentHp(double damage, L2Character attacker)
+	public void reduceCurrentHp(double damage, L2Character attacker, L2Skill skill)
     {
-        reduceCurrentHp(damage, attacker, true, false);
+        reduceCurrentHp(damage, attacker, true, false, skill);
     }
 
     /**
@@ -368,7 +368,7 @@ public class L2Attackable extends L2NpcInstance
      *
      */
     @Override
-	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT)
+	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
     {
     	/*
         if ((this instanceof L2SiegeGuardInstance) && (attacker instanceof L2SiegeGuardInstance))
@@ -395,7 +395,7 @@ public class L2Attackable extends L2NpcInstance
         if (isEventMob) return;
 
         // Add damage and hate to the attacker AggroInfo of the L2Attackable _aggroList
-        if (attacker != null) addDamage(attacker, (int)damage);
+        if (attacker != null) addDamage(attacker, (int)damage, skill);
 
         // If this L2Attackable is a L2MonsterInstance and it has spawned minions, call its minions to battle
         if (this instanceof L2MonsterInstance)
@@ -404,14 +404,14 @@ public class L2Attackable extends L2NpcInstance
             if (this instanceof L2MinionInstance)
             {
                 master = ((L2MinionInstance)this).getLeader();
-                if (!master.isInCombat()&&!master.isDead()) master.addDamage(attacker, 1);
+                if (!master.isInCombat()&&!master.isDead()) master.addDamage(attacker, 1, null);
             }
             if (master.hasMinions())
                 master.callMinionsToAssist(attacker);
         }
 
         // Reduce the current HP of the L2Attackable and launch the doDie Task if necessary
-        super.reduceCurrentHp(damage, attacker, awake, isDOT);
+        super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
     }
 
     public synchronized void setMustRewardExpSp(boolean value) {
@@ -805,7 +805,7 @@ public class L2Attackable extends L2NpcInstance
      * @param damage The number of damages given by the attacker L2Character
      *
      */
-    public void addDamage(L2Character attacker, int damage)
+    public void addDamage(L2Character attacker, int damage, L2Skill skill)
     {
         // Notify the L2Attackable AI with EVT_ATTACKED
         if (!this.isDead())
@@ -817,7 +817,7 @@ public class L2Attackable extends L2NpcInstance
 
                     if (getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK) !=null)
                     	for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK))
-                    		quest.notifyAttack(this, player, damage, attacker instanceof L2Summon);
+                    		quest.notifyAttack(this, player, damage, attacker instanceof L2Summon, skill);
                 }
             }
             catch (Exception e) { _log.log(Level.SEVERE, "", e); }

@@ -20,6 +20,7 @@ import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2SiegeClan;
+import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.status.SiegeFlagStatus;
 import net.sf.l2j.gameserver.model.entity.Siege;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -152,9 +153,9 @@ public class L2SiegeFlagInstance extends L2NpcInstance
 	}
 	
     @Override
-	public void reduceCurrentHp(double damage, L2Character attacker)
+	public void reduceCurrentHp(double damage, L2Character attacker, L2Skill skill)
     {
-    	super.reduceCurrentHp(damage, attacker);
+    	super.reduceCurrentHp(damage, attacker, skill);
     	if(canTalk())
     	{
     		if (getCastle() != null && getCastle().getSiege().getIsInProgress())

@@ -222,7 +222,7 @@ public class L2SepulcherNpcInstance extends L2NpcInstance
 			case 31486:
 			case 31487:
 				setIsInvul(false);
-				reduceCurrentHp(getMaxHp() + 1, player);
+				reduceCurrentHp(getMaxHp() + 1, player, null);
 				if (_spawnMonsterTask != null)
 					_spawnMonsterTask.cancel(true);
 				_spawnMonsterTask = ThreadPoolManager.getInstance().scheduleEffect(new SpawnMonster(getNpcId()), 3500);
@@ -242,7 +242,7 @@ public class L2SepulcherNpcInstance extends L2NpcInstance
 			case 31466:
 			case 31467:
 				setIsInvul(false);
-				reduceCurrentHp(getMaxHp() + 1, player);
+				reduceCurrentHp(getMaxHp() + 1, player, null);
 				if (player.getParty() != null && !player.getParty().isLeader(player))
 					player = player.getParty().getLeader();
 				player.addItem("Quest", HALLS_KEY, 1, player, true);
