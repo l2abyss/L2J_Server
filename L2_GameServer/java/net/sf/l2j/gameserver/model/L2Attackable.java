@@ -808,7 +808,7 @@ public class L2Attackable extends L2NpcInstance
     public void addDamage(L2Character attacker, int damage)
     {
         // Notify the L2Attackable AI with EVT_ATTACKED
-        if (damage > 0 && !this.isDead())
+        if (!this.isDead())
         {
             try {
                 if (attacker instanceof L2PcInstance || attacker instanceof L2Summon)
