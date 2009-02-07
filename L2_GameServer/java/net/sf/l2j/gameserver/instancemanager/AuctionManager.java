@@ -142,9 +142,11 @@ public class AuctionManager
 		java.sql.Connection con = null;
 		int i = 0;
 		for (i = 0; i < ItemInitDataId.length; i++)
+		{
 			if (ItemInitDataId[i] == id)
 				break;
-		if (i >= ItemInitDataId.length)
+		}
+		if (i >= ItemInitDataId.length || i != id)
 		{
 			_log.warning("Clan Hall auction not found for Id :" + id);
 			return;

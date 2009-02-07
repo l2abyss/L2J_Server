@@ -427,10 +427,12 @@ public class ClanHall
 	public void openCloseDoor(L2DoorInstance door, boolean open)
 	{
 		if (door != null)
+		{
 			if (open)
 				door.openMe();
 			else
 				door.closeMe();
+		}
 	}
 	
 	public void openCloseDoors(L2PcInstance activeChar, boolean open)
@@ -444,10 +446,12 @@ public class ClanHall
 		for (L2DoorInstance door : getDoors())
 		{
 			if (door != null)
+			{
 				if (open)
 					door.openMe();
 				else
 					door.closeMe();
+			}
 		}
 	}
 	
@@ -529,8 +533,10 @@ public class ClanHall
 		if (Config.DEBUG)
 			_log.warning("Called ClanHall.updateFunctions(int type, int lvl, int lease, long rate, boolean addNew) Owner : " + getOwnerId());
 		if (lease > 0)
+		{
 			if (!player.destroyItemByItemId("Consume", 57, lease, null, true))
 				return false;
+		}
 		if (addNew)
 			_functions.put(type, new ClanHallFunction(type, lvl, lease, 0, rate, 0, false));
 		else
@@ -626,8 +632,10 @@ public class ClanHall
 				if (ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().getAdena() >= getLease())
 				{
 					if (_paidUntil != 0)
+					{
 						while (_paidUntil < System.currentTimeMillis())
 							_paidUntil += _chRate;
+					}
 					else
 						_paidUntil = System.currentTimeMillis() + _chRate;
 					ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CH_rental_fee", 57, getLease(), null, null);

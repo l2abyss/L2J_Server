@@ -24,12 +24,16 @@ import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
+import net.sf.l2j.gameserver.instancemanager.RaidBossSpawnManager;
 import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.L2World;
+import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2MinionInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2RaidBossInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
@@ -407,7 +411,7 @@ public class AdminTeleport implements IAdminCommandHandler
 	private void recallNPC(L2PcInstance activeChar)
 	{
 		L2Object obj = activeChar.getTarget();
-		if (obj instanceof L2NpcInstance)
+		if (obj instanceof L2NpcInstance && !(obj instanceof L2MinionInstance) && !(obj instanceof L2RaidBossInstance) && !(obj instanceof L2GrandBossInstance))
 		{
 			L2NpcInstance target = (L2NpcInstance) obj;
 			
@@ -464,6 +468,39 @@ public class AdminTeleport implements IAdminCommandHandler
 				activeChar.sendMessage("Target is not in game.");
 			}
 			
+		}
+		else if (obj instanceof L2RaidBossInstance)
+		{
+			L2RaidBossInstance target = (L2RaidBossInstance) obj;
+			L2Spawn spawn = target.getSpawn();
+			double curHP = target.getCurrentHp();
+			double curMP = target.getCurrentMp();
+			if (spawn == null)
+			{
+				activeChar.sendMessage("Incorrect raid spawn.");
+				_log.warning("ERROR: NPC Id" + target.getNpcId() + " has a 'null' spawn.");
+				return;
+			}
+			RaidBossSpawnManager.getInstance().deleteSpawn(spawn, true);
+			try
+			{
+				L2NpcTemplate template = NpcTable.getInstance().getTemplate(target.getNpcId());
+				L2Spawn spawnDat = new L2Spawn(template);
+				
+				spawnDat.setLocx(activeChar.getX());
+				spawnDat.setLocy(activeChar.getY());
+				spawnDat.setLocz(activeChar.getZ());
+				spawnDat.setAmount(1);
+				spawnDat.setHeading(activeChar.getHeading());
+				spawnDat.setRespawnMinDelay(43200);
+				spawnDat.setRespawnMaxDelay(129600);
+				
+				RaidBossSpawnManager.getInstance().addNewSpawn(spawnDat, 0, curHP, curMP, true);
+			}
+			catch (Exception e)
+			{
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_CANT_FOUND));
+			}
 		}
 		else
 		{
