@@ -255,18 +255,12 @@ public final class L2WarehouseInstance extends L2FolkInstance
     private void showDepositWindowFreight(L2PcInstance player, int obj_Id)
     {
         player.sendPacket(ActionFailed.STATIC_PACKET);
-        L2PcInstance destChar = L2PcInstance.load(obj_Id);
-        if (destChar == null)
-        {
-            // Something went wrong!
-            if (Config.DEBUG)
-                _log.warning("Error retrieving a target object for char " + player.getName()
-                    + " - using freight.");
-            return;
-        }
-
-        PcFreight freight = destChar.getFreight();
-    	if (Config.ALT_GAME_FREIGHTS)
+        
+        PcFreight freight = new PcFreight(null);
+        
+        freight.doQuickRestore(obj_Id);
+        
+        if (Config.ALT_GAME_FREIGHTS)
     	{
             freight.setActiveLocation(0);
     	} else
@@ -275,7 +269,6 @@ public final class L2WarehouseInstance extends L2FolkInstance
     	}
         player.setActiveWarehouse(freight);
         player.tempInvetoryDisable();
-        destChar.deleteMe();
 
         if (Config.DEBUG) _log.fine("Showing items to freight");
         player.sendPacket(new WareHouseDepositList(player, WareHouseDepositList.FREIGHT));

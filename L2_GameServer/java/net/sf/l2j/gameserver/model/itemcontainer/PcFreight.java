@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.model.itemcontainer;
 import java.util.List;
 
 import javolution.util.FastList;
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2ItemInstance.ItemLocation;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -27,6 +28,7 @@ public class PcFreight extends ItemContainer
 
     private L2PcInstance _owner;    // This is the L2PcInstance that owns this Freight;
     private int _activeLocationId;
+    private int _tempOwnerId = 0;
 
     public PcFreight(L2PcInstance owner)
     {
@@ -115,6 +117,26 @@ public class PcFreight extends ItemContainer
     @Override
 	public boolean validateCapacity(int slots)
 	{
-		return (getSize() + slots <= _owner.getFreightLimit());
+    	int cap = (_owner == null ? Config.FREIGHT_SLOTS : _owner.getFreightLimit());
+		
+    	return (getSize() + slots <= cap);
 	}
+    
+    @Override
+    public int getOwnerId()
+    {
+    	if (_owner == null)
+    		return _tempOwnerId;
+    	
+    	return super.getOwnerId();
+    }
+    
+    /**
+     * This provides support to load a new PcFreight without owner so that transactions can be done
+     */
+    public void doQuickRestore(int val)
+    {
+    	_tempOwnerId = val;
+    	restore();
+    }
 }
