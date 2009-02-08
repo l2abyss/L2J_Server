@@ -8963,21 +8963,23 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1500<br>
-	* Message: You cannot participate in the Grand Olympiad Games with a character in their subclass.
+	* Message: $c1% does not meet the participation requirements.
+	* A sub-class character cannot participate in the Olympiad.
 	*/
-	YOU_CANT_JOIN_THE_OLYMPIAD_WITH_A_SUB_JOB_CHARACTER(1500),
+	C1_CANT_JOIN_THE_OLYMPIAD_WITH_A_SUB_CLASS_CHARACTER(1500),
 
 	/**
 	* ID: 1501<br>
-	* Message: Only Noblesse can participate in the Olympiad.
+	* Message: $c1% does not meet the participation requirements.
+	* Only Noblesse can participate in the Olympiad.
 	*/
-	ONLY_NOBLESS_CAN_PARTICIPATE_IN_THE_OLYMPIAD(1501),
+	C1_DOES_NOT_MEET_REQUIREMENTS_ONLY_NOBLESS_CAN_PARTICIPATE_IN_THE_OLYMPIAD(1501),
 
 	/**
 	* ID: 1502<br>
-	* Message: You have already been registered in a waiting list of an event.
+	* Message: $c1 is already registered on the match waiting list.
 	*/
-	YOU_HAVE_ALREADY_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_AN_EVENT(1502),
+	C1_IS_ALREADY_REGISTERED_ON_THE_MATCH_WAITING_LIST(1502),
 
 	/**
 	* ID: 1503<br>
@@ -9987,9 +9989,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1673<br>
-	* Message: Your current record for this Grand Olympiad is $s1 match(es), $s2 win(s) and $s3 defeat(s). You heave earned $s4 Olympiad Point(s).
+	* Message: Your current record for this Grand Olympiad is $s1 match(es), $s2 win(s) and $s3 defeat(s). You have earned $s4 Olympiad Point(s).
 	*/
-	THE_PRESENT_RECORD_DURING_THE_CURRENT_OLYMPIAD_SESSION_IS_S1_WINS_S2_DEFEATS_YOU_HAVE_EARNED_S3_OLYMPIAD_POINTS(1673),
+	THE_CURRENT_RECORD_FOR_THIS_OLYMPIAD_SESSION_IS_S1_MATCHES_S2_WINS_S3_DEFEATS_YOU_HAVE_EARNED_S4_OLYMPIAD_POINTS(1673),
 
 	/**
 	* ID: 1674<br>
@@ -10083,29 +10085,29 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1689<br>
-	* Message: You have already joined the waiting list for a class specific match.
+	* Message: $c1 is already registered on the class match waiting list.
 	*/
-	YOU_ARE_ALREADY_ON_THE_WAITING_LIST_TO_PARTICIPATE_IN_THE_GAME_FOR_YOUR_CLASS(1689),
+	C1_IS_ALREADY_REGISTERED_ON_THE_CLASS_MATCH_WAITING_LIST(1689),
 
 	/**
 	* ID: 1690<br>
-	* Message: You have already joined the waiting list for a non-class specific match.
+	* Message: $c1 is already registered on the waiting list for the non-class-limited individual match event.
 	*/
-	YOU_ARE_ALREADY_ON_THE_WAITING_LIST_FOR_ALL_CLASSES_WAITING_TO_PARTICIPATE_IN_THE_GAME(1690),
+	C1_IS_ALREADY_REGISTERED_ON_THE_NON_CLASS_LIMITED_MATCH_WAITING_LIST(1690),
 
 	/**
 	* ID: 1691<br>
-	* Message: You can't join a Grand Olympiad Game match with that much stuff on you! 
-	* Reduce your weight to below 80 percent full and request to join again!
+	* Message: $c1% does not meet the participation requirements.
+	* You cannot participate in the Olympiad because your inventory slot exceeds 80%.
 	*/
-	SINCE_80_PERCENT_OR_MORE_OF_YOUR_INVENTORY_SLOTS_ARE_FULL_YOU_CANNOT_PARTICIPATE_IN_THE_OLYMPIAD(1691),
+	C1_CANNOT_PARTICIPATE_IN_OLYMPIAD_INVENTORY_SLOT_EXCEEDS_80_PERCENT(1691),
 
 	/**
 	* ID: 1692<br>
-	* Message: You have changed from your main class to a subclass 
-	* and therefore are removed from the Grand Olympiad Games waiting list.
+	* Message: $c1% does not meet the participation requirements.
+	* You cannot participate in the Olympiad because you have changed to your sub-class.
 	*/
-	SINCE_YOU_HAVE_CHANGED_YOUR_CLASS_INTO_A_SUB_JOB_YOU_CANNOT_PARTICIPATE_IN_THE_OLYMPIAD(1692),
+	C1_CANNOT_PARTICIPATE_IN_OLYMPIAD_WHILE_CHANGED_TO_SUB_CLASS(1692),
 
 	/**
 	* ID: 1693<br>
@@ -11120,9 +11122,9 @@ public enum SystemMessageId
 
 	/**
 	 * ID: 1858<br>
-	 * Message: You cannot participate in the Olympiad while dead.
+	 * Message: $c1 is currently dead and cannot participate in the Olympiad.
 	 */
-	CANNOT_PARTICIPATE_OLYMPIAD_WHILE_DEAD(1858),
+	C1_CANNOT_PARTICIPATE_OLYMPIAD_WHILE_DEAD(1858),
 
 	/**
 	 * ID: 1859<br>

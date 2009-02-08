@@ -14,7 +14,8 @@
  */
 package net.sf.l2j.gameserver.handler.skillhandlers;
 
-import net.sf.l2j.gameserver.Olympiad;
+import net.sf.l2j.gameserver.model.olympiad.Olympiad;
+import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
@@ -154,7 +155,9 @@ public class Blow implements ISkillHandler
 									player.getStatus().stopHpMpRegeneration();
 									player.setIsDead(true);
 									player.setIsPendingRevive(true);
-								}
+									if (player.getPet() != null)
+										player.getPet().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
+				                }
 								else
 									player.doDie(activeChar);
 							}
@@ -188,7 +191,7 @@ public class Blow implements ISkillHandler
 			        		((L2PcInstance)target).isInOlympiadMode() &&
 			        		((L2PcInstance)target).getOlympiadGameId() == activePlayer.getOlympiadGameId())
 			        {
-			        	Olympiad.getInstance().notifyCompetitorDamage(activePlayer.getObjectId(), (int) damage, activePlayer.getOlympiadGameId());
+			        	Olympiad.getInstance().notifyCompetitorDamage(activePlayer, (int) damage, activePlayer.getOlympiadGameId());
 			        }
 				}
 			}

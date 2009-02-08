@@ -37,7 +37,6 @@ import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.GmListTable;
 import net.sf.l2j.gameserver.ItemsAutoDestroy;
 import net.sf.l2j.gameserver.LoginServerThread;
-import net.sf.l2j.gameserver.Olympiad;
 import net.sf.l2j.gameserver.RecipeController;
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.SevenSignsFestival;
@@ -52,6 +51,7 @@ import net.sf.l2j.gameserver.cache.WarehouseCacheManager;
 import net.sf.l2j.gameserver.communitybbs.BB.Forum;
 import net.sf.l2j.gameserver.communitybbs.Manager.ForumsBBSManager;
 import net.sf.l2j.gameserver.datatables.AccessLevels;
+import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.datatables.CharTemplateTable;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.FishTable;
@@ -135,6 +135,7 @@ import net.sf.l2j.gameserver.model.itemcontainer.PcFreight;
 import net.sf.l2j.gameserver.model.itemcontainer.PcInventory;
 import net.sf.l2j.gameserver.model.itemcontainer.PcWarehouse;
 import net.sf.l2j.gameserver.model.itemcontainer.PetInventory;
+import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.model.quest.State;
@@ -152,7 +153,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ExFishingEnd;
 import net.sf.l2j.gameserver.network.serverpackets.ExFishingStart;
 import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadMode;
 import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadSpelledInfo;
-import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadUserInfoSpectator;
+import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ExSetCompassZoneCode;
 import net.sf.l2j.gameserver.network.serverpackets.ExSpawnEmitter;
 import net.sf.l2j.gameserver.network.serverpackets.GMHide;
@@ -3895,7 +3896,7 @@ public final class L2PcInstance extends L2PlayableInstance
 							        + player.getName() + "). CP: "
 							        + getCurrentCp() + " HP: " + getCurrentHp()
 							        + " MP: " + getCurrentMp());
-						player.sendPacket(new ExOlympiadUserInfoSpectator(this, 1));
+						player.sendPacket(new ExOlympiadUserInfo(this, 1));
 					}
 				}
 			}
@@ -3904,7 +3905,7 @@ public final class L2PcInstance extends L2PlayableInstance
                 for(L2PcInstance spectator : Olympiad.getInstance().getSpectators(_olympiadGameId))
                 {
                     if (spectator == null) continue;
-                    spectator.sendPacket(new ExOlympiadUserInfoSpectator(this, getOlympiadSide()));
+                    spectator.sendPacket(new ExOlympiadUserInfo(this, getOlympiadSide()));
                 }
             }
         }
@@ -3962,7 +3963,7 @@ public final class L2PcInstance extends L2PlayableInstance
                         effect.addIcon(mi);
                     if (ps != null)
                         effect.addPartySpelledIcon(ps);
-                    if (os != null)
+                    if (os != null && !effect.getSkill().isToggle())
                         effect.addOlympiadSpelledIcon(os);
                 }
             }
@@ -9017,7 +9018,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		broadcastUserInfo();
 	}
 
-	public void enterOlympiadObserverMode(int x, int y, int z, int id)
+	public void enterOlympiadObserverMode(int x, int y, int z, int id, boolean storeCoords)
     {
         if (getPet() != null)
             getPet().unSummon(this);
@@ -9032,13 +9033,19 @@ public final class L2PcInstance extends L2PlayableInstance
 
             getCubics().clear();
         }
+        
+        if (getParty() != null)
+        	getParty().removePartyMember(this);
 
     	_olympiadGameId = id;
-        _obsX = getX();
         if (isSitting())
             standUp();
-        _obsY = getY();
-        _obsZ = getZ();
+        if (storeCoords)
+        {
+	        _obsX = getX();
+	        _obsY = getY();
+	        _obsZ = getZ();
+        }
         setTarget(null);
         setIsInvul(true);
         getAppearance().setInvisible();
@@ -9054,10 +9061,11 @@ public final class L2PcInstance extends L2PlayableInstance
 		setTarget(null);
 		setXYZ(_obsX, _obsY, _obsZ);
 		setIsParalyzed(false);
-		getAppearance().setVisible();
 		sendPacket(new GMHide(0));
-        setIsInvul(false);
-
+		if (!AdminCommandAccessRights.getInstance().hasAccess("admin_invis", getAccessLevel()))
+			getAppearance().setVisible();
+		if (!AdminCommandAccessRights.getInstance().hasAccess("admin_invul", getAccessLevel()))
+			setIsInvul(false);
 		if (getAI() != null)
 			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 
@@ -9071,14 +9079,15 @@ public final class L2PcInstance extends L2PlayableInstance
 		setTarget(null);
 		sendPacket(new ExOlympiadMode(0));
         teleToLocation(_obsX, _obsY, _obsZ, true);
-        getAppearance().setVisible();
         sendPacket(new GMHide(0));
-        setIsInvul(false);
-        if (getAI() != null)
-		{
+        if (!AdminCommandAccessRights.getInstance().hasAccess("admin_invis", getAccessLevel()))
+			getAppearance().setVisible();
+		if (!AdminCommandAccessRights.getInstance().hasAccess("admin_invul", getAccessLevel()))
+			setIsInvul(false);
+		if (getAI() != null)
             getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-        }
-        Olympiad.getInstance().removeSpectator(_olympiadGameId, this);
+
+        Olympiad.removeSpectator(_olympiadGameId, this);
         _olympiadGameId = -1;
         _observerMode = false;
 		broadcastUserInfo();
@@ -10506,7 +10515,7 @@ public final class L2PcInstance extends L2PlayableInstance
 				_log.log(Level.SEVERE, "deleteMe()", e);
 			}
 		
-		if (getOlympiadGameId() != -1) // handle removal from olympiad game
+		if (Olympiad.getInstance().isRegistered(this) || getOlympiadGameId() != -1) // handle removal from olympiad game
 			Olympiad.getInstance().removeDisconnectedCompetitor(this);
 		
 		// If the L2PcInstance has Pet, unsummon it
@@ -11783,7 +11792,7 @@ public final class L2PcInstance extends L2PlayableInstance
         		((L2PcInstance)target).isInOlympiadMode() &&
         		((L2PcInstance)target).getOlympiadGameId() == getOlympiadGameId())
         {
-        	Olympiad.getInstance().notifyCompetitorDamage(getObjectId(), damage, getOlympiadGameId());
+        	Olympiad.getInstance().notifyCompetitorDamage(this, damage, getOlympiadGameId());
         }
 
 		SystemMessage sm = new SystemMessage(SystemMessageId.S1_GAVE_S2_DAMAGE_OF_S3);

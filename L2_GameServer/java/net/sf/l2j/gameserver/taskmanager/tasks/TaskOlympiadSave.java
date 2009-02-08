@@ -16,7 +16,7 @@ package net.sf.l2j.gameserver.taskmanager.tasks;
 
 import java.util.logging.Logger;
 
-import net.sf.l2j.gameserver.Olympiad;
+import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.taskmanager.Task;
 import net.sf.l2j.gameserver.taskmanager.TaskManager;
 import net.sf.l2j.gameserver.taskmanager.TaskTypes;
@@ -49,18 +49,10 @@ public class TaskOlympiadSave extends Task
 	@Override
 	public void onTimeElapsed(ExecutedTask task)
 	{
-		try
+		if (Olympiad.getInstance().inCompPeriod())
 		{
-			if (Olympiad.getInstance().inCompPeriod())
-			{
-				Olympiad.getInstance().save();
-				_log.info("Olympiad System: Data updated successfully.");
-			}
-		}
-		catch (Exception e)
-		{
-			_log.warning("Olympiad System: Failed to save Olympiad configuration: "
-			        + e);
+			Olympiad.getInstance().saveOlympiadStatus();
+			_log.info("Olympiad System: Data updated.");
 		}
 	}
 	

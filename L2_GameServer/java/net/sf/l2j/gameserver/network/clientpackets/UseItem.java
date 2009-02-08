@@ -287,6 +287,13 @@ public final class UseItem extends L2GameClientPacket
 					return;
 				}
 
+                // Don't allow hero equipment and restricted items during Olympiad
+                if (activeChar.isInOlympiadMode() && (item.isHeroItem() || item.isOlyRestrictedItem()))
+                {
+                    activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_CANT_BE_EQUIPPED_FOR_THE_OLYMPIAD_EVENT));
+                    return;
+                }
+                
                 switch (item.getItem().getBodyPart())
                 {
                     case L2Item.SLOT_LR_HAND:
@@ -322,13 +329,6 @@ public final class UseItem extends L2GameClientPacket
                         // Don't allow weapon/shield equipment if a cursed weapon is equiped
                         if (activeChar.isCursedWeaponEquipped())
                         {
-                            return;
-                        }
-                        
-                        // Don't allow weapon/shield hero equipment during Olympiads
-                        if (activeChar.isInOlympiadMode() && (item.isHeroItem() || item.isOlyRestrictedItem()))
-                        {
-                            activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
                             return;
                         }
                         

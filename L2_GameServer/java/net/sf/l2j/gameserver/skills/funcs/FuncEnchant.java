@@ -14,7 +14,9 @@
  */
 package net.sf.l2j.gameserver.skills.funcs;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.Stats;
 import net.sf.l2j.gameserver.templates.item.L2Item;
@@ -48,6 +50,24 @@ public class FuncEnchant extends Func
             enchant = 3;
         }
 
+        if (env.player != null && env.player instanceof L2PcInstance)
+        {
+        	L2PcInstance player = (L2PcInstance)env.player;
+        	if (player.isInOlympiadMode() && Config.ALT_OLY_ENCHANT_LIMIT >= 0 &&
+        			(enchant + overenchant) > Config.ALT_OLY_ENCHANT_LIMIT)
+        	{
+        		if (Config.ALT_OLY_ENCHANT_LIMIT > 3)
+        		{
+        			overenchant = Config.ALT_OLY_ENCHANT_LIMIT - 3;
+        		}
+        		else
+        		{
+        			overenchant = 0;
+        			enchant = Config.ALT_OLY_ENCHANT_LIMIT;
+        		}
+        	}
+        }
+        
         if (stat == Stats.MAGIC_DEFENCE || stat == Stats.POWER_DEFENCE)
         {
             env.value += enchant + 3 * overenchant;

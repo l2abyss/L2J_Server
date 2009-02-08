@@ -14,6 +14,9 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.olympiad.Olympiad;
+
 /**
  * format ch
  * c: (id) 0xD0
@@ -35,8 +38,10 @@ public final class RequestOlympiadMatchList extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		// TODO Auto-generated method stub
-
+		L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null)
+			return;
+		if (activeChar.inObserverMode()) Olympiad.sendMatchList(activeChar);
 	}
 
 	/* (non-Javadoc)

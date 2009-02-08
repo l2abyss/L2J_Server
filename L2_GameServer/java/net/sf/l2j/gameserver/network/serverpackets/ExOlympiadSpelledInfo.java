@@ -38,13 +38,13 @@ public class ExOlympiadSpelledInfo extends L2GameServerPacket
 	private class Effect
 	{
 		protected int _skillId;
-		protected int _dat;
+		protected int _level;
 		protected int _duration;
 
-		public Effect(int pSkillId, int pDat, int pDuration)
+		public Effect(int pSkillId, int pLevel, int pDuration)
 		{
 			_skillId = pSkillId;
-			_dat = pDat;
+			_level = pLevel;
 			_duration = pDuration;
 		}
 	}
@@ -55,9 +55,9 @@ public class ExOlympiadSpelledInfo extends L2GameServerPacket
         _player = player;
 	}
 
-	public void addEffect(int skillId, int dat, int duration)
+	public void addEffect(int skillId, int level, int duration)
 	{
-		_effects.add(new Effect(skillId, dat, duration));
+		_effects.add(new Effect(skillId, level, duration));
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class ExOlympiadSpelledInfo extends L2GameServerPacket
         for (Effect temp : _effects)
         {
         	writeD(temp._skillId);
-        	writeH(temp._dat);
+        	writeH(temp._level);
         	writeD(temp._duration/1000);
         }
 	}

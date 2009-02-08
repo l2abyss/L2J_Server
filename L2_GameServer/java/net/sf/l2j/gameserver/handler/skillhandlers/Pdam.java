@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.handler.skillhandlers;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.lib.Log;
@@ -196,6 +197,8 @@ public class Pdam implements ISkillHandler
 											player.getStatus().stopHpMpRegeneration();
 											player.setIsDead(true);
 											player.setIsPendingRevive(true);
+											if (player.getPet() != null)
+												player.getPet().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
 										}
 										else
 											player.doDie(activeChar);

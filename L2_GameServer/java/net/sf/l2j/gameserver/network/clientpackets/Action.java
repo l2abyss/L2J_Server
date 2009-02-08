@@ -21,7 +21,9 @@ import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * This class ...
@@ -66,6 +68,14 @@ public final class Action extends L2GameClientPacket
 		
 		if (activeChar == null)
 			return;
+		
+		if (activeChar.inObserverMode())
+		{
+			SystemMessage sm = new SystemMessage(SystemMessageId.OBSERVERS_CANNOT_PARTICIPATE);
+			getClient().sendPacket(sm);
+			getClient().sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
 		
 		L2Object obj;
 		

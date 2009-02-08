@@ -226,6 +226,8 @@ public class CharStatus
                     stopHpMpRegeneration();
                     getActiveChar().setIsDead(true);
                     getActiveChar().setIsPendingRevive(true);
+                    if (getActiveChar().getPet() != null)
+                    	getActiveChar().getPet().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
                     return;
                 }
             }

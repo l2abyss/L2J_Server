@@ -25,7 +25,6 @@ import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.Announcements;
 import net.sf.l2j.gameserver.GmListTable;
-import net.sf.l2j.gameserver.Olympiad;
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.TaskPriority;
 import net.sf.l2j.gameserver.cache.HtmCache;
@@ -56,6 +55,7 @@ import net.sf.l2j.gameserver.model.entity.Hero;
 import net.sf.l2j.gameserver.model.entity.L2Event;
 import net.sf.l2j.gameserver.model.entity.Siege;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
+import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -343,7 +343,8 @@ public class EnterWorld extends L2GameClientPacket
 
         if (Olympiad.getInstance().playerInStadia(activeChar))
         {
-            activeChar.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+        	activeChar.doRevive();
+        	activeChar.teleToLocation(MapRegionTable.TeleportWhereType.Town);
             activeChar.sendMessage("You have been teleported to the nearest town due to you being in an Olympiad Stadium");
         }
 

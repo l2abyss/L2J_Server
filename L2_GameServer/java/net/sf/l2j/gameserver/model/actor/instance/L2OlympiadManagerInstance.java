@@ -17,13 +17,14 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.util.logging.Logger;
 
 import javolution.text.TextBuilder;
+import javolution.util.FastMap;
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.Olympiad;
 import net.sf.l2j.gameserver.datatables.NpcBufferTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Multisell;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExHeroList;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
@@ -199,13 +200,13 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
         	
         	if (player.olyBuff > 0)
            	{
-            	html.setFile(Olympiad.OLYMPIAD_HTML_FILE + "olympiad_buffs.htm");
+            	html.setFile(Olympiad.OLYMPIAD_HTML_PATH + "olympiad_buffs.htm");
             	html.replace("%objectId%", String.valueOf(getObjectId()));
             	player.sendPacket(html);
             } 
         	else
             {
-            	html.setFile(Olympiad.OLYMPIAD_HTML_FILE + "olympiad_nobuffs.htm");
+            	html.setFile(Olympiad.OLYMPIAD_HTML_PATH + "olympiad_nobuffs.htm");
             	html.replace("%objectId%", String.valueOf(getObjectId()));
             	player.sendPacket(html);
             	this.deleteMe();                    	
@@ -221,30 +222,32 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
             switch (val)
             {
                 case 1:
-                    String[] matches = Olympiad.getInstance().getMatchList();
-                    int stad;
-                    int showbattle;
-                    replyMSG.append("Grand Olympiad Competition View<br>" +
-                            "Warning: If you watch an Olympiad game, the " +
-                            "summoning of your Servitors or Pets will be " +
-                            "cancelled.<br><br>");
+                	FastMap<Integer, String> matches = Olympiad.getInstance().getMatchList();
+                    replyMSG.append("<br>Grand Olympiad Competition View <br> Warning: " +
+                    		"If you choose to watch an Olympiad game, any summoning of Servitors " +
+                    		"or Pets will be canceled. <br><br>");
 
-                    if (matches == null)
-                        replyMSG.append("<br>There are no matches at the moment");
-                    else
+                    for (int i = 0; i < Olympiad.getStadiumCount(); i++)
                     {
-                        for (int i = 0; i < matches.length; i++)
-                        {
-                        	showbattle = Integer.parseInt(matches[i].substring(1,2));
-                        	stad = Integer.parseInt(matches[i].substring(4,5));
-                        	if (showbattle == 1) {
-                        		replyMSG.append("<br><a action=\"bypass -h npc_"+getObjectId()+"_Olympiad 3_" + stad + "\">" +
-                                    matches[i] + "</a>");
-                        	}
-
+                    	int arenaID = i + 1;
+                    	String title = "";
+                    	if (matches.containsKey(i))
+                    	{
+                        	title = matches.get(i);
                         }
+                        else
+                        {
+                        	title = "Initial State";
+                        }
+                    	replyMSG.append("<a action=\"bypass -h npc_"+getObjectId()+"_Olympiad 3_" + i + "\">" +
+                                "Arena " + arenaID + "&nbsp;&nbsp;&nbsp;" + title + "</a><br>");
                     }
-                    replyMSG.append("</body></html>");
+                    
+                    replyMSG.append("<img src=\"L2UI.SquareWhite\" width=270 height=1> <img src=\"L2UI.SquareBlank\" width=1 height=3>");
+                    replyMSG.append("<table width=270 border=0 cellpadding=0 cellspacing=0>");
+                    replyMSG.append("<tr><td width=90 height=20 align=center>");
+                    replyMSG.append("<button value=\"Back\" action=\"bypass -h npc_"+getObjectId()+"_Chat 0\" width=80 height=27 back=\"L2UI_CT1.Button_DF_Down\" fore=\"L2UI_CT1.Button_DF\">");
+                    replyMSG.append("</td></tr></table></body></html>");
 
                     reply.setHtml(replyMSG.toString());
                     player.sendPacket(reply);
@@ -276,7 +279,7 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
                         }
 
                         replyMSG.append("<img src=\"L2UI.SquareWhite\" width=270 height=1> <img src=\"L2UI.SquareBlank\" width=1 height=3>");
-                        replyMSG.append("</center>");
+                        replyMSG.append("<button value=\"Back\" action=\"bypass -h npc_"+getObjectId()+"_OlympiadDesc 3a\" width=80 height=26 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center>");
                         replyMSG.append("</body></html>");
 
                         reply.setHtml(replyMSG.toString());
@@ -285,7 +288,7 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
                     break;
                 case 3:
                     int id = Integer.parseInt(command.substring(11));
-                    Olympiad.getInstance().addSpectator(id, player);
+                    Olympiad.addSpectator(id, player, true);
                     break;
                 case 4:
                     player.sendPacket(new ExHeroList());
@@ -301,13 +304,13 @@ public class L2OlympiadManagerInstance extends L2FolkInstance
 
     private void showChatWindow(L2PcInstance player, int val, String suffix)
     {
-        String filename = Olympiad.OLYMPIAD_HTML_FILE;
+        String filename = Olympiad.OLYMPIAD_HTML_PATH;
 
         filename += "noble_desc" + val;
         filename += (suffix != null)? suffix + ".htm" : ".htm";
 
-        if (filename.equals(Olympiad.OLYMPIAD_HTML_FILE + "noble_desc0.htm"))
-            filename = Olympiad.OLYMPIAD_HTML_FILE + "noble_main.htm";
+        if (filename.equals(Olympiad.OLYMPIAD_HTML_PATH + "noble_desc0.htm"))
+            filename = Olympiad.OLYMPIAD_HTML_PATH + "noble_main.htm";
 
         showChatWindow(player, filename);
     }

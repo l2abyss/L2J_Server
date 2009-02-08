@@ -24,7 +24,6 @@ import java.util.logging.Level;
 import javolution.text.TextBuilder;
 import javolution.util.FastList;
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.Olympiad;
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.SevenSignsFestival;
 import net.sf.l2j.gameserver.ThreadPoolManager;
@@ -62,6 +61,7 @@ import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.model.entity.L2Event;
 import net.sf.l2j.gameserver.model.itemcontainer.NpcInventory;
+import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.model.quest.State;
@@ -2174,7 +2174,7 @@ public class L2NpcInstance extends L2Character
 				break;
 			case 31688:
 				if (player.isNoble())
-					filename = Olympiad.OLYMPIAD_HTML_FILE + "noble_main.htm";
+					filename = Olympiad.OLYMPIAD_HTML_PATH + "noble_main.htm";
 				else
 					filename = (getHtmlPath(npcId, val));
 				break;
@@ -2184,15 +2184,15 @@ public class L2NpcInstance extends L2Character
 			case 31771:
 			case 31772:
 				if (player.isHero())
-					filename = Olympiad.OLYMPIAD_HTML_FILE + "hero_main.htm";
+					filename = Olympiad.OLYMPIAD_HTML_PATH + "hero_main.htm";
 				else
 					filename = (getHtmlPath(npcId, val));
 				break;
 			case 36402:
 				if (player.olyBuff > 0 && !player.inObserverMode())
-					filename = Olympiad.OLYMPIAD_HTML_FILE + "olympiad_buffs.htm";
+					filename = Olympiad.OLYMPIAD_HTML_PATH + "olympiad_buffs.htm";
 				else
-					filename = Olympiad.OLYMPIAD_HTML_FILE + "olympiad_nobuffs.htm";
+					filename = Olympiad.OLYMPIAD_HTML_PATH + "olympiad_nobuffs.htm";
 				break;
 			default:
 				if (npcId >= 31865 && npcId <= 31918)

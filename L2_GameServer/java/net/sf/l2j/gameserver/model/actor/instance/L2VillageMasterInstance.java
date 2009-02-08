@@ -19,7 +19,6 @@ import java.util.Set;
 
 import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.Olympiad;
 import net.sf.l2j.gameserver.datatables.CharTemplateTable;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
@@ -286,13 +285,6 @@ public final class L2VillageMasterInstance extends L2FolkInstance
                         allowAddition = false;
                     }
 
-                    if (Olympiad.getInstance().isRegisteredInComp(player)
-                        || player.getOlympiadGameId() > 0)
-                    {
-                        player.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_ALREADY_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_AN_EVENT));
-                        return;
-                    }
-
                     if (allowAddition)
                     {
                         if (!player.getSubClasses().isEmpty())
@@ -379,14 +371,6 @@ public final class L2VillageMasterInstance extends L2FolkInstance
                      * Note: paramOne = classIndex
                      */
 
-                    if (Olympiad.getInstance().isRegisteredInComp(player)
-                        || player.getOlympiadGameId() > 0)
-                    {
-                        player.sendPacket(new SystemMessage(
-                                                            SystemMessageId.YOU_HAVE_ALREADY_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_AN_EVENT));
-                        return;
-                    }
-                    
                     /*
                      * DrHouse: Despite this is not 100% retail like, it is here to avoid some exploits during subclass changes, specially
                      * on small servers. TODO: On retail, each village master doesn't offer any subclass that is not given by itself so player

@@ -28,6 +28,7 @@ import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossSpawnManager;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.network.gameserverpackets.ServerStatus;
 import net.sf.l2j.gameserver.network.serverpackets.ServerClose;
@@ -502,17 +503,10 @@ public class Shutdown extends Thread
 		System.err.println("GrandBossManager: All Grand Boss info saved!!");
 		TradeController.getInstance().dataCountStore();
 		System.err.println("TradeController: All count Item Saved");
-		try
-		{
-			Olympiad.getInstance().save();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		System.err.println("Olympiad System: Data saved!!");
-		
-		// Save Cursed Weapons data before closing.
+		Olympiad.getInstance().saveOlympiadStatus();
+        System.err.println("Olympiad System: Data saved!!");
+        
+        // Save Cursed Weapons data before closing.
 		CursedWeaponsManager.getInstance().saveData();
 		
 		// Save all manor data

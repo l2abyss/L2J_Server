@@ -18,7 +18,6 @@ import java.util.Collection;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GeoData;
-import net.sf.l2j.gameserver.Olympiad;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
 import net.sf.l2j.gameserver.ai.L2SummonAI;
@@ -35,6 +34,7 @@ import net.sf.l2j.gameserver.model.actor.stat.SummonStat;
 import net.sf.l2j.gameserver.model.actor.status.SummonStatus;
 import net.sf.l2j.gameserver.model.base.Experience;
 import net.sf.l2j.gameserver.model.itemcontainer.PetInventory;
+import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ExPartyPetWindowAdd;
@@ -826,7 +826,7 @@ public abstract class L2Summon extends L2PlayableInstance
 					((L2PcInstance)target).isInOlympiadMode() &&
 					((L2PcInstance)target).getOlympiadGameId() == getOwner().getOlympiadGameId())
 			{
-				Olympiad.getInstance().notifyCompetitorDamage(getOwner().getObjectId(), damage, getOwner().getOlympiadGameId());
+				Olympiad.getInstance().notifyCompetitorDamage(getOwner(), damage, getOwner().getOlympiadGameId());
 			}
 
 			SystemMessage sm;

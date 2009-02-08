@@ -30,6 +30,7 @@ import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.L2Event;
+import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.util.GMAudit;
@@ -171,6 +172,10 @@ public final class RequestBypassToServer extends L2GameClientPacket
 					player.processQuestEvent(p, "");
 				else
 					player.processQuestEvent(p.substring(0, idx), p.substring(idx).trim());
+			}
+			else if (_command.startsWith("OlympiadArenaChange"))
+			{
+					Olympiad.bypassChangeArena(_command, activeChar);
 			}
 		}
 		catch (Exception e)

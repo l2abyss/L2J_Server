@@ -14,48 +14,22 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-
-
 /**
- * This class ...
  *
- * @version $Revision: 1.4.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- *
- * @author godson
+ * @author  GodKratos
  */
-public class ExOlympiadUserInfo extends L2GameServerPacket
+public class ExOlympiadMatchEnd extends L2GameServerPacket
 {
-	// chcdSddddd
-	private static final String _S__FE_29_OLYMPIADUSERINFO = "[S] FE:7A ExOlympiadUserInfo";
-	private int _side;
-	private L2PcInstance _player;
-
-
-	/**
-	 * @param _player
-	 * @param _side (1 = right, 2 = left)
-	 */
-	public ExOlympiadUserInfo(L2PcInstance player, int side)
+	public ExOlympiadMatchEnd()
 	{
-		_player = player;
-		_side = side;
+		
 	}
-
-
+	
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0x7a);
-		writeC(_side);
-		writeD(_player.getObjectId());
-		writeS(_player.getName());
-		writeD(_player.getClassId().getId());
-		writeD((int)_player.getCurrentHp());
-		writeD(_player.getMaxHp());
-		writeD((int)_player.getCurrentCp());
-		writeD(_player.getMaxCp());
+		writeC(0xFE);
+		writeH(0x2D);
 	}
 
 	/* (non-Javadoc)
@@ -64,6 +38,6 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return _S__FE_29_OLYMPIADUSERINFO;
+		return "[S] FE:2D ExOlympiadMatchEnd";
 	}
 }

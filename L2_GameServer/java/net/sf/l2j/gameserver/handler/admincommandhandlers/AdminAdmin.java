@@ -18,7 +18,6 @@ import java.util.StringTokenizer;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GmListTable;
-import net.sf.l2j.gameserver.Olympiad;
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.datatables.AccessLevels;
 import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
@@ -32,6 +31,7 @@ import net.sf.l2j.gameserver.instancemanager.Manager;
 import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.model.L2Multisell;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
@@ -106,15 +106,8 @@ public class AdminAdmin implements IAdminCommandHandler
 		}
 		else if (command.startsWith("admin_saveolymp"))
 		{
-			try
-			{
-				Olympiad.getInstance().save();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-			activeChar.sendMessage("olympiad stuff saved!!");
+			Olympiad.getInstance().saveOlympiadStatus();
+			activeChar.sendMessage("olympiad system saved.");
 		}
 		else if (command.startsWith("admin_endolympiad"))
 		{

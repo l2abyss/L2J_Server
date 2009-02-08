@@ -86,6 +86,8 @@ public abstract class Inventory extends ItemContainer
     public static final int PAPERDOLL_DECO4 = 27;
     public static final int PAPERDOLL_DECO5 = 28;
     public static final int PAPERDOLL_DECO6 = 29;
+    
+    public static final int PAPERDOLL_TOTALSLOTS = 30;
 
     //Speed percentage mods
     public static final double MAX_ARMOR_WEIGHT = 12000;
@@ -759,7 +761,7 @@ public abstract class Inventory extends ItemContainer
 	{
 		return _paperdoll[slot];
 	}
-	
+
 	/**
 	 * Returns the item in the paperdoll L2Item slot
 	 * @param L2Item slot identifier
