@@ -7952,7 +7952,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	public void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
 	{
 		// Check if the skill is active
-        if (skill.isPassive() || skill.isChance())
+        if (skill.isPassive() || skill.isChance() || skill.bestowed())
         {
             // just ignore the passive skill request. why does the client send it anyway ??
             // Send a Server->Client packet ActionFailed to the L2PcInstance
