@@ -864,21 +864,33 @@ public abstract class L2Summon extends L2PlayableInstance
 	@Override
 	public void doCast(L2Skill skill)
 	{
-		int petLevel = getLevel();
-		int skillLevel = petLevel/10;
-    	if(petLevel >= 70)
-    		skillLevel += (petLevel-65)/10;
+        final L2PcInstance actingPlayer = getActingPlayer();
 
-    	// adjust the level for servitors less than lv 10
-    	if (skillLevel < 1)
-    		skillLevel = 1;
+        if (!actingPlayer.checkPvpSkill(getTarget(), skill) &&
+                !actingPlayer.getAccessLevel().allowPeaceAttack()) {
+            // Send a System Message to the L2PcInstance
+            actingPlayer.sendPacket(
+                    new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 
-    	L2Skill skillToCast = SkillTable.getInstance().getInfo(skill.getId(),skillLevel);
+            // Send a Server->Client packet ActionFailed to the L2PcInstance
+            actingPlayer.sendPacket(ActionFailed.STATIC_PACKET);
+        } else {
+            int petLevel = getLevel();
+            int skillLevel = petLevel/10;
+            if(petLevel >= 70)
+                skillLevel += (petLevel-65)/10;
 
-    	if (skillToCast != null)
-    		super.doCast(skillToCast);
-    	else
-    		super.doCast(skill);
+            // adjust the level for servitors less than lv 10
+            if (skillLevel < 1)
+                skillLevel = 1;
+
+            L2Skill skillToCast = SkillTable.getInstance().getInfo(skill.getId(),skillLevel);
+
+            if (skillToCast != null)
+                super.doCast(skillToCast);
+            else
+                super.doCast(skill);
+        }
 	}
 
 	@Override
