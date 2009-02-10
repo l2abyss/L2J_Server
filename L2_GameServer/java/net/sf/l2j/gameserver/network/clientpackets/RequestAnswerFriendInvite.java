@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.FriendList;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
 /**
@@ -83,6 +84,10 @@ public final class RequestAnswerFriendInvite extends L2GameClientPacket
         			msg.addString(requestor.getName());
             		player.sendPacket(msg);
             		msg = null;
+
+            		//Send notificacions for both player in order to show them online
+    				player.sendPacket(new FriendList(player));
+    				requestor.sendPacket(new FriendList(requestor));
         		}
         		catch (Exception e)
         		{
