@@ -193,9 +193,10 @@ public class Olympiad
 		switch (_period)
 		{
 			case 0:
-				if (_olympiadEnd == 0
-				        || _olympiadEnd < Calendar.getInstance().getTimeInMillis())
+				if (_olympiadEnd == 0 || _olympiadEnd < Calendar.getInstance().getTimeInMillis())
 					setNewOlympiadEnd();
+				else
+					scheduleWeeklyChange();
 				break;
 			case 1:
 				if (_validationEnd > Calendar.getInstance().getTimeInMillis())
@@ -303,7 +304,6 @@ public class Olympiad
 		_scheduledOlympiadEnd = ThreadPoolManager.getInstance().scheduleGeneral(new OlympiadEndTask(), getMillisToOlympiadEnd());
 		
 		updateCompStatus();
-		scheduleWeeklyChange();
 	}
 	
 	protected class OlympiadEndTask implements Runnable
@@ -764,6 +764,7 @@ public class Olympiad
 		
 		Calendar nextChange = Calendar.getInstance();
 		_nextWeeklyChange = nextChange.getTimeInMillis() + WEEKLY_PERIOD;
+		scheduleWeeklyChange();
 	}
 	
 	public boolean inCompPeriod()
@@ -819,8 +820,7 @@ public class Olympiad
 				_log.info("Olympiad System: Added weekly points to nobles");
 				
 				Calendar nextChange = Calendar.getInstance();
-				_nextWeeklyChange = nextChange.getTimeInMillis()
-				        + WEEKLY_PERIOD;
+				_nextWeeklyChange = nextChange.getTimeInMillis() + WEEKLY_PERIOD;
 			}
 		}, getMillisToWeekChange(), WEEKLY_PERIOD);
 	}
