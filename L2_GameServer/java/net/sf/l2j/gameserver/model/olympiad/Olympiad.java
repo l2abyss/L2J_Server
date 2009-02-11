@@ -81,9 +81,11 @@ public class Olympiad
 	        + "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC";
 	private static final String GET_EACH_CLASS_LEADER = "SELECT characters.char_name from olympiad_nobles_eom, characters "
 	        + "WHERE characters.charId = olympiad_nobles_eom.charId AND olympiad_nobles_eom.class_id = ? "
+	        + "AND olympiad_nobles_eom.competitions_done >= 9 "
 	        + "ORDER BY olympiad_nobles_eom.olympiad_points DESC, olympiad_nobles_eom.competitions_done DESC LIMIT 10";
 	private static final String GET_EACH_CLASS_LEADER_CURRENT = "SELECT characters.char_name from olympiad_nobles, characters "
         + "WHERE characters.charId = olympiad_nobles.charId AND olympiad_nobles.class_id = ? "
+        + "AND olympiad_nobles.competitions_done >= 9 "
         + "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC LIMIT 10";
 	private static final String OLYMPIAD_DELETE_ALL = "TRUNCATE olympiad_nobles";
 	private static final String OLYMPIAD_MONTH_CLEAR = "TRUNCATE olympiad_nobles_eom";
