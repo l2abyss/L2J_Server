@@ -30,9 +30,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2ManufactureItem;
 import net.sf.l2j.gameserver.model.L2RecipeInstance;
+import net.sf.l2j.gameserver.model.L2RecipeStatInstance;
 import net.sf.l2j.gameserver.model.L2RecipeList;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -48,6 +50,8 @@ import net.sf.l2j.gameserver.network.serverpackets.SetupGauge;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Stats;
+import net.sf.l2j.gameserver.templates.StatsSet;
+import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.util.Util;
 import net.sf.l2j.util.Rnd;
 
@@ -107,7 +111,7 @@ public class RecipeController
 		}
 		return null;
 	}
-
+	
     public L2RecipeList getRecipeById(int recId)
     {
         for (int i = 0; i < _lists.size(); i++)
@@ -299,20 +303,26 @@ public class RecipeController
         {
             Document doc = factory.newDocumentBuilder().parse(file);
             List<L2RecipeInstance> recipePartList = new FastList<L2RecipeInstance>();
+            List<L2RecipeStatInstance> recipeStatUseList = new FastList<L2RecipeStatInstance>();
+            List<L2RecipeStatInstance> recipeAltStatChangeList = new FastList<L2RecipeStatInstance>();
             
             for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
             {
                 if ("list".equalsIgnoreCase(n.getNodeName()))
                 {
-                    String recipeName;
-                    int id;
-                    for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
+                    recipesFile : for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
                     {
                         if ("item".equalsIgnoreCase(d.getNodeName()))
                         {
                             recipePartList.clear();
+                            recipeStatUseList.clear();
+                            recipeAltStatChangeList.clear();
                             NamedNodeMap attrs = d.getAttributes();
                             Node att;
+                            int id = -1;
+                            boolean haveRare = false;
+                            StatsSet set = new StatsSet();
+
                             att = attrs.getNamedItem("id");
                             if (att == null)
                             {
@@ -320,6 +330,15 @@ public class RecipeController
                                 continue;
                             }
                             id = Integer.parseInt(att.getNodeValue());
+                            set.set("id", id);
+
+                            att = attrs.getNamedItem("recipeId");
+                            if (att == null)
+                            {
+                            	_log.severe("Missing recipeId for recipe item id: "+id+", skipping");
+                                continue;
+                            }
+                            set.set("recipeId", Integer.parseInt(att.getNodeValue()));
                             
                             att = attrs.getNamedItem("name");
                             if (att == null)
@@ -327,32 +346,55 @@ public class RecipeController
                                 _log.severe("Missing name for recipe item id: "+id+", skipping");
                                 continue;
                             }
-                            recipeName = att.getNodeValue();
+                            set.set("recipeName", att.getNodeValue());
                             
-                            int recipeId = -1;
-                            int level = -1;
-                            boolean isDwarvenRecipe = true;
-                            int mpCost = -1;
-                            int successRate = -1;
-                            int prodId = -1;
-                            int count = -1;
+                            att = attrs.getNamedItem("craftLevel");
+                            if (att == null)
+                            {
+                                _log.severe("Missing level for recipe item id: "+id+", skipping");
+                                continue;
+                            }
+                            set.set("craftLevel", Integer.parseInt(att.getNodeValue()));
+                            
+                            att = attrs.getNamedItem("type");
+                            if (att == null)
+                            {
+                                _log.severe("Missing type for recipe item id: "+id+", skipping");
+                                continue;
+                            }
+                            set.set("isDwarvenRecipe", att.getNodeValue().equalsIgnoreCase("dwarven"));
+                            
+                            att = attrs.getNamedItem("successRate");
+                            if (att == null)
+                            {
+                                _log.severe("Missing successRate for recipe item id: "+id+", skipping");
+                                continue;
+                            }
+                            set.set("successRate", Integer.parseInt(att.getNodeValue()));
+                            
                             for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
                             {
-                                if ("recipe".equalsIgnoreCase(c.getNodeName()))
+                                if ("statUse".equalsIgnoreCase(c.getNodeName()))
                                 {
-                                    NamedNodeMap atts = c.getAttributes();
-                                    
-                                    recipeId = Integer.parseInt(atts.getNamedItem("id").getNodeValue());
-                                    level = Integer.parseInt(atts.getNamedItem("level").getNodeValue());
-                                    isDwarvenRecipe = atts.getNamedItem("type").getNodeValue().equalsIgnoreCase("dwarven");
+                                    String statName = c.getAttributes().getNamedItem("name").getNodeValue();
+                                    int value = Integer.parseInt(c.getAttributes().getNamedItem("value").getNodeValue());
+                                    try {
+                                    	recipeStatUseList.add(new L2RecipeStatInstance(statName, value));
+                                	} catch (Exception e) {
+                                		_log.severe("Error in StatUse parameter for recipe item id: "+id+", skipping");
+                                		continue recipesFile;
+                                	}
                                 }
-                                else if ("mpCost".equalsIgnoreCase(c.getNodeName()))
+                                else if ("altStatChange".equalsIgnoreCase(c.getNodeName()))
                                 {
-                                    mpCost = Integer.parseInt(c.getTextContent());
-                                }
-                                else if ("successRate".equalsIgnoreCase(c.getNodeName()))
-                                {
-                                    successRate = Integer.parseInt(c.getTextContent());
+                                    String statName = c.getAttributes().getNamedItem("name").getNodeValue();
+                                    int value = Integer.parseInt(c.getAttributes().getNamedItem("value").getNodeValue());
+                                    try {
+                                    	recipeAltStatChangeList.add(new L2RecipeStatInstance(statName, value));
+                                    } catch (Exception e) {
+                                    	_log.severe("Error in AltStatChange parameter for recipe item id: "+id+", skipping");
+                                    	continue recipesFile;
+                                    }
                                 }
                                 else if ("ingredient".equalsIgnoreCase(c.getNodeName()))
                                 {
@@ -362,15 +404,57 @@ public class RecipeController
                                 }
                                 else if ("production".equalsIgnoreCase(c.getNodeName()))
                                 {
-                                    prodId = Integer.parseInt(c.getAttributes().getNamedItem("id").getNodeValue());
-                                    count = Integer.parseInt(c.getAttributes().getNamedItem("count").getNodeValue());
+                                    set.set("itemId", Integer.parseInt(c.getAttributes().getNamedItem("id").getNodeValue()));
+                                    set.set("count", Integer.parseInt(c.getAttributes().getNamedItem("count").getNodeValue()));
+                                }
+                                else if ("productionRare".equalsIgnoreCase(c.getNodeName()))
+                                {
+                                    set.set("rareItemId", Integer.parseInt(c.getAttributes().getNamedItem("id").getNodeValue()));
+                                    set.set("rareCount", Integer.parseInt(c.getAttributes().getNamedItem("count").getNodeValue()));
+                                    set.set("rarity", Integer.parseInt(c.getAttributes().getNamedItem("rarity").getNodeValue()));
+                                    haveRare = true;
                                 }
                             }
-                            L2RecipeList recipeList = new L2RecipeList(id, level, recipeId, recipeName, successRate, mpCost, prodId, count, isDwarvenRecipe);
+                            if (haveRare)
+                            {
+                            	int pid = set.getInteger("itemId");
+                                int rid = set.getInteger("rareItemId");
+                                int rct = set.getInteger("rareCount");
+                                int rare = set.getInteger("rarity");
+                                int succ = set.getInteger("successRate");
+                                if (succ == 100 && !(rare == 8 || rare == 10))
+                                	_log.info("Recipe success Error: " + id);
+                                else if (succ == 70 && rare != 14)
+                                	_log.info("Recipe success Error: " + id);
+                                else if (succ == 60 && rare != 20)
+                                	_log.info("Recipe success Error: " + id);
+                                else if (rct == 2 && rid != pid)
+                                	_log.info("Double Craft Error: " + id);
+                                else if (rct == 1 && rid == pid)
+                                	_log.info("Double Craft Error: " + id);
+                                else
+                                {
+                                	L2Item template1 = ItemTable.getInstance().getTemplate(pid);
+                                	L2Item template2 = ItemTable.getInstance().getTemplate(rid);
+                                	if (!template2.getName().contains(template1.getName()))
+                                		_log.info(id + ":" + template1.getName() + "?" + template2.getName());
+                                }	
+                            }
+
+                            L2RecipeList recipeList = new L2RecipeList(set, haveRare);
                             for (L2RecipeInstance recipePart : recipePartList)
                             {
                                 recipeList.addRecipe(recipePart);
                             }
+                            for (L2RecipeStatInstance recipeStatUse : recipeStatUseList)
+                            {
+                                recipeList.addStatUse(recipeStatUse);
+                            }
+                            for (L2RecipeStatInstance recipeAltStatChange : recipeAltStatChangeList)
+                            {
+                                recipeList.addAltStatChange(recipeAltStatChange);
+                            }
+
                             _lists.put(_lists.size(), recipeList);
                         }
                     }
@@ -393,8 +477,10 @@ public class RecipeController
 		protected final L2Skill _skill;
 		protected final int _skillId;
 		protected final int _skillLevel;
-		protected double _creationPasses;
-		protected double _manaRequired;
+		protected int _creationPasses = 1;
+		protected int _itemGrab;
+		protected int _exp = -1;
+		protected int _sp = -1;
 		protected int _price;
 		protected int _totalItems;
 		protected int _materialsRefPrice;
@@ -458,8 +544,6 @@ public class RecipeController
 				return;
 			}
 
-			_manaRequired = _recipeList.getMpCost();
-
 			// validate skill level
 			if (_recipeList.getLevel() > _skillLevel)
 			{
@@ -499,20 +583,16 @@ public class RecipeController
 				_materialsRefPrice += i.getReferencePrice() * i.getQuantity();
 				_totalItems += i.getQuantity();
 			}
-			// initial mana check requires MP as written on recipe
-			if (_player.getCurrentMp() < _manaRequired)
+			
+			// initial statUse checks
+			if (!calculateStatUse(false, false))
 			{
-				_target.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_MP));
 				abort();
 				return;
 			}
 
-			// determine number of creation passes needed
-			// can "equip"  skillLevel items each pass
-			_creationPasses = (_totalItems / _skillLevel) + ((_totalItems % _skillLevel)!=0 ? 1 : 0);
-
-			if (Config.ALT_GAME_CREATION && _creationPasses != 0) // update mana required to "per pass"
-				_manaRequired /= _creationPasses; // checks to validateMp() will only need portion of mp for one pass
+			// initial AltStatChange checks
+			if (Config.ALT_GAME_CREATION) calculateAltStatChange();
 
 			updateMakeInfo(true);
 			updateCurMp();
@@ -564,8 +644,7 @@ public class RecipeController
 			if (Config.ALT_GAME_CREATION && !_items.isEmpty())
 			{
 
-				if (!validateMp()) return;				// check mana
-				_player.reduceCurrentMp(_manaRequired); 	// use some mp
+				if (!calculateStatUse(true, true)) return;				// check stat use
 				updateCurMp();							// update craft window mp bar
 
 				grabSomeItems(); // grab (equip) some more items with a nice msg to player
@@ -603,7 +682,7 @@ public class RecipeController
 
 		private void finishCrafting()
 		{
-			if(!Config.ALT_GAME_CREATION) _player.reduceCurrentMp(_manaRequired);
+			if(!Config.ALT_GAME_CREATION) calculateStatUse(false, true);
 
 			// first take adena for manufacture
 			if ((_target != _player) && _price > 0) // customer must pay for services
@@ -668,21 +747,20 @@ public class RecipeController
 
 		private void grabSomeItems()
 		{
-			int numItems = _skillLevel;
-
-			while (numItems > 0 && !_items.isEmpty())
+			int grabItems = _itemGrab;
+			while (grabItems > 0 && !_items.isEmpty())
 			{
 				TempItem item = _items.get(0);
 
 				int count = item.getQuantity();
-				if (count >= numItems) count = numItems;
+				if (count >= grabItems) count = grabItems;
 
 				item.setQuantity(item.getQuantity() - count);
 				if (item.getQuantity() <= 0) _items.remove(0);
 				else _items.set(0, item);
 
-				numItems -= count;
-
+				grabItems -= count;
+				
 				if (_target == _player)
 				{
 					SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2_EQUIPPED); // you equipped ...
@@ -694,26 +772,91 @@ public class RecipeController
 				                        + item.getItemName());
 			}
 		}
-
-		private boolean validateMp()
+		
+		// AltStatChange parameters make their effect here
+		private void calculateAltStatChange()
 		{
-			if (_player.getCurrentMp() < _manaRequired)
+			_itemGrab = _skillLevel;
+
+			for(L2RecipeStatInstance altStatChange : _recipeList.getAltStatChange())
 			{
-				// rest (wait for MP)
-				if (Config.ALT_GAME_CREATION)
+				if (altStatChange.getType() == L2RecipeStatInstance.statType.XP)
 				{
-					_player.sendPacket(new SetupGauge(0, _delay));
-					ThreadPoolManager.getInstance().scheduleGeneral(this, 100 + _delay);
+					_exp = altStatChange.getValue();
+				}
+				else if (altStatChange.getType() == L2RecipeStatInstance.statType.SP)
+				{
+					_sp = altStatChange.getValue();
+				}
+				else if (altStatChange.getType() == L2RecipeStatInstance.statType.GIM)
+				{
+					_itemGrab *= altStatChange.getValue();
+				}
+			}
+			// determine number of creation passes needed
+			_creationPasses = (_totalItems / _itemGrab) + ((_totalItems % _itemGrab)!=0 ? 1 : 0);
+			if (_creationPasses < 1) _creationPasses = 1;
+		}
+		
+		// StatUse 
+		private boolean calculateStatUse(boolean isWait, boolean isReduce)
+		{
+			boolean ret = true;
+			for(L2RecipeStatInstance statUse : _recipeList.getStatUse())
+			{
+				double modifiedValue = statUse.getValue() / _creationPasses;
+				if (statUse.getType() == L2RecipeStatInstance.statType.HP)
+				{
+					// we do not want to kill the player, so its CurrentHP must be greater than the reduce value 
+					if (_player.getCurrentHp() <= modifiedValue)
+					{
+						// rest (wait for HP)
+						if (Config.ALT_GAME_CREATION && isWait)
+						{
+							_player.sendPacket(new SetupGauge(0, _delay));
+							ThreadPoolManager.getInstance().scheduleGeneral(this, 100 + _delay);
+						}
+						else
+							// no rest - report no hp
+						{
+							_target.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_HP));
+							abort();
+						}
+						ret = false;
+					}
+					else if (isReduce)
+						_player.reduceCurrentHp(modifiedValue, _player, _skill);
+				}
+				else if (statUse.getType() == L2RecipeStatInstance.statType.MP)
+				{
+					if (_player.getCurrentMp() < modifiedValue)
+					{
+						// rest (wait for MP)
+						if (Config.ALT_GAME_CREATION && isWait)
+						{
+							_player.sendPacket(new SetupGauge(0, _delay));
+							ThreadPoolManager.getInstance().scheduleGeneral(this, 100 + _delay);
+						}
+						else
+							// no rest - report no mana
+						{
+							_target.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_MP));
+							abort();
+						}
+						ret = false;
+					}
+					else if (isReduce)
+						_player.reduceCurrentMp(modifiedValue);
 				}
 				else
-					// no rest - report no mana
 				{
-					_target.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_MP));
+					// there is an unknown StatUse value
+					_target.sendMessage("Recipe error!!!, please tell this to your GM.");
+					ret = false;
 					abort();
 				}
-				return false;
 			}
-			return true;
+			return ret;
 		}
 
 		private List<TempItem> listItems(boolean remove)
@@ -743,7 +886,7 @@ public class RecipeController
 						return null;
 					}
 
-					// make new temporary object, just for counting puroses
+					// make new temporary object, just for counting purposes
 
 					TempItem temp = new TempItem(item, quantity);
 					materials.add(temp);
@@ -844,11 +987,22 @@ public class RecipeController
 
 		private void rewardPlayer()
 		{
+			int rareProdId = _recipeList.getRareItemId();
 			int itemId = _recipeList.getItemId();
 			int itemCount = _recipeList.getCount();
-
-			L2ItemInstance createdItem = _target.getInventory().addItem("Manufacture", itemId, itemCount,
-			                                                           _target, _player);
+			L2Item template = ItemTable.getInstance().getTemplate(itemId);
+			
+			// check that the current recipe has a rare production or not
+			if (rareProdId != -1)
+			{
+				if (Rnd.get(100) < _recipeList.getRarity())
+				{
+					itemId = rareProdId;
+					itemCount = _recipeList.getRareCount();
+				}
+			}
+			
+			_target.getInventory().addItem("Manufacture", itemId, itemCount, _target, _player);
 
 			// inform customer of earned item
             SystemMessage sm = null;
@@ -876,28 +1030,40 @@ public class RecipeController
 			if (Config.ALT_GAME_CREATION)
 			{
 				int recipeLevel = _recipeList.getLevel();
-				int exp = createdItem.getReferencePrice() * itemCount;
+				if (_exp < 0)
+				{
+					_exp = template.getReferencePrice() * itemCount;
+					_exp /= recipeLevel;
+				}
+				if (_sp < 0)
+					_sp = _exp / 10;
+				if (itemId == rareProdId)
+				{
+					_exp *= Config.ALT_GAME_CREATION_RARE_XPSP_RATE;
+					_sp *= Config.ALT_GAME_CREATION_RARE_XPSP_RATE;
+				}
+
 				// one variation
 
 				// exp -= materialsRefPrice;   // mat. ref. price is not accurate so other method is better
 
-				if (exp < 0) exp = 0;
+				if (_exp < 0) _exp = 0;
+				if (_sp < 0) _sp = 0;
 
-				// another variation
-				exp /= recipeLevel;
 				for (int i = _skillLevel; i > recipeLevel; i--)
-					exp /= 4;
-
-				int sp = exp / 10;
+				{
+					_exp /= 4;
+					_sp /= 4;
+				}
 
 				// Added multiplication of Creation speed with XP/SP gain
 				// slower crafting -> more XP,  faster crafting -> less XP
 				// you can use ALT_GAME_CREATION_XP_RATE/SP to
 				// modify XP/SP gained (default = 1)
 
-				_player.addExpAndSp((int) _player.calcStat(Stats.EXPSP_RATE, exp * Config.ALT_GAME_CREATION_XP_RATE
+				_player.addExpAndSp((int) _player.calcStat(Stats.EXPSP_RATE, _exp * Config.ALT_GAME_CREATION_XP_RATE
 				                                         * Config.ALT_GAME_CREATION_SPEED, null, null)
-				                  ,(int) _player.calcStat(Stats.EXPSP_RATE, sp * Config.ALT_GAME_CREATION_SP_RATE
+				                  ,(int) _player.calcStat(Stats.EXPSP_RATE, _sp * Config.ALT_GAME_CREATION_SP_RATE
 				                                         * Config.ALT_GAME_CREATION_SPEED, null, null));
 			}
 			updateMakeInfo(true); // success

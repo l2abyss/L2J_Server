@@ -162,6 +162,7 @@ public final class Config
     public static boolean	ALT_GAME_CREATION;
     public static double	ALT_GAME_CREATION_SPEED;
     public static double	ALT_GAME_CREATION_XP_RATE;
+    public static double	ALT_GAME_CREATION_RARE_XPSP_RATE;
     public static double	ALT_GAME_CREATION_SP_RATE;
     public static boolean	ALT_BLACKSMITH_USE_RECIPES;
     public static int		ALT_CLAN_JOIN_DAYS;
@@ -1337,8 +1338,9 @@ public final class Config
 	                COMMON_RECIPE_LIMIT					= Integer.parseInt(Character.getProperty("CommonRecipeLimit","50"));
 	                ALT_GAME_CREATION					= Boolean.parseBoolean(Character.getProperty("AltGameCreation", "false"));
 	                ALT_GAME_CREATION_SPEED				= Double.parseDouble(Character.getProperty("AltGameCreationSpeed", "1"));
-	                ALT_GAME_CREATION_XP_RATE			= Double.parseDouble(Character.getProperty("AltGameCreationRateXp", "1"));
-	                ALT_GAME_CREATION_SP_RATE			= Double.parseDouble(Character.getProperty("AltGameCreationRateSp", "1"));
+	                ALT_GAME_CREATION_XP_RATE			= Double.parseDouble(Character.getProperty("AltGameCreationXpRate", "1"));
+	                ALT_GAME_CREATION_RARE_XPSP_RATE	= Double.parseDouble(Character.getProperty("AltGameCreationRareXpSpRate", "2"));
+	                ALT_GAME_CREATION_SP_RATE			= Double.parseDouble(Character.getProperty("AltGameCreationSpRate", "1"));
 	                ALT_BLACKSMITH_USE_RECIPES			= Boolean.parseBoolean(Character.getProperty("AltBlacksmithUseRecipes", "true"));
 	                ALT_CLAN_JOIN_DAYS					= Integer.parseInt(Character.getProperty("DaysBeforeJoinAClan", "5"));
 	                ALT_CLAN_CREATE_DAYS				= Integer.parseInt(Character.getProperty("DaysBeforeCreateAClan", "10"));
@@ -2232,6 +2234,7 @@ public final class Config
         else if (pName.equalsIgnoreCase("AltGameCreation")) ALT_GAME_CREATION = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltGameCreationSpeed")) ALT_GAME_CREATION_SPEED = Double.parseDouble(pValue);
         else if (pName.equalsIgnoreCase("AltGameCreationXpRate")) ALT_GAME_CREATION_XP_RATE = Double.parseDouble(pValue);
+        else if (pName.equalsIgnoreCase("AltGameCreationRareXpSpRate")) ALT_GAME_CREATION_RARE_XPSP_RATE = Double.parseDouble(pValue);
         else if (pName.equalsIgnoreCase("AltGameCreationSpRate")) ALT_GAME_CREATION_SP_RATE = Double.parseDouble(pValue);
         else if (pName.equalsIgnoreCase("AltWeightLimit")) ALT_WEIGHT_LIMIT = Double.parseDouble(pValue);
         else if (pName.equalsIgnoreCase("AltBlacksmithUseRecipes")) ALT_BLACKSMITH_USE_RECIPES = Boolean.parseBoolean(pValue);
