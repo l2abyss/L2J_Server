@@ -348,31 +348,6 @@ public class RecipeController
                                     haveRare = true;
                                 }
                             }
-                            if (haveRare)
-                            {
-                            	int pid = set.getInteger("itemId");
-                                int rid = set.getInteger("rareItemId");
-                                int rct = set.getInteger("rareCount");
-                                int rare = set.getInteger("rarity");
-                                int succ = set.getInteger("successRate");
-                                if (succ == 100 && !(rare == 8 || rare == 10))
-                                	_log.info("Recipe success Error: " + id);
-                                else if (succ == 70 && rare != 14)
-                                	_log.info("Recipe success Error: " + id);
-                                else if (succ == 60 && rare != 20)
-                                	_log.info("Recipe success Error: " + id);
-                                else if (rct == 2 && rid != pid)
-                                	_log.info("Double Craft Error: " + id);
-                                else if (rct == 1 && rid == pid)
-                                	_log.info("Double Craft Error: " + id);
-                                else
-                                {
-                                	L2Item template1 = ItemTable.getInstance().getTemplate(pid);
-                                	L2Item template2 = ItemTable.getInstance().getTemplate(rid);
-                                	if (!template2.getName().contains(template1.getName()))
-                                		_log.info(id + ":" + template1.getName() + "?" + template2.getName());
-                                }	
-                            }
 
                             L2RecipeList recipeList = new L2RecipeList(set, haveRare);
                             for (L2RecipeInstance recipePart : recipePartList)
