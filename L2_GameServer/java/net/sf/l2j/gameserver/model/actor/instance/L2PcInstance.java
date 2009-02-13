@@ -6928,7 +6928,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
 			L2RecipeList recipe;
 			while (rset.next()) {
-				recipe = RecipeController.getInstance().getRecipeList(rset.getInt("id") - 1);
+				recipe = RecipeController.getInstance().getRecipeList(rset.getInt("id"));
 
 				if (rset.getInt("type") == 1)
 					registerDwarvenRecipeList(recipe);

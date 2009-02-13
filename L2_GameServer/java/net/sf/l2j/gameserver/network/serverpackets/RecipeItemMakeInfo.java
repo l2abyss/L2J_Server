@@ -55,7 +55,7 @@ public class RecipeItemMakeInfo extends L2GameServerPacket
     @Override
 	protected final void writeImpl()
     {
-        L2RecipeList recipe = RecipeController.getInstance().getRecipeById(_id);
+        L2RecipeList recipe = RecipeController.getInstance().getRecipeList(_id);
 
         if (recipe != null)
         {

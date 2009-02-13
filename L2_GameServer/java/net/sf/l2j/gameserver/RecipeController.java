@@ -98,33 +98,28 @@ public class RecipeController
 	{
 		return _lists.get(listId);
 	}
-
+	
 	public L2RecipeList getRecipeByItemId(int itemId)
 	{
-		for (int i = 0; i < _lists.size(); i++)
+		for (L2RecipeList find : _lists.values())
 		{
-			L2RecipeList find = _lists.get(new Integer(i));
 			if (find.getRecipeId() == itemId)
-			{
 				return find;
-			}
 		}
 		return null;
 	}
-	
-    public L2RecipeList getRecipeById(int recId)
-    {
-        for (int i = 0; i < _lists.size(); i++)
-        {
-            L2RecipeList find = _lists.get(new Integer(i));
-            if (find.getId() == recId)
-            {
-                return find;
-            }
-        }
-        return null;
-    }
 
+	public int[] getAllItemIds()
+	{
+		int[] idList = new int[_lists.size()];
+		int i = 0;
+		for (L2RecipeList rec: _lists.values())
+		{
+			idList[i++] = rec.getRecipeId();
+		}
+		return idList;
+	}
+	
 	public synchronized void requestBookOpen(L2PcInstance player, boolean isDwarvenCraft)
 	{
 		RecipeItemMaker maker = null;
@@ -231,68 +226,6 @@ public class RecipeController
 		}
 	}
 
-	//TODO XMLize the recipe list
-	/*private void parseList(String line)
-	{
-		try
-		{
-			StringTokenizer st = new StringTokenizer(line, ";");
-			List<L2RecipeInstance> recipePartList = new FastList<L2RecipeInstance>();
-
-			//we use common/dwarf for easy reading of the recipes.csv file
-			String recipeTypeString = st.nextToken();
-
-			// now parse the string into a boolean
-			boolean isDwarvenRecipe;
-
-			if (recipeTypeString.equalsIgnoreCase("dwarven")) isDwarvenRecipe = true;
-			else if (recipeTypeString.equalsIgnoreCase("common")) isDwarvenRecipe = false;
-			else
-			{ //prints a helpfull message
-				_log.warning("Error parsing recipes.csv, unknown recipe type " + recipeTypeString);
-				return;
-			}
-
-			String recipeName = st.nextToken();
-			int id = Integer.parseInt(st.nextToken());
-			int recipeId = Integer.parseInt(st.nextToken());
-			int level = Integer.parseInt(st.nextToken());
-
-			//material
-			StringTokenizer st2 = new StringTokenizer(st.nextToken(), "[],");
-			while (st2.hasMoreTokens())
-			{
-				StringTokenizer st3 = new StringTokenizer(st2.nextToken(), "()");
-				int rpItemId = Integer.parseInt(st3.nextToken());
-				int quantity = Integer.parseInt(st3.nextToken());
-				L2RecipeInstance rp = new L2RecipeInstance(rpItemId, quantity);
-				recipePartList.add(rp);
-			}
-
-			int itemId = Integer.parseInt(st.nextToken());
-			int count = Integer.parseInt(st.nextToken());
-
-			//npc fee
-			//String notdoneyet = 
-            st.nextToken();
-
-			int mpCost = Integer.parseInt(st.nextToken());
-			int successRate = Integer.parseInt(st.nextToken());
-
-			L2RecipeList recipeList = new L2RecipeList(id, level, recipeId, recipeName, successRate,
-			                                           mpCost, itemId, count, isDwarvenRecipe);
-			for (L2RecipeInstance recipePart : recipePartList)
-			{
-				recipeList.addRecipe(recipePart);
-			}
-			_lists.put(new Integer(_lists.size()), recipeList);
-		}
-		catch (Exception e)
-		{
-			_log.severe("Exception in RecipeController.parseList() - " + e);
-		}
-	}*/
-    
     private void loadFromXML() throws SAXException, IOException, ParserConfigurationException
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -455,7 +388,7 @@ public class RecipeController
                                 recipeList.addAltStatChange(recipeAltStatChange);
                             }
 
-                            _lists.put(_lists.size(), recipeList);
+                            _lists.put(id, recipeList);
                         }
                     }
                 }
@@ -1072,7 +1005,7 @@ public class RecipeController
 
 	private L2RecipeList getValidRecipeList(L2PcInstance player, int id)
 	{
-		L2RecipeList recipeList = getRecipeList(id - 1);
+		L2RecipeList recipeList = getRecipeList(id);
 
 		if ((recipeList == null) || (recipeList.getRecipes().length == 0))
 		{

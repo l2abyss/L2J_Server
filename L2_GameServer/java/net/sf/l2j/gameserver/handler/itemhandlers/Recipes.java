@@ -35,12 +35,7 @@ public class Recipes implements IItemHandler
 	
 	public Recipes()
 	{
-		RecipeController rc = RecipeController.getInstance();
-		ITEM_IDS = new int[rc.getRecipesCount()];
-		for (int i = 0; i < rc.getRecipesCount(); i++)
-		{
-			ITEM_IDS[i] = rc.getRecipeList(i).getRecipeId();
-		}
+		ITEM_IDS = RecipeController.getInstance().getAllItemIds();
 	}
 	
 	/**
