@@ -11169,90 +11169,100 @@ public final class L2PcInstance extends L2PlayableInstance
     public void setPunishLevel(PunishLevel state, int delayInMinutes)
     {
     	long delayInMilliseconds = delayInMinutes * 60000L;
-        if (state == PunishLevel.NONE) // Remove Punishments
+    	switch (state)
     	{
-    		if (_punishLevel == PunishLevel.CHAT)
-    		{
-    			_punishLevel = state;
-    			stopPunishTask(true);
-    			sendPacket(new EtcStatusUpdate(this));
-	            sendMessage("Your Chat ban has been lifted");
-    		}
-    		else if (_punishLevel == PunishLevel.JAIL)
-    		{
-    			_punishLevel = state;
-    			// Open a Html message to inform the player
-        		NpcHtmlMessage htmlMsg = new NpcHtmlMessage(0);
-	            String jailInfos = HtmCache.getInstance().getHtm("data/html/jail_out.htm");
+    		case NONE: // Remove Punishments
+	    	{
+	    		switch (_punishLevel)
+	    		{
+	    			case CHAT:
+		    		{
+		    			_punishLevel = state;
+		    			stopPunishTask(true);
+		    			sendPacket(new EtcStatusUpdate(this));
+			            sendMessage("Your Chat ban has been lifted");
+			            break;
+		    		}
+	    			case JAIL:
+		    		{
+		    			_punishLevel = state;
+		    			// Open a Html message to inform the player
+		        		NpcHtmlMessage htmlMsg = new NpcHtmlMessage(0);
+			            String jailInfos = HtmCache.getInstance().getHtm("data/html/jail_out.htm");
+			            if (jailInfos != null)
+			                htmlMsg.setHtml(jailInfos);
+			            else
+			                htmlMsg.setHtml("<html><body>You are free for now, respect server rules!</body></html>");
+			            sendPacket(htmlMsg);
+			            stopPunishTask(true);
+			            teleToLocation(17836, 170178, -3507, true);  // Floran
+			            break;
+		    		}
+	    		}
+	    		break;
+	    	}
+    		case CHAT: // Chat Ban
+	    	{
+	    		_punishLevel = state;
+	    		_punishTimer = 0;
+	    		sendPacket(new EtcStatusUpdate(this));
+	    		// Remove the task if any
+	    		stopPunishTask(false);
+	    		
+	    		if (delayInMinutes > 0)
+	    		{
+	    			_punishTimer = delayInMilliseconds;
+	    			
+	    			// start the countdown
+	    			_punishTask = ThreadPoolManager.getInstance().scheduleGeneral(new PunishTask(this), _punishTimer);
+	                sendMessage("You are chat banned for "+delayInMinutes+" minutes.");
+	    		}
+	    		else
+	    			sendMessage("You have been chat banned");
+	    		break;
+	    		
+	    	}
+    		case JAIL: // Jail Player
+	    	{
+	    		_punishLevel = state;
+	    		_punishTimer = 0;
+		        // Remove the task if any
+		        stopPunishTask(false);
+	
+	            if (delayInMinutes > 0)
+	            {
+	                _punishTimer = delayInMilliseconds;
+	
+	                // start the countdown
+	                _punishTask = ThreadPoolManager.getInstance().scheduleGeneral(new PunishTask(this), _punishTimer);
+	                sendMessage("You are in jail for "+delayInMinutes+" minutes.");
+	            }
+	            
+	            if (!TvTEvent.isInactive() && TvTEvent.isPlayerParticipant(getObjectId()))
+	                TvTEvent.removeParticipant(getObjectId());
+	            if (Olympiad.getInstance().isRegisteredInComp(this))
+	                Olympiad.getInstance().removeDisconnectedCompetitor(this);
+	
+	            // Open a Html message to inform the player
+	            NpcHtmlMessage htmlMsg = new NpcHtmlMessage(0);
+	            String jailInfos = HtmCache.getInstance().getHtm("data/html/jail_in.htm");
 	            if (jailInfos != null)
 	                htmlMsg.setHtml(jailInfos);
 	            else
-	                htmlMsg.setHtml("<html><body>You are free for now, respect server rules!</body></html>");
+	                htmlMsg.setHtml("<html><body>You have been put in jail by an admin.</body></html>");
 	            sendPacket(htmlMsg);
-	            stopPunishTask(true);
-	            teleToLocation(17836, 170178, -3507, true);  // Floran
-    		}
-    	}
-        else if (state == PunishLevel.CHAT) // Chat Ban
-    	{
-    		_punishLevel = state;
-    		_punishTimer = 0;
-    		sendPacket(new EtcStatusUpdate(this));
-    		// Remove the task if any
-    		stopPunishTask(false);
-    		
-    		if (delayInMinutes > 0)
-    		{
-    			_punishTimer = delayInMilliseconds;
-    			
-    			// start the countdown
-    			_punishTask = ThreadPoolManager.getInstance().scheduleGeneral(new PunishTask(this), _punishTimer);
-                sendMessage("You are chat banned for "+delayInMinutes+" minutes.");
-    		}
-    		else
-    			sendMessage("You have been chat banned");
-    		
-    	}
-        else if (state == PunishLevel.JAIL) // Jail Player
-    	{
-    		_punishLevel = state;
-    		_punishTimer = 0;
-	        // Remove the task if any
-	        stopPunishTask(false);
-
-            if (delayInMinutes > 0)
-            {
-                _punishTimer = delayInMilliseconds;
-
-                // start the countdown
-                _punishTask = ThreadPoolManager.getInstance().scheduleGeneral(new PunishTask(this), _punishTimer);
-                sendMessage("You are in jail for "+delayInMinutes+" minutes.");
-            }
-            
-            if (!TvTEvent.isInactive() && TvTEvent.isPlayerParticipant(getObjectId()))
-                TvTEvent.removeParticipant(getObjectId());
-            if (Olympiad.getInstance().isRegisteredInComp(this))
-                Olympiad.getInstance().removeDisconnectedCompetitor(this);
-
-            // Open a Html message to inform the player
-            NpcHtmlMessage htmlMsg = new NpcHtmlMessage(0);
-            String jailInfos = HtmCache.getInstance().getHtm("data/html/jail_in.htm");
-            if (jailInfos != null)
-                htmlMsg.setHtml(jailInfos);
-            else
-                htmlMsg.setHtml("<html><body>You have been put in jail by an admin.</body></html>");
-            sendPacket(htmlMsg);
-            setInstanceId(0);
-
-            teleToLocation(-114356, -249645, -2984, false);  // Jail
-        }
-        else if (state == PunishLevel.CHAR) // Ban Character
-    	{
-    		_punishLevel = state;
-    	}
-        else if (state == PunishLevel.ACC) // Ban Account
-    	{
-    		_punishLevel = state;
+	            setInstanceId(0);
+	
+	            teleToLocation(-114356, -249645, -2984, false);  // Jail
+	            break;
+	        }
+    		case CHAR: // Ban Character
+	    	case ACC: // Ban Account
+	    	default:
+	    	{
+	    		_punishLevel = state;
+	    		break;
+	    	}
     	}
 
         // store in database
