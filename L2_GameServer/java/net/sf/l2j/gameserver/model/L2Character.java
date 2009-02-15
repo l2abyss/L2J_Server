@@ -104,6 +104,7 @@ import net.sf.l2j.gameserver.skills.Stats;
 import net.sf.l2j.gameserver.skills.effects.EffectCharge;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillAgathion;
+import net.sf.l2j.gameserver.skills.l2skills.L2SkillMount;
 import net.sf.l2j.gameserver.templates.chars.L2CharTemplate;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
@@ -5572,6 +5573,9 @@ public abstract class L2Character extends L2Object
 				((L2PcInstance)this).setAgathionId(0);
 				((L2PcInstance)this).broadcastUserInfo();
 			}
+			
+			if (oldSkill instanceof L2SkillMount && this instanceof L2PcInstance && ((L2PcInstance)this).isMounted())
+				((L2PcInstance)this).dismount();
 
 			if (oldSkill.isChance() && _chanceSkills != null)
 			{

@@ -55,6 +55,9 @@ public final class Ride extends L2GameServerPacket
             case 16042: // White Fenrir Wolf	
                 _rideType = 3;
                 break;
+            case 13130: // Light Purple Maned Horse
+            	_rideType = 4;
+            	break;
             default:
                 throw new IllegalArgumentException("Unsupported mount NpcId: "+rideClassId);
         }

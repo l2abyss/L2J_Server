@@ -26,6 +26,7 @@ import net.sf.l2j.gameserver.skills.l2skills.L2SkillCreateItem;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillDecoy;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillDefault;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillDrain;
+import net.sf.l2j.gameserver.skills.l2skills.L2SkillMount;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSiegeFlag;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSignet;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSignetCasttime;
@@ -112,6 +113,7 @@ public enum L2SkillType
 	HARVEST,
 	GET_PLAYER,
 	AGATHION(L2SkillAgathion.class),
+	MOUNT(L2SkillMount.class),
 	INSTANT_JUMP,
 	
 	// Creation

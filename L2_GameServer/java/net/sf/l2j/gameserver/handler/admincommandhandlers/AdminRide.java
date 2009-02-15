@@ -24,6 +24,7 @@ public class AdminRide implements IAdminCommandHandler
 {
 	private static final String[] ADMIN_COMMANDS =
 	{
+		"admin_ride_horse",
 		"admin_ride_wyvern",
 		"admin_ride_strider",
 		"admin_unride_wyvern",
@@ -55,6 +56,10 @@ public class AdminRide implements IAdminCommandHandler
 			else if (command.startsWith("admin_ride_wolf"))
 			{
 				_petRideId = 16041;
+			}
+			else if (command.startsWith("admin_ride_horse"))
+			{
+				_petRideId = 13130;
 			}
 			else
 			{
