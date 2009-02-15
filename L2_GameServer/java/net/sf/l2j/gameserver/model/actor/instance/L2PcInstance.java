@@ -413,6 +413,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
 	private int _mountType;
     private int _mountNpcId;
+    private int _mountLevel;
     /** Store object used to summon the strider you are mounting **/
 	private int _mountObjectID = 0;
 
@@ -689,9 +690,11 @@ public final class L2PcInstance extends L2PlayableInstance
 	private double _mpUpdateDecCheck = .0;
 	private double _mpUpdateInterval = .0;
 	
+	/* not used any more
 	private boolean _isRidingFenrirWolf	= false;
 	private boolean _isRidingWFenrirWolf = false;
 	private boolean _isRidingGreatSnowWolf = false;
+	*/
 	private boolean _isRidingStrider = false;
 	private boolean _isFlyingWyvern = false;
 
@@ -6150,12 +6153,12 @@ public final class L2PcInstance extends L2PlayableInstance
         	return false;
         
         Ride mount = new Ride(this, true, pet.getTemplate().npcId);
-        this.setMount(pet.getTemplate().npcId, mount.getMountType());
-        this.setMountObjectID(pet.getControlItemId());
-        this.broadcastPacket(mount);
+        setMount(pet.getNpcId(), pet.getLevel(), mount.getMountType());
+        setMountObjectID(pet.getControlItemId());
+        broadcastPacket(mount);
         
         // Notify self and others about speed change
-        this.broadcastUserInfo();
+        broadcastUserInfo();
         
         pet.unSummon(this);
         
@@ -6170,7 +6173,7 @@ public final class L2PcInstance extends L2PlayableInstance
         	return false;
         
         Ride mount = new Ride(this, true, npcId);
-        if (setMount(npcId, mount.getMountType()))
+        if (setMount(npcId, Experience.MAX_LEVEL, mount.getMountType()))
         {
         	setMountObjectID(controlItemObjId);
         	broadcastPacket(mount);
@@ -6184,9 +6187,11 @@ public final class L2PcInstance extends L2PlayableInstance
 	
 	public boolean dismount()
 	{
-	    if (setMount(0, 0))
+		boolean wasFlying = isFlying();
+		
+	    if (setMount(0, 0, 0))
 	    {
-	        if (isFlying()) 
+	        if (wasFlying) 
 	            removeSkill(SkillTable.getInstance().getInfo(4289, 1));
 	        Ride dismount = new Ride(this, false, 0);
 	        broadcastPacket(dismount);
@@ -8585,7 +8590,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	}
 
 	// returns false if the change of mount type fails.
-	public boolean setMount(int npcId, int mountType)
+	public boolean setMount(int npcId, int npcLevel, int mountType)
 	{
 		if (checkLandingState() && mountType == 0 && isFlying())
 			return false;
@@ -8594,9 +8599,10 @@ public final class L2PcInstance extends L2PlayableInstance
 		{
 			case 0:
                 setIsFlying(false);
+                /* not used any more
 				setIsRidingFenrirWolf(false);
 				setIsRidingWFenrirWolf(false);
-				setIsRidingGreatSnowWolf(false);
+				setIsRidingGreatSnowWolf(false);*/
 				setIsRidingStrider(false);
                 break; //Dismounted
 			case 1:
@@ -8611,6 +8617,7 @@ public final class L2PcInstance extends L2PlayableInstance
                 setIsFlying(true);
                 break; //Flying Wyvern
 			case 3:
+				/* not used any more
 				switch (npcId)
 				{
 					case 16041:
@@ -8622,12 +8629,13 @@ public final class L2PcInstance extends L2PlayableInstance
 					case 16037:
 						setIsRidingGreatSnowWolf(true);
 						break;
-				}
+				}*/
 				break;
 		}
 
 		_mountType = mountType;
         _mountNpcId = npcId;
+        _mountLevel = npcLevel;
 
 		return true;
 	}
@@ -11032,6 +11040,14 @@ public final class L2PcInstance extends L2PlayableInstance
     {
         return _mountNpcId;
     }
+    
+    /**
+     * @return Returns the mountLevel.
+     */
+    public int getMountLevel()
+    {
+    	return _mountLevel;
+    }
 
     public void setMountObjectID(int newID)
 	{
@@ -11383,6 +11399,16 @@ public final class L2PcInstance extends L2PlayableInstance
 		sendPacket(new EtcStatusUpdate(this));
 	}
 	
+	public final void setIsRidingStrider(boolean mode)
+	{
+		_isRidingStrider = mode;
+	}
+	public final void setIsFlying(boolean mode)
+	{ 
+		_isFlyingWyvern = mode;
+	}
+	
+	/* not used anymore
 	public final void setIsRidingFenrirWolf(boolean mode)
 	{
 		_isRidingFenrirWolf = mode;
@@ -11395,15 +11421,6 @@ public final class L2PcInstance extends L2PlayableInstance
 	{
 		_isRidingGreatSnowWolf = mode;
 	}
-	public final void setIsRidingStrider(boolean mode)
-	{
-		_isRidingStrider = mode;
-	}
-	public final void setIsFlying(boolean mode)
-	{ 
-		_isFlyingWyvern = mode;
-	}
-	
 	public final boolean isRidingFenrirWolf()
 	{ 
 		return _isRidingFenrirWolf;
@@ -11415,7 +11432,8 @@ public final class L2PcInstance extends L2PlayableInstance
 	public final boolean isRidingGreatSnowWolf()
 	{ 
 		return _isRidingGreatSnowWolf;
-	}
+	}*/
+	
 	public final boolean isRidingStrider()
 	{ 
 		return _isRidingStrider;

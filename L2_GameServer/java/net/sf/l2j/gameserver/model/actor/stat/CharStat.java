@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.model.actor.stat;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.L2PetDataTable;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.skills.Calculator;
@@ -624,7 +625,14 @@ public class CharStat
 		
 		// err we should be adding TO the persons run speed
 		// not making it a constant
-		int val = (int) calcStat(Stats.RUN_SPEED, _activeChar.getTemplate().baseRunSpd, null, null) + Config.RUN_SPD_BOOST;
+		double baseRunSpd = _activeChar.getTemplate().baseRunSpd;
+		if (_activeChar instanceof L2PcInstance)
+		{
+			L2PcInstance player = (L2PcInstance)_activeChar;
+			if (player.isMounted())
+				baseRunSpd = L2PetDataTable.getInstance().getPetData(player.getMountNpcId(), player.getMountLevel()).getPetSpeed();
+		}
+		int val = (int) calcStat(Stats.RUN_SPEED, baseRunSpd, null, null) + Config.RUN_SPD_BOOST;
 		
 		val /= _activeChar.getArmourExpertisePenalty();
 		

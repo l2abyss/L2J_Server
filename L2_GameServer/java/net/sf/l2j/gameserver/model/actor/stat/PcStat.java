@@ -324,32 +324,6 @@ public class PcStat extends PlayableStat
     {
     	int val = super.getRunSpeed();
     	
-    	if (getActiveChar().isFlying())
-		{
-			val += Config.WYVERN_SPEED;
-			return val;
-		}
-    	else if (getActiveChar().isRidingStrider())
-		{
-			val += Config.STRIDER_SPEED;
-			return val;
-		}
-    	else if (getActiveChar().isRidingFenrirWolf())
-		{
-			val += Config.FENRIR_SPEED;
-			return val;
-		}
-    	else if (getActiveChar().isRidingWFenrirWolf())
-		{
-			val += Config.SNOW_FENRIR_SPEED;
-			return val;
-		}
-    	else if (getActiveChar().isRidingGreatSnowWolf())
-		{
-			val += Config.GREAT_SNOW_WOLF_SPEED;
-			return val;
-		}
-    	
     	// Apply max run speed cap.
 		if (val > Config.MAX_RUN_SPEED && !getActiveChar().isGM())
 			return Config.MAX_RUN_SPEED;

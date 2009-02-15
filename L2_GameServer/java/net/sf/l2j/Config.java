@@ -584,11 +584,6 @@ public final class Config
     public static boolean	ALLOW_WYVERN_UPGRADER;
     public static String	PET_RENT_NPC;
     public static List<Integer> LIST_PET_RENT_NPC   = new FastList<Integer>();
-    public static int		WYVERN_SPEED;
-    public static int		STRIDER_SPEED;
-    public static int 		FENRIR_SPEED;
-    public static int 		GREAT_SNOW_WOLF_SPEED;
-    public static int 		SNOW_FENRIR_SPEED;
     public static double	RAID_HP_REGEN_MULTIPLIER;
     public static double	RAID_MP_REGEN_MULTIPLIER;
     public static double	RAID_PDEFENCE_MULTIPLIER;
@@ -1672,11 +1667,6 @@ public final class Config
 	                                						{
 	                                							LIST_PET_RENT_NPC.add(Integer.parseInt(id));
 	                                						}
-	                WYVERN_SPEED							= Integer.parseInt(NPC.getProperty("WyvernSpeed", "100"));
-	                STRIDER_SPEED							= Integer.parseInt(NPC.getProperty("StriderSpeed", "80"));
-	                FENRIR_SPEED						= Integer.parseInt(NPC.getProperty("FenrirSpeed", "80"));
-	                SNOW_FENRIR_SPEED						= Integer.parseInt(NPC.getProperty("SnowFenrirSpeed", "80"));
-	                GREAT_SNOW_WOLF_SPEED						= Integer.parseInt(NPC.getProperty("GreatSnowWolfSpeed", "80"));
 	                RAID_HP_REGEN_MULTIPLIER				= Double.parseDouble(NPC.getProperty("RaidHpRegenMultiplier", "100")) /100;
 	                RAID_MP_REGEN_MULTIPLIER				= Double.parseDouble(NPC.getProperty("RaidMpRegenMultiplier", "100")) /100;
 	                RAID_PDEFENCE_MULTIPLIER				= Double.parseDouble(NPC.getProperty("RaidPDefenceMultiplier", "100")) /100;
@@ -2160,11 +2150,6 @@ public final class Config
         else if (pName.equalsIgnoreCase("UseDeepBlueDropRules")) DEEPBLUE_DROP_RULES = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AllowGuards")) GUARD_ATTACK_AGGRO_MOB = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("CancelLesserEffect")) EFFECT_CANCELING = Boolean.parseBoolean(pValue);
-        else if (pName.equalsIgnoreCase("WyvernSpeed")) WYVERN_SPEED = Integer.parseInt(pValue);
-        else if (pName.equalsIgnoreCase("StriderSpeed")) STRIDER_SPEED = Integer.parseInt(pValue);
-        else if (pName.equalsIgnoreCase("FenrirSpeed")) FENRIR_SPEED = Integer.parseInt(pValue);
-        else if (pName.equalsIgnoreCase("SnowFenrirSpeed")) SNOW_FENRIR_SPEED = Integer.parseInt(pValue);
-        else if (pName.equalsIgnoreCase("GreatSnowWolfSpeed")) GREAT_SNOW_WOLF_SPEED = Integer.parseInt(pValue);
 
         else if (pName.equalsIgnoreCase("MaximumSlotsForNoDwarf")) INVENTORY_MAXIMUM_NO_DWARF = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("MaximumSlotsForDwarf")) INVENTORY_MAXIMUM_DWARF = Integer.parseInt(pValue);
