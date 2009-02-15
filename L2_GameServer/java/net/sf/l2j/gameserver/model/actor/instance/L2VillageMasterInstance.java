@@ -570,6 +570,18 @@ public final class L2VillageMasterInstance extends L2FolkInstance
 		{
 			return;
 		}
+		/* 
+		 * Until proper clan leader change support is done, this is a little
+		 * exploit fix (leader, while fliying wyvern changes clan leader and the new leader
+		 * can ride the wyvern too)
+		 * DrHouse
+		 */
+		if (player.isFlying())
+		{
+			player.sendMessage("Please, stop flying");
+			return;
+		}
+		
         L2Clan clan = player.getClan();
 
         L2ClanMember member = clan.getClanMember(target);
