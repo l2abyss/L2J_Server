@@ -817,7 +817,7 @@ public class ItemTable
 		if (item.isStackable() && count > 1)
 			item.setCount(count);
 		
-		if (Config.LOG_ITEMS)
+		if (Config.LOG_ITEMS && !process.equals("Reset"))
 		{
 			LogRecord record = new LogRecord(Level.INFO, "CREATE:" + process);
 			record.setLoggerName("item");
