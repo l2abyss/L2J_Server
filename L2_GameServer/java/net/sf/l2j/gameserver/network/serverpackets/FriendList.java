@@ -50,20 +50,30 @@ public class FriendList extends L2GameServerPacket
     public FriendList(L2PcInstance character)
     {
         _activeChar = character;
-        this.getFriendList();
+        getFriendList();
     }
     
     private static class FriendStatus
     {
+    	private final int _charId;
         private final int _id;
         private final String _name;
         private final boolean _online;
         
-        public FriendStatus(int id, String name, boolean online)
+        public FriendStatus(int charId,int id, String name, boolean online)
         {
+        	_charId = charId;
             _id = id;
             _name = name;
             _online = online;
+        }
+        
+        /**
+         * @return Returns the Char id. (first created player in-game will have id 1 and so on)
+         */
+        public int getCharId()
+        {
+        	return _charId;
         }
         
         /**
@@ -117,7 +127,7 @@ public class FriendList extends L2GameServerPacket
                 
                 L2PcInstance friend = L2World.getInstance().getPlayer(friendName);
                 
-                fs = new FriendStatus(friendId, friendName, friend != null);
+                fs = new FriendStatus(0x00030b7a,friendId, friendName, friend != null);
                 _friends.add(fs);
             }
             
@@ -141,11 +151,10 @@ public class FriendList extends L2GameServerPacket
         writeD(_friends.size());
         for (FriendStatus fs : _friends)
         {
-            writeH(0); // ??
-            writeD(fs.getId());
+            writeD(fs.getCharId()); // character id
             writeS(fs.getName());
             writeD(fs.isOnline() ? 0x01 : 0x00); // online
-            writeH(0); // ??
+            writeD(fs.isOnline() ? fs.getId() : 0x00); // object id if online
         }
     }
     

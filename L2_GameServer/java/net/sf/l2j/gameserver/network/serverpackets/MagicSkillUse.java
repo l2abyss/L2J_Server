@@ -80,9 +80,9 @@ public final class MagicSkillUse extends L2GameServerPacket
 		writeH(0x00);
 		//for()
 		//{
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
+		//	writeH(0x00);
+		//	writeH(0x00);
+		//	writeH(0x00);
 		//}
 	}
 
