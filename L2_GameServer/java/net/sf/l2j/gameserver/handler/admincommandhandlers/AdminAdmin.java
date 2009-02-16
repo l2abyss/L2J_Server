@@ -239,6 +239,11 @@ public class AdminAdmin implements IAdminCommandHandler
 					ItemTable.getInstance().reload();
 					activeChar.sendMessage("Item templates reloaded");
 				}
+				else if (type.startsWith("config"))
+				{
+					Config.load();
+					activeChar.sendMessage("All config settings have been reload");
+				}
 				else if (type.startsWith("instancemanager"))
 				{
 					Manager.reloadAll();
