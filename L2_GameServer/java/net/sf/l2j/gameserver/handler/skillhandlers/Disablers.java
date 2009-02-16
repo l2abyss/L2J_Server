@@ -247,26 +247,14 @@ public class Disablers implements ISkillHandler
 					
 					if (Formulas.getInstance().calcSkillSuccess(activeChar, target, skill, shld, ss, sps, bss))
 					{
-						// stop same type effect if avaiable
+						// stop same type effect if available
 						L2Effect[] effects = target.getAllEffects();
 						for (L2Effect e : effects)
+						{
 							if (e.getSkill().getSkillType() == type)
 								e.exit();
-						// then restart
-						// Make above skills mdef dependant
-						if (Formulas.getInstance().calcSkillSuccess(activeChar, target, skill, shld, ss, sps, bss))
-							//if(Formulas.getInstance().calcMagicAffected(activeChar, target, skill))
-							skill.getEffects(activeChar, target);
-						else
-						{
-							if (activeChar instanceof L2PcInstance)
-							{
-								SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_UNAFFECTED_BY_S2);
-								sm.addCharName(target);
-								sm.addSkillName(skill);
-								activeChar.sendPacket(sm);
-							}
 						}
+						skill.getEffects(activeChar, target);
 					}
 					else
 					{
