@@ -20,8 +20,6 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
 import net.sf.l2j.gameserver.model.L2Character;
-import net.sf.l2j.gameserver.model.L2Summon;
-import net.sf.l2j.gameserver.model.L2Transformation;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
@@ -269,24 +267,22 @@ public class CharInfo extends L2GameServerPacket
 			writeF(_activeChar.getMovementSpeedMultiplier()); // _activeChar.getProperMultiplier()
 			writeF(_activeChar.getAttackSpeedMultiplier()); // _activeChar.getAttackSpeedMultiplier()
             
-            L2Summon pet = _activeChar.getPet();
-            L2Transformation trans;
-            if (_activeChar.getMountType() != 0 && pet != null)
+			if (_activeChar.getMountType() != 0)
             {
-                writeF(pet.getTemplate().collisionRadius);
-                writeF(pet.getTemplate().collisionHeight);
+            	writeF(NpcTable.getInstance().getTemplate(_activeChar.getMountNpcId()).collisionRadius);
+            	writeF(NpcTable.getInstance().getTemplate(_activeChar.getMountNpcId()).collisionHeight);
             }
-            else if ((trans = _activeChar.getTransformation()) != null)
+            else if (_activeChar.getTransformation() != null)
             {
-                writeF(trans.getCollisionRadius());
-                writeF(trans.getCollisionHeight());
+            	writeF(_activeChar.getTransformation().getCollisionRadius());
+            	writeF(_activeChar.getTransformation().getCollisionHeight());
             }
             else
             {
                 writeF(_activeChar.getBaseTemplate().collisionRadius);
                 writeF(_activeChar.getBaseTemplate().collisionHeight);
             }
-
+            
 			writeD(_activeChar.getAppearance().getHairStyle());
 			writeD(_activeChar.getAppearance().getHairColor());
 			writeD(_activeChar.getAppearance().getFace());

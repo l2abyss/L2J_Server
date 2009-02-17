@@ -42,6 +42,7 @@ import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreMsgBuy;
 import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreMsgSell;
 import net.sf.l2j.gameserver.network.serverpackets.RecipeShopMsg;
 import net.sf.l2j.gameserver.network.serverpackets.RelationChanged;
+import net.sf.l2j.gameserver.network.serverpackets.Ride;
 import net.sf.l2j.gameserver.network.serverpackets.SpawnItem;
 import net.sf.l2j.gameserver.network.serverpackets.StaticObject;
 import net.sf.l2j.gameserver.network.serverpackets.VehicleInfo;
@@ -234,7 +235,12 @@ public class PcKnownList extends PlayableKnownList
                 			otherPlayer.sendPacket(new RelationChanged(getActiveChar().getPet(), relation2, otherPlayer.isAutoAttackable(getActiveChar())));
                 	}
                 }
-
+                if (otherPlayer.getMountType() == 4)
+                {
+                       // TODO: Remove when horse mounts fixed
+                       getActiveChar().sendPacket(new Ride(otherPlayer, false, 0));
+                       getActiveChar().sendPacket(new Ride(otherPlayer, true, otherPlayer.getMountNpcId()));
+                }
                 if (otherPlayer.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_SELL)
                 {
                     getActiveChar().sendPacket(new PrivateStoreMsgSell(otherPlayer));
