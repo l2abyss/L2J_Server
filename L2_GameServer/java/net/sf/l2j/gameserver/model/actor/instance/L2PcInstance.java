@@ -611,6 +611,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	private int _expertiseIndex; // index in EXPERTISE_LEVELS
 	private int _expertisePenalty = 0;
 
+	private boolean _isEnchanting = false;
 	private L2ItemInstance _activeEnchantItem = null;
 	private L2ItemInstance _activeEnchantAttrItem = null;
 
@@ -2246,12 +2247,26 @@ public final class L2PcInstance extends L2PlayableInstance
 
 	public void setActiveEnchantItem(L2ItemInstance scroll)
 	{
+		// If we dont have a Enchant Item, we are not enchanting.
+		if (scroll == null)
+			setIsEnchanting(false);
+		
 		_activeEnchantItem = scroll;
 	}
 
 	public L2ItemInstance getActiveEnchantItem()
 	{
 		return _activeEnchantItem;
+	}
+	
+	public void setIsEnchanting(boolean val)
+	{
+		_isEnchanting = val;
+	}
+	
+	public boolean isEnchanting()
+	{
+		return _isEnchanting;
 	}
 
 	/**
