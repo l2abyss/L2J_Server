@@ -1792,6 +1792,12 @@ public final class Config
 	                    }
 	                    else
 	                    {
+	                    	TVT_EVENT_REWARDS = new FastList<int[]>();
+	                        TVT_DOORS_IDS_TO_OPEN = new ArrayList<Integer>();
+	                        TVT_DOORS_IDS_TO_CLOSE = new ArrayList<Integer>();
+	                        TVT_EVENT_PARTICIPATION_NPC_COORDINATES = new int[3];
+	                        TVT_EVENT_TEAM_1_COORDINATES = new int[3];
+	                        TVT_EVENT_TEAM_2_COORDINATES = new int[3];
 	                        TVT_EVENT_PARTICIPATION_NPC_COORDINATES[0]  = Integer.parseInt(propertySplit[0]);
 	                        TVT_EVENT_PARTICIPATION_NPC_COORDINATES[1]  = Integer.parseInt(propertySplit[1]);
 	                        TVT_EVENT_PARTICIPATION_NPC_COORDINATES[2]  = Integer.parseInt(propertySplit[2]);
