@@ -61,7 +61,6 @@ public abstract class L2Summon extends L2PlayableInstance
 	protected int _pkKills;
     private byte _pvpFlag;
     private L2PcInstance _owner;
-    private int _karma = 0;
     private int _attackRange = 36; //Melee range
     private boolean _follow = true;
     private boolean _previousFollowStatus = true;
@@ -271,12 +270,7 @@ public abstract class L2Summon extends L2PlayableInstance
 
 	public final int getKarma()
     {
-        return _karma;
-    }
-
-    public void setKarma(int karma)
-    {
-        _karma = karma;
+        return getOwner()!= null ? getOwner().getKarma() : 0;
     }
 
     public final L2PcInstance getOwner()

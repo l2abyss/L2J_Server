@@ -779,7 +779,7 @@ public class L2PetInstance extends L2Summon
 				pet = new L2PetInstance(IdFactory.getInstance().getNextId(), template, owner, control);
 
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT item_obj_id, name, level, curHp, curMp, exp, sp, karma, pkkills, fed FROM pets WHERE item_obj_id=?");
+			PreparedStatement statement = con.prepareStatement("SELECT item_obj_id, name, level, curHp, curMp, exp, sp, pkkills, fed FROM pets WHERE item_obj_id=?");
 			statement.setInt(1, control.getObjectId());
 			ResultSet rset = statement.executeQuery();
 			if (!rset.next())
@@ -805,7 +805,6 @@ public class L2PetInstance extends L2Summon
 				pet.stopHpMpRegeneration();
 			}
 
-			pet.setKarma(rset.getInt("karma"));
 			pet.setPkKills(rset.getInt("pkkills"));
 			pet.setCurrentFed(rset.getInt("fed"));
 
@@ -847,7 +846,7 @@ public class L2PetInstance extends L2Summon
 			statement.setDouble(4, getStatus().getCurrentMp());
 			statement.setLong(5, getStat().getExp());
 			statement.setInt(6, getStat().getSp());
-			statement.setInt(7, getKarma());
+			statement.setInt(7, 0);
 			statement.setInt(8, getPkKills());
 			statement.setInt(9, getCurrentFed());
 			statement.setInt(10, getControlItemId());

@@ -103,8 +103,8 @@ public class PetInfo extends L2GameServerPacket
 		writeS(_summon.getName());
 		writeS(_summon.getTitle());
 		writeD(1);
-		writeD(_summon.getPvpFlag());	//0 = white,2= purpleblink, if its greater then karma = purple
-		writeD(_summon.getKarma());  // hmm karma ??
+		writeD(_summon.getOwner() != null ? _summon.getOwner().getPvpFlag() : 0);	//0 = white,2= purpleblink, if its greater then karma = purple
+		writeD(_summon.getOwner() != null ? _summon.getOwner().getKarma() : 0);  // hmm karma ??
 		writeD(_curFed); // how fed it is
 		writeD(_maxFed); //max fed it can be
 		writeD((int)_summon.getCurrentHp());//current hp
