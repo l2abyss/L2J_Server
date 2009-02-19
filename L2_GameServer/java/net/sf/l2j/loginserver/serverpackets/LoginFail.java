@@ -60,6 +60,6 @@ public final class LoginFail extends L2LoginServerPacket
 	protected void write()
 	{
 		writeC(0x01);
-		writeD(_reason.getCode());
+		writeC(_reason.getCode());
 	}
 }

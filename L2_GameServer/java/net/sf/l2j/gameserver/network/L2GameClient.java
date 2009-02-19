@@ -83,6 +83,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	
 	private boolean _isDetached = false;
 
+	private boolean _protocol;
+
 	public L2GameClient(MMOConnection<L2GameClient> con)
 	{
 		super(con);
@@ -682,5 +684,14 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 			    _log.log(Level.SEVERE, "Error on AutoSaveTask.", e);
 			}
 		}
+	}
+
+	public boolean isProtocolOk()
+	{
+		return _protocol;
+	}
+	public void setProtocolOk(boolean b)
+	{
+		_protocol = b;
 	}
 }

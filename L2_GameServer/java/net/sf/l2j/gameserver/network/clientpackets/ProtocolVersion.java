@@ -51,7 +51,9 @@ public final class ProtocolVersion extends L2GameClientPacket
         {
             _log.info("Client: "+getClient().toString()+" -> Protocol Revision: " + _version + " is invalid. Minimum is "+Config.MIN_PROTOCOL_REVISION+" and Maximum is "+Config.MAX_PROTOCOL_REVISION+" are supported. Closing connection.");
             _log.warning("Wrong Protocol Version "+_version);
-            getClient().closeNow();
+            KeyPacket pk = new KeyPacket(getClient().enableCrypt(),0);
+        	getClient().sendPacket(pk);
+        	getClient().setProtocolOk(false);
         }
         else
         {
@@ -60,8 +62,9 @@ public final class ProtocolVersion extends L2GameClientPacket
         		_log.fine("Client Protocol Revision is ok: "+_version);
         	}
 
-        	KeyPacket pk = new KeyPacket(getClient().enableCrypt());
+        	KeyPacket pk = new KeyPacket(getClient().enableCrypt(),1);
         	getClient().sendPacket(pk);
+        	getClient().setProtocolOk(true);
         }
 	}
 
