@@ -880,6 +880,18 @@ public abstract class L2Summon extends L2PlayableInstance
                 super.doCast(skill);
         }
 	}
+	
+	public boolean isInCombat()
+	{
+		// summons/pets have shared combat mode with their masters
+		if (getOwner() != null)
+		{
+			return ((getOwner().getAI().getAttackTarget() != null) || getOwner().getAI().isAutoAttacking());
+		}
+		
+		// Should never get here, all pets SHOULD have owners.
+		return false;
+	}
 
 	@Override
 	public L2PcInstance getActingPlayer()
