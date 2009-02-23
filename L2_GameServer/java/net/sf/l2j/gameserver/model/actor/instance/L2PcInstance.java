@@ -3414,8 +3414,9 @@ public final class L2PcInstance extends L2PlayableInstance
                 petIU.addNewItem(newItem);
 
 			((PetInventory)target).getOwner().getOwner().sendPacket(petIU);
+			getPet().getInventory().refreshWeight();
+			sendPacket(new PetInfo(getPet()));
 		}
-
 		return newItem;
 	}
 

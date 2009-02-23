@@ -86,8 +86,10 @@ public class L2PetInstance extends L2Summon
 
 	/** The Experience before the last Death Penalty */
 	private long _expBeforeDeath = 0;
+
 	private static final int FOOD_ITEM_CONSUME_COUNT = 5;
 	private static final int PET_DECAY_DELAY = 86400000; // 24 hours
+	private int _maxload;
 	
     public final L2PetData getPetData()
     {
@@ -208,6 +210,7 @@ public class L2PetInstance extends L2Summon
 
         int npcId = template.npcId;
         _mountable = L2PetDataTable.isMountable(npcId);
+        _maxload = getPetData().getPetMaxLoad();
 	}
 
     @Override
@@ -428,7 +431,16 @@ public class L2PetInstance extends L2Summon
 				getOwner().sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}		
-			
+			if ( !_inventory.validateCapacity(target))
+			{
+				getOwner().sendPacket(new SystemMessage(SystemMessageId.YOUR_PET_CANNOT_CARRY_ANY_MORE_ITEMS));
+				return;
+			}
+			if ( !_inventory.validateWeight(target, target.getCount()))
+			{
+				getOwner().sendPacket(new SystemMessage(SystemMessageId.UNABLE_TO_PLACE_ITEM_YOUR_PET_IS_TOO_ENCUMBERED));
+				return;
+			}
 			if (target.getOwnerId() != 0 && target.getOwnerId() != getOwner().getObjectId() && !getOwner().isInLooterParty(target.getOwnerId()))
             {
                 getOwner().sendPacket(ActionFailed.STATIC_PACKET);
@@ -529,6 +541,7 @@ public class L2PetInstance extends L2Summon
 
 		if (follow)
 			followOwner();
+		getOwner().sendPacket(new PetInfo(this));
 	}
 
 	@Override
@@ -614,6 +627,7 @@ public class L2PetInstance extends L2Summon
         	else petIU.addNewItem(newItem);
     		((PetInventory)target).getOwner().getOwner().sendPacket(petIU);
 		}
+    	getOwner().sendPacket(new PetInfo(this));
     	return newItem;
     }
 
@@ -979,7 +993,21 @@ public class L2PetInstance extends L2Summon
     @Override
 	public int getEvasionRate(L2Character target) { return getStat().getEvasionRate(target); }
     @Override
-	public int getRunSpeed() { return getStat().getRunSpeed(); }
+	public int getRunSpeed()
+    {
+    	int spd = getStat().getRunSpeed();
+    	
+		int weightproc = getCurrentLoad() * 1000 / getMaxLoad();
+		double weightPenalty;
+		if (weightproc < 666)
+			weightPenalty = 1;
+		else if ( weightproc < 1000)
+			weightPenalty = 0.5;
+		else
+			weightPenalty = 0;
+    	
+    	return (int)(spd*weightPenalty);
+    }
     @Override
 	public int getPAtkSpd() { return getStat().getPAtkSpd(); }
     @Override
@@ -1042,6 +1070,26 @@ public class L2PetInstance extends L2Summon
         	}
         }
     }
+    
+	public int getCurrentLoad()
+	{
+		return _inventory.getTotalWeight();
+	}
+	
+	public final void setMaxLoad(int maxLoad)
+    {
+        _maxload = maxLoad;
+    }
+    
+	@Override
+	public final int getMaxLoad()
+	{
+		return _maxload != 0 ? _maxload : 1;
+	}
+	public int getInventoryLimit()
+	{
+		return Config.INVENTORY_MAXIMUM_PET;
+	}
 }
 
 

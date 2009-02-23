@@ -64,7 +64,6 @@ public abstract class L2Summon extends L2PlayableInstance
     private int _attackRange = 36; //Melee range
     private boolean _follow = true;
     private boolean _previousFollowStatus = true;
-    private int _maxLoad;
 
     private int _chargedSoulShot;
     private int _chargedSpiritShot;
@@ -303,9 +302,9 @@ public abstract class L2Summon extends L2PlayableInstance
         return _pkKills;
     }
 
-    public final int getMaxLoad()
+    public int getMaxLoad()
     {
-        return _maxLoad;
+        return 0;
     }
 
     public final int getSoulShotsPerHit()
@@ -316,11 +315,6 @@ public abstract class L2Summon extends L2PlayableInstance
     public final int getSpiritShotsPerHit()
     {
         return _spiritShotsPerHit;
-    }
-
-    public void setMaxLoad(int maxLoad)
-    {
-        _maxLoad = maxLoad;
     }
 
     public void setChargedSoulShot(int shotType)

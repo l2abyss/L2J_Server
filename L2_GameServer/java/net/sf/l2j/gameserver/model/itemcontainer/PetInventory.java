@@ -14,8 +14,12 @@
  */
 package net.sf.l2j.gameserver.model.itemcontainer;
 
+import net.sf.l2j.gameserver.datatables.ItemTable;
+import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2ItemInstance.ItemLocation;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
+import net.sf.l2j.gameserver.templates.item.L2EtcItemType;
+import net.sf.l2j.gameserver.templates.item.L2Item;
 
 public class PetInventory extends Inventory
 {
@@ -48,6 +52,46 @@ public class PetInventory extends Inventory
 		return id;
 	}
 
+	/**
+	 * Refresh the weight of equipment loaded
+	 */
+	@Override
+	public void refreshWeight()
+	{
+		super.refreshWeight();
+	}
+	
+    public boolean validateCapacity(L2ItemInstance item)
+    {
+        int slots = 0;
+
+        if (!(item.isStackable() && getItemByItemId(item.getItemId()) != null) && item.getItemType() != L2EtcItemType.HERB)
+        	slots++;
+
+        return validateCapacity(slots);
+    }
+    
+	@Override
+	public boolean validateCapacity(int slots)
+	{
+		return (_items.size() + slots <= _owner.getInventoryLimit());
+	}
+	
+	public boolean validateWeight(L2ItemInstance item, int count)
+	{
+		int weight = 0;
+		L2Item template = ItemTable.getInstance().getTemplate(item.getItemId());
+        if (template == null) return false;
+        weight += count * template.getWeight();
+		return validateWeight(weight);
+	}
+	
+	@Override
+	public boolean validateWeight(int weight)
+	{
+		return (_totalWeight + weight <= _owner.getMaxLoad());
+	}
+	
 	@Override
 	protected ItemLocation getBaseLocation()
     {

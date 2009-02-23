@@ -95,7 +95,17 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 		{
 			return;
 		}
-		
+		if (!pet.getInventory().validateCapacity(item))
+		{
+			pet.getOwner().sendPacket(new SystemMessage(SystemMessageId.YOUR_PET_CANNOT_CARRY_ANY_MORE_ITEMS));
+			return;
+		}
+		if (!pet.getInventory().validateWeight(item,_amount))
+		{
+			pet.getOwner().sendPacket(new SystemMessage(SystemMessageId.UNABLE_TO_PLACE_ITEM_YOUR_PET_IS_TOO_ENCUMBERED));
+			return;
+		}
+				
 		if (player.transferItem("Transfer", _objectId, _amount, pet.getInventory(), pet) == null)
 		{
 			_log.warning("Invalid item transfer request: " + pet.getName() + "(pet) --> " + player.getName());

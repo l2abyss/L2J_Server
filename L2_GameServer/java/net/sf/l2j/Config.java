@@ -591,6 +591,7 @@ public final class Config
     public static double	RAID_MINION_RESPAWN_TIMER;
     public static float		RAID_MIN_RESPAWN_MULTIPLIER;
     public static float		RAID_MAX_RESPAWN_MULTIPLIER;
+    public static int		INVENTORY_MAXIMUM_PET;
 	
 	/** ************************************************** **/
 	/** NPC Settings -End                                  **/
@@ -1674,6 +1675,7 @@ public final class Config
 	                RAID_MIN_RESPAWN_MULTIPLIER				= Float.parseFloat(NPC.getProperty("RaidMinRespawnMultiplier", "1.0"));
 	                RAID_MAX_RESPAWN_MULTIPLIER				= Float.parseFloat(NPC.getProperty("RaidMaxRespawnMultiplier", "1.0"));
 	                RAID_MINION_RESPAWN_TIMER				= Integer.parseInt(NPC.getProperty("RaidMinionRespawnTime", "300000"));
+	                INVENTORY_MAXIMUM_PET					= Integer.parseInt(NPC.getProperty("MaximumSlotsForPet", "12"));
 	
 	            }
 	            catch (Exception e)
