@@ -390,8 +390,6 @@ public class ZoneManager
 			}
 		}
 
-		GrandBossManager.getInstance().initZones();
-		
 		_log.info("Done: loaded " + zoneCount + " zones.");
 	}
 	

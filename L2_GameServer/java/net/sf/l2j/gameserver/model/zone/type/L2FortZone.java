@@ -40,7 +40,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 public class L2FortZone extends L2ZoneType
 {
 	private int _fortId;
-	private Fort _fort;
+	private Fort _fort = null;
 	private int[] _spawnLoc;
 	
 	public L2FortZone(int id)
@@ -56,10 +56,6 @@ public class L2FortZone extends L2ZoneType
 		if (name.equals("fortId"))
 		{
 			_fortId = Integer.parseInt(value);
-			
-			// Register self to the correct fort
-			_fort = FortManager.getInstance().getFortById(_fortId);
-			_fort.setZone(this);
 		}
 		else if (name.equals("spawnX"))
 		{
@@ -81,7 +77,7 @@ public class L2FortZone extends L2ZoneType
 	protected void onEnter(L2Character character)
 	{
 		character.setInsideZone(L2Character.ZONE_FORT, true);
-		if (_fort.getSiege().getIsInProgress())
+		if (getFort() != null && getFort().getSiege().getIsInProgress())
 		{
 			character.setInsideZone(L2Character.ZONE_PVP, true);
 			character.setInsideZone(L2Character.ZONE_SIEGE, true);
@@ -95,7 +91,7 @@ public class L2FortZone extends L2ZoneType
 	protected void onExit(L2Character character)
 	{
 		character.setInsideZone(L2Character.ZONE_FORT, false);
-		if (_fort.getSiege().getIsInProgress())
+		if (getFort() != null && getFort().getSiege().getIsInProgress())
 		{
 			character.setInsideZone(L2Character.ZONE_PVP, false);
 			character.setInsideZone(L2Character.ZONE_SIEGE, false);
@@ -136,7 +132,7 @@ public class L2FortZone extends L2ZoneType
 	@Override
 	public void onDieInside(L2Character character)
 	{
-		if (_fort.getSiege().getIsInProgress())
+		if (getFort() != null && getFort().getSiege().getIsInProgress())
 		{
 			// debuff participants only if they die inside siege zone
 			if (character instanceof L2PcInstance && ((L2PcInstance) character).getClan() != null)
@@ -154,7 +150,7 @@ public class L2FortZone extends L2ZoneType
 				}
 				L2Clan clan;
 				L2Skill skill;
-				if (_fort.getOwnerClan() == ((L2PcInstance)character).getClan())
+				if (getFort().getOwnerClan() == ((L2PcInstance)character).getClan())
 				{
 					skill = SkillTable.getInstance().getInfo(5660, lvl);
 					if (skill != null)
@@ -162,7 +158,7 @@ public class L2FortZone extends L2ZoneType
 				}
 				else
 				{
-					for (L2SiegeClan siegeclan : _fort.getSiege().getAttackerClans())
+					for (L2SiegeClan siegeclan : getFort().getSiege().getAttackerClans())
 					{
 						if (siegeclan == null)
 							continue;
@@ -185,7 +181,7 @@ public class L2FortZone extends L2ZoneType
 
 	public void updateZoneStatusForCharactersInside()
 	{
-		if (_fort.getSiege().getIsInProgress())
+		if (getFort() != null && getFort().getSiege().getIsInProgress())
 		{
 			for (L2Character character : _characterList.values())
 			{
@@ -270,6 +266,17 @@ public class L2FortZone extends L2ZoneType
 		return players;
 	}
 	
+	public int getFortId()
+	{
+		return _fortId;
+	}
+	
+	private final Fort getFort()
+	{
+		if (_fort == null)
+			_fort = FortManager.getInstance().getFortById(_fortId);
+		return _fort;
+	}
 	/**
 	 * Get the forts defender spawn
 	 * @return

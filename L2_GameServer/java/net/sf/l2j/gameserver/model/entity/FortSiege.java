@@ -112,7 +112,7 @@ public class FortSiege
 				}
 				else if (_time == 600) // 10min remains
 				{
-					getFort().getSpawnManager().despawnSuspiciousMerchant();
+					getFort().despawnNpcs(getFort()._siegeNpcs);
 					announceToPlayer(new SystemMessage(SystemMessageId.S1_MINUTES_UNTIL_THE_FORTRESS_BATTLE_STARTS),10,false);
 					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_fortInst,300), 300000); // Prepare task for 5 minutes left.
 				}
@@ -176,7 +176,7 @@ public class FortSiege
 			
 			try
 			{
-				_fortInst.getSpawnManager().spawnSuspiciousMerchant();
+				_fortInst.spawnNpcs(_fortInst._siegeNpcs);
 			}
 			catch (Exception e)
 			{
@@ -258,7 +258,7 @@ public class FortSiege
 			saveFortSiege(); // Save fort specific data
 			clearSiegeClan(); // Clear siege clan from db
 			removeCommanders(); // Remove commander from this fort
-			getFort().getSpawnManager().spawnNpcCommanders(); // Spawn NPC commanders
+			getFort().spawnNpcs(getFort()._npcCommanders); // Spawn NPC commanders
 			getSiegeGuardManager().unspawnSiegeGuard(); // Remove all spawned siege guard from this fort
 			getFort().resetDoors(); // Respawn door to fort
 			ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSuspicoiusMerchantSpawn(getFort()), FortSiegeManager.getInstance().getSuspiciousMerchantRespawnDelay()*60*1000); // Prepare 3hr task for suspicious merchant respawn
@@ -291,7 +291,7 @@ public class FortSiege
 			loadSiegeClan(); // Load siege clan from db
 			updatePlayerSiegeStateFlags(false);
 			teleportPlayer(FortSiege.TeleportWhoType.Attacker, MapRegionTable.TeleportWhereType.Town); // Teleport to the closest town
-			getFort().getSpawnManager().despawnNpcCommanders(); // Despawn NPC commanders
+			getFort().despawnNpcs(getFort()._npcCommanders); // Despawn NPC commanders
 			spawnCommanders(); // Spawn commanders
 			getFort().resetDoors(); // Spawn door
 			spawnSiegeGuard(); // Spawn siege guard

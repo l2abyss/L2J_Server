@@ -35,6 +35,7 @@ import net.sf.l2j.gameserver.datatables.DoorTable;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.CastleManorManager;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
+import net.sf.l2j.gameserver.instancemanager.ZoneManager;
 import net.sf.l2j.gameserver.instancemanager.CastleManorManager.CropProcure;
 import net.sf.l2j.gameserver.instancemanager.CastleManorManager.SeedProduction;
 import net.sf.l2j.gameserver.model.L2Clan;
@@ -42,6 +43,7 @@ import net.sf.l2j.gameserver.model.L2Manor;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.gameserver.model.zone.type.L2CastleTeleportZone;
 import net.sf.l2j.gameserver.model.zone.type.L2CastleZone;
 import net.sf.l2j.gameserver.network.serverpackets.PlaySound;
@@ -79,7 +81,7 @@ public class Castle
 	private int _taxPercent = 0;
 	private double _taxRate = 0;
 	private int _treasury = 0;
-	private L2CastleZone _zone;
+	private L2CastleZone _zone = null;
 	private L2CastleTeleportZone _teleZone;
 	private L2Clan _formerOwner = null;
 	private int _nbArtifact = 1;
@@ -399,7 +401,7 @@ public class Castle
 	 */
 	public void banishForeigners()
 	{
-		_zone.banishForeigners(getOwnerId());
+		getZone().banishForeigners(getOwnerId());
 	}
 	
 	/**
@@ -407,30 +409,38 @@ public class Castle
 	 */
 	public boolean checkIfInZone(int x, int y, int z)
 	{
-		return _zone.isInsideZone(x, y, z);
-	}
-	
-	/**
-	 * Sets this castles zone
-	 * @param zone
-	 */
-	public void setZone(L2CastleZone zone)
-	{
-		_zone = zone;
+		return getZone().isInsideZone(x, y, z);
 	}
 	
 	public L2CastleZone getZone()
 	{
+		if (_zone == null)
+		{
+			for (L2ZoneType zone : ZoneManager.getInstance().getAllZones())
+			{
+				if (zone instanceof L2CastleZone && ((L2CastleZone)zone).getCastleId() == getCastleId())
+				{
+					_zone = (L2CastleZone)zone;
+					break;
+				}
+			}
+		}
 		return _zone;
-	}
-	
-	public void setTeleZone(L2CastleTeleportZone zone)
-	{
-		_teleZone = zone;
 	}
 	
 	public L2CastleTeleportZone getTeleZone()
 	{
+		if (_teleZone == null)
+		{
+			for (L2ZoneType zone : ZoneManager.getInstance().getAllZones())
+			{
+				if (zone instanceof L2CastleTeleportZone && ((L2CastleTeleportZone)zone).getCastleId() == getCastleId())
+				{
+					_teleZone = (L2CastleTeleportZone)zone;
+					break;
+				}
+			}
+		}
 		return _teleZone;
 	}
 	
@@ -446,7 +456,7 @@ public class Castle
 	 */
 	public double getDistance(L2Object obj)
 	{
-		return _zone.getDistanceToZone(obj);
+		return getZone().getDistanceToZone(obj);
 	}
 	
 	public void closeDoor(L2PcInstance activeChar, int doorId)

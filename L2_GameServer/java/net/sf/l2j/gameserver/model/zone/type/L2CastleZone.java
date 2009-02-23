@@ -33,7 +33,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 public class L2CastleZone extends L2ZoneType
 {
 	private int _castleId;
-	private Castle _castle;
+	private Castle _castle = null;
 	private int[] _spawnLoc;
 	
 	public L2CastleZone(int id)
@@ -49,10 +49,6 @@ public class L2CastleZone extends L2ZoneType
 		if (name.equals("castleId"))
 		{
 			_castleId = Integer.parseInt(value);
-			
-			// Register self to the correct castle
-			_castle = CastleManager.getInstance().getCastleById(_castleId);
-			_castle.setZone(this);
 		}
 		else if (name.equals("spawnX"))
 		{
@@ -73,7 +69,7 @@ public class L2CastleZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (_castle.getSiege().getIsInProgress())
+		if (getCastle() != null && getCastle().getSiege().getIsInProgress())
 		{
 			character.setInsideZone(L2Character.ZONE_PVP, true);
 			character.setInsideZone(L2Character.ZONE_SIEGE, true);
@@ -88,7 +84,7 @@ public class L2CastleZone extends L2ZoneType
 	@Override
 	protected void onExit(L2Character character)
 	{
-		if (_castle.getSiege().getIsInProgress())
+		if (getCastle() != null && getCastle().getSiege().getIsInProgress())
 		{
 			character.setInsideZone(L2Character.ZONE_PVP, false);
 			character.setInsideZone(L2Character.ZONE_SIEGE, false);
@@ -122,7 +118,7 @@ public class L2CastleZone extends L2ZoneType
 	
 	public void updateZoneStatusForCharactersInside()
 	{
-		if (_castle.getSiege().getIsInProgress())
+		if (getCastle() != null && getCastle().getSiege().getIsInProgress())
 		{
 			for (L2Character character : _characterList.values())
 			{
@@ -205,6 +201,18 @@ public class L2CastleZone extends L2ZoneType
 		}
 		
 		return players;
+	}
+	
+	public int getCastleId()
+	{
+		return _castleId;
+	}
+	
+	private final Castle getCastle()
+	{
+		if (_castle == null)
+			_castle = CastleManager.getInstance().getCastleById(_castleId);
+		return _castle;
 	}
 	
 	/**

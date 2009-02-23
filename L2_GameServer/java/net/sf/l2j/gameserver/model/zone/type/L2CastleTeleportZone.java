@@ -15,10 +15,8 @@
 package net.sf.l2j.gameserver.model.zone.type;
 
 import javolution.util.FastList;
-import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.util.Rnd;
 
@@ -32,7 +30,6 @@ public class L2CastleTeleportZone extends L2ZoneType
 {
 	private int[] _spawnLoc;
 	private int _castleId;
-	private Castle _castle;
 	
 	public L2CastleTeleportZone(int id)
 	{
@@ -47,10 +44,6 @@ public class L2CastleTeleportZone extends L2ZoneType
 		if (name.equals("castleId"))
 		{
 			_castleId = Integer.parseInt(value);
-			
-			// Register self to the correct castle
-			_castle = CastleManager.getInstance().getCastleById(_castleId);
-			_castle.setTeleZone(this);
 		}
 		else if (name.equals("spawnMinX"))
 		{
@@ -132,6 +125,11 @@ public class L2CastleTeleportZone extends L2ZoneType
 					player.teleToLocation(Rnd.get(_spawnLoc[0], _spawnLoc[1]), Rnd.get(_spawnLoc[2], _spawnLoc[3]), _spawnLoc[4]);
 			}
 		}
+	}
+	
+	public int getCastleId()
+	{
+		return _castleId;
 	}
 	
 	/**
