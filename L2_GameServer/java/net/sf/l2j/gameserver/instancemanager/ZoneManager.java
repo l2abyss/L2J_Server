@@ -26,6 +26,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javolution.util.FastList;
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
+import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2WorldRegion;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
@@ -48,6 +50,7 @@ public class ZoneManager
 
 	// =========================================================
 	private static ZoneManager _instance;
+	private final FastList<L2ZoneType> _zones = new FastList<L2ZoneType>();
 
 	public static final ZoneManager getInstance()
 	{
@@ -97,6 +100,7 @@ public class ZoneManager
 		_log.info("Loading zones...");
 		java.sql.Connection con = null;
 		int zoneCount = 0;
+		_zones.clear();
 
 		// Get the world regions
 		L2WorldRegion[][] worldRegions = L2World.getInstance().getAllWorldRegions();
@@ -324,18 +328,15 @@ public class ZoneManager
 									temp.setParameter(name, val);
 								}
 							}
-
-							// Skip checks for fishing zones & add to fishing
-							// zone manager
+							addZone(temp);
+							
+							// Skip checks for fishing zones
 							if (temp instanceof L2FishingZone)
 							{
-								FishingZoneManager.getInstance().addFishingZone((L2FishingZone) temp);
+								zoneCount++;
 								continue;
 							}
-							if (temp instanceof L2WaterZone)
-							{
-								FishingZoneManager.getInstance().addWaterZone((L2WaterZone) temp);
-							}
+							
 							// Register the zone into any world region it
 							// intersects with...
 							// currently 11136 test for each zone :>
@@ -362,14 +363,8 @@ public class ZoneManager
 								}
 							}
 
-							// Special managers for arenas, towns...
-							if (temp instanceof L2ArenaZone)
-								ArenaManager.getInstance().addArena((L2ArenaZone) temp);
-							else if (temp instanceof L2TownZone)
-								TownManager.getInstance().addTown((L2TownZone) temp);
-							else if (temp instanceof L2OlympiadStadiumZone)
-								OlympiadStadiaManager.getInstance().addStadium((L2OlympiadStadiumZone) temp);
-							else if (temp instanceof L2BossZone)
+							// Special managers for granbosses...
+							if (temp instanceof L2BossZone)
 								GrandBossManager.getInstance().addZone((L2BossZone) temp);
 
 							// Increase the counter
@@ -399,4 +394,104 @@ public class ZoneManager
 		
 		_log.info("Done: loaded " + zoneCount + " zones.");
 	}
+	
+	/**
+	 * Add new zone
+	 *
+	 * @param zone
+	 */
+	public void addZone(L2ZoneType zone)
+	{
+		_zones.add(zone);
+	}
+	
+	/**
+	 * Returns all zones registered with the ZoneManager.
+	 * To minimise iteration processing retrieve zones from L2WorldRegion for a specific location instead.
+	 * @return zones
+	 */
+	public FastList<L2ZoneType> getAllZones()
+	{
+		return _zones;
+	}
+	
+	/**
+	 * Returns all zones from where the object is located
+	 *
+	 * @param object
+	 * @return zones
+	 */
+	public FastList<L2ZoneType> getZones(L2Object object)
+	{
+		return getZones(object.getX(), object.getY(), object.getZ());
+	}
+
+	/**
+	 * Returns all zones from given coordinates 
+	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return zones
+	 */
+	public FastList<L2ZoneType> getZones(int x, int y, int z)
+	{
+		L2WorldRegion region = L2World.getInstance().getRegion(x, y);
+		FastList<L2ZoneType> temp = new FastList<L2ZoneType>();
+		for (L2ZoneType zone : region.getZones())
+		{
+			if (zone.isInsideZone(x, y, z))
+				temp.add(zone);
+		}
+		return temp;
+	}
+	
+    public  final L2ArenaZone getArena(L2Character character)
+    {
+    	for (L2ZoneType temp : ZoneManager.getInstance().getZones(character.getX(), character.getY(), character.getZ()))
+    	{
+    		if (temp instanceof L2ArenaZone && temp.isCharacterInZone(character)) 
+    			return ((L2ArenaZone)temp);
+    	}
+
+    	return null;
+    }
+    
+	/**
+	 * getFishingZone() - This function was modified to check the coordinates without caring for Z.
+	 * This allows for the player to fish off bridges, into the water, or from other similar high places. One
+	 * should be able to cast the line from up into the water, not only fishing with one's feet wet. :)
+	 *
+	 *  TODO: Consider in the future, limiting the maximum height one can be above water, if we start getting
+	 *  "orbital fishing" players... xD
+	 */
+	public final L2FishingZone getFishingZone(int x, int y, int z)
+	{
+    	for (L2ZoneType temp : ZoneManager.getInstance().getAllZones())
+    	{
+    		if (temp instanceof L2FishingZone && temp.isInsideZone(x, y, ((L2FishingZone)temp).getWaterZ()))
+    			return ((L2FishingZone)temp);
+    	}
+		return null;
+	}
+	
+	public final L2WaterZone getWaterZone(int x, int y, int z)
+	{
+    	for (L2ZoneType temp : ZoneManager.getInstance().getZones(x,z,y))
+    	{
+    		if (temp instanceof L2WaterZone && temp.isInsideZone(x, y, ((L2WaterZone)temp).getWaterZ()))
+    			return ((L2WaterZone)temp);
+    	}
+		return null;
+	}
+	
+    public final L2OlympiadStadiumZone getOlympiadStadium(L2Character character)
+    {
+    	for (L2ZoneType temp : ZoneManager.getInstance().getZones(character.getX(), character.getY(), character.getZ()))
+    	{
+    		if (temp instanceof L2OlympiadStadiumZone && temp.isCharacterInZone(character)) 
+    			return ((L2OlympiadStadiumZone)temp);
+    	}
+    	return null;
+    }
 }

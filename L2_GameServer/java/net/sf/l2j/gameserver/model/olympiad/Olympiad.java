@@ -44,7 +44,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.Announcements;
 import net.sf.l2j.gameserver.ThreadPoolManager;
-import net.sf.l2j.gameserver.instancemanager.OlympiadStadiaManager;
+import net.sf.l2j.gameserver.instancemanager.ZoneManager;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Hero;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
@@ -908,7 +908,7 @@ public class Olympiad
 	
 	public boolean playerInStadia(L2PcInstance player)
 	{
-		return (OlympiadStadiaManager.getInstance().getStadium(player) != null);
+		return (ZoneManager.getInstance().getOlympiadStadium(player) != null);
 	}
 	
 	public int[] getWaitingList()

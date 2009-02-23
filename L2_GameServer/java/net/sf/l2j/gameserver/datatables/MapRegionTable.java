@@ -23,12 +23,12 @@ import java.util.logging.Logger;
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.SevenSigns;
-import net.sf.l2j.gameserver.instancemanager.ArenaManager;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.TownManager;
+import net.sf.l2j.gameserver.instancemanager.ZoneManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
@@ -495,7 +495,7 @@ public class MapRegionTable
 			}
 			
 			// Checking if in arena
-			L2ArenaZone arena = ArenaManager.getInstance().getArena(player);
+			L2ArenaZone arena = ZoneManager.getInstance().getArena(player);
 			if (arena != null)
 			{
 				coord = arena.getSpawnLoc();
@@ -511,7 +511,7 @@ public class MapRegionTable
 					if ((castle.getSiege().checkIsDefender(player.getClan()) ||	castle.getSiege().checkIsAttacker(player.getClan())) 
 							&& SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE) == SevenSigns.CABAL_DAWN)
 					{
-						coord = TownManager.getInstance().getSecondClosestTown(activeChar).getSpawnLoc();
+						coord = TownManager.getSecondClosestTown(activeChar).getSpawnLoc();
 						return new Location(coord[0], coord[1], coord[2]);
 					}
 				}
@@ -530,7 +530,7 @@ public class MapRegionTable
 		
 		// Get the nearest town
 		// TODO: Micht: Maybe we should add some checks to prevent exception here.
-		coord = TownManager.getInstance().getClosestTown(activeChar).getSpawnLoc();
+		coord = TownManager.getClosestTown(activeChar).getSpawnLoc();
 		
 		return new Location(coord[0], coord[1], coord[2]);
 	}

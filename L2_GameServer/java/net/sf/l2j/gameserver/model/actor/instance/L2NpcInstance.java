@@ -833,7 +833,7 @@ public class L2NpcInstance extends L2Character
 		// Get castle this NPC belongs to (excluding L2Attackable)
 		if (_castleIndex < 0)
 		{
-			L2TownZone town = TownManager.getInstance().getTown(getX(), getY(), getZ());
+			L2TownZone town = TownManager.getTown(getX(), getY(), getZ());
 			
 			if (town != null)
 				_castleIndex = CastleManager.getInstance().getCastleIndex(town.getTaxById());

@@ -17,7 +17,7 @@ package net.sf.l2j.gameserver.handler.skillhandlers;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
-import net.sf.l2j.gameserver.instancemanager.FishingZoneManager;
+import net.sf.l2j.gameserver.instancemanager.ZoneManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
@@ -129,8 +129,8 @@ public class Fishing implements ISkillHandler
 		 * proceed past here... in that case, the hook will be positioned using
 		 * the old Z lookup method.
 		 */
-		L2FishingZone aimingTo = FishingZoneManager.getInstance().isInsideFishingZone(x, y, z);
-		L2WaterZone water = FishingZoneManager.getInstance().isInsideWaterZone(x, y, z);
+		L2FishingZone aimingTo = ZoneManager.getInstance().getFishingZone(x, y, z);
+		L2WaterZone water = ZoneManager.getInstance().getWaterZone(x, y, z);
 		if (aimingTo != null && water != null && (GeoData.getInstance().canSeeTarget(player.getX(), player.getY(), player.getZ() + 50, x, y, water.getWaterZ() - 50)))
 		{
 			z = water.getWaterZ() + 10;

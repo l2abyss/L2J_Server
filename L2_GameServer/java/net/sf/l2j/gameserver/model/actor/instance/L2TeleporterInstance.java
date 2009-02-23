@@ -222,7 +222,7 @@ public final class L2TeleporterInstance extends L2FolkInstance
 				player.sendPacket(new SystemMessage(SystemMessageId.NO_PORT_THAT_IS_IN_SIGE));
 				return;
 			}
-			else if (TownManager.getInstance().townHasCastleInSiege(list.getLocX(), list.getLocY()))
+			else if (TownManager.townHasCastleInSiege(list.getLocX(), list.getLocY()))
 			{
 				player.sendPacket(new SystemMessage(SystemMessageId.NO_PORT_THAT_IS_IN_SIGE));
 				return;

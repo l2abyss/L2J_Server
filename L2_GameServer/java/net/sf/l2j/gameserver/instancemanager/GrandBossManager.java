@@ -253,26 +253,26 @@ public class GrandBossManager
 	public final L2BossZone getZone(L2Character character)
 	{
 		if (_zones != null)
+		{
 			for (L2BossZone temp : _zones)
 			{
 				if (temp.isCharacterInZone(character))
-				{
 					return temp;
-				}
 			}
+		}
 		return null;
 	}
 
 	public final L2BossZone getZone(int x, int y, int z)
 	{
 		if (_zones != null)
+		{
 			for (L2BossZone temp : _zones)
 			{
 				if (temp.isInsideZone(x, y, z))
-				{
 					return temp;
-				}
 			}
+		}
 		return null;
 	}
 
@@ -280,9 +280,8 @@ public class GrandBossManager
 	{
 		L2BossZone temp = getZone(obj.getX(), obj.getY(), obj.getZ());
 		if (temp == null)
-		{
 			return false;
-		}
+		
 		return temp.getZoneName().equalsIgnoreCase(zoneType);
 	}
 
@@ -291,9 +290,8 @@ public class GrandBossManager
 		if (player == null) return false;
 		L2BossZone temp = getZone(player.getX(), player.getY(), player.getZ());
 		if (temp == null)
-		{
 			return false;
-		}
+
 		return true;
 	}
 	/*

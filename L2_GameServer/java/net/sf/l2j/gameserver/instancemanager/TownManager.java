@@ -14,54 +14,20 @@
  */
 package net.sf.l2j.gameserver.instancemanager;
 
-import java.util.logging.Logger;
-
-import javolution.util.FastList;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.entity.Castle;
+import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.gameserver.model.zone.type.L2TownZone;
 
 public class TownManager
 {
-    private static final Logger _log = Logger.getLogger(TownManager.class.getName());
-
-    // =========================================================
-    private static TownManager _instance;
-    public static final TownManager getInstance()
-    {
-        if (_instance == null)
-        {
-    		_log.info("Initializing TownManager");
-        	_instance = new TownManager();
-        }
-        return _instance;
-    }
-    // =========================================================
-
-
-    // =========================================================
-    // Data Field
-    private FastList<L2TownZone> _towns;
-
-    // =========================================================
-    // Constructor
-    public TownManager()
-    {
-    }
+    //private static final Logger _log = Logger.getLogger(TownManager.class.getName());
 
     // =========================================================
     // Property - Public
 
-    public void addTown(L2TownZone arena)
-    {
-    	if (_towns == null)
-    		_towns = new FastList<L2TownZone>();
-
-    	_towns.add(arena);
-    }
-
-    public final L2TownZone getClosestTown(L2Object activeObject)
+    public final static L2TownZone getClosestTown(L2Object activeObject)
     {
         switch (MapRegionTable.getInstance().getMapRegion(activeObject.getPosition().getX(), activeObject.getPosition().getY()))
 		{
@@ -114,7 +80,7 @@ public class TownManager
         return getTown(16); // Default to floran
     }
 
-    public final L2TownZone getSecondClosestTown(L2Object activeObject)
+    public final static L2TownZone getSecondClosestTown(L2Object activeObject)
     {
         switch (MapRegionTable.getInstance().getMapRegion(activeObject.getPosition().getX(), activeObject.getPosition().getY()))
 		{
@@ -168,7 +134,7 @@ public class TownManager
     }
     
     
-    public final boolean townHasCastleInSiege(int townId)
+    public final static boolean townHasCastleInSiege(int townId)
     {
     	//int[] castleidarray = {0,0,0,0,0,0,0,1,2,3,4,0,5,0,0,6,0};
     	int[] castleidarray = {0,0,0,0,0,0,0,1,2,3,4,0,5,7,8,6,0,9,0,0,0,0,0};
@@ -183,7 +149,7 @@ public class TownManager
         return false;
     }
 
-    public final boolean townHasCastleInSiege(int x, int y)
+    public final static boolean townHasCastleInSiege(int x, int y)
     {
         int curtown= (MapRegionTable.getInstance().getMapRegion(x, y));
         //int[] castleidarray = {0,0,0,0,0,1,0,2,3,4,5,0,0,6,0,0,0,0};
@@ -199,10 +165,13 @@ public class TownManager
         return false;
     }
 
-    public final L2TownZone getTown(int townId)
+    public final static L2TownZone getTown(int townId)
     {
-        for (L2TownZone temp : _towns)
-        	if (temp.getTownId() == townId) return temp;
+    	for (L2ZoneType temp : ZoneManager.getInstance().getAllZones())
+    	{
+        	if (temp instanceof L2TownZone && ((L2TownZone) temp).getTownId() == townId)
+        		return (L2TownZone) temp;
+    	}
         return null;
     }
 
@@ -213,10 +182,13 @@ public class TownManager
      * @param z
      * @return
      */
-    public final L2TownZone getTown(int x, int y, int z)
+    public final static L2TownZone getTown(int x, int y, int z)
     {
-        for (L2TownZone temp : _towns)
-        	if (temp.isInsideZone(x, y, z)) return temp;
+        for (L2ZoneType temp : ZoneManager.getInstance().getZones(x, y, z))
+        {
+        	if (temp instanceof L2TownZone)
+        		return (L2TownZone) temp;
+        }
         return null;
     }
 }
