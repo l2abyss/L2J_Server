@@ -451,7 +451,7 @@ public class CursedWeapon
 		_player.setKarma(9999999);
 		_player.setPkKills(0);
 		if (_player.isInParty())
-			_player.getParty().oustPartyMember(_player);
+			_player.getParty().removePartyMember(_player);
 
 		// Disable All Skills
         disableAllSkills();
