@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.skills.l2skills;
 
+import net.sf.l2j.gameserver.model.Elementals;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
@@ -74,11 +75,13 @@ public class L2SkillChangeWeapon extends L2Skill
             
             int newItemId = 0;
             int enchantLevel = 0;
+            Elementals elementals = null;
             
             if (weaponItem.getChangeWeaponId() != 0)
             {
                 newItemId = weaponItem.getChangeWeaponId();
                 enchantLevel = wpn.getEnchantLevel();
+                elementals = wpn.getElementals();
                 
 
                 if (newItemId == -1)
@@ -136,6 +139,8 @@ public class L2SkillChangeWeapon extends L2Skill
                 if (newItem == null)
                     return;
                 
+                if (elementals != null && elementals.getElement() != -1 && elementals.getValue() != -1)
+                    newItem.setElementAttr(elementals.getElement(), elementals.getValue());
                 newItem.setEnchantLevel(enchantLevel);
                 player.getInventory().equipItem(newItem);
                 
@@ -156,6 +161,7 @@ public class L2SkillChangeWeapon extends L2Skill
                 
                 InventoryUpdate u = new InventoryUpdate();
                 u.addRemovedItem(destroyItem);
+                u.addItem(newItem);
                 player.sendPacket(u);
                 
                 player.broadcastUserInfo();
