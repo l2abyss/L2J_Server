@@ -375,7 +375,7 @@ public abstract class L2Skill
     private final float _flyCourse;
 
     private final boolean _isDebuff;
-
+    
 	private boolean _isAdvancedFlag;
 
     protected L2Skill(StatsSet set)
@@ -1350,7 +1350,12 @@ public abstract class L2Skill
         if (!preCondition.test(env))
         {
             String msg = preCondition.getMessage();
-            if (msg != null)
+            int msgId = preCondition.getMessageId();
+            if (msgId != 0)
+            {
+            	activeChar.sendPacket(new SystemMessage(msgId));
+            }
+            else if (msg != null)
             {
                 activeChar.sendMessage(msg);
             }

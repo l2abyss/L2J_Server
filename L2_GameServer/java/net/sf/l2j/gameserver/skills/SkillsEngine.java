@@ -54,7 +54,7 @@ public class SkillsEngine {
 
 	private SkillsEngine()
 	{
-		//hashFiles("data/stats/etcitem", _etcitemFiles);
+		hashFiles("data/stats/etcitem", _etcitemFiles);
 		hashFiles("data/stats/armor", _armorFiles);
 		hashFiles("data/stats/weapon", _weaponFiles);
 		hashFiles("data/stats/skills", _skillFiles);
@@ -132,16 +132,17 @@ public class SkillsEngine {
     public List<L2EtcItem> loadItems(Map<Integer, Item> itemData)
     {
         List<L2EtcItem> list  = new FastList<L2EtcItem>();
+        List<Integer> xmlItem  = new FastList<Integer>();
+        
         for (L2Item item : loadData(itemData, _etcitemFiles))
         {
             list.add((L2EtcItem)item);
+            xmlItem.add(item.getItemId());
         }
-        if (list.size() == 0)
+        for (Item item : itemData.values())
         {
-            for (Item item : itemData.values())
-            {
-                list.add(new L2EtcItem((L2EtcItemType)item.type, item.set));
-            }
+        	if (!xmlItem.contains(item.id))
+        		list.add(new L2EtcItem((L2EtcItemType)item.type, item.set));
         }
         return list;
     }

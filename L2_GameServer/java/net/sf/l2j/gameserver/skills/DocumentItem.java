@@ -21,6 +21,7 @@ import java.util.Map;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.Item;
+import net.sf.l2j.gameserver.skills.conditions.Condition;
 import net.sf.l2j.gameserver.templates.StatsSet;
 import net.sf.l2j.gameserver.templates.item.L2Armor;
 import net.sf.l2j.gameserver.templates.item.L2ArmorType;
@@ -142,6 +143,27 @@ final class DocumentItem extends DocumentBase
                 makeItem();
                 parseTemplate(n, _currentItem.item);
             }
+        }
+        for (n = first; n != null; n = n.getNextSibling())
+        {
+			if ("cond".equalsIgnoreCase(n.getNodeName()))
+			{
+				Condition condition = parseCondition(n.getFirstChild(), _currentItem.item );
+				Node msg = n.getAttributes().getNamedItem("msg");
+				Node msgId = n.getAttributes().getNamedItem("msgId");
+				if (condition != null && msg != null)
+					condition.setMessage(msg.getNodeValue());
+				else if (condition != null && msgId != null)
+					condition.setMessageId(Integer.decode(getValue(msgId.getNodeValue(), null)));
+				_currentItem.item.attach(condition);
+			}
+        }
+        for (n = first; n != null; n = n.getNextSibling())
+        {
+			if ("skill".equalsIgnoreCase(n.getNodeName()))
+			{
+				attachSkill(n, _currentItem.item, null);
+			}
         }
     }
 

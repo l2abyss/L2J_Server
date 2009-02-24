@@ -33,6 +33,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.model.base.PlayerState;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.model.entity.Fort;
@@ -42,7 +43,6 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.conditions.ConditionPlayerState;
 import net.sf.l2j.gameserver.skills.conditions.ConditionUsingItemType;
-import net.sf.l2j.gameserver.skills.conditions.ConditionPlayerState.CheckPlayerState;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.templates.chars.L2PcTemplate;
 import net.sf.l2j.gameserver.templates.item.L2Armor;
@@ -165,7 +165,7 @@ public final class Formulas
 		private FuncMultRegenResting(Stats pStat)
 		{
 			super(pStat, 0x20, null);
-			setCondition(new ConditionPlayerState(CheckPlayerState.RESTING, true));
+			setCondition(new ConditionPlayerState(PlayerState.RESTING, true));
 		}
 
 		/**

@@ -21,9 +21,7 @@ import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.handler.ItemHandler;
-import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
-import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.base.Race;
@@ -170,76 +168,6 @@ public final class UseItem extends L2GameClientPacket
 				|| itemId == 10129 || itemId == 10130))
 				return;
 
-
-           L2Clan cl = activeChar.getClan();
-            //A shield that can only be used by the members of a clan that owns a castle.
-           if ((cl == null||cl.getHasCastle() == 0) && itemId == 7015 && Config.CASTLE_SHIELD)
-           {
-               SystemMessage sm = new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
-               activeChar.sendPacket(sm);
-               sm = null;
-               return;
-           }
-
-           //A shield that can only be used by the members of a clan that owns a clan hall.
-           if ((cl == null|| cl.getHasHideout() == 0) && itemId == 6902 && Config.CLANHALL_SHIELD)
-           {
-               SystemMessage sm = new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
-               activeChar.sendPacket(sm);
-               sm = null;
-               return;
-           }
-           
-           //Apella armor used by clan members may be worn by a Baron or a higher level Aristocrat.
-           if ((itemId >=7860 && itemId <=7879) && Config.APELLA_ARMORS && (cl == null||activeChar.getPledgeClass() < 5))
-           {
-               SystemMessage sm = new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
-               activeChar.sendPacket(sm);
-               sm = null;
-               return;
-           }
-
-           //Clan Oath armor used by all clan members
-           if ((itemId >=7850 && itemId <=7859) && Config.OATH_ARMORS && (cl == null))
-           {
-               SystemMessage sm = new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
-               activeChar.sendPacket(sm);
-               sm = null;
-               return;
-           }
-
-           //The Lord's Crown used by castle lords only
-           if (itemId ==6841 && Config.CASTLE_CROWN && (cl == null||(cl.getHasCastle() == 0||!activeChar.isClanLeader())))
-           {
-               SystemMessage sm = new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
-               activeChar.sendPacket(sm);
-               sm = null;
-               return;
-           }
-
-           //Castle circlets used by the members of a clan that owns a castle, academy members are excluded.
-           if (Config.CASTLE_CIRCLETS &&((itemId >= 6834 && itemId <= 6840)||itemId == 8182||itemId == 8183))
-           {
-               if (cl ==null)
-               {
-                   SystemMessage sm = new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
-                   activeChar.sendPacket(sm);
-                   sm = null;
-                   return;
-               }
-               else
-               {
-                   int circletId = CastleManager.getInstance().getCircletByCastleId(cl.getHasCastle());
-                   if (activeChar.getPledgeType() == -1||circletId != itemId)
-                   {
-                       SystemMessage sm = new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
-                       activeChar.sendPacket(sm);
-                       sm = null;
-                       return;
-                   }
-               }
-           }
-
 			// Items that cannot be used
 			if (itemId == 57)
                 return;
@@ -276,7 +204,13 @@ public final class UseItem extends L2GameClientPacket
 
 			if (Config.DEBUG)
                 _log.finest(activeChar.getObjectId() + ": use item " + _objectId);
-
+			
+			if (!item.isEquipped())
+			{
+				if ( !item.getItem().checkCondition(activeChar, activeChar))
+					return;
+			}
+            
 			if (item.isEquipable())
 			{
 				// No unequipping/equipping while the player is in special conditions
@@ -385,174 +319,6 @@ public final class UseItem extends L2GameClientPacket
                             return;
                         }
                         break;
-                    }
-                    //Race circlets can be used only if your race is matching.
-                    case L2Item.SLOT_HAIRALL:
-                    {
-                    	if (itemId >= 9391 && itemId <= 9396)
-                    	{
-                    		switch (activeChar.getRace())
-                    		{
-                    			case Kamael:
-                    			{
-                    				if (itemId != 9396)
-                    				{
-                    					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
-                    					return;
-                    				}
-                    				break;
-                    			}
-                    			case Human:
-                    			{
-                    				if (itemId != 9391)
-                    				{
-                    					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
-                    					return;
-                    				}
-                    				break;
-                    			}
-                    			case Dwarf:
-                    			{
-                    				if (itemId != 9395)
-                    				{
-                    					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
-                    					return;
-                    				}
-                    				break;
-                    			}
-                    			case Elf:
-                    			{
-                    				if (itemId != 9392)
-                    				{
-                    					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
-                    					return;
-                    				}
-                    				break;
-                    			}
-                    			case DarkElf:
-                    			{
-                    				if (itemId != 9393)
-                    				{
-                    					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
-                    					return;
-                    				}
-                    				break;
-                    			}
-                    			case Orc:
-                    			{
-                    				if (itemId != 9394)
-                    				{
-                    					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
-                    					return;
-                    				}
-                    				break;
-                    			}
-                    		}
-                    	}
-                        break;
-                    }
-                    case L2Item.SLOT_L_BRACELET:
-                    {
-                    	SystemMessage sm = new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
-                    	if ((itemId >= 9605 && itemId <= 9615) || itemId == 10018)
-                    	{
-                    		if (activeChar.getClan()!= null)
-                    		{
-                    			switch (itemId)
-                    			{
-                    				case 9605:
-                    					if (activeChar.getClan().getHasHideout() != 62)
-                    					{
-                                            activeChar.sendPacket(sm);
-                                            return;
-                    					}
-                    					break;
-                    				case 9606:
-                    					if (activeChar.getClan().getHasHideout() != 63)
-                    					{
-                                            activeChar.sendPacket(sm);
-                                            return;
-                    					}
-                    					break;
-                    				case 9607:
-                    					if (activeChar.getClan().getHasCastle() != 1)
-                    					{
-                                            activeChar.sendPacket(sm);
-                                            return;
-                    					}
-                    					break;
-                    				case 9608:
-                    					if (activeChar.getClan().getHasCastle() != 2)
-                    					{
-                                            activeChar.sendPacket(sm);
-                                            return;
-                    					}
-                    					break;
-                    				case 9609:
-                    					if (activeChar.getClan().getHasCastle() != 3)
-                    					{
-                                            activeChar.sendPacket(sm);
-                                            return;
-                    					}
-                    					break;
-                    				case 9610:
-                    					if (activeChar.getClan().getHasCastle() != 4)
-                    					{
-                                            activeChar.sendPacket(sm);
-                                            return;
-                    					}
-                    					break;
-                    				case 9611:
-                    					if (activeChar.getClan().getHasCastle() != 5)
-                    					{
-                                            activeChar.sendPacket(sm);
-                                            return;
-                    					}
-                    					break;
-                    				case 9612:
-                    					if (activeChar.getClan().getHasCastle() != 6)
-                    					{
-                                            activeChar.sendPacket(sm);
-                                            return;
-                    					}
-                    					break;
-                    				case 9613:
-                    					if (activeChar.getClan().getHasCastle() != 7)
-                    					{
-                                            activeChar.sendPacket(sm);
-                                            return;
-                    					}
-                    					break;
-                    				case 9614:
-                    					if (activeChar.getClan().getHasCastle() != 8)
-                    					{
-                                            activeChar.sendPacket(sm);
-                                            return;
-                    					}
-                    					break;
-                    				case 9615:
-                    					if (activeChar.getClan().getHasCastle() != 9)
-                    					{
-                                            activeChar.sendPacket(sm);
-                                            return;
-                    					}
-                    					break;
-                    				case 10018:
-                    					if (activeChar.getClan().getHasFort() == 0)
-                    					{
-                                            activeChar.sendPacket(sm);
-                                            return;
-                    					}
-                    					break;
-                    			}
-                    		}
-                    		else
-                    		{
-                                activeChar.sendPacket(sm);
-                                return;
-                    		}
-                    	}
-                    	break;
                     }
                     case L2Item.SLOT_DECO:
                     {

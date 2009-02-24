@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.skills.conditions;
 
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.base.PlayerState;
 import net.sf.l2j.gameserver.skills.Env;
 
 
@@ -24,14 +25,13 @@ import net.sf.l2j.gameserver.skills.Env;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class ConditionPlayerState extends Condition {
+public class ConditionPlayerState extends Condition 
+{
 
-	public enum CheckPlayerState { RESTING, MOVING, RUNNING, FLYING, BEHIND, FRONT }
-
-	private final CheckPlayerState _check;
+	private final PlayerState _check;
 	private final boolean _required;
 
-	public ConditionPlayerState(CheckPlayerState check, boolean required)
+	public ConditionPlayerState(PlayerState check, boolean required)
 	{
 		_check = check;
 		_required = required;
@@ -39,12 +39,12 @@ public class ConditionPlayerState extends Condition {
 
 	@Override
 	public boolean testImpl(Env env) {
+		L2PcInstance player;
 		switch (_check)
 		{
 		case RESTING:
-			if (env.player instanceof L2PcInstance) {
+			if (env.player instanceof L2PcInstance)
 				return ((L2PcInstance)env.player).isSitting() == _required;
-			}
 			return !_required;
 		case MOVING:
 			return env.player.isMoving() == _required;
@@ -56,6 +56,16 @@ public class ConditionPlayerState extends Condition {
             return env.player.isBehindTarget() == _required;
         case FRONT:
             return env.player.isInFrontOfTarget() == _required;
+        case CHAOTIC:
+        	player = env.player.getActingPlayer();
+        	if (player != null) 
+        		return  player.getKarma() > 0 == _required;
+			return !_required;
+        case OLYMPIAD:
+        	player = env.player.getActingPlayer();
+        	if (player != null)
+        		return player.isInOlympiadMode() == _required;
+        	return !_required;
 		}
 		return !_required;
 	}

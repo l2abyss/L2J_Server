@@ -78,7 +78,13 @@ public final class RequestPetUseItem extends L2GameClientPacket
 
 		if (Config.DEBUG)
             _log.finest(activeChar.getObjectId()+": pet use item " + _objectId);
-
+		
+        if (!item.isEquipped())
+        {
+        	if ( !item.getItem().checkCondition(activeChar, activeChar))
+        		return;
+        }
+        
 		//check if the item matches the pet
 		if (item.isEquipable())
 		{

@@ -30,6 +30,7 @@ import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.network.L2GameClient;
+import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.gameserverpackets.ServerStatus;
 import net.sf.l2j.gameserver.network.serverpackets.ServerClose;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
@@ -66,10 +67,9 @@ public class Shutdown extends Thread
 	 * @param seconds       seconds untill shutdown
 	 * @param restart       true if the server will restart after shutdown
 	 */
-	@SuppressWarnings("deprecation")
 	private void SendServerQuit(int seconds)
 	{
-		SystemMessage sysm = new SystemMessage(1);
+		SystemMessage sysm = new SystemMessage(SystemMessageId.THE_SERVER_WILL_BE_COMING_DOWN_IN_S1_SECONDS);
 		sysm.addNumber(seconds);
 		Broadcast.toAllOnlinePlayers(sysm);
 	}
@@ -539,10 +539,9 @@ public class Shutdown extends Thread
 	 * this disconnects all clients from the server
 	 *
 	 */
-	@SuppressWarnings("deprecation")
 	private void disconnectAllCharacters()
 	{
-		SystemMessage sysm = new SystemMessage(0);
+		SystemMessage sysm = new SystemMessage(SystemMessageId.YOU_HAVE_BEEN_DISCONNECTED);
 		ServerClose ql = new ServerClose();
 		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
 		//synchronized (L2World.getInstance().getAllPlayers())

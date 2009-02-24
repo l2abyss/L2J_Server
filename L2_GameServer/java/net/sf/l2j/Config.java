@@ -144,12 +144,6 @@ public final class Config
     public static int		WAREHOUSE_SLOTS_NO_DWARF;
     public static int		WAREHOUSE_SLOTS_CLAN;
     public static int		FREIGHT_SLOTS;
-    public static boolean	CASTLE_SHIELD;
-    public static boolean	CLANHALL_SHIELD;
-    public static boolean	APELLA_ARMORS;
-    public static boolean	OATH_ARMORS;
-    public static boolean	CASTLE_CROWN;
-    public static boolean	CASTLE_CIRCLETS;
     public static boolean 	ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE;
     public static boolean 	ALT_GAME_KARMA_PLAYER_CAN_SHOP;
     public static boolean 	ALT_GAME_KARMA_PLAYER_CAN_TELEPORT;
@@ -350,6 +344,7 @@ public final class Config
     public static boolean	GM_STARTUP_AUTO_LIST;
     public static boolean 	GM_STARTUP_DIET_MODE;
     public static String	GM_ADMIN_MENU_STYLE;
+    public static boolean 	GM_ITEM_RESTRICTION;
     public static boolean	BYPASS_VALIDATION;
     public static boolean	GAMEGUARD_ENFORCE;
     public static boolean	GAMEGUARD_PROHIBITACTION;
@@ -1297,12 +1292,6 @@ public final class Config
 	                WAREHOUSE_SLOTS_NO_DWARF			= Integer.parseInt(Character.getProperty("MaximumWarehouseSlotsForNoDwarf", "100"));
 	                WAREHOUSE_SLOTS_CLAN				= Integer.parseInt(Character.getProperty("MaximumWarehouseSlotsForClan", "150"));
 	                FREIGHT_SLOTS						= Integer.parseInt(Character.getProperty("MaximumFreightSlots", "20"));
-	                CASTLE_SHIELD						= Boolean.parseBoolean(Character.getProperty("CastleShieldRestriction", "True"));
-	                CLANHALL_SHIELD						= Boolean.parseBoolean(Character.getProperty("ClanHallShieldRestriction", "True"));
-	                APELLA_ARMORS						= Boolean.parseBoolean(Character.getProperty("ApellaArmorsRestriction", "True"));
-	                OATH_ARMORS							= Boolean.parseBoolean(Character.getProperty("OathArmorsRestriction", "True"));
-	                CASTLE_CROWN						= Boolean.parseBoolean(Character.getProperty("CastleLordsCrownRestriction", "True"));
-	                CASTLE_CIRCLETS						= Boolean.parseBoolean(Character.getProperty("CastleCircletsRestriction", "True"));
 	                ENCHANT_CHANCE_WEAPON				= Integer.parseInt(Character.getProperty("EnchantChanceWeapon", "68"));
 	                ENCHANT_CHANCE_ARMOR				= Integer.parseInt(Character.getProperty("EnchantChanceArmor", "52"));
 	                ENCHANT_CHANCE_JEWELRY				= Integer.parseInt(Character.getProperty("EnchantChanceJewelry", "54"));
@@ -1468,6 +1457,7 @@ public final class Config
 	                GM_STARTUP_AUTO_LIST						= Boolean.parseBoolean(General.getProperty("GMStartupAutoList", "False"));
 	                GM_STARTUP_DIET_MODE						= Boolean.parseBoolean(General.getProperty("GMStartupDietMode", "False"));
 	                GM_ADMIN_MENU_STYLE							= General.getProperty("GMAdminMenuStyle", "modern");
+	                GM_ITEM_RESTRICTION							= Boolean.parseBoolean(General.getProperty("GmItemRestriction", "False"));
 	                BYPASS_VALIDATION							= Boolean.parseBoolean(General.getProperty("BypassValidation", "True"));
 	                GAMEGUARD_ENFORCE							= Boolean.parseBoolean(General.getProperty("GameGuardEnforce", "False"));
 	                GAMEGUARD_PROHIBITACTION					= Boolean.parseBoolean(General.getProperty("GameGuardProhibitAction", "False"));
@@ -2276,12 +2266,6 @@ public final class Config
         else if (pName.equalsIgnoreCase("AltMembersCanWithdrawFromClanWH")) ALT_MEMBERS_CAN_WITHDRAW_FROM_CLANWH = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("DwarfRecipeLimit")) DWARF_RECIPE_LIMIT = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("CommonRecipeLimit")) COMMON_RECIPE_LIMIT = Integer.parseInt(pValue);
-        else if (pName.equalsIgnoreCase("CastleShieldRestriction")) CASTLE_SHIELD = Boolean.parseBoolean(pValue);
-        else if (pName.equalsIgnoreCase("ClanHallShieldRestriction")) CLANHALL_SHIELD = Boolean.parseBoolean(pValue);
-        else if (pName.equalsIgnoreCase("ApellaArmorsRestriction")) APELLA_ARMORS = Boolean.parseBoolean(pValue);
-        else if (pName.equalsIgnoreCase("OathArmorsRestriction")) OATH_ARMORS = Boolean.parseBoolean(pValue);
-        else if (pName.equalsIgnoreCase("CastleLordsCrownRestriction")) CASTLE_CROWN = Boolean.parseBoolean(pValue);
-        else if (pName.equalsIgnoreCase("CastleCircletsRestriction")) CASTLE_CIRCLETS = Boolean.parseBoolean(pValue);
 
         //ChampionMobs L2JMOD
         else if (pName.equalsIgnoreCase("ChampionEnable")) L2JMOD_CHAMPION_ENABLE =  Boolean.parseBoolean(pValue);

@@ -29,6 +29,7 @@ public abstract class Condition implements ConditionListener
 	
 	private ConditionListener _listener;
 	private String _msg;
+	private int _msgId;
 	private boolean _result;
 	
 	public final void setMessage(String msg)
@@ -39,6 +40,16 @@ public abstract class Condition implements ConditionListener
 	public final String getMessage()
 	{
 		return _msg;
+	}
+	
+	public final void setMessageId(int msgId)
+	{
+		_msgId = msgId;
+	}
+	
+	public final int getMessageId()
+	{
+		return _msgId;
 	}
 	
 	void setListener(ConditionListener listener)

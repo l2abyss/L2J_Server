@@ -54,7 +54,9 @@ public final class SystemMessage extends L2GameServerPacket
 		_messageId = messageId.getId();
 	}
 
-	@Deprecated
+	/**
+	 * Use SystemMessage(SystemMessageId messageId) where possible instead
+	 */
 	public SystemMessage(int messageId)
 	{
 		_messageId = messageId;

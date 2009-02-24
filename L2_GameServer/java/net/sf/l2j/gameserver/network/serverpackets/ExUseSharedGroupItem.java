@@ -20,15 +20,15 @@ package net.sf.l2j.gameserver.network.serverpackets;
  */
 public class ExUseSharedGroupItem extends L2GameServerPacket
 {
-	private static final String _S__FE_49_EXUSESHAREDGROUPITEM = "[S] FE:4a ExUseSharedGroupItem";
-	private int _unk1, _unk2, _unk3, _unk4;
+	private static final String _S__FE_4A_EXUSESHAREDGROUPITEM = "[S] FE:4a ExUseSharedGroupItem";
+	private int _itemId, _grpId, _remainedTime, _totalTime;
 
-	public ExUseSharedGroupItem(int unk1, int unk2, int unk3, int unk4)
+	public ExUseSharedGroupItem(int itemId, int grpId, int remainedTime, int totalTime)
 	{
-		_unk1 = unk1;
-		_unk2 = unk2;
-		_unk3 = unk3;
-		_unk4 = unk4;
+		_itemId = itemId;
+		_grpId = grpId;
+		_remainedTime = remainedTime / 1000;
+		_totalTime = totalTime / 1000;
 	}
 
 	/**
@@ -40,10 +40,10 @@ public class ExUseSharedGroupItem extends L2GameServerPacket
 		writeC(0xfe);
 		writeH(0x4a);
 
-		writeD(_unk1);
-		writeD(_unk2);
-		writeD(_unk3);
-		writeD(_unk4);
+		writeD(_itemId);
+		writeD(_grpId);
+		writeD(_remainedTime);
+		writeD(_totalTime);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class ExUseSharedGroupItem extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return _S__FE_49_EXUSESHAREDGROUPITEM;
+		return _S__FE_4A_EXUSESHAREDGROUPITEM;
 	}
 
 }

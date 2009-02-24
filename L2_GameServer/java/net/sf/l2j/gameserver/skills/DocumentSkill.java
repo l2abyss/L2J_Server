@@ -316,8 +316,11 @@ class DocumentSkill extends DocumentBase {
 				{
 					Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
 					Node msg = n.getAttributes().getNamedItem("msg");
+					Node msgId = n.getAttributes().getNamedItem("msgId");
 					if (condition != null && msg != null)
 						condition.setMessage(msg.getNodeValue());
+					else if (condition != null && msgId != null)
+						condition.setMessageId(Integer.decode(getValue(msgId.getNodeValue(), null)));
                     _currentSkill.currentSkills.get(i).attach(condition, false);
 				}
 				if ("for".equalsIgnoreCase(n.getNodeName()))

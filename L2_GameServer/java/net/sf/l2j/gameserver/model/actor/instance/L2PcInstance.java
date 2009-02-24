@@ -2430,6 +2430,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		        return;
 			giveAvailableSkills();
 		}
+		checkItemRestriction();
 		sendSkillList(); 
 		// This function gets called on login, so not such a bad place to check weight
 		refreshOverloaded();		// Update the overloaded status of the L2PcInstance
@@ -8980,6 +8981,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	public void setPledgeClass(int classId)
     {
         _pledgeClass = classId;
+		checkItemRestriction();
     }
 
     public int getPledgeClass()
@@ -11942,5 +11944,31 @@ public final class L2PcInstance extends L2PlayableInstance
     		_currentSkill = null;
     	}
     	super.setIsCastingNow(value);
+    }
+    public void checkItemRestriction()
+    {
+    	for (int i = 0; i < Inventory.PAPERDOLL_TOTALSLOTS; i++)
+    	{
+    		L2ItemInstance equippedItem = getInventory().getPaperdollItem(i);
+    		if (equippedItem != null && !equippedItem.getItem().checkCondition(this, this))
+    		{
+				getInventory().unEquipItemInSlotAndRecord(i);
+				if (equippedItem.isWear())
+					continue;
+				SystemMessage sm = null;
+				if (equippedItem.getEnchantLevel() > 0)
+				{
+					sm = new SystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
+					sm.addNumber(equippedItem.getEnchantLevel());
+					sm.addItemName(equippedItem);
+				}
+				else
+				{
+					sm = new SystemMessage(SystemMessageId.S1_DISARMED);
+					sm.addItemName(equippedItem);
+				}
+				sendPacket(sm);
+    		}
+    	}
     }
 }

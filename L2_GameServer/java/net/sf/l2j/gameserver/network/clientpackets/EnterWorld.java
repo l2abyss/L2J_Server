@@ -589,7 +589,7 @@ public class EnterWorld extends L2GameClientPacket
         if (activeChar.isNoble() && pledgeClass < 5)
                pledgeClass = 5;
 
-        if (activeChar.isHero())
+        if (activeChar.isHero() && pledgeClass < 8)
                pledgeClass = 8;
 
         activeChar.setPledgeClass(pledgeClass);

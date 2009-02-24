@@ -85,67 +85,29 @@ public class Scrolls implements IItemHandler
 		
 		if (itemId >= 8594 && itemId <= 8599) //Scrolls of recovery XML: 2286
 		{
-			if (activeChar.getKarma() > 0)
-				return; // Chaotic can not use it
-				
-			byte expIndex = (byte) activeChar.getExpertiseIndex();
-			
-			if ((itemId == 8594 && expIndex == 0) || // Scroll: Recovery (No Grade)
-					(itemId == 8595 && expIndex == 1) || // Scroll: Recovery (D Grade)
-					(itemId == 8596 && expIndex == 2) || // Scroll: Recovery (C Grade)
-					(itemId == 8597 && expIndex == 3) || // Scroll: Recovery (B Grade)
-					(itemId == 8598 && expIndex == 4) || // Scroll: Recovery (A Grade)
-					(itemId == 8599 && (expIndex == 5 || expIndex == 6))) // Scroll: Recovery (S/80 Grade)
-			{
-				if (!playable.destroyItem("Consume", item.getObjectId(), 1, null, false))
-					return;
-				activeChar.broadcastPacket(new MagicSkillUse(playable, playable, 2286, 1, 1, 0));
-				activeChar.reduceDeathPenaltyBuffLevel();
-				useScroll(activeChar, 2286, itemId - 8593);
-			}
-			else
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.INCOMPATIBLE_ITEM_GRADE));
+			if (!playable.destroyItem("Consume", item.getObjectId(), 1, null, false))
+				return;
+			activeChar.broadcastPacket(new MagicSkillUse(playable, playable, 2286, 1, 1, 0));
+			activeChar.reduceDeathPenaltyBuffLevel();
+			useScroll(activeChar, 2286, itemId - 8593);
 			return;
 		}
 		else if (itemId == 5703 || itemId >= 5803 && itemId <= 5807)
 		{
 			byte expIndex = (byte) activeChar.getExpertiseIndex();
-			
-			if ((itemId == 5703 && expIndex == 0) || // Lucky Charm (No Grade)
-					(itemId == 5803 && expIndex == 1) || // Lucky Charm (D Grade)
-					(itemId == 5804 && expIndex == 2) || // Lucky Charm (C Grade)
-					(itemId == 5805 && expIndex == 3) || // Lucky Charm (B Grade)
-					(itemId == 5806 && expIndex == 4) || // Lucky Charm (A Grade)
-					(itemId == 5807 && (expIndex == 5 || expIndex == 6))) // Lucky Charm (S/80 Grade)
-			{
-				if (!playable.destroyItem("Consume", item.getObjectId(), 1, null, false))
-					return;
-				activeChar.broadcastPacket(new MagicSkillUse(playable, playable, 2168, (expIndex > 5 ? expIndex : expIndex + 1), 1, 0));
-				useScroll(activeChar, 2168, (expIndex > 5 ? expIndex : expIndex + 1));
-				activeChar.setCharmOfLuck(true);
-			}
-			else
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.INCOMPATIBLE_ITEM_GRADE));
+			if (!playable.destroyItem("Consume", item.getObjectId(), 1, null, false))
+				return;
+			activeChar.broadcastPacket(new MagicSkillUse(playable, playable, 2168, (expIndex > 5 ? expIndex : expIndex + 1), 1, 0));
+			useScroll(activeChar, 2168, (expIndex > 5 ? expIndex : expIndex + 1));
+			activeChar.setCharmOfLuck(true);
 			return;
 		}
 		else if (itemId >= 8515 && itemId <= 8520) // Charm of Courage XML: 5041
 		{
-			byte expIndex = (byte) activeChar.getExpertiseIndex();
-			
-			if ((itemId == 8515 && expIndex == 0) || // Charm of Courage (No Grade)
-					(itemId == 8516 && expIndex <= 1) || // Charm of Courage (D Grade)
-					(itemId == 8517 && expIndex <= 2) || // Charm of Courage (C Grade)
-					(itemId == 8518 && expIndex <= 3) || // Charm of Courage (B Grade)
-					(itemId == 8519 && expIndex <= 4) || // Charm of Courage (A Grade)
-					(itemId == 8520 && expIndex <= 6)) // Charm of Courage (S/80 Grade)
-			{
-				if (!playable.destroyItem("Consume", item.getObjectId(), 1, null, false))
-					return;
-				activeChar.broadcastPacket(new MagicSkillUse(playable, playable, 5041, 1, 1, 0));
-				useScroll(activeChar, 5041, 1);
-			}
-			else
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.INCOMPATIBLE_ITEM_GRADE));
+			if (!playable.destroyItem("Consume", item.getObjectId(), 1, null, false))
+				return;
+			activeChar.broadcastPacket(new MagicSkillUse(playable, playable, 5041, 1, 1, 0));
+			useScroll(activeChar, 5041, 1);
 			return;
 		}
 		else if (itemId == 9897 || itemId >= 10131 && itemId <= 10138 || itemId == 10151 || itemId == 10274) //transformation scrolls
@@ -158,8 +120,6 @@ public class Scrolls implements IItemHandler
 		}
 		else if (itemId >= 8954 && itemId <= 8956)
 		{
-			if (activeChar.getLevel() < 76)
-				return;
 			if (!playable.destroyItem("Consume", item.getObjectId(), 1, null, false))
 				return;
 			switch (itemId)
