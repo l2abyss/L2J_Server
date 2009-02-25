@@ -446,7 +446,7 @@ public class Castle
 	
 	public void oustAllPlayers()
 	{
-		_teleZone.oustAllPlayers();
+		getTeleZone().oustAllPlayers();
 	}
 	
 	/**
