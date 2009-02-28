@@ -5728,6 +5728,15 @@ public final class L2PcInstance extends L2PlayableInstance
 		_requestExpireTime = GameTimeController.getGameTicks() + REQUEST_TIMEOUT * GameTimeController.TICKS_PER_SECOND;
 		partner.setActiveRequester(this);
 	}
+	
+	/**
+	 * Return true if last request is expired.
+	 * @return
+	 */
+	public boolean isRequestExpired()
+	{
+		return !(_requestExpireTime > GameTimeController.getGameTicks());
+	}
 
 	/**
 	 * Select the Warehouse to be used in next activity.<BR><BR>

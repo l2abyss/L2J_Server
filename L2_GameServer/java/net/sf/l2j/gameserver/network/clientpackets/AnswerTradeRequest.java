@@ -75,7 +75,8 @@ public final class AnswerTradeRequest extends L2GameClientPacket
             return;
         }
 
-		if (_response == 1) player.startTrade(partner);
+		if (_response == 1 && !partner.isRequestExpired())
+			player.startTrade(partner);
 		else
 		{
 			SystemMessage msg = new SystemMessage(SystemMessageId.S1_DENIED_TRADE_REQUEST);
