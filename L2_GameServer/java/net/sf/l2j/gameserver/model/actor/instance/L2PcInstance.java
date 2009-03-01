@@ -2230,6 +2230,9 @@ public final class L2PcInstance extends L2PlayableInstance
 
 		if (getClan() != null)
 			getClan().broadcastToOnlineMembers(new PledgeShowMemberListUpdate(this));
+		
+		if (Config.AUTO_LEARN_SKILLS)
+			rewardSkills();
 	}
 
 	/** Return the Experience of the L2PcInstance. */
