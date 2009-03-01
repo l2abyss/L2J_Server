@@ -8156,6 +8156,7 @@ public final class L2PcInstance extends L2PlayableInstance
         		target = this;
         		break;
         	case TARGET_PET:
+        	case TARGET_SUMMON:
         		target = getPet();
         		break;
         	default:
@@ -8379,6 +8380,7 @@ public final class L2PcInstance extends L2PlayableInstance
         	switch (sklTargetType)
 			{
 				case TARGET_PET:
+				case TARGET_SUMMON:
 				case TARGET_AURA:
 				case TARGET_FRONT_AURA:
 				case TARGET_BEHIND_AURA:

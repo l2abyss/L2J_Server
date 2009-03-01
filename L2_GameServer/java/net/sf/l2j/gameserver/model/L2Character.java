@@ -1425,6 +1425,7 @@ public abstract class L2Character extends L2Object
 					skill.getSkillType() == L2SkillType.REFLECT ||
 					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF ||
 					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PET ||
+					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_SUMMON ||
 					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PARTY ||
 					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_CLAN ||
 					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_ALLY)

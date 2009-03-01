@@ -94,6 +94,7 @@ public abstract class L2Skill
         TARGET_ALLY,
         TARGET_CLAN,
         TARGET_PET,
+        TARGET_SUMMON,
         TARGET_AREA,
         TARGET_FRONT_AREA,
         TARGET_BEHIND_AREA,
@@ -1474,6 +1475,13 @@ public abstract class L2Skill
                 if (target != null && !target.isDead()) return new L2Character[] {target};
 
                 return null;
+            }
+            case TARGET_SUMMON:
+            {
+            	target = activeChar.getPet();
+            	if (target != null && !target.isDead() && target instanceof L2SummonInstance) return new L2Character[] {target};
+            	
+            	return null;
             }
 			case TARGET_OWNER_PET:
 			{
