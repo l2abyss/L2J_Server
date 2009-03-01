@@ -580,13 +580,13 @@ public class L2Spawn
 	 */
 	public void setRespawnDelay(int i)
 	{
-        if (i<0)
+        if (i < 0)
             _log.warning("respawn delay is negative for spawnId:"+_id);
 
-        if (i<60)
-            i=60;
+        if (i < 10)
+            i = 10;
 
-		_respawnDelay = i * 1000;
+        _respawnDelay = i * 1000;
 	}
 
 	public L2NpcInstance getLastSpawn()
