@@ -1111,15 +1111,6 @@ public final class L2PcInstance extends L2PlayableInstance
 	public final int getLevel() { return getStat().getLevel(); }
 	
 	/**
-     * Return the _newbie state of the L2PcInstance.<BR><BR>
-     * @deprecated Use {@link #getNewbie()} instead
-     */
-    public int isNewbie()
-    {
-        return getNewbie();
-    }
-
-	/**
 	 * Return the _newbie rewards state of the L2PcInstance.<BR><BR>
 	 */
 	public int getNewbie()
