@@ -146,8 +146,6 @@ public class ScrollOfEscape implements IItemHandler
 		
 		//activeChar.abortCast();
 		activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-		//SoE Animation section
-		activeChar.setTarget(activeChar);
 		
 		// Modified by Tempy - 28 Jul 05 \\
 		// Check if this is a blessed scroll, if it is then shorten the cast time.
@@ -160,7 +158,7 @@ public class ScrollOfEscape implements IItemHandler
 		activeChar.disableAllSkills();
 		
 		L2Skill skill = SkillTable.getInstance().getInfo(escapeSkill, 1);
-		MagicSkillUse msu = new MagicSkillUse(activeChar, escapeSkill, 1, skill.getHitTime(), 0);
+		MagicSkillUse msu = new MagicSkillUse(activeChar, activeChar, escapeSkill, 1, skill.getHitTime(), 0);
 		activeChar.broadcastPacket(msu);
 		SetupGauge sg = new SetupGauge(0, skill.getHitTime());
 		activeChar.sendPacket(sg);
