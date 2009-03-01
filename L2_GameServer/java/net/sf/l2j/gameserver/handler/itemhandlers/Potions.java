@@ -203,6 +203,7 @@ public class Potions implements IItemHandler
 				// elixir of Life
 				byte expIndex = (byte) activeChar.getExpertiseIndex();
 				res = usePotion(activeChar, 2287, (expIndex > 5 ? expIndex : expIndex + 1));
+				break;
 			}
 			case 8628:
 			case 8629:
