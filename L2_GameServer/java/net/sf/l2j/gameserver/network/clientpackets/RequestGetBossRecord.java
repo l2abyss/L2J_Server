@@ -53,7 +53,7 @@ public class RequestGetBossRecord extends L2GameClientPacket
         }
 
         int points = RaidBossPointsManager.getPointsByOwnerId(activeChar.getObjectId());
-        int ranking = RaidBossPointsManager.calculateRanking(activeChar);
+        int ranking = RaidBossPointsManager.calculateRanking(activeChar.getObjectId());
         
         Map<Integer, Integer> list = RaidBossPointsManager.getList(activeChar);
 

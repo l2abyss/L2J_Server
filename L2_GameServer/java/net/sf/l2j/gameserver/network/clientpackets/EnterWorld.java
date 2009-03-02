@@ -40,7 +40,6 @@ import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.PetitionManager;
-import net.sf.l2j.gameserver.instancemanager.RaidBossPointsManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Clan;
@@ -244,8 +243,6 @@ public class EnterWorld extends L2GameClientPacket
             notifyPartner(activeChar,activeChar.getPartnerId());
         }
 
-        // load points for that character
-        RaidBossPointsManager.loadPoints(activeChar);
         if(activeChar.isCursedWeaponEquipped()) 
         {
             CursedWeaponsManager.getInstance().getCursedWeapon(activeChar.getCursedWeaponEquippedId()).cursedOnLogin();
