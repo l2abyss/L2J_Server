@@ -4509,6 +4509,7 @@ public final class L2PcInstance extends L2PlayableInstance
             regiveTemporarySkills();
             _transformation.onUntransform();
             _transformation = null;
+            stopEffects(L2EffectType.TRANSFORMATION);
             broadcastUserInfo();
             sendPacket(new SkillCoolTime(this));
         }
