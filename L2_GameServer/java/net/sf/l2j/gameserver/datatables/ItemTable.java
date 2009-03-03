@@ -754,7 +754,7 @@ public class ItemTable
 	 */
 	public L2Item getTemplate(int id)
 	{
-		if (id > _allTemplates.length)
+		if (id >= _allTemplates.length)
 			return null;
 		else
 			return _allTemplates[id];
