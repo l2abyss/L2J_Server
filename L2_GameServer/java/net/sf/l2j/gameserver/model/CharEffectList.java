@@ -215,7 +215,8 @@ public class CharEffectList
 		{
 			for (L2Effect e : _buffs)
 			{
-				if (e != null && e.getShowIcon() && !e.getSkill().isDance() && !e.getSkill().isDebuff() &&
+				if (e != null && e.getShowIcon() && !e.getSkill().isDance() &&
+					!e.getSkill().isDebuff() && !e.getSkill().bestowed() &&
 					(e.getSkill().getSkillType() == L2SkillType.BUFF ||
 					e.getSkill().getSkillType() == L2SkillType.REFLECT ||
 					e.getSkill().getSkillType() == L2SkillType.HEAL_PERCENT ||
@@ -350,7 +351,7 @@ public class CharEffectList
 
 		for (L2Effect e : effects)
 		{
-			if (e == null || 
+			if (e == null || e.getSkill().bestowed() || 
 					!(e.getSkill().getSkillType() == L2SkillType.BUFF ||
 					 e.getSkill().getSkillType() == L2SkillType.DEBUFF ||
 					 e.getSkill().getSkillType() == L2SkillType.REFLECT ||
@@ -507,7 +508,7 @@ public class CharEffectList
 			
 		// Remove first buff when buff list is full
 		L2Skill tempSkill = newEffect.getSkill();
-		if (!doesStack(tempSkill) && !tempSkill.isDebuff() &&
+		if (!doesStack(tempSkill) && !tempSkill.isDebuff() && !tempSkill.bestowed() &&
 				!(tempSkill.getId() > 4360 && tempSkill.getId() < 4367))
 		{
 			removeFirstBuff(tempSkill);
