@@ -560,6 +560,7 @@ public final class Config
     public static boolean	L2JMOD_ENABLE_WAREHOUSESORTING_CLAN;
     public static boolean	L2JMOD_ENABLE_WAREHOUSESORTING_PRIVATE;
     public static boolean	L2JMOD_ENABLE_WAREHOUSESORTING_FREIGHT;
+    public static boolean 	L2JMOD_ENABLE_MANA_POTIONS_SUPPORT;
     
     /** ************************************************** **/
 	/** L2JMods Settings -End                              **/
@@ -1892,6 +1893,8 @@ public final class Config
 	                BANKING_SYSTEM_ENABLED	= Boolean.parseBoolean(L2JModSettings.getProperty("BankingEnabled", "false"));
 	                BANKING_SYSTEM_GOLDBARS	= Integer.parseInt(L2JModSettings.getProperty("BankingGoldbarCount", "1"));
 	                BANKING_SYSTEM_ADENA	= Integer.parseInt(L2JModSettings.getProperty("BankingAdenaCount", "500000000"));
+	                
+	                L2JMOD_ENABLE_MANA_POTIONS_SUPPORT = Boolean.parseBoolean(L2JModSettings.getProperty("EnableManaPotionSupport", "false"));
 	            }
 	            catch (Exception e)
 	            {
@@ -2303,6 +2306,9 @@ public final class Config
         else if (pName.equalsIgnoreCase("EnableWarehouseSortingClan")) L2JMOD_ENABLE_WAREHOUSESORTING_CLAN = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("EnableWarehouseSortingPrivate")) L2JMOD_ENABLE_WAREHOUSESORTING_PRIVATE = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("EnableWarehouseSortingFreight")) L2JMOD_ENABLE_WAREHOUSESORTING_FREIGHT = Boolean.parseBoolean(pValue);
+        
+        // L2JMod Mana potion
+        else if (pName.equalsIgnoreCase("EnableManaPotionSupport")) L2JMOD_ENABLE_MANA_POTIONS_SUPPORT = Boolean.parseBoolean(pValue);
 
         // PvP settings
         else if (pName.equalsIgnoreCase("MinKarma")) KARMA_MIN_KARMA = Integer.parseInt(pValue);

@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.handler.itemhandlers;
 
 import java.util.logging.Logger;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.model.L2Effect;
@@ -116,6 +117,10 @@ public class Potions implements IItemHandler
 				if (!isEffectReplaceable(activeChar, L2EffectType.HEAL_OVER_TIME, itemId))
 					return;
 				res = usePotion(activeChar, 2032, 1);
+				break;
+			case 728: // custom mana potion, xml: 2005
+				if (Config.L2JMOD_ENABLE_MANA_POTIONS_SUPPORT)
+					res = usePotion(activeChar, 2005, 1);
 				break;
 			case 733: // Endeavor Potion, xml: 2010
 				res = usePotion(activeChar, 2010, 1);
