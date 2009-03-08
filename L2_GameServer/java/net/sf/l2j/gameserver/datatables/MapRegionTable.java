@@ -191,7 +191,17 @@ public class MapRegionTable
 	
 	public final int getMapRegion(int posX, int posY)
 	{
-		return _regions[getMapRegionX(posX)][getMapRegionY(posY)];
+		try
+		{
+			return _regions[getMapRegionX(posX)][getMapRegionY(posY)];
+		}
+		catch (ArrayIndexOutOfBoundsException e)
+		{
+			// Position sent is outside MapRegionTable area.
+			if (Config.DEBUG)
+				_log.log(Level.WARNING, "MapRegionTable: Player outside map regions at X,Y="+posX+","+posY, e);
+			return 0;
+		}
 	}
 	
 	public final int getMapRegionX(int posX)
