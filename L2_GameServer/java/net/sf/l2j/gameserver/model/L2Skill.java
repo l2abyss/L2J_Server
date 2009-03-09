@@ -290,6 +290,8 @@ public abstract class L2Skill
     private final int _coolTime;
     private final int _reuseDelay;
     private final int _buffDuration;
+    // for item skills delay on equip
+    private final int _equipDelay;
 
     /** Target type of the skill : SELF, PARTY, CLAN, PET... */
     private final SkillTargetType _targetType;
@@ -442,6 +444,8 @@ public abstract class L2Skill
         
         _buffDuration = set.getInteger("buffDuration", 0);
 
+        _equipDelay = set.getInteger("equipDelay", 0);
+        
         _skillRadius = set.getInteger("skillRadius", 80);
 
         _targetType = set.getEnum("target", SkillTargetType.class);
@@ -991,6 +995,11 @@ public abstract class L2Skill
         return _reuseDelay;
     }
 
+    public final int getEquipDelay()
+    {
+    	return _equipDelay;
+    }
+    
     public final int getHitTime()
     {
         return _hitTime;

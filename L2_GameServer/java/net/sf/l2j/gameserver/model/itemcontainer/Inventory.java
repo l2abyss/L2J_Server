@@ -32,6 +32,7 @@ import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2ItemInstance.ItemLocation;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.SkillCoolTime;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Stats;
 import net.sf.l2j.gameserver.templates.item.L2Armor;
@@ -341,6 +342,8 @@ public abstract class Inventory extends ItemContainer
 			int skill_Id = 0;
 		    int skillLvl = 0;
 			L2Item it = item.getItem();
+	    	boolean update = false;
+	    	boolean updateTimeStamp = false;
 			
 			if(it instanceof L2Weapon)
 			{
@@ -366,9 +369,28 @@ public abstract class Inventory extends ItemContainer
 							if (_itemSkill != null)
 							{
 					    		player.addSkill(_itemSkill, false);
-					    		player.sendSkillList(); 
+								if (_itemSkill.isActive())
+								{
+									if (player.getReuseTimeStamp().isEmpty() || !player.getReuseTimeStamp().containsKey(_itemSkill.getId()))
+									{
+										int equipDelay = _itemSkill.getEquipDelay();
+										if (equipDelay > 0)
+										{
+											player.addTimeStamp(_itemSkill.getId(), equipDelay);
+											player.disableSkill(_itemSkill.getId(), equipDelay);
+										}
+									}
+									updateTimeStamp = true;
+								}
+								update = true;
 							}
 						}
+					}
+					if (update)
+					{
+						player.sendSkillList();
+						if (updateTimeStamp)
+							player.sendPacket(new SkillCoolTime(player));
 					}
 				}
 				
@@ -401,9 +423,28 @@ public abstract class Inventory extends ItemContainer
 							if (_itemSkill != null)
 							{
 					    		player.addSkill(_itemSkill, false);
-					    		player.sendSkillList(); 
+								if (_itemSkill.isActive())
+								{
+									if (player.getReuseTimeStamp().isEmpty() || !player.getReuseTimeStamp().containsKey(_itemSkill.getId()))
+									{
+										int equipDelay = _itemSkill.getEquipDelay();
+										if (equipDelay > 0)
+										{
+											player.addTimeStamp(_itemSkill.getId(), _itemSkill.getEquipDelay());
+											player.disableSkill(_itemSkill.getId(), _itemSkill.getEquipDelay());
+										}
+									}
+									updateTimeStamp = true;
+								}
+								update = true;
 							}
 						}
+					}
+					if (update)
+					{
+						player.sendSkillList();
+						if (updateTimeStamp)
+							player.sendPacket(new SkillCoolTime(player));
 					}
 				}
 			}
