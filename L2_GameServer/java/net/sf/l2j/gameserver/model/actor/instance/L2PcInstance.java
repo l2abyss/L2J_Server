@@ -64,9 +64,7 @@ import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
 import net.sf.l2j.gameserver.handler.IItemHandler;
-import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.handler.ItemHandler;
-import net.sf.l2j.gameserver.handler.SkillHandler;
 import net.sf.l2j.gameserver.handler.skillhandlers.StrSiegeAssault;
 import net.sf.l2j.gameserver.handler.skillhandlers.SummonFriend;
 import net.sf.l2j.gameserver.handler.skillhandlers.TakeCastle;
@@ -7439,7 +7437,6 @@ public final class L2PcInstance extends L2PlayableInstance
      */
 	public void restoreEffects()
 	{
-		L2Object[] targets = new L2Character[]{this};
 		Connection con = null;
 		
 		try
@@ -7476,11 +7473,7 @@ public final class L2PcInstance extends L2PlayableInstance
 				if(skillId == -1 || effectCount == -1 || effectCurTime == -1 || reuseDelay < 0) continue;
 
 				L2Skill skill = SkillTable.getInstance().getInfo(skillId, skillLvl);
-				ISkillHandler IHand = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
-				if (IHand != null)
-					IHand.useSkill(this, skill, targets);
-				else
-					skill.useSkill(this, targets);
+				skill.getEffects(this, this);
 
 				if (remainingTime > 10)
 				{
