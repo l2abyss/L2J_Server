@@ -17,7 +17,6 @@ package net.sf.l2j.gameserver.handler.admincommandhandlers;
 import java.util.Calendar;
 import java.util.StringTokenizer;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
@@ -33,6 +32,7 @@ import net.sf.l2j.gameserver.model.zone.type.L2ClanHallZone;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * This class handles all siege commands:
@@ -236,51 +236,55 @@ public class AdminSiege implements IAdminCommandHandler
 		int i = 0;
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
 		adminReply.setFile("data/html/admin/castles.htm");
-		TextBuilder cList = new TextBuilder();
-		for (Castle castle : CastleManager.getInstance().getCastles())
-		{
-			if (castle != null)
-			{
+                final StringBuilder cList = new StringBuilder(500);
+		for (Castle castle : CastleManager.getInstance().getCastles()) {
+			if (castle != null) {
 				String name = castle.getName();
-				cList.append("<td fixwidth=90><a action=\"bypass -h admin_siege " + name + "\">" + name + "</a></td>");
+                                StringUtil.append(cList,
+                                        "<td fixwidth=90><a action=\"bypass -h admin_siege ",
+                                        name,
+                                        "\">",
+                                        name,
+                                        "</a></td>");
 				i++;
 			}
-			if (i > 2)
-			{
+			if (i > 2) {
 				cList.append("</tr><tr>");
 				i = 0;
 			}
 		}
 		adminReply.replace("%castles%", cList.toString());
-		cList.clear();
+		cList.setLength(0);
 		i = 0;
-		for (ClanHall clanhall : ClanHallManager.getInstance().getClanHalls().values())
-		{
-			if (clanhall != null)
-			{
-				cList.append("<td fixwidth=134><a action=\"bypass -h admin_clanhall " + clanhall.getId() + "\">");
-				cList.append(clanhall.getName() + "</a></td>");
+		for (ClanHall clanhall : ClanHallManager.getInstance().getClanHalls().values()) {
+			if (clanhall != null) {
+                            StringUtil.append(cList,
+                                    "<td fixwidth=134><a action=\"bypass -h admin_clanhall ",
+                                    String.valueOf(clanhall.getId()),
+                                    "\">",
+                                    clanhall.getName(),
+                                    "</a></td>");
 				i++;
 			}
-			if (i > 1)
-			{
+			if (i > 1) {
 				cList.append("</tr><tr>");
 				i = 0;
 			}
 		}
 		adminReply.replace("%clanhalls%", cList.toString());
-		cList.clear();
+		cList.setLength(0);
 		i = 0;
-		for (ClanHall clanhall : ClanHallManager.getInstance().getFreeClanHalls().values())
-		{
-			if (clanhall != null)
-			{
-				cList.append("<td fixwidth=134><a action=\"bypass -h admin_clanhall " + clanhall.getId() + "\">");
-				cList.append(clanhall.getName() + "</a></td>");
+		for (ClanHall clanhall : ClanHallManager.getInstance().getFreeClanHalls().values()) {
+			if (clanhall != null) {
+                            StringUtil.append(cList,
+                                    "<td fixwidth=134><a action=\"bypass -h admin_clanhall ",
+                                    String.valueOf(clanhall.getId()),
+                                    "\">",
+                                    clanhall.getName(),
+                                    "</a></td>");
 				i++;
 			}
-			if (i > 1)
-			{
+			if (i > 1) {
 				cList.append("</tr><tr>");
 				i = 0;
 			}

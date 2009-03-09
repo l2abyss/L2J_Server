@@ -14,9 +14,9 @@
  */
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
+import java.util.Collection;
 import java.util.StringTokenizer;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
 import net.sf.l2j.gameserver.model.CursedWeapon;
@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * This class handles following admin commands:
@@ -89,42 +90,73 @@ public class AdminCursedWeapons implements IAdminCommandHandler
 			}
 			else
 			{
-				TextBuilder replyMSG = new TextBuilder();
-				NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
-				adminReply.setFile("data/html/admin/cwinfo.htm");
-				for (CursedWeapon cw : cwm.getCursedWeapons())
-				{
-					itemId = cw.getItemId();
-					replyMSG.append("<table width=270><tr><td>Name:</td><td>" + cw.getName() + "</td></tr>");
-					if (cw.isActivated())
-					{
-						L2PcInstance pl = cw.getPlayer();
-						replyMSG.append("<tr><td>Weilder:</td><td>" + (pl == null ? "null" : pl.getName()) + "</td></tr>");
-						replyMSG.append("<tr><td>Karma:</td><td>" + String.valueOf(cw.getPlayerKarma()) + "</td></tr>");
-						replyMSG.append("<tr><td>Kills:</td><td>" + String.valueOf(cw.getPlayerPkKills()) + "/" + String.valueOf(cw.getNbKills()) + "</td></tr>");
-						replyMSG.append("<tr><td>Time remaining:</td><td>" + String.valueOf(cw.getTimeLeft() / 60000) + " min.</td></tr>");
-						replyMSG.append("<tr><td><button value=\"Remove\" action=\"bypass -h admin_cw_remove " + String.valueOf(itemId) + "\" width=73 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
-						replyMSG.append("<td><button value=\"Go\" action=\"bypass -h admin_cw_goto " + String.valueOf(itemId) + "\" width=73 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>");
-					}
-					else if (cw.isDropped())
-					{
-						replyMSG.append("<tr><td>Position:</td><td>Lying on the ground</td></tr>");
-						replyMSG.append("<tr><td>Time remaining:</td><td>" + String.valueOf(cw.getTimeLeft() / 60000) + " min.</td></tr>");
-						replyMSG.append("<tr><td>Kills:</td><td>" + String.valueOf(cw.getNbKills()) + "</td></tr>");
-						replyMSG.append("<tr><td><button value=\"Remove\" action=\"bypass -h admin_cw_remove " + String.valueOf(itemId) + "\" width=73 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
-						replyMSG.append("<td><button value=\"Go\" action=\"bypass -h admin_cw_goto " + String.valueOf(itemId) + "\" width=73 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>");
-					}
-					else
-					{
-						replyMSG.append("<tr><td>Position:</td><td>Doesn't exist.</td></tr>");
-						replyMSG.append("<tr><td><button value=\"Give to Target\" action=\"bypass -h admin_cw_add " + String.valueOf(itemId)
-								+ "\" width=99 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td><td></td></tr>");
-					}
-					replyMSG.append("</table>");
-					replyMSG.append("<br>");
-				}
-				adminReply.replace("%cwinfo%", replyMSG.toString());
-				activeChar.sendPacket(adminReply);
+                            final Collection<CursedWeapon> cws = cwm.getCursedWeapons();
+                            final StringBuilder replyMSG =
+                                    new StringBuilder(cws.size() * 300);
+                            NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
+                            adminReply.setFile("data/html/admin/cwinfo.htm");
+                            for (CursedWeapon cw : cwm.getCursedWeapons()) {
+                                itemId = cw.getItemId();
+
+                                StringUtil.append(replyMSG,
+                                        "<table width=270><tr><td>Name:</td><td>",
+                                        cw.getName(),
+                                        "</td></tr>");
+
+                                if (cw.isActivated()) {
+                                    L2PcInstance pl = cw.getPlayer();
+                                    StringUtil.append(replyMSG,
+                                            "<tr><td>Weilder:</td><td>",
+                                            (pl == null ? "null" : pl.getName()),
+                                            "</td></tr>" +
+                                            "<tr><td>Karma:</td><td>",
+                                            String.valueOf(cw.getPlayerKarma()),
+                                            "</td></tr>" +
+                                            "<tr><td>Kills:</td><td>",
+                                            String.valueOf(cw.getPlayerPkKills()),
+                                            "/",
+                                            String.valueOf(cw.getNbKills()),
+                                            "</td></tr>" +
+                                            "<tr><td>Time remaining:</td><td>",
+                                            String.valueOf(cw.getTimeLeft() / 60000),
+                                            " min.</td></tr>" +
+                                            "<tr><td><button value=\"Remove\" action=\"bypass -h admin_cw_remove ",
+                                            String.valueOf(itemId),
+                                            "\" width=73 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>" +
+                                            "<td><button value=\"Go\" action=\"bypass -h admin_cw_goto ",
+                                            String.valueOf(itemId),
+                                            "\" width=73 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>"
+                                            );
+                                }
+                                else if (cw.isDropped()) {
+                                    StringUtil.append(replyMSG,
+                                            "<tr><td>Position:</td><td>Lying on the ground</td></tr>" +
+                                            "<tr><td>Time remaining:</td><td>",
+                                            String.valueOf(cw.getTimeLeft() / 60000),
+                                            " min.</td></tr>" +
+                                            "<tr><td>Kills:</td><td>",
+                                            String.valueOf(cw.getNbKills()),
+                                            "</td></tr>" +
+                                            "<tr><td><button value=\"Remove\" action=\"bypass -h admin_cw_remove ",
+                                            String.valueOf(itemId),
+                                            "\" width=73 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>" +
+                                            "<td><button value=\"Go\" action=\"bypass -h admin_cw_goto ",
+                                            String.valueOf(itemId),
+                                            "\" width=73 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>"
+                                            );
+                                } else {
+                                    StringUtil.append(replyMSG,
+                                            "<tr><td>Position:</td><td>Doesn't exist.</td></tr>" +
+                                            "<tr><td><button value=\"Give to Target\" action=\"bypass -h admin_cw_add ",
+                                            String.valueOf(itemId),
+                                            "\" width=99 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td><td></td></tr>"
+                                            );
+                                }
+
+                                replyMSG.append("</table><br>");
+                            }
+                            adminReply.replace("%cwinfo%", replyMSG.toString());
+                            activeChar.sendPacket(adminReply);
 			}
 		}
 		else if (command.startsWith("admin_cw_reload"))

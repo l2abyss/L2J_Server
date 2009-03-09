@@ -1,15 +1,12 @@
 /*
  * $Header: Util.java, 14-Jul-2005 03:27:51 luisantonioa Exp $
- *
- * $Author: luisantonioa $
- * $Date: 14-Jul-2005 03:27:51 $
- * $Revision: 1 $
- * $Log: Util.java,v $
- * Revision 1  14-Jul-2005 03:27:51  luisantonioa
- * Added copyright notice
- *
- *
-* This program is free software: you can redistribute it and/or modify it under
+ * 
+ * $Author: luisantonioa $ $Date: 14-Jul-2005 03:27:51 $ $Revision: 1 $ $Log:
+ * Util.java,v $ Revision 1 14-Jul-2005 03:27:51 luisantonioa Added copyright
+ * notice
+ * 
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
@@ -27,109 +24,106 @@ package net.sf.l2j.util;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
-import javolution.text.TextBuilder;
-
 /**
  * This class ...
- *
+ * 
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
  */
 
 public class Util
 {
-    public static boolean isInternalIP(String ipAddress)
-    {
-    	java.net.InetAddress addr = null;
-    	try
-        {
-	        addr = java.net.InetAddress.getByName(ipAddress);
-        }
-        catch (UnknownHostException e)
-        {
-	        e.printStackTrace();
-        }
-        return addr.isSiteLocalAddress() || addr.isLoopbackAddress();
-     }
-
-    public static String printData(byte[] data, int len)
+	public static boolean isInternalIP(String ipAddress)
 	{
-        TextBuilder result = new TextBuilder();
-
+		java.net.InetAddress addr = null;
+		try
+		{
+			addr = java.net.InetAddress.getByName(ipAddress);
+		}
+		catch (UnknownHostException e)
+		{
+			e.printStackTrace();
+		}
+		return addr.isSiteLocalAddress() || addr.isLoopbackAddress();
+	}
+	
+	public static String printData(byte[] data, int len)
+	{
+		final StringBuilder result = new StringBuilder(len * 4);
+		
 		int counter = 0;
-
-		for (int i=0;i< len;i++)
+		
+		for (int i = 0; i < len; i++)
 		{
 			if (counter % 16 == 0)
 			{
-				result.append(fillHex(i,4)+": ");
+				result.append(fillHex(i, 4) + ": ");
 			}
-
+			
 			result.append(fillHex(data[i] & 0xff, 2) + " ");
 			counter++;
 			if (counter == 16)
 			{
 				result.append("   ");
-
-				int charpoint = i-15;
-				for (int a=0; a<16;a++)
+				
+				int charpoint = i - 15;
+				for (int a = 0; a < 16; a++)
 				{
 					int t1 = data[charpoint++];
 					if (t1 > 0x1f && t1 < 0x80)
 					{
-						result.append((char)t1);
+						result.append((char) t1);
 					}
 					else
 					{
 						result.append('.');
 					}
 				}
-
+				
 				result.append("\n");
 				counter = 0;
 			}
 		}
-
+		
 		int rest = data.length % 16;
-		if (rest > 0 )
+		if (rest > 0)
 		{
-			for (int i=0; i<17-rest;i++ )
+			for (int i = 0; i < 17 - rest; i++)
 			{
 				result.append("   ");
 			}
-
-			int charpoint = data.length-rest;
-			for (int a=0; a<rest;a++)
+			
+			int charpoint = data.length - rest;
+			for (int a = 0; a < rest; a++)
 			{
 				int t1 = data[charpoint++];
 				if (t1 > 0x1f && t1 < 0x80)
 				{
-					result.append((char)t1);
+					result.append((char) t1);
 				}
 				else
 				{
 					result.append('.');
 				}
 			}
-
+			
 			result.append("\n");
 		}
-
-
+		
 		return result.toString();
 	}
-
+	
 	public static String fillHex(int data, int digits)
 	{
 		String number = Integer.toHexString(data);
-
-		for (int i=number.length(); i< digits; i++)
+		
+		for (int i = number.length(); i < digits; i++)
 		{
 			number = "0" + number;
 		}
-
+		
 		return number;
 	}
-
+	
 	/**
 	 * @param raw
 	 * @return

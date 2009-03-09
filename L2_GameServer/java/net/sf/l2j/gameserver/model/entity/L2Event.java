@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
 import net.sf.l2j.gameserver.model.L2Spawn;
@@ -34,6 +33,7 @@ import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.util.Broadcast;
+import net.sf.l2j.gameserver.util.StringUtil;
 import net.sf.l2j.util.EventData;
 
 /**
@@ -139,15 +139,28 @@ public class L2Event
 			
 			DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream("data/events/" + eventName)));
 			BufferedReader inbr = new BufferedReader(new InputStreamReader(in));
-			
-			TextBuilder replyMSG = new TextBuilder("<html><body>");
-			replyMSG.append("<center><font color=\"LEVEL\">" + eventName + "</font><font color=\"FF0000\"> bY " + inbr.readLine() + "</font></center><br>");
-			
-			replyMSG.append("<br>" + inbr.readLine());
-			if (L2Event.participatingPlayers.contains(player.getName()))
+
+                        final StringBuilder replyMSG = new StringBuilder();
+                        StringUtil.append(replyMSG,
+                                "<html><body>" +
+                                "<center><font color=\"LEVEL\">",
+                                eventName,
+                                "</font><font color=\"FF0000\"> bY ",
+                                inbr.readLine(),
+                                "</font></center><br>" +
+                                "<br>",
+                                inbr.readLine()
+                                );
+
+                        if (L2Event.participatingPlayers.contains(player.getName())) {
 				replyMSG.append("<br><center>You are already in the event players list !!</center></body></html>");
-			else
-				replyMSG.append("<br><center><button value=\"Participate !! \" action=\"bypass -h npc_" + objectid + "_event_participate\" width=90 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center></body></html>");
+                        } else {
+                            StringUtil.append(replyMSG,
+                                    "<br><center><button value=\"Participate !! \" action=\"bypass -h npc_",
+                                    String.valueOf(objectid),
+                                    "_event_participate\" width=90 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center></body></html>"
+                                    );
+                        }
 			
 			adminReply.setHtml(replyMSG.toString());
 			player.sendPacket(adminReply);

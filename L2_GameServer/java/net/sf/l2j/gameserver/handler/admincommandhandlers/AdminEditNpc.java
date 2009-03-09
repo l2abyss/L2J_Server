@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import javolution.text.TextBuilder;
 import javolution.util.FastList;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.TradeController;
@@ -39,6 +38,7 @@ import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.templates.StatsSet;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.item.L2Item;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * @author terry
@@ -286,24 +286,34 @@ public class AdminEditNpc implements IAdminCommandHandler
 		}
 		
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
+
+                final String replyMSG = StringUtil.concat(
+                        "<html><title>Merchant Shop Item Edit</title>" +
+                        "<body>" +
+                        "<br>Edit an entry in merchantList." +
+                        "<br>Editing Item: ",
+                        item.getName(),
+                        "<table>" +
+                        "<tr><td width=100>Property</td><td width=100>Edit Field</td><td width=100>Old Value</td></tr>" +
+                        "<tr><td><br></td><td></td></tr>" +
+                        "<tr><td>Price</td><td><edit var=\"price\" width=80></td><td>",
+                        String.valueOf(tradeList.getPriceForItemId(itemID)),
+                        "</td></tr>" +
+                        "</table>" +
+                        "<center><br><br><br>" +
+                        "<button value=\"Save\" action=\"bypass -h admin_editShopItem ",
+                        String.valueOf(tradeListID),
+                        " ",
+                        String.valueOf(itemID),
+                        " $price\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
+                        "<br><button value=\"Back\" action=\"bypass -h admin_showShopList ",
+                        String.valueOf(tradeListID),
+                        " 1\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
+                        "</center>" +
+                        "</body></html>"
+                        );
 		
-		TextBuilder replyMSG = new TextBuilder();
-		replyMSG.append("<html><title>Merchant Shop Item Edit</title>");
-		replyMSG.append("<body>");
-		replyMSG.append("<br>Edit an entry in merchantList.");
-		replyMSG.append("<br>Editing Item: " + item.getName());
-		replyMSG.append("<table>");
-		replyMSG.append("<tr><td width=100>Property</td><td width=100>Edit Field</td><td width=100>Old Value</td></tr>");
-		replyMSG.append("<tr><td><br></td><td></td></tr>");
-		replyMSG.append("<tr><td>Price</td><td><edit var=\"price\" width=80></td><td>" + tradeList.getPriceForItemId(itemID) + "</td></tr>");
-		replyMSG.append("</table>");
-		replyMSG.append("<center><br><br><br>");
-		replyMSG.append("<button value=\"Save\" action=\"bypass -h admin_editShopItem " + tradeListID + " " + itemID + " $price\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-		replyMSG.append("<br><button value=\"Back\" action=\"bypass -h admin_showShopList " + tradeListID + " 1\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-		replyMSG.append("</center>");
-		replyMSG.append("</body></html>");
-		
-		adminReply.setHtml(replyMSG.toString());
+		adminReply.setHtml(replyMSG);
 		activeChar.sendPacket(adminReply);
 	}
 	
@@ -329,24 +339,34 @@ public class AdminEditNpc implements IAdminCommandHandler
 		}
 		
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
+
+                final String replyMSG = StringUtil.concat(
+                        "<html><title>Merchant Shop Item Delete</title>" +
+                        "<body>" +
+                        "<br>Delete entry in merchantList." +
+                        "<br>Item to Delete: ",
+                        ItemTable.getInstance().getTemplate(itemID).getName(),
+                        "<table>" +
+                        "<tr><td width=100>Property</td><td width=100>Value</td></tr>" +
+                        "<tr><td><br></td><td></td></tr>" +
+                        "<tr><td>Price</td><td>",
+                        String.valueOf(tradeList.getPriceForItemId(itemID)),
+                        "</td></tr>" +
+                        "</table>" +
+                        "<center><br><br><br>" +
+                        "<button value=\"Confirm\" action=\"bypass -h admin_delShopItem ",
+                        String.valueOf(tradeListID),
+                        " ",
+                        String.valueOf(itemID),
+                        " 1\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
+                        "<br><button value=\"Back\" action=\"bypass -h admin_showShopList ",
+                        String.valueOf(tradeListID),
+                        " 1\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">",
+                        "</center>" +
+                        "</body></html>"
+                        );
 		
-		TextBuilder replyMSG = new TextBuilder();
-		replyMSG.append("<html><title>Merchant Shop Item Delete</title>");
-		replyMSG.append("<body>");
-		replyMSG.append("<br>Delete entry in merchantList.");
-		replyMSG.append("<br>Item to Delete: " + ItemTable.getInstance().getTemplate(itemID).getName());
-		replyMSG.append("<table>");
-		replyMSG.append("<tr><td width=100>Property</td><td width=100>Value</td></tr>");
-		replyMSG.append("<tr><td><br></td><td></td></tr>");
-		replyMSG.append("<tr><td>Price</td><td>" + tradeList.getPriceForItemId(itemID) + "</td></tr>");
-		replyMSG.append("</table>");
-		replyMSG.append("<center><br><br><br>");
-		replyMSG.append("<button value=\"Confirm\" action=\"bypass -h admin_delShopItem " + tradeListID + " " + itemID + " 1\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-		replyMSG.append("<br><button value=\"Back\" action=\"bypass -h admin_showShopList " + tradeListID + " 1\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-		replyMSG.append("</center>");
-		replyMSG.append("</body></html>");
-		
-		adminReply.setHtml(replyMSG.toString());
+		adminReply.setHtml(replyMSG);
 		activeChar.sendPacket(adminReply);
 	}
 	
@@ -379,24 +399,29 @@ public class AdminEditNpc implements IAdminCommandHandler
 		}
 		
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
+
+                final String replyMSG = StringUtil.concat(
+                        "<html><title>Merchant Shop Item Add</title>" +
+                        "<body>" +
+                        "<br>Add a new entry in merchantList." +
+                        "<table>" +
+                        "<tr><td width=100>Property</td><td>Edit Field</td></tr>" +
+                        "<tr><td><br></td><td></td></tr>" +
+                        "<tr><td>ItemID</td><td><edit var=\"itemID\" width=80></td></tr>" +
+                        "<tr><td>Price</td><td><edit var=\"price\" width=80></td></tr>" +
+                        "</table>" +
+                        "<center><br><br><br>" +
+                        "<button value=\"Save\" action=\"bypass -h admin_addShopItem ",
+                        String.valueOf(tradeListID),
+                        " $itemID $price\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
+                        "<br><button value=\"Back\" action=\"bypass -h admin_showShopList ",
+                        String.valueOf(tradeListID),
+                        " 1\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
+                        "</center>" +
+                        "</body></html>"
+                        );
 		
-		TextBuilder replyMSG = new TextBuilder();
-		replyMSG.append("<html><title>Merchant Shop Item Add</title>");
-		replyMSG.append("<body>");
-		replyMSG.append("<br>Add a new entry in merchantList.");
-		replyMSG.append("<table>");
-		replyMSG.append("<tr><td width=100>Property</td><td>Edit Field</td></tr>");
-		replyMSG.append("<tr><td><br></td><td></td></tr>");
-		replyMSG.append("<tr><td>ItemID</td><td><edit var=\"itemID\" width=80></td></tr>");
-		replyMSG.append("<tr><td>Price</td><td><edit var=\"price\" width=80></td></tr>");
-		replyMSG.append("</table>");
-		replyMSG.append("<center><br><br><br>");
-		replyMSG.append("<button value=\"Save\" action=\"bypass -h admin_addShopItem " + tradeListID + " $itemID $price\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-		replyMSG.append("<br><button value=\"Back\" action=\"bypass -h admin_showShopList " + tradeListID + " 1\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-		replyMSG.append("</center>");
-		replyMSG.append("</body></html>");
-		
-		adminReply.setHtml(replyMSG.toString());
+		adminReply.setHtml(replyMSG);
 		activeChar.sendPacket(adminReply);
 	}
 	
@@ -407,54 +432,92 @@ public class AdminEditNpc implements IAdminCommandHandler
 			return;
 		
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
-		TextBuilder html = itemListHtml(tradeList, page);
-		
-		adminReply.setHtml(html.toString());
+		adminReply.setHtml(itemListHtml(tradeList, page));
 		activeChar.sendPacket(adminReply);
 		
 	}
 	
-	private TextBuilder itemListHtml(L2TradeList tradeList, int page)
+	private String itemListHtml(L2TradeList tradeList, int page)
 	{
-		TextBuilder replyMSG = new TextBuilder();
+		final StringBuilder replyMSG = new StringBuilder();
+
+                StringUtil.append(replyMSG,
+                        "<html><title>Merchant Shop List Page: ",
+                        String.valueOf(page),
+                        "</title>" +
+                        "<body>" +
+                        "<br>Edit, add or delete entries in a merchantList." +
+                        "<table>" +
+                        "<tr><td width=150>Item Name</td><td width=60>Price</td><td width=40>Delete</td></tr>"
+                        );
 		
-		replyMSG.append("<html><title>Merchant Shop List Page: " + page + "</title>");
-		replyMSG.append("<body>");
-		replyMSG.append("<br>Edit, add or delete entries in a merchantList.");
-		replyMSG.append("<table>");
-		replyMSG.append("<tr><td width=150>Item Name</td><td width=60>Price</td><td width=40>Delete</td></tr>");
 		int start = ((page - 1) * PAGE_LIMIT);
 		int end = Math.min(((page - 1) * PAGE_LIMIT) + (PAGE_LIMIT - 1), tradeList.getItems().size() - 1);
 		for (L2TradeItem item : tradeList.getItems(start, end + 1))
 		{
-			replyMSG.append("<tr><td><a action=\"bypass -h admin_editShopItem " + tradeList.getListId() + " " + item.getItemId() + "\">" + ItemTable.getInstance().getTemplate(item.getItemId()).getName() + "</a></td>");
-			replyMSG.append("<td>" + item.getPrice() + "</td>");
-			replyMSG.append("<td><button value=\"Del\" action=\"bypass -h admin_delShopItem " + tradeList.getListId() + " " + item.getItemId() + "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
-			replyMSG.append("</tr>");
+                    StringUtil.append(replyMSG,
+                            "<tr><td><a action=\"bypass -h admin_editShopItem ",
+                            String.valueOf(tradeList.getListId()),
+                            " ",
+                            String.valueOf(item.getItemId()),
+                            "\">",
+                            ItemTable.getInstance().getTemplate(item.getItemId()).getName(),
+                            "</a></td>" +
+                            "<td>",
+                            String.valueOf(item.getPrice()),
+                            "</td>" +
+                            "<td><button value=\"Del\" action=\"bypass -h admin_delShopItem ",
+                            String.valueOf(tradeList.getListId()),
+                            " ",
+                            String.valueOf(item.getItemId()),
+                            "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>" +
+                            "</tr>"
+                            );
 		}//*/
-		replyMSG.append("<tr>");
+                StringUtil.append(replyMSG, "<tr>");
 		int min = 1;
 		int max = tradeList.getItems().size() / PAGE_LIMIT + 1;
 		if (page > 1)
 		{
-			replyMSG.append("<td><button value=\"Page" + (page - 1) + "\" action=\"bypass -h admin_showShopList " + tradeList.getListId() + " " + (page - 1)
-					+ "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
+                    StringUtil.append(replyMSG,
+                            "<td><button value=\"Page",
+                            String.valueOf(page - 1),
+                            "\" action=\"bypass -h admin_showShopList ",
+                            String.valueOf(tradeList.getListId()),
+                            " ",
+                            String.valueOf(page - 1),
+                            "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>"
+                            );
 		}
 		if (page < max)
 		{
-			if (page <= min)
-				replyMSG.append("<td></td>");
-			replyMSG.append("<td><button value=\"Page" + (page + 1) + "\" action=\"bypass -h admin_showShopList " + tradeList.getListId() + " " + (page + 1)
-					+ "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
+			if (page <= min) {
+                            StringUtil.append(replyMSG, "<td></td>");
+                        }
+
+                        StringUtil.append(replyMSG,
+                                "<td><button value=\"Page",
+                                String.valueOf(page + 1),
+                                "\" action=\"bypass -h admin_showShopList ",
+                                String.valueOf(tradeList.getListId()),
+                                " ",
+                                String.valueOf(page + 1),
+                                "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>"
+                                );
 		}
-		replyMSG.append("</tr><tr><td>.</td></tr>");
-		replyMSG.append("</table>");
-		replyMSG.append("<center>");
-		replyMSG.append("<button value=\"Add\" action=\"bypass -h admin_addShopItem " + tradeList.getListId() + "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-		replyMSG.append("<button value=\"Close\" action=\"bypass -h admin_close_window\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-		replyMSG.append("</center></body></html>");
+
+                StringUtil.append(replyMSG,
+                        "</tr><tr><td>.</td></tr>" +
+                        "</table>" +
+                        "<center>" +
+                        "<button value=\"Add\" action=\"bypass -h admin_addShopItem ",
+                        String.valueOf(tradeList.getListId()),
+                        "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
+                        "<button value=\"Close\" action=\"bypass -h admin_close_window\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
+                        "</center></body></html>"
+                        );
 		
-		return replyMSG;
+		return replyMSG.toString();
 	}
 	
 	private void showShop(L2PcInstance activeChar, int merchantID)
@@ -468,28 +531,47 @@ public class AdminEditNpc implements IAdminCommandHandler
 		
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
 		
-		TextBuilder replyMSG = new TextBuilder("<html><title>Merchant Shop Lists</title>");
-		replyMSG.append("<body>");
-		if (activeChar.getTarget() instanceof L2MerchantInstance)
+		final StringBuilder replyMSG = new StringBuilder();
+                StringUtil.append(replyMSG,
+                        "<html><title>Merchant Shop Lists</title>" +
+                        "<body>"
+                        );
+
+                if (activeChar.getTarget() instanceof L2MerchantInstance)
 		{
 			String mpcName = ((L2MerchantInstance) activeChar.getTarget()).getMpc().getName();
-			replyMSG.append("<br>NPC: " + activeChar.getTarget().getName());
-			replyMSG.append("<br>Price Config: " + mpcName);
+                        StringUtil.append(replyMSG,
+                                "<br>NPC: ",
+                                activeChar.getTarget().getName(),
+                                "<br>Price Config: ",
+                                mpcName);
 		}
-		replyMSG.append("<br>Select a list to view");
-		replyMSG.append("<table>");
-		replyMSG.append("<tr><td>Mecrchant List ID</td></tr>");
+
+                StringUtil.append(replyMSG,
+                        "<br>Select a list to view" +
+                        "<table>" +
+                        "<tr><td>Mecrchant List ID</td></tr>"
+                        );
 		
 		for (L2TradeList tradeList : tradeLists)
 		{
-			if (tradeList != null)
-				replyMSG.append("<tr><td><a action=\"bypass -h admin_showShopList " + tradeList.getListId() + " 1\">Trade List " + tradeList.getListId() + "</a></td></tr>");
+			if (tradeList != null) {
+                            StringUtil.append(replyMSG,
+                                    "<tr><td><a action=\"bypass -h admin_showShopList ",
+                                    String.valueOf(tradeList.getListId()),
+                                    " 1\">Trade List ",
+                                    String.valueOf(tradeList.getListId()),
+                                    "</a></td></tr>"
+                                    );
+                        }
 		}
-		
-		replyMSG.append("</table>");
-		replyMSG.append("<center>");
-		replyMSG.append("<button value=\"Close\" action=\"bypass -h admin_close_window\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-		replyMSG.append("</center></body></html>");
+
+                StringUtil.append(replyMSG,
+                        "</table>" +
+                        "<center>" +
+                        "<button value=\"Close\" action=\"bypass -h admin_close_window\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
+                        "</center></body></html>"
+                        );
 		
 		adminReply.setHtml(replyMSG.toString());
 		activeChar.sendPacket(adminReply);
@@ -831,7 +913,12 @@ public class AdminEditNpc implements IAdminCommandHandler
 		
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
 		
-		TextBuilder replyMSG = new TextBuilder("<html><title>NPC: " + npcData.name + "(" + npcData.npcId + ") 's drop manage</title>");
+		final StringBuilder replyMSG = new StringBuilder(2900);
+                replyMSG.append("<html><title>NPC: ");
+                replyMSG.append(npcData.name);
+                replyMSG.append('(');
+                replyMSG.append(npcData.npcId);
+                replyMSG.append(") 's drop manage</title>");
 		replyMSG.append("<body>");
 		replyMSG.append("<br>Notes: click[drop_id]to show the detail of drop data,click[del] to delete the drop data!");
 		replyMSG.append("<table>");
@@ -841,14 +928,37 @@ public class AdminEditNpc implements IAdminCommandHandler
 			for (L2DropCategory cat : npcData.getDropData())
 				for (L2DropData drop : cat.getAllDrops())
 				{
-					replyMSG.append("<tr><td><a action=\"bypass -h admin_edit_drop " + npcData.npcId + " " + drop.getItemId() + " " + cat.getCategoryType() + "\">" + npcData.npcId + " " + drop.getItemId() + " " + cat.getCategoryType()
-							+ "</a></td>" + "<td>" + ItemTable.getInstance().getTemplate(drop.getItemId()).getName() + "[" + drop.getItemId() + "]" + "</td><td>" + (drop.isQuestDrop() ? "Q" : (cat.isSweep() ? "S" : "D")) + "</td><td>"
-							+ "<a action=\"bypass -h admin_del_drop " + npcData.npcId + " " + drop.getItemId() + " " + cat.getCategoryType() + "\">del</a></td></tr>");
+					replyMSG.append("<tr><td><a action=\"bypass -h admin_edit_drop ");
+                                        replyMSG.append(npcData.npcId);
+                                        replyMSG.append(' ');
+                                        replyMSG.append(drop.getItemId());
+                                        replyMSG.append(' ');
+                                        replyMSG.append(cat.getCategoryType());
+                                        replyMSG.append("\">");
+                                        replyMSG.append(npcData.npcId);
+                                        replyMSG.append(' ');
+                                        replyMSG.append(drop.getItemId());
+                                        replyMSG.append(cat.getCategoryType());
+                                        replyMSG.append("</a></td><td>");
+                                        replyMSG.append(ItemTable.getInstance().getTemplate(drop.getItemId()).getName());
+                                        replyMSG.append('[');
+                                        replyMSG.append(drop.getItemId());
+                                        replyMSG.append("]</td><td>");
+                                        replyMSG.append((drop.isQuestDrop() ? "Q" : (cat.isSweep() ? "S" : "D")));
+                                        replyMSG.append("</td><td><a action=\"bypass -h admin_del_drop ");
+                                        replyMSG.append(npcData.npcId);
+                                        replyMSG.append(' ');
+                                        replyMSG.append(drop.getItemId());
+                                        replyMSG.append(' ');
+                                        replyMSG.append(cat.getCategoryType());
+                                        replyMSG.append("\">del</a></td></tr>");
 				}
 		
 		replyMSG.append("</table>");
 		replyMSG.append("<center>");
-		replyMSG.append("<button value=\"Add DropData\" action=\"bypass -h admin_add_drop " + npcId + "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
+		replyMSG.append("<button value=\"Add DropData\" action=\"bypass -h admin_add_drop ");
+                replyMSG.append(npcId);
+                replyMSG.append("\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
 		replyMSG.append("<button value=\"Close\" action=\"bypass -h admin_close_window\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
 		replyMSG.append("</center></body></html>");
 		
@@ -870,14 +980,27 @@ public class AdminEditNpc implements IAdminCommandHandler
 			
 			NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
 			
-			TextBuilder replyMSG = new TextBuilder("<html><title>the detail of dropdata: (" + npcId + " " + itemId + " " + category + ")</title>");
+			final StringBuilder replyMSG = new StringBuilder();
+                        replyMSG.append("<html><title>the detail of dropdata: (");
+                        replyMSG.append(npcId);
+                        replyMSG.append(' ');
+                        replyMSG.append(itemId);
+                        replyMSG.append(' ');
+                        replyMSG.append(category);
+                        replyMSG.append(")</title>");
 			replyMSG.append("<body>");
 			
 			if (dropData.next())
 			{
 				replyMSG.append("<table>");
-				replyMSG.append("<tr><td>Appertain of NPC</td><td>" + NpcTable.getInstance().getTemplate(dropData.getInt("mobId")).name + "</td></tr>");
-				replyMSG.append("<tr><td>ItemName</td><td>" + ItemTable.getInstance().getTemplate(dropData.getInt("itemId")).getName() + "(" + dropData.getInt("itemId") + ")</td></tr>");
+				replyMSG.append("<tr><td>Appertain of NPC</td><td>");
+                                replyMSG.append(NpcTable.getInstance().getTemplate(dropData.getInt("mobId")).name);
+                                replyMSG.append("</td></tr>");
+				replyMSG.append("<tr><td>ItemName</td><td>");
+                                replyMSG.append(ItemTable.getInstance().getTemplate(dropData.getInt("itemId")).getName());
+                                replyMSG.append('(');
+                                replyMSG.append(dropData.getInt("itemId"));
+                                replyMSG.append(")</td></tr>");
 				replyMSG.append("<tr><td>Category</td><td>" + ((category == -1) ? "sweep" : Integer.toString(category)) + "</td></tr>");
 				replyMSG.append("<tr><td>MIN(" + dropData.getInt("min") + ")</td><td><edit var=\"min\" width=80></td></tr>");
 				replyMSG.append("<tr><td>MAX(" + dropData.getInt("max") + ")</td><td><edit var=\"max\" width=80></td></tr>");
@@ -917,23 +1040,32 @@ public class AdminEditNpc implements IAdminCommandHandler
 	private void showAddDropData(L2PcInstance activeChar, L2NpcTemplate npcData)
 	{
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
-		
-		TextBuilder replyMSG = new TextBuilder("<html><title>Add dropdata to " + npcData.name + "(" + npcData.npcId + ")</title>");
-		replyMSG.append("<body>");
-		replyMSG.append("<table>");
-		replyMSG.append("<tr><td>Item-Id</td><td><edit var=\"itemId\" width=80></td></tr>");
-		replyMSG.append("<tr><td>MIN</td><td><edit var=\"min\" width=80></td></tr>");
-		replyMSG.append("<tr><td>MAX</td><td><edit var=\"max\" width=80></td></tr>");
-		replyMSG.append("<tr><td>CATEGORY(sweep=-1)</td><td><edit var=\"category\" width=80></td></tr>");
-		replyMSG.append("<tr><td>CHANCE(0-1000000)</td><td><edit var=\"chance\" width=80></td></tr>");
-		replyMSG.append("</table>");
-		
-		replyMSG.append("<center>");
-		replyMSG.append("<button value=\"SAVE\" action=\"bypass -h admin_add_drop " + npcData.npcId + " $itemId $category $min $max $chance\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-		replyMSG.append("<br><button value=\"DropList\" action=\"bypass -h admin_show_droplist " + npcData.npcId + "\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-		replyMSG.append("</center>");
-		replyMSG.append("</body></html>");
-		adminReply.setHtml(replyMSG.toString());
+
+                final String replyMSG = StringUtil.concat(
+                        "<html><title>Add dropdata to ",
+                        npcData.name,
+                        "(",
+                        String.valueOf(npcData.npcId),
+                        ")</title>" +
+                        "<body>" +
+                        "<table>" +
+                        "<tr><td>Item-Id</td><td><edit var=\"itemId\" width=80></td></tr>" +
+                        "<tr><td>MIN</td><td><edit var=\"min\" width=80></td></tr>" +
+                        "<tr><td>MAX</td><td><edit var=\"max\" width=80></td></tr>" +
+                        "<tr><td>CATEGORY(sweep=-1)</td><td><edit var=\"category\" width=80></td></tr>" +
+                        "<tr><td>CHANCE(0-1000000)</td><td><edit var=\"chance\" width=80></td></tr>" +
+                        "</table>" +
+                        "<center>" +
+                        "<button value=\"SAVE\" action=\"bypass -h admin_add_drop ",
+                        String.valueOf(npcData.npcId),
+                        " $itemId $category $min $max $chance\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
+                        "<br><button value=\"DropList\" action=\"bypass -h admin_show_droplist ",
+                        String.valueOf(npcData.npcId),
+                        "\"  width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
+                        "</center>" +
+                        "</body></html>"
+                        );
+		adminReply.setHtml(replyMSG);
 		
 		activeChar.sendPacket(adminReply);
 	}
@@ -973,12 +1105,16 @@ public class AdminEditNpc implements IAdminCommandHandler
 				reLoadNpcDropList(npcId);
 				
 				NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
-				TextBuilder replyMSG = new TextBuilder("<html><title>Drop data modify complete!</title>");
-				replyMSG.append("<body>");
-				replyMSG.append("<center><button value=\"DropList\" action=\"bypass -h admin_show_droplist " + npcId + "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center>");
-				replyMSG.append("</body></html>");
+                                final String replyMSG = StringUtil.concat(
+                                        "<html><title>Drop data modify complete!</title>" +
+                                        "<body>" +
+                                        "<center><button value=\"DropList\" action=\"bypass -h admin_show_droplist ",
+                                        String.valueOf(npcId),
+                                        "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center>" +
+                                        "</body></html>"
+                                        );
 				
-				adminReply.setHtml(replyMSG.toString());
+				adminReply.setHtml(replyMSG);
 				activeChar.sendPacket(adminReply);
 			}
 			else
@@ -1021,13 +1157,19 @@ public class AdminEditNpc implements IAdminCommandHandler
 			reLoadNpcDropList(npcId);
 			
 			NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
-			TextBuilder replyMSG = new TextBuilder("<html><title>Add drop data complete!</title>");
-			replyMSG.append("<body>");
-			replyMSG.append("<center><button value=\"Continue add\" action=\"bypass -h admin_add_drop " + npcId + "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-			replyMSG.append("<br><br><button value=\"DropList\" action=\"bypass -h admin_show_droplist " + npcId + "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-			replyMSG.append("</center></body></html>");
+                        final String replyMSG = StringUtil.concat(
+                                "<html><title>Add drop data complete!</title>" +
+                                "<body>" +
+                                "<center><button value=\"Continue add\" action=\"bypass -h admin_add_drop ",
+                                String.valueOf(npcId),
+                                "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
+                                "<br><br><button value=\"DropList\" action=\"bypass -h admin_show_droplist ",
+                                String.valueOf(npcId),
+                                "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
+                                "</center></body></html>"
+                                );
 			
-			adminReply.setHtml(replyMSG.toString());
+			adminReply.setHtml(replyMSG);
 			activeChar.sendPacket(adminReply);
 		}
 		catch (Exception e)
@@ -1064,12 +1206,20 @@ public class AdminEditNpc implements IAdminCommandHandler
 				reLoadNpcDropList(npcId);
 				
 				NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
-				TextBuilder replyMSG = new TextBuilder("<html><title>Delete drop data(" + npcId + ", " + itemId + ", " + category + ")complete</title>");
-				replyMSG.append("<body>");
-				replyMSG.append("<center><button value=\"DropList\" action=\"bypass -h admin_show_droplist " + npcId + "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center>");
-				replyMSG.append("</body></html>");
+                                final String replyMSG = StringUtil.concat(
+                                        "<html><title>Delete drop data(",
+                                        String.valueOf(npcId),
+                                        ", ",
+                                        String.valueOf(itemId),
+                                        ", ",
+                                        String.valueOf(category),
+                                        ")complete</title>" +
+                                        "<body>" +
+                                        "<center><button value=\"DropList\" action=\"bypass -h admin_show_droplist " + npcId + "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center>" +
+                                        "</body></html>"
+                                        );
 				
-				adminReply.setHtml(replyMSG.toString());
+				adminReply.setHtml(replyMSG);
 				activeChar.sendPacket(adminReply);
 				
 			}

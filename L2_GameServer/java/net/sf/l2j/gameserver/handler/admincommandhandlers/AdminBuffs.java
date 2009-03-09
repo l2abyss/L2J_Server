@@ -2,7 +2,6 @@ package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
 import java.util.StringTokenizer;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
@@ -10,6 +9,7 @@ import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.util.GMAudit;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 public class AdminBuffs implements IAdminCommandHandler
 {
@@ -140,34 +140,36 @@ public class AdminBuffs implements IAdminCommandHandler
 	
 	public void showBuffs(L2PcInstance player, L2PcInstance activeChar)
 	{
-		TextBuilder html = new TextBuilder();
-		html.append("<html><center><font color=\"LEVEL\">Effects of "
-		        + player.getName() + "</font><center><br>");
+		final L2Effect[] effects = player.getAllEffects();
+                final StringBuilder html = StringUtil.startAppend(
+                        500 + effects.length * 200,
+                        "<html><center><font color=\"LEVEL\">Effects of ",
+                        player.getName(),
+                        "</font><center><br>" +
+                        "<table>" +
+                        "<tr><td width=200>Skill</td><td width=70>Action</td></tr>"
+                        );
 		
-		L2Effect[] effects = player.getAllEffects();
-		
-		html.append("<table>");
-		html.append("<tr><td width=200>Skill</td><td width=70>Action</td></tr>");
-		
-		for (L2Effect e : effects)
-		{
-			if (e != null)
-			{
-				html.append("<tr><td>"
-				        + e.getSkill().getName()
-				        + "</td><td><button value=\"Remove\" action=\"bypass -h admin_stopbuff "
-				        + player.getName()
-				        + " "
-				        + String.valueOf(e.getSkill().getId())
-				        + "\" width=60 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\"></td></tr>");
+		for (L2Effect e : effects) {
+			if (e != null) {
+                            StringUtil.append(html,
+                                    "<tr><td>",
+                                    e.getSkill().getName(),
+                                    "</td><td><button value=\"Remove\" action=\"bypass -h admin_stopbuff ",
+                                    player.getName(),
+                                    " ",
+                                    String.valueOf(e.getSkill().getId()),
+                                    "\" width=60 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\"></td></tr>");
 			}
 		}
-		
-		html.append("</table><br>");
-		html.append("<button value=\"Remove All\" action=\"bypass -h admin_stopallbuffs "
-		        + player.getName()
-		        + "\" width=60 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\">");
-		html.append("</html>");
+
+                StringUtil.append(html,
+                        "</table><br>" +
+                        "<button value=\"Remove All\" action=\"bypass -h admin_stopallbuffs ",
+		        player.getName(),
+		        "\" width=60 height=15 back=\"sek.cbui94\" fore=\"sek.cbui92\">" +
+                        "</html>"
+                        );
 		
 		NpcHtmlMessage ms = new NpcHtmlMessage(1);
 		ms.setHtml(html.toString());

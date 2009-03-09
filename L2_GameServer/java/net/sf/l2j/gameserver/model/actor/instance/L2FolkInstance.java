@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
@@ -34,6 +33,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ExEnchantSkillList.EnchantSki
 import net.sf.l2j.gameserver.skills.effects.EffectBuff;
 import net.sf.l2j.gameserver.skills.effects.EffectDebuff;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 public class L2FolkInstance extends L2NpcInstance
 {
@@ -83,24 +83,27 @@ public class L2FolkInstance extends L2NpcInstance
 		if (_classesToTeach == null)
 		{
 			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-			TextBuilder sb = new TextBuilder();
-			sb.append("<html><body>");
-			sb.append("I cannot teach you. My class list is empty.<br> Ask admin to fix it. Need add my npcid and classes to skill_learn.sql.<br>NpcId:"+npcId+", Your classId:"+player.getClassId().getId()+"<br>");
-			sb.append("</body></html>");
-			html.setHtml(sb.toString());
+                        final String sb = StringUtil.concat(
+                                "<html><body>" +
+                                "I cannot teach you. My class list is empty.<br> Ask admin to fix it. Need add my npcid and classes to skill_learn.sql.<br>NpcId:",
+                                String.valueOf(npcId),
+                                ", Your classId:",
+                                String.valueOf(player.getClassId().getId()),
+                                "<br>" +
+                                "</body></html>"
+                                );
+			html.setHtml(sb);
 			player.sendPacket(html);
 
 			return;
 		}
 
-		if (!getTemplate().canTeach(classId))
-        {
+		if (!getTemplate().canTeach(classId)) {
 			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-            TextBuilder sb = new TextBuilder();
-			sb.append("<html><body>");
-			sb.append("I cannot teach you any skills.<br> You must find your current class teachers.");
-			sb.append("</body></html>");
-			html.setHtml(sb.toString());
+			html.setHtml(
+                                "<html><body>" +
+                                "I cannot teach you any skills.<br> You must find your current class teachers." +
+                                "</body></html>");
 			player.sendPacket(html);
 
 			return;
@@ -163,11 +166,16 @@ public class L2FolkInstance extends L2NpcInstance
         if (_classesToTeach == null)
         {
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-            TextBuilder sb = new TextBuilder();
-            sb.append("<html><body>");
-            sb.append("I cannot teach you. My class list is empty.<br> Ask admin to fix it. Need add my npcid and classes to skill_learn.sql.<br>NpcId:"+npcId+", Your classId:"+player.getClassId().getId()+"<br>");
-            sb.append("</body></html>");
-            html.setHtml(sb.toString());
+            final String sb = StringUtil.concat(
+                    "<html><body>" +
+                    "I cannot teach you. My class list is empty.<br> Ask admin to fix it. Need add my npcid and classes to skill_learn.sql.<br>NpcId:",
+                    String.valueOf(npcId),
+                    ", Your classId:",
+                    String.valueOf(player.getClassId().getId()),
+                    "<br>" +
+                    "</body></html>"
+                    );
+            html.setHtml(sb);
             player.sendPacket(html);
 
             return;
@@ -176,11 +184,10 @@ public class L2FolkInstance extends L2NpcInstance
         if (!getTemplate().canTeach(player.getClassId()))
         {
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-            TextBuilder sb = new TextBuilder();
-            sb.append("<html><body>");
-            sb.append("I cannot teach you any skills.<br> You must find your current class teachers.");
-            sb.append("</body></html>");
-            html.setHtml(sb.toString());
+            html.setHtml(
+                    "<html><body>" +
+                    "I cannot teach you any skills.<br> You must find your current class teachers." +
+                    "</body></html>");
             player.sendPacket(html);
 
             return;
@@ -189,11 +196,10 @@ public class L2FolkInstance extends L2NpcInstance
         if (player.getClassId().level() < 3)
         {
         	NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-            TextBuilder sb = new TextBuilder();
-            sb.append("<html><body>");
-            sb.append("You must have 3rd class change quest completed.");
-            sb.append("</body></html>");
-            html.setHtml(sb.toString());
+            html.setHtml(
+                    "<html><body>" +
+                    "You must have 3rd class change quest completed." +
+                    "</body></html>");
             player.sendPacket(html);
 
             return;
@@ -249,11 +255,16 @@ public class L2FolkInstance extends L2NpcInstance
         if (_classesToTeach == null)
         {
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-            TextBuilder sb = new TextBuilder();
-            sb.append("<html><body>");
-            sb.append("I cannot teach you. My class list is empty.<br> Ask admin to fix it. Need add my npcid and classes to skill_learn.sql.<br>NpcId:"+npcId+", Your classId:"+player.getClassId().getId()+"<br>");
-            sb.append("</body></html>");
-            html.setHtml(sb.toString());
+            final String sb = StringUtil.concat(
+                    "<html><body>" +
+                    "I cannot teach you. My class list is empty.<br> Ask admin to fix it. Need add my npcid and classes to skill_learn.sql.<br>NpcId:",
+                    String.valueOf(npcId),
+                    ", Your classId:",
+                    String.valueOf(player.getClassId().getId()),
+                    "<br>" +
+                    "</body></html>"
+                    );
+            html.setHtml(sb);
             player.sendPacket(html);
 
             return;
@@ -262,11 +273,10 @@ public class L2FolkInstance extends L2NpcInstance
         if (!getTemplate().canTeach(player.getClassId()))
         {
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-            TextBuilder sb = new TextBuilder();
-            sb.append("<html><body>");
-            sb.append("I cannot teach you any skills.<br> You must find your current class teachers.");
-            sb.append("</body></html>");
-            html.setHtml(sb.toString());
+            html.setHtml(
+                    "<html><body>" +
+                    "I cannot teach you any skills.<br> You must find your current class teachers." +
+                    "</body></html>");
             player.sendPacket(html);
 
             return;
@@ -275,11 +285,10 @@ public class L2FolkInstance extends L2NpcInstance
         if (player.getClassId().level() < 3)
         {
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-            TextBuilder sb = new TextBuilder();
-            sb.append("<html><body>");
-            sb.append("You must have 3rd class change quest completed.");
-            sb.append("</body></html>");
-            html.setHtml(sb.toString());
+            html.setHtml(
+                    "<html><body>" +
+                    "You must have 3rd class change quest completed." +
+                    "</body></html>");
             player.sendPacket(html);
 
             return;
@@ -327,11 +336,16 @@ public class L2FolkInstance extends L2NpcInstance
         if (_classesToTeach == null)
         {
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-            TextBuilder sb = new TextBuilder();
-            sb.append("<html><body>");
-            sb.append("I cannot teach you. My class list is empty.<br> Ask admin to fix it. Need add my npcid and classes to skill_learn.sql.<br>NpcId:"+npcId+", Your classId:"+player.getClassId().getId()+"<br>");
-            sb.append("</body></html>");
-            html.setHtml(sb.toString());
+            final String sb = StringUtil.concat(
+                    "<html><body>" +
+                    "I cannot teach you. My class list is empty.<br> Ask admin to fix it. Need add my npcid and classes to skill_learn.sql.<br>NpcId:",
+                    String.valueOf(npcId),
+                    ", Your classId:",
+                    String.valueOf(player.getClassId().getId()),
+                    "<br>" +
+                    "</body></html>"
+                    );
+            html.setHtml(sb);
             player.sendPacket(html);
 
             return;
@@ -340,11 +354,10 @@ public class L2FolkInstance extends L2NpcInstance
         if (!getTemplate().canTeach(classId))
         {
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-            TextBuilder sb = new TextBuilder();
-            sb.append("<html><body>");
-            sb.append("I cannot teach you any skills.<br> You must find your current class teachers.");
-            sb.append("</body></html>");
-            html.setHtml(sb.toString());
+            html.setHtml(
+                    "<html><body>" +
+                    "I cannot teach you any skills.<br> You must find your current class teachers." +
+                    "</body></html>");
             player.sendPacket(html);
 
             return;
@@ -353,11 +366,10 @@ public class L2FolkInstance extends L2NpcInstance
         if (player.getClassId().level() < 3)
         {
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-            TextBuilder sb = new TextBuilder();
-            sb.append("<html><body>");
-            sb.append("You must have 3rd class change quest completed.");
-            sb.append("</body></html>");
-            html.setHtml(sb.toString());
+            html.setHtml(
+                    "<html><body>" +
+                    "You must have 3rd class change quest completed." +
+                    "</body></html>");
             player.sendPacket(html);
 
             return;

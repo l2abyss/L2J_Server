@@ -22,13 +22,13 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.text.TextBuilder;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.L2Macro.L2MacroCmd;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.SendMacroList;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * This class ...
@@ -126,16 +126,28 @@ public class MacroList
             statement.setString(4, macro.name);
             statement.setString(5, macro.descr);
             statement.setString(6, macro.acronym);
-            TextBuilder sb = new TextBuilder();
-			for (L2MacroCmd cmd : macro.commands) {
-				sb.append(cmd.type).append(',');
-				sb.append(cmd.d1).append(',');
-				sb.append(cmd.d2);
-				if (cmd.cmd != null && cmd.cmd.length() > 0)
-					sb.append(',').append(cmd.cmd);
-				sb.append(';');
-			}
-            statement.setString(7, sb.length()>255 ? sb.toString().substring(0,254):sb.toString());
+            final StringBuilder sb = new StringBuilder(300);
+            for (L2MacroCmd cmd : macro.commands) {
+                StringUtil.append(sb,
+                        String.valueOf(cmd.type),
+                        ",",
+                        String.valueOf(cmd.d1),
+                        ",",
+                        String.valueOf(cmd.d2)
+                        );
+
+                if (cmd.cmd != null && cmd.cmd.length() > 0) {
+                    StringUtil.append(sb, ",", cmd.cmd);
+                }
+
+                sb.append(';');
+            }
+
+            if (sb.length() > 255) {
+                sb.setLength(255);
+            }
+            
+            statement.setString(7, sb.toString());
             statement.execute();
             statement.close();
         }

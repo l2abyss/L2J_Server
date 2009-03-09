@@ -14,9 +14,9 @@
  */
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
+import java.util.List;
 import java.util.StringTokenizer;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.model.L2Clan;
@@ -26,6 +26,7 @@ import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * This class handles all siege commands:
@@ -130,21 +131,29 @@ public class AdminFortSiege implements IAdminCommandHandler
 		int i = 0;
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
 		adminReply.setFile("data/html/admin/forts.htm");
-		TextBuilder cList = new TextBuilder();
-		for (Fort fort : FortManager.getInstance().getForts())
-		{
-			if (fort != null)
-			{
-				String name = fort.getName();
-				cList.append("<td fixwidth=90><a action=\"bypass -h admin_fortsiege " + String.valueOf(fort.getFortId()) + "\">" + name + " id: "+fort.getFortId()+"</a></td>");
+                
+                final List<Fort> forts = FortManager.getInstance().getForts();
+                final StringBuilder cList = new StringBuilder(forts.size() * 100);
+
+                for (Fort fort : forts) {
+			if (fort != null) {
+                            StringUtil.append(cList,
+                                    "<td fixwidth=90><a action=\"bypass -h admin_fortsiege ",
+                                    String.valueOf(fort.getFortId()),
+                                    "\">",
+                                    fort.getName(),
+                                    " id: ",
+                                    String.valueOf(fort.getFortId()),
+                                    "</a></td>");
 				i++;
 			}
-			if (i > 2)
-			{
+
+			if (i > 2) {
 				cList.append("</tr><tr>");
 				i = 0;
 			}
 		}
+                
 		adminReply.replace("%forts%", cList.toString());
 		activeChar.sendPacket(adminReply);
 	}

@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
 import net.sf.l2j.gameserver.model.L2Skill;
@@ -102,11 +101,11 @@ public class L2TransformManagerInstance extends L2MerchantInstance
 		    }
             else
             {
-                TextBuilder sb = new TextBuilder();
-                sb.append("<html><head><body>");
-                sb.append("You've learned all skills.<br>");
-                sb.append("</body></html>");
-                html.setHtml(sb.toString());
+                html.setHtml(
+                        "<html><head><body>" +
+                        "You've learned all skills.<br>" +
+                        "</body></html>"
+                        );
                 player.sendPacket(html);
 
             }

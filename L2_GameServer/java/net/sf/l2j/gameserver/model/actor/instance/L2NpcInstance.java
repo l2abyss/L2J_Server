@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 
-import javolution.text.TextBuilder;
 import javolution.util.FastList;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.SevenSigns;
@@ -89,6 +88,7 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
+import net.sf.l2j.gameserver.util.StringUtil;
 import net.sf.l2j.util.Rnd;
 
 /**
@@ -713,46 +713,123 @@ public class L2NpcInstance extends L2Character
 			
 			// Send a Server->Client NpcHtmlMessage() containing the GM console about this L2NpcInstance
 			NpcHtmlMessage html = new NpcHtmlMessage(0);
-			TextBuilder html1 = new TextBuilder("<html><body><center><font color=\"LEVEL\">NPC Information</font></center>");
 			String className = getClass().getName().substring(43);
-			html1.append("<br>");
+                        final StringBuilder html1 = StringUtil.startAppend(500,
+                                "<html><body><center><font color=\"LEVEL\">NPC Information</font></center>" +
+                                "<br>" +
+                                "Instance Type: ",
+                                className,
+                                "<br1>Faction: ",
+                                getFactionId(),
+                                "<br1>Location ID: ",
+                                String.valueOf(getSpawn() != null ? getSpawn().getLocation() : 0),
+                                "<br1>"
+                                );
 			
-			html1.append("Instance Type: " + className + "<br1>Faction: " + getFactionId() + "<br1>Location ID: " + (getSpawn() != null ? getSpawn().getLocation() : 0) + "<br1>");
-			
-			if (this instanceof L2ControllableMobInstance)
-				html1.append("Mob Group: " + MobGroupTable.getInstance().getGroupForMob((L2ControllableMobInstance) this).getGroupId() + "<br>");
-			else
-				html1.append("Respawn Time: " + (getSpawn() != null ? (getSpawn().getRespawnDelay() / 1000) + "  Seconds<br>" : "?  Seconds<br>"));
-			
-			html1.append("<table border=\"0\" width=\"100%\">");
-			html1.append("<tr><td>Object ID</td><td>" + getObjectId() + "</td><td>NPC ID</td><td>" + getTemplate().npcId + "</td></tr>");
-			html1.append("<tr><td>Castle</td><td>" + getCastle().getCastleId() + "</td><td>Coords</td><td>" + getX() + "," + getY() + "," + getZ() + "</td></tr>");
-			html1.append("<tr><td>Level</td><td>" + getLevel() + "</td><td>Aggro</td><td>" + ((this instanceof L2Attackable) ? ((L2Attackable) this).getAggroRange() : 0) + "</td></tr>");
-			html1.append("</table><br>");
-			
-			html1.append("<font color=\"LEVEL\">Combat</font>");
-			html1.append("<table border=\"0\" width=\"100%\">");
-			html1.append("<tr><td>Current HP</td><td>" + getCurrentHp() + "</td><td>Current MP</td><td>" + getCurrentMp() + "</td></tr>");
-			html1.append("<tr><td>Max.HP</td><td>" + (int) (getMaxHp() / getStat().calcStat(Stats.MAX_HP, 1, this, null)) + "*" + getStat().calcStat(Stats.MAX_HP, 1, this, null) + "</td><td>Max.MP</td><td>" + getMaxMp() + "</td></tr>");
-			html1.append("<tr><td>P.Atk.</td><td>" + getPAtk(null) + "</td><td>M.Atk.</td><td>" + getMAtk(null, null) + "</td></tr>");
-			html1.append("<tr><td>P.Def.</td><td>" + getPDef(null) + "</td><td>M.Def.</td><td>" + getMDef(null, null) + "</td></tr>");
-			html1.append("<tr><td>Accuracy</td><td>" + getAccuracy() + "</td><td>Evasion</td><td>" + getEvasionRate(null) + "</td></tr>");
-			html1.append("<tr><td>Critical</td><td>" + getCriticalHit(null, null) + "</td><td>Speed</td><td>" + getRunSpeed() + "</td></tr>");
-			html1.append("<tr><td>Atk.Speed</td><td>" + getPAtkSpd() + "</td><td>Cast.Speed</td><td>" + getMAtkSpd() + "</td></tr>");
-			html1.append("</table><br>");
-			
-			html1.append("<font color=\"LEVEL\">Basic Stats</font>");
-			html1.append("<table border=\"0\" width=\"100%\">");
-			html1.append("<tr><td>STR</td><td>" + getSTR() + "</td><td>DEX</td><td>" + getDEX() + "</td><td>CON</td><td>" + getCON() + "</td></tr>");
-			html1.append("<tr><td>INT</td><td>" + getINT() + "</td><td>WIT</td><td>" + getWIT() + "</td><td>MEN</td><td>" + getMEN() + "</td></tr>");
-			html1.append("</table>");
-			
-			html1.append("<br><center><table><tr><td><button value=\"Edit NPC\" action=\"bypass -h admin_edit_npc " + getTemplate().npcId + "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"><br1></td>");
-			html1.append("<td><button value=\"Kill\" action=\"bypass -h admin_kill\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td><br1></tr>");
-			html1.append("<tr><td><button value=\"Show DropList\" action=\"bypass -h admin_show_droplist " + getTemplate().npcId + "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>");
-			html1.append("<td><button value=\"Delete\" action=\"bypass -h admin_delete\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>");
-			html1.append("</table></center><br>");
-			html1.append("</body></html>");
+			if (this instanceof L2ControllableMobInstance) {
+                            StringUtil.append(html1,
+                                    "Mob Group: ",
+                                    String.valueOf(MobGroupTable.getInstance().getGroupForMob((L2ControllableMobInstance) this).getGroupId()),
+                                    "<br>"
+                                    );
+                        } else {
+                            StringUtil.append(html1,
+                                    "Respawn Time: ",
+                                    (getSpawn() != null ? String.valueOf(getSpawn().getRespawnDelay() / 1000) : "?"),
+                                    "  Seconds<br>"
+                                    );
+                        }
+
+                        StringUtil.append(html1,
+                                "<table border=\"0\" width=\"100%\">" +
+                                "<tr><td>Object ID</td><td>",
+                                String.valueOf(getObjectId()),
+                                "</td><td>NPC ID</td><td>",
+                                String.valueOf(getTemplate().npcId),
+                                "</td></tr>" +
+                                "<tr><td>Castle</td><td>" +
+                                String.valueOf(getCastle().getCastleId()),
+                                "</td><td>Coords</td><td>",
+                                String.valueOf(getX()),
+                                ",",
+                                String.valueOf(getY()),
+                                ",",
+                                String.valueOf(getZ()),
+                                "</td></tr>" +
+                                "<tr><td>Level</td><td>",
+                                String.valueOf(getLevel()),
+                                "</td><td>Aggro</td><td>",
+                                String.valueOf((this instanceof L2Attackable) ? ((L2Attackable) this).getAggroRange() : 0),
+                                "</td></tr>" +
+                                "</table><br>" +
+                                "<font color=\"LEVEL\">Combat</font>" +
+                                "<table border=\"0\" width=\"100%\">" +
+                                "<tr><td>Current HP</td><td>",
+                                String.valueOf(getCurrentHp()),
+                                "</td><td>Current MP</td><td>",
+                                String.valueOf(getCurrentMp()),
+                                "</td></tr>" +
+                                "<tr><td>Max.HP</td><td>",
+                                String.valueOf((int) (getMaxHp() / getStat().calcStat(Stats.MAX_HP, 1, this, null))),
+                                "*",
+                                String.valueOf((int) (getStat().calcStat(Stats.MAX_HP, 1, this, null))),
+                                "</td><td>Max.MP</td><td>",
+                                String.valueOf(getMaxMp()),
+                                "</td></tr>" +
+                                "<tr><td>P.Atk.</td><td>",
+                                String.valueOf(getPAtk(null)),
+                                "</td><td>M.Atk.</td><td>",
+                                String.valueOf(getMAtk(null, null)),
+                                "</td></tr>" +
+                                "<tr><td>P.Def.</td><td>",
+                                String.valueOf(getPDef(null)),
+                                "</td><td>M.Def.</td><td>",
+                                String.valueOf(getMDef(null, null)),
+                                "</td></tr>" +
+                                "<tr><td>Accuracy</td><td>" +
+                                String.valueOf(getAccuracy()),
+                                "</td><td>Evasion</td><td>",
+                                String.valueOf(getEvasionRate(null)),
+                                "</td></tr>" +
+                                "<tr><td>Critical</td><td>",
+                                String.valueOf(getCriticalHit(null, null)),
+                                "</td><td>Speed</td><td>",
+                                String.valueOf(getRunSpeed()),
+                                "</td></tr>" +
+                                "<tr><td>Atk.Speed</td><td>",
+                                String.valueOf(getPAtkSpd()),
+                                "</td><td>Cast.Speed</td><td>",
+                                String.valueOf(getMAtkSpd()),
+                                "</td></tr>" +
+                                "</table><br>" +
+                                "<font color=\"LEVEL\">Basic Stats</font>" +
+                                "<table border=\"0\" width=\"100%\">" +
+                                "<tr><td>STR</td><td>",
+                                String.valueOf(getSTR()),
+                                "</td><td>DEX</td><td>",
+                                String.valueOf(getDEX()),
+                                "</td><td>CON</td><td>",
+                                String.valueOf(getCON()),
+                                "</td></tr>" +
+                                "<tr><td>INT</td><td>",
+                                String.valueOf(getINT()),
+                                "</td><td>WIT</td><td>",
+                                String.valueOf(getWIT()),
+                                "</td><td>MEN</td><td>",
+                                String.valueOf(getMEN()),
+                                "</td></tr>" +
+                                "</table>" +
+                                "<br><center><table><tr><td><button value=\"Edit NPC\" action=\"bypass -h admin_edit_npc ",
+                                String.valueOf(getTemplate().npcId),
+                                "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"><br1></td>" +
+                                "<td><button value=\"Kill\" action=\"bypass -h admin_kill\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td><br1></tr>" +
+                                "<tr><td><button value=\"Show DropList\" action=\"bypass -h admin_show_droplist ",
+                                String.valueOf(getTemplate().npcId),
+                                "\" width=100 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>" +
+                                "<td><button value=\"Delete\" action=\"bypass -h admin_delete\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>" +
+                                "</table></center><br>" +
+                                "</body></html>"
+                                );
 			
 			html.setHtml(html1.toString());
 			player.sendPacket(html);
@@ -778,46 +855,95 @@ public class L2NpcInstance extends L2Character
 			}
 			
 			NpcHtmlMessage html = new NpcHtmlMessage(0);
-			TextBuilder html1 = new TextBuilder("<html><body>");
-			
-			html1.append("<br><center><font color=\"LEVEL\">[Combat Stats]</font></center>");
-			html1.append("<table border=0 width=\"100%\">");
-			html1.append("<tr><td>Max.HP</td><td>" + (int) (getMaxHp() / getStat().calcStat(Stats.MAX_HP, 1, this, null)) + "*" + (int) getStat().calcStat(Stats.MAX_HP, 1, this, null) + "</td><td>Max.MP</td><td>" + getMaxMp()
-					+ "</td></tr>");
-			html1.append("<tr><td>P.Atk.</td><td>" + getPAtk(null) + "</td><td>M.Atk.</td><td>" + getMAtk(null, null) + "</td></tr>");
-			html1.append("<tr><td>P.Def.</td><td>" + getPDef(null) + "</td><td>M.Def.</td><td>" + getMDef(null, null) + "</td></tr>");
-			html1.append("<tr><td>Accuracy</td><td>" + getAccuracy() + "</td><td>Evasion</td><td>" + getEvasionRate(null) + "</td></tr>");
-			html1.append("<tr><td>Critical</td><td>" + getCriticalHit(null, null) + "</td><td>Speed</td><td>" + getRunSpeed() + "</td></tr>");
-			html1.append("<tr><td>Atk.Speed</td><td>" + getPAtkSpd() + "</td><td>Cast.Speed</td><td>" + getMAtkSpd() + "</td></tr>");
-			html1.append("<tr><td>Race</td><td>" + getTemplate().race + "</td><td></td><td></td></tr>");
-			html1.append("</table>");
-			
-			html1.append("<br><center><font color=\"LEVEL\">[Basic Stats]</font></center>");
-			html1.append("<table border=0 width=\"100%\">");
-			html1.append("<tr><td>STR</td><td>" + getSTR() + "</td><td>DEX</td><td>" + getDEX() + "</td><td>CON</td><td>" + getCON() + "</td></tr>");
-			html1.append("<tr><td>INT</td><td>" + getINT() + "</td><td>WIT</td><td>" + getWIT() + "</td><td>MEN</td><td>" + getMEN() + "</td></tr>");
-			html1.append("</table>");
-			
-			html1.append("<br><center><font color=\"LEVEL\">[Drop Info]</font></center>");
-			html1.append("<br>Rates legend: <font color=\"ff0000\">50%+</font> <font color=\"00ff00\">30%+</font> <font color=\"0000ff\">less than 30%</font>");
-			html1.append("<table border=0 width=\"100%\">");
+                        final StringBuilder html1 = StringUtil.startAppend(
+                                1000,
+                                "<html><body>" +
+                                "<br><center><font color=\"LEVEL\">[Combat Stats]</font></center>" +
+                                "<table border=0 width=\"100%\">" +
+                                "<tr><td>Max.HP</td><td>",
+                                String.valueOf((int) (getMaxHp() / getStat().calcStat(Stats.MAX_HP, 1, this, null))),
+                                "*",
+                                String.valueOf((int) getStat().calcStat(Stats.MAX_HP, 1, this, null)),
+                                "</td><td>Max.MP</td><td>",
+                                String.valueOf(getMaxMp()),
+                                "</td></tr>" +
+                                "<tr><td>P.Atk.</td><td>",
+                                String.valueOf(getPAtk(null)),
+                                "</td><td>M.Atk.</td><td>",
+                                String.valueOf(getMAtk(null, null)),
+                                "</td></tr>" +
+                                "<tr><td>P.Def.</td><td>",
+                                String.valueOf(getPDef(null)),
+                                "</td><td>M.Def.</td><td>",
+                                String.valueOf(getMDef(null, null)),
+                                "</td></tr>" +
+                                "<tr><td>Accuracy</td><td>",
+                                String.valueOf(getAccuracy()),
+                                "</td><td>Evasion</td><td>",
+                                String.valueOf(getEvasionRate(null)),
+                                "</td></tr>" +
+                                "<tr><td>Critical</td><td>",
+                                String.valueOf(getCriticalHit(null, null)),
+                                "</td><td>Speed</td><td>",
+                                String.valueOf(getRunSpeed()),
+                                "</td></tr>" +
+                                "<tr><td>Atk.Speed</td><td>",
+                                String.valueOf(getPAtkSpd()),
+                                "</td><td>Cast.Speed</td><td>",
+                                String.valueOf(getMAtkSpd()),
+                                "</td></tr>" +
+                                "<tr><td>Race</td><td>",
+                                getTemplate().race.toString(),
+                                "</td><td></td><td></td></tr>" +
+                                "</table>" +
+                                "<br><center><font color=\"LEVEL\">[Basic Stats]</font></center>" +
+                                "<table border=0 width=\"100%\">" +
+                                "<tr><td>STR</td><td>",
+                                String.valueOf(getSTR()),
+                                "</td><td>DEX</td><td>",
+                                String.valueOf(getDEX()),
+                                "</td><td>CON</td><td>",
+                                String.valueOf(getCON()),
+                                "</td></tr>" +
+                                "<tr><td>INT</td><td>",
+                                String.valueOf(getINT()),
+                                "</td><td>WIT</td><td>",
+                                String.valueOf(getWIT()),
+                                "</td><td>MEN</td><td>",
+                                String.valueOf(getMEN()),
+                                "</td></tr>" +
+                                "</table>" +
+                                "<br><center><font color=\"LEVEL\">[Drop Info]</font></center>" +
+                                "<br>Rates legend: <font color=\"ff0000\">50%+</font> <font color=\"00ff00\">30%+</font> <font color=\"0000ff\">less than 30%</font>" +
+                                "<table border=0 width=\"100%\">"
+                                );
 			
 			if (getTemplate().getDropData() != null)
 				for (L2DropCategory cat : getTemplate().getDropData())
 					for (L2DropData drop : cat.getAllDrops())
 					{
 						String name = ItemTable.getInstance().getTemplate(drop.getItemId()).getName();
+                                                final String color;
+
+						if (drop.getChance() >= 600000) {
+                                                    color = "ff0000";
+                                                } else if (drop.getChance() >= 300000) {
+                                                    color = "00ff00";
+                                                } else {
+                                                    color = "0000ff";
+                                                }
 						
-						if (drop.getChance() >= 600000)
-							html1.append("<tr><td><font color=\"ff0000\">" + name + "</font></td><td>" + (drop.isQuestDrop() ? "Quest" : (cat.isSweep() ? "Sweep" : "Drop")) + "</td></tr>");
-						else if (drop.getChance() >= 300000)
-							html1.append("<tr><td><font color=\"00ff00\">" + name + "</font></td><td>" + (drop.isQuestDrop() ? "Quest" : (cat.isSweep() ? "Sweep" : "Drop")) + "</td></tr>");
-						else
-							html1.append("<tr><td><font color=\"0000ff\">" + name + "</font></td><td>" + (drop.isQuestDrop() ? "Quest" : (cat.isSweep() ? "Sweep" : "Drop")) + "</td></tr>");
+                                                StringUtil.append(html1,
+                                                        "<tr><td><font color=\"",
+                                                        color,
+                                                        "\">",
+                                                        name,
+                                                        "</font></td><td>",
+                                                        (drop.isQuestDrop() ? "Quest" : (cat.isSweep() ? "Sweep" : "Drop")),
+                                                        "</td></tr>");
 					}
 			
-			html1.append("</table>");
-			html1.append("</body></html>");
+			html1.append("</table></body></html>");
 			
 			html.setHtml(html1.toString());
 			player.sendPacket(html);
@@ -1117,7 +1243,9 @@ public class L2NpcInstance extends L2Character
 						break;
 					case 2:
 						NpcHtmlMessage Reply = new NpcHtmlMessage(getObjectId());
-						TextBuilder replyMSG = new TextBuilder("<html><body>Black Judge:<br>");
+                                                final StringBuilder replyMSG = StringUtil.startAppend(400,
+                                                        "<html><body>Black Judge:<br>"
+                                                        );
 						
 						if (player.getDeathPenaltyBuffLevel() > 0)
 						{
@@ -1130,14 +1258,12 @@ public class L2NpcInstance extends L2Character
 								player.sendPacket(new SystemMessage(SystemMessageId.DEATH_PENALTY_LIFTED));
 								player.sendPacket(new EtcStatusUpdate(player));
 								return;
-							}
-							else
+							} else {
 								replyMSG.append("The wound you have received from death's touch is too deep to be healed for the money you have to give me. Find more money if you wish death's mark to be fully removed from you.");
-						}
-						else
-						{
-							replyMSG.append("You have no more death wounds that require healing.<br>");
-							replyMSG.append("Go forth and fight, both for this world and your own glory.");
+                                                        }
+						} else {
+							replyMSG.append("You have no more death wounds that require healing.<br>" +
+                                                                "Go forth and fight, both for this world and your own glory.");
 						}
 						
 						replyMSG.append("</body></html>");
@@ -1316,21 +1442,26 @@ public class L2NpcInstance extends L2Character
 	 */
 	public void showQuestChooseWindow(L2PcInstance player, Quest[] quests)
 	{
-		TextBuilder sb = new TextBuilder();
-		sb.append("<html><body><title>Talk about:</title><br>");
+            final StringBuilder sb = StringUtil.startAppend(150,
+                    "<html><body><title>Talk about:</title><br>"
+                    );
 		for (Quest q : quests)
 		{
-			sb.append("<a action=\"bypass -h npc_").append(getObjectId()).append("_Quest ").append(q.getName()).append("\">[").append(q.getDescr());
+                    StringUtil.append(sb,
+                            "<a action=\"bypass -h npc_",
+                            String.valueOf(getObjectId()),
+                            "_Quest ",
+                            q.getName(),
+                            "\">[",
+                            q.getDescr()
+                            );
 			
 			QuestState qs = player.getQuestState(q.getScriptName());
 			if (qs != null)
 			{
-				if (qs.getState() == State.STARTED && qs.getInt("cond") > 0)
-				{
+				if (qs.getState() == State.STARTED && qs.getInt("cond") > 0) {
 					sb.append(" (In Progress)");
-				}
-				else if (qs.getState() == State.COMPLETED)
-				{
+				} else if (qs.getState() == State.COMPLETED) {
 					sb.append(" (Done)");
 				}
 			}

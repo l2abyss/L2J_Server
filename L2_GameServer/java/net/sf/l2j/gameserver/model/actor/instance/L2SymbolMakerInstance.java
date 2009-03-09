@@ -17,12 +17,12 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.gameserver.datatables.HennaTreeTable;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2HennaInstance;
 import net.sf.l2j.gameserver.network.serverpackets.HennaEquipList;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * This class ...
@@ -57,24 +57,31 @@ public class L2SymbolMakerInstance extends L2FolkInstance
 		}
 	}
 
-	private void showRemoveChat(L2PcInstance player)
-	{
-		TextBuilder html1 = new TextBuilder("<html><body>");
-		html1.append("Select symbol you would like to remove:<br><br>");
+	private void showRemoveChat(L2PcInstance player) {
+            final StringBuilder html1 = StringUtil.startAppend(
+                    250,
+                    "<html><body>" +
+                    "Select symbol you would like to remove:<br><br>"
+                    );
 		boolean hasHennas = false;
 
 		for (int i=1;i<=3;i++)
 		{
 			L2HennaInstance henna = player.getHenna(i);
 
-			if (henna != null)
-			{
+			if (henna != null) {
 				hasHennas = true;
-				html1.append("<a action=\"bypass -h npc_%objectId%_Remove "+i+"\">"+henna.getName()+"</a><br>");
+                                StringUtil.append(html1,
+                                        "<a action=\"bypass -h npc_%objectId%_Remove ",
+                                        String.valueOf(i),
+                                        "\">",
+                                        henna.getName(),
+                                        "</a><br>");
 			}
 		}
-		if (!hasHennas)
+		if (!hasHennas) {
 			html1.append("You don't have any symbol to remove!");
+                }
 		html1.append("</body></html>");
 		insertObjectIdAndShowChatWindow(player, html1.toString());
 	}

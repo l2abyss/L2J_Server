@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
@@ -40,6 +39,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SetSummonRemainTime;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
+import net.sf.l2j.gameserver.util.StringUtil;
 import net.sf.l2j.gameserver.util.Util;
 
 /**
@@ -396,36 +396,53 @@ public class AdminEditChar implements IAdminCommandHandler
 			players = allPlayers.toArray(new L2PcInstance[allPlayers.size()]);
 		}
 		
-		int MaxCharactersPerPage = 20;
-		int MaxPages = players.length / MaxCharactersPerPage;
+		int maxCharactersPerPage = 20;
+		int maxPages = players.length / maxCharactersPerPage;
 		
-		if (players.length > MaxCharactersPerPage * MaxPages)
-			MaxPages++;
+		if (players.length > maxCharactersPerPage * maxPages)
+			maxPages++;
 		
 		//Check if number of users changed
-		if (page > MaxPages)
-			page = MaxPages;
+		if (page > maxPages)
+			page = maxPages;
 		
-		int CharactersStart = MaxCharactersPerPage * page;
-		int CharactersEnd = players.length;
-		if (CharactersEnd - CharactersStart > MaxCharactersPerPage)
-			CharactersEnd = CharactersStart + MaxCharactersPerPage;
+		int charactersStart = maxCharactersPerPage * page;
+		int charactersEnd = players.length;
+		if (charactersEnd - charactersStart > maxCharactersPerPage)
+			charactersEnd = charactersStart + maxCharactersPerPage;
 		
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
 		adminReply.setFile("data/html/admin/charlist.htm");
-		TextBuilder replyMSG = new TextBuilder();
-		for (int x = 0; x < MaxPages; x++)
-		{
+
+                final StringBuilder replyMSG = new StringBuilder(1000);
+
+                for (int x = 0; x < maxPages; x++) {
 			int pagenr = x + 1;
-			replyMSG.append("<center><a action=\"bypass -h admin_show_characters " + x + "\">Page " + pagenr + "</a></center>");
+                        StringUtil.append(replyMSG,
+                                "<center><a action=\"bypass -h admin_show_characters ",
+                                String.valueOf(x),
+                                "\">Page ",
+                                String.valueOf(pagenr),
+                                "</a></center>");
 		}
+                
 		adminReply.replace("%pages%", replyMSG.toString());
-		replyMSG.clear();
-		for (int i = CharactersStart; i < CharactersEnd; i++)
-		{ //Add player info into new Table row
-			replyMSG.append("<tr><td width=80><a action=\"bypass -h admin_character_info " + players[i].getName() + "\">" + players[i].getName() + "</a></td><td width=110>" + players[i].getTemplate().className + "</td><td width=40>"
-					+ players[i].getLevel() + "</td></tr>");
+		replyMSG.setLength(0);
+                
+		for (int i = charactersStart; i < charactersEnd; i++) {
+                    //Add player info into new Table row
+                    StringUtil.append(replyMSG,
+                            "<tr><td width=80><a action=\"bypass -h admin_character_info ",
+                            players[i].getName(),
+                            "\">",
+                            players[i].getName(),
+                            "</a></td><td width=110>",
+                            players[i].getTemplate().className,
+                            "</td><td width=40>",
+                            String.valueOf(players[i].getLevel())
+                            ,"</td></tr>");
 		}
+                
 		adminReply.replace("%players%", replyMSG.toString());
 		activeChar.sendPacket(adminReply);
 	}
@@ -631,34 +648,45 @@ public class AdminEditChar implements IAdminCommandHandler
 		}
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
 		adminReply.setFile("data/html/admin/charfind.htm");
-		TextBuilder replyMSG = new TextBuilder();
-		for (L2PcInstance player: players)
+
+                final StringBuilder replyMSG = new StringBuilder(1000);
+
+                for (L2PcInstance player: players)
 		{ //Add player info into new Table row
 			name = player.getName();
-			if (name.toLowerCase().contains(CharacterToFind.toLowerCase()))
-			{
+			if (name.toLowerCase().contains(CharacterToFind.toLowerCase())) {
 				CharactersFound = CharactersFound + 1;
-				replyMSG.append("<tr><td width=80><a action=\"bypass -h admin_character_list " + name + "\">" + name + "</a></td><td width=110>" + player.getTemplate().className + "</td><td width=40>" + player.getLevel()
-						+ "</td></tr>");
+                                StringUtil.append(replyMSG,
+                                        "<tr><td width=80><a action=\"bypass -h admin_character_list ",
+                                        name,
+                                        "\">",
+                                        name,
+                                        "</a></td><td width=110>",
+                                        player.getTemplate().className,
+                                        "</td><td width=40>",
+                                        String.valueOf(player.getLevel()),
+                                        "</td></tr>");
 			}
 			if (CharactersFound > 20)
 				break;
 		}
 		adminReply.replace("%results%", replyMSG.toString());
-		replyMSG.clear();
-		if (CharactersFound == 0)
-			replyMSG.append("s. Please try again.");
-		else if (CharactersFound > 20)
-		{
+
+                final String replyMSG2;
+                
+		if (CharactersFound == 0) {
+			replyMSG2 = "s. Please try again.";
+                } else if (CharactersFound > 20) {
 			adminReply.replace("%number%", " more than 20");
-			replyMSG.append("s.<br>Please refine your search to see all of the results.");
-		}
-		else if (CharactersFound == 1)
-			replyMSG.append(".");
-		else
-			replyMSG.append("s.");
+			replyMSG2 = "s.<br>Please refine your search to see all of the results.";
+		} else if (CharactersFound == 1) {
+			replyMSG2 = ".";
+                } else {
+			replyMSG2 = "s.";
+                }
+                
 		adminReply.replace("%number%", String.valueOf(CharactersFound));
-		adminReply.replace("%end%", replyMSG.toString());
+		adminReply.replace("%end%", replyMSG2);
 		activeChar.sendPacket(adminReply);
 	}
 	
@@ -689,7 +717,7 @@ public class AdminEditChar implements IAdminCommandHandler
 		int CharactersFound = 0;
 		L2GameClient client;
 		String name, ip = "0.0.0.0";
-		TextBuilder replyMSG = new TextBuilder();
+                final StringBuilder replyMSG = new StringBuilder(1000);
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
 		adminReply.setFile("data/html/admin/ipfind.htm");
 		for (L2PcInstance player: players)
@@ -718,28 +746,37 @@ public class AdminEditChar implements IAdminCommandHandler
 			
 			name = player.getName();
 			CharactersFound = CharactersFound + 1;
-			replyMSG.append("<tr><td width=80><a action=\"bypass -h admin_character_list " + name + "\">" + name + "</a></td><td width=110>" + player.getTemplate().className + "</td><td width=40>" + player.getLevel()
-					+ "</td></tr>");
+                        StringUtil.append(replyMSG,
+                                "<tr><td width=80><a action=\"bypass -h admin_character_list ",
+                                name,
+                                "\">",
+                                name,
+                                "</a></td><td width=110>",
+                                player.getTemplate().className,
+                                "</td><td width=40>",
+                                String.valueOf(player.getLevel()),
+                                "</td></tr>");
 
 			if (CharactersFound > 20)
 				break;
 		}
 		adminReply.replace("%results%", replyMSG.toString());
-		replyMSG.clear();
-		if (CharactersFound == 0)
-			replyMSG.append("s. Maybe they got d/c? :)");
-		else if (CharactersFound > 20)
-		{
+
+                final String replyMSG2;
+
+                if (CharactersFound == 0) {
+			replyMSG2 = "s. Maybe they got d/c? :)";
+                } else if (CharactersFound > 20) {
 			adminReply.replace("%number%", " more than " + String.valueOf(CharactersFound));
-			replyMSG.append("s.<br>In order to avoid you a client crash I won't <br1>display results beyond the 20th character.");
-		}
-		else if (CharactersFound == 1)
-			replyMSG.append(".");
-		else
-			replyMSG.append("s.");
+			replyMSG2 = "s.<br>In order to avoid you a client crash I won't <br1>display results beyond the 20th character.";
+		} else if (CharactersFound == 1) {
+			replyMSG2 = ".";
+                } else {
+			replyMSG2 = "s.";
+                }
 		adminReply.replace("%ip%", ip);
 		adminReply.replace("%number%", String.valueOf(CharactersFound));
-		adminReply.replace("%end%", replyMSG.toString());
+		adminReply.replace("%end%", replyMSG2);
 		activeChar.sendPacket(adminReply);
 	}
 	
@@ -759,11 +796,16 @@ public class AdminEditChar implements IAdminCommandHandler
 				throw new IllegalArgumentException("Player doesn't exist");
 			chars = player.getAccountChars();
 			account = player.getAccountName();
-			TextBuilder replyMSG = new TextBuilder();
+                        final StringBuilder replyMSG =
+                                new StringBuilder(chars.size() * 20);
 			NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
 			adminReply.setFile("data/html/admin/accountinfo.htm");
-			for (String charname : chars.values())
-				replyMSG.append(charname + "<br1>");
+			for (String charname : chars.values()) {
+                            StringUtil.append(replyMSG,
+                                    charname,
+                                    "<br1>");
+                        }
+                        
 			adminReply.replace("%characters%", replyMSG.toString());
 			adminReply.replace("%account%", account);
 			adminReply.replace("%player%", characterName);

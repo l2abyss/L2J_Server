@@ -18,68 +18,68 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
-
-import javolution.text.TextBuilder;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * This class ...
- *
+ * 
  * @version $Revision: 1.1.4.2 $ $Date: 2005/03/27 15:30:08 $
  */
-
 public class ConsoleLogFormatter extends Formatter
 {
-
-	/* (non-Javadoc)
+	
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
 	 */
-//	private static final String _ = " ";
+	// private static final String _ = " ";
 	private static final String CRLF = "\r\n";
+	
 	@Override
 	public String format(LogRecord record)
 	{
-        TextBuilder output = new TextBuilder();
-//		output.append(record.getLevel().getName());
-//		output.append(_);
-//		output.append(record.getLoggerName());
-//		output.append(_);
-		output.append(record.getMessage());
-		output.append(CRLF);
+		final StringBuilder output = new StringBuilder(500);
+		// output.append(record.getLevel().getName());
+		// output.append(_);
+		// output.append(record.getLoggerName());
+		// output.append(_);
+		StringUtil.append(output, record.getMessage(), CRLF);
+		
 		if (record.getThrown() != null)
 		{
 			StringWriter sw = null;
-	        PrintWriter pw = null;
-		    try
-		    {
-		        sw = new StringWriter();
-		        pw = new PrintWriter(sw);
-		        record.getThrown().printStackTrace(pw);
-				output.append(sw.toString());
-				output.append(CRLF);
-		    }
-		    catch (Exception ex)
-		    {
-		    	
-		    }
-		    finally
-		    {
-		    	try
-		    	{
-		    		pw.close();
-		    	}
-		    	catch (Exception e)
-		    	{
-		    	}
-		    	
-		    	try
-		    	{
-		    		sw.close();
-		    	}
-		    	catch (Exception e)
-		    	{
-		    	}
-		    }
+			PrintWriter pw = null;
+			try
+			{
+				sw = new StringWriter();
+				pw = new PrintWriter(sw);
+				record.getThrown().printStackTrace(pw);
+				StringUtil.append(output, sw.toString(), CRLF);
+			}
+			catch (Exception ex)
+			{
+			}
+			finally
+			{
+				try
+				{
+					pw.close();
+				}
+				catch (Exception e)
+				{
+				}
+				
+				try
+				{
+					sw.close();
+				}
+				catch (Exception e)
+				{
+				}
+			}
 		}
+		
 		return output.toString();
 	}
 }

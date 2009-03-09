@@ -17,7 +17,6 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.util.Calendar;
 import java.util.List;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.SevenSignsFestival;
@@ -29,6 +28,7 @@ import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.StatsSet;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * Festival of Darkness Guide (Seven Signs)
@@ -295,7 +295,9 @@ public final class L2FestivalGuideInstance extends L2FolkInstance
                         showChatWindow(player, 3, "d", false);
                     break;
                 case 4: // Current High Scores
-                    TextBuilder strBuffer = new TextBuilder("<html><body>Festival Guide:<br>These are the top scores of the week, for the ");
+                    final StringBuilder strBuffer = StringUtil.startAppend(
+                            500,
+                            "<html><body>Festival Guide:<br>These are the top scores of the week, for the ");
 
                     final StatsSet dawnData = SevenSignsFestival.getInstance().getHighestScoreData(SevenSigns.CABAL_DAWN, _festivalType);
                     final StatsSet duskData = SevenSignsFestival.getInstance().getHighestScoreData(SevenSigns.CABAL_DUSK, _festivalType);
@@ -309,17 +311,37 @@ public final class L2FestivalGuideInstance extends L2FolkInstance
                     if (overallData != null)
                         overallScore = overallData.getInteger("score");
 
-                    strBuffer.append(SevenSignsFestival.getFestivalName(_festivalType) + " festival.<br>");
+                    StringUtil.append(strBuffer,
+                            SevenSignsFestival.getFestivalName(_festivalType),
+                            " festival.<br>");
 
-                    if (dawnScore > 0)
-                        strBuffer.append("Dawn: " + calculateDate(dawnData.getString("date")) + ". Score " + dawnScore + "<br>" + dawnData.getString("members") + "<br>");
-                    else
+                    if (dawnScore > 0) {
+                        StringUtil.append(strBuffer,
+                                "Dawn: ",
+                                calculateDate(dawnData.getString("date")),
+                                ". Score ",
+                                String.valueOf(dawnScore),
+                                "<br>",
+                                dawnData.getString("members"),
+                                "<br>"
+                                );
+                    } else {
                         strBuffer.append("Dawn: No record exists. Score 0<br>");
+                    }
 
-                    if (duskScore > 0)
-                        strBuffer.append("Dusk: " + calculateDate(duskData.getString("date")) + ". Score " + duskScore + "<br>" + duskData.getString("members") + "<br>");
-                    else
+                    if (duskScore > 0) {
+                        StringUtil.append(strBuffer,
+                                "Dusk: ",
+                                calculateDate(duskData.getString("date")),
+                                ". Score ",
+                                String.valueOf(duskScore),
+                                "<br>",
+                                duskData.getString("members"),
+                                "<br>"
+                                );
+                    } else {
                         strBuffer.append("Dusk: No record exists. Score 0<br>");
+                    }
 
                     if (overallScore > 0) {
                         String cabalStr = "Children of Dusk";
@@ -327,12 +349,26 @@ public final class L2FestivalGuideInstance extends L2FolkInstance
                         if (overallData.getString("cabal").equals("dawn"))
                             cabalStr = "Children of Dawn";
 
-                        strBuffer.append("Consecutive top scores: " + calculateDate(overallData.getString("date")) + ". Score " + overallScore + "<br>Affilated side: " + cabalStr + "<br>" + overallData.getString("members") + "<br>");
-                    }
-                    else
+                        StringUtil.append(strBuffer,
+                                "Consecutive top scores: ",
+                                calculateDate(overallData.getString("date")),
+                                ". Score ",
+                                String.valueOf(overallScore),
+                                "<br>Affilated side: ",
+                                cabalStr,
+                                "<br>",
+                                overallData.getString("members"),
+                                "<br>"
+                                );
+                    } else {
                         strBuffer.append("Consecutive top scores: No record exists. Score 0<br>");
+                    }
 
-                    strBuffer.append("<a action=\"bypass -h npc_" + getObjectId() + "_Chat 0\">Go back.</a></body></html>");
+                    StringUtil.append(strBuffer,
+                            "<a action=\"bypass -h npc_",
+                            String.valueOf(getObjectId()),
+                            "_Chat 0\">Go back.</a></body></html>"
+                            );
 
                     NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
                     html.setHtml(strBuffer.toString());
@@ -439,9 +475,8 @@ public final class L2FestivalGuideInstance extends L2FolkInstance
         player.sendPacket( ActionFailed.STATIC_PACKET );
     }
 
-    private final String getStatsTable()
-    {
-        TextBuilder tableHtml = new TextBuilder();
+    private final String getStatsTable() {
+        final StringBuilder tableHtml = new StringBuilder(1000);
 
         // Get the scores for each of the festival level ranges (types).
         for (int i = 0; i < 5; i++)
@@ -456,16 +491,24 @@ public final class L2FestivalGuideInstance extends L2FolkInstance
             else if (dawnScore == duskScore)
                 winningCabal = "None";
 
-            tableHtml.append("<tr><td width=\"100\" align=\"center\">" + festivalName + "</td><td align=\"center\" width=\"35\">" +
-                             duskScore + "</td><td align=\"center\" width=\"35\">" + dawnScore + "</td><td align=\"center\" width=\"130\">" + winningCabal + "</td></tr>");
+            StringUtil.append(tableHtml,
+                    "<tr><td width=\"100\" align=\"center\">",
+                    festivalName,
+                    "</td><td align=\"center\" width=\"35\">",
+                    String.valueOf(duskScore),
+                    "</td><td align=\"center\" width=\"35\">",
+                    String.valueOf(dawnScore),
+                    "</td><td align=\"center\" width=\"130\">",
+                    winningCabal,
+                    "</td></tr>"
+                    );
         }
 
         return tableHtml.toString();
     }
 
-    private final String getBonusTable()
-    {
-        TextBuilder tableHtml = new TextBuilder();
+    private final String getBonusTable() {
+        final StringBuilder tableHtml = new StringBuilder(500);
 
         // Get the accumulated scores for each of the festival level ranges (types).
         for (int i = 0; i < 5; i++)
@@ -473,7 +516,13 @@ public final class L2FestivalGuideInstance extends L2FolkInstance
             int accumScore = SevenSignsFestival.getInstance().getAccumulatedBonus(i);
             String festivalName = SevenSignsFestival.getFestivalName(i);
 
-            tableHtml.append("<tr><td align=\"center\" width=\"150\">" + festivalName + "</td><td align=\"center\" width=\"150\">" + accumScore + "</td></tr>");
+            StringUtil.append(tableHtml,
+                    "<tr><td align=\"center\" width=\"150\">",
+                    festivalName,
+                    "</td><td align=\"center\" width=\"150\">",
+                    String.valueOf(accumScore),
+                    "</td></tr>"
+                    );
         }
 
         return tableHtml.toString();

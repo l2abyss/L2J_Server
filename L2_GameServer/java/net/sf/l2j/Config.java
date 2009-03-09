@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * This class contains global server configuration.<br>
@@ -1080,7 +1081,8 @@ public final class Config
 	                		}
 	                		else
 	                		{
-	                			System.out.println("[CLSetSiegeTimeList]: invalid config property -> CLSetSiegeTimeList \"" + st + "\"");
+	                			System.out.println(StringUtil.concat(
+	                					"[CLSetSiegeTimeList]: invalid config property -> CLSetSiegeTimeList \"", st, "\""));
 	                		}
 	                	}
 	                	if (isHour)
@@ -1092,7 +1094,8 @@ public final class Config
 	                    		{
 	                        		int val = Integer.valueOf(st);
 	                        		if (val > 23 || val < 0)
-	                        			System.out.println("[SiegeHourList]: invalid config property -> SiegeHourList \"" + st + "\"");
+	                        			System.out.println(StringUtil.concat(
+	                        					"[SiegeHourList]: invalid config property -> SiegeHourList \"", st, "\""));
 	                        		else if (val < 12)
 	                        			SIEGE_HOUR_LIST_MORNING.add(val);
 	                        		else
@@ -1184,8 +1187,8 @@ public final class Config
 	                Character.load(is);
 	                
 	                MASTERACCESS_LEVEL					= Integer.parseInt(Character.getProperty("MasterAccessLevel", "127"));
-	                MASTERACCESS_NAME_COLOR				= Integer.decode("0x" + Character.getProperty("MasterNameColor", "00FF00"));
-	                MASTERACCESS_TITLE_COLOR			= Integer.decode("0x" + Character.getProperty("MasterTitleColor", "00FF00"));
+	                MASTERACCESS_NAME_COLOR				= Integer.decode(StringUtil.concat("0x", Character.getProperty("MasterNameColor", "00FF00")));
+	                MASTERACCESS_TITLE_COLOR			= Integer.decode(StringUtil.concat("0x", Character.getProperty("MasterTitleColor", "00FF00")));
 	                ALT_GAME_DELEVEL					= Boolean.parseBoolean(Character.getProperty("Delevel", "true"));
 	                ALT_WEIGHT_LIMIT					= Double.parseDouble(Character.getProperty("AltWeightLimit", "1"));
 	                RUN_SPD_BOOST						= Integer.parseInt(Character.getProperty("RunSpeedBoost", "0"));
@@ -1209,7 +1212,8 @@ public final class Config
 	                        String[] skillSplit = skill.split(",");
 	                        if (skillSplit.length != 2)
 	                        {
-	                            System.out.println("[SkillDurationList]: invalid config property -> SkillDurationList \"" + skill + "\"");
+	                            System.out.println(StringUtil.concat(
+	                            		"[SkillDurationList]: invalid config property -> SkillDurationList \"", skill, "\""));
 	                        } else
 	                        {
 	                            try
@@ -1219,7 +1223,9 @@ public final class Config
 	                            {
 	                                if (!skill.equals(""))
 	                                {
-	                                    System.out.println("[SkillDurationList]: invalid config property -> SkillList \"" + skillSplit[0] + "\"" + skillSplit[1]);
+	                                    System.out.println(StringUtil.concat(
+	                                    		"[SkillDurationList]: invalid config property -> SkillList \"",
+	                                    		skillSplit[0], "\"", skillSplit[1]));
 	                                }
 	                            }
 	                        }
@@ -1238,7 +1244,8 @@ public final class Config
 	                        String[] skillSplit = skill.split(",");
 	                        if (skillSplit.length != 2)
 	                        {
-	                            System.out.println("[SkillReuseList]: invalid config property -> SkillReuseList \"" + skill + "\"");
+	                            System.out.println(StringUtil.concat(
+	                            		"[SkillReuseList]: invalid config property -> SkillReuseList \"", skill, "\""));
 	                        } else
 	                        {
 	                            try
@@ -1248,7 +1255,9 @@ public final class Config
 	                            {
 	                                if (!skill.equals(""))
 	                                {
-	                                    System.out.println("[SkillReuseList]: invalid config property -> SkillList \"" + skillSplit[0] + "\"" + skillSplit[1]);
+	                                    System.out.println(StringUtil.concat(
+	                                    		"[SkillReuseList]: invalid config property -> SkillList \"",
+	                                    		skillSplit[0], "\"", skillSplit[1]));
 	                                }
 	                            }
 	                        }
@@ -1836,7 +1845,9 @@ public final class Config
 	                                	String[] rewardSplit = reward.split(",");
 	
 	                                	if (rewardSplit.length != 2)
-	                                	    _log.warning("TvTEventEngine[Config.load()]: invalid config property -> TvTEventReward \"" + reward + "\"");
+	                                	    _log.warning(StringUtil.concat(
+	                                	    		"TvTEventEngine[Config.load()]: invalid config property -> TvTEventReward \"",
+	                                	    		reward, "\""));
 	                                	else
 	                                	{
 	                                		try
@@ -1846,7 +1857,9 @@ public final class Config
 	                                		catch (NumberFormatException nfe)
 	                                		{
 	                                			if (!reward.equals(""))
-	                                			    _log.warning("TvTEventEngine[Config.load()]: invalid config property -> TvTEventReward \"" + reward + "\"");
+	                                			    _log.warning(StringUtil.concat(
+	                                			    		"TvTEventEngine[Config.load()]: invalid config property -> TvTEventReward \"",
+	                                			    		reward, "\""));
 	                                		}
 	                                	}
 	                                }
@@ -1867,7 +1880,9 @@ public final class Config
 	                        			catch (NumberFormatException nfe)
 	                        			{
 	                        				if (!door.equals(""))
-	                        				    _log.warning("TvTEventEngine[Config.load()]: invalid config property -> TvTDoorsToOpen \"" + door + "\"");
+	                        				    _log.warning(StringUtil.concat(
+	                        				    		"TvTEventEngine[Config.load()]: invalid config property -> TvTDoorsToOpen \"",
+	                        				    		door, "\""));
 	                        			}
 	                        		}
 	                        		
@@ -1882,7 +1897,9 @@ public final class Config
 	                        			catch (NumberFormatException nfe)
 	                        			{
 	                        				if (!door.equals(""))
-	                        				    _log.warning("TvTEventEngine[Config.load()]: invalid config property -> TvTDoorsToClose \"" + door + "\"");
+	                        				    _log.warning(StringUtil.concat(
+	                        				    		"TvTEventEngine[Config.load()]: invalid config property -> TvTDoorsToClose \"",
+	                        				    		door, "\""));
 	                        			}
 	                        		}
 	                            }
@@ -2365,7 +2382,7 @@ public final class Config
         }
         catch (Exception e)
         {
-            _log.warning("Failed to save hex id to "+fileName+" File.");
+            _log.warning(StringUtil.concat("Failed to save hex id to ", fileName, " File."));
             e.printStackTrace();
         }
     }

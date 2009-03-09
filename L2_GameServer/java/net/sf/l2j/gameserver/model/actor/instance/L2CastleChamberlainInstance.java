@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
@@ -46,6 +45,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
+import net.sf.l2j.gameserver.util.StringUtil;
 import net.sf.l2j.gameserver.util.Util;
 
 /**
@@ -483,20 +483,24 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 					if (val != "")
 						getCastle().setTaxPercent(player, Integer.parseInt(val));
 
-					TextBuilder msg = new TextBuilder("<html><body>");
-					msg.append(getName() + ":<br>");
-					msg.append("Current tax rate: "	+ getCastle().getTaxPercent() + "%<br>");
-					msg.append("<table>");
-					msg.append("<tr>");
-					msg.append("<td>Change tax rate to:</td>");
-					msg.append("<td><edit var=\"value\" width=40><br>");
-					msg.append("<button value=\"Adjust\" action=\"bypass -h npc_%objectId%_tax_set $value\" width=80 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
-					msg.append("</tr>");
-					msg.append("</table>");
-					msg.append("</center>");
-					msg.append("</body></html>");
-
-					sendHtmlMessage(player, msg.toString());
+                                        final String msg = StringUtil.concat(
+                                                "<html><body>",
+                                                getName(),
+                                                ":<br>" +
+                                                "Current tax rate: ",
+                                                String.valueOf(getCastle().getTaxPercent()),
+                                                "%<br>" +
+                                                "<table>" +
+                                                "<tr>" +
+                                                "<td>Change tax rate to:</td>" +
+                                                "<td><edit var=\"value\" width=40><br>" +
+                                                "<button value=\"Adjust\" action=\"bypass -h npc_%objectId%_tax_set $value\" width=80 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>" +
+                                                "</tr>" +
+                                                "</table>" +
+                                                "</center>" +
+                                                "</body></html>"
+                                                );
+					sendHtmlMessage(player, msg);
 					return;
 				}
 				else
@@ -1367,13 +1371,28 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 						inc = 12;
 						list = Config.SIEGE_HOUR_LIST_AFTERNOON;
 					}
-					TextBuilder tList = new TextBuilder();
-					for (Integer hour : list)
-					{
-						if (hour == 0) 
-							tList.append("<a action=\"bypass -h npc_%objectId%_siege_time_set 3 " + String.valueOf(hour + inc) + "\">" + String.valueOf(hour + 12) + ":00 " + ampm + "</a><br>");
-						else
-							tList.append("<a action=\"bypass -h npc_%objectId%_siege_time_set 3 " + String.valueOf(hour + inc) + "\">" + String.valueOf(hour) + ":00 " + ampm + "</a><br>");
+
+                                        final StringBuilder tList = new StringBuilder(list.size() * 50);
+					for (Integer hour : list) {
+						if (hour == 0) {
+                                                    StringUtil.append(tList,
+                                                            "<a action=\"bypass -h npc_%objectId%_siege_time_set 3 ",
+                                                            String.valueOf(hour + inc),
+                                                            "\">",
+                                                            String.valueOf(hour + 12),
+                                                            ":00 ",
+                                                            ampm,
+                                                            "</a><br>");
+                                                } else {
+                                                    StringUtil.append(tList,
+                                                            "<a action=\"bypass -h npc_%objectId%_siege_time_set 3 ",
+                                                            String.valueOf(hour + inc),
+                                                            "\">",
+                                                            String.valueOf(hour),
+                                                            ":00 ",
+                                                            ampm,
+                                                            "</a><br>");
+                                                }
 					}
 					ret.replace("%links%", tList.toString());
 			}

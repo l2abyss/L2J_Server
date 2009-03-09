@@ -19,7 +19,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.text.TextBuilder;
 import javolution.util.FastList;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
@@ -52,6 +51,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.chars.L2CharTemplate;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * This class ...
@@ -569,32 +569,57 @@ public class L2DoorInstance extends L2Character
 			player.sendPacket(su);
 			
 			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-			TextBuilder html1 = new TextBuilder("<html><body><table border=0>");
-			html1.append("<tr><td>S.Y.L. Says:</td></tr>");
-			html1.append("<tr><td>Current HP  " + getCurrentHp() + "</td></tr>");
-			html1.append("<tr><td>Max HP      " + getMaxHp() + "</td></tr>");
-			html1.append("<tr><td>Max X       " + getXMax() + "</td></tr>");
-			html1.append("<tr><td>Max Y       " + getYMax() + "</td></tr>");
-			html1.append("<tr><td>Max Z       " + getZMax() + "</td></tr>");
-			html1.append("<tr><td>Min X       " + getXMin() + "</td></tr>");
-			html1.append("<tr><td>Min Y       " + getYMin() + "</td></tr>");
-			html1.append("<tr><td>Min Z       " + getZMin() + "</td></tr>");
-			html1.append("<tr><td>Object ID:  " + getObjectId() + "</td></tr>");
-			html1.append("<tr><td>Door ID: <br>" + getDoorId() + "</td></tr>");
-			html1.append("<tr><td><br></td></tr>");
-			
-			html1.append("<tr><td>Class: " + getClass().getName() + "</td></tr>");
-			html1.append("<tr><td><br></td></tr>");
-			html1.append("</table>");
-			
-			html1.append("<table><tr>");
-			html1.append("<td><button value=\"Open\" action=\"bypass -h admin_open " + getDoorId() + "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
-			html1.append("<td><button value=\"Close\" action=\"bypass -h admin_close " + getDoorId() + "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
-			html1.append("<td><button value=\"Kill\" action=\"bypass -h admin_kill\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
-			html1.append("<td><button value=\"Delete\" action=\"bypass -h admin_delete\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
-			html1.append("</tr></table></body></html>");
-			
-			html.setHtml(html1.toString());
+                        final String html1 = StringUtil.concat(
+                                "<html><body><table border=0>" +
+                                "<tr><td>S.Y.L. Says:</td></tr>" +
+                                "<tr><td>Current HP  ",
+                                String.valueOf(getCurrentHp()),
+                                "</td></tr>" +
+                                "<tr><td>Max HP      ",
+                                String.valueOf(getMaxHp()),
+                                "</td></tr>" +
+                                "<tr><td>Max X       ",
+                                String.valueOf(getXMax()),
+                                "</td></tr>" +
+                                "<tr><td>Max Y       ",
+                                String.valueOf(getYMax()),
+                                "</td></tr>" +
+                                "<tr><td>Max Z       ",
+                                String.valueOf(getZMax()),
+                                "</td></tr>" +
+                                "<tr><td>Min X       ",
+                                String.valueOf(getXMin()),
+                                "</td></tr>" +
+                                "<tr><td>Min Y       ",
+                                String.valueOf(getYMin()),
+                                "</td></tr>" +
+                                "<tr><td>Min Z       ",
+                                String.valueOf(getZMin()),
+                                "</td></tr>" +
+                                "<tr><td>Object ID:  ",
+                                String.valueOf(getObjectId()),
+                                "</td></tr>" +
+                                "<tr><td>Door ID: <br>",
+                                String.valueOf(getDoorId()),
+                                "</td></tr>" +
+                                "<tr><td><br></td></tr>" +
+                                "<tr><td>Class: ",
+                                getClass().getName(),
+                                "</td></tr>" +
+                                "<tr><td><br></td></tr>" +
+                                "</table>" +
+                                "<table><tr>" +
+                                "<td><button value=\"Open\" action=\"bypass -h admin_open ",
+                                String.valueOf(getDoorId()),
+                                "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>" +
+                                "<td><button value=\"Close\" action=\"bypass -h admin_close ",
+                                String.valueOf(getDoorId()),
+                                "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>" +
+                                "<td><button value=\"Kill\" action=\"bypass -h admin_kill\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>" +
+                                "<td><button value=\"Delete\" action=\"bypass -h admin_delete\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>" +
+                                "</tr></table></body></html>"
+                                );
+			html.setHtml(html1);
 			player.sendPacket(html);
 		}
 		else

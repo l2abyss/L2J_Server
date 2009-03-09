@@ -20,7 +20,6 @@ package net.sf.l2j.gameserver.model.actor.instance;
 
 import java.util.logging.Logger;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
 import net.sf.l2j.gameserver.cache.HtmCache;
@@ -39,6 +38,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ShowTownMap;
 import net.sf.l2j.gameserver.network.serverpackets.StaticObject;
 import net.sf.l2j.gameserver.templates.chars.L2CharTemplate;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * GODSON ROX!
@@ -248,21 +248,35 @@ public class L2StaticObjectInstance extends L2Character
             player.sendPacket(su);
 
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-            TextBuilder html1 = new TextBuilder("<html><body><table border=0>");
-            html1.append("<tr><td>S.Y.L. Says:</td></tr>");
-            html1.append("<tr><td>X: "+getX()+ "</td></tr>");
-            html1.append("<tr><td>Y: "+getY()+"</td></tr>");
-            html1.append("<tr><td>Z: "+getZ()+"</td></tr>");
-            html1.append("<tr><td>Object ID: " + getObjectId() + "</td></tr>");
-            html1.append("<tr><td>Static Object ID: "+getStaticObjectId()+"</td></tr>");
-            html1.append("<tr><td>Mesh Index: "+getMeshIndex()+"</td></tr>");
-            html1.append("<tr><td><br></td></tr>");
-
-            html1.append("<tr><td>Class: " + getClass().getName() + "</td></tr>");
-            html1.append("<tr><td><br></td></tr>");
-            html1.append("</table></body></html>");
-
-            html.setHtml(html1.toString());
+            final String html1 = StringUtil.concat(
+                    "<html><body><table border=0>" +
+                    "<tr><td>S.Y.L. Says:</td></tr>" +
+                    "<tr><td>X: ",
+                    String.valueOf(getX()),
+                    "</td></tr>" +
+                    "<tr><td>Y: ",
+                    String.valueOf(getY()),
+                    "</td></tr>" +
+                    "<tr><td>Z: ",
+                    String.valueOf(getZ()),
+                    "</td></tr>" +
+                    "<tr><td>Object ID: ",
+                    String.valueOf(getObjectId()),
+                    "</td></tr>" +
+                    "<tr><td>Static Object ID: ",
+                    String.valueOf(getStaticObjectId()),
+                    "</td></tr>" +
+                    "<tr><td>Mesh Index: ",
+                    String.valueOf(getMeshIndex()),
+                    "</td></tr>" +
+                    "<tr><td><br></td></tr>" +
+                    "<tr><td>Class: ",
+                    getClass().getName(),
+                    "</td></tr>" +
+                    "<tr><td><br></td></tr>" +
+                    "</table></body></html>"
+                    );
+            html.setHtml(html1);
             player.sendPacket(html);
         } else {
             // ATTACK the mob without moving?

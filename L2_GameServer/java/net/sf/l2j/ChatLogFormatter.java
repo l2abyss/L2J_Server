@@ -18,41 +18,37 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
-
-import javolution.text.TextBuilder;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * This class ...
- *
+ * 
  * @version $Revision: 1.1.4.1 $ $Date: 2005/02/06 16:14:46 $
  */
 
 public class ChatLogFormatter extends Formatter
 {
 	private static final String CRLF = "\r\n";
-
+	
 	private SimpleDateFormat dateFmt = new SimpleDateFormat("dd MMM H:mm:ss");
-
+	
 	@Override
 	public String format(LogRecord record)
 	{
 		Object[] params = record.getParameters();
-        TextBuilder output = new TextBuilder();
-		output.append('[');
-		output.append(dateFmt.format(new Date(record.getMillis())));
-		output.append(']');
-		output.append(' ');
+		final StringBuilder output = StringUtil.startAppend(30 + record.getMessage().length()
+		        + (params != null ? 10 * params.length : 0), "[", dateFmt.format(new Date(record.getMillis())), "] ");
+		
 		if (params != null)
 		{
 			for (Object p : params)
 			{
-				output.append(p);
-				output.append(' ');
+				StringUtil.append(output, String.valueOf(p), " ");
 			}
 		}
-		output.append(record.getMessage());
-		output.append(CRLF);
-
+		
+		StringUtil.append(output, record.getMessage(), CRLF);
+		
 		return output.toString();
 	}
 }

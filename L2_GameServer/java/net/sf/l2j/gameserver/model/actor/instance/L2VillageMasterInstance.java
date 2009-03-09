@@ -17,7 +17,6 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.util.Iterator;
 import java.util.Set;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.CharTemplateTable;
 import net.sf.l2j.gameserver.datatables.ClanTable;
@@ -47,6 +46,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.util.FloodProtector;
+import net.sf.l2j.gameserver.util.StringUtil;
 import net.sf.l2j.gameserver.util.Util;
 
 /**
@@ -166,7 +166,8 @@ public final class L2VillageMasterInstance extends L2FolkInstance
                 return;
             }
 
-            TextBuilder content = new TextBuilder("<html><body>");
+            final StringBuilder content = StringUtil.startAppend(1000,
+                    "<html><body>");
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
             Set<PlayerClass> subsAvailable;
 
@@ -203,14 +204,19 @@ public final class L2VillageMasterInstance extends L2FolkInstance
                     {
                         content.append("Add Subclass:<br>Which sub class do you wish to add?<br>");
 
-                        for (PlayerClass subClass : subsAvailable)
-                            content.append("<a action=\"bypass -h npc_" + getObjectId() + "_Subclass 4 "
-                                + subClass.ordinal() + "\" msg=\"1268;"
-                                + formatClassForDisplay(subClass) + "\">"
-                                + formatClassForDisplay(subClass) + "</a><br>");
-                    }
-                    else
-                    {
+                        for (PlayerClass subClass : subsAvailable) {
+                            StringUtil.append(content,
+                                "<a action=\"bypass -h npc_",
+                                String.valueOf(getObjectId()),
+                                "_Subclass 4 ",
+                                String.valueOf(subClass.ordinal()),
+                                "\" msg=\"1268;",
+                                formatClassForDisplay(subClass),
+                                "\">",
+                                formatClassForDisplay(subClass),
+                                "</a><br>");
+                        }
+                    } else {
                         player.sendMessage("There are no sub classes available at this time.");
                         return;
                     }
@@ -220,33 +226,48 @@ public final class L2VillageMasterInstance extends L2FolkInstance
 
                     final int baseClassId = player.getBaseClass();
 
-                    if (player.getSubClasses().isEmpty())
-                    {
-                        content.append("You can't change sub classes when you don't have a sub class to begin with.<br>"
-                            + "<a action=\"bypass -h npc_"
-                            + getObjectId()
-                            + "_Subclass 1\">Add subclass.</a>");
-                    }
-                    else
-                    {
+                    if (player.getSubClasses().isEmpty()) {
+                        StringUtil.append(content,
+                                "You can't change sub classes when you don't have a sub class to begin with.<br>"
+                                + "<a action=\"bypass -h npc_",
+                                String.valueOf(getObjectId()),
+                                "_Subclass 1\">Add subclass.</a>");
+                    } else {
                         content.append("Which class would you like to switch to?<br>");
 
-                        if (baseClassId == player.getActiveClass()) content.append(CharTemplateTable.getInstance().getClassNameById(baseClassId)
-                            + "&nbsp;<font color=\"LEVEL\">(Base Class)</font><br><br>");
-                        else content.append("<a action=\"bypass -h npc_" + getObjectId()
-                            + "_Subclass 5 0\">" + CharTemplateTable.getInstance().getClassNameById(baseClassId)
-                            + "</a>&nbsp;" + "<font color=\"LEVEL\">(Base Class)</font><br><br>");
+                        if (baseClassId == player.getActiveClass()) {
+                            StringUtil.append(content,
+                                    CharTemplateTable.getInstance().getClassNameById(baseClassId),
+                                    "&nbsp;<font color=\"LEVEL\">(Base Class)</font><br><br>");
+                        } else {
+                            StringUtil.append(content,
+                                    "<a action=\"bypass -h npc_",
+                                    String.valueOf(getObjectId()),
+                                    "_Subclass 5 0\">",
+                                    CharTemplateTable.getInstance().getClassNameById(baseClassId),
+                                    "</a>&nbsp;" +
+                                    "<font color=\"LEVEL\">(Base Class)</font><br><br>");
+                        }
 
                         for (Iterator<SubClass> subList = iterSubClasses(player); subList.hasNext();)
                         {
                             SubClass subClass = subList.next();
                             int subClassId = subClass.getClassId();
 
-                            if (subClassId == player.getActiveClass()) content.append(CharTemplateTable.getInstance().getClassNameById(subClassId)
-                                + "<br>");
-                            else content.append("<a action=\"bypass -h npc_" + getObjectId()
-                                + "_Subclass 5 " + subClass.getClassIndex() + "\">"
-                                + CharTemplateTable.getInstance().getClassNameById(subClassId) + "</a><br>");
+                            if (subClassId == player.getActiveClass()) {
+                                StringUtil.append(content,
+                                        CharTemplateTable.getInstance().getClassNameById(subClassId),
+                                        "<br>");
+                            } else {
+                                StringUtil.append(content,
+                                        "<a action=\"bypass -h npc_",
+                                        String.valueOf(getObjectId()),
+                                        "_Subclass 5 ",
+                                        String.valueOf(subClass.getClassIndex()),
+                                        "\">",
+                                        CharTemplateTable.getInstance().getClassNameById(subClassId),
+                                        "</a><br>");
+                            }
                         }
                     }
                     break;
@@ -258,10 +279,17 @@ public final class L2VillageMasterInstance extends L2FolkInstance
                     {
                         SubClass subClass = subList.next();
 
-                        content.append("Sub-class " + classIndex++ + "<br1>");
-                        content.append("<a action=\"bypass -h npc_" + getObjectId() + "_Subclass 6 "
-                            + subClass.getClassIndex() + "\">"
-                            + CharTemplateTable.getInstance().getClassNameById(subClass.getClassId()) + "</a><br>");
+                        StringUtil.append(content,
+                                "Sub-class ",
+                                String.valueOf(classIndex++),
+                                "<br1>" +
+                                "<a action=\"bypass -h npc_",
+                                String.valueOf(getObjectId()),
+                                "_Subclass 6 ",
+                                String.valueOf(subClass.getClassIndex()),
+                                "\">",
+                                CharTemplateTable.getInstance().getClassNameById(subClass.getClassId()),
+                                "</a><br>");
                     }
 
                     content.append("<br>If you change a sub class, you'll start at level 40 after the 2nd class transfer.");
@@ -354,12 +382,12 @@ public final class L2VillageMasterInstance extends L2FolkInstance
 
                         player.setActiveClass(player.getTotalSubClasses());
 
-                        content.append("Add Subclass:<br>The sub class of <font color=\"LEVEL\">"
-                            + className + "</font> has been added.");
+                        StringUtil.append(content,
+                                "Add Subclass:<br>The sub class of <font color=\"LEVEL\">",
+                                className,
+                                "</font> has been added.");
                         player.sendPacket(new SystemMessage(SystemMessageId.CLASS_TRANSFER)); // Transfer to new class.
-                    }
-                    else
-                    {
+                    } else {
                         html.setFile("data/html/villagemaster/SubClass_Fail.htm");
                     }
                     break;
@@ -384,8 +412,10 @@ public final class L2VillageMasterInstance extends L2FolkInstance
 
                     player.setActiveClass(paramOne);
 
-                    content.append("Change Subclass:<br>Your active sub class is now a <font color=\"LEVEL\">"
-                        + CharTemplateTable.getInstance().getClassNameById(player.getActiveClass()) + "</font>.");
+                    StringUtil.append(content,
+                            "Change Subclass:<br>Your active sub class is now a <font color=\"LEVEL\">",
+                            CharTemplateTable.getInstance().getClassNameById(player.getActiveClass()),
+                            "</font>.");
 
                     player.sendPacket(new SystemMessage(SystemMessageId.SUBCLASS_TRANSFER_COMPLETED)); // Transfer completed.
                     break;
@@ -398,13 +428,19 @@ public final class L2VillageMasterInstance extends L2FolkInstance
 
                     if (subsAvailable != null && !subsAvailable.isEmpty())
                     {
-                        for (PlayerClass subClass : subsAvailable)
-                            content.append("<a action=\"bypass -h npc_" + getObjectId() + "_Subclass 7 "
-                                + paramOne + " " + subClass.ordinal() + "\">"
-                                + formatClassForDisplay(subClass) + "</a><br>");
-                    }
-                    else
-                    {
+                        for (PlayerClass subClass : subsAvailable) {
+                            StringUtil.append(content,
+                                    "<a action=\"bypass -h npc_",
+                                    String.valueOf(getObjectId()),
+                                    "_Subclass 7 ",
+                                    String.valueOf(paramOne),
+                                    " ",
+                                    String.valueOf(subClass.ordinal()),
+                                    "\">",
+                                    formatClassForDisplay(subClass),
+                                    "</a><br>");
+                        }
+                    } else {
                         player.sendMessage("There are no sub classes available at this time.");
                         return;
                     }
@@ -426,8 +462,10 @@ public final class L2VillageMasterInstance extends L2FolkInstance
                     	player.stopAllEffects(); // all effects from old subclass stopped!
                     	player.setActiveClass(paramOne);
 
-                        content.append("Change Subclass:<br>Your sub class has been changed to <font color=\"LEVEL\">"
-                            + CharTemplateTable.getInstance().getClassNameById(paramTwo) + "</font>.");
+                        StringUtil.append(content,
+                                "Change Subclass:<br>Your sub class has been changed to <font color=\"LEVEL\">",
+                                CharTemplateTable.getInstance().getClassNameById(paramTwo),
+                                "</font>.");
 
                         player.sendPacket(new SystemMessage(SystemMessageId.ADD_NEW_SUBCLASS)); // Subclass added.
                     }
@@ -856,13 +894,11 @@ public final class L2VillageMasterInstance extends L2FolkInstance
         if (Config.DEBUG)
             _log.fine("PledgeSkillList activated on: "+getObjectId());
         NpcHtmlMessage html = new NpcHtmlMessage(1);
-        if(player.getClan() == null || !player.isClanLeader())
-        {
-            TextBuilder sb = new TextBuilder();
-            sb.append("<html><body>");
-            sb.append("<br><br>You're not qualified to learn Clan skills.");
-            sb.append("</body></html>");
-            html.setHtml(sb.toString());
+        if(player.getClan() == null || !player.isClanLeader()) {
+            html.setHtml(
+                    "<html><body>" +
+                    "<br><br>You're not qualified to learn Clan skills." +
+                    "</body></html>");
             player.sendPacket(html);
             player.sendPacket(ActionFailed.STATIC_PACKET);
         	return;
@@ -893,14 +929,11 @@ public final class L2VillageMasterInstance extends L2FolkInstance
                 	sm.addNumber(player.getClan().getLevel()+1);
                 player.sendPacket(sm);
                 player.sendPacket(new AcquireSkillDone());
-            }
-            else
-            {
-                TextBuilder sb = new TextBuilder();
-                sb.append("<html><body>");
-                sb.append("You've learned all skills available for your Clan.<br>");
-                sb.append("</body></html>");
-                html.setHtml(sb.toString());
+            } else {
+                html.setHtml(
+                        "<html><body>" +
+                        "You've learned all skills available for your Clan.<br>" +
+                        "</body></html>");
                 player.sendPacket(html);
             }
         }

@@ -18,7 +18,6 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GmListTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
@@ -37,6 +36,7 @@ import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.util.Broadcast;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * This class handles following admin commands: - show_spawns = shows menu -
@@ -246,12 +246,16 @@ public class AdminSpawn implements IAdminCommandHandler
 	
 	private void showMonsters(L2PcInstance activeChar, int level, int from)
 	{
-		TextBuilder tb = new TextBuilder();
-		
 		L2NpcTemplate[] mobs = NpcTable.getInstance().getAllMonstersOfLevel(level);
+                final StringBuilder tb = StringUtil.startAppend(500 + mobs.length * 80,
+                        "<html><title>Spawn Monster:</title><body><p> Level ",
+                        String.valueOf(level),
+                        ":<br>Total Npc's : ",
+                        String.valueOf(mobs.length),
+                        "<br>"
+                        );
 		
 		// Start
-		tb.append("<html><title>Spawn Monster:</title><body><p> Level " + level + ":<br>Total Npc's : " + mobs.length + "<br>");
 		String end1 = "<br><center><button value=\"Next\" action=\"bypass -h admin_spawn_index " + level + " $from$\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center></body></html>";
 		String end2 = "<br><center><button value=\"Back\" action=\"bypass -h admin_show_spawns\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center></body></html>";
 		
@@ -259,16 +263,19 @@ public class AdminSpawn implements IAdminCommandHandler
 		boolean ended = true;
 		for (int i = from; i < mobs.length; i++)
 		{
-			String txt = "<a action=\"bypass -h admin_spawn_monster " + mobs[i].npcId + "\">" + mobs[i].name + "</a><br1>";
+                    StringUtil.append(tb,
+                            "<a action=\"bypass -h admin_spawn_monster ",
+                            String.valueOf(mobs[i].npcId),
+                            "\">",
+                            mobs[i].name,
+                            "</a><br1>"
+                            );
 			
-			if ((tb.length() + txt.length() + end2.length()) > 8192)
-			{
+			if ((tb.length() + end2.length()) > 8192) {
 				end1 = end1.replace("$from$", "" + i);
 				ended = false;
 				break;
 			}
-			
-			tb.append(txt);
 		}
 		
 		// End
@@ -282,25 +289,36 @@ public class AdminSpawn implements IAdminCommandHandler
 	
 	private void showNpcs(L2PcInstance activeChar, String starting, int from)
 	{
-		TextBuilder tb = new TextBuilder();
 		L2NpcTemplate[] mobs = NpcTable.getInstance().getAllNpcStartingWith(starting);
+                final StringBuilder tb = StringUtil.startAppend(500 + mobs.length * 80,
+                        "<html><title>Spawn Monster:</title><body><p> There are ",
+                        String.valueOf(mobs.length),
+                        " Npcs whose name starts with ",
+                        starting,
+                        ":<br>"
+                        );
+
 		// Start
-		tb.append("<html><title>Spawn Monster:</title><body><p> There are " + mobs.length + " Npcs whose name starts with " + starting + ":<br>");
 		String end1 = "<br><center><button value=\"Next\" action=\"bypass -h admin_npc_index " + starting + " $from$\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center></body></html>";
 		String end2 = "<br><center><button value=\"Back\" action=\"bypass -h admin_show_npcs\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center></body></html>";
-		// Loop
+
+                // Loop
 		boolean ended = true;
-		for (int i = from; i < mobs.length; i++)
-		{
-			String txt = "<a action=\"bypass -h admin_spawn_monster " + mobs[i].npcId + "\">" + mobs[i].name + "</a><br1>";
-			
-			if ((tb.length() + txt.length() + end2.length()) > 8192)
+		for (int i = from; i < mobs.length; i++) {
+                    StringUtil.append(tb,
+                            "<a action=\"bypass -h admin_spawn_monster ",
+                            String.valueOf(mobs[i].npcId),
+                            "\">",
+                            mobs[i].name,
+                            "</a><br1>"
+                            );
+
+			if ((tb.length() + end2.length()) > 8192)
 			{
 				end1 = end1.replace("$from$", "" + i);
 				ended = false;
 				break;
 			}
-			tb.append(txt);
 		}
 		// End
 		if (ended)

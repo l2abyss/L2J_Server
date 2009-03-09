@@ -16,11 +16,11 @@ package net.sf.l2j.gameserver.handler.voicedcommandhandlers;
 
 import java.util.Iterator;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.gameserver.handler.IVoicedCommandHandler;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  *
@@ -45,18 +45,28 @@ public class stats implements IVoicedCommandHandler
 			if (pc != null)
 			{
 				NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
+                                final StringBuilder replyMSG = StringUtil.startAppend(
+                                        300 + pc.kills.size() * 50,
+                                        "<html><body>" +
+                                        "<center><font color=\"LEVEL\">[ L2J EVENT ENGINE ]</font></center><br>" +
+                                        "<br>Statistics for player <font color=\"LEVEL\">",
+                                        pc.getName(),
+                                        "</font><br>" +
+                                        "Total kills <font color=\"FF0000\">",
+                                        String.valueOf(pc.kills.size()),
+                                        "</font><br>" +
+                                        "<br>Detailed list: <br>"
+                                        );
 				
-				TextBuilder replyMSG = new TextBuilder("<html><body>");
-				
-				replyMSG.append("<center><font color=\"LEVEL\">[ L2J EVENT ENGINE ]</font></center><br>");
-				replyMSG.append("<br>Statistics for player <font color=\"LEVEL\">" + pc.getName() + "</font><br>");
-				replyMSG.append("Total kills <font color=\"FF0000\">" + pc.kills.size() + "</font><br>");
-				replyMSG.append("<br>Detailed list: <br>");
 				Iterator<String> it = pc.kills.iterator();
-				while (it.hasNext())
-				{
-					replyMSG.append("<font color=\"FF0000\">" + it.next() + "</font><br>");
+
+                                while (it.hasNext()) {
+                                    StringUtil.append(replyMSG,
+                                            "<font color=\"FF0000\">",
+                                            it.next(),
+                                            "</font><br>");
 				}
+                                
 				replyMSG.append("</body></html>");
 				
 				adminReply.setHtml(replyMSG.toString());

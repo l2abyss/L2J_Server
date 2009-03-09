@@ -38,7 +38,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.text.TextBuilder;
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
@@ -52,6 +51,7 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.StatsSet;
+import net.sf.l2j.gameserver.util.StringUtil;
 import net.sf.l2j.util.L2FastList;
 
 public class Olympiad
@@ -1467,9 +1467,12 @@ public class Olympiad
 	public static void sendMatchList(L2PcInstance player)
 	{
 		NpcHtmlMessage message = new NpcHtmlMessage(0);
-		TextBuilder replyMSG = new TextBuilder("<html><body>");
-		replyMSG.append("<center><br>Grand Olympiad Game View<table width=270 border=0 bgcolor=\"000000\">");
-		replyMSG.append("<tr><td fixwidth=30>NO.</td><td fixwidth=60>Status</td><td>Player1 / Player2</td></tr>");
+                final StringBuilder replyMSG = StringUtil.startAppend(
+                        200 + Olympiad.getStadiumCount() * 200,
+                        "<html><body>" +
+                        "<center><br>Grand Olympiad Game View<table width=270 border=0 bgcolor=\"000000\">" +
+                        "<tr><td fixwidth=30>NO.</td><td fixwidth=60>Status</td><td>Player1 / Player2</td></tr>"
+                        );
 
 		FastMap<Integer, String> matches = getInstance().getMatchList();
         for (int i = 0; i < Olympiad.getStadiumCount(); i++)
@@ -1482,9 +1485,19 @@ public class Olympiad
         		state = "In Progress";
             	players = matches.get(i);
             }
-        	replyMSG.append("<tr><td fixwidth=30><a action=\"bypass -h OlympiadArenaChange " + i + "\">" +
-        			arenaID + "</a></td><td fixwidth=60>" + state + "</td><td>" + players + "</td></tr>");
+                StringUtil.append(replyMSG,
+                        "<tr><td fixwidth=30><a action=\"bypass -h OlympiadArenaChange ",
+                        String.valueOf(i),
+                        "\">",
+                        String.valueOf(arenaID),
+                        "</a></td><td fixwidth=60>",
+                        state,
+                        "</td><td>",
+                        players,
+                        "</td></tr>"
+                        );
         }
+                
         replyMSG.append("</table></center></body></html>");
 
         message.setHtml(replyMSG.toString());

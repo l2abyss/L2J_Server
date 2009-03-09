@@ -18,7 +18,6 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.NpcTable;
@@ -38,6 +37,7 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * This class handles following admin commands:
@@ -287,25 +287,32 @@ public class AdminTeleport implements IAdminCommandHandler
 			return;
 		}
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
-		
-		TextBuilder replyMSG = new TextBuilder("<html><title>Teleport Character</title>");
-		replyMSG.append("<body>");
-		replyMSG.append("The character you will teleport is " + player.getName() + ".");
-		replyMSG.append("<br>");
-		
-		replyMSG.append("Co-ordinate x");
-		replyMSG.append("<edit var=\"char_cord_x\" width=110>");
-		replyMSG.append("Co-ordinate y");
-		replyMSG.append("<edit var=\"char_cord_y\" width=110>");
-		replyMSG.append("Co-ordinate z");
-		replyMSG.append("<edit var=\"char_cord_z\" width=110>");
-		replyMSG.append("<button value=\"Teleport\" action=\"bypass -h admin_teleport_character $char_cord_x $char_cord_y $char_cord_z\" width=60 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-		replyMSG.append("<button value=\"Teleport near you\" action=\"bypass -h admin_teleport_character " + activeChar.getX() + " " + activeChar.getY() + " " + activeChar.getZ()
-				+ "\" width=115 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">");
-		replyMSG.append("<center><button value=\"Back\" action=\"bypass -h admin_current_player\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center>");
-		replyMSG.append("</body></html>");
-		
-		adminReply.setHtml(replyMSG.toString());
+
+                final String replyMSG = StringUtil.concat(
+                        "<html><title>Teleport Character</title>" +
+                        "<body>" +
+                        "The character you will teleport is ",
+                        player.getName(),
+                        "." +
+                        "<br>" +
+                        "Co-ordinate x" +
+                        "<edit var=\"char_cord_x\" width=110>" +
+                        "Co-ordinate y" +
+                        "<edit var=\"char_cord_y\" width=110>" +
+                        "Co-ordinate z" +
+                        "<edit var=\"char_cord_z\" width=110>" +
+                        "<button value=\"Teleport\" action=\"bypass -h admin_teleport_character $char_cord_x $char_cord_y $char_cord_z\" width=60 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
+                        "<button value=\"Teleport near you\" action=\"bypass -h admin_teleport_character ",
+                        String.valueOf(activeChar.getX()),
+                        " ",
+                        String.valueOf(activeChar.getY()),
+                        " ",
+                        String.valueOf(activeChar.getZ()),
+                        "\" width=115 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
+                        "<center><button value=\"Back\" action=\"bypass -h admin_current_player\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center>" +
+                        "</body></html>"
+                        );
+		adminReply.setHtml(replyMSG);
 		activeChar.sendPacket(adminReply);
 	}
 	

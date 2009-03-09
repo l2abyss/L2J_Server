@@ -19,47 +19,49 @@ import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * @author Advi
- *
+ * 
  */
 public class ItemLogFormatter extends Formatter
 {
 	private static final String CRLF = "\r\n";
 	private SimpleDateFormat dateFmt = new SimpleDateFormat("dd MMM H:mm:ss");
-
+	
 	@Override
 	public String format(LogRecord record)
 	{
-        TextBuilder output = new TextBuilder();
-		output.append('[');
-		output.append(dateFmt.format(new Date(record.getMillis())));
-		output.append(']');
-		output.append(' ');
-		output.append(record.getMessage());
+		final Object[] params = record.getParameters();
+		final StringBuilder output = StringUtil.startAppend(30 + record.getMessage().length()
+		        + params.length * 50, "[", dateFmt.format(new Date(record.getMillis())), "] ", record.getMessage());
+		
 		for (Object p : record.getParameters())
 		{
-			if (p == null) continue;
-			output.append(',');
-			output.append(' ');
+			if (p == null)
+				continue;
+			output.append(", ");
 			if (p instanceof L2ItemInstance)
 			{
-				L2ItemInstance item = (L2ItemInstance)p;
-				output.append("item " + item.getObjectId() + ":");
-				if (item.getEnchantLevel() > 0) output.append("+" + item.getEnchantLevel() + " ");
-				output.append(item.getItem().getName());
-				output.append("(" + item.getCount() + ")");
+				L2ItemInstance item = (L2ItemInstance) p;
+				StringUtil.append(output, "item ", String.valueOf(item.getObjectId()), ":");
+				if (item.getEnchantLevel() > 0)
+				{
+					StringUtil.append(output, "+", String.valueOf(item.getEnchantLevel()), " ");
+				}
+				
+				StringUtil.append(output, item.getItem().getName(), "(", String.valueOf(item.getCount()), ")");
 			}
-//			else if (p instanceof L2PcInstance)
-//				output.append(((L2PcInstance)p).getName());
-			else output.append(p.toString()/* + ":" + ((L2Object)p).getObjectId()*/);
+			// else if (p instanceof L2PcInstance)
+			// output.append(((L2PcInstance)p).getName());
+			else
+				output.append(p.toString()/* + ":" + ((L2Object)p).getObjectId() */);
 		}
 		output.append(CRLF);
-
+		
 		return output.toString();
 	}
-
+	
 }

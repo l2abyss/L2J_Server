@@ -16,7 +16,6 @@ package net.sf.l2j.gameserver.model.actor.instance;
 
 import java.util.StringTokenizer;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.cache.HtmCache;
@@ -27,6 +26,7 @@ import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * Dawn/Dusk Seven Signs Priest Instance
@@ -566,21 +566,35 @@ public class L2SignsPriestInstance extends L2FolkInstance
                     showChatWindow(player, val, fileSuffix, false);
                     break;
                 case 20: // Seal Status (for when joining a cabal)
-                    TextBuilder contentBuffer = new TextBuilder("<html><body><font color=\"LEVEL\">[ Seal Status ]</font><br>");
+                    final StringBuilder contentBuffer = StringUtil.startAppend(
+                            200 + 4 * 50,
+                            "<html><body><font color=\"LEVEL\">[ Seal Status ]</font><br>"
+                            );
 
-                    for (int i = 1; i < 4; i++)
-                    {
+                    for (int i = 1; i < 4; i++) {
                         int sealOwner = SevenSigns.getInstance().getSealOwner(i);
 
-                        if (sealOwner != SevenSigns.CABAL_NULL) contentBuffer.append("["
-                            + SevenSigns.getSealName(i, false) + ": "
-                            + SevenSigns.getCabalName(sealOwner) + "]<br>");
-                        else contentBuffer.append("[" + SevenSigns.getSealName(i, false)
-                            + ": Nothingness]<br>");
+                        if (sealOwner != SevenSigns.CABAL_NULL) {
+                            StringUtil.append(contentBuffer,
+                                    "[",
+                                    SevenSigns.getSealName(i, false),
+                                    ": ",
+                                    SevenSigns.getCabalName(sealOwner),
+                                    "]<br>");
+                        } else {
+                            StringUtil.append(contentBuffer,
+                                    "[",
+                                    SevenSigns.getSealName(i, false),
+                                    ": Nothingness]<br>");
+                        }
                     }
 
-                    contentBuffer.append("<a action=\"bypass -h npc_" + getObjectId() + "_SevenSigns 3 "
-                        + cabal + "\">Go back.</a></body></html>");
+                    StringUtil.append(contentBuffer,
+                            "<a action=\"bypass -h npc_",
+                            String.valueOf(getObjectId()),
+                            "_SevenSigns 3 ",
+                            String.valueOf(cabal),
+                            "\">Go back.</a></body></html>");
 
                     NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
                     html.setHtml(contentBuffer.toString());

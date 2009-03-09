@@ -24,10 +24,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-import javolution.text.TextBuilder;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.network.L2GameClient;
 
+import net.sf.l2j.gameserver.util.StringUtil;
 import org.mmocore.network.ReceivablePacket;
 
 /**
@@ -377,93 +377,120 @@ public class ThreadPoolManager
 	/**
 	 *
 	 */
-	public String getPacketStats()
-	{
-		TextBuilder tb = new TextBuilder();
-		ThreadFactory tf = _generalPacketsThreadPool.getThreadFactory();
-		if (tf instanceof PriorityThreadFactory)
-		{
-			tb.append("General Packet Thread Pool:\r\n");
-			tb.append("Tasks in the queue: "+_generalPacketsThreadPool.getQueue().size()+"\r\n");
-			tb.append("Showing threads stack trace:\r\n");
-			PriorityThreadFactory ptf = (PriorityThreadFactory) tf;
-			int count = ptf.getGroup().activeCount();
-			Thread[] threads = new Thread[count+2];
-			ptf.getGroup().enumerate(threads);
-			tb.append("There should be "+count+" Threads\r\n");
-			for(Thread t : threads)
-			{
-				if(t == null)
-					continue;
-				tb.append(t.getName()+"\r\n");
-				for(StackTraceElement ste :t.getStackTrace())
-				{
-					tb.append(ste.toString());
-					tb.append("\r\n");
-				}
-			}
-		}
-		tb.append("Packet Tp stack traces printed.\r\n");
-		return tb.toString();
+	public String getPacketStats() {
+            final StringBuilder sb = new StringBuilder(1000);
+            ThreadFactory tf = _generalPacketsThreadPool.getThreadFactory();
+            if (tf instanceof PriorityThreadFactory) {
+                PriorityThreadFactory ptf = (PriorityThreadFactory) tf;
+                int count = ptf.getGroup().activeCount();
+                Thread[] threads = new Thread[count+2];
+                ptf.getGroup().enumerate(threads);
+                StringUtil.append(sb,
+                        "General Packet Thread Pool:\r\n" +
+                        "Tasks in the queue: ",
+                        String.valueOf(_generalPacketsThreadPool.getQueue().size()),
+                        "\r\n" +
+                        "Showing threads stack trace:\r\n" +
+                        "There should be ",
+                        String.valueOf(count),
+                        " Threads\r\n");
+                for(Thread t : threads) {
+                        if(t == null)
+                                continue;
+
+                        StringUtil.append(sb,
+                                t.getName(),
+                                "\r\n");
+                        for(StackTraceElement ste :t.getStackTrace()) {
+                            StringUtil.append(sb,
+                                    ste.toString(),
+                                    "\r\n");
+                        }
+                }
+            }
+
+            sb.append("Packet Tp stack traces printed.\r\n");
+            
+            return sb.toString();
 	}
 
-	public String getIOPacketStats()
-	{
-		TextBuilder tb = new TextBuilder();
-		ThreadFactory tf = _ioPacketsThreadPool.getThreadFactory();
-		if (tf instanceof PriorityThreadFactory)
-		{
-			tb.append("I/O Packet Thread Pool:\r\n");
-			tb.append("Tasks in the queue: "+_ioPacketsThreadPool.getQueue().size()+"\r\n");
-			tb.append("Showing threads stack trace:\r\n");
-			PriorityThreadFactory ptf = (PriorityThreadFactory) tf;
-			int count = ptf.getGroup().activeCount();
-			Thread[] threads = new Thread[count+2];
-			ptf.getGroup().enumerate(threads);
-			tb.append("There should be "+count+" Threads\r\n");
-			for(Thread t : threads)
-			{
-				if(t == null)
-					continue;
-				tb.append(t.getName()+"\r\n");
-				for(StackTraceElement ste :t.getStackTrace())
-				{
-					tb.append(ste.toString());
-					tb.append("\r\n");
-				}
-			}
-		}
-		tb.append("Packet Tp stack traces printed.\r\n");
-		return tb.toString();
+	public String getIOPacketStats() {
+            final StringBuilder sb = new StringBuilder(1000);
+            ThreadFactory tf = _ioPacketsThreadPool.getThreadFactory();
+
+            if (tf instanceof PriorityThreadFactory) {
+                PriorityThreadFactory ptf = (PriorityThreadFactory) tf;
+                int count = ptf.getGroup().activeCount();
+                Thread[] threads = new Thread[count+2];
+                ptf.getGroup().enumerate(threads);
+                StringUtil.append(sb,
+                        "I/O Packet Thread Pool:\r\n" +
+                        "Tasks in the queue: ",
+                        String.valueOf(_ioPacketsThreadPool.getQueue().size()),
+                        "\r\n" +
+                        "Showing threads stack trace:\r\n" +
+                        "There should be ",
+                        String.valueOf(count),
+                        " Threads\r\n");
+
+                for(Thread t : threads) {
+                        if(t == null)
+                                continue;
+
+                        StringUtil.append(sb,
+                                t.getName(),
+                                "\r\n");
+                        
+                        for(StackTraceElement ste :t.getStackTrace()) {
+                            StringUtil.append(sb,
+                                    ste.toString(),
+                                    "\r\n");
+                        }
+                }
+            }
+
+            sb.append("Packet Tp stack traces printed.\r\n");
+
+            return sb.toString();
 	}
 
-	public String getGeneralStats()
-	{
-		TextBuilder tb = new TextBuilder();
-		ThreadFactory tf = _generalThreadPool.getThreadFactory();
-		if (tf instanceof PriorityThreadFactory)
-		{
-			tb.append("General Thread Pool:\r\n");
-			tb.append("Tasks in the queue: "+_generalThreadPool.getQueue().size()+"\r\n");
-			tb.append("Showing threads stack trace:\r\n");
-			PriorityThreadFactory ptf = (PriorityThreadFactory) tf;
-			int count = ptf.getGroup().activeCount();
-			Thread[] threads = new Thread[count+2];
-			ptf.getGroup().enumerate(threads);
-			tb.append("There should be "+count+" Threads\r\n");
-			for(Thread t : threads)
-			{
-				if(t == null)
-					continue;
-				tb.append(t.getName()+"\r\n");
-				for(StackTraceElement ste :t.getStackTrace())
-				{
-					tb.append(ste.toString());
-					tb.append("\r\n");
-				}
-			}
-		}
-		tb.append("Packet Tp stack traces printed.\r\n");
-		return tb.toString();
+	public String getGeneralStats() {
+            final StringBuilder sb = new StringBuilder(1000);
+            ThreadFactory tf = _generalThreadPool.getThreadFactory();
+
+            if (tf instanceof PriorityThreadFactory) {
+                    PriorityThreadFactory ptf = (PriorityThreadFactory) tf;
+                    int count = ptf.getGroup().activeCount();
+                    Thread[] threads = new Thread[count+2];
+                    ptf.getGroup().enumerate(threads);
+                    StringUtil.append(sb,
+                            "General Thread Pool:\r\n" +
+                            "Tasks in the queue: ",
+                            String.valueOf(_generalThreadPool.getQueue().size()),
+                            "\r\n" +
+                            "Showing threads stack trace:\r\n" +
+                            "There should be ",
+                            String.valueOf(count),
+                            " Threads\r\n");
+                    
+                    for(Thread t : threads) {
+                            if(t == null)
+                                    continue;
+
+                            StringUtil.append(sb,
+                                    t.getName(),
+                                    "\r\n");
+
+                            for(StackTraceElement ste :t.getStackTrace()) {
+                                StringUtil.append(sb,
+                                        ste.toString(),
+                                        "\r\n");
+                            }
+                    }
+            }
+
+            sb.append("Packet Tp stack traces printed.\r\n");
+            
+            return sb.toString();
 	}
 }
