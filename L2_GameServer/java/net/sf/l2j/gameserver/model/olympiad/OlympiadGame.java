@@ -266,6 +266,11 @@ class OlympiadGame
 					ExAutoSoulShot atk = new ExAutoSoulShot(itemId, 0);
 					player.sendPacket(atk);
 				}
+				
+				// Discharge any active shots
+				player.getActiveWeaponInstance().setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
+				player.getActiveWeaponInstance().setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
+				
 				player.sendSkillList();
 			}
 			catch (Exception e)
