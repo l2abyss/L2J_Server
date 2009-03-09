@@ -3039,7 +3039,16 @@ public final class L2PcInstance extends L2PlayableInstance
 	{
 		if (count > 0)
 		{
-			L2ItemInstance item = ItemTable.getInstance().createDummyItem(itemId);
+			L2ItemInstance item = null;
+			if(ItemTable.getInstance().getTemplate(itemId) != null)
+			{
+				item = ItemTable.getInstance().createDummyItem(itemId);
+			}
+			else
+			{
+				_log.log(Level.SEVERE, "Item doesn't exist so cannot be added. Item ID: " + itemId);
+				return;
+			}
 			// Sends message to client if requested
 			if (sendMessage && ((!isCastingNow() && item.getItemType() == L2EtcItemType.HERB)
 					|| item.getItemType() != L2EtcItemType.HERB))
