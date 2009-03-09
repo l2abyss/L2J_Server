@@ -607,7 +607,11 @@ public final class QuestState
 		if (itemId == 57)
 			getPlayer().reduceAdena("Quest", count, getPlayer(), true);
 		else
+		{
+			if (item.isEquipped())
+				getPlayer().getInventory().unEquipItemInBodySlotAndRecord(item.getItem().getBodyPart());
 			getPlayer().destroyItemByItemId("Quest", itemId, count, getPlayer(), true);
+		}
 	}
 	
 	/**
