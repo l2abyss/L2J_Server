@@ -43,7 +43,7 @@ public final class L2ClassMasterInstance extends L2FolkInstance
                 49, 53};
         private static final int[] FIRST_CLASS_IDS = {1, 4, 7, 11, 15, 19, 22,
                 26, 29, 32, 35, 39, 42, 45, 47, 50, 54, 56};
-	private static final int[] SECOND_CLASS_IDS = {2, 3, 5, 6, 8, 9, 12, 13,
+	private static final int[] SECOND_CLASS_IDS = {2, 3, 5, 6, 9, 8, 12, 13,
                 14, 16, 17, 20, 21, 23, 24, 27, 28, 30, 33, 34, 36, 37, 40, 41,
                 43, 46, 48, 51, 52, 55, 57};
         private static final int[] THIRD_CLASS_IDS = {88, 89, 90, 91, 92, 93,
