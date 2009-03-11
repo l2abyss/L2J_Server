@@ -1410,7 +1410,12 @@ public class L2Clan
 
 	            if(pledgeType != -1)
 	            {
-	            	setReputationScore(getReputationScore() - 2500, true);
+	            	// Royal Guard 5000 points per each
+	                // Order of Knights 10000 points per each
+	            	if (pledgeType < L2Clan.SUBUNIT_KNIGHT1)
+	            		setReputationScore(getReputationScore() - 5000, true);
+	            	else
+	            		setReputationScore(getReputationScore() - 10000, true);
 	            }
 
 	            if (Config.DEBUG) _log.fine("New sub_clan saved in db: "+getClanId()+"; "+pledgeType);
