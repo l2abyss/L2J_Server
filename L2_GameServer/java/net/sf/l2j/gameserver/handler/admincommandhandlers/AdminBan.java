@@ -259,7 +259,7 @@ public class AdminBan implements IAdminCommandHandler {
 			statement.setInt(2, -249645);
 			statement.setInt(3, -2984);
 			statement.setInt(4, L2PcInstance.PunishLevel.JAIL.value());
-			statement.setLong(5, delay * 60000L);
+			statement.setLong(5, (delay > 0 ? delay * 60000L : 0));
 			statement.setString(6, name);
 			
 			statement.execute();
