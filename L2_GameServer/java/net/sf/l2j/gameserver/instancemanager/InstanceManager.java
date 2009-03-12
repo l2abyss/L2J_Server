@@ -66,6 +66,7 @@ public class InstanceManager
 			temp.removeNpcs();
 			temp.removePlayers();
 			temp.removeDoors();
+			temp.cancelTimer();
 			_instanceList.remove(instanceid);
 		}
 	}

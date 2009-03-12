@@ -463,6 +463,11 @@ public class Instance
 			_CheckTimeUpTask = ThreadPoolManager.getInstance().scheduleGeneral(new TimeUp(), interval);
 	}
 
+	public void cancelTimer()
+	{
+		_CheckTimeUpTask.cancel(true);
+	}
+
 	public class CheckTimeUp implements Runnable
 	{
 		private int	_remaining;
