@@ -81,7 +81,7 @@ public class AdminSummon implements IAdminCommandHandler
 		}
 		else 
 		{
-			subCommand = "admin_spawn";
+			subCommand = "admin_spawn_once";
 			if (!AdminCommandAccessRights.getInstance().hasAccess(subCommand, activeChar.getAccessLevel()))
 			{
 				activeChar.sendMessage("You don't have the access right to use this command!");
