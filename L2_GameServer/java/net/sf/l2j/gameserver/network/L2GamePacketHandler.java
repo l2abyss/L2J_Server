@@ -873,6 +873,9 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
 		                    case 0x58:
 		                    	// TODO: implement me (just disabling warnings for this packet)
 		                    	break;
+		                    case 0x23: 
+		                     	msg = new RequestExRemoveItemAttribute(); 
+		                     	break; 
 		                    default: 
 		                     	this.printDebugDoubleOpcode(opcode, id2, buf, state, client);
 		                    	break;

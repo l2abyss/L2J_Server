@@ -192,6 +192,21 @@ public class PcInventory extends Inventory
 
 		return list.toArray(new L2ItemInstance[list.size()]);
 	}
+	
+	/** 
+	 * Get all element items 
+	 * @return 
+	 */ 
+	public L2ItemInstance[] getElementItems() 
+	{
+		List<L2ItemInstance> list = new FastList<L2ItemInstance>(); 
+		for (L2ItemInstance item : _items) 
+		{
+		if (item != null && item.getElementals() != null) 
+			list.add(item); 
+		}
+		return list.toArray(new L2ItemInstance[list.size()]); 
+	} 
 
 	/**
 	 * Returns the list of items in inventory available for transaction adjusted by tradeList

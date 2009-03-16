@@ -69,6 +69,7 @@ import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.EtcStatusUpdate;
+import net.sf.l2j.gameserver.network.serverpackets.ExShowBaseAttributeCancelWindow;
 import net.sf.l2j.gameserver.network.serverpackets.ExShowVariationCancelWindow;
 import net.sf.l2j.gameserver.network.serverpackets.ExShowVariationMakeWindow;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
@@ -1282,6 +1283,10 @@ public class L2NpcInstance extends L2Character
 				{
 					DimensionalRiftManager.getInstance().handleCheat(player, this);
 				}
+			}
+			else if (command.startsWith("ReleaseAttribute"))
+			{
+				player.sendPacket(new ExShowBaseAttributeCancelWindow(player));
 			}
 		}
 	}
