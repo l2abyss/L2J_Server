@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.model;
 
 import javolution.util.FastMap;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.handler.SkillHandler;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillLaunched;
@@ -116,7 +117,7 @@ public class ChanceSkillList extends FastMap<L2Skill, ChanceCondition>
 			{
 				if(skill.triggerAnotherSkill()) //should we use this skill or this skill is just referring to another one ...
 			    {
-					skill = _owner._skills.get(skill.getTriggeredId());
+					skill = SkillTable.getInstance().getInfo(skill.getTriggeredId(), skill.getTriggeredLevel());
 			        if(skill == null)
 			        	return;
 			    } 
