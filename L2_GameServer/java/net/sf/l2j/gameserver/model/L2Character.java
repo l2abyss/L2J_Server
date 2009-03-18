@@ -5000,12 +5000,12 @@ public abstract class L2Character extends L2Object
 			sendDamageMessage(target, damage, false, crit, miss);
 
 			// If L2Character target is a L2PcInstance, send a system message
-			/*if (target instanceof L2PcInstance)
+			if (target instanceof L2PcInstance)
 			{
 				L2PcInstance enemy = (L2PcInstance)target;
 				enemy.getAI().clientStartAutoAttack();
 
-				if (shld && 100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100))
+				/*if (shld && 100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100))
 				{
 		           if (100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100))
 		           {  
@@ -5014,9 +5014,9 @@ public abstract class L2Character extends L2Object
 		           }
 		            else
 		              enemy.sendPacket(new SystemMessage(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL)); 
-				}
+				}*/
 			}
-            else */if (target instanceof L2Summon)
+            else if (target instanceof L2Summon)
             {
                 L2Summon activeSummon = (L2Summon)target;
                 L2PcInstance owner = activeSummon.getOwner();
