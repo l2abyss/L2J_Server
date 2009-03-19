@@ -486,11 +486,7 @@ public final class Formulas
         public void calc(Env env)
 		{
 			L2Character p = env.player;
-			if(p instanceof L2Summon)
-				env.value = 8;
-			else if (p instanceof L2PcInstance && p.getActiveWeaponInstance() == null)
-				env.value = 8;
-			else
+			if (p instanceof L2PcInstance && p.getActiveWeaponInstance() != null)
 				env.value *= WITbonus[p.getWIT()];
 		}
 	}
