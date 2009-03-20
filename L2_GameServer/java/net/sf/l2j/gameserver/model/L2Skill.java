@@ -380,6 +380,8 @@ public abstract class L2Skill
     
 	private boolean _isAdvancedFlag;
 
+	private boolean _isDisabled;
+
     protected L2Skill(StatsSet set)
     {
         _id = set.getInteger("skill_id");
@@ -617,6 +619,15 @@ public abstract class L2Skill
         return _isSuicideAttack;
     }
 
+    public final void setIsDisabled (boolean val)
+    {
+    	_isDisabled = val;
+    }
+    
+    public final boolean isDisabled()
+    {
+    	return _isDisabled;
+    }
     /**
      * Return the power of the skill.<BR><BR>
      */
