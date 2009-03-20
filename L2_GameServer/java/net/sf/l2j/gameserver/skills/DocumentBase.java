@@ -562,6 +562,11 @@ abstract class DocumentBase
                 }
                 cond = joinAnd(cond, new ConditionTargetUsesWeaponKind(mask));
             }
+            else if ("npcId".equalsIgnoreCase(a.getNodeName()))
+            {
+                int skill_id = Integer.decode(getValue(a.getNodeValue(), template));
+                cond = joinAnd(cond, new ConditionTargetNpcId(skill_id));
+            }
         }
         if (cond == null) _log.severe("Unrecognized <target> condition in " + _file);
         return cond;

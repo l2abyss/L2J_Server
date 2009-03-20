@@ -84,6 +84,7 @@ public class SkillHandler
 		registerSkillHandler(new Trap());
 		registerSkillHandler(new GiveSp());
 		registerSkillHandler(new InstantJump());
+		registerSkillHandler(new Dummy());
 		_log.config("SkillHandler: Loaded " + _datatable.size() + " handlers.");
 	}
 	

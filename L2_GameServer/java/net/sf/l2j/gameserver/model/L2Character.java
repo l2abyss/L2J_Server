@@ -5719,7 +5719,7 @@ public abstract class L2Character extends L2Object
 				{
 					if (!Util.checkIfInRange(escapeRange, this, target, true))
 						continue;
-					if(skill.isOffensive())
+					if(skill.isOffensive() && !skill.isNeutral())
 					{
 						if(this instanceof L2PcInstance)
 						{
@@ -5976,7 +5976,7 @@ public abstract class L2Character extends L2Object
 				getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, getTarget());
 		}
 
-        if (skill.isOffensive() && !(skill.getSkillType() == L2SkillType.UNLOCK) && !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK))
+        if (skill.isOffensive() && !skill.isNeutral() && !(skill.getSkillType() == L2SkillType.UNLOCK) && !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK))
             getAI().clientStartAutoAttack();
 
         // Notify the AI of the L2Character with EVT_FINISH_CASTING
@@ -6213,7 +6213,11 @@ public abstract class L2Character extends L2Object
 					// EVT_ATTACKED and PvPStatus
 					if (target instanceof L2Character)
 					{
-						if (skill.isOffensive())
+						if (skill.isNeutral())
+						{
+							// no flags
+						}
+						else if (skill.isOffensive())
 						{
 							if (target instanceof L2PcInstance || target instanceof L2Summon || target instanceof L2Trap)
 							{

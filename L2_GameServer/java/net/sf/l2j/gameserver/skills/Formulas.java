@@ -1893,7 +1893,7 @@ public final class Formulas
 		// TODO: CHECK/FIX THIS FORMULA UP!!
 		L2SkillType type = skill.getSkillType();
 		double defence = 0;
-		if (skill.isActive() && skill.isOffensive()) 
+		if (skill.isActive() && skill.isOffensive() && !skill.isNeutral()) 
 			defence = target.getMDef(actor, skill);
 		
 		double attack = 2 * actor.getMAtk(target, skill) * calcSkillVulnerability(target, skill);

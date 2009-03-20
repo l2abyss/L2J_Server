@@ -301,6 +301,7 @@ public abstract class L2Skill
     private final int _magicLevel;
     private final int _levelDepend;
 
+    private final boolean _isNeutral;
     // Effecting area of the skill, in radius.
     // The radius center varies according to the _targetType:
     // "caster" if targetType = AURA/PARTY/CLAN or "target" if targetType = AREA
@@ -313,7 +314,6 @@ public abstract class L2Skill
     private final int _effectId;
     private final int _effectLvl; // normal effect level
     
-
     private final boolean _ispotion;
     private final int _element;
     private final int _savevs;
@@ -342,7 +342,6 @@ public abstract class L2Skill
     private final int _triggeredLevel;
 	private final boolean _bestow;
 	private final boolean _bestowed;
-	private final boolean _triggerAnotherSkill;
     
     private final int _soulMaxConsume;
     private final int _soulConsume;
@@ -426,7 +425,7 @@ public abstract class L2Skill
         _maxNegatedEffects = set.getInteger("maxNegated", 0);
         
         _killByDOT = set.getBool("killByDOT", false);
-        
+        _isNeutral = set.getBool("neutral",false);
         _hitTime = set.getInteger("hitTime", 0);
         _coolTime = set.getInteger("coolTime", 0);
         _isDebuff = set.getBool("isDebuff", false);
@@ -481,7 +480,6 @@ public abstract class L2Skill
         _triggeredLevel = set.getInteger("triggeredLevel", 0);
         _bestow = set.getBool("bestowTriggered", false);
         _bestowed = set.getBool("bestowed", false);
-        _triggerAnotherSkill = set.getBool("triggerAnotherSkill",false);
       
         if (_operateType == SkillOpType.OP_CHANCE)
             _chanceCondition = ChanceCondition.parse(set);
@@ -815,7 +813,7 @@ public abstract class L2Skill
    
 	public boolean triggerAnotherSkill()
 	{
-		return _triggerAnotherSkill;
+		return _triggeredId > 1;
 	}
     
     /**
@@ -1157,6 +1155,11 @@ public abstract class L2Skill
         return _isOffensive;
     }
 
+    public final boolean isNeutral()
+    {
+        return _isNeutral;
+    }
+    
     public final boolean isHeroSkill()
     {
         return _isHeroSkill;
@@ -1524,6 +1527,19 @@ public abstract class L2Skill
                 // Go through the L2Character _knownList
                 Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
                 //synchronized (activeChar.getKnownList().getKnownObjects())
+                if (getSkillType() == L2SkillType.DUMMY)
+                {
+                	for (L2Object obj : objs)
+                	{
+                		if (!(obj == activeChar || obj instanceof L2NpcInstance || obj instanceof L2Attackable))
+                			continue;
+                		if (!Util.checkIfInRange(radius, activeChar, obj, true))
+                			continue;
+                		targetList.add((L2Character) obj);
+                	}
+                	targetList.add(activeChar);
+                }
+                else
 				{
 					for (L2Object obj : objs)
 					{
