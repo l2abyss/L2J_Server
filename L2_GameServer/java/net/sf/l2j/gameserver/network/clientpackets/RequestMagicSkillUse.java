@@ -66,8 +66,13 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 		L2Skill skill = SkillTable.getInstance().getInfo(_magicId, level);
 
 		// Check the validity of the skill
-		if (skill != null && !skill.isDisabled())
+		if (skill != null)
 		{
+			if (activeChar.isTransformed() && !activeChar.containsAllowedTransformSkill(skill.getId()))
+			{
+				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
 			// _log.fine("	skill:"+skill.getName() + " level:"+skill.getLevel() + " passive:"+skill.isPassive());
 			// _log.fine("	range:"+skill.getCastRange()+" targettype:"+skill.getTargetType()+" optype:"+skill.getOperateType()+" power:"+skill.getPower());
 			// _log.fine("	reusedelay:"+skill.getReuseDelay()+" hittime:"+skill.getHitTime());
@@ -83,8 +88,7 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 		else
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
-			if (skill == null)
-				_log.warning("No skill found!!");
+			_log.warning("No skill found!!");
 		}
 	}
 

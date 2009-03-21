@@ -655,6 +655,7 @@ public final class L2PcInstance extends L2PlayableInstance
     private int _fishy = 0;
     private int _fishz = 0;
 
+    private int[] _transformAllowedSkills = {};
     private ScheduledFuture<?> _taskRentPet;
     private ScheduledFuture<?> _taskWater;
 
@@ -4505,6 +4506,8 @@ public final class L2PcInstance extends L2PlayableInstance
         
         _transformation = transformation;
         transformation.onTransform();
+        sendSkillList();
+        sendPacket(new SkillCoolTime(this));
         broadcastUserInfo();
     }
     
@@ -4512,12 +4515,12 @@ public final class L2PcInstance extends L2PlayableInstance
     {
         if (this.isTransformed())
         {
-            restoreSkills();
-            regiveTemporarySkills();
+        	setTransformAllowedSkills(new int[]{});
             _transformation.onUntransform();
             _transformation = null;
             stopEffects(L2EffectType.TRANSFORMATION);
             broadcastUserInfo();
+            sendSkillList();
             sendPacket(new SkillCoolTime(this));
         }
     }
@@ -9466,7 +9469,7 @@ public final class L2PcInstance extends L2PlayableInstance
     				continue; // Fake skills to change base stats  
     			if (s.bestowed())
     				continue;
-    			if (s.isDisabled())
+    			if ((!this.containsAllowedTransformSkill(s.getId()) && !s.allowOnTransform()) && isTransformed())
     				continue;
     			
     			sl.addSkill(s.getId(), s.getLevel(), s.isPassive());  
@@ -11980,5 +11983,22 @@ public final class L2PcInstance extends L2PlayableInstance
 				sendPacket(sm);
     		}
     	}
+    }
+    
+    public void setTransformAllowedSkills(int[] ids)
+    {
+    	_transformAllowedSkills = ids;
+    }
+    
+    public boolean containsAllowedTransformSkill(int id)
+    {
+    	for (int i = 0; i < _transformAllowedSkills.length; i++)
+    	{
+    		if (_transformAllowedSkills[i] == id)
+    		{
+    			return true;
+    		}
+    	}
+    	return false;
     }
 }

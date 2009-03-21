@@ -284,7 +284,6 @@ public class CursedWeapon
 	
 	public void cursedOnLogin()
 	{
-	    disableAllSkills();
 	    doTransform();
         giveSkill();
         
@@ -323,7 +322,7 @@ public class CursedWeapon
 		_player.addSkill(skill, false);
 		skill = SkillTable.getInstance().getInfo(3631, 1);
 		_player.addSkill(skill, false);
-
+		_player.setTransformAllowedSkills(new int[]{3630,3631});
 		if (Config.DEBUG)
 			_log.info("Player "+_player.getName() +" has been awarded with skill "+skill);
 		_player.sendSkillList();
@@ -367,32 +366,9 @@ public class CursedWeapon
             TransformationManager.getInstance().transformPlayer(_player.transformId(), _player, Long.MAX_VALUE);
             return;
 		}
-		else
-		{
-	        for (L2Skill sk : _player.getAllSkills())
-	        {
-	        	if (sk != null && !sk.isPassive())
-	            _player.addSkill(sk, false);
-	        }
-		}
-		_player.regiveTemporarySkills();
 		_player.sendSkillList();
 	}
 	
-	public void disableAllSkills()
-	{
-		if (_player == null || _player.getAllSkills().length == 0)
-			return;
-		
-        for (L2Skill sk : _player.getAllSkills())
-        {
-        	if (sk != null && !sk.isPassive())
-        		_player.removeSkill(sk, false);
-        }
-        _player.sendSkillList();
-	}
-
-
 	// =========================================================
 	// Public
 	public void reActivate()
@@ -454,7 +430,6 @@ public class CursedWeapon
 			_player.getParty().removePartyMember(_player);
 
 		// Disable All Skills
-        disableAllSkills();
 		// Do Transform
 		doTransform();
 		// Add skill
