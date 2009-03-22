@@ -92,6 +92,7 @@ public class ItemHandler
 		registerItemHandler(new MercTicket());
 		registerItemHandler(new FishShots());
 		registerItemHandler(new ExtractableItems());
+		registerItemHandler(new PetFood());
 		registerItemHandler(new SpecialXMas());
 		registerItemHandler(new SummonItems());
 		registerItemHandler(new BeastSpice());

@@ -45,6 +45,9 @@ public final class Ride extends L2GameServerPacket
             case 12526: // Wind
             case 12527: // Star
             case 12528: // Twilight
+            case 16038: // red strider of wind
+			case 16039: // red strider of star
+			case 16040: // red strider of dusk
                 _rideType = 1;
                 break;
             case 12621: // Wyvern

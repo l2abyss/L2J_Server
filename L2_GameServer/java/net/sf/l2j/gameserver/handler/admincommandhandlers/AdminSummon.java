@@ -36,7 +36,6 @@ public class AdminSummon implements IAdminCommandHandler
 	/**
 	 * @see net.sf.l2j.gameserver.handler.IAdminCommandHandler#getAdminCommandList()
 	 */
-	@Override
 	public String[] getAdminCommandList()
 	{
 		
@@ -46,7 +45,6 @@ public class AdminSummon implements IAdminCommandHandler
 	/**
 	 * @see net.sf.l2j.gameserver.handler.IAdminCommandHandler#useAdminCommand(java.lang.String, net.sf.l2j.gameserver.model.actor.instance.L2PcInstance)
 	 */
-	@Override
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
 		int id;

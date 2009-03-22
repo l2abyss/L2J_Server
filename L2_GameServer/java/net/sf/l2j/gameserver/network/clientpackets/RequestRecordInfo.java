@@ -30,9 +30,9 @@ import net.sf.l2j.gameserver.model.actor.instance.L2StaticObjectInstance;
 import net.sf.l2j.gameserver.network.serverpackets.CharInfo;
 import net.sf.l2j.gameserver.network.serverpackets.GetOnVehicle;
 import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
-import net.sf.l2j.gameserver.network.serverpackets.PetInfo;
 import net.sf.l2j.gameserver.network.serverpackets.PetItemList;
 import net.sf.l2j.gameserver.network.serverpackets.RelationChanged;
+import net.sf.l2j.gameserver.network.serverpackets.ServerObjectInfo;
 import net.sf.l2j.gameserver.network.serverpackets.SpawnItem;
 import net.sf.l2j.gameserver.network.serverpackets.StaticObject;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
@@ -89,7 +89,12 @@ public class RequestRecordInfo extends L2GameClientPacket
 					else if (object instanceof L2StaticObjectInstance)
 						_activeChar.sendPacket(new StaticObject((L2StaticObjectInstance) object));
 					else if (object instanceof L2NpcInstance)
-						_activeChar.sendPacket(new NpcInfo((L2NpcInstance) object, _activeChar));
+					{
+						if (((L2NpcInstance) object).getRunSpeed() == 0)
+							_activeChar.sendPacket(new ServerObjectInfo((L2NpcInstance) object, _activeChar));
+						else
+							_activeChar.sendPacket(new NpcInfo((L2NpcInstance) object, _activeChar));
+					}
 					else if (object instanceof L2Summon)
 					{
 						L2Summon summon = (L2Summon) object;
@@ -97,13 +102,13 @@ public class RequestRecordInfo extends L2GameClientPacket
 						// Check if the L2PcInstance is the owner of the Pet
 						if (_activeChar.equals(summon.getOwner()))
 						{
-							_activeChar.sendPacket(new PetInfo(summon));
+							summon.broadcastStatusUpdate();
 							
 							if (summon instanceof L2PetInstance)
 								_activeChar.sendPacket(new PetItemList((L2PetInstance) summon));
 						}
 						else
-							_activeChar.sendPacket(new NpcInfo(summon, _activeChar));
+							_activeChar.sendPacket(new NpcInfo(summon, _activeChar,1));
 						
 						// The PetInfo packet wipes the PartySpelled (list of
 						// active spells' icons). Re-add them

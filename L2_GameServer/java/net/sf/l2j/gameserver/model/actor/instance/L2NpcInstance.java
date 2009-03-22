@@ -78,6 +78,7 @@ import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.RadarControl;
+import net.sf.l2j.gameserver.network.serverpackets.ServerObjectInfo;
 import net.sf.l2j.gameserver.network.serverpackets.SocialAction;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
@@ -368,7 +369,12 @@ public class L2NpcInstance extends L2Character
 		//synchronized (getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
-				player.sendPacket(new NpcInfo(this, player));
+			{
+				if (getRunSpeed() == 0)
+					player.sendPacket(new ServerObjectInfo(this, player));
+				else
+					player.sendPacket(new NpcInfo(this, player));
+			}
 		}
 	}
 	

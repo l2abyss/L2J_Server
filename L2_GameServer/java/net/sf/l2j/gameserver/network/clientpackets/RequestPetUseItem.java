@@ -24,7 +24,6 @@ import net.sf.l2j.gameserver.model.L2PetDataTable;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.network.serverpackets.PetInfo;
 import net.sf.l2j.gameserver.network.serverpackets.PetItemList;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.item.L2ArmorType;
@@ -81,7 +80,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		
         if (!item.isEquipped())
         {
-        	if ( !item.getItem().checkCondition(activeChar, activeChar))
+        	if ( !item.getItem().checkCondition(pet, pet))
         		return;
         }
         
@@ -102,32 +101,8 @@ public final class RequestPetUseItem extends L2GameClientPacket
 				useItem(pet, item, activeChar);
 				return;
 			}
-            else if (L2PetDataTable.isGreatWolf(pet.getNpcId()) && // Greatwolf
-                    (item.getItem().isForGreatWolf()||item.getItem().isForWolf()))
-            {
-                useItem(pet, item, activeChar);
-                return;
-            }
-            else if (L2PetDataTable.isWGreatWolf(pet.getNpcId()) && // White Greatwolf
-            		(item.getItem().isForGreatWolf()||item.getItem().isForWolf()))
-            {
-                useItem(pet, item, activeChar);
-                return;
-            }
-            else if (L2PetDataTable.isBlackWolf(pet.getNpcId()) && // Blackwolf
-            		(item.getItem().isForGreatWolf()||item.getItem().isForWolf()))
-            {
-                useItem(pet, item, activeChar);
-                return;
-            }
-            else if (L2PetDataTable.isFenrirWolf(pet.getNpcId()) && // Fenrir
-            		(item.getItem().isForGreatWolf()||item.getItem().isForWolf()))
-            {
-                useItem(pet, item, activeChar);
-                return;
-            }
-            else if (L2PetDataTable.isWFenrirWolf(pet.getNpcId()) && // white fenrir
-            		(item.getItem().isForGreatWolf()||item.getItem().isForWolf()))
+            else if (L2PetDataTable.isEvolvedWolf(pet.getNpcId()) && // evolved wolf
+                    (item.getItem().isForEvolvedWolf()||item.getItem().isForWolf()))
             {
                 useItem(pet, item, activeChar);
                 return;
@@ -158,7 +133,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
             }
 			else
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.ITEM_NOT_FOR_PETS));
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
                 return;
 			}
 		}
@@ -166,62 +141,47 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		{
 			if (L2PetDataTable.isWolf(pet.getNpcId()) && L2PetDataTable.isWolfFood(itemId))
 			{
-				feed(activeChar, pet, item);
+				useItem(pet, item, activeChar);
 				return;
 			}
-            if (L2PetDataTable.isGreatWolf(pet.getNpcId()) && L2PetDataTable.isGreatWolfFood(itemId))
+			else if (L2PetDataTable.isEvolvedWolf(pet.getNpcId()) && L2PetDataTable.isEvolvedWolfFood(itemId))
             {
-                feed(activeChar, pet, item);
+            	useItem(pet, item, activeChar);
                 return;
             }
-            if (L2PetDataTable.isWGreatWolf(pet.getNpcId()) && L2PetDataTable.isWGreatWolfFood(itemId))
-            {
-                feed(activeChar, pet, item);
-                return;
-            }
-            if (L2PetDataTable.isBlackWolf(pet.getNpcId()) && L2PetDataTable.isBlackWolfFood(itemId))
-            {
-                feed(activeChar, pet, item);
-                return;
-            }
-            if (L2PetDataTable.isFenrirWolf(pet.getNpcId()) && L2PetDataTable.isFenrirWolfFood(itemId))
-            {
-                feed(activeChar, pet, item);
-                return;
-            }
-            if (L2PetDataTable.isWFenrirWolf(pet.getNpcId()) && L2PetDataTable.isWFenrirWolfFood(itemId))
-            {
-                feed(activeChar, pet, item);
-                return;
-            }
-			if (L2PetDataTable.isSinEater(pet.getNpcId()) && L2PetDataTable.isSinEaterFood(itemId))
+			else if (L2PetDataTable.isSinEater(pet.getNpcId()) && L2PetDataTable.isSinEaterFood(itemId))
 			{
-				feed(activeChar, pet, item);
+				useItem(pet, item, activeChar);
 				return;
 			}
 			else if (L2PetDataTable.isHatchling(pet.getNpcId()) && L2PetDataTable.isHatchlingFood(itemId))
 			{
-				feed(activeChar, pet, item);
+				useItem(pet, item, activeChar);
 				return;
 			}
 			else if (L2PetDataTable.isStrider(pet.getNpcId()) && L2PetDataTable.isStriderFood(itemId))
 			{
-				feed(activeChar, pet, item);
+				useItem(pet, item, activeChar);
 				return;
 			}
 			else if (L2PetDataTable.isWyvern(pet.getNpcId()) && L2PetDataTable.isWyvernFood(itemId))
 			{
-				feed(activeChar, pet, item);
+				useItem(pet, item, activeChar);
 				return;
 			}
 			else if (L2PetDataTable.isBaby(pet.getNpcId()) && L2PetDataTable.isBabyFood(itemId))
 			{
-				feed(activeChar, pet, item);
+				useItem(pet, item, activeChar);
 				return;
 			}
 			else if (L2PetDataTable.isImprovedBaby(pet.getNpcId()) && L2PetDataTable.isImprovedBabyFood(itemId))
 			{
-				feed(activeChar, pet, item);
+				useItem(pet, item, activeChar);
+				return;
+			}
+			else
+			{
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
 				return;
 			}
 		}
@@ -234,7 +194,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		}
 		else
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.ITEM_NOT_FOR_PETS);
+			SystemMessage sm = new SystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM);
 			activeChar.sendPacket(sm);
 		}
 
@@ -246,17 +206,43 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		if (item.isEquipable())
 		{
 			if (item.isEquipped())
+			{
 				pet.getInventory().unEquipItemInSlot(item.getLocationSlot());
+				switch (item.getItem().getBodyPart())
+				{
+					case L2Item.SLOT_R_HAND:
+						pet.setWeapon(0);
+						break;
+					case L2Item.SLOT_CHEST:
+						pet.setArmor(0);
+						break;
+					case L2Item.SLOT_NECK:
+						pet.setJewel(0);
+						break;
+				}
+			}
 			else
+			{
 				pet.getInventory().equipItem(item);
+				switch (item.getItem().getBodyPart())
+				{
+					case L2Item.SLOT_R_HAND:
+						pet.setWeapon(item.getItemId());
+						break;
+					case L2Item.SLOT_CHEST:
+						pet.setArmor(item.getItemId());
+						break;
+					case L2Item.SLOT_NECK:
+						pet.setJewel(item.getItemId());
+						break;
+				}
+				
+			}
 
 			PetItemList pil = new PetItemList(pet);
 			activeChar.sendPacket(pil);
 
-			PetInfo pi = new PetInfo(pet);
-			activeChar.sendPacket(pi);
-			// The PetInfo packet wipes the PartySpelled (list of active spells' icons).  Re-add them
-			pet.updateEffectIcons(true);
+			pet.updateAndBroadcastStatus(1);
 		}
 		else
 		{
@@ -266,21 +252,11 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		    if (handler == null)
 		        _log.warning("no itemhandler registered for itemId:" + item.getItemId());
 		    else
+		    {
 		        handler.useItem(pet, item);
+		        pet.updateAndBroadcastStatus(1);
+		    }
 		}
-	}
-
-	/**
-	 * When fed by owner double click on food from pet inventory. <BR><BR>
-	 *
-	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : 1 food = 100 points of currentFed</B></FONT><BR><BR>
-	 */
-	private void feed(L2PcInstance player, L2PetInstance pet, L2ItemInstance item)
-	{
-		// if pet has food in inventory
-		if (pet.destroyItem("Feed", item.getObjectId(), 1, pet, false))
-            pet.setCurrentFed(pet.getCurrentFed() + 100);
-		pet.broadcastStatusUpdate();
 	}
 
 	/* (non-Javadoc)

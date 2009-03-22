@@ -82,6 +82,9 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 			if (skill.getSkillType() == L2SkillType.RECALL && !Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && activeChar.getKarma() > 0)
 				return;
 
+			// players mounted on pets cannot use any toggle skills
+			if (skill.isToggle() && activeChar.isMounted())
+					return;
 			// activeChar.stopMove();
 			activeChar.useMagic(skill, _ctrlPressed, _shiftPressed);
 		}

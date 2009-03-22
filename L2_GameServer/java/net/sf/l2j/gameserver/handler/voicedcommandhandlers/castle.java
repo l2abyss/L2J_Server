@@ -67,7 +67,7 @@ public class castle implements IVoicedCommandHandler
 		{
 			if (activeChar.getClan().getHasCastle() > 0 && activeChar.isClanLeader())
 			{
-				activeChar.mount(12621, 0);
+				activeChar.mount(12621, 0, true);
 			}
 		}
 		return true;

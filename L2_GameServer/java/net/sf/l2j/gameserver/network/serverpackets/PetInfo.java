@@ -30,16 +30,18 @@ public class PetInfo extends L2GameServerPacket
 	private L2Summon _summon;
 	private int _x, _y, _z, _heading;
 	private boolean _isSummoned;
+	private int _val;
 	private int _mAtkSpd, _pAtkSpd;
 	private int _runSpd, _walkSpd, _swimRunSpd, _swimWalkSpd, _flRunSpd, _flWalkSpd, _flyRunSpd, _flyWalkSpd;
 	private int _maxHp, _maxMp;
 	private int _maxFed, _curFed;
+	private float _multiplier;
 
 	/**
 	 * rev 478  dddddddddddddddddddffffdddcccccSSdddddddddddddddddddddddddddhc
 	 * @param _characters
 	 */
-	public PetInfo(L2Summon summon)
+	public PetInfo(L2Summon summon, int val)
 	{
         _summon = summon;
         _isSummoned = _summon.isShowSummonAnimation();
@@ -49,12 +51,14 @@ public class PetInfo extends L2GameServerPacket
 		_heading = _summon.getHeading();
 		_mAtkSpd = _summon.getMAtkSpd();
 		_pAtkSpd = _summon.getPAtkSpd();
-		_runSpd = _summon.getRunSpeed();
-		_walkSpd = _summon.getWalkSpeed();
+		_multiplier = _summon.getMovementSpeedMultiplier();
+		_runSpd = _summon.getPetSpeed();
+		_walkSpd =  _summon.isMountable() ? 45 : 30;
 		_swimRunSpd = _flRunSpd = _flyRunSpd = _runSpd;
 		_swimWalkSpd = _flWalkSpd = _flyWalkSpd = _walkSpd;
 		_maxHp = _summon.getMaxHp();
 		_maxMp = _summon.getMaxMp();
+		_val = val;
 		if (_summon instanceof L2PetInstance)
         {
 			L2PetInstance pet = (L2PetInstance)_summon;
@@ -88,23 +92,23 @@ public class PetInfo extends L2GameServerPacket
 		writeD(_flyRunSpd);
 		writeD(_flyWalkSpd);
 
-		writeF(1/*_cha.getProperMultiplier()*/);
-		writeF(1/*_cha.getAttackSpeedMultiplier()*/);
+		writeF(_multiplier); // movement multiplier
+		writeF(1); // attack speed multiplier
 		writeF(_summon.getTemplate().collisionRadius);
 		writeF(_summon.getTemplate().collisionHeight);
-		writeD(0); // right hand weapon
-		writeD(0);
+		writeD(_summon.getWeapon()); // right hand weapon
+		writeD(_summon.getArmor()); // body armor
 		writeD(0); // left hand weapon
-		writeC(1);	// name above char 1=true ... ??
-		writeC(_summon.isRunning() ? 1 : 0);	// running=1
+		writeC(_summon.getOwner() != null ? 1 : 0);	// when pet is dead and player exit game, pet doesn't show master name
+		writeC(1);	// running=1 (it is always 1, walking mode is calculated from multiplier)
 		writeC(_summon.isInCombat() ? 1 : 0);	// attacking 1=true
 		writeC(_summon.isAlikeDead() ? 1 : 0);  // dead 1=true
-		writeC(_isSummoned ? 2 : 0); // invisible ?? 0=false  1=true   2=summoned (only works if model has a summon animation)
-		writeS(_summon.getName());
-		writeS(_summon.getTitle());
+		writeC(_isSummoned ? 2 : _val); //  0=teleported  1=default   2=summoned
+		writeS(_summon.getName()); // summon name
+		writeS(_summon.getTitle()); // owner name
 		writeD(1);
 		writeD(_summon.getOwner() != null ? _summon.getOwner().getPvpFlag() : 0);	//0 = white,2= purpleblink, if its greater then karma = purple
-		writeD(_summon.getOwner() != null ? _summon.getOwner().getKarma() : 0);  // hmm karma ??
+		writeD(_summon.getOwner() != null ? _summon.getOwner().getKarma() : 0);  // karma
 		writeD(_curFed); // how fed it is
 		writeD(_maxFed); //max fed it can be
 		writeD((int)_summon.getCurrentHp());//current hp
@@ -130,48 +134,40 @@ public class PetInfo extends L2GameServerPacket
 		writeD(_summon.getAccuracy());//accuracy
 		writeD(_summon.getEvasionRate(null));//evasion
 		writeD(_summon.getCriticalHit(null,null));//critical
-		writeD(_runSpd);//speed
+		writeD((int) _summon.getStat().getMoveSpeed());//speed
 		writeD(_summon.getPAtkSpd());//atkspeed
 		writeD(_summon.getMAtkSpd());//casting speed
 
-		writeD(0);//c2  abnormal visual effect... bleed=1; poison=2; poison & bleed=3; flame=4;
+		writeD(_summon.getAbnormalEffect());//c2  abnormal visual effect... bleed=1; poison=2; poison & bleed=3; flame=4;
 		int npcId = _summon.getTemplate().npcId;
-
-        if ((npcId >= 12526 && npcId <= 12528) || (npcId == 16037) || (npcId == 16041) || (npcId == 16042)) //  16041  16042 CT1.5 Fenrir
-			writeH(1);//c2    ride button
-		else
-			writeH(0);
+		writeH(_summon.isMountable() ? 1 : 0);//c2    ride button
 
         writeC(0); // c2
 
-
-        
         // Following all added in C4.
         writeH(0); // ??
-        writeC(0); // team aura (1 = blue, 2 = red)
+        writeC(_summon.getOwner() != null ? _summon.getOwner().getTeam() : 0); // team aura (1 = blue, 2 = red)
 		writeD(_summon.getSoulShotsPerHit()); // How many soulshots this servitor uses per hit
         writeD(_summon.getSpiritShotsPerHit()); // How many spiritshots this servitor uses per hit
         
         int form = 0;
         if (npcId == 16041 || npcId == 16042)
         {
-        	if(_summon.getLevel() >= 75 && _summon.getLevel() < 80){ 
-        		form = 1;
-        	}else if(_summon.getLevel() >= 80 && _summon.getLevel() < 85){ 
-        		form = 2;
-        	}else if(_summon.getLevel() >= 85){ 
+        	if(_summon.getLevel() > 84)
         		form = 3;
-        	}
+        	else if(_summon.getLevel() > 79) 
+        		form = 2;
+        	else if(_summon.getLevel() > 74)
+        		form = 1;
         }
-        if (npcId == 16025 || npcId == 16037)
+        else if (npcId == 16025 ||npcId == 16037)
         {
-        	if(_summon.getLevel() >= 60 && _summon.getLevel() < 65){ 
-        		form = 1;
-        	}else if(_summon.getLevel() >= 65 && _summon.getLevel() < 70){ 
-        		form = 2;
-        	}else if(_summon.getLevel() >= 70){ 
+        	if(_summon.getLevel() > 69)
         		form = 3;
-        	}
+        	else if(_summon.getLevel() > 64) 
+        		form = 2;
+        	else if(_summon.getLevel() > 59) 
+        		form = 1;
         }
         writeD(form);//CT1.5 Pet form and skills
 	}

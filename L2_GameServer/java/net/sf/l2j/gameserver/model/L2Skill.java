@@ -295,7 +295,7 @@ public abstract class L2Skill
 
     /** Target type of the skill : SELF, PARTY, CLAN, PET... */
     private final SkillTargetType _targetType;
-
+    private int _feed;
     // base success chance
     private final double _power;
     private final int _magicLevel;
@@ -429,7 +429,7 @@ public abstract class L2Skill
         _hitTime = set.getInteger("hitTime", 0);
         _coolTime = set.getInteger("coolTime", 0);
         _isDebuff = set.getBool("isDebuff", false);
-        
+        _feed = set.getInteger("feed", 0);
         if (Config.ENABLE_MODIFY_SKILL_REUSE && Config.SKILL_REUSE_LIST.containsKey(_id))
         {
                 if ( Config.DEBUG )
@@ -3155,5 +3155,13 @@ public abstract class L2Skill
 	public boolean isAdvancedFlag()
 	{
 		return _isAdvancedFlag;
+	}
+	
+	/**
+	 * @return pet food
+	 */
+	public int getFeed()
+	{
+		return _feed;
 	}
 }

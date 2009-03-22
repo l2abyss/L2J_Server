@@ -88,8 +88,8 @@ import net.sf.l2j.gameserver.network.serverpackets.MagicSkillLaunched;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.network.serverpackets.MoveToLocation;
 import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
-import net.sf.l2j.gameserver.network.serverpackets.PetInfo;
 import net.sf.l2j.gameserver.network.serverpackets.Revive;
+import net.sf.l2j.gameserver.network.serverpackets.ServerObjectInfo;
 import net.sf.l2j.gameserver.network.serverpackets.SetupGauge;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.StopMove;
@@ -106,6 +106,7 @@ import net.sf.l2j.gameserver.skills.effects.EffectCharge;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillAgathion;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillMount;
+import net.sf.l2j.gameserver.skills.l2skills.L2SkillSummon;
 import net.sf.l2j.gameserver.templates.chars.L2CharTemplate;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
@@ -394,7 +395,11 @@ public abstract class L2Character extends L2Object
 	{
 		if (!isTeleporting())
 			return;
-		
+		if (this instanceof L2Summon)
+		{
+			((L2Summon)this).getOwner().sendPacket(new TeleportToLocation(this,getPosition().getX(), getPosition().getY(), getPosition().getZ()));
+			
+		}
 		spawnMe(getPosition().getX(), getPosition().getY(), getPosition().getZ());
 		
 		setIsTeleporting(false);
@@ -661,6 +666,12 @@ public abstract class L2Character extends L2Object
 					sendPacket(ActionFailed.STATIC_PACKET);
 					return;
 				}
+				// while mounted on wyvern, u can't attack with close range attacks, only with skills
+				if (((L2PcInstance)this).isMounted() &&((L2PcInstance)this).getMountNpcId() == 12621)
+				{
+					sendPacket(ActionFailed.STATIC_PACKET);
+					return;
+				}
 			}
 		}
 		
@@ -904,8 +915,10 @@ public abstract class L2Character extends L2Object
         L2PcInstance player = getActingPlayer();
 
         if (player != null)
-            player.updatePvPStatus(target);
-
+        {
+        	if (player.getPet() != target)
+        		player.updatePvPStatus(target);
+        }
 		// Check if hit isn't missed
 		if (!hitted)
 			// Abort the attack of the L2Character and send Server->Client ActionFailed packet
@@ -2195,7 +2208,28 @@ public abstract class L2Character extends L2Object
 	public final void setIsRunning(boolean value)
 	{
 		_isRunning = value;
-		broadcastPacket(new ChangeMoveType(this));
+		if (getRunSpeed() != 0)
+			broadcastPacket(new ChangeMoveType(this));
+		if (this instanceof L2PcInstance)
+			((L2PcInstance)this).broadcastUserInfo();
+		else if (this instanceof L2Summon)
+		{
+			((L2Summon)this).broadcastStatusUpdate();
+		}
+		else if (this instanceof L2NpcInstance)
+		{
+			Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
+			//synchronized (character.getKnownList().getKnownPlayers())
+			{
+				for (L2PcInstance player : plrs)
+				{
+					if (getRunSpeed() == 0)
+						player.sendPacket(new ServerObjectInfo((L2NpcInstance) this, player));
+					else
+						player.sendPacket(new NpcInfo((L2NpcInstance) this, player));
+				}
+			}
+		}
 	}
 	/** Set the L2Character movement type to run and send Server->Client packet ChangeMoveType to all others L2PcInstance. */
 	public final void setRunning() { if (!isRunning()) setIsRunning(true); }
@@ -2759,12 +2793,14 @@ public abstract class L2Character extends L2Object
 	{
 		_effects.stopAllEffects();
 		if (this instanceof L2PcInstance) ((L2PcInstance)this).updateAndBroadcastStatus(2);
+		if (this instanceof L2Summon) ((L2Summon)this).updateAndBroadcastStatus(1);
  	}
 
 	public final void stopAllEffectsExceptThoseThatLastThroughDeath()
 	{
 		_effects.stopAllEffectsExceptThoseThatLastThroughDeath();
 		if (this instanceof L2PcInstance) ((L2PcInstance)this).updateAndBroadcastStatus(2);
+		if (this instanceof L2Summon) ((L2Summon)this).updateAndBroadcastStatus(1);
 	}
 	
 	/**
@@ -3607,7 +3643,13 @@ public abstract class L2Character extends L2Object
 		
 		for (Stats stat : stats)
 		{
-			if (stat==Stats.POWER_ATTACK_SPEED) 
+			if (this instanceof L2Summon)
+			{
+				((L2Summon)this).updateAndBroadcastStatus(1);
+				break;
+
+			}
+			else if (stat==Stats.POWER_ATTACK_SPEED) 
 			{
 				if (su == null) su = new StatusUpdate(getObjectId());
 				su.addAttribute(StatusUpdate.ATK_SPD, getPAtkSpd());
@@ -3680,27 +3722,18 @@ public abstract class L2Character extends L2Object
 				Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
 				//synchronized (getKnownList().getKnownPlayers())
 				{
-				for (L2PcInstance player : plrs)
-						player.sendPacket(new NpcInfo((L2NpcInstance)this, player));
+					for (L2PcInstance player : plrs)
+					{
+						if (getRunSpeed() == 0)
+							player.sendPacket(new ServerObjectInfo((L2NpcInstance)this, player));
+						else
+							player.sendPacket(new NpcInfo((L2NpcInstance)this, player));
+					}
 				}
 			}
 			else if (su != null) 
 				broadcastPacket(su);
 		}
-		else if (this instanceof L2Summon)
-		{
-			if (broadcastFull)
-			{
-				Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-				//synchronized (getKnownList().getKnownPlayers())
-				{
-				for (L2PcInstance player : plrs)
-						player.sendPacket(new NpcInfo((L2Summon)this, player));
-				}
-			}
-			else if (su != null) 
-				broadcastPacket(su);
-		} 
 		else if (su != null) 
 			broadcastPacket(su);
 	}
@@ -3861,7 +3894,7 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Return True if the L2Character is attacking.<BR><BR>
 	 */
-	public final boolean isAttackingNow()
+	public boolean isAttackingNow()
 	{
 		return _attackEndTime > GameTimeController.getGameTicks();
 	}
@@ -4359,6 +4392,7 @@ public abstract class L2Character extends L2Object
 					_log.warning("Character "+this.getName()+" outside world area, in coordinates x:"+curX+" y:"+curY);
 					getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 					if (this instanceof L2PcInstance) ((L2PcInstance)this).deleteMe();
+					else if (this instanceof L2Summon) return; // preventation when summon get out of world coords, player will not loose him, unsummon handled from pcinstance
 					else this.onDecay();
         			return;
 				}
@@ -5585,6 +5619,10 @@ public abstract class L2Character extends L2Object
 			{
 				removeChanceSkill(oldSkill.getId());
 			}
+			if (oldSkill instanceof L2SkillSummon && oldSkill.getId() == 710 && this instanceof L2PcInstance && ((L2PcInstance)this).getPet() != null && ((L2PcInstance)this).getPet().getNpcId() == 14870)
+			{
+				((L2PcInstance)this).getPet().unSummon(((L2PcInstance)this));
+			}
 		}
 
 		return oldSkill;
@@ -5845,12 +5883,7 @@ public abstract class L2Character extends L2Object
 					if (this instanceof L2PcInstance
 					        && target instanceof L2Summon)
 					{
-						target.getActingPlayer().sendPacket(new PetInfo((L2Summon) target));
-						sendPacket(new NpcInfo((L2Summon) target, this));
-						
-						// The PetInfo packet wipes the PartySpelled (list of
-						// active spells' icons). Re-add them
-						((L2Summon) target).updateEffectIcons(true);
+						((L2Summon) target).updateAndBroadcastStatus(1);
 					}
 				}
 			}
@@ -6246,7 +6279,8 @@ public abstract class L2Character extends L2Object
 											owner.getAI().clientStartAutoAttack();
 										}
 									}
-									player.updatePvPStatus((L2Character)target);
+									if (!(target instanceof L2Summon) || player.getPet() != target)
+										player.updatePvPStatus((L2Character)target);
 								}
 							}
 							else if (target instanceof L2Attackable)
@@ -6273,7 +6307,9 @@ public abstract class L2Character extends L2Object
 									&& !(skill.getSkillType() == L2SkillType.SUMMON)
 									&& !(skill.getSkillType() == L2SkillType.BEAST_FEED) 
 									&& !(skill.getSkillType() == L2SkillType.UNLOCK)
-									&& !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK))
+									&& !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK)
+									&& (!(target instanceof L2Summon) || player.getPet() != target)
+							)
 								player.updatePvPStatus();
 						}
 					}

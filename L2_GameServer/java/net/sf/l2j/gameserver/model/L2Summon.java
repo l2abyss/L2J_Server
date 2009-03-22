@@ -26,7 +26,6 @@ import net.sf.l2j.gameserver.model.L2Attackable.AggroInfo;
 import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.actor.knownlist.SummonKnownList;
@@ -58,8 +57,6 @@ public abstract class L2Summon extends L2PlayableInstance
 {
     //private static Logger _log = Logger.getLogger(L2Summon.class.getName());
 
-	protected int _pkKills;
-    private byte _pvpFlag;
     private L2PcInstance _owner;
     private int _attackRange = 36; //Melee range
     private boolean _follow = true;
@@ -109,8 +106,7 @@ public abstract class L2Summon extends L2PlayableInstance
         this.setFollowStatus(true);
         setShowSummonAnimation(false); // addVisibleObject created the info packets with summon animation
                                               // if someone comes into range now, the animation shouldnt show any more
-        this.getOwner().sendPacket(new PetInfo(this));
-
+        updateAndBroadcastStatus(0);
         getOwner().sendPacket(new RelationChanged(this, getOwner().getRelation(getOwner()), false));
 
         for (L2PcInstance player : getOwner().getKnownList().getKnownPlayersInRadius(800))
@@ -178,7 +174,7 @@ public abstract class L2Summon extends L2PlayableInstance
 		//synchronized (getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
-				player.sendPacket(new NpcInfo(this, player));
+				player.sendPacket(new NpcInfo(this, player,1));
 		}
     }
 
@@ -188,11 +184,6 @@ public abstract class L2Summon extends L2PlayableInstance
     public boolean isMountable()
     {
         return false;
-    }
-    
-    public boolean isMountableOverTime()
-    {
-    	return false;
     }
 
 	@Override
@@ -274,32 +265,12 @@ public abstract class L2Summon extends L2PlayableInstance
 
     public final L2PcInstance getOwner()
     {
-        return _owner;
+    	return _owner;
     }
 
     public final int getNpcId()
     {
         return getTemplate().npcId;
-    }
-
-    public void setPvpFlag(byte pvpFlag)
-    {
-        _pvpFlag = pvpFlag;
-    }
-
-    public byte getPvpFlag()
-    {
-        return _pvpFlag;
-    }
-
-    public void setPkKills(int pkKills)
-    {
-        _pkKills = pkKills;
-    }
-
-    public final int getPkKills()
-    {
-        return _pkKills;
     }
 
     public int getMaxLoad()
@@ -390,19 +361,8 @@ public abstract class L2Summon extends L2PlayableInstance
     @Override
 	public void broadcastStatusUpdate()
     {
-        super.broadcastStatusUpdate();
-
-        if (isVisible())
-        {
-            getOwner().sendPacket(new PetStatusUpdate(this));
-            
-            L2Party party = this.getOwner().getParty();
-            if (party != null)
-            {
-                party.broadcastToPartyMembers(this.getOwner(), new ExPartyPetWindowUpdate(this));
-            }
-        }
-        
+        //super.broadcastStatusUpdate();
+        updateAndBroadcastStatus(1);
     }
     
     @Override
@@ -444,22 +404,21 @@ public abstract class L2Summon extends L2PlayableInstance
         getAI().stopFollow();
         owner.sendPacket(new PetDelete(getObjectId(), 2));
 
-        //FIXME: I think it should really drop items to ground and only owner can take for a while
-        giveAllToOwner();
+        //pet will be deleted along with all his items
+        if (getInventory() != null)
+        {
+        	getInventory().destroyAllItems("pet deleted", getOwner(), this);
+        }
         decayMe();
         getKnownList().removeAllKnownObjects();
         owner.setPet(null);
-    }
-    
-    public void onSummon()
-    {
-        
     }
 
     public void unSummon(L2PcInstance owner)
     {
 		if (isVisible() && !isDead())
 	    {
+			stopAllEffects();
 			getAI().stopFollow();
 	        owner.sendPacket(new PetDelete(getObjectId(), 2));
             L2Party party;
@@ -477,9 +436,6 @@ public abstract class L2Summon extends L2PlayableInstance
             getKnownList().removeAllKnownObjects();
 	        owner.setPet(null);
 	        setTarget(null);
-	        
-	        if (this instanceof L2PetInstance)
-	        	((L2PetInstance)this).setIsMountableOverTime(false);
 	    }
     }
 
@@ -883,19 +839,70 @@ public abstract class L2Summon extends L2PlayableInstance
 	
 	public boolean isInCombat()
 	{
-		// summons/pets have shared combat mode with their masters
-		if (getOwner() != null)
-		{
-			return ((getOwner().getAI().getAttackTarget() != null) || getOwner().getAI().isAutoAttacking());
-		}
-		
-		// Should never get here, all pets SHOULD have owners.
-		return false;
+		return getOwner().isInCombat();
 	}
 
 	@Override
 	public L2PcInstance getActingPlayer()
 	{
 		return getOwner();
+	}
+	
+	public void updateAndBroadcastStatus(int val)
+	{
+		getOwner().sendPacket(new PetInfo(this,val));
+		getOwner().sendPacket(new PetStatusUpdate(this));
+		if (isVisible())
+        {
+			broadcastNpcInfo(val);
+        }
+        L2Party party = this.getOwner().getParty();
+        if (party != null)
+        {
+            party.broadcastToPartyMembers(this.getOwner(), new ExPartyPetWindowUpdate(this));
+        }
+		updateEffectIcons(true);
+	}
+
+	public void broadcastNpcInfo(int val)
+	{
+		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
+		for (L2PcInstance player : plrs)
+		{
+			try
+			{
+				if (player == getOwner())
+					continue;
+				player.sendPacket(new NpcInfo(this,player, val));
+			}
+			catch (NullPointerException e)
+			{
+				// ignore it
+			}
+		}
+	}
+	public boolean isHungry()
+	{
+		return false;
+	}
+	@Override
+	public final boolean isAttackingNow()
+	{
+		return isInCombat();
+	}
+
+	public int getWeapon()
+	{
+		return 0;
+	}
+	
+	public int getArmor()
+	{
+		return 0;
+	}
+
+	public int getPetSpeed()
+	{
+		return getTemplate().baseRunSpd;
 	}
 }

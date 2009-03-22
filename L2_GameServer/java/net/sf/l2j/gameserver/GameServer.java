@@ -55,6 +55,7 @@ import net.sf.l2j.gameserver.datatables.NobleSkillTable;
 import net.sf.l2j.gameserver.datatables.NpcBufferTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.NpcWalkerRoutesTable;
+import net.sf.l2j.gameserver.datatables.PetSkillsTable;
 import net.sf.l2j.gameserver.datatables.SkillSpellbookTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
@@ -237,6 +238,7 @@ public class GameServer
 		RecipeController.getInstance();
 		
 		SkillTreeTable.getInstance();
+		PetSkillsTable.getInstance();
 		ArmorSetsTable.getInstance();
 		FishTable.getInstance();
 		SkillSpellbookTable.getInstance();

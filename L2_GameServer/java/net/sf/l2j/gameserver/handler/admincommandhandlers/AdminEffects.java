@@ -24,7 +24,6 @@ import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2ChestInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
@@ -618,7 +617,7 @@ public class AdminEffects implements IAdminCommandHandler
 		{
 			if (target instanceof L2Character)
 			{
-				if ((target instanceof L2Summon) || (target instanceof L2ChestInstance))
+				if (target instanceof L2ChestInstance)
 				{
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
 					return false;

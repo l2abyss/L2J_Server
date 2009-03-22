@@ -15,15 +15,15 @@
 package net.sf.l2j.gameserver.network.clientpackets;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2SummonAI;
+import net.sf.l2j.gameserver.datatables.PetSkillsTable;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.model.L2CharPosition;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ManufactureList;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
@@ -74,7 +74,7 @@ public final class RequestActionUse extends L2GameClientPacket
 			_log.finest(activeChar.getName() + " request Action use: id " + _actionId + " 2:" + _ctrlPressed + " 3:" + _shiftPressed);
 		
 		// dont do anything if player is dead
-		if (activeChar.isAlikeDead())
+		if (activeChar.isAlikeDead() || activeChar.isDead())
 		{
 			getClient().sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -172,7 +172,12 @@ public final class RequestActionUse extends L2GameClientPacket
 						activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
 						return;
 					}
-					
+					if (pet.getNpcId() == 12564 || pet.getNpcId() == 12621)
+					{
+						// sin eater and wyvern can't attack with attack button
+						activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+						return;
+					}
 					if (target.isAutoAttackable(activeChar) || _ctrlPressed)
 					{
 						if (target instanceof L2DoorInstance)
@@ -184,13 +189,17 @@ public final class RequestActionUse extends L2GameClientPacket
 						else if (pet.getNpcId() != L2SiegeSummonInstance.SIEGE_GOLEM_ID)
 							pet.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, target);
 					}
+					else
+					{
+						pet.setFollowStatus(false);
+						pet.getAI().setIntention(CtrlIntention.AI_INTENTION_FOLLOW, target);
+					}
 				}
 				break;
 			case 17:
 			case 23: // pet - cancel action
 				if (pet != null && !pet.isMovementDisabled() && !activeChar.isBetrayed())
-					pet.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
-				
+					pet.getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
 				break;
 			case 19: // pet unsummon
 				if (pet != null)
@@ -200,7 +209,7 @@ public final class RequestActionUse extends L2GameClientPacket
 					{
 						activeChar.sendPacket(new SystemMessage(SystemMessageId.DEAD_PET_CANNOT_BE_RETURNED));
 					}
-					else if (pet.isAttackingNow() || pet.isRooted() || pet.isBetrayed())
+					else if (pet.isAttackingNow() || pet.isInCombat() || pet.isRooted() || pet.isBetrayed())
 					{
 						activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_SENT_BACK_DURING_BATTLE));
 					}
@@ -209,11 +218,13 @@ public final class RequestActionUse extends L2GameClientPacket
 						// if it is a pet and not a summon
 						if (pet instanceof L2PetInstance)
 						{
-							L2PetInstance petInst = (L2PetInstance) pet;
-							
-							// if the pet is more than 40% fed
-							if (petInst.getCurrentFed() > (petInst.getMaxFed() * 0.40))
-								pet.unSummon(activeChar);
+							if (!pet.isHungry())
+							{
+								if (pet.isInCombat())
+									activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_SENT_BACK_DURING_BATTLE));
+								else
+									pet.unSummon(activeChar);
+							}
 							else
 								activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_RESTORE_HUNGRY_PETS));
 						}
@@ -222,82 +233,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				break;
 			case 38: // pet mount
 				// mount
-				if (pet != null && pet.isMountable() && pet.isMountableOverTime() && !activeChar.isMounted() && !activeChar.isBetrayed())
-				{
-					if (activeChar.isDead())
-					{
-						//A strider cannot be ridden when dead
-						SystemMessage msg = new SystemMessage(SystemMessageId.STRIDER_CANT_BE_RIDDEN_WHILE_DEAD);
-						activeChar.sendPacket(msg);
-						msg = null;
-					}
-					if (activeChar.isTransformed())
-					{
-						// You cannot mount a steed while transformed.
-						getClient().sendPacket(ActionFailed.STATIC_PACKET);
-						SystemMessage msg = new SystemMessage(SystemMessageId.YOU_CANNOT_MOUNT_A_STEED_WHILE_TRANSFORMED);
-						activeChar.sendPacket(msg);
-						return;
-					}
-					else if (pet.isDead())
-					{
-						//A dead strider cannot be ridden.
-						SystemMessage msg = new SystemMessage(SystemMessageId.DEAD_STRIDER_CANT_BE_RIDDEN);
-						activeChar.sendPacket(msg);
-						msg = null;
-					}
-					else if (pet.isInCombat() || pet.isRooted())
-					{
-						//A strider in battle cannot be ridden
-						SystemMessage msg = new SystemMessage(SystemMessageId.STRIDER_IN_BATLLE_CANT_BE_RIDDEN);
-						activeChar.sendPacket(msg);
-						msg = null;
-					}
-					else if (activeChar.isInCombat() || activeChar.getPvpFlag() != 0)
-					{
-						//A strider cannot be ridden while in battle
-						SystemMessage msg = new SystemMessage(SystemMessageId.STRIDER_CANT_BE_RIDDEN_WHILE_IN_BATTLE);
-						activeChar.sendPacket(msg);
-						msg = null;
-					}
-					else if (activeChar.isSitting() || activeChar.isMoving() || activeChar.isInsideZone(L2Character.ZONE_WATER))
-					{
-						//A strider can be ridden only when standing
-						SystemMessage msg = new SystemMessage(SystemMessageId.STRIDER_CAN_BE_RIDDEN_ONLY_WHILE_STANDING);
-						activeChar.sendPacket(msg);
-						msg = null;
-					}
-					else if (activeChar.isFishing())
-					{
-						//You can't mount, dismount, break and drop items while fishing
-						SystemMessage msg = new SystemMessage(SystemMessageId.CANNOT_DO_WHILE_FISHING_2);
-						activeChar.sendPacket(msg);
-						msg = null;
-					}
-					else if (activeChar.isCursedWeaponEquipped())
-					{
-						//You can't mount, dismount, break and drop items while weilding a cursed weapon
-						SystemMessage msg = new SystemMessage(SystemMessageId.STRIDER_CANT_BE_RIDDEN_WHILE_IN_BATTLE);
-						activeChar.sendPacket(msg);
-					}
-					else if (activeChar.getInventory().getItemByItemId(9819) != null)
-			        {
-						SystemMessage msg = new SystemMessage(SystemMessageId.YOU_CANNOT_MOUNT_A_STEED_WHILE_HOLDING_A_FLAG);
-						activeChar.sendPacket(msg);
-			        }
-					else if (!pet.isDead() && !activeChar.isMounted())
-					{
-						activeChar.mount(pet);
-					}
-				}
-				else if (activeChar.isRentedPet())
-				{
-					activeChar.stopRentPet();
-				}
-				else if (activeChar.isMounted())
-				{
-					activeChar.dismount();
-				}
+				activeChar.mountPlayer(pet);
 				break;
 			case 32: // Wild Hog Cannon - Mode Change
 				useSkill(4230);
@@ -376,10 +312,12 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 52: // unsummon
 				if (pet != null && pet instanceof L2SummonInstance)
 				{
-					if (pet.isInCombat() || pet.isBetrayed())
+					if (pet.isBetrayed())
 					{
 						activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_REFUSING_ORDER));
 					}
+					else if (pet.isAttackingNow() || pet.isInCombat())
+						activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_SENT_BACK_DURING_BATTLE));
 					else
 						pet.unSummon(activeChar);
 				}
@@ -387,6 +325,7 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 53: // move to target
 				if (target != null && pet != null && pet != target && !pet.isMovementDisabled() && !pet.isBetrayed())
 				{
+					pet.setFollowStatus(false);
 					pet.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(target.getX(), target.getY(), target.getZ(), 0));
 				}
 				break;
@@ -420,16 +359,16 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 1001:
 				break;
 			case 1003: // Wind Hatchling/Strider - Wild Stun
-				useSkill(4710); //TODO use correct skill lvl based on pet lvl
+				useSkill(4710);
 				break;
 			case 1004: // Wind Hatchling/Strider - Wild Defense
-				useSkill(4711, activeChar); //TODO use correct skill lvl based on pet lvl
+				useSkill(4711, activeChar);
 				break;
 			case 1005: // Star Hatchling/Strider - Bright Burst
-				useSkill(4712); //TODO use correct skill lvl based on pet lvl
+				useSkill(4712); 
 				break;
 			case 1006: // Star Hatchling/Strider - Bright Heal
-				useSkill(4713, activeChar); //TODO use correct skill lvl based on pet lvl
+				useSkill(4713, activeChar);
 				break;
 			case 1007: // Cat Queen - Blessing of Queen
 				useSkill(4699, activeChar);
@@ -511,6 +450,18 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 1045: // Great Wolf - Howl
 				useSkill(5584);
 				break;
+			case 1047: // Divine Beast - Bite
+				useSkill(5580);
+				break;
+			case 1048: // Divine Beast - Stun Attack
+				useSkill(5581);
+				break;
+			case 1049: // Divine Beast - Fire Breath
+				useSkill(5582);
+				break;
+			case 1050: // Divine Beast - Roar
+				useSkill(5583);
+				break;
 			case 1051: //Feline Queen - Bless The Body
 				useSkill(5638);
 				break;
@@ -572,26 +523,13 @@ public final class RequestActionUse extends L2GameClientPacket
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_TOO_HIGH_TO_CONTROL));
 				return;
 			}
-			
-			Map<Integer, L2Skill> _skills = activeSummon.getTemplate().getSkills();
-			
-			if (_skills == null)
+			int lvl = PetSkillsTable.getInstance().getAvailableLevel(activeSummon, skillId);
+			if (lvl == 0)
 				return;
 			
-			if (_skills.size() == 0)
-			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE));
-				return;
-			}
-			
-			L2Skill skill = _skills.get(skillId);
-			
+			L2Skill skill = SkillTable.getInstance().getInfo(skillId, lvl);
 			if (skill == null)
-			{
-				if (Config.DEBUG)
-					_log.warning("Skill " + skillId + " missing from npcskills.sql for a summon id " + activeSummon.getNpcId());
 				return;
-			}
 			
 			activeSummon.setTarget(target);
 			activeSummon.useMagic(skill, _ctrlPressed, _shiftPressed);

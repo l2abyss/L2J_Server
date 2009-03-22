@@ -113,7 +113,6 @@ public class FastMRUCache<K, V> extends FastCollection implements Reusable
 	}
 	
 	// Implements Reusable.
-	@Override
 	public synchronized void reset()
 	{
 		_map.reset();

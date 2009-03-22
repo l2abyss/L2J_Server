@@ -22,6 +22,7 @@ import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
@@ -72,7 +73,7 @@ public class Potions implements IItemHandler
 	 */
 	public synchronized void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
-		L2PcInstance activeChar;
+		L2PcInstance activeChar; // use activeChar only for L2PcInstance checks where cannot be used PetInstance
 		boolean res = false;
 		if (playable instanceof L2PcInstance)
 			activeChar = (L2PcInstance) playable;
@@ -93,7 +94,7 @@ public class Potions implements IItemHandler
 			return;
 		}
 		
-		if (activeChar.isAllSkillsDisabled())
+		if (playable.isAllSkillsDisabled())
 		{
 			ActionFailed af = ActionFailed.STATIC_PACKET;
 			activeChar.sendPacket(af);
@@ -106,95 +107,95 @@ public class Potions implements IItemHandler
 		{
 			// HEALING AND SPEED POTIONS
 			case 65: // red_potion, xml: 2001
-				res = usePotion(activeChar, 2001, 1);
+				res = usePotion(playable, 2001, 1);
 				break;
 			case 725: // healing_drug, xml: 2002
-				if (!isEffectReplaceable(activeChar, L2EffectType.HEAL_OVER_TIME, itemId))
+				if (!isEffectReplaceable(playable, L2EffectType.HEAL_OVER_TIME, itemId))
 					return;
-				res = usePotion(activeChar, 2002, 1);
+				res = usePotion(playable, 2002, 1);
 				break;
 			case 727: // _healing_potion, xml: 2032
-				if (!isEffectReplaceable(activeChar, L2EffectType.HEAL_OVER_TIME, itemId))
+				if (!isEffectReplaceable(playable, L2EffectType.HEAL_OVER_TIME, itemId))
 					return;
-				res = usePotion(activeChar, 2032, 1);
+				res = usePotion(playable, 2032, 1);
 				break;
 			case 728: // custom mana potion, xml: 2005
 				if (Config.L2JMOD_ENABLE_MANA_POTIONS_SUPPORT)
 					res = usePotion(activeChar, 2005, 1);
 				break;
 			case 733: // Endeavor Potion, xml: 2010
-				res = usePotion(activeChar, 2010, 1);
+				res = usePotion(playable, 2010, 1);
 				break;
 			case 734: // quick_step_potion, xml: 2011
-				res = usePotion(activeChar, 2011, 1);
+				res = usePotion(playable, 2011, 1);
 				break;
 			case 735: // swift_attack_potion, xml: 2012
-				res = usePotion(activeChar, 2012, 1);
+				res = usePotion(playable, 2012, 1);
 				break;
 			case 1060: // lesser_healing_potion,
 			case 1073: // beginner's potion, xml: 2031
 				if (!isEffectReplaceable(activeChar, L2EffectType.HEAL_OVER_TIME, itemId))
 					return;
-				res = usePotion(activeChar, 2031, 1);
+				res = usePotion(playable, 2031, 1);
 				break;
 			case 1061: // healing_potion, xml: 2032
-				if (!isEffectReplaceable(activeChar, L2EffectType.HEAL_OVER_TIME, itemId))
+				if (!isEffectReplaceable(playable, L2EffectType.HEAL_OVER_TIME, itemId))
 					return;
-				res = usePotion(activeChar, 2032, 1);
+				res = usePotion(playable, 2032, 1);
 				break;
 			case 10157: // instant haste_potion, xml: 2398
-				res = usePotion(activeChar, 2398, 1);
+				res = usePotion(playable, 2398, 1);
 				break;
 			case 1374: // adv_quick_step_potion, xml: 2034
-				res = usePotion(activeChar, 2034, 1);
+				res = usePotion(playable, 2034, 1);
 				break;
 			case 1375: // adv_swift_attack_potion, xml: 2035
-				res = usePotion(activeChar, 2035, 1);
+				res = usePotion(playable, 2035, 1);
 				break;
 			case 1539: // greater_healing_potion, xml: 2037
-				if (!isEffectReplaceable(activeChar, L2EffectType.HEAL_OVER_TIME, itemId))
+				if (!isEffectReplaceable(playable, L2EffectType.HEAL_OVER_TIME, itemId))
 					return;
-				res = usePotion(activeChar, 2037, 1);
+				res = usePotion(playable, 2037, 1);
 				break;
 			case 1540: // quick_healing_potion, xml: 2038
-				if (!isEffectReplaceable(activeChar, L2EffectType.HEAL_OVER_TIME, itemId))
+				if (!isEffectReplaceable(playable, L2EffectType.HEAL_OVER_TIME, itemId))
 					return;
-				res = usePotion(activeChar, 2038, 1);
+				res = usePotion(playable, 2038, 1);
 				break;
 			case 5591:
 			case 5592: // CP and Greater CP
-				if (!isEffectReplaceable(activeChar, L2EffectType.COMBAT_POINT_HEAL_OVER_TIME, itemId))
+				if (!isEffectReplaceable(playable, L2EffectType.COMBAT_POINT_HEAL_OVER_TIME, itemId))
 					return;
-				res = usePotion(activeChar, 2166, (itemId == 5591) ? 1 : 2);
+				res = usePotion(playable, 2166, (itemId == 5591) ? 1 : 2);
 				break;
 			case 6035: // Magic Haste Potion, xml: 2169
-				res = usePotion(activeChar, 2169, 1);
+				res = usePotion(playable, 2169, 1);
 				break;
 			case 6036: // Greater Magic Haste Potion, xml: 2169
-				res = usePotion(activeChar, 2169, 2);
+				res = usePotion(playable, 2169, 2);
 				break;
 			case 10155: //Mental Potion XML:2396
-				res = usePotion(activeChar, 2396, 1);
+				res = usePotion(playable, 2396, 1);
 				break;
 			
 			// ATTRIBUTE POTION
 			case 9997: // Fire Resist Potion, xml: 2335
-				res = usePotion(activeChar, 2335, 1);
+				res = usePotion(playable, 2335, 1);
 				break;
 			case 9998: // Water Resist Potion, xml: 2336
-				res = usePotion(activeChar, 2336, 1);
+				res = usePotion(playable, 2336, 1);
 				break;
 			case 9999: // Earth Resist Potion, xml: 2338
-				res = usePotion(activeChar, 2338, 1);
+				res = usePotion(playable, 2338, 1);
 				break;
 			case 10000: // Wind Resist Potion, xml: 2337
-				res = usePotion(activeChar, 2337, 1);
+				res = usePotion(playable, 2337, 1);
 				break;
 			case 10001: // Dark Resist Potion, xml: 2340
-				res = usePotion(activeChar, 2340, 1);
+				res = usePotion(playable, 2340, 1);
 				break;
 			case 10002: // Divine Resist Potion, xml: 2339
-				res = usePotion(activeChar, 2339, 1);
+				res = usePotion(playable, 2339, 1);
 				break;
 			
 			// ELIXIR
@@ -205,7 +206,11 @@ public class Potions implements IItemHandler
 			case 8626:
 			case 8627:
 			{
-				// elixir of Life
+				if (!(playable instanceof L2PcInstance))
+				{
+					itemNotForPets(activeChar);
+					return;
+				}
 				byte expIndex = (byte) activeChar.getExpertiseIndex();
 				res = usePotion(activeChar, 2287, (expIndex > 5 ? expIndex : expIndex + 1));
 				break;
@@ -217,6 +222,11 @@ public class Potions implements IItemHandler
 			case 8632:
 			case 8633:
 			{
+				if (!(playable instanceof L2PcInstance))
+				{
+					itemNotForPets(activeChar);
+					return;
+				}
 				byte expIndex = (byte) activeChar.getExpertiseIndex();
 				// elixir of Strength
 				res = usePotion(activeChar, 2288, (expIndex > 5 ? expIndex : expIndex + 1));
@@ -229,6 +239,11 @@ public class Potions implements IItemHandler
 			case 8638:
 			case 8639:
 			{
+				if (!(playable instanceof L2PcInstance))
+				{
+					itemNotForPets(activeChar);
+					return;
+				}
 				byte expIndex = (byte) activeChar.getExpertiseIndex();
 				// elixir of cp
 				res = usePotion(activeChar, 2289, (expIndex > 5 ? expIndex : expIndex + 1));
@@ -236,16 +251,16 @@ public class Potions implements IItemHandler
 			}
 				// VALAKAS AMULETS
 			case 6652: // Amulet Protection of Valakas
-				res = usePotion(activeChar, 2231, 1);
+				res = usePotion(playable, 2231, 1);
 				break;
 			case 6653: // Amulet Flames of Valakas
-				res = usePotion(activeChar, 2223, 1);
+				res = usePotion(playable, 2223, 1);
 				break;
 			case 6654: // Amulet Flames of Valakas
-				res = usePotion(activeChar, 2233, 1);
+				res = usePotion(playable, 2233, 1);
 				break;
 			case 6655: // Amulet Slay Valakas
-				res = usePotion(activeChar, 2232, 1);
+				res = usePotion(playable, 2232, 1);
 				break;
 			
 			// HERBS
@@ -310,118 +325,168 @@ public class Potions implements IItemHandler
 			
 			// FISHERMAN POTIONS
 			case 8193: // Fisherman's Potion - Green
+				if (!(playable instanceof L2PcInstance))
+				{
+					itemNotForPets(activeChar);
+					return;
+				}
 				if (activeChar.getSkillLevel(1315) <= 3)
 				{
 					playable.destroyItem("Consume", item.getObjectId(), 1, null, false);
 					playable.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
 					return;
 				}
-				res = usePotion(activeChar, 2274, 1);
+				res = usePotion(playable, 2274, 1);
 				break;
 			case 8194: // Fisherman's Potion - Jade
+				if (!(playable instanceof L2PcInstance))
+				{
+					itemNotForPets(activeChar);
+					return;
+				}
 				if (activeChar.getSkillLevel(1315) <= 6)
 				{
 					playable.destroyItem("Consume", item.getObjectId(), 1, null, false);
 					playable.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
 					return;
 				}
-				res = usePotion(activeChar, 2274, 2);
+				res = usePotion(playable, 2274, 2);
 				break;
 			case 8195: // Fisherman's Potion - Blue
+				if (!(playable instanceof L2PcInstance))
+				{
+					itemNotForPets(activeChar);
+					return;
+				}
 				if (activeChar.getSkillLevel(1315) <= 9)
 				{
 					playable.destroyItem("Consume", item.getObjectId(), 1, null, false);
 					playable.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
 					return;
 				}
-				res = usePotion(activeChar, 2274, 3);
+				res = usePotion(playable, 2274, 3);
 				break;
 			case 8196: // Fisherman's Potion - Yellow
+				if (!(playable instanceof L2PcInstance))
+				{
+					itemNotForPets(activeChar);
+					return;
+				}
 				if (activeChar.getSkillLevel(1315) <= 12)
 				{
 					playable.destroyItem("Consume", item.getObjectId(), 1, null, false);
 					playable.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
 					return;
 				}
-				res = usePotion(activeChar, 2274, 4);
+				res = usePotion(playable, 2274, 4);
 				break;
 			case 8197: // Fisherman's Potion - Orange
+				if (!(playable instanceof L2PcInstance))
+				{
+					itemNotForPets(activeChar);
+					return;
+				}
 				if (activeChar.getSkillLevel(1315) <= 15)
 				{
 					playable.destroyItem("Consume", item.getObjectId(), 1, null, false);
 					playable.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
 					return;
 				}
-				res = usePotion(activeChar, 2274, 5);
+				res = usePotion(playable, 2274, 5);
 				break;
 			case 8198: // Fisherman's Potion - Purple
+				if (!(playable instanceof L2PcInstance))
+				{
+					itemNotForPets(activeChar);
+					return;
+				}
 				if (activeChar.getSkillLevel(1315) <= 18)
 				{
 					playable.destroyItem("Consume", item.getObjectId(), 1, null, false);
 					playable.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
 					return;
 				}
-				res = usePotion(activeChar, 2274, 6);
+				res = usePotion(playable, 2274, 6);
 				break;
 			case 8199: // Fisherman's Potion - Red
+				if (!(playable instanceof L2PcInstance))
+				{
+					itemNotForPets(activeChar);
+					return;
+				}
 				if (activeChar.getSkillLevel(1315) <= 21)
 				{
 					playable.destroyItem("Consume", item.getObjectId(), 1, null, false);
 					playable.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
 					return;
 				}
-				res = usePotion(activeChar, 2274, 7);
+				res = usePotion(playable, 2274, 7);
 				break;
 			case 8200: // Fisherman's Potion - White
+				if (!(playable instanceof L2PcInstance))
+				{
+					itemNotForPets(activeChar);
+					return;
+				}
 				if (activeChar.getSkillLevel(1315) <= 24)
 				{
 					playable.destroyItem("Consume", item.getObjectId(), 1, null, false);
 					playable.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
 					return;
 				}
-				res = usePotion(activeChar, 2274, 8);
+				res = usePotion(playable, 2274, 8);
 				break;
 			case 8201: // Fisherman's Potion - Black
-				res = usePotion(activeChar, 2274, 9);
+				if (!(playable instanceof L2PcInstance))
+				{
+					itemNotForPets(activeChar);
+					return;
+				}
+				res = usePotion(playable, 2274, 9);
 				break;
 			case 8202: // Fishing Potion
-				res = usePotion(activeChar, 2275, 1);
+				if (!(playable instanceof L2PcInstance))
+				{
+					itemNotForPets(activeChar);
+					return;
+				}
+				res = usePotion(playable, 2275, 1);
 				break;
 			
 			// Juices
 			// added by Z0mbie!
 			case 10260: // Haste Juice,xml:2429
-				res = usePotion(activeChar, 2429, 1);
+				res = usePotion(playable, 2429, 1);
 				break;
 			case 10261: // Accuracy Juice,xml:2430
-				res = usePotion(activeChar, 2430, 1);
+				res = usePotion(playable, 2430, 1);
 				break;
 			case 10262: // Critical Power Juice,xml:2431
-				res = usePotion(activeChar, 2431, 1);
+				res = usePotion(playable, 2431, 1);
 				break;
 			case 10263: // Critical Attack Juice,xml:2432
-				res = usePotion(activeChar, 2432, 1);
+				res = usePotion(playable, 2432, 1);
 				break;
 			case 10264: // Casting Speed Juice,xml:2433
-				res = usePotion(activeChar, 2433, 1);
+				res = usePotion(playable, 2433, 1);
 				break;
 			case 10265: // Evasion Juice,xml:2434
-				res = usePotion(activeChar, 2434, 1);
+				res = usePotion(playable, 2434, 1);
 				break;
 			case 10266: // Magic Power Juice,xml:2435
-				res = usePotion(activeChar, 2435, 1);
+				res = usePotion(playable, 2435, 1);
 				break;
 			case 10267: // Power Juice,xml:2436
-				res = usePotion(activeChar, 2436, 1);
+				res = usePotion(playable, 2436, 1);
 				break;
 			case 10268: // Speed Juice,xml:2437
-				res = usePotion(activeChar, 2437, 1);
+				res = usePotion(playable, 2437, 1);
 				break;
 			case 10269: // Defense Juice,xml:2438
-				res = usePotion(activeChar, 2438, 1);
+				res = usePotion(playable, 2438, 1);
 				break;
 			case 10270: // MP Consumption Juice,xml: 2439
-				res = usePotion(activeChar, 2439, 1);
+				res = usePotion(playable, 2439, 1);
 				break;
 			default:
 		}
@@ -437,11 +502,10 @@ public class Potions implements IItemHandler
 	 * @param itemId
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	private boolean isEffectReplaceable(L2PcInstance activeChar, Enum effectType, int itemId)
+	private boolean isEffectReplaceable(L2PlayableInstance playable, Enum<L2EffectType> effectType, int itemId)
 	{
-		L2Effect[] effects = activeChar.getAllEffects();
-		
+		L2Effect[] effects = playable.getAllEffects();
+		L2PcInstance activeChar = (L2PcInstance) ((playable instanceof L2PcInstance) ? playable : ((L2Summon) playable).getOwner());
 		if (effects == null)
 			return true;
 		
@@ -486,7 +550,7 @@ public class Potions implements IItemHandler
 				
 				return false;
 			}
-				
+			
 			activeChar.doSimultaneousCast(skill);
 				
 			if (activeChar instanceof L2PcInstance)
@@ -512,9 +576,15 @@ public class Potions implements IItemHandler
 				SystemMessage sm = new SystemMessage(SystemMessageId.PET_USES_S1);
 				sm.addString(skill.getName());
 				((L2PetInstance)(activeChar)).getOwner().sendPacket(sm);
+				return true;
 			}
 		}
 		return false;
+	}
+	
+	private void itemNotForPets(L2PcInstance activeChar)
+	{
+		activeChar.sendPacket(new SystemMessage(SystemMessageId.ITEM_NOT_FOR_PETS));
 	}
 	
 	/**

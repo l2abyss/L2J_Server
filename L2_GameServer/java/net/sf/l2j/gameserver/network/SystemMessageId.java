@@ -9080,10 +9080,10 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1519<br>
-	* Message: Your pet has been killed! Make sure you resurrect your pet within 20 minutes
-	* or your pet and all of it's items will disappear forever!
+	* Message: The pet has been killed. If you do not resurrect it within 24 hours,
+	*  the pet's body will disappear along with all the pet's items.
 	*/
-	MAKE_SURE_YOU_RESSURECT_YOUR_PET_WITHIN_20_MINUTES(1519),
+	MAKE_SURE_YOU_RESSURECT_YOUR_PET_WITHIN_24_HOURS(1519),
 
 	/**
 	* ID: 1520<br>

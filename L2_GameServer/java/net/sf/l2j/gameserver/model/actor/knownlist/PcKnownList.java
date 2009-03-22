@@ -43,6 +43,7 @@ import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreMsgSell;
 import net.sf.l2j.gameserver.network.serverpackets.RecipeShopMsg;
 import net.sf.l2j.gameserver.network.serverpackets.RelationChanged;
 import net.sf.l2j.gameserver.network.serverpackets.Ride;
+import net.sf.l2j.gameserver.network.serverpackets.ServerObjectInfo;
 import net.sf.l2j.gameserver.network.serverpackets.SpawnItem;
 import net.sf.l2j.gameserver.network.serverpackets.StaticObject;
 import net.sf.l2j.gameserver.network.serverpackets.VehicleInfo;
@@ -139,7 +140,10 @@ public class PcKnownList extends PlayableKnownList
             else if (object instanceof L2NpcInstance)
             {
                 if (Config.CHECK_KNOWN) getActiveChar().sendMessage("Added NPC: "+((L2NpcInstance) object).getName());
-                getActiveChar().sendPacket(new NpcInfo((L2NpcInstance) object, getActiveChar()));
+                if (((L2NpcInstance) object).getRunSpeed() == 0)
+                	getActiveChar().sendPacket(new ServerObjectInfo((L2NpcInstance) object, getActiveChar()));
+                else
+                	getActiveChar().sendPacket(new NpcInfo((L2NpcInstance) object, getActiveChar()));
             }
             else if (object instanceof L2Summon)
             {
@@ -148,7 +152,7 @@ public class PcKnownList extends PlayableKnownList
                 // Check if the L2PcInstance is the owner of the Pet
                 if (getActiveChar().equals(summon.getOwner()))
                 {
-                    getActiveChar().sendPacket(new PetInfo(summon));
+                    getActiveChar().sendPacket(new PetInfo(summon,0));
                     // The PetInfo packet wipes the PartySpelled (list of active  spells' icons).  Re-add them
                     summon.updateEffectIcons(true);
                     if (summon instanceof L2PetInstance)
@@ -157,7 +161,7 @@ public class PcKnownList extends PlayableKnownList
                     }
                 }
                 else
-                    getActiveChar().sendPacket(new NpcInfo(summon, getActiveChar()));
+                    getActiveChar().sendPacket(new NpcInfo(summon, getActiveChar(),0));
             }
             else if (object instanceof L2PcInstance)
             {	            	

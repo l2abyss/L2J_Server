@@ -19,6 +19,7 @@ import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
@@ -73,8 +74,8 @@ final class EffectBluff extends L2Effect
 			signx = 1;
 		if (getEffected().getY() > getEffector().getY())
 			signy = 1;
-		
-		getEffected().setRunning();
+		if (!(getEffected() instanceof L2PetInstance))
+			getEffected().setRunning();
 		getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(posX + (signx * 40), posY + (signy * 40), posZ, 0));
 		getEffected().sendMessage("You can feel Bluff's effect");
 		getEffected().setTarget(null);

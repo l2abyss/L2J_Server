@@ -17,7 +17,6 @@ package net.sf.l2j.gameserver.handler.itemhandlers;
 import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.base.Race;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
@@ -45,15 +44,10 @@ public class CharChangePotions implements IItemHandler
 	public void useItem(L2PlayableInstance playable, L2ItemInstance item)
 	{
 		int itemId = item.getItemId();
-		
-		L2PcInstance activeChar;
-		
-		if (playable instanceof L2PcInstance)
-			activeChar = (L2PcInstance) playable;
-		else if (playable instanceof L2PetInstance)
-			activeChar = ((L2PetInstance) playable).getOwner();
-		else
+		if (!(playable instanceof L2PcInstance))
 			return;
+		L2PcInstance activeChar = (L2PcInstance) playable;
+		
 		
 		if (activeChar.isAllSkillsDisabled() || activeChar.isCastingNow())
 		{

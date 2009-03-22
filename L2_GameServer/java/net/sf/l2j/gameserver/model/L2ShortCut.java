@@ -32,16 +32,17 @@ public class L2ShortCut
 	private final int _type;
 	private final int _id;
 	private final int _level;
+	private final int _characterType;
 
 	public L2ShortCut(int slotId, int pageId, int shortcutType,
-                      int shortcutId, int shortcutLevel, int unknown)
+                      int shortcutId, int shortcutLevel, int characterType)
 	{
 		_slot = slotId;
 		_page = pageId;
 		_type = shortcutType;
 		_id = shortcutId;
 		_level = shortcutLevel;
-        //_unk = unknown;
+		_characterType = characterType;
 	}
 
     public int getId()
@@ -67,5 +68,10 @@ public class L2ShortCut
     public int getType()
     {
         return _type;
+    }
+    
+    public int getCharacterType()
+    {
+    	return _characterType;
     }
 }

@@ -57,7 +57,7 @@ public abstract class L2Item
 	public static final int TYPE2_PET_HATCHLING = 7;
 	public static final int TYPE2_PET_STRIDER = 8;
 	public static final int TYPE2_PET_BABY = 9;
-	public static final int TYPE2_PET_GREATWOLF = 10;
+	public static final int TYPE2_PET_EVOLVEDWOLF = 10;
 	
 	public static final int SLOT_NONE = 0x0000;
 	public static final int SLOT_UNDERWEAR = 0x0001;
@@ -467,9 +467,9 @@ public abstract class L2Item
 	 * Returns if item is for Great wolf
 	 * @return boolean
 	 */
-	public boolean isForGreatWolf()
+	public boolean isForEvolvedWolf()
 	{
-		return (_type2 == TYPE2_PET_GREATWOLF);
+		return (_type2 == TYPE2_PET_EVOLVEDWOLF);
 	}
 	
 	/**

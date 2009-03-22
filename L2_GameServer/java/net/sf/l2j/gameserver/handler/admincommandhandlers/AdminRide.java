@@ -67,7 +67,7 @@ public class AdminRide implements IAdminCommandHandler
 				return false;
 			}
 			
-			activeChar.mount(_petRideId, 0);
+			activeChar.mount(_petRideId, 0, false);
 			
 			return false;
 		}

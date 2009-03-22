@@ -148,29 +148,9 @@ public class L2PetDataTable
 		return npcId == 12077;
 	}
 	
-	public static boolean isGreatWolf(int npcId)
+	public static boolean isEvolvedWolf(int npcId)
 	{
-		return npcId == 16030;
-	}
-	
-	public static boolean isWGreatWolf(int npcId)
-	{
-		return npcId == 16037;
-	}
-	
-	public static boolean isBlackWolf(int npcId)
-	{
-		return npcId == 16025;
-	}
-	
-	public static boolean isFenrirWolf(int npcId)
-	{
-		return npcId == 16041;
-	}
-	
-	public static boolean isWFenrirWolf(int npcId)
-	{
-		return npcId == 16042;
+		return npcId == 16030 || npcId == 16037 || npcId == 16025 || npcId == 16041 || npcId == 16042;
 	}
 	
 	public static boolean isSinEater(int npcId)
@@ -185,7 +165,7 @@ public class L2PetDataTable
 	
 	public static boolean isStrider(int npcId)
 	{
-		return npcId > 12525 && npcId < 12529;
+		return (npcId > 12525 && npcId < 12529) || (npcId > 16037 && npcId < 16041);
 	}
 	
 	public static boolean isWyvern(int npcId)
@@ -210,6 +190,7 @@ public class L2PetDataTable
 			case 2515:
 			case 4038:
 			case 5168:
+			case 5169:
 			case 6316:
 			case 7582:
 			case 9668:
@@ -229,27 +210,7 @@ public class L2PetDataTable
 		return itemId == 2515;
 	}
 	
-	public static boolean isGreatWolfFood(int itemId)
-	{
-		return itemId == 9668;
-	}
-	
-	public static boolean isWGreatWolfFood(int itemId)
-	{
-		return itemId == 9668;
-	}
-	
-	public static boolean isBlackWolfFood(int itemId)
-	{
-		return itemId == 9668;
-	}
-	
-	public static boolean isFenrirWolfFood(int itemId)
-	{
-		return itemId == 9668;
-	}
-	
-	public static boolean isWFenrirWolfFood(int itemId)
+	public static boolean isEvolvedWolfFood(int itemId)
 	{
 		return itemId == 9668;
 	}
@@ -266,7 +227,7 @@ public class L2PetDataTable
 	
 	public static boolean isStriderFood(int itemId)
 	{
-		return itemId == 5168;
+		return itemId == 5168 || itemId == 5169;
 	}
 	
 	public static boolean isWyvernFood(int itemId)
@@ -284,41 +245,49 @@ public class L2PetDataTable
 		return itemId == 10425;
 	}
 	
-	public static int getFoodItemId(int npcId)
+	public static int[] getFoodItemId(int npcId)
 	{
 		switch (npcId)
 		{
 			case 12077:// Wolf
-				return 2515;
+			case 12564://Sin Eater
+				return new int[]{2515};
+				
 			case 16030:// Great Wolf 
 			case 16025:// Black Wolf
 			case 16037:// White Great Wolf	
 			case 16041:// Fenrir  
 			case 16042:// White Fenrir  
-				return 9668;
-			case 12564://Sin Eater
-				return 2515;
+				return new int[]{9668};
 				
 			case 12311:// hatchling of wind
 			case 12312:// hatchling of star
 			case 12313:// hatchling of twilight
-				return 4038;
+				return new int[]{4038};
 				
 			case 12526:// wind strider
 			case 12527:// Star strider
 			case 12528:// Twilight strider
-				return 5168;
+			case 16038:// red wind strider
+			case 16039:// red Star strider
+			case 16040:// red Twilight strider
+				return new int[]{5168,5169};
+				
+			case 12621: // wyvern
+				return new int[]{6316};
 				
 			case 12780:// Baby Buffalo
 			case 12782:// Baby Cougar
 			case 12781:// Baby Kookaburra
-				return 7582;
+				
+				return new int[]{7582};
 			case 16034:// Improved Baby Buffalo
 			case 16036:// Improved Baby Cougar	
 			case 16035:// Improved Baby Kookaburra
-				return 10425;
+				return new int[]{10425};
+				
 			default:
-				return 0;
+				return new int[]{0};
 		}
 	}
 	
@@ -327,25 +296,29 @@ public class L2PetDataTable
 		switch (itemId)
 		{
 			case 2375: // Wolf
-			case 3500:
-			case 3501:
-			case 3502: // hatchlings
-			case 4422:
-			case 4423:
-			case 4424: // striders
-			case 4425: //Sin Eater
-			case 6648:
-			case 6649:
-			case 6650:
-			case 10311:
-			case 10312:
-			case 10313: // Babies
-			case 10163: // Great Wolf
-			case 10307: // White Great Wolf
-			case 9882: // Black Wolf
+			case 3500: // hatchling of wind
+			case 3501: // hatchling of star
+			case 3502: // hatchling of twilight
+			case 4422: // strider of wind
+			case 4423: // strider of star
+			case 4424: // strider of dusk
+			case 4425: // Sin Eater
+			case 6648: // baby buffalo
+			case 6649: // baby cougar
+			case 6650: // baby kookaburra
+			case 8663: // Wyvern
+			case 9882: // Great Wolf
+			case 10163: // Black Wolf
+			case 10307: // Great Snow Wolf
+			case 10308: // red strider of wind
+			case 10309: // red strider of star
+			case 10310: // red strider of dusk
+			case 10311: // improved buffalo
+			case 10312: // improved cougar
+			case 10313: // improved kookaburra
 			case 10426: // Fenrir
 			case 10611: // White Fenrir
-			case 8663: // Wyvern
+			
 			{
 				return true;
 			}
@@ -365,12 +338,12 @@ public class L2PetDataTable
 				{
 					2375
 				};
-			case 16025:// Black Wolf 
+			case 16025:// Great Wolf
 				return new int[]
 				{
 					9882
 				};
-			case 16030:// Great Wolf 
+			case 16030:// Black Wolf 
 				return new int[]
 				{
 					10163
@@ -407,9 +380,12 @@ public class L2PetDataTable
 			case 12526:// wind strider
 			case 12527:// Star strider
 			case 12528:// Twilight strider
+			case 16038: // red strider of wind
+			case 16039: // red strider of star
+			case 16040: // red strider of dusk
 				return new int[]
 				{
-					4422, 4423, 4424
+					4422, 4423, 4424, 10308, 10309, 10310
 				};
 				
 			case 12621:// Wyvern
@@ -451,6 +427,10 @@ public class L2PetDataTable
 				|| npcId == 12621 // wyvern
 				|| npcId == 16037 // Great Snow Wolf
 				|| npcId == 16041 // Fenrir Wolf
-				|| npcId == 16042; // White Fenrir Wolf
+				|| npcId == 16042 // White Fenrir Wolf
+				|| npcId == 16038 // Red Wind Strider
+				|| npcId == 16039 // Red Star Strider
+				|| npcId == 16040 // Red Twilight Strider
+				|| npcId == 16040; // horse
 	}
 }

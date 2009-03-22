@@ -22,7 +22,6 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
-import net.sf.l2j.gameserver.network.serverpackets.PetInfo;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
 /**
@@ -77,10 +76,8 @@ public final class RequestChangePetName extends L2GameClientPacket
 		}
 
 		pet.setName(_name);
-		pet.broadcastPacket(new NpcInfo(pet, activeChar));
-		activeChar.sendPacket(new PetInfo(pet));
-		// The PetInfo packet wipes the PartySpelled (list of active spells' icons).  Re-add them
-		pet.updateEffectIcons(true);
+		pet.broadcastPacket(new NpcInfo(pet, activeChar,1));
+		pet.updateAndBroadcastStatus(1);
 
 		// set the flag on the control item to say that the pet has a name
 		if (pet instanceof L2PetInstance)

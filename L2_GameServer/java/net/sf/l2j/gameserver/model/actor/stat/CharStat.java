@@ -158,7 +158,7 @@ public class CharStat
 	{
 		if (_activeChar == null)
 			return 1;
-		
+
 		return (float) ((1.1) * getPAtkSpd() / _activeChar.getTemplate().basePAtkSpd);
 	}
 
@@ -433,7 +433,7 @@ public class CharStat
 		return (int) calcStat(Stats.STAT_MEN, _activeChar.getTemplate().baseMEN, null, null);
 	}
 
-	public final float getMovementSpeedMultiplier()
+	public float getMovementSpeedMultiplier()
 	{
     	if (_activeChar == null)
     		return 1;
@@ -532,7 +532,6 @@ public class CharStat
         if  (Config.L2JMOD_CHAMPION_ENABLE && _activeChar.isChampion())
     		bonusAtk = Config.L2JMOD_CHAMPION_SPD_ATK;
 		int val = (int) (calcStat(Stats.POWER_ATTACK_SPEED, _activeChar.getTemplate().basePAtkSpd * bonusAtk, null, null) / _activeChar.getArmourExpertisePenalty());
-		
 		return val;
 	}
 
@@ -665,7 +664,7 @@ public class CharStat
 	}
 
 	/** Return the WalkSpeed (base+modifier) of the L2Character. */
-	public final int getWalkSpeed()
+	public int getWalkSpeed()
 	{
     	
 		if (_activeChar == null)

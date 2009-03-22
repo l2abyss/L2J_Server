@@ -31,20 +31,28 @@ public final class SetupGauge extends L2GameServerPacket
 
 	private int _dat1;
 	private int _time;
+	private int _time2;
 
 	public SetupGauge(int dat1, int time)
 	{
-		_dat1 = dat1;// color  0-blue   1-red  2-cyan  3-
+		_dat1 = dat1;// color  0-blue   1-red  2-cyan  3-green
 		_time = time;
+		_time2 = time;
 	}
 
+	public SetupGauge (int color, int currentTime, int maxTime)
+	{
+		_dat1 = color;// color  0-blue   1-red  2-cyan  3-green
+		_time = currentTime;
+		_time2 = maxTime;
+	}
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x6b);
 		writeD(_dat1);
 		writeD(_time);
-		writeD(_time); //c2
+		writeD(_time2);
 	}
 
 	/* (non-Javadoc)

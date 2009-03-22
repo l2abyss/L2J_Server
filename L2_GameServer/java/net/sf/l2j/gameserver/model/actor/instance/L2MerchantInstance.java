@@ -28,6 +28,7 @@ import net.sf.l2j.gameserver.network.serverpackets.BuyList;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SellList;
+import net.sf.l2j.gameserver.network.serverpackets.SetupGauge;
 import net.sf.l2j.gameserver.network.serverpackets.ShopPreviewList;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
@@ -220,7 +221,7 @@ public class L2MerchantInstance extends L2FolkInstance
 
     public final void tryRentPet(L2PcInstance player, int val)
     {
-        if (player == null || player.getPet() != null || player.isMounted() || player.isRentedPet())
+        if (player == null || player.getPet() != null || player.isMounted() || player.isRentedPet() || player.isTransformed() || player.isCursedWeaponEquipped())
             return;
         if(!player.disarmWeapons()) return;
 
@@ -247,7 +248,9 @@ public class L2MerchantInstance extends L2FolkInstance
 
         if (!player.reduceAdena("Rent", (int) price, player.getLastFolkNPC(), true)) return;
 
-        player.mount(petId, 0);
+        player.mount(petId, 0, false);
+        SetupGauge sg = new SetupGauge(3, time*1000);
+        player.sendPacket(sg);
         player.startRentPet(time);
     }
 

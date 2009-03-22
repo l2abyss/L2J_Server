@@ -64,26 +64,39 @@ public final class ShortCutRegister extends L2GameServerPacket
         {
         case L2ShortCut.TYPE_ITEM: //1
         	writeD(_shortcut.getId());
+        	writeD(_shortcut.getCharacterType());
+        	writeD(-1); // here should be item type
+        	writeD(0x00);  // unknown
+        	writeD(0x00);  // unknown
+        	writeD(0x00);  // item augment id
         	break;
         case L2ShortCut.TYPE_SKILL: //2
         	writeD(_shortcut.getId());
         	writeD(_shortcut.getLevel());
         	writeC(0x00); // C5
+        	writeD(_shortcut.getCharacterType());
         	break;
-        case L2ShortCut.TYPE_ACTION: //3
-        	writeD(_shortcut.getId());
-        	break;
-        case L2ShortCut.TYPE_MACRO: //4
-        	writeD(_shortcut.getId());
-        	break;
-        case L2ShortCut.TYPE_RECIPE: //5
-        	writeD(_shortcut.getId());
-        	break;
+       /** these are same as default case, no need to duplicate, enable if packet get changed
+        */ 
+       /*	case L2ShortCut.TYPE_ACTION: //3
+        *		writeD(_shortcut.getId());
+        *		writeD(_shortcut.getUserCommand());
+        *		break;
+        *	case L2ShortCut.TYPE_MACRO: //4
+        *		writeD(_shortcut.getId());
+        *		writeD(_shortcut.getUserCommand());
+        *		break;
+        *	case L2ShortCut.TYPE_RECIPE: //5
+        *		writeD(_shortcut.getId());
+        *		writeD(_shortcut.getUserCommand());
+        *		break;
+        */
         default:
+        {
         	writeD(_shortcut.getId());
+        	writeD(_shortcut.getCharacterType());
         }
-
-		writeD(1);//??
+        }
 	}
 
 	/* (non-Javadoc)

@@ -729,6 +729,13 @@ abstract class AbstractAI implements Ctrl
 	
 	public void setAutoAttacking(boolean isAutoAttacking)
 	{
+		if (_actor instanceof L2Summon)
+		{
+			L2Summon summon = (L2Summon) _actor;
+			if (summon.getOwner() != null)
+				summon.getOwner().getAI().setAutoAttacking(isAutoAttacking);
+			return;
+		}
 		_clientAutoAttacking = isAutoAttacking;
 	}
 	
@@ -740,8 +747,17 @@ abstract class AbstractAI implements Ctrl
 	 */
 	public void clientStartAutoAttack()
 	{
+		if (_actor instanceof L2Summon)
+		{
+			L2Summon summon = (L2Summon) _actor;
+			if (summon.getOwner() != null)
+				summon.getOwner().getAI().clientStartAutoAttack();
+			return;
+		}
 		if (!isAutoAttacking())
 		{
+			if (_actor instanceof L2PcInstance && ((L2PcInstance)_actor).getPet() != null)
+				((L2PcInstance)_actor).getPet().broadcastPacket(new AutoAttackStart(((L2PcInstance)_actor).getPet().getObjectId()));
 			// Send a Server->Client packet AutoAttackStart to the actor and all L2PcInstance in its _knownPlayers
 			_actor.broadcastPacket(new AutoAttackStart(_actor.getObjectId()));
 			setAutoAttacking(true);
@@ -757,6 +773,13 @@ abstract class AbstractAI implements Ctrl
 	 */
 	public void clientStopAutoAttack()
 	{
+		if (_actor instanceof L2Summon)
+		{
+			L2Summon summon = (L2Summon) _actor;
+			if (summon.getOwner() != null)
+				summon.getOwner().getAI().clientStopAutoAttack();
+			return;
+		}
 		if (_actor instanceof L2PcInstance)
 		{
 			if (!AttackStanceTaskManager.getInstance().getAttackStanceTask(_actor) && isAutoAttacking())
@@ -765,8 +788,8 @@ abstract class AbstractAI implements Ctrl
 		else if (isAutoAttacking())
 		{
 			_actor.broadcastPacket(new AutoAttackStop(_actor.getObjectId()));
+			setAutoAttacking(false);
 		}
-		setAutoAttacking(false);
 	}
 	
 	/**

@@ -59,7 +59,6 @@ public class AttackStanceTaskManager
 	
 	public void addAttackStanceTask(L2Character actor)
 	{
-		_attackStanceTasks.put(actor, System.currentTimeMillis());
 		if (actor instanceof L2Summon)
 		{
 			L2Summon summon = (L2Summon) actor;
@@ -72,15 +71,26 @@ public class AttackStanceTaskManager
 				if (cubic.getId() != L2CubicInstance.LIFE_CUBIC)
 					cubic.doAction();
 		}
+		_attackStanceTasks.put(actor, System.currentTimeMillis());
 	}
 	
 	public void removeAttackStanceTask(L2Character actor)
 	{
+		if (actor instanceof L2Summon)
+		{
+			L2Summon summon = (L2Summon) actor;
+			actor = summon.getOwner();
+		}
 		_attackStanceTasks.remove(actor);
 	}
 	
 	public boolean getAttackStanceTask(L2Character actor)
 	{
+		if (actor instanceof L2Summon)
+		{
+			L2Summon summon = (L2Summon) actor;
+			actor = summon.getOwner();
+		}
 		return _attackStanceTasks.containsKey(actor);
 	}
 	
@@ -104,6 +114,8 @@ public class AttackStanceTaskManager
 							if ((current - _attackStanceTasks.get(actor)) > 15000)
 							{
 								actor.broadcastPacket(new AutoAttackStop(actor.getObjectId()));
+								if (actor instanceof L2PcInstance && ((L2PcInstance)actor).getPet() != null)
+									((L2PcInstance)actor).getPet().broadcastPacket(new AutoAttackStop(((L2PcInstance)actor).getPet().getObjectId()));
 								actor.getAI().setAutoAttacking(false);
 								_attackStanceTasks.remove(actor);
 							}

@@ -20,7 +20,7 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.base.Experience;
 import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.network.serverpackets.PetInfo;
+import net.sf.l2j.gameserver.network.serverpackets.SocialAction;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Stats;
@@ -48,7 +48,7 @@ public class PetStat extends SummonStat
         su.addAttribute(StatusUpdate.EXP, getExp());
         getActiveChar().broadcastPacket(su);
         */
-        getActiveChar().broadcastPacket(new PetInfo(getActiveChar()));
+        getActiveChar().updateAndBroadcastStatus(1);
         // The PetInfo packet wipes the PartySpelled (list of active  spells' icons).  Re-add them
         getActiveChar().updateEffectIcons(true);
 
@@ -62,7 +62,7 @@ public class PetStat extends SummonStat
 
         SystemMessage sm = new SystemMessage(SystemMessageId.PET_EARNED_S1_EXP);
         sm.addNumber((int)addToExp);
-
+        getActiveChar().updateAndBroadcastStatus(1);
         getActiveChar().getOwner().sendPacket(sm);
 
         return true;
@@ -85,11 +85,9 @@ public class PetStat extends SummonStat
         su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
         su.addAttribute(StatusUpdate.MAX_MP, getMaxMp());
         getActiveChar().broadcastPacket(su);
-
+        getActiveChar().broadcastPacket(new SocialAction(getActiveChar().getObjectId(), 15));
         // Send a Server->Client packet PetInfo to the L2PcInstance
-        getActiveChar().getOwner().sendPacket(new PetInfo(getActiveChar()));
-        // The PetInfo packet wipes the PartySpelled (list of active  spells' icons).  Re-add them
-        getActiveChar().updateEffectIcons(true);
+        getActiveChar().updateAndBroadcastStatus(1);
 
         if (getActiveChar().getControlItem() != null)
         	getActiveChar().getControlItem().setEnchantLevel(getLevel());
@@ -129,7 +127,7 @@ public class PetStat extends SummonStat
         super.setLevel(value);
 
         getActiveChar().setPetData(L2PetDataTable.getInstance().getPetData(getActiveChar().getTemplate().npcId, getLevel()));
-        getActiveChar().startFeed( false );
+        getActiveChar().startFeed();
 
         if (getActiveChar().getControlItem() != null)
         	getActiveChar().getControlItem().setEnchantLevel(getLevel());
@@ -190,9 +188,33 @@ public class PetStat extends SummonStat
     @Override
 	public int getEvasionRate(L2Character target) { return (int)calcStat(Stats.EVASION_RATE, getActiveChar().getPetData().getPetEvasion(), target, null); }
     @Override
-	public int getRunSpeed() { return (int)calcStat(Stats.RUN_SPEED, getActiveChar().getPetData().getPetSpeed(), null, null); }
+    public int getRunSpeed() { return (int)calcStat(Stats.RUN_SPEED, getActiveChar().getPetData().getPetSpeed(), null, null); }
     @Override
-	public int getPAtkSpd() { return (int)calcStat(Stats.POWER_ATTACK_SPEED, getActiveChar().getPetData().getPetAtkSpeed(), null, null); }
+	public int getWalkSpeed() { return  getRunSpeed()/2; }
     @Override
-	public int getMAtkSpd() { return  (int)calcStat(Stats.MAGIC_ATTACK_SPEED, getActiveChar().getPetData().getPetCastSpeed(), null, null); }
+	public float getMovementSpeedMultiplier()
+	{
+    	if (getActiveChar() == null)
+    		return 1;
+    	float val = getRunSpeed() * 1f / getActiveChar().getPetData().getPetSpeed();
+		if (!getActiveChar().isRunning())
+			val = val/2;
+		return val;
+	}
+    @Override
+	public int getPAtkSpd()
+    {
+    	int val = (int)calcStat(Stats.POWER_ATTACK_SPEED, getActiveChar().getPetData().getPetAtkSpeed(), null, null);
+		if (!getActiveChar().isRunning())
+			val =val/2;
+    	return  val;
+    }
+    @Override
+	public int getMAtkSpd()
+    {
+    	int val = (int)calcStat(Stats.MAGIC_ATTACK_SPEED, getActiveChar().getPetData().getPetCastSpeed(), null, null);
+		if (!getActiveChar().isRunning())
+			val =val/2;
+    	return  val;
+    }
 }

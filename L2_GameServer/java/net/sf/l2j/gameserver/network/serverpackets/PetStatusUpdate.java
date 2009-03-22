@@ -52,7 +52,7 @@ public class PetStatusUpdate extends L2GameServerPacket
 		writeD(_summon.getX());
 		writeD(_summon.getY());
 		writeD(_summon.getZ());
-		writeS(_summon.getTitle());
+		writeS("");
 		writeD(_curFed);
 		writeD(_maxFed);
 		writeD((int)_summon.getCurrentHp());

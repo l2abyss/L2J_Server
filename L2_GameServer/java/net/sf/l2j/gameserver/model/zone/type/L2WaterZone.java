@@ -21,6 +21,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
+import net.sf.l2j.gameserver.network.serverpackets.ServerObjectInfo;
 
 public class L2WaterZone extends L2ZoneType
 {
@@ -36,9 +37,6 @@ public class L2WaterZone extends L2ZoneType
 		
 		if (character instanceof L2PcInstance)
 		{
-			if (((L2PcInstance) character).isMounted())
-				((L2PcInstance) character).dismount();
-			
 			if (((L2PcInstance) character).isTransformed() && !((L2PcInstance) character).isCursedWeaponEquipped())
 			{
 				character.stopTransformation(null);
@@ -54,7 +52,12 @@ public class L2WaterZone extends L2ZoneType
 			//synchronized (character.getKnownList().getKnownPlayers())
 			{
 				for (L2PcInstance player : plrs)
-					player.sendPacket(new NpcInfo((L2NpcInstance) character, player));
+				{
+					if (character.getRunSpeed() == 0)
+						player.sendPacket(new ServerObjectInfo((L2NpcInstance)character, player));
+					else
+						player.sendPacket(new NpcInfo((L2NpcInstance) character, player));
+				}
 			}
 		}
 		
@@ -85,7 +88,12 @@ public class L2WaterZone extends L2ZoneType
 			//synchronized (character.getKnownList().getKnownPlayers())
 			{
 				for (L2PcInstance player : plrs)
-					player.sendPacket(new NpcInfo((L2NpcInstance) character, player));
+				{
+					if (character.getRunSpeed() == 0)
+						player.sendPacket(new ServerObjectInfo((L2NpcInstance)character, player));
+					else
+						player.sendPacket(new NpcInfo((L2NpcInstance) character, player));
+				}
 			}
 		}
 	}

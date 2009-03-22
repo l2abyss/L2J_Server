@@ -31,9 +31,8 @@ public final class RequestShortCutReg extends L2GameClientPacket
 	private int _id;
 	private int _slot;
 	private int _page;
-	private int _unk;
-	@SuppressWarnings("unused")
-	private int _userShortCut;
+	private int _lvl;
+	private int _characterType; // 1 - player, 2 - pet
 
 
 	@Override
@@ -42,8 +41,8 @@ public final class RequestShortCutReg extends L2GameClientPacket
 		_type = readD();
 		int slot = readD();
 		_id = readD();
-		_unk = readD();
-		_userShortCut = readD();
+		_lvl = readD();
+		_characterType = readD();
 
 		_slot = slot % 12;
 		_page = slot / 12;
@@ -64,20 +63,16 @@ public final class RequestShortCutReg extends L2GameClientPacket
 			case 0x04:	// macro
             case 0x05:  // recipe
 			{
-				L2ShortCut sc = new L2ShortCut(_slot, _page, _type, _id, -1, _unk);
+				L2ShortCut sc = new L2ShortCut(_slot, _page, _type, _id, _lvl, _characterType);
 				sendPacket(new ShortCutRegister(sc));
 				activeChar.registerShortCut(sc);
 				break;
 			}
 			case 0x02:	// skill
 			{
-				int level = activeChar.getSkillLevel( _id );
-				if (level > 0)
-				{
-					L2ShortCut sc = new L2ShortCut(_slot, _page, _type, _id, level, _unk);
-					sendPacket(new ShortCutRegister(sc));
-					activeChar.registerShortCut(sc);
-				}
+				L2ShortCut sc = new L2ShortCut(_slot, _page, _type, _id,  _lvl, _characterType);
+				sendPacket(new ShortCutRegister(sc));
+				activeChar.registerShortCut(sc);
 				break;
 			}
 		}
