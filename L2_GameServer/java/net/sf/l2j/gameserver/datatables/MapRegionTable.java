@@ -86,7 +86,7 @@ public class MapRegionTable
 			{
 				region = rset.getInt(1);
 				
-				for (int j = 0; j < 10; j++)
+				for (int j = 0; j < 11; j++)
 				{
 					_regions[j][region] = rset.getInt(j + 2);
 					count2++;

@@ -95,6 +95,7 @@ import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.StopMove;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.TeleportToLocation;
+import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.network.serverpackets.FlyToLocation.FlyType;
 import net.sf.l2j.gameserver.pathfinding.AbstractNodeLoc;
 import net.sf.l2j.gameserver.pathfinding.PathFinding;
@@ -2491,6 +2492,8 @@ public abstract class L2Character extends L2Object
 				_flyType = FlyType.valueOf(_skill.getFlyType());
 
 				broadcastPacket(new FlyToLocation(_actor,_target,_flyType));
+				setXYZ(_target.getX(), _target.getY(), _target.getZ());
+				broadcastPacket(new ValidateLocation(_actor));
 			}
 			catch (Exception e)
 			{
