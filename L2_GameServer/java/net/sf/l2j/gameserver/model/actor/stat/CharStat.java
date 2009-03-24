@@ -438,6 +438,10 @@ public class CharStat
 	{
     	if (_activeChar == null)
     		return 1;
+    	
+    	if (_activeChar instanceof L2PcInstance && ((L2PcInstance)_activeChar).isMounted())
+    		return getRunSpeed() * 1f / L2PetDataTable.getInstance().getPetData(
+    				((L2PcInstance)_activeChar).getMountNpcId(), ((L2PcInstance)_activeChar).getMountLevel()).getPetSpeed();
 
 		return getRunSpeed() * 1f / _activeChar.getTemplate().baseRunSpd;
 	}

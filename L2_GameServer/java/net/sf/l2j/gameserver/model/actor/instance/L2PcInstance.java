@@ -6233,12 +6233,12 @@ public final class L2PcInstance extends L2PlayableInstance
         Ride mount = new Ride(this, true, npcId);
         if (setMount(npcId, getLevel(), mount.getMountType()))
         {
+        	clearPetData();
         	setMountObjectID(controlItemObjId);
         	broadcastPacket(mount);
         
         	// Notify self and others about speed change
         	broadcastUserInfo();
-        	clearPetData();
         	if (useFood)
         		startFeed(npcId);
         	return true;
