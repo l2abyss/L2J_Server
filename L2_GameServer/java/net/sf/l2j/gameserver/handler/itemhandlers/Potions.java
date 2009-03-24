@@ -47,7 +47,7 @@ public class Potions implements IItemHandler
 	{
 		65, 725, 726, 727, 728, 734, 735, 1060, 1061, 1073,
 		1374, 1375, 1539, 1540, 5591, 5592, 6035, 6036,
-		6652, 6553, 6554, 6555, 8193, 8194, 8195, 8196,
+		6652, 6653, 6654, 6655, 8193, 8194, 8195, 8196,
 		8197, 8198, 8199, 8200, 8201, 8202, 8600, 8601,
 		8602, 8603, 8604, 8605, 8606, 8607,
 		8608, 8609, 8610, 8611, 8612, 8613, 8614, 10155, 10157,
@@ -254,7 +254,7 @@ public class Potions implements IItemHandler
 				res = usePotion(playable, 2231, 1);
 				break;
 			case 6653: // Amulet Flames of Valakas
-				res = usePotion(playable, 2223, 1);
+				res = usePotion(playable, 2233, 1);
 				break;
 			case 6654: // Amulet Flames of Valakas
 				res = usePotion(playable, 2233, 1);
