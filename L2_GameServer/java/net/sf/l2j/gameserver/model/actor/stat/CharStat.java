@@ -121,6 +121,7 @@ public class CharStat
 				case STAT_MEN:
 				case STAT_STR:
 				case STAT_WIT:
+				case WEIGHT_LIMIT:
 					env.value = 1;
 			}			
 		}

@@ -117,6 +117,26 @@ public class AutoChatHandler implements SpawnListener
         }
     }
 
+	public void reload()
+	{
+		// unregister all registered spawns
+		for (AutoChatInstance aci : _registeredChats.values())
+		{
+			if (aci != null)
+			{
+				// clear timer
+				if (aci._chatTask != null)
+					aci._chatTask.cancel(true);
+				this.removeChat(aci);
+			}
+		}
+		
+		// create clean list
+		_registeredChats = new FastMap<Integer, AutoChatInstance>();
+		
+		// load
+		restoreChatData();
+	}
     public static AutoChatHandler getInstance()
     {
         if (_instance == null) _instance = new AutoChatHandler();

@@ -170,6 +170,7 @@ public enum Stats
 	TRANSFER_DAMAGE_PERCENT("transDam"),
 	
 	MAX_LOAD("maxLoad"),
+	WEIGHT_LIMIT("weightLimit"),
 	
 	PATK_PLANTS("pAtk-plants"),
 	PATK_INSECTS("pAtk-insects"),

@@ -98,6 +98,29 @@ public class AutoSpawnHandler
 		return _registeredSpawns.size();
 	}
 
+	public void reload()
+	{
+		// stop all timers
+		for (ScheduledFuture<?> sf : _runningSpawns.values())
+		{
+			if (sf != null)
+				sf.cancel(true);
+		}
+		// unregister all registered spawns
+		for (AutoSpawnInstance asi : _registeredSpawns.values())
+		{
+			if (asi != null)
+				this.removeSpawn(asi);
+		}
+		
+		// create clean list
+		_registeredSpawns = new FastMap<Integer, AutoSpawnInstance>();
+		_runningSpawns = new FastMap<Integer, ScheduledFuture<?>>();
+		
+		// load
+		restoreSpawnData();
+	}
+	
 	private void restoreSpawnData()
 	{
 		int numLoaded = 0;

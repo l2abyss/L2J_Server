@@ -161,7 +161,8 @@ public class RequestRecordInfo extends L2GameClientPacket
 						// MoveToPawn/CharMoveToLocation and AutoAttackStart to
 						// the L2PcInstance
 						L2Character obj = (L2Character) object;
-						obj.getAI().describeStateToPlayer(_activeChar);
+						if (obj.getAI() != null)
+							obj.getAI().describeStateToPlayer(_activeChar);
 					}
 				}
 			}

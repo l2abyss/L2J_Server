@@ -56,6 +56,7 @@ import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.StopMove;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
+import net.sf.l2j.gameserver.skills.Stats;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.item.L2EtcItemType;
@@ -1120,6 +1121,7 @@ public class L2PetInstance extends L2Summon
 		if (maxLoad > 0)
 		{
 			int weightproc = getCurrentLoad() * 1000 / maxLoad;
+			weightproc*=(int)calcStat(Stats.WEIGHT_LIMIT, weightproc, this, null);
 			int newWeightPenalty;
 			if (weightproc < 500 || getOwner().getDietMode())
 			{

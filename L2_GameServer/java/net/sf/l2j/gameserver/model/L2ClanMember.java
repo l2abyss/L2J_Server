@@ -129,6 +129,8 @@ public class L2ClanMember
 			}
 			if (_clan.getLevel() > 3 && player.isClanLeader())
 				SiegeManager.getInstance().addSiegeSkills(player);
+			if (player.isClanLeader())
+				_clan.setLeader(this);
 		}
 
 		_player = player;

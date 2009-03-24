@@ -323,6 +323,8 @@ public class L2Clan
 	public void updateClanMember(L2PcInstance player)
 	{
 		L2ClanMember member = new L2ClanMember(player);
+		if (player.isClanLeader())
+			setLeader(member);
 
 		addClanMember(member);
 	}

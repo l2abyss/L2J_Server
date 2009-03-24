@@ -1915,6 +1915,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		if (maxLoad > 0)
 		{
 			int weightproc = getCurrentLoad() * 1000 / maxLoad;
+			weightproc*=(int)calcStat(Stats.WEIGHT_LIMIT, weightproc, this, null);
 			int newWeightPenalty;
 			if (weightproc < 500 || _dietMode)
 			{
@@ -10718,6 +10719,9 @@ public final class L2PcInstance extends L2PlayableInstance
 				L2ClanMember clanMember = getClan().getClanMember(getName());
 				if (clanMember != null)
 					clanMember.setPlayerInstance(null);
+				if (isClanLeader())
+					getClan().getLeader().setPlayerInstance(null);
+					
 			}
 			catch (Exception e)
 			{
