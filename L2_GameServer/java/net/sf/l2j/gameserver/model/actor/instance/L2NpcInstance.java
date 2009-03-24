@@ -301,7 +301,7 @@ public class L2NpcInstance extends L2Character
 	@Override
 	public boolean isAttackable()
 	{
-		return true;
+		return Config.ALT_ATTACKABLE_NPCS;
 	}
 	
 	/**

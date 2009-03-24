@@ -573,6 +573,7 @@ public final class Config
 	
 	public static boolean	ANNOUNCE_MAMMON_SPAWN;
 	public static boolean	ALT_MOB_AGRO_IN_PEACEZONE;
+	public static boolean	ALT_ATTACKABLE_NPCS;
 	public static boolean	ALT_GAME_VIEWNPC;
 	public static int		MAX_DRIFT_RANGE;
     public static boolean	DEEPBLUE_DROP_RULES;
@@ -1647,7 +1648,8 @@ public final class Config
 	                NPC.load(is);
 	                
 	                ANNOUNCE_MAMMON_SPAWN					= Boolean.parseBoolean(NPC.getProperty("AnnounceMammonSpawn", "True"));
-	                ALT_MOB_AGRO_IN_PEACEZONE				= Boolean.parseBoolean(NPC.getProperty("AltMobAgroInPeaceZone", "true"));
+	                ALT_MOB_AGRO_IN_PEACEZONE				= Boolean.parseBoolean(NPC.getProperty("AltMobAgroInPeaceZone", "True"));
+	                ALT_ATTACKABLE_NPCS						= Boolean.parseBoolean(NPC.getProperty("AltAttackableNpcs", "True"));
 	                ALT_GAME_VIEWNPC						= Boolean.parseBoolean(NPC.getProperty("AltGameViewNpc", "False"));
 	                MAX_DRIFT_RANGE							= Integer.parseInt(NPC.getProperty("MaxDriftRange", "300"));
 	                DEEPBLUE_DROP_RULES						= Boolean.parseBoolean(NPC.getProperty("UseDeepBlueDropRules", "True"));
