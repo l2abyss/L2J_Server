@@ -79,8 +79,6 @@ final class EffectConfusion extends L2Effect
 	@Override
 	public boolean onActionTime()
 	{
-		if (Config.DEBUG)
-			System.out.println(getEffected());
 		List<L2Character> targetList = new FastList<L2Character>();
 		
 		// Getting the possible targets

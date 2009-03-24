@@ -1081,8 +1081,7 @@ public final class Config
 	                		}
 	                		else
 	                		{
-	                			System.out.println(StringUtil.concat(
-	                					"[CLSetSiegeTimeList]: invalid config property -> CLSetSiegeTimeList \"", st, "\""));
+	                			_log.warning(StringUtil.concat("[CLSetSiegeTimeList]: invalid config property -> CLSetSiegeTimeList \"", st, "\""));
 	                		}
 	                	}
 	                	if (isHour)
@@ -1094,8 +1093,7 @@ public final class Config
 	                    		{
 	                        		int val = Integer.valueOf(st);
 	                        		if (val > 23 || val < 0)
-	                        			System.out.println(StringUtil.concat(
-	                        					"[SiegeHourList]: invalid config property -> SiegeHourList \"", st, "\""));
+	                        			_log.warning(StringUtil.concat("[SiegeHourList]: invalid config property -> SiegeHourList \"", st, "\""));
 	                        		else if (val < 12)
 	                        			SIEGE_HOUR_LIST_MORNING.add(val);
 	                        		else
@@ -1107,7 +1105,7 @@ public final class Config
 	                    	}                			
 	                    	if (Config.SIEGE_HOUR_LIST_AFTERNOON.isEmpty() && Config.SIEGE_HOUR_LIST_AFTERNOON.isEmpty())
 	                    	{
-	                			System.out.println("[SiegeHourList]: invalid config property -> SiegeHourList is empty");
+	                			_log.warning("[SiegeHourList]: invalid config property -> SiegeHourList is empty");
 	                    		CL_SET_SIEGE_TIME_LIST.remove("hour");
 	                    	}
 	                	}
@@ -1212,8 +1210,7 @@ public final class Config
 	                        String[] skillSplit = skill.split(",");
 	                        if (skillSplit.length != 2)
 	                        {
-	                            System.out.println(StringUtil.concat(
-	                            		"[SkillDurationList]: invalid config property -> SkillDurationList \"", skill, "\""));
+	                            _log.warning(StringUtil.concat("[SkillDurationList]: invalid config property -> SkillDurationList \"", skill, "\""));
 	                        } else
 	                        {
 	                            try
@@ -1223,9 +1220,7 @@ public final class Config
 	                            {
 	                                if (!skill.equals(""))
 	                                {
-	                                    System.out.println(StringUtil.concat(
-	                                    		"[SkillDurationList]: invalid config property -> SkillList \"",
-	                                    		skillSplit[0], "\"", skillSplit[1]));
+	                                    _log.warning(StringUtil.concat("[SkillDurationList]: invalid config property -> SkillList \"", skillSplit[0], "\"", skillSplit[1]));
 	                                }
 	                            }
 	                        }
@@ -1244,8 +1239,7 @@ public final class Config
 	                        String[] skillSplit = skill.split(",");
 	                        if (skillSplit.length != 2)
 	                        {
-	                            System.out.println(StringUtil.concat(
-	                            		"[SkillReuseList]: invalid config property -> SkillReuseList \"", skill, "\""));
+	                            _log.warning(StringUtil.concat("[SkillReuseList]: invalid config property -> SkillReuseList \"", skill, "\""));
 	                        } else
 	                        {
 	                            try
@@ -1255,9 +1249,7 @@ public final class Config
 	                            {
 	                                if (!skill.equals(""))
 	                                {
-	                                    System.out.println(StringUtil.concat(
-	                                    		"[SkillReuseList]: invalid config property -> SkillList \"",
-	                                    		skillSplit[0], "\"", skillSplit[1]));
+	                                    _log.warning(StringUtil.concat("[SkillReuseList]: invalid config property -> SkillList \"", skillSplit[0], "\"", skillSplit[1]));
 	                                }
 	                            }
 	                        }
@@ -1845,9 +1837,7 @@ public final class Config
 	                                	String[] rewardSplit = reward.split(",");
 	
 	                                	if (rewardSplit.length != 2)
-	                                	    _log.warning(StringUtil.concat(
-	                                	    		"TvTEventEngine[Config.load()]: invalid config property -> TvTEventReward \"",
-	                                	    		reward, "\""));
+	                                	    _log.warning(StringUtil.concat("TvTEventEngine[Config.load()]: invalid config property -> TvTEventReward \"", reward, "\""));
 	                                	else
 	                                	{
 	                                		try
@@ -1857,9 +1847,7 @@ public final class Config
 	                                		catch (NumberFormatException nfe)
 	                                		{
 	                                			if (!reward.equals(""))
-	                                			    _log.warning(StringUtil.concat(
-	                                			    		"TvTEventEngine[Config.load()]: invalid config property -> TvTEventReward \"",
-	                                			    		reward, "\""));
+	                                			    _log.warning(StringUtil.concat("TvTEventEngine[Config.load()]: invalid config property -> TvTEventReward \"", reward, "\""));
 	                                		}
 	                                	}
 	                                }
@@ -1880,9 +1868,7 @@ public final class Config
 	                        			catch (NumberFormatException nfe)
 	                        			{
 	                        				if (!door.equals(""))
-	                        				    _log.warning(StringUtil.concat(
-	                        				    		"TvTEventEngine[Config.load()]: invalid config property -> TvTDoorsToOpen \"",
-	                        				    		door, "\""));
+	                        				    _log.warning(StringUtil.concat("TvTEventEngine[Config.load()]: invalid config property -> TvTDoorsToOpen \"", door, "\""));
 	                        			}
 	                        		}
 	                        		
@@ -1897,9 +1883,7 @@ public final class Config
 	                        			catch (NumberFormatException nfe)
 	                        			{
 	                        				if (!door.equals(""))
-	                        				    _log.warning(StringUtil.concat(
-	                        				    		"TvTEventEngine[Config.load()]: invalid config property -> TvTDoorsToClose \"",
-	                        				    		door, "\""));
+	                        				    _log.warning(StringUtil.concat("TvTEventEngine[Config.load()]: invalid config property -> TvTDoorsToClose \"", door, "\""));
 	                        			}
 	                        		}
 	                            }

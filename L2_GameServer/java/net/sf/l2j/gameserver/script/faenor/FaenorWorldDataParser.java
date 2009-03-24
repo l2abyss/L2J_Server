@@ -115,7 +115,7 @@ public class FaenorWorldDataParser extends FaenorParser
         catch (Exception e)
         {
             petData.petId = -1;
-            System.err.println("ERROR(parseStat):" + e.getMessage());
+            _log.warning("ERROR(parseStat):" + e.getMessage());
         }
     }
 

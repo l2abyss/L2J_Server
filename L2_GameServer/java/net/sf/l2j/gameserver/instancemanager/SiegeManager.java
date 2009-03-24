@@ -243,7 +243,7 @@ public class SiegeManager
         catch (Exception e)
         {
             //_initialized = false;
-            System.err.println("Error while loading siege data.");
+            _log.warning("Error while loading siege data.");
             e.printStackTrace();
         }
         finally

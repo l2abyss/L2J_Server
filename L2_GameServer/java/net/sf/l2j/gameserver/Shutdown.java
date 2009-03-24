@@ -473,13 +473,13 @@ public class Shutdown extends Thread
 		switch (_shutdownMode)
 		{
 			case SIGTERM:
-				System.err.println("SIGTERM received. Shutting down NOW!");
+				_log.info("SIGTERM received. Shutting down NOW!");
 				break;
 			case GM_SHUTDOWN:
-				System.err.println("GM shutdown received. Shutting down NOW!");
+				_log.info("GM shutdown received. Shutting down NOW!");
 				break;
 			case GM_RESTART:
-				System.err.println("GM restart received. Restarting NOW!");
+				_log.info("GM restart received. Restarting NOW!");
 				break;
 			
 		}
@@ -498,15 +498,15 @@ public class Shutdown extends Thread
 		
 		// Save all raidboss and GrandBoss status ^_^
 		RaidBossSpawnManager.getInstance().cleanUp();
-		System.err.println("RaidBossSpawnManager: All raidboss info saved!!");
+		_log.info("RaidBossSpawnManager: All raidboss info saved!!");
 		GrandBossManager.getInstance().cleanUp();
-		System.err.println("GrandBossManager: All Grand Boss info saved!!");
+		_log.info("GrandBossManager: All Grand Boss info saved!!");
 		TradeController.getInstance().dataCountStore();
-		System.err.println("TradeController: All count Item Saved");
+		_log.info("TradeController: All count Item Saved");
 		Olympiad.getInstance().saveOlympiadStatus();
-        System.err.println("Olympiad System: Data saved!!");
-        
-        // Save Cursed Weapons data before closing.
+		_log.info("Olympiad System: Data saved!!");
+		
+		// Save Cursed Weapons data before closing.
 		CursedWeaponsManager.getInstance().saveData();
 		
 		// Save all manor data
@@ -520,9 +520,9 @@ public class Shutdown extends Thread
 		{
 			ItemsOnGroundManager.getInstance().saveInDb();
 			ItemsOnGroundManager.getInstance().cleanUp();
-			System.err.println("ItemsOnGroundManager: All items on ground saved!!");
+			_log.info("ItemsOnGroundManager: All items on ground saved!!");
 		}
-		System.err.println("Data saved. All players disconnected, shutting down.");
+		_log.info("Data saved. All players disconnected, shutting down.");
 		
 		try
 		{

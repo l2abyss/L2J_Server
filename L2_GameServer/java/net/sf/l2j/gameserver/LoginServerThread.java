@@ -362,7 +362,8 @@ public class LoginServerThread extends Thread
 
 	public void addWaitingClientAndSendRequest(String acc, L2GameClient client, SessionKey key)
 	{
-		if(Config.DEBUG) System.out.println(key);
+		if(Config.DEBUG)
+			_log.info(String.valueOf(key));
 		WaitingClient wc = new WaitingClient(acc, client, key);
 		synchronized(_waitingClients)
 		{

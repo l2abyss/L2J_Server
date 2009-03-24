@@ -754,7 +754,6 @@ public class FortSiege
 				member.sendPacket(new SystemMessage(SystemMessageId.A_FORTRESS_IS_UNDER_ATTACK));
 			}
 		}
-		//System.out.println("Siege of " + getFort().getName() + ": " + getFort().getSiegeDate().getTime());
 		loadSiegeClan();
 		// Execute siege auto start
 		_siegeStartTask = ThreadPoolManager.getInstance().scheduleGeneral(new FortSiege.ScheduleStartSiegeTask(getFort(),3600), 0);

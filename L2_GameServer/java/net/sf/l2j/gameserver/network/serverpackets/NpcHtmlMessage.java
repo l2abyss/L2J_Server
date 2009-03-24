@@ -222,7 +222,6 @@ public final class NpcHtmlMessage extends L2GameServerPacket
                 activeChar.addBypass2(_html.substring(start, finish2).trim());
 			else
                 activeChar.addBypass(_html.substring(start, finish).trim());
-			//System.err.println("["+_html.substring(start, finish)+"]");
 		}
 	}
 
