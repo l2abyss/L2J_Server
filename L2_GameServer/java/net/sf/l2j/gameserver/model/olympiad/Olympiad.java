@@ -1432,9 +1432,7 @@ public class Olympiad
 		{
 			File file = new File("log/olympiad.csv");
 			
-			boolean writeHead = false;
-			if (!file.exists())
-				writeHead = true;
+			boolean writeHead = !file.exists();
 			
 			save = new FileWriter(file, true);
 

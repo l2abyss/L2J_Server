@@ -1121,7 +1121,7 @@ public class L2PetInstance extends L2Summon
 		if (maxLoad > 0)
 		{
 			int weightproc = getCurrentLoad() * 1000 / maxLoad;
-			weightproc*=(int)calcStat(Stats.WEIGHT_LIMIT, weightproc, this, null);
+			weightproc*=(int)calcStat(Stats.WEIGHT_LIMIT, 1, this, null);
 			int newWeightPenalty;
 			if (weightproc < 500 || getOwner().getDietMode())
 			{
