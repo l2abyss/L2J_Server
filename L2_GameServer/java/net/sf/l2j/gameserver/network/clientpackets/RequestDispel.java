@@ -66,7 +66,6 @@ public class RequestDispel extends L2GameClientPacket
 					if (e != null && e.getSkill() == skill && e.getEffectType() != L2EffectType.TRANSFORMATION)
 					{
 						e.exit();
-						break;
 					}
 				}
 			}
