@@ -28,9 +28,9 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.handler.IVoicedCommandHandler;
-import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.CoupleManager;
 import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
+import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -316,9 +316,9 @@ public class Wedding implements IVoicedCommandHandler
 			activeChar.sendMessage("Your partner is in the observation.");
 			return false;
 		}
-		else if (partner.getClan() != null && CastleManager.getInstance().getCastleByOwner(partner.getClan()) != null && CastleManager.getInstance().getCastleByOwner(partner.getClan()).getSiege().getIsInProgress())
+		else if (SiegeManager.getInstance().getSiege(partner) != null && SiegeManager.getInstance().getSiege(partner).getIsInProgress())
 		{
-			activeChar.sendMessage("Your partner is in siege, you can't go to your partner.");
+			activeChar.sendMessage("Your partner is in a siege, you cannot go to your partner.");
 			return false;
 		}
 		else if (partner.isIn7sDungeon() && !activeChar.isIn7sDungeon())
@@ -374,9 +374,9 @@ public class Wedding implements IVoicedCommandHandler
 			activeChar.sendMessage("You are in the observation.");
 			return false;
 		}
-		else if (activeChar.getClan() != null && CastleManager.getInstance().getCastleByOwner(activeChar.getClan()) != null && CastleManager.getInstance().getCastleByOwner(activeChar.getClan()).getSiege().getIsInProgress())
+		else if (SiegeManager.getInstance().getSiege(activeChar) != null && SiegeManager.getInstance().getSiege(activeChar).getIsInProgress())
 		{
-			activeChar.sendMessage("You are in siege, you can't go to your partner.");
+			activeChar.sendMessage("You are in a siege, you cannot go to your partner.");
 			return false;
 		}
 		else if (activeChar.isFestivalParticipant())
