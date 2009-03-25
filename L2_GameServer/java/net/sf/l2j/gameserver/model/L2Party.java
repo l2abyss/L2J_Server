@@ -684,7 +684,10 @@ public class L2Party {
 		for (L2PcInstance member : getPartyMembers())
 		{
 			if (member == null)
+			{
+				getPartyMembers().remove(member);
 				continue;
+			}
 			
 			if (member.getLevel() > newLevel)
 				newLevel = member.getLevel();
