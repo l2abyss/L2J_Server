@@ -335,6 +335,7 @@ public final class Config
 	/** ************************************************** **/
 	
 	public static boolean	EVERYBODY_HAS_ADMIN_RIGHTS;
+	public static boolean 	DISPLAY_SERVER_VERSION;
 	public static boolean 	SERVER_LIST_BRACKET;
     public static boolean	SERVER_LIST_CLOCK;
     public static boolean	SERVER_GMONLY;
@@ -1450,6 +1451,7 @@ public final class Config
 	                General.load(is);
 	                
 	                EVERYBODY_HAS_ADMIN_RIGHTS					= Boolean.parseBoolean(General.getProperty("EverybodyHasAdminRights", "false"));
+	                DISPLAY_SERVER_VERSION						= Boolean.parseBoolean(General.getProperty("DisplayServerRevision","True"));
 	                SERVER_LIST_BRACKET							= Boolean.parseBoolean(General.getProperty("ServerListBrackets", "false"));
 	                SERVER_LIST_CLOCK							= Boolean.parseBoolean(General.getProperty("ServerListClock", "false"));
 	                SERVER_GMONLY								= Boolean.parseBoolean(General.getProperty("ServerGMOnly", "false"));

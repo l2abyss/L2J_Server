@@ -128,7 +128,7 @@ public class EnterWorld extends L2GameClientPacket
         if (L2World.getInstance().findObject(activeChar.getObjectId()) != null)
         {
             if(Config.DEBUG)
-                _log.warning("User already exist in OID map! User "+activeChar.getName()+" is character clone");
+                _log.warning("User already exist in OID map! User "+activeChar.getName()+" is a character clone");
             //activeChar.closeNetConnection();
         }
         
@@ -290,17 +290,14 @@ public class EnterWorld extends L2GameClientPacket
         activeChar.sendMessage(getText("VGhpcyBzZXJ2ZXIgdXNlcyBMMkosIGEgcHJvamVjdCBmb3VuZGVkIGJ5IEwyQ2hlZg==\n")); 
         activeChar.sendMessage(getText("YW5kIGRldmVsb3BlZCBieSB0aGUgTDJKIERldiBUZWFtIGF0IGwyanNlcnZlci5jb20=\n")); 
 
-        if (Config.SERVER_VERSION != null)
-        {
-            activeChar.sendMessage(getText("TDJKIFNlcnZlciBWZXJzaW9uOg==")+"      "+Config.SERVER_VERSION);
+        if (Config.DISPLAY_SERVER_VERSION)
+        {	
+        	if (Config.SERVER_VERSION != null)
+        		activeChar.sendMessage(getText("TDJKIFNlcnZlciBWZXJzaW9uOg==")+"      "+Config.SERVER_VERSION);
+        	if (Config.DATAPACK_VERSION != null)
+        		activeChar.sendMessage(getText("TDJKIERhdGFwYWNrIFZlcnNpb246")+"  "+Config.DATAPACK_VERSION);
         }
-
-        if (Config.DATAPACK_VERSION != null)
-        {
-            activeChar.sendMessage(getText("TDJKIERhdGFwYWNrIFZlcnNpb246")+"  "+Config.DATAPACK_VERSION);
-        }
-
-        activeChar.sendMessage(getText("Q29weXJpZ2h0IDIwMDQtMjAwOA==\n"));
+        activeChar.sendMessage(getText("Q29weXJpZ2h0IDIwMDQtMjAwOQ==\n"));
 
         SevenSigns.getInstance().sendCurrentPeriodMsg(activeChar);
         Announcements.getInstance().showAnnouncements(activeChar);
