@@ -299,6 +299,7 @@ public class GameServer
 		FourSepulchersManager.getInstance().init();
 		DimensionalRiftManager.getInstance();
 		Announcements.getInstance();
+		AutoAnnouncements.getInstance();
 		MapRegionTable.getInstance();
 		EventDroplist.getInstance();
 		
