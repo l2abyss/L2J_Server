@@ -101,34 +101,6 @@ class OlympiadManager implements Runnable
 			boolean readyNonClassed = Olympiad.hasEnoughRegisteredNonClassed();
 			if (readyClasses != null || readyNonClassed)
 			{
-				// first cycle do nothing
-				_gamesQueueSize = _gamesQueue.size();
-				for (int i = 0; i < _gamesQueueSize; i++)
-				{
-					if (_gamesQueue.get(i) == null
-					        || _gamesQueue.get(i).isTerminated()
-					        || _gamesQueue.get(i)._game == null)
-					{
-						if (_gamesQueue.containsKey(i))
-						{
-							// removes terminated games from the queue
-							try
-							{
-								_olympiadInstances.remove(i);
-								_gamesQueue.remove(i);
-								STADIUMS[i].setStadiaFree();
-							}
-							catch (Exception e)
-							{
-								e.printStackTrace();
-							}
-						}
-						else
-						{
-							_gamesQueueSize = _gamesQueueSize + 1;
-						}
-					}
-				}
 				// set up the games queue
 				for (int i = 0; i < STADIUMS.length; i++)
 				{
@@ -264,6 +236,24 @@ class OlympiadManager implements Runnable
 									// try to reuse this stadia next time
 									i--;
 								}
+							}
+						}
+					}
+					else
+					{
+						if (_gamesQueue.get(i) == null || _gamesQueue.get(i).isTerminated()
+						        || _gamesQueue.get(i)._game == null)
+						{
+							try
+							{
+								_olympiadInstances.remove(i);
+								_gamesQueue.remove(i);
+								STADIUMS[i].setStadiaFree();
+								i--;
+							}
+							catch (Exception e)
+							{
+								e.printStackTrace();
 							}
 						}
 					}
