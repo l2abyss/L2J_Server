@@ -28,20 +28,18 @@ public final class RequestPledgeReorganizeMember extends L2GameClientPacket
 {
 	private static final String _C__D0_24_REQUESTPLEDGEREORGANIZEMEMBER = "[C] D0:24 RequestPledgeReorganizeMember";
 
-	@SuppressWarnings("unused")
-	private int _unk1;
+	private int _isMemberSelected;
 	private String _memberName;
 	private int _newPledgeType;
-	@SuppressWarnings("unused")
-	private String _unk2;
+	private String _selectedMember;
 
 	@Override
 	protected void readImpl()
 	{
-		_unk1 = readD();
+		_isMemberSelected = readD();
 		_memberName = readS();
 		_newPledgeType = readD();
-		_unk2 = readS();
+		_selectedMember = readS();
 	}
 
 	/**
@@ -50,20 +48,26 @@ public final class RequestPledgeReorganizeMember extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
+		if (_isMemberSelected == 0)
+			return;
 		L2PcInstance activeChar = getClient().getActiveChar();
-	      if(activeChar == null)
-		       	return;
-		     //do we need powers to do that??
-		  L2Clan clan = activeChar.getClan();
-		      if(clan == null)
-		       	return;
-		  L2ClanMember member = clan.getClanMember(_memberName);
-		      if(member == null)
-		       	return;
-		  member.setPledgeType(_newPledgeType);
-		  clan.broadcastToOnlineMembers(new PledgeShowMemberListUpdate(member));
+		if(activeChar == null)
+			return;
+		//do we need powers to do that??
+		L2Clan clan = activeChar.getClan();
+		if(clan == null)
+			return;
+		L2ClanMember member1 = clan.getClanMember(_memberName);
+		L2ClanMember member2 = clan.getClanMember(_selectedMember);
+		if(member1 == null || member2 == null)
+			return;
+		int oldPledgeType = member1.getPledgeType();
+		if (oldPledgeType == _newPledgeType)
+			return;
+		member1.setPledgeType(_newPledgeType);
+		member2.setPledgeType(oldPledgeType);
+		clan.broadcastClanStatus();
 	}
-
 	/**
 	 * @see net.sf.l2j.gameserver.BasePacket#getType()
 	 */
