@@ -4548,12 +4548,7 @@ public final class L2PcInstance extends L2PlayableInstance
      */
     public int getTransformationId()
     {
-        L2Transformation transformation = this.getTransformation();
-        if (transformation == null)
-        {
-            return 0;
-        }
-        return transformation.getId();
+        return (_transformation == null ? 0 : _transformation.getId());
     }
     
     /**

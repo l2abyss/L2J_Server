@@ -15,7 +15,10 @@
 package net.sf.l2j.gameserver.handler.admincommandhandlers;
 
 import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
+import net.sf.l2j.gameserver.instancemanager.TransformationManager;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * @author 
@@ -34,6 +37,8 @@ public class AdminRide implements IAdminCommandHandler
 		"admin_unride_wolf",
 	};
 	private int _petRideId;
+	
+	private static final int PURPLE_MANED_HORSE_TRANSFORMATION_ID = 106;
 	
 	public boolean useAdminCommand(String command, L2PcInstance activeChar)
 	{
@@ -57,9 +62,14 @@ public class AdminRide implements IAdminCommandHandler
 			{
 				_petRideId = 16041;
 			}
-			else if (command.startsWith("admin_ride_horse"))
+			else if (command.startsWith("admin_ride_horse")) // handled using transformation
 			{
-				_petRideId = 13130;
+				if (activeChar.isTransformed())
+					activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_MOUNT_A_STEED_WHILE_TRANSFORMED));
+				else
+					TransformationManager.getInstance().transformPlayer(PURPLE_MANED_HORSE_TRANSFORMATION_ID, activeChar, Long.MAX_VALUE);
+				
+				return true;
 			}
 			else
 			{
@@ -73,7 +83,10 @@ public class AdminRide implements IAdminCommandHandler
 		}
 		else if (command.startsWith("admin_unride"))
 		{
-			activeChar.dismount();
+			if (activeChar.getTransformationId() == PURPLE_MANED_HORSE_TRANSFORMATION_ID)
+				activeChar.untransform();
+			else
+				activeChar.dismount();
 		}
 		return true;
 	}
