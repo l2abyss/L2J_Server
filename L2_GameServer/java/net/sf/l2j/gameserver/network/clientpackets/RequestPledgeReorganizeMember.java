@@ -17,7 +17,6 @@ package net.sf.l2j.gameserver.network.clientpackets;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2ClanMember;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.network.serverpackets.PledgeShowMemberListUpdate;
 
 
 /**
