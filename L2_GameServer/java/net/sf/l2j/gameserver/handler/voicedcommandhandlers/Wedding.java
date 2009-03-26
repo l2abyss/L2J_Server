@@ -442,6 +442,12 @@ public class Wedding implements IVoicedCommandHandler
 			if (_activeChar.isDead())
 				return;
 			
+			if(SiegeManager.getInstance().getSiege(_partnerx, _partnery, _partnerz) != null && SiegeManager.getInstance().getSiege(_partnerx, _partnery, _partnerz).getIsInProgress())
+			{
+				_activeChar.sendMessage("Your partner is in siege, you can't go to your partner.");
+				return;
+			}
+			
 			_activeChar.setIsIn7sDungeon(_to7sDungeon);
 			_activeChar.enableAllSkills();
 			_activeChar.setIsCastingNow(false);
