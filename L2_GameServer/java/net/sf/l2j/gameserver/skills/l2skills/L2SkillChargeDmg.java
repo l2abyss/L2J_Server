@@ -90,7 +90,7 @@ public class L2SkillChargeDmg extends L2Skill
         		continue;
         	
         	//Calculate skill evasion
-        	boolean skillIsEvaded = Formulas.getInstance().calcPhysicalSkillEvasion(target, this);
+        	boolean skillIsEvaded = Formulas.calcPhysicalSkillEvasion(target, this);
         	if(skillIsEvaded)
         	{
 				if (caster instanceof L2PcInstance)
@@ -112,20 +112,19 @@ public class L2SkillChargeDmg extends L2Skill
         	
         	
 			// TODO: should we use dual or not?
-			// because if so, damage are lowered but we dont do anything special with dual then
+			// because if so, damage are lowered but we don't do anything special with dual then
 			// like in doAttackHitByDual which in fact does the calcPhysDam call twice
-        	Formulas f = Formulas.getInstance();
 			//boolean dual  = caster.isUsingDualWeapon();
-			byte shld = Formulas.getInstance().calcShldUse(caster, target);
+			byte shld = Formulas.calcShldUse(caster, target);
 			boolean crit = false;
 			if (this.getBaseCritRate() > 0)
-				crit = f.calcCrit(this.getBaseCritRate() * 10 * f.getSTRBonus(caster));
+				crit = Formulas.calcCrit(this.getBaseCritRate() * 10 * Formulas.getSTRBonus(caster));
 			boolean soul = (weapon != null
 							&& weapon.getChargedSoulshot() == L2ItemInstance.CHARGED_SOULSHOT
 							&& weapon.getItemType() != L2WeaponType.DAGGER );
 
 			// damage calculation, crit is static 2x
-			int damage = (int)Formulas.getInstance().calcPhysDam(caster, target, this, shld, false, false, soul);
+			int damage = (int)Formulas.calcPhysDam(caster, target, this, shld, false, false, soul);
 			if (crit) damage *= 2;
 
 			if (damage > 0)

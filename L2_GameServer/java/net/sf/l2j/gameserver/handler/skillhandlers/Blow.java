@@ -60,7 +60,7 @@ public class Blow implements ISkillHandler
 				continue;
 			
 			// Check firstly if target dodges skill
-			boolean skillIsEvaded = Formulas.getInstance().calcPhysicalSkillEvasion(target, skill);
+			boolean skillIsEvaded = Formulas.calcPhysicalSkillEvasion(target, skill);
 			
 			byte _successChance = SIDE;
 			
@@ -76,7 +76,7 @@ public class Blow implements ISkillHandler
 			if ((skill.getCondition() & L2Skill.COND_BEHIND) != 0)
 				success = (_successChance == BEHIND);
 			if ((skill.getCondition() & L2Skill.COND_CRIT) != 0)
-				success = (success && Formulas.getInstance().calcBlow(activeChar, target, _successChance));
+				success = (success && Formulas.calcBlow(activeChar, target, _successChance));
 			if (!skillIsEvaded && success)
 			{
 				if (skill.hasEffects())
@@ -92,13 +92,13 @@ public class Blow implements ISkillHandler
 				}
 				L2ItemInstance weapon = activeChar.getActiveWeaponInstance();
 				boolean soul = (weapon != null && weapon.getChargedSoulshot() == L2ItemInstance.CHARGED_SOULSHOT && weapon.getItemType() == L2WeaponType.DAGGER);
-				byte shld = Formulas.getInstance().calcShldUse(activeChar, target);
+				byte shld = Formulas.calcShldUse(activeChar, target);
 				
 				// Crit rate base crit rate for skill, modified with STR bonus
 				boolean crit = false;
-				if (Formulas.getInstance().calcCrit(skill.getBaseCritRate() * 10 * Formulas.getInstance().getSTRBonus(activeChar)))
+				if (Formulas.calcCrit(skill.getBaseCritRate() * 10 * Formulas.getSTRBonus(activeChar)))
 					crit = true;
-				double damage = (int) Formulas.getInstance().calcBlowDamage(activeChar, target, skill, shld, soul);
+				double damage = (int) Formulas.calcBlowDamage(activeChar, target, skill, shld, soul);
 				if (crit)
 				{
 					damage *= 2;
@@ -174,7 +174,7 @@ public class Blow implements ISkillHandler
 	        	else
 	        		target.reduceCurrentHp(damage, activeChar, skill);
 				// Manage attack or cast break of the target (calculating rate, sending message...)
-                if (!target.isRaid() && Formulas.getInstance().calcAtkBreak(target, damage))
+                if (!target.isRaid() && Formulas.calcAtkBreak(target, damage))
                 {
                 	target.breakAttack();
                 	target.breakCast();
@@ -214,7 +214,7 @@ public class Blow implements ISkillHandler
 			}
 			
 			//Possibility of a lethal strike
-			Formulas.getInstance().calcLethalHit(activeChar, target, skill);
+			Formulas.calcLethalHit(activeChar, target, skill);
 			
 			L2Effect effect = activeChar.getFirstEffect(skill.getId());
 			//Self Effect

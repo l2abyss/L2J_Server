@@ -303,7 +303,7 @@ public class CharStatus
                 _log.fine("HP/MP/CP regen started");
             
             // Get the Regeneration periode
-            int period = Formulas.getInstance().getRegeneratePeriod(getActiveChar());
+            int period = Formulas.getRegeneratePeriod(getActiveChar());
             
             // Create the HP/MP/CP Regeneration task
             _regTask = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new RegenTask(), period, period);
@@ -529,17 +529,17 @@ public class CharStatus
                 // Modify the current CP of the L2Character and broadcast Server->Client packet StatusUpdate
                 if (getCurrentCp() < charstat.getMaxCp())
                     setCurrentCp(getCurrentCp()
-                            + Formulas.getInstance().calcCpRegen(getActiveChar()), false);
+                            + Formulas.calcCpRegen(getActiveChar()), false);
                 
                 // Modify the current HP of the L2Character and broadcast Server->Client packet StatusUpdate
                 if (getCurrentHp() < charstat.getMaxHp())
                     setCurrentHp(getCurrentHp()
-                            + Formulas.getInstance().calcHpRegen(getActiveChar()), false);
+                            + Formulas.calcHpRegen(getActiveChar()), false);
                 
                 // Modify the current MP of the L2Character and broadcast Server->Client packet StatusUpdate
                 if (getCurrentMp() < charstat.getMaxMp())
                     setCurrentMp(getCurrentMp()
-                            + Formulas.getInstance().calcMpRegen(getActiveChar()), false);
+                            + Formulas.calcMpRegen(getActiveChar()), false);
                 
                 if (!getActiveChar().isInActiveRegion())
                 {

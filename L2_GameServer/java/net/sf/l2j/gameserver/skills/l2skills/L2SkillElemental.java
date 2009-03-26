@@ -133,10 +133,10 @@ public class L2SkillElemental extends L2Skill {
 				continue;
 			}
 
-			boolean mcrit = Formulas.getInstance().calcMCrit(activeChar.getMCriticalHit(target, this));
-			byte shld = Formulas.getInstance().calcShldUse(activeChar, target);
+			boolean mcrit = Formulas.calcMCrit(activeChar.getMCriticalHit(target, this));
+			byte shld = Formulas.calcShldUse(activeChar, target);
 			
-			int damage = (int)Formulas.getInstance().calcMagicDam(
+			int damage = (int)Formulas.calcMagicDam(
 					activeChar, target, this, shld, ss, bss, mcrit);
 
 			if (damage > 0)
@@ -144,7 +144,7 @@ public class L2SkillElemental extends L2Skill {
 				target.reduceCurrentHp(damage, activeChar, this);
 
 	            // Manage attack or cast break of the target (calculating rate, sending message...)
-	            if (!target.isRaid() && Formulas.getInstance().calcAtkBreak(target, damage))
+	            if (!target.isRaid() && Formulas.calcAtkBreak(target, damage))
 	            {
 	                target.breakAttack();
 	                target.breakCast();

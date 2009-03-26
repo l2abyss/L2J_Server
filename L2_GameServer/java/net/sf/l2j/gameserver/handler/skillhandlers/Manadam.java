@@ -93,14 +93,14 @@ public class Manadam implements ISkillHandler
 			if (target.reflectSkill(skill))
 				target = activeChar;
 			
-			boolean acted = Formulas.getInstance().calcMagicAffected(activeChar, target, skill);
+			boolean acted = Formulas.calcMagicAffected(activeChar, target, skill);
 			if (target.isInvul() || !acted)
 			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.MISSED_TARGET));
 			}
 			else
 			{
-				double damage = Formulas.getInstance().calcManaDam(activeChar, target, skill, ss, bss);
+				double damage = Formulas.calcManaDam(activeChar, target, skill, ss, bss);
 				
 				double mp = (damage > target.getCurrentMp() ? target.getCurrentMp() : damage);
 				target.reduceCurrentMp(mp);

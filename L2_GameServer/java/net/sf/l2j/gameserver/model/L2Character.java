@@ -324,7 +324,7 @@ public abstract class L2Character extends L2Object
 		{
 			// Copy the Standard Calcultors of the L2NPCInstance in _calculators
 			if (this instanceof L2DoorInstance)
-				_calculators = Formulas.getInstance().getStdDoorCalculators();
+				_calculators = Formulas.getStdDoorCalculators();
 			else
 				_calculators = NPC_STD_CALCULATOR;
 			
@@ -345,7 +345,7 @@ public abstract class L2Character extends L2Object
 
 			// If L2Character is a L2PcInstance or a L2Summon, create the basic calculator set
 			_calculators = new Calculator[Stats.NUM_STATS];
-			Formulas.getInstance().addFuncsToNewCharacter(this);
+			Formulas.addFuncsToNewCharacter(this);
 		}
 
 		if (!(this instanceof L2PcInstance) && !(this instanceof L2MonsterInstance) &&
@@ -992,7 +992,7 @@ public abstract class L2Character extends L2Object
 		boolean crit1 = false;
 
 		// Calculate if hit is missed or not
-		boolean miss1 = Formulas.getInstance().calcHitMiss(this, target);
+		boolean miss1 = Formulas.calcHitMiss(this, target);
 
 		// Consume arrows
 		reduceArrowCount(false);
@@ -1003,13 +1003,13 @@ public abstract class L2Character extends L2Object
 		if (!miss1)
 		{
 			// Calculate if shield defense is efficient
-			shld1 = Formulas.getInstance().calcShldUse(this, target);
+			shld1 = Formulas.calcShldUse(this, target);
 
 			// Calculate if hit is critical
-			crit1 = Formulas.getInstance().calcCrit(getStat().getCriticalHit(target, null));
+			crit1 = Formulas.calcCrit(getStat().getCriticalHit(target, null));
 
 			// Calculate physical damages
-			damage1 = (int)Formulas.getInstance().calcPhysDam(this, target, null, shld1, crit1, false, attack.soulshot);
+			damage1 = (int)Formulas.calcPhysDam(this, target, null, shld1, crit1, false, attack.soulshot);
 		}
 
 		// Check if the L2Character is a L2PcInstance
@@ -1064,7 +1064,7 @@ public abstract class L2Character extends L2Object
         boolean crit1 = false;
 
         // Calculate if hit is missed or not
-        boolean miss1 = Formulas.getInstance().calcHitMiss(this, target);
+        boolean miss1 = Formulas.calcHitMiss(this, target);
 
         // Consume bolts
         reduceArrowCount(true);
@@ -1075,13 +1075,13 @@ public abstract class L2Character extends L2Object
         if (!miss1)
         {
             // Calculate if shield defense is efficient
-            shld1 = Formulas.getInstance().calcShldUse(this, target);
+            shld1 = Formulas.calcShldUse(this, target);
 
             // Calculate if hit is critical
-            crit1 = Formulas.getInstance().calcCrit(getStat().getCriticalHit(target, null));
+            crit1 = Formulas.calcCrit(getStat().getCriticalHit(target, null));
 
             // Calculate physical damages
-            damage1 = (int)Formulas.getInstance().calcPhysDam(this, target, null, shld1, crit1, false, attack.soulshot);
+            damage1 = (int)Formulas.calcPhysDam(this, target, null, shld1, crit1, false, attack.soulshot);
         }
 
         // Check if the L2Character is a L2PcInstance
@@ -1135,20 +1135,20 @@ public abstract class L2Character extends L2Object
 		boolean crit2 = false;
 
 		// Calculate if hits are missed or not
-		boolean miss1 = Formulas.getInstance().calcHitMiss(this, target);
-		boolean miss2 = Formulas.getInstance().calcHitMiss(this, target);
+		boolean miss1 = Formulas.calcHitMiss(this, target);
+		boolean miss2 = Formulas.calcHitMiss(this, target);
 
 		// Check if hit 1 isn't missed
 		if (!miss1)
 		{
 			// Calculate if shield defense is efficient against hit 1
-			shld1 = Formulas.getInstance().calcShldUse(this, target);
+			shld1 = Formulas.calcShldUse(this, target);
 
 			// Calculate if hit 1 is critical
-			crit1 = Formulas.getInstance().calcCrit(getStat().getCriticalHit(target, null));
+			crit1 = Formulas.calcCrit(getStat().getCriticalHit(target, null));
 
 			// Calculate physical damages of hit 1
-			damage1 = (int)Formulas.getInstance().calcPhysDam(this, target, null, shld1, crit1, true, attack.soulshot);
+			damage1 = (int)Formulas.calcPhysDam(this, target, null, shld1, crit1, true, attack.soulshot);
 			damage1 /= 2;
 		}
 
@@ -1156,13 +1156,13 @@ public abstract class L2Character extends L2Object
 		if (!miss2)
 		{
 			// Calculate if shield defense is efficient against hit 2
-			shld2 = Formulas.getInstance().calcShldUse(this, target);
+			shld2 = Formulas.calcShldUse(this, target);
 
 			// Calculate if hit 2 is critical
-			crit2 = Formulas.getInstance().calcCrit(getStat().getCriticalHit(target, null));
+			crit2 = Formulas.calcCrit(getStat().getCriticalHit(target, null));
 
 			// Calculate physical damages of hit 2
-			damage2 = (int)Formulas.getInstance().calcPhysDam(this, target, null, shld2, crit2, true, attack.soulshot);
+			damage2 = (int)Formulas.calcPhysDam(this, target, null, shld2, crit2, true, attack.soulshot);
 			damage2 /= 2;
 		}
 
@@ -1317,19 +1317,19 @@ public abstract class L2Character extends L2Object
 		boolean crit1 = false;
 
 		// Calculate if hit is missed or not
-		boolean miss1 = Formulas.getInstance().calcHitMiss(this, target);
+		boolean miss1 = Formulas.calcHitMiss(this, target);
 
 		// Check if hit isn't missed
 		if (!miss1)
 		{
 			// Calculate if shield defense is efficient
-			shld1 = Formulas.getInstance().calcShldUse(this, target);
+			shld1 = Formulas.calcShldUse(this, target);
 
 			// Calculate if hit is critical
-			crit1 = Formulas.getInstance().calcCrit(getStat().getCriticalHit(target, null));
+			crit1 = Formulas.calcCrit(getStat().getCriticalHit(target, null));
 
 			// Calculate physical damages
-			damage1 = (int)Formulas.getInstance().calcPhysDam(this, target, null, shld1, crit1, false, attack.soulshot);
+			damage1 = (int)Formulas.calcPhysDam(this, target, null, shld1, crit1, false, attack.soulshot);
 
 			if (attackpercent != 100)
 				damage1 = (int)(damage1*attackpercent/100);
@@ -1502,9 +1502,9 @@ public abstract class L2Character extends L2Object
 		// Don't modify the skill time for FORCE_BUFF skills. The skill time for those skills represent the buff time.
 		if(!effectWhileCasting)
 		{
-			hitTime = Formulas.getInstance().calcAtkSpd(this, skill, hitTime);
+			hitTime = Formulas.calcAtkSpd(this, skill, hitTime);
 			if (coolTime > 0) 
-				coolTime = Formulas.getInstance().calcAtkSpd(this, skill, coolTime);
+				coolTime = Formulas.calcAtkSpd(this, skill, coolTime);
 		}
 			
 		// Calculate altered Cast Speed due to BSpS/SpS
@@ -1590,7 +1590,7 @@ public abstract class L2Character extends L2Object
 			reuseDelay *= 333.0 / (skill.isMagic() ? getMAtkSpd() : getPAtkSpd());
 		}
 		
-		boolean skillMastery = Formulas.getInstance().calcSkillMastery(this, skill);
+		boolean skillMastery = Formulas.calcSkillMastery(this, skill);
 
 		// Skill reuse check
 		if (reuseDelay > 30000 && !skillMastery) addTimeStamp(skill.getId(),reuseDelay);
@@ -3358,7 +3358,7 @@ public abstract class L2Character extends L2Object
 	private static final Calculator[] NPC_STD_CALCULATOR;
 
 
-	static {NPC_STD_CALCULATOR = Formulas.getInstance().getStdNPCCalculators();}
+	static {NPC_STD_CALCULATOR = Formulas.getStdNPCCalculators();}
 
 	protected L2CharacterAI _ai;
 
@@ -5159,7 +5159,7 @@ public abstract class L2Character extends L2Object
                 }
 
 				// Manage attack or cast break of the target (calculating rate, sending message...)
-				if (!target.isRaid() && Formulas.getInstance().calcAtkBreak(target, damage))
+				if (!target.isRaid() && Formulas.calcAtkBreak(target, damage))
 				{
 					target.breakAttack();
 					target.breakCast();
@@ -5438,7 +5438,7 @@ public abstract class L2Character extends L2Object
         else
             atkSpd = getPAtkSpd();
 
-        return Formulas.getInstance().calcPAtkSpd(this, target, atkSpd);
+        return Formulas.calcPAtkSpd(this, target, atkSpd);
     }
 
     public int calculateReuseTime(L2Character target, L2Weapon weapon)

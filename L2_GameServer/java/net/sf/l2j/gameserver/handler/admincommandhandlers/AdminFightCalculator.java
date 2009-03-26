@@ -214,7 +214,6 @@ public class AdminFightCalculator implements IAdminCommandHandler
 	
 	private void handleShow(String params, L2PcInstance activeChar)
 	{
-		Formulas f = Formulas.getInstance();
 		params = params.trim();
 		
 		L2Character npc1 = null;
@@ -263,13 +262,13 @@ public class AdminFightCalculator implements IAdminCommandHandler
 		
 		for (int i = 0; i < 10000; i++)
 		{
-			boolean _miss1 = f.calcHitMiss(npc1, npc2);
+			boolean _miss1 = Formulas.calcHitMiss(npc1, npc2);
 			if (_miss1)
 				miss1++;
-			byte _shld1 = f.calcShldUse(npc1, npc2, false);
+			byte _shld1 = Formulas.calcShldUse(npc1, npc2, false);
 			if (_shld1 > 0)
 				shld1++;
-			boolean _crit1 = f.calcCrit(npc1.getCriticalHit(npc2, null));
+			boolean _crit1 = Formulas.calcCrit(npc1.getCriticalHit(npc2, null));
 			if (_crit1)
 				crit1++;
 			
@@ -283,7 +282,7 @@ public class AdminFightCalculator implements IAdminCommandHandler
 			if (!_miss1)
 			{
 				npc1.setAttackingBodypart();
-				double _dmg1 = f.calcPhysDam(npc1, npc2, null, _shld1, _crit1, false, false);
+				double _dmg1 = Formulas.calcPhysDam(npc1, npc2, null, _shld1, _crit1, false, false);
 				dmg1 += _dmg1;
 				npc1.abortAttack();
 			}
@@ -291,13 +290,13 @@ public class AdminFightCalculator implements IAdminCommandHandler
 		
 		for (int i = 0; i < 10000; i++)
 		{
-			boolean _miss2 = f.calcHitMiss(npc2, npc1);
+			boolean _miss2 = Formulas.calcHitMiss(npc2, npc1);
 			if (_miss2)
 				miss2++;
-			byte _shld2 = f.calcShldUse(npc2, npc1, false);
+			byte _shld2 = Formulas.calcShldUse(npc2, npc1, false);
 			if (_shld2 > 0)
 				shld2++;
-			boolean _crit2 = f.calcCrit(npc2.getCriticalHit(npc1, null));
+			boolean _crit2 = Formulas.calcCrit(npc2.getCriticalHit(npc1, null));
 			if (_crit2)
 				crit2++;
 			
@@ -311,7 +310,7 @@ public class AdminFightCalculator implements IAdminCommandHandler
 			if (!_miss2)
 			{
 				npc2.setAttackingBodypart();
-				double _dmg2 = f.calcPhysDam(npc2, npc1, null, _shld2, _crit2, false, false);
+				double _dmg2 = Formulas.calcPhysDam(npc2, npc1, null, _shld2, _crit2, false, false);
 				dmg2 += _dmg2;
 				npc2.abortAttack();
 			}
@@ -335,10 +334,10 @@ public class AdminFightCalculator implements IAdminCommandHandler
 		int tdmg2 = (int) (sAtk2 * dmg2);
 		// HP restored per 100 seconds
 		double maxHp1 = npc1.getMaxHp();
-		int hp1 = (int) (f.calcHpRegen(npc1) * 100000 / f.getRegeneratePeriod(npc1));
+		int hp1 = (int) (Formulas.calcHpRegen(npc1) * 100000 / Formulas.getRegeneratePeriod(npc1));
 		
 		double maxHp2 = npc2.getMaxHp();
-		int hp2 = (int) (f.calcHpRegen(npc2) * 100000 / f.getRegeneratePeriod(npc2));
+		int hp2 = (int) (Formulas.calcHpRegen(npc2) * 100000 / Formulas.getRegeneratePeriod(npc2));
 		
 		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
 

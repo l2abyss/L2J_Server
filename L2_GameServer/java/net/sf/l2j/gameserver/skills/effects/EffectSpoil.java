@@ -78,7 +78,7 @@ public class EffectSpoil extends L2Effect
 		boolean spoil = false;
 		if (target.isDead() == false)
 		{
-			spoil = Formulas.getInstance().calcMagicSuccess(getEffector(), target, getSkill());
+			spoil = Formulas.calcMagicSuccess(getEffector(), target, getSkill());
 			
 			if (spoil)
 			{

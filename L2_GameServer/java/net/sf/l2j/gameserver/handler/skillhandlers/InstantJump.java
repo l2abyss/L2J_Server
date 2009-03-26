@@ -56,8 +56,6 @@ public class InstantJump implements ISkillHandler
 		//if(targets.length > 1 || targets.length == 0) // this is about bad target type in DP... just dont use anything else than TARGET_ONE...
 		//	return;
 		
-		Formulas f = Formulas.getInstance();
-		
 		int x=0,y=0,z=0;
 		
 		// Gracia Final support = it ports u behind ur target, uncomment these lines when Gracia Final! is out.
@@ -108,8 +106,8 @@ public class InstantJump implements ISkillHandler
 				// activate attacked effects, if any
 				target.stopSkillEffects(skill.getId());
 				
-				byte shld = Formulas.getInstance().calcShldUse(activeChar, target);
-				if (f.calcSkillSuccess(activeChar, target, skill, shld, false, false, false))
+				byte shld = Formulas.calcShldUse(activeChar, target);
+				if (Formulas.calcSkillSuccess(activeChar, target, skill, shld, false, false, false))
 				{
 					skill.getEffects(activeChar, target);
 				

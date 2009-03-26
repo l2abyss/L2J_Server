@@ -173,9 +173,9 @@ final class EffectSignetMDam extends L2Effect
 			caster.broadcastPacket(new MagicSkillLaunched(caster, getSkill().getId(), getSkill().getLevel(), targets.toArray(new L2Character[targets.size()])));
 			for (L2Character target : targets)
 			{
-				boolean mcrit = Formulas.getInstance().calcMCrit(caster.getMCriticalHit(target, getSkill()));
-				byte shld = Formulas.getInstance().calcShldUse(caster, target);
-				int mdam = (int) Formulas.getInstance().calcMagicDam(caster, target, getSkill(), shld, ss, bss, mcrit);
+				boolean mcrit = Formulas.calcMCrit(caster.getMCriticalHit(target, getSkill()));
+				byte shld = Formulas.calcShldUse(caster, target);
+				int mdam = (int) Formulas.calcMagicDam(caster, target, getSkill(), shld, ss, bss, mcrit);
 				
 				if (target instanceof L2Summon)
 					target.broadcastStatusUpdate();
@@ -183,7 +183,7 @@ final class EffectSignetMDam extends L2Effect
 				if (mdam > 0)
 				{
 					if (!target.isRaid()
-					        && Formulas.getInstance().calcAtkBreak(target, mdam))
+					        && Formulas.calcAtkBreak(target, mdam))
 					{
 						target.breakAttack();
 						target.breakCast();
