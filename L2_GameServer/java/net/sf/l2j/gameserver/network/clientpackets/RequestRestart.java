@@ -128,7 +128,7 @@ public final class RequestRestart extends L2GameClientPacket
 
         // removing player from the world
         player.deleteMe();
-        L2GameClient.saveCharToDisk(client.getActiveChar());
+        L2GameClient.saveCharToDisk(player);
 
 
         getClient().setActiveChar(null);
