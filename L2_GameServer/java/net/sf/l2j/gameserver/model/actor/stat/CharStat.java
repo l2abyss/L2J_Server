@@ -635,9 +635,12 @@ public class CharStat
 			if (player.isMounted())
 				baseRunSpd = L2PetDataTable.getInstance().getPetData(player.getMountNpcId(), player.getMountLevel()).getPetSpeed();
 		}
-		int val = (int) calcStat(Stats.RUN_SPEED, baseRunSpd, null, null) + Config.RUN_SPD_BOOST;
-		
-		val /= _activeChar.getArmourExpertisePenalty();
+		int val = (int) calcStat(Stats.RUN_SPEED, baseRunSpd, null, null);
+		if (_activeChar instanceof L2PcInstance)
+		{
+			val += Config.RUN_SPD_BOOST;
+			val /= _activeChar.getArmourExpertisePenalty();
+		}
 		
 		return val;
 	}
