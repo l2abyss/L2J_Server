@@ -64,7 +64,9 @@ public class Potions implements IItemHandler
 		// Juices
 		10260, 10261, 10262, 10263, 10264, 10265, 10266, 10267, 10268, 10269, 10270,
 		// CT2 herbs
-		10655, 10656, 10657
+		10655, 10656, 10657,
+		//bottls of souls
+		10409,10410,10411,10412
 	};
 	
 	/**
@@ -178,6 +180,54 @@ public class Potions implements IItemHandler
 				res = usePotion(playable, 2396, 1);
 				break;
 			
+			case 10409: // Empty Bottle of Souls
+				if (activeChar.getActiveClass() >= 123 && activeChar.getActiveClass() <= 136) //Kamael classes only
+				{
+					if (activeChar.getSouls() >= 6)
+					{
+						res = usePotion(activeChar, 2498, 1);
+					}
+					else
+					{
+						playable.sendPacket(new SystemMessage(SystemMessageId.THERE_IS_NOT_ENOUGH_SOUL));
+					}
+				}
+				else
+				{
+					playable.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
+				}
+				break;
+			case 10410: // 5 Souls Bottle
+				if (activeChar.getActiveClass() >= 123 && activeChar.getActiveClass() <= 136) //Kamael classes only
+				{
+					res = usePotion(activeChar, 2499, 1);
+				}
+				else
+				{
+					playable.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
+				}
+				break;
+			case 10411: // 5 Souls Bottle Combat
+				if (activeChar.getActiveClass() >= 123 && activeChar.getActiveClass() <= 136) //Kamael classes only  				{
+				{
+					res = usePotion(activeChar, 2499, 1);
+				}
+				else
+				{
+					playable.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
+				}
+				break;
+			case 10412: // 10 Souls Bottle
+				if (activeChar.getActiveClass() >= 123 && activeChar.getActiveClass() <= 136) //Kamael classes only  				{
+				{
+					res = usePotion(activeChar, 2499, 2);
+				}
+				else
+				{
+					playable.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
+				}
+				break;
+				
 			// ATTRIBUTE POTION
 			case 9997: // Fire Resist Potion, xml: 2335
 				res = usePotion(playable, 2335, 1);
