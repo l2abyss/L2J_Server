@@ -116,6 +116,7 @@ public enum L2SkillType
 	MOUNT(L2SkillMount.class),
 	INSTANT_JUMP,
 	
+	MYSTERIOUS_CUBE,
 	// Creation
 	COMMON_CRAFT,
 	DWARVEN_CRAFT,
