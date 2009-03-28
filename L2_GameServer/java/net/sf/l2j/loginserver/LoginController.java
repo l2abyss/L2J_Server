@@ -62,7 +62,7 @@ public class LoginController
 	/** Authed Clients on LoginServer*/
 	protected FastMap<String, L2LoginClient> _loginServerClients = new FastMap<String, L2LoginClient>().setShared(true);
 
-	private Map<InetAddress, BanInfo> _bannedIps = new FastMap<InetAddress, BanInfo>().setShared(true);
+	private Map<String, BanInfo> _bannedIps = new FastMap<String, BanInfo>().setShared(true);
 
 	private Map<InetAddress, FailedLoginAttempt> _hackProtection;
 
@@ -239,7 +239,8 @@ public class LoginController
 	public void addBanForAddress(String address, long expiration) throws UnknownHostException
 	{
 		InetAddress netAddress = InetAddress.getByName(address);
-		_bannedIps.put(netAddress, new BanInfo(netAddress,  expiration));
+		if (!_bannedIps.containsKey(netAddress.getHostAddress()))
+			_bannedIps.put(netAddress.getHostAddress(), new BanInfo(netAddress,  expiration));
 	}
 
 	/**
@@ -250,17 +251,25 @@ public class LoginController
 	 */
 	public void addBanForAddress(InetAddress address, long duration)
 	{
-		_bannedIps.put(address, new BanInfo(address,  System.currentTimeMillis() + duration));
+		if (!_bannedIps.containsKey(address.getHostAddress()))
+			_bannedIps.put(address.getHostAddress(), new BanInfo(address,  System.currentTimeMillis() + duration));
 	}
 
 	public boolean isBannedAddress(InetAddress address)
 	{
-		BanInfo bi = _bannedIps.get(address);
+		String[] parts = address.getHostAddress().split("\\.");
+		BanInfo bi = _bannedIps.get(address.getHostAddress());
+		if (bi == null)
+			bi = _bannedIps.get(parts[0]+"."+parts[1]+"."+parts[2]+".0");
+		if (bi == null)
+			bi = _bannedIps.get(parts[0]+"."+parts[1]+".0.0");
+		if (bi == null)
+			bi = _bannedIps.get(parts[0]+".0.0.0");
 		if (bi != null)
 		{
 			if (bi.hasExpired())
 			{
-				_bannedIps.remove(address);
+				_bannedIps.remove(address.getHostAddress());
 				return false;
 			}
 			else
@@ -271,7 +280,7 @@ public class LoginController
 		return false;
 	}
 
-	public Map<InetAddress, BanInfo> getBannedIps()
+	public Map<String, BanInfo> getBannedIps()
 	{
 		return _bannedIps;
 	}
@@ -284,7 +293,7 @@ public class LoginController
 	 */
 	public boolean removeBanForAddress(InetAddress address)
 	{
-		return _bannedIps.remove(address) != null;
+		return _bannedIps.remove(address.getHostAddress()) != null;
 	}
 
 	/**
