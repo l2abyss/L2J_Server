@@ -4070,8 +4070,18 @@ public abstract class L2Character extends L2Object
 		}
 		else
 			dz = m._zDestination - zPrev;
+
+		float speed;
+		if (this instanceof L2BoatInstance)
+		{
+			speed = ((L2BoatInstance)this).boatSpeed;
+		}
+		else
+		{
+			speed = getStat().getMoveSpeed();
+		}
 		
-		double distPassed = getStat().getMoveSpeed() * (gameTicks - m._moveTimestamp) / GameTimeController.TICKS_PER_SECOND;
+		double distPassed = speed * (gameTicks - m._moveTimestamp) / GameTimeController.TICKS_PER_SECOND;
 		if ((dx*dx + dy*dy) < 10000 && (dz*dz > 2500)) // close enough, allows error between client and server geodata if it cannot be avoided
 		{
 			distFraction = distPassed / Math.sqrt(dx*dx + dy*dy);
@@ -4084,14 +4094,13 @@ public abstract class L2Character extends L2Object
 		if (distFraction > 1) // already there
 		{
 			// Set the position of the L2Character to the destination
+			super.getPosition().setXYZ(m._xDestination, m._yDestination, m._zDestination);
 			if (this instanceof L2BoatInstance)
 			{
-				super.getPosition().setXYZ(m._xDestination, m._yDestination, m._zDestination);
 				((L2BoatInstance)this).updatePeopleInTheBoat(m._xDestination, m._yDestination, m._zDestination);
 			}
 			else
 			{
-				super.getPosition().setXYZ(m._xDestination, m._yDestination, m._zDestination);
 				revalidateZone(false);
 			}
 		}
@@ -4101,14 +4110,13 @@ public abstract class L2Character extends L2Object
 			m._yAccurate += dy * distFraction;
 			
 			// Set the position of the L2Character to estimated after parcial move
+			super.getPosition().setXYZ((int)(m._xAccurate), (int)(m._yAccurate), zPrev + (int)(dz * distFraction + 0.5));
 			if(this instanceof L2BoatInstance )
 			{
-				super.getPosition().setXYZ((int)(m._xAccurate), (int)(m._yAccurate), zPrev + (int)(dz * distFraction + 0.5));
 				((L2BoatInstance)this).updatePeopleInTheBoat((int)(m._xAccurate), (int)(m._yAccurate), zPrev + (int)(dz * distFraction + 0.5));
 			}
 			else
 			{
-				super.getPosition().setXYZ((int)(m._xAccurate), (int)(m._yAccurate), zPrev + (int)(dz * distFraction + 0.5));
 				revalidateZone(false);
 			}
 		}
