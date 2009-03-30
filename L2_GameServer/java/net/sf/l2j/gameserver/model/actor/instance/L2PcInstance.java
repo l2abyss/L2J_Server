@@ -678,7 +678,8 @@ public final class L2PcInstance extends L2PlayableInstance
 
     /** Current skill in use. Note that L2Character has _lastSkillCast, but
      * this has the button presses */
-    private SkillDat _currentSkill;
+	private SkillDat _currentSkill;
+    private SkillDat _currentPetSkill;
 
     /** Skills queued because a skill is already in progress */
     private SkillDat _queuedSkill;
@@ -8676,6 +8677,18 @@ public final class L2PcInstance extends L2PlayableInstance
 	 */
 	public boolean checkPvpSkill(L2Object target, L2Skill skill)
 	{
+		return checkPvpSkill(target, skill, false);
+	}
+	
+	/**
+	 * Check if the requested casting is a Pc->Pc skill cast and if it's a valid pvp condition
+	 * @param target L2Object instance containing the target
+	 * @param skill L2Skill instance with the skill being casted
+	 * @param srcIsSummon is L2Summon - caster?
+	 * @return False if the skill is a pvpSkill and target is not a valid pvp target
+	 */
+	public boolean checkPvpSkill(L2Object target, L2Skill skill, boolean srcIsSummon)
+	{
 		// check for PC->PC Pvp status
 		if (
 				target != null &&                                           			// target not null and
@@ -8699,7 +8712,8 @@ public final class L2PcInstance extends L2PlayableInstance
 					)
 					return false;
 			}
-			else if (getCurrentSkill() != null && !getCurrentSkill().isCtrlPressed() && skill.isOffensive())
+			else if ((getCurrentSkill() != null && !getCurrentSkill().isCtrlPressed() && skill.isOffensive() && !srcIsSummon) 
+					|| (getCurrentPetSkill() != null && !getCurrentPetSkill().isCtrlPressed() && skill.isOffensive() && srcIsSummon))
 			{
 				if(getClan() != null && ((L2PcInstance)target).getClan() != null)
 				{
@@ -11260,6 +11274,37 @@ public final class L2PcInstance extends L2PlayableInstance
 
         _currentSkill = new SkillDat(currentSkill, ctrlPressed, shiftPressed);
     }
+    
+    /**
+     * Get the current pet skill in use or return null.<br><br>
+     * 
+     */
+    public SkillDat getCurrentPetSkill()
+    {
+    	return _currentPetSkill;
+    }
+
+    /**
+     * Create a new SkillDat object and set the player _currentPetSkill.<br><br>
+     * 
+     */
+    public void setCurrentPetSkill(L2Skill currentSkill, boolean ctrlPressed, boolean shiftPressed)
+    {
+        if (currentSkill == null)
+        {
+            if (Config.DEBUG)
+                _log.info("Setting current pet skill: NULL for " + getName() + ".");
+
+            _currentPetSkill = null;
+            return;
+        }
+
+        if (Config.DEBUG)
+            _log.info("Setting current Pet skill: " + currentSkill.getName() + " (ID: " + currentSkill.getId() + ") for " + getName() + ".");
+
+        _currentPetSkill = new SkillDat(currentSkill, ctrlPressed, shiftPressed);    	
+    }
+
 
     public SkillDat getQueuedSkill()
     {

@@ -722,7 +722,7 @@ public abstract class L2Summon extends L2PlayableInstance
 				}
 			}
 		}
-
+        getOwner().setCurrentPetSkill(skill, forceUse, dontMove);
 		// Notify the AI with AI_INTENTION_CAST and target
 		getAI().setIntention(CtrlIntention.AI_INTENTION_CAST, skill, target);
 	}

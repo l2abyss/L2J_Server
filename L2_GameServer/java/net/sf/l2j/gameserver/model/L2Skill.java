@@ -2010,6 +2010,8 @@ public abstract class L2Skill
                 else cha = activeChar;
 
                 boolean effectOriginIsL2PlayableInstance = (cha instanceof L2PlayableInstance);
+                
+                boolean srcIsSummon = (activeChar instanceof L2Summon);
 
                 L2PcInstance src = activeChar.getActingPlayer();
 
@@ -2070,7 +2072,7 @@ public abstract class L2Skill
 												continue;
 										}
 										
-										if (!src.checkPvpSkill(obj, this))
+										if (!src.checkPvpSkill(obj, this, srcIsSummon))
 											continue;
 									}
 								}
@@ -2098,7 +2100,7 @@ public abstract class L2Skill
 												continue;
 										}
 										
-										if (!src.checkPvpSkill(trg, this))
+										if (!src.checkPvpSkill(trg, this, srcIsSummon))
 											continue;
 									}
 									
