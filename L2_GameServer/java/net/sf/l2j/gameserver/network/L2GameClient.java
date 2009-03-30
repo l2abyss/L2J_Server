@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.network;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledFuture;
@@ -31,8 +32,10 @@ import net.sf.l2j.gameserver.LoginServerThread;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.LoginServerThread.SessionKey;
 import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
+import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.CharSelectInfoPackage;
+import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.L2Event;
@@ -208,70 +211,74 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 		_isDetached = b;
 	}
 
-	public L2PcInstance markToDeleteChar(int charslot) throws Exception
+	/**
+	 * Method to handle character deletion
+	 * 
+	 * @return a byte:
+	 * <li>-1: Error: No char was found for such charslot, caught exception, etc...
+	 * <li> 0: character is not member of any clan, proceed with deletion
+	 * <li> 1: character is member of a clan, but not clan leader
+	 * <li> 2: character is clan leader
+	 */
+	public byte markToDeleteChar(int charslot)
 	{
-		//have to make sure active character must be nulled
-		/*if (getActiveChar() != null)
-		{
-			saveCharToDisk(getActiveChar());
-			if (Config.DEBUG)
-			{
-				_log.fine("active Char saved");
-			}
-			this.setActiveChar(null);
-		}*/
-
 		int objid = getObjectIdForSlot(charslot);
+		
 		if (objid < 0)
-		    return null;
+		    return -1;
 
-		L2PcInstance character = L2PcInstance.load(objid);
-		if (character.getClanId() != 0)
-			return character;
-        character.deleteMe();
 		java.sql.Connection con = null;
+		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE characters SET deletetime=? WHERE charId=?");
-			statement.setLong(1, System.currentTimeMillis() + Config.DELETE_DAYS*86400000L); // 24*60*60*1000 = 86400000
-			statement.setInt(2, objid);
-			statement.execute();
-			statement.close();
+			
+			PreparedStatement statement = con.prepareStatement("SELECT clanId from characters WHERE charId=?");
+			statement.setInt(1, objid);			
+			ResultSet rs = statement.executeQuery();
+			
+			rs.next();
+			
+			int clanId = rs.getInt(1);
+			byte answer = 0;
+			if (clanId != 0)
+			{
+				L2Clan clan = ClanTable.getInstance().getClan(clanId);
+				
+				if (clan == null)
+					answer = 0; // jeezes!
+				else if (clan.getLeaderId() == objid)
+					answer = 2;
+				else 
+					answer = 1;
+			}
+			
+		    // Setting delete time
+			if (answer == 0)
+			{
+				if (Config.DELETE_DAYS == 0)
+					deleteCharByObjId(objid);
+				else
+				{
+					statement = con.prepareStatement("UPDATE characters SET deletetime=? WHERE charId=?");
+					statement.setLong(1, System.currentTimeMillis() + Config.DELETE_DAYS*86400000L); // 24*60*60*1000 = 86400000
+					statement.setInt(2, objid);
+					statement.execute();
+					statement.close();
+				}
+			}
+			
+			return answer;
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Error updating delete time of character.", e);
+			return -1;
 		}
 		finally
 		{
 			try { con.close(); } catch (Exception e) {}
 		}
-	    return null;
-	}
-
-	public L2PcInstance deleteChar(int charslot) throws Exception
-	{
-		//have to make sure active character must be nulled
-		/*if (getActiveChar() != null)
-		{
-			saveCharToDisk (getActiveChar());
-			if (Config.DEBUG) _log.fine("active Char saved");
-			this.setActiveChar(null);
-		}*/
-
-		int objid = getObjectIdForSlot(charslot);
-		if (objid < 0)
-    	    return null;
-
-		L2PcInstance character = L2PcInstance.load(objid);
-		if (character.getClanId() != 0)
-			return character;
-
-        character.deleteMe();
-		deleteCharByObjId(objid);
-
-		return null;
 	}
 
 	/**

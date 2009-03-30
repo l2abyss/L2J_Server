@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.CharDeleteFail;
 import net.sf.l2j.gameserver.network.serverpackets.CharDeleteSuccess;
 import net.sf.l2j.gameserver.network.serverpackets.CharSelectionInfo;
@@ -47,35 +46,30 @@ public final class CharacterDelete extends L2GameClientPacket
 	protected void runImpl()
 	{
 		if (Config.DEBUG) _log.fine("deleting slot:" + _charSlot);
-
-		L2PcInstance character = null;
+		
 		try
 		{
-		    if (Config.DELETE_DAYS == 0)
-		    	character = getClient().deleteChar(_charSlot);
-		    else
-		    	character = getClient().markToDeleteChar(_charSlot);
+			byte answer = getClient().markToDeleteChar(_charSlot);
+			
+			switch(answer)
+			{
+				default:
+				case -1: // Error
+					break;
+				case 0: // Success!
+					sendPacket(new CharDeleteSuccess());
+					break;
+				case 1:
+					sendPacket(new CharDeleteFail(CharDeleteFail.REASON_YOU_MAY_NOT_DELETE_CLAN_MEMBER));
+					break;
+				case 2:
+					sendPacket(new CharDeleteFail(CharDeleteFail.REASON_CLAN_LEADERS_MAY_NOT_BE_DELETED));
+					break;			
+			}
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Error:", e);
-		}
-
-		if (character == null)
-		{
-			sendPacket(new CharDeleteSuccess());
-		}
-		else
-		{
-			if (character.isClanLeader())
-			{
-				sendPacket(new CharDeleteFail(CharDeleteFail.REASON_CLAN_LEADERS_MAY_NOT_BE_DELETED));
-			}
-			else
-			{
-				sendPacket(new CharDeleteFail(CharDeleteFail.REASON_YOU_MAY_NOT_DELETE_CLAN_MEMBER));
-			}
-			character.deleteMe();
 		}
 
 		CharSelectionInfo cl = new CharSelectionInfo(getClient().getAccountName(), getClient().getSessionId().playOkID1, 0);
