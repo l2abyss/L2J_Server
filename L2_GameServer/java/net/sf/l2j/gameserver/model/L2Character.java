@@ -5642,28 +5642,24 @@ public abstract class L2Character extends L2Object
 		return oldSkill;
 	}
 
-	public void addChanceSkill(L2Skill skill)
+	public synchronized void addChanceSkill(L2Skill skill)
 	{
-		synchronized(this)
-		{
-			if (_chanceSkills == null)
+		if (_chanceSkills == null)
 				_chanceSkills = new ChanceSkillList(this);
-			_chanceSkills.put(skill, skill.getChanceCondition());
-		}
+			
+		_chanceSkills.put(skill, skill.getChanceCondition());
 	}
 
-	public void removeChanceSkill(int id)
+	public synchronized void removeChanceSkill(int id)
 	{
-		synchronized(this)
+		for (L2Skill skill : _chanceSkills.keySet())
 		{
-			for (L2Skill skill : _chanceSkills.keySet())
-			{
-				if (skill.getId() == id)
-					_chanceSkills.remove(skill);
-			}
-			if (_chanceSkills.size() == 0)
-				_chanceSkills = null;
+			if (skill.getId() == id)
+				_chanceSkills.remove(skill);
 		}
+		
+		if (_chanceSkills.size() == 0)
+				_chanceSkills = null;
 	}
 
 	/**
