@@ -60,7 +60,6 @@ public class L2SummonAI extends L2CharacterAI
 			return;
 		clientStopMoving(null);
 		_accessor.doAttack(getAttackTarget());
-		return;
 	}
 	
 	private void thinkCast()
@@ -79,7 +78,6 @@ public class L2SummonAI extends L2CharacterAI
 		setIntention(AI_INTENTION_IDLE);
 		_startFollow = val;
 		_accessor.doCast(_skill);
-		return;
 	}
 	
 	private void thinkPickUp()
@@ -90,7 +88,6 @@ public class L2SummonAI extends L2CharacterAI
 			return;
 		setIntention(AI_INTENTION_IDLE);
 		((L2Summon.AIAccessor) _accessor).doPickupItem(getTarget());
-		return;
 	}
 	
 	private void thinkInteract()
@@ -100,7 +97,6 @@ public class L2SummonAI extends L2CharacterAI
 		if (maybeMoveToPawn(getTarget(), 36))
 			return;
 		setIntention(AI_INTENTION_IDLE);
-		return;
 	}
 	
 	@Override

@@ -127,7 +127,7 @@ public class L2FortCommanderInstance extends L2FortSiegeGuardInstance
 							text = "Spirit of Fire, unleash your power! Burn the enemy!!";
 							break;
 					}
-					if (text != "")
+					if (!text.isEmpty())
 					{
 						broadcastPacket(new NpcSay(getObjectId(), 1, getNpcId(), text));
 						setCanTalk(false);

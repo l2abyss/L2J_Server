@@ -73,7 +73,7 @@ public class ExtractableItemsData
 			
 			if (line.startsWith("#"))
 				continue;
-			else if (line.equals(""))
+			else if (line.isEmpty())
 				continue;
 			
 			String[] lineSplit = line.split(";");

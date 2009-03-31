@@ -502,7 +502,7 @@ public abstract class L2Item
 			if (f != null)
 				funcs.add(f);
 		}
-		if (funcs.size() == 0)
+		if (funcs.isEmpty())
 			return _emptyFunctionSet;
 		return funcs.toArray(new Func[funcs.size()]);
 	}
@@ -528,7 +528,7 @@ public abstract class L2Item
 			if (e != null)
 				effects.add(e);
 		}
-		if (effects.size() == 0)
+		if (effects.isEmpty())
 			return _emptyEffectSet;
 		return effects.toArray(new L2Effect[effects.size()]);
 	}
@@ -555,7 +555,7 @@ public abstract class L2Item
 			for (L2Effect e : skill.getEffects(caster, target))
 				effects.add(e);
 		}
-		if (effects.size() == 0)
+		if (effects.isEmpty())
 			return _emptyEffectSet;
 		return effects.toArray(new L2Effect[effects.size()]);
 	}

@@ -282,7 +282,7 @@ public class FortSiege
 				_siegeStartTask.cancel(true);
 			_siegeStartTask = null;
 			
-			if (getAttackerClans().size() <= 0)
+			if (getAttackerClans().isEmpty())
 			{
 				return;
 			}
@@ -574,12 +574,12 @@ public class FortSiege
 								text = "I feel so much grief that I can't even take care of myself. There isn't any reason for me to stay here any longer.";
 								break;
 						}
-						if (text != "")
+						if (!text.isEmpty())
 							instance.broadcastPacket(new NpcSay(instance.getObjectId(), 1, instance.getNpcId(), text));
 					}
     			}
 				_commanders.get(getFort().getFortId()).remove(spawn);
-				if (_commanders.get(getFort().getFortId()).size() == 0)
+				if (_commanders.get(getFort().getFortId()).isEmpty())
 				{
 					// spawn fort flags
 					spawnFlag(getFort().getFortId());
@@ -671,7 +671,7 @@ public class FortSiege
 			statement.close();
 			
 			loadSiegeClan();
-			if (getAttackerClans().size() == 0)
+			if (getAttackerClans().isEmpty())
 			{
 				if (getIsInProgress())
 					endSiege();

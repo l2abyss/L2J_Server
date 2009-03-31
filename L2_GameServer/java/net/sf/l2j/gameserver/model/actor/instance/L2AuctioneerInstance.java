@@ -114,7 +114,7 @@ public final class L2AuctioneerInstance extends L2FolkInstance
 
             if (actualCommand.equalsIgnoreCase("auction"))
             {
-                if (val == "") return;
+                if (val.isEmpty()) return;
 
                 try
                 {
@@ -170,7 +170,7 @@ public final class L2AuctioneerInstance extends L2FolkInstance
             }
             else if (actualCommand.equalsIgnoreCase("bidding"))
             {
-                if (val == "") return;
+                if (val.isEmpty()) return;
                 if(Config.DEBUG) _log.warning("bidding show successful");
 
                 try
@@ -212,7 +212,7 @@ public final class L2AuctioneerInstance extends L2FolkInstance
             }
             else if (actualCommand.equalsIgnoreCase("bid"))
             {
-                if (val == "") return;
+                if (val.isEmpty()) return;
 
                 try
                 {
@@ -244,7 +244,7 @@ public final class L2AuctioneerInstance extends L2FolkInstance
                     return;
                 }
 
-                if (val == "") return;
+                if (val.isEmpty()) return;
                 if ((player.getClan().getAuctionBiddedAt() > 0 && player.getClan().getAuctionBiddedAt() != Integer.parseInt(val)) || player.getClan().getHasHideout() > 0)
                 {
                     player.sendMessage("You can't bid at more than one auction");
@@ -282,7 +282,7 @@ public final class L2AuctioneerInstance extends L2FolkInstance
                 int start;
             	int i = 1;
             	double npage = Math.ceil((float)auctions.size()/limit);
-            	if (val == ""){
+            	if (val.isEmpty()){
             		start = 1;
             	}else{
             		start = limit*(Integer.parseInt(val)-1)+1;
@@ -323,7 +323,7 @@ public final class L2AuctioneerInstance extends L2FolkInstance
             else if (actualCommand.equalsIgnoreCase("bidlist"))
             {
                 int auctionId = 0;
-                if (val == "")
+                if (val.isEmpty())
                 {
                     if (player.getClan().getAuctionBiddedAt() <= 0)
                         return;

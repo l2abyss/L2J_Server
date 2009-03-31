@@ -173,7 +173,7 @@ public class L2MonsterInstance extends L2Attackable
         if (_minionList.hasMinions())
         {
             List<L2MinionInstance> spawnedMinions = _minionList.getSpawnedMinions();
-            if (spawnedMinions != null && spawnedMinions.size() > 0)
+            if (spawnedMinions != null && !spawnedMinions.isEmpty())
             {
                 Iterator<L2MinionInstance> itr = spawnedMinions.iterator();
                 L2MinionInstance minion;

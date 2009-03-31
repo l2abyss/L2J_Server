@@ -240,7 +240,7 @@ public class Hero
 		L2ItemInstance[] items;
 		InventoryUpdate iu;
 		
-		if (_heroes.size() != 0)
+		if (!_heroes.isEmpty())
 		{
 			for (StatsSet hero : _heroes.values())
 			{
@@ -316,7 +316,7 @@ public class Hero
 			}
 		}
 		
-		if (newHeroes.size() == 0)
+		if (newHeroes.isEmpty())
 		{
 			_heroes.clear();
 			return;

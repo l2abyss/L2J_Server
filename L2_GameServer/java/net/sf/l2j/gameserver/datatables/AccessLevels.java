@@ -156,7 +156,7 @@ public class AccessLevels
 				takeAggro = rset.getBoolean("takeAggro");
 				gainExp = rset.getBoolean("gainExp");
 				
-				_accessLevels.put(accessLevel, new L2AccessLevel(accessLevel, name, nameColor, titleColor, childs.equals("") ? null : childs, isGm, allowPeaceAttack, allowFixedRes, allowTransaction, allowAltG, giveDamage, takeAggro, gainExp));
+				_accessLevels.put(accessLevel, new L2AccessLevel(accessLevel, name, nameColor, titleColor, childs.isEmpty() ? null : childs, isGm, allowPeaceAttack, allowFixedRes, allowTransaction, allowAltG, giveDamage, takeAggro, gainExp));
 			}
 			
 			rset.close();

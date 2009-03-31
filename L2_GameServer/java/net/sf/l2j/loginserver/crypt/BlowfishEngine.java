@@ -285,7 +285,6 @@ public class BlowfishEngine
         encrypting = pEncrypting;
         workingKey = key;
         setKey(workingKey);
-        return;
     }
 
     public String getAlgorithmName()

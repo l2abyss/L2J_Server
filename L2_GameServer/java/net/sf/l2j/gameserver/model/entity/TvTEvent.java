@@ -171,7 +171,7 @@ public class TvTEvent
 		int balance[] = { 0, 0 }, priority = 0, highestLevelPlayerId;
 		L2PcInstance highestLevelPlayer;
 		// XXX: allParticipants should be sorted by level instead of using highestLevelPcInstanceOf for every fetch
-		while (allParticipants.size() > 0)
+		while (!allParticipants.isEmpty())
 		{
 			// Priority team gets one player
 			highestLevelPlayerId = highestLevelPcInstanceOf(allParticipants);
@@ -180,7 +180,7 @@ public class TvTEvent
 			_teams[priority].addPlayer(highestLevelPlayer);
 			balance[priority] += highestLevelPlayer.getLevel();
 			// Exiting if no more players
-			if (allParticipants.size() == 0) break;
+			if (allParticipants.isEmpty()) break;
 			// The other team gets one player
 			// XXX: Code not dry
 			priority = 1-priority;

@@ -80,7 +80,7 @@ public class L2NpcWalkerInstance extends L2NpcInstance
 		}
 
 		//we send message to known players only!
-		if(_knownPlayers.size() > 0)
+		if(!_knownPlayers.isEmpty())
 		{
 			CreatureSay cs = new CreatureSay(getObjectId(), 0, getName(), chat);
 			Broadcast.toKnownPlayers(this, cs);

@@ -194,7 +194,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 				L2Attackable npc = (L2Attackable) _actor;
 				
 				// If its _knownPlayer isn't empty set the Intention to AI_INTENTION_ACTIVE
-				if (npc.getKnownList().getKnownPlayers().size() > 0)
+				if (!npc.getKnownList().getKnownPlayers().isEmpty())
 					intention = AI_INTENTION_ACTIVE;
 				else
 					intention = AI_INTENTION_IDLE;
@@ -323,7 +323,6 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 			else
 				((L2FortCommanderInstance) _actor).returnHome();
 		}
-		return;
 	}
 	
 	/**

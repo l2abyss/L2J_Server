@@ -181,9 +181,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			// from this location.  (Fulminus)
 			
 			// Check if player is an ally (comparing mem addr)
-			if (me.getFactionId() == "varka" && ((L2PcInstance) target).isAlliedWithVarka())
+			if ("varka".equals(me.getFactionId()) && ((L2PcInstance) target).isAlliedWithVarka())
 				return false;
-			if (me.getFactionId() == "ketra" && ((L2PcInstance) target).isAlliedWithKetra())
+			if ("ketra".equals(me.getFactionId()) && ((L2PcInstance) target).isAlliedWithKetra())
 				return false;
 			// check if the target is within the grace period for JUST getting up from fake death
 			if (((L2PcInstance) target).isRecentFakeDeath())
@@ -208,9 +208,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				if (owner.isGM() && (owner.isInvul() || !owner.getAccessLevel().canTakeAggro()))
 					return false;
 				// Check if player is an ally (comparing mem addr)
-				if (me.getFactionId() == "varka" && owner.isAlliedWithVarka())
+				if ("varka".equals(me.getFactionId()) && owner.isAlliedWithVarka())
 					return false;
-				if (me.getFactionId() == "ketra" && owner.isAlliedWithKetra())
+				if ("ketra".equals(me.getFactionId()) && owner.isAlliedWithKetra())
 					return false;
 			}
 		}
@@ -312,7 +312,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				L2Attackable npc = (L2Attackable) _actor;
 				
 				// If its _knownPlayer isn't empty set the Intention to AI_INTENTION_ACTIVE
-				if (npc.getKnownList().getKnownPlayers().size() > 0)
+				if (!npc.getKnownList().getKnownPlayers().isEmpty())
 					intention = AI_INTENTION_ACTIVE;
 			}
 			
@@ -693,19 +693,19 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	        			
 	        			// TODO: Unhardcode this by AI scripts (DrHouse)
 	        			//Catacomb mobs should assist lilim and nephilim other than dungeon
-	        			if ( (faction_id == "c_dungeon_clan") && 
-	        				((npcfaction == "c_dungeon_lilim") || npcfaction == "c_dungeon_nephi")) 
+	        			if ("c_dungeon_clan".equals(faction_id) &&
+	        				("c_dungeon_lilim".equals(npcfaction) || "c_dungeon_nephi".equals(npcfaction)))
 	        				sevenSignFaction = true;
 	        			//Lilim mobs should assist other Lilim and catacomb mobs
-	        			else if ( (faction_id == "c_dungeon_lilim") &&
-	        				(npcfaction == "c_dungeon_clan"))
+	        			else if ("c_dungeon_lilim".equals(faction_id) &&
+	        				"c_dungeon_clan".equals(npcfaction))
 	        				sevenSignFaction = true;
 	        			//Nephilim mobs should assist other Nephilim and catacomb mobs
-	        			else if ( (faction_id == "c_dungeon_nephi") &&
-	        				(npcfaction == "c_dungeon_clan")) 
+	        			else if ("c_dungeon_nephi".equals(faction_id) &&
+	        				"c_dungeon_clan".equals(npcfaction))
 	        				sevenSignFaction = true;
 	        			
-	        			if (faction_id != npc.getFactionId() && !sevenSignFaction)
+	        			if (!faction_id.equals(npc.getFactionId()) && !sevenSignFaction)
 	        				continue;
 	        				
 						// Check if the L2Object is inside the Faction Range of

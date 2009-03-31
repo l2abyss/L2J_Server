@@ -654,7 +654,7 @@ public class Disablers implements ISkillHandler
 							
 							stat = stat.toLowerCase().intern();
 							
-							if (stat == "buff")
+							if ("buff".equals(stat))
 							{
 								int lvlmodifier = 52 + skill.getMagicLevel() * 2;
 								if (skill.getMagicLevel() == 12)
@@ -668,29 +668,29 @@ public class Disablers implements ISkillHandler
 								if (Rnd.get(100) < landrate)
 									removedBuffs += negateEffect(target, L2SkillType.BUFF, -1, skill.getMaxNegatedEffects());
 							}
-							else if (stat == "debuff" && removedBuffs < skill.getMaxNegatedEffects())
+							else if ("debuff".equals(stat) && removedBuffs < skill.getMaxNegatedEffects())
 								removedBuffs += negateEffect(target, L2SkillType.DEBUFF, -1, skill.getMaxNegatedEffects());
-							else if (stat == "weakness" && removedBuffs < skill.getMaxNegatedEffects())
+							else if ("weakness".equals(stat) && removedBuffs < skill.getMaxNegatedEffects())
 								removedBuffs += negateEffect(target, L2SkillType.WEAKNESS, -1, skill.getMaxNegatedEffects());
-							else if (stat == "stun" && removedBuffs < skill.getMaxNegatedEffects())
+							else if ("stun".equals(stat) && removedBuffs < skill.getMaxNegatedEffects())
 								removedBuffs += negateEffect(target, L2SkillType.STUN, -1, skill.getMaxNegatedEffects());
-							else if (stat == "sleep" && removedBuffs < skill.getMaxNegatedEffects())
+							else if ("sleep".equals(stat) && removedBuffs < skill.getMaxNegatedEffects())
 								removedBuffs += negateEffect(target, L2SkillType.SLEEP, -1, skill.getMaxNegatedEffects());
-							else if (stat == "confusion" && removedBuffs < skill.getMaxNegatedEffects())
+							else if ("confusion".equals(stat) && removedBuffs < skill.getMaxNegatedEffects())
 								removedBuffs += negateEffect(target, L2SkillType.CONFUSION, -1, skill.getMaxNegatedEffects());
-							else if (stat == "mute" && removedBuffs < skill.getMaxNegatedEffects())
+							else if ("mute".equals(stat) && removedBuffs < skill.getMaxNegatedEffects())
 								removedBuffs += negateEffect(target, L2SkillType.MUTE, -1, skill.getMaxNegatedEffects());
-							else if (stat == "fear" && removedBuffs < skill.getMaxNegatedEffects())
+							else if ("fear".equals(stat) && removedBuffs < skill.getMaxNegatedEffects())
 								removedBuffs += negateEffect(target, L2SkillType.FEAR, -1, skill.getMaxNegatedEffects());
-							else if (stat == "poison" && removedBuffs < skill.getMaxNegatedEffects())
+							else if ("poison".equals(stat) && removedBuffs < skill.getMaxNegatedEffects())
 								removedBuffs += negateEffect(target, L2SkillType.POISON, skill.getNegateLvl(), skill.getMaxNegatedEffects());
-							else if (stat == "bleed" && removedBuffs < skill.getMaxNegatedEffects())
+							else if ("bleed".equals(stat) && removedBuffs < skill.getMaxNegatedEffects())
 								removedBuffs += negateEffect(target, L2SkillType.BLEED, skill.getNegateLvl(), skill.getMaxNegatedEffects());
-							else if (stat == "paralyze" && removedBuffs < skill.getMaxNegatedEffects())
+							else if ("paralyze".equals(stat) && removedBuffs < skill.getMaxNegatedEffects())
 								removedBuffs += negateEffect(target, L2SkillType.PARALYZE, -1, skill.getMaxNegatedEffects());
-							else if (stat == "root" && removedBuffs < skill.getMaxNegatedEffects())
+							else if ("root".equals(stat) && removedBuffs < skill.getMaxNegatedEffects())
 								removedBuffs += negateEffect(target, L2SkillType.ROOT, -1, skill.getMaxNegatedEffects());
-							else if (stat == "heal" && removedBuffs < skill.getMaxNegatedEffects())
+							else if ("heal".equals(stat) && removedBuffs < skill.getMaxNegatedEffects())
 							{
 								ISkillHandler Healhandler = SkillHandler.getInstance().getSkillHandler(L2SkillType.HEAL);
 								if (Healhandler == null)

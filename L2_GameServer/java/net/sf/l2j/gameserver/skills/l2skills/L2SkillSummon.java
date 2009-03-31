@@ -105,7 +105,7 @@ public class L2SkillSummon extends L2Skill
 					int mastery = player.getSkillLevel(L2Skill.SKILL_CUBIC_MASTERY);
 					if (mastery < 0)
 						mastery = 0;
-                    if (mastery == 0 && player.getCubics().size() > 0)
+                    if (mastery == 0 && !player.getCubics().isEmpty())
 					{
 						//Player can have only 1 cubic - we shuld replace old cubic with new one
                         for (L2CubicInstance c: player.getCubics().values())

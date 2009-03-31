@@ -523,7 +523,7 @@ public class Olympiad
 			}
 		}
 		
-		if (result.size() > 0)
+		if (!result.isEmpty())
 		{
 			return result;
 		}
@@ -1269,7 +1269,7 @@ public class Olympiad
 	
 	protected void giveHeroBonus()
 	{
-		if (_heroesToBe.size() == 0)
+		if (_heroesToBe.isEmpty())
 			return;
 		
 		for (StatsSet hero : _heroesToBe)
@@ -1287,7 +1287,7 @@ public class Olympiad
 	
 	public int getNoblessePasses(int objId)
 	{
-		if (_period != 1 || _nobles.size() == 0)
+		if (_period != 1 || _nobles.isEmpty())
 			return 0;
 		
 		StatsSet noble = _nobles.get(objId);
@@ -1327,7 +1327,7 @@ public class Olympiad
 	
 	public int getNoblePoints(int objId)
 	{
-		if (_nobles.size() == 0)
+		if (_nobles.isEmpty())
 			return 0;
 		
 		StatsSet noble = _nobles.get(objId);
@@ -1340,7 +1340,7 @@ public class Olympiad
 	
 	public int getCompetitionDone(int objId)
 	{
-		if (_nobles.size() == 0)
+		if (_nobles.isEmpty())
 			return 0;
 		
 		StatsSet noble = _nobles.get(objId);
@@ -1353,7 +1353,7 @@ public class Olympiad
 
 	public int getCompetitionWon(int objId)
 	{
-		if (_nobles.size() == 0)
+		if (_nobles.isEmpty())
 			return 0;
 		
 		StatsSet noble = _nobles.get(objId);
@@ -1366,7 +1366,7 @@ public class Olympiad
 
 	public int getCompetitionLost(int objId)
 	{
-		if (_nobles.size() == 0)
+		if (_nobles.isEmpty())
 			return 0;
 		
 		StatsSet noble = _nobles.get(objId);

@@ -142,22 +142,38 @@ public class L2DatabaseFactory
 
     public final String safetyString(String... whatToCheck)
     {
-        // NOTE: Use brace as a safty percaution just incase name is a reserved word
-        String braceLeft = "`";
-        String braceRight = "`";
-        if (getProviderType() == ProviderType.MsSql)
-        {
-            braceLeft = "[";
-            braceRight = "]";
+        // NOTE: Use brace as a safty precaution just incase name is a reserved word
+        final char braceLeft;
+        final char braceRight;
+        
+        if (getProviderType() == ProviderType.MsSql) {
+            braceLeft = '[';
+            braceRight = ']';
+        } else {
+            braceLeft = '`';
+            braceRight = '`';
         }
 
-        String result = "";
+        int length = 0;
+        
+        for (String word : whatToCheck) {
+            length += word.length() + 4;
+        }
+
+        final StringBuilder sbResult = new StringBuilder(length);
+        
         for(String word : whatToCheck)
         {
-            if(result != "") result += ", ";
-            result += braceLeft + word + braceRight;
+            if (sbResult.length() > 0) {
+                sbResult.append(", ");
+            }
+
+            sbResult.append(braceLeft);
+            sbResult.append(word);
+            sbResult.append(braceRight);
         }
-        return result;
+        
+        return sbResult.toString();
     }
 
     // =========================================================

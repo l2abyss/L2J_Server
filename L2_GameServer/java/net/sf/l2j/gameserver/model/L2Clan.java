@@ -281,7 +281,7 @@ public class L2Clan
 	 */
 	public String getLeaderName()
 	{
-		return _members.get(new Integer(_leader.getObjectId())).getName();
+		return _members.get(Integer.valueOf(_leader.getObjectId())).getName();
 	}
 
 	/**
@@ -1136,13 +1136,13 @@ public class L2Clan
     }
     public boolean isAtWarWith(Integer id)
     {
-    	if ((_atWarWith != null)&&(_atWarWith.size() > 0))
+    	if (_atWarWith != null && !_atWarWith.isEmpty())
     		if (_atWarWith.contains(id)) return true;
     	return false;
     }
     public boolean isAtWarAttacker(Integer id)
     {
-    	if ((_atWarAttackers != null)&&(_atWarAttackers.size() > 0))
+    	if (_atWarAttackers != null && !_atWarAttackers.isEmpty())
     		if (_atWarAttackers.contains(id)) return true;
     	return false;
     }
@@ -1179,7 +1179,7 @@ public class L2Clan
 
     public boolean isAtWar()
     {
-       if ((_atWarWith != null)&&(_atWarWith.size() > 0))
+       if (_atWarWith != null && !_atWarWith.isEmpty())
            return true;
        return false;
     }

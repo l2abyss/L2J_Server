@@ -248,7 +248,7 @@ public final class L2World
      */
     public L2PetInstance getPet(int ownerId)
     {
-        return _petsInstance.get(new Integer(ownerId));
+        return _petsInstance.get(Integer.valueOf(ownerId));
     }
 
     /**

@@ -5658,7 +5658,7 @@ public abstract class L2Character extends L2Object
 				_chanceSkills.remove(skill);
 		}
 		
-		if (_chanceSkills.size() == 0)
+		if (_chanceSkills.isEmpty())
 				_chanceSkills = null;
 	}
 
@@ -6089,7 +6089,7 @@ public abstract class L2Character extends L2Object
 	{
 		if (_disabledSkills == null) return;
 
-		_disabledSkills.remove(new Integer(skillId));
+		_disabledSkills.remove(Integer.valueOf(skillId));
 
 		if (this instanceof L2PcInstance)
 			removeTimeStamp(skillId);

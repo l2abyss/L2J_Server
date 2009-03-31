@@ -411,8 +411,6 @@ public class L2ControllableMobAI extends L2AttackableAI
 			_actor.setRunning();
 			setIntention(CtrlIntention.AI_INTENTION_ATTACK, hated);
 		}
-		
-		return;
 	}
 	
 	private boolean autoAttackCondition(L2Character target)
@@ -481,7 +479,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 			}
 		}
 		
-		if (potentialTarget.size() == 0) // nothing to do
+		if (potentialTarget.isEmpty()) // nothing to do
 			return null;
 		
 		// we choose a random target

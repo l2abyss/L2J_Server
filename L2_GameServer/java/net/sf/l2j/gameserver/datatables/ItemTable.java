@@ -721,8 +721,7 @@ public class ItemTable
 		}
 		
 		// Create a FastLookUp Table called _allTemplates of size : value of the highest item ID
-		if (true)
-			_log.severe("highest item id used:" + highestId);
+		_log.severe("highest item id used:" + highestId);
 		_allTemplates = new L2Item[highestId + 1];
 		
 		// Insert armor item in Fast Look Up Table

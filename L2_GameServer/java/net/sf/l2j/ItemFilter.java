@@ -34,7 +34,7 @@ public class ItemFilter implements Filter
 
 	public boolean isLoggable(LogRecord record)
 	{
-		if (record.getLoggerName() != "item") return false;
+		if (!"item".equals(record.getLoggerName())) return false;
 		if (_excludeProcess != null)
 		{
 //			if (record.getMessage() == null) return true;

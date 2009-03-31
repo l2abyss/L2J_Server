@@ -129,7 +129,7 @@ public class L2Party {
 			if (member.getInventory().validateCapacityByItemId(ItemId) &&
                     Util.checkIfInRange(Config.ALT_PARTY_RANGE2, target, member, true)) availableMembers.add(member);
 		}
-		if (availableMembers.size() > 0) return availableMembers.get(Rnd.get(availableMembers.size()));
+		if (!availableMembers.isEmpty()) return availableMembers.get(Rnd.get(availableMembers.size()));
 		else return null;
 	}
 

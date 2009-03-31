@@ -504,7 +504,7 @@ public abstract class L2Effect
 			if (f != null)
 				funcs.add(f);
 		}
-		if (funcs.size() == 0)
+		if (funcs.isEmpty())
 			return _emptyFunctionSet;
 		return funcs.toArray(new Func[funcs.size()]);
 	}

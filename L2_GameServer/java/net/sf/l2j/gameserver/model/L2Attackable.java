@@ -530,7 +530,6 @@ public class L2Attackable extends L2NpcInstance
 
         	if (!getMustRewardExpSP()) return;
 
-        	int rewardCount = 0;
         	int damage;
         	L2Character attacker, ddealer;
         	RewardInfo reward;
@@ -568,7 +567,6 @@ public class L2Attackable extends L2NpcInstance
         				if (reward == null)
         				{
         					reward = new RewardInfo(ddealer, damage);
-        					rewardCount++;
         				}
         				else
         				{

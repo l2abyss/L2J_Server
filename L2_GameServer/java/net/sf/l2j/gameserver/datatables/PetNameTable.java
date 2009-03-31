@@ -55,7 +55,7 @@ public class PetNameTable
 			String cond = "";
 			for (int it : L2PetDataTable.getPetItemsByNpc(petNpcId))
 			{
-				if (cond != "")
+				if (!cond.isEmpty())
 					cond += ", ";
 				cond += it;
 			}

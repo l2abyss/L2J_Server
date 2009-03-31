@@ -102,7 +102,7 @@ public class L2FortSiegeNpcInstance extends L2NpcInstance
             {
             	player.sendMessage("You are not able to participate"); // replace me with html
             }
-            else if (getFort().getSiege().getAttackerClans().size() == 0 && player.getInventory().getAdena() < 250000)
+            else if (getFort().getSiege().getAttackerClans().isEmpty() && player.getInventory().getAdena() < 250000)
             {
             	player.sendMessage("You need 250,000 adena to register"); // replace me with html
             }

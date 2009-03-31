@@ -80,8 +80,8 @@ public final class SystemMessage extends L2GameServerPacket
 
 	public SystemMessage addFortId(int number)
 	{
-		_types.add(new Integer(TYPE_FORTRESS));
-		_values.add(new Integer(number));
+		_types.add(Integer.valueOf(TYPE_FORTRESS));
+		_values.add(Integer.valueOf(number));
 		return this;
 	}
 

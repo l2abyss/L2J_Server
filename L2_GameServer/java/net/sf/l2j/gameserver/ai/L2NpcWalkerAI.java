@@ -112,7 +112,7 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 		if (getActor().getX() == destinationX && getActor().getY() == destinationY && getActor().getZ() == destinationZ)
 		{
 			String chat = _route.get(_currentPos).getChatText();
-			if (chat != null && !chat.equals(""))
+			if (chat != null && !chat.isEmpty())
 			{
 				try
 				{

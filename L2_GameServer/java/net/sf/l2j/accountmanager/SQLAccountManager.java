@@ -125,7 +125,6 @@ public class SQLAccountManager
             System.out.println("");
             printAccInfo(_mode);
         }
-        return;
     }
     
     private static void printAccInfo(String m) throws SQLException

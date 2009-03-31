@@ -208,11 +208,11 @@ public class AdminEventEngine implements IAdminCommandHandler
 				}
 				int i = 0;
 				
-				while (L2Event.participatingPlayers.size() > 0)
+				while (!L2Event.participatingPlayers.isEmpty())
 				{
 					String target = getMaxLeveledPlayer();
 					
-					if (!target.equals(""))
+					if (!target.isEmpty())
 					{
 						
 						L2Event.players.get(i + 1).add(target);
@@ -603,7 +603,7 @@ public class AdminEventEngine implements IAdminCommandHandler
 	void destroyEventNpcs()
 	{
 		L2NpcInstance npc;
-		while (L2Event.npcs.size() > 0)
+		while (!L2Event.npcs.isEmpty())
 		{
 			try
 			{

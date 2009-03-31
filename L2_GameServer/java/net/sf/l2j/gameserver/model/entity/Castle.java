@@ -1077,7 +1077,6 @@ public class Castle
 	public void setIsTimeRegistrationOver(boolean val)
 	{
 		_isTimeRegistrationOver = val;
-		return;
 	}
 	
 	public Calendar getTimeRegistrationOverDate()

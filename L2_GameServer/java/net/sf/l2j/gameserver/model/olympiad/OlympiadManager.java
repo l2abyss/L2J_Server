@@ -315,7 +315,7 @@ class OlympiadManager implements Runnable
 			{
 			}
 			
-			if (_gamesQueue.size() == 0)
+			if (_gamesQueue.isEmpty())
 			{
 				allGamesTerminated = true;
 			}
@@ -338,7 +338,7 @@ class OlympiadManager implements Runnable
 	
 	protected OlympiadGame getOlympiadGame(int index)
 	{
-		if (_olympiadInstances != null && _olympiadInstances.size() > 0)
+		if (_olympiadInstances != null && !_olympiadInstances.isEmpty())
 		{
 			return _olympiadInstances.get(index);
 		}
@@ -347,7 +347,7 @@ class OlympiadManager implements Runnable
 	
 	protected void removeGame(OlympiadGame game)
 	{
-		if (_olympiadInstances != null && _olympiadInstances.size() > 0)
+		if (_olympiadInstances != null && !_olympiadInstances.isEmpty())
 		{
 			for (int i = 0; i < _olympiadInstances.size(); i++)
 			{
@@ -366,7 +366,7 @@ class OlympiadManager implements Runnable
 	
 	protected L2FastList<L2PcInstance> getRandomClassList(Map<Integer, L2FastList<L2PcInstance>> list, L2FastList<Integer> classList)
 	{
-		if (list == null || classList == null || list.size() == 0 || classList.size() == 0)
+		if (list == null || classList == null || list.isEmpty() || classList.isEmpty())
 			return null;
 
 		return list.get(classList.get(Rnd.nextInt(classList.size())));
@@ -376,7 +376,7 @@ class OlympiadManager implements Runnable
 	        L2FastList<L2PcInstance> list)
 	{
 		L2FastList<L2PcInstance> opponents = new L2FastList<L2PcInstance>();
-		if (list.size() == 0)
+		if (list.isEmpty())
 			return opponents;
 		int loopCount = (list.size() / 2);
 		
@@ -402,7 +402,7 @@ class OlympiadManager implements Runnable
 	{
 		if (list == null)
 			return false;
-		if (list.size() == 0)
+		if (list.isEmpty())
 			return false;
 		int loopCount = list.size() >> 1;
 		

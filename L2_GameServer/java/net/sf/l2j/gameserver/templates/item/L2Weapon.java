@@ -345,7 +345,7 @@ public final class L2Weapon extends L2Item
 			target.getFirstEffect(_skillsOnCrit.getId()).exit();
 		for (L2Effect e : _skillsOnCrit.getEffects(caster, target))
 			effects.add(e);
-		if (effects.size() == 0)
+		if (effects.isEmpty())
 			return _emptyEffectSet;
 		return effects.toArray(new L2Effect[effects.size()]);
 	}

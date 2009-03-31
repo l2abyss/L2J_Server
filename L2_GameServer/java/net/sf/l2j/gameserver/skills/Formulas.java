@@ -1185,7 +1185,7 @@ public final class Formulas
 		if (siege == null || !siege.getIsInProgress()) return 0;
 
 		L2SiegeClan siegeClan = siege.getAttackerClan(activeChar.getClan().getClanId());
-		if (siegeClan == null || siegeClan.getFlag().size() == 0
+		if (siegeClan == null || siegeClan.getFlag().isEmpty()
 			|| !Util.checkIfInRange(200, activeChar, siegeClan.getFlag().get(0), true)) return 0;
 
 		return 1.5; // If all is true, then modifer will be 50% more

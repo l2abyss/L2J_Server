@@ -1463,14 +1463,12 @@ public class FourSepulchersManager extends GrandBossManager
 		// _log.info("FourSepulchersManager.DeleteAllMobs: Try to delete " +
 		// _allMobs.size() + " monsters.");
 		
-		int delCnt = 0;
 		for (L2NpcInstance mob : _allMobs)
 		{
 			try
 			{
 				mob.getSpawn().stopRespawn();
 				mob.deleteMe();
-				delCnt++;
 			}
 			catch (Exception e)
 			{

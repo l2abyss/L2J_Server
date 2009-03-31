@@ -168,7 +168,7 @@ final class EffectSignetMDam extends L2Effect
 			}
 		}
 		
-		if (targets.size() > 0)
+		if (!targets.isEmpty())
 		{
 			caster.broadcastPacket(new MagicSkillLaunched(caster, getSkill().getId(), getSkill().getLevel(), targets.toArray(new L2Character[targets.size()])));
 			for (L2Character target : targets)

@@ -1220,7 +1220,7 @@ public final class Config
 	                                SKILL_DURATION_LIST.put(Integer.parseInt(skillSplit[0]), Integer.parseInt(skillSplit[1]));
 	                            } catch (NumberFormatException nfe)
 	                            {
-	                                if (!skill.equals(""))
+	                                if (!skill.isEmpty())
 	                                {
 	                                    _log.warning(StringUtil.concat("[SkillDurationList]: invalid config property -> SkillList \"", skillSplit[0], "\"", skillSplit[1]));
 	                                }
@@ -1249,7 +1249,7 @@ public final class Config
 	                                SKILL_REUSE_LIST.put(Integer.valueOf(skillSplit[0]), Integer.valueOf(skillSplit[1]));
 	                            } catch (NumberFormatException nfe)
 	                            {
-	                                if (!skill.equals(""))
+	                                if (!skill.isEmpty())
 	                                {
 	                                    _log.warning(StringUtil.concat("[SkillReuseList]: invalid config property -> SkillList \"", skillSplit[0], "\"", skillSplit[1]));
 	                                }
@@ -1850,7 +1850,7 @@ public final class Config
 	                                		}
 	                                		catch (NumberFormatException nfe)
 	                                		{
-	                                			if (!reward.equals(""))
+	                                			if (!reward.isEmpty())
 	                                			    _log.warning(StringUtil.concat("TvTEventEngine[Config.load()]: invalid config property -> TvTEventReward \"", reward, "\""));
 	                                		}
 	                                	}
@@ -1886,7 +1886,7 @@ public final class Config
 	                        			}
 	                        			catch (NumberFormatException nfe)
 	                        			{
-	                        				if (!door.equals(""))
+	                        				if (!door.isEmpty())
 	                        				    _log.warning(StringUtil.concat("TvTEventEngine[Config.load()]: invalid config property -> TvTDoorsToClose \"", door, "\""));
 	                        			}
 	                        		}

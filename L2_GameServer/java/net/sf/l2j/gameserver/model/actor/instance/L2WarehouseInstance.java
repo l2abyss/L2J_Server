@@ -229,7 +229,7 @@ public final class L2WarehouseInstance extends L2FolkInstance
     private void showDepositWindowFreight(L2PcInstance player)
     {
         // No other chars in the account of this player
-        if (player.getAccountChars().size() == 0)
+        if (player.getAccountChars().isEmpty())
         {
             player.sendPacket(new SystemMessage(SystemMessageId.CHARACTER_DOES_NOT_EXIST));
         }
@@ -239,7 +239,7 @@ public final class L2WarehouseInstance extends L2FolkInstance
 
             Map<Integer, String> chars = player.getAccountChars();
 
-            if (chars.size() < 1)
+            if (chars.isEmpty())
             {
                 player.sendPacket(ActionFailed.STATIC_PACKET);
                 return;

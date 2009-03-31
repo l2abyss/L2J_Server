@@ -153,7 +153,6 @@ public class L2BoatInstance extends L2Character
 				bp.time = Integer.parseInt(st.nextToken());
 				_path.put(i, bp);
 			}
-			return;
 		}
 		
 		/**

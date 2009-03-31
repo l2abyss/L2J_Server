@@ -1972,7 +1972,7 @@ public abstract class L2Skill
 					}
 				}
 
-                if (targetList.size() == 0)
+                if (targetList.isEmpty())
                     return null;
 
                 return targetList.toArray(new L2Character[targetList.size()]);
@@ -2129,7 +2129,7 @@ public abstract class L2Skill
 					}
 				}
 
-                if (targetList.size() == 0)
+                if (targetList.isEmpty())
                     return null;
 
                 return targetList.toArray(new L2Character[targetList.size()]);
@@ -2282,7 +2282,7 @@ public abstract class L2Skill
 					}
 				}
 
-                if (targetList.size() == 0)
+                if (targetList.isEmpty())
                     return null;
 
                 return targetList.toArray(new L2Character[targetList.size()]);
@@ -2311,7 +2311,7 @@ public abstract class L2Skill
 						if (obj instanceof L2Attackable && obj != target)
 							targetList.add((L2Character) obj);
 						
-						if (targetList.size() == 0)
+						if (targetList.isEmpty())
 						{
 							activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_CANT_FOUND));
 							return null;
@@ -2809,7 +2809,7 @@ public abstract class L2Skill
 					}
 				}
 
-                if (targetList.size() == 0) return null;
+                if (targetList.isEmpty()) return null;
                 return targetList.toArray(new L2Character[targetList.size()]);
             }
             case TARGET_UNLOCKABLE:
@@ -2901,7 +2901,7 @@ public abstract class L2Skill
 					}
 				}
 
-                if (targetList.size() == 0) return null;
+                if (targetList.isEmpty()) return null;
                 return targetList.toArray(new L2Character[targetList.size()]);
             }
             case TARGET_ENEMY_SUMMON:
@@ -2953,7 +2953,7 @@ public abstract class L2Skill
             Func f = t.getFunc(env, this); // skill is owner
             if (f != null) funcs.add(f);
         }
-        if (funcs.size() == 0) return _emptyFunctionSet;
+        if (funcs.isEmpty()) return _emptyFunctionSet;
         return funcs.toArray(new Func[funcs.size()]);
     }
 
@@ -3003,7 +3003,7 @@ public abstract class L2Skill
             if (e != null) effects.add(e);
         }
 
-        if (effects.size() == 0) return _emptyEffectSet;
+        if (effects.isEmpty()) return _emptyEffectSet;
 
         return effects.toArray(new L2Effect[effects.size()]);
     }
@@ -3039,7 +3039,7 @@ public abstract class L2Skill
             if (e != null) effects.add(e);
         }
 
-        if (effects.size() == 0) return _emptyEffectSet;
+        if (effects.isEmpty()) return _emptyEffectSet;
 
         return effects.toArray(new L2Effect[effects.size()]);
     }
@@ -3086,7 +3086,7 @@ public abstract class L2Skill
                 else effects.add(e);
             }
         }
-        if (effects.size() == 0) return _emptyEffectSet;
+        if (effects.isEmpty()) return _emptyEffectSet;
 
         return effects.toArray(new L2Effect[effects.size()]);
     }

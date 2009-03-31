@@ -101,7 +101,7 @@ public class DayNightSpawnManager {
     private void spawnCreatures(Map<L2Spawn, L2NpcInstance> UnSpawnCreatures,Map<L2Spawn, L2NpcInstance> SpawnCreatures, String UnspawnLogInfo, String SpawnLogInfo){
         try
         {
-            if (UnSpawnCreatures.size() != 0)
+            if (!UnSpawnCreatures.isEmpty())
             {
                 int i = 0;
                 for (L2NpcInstance dayCreature : UnSpawnCreatures.values())
@@ -159,7 +159,7 @@ public class DayNightSpawnManager {
     }
     private void changeMode(int mode)
     {
-        if (_nightCreatures.size() == 0 && _dayCreatures.size() == 0)
+        if (_nightCreatures.isEmpty() && _dayCreatures.isEmpty())
             return;
 
         switch(mode) {

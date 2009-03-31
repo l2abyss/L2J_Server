@@ -71,7 +71,7 @@ public class Resurrect implements ISkillHandler
 				targetToRes.add(target);
 		}
 		
-		if (targetToRes.size() == 0)
+		if (targetToRes.isEmpty())
 		{
 			activeChar.abortCast();
 			activeChar.sendMessage("No valid target to resurrect");

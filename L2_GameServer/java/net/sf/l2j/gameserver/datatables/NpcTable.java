@@ -504,25 +504,38 @@ public class NpcTable
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			Map<String, Object> set = npc.getSet();
+
+            int length = 0;
+
+            for (Object obj : set.keySet()) {
+                // 15 is just guessed npc name length
+                length += ((String) obj).length() + 7 + 15;
+            }
+
+            final StringBuilder sbValues = new StringBuilder(length);
 			
-			String name = "";
-			String values = "";
-			
-			for (Object obj : set.keySet())
-			{
-				name = (String) obj;
+			for (Object obj : set.keySet()) {
+                final String name = (String) obj;
 				
-				if (!name.equalsIgnoreCase("npcId"))
-				{
-					if (values != "")
-						values += ", ";
-					
-					values += name + " = '" + set.get(name) + "'";
+				if (!name.equalsIgnoreCase("npcId")) {
+                    if (sbValues.length() > 0) {
+                        sbValues.append(", ");
+                    }
+
+                    sbValues.append(name);
+                    sbValues.append(" = '");
+                    sbValues.append(set.get(name));
+                    sbValues.append('\'');
 				}
 			}
-			
-			String query = "UPDATE npc SET " + values + " WHERE id = ?";
-			PreparedStatement statement = con.prepareStatement(query);
+
+            final StringBuilder sbQuery =
+                    new StringBuilder(sbValues.length() + 28);
+            sbQuery.append("UPDATE npc SET ");
+            sbQuery.append(sbValues.toString());
+            sbQuery.append(" WHERE id = ?");
+			PreparedStatement statement =
+                    con.prepareStatement(sbQuery.toString());
 			statement.setInt(1, npc.getInteger("npcId"));
 			statement.execute();
 			statement.close();

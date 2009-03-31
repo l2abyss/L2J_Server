@@ -351,35 +351,30 @@ public final class L2ClassMasterInstance extends L2FolkInstance
                     );
         html.setHtml(sb);
         player.sendPacket(html);
-        return;
 	}
 
 	private void showChatWindow1st(L2PcInstance player) {
                 NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
             html.setHtml(createGMClassMasterHtml(FIRST_CLASS_IDS));
             player.sendPacket(html);
-            return;
 	}
 
 	private void showChatWindow2nd(L2PcInstance player) {
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
             html.setHtml(createGMClassMasterHtml(SECOND_CLASS_IDS));
             player.sendPacket(html);
-            return;
 	}
 
 	private void showChatWindow3rd(L2PcInstance player) {
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
             html.setHtml(createGMClassMasterHtml(THIRD_CLASS_IDS));
             player.sendPacket(html);
-            return;
 	}
 
 	private void showChatWindowBase(L2PcInstance player) {
             NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
             html.setHtml(createGMClassMasterHtml(BASE_CLASS_IDS));
             player.sendPacket(html);
-            return;
 	}
 
 	private void changeClass(L2PcInstance player, int val)

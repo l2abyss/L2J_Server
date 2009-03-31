@@ -248,7 +248,6 @@ public class L2PlayerAI extends L2CharacterAI
 			return;
 		
 		_accessor.doAttack(target);
-		return;
 	}
 	
 	private void thinkCast()
@@ -299,8 +298,6 @@ public class L2PlayerAI extends L2CharacterAI
 		}
 		else
 			_accessor.doCast(_skill);
-		
-		return;
 	}
 	
 	private void thinkPickUp()
@@ -314,7 +311,6 @@ public class L2PlayerAI extends L2CharacterAI
 			return;
 		setIntention(AI_INTENTION_IDLE);
 		((L2PcInstance.AIAccessor) _accessor).doPickupItem(target);
-		return;
 	}
 	
 	private void thinkInteract()
@@ -329,7 +325,6 @@ public class L2PlayerAI extends L2CharacterAI
 		if (!(target instanceof L2StaticObjectInstance))
 			((L2PcInstance.AIAccessor) _accessor).doInteract((L2Character) target);
 		setIntention(AI_INTENTION_IDLE);
-		return;
 	}
 	
 	@Override

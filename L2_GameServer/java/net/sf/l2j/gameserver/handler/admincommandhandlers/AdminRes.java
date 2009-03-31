@@ -128,7 +128,7 @@ public class AdminRes implements IAdminCommandHandler
 		{
 			int radius = 0;
 			
-			if (!radiusStr.equals(""))
+			if (!radiusStr.isEmpty())
 			{
 				radius = Integer.parseInt(radiusStr);
 				

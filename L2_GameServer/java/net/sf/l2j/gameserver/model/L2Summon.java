@@ -500,17 +500,14 @@ public abstract class L2Summon extends L2PlayableInstance
 
 	protected void doPickupItem(L2Object object)
     {
-        return;
     }
 
     public void giveAllToOwner()
     {
-        return;
     }
 
     public void store()
     {
-        return;
     }
 
 	@Override

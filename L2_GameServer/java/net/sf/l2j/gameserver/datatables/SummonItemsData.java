@@ -60,7 +60,7 @@ public class SummonItemsData
 			return;
 		}
 		
-		int lineCount = 0, commentLinesCount = 0;
+		int lineCount = 0;
 		
 		while (s.hasNextLine())
 		{
@@ -70,10 +70,9 @@ public class SummonItemsData
 			
 			if (line.startsWith("#"))
 			{
-				commentLinesCount++;
 				continue;
 			}
-			else if (line.equals(""))
+			else if (line.isEmpty())
 				continue;
 			
 			String[] lineSplit = line.split(";");

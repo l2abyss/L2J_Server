@@ -136,7 +136,6 @@ public class RecipeController
 
 		SystemMessage sm = new SystemMessage(SystemMessageId.CANT_ALTER_RECIPEBOOK_WHILE_CRAFTING);
 		player.sendPacket(sm);
-		return;
 	}
 
 	public synchronized void requestMakeItemAbort(L2PcInstance player)

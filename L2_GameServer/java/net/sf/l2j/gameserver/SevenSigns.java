@@ -991,7 +991,7 @@ public class SevenSigns
 		}
 
 		// Increasing Seal total score for the player chosen Seal.
-		if (currPlayerData.getString("cabal") == "dawn")
+		if ("dawn".equals(currPlayerData.getString("cabal")))
 			_signsDawnSealTotals.put(chosenSeal, _signsDawnSealTotals.get(chosenSeal) + 1);
 		else
 			_signsDuskSealTotals.put(chosenSeal, _signsDuskSealTotals.get(chosenSeal) + 1);
@@ -1342,7 +1342,7 @@ public class SevenSigns
     			}
     			else
     			{
-    				if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && !currPlayer.getString("cabal").equals(""))
+    				if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && !currPlayer.getString("cabal").isEmpty())
     				{
     					onlinePlayer.teleToLocation(MapRegionTable.TeleportWhereType.Town);
     					onlinePlayer.setIsIn7sDungeon(false);

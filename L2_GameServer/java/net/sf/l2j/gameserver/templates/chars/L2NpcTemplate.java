@@ -324,7 +324,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	{
 		if (_categories == null)
 			return;
-		while (_categories.size() > 0)
+		while (!_categories.isEmpty())
 		{
 			_categories.getFirst().clearAllDrops();
 			_categories.removeFirst();

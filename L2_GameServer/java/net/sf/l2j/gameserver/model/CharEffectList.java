@@ -383,7 +383,7 @@ public class CharEffectList
 		synchronized(effectList)
 		{
 
-			if (effect.getStackType() == "none")
+			if ("none".equals(effect.getStackType()))
 			{
 				// Remove Func added by this effect from the L2Character Calculator
 				_owner.removeStatsOwner(effect);
@@ -395,7 +395,7 @@ public class CharEffectList
 				// Get the list of all stacked effects corresponding to the stack type of the L2Effect to add
 				List<L2Effect> stackQueue = _stackedEffects.get(effect.getStackType());
 
-				if (stackQueue == null || stackQueue.size() < 1) return;
+				if (stackQueue == null || stackQueue.isEmpty()) return;
 
 				// Get the identifier of the first stacked effect of the stack group selected
 				L2Effect frontEffect = stackQueue.get(0);
@@ -412,7 +412,7 @@ public class CharEffectList
 						_owner.removeStatsOwner(effect);
 
 						// Check if there's another effect in the Stack Group
-						if (stackQueue.size() > 0)
+						if (!stackQueue.isEmpty())
 						{
 							// Add its list of Funcs to the Calculator set of the L2Character
 							for (L2Effect e : effectList)
@@ -556,7 +556,7 @@ public class CharEffectList
 			stackQueue = new FastList<L2Effect>();
 
 		tempEffect = null;
-		if (stackQueue.size() > 0)
+		if (!stackQueue.isEmpty())
 		{
 			// Get the first stacked effect of the Stack group selected
 			for (L2Effect e : allEffects)

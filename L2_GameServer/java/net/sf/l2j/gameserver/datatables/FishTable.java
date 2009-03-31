@@ -140,7 +140,7 @@ public class FishTable
 			
 			result.add(f);
 		}
-		if (result.size() == 0)
+		if (result.isEmpty())
 			_log.warning("Cant Find Any Fish!? - Lvl: " + lvl + " Type: " + type);
 		return result;
 	}

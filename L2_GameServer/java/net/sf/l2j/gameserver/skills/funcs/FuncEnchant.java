@@ -171,6 +171,5 @@ public class FuncEnchant extends Func
                     break;
                 }
             }
-        return;
     }
 }

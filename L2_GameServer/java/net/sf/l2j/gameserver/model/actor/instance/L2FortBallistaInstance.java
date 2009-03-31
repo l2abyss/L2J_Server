@@ -48,7 +48,7 @@ public class L2FortBallistaInstance extends L2NpcInstance
         
         if (getFort().getSiege().getIsInProgress())
         {
-            if (killer instanceof L2PcInstance);
+            if (killer instanceof L2PcInstance)
             {
             	L2PcInstance player = ((L2PcInstance)killer);
             	if (player.getClan() != null && player.getClan().getLevel() >= 5)

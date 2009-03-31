@@ -22,7 +22,7 @@ public class ChatFilter implements Filter
 
 	public boolean isLoggable(LogRecord record)
 	{
-		return record.getLoggerName() == "chat";
+		return "chat".equals(record.getLoggerName());
 	}
 
 }

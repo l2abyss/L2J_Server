@@ -182,7 +182,7 @@ public class L2BossZone extends L2ZoneType
 			}
 			if (character instanceof L2PlayableInstance)
 			{
-				if (getCharactersInside() != null && getCharactersInside().size() > 0)
+				if (getCharactersInside() != null && !getCharactersInside().isEmpty())
 				{
 					_raidList.clear();
 					int count = 0;

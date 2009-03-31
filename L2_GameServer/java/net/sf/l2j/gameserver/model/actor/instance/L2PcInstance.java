@@ -817,7 +817,6 @@ public final class L2PcInstance extends L2PlayableInstance
     	{
     		_target = destination;
     		_skill = skill;
-    		return;
     	}
 
     	public L2PcInstance getTarget()
@@ -840,7 +839,6 @@ public final class L2PcInstance extends L2PlayableInstance
     	public void setTarget(L2DoorInstance door)
     	{
     		_target = door;
-    		return;
     	}
     	public L2DoorInstance getDoor()
     	{
@@ -5048,7 +5046,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		setPvpFlag(0); // Clear the pvp flag
 		
 		// Unsummon Cubics
-		if (_cubics.size() > 0)
+		if (!_cubics.isEmpty())
 		{
 			for (L2CubicInstance cubic : _cubics.values())
 			{
@@ -8964,7 +8962,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		L2ItemInstance item;
 		IItemHandler handler;
 		
-		if (_activeSoulShots == null || _activeSoulShots.size() == 0)
+		if (_activeSoulShots == null || _activeSoulShots.isEmpty())
 			return;
 		
 		try
@@ -9205,7 +9203,7 @@ public final class L2PcInstance extends L2PlayableInstance
         if (getPet() != null)
             getPet().unSummon(this);
 
-        if (getCubics().size() > 0)
+        if (!getCubics().isEmpty())
         {
             for (L2CubicInstance cubic : getCubics().values())
             {
@@ -9909,7 +9907,7 @@ public final class L2PcInstance extends L2PlayableInstance
         if (getPet() instanceof L2SummonInstance)
         	getPet().unSummon(this);
 
-        if (getCubics().size() > 0)
+        if (!getCubics().isEmpty())
         {
             for (L2CubicInstance cubic : getCubics().values())
             {
@@ -10405,7 +10403,7 @@ public final class L2PcInstance extends L2PlayableInstance
 
 	public void broadcastSnoop(int type, String name, String _text)
 	{
-		if(_snoopListener.size() > 0)
+		if(!_snoopListener.isEmpty())
 		{
 			Snoop sn = new Snoop(getObjectId(),getName(),type,name,_text);
 
@@ -10848,7 +10846,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		int group = GetRandomGroup();
 		int type = GetRandomFishType(group);
 		List<FishData> fishs = FishTable.getInstance().getfish(lvl, type, group);
-		if (fishs == null || fishs.size() == 0)
+		if (fishs == null || fishs.isEmpty())
 		{
 			sendMessage("Error - Fishes are not definied");
 			endFishing(false);

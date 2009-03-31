@@ -85,7 +85,7 @@ public class GameServerRegister
 			{
 				try
 				{
-					int id = new Integer(_choice).intValue();
+					int id = Integer.parseInt(_choice);
 					int size = gameServerTable.getServerNames().size();
 
 					if (size == 0)

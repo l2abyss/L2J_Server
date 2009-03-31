@@ -80,37 +80,37 @@ public final class L2VillageMasterInstance extends L2FolkInstance
 
         if (actualCommand.equalsIgnoreCase("create_clan"))
         {
-            if (cmdParams.equals("")) return;
+            if (cmdParams.isEmpty()) return;
 
             ClanTable.getInstance().createClan(player, cmdParams);
         }
         else if (actualCommand.equalsIgnoreCase("create_academy"))
         {
-            if (cmdParams.equals("")) return;
+            if (cmdParams.isEmpty()) return;
 
             createSubPledge(player, cmdParams, null, L2Clan.SUBUNIT_ACADEMY, 5);
         }
         else if (actualCommand.equalsIgnoreCase("create_royal"))
         {
-            if (cmdParams.equals("")) return;
+            if (cmdParams.isEmpty()) return;
 
             createSubPledge(player, cmdParams, cmdParams2, L2Clan.SUBUNIT_ROYAL1, 6);
         }
         else if (actualCommand.equalsIgnoreCase("create_knight"))
         {
-            if (cmdParams.equals("")) return;
+            if (cmdParams.isEmpty()) return;
 
             createSubPledge(player, cmdParams, cmdParams2, L2Clan.SUBUNIT_KNIGHT1, 7);
         }
         else if (actualCommand.equalsIgnoreCase("assign_subpl_leader"))
         {
-            if (cmdParams.equals("")) return;
+            if (cmdParams.isEmpty()) return;
 
             assignSubPledgeLeader(player, cmdParams, cmdParams2);
         }
         else if (actualCommand.equalsIgnoreCase("create_ally"))
         {
-            if (cmdParams.equals("")) return;
+            if (cmdParams.isEmpty()) return;
 
             if (!player.isClanLeader())
             {
@@ -134,7 +134,7 @@ public final class L2VillageMasterInstance extends L2FolkInstance
         }
         else if (actualCommand.equalsIgnoreCase("change_clan_leader"))
         {
-            if (cmdParams.equals("")) return;
+            if (cmdParams.isEmpty()) return;
 
             changeClanLeader(player, cmdParams);
         }

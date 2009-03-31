@@ -112,7 +112,7 @@ public class Die extends L2GameServerPacket
             		isInCastleDefense? 0x01 : 0x00);             		// 6d 02 00 00 00 - to castle
             writeD(siegeClan != null &&
             	   !isInCastleDefense && ! isInFortDefense &&
-                   siegeClan.getFlag().size() > 0 ? 0x01 : 0x00);       // 6d 03 00 00 00 - to siege HQ
+                   !siegeClan.getFlag().isEmpty() ? 0x01 : 0x00);       // 6d 03 00 00 00 - to siege HQ
             writeD(_sweepable ? 0x01 : 0x00);                               // sweepable  (blue glow)
             writeD(_access.allowFixedRes() ? 0x01: 0x00);                  // 6d 04 00 00 00 - to FIXED
             writeD(_clan.getHasFort() > 0  || isInFortDefense? 0x01 : 0x00);    // 6d 05 00 00 00 - to fortress

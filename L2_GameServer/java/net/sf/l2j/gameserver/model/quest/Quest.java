@@ -651,7 +651,7 @@ public class Quest extends ManagedScript
 	 */
 	public boolean showResult(L2PcInstance player, String res)
 	{
-		if (res == null || res.equals(""))
+		if (res == null || res.isEmpty())
 			return true;
 		if (res.endsWith(".htm"))
 		{
@@ -1230,7 +1230,7 @@ public class Quest extends ManagedScript
 		// NPE prevention.  If the player is null, there is nothing to return
 		if (player == null)
 			return null;
-		if ((player.getParty() == null) || (player.getParty().getPartyMembers().size() == 0))
+		if ((player.getParty() == null) || (player.getParty().getPartyMembers().isEmpty()))
 			return player;
 		L2Party party = player.getParty();
 		return party.getPartyMembers().get(Rnd.get(party.getPartyMembers().size()));
@@ -1277,7 +1277,7 @@ public class Quest extends ManagedScript
 		QuestState temp = null;
 		L2Party party = player.getParty();
 		// if this player is not in a party, just check if this player instance matches the conditions itself
-		if ((party == null) || (party.getPartyMembers().size() == 0))
+		if ((party == null) || (party.getPartyMembers().isEmpty()))
 		{
 			temp = player.getQuestState(getName());
 			if ((temp != null) && (temp.get(var) != null) && ((String) temp.get(var)).equalsIgnoreCase(value))
@@ -1302,7 +1302,7 @@ public class Quest extends ManagedScript
 				candidates.add(partyMember);
 		}
 		// if there was no match, return null...
-		if (candidates.size() == 0)
+		if (candidates.isEmpty())
 			return null;
 		
 		// if a match was found from the party, return one of them at random.
@@ -1329,7 +1329,7 @@ public class Quest extends ManagedScript
 		QuestState temp = null;
 		L2Party party = player.getParty();
 		// if this player is not in a party, just check if this player instance matches the conditions itself
-		if ((party == null) || (party.getPartyMembers().size() == 0))
+		if ((party == null) || (party.getPartyMembers().isEmpty()))
 		{
 			temp = player.getQuestState(getName());
 			if ((temp != null) && (temp.getState() == state))
@@ -1354,7 +1354,7 @@ public class Quest extends ManagedScript
 				candidates.add(partyMember);
 		}
 		// if there was no match, return null...
-		if (candidates.size() == 0)
+		if (candidates.isEmpty())
 			return null;
 		
 		// if a match was found from the party, return one of them at random.

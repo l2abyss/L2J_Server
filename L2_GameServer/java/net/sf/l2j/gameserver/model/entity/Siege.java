@@ -331,7 +331,7 @@ public class Siege
 			if (getCastle().getOwnerId() > 0)
 				_siegeGuardManager.removeMercs(); // Remove all merc entry from db
 				
-			if (getDefenderClans().size() == 0 && // If defender doesn't exist (Pc vs Npc)
+			if (getDefenderClans().isEmpty() && // If defender doesn't exist (Pc vs Npc)
 					getAttackerClans().size() == 1 // Only 1 attacker
 			)
 			{
@@ -345,7 +345,7 @@ public class Siege
 			{
 				
 				int allyId = ClanTable.getInstance().getClan(getCastle().getOwnerId()).getAllyId();
-				if (getDefenderClans().size() == 0) // If defender doesn't exist (Pc vs Npc)
+				if (getDefenderClans().isEmpty()) // If defender doesn't exist (Pc vs Npc)
 				// and only an alliance attacks
 				{
 					// The player's clan is in an alliance
@@ -424,7 +424,7 @@ public class Siege
 	{
 		if (!getIsInProgress())
 		{
-			if (getAttackerClans().size() <= 0)
+			if (getAttackerClans().isEmpty())
 			{
 				SystemMessage sm;
 				if (getCastle().getOwnerId() <= 0)
@@ -1303,7 +1303,7 @@ public class Siege
 		
 		// Register guard to the closest Control Tower
 		// When CT dies, so do all the guards that it controls
-		if (getSiegeGuardManager().getSiegeGuardSpawn().size() > 0 && _controlTowers.size() > 0)
+		if (!getSiegeGuardManager().getSiegeGuardSpawn().isEmpty() && !_controlTowers.isEmpty())
 		{
 			L2ControlTowerInstance closestCt;
 			double distance, x, y, z;
