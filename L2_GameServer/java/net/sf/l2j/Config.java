@@ -151,6 +151,11 @@ public final class Config
     public static boolean 	ALT_GAME_KARMA_PLAYER_CAN_USE_GK;
     public static boolean 	ALT_GAME_KARMA_PLAYER_CAN_TRADE;
     public static boolean 	ALT_GAME_KARMA_PLAYER_CAN_USE_WAREHOUSE;
+    public static int		MAX_PERSONAL_FAME_POINTS;
+    public static int		FORTRESS_ZONE_FAME_TASK_FREQUENCY;
+    public static int		FORTRESS_ZONE_FAME_AQUIRE_POINTS;
+    public static int		CASTLE_ZONE_FAME_TASK_FREQUENCY;
+    public static int		CASTLE_ZONE_FAME_AQUIRE_POINTS;
     public static boolean	IS_CRAFTING_ENABLED;
     public static int		DWARF_RECIPE_LIMIT;
     public static int		COMMON_RECIPE_LIMIT;
@@ -1322,6 +1327,11 @@ public final class Config
 	                ALT_GAME_KARMA_PLAYER_CAN_USE_GK	= Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanUseGK", "false"));
 	                ALT_GAME_KARMA_PLAYER_CAN_TRADE		= Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanTrade", "true"));
 	                ALT_GAME_KARMA_PLAYER_CAN_USE_WAREHOUSE	= Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanUseWareHouse", "true"));
+	                MAX_PERSONAL_FAME_POINTS			= Integer.parseInt(Character.getProperty("MaxPersonalFamePoints","65535"));
+	                FORTRESS_ZONE_FAME_TASK_FREQUENCY	= Integer.parseInt(Character.getProperty("FortressZoneFameTaskFrequency","300"));
+	                FORTRESS_ZONE_FAME_AQUIRE_POINTS	= Integer.parseInt(Character.getProperty("FortressZoneFameAquirePoints","31"));
+	                CASTLE_ZONE_FAME_TASK_FREQUENCY	= Integer.parseInt(Character.getProperty("CastleZoneFameTaskFrequency","300"));
+	                CASTLE_ZONE_FAME_AQUIRE_POINTS	= Integer.parseInt(Character.getProperty("CastleZoneFameAquirePoints","125"));
 	                IS_CRAFTING_ENABLED					= Boolean.parseBoolean(Character.getProperty("CraftingEnabled", "true"));
 	                DWARF_RECIPE_LIMIT					= Integer.parseInt(Character.getProperty("DwarfRecipeLimit","50"));
 	                COMMON_RECIPE_LIMIT					= Integer.parseInt(Character.getProperty("CommonRecipeLimit","50"));
@@ -2265,6 +2275,11 @@ public final class Config
         else if (pName.equalsIgnoreCase("AltKarmaPlayerCanTeleport")) ALT_GAME_KARMA_PLAYER_CAN_TELEPORT = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltKarmaPlayerCanTrade")) ALT_GAME_KARMA_PLAYER_CAN_TRADE = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltKarmaPlayerCanUseWareHouse")) ALT_GAME_KARMA_PLAYER_CAN_USE_WAREHOUSE = Boolean.parseBoolean(pValue);
+        else if (pName.equalsIgnoreCase("MaxPersonalFamePoints")) MAX_PERSONAL_FAME_POINTS = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("FortressZoneFameTaskFrequency")) FORTRESS_ZONE_FAME_TASK_FREQUENCY = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("FortressZoneFameAquirePoints")) FORTRESS_ZONE_FAME_AQUIRE_POINTS = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("CastleZoneFameTaskFrequency")) CASTLE_ZONE_FAME_TASK_FREQUENCY = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("CastleZoneFameAquirePoints")) CASTLE_ZONE_FAME_AQUIRE_POINTS = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("AltCastleForDawn")) ALT_GAME_CASTLE_DAWN = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltCastleForDusk")) ALT_GAME_CASTLE_DUSK = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltRequireClanCastle")) ALT_GAME_REQUIRE_CLAN_CASTLE = Boolean.parseBoolean(pValue);

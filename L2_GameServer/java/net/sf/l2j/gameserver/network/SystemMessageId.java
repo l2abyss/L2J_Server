@@ -13654,6 +13654,12 @@ public enum SystemMessageId
 	S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1(2305),
 
 	/**
+	* ID: 2319<br>
+	* Message: You have acquired $s1 reputation score.
+	*/
+	ACQUIRED_S1_REPUTATION_SCORE(2319),
+
+	/**
 	 *  ID: 2326<br>
 	 *  Message: You have acquired 50 Clan's Fame Points..
 	 */

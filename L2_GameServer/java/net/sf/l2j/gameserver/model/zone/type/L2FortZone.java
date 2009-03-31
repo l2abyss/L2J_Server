@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.model.zone.type;
 
 import javolution.util.FastList;
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
@@ -83,7 +84,13 @@ public class L2FortZone extends L2ZoneType
 			character.setInsideZone(L2Character.ZONE_SIEGE, true);
 			
 			if (character instanceof L2PcInstance)
+			{
 				((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
+				if (((L2PcInstance) character).getClan() != null 
+						&& (_fort.getSiege().checkIsAttacker(((L2PcInstance) character).getClan())
+						|| _fort.getSiege().checkIsDefender(((L2PcInstance) character).getClan())))
+					((L2PcInstance) character).startFameTask(Config.FORTRESS_ZONE_FAME_TASK_FREQUENCY * 1000, Config.FORTRESS_ZONE_FAME_AQUIRE_POINTS);
+			}
 		}
 	}
 	
@@ -99,6 +106,7 @@ public class L2FortZone extends L2ZoneType
 			if (character instanceof L2PcInstance)
 			{
 				((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
+				((L2PcInstance) character).stopFameTask();
 				
 				// Set pvp flag
 				if (((L2PcInstance) character).getPvpFlag() == 0)
@@ -205,7 +213,10 @@ public class L2FortZone extends L2ZoneType
 					character.setInsideZone(L2Character.ZONE_SIEGE, false);
 					
 					if (character instanceof L2PcInstance)
+					{
 						((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
+						((L2PcInstance) character).stopFameTask();
+					}
 					if (character instanceof L2SiegeSummonInstance)
 					{
 						((L2SiegeSummonInstance) character).unSummon(((L2SiegeSummonInstance) character).getOwner());
