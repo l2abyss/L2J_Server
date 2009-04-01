@@ -35,6 +35,7 @@ import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.model.entity.FortSiege;
 import net.sf.l2j.gameserver.model.entity.Siege;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.PledgeShowMemberListAll;
 import net.sf.l2j.gameserver.network.serverpackets.PledgeShowMemberListUpdate;
@@ -216,6 +217,7 @@ public class ClanTable
 		player.sendPacket(new PledgeShowInfoUpdate(clan));
 		player.sendPacket(new PledgeShowMemberListAll(clan, player));
 		player.sendPacket(new UserInfo(player));
+		player.sendPacket(new ExBrExtraUserInfo(player));
 		player.sendPacket(new PledgeShowMemberListUpdate(player));
 		player.sendPacket(new SystemMessage(SystemMessageId.CLAN_CREATED));
 		return clan;

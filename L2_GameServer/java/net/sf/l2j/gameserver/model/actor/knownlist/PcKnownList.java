@@ -33,6 +33,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2TrapInstance;
 import net.sf.l2j.gameserver.network.serverpackets.CharInfo;
 import net.sf.l2j.gameserver.network.serverpackets.DeleteObject;
 import net.sf.l2j.gameserver.network.serverpackets.DropItem;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ExPrivateStoreSetWholeMsg;
 import net.sf.l2j.gameserver.network.serverpackets.GetOnVehicle;
 import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
@@ -171,6 +172,7 @@ public class PcKnownList extends PlayableKnownList
                 	otherPlayer.getPosition().setWorldPosition(otherPlayer.getBoat().getPosition().getWorldPosition());
 
                     getActiveChar().sendPacket(new CharInfo(otherPlayer));
+                    otherPlayer.broadcastPacket(new ExBrExtraUserInfo(otherPlayer));
                     int relation1 = otherPlayer.getRelation(getActiveChar());
                 	int relation2 = getActiveChar().getRelation(otherPlayer);
                 	if (otherPlayer.getKnownList().getKnownRelations().get(getActiveChar().getObjectId()) != null && otherPlayer.getKnownList().getKnownRelations().get(getActiveChar().getObjectId()) != relation1)
@@ -224,6 +226,7 @@ public class PcKnownList extends PlayableKnownList
                 else
                 {
                 	getActiveChar().sendPacket(new CharInfo(otherPlayer));
+                	otherPlayer.broadcastPacket(new ExBrExtraUserInfo(otherPlayer));
                 	int relation1 = otherPlayer.getRelation(getActiveChar());
                 	int relation2 = getActiveChar().getRelation(otherPlayer);
                 	if (otherPlayer.getKnownList().getKnownRelations().get(getActiveChar().getObjectId()) != null && otherPlayer.getKnownList().getKnownRelations().get(getActiveChar().getObjectId()) != relation1)

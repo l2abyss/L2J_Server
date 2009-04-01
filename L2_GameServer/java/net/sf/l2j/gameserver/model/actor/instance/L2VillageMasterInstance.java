@@ -41,6 +41,7 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.AcquireSkillDone;
 import net.sf.l2j.gameserver.network.serverpackets.AcquireSkillList;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
@@ -738,6 +739,7 @@ public final class L2VillageMasterInstance extends L2FolkInstance
         	if (leaderSubPledge.getPlayerInstance() == null) return;
         	leaderSubPledge.getPlayerInstance().setPledgeClass(leaderSubPledge.calculatePledgeClass(leaderSubPledge.getPlayerInstance()));
         	leaderSubPledge.getPlayerInstance().sendPacket(new UserInfo(leaderSubPledge.getPlayerInstance()));
+        	leaderSubPledge.getPlayerInstance().sendPacket(new ExBrExtraUserInfo(leaderSubPledge.getPlayerInstance()));
         }
     }
 
@@ -799,6 +801,7 @@ public final class L2VillageMasterInstance extends L2FolkInstance
         L2ClanMember leaderSubPledge = clan.getClanMember(leaderName);
         leaderSubPledge.getPlayerInstance().setPledgeClass(leaderSubPledge.calculatePledgeClass(leaderSubPledge.getPlayerInstance()));
         leaderSubPledge.getPlayerInstance().sendPacket(new UserInfo(leaderSubPledge.getPlayerInstance()));
+        leaderSubPledge.getPlayerInstance().sendPacket(new ExBrExtraUserInfo(leaderSubPledge.getPlayerInstance()));
         clan.broadcastClanStatus();
     	SystemMessage sm = new SystemMessage(SystemMessageId.S1_HAS_BEEN_SELECTED_AS_CAPTAIN_OF_S2);
     	sm.addString(leaderName);

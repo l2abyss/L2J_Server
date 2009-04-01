@@ -35,6 +35,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.L2Event;
 import net.sf.l2j.gameserver.network.serverpackets.CharInfo;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.PlaySound;
@@ -713,6 +714,7 @@ public class AdminEventEngine implements IAdminCommandHandler
 				target.broadcastPacket(info1);
 				UserInfo info2 = new UserInfo(target);
 				target.sendPacket(info2);
+				target.broadcastPacket(new ExBrExtraUserInfo(target));
 			}
 			catch (Exception e)
 			{
@@ -737,6 +739,7 @@ public class AdminEventEngine implements IAdminCommandHandler
 				target.broadcastPacket(info1);
 				UserInfo info2 = new UserInfo(target);
 				target.sendPacket(info2);
+				target.broadcastPacket(new ExBrExtraUserInfo(target));
 			}
 			catch (Exception e)
 			{

@@ -20,6 +20,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.base.Race;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 
@@ -117,6 +118,7 @@ public class CharChangePotions implements IItemHandler
 		// Broadcast the changes to the char and all those nearby.
 		UserInfo ui = new UserInfo(activeChar);
 		activeChar.broadcastPacket(ui);
+		activeChar.broadcastPacket(new ExBrExtraUserInfo(activeChar));
 	}
 	
 	/**

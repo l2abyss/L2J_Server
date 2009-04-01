@@ -77,6 +77,7 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.clientpackets.Say2;
 import net.sf.l2j.gameserver.network.serverpackets.CharInfo;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
@@ -942,6 +943,7 @@ public class GameStatusThread extends Thread
             activeChar.sendPacket(iu);
             activeChar.broadcastPacket(new CharInfo(activeChar));
             activeChar.sendPacket(new UserInfo(activeChar));
+            activeChar.broadcastPacket(new ExBrExtraUserInfo(activeChar));
 
             // informations
             activeChar.sendMessage("Changed enchantment of " + activeChar.getName() + "'s "

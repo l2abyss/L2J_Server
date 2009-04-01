@@ -43,6 +43,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2FortCommanderInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.NpcSay;
 import net.sf.l2j.gameserver.network.serverpackets.RelationChanged;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
@@ -379,6 +380,7 @@ public class FortSiege
 				else
 					member.setSiegeState((byte) 1);
 				member.sendPacket(new UserInfo(member));
+				member.sendPacket(new ExBrExtraUserInfo(member));
 				Collection<L2PcInstance> plrs = member.getKnownList().getKnownPlayers().values();
 				//synchronized (member.getKnownList().getKnownPlayers())
 				{
@@ -401,6 +403,7 @@ public class FortSiege
 				else
 					member.setSiegeState((byte) 2);
 				member.sendPacket(new UserInfo(member));
+				member.sendPacket(new ExBrExtraUserInfo(member));
 				Collection<L2PcInstance> plrs = member.getKnownList().getKnownPlayers().values();
 				//synchronized (member.getKnownList().getKnownPlayers())
 				{

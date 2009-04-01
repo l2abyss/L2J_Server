@@ -20,6 +20,7 @@ import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExAttributeEnchantResult;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
@@ -190,6 +191,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 
 		player.sendPacket(new ExAttributeEnchantResult(powerToAdd));
 		player.sendPacket(new UserInfo(player));
+		player.sendPacket(new ExBrExtraUserInfo(player));
 		player.setActiveEnchantAttrItem(null);
 	}
 

@@ -32,6 +32,7 @@ import net.sf.l2j.gameserver.model.base.ClassId;
 import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.CharInfo;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.PartySmallWindowAll;
 import net.sf.l2j.gameserver.network.serverpackets.PartySmallWindowDeleteAll;
@@ -195,6 +196,7 @@ public class AdminEditChar implements IAdminCommandHandler
 					L2PcInstance player = (L2PcInstance) target;
 					player.setFame(fame);
 					player.sendPacket(new UserInfo(player));
+					player.sendPacket(new ExBrExtraUserInfo(player));
 					player.sendMessage("A GM changed your Reputation points to " + fame);
 				}
 				else
@@ -645,6 +647,7 @@ public class AdminEditChar implements IAdminCommandHandler
 		
 		player.broadcastPacket(new CharInfo(player));
 		player.sendPacket(new UserInfo(player));
+		player.broadcastPacket(new ExBrExtraUserInfo(player));
 		player.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 		player.decayMe();
 		player.spawnMe(activeChar.getX(), activeChar.getY(), activeChar.getZ());

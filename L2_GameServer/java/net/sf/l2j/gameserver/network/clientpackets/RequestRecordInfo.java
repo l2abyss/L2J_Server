@@ -28,6 +28,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2StaticObjectInstance;
 import net.sf.l2j.gameserver.network.serverpackets.CharInfo;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.GetOnVehicle;
 import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.PetItemList;
@@ -60,6 +61,7 @@ public class RequestRecordInfo extends L2GameClientPacket
 			return;
 
 		_activeChar.sendPacket(new UserInfo(_activeChar));
+		_activeChar.sendPacket(new ExBrExtraUserInfo(_activeChar));
 
 		Collection<L2Object> objs = _activeChar.getKnownList().getKnownObjects().values();
 		//synchronized (_activeChar.getKnownList().getKnownObjects())
@@ -122,6 +124,7 @@ public class RequestRecordInfo extends L2GameClientPacket
 						{
 							otherPlayer.getPosition().setWorldPosition(otherPlayer.getBoat().getPosition().getWorldPosition());
 							_activeChar.sendPacket(new CharInfo(otherPlayer));
+							otherPlayer.broadcastPacket(new ExBrExtraUserInfo(otherPlayer));
 							int relation = otherPlayer.getRelation(_activeChar);
 							
 							if (otherPlayer.getPet() != null)
@@ -139,6 +142,7 @@ public class RequestRecordInfo extends L2GameClientPacket
 						else
 						{
 							_activeChar.sendPacket(new CharInfo(otherPlayer));
+							otherPlayer.broadcastPacket(new ExBrExtraUserInfo(otherPlayer));
 							int relation = otherPlayer.getRelation(_activeChar);
 							
 							if (otherPlayer.getPet() != null)

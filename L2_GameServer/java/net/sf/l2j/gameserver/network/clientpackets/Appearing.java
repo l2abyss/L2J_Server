@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.network.clientpackets;
 
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 
 /**
@@ -43,6 +44,7 @@ public final class Appearing extends L2GameClientPacket
         if (activeChar.isTeleporting()) activeChar.onTeleported();
 
         sendPacket(new UserInfo(activeChar));
+        sendPacket(new ExBrExtraUserInfo(activeChar));
 	}
 
 	/* (non-Javadoc)

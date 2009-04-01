@@ -35,6 +35,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.ItemContainer;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
 import net.sf.l2j.gameserver.network.serverpackets.PledgeReceiveSubPledgeCreated;
@@ -318,6 +319,7 @@ public class L2Clan
 		player.setPledgeClass(member.calculatePledgeClass(player));
 		player.sendPacket(new PledgeShowMemberListUpdate(player));
 		player.sendPacket(new UserInfo(player));
+		player.sendPacket(new ExBrExtraUserInfo(player));
     }
 
 	public void updateClanMember(L2PcInstance player)
@@ -1588,6 +1590,7 @@ public class L2Clan
                         {
                             cm.getPlayerInstance().setClanPrivileges(privs);
                             cm.getPlayerInstance().sendPacket(new UserInfo(cm.getPlayerInstance()));
+                            cm.getPlayerInstance().sendPacket(new ExBrExtraUserInfo(cm.getPlayerInstance()));
                         }
             }
             broadcastClanStatus();
@@ -2005,6 +2008,7 @@ public class L2Clan
         updateClanInDB();
 
         player.sendPacket(new UserInfo(player));
+        player.sendPacket(new ExBrExtraUserInfo(player));
 
         //TODO: Need correct message id
         player.sendMessage("Alliance " + allyName + " has been created.");

@@ -29,6 +29,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.PcInventory;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
@@ -210,6 +211,7 @@ public class MultiSellChoose extends L2GameClientPacket
 					int fameCost = player.getFame() - (e.getItemCount() * _amount);
 					player.setFame(fameCost);
 					player.sendPacket(new UserInfo(player));
+					player.sendPacket(new ExBrExtraUserInfo(player));
 					break;
 				}
 				default:

@@ -29,6 +29,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.base.Experience;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ShortCutRegister;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
@@ -161,6 +162,7 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
                     }
                     
                     player.sendPacket(new UserInfo(player));
+                    player.sendPacket(new ExBrExtraUserInfo(player));
                     
                     SystemMessage sm = new SystemMessage(SystemMessageId.YOU_HAVE_SUCCEEDED_IN_ENCHANTING_THE_SKILL_S1);
                     sm.addSkillName(_skillId);

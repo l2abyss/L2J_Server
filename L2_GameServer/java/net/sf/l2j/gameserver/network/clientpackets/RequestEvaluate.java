@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.network.clientpackets;
 
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 
@@ -106,6 +107,7 @@ public final class RequestEvaluate extends L2GameClientPacket
 		sm =null;
 
         activeChar.sendPacket(new UserInfo(activeChar));
+        sendPacket(new ExBrExtraUserInfo(activeChar));
 		target.broadcastUserInfo();
 	}
 

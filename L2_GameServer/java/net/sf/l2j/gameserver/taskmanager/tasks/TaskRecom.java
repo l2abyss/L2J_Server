@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.taskmanager.Task;
 import net.sf.l2j.gameserver.taskmanager.TaskManager;
@@ -58,6 +59,7 @@ public class TaskRecom extends Task
 			{
 				player.restartRecom();
 				player.sendPacket(new UserInfo(player));
+				player.sendPacket(new ExBrExtraUserInfo(player));
 			}
 		}
 		_log.config("Recommendation Global Task: launched.");

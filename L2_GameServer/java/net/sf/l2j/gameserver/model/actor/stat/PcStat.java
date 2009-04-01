@@ -21,6 +21,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.base.Experience;
 import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.PledgeShowMemberListUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SocialAction;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
@@ -68,6 +69,7 @@ public class PcStat extends PlayableStat
 
         // EXP status update currently not used in retail
         activeChar.sendPacket(new UserInfo(activeChar));
+        activeChar.sendPacket(new ExBrExtraUserInfo(activeChar));
         return true;
     }
 
@@ -188,6 +190,7 @@ public class PcStat extends PlayableStat
         getActiveChar().refreshExpertisePenalty();
         // Send a Server->Client packet UserInfo to the L2PcInstance
         getActiveChar().sendPacket(new UserInfo(getActiveChar()));
+        getActiveChar().sendPacket(new ExBrExtraUserInfo(getActiveChar()));
 
         return levelIncreased;
     }

@@ -37,6 +37,7 @@ import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
@@ -308,6 +309,7 @@ public class Hero
 					}
 					
 					player.sendPacket(new UserInfo(player));
+					player.sendPacket(new ExBrExtraUserInfo(player));
 					player.broadcastUserInfo();
 				}
 				catch (NullPointerException e)
@@ -377,6 +379,7 @@ public class Hero
 					clan.broadcastToOnlineMembers(sm);
 				}
 				player.sendPacket(new UserInfo(player));
+				player.sendPacket(new ExBrExtraUserInfo(player));
 				player.broadcastUserInfo();
 				
 			}

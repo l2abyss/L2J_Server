@@ -31,6 +31,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.CharInfo;
 import net.sf.l2j.gameserver.network.serverpackets.Earthquake;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ExRedSky;
 import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
@@ -348,6 +349,7 @@ public class AdminEffects implements IAdminCommandHandler
 				activeChar.broadcastPacket(info1);
 				UserInfo info2 = new UserInfo(activeChar);
 				activeChar.sendPacket(info2);
+				activeChar.broadcastPacket(new ExBrExtraUserInfo(activeChar));
 			}
 			catch (Exception e)
 			{
@@ -362,6 +364,7 @@ public class AdminEffects implements IAdminCommandHandler
 			activeChar.broadcastPacket(info1);
 			UserInfo info2 = new UserInfo(activeChar);
 			activeChar.sendPacket(info2);
+			activeChar.broadcastPacket(new ExBrExtraUserInfo(activeChar));
 		}
 		else if (command.equals("admin_clear_teams"))
 		{

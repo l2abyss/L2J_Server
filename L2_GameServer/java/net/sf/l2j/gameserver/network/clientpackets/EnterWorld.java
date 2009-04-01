@@ -62,6 +62,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ClientSetTime;
 import net.sf.l2j.gameserver.network.serverpackets.Die;
 import net.sf.l2j.gameserver.network.serverpackets.EtcStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ExBasicActionList;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ExStorageMaxCount;
 import net.sf.l2j.gameserver.network.serverpackets.FriendList;
 import net.sf.l2j.gameserver.network.serverpackets.HennaInfo;
@@ -202,6 +203,7 @@ public class EnterWorld extends L2GameClientPacket
         setPledgeClass(activeChar);
 
         activeChar.sendPacket(new UserInfo(activeChar));
+        sendPacket(new ExBrExtraUserInfo(activeChar));
         
         // Send Macro List
         activeChar.getMacroses().sendUpdate();

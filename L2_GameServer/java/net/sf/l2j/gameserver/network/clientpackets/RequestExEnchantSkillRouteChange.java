@@ -29,6 +29,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.base.Experience;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ShortCutRegister;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
@@ -175,6 +176,7 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
                 }
 
                 player.sendPacket(new UserInfo(player));
+                player.sendPacket(new ExBrExtraUserInfo(player));
                 
                 if (levelPenalty == 0)
                 {
