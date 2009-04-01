@@ -16,7 +16,6 @@ package net.sf.l2j.gameserver.skills.conditions;
 
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.skills.Env;
-import net.sf.l2j.gameserver.skills.Stats;
 
 
 
@@ -24,27 +23,20 @@ import net.sf.l2j.gameserver.skills.Stats;
  * @author Kerberos
  *
  **/
-public class ConditionPlayerWeight extends Condition {
+public class ConditionPlayerInvSize extends Condition {
 
-	private final int _weight;
+	private final int _size;
 
-	public ConditionPlayerWeight(int weight)
+	public ConditionPlayerInvSize(int size)
 	{
-		_weight = weight;
+		_size = size;
 	}
 
 	@Override
 	public boolean testImpl(Env env)
 	{
 		if (env.player instanceof L2PcInstance)
-		{
-			if (((L2PcInstance) env.player).getMaxLoad() > 0)
-			{
-				int weightproc = ((L2PcInstance) env.player).getCurrentLoad() * 100 / ((L2PcInstance) env.player).getMaxLoad();
-				weightproc*=(int)((L2PcInstance) env.player).calcStat(Stats.WEIGHT_LIMIT, 1, env.player, null);
-				return weightproc < _weight || ((L2PcInstance) env.player).getDietMode();
-			}
-		}
+			return env.player.getInventory().getSize() <= (((L2PcInstance) env.player).getInventoryLimit()-_size);
 		return true;
 	}
 }

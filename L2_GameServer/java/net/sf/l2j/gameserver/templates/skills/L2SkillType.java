@@ -116,7 +116,6 @@ public enum L2SkillType
 	MOUNT(L2SkillMount.class),
 	INSTANT_JUMP,
 	
-	MYSTERIOUS_CUBE,
 	// Creation
 	COMMON_CRAFT,
 	DWARVEN_CRAFT,
@@ -175,7 +174,7 @@ public enum L2SkillType
 	COREDONE,
 	
 	// unimplemented
-	NOTDONE, BALLISTA, DUMMY;
+	NOTDONE, BALLISTA, DUMMY, EXTRACTABLE;
 	
 	private final Class<? extends L2Skill> _class;
 	

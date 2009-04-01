@@ -435,6 +435,11 @@ abstract class DocumentBase
                 int weight = Integer.decode(getValue(a.getNodeValue(), null));
                 cond = joinAnd(cond, new ConditionPlayerWeight(weight));
             }
+            else if ("invSize".equalsIgnoreCase(a.getNodeName()))
+            {
+                int size = Integer.decode(getValue(a.getNodeValue(), null));
+                cond = joinAnd(cond, new ConditionPlayerInvSize(size));
+            }
             else if ("pledgeClass".equalsIgnoreCase(a.getNodeName()))
             {
                 int pledgeClass = Integer.decode(getValue(a.getNodeValue(), null));

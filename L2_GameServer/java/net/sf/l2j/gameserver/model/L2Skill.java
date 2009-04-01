@@ -284,6 +284,7 @@ public abstract class L2Skill
     // kill by damage over time
     private final boolean _killByDOT;
 
+    private final int _refId;
     // all times in milliseconds
     private final int _hitTime;
     //private final int _skillInterruptTime;
@@ -384,7 +385,7 @@ public abstract class L2Skill
     {
         _id = set.getInteger("skill_id");
         _level = set.getInteger("level");
-
+        _refId = set.getInteger("referenceId", set.getInteger("itemConsumeId", 0));
         _displayId = set.getInteger("displayId", _id);
         _name = set.getString("name");
         _operateType = set.getEnum("operateType", SkillOpType.class);
@@ -3166,4 +3167,13 @@ public abstract class L2Skill
 	{
 		return _feed;
 	}
+
+	/**
+	 * used for extractable item skills
+     * @return reference item id
+     */
+    public int getReferenceItemId()
+    {
+	    return _refId;
+    }
 }

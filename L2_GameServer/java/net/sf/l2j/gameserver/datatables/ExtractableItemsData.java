@@ -22,6 +22,7 @@
 package net.sf.l2j.gameserver.datatables;
 
 import java.io.File;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -30,12 +31,13 @@ import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ExtractableItem;
 import net.sf.l2j.gameserver.model.L2ExtractableProductItem;
+import net.sf.l2j.gameserver.model.L2Skill;
 
 public class ExtractableItemsData
 {
 	protected static final Logger _log = Logger.getLogger(ExtractableItemsData.class.getName());
-	//          Map<itemid, L2ExtractableItem>
-	private FastMap<Integer, L2ExtractableItem> _items;
+	//          Map<FastMap<itemid, skill>, L2ExtractableItem>
+	private Map<Integer, L2ExtractableItem> _items = new FastMap<Integer, L2ExtractableItem>();
 	
 	private static ExtractableItemsData _instance = null;
 	
@@ -49,7 +51,7 @@ public class ExtractableItemsData
 	
 	public ExtractableItemsData()
 	{
-		_items = new FastMap<Integer, L2ExtractableItem>();
+		_items.clear();
 		
 		Scanner s;
 		
@@ -69,7 +71,7 @@ public class ExtractableItemsData
 		{
 			lineCount++;
 			
-			String line = s.nextLine();
+			String line = s.nextLine().trim();
 			
 			if (line.startsWith("#"))
 				continue;
@@ -79,10 +81,14 @@ public class ExtractableItemsData
 			String[] lineSplit = line.split(";");
 			boolean ok = true;
 			int itemID = 0;
+			int skillID = 0;
+			int skillLvl = 0;
 			
 			try
 			{
 				itemID = Integer.parseInt(lineSplit[0]);
+				skillID = Integer.parseInt(lineSplit[1]);
+				skillLvl = Integer.parseInt(lineSplit[2]);
 			}
 			catch (Exception e)
 			{
@@ -90,19 +96,25 @@ public class ExtractableItemsData
 				_log.warning("		" + line);
 				ok = false;
 			}
-			
+			L2Skill skill = SkillTable.getInstance().getInfo(skillID, skillLvl);
+			if (skill == null)
+			{
+					_log.warning("Extractable items data: Error in line " + lineCount + " -> skill is null!");
+					_log.warning("		" + line);
+					ok = false;
+			}
 			if (!ok)
 				continue;
 			
 			FastList<L2ExtractableProductItem> product_temp = new FastList<L2ExtractableProductItem>();
 			
-			for (int i = 0; i < lineSplit.length - 1; i++)
+			for (int i = 2; i < lineSplit.length -1 ; i++)
 			{
 				ok = true;
 				
 				String[] lineSplit2 = lineSplit[i + 1].split(",");
 				
-				if (lineSplit2.length != 3)
+				if (lineSplit2.length < 3 )//|| lineSplit2.length-1 %2 != 0)
 				{
 					_log.warning("Extractable items data: Error in line " + lineCount + " -> wrong seperator!");
 					_log.warning("		" + line);
@@ -112,13 +124,21 @@ public class ExtractableItemsData
 				if (!ok)
 					continue;
 				
-				int production = 0, amount = 0, chance = 0;
+				int[] production = {0};
+				int[] amount = {0};
+				int chance = 0;
 				
 				try
 				{
-					production = Integer.parseInt(lineSplit2[0]);
-					amount = Integer.parseInt(lineSplit2[1]);
-					chance = Integer.parseInt(lineSplit2[2]);
+					int k =0;
+					for (int j = 0; j < lineSplit2.length-1 ;j++)
+					{
+						production[k] = Integer.parseInt(lineSplit2[j]);
+						amount[k] = Integer.parseInt(lineSplit2[j+=1]);
+						k++;
+					}
+
+					chance = Integer.parseInt(lineSplit2[lineSplit2.length-1]);
 				}
 				catch (Exception e)
 				{
@@ -130,7 +150,7 @@ public class ExtractableItemsData
 				if (!ok)
 					continue;
 				
-				L2ExtractableProductItem product = new L2ExtractableProductItem(production, amount, chance);
+				L2ExtractableProductItem product = new L2ExtractableProductItem(production, amount, chance, skill);
 				product_temp.add(product);
 			}
 			
@@ -145,6 +165,7 @@ public class ExtractableItemsData
 				_log.warning("		" + line);
 				continue;
 			}
+
 			L2ExtractableItem product = new L2ExtractableItem(itemID, product_temp);
 			_items.put(itemID, product);
 		}
