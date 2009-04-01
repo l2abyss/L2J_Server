@@ -360,6 +360,7 @@ public final class Config
     public static boolean	GMAUDIT;
     public static boolean	LOG_GAME_DAMAGE;
     public static boolean	DEBUG;
+    public static boolean   PACKET_HANDLER_DEBUG;
     public static boolean	ASSERT;
     public static boolean	DEVELOPER;
     public static boolean	ACCEPT_GEOEDITOR_CONN;
@@ -1481,6 +1482,7 @@ public final class Config
 	                GMAUDIT										= Boolean.parseBoolean(General.getProperty("GMAudit", "False"));
 	                LOG_GAME_DAMAGE								= Boolean.parseBoolean(General.getProperty("LogGameDamage", "False"));
 	                DEBUG										= Boolean.parseBoolean(General.getProperty("Debug", "false"));
+	                PACKET_HANDLER_DEBUG						= Boolean.parseBoolean(General.getProperty("PacketHandlerDebug", "false"));
 	                ASSERT										= Boolean.parseBoolean(General.getProperty("Assert", "false"));
 	                DEVELOPER									= Boolean.parseBoolean(General.getProperty("Developer", "false"));
 	                ACCEPT_GEOEDITOR_CONN						= Boolean.parseBoolean(General.getProperty("AcceptGeoeditorConn", "false"));
@@ -1999,6 +2001,7 @@ public final class Config
 	                PORT_LOGIN            = Integer.parseInt(serverSettings.getProperty("LoginserverPort", "2106"));
 	
 	                DEBUG        = Boolean.parseBoolean(serverSettings.getProperty("Debug", "false"));
+	                PACKET_HANDLER_DEBUG	= Boolean.parseBoolean(serverSettings.getProperty("PacketHandlerDebug", "false"));
 	                DEVELOPER    = Boolean.parseBoolean(serverSettings.getProperty("Developer", "false"));
 	                ASSERT       = Boolean.parseBoolean(serverSettings.getProperty("Assert", "false"));
 	
