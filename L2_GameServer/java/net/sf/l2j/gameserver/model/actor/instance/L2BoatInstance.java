@@ -207,7 +207,7 @@ public class L2BoatInstance extends L2Character
 			{
 				L2BoatPoint bp = _path.get(state);
 				double dx = (_boat.getX() - bp.x);
-				double dy = (_boat.getX() - bp.y);
+				double dy = (_boat.getY() - bp.y);
 				double distance = Math.sqrt(dx * dx + dy * dy);
 				double cos;
 				double sin;
@@ -588,7 +588,7 @@ public class L2BoatInstance extends L2Character
 				{
 					for (L2PcInstance player : knownPlayers)
 					{
-						if (player.isInBoat())
+						if (player.isInBoat() && player.getBoat() == this)
 						{
 							L2ItemInstance it;
 							it = player.getInventory().getItemByItemId(_t1.idWTicket1);
@@ -630,7 +630,7 @@ public class L2BoatInstance extends L2Character
 				{
 					for (L2PcInstance player : knownPlayers)
 					{
-						if (player.isInBoat())
+						if (player.isInBoat() && player.getBoat() == this)
 						{
 							L2ItemInstance it;
 							it = player.getInventory().getItemByItemId(_t2.idWTicket1);
