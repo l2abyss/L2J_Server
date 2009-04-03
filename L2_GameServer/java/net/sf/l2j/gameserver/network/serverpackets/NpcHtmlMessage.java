@@ -135,6 +135,7 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 	private int _npcObjId;
 	private String _html;
 	private int _itemId = 0;
+	private boolean _validate = true;
 	
 	/**
 	 * 
@@ -162,10 +163,18 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 		_npcObjId = npcObjId;
 	}
 
+	/**
+	 * disable building bypass validation cache for this packet
+	 */
+	public void disableValidation()
+	{
+		_validate = false;
+	}
+
 	@Override
 	public void runImpl()
 	{
-		if (Config.BYPASS_VALIDATION)
+		if (Config.BYPASS_VALIDATION && _validate)
 			buildBypassCache(getClient().getActiveChar());
 	}
 

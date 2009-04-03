@@ -53,6 +53,7 @@ public final class RequestLinkHtml extends L2GameClientPacket
 		{
 			String filename = "data/html/"+_link;
 			NpcHtmlMessage msg = new NpcHtmlMessage(0);
+			msg.disableValidation();
 			msg.setFile(filename);
 			sendPacket(msg);
 		}
