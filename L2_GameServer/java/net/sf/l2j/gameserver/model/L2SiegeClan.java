@@ -17,7 +17,7 @@ package net.sf.l2j.gameserver.model;
 import java.util.List;
 
 import javolution.util.FastList;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 
 public class L2SiegeClan
 {
@@ -26,7 +26,7 @@ public class L2SiegeClan
 	// ===============================================================
 	// Data Field
 	private int _clanId                = 0;
-	private List<L2NpcInstance> _flag  = new FastList<L2NpcInstance>();
+	private List<L2Npc> _flag  = new FastList<L2Npc>();
 	private int _numFlagsAdded = 0;
 	private SiegeClanType _type;
 
@@ -54,13 +54,13 @@ public class L2SiegeClan
 		return _numFlagsAdded;
 	}
 
-	public void addFlag(L2NpcInstance flag)
+	public void addFlag(L2Npc flag)
 	{
 		_numFlagsAdded++;
 		getFlag().add(flag);
 	}
 
-	public boolean removeFlag(L2NpcInstance flag)
+	public boolean removeFlag(L2Npc flag)
 	{
 		if (flag == null) return false;
 		boolean ret = getFlag().remove(flag);
@@ -77,7 +77,7 @@ public class L2SiegeClan
 
 	public void removeFlags()
 	{
-		for (L2NpcInstance flag: getFlag())
+		for (L2Npc flag: getFlag())
 			removeFlag(flag);
 	}
 
@@ -85,9 +85,9 @@ public class L2SiegeClan
 	// Property
 	public final int getClanId() { return _clanId; }
 
-	public final List<L2NpcInstance> getFlag()
+	public final List<L2Npc> getFlag()
 	{
-		if (_flag == null) _flag  = new FastList<L2NpcInstance>();
+		if (_flag == null) _flag  = new FastList<L2Npc>();
 		return _flag;
 	}
 

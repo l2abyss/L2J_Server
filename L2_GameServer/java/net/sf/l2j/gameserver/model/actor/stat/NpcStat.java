@@ -14,7 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.actor.stat;
 
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.skills.Stats;
 
 public class NpcStat extends CharStat
@@ -24,7 +24,7 @@ public class NpcStat extends CharStat
 
     // =========================================================
     // Constructor
-    public NpcStat(L2NpcInstance activeChar)
+    public NpcStat(L2Npc activeChar)
     {
         super(activeChar);
 
@@ -40,7 +40,7 @@ public class NpcStat extends CharStat
     // =========================================================
     // Property - Public
     @Override
-	public L2NpcInstance getActiveChar() { return (L2NpcInstance)super.getActiveChar(); }
+	public L2Npc getActiveChar() { return (L2Npc)super.getActiveChar(); }
 
     @Override
 	public final int getMaxHp() { return (int)calcStat(Stats.MAX_HP, getActiveChar().getTemplate().baseHpMax , null, null); }

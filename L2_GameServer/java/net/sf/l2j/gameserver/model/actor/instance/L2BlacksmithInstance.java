@@ -21,7 +21,7 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
  * @author zabbix
  * Lets drink to code!
  */
-public class L2BlacksmithInstance extends L2FolkInstance
+public class L2BlacksmithInstance extends L2NpcInstance
 {
 	public L2BlacksmithInstance(int objectId, L2NpcTemplate template)
 	{

@@ -32,12 +32,12 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.instancemanager.QuestManager;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Party;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Spawn;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -209,7 +209,7 @@ public class Quest extends ManagedScript
 	 * @param npc:  npc associated with this timer (can be null)
 	 * @param player: player associated with this timer (can be null)
 	 */
-	public void startQuestTimer(String name, long time, L2NpcInstance npc, L2PcInstance player)
+	public void startQuestTimer(String name, long time, L2Npc npc, L2PcInstance player)
 	{
 		startQuestTimer(name, time, npc, player, false);
 	}
@@ -223,7 +223,7 @@ public class Quest extends ManagedScript
 	 * @param player: player associated with this timer (can be null)
 	 * @param repeatable: indicates if the timer is repeatable or one-time.
 	 */
-	public void startQuestTimer(String name, long time, L2NpcInstance npc, L2PcInstance player, boolean repeating)
+	public void startQuestTimer(String name, long time, L2Npc npc, L2PcInstance player, boolean repeating)
 	{
 		// Add quest timer if timer doesn't already exist
 		FastList<QuestTimer> timers = getQuestTimers(name);
@@ -255,7 +255,7 @@ public class Quest extends ManagedScript
 		// ignore the startQuestTimer in all other cases (timer is already started)
 	}
 	
-	public QuestTimer getQuestTimer(String name, L2NpcInstance npc, L2PcInstance player)
+	public QuestTimer getQuestTimer(String name, L2Npc npc, L2PcInstance player)
 	{
 		FastList<QuestTimer> qt = getQuestTimers(name);
 		
@@ -308,7 +308,7 @@ public class Quest extends ManagedScript
 		}
 	}
 	
-	public void cancelQuestTimer(String name, L2NpcInstance npc, L2PcInstance player)
+	public void cancelQuestTimer(String name, L2Npc npc, L2PcInstance player)
 	{
 		QuestTimer timer = getQuestTimer(name, npc, player);
 		if (timer != null)
@@ -334,7 +334,7 @@ public class Quest extends ManagedScript
 	}
 	
 	// these are methods to call from java
-	public final boolean notifyAttack(L2NpcInstance npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
+	public final boolean notifyAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
 	{
 		String res = null;
 		try
@@ -362,7 +362,7 @@ public class Quest extends ManagedScript
 		return showResult(qs.getPlayer(), res);
 	}
 	
-    public final boolean notifySpellFinished(L2NpcInstance instance, L2PcInstance player, L2Skill skill)
+    public final boolean notifySpellFinished(L2Npc instance, L2PcInstance player, L2Skill skill)
     {
 		String res = null;
 		try
@@ -376,7 +376,7 @@ public class Quest extends ManagedScript
 		return showResult(player, res);
 	    
     }
-	public final boolean notifySpawn(L2NpcInstance npc)
+	public final boolean notifySpawn(L2Npc npc)
 	{
 		try
 		{
@@ -390,7 +390,7 @@ public class Quest extends ManagedScript
 		return false;
 	}
 	
-	public final boolean notifyEvent(String event, L2NpcInstance npc, L2PcInstance player)
+	public final boolean notifyEvent(String event, L2Npc npc, L2PcInstance player)
 	{
 		String res = null;
 		try
@@ -404,7 +404,7 @@ public class Quest extends ManagedScript
 		return showResult(player, res);
 	}
 	
-	public final boolean notifyKill(L2NpcInstance npc, L2PcInstance killer, boolean isPet)
+	public final boolean notifyKill(L2Npc npc, L2PcInstance killer, boolean isPet)
 	{
 		String res = null;
 		try
@@ -418,7 +418,7 @@ public class Quest extends ManagedScript
 		return showResult(killer, res);
 	}
 	
-	public final boolean notifyTalk(L2NpcInstance npc, QuestState qs)
+	public final boolean notifyTalk(L2Npc npc, QuestState qs)
 	{
 		String res = null;
 		try
@@ -434,7 +434,7 @@ public class Quest extends ManagedScript
 	}
 	
 	// override the default NPC dialogs when a quest defines this for the given NPC
-	public final boolean notifyFirstTalk(L2NpcInstance npc, L2PcInstance player)
+	public final boolean notifyFirstTalk(L2Npc npc, L2PcInstance player)
 	{
 		String res = null;
 		try
@@ -457,13 +457,13 @@ public class Quest extends ManagedScript
 	}
 	public class tmpOnSkillSee implements Runnable
 	{
-		private L2NpcInstance _npc;
+		private L2Npc _npc;
 		private L2PcInstance _caster;
 		private L2Skill _skill;
 		private L2Object[] _targets;
 		private boolean _isPet;
 		
-		public tmpOnSkillSee(L2NpcInstance npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
+		public tmpOnSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
 		{
 			_npc = npc;
 			_caster = caster;
@@ -488,13 +488,13 @@ public class Quest extends ManagedScript
 		}
 	}
 	
-	public final boolean notifySkillSee(L2NpcInstance npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
+	public final boolean notifySkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
 	{
 		ThreadPoolManager.getInstance().executeAi(new tmpOnSkillSee(npc, caster, skill, targets, isPet));
 		return true;
 	}
 	
-	public final boolean notifyFactionCall(L2NpcInstance npc, L2NpcInstance caller, L2PcInstance attacker, boolean isPet)
+	public final boolean notifyFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isPet)
 	{
 		String res = null;
 		try
@@ -510,11 +510,11 @@ public class Quest extends ManagedScript
 
 	public class tmpOnAggroEnter implements Runnable
 	{
-		private L2NpcInstance _npc;
+		private L2Npc _npc;
 		private L2PcInstance _pc;
 		private boolean _isPet;
 		
-		public tmpOnAggroEnter(L2NpcInstance npc, L2PcInstance pc, boolean isPet)
+		public tmpOnAggroEnter(L2Npc npc, L2PcInstance pc, boolean isPet)
 		{
 			_npc = npc;
 			_pc = pc;
@@ -536,32 +536,32 @@ public class Quest extends ManagedScript
 			
 		}
 	}
-	public final boolean notifyAggroRangeEnter(L2NpcInstance npc, L2PcInstance player, boolean isPet)
+	public final boolean notifyAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isPet)
 	{
 		ThreadPoolManager.getInstance().executeAi(new tmpOnAggroEnter(npc, player, isPet));
 		return true;
 	}
 	
 	// these are methods that java calls to invoke scripts
-	public String onAttack(L2NpcInstance npc, L2PcInstance attacker, int damage, boolean isPet)
+	public String onAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet)
 	{
 		return null;
 	}
 	
-	public String onAttack(L2NpcInstance npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
+	public String onAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
 	{
 		return onAttack(npc, attacker, damage, isPet);
 	}
 	
 	public String onDeath(L2Character killer, L2Character victim, QuestState qs)
 	{
-		if (killer instanceof L2NpcInstance)
-			return onAdvEvent("", (L2NpcInstance) killer, qs.getPlayer());
+		if (killer instanceof L2Npc)
+			return onAdvEvent("", (L2Npc) killer, qs.getPlayer());
 		else
 			return onAdvEvent("", null, qs.getPlayer());
 	}
 	
-	public String onAdvEvent(String event, L2NpcInstance npc, L2PcInstance player)
+	public String onAdvEvent(String event, L2Npc npc, L2PcInstance player)
 	{
 		// if not overridden by a subclass, then default to the returned value of the simpler (and older) onEvent override
 		// if the player has a state, use it as parameter in the next call, else return null
@@ -577,42 +577,42 @@ public class Quest extends ManagedScript
 		return null;
 	}
 	
-	public String onKill(L2NpcInstance npc, L2PcInstance killer, boolean isPet)
+	public String onKill(L2Npc npc, L2PcInstance killer, boolean isPet)
 	{
 		return null;
 	}
 	
-	public String onTalk(L2NpcInstance npc, L2PcInstance talker)
+	public String onTalk(L2Npc npc, L2PcInstance talker)
 	{
 		return null;
 	}
 	
-	public String onFirstTalk(L2NpcInstance npc, L2PcInstance player)
+	public String onFirstTalk(L2Npc npc, L2PcInstance player)
 	{
 		return null;
 	}
 	
-	public String onSkillSee(L2NpcInstance npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
+	public String onSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
 	{
 		return null;
 	}
 	
-	public String onSpellFinished(L2NpcInstance npc, L2PcInstance player, L2Skill skill)
+	public String onSpellFinished(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
 		return null;
 	}
 	
-	public String onSpawn(L2NpcInstance npc)
+	public String onSpawn(L2Npc npc)
 	{
 		return null;
 	}
 	
-	public String onFactionCall(L2NpcInstance npc, L2NpcInstance caller, L2PcInstance attacker, boolean isPet)
+	public String onFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isPet)
 	{
 		return null;
 	}
 	
-	public String onAggroRangeEnter(L2NpcInstance npc, L2PcInstance player, boolean isPet)
+	public String onAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isPet)
 	{
 		return null;
 	}
@@ -1399,9 +1399,9 @@ public class Quest extends ManagedScript
 	
 	public class DeSpawnScheduleTimerTask implements Runnable
 	{
-		L2NpcInstance _npc = null;
+		L2Npc _npc = null;
 		
-		public DeSpawnScheduleTimerTask(L2NpcInstance npc)
+		public DeSpawnScheduleTimerTask(L2Npc npc)
 		{
 			_npc = npc;
 		}
@@ -1417,7 +1417,7 @@ public class Quest extends ManagedScript
 	 * Add a temporary (quest) spawn
 	 * Return instance of newly spawned npc
 	 */
-	public L2NpcInstance addSpawn(int npcId, L2Character cha)
+	public L2Npc addSpawn(int npcId, L2Character cha)
 	{
 		return addSpawn(npcId, cha.getX(), cha.getY(), cha.getZ(), cha.getHeading(), false, 0, false);
 	}
@@ -1427,24 +1427,24 @@ public class Quest extends ManagedScript
 	 * Return instance of newly spawned npc
 	 * with summon animation
 	 */
-	public L2NpcInstance addSpawn(int npcId, L2Character cha, boolean isSummonSpawn)
+	public L2Npc addSpawn(int npcId, L2Character cha, boolean isSummonSpawn)
 	{
 		return addSpawn(npcId, cha.getX(), cha.getY(), cha.getZ(), cha.getHeading(), false, 0, isSummonSpawn);
 	}
 	
-	public L2NpcInstance addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffSet, int despawnDelay)
+	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffSet, int despawnDelay)
 	{
 		return addSpawn(npcId, x, y, z, heading, randomOffSet, despawnDelay, false);
 	}
 	
-	public L2NpcInstance addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
+	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
 	{
 		return addSpawn(npcId, x, y, z, heading, randomOffset, despawnDelay, isSummonSpawn, 0);
 	}
 	
-	public L2NpcInstance addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn, int instanceId)
+	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn, int instanceId)
 	{
-		L2NpcInstance result = null;
+		L2Npc result = null;
 		try
 		{
 			L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);

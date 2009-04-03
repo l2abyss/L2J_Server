@@ -24,10 +24,10 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.instancemanager.DuelManager;
-import net.sf.l2j.gameserver.model.L2Attackable;
-import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2FortBallistaInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.actor.stat.CharStat;
@@ -170,7 +170,7 @@ public class CharStatus
             getActiveChar().stopImmobileUntilAttacked(null);
         
         // Add attackers to npc's attacker list
-        if (getActiveChar() instanceof L2NpcInstance)
+        if (getActiveChar() instanceof L2Npc)
             getActiveChar().addAttackerToAttackByList(attacker);
         
         if (value > 0) // Reduce Hp if any

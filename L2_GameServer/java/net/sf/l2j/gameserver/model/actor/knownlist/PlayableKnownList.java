@@ -14,7 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.actor.knownlist;
 
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 
 public class PlayableKnownList extends CharKnownList
 {
@@ -23,7 +23,7 @@ public class PlayableKnownList extends CharKnownList
 
     // =========================================================
     // Constructor
-    public PlayableKnownList(L2PlayableInstance activeChar)
+    public PlayableKnownList(L2Playable activeChar)
     {
         super(activeChar);
     }
@@ -37,5 +37,5 @@ public class PlayableKnownList extends CharKnownList
     // =========================================================
     // Property - Public
     @Override
-	public L2PlayableInstance getActiveChar() { return (L2PlayableInstance)super.getActiveChar(); }
+	public L2Playable getActiveChar() { return (L2Playable)super.getActiveChar(); }
 }

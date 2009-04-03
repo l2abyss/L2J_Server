@@ -24,9 +24,10 @@ import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GmListTable;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.util.Point3D;
 
 /**
@@ -630,7 +631,7 @@ public final class L2World
      * @param object L2object that determine the current L2WorldRegion
      *
      */
-    public List<L2PlayableInstance> getVisiblePlayable(L2Object object)
+    public List<L2Playable> getVisiblePlayable(L2Object object)
     {
         L2WorldRegion reg = object.getWorldRegion();
 
@@ -638,18 +639,18 @@ public final class L2World
             return null;
 
         // Create an FastList in order to contain all visible L2Object
-        List<L2PlayableInstance> result = new ArrayList<L2PlayableInstance>();
+        List<L2Playable> result = new ArrayList<L2Playable>();
 
         // Go through the FastList of region
         for (L2WorldRegion regi : reg.getSurroundingRegions())
         {
             // Create an Iterator to go through the visible L2Object of the L2WorldRegion
-        	Map<Integer,L2PlayableInstance> _allpls = regi.getVisiblePlayable();
-        	Collection<L2PlayableInstance> _playables = _allpls.values();
+        	Map<Integer,L2Playable> _allpls = regi.getVisiblePlayable();
+        	Collection<L2Playable> _playables = _allpls.values();
             // Go through visible object of the selected region
         	//synchronized (_allpls)
         	{
-        		for (L2PlayableInstance _object: _playables)
+        		for (L2Playable _object: _playables)
         		{
         			if (_object.equals(object))
         				continue;   // skip our own character

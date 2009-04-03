@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.handler.usercommandhandlers.*;
 
 /**
  * This class ...
@@ -46,20 +45,6 @@ public class UserCommandHandler
 	private UserCommandHandler()
 	{
 		_datatable = new FastMap<Integer, IUserCommandHandler>();
-		registerUserCommandHandler(new ClanPenalty());
-		registerUserCommandHandler(new ClanWarsList());
-		registerUserCommandHandler(new DisMount());
-		registerUserCommandHandler(new Escape());
-		registerUserCommandHandler(new InstanceZone());
-		registerUserCommandHandler(new Loc());
-		registerUserCommandHandler(new Mount());
-		registerUserCommandHandler(new PartyInfo());
-		registerUserCommandHandler(new Time());
-		registerUserCommandHandler(new OlympiadStat());
-		registerUserCommandHandler(new ChannelLeave());
-		registerUserCommandHandler(new ChannelDelete());
-		registerUserCommandHandler(new ChannelListUpdate());
-		_log.config("UserCommandHandler: Loaded " + _datatable.size() + " handlers.");
 	}
 	
 	public void registerUserCommandHandler(IUserCommandHandler handler)

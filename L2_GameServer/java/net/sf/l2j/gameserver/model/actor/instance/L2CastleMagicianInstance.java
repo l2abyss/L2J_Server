@@ -23,7 +23,7 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
  * @author  Kerberos
  */
 
-public class L2CastleMagicianInstance extends L2FolkInstance
+public class L2CastleMagicianInstance extends L2NpcInstance
 {
 	protected static final int COND_ALL_FALSE = 0;
 	protected static final int COND_BUSY_BECAUSE_OF_SIEGE = 1;

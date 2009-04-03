@@ -55,7 +55,7 @@ import net.sf.l2j.gameserver.util.Util;
  *
  * @version $Revision: 1.4.2.3.2.8 $ $Date: 2005/03/29 23:15:15 $
  */
-public final class L2VillageMasterInstance extends L2FolkInstance
+public final class L2VillageMasterInstance extends L2NpcInstance
 {
     //private static Logger _log = Logger.getLogger(L2VillageMasterInstance.class.getName());
 

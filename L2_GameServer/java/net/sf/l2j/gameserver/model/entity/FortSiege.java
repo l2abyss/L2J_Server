@@ -38,9 +38,9 @@ import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2SiegeClan;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.L2SiegeClan.SiegeClanType;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FortCommanderInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
@@ -615,7 +615,7 @@ public class FortSiege
 	}
 	
 	/** Remove the flag that was killed */
-	public void killedFlag(L2NpcInstance flag)
+	public void killedFlag(L2Npc flag)
 	{
 		if (flag == null)
 			return;
@@ -1126,7 +1126,7 @@ public class FortSiege
 		return getFort().getSiegeDate();
 	}
 	
-	public List<L2NpcInstance> getFlag(L2Clan clan)
+	public List<L2Npc> getFlag(L2Clan clan)
 	{
 		if (clan != null)
 		{

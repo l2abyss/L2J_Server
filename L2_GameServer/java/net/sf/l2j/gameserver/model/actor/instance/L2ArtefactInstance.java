@@ -15,8 +15,9 @@
 package net.sf.l2j.gameserver.model.actor.instance;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
@@ -27,7 +28,7 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
  *
  * @version $Revision: 1.11.2.1.2.7 $ $Date: 2005/04/06 16:13:40 $
  */
-public final class L2ArtefactInstance extends L2NpcInstance
+public final class L2ArtefactInstance extends L2Npc
 {
 	/**
 	 * Constructor of L2ArtefactInstance (use L2Character and L2NpcInstance constructor).<BR><BR>

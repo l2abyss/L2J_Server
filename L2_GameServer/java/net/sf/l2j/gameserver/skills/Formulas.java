@@ -23,16 +23,16 @@ import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2SiegeClan;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.base.PlayerState;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
@@ -1215,9 +1215,9 @@ public final class Formulas
 				* (target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, skill));
 
 		// get the natural vulnerability for the template
-		if (target instanceof L2NpcInstance)
+		if (target instanceof L2Npc)
 		{
-			damage *= ((L2NpcInstance) target).getTemplate().getVulnerability(Stats.DAGGER_WPN_VULN);
+			damage *= ((L2Npc) target).getTemplate().getVulnerability(Stats.DAGGER_WPN_VULN);
 		}
 		// get the vulnerability for the instance due to skills (buffs, passives, toggles, etc)
 		damage = target.calcStat(Stats.DAGGER_WPN_VULN, damage, target, null);
@@ -1239,8 +1239,8 @@ public final class Formulas
 		}
 		
 		// Dmg bonusses in PvP fight
-		if((attacker instanceof L2PlayableInstance)
-				&& (target instanceof L2PlayableInstance))
+		if((attacker instanceof L2Playable)
+				&& (target instanceof L2Playable))
 		{
 			if(skill == null)
 				damage *= attacker.calcStat(Stats.PVP_PHYSICAL_DMG, 1, null, null);
@@ -1383,10 +1383,10 @@ public final class Formulas
 		{
 			// get the vulnerability due to skills (buffs, passives, toggles, etc)
 			damage = target.calcStat(stat, damage, target, null);
-			if (target instanceof L2NpcInstance)
+			if (target instanceof L2Npc)
 			{
 				// get the natural vulnerability for the template
-				damage *= ((L2NpcInstance) target).getTemplate().getVulnerability(stat);
+				damage *= ((L2Npc) target).getTemplate().getVulnerability(stat);
 			}
 		}
 
@@ -1399,9 +1399,9 @@ public final class Formulas
 			if (damage < 0) damage = 0;
 		}
 		
-		if (target instanceof L2NpcInstance)
+		if (target instanceof L2Npc)
 		{
-			switch (((L2NpcInstance) target).getTemplate().getRace())
+			switch (((L2Npc) target).getTemplate().getRace())
 			{
 				case UNDEAD:
 					damage *= attacker.getPAtkUndead(target);
@@ -1440,8 +1440,8 @@ public final class Formulas
 		}
 		
 		// Dmg bonusses in PvP fight
-		if((attacker instanceof L2PlayableInstance) 
-				&& (target instanceof L2PlayableInstance))
+		if((attacker instanceof L2Playable) 
+				&& (target instanceof L2Playable))
 		{
 			if(skill == null)
 				damage *= attacker.calcStat(Stats.PVP_PHYSICAL_DMG, 1, null, null);
@@ -1522,8 +1522,8 @@ public final class Formulas
 		else if (mcrit) damage *= 3;
 		damage += Rnd.get() * attacker.getRandomDamage(target);
 		// Pvp bonusses for dmg
-		if((attacker instanceof L2PlayableInstance)
-				&& (target instanceof L2PlayableInstance))
+		if((attacker instanceof L2Playable)
+				&& (target instanceof L2Playable))
 		{
 			if(skill.isMagic())
 				damage *= attacker.calcStat(Stats.PVP_MAGICAL_DMG, 1, null, null);
@@ -1640,7 +1640,7 @@ public final class Formulas
     {
         if (!target.isRaid()
                 && !(target instanceof L2DoorInstance)
-                && !(target instanceof L2NpcInstance && ((L2NpcInstance) target).getNpcId() == 35062))
+                && !(target instanceof L2Npc && ((L2Npc) target).getNpcId() == 35062))
         {
             int chance = Rnd.get(1000);
             
@@ -1651,7 +1651,7 @@ public final class Formulas
             // 2nd lethal effect activate (cp,hp to 1 or if target is npc then hp to 1)
             if (skill.getLethalChance2() > 0 && chance < calcLethal(activeChar, target, skill.getLethalChance2(),skill.getMagicLevel()))
             {
-                if (target instanceof L2NpcInstance)
+                if (target instanceof L2Npc)
                     target.reduceCurrentHp(target.getCurrentHp() - 1, activeChar, skill);
                 else if (target instanceof L2PcInstance) // If is a active player set his HP and CP to 1
                 {
@@ -1684,7 +1684,7 @@ public final class Formulas
                         }
                     }
                 }
-                else if (target instanceof L2NpcInstance) // If is a monster remove first damage and after 50% of current hp
+                else if (target instanceof L2Npc) // If is a monster remove first damage and after 50% of current hp
                     target.reduceCurrentHp(target.getCurrentHp() / 2, activeChar, skill);
                 activeChar.sendPacket(new SystemMessage(SystemMessageId.HALF_KILL));
                 

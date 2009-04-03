@@ -22,7 +22,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
 import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.model.L2Party;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.model.quest.QuestState;
@@ -186,7 +186,7 @@ public class DimensionalRift
 		}
 	}
 	
-	public void manualTeleport(L2PcInstance player, L2NpcInstance npc)
+	public void manualTeleport(L2PcInstance player, L2Npc npc)
 	{
 		if (!player.isInParty() || !player.getParty().isInDimensionalRift())
 			return;
@@ -216,7 +216,7 @@ public class DimensionalRift
 		createTeleporterTimer(true);
 	}
 	
-	public void manualExitRift(L2PcInstance player, L2NpcInstance npc)
+	public void manualExitRift(L2PcInstance player, L2Npc npc)
 	{
 		if (!player.isInParty() || !player.getParty().isInDimensionalRift())
 			return;

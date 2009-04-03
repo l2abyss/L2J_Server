@@ -16,9 +16,6 @@ package net.sf.l2j.gameserver.handler;
 
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Logger;
-
-import net.sf.l2j.gameserver.handler.itemhandlers.*;
 
 /**
  * This class manages handlers of items
@@ -27,8 +24,6 @@ import net.sf.l2j.gameserver.handler.itemhandlers.*;
  */
 public class ItemHandler
 {
-	private static Logger _log = Logger.getLogger(ItemHandler.class.getName());
-	
 	private static ItemHandler _instance;
 	
 	private Map<Integer, IItemHandler> _datatable;
@@ -61,43 +56,6 @@ public class ItemHandler
 	private ItemHandler()
 	{
 		_datatable = new TreeMap<Integer, IItemHandler>();
-		registerItemHandler(new ScrollOfEscape());
-		registerItemHandler(new ScrollOfResurrection());
-		registerItemHandler(new SoulShots());
-		registerItemHandler(new SpiritShot());
-		registerItemHandler(new BlessedSpiritShot());
-		registerItemHandler(new BallistaBomb());
-		registerItemHandler(new BeastSoulShot());
-		registerItemHandler(new BeastSpiritShot());
-		registerItemHandler(new Key());
-		registerItemHandler(new PaganKeys());
-		registerItemHandler(new Maps());
-		registerItemHandler(new Potions());
-		registerItemHandler(new Recipes());
-		registerItemHandler(new RollingDice());
-		registerItemHandler(new MysteryPotion());
-		registerItemHandler(new EnchantAttribute());
-		registerItemHandler(new EnchantScrolls());
-		registerItemHandler(new EnergyStone());
-		registerItemHandler(new Book());
-		registerItemHandler(new Remedy());
-		registerItemHandler(new Scrolls());
-		registerItemHandler(new CrystalCarol());
-		registerItemHandler(new SoulCrystals());
-		registerItemHandler(new SevenSignsRecord());
-		registerItemHandler(new CharChangePotions());
-		registerItemHandler(new Firework());
-		registerItemHandler(new Seed());
-		registerItemHandler(new Harvester());
-		registerItemHandler(new MercTicket());
-		registerItemHandler(new FishShots());
-		registerItemHandler(new ExtractableItems());
-		registerItemHandler(new PetFood());
-		registerItemHandler(new SpecialXMas());
-		registerItemHandler(new SummonItems());
-		registerItemHandler(new BeastSpice());
-		registerItemHandler(new SpiritLake());
-		_log.config("ItemHandler: Loaded " + _datatable.size() + " handlers.");
 	}
 	
 	/**

@@ -33,7 +33,7 @@ import net.sf.l2j.gameserver.util.StringUtil;
  *
  * @author Tempy
  */
-public class L2SignsPriestInstance extends L2FolkInstance
+public class L2SignsPriestInstance extends L2NpcInstance
 {
     //private static Logger _log = Logger.getLogger(L2SignsPriestInstance.class.getName());
 

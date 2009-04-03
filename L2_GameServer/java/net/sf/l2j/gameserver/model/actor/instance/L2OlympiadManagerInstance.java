@@ -39,7 +39,7 @@ import net.sf.l2j.util.L2FastList;
  * @author godson
  */
 
-public class L2OlympiadManagerInstance extends L2FolkInstance
+public class L2OlympiadManagerInstance extends L2NpcInstance
 {
     private static Logger _logOlymp = Logger.getLogger(L2OlympiadManagerInstance.class.getName());
 

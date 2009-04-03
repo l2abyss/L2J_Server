@@ -21,6 +21,7 @@ import net.sf.l2j.gameserver.datatables.NpcBufferTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -28,7 +29,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.taskmanager.AttackStanceTaskManager;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
-public class L2NpcBufferInstance extends L2NpcInstance
+public class L2NpcBufferInstance extends L2Npc
 {
     @SuppressWarnings("hiding")
     static final Logger _log = Logger.getLogger(L2NpcBufferInstance.class.getName());

@@ -14,13 +14,13 @@
  */
 package net.sf.l2j.gameserver.skills.l2skills;
 
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Summon;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.templates.StatsSet;
@@ -92,10 +92,10 @@ public class L2SkillElemental extends L2Skill {
                 activeSummon.setChargedSpiritShot(L2ItemInstance.CHARGED_NONE);
             }
         }
-        else if (activeChar instanceof L2NpcInstance)
+        else if (activeChar instanceof L2Npc)
         {
-        	bss = ((L2NpcInstance)activeChar).isUsingShot(false);
-        	ss = ((L2NpcInstance)activeChar).isUsingShot(true);
+        	bss = ((L2Npc)activeChar).isUsingShot(false);
+        	ss = ((L2Npc)activeChar).isUsingShot(true);
         }
 
         for (L2Character target: (L2Character[]) targets)

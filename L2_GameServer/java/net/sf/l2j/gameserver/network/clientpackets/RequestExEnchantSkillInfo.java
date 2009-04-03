@@ -22,7 +22,7 @@ import net.sf.l2j.gameserver.datatables.SkillTreeTable;
 import net.sf.l2j.gameserver.model.L2EnchantSkillLearn;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2EnchantSkillLearn.EnchantSkillDetail;
-import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.ExEnchantSkillInfo;
@@ -73,9 +73,9 @@ public final class RequestExEnchantSkillInfo extends L2GameClientPacket
         if (activeChar.getLevel() < 76)
             return;
 
-        L2FolkInstance trainer = activeChar.getLastFolkNPC();
+        L2NpcInstance trainer = activeChar.getLastFolkNPC();
 
-        if ((trainer == null || !activeChar.isInsideRadius(trainer, L2NpcInstance.INTERACTION_DISTANCE, false, false)) && !activeChar.isGM())
+        if ((trainer == null || !activeChar.isInsideRadius(trainer, L2Npc.INTERACTION_DISTANCE, false, false)) && !activeChar.isGM())
             return;
 
         L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLvl);

@@ -19,11 +19,11 @@ import java.util.concurrent.Future;
 
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.SkillTable;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.util.Rnd;
 
@@ -95,7 +95,7 @@ public class L2PoisonZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (((character instanceof L2PlayableInstance) && _target.equalsIgnoreCase("pc")) || ((character instanceof L2PcInstance) && _target.equalsIgnoreCase("pc_only"))
+		if (((character instanceof L2Playable) && _target.equalsIgnoreCase("pc")) || ((character instanceof L2PcInstance) && _target.equalsIgnoreCase("pc_only"))
 				|| ((character instanceof L2MonsterInstance) && _target.equalsIgnoreCase("npc")))
 		{
 			if (_task == null)
@@ -162,7 +162,7 @@ public class L2PoisonZone extends L2ZoneType
 				{
 					if (temp != null && !temp.isDead())
 					{
-						if (((temp instanceof L2PlayableInstance && getTargetType().equalsIgnoreCase("pc")) || (temp instanceof L2PcInstance && getTargetType().equalsIgnoreCase("pc_only")) || (temp instanceof L2MonsterInstance && getTargetType().equalsIgnoreCase("npc")))
+						if (((temp instanceof L2Playable && getTargetType().equalsIgnoreCase("pc")) || (temp instanceof L2PcInstance && getTargetType().equalsIgnoreCase("pc_only")) || (temp instanceof L2MonsterInstance && getTargetType().equalsIgnoreCase("npc")))
 								&& Rnd.get(100) < getChance())
 						{
 							getSkill().getEffects(temp, temp);

@@ -28,7 +28,7 @@ import net.sf.l2j.gameserver.util.Util;
 /**
  * @author  l3x
  */
-public class L2CastleWarehouseInstance extends L2FolkInstance
+public class L2CastleWarehouseInstance extends L2NpcInstance
 {
 	protected static final int COND_ALL_FALSE = 0;
 	protected static final int COND_BUSY_BECAUSE_OF_SIEGE = 1;

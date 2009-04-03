@@ -16,12 +16,13 @@ package net.sf.l2j.gameserver.model.actor.instance;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.cache.HtmCache;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
-public class L2TvTEventNpcInstance extends L2NpcInstance
+public class L2TvTEventNpcInstance extends L2Npc
 {
 	public L2TvTEventNpcInstance(int objectId, L2NpcTemplate template)
 	{

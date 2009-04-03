@@ -19,9 +19,9 @@ import java.util.logging.Level;
 
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.SkillTable;
-import net.sf.l2j.gameserver.model.L2Character;
-import net.sf.l2j.gameserver.model.L2Decoy;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Decoy;
 import net.sf.l2j.gameserver.model.actor.knownlist.DecoyKnownList;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;

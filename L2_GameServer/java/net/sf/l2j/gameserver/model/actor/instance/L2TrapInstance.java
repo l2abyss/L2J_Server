@@ -21,11 +21,11 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 import net.sf.l2j.gameserver.ThreadPoolManager;
-import net.sf.l2j.gameserver.model.L2Attackable;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Trap;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Trap;
 import net.sf.l2j.gameserver.model.actor.knownlist.TrapKnownList;
 import net.sf.l2j.gameserver.network.serverpackets.SocialAction;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
@@ -65,7 +65,7 @@ public class L2TrapInstance extends L2Trap
 	
 	/**
 	 * 
-	 * @see net.sf.l2j.gameserver.model.L2Character#doDie(net.sf.l2j.gameserver.model.L2Character)
+	 * @see net.sf.l2j.gameserver.model.actor.L2Character#doDie(net.sf.l2j.gameserver.model.actor.L2Character)
 	 */
 	@Override
 	public boolean doDie(L2Character killer)
@@ -80,7 +80,7 @@ public class L2TrapInstance extends L2Trap
 	
 	/**
 	 * 
-	 * @see net.sf.l2j.gameserver.model.L2Character#getKnownList()
+	 * @see net.sf.l2j.gameserver.model.actor.L2Character#getKnownList()
 	 */
 	@Override
 	public TrapKnownList getKnownList()
@@ -204,7 +204,7 @@ public class L2TrapInstance extends L2Trap
 	
 	/**
 	 * 
-	 * @see net.sf.l2j.gameserver.model.L2Trap#unSummon(net.sf.l2j.gameserver.model.actor.instance.L2PcInstance)
+	 * @see net.sf.l2j.gameserver.model.actor.L2Trap#unSummon(net.sf.l2j.gameserver.model.actor.instance.L2PcInstance)
 	 */
 	@Override
 	public void unSummon(L2PcInstance owner)
@@ -246,7 +246,7 @@ public class L2TrapInstance extends L2Trap
 	
 	/**
 	 * 
-	 * @see net.sf.l2j.gameserver.model.L2Trap#setDetected()
+	 * @see net.sf.l2j.gameserver.model.actor.L2Trap#setDetected()
 	 */
 	@Override
 	public void setDetected()
@@ -256,7 +256,7 @@ public class L2TrapInstance extends L2Trap
 	
 	/**
 	 * 
-	 * @see net.sf.l2j.gameserver.model.L2Trap#isDetected()
+	 * @see net.sf.l2j.gameserver.model.actor.L2Trap#isDetected()
 	 */
 	@Override
 	public boolean isDetected()

@@ -14,10 +14,10 @@
  */
 package net.sf.l2j.gameserver.model.actor.status;
 
-import net.sf.l2j.gameserver.model.L2Character;
-import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.entity.Duel;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -95,7 +95,7 @@ public class PcStatus extends PlayableStatus
                 }
             }
 
-            if (attacker instanceof L2PlayableInstance)
+            if (attacker instanceof L2Playable)
             {
                 if (getCurrentCp() >= value)
                 {

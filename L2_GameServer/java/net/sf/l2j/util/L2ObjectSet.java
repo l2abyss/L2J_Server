@@ -28,7 +28,7 @@ import java.util.Iterator;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2Object;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 
 /**
  * This class ...
@@ -49,14 +49,14 @@ public abstract class L2ObjectSet<T extends L2Object> implements Iterable<T>
         }
     }
 
-    public static L2ObjectSet<L2PlayableInstance> createL2PlayerSet()
+    public static L2ObjectSet<L2Playable> createL2PlayerSet()
     {
         switch (Config.SET_TYPE)
         {
             case WorldObjectSet:
-                return new WorldObjectSet<L2PlayableInstance>();
+                return new WorldObjectSet<L2Playable>();
             default:
-                return new L2ObjectHashSet<L2PlayableInstance>();
+                return new L2ObjectHashSet<L2Playable>();
         }
     }
 

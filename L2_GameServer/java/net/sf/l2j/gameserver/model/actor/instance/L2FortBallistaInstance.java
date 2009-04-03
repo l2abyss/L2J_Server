@@ -15,7 +15,8 @@
 package net.sf.l2j.gameserver.model.actor.instance;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
-import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
@@ -26,7 +27,7 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 
 
-public class L2FortBallistaInstance extends L2NpcInstance
+public class L2FortBallistaInstance extends L2Npc
 {
 	public L2FortBallistaInstance(int objectId, L2NpcTemplate template)
     {

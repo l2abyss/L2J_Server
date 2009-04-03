@@ -21,18 +21,18 @@ import java.util.Collection;
 import java.util.List;
 
 import javolution.util.FastList;
-import net.sf.l2j.gameserver.model.L2Attackable;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.MobGroup;
 import net.sf.l2j.gameserver.model.MobGroupTable;
-import net.sf.l2j.gameserver.model.L2Character.AIAccessor;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
+import net.sf.l2j.gameserver.model.actor.L2Character.AIAccessor;
 import net.sf.l2j.gameserver.model.actor.instance.L2ControllableMobInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.util.Util;
 import net.sf.l2j.util.Rnd;
 
@@ -297,19 +297,19 @@ public class L2ControllableMobAI extends L2AttackableAI
 		else
 		{
 			// notify aggression
-			if (((L2NpcInstance) _actor).getFactionId() != null)
+			if (((L2Npc) _actor).getFactionId() != null)
 			{
-				String faction_id = ((L2NpcInstance) _actor).getFactionId();
+				String faction_id = ((L2Npc) _actor).getFactionId();
 				
 				Collection<L2Object> objs = _actor.getKnownList().getKnownObjects().values();
 				//synchronized (_actor.getKnownList().getKnownObjects())
 				{
 					for (L2Object obj : objs)
 					{
-						if (!(obj instanceof L2NpcInstance))
+						if (!(obj instanceof L2Npc))
 							continue;
 						
-						L2NpcInstance npc = (L2NpcInstance) obj;
+						L2Npc npc = (L2Npc) obj;
 						
 						if (faction_id != npc.getFactionId())
 							continue;
@@ -419,7 +419,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 			return false;
 		L2Attackable me = (L2Attackable) _actor;
 		
-		if (target instanceof L2FolkInstance || target instanceof L2DoorInstance)
+		if (target instanceof L2NpcInstance || target instanceof L2DoorInstance)
 			return false;
 		
 		if (target.isAlikeDead() || !me.isInsideRadius(target, me.getAggroRange(), false, false) || Math.abs(_actor.getZ() - target.getZ()) > 100)
@@ -430,14 +430,14 @@ public class L2ControllableMobAI extends L2AttackableAI
 			return false;
 		
 		// Check if the target is a L2PlayableInstance
-		if (target instanceof L2PlayableInstance)
+		if (target instanceof L2Playable)
 		{
 			// Check if the target isn't in silent move mode
-			if (((L2PlayableInstance) target).isSilentMoving())
+			if (((L2Playable) target).isSilentMoving())
 				return false;
 		}
 		
-		if (target instanceof L2NpcInstance)
+		if (target instanceof L2Npc)
 			return false;
 		
 		return me.isAggressive();

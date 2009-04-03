@@ -15,12 +15,12 @@
 package net.sf.l2j.gameserver.skills.effects;
 
 import net.sf.l2j.gameserver.ai.CtrlEvent;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
-import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2EffectPointInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
@@ -76,7 +76,7 @@ final class EffectSignetAntiSummon extends L2Effect
 			if (cha == null)
 				continue;
 			
-			if (cha instanceof L2PlayableInstance)
+			if (cha instanceof L2Playable)
 			{
 				L2PcInstance owner = null;
 				

@@ -36,15 +36,15 @@ import net.sf.l2j.gameserver.instancemanager.MercTicketManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeGuardManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager.SiegeSpawn;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2SiegeClan;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2SiegeClan.SiegeClanType;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2ControlTowerInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
@@ -736,7 +736,7 @@ public class Siege
 	}
 	
 	/** Control Tower was skilled */
-	public void killedCT(L2NpcInstance ct)
+	public void killedCT(L2Npc ct)
 	{
 		_controlTowerCount--;
 		if (_controlTowerCount < 0)
@@ -744,7 +744,7 @@ public class Siege
 	}
 	
 	/** Remove the flag that was killed */
-	public void killedFlag(L2NpcInstance flag)
+	public void killedFlag(L2Npc flag)
 	{
 		if (flag == null)
 			return;
@@ -1448,7 +1448,7 @@ public class Siege
 			saveSiegeDate();
 	}
 	
-	public List<L2NpcInstance> getFlag(L2Clan clan)
+	public List<L2Npc> getFlag(L2Clan clan)
 	{
 		if (clan != null)
 		{

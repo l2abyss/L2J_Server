@@ -14,13 +14,13 @@
  */
 package net.sf.l2j.gameserver.model.actor.knownlist;
 
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.actor.instance.L2CabaleBufferInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FestivalGuideInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 
 public class NpcKnownList extends CharKnownList
 {
@@ -29,7 +29,7 @@ public class NpcKnownList extends CharKnownList
 
     // =========================================================
     // Constructor
-    public NpcKnownList(L2NpcInstance activeChar)
+    public NpcKnownList(L2Npc activeChar)
     {
         super(activeChar);
     }
@@ -43,7 +43,7 @@ public class NpcKnownList extends CharKnownList
     // =========================================================
     // Property - Public
     @Override
-	public L2NpcInstance getActiveChar() { return (L2NpcInstance)super.getActiveChar(); }
+	public L2Npc getActiveChar() { return (L2Npc)super.getActiveChar(); }
 
     @Override
 	public int getDistanceToForgetObject(L2Object object) { return 2 * getDistanceToWatchObject(object); }
@@ -54,13 +54,13 @@ public class NpcKnownList extends CharKnownList
         if (object instanceof L2FestivalGuideInstance)
             return 4000;
 
-        if (object instanceof L2FolkInstance || !(object instanceof L2Character))
+        if (object instanceof L2NpcInstance || !(object instanceof L2Character))
             return 0;
 
         if (object instanceof L2CabaleBufferInstance)
             return 900;
 
-        if (object instanceof L2PlayableInstance)
+        if (object instanceof L2Playable)
             return 1500;
 
         return 500;

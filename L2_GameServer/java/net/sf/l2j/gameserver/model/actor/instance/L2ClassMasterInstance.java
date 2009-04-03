@@ -36,7 +36,7 @@ import net.sf.l2j.gameserver.util.StringUtil;
  *
  * @version $Revision: 1.4.2.1.2.7 $ $Date: 2005/03/27 15:29:32 $
  */
-public final class L2ClassMasterInstance extends L2FolkInstance
+public final class L2ClassMasterInstance extends L2NpcInstance
 {
 	//private static Logger _log = Logger.getLogger(L2ClassMasterInstance.class.getName());
         private static final int[] BASE_CLASS_IDS = {0, 10, 18, 25, 31, 38, 44,

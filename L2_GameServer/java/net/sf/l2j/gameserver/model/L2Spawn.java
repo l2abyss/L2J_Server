@@ -25,7 +25,8 @@ import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.Territory;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.util.Rnd;
 
@@ -95,7 +96,7 @@ public class L2Spawn
     /** If true then spawn is custom */
     private boolean _customSpawn;
 
-    private L2NpcInstance _lastSpawn;
+    private L2Npc _lastSpawn;
     private static List<SpawnListener> _spawnListeners = new FastList<SpawnListener>();
 
 	/** The task launching the function doSpawn() */
@@ -103,9 +104,9 @@ public class L2Spawn
 	{
 		//L2NpcInstance _instance;
 		//int _objId;
-        private L2NpcInstance _oldNpc;
+        private L2Npc _oldNpc;
 
-		public SpawnTask(/*int objid*/L2NpcInstance pOldNpc)
+		public SpawnTask(/*int objid*/L2Npc pOldNpc)
 		{
 			//_objId= objid;
             _oldNpc = pOldNpc;
@@ -357,7 +358,7 @@ public class L2Spawn
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : A respawn is possible ONLY if _doRespawn=True and _scheduledCount + _currentCount < _maximumCount</B></FONT><BR><BR>
 	 *
 	 */
-	public void decreaseCount(/*int npcId*/L2NpcInstance oldNpc)
+	public void decreaseCount(/*int npcId*/L2Npc oldNpc)
 	{
 		// Decrease the current number of L2NpcInstance of this L2Spawn
 		_currentCount--;
@@ -393,7 +394,7 @@ public class L2Spawn
 	/**
 	 * Create a L2NpcInstance in this L2Spawn.<BR><BR>
 	 */
-	public L2NpcInstance spawnOne(boolean val)
+	public L2Npc spawnOne(boolean val)
 	{
 		return doSpawn(val);
 	}
@@ -414,7 +415,7 @@ public class L2Spawn
         _doRespawn = true;
     }
 
-    public L2NpcInstance doSpawn()
+    public L2Npc doSpawn()
     {
     	return doSpawn(false);
     }
@@ -438,9 +439,9 @@ public class L2Spawn
 	 * <li>Increase the current number of L2NpcInstance managed by this L2Spawn  </li><BR><BR>
 	 *
 	 */
-	public L2NpcInstance doSpawn(boolean isSummonSpawn)
+	public L2Npc doSpawn(boolean isSummonSpawn)
 	{
-		L2NpcInstance mob = null;
+		L2Npc mob = null;
 		try
 		{
 			// Check if the L2Spawn is not a L2Pet or L2Minion or L2Decoy spawn
@@ -464,9 +465,9 @@ public class L2Spawn
 			if (isSummonSpawn && tmp instanceof L2Character)
 				((L2Character)tmp).setShowSummonAnimation(isSummonSpawn);
 			// Check if the Instance is a L2NpcInstance
-			if (!(tmp instanceof L2NpcInstance))
+			if (!(tmp instanceof L2Npc))
 				return mob;
-			mob = (L2NpcInstance)tmp;
+			mob = (L2Npc)tmp;
             return intializeNpcInstance(mob);
 		}
 		catch (Exception e)
@@ -480,7 +481,7 @@ public class L2Spawn
      * @param mob
      * @return
      */
-    private L2NpcInstance intializeNpcInstance(L2NpcInstance mob)
+    private L2Npc intializeNpcInstance(L2Npc mob)
     {
         int newlocx, newlocy, newlocz;
 
@@ -564,7 +565,7 @@ public class L2Spawn
         }
     }
 
-    public static void notifyNpcSpawned(L2NpcInstance npc)
+    public static void notifyNpcSpawned(L2Npc npc)
     {
         synchronized (_spawnListeners)
         {
@@ -589,7 +590,7 @@ public class L2Spawn
         _respawnDelay = i * 1000;
 	}
 
-	public L2NpcInstance getLastSpawn()
+	public L2Npc getLastSpawn()
 	{
         return _lastSpawn;
 	}
@@ -597,7 +598,7 @@ public class L2Spawn
     /**
      * @param oldNpc
      */
-    public void respawnNpc(L2NpcInstance oldNpc)
+    public void respawnNpc(L2Npc oldNpc)
     {
         oldNpc.refreshID();
         /*L2NpcInstance instance = */intializeNpcInstance(oldNpc);

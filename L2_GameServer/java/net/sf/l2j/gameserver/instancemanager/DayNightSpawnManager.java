@@ -21,7 +21,7 @@ import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.model.L2Spawn;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2RaidBossInstance;
 
 /**
@@ -36,8 +36,8 @@ public class DayNightSpawnManager {
     private static Logger _log = Logger.getLogger(DayNightSpawnManager.class.getName());
 
     private static DayNightSpawnManager _instance;
-    private static Map<L2Spawn, L2NpcInstance> _dayCreatures;
-    private static Map<L2Spawn, L2NpcInstance> _nightCreatures;
+    private static Map<L2Spawn, L2Npc> _dayCreatures;
+    private static Map<L2Spawn, L2Npc> _nightCreatures;
     private static Map<L2Spawn, L2RaidBossInstance> _bosses;
 
     //private static int _currentState;  // 0 = Day, 1 = Night
@@ -51,8 +51,8 @@ public class DayNightSpawnManager {
 
     private DayNightSpawnManager()
     {
-        _dayCreatures = new FastMap<L2Spawn, L2NpcInstance>();
-        _nightCreatures = new FastMap<L2Spawn, L2NpcInstance>();
+        _dayCreatures = new FastMap<L2Spawn, L2Npc>();
+        _nightCreatures = new FastMap<L2Spawn, L2Npc>();
         _bosses = new FastMap<L2Spawn, L2RaidBossInstance>();
         
         _log.info("DayNightSpawnManager: Day/Night handler initialized");
@@ -98,13 +98,13 @@ public class DayNightSpawnManager {
      * Arg 3 : String for log info for unspawned L2NpcInstance
      * Arg 4 : String for log info for spawned L2NpcInstance
      */
-    private void spawnCreatures(Map<L2Spawn, L2NpcInstance> UnSpawnCreatures,Map<L2Spawn, L2NpcInstance> SpawnCreatures, String UnspawnLogInfo, String SpawnLogInfo){
+    private void spawnCreatures(Map<L2Spawn, L2Npc> UnSpawnCreatures,Map<L2Spawn, L2Npc> SpawnCreatures, String UnspawnLogInfo, String SpawnLogInfo){
         try
         {
             if (!UnSpawnCreatures.isEmpty())
             {
                 int i = 0;
-                for (L2NpcInstance dayCreature : UnSpawnCreatures.values())
+                for (L2Npc dayCreature : UnSpawnCreatures.values())
                 {
                     if (dayCreature == null) continue;
 
@@ -117,7 +117,7 @@ public class DayNightSpawnManager {
             }
 
             int i = 0;
-            L2NpcInstance creature = null;
+            L2Npc creature = null;
             for (L2Spawn spawnDat : SpawnCreatures.keySet())
             {
                 if (SpawnCreatures.get(spawnDat) == null)

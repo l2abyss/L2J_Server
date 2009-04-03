@@ -66,10 +66,6 @@ import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
 import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.handler.ItemHandler;
-import net.sf.l2j.gameserver.handler.skillhandlers.StrSiegeAssault;
-import net.sf.l2j.gameserver.handler.skillhandlers.SummonFriend;
-import net.sf.l2j.gameserver.handler.skillhandlers.TakeCastle;
-import net.sf.l2j.gameserver.handler.skillhandlers.TakeFort;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.CoupleManager;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
@@ -83,12 +79,9 @@ import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.BlockList;
 import net.sf.l2j.gameserver.model.FishData;
 import net.sf.l2j.gameserver.model.L2AccessLevel;
-import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2CharPosition;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2ClanMember;
-import net.sf.l2j.gameserver.model.L2Decoy;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2Fishing;
 import net.sf.l2j.gameserver.model.L2HennaInstance;
@@ -105,15 +98,20 @@ import net.sf.l2j.gameserver.model.L2Request;
 import net.sf.l2j.gameserver.model.L2ShortCut;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2SkillLearn;
-import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.L2Transformation;
-import net.sf.l2j.gameserver.model.L2Trap;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2WorldRegion;
 import net.sf.l2j.gameserver.model.MacroList;
 import net.sf.l2j.gameserver.model.ShortCuts;
 import net.sf.l2j.gameserver.model.TradeList;
 import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Decoy;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
+import net.sf.l2j.gameserver.model.actor.L2Trap;
 import net.sf.l2j.gameserver.model.actor.appearance.PcAppearance;
 import net.sf.l2j.gameserver.model.actor.knownlist.PcKnownList;
 import net.sf.l2j.gameserver.model.actor.stat.PcStat;
@@ -226,7 +224,7 @@ import net.sf.l2j.util.Rnd;
  *
  * @version $Revision: 1.66.2.41.2.33 $ $Date: 2005/04/11 10:06:09 $
  */
-public final class L2PcInstance extends L2PlayableInstance
+public final class L2PcInstance extends L2Playable
 {
     // Character Skill SQL String Definitions:
 	private static final String RESTORE_SKILLS_FOR_CHAR = "SELECT skill_id,skill_level FROM character_skills WHERE charId=? AND class_index=?";
@@ -497,7 +495,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	private boolean _hero = false;
 
 	/** The L2FolkInstance corresponding to the last Folk wich one the player talked. */
-	private L2FolkInstance _lastFolkNpc = null;
+	private L2NpcInstance _lastFolkNpc = null;
 
 	/** Last NPC Id talked on a quest */
 	private int _questNpcObject = 0;
@@ -1345,7 +1343,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 * @param npcId The Identifier of the L2Attackable attacked
 	 *
 	 */
-	public QuestState[] getQuestsForAttacks(L2NpcInstance npc)
+	public QuestState[] getQuestsForAttacks(L2Npc npc)
 	{
 		// Create a QuestState table that will contain all QuestState to modify
 		QuestState[] states = null;
@@ -1374,7 +1372,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	 * @param npcId The Identifier of the L2Attackable killed
 	 *
 	 */
-	public QuestState[] getQuestsForKills(L2NpcInstance npc)
+	public QuestState[] getQuestsForKills(L2Npc npc)
 	{
 		// Create a QuestState table that will contain all QuestState to modify
 		QuestState[] states = null;
@@ -1452,9 +1450,9 @@ public final class L2PcInstance extends L2PlayableInstance
 			if (getLastQuestNpcObject() > 0)
 			{
 				L2Object object = L2World.getInstance().findObject(getLastQuestNpcObject());
-				if (object instanceof L2NpcInstance && isInsideRadius(object, L2NpcInstance.INTERACTION_DISTANCE, false, false))
+				if (object instanceof L2Npc && isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
                 {
-					L2NpcInstance npc = (L2NpcInstance)object;
+					L2Npc npc = (L2Npc)object;
 					QuestState[] states = getQuestsForTalk(npc.getNpcId());
 
 					if (states != null)
@@ -4959,7 +4957,7 @@ public final class L2PcInstance extends L2PlayableInstance
      * @param attacker The L2Character who attacks
      *
      *
-	 * @see net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance#doDie(net.sf.l2j.gameserver.model.L2Character)
+	 * @see net.sf.l2j.gameserver.model.actor.L2Playable#doDie(net.sf.l2j.gameserver.model.actor.L2Character)
 	 */
 	@Override
 	public boolean doDie(L2Character killer)
@@ -5108,7 +5106,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		if ((!isInsideZone(ZONE_PVP) || pk == null) && (!isGM() || Config.KARMA_DROP_GM))
 		{
 			boolean isKarmaDrop = false;
-			boolean isKillerNpc = (killer instanceof L2NpcInstance);
+			boolean isKillerNpc = (killer instanceof L2Npc);
 			int pkLimit = Config.KARMA_PK_LIMIT;
 
 			int dropEquip           = 0;
@@ -5206,7 +5204,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	public void onKillUpdatePvPKarma(L2Character target)
 	{
 		if (target == null) return;
-		if (!(target instanceof L2PlayableInstance)) return;
+		if (!(target instanceof L2Playable)) return;
 
 		L2PcInstance targetPlayer = target.getActingPlayer();
 
@@ -8054,7 +8052,7 @@ public final class L2PcInstance extends L2PlayableInstance
 		if (getClan() != null && attacker != null && getClan().isMember(attacker.getObjectId()))
 			return false;
 
-        if(attacker instanceof L2PlayableInstance && isInsideZone(ZONE_PEACE))
+        if(attacker instanceof L2Playable && isInsideZone(ZONE_PEACE))
             return false;
 
 		// Check if the L2PcInstance has Karma
@@ -8637,10 +8635,10 @@ public final class L2PcInstance extends L2PlayableInstance
 				}
 		}
 
-        if ((sklTargetType == SkillTargetType.TARGET_HOLY && !TakeCastle.checkIfOkToCastSealOfRule(this, false))
-        		|| (sklTargetType == SkillTargetType.TARGET_FLAGPOLE && !TakeFort.checkIfOkToCastFlagDisplay(this, false, skill, getTarget()))
+        if ((sklTargetType == SkillTargetType.TARGET_HOLY && !checkIfOkToCastSealOfRule(CastleManager.getInstance().getCastle(this), false))
+        		|| (sklTargetType == SkillTargetType.TARGET_FLAGPOLE && !checkIfOkToCastFlagDisplay(FortManager.getInstance().getFort(this), false, skill, getTarget()))
         		|| (sklType == L2SkillType.SIEGEFLAG && !L2SkillSiegeFlag.checkIfOkToPlaceFlag(this, false))
-        		|| (sklType == L2SkillType.STRSIEGEASSAULT && !StrSiegeAssault.checkIfOkToUseStriderSiegeAssault(this, false)))
+        		|| (sklType == L2SkillType.STRSIEGEASSAULT && !checkIfOkToUseStriderSiegeAssault(false)))
         {
             sendPacket(ActionFailed.STATIC_PACKET);
             abortCast();
@@ -8668,6 +8666,127 @@ public final class L2PcInstance extends L2PlayableInstance
         }
         // finally, after passing all conditions
         return true;
+	}
+	
+	public boolean checkIfOkToUseStriderSiegeAssault(boolean isCheckOnly)
+	{
+		Castle castle = CastleManager.getInstance().getCastle(this);
+		Fort fort = FortManager.getInstance().getFort(this);
+		
+		if ((castle == null) && (fort == null))
+			return false;
+		
+		if (castle != null)
+			return checkIfOkToUseStriderSiegeAssault(castle, isCheckOnly);
+		else
+			return checkIfOkToUseStriderSiegeAssault(fort, isCheckOnly);
+		
+	}
+	
+	public boolean checkIfOkToUseStriderSiegeAssault(Castle castle, boolean isCheckOnly)
+	{
+		String text = "";
+		
+		if (castle == null || castle.getCastleId() <= 0)
+			text = "You must be on castle ground to use strider siege assault";
+		else if (!castle.getSiege().getIsInProgress())
+			text = "You can only use strider siege assault during a siege.";
+		else if (!(getTarget() instanceof L2DoorInstance))
+			text = "You can only use strider siege assault on doors and walls.";
+		else if (!isRidingStrider())
+			text = "You can only use strider siege assault when on strider.";
+		else
+			return true;
+		
+		if (!isCheckOnly)
+			sendMessage(text);
+		
+		return false;
+	}
+	
+	public boolean checkIfOkToUseStriderSiegeAssault(Fort fort, boolean isCheckOnly)
+	{
+		String text = "";
+		
+		if (fort == null || fort.getFortId() <= 0)
+			text = "You must be on fort ground to use strider siege assault";
+		else if (!fort.getSiege().getIsInProgress())
+			text = "You can only use strider siege assault during a siege.";
+		else if (!(getTarget() instanceof L2DoorInstance))
+			text = "You can only use strider siege assault on doors and walls.";
+		else if (!isRidingStrider())
+			text = "You can only use strider siege assault when on strider.";
+		else
+			return true;
+		
+		if (!isCheckOnly)
+			sendMessage(text);
+		
+		return false;
+	}
+	
+	public boolean checkIfOkToCastSealOfRule(Castle castle, boolean isCheckOnly)
+	{
+		String text = "";
+		
+		if (castle == null || castle.getCastleId() <= 0)
+			text = "You must be on castle ground to use this skill";
+		else if (!(getTarget() instanceof L2ArtefactInstance))
+			text = "You can only use this skill on an artifact";
+		else if (!castle.getSiege().getIsInProgress())
+			text = "You can only use this skill during a siege.";
+		else if (!Util.checkIfInRange(200, this, getTarget(), true))
+			text = "You are not in range of the artifact.";
+		else if (castle.getSiege().getAttackerClan(getClan()) == null)
+			text = "You must be an attacker to use this skill";
+		else
+		{
+			if (!isCheckOnly)
+				castle.getSiege().announceToPlayer("Clan " + getClan().getName()
+				        + " has begun to engrave the ruler.", true);
+			return true;
+		}
+		
+		if (!isCheckOnly)
+			sendMessage(text);
+		
+		return false;
+	}
+	
+	public boolean checkIfOkToCastFlagDisplay(Fort fort, boolean isCheckOnly, L2Skill skill,
+	        L2Object target)
+	{
+		SystemMessage sm;
+		if (fort == null || fort.getFortId() <= 0)
+		{
+			sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+			sm.addSkillName(skill);
+		}
+		else if (!fort.getSiege().getIsInProgress())
+		{
+			sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+			sm.addSkillName(skill);
+		}
+		else if (!Util.checkIfInRange(200, this, getTarget(), true))
+		{
+			sm = new SystemMessage(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED);
+		}
+		else if (fort.getSiege().getAttackerClan(getClan()) == null)
+		{
+			sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+			sm.addSkillName(skill);
+		}
+		else
+		{
+			if (!isCheckOnly)
+				fort.getSiege().announceToPlayer(new SystemMessage(SystemMessageId.S1_TRYING_RAISE_FLAG), getClan().getName());
+			return true;
+		}
+		
+		if (!isCheckOnly)
+			sendPacket(sm);
+		
+		return false;
 	}
 
     public boolean isInLooterParty(int LooterId)
@@ -8938,7 +9057,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	/**
 	 * Set the _lastFolkNpc of the L2PcInstance corresponding to the last Folk wich one the player talked.<BR><BR>
 	 */
-	public void setLastFolkNPC(L2FolkInstance folkNpc)
+	public void setLastFolkNPC(L2NpcInstance folkNpc)
 	{
 		_lastFolkNpc = folkNpc;
 	}
@@ -8946,7 +9065,7 @@ public final class L2PcInstance extends L2PlayableInstance
 	/**
 	 * Return the _lastFolkNpc of the L2PcInstance corresponding to the last Folk wich one the player talked.<BR><BR>
 	 */
-	public L2FolkInstance getLastFolkNPC()
+	public L2NpcInstance getLastFolkNPC()
 	{
 		return _lastFolkNpc;
 	}
@@ -11729,7 +11848,7 @@ public final class L2PcInstance extends L2PlayableInstance
      * @param skill
      * @param target
      */
-    public void absorbSoul(L2Skill skill, L2NpcInstance npc)
+    public void absorbSoul(L2Skill skill, L2Npc npc)
     {
         if (_souls >= skill.getNumSouls())
         {
@@ -12069,12 +12188,12 @@ public final class L2PcInstance extends L2PlayableInstance
 		if (pcrit)
         {
 			sendPacket(new SystemMessage(SystemMessageId.S1_HAD_CRITICAL_HIT).addPcName(this));
-            if (getSkillLevel(467) > 0 && target instanceof L2NpcInstance)
+            if (getSkillLevel(467) > 0 && target instanceof L2Npc)
             {
                 L2Skill skill = SkillTable.getInstance().getInfo(467,getSkillLevel(467));
                 if (Rnd.get(100) < skill.getCritChance())
                 {
-                    absorbSoul(skill,((L2NpcInstance)target));
+                    absorbSoul(skill,((L2Npc)target));
                 }
             }
         }
@@ -12157,11 +12276,145 @@ public final class L2PcInstance extends L2PlayableInstance
     		return;
     	if (answer == 1 && _summonRequest.getTarget().getCharId() == requesterId)
     	{
-    		SummonFriend.teleToTarget(this, _summonRequest.getTarget(), _summonRequest.getSkill());
+    		teleToTarget(this, _summonRequest.getTarget(), _summonRequest.getSkill());
     	}
     	_summonRequest.setTarget(null, null);
     }
     
+    public void teleToTarget(L2PcInstance targetChar, L2PcInstance summonerChar, L2Skill summonSkill)
+	{
+		if (targetChar == null || summonerChar == null || summonSkill == null)
+			return;
+
+		if (!checkSummonerStatus(summonerChar))
+			return;
+		if (!checkTargetStatus(targetChar, summonerChar))
+			return;
+
+		int itemConsumeId = summonSkill.getTargetConsumeId();
+		int itemConsumeCount = summonSkill.getTargetConsume();
+		if (itemConsumeId != 0 && itemConsumeCount != 0)
+		{
+			String ItemName = ItemTable.getInstance().getTemplate(itemConsumeId).getName();
+			if (targetChar.getInventory().getInventoryItemCount(itemConsumeId, 0) < itemConsumeCount)
+			{
+    			SystemMessage sm =  new SystemMessage(SystemMessageId.S1_REQUIRED_FOR_SUMMONING);
+    			sm.addString(ItemName);
+    			targetChar.sendPacket(sm);
+				return;
+			}
+			targetChar.getInventory().destroyItemByItemId("Consume", itemConsumeId, itemConsumeCount, summonerChar, targetChar);
+			SystemMessage sm = new SystemMessage(SystemMessageId.S1_HAS_DISAPPEARED);
+			sm.addString(ItemName);
+			targetChar.sendPacket(sm);
+		}
+		targetChar.teleToLocation(summonerChar.getX(), summonerChar.getY(), summonerChar.getZ(), true);
+	}
+    
+    public static boolean checkSummonerStatus(L2PcInstance summonerChar)
+	{
+		if (summonerChar == null)
+			return false;
+
+		if (summonerChar.isInOlympiadMode())
+		{
+			summonerChar.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
+			return false;
+		}
+
+		if (summonerChar.inObserverMode())
+		{
+			return false;
+		}
+		
+		if (summonerChar.isInsideZone(L2Character.ZONE_NOSUMMONFRIEND))
+		{
+			summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_IS_IN_AN_AREA_WHICH_BLOCKS_SUMMONING));
+			return false;
+		}
+		return true;
+	}
+    
+    public static boolean checkTargetStatus(L2PcInstance targetChar, L2PcInstance summonerChar)
+	{
+		if (targetChar == null)
+			return false;
+
+		if (targetChar.isAlikeDead())
+		{
+			SystemMessage sm = new SystemMessage(SystemMessageId.S1_IS_DEAD_AT_THE_MOMENT_AND_CANNOT_BE_SUMMONED);
+			sm.addPcName(targetChar);
+			summonerChar.sendPacket(sm);
+			return false;
+		}
+
+		if (targetChar.isInStoreMode())
+		{
+			SystemMessage sm = new SystemMessage(SystemMessageId.S1_CURRENTLY_TRADING_OR_OPERATING_PRIVATE_STORE_AND_CANNOT_BE_SUMMONED);
+			sm.addPcName(targetChar);
+			summonerChar.sendPacket(sm);
+			return false;
+		}
+
+		if (targetChar.isRooted() || targetChar.isInCombat())
+		{
+			SystemMessage sm = new SystemMessage(SystemMessageId.S1_IS_ENGAGED_IN_COMBAT_AND_CANNOT_BE_SUMMONED);
+			sm.addPcName(targetChar);
+			summonerChar.sendPacket(sm);
+			return false;
+		}
+
+		if (targetChar.isInOlympiadMode())
+		{
+			summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_SUMMON_PLAYERS_WHO_ARE_IN_OLYMPIAD));
+			return false;
+		}
+
+		if (targetChar.isFestivalParticipant())
+		{
+			summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_IS_IN_AN_AREA_WHICH_BLOCKS_SUMMONING));
+			return false;
+		}
+
+		if (targetChar.inObserverMode())
+		{
+			summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_IS_IN_AN_AREA_WHICH_BLOCKS_SUMMONING));
+			return false;
+		}
+
+		if (targetChar.isInsideZone(L2Character.ZONE_NOSUMMONFRIEND))
+		{
+			SystemMessage sm = new SystemMessage(SystemMessageId.S1_IN_SUMMON_BLOCKING_AREA);
+			sm.addString(targetChar.getName());
+			summonerChar.sendPacket(sm);
+			return false;
+		}
+
+		// on retail character can enter 7s dungeon with summon friend,
+		// but will be teleported away by mobs
+		// because currently this is not working in L2J we do not allowing summoning
+		if (summonerChar.isIn7sDungeon())
+		{
+			int targetCabal = SevenSigns.getInstance().getPlayerCabal(targetChar);
+			if (SevenSigns.getInstance().isSealValidationPeriod())
+			{
+				if (targetCabal != SevenSigns.getInstance().getCabalHighestScore())
+				{
+					summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_IS_IN_AN_AREA_WHICH_BLOCKS_SUMMONING));
+					return false;					
+				}
+			}
+			else
+			{
+				if (targetCabal == SevenSigns.CABAL_NULL)
+				{
+					summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_IS_IN_AN_AREA_WHICH_BLOCKS_SUMMONING));
+					return false;					
+				}
+			}
+		}
+		return true;	
+	}
 
     public void gatesRequest(L2DoorInstance door)
     {

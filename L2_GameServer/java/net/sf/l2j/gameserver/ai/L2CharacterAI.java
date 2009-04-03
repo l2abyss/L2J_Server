@@ -21,16 +21,16 @@ import java.util.List;
 import javolution.util.FastList;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.Universe;
-import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2CharPosition;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2ItemInstance.ItemLocation;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.AutoAttackStop;
 import net.sf.l2j.gameserver.taskmanager.AttackStanceTaskManager;
@@ -150,7 +150,7 @@ public class L2CharacterAI extends AbstractAI
 			// Also enable random animations for this L2Character if allowed
 			// This is only for mobs - town npcs are handled in their constructor
 			if (_actor instanceof L2Attackable)
-				((L2NpcInstance) _actor).startRandomAnimationTimer();
+				((L2Npc) _actor).startRandomAnimationTimer();
 			
 			// Launch the Think Event
 			onEvtThink();
@@ -1166,9 +1166,9 @@ public class L2CharacterAI extends AbstractAI
 					break;
 			}
 			// water movement analysis
-			if (_actor instanceof L2NpcInstance)
+			if (_actor instanceof L2Npc)
 			{
-				int npcId = ((L2NpcInstance) _actor).getNpcId();
+				int npcId = ((L2Npc) _actor).getNpcId();
 				
 				switch (npcId)
 				{

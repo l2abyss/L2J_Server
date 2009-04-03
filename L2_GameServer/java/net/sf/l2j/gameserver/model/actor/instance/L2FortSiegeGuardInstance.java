@@ -18,10 +18,11 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
 import net.sf.l2j.gameserver.ai.L2FortSiegeGuardAI;
-import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2CharPosition;
-import net.sf.l2j.gameserver.model.L2Character;
-import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.knownlist.FortSiegeGuardKnownList;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
@@ -69,7 +70,7 @@ public class L2FortSiegeGuardInstance extends L2Attackable
     @Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
-    	if (!(attacker instanceof L2PlayableInstance) )
+    	if (!(attacker instanceof L2Playable) )
     		return false;
 
         boolean isFort = ( getFort() != null && getFort().getFortId() > 0 
@@ -170,7 +171,7 @@ public class L2FortSiegeGuardInstance extends L2Attackable
 
         if (!(attacker instanceof L2FortSiegeGuardInstance))
         {
-        	if (attacker instanceof L2PlayableInstance)
+        	if (attacker instanceof L2Playable)
         	{
         		L2PcInstance player = null;
         		if (attacker instanceof L2PcInstance)

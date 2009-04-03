@@ -26,14 +26,17 @@ import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.datatables.HeroSkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2ArtefactInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2ChestInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.base.ClassId;
@@ -1539,7 +1542,7 @@ public abstract class L2Skill
                 {
                 	for (L2Object obj : objs)
                 	{
-                		if (!(obj == activeChar || obj instanceof L2NpcInstance || obj instanceof L2Attackable))
+                		if (!(obj == activeChar || obj instanceof L2Npc || obj instanceof L2Attackable))
                 			continue;
                 		if (!Util.checkIfInRange(radius, activeChar, obj, true))
                 			continue;
@@ -1552,7 +1555,7 @@ public abstract class L2Skill
 					for (L2Object obj : objs)
 					{
 						if (obj instanceof L2Attackable
-						        || obj instanceof L2PlayableInstance)
+						        || obj instanceof L2Playable)
 						{
 							// Don't add this target if this is a Pc->Pc pvp
 							// casting and pvp condition not met
@@ -1610,7 +1613,7 @@ public abstract class L2Skill
 							else
 							// Skill user is not L2PlayableInstance
 							{
-								if (!(obj instanceof L2PlayableInstance) // Target
+								if (!(obj instanceof L2Playable) // Target
 																			// is
 																			// not
 																			// L2PlayableInstance
@@ -1647,7 +1650,7 @@ public abstract class L2Skill
 					for (L2Object obj : objs)
 					{
 						if (obj instanceof L2Attackable
-						        || obj instanceof L2PlayableInstance)
+						        || obj instanceof L2Playable)
 						{
 							// Don't add this target if this is a Pc->Pc pvp
 							// casting and pvp condition not met
@@ -1709,7 +1712,7 @@ public abstract class L2Skill
 							else
 							// Skill user is not L2PlayableInstance
 							{
-								if (!(obj instanceof L2PlayableInstance) // Target
+								if (!(obj instanceof L2Playable) // Target
 																			// is
 																			// not
 																			// L2PlayableInstance
@@ -1746,7 +1749,7 @@ public abstract class L2Skill
 					for (L2Object obj : objs)
 					{
 						if (obj instanceof L2Attackable
-						        || obj instanceof L2PlayableInstance)
+						        || obj instanceof L2Playable)
 						{
 							// Don't add this target if this is a Pc->Pc pvp
 							// casting and pvp condition not met
@@ -1808,7 +1811,7 @@ public abstract class L2Skill
 							else
 							// Skill user is not L2PlayableInstance
 							{
-								if (!(obj instanceof L2PlayableInstance) // Target
+								if (!(obj instanceof L2Playable) // Target
 																			// is
 																			// not
 																			// L2PlayableInstance
@@ -1833,7 +1836,7 @@ public abstract class L2Skill
             }
             case TARGET_AREA:
             {
-                if ((!(target instanceof L2Attackable || target instanceof L2PlayableInstance)) ||  // Target
+                if ((!(target instanceof L2Attackable || target instanceof L2Playable)) ||  // Target
 																									// is
 																									// not
 																									// L2Attackable
@@ -1862,7 +1865,7 @@ public abstract class L2Skill
                 }
                 else cha = activeChar;
 
-                boolean effectOriginIsL2PlayableInstance = (cha instanceof L2PlayableInstance);
+                boolean effectOriginIsL2PlayableInstance = (cha instanceof L2Playable);
 
                 L2PcInstance src = activeChar.getActingPlayer();
 
@@ -1875,7 +1878,7 @@ public abstract class L2Skill
 				{
 					for (L2Object obj : objs)
 					{
-						if (!(obj instanceof L2Attackable || obj instanceof L2PlayableInstance))
+						if (!(obj instanceof L2Attackable || obj instanceof L2Playable))
 							continue;
 						if (obj == cha)
 							continue;
@@ -1964,7 +1967,7 @@ public abstract class L2Skill
 																		// at
 																		// L2PlayableInstance
 																		// and
-								        !(obj instanceof L2PlayableInstance)) // Object
+								        !(obj instanceof L2Playable)) // Object
 																				// is
 																				// not
 																				// L2PlayableInstance
@@ -1983,7 +1986,7 @@ public abstract class L2Skill
             }
             case TARGET_FRONT_AREA:
             {
-                if ((!(target instanceof L2Attackable || target instanceof L2PlayableInstance)) ||  // Target
+                if ((!(target instanceof L2Attackable || target instanceof L2Playable)) ||  // Target
 																									// is
 																									// not
 																									// L2Attackable
@@ -2013,7 +2016,7 @@ public abstract class L2Skill
                 }
                 else cha = activeChar;
 
-                boolean effectOriginIsL2PlayableInstance = (cha instanceof L2PlayableInstance);
+                boolean effectOriginIsL2PlayableInstance = (cha instanceof L2Playable);
                 
                 boolean srcIsSummon = (activeChar instanceof L2Summon);
 
@@ -2031,7 +2034,7 @@ public abstract class L2Skill
 						if (obj == cha)
 							continue;
 						
-						if (!(obj instanceof L2Attackable || obj instanceof L2PlayableInstance))
+						if (!(obj instanceof L2Attackable || obj instanceof L2Playable))
 							continue;
 						
 						target = (L2Character) obj;
@@ -2121,7 +2124,7 @@ public abstract class L2Skill
 																		// at
 																		// L2PlayableInstance
 																		// and
-								        !(obj instanceof L2PlayableInstance)) // Object
+								        !(obj instanceof L2Playable)) // Object
 																				// is
 																				// not
 																				// L2PlayableInstance
@@ -2140,7 +2143,7 @@ public abstract class L2Skill
             }
             case TARGET_BEHIND_AREA:
             {
-                if ((!(target instanceof L2Attackable || target instanceof L2PlayableInstance)) ||  // Target
+                if ((!(target instanceof L2Attackable || target instanceof L2Playable)) ||  // Target
 																									// is
 																									// not
 																									// L2Attackable
@@ -2170,7 +2173,7 @@ public abstract class L2Skill
                 }
                 else cha = activeChar;
 
-                boolean effectOriginIsL2PlayableInstance = (cha instanceof L2PlayableInstance);
+                boolean effectOriginIsL2PlayableInstance = (cha instanceof L2Playable);
 
                 L2PcInstance src = activeChar.getActingPlayer();
 
@@ -2183,7 +2186,7 @@ public abstract class L2Skill
 				{
 					for (L2Object obj : objs)
 					{
-						if (!(obj instanceof L2Attackable || obj instanceof L2PlayableInstance))
+						if (!(obj instanceof L2Attackable || obj instanceof L2Playable))
 							continue;
 						if (obj == cha)
 							continue;
@@ -2274,7 +2277,7 @@ public abstract class L2Skill
 																		// at
 																		// L2PlayableInstance
 																		// and
-								        !(obj instanceof L2PlayableInstance)) // Object
+								        !(obj instanceof L2Playable)) // Object
 																				// is
 																				// not
 																				// L2PlayableInstance
@@ -2522,7 +2525,7 @@ public abstract class L2Skill
             case TARGET_CORPSE_CLAN:
             case TARGET_CLAN:
             {
-                if (activeChar instanceof L2PlayableInstance)
+                if (activeChar instanceof L2Playable)
                 {
                     int radius = getSkillRadius();
                     L2PcInstance player = null;
@@ -2592,23 +2595,23 @@ public abstract class L2Skill
                         }
                     }
                 }
-                else if (activeChar instanceof L2NpcInstance)
+                else if (activeChar instanceof L2Npc)
                 {
                 	// for buff purposes, returns one unbuffed friendly mob nearby or mob itself?
-                	L2NpcInstance npc = (L2NpcInstance) activeChar;
+                	L2Npc npc = (L2Npc) activeChar;
                 	Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
                 	//synchronized (activeChar.getKnownList().getKnownObjects())
 					{
 						for (L2Object newTarget : objs)
 						{
-							if (newTarget instanceof L2NpcInstance
-							        && ((L2NpcInstance) newTarget).getFactionId() == npc.getFactionId())
+							if (newTarget instanceof L2Npc
+							        && ((L2Npc) newTarget).getFactionId() == npc.getFactionId())
 							{
 								if (!Util.checkIfInRange(getCastRange(), activeChar, newTarget, true))
 									continue;
-								if (((L2NpcInstance) newTarget).getFirstEffect(this) != null)
+								if (((L2Npc) newTarget).getFirstEffect(this) != null)
 								{
-									targetList.add((L2NpcInstance) newTarget);
+									targetList.add((L2Npc) newTarget);
 									break;
 								}
 							}
@@ -2739,7 +2742,7 @@ public abstract class L2Skill
 				{
 					for (L2Object obj : objs)
 					{
-						if (!(obj instanceof L2Attackable || obj instanceof L2PlayableInstance)
+						if (!(obj instanceof L2Attackable || obj instanceof L2Playable)
 						        || ((L2Character) obj).isDead()
 						        || ((L2Character) obj) == activeChar)
 							continue;
@@ -2839,7 +2842,7 @@ public abstract class L2Skill
             }
             case TARGET_UNDEAD:
             {
-                if (target instanceof L2NpcInstance || target instanceof L2SummonInstance)
+                if (target instanceof L2Npc || target instanceof L2SummonInstance)
                 {
                     if (!target.isUndead() || target.isDead())
                     {
@@ -2862,7 +2865,7 @@ public abstract class L2Skill
             {
                 L2Character cha;
                 int radius = getSkillRadius();
-                if (getCastRange() >= 0 && (target instanceof L2NpcInstance || target instanceof L2SummonInstance)
+                if (getCastRange() >= 0 && (target instanceof L2Npc || target instanceof L2SummonInstance)
                 		&& target.isUndead() && !target.isAlikeDead())
                 {
                     cha = target;
@@ -2878,8 +2881,8 @@ public abstract class L2Skill
 				{
 					for (L2Object obj : objs)
 					{
-						if (obj instanceof L2NpcInstance)
-							target = (L2NpcInstance) obj;
+						if (obj instanceof L2Npc)
+							target = (L2Npc) obj;
 						else if (obj instanceof L2SummonInstance)
 							target = (L2SummonInstance) obj;
 						else

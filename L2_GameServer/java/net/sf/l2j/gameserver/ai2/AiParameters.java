@@ -20,8 +20,8 @@ import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import javolution.util.FastList;
-import net.sf.l2j.gameserver.model.L2Character;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 
 /**
  *
@@ -32,7 +32,7 @@ public class AiParameters
 {
 	private Queue<AiEvent> _eventQueue;
 	private EnumSet<AiEventType> _inhibitions;
-	private L2NpcInstance _actor;
+	private L2Npc _actor;
 	private List<Hated> _hated;
 	private List<Liked> _liked;
 	
@@ -67,7 +67,7 @@ public class AiParameters
 		GAVE_DAMMAGE_TO_ENNEMY
 	}
 	
-	public AiParameters(L2NpcInstance actor)
+	public AiParameters(L2Npc actor)
 	{
 		_eventQueue = new PriorityBlockingQueue<AiEvent>();
 		_hated = new FastList<Hated>();
@@ -97,7 +97,7 @@ public class AiParameters
 		_eventQueue.offer(set);
 	}
 	
-	public L2NpcInstance getActor()
+	public L2Npc getActor()
 	{
 		return _actor;
 	}

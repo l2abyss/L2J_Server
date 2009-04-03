@@ -15,7 +15,7 @@
 package net.sf.l2j.gameserver.skills.effects;
 
 import net.sf.l2j.gameserver.model.L2Effect;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
@@ -47,9 +47,9 @@ public class EffectCharmOfLuck extends L2Effect
 	@Override
 	public boolean onStart()
 	{
-		if (getEffected() instanceof L2PlayableInstance)
+		if (getEffected() instanceof L2Playable)
 		{
-			((L2PlayableInstance) getEffected()).startCharmOfLuck();
+			((L2Playable) getEffected()).startCharmOfLuck();
 			return true;
 		}
 		return false;
@@ -62,7 +62,7 @@ public class EffectCharmOfLuck extends L2Effect
 	@Override
 	public void onExit()
 	{
-		((L2PlayableInstance) getEffected()).stopCharmOfLuck(this);
+		((L2Playable) getEffected()).stopCharmOfLuck(this);
 	}
 	
 	/**

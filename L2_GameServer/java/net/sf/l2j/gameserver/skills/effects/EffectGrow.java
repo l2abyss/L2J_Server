@@ -14,9 +14,9 @@
  */
 package net.sf.l2j.gameserver.skills.effects;
 
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
@@ -45,9 +45,9 @@ public class EffectGrow extends L2Effect
 	@Override
 	public boolean onStart()
 	{
-		if (getEffected() instanceof L2NpcInstance)
+		if (getEffected() instanceof L2Npc)
 		{
-			L2NpcInstance npc = (L2NpcInstance) getEffected();
+			L2Npc npc = (L2Npc) getEffected();
 			//TODO: Uncomment line when fix for mobs falling underground is found
 			//npc.setCollisionHeight((int) (npc.getCollisionHeight() * 1.24));
 			npc.setCollisionRadius((int) (npc.getCollisionRadius() * 1.19));
@@ -75,9 +75,9 @@ public class EffectGrow extends L2Effect
 	@Override
 	public void onExit()
 	{
-		if (getEffected() instanceof L2NpcInstance)
+		if (getEffected() instanceof L2Npc)
 		{
-			L2NpcInstance npc = (L2NpcInstance) getEffected();
+			L2Npc npc = (L2Npc) getEffected();
 			//TODO: Uncomment line when fix for mobs falling underground is found
 			//npc.setCollisionHeight(npc.getTemplate().collisionHeight);
 			npc.setCollisionRadius(npc.getTemplate().collisionRadius);

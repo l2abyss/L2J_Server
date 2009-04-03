@@ -15,9 +15,9 @@
 package net.sf.l2j.gameserver.model.actor.instance;
 
 import net.sf.l2j.gameserver.instancemanager.RaidBossPointsManager;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
@@ -67,7 +67,7 @@ public final class L2GrandBossInstance extends L2MonsterInstance
 
     /**
      * 
-     * @see net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance#doDie(net.sf.l2j.gameserver.model.L2Character)
+     * @see net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance#doDie(net.sf.l2j.gameserver.model.actor.L2Character)
      */
     @Override
     public boolean doDie(L2Character killer)

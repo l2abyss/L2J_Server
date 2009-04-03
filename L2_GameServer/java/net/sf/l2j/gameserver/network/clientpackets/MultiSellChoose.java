@@ -25,7 +25,7 @@ import net.sf.l2j.gameserver.model.L2Multisell;
 import net.sf.l2j.gameserver.model.L2Multisell.MultiSellEntry;
 import net.sf.l2j.gameserver.model.L2Multisell.MultiSellIngredient;
 import net.sf.l2j.gameserver.model.L2Multisell.MultiSellListContainer;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.PcInventory;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -92,7 +92,7 @@ public class MultiSellChoose extends L2GameClientPacket
 		// given the template entry and information about maintaining enchantment and applying taxes
 		// re-create the instance of the entry that will be used for this exchange
 		// i.e. change the enchantment level of select ingredient/products and adena amount appropriately.
-		L2NpcInstance merchant = (player.getTarget() instanceof L2NpcInstance) ? (L2NpcInstance) player.getTarget() : null;
+		L2Npc merchant = (player.getTarget() instanceof L2Npc) ? (L2Npc) player.getTarget() : null;
 		if (merchant == null)
 			return;
 		
@@ -398,7 +398,7 @@ public class MultiSellChoose extends L2GameClientPacket
 	// example: If the template has an item worth 120aa, and the tax is 10%,
 	// then from 120aa, take 5/6 so that is 100aa, apply the 10% tax in adena (10a)
 	// so the final price will be 120aa and 10a!
-	private MultiSellEntry prepareEntry(L2NpcInstance merchant, MultiSellEntry templateEntry, boolean applyTaxes, boolean maintainEnchantment, int enchantLevel)
+	private MultiSellEntry prepareEntry(L2Npc merchant, MultiSellEntry templateEntry, boolean applyTaxes, boolean maintainEnchantment, int enchantLevel)
 	{
 		MultiSellEntry newEntry = L2Multisell.getInstance().new MultiSellEntry();
 		newEntry.setEntryId(templateEntry.getEntryId());

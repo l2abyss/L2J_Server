@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 import javolution.util.FastList;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.ItemContainer;
@@ -82,8 +82,8 @@ public final class RequestPackageSend extends L2GameClientPacket
         	getClient().getActiveChar().setActiveWarehouse(freight);
         	ItemContainer warehouse = player.getActiveWarehouse();
         	if (warehouse == null) return;
-        	L2FolkInstance manager = player.getLastFolkNPC();
-        	if ((manager == null || !player.isInsideRadius(manager, L2NpcInstance.INTERACTION_DISTANCE, false, false)) && !player.isGM()) return;
+        	L2NpcInstance manager = player.getLastFolkNPC();
+        	if ((manager == null || !player.isInsideRadius(manager, L2Npc.INTERACTION_DISTANCE, false, false)) && !player.isGM()) return;
 
         	if (warehouse instanceof PcFreight && !player.getAccessLevel().allowTransaction())
         	{

@@ -16,8 +16,8 @@ package net.sf.l2j.gameserver.model.zone.type;
 
 import java.util.Collection;
 
-import net.sf.l2j.gameserver.model.L2Character;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
@@ -46,7 +46,7 @@ public class L2WaterZone extends L2ZoneType
 			else
 				((L2PcInstance) character).broadcastUserInfo();
 		}
-		else if (character instanceof L2NpcInstance)
+		else if (character instanceof L2Npc)
 		{
 			Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
 			//synchronized (character.getKnownList().getKnownPlayers())
@@ -54,9 +54,9 @@ public class L2WaterZone extends L2ZoneType
 				for (L2PcInstance player : plrs)
 				{
 					if (character.getRunSpeed() == 0)
-						player.sendPacket(new ServerObjectInfo((L2NpcInstance)character, player));
+						player.sendPacket(new ServerObjectInfo((L2Npc)character, player));
 					else
-						player.sendPacket(new NpcInfo((L2NpcInstance) character, player));
+						player.sendPacket(new NpcInfo((L2Npc) character, player));
 				}
 			}
 		}
@@ -82,7 +82,7 @@ public class L2WaterZone extends L2ZoneType
 		{
 			((L2PcInstance) character).broadcastUserInfo();
 		}
-		else if (character instanceof L2NpcInstance)
+		else if (character instanceof L2Npc)
 		{
 			Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
 			//synchronized (character.getKnownList().getKnownPlayers())
@@ -90,9 +90,9 @@ public class L2WaterZone extends L2ZoneType
 				for (L2PcInstance player : plrs)
 				{
 					if (character.getRunSpeed() == 0)
-						player.sendPacket(new ServerObjectInfo((L2NpcInstance)character, player));
+						player.sendPacket(new ServerObjectInfo((L2Npc)character, player));
 					else
-						player.sendPacket(new NpcInfo((L2NpcInstance) character, player));
+						player.sendPacket(new NpcInfo((L2Npc) character, player));
 				}
 			}
 		}

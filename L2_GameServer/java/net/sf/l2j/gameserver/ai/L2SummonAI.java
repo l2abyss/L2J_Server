@@ -17,8 +17,8 @@ package net.sf.l2j.gameserver.ai;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_FOLLOW;
 import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE;
-import net.sf.l2j.gameserver.model.L2Summon;
-import net.sf.l2j.gameserver.model.L2Character.AIAccessor;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
+import net.sf.l2j.gameserver.model.actor.L2Character.AIAccessor;
 
 public class L2SummonAI extends L2CharacterAI
 {

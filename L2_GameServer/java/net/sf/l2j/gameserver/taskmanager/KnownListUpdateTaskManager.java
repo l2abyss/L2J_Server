@@ -19,12 +19,12 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2WorldRegion;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.actor.instance.L2GuardInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 
 public class KnownListUpdateTaskManager
 {
@@ -114,10 +114,10 @@ public class KnownListUpdateTaskManager
 						
 					if (forgetObjects)
 					{
-						object.getKnownList().forgetObjects((object instanceof L2PlayableInstance || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate));
+						object.getKnownList().forgetObjects((object instanceof L2Playable || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate));
 						continue;
 					}
-					if (object instanceof L2PlayableInstance || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate)
+					if (object instanceof L2Playable || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate)
 					{
 						for (L2WorldRegion regi : region.getSurroundingRegions())
 						{
@@ -134,7 +134,7 @@ public class KnownListUpdateTaskManager
 					{
 						for (L2WorldRegion regi : region.getSurroundingRegions())
 						{
-							Collection<L2PlayableInstance> inrPls = regi.getVisiblePlayable().values();
+							Collection<L2Playable> inrPls = regi.getVisiblePlayable().values();
 							// synchronized (regi.getVisiblePlayable())
 							{
 								if (regi.isActive())

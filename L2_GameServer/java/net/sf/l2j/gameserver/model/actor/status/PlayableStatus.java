@@ -14,8 +14,8 @@
  */
 package net.sf.l2j.gameserver.model.actor.status;
 
-import net.sf.l2j.gameserver.model.L2Character;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 
 public class PlayableStatus extends CharStatus
 {
@@ -24,7 +24,7 @@ public class PlayableStatus extends CharStatus
 
     // =========================================================
     // Constructor
-    public PlayableStatus(L2PlayableInstance activeChar)
+    public PlayableStatus(L2Playable activeChar)
     {
         super(activeChar);
     }
@@ -60,5 +60,5 @@ public class PlayableStatus extends CharStatus
     // =========================================================
     // Property - Public
     @Override
-	public L2PlayableInstance getActiveChar() { return (L2PlayableInstance)super.getActiveChar(); }
+	public L2Playable getActiveChar() { return (L2Playable)super.getActiveChar(); }
 }

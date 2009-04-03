@@ -14,8 +14,8 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-import net.sf.l2j.gameserver.model.L2Character;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 
 /**
  *
@@ -24,13 +24,13 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 public final class ServerObjectInfo extends L2GameServerPacket
 {
 	private static final String _S__92_SERVEROBJECTINFO = "[S] 92 ServerObjectInfo";
-	private L2NpcInstance _activeChar;
+	private L2Npc _activeChar;
 	private int _x, _y, _z, _heading;
 	private int _idTemplate;
 	private boolean _isAttackable;
 	private int _collisionHeight, _collisionRadius;
 
-	public ServerObjectInfo(L2NpcInstance activeChar, L2Character actor)
+	public ServerObjectInfo(L2Npc activeChar, L2Character actor)
 	{
 		_activeChar = activeChar;
 		_idTemplate = _activeChar.getTemplate().idTemplate;

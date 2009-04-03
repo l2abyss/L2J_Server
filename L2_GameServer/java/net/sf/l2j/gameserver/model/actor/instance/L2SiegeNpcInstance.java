@@ -26,7 +26,7 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
  *
  * @version $Revision$ $Date$
  */
-public class L2SiegeNpcInstance extends L2FolkInstance
+public class L2SiegeNpcInstance extends L2NpcInstance
 {
 	//private static Logger _log = Logger.getLogger(L2SiegeNpcInstance.class.getName());
 

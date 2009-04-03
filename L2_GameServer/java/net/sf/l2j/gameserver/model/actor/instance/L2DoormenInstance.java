@@ -32,7 +32,7 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
  *
  * @version $Revision$ $Date$
  */
-public class L2DoormenInstance extends L2FolkInstance
+public class L2DoormenInstance extends L2NpcInstance
 {
     private ClanHall _clanHall;
     private static int COND_ALL_FALSE = 0;

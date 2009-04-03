@@ -16,7 +16,7 @@ package net.sf.l2j.gameserver.skills.conditions;
 
 import java.util.ArrayList;
 
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.skills.Env;
 
 /**
@@ -35,8 +35,8 @@ public class ConditionTargetRaceId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.target instanceof L2NpcInstance))
+		if (!(env.target instanceof L2Npc))
 			return false;
-		return (_raceIds.contains(((L2NpcInstance)env.target).getTemplate().race.ordinal()));
+		return (_raceIds.contains(((L2Npc)env.target).getTemplate().race.ordinal()));
 	}
 }

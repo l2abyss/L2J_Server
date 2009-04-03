@@ -16,9 +16,9 @@ package net.sf.l2j.gameserver.model.actor.stat;
 
 import java.util.logging.Logger;
 
-import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.base.Experience;
 
 public class PlayableStat extends CharStat
@@ -29,7 +29,7 @@ public class PlayableStat extends CharStat
 
     // =========================================================
     // Constructor
-    public PlayableStat(L2PlayableInstance activeChar)
+    public PlayableStat(L2Playable activeChar)
     {
         super(activeChar);
     }
@@ -190,5 +190,5 @@ public class PlayableStat extends CharStat
     // =========================================================
     // Property - Public
     @Override
-	public L2PlayableInstance getActiveChar() { return (L2PlayableInstance)super.getActiveChar(); }
+	public L2Playable getActiveChar() { return (L2Playable)super.getActiveChar(); }
 }

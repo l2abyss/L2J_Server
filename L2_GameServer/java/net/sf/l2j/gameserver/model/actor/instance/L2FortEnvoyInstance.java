@@ -22,13 +22,14 @@ import java.util.StringTokenizer;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
-public class L2FortEnvoyInstance extends L2NpcInstance
+public class L2FortEnvoyInstance extends L2Npc
 {
     public L2FortEnvoyInstance(int objectID, L2NpcTemplate template)
     {

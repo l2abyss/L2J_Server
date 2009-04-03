@@ -27,23 +27,23 @@ import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.Territory;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
-import net.sf.l2j.gameserver.model.L2Attackable;
 import net.sf.l2j.gameserver.model.L2CharPosition;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FestivalMonsterInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FriendlyMobInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2GuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MinionInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RiftInvaderInstance;
 import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
@@ -150,7 +150,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		}
 		
 		// Check if the target isn't a Folk or a Door
-		if (target instanceof L2FolkInstance || target instanceof L2DoorInstance)
+		if (target instanceof L2NpcInstance || target instanceof L2DoorInstance)
 			return false;
 		
 		// Check if the target isn't dead, is in the Aggro range and is at the same height
@@ -161,10 +161,10 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			return false;
 		
 		// Check if the target is a L2PlayableInstance
-		if (target instanceof L2PlayableInstance)
+		if (target instanceof L2Playable)
 		{
 			// Check if the AI isn't a Raid Boss and the target isn't in silent move mode
-			if (!(me.isRaid()) && ((L2PlayableInstance) target).isSilentMoving())
+			if (!(me.isRaid()) && ((L2Playable) target).isSilentMoving())
 				return false;
 		}
 		
@@ -236,7 +236,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		{ // the actor is a L2FriendlyMobInstance
 		
 			// Check if the target isn't another L2NpcInstance
-			if (target instanceof L2NpcInstance)
+			if (target instanceof L2Npc)
 				return false;
 			
 			// Check if the L2PcInstance target has karma (=PK)
@@ -250,7 +250,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		{ //The actor is a L2MonsterInstance
 		
 			// Check if the target isn't another L2NpcInstance
-			if (target instanceof L2NpcInstance)
+			if (target instanceof L2Npc)
 				return false;
 			
 			// depending on config, do not allow mobs to attack _new_ players in peacezones,
@@ -673,9 +673,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		}
 		
 		// Handle all L2Object of its Faction inside the Faction Range
-		if (((L2NpcInstance) _actor).getFactionId() != null)
+		if (((L2Npc) _actor).getFactionId() != null)
 		{
-			String faction_id = ((L2NpcInstance) _actor).getFactionId();
+			String faction_id = ((L2Npc) _actor).getFactionId();
 			
 			// Go through all L2Object that belong to its faction
 			Collection<L2Object> objs = _actor.getKnownList().getKnownObjects().values();
@@ -683,9 +683,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			{
 				for (L2Object obj : objs)
 				{
-					if (obj instanceof L2NpcInstance)
+					if (obj instanceof L2Npc)
 					{
-						L2NpcInstance npc = (L2NpcInstance) obj;
+						L2Npc npc = (L2Npc) obj;
 						
 						//Handle SevenSigns mob Factions
 	        			String npcfaction = npc.getFactionId();
@@ -721,7 +721,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 									{
 										L2PcInstance player = (originalAttackTarget instanceof L2PcInstance) ? (L2PcInstance) originalAttackTarget : ((L2Summon) originalAttackTarget).getOwner();
 										for (Quest quest : npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_FACTION_CALL))
-											quest.notifyFactionCall(npc, (L2NpcInstance) _actor, player, (originalAttackTarget instanceof L2Summon));
+											quest.notifyFactionCall(npc, (L2Npc) _actor, player, (originalAttackTarget instanceof L2Summon));
 									}
 								}
 							}

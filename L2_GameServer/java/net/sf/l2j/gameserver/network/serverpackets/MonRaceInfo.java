@@ -16,7 +16,7 @@ package net.sf.l2j.gameserver.network.serverpackets;
 
 import java.util.logging.Logger;
 
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 
 
 /**
@@ -35,10 +35,10 @@ public class MonRaceInfo extends L2GameServerPacket
     private static final String _S__DD_MonRaceInfo = "[S] e3 MonRaceInfo";
     private int _unknown1;
     private int _unknown2;
-    private L2NpcInstance[] _monsters;
+    private L2Npc[] _monsters;
     private int[][] _speeds;
 
-    public MonRaceInfo(int unknown1 , int unknown2, L2NpcInstance[] monsters, int[][] speeds)
+    public MonRaceInfo(int unknown1 , int unknown2, L2Npc[] monsters, int[][] speeds)
     {
         /*
          * -1 0 to initial the race

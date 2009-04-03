@@ -16,16 +16,16 @@ package net.sf.l2j.gameserver.model.actor.knownlist;
 
 
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.model.L2Character;
-import net.sf.l2j.gameserver.model.L2Decoy;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
-import net.sf.l2j.gameserver.model.L2Summon;
-import net.sf.l2j.gameserver.model.L2Trap;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Decoy;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
+import net.sf.l2j.gameserver.model.actor.L2Trap;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DecoyInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2StaticObjectInstance;
@@ -138,13 +138,13 @@ public class PcKnownList extends PlayableKnownList
             {
             	getActiveChar().sendPacket(new NpcInfo((L2Trap) object, getActiveChar()));
             }
-            else if (object instanceof L2NpcInstance)
+            else if (object instanceof L2Npc)
             {
-                if (Config.CHECK_KNOWN) getActiveChar().sendMessage("Added NPC: "+((L2NpcInstance) object).getName());
-                if (((L2NpcInstance) object).getRunSpeed() == 0)
-                	getActiveChar().sendPacket(new ServerObjectInfo((L2NpcInstance) object, getActiveChar()));
+                if (Config.CHECK_KNOWN) getActiveChar().sendMessage("Added NPC: "+((L2Npc) object).getName());
+                if (((L2Npc) object).getRunSpeed() == 0)
+                	getActiveChar().sendPacket(new ServerObjectInfo((L2Npc) object, getActiveChar()));
                 else
-                	getActiveChar().sendPacket(new NpcInfo((L2NpcInstance) object, getActiveChar()));
+                	getActiveChar().sendPacket(new NpcInfo((L2Npc) object, getActiveChar()));
             }
             else if (object instanceof L2Summon)
             {
@@ -291,7 +291,7 @@ public class PcKnownList extends PlayableKnownList
             if (!super.removeKnownObject(object)) return false;
         // Send Server-Client Packet DeleteObject to the L2PcInstance
         getActiveChar().sendPacket(new DeleteObject(object));
-       if (Config.CHECK_KNOWN && object instanceof L2NpcInstance) getActiveChar().sendMessage("Removed NPC: "+((L2NpcInstance)object).getName());
+       if (Config.CHECK_KNOWN && object instanceof L2Npc) getActiveChar().sendMessage("Removed NPC: "+((L2Npc)object).getName());
         return true;
     }
 

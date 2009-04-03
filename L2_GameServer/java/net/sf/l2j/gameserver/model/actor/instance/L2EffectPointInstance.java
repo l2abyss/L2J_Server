@@ -14,12 +14,13 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
-import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
-public class L2EffectPointInstance extends L2NpcInstance
+public class L2EffectPointInstance extends L2Npc
 {
     private L2Character _owner;
 

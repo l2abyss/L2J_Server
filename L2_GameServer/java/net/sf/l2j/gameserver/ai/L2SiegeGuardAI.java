@@ -24,17 +24,17 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.ThreadPoolManager;
-import net.sf.l2j.gameserver.model.L2Attackable;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 import net.sf.l2j.gameserver.util.Util;
@@ -126,7 +126,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 	private boolean autoAttackCondition(L2Character target)
 	{
 		// Check if the target isn't another guard, folk or a door
-		if (target == null || target instanceof L2SiegeGuardInstance || target instanceof L2FolkInstance || target instanceof L2DoorInstance
+		if (target == null || target instanceof L2SiegeGuardInstance || target instanceof L2NpcInstance || target instanceof L2DoorInstance
 				|| target.isAlikeDead())
 			return false;
 		
@@ -149,10 +149,10 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		}
 		
 		// Check if the target is a L2PcInstance
-		if (target instanceof L2PlayableInstance)
+		if (target instanceof L2Playable)
 		{
 			// Check if the target isn't in silent move mode AND too far (>100)
-			if (((L2PlayableInstance) target).isSilentMoving() && !_actor.isInsideRadius(target, 250, false, false))
+			if (((L2Playable) target).isSilentMoving() && !_actor.isInsideRadius(target, 250, false, false))
 				return false;
 		}
 		// Los Check Here
@@ -369,7 +369,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 	{
 		L2Character target = getAttackTarget();
 		// Call all L2Object of its Faction inside the Faction Range
-		if (((L2NpcInstance) _actor).getFactionId() == null || target == null)
+		if (((L2Npc) _actor).getFactionId() == null || target == null)
 			return;
 		
 		if (target.isInvul())
@@ -377,7 +377,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		
 		if (Rnd.get(10) > 4) return; // test for reducing CPU load
 			
-		String faction_id = ((L2NpcInstance) _actor).getFactionId();
+		String faction_id = ((L2Npc) _actor).getFactionId();
 		
 		// Go through all L2Character that belong to its faction
 		//for (L2Character cha : _actor.getKnownList().getKnownCharactersInRadius(((L2NpcInstance) _actor).getFactionRange()+_actor.getTemplate().collisionRadius))
@@ -386,9 +386,9 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 			if (cha == null)
 				continue;
 			
-			if (!(cha instanceof L2NpcInstance))
+			if (!(cha instanceof L2Npc))
 			{
-				if (_selfAnalysis.hasHealOrResurrect && cha instanceof L2PcInstance && ((L2NpcInstance) _actor).getCastle().getSiege().checkIsDefender(((L2PcInstance) cha).getClan()))
+				if (_selfAnalysis.hasHealOrResurrect && cha instanceof L2PcInstance && ((L2Npc) _actor).getCastle().getSiege().checkIsDefender(((L2PcInstance) cha).getClan()))
 				{
 					// heal friends
 					if (!_actor.isAttackingDisabled() && cha.getCurrentHp() < cha.getMaxHp() * 0.6 && _actor.getCurrentHp() > _actor.getMaxHp() / 2 && _actor.getCurrentMp() > _actor.getMaxMp() / 2 && cha.isInCombat())
@@ -420,7 +420,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 				continue;
 			}
 			
-			L2NpcInstance npc = (L2NpcInstance) cha;
+			L2Npc npc = (L2Npc) cha;
 			
 			if (faction_id != npc.getFactionId())
 				continue;

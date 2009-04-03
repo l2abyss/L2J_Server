@@ -17,7 +17,7 @@ package net.sf.l2j.gameserver.handler;
 import java.util.logging.Logger;
 
 import net.sf.l2j.gameserver.model.L2ItemInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 
 /**
  * Mother class of all itemHandlers.<BR><BR>
@@ -35,7 +35,7 @@ public interface IItemHandler
 	 * @param activeChar : L2PlayableInstance designating the player
 	 * @param item : L2ItemInstance designating the item to use
 	 */
-	public void useItem(L2PlayableInstance playable, L2ItemInstance item);
+	public void useItem(L2Playable playable, L2ItemInstance item);
 	
 	/**
 	 * Returns the list of item IDs corresponding to the type of item.<BR><BR>

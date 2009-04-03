@@ -33,7 +33,7 @@ import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Spawn;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.DimensionalRift;
 import net.sf.l2j.gameserver.model.quest.Quest;
@@ -276,7 +276,7 @@ public class DimensionalRiftManager
         player.teleToLocation(coords[0], coords[1], coords[2]);
     }
 
-    public void start(L2PcInstance player, byte type, L2NpcInstance npc)
+    public void start(L2PcInstance player, byte type, L2Npc npc)
     {
         boolean canPass = true;
         if(!player.isInParty())
@@ -381,7 +381,7 @@ public class DimensionalRiftManager
         private final Shape _s;
         private final boolean _isBossRoom;
         private final FastList<L2Spawn> _roomSpawns;
-        protected final FastList<L2NpcInstance> _roomMobs;
+        protected final FastList<L2Npc> _roomMobs;
 
         public DimensionalRiftRoom(byte type, byte room, int xMin, int xMax, int yMin, int yMax, int zMin, int zMax, int xT, int yT, int zT, boolean isBossRoom)
         {
@@ -396,7 +396,7 @@ public class DimensionalRiftManager
             _teleportCoords = new int[] { xT, yT, zT };
             _isBossRoom = isBossRoom;
             _roomSpawns = new FastList<L2Spawn>();
-            _roomMobs = new FastList<L2NpcInstance>();
+            _roomMobs = new FastList<L2Npc>();
             _s = new Polygon(new int[] { xMin, xMax, xMax, xMin }, new int[] { yMin, yMin, yMax, yMax }, 4);
         }
 
@@ -471,7 +471,7 @@ public class DimensionalRiftManager
         }
     }
 
-    public void showHtmlFile(L2PcInstance player, String file, L2NpcInstance npc)
+    public void showHtmlFile(L2PcInstance player, String file, L2Npc npc)
     {
         NpcHtmlMessage html = new NpcHtmlMessage(npc.getObjectId());
         html.setFile(file);
@@ -479,7 +479,7 @@ public class DimensionalRiftManager
         player.sendPacket(html);
     }
 
-    public void handleCheat(L2PcInstance player, L2NpcInstance npc)
+    public void handleCheat(L2PcInstance player, L2Npc npc)
     {
         showHtmlFile(player, "data/html/seven_signs/rift/Cheater.htm", npc);
         if (!player.isGM())

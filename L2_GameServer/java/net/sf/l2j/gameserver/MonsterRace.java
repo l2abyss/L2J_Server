@@ -18,14 +18,14 @@ import java.lang.reflect.Constructor;
 
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.util.Rnd;
 
 
 public class MonsterRace
 {
-    private L2NpcInstance[] _monsters;
+    private L2Npc[] _monsters;
     private static MonsterRace _instance;
     private Constructor<?> _constructor;
     private int[][] _speeds;
@@ -33,7 +33,7 @@ public class MonsterRace
 
     private MonsterRace()
     {
-        _monsters    = new L2NpcInstance[8];
+        _monsters    = new L2Npc[8];
         _speeds      = new int[8][20];
         _first       = new int[2];
         _second      = new int[2];
@@ -74,7 +74,7 @@ public class MonsterRace
                 L2NpcTemplate template = NpcTable.getInstance().getTemplate(id+random);
                 _constructor = Class.forName("net.sf.l2j.gameserver.model.actor.instance." + template.type + "Instance").getConstructors()[0];
                 int objectId = IdFactory.getInstance().getNextId();
-                _monsters[i] = (L2NpcInstance)_constructor.newInstance(objectId, template);
+                _monsters[i] = (L2Npc)_constructor.newInstance(objectId, template);
             }
             catch (Exception e)
             {
@@ -119,7 +119,7 @@ public class MonsterRace
     /**
      * @return Returns the monsters.
      */
-    public L2NpcInstance[] getMonsters()
+    public L2Npc[] getMonsters()
     {
         return _monsters;
     }

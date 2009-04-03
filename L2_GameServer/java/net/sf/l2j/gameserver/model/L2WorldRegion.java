@@ -27,8 +27,10 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.L2AttackableAI;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.gameserver.model.zone.type.L2DerbyTrackZone;
 import net.sf.l2j.gameserver.model.zone.type.L2PeaceZone;
@@ -44,7 +46,7 @@ public final class L2WorldRegion
     private static Logger _log = Logger.getLogger(L2WorldRegion.class.getName());
 
     /** L2ObjectHashSet(L2PlayableInstance) containing L2PlayableInstance of all player & summon in game in this L2WorldRegion */
-    private Map<Integer,L2PlayableInstance> _allPlayable;
+    private Map<Integer,L2Playable> _allPlayable;
 
     /** L2ObjectHashSet(L2Object) containing L2Object visible in this L2WorldRegion */
     private Map<Integer,L2Object> _visibleObjects;
@@ -57,7 +59,7 @@ public final class L2WorldRegion
 
     public L2WorldRegion(int pTileX, int pTileY)
     {
-        _allPlayable = new FastMap<Integer, L2PlayableInstance>().setShared(true);
+        _allPlayable = new FastMap<Integer, L2Playable>().setShared(true);
         _visibleObjects = new FastMap<Integer, L2Object>().setShared(true);
         _surroundingRegions = new ArrayList<L2WorldRegion>();
 
@@ -248,8 +250,8 @@ public final class L2WorldRegion
         				// Start HP/MP/CP Regeneration task
         				((L2Attackable)o).getStatus().startHpMpRegeneration();
         			}
-        			else if (o instanceof L2NpcInstance)
-        				((L2NpcInstance)o).startRandomAnimationTimer();
+        			else if (o instanceof L2Npc)
+        				((L2Npc)o).startRandomAnimationTimer();
         		}
         	}
         	//KnownListUpdateTaskManager.getInstance().updateRegion(this, true, true);
@@ -362,9 +364,9 @@ public final class L2WorldRegion
         if (object == null) return;
         _visibleObjects.put(object.getObjectId(),object);
 
-        if (object instanceof L2PlayableInstance)
+        if (object instanceof L2Playable)
         {
-            _allPlayable.put(object.getObjectId(),(L2PlayableInstance) object);
+            _allPlayable.put(object.getObjectId(),(L2Playable) object);
 
             // if this is the first player to enter the region, activate self & neighbors
             if ((_allPlayable.size() == 1) && (!Config.GRIDS_ALWAYS_ON))
@@ -385,7 +387,7 @@ public final class L2WorldRegion
         if (object == null) return;
         _visibleObjects.remove(object.getObjectId());
 
-        if (object instanceof L2PlayableInstance)
+        if (object instanceof L2Playable)
         {
             _allPlayable.remove(object.getObjectId());
 
@@ -407,7 +409,7 @@ public final class L2WorldRegion
         return _surroundingRegions;
     }
 
-    public Map<Integer,L2PlayableInstance> getVisiblePlayable()
+    public Map<Integer,L2Playable> getVisiblePlayable()
     {
         return _allPlayable;
     }
@@ -433,9 +435,9 @@ public final class L2WorldRegion
         {
         	for (L2Object obj : vNPC)
         	{
-        		if (obj instanceof L2NpcInstance)
+        		if (obj instanceof L2Npc)
         		{
-        			L2NpcInstance target = (L2NpcInstance) obj;
+        			L2Npc target = (L2Npc) obj;
         			target.deleteMe();
         			L2Spawn spawn = target.getSpawn();
         			if (spawn != null)

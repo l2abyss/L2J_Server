@@ -19,8 +19,9 @@ import java.util.Map;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
 import net.sf.l2j.gameserver.ai.L2NpcWalkerAI;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.util.Broadcast;
@@ -32,7 +33,7 @@ import net.sf.l2j.gameserver.util.Broadcast;
  * @original author Rayan RPG for L2Emu Project
  * @since 819
  */
-public class L2NpcWalkerInstance extends L2NpcInstance
+public class L2NpcWalkerInstance extends L2Npc
 {
 	/**
 	 * Constructor of L2NpcWalkerInstance (use L2Character and L2NpcInstance constructor).<BR><BR>

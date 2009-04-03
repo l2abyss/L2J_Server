@@ -40,8 +40,8 @@ import net.sf.l2j.gameserver.model.L2Party;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.SpawnListener;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2FestivalMonsterInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.base.Experience;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -772,8 +772,8 @@ public class SevenSignsFestival implements SpawnListener
     protected List<Integer> _accumulatedBonuses;   // The total bonus available (in Ancient Adena)
 
     boolean _noPartyRegister;
-    private L2NpcInstance _dawnChatGuide;
-    private L2NpcInstance _duskChatGuide;
+    private L2Npc _dawnChatGuide;
+    private L2Npc _duskChatGuide;
 
     protected Map<Integer, List<L2PcInstance>> _dawnFestivalParticipants;
     protected Map<Integer, List<L2PcInstance>> _duskFestivalParticipants;
@@ -1764,7 +1764,7 @@ public class SevenSignsFestival implements SpawnListener
      *
      * @param npc
      */
-    public void npcSpawned(L2NpcInstance npc)
+    public void npcSpawned(L2Npc npc)
     {
         if (npc == null)
             return;
@@ -2060,7 +2060,7 @@ public class SevenSignsFestival implements SpawnListener
         private FestivalSpawn _startLocation;
         private FestivalSpawn _witchSpawn;
 
-        private L2NpcInstance _witchInst;
+        private L2Npc _witchInst;
         List<L2FestivalMonsterInstance> _npcInsts;
 
         private List<L2PcInstance> _participants;

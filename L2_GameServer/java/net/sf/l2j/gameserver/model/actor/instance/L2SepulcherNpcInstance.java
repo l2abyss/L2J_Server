@@ -26,6 +26,7 @@ import net.sf.l2j.gameserver.datatables.DoorTable;
 import net.sf.l2j.gameserver.instancemanager.FourSepulchersManager;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2World;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
@@ -42,7 +43,7 @@ import net.sf.l2j.util.Rnd;
  * 
  * @author sandman
  */
-public class L2SepulcherNpcInstance extends L2NpcInstance
+public class L2SepulcherNpcInstance extends L2Npc
 {
 	protected static Map<Integer, Integer> _hallGateKeepers = new FastMap<Integer, Integer>();
 

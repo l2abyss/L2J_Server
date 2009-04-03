@@ -17,6 +17,8 @@ package net.sf.l2j.gameserver.model;
 import java.util.List;
 
 import javolution.util.FastList;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
+import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.network.serverpackets.ExCloseMPCC;

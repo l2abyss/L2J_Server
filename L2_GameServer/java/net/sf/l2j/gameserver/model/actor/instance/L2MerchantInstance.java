@@ -39,7 +39,7 @@ import net.sf.l2j.gameserver.util.StringUtil;
  *
  * @version $Revision: 1.10.4.9 $ $Date: 2005/04/11 10:06:08 $
  */
-public class L2MerchantInstance extends L2FolkInstance
+public class L2MerchantInstance extends L2NpcInstance
 {
     //private static Logger _log = Logger.getLogger(L2MerchantInstance.class.getName());
     

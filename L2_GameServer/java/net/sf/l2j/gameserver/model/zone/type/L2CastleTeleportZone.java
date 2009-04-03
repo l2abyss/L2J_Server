@@ -15,7 +15,7 @@
 package net.sf.l2j.gameserver.model.zone.type;
 
 import javolution.util.FastList;
-import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.util.Rnd;

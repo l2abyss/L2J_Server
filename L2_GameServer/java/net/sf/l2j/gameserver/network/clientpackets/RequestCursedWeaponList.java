@@ -18,7 +18,7 @@ import java.util.List;
 
 import javolution.util.FastList;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
-import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.network.serverpackets.ExCursedWeaponList;
 
 /**

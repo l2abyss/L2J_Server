@@ -25,8 +25,8 @@ import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2WorldRegion;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
@@ -44,7 +44,7 @@ public class Instance
 	private int _id;
 	private String _name;
 	private FastSet<Integer> _players = new FastSet<Integer>();
-	private FastList<L2NpcInstance> _npcs = new FastList<L2NpcInstance>();
+	private FastList<L2Npc> _npcs = new FastList<L2Npc>();
 	private FastList<L2DoorInstance> _doors = new FastList<L2DoorInstance>();
 	private int[] _spawnLoc = new int[3];
 	private boolean _allowSummon = true;
@@ -201,7 +201,7 @@ public class Instance
 		return _players;
 	}
 
-	public FastList<L2NpcInstance> getNpcs()
+	public FastList<L2Npc> getNpcs()
 	{
 		return _npcs;
 	}
@@ -241,7 +241,7 @@ public class Instance
 
 	public void removeNpcs()
 	{
-		for (L2NpcInstance mob : _npcs)
+		for (L2Npc mob : _npcs)
 		{
 			if (mob != null)
 			{
@@ -377,7 +377,7 @@ public class Instance
 							else
 								spawnDat.startRespawn();
 							spawnDat.setInstanceId(getId());
-							L2NpcInstance newmob = spawnDat.doSpawn();
+							L2Npc newmob = spawnDat.doSpawn();
 							_npcs.add(newmob);
 						}
 						else

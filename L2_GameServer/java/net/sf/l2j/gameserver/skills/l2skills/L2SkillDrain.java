@@ -15,14 +15,14 @@
 package net.sf.l2j.gameserver.skills.l2skills;
 
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
@@ -91,10 +91,10 @@ public class L2SkillDrain extends L2Skill {
                     activeSummon.setChargedSpiritShot(L2ItemInstance.CHARGED_NONE);
                 }
             }
-            else if (activeChar instanceof L2NpcInstance)
+            else if (activeChar instanceof L2Npc)
             {
-            	bss = ((L2NpcInstance)activeChar).isUsingShot(false);
-            	ss = ((L2NpcInstance)activeChar).isUsingShot(true);
+            	bss = ((L2Npc)activeChar).isUsingShot(false);
+            	ss = ((L2Npc)activeChar).isUsingShot(true);
             }
             	
 
@@ -170,8 +170,8 @@ public class L2SkillDrain extends L2Skill {
             }
 
             // Check to see if we should do the decay right after the cast
-            if (target.isDead() && getTargetType() == SkillTargetType.TARGET_CORPSE_MOB && target instanceof L2NpcInstance) {
-                ((L2NpcInstance)target).endDecayTask();
+            if (target.isDead() && getTargetType() == SkillTargetType.TARGET_CORPSE_MOB && target instanceof L2Npc) {
+                ((L2Npc)target).endDecayTask();
             }
 		}
         //effect self :]

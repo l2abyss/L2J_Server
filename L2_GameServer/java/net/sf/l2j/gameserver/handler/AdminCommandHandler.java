@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.handler.admincommandhandlers.*;
 
 /**
  * This class ...
@@ -46,66 +45,6 @@ public class AdminCommandHandler
 	private AdminCommandHandler()
 	{
 		_datatable = new FastMap<String, IAdminCommandHandler>();
-		registerAdminCommandHandler(new AdminAdmin());
-		registerAdminCommandHandler(new AdminAnnouncements());
-		registerAdminCommandHandler(new AdminBan());
-		registerAdminCommandHandler(new AdminBBS());
-		registerAdminCommandHandler(new AdminBuffs());
-		registerAdminCommandHandler(new AdminCache());
-		registerAdminCommandHandler(new AdminChangeAccessLevel());
-		registerAdminCommandHandler(new AdminCreateItem());
-		registerAdminCommandHandler(new AdminCursedWeapons());
-		registerAdminCommandHandler(new AdminDelete());
-		registerAdminCommandHandler(new AdminDisconnect());
-		registerAdminCommandHandler(new AdminDoorControl());
-		registerAdminCommandHandler(new AdminEditChar());
-		registerAdminCommandHandler(new AdminEditNpc());
-		registerAdminCommandHandler(new AdminEffects());
-		registerAdminCommandHandler(new AdminElement());
-		registerAdminCommandHandler(new AdminEnchant());
-		registerAdminCommandHandler(new AdminEventEngine());
-		registerAdminCommandHandler(new AdminExpSp());
-		registerAdminCommandHandler(new AdminFightCalculator());
-		registerAdminCommandHandler(new AdminFortSiege());
-		registerAdminCommandHandler(new AdminGeodata());
-		registerAdminCommandHandler(new AdminGeoEditor());
-		registerAdminCommandHandler(new AdminGm());
-		registerAdminCommandHandler(new AdminGmChat());
-		registerAdminCommandHandler(new AdminHeal());
-		registerAdminCommandHandler(new AdminHelpPage());
-		registerAdminCommandHandler(new AdminInstance());
-		registerAdminCommandHandler(new AdminInvul());
-		registerAdminCommandHandler(new AdminKick());
-		registerAdminCommandHandler(new AdminKill());
-		registerAdminCommandHandler(new AdminLevel());
-		registerAdminCommandHandler(new AdminLogin());
-		registerAdminCommandHandler(new AdminMammon());
-		registerAdminCommandHandler(new AdminManor());
-		registerAdminCommandHandler(new AdminMenu());
-		registerAdminCommandHandler(new AdminMobGroup());
-		registerAdminCommandHandler(new AdminMonsterRace());
-		registerAdminCommandHandler(new AdminPathNode());
-		registerAdminCommandHandler(new AdminPetition());
-		registerAdminCommandHandler(new AdminPForge());
-		registerAdminCommandHandler(new AdminPledge());
-		registerAdminCommandHandler(new AdminPolymorph());
-		registerAdminCommandHandler(new AdminQuest());
-		registerAdminCommandHandler(new AdminRepairChar());
-		registerAdminCommandHandler(new AdminRes());
-		registerAdminCommandHandler(new AdminRide());
-		registerAdminCommandHandler(new AdminShop());
-		registerAdminCommandHandler(new AdminShutdown());
-		registerAdminCommandHandler(new AdminSiege());
-		registerAdminCommandHandler(new AdminSkill());
-		registerAdminCommandHandler(new AdminSpawn());
-		registerAdminCommandHandler(new AdminSummon());
-		registerAdminCommandHandler(new AdminTarget());
-		registerAdminCommandHandler(new AdminTeleport());
-		registerAdminCommandHandler(new AdminTest());
-		registerAdminCommandHandler(new AdminTvTEvent());
-		registerAdminCommandHandler(new AdminUnblockIp());
-		registerAdminCommandHandler(new AdminZone());
-		_log.config("AdminCommandHandler: Loaded " + _datatable.size() + " handlers.");
 	}
 	
 	public void registerAdminCommandHandler(IAdminCommandHandler handler)

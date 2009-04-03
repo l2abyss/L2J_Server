@@ -38,7 +38,7 @@ import net.sf.l2j.gameserver.util.Util;
  *
  * @version $Revision: 1.3.4.10 $ $Date: 2005/04/06 16:13:41 $
  */
-public final class L2WarehouseInstance extends L2FolkInstance
+public final class L2WarehouseInstance extends L2NpcInstance
 {
     //private static Logger _log = Logger.getLogger(L2WarehouseInstance.class.getName());
 

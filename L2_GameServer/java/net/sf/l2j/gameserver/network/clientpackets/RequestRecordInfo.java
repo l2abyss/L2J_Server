@@ -17,13 +17,13 @@ package net.sf.l2j.gameserver.network.clientpackets;
 import java.util.Collection;
 
 import net.sf.l2j.gameserver.TaskPriority;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
-import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2StaticObjectInstance;
@@ -90,12 +90,12 @@ public class RequestRecordInfo extends L2GameClientPacket
 					}
 					else if (object instanceof L2StaticObjectInstance)
 						_activeChar.sendPacket(new StaticObject((L2StaticObjectInstance) object));
-					else if (object instanceof L2NpcInstance)
+					else if (object instanceof L2Npc)
 					{
-						if (((L2NpcInstance) object).getRunSpeed() == 0)
-							_activeChar.sendPacket(new ServerObjectInfo((L2NpcInstance) object, _activeChar));
+						if (((L2Npc) object).getRunSpeed() == 0)
+							_activeChar.sendPacket(new ServerObjectInfo((L2Npc) object, _activeChar));
 						else
-							_activeChar.sendPacket(new NpcInfo((L2NpcInstance) object, _activeChar));
+							_activeChar.sendPacket(new NpcInfo((L2Npc) object, _activeChar));
 					}
 					else if (object instanceof L2Summon)
 					{

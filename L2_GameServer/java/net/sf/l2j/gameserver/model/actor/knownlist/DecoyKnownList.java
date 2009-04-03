@@ -14,8 +14,8 @@
  */
 package net.sf.l2j.gameserver.model.actor.knownlist;
 
-import net.sf.l2j.gameserver.model.L2Decoy;
 import net.sf.l2j.gameserver.model.L2Object;
+import net.sf.l2j.gameserver.model.actor.L2Decoy;
 
 public class DecoyKnownList extends CharKnownList
 {

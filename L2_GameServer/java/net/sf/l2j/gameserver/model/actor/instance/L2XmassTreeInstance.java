@@ -19,9 +19,10 @@ import java.util.concurrent.ScheduledFuture;
 
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.SkillTable;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.util.Rnd;
@@ -30,7 +31,7 @@ import net.sf.l2j.util.Rnd;
  * @author Drunkard Zabb0x
  * Lets drink2code!
  */
-public class L2XmassTreeInstance extends L2NpcInstance
+public class L2XmassTreeInstance extends L2Npc
 {
     private ScheduledFuture<?> _aiTask;
 

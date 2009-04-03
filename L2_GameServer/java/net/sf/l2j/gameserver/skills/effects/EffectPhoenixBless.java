@@ -17,7 +17,7 @@
 package net.sf.l2j.gameserver.skills.effects;
 
 import net.sf.l2j.gameserver.model.L2Effect;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
@@ -48,9 +48,9 @@ final class EffectPhoenixBless extends L2Effect
 	@Override
 	public boolean onStart()
 	{
-		if (getEffected() instanceof L2PlayableInstance)
+		if (getEffected() instanceof L2Playable)
 		{
-			((L2PlayableInstance) getEffected()).startPhoenixBlessing();
+			((L2Playable) getEffected()).startPhoenixBlessing();
 			return true;
 		}
 		return false;
@@ -63,7 +63,7 @@ final class EffectPhoenixBless extends L2Effect
 	@Override
 	public void onExit()
 	{
-		((L2PlayableInstance) getEffected()).stopPhoenixBlessing(this);
+		((L2Playable) getEffected()).stopPhoenixBlessing(this);
 	}
 	
 	/**

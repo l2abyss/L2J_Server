@@ -29,9 +29,9 @@ import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.TownManager;
 import net.sf.l2j.gameserver.instancemanager.ZoneManager;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.Location;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
@@ -464,11 +464,11 @@ public class MapRegionTable
 						if (castle.getSiege().getIsInProgress())
 						{
 							// Check if player's clan is attacker
-							List<L2NpcInstance> flags = castle.getSiege().getFlag(player.getClan());
+							List<L2Npc> flags = castle.getSiege().getFlag(player.getClan());
 							if (flags != null && !flags.isEmpty())
 							{
 								// Spawn to flag - Need more work to get player to the nearest flag
-								L2NpcInstance flag = flags.get(0);
+								L2Npc flag = flags.get(0);
 								return new Location(flag.getX(), flag.getY(), flag.getZ());
 							}
 						}
@@ -479,11 +479,11 @@ public class MapRegionTable
 						if (fort.getSiege().getIsInProgress())
 						{
 							// Check if player's clan is attacker
-							List<L2NpcInstance> flags = fort.getSiege().getFlag(player.getClan());
+							List<L2Npc> flags = fort.getSiege().getFlag(player.getClan());
 							if (flags != null && !flags.isEmpty())
 							{
 								// Spawn to flag - Need more work to get player to the nearest flag
-								L2NpcInstance flag = flags.get(0);
+								L2Npc flag = flags.get(0);
 								return new Location(flag.getX(), flag.getY(), flag.getZ());
 							}
 						}

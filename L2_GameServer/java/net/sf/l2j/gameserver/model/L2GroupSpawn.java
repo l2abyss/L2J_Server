@@ -19,7 +19,7 @@ import java.lang.reflect.Constructor;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.Territory;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.util.Rnd;
 
@@ -41,9 +41,9 @@ public class L2GroupSpawn extends L2Spawn
 		setAmount(1);
 	}
 
-	public L2NpcInstance doGroupSpawn()
+	public L2Npc doGroupSpawn()
     {
-		L2NpcInstance mob = null;
+		L2Npc mob = null;
 
 		try
 		{
@@ -54,10 +54,10 @@ public class L2GroupSpawn extends L2Spawn
 			Object[] parameters = {IdFactory.getInstance().getNextId(), _template};
 			Object  tmp = _constructor.newInstance(parameters);
 
-			if (!(tmp instanceof L2NpcInstance))
+			if (!(tmp instanceof L2Npc))
 				return null;
 
-			mob = (L2NpcInstance)tmp;
+			mob = (L2Npc)tmp;
 
 			int newlocx, newlocy, newlocz;
 

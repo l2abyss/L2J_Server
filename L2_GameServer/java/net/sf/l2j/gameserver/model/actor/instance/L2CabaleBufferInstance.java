@@ -21,9 +21,10 @@ import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.SkillTable;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
@@ -36,7 +37,7 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
  * @author Layane
  *
  */
-public class L2CabaleBufferInstance extends L2NpcInstance
+public class L2CabaleBufferInstance extends L2Npc
 {
 	@Override
 	public void onAction(L2PcInstance player)

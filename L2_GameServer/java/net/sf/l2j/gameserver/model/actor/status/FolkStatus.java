@@ -14,8 +14,8 @@
  */
 package net.sf.l2j.gameserver.model.actor.status;
 
-import net.sf.l2j.gameserver.model.L2Character;
-import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 
 public class FolkStatus extends NpcStatus
@@ -25,7 +25,7 @@ public class FolkStatus extends NpcStatus
 
     // =========================================================
     // Constructor
-    public FolkStatus(L2NpcInstance activeChar)
+    public FolkStatus(L2Npc activeChar)
     {
         super(activeChar);
     }
@@ -46,5 +46,5 @@ public class FolkStatus extends NpcStatus
     }
 
     @Override
-	public L2FolkInstance getActiveChar() { return (L2FolkInstance)super.getActiveChar(); }
+	public L2NpcInstance getActiveChar() { return (L2NpcInstance)super.getActiveChar(); }
 }

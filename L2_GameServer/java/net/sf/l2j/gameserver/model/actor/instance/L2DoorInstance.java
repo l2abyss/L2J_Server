@@ -28,11 +28,13 @@ import net.sf.l2j.gameserver.ai.L2DoorAI;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.model.L2CharPosition;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.actor.knownlist.DoorKnownList;
 import net.sf.l2j.gameserver.model.actor.stat.DoorStat;
 import net.sf.l2j.gameserver.model.actor.status.DoorStatus;
@@ -365,7 +367,7 @@ public class L2DoorInstance extends L2Character
 			return true;
 		
 		// Doors can`t be attacked by NPCs
-		if (!(attacker instanceof L2PlayableInstance))
+		if (!(attacker instanceof L2Playable))
 			return false;
 		
 		// Attackable  only during siege by everyone (not owner)
@@ -505,7 +507,7 @@ public class L2DoorInstance extends L2Character
 			}
 			else if (player.getClan() != null && getClanHall() != null && player.getClanId() == getClanHall().getOwnerId())
 			{
-				if (!isInsideRadius(player, L2NpcInstance.INTERACTION_DISTANCE, false, false))
+				if (!isInsideRadius(player, L2Npc.INTERACTION_DISTANCE, false, false))
 				{
 					player.getAI().setIntention(CtrlIntention.AI_INTENTION_INTERACT, this);
 				}
@@ -524,7 +526,7 @@ public class L2DoorInstance extends L2Character
 			}
 			else if (player.getClan() != null && getFort() != null && player.getClan() == getFort().getOwnerClan() && isUnlockable() && !getFort().getSiege().getIsInProgress())
 			{
-				if (!isInsideRadius(player, L2NpcInstance.INTERACTION_DISTANCE, false, false))
+				if (!isInsideRadius(player, L2Npc.INTERACTION_DISTANCE, false, false))
 				{
 					player.getAI().setIntention(CtrlIntention.AI_INTENTION_INTERACT, this);
 				}

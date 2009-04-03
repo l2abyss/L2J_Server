@@ -35,7 +35,7 @@ import net.sf.l2j.gameserver.util.StringUtil;
  *
  * @author Tempy
  */
-public final class L2FestivalGuideInstance extends L2FolkInstance
+public final class L2FestivalGuideInstance extends L2NpcInstance
 {
     protected int _festivalType;
     protected int _festivalOracle;

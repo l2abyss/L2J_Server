@@ -14,8 +14,8 @@
  */
 package net.sf.l2j.gameserver.skills.conditions;
 
-import net.sf.l2j.gameserver.model.L2Attackable;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.skills.Env;
 
 
@@ -33,7 +33,7 @@ public class ConditionTargetNpcId extends Condition {
 		if (env.target == null)
 			return false;
 		boolean mt;
-		mt = (((env.target instanceof L2Attackable) && ((L2Attackable)env.target).getNpcId() == _npcId)||((env.target instanceof L2NpcInstance) && ((L2NpcInstance)env.target).getNpcId() == _npcId) );
+		mt = (((env.target instanceof L2Attackable) && ((L2Attackable)env.target).getNpcId() == _npcId)||((env.target instanceof L2Npc) && ((L2Npc)env.target).getNpcId() == _npcId) );
 		return mt;
 	}
 }

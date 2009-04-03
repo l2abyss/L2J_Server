@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.ThreadPoolManager;
-import net.sf.l2j.gameserver.model.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Character;
 
 /**
  * @author la2 Lets drink to code!

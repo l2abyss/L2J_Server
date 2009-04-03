@@ -19,12 +19,12 @@ import java.util.Map;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
-import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.util.Util;
 
@@ -216,10 +216,10 @@ public class CharKnownList extends ObjectKnownList
 					if (Util.checkIfInRange((int) radius, getActiveChar(), obj, true))
 						result.add((L2MonsterInstance) obj);
 				}
-				else if (obj instanceof L2NpcInstance)
+				else if (obj instanceof L2Npc)
 				{
 					if (Util.checkIfInRange((int) radius, getActiveChar(), obj, true))
-						result.add((L2NpcInstance) obj);
+						result.add((L2Npc) obj);
 				}
 			}
 		}

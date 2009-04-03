@@ -33,7 +33,7 @@ import net.sf.l2j.gameserver.network.serverpackets.NpcSay;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
-public final class L2CastleTeleporterInstance extends L2FolkInstance
+public final class L2CastleTeleporterInstance extends L2NpcInstance
 {
 	private boolean _currentTask = false;
 

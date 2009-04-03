@@ -14,9 +14,9 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-import net.sf.l2j.gameserver.model.L2Summon;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 
 /**
  *
@@ -38,7 +38,7 @@ public final class RelationChanged extends L2GameServerPacket
 
 	private int _objId, _relation, _autoAttackable, _karma, _pvpFlag;
 
-	public RelationChanged(L2PlayableInstance activeChar, int relation, boolean autoattackable)
+	public RelationChanged(L2Playable activeChar, int relation, boolean autoattackable)
 	{
 		_objId = activeChar.getObjectId();
 		_relation = relation;

@@ -23,16 +23,16 @@ import javolution.util.FastList;
 import net.sf.l2j.gameserver.ai.CtrlEvent;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
-import net.sf.l2j.gameserver.model.L2Attackable;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.L2Summon;
 import net.sf.l2j.gameserver.model.L2World;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2EffectPointInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillLaunched;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
@@ -144,7 +144,7 @@ final class EffectSignetMDam extends L2Effect
 				continue;
 			
 			if (cha instanceof L2Attackable
-			        || cha instanceof L2PlayableInstance)
+			        || cha instanceof L2Playable)
 			{
 				if (cha.isAlikeDead())
 					continue;
@@ -157,7 +157,7 @@ final class EffectSignetMDam extends L2Effect
 				else
 					caster.reduceCurrentMp(mpConsume);
 				
-				if (cha instanceof L2PlayableInstance)
+				if (cha instanceof L2Playable)
 				{
 					if (cha instanceof L2Summon && ((L2Summon)cha).getOwner() == caster){}
 					else

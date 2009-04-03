@@ -18,8 +18,8 @@
 package net.sf.l2j.gameserver.model.actor.instance;
 
 import net.sf.l2j.gameserver.datatables.HennaTreeTable;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2HennaInstance;
+import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.network.serverpackets.HennaEquipList;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.util.StringUtil;
@@ -29,7 +29,7 @@ import net.sf.l2j.gameserver.util.StringUtil;
  *
  * @version $Revision$ $Date$
  */
-public class L2SymbolMakerInstance extends L2FolkInstance
+public class L2SymbolMakerInstance extends L2NpcInstance
 {
 	//private static Logger _log = Logger.getLogger(L2SymbolMakerInstance.class.getName());
 

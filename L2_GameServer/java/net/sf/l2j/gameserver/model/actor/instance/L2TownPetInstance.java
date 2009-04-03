@@ -18,6 +18,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.model.L2CharPosition;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
@@ -28,7 +29,7 @@ import net.sf.l2j.util.Rnd;
  * @author Kerberos
  */
 
-public class L2TownPetInstance extends L2NpcInstance
+public class L2TownPetInstance extends L2Npc
 {    
     int randomX, randomY, spawnX, spawnY;
 

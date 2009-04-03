@@ -17,7 +17,7 @@ package net.sf.l2j.gameserver.skills.effects;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Effect;
-import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FortCommanderInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FortSiegeGuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -73,7 +73,7 @@ final class EffectFear extends L2Effect
 		        && getSkill().getId() != 1381)
 			return false;
 		
-		if (getEffected() instanceof L2FolkInstance
+		if (getEffected() instanceof L2NpcInstance
 		        || getEffected() instanceof L2SiegeGuardInstance
 		        || getEffected() instanceof L2FortSiegeGuardInstance
 		        || getEffected() instanceof L2FortCommanderInstance

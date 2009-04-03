@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.handler.chathandlers.*;
 
 /**
  * This class handles all chat handlers
@@ -48,18 +47,6 @@ public class ChatHandler
 	private ChatHandler()
 	{
 		_datatable = new FastMap<Integer, IChatHandler>();
-		registerChatHandler(new ChatAll());
-		registerChatHandler(new ChatAlliance());
-		registerChatHandler(new ChatClan());
-		registerChatHandler(new ChatHeroVoice());
-		registerChatHandler(new ChatParty());
-		registerChatHandler(new ChatPartyRoomAll());
-		registerChatHandler(new ChatPartyRoomCommander());
-		registerChatHandler(new ChatPetition());
-		registerChatHandler(new ChatShout());
-		registerChatHandler(new ChatTell());
-		registerChatHandler(new ChatTrade());
-		_log.config("ChatHandler: Loaded " + _datatable.size() + " handlers.");
 	}
 	
 	/**

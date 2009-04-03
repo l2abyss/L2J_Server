@@ -27,7 +27,7 @@ import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.L2Event;
 import net.sf.l2j.gameserver.model.olympiad.Olympiad;
@@ -116,9 +116,9 @@ public final class RequestBypassToServer extends L2GameClientPacket
 					L2Object object = L2World.getInstance().findObject(Integer.parseInt(id));
 
 					if (_command.substring(endOfId+1).startsWith("event_participate")) L2Event.inscribePlayer(activeChar);
-					else if (object instanceof L2NpcInstance && endOfId > 0 && activeChar.isInsideRadius(object, L2NpcInstance.INTERACTION_DISTANCE, false, false))
+					else if (object instanceof L2Npc && endOfId > 0 && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
 					{
-						((L2NpcInstance)object).onBypassFeedback(activeChar, _command.substring(endOfId+1));
+						((L2Npc)object).onBypassFeedback(activeChar, _command.substring(endOfId+1));
 					}
 					activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				}
@@ -128,26 +128,26 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			else if (_command.equals("menu_select?ask=-16&reply=1"))
 			{
                 L2Object object = activeChar.getTarget();
-                if (object instanceof L2NpcInstance)
+                if (object instanceof L2Npc)
                 {
-                    ((L2NpcInstance) object).onBypassFeedback(activeChar, _command);
+                    ((L2Npc) object).onBypassFeedback(activeChar, _command);
                 }
 			}
 			else if (_command.equals("menu_select?ask=-16&reply=2"))
 			{
                 L2Object object = activeChar.getTarget();
-                if (object instanceof L2NpcInstance)
+                if (object instanceof L2Npc)
                 {
-                    ((L2NpcInstance) object).onBypassFeedback(activeChar, _command);
+                    ((L2Npc) object).onBypassFeedback(activeChar, _command);
                 }
 			}
 			// Navigate through Manor windows
             else if (_command.startsWith("manor_menu_select?"))
             {
             	L2Object object = activeChar.getTarget();
-                if (object instanceof L2NpcInstance)
+                if (object instanceof L2Npc)
                 {
-                    ((L2NpcInstance) object).onBypassFeedback(activeChar, _command);
+                    ((L2Npc) object).onBypassFeedback(activeChar, _command);
                 }
             }
 			else if (_command.startsWith("bbs_"))
@@ -195,9 +195,9 @@ public final class RequestBypassToServer extends L2GameClientPacket
 	{
 		L2Object obj = activeChar.getTarget();
 		if (obj == null) return;
-		if (obj instanceof L2NpcInstance)
+		if (obj instanceof L2Npc)
 		{
-			L2NpcInstance temp = (L2NpcInstance) obj;
+			L2Npc temp = (L2Npc) obj;
 			temp.setTarget(activeChar);
 			temp.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO,
 					new L2CharPosition(activeChar.getX(),activeChar.getY(), activeChar.getZ(), 0 ));

@@ -17,7 +17,7 @@ package net.sf.l2j.gameserver.skills.effects;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Effect;
-import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeSummonInstance;
@@ -55,10 +55,10 @@ final class EffectBluff extends L2Effect
 	public boolean onStart()
 	{
 		getEffected().startFear();
-		if (getEffected() instanceof L2FolkInstance)
+		if (getEffected() instanceof L2NpcInstance)
 			return false;
 		
-		if (getEffected() instanceof L2NpcInstance && ((L2NpcInstance) getEffected()).getNpcId() == 35062 || getSkill().getId() != 358)
+		if (getEffected() instanceof L2Npc && ((L2Npc) getEffected()).getNpcId() == 35062 || getSkill().getId() != 358)
 			return false;
 		
 		if (getEffected() instanceof L2SiegeSummonInstance)

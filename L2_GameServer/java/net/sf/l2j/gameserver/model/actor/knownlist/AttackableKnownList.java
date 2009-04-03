@@ -18,12 +18,12 @@ import java.util.Collection;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
-import net.sf.l2j.gameserver.model.L2Attackable;
-import net.sf.l2j.gameserver.model.L2Character;
 import net.sf.l2j.gameserver.model.L2Object;
-import net.sf.l2j.gameserver.model.actor.instance.L2FolkInstance;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
+import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PlayableInstance;
 
 public class AttackableKnownList extends NpcKnownList
 {
@@ -79,10 +79,10 @@ public class AttackableKnownList extends NpcKnownList
     @Override
 	public int getDistanceToWatchObject(L2Object object)
     {
-        if (object instanceof L2FolkInstance || !(object instanceof L2Character))
+        if (object instanceof L2NpcInstance || !(object instanceof L2Character))
             return 0;
 
-        if (object instanceof L2PlayableInstance)
+        if (object instanceof L2Playable)
             return 1500;
 
         if (getActiveChar().getAggroRange() > getActiveChar().getFactionRange())
