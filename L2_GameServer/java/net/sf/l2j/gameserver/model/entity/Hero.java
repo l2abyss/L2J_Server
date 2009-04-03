@@ -35,6 +35,7 @@ import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
@@ -43,7 +44,6 @@ import net.sf.l2j.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.templates.StatsSet;
-import net.sf.l2j.gameserver.templates.item.L2Item;
 
 public class Hero
 {
@@ -238,9 +238,6 @@ public class Hero
 	{
 		updateHeroes(true);
 		
-		L2ItemInstance[] items;
-		InventoryUpdate iu;
-		
 		if (!_heroes.isEmpty())
 		{
 			for (StatsSet hero : _heroes.values())
@@ -255,58 +252,18 @@ public class Hero
 				{
 					player.setHero(false);
 					
-					items = player.getInventory().unEquipItemInBodySlotAndRecord(L2Item.SLOT_LR_HAND);
-					iu = new InventoryUpdate();
-					for (L2ItemInstance item : items)
-					{
-						iu.addModifiedItem(item);
-					}
-					player.sendPacket(iu);
-					
-					items = player.getInventory().unEquipItemInBodySlotAndRecord(L2Item.SLOT_R_HAND);
-					iu = new InventoryUpdate();
-					for (L2ItemInstance item : items)
-					{
-						iu.addModifiedItem(item);
-					}
-					player.sendPacket(iu);
-					
-					items = player.getInventory().unEquipItemInBodySlotAndRecord(L2Item.SLOT_HAIR);
-					iu = new InventoryUpdate();
-					for (L2ItemInstance item : items)
-					{
-						iu.addModifiedItem(item);
-					}
-					player.sendPacket(iu);
-					
-					items = player.getInventory().unEquipItemInBodySlotAndRecord(L2Item.SLOT_HAIR2);
-					iu = new InventoryUpdate();
-					for (L2ItemInstance item : items)
-					{
-						iu.addModifiedItem(item);
-					}
-					player.sendPacket(iu);
-					
-					items = player.getInventory().unEquipItemInBodySlotAndRecord(L2Item.SLOT_HAIRALL);
-					iu = new InventoryUpdate();
-					for (L2ItemInstance item : items)
-					{
-						iu.addModifiedItem(item);
-					}
-					player.sendPacket(iu);
-					
-					for (L2ItemInstance item : player.getInventory().getAvailableItems(false))
-					{
-						if (item == null)
-							continue;
-						if (!item.isHeroItem())
-							continue;
-						
-						player.destroyItem("Hero", item, null, true);
-						iu = new InventoryUpdate();
-						iu.addRemovedItem(item);
-						player.sendPacket(iu);
-					}
+			    	for (int i = 0; i < Inventory.PAPERDOLL_TOTALSLOTS; i++)
+			    	{
+			    		L2ItemInstance equippedItem = player.getInventory().getPaperdollItem(i);
+			    		if (equippedItem != null && equippedItem.isHeroItem())
+			    		{
+			    			player.getInventory().unEquipItemInSlotAndRecord(i);
+			    			player.destroyItem("Hero", equippedItem, null, true);
+							InventoryUpdate iu = new InventoryUpdate();
+							iu.addRemovedItem(equippedItem);
+							player.sendPacket(iu);
+			    		}
+			    	}
 					
 					player.sendPacket(new UserInfo(player));
 					player.sendPacket(new ExBrExtraUserInfo(player));

@@ -35,6 +35,7 @@ import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.SocialAction;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.util.Broadcast;
 import net.sf.l2j.util.Point3D;
@@ -545,7 +546,7 @@ public class CursedWeapon
 		if (_player != null && _player.isOnline() > 0)
 		{
 			_player.setPkKills(_nbKills);
-			_player.broadcastUserInfo();
+			_player.sendPacket(new UserInfo(_player));
 
 			if (_nbKills % _stageKills == 0 && _nbKills <= _stageKills*(_skillMaxLevel-1))
 			{

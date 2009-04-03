@@ -2440,9 +2440,6 @@ public final class L2PcInstance extends L2PlayableInstance
 		}
 		checkItemRestriction();
 		sendSkillList(); 
-		// This function gets called on login, so not such a bad place to check weight
-		refreshOverloaded();		// Update the overloaded status of the L2PcInstance
-		refreshExpertisePenalty();  // Update the expertise status of the L2PcInstance
 	}
 
 	/**
@@ -6917,6 +6914,8 @@ public final class L2PcInstance extends L2PlayableInstance
 
 			// Update the overloaded status of the L2PcInstance
 			player.refreshOverloaded();
+	        // Update the expertise status of the L2PcInstance
+	        player.refreshExpertisePenalty();
 		}
 		catch (Exception e)
 		{
@@ -9984,9 +9983,9 @@ public final class L2PcInstance extends L2PlayableInstance
         	setCurrentMp(getMaxMp());
         if (getCurrentCp() > getMaxCp())
         	setCurrentCp(getMaxCp());
-        broadcastUserInfo();
         refreshOverloaded();
 		refreshExpertisePenalty();
+        broadcastUserInfo();
 
         // Clear resurrect xp calculation
         setExpBeforeDeath(0);
