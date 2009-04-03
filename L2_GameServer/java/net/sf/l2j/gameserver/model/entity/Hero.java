@@ -256,17 +256,20 @@ public class Hero
 			    	{
 			    		L2ItemInstance equippedItem = player.getInventory().getPaperdollItem(i);
 			    		if (equippedItem != null && equippedItem.isHeroItem())
-			    		{
 			    			player.getInventory().unEquipItemInSlotAndRecord(i);
-			    			player.destroyItem("Hero", equippedItem, null, true);
-							InventoryUpdate iu = new InventoryUpdate();
-							iu.addRemovedItem(equippedItem);
-							player.sendPacket(iu);
-			    		}
 			    	}
+
+					for (L2ItemInstance item : player.getInventory().getAvailableItems(false))
+					{
+						if (item != null && item.isHeroItem())
+						{
+							player.destroyItem("Hero", item, null, true);
+							InventoryUpdate iu = new InventoryUpdate();
+							iu.addRemovedItem(item);
+							player.sendPacket(iu);
+						}
+					}
 					
-					player.sendPacket(new UserInfo(player));
-					player.sendPacket(new ExBrExtraUserInfo(player));
 					player.broadcastUserInfo();
 				}
 				catch (NullPointerException e)
