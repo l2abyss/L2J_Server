@@ -66,6 +66,17 @@ public final class RequestRestart extends L2GameClientPacket
             return;
         }
 
+        if(player.getActiveEnchantItem() != null)
+        {
+        	player.sendMessage("You cant logout while enchanting!");
+        	return;
+        }
+        if(player.getActiveEnchantAttrItem() != null)
+        {
+        	player.sendMessage("You cant logout while enchanting!");
+        	return;
+        }
+
         if (player.isTeleporting()) {
         	player.abortCast();
         	player.setIsTeleporting(false);

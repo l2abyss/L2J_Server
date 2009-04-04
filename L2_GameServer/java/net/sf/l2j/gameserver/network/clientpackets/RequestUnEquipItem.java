@@ -79,7 +79,7 @@ public class RequestUnEquipItem extends L2GameClientPacket
             activeChar.sendMessage("Your status does not allow you to do that.");
             return;
         }
-        if (activeChar.isAttackingNow() || activeChar.isCastingNow() || activeChar.isCastingSimultaneouslyNow())
+        if (activeChar.isCastingNow() || activeChar.isCastingSimultaneouslyNow())
         	return;
 
 		L2ItemInstance[] unequiped =
@@ -97,7 +97,7 @@ public class RequestUnEquipItem extends L2GameClientPacket
 
 		activeChar.sendPacket(iu);
 
-		activeChar.abortAttack();
+		// On retail you don't stop hitting if unequip something. REOMVED: activeChar.abortAttack();
 		activeChar.broadcastUserInfo();
 
 		// this can be 0 if the user pressed the right mousebutton twice very fast

@@ -20,11 +20,13 @@ import javolution.util.FastList;
 import net.sf.l2j.gameserver.model.actor.L2Attackable;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.network.serverpackets.ExCloseMPCC;
 import net.sf.l2j.gameserver.network.serverpackets.ExMPCCPartyInfoUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ExOpenMPCC;
 import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
 /**
  *
@@ -49,6 +51,7 @@ public class L2CommandChannel
 		_partys.add(leader.getParty());
 		_channelLvl = leader.getParty().getLevel();
 		leader.getParty().setCommandChannel(this);
+		leader.getParty().broadcastToPartyMembers(new SystemMessage(SystemMessageId.COMMAND_CHANNEL_FORMED));
 		leader.getParty().broadcastToPartyMembers(new ExOpenMPCC());
 	}
 
@@ -65,6 +68,7 @@ public class L2CommandChannel
 		if (party.getLevel() > _channelLvl)
 			_channelLvl = party.getLevel();
 		party.setCommandChannel(this);
+		party.broadcastToPartyMembers(new SystemMessage(SystemMessageId.JOINED_COMMAND_CHANNEL));
 		party.broadcastToPartyMembers(new ExOpenMPCC());
 	}
 
@@ -85,6 +89,7 @@ public class L2CommandChannel
 		party.broadcastToPartyMembers(new ExCloseMPCC());
 		if(_partys.size() < 2)
 		{
+			broadcastToChannelMembers(new SystemMessage(SystemMessageId.COMMAND_CHANNEL_DISBANDED));
 			disbandChannel();
 		} 
 		else 
@@ -99,10 +104,13 @@ public class L2CommandChannel
 	 */
 	public void disbandChannel()
 	{
-		for (L2Party party : _partys)
+		if (_partys != null)
 		{
-			if(party != null)
-				removeParty(party);
+			for (L2Party party : _partys)
+			{
+				if(party != null)
+					removeParty(party);
+			}
 		}
 		_partys = null;
 	}
@@ -221,6 +229,8 @@ public class L2CommandChannel
 	    		return (getMemberCount() > 225);
 	    	case 29028: // Valakas
 	    		return (getMemberCount() > 99);
+	    	case 29045: // Frintezza
+	    		return (getMemberCount() > 35);
 	    	default: // normal Raidboss
 	    		return (getMemberCount() > 18);
 		}

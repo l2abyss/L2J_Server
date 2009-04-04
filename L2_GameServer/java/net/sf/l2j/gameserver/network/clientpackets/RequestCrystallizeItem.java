@@ -125,9 +125,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 				|| (itemToRemove.getItem().getCrystalCount() <= 0)
 				|| (itemToRemove.getItem().getCrystalType() == L2Item.CRYSTAL_NONE))
 		{
-			_log.warning("" + activeChar.getObjectId()
-					+ " tried to crystallize "
-					+ itemToRemove.getItem().getItemId());
+			_log.warning(activeChar.getName() + " (" + activeChar.getObjectId() + ") tried to crystallize " + itemToRemove.getItem().getItemId());
 			return;
 		}
 
