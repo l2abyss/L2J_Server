@@ -102,6 +102,7 @@ public enum L2SkillType
 	UNLOCK,
 	ENCHANT_ARMOR,
 	ENCHANT_WEAPON,
+	ENCHANT_ATTRIBUTE,
 	SOULSHOT,
 	SPIRITSHOT,
 	SIEGEFLAG(L2SkillSiegeFlag.class),
@@ -115,12 +116,14 @@ public enum L2SkillType
 	AGATHION(L2SkillAgathion.class),
 	MOUNT(L2SkillMount.class),
 	INSTANT_JUMP,
+	DUMMY,
 	
 	// Creation
 	COMMON_CRAFT,
 	DWARVEN_CRAFT,
 	CREATE_ITEM(L2SkillCreateItem.class),
 	SUMMON_TREASURE_KEY,
+	EXTRACTABLE,
 	
 	// Summons
 	SUMMON(L2SkillSummon.class),
@@ -174,7 +177,7 @@ public enum L2SkillType
 	COREDONE,
 	
 	// unimplemented
-	NOTDONE, BALLISTA, DUMMY, EXTRACTABLE;
+	NOTDONE, BALLISTA;
 	
 	private final Class<? extends L2Skill> _class;
 	

@@ -569,8 +569,15 @@ abstract class DocumentBase
             }
             else if ("npcId".equalsIgnoreCase(a.getNodeName()))
             {
-                int skill_id = Integer.decode(getValue(a.getNodeValue(), template));
-                cond = joinAnd(cond, new ConditionTargetNpcId(skill_id));
+            	String values = getValue(a.getNodeValue(), template).trim();
+                String[] valuesSplit = values.split(" ");
+                cond = joinAnd(cond, new ConditionTargetNpcId(valuesSplit));
+            }
+            else if ("npcType".equalsIgnoreCase(a.getNodeName()))
+            {
+            	String values = getValue(a.getNodeValue(), template).trim();
+                String[] valuesSplit = values.split(" ");
+                cond = joinAnd(cond, new ConditionTargetNpcType(valuesSplit));
             }
         }
         if (cond == null) _log.severe("Unrecognized <target> condition in " + _file);

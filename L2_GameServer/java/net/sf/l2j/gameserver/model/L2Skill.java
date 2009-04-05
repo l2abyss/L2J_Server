@@ -2835,11 +2835,6 @@ public abstract class L2Skill
                 else return new L2Character[] {target};
 
             }
-            case TARGET_ITEM:
-            {
-                activeChar.sendMessage("Target type of skill is not currently handled");
-                return null;
-            }
             case TARGET_UNDEAD:
             {
                 if (target instanceof L2Npc || target instanceof L2SummonInstance)
@@ -3175,7 +3170,7 @@ public abstract class L2Skill
 	}
 
 	/**
-	 * used for extractable item skills
+	 * used for tracking item id in case that item consume cannot be used
      * @return reference item id
      */
     public int getReferenceItemId()
