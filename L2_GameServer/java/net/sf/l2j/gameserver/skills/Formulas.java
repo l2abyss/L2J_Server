@@ -1706,11 +1706,8 @@ public final class Formulas
 	/** Returns true in case when ATTACK is canceled due to hit */
 	public static final boolean calcAtkBreak(L2Character target, double dmg)
 	{
-	    if (target instanceof L2PcInstance)
-        {
-            if (((L2PcInstance)target).getForceBuff() != null)
-                return true;
-        }
+		if (target.getFusionSkill() != null)
+			return true;
 	    
         double init = 0;
 

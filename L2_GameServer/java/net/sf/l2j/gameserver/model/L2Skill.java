@@ -1301,7 +1301,7 @@ public abstract class L2Skill
             case INSTANT_JUMP:
                 return true;
             default:
-                return false;
+                return this.isDebuff();
         }
     }
 
@@ -1458,7 +1458,6 @@ public abstract class L2Skill
 					case WARRIOR_BANE:
 					case BETRAY:
 					case BALANCE_LIFE:
-					case FORCE_BUFF:
 						canTargetSelf = true;
 						break;
 				}

@@ -2527,7 +2527,19 @@ public class L2Npc extends L2Character
 		{
 			_log.log(Level.SEVERE, "Failed decayMe().", e);
 		}
-		
+		try
+		{
+			if (_fusionSkill != null)
+				abortCast();
+			
+			for (L2Character character : getKnownList().getKnownCharacters())
+				if (character.getFusionSkill() != null && character.getFusionSkill().getTarget() == this)
+					character.abortCast();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
 		if (oldRegion != null)
 			oldRegion.removeFromZones(this);
 		

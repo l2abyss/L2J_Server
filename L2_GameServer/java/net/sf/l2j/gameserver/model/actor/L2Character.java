@@ -45,7 +45,7 @@ import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
 import net.sf.l2j.gameserver.instancemanager.TownManager;
 import net.sf.l2j.gameserver.model.ChanceSkillList;
 import net.sf.l2j.gameserver.model.CharEffectList;
-import net.sf.l2j.gameserver.model.ForceBuff;
+import net.sf.l2j.gameserver.model.FusionSkill;
 import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
@@ -197,7 +197,7 @@ public abstract class L2Character extends L2Object
 	protected ChanceSkillList _chanceSkills;
 
 	/** Current force buff this caster is casting to a target */
-	protected ForceBuff _forceBuff;
+	protected FusionSkill _fusionSkill;
 
 	/** Zone system */
 	public static final byte ZONE_PVP = 0;
@@ -1505,7 +1505,7 @@ public abstract class L2Character extends L2Object
 		int hitTime = skill.getHitTime();
 		int coolTime = skill.getCoolTime();
 
-		boolean effectWhileCasting = skill.getSkillType() == L2SkillType.FORCE_BUFF
+		boolean effectWhileCasting = skill.getSkillType() == L2SkillType.FUSION
 			|| skill.getSkillType() == L2SkillType.SIGNET_CASTTIME;
 
 		// Calculate the casting time of the skill (base + modifier of MAtkSpd)
@@ -1677,8 +1677,8 @@ public abstract class L2Character extends L2Object
                 }
             }
             
-			if (skill.getSkillType() == L2SkillType.FORCE_BUFF)
-				startForceBuff(target, skill);
+			if (skill.getSkillType() == L2SkillType.FUSION)
+				startFusionSkill(target, skill);
 			else
 				callSkill(skill, targets);
 		}
@@ -1930,13 +1930,13 @@ public abstract class L2Character extends L2Object
 	 */
 	public void removeTimeStamp(int s) {/***/}
 	
-	public void startForceBuff(L2Character target, L2Skill skill)
+	public void startFusionSkill(L2Character target, L2Skill skill)
 	{
-		if (skill.getSkillType() != L2SkillType.FORCE_BUFF)
+		if (skill.getSkillType() != L2SkillType.FUSION)
 			return;
 		
-		if (_forceBuff == null)
-			_forceBuff = new ForceBuff(this, target, skill);
+		if (_fusionSkill == null)
+			_fusionSkill = new FusionSkill(this, target, skill);
 	}
 
     /**
@@ -2041,7 +2041,19 @@ public abstract class L2Character extends L2Object
 				((L2PcInstance)this).reviveRequest(((L2PcInstance)this),null,false);
 			}
         }
-        
+		try
+		{
+			if (_fusionSkill != null)
+				abortCast();
+			
+			for (L2Character character : getKnownList().getKnownCharacters())
+				if (character.getFusionSkill() != null && character.getFusionSkill().getTarget() == this)
+					character.abortCast();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
 		return true;
 	}
 
@@ -3973,8 +3985,8 @@ public abstract class L2Character extends L2Object
 				_skillCast2 = null;
 			}
 
-			if (getForceBuff() != null)
-				getForceBuff().onCastAbort();
+			if (getFusionSkill() != null)
+				getFusionSkill().onCastAbort();
 			
 			L2Effect mog = getFirstEffect(L2EffectType.SIGNET_GROUND);
 			if (mog != null)
@@ -5850,7 +5862,7 @@ public abstract class L2Character extends L2Object
 			abortCast();
 			return;
 		}
-		if(getForceBuff() != null)
+		if(getFusionSkill() != null)
 		{
 			if (simultaneously)
 			{
@@ -5862,7 +5874,7 @@ public abstract class L2Character extends L2Object
 				_skillCast = null;
 				setIsCastingNow(false);
 			}
-			getForceBuff().onCastAbort();
+			getFusionSkill().onCastAbort();
 			notifyQuestEventSkillFinished(skill, targets[0]);
 			return;
 		}
@@ -6698,14 +6710,14 @@ public abstract class L2Character extends L2Object
 	{
 	}
 
-	public ForceBuff getForceBuff()
+	public FusionSkill getFusionSkill()
 	{
-		return _forceBuff;
+		return _fusionSkill;
 	}
 
-	public void setForceBuff(ForceBuff fb)
+	public void setFusionSkill(FusionSkill fb)
 	{
-		_forceBuff = fb;
+		_fusionSkill = fb;
 	}
 
     

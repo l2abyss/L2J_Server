@@ -348,11 +348,11 @@ public class L2Party {
 			
 			try
             {
-                if (player.getForceBuff() != null)
+                if (player.getFusionSkill() != null)
                     player.abortCast();
                 
                 for (L2Character character : player.getKnownList().getKnownCharacters())
-                    if (character.getForceBuff() != null && character.getForceBuff().getTarget() == player)
+                    if (character.getFusionSkill() != null && character.getFusionSkill().getTarget() == player)
                         character.abortCast();
             }
             catch (Exception e){}

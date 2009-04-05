@@ -20,17 +20,19 @@ import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
 /**
- * @author kombat
+ * @author Kerberos
  */
 
-public final class EffectForce extends L2Effect
+public final class EffectFusion extends L2Effect
 {
-	public int forces;
+	public int _effect;
+	public int _maxEffect;
 	
-	public EffectForce(Env env, EffectTemplate template)
+	public EffectFusion(Env env, EffectTemplate template)
 	{
 		super(env, template);
-		forces = getSkill().getLevel();
+		_effect = 1;
+		_maxEffect = SkillTable.getInstance().getMaxLevel(getSkill().getId(), 99);
 	}
 	
 	/**
@@ -50,22 +52,22 @@ public final class EffectForce extends L2Effect
 	@Override
 	public L2EffectType getEffectType()
 	{
-		return L2EffectType.BUFF;
+		return L2EffectType.FUSION;
 	}
 	
-	public void increaseForce()
+	public void increaseEffect()
 	{
-		if (forces < 3)
+		if (_effect < _maxEffect)
 		{
-			forces++;
+			_effect++;
 			updateBuff();
 		}
 	}
 	
 	public void decreaseForce()
 	{
-		forces--;
-		if (forces < 1)
+		_effect--;
+		if (_effect < 1)
 			exit();
 		else
 			updateBuff();
@@ -74,6 +76,6 @@ public final class EffectForce extends L2Effect
 	private void updateBuff()
 	{
 		exit();
-		SkillTable.getInstance().getInfo(getSkill().getId(), forces).getEffects(getEffector(), getEffected());
+		SkillTable.getInstance().getInfo(getSkill().getId(), _effect).getEffects(getEffector(), getEffected());
 	}
 }

@@ -145,6 +145,7 @@ public enum L2SkillType
 	DEBUFF,
 	PASSIVE,
 	CONT,
+	FUSION,
 	
 	RESURRECT,
 	CHARGE(L2SkillCharge.class),
@@ -161,7 +162,6 @@ public enum L2SkillType
 	FAKE_DEATH,
 	UNDEAD_DEFENSE,
 	BEAST_FEED,
-	FORCE_BUFF,
 	CHARGESOUL,
 	TRANSFORMDISPEL,
 	SUMMON_TRAP(L2SkillTrap.class),

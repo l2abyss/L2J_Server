@@ -5064,11 +5064,11 @@ public final class L2PcInstance extends L2Playable
 			_cubics.clear();
 		}
 		
-		if (_forceBuff != null)
+		if (_fusionSkill != null)
 			abortCast();
 		
 		for (L2Character character : getKnownList().getKnownCharacters())
-			if (character.getForceBuff() != null && character.getForceBuff().getTarget() == this)
+			if (character.getFusionSkill() != null && character.getFusionSkill().getTarget() == this)
 				character.abortCast();
 		
 		if (isInParty() && getParty().isInDimensionalRift())
@@ -9992,13 +9992,13 @@ public final class L2PcInstance extends L2Playable
             if (temp != null && temp.isEquipped()) temp.getAugmentation().removeBonus(this);
         
         // Delete a force buff upon class change.
-        if(_forceBuff != null)
+        if(_fusionSkill != null)
             abortCast();
 
         // Stop casting for any player that may be casting a force buff on this l2pcinstance.
 		for(L2Character character : getKnownList().getKnownCharacters())
 		{
-			if(character.getForceBuff() != null && character.getForceBuff().getTarget() == this)
+			if(character.getFusionSkill() != null && character.getFusionSkill().getTarget() == this)
 				character.abortCast();
 		}
 
@@ -10781,11 +10781,11 @@ public final class L2PcInstance extends L2Playable
 		
 		try
 		{
-			if (_forceBuff != null)
+			if (_fusionSkill != null)
 				abortCast();
 			
 			for (L2Character character : getKnownList().getKnownCharacters())
-				if (character.getForceBuff() != null && character.getForceBuff().getTarget() == this)
+				if (character.getFusionSkill() != null && character.getFusionSkill().getTarget() == this)
 					character.abortCast();
 		}
 		catch (Exception e)
