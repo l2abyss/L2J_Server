@@ -331,11 +331,11 @@ public class Hero
 				L2Clan clan = player.getClan();
 				if (clan != null)
 				{
-					clan.setReputationScore(clan.getReputationScore() + 1000, true);
+					clan.setReputationScore(clan.getReputationScore() + Config.HERO_POINTS, true);
 					clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 					SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_MEMBER_S1_BECAME_HERO_AND_GAINED_S2_REPUTATION_POINTS);
 					sm.addString(name);
-					sm.addNumber(1000);
+					sm.addNumber(Config.HERO_POINTS);
 					clan.broadcastToOnlineMembers(sm);
 				}
 				player.sendPacket(new UserInfo(player));
@@ -361,11 +361,11 @@ public class Hero
 							L2Clan clan = ClanTable.getInstance().getClanByName(clanName);
 							if (clan != null)
 							{
-								clan.setReputationScore(clan.getReputationScore() + 1000, true);
+								clan.setReputationScore(clan.getReputationScore() + Config.HERO_POINTS, true);
 								clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 								SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_MEMBER_S1_BECAME_HERO_AND_GAINED_S2_REPUTATION_POINTS);
 								sm.addString(name);
-								sm.addNumber(1000);
+								sm.addNumber(Config.HERO_POINTS);
 								clan.broadcastToOnlineMembers(sm);
 							}
 						}

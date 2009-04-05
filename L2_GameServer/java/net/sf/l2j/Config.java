@@ -177,7 +177,6 @@ public final class Config
     public static boolean	ALT_GAME_NEW_CHAR_ALWAYS_IS_NEWBIE;
     public static boolean	ALT_MEMBERS_CAN_WITHDRAW_FROM_CLANWH;
     public static boolean	REMOVE_CASTLE_CIRCLETS;
-    public static int		ALT_REPUTATION_SCORE_PER_KILL;
     public static int		ALT_PARTY_RANGE;
     public static int		ALT_PARTY_RANGE2;
     public static int		STARTING_ADENA;
@@ -329,7 +328,37 @@ public final class Config
 	/** Feature Settings -Begin                            **/
 	/** ************************************************** **/
     
-    // TODO: Fill this area up!
+    public static int TAKE_FORT_POINTS;
+    public static int LOOSE_FORT_POINTS;
+    public static int TAKE_CASTLE_POINTS;
+    public static int LOOSE_CASTLE_POINTS;
+    public static int CASTLE_DEFENDED_POINTS;
+    public static int FESTIVAL_WIN_POINTS;
+    public static int HERO_POINTS;
+    public static int ROYAL_GUARD_COST;
+    public static int KNIGHT_UNIT_COST;
+    public static int KNIGHT_REINFORCE_COST;
+    public static int BALLISTA_POINTS;
+    public static int REPUTATION_SCORE_PER_KILL;
+    public static int JOIN_ACADEMY_MIN_REP_SCORE;
+    public static int JOIN_ACADEMY_MAX_REP_SCORE;
+    public static int RAID_RANKING_1ST;
+    public static int RAID_RANKING_2ND;
+    public static int RAID_RANKING_3RD;
+    public static int RAID_RANKING_4TH;
+    public static int RAID_RANKING_5TH; 
+    public static int RAID_RANKING_6TH;
+    public static int RAID_RANKING_7TH;
+    public static int RAID_RANKING_8TH;
+    public static int RAID_RANKING_9TH;
+    public static int RAID_RANKING_10TH;
+    public static int RAID_RANKING_UP_TO_50TH;
+    public static int RAID_RANKING_UP_TO_100TH;
+    public static int CLAN_LEVEL_6_COST;
+    public static int CLAN_LEVEL_7_COST;
+    public static int CLAN_LEVEL_8_COST;
+    public static int CLAN_LEVEL_9_COST;
+    public static int CLAN_LEVEL_10_COST;
     
     /** ************************************************** **/
 	/** Feature Settings -End                              **/
@@ -1178,6 +1207,38 @@ public final class Config
 	                ALT_SIEGE_DUSK_GATES_PDEF_MULT						= Double.parseDouble(Feature.getProperty("AltDuskGatesPdefMult", "0.8"));
 	                ALT_SIEGE_DAWN_GATES_MDEF_MULT						= Double.parseDouble(Feature.getProperty("AltDawnGatesMdefMult", "1.1"));
 	                ALT_SIEGE_DUSK_GATES_MDEF_MULT						= Double.parseDouble(Feature.getProperty("AltDuskGatesMdefMult", "0.8"));
+	                
+	                TAKE_FORT_POINTS									= Integer.parseInt(Feature.getProperty("TakeFortPoints", "200"));
+	                LOOSE_FORT_POINTS									= Integer.parseInt(Feature.getProperty("LooseFortPoints", "400"));
+	                TAKE_CASTLE_POINTS									= Integer.parseInt(Feature.getProperty("TakeCastlePoints", "1500"));
+	                LOOSE_CASTLE_POINTS									= Integer.parseInt(Feature.getProperty("LooseCastlePoints", "3000"));
+	                CASTLE_DEFENDED_POINTS								= Integer.parseInt(Feature.getProperty("CastleDefendedPoints", "750"));
+	                FESTIVAL_WIN_POINTS									= Integer.parseInt(Feature.getProperty("FestivalOfDarknessWin", "200"));
+	                HERO_POINTS											= Integer.parseInt(Feature.getProperty("HeroPoints", "1000"));
+	                ROYAL_GUARD_COST									= Integer.parseInt(Feature.getProperty("CreateRoyalGuardCost", "5000"));
+	                KNIGHT_UNIT_COST									= Integer.parseInt(Feature.getProperty("CreateKnightUnitCost", "10000"));
+	                KNIGHT_REINFORCE_COST								= Integer.parseInt(Feature.getProperty("ReinforceKnightUnitCost", "5000"));
+	                BALLISTA_POINTS										= Integer.parseInt(Feature.getProperty("KillBallistaPoints", "30"));
+	                REPUTATION_SCORE_PER_KILL							= Integer.parseInt(Feature.getProperty("ReputationScorePerKill", "1"));
+	                JOIN_ACADEMY_MIN_REP_SCORE							= Integer.parseInt(Feature.getProperty("CompleteAcademyMinPoints", "190"));
+	                JOIN_ACADEMY_MAX_REP_SCORE							= Integer.parseInt(Feature.getProperty("CompleteAcademyMaxPoints", "650"));
+	                RAID_RANKING_1ST									= Integer.parseInt(Feature.getProperty("1stRaidRankingPoints", "1250"));
+	                RAID_RANKING_2ND									= Integer.parseInt(Feature.getProperty("2ndRaidRankingPoints", "900"));
+	                RAID_RANKING_3RD									= Integer.parseInt(Feature.getProperty("3rdRaidRankingPoints", "700"));
+	                RAID_RANKING_4TH									= Integer.parseInt(Feature.getProperty("4thRaidRankingPoints", "600"));
+	                RAID_RANKING_5TH									= Integer.parseInt(Feature.getProperty("5thRaidRankingPoints", "450"));
+	                RAID_RANKING_6TH									= Integer.parseInt(Feature.getProperty("6thRaidRankingPoints", "350"));
+	                RAID_RANKING_7TH									= Integer.parseInt(Feature.getProperty("7thRaidRankingPoints", "300"));
+	                RAID_RANKING_8TH									= Integer.parseInt(Feature.getProperty("8thRaidRankingPoints", "200"));
+	                RAID_RANKING_9TH									= Integer.parseInt(Feature.getProperty("9thRaidRankingPoints", "150"));
+	                RAID_RANKING_10TH									= Integer.parseInt(Feature.getProperty("10thRaidRankingPoints", "100"));
+	                RAID_RANKING_UP_TO_50TH									= Integer.parseInt(Feature.getProperty("UpTo50thRaidRankingPoints", "25"));
+	                RAID_RANKING_UP_TO_100TH									= Integer.parseInt(Feature.getProperty("UpTo100thRaidRankingPoints", "12"));
+	                CLAN_LEVEL_6_COST									= Integer.parseInt(Feature.getProperty("ClanLevel6Cost", "10000"));
+	                CLAN_LEVEL_7_COST									= Integer.parseInt(Feature.getProperty("ClanLevel7Cost", "20000"));
+	                CLAN_LEVEL_8_COST									= Integer.parseInt(Feature.getProperty("ClanLevel8Cost", "40000"));
+	                CLAN_LEVEL_9_COST									= Integer.parseInt(Feature.getProperty("ClanLevel9Cost", "40000"));
+	                CLAN_LEVEL_10_COST									= Integer.parseInt(Feature.getProperty("ClanLevel10Cost", "40000"));
 	            }
 	            catch (Exception e)
 	            {
@@ -1354,7 +1415,6 @@ public final class Config
 	                //ALT_GAME_NEW_CHAR_ALWAYS_IS_NEWBIE	= Boolean.parseBoolean(Character.getProperty("AltNewCharAlwaysIsNewbie", "False"));
 	                ALT_MEMBERS_CAN_WITHDRAW_FROM_CLANWH= Boolean.parseBoolean(Character.getProperty("AltMembersCanWithdrawFromClanWH", "false"));
 	                REMOVE_CASTLE_CIRCLETS				= Boolean.parseBoolean(Character.getProperty("RemoveCastleCirclets", "true"));
-	                ALT_REPUTATION_SCORE_PER_KILL		= Integer.parseInt(Character.getProperty("ReputationScorePerKill", "1"));
 	                ALT_PARTY_RANGE						= Integer.parseInt(Character.getProperty("AltPartyRange", "1600"));
 	                ALT_PARTY_RANGE2					= Integer.parseInt(Character.getProperty("AltPartyRange2", "1400"));
 	                STARTING_ADENA						= Integer.parseInt(Character.getProperty("StartingAdena", "100"));
@@ -2244,7 +2304,7 @@ public final class Config
         else if (pName.equalsIgnoreCase("AltBlacksmithUseRecipes")) ALT_BLACKSMITH_USE_RECIPES = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("AltGameSkillLearn")) ALT_GAME_SKILL_LEARN = Boolean.parseBoolean(pValue);
         else if (pName.equalsIgnoreCase("RemoveCastleCirclets")) REMOVE_CASTLE_CIRCLETS = Boolean.parseBoolean(pValue);
-        else if (pName.equalsIgnoreCase("ReputationScorePerKill")) ALT_REPUTATION_SCORE_PER_KILL = Integer.parseInt(pValue);
+        else if (pName.equalsIgnoreCase("ReputationScorePerKill")) REPUTATION_SCORE_PER_KILL = Integer.parseInt(pValue);
         else if (pName.equalsIgnoreCase("AltGameCancelByHit"))
         {
             ALT_GAME_CANCEL_BOW     = pValue.equalsIgnoreCase("bow") || pValue.equalsIgnoreCase("all");

@@ -407,11 +407,12 @@ public class Fort
 		if (updateClansReputation)
 		{
 			// update reputation first
-			updateClansReputation(clan);
+			updateClansReputation(clan,false);
 		}
 		// Remove old owner
 		if (getOwnerClan() != null && (clan != null && clan != getOwnerClan()))
 		{
+			updateClansReputation(clan,true);
 			removeOwner(true);
 		}
 		setFortState(0,0); // initialize fort state
@@ -986,11 +987,14 @@ public class Fort
 		return _name;
 	}
 	
-	public void updateClansReputation(L2Clan owner)
+	public void updateClansReputation(L2Clan owner, boolean removePoints)
 	{
 		if (owner != null)
 		{
-			owner.setReputationScore(owner.getReputationScore() + 200, true);
+			if (removePoints)
+				owner.setReputationScore(owner.getReputationScore() - Config.LOOSE_FORT_POINTS, true);
+			else
+				owner.setReputationScore(owner.getReputationScore() + Config.TAKE_FORT_POINTS, true);
 			owner.broadcastToOnlineMembers(new PledgeShowInfoUpdate(owner));
 		}
 	}

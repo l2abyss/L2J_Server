@@ -82,7 +82,10 @@ public class L2CastleZone extends L2ZoneType
 				if (((L2PcInstance) character).getClan() != null 
 						&& (_castle.getSiege().checkIsAttacker(((L2PcInstance) character).getClan())
 						|| _castle.getSiege().checkIsDefender(((L2PcInstance) character).getClan())))
+				{
+					((L2PcInstance) character).setIsInSiege(true);
 					((L2PcInstance) character).startFameTask(Config.CASTLE_ZONE_FAME_TASK_FREQUENCY * 1000, Config.CASTLE_ZONE_FAME_AQUIRE_POINTS);
+				}
 				((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
 			}
 		}
@@ -102,6 +105,7 @@ public class L2CastleZone extends L2ZoneType
 			{
 				((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
 				((L2PcInstance) character).stopFameTask();
+				((L2PcInstance) character).setIsInSiege(false);
 				
 				// Set pvp flag
 				if (((L2PcInstance) character).getPvpFlag() == 0)

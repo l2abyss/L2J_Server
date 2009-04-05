@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.taskmanager.tasks;
 import java.util.Calendar;
 import java.util.Map;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.instancemanager.RaidBossPointsManager;
 import net.sf.l2j.gameserver.model.L2Clan;
@@ -58,40 +59,40 @@ public class TaskRaidPointsReset extends Task
 						switch (entry.getValue())
 						{
 							case 1:
-								reputation = 1250;
+								reputation = Config.RAID_RANKING_1ST;
 								break;
 							case 2:
-								reputation = 900;
+								reputation = Config.RAID_RANKING_2ND;
 								break;
 							case 3:
-								reputation = 700;
+								reputation = Config.RAID_RANKING_3RD;
 								break;
 							case 4:
-								reputation = 600;
+								reputation = Config.RAID_RANKING_4TH;
 								break;
 							case 5:
-								reputation = 450;
+								reputation = Config.RAID_RANKING_5TH;
 								break;
 							case 6:
-								reputation = 350;
+								reputation = Config.RAID_RANKING_6TH;
 								break;
 							case 7:
-								reputation = 300;
+								reputation = Config.RAID_RANKING_7TH;
 								break;
 							case 8:
-								reputation = 200;
+								reputation = Config.RAID_RANKING_8TH;
 								break;
 							case 9:
-								reputation = 150;
+								reputation = Config.RAID_RANKING_9TH;
 								break;
 							case 10:
-								reputation = 100;
+								reputation = Config.RAID_RANKING_10TH;
 								break;
 							default:
 								if (entry.getValue() <= 50)
-									reputation = 25;
+									reputation = Config.RAID_RANKING_UP_TO_50TH;
 								else
-									reputation = 12;
+									reputation = Config.RAID_RANKING_UP_TO_100TH;
 								break;
 						}
 						c.setReputationScore(c.getReputationScore() + reputation, true);

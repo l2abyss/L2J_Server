@@ -2202,9 +2202,9 @@ public final class L2PcInstance extends L2Playable
 
 		if (getLvlJoinedAcademy() != 0 && _clan != null && PlayerClass.values()[Id].getLevel() == ClassLevel.Third)
         {
-			if(getLvlJoinedAcademy() <= 16) _clan.setReputationScore(_clan.getReputationScore()+650, true);
-            else if(getLvlJoinedAcademy() >= 39) _clan.setReputationScore(_clan.getReputationScore()+190, true);
-            else _clan.setReputationScore(_clan.getReputationScore()+(650-(getLvlJoinedAcademy()-16)*20), true);
+			if(getLvlJoinedAcademy() <= 16) _clan.setReputationScore(_clan.getReputationScore()+Config.JOIN_ACADEMY_MAX_REP_SCORE, true);
+            else if(getLvlJoinedAcademy() >= 39) _clan.setReputationScore(_clan.getReputationScore()+Config.JOIN_ACADEMY_MIN_REP_SCORE, true);
+            else _clan.setReputationScore(_clan.getReputationScore()+(Config.JOIN_ACADEMY_MAX_REP_SCORE-(getLvlJoinedAcademy()-16)*20), true);
 			_clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
 			setLvlJoinedAcademy(0);
             //oust pledge member from the academy, cuz he has finished his 2nd class transfer
@@ -5005,22 +5005,26 @@ public final class L2PcInstance extends L2Playable
 					
 					if (!(isInsideZone(ZONE_PVP) && !isInsideZone(ZONE_SIEGE)))
 					{
-						if (pk != null && pk.getClan() != null && getClan() != null && !isAcademyMember() && !(pk.isAcademyMember()) && _clan.isAtWarWith(pk.getClanId()) && pk.getClan().isAtWarWith(_clan.getClanId()))
+						if (pk != null && pk.getClan() != null && getClan() != null && !isAcademyMember() && !(pk.isAcademyMember()) )
 						{
-							
-							// when your reputation score is 0 or below, the other clan cannot acquire any reputation points
-							if (getClan().getReputationScore() > 0)
+							if ((_clan.isAtWarWith(pk.getClanId()) && pk.getClan().isAtWarWith(_clan.getClanId()))||
+									((isInsideZone(ZONE_SIEGE) && pk.isInsideZone(ZONE_SIEGE))&&
+											(isInSiege() && pk.isInSiege())))
 							{
-								pk.getClan().setReputationScore(pk.getClan().getReputationScore() + Config.ALT_REPUTATION_SCORE_PER_KILL, true);
-								getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
-								pk.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(pk.getClan()));
-							}
-							// when the opposing sides reputation score is 0 or below, your clans reputation score does not decrease
-							if (pk.getClan().getReputationScore() > 0)
-							{
-								_clan.setReputationScore(_clan.getReputationScore() - Config.ALT_REPUTATION_SCORE_PER_KILL, true);
-								getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
-								pk.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(pk.getClan()));
+								// 	when your reputation score is 0 or below, the other clan cannot acquire any reputation points
+								if (getClan().getReputationScore() > 0)
+								{
+									pk.getClan().setReputationScore(pk.getClan().getReputationScore() + Config.REPUTATION_SCORE_PER_KILL, true);
+									getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
+									pk.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(pk.getClan()));
+								}
+								// 	when the opposing sides reputation score is 0 or below, your clans reputation score does not decrease
+								if (pk.getClan().getReputationScore() > 0)
+								{
+									_clan.setReputationScore(_clan.getReputationScore() - Config.REPUTATION_SCORE_PER_KILL, true);
+									getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(_clan));
+									pk.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(pk.getClan()));
+								}
 							}
 						}
 					}
@@ -12064,6 +12068,7 @@ public final class L2PcInstance extends L2Playable
 	private FastMap<Integer, TimeStamp> _reuseTimeStamps = new FastMap<Integer, TimeStamp>().setShared(true);
 	private boolean _canFeed;
 	private int _afroId = 0;
+	private boolean _isInSiege;
 
     public Collection<TimeStamp> getReuseTimeStamps()
     {
@@ -12703,5 +12708,15 @@ public final class L2PcInstance extends L2Playable
     {
 	    _afroId = id;
 	    broadcastUserInfo();
+    }
+
+    public void setIsInSiege(boolean b)
+    {
+    	_isInSiege = b;
+    }
+    
+    public boolean isInSiege()
+    {
+    	return _isInSiege;
     }
 }
