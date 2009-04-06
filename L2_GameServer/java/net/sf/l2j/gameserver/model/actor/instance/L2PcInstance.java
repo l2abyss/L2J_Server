@@ -6192,6 +6192,7 @@ public final class L2PcInstance extends L2Playable
             }
         }
 
+        /* Retail does not disarm shields
         // Unequip the shield
         L2ItemInstance sld = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LHAND);
         if (sld != null)
@@ -6225,7 +6226,7 @@ public final class L2PcInstance extends L2Playable
                 }
                 sendPacket(sm);
             }
-        }
+        }*/
         return true;
 	}
     
