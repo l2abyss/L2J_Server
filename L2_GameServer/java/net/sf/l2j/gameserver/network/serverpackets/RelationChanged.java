@@ -24,11 +24,12 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
  */
 public final class RelationChanged extends L2GameServerPacket
 {
-	public static final int RELATION_PVP_FLAG     = 0x00002; // pvp ???
-	public static final int RELATION_HAS_KARMA    = 0x00004; // karma ???
-	public static final int RELATION_HAS_PARTY    = 0x00008; // true if in party
+	public static final int RELATION_PARTY1       = 0x00001; // party member
+	public static final int RELATION_PARTY2       = 0x00002; // party member
+	public static final int RELATION_PARTY3       = 0x00004; // party member
+	public static final int RELATION_PARTY4       = 0x00008; // party member (for information, see L2PcInstance.getRelation())
 	public static final int RELATION_PARTYLEADER  = 0x00010; // true if is party leader
-	public static final int RELATION_PARTY_MEMBER = 0x00020; // party member (even party leader need it)
+	public static final int RELATION_HAS_PARTY    = 0x00020; // true if is in party
 	public static final int RELATION_CLAN_MEMBER  = 0x00040; // true if is in clan
 	public static final int RELATION_LEADER 	  = 0x00080; // true if is clan leader
 	public static final int RELATION_INSIEGE   	  = 0x00200; // true if in siege

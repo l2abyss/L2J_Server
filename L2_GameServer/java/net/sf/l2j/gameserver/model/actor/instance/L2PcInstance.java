@@ -910,11 +910,6 @@ public final class L2PcInstance extends L2Playable
 	{
 		int result = 0;
 
-		// karma and pvp may not be required
-		if (getPvpFlag() != 0)
-			result |= RelationChanged.RELATION_PVP_FLAG;
-		if (getKarma() > 0)
-			result |= RelationChanged.RELATION_HAS_KARMA;
 		if (getClan() != null)
 			result |= RelationChanged.RELATION_CLAN_MEMBER;
 		if (isClanLeader())
@@ -922,9 +917,41 @@ public final class L2PcInstance extends L2Playable
 		if (getParty() != null && getParty() == target.getParty())
 		{
 			result |= RelationChanged.RELATION_HAS_PARTY;
-			result |= RelationChanged.RELATION_PARTY_MEMBER;
-			if (getParty().getLeader() == this)
-				result |= RelationChanged.RELATION_PARTYLEADER;
+			for (int i = 0; i < getParty().getPartyMembers().size(); i++)
+			{
+				if (getParty().getPartyMembers().get(i) != this)
+					continue;
+				switch (i)
+				{
+					case 0:
+						result |= RelationChanged.RELATION_PARTYLEADER; // 0x10
+						break;
+					case 1:
+						result |= RelationChanged.RELATION_PARTY4; // 0x8
+						break;
+					case 2:
+						result |= RelationChanged.RELATION_PARTY3+RelationChanged.RELATION_PARTY2+RelationChanged.RELATION_PARTY1; // 0x7
+						break;
+					case 3:
+						result |= RelationChanged.RELATION_PARTY3+RelationChanged.RELATION_PARTY2; // 0x6
+						break;
+					case 4:
+						result |= RelationChanged.RELATION_PARTY3+RelationChanged.RELATION_PARTY1; // 0x5
+						break;
+					case 5:
+						result |= RelationChanged.RELATION_PARTY3; // 0x4
+						break;
+					case 6:
+						result |= RelationChanged.RELATION_PARTY2+RelationChanged.RELATION_PARTY1; // 0x3
+						break;
+					case 7:
+						result |= RelationChanged.RELATION_PARTY2; // 0x2
+						break;
+					case 8:
+						result |= RelationChanged.RELATION_PARTY1; // 0x1
+						break;
+				}
+			}	
 		}
 		if (getSiegeState() != 0)
 		{
