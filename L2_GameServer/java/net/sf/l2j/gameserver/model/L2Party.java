@@ -224,6 +224,7 @@ public class L2Party {
 			{
 				member.sendPacket(new PartySmallWindowDeleteAll());
 				member.sendPacket(new PartySmallWindowAll(member, getPartyMembers()));
+				member.broadcastUserInfo();
 			}
 		}
 	}
@@ -297,6 +298,7 @@ public class L2Party {
         {
 			member.updateEffectIcons(true); // update party icons only
             summon = member.getPet();
+            member.broadcastUserInfo();
             if (summon != null)
             {
                 summon.updateEffectIcons();

@@ -915,10 +915,17 @@ public final class L2PcInstance extends L2Playable
 			result |= RelationChanged.RELATION_PVP_FLAG;
 		if (getKarma() > 0)
 			result |= RelationChanged.RELATION_HAS_KARMA;
-
+		if (getClan() != null)
+			result |= RelationChanged.RELATION_CLAN_MEMBER;
 		if (isClanLeader())
 			result |= RelationChanged.RELATION_LEADER;
-
+		if (getParty() != null && getParty() == target.getParty())
+		{
+			result |= RelationChanged.RELATION_HAS_PARTY;
+			result |= RelationChanged.RELATION_PARTY_MEMBER;
+			if (getParty().getLeader() == this)
+				result |= RelationChanged.RELATION_PARTYLEADER;
+		}
 		if (getSiegeState() != 0)
 		{
 			result |= RelationChanged.RELATION_INSIEGE;
