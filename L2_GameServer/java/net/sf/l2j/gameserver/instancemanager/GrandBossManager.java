@@ -338,6 +338,7 @@ public class GrandBossManager
 		if (_storedInfo.containsKey(bossId))
 			_storedInfo.remove(bossId);
 		_storedInfo.put(bossId, info);
+		storeToDb();
 	}
 
 	private void storeToDb()
