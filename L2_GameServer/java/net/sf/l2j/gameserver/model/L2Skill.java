@@ -53,7 +53,6 @@ import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.skills.funcs.FuncTemplate;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
 import net.sf.l2j.gameserver.templates.StatsSet;
-import net.sf.l2j.gameserver.templates.item.L2WeaponType;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 import net.sf.l2j.gameserver.util.Util;
@@ -1330,21 +1329,19 @@ public abstract class L2Skill
 	{
 		int weaponsAllowed = getWeaponsAllowed();
         //check to see if skill has a weapon dependency.
-        if (weaponsAllowed == 0) return true;
+        if (weaponsAllowed == 0)
+        	return true;
+        
+        int mask = 0;
+        
         if (activeChar.getActiveWeaponItem() != null)
-        {
-            L2WeaponType playerWeapon;
-            playerWeapon = activeChar.getActiveWeaponItem().getItemType();
-            int mask = playerWeapon.mask();
-            if ((mask & weaponsAllowed) != 0) return true;
-            // can be on the secondary weapon
-            if (activeChar.getSecondaryWeaponItem() != null)
-            {
-                playerWeapon = activeChar.getSecondaryWeaponItem().getItemType();
-                mask = playerWeapon.mask();
-                if ((mask & weaponsAllowed) != 0) return true;
-            }
-        }
+        	mask |= activeChar.getActiveWeaponItem().getItemType().mask();
+        if (activeChar.getSecondaryWeaponItem() != null)
+        	mask |= activeChar.getSecondaryWeaponItem().getItemType().mask();
+        
+        if ((mask & weaponsAllowed) != 0)
+        	return true;
+        
         return false;
     }
 
