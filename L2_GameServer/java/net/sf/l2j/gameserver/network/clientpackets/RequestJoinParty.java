@@ -100,12 +100,6 @@ public final class RequestJoinParty extends L2GameClientPacket
 			return;
 		}
 		
-		if (target.getInstanceId() != requestor.getInstanceId())
-  	 	{
-  	 		requestor.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
-  	 	 	return;
-  	 	}
-
 		if (target.isInJail() || requestor.isInJail())
         {
 			requestor.sendMessage("Player is in Jail");
@@ -113,9 +107,6 @@ public final class RequestJoinParty extends L2GameClientPacket
 		}
 
         if (target.isInOlympiadMode() || requestor.isInOlympiadMode())
-            return;
-
-        if (target.isInDuel() || requestor.isInDuel())
             return;
 
         if (!requestor.isInParty())     //Asker has no party
@@ -146,35 +137,37 @@ public final class RequestJoinParty extends L2GameClientPacket
 		SystemMessage msg;
 
        // summary of ppl already in party and ppl that get invitation
-        if (requestor.getParty().getMemberCount() + requestor.getParty().getPendingInvitationNumber() >= 9 )
-        {
-			requestor.sendPacket(new SystemMessage(SystemMessageId.PARTY_FULL));
-			return;
-		}
-
 		if (!requestor.getParty().isLeader(requestor))
         {
 			requestor.sendPacket(new SystemMessage(SystemMessageId.ONLY_LEADER_CAN_INVITE));
 			return;
 		}
+        if (requestor.getParty().getMemberCount() >= 9 )
+        {
+			requestor.sendPacket(new SystemMessage(SystemMessageId.PARTY_FULL));
+			return;
+		}
+        if (requestor.getParty().getPendingInvitation())
+        {
+        	requestor.sendPacket(new SystemMessage(SystemMessageId.WAITING_FOR_ANOTHER_REPLY));
+        	return;
+        }
 
 		if (!target.isProcessingRequest())
 		{
 		    requestor.onTransactionRequest(target);
 		    // in case a leader change has happened, use party's mode
 		    target.sendPacket(new AskJoinParty(requestor.getName(), requestor.getParty().getLootDistribution()));
-		    requestor.getParty().increasePendingInvitationNumber();
+		    requestor.getParty().setPendingInvitation(true);
 
 		    if (Config.DEBUG)
 		        _log.fine("sent out a party invitation to:"+target.getName());
 
-		    msg = new SystemMessage(SystemMessageId.YOU_INVITED_S1_TO_PARTY);
-		    msg.addString(target.getName());
-		    requestor.sendPacket(msg);
 		}
 		else
 		{
 		    msg = new SystemMessage(SystemMessageId.S1_IS_BUSY_TRY_LATER);
+		    msg.addString(target.getName());
 		    requestor.sendPacket(msg);
 
 		    if (Config.DEBUG)
@@ -192,28 +185,21 @@ public final class RequestJoinParty extends L2GameClientPacket
 	 */
 	private void createNewParty(L2PcInstance target, L2PcInstance requestor)
 	{
-		SystemMessage msg;
-
 		if (!target.isProcessingRequest())
 		{
 		    requestor.setParty(new L2Party(requestor, _itemDistribution));
 
 		    requestor.onTransactionRequest(target);
 		    target.sendPacket(new AskJoinParty(requestor.getName(), _itemDistribution));
-		    requestor.getParty().increasePendingInvitationNumber();
+		    requestor.getParty().setPendingInvitation(true);
 
 		    if (Config.DEBUG)
 		        _log.fine("sent out a party invitation to:"+target.getName());
 
-		    msg = new SystemMessage(SystemMessageId.YOU_INVITED_S1_TO_PARTY);
-		    msg.addString(target.getName());
-		    requestor.sendPacket(msg);
 		}
 		else
 		{
-		    msg = new SystemMessage(SystemMessageId.S1_IS_BUSY_TRY_LATER);
-		    msg.addString(target.getName());
-		    requestor.sendPacket(msg);
+		    requestor.sendPacket(new SystemMessage(SystemMessageId.WAITING_FOR_ANOTHER_REPLY));
 
 		    if (Config.DEBUG)
 		        _log.warning(requestor.getName() + " already received a party invitation");
