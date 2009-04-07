@@ -1110,7 +1110,7 @@ public final class Config
 					ALT_GAME_SUBCLASS_WITHOUT_QUESTS = Boolean.parseBoolean(Character.getProperty("AltSubClassWithoutQuests", "False"));
 					MAX_RUN_SPEED = Integer.parseInt(Character.getProperty("MaxRunSpeed", "250"));
 					MAX_PCRIT_RATE = Integer.parseInt(Character.getProperty("MaxPCritRate", "500"));
-					MAX_MCRIT_RATE = Integer.parseInt(Character.getProperty("MaxMCritRate", "300"));
+					MAX_MCRIT_RATE = Integer.parseInt(Character.getProperty("MaxMCritRate", "200"));
 					MAX_PATK_SPEED = Integer.parseInt(Character.getProperty("MaxPAtkSpeed", "1500"));
 					MAX_MATK_SPEED = Integer.parseInt(Character.getProperty("MaxMAtkSpeed", "1999"));
 					MAX_EVASION = Integer.parseInt(Character.getProperty("MaxEvasion", "200"));
@@ -1167,7 +1167,7 @@ public final class Config
 					ALT_GAME_CREATION_SP_RATE = Double.parseDouble(Character.getProperty("AltGameCreationSpRate", "1"));
 					ALT_GAME_CREATION_RARE_XPSP_RATE = Double.parseDouble(Character.getProperty("AltGameCreationRareXpSpRate", "2"));
 					ALT_BLACKSMITH_USE_RECIPES = Boolean.parseBoolean(Character.getProperty("AltBlacksmithUseRecipes", "true"));
-					ALT_CLAN_JOIN_DAYS = Integer.parseInt(Character.getProperty("DaysBeforeJoinAClan", "5"));
+					ALT_CLAN_JOIN_DAYS = Integer.parseInt(Character.getProperty("DaysBeforeJoinAClan", "1"));
 					ALT_CLAN_CREATE_DAYS = Integer.parseInt(Character.getProperty("DaysBeforeCreateAClan", "10"));
 					ALT_CLAN_DISSOLVE_DAYS = Integer.parseInt(Character.getProperty("DaysToPassToDissolveAClan", "7"));
 					ALT_ALLY_JOIN_DAYS_WHEN_LEAVED = Integer.parseInt(Character.getProperty("DaysBeforeJoinAllyWhenLeaved", "1"));
@@ -1180,7 +1180,7 @@ public final class Config
 					REMOVE_CASTLE_CIRCLETS = Boolean.parseBoolean(Character.getProperty("RemoveCastleCirclets", "true"));
 					ALT_PARTY_RANGE = Integer.parseInt(Character.getProperty("AltPartyRange", "1600"));
 					ALT_PARTY_RANGE2 = Integer.parseInt(Character.getProperty("AltPartyRange2", "1400"));
-					STARTING_ADENA = Integer.parseInt(Character.getProperty("StartingAdena", "100"));
+					STARTING_ADENA = Integer.parseInt(Character.getProperty("StartingAdena", "0"));
 					AUTO_LOOT = Boolean.parseBoolean(Character.getProperty("AutoLoot", "false"));
 					UNSTUCK_INTERVAL = Integer.parseInt(Character.getProperty("UnstuckInterval", "300"));
 					PLAYER_SPAWN_PROTECTION = Integer.parseInt(Character.getProperty("PlayerSpawnProtection", "0"));
@@ -1191,7 +1191,7 @@ public final class Config
 					PETITIONING_ALLOWED = Boolean.parseBoolean(Character.getProperty("PetitioningAllowed", "True"));
 					MAX_PETITIONS_PER_PLAYER = Integer.parseInt(Character.getProperty("MaxPetitionsPerPlayer", "5"));
 					MAX_PETITIONS_PENDING = Integer.parseInt(Character.getProperty("MaxPetitionsPending", "25"));
-					ALT_GAME_FREIGHTS = Boolean.parseBoolean(Character.getProperty("AltGameFreights", "false"));
+					ALT_GAME_FREIGHTS = Boolean.parseBoolean(Character.getProperty("AltGameFreights", "true"));
 					ALT_GAME_FREIGHT_PRICE = Integer.parseInt(Character.getProperty("AltGameFreightPrice", "1000"));
 					ALT_GAME_FREE_TELEPORT = Boolean.parseBoolean(Character.getProperty("AltFreeTeleporting", "False"));
 					ALT_RECOMMEND = Boolean.parseBoolean(Character.getProperty("AltRecommend", "False"));
