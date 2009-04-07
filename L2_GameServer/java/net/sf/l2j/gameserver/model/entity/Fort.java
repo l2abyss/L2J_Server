@@ -76,7 +76,9 @@ public class Fort
 	protected FastList<L2Spawn> _siegeNpcs = new FastList<L2Spawn>();
 	protected FastList<L2Spawn> _npcCommanders = new FastList<L2Spawn>();
 	protected FastList<L2Spawn> _specialEnvoys = new FastList<L2Spawn>();
-	
+
+	private FastMap<Integer, Integer> _envoyCastles = new FastMap<Integer, Integer>();
+
 	/** Fortress Functions */
 	public static final int FUNC_TELEPORT = 1;
 	public static final int FUNC_RESTORE_HP = 2;
@@ -1099,7 +1101,7 @@ public class Fort
 
 	public final int getCastleIdFromEnvoy(int npcId)
 	{
-		return FortManager.getInstance().getEnvoyCastle(npcId);
+		return _envoyCastles.get(npcId);
 	}
 	/**
 	 * @return Returns amount of barracks.
@@ -1364,7 +1366,7 @@ public class Fort
     {
     	Connection con = null;
     	_specialEnvoys.clear();
-    	FortManager.getInstance()._envoyCastles.clear();
+    	_envoyCastles.clear();
     	try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -1390,7 +1392,7 @@ public class Fort
 					spawnDat.setHeading(rset.getInt("heading"));
 					spawnDat.setRespawnDelay(60);
 					_specialEnvoys.add(spawnDat);
-					FortManager.getInstance()._envoyCastles.put(npcId, castleId);
+					_envoyCastles.put(npcId, castleId);
 				}
 				else
 				{

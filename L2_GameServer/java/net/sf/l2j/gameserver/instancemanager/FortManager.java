@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2Object;
@@ -31,7 +30,6 @@ public class FortManager
 	protected static final Logger _log = Logger.getLogger(FortManager.class.getName());
 	// =========================================================
 	private static FortManager _instance;
-	public FastMap<Integer, Integer> _envoyCastles = new FastMap<Integer, Integer>();
 	
 	public static final FortManager getInstance()
     {
@@ -203,9 +201,4 @@ public class FortManager
         if (_forts == null) _forts = new FastList<Fort>();
         return _forts;
     }
-    
-	public int getEnvoyCastle(int npcId)
-	{
-		return _envoyCastles.get(npcId);
-	}
 }
