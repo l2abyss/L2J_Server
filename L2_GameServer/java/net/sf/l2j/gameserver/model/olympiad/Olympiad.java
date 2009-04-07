@@ -189,7 +189,7 @@ public class Olympiad
 		_currentCycle = Integer.parseInt(OlympiadProperties.getProperty("CurrentCycle", "1"));
 		_period = Integer.parseInt(OlympiadProperties.getProperty("Period", "0"));
 		_olympiadEnd = Long.parseLong(OlympiadProperties.getProperty("OlympiadEnd", "0"));
-		_validationEnd = Long.parseLong(OlympiadProperties.getProperty("ValdationEnd", "0"));
+		_validationEnd = Long.parseLong(OlympiadProperties.getProperty("ValidationEnd", "0"));
 		_nextWeeklyChange = Long.parseLong(OlympiadProperties.getProperty("NextWeeklyChange", "0"));
 		
 		switch (_period)
