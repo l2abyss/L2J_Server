@@ -110,6 +110,7 @@ import net.sf.l2j.gameserver.scripting.CompiledScriptCache;
 import net.sf.l2j.gameserver.scripting.L2ScriptEngineManager;
 import net.sf.l2j.gameserver.taskmanager.KnownListUpdateTaskManager;
 import net.sf.l2j.gameserver.taskmanager.TaskManager;
+import net.sf.l2j.gameserver.taskmanager.tasks.AutoAnnounceTaskManager;
 import net.sf.l2j.gameserver.util.DynamicExtension;
 import net.sf.l2j.status.Status;
 import net.sf.l2j.util.DeadLockDetector;
@@ -299,7 +300,7 @@ public class GameServer
 		FourSepulchersManager.getInstance().init();
 		DimensionalRiftManager.getInstance();
 		Announcements.getInstance();
-		AutoAnnouncements.getInstance();
+		AutoAnnounceTaskManager.getInstance();
 		MapRegionTable.getInstance();
 		EventDroplist.getInstance();
 		

@@ -28,7 +28,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2GuardInstance;
 
 public class KnownListUpdateTaskManager
 {
-	protected static final Logger _log = Logger.getLogger(DecayTaskManager.class.getName());
+	protected static final Logger _log = Logger.getLogger(KnownListUpdateTaskManager.class.getName());
 	
 	private final static int FULL_UPDATE_TIMER = 100;
 	private Object syncObject = new Object();
