@@ -484,6 +484,9 @@ public class Siege
 		L2Clan clan;
 		for (L2SiegeClan siegeclan : getAttackerClans())
 		{
+			if (siegeclan == null)
+				continue;
+			
 			clan = ClanTable.getInstance().getClan(siegeclan.getClanId());
 			for (L2PcInstance member : clan.getOnlineMembers(0))
 			{
@@ -507,6 +510,9 @@ public class Siege
 		}
 		for (L2SiegeClan siegeclan : getDefenderClans())
 		{
+			if (siegeclan == null)
+				continue;
+
 			clan = ClanTable.getInstance().getClan(siegeclan.getClanId());
 			for (L2PcInstance member : clan.getOnlineMembers(0))
 			{

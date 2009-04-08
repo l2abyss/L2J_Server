@@ -352,7 +352,7 @@ public class Duel
 		// Save player Conditions
 		savePlayerConditions();
 		
-		if (_playerA.isInDuel() || _playerB.isInDuel())
+		if (_playerA.isInDuel() || _playerB.isInDuel() || _playerA == null || _playerB == null)
 		{
 			// clean up
 			_playerConditions.clear();

@@ -352,15 +352,24 @@ public class CharEffectList
 
 		for (L2Effect e : effects)
 		{
-			if (e == null || e.getSkill().bestowed() || 
-					!(e.getSkill().getSkillType() == L2SkillType.BUFF ||
-					 e.getSkill().getSkillType() == L2SkillType.DEBUFF ||
-					 e.getSkill().getSkillType() == L2SkillType.REFLECT ||
-					 e.getSkill().getSkillType() == L2SkillType.HEAL_PERCENT ||
-					 e.getSkill().getSkillType() == L2SkillType.MANAHEAL_PERCENT))
-			{
+			if (e == null)
 				continue;
+
+			if (e.getSkill().bestowed())
+				continue;
+
+			switch (e.getSkill().getSkillType())
+			{
+				case BUFF:
+				case DEBUFF:
+				case REFLECT:
+				case HEAL_PERCENT:
+				case MANAHEAL_PERCENT:
+					break;
+				default:
+					continue;
 			}
+
 			if ((danceBuff && e.getSkill().isDance()) || (!danceBuff && !e.getSkill().isDance()))
 			{
 				if (e.getSkill() == checkSkill)
@@ -446,7 +455,11 @@ public class CharEffectList
 					effectList.remove(e);
 					if (_owner instanceof L2PcInstance)
 					{
-						SystemMessage sm = new SystemMessage(SystemMessageId.EFFECT_S1_DISAPPEARED);
+						SystemMessage sm;
+						if (effect.getSkill().isToggle())
+							sm = new SystemMessage(SystemMessageId.S1_HAS_BEEN_ABORTED);
+						else
+							sm = new SystemMessage(SystemMessageId.EFFECT_S1_DISAPPEARED);
 						sm.addSkillName(effect);
 						_owner.sendPacket(sm);
 					}

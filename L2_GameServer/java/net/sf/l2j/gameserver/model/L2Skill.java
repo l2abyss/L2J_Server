@@ -1374,7 +1374,9 @@ public abstract class L2Skill
             int msgId = preCondition.getMessageId();
             if (msgId != 0)
             {
-            	activeChar.sendPacket(new SystemMessage(msgId));
+            	SystemMessage sm = new SystemMessage(msgId);
+            	sm.addSkillName(_id);
+            	activeChar.sendPacket(sm);
             }
             else if (msg != null)
             {

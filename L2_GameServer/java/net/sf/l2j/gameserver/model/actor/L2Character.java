@@ -5332,6 +5332,8 @@ public abstract class L2Character extends L2Object
         	{
         		// if L2PcInstance is in Olympia and the match isn't already start, send a Server->Client packet ActionFailed
         		player.sendPacket(ActionFailed.STATIC_PACKET);
+        		setIsCastingSimultaneouslyNow(false);
+        		setIsCastingNow(false);
         	}
         }
 		else if (player.getTarget() != null && !player.getTarget().isAttackable() && !player.getAccessLevel().allowPeaceAttack())
