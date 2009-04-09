@@ -2466,8 +2466,6 @@ public final class L2PcInstance extends L2Playable
 		// Auto-Learn skills if activated
 		if (Config.AUTO_LEARN_SKILLS)
 		{
-		    if (this.isTransformed() || this.isCursedWeaponEquipped())
-		        return;
 			giveAvailableSkills();
 		}
 		checkItemRestriction();
@@ -4551,6 +4549,10 @@ public final class L2PcInstance extends L2Playable
         }
         
         _transformation = transformation;
+        for (L2Effect e : getAllEffects())
+        {
+        	if (e != null && e.getSkill().isToggle()) e.exit();
+        }
         transformation.onTransform();
         sendSkillList();
         sendPacket(new SkillCoolTime(this));
