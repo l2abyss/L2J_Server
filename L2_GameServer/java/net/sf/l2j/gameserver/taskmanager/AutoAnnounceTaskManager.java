@@ -10,13 +10,15 @@
  * You should have received a copy of the GNU General Public License along with this program. If
  * not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.taskmanager.tasks;
+package net.sf.l2j.gameserver.taskmanager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.util.Broadcast;
@@ -30,6 +32,7 @@ public class AutoAnnounceTaskManager
 	protected static final Logger _log = Logger.getLogger(AutoAnnounceTaskManager.class.getName());
 	
 	private static AutoAnnounceTaskManager _instance;
+	protected List<AutoAnnouncement> _announces = new FastList<AutoAnnouncement>();
 	
 	public static AutoAnnounceTaskManager getInstance()
 	{
@@ -46,6 +49,12 @@ public class AutoAnnounceTaskManager
 	
 	public void restore()
 	{
+		if (!_announces.isEmpty())
+		{
+			for (AutoAnnouncement a : _announces)
+				a.stopAnnounce();
+		}
+		
 		java.sql.Connection conn = null;
 		int count = 0;
 		try
@@ -78,6 +87,7 @@ public class AutoAnnounceTaskManager
 		private long _delay;
 		private int _repeat = -1;
 		private String[] _memo;
+		private boolean _stopped = false;
 		
 		public AutoAnnouncement(int id, long delay, int repeat, String[] memo)
 		{
@@ -85,6 +95,13 @@ public class AutoAnnounceTaskManager
 			_delay = delay;
 			_repeat = repeat;
 			_memo = memo;
+			if (!_announces.contains(this))
+				_announces.add(this);
+		}
+		
+		public void stopAnnounce()
+		{
+			_stopped = true;
 		}
 		
 		public void run()
@@ -93,7 +110,7 @@ public class AutoAnnounceTaskManager
 			{
 				announce(text);
 			}
-			if (_repeat > 0)
+			if (!_stopped && _repeat > 0)
 				ThreadPoolManager.getInstance().scheduleGeneral(new AutoAnnouncement(_id, _delay, _repeat--, _memo), _delay);
 		}
 	}
@@ -103,5 +120,4 @@ public class AutoAnnounceTaskManager
 		Broadcast.announceToOnlinePlayers(text);
 		_log.warning("AutoAnnounce: " + text);
 	}
-	
 }
