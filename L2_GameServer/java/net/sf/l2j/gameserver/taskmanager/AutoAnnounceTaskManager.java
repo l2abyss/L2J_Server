@@ -53,6 +53,8 @@ public class AutoAnnounceTaskManager
 		{
 			for (AutoAnnouncement a : _announces)
 				a.stopAnnounce();
+			
+			_announces.clear();
 		}
 		
 		java.sql.Connection conn = null;
