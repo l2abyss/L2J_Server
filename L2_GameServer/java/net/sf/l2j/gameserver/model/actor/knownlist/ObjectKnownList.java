@@ -65,7 +65,13 @@ public class ObjectKnownList
         return (getKnownObjects().put(object.getObjectId(), object) == null);
     }
 
-    public final boolean knowsObject(L2Object object) { return getActiveObject() == object || getKnownObjects().containsKey(object.getObjectId()); }
+    public final boolean knowsObject(L2Object object)
+	{
+		if (object == null)
+			return false;
+		
+		return getActiveObject() == object || getKnownObjects().containsKey(object.getObjectId());
+	}
 
     /** Remove all L2Object from _knownObjects */
     public void removeAllKnownObjects() { getKnownObjects().clear(); }
