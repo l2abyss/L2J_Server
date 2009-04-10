@@ -44,7 +44,7 @@ public class AutoAnnounceTaskManager
 		restore();
 	}
 	
-	private void restore()
+	public void restore()
 	{
 		java.sql.Connection conn = null;
 		int count = 0;
