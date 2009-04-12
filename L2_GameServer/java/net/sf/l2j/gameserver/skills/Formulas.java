@@ -999,7 +999,7 @@ public final class Formulas
             		ClanHall clansHall = ClanHallManager.getInstance().getClanHallById(clanHallIndex);
             		if(clansHall != null)
             			if (clansHall.getFunction(ClanHall.FUNC_RESTORE_HP) != null)
-            				hpRegenMultiplier *= 1+ clansHall.getFunction(ClanHall.FUNC_RESTORE_HP).getLvl()/100;
+            				hpRegenMultiplier *= 1+ (double)clansHall.getFunction(ClanHall.FUNC_RESTORE_HP).getLvl()/100;
             	}
             }
 
@@ -1011,7 +1011,7 @@ public final class Formulas
             		Castle castle = CastleManager.getInstance().getCastleById(castleIndex);
             		if(castle != null)
             			if (castle.getFunction(Castle.FUNC_RESTORE_HP) != null)
-            				hpRegenMultiplier *= 1+ castle.getFunction(Castle.FUNC_RESTORE_HP).getLvl()/100;
+            				hpRegenMultiplier *= 1+ (double)castle.getFunction(Castle.FUNC_RESTORE_HP).getLvl()/100;
             	}
             }
             
@@ -1023,7 +1023,7 @@ public final class Formulas
             		Fort fort = FortManager.getInstance().getFortById(fortIndex);
             		if (fort != null)
             			if (fort.getFunction(Fort.FUNC_RESTORE_HP) != null)
-            				hpRegenMultiplier *= 1+ fort.getFunction(Fort.FUNC_RESTORE_HP).getLvl()/100;
+            				hpRegenMultiplier *= 1+ (double)fort.getFunction(Fort.FUNC_RESTORE_HP).getLvl()/100;
             	}
             }
 
@@ -1075,7 +1075,7 @@ public final class Formulas
             		ClanHall clansHall = ClanHallManager.getInstance().getClanHallById(clanHallIndex);
             		if(clansHall != null)
             			if (clansHall.getFunction(ClanHall.FUNC_RESTORE_MP) != null)
-            				mpRegenMultiplier *= 1+ clansHall.getFunction(ClanHall.FUNC_RESTORE_MP).getLvl()/100;
+            				mpRegenMultiplier *= 1+ (double)clansHall.getFunction(ClanHall.FUNC_RESTORE_MP).getLvl()/100;
             	}
             }
 
@@ -1087,7 +1087,7 @@ public final class Formulas
             		Castle castle = CastleManager.getInstance().getCastleById(castleIndex);
             		if(castle != null)
             			if (castle.getFunction(Castle.FUNC_RESTORE_MP) != null)
-            				mpRegenMultiplier *= 1+ castle.getFunction(Castle.FUNC_RESTORE_MP).getLvl()/100;
+            				mpRegenMultiplier *= 1+ (double)castle.getFunction(Castle.FUNC_RESTORE_MP).getLvl()/100;
             	}
             }
             
@@ -1099,7 +1099,7 @@ public final class Formulas
             		Fort fort = FortManager.getInstance().getFortById(fortIndex);
             		if(fort != null)
             			if (fort.getFunction(Fort.FUNC_RESTORE_MP) != null)
-            				mpRegenMultiplier *= 1+ fort.getFunction(Fort.FUNC_RESTORE_MP).getLvl()/100;
+            				mpRegenMultiplier *= 1+ (double)fort.getFunction(Fort.FUNC_RESTORE_MP).getLvl()/100;
             	}
             }
 
