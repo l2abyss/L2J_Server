@@ -153,8 +153,6 @@ public class L2Npc extends L2Character
 	private int _currentRHandId; // normally this shouldn't change from the template, but there exist exceptions
 	private int _currentCollisionHeight; // used for npc grow effect skills
 	private int _currentCollisionRadius; // used for npc grow effect skills
-
-	private boolean _isRaid = false;
 	
 	/** Task launching the function onRandomAnimation() */
 	protected class RandomAnimationTask implements Runnable
@@ -2702,18 +2700,4 @@ public class L2Npc extends L2Character
 		return _inventory;
 	}
 	
-    @Override
-	public boolean isRaid()
-    {
-        return _isRaid ;
-    }
-    
-	/**
-	 * Set this Npc as a Raid instance.<BR><BR>
-	 * @param isRaid
-	 */
-    public void setIsRaid(boolean isRaid)
-    {
-    	_isRaid = isRaid;
-    }
 }
