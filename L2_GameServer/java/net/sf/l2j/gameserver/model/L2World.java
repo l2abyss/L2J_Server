@@ -107,10 +107,13 @@ public final class L2World
      */
     public void storeObject(L2Object object)
     {
-    	if(_allObjects.get(object.getObjectId()) != null)
+    	if(_allObjects.containsKey(object.getObjectId()))
     	{
     		if (Config.DEBUG)
     			_log.warning("[L2World] objectId "+object.getObjectId()+" already exist in OID map!");
+    		if (Config.ASSERT)
+    			throw new AssertionError();
+    		
     		return;
     	}
 
@@ -144,7 +147,7 @@ public final class L2World
 
     public void removeObjects(List<L2Object> list)
     {
-        for(L2Object o : list)	_allObjects.remove(o.getObjectId());  // suggestion by whatev
+    	for(L2Object o : list)	_allObjects.remove(o.getObjectId());  // suggestion by whatev
         //IdFactory.getInstance().releaseId(object.getObjectId());
     }
 
