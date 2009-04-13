@@ -45,18 +45,14 @@ public class BitSetIDFactory extends IdFactory
 	private AtomicInteger _freeIdCount;
 	private AtomicInteger _nextFreeId;
 	
-	public class BitSetCapacityCheck implements Runnable
+	protected class BitSetCapacityCheck implements Runnable
 	{
-		
-		/**
-		 * 
-		 * @see java.lang.Runnable#run()
-		 */
 		public void run()
 		{
-			if (reachingBitSetCapacity())
+			synchronized (BitSetIDFactory.this)
 			{
-				increaseBitSetCapacity();
+				if (reachingBitSetCapacity())
+					increaseBitSetCapacity();
 			}
 		}
 		
@@ -65,12 +61,16 @@ public class BitSetIDFactory extends IdFactory
 	protected BitSetIDFactory()
 	{
 		super();
-		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new BitSetCapacityCheck(), 30000, 30000);
-		initialize();
+		
+		synchronized(BitSetIDFactory.class)
+		{
+			ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new BitSetCapacityCheck(), 30000, 30000);
+			initialize();
+		}
 		_log.info("IDFactory: " + _freeIds.size() + " id's available.");
 	}
 	
-	public synchronized void initialize()
+	public void initialize()
 	{
 		try
 		{
