@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.TeleportLocationTable;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
@@ -29,9 +30,11 @@ import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.AgitDecoInfo;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
+import net.sf.l2j.gameserver.network.serverpackets.SortedWareHouseWithdrawalList;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.network.serverpackets.WareHouseDepositList;
 import net.sf.l2j.gameserver.network.serverpackets.WareHouseWithdrawalList;
+import net.sf.l2j.gameserver.network.serverpackets.SortedWareHouseWithdrawalList.WarehouseListType;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
@@ -96,7 +99,26 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                     if (val.equalsIgnoreCase("deposit"))
                         showVaultWindowDeposit(player);
                     else if (val.equalsIgnoreCase("withdraw"))
-                        showVaultWindowWithdraw(player);
+                    {
+                    	if (Config.L2JMOD_ENABLE_WAREHOUSESORTING_CLAN)
+                    	{
+                    		String htmFile = "data/html/mods/WhSortedC.htm";
+	                		String htmContent = HtmCache.getInstance().getHtm(htmFile);
+	                		if (htmContent != null)
+	                		{
+	                			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
+	                			npcHtmlMessage.setHtml(htmContent);
+	                			npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));
+	                			player.sendPacket(npcHtmlMessage);
+	                		}
+	                		else
+	                		{
+	                			_log.warning("Missing htm: " + htmFile + " !");
+	                		}
+                    	}
+                    	else
+                    		showVaultWindowWithdraw(player, null, (byte) 0);
+                    }
                     else
                     {
                         html.setFile("data/html/clanHallManager/vault.htm");
@@ -111,6 +133,17 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                     sendHtmlMessage(player, html);
                 }
                 return;
+            }
+            else if (actualCommand.startsWith("WithdrawSortedC"))
+            {
+            	String param[] = command.split("_");
+            	if (param.length > 2)
+            		showVaultWindowWithdraw(player, WarehouseListType.valueOf(param[1]), SortedWareHouseWithdrawalList.getOrder(param[2]));
+            	else if (param.length > 1)
+            		showVaultWindowWithdraw(player, WarehouseListType.valueOf(param[1]), SortedWareHouseWithdrawalList.A2Z);
+            	else
+            		showVaultWindowWithdraw(player, WarehouseListType.ALL, SortedWareHouseWithdrawalList.A2Z);
+            	return;
             }
             else if (actualCommand.equalsIgnoreCase("door"))
             {
@@ -1431,21 +1464,24 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
         player.sendPacket(new WareHouseDepositList(player, WareHouseDepositList.CLAN)); //Or Clan Hall??
     }
 
-    private void showVaultWindowWithdraw(L2PcInstance player)
+    private void showVaultWindowWithdraw(L2PcInstance player, WarehouseListType itemtype, byte sortorder)
     {
-    	if (player.isClanLeader()||((player.getClanPrivileges() & L2Clan.CP_CL_VIEW_WAREHOUSE) == L2Clan.CP_CL_VIEW_WAREHOUSE))
+    	if (player.isClanLeader() || ((player.getClanPrivileges() & L2Clan.CP_CL_VIEW_WAREHOUSE) == L2Clan.CP_CL_VIEW_WAREHOUSE))
     	{
     		player.sendPacket(ActionFailed.STATIC_PACKET);
     		player.setActiveWarehouse(player.getClan().getWarehouse());
-    		player.sendPacket(new WareHouseWithdrawalList(player, WareHouseWithdrawalList.CLAN));
+    		if (itemtype != null)
+				player.sendPacket(new SortedWareHouseWithdrawalList(player, WareHouseWithdrawalList.CLAN, itemtype, sortorder));
+			else
+				player.sendPacket(new WareHouseWithdrawalList(player, WareHouseWithdrawalList.CLAN));
     	}
     	else
-        {
+    	{
     		NpcHtmlMessage html = new NpcHtmlMessage(1);
             html.setFile("data/html/clanHallManager/not_authorized.htm");
             sendHtmlMessage(player, html);
-        }
-    }
+    	}
+	}
 
     private void doTeleport(L2PcInstance player, int val)
     {
