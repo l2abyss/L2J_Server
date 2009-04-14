@@ -52,7 +52,18 @@ public class L2PetManagerInstance extends L2MerchantInstance
 	{
 		super(objectID, template);
 	}
-	
+
+	@Override
+	public String getHtmlPath(int npcId, int val)
+	{
+		String pom = "";
+		
+		if (val == 0) pom = "" + npcId;
+		else pom = npcId + "-" + val;
+		
+		return "data/html/petmanager/" + pom + ".htm";
+	}
+
 	public void onAction(L2PcInstance player)
 	{
 		if (!canTarget(player))
