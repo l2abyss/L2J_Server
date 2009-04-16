@@ -29,6 +29,8 @@ import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
+import net.sf.l2j.gameserver.network.serverpackets.WareHouseDepositList;
+import net.sf.l2j.gameserver.network.serverpackets.WareHouseWithdrawalList;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
@@ -185,14 +187,28 @@ public class L2FortManagerInstance extends L2MerchantInstance
 					return;
 				}
 			}
-			else if (actualCommand.equalsIgnoreCase("manage_functions"))
-			{
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-				html.setFile("data/html/fortress/foreman-manage.htm");
-				html.replace("%objectId%", String.valueOf(getObjectId()));
-				player.sendPacket(html);
-				return;
-			}
+            else if(actualCommand.equalsIgnoreCase("manage_vault"))
+            {
+            	NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+                if ((player.getClanPrivileges() & L2Clan.CP_CL_VIEW_WAREHOUSE) == L2Clan.CP_CL_VIEW_WAREHOUSE)
+                {
+                    if (val.equalsIgnoreCase("deposit"))
+                        showVaultWindowDeposit(player);
+                    else if (val.equalsIgnoreCase("withdraw"))
+                        showVaultWindowWithdraw(player);
+                    else
+                    {
+                        html.setFile("data/html/fortress/foreman-vault.htm");
+                        sendHtmlMessage(player, html);
+                    }
+                }
+                else
+                {
+                    html.setFile("data/html/fortress/foreman-noprivs.htm");
+                    sendHtmlMessage(player, html);
+                }
+                return;
+            }
 			else if (actualCommand.equalsIgnoreCase("functions"))
 			{
 				if (val.equalsIgnoreCase("tele"))
@@ -923,4 +939,27 @@ public class L2FortManagerInstance extends L2MerchantInstance
 		}
 		return COND_ALL_FALSE;
 	}
+	
+    private void showVaultWindowDeposit(L2PcInstance player)
+    {
+        player.sendPacket(ActionFailed.STATIC_PACKET);
+        player.setActiveWarehouse(player.getClan().getWarehouse());
+        player.sendPacket(new WareHouseDepositList(player, WareHouseDepositList.CLAN));
+    }
+
+    private void showVaultWindowWithdraw(L2PcInstance player)
+    {
+    	if (player.isClanLeader()||((player.getClanPrivileges() & L2Clan.CP_CL_VIEW_WAREHOUSE) == L2Clan.CP_CL_VIEW_WAREHOUSE))
+    	{
+    		player.sendPacket(ActionFailed.STATIC_PACKET);
+    		player.setActiveWarehouse(player.getClan().getWarehouse());
+    		player.sendPacket(new WareHouseWithdrawalList(player, WareHouseWithdrawalList.CLAN));
+    	}
+    	else
+        {
+    		NpcHtmlMessage html = new NpcHtmlMessage(1);
+            html.setFile("data/html/fortress/foreman-noprivs.htm");
+            sendHtmlMessage(player, html);
+        }
+    }
 }
