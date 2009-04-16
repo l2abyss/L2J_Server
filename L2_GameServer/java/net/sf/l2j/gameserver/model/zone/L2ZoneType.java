@@ -241,6 +241,21 @@ public abstract class L2ZoneType
 	}
 	
 	/**
+	 * Checks if the given coordinates are within zone's plane
+	 * @param x
+	 * @param y
+	 */
+	public boolean isInsideZone(int x, int y)
+	{
+		for (L2ZoneForm zone : getZones())
+		{
+			if (zone.isInsideZone(x, y, zone.getHighZ()))
+				return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * Checks if the given coordinates are within the zone
 	 * @param x
 	 * @param y

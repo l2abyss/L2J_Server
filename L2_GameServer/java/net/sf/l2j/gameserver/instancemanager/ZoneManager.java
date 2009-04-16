@@ -330,13 +330,6 @@ public class ZoneManager
 							}
 							addZone(temp);
 							
-							// Skip checks for fishing zones
-							if (temp instanceof L2FishingZone)
-							{
-								zoneCount++;
-								continue;
-							}
-							
 							// Register the zone into any world region it
 							// intersects with...
 							// currently 11136 test for each zone :>
@@ -425,6 +418,25 @@ public class ZoneManager
 	}
 
 	/**
+	 * Returns all zones from given coordinates (plane)
+	 * 
+	 * @param x
+	 * @param y
+	 * @return zones
+	 */
+	public FastList<L2ZoneType> getZones(int x, int y)
+	{
+		L2WorldRegion region = L2World.getInstance().getRegion(x, y);
+		FastList<L2ZoneType> temp = new FastList<L2ZoneType>();
+		for (L2ZoneType zone : region.getZones())
+		{
+			if (zone.isInsideZone(x, y))
+				temp.add(zone);
+		}
+		return temp;
+	}
+
+	/**
 	 * Returns all zones from given coordinates 
 	 *
 	 * @param x
@@ -455,34 +467,6 @@ public class ZoneManager
     	return null;
     }
     
-	/**
-	 * getFishingZone() - This function was modified to check the coordinates without caring for Z.
-	 * This allows for the player to fish off bridges, into the water, or from other similar high places. One
-	 * should be able to cast the line from up into the water, not only fishing with one's feet wet. :)
-	 *
-	 *  TODO: Consider in the future, limiting the maximum height one can be above water, if we start getting
-	 *  "orbital fishing" players... xD
-	 */
-	public final L2FishingZone getFishingZone(int x, int y, int z)
-	{
-    	for (L2ZoneType temp : ZoneManager.getInstance().getAllZones())
-    	{
-    		if (temp instanceof L2FishingZone && temp.isInsideZone(x, y, ((L2FishingZone)temp).getWaterZ()))
-    			return ((L2FishingZone)temp);
-    	}
-		return null;
-	}
-	
-	public final L2WaterZone getWaterZone(int x, int y, int z)
-	{
-    	for (L2ZoneType temp : ZoneManager.getInstance().getZones(x,z,y))
-    	{
-    		if (temp instanceof L2WaterZone && temp.isInsideZone(x, y, ((L2WaterZone)temp).getWaterZ()))
-    			return ((L2WaterZone)temp);
-    	}
-		return null;
-	}
-	
     public final L2OlympiadStadiumZone getOlympiadStadium(L2Character character)
     {
     	for (L2ZoneType temp : ZoneManager.getInstance().getZones(character.getX(), character.getY(), character.getZ()))
