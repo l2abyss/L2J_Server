@@ -119,12 +119,34 @@ public class L2FortManagerInstance extends L2MerchantInstance
 			{
 				val = st.nextToken();
 			}
-
-			if (actualCommand.equalsIgnoreCase("banish_foreigner"))
+			if (actualCommand.equalsIgnoreCase("expel"))
+			{
+				if ((player.getClanPrivileges() & L2Clan.CP_CS_DISMISS) == L2Clan.CP_CS_DISMISS)
+				{
+					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+					html.setFile("data/html/fortress/foreman-expel.htm");
+					html.replace("%objectId%", String.valueOf(getObjectId()));
+					player.sendPacket(html);
+					return;
+				}
+				else
+				{
+					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+					html.setFile("data/html/fortress/foreman-noprivs.htm");
+					html.replace("%objectId%", String.valueOf(getObjectId()));
+					player.sendPacket(html);
+					return;
+				}
+			}
+			else if (actualCommand.equalsIgnoreCase("banish_foreigner"))
 			{
 				if ((player.getClanPrivileges() & L2Clan.CP_CS_DISMISS) == L2Clan.CP_CS_DISMISS)
 				{
 					getFort().banishForeigners(); // Move non-clan members off fortress area
+					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+					html.setFile("data/html/fortress/foreman-expeled.htm");
+					html.replace("%objectId%", String.valueOf(getObjectId()));
+					player.sendPacket(html);
 					return;
 				}
 				else
@@ -140,13 +162,13 @@ public class L2FortManagerInstance extends L2MerchantInstance
 			{
 				if (player.isClanLeader())
 				{
+					SimpleDateFormat format2 = new SimpleDateFormat("HH");
+					SimpleDateFormat format3 = new SimpleDateFormat("mm");
 					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 					html.setFile("data/html/fortress/foreman-report.htm");
 					html.replace("%objectId%", String.valueOf(getObjectId()));
-					L2Clan clan = getFort().getOwnerClan();
-					html.replace("%clanname%", clan.getName());
-					html.replace("%clanleadername%", clan.getLeaderName());
-					html.replace("%fortname%", getFort().getName());
+					html.replace("%hr%", format2.format(getFort().getOwnedTime()));
+					html.replace("%min%", format3.format(getFort().getOwnedTime()));
 					player.sendPacket(html);
 					return;
 				}
