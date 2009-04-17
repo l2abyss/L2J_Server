@@ -429,7 +429,8 @@ public class MultiSellChoose extends L2GameClientPacket
 				continue; // do not yet add this adena amount to the list as taxIngredient adena might be entered later (order not guaranteed)
 			}
 			// if it is an armor/weapon, modify the enchantment level appropriately, if necessary
-			else if (maintainEnchantment)
+			// not used for clan reputation and fame
+			else if (maintainEnchantment && newIngredient.getItemId() > 0)
 			{
 				L2Item tempItem = ItemTable.getInstance().createDummyItem(newIngredient.getItemId()).getItem();
 				if ((tempItem instanceof L2Armor) || (tempItem instanceof L2Weapon))
