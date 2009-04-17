@@ -380,7 +380,7 @@ public class L2Party {
 
 			if (isLeader && getPartyMembers().size() > 1)
 			{
-				msg = new SystemMessage(SystemMessageId.S1_HAS_BECOME_A_PARTY_LEADER);
+				msg = new SystemMessage(SystemMessageId.C1_HAS_BECOME_A_PARTY_LEADER);
 				msg.addString(getLeader().getName());
 				broadcastToPartyMembers(msg);
 				broadcastToPartyMembersNewLeader();
@@ -438,7 +438,7 @@ public class L2Party {
 					getPartyMembers().set(p1,temp);
 					
 
-					SystemMessage msg = new SystemMessage(SystemMessageId.S1_HAS_BECOME_A_PARTY_LEADER);
+					SystemMessage msg = new SystemMessage(SystemMessageId.C1_HAS_BECOME_A_PARTY_LEADER);
 					msg.addString(getLeader().getName());
 					broadcastToPartyMembers(msg);
 					broadcastToPartyMembersNewLeader();

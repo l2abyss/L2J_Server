@@ -364,7 +364,7 @@ public class MultiSellChoose extends L2GameClientPacket
 			{
 				if (maintainEnchantment && e.getEnchantmentLevel() > 0)
 				{
-					sm = new SystemMessage(SystemMessageId.ACQUIRED);
+					sm = new SystemMessage(SystemMessageId.ACQUIRED_S1_S2);
 					sm.addNumber(e.getEnchantmentLevel());
 					sm.addItemName(e.getItemId());
 				}

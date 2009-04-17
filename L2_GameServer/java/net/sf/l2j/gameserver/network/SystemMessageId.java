@@ -490,7 +490,7 @@ public enum SystemMessageId
 
 	/**
 	 * ID: 78<br>
-	 * Message: Do you wish to delete $s1?
+	 * Message: Do you really wish to delete $s1%?
 	 */
 	WISH_DELETE_S1(78),
 
@@ -682,7 +682,7 @@ public enum SystemMessageId
 
 	/**
 	 * ID: 110<br>
-	 * Message: The effects of $s1 flow through you.
+	 * Message: $s1 $s2's effect can be felt.
 	 */
 	YOU_FEEL_S1_EFFECT(110),
 
@@ -2177,7 +2177,7 @@ public enum SystemMessageId
 	* ID: 371<br>
 	* Message: Acquired +$s1 $s2.
 	*/
-	ACQUIRED(371),
+	ACQUIRED_S1_S2(371),
 
 	/**
 	 * ID: 372<br>
@@ -4844,25 +4844,25 @@ public enum SystemMessageId
 	* ID: 819<br>
 	* Message: Tickets sales are closed for Monster Race $s1. Odds are posted.
 	*/
-	MONSRACE_TICKET_SALES_CLOSED(819),
+	MONSRACE_S1_TICKET_SALES_CLOSED(819),
 
 	/**
 	* ID: 820<br>
 	* Message: Monster Race $s2 will begin in $s1 minute(s)!
 	*/
-	MONSRACE_BEGINS_IN_S1_MINUTES(820),
+	MONSRACE_S2_BEGINS_IN_S1_MINUTES(820),
 
 	/**
 	* ID: 821<br>
 	* Message: Monster Race $s1 will begin in 30 seconds!
 	*/
-	MONSRACE_BEGINS_IN_30_SECONDS(821),
+	MONSRACE_S1_BEGINS_IN_30_SECONDS(821),
 
 	/**
 	* ID: 822<br>
 	* Message: Monster Race $s1 is about to begin! Countdown in five seconds!
 	*/
-	MONSRACE_COUNTDOWN_IN_FIVE_SECONDS(822),
+	MONSRACE_S1_COUNTDOWN_IN_FIVE_SECONDS(822),
 
 	/**
 	* ID: 823<br>
@@ -4880,7 +4880,7 @@ public enum SystemMessageId
 	* ID: 825<br>
 	* Message: Monster Race $s1 is finished!
 	*/
-	MONSRACE_RACE_END(825),
+	MONSRACE_S1_RACE_END(825),
 
 	/**
 	* ID: 826<br>
@@ -4896,9 +4896,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 828<br>
-	* Message: Are you sure you wish to delete the  macro?
+	* Message: Are you sure you wish to delete the $s1 macro?
 	*/
-	WISH_TO_DELETE_MACRO(828),
+	WISH_TO_DELETE_S1_MACRO(828),
 
 	/**
 	* ID: 829<br>
@@ -4908,15 +4908,15 @@ public enum SystemMessageId
 
 	/**
 	* ID: 830<br>
-	* Message: You have recommended $s1. You are authorized to make $s2 more recommendations.
+	* Message: You have recommended $c1. You have $s2 recommendations left.
 	*/
-	YOU_HAVE_RECOMMENDED(830),
+	YOU_HAVE_RECOMMENDED_C1_YOU_HAVE_S2_RECOMMENDATIONS_LEFT(830),
 
 	/**
 	* ID: 831<br>
-	* Message: You have been recommended by $s1.
+	* Message: You have been recommended by $c1.
 	*/
-	YOU_HAVE_BEEN_RECOMMENDED(831),
+	YOU_HAVE_BEEN_RECOMMENDED_BY_C1(831),
 
 	/**
 	* ID: 832<br>
@@ -4933,9 +4933,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 834<br>
-	* Message: $s1 has rolled $s2.
+	* Message: $c1 has rolled $s2.
 	*/
-	S1_ROLLED_S2(834),
+	C1_ROLLED_S2(834),
 
 	/**
 	* ID: 835<br>
@@ -5732,27 +5732,27 @@ public enum SystemMessageId
 
 	/**
 	* ID: 967<br>
-	* Message: Do you accept 's party invitation? (Item Distribution: Random including spoil.)
+	* Message: Do you accept $c1's party invitation? (Item Distribution: Random including spoil.)
 	*/
-	PARTY_INVITE_RANDOM_INCLUDING_SPOIL(967),
+	C1_PARTY_INVITE_RANDOM_INCLUDING_SPOIL(967),
 
 	/**
 	* ID: 968<br>
-	* Message: Do you accept 's party invitation? (Item Distribution: By Turn.)
+	* Message: Do you accept $c1's party invitation? (Item Distribution: By Turn.)
 	*/
-	PARTY_INVITE_BY_TURN(968),
+	C1_PARTY_INVITE_BY_TURN(968),
 
 	/**
 	* ID: 969<br>
-	* Message: Do you accept 's party invitation? (Item Distribution: By Turn including spoil.)
+	* Message: Do you accept $c1's party invitation? (Item Distribution: By Turn including spoil.)
 	*/
-	PARTY_INVITE_BY_TURN_INCLUDING_SPOIL(969),
+	C1_PARTY_INVITE_BY_TURN_INCLUDING_SPOIL(969),
 
 	/**
 	* ID: 970<br>
-	* Message: $s2's MP has been drained by $s1.
+	* Message: $s2's MP has been drained by $c1.
 	*/
-	S2_MP_HAS_BEEN_DRAINED_BY_S1(970),
+	S2_MP_HAS_BEEN_DRAINED_BY_C1(970),
 
 	/**
 	* ID: 971<br>
@@ -6026,9 +6026,9 @@ public enum SystemMessageId
 
 	/**
 	 * ID: 1016<br>
-	 * Message: Pet received $s2 damage by $s1.
+	 * Message: Pet received $s2 damage by $c1.
 	 */
-	PET_RECEIVED_S2_DAMAGE_BY_S1(1016),
+	PET_RECEIVED_S2_DAMAGE_BY_C1(1016),
 
 	/**
 	 * ID: 1017<br>
@@ -6152,15 +6152,15 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1037<br>
-	* Message: $s1 manufactured $s2.
+	* Message: $c1 manufactured $s2.
 	*/
-	S1_MANUFACTURED_S2(1037),
+	C1_MANUFACTURED_S2(1037),
 
 	/**
 	* ID: 1038<br>
-	* Message: $s1 manufactured $s3 $s2(s).
+	* Message: $c1 manufactured $s3 $s2(s).
 	*/
-	S1_MANUFACTURED_S3_S2_S(1038),
+	C1_MANUFACTURED_S3_S2_S(1038),
 
 	/**
 	* ID: 1039<br>
@@ -6329,9 +6329,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1067<br>
-	* Message: $s2 HP has been restored by $s1
+	* Message: $s2 HP has been restored by $c1
 	*/
-	S2_HP_RESTORED_BY_S1(1067),
+	S2_HP_RESTORED_BY_C1(1067),
 
 	/**
 	* ID: 1068<br>
@@ -6341,9 +6341,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1069<br>
-	* Message: $s2 MP has been restored by $s1.
+	* Message: $s2 MP has been restored by $c1.
 	*/
-	S2_MP_RESTORED_BY_S1(1069),
+	S2_MP_RESTORED_BY_C1(1069),
 
 	/**
 	* ID: 1070<br>
@@ -6463,9 +6463,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1089<br>
-	* Message: $s1 has obtained a first anniversary commemorative item.
+	* Message: $c1 has obtained a first anniversary commemorative item.
 	*/
-	S1_OBTAINED_ANNIVERSARY_ITEM(1089),
+	C1_OBTAINED_ANNIVERSARY_ITEM(1089),
 
 	/**
 	* ID: 1090<br>
@@ -6757,15 +6757,15 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1137<br>
-	* Message: $s1 harvested $s3 $s2(s).
+	* Message: $c1 harvested $s3 $s2(s).
 	*/
-	S1_HARVESTED_S3_S2S(1137),
+	C1_HARVESTED_S3_S2S(1137),
 
 	/**
 	* ID: 1138<br>
-	* Message: $s1 harvested $s2(s).
+	* Message: $c1 harvested $s2(s).
 	*/
-	S1_HARVESTED_S2S(1138),
+	C1_HARVESTED_S2S(1138),
 
 	/**
 	* ID: 1139<br>
@@ -6805,75 +6805,75 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1145<br>
-	* Message: $s2 has been created for $s1 after the payment of $s3 adena is received.
+	* Message: $s2 has been created for $c1 after the payment of $s3 adena is received.
 	*/
-	S2_CREATED_FOR_S1_FOR_S3_ADENA(1145),
+	S2_CREATED_FOR_C1_FOR_S3_ADENA(1145),
 
 	/**
 	* ID: 1146<br>
-	* Message: $s1 created $s2 after receiving $s3 adena.
+	* Message: $c1 created $s2 after receiving $s3 adena.
 	*/
-	S1_CREATED_S2_FOR_S3_ADENA(1146),
+	C1_CREATED_S2_FOR_S3_ADENA(1146),
 
 	/**
 	* ID: 1147<br>
-	* Message: $s2 $s3 have been created for $s1 at the price of $s4 adena.
+	* Message: $s2 $s3 have been created for $c1 at the price of $s4 adena.
 	*/
-	S2_S3_S_CREATED_FOR_S1_FOR_S4_ADENA(1147),
+	S2_S3_S_CREATED_FOR_C1_FOR_S4_ADENA(1147),
 
 	/**
 	* ID: 1148<br>
-	* Message: $s1 created $s2 $s3 at the price of $s4 adena.
+	* Message: $c1 created $s2 $s3 at the price of $s4 adena.
 	*/
-	S1_CREATED_S2_S3_S_FOR_S4_ADENA(1148),
+	C1_CREATED_S2_S3_S_FOR_S4_ADENA(1148),
 
 	/**
 	* ID: 1149<br>
-	* Message: Your attempt to create $s2 for $s1 at the price of $s3 adena has failed.
+	* Message: Your attempt to create $s2 for $c1 at the price of $s3 adena has failed.
 	*/
-	CREATION_OF_S2_FOR_S1_AT_S3_ADENA_FAILED(1149),
+	CREATION_OF_S2_FOR_C1_AT_S3_ADENA_FAILED(1149),
 
 	/**
 	* ID: 1150<br>
-	* Message: $s1 has failed to create $s2 at the price of $s3 adena.
+	* Message: $c1 has failed to create $s2 at the price of $s3 adena.
 	*/
-	S1_FAILED_TO_CREATE_S2_FOR_S3_ADENA(1150),
+	C1_FAILED_TO_CREATE_S2_FOR_S3_ADENA(1150),
 
 	/**
 	* ID: 1151<br>
-	* Message: $s2 is sold to $s1 at the price of $s3 adena.
+	* Message: $s2 is sold to $c1 at the price of $s3 adena.
 	*/
-	S2_SOLD_TO_S1_FOR_S3_ADENA(1151),
+	S2_SOLD_TO_C1_FOR_S3_ADENA(1151),
 
 	/**
 	* ID: 1152<br>
-	* Message: $s2 $s3 have been sold to $s1 for $s4 adena.
+	* Message: $s2 $s3 have been sold to $c1 for $s4 adena.
 	*/
-	S3_S2_S_SOLD_TO_S1_FOR_S4_ADENA(1152),
+	S3_S2_S_SOLD_TO_C1_FOR_S4_ADENA(1152),
 
 	/**
 	* ID: 1153<br>
-	* Message: $s2 has been purchased from $s1 at the price of $s3 adena.
+	* Message: $s2 has been purchased from $c1 at the price of $s3 adena.
 	*/
-	S2_PURCHASED_FROM_S1_FOR_S3_ADENA(1153),
+	S2_PURCHASED_FROM_C1_FOR_S3_ADENA(1153),
 
 	/**
 	* ID: 1154<br>
-	* Message: $s3 $s2 has been purchased from $s1 for $s4 adena.
+	* Message: $s3 $s2 has been purchased from $c1 for $s4 adena.
 	*/
-	S3_S2_S_PURCHASED_FROM_S1_FOR_S4_ADENA(1154),
+	S3_S2_S_PURCHASED_FROM_C1_FOR_S4_ADENA(1154),
 
 	/**
 	* ID: 1155<br>
-	* Message: +$s2 $s3 have been sold to $s1 for $s4 adena.
+	* Message: +$s2 $s3 have been sold to $c1 for $s4 adena.
 	*/
-	S3_S2_SOLD_TO_S1_FOR_S4_ADENA(1155),
+	S3_S2_SOLD_TO_C1_FOR_S4_ADENA(1155),
 
 	/**
 	* ID: 1156<br>
-	* Message: +$s2 $s3 has been purchased from $s1 for $s4 adena.
+	* Message: +$s2 $s3 has been purchased from $c1 for $s4 adena.
 	*/
-	S2_S3_PURCHASED_FROM_S1_FOR_S4_ADENA(1156),
+	S2_S3_PURCHASED_FROM_C1_FOR_S4_ADENA(1156),
 
 	/**
 	* ID: 1157<br>
@@ -6889,9 +6889,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1159<br>
-	* Message: You requested $s1's magic.
+	* Message: The ferry from Talking Island will arrive at Gludin Harbor in approximately 10 minutes.
 	*/
-	REQUESTED_S1_MAGIC(1159),
+	FERRY_FROM_TALKING_ARRIVE_AT_GLUDIN_10_MINUTES(1159),
 
 	/**
 	* ID: 1160<br>
@@ -7185,9 +7185,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1208<br>
-	* Message: $s1 died and dropped $s3 $s2.
+	* Message: $c1 died and dropped $s3 $s2.
 	*/
-	S1_DIED_DROPPED_S3_S2(1208),
+	C1_DIED_DROPPED_S3_S2(1208),
 
 	/**
 	* ID: 1209<br>
@@ -7308,9 +7308,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1228<br>
-	* Message: $s1 has blocked you. You cannot send mail to $s1.
+	* Message: $c1 has blocked you. You cannot send mail to $c1.
 	*/
-	S1_BLOCKED_YOU_CANNOT_MAIL(1228),
+	C1_BLOCKED_YOU_CANNOT_MAIL(1228),
 
 	/**
 	* ID: 1229<br>
@@ -7417,9 +7417,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1246<br>
-	* Message: $s1 died and has dropped $s2 adena.
+	* Message: $c1 died and has dropped $s2 adena.
 	*/
-	S1_DIED_DROPPED_S2_ADENA(1246),
+	C1_DIED_DROPPED_S2_ADENA(1246),
 
 	/**
 	* ID: 1247<br>
@@ -7743,9 +7743,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1299<br>
-	* Message: $s1's casting has been interrupted.
+	* Message: $c1's casting has been interrupted.
 	*/
-	S1_CASTING_INTERRUPTED(1299),
+	C1_CASTING_INTERRUPTED(1299),
 
 	/**
 	* ID: 1300<br>
@@ -8181,10 +8181,10 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1370<br>
-	* Message: Your message to $s1 did not reach its recipient. You cannot send mail
+	* Message: Your message to $c1 did not reach its recipient. You cannot send mail
 	* to the GM staff.
 	*/
-	CANNOT_MAIL_GM(1370),
+	CANNOT_MAIL_GM_C1(1370),
 
 	/**
 	* ID: 1371<br>
@@ -8201,45 +8201,45 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1373<br>
-	* Message: $s1 has picked up $s2 that was dropped by a Raid Boss.
+	* Message: $c1 has picked up $s2 that was dropped by a Raid Boss.
 	*/
-	S1_PICKED_UP_S2_FROM_RAIDBOSS(1373),
+	C1_PICKED_UP_S2_FROM_RAIDBOSS(1373),
 
 	/**
 	* ID: 1374<br>
-	* Message: $s1 has picked up $s3 $s2(s) that was dropped by a Raid Boss.
+	* Message: $c1 has picked up $s3 $s2(s) that was dropped by a Raid Boss.
 	*/
-	S1_PICKED_UP_S3_S2_S_FROM_RAIDBOSS(1374),
+	C1_PICKED_UP_S3_S2_S_FROM_RAIDBOSS(1374),
 
 	/**
 	* ID: 1375<br>
-	* Message: $s1 has picked up $s2 adena that was dropped by a Raid Boss.
+	* Message: $c1 has picked up $s2 adena that was dropped by a Raid Boss.
 	*/
-	S1_PICKED_UP_S2_ADENA_FROM_RAIDBOSS(1375),
+	C1_PICKED_UP_S2_ADENA_FROM_RAIDBOSS(1375),
 
 	/**
 	* ID: 1376<br>
-	* Message: $s1 has picked up $s2 that was dropped by another character.
+	* Message: $c1 has picked up $s2 that was dropped by another character.
 	*/
-	S1_PICKED_UP_S2_FROM_ANOTHER_CHARACTER(1376),
+	C1_PICKED_UP_S2_FROM_ANOTHER_CHARACTER(1376),
 
 	/**
 	* ID: 1377<br>
-	* Message: $s1 has picked up $s3 $s2(s) that was dropped by a another character.
+	* Message: $c1 has picked up $s3 $s2(s) that was dropped by a another character.
 	*/
-	S1_PICKED_UP_S3_S2_S_FROM_ANOTHER_CHARACTER(1377),
+	C1_PICKED_UP_S3_S2_S_FROM_ANOTHER_CHARACTER(1377),
 
 	/**
 	* ID: 1378<br>
-	* Message: $s1 has picked up +$s3 $s2 that was dropped by a another character.
+	* Message: $c1 has picked up +$s3 $s2 that was dropped by a another character.
 	*/
-	S1_PICKED_UP_S3_S2_FROM_ANOTHER_CHARACTER(1378),
+	C1_PICKED_UP_S3_S2_FROM_ANOTHER_CHARACTER(1378),
 
 	/**
 	* ID: 1379<br>
-	* Message: $s1 has obtained $s2 adena.
+	* Message: $c1 has obtained $s2 adena.
 	*/
-	S1_OBTAINED_S2_ADENA(1379),
+	C1_OBTAINED_S2_ADENA(1379),
 
 	/**
 	* ID: 1380<br>
@@ -8268,9 +8268,9 @@ public enum SystemMessageId
 
 	/**
 	 * ID: 1384<br>
-	 * Message: $s1 has become the party leader.
+	 * Message: $c1 has become the party leader.
 	 */
-	S1_HAS_BECOME_A_PARTY_LEADER(1384),
+	C1_HAS_BECOME_A_PARTY_LEADER(1384),
 
 	/**
 	 * ID: 1385<br>
@@ -8849,7 +8849,7 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1481<br>
-	* Message: You've selected to join a non-class specific game. Continue?
+	* Message: You have selected an individual, non-class-limited match. Do you wish to participate?
 	*/
 	OLYMPIAD_NON_CLASS_CONFIRM(1481),
 
@@ -8933,7 +8933,7 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1495<br>
-	* Message: The Grand Olympiad match will start in $s1 second(s).
+	* Message: The match will start in $s1 second(s).
 	*/
 	THE_GAME_WILL_START_IN_S1_SECOND_S(1495),
 
@@ -8989,7 +8989,7 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1504<br>
-	* Message: You have been registered in the Grand Olympiad Games waiting list for a non-class specific match.
+	* Message: You have registered on the waiting list for the non-class-limited individual match event.
 	*/
 	YOU_HAVE_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_NO_CLASS_GAMES(1504),
 
@@ -10462,9 +10462,9 @@ public enum SystemMessageId
 
 	/**
 	 * ID: 1750<br>
-	 * Message: If you posses $s1, you cannot participate in the Olympiad.
+	 * Message: $c1% does not meet the participation requirements. The owner of $s2 cannot participate in the Olympiad.
 	 */
-	CANNOT_JOIN_OLYMPIAD_POSSESSING_S1(1750),
+	C1_CANNOT_JOIN_OLYMPIAD_POSSESSING_S2(1750),
 
 	/**
 	 * ID: 1751<br>
@@ -11116,9 +11116,9 @@ public enum SystemMessageId
 
 	/**
 	 * ID: 1857<br>
-	 * Message: Since you now own $s1, you cannot participate in the Olympiad.
+	 * Message: $c1 is the owner of $s2 and cannot participate in the Olympiad.
 	 */
-	YOU_POSSESS_S1_OLYMPIAD_CANCELLED(1857),
+	C1_OWNS_S2_AND_CANNOT_PARTICIPATE_IN_OLYMPIAD(1857),
 
 	/**
 	 * ID: 1858<br>
@@ -12142,9 +12142,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2029<br>
-	* Message: You cannot participate in the Olympiad during teleport.
+	* Message: $c1 is currently teleporting and cannot participate in the Olympiad.
 	*/
-	CANT_PARTICIPATE_OLYMPIAD_DURING_TELEPORT(2029),
+	C1_CANNOT_PARTICIPATE_IN_OLYMPIAD_DURING_TELEPORT(2029),
 
 	/**
 	* ID: 2030<br>
@@ -13639,7 +13639,7 @@ public enum SystemMessageId
 	* ID: 2303<br>
 	* Message: There are $s2 second(s) remaining in $s1's re-use time.
 	*/
-	S2_SECONDS_REMAIMNING_FOR_REUSE_S1(2303),
+	S2_SECONDS_REMAINING_FOR_REUSE_S1(2303),
 	
 	/**
 	* ID: 2304<br>

@@ -111,17 +111,17 @@ public class L2RaceManagerInstance extends L2Npc
                                          new Announcement(
                                                           SystemMessageId.MONSRACE_TICKETS_STOP_IN_S1_MINUTES),
                                          6 * MINUTE, 10 * MINUTE);
-            s.scheduleGeneralAtFixedRate(new Announcement(SystemMessageId.MONSRACE_TICKET_SALES_CLOSED),
+            s.scheduleGeneralAtFixedRate(new Announcement(SystemMessageId.MONSRACE_S1_TICKET_SALES_CLOSED),
                                          7 * MINUTE, 10 * MINUTE);
-            s.scheduleGeneralAtFixedRate(new Announcement(SystemMessageId.MONSRACE_BEGINS_IN_S1_MINUTES),
+            s.scheduleGeneralAtFixedRate(new Announcement(SystemMessageId.MONSRACE_S2_BEGINS_IN_S1_MINUTES),
                                          7 * MINUTE, 10 * MINUTE);
-            s.scheduleGeneralAtFixedRate(new Announcement(SystemMessageId.MONSRACE_BEGINS_IN_S1_MINUTES),
+            s.scheduleGeneralAtFixedRate(new Announcement(SystemMessageId.MONSRACE_S2_BEGINS_IN_S1_MINUTES),
                                          8 * MINUTE, 10 * MINUTE);
-            s.scheduleGeneralAtFixedRate(new Announcement(SystemMessageId.MONSRACE_BEGINS_IN_30_SECONDS),
+            s.scheduleGeneralAtFixedRate(new Announcement(SystemMessageId.MONSRACE_S1_BEGINS_IN_30_SECONDS),
                                          8 * MINUTE + 30 * SECOND, 10 * MINUTE);
             s.scheduleGeneralAtFixedRate(
                                          new Announcement(
-                                                          SystemMessageId.MONSRACE_COUNTDOWN_IN_FIVE_SECONDS),
+                                                          SystemMessageId.MONSRACE_S1_COUNTDOWN_IN_FIVE_SECONDS),
                                          8 * MINUTE + 50 * SECOND, 10 * MINUTE);
             s.scheduleGeneralAtFixedRate(new Announcement(SystemMessageId.MONSRACE_BEGINS_IN_S1_SECONDS),
                                          8 * MINUTE + 55 * SECOND, 10 * MINUTE);
@@ -178,20 +178,21 @@ public class L2RaceManagerInstance extends L2Npc
                 sm.addNumber(_raceNumber);
                 break;
             case 818: // SystemMessageId.MONSRACE_TICKETS_STOP_IN_S1_MINUTES
-            case 820: // SystemMessageId.MONSRACE_BEGINS_IN_S1_MINUTES
+            case 820: // SystemMessageId.MONSRACE_S2_BEGINS_IN_S1_MINUTES
             case 823: // SystemMessageId.MONSRACE_BEGINS_IN_S1_SECONDS
                 sm.addNumber(_minutes);
                 sm.addNumber(_raceNumber);
                 _minutes--;
                 break;
-            case 819: // SystemMessageId.MONSRACE_TICKET_SALES_CLOSED
+            case 819: // SystemMessageId.MONSRACE_S1_TICKET_SALES_CLOSED
                 //_log.info("Sales closed");
                 sm.addNumber(_raceNumber);
                 _state = WAITING;
                 _minutes = 2;
                 break;
-            case 822: // SystemMessageId.MONSRACE_COUNTDOWN_IN_FIVE_SECONDS
-            case 825: // SystemMessageId.MONSRACE_RACE_END
+            case 821: // SystemMessageId.MONSRACE_S1_BEGINS_IN_30_SECONDS
+            case 822: // SystemMessageId.MONSRACE_S1_COUNTDOWN_IN_FIVE_SECONDS
+            case 825: // SystemMessageId.MONSRACE_S1_RACE_END
                 sm.addNumber(_raceNumber);
                 _minutes = 5;
                 break;
@@ -405,7 +406,7 @@ public class L2RaceManagerInstance extends L2Npc
             if (!player.reduceAdena("Race", _cost[priceId - 1], this, true)) return;
             player.setRace(0, 0);
             player.setRace(1, 0);
-            sm = new SystemMessage(SystemMessageId.ACQUIRED);
+            sm = new SystemMessage(SystemMessageId.ACQUIRED_S1_S2);
             sm.addNumber(_raceNumber);
             sm.addItemName(4443);
             player.sendPacket(sm);
@@ -496,7 +497,7 @@ public class L2RaceManagerInstance extends L2Npc
         public void run()
         {
             makeAnnouncement(SystemMessageId.MONSRACE_FIRST_PLACE_S1_SECOND_S2);
-            makeAnnouncement(SystemMessageId.MONSRACE_RACE_END);
+            makeAnnouncement(SystemMessageId.MONSRACE_S1_RACE_END);
             _raceNumber++;
 
             DeleteObject obj = null;

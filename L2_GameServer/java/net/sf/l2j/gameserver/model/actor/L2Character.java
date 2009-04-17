@@ -5097,7 +5097,7 @@ public abstract class L2Character extends L2Object
                 if (owner != null)
                 {
                 	owner.getAI().clientStartAutoAttack();
-                	SystemMessage sm = new SystemMessage(SystemMessageId.PET_RECEIVED_S2_DAMAGE_BY_S1);
+                	SystemMessage sm = new SystemMessage(SystemMessageId.PET_RECEIVED_S2_DAMAGE_BY_C1);
                 	sm.addString(getName());
                 	sm.addNumber(damage);
                 	owner.sendPacket(sm);

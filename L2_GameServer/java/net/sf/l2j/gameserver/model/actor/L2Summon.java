@@ -792,7 +792,7 @@ public abstract class L2Summon extends L2Playable
 		if (this instanceof L2SummonInstance)
 			sm = new SystemMessage(SystemMessageId.SUMMON_RECEIVED_DAMAGE_S2_BY_S1);
 		else
-			sm = new SystemMessage(SystemMessageId.PET_RECEIVED_S2_DAMAGE_BY_S1);
+			sm = new SystemMessage(SystemMessageId.PET_RECEIVED_S2_DAMAGE_BY_C1);
 
 		sm.addCharName(attacker);
 		sm.addNumber(damage);

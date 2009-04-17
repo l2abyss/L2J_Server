@@ -1773,7 +1773,7 @@ public class L2Npc extends L2Character
 				return;
 			Lottery.getInstance().increasePrize(price);
 			
-			sm = new SystemMessage(SystemMessageId.ACQUIRED);
+			sm = new SystemMessage(SystemMessageId.ACQUIRED_S1_S2);
 			sm.addNumber(lotonumber);
 			sm.addItemName(4442);
 			player.sendPacket(sm);

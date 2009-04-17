@@ -8419,7 +8419,7 @@ public final class L2PcInstance extends L2Playable
         		}
         		else
         		{
-        			sm = new SystemMessage(SystemMessageId.S2_SECONDS_REMAIMNING_FOR_REUSE_S1);
+        			sm = new SystemMessage(SystemMessageId.S2_SECONDS_REMAINING_FOR_REUSE_S1);
         			sm.addSkillName(skill);
         		}
 					

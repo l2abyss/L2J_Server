@@ -1389,7 +1389,7 @@ public class L2Attackable extends L2Npc
 						if (isRaid() && !isRaidMinion())
 						{
 							SystemMessage sm;
-							sm = new SystemMessage(SystemMessageId.S1_DIED_DROPPED_S3_S2);
+							sm = new SystemMessage(SystemMessageId.C1_DIED_DROPPED_S3_S2);
 							sm.addCharName(this);
 							sm.addItemName(item.getItemId());
 							sm.addNumber(item.getCount());

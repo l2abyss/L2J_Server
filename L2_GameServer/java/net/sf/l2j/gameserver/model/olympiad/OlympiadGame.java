@@ -983,7 +983,8 @@ class OlympiadGameTask implements Runnable
 			}
 			else if (player.isCursedWeaponEquipped())
 			{
-				sm = new SystemMessage(SystemMessageId.CANNOT_JOIN_OLYMPIAD_POSSESSING_S1);
+				sm = new SystemMessage(SystemMessageId.C1_CANNOT_JOIN_OLYMPIAD_POSSESSING_S2);
+				sm.addPcName(player);
 				sm.addItemName(player.getCursedWeaponEquippedId());
 				defaulted = true;
 			}

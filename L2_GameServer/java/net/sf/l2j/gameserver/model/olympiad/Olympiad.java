@@ -371,7 +371,7 @@ public class Olympiad
 		if (!noble.isNoble())
 		{
 			sm = new SystemMessage(SystemMessageId.C1_DOES_NOT_MEET_REQUIREMENTS_ONLY_NOBLESS_CAN_PARTICIPATE_IN_THE_OLYMPIAD);
-			sm.addString(noble.getName());
+			sm.addPcName(noble);
 			noble.sendPacket(sm);
 			return false;
 		}
@@ -380,13 +380,14 @@ public class Olympiad
         if (noble.getBaseClass() != noble.getClassId().getId())
 		{
 			sm = new SystemMessage(SystemMessageId.C1_CANT_JOIN_THE_OLYMPIAD_WITH_A_SUB_CLASS_CHARACTER);
-			sm.addString(noble.getName());
+			sm.addPcName(noble);
 			noble.sendPacket(sm);
 			return false;
 		}
         if (noble.isCursedWeaponEquipped())
         {
-        	sm = new SystemMessage(SystemMessageId.CANNOT_JOIN_OLYMPIAD_POSSESSING_S1);
+        	sm = new SystemMessage(SystemMessageId.C1_CANNOT_JOIN_OLYMPIAD_POSSESSING_S2);
+        	sm.addPcName(noble);
 			sm.addItemName(noble.getCursedWeaponEquippedId());
 			noble.sendPacket(sm);
 			return false;
@@ -414,7 +415,7 @@ public class Olympiad
 				if (participant.getObjectId() == noble.getObjectId())
 				{
 					sm = new SystemMessage(SystemMessageId.C1_IS_ALREADY_REGISTERED_ON_THE_CLASS_MATCH_WAITING_LIST);
-					sm.addString(noble.getName());
+					sm.addPcName(noble);
 					noble.sendPacket(sm);
 					return false;
 				}
@@ -424,7 +425,7 @@ public class Olympiad
 		if (isRegisteredInComp(noble))
 		{
 			sm = new SystemMessage(SystemMessageId.C1_IS_ALREADY_REGISTERED_ON_THE_NON_CLASS_LIMITED_MATCH_WAITING_LIST);
-			sm.addString(noble.getName());
+			sm.addPcName(noble);
 			noble.sendPacket(sm);
 			return false;
 		}
