@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 import javolution.util.FastList;
+
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.GeoData;
@@ -35,6 +36,7 @@ import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
+import net.sf.l2j.gameserver.model.actor.instance.L2ChestInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FestivalMonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
@@ -562,7 +564,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			}
 		}
 		// Order to the L2MonsterInstance to random walk (1/100)
-		else if (npc.getSpawn() != null && Rnd.nextInt(RANDOM_WALK_RATE) == 0 && !(_actor.isRaid() || _actor instanceof L2MinionInstance))
+		else if (npc.getSpawn() != null && Rnd.nextInt(RANDOM_WALK_RATE) == 0 
+				&& !(_actor.isRaid() || _actor instanceof L2MinionInstance || _actor instanceof L2ChestInstance || _actor instanceof L2GuardInstance))
 		{
 			int x1, y1, z1;
 			int range = Config.MAX_DRIFT_RANGE;
@@ -615,12 +618,17 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			else
 			{
 				// If NPC with fixed coord
-				x1 = npc.getSpawn().getLocx() + Rnd.nextInt(range * 2) - range;
-				y1 = npc.getSpawn().getLocy() + Rnd.nextInt(range * 2) - range;
-				z1 = npc.getZ();
+				x1 = npc.getSpawn().getLocx();
+				y1 = npc.getSpawn().getLocy();
+				z1 = npc.getSpawn().getLocz();
+				
 				if (_actor.getPlanDistanceSq(x1, y1) > range * range)
-				{
 					npc.setisReturningToSpawnPoint(true);
+				else
+				{
+					x1 += Rnd.nextInt(range * 2) - range;
+					y1 += Rnd.nextInt(range * 2) - range;
+					z1 = npc.getZ();
 				}
 			}
 			
