@@ -89,7 +89,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
     public double getCollisionRadius()
     {
     	if (getId()>=312 && getId()<=318)
-    		return _player.getTemplate().collisionRadius;
+    		return _player.getBaseTemplate().collisionRadius;
         return _collisionRadius;
     }
 
@@ -99,7 +99,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
     public double getCollisionHeight()
     {
     	if (getId()>=312 && getId()<=318)
-    		return _player.getTemplate().collisionHeight;
+    		return _player.getBaseTemplate().collisionHeight;
         return _collisionHeight;
     }
 
