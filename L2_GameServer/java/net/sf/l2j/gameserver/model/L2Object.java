@@ -18,17 +18,13 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.ItemsOnGroundManager;
-import net.sf.l2j.gameserver.instancemanager.MercTicketManager;
 import net.sf.l2j.gameserver.model.actor.L2Character;
-import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.knownlist.ObjectKnownList;
 import net.sf.l2j.gameserver.model.actor.poly.ObjectPoly;
 import net.sf.l2j.gameserver.model.actor.position.ObjectPosition;
-import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
-import net.sf.l2j.gameserver.network.serverpackets.GetItem;
 
 
 /**
@@ -204,75 +200,6 @@ public abstract class L2Object
         L2World.getInstance().removeObject(this);
         if (Config.SAVE_DROPPED_ITEM)
         	ItemsOnGroundManager.getInstance().removeObject(this);
-    }
-
-
-    /**
-     * Remove a L2ItemInstance from the world and send server->client GetItem packets.<BR><BR>
-     *
-     * <B><U> Actions</U> :</B><BR><BR>
-     * <li>Send a Server->Client Packet GetItem to player that pick up and its _knowPlayers member </li>
-     * <li>Remove the L2Object from the world</li><BR><BR>
-     *
-     * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T REMOVE the object from _allObjects of L2World </B></FONT><BR><BR>
-     *
-     * <B><U> Assert </U> :</B><BR><BR>
-     * <li> this instanceof L2ItemInstance</li>
-     * <li> _worldRegion != null <I>(L2Object is visible at the beginning)</I></li><BR><BR>
-     *
-     * <B><U> Example of use </U> :</B><BR><BR>
-     * <li> Do Pickup Item : PCInstance and Pet</li><BR><BR>
-     *
-     * @param player Player that pick up the item
-     *
-     */
-    public final void pickupMe(L2Character player) // NOTE: Should move this function into L2ItemInstance because it does not apply to L2Character
-    {
-        if (Config.ASSERT) assert this instanceof L2ItemInstance;
-        if (Config.ASSERT) assert getPosition().getWorldRegion() != null;
-
-        L2WorldRegion oldregion = getPosition().getWorldRegion();
-
-        // Create a server->client GetItem packet to pick up the L2ItemInstance
-        GetItem gi = new GetItem((L2ItemInstance)this, player.getObjectId());
-        player.broadcastPacket(gi);
-
-        synchronized (this)
-        {
-            _isVisible = false;
-            getPosition().setWorldRegion(null);
-        }
-
-        // if this item is a mercenary ticket, remove the spawns!
-        if (this instanceof L2ItemInstance)
-        {
-        	int itemId = ((L2ItemInstance)this).getItemId();
-        	if (MercTicketManager.getInstance().getTicketCastleId(itemId) > 0)
-        	{
-        		MercTicketManager.getInstance().removeTicket((L2ItemInstance)this);
-        		ItemsOnGroundManager.getInstance().removeObject(this);
-        	}
-        	if (itemId == 57 || itemId == 6353)
-        	{
-        		QuestState qs = null;
-        		if (player instanceof L2Summon)
-        		{
-        			qs = ((L2Summon)player).getOwner().getQuestState("255_Tutorial");
-            		if (qs != null)
-            			qs.getQuest().notifyEvent("CE"+itemId+"",null,((L2Summon)player).getOwner());
-        		}
-        		else if (player instanceof L2PcInstance)
-        		{
-        			qs = ((L2PcInstance)player).getQuestState("255_Tutorial");
-            		if (qs != null)
-            			qs.getQuest().notifyEvent("CE"+itemId+"",null,(L2PcInstance)player);
-        		}
-        	}
-        }
-
-        // outside of synchronized to avoid deadlocks
-        // Remove the L2ItemInstance from the world
-        L2World.getInstance().removeVisibleObject(this, oldregion);
     }
 
     public void refreshID()
