@@ -907,4 +907,10 @@ public abstract class L2Summon extends L2Playable
 	{
 		return getTemplate().baseRunSpd;
 	}
+	
+	@Override
+	public boolean isRunning()
+	{
+		return true; // summons always run
+	}
 }

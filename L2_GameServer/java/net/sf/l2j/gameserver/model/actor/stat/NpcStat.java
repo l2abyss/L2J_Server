@@ -46,16 +46,16 @@ public class NpcStat extends CharStat
 	public final int getMaxHp() { return (int)calcStat(Stats.MAX_HP, getActiveChar().getTemplate().baseHpMax , null, null); }
     
     @Override
-	public int getWalkSpeed() { return  getRunSpeed()/2; }
+	public int getWalkSpeed(){ return (int) calcStat(Stats.WALK_SPEED, getActiveChar().getTemplate().baseWalkSpd, null, null);}
     
     @Override
 	public float getMovementSpeedMultiplier()
 	{
     	if (getActiveChar() == null)
     		return 1;
-    	float val = getRunSpeed() * 1f / getActiveChar().getTemplate().baseRunSpd;
-		if (!getActiveChar().isRunning())
-			val = val/2;
-		return val;
+    	if (getActiveChar().isRunning())
+    		return getRunSpeed() * 1f / getActiveChar().getTemplate().baseRunSpd;
+    	else
+    		return getWalkSpeed() * 1f / getActiveChar().getTemplate().baseWalkSpd;
 	}
 }

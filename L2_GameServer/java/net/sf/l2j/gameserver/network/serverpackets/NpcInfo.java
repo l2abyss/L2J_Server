@@ -416,7 +416,7 @@ public final class NpcInfo extends L2GameServerPacket
 		writeD(_chest);
 		writeD(_lhand); // left hand weapon
 		writeC(1);	// name above char 1=true ... ??
-		writeC(1); // char always running
+		writeC(_activeChar.isRunning() ? 1 : 0);
 		writeC(_activeChar.isInCombat() ? 1 : 0);
 		writeC(_activeChar.isAlikeDead() ? 1 : 0);
 		writeC(_isSummoned ? 2 : _val); //  0=teleported  1=default   2=summoned

@@ -2226,7 +2226,7 @@ public abstract class L2Character extends L2Object
 	public final void setIsRooted(boolean value) { _isRooted = value; }
 
 	/** Return True if the L2Character is running. */
-	public final boolean isRunning() { return _isRunning; }
+	public boolean isRunning() { return _isRunning; }
 	public final void setIsRunning(boolean value)
 	{
 		_isRunning = value;
