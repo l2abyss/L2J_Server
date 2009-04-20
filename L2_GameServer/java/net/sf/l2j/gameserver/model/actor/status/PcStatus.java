@@ -121,7 +121,7 @@ public class PcStatus extends PlayableStatus
         if (attacker != null && attacker != getActiveChar() && fullValue > 0 && !isDOT)
         {
             // Send a System Message to the L2PcInstance
-            SystemMessage smsg = new SystemMessage(SystemMessageId.S1_RECEIVED_DAMAGE_OF_S3_FROM_S2);
+            SystemMessage smsg = new SystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
             smsg.addString(getActiveChar().getName());
             smsg.addCharName(attacker);
             smsg.addNumber(fullValue);

@@ -45,9 +45,9 @@ public final class DlgAnswer extends L2GameClientPacket
 	{
 		if (Config.DEBUG)
 			_log.fine(getType()+": Answer accepted. Message ID "+_messageId+", answer "+_answer+", Requester ID "+_requesterId);
-		if (_messageId == SystemMessageId.RESSURECTION_REQUEST.getId())
+		if (_messageId == SystemMessageId.RESSURECTION_REQUEST_BY_C1_FOR_S2_XP.getId())
 			getClient().getActiveChar().reviveAnswer(_answer);
-		else if (_messageId==SystemMessageId.S1_WISHES_TO_SUMMON_YOU_FROM_S2_DO_YOU_ACCEPT.getId())
+		else if (_messageId==SystemMessageId.C1_WISHES_TO_SUMMON_YOU_FROM_S2_DO_YOU_ACCEPT.getId())
 			getClient().getActiveChar().teleportAnswer(_answer, _requesterId);
 		else if (_messageId == SystemMessageId.S1.getId() && Config.L2JMOD_ALLOW_WEDDING)
 			getClient().getActiveChar().EngageAnswer(_answer);

@@ -55,7 +55,7 @@ public final class RequestExOustFromMPCC extends L2GameClientPacket
 			SystemMessage sm = new SystemMessage(SystemMessageId.DISMISSED_FROM_COMMAND_CHANNEL);
 			target.getParty().broadcastToPartyMembers(sm);
 
-			sm = new SystemMessage(SystemMessageId.S1_PARTY_DISMISSED_FROM_COMMAND_CHANNEL);
+			sm = new SystemMessage(SystemMessageId.C1_PARTY_DISMISSED_FROM_COMMAND_CHANNEL);
 			sm.addString(target.getParty().getLeader().getName());
 			activeChar.getParty().getCommandChannel().broadcastToChannelMembers(sm);
 		}

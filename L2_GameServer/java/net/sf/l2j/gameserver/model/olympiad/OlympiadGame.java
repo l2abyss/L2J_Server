@@ -503,7 +503,7 @@ class OlympiadGame
 				int lostPoints = playerOnePoints / 3;
 				playerOneStat.set(POINTS, playerOnePoints - lostPoints);
 				Olympiad.updateNobleStats(_playerOneID, playerOneStat);
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1_HAS_LOST_S2_OLYMPIAD_POINTS);
+				SystemMessage sm = new SystemMessage(SystemMessageId.C1_HAS_LOST_S2_OLYMPIAD_POINTS);
 				sm.addString(_playerOneName);
 				sm.addNumber(lostPoints);
 				broadcastMessage(sm, false);
@@ -518,7 +518,7 @@ class OlympiadGame
 				int lostPoints = playerTwoPoints / 3;
 				playerTwoStat.set(POINTS, playerTwoPoints - lostPoints);
 				Olympiad.updateNobleStats(_playerTwoID, playerTwoStat);
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1_HAS_LOST_S2_OLYMPIAD_POINTS);
+				SystemMessage sm = new SystemMessage(SystemMessageId.C1_HAS_LOST_S2_OLYMPIAD_POINTS);
 				sm.addString(_playerTwoName);
 				sm.addNumber(lostPoints);
 				broadcastMessage(sm, false);
@@ -555,7 +555,7 @@ class OlympiadGame
 						        + _playerTwoName + " Win " + pointDiff + " points");
 					
 					_sm = new SystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
-					_sm2 = new SystemMessage(SystemMessageId.S1_HAS_GAINED_S2_OLYMPIAD_POINTS);
+					_sm2 = new SystemMessage(SystemMessageId.C1_HAS_GAINED_S2_OLYMPIAD_POINTS);
 					_sm.addString(_playerTwoName);
 					broadcastMessage(_sm, true);
 					_sm2.addString(_playerTwoName);
@@ -589,7 +589,7 @@ class OlympiadGame
 						        + _playerOneName + " Win " + pointDiff + " points");
 					
 					_sm = new SystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
-					_sm2 = new SystemMessage(SystemMessageId.S1_HAS_GAINED_S2_OLYMPIAD_POINTS);
+					_sm2 = new SystemMessage(SystemMessageId.C1_HAS_GAINED_S2_OLYMPIAD_POINTS);
 					_sm.addString(_playerOneName);
 					broadcastMessage(_sm, true);
 					_sm2.addString(_playerOneName);
@@ -644,8 +644,8 @@ class OlympiadGame
 		}
 		
 		_sm = new SystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
-		_sm2 = new SystemMessage(SystemMessageId.S1_HAS_GAINED_S2_OLYMPIAD_POINTS);
-		_sm3 = new SystemMessage(SystemMessageId.S1_HAS_LOST_S2_OLYMPIAD_POINTS);
+		_sm2 = new SystemMessage(SystemMessageId.C1_HAS_GAINED_S2_OLYMPIAD_POINTS);
+		_sm3 = new SystemMessage(SystemMessageId.C1_HAS_LOST_S2_OLYMPIAD_POINTS);
 		
 		String result = "";
 		
@@ -754,11 +754,11 @@ class OlympiadGame
 		 	playerTwoStat.set(POINTS, playerTwoPoints - pointTwoDiff);
 		 	playerOneStat.set(COMP_DRAWN, playerOneDrawn + 1);
 			playerTwoStat.set(COMP_DRAWN, playerTwoDrawn + 1);
-			_sm2 = new SystemMessage(SystemMessageId.S1_HAS_LOST_S2_OLYMPIAD_POINTS);
+			_sm2 = new SystemMessage(SystemMessageId.C1_HAS_LOST_S2_OLYMPIAD_POINTS);
 		 	_sm2.addString(_playerOneName);
 		 	_sm2.addNumber(pointOneDiff);
 		 	broadcastMessage(_sm2, false);
-		 	_sm3 = new SystemMessage(SystemMessageId.S1_HAS_LOST_S2_OLYMPIAD_POINTS);
+		 	_sm3 = new SystemMessage(SystemMessageId.C1_HAS_LOST_S2_OLYMPIAD_POINTS);
 		 	_sm3.addString(_playerTwoName);
 		 	_sm3.addNumber(pointTwoDiff);
 		 	broadcastMessage(_sm3, false);

@@ -92,7 +92,7 @@ public class L2Request
         }
 		if (partner.getRequest().isProcessingRequest())
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.S1_IS_BUSY_TRY_LATER);
+			SystemMessage sm = new SystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
 			sm.addString(partner.getName());
 			_player.sendPacket(sm);
 			sm = null;

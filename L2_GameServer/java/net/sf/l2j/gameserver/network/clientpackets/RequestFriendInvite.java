@@ -95,14 +95,14 @@ public final class RequestFriendInvite extends L2GameClientPacket
 		        {
 		    	    //requets to become friend
     			    activeChar.onTransactionRequest(friend);
-    			    sm = new SystemMessage(SystemMessageId.S1_REQUESTED_TO_BECOME_FRIENDS);
+    			    sm = new SystemMessage(SystemMessageId.C1_REQUESTED_TO_BECOME_FRIENDS);
     			    sm.addString(_name);
     			    FriendAddRequest ajf = new FriendAddRequest(activeChar.getName());
     			    friend.sendPacket(ajf);
     			}
                 else
                 {
-    			    sm = new SystemMessage(SystemMessageId.S1_IS_BUSY_TRY_LATER);
+    			    sm = new SystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
     			}
 		    }
 

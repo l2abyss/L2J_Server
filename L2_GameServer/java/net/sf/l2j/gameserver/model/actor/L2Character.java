@@ -5037,7 +5037,7 @@ public abstract class L2Character extends L2Object
          	
             if (target instanceof L2PcInstance)
             {
-                SystemMessage sm = new SystemMessage(SystemMessageId.AVOIDED_S1S_ATTACK);
+                SystemMessage sm = new SystemMessage(SystemMessageId.AVOIDED_C1_ATTACK);
                 sm.addCharName(this);
                 target.sendPacket(sm);
             }

@@ -68,7 +68,7 @@ public final class RequestFriendDel extends L2GameClientPacket{
                 {
     			    statement.close();
     			    // Player is not in your friendlist
-    			    sm = new SystemMessage(SystemMessageId.S1_NOT_ON_YOUR_FRIENDS_LIST);
+    			    sm = new SystemMessage(SystemMessageId.C1_NOT_ON_YOUR_FRIENDS_LIST);
     			    sm.addString(_name);
     			    activeChar.sendPacket(sm);
     			    sm = null;
@@ -84,7 +84,7 @@ public final class RequestFriendDel extends L2GameClientPacket{
                 {
     				statement.close();
     				// Player is not in your friendlist
-    				sm = new SystemMessage(SystemMessageId.S1_NOT_ON_YOUR_FRIENDS_LIST);
+    				sm = new SystemMessage(SystemMessageId.C1_NOT_ON_YOUR_FRIENDS_LIST);
     				sm.addString(_name);
     				activeChar.sendPacket(sm);
     				sm = null;

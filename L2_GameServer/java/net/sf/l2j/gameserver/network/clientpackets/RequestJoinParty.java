@@ -74,7 +74,7 @@ public final class RequestJoinParty extends L2GameClientPacket
 
 		if (target.isInParty())
         {
-			SystemMessage msg = new SystemMessage(SystemMessageId.S1_IS_ALREADY_IN_PARTY);
+			SystemMessage msg = new SystemMessage(SystemMessageId.C1_IS_ALREADY_IN_PARTY);
 			msg.addString(target.getName());
 			requestor.sendPacket(msg);
 			return;
@@ -166,7 +166,7 @@ public final class RequestJoinParty extends L2GameClientPacket
 		}
 		else
 		{
-		    msg = new SystemMessage(SystemMessageId.S1_IS_BUSY_TRY_LATER);
+		    msg = new SystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
 		    msg.addString(target.getName());
 		    requestor.sendPacket(msg);
 

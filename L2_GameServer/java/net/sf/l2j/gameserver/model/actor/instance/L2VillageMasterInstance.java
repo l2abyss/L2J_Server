@@ -803,7 +803,7 @@ public final class L2VillageMasterInstance extends L2NpcInstance
         leaderSubPledge.getPlayerInstance().sendPacket(new UserInfo(leaderSubPledge.getPlayerInstance()));
         leaderSubPledge.getPlayerInstance().sendPacket(new ExBrExtraUserInfo(leaderSubPledge.getPlayerInstance()));
         clan.broadcastClanStatus();
-    	SystemMessage sm = new SystemMessage(SystemMessageId.S1_HAS_BEEN_SELECTED_AS_CAPTAIN_OF_S2);
+    	SystemMessage sm = new SystemMessage(SystemMessageId.C1_HAS_BEEN_SELECTED_AS_CAPTAIN_OF_S2);
     	sm.addString(leaderName);
     	sm.addString(clanName);
     	clan.broadcastToOnlineMembers(sm);

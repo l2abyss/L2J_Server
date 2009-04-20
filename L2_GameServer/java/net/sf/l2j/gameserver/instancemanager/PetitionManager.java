@@ -138,7 +138,7 @@ public final class PetitionManager
 				else
 				{
                     // Ending petition consultation with <Player>.
-					SystemMessage sm = new SystemMessage(SystemMessageId.PETITION_ENDED_WITH_S1);
+					SystemMessage sm = new SystemMessage(SystemMessageId.PETITION_ENDED_WITH_C1);
 					sm.addString(getPetitioner().getName());
 					getResponder().sendPacket(sm);
 
@@ -284,7 +284,7 @@ public final class PetitionManager
 		currPetition.sendResponderPacket(sm);
 
         // Petition consultation with <Player> underway.
-		sm = new SystemMessage(SystemMessageId.PETITION_WITH_S1_UNDER_WAY);
+		sm = new SystemMessage(SystemMessageId.STARTING_PETITION_WITH_C1);
 		sm.addString(currPetition.getPetitioner().getName());
 		currPetition.sendResponderPacket(sm);
 		return true;

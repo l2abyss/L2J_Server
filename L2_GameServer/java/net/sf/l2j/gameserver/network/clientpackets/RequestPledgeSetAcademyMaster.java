@@ -90,7 +90,7 @@ public final class RequestPledgeSetAcademyMaster extends L2GameClientPacket
         	apprenticeMember.saveApprenticeAndSponsor(0, 0);
         	sponsorMember.saveApprenticeAndSponsor(0, 0);
 
-        	sm = new SystemMessage(SystemMessageId.S2_CLAN_MEMBER_S1_S_APPRENTICE_HAS_BEEN_REMOVED);
+        	sm = new SystemMessage(SystemMessageId.S2_CLAN_MEMBER_C1_APPRENTICE_HAS_BEEN_REMOVED);
         }
         else
         {

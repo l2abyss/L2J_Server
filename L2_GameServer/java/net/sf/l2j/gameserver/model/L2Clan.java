@@ -273,7 +273,7 @@ public class L2Clan
 
         broadcastClanStatus();
 
-    	SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_LEADER_PRIVILEGES_HAVE_BEEN_TRANSFERRED_TO_S1);
+    	SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_LEADER_PRIVILEGES_HAVE_BEEN_TRANSFERRED_TO_C1);
     	sm.addString(newLeader.getName());
     	broadcastToOnlineMembers(sm);
     	sm = null;

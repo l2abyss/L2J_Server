@@ -56,7 +56,7 @@ public final class RequestDuelAnswerStart extends L2GameClientPacket
 			SystemMessage msg1 = null, msg2 = null;
 			if (requestor.isInDuel())
 			{
-				msg1 = new SystemMessage(SystemMessageId.S1_CANNOT_DUEL_BECAUSE_S1_IS_ALREADY_ENGAGED_IN_A_DUEL);
+				msg1 = new SystemMessage(SystemMessageId.C1_CANNOT_DUEL_BECAUSE_C1_IS_ALREADY_ENGAGED_IN_A_DUEL);
 				msg1.addString(requestor.getName());
 				player.sendPacket(msg1);
 				return;
@@ -69,7 +69,7 @@ public final class RequestDuelAnswerStart extends L2GameClientPacket
 
 			if (_partyDuel == 1)
 			{
-				msg1 = new SystemMessage(SystemMessageId.YOU_HAVE_ACCEPTED_S1S_CHALLENGE_TO_A_PARTY_DUEL_THE_DUEL_WILL_BEGIN_IN_A_FEW_MOMENTS);
+				msg1 = new SystemMessage(SystemMessageId.YOU_HAVE_ACCEPTED_C1_CHALLENGE_TO_A_PARTY_DUEL_THE_DUEL_WILL_BEGIN_IN_A_FEW_MOMENTS);
 				msg1.addString(requestor.getName());
 
 				msg2 = new SystemMessage(SystemMessageId.S1_HAS_ACCEPTED_YOUR_CHALLENGE_TO_DUEL_AGAINST_THEIR_PARTY_THE_DUEL_WILL_BEGIN_IN_A_FEW_MOMENTS);
@@ -77,10 +77,10 @@ public final class RequestDuelAnswerStart extends L2GameClientPacket
 			}
 			else
 			{
-				msg1 = new SystemMessage(SystemMessageId.YOU_HAVE_ACCEPTED_S1S_CHALLENGE_TO_A_DUEL_THE_DUEL_WILL_BEGIN_IN_A_FEW_MOMENTS);
+				msg1 = new SystemMessage(SystemMessageId.YOU_HAVE_ACCEPTED_C1_CHALLENGE_TO_A_DUEL_THE_DUEL_WILL_BEGIN_IN_A_FEW_MOMENTS);
 				msg1.addString(requestor.getName());
 
-				msg2 = new SystemMessage(SystemMessageId.S1_HAS_ACCEPTED_YOUR_CHALLENGE_TO_A_DUEL_THE_DUEL_WILL_BEGIN_IN_A_FEW_MOMENTS);
+				msg2 = new SystemMessage(SystemMessageId.C1_HAS_ACCEPTED_YOUR_CHALLENGE_TO_A_DUEL_THE_DUEL_WILL_BEGIN_IN_A_FEW_MOMENTS);
 				msg2.addString(player.getName());
 			}
 
@@ -95,7 +95,7 @@ public final class RequestDuelAnswerStart extends L2GameClientPacket
 			if (_partyDuel == 1) msg = new SystemMessage(SystemMessageId.THE_OPPOSING_PARTY_HAS_DECLINED_YOUR_CHALLENGE_TO_A_DUEL);
 			else
 			{
-				msg = new SystemMessage(SystemMessageId.S1_HAS_DECLINED_YOUR_CHALLENGE_TO_A_DUEL);
+				msg = new SystemMessage(SystemMessageId.C1_HAS_DECLINED_YOUR_CHALLENGE_TO_A_DUEL);
 				msg.addString(player.getName());
 			}
     		requestor.sendPacket(msg);
