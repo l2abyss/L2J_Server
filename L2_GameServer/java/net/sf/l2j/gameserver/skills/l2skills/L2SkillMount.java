@@ -22,7 +22,6 @@ import net.sf.l2j.gameserver.model.entity.TvTEvent;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.StatsSet;
-import net.sf.l2j.gameserver.util.FloodProtector;
 
 public class L2SkillMount extends L2Skill
 {
@@ -47,7 +46,7 @@ public class L2SkillMount extends L2Skill
 		
 		L2PcInstance activePlayer = (L2PcInstance)caster;
 
-		if (!FloodProtector.tryPerformAction(activePlayer.getObjectId(), FloodProtector.PROTECTED_ITEMPETSUMMON))
+		if (!activePlayer.getFloodProtectors().getItemPetSummon().tryPerformAction("mount"))
 			return;
 		
 		// Dismount Action

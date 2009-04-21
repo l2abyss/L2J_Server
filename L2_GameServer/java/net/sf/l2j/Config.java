@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
+import net.sf.l2j.gameserver.util.FloodProtectorConfig;
 import net.sf.l2j.gameserver.util.StringUtil;
 
 public final class Config
@@ -54,6 +55,7 @@ public final class Config
 	public static final String CONFIGURATION_FILE = "./config/server.properties";
 	public static final String SIEGE_CONFIGURATION_FILE = "./config/siege.properties";
 	public static final String TELNET_FILE = "./config/telnet.properties";
+	public static final String FLOOD_PROTECTOR_FILE = "./config/floodprotector.properties";
 
 
 	//--------------------------------------------------
@@ -352,7 +354,22 @@ public final class Config
 	public static boolean DEADLOCK_DETECTOR;
 	public static int DEADLOCK_CHECK_INTERVAL;
 	public static boolean RESTART_ON_DEADLOCK;
-	public static int FLOODPROTECTOR_INITIALSIZE;
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_USE_ITEM =
+		new FloodProtectorConfig("UseItemFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_ROLL_DICE =
+		new FloodProtectorConfig("RollDiceFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_FIREWORK =
+		new FloodProtectorConfig("FireworkFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_ITEM_PET_SUMMON =
+		new FloodProtectorConfig("ItemPetSummonFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_HERO_VOICE =
+		new FloodProtectorConfig("HeroVoiceFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_SUBCLASS =
+		new FloodProtectorConfig("SubclassFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_DROP_ITEM =
+		new FloodProtectorConfig("DropItemFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_SERVER_BYPASS =
+		new FloodProtectorConfig("ServerBypassFloodProtector");
 	public static boolean ALLOW_DISCARDITEM;
 	public static int AUTODESTROY_ITEM_AFTER;
 	public static int HERB_AUTO_DESTROY_TIME;
@@ -1319,7 +1336,6 @@ public final class Config
 					DEADLOCK_DETECTOR = Boolean.parseBoolean(General.getProperty("DeadLockDetector", "False"));
 					DEADLOCK_CHECK_INTERVAL = Integer.parseInt(General.getProperty("DeadLockCheckInterval", "20"));
 					RESTART_ON_DEADLOCK = Boolean.parseBoolean(General.getProperty("RestartOnDeadlock", "False"));
-					FLOODPROTECTOR_INITIALSIZE = Integer.parseInt(General.getProperty("FloodProtectorInitialSize", "50"));
 					ALLOW_DISCARDITEM = Boolean.parseBoolean(General.getProperty("AllowDiscardItem", "True"));
 					AUTODESTROY_ITEM_AFTER = Integer.parseInt(General.getProperty("AutoDestroyDroppedItemAfter", "0"));
 					HERB_AUTO_DESTROY_TIME = Integer.parseInt(General.getProperty("AutoDestroyHerbTime","15"))*1000;
@@ -1371,7 +1387,6 @@ public final class Config
 					ALLOW_RACE = Boolean.parseBoolean(General.getProperty("AllowRace", "True"));
 					ALLOW_WATER = Boolean.parseBoolean(General.getProperty("AllowWater", "True"));
 					ALLOW_RENTPET = Boolean.parseBoolean(General.getProperty("AllowRentPet", "False"));
-					FLOODPROTECTOR_INITIALSIZE = Integer.parseInt(General.getProperty("FloodProtectorInitialSize", "50"));
 					ALLOW_DISCARDITEM = Boolean.parseBoolean(General.getProperty("AllowDiscardItem", "True"));
 					ALLOWFISHING = Boolean.parseBoolean(General.getProperty("AllowFishing", "True"));
 					ALLOW_MANOR = Boolean.parseBoolean(General.getProperty("AllowManor", "True"));
@@ -1471,6 +1486,22 @@ public final class Config
 				{
 					e.printStackTrace();
 					throw new Error("Failed to Load "+GENERAL_CONFIG_FILE+" File.");
+				}
+				
+				// Load FloodProtector Properties file
+				try
+				{
+					Properties security = new Properties();
+					is = new FileInputStream(new File(FLOOD_PROTECTOR_FILE));
+					security.load(is);
+					
+					loadFloodProtectorConfigs(security);
+					
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+					throw new Error("Failed to Load "+FLOOD_PROTECTOR_FILE);
 				}
 
 				// Load NPC Properties file (if exists)
@@ -2178,5 +2209,48 @@ public final class Config
 			_log.warning(StringUtil.concat("Failed to save hex id to ", fileName, " File."));
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Loads flood protector configurations.
+	 * 
+	 * @param properties
+	 *            properties file reader
+	 */
+	private static void loadFloodProtectorConfigs(final Properties properties)
+	{
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_USE_ITEM, "UseItem", "4");
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_ROLL_DICE, "RollDice", "42");
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_FIREWORK, "Firework", "42");
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_ITEM_PET_SUMMON, "ItemPetSummon", "16");
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_HERO_VOICE, "HeroVoice", "100");
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_SUBCLASS, "Subclass", "20");
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_DROP_ITEM, "DropItem", "10");
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_SERVER_BYPASS, "ServerBypass", "5");
+	}
+	
+	/**
+	 * Loads single flood protector configuration.
+	 * 
+	 * @param properties
+	 *            properties file reader
+	 * @param config
+	 *            flood protector configuration instance
+	 * @param configString
+	 *            flood protector configuration string that determines for which flood protector
+	 *            configuration should be read
+	 * @param defaultInterval
+	 *            default flood protector interval
+	 */
+	private static void loadFloodProtectorConfig(final Properties properties,
+	        final FloodProtectorConfig config, final String configString,
+	        final String defaultInterval)
+	{
+		config.FLOOD_PROTECTION_INTERVAL = Integer.parseInt(properties.getProperty(StringUtil.concat("FloodProtector", configString, "Interval"), defaultInterval));
+		config.LOG_FLOODING = Boolean.parseBoolean(properties.getProperty(StringUtil.concat("FloodProtector", configString, "LogFlooding"), "False"));
+		config.PUNISHMENT_LIMIT = Integer.parseInt(properties.getProperty(StringUtil.concat("FloodProtector", configString, "PunishmentLimit"), "0"));
+		config.PUNISHMENT_TYPE = properties.getProperty(StringUtil.concat("FloodProtector", configString, "PunishmentType"), "none");
+		config.PUNISHMENT_TIME = Integer.parseInt(properties.getProperty(StringUtil.concat("FloodProtector", configString, "PunishmentTime"), "0"));
+		
 	}
 }

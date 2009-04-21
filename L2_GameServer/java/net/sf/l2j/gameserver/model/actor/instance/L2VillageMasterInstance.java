@@ -46,7 +46,6 @@ import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
-import net.sf.l2j.gameserver.util.FloodProtector;
 import net.sf.l2j.gameserver.util.StringUtil;
 import net.sf.l2j.gameserver.util.Util;
 
@@ -302,7 +301,7 @@ public final class L2VillageMasterInstance extends L2NpcInstance
                      * classes then disallow them to change to their most recently added sub-class choice.
                      */
                     
-                    if (!FloodProtector.tryPerformAction(player.getObjectId(), FloodProtector.PROTECTED_SUBCLASS))
+                    if (!player.getFloodProtectors().getSubclass().tryPerformAction("add subclass"))
                     {
                     	_log.warning("Player "+player.getName()+" has performed a subclass change too fast");
                     	return;
@@ -405,7 +404,7 @@ public final class L2VillageMasterInstance extends L2NpcInstance
                      * on small servers. TODO: On retail, each village master doesn't offer any subclass that is not given by itself so player
                      * always has to move to other location to change subclass after changing previously. Thanks Aikimaniac for this info.
                      */
-                    if (!FloodProtector.tryPerformAction(player.getObjectId(), FloodProtector.PROTECTED_SUBCLASS))
+                    if (!player.getFloodProtectors().getSubclass().tryPerformAction("change class"))
                     {
                     	_log.warning("Player "+player.getName()+" has performed a subclass change too fast");
                     	return;
@@ -452,8 +451,8 @@ public final class L2VillageMasterInstance extends L2NpcInstance
                      * subclass list even if false!
                      */
                 	
-                	if (!FloodProtector.tryPerformAction(player.getObjectId(), FloodProtector.PROTECTED_SUBCLASS))
-                    {
+                	if (!player.getFloodProtectors().getSubclass().tryPerformAction("change class"))
+                	{
                     	_log.warning("Player "+player.getName()+" has performed a subclass change too fast");
                     	return;
                     }

@@ -213,7 +213,7 @@ import net.sf.l2j.gameserver.templates.item.L2WeaponType;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 import net.sf.l2j.gameserver.util.Broadcast;
-import net.sf.l2j.gameserver.util.FloodProtector;
+import net.sf.l2j.gameserver.util.FloodProtectors;
 import net.sf.l2j.gameserver.util.Util;
 import net.sf.l2j.util.Point3D;
 import net.sf.l2j.util.Rnd;
@@ -380,6 +380,8 @@ public final class L2PcInstance extends L2Playable
 	private int _lastCompassZone; // the last compass zone update send to the client
 
 	private boolean _isIn7sDungeon = false;
+	
+	private final FloodProtectors _floodProtectors = new FloodProtectors(this);
 
     private PunishLevel _punishLevel = PunishLevel.NONE;
     private long _punishTimer = 0;
@@ -10977,9 +10979,6 @@ public final class L2PcInstance extends L2Playable
 		// Close the connection with the client
 		closeNetConnection();
 		
-		// remove from flood protector
-		FloodProtector.removePlayer(getObjectId());
-		
 		if (getClanId() > 0)
 			getClan().broadcastToOtherOnlineMembers(new PledgeShowMemberListUpdate(this), this);
 		//ClanTable.getInstance().getClan(getClanId()).broadcastToOnlineMembers(new PledgeShowMemberListAdd(this));
@@ -12757,5 +12756,10 @@ public final class L2PcInstance extends L2Playable
     public boolean isInSiege()
     {
     	return _isInSiege;
+    }
+    
+    public FloodProtectors getFloodProtectors()
+    {
+    	return _floodProtectors;
     }
 }

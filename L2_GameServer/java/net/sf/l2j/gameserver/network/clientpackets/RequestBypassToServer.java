@@ -64,6 +64,9 @@ public final class RequestBypassToServer extends L2GameClientPacket
 
 		if (activeChar == null)
 		    return;
+		
+		if (!activeChar.getFloodProtectors().getServerBypass().tryPerformAction(_command))
+			return;
 
 		try {
 			if (_command.startsWith("admin_")) //&& activeChar.getAccessLevel() >= Config.GM_ACCESSLEVEL)

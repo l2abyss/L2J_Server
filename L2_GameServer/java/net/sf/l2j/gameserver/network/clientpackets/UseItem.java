@@ -36,7 +36,6 @@ import net.sf.l2j.gameserver.templates.item.L2ArmorType;
 import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
 import net.sf.l2j.gameserver.templates.item.L2WeaponType;
-import net.sf.l2j.gameserver.util.FloodProtector;
 
 /**
  * This class ...
@@ -85,8 +84,8 @@ public final class UseItem extends L2GameClientPacket
             return;
 
 		// Flood protect UseItem
-		if (!FloodProtector.tryPerformAction(activeChar.getObjectId(), FloodProtector.PROTECTED_USEITEM))
-			return;
+		if (!activeChar.getFloodProtectors().getUseItem().tryPerformAction("use item"))
+				return;
 
 		if (activeChar.getPrivateStoreType() != 0)
 		{

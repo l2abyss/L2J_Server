@@ -77,7 +77,6 @@ import net.sf.l2j.gameserver.network.serverpackets.ShortCutInit;
 import net.sf.l2j.gameserver.network.serverpackets.SkillCoolTime;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
-import net.sf.l2j.gameserver.util.FloodProtector;
 
 /**
  * Enter World Packet Handler<p>
@@ -124,9 +123,6 @@ public class EnterWorld extends L2GameClientPacket
 			if (instanceId > 0)
 			InstanceManager.getInstance().getInstance(instanceId).removePlayer(activeChar.getObjectId());
 		}
-
-		// Register in flood protector
-		FloodProtector.registerNewPlayer(activeChar.getObjectId());
 
 		if (L2World.getInstance().findObject(activeChar.getObjectId()) != null)
 		{
