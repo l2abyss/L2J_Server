@@ -45,7 +45,7 @@ public final class FloodProtectorAction
 	/**
 	 * Request counter.
 	 */
-	private AtomicInteger _count;
+	private AtomicInteger _count = new AtomicInteger(0);
 	/**
 	 * Flag determining whether exceeding request has been logged.
 	 */
