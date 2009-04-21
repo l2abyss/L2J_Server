@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +52,7 @@ public final class CharacterCreate extends L2GameClientPacket
 {
 	private static final String _C__0B_CHARACTERCREATE = "[C] 0B CharacterCreate";
 	private static Logger _log = Logger.getLogger(CharacterCreate.class.getName());
-
+	
 	// cSdddddddddddd
 	private String _name;
     private int _race;
@@ -88,23 +89,7 @@ public final class CharacterCreate extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-        if (CharNameTable.getInstance().accountCharNumber(getClient().getAccountName()) >= Config.MAX_CHARACTERS_NUMBER_PER_ACCOUNT && Config.MAX_CHARACTERS_NUMBER_PER_ACCOUNT != 0)
-        {
-            if (Config.DEBUG)
-                _log.fine("Max number of characters reached. Creation failed.");
-            CharCreateFail ccf = new CharCreateFail(CharCreateFail.REASON_TOO_MANY_CHARACTERS);
-            sendPacket(ccf);
-            return;
-        }
-        else if (CharNameTable.getInstance().doesCharNameExist(_name))
-		{
-			if (Config.DEBUG)
-				_log.fine("charname: "+ _name + " already exists. creation failed.");
-			CharCreateFail ccf = new CharCreateFail(CharCreateFail.REASON_NAME_ALREADY_EXISTS);
-			sendPacket(ccf);
-			return;
-		}
-		else if ((_name.length() < 3) || (_name.length() > 16) || !Util.isAlphaNumeric(_name) || !isValidName(_name))
+		if ((_name.length() < 3) || (_name.length() > 16) || !Util.isAlphaNumeric(_name) || !isValidName(_name))
 		{
 			if (Config.DEBUG)
 				_log.fine("charname: " + _name + " is invalid. creation failed.");
@@ -112,24 +97,51 @@ public final class CharacterCreate extends L2GameClientPacket
 			sendPacket(ccf);
 			return;
 		}
-
 		
+		L2PcInstance newChar = null;
+		L2PcTemplate template = null;
 		
-		L2PcTemplate template = CharTemplateTable.getInstance().getTemplate(_classId);
-		
-        if (Config.DEBUG)
-            _log.fine("charname: " + _name + " classId: " + _classId+" template: "+template);
-        
-        if(template == null || template.classBaseLevel > 1) 
+		/*
+		 * DrHouse: Since checks for duplicate names are done using SQL, 
+		 * lock must be held until data is written to DB as well.
+		 */
+		synchronized (CharNameTable.getInstance())
 		{
-			CharCreateFail ccf = new CharCreateFail(CharCreateFail.REASON_CREATION_FAILED);
-			sendPacket(ccf);
-			return;
+			if (CharNameTable.getInstance().accountCharNumber(getClient().getAccountName()) >= Config.MAX_CHARACTERS_NUMBER_PER_ACCOUNT
+			        && Config.MAX_CHARACTERS_NUMBER_PER_ACCOUNT != 0)
+			{
+				if (Config.DEBUG)
+					_log.fine("Max number of characters reached. Creation failed.");
+				CharCreateFail ccf = new CharCreateFail(CharCreateFail.REASON_TOO_MANY_CHARACTERS);
+				sendPacket(ccf);
+				return;
+			}
+			else if (CharNameTable.getInstance().doesCharNameExist(_name))
+			{
+				if (Config.DEBUG)
+					_log.fine("charname: " + _name + " already exists. creation failed.");
+				CharCreateFail ccf = new CharCreateFail(CharCreateFail.REASON_NAME_ALREADY_EXISTS);
+				sendPacket(ccf);
+				return;
+			}
+			
+			template = CharTemplateTable.getInstance().getTemplate(_classId);
+			
+			if (Config.DEBUG)
+				_log.fine("charname: " + _name + " classId: " + _classId + " template: " + template);
+			
+			if (template == null || template.classBaseLevel > 1)
+			{
+				CharCreateFail ccf = new CharCreateFail(CharCreateFail.REASON_CREATION_FAILED);
+				sendPacket(ccf);
+				return;
+			}
+			
+			int objectId = IdFactory.getInstance().getNextId();
+			newChar = L2PcInstance.create(objectId, template, getClient().getAccountName(), _name, _hairStyle, _hairColor, _face, _sex != 0);
 		}
-
-		int objectId = IdFactory.getInstance().getNextId();
-		L2PcInstance newChar = L2PcInstance.create(objectId, template, getClient().getAccountName(),
-				_name, _hairStyle, _hairColor, _face, _sex!=0);
+		
+		
 		newChar.setCurrentHp(template.baseHpMax);
 		newChar.setCurrentCp(template.baseCpMax);
 		newChar.setCurrentMp(template.baseMpMax);
