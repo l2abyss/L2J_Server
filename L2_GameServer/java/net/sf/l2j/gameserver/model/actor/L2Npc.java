@@ -76,6 +76,7 @@ import net.sf.l2j.gameserver.model.quest.State;
 import net.sf.l2j.gameserver.model.zone.type.L2TownZone;
 import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.AbstractNpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.EtcStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ExShowBaseAttributeCancelWindow;
@@ -85,7 +86,6 @@ import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
-import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.RadarControl;
 import net.sf.l2j.gameserver.network.serverpackets.ServerObjectInfo;
 import net.sf.l2j.gameserver.network.serverpackets.SocialAction;
@@ -380,7 +380,7 @@ public class L2Npc extends L2Character
 				if (getRunSpeed() == 0)
 					player.sendPacket(new ServerObjectInfo(this, player));
 				else
-					player.sendPacket(new NpcInfo(this, player));
+					player.sendPacket(new AbstractNpcInfo.NpcInfo(this, player));
 			}
 		}
 	}

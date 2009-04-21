@@ -26,7 +26,7 @@ import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
-import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
+import net.sf.l2j.gameserver.network.serverpackets.AbstractNpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.StopMove;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
@@ -158,7 +158,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
         	_owner = owner;
 	    	setTitle(owner.getName());
 	    	// broadcast the new title
-	    	broadcastPacket( new NpcInfo(this, owner) );
+	    	broadcastPacket( new AbstractNpcInfo.NpcInfo(this, owner) );
 
 	    	owner.setTrainedBeast(this);
 

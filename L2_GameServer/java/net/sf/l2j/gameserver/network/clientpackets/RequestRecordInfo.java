@@ -27,10 +27,10 @@ import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2StaticObjectInstance;
+import net.sf.l2j.gameserver.network.serverpackets.AbstractNpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.CharInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.GetOnVehicle;
-import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.PetItemList;
 import net.sf.l2j.gameserver.network.serverpackets.RelationChanged;
 import net.sf.l2j.gameserver.network.serverpackets.ServerObjectInfo;
@@ -95,7 +95,7 @@ public class RequestRecordInfo extends L2GameClientPacket
 						if (((L2Npc) object).getRunSpeed() == 0)
 							_activeChar.sendPacket(new ServerObjectInfo((L2Npc) object, _activeChar));
 						else
-							_activeChar.sendPacket(new NpcInfo((L2Npc) object, _activeChar));
+							_activeChar.sendPacket(new AbstractNpcInfo.NpcInfo((L2Npc) object, _activeChar));
 					}
 					else if (object instanceof L2Summon)
 					{
@@ -110,7 +110,7 @@ public class RequestRecordInfo extends L2GameClientPacket
 								_activeChar.sendPacket(new PetItemList((L2PetInstance) summon));
 						}
 						else
-							_activeChar.sendPacket(new NpcInfo(summon, _activeChar,1));
+							_activeChar.sendPacket(new AbstractNpcInfo.SummonInfo(summon, _activeChar,1));
 						
 						// The PetInfo packet wipes the PartySpelled (list of
 						// active spells' icons). Re-add them

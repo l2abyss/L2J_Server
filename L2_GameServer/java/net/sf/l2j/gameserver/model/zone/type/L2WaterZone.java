@@ -20,7 +20,7 @@ import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
-import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
+import net.sf.l2j.gameserver.network.serverpackets.AbstractNpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ServerObjectInfo;
 
 public class L2WaterZone extends L2ZoneType
@@ -56,7 +56,7 @@ public class L2WaterZone extends L2ZoneType
 					if (character.getRunSpeed() == 0)
 						player.sendPacket(new ServerObjectInfo((L2Npc)character, player));
 					else
-						player.sendPacket(new NpcInfo((L2Npc) character, player));
+						player.sendPacket(new AbstractNpcInfo.NpcInfo((L2Npc) character, player));
 				}
 			}
 		}
@@ -92,7 +92,7 @@ public class L2WaterZone extends L2ZoneType
 					if (character.getRunSpeed() == 0)
 						player.sendPacket(new ServerObjectInfo((L2Npc)character, player));
 					else
-						player.sendPacket(new NpcInfo((L2Npc) character, player));
+						player.sendPacket(new AbstractNpcInfo.NpcInfo((L2Npc) character, player));
 				}
 			}
 		}

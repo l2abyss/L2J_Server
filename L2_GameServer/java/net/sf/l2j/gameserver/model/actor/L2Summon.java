@@ -40,12 +40,12 @@ import net.sf.l2j.gameserver.model.base.Experience;
 import net.sf.l2j.gameserver.model.itemcontainer.PetInventory;
 import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.AbstractNpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ExPartyPetWindowAdd;
 import net.sf.l2j.gameserver.network.serverpackets.ExPartyPetWindowDelete;
 import net.sf.l2j.gameserver.network.serverpackets.ExPartyPetWindowUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
-import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.PartySpelled;
 import net.sf.l2j.gameserver.network.serverpackets.PetDelete;
 import net.sf.l2j.gameserver.network.serverpackets.PetInfo;
@@ -179,7 +179,7 @@ public abstract class L2Summon extends L2Playable
 		//synchronized (getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
-				player.sendPacket(new NpcInfo(this, player,1));
+				player.sendPacket(new AbstractNpcInfo.SummonInfo(this, player,1));
 		}
     }
 
@@ -875,7 +875,7 @@ public abstract class L2Summon extends L2Playable
 			{
 				if (player == getOwner())
 					continue;
-				player.sendPacket(new NpcInfo(this,player, val));
+				player.sendPacket(new AbstractNpcInfo.SummonInfo(this,player, val));
 			}
 			catch (NullPointerException e)
 			{
@@ -906,11 +906,5 @@ public abstract class L2Summon extends L2Playable
 	public int getPetSpeed()
 	{
 		return getTemplate().baseRunSpd;
-	}
-	
-	@Override
-	public boolean isRunning()
-	{
-		return true; // summons always run
 	}
 }

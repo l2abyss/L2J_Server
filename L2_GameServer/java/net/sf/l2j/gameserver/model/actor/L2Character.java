@@ -86,6 +86,7 @@ import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.AbstractNpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.Attack;
 import net.sf.l2j.gameserver.network.serverpackets.ChangeMoveType;
@@ -97,7 +98,6 @@ import net.sf.l2j.gameserver.network.serverpackets.MagicSkillCanceld;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillLaunched;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.network.serverpackets.MoveToLocation;
-import net.sf.l2j.gameserver.network.serverpackets.NpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.Revive;
 import net.sf.l2j.gameserver.network.serverpackets.ServerObjectInfo;
 import net.sf.l2j.gameserver.network.serverpackets.SetupGauge;
@@ -2248,7 +2248,7 @@ public abstract class L2Character extends L2Object
 					if (getRunSpeed() == 0)
 						player.sendPacket(new ServerObjectInfo((L2Npc) this, player));
 					else
-						player.sendPacket(new NpcInfo((L2Npc) this, player));
+						player.sendPacket(new AbstractNpcInfo.NpcInfo((L2Npc) this, player));
 				}
 			}
 		}
@@ -3755,7 +3755,7 @@ public abstract class L2Character extends L2Object
 						if (getRunSpeed() == 0)
 							player.sendPacket(new ServerObjectInfo((L2Npc)this, player));
 						else
-							player.sendPacket(new NpcInfo((L2Npc)this, player));
+							player.sendPacket(new AbstractNpcInfo.NpcInfo((L2Npc)this, player));
 					}
 				}
 			}
