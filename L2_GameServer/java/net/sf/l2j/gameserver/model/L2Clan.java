@@ -1779,7 +1779,7 @@ public class L2Clan
 		}
 		if (target.getClanJoinExpiryTime() > System.currentTimeMillis())
 		{
-        	SystemMessage sm = new SystemMessage(SystemMessageId.S1_MUST_WAIT_BEFORE_JOINING_ANOTHER_CLAN);
+        	SystemMessage sm = new SystemMessage(SystemMessageId.C1_MUST_WAIT_BEFORE_JOINING_ANOTHER_CLAN);
         	sm.addString(target.getName());
         	activeChar.sendPacket(sm);
         	sm = null;

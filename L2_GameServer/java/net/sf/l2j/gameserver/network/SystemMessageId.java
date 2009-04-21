@@ -4492,9 +4492,9 @@ public enum SystemMessageId
 
 	/**
 	 * ID: 760<br>
-	 * Message: $s1 cannot join the clan because one day has not yet passed since he/she left another clan. 
+	 * Message: $c1 cannot join the clan because one day has not yet passed since he/she left another clan. 
 	 */
-	S1_MUST_WAIT_BEFORE_JOINING_ANOTHER_CLAN(760),
+	C1_MUST_WAIT_BEFORE_JOINING_ANOTHER_CLAN(760),
 
 	/**
 	* ID: 761<br>
@@ -4505,9 +4505,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 762<br>
-	* Message: $s1 rolled $s2 and $s3's eye came out.
+	* Message: $c1 rolled $s2 and $s3's eye came out.
 	*/
-	S1_ROLLED_S2_S3_EYE_CAME_OUT(762),
+	C1_ROLLED_S2_S3_EYE_CAME_OUT(762),
 
 	/**
 	* ID: 763<br>
