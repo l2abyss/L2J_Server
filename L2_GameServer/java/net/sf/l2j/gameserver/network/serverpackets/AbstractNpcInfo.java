@@ -46,7 +46,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
     protected String _name = "";
     protected String _title = "";
 
-	public AbstractNpcInfo(L2Character cha, L2Character attacker)
+	public AbstractNpcInfo(L2Character cha)
     {
     	_isSummoned = cha.isShowSummonAnimation();
     	_x = cha.getX();
@@ -79,13 +79,14 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
     	
     	public NpcInfo(L2Npc cha, L2Character attacker)
     	{
-    		super(cha, attacker);
+    		super(cha);
     		_npc = cha;
     		_idTemplate = cha.getTemplate().idTemplate; // On every subclass
     		_rhand = cha.getRightHandItem();  // On every subclass
     		_lhand = cha.getLeftHandItem(); // On every subclass
             _collisionHeight = cha.getCollisionHeight();// On every subclass
             _collisionRadius = cha.getCollisionRadius();// On every subclass
+            _isAttackable = cha.isAutoAttackable(attacker);
             if (cha.getTemplate().serverSideName)
             	_name = cha.getTemplate().name;// On every subclass
 
@@ -170,7 +171,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
     	
     	public TrapInfo(L2Trap cha, L2Character attacker)
     	{
-    		super(cha, attacker);
+    		super(cha);
     		
     		_trap = cha;
     		_idTemplate = cha.getTemplate().idTemplate;
@@ -256,7 +257,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 		
 		public DecoyInfo(L2Decoy cha)
 		{
-			super(cha, null);
+			super(cha);
 			
 			if (_idTemplate <= 13070 || _idTemplate >= 13077)
 			{
@@ -499,7 +500,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 		
 		public SummonInfo(L2Summon cha, L2Character attacker, int val)
 		{
-			super(cha, attacker);
+			super(cha);
 			_summon = cha;
 			_val = val;
 			
