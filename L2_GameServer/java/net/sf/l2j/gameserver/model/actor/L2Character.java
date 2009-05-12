@@ -1576,7 +1576,7 @@ public abstract class L2Character extends L2Object
 			coolTime = skill.getCoolTime();
 		}
 		// if basic hitTime is higher than 500 than the min hitTime is 500
-		else if (skill.getHitTime() > 500 && hitTime < 500)
+		else if (skill.getHitTime() >= 500 && hitTime < 500)
 			hitTime = 500;
 		
 		// queue herbs and potions
