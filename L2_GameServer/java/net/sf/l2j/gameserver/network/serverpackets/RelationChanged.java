@@ -53,11 +53,13 @@ public final class RelationChanged extends L2GameServerPacket
 		{
 			_karma = ((L2PcInstance)activeChar).getKarma();
 			_pvpFlag = ((L2PcInstance)activeChar).getPvpFlag();
+			_invisible = ((L2PcInstance)activeChar).getAppearance().getInvisible();
 		}
 		else if (activeChar instanceof L2Summon)
 		{
 			_karma =  ((L2Summon)activeChar).getOwner().getKarma();
 			_pvpFlag = ((L2Summon)activeChar).getOwner().getPvpFlag();
+			_invisible = ((L2Summon)activeChar).getOwner().getAppearance().getInvisible();
 		}
 	}
 

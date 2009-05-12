@@ -21,7 +21,9 @@ import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.entity.Fort;
 
 /**
- *
+ * format: d (dSdd)
+ * cnt:%d (fortressID:%d ownerName:%s, siegeState:%d, lastOwnedTime:%d)
+ * 
  * @author  KenM
  */
 public class ExShowFortressInfo extends L2GameServerPacket

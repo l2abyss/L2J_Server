@@ -29,15 +29,21 @@ public class ExBrExtraUserInfo extends L2GameServerPacket
 	{
 		_charObjId = player.getObjectId();
 		_val = player.getAfroHaircutId();
+		_invisible = player.getAppearance().getInvisible();
 	}
 
 	@Override
+	/**
+	 * This packet should belong to Quest windows, not UserInfo in T3.
+	 */
 	protected final void writeImpl()
 	{
+
 		writeC(0xfe);
-		writeH(0x8d);
+		writeH(0xac);
 		writeD(_charObjId);  //object id of player
 		writeD(_val);  //	afro hair cut
+
 	}
 
 	/* (non-Javadoc)

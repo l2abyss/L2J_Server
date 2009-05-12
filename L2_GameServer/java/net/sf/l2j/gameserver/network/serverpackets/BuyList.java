@@ -61,17 +61,17 @@ public final class BuyList extends L2GameServerPacket
 	private static final String _S__1D_BUYLIST = "[S] 07 BuyList";
 	private int _listId;
 	private Collection<L2TradeItem> _list;
-	private int _money;
+	private long _money;
 	private double _taxRate = 0;
 
-	public BuyList(L2TradeList list, int currentMoney)
+	public BuyList(L2TradeList list, long currentMoney)
 	{
 		_listId = list.getListId();
 		_list = list.getItems();
 		_money = currentMoney;
 	}
 
-	public BuyList(L2TradeList list, int currentMoney, double taxRate)
+	public BuyList(L2TradeList list, long currentMoney, double taxRate)
 	{
 		_listId = list.getListId();
         _list = list.getItems();
@@ -79,7 +79,7 @@ public final class BuyList extends L2GameServerPacket
 		_taxRate = taxRate;
 	}
 
-	public BuyList(List<L2TradeItem> lst, int listId, int currentMoney)
+	public BuyList(List<L2TradeItem> lst, int listId, long currentMoney)
 	{
 		_listId = listId;
 		_list = lst;
@@ -90,7 +90,7 @@ public final class BuyList extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x07);
-		writeD(_money);		// current money
+		writeQ(_money);		// current money
 		writeD(_listId);
 
 		writeH(_list.size());
@@ -102,7 +102,7 @@ public final class BuyList extends L2GameServerPacket
 				writeH(item.getTemplate().getType1()); // item type1
 				writeD(0x00); //objectId
 				writeD(item.getItemId());
-				writeD(item.getCurrentCount() <0 ? 0 : item.getCurrentCount());
+				writeQ(item.getCurrentCount() <0 ? 0 : item.getCurrentCount());
 				writeH(item.getTemplate().getType2());	// item type2
 				writeH(0x00);	// ?
 
@@ -122,14 +122,14 @@ public final class BuyList extends L2GameServerPacket
 				}
 
 	            if (item.getItemId() >= 3960 && item.getItemId() <= 4026)//Config.RATE_SIEGE_GUARDS_PRICE-//'
-	                writeD((int)(item.getPrice() * Config.RATE_SIEGE_GUARDS_PRICE * (1 + _taxRate)));
+	                writeQ((int)(item.getPrice() * Config.RATE_SIEGE_GUARDS_PRICE * (1 + _taxRate)));
 	            else
-	                writeD((int)(item.getPrice() * (1 + _taxRate)));
+	                writeQ((int)(item.getPrice() * (1 + _taxRate)));
                 
                 // T1
 				for (byte i = 0; i < 8; i++)
 				{
-					writeD(0x00);
+					writeH(0x00);
 				}
 			}
 		}

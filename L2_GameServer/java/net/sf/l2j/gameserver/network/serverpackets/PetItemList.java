@@ -59,7 +59,7 @@ public class PetItemList extends L2GameServerPacket
 			writeH(temp.getItem().getType1()); // item type1
 			writeD(temp.getObjectId());
 			writeD(temp.getItemId());
-			writeD(temp.getCount());
+			writeQ(temp.getCount());
 			writeH(temp.getItem().getType2());	// item type2
 			writeH(0xff);	// ?
 			writeH(temp.isEquipped() ? 0x01 : 0x00);
@@ -67,11 +67,11 @@ public class PetItemList extends L2GameServerPacket
 			writeH(temp.getEnchantLevel());	// enchant level
 			writeH(0x00);	// ?
 
-			writeD(temp.getAttackElementType());
-			writeD(temp.getAttackElementPower());
+			writeH(temp.getAttackElementType());
+			writeH(temp.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 			{
-				writeD(temp.getElementDefAttr(i));
+				writeH(temp.getElementDefAttr(i));
 			}
 		}
 	}

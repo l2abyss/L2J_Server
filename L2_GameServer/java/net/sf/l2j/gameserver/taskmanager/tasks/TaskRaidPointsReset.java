@@ -21,7 +21,6 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.instancemanager.RaidBossPointsManager;
 import net.sf.l2j.gameserver.model.L2Clan;
-import net.sf.l2j.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 import net.sf.l2j.gameserver.taskmanager.Task;
 import net.sf.l2j.gameserver.taskmanager.TaskManager;
 import net.sf.l2j.gameserver.taskmanager.TaskTypes;
@@ -96,7 +95,6 @@ public class TaskRaidPointsReset extends Task
 								break;
 						}
 						c.setReputationScore(c.getReputationScore() + reputation, true);
-						c.broadcastToOnlineMembers(new PledgeShowInfoUpdate(c));
 					}
 				}
 			}

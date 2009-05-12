@@ -25,31 +25,44 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
  *
  * sample
  *
- * 27
- * 00 00
- * 01 00 		// item count
- *
- * 04 00 		// itemType1  0-weapon/ring/earring/necklace  1-armor/shield  4-item/questitem/adena
- * c6 37 50 40  // objectId
- * cd 09 00 00  // itemId
- * 05 00 00 00  // count
- * 05 00		// itemType2  0-weapon  1-shield/armor  2-ring/earring/necklace  3-questitem  4-adena  5-item
- * 00 00 		// always 0 ??
- * 00 00 		// equipped 1-yes
- * 00 00 		// slot    0006-lr.ear  0008-neck  0030-lr.finger  0040-head  0080-??  0100-l.hand  0200-gloves  0400-chest  0800-pants  1000-feet  2000-??  4000-r.hand  8000-r.hand
- * 00 00 		// always 0 ??
- * 00 00		// always 0 ??
+ * 11 // packet ID
+ * 00 00 // show window
+ * 15 00 // item count
+ * 
+ * 04 00 // item type id
+ * 
+ * 48 B8 B9 40 // object id
+ * 47 09 00 00 //item id
+ * 0C 00 00 00 // location slot
+ * 01 00 00 00 00 00 00 00 // amount
+ * 05 00 // item type 2
+ * 00 00 // custom type 1
+ * 00 00 // is equipped?
+ * 00 00 00 00 // body part
+ * 0F 00 // enchant level
+ * 00 00 // custom type 2
+ * 00 00 // augmentation data
+ * 00 00 // augmentation data
+ * FF FF FF FF //mana
+ * FE FF // attack element
+ * 00 00 // attack element power
+ * 00 00 // fire defence element power
+ * 00 00 // water defence element power
+ * 00 00 // wind defence element power
+ * 00 00 // earth defence element power
+ * 00 00 // holy defence element power
+ * 00 00 // unholy defence element power
+ * F1 D8 FF FF // remaining time = -9999
  *
 
- * format   h (h dddhhhh hh)	revision 377
- * format   h (h dddhhhd hh)    revision 415
+ * format   hh (h dddQhhhdhhhhdhhhhhhhhd)
  *
  * @version $Revision: 1.4.2.1.2.4 $ $Date: 2005/03/27 15:29:57 $
  */
 public final class ItemList extends L2GameServerPacket
 {
 	private static Logger _log = Logger.getLogger(ItemList.class.getName());
-	private static final String _S__27_ITEMLIST = "[S] 11 ItemList";
+	private static final String _S__11_ITEMLIST = "[S] 11 ItemList";
 	private L2ItemInstance[] _items;
 	private boolean _showWindow;
 	
@@ -99,13 +112,12 @@ public final class ItemList extends L2GameServerPacket
 			
 			writeD(temp.getObjectId());
 			writeD(temp.getItemId());
-			writeD(temp.getLocationSlot()); // T1
-			writeD(temp.getCount());
+			writeD(temp.getLocationSlot());
+			writeQ(temp.getCount());
 			writeH(temp.getItem().getType2()); // item type2
 			writeH(temp.getCustomType1()); // item type3
 			writeH(temp.isEquipped() ? 0x01 : 0x00);
 			writeD(temp.getItem().getBodyPart());
-			
 			writeH(temp.getEnchantLevel()); // enchant level
 			//race tickets
 			writeH(temp.getCustomType2()); // item type3
@@ -118,14 +130,13 @@ public final class ItemList extends L2GameServerPacket
 			writeD(temp.getMana());
 			
 			// T1
-			writeD(temp.getAttackElementType());
-			writeD(temp.getAttackElementPower());
+			writeH(temp.getAttackElementType());
+			writeH(temp.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 			{
-				writeD(temp.getElementDefAttr(i));
+				writeH(temp.getElementDefAttr(i));
 			}
-			// T2
-			writeD(0x00);
+			writeD(temp.isTimeLimitedItem() ? (int) (temp.getRemainingTime()/1000) : -1);
 		}
 	}
 	
@@ -135,6 +146,6 @@ public final class ItemList extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return _S__27_ITEMLIST;
+		return _S__11_ITEMLIST;
 	}
 }

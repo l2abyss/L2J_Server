@@ -98,7 +98,7 @@ public final class ExEnchantSkillInfo extends L2GameServerPacket
             writeD(sede._rate);
             writeD(sede._spCost * _xpSpCostMultiplier);
             writeQ(sede._expCost * _xpSpCostMultiplier);
-            writeD(0); // required item count
+            writeQ(0); // required item count
             writeD(0); // req type?
             writeD(0); // required itemId
             writeD(0); // ?

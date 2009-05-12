@@ -170,6 +170,7 @@ public class PetInfo extends L2GameServerPacket
         		form = 1;
         }
         writeD(form);//CT1.5 Pet form and skills
+        writeD(0x00);
 	}
 
 	/* (non-Javadoc)

@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -34,7 +35,7 @@ public class ExStorageMaxCount extends L2GameServerPacket
 	private L2PcInstance _activeChar;
 	private int _inventory;
 	private int _warehouse;
-	private int _freight;
+	private int _clan;
 	private int _privateSell;
 	private int _privateBuy;
 	private int _receipeD;
@@ -47,7 +48,7 @@ public class ExStorageMaxCount extends L2GameServerPacket
         _warehouse = _activeChar.getWareHouseLimit();
 		_privateSell = _activeChar.getPrivateSellStoreLimit();
 		_privateBuy = _activeChar.getPrivateBuyStoreLimit();
-		_freight = _activeChar.getFreightLimit();
+		_clan = Config.WAREHOUSE_SLOTS_CLAN;
 		_receipeD = _activeChar.getDwarfRecipeLimit();
 		_recipe = _activeChar.getCommonRecipeLimit();
 	}
@@ -63,12 +64,12 @@ public class ExStorageMaxCount extends L2GameServerPacket
 
 		writeD(_inventory);
 		writeD(_warehouse);
-		writeD(_freight);
+		writeD(_clan);
 		writeD(_privateSell);
 		writeD(_privateBuy);
 		writeD(_receipeD);
 		writeD(_recipe);
-
+		writeD(0x00);
 	}
 
 	/* (non-Javadoc)

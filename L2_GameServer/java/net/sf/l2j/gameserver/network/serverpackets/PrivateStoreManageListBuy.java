@@ -27,7 +27,7 @@ public class PrivateStoreManageListBuy extends L2GameServerPacket
 {
 	private static final String _S__D0_PRIVATESELLLISTBUY = "[S] bd PrivateStoreManageListBuy";
 	private int _objId;
-	private int _playerAdena;
+	private long _playerAdena;
 	private L2ItemInstance[] _itemList;
 	private TradeList.TradeItem[] _buyList;
 
@@ -45,26 +45,27 @@ public class PrivateStoreManageListBuy extends L2GameServerPacket
 		writeC(0xbd);
 		//section 1
 		writeD(_objId);
-		writeD(_playerAdena);
+		writeQ(_playerAdena);
 
 		//section2
 		writeD(_itemList.length); // inventory items for potential buy
 		for (L2ItemInstance item : _itemList)
 		{
+
 			writeD(item.getItemId());
 			writeH(0); //show enchant lvl as 0, as you can't buy enchanted weapons
-			writeD(item.getCount());
-			writeD(item.getReferencePrice());
+			writeQ(item.getCount());
+			writeQ(item.getReferencePrice());
 			writeH(0x00);
 			writeD(item.getItem().getBodyPart());
 			writeH(item.getItem().getType2());
 
 			// T1
-			writeD(item.getAttackElementType());
-			writeD(item.getAttackElementPower());
+			writeH(item.getAttackElementType());
+			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 			{
-				writeD(item.getElementDefAttr(i));
+				writeH(item.getElementDefAttr(i));
 			}
 		}
 
@@ -74,20 +75,20 @@ public class PrivateStoreManageListBuy extends L2GameServerPacket
 		{
 			writeD(item.getItem().getItemId());
 			writeH(0);
-			writeD(item.getCount());
-			writeD(item.getItem().getReferencePrice());
+			writeQ(item.getCount());
+			writeQ(item.getItem().getReferencePrice());
 			writeH(0x00);
 			writeD(item.getItem().getBodyPart());
 			writeH(item.getItem().getType2());
-			writeD(item.getPrice());//your price
-			writeD(item.getItem().getReferencePrice());//fixed store price
+			writeQ(item.getPrice());//your price
+			writeQ(item.getItem().getReferencePrice());//fixed store price
 			
 			// T1
-			writeD(item.getAttackElementType());
-			writeD(item.getAttackElementPower());
+			writeH(item.getAttackElementType());
+			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 			{
-				writeD(item.getElementDefAttr(i));
+				writeH(item.getElementDefAttr(i));
 			}
 		}
 	}

@@ -78,6 +78,7 @@ public class CharInfo extends L2GameServerPacket
     	_walkSpd        = (int)(_activeChar.getWalkSpeed()/_moveMultiplier);    
         _swimRunSpd = _flRunSpd = _flyRunSpd = _runSpd;
         _swimWalkSpd = _flWalkSpd = _flyWalkSpd = _walkSpd;
+        _invisible = cha.getAppearance().getInvisible();
     }
 
 	@Override
@@ -85,13 +86,11 @@ public class CharInfo extends L2GameServerPacket
 	{
 		boolean gmSeeInvis = false;
 
-		if (_activeChar.getAppearance().getInvisible())
+		if (_invisible)
 		{
 			L2PcInstance tmp = getClient().getActiveChar();
 			if (tmp != null && tmp.isGM())
 				gmSeeInvis = true;
-			else
-				return;
 		}
 
 		if (_activeChar.getPoly().isMorphed())
@@ -137,7 +136,7 @@ public class CharInfo extends L2GameServerPacket
 				}
 				else
 				{
-					writeC(_activeChar.getAppearance().getInvisible()? 1 : 0); // invisible ?? 0=false  1=true   2=summoned (only works if model has a summon animation)
+					writeC(_invisible? 1 : 0); // invisible ?? 0=false  1=true   2=summoned (only works if model has a summon animation)
 				}
 
 				writeS(_activeChar.getAppearance().getVisibleName());
@@ -164,8 +163,8 @@ public class CharInfo extends L2GameServerPacket
 					writeD(_activeChar.getAbnormalEffect());  // C2
 				}
 
-				writeD(0);  // C2
-				writeD(0);  // C2
+				writeD(_activeChar.getClanId()); //clan id
+				writeD(_activeChar.getClanCrestId()); //crest id
 				writeD(0);  // C2
 				writeD(0);  // C2
 				writeC(0);  // C2
@@ -175,6 +174,9 @@ public class CharInfo extends L2GameServerPacket
                 writeD(0x00);  // C4
                 writeD(0x00);  // C6
                 writeD(0x00);
+                writeD(0x00);
+    	        writeC(0x01);
+                writeC(0x01);
                 writeD(0x00);
 			}
             else
@@ -220,6 +222,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_DECO4));
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_DECO5));
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_DECO6));
+			writeD(0x00); // CT2.3
 			// end of t1 new d's
 			
 			// c6 new h's
@@ -244,7 +247,10 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_DECO4));
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_DECO5));
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_DECO6));
-
+			writeD(0x00); // CT2.3
+			
+			writeD(0x00);
+			writeD(0x00);
 			// end of t1 new h's
 			
 			writeD(_activeChar.getPvpFlag());
@@ -315,7 +321,7 @@ public class CharInfo extends L2GameServerPacket
 			}
 			else
 			{
-				writeC(_activeChar.getAppearance().getInvisible() ? 1 : 0);	// invisible = 1  visible =0
+				writeC(_invisible ? 1 : 0);	// invisible = 1  visible =0
 			}
 
 			writeC(_activeChar.getMountType());	// 1-on Strider, 2-on Wyvern, 3-on Great Wolf, 0-no mount
@@ -385,6 +391,12 @@ public class CharInfo extends L2GameServerPacket
 	        
 	        // T2
 	        writeD(0x01);
+	        
+	        // T2.3
+	        writeD(0x00);
+	        writeD(0x00);
+	        writeD(0x00);
+	        writeD(0x00);
 		}
 	}
 

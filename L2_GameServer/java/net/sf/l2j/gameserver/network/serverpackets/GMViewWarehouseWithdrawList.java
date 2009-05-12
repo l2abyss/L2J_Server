@@ -29,7 +29,7 @@ public class GMViewWarehouseWithdrawList extends L2GameServerPacket
 	private L2ItemInstance[] _items;
 	private String _playerName;
 	private L2PcInstance _activeChar;
-	private int _money;
+	private long _money;
 	
 	public GMViewWarehouseWithdrawList(L2PcInstance cha)
 	{
@@ -44,7 +44,7 @@ public class GMViewWarehouseWithdrawList extends L2GameServerPacket
 	{
 		writeC(0x9b);
 		writeS(_playerName);
-		writeD(_money);
+		writeQ(_money);
 		writeH(_items.length);
 		
 		for (L2ItemInstance item : _items)
@@ -53,7 +53,7 @@ public class GMViewWarehouseWithdrawList extends L2GameServerPacket
 			
 			writeD(item.getObjectId());
 			writeD(item.getItemId());
-			writeD(item.getCount());
+			writeQ(item.getCount());
 			writeH(item.getItem().getType2());
 			writeH(item.getCustomType1());
 			
@@ -94,7 +94,7 @@ public class GMViewWarehouseWithdrawList extends L2GameServerPacket
 			
 			writeD(item.getMana());
 			// T2
-			writeD(0x00);
+			writeD(item.isTimeLimitedItem() ? (int) (item.getRemainingTime()/1000) : -1);
 		}
 	}
 	

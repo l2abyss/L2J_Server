@@ -47,7 +47,7 @@ public class RecipeShopSellList extends L2GameServerPacket
             writeD(_manufacturer.getObjectId());
             writeD((int) _manufacturer.getCurrentMp());//Creator's MP
             writeD(_manufacturer.getMaxMp());//Creator's MP
-            writeD(_buyer.getAdena());//Buyer Adena
+            writeQ(_buyer.getAdena());//Buyer Adena
 
             int count = createList.size();
             writeD(count);
@@ -58,7 +58,7 @@ public class RecipeShopSellList extends L2GameServerPacket
                 temp = createList.getList().get(i);
                 writeD(temp.getRecipeId());
                 writeD(0x00); //unknown
-                writeD(temp.getCost());
+                writeQ(temp.getCost());
             }
         }
     }

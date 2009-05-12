@@ -45,9 +45,13 @@ public final class AcquireSkillList extends L2GameServerPacket
 	//private static Logger _log = Logger.getLogger(AquireSkillList.class.getName());
     public enum SkillType
     {
-    	Usual,
-    	Fishing,
-    	Clan
+    	Usual, // 0
+    	Fishing, // 1
+    	Clan, // 2
+    	unk3,
+    	unk4,
+    	unk5,
+    	Special // 6
     }
 
 	private static final String _S__A3_AQUIRESKILLLIST = "[S] 90 AquireSkillList";

@@ -71,9 +71,9 @@ public class ExShowCropInfo extends L2GameServerPacket
 		for (CropProcure crop : _crops)
         {
 			writeD(crop.getId());          // Crop id
-			writeD(crop.getAmount());      // Buy residual
-			writeD(crop.getStartAmount()); // Buy
-			writeD(crop.getPrice());       // Buy price
+			writeD((int)crop.getAmount());      // Buy residual
+			writeD((int)crop.getStartAmount()); // Buy
+			writeD((int)crop.getPrice());       // Buy price
 			writeC(crop.getReward());      // Reward
 			writeD(L2Manor.getInstance().getSeedLevelByCrop(crop.getId())); // Seed Level
 			writeC(1); // rewrad 1 Type

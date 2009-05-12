@@ -43,14 +43,14 @@ public class PackageSendableList extends L2GameServerPacket
 		writeC(0xd2);
 
 		writeD(_playerObjId);
-		writeD(getClient().getActiveChar().getAdena());
+		writeQ(getClient().getActiveChar().getAdena());
 		writeD(_items.length);
 		for(L2ItemInstance item : _items) // format inside the for taken from SellList part use should be about the same
 		{
 			writeH(item.getItem().getType1());
 			writeD(item.getObjectId());
 			writeD(item.getItemId());
-			writeD(item.getCount());
+			writeQ(item.getCount());
 			writeH(item.getItem().getType2());
 			writeH(item.getCustomType1());
 			writeD(item.getItem().getBodyPart());
@@ -59,11 +59,11 @@ public class PackageSendableList extends L2GameServerPacket
 			writeH(0x00);
 			writeD(item.getObjectId()); // some item identifier later used by client to answer (see RequestPackageSend) not item id nor object id maybe some freight system id??
 			//T1
-			writeD(item.getAttackElementType());
-			writeD(item.getAttackElementPower());
+			writeH(item.getAttackElementType());
+			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 			{
-				writeD(item.getElementDefAttr(i));
+				writeH(item.getElementDefAttr(i));
 			}
 		}
 	}

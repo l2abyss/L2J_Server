@@ -35,7 +35,7 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 {
 	private static final String _S__B3_PRIVATESELLLISTSELL = "[S] a0 PrivateSellListSell";
 	private int _objId;
-	private int _playerAdena;
+	private long _playerAdena;
 	private boolean _packageSale;
 	private TradeList.TradeItem[] _itemList;
 	private TradeList.TradeItem[] _sellList;
@@ -57,7 +57,7 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 		//section 1
 		writeD(_objId);
 		writeD(_packageSale ? 1 : 0); // Package sell
-		writeD(_playerAdena);
+		writeQ(_playerAdena);
 
 		//section2
 		writeD(_itemList.length); //for potential sells
@@ -66,19 +66,19 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 			writeD(item.getItem().getType2());
 			writeD(item.getObjectId());
 			writeD(item.getItem().getItemId());
-			writeD(item.getCount());
+			writeQ(item.getCount());
 			writeH(0);
 			writeH(item.getEnchant());//enchant lvl
 			writeH(0);
 			writeD(item.getItem().getBodyPart());
-			writeD(item.getPrice()); //store price
+			writeQ(item.getPrice()); //store price
 			
 			// T1
-			writeD(item.getAttackElementType());
-			writeD(item.getAttackElementPower());
+			writeH(item.getAttackElementType());
+			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 			{
-				writeD(item.getElementDefAttr(i));
+				writeH(item.getElementDefAttr(i));
 			}
 		}
 		//section 3
@@ -88,20 +88,20 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 			writeD(item.getItem().getType2());
 			writeD(item.getObjectId());
 			writeD(item.getItem().getItemId());
-			writeD(item.getCount());
+			writeQ(item.getCount());
 			writeH(0);
 			writeH(item.getEnchant());//enchant lvl
 			writeH(0x00);
 			writeD(item.getItem().getBodyPart());
-			writeD(item.getPrice());//your price
-			writeD(item.getItem().getReferencePrice()); //store price
+			writeQ(item.getPrice());//your price
+			writeQ(item.getItem().getReferencePrice()); //store price
 			
 			// T1
-			writeD(item.getAttackElementType());
-			writeD(item.getAttackElementPower());
+			writeH(item.getAttackElementType());
+			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 			{
-				writeD(item.getElementDefAttr(i));
+				writeH(item.getElementDefAttr(i));
 			}
 		}
 	}

@@ -45,9 +45,9 @@ public final class BuyListSeed extends L2GameServerPacket
 
 	private int _manorId;
 	private Collection<L2TradeItem> _list;
-	private int _money;
+	private long _money;
 
-	public BuyListSeed(L2TradeList list, int manorId, int currentMoney)
+	public BuyListSeed(L2TradeList list, int manorId, long currentMoney)
 	{
 		_money  = currentMoney;
 		_manorId = manorId;
@@ -59,7 +59,7 @@ public final class BuyListSeed extends L2GameServerPacket
 	{
 		writeC(0xe9);
 
-		writeD(_money);                                 // current money
+		writeQ(_money);                                 // current money
 		writeD(_manorId);                               // manor id
 
 		writeH(_list.size());                           // list length
@@ -69,10 +69,10 @@ public final class BuyListSeed extends L2GameServerPacket
 			writeH(0x04);                               // item->type1
 			writeD(0x00);                               // objectId
 			writeD(item.getItemId());                   // item id
-			writeD(item.getCurrentCount());             // item count
+			writeQ(item.getCurrentCount());             // item count
 			writeH(0x04);                               // item->type2
 			writeH(0x00);                               // unknown :)
-			writeD(item.getPrice());                    // price
+			writeQ(item.getPrice());                    // price
 		}
 	}
 

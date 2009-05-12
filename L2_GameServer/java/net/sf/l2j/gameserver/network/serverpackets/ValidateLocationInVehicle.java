@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.network.serverpackets;
 
 import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 /**
  * This class ...
  *
@@ -23,7 +24,7 @@ import net.sf.l2j.gameserver.model.actor.L2Character;
 public class ValidateLocationInVehicle extends L2GameServerPacket
 {
     private static final String _S__73_ValidateLocationInVehicle = "[S] 80 ValidateLocationInVehicle";
-    private L2Character _activeChar;
+    private L2PcInstance _activeChar;
 
 
     /**
@@ -32,15 +33,20 @@ public class ValidateLocationInVehicle extends L2GameServerPacket
      */
     public ValidateLocationInVehicle(L2Character player)
     {
-    	_activeChar = player;
+    	if (!(player instanceof L2PcInstance)) return;
+
+		_activeChar = (L2PcInstance)player;
+
+		if (_activeChar.getBoat() == null) return;
     }
 
     @Override
 	protected final void writeImpl()
     {
+    	
         writeC(0x80);
         writeD(_activeChar.getObjectId());
-        writeD(1343225858); //TODO verify vehicle object id ??
+        writeD(_activeChar.getBoat().getObjectId());
         writeD(_activeChar.getX());
         writeD(_activeChar.getY());
         writeD(_activeChar.getZ());

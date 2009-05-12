@@ -66,8 +66,7 @@ public final class UserInfo extends L2GameServerPacket
 {
     private static final String _S__04_USERINFO = "[S] 32 UserInfo";
     private L2PcInstance _activeChar;
-    private int _runSpd, _walkSpd, _swimRunSpd, _swimWalkSpd, _flRunSpd, _flWalkSpd, _flyRunSpd,
-            _flyWalkSpd, _relation;
+    private int _runSpd, _walkSpd, _swimRunSpd, _swimWalkSpd, _flyRunSpd,_flyWalkSpd, _relation;
     private float _moveMultiplier;
 
     /**
@@ -80,8 +79,8 @@ public final class UserInfo extends L2GameServerPacket
         _moveMultiplier = _activeChar.getMovementSpeedMultiplier();
         _runSpd = (int) (_activeChar.getRunSpeed() / _moveMultiplier);
         _walkSpd = (int) (_activeChar.getWalkSpeed() / _moveMultiplier);
-        _swimRunSpd = _flRunSpd = _flyRunSpd = _runSpd;
-        _swimWalkSpd = _flWalkSpd = _flyWalkSpd = _walkSpd;
+        _swimRunSpd = _flyRunSpd = _runSpd;
+        _swimWalkSpd = _flyWalkSpd = _walkSpd;
         _relation = _activeChar.isClanLeader() ? 0x40 : 0;
         if (_activeChar.getSiegeState() == 1) _relation |= 0x180;
         if (_activeChar.getSiegeState() == 2) _relation |= 0x80;
@@ -95,7 +94,7 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.getX());
         writeD(_activeChar.getY());
         writeD(_activeChar.getZ());
-        writeD(_activeChar.getHeading());
+        writeD(_activeChar.isInAirShip() ? _activeChar.getAirShip().getObjectId() : 0x00); // heading from CT2.3 no longer used inside userinfo, here is now vehicle id (boat,airship)
         writeD(_activeChar.getObjectId());
         writeS(_activeChar.getName());
         writeD(_activeChar.getRace().ordinal());
@@ -120,7 +119,7 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.getCurrentLoad());
         writeD(_activeChar.getMaxLoad());
 
-        writeD(_activeChar.getActiveWeaponItem() != null ? 0x40 : 0x20); // 0x20 no weapon, 0x40 weapon equipped
+        writeD(_activeChar.getActiveWeaponItem() != null ? 40 : 20); // 20 no weapon, 40 weapon equipped
         
         writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_UNDER));
         writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_REAR));
@@ -139,7 +138,6 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_LRHAND));
         writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_HAIR));
         writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_HAIR2));
-        // T1 new D's
         writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_RBRACELET));
         writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_LBRACELET));
         writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_DECO1));
@@ -148,8 +146,7 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_DECO4));
         writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_DECO5));
         writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_DECO6));
-        // end of T1 new D's
-        
+        writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_BELT)); // CT2.3
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_UNDER));
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_REAR));
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_LEAR));
@@ -167,8 +164,6 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_LRHAND));
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_HAIR));
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_HAIR2));
-        
-        // T1 new D's
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_RBRACELET));
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_LBRACELET));
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_DECO1));
@@ -177,9 +172,7 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_DECO4));
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_DECO5));
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_DECO6));
-        // end of T1 new D's
-        
-        // c6 new h's
+        writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_BELT)); // CT2.3
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_UNDER));
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_REAR));
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_LEAR));
@@ -197,9 +190,6 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_LRHAND));
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_HAIR));
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_HAIR2));
-        // end of c6 new h's
-        
-        // start of T1 new h's
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_RBRACELET));
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_LBRACELET));
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_DECO1));
@@ -208,8 +198,9 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_DECO4));
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_DECO5));
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_DECO6));
-        // end of T1 new h's
-        
+        writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_BELT)); // CT2.3
+        writeD(0x00); // CT2.3
+        writeD(0x01); // CT2.3
         writeD(_activeChar.getPAtk(null));
         writeD(_activeChar.getPAtkSpd());
         writeD(_activeChar.getPDef(null));
@@ -230,10 +221,10 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_walkSpd);
         writeD(_swimRunSpd); // swimspeed
         writeD(_swimWalkSpd); // swimspeed
-        writeD(_flRunSpd);
-        writeD(_flWalkSpd);
-        writeD(_flyRunSpd);
-        writeD(_flyWalkSpd);
+        writeD(0);
+        writeD(0);
+        writeD(_activeChar.isFlying() ? _flyRunSpd : 0); // fly speed
+        writeD(_activeChar.isFlying() ? _flyWalkSpd : 0); // fly speed
         writeF(_moveMultiplier);
         writeF(_activeChar.getAttackSpeedMultiplier());
 
@@ -261,7 +252,7 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.isGM() ? 1 : 0); // builder level
 
         String title = _activeChar.getTitle();
-        if (_activeChar.getAppearance().getInvisible() && _activeChar.isGM()) title = "Invisible";
+     	if (_activeChar.getAppearance().getInvisible() && _activeChar.isGM()) title = "Invisible";
         if (_activeChar.getPoly().isMorphed())
         {
         	L2NpcTemplate polyObj = NpcTable.getInstance().getTemplate(_activeChar.getPoly().getPolyId());
@@ -290,13 +281,13 @@ public final class UserInfo extends L2GameServerPacket
         writeC(0x00); //1-find party members
 
         writeD(_activeChar.getAbnormalEffect());
-        writeC(0x00);
+        writeC(_activeChar.isFlyingMounted() ? 2 : 0);
 
         writeD(_activeChar.getClanPrivileges());
 
         writeH(_activeChar.getRecomLeft()); //c2  recommendations remaining
         writeH(_activeChar.getRecomHave()); //c2  recommendations received
-        writeD(_activeChar.getMountNpcId() + 1000000);
+        writeD(_activeChar.getMountNpcId() > 0 ? _activeChar.getMountNpcId() + 1000000 : 0);
         writeH(_activeChar.getInventoryLimit());
 
         writeD(_activeChar.getClassId().getId());
@@ -338,21 +329,26 @@ public final class UserInfo extends L2GameServerPacket
         // T1 Starts
         writeD(_activeChar.getTransformationId());
         
-        writeD(_activeChar.getAttackElement());
-        writeD(_activeChar.getAttackElementValue());
-        writeD(_activeChar.getDefAttrFire());
-        writeD(_activeChar.getDefAttrWater());
-        writeD(_activeChar.getDefAttrWind());
-        writeD(_activeChar.getDefAttrEarth());
-        writeD(_activeChar.getDefAttrHoly());
-        writeD(_activeChar.getDefAttrUnholy());
+        int attackAttribute = _activeChar.getAttackElement();
+		writeH(attackAttribute);
+		writeH(_activeChar.getAttackElementValue(attackAttribute));
+        writeH(_activeChar.getDefAttrFire());
+        writeH(_activeChar.getDefAttrWater());
+        writeH(_activeChar.getDefAttrWind());
+        writeH(_activeChar.getDefAttrEarth());
+        writeH(_activeChar.getDefAttrHoly());
+        writeH(_activeChar.getDefAttrUnholy());
         
         writeD(_activeChar.getAgathionId());
         
         // T2 Starts
         writeD(_activeChar.getFame());  // Fame
-        writeD(0x00); // Unknown
-        writeD(_activeChar.getVitalityLevel());  // Vitality Level
+        writeD(0x01); // Unknown
+        writeD(0x00);  // Vitality Points
+        writeD(0x00); // CT2.3
+        writeD(0x00); // CT2.3
+        writeD(0x00); // CT2.3
+        writeD(0x00); // CT2.3
     }
 
     /* (non-Javadoc)

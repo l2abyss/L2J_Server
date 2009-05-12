@@ -27,7 +27,7 @@ public class PrivateStoreListBuy extends L2GameServerPacket
 //	private static final String _S__D1_PRIVATEBUYLISTBUY = "[S] b8 PrivateBuyListBuy";
 	private static final String _S__D1_PRIVATESTORELISTBUY = "[S] be PrivateStoreListBuy";
 	private int _objId;
-	private int _playerAdena;
+	private long _playerAdena;
 	private TradeList.TradeItem[] _items;
 
 	public PrivateStoreListBuy(L2PcInstance player, L2PcInstance storePlayer)
@@ -43,7 +43,7 @@ public class PrivateStoreListBuy extends L2GameServerPacket
 	{
 		writeC(0xbe);
 		writeD(_objId);
-		writeD(_playerAdena);
+		writeQ(_playerAdena);
 
 		writeD(_items.length);
 
@@ -52,23 +52,23 @@ public class PrivateStoreListBuy extends L2GameServerPacket
 			writeD(item.getObjectId());
 			writeD(item.getItem().getItemId());
 			writeH(item.getEnchant());
-			writeD(item.getCount()); //give max possible sell amount
+			writeQ(item.getCount()); //give max possible sell amount
 
-			writeD(item.getItem().getReferencePrice());
+			writeQ(item.getItem().getReferencePrice());
 			writeH(0);
 
 			writeD(item.getItem().getBodyPart());
 			writeH(item.getItem().getType2());
-			writeD(item.getPrice());//buyers price
+			writeQ(item.getPrice());//buyers price
 
-			writeD(item.getCount());  // maximum possible tradecount
+			writeQ(item.getCount());  // maximum possible tradecount
 			
 			// T1
-			writeD(item.getAttackElementType());
-			writeD(item.getAttackElementPower());
+			writeH(item.getAttackElementType());
+			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 			{
-				writeD(item.getElementDefAttr(i));
+				writeH(item.getElementDefAttr(i));
 			}
 		}
 	}

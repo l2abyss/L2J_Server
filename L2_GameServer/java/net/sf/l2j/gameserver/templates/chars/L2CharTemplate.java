@@ -79,12 +79,12 @@ public class L2CharTemplate
 	public final double baseMovementVuln;
 	public final double baseConfusionVuln;
 	public final double baseSleepVuln;
-	public final double baseFireVuln;
-	public final double baseWindVuln;
-	public final double baseWaterVuln;
-	public final double baseEarthVuln;
-	public final double baseHolyVuln;
-	public final double baseDarkVuln;
+	public final double baseFireRes;
+	public final double baseWindRes;
+	public final double baseWaterRes;
+	public final double baseEarthRes;
+	public final double baseHolyRes;
+	public final double baseDarkRes;
 	public final double baseCritVuln;
 	
 	public final boolean isUndead;
@@ -149,12 +149,12 @@ public class L2CharTemplate
 		baseMovementVuln = set.getInteger("baseMovementVuln", 1);
 		baseConfusionVuln = set.getInteger("baseConfusionVuln", 1);
 		baseSleepVuln = set.getInteger("baseSleepVuln", 1);
-		baseFireVuln = set.getInteger("baseFireVuln", 1);
-		baseWindVuln = set.getInteger("baseWindVuln", 1);
-		baseWaterVuln = set.getInteger("baseWaterVuln", 1);
-		baseEarthVuln = set.getInteger("baseEarthVuln", 1);
-		baseHolyVuln = set.getInteger("baseHolyVuln", 1);
-		baseDarkVuln = set.getInteger("baseDarkVuln", 1);
+		baseFireRes = set.getInteger("baseFireRes", 0);
+		baseWindRes = set.getInteger("baseWindRes", 0);
+		baseWaterRes = set.getInteger("baseWaterRes", 0);
+		baseEarthRes = set.getInteger("baseEarthRes", 0);
+		baseHolyRes = set.getInteger("baseHolyRes", 0);
+		baseDarkRes = set.getInteger("baseDarkRes", 0);
 		baseCritVuln = set.getInteger("baseCritVuln", 1);
 		
 		isUndead = (set.getInteger("isUndead", 0) == 1);

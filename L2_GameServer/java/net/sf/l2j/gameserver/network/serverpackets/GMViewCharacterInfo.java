@@ -99,6 +99,7 @@ public class GMViewCharacterInfo extends L2GameServerPacket
         writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_DECO4));
         writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_DECO5));
         writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_DECO6));
+        writeD(0); // T3 Unknown 
         // end of T1 new D's
         
 		writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_HAIRALL));
@@ -127,6 +128,9 @@ public class GMViewCharacterInfo extends L2GameServerPacket
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_DECO4));
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_DECO5));
         writeD(_activeChar.getInventory().getPaperdollItemId(Inventory.PAPERDOLL_DECO6));
+        writeD(0); // T3 Unknown 
+        writeD(0); // T3 Unknown 
+        writeD(0); // T3 Unknown 
         // end of T1 new D's
         
         // c6 new h's
@@ -246,14 +250,15 @@ public class GMViewCharacterInfo extends L2GameServerPacket
         writeD(_activeChar.getAppearance().getNameColor());
         writeD(_activeChar.getAppearance().getTitleColor());
         
-        writeD(_activeChar.getAttackElement());
-        writeD(_activeChar.getAttackElementValue());
-        writeD(_activeChar.getDefAttrFire());
-        writeD(_activeChar.getDefAttrWater());
-        writeD(_activeChar.getDefAttrWind());
-        writeD(_activeChar.getDefAttrEarth());
-        writeD(_activeChar.getDefAttrHoly());
-        writeD(_activeChar.getDefAttrUnholy());
+        int attackAttribute = _activeChar.getAttackElement();
+		writeH(attackAttribute);
+		writeH(_activeChar.getAttackElementValue(attackAttribute));
+        writeH(_activeChar.getDefAttrFire());
+        writeH(_activeChar.getDefAttrWater());
+        writeH(_activeChar.getDefAttrWind());
+        writeH(_activeChar.getDefAttrEarth());
+        writeH(_activeChar.getDefAttrHoly());
+        writeH(_activeChar.getDefAttrUnholy());
 	}
 
 	/* (non-Javadoc)

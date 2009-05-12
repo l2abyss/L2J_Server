@@ -57,13 +57,17 @@ public class Attack extends L2GameServerPacket
 	private int _x;
 	private int _y;
 	private int _z;
+	private int _tx;
+	private int _ty;
+	private int _tz;
+	L2Object _defender;
 	private Hit[] _hits;
 
 	/**
 	 * @param attacker the attacker L2Character
 	 * @param ss true if useing SoulShots
 	 */
-	public Attack(L2Character attacker, boolean ss, int grade)
+	public Attack(L2Character attacker, L2Object target, boolean ss, int grade)
 	{
 		_attackerObjId = attacker.getObjectId();
 		soulshot = ss;
@@ -71,6 +75,10 @@ public class Attack extends L2GameServerPacket
 		_x = attacker.getX();
 		_y = attacker.getY();
 		_z = attacker.getZ();
+		_tx = target.getX();
+		_ty = target.getY();
+		_tz = target.getZ();
+		_defender = target;
 		_hits = new Hit[0];
 	}
 
@@ -106,19 +114,27 @@ public class Attack extends L2GameServerPacket
 		writeC(0x33);
 
 		writeD(_attackerObjId);
-		writeD(_hits[0]._targetId);
+		writeD(_defender.getObjectId());
 		writeD(_hits[0]._damage);
 		writeC(_hits[0]._flags);
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
 		writeH(_hits.length-1);
-		for (Hit temp: _hits)
+		
+		if(_hits.length > 1) // prevent sending useless packet while there is only one target.
 		{
-			writeD(temp._targetId);
-			writeD(temp._damage);
-			writeC(temp._flags);
+			for (Hit temp: _hits)
+			{
+				writeD(temp._targetId);
+				writeD(temp._damage);
+				writeC(temp._flags);
+			}
 		}
+		
+		writeD(_tx);
+		writeD(_ty);
+		writeD(_tz);		
 	}
 
 	/* (non-Javadoc)

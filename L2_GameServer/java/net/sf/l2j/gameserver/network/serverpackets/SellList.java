@@ -34,7 +34,7 @@ public class SellList extends L2GameServerPacket
 	private static Logger _log = Logger.getLogger(SellList.class.getName());
 	private final L2PcInstance _activeChar;
 	private final L2MerchantInstance _lease;
-	private int _money;
+	private long _money;
 	private List<L2ItemInstance> _selllist = new FastList<L2ItemInstance>();
 
 	public SellList(L2PcInstance player)
@@ -76,7 +76,7 @@ public class SellList extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x06);
-		writeD(_money);
+		writeQ(_money);
 		writeD(_lease == null ? 0x00 : 1000000 + _lease.getTemplate().npcId);
 		writeH(_selllist.size());
 
@@ -85,21 +85,21 @@ public class SellList extends L2GameServerPacket
 			writeH(item.getItem().getType1());
 			writeD(item.getObjectId());
 			writeD(item.getItemId());
-			writeD(item.getCount());
+			writeQ(item.getCount());
 			writeH(item.getItem().getType2());
 			writeH(0x00);
 			writeD(item.getItem().getBodyPart());
 			writeH(item.getEnchantLevel());
 			writeH(0x00);
 			writeH(0x00);
-			writeD(item.getItem().getReferencePrice()/2);
+			writeQ(item.getItem().getReferencePrice()/2);
 
 			// T1
-			writeD(item.getAttackElementType());
-			writeD(item.getAttackElementPower());
+			writeH(item.getAttackElementType());
+			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 			{
-				writeD(item.getElementDefAttr(i));
+				writeH(item.getElementDefAttr(i));
 			}
 		}
 	}

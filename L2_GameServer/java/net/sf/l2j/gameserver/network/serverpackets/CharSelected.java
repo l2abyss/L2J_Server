@@ -62,7 +62,7 @@ public class CharSelected extends L2GameServerPacket
 		writeQ(_activeChar.getExp());
 		writeD(_activeChar.getLevel());
 		writeD(_activeChar.getKarma());	// thx evill33t
-		writeD(0x0);	//?
+		writeD(_activeChar.getPkKills());
 		writeD(_activeChar.getINT());
 		writeD(_activeChar.getSTR());
 		writeD(_activeChar.getCON());
@@ -70,7 +70,7 @@ public class CharSelected extends L2GameServerPacket
 		writeD(_activeChar.getDEX());
 		writeD(_activeChar.getWIT());
         
-		writeD(0x00);
+		writeD(2158); //?
 		writeD(0x00);
 
 		writeD(_activeChar.getClassId().getId());
@@ -81,6 +81,7 @@ public class CharSelected extends L2GameServerPacket
 		writeD(0x00); 
         
         writeB(new byte[64]);
+        writeD(0x00);
 	}
 
 	/* (non-Javadoc)

@@ -28,6 +28,7 @@ import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.model.L2Multisell.MultiSellEntry;
 import net.sf.l2j.gameserver.model.L2Multisell.MultiSellIngredient;
 import net.sf.l2j.gameserver.model.L2Multisell.MultiSellListContainer;
+import net.sf.l2j.gameserver.templates.item.L2Item;
 
 
 /**
@@ -70,57 +71,71 @@ public final class MultiSellList extends L2GameServerPacket
             	writeC(1);
                 writeH(0x00); // C6
                 writeD(0x00); // C6
-                writeD(-2); // T1
                 writeD(0x00); // T1
-                writeD(0x00); // T1
-                writeD(0x00); // T1
-                writeD(0x00); // T1
-                writeD(0x00); // T1
-                writeD(0x00); // T1
-                writeD(0x00); // T1
-                writeD(0x00); // T1
+                writeH(65534); // T1
+                writeH(0x00); // T1
+                writeH(0x00); // T1
+                writeH(0x00); // T1
+                writeH(0x00); // T1
+                writeH(0x00); // T1
+                writeH(0x00); // T1
+                writeH(0x00); // T1
             	writeH(ent.getProducts().size());
             	writeH(ent.getIngredients().size());
 
             	for(MultiSellIngredient i: ent.getProducts())
             	{
-	            	writeD(i.getItemId());
-	            	writeD(ItemTable.getInstance().getTemplate(i.getItemId()).getBodyPart());
-	            	writeH(ItemTable.getInstance().getTemplate(i.getItemId()).getType2());
-	            	writeD(i.getItemCount());
+            		int item = i.getItemId();
+            		int bodyPart = 0;
+            		int type2 = 65535;
+	            	
+	            	if (item > 0)
+	            	{
+	            		L2Item template = ItemTable.getInstance().getTemplate(item);
+	            		if (template != null)
+	            		{
+	            			bodyPart = template.getBodyPart();
+	            			type2 = template.getType2();
+	            		}
+	            	}
+
+	            	writeD(item);
+	            	writeD(bodyPart);
+	            	writeH(type2);
+	            	writeQ(i.getItemCount());
 	        	    writeH(i.getEnchantmentLevel()); //enchtant lvl
 	            	writeD(0x00); // C6
 	            	writeD(0x00); // C6
-                    writeD(-2); // T1
-                    writeD(0x00); // T1
-                    writeD(0x00); // T1
-                    writeD(0x00); // T1
-                    writeD(0x00); // T1
-                    writeD(0x00); // T1
-                    writeD(0x00); // T1
-                    writeD(0x00); // T1
+                    writeH(65534); // T1 element id
+                    writeH(0x00); // T1 element power
+                    writeH(0x00); // T1 fire
+                    writeH(0x00); // T1 water
+                    writeH(0x00); // T1 wind
+                    writeH(0x00); // T1 earth
+                    writeH(0x00); // T1 holy
+                    writeH(0x00); // T1 dark
             	}
 
                 for(MultiSellIngredient i : ent.getIngredients())
                 {
-                	int items = i.getItemId();
+                	int item = i.getItemId();
                 	int typeE = 65535;
-                	if (items != -200 && items != -300)
-                		typeE = ItemTable.getInstance().getTemplate(i.getItemId()).getType2();
-                    writeD(items);      //ID
+                	if (item > 0)
+                		typeE = ItemTable.getInstance().getTemplate(item).getType2();
+                    writeD(item);      //ID
                     writeH(typeE);
-                    writeD(i.getItemCount());	//Count
+                    writeQ(i.getItemCount());	//Count
                     writeH(i.getEnchantmentLevel()); //Enchant Level
                 	writeD(0x00); // C6
                 	writeD(0x00); // C6
-                    writeD(-2); // T1
-                    writeD(0x00); // T1
-                    writeD(0x00); // T1
-                    writeD(0x00); // T1
-                    writeD(0x00); // T1
-                    writeD(0x00); // T1
-                    writeD(0x00); // T1
-                    writeD(0x00); // T1
+                    writeH(65534); // T1
+                    writeH(0x00); // T1
+                    writeH(0x00); // T1
+                    writeH(0x00); // T1
+                    writeH(0x00); // T1
+                    writeH(0x00); // T1
+                    writeH(0x00); // T1
+                    writeH(0x00); // T1
                 }
             }
         }

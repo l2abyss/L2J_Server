@@ -111,7 +111,7 @@ public class ShowBoard extends L2GameServerPacket
 			}
 			data[i++] = 0;
 			data[i] = 0;
-			//writeS(_htmlCode); // current page
+			writeS(_htmlCode); // current page
 			writeB(data);
 		}
 		else

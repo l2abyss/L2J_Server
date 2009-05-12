@@ -28,7 +28,7 @@ import javolution.util.FastList;
  * 05000000 47040000 0100000 000000000	   1 x spellbook advanced ATTACK                                                 .
  * </code>
  *
- * format   ddd d (dddd)
+ * format   dddd d (ddQd)
  *
  * @version $Revision: 1.3.2.1.2.4 $ $Date: 2005/03/27 15:29:39 $
  */
@@ -83,7 +83,7 @@ public class AcquireSkillInfo extends L2GameServerPacket
 		{
 			writeD(temp.type);
 			writeD(temp.itemId);
-			writeD(temp.count);
+			writeQ(temp.count);
 			writeD(temp.unk);
 		}
 	}

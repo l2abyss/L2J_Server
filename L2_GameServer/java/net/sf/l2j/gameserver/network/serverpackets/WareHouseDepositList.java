@@ -29,13 +29,13 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 public final class WareHouseDepositList extends L2GameServerPacket
 {
 	public static final int PRIVATE = 1;
-	public static final int CLAN = 2;
+	public static final int CLAN = 4;
 	public static final int CASTLE = 3; //not sure
-	public static final int FREIGHT = 4; //not sure
+	public static final int FREIGHT = 1;
 	private static Logger _log = Logger.getLogger(WareHouseDepositList.class.getName());
 	private static final String _S__53_WAREHOUSEDEPOSITLIST = "[S] 41 WareHouseDepositList";
 	private L2PcInstance _activeChar;
-	private int _playerAdena;
+	private long _playerAdena;
 	private FastList<L2ItemInstance> _items;
 	private int _whType;
 	
@@ -71,7 +71,7 @@ public final class WareHouseDepositList extends L2GameServerPacket
 		* 0x03-Castle Warehouse
 		* 0x04-Warehouse */
 		writeH(_whType);
-		writeD(_playerAdena);
+		writeQ(_playerAdena);
 		int count = _items.size();
 		if (Config.DEBUG)
 			_log.fine("count:" + count);
@@ -82,7 +82,7 @@ public final class WareHouseDepositList extends L2GameServerPacket
 			writeH(item.getItem().getType1());
 			writeD(item.getObjectId());
 			writeD(item.getItemId());
-			writeD(item.getCount());
+			writeQ(item.getCount());
 			writeH(item.getItem().getType2());
 			writeH(item.getCustomType1());
 			writeD(item.getItem().getBodyPart());
@@ -98,16 +98,16 @@ public final class WareHouseDepositList extends L2GameServerPacket
 			else
 				writeQ(0x00);
 			
-			writeD(item.getAttackElementType());
-			writeD(item.getAttackElementPower());
+			writeH(item.getAttackElementType());
+			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 			{
-				writeD(item.getElementDefAttr(i));
+				writeH(item.getElementDefAttr(i));
 			}
 			
 			writeD(item.getMana());
 			// T2
-			writeD(0x00);
+			writeD(item.isTimeLimitedItem() ? (int) (item.getRemainingTime()/1000) : -1);
 		}
 	}
 	

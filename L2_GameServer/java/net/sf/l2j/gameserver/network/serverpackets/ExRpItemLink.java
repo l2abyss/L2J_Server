@@ -49,7 +49,7 @@ public final class ExRpItemLink extends L2GameServerPacket
         // guessing xD
         writeD(_item.getObjectId());
         writeD(_item.getItemId());
-        writeD(_item.getCount());
+        writeQ(_item.getCount());
         writeH(_item.getItem().getType2());
         writeD(_item.getItem().getBodyPart());
         writeH(_item.getEnchantLevel());
@@ -58,11 +58,11 @@ public final class ExRpItemLink extends L2GameServerPacket
         writeD(_item.isAugmented() ? _item.getAugmentation().getAugmentationId() : 0x00);
         writeD(_item.getMana());
         // T1
-        writeD(_item.getAttackElementType());
-        writeD(_item.getAttackElementPower());
+        writeH(_item.getAttackElementType());
+        writeH(_item.getAttackElementPower());
         for (byte i = 0; i < 6; i++)
         {
-            writeD(_item.getElementDefAttr(i));
+            writeH(_item.getElementDefAttr(i));
         }
     }
 }

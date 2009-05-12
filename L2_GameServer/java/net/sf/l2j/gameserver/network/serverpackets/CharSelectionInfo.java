@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -113,9 +114,9 @@ public class CharSelectionInfo extends L2GameServerPacket
             
             writeD(0x01); // active ??
             
-            writeD(0x00); // x
-            writeD(0x00); // y
-            writeD(0x00); // z
+            writeD(charInfoPackage.getX()); // x
+            writeD(charInfoPackage.getY()); // y
+            writeD(charInfoPackage.getZ()); // z
             
             writeF(charInfoPackage.getCurrentHp()); // hp cur
             writeF(charInfoPackage.getCurrentMp()); // mp cur
@@ -127,7 +128,7 @@ public class CharSelectionInfo extends L2GameServerPacket
             writeD(charInfoPackage.getKarma()); // karma
             writeD(charInfoPackage.getPkKills());
             
-            writeD(0x00);
+            writeD(charInfoPackage.getPvPKills());
             writeD(0x00);
             writeD(0x00);
             writeD(0x00);
@@ -153,15 +154,16 @@ public class CharSelectionInfo extends L2GameServerPacket
             writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_LRHAND));
             writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_HAIR));
             writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_HAIR2));
-            
             writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_RBRACELET));
             writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_LBRACELET));
-            writeD(0x00);
-            writeD(0x00);
-            writeD(0x00);
-            writeD(0x00);
-            writeD(0x00);
-            writeD(0x00);
+            writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_DECO1));
+            writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_DECO2));
+            writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_DECO3));
+            writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_DECO4));
+            writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_DECO5));
+            writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_DECO6));
+            writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_BELT));
+            
             writeD(charInfoPackage.getHairStyle());
             writeD(charInfoPackage.getHairColor());
             writeD(charInfoPackage.getFace());
@@ -196,7 +198,7 @@ public class CharSelectionInfo extends L2GameServerPacket
         CharSelectInfoPackage charInfopackage;
         List<CharSelectInfoPackage> characterList = new FastList<CharSelectInfoPackage>();
         
-        java.sql.Connection con = null;
+        Connection con = null;
         
         try
         {
@@ -231,7 +233,7 @@ public class CharSelectionInfo extends L2GameServerPacket
     
     private void loadCharacterSubclassInfo(CharSelectInfoPackage charInfopackage, int ObjectId, int activeClassId)
     {
-        java.sql.Connection con = null;
+        Connection con = null;
         
         try
         {
@@ -292,6 +294,7 @@ public class CharSelectionInfo extends L2GameServerPacket
         charInfopackage.setCurrentMp(chardata.getDouble("curmp"));
         charInfopackage.setKarma(chardata.getInt("karma"));
         charInfopackage.setPkKills(chardata.getInt("pkkills"));
+        charInfopackage.setPvPKills(chardata.getInt("pvpkills"));
         charInfopackage.setFace(chardata.getInt("face"));
         charInfopackage.setHairStyle(chardata.getInt("hairstyle"));
         charInfopackage.setHairColor(chardata.getInt("haircolor"));
@@ -306,6 +309,9 @@ public class CharSelectionInfo extends L2GameServerPacket
         final int baseClassId = chardata.getInt("base_class");
         final int activeClassId = chardata.getInt("classid");
         
+        charInfopackage.setX(chardata.getInt("x"));
+        charInfopackage.setY(chardata.getInt("y"));
+        charInfopackage.setZ(chardata.getInt("z"));
         // if is in subclass, load subclass exp, sp, lvl info
         if(baseClassId != activeClassId)
             loadCharacterSubclassInfo(charInfopackage, objectId, activeClassId);
@@ -338,7 +344,7 @@ public class CharSelectionInfo extends L2GameServerPacket
         
         if (weaponObjId > 0)
         {
-            java.sql.Connection con = null;
+            Connection con = null;
             try
             {
                 con = L2DatabaseFactory.getInstance().getConnection();

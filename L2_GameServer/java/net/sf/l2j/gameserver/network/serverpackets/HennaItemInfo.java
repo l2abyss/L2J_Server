@@ -41,10 +41,10 @@ public class HennaItemInfo extends L2GameServerPacket
         writeC(0xe4);
         writeD(_henna.getSymbolId());          //symbol Id
         writeD(_henna.getItemIdDye());     //item id of dye
-        writeD(_henna.getAmountDyeRequire());    // total amount of dye require
-        writeD(_henna.getPrice());  //total amount of aden require to draw symbol
+        writeQ(_henna.getAmountDyeRequire());    // total amount of dye require
+        writeQ(_henna.getPrice());  //total amount of aden require to draw symbol
         writeD(1);      //able to draw or not 0 is false and 1 is true
-        writeD(_activeChar.getAdena());
+        writeQ(_activeChar.getAdena());
 
         writeD(_activeChar.getINT());   //current INT
         writeC(_activeChar.getINT()+ _henna.getStatINT());    //equip INT

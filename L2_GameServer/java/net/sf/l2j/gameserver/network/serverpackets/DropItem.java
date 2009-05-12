@@ -69,7 +69,7 @@ public class DropItem extends L2GameServerPacket
 		{
 			writeD(0x00);
 		}
-		writeD(_item.getCount());
+		writeQ(_item.getCount());
 
 		writeD(1); // unknown
 	}

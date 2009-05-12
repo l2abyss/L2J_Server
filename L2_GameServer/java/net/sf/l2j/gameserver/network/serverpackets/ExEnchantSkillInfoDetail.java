@@ -24,9 +24,9 @@ package net.sf.l2j.gameserver.network.serverpackets;
 public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 {
     private final int _itemId;
-    private final int _itemCount;
+    private final long _itemCount;
     
-    public ExEnchantSkillInfoDetail(int itemId, int itemCount)
+    public ExEnchantSkillInfoDetail(int itemId, long itemCount)
     {
         _itemId = itemId;
         _itemCount = itemCount;
@@ -56,7 +56,7 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
         writeD(0);
         writeQ(0);
         writeD(0);
-        writeD(_itemCount); // Count
+        writeQ(_itemCount); // Count
         writeD(0);
         writeD(_itemId); // ItemId Required
         writeD(0);

@@ -37,6 +37,7 @@ public final class SystemMessage extends L2GameServerPacket
 	// d d (d S/d d/d dd)
 	//      |--------------> 0 - String  1-number 2-textref npcname (1000000-1002655)  3-textref itemname 4-textref skills 5-??
 	private static final int TYPE_ZONE_NAME = 7;
+	private static final int TYPE_ITEM_NUMBER = 6;
 	private static final int TYPE_FORTRESS = 5; // maybe not only for fortress, rename if needed
 	private static final int TYPE_SKILL_NAME = 4;
 	private static final int TYPE_ITEM_NAME = 3;
@@ -92,14 +93,31 @@ public final class SystemMessage extends L2GameServerPacket
 		return this;
 	}
 
+	public SystemMessage addItemNumber(long number)
+	{
+		_types.add(Integer.valueOf(TYPE_ITEM_NUMBER));
+		_values.add(Long.valueOf(number));
+		return this;
+	}
+	
 	public SystemMessage addCharName(L2Character cha)
 	{
 		if (cha instanceof L2Npc)
-			return addNpcName((L2Npc)cha);
+		{
+			if (((L2Npc)cha).getTemplate().serverSideName)
+				return addString(((L2Npc)cha).getTemplate().name);
+			else			
+				return addNpcName((L2Npc)cha);
+		}
 		if (cha instanceof L2PcInstance)
 			return addPcName((L2PcInstance)cha);
 		if (cha instanceof L2Summon)
-			return addNpcName((L2Summon)cha);
+		{
+			if (((L2Summon)cha).getTemplate().serverSideName)
+				return addString(((L2Summon)cha).getTemplate().name);
+			else			
+				return addNpcName((L2Summon)cha);
+		}
 		return addString(cha.getName());
 	}
 
@@ -208,10 +226,16 @@ public final class SystemMessage extends L2GameServerPacket
 					writeS( (String)_values.get(i));
 					break;
 				}
+				case TYPE_ITEM_NUMBER:
+				{
+					long t1 = ((Long)_values.get(i)).longValue();
+					writeQ(t1);
+					break;
+				}
+				case TYPE_ITEM_NAME:
 				case TYPE_FORTRESS:
 				case TYPE_NUMBER:
 				case TYPE_NPC_NAME:
-				case TYPE_ITEM_NAME:
 				{
 					int t1 = ((Integer)_values.get(i)).intValue();
 					writeD(t1);

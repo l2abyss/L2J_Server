@@ -58,7 +58,7 @@ public class RecipeShopManageList  extends L2GameServerPacket
 	{
 		writeC(0xde);
 		writeD(_seller.getObjectId());
-		writeD(_seller.getAdena());
+		writeD((int)_seller.getAdena());
 		writeD(_isDwarven ? 0x00 : 0x01);
 
 		if (_recipes == null)
@@ -90,7 +90,7 @@ public class RecipeShopManageList  extends L2GameServerPacket
             {
                 writeD(item.getRecipeId());
                 writeD(0x00);
-                writeD(item.getCost());
+                writeQ(item.getCost());
             }
         }
 	}

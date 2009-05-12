@@ -33,8 +33,8 @@ public final class ExBasicActionList extends L2GameServerPacket
     
     public static int[] getDefaultActionList()
     {
-        int count1 = 66; // 0 <-> (count1 - 1)
-        int count2 = 61; // 1000 <-> (1000 + count2 - 1)
+        int count1 = 71; // 0 <-> (count1 - 1)
+        int count2 = 89; // 1000 <-> (1000 + count2 - 1) //Update by rocknow
         int[] actionIds = new int[count1 + count2];
         
         int index = 0;

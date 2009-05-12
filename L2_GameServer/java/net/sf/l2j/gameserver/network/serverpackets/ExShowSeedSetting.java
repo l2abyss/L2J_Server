@@ -40,7 +40,7 @@ public class ExShowSeedSetting extends L2GameServerPacket
     
     private int _count;
     
-    private int[] _seedData; // data to send, size:_count*12
+    private long[] _seedData; // data to send, size:_count*12
     
     @Override
     public void runImpl()
@@ -54,7 +54,7 @@ public class ExShowSeedSetting extends L2GameServerPacket
         FastList<Integer> seeds = L2Manor.getInstance().getSeedsForCastle(
                 _manorId);
         _count = seeds.size();
-        _seedData = new int[_count * 12];
+        _seedData = new long[_count * 12];
         int i = 0;
         for (int s : seeds)
         {
@@ -65,7 +65,7 @@ public class ExShowSeedSetting extends L2GameServerPacket
             _seedData[i * 12 + 3] = L2Manor.getInstance().getRewardItemBySeed(
                     s, 2);
             _seedData[i * 12 + 4] = L2Manor.getInstance().getSeedSaleLimit(s);
-            _seedData[i * 12 + 5] = L2Manor.getInstance().getSeedBuyPrice(s);
+            _seedData[i * 12 + 5] = (int)L2Manor.getInstance().getSeedBuyPrice(s);
             _seedData[i * 12 + 6] = L2Manor.getInstance().getSeedBasicPrice(s) * 60 / 100;
             _seedData[i * 12 + 7] = L2Manor.getInstance().getSeedBasicPrice(s) * 10;
             SeedProduction seedPr = c.getSeed(s,
@@ -106,22 +106,22 @@ public class ExShowSeedSetting extends L2GameServerPacket
         
         for (int i = 0; i < _count; i++)
         {
-            writeD(_seedData[i * 12 + 0]); // seed id
-            writeD(_seedData[i * 12 + 1]); // level
+            writeD((int) _seedData[i * 12 + 0]); // seed id
+            writeD((int) _seedData[i * 12 + 1]); // level
             writeC(1);
-            writeD(_seedData[i * 12 + 2]); // reward 1 id
+            writeD((int) _seedData[i * 12 + 2]); // reward 1 id
             writeC(1);
-            writeD(_seedData[i * 12 + 3]); // reward 2 id
+            writeD((int) _seedData[i * 12 + 3]); // reward 2 id
             
-            writeD(_seedData[i * 12 + 4]); // next sale limit
-            writeD(_seedData[i * 12 + 5]); // price for castle to produce 1
-            writeD(_seedData[i * 12 + 6]); // min seed price
-            writeD(_seedData[i * 12 + 7]); // max seed price
+            writeD((int)_seedData[i * 12 + 4]); // next sale limit
+            writeD((int)_seedData[i * 12 + 5]); // price for castle to produce 1
+            writeD((int)_seedData[i * 12 + 6]); // min seed price
+            writeD((int)_seedData[i * 12 + 7]); // max seed price
             
-            writeD(_seedData[i * 12 + 8]); // today sales
-            writeD(_seedData[i * 12 + 9]); // today price
-            writeD(_seedData[i * 12 + 10]); // next sales
-            writeD(_seedData[i * 12 + 11]); // next price
+            writeQ(_seedData[i * 12 + 8]); // today sales
+            writeQ(_seedData[i * 12 + 9]); // today price
+            writeQ(_seedData[i * 12 + 10]); // next sales
+            writeQ(_seedData[i * 12 + 11]); // next price
         }
     }
     

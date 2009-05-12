@@ -21,6 +21,8 @@ package net.sf.l2j.gameserver.network.serverpackets;
  */
 public class SocialAction extends L2GameServerPacket
 {
+	public static final int LEVEL_UP = 2122;
+	
 	private static final String _S__3D_SOCIALACTION = "[S] 27 SocialAction";
 	private int _charObjId;
 	private int _actionId;
