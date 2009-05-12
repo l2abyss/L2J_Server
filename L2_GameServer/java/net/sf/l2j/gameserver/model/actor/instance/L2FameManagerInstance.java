@@ -23,7 +23,6 @@ import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
-import net.sf.l2j.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
@@ -115,7 +114,6 @@ public class L2FameManagerInstance extends L2Npc
     		{
     			player.setFame(player.getFame()-1000);
     			player.getClan().setReputationScore(player.getClan().getReputationScore()+50, true);
-    			player.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(player.getClan()));
     			player.sendPacket(new SystemMessage(SystemMessageId.ACQUIRED_50_CLAN_FAME_POINTS));
     			html.setFile("data/html/famemanager/"+getNpcId()+"-5.htm");
     		}

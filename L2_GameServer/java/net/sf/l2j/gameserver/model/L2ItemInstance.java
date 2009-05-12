@@ -14,6 +14,9 @@
  */
 package net.sf.l2j.gameserver.model;
 
+import static net.sf.l2j.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
+import static net.sf.l2j.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -76,11 +79,11 @@ public final class L2ItemInstance extends L2Object
 	private int _ownerId;
 
 	/** Quantity of the item */
-	private int _count;
+	private long _count;
 	/** Initial Quantity of the item */
-	private int _initCount;
-	/** Time after restore Item count (in Hours) */
-	private int _time;
+	private long _initCount;
+	/** Remaining time (in miliseconds) */
+	private long _time;
 	/** Quantity of the item can decrease */
 	private boolean _decrease = false;
 	
@@ -142,6 +145,7 @@ public final class L2ItemInstance extends L2Object
 	private Elementals _elementals = null;
 
 	private ScheduledFuture<?> itemLootShedule = null;
+	public ScheduledFuture<?> _lifeTimeTask;
 	/**
 	 * Constructor of the L2ItemInstance from the objectId and the itemId.
 	 * @param objectId : int designating the ID of the object in the world
@@ -162,6 +166,8 @@ public final class L2ItemInstance extends L2Object
 		_type2 = 0;
 		_dropTime = 0;
 		_mana = _item.getDuration();
+		_time = _item.getTime() == -1 ? -1 : System.currentTimeMillis() + (_item.getTime()*60*1000);
+		scheduleLifeTimeTask();
 	}
 
 	/**
@@ -181,6 +187,8 @@ public final class L2ItemInstance extends L2Object
 		setCount(1);
 		_loc = ItemLocation.VOID;
 		_mana = _item.getDuration();
+		_time = _item.getTime() == -1 ? -1 : System.currentTimeMillis() + (_item.getTime()*60*1000);
+		scheduleLifeTimeTask();
 	}
 	
 	/**
@@ -331,7 +339,7 @@ public final class L2ItemInstance extends L2Object
      * Sets the quantity of the item.<BR><BR>
      * @param count the new count to set
      */
-    public void setCount(int count)
+    public void setCount(long count)
     {
         if (getCount() == count) 
         {
@@ -345,7 +353,7 @@ public final class L2ItemInstance extends L2Object
     /**
      * @return Returns the count.
      */
-    public int getCount()
+    public long getCount()
     {
         return _count;
     }
@@ -358,14 +366,19 @@ public final class L2ItemInstance extends L2Object
 	 * @param creator : L2PcInstance Player requesting the item creation
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
 	 */
-	public void changeCount(String process, int count, L2PcInstance creator, L2Object reference)
+	public void changeCount(String process, long count, L2PcInstance creator, L2Object reference)
 	{
         if (count == 0) 
         {
             return;
         }
         
-        if ( count > 0 && getCount() > Integer.MAX_VALUE - count) 
+        long max = Integer.MAX_VALUE;
+        
+        if (getItemId() == ADENA_ID)
+        	max = MAX_ADENA;
+        
+        if ( count > 0 && getCount() > max - count) 
         {
             setCount(Integer.MAX_VALUE);
         }
@@ -727,6 +740,10 @@ public final class L2ItemInstance extends L2Object
             // Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
             player.sendPacket(ActionFailed.STATIC_PACKET);
         }
+        else if (player.isFlying()) // cannot pickup
+        {
+        	player.sendPacket(ActionFailed.STATIC_PACKET);
+        }
 		else
 			player.getAI().setIntention(CtrlIntention.AI_INTENTION_PICK_UP, this);
 	}
@@ -1046,16 +1063,6 @@ public final class L2ItemInstance extends L2Object
 	}
 
 	/**
-	 * Sets the mana for this shadow item
-	 * <b>NOTE</b>: does not send an inventory update packet
-	 * @param mana
-	 */
-	public void setMana(int mana)
-	{
-		_mana = mana;
-	}
-
-	/**
 	 * Returns the remaining mana of this shadow item
 	 * @return lifeTime
 	 */
@@ -1288,19 +1295,21 @@ public final class L2ItemInstance extends L2Object
 	public static L2ItemInstance restoreFromDb(int ownerId, ResultSet rs) 
 	{
 		L2ItemInstance inst = null;
-		int objectId, item_id, count, loc_data, enchant_level, custom_type1, custom_type2, manaLeft;
+		int objectId, item_id, loc_data, enchant_level, custom_type1, custom_type2, manaLeft;
+		long time, count;
 		ItemLocation loc;
 		try
 		{
 		    objectId = rs.getInt(1);
 		    item_id = rs.getInt("item_id");
-		    count = rs.getInt("count");
+		    count = rs.getLong("count");
 		    loc = ItemLocation.valueOf(rs.getString("loc"));
 		    loc_data = rs.getInt("loc_data");
 		    enchant_level = rs.getInt("enchant_level");
 		    custom_type1 =  rs.getInt("custom_type1");
 		    custom_type2 =  rs.getInt("custom_type2");
 		    manaLeft = rs.getInt("mana_left");
+		    time = rs.getLong("time");
 		} catch (Exception e) {
 		    _log.log(Level.SEVERE, "Could not restore an item owned by "+ownerId+" from DB:", e);
 		    return null;
@@ -1323,19 +1332,18 @@ public final class L2ItemInstance extends L2Object
 		
 		// Setup life time for shadow weapons
 		inst._mana = manaLeft;
-
+		inst._time = time;
 		// consume 1 mana
 		if (inst._mana > 0 && inst.getLocation() == ItemLocation.PAPERDOLL)
 		    inst.decreaseMana(false);
 
-		// if mana left is 0 delete this item
+		// if mana left is 0 return nothing, item already deleted from decreaseMana()
 		if (inst._mana == 0)
 		{
-		    inst.removeFromDb();
 		    return null;
 		}
-		else if (inst._mana > 0 && inst.getLocation() == ItemLocation.PAPERDOLL)
-		    inst.scheduleConsumeManaTask();
+		if (inst.isTimeLimitedItem())
+			inst.scheduleLifeTimeTask();
 
 		//load augmentation and elemental enchant
 		if (inst.isEquipable())
@@ -1431,22 +1439,23 @@ public final class L2ItemInstance extends L2Object
 		if (_storedInDb)
 			return;
 
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(
-					"UPDATE items SET owner_id=?,count=?,loc=?,loc_data=?,enchant_level=?,custom_type1=?,custom_type2=?,mana_left=? " +
+					"UPDATE items SET owner_id=?,count=?,loc=?,loc_data=?,enchant_level=?,custom_type1=?,custom_type2=?,mana_left=?,time=? " +
 					"WHERE object_id = ?");
 			statement.setInt(1, _ownerId);
-			statement.setInt(2, getCount());
+			statement.setLong(2, getCount());
 			statement.setString(3, _loc.name());
 			statement.setInt(4, _locData);
 			statement.setInt(5, getEnchantLevel());
 			statement.setInt(6, getCustomType1());
 			statement.setInt(7, getCustomType2());
 			statement.setInt(8, getMana());
-			statement.setInt(9, getObjectId());
+			statement.setLong(9, getTime());
+			statement.setInt(10, getObjectId());
 			statement.executeUpdate();
 			_existsInDb = true;
 			_storedInDb = true;
@@ -1469,16 +1478,16 @@ public final class L2ItemInstance extends L2Object
 		if (_wear)
 			return;
 		if (Config.ASSERT) assert !_existsInDb && getObjectId() != 0;
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(
-					"INSERT INTO items (owner_id,item_id,count,loc,loc_data,enchant_level,object_id,custom_type1,custom_type2,mana_left) " +
-					"VALUES (?,?,?,?,?,?,?,?,?,?)");
+					"INSERT INTO items (owner_id,item_id,count,loc,loc_data,enchant_level,object_id,custom_type1,custom_type2,mana_left,time) " +
+					"VALUES (?,?,?,?,?,?,?,?,?,?,?)");
 			statement.setInt(1, _ownerId);
 			statement.setInt(2, _itemId);
-			statement.setInt(3, getCount());
+			statement.setLong(3, getCount());
 			statement.setString(4, _loc.name());
 			statement.setInt(5, _locData);
 			statement.setInt(6, getEnchantLevel());
@@ -1486,6 +1495,7 @@ public final class L2ItemInstance extends L2Object
 			statement.setInt(8, _type1);
 			statement.setInt(9, _type2);
 			statement.setInt(10, getMana());
+			statement.setLong(11, getTime());
 
 			statement.executeUpdate();
 			_existsInDb = true;
@@ -1588,7 +1598,7 @@ public final class L2ItemInstance extends L2Object
     	_initCount = InitCount;
     }
     
-    public int getInitCount()
+    public long getInitCount()
     {
     	return _initCount;
     }
@@ -1599,13 +1609,106 @@ public final class L2ItemInstance extends L2Object
     		setCount(_initCount);
     }
     
-    public void setTime(int time)
+    public boolean isTimeLimitedItem()
     {
-    	_time = time > 0 ?  time : 0;
+    	return (_time > 0);
     }
     
-    public int getTime()
+    /**
+     * Returns (current system time + time) of this time limited item
+     * @return Time
+     */
+    public long getTime()
     {
     	return _time;
+    }
+    
+    public long getRemainingTime()
+    {
+    	return _time-System.currentTimeMillis();
+    }
+    public void endOfLife()
+    {
+    	L2PcInstance player = ((L2PcInstance)L2World.getInstance().findObject(getOwnerId()));
+    	if (player != null)
+    	{
+    		if (isEquipped())
+    		{
+    			L2ItemInstance[] unequiped = player.getInventory().unEquipItemInSlotAndRecord(getLocationSlot());
+    			InventoryUpdate iu = new InventoryUpdate();
+    			for (L2ItemInstance item: unequiped)
+    			{
+    				player.checkSSMatch(null, item);
+    				iu.addModifiedItem(item);
+    			}
+    			player.sendPacket(iu);
+    		}
+    		
+    		if (getLocation() != ItemLocation.WAREHOUSE)
+    		{
+    			// destroy
+    			player.getInventory().destroyItem("L2ItemInstance", this, player, null);
+    			
+    			// send update
+    			InventoryUpdate iu = new InventoryUpdate();
+    			iu.addRemovedItem(this);
+    			player.sendPacket(iu);
+    			
+    			StatusUpdate su = new StatusUpdate(player.getObjectId());
+    			su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
+    			player.sendPacket(su);
+    			
+    		}
+    		else
+    		{
+    			player.getWarehouse().destroyItem("L2ItemInstance", this, player, null);
+    		}
+    		player.sendPacket(new SystemMessage(SystemMessageId.TIME_LIMITED_ITEM_DELETED));
+    		// delete from world
+    		L2World.getInstance().removeObject(this);
+    	}
+    }
+    
+    public void scheduleLifeTimeTask()
+    {
+    	if (!isTimeLimitedItem()) return;
+    	if (getRemainingTime() <= 0)
+    		endOfLife();
+    	else
+    	{
+    		if (_lifeTimeTask != null)
+    			_lifeTimeTask.cancel(false);
+    		_lifeTimeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleLifeTimeTask(this), getRemainingTime());
+    	}
+    }
+    
+    public class ScheduleLifeTimeTask implements Runnable
+    {
+    	private L2ItemInstance _limitedItem;
+    	
+    	public ScheduleLifeTimeTask(L2ItemInstance item)
+    	{
+    		_limitedItem = item;
+    	}
+    	
+    	public void run()
+    	{
+    		try
+    		{
+    			if (_limitedItem != null)
+    				_limitedItem.endOfLife();
+    		}
+    		catch (Exception e)
+    		{
+    			_log.log(Level.SEVERE, "", e);
+    		}
+    	}
+    }
+    
+    public void updateElementAttrBonus(L2PcInstance player)
+    {
+    	if (_elementals == null)
+    		return;
+    	_elementals.updateBonus(player, isArmor()); 
     }
 }

@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.instancemanager;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -50,7 +51,7 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
  */
 public class MercTicketManager
 {
-    protected static final Logger _log = Logger.getLogger(CastleManager.class.getName());
+    protected static final Logger _log = Logger.getLogger(MercTicketManager.class.getName());
 
     // =========================================================
     private static MercTicketManager _instance;
@@ -156,7 +157,7 @@ public class MercTicketManager
     // Method - Private
     private final void load()
     {
-        java.sql.Connection con = null;
+        Connection con = null;
         // load merc tickets into the world
         try
         {

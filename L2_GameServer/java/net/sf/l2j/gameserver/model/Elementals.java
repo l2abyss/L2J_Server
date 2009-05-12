@@ -14,8 +14,15 @@
  */
 package net.sf.l2j.gameserver.model;
 
+import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.skills.Stats;
+import net.sf.l2j.gameserver.skills.funcs.FuncAdd;
+import net.sf.l2j.gameserver.skills.funcs.LambdaConst;
+
 public final class Elementals
 {
+	private ElementalStatBoni _boni = null;
 	public final static byte NONE = -1;
 	public final static byte FIRE = 0;
 	public final static byte WATER = 1;
@@ -111,6 +118,7 @@ public final class Elementals
 	public void setElement(byte type)
 	{
 		_element = type;
+		_boni.setElement(type);
 	}
 
 	public int getValue()
@@ -121,6 +129,7 @@ public final class Elementals
 	public void setValue(int val)
 	{
 		_value = val;
+		_boni.setValue(val); 
 	}
 
 	public static String getElementName(byte element)
@@ -176,5 +185,106 @@ public final class Elementals
 	{
 		_element = type;
 		_value = value;
+		_boni = new ElementalStatBoni(_element, _value);
 	}
-}
+	
+	public class ElementalStatBoni  
+	{  
+		private byte _elementalType;  
+		private int _elementalValue;  
+		private boolean _active;  
+		
+		public ElementalStatBoni(byte type, int value)  
+		{  
+			_elementalType = type;  
+			_elementalValue = value;  
+			_active = false;  
+		}  
+		
+		public void applyBonus(L2PcInstance player, boolean isArmor)  
+		{  
+			// make sure the bonuses are not applied twice..  
+			if (_active)  
+				return;  
+			
+			switch (_elementalType)  
+			{  
+				case FIRE:  
+					if (isArmor)  
+						player.addStatFunc(new FuncAdd(Stats.FIRE_RES, 0x40, this, new LambdaConst(_elementalValue)));  
+					else  
+						player.addStatFunc(new FuncAdd(Stats.FIRE_POWER, 0x40, this, new LambdaConst(_elementalValue)));  
+					break;  
+				case WATER:  
+					if (isArmor)  
+						player.addStatFunc(new FuncAdd(Stats.WATER_RES, 0x40, this, new LambdaConst(_elementalValue)));  
+					else  
+						player.addStatFunc(new FuncAdd(Stats.WATER_POWER, 0x40, this, new LambdaConst(_elementalValue)));  
+					break;  
+				case WIND:  
+					if (isArmor)  
+						player.addStatFunc(new FuncAdd(Stats.WIND_RES, 0x40, this, new LambdaConst(_elementalValue)));  
+					else  
+						player.addStatFunc(new FuncAdd(Stats.WIND_POWER, 0x40, this, new LambdaConst(_elementalValue)));  
+					break;  
+				case EARTH:  
+					if (isArmor)  
+						player.addStatFunc(new FuncAdd(Stats.EARTH_RES, 0x40, this, new LambdaConst(_elementalValue)));  
+					else  
+						player.addStatFunc(new FuncAdd(Stats.EARTH_POWER, 0x40, this, new LambdaConst(_elementalValue)));  
+					break;  
+				case DARK:  
+					if (isArmor)  
+						player.addStatFunc(new FuncAdd(Stats.DARK_RES, 0x40, this, new LambdaConst(_elementalValue)));  
+					else  
+						player.addStatFunc(new FuncAdd(Stats.DARK_POWER, 0x40, this, new LambdaConst(_elementalValue)));  
+					break;  
+				case HOLY:  
+					if (isArmor)  
+						player.addStatFunc(new FuncAdd(Stats.HOLY_RES, 0x40, this, new LambdaConst(_elementalValue)));  
+					else  
+						player.addStatFunc(new FuncAdd(Stats.HOLY_POWER, 0x40, this, new LambdaConst(_elementalValue)));  
+					break;  
+			}  
+			
+			_active = true;  
+		}  
+		
+		public void removeBonus(L2PcInstance player)  
+		{  
+			// make sure the bonuses are not removed twice  
+			if (!_active)  
+				return;  
+			
+			((L2Character) player).removeStatsOwner(this);  
+			
+			_active = false;  
+		}  
+		
+		public void setValue(int val)  
+		{  
+			_elementalValue = val;  
+		}  
+		
+		public void setElement(byte type)  
+		{  
+			_elementalType = type;  
+		}  
+	}  
+	
+	public void applyBonus(L2PcInstance player, boolean isArmor)  
+	{  
+		_boni.applyBonus(player, isArmor);  
+	}  
+	
+	public void removeBonus(L2PcInstance player)  
+	{  
+		_boni.removeBonus(player);  
+	}  
+	
+	public void updateBonus(L2PcInstance player, boolean isArmor)  
+	{  
+		_boni.removeBonus(player);  
+		_boni.applyBonus(player, isArmor);  
+	}  
+}  

@@ -12,36 +12,22 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.model;
+package net.sf.l2j.gameserver.model.actor.instance;
 
-/**
- *
- */
-public class ItemRequest
+import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
+
+public final class L2FlyMonsterInstance extends L2MonsterInstance
 {
-	int _objectId;
-	int _itemId;
-	long _count;
-	long _price;
 
-	public ItemRequest(int objectId, long count, long price)
+	public L2FlyMonsterInstance(int objectId, L2NpcTemplate template)
 	{
-		_objectId = objectId;
-		_count = count;
-		_price = price;
+		super(objectId, template);
 	}
 
-	public ItemRequest(int objectId, int itemId, long count, long price)
-	{
-		_objectId = objectId;
-		_itemId = itemId;
-		_count = count;
-		_price = price;
-	}
-
-	public int getObjectId(){return _objectId;}
-	public int getItemId(){return _itemId;}
-	public void setCount(long count){_count = count;}
-	public long getCount(){return _count;}
-	public long getPrice(){return _price;}
+    @Override
+	public void onSpawn()
+    {
+    	this.setIsFlying(true);
+    	super.onSpawn();
+    }
 }

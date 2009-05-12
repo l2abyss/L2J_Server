@@ -63,7 +63,7 @@ public class L2SignsPriestInstance extends L2NpcInstance
             int stoneType = 0;
             L2ItemInstance ancientAdena = player.getInventory().getItemByItemId(
                                                                                 SevenSigns.ANCIENT_ADENA_ID);
-            int ancientAdenaAmount = ancientAdena == null ? 0 : ancientAdena.getCount();
+            long ancientAdenaAmount = ancientAdena == null ? 0 : ancientAdena.getCount();
             int val = Integer.parseInt(command.substring(11, 12).trim());
 
             if (command.length() > 12) // SevenSigns x[x] x [x..x]
@@ -136,7 +136,7 @@ public class L2SignsPriestInstance extends L2NpcInstance
                 	boolean fee = true;
                 	L2ItemInstance adena = player.getInventory().getItemByItemId(57); //adena
                 	L2ItemInstance certif = player.getInventory().getItemByItemId(5708); //Lord of the Manor's Certificate of Approval
-                	if ((adena != null && adena.getCount() >= 50000) || (certif != null && certif.getCount() >= 1))
+                	if (player.getClassId().level() < 2 || (adena != null && adena.getCount() >= SevenSigns.ADENA_JOIN_DAWN_COST) || (certif != null && certif.getCount() >= 1))
                 		fee = false;
                 	if (fee)
                 	{
@@ -161,7 +161,7 @@ public class L2SignsPriestInstance extends L2NpcInstance
                 	else if (cabal == SevenSigns.CABAL_DAWN && Config.ALT_GAME_CASTLE_DAWN) //dawn
                 	{
                 		// clans without castle need to pay participation fee
-                		if (player.getClan() == null || (player.getClan() != null && player.getClan().getHasCastle() == 0)) // even if in htmls is said that ally can have castle too, but its not
+                		if (player.getClassId().level() >= 2 && (player.getClan() == null || (player.getClan() != null && player.getClan().getHasCastle() == 0))) // even if in htmls is said that ally can have castle too, but its not
                 		{
                 			showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn_fee.htm");
                 			break;
@@ -256,14 +256,14 @@ public class L2SignsPriestInstance extends L2NpcInstance
                     stoneType = Integer.parseInt(command.substring(13));
                     L2ItemInstance redStones = player.getInventory().getItemByItemId(
                                                                                      SevenSigns.SEAL_STONE_RED_ID);
-                    int redStoneCount = redStones == null ? 0 : redStones.getCount();
+                    long redStoneCount = redStones == null ? 0 : redStones.getCount();
                     L2ItemInstance greenStones = player.getInventory().getItemByItemId(
                                                                                        SevenSigns.SEAL_STONE_GREEN_ID);
-                    int greenStoneCount = greenStones == null ? 0 : greenStones.getCount();
+                    long greenStoneCount = greenStones == null ? 0 : greenStones.getCount();
                     L2ItemInstance blueStones = player.getInventory().getItemByItemId(
                                                                                       SevenSigns.SEAL_STONE_BLUE_ID);
-                    int blueStoneCount = blueStones == null ? 0 : blueStones.getCount();
-                    int contribScore = SevenSigns.getInstance().getPlayerContribScore(player);
+                    long blueStoneCount = blueStones == null ? 0 : blueStones.getCount();
+                    long contribScore = SevenSigns.getInstance().getPlayerContribScore(player);
                     boolean stonesFound = false;
 
                     if (contribScore == Config.ALT_MAXIMUM_PLAYER_CONTRIB)
@@ -273,9 +273,9 @@ public class L2SignsPriestInstance extends L2NpcInstance
                     }
                     else
                     {
-                        int redContribCount = 0;
-                        int greenContribCount = 0;
-                        int blueContribCount = 0;
+                        long redContribCount = 0;
+                        long greenContribCount = 0;
+                        long blueContribCount = 0;
 
                         switch (stoneType)
                         {
@@ -297,7 +297,7 @@ public class L2SignsPriestInstance extends L2NpcInstance
                                 if (redContribCount > redStoneCount) redContribCount = redStoneCount;
                                 break;
                             case 4:
-                                int tempContribScore = contribScore;
+                                long tempContribScore = contribScore;
                                 redContribCount = (Config.ALT_MAXIMUM_PLAYER_CONTRIB - tempContribScore)
                                     / SevenSigns.RED_CONTRIB_POINTS;
                                 if (redContribCount > redStoneCount) redContribCount = redStoneCount;
@@ -344,7 +344,7 @@ public class L2SignsPriestInstance extends L2NpcInstance
                                                                                            redContribCount);
 
                         sm = new SystemMessage(SystemMessageId.CONTRIB_SCORE_INCREASED);
-                        sm.addNumber(contribScore);
+                        sm.addItemNumber(contribScore);
                         player.sendPacket(sm);
 
                         showChatWindow(player, 6, null, false);
@@ -444,7 +444,7 @@ public class L2SignsPriestInstance extends L2NpcInstance
                 case 17: // Exchange Seal Stones for Ancient Adena (Type Choice) - SevenSigns 17 x
                     stoneType = Integer.parseInt(command.substring(14));
                     int stoneId = 0;
-                    int stoneCount = 0;
+                    long stoneCount = 0;
                     int stoneValue = 0;
                     String stoneColor = null;
                     String content;
@@ -515,8 +515,8 @@ public class L2SignsPriestInstance extends L2NpcInstance
                         break;
                     }
 
-                    int totalCount = convertItem.getCount();
-                    int ancientAdenaReward = 0;
+                    long totalCount = convertItem.getCount();
+                    long ancientAdenaReward = 0;
 
                     if (convertCount <= totalCount && convertCount > 0)
                     {

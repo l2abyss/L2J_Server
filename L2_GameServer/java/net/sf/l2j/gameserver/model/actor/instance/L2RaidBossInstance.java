@@ -32,7 +32,7 @@ import net.sf.l2j.util.Rnd;
  *
  * @version $Revision: 1.20.4.6 $ $Date: 2005/04/06 16:13:39 $
  */
-public final class L2RaidBossInstance extends L2MonsterInstance
+public class L2RaidBossInstance extends L2MonsterInstance
 {
 	private static final int RAIDBOSS_MAINTENANCE_INTERVAL = 30000; // 30 sec
 

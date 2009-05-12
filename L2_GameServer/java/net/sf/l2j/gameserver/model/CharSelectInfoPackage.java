@@ -49,8 +49,12 @@ public class CharSelectInfoPackage
 	private int[][] _paperdoll;
     private int _karma=0;
     private int _pkKills=0;
+    private int _pvpKills=0;
     private int _augmentationId=0;
     private int _transformId = 0;
+    private int _x = 0;
+    private int _y = 0;
+    private int _z = 0;
 
 
     /**
@@ -263,6 +267,14 @@ public class CharSelectInfoPackage
     {
         return _pkKills;
     }
+    public void setPvPKills(int PvPKills)
+    {
+        _pvpKills = PvPKills;
+    } 
+    public int getPvPKills()
+    {
+        return _pvpKills;
+    }
     public int getTransformId() 
     { 
         return _transformId; 
@@ -270,5 +282,29 @@ public class CharSelectInfoPackage
     public void setTransformId(int id) 
     { 
         _transformId = id; 
+    }
+    public int getX()
+    {
+    	return _x;
+    }
+    public int getY()
+    {
+    	return _y;
+    }
+    public int getZ()
+    {
+    	return _z;
+    }
+    public void setX(int x)
+    {
+    	_x = x;
+    }
+    public void setY(int y)
+    {
+    	_y = y;
+    }
+    public void setZ(int z)
+    {
+    	_z = z;
     }
 }

@@ -38,6 +38,9 @@ public abstract class L2Transformation implements Cloneable, Runnable
     private long _startTime;
     private ScheduledFuture<?> _future;
     
+    protected boolean _canDoMeleeAttack = true;
+    protected boolean _startFollowToCast = true;
+    
     /**
      * 
      * @param id Internal id that server will use to associate this transformation 
@@ -223,5 +226,22 @@ public abstract class L2Transformation implements Cloneable, Runnable
     // Override if necessary
     public void onLevelUp()
     {
+    	
+    }
+    
+    /**
+     * Returns true if transformation can do melee attack
+     */
+    public boolean canDoMeleeAttack()
+    {
+    	return _canDoMeleeAttack;
+    }
+    
+    /**
+     * Returns true if transformation can start follow target when trying to cast an skill out of range
+     */
+    public boolean canStartFollowToCast()
+    {
+    	return _startFollowToCast;
     }
 }

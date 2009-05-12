@@ -30,21 +30,32 @@ public final class L2ArmorSet
 	private final int _head;
 	private final int _gloves;
 	private final int _feet;
+	private final int _mw_legs;
+	private final int _mw_head;
+	private final int _mw_gloves;
+	private final int _mw_feet;
+
 	private final int _skillId;
 	private final int _skillLvl;
 
 	private final int _shield;
+	private final int _mw_shield;
 	private final int _shieldSkillId;
 
 	private final int _enchant6Skill;
 
-	public L2ArmorSet(int chest, int legs, int head, int gloves, int feet, int skill_id, int skill_lvl, int shield, int shield_skill_id, int enchant6skill)
+	public L2ArmorSet(int chest, int legs, int head, int gloves, int feet, int skill_id, int skill_lvl, int shield, int shield_skill_id, int enchant6skill, int mw_legs, int mw_head, int mw_gloves, int mw_feet, int mw_shield)
 	{
 		_chest = chest;
 		_legs  = legs;
 		_head  = head;
 		_gloves = gloves;
 		_feet  = feet;
+		_mw_legs  = mw_legs;
+		_mw_head  = mw_head;
+		_mw_gloves = mw_gloves;
+		_mw_feet  = mw_feet;
+		_mw_shield = mw_shield;
 		_skillId = skill_id;
 		_skillLvl = skill_lvl;
 
@@ -84,13 +95,13 @@ public final class L2ArmorSet
 	{
 		if(_chest != 0 && _chest != chest)
 			return false;
-		if(_legs != 0 && _legs != legs)
+		if(_legs != 0 && _legs != legs && _mw_legs != legs)
 			return false;
-		if(_head != 0 && _head != head)
+		if(_head != 0 && _head != head && _mw_head != head)
 			return false;
-		if(_gloves != 0 && _gloves != gloves)
+		if(_gloves != 0 && _gloves != gloves && _mw_gloves != gloves)
 			return false;
-		if(_feet != 0 && _feet != feet)
+		if(_feet != 0 && _feet != feet && _mw_feet != feet)
 			return false;
 
 		return true;
@@ -102,13 +113,13 @@ public final class L2ArmorSet
 		case Inventory.PAPERDOLL_CHEST:
 			return _chest == itemId;
 		case Inventory.PAPERDOLL_LEGS:
-			return _legs == itemId;
+			return (_legs == itemId || _mw_legs == itemId);
 		case Inventory.PAPERDOLL_HEAD:
-			return _head == itemId;
+			return (_head == itemId || _mw_head == itemId);
 		case Inventory.PAPERDOLL_GLOVES:
-			return _gloves == itemId;
+			return (_gloves == itemId || _mw_gloves == itemId);
 		case Inventory.PAPERDOLL_FEET:
-			return _feet == itemId;
+			return (_feet == itemId || _mw_feet == itemId);
 		default:
 			return false;
 		}
@@ -129,7 +140,7 @@ public final class L2ArmorSet
 		Inventory inv = player.getInventory();
 
 		L2ItemInstance shieldItem   = inv.getPaperdollItem(Inventory.PAPERDOLL_LHAND);
-		if(shieldItem!= null && shieldItem.getItemId() == _shield)
+		if(shieldItem!= null && (shieldItem.getItemId() == _shield || shieldItem.getItemId() == _mw_shield))
 			return true;
 
 		return false;
@@ -139,7 +150,7 @@ public final class L2ArmorSet
 		if(_shield == 0)
 			return false;
 
-		return _shield == shield_id;
+		return (_shield == shield_id || _mw_shield == shield_id);
 	}
 	public int getShieldSkillId()
 	{
@@ -168,15 +179,15 @@ public final class L2ArmorSet
 		L2ItemInstance glovesItem = inv.getPaperdollItem(Inventory.PAPERDOLL_GLOVES);
 		L2ItemInstance feetItem   = inv.getPaperdollItem(Inventory.PAPERDOLL_FEET);
 
-		if(chestItem.getEnchantLevel() < 6)
+		if(chestItem == null || chestItem.getEnchantLevel() < 6)
 			return false;
-		if(_legs != 0 && legsItem.getEnchantLevel() < 6)
+		if(_legs != 0 && (legsItem == null || legsItem.getEnchantLevel() < 6))
 			return false;
-		if(_gloves != 0 && glovesItem.getEnchantLevel() < 6)
+		if(_gloves != 0 && (glovesItem == null || glovesItem.getEnchantLevel() < 6))
 			return false;
-		if(_head != 0 && headItem.getEnchantLevel() < 6)
+		if(_head != 0 && (headItem == null || headItem.getEnchantLevel() < 6))
 			return false;
-		if(_feet != 0 && feetItem.getEnchantLevel() < 6)
+		if(_feet != 0 && (feetItem == null || feetItem.getEnchantLevel() < 6))
 			return false;
 
 		return true;

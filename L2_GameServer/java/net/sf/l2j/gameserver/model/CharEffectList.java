@@ -25,7 +25,6 @@ import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.skills.effects.EffectCharge;
 import net.sf.l2j.gameserver.skills.effects.EffectCharmOfCourage;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
@@ -48,6 +47,31 @@ public class CharEffectList
 		_owner = owner;
 	}
 
+	public int getElementIdFromEffects()
+	{
+		L2Effect[] effects = getAllEffects();
+		int elementId = -1;
+		for (L2Effect e : effects)
+		{
+			if (e == null)
+				continue;
+			if (e.getSkill().getElement() < 1)
+				continue;
+			// 2nd order - passive skills/toggles
+			if (e.getSkill().isPassive()||e.getSkill().isToggle())
+			{
+				elementId = e.getSkill().getElement()-1;
+				break;
+			}
+			// 3rd order: get first element (if any)
+			else if (elementId < 0)
+			{
+				elementId = e.getSkill().getElement()-1;
+				// do not break; this line, toggle skill can replace element
+			}
+		}
+		return elementId;
+	}
 	/**
 	 * Returns all effects affecting stored in this CharEffectList
 	 * @return
@@ -79,23 +103,6 @@ public class CharEffectList
 		L2Effect[] tempArray = new L2Effect[temp.size()];
 		temp.toArray(tempArray);
 		return tempArray;
-	}
-
-	/**
-	 * Returns the first ChargeEffect in this CharEffectList
-	 * @return
-	 */
-	public final EffectCharge getChargeEffect()
-	{
-		L2Effect[] effects = getAllEffects();
-		for (L2Effect e : effects)
-		{
-			if (e.getSkill().getSkillType() == L2SkillType.CHARGE)
-			{
-				return (EffectCharge)e;
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -217,7 +224,7 @@ public class CharEffectList
 			for (L2Effect e : _buffs)
 			{
 				if (e != null && e.getShowIcon() && !e.getSkill().isDance() &&
-					!e.getSkill().isDebuff() && !e.getSkill().bestowed() &&
+					!e.getSkill().isDebuff()  &&
 					(e.getSkill().getSkillType() == L2SkillType.BUFF ||
 					e.getSkill().getSkillType() == L2SkillType.REFLECT ||
 					e.getSkill().getSkillType() == L2SkillType.HEAL_PERCENT ||
@@ -262,7 +269,7 @@ public class CharEffectList
 		// Exit them
 		for (L2Effect e : effects)
 		{
-			if (e != null && e.getSkill().getId() != 5660)
+			if (e != null && e.getSkill().getId() != 5660 && (e.getSkill().getId() < 840 || e.getSkill().getId() > 842))
 			{
 				e.exit(true);
 			}
@@ -283,6 +290,8 @@ public class CharEffectList
 			if (e != null)
 			{
 				if (e instanceof EffectCharmOfCourage)
+					continue;
+				if (e.getSkill().getId() >= 840 && e.getSkill().getId() <= 842)
 					continue;
 				e.exit(true);
 			}
@@ -353,9 +362,6 @@ public class CharEffectList
 		for (L2Effect e : effects)
 		{
 			if (e == null)
-				continue;
-
-			if (e.getSkill().bestowed())
 				continue;
 
 			switch (e.getSkill().getSkillType())
@@ -522,7 +528,7 @@ public class CharEffectList
 			
 		// Remove first buff when buff list is full
 		L2Skill tempSkill = newEffect.getSkill();
-		if (!doesStack(tempSkill) && !tempSkill.isDebuff() && !tempSkill.bestowed() &&
+		if (!doesStack(tempSkill) && !tempSkill.isDebuff()  &&
 				!(tempSkill.getId() > 4360 && tempSkill.getId() < 4367))
 		{
 			removeFirstBuff(tempSkill);

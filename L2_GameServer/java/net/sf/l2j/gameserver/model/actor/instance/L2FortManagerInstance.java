@@ -19,6 +19,7 @@ import java.util.StringTokenizer;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
+import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.TeleportLocationTable;
 import net.sf.l2j.gameserver.model.L2Clan;
@@ -28,9 +29,11 @@ import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
+import net.sf.l2j.gameserver.network.serverpackets.SortedWareHouseWithdrawalList;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.network.serverpackets.WareHouseDepositList;
 import net.sf.l2j.gameserver.network.serverpackets.WareHouseWithdrawalList;
+import net.sf.l2j.gameserver.network.serverpackets.SortedWareHouseWithdrawalList.WarehouseListType;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
@@ -160,7 +163,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 			}
 			else if (actualCommand.equalsIgnoreCase("receive_report"))
 			{
-				if (player.isClanLeader())
+				if (getFort().getFortState() < 2)
 				{
 					SimpleDateFormat format2 = new SimpleDateFormat("HH");
 					SimpleDateFormat format3 = new SimpleDateFormat("mm");
@@ -174,9 +177,13 @@ public class L2FortManagerInstance extends L2MerchantInstance
 				}
 				else
 				{
+					SimpleDateFormat format2 = new SimpleDateFormat("HH");
+					SimpleDateFormat format3 = new SimpleDateFormat("mm");
 					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-					html.setFile("data/html/fortress/foreman-noprivs.htm");
+					html.setFile("data/html/fortress/foreman-report.htm");
 					html.replace("%objectId%", String.valueOf(getObjectId()));
+					html.replace("%hr%", format2.format(getFort().getOwnedTime()));
+					html.replace("%min%", format3.format(getFort().getOwnedTime()));
 					player.sendPacket(html);
 					return;
 				}
@@ -191,14 +198,32 @@ public class L2FortManagerInstance extends L2MerchantInstance
 						boolean open = (Integer.parseInt(val) == 1);
 						while (st.hasMoreTokens())
 							getFort().openCloseDoor(player, Integer.parseInt(st.nextToken()), open);
+						if (open)
+						{
+							NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+							html.setFile("data/html/fortress/foreman-opened.htm");
+							html.replace("%objectId%", String.valueOf(getObjectId()));
+							player.sendPacket(html);
+							return;
+						}
+						else
+						{
+							NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+							html.setFile("data/html/fortress/foreman-closed.htm");
+							html.replace("%objectId%", String.valueOf(getObjectId()));
+							player.sendPacket(html);
+							return;
+						}
 					}
-
-					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-					html.setFile("data/html/fortress/" + getTemplate().npcId	+ "-d.htm");
-					html.replace("%objectId%", String.valueOf(getObjectId()));
-					html.replace("%npcname%", getName());
-					player.sendPacket(html);
-					return;
+					else
+					{
+						NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+						html.setFile("data/html/fortress/" + getTemplate().npcId	+ "-d.htm");
+						html.replace("%objectId%", String.valueOf(getObjectId()));
+						html.replace("%npcname%", getName());
+						player.sendPacket(html);
+						return;
+					}
 				}
 				else
 				{
@@ -217,7 +242,26 @@ public class L2FortManagerInstance extends L2MerchantInstance
                     if (val.equalsIgnoreCase("deposit"))
                         showVaultWindowDeposit(player);
                     else if (val.equalsIgnoreCase("withdraw"))
-                        showVaultWindowWithdraw(player);
+                    {
+                    	if (Config.L2JMOD_ENABLE_WAREHOUSESORTING_CLAN)
+                    	{
+                    		String htmFile = "data/html/mods/WhSortedC.htm";
+	                		String htmContent = HtmCache.getInstance().getHtm(htmFile);
+	                		if (htmContent != null)
+	                		{
+	                			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
+	                			npcHtmlMessage.setHtml(htmContent);
+	                			npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));
+	                			player.sendPacket(npcHtmlMessage);
+	                		}
+	                		else
+	                		{
+	                			_log.warning("Missing htm: " + htmFile + " !");
+	                		}
+                    	}
+                    	else
+                    		showVaultWindowWithdraw(player, null, (byte) 0);
+                    }
                     else
                     {
                         html.setFile("data/html/fortress/foreman-vault.htm");
@@ -230,6 +274,17 @@ public class L2FortManagerInstance extends L2MerchantInstance
                     sendHtmlMessage(player, html);
                 }
                 return;
+            }
+            else if (actualCommand.startsWith("WithdrawSortedC"))
+            {
+            	String param[] = command.split("_");
+            	if (param.length > 2)
+            		showVaultWindowWithdraw(player, WarehouseListType.valueOf(param[1]), SortedWareHouseWithdrawalList.getOrder(param[2]));
+            	else if (param.length > 1)
+            		showVaultWindowWithdraw(player, WarehouseListType.valueOf(param[1]), SortedWareHouseWithdrawalList.A2Z);
+            	else
+            		showVaultWindowWithdraw(player, WarehouseListType.ALL, SortedWareHouseWithdrawalList.A2Z);
+            	return;
             }
 			else if (actualCommand.equalsIgnoreCase("functions"))
 			{
@@ -955,7 +1010,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 			{
 				if (getFort().getSiege().getIsInProgress())
 					return COND_BUSY_BECAUSE_OF_SIEGE; // Busy because of siege
-				else if (getFort().getOwnerClan()!=null&&getFort().getOwnerClan().getClanId() == player.getClanId()) // Clan owns fortress
+				else if (getFort().getOwnerClan() != null && getFort().getOwnerClan().getClanId() == player.getClanId()) // Clan owns fortress
 					return COND_OWNER; // Owner
 			}
 		}
@@ -969,13 +1024,16 @@ public class L2FortManagerInstance extends L2MerchantInstance
         player.sendPacket(new WareHouseDepositList(player, WareHouseDepositList.CLAN));
     }
 
-    private void showVaultWindowWithdraw(L2PcInstance player)
+    private void showVaultWindowWithdraw(L2PcInstance player, WarehouseListType itemtype, byte sortorder)
     {
-    	if (player.isClanLeader()||((player.getClanPrivileges() & L2Clan.CP_CL_VIEW_WAREHOUSE) == L2Clan.CP_CL_VIEW_WAREHOUSE))
+    	if (player.isClanLeader() || ((player.getClanPrivileges() & L2Clan.CP_CL_VIEW_WAREHOUSE) == L2Clan.CP_CL_VIEW_WAREHOUSE))
     	{
     		player.sendPacket(ActionFailed.STATIC_PACKET);
     		player.setActiveWarehouse(player.getClan().getWarehouse());
-    		player.sendPacket(new WareHouseWithdrawalList(player, WareHouseWithdrawalList.CLAN));
+    		if (itemtype != null)
+    			player.sendPacket(new SortedWareHouseWithdrawalList(player, WareHouseWithdrawalList.CLAN, itemtype, sortorder));
+    		else
+    			player.sendPacket(new WareHouseWithdrawalList(player, WareHouseWithdrawalList.CLAN));
     	}
     	else
         {

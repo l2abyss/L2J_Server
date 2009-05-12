@@ -269,7 +269,7 @@ public final class L2FestivalGuideInstance extends L2NpcInstance
                     }
 
                     L2ItemInstance bloodOfferings = player.getInventory().getItemByItemId(SevenSignsFestival.FESTIVAL_OFFERING_ID);
-                    int offeringCount = 0;
+                    long offeringCount = 0;
 
                     // Check if the player collected any blood offerings during the festival.
                     if (bloodOfferings == null) {
@@ -279,14 +279,14 @@ public final class L2FestivalGuideInstance extends L2NpcInstance
 
                     offeringCount = bloodOfferings.getCount();
 
-                    int offeringScore = offeringCount * SevenSignsFestival.FESTIVAL_OFFERING_VALUE;
+                    long offeringScore = offeringCount * SevenSignsFestival.FESTIVAL_OFFERING_VALUE;
                     boolean isHighestScore = SevenSignsFestival.getInstance().setFinalScore(player, _festivalOracle, _festivalType, offeringScore);
 
                     player.destroyItem("SevenSigns", bloodOfferings, this, false);
 
                     // Send message that the contribution score has increased.
                     SystemMessage sm = new SystemMessage(SystemMessageId.CONTRIB_SCORE_INCREASED);
-                    sm.addNumber(offeringScore);
+                    sm.addItemNumber(offeringScore);
                     player.sendPacket(sm);
 
                     if (isHighestScore)

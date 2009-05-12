@@ -31,8 +31,9 @@ public final class L2PledgeSkillLearn
     private final int _repCost;
     private final int _baseLvl;
     private final int _itemId;
+    private final int _itemCount;
 
-    public L2PledgeSkillLearn(int id, int lvl, int baseLvl, String name, int cost, int itemId)
+    public L2PledgeSkillLearn(int id, int lvl, int baseLvl, String name, int cost, int itemId, int itemCount)
     {
         _id = id;
         _level = lvl;
@@ -40,6 +41,7 @@ public final class L2PledgeSkillLearn
         _name = name.intern();
         _repCost = cost;
         _itemId = itemId;
+        _itemCount = itemCount;
     }
 
     /**
@@ -85,5 +87,10 @@ public final class L2PledgeSkillLearn
     public int getItemId()
     {
         return _itemId;
+    }
+
+    public int getItemCount()
+    {
+    	return _itemCount;
     }
 }

@@ -126,7 +126,7 @@ public class CursedWeapon
 	    		// Remove from Db
 	    		_log.info(_name + " being removed offline." );
 
-	    		java.sql.Connection con = null;
+	    		Connection con = null;
 	    		try
 	    		{
 	    			con = L2DatabaseFactory.getInstance().getConnection();

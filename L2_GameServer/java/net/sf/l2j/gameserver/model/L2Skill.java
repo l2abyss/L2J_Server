@@ -24,7 +24,6 @@ import javolution.util.FastList;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.datatables.HeroSkillTable;
-import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
 import net.sf.l2j.gameserver.model.actor.L2Attackable;
 import net.sf.l2j.gameserver.model.actor.L2Character;
@@ -41,19 +40,16 @@ import net.sf.l2j.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.base.ClassId;
 import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.network.serverpackets.EtcStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.skills.Stats;
 import net.sf.l2j.gameserver.skills.conditions.Condition;
-import net.sf.l2j.gameserver.skills.effects.EffectCharge;
-import net.sf.l2j.gameserver.skills.effects.EffectTemplate;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.skills.funcs.FuncTemplate;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
 import net.sf.l2j.gameserver.templates.StatsSet;
-import net.sf.l2j.gameserver.templates.skills.L2EffectType;
+import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 import net.sf.l2j.gameserver.util.Util;
 
@@ -62,7 +58,7 @@ import net.sf.l2j.gameserver.util.Util;
  *
  * @version $Revision: 1.3.2.8.2.22 $ $Date: 2005/04/06 16:13:42 $
  */
-public abstract class L2Skill
+public abstract class L2Skill implements IChanceSkillTrigger
 {
     protected static final Logger _log = Logger.getLogger(L2Skill.class.getName());
 
@@ -83,7 +79,7 @@ public abstract class L2Skill
 
     public static enum SkillOpType
     {
-        OP_PASSIVE, OP_ACTIVE, OP_TOGGLE, OP_CHANCE
+        OP_PASSIVE, OP_ACTIVE, OP_TOGGLE
     }
 
     /** Target types of skills : SELF, PARTY, CLAN, PET... */
@@ -125,9 +121,9 @@ public abstract class L2Skill
     }
 
     //elements
-    public final static int ELEMENT_WIND = 1;
-    public final static int ELEMENT_FIRE = 2;
-    public final static int ELEMENT_WATER = 3;
+    public final static int ELEMENT_FIRE = 1;
+    public final static int ELEMENT_WATER = 2;
+    public final static int ELEMENT_WIND = 3;
     public final static int ELEMENT_EARTH = 4;
     public final static int ELEMENT_HOLY = 5;
     public final static int ELEMENT_DARK = 6;
@@ -279,8 +275,8 @@ public abstract class L2Skill
     private final int _abnormalLvl; // e.g. poison or bleed lvl 2 
     								// Note: see also _effectAbnormalLvl
     private final int _negateLvl;   // abnormalLvl is negated with negateLvl
-    private final int _negateId; 			// cancels the effect of skill ID
-    private final String[] _negateStats; 	// lists the effect types that are canceled
+    private final int[] _negateId; 			// cancels the effect of skill ID
+    private final L2SkillType[] _negateStats; 	// lists the effect types that are canceled
     private final int _maxNegatedEffects; 	// maximum number of effects to negate
     
     // kill by damage over time
@@ -313,7 +309,6 @@ public abstract class L2Skill
     private final L2SkillType _skillType;
     private final L2SkillType _effectType; // additional effect has a type
     private final int _effectAbnormalLvl; // abnormal level for the additional effect type, e.g. poison lvl 1
-    private final int _effectPower;
     private final int _effectId;
     private final int _effectLvl; // normal effect level
     
@@ -340,12 +335,12 @@ public abstract class L2Skill
     private final int _minPledgeClass;
 
     private final boolean _isOffensive;
+    private final int _requiredCharges;
+    private final int _maxCharges;
     private final int _numCharges;
     private final int _triggeredId;
     private final int _triggeredLevel;
-	private final boolean _bestow;
-	private final boolean _bestowed;
-    
+    private final String _chanceType;
     private final int _soulMaxConsume;
     private final int _soulConsume;
     private final int _numSouls;
@@ -355,6 +350,8 @@ public abstract class L2Skill
     private final int _transformId;
     private final int _transformDuration;
 
+    private final int _afterEffectId;
+    private final int _afterEffectLvl;
     private final boolean _isHeroSkill; // If true the skill is a Hero Skill
 
     private final int _baseCritRate;  // percent of success for skill critical hit (especially for PDAM & BLOW - they're not affected by rCrit values or buffs). Default loads -1 for all other skills but 0 to PDAM & BLOW
@@ -382,9 +379,13 @@ public abstract class L2Skill
     private final boolean _isDebuff;
     
 	private boolean _isAdvancedFlag;
-
+	private String _attribute;
 	private int _afroId;
 
+	private int _learnSkillId;
+	private int _learnSkillLvl;
+
+	private boolean _useShield;
     protected L2Skill(StatsSet set)
     {
         _id = set.getInteger("skill_id");
@@ -413,21 +414,62 @@ public abstract class L2Skill
         _summonTotalLifeTime= set.getInteger("summonTotalLifeTime", 1200000);  // 20 minutes default
         _summonTimeLostIdle= set.getInteger("summonTimeLostIdle", 0);
         _summonTimeLostActive= set.getInteger("summonTimeLostActive", 0);
-        
+        _afterEffectId = set.getInteger("afterEffectId", 0);
+        _afterEffectLvl = set.getInteger("afterEffectLvl", 1);
         _isCubic    = set.getBool("isCubic", false);
 
          _isAdvancedFlag = set.getBool("isAdvancedFlag", false);
         _activationtime= set.getInteger("activationtime", 8);
         _activationchance= set.getInteger("activationchance", 30);
         
-        _castRange = set.getInteger("castRange", 0);
+        _castRange = set.getInteger("castRange", -1);
         _effectRange = set.getInteger("effectRange", -1);
         
         _abnormalLvl = set.getInteger("abnormalLvl", -1);
         _effectAbnormalLvl = set.getInteger("effectAbnormalLvl", -1); // support for a separate effect abnormal lvl, e.g. poison inside a different skill
         _negateLvl = set.getInteger("negateLvl", -1);
-        _negateStats = set.getString("negateStats", "").split(" ");
-        _negateId = set.getInteger("negateId", 0);
+        _learnSkillId = set.getInteger("learnSkillId",0);
+        _learnSkillLvl = set.getInteger("learnSkillLvl",1);
+        _attribute = set.getString("attribute");
+        String str = set.getString("negateStats", "");
+        
+        if (str == "")
+        	_negateStats = new L2SkillType[0];
+        else
+        {
+        	String[] stats = str.split(" ");
+        	L2SkillType[] array = new L2SkillType[stats.length];
+        
+        	for (int i = 0;  i < stats.length; i++)
+        	{
+        		L2SkillType type = null;
+        		try
+        		{
+    				type = Enum.valueOf(L2SkillType.class, stats[i]);
+    			}
+        		catch (Exception e)
+        		{
+    				throw new IllegalArgumentException("SkillId: "+_id+"Enum value of type "+L2SkillType.class.getName()+"required, but found: "+stats[i]);
+    			}
+        	
+        		array[i] = type;        		
+        	}
+        	_negateStats = array;
+        }
+        
+        
+        String negateId = set.getString("negateId", null);
+        if (negateId != null)
+        {
+            String[] valuesSplit = negateId.split(",");
+            _negateId = new int[valuesSplit.length];
+    		for (int i = 0; i < valuesSplit.length;i++)
+    		{
+    			_negateId[i] = Integer.valueOf(valuesSplit[i]);
+    		}
+        }
+        else
+        	_negateId = new int[0];
         _maxNegatedEffects = set.getInteger("maxNegated", 0);
         
         _killByDOT = set.getBool("killByDOT", false);
@@ -458,10 +500,9 @@ public abstract class L2Skill
         _magicLevel = set.getInteger("magicLvl", SkillTreeTable.getInstance().getMinSkillLevel(_id, _level));
         _levelDepend = set.getInteger("lvlDepend", 0);
         _stat = set.getEnum("stat", Stats.class, null);
-
+        _useShield = set.getBool("useShield", false);
         _skillType = set.getEnum("skillType", L2SkillType.class);
         _effectType = set.getEnum("effectType", L2SkillType.class, null);
-        _effectPower = set.getInteger("effectPower", 0);
         _effectId = set.getInteger("effectId", 0);
         _effectLvl = set.getInteger("effectLevel", 0);
 
@@ -481,13 +522,13 @@ public abstract class L2Skill
         _mulCrossLearnProf = set.getFloat("mulCrossLearnProf", 3.f);
         _minPledgeClass = set.getInteger("minPledgeClass", 0);
         _isOffensive = set.getBool("offensive", isSkillTypeOffensive());
-        _numCharges = set.getInteger("num_charges", getLevel());
+        _maxCharges = set.getInteger("maxCharges", 0);
+        _numCharges = set.getInteger("numCharges", 0);
+        _requiredCharges = set.getInteger("requiredCharges", 0);
         _triggeredId = set.getInteger("triggeredId", 0);
         _triggeredLevel = set.getInteger("triggeredLevel", 0);
-        _bestow = set.getBool("bestowTriggered", false);
-        _bestowed = set.getBool("bestowed", false);
-      
-        if (_operateType == SkillOpType.OP_CHANCE)
+        _chanceType = set.getString("chanceType", "");
+        if (_chanceType != "" && !_chanceType.isEmpty())
             _chanceCondition = ChanceCondition.parse(set);
 
         _numSouls = set.getInteger("num_souls", 0);
@@ -514,7 +555,7 @@ public abstract class L2Skill
         _flyType = set.getString("flyType", null);
         _flyRadius = set.getInteger("flyRadius", 200);
         _flyCourse = set.getFloat("flyCourse", 0);
-
+        
         String canLearn = set.getString("canLearn", null);
         if (canLearn == null)
         {
@@ -625,7 +666,7 @@ public abstract class L2Skill
 
     public final boolean allowOnTransform()
     {
-    	return isPassive() || isChance() || bestowed();
+    	return isPassive();
     }
     /**
      * Return the power of the skill.<BR><BR>
@@ -664,7 +705,7 @@ public abstract class L2Skill
         return _power;
     }
 
-    public final String[] getNegateStats()
+    public final L2SkillType[] getNegateStats()
     {
         return _negateStats;
     }
@@ -679,7 +720,7 @@ public abstract class L2Skill
         return _negateLvl;
     }
     
-    public final int getNegateId()
+    public final int[] getNegateId()
     {
         return _negateId;
     }
@@ -697,14 +738,6 @@ public abstract class L2Skill
     public final int getLevelDepend()
     {
         return _levelDepend;
-    }
-
-    /**
-     * Return the additional effect power or base probability.<BR><BR>
-     */
-    public final int getEffectPower()
-    {
-        return _effectPower;
     }
 
     /**
@@ -810,16 +843,6 @@ public abstract class L2Skill
     {
         return _triggeredLevel;
     }
-
-	public boolean bestowTriggered()
-	{
-		return _bestow;
-	}
-   
-	public boolean bestowed()
-	{
-		return _bestowed;
-	}
    
 	public boolean triggerAnotherSkill()
 	{
@@ -1043,7 +1066,7 @@ public abstract class L2Skill
 
     public final boolean isChance()
     {
-        return _operateType == SkillOpType.OP_CHANCE;
+        return _chanceCondition != null && isPassive();
     }
 
     public ChanceCondition getChanceCondition()
@@ -2962,7 +2985,12 @@ public abstract class L2Skill
         return (_effectTemplates != null && _effectTemplates.length > 0);
     }
 
-    public final L2Effect[] getEffects(L2Character effector, L2Character effected)
+    /**
+     * Env is used to pass parameters for secondary effects (shield and ss/bss/bsss)
+     * 
+     * @return an array with the effects that have been added to effector 
+     */
+    public final L2Effect[] getEffects(L2Character effector, L2Character effected, Env env)
     {
         if (isPassive()) return _emptyEffectSet;
 
@@ -2987,20 +3015,37 @@ public abstract class L2Skill
             
         List<L2Effect> effects = new FastList<L2Effect>();
 
-        boolean skillMastery = false;
+        if (env == null)
+        	env = new Env();
         
-        if (!isToggle() && Formulas.calcSkillMastery(effector, this))
-        	skillMastery = true;
+        env.skillMastery = Formulas.calcSkillMastery(effector, this);
+        env.player = effector;
+        env.target = effected;
+        env.skill = this;
         
         for (EffectTemplate et : _effectTemplates)
         {
-            Env env = new Env();
-            env.player = effector;
-            env.target = effected;
-            env.skill = this;
-            env.skillMastery = skillMastery;
-            L2Effect e = et.getEffect(env);
-            if (e != null) effects.add(e);
+        	boolean success = true;
+        	
+        	if (et.effectPower > -1)
+        		success = Formulas.calcEffectSuccess(effector, effected, et, this, env.shld, env.ss, env.sps, env.bss);
+        	
+        	if (success)
+        	{
+        		L2Effect e = et.getEffect(env);
+            	if (e != null) 
+            	{
+            		e.scheduleEffect();
+            		effects.add(e);
+            	}
+        	}
+        	else if (effector instanceof L2PcInstance)
+			{
+				SystemMessage sm = new SystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
+				sm.addCharName(effected);
+				sm.addSkillName(this);
+				((L2PcInstance)effector).sendPacket(sm);
+			}
         }
 
         if (effects.isEmpty()) return _emptyEffectSet;
@@ -3008,7 +3053,16 @@ public abstract class L2Skill
         return effects.toArray(new L2Effect[effects.size()]);
     }
     
-    public final L2Effect[] getEffects(L2CubicInstance effector, L2Character effected)
+    /**
+     * Warning: this method doesn't consider modifier (shield, ss, sps, bss) for secondary effects
+     * 
+     */
+    public final L2Effect[] getEffects(L2Character effector, L2Character effected)
+    {
+    	return getEffects(effector, effected, null);
+    }
+    
+    public final L2Effect[] getEffects(L2CubicInstance effector, L2Character effected, Env env)
     {
         if (isPassive()) return _emptyEffectSet;
 
@@ -3027,16 +3081,30 @@ public abstract class L2Skill
 
 
         List<L2Effect> effects = new FastList<L2Effect>();
-
+        
+        if (env == null)
+        	env = new Env();
+        
+        env.player = effector.getOwner();
+        env.cubic = effector;
+        env.target = effected;
+        env.skill = this;
+        
         for (EffectTemplate et : _effectTemplates)
         {
-            Env env = new Env();
-            env.player = effector.getOwner();
-            env.cubic = effector;
-            env.target = effected;
-            env.skill = this;
-            L2Effect e = et.getEffect(env);
-            if (e != null) effects.add(e);
+        	boolean success = true;
+        	if (et.effectPower > -1)
+        		success = Formulas.calcEffectSuccess(effector.getOwner(), effected, et, this, env.shld, env.ss, env.sps, env.bss);
+            
+        	if (success)
+        	{
+        		L2Effect e = et.getEffect(env);
+            	if (e != null)
+            	{
+            		e.scheduleEffect();
+            		effects.add(e);
+            	}
+        	}
         }
 
         if (effects.isEmpty()) return _emptyEffectSet;
@@ -3061,29 +3129,8 @@ public abstract class L2Skill
             L2Effect e = et.getEffect(env);
             if (e != null)
             {
-                //Implements effect charge
-                if (e.getEffectType()== L2EffectType.CHARGE)
-                {
-                	env.skill = SkillTable.getInstance().getInfo(8, effector.getSkillLevel(8));
-                    EffectCharge effect = (EffectCharge) env.target.getFirstEffect(L2EffectType.CHARGE);
-                    if (effect != null)
-                    {
-                    	int effectcharge = effect.getLevel();
-                        if (effectcharge < _numCharges)
-                        {
-                        	effect.addNumCharges(++effectcharge);
-                            if (env.target instanceof L2PcInstance)
-                            {
-                            	env.target.sendPacket(new EtcStatusUpdate((L2PcInstance)env.target));
-                                SystemMessage sm = new SystemMessage(SystemMessageId.FORCE_INCREASED_TO_S1);
-                                sm.addNumber(effectcharge);
-                                env.target.sendPacket(sm);
-                            }
-                        }
-                    }
-                    else effects.add(e);
-                }
-                else effects.add(e);
+            	e.scheduleEffect();
+            	effects.add(e);
             }
         }
         if (effects.isEmpty()) return _emptyEffectSet;
@@ -3183,4 +3230,75 @@ public abstract class L2Skill
     {
 	    return _afroId;
     }
+
+	/**
+	 * used for learning skills through skills
+     * @return new skill id to learn (if not defined, default 0)
+     */
+    public int getNewSkillId()
+    {
+	    return _learnSkillId;
+    }
+
+	/**
+	 * used for learning skills through skills
+     * @return skill lvl to learn (if not defined, default 1)
+     */
+    public int getNewSkillLvl()
+    {
+	    return _learnSkillLvl;
+    }
+    public final int getRequiredCharges()
+    {
+    	return _requiredCharges;
+    }
+    
+    public final int getMaxCharges()
+    {
+    	return _maxCharges;
+    }
+
+    public int getAfterEffectId()
+    {
+	    return _afterEffectId;
+    }
+
+    public int getAfterEffectLvl()
+    {
+	    return _afterEffectLvl;
+    }
+    
+    @Override
+	public boolean triggersChanceSkill()
+	{
+		return _triggeredId > 0 && isChance();
+	}
+	
+	@Override
+	public int getTriggeredChanceId()
+	{
+		return _triggeredId;
+	}
+	
+	@Override
+	public int getTriggeredChanceLevel()
+	{
+		return _triggeredLevel;
+	}
+	
+	@Override
+	public ChanceCondition getTriggeredChanceCondition()
+	{
+		return _chanceCondition;
+	}
+	
+	public String getAttributeName()
+	{
+		return _attribute;
+	}
+	
+	public boolean useShield()
+	{
+		return _useShield;
+	}
 }

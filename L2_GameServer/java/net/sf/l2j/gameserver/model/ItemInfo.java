@@ -35,7 +35,7 @@ public class ItemInfo
     private int _augmentation;
 
     /** The quantity of L2ItemInstance */
-    private int _count;
+    private long _count;
 
     /** The price of the L2ItemInstance */
     private int _price;
@@ -52,6 +52,7 @@ public class ItemInfo
 
 	/** The mana of this item */
     private int _mana;
+    private int _time;
     
     private int _location;
 
@@ -100,7 +101,7 @@ public class ItemInfo
 
 		// Get shadow item mana
 		_mana = item.getMana();
-		
+		_time = item.isTimeLimitedItem() ? (int) (item.getRemainingTime()*1000*60) : -1;
 		_location = item.getLocationSlot();
 
 		_elemAtkType = item.getAttackElementType();
@@ -141,6 +142,7 @@ public class ItemInfo
 		
 		// Get shadow item mana
 		_mana = item.getMana();
+		_time = item.isTimeLimitedItem() ? (int) (item.getRemainingTime()/1000) : -1;
 		
 		_location = item.getLocationSlot();
 
@@ -155,13 +157,14 @@ public class ItemInfo
 	public L2Item getItem(){return _item;}
 	public int getEnchant(){return _enchant;}
 	public int getAugmentationBonus(){return _augmentation;}
-	public int getCount(){return _count;}
+	public long getCount(){return _count;}
 	public int getPrice(){return _price;}
 	public int getCustomType1(){return _type1;}
 	public int getCustomType2(){return _type2;}
 	public int getEquipped(){return _equipped;}
 	public int getChange(){return _change;}
 	public int getMana(){return _mana;}
+	public int getTime(){return _time;}
 	public int getLocation(){return _location;}
 	public int getAttackElementType(){return _elemAtkType;}
 	public int getAttackElementPower(){return _elemAtkPower;}

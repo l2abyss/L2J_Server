@@ -14,12 +14,13 @@
  */
 package net.sf.l2j.gameserver.model;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -140,7 +141,7 @@ public class L2TradeList
         return list.subList(start, end);
     }
 
-	public int getPriceForItemId(int itemId)
+	public long getPriceForItemId(int itemId)
 	{
         L2TradeItem item = _items.get(itemId);
         if (item != null)
@@ -182,11 +183,11 @@ public class L2TradeList
         
         private final int _itemId;
         private final L2Item _template;
-        private int _price;
+        private long _price;
         
         // count related
-        private AtomicInteger _currentCount = new AtomicInteger();
-        private int _maxCount = -1;
+        private AtomicLong _currentCount = new AtomicLong();
+        private long _maxCount = -1;
         private long _restoreDelay;
         private long _nextRestoreTime;
         
@@ -207,7 +208,7 @@ public class L2TradeList
         /**
          * @param price The price to set.
          */
-        public void setPrice(int price)
+        public void setPrice(long price)
         {
             _price = price;
         }
@@ -215,7 +216,7 @@ public class L2TradeList
         /**
          * @return Returns the price.
          */
-        public int getPrice()
+        public long getPrice()
         {
             return _price;
         }
@@ -228,12 +229,12 @@ public class L2TradeList
         /**
          * @param currentCount The currentCount to set.
          */
-        public void setCurrentCount(int currentCount)
+        public void setCurrentCount(long currentCount)
         {
             _currentCount.set(currentCount);
         }
         
-        public boolean decreaseCount(int val)
+        public boolean decreaseCount(long val)
         {
             return _currentCount.addAndGet(-val) >= 0;
         }
@@ -241,13 +242,13 @@ public class L2TradeList
         /**
          * @return Returns the currentCount.
          */
-        public int getCurrentCount()
+        public long getCurrentCount()
         {
             if (this.hasLimitedStock() && this.isPendingStockUpdate())
             {
                 this.restoreInitialCount();
             }
-            int ret = _currentCount.get();
+            long ret = _currentCount.get();
             return ret > 0 ? ret : 0;
         }
         
@@ -274,7 +275,7 @@ public class L2TradeList
         /**
          * @param maxCount The maxCount to set.
          */
-        public void setMaxCount(int maxCount)
+        public void setMaxCount(long maxCount)
         {
             _maxCount = maxCount;
         }
@@ -282,7 +283,7 @@ public class L2TradeList
         /**
          * @return Returns the maxCount.
          */
-        public int getMaxCount()
+        public long getMaxCount()
         {
             return _maxCount;
         }
@@ -338,7 +339,7 @@ public class L2TradeList
         
         protected void saveDataTimer()
         {
-            java.sql.Connection con = null;
+            Connection con = null;
             try
             {
                 con = L2DatabaseFactory.getInstance().getConnection();

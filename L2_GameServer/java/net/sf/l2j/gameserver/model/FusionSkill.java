@@ -64,7 +64,7 @@ public final class FusionSkill
         {
             L2Skill force = SkillTable.getInstance().getInfo(_fusionId, _fusionLevel);
             if (force != null)
-                force.getEffects(_caster, _target);
+                force.getEffects(_caster, _target, null);
             else
                 _log.warning("Triggered skill ["+_fusionId+";"+_fusionLevel+"] not found!");
         }

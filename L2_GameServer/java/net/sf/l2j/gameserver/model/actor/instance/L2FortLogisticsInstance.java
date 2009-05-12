@@ -21,21 +21,20 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.util.StringTokenizer;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
-import net.sf.l2j.gameserver.model.actor.L2Npc;
-import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
-import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  * @author Vice 
  */
-public class L2FortSiegeNpcInstance extends L2Npc
+public class L2FortLogisticsInstance extends L2MerchantInstance
 {
-    public L2FortSiegeNpcInstance(int objectID, L2NpcTemplate template)
+	private static final int BLOOD_OATH = 9910;
+	
+    public L2FortLogisticsInstance(int objectID, L2NpcTemplate template)
     {
         super(objectID, template);
     }
@@ -44,6 +43,8 @@ public class L2FortSiegeNpcInstance extends L2Npc
     public void onAction(L2PcInstance player)
     {
         if (!canTarget(player)) return;
+        
+        player.setLastFolkNPC(this);
         
         // Check if the L2PcInstance already target the L2NpcInstance
         if (this != player.getTarget())
@@ -77,6 +78,9 @@ public class L2FortSiegeNpcInstance extends L2Npc
 
     public void onBypassFeedback(L2PcInstance player, String command)
     {
+    	// BypassValidation Exploit plug.
+		if (player.getLastFolkNPC().getObjectId() != this.getObjectId())
+			return;
         StringTokenizer st = new StringTokenizer(command, " ");
         String actualCommand = st.nextToken(); // Get actual command
 
@@ -94,14 +98,54 @@ public class L2FortSiegeNpcInstance extends L2Npc
             catch (NumberFormatException nfe){}
             showMessageWindow(player, val);
         }
-        else if (actualCommand.equalsIgnoreCase("register"))
+        else if (actualCommand.equalsIgnoreCase("rewards"))
         {
-           	if (getFort().getSiege().registerAttacker(player, false))
-           	{
-           		SystemMessage sm = new SystemMessage(SystemMessageId.REGISTERED_TO_S1_FORTRESS_BATTLE);
-           		sm.addString(getFort().getName());
-           		player.sendPacket(sm);
-           	}
+        	if (player.getClan() != null && getFort().getOwnerClan() != null && player.getClan() == getFort().getOwnerClan() && player.isClanLeader())
+        	{
+        		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+    			html.setFile("data/html/fortress/logistics-rewards.htm");
+    			int blood = getFort().getBloodOathReward();
+    			html.replace("%objectId%", String.valueOf(getObjectId()));
+    			html.replace("%bloodoath%", String.valueOf(blood));
+    			player.sendPacket(html);
+    			return;
+        	}
+        	else
+        	{
+        		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+    			html.setFile("data/html/fortress/logistics-noprivs.htm");
+    			html.replace("%objectId%", String.valueOf(getObjectId()));
+    			player.sendPacket(html);
+    			return;
+        	}
+        }
+        else if (actualCommand.equalsIgnoreCase("blood"))
+        {
+        	if (player.getClan() != null && getFort().getOwnerClan() != null && player.getClan() == getFort().getOwnerClan() && player.isClanLeader())
+        	{
+        		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+        		int blood = getFort().getBloodOathReward();
+        		if (blood > 0)
+        		{
+        			html.setFile("data/html/fortress/logistics-blood.htm");
+        			player.addItem("Quest", BLOOD_OATH, blood, this, true);
+        			getFort().setBloodOathReward(0);
+        		}
+        		else
+        			html.setFile("data/html/fortress/logistics-noblood.htm");
+    			html.replace("%objectId%", String.valueOf(getObjectId()));
+    			
+    			player.sendPacket(html);
+    			return;
+        	}
+        	else
+        	{
+        		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+    			html.setFile("data/html/fortress/logistics-noprivs.htm");
+    			html.replace("%objectId%", String.valueOf(getObjectId()));
+    			player.sendPacket(html);
+    			return;
+        	}
         }
         else
         {
@@ -121,9 +165,9 @@ public class L2FortSiegeNpcInstance extends L2Npc
         String filename;
 
         if (val == 0)
-            filename = "data/html/fortress/merchant.htm";
+            filename = "data/html/fortress/logistics.htm";
         else
-            filename = "data/html/fortress/merchant-" + val + ".htm";
+            filename = "data/html/fortress/logistics-" + val + ".htm";
 
         NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
         html.setFile(filename);

@@ -642,7 +642,7 @@ public class L2CubicInstance
 						dm.onBuff(((L2PcInstance) target), debuff);
 			}
 			else
-				skill.getEffects(activeCubic, target);
+				skill.getEffects(activeCubic, target, null);
 		}
 	}
 	
@@ -688,7 +688,7 @@ public class L2CubicInstance
 					if (target.getFirstEffect(skill) != null)
 						target.removeEffect(target.getFirstEffect(skill));
 					if (Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld))
-						skill.getEffects(activeCubic, target);
+						skill.getEffects(activeCubic, target, null);
 				}
 				
 				target.reduceCurrentHp(damage, activeCubic.getOwner(), skill);
@@ -728,7 +728,7 @@ public class L2CubicInstance
 									dm.onBuff(((L2PcInstance) target), debuff);
 						}
 						else
-							skill.getEffects(activeCubic, target);
+							skill.getEffects(activeCubic, target, null);
 						if (Config.DEBUG)
 							_log.info("Disablers: useCubicSkill() -> success");
 					}
@@ -757,7 +757,7 @@ public class L2CubicInstance
 									dm.onBuff(((L2PcInstance) target), debuff);
 						}
 						else
-							skill.getEffects(activeCubic, target);
+							skill.getEffects(activeCubic, target, null);
 						
 						if (Config.DEBUG)
 							_log.info("Disablers: useCubicSkill() -> success");
@@ -812,7 +812,7 @@ public class L2CubicInstance
 									dm.onBuff(((L2PcInstance) target), debuff);
 						}
 						else
-							skill.getEffects(activeCubic, target);
+							skill.getEffects(activeCubic, target, null);
 						
 						if (Config.DEBUG)
 							_log.info("Disablers: useCubicSkill() -> success");
@@ -830,7 +830,7 @@ public class L2CubicInstance
 					{
 						if (target instanceof L2Attackable)
 							target.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, activeCubic.getOwner(), (int) ((150 * skill.getPower()) / (target.getLevel() + 7)));
-						skill.getEffects(activeCubic, target);
+						skill.getEffects(activeCubic, target, null);
 						
 						if (Config.DEBUG)
 							_log.info("Disablers: useCubicSkill() -> success");

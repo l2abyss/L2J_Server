@@ -16,6 +16,7 @@
 package net.sf.l2j.gameserver.instancemanager;
 
 import java.io.File;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
@@ -98,7 +99,7 @@ public class ZoneManager
 	private final void load()
 	{
 		_log.info("Loading zones...");
-		java.sql.Connection con = null;
+		Connection con = null;
 		int zoneCount = 0;
 		_zones.clear();
 
@@ -172,6 +173,8 @@ public class ZoneManager
 								temp = new L2MotherTreeZone(zoneId);
 							else if (zoneType.equals("BigheadZone"))
 								temp = new L2BigheadZone(zoneId);
+							else if (zoneType.equals("LandingZone"))
+								temp = new L2LandingZone(zoneId);
 							else if (zoneType.equals("NoLandingZone"))
 								temp = new L2NoLandingZone(zoneId);
 							else if (zoneType.equals("JailZone"))

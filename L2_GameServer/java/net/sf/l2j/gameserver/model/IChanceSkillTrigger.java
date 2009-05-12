@@ -15,33 +15,30 @@
 package net.sf.l2j.gameserver.model;
 
 /**
+ * This interface provides method to handle triggered skills from other objects.<br>
+ * For example, other skill, an effect, etc...
  *
+ * @author  DrHouse
  */
-public class ItemRequest
+public interface IChanceSkillTrigger
 {
-	int _objectId;
-	int _itemId;
-	long _count;
-	long _price;
-
-	public ItemRequest(int objectId, long count, long price)
-	{
-		_objectId = objectId;
-		_count = count;
-		_price = price;
-	}
-
-	public ItemRequest(int objectId, int itemId, long count, long price)
-	{
-		_objectId = objectId;
-		_itemId = itemId;
-		_count = count;
-		_price = price;
-	}
-
-	public int getObjectId(){return _objectId;}
-	public int getItemId(){return _itemId;}
-	public void setCount(long count){_count = count;}
-	public long getCount(){return _count;}
-	public long getPrice(){return _price;}
+	/**
+	 * Just a flag
+	 */
+	public boolean triggersChanceSkill();
+	
+	/**
+	 * Triggered Id
+	 */
+	public int getTriggeredChanceId();
+	
+	/**
+	 * Triggered level
+	 */
+	public int getTriggeredChanceLevel();
+	
+	/**
+	 * Chance condition object
+	 */
+	public ChanceCondition getTriggeredChanceCondition();
 }

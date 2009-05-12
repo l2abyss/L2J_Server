@@ -496,7 +496,7 @@ public class L2Party {
 			SystemMessage msg = new SystemMessage(SystemMessageId.C1_OBTAINED_S3_S2);
 			msg.addString(target.getName());
 			msg.addItemName(item);
-			msg.addNumber(item.getCount());
+			msg.addItemNumber(item.getCount());
 			broadcastToPartyMembers(target, msg);
 		}
 		else
@@ -534,7 +534,7 @@ public class L2Party {
 			                          : new SystemMessage(SystemMessageId.C1_OBTAINED_S3_S2);
 			msg.addString(looter.getName());
 			msg.addItemName(item.getItemId());
-			msg.addNumber(item.getCount());
+			msg.addItemNumber(item.getCount());
 			broadcastToPartyMembers(looter, msg);
 		}
 		else
@@ -551,7 +551,7 @@ public class L2Party {
 	 * distribute adena to party members
 	 * @param adena
 	 */
-	public void distributeAdena(L2PcInstance player, int adena, L2Character target)
+	public void distributeAdena(L2PcInstance player, long adena, L2Character target)
 	{
         // Get all the party members
         List<L2PcInstance> membersList = getPartyMembers();
@@ -570,7 +570,7 @@ public class L2Party {
 
         // Now we can actually distribute the adena reward
         // (Total adena splitted by the number of party members that are in range and must be rewarded)
-        int count = adena / ToReward.size();
+        long count = adena / ToReward.size();
         for (L2PcInstance member : ToReward)
             member.addAdena("Party", count, player, true);
 	}

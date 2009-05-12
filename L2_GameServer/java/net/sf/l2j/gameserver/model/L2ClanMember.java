@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -226,7 +227,7 @@ public class L2ClanMember
 
 	public void updatePledgeType()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try
         {
@@ -276,7 +277,7 @@ public class L2ClanMember
 	 */
 	public void updatePowerGrade()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try
         {
@@ -576,7 +577,7 @@ public class L2ClanMember
 
 	public void saveApprenticeAndSponsor(int apprentice, int sponsor)
     {
-		java.sql.Connection con = null;
+		Connection con = null;
 
          try
          {

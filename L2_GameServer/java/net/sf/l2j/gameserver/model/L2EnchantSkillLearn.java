@@ -108,27 +108,29 @@ public final class L2EnchantSkillLearn
     
     public static class EnchantSkillDetail
     {
-        // not needed, just for easier debug
-        private final String _name;
-
         private final int _level;
         private final int _spCost;
         private final int _minSkillLevel;
         private final int _exp;
-        private final byte _rate76;
-        private final byte _rate77;
-        private final byte _rate78;
+        private final byte _rate76,_rate77,_rate78,_rate79,_rate80,_rate81,_rate82,_rate83,_rate84,_rate85;
+
         
-        public EnchantSkillDetail(int lvl, int minSkillLvl, String name, int cost, int exp, byte rate76, byte rate77, byte rate78)
+        public EnchantSkillDetail(int lvl, int minSkillLvl, int cost, int exp, byte rate76, byte rate77, byte rate78, byte rate79, byte rate80, byte rate81, byte rate82, byte rate83, byte rate84, byte rate85)
         {
             _level = lvl;
             _minSkillLevel = minSkillLvl;
-            _name = name.intern();
             _spCost = cost;
             _exp = exp;
             _rate76 = rate76;
             _rate77 = rate77;
             _rate78 = rate78;
+            _rate79 = rate79;
+            _rate80 = rate80;
+            _rate81 = rate81;
+            _rate82 = rate82;
+            _rate83 = rate83;
+            _rate84 = rate84;
+            _rate85 = rate85;
         }
         
         /**
@@ -145,14 +147,6 @@ public final class L2EnchantSkillLearn
         public int getMinSkillLevel()
         {
             return _minSkillLevel;
-        }
-
-        /**
-         * @return Returns the name.
-         */
-        public String getName()
-        {
-            return _name;
         }
 
         /**
@@ -181,8 +175,29 @@ public final class L2EnchantSkillLearn
                 case 78:
                     result = _rate78;
                     break;
+                case 79:
+                    result = _rate79;
+                    break;
+                case 80:
+                    result = _rate80;
+                    break;
+                case 81:
+                    result = _rate81;
+                    break;
+                case 82:
+                    result = _rate82;
+                    break;
+                case 83:
+                    result = _rate83;
+                    break;
+                case 84:
+                    result = _rate84;
+                    break;
+                case 85:
+                    result = _rate85;
+                    break;
                 default:
-                    result = _rate78;
+                    result = _rate85;
                 break;
             }
             return result;

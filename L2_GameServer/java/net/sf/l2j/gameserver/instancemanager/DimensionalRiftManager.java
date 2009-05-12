@@ -55,7 +55,7 @@ public class DimensionalRiftManager
     private static Logger _log = Logger.getLogger(DimensionalRiftManager.class.getName());
     private static DimensionalRiftManager _instance;
     private FastMap<Byte, FastMap<Byte, DimensionalRiftRoom>> _rooms = new FastMap<Byte, FastMap<Byte, DimensionalRiftRoom>>();
-    private final short DIMENSIONAL_FRAGMENT_ITEM_ID = 7079;
+    private final int DIMENSIONAL_FRAGMENT_ITEM_ID = 7079;
 
     public static DimensionalRiftManager getInstance()
     {

@@ -81,6 +81,33 @@ public class L2NpcInstance extends L2Npc
 
 		int npcId = getTemplate().npcId;
 
+		if (npcId == 32611)
+		{
+			L2SkillLearn[] skills = SkillTreeTable.getInstance().getAvailableSpecialSkills(player);
+			AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.SkillType.Special);
+			
+			int counts = 0;
+
+	        for (L2SkillLearn s : skills)
+			{
+				L2Skill sk = SkillTable.getInstance().getInfo(s.getId(), s.getLevel());
+
+				if (sk == null)
+					continue;
+
+				counts++;
+				asl.addSkill(s.getId(), s.getLevel(), s.getLevel(), 0, 1);
+			}
+
+			if (counts == 0) // No more skills to learn, come back when you level.
+
+			    player.sendPacket(new SystemMessage(SystemMessageId.NO_MORE_SKILLS_TO_LEARN));
+			else
+			    player.sendPacket(asl);
+
+			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
 		if (_classesToTeach == null)
 		{
 			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());

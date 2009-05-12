@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
+
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.communitybbs.BB.Forum;
@@ -30,6 +32,7 @@ import net.sf.l2j.gameserver.communitybbs.Manager.ForumsBBSManager;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
+import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -158,6 +161,10 @@ public class L2Clan
 
     private int _reputationScore = 0;
     private int _rank = 0;
+
+    private String _notice;
+    private boolean _noticeEnabled = false;
+    private static final int MAX_NOTICE_LENGTH = 8192;
 
     /**
      * Called if a clan is referenced only by id.
@@ -409,6 +416,13 @@ public class L2Clan
 			// remove Clanskills from Player
 			for(L2Skill skill: player.getClan().getAllSkills())
 				player.removeSkill(skill,false);
+			// remove Residential skills
+			if (player.getClan().getHasCastle() > 0)
+				CastleManager.getInstance().getCastleByOwner(player.getClan()).removeResidentialSkills(player);
+			if (player.getClan().getHasFort() > 0)
+				FortManager.getInstance().getFortByOwner(player.getClan()).removeResidentialSkills(player);
+			player.sendSkillList();
+
 			player.setClan(null);
 			player.setClanJoinExpiryTime(clanJoinExpiryTime);
 			player.setPledgeClass(exMember.calculatePledgeClass(player));
@@ -667,7 +681,7 @@ public class L2Clan
 
 	public void updateClanInDB()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -703,7 +717,7 @@ public class L2Clan
 
 	public void store()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -735,7 +749,7 @@ public class L2Clan
 
     private void removeMemberInDatabase(L2ClanMember member, long clanJoinExpiryTime, long clanCreateExpiryTime)
     {
-        java.sql.Connection con = null;
+        Connection con = null;
         try
         {
             con = L2DatabaseFactory.getInstance().getConnection();
@@ -771,7 +785,7 @@ public class L2Clan
     @SuppressWarnings("unused")
     private void updateWarsInDB()
     {
-        java.sql.Connection con = null;
+        Connection con = null;
         try
         {
             con = L2DatabaseFactory.getInstance().getConnection();
@@ -803,7 +817,7 @@ public class L2Clan
     private void restore()
     {
         //restorewars();
-    	java.sql.Connection con = null;
+    	Connection con = null;
         try
         {
             L2ClanMember member;
@@ -875,6 +889,7 @@ public class L2Clan
             restoreSubPledges();
             restoreRankPrivs();
             restoreSkills();
+            restoreNotice();
         }
         catch (Exception e)
         {
@@ -886,9 +901,113 @@ public class L2Clan
         }
     }
 
+    private void restoreNotice()
+    {
+    	Connection con = null;
+    	try
+    	{
+    		con = L2DatabaseFactory.getInstance().getConnection();
+    		PreparedStatement statement = con.prepareStatement("SELECT enabled,notice FROM clan_notices WHERE clan_id=?");
+    		statement.setInt(1, getClanId());
+    		ResultSet noticeData = statement.executeQuery();
+
+    		while (noticeData.next())
+    		{
+    			_noticeEnabled = noticeData.getBoolean("enabled");
+    			_notice = noticeData.getString("notice");
+    		}
+
+    		noticeData.close();
+    		statement.close();
+    	}
+    	catch (Exception e)
+    	{
+    		_log.log(Level.SEVERE, "Error restoring clan notice.", e);
+    	}
+    	finally
+    	{
+    		try
+    		{
+    			con.close();
+    		}
+    		catch (Exception e)
+    		{
+    		}
+    	}
+    	
+    }
+
+    private void storeNotice(String notice, boolean enabled)
+    {
+    	if (notice == null)
+    		notice = "";
+
+    	if (notice.length() > MAX_NOTICE_LENGTH)
+    		notice = notice.substring(0, MAX_NOTICE_LENGTH - 1);
+
+    	Connection con = null;
+    	try
+    	{
+    		con = L2DatabaseFactory.getInstance().getConnection();
+    		PreparedStatement statement = con.prepareStatement("INSERT INTO clan_notices (clan_id,notice,enabled) values (?,?,?) ON DUPLICATE KEY UPDATE notice=?,enabled=?");
+    		statement.setInt(1, getClanId());
+    		statement.setString(2, notice);
+    		if (enabled)
+    			statement.setString(3, "true");
+    		else
+    			statement.setString(3, "false");
+    		statement.setString(4, notice);
+    		if (enabled)
+    			statement.setString(5, "true");
+    		else
+    			statement.setString(5, "false");
+    		statement.execute();
+    		statement.close();
+    	}
+    	catch (Exception e)
+    	{
+    		_log.warning("Error could not store clan notice: " + e);
+    	}
+    	finally
+    	{
+    		try
+    		{
+    			con.close();
+    		}
+    		catch (Exception e)
+    		{
+    		}
+    	}
+
+    	_notice = notice;
+    	_noticeEnabled = enabled;
+    }
+
+    public void setNoticeEnabled(boolean enabled)
+    {
+    	storeNotice(_notice, enabled);
+    }
+
+    public void setNotice(String notice)
+    {
+    	storeNotice(notice, _noticeEnabled);
+    }
+
+    public boolean isNoticeEnabled()
+    {
+    	return _noticeEnabled;
+    }
+
+    public String getNotice()
+    {
+    	if (_notice == null)
+    		return "";
+    	return _notice;
+    }
+
     private void restoreSkills()
     {
-        java.sql.Connection con = null;
+        Connection con = null;
 
         try
         {
@@ -951,7 +1070,7 @@ public class L2Clan
     public L2Skill addNewSkill(L2Skill newSkill)
     {
         L2Skill oldSkill    = null;
-        java.sql.Connection con = null;
+        Connection con = null;
 
         if (newSkill != null)
         {
@@ -1298,7 +1417,7 @@ public class L2Clan
 
     private void restoreSubPledges()
     {
-        java.sql.Connection con = null;
+        Connection con = null;
 
         try
         {
@@ -1395,7 +1514,7 @@ public class L2Clan
         }
         else
         {
-	        java.sql.Connection con = null;
+	        Connection con = null;
 	        try
 	        {
 	            con = L2DatabaseFactory.getInstance().getConnection();
@@ -1472,7 +1591,7 @@ public class L2Clan
 
     public void updateSubPledgeInDB(int pledgeType)
     {
- 	   java.sql.Connection con = null;
+ 	   Connection con = null;
  	   try
  	   {
  		   con = L2DatabaseFactory.getInstance().getConnection();
@@ -1497,7 +1616,7 @@ public class L2Clan
 
     private void restoreRankPrivs()
     {
-        java.sql.Connection con = null;
+        Connection con = null;
 
         try
         {
@@ -1559,7 +1678,7 @@ public class L2Clan
             _privs.get(rank).setPrivs(privs);
 
 
-            java.sql.Connection con = null;
+            Connection con = null;
 
             try
             {
@@ -1601,7 +1720,7 @@ public class L2Clan
         {
             _privs.put(rank, new RankPrivs(rank, 0, privs));
 
-            java.sql.Connection con = null;
+            Connection con = null;
 
             try
             {
@@ -1683,6 +1802,7 @@ public class L2Clan
     	_reputationScore = value;
     	if(_reputationScore > 100000000) _reputationScore = 100000000;
     	if(_reputationScore < -100000000) _reputationScore = -100000000;
+    	broadcastToOnlineMembers(new PledgeShowInfoUpdate(this));
     	if (save) updateClanInDB();
     }
 
@@ -1711,7 +1831,7 @@ public class L2Clan
 
         if(storeInDb)
         {
-        	java.sql.Connection con = null;
+        	Connection con = null;
         	try
         	{
         		con = L2DatabaseFactory.getInstance().getConnection();
@@ -2056,7 +2176,7 @@ public class L2Clan
 		updateClanInDB();
 
         // The clan leader should take the XP penalty of a full death.
-        player.deathPenalty(false, false);
+        player.deathPenalty(false, false, false);
     }
 
     public void levelUpClan(L2PcInstance player)
@@ -2085,7 +2205,7 @@ public class L2Clan
                     {
 	                    player.setSp(player.getSp() - 20000);
 	                    SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
-	                    sp.addNumber(30000);
+	                    sp.addNumber(20000);
 	                    player.sendPacket(sp);
                         sp = null;
 	                    increaseClanLevel = true;
@@ -2102,7 +2222,7 @@ public class L2Clan
                     {
 	                    player.setSp(player.getSp() - 100000);
 	                    SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
-	                    sp.addNumber(150000);
+	                    sp.addNumber(100000);
 	                    player.sendPacket(sp);
                         sp = null;
 	                    increaseClanLevel = true;
@@ -2120,7 +2240,7 @@ public class L2Clan
                     {
 	                    player.setSp(player.getSp() - 350000);
 	                    SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
-	                    sp.addNumber(500000);
+	                    sp.addNumber(350000);
 	                    player.sendPacket(sp);
                         sp = null;
                         SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
@@ -2143,7 +2263,7 @@ public class L2Clan
                 	{
 	                    player.setSp(player.getSp() - 1000000);
 	                    SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
-	                    sp.addNumber(1400000);
+	                    sp.addNumber(1000000);
 	                    player.sendPacket(sp);
                         sp = null;
                         SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
@@ -2166,12 +2286,12 @@ public class L2Clan
                 	{
                 		player.setSp(player.getSp() - 2500000);
 	                    SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
-	                    sp.addNumber(3500000);
+	                    sp.addNumber(2500000);
 	                    player.sendPacket(sp);
                         sp = null;
                         SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
                         sm.addItemName(3870);
-                        sm.addNumber(1);
+                        sm.addItemNumber(1);
                         player.sendPacket(sm);
                         sm = null;
                         increaseClanLevel = true;
@@ -2250,7 +2370,7 @@ public class L2Clan
                 		cr = null;
                 		SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
                         sm.addItemName(9911);
-                        sm.addNumber(5);
+                        sm.addItemNumber(5);
                         player.sendPacket(sm);
                 		increaseClanLevel = true;
                 	}
@@ -2280,7 +2400,7 @@ public class L2Clan
 
     public void changeLevel(int level)
     {
-        java.sql.Connection con = null;
+        Connection con = null;
         try
         {
             con = L2DatabaseFactory.getInstance().getConnection();
@@ -2289,8 +2409,6 @@ public class L2Clan
             statement.setInt(2, getClanId());
             statement.execute();
             statement.close();
-
-            con.close();
         }
         catch (Exception e)
         {

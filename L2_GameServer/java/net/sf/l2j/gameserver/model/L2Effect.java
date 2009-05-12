@@ -23,20 +23,24 @@ import java.util.logging.Logger;
 import javolution.util.FastList;
 import net.sf.l2j.gameserver.GameTimeController;
 import net.sf.l2j.gameserver.ThreadPoolManager;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.AbnormalStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadSpelledInfo;
+import net.sf.l2j.gameserver.network.serverpackets.MagicSkillLaunched;
+import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.network.serverpackets.PartySpelled;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
-import net.sf.l2j.gameserver.skills.effects.EffectTemplate;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.skills.funcs.FuncTemplate;
 import net.sf.l2j.gameserver.skills.funcs.Lambda;
+import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
+import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
 /**
  * This class ...
@@ -141,6 +145,16 @@ public abstract class L2Effect
 	private boolean _inUse = false;
 	private boolean _startConditionsCorrect = true;
 	
+	/**
+	 * For special behavior. See Formulas.calcEffectSuccess
+	 */
+	private double _effectPower;
+	private L2SkillType _effectSkillType;
+	
+	/**
+	 * <font color="FF0000"><b>WARNING: scheduleEffect nolonger inside constructor</b></font><br>
+	 * So you must call it explicitly
+	 */
 	protected L2Effect(Env env, EffectTemplate template)
 	{
 		_state = EffectState.CREATED;
@@ -174,13 +188,23 @@ public abstract class L2Effect
 		_periodStartTicks = GameTimeController.getGameTicks();
 		_periodfirsttime = 0;
 		_icon = template.icon;
-		scheduleEffect();
+		_effectPower = template.effectPower;
+		_effectSkillType = template.effectType;
+		
+		/*
+		 * Commented out by DrHouse: 
+		 * scheduleEffect can call onStart before effect is completly
+		 * initialized on constructor (child classes constructor)
+		 */
+		//scheduleEffect();
 	}
 	
 	/**
 	 * Special constructor to "steal" buffs. Must be implemented on
-	 * every child class that can be stolen.
-	 *
+	 * every child class that can be stolen.<br><br>
+	 * 
+	 * <font color="FF0000"><b>WARNING: scheduleEffect nolonger inside constructor</b></font>
+	 * <br>So you must call it explicitly
 	 * @param env
 	 * @param effect
 	 */
@@ -202,7 +226,13 @@ public abstract class L2Effect
 		_periodStartTicks = effect.getPeriodStartTicks();
 		_periodfirsttime = effect.getPeriodfirsttime();
 		_icon = _template.icon;
-		scheduleEffect();
+		
+		/*
+		 * Commented out by DrHouse: 
+		 * scheduleEffect can call onStart before effect is completly
+		 * initialized on constructor (child classes constructor)
+		 */
+		//scheduleEffect();
 	}
 	
 	public int getCount()
@@ -325,11 +355,16 @@ public abstract class L2Effect
 	
 	private synchronized void startEffectTask(int duration)
 	{
-		stopEffectTask();
-		_currentTask = new EffectTask(duration, -1);
-		_currentFuture = ThreadPoolManager.getInstance().scheduleEffect(_currentTask, duration);
+		if (duration >= 0)
+		{
+			stopEffectTask();
+			_currentTask = new EffectTask(duration, -1);
+			_currentFuture = ThreadPoolManager.getInstance().scheduleEffect(_currentTask, duration);
+		}
 		if (_state == EffectState.ACTING)
+		{
 			_effected.addEffect(this);
+		}
 	}
 	
 	private synchronized void startEffectTaskAtFixedRate(int delay, int rate)
@@ -433,7 +468,7 @@ public abstract class L2Effect
 		{
 			_state = EffectState.ACTING;
 			
-			if (_skill.isPvpSkill())
+			if (_skill.isPvpSkill() && _icon && getEffected() instanceof L2PcInstance)
 			{
 				SystemMessage smsg = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
 				smsg.addSkillName(_skill);
@@ -445,7 +480,7 @@ public abstract class L2Effect
 				startEffectTaskAtFixedRate(5, _period * 1000);
 				return;
 			}
-			if (_period > 0)
+			if (_period > 0 || _period == -1)
 			{
 				startEffectTask(_period * 1000);
 				return;
@@ -479,7 +514,7 @@ public abstract class L2Effect
 					onExit();
 			
 			//If the time left is equal to zero, send the message
-			if (_count == 0 && getEffected() != null)
+			if (_count == 0 && _icon && getEffected() instanceof L2PcInstance)
 			{
 				SystemMessage smsg3 = new SystemMessage(SystemMessageId.S1_HAS_WORN_OFF);
 				smsg3.addSkillName(_skill);
@@ -487,6 +522,17 @@ public abstract class L2Effect
 			}
 			// Stop the task of the L2Effect, remove it and update client magic icon
 			stopEffectTask();
+			
+			if (_skill.getAfterEffectId() > 0)
+			{
+				L2Skill skill = SkillTable.getInstance().getInfo(_skill.getAfterEffectId(), _skill.getAfterEffectLvl());
+				if (skill != null)
+				{
+					getEffected().broadcastPacket(new MagicSkillUse(_effected, skill.getId(), skill.getLevel(), 0, 0));
+					getEffected().broadcastPacket(new MagicSkillLaunched(_effected, skill.getId(), skill.getLevel()));
+					skill.getEffects(getEffected(), getEffected());
+				}
+			}
 		}
 	}
 	
@@ -514,44 +560,44 @@ public abstract class L2Effect
 	{
 		EffectTask task = _currentTask;
 		ScheduledFuture<?> future = _currentFuture;
-		if (task == null || future == null)
-			return;
 		if (_state == EffectState.FINISHING || _state == EffectState.CREATED)
 			return;
 		L2Skill sk = getSkill();
-		if (task._rate > 0)
+		if (task != null && task._rate > 0)
 		{
 			if (sk.isPotion())
 				mi.addEffect(sk.getId(), getLevel(), sk.getBuffDuration() - (getTaskTime() * 1000));
 			else
 				mi.addEffect(sk.getId(), getLevel(), -1);
 		}
-		else
+		else if (future != null)
 			mi.addEffect(sk.getId(), getLevel(), (int) future.getDelay(TimeUnit.MILLISECONDS));
+		else if (_period == -1)
+			mi.addEffect(sk.getId(), getLevel(), _period);
 	}
 	
 	public final void addPartySpelledIcon(PartySpelled ps)
 	{
-		EffectTask task = _currentTask;
 		ScheduledFuture<?> future = _currentFuture;
-		if (task == null || future == null)
-			return;
 		if (_state == EffectState.FINISHING || _state == EffectState.CREATED)
 			return;
 		L2Skill sk = getSkill();
-		ps.addPartySpelledEffect(sk.getId(), getLevel(), (int) future.getDelay(TimeUnit.MILLISECONDS));
+		if (future != null)
+			ps.addPartySpelledEffect(sk.getId(), getLevel(), (int) future.getDelay(TimeUnit.MILLISECONDS));
+		else if (_period == -1)
+			ps.addPartySpelledEffect(sk.getId(), getLevel(), _period);
 	}
 	
 	public final void addOlympiadSpelledIcon(ExOlympiadSpelledInfo os)
 	{
-		EffectTask task = _currentTask;
 		ScheduledFuture<?> future = _currentFuture;
-		if (task == null || future == null)
-			return;
 		if (_state == EffectState.FINISHING || _state == EffectState.CREATED)
 			return;
 		L2Skill sk = getSkill();
-		os.addEffect(sk.getId(), getLevel(), (int) future.getDelay(TimeUnit.MILLISECONDS));
+		if (future != null)
+			os.addEffect(sk.getId(), getLevel(), (int) future.getDelay(TimeUnit.MILLISECONDS));
+		else if (_period == -1)
+			os.addEffect(sk.getId(), getLevel(), _period);
 	}
 	
 	public int getLevel()
@@ -582,5 +628,15 @@ public abstract class L2Effect
 	public EffectTemplate getEffectTemplate()
 	{
 		return _template;
+	}
+	
+	public double getEffectPower()
+	{
+		return _effectPower;
+	}
+	
+	public L2SkillType getSkillType()
+	{
+		return _effectSkillType;
 	}
 }

@@ -95,24 +95,24 @@ public class L2OlympiadManagerInstance extends L2NpcInstance
                             "<center>" +
                             "<img src=\"L2UI.SquareWhite\" width=270 height=1><img src=\"L2UI.SquareBlank\" width=1 height=3>" +
                             "<table width=270 border=0 bgcolor=\"000000\">" +
-                            "<tr>" +
-                            "<td align=\"left\">General</td>" +
-                            "<td align=\"right\">",
-                            String.valueOf(classed),
-                            "</td>" +
-                            "</tr>" +
-                            "<tr>" +
-                            "<td align=\"left\">Not class-defined</td>" +
-                            "<td align=\"right\">",
-                            String.valueOf(nonClassed),
-                            "</td>" +
-                            "</tr>" +
-                            "</table><br>" +
+                            "<tr><td fixwidth=100>Class (Individual)</td>"+
+                            "<td fixwidth=170 align=right>"+
+                            (classed < 100 ? "Fewer than 100" : "More than 100")+
+                            "</td></tr>" +
+                            "<tr><td fixwidth=100>Class-Irrelevant (Team)</td>" +
+                            "<td fixwidth=170 align=right>Fewer than 100</td>", // once team (3vs3) will be supported, unhardcode Fewer than 100 as its done with others
+                            "</td></tr>" +
+                            "<tr><td fixwidth=100>Class-Irrelevant (Individual)</td>"+
+                            "<td fixwidth=170 align=right>"+
+                            (nonClassed < 100 ? "Fewer than 100" : "More than 100")+
+                            "</td></tr></table>" +
                             "<img src=\"L2UI.SquareWhite\" width=270 height=1> <img src=\"L2UI.SquareBlank\" width=1 height=3>" +
+                            "<table width=270 border=0 cellpadding=0 cellspacing=0>"+
+                            "<tr><td width=90 height=20 align=center>"+
                             "<button value=\"Back\" action=\"bypass -h npc_",
                             String.valueOf(getObjectId()),
                             "_OlympiadDesc 2a\" " +
-                            "width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center>" +
+                            "width=80 height=27 back=\"L2UI_CT1.Button_DF_Down\" fore=\"L2UI_CT1.Button_DF\"></td></tr></table></center>" +
                             "</body></html>"
                             );
                     reply.setHtml(replyMSG);
@@ -155,23 +155,52 @@ public class L2OlympiadManagerInstance extends L2NpcInstance
                         player.sendPacket(iu);
 
                         SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_ITEM);
-                        sm.addNumber(passes);
+                        sm.addItemNumber(passes);
                         sm.addItemName(item);
                         player.sendPacket(sm);
                     }
                     else
                     {
-                        player.sendMessage("Not enough points, or not currently in Valdation Period");
-                        //TODO Send HTML packet "Saying not enough olympiad points.
+                    	reply = new NpcHtmlMessage(getObjectId());
+                        final String replyMSG = StringUtil.concat(
+                                "<html><body>Grand Olympiad Manager:<br>" +
+                                "I'm sorry. You do not have enough points to obtain Olympiad Tokens. Better luck next time.<br>",
+                                "<a action=\"bypass -h npc_",
+                                String.valueOf(getObjectId()),
+                                "_OlympiadDesc 2a\">Return</a>" +
+                                "</body></html>"
+                                );
+                        reply.setHtml(replyMSG);
+                        player.sendPacket(reply);
                     }
                     break;
                 case 7:
                 	L2Multisell.getInstance().separateAndSend(102, player, false, getCastle().getTaxRate());
                     break;
-                    default:
+                case 9:
+                	L2Multisell.getInstance().separateAndSend(103, player, false, getCastle().getTaxRate());
+                    break;
+                case 8:
+                    int point = Olympiad.getInstance().getNoblePoints(player.getObjectId());
+                    if (point >= 0) {
+                        reply = new NpcHtmlMessage(getObjectId());
+                        final String replyMSG = StringUtil.concat(
+                                "<html><body>" +
+                                "Your Grand Olympiad Score from the previous period is ",
+                                String.valueOf(point),
+                                " point(s). <br>" +
+                                "<a action=\"bypass -h npc_",
+                                String.valueOf(getObjectId()),
+                                "_OlympiadDesc 2a\">Return</a>" +
+                                "</body></html>"
+                                );
+                        reply.setHtml(replyMSG);
+                        player.sendPacket(reply);
+                    }
+                    break;
+                default:
                         _logOlymp.warning("Olympiad System: Couldnt send packet for request " + val);
                     break;
-
             }
         }
         else if (command.startsWith("OlyBuff"))
@@ -246,7 +275,7 @@ public class L2OlympiadManagerInstance extends L2NpcInstance
                     	if (matches.containsKey(i)) {
                         	title = matches.get(i);
                         } else {
-                        	title = "Initial State";
+                        	title = "&$906;"; // initial state
                         }
 
                         StringUtil.append(replyMSG,
@@ -294,10 +323,10 @@ public class L2OlympiadManagerInstance extends L2NpcInstance
                             for (String name : names) {
                                 StringUtil.append(replyMSG,
                                         "<tr>" +
-                                        "<td align=\"left\">",
+                                        "<td fixwidth=100 align=center>",
                                         String.valueOf(index++),
                                         "</td>" +
-                                        "<td align=\"right\">",
+                                        "<td fixwidth=170 align=center>",
                                         name,
                                         "</td>" +
                                         "</tr>");
@@ -308,9 +337,11 @@ public class L2OlympiadManagerInstance extends L2NpcInstance
 
                         StringUtil.append(replyMSG,
                                 "<img src=\"L2UI.SquareWhite\" width=270 height=1> <img src=\"L2UI.SquareBlank\" width=1 height=3>" +
+                                "<table width=270 border=0 cellpadding=0 cellspacing=0>"+
+                                "<tr><td width=90 height=20 align=center>"+
                                 "<button value=\"Back\" action=\"bypass -h npc_",
                                 String.valueOf(getObjectId()),
-                                "_OlympiadDesc 3a\" width=80 height=26 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center>" +
+                                "_OlympiadDesc 3a\" width=80 height=27 back=\"L2UI_CT1.Button_DF_Down\" fore=\"L2UI_CT1.Button_DF\"></td></tr></table></center>" +
                                 "</body></html>");
 
                         reply.setHtml(replyMSG.toString());

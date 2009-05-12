@@ -47,7 +47,7 @@ public final class L2World
     public static final int SHIFT_BY = 12;
 
     /** Map dimensions */
-    public static final int MAP_MIN_X = -163840;
+    public static final int MAP_MIN_X = -327680;
     public static final int MAP_MAX_X = 229376;
     public static final int MAP_MIN_Y = -262144;
     public static final int MAP_MAX_Y = 294912;

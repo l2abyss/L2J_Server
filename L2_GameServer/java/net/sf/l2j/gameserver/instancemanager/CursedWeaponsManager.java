@@ -185,7 +185,7 @@ public class CursedWeaponsManager
 	{
     	if (Config.DEBUG)
     		_log.info("  Restoring ... ");
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			// Retrieve the L2PcInstance from the characters table of the database
@@ -236,7 +236,7 @@ public class CursedWeaponsManager
     	if (Config.DEBUG)
     		_log.info("  Checking players ... ");
 
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			// Retrieve the L2PcInstance from the characters table of the database
@@ -304,8 +304,6 @@ public class CursedWeaponsManager
 					statement.close();
 				} catch (SQLException sqlE)
 				{}
-				// close the statement to avoid multiply prepared statement errors in following iterations.
-    			try { con.close(); } catch (Exception e) {}
 			}
 		}
 		catch (Exception e)

@@ -42,6 +42,8 @@ import net.sf.l2j.gameserver.network.serverpackets.AcquireSkillDone;
 import net.sf.l2j.gameserver.network.serverpackets.AcquireSkillList;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
+import net.sf.l2j.gameserver.network.serverpackets.MagicSkillLaunched;
+import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
@@ -150,6 +152,8 @@ public final class L2VillageMasterInstance extends L2NpcInstance
                 return;
             }
             player.getClan().levelUpClan(player);
+            player.broadcastPacket(new MagicSkillUse(player, 5103, 1, 0, 0));
+            player.broadcastPacket(new MagicSkillLaunched(player, 5103, 1));
         }
         else if (actualCommand.equalsIgnoreCase("learn_clan_skills"))
         {
@@ -573,7 +577,7 @@ public final class L2VillageMasterInstance extends L2NpcInstance
         ClanTable.getInstance().scheduleRemoveClan(clan.getClanId());
 
         // The clan leader should take the XP penalty of a full death.
-        player.deathPenalty(false, false);
+        player.deathPenalty(false, false, false);
     }
 
     public void recoverClan(L2PcInstance player, int clanId)
@@ -905,7 +909,6 @@ public final class L2VillageMasterInstance extends L2NpcInstance
             player.sendPacket(ActionFailed.STATIC_PACKET);
         	return;
         }
-        	
 
         L2PledgeSkillLearn[] skills = SkillTreeTable.getInstance().getAvailablePledgeSkills(player);
         AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.SkillType.Clan);
@@ -914,9 +917,10 @@ public final class L2VillageMasterInstance extends L2NpcInstance
         for (L2PledgeSkillLearn s: skills)
         {
             int cost = s.getRepCost();
+            int itemCount = s.getItemCount();
             counts++;
 
-            asl.addSkill(s.getId(), s.getLevel(), s.getLevel(), cost, 0);
+            asl.addSkill(s.getId(), s.getLevel(), s.getLevel(), cost, itemCount);
         }
 
         if (counts == 0)

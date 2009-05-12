@@ -26,7 +26,7 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
  *
  * @version $Revision: 1.20.4.6 $ $Date: 2005/04/06 16:13:39 $
  */
-public final class L2MinionInstance extends L2MonsterInstance
+public class L2MinionInstance extends L2MonsterInstance
 {
 	//private static Logger _log = Logger.getLogger(L2RaidMinionInstance.class.getName());
 
@@ -60,13 +60,13 @@ public final class L2MinionInstance extends L2MonsterInstance
 	@Override
 	public void onSpawn()
 	{
-		super.onSpawn();
-		// Notify Leader that Minion has Spawned
-		getLeader().notifyMinionSpawned(this);
 		if (getLeader().isRaid())
 		{
 			setIsRaidMinion(true);
 		}
+		super.onSpawn();
+		// Notify Leader that Minion has Spawned
+		getLeader().notifyMinionSpawned(this);
 		// check the region where this mob is, do not activate the AI if region is inactive.
 		L2WorldRegion region = L2World.getInstance().getRegion(getX(),getY());
 		if ((region !=null) && (!region.isActive()))

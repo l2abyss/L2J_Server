@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Map;
@@ -76,7 +77,7 @@ public class ShortCuts
         if (oldShortCut != null)
             deleteShortCutFromDb(oldShortCut);
 
-        java.sql.Connection con = null;
+        Connection con = null;
 
         try
         {
@@ -152,7 +153,7 @@ public class ShortCuts
      */
     private void deleteShortCutFromDb(L2ShortCut shortcut)
     {
-        java.sql.Connection con = null;
+        Connection con = null;
 
         try
         {
@@ -179,7 +180,7 @@ public class ShortCuts
     public void restore()
     {
         _shortCuts.clear();
-        java.sql.Connection con = null;
+        Connection con = null;
 
         try
         {

@@ -41,14 +41,14 @@ public class TradeList
         private int _objectId;
         private L2Item _item;
         private int _enchant;
-        private int _count;
+        private long _count;
         private int _price;
  
         private int _elemAtkType = -2;
         private int _elemAtkPower = 0;
         private int[] _elemDefAttr = {0, 0, 0, 0, 0, 0};
 
-        public TradeItem(L2ItemInstance item, int count, int price)
+        public TradeItem(L2ItemInstance item, long count, int price)
         {
             _objectId = item.getObjectId();
             _item = item.getItem();
@@ -62,7 +62,7 @@ public class TradeList
                 _elemDefAttr[i] = item.getElementDefAttr(i);
         }
 
-        public TradeItem(L2Item item, int count, int price)
+        public TradeItem(L2Item item, long count, int price)
         {
             _objectId = 0;
             _item = item;
@@ -71,7 +71,7 @@ public class TradeList
             _price = price;
         }
 
-        public TradeItem(TradeItem item, int count, int price)
+        public TradeItem(TradeItem item, long count, int price)
         {
             _objectId = item.getObjectId();
             _item = item.getItem();
@@ -110,12 +110,12 @@ public class TradeList
             return _enchant;
         }
 
-        public void setCount(int count)
+        public void setCount(long count)
         {
             _count = count;
         }
 
-        public int getCount()
+        public long getCount()
         {
             return _count;
         }
@@ -292,7 +292,7 @@ public class TradeList
      * @param count : int
      * @return
      */
-    public synchronized TradeItem addItem(int objectId, int count)
+    public synchronized TradeItem addItem(int objectId, long count)
     {
         return addItem(objectId, count, 0);
     }
@@ -304,7 +304,7 @@ public class TradeList
      * @param price : int
      * @return
      */
-    public synchronized TradeItem addItem(int objectId, int count, int price)
+    public synchronized TradeItem addItem(int objectId, long count, int price)
     {
         if (isLocked())
         {
@@ -387,7 +387,7 @@ public class TradeList
      * @param count : int
      * @return
      */
-    public synchronized TradeItem removeItem(int objectId, int itemId, int count)
+    public synchronized TradeItem removeItem(int objectId, int itemId, long count)
     {
         if (isLocked())
         {
@@ -740,13 +740,13 @@ public class TradeList
                 SystemMessage msg = new SystemMessage(SystemMessageId.C1_PURCHASED_S3_S2_S);
                 msg.addString(player.getName());
                 msg.addItemName(newItem);
-                msg.addNumber(item.getCount());
+                msg.addItemNumber(item.getCount());
                 _owner.sendPacket(msg);
 
                 msg = new SystemMessage(SystemMessageId.PURCHASED_S3_S2_S_FROM_C1);
                 msg.addString(_owner.getName());
                 msg.addItemName(newItem);
-                msg.addNumber(item.getCount());
+                msg.addItemNumber(item.getCount());
                 player.sendPacket(msg);
             }
             else
@@ -773,7 +773,7 @@ public class TradeList
      * Sell items to this PrivateStore list
      * @return : boolean true if success
      */
-    public synchronized boolean privateStoreSell(L2PcInstance player, ItemRequest[] items, int price)
+    public synchronized boolean privateStoreSell(L2PcInstance player, ItemRequest[] items)
     {
         if (_locked) return false;
 
@@ -801,12 +801,32 @@ public class TradeList
         InventoryUpdate ownerIU = new InventoryUpdate();
         InventoryUpdate playerIU = new InventoryUpdate();
 
+        int totalprice = 0;
+        
         // Transfer items
         for (ItemRequest item : items)
         {
             // Check if requested item is sill on the list and adjust its count
             adjustItemRequestByItemId(item);
             if (item.getCount() == 0) continue;
+            
+            int price = -1;
+            
+            for (TradeItem ti : _items)
+            {
+            	if (ti.getItem().getItemId() == item.getItemId())
+            	{
+            		if (ti.getPrice() == item.getPrice())
+            			price = ti.getPrice();
+            		
+            		break;
+            	}
+            }
+            
+            if (price == -1)
+            	continue;
+            
+            totalprice += price*item.getCount();
 
             // Check if requested item is available for manipulation
             L2ItemInstance oldItem = player.checkItemManipulation(item.getObjectId(), item.getCount(), "sell");
@@ -829,13 +849,13 @@ public class TradeList
                 SystemMessage msg = new SystemMessage(SystemMessageId.PURCHASED_S3_S2_S_FROM_C1);
                 msg.addString(player.getName());
                 msg.addItemName(newItem);
-                msg.addNumber(item.getCount());
+                msg.addItemNumber(item.getCount());
                 _owner.sendPacket(msg);
 
                 msg = new SystemMessage(SystemMessageId.C1_PURCHASED_S3_S2_S);
                 msg.addString(_owner.getName());
                 msg.addItemName(newItem);
-                msg.addNumber(item.getCount());
+                msg.addItemNumber(item.getCount());
                 player.sendPacket(msg);
             }
             else
@@ -853,11 +873,11 @@ public class TradeList
         }
 
         // Transfer adena
-        if (price > ownerInventory.getAdena()) return false;
+        if (totalprice > ownerInventory.getAdena()) return false;
         L2ItemInstance adenaItem = ownerInventory.getAdenaInstance();
-        ownerInventory.reduceAdena("PrivateStore", price, _owner, player);
+        ownerInventory.reduceAdena("PrivateStore", totalprice, _owner, player);
         ownerIU.addItem(adenaItem);
-        playerInventory.addAdena("PrivateStore", price, player, _owner);
+        playerInventory.addAdena("PrivateStore", totalprice, player, _owner);
         playerIU.addItem(playerInventory.getAdenaInstance());
 
         // Send inventory update packet
