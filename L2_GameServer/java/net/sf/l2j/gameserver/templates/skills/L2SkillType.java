@@ -19,9 +19,7 @@ import java.lang.reflect.Constructor;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillAgathion;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillChangeWeapon;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillCharge;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillChargeDmg;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillChargeEffect;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillCreateItem;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillDecoy;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillDefault;
@@ -76,6 +74,7 @@ public enum L2SkillType
 	HEAL_PERCENT,
 	HEAL_STATIC,
 	COMBATPOINTHEAL,
+	CPHEAL_PERCENT,
 	CPHOT,
 	MANAHEAL,
 	MANA_BY_LEVEL,
@@ -124,6 +123,7 @@ public enum L2SkillType
 	CREATE_ITEM(L2SkillCreateItem.class),
 	SUMMON_TREASURE_KEY,
 	EXTRACTABLE,
+	LEARN_SKILL,
 	
 	// Summons
 	SUMMON(L2SkillSummon.class),
@@ -136,6 +136,7 @@ public enum L2SkillType
 	
 	// Cancel
 	CANCEL,
+	CANCEL_STATS,
 	CANCEL_DEBUFF,
 	MAGE_BANE,
 	WARRIOR_BANE,
@@ -148,8 +149,6 @@ public enum L2SkillType
 	FUSION,
 	
 	RESURRECT,
-	CHARGE(L2SkillCharge.class),
-	CHARGE_EFFECT(L2SkillChargeEffect.class),
 	CHARGEDAM(L2SkillChargeDmg.class),
 	MHOT,
 	DETECT_WEAKNESS,

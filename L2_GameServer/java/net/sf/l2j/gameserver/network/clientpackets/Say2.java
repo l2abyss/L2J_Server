@@ -110,10 +110,17 @@ public final class Say2 extends L2GameClientPacket
 			return;
 		}
 
+		// Even though the client can handle more characters than it's current limit allows, an overflow (critical error) happens if you pass a huge (1000+) message.
+		// April 27, 2009 - Verified on Gracia P2 & Final official client as 105
+		if (_text.length() > 105)
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.DONT_SPAM));
+			return;
+		}
+
 		if (activeChar.isCursedWeaponEquipped() && (_type == TRADE || _type == SHOUT))
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.SHOUT_AND_TRADE_CHAT_CANNOT_BE_USED_WHILE_POSSESSING_CURSED_WEAPON);
-			activeChar.sendPacket(sm);
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.SHOUT_AND_TRADE_CHAT_CANNOT_BE_USED_WHILE_POSSESSING_CURSED_WEAPON));
 			return;
 		}
 

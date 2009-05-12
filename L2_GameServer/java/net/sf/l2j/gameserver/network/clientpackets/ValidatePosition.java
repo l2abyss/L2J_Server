@@ -22,6 +22,7 @@ import net.sf.l2j.gameserver.Universe;
 import net.sf.l2j.gameserver.geoeditorcon.GeoEditorListener;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.serverpackets.ExValidateLocationInAirShip;
 import net.sf.l2j.gameserver.network.serverpackets.PartyMemberPosition;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocationInVehicle;
@@ -108,6 +109,10 @@ public class ValidatePosition extends L2GameClientPacket
         		{
         			sendPacket(new ValidateLocationInVehicle(activeChar));
         		}
+        		else if (activeChar.isInAirShip())
+        		{
+        			sendPacket(new ExValidateLocationInAirShip(activeChar));
+        		}
         		else
         		{
         			activeChar.sendPacket(new ValidateLocation(activeChar));
@@ -162,6 +167,10 @@ public class ValidatePosition extends L2GameClientPacket
             		if (activeChar.isInBoat())
             		{
             			sendPacket(new ValidateLocationInVehicle(activeChar));
+            		}
+            		else if (activeChar.isInAirShip())
+            		{
+            			sendPacket(new ExValidateLocationInAirShip(activeChar));
             		}
             		else
             		{

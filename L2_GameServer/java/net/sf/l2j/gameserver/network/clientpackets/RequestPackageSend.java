@@ -57,7 +57,7 @@ public final class RequestPackageSend extends L2GameClientPacket
 		for(int i = 0; i<_count; i++)
 		{
 			int id = readD(); //this is some id sent in PackageSendableList
-			int count = readD();
+			long count = readQ();
 			_items.add(new Item(id, count));
 		}
 	}
@@ -96,13 +96,13 @@ public final class RequestPackageSend extends L2GameClientPacket
 
         	// Freight price from config or normal price per item slot (30)
         	int fee = _count * Config.ALT_GAME_FREIGHT_PRICE;
-        	int currentAdena = player.getAdena();
+        	long currentAdena = player.getAdena();
         	int slots = 0;
 
         	for (Item i : _items)
         	{
         		int objectId = i.id;
-        		int count = i.count;
+        		long count = i.count;
 
         		// Check validity of requested item
         		L2ItemInstance item = player.checkItemManipulation(objectId, count, "deposit");
@@ -141,7 +141,7 @@ public final class RequestPackageSend extends L2GameClientPacket
         	for (Item i : _items)
         	{
         		int objectId = i.id;
-        		int count = i.count;
+        		long count = i.count;
 
         		// check for an invalid item
         		if (objectId == 0 && count == 0) continue;
@@ -197,9 +197,9 @@ public final class RequestPackageSend extends L2GameClientPacket
 	private class Item
 	{
 		public int id;
-		public int count;
+		public long count;
 
-		public Item(int i, int c)
+		public Item(int i, long c)
 		{
 			id = i;
 			count = c;

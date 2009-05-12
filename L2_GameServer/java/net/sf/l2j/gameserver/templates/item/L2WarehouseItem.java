@@ -32,7 +32,7 @@ public class L2WarehouseItem
 {
 	private L2Item _item;
 	private int _object;
-	private int _count;
+	private long _count;
 	private int _owner;
 	private int _enchant;
 	private int _grade;
@@ -48,6 +48,7 @@ public class L2WarehouseItem
 	{
 		0, 0, 0, 0, 0, 0
 	};
+	private int _time;
 	
 	public L2WarehouseItem(L2ItemInstance item)
 	{
@@ -67,6 +68,7 @@ public class L2WarehouseItem
 		else
 			_isAugmented = false;
 		_mana = item.getMana();
+		_time = item.isTimeLimitedItem() ? (int) (item.getRemainingTime()/1000) : -1;
 		
 		_elemAtkType = item.getAttackElementType();
 		_elemAtkPower = item.getAttackElementPower();
@@ -105,7 +107,7 @@ public class L2WarehouseItem
 	 * Returns the count
 	 * @return int
 	 */
-	public final int getCount()
+	public final long getCount()
 	{
 		return _count;
 	}
@@ -260,6 +262,10 @@ public class L2WarehouseItem
 		return _elemDefAttr[i];
 	}
 	
+	public int getTime()
+	{
+		return _time;
+	}
 	/**
 	 * Returns the name of the item
 	 * @return String

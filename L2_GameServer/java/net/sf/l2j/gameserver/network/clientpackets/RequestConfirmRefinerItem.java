@@ -91,26 +91,26 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 			case L2Item.CRYSTAL_C:
 				gemstoneCount = 20;
 				gemstoneItemId = GEMSTONE_D;
-				sm.addNumber(gemstoneCount);
+				sm.addItemNumber(gemstoneCount);
 				sm.addString("Gemstone D");
 				break;
 			case L2Item.CRYSTAL_B:
 				gemstoneCount = 30;
 				gemstoneItemId = GEMSTONE_D;
-				sm.addNumber(gemstoneCount);
+				sm.addItemNumber(gemstoneCount);
 				sm.addString("Gemstone D");
 				break;
 			case L2Item.CRYSTAL_A:
 				gemstoneCount = 20;
 				gemstoneItemId = GEMSTONE_C;
-				sm.addNumber(gemstoneCount);
+				sm.addItemNumber(gemstoneCount);
 				sm.addString("Gemstone C");
 				break;
 			case L2Item.CRYSTAL_S:
 			case L2Item.CRYSTAL_S80:
 				gemstoneCount = 25;
 				gemstoneItemId = GEMSTONE_C;
-				sm.addNumber(gemstoneCount);
+				sm.addItemNumber(gemstoneCount);
 				sm.addString("Gemstone C");
 				break;
 		}

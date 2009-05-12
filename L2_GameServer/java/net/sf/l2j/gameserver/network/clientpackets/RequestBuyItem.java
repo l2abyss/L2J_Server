@@ -24,12 +24,14 @@ import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2TradeList;
 import net.sf.l2j.gameserver.model.L2TradeList.L2TradeItem;
+import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2CastleChamberlainInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2ClanHallManagerInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FishermanInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MercManagerInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MerchantInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetManagerInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -68,7 +70,7 @@ public final class RequestBuyItem extends L2GameClientPacket
 		for (int i = 0; i < _count; i++)
 		{
 			int itemId   = readD(); _items[i * 2 + 0] = itemId;
-			long cnt      = readD();
+			long cnt      = readQ();
 			if (cnt > Integer.MAX_VALUE || cnt < 0)
 			{
 			    _count=0; _items = null;
@@ -109,7 +111,7 @@ public final class RequestBuyItem extends L2GameClientPacket
             {
         		htmlFolder = "fisherman";
             }
-            else if (target instanceof L2MerchantInstance)
+            else if (target instanceof L2MerchantInstance || target instanceof L2MerchantSummonInstance)
             {
                 htmlFolder = "merchant";
             }
@@ -127,10 +129,12 @@ public final class RequestBuyItem extends L2GameClientPacket
         	ok = false;
         }
 
-        L2MerchantInstance merchant = null;
+        L2Character merchant = null;
 
         if (ok)
-        	merchant = (L2MerchantInstance) target;
+        {
+        	merchant = (L2Character) target;
+        }
         else if (!ok && !player.isGM())
         {
         	player.sendMessage("Invalid Target: Seller must be targetted");
@@ -141,7 +145,11 @@ public final class RequestBuyItem extends L2GameClientPacket
 
         if (merchant != null)
         {
-        	List<L2TradeList> lists = TradeController.getInstance().getBuyListByNpcId(merchant.getNpcId());
+        	List<L2TradeList> lists;
+        	if (merchant instanceof L2MerchantSummonInstance)
+        		lists = TradeController.getInstance().getBuyListByNpcId(((L2MerchantSummonInstance)merchant).getNpcId());
+        	else
+        		lists = TradeController.getInstance().getBuyListByNpcId(((L2MerchantInstance)merchant).getNpcId());
 
         	if(!player.isGM() )
         	{
@@ -180,10 +188,10 @@ public final class RequestBuyItem extends L2GameClientPacket
 		}
 		double castleTaxRate = 0;
         double baseTaxRate = 0;
-		if (merchant != null) 
+		if (merchant != null && merchant instanceof L2MerchantInstance) 
         {
-            castleTaxRate = merchant.getMpc().getCastleTaxRate();
-            baseTaxRate = merchant.getMpc().getBaseTaxRate();
+            castleTaxRate = ((L2MerchantInstance)merchant).getMpc().getCastleTaxRate();
+            baseTaxRate = ((L2MerchantInstance)merchant).getMpc().getBaseTaxRate();
         }
 		long subTotal = 0;
 		int castleTax = 0;
@@ -196,7 +204,7 @@ public final class RequestBuyItem extends L2GameClientPacket
 		{
 			int itemId = _items[i * 2 + 0];
 			int count  = _items[i * 2 + 1];
-			int price = -1;
+			long price = -1;
 
             L2TradeItem tradeItem = list.getItemById(itemId);
 			if (tradeItem == null)
@@ -251,7 +259,7 @@ public final class RequestBuyItem extends L2GameClientPacket
                 }
             }
             
-			subTotal += (long)count * price;	// Before tax
+			subTotal += count * price;	// Before tax
 			castleTax = (int) (subTotal * castleTaxRate);
             baseTax = (int) (subTotal * baseTaxRate);
             if (subTotal + castleTax + baseTax > Integer.MAX_VALUE)
@@ -318,10 +326,15 @@ public final class RequestBuyItem extends L2GameClientPacket
 
 		if (merchant != null)
 		{
+			String html;
             // add to castle treasury
-            merchant.getCastle().addToTreasury(castleTax);
-            
-			String html = HtmCache.getInstance().getHtm("data/html/"+ htmlFolder +"/" + merchant.getNpcId() + "-bought.htm");
+			if (merchant instanceof L2MerchantInstance)
+			{
+				((L2MerchantInstance)merchant).getCastle().addToTreasury(castleTax);
+				html = HtmCache.getInstance().getHtm("data/html/"+ htmlFolder +"/" + ((L2MerchantInstance)merchant).getNpcId() + "-bought.htm");
+			}
+			else
+				html = HtmCache.getInstance().getHtm("data/html/"+ htmlFolder +"/" + ((L2MerchantSummonInstance)merchant).getNpcId() + "-bought.htm");
 
 			if (html != null)
 			{

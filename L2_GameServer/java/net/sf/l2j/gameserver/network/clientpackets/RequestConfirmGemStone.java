@@ -34,7 +34,7 @@ public final class RequestConfirmGemStone extends L2GameClientPacket
 	private int _targetItemObjId;
 	private int _refinerItemObjId;
 	private int _gemstoneItemObjId;
-	private int _gemstoneCount;
+	private long _gemstoneCount;
 
 
 	/**
@@ -47,7 +47,7 @@ public final class RequestConfirmGemStone extends L2GameClientPacket
 		_targetItemObjId = readD();
 		_refinerItemObjId = readD();
 		_gemstoneItemObjId = readD();
-		_gemstoneCount= readD();
+		_gemstoneCount= readQ();
 	}
 
 	/**
@@ -113,7 +113,7 @@ public final class RequestConfirmGemStone extends L2GameClientPacket
 				break;
 		}
 
-		activeChar.sendPacket(new ExPutCommissionResultForVariationMake(_gemstoneItemObjId, _gemstoneCount));
+		activeChar.sendPacket(new ExPutCommissionResultForVariationMake(_gemstoneItemObjId, _gemstoneCount, gemstoneItemId));
 		activeChar.sendPacket(new SystemMessage(SystemMessageId.PRESS_THE_AUGMENT_BUTTON_TO_BEGIN));
 	}
 

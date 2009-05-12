@@ -343,7 +343,7 @@ public final class L2Weapon extends L2Item
 			return _emptyEffectSet; // These skills should not work on RaidBoss
 		if (target.getFirstEffect(_skillsOnCrit.getId()) != null)
 			target.getFirstEffect(_skillsOnCrit.getId()).exit();
-		for (L2Effect e : _skillsOnCrit.getEffects(caster, target))
+		for (L2Effect e : _skillsOnCrit.getEffects(caster, target, new Env(shld, false, false, false)))
 			effects.add(e);
 		if (effects.isEmpty())
 			return _emptyEffectSet;

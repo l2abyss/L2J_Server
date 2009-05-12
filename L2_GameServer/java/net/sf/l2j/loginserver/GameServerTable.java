@@ -24,6 +24,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.RSAKeyGenParameterSpec;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -144,7 +145,7 @@ public class GameServerTable
 
 	private void loadRegisteredGameServers() throws SQLException
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		PreparedStatement statement = null;
 
 		int id;
@@ -218,7 +219,7 @@ public class GameServerTable
 
 	public void registerServerOnDB(byte[] hexId, int id, String externalHost)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		PreparedStatement statement = null;
 		try
 		{
@@ -238,19 +239,10 @@ public class GameServerTable
 		{
 			try
 			{
-				statement.close();
-			}
-			catch (Exception e)
-			{
-				
-			}
-			try
-			{
 				con.close();
 			}
 			catch (Exception e)
 			{
-				
 			}
 		}
 	}

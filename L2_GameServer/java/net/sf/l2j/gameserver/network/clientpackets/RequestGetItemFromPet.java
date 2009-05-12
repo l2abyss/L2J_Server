@@ -32,7 +32,7 @@ public final class RequestGetItemFromPet extends L2GameClientPacket
 	private static Logger _log = Logger.getLogger(RequestGetItemFromPet.class.getName());
 
 	private int _objectId;
-	private int _amount;
+	private long _amount;
 	@SuppressWarnings("unused")
     private int _unknown;
 
@@ -40,7 +40,7 @@ public final class RequestGetItemFromPet extends L2GameClientPacket
 	protected void readImpl()
 	{
 		_objectId = readD();
-		_amount   = readD();
+		_amount   = readQ();
 		_unknown  = readD();// = 0 for most trades
 	}
 
@@ -50,7 +50,8 @@ public final class RequestGetItemFromPet extends L2GameClientPacket
 		L2PcInstance player = getClient().getActiveChar();
         if (player == null || !(player.getPet() instanceof L2PetInstance)) return;
         L2PetInstance pet = (L2PetInstance)player.getPet();
-
+        if (player.getActiveEnchantItem() != null)
+        	return;
         if(_amount < 0)
         {
         	Util.handleIllegalPlayerAction(player,"[RequestGetItemFromPet] count < 0! ban! oid: "+_objectId+" owner: "+player.getName(),Config.DEFAULT_PUNISH);

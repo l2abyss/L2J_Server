@@ -18,9 +18,11 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
+import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2FishermanInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MerchantInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetManagerInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -85,7 +87,7 @@ public final class RequestSellItem extends L2GameClientPacket
 		{
 			int objectId = readD(); _items[i * 3 + 0] = objectId;
 			int itemId   = readD(); _items[i * 3 + 1] = itemId;
-			long cnt      = readD();
+			long cnt      = readQ();
 			if (cnt > Integer.MAX_VALUE || cnt <= 0)
 			{
 			    _count = 0; _items = null;
@@ -115,6 +117,7 @@ public final class RequestSellItem extends L2GameClientPacket
         L2Object target = player.getTarget();
         if (!player.isGM() && (target == null								// No target (ie GM Shop)
         		|| !(target instanceof L2MerchantInstance)	// Target not a merchant and not mercmanager
+        		|| !(target instanceof L2MerchantSummonInstance)
 			    || !player.isInsideRadius(target, L2Npc.INTERACTION_DISTANCE, false, false) 	// Distance is too far
 			        )) return;
 
@@ -123,7 +126,7 @@ public final class RequestSellItem extends L2GameClientPacket
 
         if (target != null)
         {
-        	if (target instanceof L2MerchantInstance)
+        	if (target instanceof L2MerchantInstance || target instanceof L2MerchantSummonInstance)
         		htmlFolder = "merchant";
         	else if (target instanceof L2FishermanInstance)
         		htmlFolder = "fisherman";
@@ -135,14 +138,19 @@ public final class RequestSellItem extends L2GameClientPacket
         else
         	ok = false;
 
-        L2Npc merchant = null;
+        L2Character merchant = null;
 
         if (ok)
-        	merchant = (L2Npc)target;
+        	merchant = (L2Character)target;
 
 		if (merchant != null && _listId > 1000000) // lease
 		{
-			if (merchant.getTemplate().npcId != _listId-1000000)
+			int npcId = 0;
+			if (merchant instanceof L2MerchantInstance)
+				npcId = ((L2MerchantInstance)merchant).getTemplate().npcId;
+			else if (merchant instanceof L2MerchantSummonInstance)
+				npcId = ((L2MerchantSummonInstance)merchant).getTemplate().npcId;
+			if (npcId != _listId-1000000)
 			{
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
@@ -201,8 +209,11 @@ public final class RequestSellItem extends L2GameClientPacket
 */
 		}
 		player.addAdena("Sell", (int)totalPrice, merchant, false);
-
-		String html = HtmCache.getInstance().getHtm("data/html/"+ htmlFolder +"/" + merchant.getNpcId() + "-sold.htm");
+		String html;
+		if (merchant instanceof L2MerchantInstance)
+			html = HtmCache.getInstance().getHtm("data/html/"+ htmlFolder +"/" + ((L2MerchantInstance)merchant).getNpcId() + "-sold.htm");
+		else
+			html = HtmCache.getInstance().getHtm("data/html/"+ htmlFolder +"/" + ((L2MerchantSummonInstance)merchant).getNpcId() + "-sold.htm");
 
 		if (html != null)
 		{

@@ -14,49 +14,35 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
-import javolution.util.FastList;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.network.serverpackets.ExSendManorList;
+import net.sf.l2j.gameserver.network.serverpackets.ExGetBookMarkInfoPacket;
+
 
 /**
- * Format: ch
- * c (id) 0xD0
- * h (subid) 0x01
- * @author l3x
+ *  @author ShanSoft
+ *  Packets Structure: chddd
  */
-public class RequestManorList extends L2GameClientPacket
+public final class RequestBookMarkSlotInfo extends L2GameClientPacket
 {
-	private static final String _C__D0_01_REQUESTMANORLIST = "[C] D0:01 RequestManorList";
+	private static final String _C__51_REQUESTBOOKMARKSLOTINFO = "[C] 51 RequestBookMarkSlotInfo";
 
 	@Override
 	protected void readImpl()
 	{
+		//There is nothing to read.
 	}
 
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
-		if (player == null) 
-			return;
-		FastList<String> manorsName = new FastList<String>();
-		manorsName.add("gludio");
-		manorsName.add("dion");
-		manorsName.add("giran");
-		manorsName.add("oren");
-		manorsName.add("aden");
-		manorsName.add("innadril");
-		manorsName.add("goddard");
-		manorsName.add("rune");
-		manorsName.add("schuttgart");
-		ExSendManorList manorlist = new ExSendManorList(manorsName);
-		player.sendPacket(manorlist);
-
+		player.sendPacket(new ExGetBookMarkInfoPacket(player));
 	}
+
 
 	@Override
 	public String getType()
 	{
-		return _C__D0_01_REQUESTMANORLIST;
+		return _C__51_REQUESTBOOKMARKSLOTINFO;
 	}
 }

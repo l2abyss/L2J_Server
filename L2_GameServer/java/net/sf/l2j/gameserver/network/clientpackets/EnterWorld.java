@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.network.clientpackets;
 
 import java.io.UnsupportedEncodingException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
@@ -32,6 +33,7 @@ import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
+import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
 import net.sf.l2j.gameserver.instancemanager.CoupleManager;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
@@ -42,7 +44,7 @@ import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.PetitionManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.L2Clan;
-import net.sf.l2j.gameserver.model.L2Effect;
+import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -63,6 +65,7 @@ import net.sf.l2j.gameserver.network.serverpackets.Die;
 import net.sf.l2j.gameserver.network.serverpackets.EtcStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ExBasicActionList;
 import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
+import net.sf.l2j.gameserver.network.serverpackets.ExGetBookMarkInfoPacket;
 import net.sf.l2j.gameserver.network.serverpackets.ExStorageMaxCount;
 import net.sf.l2j.gameserver.network.serverpackets.FriendList;
 import net.sf.l2j.gameserver.network.serverpackets.HennaInfo;
@@ -77,6 +80,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ShortCutInit;
 import net.sf.l2j.gameserver.network.serverpackets.SkillCoolTime;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
+import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * Enter World Packet Handler<p>
@@ -100,6 +104,34 @@ public class EnterWorld extends L2GameClientPacket
 	protected void readImpl()
 	{
 		// This is just a trigger packet. It has no content.
+		/*
+		readD();
+		readD();
+		readD();
+		readD();
+		readB();
+		readD();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		readC();
+		*/
 	}
 
 	@Override
@@ -158,11 +190,13 @@ public class EnterWorld extends L2GameClientPacket
 		if (activeChar.getCurrentHp() < 0.5)
 			activeChar.setIsDead(true);
 
+		setPledgeClass(activeChar);
+
+		boolean showClanNotice = false;
+
 		// Clan related checks are here
 		if (activeChar.getClan() != null)
 		{
-			setPledgeClass(activeChar);
-
 			activeChar.sendPacket(new PledgeSkillList(activeChar.getClan()));
 
 			notifyClanMembers(activeChar);
@@ -203,6 +237,15 @@ public class EnterWorld extends L2GameClientPacket
 			
 			sendPacket(new PledgeShowMemberListAll(activeChar.getClan(), activeChar));
 			sendPacket(new PledgeStatusChanged(activeChar.getClan()));
+			
+			// Residential skills support
+			if (activeChar.getClan().getHasCastle() > 0)
+				CastleManager.getInstance().getCastleByOwner(activeChar.getClan()).giveResidentialSkills(activeChar);
+			
+			if (activeChar.getClan().getHasFort() > 0)
+				FortManager.getInstance().getFortByOwner(activeChar.getClan()).giveResidentialSkills(activeChar);
+
+			showClanNotice = activeChar.getClan().isNoticeEnabled();
 		}
 
 		// Set Hero status if it applies
@@ -239,6 +282,9 @@ public class EnterWorld extends L2GameClientPacket
 		// Send GG check
 		activeChar.queryGameGuard();
 
+		// Send Teleport Bookmark List
+		sendPacket(new ExGetBookMarkInfoPacket(activeChar));
+		
 		// Send Shortcuts
 		sendPacket(new ShortCutInit(activeChar));
 
@@ -277,17 +323,6 @@ public class EnterWorld extends L2GameClientPacket
 			CursedWeaponsManager.getInstance().getCursedWeapon(activeChar.getCursedWeaponEquippedId()).cursedOnLogin();
 		}
 
-		for (L2Effect e : activeChar.getAllEffects())
-		{
-			switch (e.getEffectType())
-			{
-				case HEAL_OVER_TIME:
-				case COMBAT_POINT_HEAL_OVER_TIME:
-				case CHARGE:
-					e.exit();
-			}
-		}
-
 		activeChar.updateEffectIcons();
 
 		activeChar.sendPacket(new EtcStatusUpdate(activeChar));
@@ -318,7 +353,16 @@ public class EnterWorld extends L2GameClientPacket
 		SevenSigns.getInstance().sendCurrentPeriodMsg(activeChar);
 		Announcements.getInstance().showAnnouncements(activeChar);
 
-		if (Config.SERVER_NEWS)
+		if (showClanNotice)
+		{
+			final StringBuilder html = StringUtil.startAppend(2000,
+					"<html><title>Clan Announcements</title><body><br><center><font color=\"CCAA00\">",
+					activeChar.getClan().getName(),
+					"</font> <font color=\"6655FF\">Clan Alert Message</font></center><br><img src=\"L2UI.SquareWhite\" width=270 height=1><br>",
+					activeChar.getClan().getNotice().replaceAll("\r\n", "<br>"), "</body></html>");
+			sendPacket(new NpcHtmlMessage(1, html.toString())); 
+		}
+		else if (Config.SERVER_NEWS)
 		{
 			String serverNews = HtmCache.getInstance().getHtm("data/html/servnews.htm");
 			if (serverNews != null)
@@ -340,6 +384,13 @@ public class EnterWorld extends L2GameClientPacket
 
 		sendPacket(new SkillCoolTime(activeChar));
 
+		for (L2ItemInstance i : activeChar.getInventory().getItems())
+		{
+			if (i.isTimeLimitedItem())
+			{
+				i.scheduleLifeTimeTask();
+			}
+		}
 		if (Olympiad.getInstance().playerInStadia(activeChar))
 		{
 			activeChar.doRevive();
@@ -432,7 +483,7 @@ public class EnterWorld extends L2GameClientPacket
 	*/
 	private void notifyFriends(L2PcInstance cha)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try
 		{

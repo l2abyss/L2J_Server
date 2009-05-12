@@ -37,7 +37,7 @@ public final class RequestRefine extends L2GameClientPacket
 	private int _targetItemObjId;
 	private int _refinerItemObjId;
 	private int _gemstoneItemObjId;
-	private int _gemstoneCount;
+	private long _gemstoneCount;
 
 	@Override
 	protected void readImpl()
@@ -45,7 +45,7 @@ public final class RequestRefine extends L2GameClientPacket
 		_targetItemObjId = readD();
 		_refinerItemObjId = readD();
 		_gemstoneItemObjId = readD();
-		_gemstoneCount = readD();
+		_gemstoneCount = readQ();
 	}
 
 	/**
@@ -167,7 +167,7 @@ public final class RequestRefine extends L2GameClientPacket
 		if (player.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE || player.isDead()
 				|| player.isParalyzed() || player.isFishing() || player.isSitting()) return false;
 
-		int modifyGemstoneCount = _gemstoneCount;
+		long modifyGemstoneCount = _gemstoneCount;
 		int lifeStoneLevel = getLifeStoneLevel(lifeStoneId);
 		int lifeStoneGrade = getLifeStoneGrade(lifeStoneId);
 		switch (itemGrade)

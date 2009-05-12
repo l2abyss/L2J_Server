@@ -103,4 +103,10 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 	{
 		return _C__2F_REQUESTMAGICSKILLUSE;
 	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

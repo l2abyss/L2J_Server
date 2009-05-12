@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.logging.Logger;
 
@@ -58,7 +59,7 @@ public final class RequestAnswerFriendInvite extends L2GameClientPacket
 
     		if (_response == 1)
             {
-        		java.sql.Connection con = null;
+        		Connection con = null;
         		try
         		{
         		    con = L2DatabaseFactory.getInstance().getConnection();

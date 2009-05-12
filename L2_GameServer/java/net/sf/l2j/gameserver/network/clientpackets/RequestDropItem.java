@@ -42,7 +42,7 @@ public final class RequestDropItem extends L2GameClientPacket
 	private static Logger _log = Logger.getLogger(RequestDropItem.class.getName());
 
 	private int _objectId;
-	private int _count;
+	private long _count;
 	private int _x;
 	private int _y;
 	private int _z;
@@ -51,7 +51,7 @@ public final class RequestDropItem extends L2GameClientPacket
 	protected void readImpl()
 	{
 		_objectId = readD();
-		_count    = readD();
+		_count    = readQ();
 		_x        = readD();
 		_y        = readD();
 		_z        = readD();
@@ -130,6 +130,10 @@ public final class RequestDropItem extends L2GameClientPacket
             activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DO_WHILE_FISHING_2));
             return;
         }
+		if (activeChar.isFlying())
+		{
+			return;
+		}
 
 		// Cannot discard item that the skill is consuming
 		if (activeChar.isCastingNow())
@@ -184,7 +188,7 @@ public final class RequestDropItem extends L2GameClientPacket
 			activeChar.sendPacket(il);
 		}
 
-		L2ItemInstance dropedItem = activeChar.dropItem("Drop", _objectId, _count, _x, _y, _z, null, false);
+		L2ItemInstance dropedItem = activeChar.dropItem("Drop", _objectId, (int) _count, _x, _y, _z, null, false);
 
 		if (Config.DEBUG) _log.fine("dropping " + _objectId + " item("+_count+") at: " + _x + " " + _y + " " + _z);
 

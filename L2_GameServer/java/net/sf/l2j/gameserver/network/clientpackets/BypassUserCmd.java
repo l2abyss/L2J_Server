@@ -25,10 +25,10 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
  *
  * @version $Revision: 1.1.2.1.2.2 $ $Date: 2005/03/27 15:29:30 $
  */
-public class RequestUserCommand extends L2GameClientPacket
+public class BypassUserCmd extends L2GameClientPacket
 {
-	private static final String _C__AA_REQUESTUSERCOMMAND = "[C] aa RequestUserCommand";
-	static Logger _log = Logger.getLogger(RequestUserCommand.class.getName());
+	private static final String _C__B3_BYPASSUSERCMD = "[C] b3 BypassUserCmd";
+	static Logger _log = Logger.getLogger(BypassUserCmd.class.getName());
 
 	private int _command;
 
@@ -65,6 +65,6 @@ public class RequestUserCommand extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__AA_REQUESTUSERCOMMAND;
+		return _C__B3_BYPASSUSERCMD;
 	}
 }

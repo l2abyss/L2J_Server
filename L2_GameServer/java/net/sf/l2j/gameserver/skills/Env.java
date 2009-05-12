@@ -37,4 +37,21 @@ public final class Env {
 	public double value;
 	public double baseValue;
 	public boolean skillMastery = false;
+	public byte shld = 0;
+	public boolean ss = false;
+	public boolean sps = false;
+	public boolean bss = false;
+	
+	public Env()
+	{
+		
+	}
+	
+	public Env(byte shd, boolean s, boolean ps, boolean bs)
+	{
+		shld = shd;
+		ss = s;
+		sps = ps;
+		bss = bs;
+	}
 }

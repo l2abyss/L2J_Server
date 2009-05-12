@@ -31,7 +31,6 @@ import net.sf.l2j.gameserver.model.itemcontainer.PcInventory;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
-import net.sf.l2j.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
@@ -45,17 +44,49 @@ public class MultiSellChoose extends L2GameClientPacket
 	private static Logger _log = Logger.getLogger(MultiSellChoose.class.getName());
 	private int _listId;
 	private int _entryId;
-	private int _amount;
+	private long _amount;
 	private int _enchantment;
 	private int _transactionTax; // local handling of taxation
+	@SuppressWarnings("unused")
+    private int _unk1;
+	@SuppressWarnings("unused")
+	private int _unk2;
+	@SuppressWarnings("unused")
+	private int _unk3;
+	@SuppressWarnings("unused")
+	private int _unk7;
+	@SuppressWarnings("unused")
+	private int _unk4;
+	@SuppressWarnings("unused")
+	private int _unk5;
+	@SuppressWarnings("unused")
+	private int _unk6;
+	@SuppressWarnings("unused")
+	private int _unk8;
+	@SuppressWarnings("unused")
+	private int _unk9;
+	@SuppressWarnings("unused")
+	private int _unk10;
+	@SuppressWarnings("unused")
+	private int _unk11;
 	
 	@Override
 	protected void readImpl()
 	{
 		_listId = readD();
 		_entryId = readD();
-		_amount = readD();
-		// _enchantment = readH();  // <---commented this line because it did NOT work!
+		_amount = readQ();
+		_unk1 = readH();
+		_unk2 = readD();
+		_unk3 = readD();
+		_unk4 = readH(); // elemental attributes
+		_unk5 = readH();// elemental attributes
+		_unk6 = readH();// elemental attributes
+		_unk7 = readH();// elemental attributes
+		_unk8 = readH();// elemental attributes
+		_unk9 = readH();// elemental attributes
+		_unk10 = readH();// elemental attributes
+		_unk11 = readH();// elemental attributes
 		_enchantment = _entryId % 100000;
 		_entryId = _entryId / 100000;
 		_transactionTax = 0; // initialize tax amount to 0...
@@ -177,7 +208,7 @@ public class MultiSellChoose extends L2GameClientPacket
 					// otherwise, check only the count of items with exactly the needed enchantment level
 					if (inv.getInventoryItemCount(e.getItemId(), maintainEnchantment ? e.getEnchantmentLevel() : -1) < ((Config.ALT_BLACKSMITH_USE_RECIPES || !e.getMantainIngredient()) ? (e.getItemCount() * _amount) : e.getItemCount()))
 					{
-						player.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
+						player.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_REQUIRED_ITEMS));//Update by rocknow
 						_ingredientsList.clear();
 						_ingredientsList = null;
 						return;
@@ -198,17 +229,16 @@ public class MultiSellChoose extends L2GameClientPacket
 			{
 				case -200: // Clan Reputation Score
 				{
-					int repCost = player.getClan().getReputationScore() - (e.getItemCount() * _amount);
+					int repCost = (int) (player.getClan().getReputationScore() - (e.getItemCount() * _amount));
 					player.getClan().setReputationScore(repCost, true);
 					SystemMessage smsg = new SystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
-					smsg.addNumber(e.getItemCount() * _amount);
+					smsg.addItemNumber(e.getItemCount() * _amount);
 					player.sendPacket(smsg);
-					player.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(player.getClan()));
 					break;
 				}
 				case -300: // Player Fame
 				{
-					int fameCost = player.getFame() - (e.getItemCount() * _amount);
+					int fameCost = (int) (player.getFame() - (e.getItemCount() * _amount));
 					player.setFame(fameCost);
 					player.sendPacket(new UserInfo(player));
 					player.sendPacket(new ExBrExtraUserInfo(player));
@@ -356,7 +386,7 @@ public class MultiSellChoose extends L2GameClientPacket
 			{
 				sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
 				sm.addItemName(e.getItemId());
-				sm.addNumber(e.getItemCount() * _amount);
+				sm.addItemNumber(e.getItemCount() * _amount);
 				player.sendPacket(sm);
 				sm = null;
 			}
@@ -365,7 +395,7 @@ public class MultiSellChoose extends L2GameClientPacket
 				if (maintainEnchantment && e.getEnchantmentLevel() > 0)
 				{
 					sm = new SystemMessage(SystemMessageId.ACQUIRED_S1_S2);
-					sm.addNumber(e.getEnchantmentLevel());
+					sm.addItemNumber(e.getEnchantmentLevel());
 					sm.addItemName(e.getItemId());
 				}
 				else

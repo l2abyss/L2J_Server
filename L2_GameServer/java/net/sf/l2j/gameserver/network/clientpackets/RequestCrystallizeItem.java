@@ -44,13 +44,13 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 	private static Logger _log = Logger.getLogger(RequestCrystallizeItem.class.getName());
 
 	private int _objectId;
-	private int _count;
+	private long _count;
 
 	@Override
 	protected void readImpl()
 	{
 		_objectId = readD();
-		_count = readD();
+		_count = readQ();
 	}
 
 	@Override
@@ -213,7 +213,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 
 		SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
 		sm.addItemName(createditem);
-		sm.addNumber(crystalAmount);
+		sm.addItemNumber(crystalAmount);
 		activeChar.sendPacket(sm);
 		sm = null;
 

@@ -52,14 +52,14 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
             int itemId = readD(); _items[x * 3 + 0] = itemId;
             readH();//TODO analyse this
             readH();//TODO analyse this
-            long cnt    = readD();
+            long cnt    = readQ();
 	    if (cnt > Integer.MAX_VALUE || cnt < 0)
 	    {
 		_count = 0; _items = null;
 		return;
 	    }
 	    _items[x * 3 + 1] = (int)cnt;
-            int price  = readD(); _items[x * 3 + 2] = price;
+            int price  = (int) readQ(); _items[x * 3 + 2] = price;
         }
 	}
 
@@ -71,7 +71,7 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
 
         if (!player.getAccessLevel().allowTransaction())
         {
-            player.sendMessage("Transactions are disable for your Access Level");
+            player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
             return;
         }
 

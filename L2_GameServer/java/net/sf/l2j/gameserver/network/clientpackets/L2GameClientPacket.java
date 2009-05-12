@@ -74,17 +74,20 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 			}
 			
 			runImpl();
-            if (this instanceof MoveBackwardToLocation 
-            	|| this instanceof AttackRequest 
-            	|| this instanceof RequestActionUse
-            	|| this instanceof RequestMagicSkillUse)
-            	// could include pickup and talk too, but less is better
-            {
-            	// Removes onspawn protection - player has faster computer than
-            	// average
-            	if (getClient().getActiveChar() != null)
-            		getClient().getActiveChar().onActionRequest();
-            }
+			
+			/* Removes onspawn protection - player has faster computer than average
+			 * 
+			 * True for these packets:
+			 * AttackRequest
+			 * MoveBackwardToLocation
+			 * RequestActionUse
+			 * RequestMagicSkillUse
+			 * 
+			 * it could include pickup and talk too, but less is better
+			 */
+            if (triggersOnActionRequest() && getClient().getActiveChar() != null)
+            	getClient().getActiveChar().onActionRequest();
+            
 		}
 		catch (Throwable t)
 		{
@@ -104,4 +107,12 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 	 * @return A String with this packet name for debuging purposes
 	 */
 	public abstract String getType();
+	
+	/**
+	 * Overriden with true value on some packets that should disable spawn protection
+	 */
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

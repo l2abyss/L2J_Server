@@ -72,6 +72,8 @@ public final class UseItem extends L2GameClientPacket
 	protected void readImpl()
 	{
 		_objectId = readD();
+		// TODO:
+		//readD();
 	}
 
 	@Override

@@ -58,7 +58,7 @@ public class RequestBuyProcure extends L2GameClientPacket {
 		{
 			long servise = readD();
 			int itemId   = readD(); _items[i * 2 + 0] = itemId;
-			long cnt      = readD();
+			long cnt      = readQ();
 			if (cnt > Integer.MAX_VALUE || cnt < 1)
 			{
 				_count=0; _items = null;
@@ -160,7 +160,7 @@ public class RequestBuyProcure extends L2GameClientPacket {
 			// Send Char Buy Messages
 			SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
 			sm.addItemName(item);
-			sm.addNumber(rewardItemCount);
+			sm.addItemNumber(rewardItemCount);
 			player.sendPacket(sm);
 			sm = null;
 

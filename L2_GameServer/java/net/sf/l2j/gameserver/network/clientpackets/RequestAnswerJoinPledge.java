@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import net.sf.l2j.gameserver.instancemanager.CastleManager;
+import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -31,7 +33,6 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 public final class RequestAnswerJoinPledge extends L2GameClientPacket
 {
 	private static final String _C__25_REQUESTANSWERJOINPLEDGE = "[C] 25 RequestAnswerJoinPledge";
-	//private static Logger _log = Logger.getLogger(RequestAnswerJoinPledge.class.getName());
 
 	private int _answer;
 
@@ -101,6 +102,12 @@ public final class RequestAnswerJoinPledge extends L2GameClientPacket
 				sm.addString(activeChar.getName());
 				clan.broadcastToOnlineMembers(sm);
 				sm = null;
+
+				if (activeChar.getClan().getHasCastle() > 0)
+					CastleManager.getInstance().getCastleByOwner(activeChar.getClan()).giveResidentialSkills(activeChar);
+				if (activeChar.getClan().getHasFort() > 0)
+					FortManager.getInstance().getFortByOwner(activeChar.getClan()).giveResidentialSkills(activeChar);
+				activeChar.sendSkillList();
 
 				clan.broadcastToOtherOnlineMembers(new PledgeShowMemberListAdd(activeChar), activeChar);
 				clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));

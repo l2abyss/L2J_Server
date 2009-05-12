@@ -58,6 +58,7 @@ public enum Stats
 	// Atk & Def rates
 	EVASION_RATE("rEvas"),
 	P_SKILL_EVASION("pSkillEvas"),
+	CRIT_DAMAGE_EVASION("critDamEvas"),
 	SHIELD_RATE("rShld"),
 	CRITICAL_RATE("rCrit"),
 	BLOW_RATE("blowRate"),
@@ -109,6 +110,8 @@ public enum Stats
 	EARTH("earth"),
 	HOLY("holy"),
 	DARK("dark"),
+	VALAKAS("valakas"),
+	VALAKAS_RES("valakasRes"),
 	//
 	AGGRESSION_VULN("aggressionVuln"),
 	BLEED_VULN("bleedVuln"),
@@ -119,16 +122,25 @@ public enum Stats
 	SLEEP_VULN("sleepVuln"),
 	CONFUSION_VULN("confusionVuln"),
 	MOVEMENT_VULN("movementVuln"),
-	FIRE_VULN("fireVuln"),
-	WIND_VULN("windVuln"),
-	WATER_VULN("waterVuln"),
-	EARTH_VULN("earthVuln"),
-	HOLY_VULN("holyVuln"),
-	DARK_VULN("darkVuln"),
+	FIRE_RES("fireRes"),
+	WIND_RES("windRes"),
+	WATER_RES("waterRes"),
+	EARTH_RES("earthRes"),
+	HOLY_RES("holyRes"),
+	DARK_RES("darkRes"),
+	//Skills Power
+	FIRE_POWER("firePower"),
+	WATER_POWER("waterPower"),
+	WIND_POWER("windPower"),
+	EARTH_POWER("earthPower"),
+	HOLY_POWER("holyPower"),
+	DARK_POWER("darkPower"),
 	CANCEL_VULN("cancelVuln"), // Resistance for cancel type skills
 	DERANGEMENT_VULN("derangementVuln"),
 	DEBUFF_VULN("debuffVuln"),
+	BUFF_VULN("buffVuln"),
 	CRIT_VULN("critVuln"), // Resistence to Crit DMG.
+	MAGIC_DAMAGE_VULN("magicDamVul"),
 	
 	AGGRESSION_PROF("aggressionProf"),
 	BLEED_PROF("bleedProf"),
@@ -162,6 +174,7 @@ public enum Stats
 	DUAL_WPN_VULN("dualWpnVuln"),
 	DUALFIST_WPN_VULN("dualFistWpnVuln"),
 	BIGSWORD_WPN_VULN("bigSwordWpnVuln"),
+	BIGBLUNT_WPN_VULN("bigBluntWpnVuln"),
 	
 	REFLECT_DAMAGE_PERCENT("reflectDam"),
 	REFLECT_SKILL_MAGIC("reflectSkillMagic"),
@@ -177,7 +190,6 @@ public enum Stats
 	PATK_ANIMALS("pAtk-animals"),
 	PATK_MONSTERS("pAtk-monsters"),
 	PATK_DRAGONS("pAtk-dragons"),
-	PATK_UNDEAD("pAtk-undead"),
 	PATK_GIANTS("pAtk-giants"),
 	
 	PDEF_PLANTS("pDef-plants"),
@@ -185,7 +197,6 @@ public enum Stats
 	PDEF_ANIMALS("pDef-animals"),
 	PDEF_MONSTERS("pDef-monsters"),
 	PDEF_DRAGONS("pDef-dragons"),
-	PDEF_UNDEAD("pDef-undead"),
 	PDEF_GIANTS("pDef-giants"),
 	
 	ATK_REUSE("atkReuse"),
@@ -204,6 +215,7 @@ public enum Stats
 	PHYSICAL_MP_CONSUME_RATE("PhysicalMpConsumeRate"),
 	MAGICAL_MP_CONSUME_RATE("MagicalMpConsumeRate"),
 	DANCE_MP_CONSUME_RATE("DanceMpConsumeRate"),
+	BOW_MP_CONSUME_RATE("BowMpConsumeRate"),
 	HP_CONSUME_RATE("HpConsumeRate"),
 	MP_CONSUME("MpConsume"),
 	SOULSHOT_COUNT("soulShotCount"),

@@ -58,8 +58,8 @@ public final class RequestPrivateStoreSell extends L2GameClientPacket
 			int itemId = readD();
             readH(); //TODO analyse this
             readH(); //TODO analyse this
-			long count   = readD();
-			int price    = readD();
+			long count   = readQ();
+			long price    = readQ();
 
 			if (count > Integer.MAX_VALUE || count < 0)
 			{
@@ -118,7 +118,7 @@ public final class RequestPrivateStoreSell extends L2GameClientPacket
 			return;
 		}
 
-        if (!storeList.privateStoreSell(player, _items, _price))
+        if (!storeList.privateStoreSell(player, _items))
         {
             sendPacket(ActionFailed.STATIC_PACKET);
             _log.warning("PrivateStore sell has failed due to invalid list or request. Player: " + player.getName() + ", Private store of: " + storePlayer.getName());

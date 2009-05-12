@@ -36,7 +36,8 @@ public enum L2WeaponType
 	BIGBLUNT(14, "Big Blunt"), // Two handed blunt
 	ANCIENT_SWORD(15, "Ancient"),
 	CROSSBOW(16, "Crossbow"),
-	RAPIER(17, "Rapier");
+	RAPIER(17, "Rapier"),
+	DUAL_DAGGER(18, "Dual Dagger");
 	
 	private final int _id;
 	private final String _name;

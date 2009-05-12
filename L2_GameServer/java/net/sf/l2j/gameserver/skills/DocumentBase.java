@@ -18,6 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,23 +29,26 @@ import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.SkillTable;
+import net.sf.l2j.gameserver.model.ChanceCondition;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.base.PlayerState;
 import net.sf.l2j.gameserver.model.base.Race;
 import net.sf.l2j.gameserver.skills.conditions.*;
 import net.sf.l2j.gameserver.skills.conditions.ConditionGameTime.CheckGameTime;
-import net.sf.l2j.gameserver.skills.effects.EffectTemplate;
+import net.sf.l2j.gameserver.skills.effects.EffectChanceSkillTrigger;
 import net.sf.l2j.gameserver.skills.funcs.FuncTemplate;
 import net.sf.l2j.gameserver.skills.funcs.Lambda;
 import net.sf.l2j.gameserver.skills.funcs.LambdaCalc;
 import net.sf.l2j.gameserver.skills.funcs.LambdaConst;
 import net.sf.l2j.gameserver.skills.funcs.LambdaStats;
 import net.sf.l2j.gameserver.templates.StatsSet;
+import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.item.L2ArmorType;
 import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
 import net.sf.l2j.gameserver.templates.item.L2WeaponType;
+import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -176,8 +180,14 @@ abstract class DocumentBase
     protected void attachEffect(Node n, Object template, Condition attachCond)
     {
         NamedNodeMap attrs = n.getAttributes();
-        String name = attrs.getNamedItem("name").getNodeValue();
-        int time, count = 1;
+        String name = attrs.getNamedItem("name").getNodeValue().intern();
+        
+        /**
+         * Keep this values as default ones, DP needs it
+         */
+        int time = 1;
+        int count = 1;
+        
         if (attrs.getNamedItem("count") != null)
         {
             count = Integer.decode(getValue(attrs.getNamedItem("count").getNodeValue(), template));
@@ -200,8 +210,10 @@ abstract class DocumentBase
                 }
             }
         }
-        else time = ((L2Skill) template).getBuffDuration() / 1000 / count;
-        boolean self = false;
+        else if (((L2Skill) template).getBuffDuration() > 0)
+        	time = ((L2Skill) template).getBuffDuration() / 1000 / count;
+        
+        	boolean self = false;
         if (attrs.getNamedItem("self") != null)
         {
             if (Integer.decode(getValue(attrs.getNamedItem("self").getNodeValue(),template)) == 1)
@@ -220,10 +232,17 @@ abstract class DocumentBase
         {
             String abn = attrs.getNamedItem("abnormal").getNodeValue();
             if (abn.equals("poison")) abnormal = L2Character.ABNORMAL_EFFECT_POISON;
-            else if (abn.equals("bleeding")) abnormal = L2Character.ABNORMAL_EFFECT_BLEEDING;
+            else if (abn.equals("bleed")) abnormal = L2Character.ABNORMAL_EFFECT_BLEEDING;
+            else if (abn.equals("stun")) abnormal = L2Character.ABNORMAL_EFFECT_STUN;
+            else if (abn.equals("dancestun")) abnormal = L2Character.ABNORMAL_EFFECT_DANCE_STUNNED;
+            else if (abn.equals("sleep")) abnormal = L2Character.ABNORMAL_EFFECT_SLEEP;
             else if (abn.equals("flame")) abnormal = L2Character.ABNORMAL_EFFECT_FLAME;
             else if (abn.equals("bighead")) abnormal = L2Character.ABNORMAL_EFFECT_BIG_HEAD;
             else if (abn.equals("stealth")) abnormal = L2Character.ABNORMAL_EFFECT_STEALTH;
+            else if (abn.equals("root")) abnormal = L2Character.ABNORMAL_EFFECT_ROOT;
+            else if (abn.equals("mute")) abnormal = L2Character.ABNORMAL_EFFECT_MUTED;
+            else if (abn.equals("earthquake")) abnormal = L2Character.ABNORMAL_EFFECT_EARTHQUAKE;
+            else if (abn.equals("vitality")) abnormal = L2Character.ABNORMAL_EFFECT_VITALITY;
         }
         float stackOrder = 0;
         String stackType = "none";
@@ -235,12 +254,68 @@ abstract class DocumentBase
         {
             stackOrder = Float.parseFloat(getValue(attrs.getNamedItem("stackOrder").getNodeValue(), template));
         }
-        EffectTemplate lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, time,
-                                               abnormal, stackType, stackOrder, icon);
-        parseTemplate(n, lt);
-        if (template instanceof L2Item) ((L2Item) template).attach(lt);
-        else if (template instanceof L2Skill && !self) ((L2Skill) template).attach(lt);
-        else if (template instanceof L2Skill && self) ((L2Skill) template).attachSelf(lt);
+        
+        double effectPower = -1;
+        if (attrs.getNamedItem("effectPower") != null)
+	        effectPower = Double.parseDouble( getValue(attrs.getNamedItem("effectPower").getNodeValue(), template));
+        
+        L2SkillType type = null;
+        if (attrs.getNamedItem("effectType") != null)
+        {
+        	String typeName = getValue(attrs.getNamedItem("effectType").getNodeValue(), template);
+        	
+        	try
+        	{
+    			type = Enum.valueOf(L2SkillType.class, typeName);
+    		} 
+        	catch (Exception e)
+        	{
+    			throw new IllegalArgumentException("Not skilltype found for: "+typeName);
+    		}
+        }
+        
+        EffectTemplate lt;
+        
+        final boolean isChanceSkillTrigger = (name == EffectChanceSkillTrigger.class.getName());
+        int trigId = 0;
+		if (attrs.getNamedItem("triggeredId") != null)
+			trigId = Integer.parseInt(getValue(attrs.getNamedItem("triggeredId").getNodeValue(), template));
+		else if (isChanceSkillTrigger)
+			throw new NoSuchElementException(name + " requires triggerId");
+		
+		int trigLvl = 1;
+		if (attrs.getNamedItem("triggeredLevel") != null)
+			trigLvl = Integer.parseInt(getValue(attrs.getNamedItem("triggeredLevel").getNodeValue(), template));
+		
+		String chanceCond = null;
+		if (attrs.getNamedItem("chanceType") != null)
+			chanceCond = getValue(attrs.getNamedItem("chanceType").getNodeValue(), template);
+		else if (isChanceSkillTrigger)
+			throw new NoSuchElementException(name + " requires chanceType");
+		
+		int activationChance = 0;
+		if (attrs.getNamedItem("activationChance") != null)
+			activationChance = Integer.parseInt(getValue(attrs.getNamedItem("activationChance").getNodeValue(), template));
+		else if (isChanceSkillTrigger)
+			throw new NoSuchElementException(name + " requires activationChance");
+		
+		ChanceCondition chance = ChanceCondition.parse(chanceCond, activationChance);
+		
+		if (chance == null && isChanceSkillTrigger)
+			throw new NoSuchElementException("Invalid chance condition: " + chanceCond + " "
+			        + activationChance);        	
+        	
+        lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, time, abnormal, stackType, stackOrder, icon, effectPower, type, trigId, trigLvl, chance);
+		parseTemplate(n, lt);
+		if (template instanceof L2Item)
+			((L2Item) template).attach(lt);
+		else if (template instanceof L2Skill)
+		{
+			if (self)
+				((L2Skill) template).attachSelf(lt);
+			else
+				((L2Skill) template).attach(lt);
+		}
     }
 
     protected void attachSkill(Node n, Object template, Condition attachCond)
@@ -470,6 +545,17 @@ abstract class DocumentBase
             {
                 int sex = Integer.decode(getValue(a.getNodeValue(), null));
                 cond = joinAnd(cond, new ConditionPlayerSex(sex));
+            }
+            
+            else if ("flyMounted".equalsIgnoreCase(a.getNodeName()))
+            {
+            	boolean val = Boolean.valueOf(a.getNodeValue());
+                cond = joinAnd(cond, new ConditionPlayerFlyMounted(val));
+            }
+            else if ("landingZone".equalsIgnoreCase(a.getNodeName()))
+            {
+            	boolean val = Boolean.valueOf(a.getNodeValue());
+                cond = joinAnd(cond, new ConditionPlayerLandingZone(val));
             }
         }
 

@@ -90,4 +90,10 @@ public final class AttackRequest extends L2GameClientPacket
 	{
 		return _C__0A_ATTACKREQUEST;
 	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return true;
+	}
 }

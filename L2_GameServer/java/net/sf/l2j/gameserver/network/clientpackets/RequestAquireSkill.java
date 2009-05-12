@@ -137,7 +137,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 
 						SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 						sm.addItemName(costid);
-						sm.addNumber(1);
+						sm.addItemNumber(1);
 						sendPacket(sm);
 						sm = null;
 					}
@@ -245,7 +245,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 
 					SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 					sm.addItemName(costid);
-					sm.addNumber(costcount);
+					sm.addItemNumber(costcount);
 					sendPacket(sm);
 					sm = null;
 				}
@@ -268,6 +268,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 				}
 
 				int itemId = 0;
+				int itemCount = 0;
 				int repCost = 100000000;
 				// Skill Learn bug Fix
 				L2PledgeSkillLearn[] skills = SkillTreeTable.getInstance().getAvailablePledgeSkills(player);
@@ -281,6 +282,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 
 					counts++;
 					itemId = s.getItemId();
+					itemCount = s.getItemCount();
 					repCost = s.getRepCost();
 				}
 
@@ -295,7 +297,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 				{
 					if (Config.LIFE_CRYSTAL_NEEDED)
 					{
-						if (!player.destroyItemByItemId("Consume", itemId, 1, trainer, false))
+						if (!player.destroyItemByItemId("Consume", itemId, itemCount, trainer, false))
 						{
 							// Haven't spellbook
 							player.sendPacket(new SystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
@@ -304,7 +306,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 
 						SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 						sm.addItemName(itemId);
-						sm.addNumber(1);
+						sm.addNumber(itemCount);
 						sendPacket(sm);
 						sm = null;
 					}
@@ -337,6 +339,57 @@ public class RequestAquireSkill extends L2GameClientPacket
 	            }
 				((L2VillageMasterInstance)trainer).showPledgeSkillList(player); //Maybe we shoud add a check here...
 	            return;
+			}
+			case 6:
+			{
+				int costid = 0;
+				int costcount = 0;
+				// Skill Learn bug Fix
+				L2SkillLearn[] skillsc = SkillTreeTable.getInstance().getAvailableSpecialSkills(player);
+
+				for (L2SkillLearn s : skillsc)
+				{
+					L2Skill sk = SkillTable.getInstance().getInfo(s.getId(),s.getLevel());
+
+					if (sk == null || sk != skill)
+						continue;
+
+					counts++;
+					costid = s.getIdCost();
+					costcount = s.getCostCount();
+					_requiredSp = s.getSpCost();
+				}
+
+				if (counts == 0)
+				{
+					player.sendMessage("You are trying to learn skill that u can't..");
+					Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", IllegalPlayerAction.PUNISH_KICK);
+					return;
+				}
+
+				if (player.getSp() >= _requiredSp)
+				{
+					if (!player.destroyItemByItemId("Consume", costid, costcount, trainer, false))
+					{
+						// Haven't spellbook
+						player.sendPacket(new SystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+						return;
+					}
+
+					SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+					sm.addItemName(costid);
+					sm.addItemNumber(costcount);
+					sendPacket(sm);
+					sm = null;
+				}
+				else
+				{
+					SystemMessage sm = new SystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL);
+					player.sendPacket(sm);
+					sm = null;
+					return;
+				}
+				break;
 			}
 			default:
 			{

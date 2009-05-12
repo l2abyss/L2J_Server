@@ -64,7 +64,7 @@ public final class RequestExEnchantSkillInfoDetail extends L2GameClientPacket
             return;
         
         int bookId = 0;
-        int reqCount = 0;
+        long reqCount = 0;
         // require book for first level
         int enchantLevel = _skillLvl%100;
         // if going to first level OR going to Original level(untraining) 

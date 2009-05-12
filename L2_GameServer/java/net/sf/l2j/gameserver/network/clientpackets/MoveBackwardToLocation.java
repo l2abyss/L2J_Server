@@ -136,4 +136,10 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 	{
 		return _C__01_MOVEBACKWARDTOLOC;
 	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return true;
+	}
 }

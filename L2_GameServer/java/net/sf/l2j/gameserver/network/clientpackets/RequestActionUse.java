@@ -38,6 +38,7 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ChairSit;
 import net.sf.l2j.gameserver.network.serverpackets.RecipeShopManageList;
+import net.sf.l2j.gameserver.network.serverpackets.SocialAction;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
 /**
@@ -450,6 +451,10 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 1045: // Great Wolf - Howl
 				useSkill(5584);
 				break;
+			//Add by rocknow
+			case 1046: // Strider - Roar
+				useSkill(5585);
+				break;
 			case 1047: // Divine Beast - Bite
 				useSkill(5580);
 				break;
@@ -491,6 +496,80 @@ public final class RequestActionUse extends L2GameClientPacket
 				break;
 			case 1060: //Nightshade - Guidance
 				useSkill(5654);
+				break;
+			//Add by rocknow
+			case 1061:
+				useSkill(5745);
+				break;
+			case 1062:
+				useSkill(5746);
+				break;
+			case 1063:
+				useSkill(5747);
+				break;
+			case 1064:
+				useSkill(5748);
+				break;
+			case 1065:
+				useSkill(5753);
+				break;
+			case 1066:
+				useSkill(5749);
+				break;
+			case 1067:
+				useSkill(5750);
+				break;
+			case 1068:
+				useSkill(5751);
+				break;
+			case 1069:
+				useSkill(5752);
+				break;
+			case 1070:
+				useSkill(5771);
+				break;
+			case 1071:
+				useSkill(5761);
+				break;
+				//T3 Social Packets
+			case 12:
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 2));
+				break;
+			case 13:
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 3));
+				break;
+			case 14:
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 4));
+				break;
+			case 24:
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 5));
+				break;
+			case 25:
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 6));
+				break;
+			case 26:
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 7));
+				break;
+			case 29:
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 8));
+				break;
+			case 30:
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 9));
+				break;
+			case 31:
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 10));
+				break;
+			case 33:
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 11));
+				break;
+			case 34:
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 12));
+				break;
+			case 35:
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 13));
+				break;
+			case 62:
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 14));
 				break;
 			default:
 				_log.warning(activeChar.getName() + ": unhandled action type " + _actionId);
@@ -554,5 +633,11 @@ public final class RequestActionUse extends L2GameClientPacket
 	public String getType()
 	{
 		return _C__45_REQUESTACTIONUSE;
+	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return true;
 	}
 }

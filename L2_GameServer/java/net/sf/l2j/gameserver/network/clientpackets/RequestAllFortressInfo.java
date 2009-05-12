@@ -30,7 +30,7 @@ public class RequestAllFortressInfo extends L2GameClientPacket
     @Override
     public String getType()
     {
-        return "[C] D0:40 RequestAllFortressInfo";
+        return "[C] D0:3D RequestAllFortressInfo";
     }
 
     /**

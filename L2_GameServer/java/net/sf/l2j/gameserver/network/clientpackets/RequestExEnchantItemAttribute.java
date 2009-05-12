@@ -95,7 +95,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 		}
 
 		//can't enchant rods, shadow items, adventurers', hero items
-		if (item.getItem().getItemType() == L2WeaponType.ROD || item.isShadowItem() || item.isHeroItem()
+		if (item.getItem().getItemType() == L2WeaponType.ROD || item.isShadowItem() || item.isHeroItem() || item.isTimeLimitedItem()
 		|| (item.getItemId() >= 7816 && item.getItemId() <= 7831) || (item.getItem().getItemType() == L2WeaponType.NONE) ||
 			!(item.getItem().getCrystalType() == L2Item.CRYSTAL_S || item.getItem().getCrystalType() == L2Item.CRYSTAL_S80))
 		{
@@ -178,6 +178,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			}
 			player.sendPacket(sm);
 			item.setElementAttr(elementToAdd, newPower);
+			item.updateElementAttrBonus(player); 
 
 			// send packets
 			InventoryUpdate iu = new InventoryUpdate();

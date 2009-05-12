@@ -70,7 +70,7 @@ public final class RequestSurrenderPledgeWar extends L2GameClientPacket
         msg.addString(_pledgeName);
         _activeChar.sendPacket(msg);
         msg = null;
-        _activeChar.deathPenalty(false, false);
+        _activeChar.deathPenalty(false, false, false);
         ClanTable.getInstance().deleteclanswars(_clan.getClanId(), clan.getClanId());
         /*L2PcInstance leader = L2World.getInstance().getPlayer(clan.getLeaderName());
         if(leader != null && leader.isOnline() == 0)

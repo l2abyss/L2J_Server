@@ -84,9 +84,11 @@ protected void runImpl()
                BlockList.sendListToOwner(activeChar);
                break;
            case ALLBLOCK:
+               activeChar.sendPacket(new SystemMessage(SystemMessageId.MESSAGE_REFUSAL_MODE));//Update by rocknow
                BlockList.setBlockAll(activeChar, true);
                break;
            case ALLUNBLOCK:
+               activeChar.sendPacket(new SystemMessage(SystemMessageId.MESSAGE_ACCEPTANCE_MODE));//Update by rocknow
                BlockList.setBlockAll(activeChar, false);
                break;
            default:

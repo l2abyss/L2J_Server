@@ -36,13 +36,13 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 	
 	private int _objectId;
 	
-	private int _amount;
+	private long _amount;
 	
 	@Override
 	protected void readImpl()
 	{
 		_objectId = readD();
-		_amount = readD();
+		_amount = readQ();
 	}
 	
 	@Override
@@ -51,7 +51,8 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null || !(player.getPet() instanceof L2PetInstance))
 			return;
-		
+        if (player.getActiveEnchantItem() != null)
+        	return;
 		// Alt game - Karma punishment
 		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TRADE && player.getKarma() > 0)
 			return;

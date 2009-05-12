@@ -147,6 +147,7 @@ public class RequestAquireSkillInfo extends L2GameClientPacket
         {
             int requiredRep = 0;
             int itemId = 0;
+            int itemCount = 0;
             L2PledgeSkillLearn[] skills = SkillTreeTable.getInstance().getAvailablePledgeSkills(activeChar);
 
             for (L2PledgeSkillLearn s : skills)
@@ -156,6 +157,7 @@ public class RequestAquireSkillInfo extends L2GameClientPacket
                     canteach = true;
                     requiredRep = s.getRepCost();
                     itemId = s.getItemId();
+                    itemCount = s.getItemCount();
                     break;
                 }
             }
@@ -164,14 +166,33 @@ public class RequestAquireSkillInfo extends L2GameClientPacket
                 return; // cheater
 
 
-            AcquireSkillInfo asi = new AcquireSkillInfo(skill.getId(), skill.getLevel(), requiredRep,2);
+            AcquireSkillInfo asi = new AcquireSkillInfo(skill.getId(), skill.getLevel(), requiredRep, 2);
 
             if (Config.LIFE_CRYSTAL_NEEDED)
-            {
-                asi.addRequirement(1, itemId, 1, 0);
-            }
+                asi.addRequirement(1, itemId, itemCount, 0);
 
             sendPacket(asi);
+        }
+		else if (_skillType == 6)
+        {
+			int costid = 0;
+			int costcount = 0;
+			L2SkillLearn[] skillsc = SkillTreeTable.getInstance().getAvailableSpecialSkills(activeChar);
+			for (L2SkillLearn s : skillsc)
+			{
+				L2Skill sk = SkillTable.getInstance().getInfo(s.getId(), s.getLevel());
+
+				if (sk == null || sk != skill)
+                    continue;
+
+				canteach = true;
+				costid = s.getIdCost();
+				costcount = s.getCostCount();
+			}
+
+			AcquireSkillInfo asi = new AcquireSkillInfo(skill.getId(), skill.getLevel(), 0, 6);
+			asi.addRequirement(5, costid, costcount, 0);
+			sendPacket(asi);
         }
 		else // Common Skills
 		{

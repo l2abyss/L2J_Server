@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Logger;
@@ -49,7 +50,7 @@ public final class RequestFriendList extends L2GameClientPacket
 			return;
 
 		SystemMessage sm;
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try
 		{

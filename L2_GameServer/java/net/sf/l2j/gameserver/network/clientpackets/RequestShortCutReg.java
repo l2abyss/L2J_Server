@@ -59,6 +59,13 @@ public final class RequestShortCutReg extends L2GameClientPacket
 		switch (_type)
 		{
 			case 0x01:	// item
+			case 0x02:	// skill
+			{
+				L2ShortCut sc = new L2ShortCut(_slot, _page, _type, _id, _lvl, _characterType);
+				sendPacket(new ShortCutRegister(sc));
+				activeChar.registerShortCut(sc);
+				break;
+			}
 			case 0x03:	// action
 			case 0x04:	// macro
             case 0x05:  // recipe
@@ -68,13 +75,14 @@ public final class RequestShortCutReg extends L2GameClientPacket
 				activeChar.registerShortCut(sc);
 				break;
 			}
-			case 0x02:	// skill
-			{
-				L2ShortCut sc = new L2ShortCut(_slot, _page, _type, _id,  _lvl, _characterType);
+            case 0x06: // Teleport Bookmark
+            {
+				L2ShortCut sc = new L2ShortCut(_slot, _page, _type, _id, _lvl, _characterType);
 				sendPacket(new ShortCutRegister(sc));
 				activeChar.registerShortCut(sc);
 				break;
-			}
+            }
+
 		}
 
 	}

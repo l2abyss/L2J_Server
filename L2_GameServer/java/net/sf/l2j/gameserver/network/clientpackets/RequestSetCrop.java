@@ -40,7 +40,7 @@ public class RequestSetCrop extends L2GameClientPacket {
 
 	private int _manorId;
 
-	private int[] _items; // _size*4
+	private long[] _items; // _size*4
 
 	@Override
 	protected void readImpl()
@@ -52,14 +52,14 @@ public class RequestSetCrop extends L2GameClientPacket {
 			_size = 0;
 			return;
 		}
-		_items = new int[_size * 4];
+		_items = new long[_size * 4];
 		for (int i = 0; i < _size; i++)
 		{
 			int itemId = readD();
 			_items[i * 4 + 0] = itemId;
-			int sales = readD();
+			long sales = readQ();
 			_items[i * 4 + 1] = sales;
-			int price = readD();
+			long price = readQ();
 			_items[i * 4 + 2] = price;
 			int type = readC();
 			_items[i * 4 + 3] = type;
@@ -75,10 +75,10 @@ public class RequestSetCrop extends L2GameClientPacket {
 		FastList<CropProcure> crops = new FastList<CropProcure>();
 		for (int i = 0; i < _size; i++)
 		{
-			int id = _items[i * 4 + 0];
-			int sales = _items[i * 4 + 1];
-			int price = _items[i * 4 + 2];
-			int type = _items[i * 4 + 3];
+			int id = (int) _items[i * 4 + 0];
+			long sales = _items[i * 4 + 1];
+			long price = _items[i * 4 + 2];
+			int type = (int) _items[i * 4 + 3];
 			if (id > 0)
 			{
 				CropProcure s = CastleManorManager.getInstance().getNewCropProcure(id, sales, type, price, sales);

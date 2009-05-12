@@ -71,7 +71,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 			_items[i * 4 + 1] = itemId;
 			int manorId = readD();
 			_items[i * 4 + 2] = manorId;
-			long count = readD();
+			long count = readQ();
 			if (count > Integer.MAX_VALUE) count = Integer.MAX_VALUE;
 			_items[i * 4 + 3] = (int)count;
 		}
@@ -192,7 +192,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 			if (crop == null || crop.getId() == 0 || crop.getPrice() == 0)
 				continue;
 
-			int fee = 0; // fee for selling to other manors
+			long fee = 0; // fee for selling to other manors
 
 			int rewardItem = L2Manor.getInstance().getRewardItem(cropId,
 					crop.getReward());
@@ -200,19 +200,19 @@ public class RequestProcureCropList extends L2GameClientPacket
 			if (count > crop.getAmount())
 				continue;
 
-			int sellPrice = (count * crop.getPrice());
-			int rewardPrice = ItemTable.getInstance().getTemplate(rewardItem)
+			long sellPrice = (count * crop.getPrice());
+			long rewardPrice = ItemTable.getInstance().getTemplate(rewardItem)
 					.getReferencePrice();
 
 			if (rewardPrice == 0)
 				continue;
 
-			int rewardItemCount = sellPrice / rewardPrice;
+			long rewardItemCount = sellPrice / rewardPrice;
 			if (rewardItemCount < 1)
 			{
 				SystemMessage sm = new SystemMessage(SystemMessageId.FAILED_IN_TRADING_S2_OF_CROP_S1);
 				sm.addItemName(cropId);
-				sm.addNumber(count);
+				sm.addItemNumber(count);
 				player.sendPacket(sm);
 				continue;
 			}
@@ -225,7 +225,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 			{
 				SystemMessage sm = new SystemMessage(SystemMessageId.FAILED_IN_TRADING_S2_OF_CROP_S1);
 				sm.addItemName(cropId);
-				sm.addNumber(count);
+				sm.addItemNumber(count);
 				player.sendPacket(sm);
 				sm = new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
 				player.sendPacket(sm);
@@ -271,31 +271,31 @@ public class RequestProcureCropList extends L2GameClientPacket
 			SystemMessage sm = new SystemMessage(
 					SystemMessageId.TRADED_S2_OF_CROP_S1);
 			sm.addItemName(cropId);
-			sm.addNumber(count);
+			sm.addItemNumber(count);
 			player.sendPacket(sm);
 
 			if (fee > 0)
 			{
 				sm = new SystemMessage(SystemMessageId.S1_ADENA_HAS_BEEN_WITHDRAWN_TO_PAY_FOR_PURCHASING_FEES);
-				sm.addNumber(fee);
+				sm.addItemNumber(fee);
 				player.sendPacket(sm);
 			}
 
 			sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 			sm.addItemName(cropId);
-			sm.addNumber(count);
+			sm.addItemNumber(count);
 			player.sendPacket(sm);
 
 			if (fee > 0)
 			{
 				sm = new SystemMessage(SystemMessageId.DISAPPEARED_ADENA);
-				sm.addNumber(fee);
+				sm.addItemNumber(fee);
 				player.sendPacket(sm);
 			}
 
 			sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
 			sm.addItemName(itemAdd);
-			sm.addNumber(rewardItemCount);
+			sm.addItemNumber(rewardItemCount);
 			player.sendPacket(sm);
 		}
 

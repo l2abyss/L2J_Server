@@ -28,10 +28,10 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.conditions.Condition;
-import net.sf.l2j.gameserver.skills.effects.EffectTemplate;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.skills.funcs.FuncTemplate;
 import net.sf.l2j.gameserver.templates.StatsSet;
+import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 
 /**
  * This class contains all informations concerning the item (weapon, armor, etc).<BR>
@@ -85,6 +85,7 @@ public abstract class L2Item
 	public static final int SLOT_R_BRACELET = 0x100000;
 	public static final int SLOT_L_BRACELET = 0x200000;
 	public static final int SLOT_DECO = 0x400000;
+	public static final int SLOT_BELT = 0x800000;
 	public static final int SLOT_WOLF = -100;
 	public static final int SLOT_HATCHLING = -101;
 	public static final int SLOT_STRIDER = -102;
@@ -122,18 +123,19 @@ public abstract class L2Item
 	public static final int CRYSTAL_A = 0x04; // ??
 	public static final int CRYSTAL_S = 0x05; // ??
 	public static final int CRYSTAL_S80 = 0x06; // ??
+	public static final int CRYSTAL_S84 = 0x07; // ??
 	
 	private static final int[] crystalItemId =
 	{
-		0, 1458, 1459, 1460, 1461, 1462, 1462
+		0, 1458, 1459, 1460, 1461, 1462, 1462, 1462
 	};
 	private static final int[] crystalEnchantBonusArmor =
 	{
-		0, 11, 6, 11, 19, 25, 25
+		0, 11, 6, 11, 19, 25, 25, 25
 	};
 	private static final int[] crystalEnchantBonusWeapon =
 	{
-		0, 90, 45, 67, 144, 250, 250
+		0, 90, 45, 67, 144, 250, 250, 250
 	};
 	
 	private final int _itemId;
@@ -146,6 +148,7 @@ public abstract class L2Item
 	private final int _materialType;
 	private final int _crystalType; // default to none-grade
 	private final int _duration;
+	private final int _time;
 	private final int _bodyPart;
 	private final int _referencePrice;
 	private final int _crystalCount;
@@ -196,6 +199,7 @@ public abstract class L2Item
 		_materialType = set.getInteger("material");
 		_crystalType = set.getInteger("crystal_type", CRYSTAL_NONE); // default to none-grade
 		_duration = set.getInteger("duration");
+		_time = set.getInteger("time");
 		_bodyPart = set.getInteger("bodypart");
 		_referencePrice = set.getInteger("price");
 		_crystalCount = set.getInteger("crystal_count", 0);
@@ -224,6 +228,14 @@ public abstract class L2Item
 		return _duration;
 	}
 	
+	/**
+	 * Returns the time of the item
+	 * @return int
+	 */
+	public final int getTime()
+	{
+		return _time;
+	}
 	/**
 	 * Returns the ID of the iden
 	 * @return int
@@ -397,7 +409,7 @@ public abstract class L2Item
 	 */
 	public final int getReferencePrice()
 	{
-		return (isConsumable() ? (int) (_referencePrice * Config.RATE_CONSUMABLE_COST) : _referencePrice);
+		return (isConsumable() ? (int)(_referencePrice * Config.RATE_CONSUMABLE_COST) : _referencePrice);
 	}
 	
 	/**
@@ -526,7 +538,10 @@ public abstract class L2Item
 			env.item = instance;
 			L2Effect e = et.getEffect(env);
 			if (e != null)
+			{
+				e.scheduleEffect();
 				effects.add(e);
+			}
 		}
 		if (effects.isEmpty())
 			return _emptyEffectSet;

@@ -63,7 +63,7 @@ public final class RequestHennaEquip extends L2GameClientPacket
             return;
 
     	L2HennaInstance temp = new L2HennaInstance(template);
-    	int _count = 0;
+    	long _count = 0;
     	
     	/* Prevents henna drawing exploit: 
     	   1) talk to L2SymbolMakerInstance 

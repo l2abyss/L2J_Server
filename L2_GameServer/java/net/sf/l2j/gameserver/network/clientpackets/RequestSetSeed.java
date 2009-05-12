@@ -40,7 +40,7 @@ public class RequestSetSeed extends L2GameClientPacket {
 
 	private int _manorId;
 
-	private int[] _items; // _size*3
+	private long[] _items; // _size*3
 
 	/**
 	 * @param buf
@@ -56,14 +56,14 @@ public class RequestSetSeed extends L2GameClientPacket {
 			_size = 0;
 			return;
 		}
-		_items = new int[_size * 3];
+		_items = new long[_size * 3];
 		for (int i = 0; i < _size; i++)
 		{
 			int itemId = readD();
 			_items[i * 3 + 0] = itemId;
-			int sales = readD();
+			long sales = readQ();
 			_items[i * 3 + 1] = sales;
-			int price = readD();
+			long price = readQ();
 			_items[i * 3 + 2] = price;
 		}
 	}
@@ -77,9 +77,9 @@ public class RequestSetSeed extends L2GameClientPacket {
 		FastList<SeedProduction> seeds = new FastList<SeedProduction>();
 		for (int i = 0; i < _size; i++)
 		{
-			int id = _items[i * 3 + 0];
-			int sales = _items[i * 3 + 1];
-			int price = _items[i * 3 + 2];
+			int id = (int) _items[i * 3 + 0];
+			long sales = _items[i * 3 + 1];
+			long price = _items[i * 3 + 2];
 			if (id > 0)
 			{
 				SeedProduction s = CastleManorManager.getInstance()

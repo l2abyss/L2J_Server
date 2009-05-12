@@ -28,6 +28,7 @@ import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.L2Event;
 import net.sf.l2j.gameserver.model.olympiad.Olympiad;
@@ -122,6 +123,29 @@ public final class RequestBypassToServer extends L2GameClientPacket
 					else if (object instanceof L2Npc && endOfId > 0 && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
 					{
 						((L2Npc)object).onBypassFeedback(activeChar, _command.substring(endOfId+1));
+					}
+					activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+				}
+				catch (NumberFormatException nfe) {}
+			}
+			else if (_command.startsWith("summon_"))
+			{
+				if(!activeChar.validateBypass(_command))
+					return;
+
+				int endOfId = _command.indexOf('_', 8);
+				String id;
+				if (endOfId > 0)
+					id = _command.substring(7, endOfId);
+				else
+					id = _command.substring(7);
+				try
+				{
+					L2Object object = L2World.getInstance().findObject(Integer.parseInt(id));
+
+					if (object instanceof L2MerchantSummonInstance && endOfId > 0 && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
+					{
+						((L2MerchantSummonInstance)object).onBypassFeedback(activeChar, _command.substring(endOfId+1));
 					}
 					activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				}

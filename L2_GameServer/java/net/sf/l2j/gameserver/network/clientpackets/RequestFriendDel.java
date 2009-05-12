@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
@@ -47,7 +48,7 @@ public final class RequestFriendDel extends L2GameClientPacket{
 	protected void runImpl()
 	{
 		SystemMessage sm;
-		java.sql.Connection con = null;
+		Connection con = null;
 		L2PcInstance activeChar = getClient().getActiveChar();
         if (activeChar == null)
             return;
@@ -93,8 +94,8 @@ public final class RequestFriendDel extends L2GameClientPacket{
 		    }
 
 			int objectId = rset.getInt("friendId");
+			rset.close();
 			statement.close();
-            rset.close();
 
 			statement = con.prepareStatement("DELETE FROM character_friends WHERE (charId=? AND friendId=?) OR (charId=? AND friendId=?)");
 			statement.setInt(1, activeChar.getObjectId());

@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,13 +44,13 @@ public final class RequestDestroyItem extends L2GameClientPacket
 	private static Logger _log = Logger.getLogger(RequestDestroyItem.class.getName());
 
 	private int _objectId;
-	private int _count;
+	private long _count;
 
 	@Override
 	protected void readImpl()
 	{
 		_objectId = readD();
-		_count = readD();
+		_count = readQ();
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 			return;
 		}
 
-		int count = _count;
+		long count = _count;
 
         if (activeChar.getPrivateStoreType() != 0)
         {
@@ -139,7 +140,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 
 		if (L2PetDataTable.isPetItem(itemId))
 		{
-			java.sql.Connection con = null;
+			Connection con = null;
 			try
 			{
 				if (activeChar.getPet() != null && activeChar.getPet().getControlItemId() == _objectId)
@@ -163,7 +164,8 @@ public final class RequestDestroyItem extends L2GameClientPacket
 				try { con.close(); } catch (Exception e) {}
 			}
 		}
-
+		if (itemToRemove.isTimeLimitedItem())
+			itemToRemove.endOfLife();
 		L2ItemInstance removedItem = activeChar.getInventory().destroyItem("Destroy", _objectId, count, activeChar, null);
 
 		if(removedItem == null)

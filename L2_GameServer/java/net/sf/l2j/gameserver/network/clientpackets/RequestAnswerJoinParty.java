@@ -57,6 +57,15 @@ public final class RequestAnswerJoinParty extends L2GameClientPacket
 
     		if (_response == 1)
             {
+				if (requestor.getParty() != null)//Update by rocknow-Start
+				{
+					if (requestor.getParty().getMemberCount() >= 9)
+					{
+						player.sendPacket(new SystemMessage(SystemMessageId.PARTY_FULL));
+						requestor.sendPacket(new SystemMessage(SystemMessageId.PARTY_FULL));
+						return;
+					}
+				}//Update by rocknow-End
     			player.joinParty(requestor.getParty());
     		} else
             {
