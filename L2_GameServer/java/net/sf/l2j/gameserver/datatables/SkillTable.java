@@ -76,7 +76,7 @@ public class SkillTable
 	 */
 	public static int getSkillHashCode(int skillId, int skillLevel)
 	{
-		return skillId * 256 + skillLevel;
+		return skillId * 255 + skillLevel;
 	}
 	
 	public L2Skill getInfo(int skillId, int level)

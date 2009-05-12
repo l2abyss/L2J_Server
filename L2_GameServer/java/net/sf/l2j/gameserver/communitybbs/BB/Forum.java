@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.communitybbs.BB;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -97,7 +98,7 @@ public class Forum
 	 */
 	private void load()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -173,7 +174,7 @@ public class Forum
 	 */
 	private void getChildren()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -306,7 +307,7 @@ public class Forum
 	 */
 	public void insertindb()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();

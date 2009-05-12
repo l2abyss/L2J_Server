@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.communitybbs.BB;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.logging.Logger;
 
@@ -71,7 +72,7 @@ public class Topic
 	 */
 	public void insertindb()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -146,7 +147,7 @@ public class Topic
 	{
 		TopicBBSManager.getInstance().delTopic(this);
 		f.rmTopicByID(getID());
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();

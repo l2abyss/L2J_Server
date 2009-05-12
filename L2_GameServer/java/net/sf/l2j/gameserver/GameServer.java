@@ -56,6 +56,7 @@ import net.sf.l2j.gameserver.datatables.NpcBufferTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.NpcWalkerRoutesTable;
 import net.sf.l2j.gameserver.datatables.PetSkillsTable;
+import net.sf.l2j.gameserver.datatables.ResidentialSkillTable;
 import net.sf.l2j.gameserver.datatables.SkillSpellbookTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
@@ -71,6 +72,7 @@ import net.sf.l2j.gameserver.handler.SkillHandler;
 import net.sf.l2j.gameserver.handler.UserCommandHandler;
 import net.sf.l2j.gameserver.handler.VoicedCommandHandler;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
+import net.sf.l2j.gameserver.instancemanager.AirShipManager;
 import net.sf.l2j.gameserver.instancemanager.AuctionManager;
 import net.sf.l2j.gameserver.instancemanager.BoatManager;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
@@ -246,6 +248,7 @@ public class GameServer
 		CharTemplateTable.getInstance();
 		NobleSkillTable.getInstance();
 		HeroSkillTable.getInstance();
+		ResidentialSkillTable.getInstance();
 		
 		// Call to load caches
 		HtmCache.getInstance();
@@ -319,6 +322,7 @@ public class GameServer
 		PetitionManager.getInstance();
 		QuestManager.getInstance();
 		TransformationManager.getInstance();
+		AirShipManager.getInstance();
 		
 		try
 		{

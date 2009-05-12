@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Map;
@@ -59,25 +60,21 @@ public class HennaTable
 	 */
 	private void restoreHennaData()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
-			try
-			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("SELECT symbol_id, symbol_name, dye_id, dye_amount, price, stat_INT, stat_STR, stat_CON, stat_MEM, stat_DEX, stat_WIT FROM henna");
-				ResultSet hennadata = statement.executeQuery();
-				
-				fillHennaTable(hennadata);
-				hennadata.close();
-				statement.close();
-			}
-			catch (Exception e)
-			{
-				_log.severe("error while creating henna table " + e);
-				e.printStackTrace();
-			}
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT symbol_id, symbol_name, dye_id, dye_amount, price, stat_INT, stat_STR, stat_CON, stat_MEM, stat_DEX, stat_WIT FROM henna");
+			ResultSet hennadata = statement.executeQuery();
 			
+			fillHennaTable(hennadata);
+			hennadata.close();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.severe("error while creating henna table " + e);
+			e.printStackTrace();
 		}
 		finally
 		{

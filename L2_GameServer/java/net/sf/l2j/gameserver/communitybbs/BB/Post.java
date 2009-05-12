@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.communitybbs.BB;
 
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -64,7 +65,7 @@ public class Post
 	}
 	public void insertindb(CPost cp)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -116,7 +117,7 @@ public class Post
 	public void deleteme(Topic t)
 	{
 		PostBBSManager.getInstance().delPostByTopic(t);
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -146,7 +147,7 @@ public class Post
 	 */
 	private void load(Topic t)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -190,7 +191,7 @@ public class Post
 	 */
 	public void updatetxt(int i)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			CPost cp = getCPost(i);

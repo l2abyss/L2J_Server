@@ -14,7 +14,15 @@
  */
 package net.sf.l2j.gameserver.ai;
 
-import static net.sf.l2j.gameserver.ai.CtrlIntention.*;
+import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
+import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
+import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_CAST;
+import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_FOLLOW;
+import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE;
+import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_INTERACT;
+import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_MOVE_TO;
+import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_PICK_UP;
+import static net.sf.l2j.gameserver.ai.CtrlIntention.AI_INTENTION_REST;
 
 import java.util.List;
 
@@ -29,10 +37,14 @@ import net.sf.l2j.gameserver.model.L2ItemInstance.ItemLocation;
 import net.sf.l2j.gameserver.model.actor.L2Attackable;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.instance.L2AirShipInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.AutoAttackStop;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.taskmanager.AttackStanceTaskManager;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
@@ -189,6 +201,9 @@ public class L2CharacterAI extends AbstractAI
 	@Override
 	protected void onIntentionAttack(L2Character target)
 	{
+		// stop invul effect if exist
+		if (_actor.getInvulEffect() != null)
+			_actor.getInvulEffect().exit();
 		if (target == null)
 		{
 			clientActionFailed();
@@ -257,6 +272,9 @@ public class L2CharacterAI extends AbstractAI
 	@Override
 	protected void onIntentionCast(L2Skill skill, L2Object target)
 	{
+		// stop invul effect if exist
+		if (_actor.getInvulEffect() != null)
+			_actor.getInvulEffect().exit();
 		if (getIntention() == AI_INTENTION_REST && skill.isMagic())
 		{
 			clientActionFailed();
@@ -359,6 +377,40 @@ public class L2CharacterAI extends AbstractAI
 		
 		// Move the actor to Location (x,y,z) server side AND client side by sending Server->Client packet CharMoveToLocation (broadcast)
 		moveToInABoat(destination, origin);
+	}
+
+	/* (non-Javadoc)
+	 * @see net.sf.l2j.gameserver.ai.AbstractAI#onIntentionMoveToInAirShip(net.sf.l2j.gameserver.model.L2CharPosition, net.sf.l2j.gameserver.model.L2CharPosition)
+	 */
+	@Override
+	protected void onIntentionMoveToInAirShip(L2CharPosition destination, L2CharPosition origin)
+	{
+		if (getIntention() == AI_INTENTION_REST)
+		{
+			// Cancel action client side by sending Server->Client packet ActionFailed to the L2PcInstance actor
+			clientActionFailed();
+			return;
+		}
+		
+		if (_actor.isAllSkillsDisabled() || _actor.isCastingNow())
+		{
+			// Cancel action client side by sending Server->Client packet ActionFailed to the L2PcInstance actor
+			clientActionFailed();
+			return;
+		}
+		
+		// Set the Intention of this AbstractAI to AI_INTENTION_MOVE_TO
+		//
+		//changeIntention(AI_INTENTION_MOVE_TO, new L2CharPosition(((L2PcInstance)_actor).getBoat().getX() - destination.x, ((L2PcInstance)_actor).getBoat().getY() - destination.y, ((L2PcInstance)_actor).getBoat().getZ() - destination.z, 0)  , null);
+		
+		// Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)
+		clientStopAutoAttack();
+		
+		// Abort the attack of the L2Character and send Server->Client ActionFailed packet
+		_actor.abortAttack();
+		
+		// Move the actor to Location (x,y,z) server side AND client side by sending Server->Client packet CharMoveToLocation (broadcast)
+		moveToInAirShip(destination, origin);
 	}
 	
 	/**
@@ -715,6 +767,10 @@ public class L2CharacterAI extends AbstractAI
 		{
 			((L2BoatInstance) _actor).evtArrived();
 		}
+		else if (_actor instanceof L2AirShipInstance)
+		{
+			((L2AirShipInstance) _actor).evtArrived();
+		}
 	}
 	
 	/**
@@ -1009,6 +1065,19 @@ public class L2CharacterAI extends AbstractAI
 			
 			if (_actor.isMovementDisabled())
 				return true;
+			
+			// while flying there is no move to cast
+			if (_actor.getAI().getIntention() == CtrlIntention.AI_INTENTION_CAST && 
+					_actor instanceof L2PcInstance && ((L2PcInstance)_actor).isTransformed())
+			{
+				if (!((L2PcInstance)_actor).getTransformation().canStartFollowToCast())
+				{
+					((L2PcInstance)_actor).sendPacket(new SystemMessage(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED));
+					((L2PcInstance)_actor).sendPacket(ActionFailed.STATIC_PACKET);
+					
+					return true;
+				}
+			}
 			
 			// If not running, set the L2Character movement type to run and send Server->Client packet ChangeMoveType to all others L2PcInstance
 			if (!_actor.isRunning() && !(this instanceof L2PlayerAI) && !(this instanceof L2SummonAI))

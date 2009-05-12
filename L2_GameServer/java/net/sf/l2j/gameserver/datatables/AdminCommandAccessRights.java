@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -63,7 +64,7 @@ public class AdminCommandAccessRights
 	{
 		_adminCommandAccessRights = new FastMap<String, L2AdminCommandAccessRight>();
 		
-		java.sql.Connection con = null;
+		Connection con = null;
 		
 		try
 		{

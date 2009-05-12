@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.lib;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Logger;
@@ -44,7 +45,7 @@ public class SqlUtils
 		String query = "";
 		Integer res = null;
 		
-		java.sql.Connection con = null;
+		Connection con = null;
 		
 		try
 		{
@@ -87,7 +88,7 @@ public class SqlUtils
 		String query = "";
 		Integer[] res = null;
 		
-		java.sql.Connection con = null;
+		Connection con = null;
 		
 		try
 		{
@@ -144,7 +145,7 @@ public class SqlUtils
 		
 		String query = "";
 		
-		java.sql.Connection con = null;
+		Connection con = null;
 		
 		Integer res[][] = null;
 		

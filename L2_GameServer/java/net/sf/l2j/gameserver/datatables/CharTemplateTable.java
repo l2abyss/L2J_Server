@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -51,7 +52,7 @@ public class CharTemplateTable
 	
 	private CharTemplateTable()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		
 		try
 		{

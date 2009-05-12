@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -67,7 +68,7 @@ public class NpcTable
 	
 	private void restoreNpcData()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		
 		try
 		{
@@ -409,7 +410,7 @@ public class NpcTable
 	
 	public void reloadNpc(int id)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		
 		try
 		{
@@ -499,7 +500,7 @@ public class NpcTable
 	
 	public void saveNpc(StatsSet npc)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();

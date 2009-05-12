@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class SpawnTable
 	
 	private void fillSpawnTable()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		
 		try
 		{
@@ -273,7 +274,7 @@ public class SpawnTable
 		
 		if (storeInDb)
 		{
-			java.sql.Connection con = null;
+			Connection con = null;
 			String spawnTable;
 			if (spawn.isCustom() && Config.CUSTOM_SPAWNLIST_TABLE)
 				spawnTable = "custom_spawnlist";
@@ -322,7 +323,7 @@ public class SpawnTable
 		
 		if (updateDb)
 		{
-			java.sql.Connection con = null;
+			Connection con = null;
 			if (Config.DELETE_GMSPAWN_ON_CUSTOM)
 			{
 				try

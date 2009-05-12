@@ -301,7 +301,7 @@ public class TradeController
     
     public void dataCountStore()
     {
-        java.sql.Connection con = null;
+        Connection con = null;
         PreparedStatement statement;
         
         try
@@ -320,7 +320,7 @@ public class TradeController
                         if (item.hasLimitedStock() && item.getCurrentCount() < item.getMaxCount()) //needed?
                         {
                             statement = con.prepareStatement("UPDATE merchant_buylists SET currentCount=? WHERE item_id=? AND shop_id=?");
-                            statement.setInt(1, item.getCurrentCount());
+                            statement.setLong(1, item.getCurrentCount());
                             statement.setInt(2, item.getItemId());
                             statement.setInt(3, listId);
                             statement.executeUpdate();

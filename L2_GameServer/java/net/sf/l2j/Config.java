@@ -274,6 +274,8 @@ public final class Config
 	public static long FS_SUPPORT_FEE_RATIO;
 	public static int FS_SUPPORT1_FEE;
 	public static int FS_SUPPORT2_FEE;
+	public static int FS_BLOOD_OATH_COUNT;
+	public static int FS_BLOOD_OATH_FRQ;
 
 
 	//--------------------------------------------------
@@ -446,6 +448,7 @@ public final class Config
 	public static int ALT_OLY_GP_PER_POINT;
 	public static int ALT_OLY_MIN_POINT_FOR_EXCH;
 	public static int ALT_OLY_HERO_POINTS;
+	public static int ALT_OLY_HERO_TOKENS;
 	public static boolean ALT_OLY_LOG_FIGHTS;
 	public static boolean ALT_OLY_SHOW_MONTHLY_WINNERS;
 	public static boolean ALT_OLY_ANNOUNCE_GAMES;
@@ -634,6 +637,7 @@ public final class Config
 	public static int KARMA_RATE_DROP_ITEM;
 	public static int KARMA_RATE_DROP_EQUIP;
 	public static int KARMA_RATE_DROP_EQUIP_WEAPON;
+	public static double[] PLAYER_XP_PERCENT_LOST;
 
 
 	//--------------------------------------------------
@@ -672,6 +676,7 @@ public final class Config
 	public static String DATABASE_LOGIN;
 	public static String DATABASE_PASSWORD;
 	public static int DATABASE_MAX_CONNECTIONS;
+	public static int DATABASE_MAX_IDLE_TIME;
 	public static int MAXIMUM_ONLINE_USERS;
 	public static String CNAME_TEMPLATE;
 	public static String PET_NAME_TEMPLATE;
@@ -805,6 +810,7 @@ public final class Config
 					DATABASE_LOGIN = serverSettings.getProperty("Login", "root");
 					DATABASE_PASSWORD = serverSettings.getProperty("Password", "");
 					DATABASE_MAX_CONNECTIONS = Integer.parseInt(serverSettings.getProperty("MaximumDbConnections", "10"));
+					DATABASE_MAX_IDLE_TIME = Integer.parseInt(serverSettings.getProperty("MaximumDbIdleTime", "0"));
 
 					DATAPACK_ROOT = new File(serverSettings.getProperty("DatapackRoot", ".")).getCanonicalFile();
 
@@ -972,6 +978,8 @@ public final class Config
 					FS_EXPREG_FEE_RATIO = Long.parseLong(Feature.getProperty("FortressExpRegenerationFunctionFeeRatio", "86400000"));
 					FS_EXPREG1_FEE = Integer.parseInt(Feature.getProperty("FortressExpRegenerationFeeLvl1", "9000"));
 					FS_EXPREG2_FEE = Integer.parseInt(Feature.getProperty("FortressExpRegenerationFeeLvl2", "10000"));
+					FS_BLOOD_OATH_COUNT = Integer.parseInt(Feature.getProperty("FortressBloodOathCount", "1"));
+					FS_BLOOD_OATH_FRQ = Integer.parseInt(Feature.getProperty("FortressBloodOathFrequency", "360"));
 
 					ALT_GAME_CASTLE_DAWN = Boolean.parseBoolean(Feature.getProperty("AltCastleForDawn", "True"));
 					ALT_GAME_CASTLE_DUSK = Boolean.parseBoolean(Feature.getProperty("AltCastleForDusk", "True"));
@@ -1414,10 +1422,11 @@ public final class Config
 					ALT_OLY_BATTLE_REWARD_ITEM = Integer.parseInt(General.getProperty("AltOlyBattleRewItem","6651"));
 					ALT_OLY_CLASSED_RITEM_C = Integer.parseInt(General.getProperty("AltOlyClassedRewItemCount","50"));
 					ALT_OLY_NONCLASSED_RITEM_C = Integer.parseInt(General.getProperty("AltOlyNonClassedRewItemCount","30"));
-					ALT_OLY_COMP_RITEM = Integer.parseInt(General.getProperty("AltOlyCompRewItem","6651"));
+					ALT_OLY_COMP_RITEM = Integer.parseInt(General.getProperty("AltOlyCompRewItem","13722"));
 					ALT_OLY_GP_PER_POINT = Integer.parseInt(General.getProperty("AltOlyGPPerPoint","1000"));
 					ALT_OLY_MIN_POINT_FOR_EXCH = Integer.parseInt(General.getProperty("AltOlyMinPointForExchange","50"));
 					ALT_OLY_HERO_POINTS = Integer.parseInt(General.getProperty("AltOlyHeroPoints","300"));
+					ALT_OLY_HERO_TOKENS = Integer.parseInt(General.getProperty("AltOlyHeroTokens","180000"));
 					ALT_OLY_LOG_FIGHTS = Boolean.parseBoolean(General.getProperty("AlyOlyLogFights","false"));
 					ALT_OLY_SHOW_MONTHLY_WINNERS = Boolean.parseBoolean(General.getProperty("AltOlyShowMonthlyWinners","true"));
 					ALT_OLY_ANNOUNCE_GAMES = Boolean.parseBoolean(General.getProperty("AltOlyAnnounceGames","true"));
@@ -1581,6 +1590,42 @@ public final class Config
 					KARMA_RATE_DROP_ITEM = Integer.parseInt(ratesSettings.getProperty("KarmaRateDropItem", "50"));
 					KARMA_RATE_DROP_EQUIP = Integer.parseInt(ratesSettings.getProperty("KarmaRateDropEquip", "40"));
 					KARMA_RATE_DROP_EQUIP_WEAPON = Integer.parseInt(ratesSettings.getProperty("KarmaRateDropEquipWeapon", "10"));
+					
+					// Initializing table
+					PLAYER_XP_PERCENT_LOST = new double[Byte.MAX_VALUE+1];
+					
+					// Default value
+					for (int i = 0; i <= Byte.MAX_VALUE; i++)
+						PLAYER_XP_PERCENT_LOST[i] = 1.;
+					
+					// Now loading into table parsed values
+					try
+					{
+						String[] values = ratesSettings.getProperty("PlayerXPPercentLost", "0,39-7.0;40,75-4.0;76,76-2.5;77,77-2.0;78,78-1.5").split(";");
+						
+						for (String s : values)
+						{
+							int min;
+							int max;
+							double val;
+							
+							String[] vals = s.split("-");
+							String[] mM = vals[0].split(",");
+							
+							min = Integer.parseInt(mM[0]);
+							max = Integer.parseInt(mM[1]);
+							val = Double.parseDouble(vals[1]);
+							
+							for (int i = min; i <= max; i++)
+								PLAYER_XP_PERCENT_LOST[i] = val;
+						}
+					}
+					catch (Exception e)
+					{
+						_log.warning("Error while loading Player XP percent lost");
+						e.printStackTrace();
+					}
+					
 				}
 				catch (Exception e)
 				{
@@ -1855,6 +1900,7 @@ public final class Config
 					DATABASE_LOGIN = serverSettings.getProperty("Login", "root");
 					DATABASE_PASSWORD = serverSettings.getProperty("Password", "");
 					DATABASE_MAX_CONNECTIONS = Integer.parseInt(serverSettings.getProperty("MaximumDbConnections", "10"));
+					DATABASE_MAX_IDLE_TIME = Integer.parseInt(serverSettings.getProperty("MaximumDbIdleTime", "0"));
 
 					SHOW_LICENCE = Boolean.parseBoolean(serverSettings.getProperty("ShowLicence", "true"));
 					IP_UPDATE_TIME = Integer.parseInt(serverSettings.getProperty("IpUpdateTime","15"));

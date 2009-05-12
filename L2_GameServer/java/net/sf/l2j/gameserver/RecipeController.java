@@ -388,7 +388,7 @@ public class RecipeController
 		protected int _itemGrab;
 		protected int _exp = -1;
 		protected int _sp = -1;
-		protected int _price;
+		protected long _price;
 		protected int _totalItems;
 		protected int _materialsRefPrice;
 		protected int _delay;
@@ -671,7 +671,7 @@ public class RecipeController
 				if (_target == _player)
 				{
 					SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2_EQUIPPED); // you equipped ...
-					sm.addNumber(count);
+					sm.addItemNumber(count);
 					sm.addItemName(item.getItemId());
 					_player.sendPacket(sm);
 				}
@@ -917,7 +917,7 @@ public class RecipeController
             {
     			sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
     			sm.addItemName(itemId);
-                sm.addNumber(itemCount);
+                sm.addItemNumber(itemCount);
     			_target.sendPacket(sm);
             } else
             {
@@ -930,7 +930,7 @@ public class RecipeController
 			{
 				// inform manufacturer of earned profit
 				sm = new SystemMessage(SystemMessageId.EARNED_ADENA);
-				sm.addNumber(_price);
+				sm.addItemNumber(_price);
 				_player.sendPacket(sm);
 			}
 

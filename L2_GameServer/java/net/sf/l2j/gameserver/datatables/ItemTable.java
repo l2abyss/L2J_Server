@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -99,6 +100,7 @@ public class ItemTable
 		_materials.put("cobweb", L2Item.MATERIAL_COBWEB);
 		_materials.put("seed", L2Item.MATERIAL_SEED);
 		
+		_crystalTypes.put("s84", L2Item.CRYSTAL_S84);
 		_crystalTypes.put("s80", L2Item.CRYSTAL_S80);
 		_crystalTypes.put("s", L2Item.CRYSTAL_S);
 		_crystalTypes.put("a", L2Item.CRYSTAL_A);
@@ -124,6 +126,7 @@ public class ItemTable
 		_weaponTypes.put("crossbow", L2WeaponType.CROSSBOW);
 		_weaponTypes.put("rapier", L2WeaponType.RAPIER);
 		_weaponTypes.put("ancient", L2WeaponType.ANCIENT_SWORD);
+		_weaponTypes.put("dualdagger", L2WeaponType.DUAL_DAGGER);
 		
 		_armorTypes.put("none", L2ArmorType.NONE);
 		_armorTypes.put("light", L2ArmorType.LIGHT);
@@ -151,6 +154,7 @@ public class ItemTable
 		_slots.put("feet", L2Item.SLOT_FEET);
 		_slots.put("gloves", L2Item.SLOT_GLOVES);
 		_slots.put("chest,legs", L2Item.SLOT_CHEST | L2Item.SLOT_LEGS);
+		_slots.put("belt", L2Item.SLOT_BELT);
 		_slots.put("rhand", L2Item.SLOT_R_HAND);
 		_slots.put("lhand", L2Item.SLOT_L_HAND);
 		_slots.put("lrhand", L2Item.SLOT_LR_HAND);
@@ -170,25 +174,25 @@ public class ItemTable
 	/** Table of SQL request in order to obtain items from tables [etcitem], [armor], [weapon] */
 	private static final String[] SQL_ITEM_SELECTS =
 	{
-		"SELECT item_id, name, crystallizable, item_type, weight, consume_type, material," + " crystal_type, duration, price, crystal_count, sellable, dropable, destroyable, tradeable FROM etcitem",
+		"SELECT item_id, name, crystallizable, item_type, weight, consume_type, material," + " crystal_type, duration, time, price, crystal_count, sellable, dropable, destroyable, tradeable FROM etcitem",
 		
-		"SELECT item_id, name, bodypart, crystallizable, armor_type, weight," + " material, crystal_type, avoid_modify, duration, p_def, m_def, mp_bonus,"
+		"SELECT item_id, name, bodypart, crystallizable, armor_type, weight," + " material, crystal_type, avoid_modify, duration, time, p_def, m_def, mp_bonus,"
 				+ " price, crystal_count, sellable, dropable, destroyable, tradeable, skill FROM armor",
 		
 		"SELECT item_id, name, bodypart, crystallizable, weight, soulshots, spiritshots," + " material, crystal_type, p_dam, rnd_dam, weaponType, critical, hit_modify, avoid_modify,"
-				+ " shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, price, crystal_count," + " sellable, dropable, destroyable, tradeable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl,"
+				+ " shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, time, price, crystal_count," + " sellable, dropable, destroyable, tradeable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl,"
 				+ " onCast_skill_chance, onCrit_skill_id, onCrit_skill_lvl, onCrit_skill_chance, change_weaponId FROM weapon"
 	};
 	
 	private static final String[] SQL_CUSTOM_ITEM_SELECTS =
 	{
-		"SELECT item_id, name, crystallizable, item_type, weight, consume_type, material," + " crystal_type, duration, price, crystal_count, sellable, dropable, destroyable, tradeable FROM custom_etcitem",
+		"SELECT item_id, name, crystallizable, item_type, weight, consume_type, material," + " crystal_type, duration, time, price, crystal_count, sellable, dropable, destroyable, tradeable FROM custom_etcitem",
 		
-		"SELECT item_id, name, bodypart, crystallizable, armor_type, weight," + " material, crystal_type, avoid_modify, duration, p_def, m_def, mp_bonus,"
+		"SELECT item_id, name, bodypart, crystallizable, armor_type, weight," + " material, crystal_type, avoid_modify, duration, time, p_def, m_def, mp_bonus,"
 				+ " price, crystal_count, sellable, dropable, destroyable, tradeable, skill FROM custom_armor",
 		
 		"SELECT item_id, name, bodypart, crystallizable, weight, soulshots, spiritshots," + " material, crystal_type, p_dam, rnd_dam, weaponType, critical, hit_modify, avoid_modify,"
-				+ " shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, price, crystal_count," + " sellable, dropable, destroyable, tradeable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl,"
+				+ " shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, time, price, crystal_count," + " sellable, dropable, destroyable, tradeable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl,"
 				+ " onCast_skill_chance, onCrit_skill_id, onCrit_skill_lvl, onCrit_skill_chance, change_weaponId FROM custom_weapon"
 	};
 	
@@ -230,7 +234,7 @@ public class ItemTable
 		_armors = new FastMap<Integer, L2Armor>();
 		_weapons = new FastMap<Integer, L2Weapon>();
 		
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -410,6 +414,7 @@ public class ItemTable
 		item.set.set("mp_consume", rset.getInt("mp_consume"));
 		item.set.set("m_dam", rset.getInt("m_dam"));
 		item.set.set("duration", rset.getInt("duration"));
+		item.set.set("time", rset.getInt("time"));
 		item.set.set("price", rset.getInt("price"));
 		item.set.set("crystal_count", rset.getInt("crystal_count"));
 		item.set.set("sellable", Boolean.valueOf(rset.getString("sellable")));
@@ -493,6 +498,7 @@ public class ItemTable
 		item.set.set("crystal_type", _crystalTypes.get(rset.getString("crystal_type")));
 		item.set.set("avoid_modify", rset.getInt("avoid_modify"));
 		item.set.set("duration", rset.getInt("duration"));
+		item.set.set("time", rset.getInt("time"));
 		item.set.set("p_def", rset.getInt("p_def"));
 		item.set.set("m_def", rset.getInt("m_def"));
 		item.set.set("mp_bonus", rset.getInt("mp_bonus"));
@@ -633,6 +639,7 @@ public class ItemTable
 		item.set.set("name", item.name);
 		
 		item.set.set("duration", rset.getInt("duration"));
+		item.set.set("time", rset.getInt("time"));
 		item.set.set("price", rset.getInt("price"));
 		
 		return item;
@@ -774,7 +781,7 @@ public class ItemTable
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @return L2ItemInstance corresponding to the new item
 	 */
-	public L2ItemInstance createItem(String process, int itemId, int count, L2PcInstance actor, L2Object reference)
+	public L2ItemInstance createItem(String process, int itemId, long count, L2PcInstance actor, L2Object reference)
 	{
 		// Create and Init the L2ItemInstance corresponding to the Item Identifier
 		L2ItemInstance item = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
@@ -935,7 +942,7 @@ public class ItemTable
 			// if it's a pet control item, delete the pet as well
 			if (L2PetDataTable.isPetItem(item.getItemId()))
 			{
-				java.sql.Connection con = null;
+				Connection con = null;
 				try
 				{
 					// Delete the pet in db

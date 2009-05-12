@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -48,7 +49,7 @@ public class MapRegionTable
 	
 	private static MapRegionTable _instance;
 	
-	private final int[][] _regions = new int[19][21];
+	private final int[][] _regions = new int[16][18];
 	
 	private final int[][] _pointsWithKarmas;
 	
@@ -75,18 +76,18 @@ public class MapRegionTable
 		int count2 = 0;
 		
 		//LineNumberReader lnr = null;
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT region, sec0, sec1, sec2, sec3, sec4, sec5, sec6, sec7, sec8, sec9, sec10 FROM mapregion");
+			PreparedStatement statement = con.prepareStatement("SELECT region, sec0, sec1, sec2, sec3, sec4, sec5, sec6, sec7, sec8, sec9, sec10,sec11,sec12,sec13,sec14,sec15 FROM mapregion");
 			ResultSet rset = statement.executeQuery();
 			int region;
 			while (rset.next())
 			{
 				region = rset.getInt(1);
 				
-				for (int j = 0; j < 11; j++)
+				for (int j = 0; j < 16; j++)
 				{
 					_regions[j][region] = rset.getInt(j + 2);
 					count2++;
@@ -206,7 +207,7 @@ public class MapRegionTable
 	
 	public final int getMapRegionX(int posX)
 	{
-		return (posX >> 15) + 4;// + centerTileX;
+		return (posX >> 15) + 9;// + centerTileX;
 	}
 	
 	public final int getMapRegionY(int posY)
@@ -355,7 +356,7 @@ public class MapRegionTable
 				break;
 			case 16:
 				nearestTown = "Town of Shuttgart";
-				break; ////TODO@ (Check mapregion table)[Luno]
+				break;
 			case 18:
 				nearestTown = "Primeval Isle";
 				break;
@@ -367,6 +368,48 @@ public class MapRegionTable
 				break;
 			case 21:
 				nearestTown = "Fantasy Island";
+				break;
+			case 22:
+				nearestTown = "Neutral Zone";
+				break;
+			case 23:
+				nearestTown = "Coliseum";
+				break;
+			case 24:
+				nearestTown = "GM Consultation service";
+				break;
+			case 25:
+				nearestTown = "Dimensional Gap";
+				break;
+			case 26:
+				nearestTown = "Cemetery of the Empire";
+				break;
+			case 27:
+				nearestTown = "inside the Steel Citadel";
+				break;
+			case 28:
+				nearestTown = "Steel Citadel Resistance";
+				break;
+			case 29:
+				nearestTown = "Inside Kamaloka";
+				break;
+			case 30:
+				nearestTown = "Inside Nia Kamaloka";
+				break;
+			case 31:
+				nearestTown = "Inside Rim Kamaloka";
+				break;
+			case 32:
+				nearestTown = "Keucereus clan association";
+				break;
+			case 33:
+				nearestTown = "inside the Seed of Infinity";
+				break;
+			case 34:
+				nearestTown = "outside the Seed of Infinity";
+				break;
+			case 35:
+				nearestTown = "Aerial Cleft";
 				break;
 			default:
 				nearestTown = "Town of Aden";
@@ -392,8 +435,8 @@ public class MapRegionTable
 			Castle castle = null;
 			Fort fort = null;
 			ClanHall clanhall = null;
-			
-			if (player.getClan() != null)
+		
+			if (player.getClan() != null && !player.isFlyingMounted()) // flying players in gracia cant use teleports to aden continent
 			{
 				// If teleport to clan hall
 				if (teleportWhere == TeleportWhereType.ClanHall)
@@ -403,13 +446,13 @@ public class MapRegionTable
 					if (clanhall != null)
 					{
 						L2ClanHallZone zone = clanhall.getZone();
-						if (zone != null)
+						if (zone != null && !player.isFlyingMounted())
 						{
 							return zone.getSpawn();
 						}
 					}
 				}
-				
+
 				// If teleport to castle
 				if (teleportWhere == TeleportWhereType.Castle)
 				{
@@ -491,15 +534,14 @@ public class MapRegionTable
 				}
 			}
 			
-			// teleport RED PK 5+ to Floran Village
-			if (player.getPkKills() > 5 && player.getKarma() > 1)
-				return new Location(17817, 170079, -3530);
 			//Karma player land out of city
 			if (player.getKarma() > 1)
 			{
 				int closest = getMapRegion(activeChar.getX(), activeChar.getY());
 				if (closest >= 0 && closest < _pointsWithKarmas.length)
 					return new Location(_pointsWithKarmas[closest][0], _pointsWithKarmas[closest][1], _pointsWithKarmas[closest][2]);
+				else if (player.isFlyingMounted()) // prevent flying players to teleport outside of gracia
+					return new Location(-186330, 242944, 2544);
 				else
 					return new Location(17817, 170079, -3530);
 			}

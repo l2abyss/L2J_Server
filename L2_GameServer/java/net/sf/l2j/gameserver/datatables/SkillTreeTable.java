@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
@@ -58,6 +59,7 @@ public class SkillTreeTable
 	private List<L2PledgeSkillLearn> _pledgeSkillTrees; //pledge skill list
 	private Map<Integer, L2EnchantSkillLearn> _enchantSkillTrees; //enchant skill list
 	private List<L2TransformSkillLearn> _TransformSkillTrees; // Transform Skills (Test)
+	private FastList<L2SkillLearn> _specialSkillTrees;
 	
 	public static SkillTreeTable getInstance()
 	{
@@ -137,7 +139,8 @@ public class SkillTreeTable
 		int count4 = 0;
 		int count5 = 0;
 		int count6 = 0;
-		java.sql.Connection con = null;
+		int count7 = 0;
+		Connection con = null;
 		
 		try
 		{
@@ -249,7 +252,7 @@ public class SkillTreeTable
 			{
 				_enchantSkillTrees = new FastMap<Integer, L2EnchantSkillLearn>();
 				
-				PreparedStatement statement = con.prepareStatement("SELECT skill_id, level, name, base_lvl, sp, min_skill_lvl, exp, success_rate76, success_rate77, success_rate78 FROM enchant_skill_trees ORDER BY skill_id, level");
+				PreparedStatement statement = con.prepareStatement("SELECT skill_id, level, base_lvl, sp, min_skill_lvl, exp, success_rate76, success_rate77, success_rate78, success_rate79, success_rate80, success_rate81, success_rate82, success_rate83, success_rate84, success_rate85 FROM enchant_skill_trees ORDER BY skill_id, level");
 				ResultSet skilltree3 = statement.executeQuery();
 				
 				int prevSkillId = -1;
@@ -258,7 +261,6 @@ public class SkillTreeTable
 				{
 					int id = skilltree3.getInt("skill_id");
 					int lvl = skilltree3.getInt("level");
-					String name = skilltree3.getString("name");
 					int baseLvl = skilltree3.getInt("base_lvl");
 					int minSkillLvl = skilltree3.getInt("min_skill_lvl");
 					int sp = skilltree3.getInt("sp");
@@ -266,6 +268,13 @@ public class SkillTreeTable
 					byte rate76 = skilltree3.getByte("success_rate76");
 					byte rate77 = skilltree3.getByte("success_rate77");
 					byte rate78 = skilltree3.getByte("success_rate78");
+					byte rate79 = skilltree3.getByte("success_rate79");
+					byte rate80 = skilltree3.getByte("success_rate80");
+					byte rate81 = skilltree3.getByte("success_rate81");
+					byte rate82 = skilltree3.getByte("success_rate82");
+					byte rate83 = skilltree3.getByte("success_rate83");
+					byte rate84 = skilltree3.getByte("success_rate84");
+					byte rate85 = skilltree3.getByte("success_rate85");
 					
 					if (prevSkillId != id)
 						prevSkillId = id;
@@ -276,7 +285,7 @@ public class SkillTreeTable
 						skill = new L2EnchantSkillLearn(id, baseLvl);
 						_enchantSkillTrees.put(id, skill);
 					}
-					EnchantSkillDetail esd = new EnchantSkillDetail(lvl, minSkillLvl, name, sp, exp, rate76, rate77, rate78);
+					EnchantSkillDetail esd = new EnchantSkillDetail(lvl, minSkillLvl, sp, exp, rate76, rate77, rate78, rate79, rate80, rate81, rate82, rate83, rate84, rate85);
 					skill.addEnchantDetail(esd);
 				}
 				
@@ -294,7 +303,7 @@ public class SkillTreeTable
 			{
 				_pledgeSkillTrees = new FastList<L2PledgeSkillLearn>();
 				
-				PreparedStatement statement = con.prepareStatement("SELECT skill_id, level, name, clan_lvl, repCost, itemId FROM pledge_skill_trees ORDER BY skill_id, level");
+				PreparedStatement statement = con.prepareStatement("SELECT skill_id, level, name, clan_lvl, repCost, itemId, itemCount FROM pledge_skill_trees ORDER BY skill_id, level");
 				ResultSet skilltree4 = statement.executeQuery();
 				
 				int prevSkillId = -1;
@@ -307,11 +316,12 @@ public class SkillTreeTable
 					int baseLvl = skilltree4.getInt("clan_lvl");
 					int sp = skilltree4.getInt("repCost");
 					int itemId = skilltree4.getInt("itemId");
+					int itemCount = skilltree4.getInt("itemCount");
 					
 					if (prevSkillId != id)
 						prevSkillId = id;
 					
-					L2PledgeSkillLearn skill = new L2PledgeSkillLearn(id, lvl, baseLvl, name, sp, itemId);
+					L2PledgeSkillLearn skill = new L2PledgeSkillLearn(id, lvl, baseLvl, name, sp, itemId, itemCount);
 					
 					_pledgeSkillTrees.add(skill);
 				}
@@ -361,6 +371,40 @@ public class SkillTreeTable
 			{
 				_log.log(Level.SEVERE, "Error while creating Transformation skill table ", e);
 			}
+			try
+			{
+				_specialSkillTrees = new FastList<L2SkillLearn>();
+				
+				PreparedStatement statement = con.prepareStatement("SELECT skill_id, level, name, costid, cost FROM special_skill_trees ORDER BY skill_id, level");
+				ResultSet skilltree6 = statement.executeQuery();
+				
+				int prevSkillId = -1;
+				
+				while (skilltree6.next())
+				{
+					int id = skilltree6.getInt("skill_id");
+					int lvl = skilltree6.getInt("level");
+					String name = skilltree6.getString("name");
+					int costId = skilltree6.getInt("costid");
+					int costCount = skilltree6.getInt("cost");
+					
+					if (prevSkillId != id)
+						prevSkillId = id;
+					
+					L2SkillLearn skill = new L2SkillLearn(id, lvl, 0, name, 0, costId, costCount);
+					
+					_specialSkillTrees.add(skill);
+				}
+				
+				skilltree6.close();
+				statement.close();
+				
+				count7 = _specialSkillTrees.size();
+			}
+			catch (Exception e)
+			{
+				_log.severe("Error while creating special skill table: " + e);
+			}
 		}
 		catch (Exception e)
 		{
@@ -382,6 +426,7 @@ public class SkillTreeTable
 		_log.config("EnchantSkillTreeTable: Loaded " + count4 + " enchant skills.");
 		_log.config("PledgeSkillTreeTable: Loaded " + count5 + " pledge skills");
 		_log.config("TransformSkillTreeTable: Loaded " + count6 + " transform skills");
+		_log.config("SpecialSkillTreeTable: Loaded " + count7 + " special skills");
 	}
 	
 	private Map<ClassId, Map<Integer, L2SkillLearn>> getSkillTrees()
@@ -489,6 +534,49 @@ public class SkillTreeTable
 		return result.toArray(new L2SkillLearn[result.size()]);
 	}
 	
+	public L2SkillLearn[] getAvailableSpecialSkills(L2PcInstance cha)
+	{
+		List<L2SkillLearn> result = new FastList<L2SkillLearn>();
+		List<L2SkillLearn> skills = new FastList<L2SkillLearn>();
+		
+		skills.addAll(_specialSkillTrees);
+		
+		if (skills == null)
+		{
+			// the skilltree for this class is undefined, so we give an empty list
+			_log.warning("Skilltree for special is not defined !");
+			return new L2SkillLearn[0];
+		}
+		
+		L2Skill[] oldSkills = cha.getAllSkills();
+		
+		for (L2SkillLearn temp : skills)
+		{
+			boolean knownSkill = false;
+				
+			for (int j = 0; j < oldSkills.length && !knownSkill; j++)
+			{
+				if (oldSkills[j].getId() == temp.getId())
+				{
+					knownSkill = true;
+						
+					if (oldSkills[j].getLevel() == temp.getLevel() - 1)
+					{
+						// this is the next level of a skill that we know
+						result.add(temp);
+					}
+				}
+			}
+				
+			if (!knownSkill && temp.getLevel() == 1)
+			{
+				// this is a new skill
+				result.add(temp);
+			}
+		}
+		
+		return result.toArray(new L2SkillLearn[result.size()]);
+	}
 	public L2EnchantSkillLearn getSkillEnchantmentForSkill(L2Skill skill)
 	{
 		L2EnchantSkillLearn esl = this.getSkillEnchantmentBySkillId(skill.getId());

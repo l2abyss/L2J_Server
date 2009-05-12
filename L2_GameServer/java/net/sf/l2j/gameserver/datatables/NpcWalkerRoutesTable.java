@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Logger;
@@ -56,7 +57,7 @@ public class NpcWalkerRoutesTable
 	public void load()
 	{
 		_routes.clear();
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -84,8 +85,6 @@ public class NpcWalkerRoutesTable
 			statement.close();
 			
 			_log.info("WalkerRoutesTable: Loaded " + _routes.size() + " Npc Walker Routes.");
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{

@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -130,7 +131,7 @@ public class SQLAccountManager
     private static void printAccInfo(String m) throws SQLException
     {
         int count = 0;
-        java.sql.Connection con = null;
+        Connection con = null;
         con = L2DatabaseFactory.getInstance().getConnection();
         String q = "SELECT login, accessLevel FROM accounts ";
         if (m.equals("1"))
@@ -150,6 +151,7 @@ public class SQLAccountManager
         }
         rset.close();
         statement.close();
+        con.close();
         System.out.println("Displayed accounts: " + count + ".");
     }
     
@@ -162,7 +164,7 @@ public class SQLAccountManager
         newpass = md.digest(newpass);
         
         // Add to Base
-        java.sql.Connection con = null;
+        Connection con = null;
         con = L2DatabaseFactory.getInstance().getConnection();
         PreparedStatement statement = con.prepareStatement("REPLACE	accounts (login, password, accessLevel) VALUES (?,?,?)");
         statement.setString(1, account);
@@ -170,11 +172,12 @@ public class SQLAccountManager
         statement.setString(3, level);
         statement.executeUpdate();
         statement.close();
+        con.close();
     }
     
     private static void changeAccountLevel(String account, String level) throws SQLException
     {
-        java.sql.Connection con = null;
+        Connection con = null;
         con = L2DatabaseFactory.getInstance().getConnection();
         
         // Check Account Exist
@@ -201,14 +204,13 @@ public class SQLAccountManager
             System.out.println("Account " + account + " does not exist.");
         }
         rset.close();
-        
-        // Close Connection
         statement.close();
+        con.close();
     }
     
     private static void deleteAccount(String account) throws SQLException
     {
-        java.sql.Connection con = null;
+        Connection con = null;
         con = L2DatabaseFactory.getInstance().getConnection();
         
         // Check Account Exist

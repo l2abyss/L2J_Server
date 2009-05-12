@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.instancemanager.games;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -88,7 +89,7 @@ public class Lottery
 	public void increasePrize(int count)
 	{
 		_prize += count;
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -135,7 +136,7 @@ public class Lottery
 		
 		public void run()
 		{
-			java.sql.Connection con = null;
+			Connection con = null;
 			PreparedStatement statement;
 			try
 			{
@@ -326,7 +327,7 @@ public class Lottery
 			int count3 = 0;
 			int count4 = 0;
 			
-			java.sql.Connection con = null;
+			Connection con = null;
 			PreparedStatement statement;
 			try
 			{
@@ -420,8 +421,8 @@ public class Lottery
 				// There are winners.
 				sm = new SystemMessage(SystemMessageId.AMOUNT_FOR_WINNER_S1_IS_S2_ADENA_WE_HAVE_S3_PRIZE_WINNER);
 				sm.addNumber(getId());
-				sm.addNumber(getPrize());
-				sm.addNumber(count1);
+				sm.addItemNumber(getPrize());
+				sm.addItemNumber(count1);
 				Announcements.getInstance().announceToAll(sm);
 			}
 			else
@@ -429,7 +430,7 @@ public class Lottery
 				// There are no winners.
 				sm = new SystemMessage(SystemMessageId.AMOUNT_FOR_LOTTERY_S1_IS_S2_ADENA_NO_WINNER);
 				sm.addNumber(getId());
-				sm.addNumber(getPrize());
+				sm.addItemNumber(getPrize());
 				Announcements.getInstance().announceToAll(sm);
 			}
 			
@@ -515,7 +516,7 @@ public class Lottery
 			0, 0
 		};
 		
-		java.sql.Connection con = null;
+		Connection con = null;
 		PreparedStatement statement;
 		
 		try

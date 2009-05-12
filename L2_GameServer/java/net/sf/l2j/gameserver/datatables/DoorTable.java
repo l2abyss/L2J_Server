@@ -126,28 +126,29 @@ public class DoorTable
 	public static L2DoorInstance parseList(String line)
 	{
 		StringTokenizer st = new StringTokenizer(line, ";");
-		
-		String name = st.nextToken();
-		int id = Integer.parseInt(st.nextToken());
-		int x = Integer.parseInt(st.nextToken());
-		int y = Integer.parseInt(st.nextToken());
-		int z = Integer.parseInt(st.nextToken());
-		int rangeXMin = Integer.parseInt(st.nextToken());
-		int rangeYMin = Integer.parseInt(st.nextToken());
-		int rangeZMin = Integer.parseInt(st.nextToken());
-		int rangeXMax = Integer.parseInt(st.nextToken());
-		int rangeYMax = Integer.parseInt(st.nextToken());
-		int rangeZMax = Integer.parseInt(st.nextToken());
-		int hp = Integer.parseInt(st.nextToken());
-		int pdef = Integer.parseInt(st.nextToken());
-		int mdef = Integer.parseInt(st.nextToken());
-		boolean unlockable = false;
-		if (st.hasMoreTokens())
-			unlockable = Boolean.parseBoolean(st.nextToken());
-		boolean startOpen = false;
-		if (st.hasMoreTokens())
-			startOpen = Boolean.parseBoolean(st.nextToken());
-		
+		L2DoorInstance door = null;
+		try
+		{
+			String name = st.nextToken();
+			int id = Integer.parseInt(st.nextToken());
+			int x = Integer.parseInt(st.nextToken());
+			int y = Integer.parseInt(st.nextToken());
+			int z = Integer.parseInt(st.nextToken());
+			int rangeXMin = Integer.parseInt(st.nextToken());
+			int rangeYMin = Integer.parseInt(st.nextToken());
+			int rangeZMin = Integer.parseInt(st.nextToken());
+			int rangeXMax = Integer.parseInt(st.nextToken());
+			int rangeYMax = Integer.parseInt(st.nextToken());
+			int rangeZMax = Integer.parseInt(st.nextToken());
+			int hp = Integer.parseInt(st.nextToken());
+			int pdef = Integer.parseInt(st.nextToken());
+			int mdef = Integer.parseInt(st.nextToken());
+			boolean unlockable = false;
+			if (st.hasMoreTokens())
+				unlockable = Boolean.parseBoolean(st.nextToken());
+			boolean startOpen = false;
+			if (st.hasMoreTokens())
+				startOpen = Boolean.parseBoolean(st.nextToken());
 		if (rangeXMin > rangeXMax)
 			_log.severe("Error in door data, ID:" + id);
 		if (rangeYMin > rangeYMax)
@@ -206,16 +207,8 @@ public class DoorTable
 		npcDat.set("baseMDef", mdef);
 		
 		L2CharTemplate template = new L2CharTemplate(npcDat);
-		L2DoorInstance door = new L2DoorInstance(IdFactory.getInstance().getNextId(), template, id, name, unlockable);
+		door = new L2DoorInstance(IdFactory.getInstance().getNextId(), template, id, name, unlockable);
 		door.setRange(rangeXMin, rangeYMin, rangeZMin, rangeXMax, rangeYMax, rangeZMax);
-		try
-		{
-			door.setMapRegion(MapRegionTable.getInstance().getMapRegion(x, y));
-		}
-		catch (Exception e)
-		{
-			_log.severe("Error in door data, ID:" + id);
-		}
 		door.setCurrentHpMp(door.getMaxHp(), door.getMaxMp());
 		door.setXYZInvisible(x, y, z);
 		
@@ -223,7 +216,11 @@ public class DoorTable
 			door.setIsCommanderDoor(startOpen);
 		else
 			door.setOpen(startOpen);
-		
+		}
+		catch (Exception e)
+		{
+			_log.severe("Error in door data at line: " +line);
+		}
 		return door;
 	}
 	

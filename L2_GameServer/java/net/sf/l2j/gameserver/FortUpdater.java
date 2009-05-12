@@ -16,7 +16,9 @@ package net.sf.l2j.gameserver;
 
 import java.util.logging.Logger;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2Clan;
+import net.sf.l2j.gameserver.model.entity.Fort;
 
 /**
  *
@@ -27,13 +29,13 @@ import net.sf.l2j.gameserver.model.L2Clan;
 public class FortUpdater implements Runnable
 {
 	protected static Logger _log = Logger.getLogger(FortUpdater.class.getName());
-	@SuppressWarnings("unused")
 	private L2Clan _clan;
-	@SuppressWarnings("unused")
-	private int _runCount = 0;
+	private Fort _fort;
+	private int _runCount;
 	
-	public FortUpdater(L2Clan clan, int runCount)
+	public FortUpdater(Fort fort, L2Clan clan, int runCount)
 	{
+		_fort = fort;
 		_clan = clan;
 		_runCount = runCount;
 	}
@@ -42,6 +44,12 @@ public class FortUpdater implements Runnable
 	{
 		try
 		{
+			_runCount++;
+			if (_fort.getOwnerClan() == null || _fort.getOwnerClan() != _clan
+					|| (_runCount * Config.FS_BLOOD_OATH_FRQ * 60) > (_fort.getOwnedTime() + 60))
+				return;
+			
+			_fort.setBloodOathReward(_fort.getBloodOathReward() + Config.FS_BLOOD_OATH_COUNT);
 		}
 		catch (Exception e)
 		{

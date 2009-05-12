@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,7 +45,7 @@ public class CharNameTable
 	public synchronized boolean doesCharNameExist(String name)
 	{
 		boolean result = true;
-		java.sql.Connection con = null;
+		Connection con = null;
 		
 		try
 		{
@@ -75,7 +76,7 @@ public class CharNameTable
 	
 	public int accountCharNumber(String account)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		int number = 0;
 		
 		try

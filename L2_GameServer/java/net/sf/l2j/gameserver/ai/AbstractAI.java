@@ -34,6 +34,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.AutoAttackStart;
 import net.sf.l2j.gameserver.network.serverpackets.AutoAttackStop;
 import net.sf.l2j.gameserver.network.serverpackets.Die;
+import net.sf.l2j.gameserver.network.serverpackets.ExMoveToLocationInAirShip;
 import net.sf.l2j.gameserver.network.serverpackets.MoveToLocation;
 import net.sf.l2j.gameserver.network.serverpackets.MoveToLocationInVehicle;
 import net.sf.l2j.gameserver.network.serverpackets.MoveToPawn;
@@ -316,6 +317,9 @@ abstract class AbstractAI implements Ctrl
 			case AI_INTENTION_MOVE_TO_IN_A_BOAT:
 				onIntentionMoveToInABoat((L2CharPosition) arg0, (L2CharPosition) arg1);
 				break;
+			case AI_INTENTION_MOVE_TO_IN_AIR_SHIP:
+				onIntentionMoveToInAirShip((L2CharPosition) arg0, (L2CharPosition) arg1);
+				break;
 			case AI_INTENTION_FOLLOW:
 				onIntentionFollow((L2Character) arg0);
 				break;
@@ -488,6 +492,8 @@ abstract class AbstractAI implements Ctrl
 	protected abstract void onIntentionMoveTo(L2CharPosition destination);
 	
 	protected abstract void onIntentionMoveToInABoat(L2CharPosition destination, L2CharPosition origin);
+	
+	protected abstract void onIntentionMoveToInAirShip(L2CharPosition destination, L2CharPosition origin);
 	
 	protected abstract void onIntentionFollow(L2Character target);
 	
@@ -663,6 +669,33 @@ abstract class AbstractAI implements Ctrl
 			if (((L2PcInstance) _actor).getBoat() != null)
 			{
 				MoveToLocationInVehicle msg = new MoveToLocationInVehicle(_actor, destination, origin);
+				_actor.broadcastPacket(msg);
+			}
+			
+		}
+		else
+		{
+			_actor.sendPacket(ActionFailed.STATIC_PACKET);
+		}
+	}
+
+	protected void moveToInAirShip(L2CharPosition destination, L2CharPosition origin)
+	{
+		// Check if actor can move
+		if (!_actor.isMovementDisabled())
+		{
+			/*	// Set AI movement data
+			 _client_moving = true;
+			 _client_moving_to_pawn_offset = 0;
+
+			 // Calculate movement data for a move to location action and add the actor to movingObjects of GameTimeController
+			 _accessor.moveTo(((L2PcInstance)_actor).getBoat().getX() - destination.x,((L2PcInstance)_actor).getBoat().getY()- destination.y,((L2PcInstance)_actor).getBoat().getZ() - destination.z);
+			 */
+			// Send a Server->Client packet CharMoveToLocation to the actor and all L2PcInstance in its _knownPlayers
+			//CharMoveToLocation msg = new CharMoveToLocation(_actor);
+			if (((L2PcInstance) _actor).getAirShip() != null)
+			{
+				ExMoveToLocationInAirShip msg = new ExMoveToLocationInAirShip(_actor, destination);
 				_actor.broadcastPacket(msg);
 			}
 			

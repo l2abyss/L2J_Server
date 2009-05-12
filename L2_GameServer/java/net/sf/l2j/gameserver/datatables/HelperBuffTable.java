@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -52,6 +53,10 @@ public class HelperBuffTable
 	 *  Used to generate message : "Only novice character of level ... or less can receive my support magic.") */
 	private int _magicClassHighestLevel = 1;
 	private int _physicClassHighestLevel = 1;
+
+	private int _servitorLowestLevel = 100;
+
+	private int _servitorHighestLevel = 1;
 	
 	public static HelperBuffTable getInstance()
 	{
@@ -77,7 +82,7 @@ public class HelperBuffTable
 	 */
 	private void restoreHelperBuffData()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			try
@@ -126,6 +131,7 @@ public class HelperBuffTable
 			helperBuffDat.set("lowerLevel", HelperBuffData.getInt("lower_level"));
 			helperBuffDat.set("upperLevel", HelperBuffData.getInt("upper_level"));
 			helperBuffDat.set("isMagicClass", HelperBuffData.getString("is_magic_class"));
+			helperBuffDat.set("forSummon", HelperBuffData.getString("forSummon"));
 			
 			// Calulate the range level in wich player must be to obtain buff from Newbie Helper
 			if ("false".equals(HelperBuffData.getString("is_magic_class")))
@@ -144,7 +150,14 @@ public class HelperBuffTable
 				if (HelperBuffData.getInt("upper_level") > _magicClassHighestLevel)
 					_magicClassHighestLevel = HelperBuffData.getInt("upper_level");
 			}
-			
+			if ("true".equals(HelperBuffData.getString("forSummon")))
+			{
+				if (HelperBuffData.getInt("lower_level") < _servitorLowestLevel)
+					_servitorLowestLevel = HelperBuffData.getInt("lower_level");
+				
+				if (HelperBuffData.getInt("upper_level") > _servitorHighestLevel)
+					_servitorHighestLevel = HelperBuffData.getInt("upper_level");
+			}
 			// Add this Helper Buff to the Helper Buff List
 			L2HelperBuff template = new L2HelperBuff(helperBuffDat);
 			_helperBuff.add(template);
@@ -157,11 +170,6 @@ public class HelperBuffTable
 	public boolean isInitialized()
 	{
 		return _initialized;
-	}
-	
-	public L2HelperBuff getHelperBuffTableItem(int id)
-	{
-		return _helperBuff.get(id);
 	}
 	
 	/**
@@ -180,13 +188,6 @@ public class HelperBuffTable
 		return _magicClassHighestLevel;
 	}
 	
-	/**
-	 * @param magicClassHighestLevel The magicClassHighestLevel to set.
-	 */
-	public void setMagicClassHighestLevel(int magicClassHighestLevel)
-	{
-		_magicClassHighestLevel = magicClassHighestLevel;
-	}
 	
 	/**
 	 * @return Returns the magicClassLowestLevel.
@@ -194,14 +195,6 @@ public class HelperBuffTable
 	public int getMagicClassLowestLevel()
 	{
 		return _magicClassLowestLevel;
-	}
-	
-	/**
-	 * @param magicClassLowestLevel The magicClassLowestLevel to set.
-	 */
-	public void setMagicClassLowestLevel(int magicClassLowestLevel)
-	{
-		_magicClassLowestLevel = magicClassLowestLevel;
 	}
 	
 	/**
@@ -213,14 +206,6 @@ public class HelperBuffTable
 	}
 	
 	/**
-	 * @param physicClassHighestLevel The physicClassHighestLevel to set.
-	 */
-	public void setPhysicClassHighestLevel(int physicClassHighestLevel)
-	{
-		_physicClassHighestLevel = physicClassHighestLevel;
-	}
-	
-	/**
 	 * @return Returns the physicClassLowestLevel.
 	 */
 	public int getPhysicClassLowestLevel()
@@ -229,11 +214,18 @@ public class HelperBuffTable
 	}
 	
 	/**
-	 * @param physicClassLowestLevel The physicClassLowestLevel to set.
+	 * @return Returns the servitorLowestLevel.
 	 */
-	public void setPhysicClassLowestLevel(int physicClassLowestLevel)
+	public int getServitorLowestLevel()
 	{
-		_physicClassLowestLevel = physicClassLowestLevel;
+		return _servitorLowestLevel;
 	}
 	
+	/**
+	  @return Returns the servitorHighestLevel.
+	 */
+	public int getServitorHighestLevel()
+	{
+		return _servitorHighestLevel;
+	}
 }

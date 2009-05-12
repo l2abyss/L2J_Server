@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Map;
@@ -74,7 +75,7 @@ public class ClanTable
 	{
 		_clans = new FastMap<Integer, L2Clan>();
 		L2Clan clan;
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -89,16 +90,7 @@ public class ClanTable
 				_clans.put(Integer.parseInt(result.getString("clan_id")), new L2Clan(Integer.parseInt(result.getString("clan_id"))));
 				clan = getClan(Integer.parseInt(result.getString("clan_id")));
 				if (clan.getDissolvingExpiryTime() != 0)
-				{
-					if (clan.getDissolvingExpiryTime() < System.currentTimeMillis())
-					{
-						destroyClan(clan.getClanId());
-					}
-					else
-					{
-						scheduleRemoveClan(clan.getClanId());
-					}
-				}
+					scheduleRemoveClan(clan.getClanId());
 				clanCount++;
 			}
 			result.close();
@@ -262,7 +254,7 @@ public class ClanTable
 		_clans.remove(clanId);
 		IdFactory.getInstance().releaseId(clanId);
 		
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -291,7 +283,12 @@ public class ClanTable
 			statement.setInt(2, clanId);
 			statement.execute();
 			statement.close();
-			
+
+			statement = con.prepareStatement("DELETE FROM clan_notices WHERE clan_id=?");
+			statement.setInt(1, clanId);
+			statement.execute();
+			statement.close();
+
 			if (castleId != 0)
 			{
 				statement = con.prepareStatement("UPDATE castle SET taxPercent = 0 WHERE id = ?");
@@ -342,7 +339,7 @@ public class ClanTable
 					destroyClan(clanId);
 				}
 			}
-		}, getClan(clanId).getDissolvingExpiryTime() - System.currentTimeMillis());
+		}, Math.max(getClan(clanId).getDissolvingExpiryTime() - System.currentTimeMillis(), 300000));
 	}
 	
 	public boolean isAllyExists(String allyName)
@@ -365,7 +362,7 @@ public class ClanTable
 		clan2.setAttackerClan(clan1);
 		clan1.broadcastClanStatus();
 		clan2.broadcastClanStatus();
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -424,7 +421,7 @@ public class ClanTable
 		//    if(player.getPlayerInstance()!=null)
 		//			player.getPlayerInstance().setWantsPeace(0);
 		//}
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -484,7 +481,7 @@ public class ClanTable
 	
 	private void restorewars()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
