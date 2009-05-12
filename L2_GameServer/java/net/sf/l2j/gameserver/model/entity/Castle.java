@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.entity;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
@@ -24,6 +25,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
+
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.Announcements;
@@ -32,6 +34,7 @@ import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.DoorTable;
+import net.sf.l2j.gameserver.datatables.ResidentialSkillTable;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.CastleManorManager;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
@@ -41,6 +44,7 @@ import net.sf.l2j.gameserver.instancemanager.CastleManorManager.SeedProduction;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2Manor;
 import net.sf.l2j.gameserver.model.L2Object;
+import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
@@ -87,6 +91,7 @@ public class Castle
 	private int _nbArtifact = 1;
 	private Map<Integer, Integer> _engrave = new FastMap<Integer, Integer>();
 	private Map<Integer, CastleFunction> _function;
+	private FastList<L2Skill> _residentialSkills = new FastList<L2Skill>();
 	
 	/** Castle Functions */
 	public static final int FUNC_TELEPORT = 1;
@@ -217,7 +222,7 @@ public class Castle
 		
 		public void dbSave(boolean newFunction)
 		{
-			java.sql.Connection con = null;
+			Connection con = null;
 			try
 			{
 				PreparedStatement statement;
@@ -272,6 +277,7 @@ public class Castle
 		load();
 		loadDoor();
 		_function = new FastMap<Integer, CastleFunction>();
+		_residentialSkills = ResidentialSkillTable.getInstance().getSkills(castleId);
 		if (getOwnerId() != 0)
 		{
 			loadFunctions();
@@ -314,7 +320,7 @@ public class Castle
 	
 	// This method add to the treasury
 	/** Add amount to castle instance's treasury (warehouse). */
-	public void addToTreasury(int amount)
+	public void addToTreasury(long amount)
 	{
 		// check if owned
 		if (getOwnerId() <= 0)
@@ -350,7 +356,7 @@ public class Castle
 	}
 	
 	/** Add amount to castle instance's treasury (warehouse), no tax paying. */
-	public boolean addToTreasuryNoTax(int amount)
+	public boolean addToTreasuryNoTax(long amount)
 	{
 		if (getOwnerId() <= 0)
 			return false;
@@ -364,13 +370,13 @@ public class Castle
 		}
 		else
 		{
-			if ((long) _treasury + amount > Integer.MAX_VALUE)
+			if (_treasury + amount > Integer.MAX_VALUE) // TODO is this valid after gracia final?
 				_treasury = Integer.MAX_VALUE;
 			else
 				_treasury += amount;
 		}
 		
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -523,8 +529,12 @@ public class Castle
 		
 		if (getSiege().getIsInProgress()) // If siege in progress
 			getSiege().midVictory(); // Mid victory phase of siege
-			
-		updateClansReputation();
+		
+		for (L2PcInstance member : clan.getOnlineMembers(0))
+		{
+			giveResidentialSkills(member);
+			member.sendSkillList();
+		}
 	}
 	
 	public void removeOwner(L2Clan clan)
@@ -536,6 +546,11 @@ public class Castle
 			{
 				CastleManager.getInstance().removeCirclet(_formerOwner, getCastleId());
 			}
+			for (L2PcInstance member : clan.getOnlineMembers(0))
+			{
+				removeResidentialSkills(member);
+				member.sendSkillList();
+			}
 			clan.setHasCastle(0);
 			Announcements.getInstance().announceToAll(clan.getName() + " has lost " + getName() + " castle");
 			clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
@@ -545,7 +560,6 @@ public class Castle
 		if (getSiege().getIsInProgress())
 			getSiege().midVictory();
 		
-		updateClansReputation();
 		for (Map.Entry<Integer, CastleFunction> fc : _function.entrySet())
 			removeFunction(fc.getKey());
 		_function.clear();
@@ -582,7 +596,7 @@ public class Castle
 		_taxPercent = taxPercent;
 		_taxRate = _taxPercent / 100.0;
 		
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -659,7 +673,7 @@ public class Castle
 	// This method loads castle
 	private void load()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			PreparedStatement statement;
@@ -727,7 +741,7 @@ public class Castle
 	/** Load All Functions */
 	private void loadFunctions()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			PreparedStatement statement;
@@ -763,7 +777,7 @@ public class Castle
 	public void removeFunction(int functionType)
 	{
 		_function.remove(functionType);
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			PreparedStatement statement;
@@ -831,7 +845,7 @@ public class Castle
 	// This method loads castle door data from database
 	private void loadDoor()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -873,7 +887,7 @@ public class Castle
 	// This method loads castle door upgrade data from database
 	private void loadDoorUpgrade()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -907,7 +921,7 @@ public class Castle
 	
 	private void removeDoorUpgrade()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -935,7 +949,7 @@ public class Castle
 	
 	private void saveDoorUpgrade(int doorId, int hp, int pDef, int mDef)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -971,7 +985,7 @@ public class Castle
 		else
 			_ownerId = 0; // Remove owner
 			
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -1187,7 +1201,7 @@ public class Castle
 	//save manor production data
 	public void saveSeedData()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		PreparedStatement statement;
 		
 		try
@@ -1263,7 +1277,7 @@ public class Castle
 	//save manor production data for specified period
 	public void saveSeedData(int period)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		PreparedStatement statement;
 		try
 		{
@@ -1319,7 +1333,7 @@ public class Castle
 	//save crop procure data
 	public void saveCropData()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		PreparedStatement statement;
 		try
 		{
@@ -1391,7 +1405,7 @@ public class Castle
 	//	save crop procure data for specified period
 	public void saveCropData(int period)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		PreparedStatement statement;
 		try
 		{
@@ -1445,16 +1459,16 @@ public class Castle
 		}
 	}
 	
-	public void updateCrop(int cropId, int amount, int period)
+	public void updateCrop(int cropId, long amount, int period)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		PreparedStatement statement;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
 			statement = con.prepareStatement(CASTLE_UPDATE_CROP);
-			statement.setInt(1, amount);
+			statement.setInt(1, (int)amount);
 			statement.setInt(2, cropId);
 			statement.setInt(3, getCastleId());
 			statement.setInt(4, period);
@@ -1477,16 +1491,16 @@ public class Castle
 		}
 	}
 	
-	public void updateSeed(int seedId, int amount, int period)
+	public void updateSeed(int seedId, long amount, int period)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		PreparedStatement statement;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
 			statement = con.prepareStatement(CASTLE_UPDATE_SEED);
-			statement.setInt(1, amount);
+			statement.setLong(1, amount);
 			statement.setInt(2, seedId);
 			statement.setInt(3, getCastleId());
 			statement.setInt(4, period);
@@ -1529,15 +1543,10 @@ public class Castle
 				_formerOwner.setReputationScore(_formerOwner.getReputationScore() - Config.LOOSE_CASTLE_POINTS, true);
 				L2Clan owner = ClanTable.getInstance().getClan(getOwnerId());
 				if (owner != null)
-				{
 					owner.setReputationScore(owner.getReputationScore() + Math.min(Config.TAKE_CASTLE_POINTS, maxreward), true);
-					owner.broadcastToOnlineMembers(new PledgeShowInfoUpdate(owner));
-				}
 			}
 			else
 				_formerOwner.setReputationScore(_formerOwner.getReputationScore() + Config.CASTLE_DEFENDED_POINTS, true);
-			
-			_formerOwner.broadcastToOnlineMembers(new PledgeShowInfoUpdate(_formerOwner));
 		}
 		else
 		{
@@ -1545,8 +1554,30 @@ public class Castle
 			if (owner != null)
 			{
 				owner.setReputationScore(owner.getReputationScore() + Config.TAKE_CASTLE_POINTS, true);
-				owner.broadcastToOnlineMembers(new PledgeShowInfoUpdate(owner));
 			}
+		}
+	}
+
+	public FastList<L2Skill> getResidentialSkills()
+	{
+		return _residentialSkills;
+	}
+
+	public void giveResidentialSkills(L2PcInstance player)
+	{
+		if (_residentialSkills != null && _residentialSkills.size() > 0)
+		{
+			for (L2Skill sk : _residentialSkills)
+				player.addSkill(sk, false);
+		}
+	}
+
+	public void removeResidentialSkills(L2PcInstance player)
+	{
+		if (_residentialSkills != null && _residentialSkills.size() > 0)
+		{
+			for (L2Skill sk : _residentialSkills)
+				player.removeSkill(sk, false);
 		}
 	}
 }

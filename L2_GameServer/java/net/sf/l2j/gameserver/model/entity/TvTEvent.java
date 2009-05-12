@@ -307,7 +307,7 @@ public class TvTEvent
 					{
 						systemMessage = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
 						systemMessage.addItemName(reward[0]);
-						systemMessage.addNumber(reward[1]);
+						systemMessage.addItemNumber(reward[1]);
 					}
 					else
 					{
@@ -368,7 +368,7 @@ public class TvTEvent
 					{
 						systemMessage = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
 						systemMessage.addItemName(reward[0]);
-						systemMessage.addNumber(reward[1]);
+						systemMessage.addItemNumber(reward[1]);
 					}
 					else
 					{

@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.itemcontainer;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -88,7 +89,8 @@ public abstract class Inventory extends ItemContainer
 	public static final int PAPERDOLL_DECO4 = 27;
 	public static final int PAPERDOLL_DECO5 = 28;
 	public static final int PAPERDOLL_DECO6 = 29;
-	public static final int PAPERDOLL_TOTALSLOTS = 30;
+	public static final int PAPERDOLL_BELT = 30;
+	public static final int PAPERDOLL_TOTALSLOTS = 31;
 
 	//Speed percentage mods
 	public static final double MAX_ARMOR_WEIGHT = 12000;
@@ -285,9 +287,11 @@ public abstract class Inventory extends ItemContainer
 			if (it instanceof L2Weapon)
 			{
 				// Remove augmentation bonuses on unequip
-				if (item.isAugmented() && getOwner() instanceof L2PcInstance)
-					item.getAugmentation().removeBonus((L2PcInstance)getOwner());
+				if (item.isAugmented())
+					item.getAugmentation().removeBonus(player);
 
+				if (item.getElementals() != null)
+					item.getElementals().removeBonus(player);
 				// Remove skills bestowed from +4 Rapiers/Duals
 				if (item.getEnchantLevel() >= 4)
 				{
@@ -326,6 +330,8 @@ public abstract class Inventory extends ItemContainer
 			}
 			else if (it instanceof L2Armor)
 			{
+				if (item.getElementals() != null)
+					item.getElementals().removeBonus(player); 
 				final String[] _skill = ((L2Armor)it).getSkills();
 
 				if (_skill != null)
@@ -372,8 +378,11 @@ public abstract class Inventory extends ItemContainer
 			if (it instanceof L2Weapon)
 			{
 				// Apply augmentation bonuses on equip
-				if (item.isAugmented() && getOwner() instanceof L2PcInstance)
-					item.getAugmentation().applyBonus((L2PcInstance)getOwner());
+				if (item.isAugmented()) 
+					item.getAugmentation().applyBonus(player); 
+				
+				if (item.getElementals() != null)
+					item.getElementals().applyBonus(player, false); 
 
 				// Add skills bestowed from +4 Rapiers/Duals
 				if (item.getEnchantLevel() >= 4)
@@ -435,6 +444,8 @@ public abstract class Inventory extends ItemContainer
 			}
 			else if (it instanceof L2Armor)
 			{
+				if (item.getElementals() != null)
+					item.getElementals().applyBonus(player, true); 
 				final String[] _skill = ((L2Armor)it).getSkills();
 
 				if (_skill != null)
@@ -674,7 +685,7 @@ public abstract class Inventory extends ItemContainer
 	 */
 	protected Inventory()
 	{
-		_paperdoll = new L2ItemInstance[30];
+		_paperdoll = new L2ItemInstance[31];
 		_paperdollListeners = new FastList<PaperdollListener>();
 		addPaperdollListener(new ArmorSetListener());
 		addPaperdollListener(new CrossBowListener());
@@ -734,7 +745,7 @@ public abstract class Inventory extends ItemContainer
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @return L2ItemInstance corresponding to the destroyed item or the updated item in inventory
 	 */
-	public L2ItemInstance dropItem(String process, int objectId, int count, L2PcInstance actor, L2Object reference)
+	public L2ItemInstance dropItem(String process, int objectId, long count, L2PcInstance actor, L2Object reference)
 	{
 		L2ItemInstance item = getItemByObjectId(objectId);
 		if (item == null)
@@ -1040,6 +1051,8 @@ public abstract class Inventory extends ItemContainer
 			case PAPERDOLL_DECO4:
 			case PAPERDOLL_DECO5:
 			case PAPERDOLL_DECO6:		slot = L2Item.SLOT_DECO;
+				break;
+			case PAPERDOLL_BELT:		slot = L2Item.SLOT_BELT;
 				break;
 		}
 		return slot;
@@ -1422,7 +1435,8 @@ public abstract class Inventory extends ItemContainer
 			case L2Item.CRYSTAL_A:			arrowsId = 1344;
 				break; // Mithril arrow
 			case L2Item.CRYSTAL_S:
-			case L2Item.CRYSTAL_S80:		arrowsId = 1345;
+			case L2Item.CRYSTAL_S80:
+			case L2Item.CRYSTAL_S84:        arrowsId = 1345;
 				break; // Shining arrow
 		}
 
@@ -1453,7 +1467,8 @@ public abstract class Inventory extends ItemContainer
 			case L2Item.CRYSTAL_A:			boltsId = 9636;
 				break; // Mithril Bolt
 			case L2Item.CRYSTAL_S:
-			case L2Item.CRYSTAL_S80:		boltsId = 9637;
+			case L2Item.CRYSTAL_S80:
+			case L2Item.CRYSTAL_S84:        boltsId = 9637;
 				break; // Shining Bolt
 		}
 
@@ -1467,12 +1482,12 @@ public abstract class Inventory extends ItemContainer
 	@Override
 	public void restore()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT object_id, item_id, count, enchant_level, loc, loc_data, custom_type1, custom_type2, mana_left FROM items WHERE owner_id=? AND (loc=? OR loc=?) ORDER BY loc_data");
+			PreparedStatement statement = con.prepareStatement("SELECT object_id, item_id, count, enchant_level, loc, loc_data, custom_type1, custom_type2, mana_left, time FROM items WHERE owner_id=? AND (loc=? OR loc=?) ORDER BY loc_data");
 			statement.setInt(1, getOwnerId());
 			statement.setString(2, getBaseLocation().name());
 			statement.setString(3, getEquipLocation().name());

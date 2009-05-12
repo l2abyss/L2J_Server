@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.itemcontainer;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -154,9 +155,9 @@ public abstract class ItemContainer
 	 * @param enchantLevel : enchant level to match on, or -1 for ANY enchant level
 	 * @return int corresponding to the number of items matching the above conditions.
 	 */
-	public int getInventoryItemCount(int itemId, int enchantLevel)
+	public long getInventoryItemCount(int itemId, int enchantLevel)
 	{
-		int count = 0;
+		long count = 0;
 		
 		for (L2ItemInstance item : _items)
 			if (item.getItemId() == itemId && ((item.getEnchantLevel() == enchantLevel) || (enchantLevel < 0)))
@@ -184,7 +185,7 @@ public abstract class ItemContainer
 		// If stackable item is found in inventory just add to current quantity
 		if (olditem != null && olditem.isStackable())
 		{
-			int count = item.getCount();
+			long count = item.getCount();
 			olditem.changeCount(process, count, actor, reference);
 			olditem.setLastChange(L2ItemInstance.MODIFIED);
 			
@@ -230,7 +231,7 @@ public abstract class ItemContainer
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @return L2ItemInstance corresponding to the new item or the updated item in inventory
 	 */
-	public L2ItemInstance addItem(String process, int itemId, int count, L2PcInstance actor, L2Object reference)
+	public L2ItemInstance addItem(String process, int itemId, long count, L2PcInstance actor, L2Object reference)
 	{
 		L2ItemInstance item = getItemByItemId(itemId);
 		
@@ -327,7 +328,7 @@ public abstract class ItemContainer
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @return L2ItemInstance corresponding to the new item or the updated item in inventory
 	 */
-	public L2ItemInstance transferItem(String process, int objectId, int count, ItemContainer target, L2PcInstance actor, L2Object reference)
+	public L2ItemInstance transferItem(String process, int objectId, long count, ItemContainer target, L2PcInstance actor, L2Object reference)
 	{
 		if (target == null)
 		{
@@ -416,7 +417,7 @@ public abstract class ItemContainer
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @return L2ItemInstance corresponding to the destroyed item or the updated item in inventory
 	 */
-	public L2ItemInstance destroyItem(String process, L2ItemInstance item, int count, L2PcInstance actor, L2Object reference)
+	public L2ItemInstance destroyItem(String process, L2ItemInstance item, long count, L2PcInstance actor, L2Object reference)
 	{
 		synchronized (item)
 		{
@@ -463,7 +464,7 @@ public abstract class ItemContainer
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @return L2ItemInstance corresponding to the destroyed item or the updated item in inventory
 	 */
-	public L2ItemInstance destroyItem(String process, int objectId, int count, L2PcInstance actor, L2Object reference)
+	public L2ItemInstance destroyItem(String process, int objectId, long count, L2PcInstance actor, L2Object reference)
 	{
 		L2ItemInstance item = getItemByObjectId(objectId);
 		if (item == null)
@@ -482,7 +483,7 @@ public abstract class ItemContainer
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @return L2ItemInstance corresponding to the destroyed item or the updated item in inventory
 	 */
-	public L2ItemInstance destroyItemByItemId(String process, int itemId, int count, L2PcInstance actor, L2Object reference)
+	public L2ItemInstance destroyItemByItemId(String process, int itemId, long count, L2PcInstance actor, L2Object reference)
 	{
 		L2ItemInstance item = getItemByItemId(itemId);
 		if (item == null)
@@ -501,15 +502,18 @@ public abstract class ItemContainer
 	public synchronized void destroyAllItems(String process, L2PcInstance actor, L2Object reference)
 	{
 		for (L2ItemInstance item : _items)
-			destroyItem(process, item, actor, reference);
+		{
+			if (item != null)
+				destroyItem(process, item, actor, reference);
+		}
 	}
 	
 	/**
 	 * Get warehouse adena
 	 */
-	public int getAdena()
+	public long getAdena()
 	{
-		int count = 0;
+		long count = 0;
 		
 		for (L2ItemInstance item : _items)
 		{
@@ -589,11 +593,11 @@ public abstract class ItemContainer
 	 */
 	public void restore()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT object_id, item_id, count, enchant_level, loc, loc_data, custom_type1, custom_type2, mana_left FROM items WHERE owner_id=? AND (loc=?)");
+			PreparedStatement statement = con.prepareStatement("SELECT object_id, item_id, count, enchant_level, loc, loc_data, custom_type1, custom_type2, mana_left, time FROM items WHERE owner_id=? AND (loc=?)");
 			statement.setInt(1, getOwnerId());
 			statement.setString(2, getBaseLocation().name());
 			ResultSet inv = statement.executeQuery();

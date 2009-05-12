@@ -1380,7 +1380,7 @@ public class L2Attackable extends L2Npc
 							_log.fine("Item id to drop: " + item.getItemId() + " amount: " + item.getCount());
 
 						// Check if the autoLoot mode is active
-						if (Config.AUTO_LOOT)
+						if (Config.AUTO_LOOT || isFlying())
 							player.doAutoLoot(this, item); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
 						else
 							dropItem(player, item); // drop the item on the ground
@@ -1392,7 +1392,7 @@ public class L2Attackable extends L2Npc
 							sm = new SystemMessage(SystemMessageId.C1_DIED_DROPPED_S3_S2);
 							sm.addCharName(this);
 							sm.addItemName(item.getItemId());
-							sm.addNumber(item.getCount());
+							sm.addItemNumber(item.getCount());
 							broadcastPacket(sm);
 						}
 					}
@@ -1407,14 +1407,14 @@ public class L2Attackable extends L2Npc
 
 			if (player.getLevel() <= getLevel() && (Rnd.get(100) < Config.L2JMOD_CHAMPION_REWARD_LOWER_LVL_ITEM_CHANCE))
 			{
-				if (Config.AUTO_LOOT)
+				if (Config.AUTO_LOOT || isFlying())
 					player.addItem("ChampionLoot", item.getItemId(), item.getCount(), this, true); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
 				else
 					dropItem(player, item);
 			}
 			else if (player.getLevel() > getLevel() && (Rnd.get(100) < Config.L2JMOD_CHAMPION_REWARD_HIGHER_LVL_ITEM_CHANCE))
 			{
-				if (Config.AUTO_LOOT)
+				if (Config.AUTO_LOOT || isFlying())
 					player.addItem("ChampionLoot", item.getItemId(), item.getCount(), this, true); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
 				else
 					dropItem(player, item);
@@ -1435,7 +1435,7 @@ public class L2Attackable extends L2Npc
 			{
 				RewardItem item = new RewardItem(8612, 1);
 
-				if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS)
+				if ((Config.AUTO_LOOT || isFlying()) && Config.AUTO_LOOT_HERBS)
 					player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
 				else
 					dropItem(player, item);
@@ -1454,7 +1454,7 @@ public class L2Attackable extends L2Npc
 					if (i == 3) item = new RewardItem(10655, 1); // Herb of Life Force Absorption
 					if (i == 4) item = new RewardItem(10656, 1); // Herb of Critical Attack - Power
 
-					if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS)
+					if ((Config.AUTO_LOOT || isFlying()) && Config.AUTO_LOOT_HERBS)
 						player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
 					else
 						dropItem(player, item);
@@ -1468,7 +1468,7 @@ public class L2Attackable extends L2Npc
 			{
 				RewardItem item = new RewardItem(8613, 1);
 
-				if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS)
+				if ((Config.AUTO_LOOT || isFlying()) && Config.AUTO_LOOT_HERBS)
 					player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
 				else
 					dropItem(player, item);
@@ -1485,7 +1485,7 @@ public class L2Attackable extends L2Npc
 					if (i == 0) item = new RewardItem(8607, 1); // Herb of Magic
 					if (i == 1) item = new RewardItem(8609, 1); // Herb of Casting Speed
 
-					if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS)
+					if ((Config.AUTO_LOOT || isFlying()) && Config.AUTO_LOOT_HERBS)
 						player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
 					else
 						dropItem(player, item);
@@ -1499,7 +1499,7 @@ public class L2Attackable extends L2Npc
 			{
 				RewardItem item = new RewardItem(8614, 1);
 
-				if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS)
+				if ((Config.AUTO_LOOT || isFlying()) && Config.AUTO_LOOT_HERBS)
 					player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
 				else
 					dropItem(player, item);
@@ -1516,7 +1516,7 @@ public class L2Attackable extends L2Npc
 				{
 					RewardItem item = new RewardItem(8600, 1);
 
-					if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS)
+					if ((Config.AUTO_LOOT || isFlying()) && Config.AUTO_LOOT_HERBS)
 						player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
 					else
 						dropItem(player, item);
@@ -1532,7 +1532,7 @@ public class L2Attackable extends L2Npc
 				{
 					RewardItem item = new RewardItem(8601, 1);
 
-					if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS)
+					if ((Config.AUTO_LOOT || isFlying()) && Config.AUTO_LOOT_HERBS)
 						player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
 					else
 						dropItem(player, item);
@@ -1548,7 +1548,7 @@ public class L2Attackable extends L2Npc
 				{
 					RewardItem item = new RewardItem(8602, 1);
 
-					if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS)
+					if ((Config.AUTO_LOOT || isFlying()) && Config.AUTO_LOOT_HERBS)
 						player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
 					else
 						dropItem(player, item);
@@ -1563,7 +1563,7 @@ public class L2Attackable extends L2Npc
 				{
 					RewardItem item = new RewardItem(8603, 1);
 
-					if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS)
+					if ((Config.AUTO_LOOT || isFlying()) && Config.AUTO_LOOT_HERBS)
 						player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
 					else
 						dropItem(player, item);
@@ -1579,7 +1579,7 @@ public class L2Attackable extends L2Npc
 				{
 					RewardItem item = new RewardItem(8604, 1);
 
-					if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS)
+					if ((Config.AUTO_LOOT || isFlying()) && Config.AUTO_LOOT_HERBS)
 						player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
 					else
 						dropItem(player, item);
@@ -1595,7 +1595,7 @@ public class L2Attackable extends L2Npc
 				{
 					RewardItem item = new RewardItem(8605, 1);
 
-					if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS)
+					if ((Config.AUTO_LOOT || isFlying()) && Config.AUTO_LOOT_HERBS)
 						player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
 					else
 						dropItem(player, item);
@@ -1608,7 +1608,7 @@ public class L2Attackable extends L2Npc
 			{
 				RewardItem item = new RewardItem(8611, 1);	// Herb of Speed
 
-				if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS)
+				if ((Config.AUTO_LOOT || isFlying()) && Config.AUTO_LOOT_HERBS)
 					player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
 				else
 					dropItem(player, item);
@@ -1621,7 +1621,7 @@ public class L2Attackable extends L2Npc
 			{
 				RewardItem item = new RewardItem(10657, 1);	// Herb of Doubt
 
-				if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS)
+				if ((Config.AUTO_LOOT || isFlying()) && Config.AUTO_LOOT_HERBS)
 					player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
 				else
 					dropItem(player, item);
@@ -1671,7 +1671,7 @@ public class L2Attackable extends L2Npc
 			{
 				RewardItem item = new RewardItem(drop.items[Rnd.get(drop.items.length)], Rnd.get(drop.min, drop.max));
 
-				if (Config.AUTO_LOOT)
+				if (Config.AUTO_LOOT || isFlying())
 					player.doAutoLoot(this, item); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
 				else
 					dropItem(player, item); // drop the item on the ground

@@ -31,6 +31,7 @@ import net.sf.l2j.gameserver.model.L2WorldRegion;
 import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.model.actor.L2Attackable.AggroInfo;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.actor.knownlist.SummonKnownList;
@@ -45,6 +46,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ExPartyPetWindowAdd;
 import net.sf.l2j.gameserver.network.serverpackets.ExPartyPetWindowDelete;
 import net.sf.l2j.gameserver.network.serverpackets.ExPartyPetWindowUpdate;
+import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.PartySpelled;
 import net.sf.l2j.gameserver.network.serverpackets.PetDelete;
@@ -107,21 +109,22 @@ public abstract class L2Summon extends L2Playable
     public void onSpawn()
     {
         super.onSpawn();
-
-        this.setFollowStatus(true);
+        if (!(this instanceof L2MerchantSummonInstance))
+        {
+        	this.setFollowStatus(true);
+        	updateAndBroadcastStatus(0);
+        	getOwner().sendPacket(new RelationChanged(this, getOwner().getRelation(getOwner()), false));
+            for (L2PcInstance player : getOwner().getKnownList().getKnownPlayersInRadius(800))
+            	player.sendPacket(new RelationChanged(this, getOwner().getRelation(player), isAutoAttackable(player)));
+            L2Party party = this.getOwner().getParty();
+            if (party != null)
+            {
+                party.broadcastToPartyMembers(this.getOwner(), new ExPartyPetWindowAdd(this));
+            }
+        }
         setShowSummonAnimation(false); // addVisibleObject created the info packets with summon animation
                                               // if someone comes into range now, the animation shouldnt show any more
-        updateAndBroadcastStatus(0);
-        getOwner().sendPacket(new RelationChanged(this, getOwner().getRelation(getOwner()), false));
 
-        for (L2PcInstance player : getOwner().getKnownList().getKnownPlayersInRadius(800))
-        	player.sendPacket(new RelationChanged(this, getOwner().getRelation(player), isAutoAttackable(player)));
-
-        L2Party party = this.getOwner().getParty();
-        if (party != null)
-        {
-            party.broadcastToPartyMembers(this.getOwner(), new ExPartyPetWindowAdd(this));
-        }
     }
 
     @Override
@@ -151,6 +154,8 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public L2CharacterAI getAI()
     {
+		if (this instanceof L2MerchantSummonInstance)
+			return null;
 		L2CharacterAI ai = _ai; // copy handle
 		if (ai == null)
 		{
@@ -313,7 +318,8 @@ public abstract class L2Summon extends L2Playable
 	{
 		if (!super.doDie(killer))
 			return false;
-		
+		if (this instanceof L2MerchantSummonInstance)
+			return true;
 		L2PcInstance owner = getOwner();
 		
 		if (owner != null)
@@ -373,6 +379,8 @@ public abstract class L2Summon extends L2Playable
     @Override
     public void updateEffectIcons(boolean partyOnly)
     {
+    	if (this instanceof L2MerchantSummonInstance)
+			return;
         PartySpelled ps = new PartySpelled(this);
         
         // Go through all effects if any
@@ -384,7 +392,7 @@ public abstract class L2Summon extends L2Playable
                 if (effect == null)
                     continue;
                 
-                if (effect.getInUse())
+                if (effect.getInUse() && effect.getShowIcon())
                 {
                     effect.addPartySpelledIcon(ps);
                 }
@@ -406,6 +414,8 @@ public abstract class L2Summon extends L2Playable
 
     public void deleteMe(L2PcInstance owner)
     {
+    	if (this instanceof L2MerchantSummonInstance)
+			return;
         getAI().stopFollow();
         owner.sendPacket(new PetDelete(getObjectId(), 2));
 
@@ -423,23 +433,25 @@ public abstract class L2Summon extends L2Playable
     {
 		if (isVisible() && !isDead())
 	    {
+			if (!(this instanceof L2MerchantSummonInstance))
+			{
+				getAI().stopFollow();
+		        owner.sendPacket(new PetDelete(getObjectId(), 2));
+	            L2Party party;
+	            if ((party = owner.getParty()) != null)
+	            {
+	                party.broadcastToPartyMembers(owner, new ExPartyPetWindowDelete(this));
+	            }
+	            
+		        store();
+		        giveAllToOwner();
+		        owner.setPet(null);
+			}
 			stopAllEffects();
-			getAI().stopFollow();
-	        owner.sendPacket(new PetDelete(getObjectId(), 2));
-            L2Party party;
-            if ((party = owner.getParty()) != null)
-            {
-                party.broadcastToPartyMembers(owner, new ExPartyPetWindowDelete(this));
-            }
-            
-	        store();
-	        giveAllToOwner();
-	        
 	        L2WorldRegion oldRegion = getWorldRegion();
 		    decayMe();
 		    if (oldRegion != null) oldRegion.removeFromZones(this);
             getKnownList().removeAllKnownObjects();
-	        owner.setPet(null);
 	        setTarget(null);
 	    }
     }
@@ -458,6 +470,8 @@ public abstract class L2Summon extends L2Playable
 
     public void setFollowStatus(boolean state)
     {
+    	if (this instanceof L2MerchantSummonInstance)
+    		return;
         _follow = state;
 		if (_follow)
 			getAI().setIntention(CtrlIntention.AI_INTENTION_FOLLOW, getOwner());
@@ -474,6 +488,8 @@ public abstract class L2Summon extends L2Playable
     @Override
 	public boolean isAutoAttackable(L2Character attacker)
     {
+    	if (this instanceof L2MerchantSummonInstance)
+    		return false;
         return _owner.isAutoAttackable(attacker);
     }
 
@@ -545,6 +561,8 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public boolean isInvul()
 	{
+		if (this instanceof L2MerchantSummonInstance)
+    		return true;
 		return _isInvul  || _isTeleporting ||  getOwner().isSpawnProtected();
 	}
 
@@ -554,6 +572,8 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public L2Party getParty()
 	{
+		if (this instanceof L2MerchantSummonInstance)
+    		return null;
 		if (_owner == null)
 			return null;
 		else
@@ -566,6 +586,8 @@ public abstract class L2Summon extends L2Playable
     @Override
 	public boolean isInParty()
 	{
+    	if (this instanceof L2MerchantSummonInstance)
+    		return false;
     	if (_owner == null)
     		return false;
     	else
@@ -590,6 +612,8 @@ public abstract class L2Summon extends L2Playable
 	 */
 	public void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
 	{
+		if (this instanceof L2MerchantSummonInstance)
+    		return;
 		if (skill == null || isDead())
 			return;
 
@@ -756,6 +780,8 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public final void sendDamageMessage(L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
 	{
+		if (this instanceof L2MerchantSummonInstance)
+    		return;
 		if (miss) return;
 
 		// Prevents the double spam of system messages, if the target is the owning player.
@@ -788,6 +814,8 @@ public abstract class L2Summon extends L2Playable
 	public void reduceCurrentHp(int damage, L2Character attacker, L2Skill skill)
 	{
 		super.reduceCurrentHp(damage, attacker, skill);
+		if (this instanceof L2MerchantSummonInstance)
+    		return;
 		SystemMessage sm;
 		if (this instanceof L2SummonInstance)
 			sm = new SystemMessage(SystemMessageId.SUMMON_RECEIVED_DAMAGE_S2_BY_S1);
@@ -810,6 +838,8 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public void doCast(L2Skill skill)
 	{
+		if (this instanceof L2MerchantSummonInstance)
+    		return;
         final L2PcInstance actingPlayer = getActingPlayer();
 
         if (!actingPlayer.checkPvpSkill(getTarget(), skill) &&
@@ -841,6 +871,8 @@ public abstract class L2Summon extends L2Playable
 	
 	public boolean isInCombat()
 	{
+		if (this instanceof L2MerchantSummonInstance)
+    		return false;
 		return getOwner().isInCombat();
 	}
 
@@ -850,8 +882,24 @@ public abstract class L2Summon extends L2Playable
 		return getOwner();
 	}
 	
+	@Override
+	public final void broadcastPacket(L2GameServerPacket mov)
+	{
+		mov.setInvisible(getOwner().getAppearance().getInvisible());
+		super.broadcastPacket(mov);
+	}
+
+	@Override
+	public final void broadcastPacket(L2GameServerPacket mov, int radiusInKnownlist)
+	{
+		mov.setInvisible(getOwner().getAppearance().getInvisible());
+		super.broadcastPacket(mov, radiusInKnownlist);
+	}
+
 	public void updateAndBroadcastStatus(int val)
 	{
+		if (this instanceof L2MerchantSummonInstance)
+    		return;
 		getOwner().sendPacket(new PetInfo(this,val));
 		getOwner().sendPacket(new PetStatusUpdate(this));
 		if (isVisible())
@@ -873,7 +921,7 @@ public abstract class L2Summon extends L2Playable
 		{
 			try
 			{
-				if (player == getOwner())
+				if (player == getOwner() && !(this instanceof L2MerchantSummonInstance))
 					continue;
 				player.sendPacket(new AbstractNpcInfo.SummonInfo(this,player, val));
 			}

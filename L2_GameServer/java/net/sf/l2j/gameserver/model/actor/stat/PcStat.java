@@ -162,7 +162,7 @@ public class PcStat extends PlayableStat
         			qs.getQuest().notifyEvent("CE40", null, getActiveChar());
 
         	getActiveChar().setCurrentCp(getMaxCp());
-            getActiveChar().broadcastPacket(new SocialAction(getActiveChar().getObjectId(), 15));
+            getActiveChar().broadcastPacket(new SocialAction(getActiveChar().getObjectId(), SocialAction.LEVEL_UP));
             getActiveChar().sendPacket(new SystemMessage(SystemMessageId.YOU_INCREASED_YOUR_LEVEL));
         }
 

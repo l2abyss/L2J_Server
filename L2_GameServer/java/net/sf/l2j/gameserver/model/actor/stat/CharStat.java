@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.model.actor.stat;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2PetDataTable;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
@@ -33,6 +34,7 @@ public class CharStat
 	private long _exp = 0;
 	private int _sp = 0;
 	private byte _level = 1;
+	
 	// =========================================================
 	// Constructor
 	public CharStat(L2Character activeChar)
@@ -539,16 +541,6 @@ public class CharStat
 		return val;
 	}
 
-	/** Return the PAtk Modifier against undead. */
-	public final double getPAtkUndead(L2Character target)
-	{
-		return calcStat(Stats.PATK_UNDEAD, 1, target, null);
-	}
-
-	public final double getPDefUndead(L2Character target)
-	{
-		return calcStat(Stats.PDEF_UNDEAD, 1, target, null);
-	}
 	/** Return the PDef Modifier against animals. */
 	public final double getPDefAnimals(L2Character target)
 	{
@@ -718,43 +710,64 @@ public class CharStat
 		return (int) calcStat(Stats.MP_CONSUME, skill.getMpInitialConsume(), null, skill);
 	}
 
-    public double getElementAttributeFire()
-    {
-        return (int) (100 - 100 * calcStat(Stats.FIRE_VULN, _activeChar.getTemplate().baseFireVuln, null, null));
-    }
+	public double getElementAttributeFire()
+	{
+		return (int) calcStat(Stats.FIRE_RES, _activeChar.getTemplate().baseFireRes, null, null);
+	}
 
-    public double getElementAttributeWater()
-    {
-        return (int) (100 - 100 * calcStat(Stats.WATER_VULN, _activeChar.getTemplate().baseWaterVuln, null, null));
-    }
+	public double getElementAttributeWater()
+	{
+		return (int) calcStat(Stats.WATER_RES, _activeChar.getTemplate().baseWaterRes, null, null);
+	}
 
-    public double getElementAttributeEarth()
-    {
-        return (int) (100 - 100 * calcStat(Stats.EARTH_VULN, _activeChar.getTemplate().baseEarthVuln, null, null));
-    }
+	public double getElementAttributeEarth()
+	{
+		return (int) calcStat(Stats.EARTH_RES, _activeChar.getTemplate().baseEarthRes, null, null);
+	}
 
-    public double getElementAttributeWind()
-    {
-        return (int) (100 - 100 * calcStat(Stats.WIND_VULN, _activeChar.getTemplate().baseWindVuln, null, null));
-    }
+	public double getElementAttributeWind()
+	{
+		return (int) calcStat(Stats.WIND_RES, _activeChar.getTemplate().baseWindRes, null, null);
+	}
 
-    public double getElementAttributeHoly()
-    {
-        return (int) (100 - 100 * calcStat(Stats.HOLY_VULN, _activeChar.getTemplate().baseHolyVuln, null, null));
-    }
+	public double getElementAttributeHoly()
+	{
+		return (int) calcStat(Stats.HOLY_RES, _activeChar.getTemplate().baseHolyRes, null, null);
+	}
 
-    public double getElementAttributeUnholy()
-    {
-        return (int) (100 - 100 * calcStat(Stats.DARK_VULN, _activeChar.getTemplate().baseDarkVuln, null, null));
-    }
+	public double getElementAttributeUnholy()
+	{
+		return (int) calcStat(Stats.DARK_RES, _activeChar.getTemplate().baseDarkRes, null, null);
+	}
 
-    public int getAttackElement()
-    {
-        return -2;
-    }
+	public int getAttackElement()
+	{
+		L2ItemInstance weaponInstance = _activeChar.getActiveWeaponInstance();
+		// 1st order - weapon element
+		if (weaponInstance != null && weaponInstance.getAttackElementType() >= 0 )
+			return weaponInstance.getAttackElementType();
 
-    public double getAttackElementValue()
-    {
-        return 0.0;
-    }
+		return _activeChar.getElementIdFromEffects();
+	}
+
+	public int getAttackElementValue(int attackAttribute)
+	{
+		switch (attackAttribute)
+		{
+		case 0:
+			return (int) calcStat(Stats.FIRE_POWER, _activeChar.getTemplate().baseFire, null, null);
+		case 1:
+			return (int) calcStat(Stats.WATER_POWER, _activeChar.getTemplate().baseWater, null, null);
+		case 2:
+			return (int) calcStat(Stats.WIND_POWER, _activeChar.getTemplate().baseWind, null, null);
+		case 3:
+			return (int) calcStat(Stats.EARTH_POWER, _activeChar.getTemplate().baseEarth, null, null);
+		case 4:
+			return (int) calcStat(Stats.HOLY_POWER, _activeChar.getTemplate().baseHoly, null, null);
+		case 5:
+			return (int) calcStat(Stats.DARK_POWER, _activeChar.getTemplate().baseDark, null, null);
+		default:
+			return 0;
+		}
+	}
 }

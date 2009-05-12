@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.itemcontainer;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -37,6 +38,7 @@ public class PcInventory extends Inventory
 {
     public static final int ADENA_ID = 57;
     public static final int ANCIENT_ADENA_ID = 5575;
+    public static final long MAX_ADENA = 99900000000L;
 
 	private final L2PcInstance _owner;
 	private L2ItemInstance _adena;
@@ -56,14 +58,14 @@ public class PcInventory extends Inventory
 
 	public L2ItemInstance getAdenaInstance() {return _adena;}
 	@Override
-	public int getAdena() {return _adena != null ? _adena.getCount() : 0;}
+	public long getAdena() {return _adena != null ? _adena.getCount() : 0;}
 
 	public L2ItemInstance getAncientAdenaInstance()
 	{
 		return _ancientAdena;
 	}
 
-	public int getAncientAdena()
+	public long getAncientAdena()
 	{
 		return (_ancientAdena != null) ? _ancientAdena.getCount() : 0;
 	}
@@ -266,7 +268,7 @@ public class PcInventory extends Inventory
 	 * @param actor : L2PcInstance Player requesting the item add
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
      */
-    public void addAdena(String process, int count, L2PcInstance actor, L2Object reference)
+    public void addAdena(String process, long count, L2PcInstance actor, L2Object reference)
     {
     	if (count > 0)
     		addItem(process, ADENA_ID, count, actor, reference);
@@ -279,7 +281,7 @@ public class PcInventory extends Inventory
 	 * @param actor : L2PcInstance Player requesting the item add
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
      */
-	public void reduceAdena(String process, int count, L2PcInstance actor, L2Object reference)
+	public void reduceAdena(String process, long count, L2PcInstance actor, L2Object reference)
 	{
     	if (count > 0)
     		destroyItemByItemId(process, ADENA_ID, count, actor, reference);
@@ -292,7 +294,7 @@ public class PcInventory extends Inventory
 	 * @param actor : L2PcInstance Player requesting the item add
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
      */
-    public void addAncientAdena(String process, int count, L2PcInstance actor, L2Object reference)
+    public void addAncientAdena(String process, long count, L2PcInstance actor, L2Object reference)
     {
     	if (count > 0)
     		addItem(process, ANCIENT_ADENA_ID, count, actor, reference);
@@ -305,7 +307,7 @@ public class PcInventory extends Inventory
 	 * @param actor : L2PcInstance Player requesting the item add
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
      */
-	public void reduceAncientAdena(String process, int count, L2PcInstance actor, L2Object reference)
+	public void reduceAncientAdena(String process, long count, L2PcInstance actor, L2Object reference)
 	{
     	if (count > 0)
     		destroyItemByItemId(process, ANCIENT_ADENA_ID, count, actor, reference);
@@ -343,7 +345,7 @@ public class PcInventory extends Inventory
      * @return L2ItemInstance corresponding to the new item or the updated item in inventory
      */
     @Override
-	public L2ItemInstance addItem(String process, int itemId, int count, L2PcInstance actor, L2Object reference)
+	public L2ItemInstance addItem(String process, int itemId, long count, L2PcInstance actor, L2Object reference)
     {
         L2ItemInstance item = super.addItem(process, itemId, count, actor, reference);
 
@@ -383,7 +385,7 @@ public class PcInventory extends Inventory
      * @return L2ItemInstance corresponding to the new item or the updated item in inventory
      */
     @Override
-	public L2ItemInstance transferItem(String process, int objectId, int count, ItemContainer target, L2PcInstance actor, L2Object reference)
+	public L2ItemInstance transferItem(String process, int objectId, long count, ItemContainer target, L2PcInstance actor, L2Object reference)
     {
         L2ItemInstance item = super.transferItem(process, objectId, count, target, actor, reference);
 
@@ -419,7 +421,7 @@ public class PcInventory extends Inventory
      * @return L2ItemInstance corresponding to the destroyed item or the updated item in inventory
      */
     @Override
-    public L2ItemInstance destroyItem(String process, L2ItemInstance item, int count, L2PcInstance actor, L2Object reference)
+    public L2ItemInstance destroyItem(String process, L2ItemInstance item, long count, L2PcInstance actor, L2Object reference)
     {
         item = super.destroyItem(process, item, count, actor, reference);
 
@@ -442,7 +444,7 @@ public class PcInventory extends Inventory
      * @return L2ItemInstance corresponding to the destroyed item or the updated item in inventory
 	 */
 	@Override
-	public L2ItemInstance destroyItem(String process, int objectId, int count, L2PcInstance actor, L2Object reference)
+	public L2ItemInstance destroyItem(String process, int objectId, long count, L2PcInstance actor, L2Object reference)
     {
         L2ItemInstance item = getItemByObjectId(objectId);
         if (item == null) 
@@ -462,7 +464,7 @@ public class PcInventory extends Inventory
      * @return L2ItemInstance corresponding to the destroyed item or the updated item in inventory
 	 */
 	@Override
-	public L2ItemInstance destroyItemByItemId(String process, int itemId, int count, L2PcInstance actor, L2Object reference)
+	public L2ItemInstance destroyItemByItemId(String process, int itemId, long count, L2PcInstance actor, L2Object reference)
 	{
         L2ItemInstance item = getItemByItemId(itemId);
         if (item == null) 
@@ -504,7 +506,7 @@ public class PcInventory extends Inventory
      * @return L2ItemInstance corresponding to the destroyed item or the updated item in inventory
 	 */
 	@Override
-	public L2ItemInstance dropItem(String process, int objectId, int count, L2PcInstance actor, L2Object reference)
+	public L2ItemInstance dropItem(String process, int objectId, long count, L2PcInstance actor, L2Object reference)
 	{
         L2ItemInstance item = super.dropItem(process, objectId, count, actor, reference);
 
@@ -562,8 +564,8 @@ public class PcInventory extends Inventory
 
 	public static int[][] restoreVisibleInventory(int objectId)
     {
-    	int[][] paperdoll = new int[30][3];
-        java.sql.Connection con = null;
+    	int[][] paperdoll = new int[31][3];
+        Connection con = null;
 
         try
         {

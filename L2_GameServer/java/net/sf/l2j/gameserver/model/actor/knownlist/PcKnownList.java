@@ -23,9 +23,11 @@ import net.sf.l2j.gameserver.model.actor.L2Decoy;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.L2Trap;
+import net.sf.l2j.gameserver.model.actor.instance.L2AirShipInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DecoyInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2StaticObjectInstance;
@@ -34,7 +36,9 @@ import net.sf.l2j.gameserver.network.serverpackets.AbstractNpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.CharInfo;
 import net.sf.l2j.gameserver.network.serverpackets.DeleteObject;
 import net.sf.l2j.gameserver.network.serverpackets.DropItem;
+import net.sf.l2j.gameserver.network.serverpackets.ExAirShipInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
+import net.sf.l2j.gameserver.network.serverpackets.ExGetOnAirShip;
 import net.sf.l2j.gameserver.network.serverpackets.ExPrivateStoreSetWholeMsg;
 import net.sf.l2j.gameserver.network.serverpackets.GetOnVehicle;
 import net.sf.l2j.gameserver.network.serverpackets.PetInfo;
@@ -126,6 +130,13 @@ public class PcKnownList extends PlayableKnownList
             		((L2BoatInstance) object).sendVehicleDeparture(getActiveChar());
             	}
             }
+            else if (object instanceof L2AirShipInstance)
+            {
+            	if(object != getActiveChar().getAirShip())
+            	{
+            		getActiveChar().sendPacket(new ExAirShipInfo((L2AirShipInstance) object));
+            	}
+            }
             else if (object instanceof L2StaticObjectInstance)
             {
                 getActiveChar().sendPacket(new StaticObject((L2StaticObjectInstance) object));
@@ -151,7 +162,7 @@ public class PcKnownList extends PlayableKnownList
                 L2Summon summon = (L2Summon) object;
 
                 // Check if the L2PcInstance is the owner of the Pet
-                if (getActiveChar().equals(summon.getOwner()))
+                if (getActiveChar().equals(summon.getOwner()) && !(summon instanceof L2MerchantSummonInstance))
                 {
                     getActiveChar().sendPacket(new PetInfo(summon,0));
                     // The PetInfo packet wipes the PartySpelled (list of active  spells' icons).  Re-add them
@@ -172,7 +183,7 @@ public class PcKnownList extends PlayableKnownList
                 	otherPlayer.getPosition().setWorldPosition(otherPlayer.getBoat().getPosition().getWorldPosition());
 
                     getActiveChar().sendPacket(new CharInfo(otherPlayer));
-                    otherPlayer.broadcastPacket(new ExBrExtraUserInfo(otherPlayer));
+                    getActiveChar().sendPacket(new ExBrExtraUserInfo(otherPlayer));
                     int relation1 = otherPlayer.getRelation(getActiveChar());
                 	int relation2 = getActiveChar().getRelation(otherPlayer);
                 	if (otherPlayer.getKnownList().getKnownRelations().get(getActiveChar().getObjectId()) != null && otherPlayer.getKnownList().getKnownRelations().get(getActiveChar().getObjectId()) != relation1)
@@ -223,10 +234,32 @@ public class PcKnownList extends PlayableKnownList
 
                 	}*/
                 }
+                else if(otherPlayer.isInAirShip())
+                {
+                	otherPlayer.getPosition().setWorldPosition(otherPlayer.getAirShip().getPosition().getWorldPosition());
+
+                    getActiveChar().sendPacket(new CharInfo(otherPlayer));
+                    getActiveChar().sendPacket(new ExBrExtraUserInfo(otherPlayer));
+                    int relation1 = otherPlayer.getRelation(getActiveChar());
+                	int relation2 = getActiveChar().getRelation(otherPlayer);
+                	if (otherPlayer.getKnownList().getKnownRelations().get(getActiveChar().getObjectId()) != null && otherPlayer.getKnownList().getKnownRelations().get(getActiveChar().getObjectId()) != relation1)
+                	{
+                		getActiveChar().sendPacket(new RelationChanged(otherPlayer, relation1, getActiveChar().isAutoAttackable(otherPlayer)));
+                		if (otherPlayer.getPet() != null)
+                			getActiveChar().sendPacket(new RelationChanged(otherPlayer.getPet(), relation1, getActiveChar().isAutoAttackable(otherPlayer)));
+                	}
+                	if (getActiveChar().getKnownList().getKnownRelations().get(otherPlayer.getObjectId()) != null && getActiveChar().getKnownList().getKnownRelations().get(otherPlayer.getObjectId()) != relation2)
+                	{
+                		otherPlayer.sendPacket(new RelationChanged(getActiveChar(), relation2, otherPlayer.isAutoAttackable(getActiveChar())));
+                		if (getActiveChar().getPet() != null)
+                			otherPlayer.sendPacket(new RelationChanged(getActiveChar().getPet(), relation2, otherPlayer.isAutoAttackable(getActiveChar())));
+                	}
+                	getActiveChar().sendPacket(new ExGetOnAirShip(otherPlayer, otherPlayer.getAirShip()));
+                }
                 else
                 {
                 	getActiveChar().sendPacket(new CharInfo(otherPlayer));
-                	otherPlayer.broadcastPacket(new ExBrExtraUserInfo(otherPlayer));
+                	getActiveChar().sendPacket(new ExBrExtraUserInfo(otherPlayer));
                 	int relation1 = otherPlayer.getRelation(getActiveChar());
                 	int relation2 = getActiveChar().getRelation(otherPlayer);
                 	if (otherPlayer.getKnownList().getKnownRelations().get(getActiveChar().getObjectId()) != null && otherPlayer.getKnownList().getKnownRelations().get(getActiveChar().getObjectId()) != relation1)

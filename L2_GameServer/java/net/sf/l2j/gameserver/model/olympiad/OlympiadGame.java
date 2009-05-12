@@ -21,6 +21,8 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.HeroSkillTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
+import net.sf.l2j.gameserver.instancemanager.CastleManager;
+import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Party;
 import net.sf.l2j.gameserver.model.L2Skill;
@@ -201,6 +203,10 @@ class OlympiadGame
 				{
 					for (L2Skill skill : player.getClan().getAllSkills())
 						player.removeSkill(skill, false);
+					if (player.getClan().getHasCastle() > 0)
+						CastleManager.getInstance().getCastleByOwner(player.getClan()).removeResidentialSkills(player);
+					if (player.getClan().getHasFort() > 0)
+						FortManager.getInstance().getFortByOwner(player.getClan()).removeResidentialSkills(player);
 				}
 				// Abort casting if player casting
 				if (player.isCastingNow())
@@ -394,6 +400,10 @@ class OlympiadGame
 						if (skill.getMinPledgeClass() <= player.getPledgeClass())
 							player.addSkill(skill, false);
 					}
+					if (player.getClan().getHasCastle() > 0)
+						CastleManager.getInstance().getCastleByOwner(player.getClan()).giveResidentialSkills(player);
+					if (player.getClan().getHasFort() > 0)
+						FortManager.getInstance().getFortByOwner(player.getClan()).giveResidentialSkills(player);
 				}
 				
 				// Add Hero Skills

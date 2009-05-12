@@ -490,7 +490,8 @@ public enum SystemMessageId
 
 	/**
 	 * ID: 78<br>
-	 * Message: Do you really wish to delete $s1%?
+	 * Message: When you delete a character, any items in his/her possession
+	 * will also be deleted. Do you really wish to delete $s1%?
 	 */
 	WISH_DELETE_S1(78),
 
@@ -586,7 +587,7 @@ public enum SystemMessageId
 
 	/**
 	* ID: 94<br>
-	* Message: 2004 (c) Copyright NCsoft Corporation. All Rights Reserved.
+	* Message: 2004-2009 © Copyright NCsoft Corporation. All Rights Reserved.
 	*/
 	COPYRIGHT(94),
 
@@ -652,9 +653,9 @@ public enum SystemMessageId
 
 	/**
 	 * ID: 105<br>
-	 * Message: You have invited $c1 to your party.
+	 * Message: $c1 has been invited to the party.
 	 */
-	YOU_INVITED_C1_TO_PARTY(105),
+	C1_INVITED_TO_PARTY(105),
 
 	/**
 	 * ID: 106<br>
@@ -1757,7 +1758,7 @@ public enum SystemMessageId
 
 	/**
 	* ID: 289<br>
-	* Message: You cannot build another headquarters since one already exists
+	* Message: An outpost or headquarters cannot be built because at least one already exists.
 	*/
 	NOT_ANOTHER_HEADQUARTERS(289),
 
@@ -5497,13 +5498,13 @@ public enum SystemMessageId
 
 	/**
 	* ID: 927<br>
-	* Message: The current time is $s1:$s2 in the day.
+	* Message: The current time is $s1:$s2.
 	*/
 	TIME_S1_S2_IN_THE_DAY(927),
 
 	/**
 	* ID: 928<br>
-	* Message: The current time is $s1:$s2 in the night.
+	* Message: The current time is $s1:$s2.
 	*/
 	TIME_S1_S2_IN_THE_NIGHT(928),
 
@@ -8951,7 +8952,7 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1497<br>
-	* Message: Congratulations $c1, you win the match!
+	* Message: Congratulations, $c1! You win the match!
 	*/
 	C1_HAS_WON_THE_GAME(1497),
 
@@ -9842,7 +9843,7 @@ public enum SystemMessageId
 	* ID: 1643<br>
 	* Message: Current Location: $s1, $s2, $s3 (Dimensional Gap)
 	*/
-	CURRENT_LOCATION_S1_S2_S3_DIMENSIONAL_GAP(1643),
+	LOC_DIMENSIONAL_GAP_S1_S2_S3(1643),
 
 	// 1644 - 1648: none
 
@@ -11056,9 +11057,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 1846<br>
-	* Message: You are too far away from the Strider to mount it.
+	* Message: You are too far away from the Fenrir to mount it.
 	*/
-	TOO_FAR_AWAY_FROM_STRIDER_TO_MOUNT(1846),
+	TOO_FAR_AWAY_FROM_FENRIR_TO_MOUNT(1846),
 
 	/**
 	* ID: 1847<br>
@@ -11881,10 +11882,10 @@ public enum SystemMessageId
 	S1S_REMAINING_MANA_IS_NOW_0(1982),
 
 	/**
-	* ID: 1983<br>
+	* ID: 1987<br>
 	* Message: $s1
 	*/
-	S1(1983),
+	S1(1987),
 
 	/**
 	* ID: 1984<br>
@@ -12216,13 +12217,17 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2038<br>
-	* Message: This account cannot drop items.
+	* Message: Some Lineage II features have been limited for free trials. 
+	* Trial accounts aren’t allowed to drop items and/or Adena.  
+	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	ACCOUNT_CANT_DROP_ITEMS(2038),
 
 	/**
 	* ID: 2039<br>
-	* Message: This account cannot trade items.
+	* Message: Some Lineage II features have been limited for free trials. 
+	* Trial accounts aren’t allowed to trade items and/or Adena.  
+	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	ACCOUNT_CANT_TRADE_ITEMS(2039),
 
@@ -12234,13 +12239,16 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2041<br>
-	* Message: Cannot open a private store.
+	* Message: Some Lineage II features have been limited for free trials. 
+	* Trial accounts aren’t allowed to setup private stores. 
+	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	CANT_OPEN_PRIVATE_STORE(2041),
 
 	/**
 	* ID: 2042<br>
-	* Message: Your account has been suspended ...
+	* Message: This account has been suspended for non-payment based on the cell phone payment agreement.\\n 
+	* Please submit proof of payment by fax (02-2186-3499) and contact customer service at 1600-0020.
 	*/
 	ILLEGAL_USE23(2042),
 
@@ -12253,25 +12261,33 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2044<br>
-	* Message: This account cannot set up private manufacture.
+	* Message: Some Lineage II features have been limited for free trials. 
+	* Trial accounts aren’t allowed to set up private manufacturing stores. 
+	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	CANT_SETUP_PRIVATE_WORKSHOP(2044),
 
 	/**
 	* ID: 2045<br>
-	* Message: This account cannot use private manufacture.
+	* Message: Some Lineage II features have been limited for free trials. 
+	* Trial accounts aren’t allowed to use private manufacturing stores. 
+	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	CANT_USE_PRIVATE_WORKSHOP(2045),
 
 	/**
 	* ID: 2046<br>
-	* Message: This account cannot use private stores.
+	* Message: Some Lineage II features have been limited for free trials. 
+	* Trial accounts aren’t allowed buy items from private stores. 
+	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	CANT_USE_PRIVATE_STORES(2046),
 
 	/**
 	* ID: 2047<br>
-	* Message: This account cannot use the clan warehouse.
+	* Message: Some Lineage II features have been limited for free trials. 
+	* Trial accounts aren’t allowed to access clan warehouses. 
+	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	CANT_USE_CLAN_WH(2047),
 
@@ -12448,9 +12464,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2076<br>
-	* Message: Your bid cannot exceed 2.1 billion
+	* Message: Bidding is not allowed because the maximum bidding price exceeds 100 billion.
 	*/
-	BID_CANT_EXCEED_2_1_BILLION(2076),
+	BID_CANT_EXCEED_100_BILLION(2076),
 
 	/**
 	* ID: 2077<br>
@@ -12478,9 +12494,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2081<br>
-	* Message: There is no reserve.
+	* Message: There are no funds presently due to you.
 	*/
-	NO_RESERVE(2081),
+	NO_FUNDS_DUE(2081),
 
 	/**
 	* ID: 2082<br>
@@ -12562,7 +12578,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2095<br>
-	* Message: The following account cannot use Shout.
+	* Message: Some Lineage II features have been limited for free trials. 
+	* Trial accounts have limited chatting capabilities. 
+	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	ACCOUNT_CANNOT_SHOUT(2095),
 
@@ -12610,7 +12628,7 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2103<br>
-	* Message: You cannot enter because you are not in a current Command Channel.
+	* Message: You cannot enter because you are not associated with the current command channel.
 	*/
 	NOT_IN_COMMAND_CHANNEL_CANT_ENTER(2103),
 
@@ -12867,7 +12885,7 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2145<br>
-	* Message: Elemental power enhancer usage has been cancelled.
+	* Message: Attribute item usage has been cancelled.
 	*/
 	ELEMENTAL_ENHANCE_CANCELED(2145),
 
@@ -12946,7 +12964,7 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2158<br>
-	* Message: Forced attack is impossible against siege side temporary allied members.
+	* Message: Force attack is impossible against a temporary allied member during a siege.
 	*/
 	FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS(2158),
 
@@ -13181,7 +13199,7 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2197<br>
-	* Message: Owned $s1 Clan.
+	* Message: Owned by clan $s1.
 	*/
 	OWNED_S1_CLAN(2197),
 
@@ -13350,7 +13368,7 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2225<br>
-	* Message: There are no other skills to learn. Please come back after $s1st class change
+	* Message: There are no other skills to learn. Please come back after $s1nd class change.
 	*/
 	NO_SKILLS_TO_LEARN_RETURN_AFTER_S1_CLASS_CHANGE(2225),
 
@@ -13576,7 +13594,7 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2262<br>
-	* Message: $c1 has received damage of $s3 from $c2.
+	* Message: $c1 has received $s3 damage from $c2.
 	*/
 	C1_RECEIVED_DAMAGE_OF_S3_FROM_C2(2262),
 
@@ -13654,6 +13672,18 @@ public enum SystemMessageId
 	NPCS_RECAPTURED_FORTRESS(2276),
 
 	/**
+	* ID: 2293<br>
+	* Message: Current location: $s1, $s2, $s3 (inside the Steel Citadel)
+	*/
+	LOC_STEEL_CITADEL_S1_S2_S3(2293),
+	
+	/**
+	* ID: 2301<br>
+	* Message: Current location: Steel Citadel Resistance
+	*/
+	LOC_STEEL_CITADEL_RESISTANCE(2301),
+	
+	/**
 	* ID: 2303<br>
 	* Message: There are $s2 second(s) remaining in $s1's re-use time.
 	*/
@@ -13678,6 +13708,24 @@ public enum SystemMessageId
 	ACQUIRED_S1_REPUTATION_SCORE(2319),
 
 	/**
+	* ID: 2321<br>
+	* Message: Current location: Inside Kamaloka
+	*/
+	LOC_KAMALOKA(2321),
+	
+	/**
+	* ID: 2322<br>
+	* Message: Current location: Inside Nia Kamaloka
+	*/
+	
+	LOC_NIA_KAMALOKA(2322),
+	/**
+	* ID: 2323<br>
+	* Message: Current location: Inside Rim Kamaloka
+	*/
+	LOC_RIM_KAMALOKA(2323),
+	
+	/**
 	 *  ID: 2326<br>
 	 *  Message: You have acquired 50 Clan's Fame Points..
 	 */
@@ -13699,8 +13747,72 @@ public enum SystemMessageId
 	* ID: 2337<br>
 	* Message: CP disappears when hit with a half kill skill.
 	*/
-	CP_DISAPPEARS_WHEN_HIT_WITH_A_HALF_KILL_SKILL(2337);
+	CP_DISAPPEARS_WHEN_HIT_WITH_A_HALF_KILL_SKILL(2337),
 	
+	/**
+	 * ID: 2366<br>
+	 * Message: The limited-time item has been deleted..
+	 */
+	TIME_LIMITED_ITEM_DELETED(2366),
+	
+	/**
+	* ID: 2390<br>
+	* Message: Your number of My Teleports slots has reached its maximum limit.
+	*/
+	YOUR_NUMBER_OF_MY_TELEPORTS_SLOTS_HAS_REACHED_ITS_MAXIMUM_LIMIT(2390),
+	
+	/**
+	* ID: 2398<br>
+	* Message: You have no open My Teleports slots.
+	*/
+	YOU_HAVE_NO_OPEN_MY_TELEPORTS_SLOTS(2398),
+	
+	/**
+	* ID: 2409<br>
+	* Message: The number of My Teleports slots has been increased.
+	*/
+	THE_NUMBER_OF_MY_TELEPORTS_SLOTS_HAS_BEEN_INCREASED(2409),
+	/**
+	* ID: 2710<br>
+	* Message: Current location: $s1, $s2, $s3 (near the Keucereus clan association location)
+	*/
+	LOC_KEUCEREUS_S1_S2_S3(2710),
+	
+	/**
+	* ID: 2711<br>
+	* Message: Current location: $s1, $s2, $s3 (inside the Seed of Infinity)
+	*/
+	LOC_IN_SEED_INFINITY_S1_S2_S3(2711),
+	
+	/**
+	* ID: 2712<br>
+	* Message: Current location: $s1, $s2, $s3 (outside the Seed of Infinity)
+	*/
+	LOC_OUT_SEED_INFINITY_S1_S2_S3(2712),
+	
+	/**
+	* ID: 2716<br>
+	* Message: Current location: $s1, $s2, $s3 (inside Aerial Cleft)
+	*/
+	LOC_CLEFT_S1_S2_S3(2716),
+	
+	/**
+	* ID: 2721<br>
+	* Message: Boarding or cancellation of boarding on Airships is not allowed in the current area.
+	*/
+	BOARD_OR_CANCEL_NOT_POSSIBLE_HERE(2721),
+
+	/**
+	* ID: 2727<br>
+	* Message: You cannot mount because you do not meet the requirements.
+	*/
+	YOU_CANNOT_MOUNT_NOT_MEET_REQUEIREMENTS(2727),
+	
+	/**
+	* ID: 6501<br>
+	* Message: You cannot bookmark this location because you do not have a My Teleport Flag.
+	*/
+	YOU_CANNOT_BOOKMARK_THIS_LOCATION_BECAUSE_YOU_DO_NOT_HAVE_A_MY_TELEPORT_FLAG(6501);
 	
 	private int _id;
 

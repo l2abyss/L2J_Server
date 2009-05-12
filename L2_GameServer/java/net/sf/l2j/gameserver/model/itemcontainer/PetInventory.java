@@ -78,7 +78,7 @@ public class PetInventory extends Inventory
 		return (_items.size() + slots <= _owner.getInventoryLimit());
 	}
 	
-	public boolean validateWeight(L2ItemInstance item, int count)
+	public boolean validateWeight(L2ItemInstance item, long count)
 	{
 		int weight = 0;
 		L2Item template = ItemTable.getInstance().getTemplate(item.getItemId());

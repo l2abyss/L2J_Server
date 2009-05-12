@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.entity;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
@@ -276,7 +277,8 @@ public class Siege
 			
 			if (getCastle().getOwnerId() <= 0)
 				announceToPlayer("The siege of " + getCastle().getName() + " has ended in a draw.", false);
-			
+
+			getCastle().updateClansReputation();
 			removeFlags(); // Removes all flags. Note: Remove flag before teleporting players
 			teleportPlayer(Siege.TeleportWhoType.Attacker, MapRegionTable.TeleportWhereType.Town); // Teleport to the second closest town
 			teleportPlayer(Siege.TeleportWhoType.DefenderNotOwner, MapRegionTable.TeleportWhereType.Town); // Teleport to the second closest town
@@ -590,7 +592,7 @@ public class Siege
 	/** Clear all registered siege clans from database for castle */
 	public void clearSiegeClan()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -631,7 +633,7 @@ public class Siege
 	/** Clear all siege clans waiting for approval from database for castle */
 	public void clearSiegeWaitingClan()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -822,7 +824,7 @@ public class Siege
 		if (clanId <= 0)
 			return;
 		
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -1037,7 +1039,7 @@ public class Siege
 	/** Load siege clans. */
 	private void loadSiegeClan()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			getAttackerClans().clear();
@@ -1150,7 +1152,7 @@ public class Siege
 			_scheduledStartSiegeTask.cancel(true);
 			_scheduledStartSiegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new Siege.ScheduleStartSiegeTask(getCastle()), 1000);
 		}
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -1190,7 +1192,7 @@ public class Siege
 		if (clan.getHasCastle() > 0)
 			return;
 		
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			if (typeId == 0 || typeId == 2 || typeId == -1)

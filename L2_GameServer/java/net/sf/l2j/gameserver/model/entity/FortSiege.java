@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.entity;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
@@ -448,7 +449,7 @@ public class FortSiege
 	/** Clear all registered siege clans from database for fort */
 	public void clearSiegeClan()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -657,7 +658,7 @@ public class FortSiege
 	public void removeSiegeClan(int clanId)
 	{
 		
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -809,13 +810,27 @@ public class FortSiege
 		if (player.getClan() == null || player.getClan().getLevel() < FortSiegeManager.getInstance().getSiegeClanMinLevel())
 		{
 			b = false;
-			player.sendMessage("Only clans with Level " + FortSiegeManager.getInstance().getSiegeClanMinLevel() + " and higher may register for a fort siege.");
+			player.sendMessage("Only clans with Level " + FortSiegeManager.getInstance().getSiegeClanMinLevel() + " and higher may register for a fortress siege.");
+		}
+		else if (!player.isClanLeader())
+		{
+			b = false;
+			player.sendPacket(new SystemMessage(SystemMessageId.ONLY_THE_CLAN_LEADER_IS_ENABLED));			
 		}
 		else if (player.getClan() == getFort().getOwnerClan())
 		{
 			b = false;
 			player.sendPacket(new SystemMessage(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING));
 		}
+		else if (getFort().getOwnerClan() != null && player.getClan().getHasCastle() > 0 && player.getClan().getHasCastle() == getFort().getCastleId())
+		{
+			b = false;
+			player.sendPacket(new SystemMessage(SystemMessageId.CANT_REGISTER_TO_SIEGE_DUE_TO_CONTRACT));
+		}
+		else if (getFort().getSiege().getAttackerClans().isEmpty() && player.getInventory().getAdena() < 250000)
+        {
+        	player.sendMessage("You need 250,000 adena to register"); // replace me with html
+        }
 		else
 		{
 			for (Fort fort : FortManager.getInstance().getForts())
@@ -869,7 +884,7 @@ public class FortSiege
 	/** Load siege clans. */
 	private void loadSiegeClan()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			getAttackerClans().clear();
@@ -947,7 +962,7 @@ public class FortSiege
 	/** Save siege date to database. */
 	private void saveSiegeDate()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -984,7 +999,7 @@ public class FortSiege
 	 */
 	private void saveSiegeClan(L2Clan clan)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			if (getAttackerClans().size() >= FortSiegeManager.getInstance().getAttackerMaxClans())

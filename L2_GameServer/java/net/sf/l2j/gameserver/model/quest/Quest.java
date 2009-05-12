@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.model.quest;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
@@ -41,6 +42,7 @@ import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
+import net.sf.l2j.gameserver.network.serverpackets.NpcQuestHtmlMessage;
 import net.sf.l2j.gameserver.scripting.ManagedScript;
 import net.sf.l2j.gameserver.scripting.ScriptManager;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
@@ -252,7 +254,6 @@ public class Quest extends ManagedScript
 				}
 			}
 		}
-		// ignore the startQuestTimer in all other cases (timer is already started)
 	}
 	
 	public QuestTimer getQuestTimer(String name, L2Npc npc, L2PcInstance player)
@@ -681,7 +682,7 @@ public class Quest extends ManagedScript
 	public final static void playerEnter(L2PcInstance player)
 	{
 		
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			// Get list of quests owned by the player from database
@@ -787,7 +788,7 @@ public class Quest extends ManagedScript
 	 */
 	public final void saveGlobalQuestVar(String var, String value)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -827,7 +828,7 @@ public class Quest extends ManagedScript
 	public final String loadGlobalQuestVar(String var)
 	{
 		String result = "";
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -864,7 +865,7 @@ public class Quest extends ManagedScript
 	 */
 	public final void deleteGlobalQuestVar(String var)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -896,7 +897,7 @@ public class Quest extends ManagedScript
 	 */
 	public final void deleteAllGlobalQuestVars()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -930,7 +931,7 @@ public class Quest extends ManagedScript
 	 */
 	public static void createQuestVarInDb(QuestState qs, String var, String value)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -975,7 +976,7 @@ public class Quest extends ManagedScript
 	 */
 	public static void updateQuestVarInDb(QuestState qs, String var, String value)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -1011,7 +1012,7 @@ public class Quest extends ManagedScript
 	 */
 	public static void deleteQuestVarInDb(QuestState qs, String var)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -1045,7 +1046,7 @@ public class Quest extends ManagedScript
 	 */
 	public static void deleteQuestInDb(QuestState qs)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -1368,14 +1369,14 @@ public class Quest extends ManagedScript
 	 */
 	public String showHtmlFile(L2PcInstance player, String fileName)
 	{
-		String questId = getName();
-		
+		String questName = getName();
+		int questId = getQuestIntId(); 
 		//Create handler to file linked to the quest
 		String directory = getDescr().toLowerCase();
-		String content = HtmCache.getInstance().getHtm("data/scripts/" + directory + "/" + questId + "/" + fileName);
+		String content = HtmCache.getInstance().getHtm("data/scripts/" + directory + "/" + questName + "/" + fileName);
 		
 		if (content == null)
-			content = HtmCache.getInstance().getHtmForce("data/scripts/quests/" + questId + "/" + fileName);
+			content = HtmCache.getInstance().getHtmForce("data/scripts/quests/" + questName + "/" + fileName);
 		
 		if (player != null && player.getTarget() != null)
 			content = content.replaceAll("%objectId%", String.valueOf(player.getTarget().getObjectId()));
@@ -1383,10 +1384,20 @@ public class Quest extends ManagedScript
 		//Send message to client if message not empty     
 		if (content != null)
 		{
-			NpcHtmlMessage npcReply = new NpcHtmlMessage(5);
-			npcReply.setHtml(content);
-			npcReply.replace("%playername%", player.getName());
-			player.sendPacket(npcReply);
+			if (questId > 0 && questId < 20000)
+			{
+				NpcQuestHtmlMessage npcReply = new NpcQuestHtmlMessage(5,questId);
+				npcReply.setHtml(content);
+				npcReply.replace("%playername%", player.getName());
+				player.sendPacket(npcReply);
+			}
+			else
+			{
+				NpcHtmlMessage npcReply = new NpcHtmlMessage(5);
+				npcReply.setHtml(content);
+				npcReply.replace("%playername%", player.getName());
+				player.sendPacket(npcReply);
+			}
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 		}
 		

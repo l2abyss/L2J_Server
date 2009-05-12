@@ -40,7 +40,6 @@ import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
-import net.sf.l2j.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.templates.StatsSet;
@@ -332,7 +331,6 @@ public class Hero
 				if (clan != null)
 				{
 					clan.setReputationScore(clan.getReputationScore() + Config.HERO_POINTS, true);
-					clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 					SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_MEMBER_C1_BECAME_HERO_AND_GAINED_S2_REPUTATION_POINTS);
 					sm.addString(name);
 					sm.addNumber(Config.HERO_POINTS);
@@ -345,7 +343,7 @@ public class Hero
 			}
 			else
 			{
-				java.sql.Connection con = null;
+				Connection con = null;
 				
 				try
 				{
@@ -362,7 +360,6 @@ public class Hero
 							if (clan != null)
 							{
 								clan.setReputationScore(clan.getReputationScore() + Config.HERO_POINTS, true);
-								clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 								SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_MEMBER_C1_BECAME_HERO_AND_GAINED_S2_REPUTATION_POINTS);
 								sm.addString(name);
 								sm.addNumber(Config.HERO_POINTS);

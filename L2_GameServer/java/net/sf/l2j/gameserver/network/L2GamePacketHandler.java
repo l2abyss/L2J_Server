@@ -130,14 +130,16 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
 		            		break;
 		            	}
 		            	
-		            	// single packet
-		            	if (id2 == 0x39)
+		            	switch (id2)
 		            	{
-		            		msg = new RequestGotoLobby();
-		            	}
-		            	else
-		            	{
-		            		this.printDebugDoubleOpcode(opcode, id2, buf, state, client);
+		            		case 0x36:
+		            			msg = new RequestGotoLobby();
+		            			break;
+		            		case 0x3d:
+                                msg = new RequestAllFortressInfo();
+                                break;
+                            default:
+                            	this.printDebugDoubleOpcode(opcode, id2, buf, state, client);
 		            	}
 		            	
 						break;
@@ -245,9 +247,9 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
                     case 0x31: // t1 ??
                         msg = new SetPrivateStoreListSell();
                         break;
-//                  case 0x32:
-//                      msg = new RequestPrivateStoreManageCancel(data, _client);
-//                      break;
+                    case 0x32:
+                        msg = new AttackRequest();
+                        break;
 					case 0x34:
 						msg = new RequestSocialAction();
 						break;
@@ -373,6 +375,17 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
                     case 0x67:
                         msg = new RequestPledgeCrest();
                         break;
+		            case 0x6b:
+		            	msg = new RequestSendFriendMsg();
+		            	break;
+		            case 0x6c:
+		                msg = new RequestShowMiniMap();
+		                break;
+		            case 0x6d: // MSN dialogs so that you dont see them in the console.
+						break;
+		            case 0x6e: //record video
+		            	msg = new RequestRecordInfo();
+		                break;
                     case 0x6f:
                         msg = new RequestHennaEquip();
                         break;
@@ -563,7 +576,7 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
 //						// NetPing
 //						break;
 		            case 0xb3:
-		            	msg = new RequestUserCommand();
+		            	msg = new BypassUserCmd();
 		                break;
 		            case 0xb4:
 		            	msg = new SnoopQuit();
@@ -642,18 +655,6 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
 		            case 0xcb:
 		                msg = new GameGuardReply();
 		                break;
-		            case 0x6b:
-		            	msg = new RequestSendFriendMsg();
-		            	break;
-		            case 0x6c:
-		                msg = new RequestShowMiniMap();
-		                break;
-		            case 0x6d: // MSN dialogs so that you dont see them in the console.
-						break;
-		            case 0x6e: //record video
-		            	msg = new RequestRecordInfo();
-		                break;
-
 		            case 0xd0:
 		            	int id2 = -1;
 		            	if (buf.remaining() >= 2)
@@ -744,6 +745,9 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
                             case 0x19:
                                 msg = new RequestPCCafeCouponUse();
                                 break;
+                            case 0x20:
+                            	msg = new MoveToLocationInAirShip();
+                            	break;
                             case 0x1b:
                                 msg = new RequestDuelStart();
                                 break;
@@ -759,6 +763,9 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
                             case 0x22:
                                 // TODO implement me (just disabling warnings for this packet)
                                 break;
+		                    case 0x23: 
+		                     	msg = new RequestExRemoveItemAttribute(); 
+		                     	break; 
                             case 0x24:
                                 msg = new RequestSaveInventoryOrder();
                                 break;
@@ -808,65 +815,95 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
                                 msg = new RequestExEnchantSkillUntrain();
                                 break;
                             case 0x35:
-                                msg = new RequestExEnchantSkillRouteChange();
+                                msg = new RequestExEnchantItemAttribute();
                                 break;
                             case 0x36:
                                 msg = new ExGetOnAirShip();
                                 break;
-                            case 0x38:
-                                msg = new RequestExEnchantItemAttribute();
-                                break;
-                            case 0x3f:
+                            case 0x3c:
                                 msg = new RequestAllCastleInfo();
                                 break;
-                            case 0x40:
+                            case 0x3d:
                                 msg = new RequestAllFortressInfo();
                                 break;
-                            case 0x41:
+                            case 0x3e:
                                 msg = new RequestAllAgitInfo();
                                 break;
+		                    case 0x3f:
+		                    	// TODO: Create RequestFortressSiegeInfo Packet.
+		                    	break;
+                            case 0x40:
+                                msg = new RequestGetBossRecord();
+                                break;
+                            case 0x41:
+                            	msg = new RequestRefine();
+                                break;
                             case 0x42:
-                                msg = new RequestFortressSiegeInfo();
+                                msg = new RequestConfirmCancelItem();
                                 break;
 		                    case 0x43:
-		                        msg = new RequestGetBossRecord();
+		                    	msg = new RequestRefineCancel();
 		                        break;
 		                    case 0x44:
 		                    	msg = new RequestRefine();
 		                    	break;
 		                    case 0x45:
-		                    	msg = new RequestConfirmCancelItem();
+		                    	msg = new RequestDuelSurrender();
 		                    	break;
-		                    case 0x46:
-		                    	msg = new RequestRefineCancel();
-		                    	break;
+                            case 0x46:
+                                msg = new RequestExEnchantSkillRouteChange();
+                                break;
 		                    case 0x47:
 		                    	msg = new RequestExMagicSkillUseGround();
 		                    	break;
-		                    case 0x48:
-		                    	msg = new RequestDuelSurrender();
-		                    	break;
-		                    case 0x49:
-		                    	msg = new RequestExEnchantSkillInfoDetail();
-		                    	break;
 		                    case 0x4b:
-		                    	msg = new RequestFortressMapInfo();
+		                    	msg = new RequestDispel();
+		                    	break;
+		                    case 0x4c:
+		                    	msg = new RequestExTryToPutEnchantTargetItem();
 		                    	break;
 		                    case 0x4d:
 		                    	msg = new SetPrivateStoreWholeMsg();
 		                    	break;
 		                    case 0x4e:
-		                    	msg = new RequestDispel();
-		                    	break;
-		                    case 0x4f:
-		                    	msg = new RequestExTryToPutEnchantTargetItem();
+		                    	msg = new RequestExCancelEnchantItem();
 		                    	break;
 		                    case 0x50:
 		                    	msg = new RequestExTryToPutEnchantSupportItem();
 		                    	break;
 		                    case 0x51:
-		                    	msg = new RequestExCancelEnchantItem();
-		                    	break;
+		                        int id3 = 0;
+		                        if (buf.remaining() >= 2)
+		                        {
+								    id3 = buf.getShort() & 0xffff;
+		                        }
+		                        else
+		                        {
+		                        	_log.warning("Client: "+client.toString()+" sent a 0xd0:0x51 without the third opcode.");
+		                        	break;
+		                        }
+		                        switch (id3)
+		                        {
+		                        	case 0x00:
+		                        		msg = new RequestBookMarkSlotInfo();
+		                        		break;
+		                        	case 0x01:
+		                        		msg = new RequestSaveBookMarkSlot();
+		                        		break;
+		                        	case 0x02:
+		                        		msg = new RequestModifyBookMarkSlot();
+		                        		break;
+		                        	case 0x03:
+		                        		msg = new RequestDeleteBookMarkSlot();
+		                        		break;
+		                        	case 0x04:
+		                        		msg = new RequestTeleportBookMark();
+		                        		break;
+		                        default:
+		                        	this.printDebugDoubleOpcode(opcode, id3, buf, state, client);
+		                            break;
+		                        }
+		                        break;
 		                    case 0x52:
 		                    	msg = new RequestChangeNicknameColor();
 		                    	break;
@@ -876,12 +913,16 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
 		                    case 0x54:
 		                    	// TODO: implement me (just disabling warnings for this packet)
 		                    	break;
-		                    case 0x58:
+		                    case 0x56:
 		                    	// TODO: implement me (just disabling warnings for this packet)
 		                    	break;
-		                    case 0x23: 
-		                     	msg = new RequestExRemoveItemAttribute(); 
-		                     	break; 
+		                    case 0x58:
+		                    	// TODO: Create RequestDominionInfo packet to send back
+		                    	//       FE:92 ExReplyDominionInfo (packet info in YAL2Logger)
+		                    	break;
+		                    case 0x63:
+		                    	// TODO: Create RequestSeedPhase packet to send back FE:A1 ExShowSeedMapInfo
+		                    	break;
 		                    default: 
 		                     	this.printDebugDoubleOpcode(opcode, id2, buf, state, client);
 		                    	break;

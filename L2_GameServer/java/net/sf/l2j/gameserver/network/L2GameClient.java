@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.network;
 
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -196,7 +197,11 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	public void sendPacket(L2GameServerPacket gsp)
 	{
 		if (_isDetached) return;
-		
+
+		// Packets from invisible chars sends only to GMs
+		if (gsp.isInvisible() && getActiveChar() != null && !getActiveChar().isGM())
+			return;
+
 		getConnection().sendPacket(gsp);
 		gsp.runImpl();
 	}
@@ -227,7 +232,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 		if (objid < 0)
 		    return -1;
 
-		java.sql.Connection con = null;
+		Connection con = null;
 		
 		try
 		{
@@ -252,6 +257,9 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 				else 
 					answer = 1;
 			}
+			
+			rs.close();
+			statement.close();
 			
 		    // Setting delete time
 			if (answer == 0)
@@ -313,7 +321,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 		int objid = getObjectIdForSlot(charslot);
     		if (objid < 0)
     		    return;
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 		con = L2DatabaseFactory.getInstance().getConnection();
@@ -340,7 +348,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	    if (objid < 0)
 	        return;
 
-	    java.sql.Connection con = null;
+	    Connection con = null;
 
 		try
 		{
@@ -366,6 +374,11 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 			statement = con.prepareStatement("DELETE FROM character_quests WHERE charId=?");
 			statement.setInt(1, objid);
 			statement.execute();
+			statement.close();
+			
+			statement = con.prepareStatement("DELETE FROM character_quest_global_data WHERE charId=?");
+			statement.setInt(1, objid);
+			statement.executeUpdate();
 			statement.close();
 
 			statement = con.prepareStatement("DELETE FROM character_recipebook WHERE charId=?");

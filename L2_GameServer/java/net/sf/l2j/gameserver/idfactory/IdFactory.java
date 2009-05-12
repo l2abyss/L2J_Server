@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.idfactory;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -119,15 +120,15 @@ public abstract class IdFactory
      */
     private void setAllCharacterOffline()
     {
-        java.sql.Connection con2 = null;
+        Connection con = null;
         try
         {
-            con2 = L2DatabaseFactory.getInstance().getConnection();
-            Statement s2 = con2.createStatement();
-            s2.executeUpdate("update characters set online=0");
+        	con = L2DatabaseFactory.getInstance().getConnection();
+            Statement statement = con.createStatement();
+            statement.executeUpdate("UPDATE characters SET online = 0");
+            statement.close();
+            
             _log.info("Updated characters online status.");
-
-            s2.close();
         }
         catch (SQLException e)
         {
@@ -136,7 +137,7 @@ public abstract class IdFactory
         {
             try
             {
-                con2.close();
+                con.close();
             }
             catch (Exception e)
             {
@@ -149,12 +150,12 @@ public abstract class IdFactory
      */
     private void cleanUpDB()
     {
-        java.sql.Connection conn = null;
+        Connection con = null;
         try
         {
             int cleanCount = 0;
-            conn = L2DatabaseFactory.getInstance().getConnection();
-            Statement stmt = conn.createStatement();
+            con = L2DatabaseFactory.getInstance().getConnection();
+            Statement stmt = con.createStatement();
             //Character related
             cleanCount += stmt.executeUpdate("DELETE FROM character_friends WHERE character_friends.charId NOT IN (SELECT charId FROM characters);");
             cleanCount += stmt.executeUpdate("DELETE FROM character_hennas WHERE character_hennas.charId NOT IN (SELECT charId FROM characters);");
@@ -184,6 +185,7 @@ public abstract class IdFactory
             cleanCount += stmt.executeUpdate("DELETE FROM clan_wars WHERE clan_wars.clan1 NOT IN (SELECT clan_id FROM clan_data);");
             cleanCount += stmt.executeUpdate("DELETE FROM clan_wars WHERE clan_wars.clan2 NOT IN (SELECT clan_id FROM clan_data);");
             cleanCount += stmt.executeUpdate("DELETE FROM siege_clans WHERE siege_clans.clan_id NOT IN (SELECT clan_id FROM clan_data);");
+            cleanCount += stmt.executeUpdate("DELETE FROM clan_notices WHERE clan_notices.clan_id NOT IN (SELECT clan_id FROM clan_data);");
             stmt.executeUpdate("UPDATE castle SET taxpercent=0 WHERE castle.id NOT IN (SELECT hasCastle FROM clan_data);");
             //Character & clan related
             cleanCount += stmt.executeUpdate("DELETE FROM items WHERE items.owner_id NOT IN (SELECT charId FROM characters) AND items.owner_id NOT IN (SELECT clan_id FROM clan_data);");
@@ -204,7 +206,7 @@ public abstract class IdFactory
         {
             try
             {
-                conn.close();
+                con.close();
             }
             catch (Exception e)
             {
@@ -219,38 +221,33 @@ public abstract class IdFactory
      */
     protected int[] extractUsedObjectIDTable() throws SQLException
     {
-        java.sql.Connection con = null;
+        Connection con = null;
         try
         {
             con = L2DatabaseFactory.getInstance().getConnection();
 
             //create a temporary table
-            Statement s = con.createStatement();
-            try
-            {
-                s.executeUpdate("drop table temporaryObjectTable");
-            }
-            catch (SQLException e)
-            {
-            }
-            s.executeUpdate("delete from itemsonground where object_id in (select object_id from items)");
-            s.executeUpdate("create table temporaryObjectTable" + " (object_id int NOT NULL PRIMARY KEY)");
+            Statement statement = con.createStatement();
 
-            s.executeUpdate("insert into temporaryObjectTable (object_id)" + " SELECT charId FROM characters");
-            s.executeUpdate("insert into temporaryObjectTable (object_id)" + " select object_id from items");
-            s.executeUpdate("insert into temporaryObjectTable (object_id)" + " select clan_id from clan_data");
-//            s.executeUpdate("insert into temporaryObjectTable (object_id)" + " select crest_id from clan_data where crest_id > 0");
-            s.executeUpdate("insert into temporaryObjectTable (object_id)" + " select object_id from itemsonground");
+            statement.executeUpdate("DROP TABLE IF EXISTS temporaryObjectTable");
+            statement.executeUpdate("DELETE FROM itemsonground WHERE object_id IN (SELECT object_id FROM items)");
+            statement.executeUpdate("CREATE TABLE temporaryObjectTable" + " (object_id int NOT NULL PRIMARY KEY)");
 
-            ResultSet result = s.executeQuery("select count(object_id) from temporaryObjectTable");
+            statement.executeUpdate("INSERT INTO temporaryObjectTable (object_id)" + " SELECT charId FROM characters");
+            statement.executeUpdate("INSERT INTO temporaryObjectTable (object_id)" + " SELECT object_id FROM items");
+            statement.executeUpdate("INSERT INTO temporaryObjectTable (object_id)" + " SELECT clan_id FROM clan_data");
+            //statement.executeUpdate("INSERT INTO temporaryObjectTable (object_id)" + " SELECT crest_id FROM clan_data WHERE crest_id > 0");
+            statement.executeUpdate("INSERT INTO temporaryObjectTable (object_id)" + " SELECT object_id FROM itemsonground");
+
+            ResultSet result = statement.executeQuery("SELECT COUNT(object_id) FROM temporaryObjectTable");
 
             result.next();
             int size = result.getInt(1);
-            int[] tmp_obj_ids = new int[size];
-            // _log.info("tmp table size: " + tmp_obj_ids.length);
             result.close();
+            int[] tmp_obj_ids = new int[size];
+            //_log.info("tmp table size: " + tmp_obj_ids.length);
 
-            result = s.executeQuery("select object_id from temporaryObjectTable ORDER BY object_id");
+            result = statement.executeQuery("SELECT object_id FROM temporaryObjectTable ORDER BY object_id");
 
             int idx = 0;
             while (result.next())
@@ -259,7 +256,7 @@ public abstract class IdFactory
             }
 
             result.close();
-            s.close();
+            statement.close();
 
             return tmp_obj_ids;
         }

@@ -23,6 +23,7 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
+import net.sf.l2j.gameserver.model.actor.instance.L2AirShipInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -138,10 +139,9 @@ public class CharKnownList extends ObjectKnownList
 			for (L2Object object : objs)
 			{
 				// Remove all objects invisible or too far
-				if (!object.isVisible()
-				        || !Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true))
-					if (object instanceof L2BoatInstance
-					        && getActiveObject() instanceof L2PcInstance)
+				if (!object.isVisible() || !Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true))
+				{
+					if (object instanceof L2BoatInstance && getActiveObject() instanceof L2PcInstance)
 					{
 						if (((L2BoatInstance) (object)).getVehicleDeparture() == null)
 						{
@@ -159,10 +159,29 @@ public class CharKnownList extends ObjectKnownList
 							removeKnownObject(object);
 						}
 					}
+					else if (object instanceof L2AirShipInstance && getActiveObject() instanceof L2PcInstance)
+					{
+						if (((L2AirShipInstance) (object)).getAirShipInfo() == null)
+						{
+							//
+						}
+						else if (((L2PcInstance) getActiveObject()).isInAirShip())
+						{
+							if (((L2PcInstance) getActiveObject()).getAirShip() != object)
+							{
+								removeKnownObject(object);
+							}
+						}
+						else
+						{
+							removeKnownObject(object);
+						}
+					}
 					else
 					{
 						removeKnownObject(object);
 					}
+				}
 			}
 		}
     }

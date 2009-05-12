@@ -85,7 +85,7 @@ public class PetStat extends SummonStat
         su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
         su.addAttribute(StatusUpdate.MAX_MP, getMaxMp());
         getActiveChar().broadcastPacket(su);
-        getActiveChar().broadcastPacket(new SocialAction(getActiveChar().getObjectId(), 15));
+        getActiveChar().broadcastPacket(new SocialAction(getActiveChar().getObjectId(), SocialAction.LEVEL_UP));
         // Send a Server->Client packet PetInfo to the L2PcInstance
         getActiveChar().updateAndBroadcastStatus(1);
 

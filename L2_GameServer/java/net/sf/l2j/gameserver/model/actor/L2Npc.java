@@ -57,9 +57,10 @@ import net.sf.l2j.gameserver.model.actor.instance.L2ControllableMobInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoormenInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FestivalGuideInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FishermanInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MerchantInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2TeleporterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2WarehouseInstance;
 import net.sf.l2j.gameserver.model.actor.knownlist.NpcKnownList;
@@ -734,7 +735,7 @@ public class L2Npc extends L2Character
                                 "Instance Type: ",
                                 className,
                                 "<br1>Faction: ",
-                                getFactionId(),
+                                getFactionId() != null ? getFactionId() : "null",
                                 "<br1>Location ID: ",
                                 String.valueOf(getSpawn() != null ? getSpawn().getLocation() : 0),
                                 "<br1>"
@@ -1170,7 +1171,11 @@ public class L2Npc extends L2Character
 			}
 			else if (command.startsWith("SupportMagic"))
 			{
-				makeSupportMagic(player);
+				makeSupportMagic(player,false);
+			}
+			else if (command.startsWith("SupportMagicServitor"))
+			{
+				makeSupportMagic(player,true);
 			}
 			else if (command.startsWith("GiveBlessing"))
 			{
@@ -1243,7 +1248,7 @@ public class L2Npc extends L2Character
 				int cmdChoice = Integer.parseInt(command.substring(10, 11).trim());
 				int[] pen_clear_price =
 				{
-					3600, 8640, 25200, 50400, 86400, 144000, 144000
+					3600, 8640, 25200, 50400, 86400, 144000, 144000, 144000
 				};
 				switch (cmdChoice)
 				{
@@ -1520,7 +1525,7 @@ public class L2Npc extends L2Character
 		}
 		else
 		{
-			if ((q.getQuestIntId() >= 1 && q.getQuestIntId() < 1000) && (player.getWeightPenalty() >= 3 || player.getInventoryLimit() * 0.8 <= player.getInventory().getSize()))
+			if ((q.getQuestIntId() >= 1 && q.getQuestIntId() < 20000) && (player.getWeightPenalty() >= 3 || player.getInventoryLimit() * 0.8 <= player.getInventory().getSize()))
 			{
 				player.sendPacket(new SystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
 				return;
@@ -1528,7 +1533,7 @@ public class L2Npc extends L2Character
 			
 			if (qs == null)
 			{
-				if (q.getQuestIntId() >= 1 && q.getQuestIntId() < 1000)
+				if (q.getQuestIntId() >= 1 && q.getQuestIntId() < 20000)
 				{
 					Quest[] questList = player.getAllActiveQuests();
 					if (questList.length >= 25) // if too many ongoing quests, don't show window and send message
@@ -1607,7 +1612,7 @@ public class L2Npc extends L2Character
 			for (QuestState x : awaits)
 			{
 				if (!options.contains(x.getQuest()))
-					if ((x.getQuest().getQuestIntId() > 0) && (x.getQuest().getQuestIntId() < 1000))
+					if ((x.getQuest().getQuestIntId() > 0) && (x.getQuest().getQuestIntId() < 20000))
 						options.add(x.getQuest());
 			}
 		}
@@ -1617,7 +1622,7 @@ public class L2Npc extends L2Character
 			for (Quest x : starts)
 			{
 				if (!options.contains(x))
-					if ((x.getQuestIntId() > 0) && (x.getQuestIntId() < 1000))
+					if ((x.getQuestIntId() > 0) && (x.getQuestIntId() < 20000))
 						options.add(x);
 			}
 		}
@@ -1857,7 +1862,7 @@ public class L2Npc extends L2Character
 			
 			sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 			sm.addItemName(4442);
-			sm.addNumber(1);
+			sm.addItemNumber(1);
 			player.sendPacket(sm);
 			
 			int adena = check[1];
@@ -1917,7 +1922,7 @@ public class L2Npc extends L2Character
 	 * @param player The L2PcInstance that talk with the L2NpcInstance
 	 * 
 	 */
-	public void makeSupportMagic(L2PcInstance player)
+	public void makeSupportMagic(L2PcInstance player, boolean isSummon)
 	{
 		if (player == null)
 			return;
@@ -1930,21 +1935,39 @@ public class L2Npc extends L2Character
 		int lowestLevel = 0;
 		int highestLevel = 0;
 		
-		// Select the player
-		setTarget(player);
-		
-		// Calculate the min and max level between which the player must be to obtain buff
-		if (player.isMageClass())
+		if (isSummon)
 		{
-			lowestLevel = HelperBuffTable.getInstance().getMagicClassLowestLevel();
-			highestLevel = HelperBuffTable.getInstance().getMagicClassHighestLevel();
+			if (player.getPet() == null || !(player.getPet() instanceof L2SummonInstance))
+			{
+				String content = "<html><body>Only servitors can receive this Support Magic. If you do not have a servitor, you cannot access these spells.</body></html>";
+				insertObjectIdAndShowChatWindow(player, content);
+				return;
+			}
+			setTarget(player.getPet());
+		}
+		else
+			// 	Select the player
+			setTarget(player);
+		
+		if (isSummon)
+		{
+			lowestLevel = HelperBuffTable.getInstance().getServitorLowestLevel();
+			highestLevel = HelperBuffTable.getInstance().getServitorHighestLevel();
 		}
 		else
 		{
-			lowestLevel = HelperBuffTable.getInstance().getPhysicClassLowestLevel();
-			highestLevel = HelperBuffTable.getInstance().getPhysicClassHighestLevel();
+			// 	Calculate the min and max level between which the player must be to obtain buff
+			if (player.isMageClass())
+			{
+				lowestLevel = HelperBuffTable.getInstance().getMagicClassLowestLevel();
+				highestLevel = HelperBuffTable.getInstance().getMagicClassHighestLevel();
+			}
+			else
+			{
+				lowestLevel = HelperBuffTable.getInstance().getPhysicClassLowestLevel();
+				highestLevel = HelperBuffTable.getInstance().getPhysicClassHighestLevel();
+			}
 		}
-		
 		// If the player is too high level, display a message and return
 		if (player_level > highestLevel)
 		{
@@ -1963,22 +1986,36 @@ public class L2Npc extends L2Character
 		}
 		
 		L2Skill skill = null;
-		// Go through the Helper Buff list define in sql table helper_buff_list and cast skill
-		for (L2HelperBuff helperBuffItem : HelperBuffTable.getInstance().getHelperBuffTable())
+		if (isSummon)
 		{
-			if (helperBuffItem.isMagicClassBuff() == player.isMageClass())
+			for (L2HelperBuff helperBuffItem : HelperBuffTable.getInstance().getHelperBuffTable())
 			{
-				if (player_level >= helperBuffItem.getLowerLevel() && player_level <= helperBuffItem.getUpperLevel())
+				if (helperBuffItem.isForSummon())
 				{
 					skill = SkillTable.getInstance().getInfo(helperBuffItem.getSkillID(), helperBuffItem.getSkillLevel());
-					if (skill.getSkillType() == L2SkillType.SUMMON)
-						player.doSimultaneousCast(skill);
-					else
+					if (skill != null)
 						doCast(skill);
 				}
 			}
 		}
-		
+		else
+		{
+			// 	Go through the Helper Buff list define in sql table helper_buff_list and cast skill
+			for (L2HelperBuff helperBuffItem : HelperBuffTable.getInstance().getHelperBuffTable())
+			{
+				if (helperBuffItem.isMagicClassBuff() == player.isMageClass())
+				{
+					if (player_level >= helperBuffItem.getLowerLevel() && player_level <= helperBuffItem.getUpperLevel())
+					{
+						skill = SkillTable.getInstance().getInfo(helperBuffItem.getSkillID(), helperBuffItem.getSkillLevel());
+						if (skill.getSkillType() == L2SkillType.SUMMON)
+							player.doSimultaneousCast(skill);
+						else
+							doCast(skill);
+					}
+				}
+			}
+		}
 	}
 	
 	public void showChatWindow(L2PcInstance player)
@@ -2346,7 +2383,10 @@ public class L2Npc extends L2Character
 			default:
 				if (npcId >= 31865 && npcId <= 31918)
 				{
-					filename += "rift/GuardianOfBorder.htm";
+					if (val == 0 )
+						filename += "rift/GuardianOfBorder.htm";
+					else
+						filename += "rift/GuardianOfBorder-" + val + ".htm";
 					break;
 				}
 				if ((npcId >= 31093 && npcId <= 31094) || (npcId >= 31172 && npcId <= 31201) || (npcId >= 31239 && npcId <= 31254))

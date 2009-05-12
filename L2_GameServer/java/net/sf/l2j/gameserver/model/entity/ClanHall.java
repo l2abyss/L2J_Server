@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.entity;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -191,7 +192,7 @@ public class ClanHall
 		
 		public void dbSave(boolean newFunction)
 		{
-			java.sql.Connection con = null;
+			Connection con = null;
 			try
 			{
 				PreparedStatement statement;
@@ -464,7 +465,7 @@ public class ClanHall
 	/** Load All Functions */
 	private void loadFunctions()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			PreparedStatement statement;
@@ -499,7 +500,7 @@ public class ClanHall
 	public void removeFunction(int functionType)
 	{
 		_functions.remove(functionType);
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			PreparedStatement statement;
@@ -567,7 +568,7 @@ public class ClanHall
 	/** Update DB */
 	public void updateDb()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
