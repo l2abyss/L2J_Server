@@ -20,10 +20,11 @@ import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
-final class EffectSilentMove extends L2Effect
+public class EffectSilentMove extends L2Effect
 {
 	public EffectSilentMove(Env env, EffectTemplate template)
 	{

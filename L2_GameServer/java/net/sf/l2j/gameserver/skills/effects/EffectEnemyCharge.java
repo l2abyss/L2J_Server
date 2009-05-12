@@ -24,6 +24,7 @@ import net.sf.l2j.gameserver.network.serverpackets.FlyToLocation;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.network.serverpackets.FlyToLocation.FlyType;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
 public class EffectEnemyCharge extends L2Effect

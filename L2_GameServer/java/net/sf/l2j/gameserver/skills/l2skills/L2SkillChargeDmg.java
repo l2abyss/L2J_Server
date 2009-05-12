@@ -21,40 +21,17 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.network.serverpackets.EtcStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Formulas;
-import net.sf.l2j.gameserver.skills.effects.EffectCharge;
 import net.sf.l2j.gameserver.templates.StatsSet;
 import net.sf.l2j.gameserver.templates.item.L2WeaponType;
 
 public class L2SkillChargeDmg extends L2Skill
 {
 
-	final int chargeSkillId;
-
 	public L2SkillChargeDmg(StatsSet set)
     {
 		super(set);
-		chargeSkillId = set.getInteger("charge_skill_id");
-	}
-
-	@Override
-	public boolean checkCondition(L2Character activeChar, L2Object target, boolean itemOrWeapon)
-	{
-		if (activeChar instanceof L2PcInstance)
-		{
-			L2PcInstance player = (L2PcInstance)activeChar;
-			EffectCharge e = (EffectCharge)player.getFirstEffect(chargeSkillId);
-			if(e == null || e.numCharges < getNumCharges())
-			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-				sm.addSkillName(this);
-				activeChar.sendPacket(sm);
-				return false;
-			}
-		}
-		return super.checkCondition(activeChar, target, itemOrWeapon);
 	}
 
 	@Override
@@ -65,34 +42,22 @@ public class L2SkillChargeDmg extends L2Skill
 			return;
         }
 
-		// get the effect
-		EffectCharge effect = (EffectCharge) caster.getFirstEffect(chargeSkillId);
-		if (effect == null || effect.numCharges < getNumCharges())
-		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-			sm.addSkillName(this);
-			caster.sendPacket(sm);
-			return;
-		}
-        double modifier = 0;
-        modifier = 0.8+0.201*effect.numCharges; // thanks Diego Vargas of L2Guru: 70*((0.8+0.201*No.Charges) * (PATK+POWER)) / PDEF
-
-		if (getTargetType() != SkillTargetType.TARGET_AREA && getTargetType() != SkillTargetType.TARGET_MULTIFACE)
-			effect.numCharges -= getNumCharges();
+		double modifier = 0;
 		if (caster instanceof L2PcInstance)
-			caster.sendPacket(new EtcStatusUpdate((L2PcInstance)caster));
-        if (effect.numCharges == 0)
-        	{effect.exit();}
-        for (L2Character target: (L2Character[]) targets)
         {
-        	L2ItemInstance weapon = caster.getActiveWeaponInstance();
-        	if (target.isAlikeDead())
-        		continue;
+			// thanks Diego Vargas of L2Guru: 70*((0.8+0.201*No.Charges) * (PATK+POWER)) / PDEF
+			modifier = 0.8+0.201*(getNumCharges()+((L2PcInstance)caster).getCharges());
+        }
+		for (L2Character target: (L2Character[]) targets)
+		{
+			L2ItemInstance weapon = caster.getActiveWeaponInstance();
+			if (target.isAlikeDead())
+				continue;
         	
-        	//Calculate skill evasion
-        	boolean skillIsEvaded = Formulas.calcPhysicalSkillEvasion(target, this);
-        	if(skillIsEvaded)
-        	{
+			//	Calculate skill evasion
+			boolean skillIsEvaded = Formulas.calcPhysicalSkillEvasion(target, this);
+			if(skillIsEvaded)
+			{
 				if (caster instanceof L2PcInstance)
 				{
 					SystemMessage sm = new SystemMessage(SystemMessageId.C1_DODGES_ATTACK);
@@ -118,7 +83,7 @@ public class L2SkillChargeDmg extends L2Skill
 			byte shld = Formulas.calcShldUse(caster, target);
 			boolean crit = false;
 			if (this.getBaseCritRate() > 0)
-				crit = Formulas.calcCrit(this.getBaseCritRate() * 10 * Formulas.getSTRBonus(caster));
+				crit = Formulas.calcCrit(this.getBaseCritRate() * 10 * Formulas.getSTRBonus(caster), target);
 			boolean soul = (weapon != null
 							&& weapon.getChargedSoulshot() == L2ItemInstance.CHARGED_SOULSHOT
 							&& weapon.getItemType() != L2WeaponType.DAGGER );

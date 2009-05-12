@@ -12,23 +12,25 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j.gameserver.skills.effects;
+package net.sf.l2j.gameserver.templates.effects;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
+import net.sf.l2j.gameserver.model.ChanceCondition;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.conditions.Condition;
 import net.sf.l2j.gameserver.skills.funcs.FuncTemplate;
 import net.sf.l2j.gameserver.skills.funcs.Lambda;
+import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
 /**
  * @author mkizub
  * 
  */
-public final class EffectTemplate
+public class EffectTemplate
 {
 	static Logger _log = Logger.getLogger(EffectTemplate.class.getName());
 	
@@ -46,7 +48,16 @@ public final class EffectTemplate
 	public final float stackOrder;
 	public final boolean icon;
 	public final String funcName;
-	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda, int pCounter, int pPeriod, int pAbnormalEffect, String pStackType, float pStackOrder, boolean showicon)
+	public final double effectPower; // to thandle chance
+	public final L2SkillType effectType; // to handle resistences etc...
+	
+	public final int triggeredId;
+    public final int triggeredLevel;
+    public final ChanceCondition chanceCondition;
+	
+	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda, 
+			int pCounter, int pPeriod, int pAbnormalEffect, String pStackType, float pStackOrder, boolean showicon,
+			double ePower, L2SkillType eType, int trigId, int trigLvl, ChanceCondition chanceCond)
 	{
 		attachCond = pAttachCond;
 		applayCond = pApplayCond;
@@ -58,6 +69,13 @@ public final class EffectTemplate
 		stackOrder = pStackOrder;
 		icon = showicon;
 		funcName = func;
+		effectPower = ePower;
+		effectType = eType;
+		
+		triggeredId = trigId;
+	    triggeredLevel = trigLvl;
+	    chanceCondition = chanceCond;
+	    
 		try
 		{
 			_func = Class.forName("net.sf.l2j.gameserver.skills.effects.Effect" + func);
@@ -104,57 +122,58 @@ public final class EffectTemplate
 		
 	}
 	
-		/**
-		 * Creates an L2Effect instance from an existing one and an Env object.
-		 *
-		 * @param env
-		 * @param stolen
-		 * @return
-		 */
-		public L2Effect getStolenEffect(Env env, L2Effect stolen)
+	/**
+	 * Creates an L2Effect instance from an existing one and an Env object.
+	 * 
+	 * @param env
+	 * @param stolen
+	 * @return
+	 */
+	public L2Effect getStolenEffect(Env env, L2Effect stolen)
+	{
+		Class<?> func;
+		Constructor<?> stolenCons;
+		try
 		{
-			Class<?> func;
-			Constructor<?> stolenCons;
-			try
-			{
-				func = Class.forName("net.sf.l2j.gameserver.skills.effects.Effect"+stolen.getEffectTemplate().funcName);
-			}
-			catch (ClassNotFoundException e)
-			{
-				throw new RuntimeException(e);
-			}
-			try
-			{
-				stolenCons = func.getConstructor(Env.class, L2Effect.class);
-			}
-			catch (NoSuchMethodException e)
-			{
-				throw new RuntimeException(e);
-			}
-			try
-			{
-				L2Effect effect = (L2Effect)stolenCons.newInstance(env, stolen);
-				//if (_applayCond != null)
-				//	effect.setCondition(_applayCond);
-				return effect;
-			}
-			catch (IllegalAccessException e)
-			{
-				e.printStackTrace();
-				return null;
-			}
-			catch (InstantiationException e)
-			{
-				e.printStackTrace();
-				return null;
-			}
-			catch (InvocationTargetException e)
-			{
-				_log.warning("Error creating new instance of Class "+func+" Exception was:");
-				e.getTargetException().printStackTrace();
-				return null;
-			}
+			func = Class.forName("net.sf.l2j.gameserver.skills.effects.Effect"
+			        + stolen.getEffectTemplate().funcName);
 		}
+		catch (ClassNotFoundException e)
+		{
+			throw new RuntimeException(e);
+		}
+		try
+		{
+			stolenCons = func.getConstructor(Env.class, L2Effect.class);
+		}
+		catch (NoSuchMethodException e)
+		{
+			throw new RuntimeException(e);
+		}
+		try
+		{
+			L2Effect effect = (L2Effect) stolenCons.newInstance(env, stolen);
+			// if (_applayCond != null)
+			// effect.setCondition(_applayCond);
+			return effect;
+		}
+		catch (IllegalAccessException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		catch (InstantiationException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		catch (InvocationTargetException e)
+		{
+			_log.warning("Error creating new instance of Class " + func + " Exception was:");
+			e.getTargetException().printStackTrace();
+			return null;
+		}
+	}
 	
 	public void attach(FuncTemplate f)
 	{

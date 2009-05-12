@@ -1,9 +1,13 @@
+﻿====================================
+The Jython License
+====================================
+
 
 A. TERMS AND CONDITIONS FOR ACCESSING OR OTHERWISE USING JYTHON
-=======================================================
+==============================================================================================================
 
 PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
---------------------------------------------
+----------------------------------------------------------------------------------------
 
 1. This LICENSE AGREEMENT is between the Python Software Foundation
 ("PSF"), and the Individual or Organization ("Licensee") accessing and
@@ -51,7 +55,7 @@ agrees to be bound by the terms and conditions of this License
 Agreement.
  
 Jython 2.0, 2.1 License
-================================
+--------------------------------------------
 
 Copyright (c) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Jython Developers
 All rights reserved.
@@ -72,7 +76,7 @@ are met:
    derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+"AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
 A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
 CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
@@ -87,19 +91,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 JPython 1.1.x Software License.
-=========================
-
 ______________________________________________________________________
-
-IMPORTANT: PLEASE READ THE FOLLOWING AGREEMENT CAREFULLY.
-
-BY CLICKING ON THE "ACCEPT" BUTTON WHERE INDICATED, OR BY INSTALLING,
-COPYING OR OTHERWISE USING THE SOFTWARE, YOU ARE DEEMED TO HAVE AGREED TO
-THE TERMS AND CONDITIONS OF THIS AGREEMENT.
-
-______________________________________________________________________
-
-JPython version 1.1.x
 
   1. This LICENSE AGREEMENT is between the Corporation for National Research
      Initiatives, having an office at 1895 Preston White Drive, Reston, VA
@@ -197,4 +189,3 @@ Software License.
 
 The command line interpreter is covered by the Apache Software
 License.  See the org/apache/LICENSE file for details.
-

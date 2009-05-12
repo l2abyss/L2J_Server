@@ -18,6 +18,7 @@ import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
 /**
@@ -26,7 +27,7 @@ import net.sf.l2j.gameserver.templates.skills.L2EffectType;
  *         TODO To change the template for this generated type comment go to
  *         Window - Preferences - Java - Code Style - Code Templates
  */
-final class EffectImmobilePetBuff extends L2Effect
+public class EffectImmobilePetBuff extends L2Effect
 {
 	private L2Summon _pet;
 	

@@ -26,6 +26,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
 /**
@@ -33,7 +34,7 @@ import net.sf.l2j.gameserver.templates.skills.L2EffectType;
  * 
  *         Implementation of the Fear Effect
  */
-final class EffectFear extends L2Effect
+public class EffectFear extends L2Effect
 {
 	public static final int FEAR_RANGE = 500;
 	

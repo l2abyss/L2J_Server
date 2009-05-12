@@ -22,6 +22,7 @@ import static net.sf.l2j.gameserver.taskmanager.TaskTypes.TYPE_SPECIAL;
 import static net.sf.l2j.gameserver.taskmanager.TaskTypes.TYPE_STARTUP;
 import static net.sf.l2j.gameserver.taskmanager.TaskTypes.TYPE_TIME;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -89,7 +90,7 @@ public final class TaskManager
 			task.onTimeElapsed(this);
 			lastActivation = System.currentTimeMillis();
 			
-			java.sql.Connection con = null;
+			Connection con = null;
 			
 			try
 			{
@@ -203,7 +204,7 @@ public final class TaskManager
 	
 	private void startAllTasks()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -348,7 +349,7 @@ public final class TaskManager
 	
 	public static boolean addUniqueTask(String task, TaskTypes type, String param1, String param2, String param3, long lastActivation)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		
 		try
 		{
@@ -399,7 +400,7 @@ public final class TaskManager
 	
 	public static boolean addTask(String task, TaskTypes type, String param1, String param2, String param3, long lastActivation)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		
 		try
 		{

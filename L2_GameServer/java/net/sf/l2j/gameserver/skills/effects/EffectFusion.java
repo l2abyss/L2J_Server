@@ -17,13 +17,14 @@ package net.sf.l2j.gameserver.skills.effects;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
 /**
  * @author Kerberos
  */
 
-public final class EffectFusion extends L2Effect
+public class EffectFusion extends L2Effect
 {
 	public int _effect;
 	public int _maxEffect;

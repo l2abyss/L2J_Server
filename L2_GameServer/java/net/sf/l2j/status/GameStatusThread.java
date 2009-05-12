@@ -456,7 +456,7 @@ public class GameStatusThread extends Thread
                             player.sendPacket(iu);
                             SystemMessage sm = new SystemMessage(SystemMessageId.YOU_PICKED_UP_S1_S2);
                             sm.addItemName(itemId);
-                            sm.addNumber(amount);
+                            sm.addItemNumber(amount);
                             player.sendPacket(sm);
                             _print.println("ok");
                             GMAudit.auditGMAction("Telnet Admin", "Give Item", player.getName(), "item: "+itemId+" amount: "+amount);

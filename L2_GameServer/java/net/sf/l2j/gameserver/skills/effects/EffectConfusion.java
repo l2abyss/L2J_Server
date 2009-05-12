@@ -23,6 +23,7 @@ import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 import net.sf.l2j.util.Rnd;
 
@@ -31,7 +32,7 @@ import net.sf.l2j.util.Rnd;
  * 
  *         Implementation of the Confusion Effect
  */
-final class EffectConfusion extends L2Effect
+public class EffectConfusion extends L2Effect
 {
 	
 	public EffectConfusion(Env env, EffectTemplate template)

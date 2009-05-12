@@ -22,6 +22,7 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
@@ -171,6 +172,8 @@ public class L2SkillSummon extends L2Skill
 		}
 		if (summonTemplate.type.equalsIgnoreCase("L2SiegeSummon"))
 			summon = new L2SiegeSummonInstance(IdFactory.getInstance().getNextId(), summonTemplate, activeChar, this);
+		else if (summonTemplate.type.equalsIgnoreCase("L2MerchantSummon"))
+			summon = new L2MerchantSummonInstance(IdFactory.getInstance().getNextId(), summonTemplate, activeChar, this);
 		else
 			summon = new L2SummonInstance(IdFactory.getInstance().getNextId(), summonTemplate, activeChar, this);
 
@@ -190,7 +193,8 @@ public class L2SkillSummon extends L2Skill
 		summon.setCurrentMp(summon.getMaxMp());
 		summon.setHeading(activeChar.getHeading());
     	summon.setRunning();
-		activeChar.setPet(summon);
+    	if (!(summon instanceof L2MerchantSummonInstance))
+    		activeChar.setPet(summon);
 
     	L2World.getInstance().storeObject(summon);
         summon.spawnMe(activeChar.getX()+50, activeChar.getY()+100, activeChar.getZ());

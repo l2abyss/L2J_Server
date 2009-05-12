@@ -19,13 +19,14 @@ import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2EffectPointInstance;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
 /**
  * @authors Forsaiken, Sami
  */
 
-final class EffectSignetNoise extends L2Effect
+public class EffectSignetNoise extends L2Effect
 {
 	private L2EffectPointInstance _actor;
 	

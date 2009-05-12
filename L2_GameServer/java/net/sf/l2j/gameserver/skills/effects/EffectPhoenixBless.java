@@ -19,12 +19,13 @@ package net.sf.l2j.gameserver.skills.effects;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
 /**
  * @author Faror
  */
-final class EffectPhoenixBless extends L2Effect
+public class EffectPhoenixBless extends L2Effect
 {
 	public EffectPhoenixBless(Env env, EffectTemplate template)
 	{

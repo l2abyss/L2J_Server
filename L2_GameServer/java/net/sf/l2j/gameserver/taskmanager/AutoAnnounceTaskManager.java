@@ -12,6 +12,7 @@
  */
 package net.sf.l2j.gameserver.taskmanager;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -57,7 +58,7 @@ public class AutoAnnounceTaskManager
 			_announces.clear();
 		}
 		
-		java.sql.Connection conn = null;
+		Connection conn = null;
 		int count = 0;
 		try
 		{
@@ -75,10 +76,16 @@ public class AutoAnnounceTaskManager
 				ThreadPoolManager.getInstance().scheduleGeneral(new AutoAnnouncement(id, delay, repeat, text), initial);
 				count++;
 			}
+			data.close();
+			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "AutoAnnoucements: Fail to load announcements data.", e);
+		}
+		finally
+		{
+			try { conn.close(); } catch (Exception e) {}
 		}
 		_log.log(Level.SEVERE, "AutoAnnoucements: Load "+count+" Auto Annoucement Data.");
 	}

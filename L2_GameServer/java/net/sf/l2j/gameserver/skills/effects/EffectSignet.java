@@ -25,13 +25,14 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSignet;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSignetCasttime;
+import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
 /**
  * @authors Forsaiken, Sami
  */
 
-final class EffectSignet extends L2Effect
+public class EffectSignet extends L2Effect
 {
 	private L2Skill _skill;
 	private L2EffectPointInstance _actor;

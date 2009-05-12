@@ -22,6 +22,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import net.sf.l2j.gameserver.skills.Env;
+import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
 
 /**
@@ -29,7 +30,7 @@ import net.sf.l2j.gameserver.templates.skills.L2EffectType;
  * 
  *         Implementation of the Bluff Effect
  */
-final class EffectBluff extends L2Effect
+public class EffectBluff extends L2Effect
 {
 	
 	public EffectBluff(Env env, EffectTemplate template)
