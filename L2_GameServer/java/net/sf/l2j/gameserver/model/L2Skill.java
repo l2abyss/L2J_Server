@@ -430,7 +430,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _negateLvl = set.getInteger("negateLvl", -1);
         _learnSkillId = set.getInteger("learnSkillId",0);
         _learnSkillLvl = set.getInteger("learnSkillLvl",1);
-        _attribute = set.getString("attribute");
+        _attribute = set.getString("attribute","");
         String str = set.getString("negateStats", "");
         
         if (str == "")
