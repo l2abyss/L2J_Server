@@ -692,7 +692,7 @@ public abstract class L2Character extends L2Object
 				 * Players riding wyvern or with special (flying) transformations can do melee attacks, only with skills 
 				 */
 				if ((actor.isMounted() && actor.getMountNpcId() == 12621) 
-						|| (actor.isTransformed() && actor.getTransformation().canDoMeleeAttack()))
+						|| (actor.isTransformed() && !actor.getTransformation().canDoMeleeAttack()))
 				{
 					sendPacket(ActionFailed.STATIC_PACKET);
 					return;
