@@ -728,8 +728,34 @@ public class CharStat
 		// 1st order - weapon element
 		if (weaponInstance != null && weaponInstance.getAttackElementType() >= 0 )
 			return weaponInstance.getAttackElementType();
+		
+		// temp fix starts
+		double tempVal =0,stats[] = { 0, 0, 0, 0, 0, 0 };
 
-		return _activeChar.getElementIdFromEffects();
+		int returnVal = -2;
+		stats[0] = (int) calcStat(Stats.FIRE_POWER, _activeChar.getTemplate().baseFire, null, null);
+		stats[1] = (int) calcStat(Stats.WATER_POWER, _activeChar.getTemplate().baseWater, null, null);
+		stats[2] = (int) calcStat(Stats.WIND_POWER, _activeChar.getTemplate().baseWind, null, null);
+		stats[3] = (int) calcStat(Stats.EARTH_POWER, _activeChar.getTemplate().baseEarth, null, null);
+		stats[4] = (int) calcStat(Stats.HOLY_POWER, _activeChar.getTemplate().baseHoly, null, null);
+		stats[5] = (int) calcStat(Stats.DARK_POWER, _activeChar.getTemplate().baseDark, null, null);
+
+		for (int x = 0; x < 6; x++)
+		{
+			if (stats[x] > tempVal)
+			{
+				returnVal = x;
+				tempVal = stats[x];
+			}
+		}
+
+		return returnVal;
+		// temp fix ends
+		
+		/*
+		 * uncomment me once deadlocks in getAllEffects() fixed 
+			return _activeChar.getElementIdFromEffects();
+		*/
 	}
 
 	public int getAttackElementValue(int attackAttribute)
