@@ -359,52 +359,70 @@ public class MultiSellChoose extends L2GameClientPacket
 		// Generate the appropriate items
 		for (MultiSellIngredient e : entry.getProducts())
 		{
-			if (ItemTable.getInstance().createDummyItem(e.getItemId()).isStackable())
+			switch (e.getItemId())
 			{
-				inv.addItem("Multisell", e.getItemId(), (e.getItemCount() * _amount), player, player.getTarget());
-			}
-			else
-			{
-				L2ItemInstance product = null;
-				for (int i = 0; i < (e.getItemCount() * _amount); i++)
+				case -200: // Clan Reputation Score - now not supported
 				{
-					product = inv.addItem("Multisell", e.getItemId(), 1, player, player.getTarget());
-					if (maintainEnchantment)
+					//player.getClan().setReputationScore((int)(player.getClan().getReputationScore() + e.getItemCount() * _amount), true);
+					break;
+				}
+				case -300: // Player Fame
+				{
+					player.setFame((int)(player.getFame() + e.getItemCount() * _amount));
+					player.sendPacket(new UserInfo(player));
+					player.sendPacket(new ExBrExtraUserInfo(player));
+					break;
+				}
+				default:
+				{
+					if (ItemTable.getInstance().createDummyItem(e.getItemId()).isStackable())
 					{
-						if (i < augmentation.size())
+						inv.addItem("Multisell", e.getItemId(), (e.getItemCount() * _amount), player, player.getTarget());
+					}
+					else
+					{
+						L2ItemInstance product = null;
+						for (int i = 0; i < (e.getItemCount() * _amount); i++)
 						{
-							product.setAugmentation(new L2Augmentation(augmentation.get(i).getAugmentationId(), augmentation.get(i).getSkill()));
+							product = inv.addItem("Multisell", e.getItemId(), 1, player, player.getTarget());
+							if (maintainEnchantment)
+							{
+								if (i < augmentation.size())
+								{
+									product.setAugmentation(new L2Augmentation(augmentation.get(i).getAugmentationId(), augmentation.get(i).getSkill()));
+								}
+								product.setEnchantLevel(e.getEnchantmentLevel());
+							}
 						}
-						product.setEnchantLevel(e.getEnchantmentLevel());
+					}
+					// msg part
+					SystemMessage sm;
+					
+					if (e.getItemCount() * _amount > 1)
+					{
+						sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
+						sm.addItemName(e.getItemId());
+						sm.addItemNumber(e.getItemCount() * _amount);
+						player.sendPacket(sm);
+						sm = null;
+					}
+					else
+					{
+						if (maintainEnchantment && e.getEnchantmentLevel() > 0)
+						{
+							sm = new SystemMessage(SystemMessageId.ACQUIRED_S1_S2);
+							sm.addItemNumber(e.getEnchantmentLevel());
+							sm.addItemName(e.getItemId());
+						}
+						else
+						{
+							sm = new SystemMessage(SystemMessageId.EARNED_ITEM);
+							sm.addItemName(e.getItemId());
+						}
+						player.sendPacket(sm);
+						sm = null;
 					}
 				}
-			}
-			// msg part
-			SystemMessage sm;
-			
-			if (e.getItemCount() * _amount > 1)
-			{
-				sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
-				sm.addItemName(e.getItemId());
-				sm.addItemNumber(e.getItemCount() * _amount);
-				player.sendPacket(sm);
-				sm = null;
-			}
-			else
-			{
-				if (maintainEnchantment && e.getEnchantmentLevel() > 0)
-				{
-					sm = new SystemMessage(SystemMessageId.ACQUIRED_S1_S2);
-					sm.addItemNumber(e.getEnchantmentLevel());
-					sm.addItemName(e.getItemId());
-				}
-				else
-				{
-					sm = new SystemMessage(SystemMessageId.EARNED_ITEM);
-					sm.addItemName(e.getItemId());
-				}
-				player.sendPacket(sm);
-				sm = null;
 			}
 		}
 		player.sendPacket(new ItemList(player, false));
