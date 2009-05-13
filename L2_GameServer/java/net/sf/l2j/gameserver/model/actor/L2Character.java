@@ -5614,7 +5614,7 @@ public abstract class L2Character extends L2Object
 				addChanceSkill(newSkill);
 			}
 			
-			if (!newSkill.isChance() && newSkill.triggerAnotherSkill() )
+			/*if (!newSkill.isChance() && newSkill.triggerAnotherSkill() )
 			{
 				L2Skill bestowed = SkillTable.getInstance().getInfo(newSkill.getTriggeredId(), newSkill.getTriggeredLevel());
 				addSkill(bestowed); 
@@ -5626,7 +5626,7 @@ public abstract class L2Character extends L2Object
 			{
 				L2Skill triggeredSkill = SkillTable.getInstance().getInfo(newSkill.getTriggeredId(),newSkill.getTriggeredLevel());
 				addSkill(triggeredSkill);
-			}
+			}*/
 		}
 
 		return oldSkill;
