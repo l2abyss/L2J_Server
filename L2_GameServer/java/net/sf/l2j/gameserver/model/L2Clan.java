@@ -2179,17 +2179,17 @@ public class L2Clan
         player.deathPenalty(false, false, false);
     }
 
-    public void levelUpClan(L2PcInstance player)
+    public boolean levelUpClan(L2PcInstance player)
     {
         if (!player.isClanLeader())
         {
             player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
-            return;
+            return false;
         }
         if (System.currentTimeMillis() < getDissolvingExpiryTime())
         {
             player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_RISE_LEVEL_WHILE_DISSOLUTION_IN_PROGRESS));
-            return;
+            return false;
         }
 
         boolean increaseClanLevel = false;
@@ -2377,14 +2377,14 @@ public class L2Clan
                 }
                 break;
             default:
-            	return;
+            	return false;
         }
 
         if (!increaseClanLevel)
         {
             SystemMessage sm = new SystemMessage(SystemMessageId.FAILED_TO_INCREASE_CLAN_LEVEL);
             player.sendPacket(sm);
-            return;
+            return false;
         }
 
         // the player should know that he has less sp now :p
@@ -2396,6 +2396,7 @@ public class L2Clan
         player.sendPacket(il);
 
         changeLevel(getLevel() + 1);
+        return true;
     }
 
     public void changeLevel(int level)

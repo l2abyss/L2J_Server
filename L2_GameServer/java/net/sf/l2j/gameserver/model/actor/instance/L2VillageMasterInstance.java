@@ -151,9 +151,11 @@ public final class L2VillageMasterInstance extends L2NpcInstance
                 player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
                 return;
             }
-            player.getClan().levelUpClan(player);
-            player.broadcastPacket(new MagicSkillUse(player, 5103, 1, 0, 0));
-            player.broadcastPacket(new MagicSkillLaunched(player, 5103, 1));
+            if (player.getClan().levelUpClan(player))
+            {
+            	player.broadcastPacket(new MagicSkillUse(player, 5103, 1, 0, 0));
+            	player.broadcastPacket(new MagicSkillLaunched(player, 5103, 1));
+            }
         }
         else if (actualCommand.equalsIgnoreCase("learn_clan_skills"))
         {
