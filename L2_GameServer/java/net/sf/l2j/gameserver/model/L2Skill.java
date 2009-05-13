@@ -286,6 +286,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private int _learnSkillLvl;
 
 	private boolean _useShield;
+
+	private boolean _isSuicideAttack;
     protected L2Skill(StatsSet set)
     {
         _id = set.getInteger("skill_id");
@@ -411,6 +413,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _condition = set.getInteger("condition", 0);
         _conditionValue = set.getInteger("conditionValue", 0);
         _overhit = set.getBool("overHit", false);
+        _isSuicideAttack = set.getBool("isSuicideAttack", false);
         _weaponsAllowed = set.getInteger("weaponsAllowed", 0);
         _armorsAllowed = set.getInteger("armorsAllowed", 0);
 
@@ -502,6 +505,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
         return _killByDOT;
     }
 
+    public final boolean isSuicideAttack()
+    {
+    	 return _isSuicideAttack;
+    }
     public final boolean allowOnTransform()
     {
     	return isPassive();
