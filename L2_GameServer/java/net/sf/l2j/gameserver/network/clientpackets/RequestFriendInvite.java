@@ -26,7 +26,6 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.FriendAddRequest;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.util.Util;
 
 /**
  * This class ...
@@ -57,7 +56,6 @@ public final class RequestFriendInvite extends L2GameClientPacket
             return;
 
         L2PcInstance friend = L2World.getInstance().getPlayer(_name);
-        _name = Util.capitalizeFirst(_name); //FIXME: is it right to capitalize a nickname?
 
     	if (friend == null)
         {
@@ -75,7 +73,7 @@ public final class RequestFriendInvite extends L2GameClientPacket
     	    sm = null;
     	    return;
     	}
-
+    	String name = friend.getName();
 		try
 		{
 		    con = L2DatabaseFactory.getInstance().getConnection();
@@ -88,7 +86,7 @@ public final class RequestFriendInvite extends L2GameClientPacket
             {
     			//Player already is in your friendlist
     			sm = new SystemMessage(SystemMessageId.S1_ALREADY_IN_FRIENDS_LIST);
-    			sm.addString(_name);
+    			sm.addString(name);
 		    }
             else
             {
@@ -97,17 +95,18 @@ public final class RequestFriendInvite extends L2GameClientPacket
 		    	    //requets to become friend
     			    activeChar.onTransactionRequest(friend);
     			    sm = new SystemMessage(SystemMessageId.C1_REQUESTED_TO_BECOME_FRIENDS);
-    			    sm.addString(_name);
+    			    sm.addString(name);
     			    FriendAddRequest ajf = new FriendAddRequest(activeChar.getName());
     			    friend.sendPacket(ajf);
     			}
                 else
                 {
     			    sm = new SystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
+    			    sm.addString(name);
     			}
 		    }
 
-			friend.sendPacket(sm);
+			activeChar.sendPacket(sm);
 			sm = null;
 			rset.close();
 			statement.close();
