@@ -56,7 +56,7 @@ public class EffectChanceSkillTrigger extends L2Effect implements IChanceSkillTr
 	
 	public void onExit()
 	{
-		getEffected().removeChanceSkill(_triggeredId);
+		getEffected().removeChanceEffect(this);
 	}
 
 	@Override

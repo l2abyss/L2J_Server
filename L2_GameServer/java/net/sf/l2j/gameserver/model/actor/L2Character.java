@@ -5762,6 +5762,16 @@ public abstract class L2Character extends L2Object
 		_chanceSkills.put(effect, effect.getTriggeredChanceCondition());
 	}
 
+	public synchronized void removeChanceEffect(EffectChanceSkillTrigger effect)
+	{
+		if (_chanceSkills == null) return;
+
+		_chanceSkills.remove(effect);
+
+		if (_chanceSkills.isEmpty())
+			_chanceSkills = null;
+	}
+
 	/**
 	 * Return all skills own by the L2Character in a table of L2Skill.<BR><BR>
 	 *
