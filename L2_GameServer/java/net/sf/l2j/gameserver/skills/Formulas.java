@@ -1948,17 +1948,11 @@ public final class Formulas
 				case SLEEP:
 					multiplier *= target.getTemplate().baseSleepVuln;
 					break;
-				case FIRE:
-				case WIND:
-				case WATER:
-				case EARTH:
-				case HOLY:
-				case DARK:
-					multiplier *= calcElemental(attacker, target, skill);
-					break;
 				}
 			}
-			
+			if (skill.getElement() > 0)
+				multiplier *= calcElemental(attacker, target, skill);
+
 			// Finally, calculate skilltype vulnerabilities
 			L2SkillType type = skill.getSkillType();
 			

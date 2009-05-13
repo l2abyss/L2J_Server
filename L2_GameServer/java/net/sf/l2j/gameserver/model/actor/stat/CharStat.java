@@ -336,24 +336,6 @@ public class CharStat
 			case SLEEP:
 				attack += _activeChar.getTemplate().baseSleep;
 				break;
-			case FIRE:
-				attack += _activeChar.getTemplate().baseFire;
-				break;
-			case WIND:
-				attack += _activeChar.getTemplate().baseWind;
-				break;
-			case WATER:
-				attack += _activeChar.getTemplate().baseWater;
-				break;
-			case EARTH:
-				attack += _activeChar.getTemplate().baseEarth;
-				break;
-			case HOLY:
-				attack += _activeChar.getTemplate().baseHoly;
-				break;
-			case DARK:
-				attack += _activeChar.getTemplate().baseDark;
-				break;
 			}
 		}
 

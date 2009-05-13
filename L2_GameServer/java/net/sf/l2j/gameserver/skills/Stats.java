@@ -104,12 +104,6 @@ public enum Stats
 	MOVEMENT("movement"), // slowdown movement, debuff
 	CONFUSION("confusion"), // mob changes target, opposite to aggression/hate
 	SLEEP("sleep"), // sleep (don't move/ATTACK) until attacked
-	FIRE("fire"),
-	WIND("wind"),
-	WATER("water"),
-	EARTH("earth"),
-	HOLY("holy"),
-	DARK("dark"),
 	VALAKAS("valakas"),
 	VALAKAS_RES("valakasRes"),
 	//
@@ -151,12 +145,6 @@ public enum Stats
 	SLEEP_PROF("sleepProf"),
 	CONFUSION_PROF("confusionProf"),
 	PROF("movementProf"),
-	FIRE_PROF("fireProf"),
-	WIND_PROF("windProf"),
-	WATER_PROF("waterProf"),
-	EARTH_PROF("earthProf"),
-	HOLY_PROF("holyProf"),
-	DARK_PROF("darkProf"),
 	CANCEL_PROF("cancelProf"),
 	DERANGEMENT_PROF("derangementProf"),
 	DEBUFF_PROF("debuffProf"),
