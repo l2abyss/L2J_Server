@@ -33,8 +33,6 @@ import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ShortCutRegister;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
-import net.sf.l2j.gameserver.util.IllegalPlayerAction;
-import net.sf.l2j.gameserver.util.Util;
 
 /**
  * Format (ch) dd
@@ -73,8 +71,6 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
         if (trainer == null)
             return;
         
-        int npcid = trainer.getNpcId();
-        
         if ((trainer == null || !player.isInsideRadius(trainer, L2Npc.INTERACTION_DISTANCE, false, false)) && !player.isGM())
             return;
         
@@ -90,7 +86,7 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
             return;
         }
         
-        if (!skill.canTeachBy(npcid) || !skill.getCanLearn(player.getClassId()))
+/*        if (!skill.canTeachBy(npcid) || !skill.getCanLearn(player.getClassId()))
         {
             if (!Config.ALT_GAME_SKILL_LEARN)
             {
@@ -98,7 +94,7 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
                 Util.handleIllegalPlayerAction(player, "Client "+this.getClient()+" tried to learn skill that he can't!!!", IllegalPlayerAction.PUNISH_KICK);
                 return;
             }
-        }
+        }*/
         
 	    int reqItemId = SkillTreeTable.UNTRAIN_ENCHANT_BOOK;
         

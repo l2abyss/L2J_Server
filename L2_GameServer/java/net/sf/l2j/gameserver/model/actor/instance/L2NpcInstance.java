@@ -145,7 +145,7 @@ public class L2NpcInstance extends L2Npc
 		{
 			L2Skill sk = SkillTable.getInstance().getInfo(s.getId(), s.getLevel());
 
-			if (sk == null || !sk.getCanLearn(player.getClassId()) || !sk.canTeachBy(npcId))
+			if (sk == null)
 				continue;
 
 			int cost = SkillTreeTable.getInstance().getSkillCost(player, sk);

@@ -783,19 +783,7 @@ public class SkillTreeTable
 			{
 				skillCost = skillLearn.getSpCost();
 				if (!player.getClassId().equalsOrChildOf(classId))
-				{
-					if (skill.getCrossLearnAdd() < 0)
 						return skillCost;
-					
-					skillCost += skill.getCrossLearnAdd();
-					skillCost *= skill.getCrossLearnMul();
-				}
-				
-				if ((classId.getRace() != player.getRace()) && !player.isSubClassActive())
-					skillCost *= skill.getCrossLearnRace();
-				
-				if (classId.isMage() != player.getClassId().isMage())
-					skillCost *= skill.getCrossLearnProf();
 			}
 		}
 		

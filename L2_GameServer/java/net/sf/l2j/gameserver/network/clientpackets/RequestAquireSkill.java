@@ -77,8 +77,6 @@ public class RequestAquireSkill extends L2GameClientPacket
 		if (trainer == null)
 			return;
 
-		int npcid = trainer.getNpcId();
-
 		if (!player.isInsideRadius(trainer, L2Npc.INTERACTION_DISTANCE, false, false)
 				&& !player.isGM())
 			return;
@@ -157,8 +155,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 				{
 					L2Skill sk = SkillTable.getInstance().getInfo(s.getId(),
 					s.getLevel());
-					if (sk == null || sk != skill || !sk.getCanLearn(player.getSkillLearningClassId())
-							|| !sk.canTeachBy(npcid))
+					if (sk == null)
 						continue;
 					counts++;
 					_requiredSp = SkillTreeTable.getInstance().getSkillCost(player,skill);

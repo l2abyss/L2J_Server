@@ -16,8 +16,6 @@ package net.sf.l2j.gameserver.model;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -38,7 +36,6 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
-import net.sf.l2j.gameserver.model.base.ClassId;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
@@ -70,13 +67,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
     public static final int SKILL_DIVINE_INSPIRATION = 1405;
     public static final int SKILL_CLAN_LUCK = 390;
 
-    public static final int SKILL_FAKE_INT = 9001;
-    public static final int SKILL_FAKE_WIT = 9002;
-    public static final int SKILL_FAKE_MEN = 9003;
-    public static final int SKILL_FAKE_CON = 9004;
-    public static final int SKILL_FAKE_DEX = 9005;
-    public static final int SKILL_FAKE_STR = 9006;
-
     public static enum SkillOpType
     {
         OP_PASSIVE, OP_ACTIVE, OP_TOGGLE
@@ -107,7 +97,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
         TARGET_CORPSE_CLAN,
         TARGET_CORPSE_PLAYER,
         TARGET_CORPSE_PET,
-        TARGET_ITEM,
         TARGET_AREA_CORPSE_MOB,
         TARGET_CORPSE_MOB,
         TARGET_UNLOCKABLE,
@@ -128,82 +117,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     public final static int ELEMENT_HOLY = 5;
     public final static int ELEMENT_DARK = 6;
 
-    //save vs
-    public final static int SAVEVS_INT = 1;
-    public final static int SAVEVS_WIT = 2;
-    public final static int SAVEVS_MEN = 3;
-    public final static int SAVEVS_CON = 4;
-    public final static int SAVEVS_DEX = 5;
-    public final static int SAVEVS_STR = 6;
-
-    //stat effected
-    public final static int STAT_PATK = 301; // pAtk
-    public final static int STAT_PDEF = 302; // pDef
-    public final static int STAT_MATK = 303; // mAtk
-    public final static int STAT_MDEF = 304; // mDef
-    public final static int STAT_MAXHP = 305; // maxHp
-    public final static int STAT_MAXMP = 306; // maxMp
-    public final static int STAT_CURHP = 307;
-    public final static int STAT_CURMP = 308;
-    public final static int STAT_HPREGEN = 309; // regHp
-    public final static int STAT_MPREGEN = 310; // regMp
-    public final static int STAT_CASTINGSPEED = 311; // sCast
-    public final static int STAT_ATKSPD = 312; // sAtk
-    public final static int STAT_CRITDAM = 313; // critDmg
-    public final static int STAT_CRITRATE = 314; // critRate
-    public final static int STAT_FIRERES = 315; // fireRes
-    public final static int STAT_WINDRES = 316; // windRes
-    public final static int STAT_WATERRES = 317; // waterRes
-    public final static int STAT_EARTHRES = 318; // earthRes
-    public final static int STAT_HOLYRES = 336; // holyRes
-    public final static int STAT_DARKRES = 337; // darkRes
-    public final static int STAT_ROOTRES = 319; // rootRes
-    public final static int STAT_SLEEPRES = 320; // sleepRes
-    public final static int STAT_CONFUSIONRES = 321; // confusRes
-    public final static int STAT_BREATH = 322; // breath
-    public final static int STAT_AGGRESSION = 323; // aggr
-    public final static int STAT_BLEED = 324; // bleed
-    public final static int STAT_POISON = 325; // poison
-    public final static int STAT_STUN = 326; // stun
-    public final static int STAT_ROOT = 327; // root
-    public final static int STAT_MOVEMENT = 328; // move
-    public final static int STAT_EVASION = 329; // evas
-    public final static int STAT_ACCURACY = 330; // accu
-    public final static int STAT_COMBAT_STRENGTH = 331;
-    public final static int STAT_COMBAT_WEAKNESS = 332;
-    public final static int STAT_ATTACK_RANGE = 333; // rAtk
-    public final static int STAT_NOAGG = 334; // noagg
-    public final static int STAT_SHIELDDEF = 335; // sDef
-    public final static int STAT_MP_CONSUME_RATE = 336; // Rate of mp consume per skill use
-    public final static int STAT_HP_CONSUME_RATE = 337; // Rate of hp consume per skill use
-    public final static int STAT_MCRITRATE = 338; // Magic Crit Rate
-
-    //COMBAT DAMAGE MODIFIER SKILLS...DETECT WEAKNESS AND WEAKNESS/STRENGTH
-    public final static int COMBAT_MOD_ANIMAL = 200;
-    public final static int COMBAT_MOD_BEAST = 201;
-    public final static int COMBAT_MOD_BUG = 202;
-    public final static int COMBAT_MOD_DRAGON = 203;
-    public final static int COMBAT_MOD_MONSTER = 204;
-    public final static int COMBAT_MOD_PLANT = 205;
-    public final static int COMBAT_MOD_HOLY = 206;
-    public final static int COMBAT_MOD_UNHOLY = 207;
-    public final static int COMBAT_MOD_BOW = 208;
-    public final static int COMBAT_MOD_BLUNT = 209;
-    public final static int COMBAT_MOD_DAGGER = 210;
-    public final static int COMBAT_MOD_FIST = 211;
-    public final static int COMBAT_MOD_DUAL = 212;
-    public final static int COMBAT_MOD_SWORD = 213;
-    public final static int COMBAT_MOD_POISON = 214;
-    public final static int COMBAT_MOD_BLEED = 215;
-    public final static int COMBAT_MOD_FIRE = 216;
-    public final static int COMBAT_MOD_WATER = 217;
-    public final static int COMBAT_MOD_EARTH = 218;
-    public final static int COMBAT_MOD_WIND = 219;
-    public final static int COMBAT_MOD_ROOT = 220;
-    public final static int COMBAT_MOD_STUN = 221;
-    public final static int COMBAT_MOD_CONFUSION = 222;
-    public final static int COMBAT_MOD_DARK = 223;
-
+    
     //conditional values
     public final static int COND_RUNNING = 0x0001;
     public final static int COND_WALKING = 0x0002;
@@ -214,11 +128,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
     public final static int COND_ROBES = 0x0040;
     public final static int COND_CHARGES = 0x0080;
     public final static int COND_SHIELD = 0x0100;
-    public final static int COND_GRADEA = 0x010000;
-    public final static int COND_GRADEB = 0x020000;
-    public final static int COND_GRADEC = 0x040000;
-    public final static int COND_GRADED = 0x080000;
-    public final static int COND_GRADES = 0x100000;
 
     private static final Func[] _emptyFunctionSet = new Func[0];
     private static final L2Effect[] _emptyEffectSet = new L2Effect[0];
@@ -314,9 +223,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
     
     private final boolean _ispotion;
     private final int _element;
-    private final int _savevs;
-    
-    private final boolean _isSuicideAttack;
 
     private final Stats _stat;
 
@@ -326,12 +232,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final int _weaponsAllowed;
     private final int _armorsAllowed;
 
-    private final int _addCrossLearn; // -1 disable, otherwice SP price for others classes, default 1000
-    private final float _mulCrossLearn; // multiplay for others classes, default 2
-    private final float _mulCrossLearnRace; // multiplay for others races, default 2
-    private final float _mulCrossLearnProf; // multiplay for fighter/mage missmatch, default 3
-    private final List<ClassId> _canLearn; // which classes can learn
-    private final List<Integer> _teachers; // which NPC teaches
     private final int _minPledgeClass;
 
     private final boolean _isOffensive;
@@ -507,19 +407,13 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _effectLvl = set.getInteger("effectLevel", 0);
 
         _element = set.getInteger("element", 0);
-        _savevs = set.getInteger("save", 0);
 
         _condition = set.getInteger("condition", 0);
         _conditionValue = set.getInteger("conditionValue", 0);
         _overhit = set.getBool("overHit", false);
-        _isSuicideAttack = set.getBool("isSuicideAttack", false);
         _weaponsAllowed = set.getInteger("weaponsAllowed", 0);
         _armorsAllowed = set.getInteger("armorsAllowed", 0);
 
-        _addCrossLearn = set.getInteger("addCrossLearn", 1000);
-        _mulCrossLearn = set.getFloat("mulCrossLearn", 2.f);
-        _mulCrossLearnRace = set.getFloat("mulCrossLearnRace", 2.f);
-        _mulCrossLearnProf = set.getFloat("mulCrossLearnProf", 3.f);
         _minPledgeClass = set.getInteger("minPledgeClass", 0);
         _isOffensive = set.getBool("offensive", isSkillTypeOffensive());
         _maxCharges = set.getInteger("maxCharges", 0);
@@ -555,52 +449,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _flyType = set.getString("flyType", null);
         _flyRadius = set.getInteger("flyRadius", 200);
         _flyCourse = set.getFloat("flyCourse", 0);
-        
-        String canLearn = set.getString("canLearn", null);
-        if (canLearn == null)
-        {
-            _canLearn = null;
-        }
-        else
-        {
-            _canLearn = new FastList<ClassId>();
-            StringTokenizer st = new StringTokenizer(canLearn, " \r\n\t,;");
-            while (st.hasMoreTokens())
-            {
-                String cls = st.nextToken();
-                try
-                {
-                    _canLearn.add(ClassId.valueOf(cls));
-                }
-                catch (Exception e)
-                {
-                    _log.log(Level.SEVERE, "Bad class " + cls + " to learn skill", e);
-                }
-            }
-        }
-
-        String teachers = set.getString("teachers", null);
-        if (teachers == null)
-        {
-            _teachers = null;
-        }
-        else
-        {
-            _teachers = new FastList<Integer>();
-            StringTokenizer st = new StringTokenizer(teachers, " \r\n\t,;");
-            while (st.hasMoreTokens())
-            {
-                String npcid = st.nextToken();
-                try
-                {
-                    _teachers.add(Integer.parseInt(npcid));
-                }
-                catch (Exception e)
-                {
-                    _log.log(Level.SEVERE, "Bad teacher id " + npcid + " to teach skill", e);
-                }
-            }
-        }
     }
 
     public abstract void useSkill(L2Character caster, L2Object[] targets);
@@ -623,11 +471,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
     public final L2SkillType getSkillType()
     {
         return _skillType;
-    }
-
-    public final int getSavevs()
-    {
-        return _savevs;
     }
 
     public final int getElement()
@@ -657,11 +500,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
     public final boolean killByDOT()
     {
         return _killByDOT;
-    }
-    
-    public final boolean isSuicideAttack()
-    {
-        return _isSuicideAttack;
     }
 
     public final boolean allowOnTransform()
@@ -1119,36 +957,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
     public final int getWeaponsAllowed()
     {
         return _weaponsAllowed;
-    }
-
-    public final int getCrossLearnAdd()
-    {
-        return _addCrossLearn;
-    }
-
-    public final float getCrossLearnMul()
-    {
-        return _mulCrossLearn;
-    }
-
-    public final float getCrossLearnRace()
-    {
-        return _mulCrossLearnRace;
-    }
-
-    public final float getCrossLearnProf()
-    {
-        return _mulCrossLearnProf;
-    }
-
-    public final boolean getCanLearn(ClassId cls)
-    {
-        return _canLearn == null || _canLearn.contains(cls);
-    }
-
-    public final boolean canTeachBy(int npcId)
-    {
-        return _teachers == null || _teachers.contains(npcId);
     }
 
     public int getMinPledgeClass() { return _minPledgeClass;  }
