@@ -242,6 +242,8 @@ public final class L2World
      */
     public L2PcInstance getPlayer(String name)
     {
+        if (name == null)
+            return null;
         return _allPlayers.get(name.toLowerCase());
     }
 
