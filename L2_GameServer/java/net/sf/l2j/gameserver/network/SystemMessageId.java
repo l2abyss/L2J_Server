@@ -587,7 +587,7 @@ public enum SystemMessageId
 
 	/**
 	* ID: 94<br>
-	* Message: 2004-2009 © Copyright NCsoft Corporation. All Rights Reserved.
+	* Message: 2004-2009 (c) Copyright NCsoft Corporation. All Rights Reserved.
 	*/
 	COPYRIGHT(94),
 
@@ -12218,7 +12218,7 @@ public enum SystemMessageId
 	/**
 	* ID: 2038<br>
 	* Message: Some Lineage II features have been limited for free trials. 
-	* Trial accounts aren’t allowed to drop items and/or Adena.  
+	* Trial accounts aren't allowed to drop items and/or Adena.  
 	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	ACCOUNT_CANT_DROP_ITEMS(2038),
@@ -12226,7 +12226,7 @@ public enum SystemMessageId
 	/**
 	* ID: 2039<br>
 	* Message: Some Lineage II features have been limited for free trials. 
-	* Trial accounts aren’t allowed to trade items and/or Adena.  
+	* Trial accounts aren't allowed to trade items and/or Adena.  
 	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	ACCOUNT_CANT_TRADE_ITEMS(2039),
@@ -12240,7 +12240,7 @@ public enum SystemMessageId
 	/**
 	* ID: 2041<br>
 	* Message: Some Lineage II features have been limited for free trials. 
-	* Trial accounts aren’t allowed to setup private stores. 
+	* Trial accounts aren't allowed to setup private stores. 
 	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	CANT_OPEN_PRIVATE_STORE(2041),
@@ -12261,24 +12261,24 @@ public enum SystemMessageId
 
 	/**
 	* ID: 2044<br>
-	* Message: Some Lineage II features have been limited for free trials. 
-	* Trial accounts aren’t allowed to set up private manufacturing stores. 
+	* Message: Some Lineage II features have been limited for free trials.
+	* Trial accounts aren't allowed to set up private manufacturing stores. 
 	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	CANT_SETUP_PRIVATE_WORKSHOP(2044),
 
 	/**
 	* ID: 2045<br>
-	* Message: Some Lineage II features have been limited for free trials. 
-	* Trial accounts aren’t allowed to use private manufacturing stores. 
+	* Message: Some Lineage II features have been limited for free trials.
+	* Trial accounts aren't allowed to use private manufacturing stores.
 	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	CANT_USE_PRIVATE_WORKSHOP(2045),
 
 	/**
 	* ID: 2046<br>
-	* Message: Some Lineage II features have been limited for free trials. 
-	* Trial accounts aren’t allowed buy items from private stores. 
+	* Message: Some Lineage II features have been limited for free trials.
+	* Trial accounts aren't allowed buy items from private stores.
 	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	CANT_USE_PRIVATE_STORES(2046),
@@ -12286,7 +12286,7 @@ public enum SystemMessageId
 	/**
 	* ID: 2047<br>
 	* Message: Some Lineage II features have been limited for free trials. 
-	* Trial accounts aren’t allowed to access clan warehouses. 
+	* Trial accounts aren't allowed to access clan warehouses.
 	* To unlock all of the features of Lineage II, purchase the full version today.
 	*/
 	CANT_USE_CLAN_WH(2047),
