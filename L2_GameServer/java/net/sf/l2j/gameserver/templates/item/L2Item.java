@@ -691,7 +691,10 @@ public abstract class L2Item
 	            }
 	            else if (msgId !=0)
 	            {
-	            	activeChar.sendPacket(new SystemMessage(msgId));
+	            	SystemMessage sm = new SystemMessage(msgId);
+	            	if (preCondition.isAddName())
+	            		sm.addItemName(_itemId);
+	            	activeChar.sendPacket(sm);
 	            }
 	            return false;
 	        }

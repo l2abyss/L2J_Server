@@ -1213,7 +1213,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
             if (msgId != 0)
             {
             	SystemMessage sm = new SystemMessage(msgId);
-            	sm.addSkillName(_id);
+            	if (preCondition.isAddName())
+            		sm.addSkillName(_id);
             	activeChar.sendPacket(sm);
             }
             else if (msg != null)

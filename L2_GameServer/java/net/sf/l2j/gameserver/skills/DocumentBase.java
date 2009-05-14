@@ -131,7 +131,12 @@ abstract class DocumentBase
 			if (condition != null && msg != null)
 				condition.setMessage(msg.getNodeValue());
 			else if (condition != null && msgId != null)
+			{
 				condition.setMessageId(Integer.decode(getValue(msgId.getNodeValue(), null)));
+				Node addName = n.getAttributes().getNamedItem("addName");
+				if (addName != null && Integer.decode(getValue(msgId.getNodeValue(), null)) > 0)
+					condition.addName();
+			}
             n = n.getNextSibling();
         }
         for (; n != null; n = n.getNextSibling())

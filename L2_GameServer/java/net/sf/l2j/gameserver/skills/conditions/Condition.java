@@ -26,43 +26,54 @@ public abstract class Condition implements ConditionListener
 {
 	
 	//private static final Logger _log = Logger.getLogger(Condition.class.getName());
-	
+
 	private ConditionListener _listener;
 	private String _msg;
 	private int _msgId;
+	private boolean _addName = false;
 	private boolean _result;
-	
+
 	public final void setMessage(String msg)
 	{
 		_msg = msg;
 	}
-	
+
 	public final String getMessage()
 	{
 		return _msg;
 	}
-	
+
 	public final void setMessageId(int msgId)
 	{
 		_msgId = msgId;
 	}
-	
+
 	public final int getMessageId()
 	{
 		return _msgId;
 	}
-	
+
+	public final void addName()
+	{
+		_addName = true;
+	}
+
+	public final boolean isAddName()
+	{
+		return _addName;
+	}
+
 	void setListener(ConditionListener listener)
 	{
 		_listener = listener;
 		notifyChanged();
 	}
-	
+
 	final ConditionListener getListener()
 	{
 		return _listener;
 	}
-	
+
 	public final boolean test(Env env)
 	{
 		boolean res = testImpl(env);
@@ -73,9 +84,9 @@ public abstract class Condition implements ConditionListener
 		}
 		return res;
 	}
-	
+
 	abstract boolean testImpl(Env env);
-	
+
 	public void notifyChanged()
 	{
 		if (_listener != null)
