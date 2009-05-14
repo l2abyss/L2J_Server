@@ -531,7 +531,7 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 1071:
 				useSkill(5761);
 				break;
-				//T3 Social Packets
+				//CT 2.3 Social Packets
 			case 12:
 				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 2));
 				break;
@@ -542,10 +542,10 @@ public final class RequestActionUse extends L2GameClientPacket
 				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 4));
 				break;
 			case 24:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 5));
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 6));
 				break;
 			case 25:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 6));
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 5));
 				break;
 			case 26:
 				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 7));
@@ -570,6 +570,9 @@ public final class RequestActionUse extends L2GameClientPacket
 				break;
 			case 62:
 				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 14));
+				break;
+			case 66:
+				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 15));
 				break;
 			default:
 				_log.warning(activeChar.getName() + ": unhandled action type " + _actionId);
