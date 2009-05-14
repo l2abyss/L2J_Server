@@ -60,8 +60,7 @@ public class L2SkillCreateItem extends L2Skill
         L2PcInstance player = (L2PcInstance) activeChar;
         if (activeChar instanceof L2PcInstance)
         {
-            int rnd = Rnd.nextInt(_randomCount) + 1;
-            int count = _createItemCount * rnd;
+            int count = _createItemCount + Rnd.nextInt(_randomCount);
             int rndid = Rnd.nextInt(_createItemId.length);
             giveItems(player, _createItemId[rndid], count);
         }
