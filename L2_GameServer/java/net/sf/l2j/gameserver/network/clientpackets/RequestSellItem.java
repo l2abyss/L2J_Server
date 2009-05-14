@@ -116,8 +116,7 @@ public final class RequestSellItem extends L2GameClientPacket
 
         L2Object target = player.getTarget();
         if (!player.isGM() && (target == null								// No target (ie GM Shop)
-        		|| !(target instanceof L2MerchantInstance)	// Target not a merchant and not mercmanager
-        		|| !(target instanceof L2MerchantSummonInstance)
+        		|| !(target instanceof L2MerchantInstance || target instanceof L2MerchantSummonInstance)	// Target not a merchant
 			    || !player.isInsideRadius(target, L2Npc.INTERACTION_DISTANCE, false, false) 	// Distance is too far
 			        )) return;
 
