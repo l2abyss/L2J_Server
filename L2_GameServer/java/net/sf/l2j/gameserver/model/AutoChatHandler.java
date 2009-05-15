@@ -86,7 +86,7 @@ public class AutoChatHandler implements SpawnListener
                 rs2.last();
                 String[] chatTexts = new String[rs2.getRow()];
                 int i = 0;
-                rs2.first();
+                rs2.beforeFirst();
 
                 while (rs2.next())
                 {
