@@ -40,7 +40,7 @@ import net.sf.l2j.gameserver.util.Util;
  * d    // seeds to buy
  * [
  * d    // seed id
- * d    // count
+ * q    // count
  * ]
  * @param decrypt
  * @author l3x
@@ -56,13 +56,13 @@ public class RequestBuySeed extends L2GameClientPacket
 	private int _manorId;
 	private int[] _items; // size _count * 2
 
-    @Override
+	@Override
 	protected void readImpl()
 	{
 		_manorId = readD();
 		_count = readD();
 
-		if (_count > 500 || _count * 8 < _buf.remaining()) // check values
+		if (_count > 500 || _count * 12 < _buf.remaining()) // check values
 		{
 			_count = 0;
 			return;
@@ -72,8 +72,7 @@ public class RequestBuySeed extends L2GameClientPacket
 
 		for (int i = 0; i < _count; i++)
 		{
-			int itemId = readD();
-			_items[i * 2 + 0] = itemId;
+			_items[i * 2 + 0] = readD(); // itemId
 			long cnt = readQ();
 			if (cnt > Integer.MAX_VALUE || cnt < 1)
 			{
