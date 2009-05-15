@@ -292,7 +292,7 @@ public class ClanTable
 			if (castleId != 0)
 			{
 				statement = con.prepareStatement("UPDATE castle SET taxPercent = 0 WHERE id = ?");
-				statement.setInt(2, castleId);
+				statement.setInt(1, castleId);
 				statement.execute();
 				statement.close();
 			}
