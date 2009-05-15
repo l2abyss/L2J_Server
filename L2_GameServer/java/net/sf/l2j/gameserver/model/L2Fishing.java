@@ -315,39 +315,41 @@ public class L2Fishing implements Runnable
 	private void PenaltyMonster()
 	{
 		int lvl = (int)Math.round(_fisher.getLevel()*0.1);
+		
 		int npcid;
 
 		_fisher.sendPacket(new SystemMessage(SystemMessageId.YOU_CAUGHT_SOMETHING_SMELLY_THROW_IT_BACK));
 		switch (lvl)
 		{
-		case 0:
-		case 1:
-			npcid = 18319;
-			break;
-		case 2:
-			npcid = 18320;
-			break;
-		case 3:
-			npcid = 18321;
-			break;
-		case 4:
-			npcid = 18322;
-			break;
-		case 5:
-			npcid = 18323;
-			break;
-		case 6:
-			npcid = 18324;
-			break;
-		case 7:
-			npcid = 18325;
-			break;
-		case 8:
-			npcid = 18326;
-			break;
-		default:
-			npcid = 18319;
-		    break;
+			case 0:
+			case 1:
+				npcid = 18319;
+				break;
+			case 2:
+				npcid = 18320;
+				break;
+			case 3:
+				npcid = 18321;
+				break;
+			case 4:
+				npcid = 18322;
+				break;
+			case 5:
+				npcid = 18323;
+				break;
+			case 6:
+				npcid = 18324;	
+				break;
+			case 7:
+				npcid = 18325;
+				break;
+			case 8:
+			case 9:
+				npcid = 18326;
+				break;
+			default:
+				npcid = 18319;
+			    break;
 		}
 		L2NpcTemplate temp;
 		temp = NpcTable.getInstance().getTemplate(npcid);
