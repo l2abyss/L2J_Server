@@ -1197,7 +1197,6 @@ public final class Formulas
 	{
 		double power = skill.getPower();
 		double damage = attacker.getPAtk(target);
-		damage += calcElemental(attacker, target, skill);
 		damage+=calcValakasAttribute(attacker, target, skill);
 		double defence = target.getPDef(attacker);
 		if(ss)
@@ -1237,9 +1236,7 @@ public final class Formulas
 			else
 				damage *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);	
 		}
-		
-		
-		
+		damage += calcElemental(attacker, target, skill);
 		return damage < 1 ? 1. : damage;
 	}
 	/** Calculated damage caused by ATTACK of attacker on target,
@@ -1258,7 +1255,6 @@ public final class Formulas
 	{
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
-		damage += calcElemental(attacker, target, skill);
 		damage+=calcValakasAttribute(attacker, target, skill);
 		switch (shld)
 		{
@@ -1438,7 +1434,7 @@ public final class Formulas
 			else
 				damage *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);	
 		}
-		
+		damage += calcElemental(attacker, target, skill);
 		return damage;
 	}
 
@@ -1461,7 +1457,6 @@ public final class Formulas
 		else if (ss) mAtk *= 2;
 
 		double damage = 91 * Math.sqrt(mAtk) / mDef * skill.getPower(attacker); 
-		damage += calcElemental(attacker, target, skill); 
 		
 		// In C5 summons make 10 % less dmg in PvP.
 		if(attacker instanceof L2Summon && target instanceof L2PcInstance) damage *= 0.9;
@@ -1526,7 +1521,7 @@ public final class Formulas
 		damage *= rnd;
 		// CT2.3 general magic vuln
 		damage *= target.calcStat(Stats.MAGIC_DAMAGE_VULN, 1, null, null);
-		
+		damage += calcElemental(attacker, target, skill);
 		return damage;
 	}
 	
@@ -1546,7 +1541,7 @@ public final class Formulas
 		
 		double damage = 91 * Math.sqrt(mAtk) / mDef * skill.getPower();
 		L2PcInstance owner = attacker.getOwner();
-		damage += calcElemental(owner, target, skill);
+		
 		// Failure calculation
 		if (Config.ALT_GAME_MAGICFAILURES && !calcMagicSuccess(owner, target, skill))
 		{			
@@ -1588,7 +1583,7 @@ public final class Formulas
 		
 		// CT2.3 general magic vuln
 		damage *= target.calcStat(Stats.MAGIC_DAMAGE_VULN, 1, null, null);
-		
+		damage += calcElemental(owner, target, skill);
 		return damage;
 	}
 
