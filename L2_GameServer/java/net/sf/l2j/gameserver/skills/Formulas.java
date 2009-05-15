@@ -33,7 +33,6 @@ import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.base.PlayerState;
@@ -1198,7 +1197,7 @@ public final class Formulas
 	{
 		double power = skill.getPower();
 		double damage = attacker.getPAtk(target);
-		damage *= calcElemental(attacker, target, skill);
+		damage += calcElemental(attacker, target, skill);
 		damage+=calcValakasAttribute(attacker, target, skill);
 		double defence = target.getPDef(attacker);
 		if(ss)
@@ -1259,7 +1258,7 @@ public final class Formulas
 	{
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
-		damage *= calcElemental(attacker, target, skill);
+		damage += calcElemental(attacker, target, skill);
 		damage+=calcValakasAttribute(attacker, target, skill);
 		switch (shld)
 		{
@@ -1462,7 +1461,7 @@ public final class Formulas
 		else if (ss) mAtk *= 2;
 
 		double damage = 91 * Math.sqrt(mAtk) / mDef * skill.getPower(attacker); 
-		damage *= calcElemental(attacker, target, skill); 
+		damage += calcElemental(attacker, target, skill); 
 		
 		// In C5 summons make 10 % less dmg in PvP.
 		if(attacker instanceof L2Summon && target instanceof L2PcInstance) damage *= 0.9;
@@ -1547,7 +1546,7 @@ public final class Formulas
 		
 		double damage = 91 * Math.sqrt(mAtk) / mDef * skill.getPower();
 		L2PcInstance owner = attacker.getOwner();
-		damage *= calcElemental(owner, target, skill);
+		damage += calcElemental(owner, target, skill);
 		// Failure calculation
 		if (Config.ALT_GAME_MAGICFAILURES && !calcMagicSuccess(owner, target, skill))
 		{			
@@ -1950,8 +1949,6 @@ public final class Formulas
 					break;
 				}
 			}
-			if (skill.getElement() > 0)
-				multiplier *= calcElemental(attacker, target, skill);
 
 			// Finally, calculate skilltype vulnerabilities
 			L2SkillType type = skill.getSkillType();
@@ -2563,68 +2560,111 @@ public final class Formulas
     	}
     	return calcPower - calcDefen;
     }
-    public static double calcElemental(L2Character attacker, L2Character target, L2Skill skill)  
+    public static int calcElemental(L2Character attacker, L2Character target, L2Skill skill)  
     {  
     	double calcPower = 0;  
     	double calcDefen = 0;  
-    	double calcTotal = 0;  
-    	double result = 1;  
+    	int calcTotal = 0;  
+    	int result = 0;  
     	
-    	if (target instanceof L2NpcInstance)  
-    		calcDefen = 20;
     	L2ItemInstance weaponInstance = attacker.getActiveWeaponInstance();  
 		int elementType = -1;  
-		// first check skill element
-		if (skill != null && skill.getElement() > 0)  
+		// skill formula
+		if (skill != null)
     	{
-    		calcPower = 20;  
-    		// Calculate the elemental power  
-    		switch (skill.getElement())  
-    		{  
-    			case L2Skill.ELEMENT_FIRE:
-    				if (attacker.getAttackElement() == Elementals.FIRE)
-    					calcPower = attacker.calcStat(Stats.FIRE_POWER, calcPower, target, skill);  
-    				calcDefen = target.calcStat(Stats.FIRE_RES, calcDefen, target, skill);  
-    				break;  
-    			case L2Skill.ELEMENT_WATER:
-    				if (attacker.getAttackElement() == Elementals.WATER)
-    					calcPower = attacker.calcStat(Stats.WATER_POWER, calcPower, target, skill);  
-    				calcDefen = target.calcStat(Stats.WATER_RES, calcDefen, target, skill);  
-    				break;  
-    			case L2Skill.ELEMENT_EARTH:
-    				if (attacker.getAttackElement() == Elementals.EARTH)
-    					calcPower = attacker.calcStat(Stats.EARTH_POWER, calcPower, target, skill);  
-    				calcDefen = target.calcStat(Stats.EARTH_RES, calcDefen, target, skill);  
-    				break;  
-    			case L2Skill.ELEMENT_WIND:
-    				if (attacker.getAttackElement() == Elementals.WIND)
-    					calcPower = attacker.calcStat(Stats.WIND_POWER, calcPower, target, skill);  
-    				calcDefen = target.calcStat(Stats.WIND_RES, calcDefen, target, skill);  
-    				break;  
-    			case L2Skill.ELEMENT_HOLY:
-    				if (attacker.getAttackElement() == Elementals.HOLY)
-    					calcPower = attacker.calcStat(Stats.HOLY_POWER, calcPower, target, skill);  
-    				calcDefen = target.calcStat(Stats.HOLY_RES, calcDefen, target, skill);  
-    				break;  
-    			case L2Skill.ELEMENT_DARK:
-    				if (attacker.getAttackElement() == Elementals.DARK)
-    					calcPower = attacker.calcStat(Stats.DARK_POWER, calcPower, target, skill);  
-    				calcDefen = target.calcStat(Stats.DARK_RES, calcDefen, target, skill);  
-    				break;  
-    		}  
-    		calcTotal = calcPower - calcDefen;  
-    		if (calcTotal <= -80)  
-    			result = 0.20;  
-    		else if (calcTotal > -80 && calcTotal <= -1)  
-    			result = 1 - (Math.abs(calcTotal) / 100);  
-    		else if (calcTotal >= 1 && calcTotal <= 74)  
-    			result = 1 + (calcTotal * 0.0052);  
-    		else if (calcTotal >= 75 && calcTotal <= 149)  
-    			result = 1.4;  
-    		else if (calcTotal >= 150)  
-    			result = 1.7;  
+			//elemental skill
+			if (skill.getElement() > 0)
+			{
+				// Calculate the elemental power  
+				switch (skill.getElement())  
+				{  
+					case L2Skill.ELEMENT_FIRE:
+						if (attacker.getAttackElement() == Elementals.FIRE)
+							calcPower = attacker.calcStat(Stats.FIRE_POWER, calcPower, target, skill);  
+						calcDefen = target.calcStat(Stats.FIRE_RES, calcDefen, target, skill);  
+						break;  
+					case L2Skill.ELEMENT_WATER:
+						if (attacker.getAttackElement() == Elementals.WATER)
+							calcPower = attacker.calcStat(Stats.WATER_POWER, calcPower, target, skill);  
+						calcDefen = target.calcStat(Stats.WATER_RES, calcDefen, target, skill);  
+						break;  
+					case L2Skill.ELEMENT_EARTH:
+						if (attacker.getAttackElement() == Elementals.EARTH)
+							calcPower = attacker.calcStat(Stats.EARTH_POWER, calcPower, target, skill);  
+						calcDefen = target.calcStat(Stats.EARTH_RES, calcDefen, target, skill);  
+						break;  
+					case L2Skill.ELEMENT_WIND:
+						if (attacker.getAttackElement() == Elementals.WIND)
+							calcPower = attacker.calcStat(Stats.WIND_POWER, calcPower, target, skill);  
+						calcDefen = target.calcStat(Stats.WIND_RES, calcDefen, target, skill);  
+						break;  
+					case L2Skill.ELEMENT_HOLY:
+						if (attacker.getAttackElement() == Elementals.HOLY)
+							calcPower = attacker.calcStat(Stats.HOLY_POWER, calcPower, target, skill);  
+						calcDefen = target.calcStat(Stats.HOLY_RES, calcDefen, target, skill);  
+						break;  
+					case L2Skill.ELEMENT_DARK:
+						if (attacker.getAttackElement() == Elementals.DARK)
+							calcPower = attacker.calcStat(Stats.DARK_POWER, calcPower, target, skill);  
+						calcDefen = target.calcStat(Stats.DARK_RES, calcDefen, target, skill);  
+						break;  
+				}
+			}
+			//non-elemental skill
+			else
+			{
+				if (weaponInstance != null && weaponInstance.getAttackElementType() >= 0 && weaponInstance.getAttackElementType() == attacker.getAttackElement())
+					elementType = weaponInstance.getAttackElementType();
+				else if (attacker.getAttackElement() > 0)
+					elementType = attacker.getAttackElement();
+				if (elementType >= 0)
+				{
+					switch (elementType)  
+		    		{  
+		    			case Elementals.FIRE:  
+		    				calcPower = attacker.calcStat(Stats.FIRE_POWER, calcPower, target, skill);  
+		    				calcDefen = target.calcStat(Stats.FIRE_RES, calcDefen, target, skill);  
+		    				break;  
+		    			case Elementals.WATER:  
+		    				calcPower = attacker.calcStat(Stats.WATER_POWER, calcPower, target, skill);  
+		    				calcDefen = target.calcStat(Stats.WATER_RES, calcDefen, target, skill);  
+		    				break;  
+		    			case Elementals.EARTH:  
+		    				calcPower = attacker.calcStat(Stats.EARTH_POWER, calcPower, target, skill);  
+		    				calcDefen = target.calcStat(Stats.EARTH_RES, calcDefen, target, skill);  
+		    				break;  
+		    			case Elementals.WIND:  
+		    				calcPower = attacker.calcStat(Stats.WIND_POWER, calcPower, target, skill);  
+		    				calcDefen = target.calcStat(Stats.WIND_RES, calcDefen, target, skill);  
+		    				break;  
+		    			case Elementals.HOLY:  
+		    				calcPower = attacker.calcStat(Stats.HOLY_POWER, calcPower, target, skill);  
+		    				calcDefen = target.calcStat(Stats.HOLY_RES, calcDefen, target, skill);  
+		    				break;  
+		    			case Elementals.DARK:  
+		    				calcPower = attacker.calcStat(Stats.DARK_POWER, calcPower, target, skill);  
+		    				calcDefen = target.calcStat(Stats.DARK_RES, calcDefen, target, skill);  
+		    				break;
+		    		}
+				}
+			}
+    		calcTotal = (int) (calcPower - calcDefen);
+
+    		if (calcTotal <= -20)
+    			calcTotal = -20;
+    		if (calcTotal >= 60 && calcTotal < 120)
+    			calcTotal = 60;
+    		else if (calcTotal >= 120 && calcTotal < 180)
+    			calcTotal = 120;
+    		else if (calcTotal >= 180 && calcTotal < 240)
+    			calcTotal = 180;
+    		else if (calcTotal >= 240 && calcTotal < 320)
+    			calcTotal = 320;
+    		result = calcTotal;
+
+    		if (skill.isMagic())
+    			result*=10;
     	}
-		// if skill not used or non-elemental skill, check for item/character elemental power
 		else
 		{
 			if (weaponInstance != null && weaponInstance.getAttackElementType() >= 0 && weaponInstance.getAttackElementType() == attacker.getAttackElement())
@@ -2660,15 +2700,19 @@ public final class Formulas
 	    				calcDefen = target.calcStat(Stats.DARK_RES, calcDefen, target, skill);  
 	    				break;
 	    		}
-				calcTotal = calcPower - calcDefen;  
-	    		if (calcTotal <= -80)  
-	    			result = 0.20;  
-	    		else if (calcTotal > -80 && calcTotal <= -1)  
-	    			result = 1 - (Math.abs(calcTotal) * 0.007);  
-	    		else if (calcTotal >= 1 && calcTotal < 100)  
-	    			result = 1 + (calcTotal * 0.007);  
-	    		else if (calcTotal > 100)  
-	    			result = 1.7; 
+				calcTotal = (int) (calcPower - calcDefen); 
+				
+	    		if (calcTotal <= -20)
+	    			calcTotal = -20;
+	    		if (calcTotal >= 60 && calcTotal < 120)
+	    			calcTotal = 60;
+	    		else if (calcTotal >= 120 && calcTotal < 180)
+	    			calcTotal = 120;
+	    		else if (calcTotal >= 180 && calcTotal < 240)
+	    			calcTotal = 180;
+	    		else if (calcTotal >= 240 && calcTotal < 320)
+	    			calcTotal = 320;
+	    		result = calcTotal;
 			}
 		}
     	return result;
