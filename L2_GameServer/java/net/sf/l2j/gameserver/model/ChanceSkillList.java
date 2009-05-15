@@ -69,7 +69,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 
 		onEvent(event, target);
 	}
-	
+
 	public void onEvadedHit(L2Character attacker)
 	{
 		onEvent(ChanceCondition.EVT_EVADED_HIT, attacker);
@@ -127,21 +127,24 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			        if(skill == null)
 			        	return;
 			    } 
-				
-			    ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
-			    L2Object[] targets = skill.getTargetList(_owner, false, target);
-			 
-			    _owner.broadcastPacket(new MagicSkillLaunched(_owner, skill.getDisplayId(), skill.getLevel(), targets));
-			    _owner.broadcastPacket(new MagicSkillUse(_owner, (L2Character)targets[0], skill.getDisplayId(), skill.getLevel(), 0, 0));
-			 
 
-			    // Launch the magic skill and calculate its effects
-			    // TODO: once core will support all posible effects, use effects (not handler)
-			    if (handler != null)
-			    	handler.useSkill(_owner, skill, targets);
-			    else
-			    	skill.useSkill(_owner, targets);
-			            
+				ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
+				L2Object[] targets = skill.getTargetList(_owner, false, target);
+				L2Character firstTarget;
+				if (targets != null && targets.length > 0)
+					firstTarget = (L2Character)targets[0];
+				else
+					firstTarget = _owner;
+
+				_owner.broadcastPacket(new MagicSkillLaunched(_owner, skill.getDisplayId(), skill.getLevel(), targets));
+				_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, skill.getDisplayId(), skill.getLevel(), 0, 0));
+
+				// Launch the magic skill and calculate its effects
+				// TODO: once core will support all posible effects, use effects (not handler)
+				if (handler != null)
+					handler.useSkill(_owner, skill, targets);
+				else
+					skill.useSkill(_owner, targets);
 			}
         }
 		catch(Exception e)
@@ -149,33 +152,36 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void makeCast(EffectChanceSkillTrigger effect, L2Character target)
 	{
 		try
 		{
 			if (effect == null || !effect.triggersChanceSkill())
 				return;
-			
+
 			L2Skill triggered = SkillTable.getInstance().getInfo(effect.getTriggeredChanceId(), effect.getTriggeredChanceLevel());
-			
+
 			if (triggered == null)
 				return;
-			
-			ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(triggered.getSkillType());
-		    L2Object[] targets = triggered.getTargetList(_owner, false, target);
-		 
-		    _owner.broadcastPacket(new MagicSkillLaunched(_owner, triggered.getDisplayId(), triggered.getLevel(), targets));
-		    _owner.broadcastPacket(new MagicSkillUse(_owner, (L2Character)targets[0], triggered.getDisplayId(), triggered.getLevel(), 0, 0));
-		 
 
-		    // Launch the magic skill and calculate its effects
-		    // TODO: once core will support all posible effects, use effects (not handler)
-		    if (handler != null)
-		    	handler.useSkill(_owner, triggered, targets);
-		    else
-		    	triggered.useSkill(_owner, targets);
-			
+			ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(triggered.getSkillType());
+			L2Object[] targets = triggered.getTargetList(_owner, false, target);
+			L2Character firstTarget;
+			if (targets != null && targets.length > 0)
+				firstTarget = (L2Character)targets[0];
+			else
+				firstTarget = _owner;
+
+			_owner.broadcastPacket(new MagicSkillLaunched(_owner, triggered.getDisplayId(), triggered.getLevel(), targets));
+			_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, triggered.getDisplayId(), triggered.getLevel(), 0, 0));
+
+			// Launch the magic skill and calculate its effects
+			// TODO: once core will support all posible effects, use effects (not handler)
+			if (handler != null)
+				handler.useSkill(_owner, triggered, targets);
+			else
+				triggered.useSkill(_owner, targets);
 		}
 		catch (Exception e)
 		{
