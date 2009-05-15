@@ -22,6 +22,7 @@ import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillLaunched;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.skills.effects.EffectChanceSkillTrigger;
+import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
 /**
  * CT2.3: Added support for allowing effect as a chance skill trigger (DrHouse)
@@ -124,7 +125,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 				if(skill.triggersChanceSkill()) //skill will trigger another skill, but only if its not chance skill
 			    {
 					skill = SkillTable.getInstance().getInfo(skill.getTriggeredChanceId(), skill.getTriggeredChanceLevel());
-			        if(skill == null)
+			        if(skill == null || skill.getSkillType() == L2SkillType.NOTDONE)
 			        	return;
 			    } 
 
@@ -162,7 +163,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 
 			L2Skill triggered = SkillTable.getInstance().getInfo(effect.getTriggeredChanceId(), effect.getTriggeredChanceLevel());
 
-			if (triggered == null)
+			if (triggered == null || triggered.getSkillType() == L2SkillType.NOTDONE)
 				return;
 
 			ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(triggered.getSkillType());
