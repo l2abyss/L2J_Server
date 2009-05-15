@@ -15,9 +15,11 @@
 package net.sf.l2j.gameserver.network.clientpackets;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.TradeList;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ExPrivateStoreSetWholeMsg;
 import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreManageListSell;
 import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreMsgSell;
@@ -37,34 +39,31 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 	private boolean _packageSale;
 	private int[] _items; // count * 3
 
-
 	@Override
 	protected void readImpl()
 	{
-	    _packageSale = (readD() == 1);
+		_packageSale = (readD() == 1);
 		_count = readD();
 		if (_count <= 0  || _count * 12 > _buf.remaining() || _count > Config.MAX_ITEM_IN_PACKET)
 		{
-		    _count = 0;
-		    _items = null;
-		    return;
+			_count = 0;
+			_items = null;
+			return;
 		}
 		_items = new int[_count * 3];
 		for (int x = 0; x < _count ; x++)
 		{
-			int objectId = readD();
-			_items[x * 3 + 0] = objectId;
-			long cnt      =  readQ();
-			
+			_items[x * 3 + 0] = readD(); // objectId
+			long cnt = readQ();
+
 			if (cnt > Integer.MAX_VALUE || cnt < 0)
 			{
-			    _count = 0;
-			    _items = null;
-			    return;
+				_count = 0;
+				_items = null;
+				return;
 			}
 			_items[x * 3 + 1] = (int) cnt;
-			int price    = (int) readQ();
-			_items[x * 3 + 2] = price;
+			_items[x * 3 + 2] = (int)readQ(); //price
 		}
 	}
 
@@ -73,40 +72,48 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 	{
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null) return;
-		
+
 		if (!player.getAccessLevel().allowTransaction())
-        {
-            player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
-            return;
-        }
+		{
+			player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			return;
+		}
 
-        TradeList tradeList = player.getSellList();
-        tradeList.clear();
-        tradeList.setPackaged(_packageSale);
+		if (player.isInsideZone(L2Character.ZONE_NOSTORE))
+		{
+			player.sendPacket(new PrivateStoreManageListSell(player, _packageSale));
+			player.sendPacket(new SystemMessage(SystemMessageId.NO_PRIVATE_STORE_HERE));
+			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
 
-        for (int i = 0; i < _count; i++)
-        {
-            int objectId = _items[i * 3 + 0];
-            int count    = _items[i * 3 + 1];
-            int price    = _items[i * 3 + 2];
+		TradeList tradeList = player.getSellList();
+		tradeList.clear();
+		tradeList.setPackaged(_packageSale);
 
-            tradeList.addItem(objectId, count, price);
-        }
+		for (int i = 0; i < _count; i++)
+		{
+			int objectId = _items[i * 3 + 0];
+			int count    = _items[i * 3 + 1];
+			int price    = _items[i * 3 + 2];
 
-        if (_count <= 0)
-        {
-            player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
+			tradeList.addItem(objectId, count, price);
+		}
+
+		if (_count <= 0)
+		{
+			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
 			player.broadcastUserInfo();
-            return;
-        }
+			return;
+		}
 
-        // Check maximum number of allowed slots for pvt shops
-        if (_count > player.getPrivateSellStoreLimit())
-        {
-        	player.sendPacket(new PrivateStoreManageListSell(player, _packageSale));
-            player.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED));
-            return;
-        }
+		// Check maximum number of allowed slots for pvt shops
+		if (_count > player.getPrivateSellStoreLimit())
+		{
+			player.sendPacket(new PrivateStoreManageListSell(player, _packageSale));
+			player.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED));
+			return;
+		}
 
 		player.sitDown();
 		if (_packageSale)
@@ -118,14 +125,14 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_SELL);
 		}
 		player.broadcastUserInfo();
-		
+
 		if (_packageSale)
 		{
-		    player.broadcastPacket(new ExPrivateStoreSetWholeMsg(player));
+			player.broadcastPacket(new ExPrivateStoreSetWholeMsg(player));
 		}
 		else
 		{
-		    player.broadcastPacket(new PrivateStoreMsgSell(player));
+			player.broadcastPacket(new PrivateStoreMsgSell(player));
 		}
 	}
 
