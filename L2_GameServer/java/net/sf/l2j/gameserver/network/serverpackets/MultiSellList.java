@@ -104,16 +104,16 @@ public final class MultiSellList extends L2GameServerPacket
 	            	writeH(type2);
 	            	writeQ(i.getItemCount());
 	        	    writeH(i.getEnchantmentLevel()); //enchtant lvl
-	            	writeD(0x00); // C6
-	            	writeD(0x00); // C6
-                    writeH(65534); // T1 element id
-                    writeH(0x00); // T1 element power
-                    writeH(0x00); // T1 fire
-                    writeH(0x00); // T1 water
-                    writeH(0x00); // T1 wind
-                    writeH(0x00); // T1 earth
-                    writeH(0x00); // T1 holy
-                    writeH(0x00); // T1 dark
+	            	writeD(i.getAugmentId()); // C6
+	            	writeD(0x00); // mana
+                    writeH(i.getElementId()); // T1 element id
+                    writeH(i.getElementVal()); // T1 element power
+                    writeH(i.getFireVal()); // T1 fire
+                    writeH(i.getWaterVal()); // T1 water
+                    writeH(i.getWindVal()); // T1 wind
+                    writeH(i.getEarthVal()); // T1 earth
+                    writeH(i.getHolyVal()); // T1 holy
+                    writeH(i.getDarkVal()); // T1 dark
             	}
 
                 for(MultiSellIngredient i : ent.getIngredients())
@@ -126,16 +126,16 @@ public final class MultiSellList extends L2GameServerPacket
                     writeH(typeE);
                     writeQ(i.getItemCount());	//Count
                     writeH(i.getEnchantmentLevel()); //Enchant Level
+                	writeD(i.getAugmentId()); // C6
                 	writeD(0x00); // C6
-                	writeD(0x00); // C6
-                    writeH(65534); // T1
-                    writeH(0x00); // T1
-                    writeH(0x00); // T1
-                    writeH(0x00); // T1
-                    writeH(0x00); // T1
-                    writeH(0x00); // T1
-                    writeH(0x00); // T1
-                    writeH(0x00); // T1
+                    writeH(i.getElementId()); // T1
+                    writeH(i.getElementVal()); // T1
+                    writeH(i.getFireVal()); // T1
+                    writeH(i.getWaterVal()); // T1
+                    writeH(i.getWindVal()); // T1
+                    writeH(i.getEarthVal()); // T1
+                    writeH(i.getHolyVal()); // T1
+                    writeH(i.getDarkVal()); // T1
                 }
             }
         }

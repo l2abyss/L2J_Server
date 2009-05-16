@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import javolution.util.FastList;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.ItemTable;
+import net.sf.l2j.gameserver.model.Elementals;
 import net.sf.l2j.gameserver.model.L2Augmentation;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Multisell;
@@ -221,6 +222,7 @@ public class MultiSellChoose extends L2GameClientPacket
 		_ingredientsList.clear();
 		_ingredientsList = null;
 		FastList<L2Augmentation> augmentation = new FastList<L2Augmentation>();
+		Elementals elemental = null;
 		/** All ok, remove items and add final product */
 		
 		for (MultiSellIngredient e : entry.getIngredients())
@@ -283,6 +285,8 @@ public class MultiSellChoose extends L2GameClientPacket
 								{
 									if (inventoryContents[i].isAugmented())
 										augmentation.add(inventoryContents[i].getAugmentation());
+									if(inventoryContents[i].getElementals() != null)
+										elemental = inventoryContents[i].getElementals();
 									if (!player.destroyItem("Multisell", inventoryContents[i].getObjectId(), 1, player.getTarget(), true))
 										return;
 								}
@@ -388,9 +392,9 @@ public class MultiSellChoose extends L2GameClientPacket
 							if (maintainEnchantment)
 							{
 								if (i < augmentation.size())
-								{
 									product.setAugmentation(new L2Augmentation(augmentation.get(i).getAugmentationId(), augmentation.get(i).getSkill()));
-								}
+								if (elemental != null)
+									product.setElementAttr(elemental.getElement(), elemental.getValue());
 								product.setEnchantLevel(e.getEnchantmentLevel());
 							}
 						}

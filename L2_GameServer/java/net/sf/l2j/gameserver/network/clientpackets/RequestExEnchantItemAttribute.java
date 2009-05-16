@@ -142,7 +142,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			powerToAdd = limit - elementValue;
 		}
 
-		if (oldElement != null && oldElement.getElement() != elementToAdd)
+		if (oldElement != null && oldElement.getElement() != elementToAdd && oldElement.getElement() != -2)
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.ANOTHER_ELEMENTAL_POWER_ALREADY_ADDED));
 			player.setActiveEnchantAttrItem(null);

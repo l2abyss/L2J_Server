@@ -120,7 +120,7 @@ public class L2Multisell
         	else
         		items = player.getInventory().getUniqueItems(false,false,false);
 
-        	int enchantLevel;
+        	int enchantLevel, elementId, elementValue,augmentId, fireVal, waterVal, windVal, earthVal, holyVal, darkVal;
             for (L2ItemInstance item : items)
             {
             	// only do the matchup on equipable items that are not currently equipped
@@ -128,6 +128,15 @@ public class L2Multisell
             	if (!item.isWear() && ((item.getItem() instanceof L2Armor) || (item.getItem() instanceof L2Weapon)))
             	{
             		enchantLevel = (listTemplate.getMaintainEnchantment()? item.getEnchantLevel() : 0);
+            		augmentId = (listTemplate.getMaintainEnchantment()? (item.getAugmentation() != null ? item.getAugmentation().getAugmentationId() : 0) : 0);
+            		elementId = (listTemplate.getMaintainEnchantment()? item.getAttackElementType() : -2);
+            		elementValue = (listTemplate.getMaintainEnchantment()? item.getAttackElementPower() : 0);
+            		fireVal = (listTemplate.getMaintainEnchantment()? item.getElementDefAttr(Elementals.FIRE) : 0);
+            		waterVal = (listTemplate.getMaintainEnchantment()? item.getElementDefAttr(Elementals.WATER) : 0);
+            		windVal = (listTemplate.getMaintainEnchantment()? item.getElementDefAttr(Elementals.WIND) : 0);
+            		earthVal = (listTemplate.getMaintainEnchantment()? item.getElementDefAttr(Elementals.EARTH) : 0);
+            		holyVal = (listTemplate.getMaintainEnchantment()? item.getElementDefAttr(Elementals.HOLY) : 0);
+            		darkVal = (listTemplate.getMaintainEnchantment()? item.getElementDefAttr(Elementals.DARK) : 0);
             		// loop through the entries to see which ones we wish to include
 	                for (MultiSellEntry ent : listTemplate.getEntries())
 	                {
@@ -146,7 +155,7 @@ public class L2Multisell
 		                // manipulate the ingredients of the template entry for this particular instance shown
 		                // i.e: Assign enchant levels and/or apply taxes as needed.
 		                if (doInclude)
-		                	list.addEntry(prepareEntry(ent, listTemplate.getApplyTaxes(), listTemplate.getMaintainEnchantment(), enchantLevel, taxRate));
+		                	list.addEntry(prepareEntry(ent, listTemplate.getApplyTaxes(), listTemplate.getMaintainEnchantment(), enchantLevel, augmentId, elementId, elementValue, fireVal, waterVal, windVal, earthVal, holyVal, darkVal, taxRate));
 	                }
             	}
             } // end for each inventory item.
@@ -155,7 +164,7 @@ public class L2Multisell
         {
         	// if no taxes are applied, no modifications are needed
     		for (MultiSellEntry ent : listTemplate.getEntries())
-    			list.addEntry(prepareEntry(ent, listTemplate.getApplyTaxes(), false, 0, taxRate));
+    			list.addEntry(prepareEntry(ent, listTemplate.getApplyTaxes(), false, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, taxRate));
         }
 
         return list;
@@ -167,7 +176,7 @@ public class L2Multisell
     //    amount of adena is appended to the entry
 	// c) If the entry already has adena as an entry, the taxIngredient is used in order to increase
     //	  the count for the existing adena ingredient
-    private MultiSellEntry prepareEntry(MultiSellEntry templateEntry, boolean applyTaxes, boolean maintainEnchantment, int enchantLevel, double taxRate)
+    private MultiSellEntry prepareEntry(MultiSellEntry templateEntry, boolean applyTaxes, boolean maintainEnchantment, int enchantLevel, int augmentId, int elementId, int elementValue, int fireValue, int waterValue, int windValue, int earthValue, int holyValue, int darkValue, double taxRate)
     {
     	MultiSellEntry newEntry = L2Multisell.getInstance().new MultiSellEntry();
     	newEntry.setEntryId(templateEntry.getEntryId()*100000+enchantLevel);
@@ -196,7 +205,18 @@ public class L2Multisell
         	{
             	L2Item tempItem = ItemTable.getInstance().createDummyItem(ing.getItemId()).getItem();
             	if ((tempItem instanceof L2Armor) || (tempItem instanceof L2Weapon))
+            	{
             		newIngredient.setEnchantmentLevel(enchantLevel);
+            		newIngredient.setAugmentId(augmentId);
+            		newIngredient.setElementId(elementId);
+            		newIngredient.setElementValue(elementValue);
+            		newIngredient.setFireValue(fireValue);
+            		newIngredient.setWaterValue(waterValue);
+            		newIngredient.setWindValue(windValue);
+            		newIngredient.setEarthValue(earthValue);
+            		newIngredient.setHolyValue(holyValue);
+            		newIngredient.setDarkValue(darkValue);
+            	}
         	}
 
         	// finally, add this ingredient to the entry
@@ -205,7 +225,7 @@ public class L2Multisell
         // now add the adena, if any.
         if (adenaAmount > 0 )
         {
-        	newEntry.addIngredient(L2Multisell.getInstance().new MultiSellIngredient(57,adenaAmount,0,false,false));
+        	newEntry.addIngredient(L2Multisell.getInstance().new MultiSellIngredient(57,adenaAmount,0,0,-2,0,0,0,0,0,0,0,false,false));
         }
         // Now modify the enchantment level of products, if necessary
         for (MultiSellIngredient ing : templateEntry.getProducts())
@@ -219,7 +239,18 @@ public class L2Multisell
             	// (note, if maintain enchantment is "false" this modification will result to a +0)
             	L2Item tempItem = ItemTable.getInstance().createDummyItem(ing.getItemId()).getItem();
             	if ((tempItem instanceof L2Armor) || (tempItem instanceof L2Weapon))
+            	{
             		newIngredient.setEnchantmentLevel(enchantLevel);
+            		newIngredient.setAugmentId(augmentId);
+            		newIngredient.setElementId(elementId);
+            		newIngredient.setElementValue(elementValue);
+            		newIngredient.setFireValue(fireValue);
+            		newIngredient.setWaterValue(waterValue);
+            		newIngredient.setWindValue(windValue);
+            		newIngredient.setEarthValue(earthValue);
+            		newIngredient.setHolyValue(holyValue);
+            		newIngredient.setDarkValue(darkValue);
+            	}
             }
         	newEntry.addProduct(newIngredient);
         }
@@ -305,19 +336,28 @@ public class L2Multisell
 
     public class MultiSellIngredient
     {
-        private int _itemId, _itemCount, _enchantmentLevel;
+        private int _itemId, _itemCount, _enchantmentLevel,_element,_elementVal,_augment, _fireVal, _waterVal,_windVal,_earthVal,_holyVal,_darkVal;
         private boolean _isTaxIngredient, _mantainIngredient;
 
         public MultiSellIngredient(int itemId, int itemCount, boolean isTaxIngredient, boolean mantainIngredient)
         {
-        	this(itemId, itemCount, 0, isTaxIngredient, mantainIngredient);
+        	this(itemId, itemCount, 0, 0, -2, 0,0,0,0,0,0,0, isTaxIngredient, mantainIngredient);
         }
 
-        public MultiSellIngredient(int itemId, int itemCount, int enchantmentLevel, boolean isTaxIngredient, boolean mantainIngredient)
+        public MultiSellIngredient(int itemId, int itemCount, int enchantmentLevel, int augmentId, int elementId, int elementVal, int fireVal, int waterVal, int windVal, int earthVal, int holyVal, int darkVal,boolean isTaxIngredient, boolean mantainIngredient)
         {
             setItemId(itemId);
             setItemCount(itemCount);
             setEnchantmentLevel(enchantmentLevel);
+            setAugmentId(augmentId);
+            setElementId(elementId);
+            setElementValue(elementVal);
+            setFireValue(fireVal);
+            setWaterValue(waterVal);
+            setWindValue(windVal);
+            setEarthValue(earthVal);
+            setHolyValue(holyVal);
+            setDarkValue(darkVal);
             setIsTaxIngredient(isTaxIngredient);
             setMantainIngredient(mantainIngredient);
         }
@@ -329,6 +369,88 @@ public class L2Multisell
         	_enchantmentLevel = e.getEnchantmentLevel();
         	_isTaxIngredient = e.isTaxIngredient();
         	_mantainIngredient = e.getMantainIngredient();
+        	_augment = e.getAugmentId();
+        	_element = e.getElementId();
+        	_elementVal = e.getElementVal();
+        	_fireVal = e.getFireVal();
+        	_waterVal = e.getWaterVal();
+        	_windVal = e.getWindVal();
+        	_earthVal = e.getEarthVal();
+        	_holyVal = e.getHolyVal();
+        	_darkVal = e.getDarkVal();
+        }
+        
+        public void setAugmentId(int augment)
+        {
+        	_augment = augment;
+        }
+        public void setElementId(int element)
+        {
+        	_element = element;
+        }
+        public void setElementValue(int elementVal)
+        {
+        	_elementVal = elementVal;
+        }
+        public void setFireValue (int val)
+        {
+        	_fireVal = val;
+        }
+        public void setWaterValue(int val)
+        {
+        	_waterVal = val;
+        }
+        public void setWindValue(int val)
+        {
+        	_windVal = val;
+        }
+        public void setEarthValue(int val)
+        {
+        	_earthVal = val;
+        }
+        public void setHolyValue(int val)
+        {
+        	_holyVal = val;
+        }
+        public void setDarkValue(int val)
+        {
+        	_darkVal = val;
+        }
+        public int getAugmentId()
+        {
+        	return _augment;
+        }
+        public int getElementId()
+        {
+        	return _element;
+        }
+        public int getElementVal()
+        {
+        	return _elementVal;
+        }
+        public int getFireVal()
+        {
+        	return _fireVal;
+        }
+        public int getWaterVal()
+        {
+        	return _waterVal;
+        }
+        public int getWindVal()
+        {
+        	return _windVal;
+        }
+        public int getEarthVal()
+        {
+        	return _earthVal;
+        }
+        public int getHolyVal()
+        {
+        	return _holyVal;
+        }
+        public int getDarkVal()
+        {
+        	return _darkVal;
         }
         /**
          * @param itemId The itemId to set.
@@ -448,6 +570,7 @@ public class L2Multisell
             return _maintainEnchantment;
         }
 
+       
         public void addEntry(MultiSellEntry e)
         {
             _entriesC.add(e);
@@ -528,7 +651,7 @@ public class L2Multisell
             		list.setMaintainEnchantment(false);
             	else
             		list.setMaintainEnchantment(Boolean.parseBoolean(attribute.getNodeValue()));
-
+            	
                 for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
                 {
                     if ("item".equalsIgnoreCase(d.getNodeName()))
