@@ -2878,6 +2878,17 @@ public abstract class L2Skill implements IChanceSkillTrigger
     	return getEffects(effector, effected, null);
     }
     
+    /**
+     * This method has suffered some changes in CT2.2 ->CT2.3<br>
+     * Effect engine is now supporting secondary effects with independent 
+     * success/fail calculus from effect skill. Env parameter has been added to
+     * pass parameters like soulshot, spiritshots, blessed spiritshots or shield deffence.
+     * Some other optimizations have been done
+     * <br><br>
+     * This new feature works following next rules:
+     * <li> To enable feature, effectPower must be over -1 (check DocumentSkill#attachEffect for further information)</li>
+     * <li> If main skill fails, secondary effect always fail</li>
+     */
     public final L2Effect[] getEffects(L2CubicInstance effector, L2Character effected, Env env)
     {
         if (isPassive()) return _emptyEffectSet;
