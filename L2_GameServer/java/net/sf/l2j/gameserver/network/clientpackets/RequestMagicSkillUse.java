@@ -107,6 +107,6 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 	@Override
 	protected boolean triggersOnActionRequest()
 	{
-		return false;
+		return true;
 	}
 }
