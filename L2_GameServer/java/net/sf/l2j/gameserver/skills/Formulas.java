@@ -2215,6 +2215,11 @@ public final class Formulas
 
 	public static boolean calcSkillSuccess(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
 	{
+		if (skill.ignoreResists())
+		{
+			return (Rnd.get(100) < skill.getPower());
+		}
+
 		if (shld == 2) // perfect block
 		{
 			return false;

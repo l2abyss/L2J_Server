@@ -6784,6 +6784,20 @@ public abstract class L2Character extends L2Object
 	 */
 	public boolean reflectSkill(L2Skill skill)
 	{
+		// you can't reflect skill ignoring resists
+		if (skill.ignoreResists())
+			return false;
+
+		// check for non-reflected skilltypes, need additional retail check
+		switch (skill.getSkillType())
+		{
+			case BUFF:
+			case REFLECT:
+			case HEAL_PERCENT:
+			case MANAHEAL_PERCENT:
+				return false;
+		}
+
 		double reflect = calcStat(skill.isMagic() ? Stats.REFLECT_SKILL_MAGIC : Stats.REFLECT_SKILL_PHYSIC, 0, null, null);
 		if( Rnd.get(100) < reflect)
 			return true;

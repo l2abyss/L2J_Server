@@ -208,6 +208,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final double _power;
     private final int _magicLevel;
     private final int _levelDepend;
+    private final boolean _ignoreResists;
 
     private final boolean _isNeutral;
     // Effecting area of the skill, in radius.
@@ -401,6 +402,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _power = set.getFloat("power", 0.f);
         _magicLevel = set.getInteger("magicLvl", SkillTreeTable.getInstance().getMinSkillLevel(_id, _level));
         _levelDepend = set.getInteger("lvlDepend", 0);
+        _ignoreResists = set.getBool("ignoreResists", false);
         _stat = set.getEnum("stat", Stats.class, null);
         _useShield = set.getBool("useShield", false);
         _skillType = set.getEnum("skillType", L2SkillType.class);
@@ -583,6 +585,14 @@ public abstract class L2Skill implements IChanceSkillTrigger
     public final int getLevelDepend()
     {
         return _levelDepend;
+    }
+
+    /**
+     * Return true if skill should ignore all resistances
+     */
+    public final boolean ignoreResists()
+    {
+    	return _ignoreResists;
     }
 
     /**
