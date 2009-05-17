@@ -14,13 +14,12 @@
  */
 package net.sf.l2j.gameserver.skills.effects;
 
-import net.sf.l2j.gameserver.ai.CtrlIntention;
-import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeSummonInstance;
+import net.sf.l2j.gameserver.network.serverpackets.StartRotation;
+import net.sf.l2j.gameserver.network.serverpackets.StopRotation;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
@@ -55,7 +54,6 @@ public class EffectBluff extends L2Effect
 	@Override
 	public boolean onStart()
 	{
-		getEffected().startFear();
 		if (getEffected() instanceof L2NpcInstance)
 			return false;
 		
@@ -63,35 +61,12 @@ public class EffectBluff extends L2Effect
 			return false;
 		
 		if (getEffected() instanceof L2SiegeSummonInstance)
-		{
 			return false;
-		}
-		int posX = getEffected().getX();
-		int posY = getEffected().getY();
-		int posZ = getEffected().getZ();
-		int signx = -1;
-		int signy = -1;
-		if (getEffected().getX() > getEffector().getX())
-			signx = 1;
-		if (getEffected().getY() > getEffector().getY())
-			signy = 1;
-		if (!(getEffected() instanceof L2PetInstance))
-			getEffected().setRunning();
-		getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(posX + (signx * 40), posY + (signy * 40), posZ, 0));
-		getEffected().sendMessage("You can feel Bluff's effect");
-		getEffected().setTarget(null);
+
+		getEffected().broadcastPacket(new StartRotation(getEffected().getObjectId(), getEffected().getHeading(), 1, 65535));
+		getEffected().broadcastPacket(new StopRotation(getEffected().getObjectId(), getEffector().getHeading(), 65535));
+		getEffected().setHeading(getEffector().getHeading());
 		return true;
-	}
-	
-	/**
-	 * 
-	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
-	 */
-	@Override
-	public void onExit()
-	{
-		getEffected().stopFear(this);
-		
 	}
 	
 	/**

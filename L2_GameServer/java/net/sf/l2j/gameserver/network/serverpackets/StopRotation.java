@@ -14,8 +14,6 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-import net.sf.l2j.gameserver.model.actor.L2Character;
-
 /**
  * This class ...
  *
@@ -24,13 +22,13 @@ import net.sf.l2j.gameserver.model.actor.L2Character;
 public class StopRotation extends L2GameServerPacket
 {
 	private static final String _S__78_STOPROTATION = "[S] 61 StopRotation";
-	private int _charObjId;
-	private int _degree;
+	private int _charObjId, _degree, _speed;
 
-	public StopRotation(L2Character player, int degree)
+	public StopRotation(int objectId, int degree, int speed)
 	{
-		_charObjId = player.getObjectId();
+		_charObjId = objectId;
 		_degree = degree;
+		_speed = speed;
 	}
 
 	@Override
@@ -39,6 +37,8 @@ public class StopRotation extends L2GameServerPacket
 		writeC(0x61);
 		writeD(_charObjId);
 		writeD(_degree);
+		writeD(_speed);
+		writeC(0); // ?
 	}
 
 	/* (non-Javadoc)

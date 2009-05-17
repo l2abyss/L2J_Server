@@ -41,7 +41,7 @@ public final class FinishRotating extends L2GameClientPacket
 	{
 		if (getClient().getActiveChar() == null)
 		    return;
-		StopRotation sr = new StopRotation(getClient().getActiveChar(), _degree);
+		StopRotation sr = new StopRotation(getClient().getActiveChar().getObjectId(), _degree, 0);
 		getClient().getActiveChar().broadcastPacket(sr);
 	}
 

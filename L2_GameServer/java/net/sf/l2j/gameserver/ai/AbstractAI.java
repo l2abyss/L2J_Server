@@ -736,7 +736,7 @@ abstract class AbstractAI implements Ctrl
 			if (pos != null)
 			{
 				// Send a Server->Client packet StopRotation to the actor and all L2PcInstance in its _knownPlayers
-				StopRotation sr = new StopRotation(_actor, pos.heading);
+				StopRotation sr = new StopRotation(_actor.getObjectId(), pos.heading, 0);
 				_actor.sendPacket(sr);
 				_actor.broadcastPacket(sr);
 			}
