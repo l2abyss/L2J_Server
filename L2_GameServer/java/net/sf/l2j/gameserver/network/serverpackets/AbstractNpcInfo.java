@@ -138,7 +138,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_chest);
 			writeD(_lhand); // left hand weapon
 			writeC(1); // name above char 1=true ... ??
-			writeC(1); // char always running
+			writeC(_npc.isRunning() ? 1 : 0);
 			writeC(_npc.isInCombat() ? 1 : 0);
 			writeC(_npc.isAlikeDead() ? 1 : 0);
 			writeC(_isSummoned ? 2 : 0); // 0=teleported 1=default 2=summoned
