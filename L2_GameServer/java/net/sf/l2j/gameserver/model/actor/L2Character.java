@@ -2361,7 +2361,13 @@ public abstract class L2Character extends L2Object
 	/** Return the Title of the L2Character. */
 	public final String getTitle() { return _title; }
 	/** Set the Title of the L2Character. */
-	public final void setTitle(String value) { _title = value.length()>16? value.substring(0,15):value; }
+	public final void setTitle(String value)
+	{
+		if (value == null)
+			_title = "";
+		
+		_title = value.length() > 16 ? value.substring(0,15) : value;
+	}
 
 	/** Set the L2Character movement type to walk and send Server->Client packet ChangeMoveType to all others L2PcInstance. */
 	public final void setWalking() { if (isRunning()) setIsRunning(false); }
