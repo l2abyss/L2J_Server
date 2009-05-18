@@ -830,7 +830,7 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
                                 msg = new RequestAllAgitInfo();
                                 break;
 		                    case 0x3f:
-		                    	// TODO: Create RequestFortressSiegeInfo Packet.
+		                    	msg = new RequestFortressSiegeInfo();
 		                    	break;
                             case 0x40:
                                 msg = new RequestGetBossRecord();
@@ -845,7 +845,7 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
 		                    	msg = new RequestRefineCancel();
 		                        break;
 		                    case 0x44:
-		                    	msg = new RequestRefine();
+		                    	msg = new RequestExMagicSkillUseGround();
 		                    	break;
 		                    case 0x45:
 		                    	msg = new RequestDuelSurrender();
@@ -854,7 +854,7 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
                                 msg = new RequestExEnchantSkillRouteChange();
                                 break;
 		                    case 0x47:
-		                    	msg = new RequestExMagicSkillUseGround();
+		                    	// unknown
 		                    	break;
 		                    case 0x4b:
 		                    	msg = new RequestDispel();
