@@ -2365,8 +2365,8 @@ public abstract class L2Character extends L2Object
 	{
 		if (value == null)
 			_title = "";
-		
-		_title = value.length() > 16 ? value.substring(0,15) : value;
+		else
+			_title = value.length() > 16 ? value.substring(0,15) : value;
 	}
 
 	/** Set the L2Character movement type to walk and send Server->Client packet ChangeMoveType to all others L2PcInstance. */
