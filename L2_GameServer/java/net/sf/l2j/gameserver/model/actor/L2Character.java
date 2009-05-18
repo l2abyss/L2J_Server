@@ -1454,7 +1454,7 @@ public abstract class L2Character extends L2Object
 			case TARGET_ALLY:
         		doit = true;
         	default:
-        		if (targets == null || targets.length == 0)  
+        		if (targets.length == 0)  
     			{
     				if (simultaneously)
     					setIsCastingSimultaneouslyNow(false);

@@ -58,6 +58,8 @@ import net.sf.l2j.gameserver.util.Util;
 public abstract class L2Skill implements IChanceSkillTrigger
 {
     protected static final Logger _log = Logger.getLogger(L2Skill.class.getName());
+    
+    private static final L2Object[] _emptyTargetList = new L2Object[0];
 
     public static final int SKILL_CUBIC_MASTERY = 143;
     public static final int SKILL_LUCKY = 194;
@@ -1314,7 +1316,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 if (target == null || target.isDead() || (target == activeChar && !canTargetSelf))
                 {
                     activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-                    return null;
+                    return _emptyTargetList;
                 }
 
                 // If a target is found, return it in a table else send a system message TARGET_IS_INCORRECT
@@ -1333,7 +1335,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                         return new L2Character[] {target};
                 }
 
-                return null;
+                return _emptyTargetList;
             }
             case TARGET_FLAGPOLE:
             {
@@ -1344,14 +1346,14 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 target = activeChar.getPet();
                 if (target != null && !target.isDead()) return new L2Character[] {target};
 
-                return null;
+                return _emptyTargetList;
             }
             case TARGET_SUMMON:
             {
             	target = activeChar.getPet();
             	if (target != null && !target.isDead() && target instanceof L2SummonInstance) return new L2Character[] {target};
             	
-            	return null;
+            	return _emptyTargetList;
             }
 			case TARGET_OWNER_PET:
 			{
@@ -1362,7 +1364,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 						return new L2Character[]{target};
 				}
 
-				return null;
+				return _emptyTargetList;
 			}
 			case TARGET_CORPSE_PET:
 			{
@@ -1373,7 +1375,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 						return new L2Character[]{target};
 				}
 
-				return null;
+				return _emptyTargetList;
 			}
             case TARGET_AURA:
             {
@@ -1698,7 +1700,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 																												// dead/faking
                 {
                     activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-                    return null;
+                    return _emptyTargetList;
                 }
 
                 L2Character cha;
@@ -1827,7 +1829,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				}
 
                 if (targetList.isEmpty())
-                    return null;
+                    return _emptyTargetList;
 
                 return targetList.toArray(new L2Character[targetList.size()]);
             }
@@ -1848,7 +1850,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 																												// dead/faking
                 {
                     activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-                    return null;
+                    return _emptyTargetList;
                 }
 
                 L2Character cha;
@@ -1984,7 +1986,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				}
 
                 if (targetList.isEmpty())
-                    return null;
+                    return _emptyTargetList;
 
                 return targetList.toArray(new L2Character[targetList.size()]);
             }
@@ -2005,7 +2007,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 																												// dead/faking
                 {
                     activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-                    return null;
+                    return _emptyTargetList;
                 }
 
                 L2Character cha;
@@ -2137,7 +2139,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				}
 
                 if (targetList.isEmpty())
-                    return null;
+                    return _emptyTargetList;
 
                 return targetList.toArray(new L2Character[targetList.size()]);
             }
@@ -2146,7 +2148,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 if ((!(target instanceof L2Attackable) && !(target instanceof L2PcInstance)))
                 {
                     activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-                    return null;
+                    return _emptyTargetList;
                 }
 
                 if (onlyFirst == false) targetList.add(target);
@@ -2168,7 +2170,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 						if (targetList.isEmpty())
 						{
 							activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_CANT_FOUND));
-							return null;
+							return _emptyTargetList;
 						}
 					}
 				}
@@ -2245,12 +2247,12 @@ public abstract class L2Skill implements IChanceSkillTrigger
 						return new L2Character[]{target};
 					}
 					else
-						return null;
+						return _emptyTargetList;
 				}
 				else
 				{
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-					return null;
+					return _emptyTargetList;
 				}
 			}
 			case TARGET_PARTY_OTHER:
@@ -2271,23 +2273,23 @@ public abstract class L2Skill implements IChanceSkillTrigger
                                     if (!player.isMageClass())
                                         return new L2Character[]{target};
                                     else
-                                        return null;
+                                        return _emptyTargetList;
                                 case 427:
                                     if (player.isMageClass())
                                         return new L2Character[]{target};
                                     else
-                                        return null;
+                                        return _emptyTargetList;
                             }
                         }
                         return new L2Character[]{target};
                     }
                     else
-                        return null;
+                        return _emptyTargetList;
                 }
                 else
                 {
                     activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-                    return null;
+                    return _emptyTargetList;
                 }
             }
             case TARGET_CORPSE_ALLY:
@@ -2380,7 +2382,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                     	player = ((L2Summon)activeChar).getOwner();
                     else
                     	player = (L2PcInstance) activeChar;
-                    if (player == null) return null;
+                    if (player == null) return _emptyTargetList;
                     L2Clan clan = player.getClan();
 
                     if (player.isInOlympiadMode())
@@ -2533,14 +2535,14 @@ public abstract class L2Skill implements IChanceSkillTrigger
                     }
                 }
                 activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-                return null;
+                return _emptyTargetList;
             }
             case TARGET_CORPSE_MOB:
             {
                 if (!(target instanceof L2Attackable) || !target.isDead())
                 {
                     activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-                    return null;
+                    return _emptyTargetList;
                 }
                 
                 // Corpse mob only available for half time
@@ -2553,7 +2555,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                         		&& (System.currentTimeMillis() - DecayTaskManager.getInstance().getTasks().get(target)) > DecayTaskManager.ATTACKABLE_DECAY_TIME / 2)
                         {
                         	activeChar.sendPacket(new SystemMessage(SystemMessageId.CORPSE_TOO_OLD_SKILL_NOT_USED));
-                        	return null;
+                        	return _emptyTargetList;
                         }
                 	}
                 }
@@ -2571,7 +2573,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 if ((!(target instanceof L2Attackable)) || !target.isDead())
                 {
                     activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-                    return null;
+                    return _emptyTargetList;
                 }
 
                 if (onlyFirst == false) targetList.add(target);
@@ -2663,7 +2665,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 					}
 				}
 
-                if (targetList.isEmpty()) return null;
+                if (targetList.isEmpty()) return _emptyTargetList;
                 return targetList.toArray(new L2Character[targetList.size()]);
             }
             case TARGET_UNLOCKABLE:
@@ -2671,7 +2673,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 if (!(target instanceof L2DoorInstance) && !(target instanceof L2ChestInstance))
                 {
                 	//activeChar.sendPacket(new SystemMessage(SystemMessage.TARGET_IS_INCORRECT));
-                    return null;
+                    return _emptyTargetList;
                 }
 
                 if (onlyFirst == false)
@@ -2689,7 +2691,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                     if (!target.isUndead() || target.isDead())
                     {
                         activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-                        return null;
+                        return _emptyTargetList;
                     }
 
                     if (onlyFirst == false) targetList.add(target);
@@ -2700,7 +2702,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 else
                 {
                     activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-                    return null;
+                    return _emptyTargetList;
                 }
             }
             case TARGET_AREA_UNDEAD:
@@ -2750,7 +2752,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 					}
 				}
 
-                if (targetList.isEmpty()) return null;
+                if (targetList.isEmpty()) return _emptyTargetList;
                 return targetList.toArray(new L2Character[targetList.size()]);
             }
             case TARGET_ENEMY_SUMMON:
@@ -2763,12 +2765,12 @@ public abstract class L2Skill implements IChanceSkillTrigger
                             || (targetSummon.getOwner().isInsideZone(L2Character.ZONE_PVP) && ((L2PcInstance)activeChar).isInsideZone(L2Character.ZONE_PVP)))
                        return new L2Character[]{targetSummon};
                 }
-                return null;
+                return _emptyTargetList;
             }
             default:
             {
                 activeChar.sendMessage("Target type of skill is not currently handled");
-                return null;
+                return _emptyTargetList;
             }
         }//end switch
     }
@@ -2784,8 +2786,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
         targets = getTargetList(activeChar, true);
 
-        if (targets == null || targets.length == 0) return null;
-        else return targets[0];
+        if (targets.length == 0)
+        	return null;
+        else 
+        	return targets[0];
     }
 
     public final Func[] getStatFuncs(L2Effect effect, L2Character player)

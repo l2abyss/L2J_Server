@@ -128,14 +128,15 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			        if(skill == null || skill.getSkillType() == L2SkillType.NOTDONE)
 			        	return;
 			    } 
-
-				ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
+				
 				L2Object[] targets = skill.getTargetList(_owner, false, target);
-				L2Character firstTarget;
-				if (targets != null && targets.length > 0)
-					firstTarget = (L2Character)targets[0];
-				else
-					firstTarget = _owner;
+				
+				if (targets.length == 0)
+					return;
+				
+				L2Character firstTarget = (L2Character)targets[0];
+				
+				ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
 
 				_owner.broadcastPacket(new MagicSkillLaunched(_owner, skill.getDisplayId(), skill.getLevel(), targets));
 				_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, skill.getDisplayId(), skill.getLevel(), 0, 0));
@@ -166,13 +167,14 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			if (triggered == null || triggered.getSkillType() == L2SkillType.NOTDONE)
 				return;
 
-			ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(triggered.getSkillType());
 			L2Object[] targets = triggered.getTargetList(_owner, false, target);
-			L2Character firstTarget;
-			if (targets != null && targets.length > 0)
-				firstTarget = (L2Character)targets[0];
-			else
-				firstTarget = _owner;
+			
+			if (targets.length == 0)
+				return;
+			
+			L2Character firstTarget = (L2Character)targets[0];
+			
+			ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(triggered.getSkillType());
 
 			_owner.broadcastPacket(new MagicSkillLaunched(_owner, triggered.getDisplayId(), triggered.getLevel(), targets));
 			_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, triggered.getDisplayId(), triggered.getLevel(), 0, 0));

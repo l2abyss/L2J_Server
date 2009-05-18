@@ -186,7 +186,8 @@ public class L2TrapInstance extends L2Trap
 		unSummon(getOwner());
 		
 		L2Object[] targetList = _skill.getTargetList(this);
-		if (targetList == null) 
+		
+		if (targetList.length == 0) 
 			return;
 		
 		for (L2Object atked : targetList)
