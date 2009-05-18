@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -1261,9 +1262,12 @@ public final class L2PcInstance extends L2Playable
 	 * @param recipe The L2RecipeList to add to the _recipebook
 	 *
 	 */
-	public void registerCommonRecipeList(L2RecipeList recipe)
+	public void registerCommonRecipeList(L2RecipeList recipe, boolean saveToDb)
 	{
 		_commonRecipeBook.put(recipe.getId(), recipe);
+		
+		if (saveToDb)
+			insertNewRecipeData(recipe.getId(), false);
 	}
 
 	/**
@@ -1272,9 +1276,12 @@ public final class L2PcInstance extends L2Playable
 	 * @param recipe The L2RecipeList to add to the _recipebook
 	 *
 	 */
-	public void registerDwarvenRecipeList(L2RecipeList recipe)
+	public void registerDwarvenRecipeList(L2RecipeList recipe, boolean saveToDb)
 	{
 		_dwarvenRecipeBook.put(recipe.getId(), recipe);
+		
+		if (saveToDb)
+			insertNewRecipeData(recipe.getId(), true);
 	}
 
 	/**
@@ -1301,10 +1308,10 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void unregisterRecipeList(int recipeId)
 	{
-		if (_dwarvenRecipeBook.containsKey(recipeId))
-			_dwarvenRecipeBook.remove(recipeId);
-		else if(_commonRecipeBook.containsKey(recipeId))
-			_commonRecipeBook.remove(recipeId);
+		if (_dwarvenRecipeBook.remove(recipeId) != null)
+			 deleteRecipeData(recipeId, true);
+		else if (_commonRecipeBook.remove(recipeId) != null)
+			deleteRecipeData(recipeId, false);
 		else
 			_log.warning("Attempted to remove unknown RecipeList: "+recipeId);
 
@@ -1314,6 +1321,63 @@ public final class L2PcInstance extends L2Playable
 		{
 			if (sc != null && sc.getId() == recipeId && sc.getType() == L2ShortCut.TYPE_RECIPE)
 				deleteShortCut(sc.getSlot(), sc.getPage());
+		}
+	}
+	
+	private void insertNewRecipeData(int recipeId, boolean isDwarf)
+	{
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("INSERT INTO character_recipebook (charId, id, classIndex, type) values(?,?,?,?)");
+			statement.setInt(1, getObjectId());
+			statement.setInt(2,recipeId);
+			statement.setInt(3, isDwarf ? _classIndex : 0);
+			statement.setInt(4, isDwarf ? 1 : 0);
+			statement.execute();
+			statement.close();
+		}
+		catch (SQLException e)
+		{
+			if(_log.isLoggable(Level.SEVERE))
+				_log.log(Level.SEVERE, "SQL exception while inserting recipe: "+recipeId+" from character "+getObjectId(), e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e){}
+		}		
+	}
+	
+	private void deleteRecipeData(int recipeId, boolean isDwarf)
+	{
+		Connection con = null;
+
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM character_recipebook WHERE charId=? AND id=? AND classIndex=?");
+			statement.setInt(1, getObjectId());
+			statement.setInt(2, recipeId);
+			statement.setInt(3, isDwarf ? _classIndex : 0);
+			statement.execute();
+			statement.close();
+		}
+		catch (SQLException e)
+		{
+			if (_log.isLoggable(Level.SEVERE))
+				_log.log(Level.SEVERE, "SQL exception while deleting recipe: "+recipeId+" from character "+getObjectId(), e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			} catch (Exception e) {}
 		}
 	}
 
@@ -7131,87 +7195,47 @@ public final class L2PcInstance extends L2Playable
 		if (Config.ALT_RECOMMEND) restoreRecom();
 
 		// Retrieve from the database the recipe book of this L2PcInstance.
-		if (!isSubClassActive())
-			restoreRecipeBook();
-	}
-
-	/**
-	 * Store recipe book data for this L2PcInstance, if not on an active sub-class.
-	 */
-	private void storeRecipeBook()
-	{
-		// If the player is on a sub-class don't even attempt to store a recipe book.
-		if (isSubClassActive())
-			return;
-		if (getCommonRecipeBook().length == 0 && getDwarvenRecipeBook().length == 0)
-			return;
-
-		Connection con = null;
-
-		try {
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM character_recipebook WHERE charId=?");
-			statement.setInt(1, getObjectId());
-			statement.execute();
-			statement.close();
-
-			L2RecipeList[] recipes = getCommonRecipeBook();
-
-			for (L2RecipeList recipe: recipes)
-			{
-				statement = con.prepareStatement("INSERT INTO character_recipebook (charId, id, type) values(?,?,0)");
-				statement.setInt(1, getObjectId());
-				statement.setInt(2, recipe.getId());
-				statement.execute();
-				statement.close();
-			}
-
-			recipes = getDwarvenRecipeBook();
-			for (L2RecipeList recipe: recipes)
-			{
-				statement = con.prepareStatement("INSERT INTO character_recipebook (charId, id, type) values(?,?,1)");
-				statement.setInt(1, getObjectId());
-				statement.setInt(2, recipe.getId());
-				statement.execute();
-				statement.close();
-			}
-		}
-		catch (Exception e) {
-			_log.warning("Could not store recipe book data: " + e);
-		}
-		finally {
-			try { con.close(); } catch (Exception e) {}
-		}
+		restoreRecipeBook(true);
 	}
 
 	/**
 	 * Restore recipe book data for this L2PcInstance.
 	 */
-	private void restoreRecipeBook()
+	private void restoreRecipeBook(boolean loadCommon)
 	{
 		Connection con = null;
 
 		try {
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT id, type FROM character_recipebook WHERE charId=?");
+			String sql = loadCommon ? "SELECT id, type FROM character_recipebook WHERE charId=? AND classIndex=?" :
+											"SELECT id FROM character_recipebook WHERE charId=? AND classIndex=? AND type = 1";
+			PreparedStatement statement = con.prepareStatement(sql);
 			statement.setInt(1, getObjectId());
+			statement.setInt(2, _classIndex);
 			ResultSet rset = statement.executeQuery();
 
 			L2RecipeList recipe;
 			while (rset.next()) {
 				recipe = RecipeController.getInstance().getRecipeList(rset.getInt("id"));
 
-				if (rset.getInt("type") == 1)
-					registerDwarvenRecipeList(recipe);
+				if (loadCommon)
+				{
+					if (rset.getInt(2) == 1)
+						registerDwarvenRecipeList(recipe, false);
+					else
+						registerCommonRecipeList(recipe, false);
+				}
 				else
-					registerCommonRecipeList(recipe);
+					registerDwarvenRecipeList(recipe, false);
 			}
 
 			rset.close();
 			statement.close();
 		}
-		catch (Exception e) {
-			_log.warning("Could not restore recipe book data:" + e);
+		catch (Exception e)
+		{
+			if (_log.isLoggable(Level.SEVERE))
+				_log.warning("Could not restore recipe book data:" + e);
 		}
 		finally {
 			try { con.close(); } catch (Exception e) {}
@@ -7230,7 +7254,6 @@ public final class L2PcInstance extends L2Playable
 		storeCharBase();
 		storeCharSub();
 		storeEffect();
-		storeRecipeBook();
 		transformInsertInfo();
 	}
 
@@ -10166,11 +10189,12 @@ public final class L2PcInstance extends L2Playable
         if (isSubClassActive())
         {
             _dwarvenRecipeBook.clear();
-            _commonRecipeBook.clear();
+            // Common recipe book shared for all subclasses for now. TODO confirm this info
+            //_commonRecipeBook.clear();
         }
         else
         {
-            restoreRecipeBook();
+            restoreRecipeBook(false);
 		}
 
         // Restore any Death Penalty Buff
