@@ -1434,63 +1434,95 @@ public abstract class L2Character extends L2Object
         L2Character target = null;
 		// Get all possible targets of the skill in a table in function of the skill target type
         L2Object[] targets = skill.getTargetList(this);
+        
+        boolean doit = false;
 
-		// AURA skills should always be using caster as target
-		if (skill.getTargetType() == SkillTargetType.TARGET_AURA
-				|| skill.getTargetType() == SkillTargetType.TARGET_FRONT_AURA
-				|| skill.getTargetType() == SkillTargetType.TARGET_BEHIND_AURA
-				|| skill.getTargetType() == SkillTargetType.TARGET_GROUND)
-		{
-			target = this;
-		}
-		else 
+        // AURA skills should always be using caster as target
+        switch (skill.getTargetType())
         {
-			if (targets == null || targets.length == 0)  
-			{
-				if (simultaneously)
-					setIsCastingSimultaneouslyNow(false);
-				else
-					setIsCastingNow(false);
-				// Send a Server->Client packet ActionFailed to the L2PcInstance
-	            if (this instanceof L2PcInstance)
-	            {
-	            	sendPacket(ActionFailed.STATIC_PACKET);
-					getAI().setIntention(AI_INTENTION_ACTIVE);
-	            }
-				return;
-			}
-			
-			if(     skill.getSkillType() == L2SkillType.BUFF ||
-					skill.getSkillType() == L2SkillType.HEAL ||
-					skill.getSkillType() == L2SkillType.COMBATPOINTHEAL ||
-					skill.getSkillType() == L2SkillType.MANAHEAL ||
-					skill.getSkillType() == L2SkillType.REFLECT ||
-					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF ||
-					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PET ||
-					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_SUMMON ||
-					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PARTY ||
-					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_CLAN ||
-					skill.getTargetType() == L2Skill.SkillTargetType.TARGET_ALLY)
-			{
-				target = (L2Character) targets[0];
+        	case TARGET_AURA:
+        	case TARGET_FRONT_AURA:
+        	case TARGET_BEHIND_AURA:
+        	case TARGET_GROUND:
+        		target = this;
+        		break;
+        	case TARGET_SELF:
+			case TARGET_PET:
+			case TARGET_SUMMON:
+			case TARGET_PARTY:
+			case TARGET_CLAN:
+			case TARGET_ALLY:
+        		doit = true;
+        	default:
+        		if (targets == null || targets.length == 0)  
+    			{
+    				if (simultaneously)
+    					setIsCastingSimultaneouslyNow(false);
+    				else
+    					setIsCastingNow(false);
+    				// Send a Server->Client packet ActionFailed to the L2PcInstance
+    	            if (this instanceof L2PcInstance)
+    	            {
+    	            	sendPacket(ActionFailed.STATIC_PACKET);
+    					getAI().setIntention(AI_INTENTION_ACTIVE);
+    	            }
+    				return;
+    			}
+        	
+        		switch (skill.getSkillType())
+        		{
+        			case BUFF:
+        			case HEAL:
+        			case COMBATPOINTHEAL:
+        			case MANAHEAL:
+        			case REFLECT:
+        				doit = true;
+        				break;
+        		}
+        		
+        		/*
+        		 * handled on first switch
+        		switch (skill.getTargetType())
+        		{
+        			case TARGET_SELF:
+        			case TARGET_PET:
+        			case TARGET_SUMMON:
+        			case TARGET_PARTY:
+        			case TARGET_CLAN:
+        			case TARGET_ALLY:
+        				doit = true;
+        				break;
+        		}*/
+        		
+        		if (doit)
+        		{
+        			target = (L2Character) targets[0];
 
-				if (this instanceof L2PcInstance && target instanceof L2PcInstance 
-						&& target.getAI().getIntention() == CtrlIntention.AI_INTENTION_ATTACK)
-				{
-					if(skill.getSkillType() == L2SkillType.BUFF || skill.getSkillType() == L2SkillType.HOT 
-							|| skill.getSkillType() == L2SkillType.HEAL || skill.getSkillType() == L2SkillType.HEAL_PERCENT 
-							|| skill.getSkillType() == L2SkillType.MANAHEAL 
-							|| skill.getSkillType() == L2SkillType.MANAHEAL_PERCENT || skill.getSkillType() == L2SkillType.BALANCE_LIFE)
-						target.setLastBuffer(this);
-
-					if (((L2PcInstance)this).isInParty() && skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PARTY)
-					{
-						for (L2PcInstance member : ((L2PcInstance)this).getParty().getPartyMembers())
-							 member.setLastBuffer(this);
-					}
-				}
-			} 
-			else target = (L2Character) getTarget();
+    				if (this instanceof L2PcInstance && target instanceof L2PcInstance 
+    						&& target.getAI().getIntention() == CtrlIntention.AI_INTENTION_ATTACK)
+    				{
+    					switch (skill.getSkillType())
+    					{
+    						case BUFF:
+    						case HOT:
+    						case HEAL:
+    						case HEAL_PERCENT:
+    						case MANAHEAL:
+    						case MANAHEAL_PERCENT:
+    						case BALANCE_LIFE:
+    							target.setLastBuffer(this);
+    							break;
+    					}
+    					
+    					if (((L2PcInstance)this).isInParty() && skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PARTY)
+    					{
+    						for (L2PcInstance member : ((L2PcInstance)this).getParty().getPartyMembers())
+    							 member.setLastBuffer(this);
+    					}
+    				}
+        		}
+        		else target = (L2Character) getTarget();
+        		
         }
 
 		if (target == null)
