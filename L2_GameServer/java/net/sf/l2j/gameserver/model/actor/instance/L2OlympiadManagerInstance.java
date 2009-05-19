@@ -222,13 +222,17 @@ public class L2OlympiadManagerInstance extends L2NpcInstance
 						int index = 1;
 						for (String name : names)
 						{
+							reply.replace("%place"+index+"%", String.valueOf(index));
 							reply.replace("%rank"+index+"%", name);
 							index++;
 							if (index > 10)
 								break;
 						}
 						for (; index <= 10; index++)
+						{
+							reply.replace("%place"+index+"%", "");
 							reply.replace("%rank"+index+"%", "");
+						}
 
 						reply.replace("%objectId%", String.valueOf(getObjectId()));
 						player.sendPacket(reply);
