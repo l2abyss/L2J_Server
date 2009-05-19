@@ -33,7 +33,7 @@ public class ExBrBroadcastEventState extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0xfe);
-		writeH(0x8c);
+		writeH(0xab);
 		writeD(_eventId);
 		writeD(_eventState);
 	}
