@@ -160,6 +160,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
             }
             case L2Item.CRYSTAL_S:
             case L2Item.CRYSTAL_S80:
+            case L2Item.CRYSTAL_S84:
             {
                 if (skillLevel <= 4)
                 {

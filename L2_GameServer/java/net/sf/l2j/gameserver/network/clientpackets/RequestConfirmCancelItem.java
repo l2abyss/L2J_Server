@@ -91,6 +91,7 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 				break;
 			case L2Item.CRYSTAL_S:
 			case L2Item.CRYSTAL_S80:
+			case L2Item.CRYSTAL_S84:
 				price = 480000;
 				break;
 			// any other item type is not augmentable

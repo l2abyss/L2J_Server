@@ -108,6 +108,7 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 				break;
 			case L2Item.CRYSTAL_S:
 			case L2Item.CRYSTAL_S80:
+			case L2Item.CRYSTAL_S84:
 				gemstoneCount = 25;
 				gemstoneItemId = GEMSTONE_C;
 				sm.addItemNumber(gemstoneCount);
