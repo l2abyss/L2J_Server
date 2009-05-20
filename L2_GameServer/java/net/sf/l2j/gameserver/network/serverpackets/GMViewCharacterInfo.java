@@ -187,6 +187,8 @@ public class GMViewCharacterInfo extends L2GameServerPacket
         writeH(0x00);
         writeH(0x00);
         // end of T1 new h's
+        writeH(0x00);
+        writeH(0x00);
 
 		writeD(_activeChar.getPAtk(null));
 		writeD(_activeChar.getPAtkSpd());
@@ -259,6 +261,7 @@ public class GMViewCharacterInfo extends L2GameServerPacket
         writeH(_activeChar.getDefAttrEarth());
         writeH(_activeChar.getDefAttrHoly());
         writeH(_activeChar.getDefAttrUnholy());
+        writeD(_activeChar.getFame());
 	}
 
 	/* (non-Javadoc)
