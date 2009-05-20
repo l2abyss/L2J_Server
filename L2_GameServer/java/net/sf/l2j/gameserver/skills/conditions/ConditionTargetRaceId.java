@@ -37,6 +37,6 @@ public class ConditionTargetRaceId extends Condition
 	{
 		if (!(env.target instanceof L2Npc))
 			return false;
-		return (_raceIds.contains(((L2Npc)env.target).getTemplate().getRace().ordinal()));
+		return (_raceIds.contains(((L2Npc)env.target).getTemplate().getRace().ordinal()+1));
 	}
 }
