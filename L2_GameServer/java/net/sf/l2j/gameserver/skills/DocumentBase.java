@@ -611,8 +611,15 @@ abstract class DocumentBase
             }
             else if ("active_effect_id".equalsIgnoreCase(a.getNodeName()))
             {
-                int effect_id = Integer.decode(getValue(a.getNodeValue(), template));
-            	cond = joinAnd(cond, new ConditionTargetActiveEffectId(effect_id));
+            	int effect_id = Integer.decode(getValue(a.getNodeValue(), template));
+                cond = joinAnd(cond, new ConditionTargetActiveEffectId(effect_id));
+            }
+            else if ("active_effect_id_lvl".equalsIgnoreCase(a.getNodeName()))
+            {
+            	String val = getValue(a.getNodeValue(), template);
+            	int effect_id = Integer.decode(getValue(val.split(",")[0], template));
+        		int effect_lvl = Integer.decode(getValue(val.split(",")[1], template));
+        		cond = joinAnd(cond, new ConditionTargetActiveEffectId(effect_id, effect_lvl));
             }
             else if ("active_skill_id".equalsIgnoreCase(a.getNodeName()))
             {

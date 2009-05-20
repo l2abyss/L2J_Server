@@ -21,10 +21,18 @@ public class ConditionTargetActiveEffectId extends Condition
 {
     
     private final int _effectId;
+    private final int _effectLvl;
     
     public ConditionTargetActiveEffectId(int effectId)
     {
         _effectId = effectId;
+        _effectLvl = -1;
+    }
+    
+    public ConditionTargetActiveEffectId(int effectId, int effectLevel)
+    {
+    	_effectId = effectId;
+    	_effectLvl = effectLevel;
     }
     
     @Override
@@ -35,7 +43,15 @@ public class ConditionTargetActiveEffectId extends Condition
             if (e != null)
             {
                 if (e.getSkill().getId() == _effectId)
-                    return true;
+                {
+                	if (_effectLvl != -1)
+                	{
+                		if (_effectLvl == e.getSkill().getLevel())
+                			return true;
+                	}
+                	else
+                		return true;
+                }
             }
         }
         return false;
