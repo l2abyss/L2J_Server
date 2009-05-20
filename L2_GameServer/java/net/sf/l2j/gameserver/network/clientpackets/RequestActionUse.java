@@ -455,6 +455,7 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 1046: // Strider - Roar
 				useSkill(5585);
 				break;
+			// CT2.3
 			case 1047: // Divine Beast - Bite
 				useSkill(5580);
 				break;
@@ -499,39 +500,87 @@ public final class RequestActionUse extends L2GameClientPacket
 				break;
 			//Add by rocknow
 			case 1061:
-				useSkill(5745);
+				useSkill(5745); // Death blow
 				break;
 			case 1062:
-				useSkill(5746);
+				useSkill(5746); // Double attack
 				break;
 			case 1063:
-				useSkill(5747);
+				useSkill(5747); // Spin attack
 				break;
 			case 1064:
-				useSkill(5748);
+				useSkill(5748); // Meteor Shower
 				break;
 			case 1065:
-				useSkill(5753);
+				useSkill(5753); // Awakening
 				break;
 			case 1066:
-				useSkill(5749);
+				useSkill(5749); // Thunder Bolt
 				break;
 			case 1067:
-				useSkill(5750);
+				useSkill(5750); // Flash
 				break;
 			case 1068:
-				useSkill(5751);
+				useSkill(5751); // Lightning Wave
 				break;
 			case 1069:
-				useSkill(5752);
+				useSkill(5752); // Flare
 				break;
 			case 1070:
-				useSkill(5771);
+				useSkill(5771); // Buff control
 				break;
 			case 1071:
-				useSkill(5761);
+				useSkill(5761); // Power Strike
 				break;
-				//CT 2.3 Social Packets
+			case 1072:
+				useSkill(6046); // Piercing attack
+				break;
+			case 1073:
+				useSkill(6047); // Whirlwind
+				break;
+			case 1074:
+				useSkill(6048); // Lance Smash
+				break;
+			case 1075:
+				useSkill(6049); // Battle Cry
+				break;
+			case 1076:
+				useSkill(6050); // Power Smash
+				break;
+			case 1077:
+				useSkill(6051); // Energy Burst
+				break;
+			case 1078:
+				useSkill(6052); // Shockwave
+				break;
+			case 1079:
+				useSkill(6053); // Howl
+				break;
+			case 1080:
+				useSkill(6041); // Phoenix Rush
+				break;
+			case 1081:
+				useSkill(6042); // Phoenix Cleanse
+				break;
+			case 1082:
+				useSkill(6043); // Phoenix Flame Feather
+				break;
+			case 1083:
+				useSkill(6044); // Phoenix Flame Beak
+				break;
+			case 1084:
+				useSkill(6054); // Switch State
+				break;
+			case 1086:
+				useSkill(6094); // Panther Cancel
+				break;
+			case 1087:
+				useSkill(6095); // Panther Dark Claw
+				break;
+			case 1088:
+				useSkill(6096); // Panther Fatal Claw
+				break;
+			// CT2.3 Social Packets
 			case 12:
 				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 2));
 				break;
