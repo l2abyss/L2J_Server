@@ -2116,7 +2116,7 @@ public final class Formulas
 		if (shld == 2) // perfect block
 			return false;
 		
-		L2SkillType type = skill.getSkillType();
+		L2SkillType type = effect.effectType  != null ? effect.effectType : skill.getSkillType();
 
 		int value = (int)effect.effectPower;
 		int lvlDepend = skill.getLevelDepend();

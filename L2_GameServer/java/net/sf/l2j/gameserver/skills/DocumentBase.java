@@ -279,6 +279,9 @@ abstract class DocumentBase
     		}
         }
         
+        if (effectPower > -1 && type == null && _log.isLoggable(Level.WARNING))
+        	_log.log(Level.WARNING, "Missing effectType for effect: "+name);
+        
         EffectTemplate lt;
         
         final boolean isChanceSkillTrigger = (name == EffectChanceSkillTrigger.class.getName());
