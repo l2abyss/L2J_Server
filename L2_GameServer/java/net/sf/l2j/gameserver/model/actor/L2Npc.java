@@ -908,15 +908,10 @@ public class L2Npc extends L2Character
 					String.valueOf(getPAtkSpd()),
 					"</td><td>Cast.Speed</td><td>",
 					String.valueOf(getMAtkSpd()),
-					"</td></tr>"
-					);
-			if (getTemplate().race != null)
-				StringUtil.append(html1,
-						"<tr><td>Race</td><td>",
-						getTemplate().race.toString(),
-						"</td><td></td><td></td></tr>"
-						);
-			StringUtil.append(html1,
+					"</td></tr>" +
+					"<tr><td>Race</td><td>",
+					getTemplate().getRace().toString(),
+					"</td><td></td><td></td></tr>" +
 					"</table>" +
 					"<br><center><font color=\"LEVEL\">[Basic Stats]</font></center>" +
 					"<table border=0 width=\"100%\">" +
