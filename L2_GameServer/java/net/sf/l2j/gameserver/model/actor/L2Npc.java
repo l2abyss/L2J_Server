@@ -933,13 +933,14 @@ public class L2Npc extends L2Character
 					);
 
 			if (getTemplate().getDropData() != null)
+			{
+				StringUtil.append(html1,
+						"<br><center><font color=\"LEVEL\">[Drop Info]</font></center>" +
+						"<br>Rates legend: <font color=\"ff0000\">50%+</font> <font color=\"00ff00\">30%+</font> <font color=\"0000ff\">less than 30%</font>" +
+						"<table border=0 width=\"100%\">"
+						);
 				for (L2DropCategory cat : getTemplate().getDropData())
 				{
-					StringUtil.append(html1,
-							"<br><center><font color=\"LEVEL\">[Drop Info]</font></center>" +
-							"<br>Rates legend: <font color=\"ff0000\">50%+</font> <font color=\"00ff00\">30%+</font> <font color=\"0000ff\">less than 30%</font>" +
-							"<table border=0 width=\"100%\">"
-							);
 					for (L2DropData drop : cat.getAllDrops())
 					{
 						final String name = ItemTable.getInstance().getTemplate(drop.getItemId()).getName();
@@ -963,7 +964,9 @@ public class L2Npc extends L2Character
 								);
 					}
 				}
-			html1.append("</table></body></html>");
+				html1.append("</table>");
+			}
+			html1.append("</body></html>");
 
 			html.setHtml(html1.toString());
 			player.sendPacket(html);
