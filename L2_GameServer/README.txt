@@ -57,7 +57,7 @@ II. LEGAL
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
+the Free Software Foundation; either version 3, or (at your option)
 any later version.
 
 This program is distributed in the hope that it will be useful, but
@@ -112,7 +112,7 @@ and get to know the wiki sites.
 They contain all the info you need to setup and run a L2J Server.
 
 L2J Server wiki: Server Guides, How-to's, bugtracker:
-https://l2jserver.com/trac/wiki
+https://www.l2jserver.com/trac/wiki
 
 L2J-Datapack wiki: Datapack Guides, How-to's, bugtracker:
 http://www.l2jdp.com/trac/wiki
@@ -225,7 +225,7 @@ IX. CONTACT
 ====================
 
 Website: http://www.l2jserver.com
-Forum: http://forum.l2jserver.com
+Forum: http://www.l2jserver.com/forum
 IRC: #l2j @ Freenode (irc.freenode.net)
 
 Please note that L2J Devs can't help players with connecting issues or
@@ -286,7 +286,7 @@ http://forum.l2jserver.com/team.php
 Have fun playing L2J ;)
 Dev Team
 
-    L2J Server, Copyright (C) 2006-2008 
+    L2J Server, Copyright (C) 2006-2009 
     L2J Server comes with ABSOLUTELY NO WARRANTY.
     This is free software, and you are welcome to redistribute it
     under certain conditions.
