@@ -14,9 +14,9 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -44,29 +44,24 @@ public final class RequestPledgeInfo extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (Config.DEBUG)
-			_log.fine("infos for clan " + _clanId + " requested");
+		if (_log.isLoggable(Level.FINE))
+			_log.log(Level.FINE, "Info for clan " + _clanId + " requested");
 
 		L2PcInstance activeChar = getClient().getActiveChar();
+		
+		if (activeChar == null)
+			return;
+		
 		L2Clan clan = ClanTable.getInstance().getClan(_clanId);
 		if (clan == null)
 		{
-			_log.warning("Clan data for clanId " + _clanId + " is missing");
+			_log.warning("Clan data for clanId " + _clanId + " is missing for player "+activeChar.getName());
 			return; // we have no clan data ?!? should not happen
 		}
 
 		PledgeInfo pc = new PledgeInfo(clan);
-		if (activeChar != null)
-		{
-			activeChar.sendPacket(pc);
-
-			/*
-			 * if (clan.getClanId() == activeChar.getClanId()) {
-			 * activeChar.sendPacket(new PledgeShowMemberListDeleteAll());
-			 * PledgeShowMemberListAll pm = new PledgeShowMemberListAll(clan,
-			 * activeChar); activeChar.sendPacket(pm); }
-			 */
-		}
+		activeChar.sendPacket(pc);
+		
 	}
 
 	/*
