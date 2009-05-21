@@ -12373,7 +12373,7 @@ public final class L2PcInstance extends L2Playable
 
 		final SystemMessage sm;
 		
-		if (target.isInvul())
+		if (target.isInvul() && !(target instanceof L2NpcInstance))
 			sm = new SystemMessage(SystemMessageId.ATTACK_WAS_BLOCKED);
 		else
 		{

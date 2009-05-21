@@ -32,6 +32,7 @@ import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.model.actor.L2Attackable.AggroInfo;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MerchantSummonInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.actor.knownlist.SummonKnownList;
@@ -803,7 +804,7 @@ public abstract class L2Summon extends L2Playable
 
 			final SystemMessage sm;
 			
-			if (target.isInvul())
+			if (target.isInvul() && !(target instanceof L2NpcInstance))
 				sm = new SystemMessage(SystemMessageId.ATTACK_WAS_BLOCKED);
 			else
 			{
