@@ -1510,6 +1510,9 @@ public final class L2ItemInstance extends L2Object
         {
 			try { con.close(); } catch (Exception e) {}
 		}
+        
+        if (_elementals != null)
+        	updateItemAttributes();
 	}
 
 	/**
