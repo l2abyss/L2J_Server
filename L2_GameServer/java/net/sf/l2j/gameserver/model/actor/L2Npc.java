@@ -1175,13 +1175,13 @@ public class L2Npc extends L2Character
 			{
 				makeCPRecovery(player);
 			}
-			else if (command.startsWith("SupportMagic"))
-			{
-				makeSupportMagic(player,false);
-			}
 			else if (command.startsWith("SupportMagicServitor"))
 			{
 				makeSupportMagic(player,true);
+			}
+			else if (command.startsWith("SupportMagic"))
+			{
+				makeSupportMagic(player,false);
 			}
 			else if (command.startsWith("GiveBlessing"))
 			{
