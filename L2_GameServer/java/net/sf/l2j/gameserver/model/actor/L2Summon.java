@@ -801,12 +801,20 @@ public abstract class L2Summon extends L2Playable
 				Olympiad.getInstance().notifyCompetitorDamage(getOwner(), damage, getOwner().getOlympiadGameId());
 			}
 
-			SystemMessage sm;
-			if (this instanceof L2SummonInstance)
-				sm = new SystemMessage(SystemMessageId.SUMMON_GAVE_DAMAGE_S1);
+			final SystemMessage sm;
+			
+			if (target.isInvul())
+				sm = new SystemMessage(SystemMessageId.ATTACK_WAS_BLOCKED);
 			else
-				sm = new SystemMessage(SystemMessageId.PET_HIT_FOR_S1_DAMAGE);
-			sm.addNumber(damage);
+			{
+				if (this instanceof L2SummonInstance)
+					sm = new SystemMessage(SystemMessageId.SUMMON_GAVE_DAMAGE_S1);
+				else
+					sm = new SystemMessage(SystemMessageId.PET_HIT_FOR_S1_DAMAGE);
+				
+				sm.addNumber(damage);
+			}
+			
 			getOwner().sendPacket(sm);
 		}
 	}

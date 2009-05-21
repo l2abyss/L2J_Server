@@ -12371,10 +12371,18 @@ public final class L2PcInstance extends L2Playable
         	Olympiad.getInstance().notifyCompetitorDamage(this, damage, getOlympiadGameId());
         }
 
-		SystemMessage sm = new SystemMessage(SystemMessageId.C1_GAVE_C2_DAMAGE_OF_S3);
-		sm.addPcName(this);
-		sm.addCharName(target);
-		sm.addNumber(damage);
+		final SystemMessage sm;
+		
+		if (target.isInvul())
+			sm = new SystemMessage(SystemMessageId.ATTACK_WAS_BLOCKED);
+		else
+		{
+			sm = new SystemMessage(SystemMessageId.C1_GAVE_C2_DAMAGE_OF_S3);
+			sm.addPcName(this);
+			sm.addCharName(target);
+			sm.addNumber(damage);
+		}
+		
 		sendPacket(sm);
 	}
 
