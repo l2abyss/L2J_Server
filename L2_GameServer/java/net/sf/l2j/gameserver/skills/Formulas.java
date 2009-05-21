@@ -1889,15 +1889,24 @@ public final class Formulas
 		
 		double attack = 2 * actor.getMAtk(target, skill) * calcSkillVulnerability(actor, target, skill);
 		double d = (attack - defence)/(attack + defence);
-		if (target.isRaid()
-				&& (type == L2SkillType.CONFUSION || type == L2SkillType.MUTE || type == L2SkillType.PARALYZE
-					|| type == L2SkillType.ROOT || type == L2SkillType.FEAR || type == L2SkillType.SLEEP
-					|| type == L2SkillType.STUN || type == L2SkillType.DEBUFF || type == L2SkillType.AGGDEBUFF))
+		if (target.isRaid())
 		{
-			if ( d > 0 && Rnd.get(1000) == 1)
-				return true;
-			else 
-				return false;
+			switch (type)
+			{
+				case CONFUSION:
+				case MUTE:
+				case PARALYZE:
+				case ROOT:
+				case FEAR:
+				case SLEEP:
+				case STUN:
+				case DEBUFF:
+				case AGGDEBUFF:
+					if ( d > 0 && Rnd.get(1000) == 1)
+						return true;
+					else 
+						return false;
+			}
 		}
 		
 		d += 0.5 * Rnd.nextGaussian();
