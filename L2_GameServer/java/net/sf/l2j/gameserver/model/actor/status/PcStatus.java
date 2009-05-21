@@ -40,12 +40,20 @@ public class PcStatus extends PlayableStatus
     // =========================================================
     // Method - Public
     @Override
-	public final void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true, false); }
+	public final void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true, false, false); }
     @Override
-	public final void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT)
+	public final void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHpConsumption)
     {
-        if (getActiveChar().isInvul() && getActiveChar() != attacker)
-        	return;
+    	if (getActiveChar().isInvul())
+    	{
+    		if (attacker == getActiveChar())
+    		{
+    			if (!isDOT && !isHpConsumption)
+    				return;
+    		}
+    		else
+    			return;
+    	}
 		if (getActiveChar().isDead())
 			return;
 		
@@ -110,7 +118,7 @@ public class PcStatus extends PlayableStatus
             }
         }
 
-        super.reduceHp(value, attacker, awake, isDOT);
+        super.reduceHp(value, attacker, awake, isDOT, isHpConsumption);
 
         if (!getActiveChar().isDead() && getActiveChar().isSitting() && !isDOT)
             getActiveChar().standUp();

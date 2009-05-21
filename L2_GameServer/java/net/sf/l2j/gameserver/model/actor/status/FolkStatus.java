@@ -33,10 +33,10 @@ public class FolkStatus extends NpcStatus
     // =========================================================
     // Method - Public
     @Override
-	public final void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true, false); }
+	public final void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true, false, false); }
 
     @Override
-	public final void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT)
+	public final void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHpConsumption)
     {
     }
     

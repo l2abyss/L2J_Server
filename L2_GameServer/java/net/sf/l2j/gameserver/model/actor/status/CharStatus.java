@@ -117,14 +117,27 @@ public class CharStatus
      */
     public void reduceHp(double value, L2Character attacker)
     {
-        reduceHp(value, attacker, true, false);
+        reduceHp(value, attacker, true, false, false);
     }
     
-    public void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT)
+    public void reduceHp(double value, L2Character attacker, boolean isHpConsumption)
+    {
+    	reduceHp(value, attacker, true, false, isHpConsumption);
+    }
+    
+    public void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHpConsumption)
     {
     	if (getActiveChar() instanceof L2FortBallistaInstance && getActiveChar().getMaxHp() == value){}
     	else if (getActiveChar().isInvul())
-            return;
+    	{
+    		if (attacker == getActiveChar())
+    		{
+    			if (!isDOT && !isHpConsumption)
+    				return;
+    		}
+    		else
+    			return;
+    	}
         if (getActiveChar().isDead())
             return;
         

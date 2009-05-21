@@ -6080,7 +6080,7 @@ public abstract class L2Character extends L2Object
 				if (consumeHp + 1 >= getCurrentHp())
 					consumeHp = getCurrentHp() - 1.0;
 				
-				getStatus().reduceHp(consumeHp, this);
+				getStatus().reduceHp(consumeHp, this, true);
 				
 				su.addAttribute(StatusUpdate.CUR_HP, (int) getCurrentHp());
 				isSendStatus = true;
@@ -6756,9 +6756,9 @@ public abstract class L2Character extends L2Object
 	public void reduceCurrentHp(double i, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
 	{
 		if (Config.L2JMOD_CHAMPION_ENABLE && isChampion() && Config.L2JMOD_CHAMPION_HP != 0)
-			getStatus().reduceHp(i/Config.L2JMOD_CHAMPION_HP, attacker, awake, isDOT);
+			getStatus().reduceHp(i/Config.L2JMOD_CHAMPION_HP, attacker, awake, isDOT, false);
 		else
-			getStatus().reduceHp(i, attacker, awake, isDOT);
+			getStatus().reduceHp(i, attacker, awake, isDOT, false);
 	}
 	public void reduceCurrentMp(double i) { getStatus().reduceMp(i); }
 	public void removeStatusListener(L2Character object) { getStatus().removeStatusListener(object); }

@@ -11,15 +11,15 @@ public class SiegeFlagStatus extends NpcStatus
 	}
 	
 	@Override
-	public void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true, false); }
+	public void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true, false, false); }
 
 	@Override
-	public void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT)
+	public void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHpConsumption)
 	{
 		if (getActiveChar().isAdvancedHeadquarter())
 			value /= 2.;
 		
-		super.reduceHp(value, attacker, awake, isDOT);
+		super.reduceHp(value, attacker, awake, isDOT, isHpConsumption);
 	}
 	
 	@Override
