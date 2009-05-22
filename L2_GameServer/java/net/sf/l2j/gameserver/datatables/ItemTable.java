@@ -133,6 +133,7 @@ public class ItemTable
 		_armorTypes.put("heavy", L2ArmorType.HEAVY);
 		_armorTypes.put("magic", L2ArmorType.MAGIC);
 		_armorTypes.put("pet", L2ArmorType.PET);
+		_armorTypes.put("sigil", L2ArmorType.SIGIL);
 		
 		_slots.put("shirt", L2Item.SLOT_UNDERWEAR);
 		_slots.put("belt", L2Item.SLOT_ALLDRESS);

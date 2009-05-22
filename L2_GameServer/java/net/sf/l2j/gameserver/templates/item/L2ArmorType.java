@@ -25,7 +25,8 @@ public enum L2ArmorType
 	LIGHT(2, "Light"),
 	HEAVY(3, "Heavy"),
 	MAGIC(4, "Magic"),
-	PET(5, "Pet");
+	PET(5, "Pet"),
+	SIGIL(6, "Sigil");
 	
 	final int _id;
 	final String _name;
