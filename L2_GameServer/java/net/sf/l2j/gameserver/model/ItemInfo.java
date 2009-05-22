@@ -101,7 +101,7 @@ public class ItemInfo
 
 		// Get shadow item mana
 		_mana = item.getMana();
-		_time = item.isTimeLimitedItem() ? (int) (item.getRemainingTime()*1000*60) : -1;
+		_time = item.isTimeLimitedItem() ? (int) (item.getRemainingTime()/1000) : -1;
 		_location = item.getLocationSlot();
 
 		_elemAtkType = item.getAttackElementType();

@@ -166,7 +166,7 @@ public final class L2ItemInstance extends L2Object
 		_type2 = 0;
 		_dropTime = 0;
 		_mana = _item.getDuration();
-		_time = _item.getTime() == -1 ? -1 : System.currentTimeMillis() + (_item.getTime()*60*1000);
+		_time = _item.getTime() == -1 ? -1 : System.currentTimeMillis() + ((long)_item.getTime()*60*1000);
 		scheduleLifeTimeTask();
 	}
 
@@ -187,7 +187,7 @@ public final class L2ItemInstance extends L2Object
 		setCount(1);
 		_loc = ItemLocation.VOID;
 		_mana = _item.getDuration();
-		_time = _item.getTime() == -1 ? -1 : System.currentTimeMillis() + (_item.getTime()*60*1000);
+		_time = _item.getTime() == -1 ? -1 : System.currentTimeMillis() + ((long)_item.getTime()*60*1000);
 		scheduleLifeTimeTask();
 	}
 	
@@ -1628,7 +1628,7 @@ public final class L2ItemInstance extends L2Object
     
     public long getRemainingTime()
     {
-    	return _time-System.currentTimeMillis();
+    	return _time - System.currentTimeMillis();
     }
     public void endOfLife()
     {
