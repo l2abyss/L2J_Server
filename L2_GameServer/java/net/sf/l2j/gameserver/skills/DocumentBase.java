@@ -554,7 +554,6 @@ abstract class DocumentBase
                 int sex = Integer.decode(getValue(a.getNodeValue(), null));
                 cond = joinAnd(cond, new ConditionPlayerSex(sex));
             }
-            
             else if ("flyMounted".equalsIgnoreCase(a.getNodeName()))
             {
             	boolean val = Boolean.valueOf(a.getNodeValue());
@@ -568,7 +567,7 @@ abstract class DocumentBase
             else if ("active_skill_id".equalsIgnoreCase(a.getNodeName()))
             {
                 int skill_id = Integer.decode(getValue(a.getNodeValue(), template));
-                cond = joinAnd(cond, new ConditionTargetActiveSkillId(skill_id));
+                cond = joinAnd(cond, new ConditionPlayerActiveSkillId(skill_id));
             }
         }
 
