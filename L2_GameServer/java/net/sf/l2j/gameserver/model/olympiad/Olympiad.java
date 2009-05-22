@@ -63,6 +63,7 @@ public class Olympiad
 	protected static L2FastList<StatsSet> _heroesToBe;
 	private static L2FastList<L2PcInstance> _nonClassBasedRegisters;
 	private static Map<Integer, L2FastList<L2PcInstance>> _classBasedRegisters;
+	private static Map<Integer, Integer> _noblesRank;
 	
 	private static final String OLYMPIAD_DATA_FILE = "config/olympiad.properties";
 	public static final String OLYMPIAD_HTML_PATH = "data/html/olympiad/";
@@ -79,6 +80,8 @@ public class Olympiad
 	        + "FROM olympiad_nobles, characters WHERE characters.charId = olympiad_nobles.charId "
 	        + "AND olympiad_nobles.class_id = ? AND olympiad_nobles.competitions_done >= 9 "
 	        + "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC";
+	private static final String GET_ALL_CLASSIFIED_NOBLESS = "SELECT charId from olympiad_nobles_eom "
+			+ "WHERE competitions_done >= 9 ORDER BY olympiad_points DESC, competitions_done DESC";
 	private static final String GET_EACH_CLASS_LEADER = "SELECT characters.char_name from olympiad_nobles_eom, characters "
 	        + "WHERE characters.charId = olympiad_nobles_eom.charId AND olympiad_nobles_eom.class_id = ? "
 	        + "AND olympiad_nobles_eom.competitions_done >= 9 "
@@ -203,6 +206,7 @@ public class Olympiad
 			case 1:
 				if (_validationEnd > Calendar.getInstance().getTimeInMillis())
 				{
+					loadNoblesRank();
 					_scheduledValdationTask = ThreadPoolManager.getInstance().scheduleGeneral(new ValidationEndTask(), getMillisToValidationEnd());
 				}
 				else
@@ -286,7 +290,68 @@ public class Olympiad
 		_log.info("Olympiad System: Loaded " + _nobles.size() + " Nobles");
 		
 	}
-	
+
+	public void loadNoblesRank()
+	{
+		_noblesRank = new FastMap<Integer, Integer>();
+		Map<Integer, Integer> tmpPlace = new FastMap<Integer, Integer>();
+
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(GET_ALL_CLASSIFIED_NOBLESS);
+			ResultSet rset = statement.executeQuery();
+
+			int place = 1;
+			while (rset.next())
+			{
+				tmpPlace.put(rset.getInt(CHAR_ID), place++);
+			}
+
+			rset.close();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Olympiad System: Error loading noblesse data from database for Ranking: ", e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
+		int rank1 = (int) Math.round(tmpPlace.size() * 0.01);
+		int rank2 = (int) Math.round(tmpPlace.size() * 0.10);
+		int rank3 = (int) Math.round(tmpPlace.size() * 0.25);
+		int rank4 = (int) Math.round(tmpPlace.size() * 0.50);
+		if (rank1 == 0)
+		{
+			rank1 = 1;
+			rank2 ++;
+			rank3 ++;
+			rank4 ++;
+		}
+		for (int charId : tmpPlace.keySet())
+		{
+			if (tmpPlace.get(charId) <= rank1)
+				_noblesRank.put(charId, 1);
+			else if (tmpPlace.get(charId) <= rank2)
+				_noblesRank.put(charId, 2);
+			else if (tmpPlace.get(charId) <= rank3)
+				_noblesRank.put(charId, 3);
+			else if (tmpPlace.get(charId) <= rank4)
+				_noblesRank.put(charId, 4);
+			else
+				_noblesRank.put(charId, 5);
+		}
+	}
+
 	protected void init()
 	{
 		if (_period == 1)
@@ -325,7 +390,6 @@ public class Olympiad
 			
 			_period = 1;
 			sortHerosToBe();
-			giveHeroBonus();
 			Hero.getInstance().computeNewHeroes(_heroesToBe);
 			
 			saveOlympiadStatus();
@@ -334,6 +398,7 @@ public class Olympiad
 			Calendar validationEnd = Calendar.getInstance();
 			_validationEnd = validationEnd.getTimeInMillis() + VALIDATION_PERIOD;
 			
+			loadNoblesRank();
 			_scheduledValdationTask = ThreadPoolManager.getInstance().scheduleGeneral(new ValidationEndTask(), getMillisToValidationEnd());
 		}
 	}
@@ -1268,36 +1333,39 @@ public class Olympiad
 		
 	}
 	
-	protected void giveHeroBonus()
+	public int getNoblessePasses(L2PcInstance player)
 	{
-		if (_heroesToBe.isEmpty())
-			return;
+		if (_period != 1 || _noblesRank.isEmpty())
+			return 0;
 		
-		for (StatsSet hero : _heroesToBe)
-		{
-			int charId = hero.getInteger(CHAR_ID);
-			
-			StatsSet noble = _nobles.get(charId);
-			int currentPoints = noble.getInteger(POINTS);
-			currentPoints += Config.ALT_OLY_HERO_POINTS;
-			noble.set(POINTS, currentPoints);
-			
-			updateNobleStats(charId, noble);
-		}
-	}
-	
-	public int getNoblessePasses(int objId)
-	{
-		if (_period != 1 || _nobles.isEmpty())
+		int objId = player.getObjectId();
+		if (!_noblesRank.containsKey(objId))
 			return 0;
 		
 		StatsSet noble = _nobles.get(objId);
-		if (noble == null)
+		if (noble.getInteger(POINTS) == 0)
 			return 0;
-		int points = noble.getInteger(POINTS);
-		if (points <= Config.ALT_OLY_MIN_POINT_FOR_EXCH)
-			return 0;
-		
+
+		int rank = _noblesRank.get(objId);
+		int points = (player.isHero() ? Config.ALT_OLY_HERO_POINTS : 0);
+		switch(rank)
+		{
+			case 1:
+				points += Config.ALT_OLY_RANK1_POINTS;
+				break;
+			case 2:
+				points += Config.ALT_OLY_RANK2_POINTS;
+				break;
+			case 3:
+				points += Config.ALT_OLY_RANK3_POINTS;
+				break;
+			case 4:
+				points += Config.ALT_OLY_RANK4_POINTS;
+				break;
+			default:
+				points += Config.ALT_OLY_RANK5_POINTS;
+		}
+
 		noble.set(POINTS, 0);
 		updateNobleStats(objId, noble);
 		

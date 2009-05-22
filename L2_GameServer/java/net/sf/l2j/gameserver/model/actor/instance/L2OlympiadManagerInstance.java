@@ -104,7 +104,7 @@ public class L2OlympiadManagerInstance extends L2NpcInstance
 					Olympiad.getInstance().registerNoble(player, true);
 					break;
 				case 6:
-					int passes = Olympiad.getInstance().getNoblessePasses(player.getObjectId());
+					int passes = Olympiad.getInstance().getNoblessePasses(player);
 					if (passes > 0)
 					{
 						L2ItemInstance item = player.getInventory().addItem("Olympiad", GATE_PASS, passes, player, this);
