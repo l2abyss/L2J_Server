@@ -1446,6 +1446,9 @@ public final class L2PcInstance extends L2Playable
 
 		for (QuestState qs : _quests.values())
 		{
+			if (qs == null)
+				continue;
+			
 		    int questId = qs.getQuest().getQuestIntId();
 			if ((questId>19999) || (questId<1))
 				continue;
