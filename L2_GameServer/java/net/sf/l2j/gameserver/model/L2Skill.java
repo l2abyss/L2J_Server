@@ -236,7 +236,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final int _armorsAllowed;
 
     private final int _minPledgeClass;
-
+    private final int[] _teleportCoords;
     private final boolean _isOffensive;
     private final int _requiredCharges;
     private final int _maxCharges;
@@ -322,6 +322,16 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _afterEffectId = set.getInteger("afterEffectId", 0);
         _afterEffectLvl = set.getInteger("afterEffectLvl", 1);
         _isCubic    = set.getBool("isCubic", false);
+        String coords = set.getString("teleCoords", null);
+        if (coords != null)
+        {
+            String[] valuesSplit = coords.split(",");
+            _teleportCoords = new int[valuesSplit.length];
+    		for (int i = 0; i < valuesSplit.length;i++)
+    			_teleportCoords[i] = Integer.valueOf(valuesSplit[i]);
+        }
+        else
+        	_teleportCoords = null;
 
          _isAdvancedFlag = set.getBool("isAdvancedFlag", false);
         _activationtime= set.getInteger("activationtime", 8);
@@ -3141,5 +3151,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public boolean useShield()
 	{
 		return _useShield;
+	}
+	
+	public int[] getTeleportCoords()
+	{
+		return _teleportCoords;
 	}
 }
