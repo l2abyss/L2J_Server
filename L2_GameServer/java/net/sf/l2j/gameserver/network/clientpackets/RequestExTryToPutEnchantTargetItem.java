@@ -30,9 +30,9 @@ import net.sf.l2j.gameserver.templates.item.L2WeaponType;
  */
 public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 {
-	
-	private int _objectId;
-	
+
+	private int _objectId = 0;
+
 	/**
 	 * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#getType()
 	 */
@@ -41,7 +41,7 @@ public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 	{
 		return "[C] D0:4F RequestExTryToPutEnchantTargetItem";
 	}
-	
+
 	/**
 	 * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
 	 */
@@ -50,7 +50,7 @@ public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 	{
 		_objectId = readD();
 	}
-	
+
 	/**
 	 * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
 	 */
@@ -58,55 +58,51 @@ public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
-		
+
+		if (_objectId == 0)
+			return;
+
 		if (activeChar != null)
 		{
 			if (activeChar.isEnchanting())
 				return;
-			
+
 			L2ItemInstance targetItem = (L2ItemInstance) L2World.getInstance().findObject(_objectId);
 			L2ItemInstance enchantScroll = activeChar.getActiveEnchantItem();
-			
+
 			if (targetItem == null || enchantScroll == null)
 				return;
-			
+
 			activeChar.setIsEnchanting(true);
 
-			if (targetItem.isEtcItem() || targetItem.isWear() || targetItem.getItem().getItemType() == L2WeaponType.ROD || targetItem.isHeroItem() || targetItem.getItemId() >= 7816 && targetItem.getItemId() <= 7831
-					|| targetItem.isShadowItem() || targetItem.isCommonItem() || targetItem.isTimeLimitedItem())
-			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS));
-				activeChar.setActiveEnchantItem(null);
-				activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
-				return;
-			}
-			
 			switch (targetItem.getLocation())
 			{
 				case INVENTORY:
 				case PAPERDOLL:
-				{
-					if (targetItem.getOwnerId() != activeChar.getObjectId())
+					// can't enchant rods, hero weapons, adventurers' items,shadow and common items
+					if (targetItem.getOwnerId() != activeChar.getObjectId()
+							|| targetItem.getItem().getItemType() == L2WeaponType.ROD
+							|| targetItem.isHeroItem()
+							|| (targetItem.getItemId() >= 7816 && targetItem.getItemId() <= 7831)
+							|| targetItem.isShadowItem()
+							|| targetItem.isCommonItem()
+							|| targetItem.isTimeLimitedItem()
+							|| targetItem.isEtcItem()
+							|| targetItem.isWear()
+							|| targetItem.getItem().getBodyPart() == L2Item.SLOT_L_BRACELET
+							|| targetItem.getItem().getBodyPart() == L2Item.SLOT_R_BRACELET
+							|| (targetItem.getLocation() != L2ItemInstance.ItemLocation.INVENTORY && targetItem.getLocation() != L2ItemInstance.ItemLocation.PAPERDOLL))
 					{
 						activeChar.sendPacket(new SystemMessage(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS));
 						activeChar.setActiveEnchantItem(null);
 						activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 						return;
 					}
-					break;
-				}
-				default:
-				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS));
-					activeChar.setActiveEnchantItem(null);
-					activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
-					return;
-				}
 			}
-			
+
 			int itemType2 = targetItem.getItem().getType2();
 			boolean enchantItem = false;
-			
+
 			/** pretty code ;D */
 			switch (targetItem.getItem().getCrystalType())
 			{
@@ -198,7 +194,7 @@ public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 					}
 					break;
 			}
-			
+
 			if (!enchantItem)
 			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS));

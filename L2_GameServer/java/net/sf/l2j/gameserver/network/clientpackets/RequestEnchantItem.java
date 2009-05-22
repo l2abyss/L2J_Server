@@ -28,16 +28,15 @@ import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.templates.item.L2WeaponType;
-import net.sf.l2j.gameserver.util.IllegalPlayerAction;
 import net.sf.l2j.gameserver.util.Util;
 import net.sf.l2j.util.Rnd;
 
 public final class RequestEnchantItem extends L2GameClientPacket
 {
 	protected static final Logger _log = Logger.getLogger(RequestEnchantItem.class.getName());
-	
+
 	private static final String _C__58_REQUESTENCHANTITEM = "[C] 58 RequestEnchantItem";
-	
+
 	private static final int[] ENCHANT_SCROLLS =
 	{
 		729, 730, 947, 948, 951, 952, 955, 956, 959, 960
@@ -46,85 +45,50 @@ public final class RequestEnchantItem extends L2GameClientPacket
 	{
 		6569, 6570, 6571, 6572, 6573, 6574, 6575, 6576, 6577, 6578
 	};
-	
-	private int _objectId;
-	
+
+	private int _objectId = 0;
+
 	@Override
 	protected void readImpl()
 	{
 		_objectId = readD();
 	}
-	
+
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
-		
+
 		if (activeChar == null || _objectId == 0)
 			return;
-		
+
 		if (activeChar.isOnline() == 0)
 		{
 			activeChar.setActiveEnchantItem(null);
 			return;
 		}
-		
-		if (activeChar.isProcessingTransaction())
+
+		if (activeChar.isProcessingTransaction() || activeChar.isInStoreMode())
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_ENCHANT_WHILE_STORE));
 			activeChar.setActiveEnchantItem(null);
 			return;
 		}
-		
+
 		L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
 		L2ItemInstance scroll = activeChar.getActiveEnchantItem();
-		
+
 		if (item == null || scroll == null)
 		{
 			activeChar.setActiveEnchantItem(null);
 			return;
 		}
-		
-		// can't enchant rods, hero weapons, adventurers' items,shadow and common items
-		if (item.getItem().getItemType() == L2WeaponType.ROD || item.isHeroItem() || item.getItemId() >= 7816 && item.getItemId() <= 7831 || item.isShadowItem() || item.isCommonItem() || item.isTimeLimitedItem())
-		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
-			activeChar.setActiveEnchantItem(null);
-			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
-			return;
-		}
-		
-		if (item.isWear())
-		{
-			Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to enchant a weared Item", IllegalPlayerAction.PUNISH_KICK);
-			return;
-		}
-		
-		switch (item.getLocation())
-		{
-			case INVENTORY:
-			case PAPERDOLL:
-			{
-				if (item.getOwnerId() != activeChar.getObjectId())
-				{
-					activeChar.setActiveEnchantItem(null);
-					activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
-					return;
-				}
-				break;
-			}
-			default:
-			{
-				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to use enchant Exploit!", IllegalPlayerAction.PUNISH_KICK);
-				return;
-			}
-		}
-		
+
 		int itemType2 = item.getItem().getType2();
 		boolean enchantItem = false;
 		boolean blessedScroll = false;
 		int crystalId = 0;
-		
+
 		/** pretty code ;D */
 		switch (item.getItem().getCrystalType())
 		{
@@ -221,7 +185,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				}
 				break;
 		}
-		
+
 		if (!enchantItem)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
@@ -229,11 +193,11 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 			return;
 		}
-		
+
 		// Check the scroll type, and if it functions like "blessed" set it to true for being "blessedScroll" - Yesod
 		if (scroll.getItemId() >= 6569 && scroll.getItemId() <= 6578)
 			blessedScroll = true;
-		
+
 		scroll = activeChar.getInventory().destroyItem("Enchant", scroll.getObjectId(), 1, activeChar, item);
 		if (scroll == null)
 		{
@@ -243,9 +207,9 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 			return;
 		}
-		
+
 		SystemMessage sm;
-		
+
 		int chance = 0;
 		int maxEnchantLevel = 0;
 		synchronized (item)
@@ -310,12 +274,32 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				}
 				maxEnchantLevel = Config.ENCHANT_MAX_JEWELRY;
 			}
-			
+
+			// can't enchant rods, hero weapons, adventurers' items,shadow and common items
+			if (item.getOwnerId() != activeChar.getObjectId()
+					|| item.getItem().getItemType() == L2WeaponType.ROD
+					|| item.isHeroItem()
+					|| (item.getItemId() >= 7816 && item.getItemId() <= 7831)
+					|| item.isShadowItem()
+					|| item.isCommonItem()
+					|| item.isTimeLimitedItem()
+					|| item.isEtcItem()
+					|| item.isWear()
+					|| item.getItem().getBodyPart() == L2Item.SLOT_L_BRACELET
+					|| item.getItem().getBodyPart() == L2Item.SLOT_R_BRACELET
+					|| (item.getLocation() != L2ItemInstance.ItemLocation.INVENTORY && item.getLocation() != L2ItemInstance.ItemLocation.PAPERDOLL))
+			{
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
+				activeChar.setActiveEnchantItem(null);
+				activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
+				return;
+			}
+
 			if (item.getEnchantLevel() < Config.ENCHANT_SAFE_MAX || item.getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR && item.getEnchantLevel() < Config.ENCHANT_SAFE_MAX_FULL)
 				chance = 100;
-		
+
 			boolean failed = false;
-		
+
 			if (Rnd.get(100) < chance)
 			{
 				if (item.getOwnerId() != activeChar.getObjectId() || item.getEnchantLevel() >= maxEnchantLevel && maxEnchantLevel != 0)
@@ -332,14 +316,17 @@ public final class RequestEnchantItem extends L2GameClientPacket
 					activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 					return;
 				}
-				
-				item.setEnchantLevel(item.getEnchantLevel() + 1);
-				item.updateDatabase();
+
+				if (maxEnchantLevel == 0 || item.getEnchantLevel() < maxEnchantLevel)
+				{
+					item.setEnchantLevel(item.getEnchantLevel() + 1);
+					item.updateDatabase();
+				}
 			}
 			else
 			{
 				failed = true;
-			
+
 				if (!blessedScroll)
 				{
 					if (item.isEquipped())
@@ -357,7 +344,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 							sm.addItemName(item);
 							activeChar.sendPacket(sm);
 						}
-					
+
 						L2ItemInstance[] unequiped = activeChar.getInventory().unEquipItemInSlotAndRecord(item.getLocationSlot());
 						InventoryUpdate iu = new InventoryUpdate();
 						for (L2ItemInstance itm : unequiped)
@@ -368,25 +355,25 @@ public final class RequestEnchantItem extends L2GameClientPacket
 					
 						activeChar.broadcastUserInfo();
 					}
-				
+
 					int count = item.getCrystalCount() - (item.getItem().getCrystalCount() + 1) / 2;
 					if (count < 1)
 						count = 1;
-				
+
 					L2ItemInstance destroyItem = activeChar.getInventory().destroyItem("Enchant", item, activeChar, null);
 					if (destroyItem == null)
 					{
 						activeChar.setActiveEnchantItem(null);
 						return;
 					}
-				
+
 					L2ItemInstance crystals = activeChar.getInventory().addItem("Enchant", crystalId, count, activeChar, destroyItem);
-				
+
 					sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
 					sm.addItemName(crystals);
 					sm.addItemNumber(count);
 					activeChar.sendPacket(sm);
-				
+
 					if (!Config.FORCE_INVENTORY_UPDATE)
 					{
 						InventoryUpdate iu = new InventoryUpdate();
@@ -400,13 +387,13 @@ public final class RequestEnchantItem extends L2GameClientPacket
 					}
 					else
 						activeChar.sendPacket(new ItemList(activeChar, true));
-				
+
 					StatusUpdate su = new StatusUpdate(activeChar.getObjectId());
 					su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());
 					activeChar.sendPacket(su);
-				
+
 					activeChar.broadcastUserInfo();
-				
+
 					L2World world = L2World.getInstance();
 					world.removeObject(destroyItem);
 					activeChar.sendPacket(new ExPutEnchantTargetItemResult(1, crystalId, count));
@@ -415,28 +402,28 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				{
 					sm = new SystemMessage(SystemMessageId.BLESSED_ENCHANT_FAILED);
 					activeChar.sendPacket(sm);
-				
+
 					item.setEnchantLevel(0);
 					item.updateDatabase();
 					activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
 				}
 			}
 			sm = null;
-		
+
 			StatusUpdate su = new StatusUpdate(activeChar.getObjectId());
 			su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());
 			activeChar.sendPacket(su);
 			su = null;
-		
+
 			if (!failed)
 				activeChar.sendPacket(new ExPutEnchantTargetItemResult(0, 0, 0));
-		
+
 			activeChar.sendPacket(new ItemList(activeChar, false));
 			activeChar.broadcastUserInfo();
 			activeChar.setActiveEnchantItem(null);
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
