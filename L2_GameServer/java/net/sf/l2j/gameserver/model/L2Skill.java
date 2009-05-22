@@ -237,6 +237,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
     private final int _minPledgeClass;
     private final int[] _teleportCoords;
+    private final String _recallType;
     private final boolean _isOffensive;
     private final int _requiredCharges;
     private final int _maxCharges;
@@ -333,6 +334,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
         else
         	_teleportCoords = null;
 
+        _recallType = set.getString("recallType", "");
          _isAdvancedFlag = set.getBool("isAdvancedFlag", false);
         _activationtime= set.getInteger("activationtime", 8);
         _activationchance= set.getInteger("activationchance", 30);
@@ -3156,5 +3158,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public int[] getTeleportCoords()
 	{
 		return _teleportCoords;
+	}
+	
+	public String getRecallType()
+	{
+		return _recallType;
 	}
 }
