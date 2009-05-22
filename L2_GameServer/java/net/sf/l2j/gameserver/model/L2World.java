@@ -147,7 +147,11 @@ public final class L2World
 
     public void removeObjects(List<L2Object> list)
     {
-    	for(L2Object o : list)	_allObjects.remove(o.getObjectId());  // suggestion by whatev
+    	for(L2Object o : list)
+    	{
+    		if (o != null)
+    			_allObjects.remove(o.getObjectId());  // suggestion by whatev
+    	}
         //IdFactory.getInstance().releaseId(object.getObjectId());
     }
 
