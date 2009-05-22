@@ -195,7 +195,6 @@ public class GameServer
 		
 		_threadpools = ThreadPoolManager.getInstance();
 		
-		new File(Config.DATAPACK_ROOT, "data/clans").mkdirs();
 		new File(Config.DATAPACK_ROOT, "data/crests").mkdirs();
 		
 		// load script engines
