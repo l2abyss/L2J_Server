@@ -2634,6 +2634,18 @@ public final class L2PcInstance extends L2Playable
 				if (getSkillLevel(sk.getId()) == -1)
 					skillCounter++;
 
+				// fix when learning toggle skills
+				if (sk.isToggle())
+				{
+					L2Effect toggleEffect = getFirstEffect(sk.getId());
+					if (toggleEffect != null)
+					{
+						// stop old toggle skill effect, and give new toggle skill effect back
+						toggleEffect.exit();
+						sk.getEffects(this, this);
+					}
+				}
+
 				addSkill(sk, true);
 			}
 
