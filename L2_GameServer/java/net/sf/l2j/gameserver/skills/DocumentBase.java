@@ -565,6 +565,11 @@ abstract class DocumentBase
             	boolean val = Boolean.valueOf(a.getNodeValue());
                 cond = joinAnd(cond, new ConditionPlayerLandingZone(val));
             }
+            else if ("active_skill_id".equalsIgnoreCase(a.getNodeName()))
+            {
+                int skill_id = Integer.decode(getValue(a.getNodeValue(), template));
+                cond = joinAnd(cond, new ConditionTargetActiveSkillId(skill_id));
+            }
         }
 
         if(forces[0] + forces[1] > 0)
