@@ -71,7 +71,7 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 		int refinerItemId = refinerItem.getItem().getItemId();
 
 		// is the item a life stone?
-		if (refinerItemId < 8723 || (refinerItemId > 8762 && refinerItemId < 9573) || (refinerItemId > 9576 && refinerItemId < 10483) || refinerItemId > 10486)
+		if (refinerItemId < 8723 || (refinerItemId > 8762 && refinerItemId < 9573) || (refinerItemId > 9576 && refinerItemId < 10483) || (refinerItemId > 10486 && refinerItemId < 14166) || refinerItemId > 14169)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
 			return;
