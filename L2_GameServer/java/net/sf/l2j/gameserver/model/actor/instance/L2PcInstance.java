@@ -9247,18 +9247,19 @@ public final class L2PcInstance extends L2Playable
 					{
 						if (!summon)
 						{
-							if (itemId == 2509 || itemId == 2510
-							        || itemId == 2511 || itemId == 2512
-							        || itemId == 2513 || itemId == 2514
-							        || itemId == 3947 || itemId == 3948
-							        || itemId == 3949 || itemId == 3950
-							        || itemId == 3951 || itemId == 3952
-							        || itemId == 5790)
+							switch(itemId)
 							{
-								handler = ItemHandler.getInstance().getItemHandler(itemId);
-								
-								if (handler != null)
-									handler.useItem(this, item);
+								case 2509: case 2510: case 2512:
+								case 2513: case 2514: case 3947:
+								case 3948: case 3949: case 3950:
+								case 3951: case 3952: case 5790:
+									
+									handler = ItemHandler.getInstance().getItemHandler(itemId);
+									
+									if (handler != null)
+										handler.useItem(this, item);
+									
+									break;
 							}
 						}
 						else
@@ -9277,15 +9278,18 @@ public final class L2PcInstance extends L2Playable
 					{
 						if (!summon)
 						{
-							if (itemId == 1463 || itemId == 1464
-							        || itemId == 1465 || itemId == 1466
-							        || itemId == 1467 || itemId == 1835
-							        || itemId == 5789)
+							switch(itemId)
 							{
-								handler = ItemHandler.getInstance().getItemHandler(itemId);
-								
-								if (handler != null)
-									handler.useItem(this, item);
+								case 1463: case 1464: case 1465:
+								case 1466: case 1467: case 1835:
+								case 5789:
+									
+									handler = ItemHandler.getInstance().getItemHandler(itemId);
+									
+									if (handler != null)
+										handler.useItem(this, item);
+									
+									break;
 							}
 						}
 						else
