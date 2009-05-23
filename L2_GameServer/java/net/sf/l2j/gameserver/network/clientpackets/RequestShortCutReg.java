@@ -34,7 +34,6 @@ public final class RequestShortCutReg extends L2GameClientPacket
 	private int _lvl;
 	private int _characterType; // 1 - player, 2 - pet
 
-
 	@Override
 	protected void readImpl()
 	{
@@ -46,7 +45,6 @@ public final class RequestShortCutReg extends L2GameClientPacket
 
 		_slot = slot % 12;
 		_page = slot / 12;
-
 	}
 
 	@Override
@@ -55,6 +53,9 @@ public final class RequestShortCutReg extends L2GameClientPacket
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 		    return;
+
+		if (_page > 9 || _page < 0)
+			return;
 
 		switch (_type)
 		{
@@ -82,9 +83,7 @@ public final class RequestShortCutReg extends L2GameClientPacket
 				activeChar.registerShortCut(sc);
 				break;
             }
-
 		}
-
 	}
 
 	/* (non-Javadoc)
