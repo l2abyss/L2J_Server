@@ -243,7 +243,8 @@ public class GameServer
 		PetSkillsTable.getInstance();
 		ArmorSetsTable.getInstance();
 		FishTable.getInstance();
-		SkillSpellbookTable.getInstance();
+		if (Config.SP_BOOK_NEEDED)
+			SkillSpellbookTable.getInstance();
 		CharTemplateTable.getInstance();
 		NobleSkillTable.getInstance();
 		HeroSkillTable.getInstance();

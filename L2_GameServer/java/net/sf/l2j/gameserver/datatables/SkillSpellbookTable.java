@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
+import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.L2Skill;
 
@@ -33,6 +34,9 @@ public class SkillSpellbookTable
 	
 	public static SkillSpellbookTable getInstance()
 	{
+		if (!Config.SP_BOOK_NEEDED)
+			throw new RuntimeException("Trying to load SP book table with config option disabled");
+		
 		if (_instance == null)
 			_instance = new SkillSpellbookTable();
 		
