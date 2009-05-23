@@ -124,13 +124,15 @@ public class ExtractableItemsData
 				if (!ok)
 					continue;
 				
-				int[] production = {0};
-				int[] amount = {0};
+				int[] production =null;
+				int[] amount = null;
 				int chance = 0;
 				
 				try
 				{
 					int k =0;
+					production = new int[lineSplit2.length-1/2];
+					amount = new int[lineSplit2.length-1/2];
 					for (int j = 0; j < lineSplit2.length-1 ;j++)
 					{
 						production[k] = Integer.parseInt(lineSplit2[j]);
