@@ -21,7 +21,7 @@ import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.network.serverpackets.ExPutEnchantTargetItemResult;
+import net.sf.l2j.gameserver.network.serverpackets.EnchantResult;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
@@ -44,6 +44,18 @@ public final class RequestEnchantItem extends L2GameClientPacket
 	private static final int[] BLESSED_SCROLLS =
 	{
 		6569, 6570, 6571, 6572, 6573, 6574, 6575, 6576, 6577, 6578
+	};
+	private static final int[] ENCHANT10_SCROLLS =
+	{
+		22006, 22007, 22008, 22009, 22010, 22011, 22012, 22013
+	};
+	private static final int[] BLESSED10_SCROLLS =
+	{
+		22014, 22015, 22016, 22017
+	};
+	private static final int[] ENCHANT100_SCROLLS =
+	{
+		22018, 22019, 22020, 22021
 	};
 
 	private int _objectId = 0;
@@ -77,6 +89,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 
 		L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
 		L2ItemInstance scroll = activeChar.getActiveEnchantItem();
+		L2ItemInstance support = activeChar.getActiveEnchantSupportItem();
 
 		if (item == null || scroll == null)
 		{
@@ -86,7 +99,8 @@ public final class RequestEnchantItem extends L2GameClientPacket
 
 		int itemType2 = item.getItem().getType2();
 		boolean enchantItem = false;
-		boolean blessedScroll = false;
+		boolean blessedScroll = false; // item will not break
+		boolean retainEnchantValue = false; // for blessedScroll = true item will retain old enchant value on fail
 		int crystalId = 0;
 
 		/** pretty code ;D */
@@ -99,14 +113,22 @@ public final class RequestEnchantItem extends L2GameClientPacket
 					case 729:
 					case 731:
 					case 6569:
+					case 22009:
+					case 22015:
+					case 22019:
 						if (itemType2 == L2Item.TYPE2_WEAPON)
-							enchantItem = true;
+							if (support == null || support.getItemId() == 12365)
+								enchantItem = true;
 						break;
 					case 730:
 					case 732:
 					case 6570:
+					case 22013:
+					case 22017:
+					case 22021:
 						if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-							enchantItem = true;
+							if (support == null || support.getItemId() == 12370)
+								enchantItem = true;
 						break;
 				}
 				break;
@@ -117,14 +139,22 @@ public final class RequestEnchantItem extends L2GameClientPacket
 					case 947:
 					case 949:
 					case 6571:
+					case 22008:
+					case 22014:
+					case 22018:
 						if (itemType2 == L2Item.TYPE2_WEAPON)
-							enchantItem = true;
+							if (support == null || support.getItemId() == 12364)
+								enchantItem = true;
 						break;
 					case 948:
 					case 950:
 					case 6572:
+					case 22012:
+					case 22016:
+					case 22020:
 						if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-							enchantItem = true;
+							if (support == null || support.getItemId() == 12369)
+								enchantItem = true;
 						break;
 				}
 				break;
@@ -135,14 +165,18 @@ public final class RequestEnchantItem extends L2GameClientPacket
 					case 951:
 					case 953:
 					case 6573:
+					case 22007:
 						if (itemType2 == L2Item.TYPE2_WEAPON)
-							enchantItem = true;
+							if (support == null || support.getItemId() == 12363)
+								enchantItem = true;
 						break;
 					case 952:
 					case 954:
 					case 6574:
+					case 22011:
 						if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-							enchantItem = true;
+							if (support == null || support.getItemId() == 12368)
+								enchantItem = true;
 						break;
 				}
 				break;
@@ -153,14 +187,18 @@ public final class RequestEnchantItem extends L2GameClientPacket
 					case 955:
 					case 957:
 					case 6575:
+					case 22006:
 						if (itemType2 == L2Item.TYPE2_WEAPON)
-							enchantItem = true;
+							if (support == null || support.getItemId() == 12362)
+								enchantItem = true;
 						break;
 					case 956:
 					case 958:
 					case 6576:
+					case 22010:
 						if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-							enchantItem = true;
+							if (support == null || support.getItemId() == 12367)
+								enchantItem = true;
 						break;
 				}
 				break;
@@ -174,29 +212,60 @@ public final class RequestEnchantItem extends L2GameClientPacket
 					case 961:
 					case 6577:
 						if (itemType2 == L2Item.TYPE2_WEAPON)
-							enchantItem = true;
+							if (support == null || support.getItemId() == 12366)
+								enchantItem = true;
 						break;
 					case 960:
 					case 962:
 					case 6578:
 						if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-							enchantItem = true;
+							if (support == null || support.getItemId() == 12371)
+								enchantItem = true;
 						break;
 				}
 				break;
 		}
 
+		int maxEnchantLevel = 0;
+		switch (itemType2)
+		{
+			case L2Item.TYPE2_WEAPON: 
+				maxEnchantLevel = Config.ENCHANT_MAX_WEAPON;
+				break;
+			case L2Item.TYPE2_SHIELD_ARMOR:
+				maxEnchantLevel = Config.ENCHANT_MAX_ARMOR;
+				break;
+			case L2Item.TYPE2_ACCESSORY:
+				maxEnchantLevel = Config.ENCHANT_MAX_JEWELRY;
+				break;
+		}
+
+		if (maxEnchantLevel != 0 && item.getEnchantLevel() >= maxEnchantLevel)
+			enchantItem = false;
+
+		// Ancient enchant crystals can enchant only up to 16
+		if (item.getEnchantLevel() >= 16 && scroll.getItemId() >= 22014 && scroll.getItemId() <= 22017)
+			enchantItem = false;
+
+		// support items can enchant up to 9
+		if (support != null && item.getEnchantLevel() > 9)
+			enchantItem = false;
+
 		if (!enchantItem)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
 			activeChar.setActiveEnchantItem(null);
-			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
+			activeChar.sendPacket(new EnchantResult(2, 0, 0));
 			return;
 		}
 
-		// Check the scroll type, and if it functions like "blessed" set it to true for being "blessedScroll" - Yesod
-		if (scroll.getItemId() >= 6569 && scroll.getItemId() <= 6578)
-			blessedScroll = true;
+		if (activeChar.getActiveEnchantTimestamp() == 0 || System.currentTimeMillis() - activeChar.getActiveEnchantTimestamp() < 2000)
+		{
+			Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " use autoenchant program ", Config.DEFAULT_PUNISH);
+			activeChar.setActiveEnchantItem(null);
+			activeChar.sendPacket(new EnchantResult(2, 0, 0));
+			return;
+		}
 
 		scroll = activeChar.getInventory().destroyItem("Enchant", scroll.getObjectId(), 1, activeChar, item);
 		if (scroll == null)
@@ -204,14 +273,27 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
 			Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to enchant with a scroll he doesn't have", Config.DEFAULT_PUNISH);
 			activeChar.setActiveEnchantItem(null);
-			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
+			activeChar.sendPacket(new EnchantResult(2, 0, 0));
 			return;
+		}
+
+		if (support != null)
+		{
+			support = activeChar.getInventory().destroyItem("Enchant", support.getObjectId(), 1, activeChar, item);
+			if (support == null)
+			{
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
+				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to enchant with a support item he doesn't have", Config.DEFAULT_PUNISH);
+				activeChar.setActiveEnchantItem(null);
+				activeChar.sendPacket(new EnchantResult(2, 0, 0));
+				return;
+			}
 		}
 
 		SystemMessage sm;
 
 		int chance = 0;
-		int maxEnchantLevel = 0;
+		maxEnchantLevel = 0;
 		synchronized (item)
 		{
 			if (item.getItem().getType2() == L2Item.TYPE2_WEAPON)
@@ -224,11 +306,38 @@ public final class RequestEnchantItem extends L2GameClientPacket
 						break;
 					}
 				}
+				for (int scrollId : ENCHANT10_SCROLLS)
+				{
+					if (scroll.getItemId() == scrollId)
+					{
+						chance = Config.ENCHANT_CHANCE_WEAPON + 10;
+						break;
+					}
+				}
 				for (int scrollId : BLESSED_SCROLLS)
 				{
 					if (scroll.getItemId() == scrollId)
 					{
 						chance = Config.BLESSED_ENCHANT_CHANCE_WEAPON;
+						blessedScroll = true;
+						break;
+					}
+				}
+				for (int scrollId : BLESSED10_SCROLLS)
+				{
+					if (scroll.getItemId() == scrollId)
+					{
+						chance = Config.BLESSED_ENCHANT_CHANCE_WEAPON + 10;
+						blessedScroll = true;
+						retainEnchantValue = true;
+						break;
+					}
+				}
+				for (int scrollId : ENCHANT100_SCROLLS)
+				{
+					if (scroll.getItemId() == scrollId)
+					{
+						chance = 100;
 						break;
 					}
 				}
@@ -244,11 +353,38 @@ public final class RequestEnchantItem extends L2GameClientPacket
 						break;
 					}
 				}
+				for (int scrollId : ENCHANT10_SCROLLS)
+				{
+					if (scroll.getItemId() == scrollId)
+					{
+						chance = Config.ENCHANT_CHANCE_ARMOR + 10;
+						break;
+					}
+				}
 				for (int scrollId : BLESSED_SCROLLS)
 				{
 					if (scroll.getItemId() == scrollId)
 					{
 						chance = Config.BLESSED_ENCHANT_CHANCE_ARMOR;
+						blessedScroll = true;
+						break;
+					}
+				}
+				for (int scrollId : BLESSED10_SCROLLS)
+				{
+					if (scroll.getItemId() == scrollId)
+					{
+						chance = Config.BLESSED_ENCHANT_CHANCE_ARMOR + 10;
+						blessedScroll = true;
+						retainEnchantValue = true;
+						break;
+					}
+				}
+				for (int scrollId : ENCHANT100_SCROLLS)
+				{
+					if (scroll.getItemId() == scrollId)
+					{
+						chance = 100;
 						break;
 					}
 				}
@@ -264,11 +400,38 @@ public final class RequestEnchantItem extends L2GameClientPacket
 						break;
 					}
 				}
+				for (int scrollId : ENCHANT10_SCROLLS)
+				{
+					if (scroll.getItemId() == scrollId)
+					{
+						chance = Config.ENCHANT_CHANCE_JEWELRY + 10;
+						break;
+					}
+				}
 				for (int scrollId : BLESSED_SCROLLS)
 				{
 					if (scroll.getItemId() == scrollId)
 					{
 						chance = Config.BLESSED_ENCHANT_CHANCE_JEWELRY;
+						blessedScroll = true;
+						break;
+					}
+				}
+				for (int scrollId : BLESSED10_SCROLLS)
+				{
+					if (scroll.getItemId() == scrollId)
+					{
+						chance = Config.BLESSED_ENCHANT_CHANCE_JEWELRY + 10;
+						blessedScroll = true;
+						retainEnchantValue = true;
+						break;
+					}
+				}
+				for (int scrollId : ENCHANT100_SCROLLS)
+				{
+					if (scroll.getItemId() == scrollId)
+					{
+						chance = 100;
 						break;
 					}
 				}
@@ -291,37 +454,37 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
 				activeChar.setActiveEnchantItem(null);
-				activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
+				activeChar.sendPacket(new EnchantResult(2, 0, 0));
 				return;
 			}
 
 			if (item.getEnchantLevel() < Config.ENCHANT_SAFE_MAX || item.getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR && item.getEnchantLevel() < Config.ENCHANT_SAFE_MAX_FULL)
 				chance = 100;
 
+			if (support != null && item.getEnchantLevel() <= 9)
+				chance += 20;
+
 			boolean failed = false;
 
 			if (Rnd.get(100) < chance)
 			{
-				if (item.getOwnerId() != activeChar.getObjectId() || item.getEnchantLevel() >= maxEnchantLevel && maxEnchantLevel != 0)
+				if (item.getOwnerId() != activeChar.getObjectId() || (item.getEnchantLevel() >= maxEnchantLevel && maxEnchantLevel != 0))
 				{
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
 					activeChar.setActiveEnchantItem(null);
-					activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
+					activeChar.sendPacket(new EnchantResult(2, 0, 0));
 					return;
 				}
 				if (item.getLocation() != L2ItemInstance.ItemLocation.INVENTORY && item.getLocation() != L2ItemInstance.ItemLocation.PAPERDOLL)
 				{
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
 					activeChar.setActiveEnchantItem(null);
-					activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
+					activeChar.sendPacket(new EnchantResult(2, 0, 0));
 					return;
 				}
 
-				if (maxEnchantLevel == 0 || item.getEnchantLevel() < maxEnchantLevel)
-				{
-					item.setEnchantLevel(item.getEnchantLevel() + 1);
-					item.updateDatabase();
-				}
+				item.setEnchantLevel(item.getEnchantLevel() + 1);
+				item.updateDatabase();
 			}
 			else
 			{
@@ -396,16 +559,19 @@ public final class RequestEnchantItem extends L2GameClientPacket
 
 					L2World world = L2World.getInstance();
 					world.removeObject(destroyItem);
-					activeChar.sendPacket(new ExPutEnchantTargetItemResult(1, crystalId, count));
+					activeChar.sendPacket(new EnchantResult(1, crystalId, count));
 				}
 				else
 				{
 					sm = new SystemMessage(SystemMessageId.BLESSED_ENCHANT_FAILED);
 					activeChar.sendPacket(sm);
 
-					item.setEnchantLevel(0);
-					item.updateDatabase();
-					activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
+					if (!retainEnchantValue)
+					{
+						item.setEnchantLevel(0);
+						item.updateDatabase();
+					}
+					activeChar.sendPacket(new EnchantResult(2, 0, 0));
 				}
 			}
 			sm = null;
@@ -416,7 +582,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			su = null;
 
 			if (!failed)
-				activeChar.sendPacket(new ExPutEnchantTargetItemResult(0, 0, 0));
+				activeChar.sendPacket(new EnchantResult(0, 0, 0));
 
 			activeChar.sendPacket(new ItemList(activeChar, false));
 			activeChar.broadcastUserInfo();

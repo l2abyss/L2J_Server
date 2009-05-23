@@ -15,7 +15,7 @@
 package net.sf.l2j.gameserver.network.clientpackets;
 
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.network.serverpackets.ExPutEnchantTargetItemResult;
+import net.sf.l2j.gameserver.network.serverpackets.EnchantResult;
 
 /**
  *
@@ -50,7 +50,7 @@ public class RequestExCancelEnchantItem extends L2GameClientPacket
 		L2PcInstance activeChar = this.getClient().getActiveChar();
 		if (activeChar != null)
 		{
-			activeChar.sendPacket(new ExPutEnchantTargetItemResult(2, 0, 0));
+			activeChar.sendPacket(new EnchantResult(2, 0, 0));
 			activeChar.setActiveEnchantItem(null);
 		}
 	}

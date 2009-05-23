@@ -20,20 +20,16 @@ package net.sf.l2j.gameserver.network.serverpackets;
  */
 public class ExPutEnchantTargetItemResult extends L2GameServerPacket
 {
-	private static final String _S__87_EXPUTENCHANTTARGETITEMRESULT = "[S] 87 ExPutEnchantTargetItemResult";
+	private static final String _S__81_EXPUTENCHANTTARGETITEMRESULT = "[S] 81 ExPutEnchantTargetItemResult";
 	
 	private int _result;
-	private int _crystal;
-	private int _count;
 	
 	/**
 	 * 
 	 */
-	public ExPutEnchantTargetItemResult(int result, int crystal, int count)
+	public ExPutEnchantTargetItemResult(int result)
 	{
 		_result = result;
-		_crystal = crystal;
-		_count = count;
 	}
 	
 	/**
@@ -42,7 +38,7 @@ public class ExPutEnchantTargetItemResult extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return _S__87_EXPUTENCHANTTARGETITEMRESULT;
+		return _S__81_EXPUTENCHANTTARGETITEMRESULT;
 	}
 	
 	/**
@@ -51,9 +47,8 @@ public class ExPutEnchantTargetItemResult extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0x87);
+		writeC(0xfe);
+		writeH(0x81);
 		writeD(_result);
-		writeD(_crystal);
-		writeQ(_count);
 	}
 }

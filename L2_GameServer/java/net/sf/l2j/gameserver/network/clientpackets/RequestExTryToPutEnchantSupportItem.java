@@ -14,7 +14,13 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import net.sf.l2j.gameserver.model.L2ItemInstance;
+import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.ExPutEnchantSupportItemResult;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.templates.item.L2Item;
 
 /**
  *
@@ -23,8 +29,8 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 public class RequestExTryToPutEnchantSupportItem extends L2GameClientPacket
 {
 
-	private int _unk1;
-	private int _unk2;
+	private int _supportObjectId;
+	private int _enchantObjectId;
 
 	/**
      * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#getType()
@@ -41,8 +47,8 @@ public class RequestExTryToPutEnchantSupportItem extends L2GameClientPacket
     @Override
     protected void readImpl()
     {
-	    _unk1 = readD();
-	    _unk2 = readD();
+	    _supportObjectId = readD();
+	    _enchantObjectId = readD();
     }
 
 	/**
@@ -54,7 +60,72 @@ public class RequestExTryToPutEnchantSupportItem extends L2GameClientPacket
     	L2PcInstance activeChar = this.getClient().getActiveChar();
 	    if (activeChar != null)
 	    {
-	    	activeChar.sendMessage("RequestExTryToPutEnchantSupportItem: "+_unk1+" - "+_unk2);
+	    	if (activeChar.isEnchanting())
+	    	{
+	    		L2ItemInstance supportItem = (L2ItemInstance) L2World.getInstance().findObject(_supportObjectId);
+	    		L2ItemInstance enchantItem = (L2ItemInstance) L2World.getInstance().findObject(_enchantObjectId);
+
+	    		if (supportItem == null || enchantItem == null)
+	    			return;
+
+				int itemType2 = enchantItem.getItem().getType2();
+	    		boolean ok = false;
+
+	    		switch (enchantItem.getItem().getCrystalType())
+	    		{
+	    			case L2Item.CRYSTAL_A:
+	    				if (itemType2 == L2Item.TYPE2_WEAPON && supportItem.getItemId() == 12365)
+	    					ok = true;
+	    				if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
+	    					if (supportItem.getItemId() == 12370)
+	    						ok = true;
+	    				break;
+	    			case L2Item.CRYSTAL_B:
+	    				if (itemType2 == L2Item.TYPE2_WEAPON && supportItem.getItemId() == 12364)
+	    					ok = true;
+	    				if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
+	    					if (supportItem.getItemId() == 12369)
+	    						ok = true;
+	    				break;
+	    			case L2Item.CRYSTAL_C:
+	    				if (itemType2 == L2Item.TYPE2_WEAPON && supportItem.getItemId() == 12363)
+	    					ok = true;
+	    				if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
+	    					if (supportItem.getItemId() == 12368)
+	    						ok = true;
+	    				break;
+	    			case L2Item.CRYSTAL_D:
+	    				if (itemType2 == L2Item.TYPE2_WEAPON && supportItem.getItemId() == 12362)
+	    					ok = true;
+	    				if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
+	    					if (supportItem.getItemId() == 12367)
+	    						ok = true;
+	    				break;
+	    			case L2Item.CRYSTAL_S:
+	    			case L2Item.CRYSTAL_S80:
+	    			case L2Item.CRYSTAL_S84:
+	    				if (itemType2 == L2Item.TYPE2_WEAPON && supportItem.getItemId() == 12366)
+	    					ok = true;
+	    				if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
+	    					if (supportItem.getItemId() == 12371)
+	    						ok = true;
+	    				break;
+	    		}
+	    		
+	    		if (enchantItem.getEnchantLevel() > 9)
+	    			ok = false;
+	    		
+	    		if (!ok)
+	    		{
+	    			// message may be custom
+	    			activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
+		    		activeChar.setActiveEnchantSupportItem(null);
+	    			activeChar.sendPacket(new ExPutEnchantSupportItemResult(0));
+	    			return;
+	    		}
+	    		activeChar.setActiveEnchantSupportItem(supportItem);
+				activeChar.sendPacket(new ExPutEnchantSupportItemResult(_supportObjectId));
+	    	}
 	    }
     }
 	

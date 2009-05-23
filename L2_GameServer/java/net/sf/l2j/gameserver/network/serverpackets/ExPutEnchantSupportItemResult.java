@@ -20,14 +20,16 @@ package net.sf.l2j.gameserver.network.serverpackets;
  */
 public class ExPutEnchantSupportItemResult extends L2GameServerPacket
 {
-	private static final String _S__87_EXPUTENCHANTSUPPORTITEMRESULT = "[S] 87 ExPutEnchantSupportItemResult";
+	private static final String _S__82_EXPUTENCHANTSUPPORTITEMRESULT = "[S] 82 ExPutEnchantSupportItemResult";
 	
+	private int _result;
+
 	/**
 	 * 
 	 */
-	public ExPutEnchantSupportItemResult()
+	public ExPutEnchantSupportItemResult(int result)
 	{
-		
+		_result = result;
 	}
 	
 	/**
@@ -36,7 +38,7 @@ public class ExPutEnchantSupportItemResult extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return _S__87_EXPUTENCHANTSUPPORTITEMRESULT;
+		return _S__82_EXPUTENCHANTSUPPORTITEMRESULT;
 	}
 	
 	/**
@@ -45,6 +47,8 @@ public class ExPutEnchantSupportItemResult extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		
+		writeC(0xfe);
+		writeH(0x82);
+		writeD(_result);
 	}
 }

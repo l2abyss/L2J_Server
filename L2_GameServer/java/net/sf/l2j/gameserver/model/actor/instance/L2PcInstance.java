@@ -646,7 +646,9 @@ public final class L2PcInstance extends L2Playable
 
 	private boolean _isEnchanting = false;
 	private L2ItemInstance _activeEnchantItem = null;
+	private L2ItemInstance _activeEnchantSupportItem = null;
 	private L2ItemInstance _activeEnchantAttrItem = null;
+	private long _activeEnchantTimestamp = 0;
 
 	protected boolean _inventoryDisable = false;
 
@@ -2382,8 +2384,11 @@ public final class L2PcInstance extends L2Playable
 	{
 		// If we dont have a Enchant Item, we are not enchanting.
 		if (scroll == null)
+		{
+			setActiveEnchantSupportItem(null);
+			setActiveEnchantTimestamp(0);
 			setIsEnchanting(false);
-		
+		}
 		_activeEnchantItem = scroll;
 	}
 
@@ -2391,7 +2396,27 @@ public final class L2PcInstance extends L2Playable
 	{
 		return _activeEnchantItem;
 	}
-	
+
+	public void setActiveEnchantSupportItem(L2ItemInstance item)
+	{
+		_activeEnchantSupportItem = item;
+	}
+
+	public L2ItemInstance getActiveEnchantSupportItem()
+	{
+		return _activeEnchantSupportItem;
+	}
+
+	public long getActiveEnchantTimestamp()
+	{
+		return _activeEnchantTimestamp;
+	}
+
+	public void setActiveEnchantTimestamp(long val)
+	{
+		_activeEnchantTimestamp = val;
+	}
+
 	public void setIsEnchanting(boolean val)
 	{
 		_isEnchanting = val;
