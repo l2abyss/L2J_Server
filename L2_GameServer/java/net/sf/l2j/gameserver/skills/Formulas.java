@@ -64,6 +64,14 @@ public final class Formulas
 	/** Regen Task period */
 	protected static final Logger _log = Logger.getLogger(L2Character.class.getName());
 	private static final int HP_REGENERATE_PERIOD = 3000; // 3 secs
+	
+	public static final byte SHIELD_DEFENSE_FAILED = 0; // no shield defense
+	public static final byte SHIELD_DEFENSE_SUCCEED = 1; // normal shield defense
+	public static final byte SHIELD_DEFENSE_PERFECT_BLOCK = 2; // perfect block
+	
+	public static final byte SKILL_REFLECT_FAILED = 0; // no reflect
+	public static final byte SKILL_REFLECT_SUCCEED = 1; // normal reflect, some damage reflected some other not
+	public static final byte SKILL_REFLECT_VENGANCE = 2; // 100% of the damage affect both
 
 	public static final int MAX_STAT_VALUE = 100;
 
@@ -1205,10 +1213,10 @@ public final class Formulas
 			damage *= 2.;
 		switch(shld)
 		{
-			case 1:
+			case SHIELD_DEFENSE_SUCCEED:
 				defence += target.getShldDef();
 				break;
-			case 2: // perfect block
+			case SHIELD_DEFENSE_PERFECT_BLOCK: // perfect block
 				return 1;
 		}
 		
@@ -1263,13 +1271,11 @@ public final class Formulas
 		damage+=calcValakasAttribute(attacker, target, skill);
 		switch (shld)
 		{
-			case 1:
-			{
+			case SHIELD_DEFENSE_SUCCEED:
 				if (!Config.ALT_GAME_SHIELD_BLOCKS)
 					defence += target.getShldDef();
 				break;
-			}
-			case 2: // perfect block
+			case SHIELD_DEFENSE_PERFECT_BLOCK: // perfect block
 				return 1.;
 		}
 		
@@ -1451,10 +1457,10 @@ public final class Formulas
 		
 		switch (shld)
 		{
-			case 1:
+			case SHIELD_DEFENSE_SUCCEED:
 				mDef += target.getShldDef(); // kamael
 				break;
-			case 2: // perfect block
+			case SHIELD_DEFENSE_PERFECT_BLOCK: // perfect block
 				return 1;
 		}
 		
@@ -1538,10 +1544,10 @@ public final class Formulas
 		
 		switch (shld)
 		{
-			case 1:
+			case SHIELD_DEFENSE_SUCCEED:
 				mDef += target.getShldDef(); // kamael
 				break;
-			case 2: // perfect block
+			case SHIELD_DEFENSE_PERFECT_BLOCK: // perfect block
 				return 1;
 		}
 		
@@ -1846,7 +1852,7 @@ public final class Formulas
             return 0;
         }
         
-        byte shldSuccess = 0;
+        byte shldSuccess = SHIELD_DEFENSE_FAILED;
         // if attacker 
 		// if attacker use bow and target wear shield, shield block rate is multiplied by 1.3 (30%)
         L2Weapon at_weapon = attacker.getActiveWeaponItem();
@@ -1855,11 +1861,11 @@ public final class Formulas
         
         if (shldRate > 0 && 100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100))
         {
-        	shldSuccess = 2;
+        	shldSuccess = SHIELD_DEFENSE_PERFECT_BLOCK;
         }
         else if (shldRate > Rnd.get(100))
         {
-        	shldSuccess = 1;
+        	shldSuccess = SHIELD_DEFENSE_SUCCEED;
         }
         
         if (sendSysMsg && target instanceof L2PcInstance)
@@ -1868,10 +1874,10 @@ public final class Formulas
 			
 			switch (shldSuccess)
 			{
-				case 1:
+				case SHIELD_DEFENSE_SUCCEED:
 					enemy.sendPacket(new SystemMessage(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL));
 					break;
-				case 2:
+				case SHIELD_DEFENSE_PERFECT_BLOCK:
 					enemy.sendPacket(new SystemMessage(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS));
 					break;
 			}
@@ -2130,7 +2136,7 @@ public final class Formulas
 	
 	public static boolean calcEffectSuccess(L2Character attacker, L2Character target, EffectTemplate effect, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
 	{
-		if (shld == 2) // perfect block
+		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK) // perfect block
 			return false;
 		
 		L2SkillType type = effect.effectType  != null ? effect.effectType : skill.getSkillType();
@@ -2233,14 +2239,10 @@ public final class Formulas
 	public static boolean calcSkillSuccess(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
 	{
 		if (skill.ignoreResists())
-		{
 			return (Rnd.get(100) < skill.getPower());
-		}
 
-		if (shld == 2) // perfect block
-		{
+		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK) // perfect block
 			return false;
-		}
 		
 		L2SkillType type = skill.getSkillType();
 
@@ -2340,10 +2342,9 @@ public final class Formulas
 	
 	public static boolean calcCubicSkillSuccess(L2CubicInstance attacker, L2Character target, L2Skill skill, byte shld)
 	{
-		if (shld == 2) // perfect block
-		{
+		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK) // perfect block
 			return false;
-		}
+		
 		L2SkillType type = skill.getSkillType();
 		
 		// these skills should not work on RaidBoss
