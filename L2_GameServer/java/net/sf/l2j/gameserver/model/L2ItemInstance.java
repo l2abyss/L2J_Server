@@ -373,14 +373,11 @@ public final class L2ItemInstance extends L2Object
             return;
         }
         
-        long max = Integer.MAX_VALUE;
-        
-        if (getItemId() == ADENA_ID)
-        	max = MAX_ADENA;
+        long max = getItemId() == ADENA_ID ? MAX_ADENA : Integer.MAX_VALUE;
         
         if ( count > 0 && getCount() > max - count) 
         {
-            setCount(Integer.MAX_VALUE);
+            setCount(max);
         }
         else 
         {
