@@ -26,37 +26,14 @@ import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.templates.item.L2Item;
-import net.sf.l2j.gameserver.templates.item.L2WeaponType;
 import net.sf.l2j.gameserver.util.Util;
 import net.sf.l2j.util.Rnd;
 
-public final class RequestEnchantItem extends L2GameClientPacket
+public final class RequestEnchantItem extends AbstractEnchantPacket
 {
 	protected static final Logger _log = Logger.getLogger(RequestEnchantItem.class.getName());
 
 	private static final String _C__58_REQUESTENCHANTITEM = "[C] 58 RequestEnchantItem";
-
-	private static final int[] ENCHANT_SCROLLS =
-	{
-		729, 730, 947, 948, 951, 952, 955, 956, 959, 960
-	};
-	private static final int[] BLESSED_SCROLLS =
-	{
-		6569, 6570, 6571, 6572, 6573, 6574, 6575, 6576, 6577, 6578
-	};
-	private static final int[] ENCHANT10_SCROLLS =
-	{
-		22006, 22007, 22008, 22009, 22010, 22011, 22012, 22013
-	};
-	private static final int[] BLESSED10_SCROLLS =
-	{
-		22014, 22015, 22016, 22017
-	};
-	private static final int[] ENCHANT100_SCROLLS =
-	{
-		22018, 22019, 22020, 22021
-	};
 
 	private int _objectId = 0;
 
@@ -74,7 +51,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 		if (activeChar == null || _objectId == 0)
 			return;
 
-		if (activeChar.isOnline() == 0)
+		if (activeChar.isOnline() == 0 || getClient().isDetached())
 		{
 			activeChar.setActiveEnchantItem(null);
 			return;
@@ -97,161 +74,20 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			return;
 		}
 
-		int itemType2 = item.getItem().getType2();
-		boolean enchantItem = false;
-		boolean blessedScroll = false; // item will not break
-		boolean retainEnchantValue = false; // for blessedScroll = true item will retain old enchant value on fail
-		int crystalId = 0;
+		// template for scroll
+		EnchantScroll scrollTemplate = getEnchantScroll(scroll);
 
-		/** pretty code ;D */
-		switch (item.getItem().getCrystalType())
-		{
-			case L2Item.CRYSTAL_A:
-				crystalId = 1461;
-				switch (scroll.getItemId())
-				{
-					case 729:
-					case 731:
-					case 6569:
-					case 22009:
-					case 22015:
-					case 22019:
-						if (itemType2 == L2Item.TYPE2_WEAPON)
-							if (support == null || support.getItemId() == 12365)
-								enchantItem = true;
-						break;
-					case 730:
-					case 732:
-					case 6570:
-					case 22013:
-					case 22017:
-					case 22021:
-						if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-							if (support == null || support.getItemId() == 12370)
-								enchantItem = true;
-						break;
-				}
-				break;
-			case L2Item.CRYSTAL_B:
-				crystalId = 1460;
-				switch (scroll.getItemId())
-				{
-					case 947:
-					case 949:
-					case 6571:
-					case 22008:
-					case 22014:
-					case 22018:
-						if (itemType2 == L2Item.TYPE2_WEAPON)
-							if (support == null || support.getItemId() == 12364)
-								enchantItem = true;
-						break;
-					case 948:
-					case 950:
-					case 6572:
-					case 22012:
-					case 22016:
-					case 22020:
-						if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-							if (support == null || support.getItemId() == 12369)
-								enchantItem = true;
-						break;
-				}
-				break;
-			case L2Item.CRYSTAL_C:
-				crystalId = 1459;
-				switch (scroll.getItemId())
-				{
-					case 951:
-					case 953:
-					case 6573:
-					case 22007:
-						if (itemType2 == L2Item.TYPE2_WEAPON)
-							if (support == null || support.getItemId() == 12363)
-								enchantItem = true;
-						break;
-					case 952:
-					case 954:
-					case 6574:
-					case 22011:
-						if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-							if (support == null || support.getItemId() == 12368)
-								enchantItem = true;
-						break;
-				}
-				break;
-			case L2Item.CRYSTAL_D:
-				crystalId = 1458;
-				switch (scroll.getItemId())
-				{
-					case 955:
-					case 957:
-					case 6575:
-					case 22006:
-						if (itemType2 == L2Item.TYPE2_WEAPON)
-							if (support == null || support.getItemId() == 12362)
-								enchantItem = true;
-						break;
-					case 956:
-					case 958:
-					case 6576:
-					case 22010:
-						if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-							if (support == null || support.getItemId() == 12367)
-								enchantItem = true;
-						break;
-				}
-				break;
-			case L2Item.CRYSTAL_S:
-			case L2Item.CRYSTAL_S80:
-			case L2Item.CRYSTAL_S84:
-				crystalId = 1462;
-				switch (scroll.getItemId())
-				{
-					case 959:
-					case 961:
-					case 6577:
-						if (itemType2 == L2Item.TYPE2_WEAPON)
-							if (support == null || support.getItemId() == 12366)
-								enchantItem = true;
-						break;
-					case 960:
-					case 962:
-					case 6578:
-						if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-							if (support == null || support.getItemId() == 12371)
-								enchantItem = true;
-						break;
-				}
-				break;
-		}
+		// scroll not found in list
+		if (scrollTemplate == null)
+			return;
 
-		int maxEnchantLevel = 0;
-		switch (itemType2)
-		{
-			case L2Item.TYPE2_WEAPON: 
-				maxEnchantLevel = Config.ENCHANT_MAX_WEAPON;
-				break;
-			case L2Item.TYPE2_SHIELD_ARMOR:
-				maxEnchantLevel = Config.ENCHANT_MAX_ARMOR;
-				break;
-			case L2Item.TYPE2_ACCESSORY:
-				maxEnchantLevel = Config.ENCHANT_MAX_JEWELRY;
-				break;
-		}
+		// template for support item, if exist
+		EnchantItem supportTemplate = null;
+		if (support != null)
+			supportTemplate = getSupportItem(support);
 
-		if (maxEnchantLevel != 0 && item.getEnchantLevel() >= maxEnchantLevel)
-			enchantItem = false;
-
-		// Ancient enchant crystals can enchant only up to 16
-		if (item.getEnchantLevel() >= 16 && scroll.getItemId() >= 22014 && scroll.getItemId() <= 22017)
-			enchantItem = false;
-
-		// support items can enchant up to 9
-		if (support != null && item.getEnchantLevel() > 9)
-			enchantItem = false;
-
-		if (!enchantItem)
+		// first validation check
+		if (!scrollTemplate.isValid(item, supportTemplate) || !isEnchantable(item))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
 			activeChar.setActiveEnchantItem(null);
@@ -259,6 +95,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			return;
 		}
 
+		// fast auto-enchant cheat check
 		if (activeChar.getActiveEnchantTimestamp() == 0 || System.currentTimeMillis() - activeChar.getActiveEnchantTimestamp() < 2000)
 		{
 			Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " use autoenchant program ", Config.DEFAULT_PUNISH);
@@ -267,6 +104,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			return;
 		}
 
+		// attempting to destroy scroll
 		scroll = activeChar.getInventory().destroyItem("Enchant", scroll.getObjectId(), 1, activeChar, item);
 		if (scroll == null)
 		{
@@ -277,6 +115,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			return;
 		}
 
+		// attempting to destroy support if exist
 		if (support != null)
 		{
 			support = activeChar.getInventory().destroyItem("Enchant", support.getObjectId(), 1, activeChar, item);
@@ -292,165 +131,14 @@ public final class RequestEnchantItem extends L2GameClientPacket
 
 		SystemMessage sm;
 
-		int chance = 0;
-		maxEnchantLevel = 0;
 		synchronized (item)
 		{
-			if (item.getItem().getType2() == L2Item.TYPE2_WEAPON)
-			{
-				for (int scrollId : ENCHANT_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = Config.ENCHANT_CHANCE_WEAPON;
-						break;
-					}
-				}
-				for (int scrollId : ENCHANT10_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = Config.ENCHANT_CHANCE_WEAPON + 10;
-						break;
-					}
-				}
-				for (int scrollId : BLESSED_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = Config.BLESSED_ENCHANT_CHANCE_WEAPON;
-						blessedScroll = true;
-						break;
-					}
-				}
-				for (int scrollId : BLESSED10_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = Config.BLESSED_ENCHANT_CHANCE_WEAPON + 10;
-						blessedScroll = true;
-						retainEnchantValue = true;
-						break;
-					}
-				}
-				for (int scrollId : ENCHANT100_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = 100;
-						break;
-					}
-				}
-				maxEnchantLevel = Config.ENCHANT_MAX_WEAPON;
-			}
-			else if (item.getItem().getType2() == L2Item.TYPE2_SHIELD_ARMOR)
-			{
-				for (int scrollId : ENCHANT_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = Config.ENCHANT_CHANCE_ARMOR;
-						break;
-					}
-				}
-				for (int scrollId : ENCHANT10_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = Config.ENCHANT_CHANCE_ARMOR + 10;
-						break;
-					}
-				}
-				for (int scrollId : BLESSED_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = Config.BLESSED_ENCHANT_CHANCE_ARMOR;
-						blessedScroll = true;
-						break;
-					}
-				}
-				for (int scrollId : BLESSED10_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = Config.BLESSED_ENCHANT_CHANCE_ARMOR + 10;
-						blessedScroll = true;
-						retainEnchantValue = true;
-						break;
-					}
-				}
-				for (int scrollId : ENCHANT100_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = 100;
-						break;
-					}
-				}
-				maxEnchantLevel = Config.ENCHANT_MAX_ARMOR;
-			}
-			else if (item.getItem().getType2() == L2Item.TYPE2_ACCESSORY)
-			{
-				for (int scrollId : ENCHANT_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = Config.ENCHANT_CHANCE_JEWELRY;
-						break;
-					}
-				}
-				for (int scrollId : ENCHANT10_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = Config.ENCHANT_CHANCE_JEWELRY + 10;
-						break;
-					}
-				}
-				for (int scrollId : BLESSED_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = Config.BLESSED_ENCHANT_CHANCE_JEWELRY;
-						blessedScroll = true;
-						break;
-					}
-				}
-				for (int scrollId : BLESSED10_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = Config.BLESSED_ENCHANT_CHANCE_JEWELRY + 10;
-						blessedScroll = true;
-						retainEnchantValue = true;
-						break;
-					}
-				}
-				for (int scrollId : ENCHANT100_SCROLLS)
-				{
-					if (scroll.getItemId() == scrollId)
-					{
-						chance = 100;
-						break;
-					}
-				}
-				maxEnchantLevel = Config.ENCHANT_MAX_JEWELRY;
-			}
+			int chance = scrollTemplate.getChance(item, supportTemplate);
 
-			// can't enchant rods, hero weapons, adventurers' items,shadow and common items
+			// last validation check
 			if (item.getOwnerId() != activeChar.getObjectId()
-					|| item.getItem().getItemType() == L2WeaponType.ROD
-					|| item.isHeroItem()
-					|| (item.getItemId() >= 7816 && item.getItemId() <= 7831)
-					|| item.isShadowItem()
-					|| item.isCommonItem()
-					|| item.isTimeLimitedItem()
-					|| item.isEtcItem()
-					|| item.isWear()
-					|| item.getItem().getBodyPart() == L2Item.SLOT_L_BRACELET
-					|| item.getItem().getBodyPart() == L2Item.SLOT_R_BRACELET
-					|| (item.getLocation() != L2ItemInstance.ItemLocation.INVENTORY && item.getLocation() != L2ItemInstance.ItemLocation.PAPERDOLL))
+					|| !isEnchantable(item)
+					|| chance < 0)
 			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
 				activeChar.setActiveEnchantItem(null);
@@ -458,40 +146,34 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				return;
 			}
 
-			if (item.getEnchantLevel() < Config.ENCHANT_SAFE_MAX || item.getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR && item.getEnchantLevel() < Config.ENCHANT_SAFE_MAX_FULL)
-				chance = 100;
-
-			if (support != null && item.getEnchantLevel() <= 9)
-				chance += 20;
-
-			boolean failed = false;
-
 			if (Rnd.get(100) < chance)
 			{
-				if (item.getOwnerId() != activeChar.getObjectId() || (item.getEnchantLevel() >= maxEnchantLevel && maxEnchantLevel != 0))
-				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
-					activeChar.setActiveEnchantItem(null);
-					activeChar.sendPacket(new EnchantResult(2, 0, 0));
-					return;
-				}
-				if (item.getLocation() != L2ItemInstance.ItemLocation.INVENTORY && item.getLocation() != L2ItemInstance.ItemLocation.PAPERDOLL)
-				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
-					activeChar.setActiveEnchantItem(null);
-					activeChar.sendPacket(new EnchantResult(2, 0, 0));
-					return;
-				}
-
+				// success
 				item.setEnchantLevel(item.getEnchantLevel() + 1);
 				item.updateDatabase();
+				activeChar.sendPacket(new EnchantResult(0, 0, 0));
 			}
 			else
 			{
-				failed = true;
-
-				if (!blessedScroll)
+				if (scrollTemplate.isSafe())
 				{
+					// safe enchant - remain old value
+					// need retail message
+					activeChar.sendPacket(new EnchantResult(5, 0, 0));
+				}
+				else if (scrollTemplate.isBlessed())
+				{
+					// blessed enchant - clear enchant value
+					sm = new SystemMessage(SystemMessageId.BLESSED_ENCHANT_FAILED);
+					activeChar.sendPacket(sm);
+
+					item.setEnchantLevel(0);
+					item.updateDatabase();
+					activeChar.sendPacket(new EnchantResult(3, 0, 0));
+				}
+				else 
+				{
+					// enchant failed, destroy item
 					if (item.isEquipped())
 					{
 						if (item.getEnchantLevel() > 0)
@@ -519,6 +201,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 						activeChar.broadcastUserInfo();
 					}
 
+					int crystalId = item.getItem().getCrystalItemId();
 					int count = item.getCrystalCount() - (item.getItem().getCrystalCount() + 1) / 2;
 					if (count < 1)
 						count = 1;
@@ -526,7 +209,10 @@ public final class RequestEnchantItem extends L2GameClientPacket
 					L2ItemInstance destroyItem = activeChar.getInventory().destroyItem("Enchant", item, activeChar, null);
 					if (destroyItem == null)
 					{
+						// unable to destroy item, cheater ?
+						Util.handleIllegalPlayerAction(activeChar, "Unable to delete item on enchant failure from player " + activeChar.getName() + ", possible cheater !", Config.DEFAULT_PUNISH);
 						activeChar.setActiveEnchantItem(null);
+						activeChar.sendPacket(new EnchantResult(2, 0, 0));
 						return;
 					}
 
@@ -551,27 +237,9 @@ public final class RequestEnchantItem extends L2GameClientPacket
 					else
 						activeChar.sendPacket(new ItemList(activeChar, true));
 
-					StatusUpdate su = new StatusUpdate(activeChar.getObjectId());
-					su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());
-					activeChar.sendPacket(su);
-
-					activeChar.broadcastUserInfo();
-
 					L2World world = L2World.getInstance();
 					world.removeObject(destroyItem);
 					activeChar.sendPacket(new EnchantResult(1, crystalId, count));
-				}
-				else
-				{
-					sm = new SystemMessage(SystemMessageId.BLESSED_ENCHANT_FAILED);
-					activeChar.sendPacket(sm);
-
-					if (!retainEnchantValue)
-					{
-						item.setEnchantLevel(0);
-						item.updateDatabase();
-					}
-					activeChar.sendPacket(new EnchantResult(2, 0, 0));
 				}
 			}
 			sm = null;
@@ -580,9 +248,6 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());
 			activeChar.sendPacket(su);
 			su = null;
-
-			if (!failed)
-				activeChar.sendPacket(new EnchantResult(0, 0, 0));
 
 			activeChar.sendPacket(new ItemList(activeChar, false));
 			activeChar.broadcastUserInfo();

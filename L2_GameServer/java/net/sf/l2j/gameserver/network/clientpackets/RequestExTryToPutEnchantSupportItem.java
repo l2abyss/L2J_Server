@@ -20,13 +20,12 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExPutEnchantSupportItemResult;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.templates.item.L2Item;
 
 /**
  *
  * @author  KenM
  */
-public class RequestExTryToPutEnchantSupportItem extends L2GameClientPacket
+public class RequestExTryToPutEnchantSupportItem extends AbstractEnchantPacket
 {
 
 	private int _supportObjectId;
@@ -62,60 +61,15 @@ public class RequestExTryToPutEnchantSupportItem extends L2GameClientPacket
 	    {
 	    	if (activeChar.isEnchanting())
 	    	{
-	    		L2ItemInstance supportItem = (L2ItemInstance) L2World.getInstance().findObject(_supportObjectId);
-	    		L2ItemInstance enchantItem = (L2ItemInstance) L2World.getInstance().findObject(_enchantObjectId);
+	    		L2ItemInstance item = (L2ItemInstance) L2World.getInstance().findObject(_enchantObjectId);
+	    		L2ItemInstance support = (L2ItemInstance) L2World.getInstance().findObject(_supportObjectId);
 
-	    		if (supportItem == null || enchantItem == null)
+	    		if (item == null || support == null)
 	    			return;
 
-				int itemType2 = enchantItem.getItem().getType2();
-	    		boolean ok = false;
-
-	    		switch (enchantItem.getItem().getCrystalType())
-	    		{
-	    			case L2Item.CRYSTAL_A:
-	    				if (itemType2 == L2Item.TYPE2_WEAPON && supportItem.getItemId() == 12365)
-	    					ok = true;
-	    				if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-	    					if (supportItem.getItemId() == 12370)
-	    						ok = true;
-	    				break;
-	    			case L2Item.CRYSTAL_B:
-	    				if (itemType2 == L2Item.TYPE2_WEAPON && supportItem.getItemId() == 12364)
-	    					ok = true;
-	    				if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-	    					if (supportItem.getItemId() == 12369)
-	    						ok = true;
-	    				break;
-	    			case L2Item.CRYSTAL_C:
-	    				if (itemType2 == L2Item.TYPE2_WEAPON && supportItem.getItemId() == 12363)
-	    					ok = true;
-	    				if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-	    					if (supportItem.getItemId() == 12368)
-	    						ok = true;
-	    				break;
-	    			case L2Item.CRYSTAL_D:
-	    				if (itemType2 == L2Item.TYPE2_WEAPON && supportItem.getItemId() == 12362)
-	    					ok = true;
-	    				if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-	    					if (supportItem.getItemId() == 12367)
-	    						ok = true;
-	    				break;
-	    			case L2Item.CRYSTAL_S:
-	    			case L2Item.CRYSTAL_S80:
-	    			case L2Item.CRYSTAL_S84:
-	    				if (itemType2 == L2Item.TYPE2_WEAPON && supportItem.getItemId() == 12366)
-	    					ok = true;
-	    				if (itemType2 == L2Item.TYPE2_SHIELD_ARMOR || itemType2 == L2Item.TYPE2_ACCESSORY)
-	    					if (supportItem.getItemId() == 12371)
-	    						ok = true;
-	    				break;
-	    		}
+	    		EnchantItem supportTemplate = getSupportItem(support);
 	    		
-	    		if (enchantItem.getEnchantLevel() > 9)
-	    			ok = false;
-	    		
-	    		if (!ok)
+	    		if (supportTemplate == null || !supportTemplate.isValid(item))
 	    		{
 	    			// message may be custom
 	    			activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
@@ -123,7 +77,7 @@ public class RequestExTryToPutEnchantSupportItem extends L2GameClientPacket
 	    			activeChar.sendPacket(new ExPutEnchantSupportItemResult(0));
 	    			return;
 	    		}
-	    		activeChar.setActiveEnchantSupportItem(supportItem);
+	    		activeChar.setActiveEnchantSupportItem(support);
 				activeChar.sendPacket(new ExPutEnchantSupportItemResult(_supportObjectId));
 	    	}
 	    }
