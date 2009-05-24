@@ -12187,7 +12187,7 @@ public final class L2PcInstance extends L2Playable
 			_shortBuffTask.cancel(false);
 			_shortBuffTask = null;
 		}
-		_shortBuffTask = ThreadPoolManager.getInstance().scheduleGeneral(new ShortBuffTask(this), 15000);
+		_shortBuffTask = ThreadPoolManager.getInstance().scheduleGeneral(new ShortBuffTask(this), time*1000);
 		
 		sendPacket(new ShortBuffStatusUpdate(magicId, level, time));
 	}
