@@ -23,6 +23,7 @@ import net.sf.l2j.gameserver.templates.StatsSet;
  */
 public final class L2EtcItem  extends L2Item
 {
+	private final String[] _skill;
 	/**
 	 * Constructor for EtcItem.
 	 * @see L2Item constructor
@@ -32,6 +33,7 @@ public final class L2EtcItem  extends L2Item
 	public L2EtcItem(L2EtcItemType type, StatsSet set)
 	{
 		super(type, set);
+		_skill = set.getString("skill").split(";");
 	}
 
 	/**
@@ -64,4 +66,12 @@ public final class L2EtcItem  extends L2Item
 		return getItemType().mask();
 	}
 
+	/**
+	 * Returns skills linked to that EtcItem
+	 * @return
+	 */
+	public String[] getSkills()
+	{
+		return _skill;
+	}
 }
