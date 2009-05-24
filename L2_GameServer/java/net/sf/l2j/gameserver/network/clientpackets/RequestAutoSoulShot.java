@@ -69,7 +69,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 					if (_itemId < 6535 || _itemId > 6540)
 					{
 						// Attempt to charge first shot on activation
-						if (_itemId == 6645 || _itemId == 6646 || _itemId == 6647)
+						if (_itemId == 6645 || _itemId == 6646 || _itemId == 6647 || _itemId == 20332 || _itemId == 20333 || _itemId == 20334)
 						{
 							activeChar.addAutoSoulShot(_itemId);
 							ExAutoSoulShot atk = new ExAutoSoulShot(_itemId, _type);
@@ -91,7 +91,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 										|| (item.getItem().getCrystalType() == L2Item.CRYSTAL_S && activeChar.getActiveWeaponItem().getCrystalType() == L2Item.CRYSTAL_S80) 
 										|| (item.getItem().getCrystalType() == L2Item.CRYSTAL_S && activeChar.getActiveWeaponItem().getCrystalType() == L2Item.CRYSTAL_S84))
 								{
-									if (_itemId >= 3947 && _itemId <= 3952 && activeChar.isInOlympiadMode())
+									if (((_itemId >= 3947 && _itemId <= 3952)||(_itemId >= 22072 && _itemId <= 22076) )&& activeChar.isInOlympiadMode())
 									{
 										SystemMessage sm = new SystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT);
 										sm.addString(item.getItemName());
@@ -116,7 +116,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 							}
 							else
 							{
-								if ((_itemId >= 2509 && _itemId <= 2514) || (_itemId >= 3947 && _itemId <= 3952) || _itemId == 5790)
+								if ((_itemId >= 2509 && _itemId <= 2514) || (_itemId >= 3947 && _itemId <= 3952) || _itemId == 5790 || (_itemId >= 22072 && _itemId <= 22081))
 									activeChar.sendPacket(new SystemMessage(SystemMessageId.SPIRITSHOTS_GRADE_MISMATCH));
 								else
 									activeChar.sendPacket(new SystemMessage(SystemMessageId.SOULSHOTS_GRADE_MISMATCH));

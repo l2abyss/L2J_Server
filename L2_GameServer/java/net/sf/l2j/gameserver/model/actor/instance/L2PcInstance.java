@@ -2164,7 +2164,8 @@ public final class L2PcInstance extends L2Playable
 				if (((_itemId >= 2509 && _itemId <= 2514) ||
 						(_itemId >= 3947 && _itemId <= 3952) ||
 						(_itemId <= 1804 && _itemId >= 1808) ||
-						_itemId == 5789 || _itemId == 5790 || _itemId == 1835) &&
+						_itemId == 5789 || _itemId == 5790 || _itemId == 1835
+						|| (_itemId >=22072 && _itemId <=22086)) &&
 						ss.getItem().getCrystalType() == unequipped.getItem().getCrystalType())
 				{
                     sendPacket(new ExAutoSoulShot(_itemId, 0));
@@ -9278,7 +9279,10 @@ public final class L2PcInstance extends L2Playable
 								case 2513: case 2514: case 3947:
 								case 3948: case 3949: case 3950:
 								case 3951: case 3952: case 5790:
-									
+								case 22072: case 22073: case 22074:
+								case 22075: case 22076: case 22077:
+								case 22078: case 22079: case 22080:
+								case 22081:
 									handler = ItemHandler.getInstance().getItemHandler(itemId);
 									
 									if (handler != null)
@@ -9289,12 +9293,15 @@ public final class L2PcInstance extends L2Playable
 						}
 						else
 						{
-							if (itemId == 6646 || itemId == 6647)
+							switch(itemId)
 							{
-								handler = ItemHandler.getInstance().getItemHandler(itemId);
-								
-								if (handler != null)
-									handler.useItem(this, item);
+								case 6646: case 6647:
+								case 20333: case 20334:
+									handler = ItemHandler.getInstance().getItemHandler(itemId);
+									
+									if (handler != null)
+										handler.useItem(this, item);
+									break;
 							}
 						}
 					}
@@ -9307,7 +9314,8 @@ public final class L2PcInstance extends L2Playable
 							{
 								case 1463: case 1464: case 1465:
 								case 1466: case 1467: case 1835:
-								case 5789:
+								case 5789: case 22082: case 22083:
+								case 22084: case 22085: case 22086:
 									
 									handler = ItemHandler.getInstance().getItemHandler(itemId);
 									
@@ -9319,7 +9327,7 @@ public final class L2PcInstance extends L2Playable
 						}
 						else
 						{
-							if (itemId == 6645)
+							if (itemId == 6645 || itemId == 20332)
 							{
 								handler = ItemHandler.getInstance().getItemHandler(itemId);
 								
