@@ -432,7 +432,7 @@ abstract class DocumentBase
             }
             else if ("level".equalsIgnoreCase(a.getNodeName()))
             {
-                int lvl = Integer.decode(getValue(a.getNodeValue(), null));
+                int lvl = Integer.decode(getValue(a.getNodeValue(), template));
                 cond = joinAnd(cond, new ConditionPlayerLevel(lvl));
             }
             else if ("resting".equalsIgnoreCase(a.getNodeName()))
