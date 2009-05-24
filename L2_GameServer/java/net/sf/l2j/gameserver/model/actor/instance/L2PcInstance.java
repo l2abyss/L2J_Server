@@ -768,9 +768,9 @@ public final class L2PcInstance extends L2Playable
 	}
 
 	/** ShortBuff clearing Task */
-	private ScheduledFuture<?> _shortBuffTask = null;
+	ScheduledFuture<?> _shortBuffTask = null;
 
-	private class ShortBuffTask implements Runnable
+	public class ShortBuffTask implements Runnable
 	{
 		private L2PcInstance _player = null;
 
@@ -778,13 +778,14 @@ public final class L2PcInstance extends L2Playable
         {
 	        _player = activeChar;
         }
-
+        
 		public void run()
 		{
 			if (_player == null)
 				return;
 			
 			_player.sendPacket(new ShortBuffStatusUpdate(0, 0, 0));
+			setShortBuffTaskSkillId(0);
 		}
 	}
 
@@ -11607,6 +11608,7 @@ public final class L2PcInstance extends L2Playable
 	}
 
     private L2ItemInstance _lure = null;
+	public int _shortBuffTaskSkillId = 0;
 
     /**
      * Get the current skill in use or return null.<BR><BR>
@@ -12188,10 +12190,15 @@ public final class L2PcInstance extends L2Playable
 			_shortBuffTask = null;
 		}
 		_shortBuffTask = ThreadPoolManager.getInstance().scheduleGeneral(new ShortBuffTask(this), time*1000);
+		setShortBuffTaskSkillId(magicId);
 		
 		sendPacket(new ShortBuffStatusUpdate(magicId, level, time));
 	}
-
+    
+    public void setShortBuffTaskSkillId(int id)
+    {
+    	_shortBuffTaskSkillId = id;
+    }
     public int getDeathPenaltyBuffLevel()
     {
     	  return _deathPenaltyBuffLevel;
