@@ -909,7 +909,7 @@ public abstract class L2Character extends L2Object
         if (weaponItem != null)
         {
         	ssGrade = weaponItem.getCrystalType();
-        	if (ssGrade == 6)
+        	if (ssGrade == 6 || ssGrade == 7)
         		ssGrade = 5;
         }
             
