@@ -7449,12 +7449,12 @@ public final class L2PcInstance extends L2Playable
 			
 			final List<Integer> storedSkills = new FastList<Integer>();
 			
+			// Store all effect data along with calulated remaining
+			// reuse delays for matching skills. 'restore_type'= 0.
+			statement = con.prepareStatement(ADD_SKILL_SAVE);
+
 			if (storeEffects)
 			{
-				// Store all effect data along with calulated remaining
-				// reuse delays for matching skills. 'restore_type'= 0.
-				statement = con.prepareStatement(ADD_SKILL_SAVE);
-				
 				for (L2Effect effect : getAllEffects())
 				{
 					if (effect == null)
