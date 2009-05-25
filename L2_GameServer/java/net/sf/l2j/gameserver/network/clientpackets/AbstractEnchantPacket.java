@@ -54,12 +54,26 @@ public class AbstractEnchantPacket extends L2GameClientPacket
 			
 			int type2 = enchantItem.getItem().getType2();
 
-			// weapon scrolls can enchant only weapons
-			if (_isWeapon && type2 != L2Item.TYPE2_WEAPON)
-				return false;
-			// armor scrolls can enchant only accessory and armors
-			if (!_isWeapon && (type2 != L2Item.TYPE2_SHIELD_ARMOR && type2 != L2Item.TYPE2_ACCESSORY))
-				return false;
+			// checking scroll type and configured maximum enchant level
+			switch (type2)
+			{
+				// weapon scrolls can enchant only weapons
+				case L2Item.TYPE2_WEAPON:
+					if (!_isWeapon || enchantItem.getEnchantLevel() >= Config.ENCHANT_MAX_WEAPON)
+						return false;
+					break;
+					// armor scrolls can enchant only accessory and armors
+				case L2Item.TYPE2_SHIELD_ARMOR:
+					if (_isWeapon || enchantItem.getEnchantLevel() >= Config.ENCHANT_MAX_ARMOR)
+						return false;
+					break;
+				case L2Item.TYPE2_ACCESSORY:
+					if (_isWeapon || enchantItem.getEnchantLevel() >= Config.ENCHANT_MAX_JEWELRY)
+						return false;
+					break;
+				default:
+					return false;
+			}
 
 			// check for crystal types
 			switch (enchantItem.getItem().getCrystalType())
