@@ -97,6 +97,10 @@ public class L2SkillChargeDmg extends L2Skill
                 double finalDamage = damage;
                 finalDamage = finalDamage*modifier;
 				target.reduceCurrentHp(finalDamage, caster, this);
+				
+				// vengeance reflected damage
+				if ((Formulas.calcSkillReflect(target, this) & Formulas.SKILL_REFLECT_VENGEANCE) != 0)
+					caster.reduceCurrentHp(damage, target, this);
 
 				caster.sendDamageMessage(target, (int)finalDamage, false, crit, false);
 

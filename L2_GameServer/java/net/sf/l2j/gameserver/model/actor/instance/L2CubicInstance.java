@@ -663,8 +663,11 @@ public class L2CubicInstance
 			byte shld = Formulas.calcShldUse(activeCubic.getOwner(), target);
 			int damage = (int) Formulas.calcMagicDam(activeCubic, target, skill, mcrit, shld);
 			
-			// if target is reflecting the skill then no damage is done
-			if (target.reflectSkill(skill))
+			/*
+			 *  If target is reflecting the skill then no damage is done
+			 *  Ignoring vengance-like reflections
+			 */
+			if (Formulas.calcSkillReflect(target, skill) == Formulas.SKILL_REFLECT_FAILED)
 				damage = 0;
 			
 			if (Config.DEBUG)

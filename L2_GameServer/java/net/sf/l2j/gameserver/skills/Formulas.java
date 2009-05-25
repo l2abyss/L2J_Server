@@ -71,7 +71,9 @@ public final class Formulas
 	
 	public static final byte SKILL_REFLECT_FAILED = 0; // no reflect
 	public static final byte SKILL_REFLECT_SUCCEED = 1; // normal reflect, some damage reflected some other not
-	public static final byte SKILL_REFLECT_VENGANCE = 2; // 100% of the damage affect both
+	public static final byte SKILL_REFLECT_VENGEANCE = 2; // 100% of the damage affect both
+	
+	private static final byte MELEE_ATTACK_RANGE = 40;
 
 	public static final int MAX_STAT_VALUE = 100;
 
@@ -2366,7 +2368,8 @@ public final class Formulas
 		}
 				
 		// if target reflect this skill then the effect will fail
-		if (target.reflectSkill(skill)) return false;
+		if (calcSkillReflect(target, skill) == SKILL_REFLECT_FAILED)
+			return false;
 		
 		int value = (int) skill.getPower();
 		int lvlDepend = skill.getLevelDepend();
@@ -2687,5 +2690,69 @@ public final class Formulas
 			}
 		}
     	return result;
+    }
+    
+    /**
+     * Calculate skill reflection according these three possibilities:
+     * <li>Reflect failed</li>
+     * <li>Mormal reflect (just effects). <U>Only possible for skilltypes: BUFF, REFLECT, HEAL_PERCENT,
+     * MANAHEAL_PERCENT, HOT, CPHOT, MPHOT</U></li>
+     * <li>vengEance reflect (100% damage reflected but damage is also dealt to actor). <U>This is only possible
+     * for skills with skilltype PDAM, BLOW, CHARGEDAM, MDAM or DEATHLINK</U></li>
+     <br><br>
+     * 
+     @param actor
+     * @param target
+     * @param skill
+     * @return SKILL_REFLECTED_FAILED, SKILL_REFLECT_SUCCEED or SKILL_REFLECT_VENGEANCE
+     */
+    public static byte calcSkillReflect(L2Character target, L2Skill skill)
+    {
+    	/*
+    	 *  Neither some special skills (like hero debuffs...) or those skills
+    	 *  ignoring resistances can be reflected
+    	 */
+		if (skill.ignoreResists() || !skill.canBeReflected())
+			return SKILL_REFLECT_FAILED;
+		
+		// only magic and melee skills can be reflected
+		if (!skill.isMagic() && 
+				skill.getCastRange() == -1 || skill.getCastRange() > MELEE_ATTACK_RANGE)
+			return SKILL_REFLECT_FAILED;
+
+		byte reflect = SKILL_REFLECT_FAILED;
+		// check for non-reflected skilltypes, need additional retail check
+		switch (skill.getSkillType())
+		{
+			case BUFF:
+			case REFLECT:
+			case HEAL_PERCENT:
+			case MANAHEAL_PERCENT:
+			case HOT:
+			case CPHOT:
+			case MPHOT:
+			case UNDEAD_DEFENSE:
+			case AGGDEBUFF:
+			case CONT:
+				return SKILL_REFLECT_FAILED;
+			// these skill types can deal damage
+			case PDAM:
+			case BLOW:
+			case MDAM:
+			case DEATHLINK:
+			case CHARGEDAM:
+				final Stats stat = skill.isMagic() ? Stats.VENGEANCE_SKILL_MAGIC_DAMAGE : Stats.VENGEANCE_SKILL_PHYSICAL_DAMAGE;
+				final double venganceChance = target.getStat().calcStat(stat, 0, target, skill);
+				if (venganceChance > Rnd.get(100))
+					reflect |= SKILL_REFLECT_VENGEANCE;					
+				break;
+		}
+
+		final double reflectChance = target.calcStat(skill.isMagic() ? Stats.REFLECT_SKILL_MAGIC : Stats.REFLECT_SKILL_PHYSIC, 0, null, skill);
+		
+		if( Rnd.get(100) < reflectChance)
+			reflect |= SKILL_REFLECT_SUCCEED;
+
+		return reflect;
     }
 }

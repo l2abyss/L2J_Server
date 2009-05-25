@@ -205,7 +205,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
     /** Target type of the skill : SELF, PARTY, CLAN, PET... */
     private final SkillTargetType _targetType;
-    private int _feed;
+    private final int _feed;
     // base success chance
     private final double _power;
     private final int _magicLevel;
@@ -283,15 +283,17 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final boolean _isDebuff;
     
 	private boolean _isAdvancedFlag;
-	private String _attribute;
-	private int _afroId;
+	private final String _attribute;
+	private final int _afroId;
 
-	private int _learnSkillId;
-	private int _learnSkillLvl;
+	private final int _learnSkillId;
+	private final int _learnSkillLvl;
 
-	private boolean _useShield;
-
-	private boolean _isSuicideAttack;
+	private final boolean _useShield;
+	private final boolean _isSuicideAttack;
+	private final boolean _canBeReflected;
+	
+	
     protected L2Skill(StatsSet set)
     {
         _id = set.getInteger("skill_id");
@@ -468,6 +470,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _flyType = set.getString("flyType", null);
         _flyRadius = set.getInteger("flyRadius", 200);
         _flyCourse = set.getFloat("flyCourse", 0);
+        _canBeReflected = set.getBool("canBeReflected", true);
     }
 
     public abstract void useSkill(L2Character caster, L2Object[] targets);
@@ -3163,5 +3166,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public String getRecallType()
 	{
 		return _recallType;
+	}
+	
+	public boolean canBeReflected()
+	{
+		return _canBeReflected;
 	}
 }
