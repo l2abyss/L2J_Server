@@ -7293,7 +7293,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * Update L2PcInstance stats in the characters table of the database.<BR><BR>
 	 */
-	public synchronized void store()
+	public synchronized void store(boolean storeActiveEffects)
 	{
 		//update client coords, if these look like true
         if (isInsideRadius(getClientX(), getClientY(), 1000, true))
@@ -7301,8 +7301,13 @@ public final class L2PcInstance extends L2Playable
 
 		storeCharBase();
 		storeCharSub();
-		storeEffect();
+		storeEffect(storeActiveEffects);
 		transformInsertInfo();
+	}
+	
+	public void store()
+	{
+		store(true);
 	}
 
 	private void storeCharBase()
@@ -7421,7 +7426,7 @@ public final class L2PcInstance extends L2Playable
         finally { try { con.close(); } catch (Exception e) {} }
     }
     
-    private void storeEffect()
+    private void storeEffect(boolean storeEffects)
 	{
 		if (!Config.STORE_SKILL_COOLTIME)
 			return;
@@ -7430,6 +7435,7 @@ public final class L2PcInstance extends L2Playable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
+			
 			
 			// Delete all current stored effects for char to avoid dupe
 			PreparedStatement statement = con.prepareStatement(DELETE_SKILL_SAVE);
@@ -7441,57 +7447,61 @@ public final class L2PcInstance extends L2Playable
 			
 			int buff_index = 0;
 			
-			// Store all effect data along with calulated remaining
-			// reuse delays for matching skills. 'restore_type'= 0.
-			statement = con.prepareStatement(ADD_SKILL_SAVE);
+			final List<Integer> storedSkills = new FastList<Integer>();
 			
-			List<Integer> storedSkills = new FastList<Integer>();
-			
-			for (L2Effect effect : getAllEffects())
+			if (storeEffects)
 			{
-				if (effect == null)
-					continue;
+				// Store all effect data along with calulated remaining
+				// reuse delays for matching skills. 'restore_type'= 0.
+				statement = con.prepareStatement(ADD_SKILL_SAVE);
 				
-				switch (effect.getEffectType())
+				for (L2Effect effect : getAllEffects())
 				{
-					case HEAL_OVER_TIME:
-					case COMBAT_POINT_HEAL_OVER_TIME:
+					if (effect == null)
 						continue;
-				}
-				
-				L2Skill skill = effect.getSkill();
-				int skillId = skill.getId();
-				
-				if (storedSkills.contains(skillId))
-					continue;
-				
-				storedSkills.add(skillId);
-				
-				if (effect != null && !effect.isHerbEffect() && effect.getInUse() && !skill.isToggle())
-				{
 					
-					statement.setInt(1, getObjectId());
-					statement.setInt(2, skillId);
-					statement.setInt(3, skill.getLevel());
-					statement.setInt(4, effect.getCount());
-					statement.setInt(5, effect.getTime());
-					
-					if (_reuseTimeStamps.containsKey(skillId))
+					switch (effect.getEffectType())
 					{
-						TimeStamp t = _reuseTimeStamps.get(skillId);
-						statement.setLong(6, t.hasNotPassed() ? t.getReuse() : 0);
-						statement.setDouble(7, t.hasNotPassed() ? t.getStamp() : 0 );
-					}
-					else
-					{
-						statement.setLong(6, 0);
-						statement.setDouble(7, 0);
+						case HEAL_OVER_TIME:
+						case COMBAT_POINT_HEAL_OVER_TIME:
+							continue;
 					}
 					
-					statement.setInt(8, 0);
-					statement.setInt(9, getClassIndex());
-					statement.setInt(10, ++buff_index);
-					statement.execute();
+					L2Skill skill = effect.getSkill();
+					int skillId = skill.getId();
+					
+					if (storedSkills.contains(skillId))
+						continue;
+					
+					storedSkills.add(skillId);
+					
+					if (effect != null && !effect.isHerbEffect() && effect.getInUse()
+					        && !skill.isToggle())
+					{
+						
+						statement.setInt(1, getObjectId());
+						statement.setInt(2, skillId);
+						statement.setInt(3, skill.getLevel());
+						statement.setInt(4, effect.getCount());
+						statement.setInt(5, effect.getTime());
+						
+						if (_reuseTimeStamps.containsKey(skillId))
+						{
+							TimeStamp t = _reuseTimeStamps.get(skillId);
+							statement.setLong(6, t.hasNotPassed() ? t.getReuse() : 0);
+							statement.setDouble(7, t.hasNotPassed() ? t.getStamp() : 0);
+						}
+						else
+						{
+							statement.setLong(6, 0);
+							statement.setDouble(7, 0);
+						}
+						
+						statement.setInt(8, 0);
+						statement.setInt(9, getClassIndex());
+						statement.setInt(10, ++buff_index);
+						statement.execute();
+					}
 				}
 			}
 			
@@ -10155,6 +10165,8 @@ public final class L2PcInstance extends L2Playable
      * <BR><BR>
      * An index of zero specifies the character's original (base) class,
      * while indexes 1-3 specifies the character's sub-classes respectively.
+     * <br><br>
+     * <font color="00FF00"/>WARNING: Use only on subclase change</font>
      *
      * @param classIndex
      */
@@ -10185,7 +10197,7 @@ public final class L2PcInstance extends L2Playable
          * 1. Call store() before modifying _classIndex to avoid skill effects rollover.
          * 2. Register the correct _classId against applied 'classIndex'.
          */
-        store();
+        store(Config.SUBCLASS_STORE_SKILL_COOLTIME);
         _reuseTimeStamps.clear();
         
         // clear charges
