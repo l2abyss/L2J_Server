@@ -6345,6 +6345,9 @@ public abstract class L2Character extends L2Object
 			// Initial checks
 			for (L2Object trg : targets)
 			{
+				if (trg == null)
+					continue;
+
 				if (trg instanceof L2Character)
 				{
 					// Set some values inside target's instance for later use

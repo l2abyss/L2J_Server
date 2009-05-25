@@ -73,9 +73,15 @@ public class L2FortSiegeGuardInstance extends L2Attackable
     	if (!(attacker instanceof L2Playable) )
     		return false;
 
-        boolean isFort = ( getFort() != null && getFort().getFortId() > 0 
+    	boolean isDefender = false;
+    	if (attacker instanceof L2PcInstance)
+    		isDefender = getFort().getSiege().checkIsDefender(((L2PcInstance)attacker).getClan());
+    	else if (attacker instanceof L2Summon)
+    		isDefender = getFort().getSiege().checkIsDefender((((L2Summon)attacker).getOwner()).getClan());
+
+    	boolean isFort = ( getFort() != null && getFort().getFortId() > 0 
                 && getFort().getSiege().getIsInProgress()
-                && !getFort().getSiege().checkIsDefender(((L2PcInstance)attacker).getClan()));
+                && !isDefender);
         
         // Attackable during siege by all except defenders
 		return isFort;
