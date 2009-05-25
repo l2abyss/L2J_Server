@@ -222,7 +222,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_DECO4));
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_DECO5));
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_DECO6));
-			writeD(0x00); // CT2.3
+			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_BELT));
 			// end of t1 new d's
 			
 			// c6 new h's
@@ -247,7 +247,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_DECO4));
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_DECO5));
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_DECO6));
-			writeD(0x00); // CT2.3
+			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_BELT));
 			
 			writeD(0x00);
 			writeD(0x00);

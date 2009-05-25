@@ -863,6 +863,8 @@ public abstract class Inventory extends ItemContainer
 				return _paperdoll[23];
 			case 0x400000:
 				return _paperdoll[24];
+			case 0x10000000:
+				return _paperdoll[30];
 		}
 		return null;
 	}
@@ -1172,6 +1174,8 @@ public abstract class Inventory extends ItemContainer
 				break;
 			case L2Item.SLOT_R_BRACELET:	pdollSlot = PAPERDOLL_RBRACELET;
 				break;
+			case L2Item.SLOT_BELT:			pdollSlot = PAPERDOLL_BELT;
+				break;
 		}
 		if (pdollSlot >= 0)
 			setPaperdollItem(pdollSlot, null);
@@ -1381,6 +1385,9 @@ public abstract class Inventory extends ItemContainer
 				break;
 			case L2Item.SLOT_DECO:
 				equipTalisman(item);
+				break;
+			case L2Item.SLOT_BELT:
+				setPaperdollItem(PAPERDOLL_BELT, item);
 				break;
 			default:
 				_log.warning("Unknown body slot "+targetSlot+" for Item ID:"+item.getItemId());
