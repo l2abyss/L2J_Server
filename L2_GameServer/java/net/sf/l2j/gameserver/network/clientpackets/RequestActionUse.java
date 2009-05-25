@@ -179,6 +179,13 @@ public final class RequestActionUse extends L2GameClientPacket
 						activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 						return;
 					}
+					
+					if (pet.isLockedTarget())
+					{
+						pet.getOwner().sendPacket(new SystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
+						return;
+					}
+					
 					if (target.isAutoAttackable(activeChar) || _ctrlPressed)
 					{
 						if (target instanceof L2DoorInstance)

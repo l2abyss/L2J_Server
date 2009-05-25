@@ -16,7 +16,9 @@ package net.sf.l2j.gameserver.skills.effects;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.model.L2Effect;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
@@ -50,13 +52,22 @@ public class EffectTargetMe extends L2Effect
 	@Override
 	public boolean onStart()
 	{
-		// Should only work on PC?
-		if (getEffected() instanceof L2PcInstance)
+		if (getEffected() instanceof L2Playable)
 		{
-			getEffected().setTarget(getEffector());
-			MyTargetSelected my = new MyTargetSelected(getEffector().getObjectId(), 0);
-			getEffected().sendPacket(my);
-			getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, getEffector());
+			if (getEffected() instanceof L2SiegeSummonInstance)
+				return false;
+
+			if (getEffected().getTarget() != getEffector())
+			{
+				// Target is different - stop autoattack and break cast
+				getEffected().setTarget(getEffector());
+				getEffected().abortAttack();
+				getEffected().abortCast();
+				if (getEffected() instanceof L2PcInstance)
+					getEffected().sendPacket(new MyTargetSelected(getEffector().getObjectId(), 0));
+				getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+			}
+			((L2Playable)getEffected()).setLockedTarget(getEffector());
 			return true;
 		}
 		return false;
@@ -69,7 +80,8 @@ public class EffectTargetMe extends L2Effect
 	@Override
 	public void onExit()
 	{
-		// nothing
+		if (getEffected() instanceof L2Playable)
+			((L2Playable)getEffected()).setLockedTarget(null);
 	}
 	
 	/**

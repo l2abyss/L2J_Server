@@ -537,6 +537,12 @@ public class L2Npc extends L2Character
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return false;
 		}
+		if (player.isLockedTarget() && player.getLockedTarget() != this)
+		{
+			player.sendPacket(new SystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
+			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return false;
+		}
 		// TODO: More checks...
 
 		return true;

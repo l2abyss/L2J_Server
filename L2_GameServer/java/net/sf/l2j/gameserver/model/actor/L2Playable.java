@@ -41,7 +41,9 @@ public abstract class L2Playable extends L2Character
 	private boolean _isPhoenixBlessed = false; 		// for Soul of The Phoenix or Salvation buffs
 	private boolean _isSilentMoving = false;		// Silent Move
 	private boolean _ProtectionBlessing = false;
-	
+
+	private L2Character _lockedTarget = null;
+
 	/**
 	 * Constructor of L2PlayableInstance (use L2Character constructor).<BR><BR>
 	 *
@@ -307,5 +309,20 @@ public abstract class L2Playable extends L2Character
 
 		setCharmOfLuck(false);
 		updateAbnormalEffect();
+	}
+
+	public boolean isLockedTarget()
+	{
+		return _lockedTarget != null;
+	}
+
+	public L2Character getLockedTarget()
+	{
+		return _lockedTarget;
+	}
+
+	public void setLockedTarget(L2Character cha)
+	{
+		_lockedTarget = cha;
 	}
 }

@@ -15,6 +15,9 @@
 package net.sf.l2j.gameserver.network.clientpackets;
 
 import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * This class ...
@@ -40,6 +43,11 @@ public final class RequestTargetCanceld extends L2GameClientPacket
 		L2Character activeChar = getClient().getActiveChar();
         if (activeChar != null)
         {
+        	if (((L2PcInstance)activeChar).isLockedTarget())
+        	{
+        		activeChar.sendPacket(new SystemMessage(SystemMessageId.FAILED_DISABLE_TARGET));
+        		return;
+        	}
             if (_unselect == 0)
             {
             	if (activeChar.isCastingNow() && activeChar.canAbortCast())

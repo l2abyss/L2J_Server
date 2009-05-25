@@ -3913,6 +3913,12 @@ public final class L2PcInstance extends L2Playable
 			return;
 		}
 
+		if (player.isLockedTarget() && player.getLockedTarget() != this)
+		{
+			player.sendPacket(new SystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
+			return;
+		}
+
 		// Check if the player already target this L2PcInstance
 		if (player.getTarget() != this)
 		{
