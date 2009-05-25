@@ -2725,7 +2725,7 @@ public final class Formulas
 		
 		// only magic and melee skills can be reflected
 		if (!skill.isMagic() && 
-				skill.getCastRange() == -1 || skill.getCastRange() > MELEE_ATTACK_RANGE)
+				(skill.getCastRange() == -1 || skill.getCastRange() > MELEE_ATTACK_RANGE))
 			return SKILL_REFLECT_FAILED;
 
 		byte reflect = SKILL_REFLECT_FAILED;
