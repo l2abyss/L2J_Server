@@ -80,7 +80,7 @@ public class L2SkillChargeDmg extends L2Skill
 			// because if so, damage are lowered but we don't do anything special with dual then
 			// like in doAttackHitByDual which in fact does the calcPhysDam call twice
 			//boolean dual  = caster.isUsingDualWeapon();
-			byte shld = Formulas.calcShldUse(caster, target);
+			byte shld = Formulas.calcShldUse(caster, target, this);
 			boolean crit = false;
 			if (this.getBaseCritRate() > 0)
 				crit = Formulas.calcCrit(this.getBaseCritRate() * 10 * Formulas.getSTRBonus(caster), target);

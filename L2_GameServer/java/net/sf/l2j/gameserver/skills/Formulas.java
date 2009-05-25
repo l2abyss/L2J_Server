@@ -1843,8 +1843,11 @@ public final class Formulas
 	 * @param sendSysMsg
 	 * @return
 	 */
-	public static byte calcShldUse(L2Character attacker, L2Character target, boolean sendSysMsg)
+	public static byte calcShldUse(L2Character attacker, L2Character target, L2Skill skill, boolean sendSysMsg)
 	{
+		if (skill != null && skill.ignoreShield())
+			return 0;
+
 		double shldRate = target.calcStat(Stats.SHIELD_RATE, 0, attacker, null)
 			* DEXbonus[target.getDEX()];
 		if (shldRate == 0.0) return 0;
@@ -1888,9 +1891,14 @@ public final class Formulas
 		return shldSuccess;
 	}
 	
+	public static byte calcShldUse(L2Character attacker, L2Character target, L2Skill skill)
+	{
+		return calcShldUse(attacker, target, skill, true);
+	}
+
 	public static byte calcShldUse(L2Character attacker, L2Character target)
 	{
-		return calcShldUse(attacker, target, true);
+		return calcShldUse(attacker, target, null, true);
 	}
 
 	public static boolean calcMagicAffected(L2Character actor, L2Character target, L2Skill skill)

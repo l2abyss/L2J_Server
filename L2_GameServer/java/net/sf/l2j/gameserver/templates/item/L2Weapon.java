@@ -338,7 +338,7 @@ public final class L2Weapon extends L2Item
 		if (!_skillsOnCritCondition.test(env))
 			return _emptyEffectSet; // Skill condition not met
 			
-		byte shld = Formulas.calcShldUse(caster, target);
+		byte shld = Formulas.calcShldUse(caster, target, _skillsOnCrit);
 		if (!Formulas.calcSkillSuccess(caster, target, _skillsOnCrit, shld, false, false, false))
 			return _emptyEffectSet; // These skills should not work on RaidBoss
 		if (target.getFirstEffect(_skillsOnCrit.getId()) != null)
@@ -374,7 +374,7 @@ public final class L2Weapon extends L2Item
 		if (!_skillsOnCastCondition.test(env))
 			return _emptyEffectSet;
 		
-		byte shld = Formulas.calcShldUse(caster, target);
+		byte shld = Formulas.calcShldUse(caster, target, _skillsOnCast);
 		if (_skillsOnCast.isOffensive() && !Formulas.calcSkillSuccess(caster, target, _skillsOnCast, shld, false, false, false))
 			return _emptyEffectSet;
 		

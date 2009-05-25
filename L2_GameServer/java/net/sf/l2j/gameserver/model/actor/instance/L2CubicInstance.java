@@ -621,7 +621,7 @@ public class L2CubicInstance
 		{
 			if (skill.isOffensive())
 			{
-				byte shld = Formulas.calcShldUse(activeCubic.getOwner(), target);
+				byte shld = Formulas.calcShldUse(activeCubic.getOwner(), target, skill);
 				boolean acted = Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld);
 				if (!acted)
 				{
@@ -660,7 +660,7 @@ public class L2CubicInstance
 			}
 			
 			boolean mcrit = Formulas.calcMCrit(activeCubic.getMCriticalHit(target, skill));
-			byte shld = Formulas.calcShldUse(activeCubic.getOwner(), target);
+			byte shld = Formulas.calcShldUse(activeCubic.getOwner(), target, skill);
 			int damage = (int) Formulas.calcMagicDam(activeCubic, target, skill, mcrit, shld);
 			
 			/*
@@ -709,7 +709,7 @@ public class L2CubicInstance
 			if (target == null || target.isDead()) // bypass if target is null or dead
 				continue;
 			
-			byte shld = Formulas.calcShldUse(activeCubic.getOwner(), target);
+			byte shld = Formulas.calcShldUse(activeCubic.getOwner(), target, skill);
 			
 			switch (type)
 			{
