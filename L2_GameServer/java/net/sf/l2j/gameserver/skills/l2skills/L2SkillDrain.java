@@ -143,7 +143,7 @@ public class L2SkillDrain extends L2Skill {
                 if (hasEffects() && getTargetType() != SkillTargetType.TARGET_CORPSE_MOB)
                 {
                 	// ignoring vengance-like reflections
-                	if (Formulas.calcSkillReflect(target, this) == Formulas.SKILL_REFLECT_SUCCEED)
+                	if ((Formulas.calcSkillReflect(target, this) & Formulas.SKILL_REFLECT_SUCCEED) > 0)
                 	{
                 		activeChar.stopSkillEffects(getId());
     					getEffects(target,activeChar);
