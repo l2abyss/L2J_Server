@@ -18,10 +18,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
-import java.util.Vector;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +39,13 @@ public class RaidBossPointsManager
 {
 	private final static Logger _log = Logger.getLogger(RaidBossPointsManager.class.getName());
 	protected static FastMap<Integer, Map<Integer, Integer>> _list;
+	
+	private static final Comparator<Map.Entry<Integer, Integer>> _comparator = new Comparator<Map.Entry<Integer, Integer>>(){
+		public int compare(Map.Entry<Integer, Integer> entry, Map.Entry<Integer, Integer> entry1)
+		{
+			return entry.getValue().equals(entry1.getValue()) ? 0 : entry.getValue() < entry1.getValue() ? 1 : -1;
+		}
+	};
 
 	public final static void init()
 	{
@@ -193,14 +200,9 @@ public class RaidBossPointsManager
 				tmpPoints.put(ownerId, totalPoints);
 			}
 		}
-		Vector<Entry<Integer, Integer>> list = new Vector<Map.Entry<Integer, Integer>>(tmpPoints.entrySet());
+		ArrayList<Entry<Integer, Integer>> list = new ArrayList<Map.Entry<Integer, Integer>>(tmpPoints.entrySet());
 		
-		Collections.sort(list, new Comparator<Map.Entry<Integer, Integer>>(){
-			public int compare(Map.Entry<Integer, Integer> entry, Map.Entry<Integer, Integer> entry1)
-			{
-				return entry.getValue().equals(entry1.getValue()) ? 0 : entry.getValue() < entry1.getValue() ? 1 : -1;
-			}
-		});
+		Collections.sort(list, _comparator);
 
 		int ranking = 1;
 		for(Map.Entry<Integer, Integer> entry : list)
@@ -225,14 +227,9 @@ public class RaidBossPointsManager
 				tmpPoints.put(ownerId, totalPoints);
 			}
 		}
-		Vector<Entry<Integer, Integer>> list = new Vector<Map.Entry<Integer, Integer>>(tmpPoints.entrySet());
+		ArrayList<Entry<Integer, Integer>> list = new ArrayList<Map.Entry<Integer, Integer>>(tmpPoints.entrySet());
 		
-		Collections.sort(list, new Comparator<Map.Entry<Integer, Integer>>(){
-			public int compare(Map.Entry<Integer, Integer> entry, Map.Entry<Integer, Integer> entry1)
-			{
-				return entry.getValue().equals(entry1.getValue()) ? 0 : entry.getValue() < entry1.getValue() ? 1 : -1;
-			}
-		});
+		Collections.sort(list, _comparator);
 
 		int ranking = 1;
 		for(Map.Entry<Integer, Integer> entry : list)

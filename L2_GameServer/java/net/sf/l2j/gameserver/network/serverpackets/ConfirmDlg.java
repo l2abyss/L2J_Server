@@ -14,8 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-import java.util.Vector;
-
+import javolution.util.FastList;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Skill;
@@ -44,11 +43,22 @@ public class ConfirmDlg extends L2GameServerPacket
 	private static final int TYPE_NUMBER = 1;
 	private static final int TYPE_TEXT = 0;
 
-	private Vector<Integer> _types = new Vector<Integer>();
-	private Vector<Object> _values = new Vector<Object>();
-
+	private final FastList<CnfDlgData> _info = new FastList<CnfDlgData>();
+	
 	private int _time = 0;
 	private int _requesterId = 0;
+	
+	protected class CnfDlgData
+	{
+		protected final int type;
+		protected final Object value;
+		
+		protected CnfDlgData(int t, Object val)
+		{
+			type = t;
+			value = val;
+		}
+	}
 
 	public ConfirmDlg(int messageId)
 	{
@@ -57,15 +67,13 @@ public class ConfirmDlg extends L2GameServerPacket
 
 	public ConfirmDlg addString(String text)
 	{
-		_types.add(Integer.valueOf(TYPE_TEXT));
-		_values.add(text);
+		_info.add(new CnfDlgData(TYPE_TEXT, text));
 		return this;
 	}
 
 	public ConfirmDlg addNumber(int number)
 	{
-		_types.add(Integer.valueOf(TYPE_NUMBER));
-		_values.add(Integer.valueOf(number));
+		_info.add(new CnfDlgData(TYPE_NUMBER, number));
 		return this;
 	}
 
@@ -104,8 +112,7 @@ public class ConfirmDlg extends L2GameServerPacket
 
 	public ConfirmDlg addNpcName(int id)
 	{
-		_types.add(Integer.valueOf(TYPE_NPC_NAME));
-		_values.add(Integer.valueOf(1000000 + id));
+		_info.add(new CnfDlgData(TYPE_NPC_NAME, id));
 		return this;
 	}
 
@@ -122,16 +129,14 @@ public class ConfirmDlg extends L2GameServerPacket
 
 	public ConfirmDlg addItemName(int id)
 	{
-		_types.add(Integer.valueOf(TYPE_ITEM_NAME));
-		_values.add(Integer.valueOf(id));
+		_info.add(new CnfDlgData(TYPE_ITEM_NAME, id));
 		return this;
 	}
 
 	public ConfirmDlg addZoneName(int x, int y, int z)
 	{
-		_types.add(Integer.valueOf(TYPE_ZONE_NAME));
-		int[] coord = {x, y, z};
-		_values.add(coord);
+		Integer[] coord = {x, y, z};
+		_info.add(new CnfDlgData(TYPE_ZONE_NAME, coord));
 		return this;
 	}
 
@@ -154,8 +159,7 @@ public class ConfirmDlg extends L2GameServerPacket
 
 	public ConfirmDlg addSkillName(int id, int lvl)
 	{
-		_types.add(Integer.valueOf(TYPE_SKILL_NAME));
-		_values.add(Integer.valueOf(id));
+		_info.add(new CnfDlgData(TYPE_SKILL_NAME, id));
 		_skillLvL = lvl;
 		return this;
 	}
@@ -178,47 +182,40 @@ public class ConfirmDlg extends L2GameServerPacket
 		writeC(0xf3);
 		writeD(_messageId);
 
-		if (_types != null && !_types.isEmpty())
+		if (_info.isEmpty())
 		{
-			writeD(_types.size());
-			for (int i = 0; i < _types.size(); i++)
+			writeD(0x00);
+			writeD(0x00);
+			writeD(0x00);
+		}
+		else
+		{
+			writeD(_info.size());
+			
+			for (CnfDlgData data : _info)
 			{
-				int t = _types.get(i).intValue();
+				writeD(data.type);
 
-				writeD(t);
-
-				switch (t)
+				switch (data.type)
 				{
 					case TYPE_TEXT:
-					{
-						writeS( (String)_values.get(i));
+						writeS((String)data.value);
 						break;
-					}
 					case TYPE_NUMBER:
 					case TYPE_NPC_NAME:
 					case TYPE_ITEM_NAME:
-					{
-						int t1 = ((Integer)_values.get(i)).intValue();
-						writeD(t1);
+						writeD((Integer)data.value);
 						break;
-					}
 					case TYPE_SKILL_NAME:
-					{
-						int t1 = ((Integer)_values.get(i)).intValue();
-						writeD(t1); // Skill Id
+						writeD((Integer)data.value); // Skill Id
 						writeD(_skillLvL); // Skill lvl
 						break;
-					}
 					case TYPE_ZONE_NAME:
-					{
-						int t1 = ((int[])_values.get(i))[0];
-						int t2 = ((int[])_values.get(i))[1];
-						int t3 = ((int[])_values.get(i))[2];
-						writeD(t1);
-						writeD(t2);
-						writeD(t3);
+						Integer[] array = (Integer[])data.value;
+						writeD(array[0]);
+						writeD(array[1]);
+						writeD(array[2]);
 						break;
-					}
 				}
 			}
 			// timed dialog (Summon Friend skill request)
@@ -226,12 +223,6 @@ public class ConfirmDlg extends L2GameServerPacket
 				writeD(_time);
 			if (_requesterId != 0)
 				writeD(_requesterId);
-		}
-		else
-		{
-			writeD(0x00);
-			writeD(0x00);
-			writeD(0x00);
 		}
 	}
 

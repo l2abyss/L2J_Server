@@ -15,7 +15,7 @@
 package net.sf.l2j.gameserver.network.gameserverpackets;
 
 import java.io.IOException;
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * @author -Wooden-
@@ -23,7 +23,7 @@ import java.util.Vector;
  */
 public class ServerStatus extends GameServerBasePacket
 {
-    private Vector<Attribute> _attributes;
+    private ArrayList<Attribute> _attributes;
 
     public static final String[] STATUS_STRING = {"Auto", "Good", "Normal", "Full", "Down", "Gm Only"};
 
@@ -57,7 +57,7 @@ public class ServerStatus extends GameServerBasePacket
 
     public ServerStatus()
     {
-        _attributes = new Vector<Attribute>();
+        _attributes = new ArrayList<Attribute>();
     }
 
     public void addAttribute(int id, int value)

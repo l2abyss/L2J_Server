@@ -14,7 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  *
@@ -67,7 +67,7 @@ public final class StatusUpdate extends L2GameServerPacket
     public static final int MAX_CP = 0x22;
 
     private int _objectId;
-    private Vector<Attribute> _attributes;
+    private ArrayList<Attribute> _attributes;
 
     class Attribute
     {
@@ -90,7 +90,7 @@ public final class StatusUpdate extends L2GameServerPacket
 
     public StatusUpdate(int objectId)
     {
-        _attributes = new Vector<Attribute>();
+        _attributes = new ArrayList<Attribute>();
         _objectId = objectId;
     }
 

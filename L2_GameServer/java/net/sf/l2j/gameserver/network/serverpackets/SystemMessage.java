@@ -14,7 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
@@ -46,10 +46,24 @@ public final class SystemMessage extends L2GameServerPacket
 	private static final int TYPE_TEXT = 0;
 	private static final String _S__7A_SYSTEMMESSAGE = "[S] 62 SystemMessage";
 	private int _messageId;
-	private Vector<Integer> _types = new Vector<Integer>();
-	private Vector<Object> _values = new Vector<Object>();
+	
+	private final ArrayList<SysMsgData> _info = new ArrayList<SysMsgData>();
+	//private Vector<Integer> _types = new Vector<Integer>();
+	//private Vector<Object> _values = new Vector<Object>();
 	private int _skillLvL = 1;
 
+	protected class SysMsgData
+	{
+		protected final int type;
+		protected final Object value;
+		
+		protected SysMsgData(int t, Object val)
+		{
+			type = t;
+			value = val;
+		}
+	}
+	
 	public SystemMessage(SystemMessageId messageId)
 	{
 		_messageId = messageId.getId();
@@ -73,30 +87,25 @@ public final class SystemMessage extends L2GameServerPacket
 
 	public SystemMessage addString(String text)
 	{
-		_types.add(Integer.valueOf(TYPE_TEXT));
-		_values.add(text);
-
+		_info.add(new SysMsgData(TYPE_TEXT, text));
 		return this;
 	}
 
 	public SystemMessage addFortId(int number)
 	{
-		_types.add(Integer.valueOf(TYPE_FORTRESS));
-		_values.add(Integer.valueOf(number));
+		_info.add(new SysMsgData(TYPE_FORTRESS, number));
 		return this;
 	}
 
 	public SystemMessage addNumber(int number)
 	{
-		_types.add(Integer.valueOf(TYPE_NUMBER));
-		_values.add(Integer.valueOf(number));
+		_info.add(new SysMsgData(TYPE_NUMBER, number));
 		return this;
 	}
 
 	public SystemMessage addItemNumber(long number)
 	{
-		_types.add(Integer.valueOf(TYPE_ITEM_NUMBER));
-		_values.add(Long.valueOf(number));
+		_info.add(new SysMsgData(TYPE_ITEM_NUMBER, number));
 		return this;
 	}
 	
@@ -145,9 +154,7 @@ public final class SystemMessage extends L2GameServerPacket
 
 	public SystemMessage addNpcName(int id)
 	{
-		_types.add(Integer.valueOf(TYPE_NPC_NAME));
-		_values.add(Integer.valueOf(1000000 + id));
-
+		_info.add(new SysMsgData(TYPE_NPC_NAME, id));
 		return this;
 	}
 
@@ -164,18 +171,14 @@ public final class SystemMessage extends L2GameServerPacket
 
 	public SystemMessage addItemName(int id)
 	{
-		_types.add(Integer.valueOf(TYPE_ITEM_NAME));
-		_values.add(Integer.valueOf(id));
-
+		_info.add(new SysMsgData(TYPE_ITEM_NAME, id));
 		return this;
 	}
 
 	public SystemMessage addZoneName(int x, int y, int z)
 	{
-		_types.add(Integer.valueOf(TYPE_ZONE_NAME));
 		int[] coord = {x, y, z};
-		_values.add(coord);
-
+		_info.add(new SysMsgData(TYPE_ZONE_NAME, coord));
 		return this;
 	}
 
@@ -198,8 +201,7 @@ public final class SystemMessage extends L2GameServerPacket
 
 	public SystemMessage addSkillName(int id, int lvl)
 	{
-		_types.add(Integer.valueOf(TYPE_SKILL_NAME));
-		_values.add(Integer.valueOf(id));
+		_info.add(new SysMsgData(TYPE_SKILL_NAME, id));
 		_skillLvL = lvl;
 
 		return this;
@@ -211,53 +213,38 @@ public final class SystemMessage extends L2GameServerPacket
 		writeC(0x62);
 
 		writeD(_messageId);
-		writeD(_types.size());
+		writeD(_info.size());
 
-		for (int i = 0; i < _types.size(); i++)
+		for (SysMsgData data : _info)
 		{
-			int t = _types.get(i).intValue();
+			int t = data.type;
 
 			writeD(t);
 
 			switch (t)
 			{
 				case TYPE_TEXT:
-				{
-					writeS( (String)_values.get(i));
+					writeS((String)data.value);
 					break;
-				}
 				case TYPE_ITEM_NUMBER:
-				{
-					long t1 = ((Long)_values.get(i)).longValue();
-					writeQ(t1);
+					writeQ((Long)data.value);
 					break;
-				}
 				case TYPE_ITEM_NAME:
 				case TYPE_FORTRESS:
 				case TYPE_NUMBER:
 				case TYPE_NPC_NAME:
-				{
-					int t1 = ((Integer)_values.get(i)).intValue();
-					writeD(t1);
+					writeD((Integer)data.value);
 					break;
-				}
 				case TYPE_SKILL_NAME:
-				{
-					int t1 = ((Integer)_values.get(i)).intValue();
-					writeD(t1); // Skill Id
+					writeD((Integer)data.value); // Skill Id
 					writeD(_skillLvL); // Skill lvl
 					break;
-				}
 				case TYPE_ZONE_NAME:
-				{
-					int t1 = ((int[])_values.get(i))[0];
-					int t2 = ((int[])_values.get(i))[1];
-					int t3 = ((int[])_values.get(i))[2];
-					writeD(t1);
-					writeD(t2);
-					writeD(t3);
+					Integer[] array = (Integer[])data.value;
+					writeD(array[0]);
+					writeD(array[1]);
+					writeD(array[2]);
 					break;
-				}
 			}
 		}
 	}
