@@ -1402,23 +1402,21 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 L2PcInstance src = activeChar.getActingPlayer();
 
                 // Go through the L2Character _knownList
-                Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
+                Collection<L2Character> objs = activeChar.getKnownList().getKnownCharactersInRadius(radius);
                 //synchronized (activeChar.getKnownList().getKnownObjects())
                 if (getSkillType() == L2SkillType.DUMMY)
                 {
-                	for (L2Object obj : objs)
+                	for (L2Character obj : objs)
                 	{
                 		if (!(obj == activeChar || obj instanceof L2Npc || obj instanceof L2Attackable))
                 			continue;
-                		if (!Util.checkIfInRange(radius, activeChar, obj, true))
-                			continue;
-                		targetList.add((L2Character) obj);
+                		targetList.add(obj);
                 	}
                 	targetList.add(activeChar);
                 }
                 else
 				{
-					for (L2Object obj : objs)
+					for (L2Character obj : objs)
 					{
 						if (obj instanceof L2Attackable
 						        || obj instanceof L2Playable)
@@ -1426,12 +1424,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 							// Don't add this target if this is a Pc->Pc pvp
 							// casting and pvp condition not met
 							if (obj == activeChar || obj == src
-							        || ((L2Character) obj).isDead())
+							        || obj.isDead())
 								continue;
 							if (src != null)
 							{
-								if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
-									continue;
 								// check if both attacker and target are
 								// L2PcInstances and if they are in same party
 								if (obj instanceof L2PcInstance)
@@ -1442,7 +1438,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 									        && src.getParty().getPartyLeaderOID() == ((L2PcInstance) obj).getParty().getPartyLeaderOID())
 										continue;
 									if (!srcInArena
-									        && !(((L2Character) obj).isInsideZone(L2Character.ZONE_PVP) && !((L2Character) obj).isInsideZone(L2Character.ZONE_SIEGE)))
+									        && !(obj.isInsideZone(L2Character.ZONE_PVP) && !obj.isInsideZone(L2Character.ZONE_SIEGE)))
 									{
 										if (src.getAllyId() == ((L2PcInstance) obj).getAllyId()
 										        && src.getAllyId() != 0)
@@ -1464,7 +1460,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 									        && src.getParty().getPartyLeaderOID() == trg.getParty().getPartyLeaderOID())
 										continue;
 									if (!srcInArena
-									        && !(((L2Character) obj).isInsideZone(L2Character.ZONE_PVP) && !((L2Character) obj).isInsideZone(L2Character.ZONE_SIEGE)))
+									        && !(obj.isInsideZone(L2Character.ZONE_PVP) && !obj.isInsideZone(L2Character.ZONE_SIEGE)))
 									{
 										if (src.getAllyId() == trg.getAllyId()
 										        && src.getAllyId() != 0)
@@ -1490,13 +1486,13 @@ public abstract class L2Skill implements IChanceSkillTrigger
 																		// (?)
 									continue;
 							}
-							if (!Util.checkIfInRange(radius, activeChar, obj, true))
+							if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
 								continue;
-							
+
 							if (onlyFirst == false)
-								targetList.add((L2Character) obj);
+								targetList.add(obj);
 							else
-								return new L2Character[] { (L2Character) obj };
+								return new L2Character[] { obj };
 						}
 					}
 				}
@@ -1510,10 +1506,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 L2PcInstance src = activeChar.getActingPlayer();
                 
                 // Go through the L2Character _knownList
-                Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
+                Collection<L2Character> objs = activeChar.getKnownList().getKnownCharactersInRadius(radius);
                 //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
-					for (L2Object obj : objs)
+					for (L2Character obj : objs)
 					{
 						if (obj instanceof L2Attackable
 						        || obj instanceof L2Playable)
@@ -1521,14 +1517,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 							// Don't add this target if this is a Pc->Pc pvp
 							// casting and pvp condition not met
 							if (obj == activeChar || obj == src
-							        || ((L2Character) obj).isDead())
+							        || obj.isDead())
 								continue;
 							if (src != null)
 							{
-								if (!((L2Character) obj).isInFrontOf(activeChar))
-									continue;
-								
-								if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
+								if (!obj.isInFrontOf(activeChar))
 									continue;
 								
 								// check if both attacker and target are
@@ -1541,7 +1534,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 									        && src.getParty().getPartyLeaderOID() == ((L2PcInstance) obj).getParty().getPartyLeaderOID())
 										continue;
 									if (!srcInArena
-									        && !(((L2Character) obj).isInsideZone(L2Character.ZONE_PVP) && !((L2Character) obj).isInsideZone(L2Character.ZONE_SIEGE)))
+									        && !(obj.isInsideZone(L2Character.ZONE_PVP) && !obj.isInsideZone(L2Character.ZONE_SIEGE)))
 									{
 										if (src.getAllyId() == ((L2PcInstance) obj).getAllyId()
 										        && src.getAllyId() != 0)
@@ -1563,7 +1556,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 									        && src.getParty().getPartyLeaderOID() == trg.getParty().getPartyLeaderOID())
 										continue;
 									if (!srcInArena
-									        && !(((L2Character) obj).isInsideZone(L2Character.ZONE_PVP) && !((L2Character) obj).isInsideZone(L2Character.ZONE_SIEGE)))
+									        && !(obj.isInsideZone(L2Character.ZONE_PVP) && !obj.isInsideZone(L2Character.ZONE_SIEGE)))
 									{
 										if (src.getAllyId() == trg.getAllyId()
 										        && src.getAllyId() != 0)
@@ -1589,13 +1582,13 @@ public abstract class L2Skill implements IChanceSkillTrigger
 																		// (?)
 									continue;
 							}
-							if (!Util.checkIfInRange(radius, activeChar, obj, true))
+							if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
 								continue;
 							
 							if (onlyFirst == false)
-								targetList.add((L2Character) obj);
+								targetList.add(obj);
 							else
-								return new L2Character[] { (L2Character) obj };
+								return new L2Character[] { obj };
 						}
 					}
 				}
@@ -1609,10 +1602,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 L2PcInstance src = activeChar.getActingPlayer();
                 
                 // Go through the L2Character _knownList
-                Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
+                Collection<L2Character> objs = activeChar.getKnownList().getKnownCharactersInRadius(radius);
                 //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
-					for (L2Object obj : objs)
+					for (L2Character obj : objs)
 					{
 						if (obj instanceof L2Attackable
 						        || obj instanceof L2Playable)
@@ -1620,14 +1613,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 							// Don't add this target if this is a Pc->Pc pvp
 							// casting and pvp condition not met
 							if (obj == activeChar || obj == src
-							        || ((L2Character) obj).isDead())
+							        || obj.isDead())
 								continue;
 							if (src != null)
 							{
-								if (!((L2Character) obj).isBehind(activeChar))
-									continue;
-								
-								if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
+								if (!obj.isBehind(activeChar))
 									continue;
 								
 								// check if both attacker and target are
@@ -1640,7 +1630,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 									        && src.getParty().getPartyLeaderOID() == ((L2PcInstance) obj).getParty().getPartyLeaderOID())
 										continue;
 									if (!srcInArena
-									        && !(((L2Character) obj).isInsideZone(L2Character.ZONE_PVP) && !((L2Character) obj).isInsideZone(L2Character.ZONE_SIEGE)))
+									        && !(obj.isInsideZone(L2Character.ZONE_PVP) && !obj.isInsideZone(L2Character.ZONE_SIEGE)))
 									{
 										if (src.getAllyId() == ((L2PcInstance) obj).getAllyId()
 										        && src.getAllyId() != 0)
@@ -1662,7 +1652,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 									        && src.getParty().getPartyLeaderOID() == trg.getParty().getPartyLeaderOID())
 										continue;
 									if (!srcInArena
-									        && !(((L2Character) obj).isInsideZone(L2Character.ZONE_PVP) && !((L2Character) obj).isInsideZone(L2Character.ZONE_SIEGE)))
+									        && !(obj.isInsideZone(L2Character.ZONE_PVP) && !obj.isInsideZone(L2Character.ZONE_SIEGE)))
 									{
 										if (src.getAllyId() == trg.getAllyId()
 										        && src.getAllyId() != 0)
@@ -1688,13 +1678,13 @@ public abstract class L2Skill implements IChanceSkillTrigger
 																		// (?)
 									continue;
 							}
-							if (!Util.checkIfInRange(radius, activeChar, obj, true))
+							if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
 								continue;
 							
 							if (onlyFirst == false)
-								targetList.add((L2Character) obj);
+								targetList.add(obj);
 							else
-								return new L2Character[] { (L2Character) obj };
+								return new L2Character[] { obj };
 						}
 					}
 				}
@@ -1739,29 +1729,22 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
                 boolean srcInArena = (activeChar.isInsideZone(L2Character.ZONE_PVP) && !activeChar.isInsideZone(L2Character.ZONE_SIEGE));
 
-                Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
+                Collection<L2Character> objs = activeChar.getKnownList().getKnownCharactersInRadius(radius);
                 //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
-					for (L2Object obj : objs)
+					for (L2Character obj : objs)
 					{
 						if (!(obj instanceof L2Attackable || obj instanceof L2Playable))
 							continue;
 						if (obj == cha)
 							continue;
-						target = (L2Character) obj;
-						
-						if (!GeoData.getInstance().canSeeTarget(activeChar, target))
-							continue;
+						target = obj;
 						
 						if (!target.isDead() && (target != activeChar))
 						{
-							if (!Util.checkIfInRange(radius, obj, cha, true))
-								continue;
-							
 							if (src != null) // caster is l2playableinstance
 												// and exists
 							{
-								
 								if (obj instanceof L2PcInstance)
 								{
 									L2PcInstance trg = (L2PcInstance) obj;
@@ -1840,7 +1823,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 									continue;
 							}
 							
-							targetList.add((L2Character) obj);
+							if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
+								continue;
+							
+							targetList.add(obj);
 						}
 					}
 				}
@@ -1892,10 +1878,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
                 boolean srcInArena = (activeChar.isInsideZone(L2Character.ZONE_PVP) && !activeChar.isInsideZone(L2Character.ZONE_SIEGE));
 
-                Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
+                Collection<L2Character> objs = activeChar.getKnownList().getKnownCharactersInRadius(radius);
                 //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
-					for (L2Object obj : objs)
+					for (L2Character obj : objs)
 					{
 						if (obj == cha)
 							continue;
@@ -1903,17 +1889,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 						if (!(obj instanceof L2Attackable || obj instanceof L2Playable))
 							continue;
 						
-						target = (L2Character) obj;
+						target = obj;
 						
 						if (!target.isDead() && (target != activeChar))
 						{
-							if (!Util.checkIfInRange(radius, obj, activeChar, true))
-								continue;
-							
-							if (!((L2Character) obj).isInFrontOf(activeChar))
-								continue;
-							
-							if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
+							if (!obj.isInFrontOf(activeChar))
 								continue;
 							
 							if (src != null) // caster is l2playableinstance
@@ -1996,8 +1976,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 																				// L2PlayableInstance
 									continue;
 							}
+							if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
+								continue;
 							
-							targetList.add((L2Character) obj);
+							targetList.add(obj);
 						}
 					}
 				}
@@ -2047,26 +2029,20 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
                 boolean srcInArena = (activeChar.isInsideZone(L2Character.ZONE_PVP) && !activeChar.isInsideZone(L2Character.ZONE_SIEGE));
 
-                Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
+                Collection<L2Character> objs = activeChar.getKnownList().getKnownCharactersInRadius(radius);
                 //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
-					for (L2Object obj : objs)
+					for (L2Character obj : objs)
 					{
 						if (!(obj instanceof L2Attackable || obj instanceof L2Playable))
 							continue;
 						if (obj == cha)
 							continue;
-						target = (L2Character) obj;
+						target = obj;
 						
 						if (!target.isDead() && (target != activeChar))
 						{
-							if (!Util.checkIfInRange(radius, obj, activeChar, true))
-								continue;
-							
-							if (!((L2Character) obj).isBehind(activeChar))
-								continue;
-							
-							if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
+							if (!obj.isBehind(activeChar))
 								continue;
 							
 							if (src != null) // caster is l2playableinstance
@@ -2149,8 +2125,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 																				// L2PlayableInstance
 									continue;
 							}
+							if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
+								continue;
 							
-							targetList.add((L2Character) obj);
+							targetList.add(obj);
 						}
 					}
 				}
@@ -2173,16 +2151,13 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
                 int radius = getSkillRadius();
 
-                Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
+                Collection<L2Character> objs = activeChar.getKnownList().getKnownCharactersInRadius(radius);
                 //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
-					for (L2Object obj : objs)
+					for (L2Character obj : objs)
 					{
-						if (!Util.checkIfInRange(radius, activeChar, obj, true))
-							continue;
-						
 						if (obj instanceof L2Attackable && obj != target)
-							targetList.add((L2Character) obj);
+							targetList.add(obj);
 						
 						if (targetList.isEmpty())
 						{
@@ -2603,7 +2578,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 L2PcInstance trg = null;
 
                 int radius = getSkillRadius();
-                Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
+                Collection<L2Character> objs = activeChar.getKnownList().getKnownCharactersInRadius(radius);
                 //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
 					for (L2Object obj : objs)
@@ -2611,12 +2586,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 						if (!(obj instanceof L2Attackable || obj instanceof L2Playable)
 						        || ((L2Character) obj).isDead()
 						        || ((L2Character) obj) == activeChar)
-							continue;
-						
-						if (!Util.checkIfInRange(radius, target, obj, true))
-							continue;
-						
-						if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
 							continue;
 						
 						if (obj instanceof L2PcInstance && src != null)
@@ -2677,6 +2646,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 							if (((L2Summon) obj).isInsideZone(L2Character.ZONE_PEACE))
 								continue;
 						}
+						if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
+							continue;
 						
 						targetList.add((L2Character) obj);
 					}
@@ -2737,19 +2708,16 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 }
                 else cha = activeChar;
 
-                Collection<L2Object> objs = cha.getKnownList().getKnownObjects().values();
+                Collection<L2Character> objs = cha.getKnownList().getKnownCharactersInRadius(radius);
                 //synchronized (cha.getKnownList().getKnownObjects())
 				{
-					for (L2Object obj : objs)
+					for (L2Character obj : objs)
 					{
 						if (obj instanceof L2Npc)
-							target = (L2Npc) obj;
+							target = obj;
 						else if (obj instanceof L2SummonInstance)
-							target = (L2SummonInstance) obj;
+							target = obj;
 						else
-							continue;
-						
-						if (!GeoData.getInstance().canSeeTarget(activeChar, target))
 							continue;
 						
 						if (!target.isAlikeDead()) // If target is not
@@ -2758,13 +2726,14 @@ public abstract class L2Skill implements IChanceSkillTrigger
 						{
 							if (!target.isUndead())
 								continue;
-							if (!Util.checkIfInRange(radius, cha, obj, true))
+
+							if (!GeoData.getInstance().canSeeTarget(activeChar, target))
 								continue;
 							
 							if (onlyFirst == false)
-								targetList.add((L2Character) obj);
+								targetList.add(obj);
 							else
-								return new L2Character[] { (L2Character) obj };
+								return new L2Character[] { obj };
 						}
 					}
 				}
