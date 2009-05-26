@@ -3084,12 +3084,12 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * Reduce ancient adena in Inventory of the L2PcInstance and send a Server->Client InventoryUpdate packet to the L2PcInstance.
 	 * @param process : String Identifier of process triggering this action
-	 * @param count : int Quantity of ancient adena to be reduced
+	 * @param count : longt Quantity of ancient adena to be reduced
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @param sendMessage : boolean Specifies whether to send message to Client about this action
 	 * @return boolean informing if the action was successfull
 	 */
-	public boolean reduceAncientAdena(String process, int count, L2Object reference, boolean sendMessage)
+	public boolean reduceAncientAdena(String process, long count, L2Object reference, boolean sendMessage)
 	{
 	    if (count > getAncientAdena())
 	    {
@@ -3213,7 +3213,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @param sendMessage : boolean Specifies whether to send message to Client about this action
 	 */
-	public void addItem(String process, int itemId, int count, L2Object reference, boolean sendMessage)
+	public void addItem(String process, int itemId, long count, L2Object reference, boolean sendMessage)
 	{
 		if (count > 0)
 		{
@@ -3411,7 +3411,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param sendMessage : boolean Specifies whether to send message to Client about this action
 	 * @return boolean informing if the action was successfull
 	 */
-	public boolean destroyItemWithoutTrace(String process, int objectId, int count, L2Object reference, boolean sendMessage)
+	public boolean destroyItemWithoutTrace(String process, int objectId, long count, L2Object reference, boolean sendMessage)
 	{
         L2ItemInstance item = _inventory.getItemByObjectId(objectId);
 
