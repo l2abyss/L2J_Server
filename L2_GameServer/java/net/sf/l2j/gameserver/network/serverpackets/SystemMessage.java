@@ -154,7 +154,7 @@ public final class SystemMessage extends L2GameServerPacket
 
 	public SystemMessage addNpcName(int id)
 	{
-		_info.add(new SysMsgData(TYPE_NPC_NAME, id));
+		_info.add(new SysMsgData(TYPE_NPC_NAME, 1000000+id));
 		return this;
 	}
 
@@ -240,10 +240,10 @@ public final class SystemMessage extends L2GameServerPacket
 					writeD(_skillLvL); // Skill lvl
 					break;
 				case TYPE_ZONE_NAME:
-					Integer[] array = (Integer[])data.value;
-					writeD(array[0]);
-					writeD(array[1]);
-					writeD(array[2]);
+					int[] coords = (int[])data.value;
+					writeD(coords[0]);
+					writeD(coords[1]);
+					writeD(coords[2]);
 					break;
 			}
 		}
