@@ -743,10 +743,10 @@ public final class L2PcInstance extends L2Playable
 	{
 		private String _process;
 		private int _itemId;
-		private int _count;
+		private long _count;
 		private L2Object _reference;
 		private boolean _sendMessage;
-		HerbTask(String process, int itemId, int count, L2Object reference, boolean sendMessage)
+		HerbTask(String process, int itemId, long count, L2Object reference, boolean sendMessage)
 		{
 			_process = process;
 			_itemId = itemId;
@@ -3084,7 +3084,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * Reduce ancient adena in Inventory of the L2PcInstance and send a Server->Client InventoryUpdate packet to the L2PcInstance.
 	 * @param process : String Identifier of process triggering this action
-	 * @param count : longt Quantity of ancient adena to be reduced
+	 * @param count : long Quantity of ancient adena to be reduced
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @param sendMessage : boolean Specifies whether to send message to Client about this action
 	 * @return boolean informing if the action was successfull
@@ -3209,7 +3209,7 @@ public final class L2PcInstance extends L2Playable
 	 * Adds item to Inventory and send a Server->Client InventoryUpdate packet to the L2PcInstance.
 	 * @param process : String Identifier of process triggering this action
 	 * @param itemId : int Item Identifier of the item to be added
-	 * @param count : int Quantity of items to be added
+	 * @param count : long Quantity of items to be added
 	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @param sendMessage : boolean Specifies whether to send message to Client about this action
 	 */
