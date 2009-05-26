@@ -59,16 +59,19 @@ public class AbstractEnchantPacket extends L2GameClientPacket
 			{
 				// weapon scrolls can enchant only weapons
 				case L2Item.TYPE2_WEAPON:
-					if (!_isWeapon || enchantItem.getEnchantLevel() >= Config.ENCHANT_MAX_WEAPON)
+					if (!_isWeapon
+							|| (Config.ENCHANT_MAX_WEAPON > 0 && enchantItem.getEnchantLevel() >= Config.ENCHANT_MAX_WEAPON))
 						return false;
 					break;
 					// armor scrolls can enchant only accessory and armors
 				case L2Item.TYPE2_SHIELD_ARMOR:
-					if (_isWeapon || enchantItem.getEnchantLevel() >= Config.ENCHANT_MAX_ARMOR)
+					if (_isWeapon
+							|| (Config.ENCHANT_MAX_ARMOR > 0 && enchantItem.getEnchantLevel() >= Config.ENCHANT_MAX_ARMOR))
 						return false;
 					break;
 				case L2Item.TYPE2_ACCESSORY:
-					if (_isWeapon || enchantItem.getEnchantLevel() >= Config.ENCHANT_MAX_JEWELRY)
+					if (_isWeapon
+							|| (Config.ENCHANT_MAX_JEWELRY > 0 && enchantItem.getEnchantLevel() >= Config.ENCHANT_MAX_JEWELRY))
 						return false;
 					break;
 				default:
