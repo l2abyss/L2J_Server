@@ -1260,6 +1260,9 @@ public class L2Attackable extends L2Npc
 				// TODO (April 11, 2009): Find a way not to hardcode these values.
 				if ((drop.getItemId() == 57 || (drop.getItemId() >= 6360 && drop.getItemId() <= 6362)) && isChampion())
 					itemCount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;
+			
+			if (!Config.MULTIPLE_ITEM_DROP && !ItemTable.getInstance().getTemplate(drop.getItemId()).isStackable())
+				itemCount = 1;
 
 			if (itemCount > 0)
 				return new RewardItem(drop.getItemId(), itemCount);
