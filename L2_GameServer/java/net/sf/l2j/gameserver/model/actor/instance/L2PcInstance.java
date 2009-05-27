@@ -159,6 +159,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadSpelledInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ExSetCompassZoneCode;
 import net.sf.l2j.gameserver.network.serverpackets.ExSpawnEmitter;
+import net.sf.l2j.gameserver.network.serverpackets.ExStorageMaxCount;
 import net.sf.l2j.gameserver.network.serverpackets.GMHide;
 import net.sf.l2j.gameserver.network.serverpackets.GameGuardQuery;
 import net.sf.l2j.gameserver.network.serverpackets.HennaInfo;
@@ -10316,6 +10317,7 @@ public final class L2PcInstance extends L2Playable
 
         broadcastPacket(new SocialAction(getObjectId(), SocialAction.LEVEL_UP));
         sendPacket(new SkillCoolTime(this));
+        sendPacket(new ExStorageMaxCount(this));
 
         //decayMe();
         //spawnMe(getX(), getY(), getZ());
