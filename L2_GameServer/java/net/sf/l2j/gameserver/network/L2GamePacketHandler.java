@@ -102,8 +102,36 @@ public final class L2GamePacketHandler extends TCPHeaderHandler<L2GameClient> im
 					case 0x7b:
 						msg = new CharacterRestore();
 						break;
+					case 0xd0:
+						int id2 = -1;
+		            	if (buf.remaining() >= 2)
+		            	{
+		            		id2 = buf.getShort() & 0xffff;
+		            	}
+		            	else
+		            	{
+		            		if (Config.PACKET_HANDLER_DEBUG)
+		            			_log.warning("Client: "+client.toString()+" sent a 0xd0 without the second opcode.");
+		            		break;
+		            	}
+		            	
+		            	switch (id2)
+		            	{
+		            		case 0x36:
+		            			msg = new RequestGotoLobby();
+		            			break;
+		            		/*
+		            		 * case 0x3d:
+		            		 *
+                             *  msg = new RequestAllFortressInfo();
+                             *  break;
+                             */
+                            default:
+                            	printDebugDoubleOpcode(opcode, id2, buf, state, client);
+		            	}
+		            	break;
 					default:
-						this.printDebug(opcode, buf, state, client);
+						printDebug(opcode, buf, state, client);
 						break;
 				}
 				break;
