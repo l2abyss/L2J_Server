@@ -2650,7 +2650,7 @@ public abstract class L2Character extends L2Object
 	/** Map 32 bits (0x0000) containing all abnormal effect in progress */
 	private int _AbnormalEffects;
 
-	private CharEffectList _effects = new CharEffectList(this);
+	protected CharEffectList _effects = new CharEffectList(this);
 
 	public static final int ABNORMAL_EFFECT_BLEEDING		= 0x000001;
 	public static final int ABNORMAL_EFFECT_POISON 			= 0x000002;
@@ -2708,10 +2708,7 @@ public abstract class L2Character extends L2Object
 	 */
 	public void addEffect(L2Effect newEffect)
 	{
-		_effects.addEffect(newEffect);
-
-		// Update active skills in progress (In Use and Not In Use because stacked) icons on client
-		updateEffectIcons();
+		_effects.queueEffect(newEffect, false);
 	}
 
 	/**
@@ -2735,10 +2732,7 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void removeEffect(L2Effect effect)
 	{
-		_effects.removeEffect(effect);
-
-		// Update active skills in progress (In Use and Not In Use because stacked) icons on client
-		updateEffectIcons();
+		_effects.queueEffect(effect, true);
 	}
 
 	/**
@@ -6953,10 +6947,5 @@ public abstract class L2Character extends L2Object
     {
     	_isRaid = val;
     	_isMinion = val;
-    }
-    
-    public int getElementIdFromEffects()
-    {
-    	return _effects.getElementIdFromEffects();
     }
 }

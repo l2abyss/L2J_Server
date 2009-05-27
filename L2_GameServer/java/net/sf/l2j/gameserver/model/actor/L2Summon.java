@@ -22,7 +22,6 @@ import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
 import net.sf.l2j.gameserver.ai.L2SummonAI;
 import net.sf.l2j.gameserver.datatables.SkillTable;
-import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Party;
@@ -49,7 +48,6 @@ import net.sf.l2j.gameserver.network.serverpackets.ExPartyPetWindowDelete;
 import net.sf.l2j.gameserver.network.serverpackets.ExPartyPetWindowUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
-import net.sf.l2j.gameserver.network.serverpackets.PartySpelled;
 import net.sf.l2j.gameserver.network.serverpackets.PetDelete;
 import net.sf.l2j.gameserver.network.serverpackets.PetInfo;
 import net.sf.l2j.gameserver.network.serverpackets.PetStatusShow;
@@ -377,42 +375,6 @@ public abstract class L2Summon extends L2Playable
         updateAndBroadcastStatus(1);
     }
     
-    @Override
-    public void updateEffectIcons(boolean partyOnly)
-    {
-    	if (this instanceof L2MerchantSummonInstance)
-			return;
-        PartySpelled ps = new PartySpelled(this);
-        
-        // Go through all effects if any
-        L2Effect[] effects = getAllEffects();
-        if (effects != null && effects.length > 0)
-        {
-            for (L2Effect effect: effects)
-            {
-                if (effect == null)
-                    continue;
-                
-                if (effect.getInUse() && effect.getShowIcon())
-                {
-                    effect.addPartySpelledIcon(ps);
-                }
-            }
-        }
-        
-        L2Party party = this.getOwner().getParty();
-        if (party != null)
-        {
-            // tell everyone about the summon effect
-            party.broadcastToPartyMembers(ps);
-        }
-        else
-        {
-            // tell only the owner
-            this.getOwner().sendPacket(ps);
-        }
-    }
-
     public void deleteMe(L2PcInstance owner)
     {
     	if (this instanceof L2MerchantSummonInstance)

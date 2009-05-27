@@ -142,7 +142,6 @@ import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.model.quest.State;
 import net.sf.l2j.gameserver.network.L2GameClient;
 import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.network.serverpackets.AbnormalStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ChangeWaitType;
 import net.sf.l2j.gameserver.network.serverpackets.CharInfo;
@@ -155,7 +154,6 @@ import net.sf.l2j.gameserver.network.serverpackets.ExFishingEnd;
 import net.sf.l2j.gameserver.network.serverpackets.ExFishingStart;
 import net.sf.l2j.gameserver.network.serverpackets.ExGetBookMarkInfoPacket;
 import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadMode;
-import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadSpelledInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ExSetCompassZoneCode;
 import net.sf.l2j.gameserver.network.serverpackets.ExSpawnEmitter;
@@ -174,7 +172,6 @@ import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ObservationMode;
 import net.sf.l2j.gameserver.network.serverpackets.ObservationReturn;
 import net.sf.l2j.gameserver.network.serverpackets.PartySmallWindowUpdate;
-import net.sf.l2j.gameserver.network.serverpackets.PartySpelled;
 import net.sf.l2j.gameserver.network.serverpackets.PetInventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.PledgeShowMemberListDelete;
 import net.sf.l2j.gameserver.network.serverpackets.PledgeShowMemberListUpdate;
@@ -4121,88 +4118,6 @@ public final class L2PcInstance extends L2Playable
         }
 	}
     
-    @Override
-    public final void updateEffectIcons(boolean partyOnly)
-    {
-        // Create the main packet if needed
-        AbnormalStatusUpdate mi = null;
-        if (!partyOnly)
-        {
-            mi = new AbnormalStatusUpdate();
-        }
-        
-        PartySpelled ps = null;
-        if (this.isInParty())
-        {
-            ps = new PartySpelled(this);
-        }
-        
-        // Create the olympiad spectator packet if needed
-        ExOlympiadSpelledInfo os = null;
-        if (this.isInOlympiadMode() && this.isOlympiadStart())
-        {
-            os = new ExOlympiadSpelledInfo(this);
-        }
-        
-        // Go through all effects if any
-        L2Effect[] effects = getAllEffects();
-        if (effects != null && effects.length > 0)
-        {
-            for (L2Effect effect : effects)
-            {
-                if (effect == null || !effect.getShowIcon())
-                {
-                    continue;
-                }
-                
-                switch (effect.getEffectType())
-                {
-                	case CHARGE: // handled by EtcStatusUpdate
-                	case SIGNET_GROUND:
-                		continue;
-                }
-                
-                if (effect.getInUse())
-                {
-                    if (mi != null)
-                        effect.addIcon(mi);
-                    if (ps != null)
-                        effect.addPartySpelledIcon(ps);
-                    if (os != null && !effect.getSkill().isToggle())
-                        effect.addOlympiadSpelledIcon(os);
-                }
-            }
-        }
-            
-        // Send the packets if needed
-        if (mi != null)
-            sendPacket(mi);
-        if (ps != null)
-        {
-            // summon info only needs to go to the owner, not to the whole party
-            // player info: if in party, send to all party members except one's self.
-            //              if not in party, send to self.
-            if (this.isInParty())
-            {
-                this.getParty().broadcastToPartyMembers(this, ps);
-            }
-        }
-        
-        if (os != null)
-        {
-            if (Olympiad.getInstance().getSpectators(this.getOlympiadGameId()) != null)
-            {
-                for (L2PcInstance spectator : Olympiad.getInstance().getSpectators(this.getOlympiadGameId()))
-                {
-                    if (spectator != null) 
-                    {
-                        spectator.sendPacket(os);
-                    }
-                }
-            }
-        }
-    }
-
 	/**
 	 * Send a Server->Client packet UserInfo to this L2PcInstance and CharInfo to all L2PcInstance in its _KnownPlayers.<BR><BR>
 	 *

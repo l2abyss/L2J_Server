@@ -189,7 +189,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final int[] _negateId; 			// cancels the effect of skill ID
     private final L2SkillType[] _negateStats; 	// lists the effect types that are canceled
     private final int _maxNegatedEffects; 	// maximum number of effects to negate
-    
+
+    private final boolean _stayAfterDeath; // skill should stay after death
+
     // kill by damage over time
     private final boolean _killByDOT;
 
@@ -391,7 +393,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
         else
         	_negateId = new int[0];
         _maxNegatedEffects = set.getInteger("maxNegated", 0);
-        
+
+        _stayAfterDeath = set.getBool("stayAfterDeath", false);
+
         _killByDOT = set.getBool("killByDOT", false);
         _isNeutral = set.getBool("neutral",false);
         _hitTime = set.getInteger("hitTime", 0);
@@ -1169,6 +1173,18 @@ public abstract class L2Skill implements IChanceSkillTrigger
             default:
                 return this.isDebuff();
         }
+    }
+
+    public final boolean is7Signs()
+    {
+    	if (_id > 4360 && _id < 4367)
+    		return true;
+    	return false;
+    }
+
+    public final boolean isStayAfterDeath()
+    {
+    	return _stayAfterDeath;
     }
 
     //	int weapons[] = {L2Weapon.WEAPON_TYPE_ETC, L2Weapon.WEAPON_TYPE_BOW,
