@@ -55,6 +55,10 @@ public final class FloodProtectors
 	 * Server-bypass flood protector.
 	 */
 	private final FloodProtectorAction _serverBypass;
+	/**
+	 * Multisell flood protector.
+	 */
+	private final FloodProtectorAction _multiSell;
 	
 	/**
 	 * Creates new instance of FloodProtectors.
@@ -73,6 +77,7 @@ public final class FloodProtectors
 		_subclass = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_SUBCLASS);
 		_dropItem = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_DROP_ITEM);
 		_serverBypass = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_SERVER_BYPASS);
+		_multiSell = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_MULTISELL);
 	}
 	
 	/**
@@ -154,4 +159,15 @@ public final class FloodProtectors
 	{
 		return _serverBypass;
 	}
+
+	/**
+	 * Returns {@link #_multisell}.
+	 * 
+	 * @return {@link #_multisell}
+	 */
+	public FloodProtectorAction getMultiSell()
+	{
+		return _multiSell;
+	}
+
 }

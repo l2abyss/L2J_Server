@@ -373,6 +373,8 @@ public final class Config
 		new FloodProtectorConfig("DropItemFloodProtector");
 	public static final FloodProtectorConfig FLOOD_PROTECTOR_SERVER_BYPASS =
 		new FloodProtectorConfig("ServerBypassFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_MULTISELL =
+		new FloodProtectorConfig("MultiSellFloodProtector");
 	public static boolean ALLOW_DISCARDITEM;
 	public static int AUTODESTROY_ITEM_AFTER;
 	public static int HERB_AUTO_DESTROY_TIME;
