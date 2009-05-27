@@ -667,7 +667,7 @@ public class L2CubicInstance
 			 *  If target is reflecting the skill then no damage is done
 			 *  Ignoring vengance-like reflections
 			 */
-			if (Formulas.calcSkillReflect(target, skill) == Formulas.SKILL_REFLECT_FAILED)
+			if ((Formulas.calcSkillReflect(target, skill) & Formulas.SKILL_REFLECT_SUCCEED) > 0)
 				damage = 0;
 			
 			if (Config.DEBUG)
