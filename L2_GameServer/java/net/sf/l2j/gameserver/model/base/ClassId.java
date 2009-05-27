@@ -280,9 +280,12 @@ public enum ClassId
 	 */
 	public final int level()
 	{
-		if (_parent == null)
+		if (_id != 0x87 && _parent == null)
 			return 0;
-		
+		if (_id == 0x87)
+			return 2;
+		if (_id == 0x88)
+			return 3;
 		return 1 + _parent.level();
 	}
 	

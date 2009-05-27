@@ -486,7 +486,7 @@ public class L2NpcInstance extends L2Npc
 						{
 						    for (ClassId cid : _classesToTeach)
 						    {
-						        if (cid.level() != classCheck.level())
+						        if (cid.level() > classCheck.level()) 
 						            continue;
 
 						        if (SkillTreeTable.getInstance().getAvailableSkills(player, cid).length == 0)
