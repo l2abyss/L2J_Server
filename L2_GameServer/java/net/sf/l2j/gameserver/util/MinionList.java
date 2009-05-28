@@ -108,6 +108,9 @@ public class MinionList
 		Set<Integer> seenGroups = new FastSet<Integer>();
 		for (L2MinionInstance minion : getSpawnedMinions())
 		{
+			if (minion == null)
+				continue;
+			
 			seenGroups.add(minion.getNpcId());
 		}
 		return seenGroups.size();
