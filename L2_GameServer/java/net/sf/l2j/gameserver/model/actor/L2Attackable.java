@@ -1383,7 +1383,9 @@ public class L2Attackable extends L2Npc
 							_log.fine("Item id to drop: " + item.getItemId() + " amount: " + item.getCount());
 
 						// Check if the autoLoot mode is active
-						if (Config.AUTO_LOOT || isFlying())
+						if (isFlying()
+								|| (!isRaid() && Config.AUTO_LOOT)
+								|| (isRaid() && Config.AUTO_LOOT_RAIDS))
 							player.doAutoLoot(this, item); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
 						else
 							dropItem(player, item); // drop the item on the ground

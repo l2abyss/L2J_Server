@@ -149,6 +149,7 @@ public final class Config
 	public static int ALT_PARTY_RANGE2;
 	public static int STARTING_ADENA;
 	public static boolean AUTO_LOOT;
+	public static boolean AUTO_LOOT_RAIDS;
 	public static int UNSTUCK_INTERVAL;
 	public static int PLAYER_SPAWN_PROTECTION;
 	public static boolean RESPAWN_RANDOM_ENABLED;
@@ -1214,6 +1215,7 @@ public final class Config
 					ALT_PARTY_RANGE2 = Integer.parseInt(Character.getProperty("AltPartyRange2", "1400"));
 					STARTING_ADENA = Integer.parseInt(Character.getProperty("StartingAdena", "0"));
 					AUTO_LOOT = Boolean.parseBoolean(Character.getProperty("AutoLoot", "false"));
+					AUTO_LOOT_RAIDS = Boolean.parseBoolean(Character.getProperty("AutoLootRaids", "false"));
 					UNSTUCK_INTERVAL = Integer.parseInt(Character.getProperty("UnstuckInterval", "300"));
 					PLAYER_SPAWN_PROTECTION = Integer.parseInt(Character.getProperty("PlayerSpawnProtection", "0"));
 					RESPAWN_RANDOM_ENABLED = Boolean.parseBoolean(Character.getProperty("RespawnRandomInTown", "True"));
@@ -2152,6 +2154,7 @@ public final class Config
 		else if (pName.equalsIgnoreCase("LifeCrystalNeeded")) LIFE_CRYSTAL_NEEDED = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("SpBookNeeded")) SP_BOOK_NEEDED = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AutoLoot")) AUTO_LOOT = Boolean.parseBoolean(pValue);
+		else if (pName.equalsIgnoreCase("AutoLootRaids")) AUTO_LOOT_RAIDS = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AutoLootHerbs")) AUTO_LOOT_HERBS = Boolean.parseBoolean(pValue);
 
 		else if (pName.equalsIgnoreCase("AltKarmaPlayerCanBeKilledInPeaceZone")) ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE = Boolean.parseBoolean(pValue);
