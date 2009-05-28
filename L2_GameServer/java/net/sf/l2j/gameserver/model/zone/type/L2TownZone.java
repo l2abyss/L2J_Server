@@ -102,6 +102,8 @@ public class L2TownZone extends L2ZoneType
 		if (_isPeaceZone && Config.ZONE_TOWN != 2)
 			character.setInsideZone(L2Character.ZONE_PEACE, true);
 		
+		character.setInsideZone(L2Character.ZONE_TOWN, true);
+		
 	}
 	
 	@Override
@@ -110,6 +112,8 @@ public class L2TownZone extends L2ZoneType
 		// TODO: there should be no exit if there was possibly no enter
 		if (_isPeaceZone)
 			character.setInsideZone(L2Character.ZONE_PEACE, false);
+		
+		character.setInsideZone(L2Character.ZONE_TOWN, true);
 		
 		// if (character instanceof L2PcInstance)
 		//((L2PcInstance)character).sendMessage("You left "+_townName);

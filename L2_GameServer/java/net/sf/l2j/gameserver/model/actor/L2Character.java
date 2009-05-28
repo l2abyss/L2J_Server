@@ -217,8 +217,9 @@ public abstract class L2Character extends L2Object
 	public static final byte ZONE_NOSUMMONFRIEND = 12;
 	public static final byte ZONE_FORT = 13;
 	public static final byte ZONE_NOSTORE = 14;
+	public static final byte ZONE_TOWN = 15;
 
-	private final byte[] _zones = new byte[15];
+	private final byte[] _zones = new byte[16];
 	protected byte _zoneValidateCounter = 4;
 
 	private boolean _isRaid = false;

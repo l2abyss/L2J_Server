@@ -223,9 +223,8 @@ public final class L2TeleporterInstance extends L2NpcInstance
 				player.sendPacket(new SystemMessage(SystemMessageId.NO_PORT_THAT_IS_IN_SIGE));
 				return;
 			}
-			// temp hack: only gatekeepers inside town are restricted, e.g. Cruma tower
-			else if (TownManager.townHasCastleInSiege(list.getLocX(), list.getLocY()) 
-					&& isInsideZone(L2Character.ZONE_PEACE))
+			else if (TownManager.townHasCastleInSiege(list.getLocX(), list.getLocY())
+					&& isInsideZone(L2Character.ZONE_TOWN))
 			{
 				player.sendPacket(new SystemMessage(SystemMessageId.NO_PORT_THAT_IS_IN_SIGE));
 				return;

@@ -145,8 +145,6 @@ public class L2SkillSiegeFlag extends L2Skill
 			text = "You must be a clan leader to place a flag";
 		else if (castle.getSiege().getAttackerClan(player.getClan()).getNumFlags() >= SiegeManager.getInstance().getFlagMaxCount())
 			text = "You have already placed the maximum number of flags possible";
-		else if (activeChar.isInsideZone(L2Character.ZONE_CASTLE))
-			text = "You cannot place the flag inside a Castle";
 		else
 			return true;
 		
@@ -180,8 +178,6 @@ public class L2SkillSiegeFlag extends L2Skill
 			text = "You must be a clan leader to place a flag";
 		else if (fort.getSiege().getAttackerClan(player.getClan()).getNumFlags() >= FortSiegeManager.getInstance().getFlagMaxCount())
 			text = "You have already placed the maximum number of flags possible";
-		else if (activeChar.isInsideZone(L2Character.ZONE_FORT))
-			text = "You cannot place the flag inside a Fort";
 		else
 			return true;
 		
