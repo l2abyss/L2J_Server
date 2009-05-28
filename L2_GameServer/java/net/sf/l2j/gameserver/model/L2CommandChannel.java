@@ -61,6 +61,8 @@ public class L2CommandChannel
 	 */
 	public void addParty(L2Party party)
 	{
+		if (party == null)
+			return;
 		// Update the CCinfo for existing players
 		this.broadcastToChannelMembers(new ExMPCCPartyInfoUpdate(party, 1));
 		
@@ -78,6 +80,9 @@ public class L2CommandChannel
 	 */
 	public void removeParty(L2Party party)
 	{
+		if (party == null)
+			return;
+		
 		_partys.remove(party);
 		_channelLvl = 0;
 		for (L2Party pty : _partys)
