@@ -424,7 +424,11 @@ public class L2Clan
 			player.sendSkillList();
 
 			player.setClan(null);
-			player.setClanJoinExpiryTime(clanJoinExpiryTime);
+			
+			// players leaving from clan academy have no penalty
+			if (exMember.getPledgeType() != -1)
+				player.setClanJoinExpiryTime(clanJoinExpiryTime);
+			
 			player.setPledgeClass(exMember.calculatePledgeClass(player));
 			player.broadcastUserInfo();
 			// disable clan tab
