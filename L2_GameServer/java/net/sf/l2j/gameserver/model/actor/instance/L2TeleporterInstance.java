@@ -23,6 +23,7 @@ import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.instancemanager.TownManager;
 import net.sf.l2j.gameserver.model.L2TeleportLocation;
+import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -222,7 +223,9 @@ public final class L2TeleporterInstance extends L2NpcInstance
 				player.sendPacket(new SystemMessage(SystemMessageId.NO_PORT_THAT_IS_IN_SIGE));
 				return;
 			}
-			else if (TownManager.townHasCastleInSiege(list.getLocX(), list.getLocY()))
+			// temp hack: only gatekeepers inside town are restricted, e.g. Cruma tower
+			else if (TownManager.townHasCastleInSiege(list.getLocX(), list.getLocY()) 
+					&& isInsideZone(L2Character.ZONE_PEACE))
 			{
 				player.sendPacket(new SystemMessage(SystemMessageId.NO_PORT_THAT_IS_IN_SIGE));
 				return;
