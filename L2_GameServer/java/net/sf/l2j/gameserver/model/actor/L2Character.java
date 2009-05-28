@@ -5272,7 +5272,8 @@ public abstract class L2Character extends L2Object
 				}
 
                 // Notify AI with EVT_ATTACKED
-                target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
+				if (target.hasAI())
+					target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
                 getAI().clientStartAutoAttack();
                 if (this instanceof L2Summon)
                 {
@@ -6349,8 +6350,13 @@ public abstract class L2Character extends L2Object
 
 					// Check Raidboss attack and
 					// check buffing chars who attack raidboss. Results in mute.
-					L2Character targetsAttackTarget = target.getAI().getAttackTarget();
-					L2Character targetsCastTarget = target.getAI().getCastTarget();
+					L2Character targetsAttackTarget = null;
+					L2Character targetsCastTarget = null;
+					if (target.hasAI())
+					{
+						targetsAttackTarget = target.getAI().getAttackTarget();
+						targetsCastTarget = target.getAI().getCastTarget();
+					}
 					if (
 							(target.isRaid() && getLevel() > target.getLevel() + 8)
 							||
