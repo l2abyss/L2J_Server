@@ -47,6 +47,8 @@ class DocumentSkill extends DocumentBase {
         public StatsSet[]           enchsets4;
         public StatsSet[]           enchsets5;
         public StatsSet[]           enchsets6;
+        public StatsSet[]           enchsets7;
+        public StatsSet[]           enchsets8;
         public int                  currentLevel;
         public List<L2Skill>   skills          = new FastList<L2Skill>();
         public List<L2Skill>   currentSkills   = new FastList<L2Skill>();
@@ -140,6 +142,8 @@ class DocumentSkill extends DocumentBase {
         int enchantLevels4 = 0;
         int enchantLevels5 = 0;
         int enchantLevels6 = 0;
+        int enchantLevels7 = 0;
+        int enchantLevels8 = 0;
 		int skillId = Integer.parseInt(attrs.getNamedItem("id").getNodeValue());
 		String skillName = attrs.getNamedItem("name").getNodeValue();
 		String levels = attrs.getNamedItem("levels").getNodeValue();
@@ -156,6 +160,10 @@ class DocumentSkill extends DocumentBase {
             enchantLevels5 = Integer.parseInt(attrs.getNamedItem("enchantLevels5").getNodeValue());
         if (attrs.getNamedItem("enchantLevels6") != null)
             enchantLevels6 = Integer.parseInt(attrs.getNamedItem("enchantLevels6").getNodeValue());
+        if (attrs.getNamedItem("enchantLevels7") != null)
+            enchantLevels7 = Integer.parseInt(attrs.getNamedItem("enchantLevels7").getNodeValue());
+        if (attrs.getNamedItem("enchantLevels8") != null)
+            enchantLevels8 = Integer.parseInt(attrs.getNamedItem("enchantLevels8").getNodeValue());
 
         _currentSkill.id     = skillId;
         _currentSkill.name   = skillName;
@@ -166,6 +174,8 @@ class DocumentSkill extends DocumentBase {
         _currentSkill.enchsets4   = new StatsSet[enchantLevels4];
         _currentSkill.enchsets5   = new StatsSet[enchantLevels5];
         _currentSkill.enchsets6   = new StatsSet[enchantLevels6];
+        _currentSkill.enchsets7   = new StatsSet[enchantLevels7];
+        _currentSkill.enchsets8   = new StatsSet[enchantLevels8];
 
 		for (int i=0; i < lastLvl; i++)
 		{
@@ -333,6 +343,52 @@ class DocumentSkill extends DocumentBase {
 
         if (_currentSkill.enchsets6.length != enchantLevels6)
             throw new RuntimeException("Skill id="+skillId+" number of levels missmatch, "+enchantLevels6+" levels expected");
+        
+        for (int i=0; i < enchantLevels7; i++)
+        {
+            _currentSkill.enchsets7[i] = new StatsSet();
+            _currentSkill.enchsets7[i].set("skill_id", _currentSkill.id);
+            _currentSkill.enchsets7[i].set("level",    i+701);
+            _currentSkill.enchsets7[i].set("name",     _currentSkill.name);
+
+            for (n=first; n != null; n = n.getNextSibling())
+            {
+                if ("set".equalsIgnoreCase(n.getNodeName()))
+                    parseBeanSet(n, _currentSkill.enchsets7[i], _currentSkill.sets.length);
+            }
+
+            for (n=first; n != null; n = n.getNextSibling())
+            {
+                if ("enchant7".equalsIgnoreCase(n.getNodeName()))
+                    parseBeanSet(n, _currentSkill.enchsets7[i], i+1);
+            }
+        }
+
+        if (_currentSkill.enchsets7.length != enchantLevels7)
+            throw new RuntimeException("Skill id="+skillId+" number of levels missmatch, "+enchantLevels7+" levels expected");
+        
+        for (int i=0; i < enchantLevels8; i++)
+        {
+            _currentSkill.enchsets8[i] = new StatsSet();
+            _currentSkill.enchsets8[i].set("skill_id", _currentSkill.id);
+            _currentSkill.enchsets8[i].set("level",    i+801);
+            _currentSkill.enchsets8[i].set("name",     _currentSkill.name);
+
+            for (n=first; n != null; n = n.getNextSibling())
+            {
+                if ("set".equalsIgnoreCase(n.getNodeName()))
+                    parseBeanSet(n, _currentSkill.enchsets8[i], _currentSkill.sets.length);
+            }
+
+            for (n=first; n != null; n = n.getNextSibling())
+            {
+                if ("enchant8".equalsIgnoreCase(n.getNodeName()))
+                    parseBeanSet(n, _currentSkill.enchsets8[i], i+1);
+            }
+        }
+
+        if (_currentSkill.enchsets8.length != enchantLevels8)
+            throw new RuntimeException("Skill id="+skillId+" number of levels missmatch, "+enchantLevels8+" levels expected");
 
         makeSkills();
 		for (int i=0; i < lastLvl; i++)
@@ -614,13 +670,97 @@ class DocumentSkill extends DocumentBase {
                 }
             }
         }
+        for (int i=lastLvl+enchantLevels1+enchantLevels2+enchantLevels3+enchantLevels4+enchantLevels5+enchantLevels6; i < lastLvl+enchantLevels1+enchantLevels2+enchantLevels3+enchantLevels4+enchantLevels5+enchantLevels6+enchantLevels7; i++)
+        {
+            boolean found = false;
+            _currentSkill.currentLevel = i-lastLvl-enchantLevels1-enchantLevels2-enchantLevels3-enchantLevels4-enchantLevels5-enchantLevels6;
+            for (n=first; n != null; n = n.getNextSibling())
+            {
+                if ("enchant7cond".equalsIgnoreCase(n.getNodeName()))
+                {
+                    found = true;
+                    Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
+                    Node msg = n.getAttributes().getNamedItem("msg");
+                    if (condition != null && msg != null)
+                        condition.setMessage(msg.getNodeValue());
+                    _currentSkill.currentSkills.get(i).attach(condition,false);
+                }
+                if ("enchant7for".equalsIgnoreCase(n.getNodeName()))
+                {
+                    found = true;
+                    parseTemplate(n, _currentSkill.currentSkills.get(i));
+                }
+            }
+            // If none found, the enchanted skill will take effects from maxLvL of norm skill
+            if(!found)
+            {
+                _currentSkill.currentLevel = lastLvl-1;
+                for (n=first; n != null; n = n.getNextSibling())
+                {
+                    if ("cond".equalsIgnoreCase(n.getNodeName()))
+                    {
+                        Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
+                        Node msg = n.getAttributes().getNamedItem("msg");
+                        if (condition != null && msg != null)
+                            condition.setMessage(msg.getNodeValue());
+                        _currentSkill.currentSkills.get(i).attach(condition,false);
+                    }
+                    if ("for".equalsIgnoreCase(n.getNodeName()))
+                    {
+                        parseTemplate(n, _currentSkill.currentSkills.get(i));
+                    }
+                }
+            }
+        }
+        for (int i=lastLvl+enchantLevels1+enchantLevels2+enchantLevels3+enchantLevels4+enchantLevels5+enchantLevels6+enchantLevels7; i < lastLvl+enchantLevels1+enchantLevels2+enchantLevels3+enchantLevels4+enchantLevels5+enchantLevels6+enchantLevels7+enchantLevels8; i++)
+        {
+            boolean found = false;
+            _currentSkill.currentLevel = i-lastLvl-enchantLevels1-enchantLevels2-enchantLevels3-enchantLevels4-enchantLevels5-enchantLevels6-enchantLevels7;
+            for (n=first; n != null; n = n.getNextSibling())
+            {
+                if ("enchant8cond".equalsIgnoreCase(n.getNodeName()))
+                {
+                    found = true;
+                    Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
+                    Node msg = n.getAttributes().getNamedItem("msg");
+                    if (condition != null && msg != null)
+                        condition.setMessage(msg.getNodeValue());
+                    _currentSkill.currentSkills.get(i).attach(condition,false);
+                }
+                if ("enchant8for".equalsIgnoreCase(n.getNodeName()))
+                {
+                    found = true;
+                    parseTemplate(n, _currentSkill.currentSkills.get(i));
+                }
+            }
+            // If none found, the enchanted skill will take effects from maxLvL of norm skill
+            if(!found)
+            {
+                _currentSkill.currentLevel = lastLvl-1;
+                for (n=first; n != null; n = n.getNextSibling())
+                {
+                    if ("cond".equalsIgnoreCase(n.getNodeName()))
+                    {
+                        Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
+                        Node msg = n.getAttributes().getNamedItem("msg");
+                        if (condition != null && msg != null)
+                            condition.setMessage(msg.getNodeValue());
+                        _currentSkill.currentSkills.get(i).attach(condition,false);
+                    }
+                    if ("for".equalsIgnoreCase(n.getNodeName()))
+                    {
+                        parseTemplate(n, _currentSkill.currentSkills.get(i));
+                    }
+                }
+            }
+        }
         _currentSkill.skills.addAll(_currentSkill.currentSkills);
 	}
 
     private void makeSkills()
 	{
         int count = 0;
-        _currentSkill.currentSkills = new FastList<L2Skill>(_currentSkill.sets.length+_currentSkill.enchsets1.length+_currentSkill.enchsets2.length+_currentSkill.enchsets3.length+_currentSkill.enchsets4.length+_currentSkill.enchsets5.length+_currentSkill.enchsets6.length);
+        _currentSkill.currentSkills = new FastList<L2Skill>(_currentSkill.sets.length+_currentSkill.enchsets1.length+_currentSkill.enchsets2.length+_currentSkill.enchsets3.length+_currentSkill.enchsets4.length+_currentSkill.enchsets5.length+_currentSkill.enchsets6.length+_currentSkill.enchsets7.length+_currentSkill.enchsets8.length);
 
 		for (int i=0; i < _currentSkill.sets.length; i++)
         {
@@ -710,6 +850,32 @@ class DocumentSkill extends DocumentBase {
             catch (Exception e)
             {
                 _log.log(Level.SEVERE, "Skill id="+_currentSkill.enchsets6[i].getEnum("skillType", L2SkillType.class).makeSkill(_currentSkill.enchsets6[i]).getDisplayId()+" level="+_currentSkill.enchsets6[i].getEnum("skillType", L2SkillType.class).makeSkill(_currentSkill.enchsets6[i]).getLevel(), e);
+            }
+        }
+        _count = count;
+        for (int i=0; i < _currentSkill.enchsets7.length; i++)
+        {
+            try
+            {
+                _currentSkill.currentSkills.add(_count+i, _currentSkill.enchsets7[i].getEnum("skillType", L2SkillType.class).makeSkill(_currentSkill.enchsets7[i]));
+                count++;
+            }
+            catch (Exception e)
+            {
+                _log.log(Level.SEVERE, "Skill id="+_currentSkill.enchsets7[i].getEnum("skillType", L2SkillType.class).makeSkill(_currentSkill.enchsets7[i]).getDisplayId()+" level="+_currentSkill.enchsets7[i].getEnum("skillType", L2SkillType.class).makeSkill(_currentSkill.enchsets7[i]).getLevel(), e);
+            }
+        }
+        _count = count;
+        for (int i=0; i < _currentSkill.enchsets8.length; i++)
+        {
+            try
+            {
+                _currentSkill.currentSkills.add(_count+i, _currentSkill.enchsets8[i].getEnum("skillType", L2SkillType.class).makeSkill(_currentSkill.enchsets8[i]));
+                count++;
+            }
+            catch (Exception e)
+            {
+                _log.log(Level.SEVERE, "Skill id="+_currentSkill.enchsets8[i].getEnum("skillType", L2SkillType.class).makeSkill(_currentSkill.enchsets8[i]).getDisplayId()+" level="+_currentSkill.enchsets8[i].getEnum("skillType", L2SkillType.class).makeSkill(_currentSkill.enchsets8[i]).getLevel(), e);
             }
         }
 	}
