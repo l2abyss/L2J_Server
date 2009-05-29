@@ -37,7 +37,7 @@ public class ExShowBaseAttributeCancelWindow extends L2GameServerPacket
 		for (L2ItemInstance item : _items)
 		{
 			writeD(item.getObjectId());
-			writeD(50000);
+			writeQ(50000);
 		}
 	}
 
