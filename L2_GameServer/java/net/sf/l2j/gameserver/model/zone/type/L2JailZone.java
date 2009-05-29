@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.model.zone.type;
 
+import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
@@ -38,9 +40,12 @@ public class L2JailZone extends L2ZoneType
 		if (character instanceof L2PcInstance)
 		{
 			character.setInsideZone(L2Character.ZONE_JAIL, true);
-			character.setInsideZone(L2Character.ZONE_PVP, true);
 			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
-			((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
+			if (Config.JAIL_IS_PVP)
+			{
+				character.setInsideZone(L2Character.ZONE_PVP, true);
+				((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
+			}
 		}
 	}
 	
@@ -50,9 +55,18 @@ public class L2JailZone extends L2ZoneType
 		if (character instanceof L2PcInstance)
 		{
 			character.setInsideZone(L2Character.ZONE_JAIL, false);
-			character.setInsideZone(L2Character.ZONE_PVP, false);
 			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
-			((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
+			if (Config.JAIL_IS_PVP)
+			{
+				character.setInsideZone(L2Character.ZONE_PVP, false);
+				((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
+			}
+			if (((L2PcInstance) character).isInJail())
+			{
+				// when a player wants to exit jail even if he is still jailed, teleport him back to jail
+				ThreadPoolManager.getInstance().scheduleGeneral(new BackToJail(character), 2000);
+				character.sendMessage("You cannot cheat your way out of here. You must wait until your jail time is over.");
+			}
 		}
 	}
 	
@@ -66,4 +80,18 @@ public class L2JailZone extends L2ZoneType
 	{
 	}
 	
+	static class BackToJail implements Runnable
+	{
+		private L2PcInstance _activeChar;
+		
+		BackToJail(L2Character character)
+		{
+			_activeChar = (L2PcInstance) character;
+		}
+		
+		public void run()
+		{
+			_activeChar.teleToLocation(-114356, -249645, -2984); // Jail
+		}
+	}
 }
