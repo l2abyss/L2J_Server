@@ -10,10 +10,18 @@ import net.sf.l2j.gameserver.skills.Env;
 public class ConditionPlayerActiveSkillId extends Condition
 {
 	private final int _skillId;
+	private final int _skillLevel;
     
     public ConditionPlayerActiveSkillId(int skillId)
     {
         _skillId = skillId;
+        _skillLevel = -1;
+    }
+    
+    public ConditionPlayerActiveSkillId(int skillId, int skillLevel)
+    {
+        _skillId = skillId;
+        _skillLevel = skillLevel;
     }
     
     @Override
@@ -24,7 +32,10 @@ public class ConditionPlayerActiveSkillId extends Condition
             if (sk != null)
             {
                 if (sk.getId() == _skillId)
-                    return true;
+                {
+                	if (_skillLevel == -1 || _skillLevel == sk.getLevel())
+                		return true;
+                }
             }
         }
         return false;

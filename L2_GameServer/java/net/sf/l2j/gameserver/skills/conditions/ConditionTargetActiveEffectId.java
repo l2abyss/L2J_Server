@@ -44,12 +44,7 @@ public class ConditionTargetActiveEffectId extends Condition
             {
                 if (e.getSkill().getId() == _effectId)
                 {
-                	if (_effectLvl != -1)
-                	{
-                		if (_effectLvl == e.getSkill().getLevel())
-                			return true;
-                	}
-                	else
+                	if (_effectLvl == -1 || _effectLvl == e.getSkill().getLevel())
                 		return true;
                 }
             }

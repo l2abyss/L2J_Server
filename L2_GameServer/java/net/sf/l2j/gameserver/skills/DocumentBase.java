@@ -569,6 +569,13 @@ abstract class DocumentBase
                 int skill_id = Integer.decode(getValue(a.getNodeValue(), template));
                 cond = joinAnd(cond, new ConditionPlayerActiveSkillId(skill_id));
             }
+            else if ("active_skill_id_lvl".equalsIgnoreCase(a.getNodeName()))
+            {
+            	String val = getValue(a.getNodeValue(), template);
+            	int skill_id = Integer.decode(getValue(val.split(",")[0], template));
+        		int skill_lvl = Integer.decode(getValue(val.split(",")[1], template));
+                cond = joinAnd(cond, new ConditionPlayerActiveSkillId(skill_id, skill_lvl));
+            }
         }
 
         if(forces[0] + forces[1] > 0)
