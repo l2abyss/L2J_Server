@@ -12346,7 +12346,7 @@ public final class L2PcInstance extends L2Playable
 		if (pcrit)
         {
 			sendPacket(new SystemMessage(SystemMessageId.C1_HAD_CRITICAL_HIT).addPcName(this));
-            if (getSkillLevel(467) > 0 && target instanceof L2Npc)
+            if (target instanceof L2Npc && getSkillLevel(467) > 0)
             {
                 L2Skill skill = SkillTable.getInstance().getInfo(467,getSkillLevel(467));
                 if (Rnd.get(100) < skill.getCritChance())
