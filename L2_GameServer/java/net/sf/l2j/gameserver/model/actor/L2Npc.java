@@ -952,7 +952,7 @@ public class L2Npc extends L2Character
 						final String name = ItemTable.getInstance().getTemplate(drop.getItemId()).getName();
 						final String color;
 
-						if (drop.getChance() >= 600000)
+						if (drop.getChance() >= 500000)
 							color = "ff0000";
 						else if (drop.getChance() >= 300000)
 							color = "00ff00";
