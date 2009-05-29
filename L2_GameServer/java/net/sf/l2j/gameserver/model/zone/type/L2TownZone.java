@@ -113,7 +113,7 @@ public class L2TownZone extends L2ZoneType
 		if (_isPeaceZone)
 			character.setInsideZone(L2Character.ZONE_PEACE, false);
 		
-		character.setInsideZone(L2Character.ZONE_TOWN, true);
+		character.setInsideZone(L2Character.ZONE_TOWN, false);
 		
 		// if (character instanceof L2PcInstance)
 		//((L2PcInstance)character).sendMessage("You left "+_townName);
