@@ -311,6 +311,12 @@ public abstract class L2Playable extends L2Character
 		updateAbnormalEffect();
 	}
 
+	@Override
+	public void updateEffectIcons(boolean partyOnly)
+	{
+		_effects.updateEffectIcons(partyOnly);
+	}
+
 	public boolean isLockedTarget()
 	{
 		return _lockedTarget != null;
