@@ -641,6 +641,7 @@ public class Castle
 			{
 				door.decayMe(); // Kill current if not killed already
 				door = DoorTable.parseList(_doorDefault.get(i));
+				DoorTable.getInstance().putDoor(door); //Readd the new door to the DoorTable By Erb
 				if (isDoorWeak)
 					door.setCurrentHp(door.getMaxHp() / 2);
 				door.spawnMe(door.getX(), door.getY(), door.getZ());
