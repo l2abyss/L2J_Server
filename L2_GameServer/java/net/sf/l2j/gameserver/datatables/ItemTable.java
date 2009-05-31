@@ -178,7 +178,7 @@ public class ItemTable
 		"SELECT item_id, name, crystallizable, item_type, weight, consume_type, material," + " crystal_type, duration, time, price, crystal_count, sellable, dropable, destroyable, tradeable, handler, skill FROM etcitem",
 		
 		"SELECT item_id, name, bodypart, crystallizable, armor_type, weight," + " material, crystal_type, avoid_modify, duration, time, p_def, m_def, mp_bonus,"
-				+ " price, crystal_count, sellable, dropable, destroyable, tradeable, skill FROM armor",
+				+ " price, crystal_count, sellable, dropable, destroyable, tradeable, enchant4_skill, skill FROM armor",
 		
 		"SELECT item_id, name, bodypart, crystallizable, weight, soulshots, spiritshots," + " material, crystal_type, p_dam, rnd_dam, weaponType, critical, hit_modify, avoid_modify,"
 				+ " shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, time, price, crystal_count," + " sellable, dropable, destroyable, tradeable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl,"
@@ -190,7 +190,7 @@ public class ItemTable
 		"SELECT item_id, name, crystallizable, item_type, weight, consume_type, material," + " crystal_type, duration, time, price, crystal_count, sellable, dropable, destroyable, tradeable, handler, skill FROM custom_etcitem",
 		
 		"SELECT item_id, name, bodypart, crystallizable, armor_type, weight," + " material, crystal_type, avoid_modify, duration, time, p_def, m_def, mp_bonus,"
-				+ " price, crystal_count, sellable, dropable, destroyable, tradeable, skill FROM custom_armor",
+				+ " price, crystal_count, sellable, dropable, destroyable, tradeable, enchant4_skill, skill FROM custom_armor",
 		
 		"SELECT item_id, name, bodypart, crystallizable, weight, soulshots, spiritshots," + " material, crystal_type, p_dam, rnd_dam, weaponType, critical, hit_modify, avoid_modify,"
 				+ " shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, time, price, crystal_count," + " sellable, dropable, destroyable, tradeable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl,"
@@ -481,6 +481,7 @@ public class ItemTable
 		item.set.set("dropable", Boolean.valueOf(rset.getString("dropable")));
 		item.set.set("destroyable", Boolean.valueOf(rset.getString("destroyable")));
 		item.set.set("tradeable", Boolean.valueOf(rset.getString("tradeable")));
+		item.set.set("enchant4_skill", rset.getString("enchant4_skill"));
 		item.set.set("skill", rset.getString("skill"));
 		
 		if (bodypart == L2Item.SLOT_NECK || bodypart == L2Item.SLOT_HAIR || bodypart == L2Item.SLOT_HAIR2 || bodypart == L2Item.SLOT_HAIRALL || (bodypart & L2Item.SLOT_L_EAR) != 0 || (bodypart & L2Item.SLOT_L_FINGER) != 0)

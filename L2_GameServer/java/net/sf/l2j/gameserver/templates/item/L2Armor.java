@@ -17,7 +17,9 @@ package net.sf.l2j.gameserver.templates.item;
 import java.util.List;
 
 import javolution.util.FastList;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
+import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.funcs.Func;
@@ -36,6 +38,7 @@ public final class L2Armor extends L2Item
 	private final int _mDef;
 	private final int _mpBonus;
 	private final int _hpBonus;
+	private L2Skill _enchant4Skill = null; // skill that activates when armor is enchanted +4
 	private final String[] _skill;
 
     /**
@@ -44,6 +47,7 @@ public final class L2Armor extends L2Item
      * <LI>_avoidModifier</LI>
      * <LI>_pDef & _mDef</LI>
      * <LI>_mpBonus & _hpBonus</LI>
+     * <LI>enchant4Skill</LI>
      * @param type : L2ArmorType designating the type of armor
      * @param set : StatsSet designating the set of couples (key,value) caracterizing the armor
      * @see L2Item constructor
@@ -56,6 +60,15 @@ public final class L2Armor extends L2Item
 		_mDef          = set.getInteger("m_def");
 		_mpBonus       = set.getInteger("mp_bonus", 0);
 		_hpBonus       = set.getInteger("hp_bonus", 0);
+
+		String[] skill = set.getString("enchant4_skill").split("-");
+		if (skill != null && skill.length == 2)
+		{
+			int skill_Id = Integer.parseInt(skill[0]);
+			int skillLvl = Integer.parseInt(skill[1]);
+			if (skill_Id > 0 && skillLvl > 0)
+				_enchant4Skill = SkillTable.getInstance().getInfo(skill_Id, skillLvl);
+		}
 
 		_skill = set.getString("skill").split(";");
 	}
@@ -123,6 +136,15 @@ public final class L2Armor extends L2Item
 	public final int getHpBonus()
 	{
 		return _hpBonus;
+	}
+	
+	/**
+	* Returns skill that player get when has equiped armor +4  or more
+	* @return
+	*/
+	public L2Skill getEnchant4Skill()
+	{
+		return _enchant4Skill;
 	}
 
 	/**

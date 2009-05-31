@@ -331,7 +331,20 @@ public abstract class Inventory extends ItemContainer
 			else if (it instanceof L2Armor)
 			{
 				if (item.getElementals() != null)
-					item.getElementals().removeBonus(player); 
+					item.getElementals().removeBonus(player);
+				
+				// Remove skills bestowed from +4 armor
+				if (item.getEnchantLevel() >= 4)
+				{
+					enchant4Skill = ((L2Armor)it).getEnchant4Skill();
+
+					if (enchant4Skill != null)
+					{
+						player.removeSkill(enchant4Skill, false, enchant4Skill.isPassive());
+						player.sendSkillList(); 
+					}
+				}
+				
 				final String[] _skill = ((L2Armor)it).getSkills();
 
 				if (_skill != null)
@@ -445,7 +458,20 @@ public abstract class Inventory extends ItemContainer
 			else if (it instanceof L2Armor)
 			{
 				if (item.getElementals() != null)
-					item.getElementals().applyBonus(player, true); 
+					item.getElementals().applyBonus(player, true);
+				
+				// Add skills bestowed from +4 armor
+				if (item.getEnchantLevel() >= 4)
+				{
+					enchant4Skill= ((L2Armor)it).getEnchant4Skill();
+
+					if (enchant4Skill != null)
+					{
+						player.addSkill(enchant4Skill, false);
+						player.sendSkillList(); 
+					}
+				}
+				
 				final String[] _skill = ((L2Armor)it).getSkills();
 
 				if (_skill != null)
