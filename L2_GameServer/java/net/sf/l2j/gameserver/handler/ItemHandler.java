@@ -14,8 +14,10 @@
  */
 package net.sf.l2j.gameserver.handler;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.List;
+
+import javolution.util.FastList;
+import net.sf.l2j.gameserver.templates.item.L2EtcItem;
 
 /**
  * This class manages handlers of items
@@ -26,7 +28,7 @@ public class ItemHandler
 {
 	private static ItemHandler _instance;
 	
-	private Map<Integer, IItemHandler> _datatable;
+	private List<IItemHandler> _datatable;
 	
 	/**
 	 * Create ItemHandler if doesn't exist and returns ItemHandler
@@ -55,7 +57,7 @@ public class ItemHandler
 	 */
 	private ItemHandler()
 	{
-		_datatable = new TreeMap<Integer, IItemHandler>();
+		_datatable = new FastList<IItemHandler>();
 	}
 	
 	/**
@@ -67,13 +69,7 @@ public class ItemHandler
 	 */
 	public void registerItemHandler(IItemHandler handler)
 	{
-		// Get all ID corresponding to the item type of the handler
-		int[] ids = handler.getItemIds();
-		// Add handler for each ID found
-		for (int i = 0; i < ids.length; i++)
-		{
-			_datatable.put(Integer.valueOf(ids[i]), handler);
-		}
+		_datatable.add(handler);
 	}
 	
 	/**
@@ -81,8 +77,16 @@ public class ItemHandler
 	 * @param itemId : int designating the itemID
 	 * @return IItemHandler
 	 */
-	public IItemHandler getItemHandler(int itemId)
+	public IItemHandler getItemHandler(L2EtcItem item)
 	{
-		return _datatable.get(Integer.valueOf(itemId));
+		String handler = item.getHandlerName();
+		if (handler.equalsIgnoreCase("none") || item == null)
+			return null;
+		for (IItemHandler iih : _datatable)
+		{
+			if (iih.getClass().getName() == handler)
+				return iih;
+		}
+		return null;
 	}
 }

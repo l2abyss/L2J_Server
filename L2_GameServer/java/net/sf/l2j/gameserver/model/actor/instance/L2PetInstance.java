@@ -156,7 +156,7 @@ public class L2PetInstance extends L2Summon
 				}
 				if (food != null && isHungry())
 				{
-					IItemHandler handler = ItemHandler.getInstance().getItemHandler(food.getItemId());
+					IItemHandler handler = ItemHandler.getInstance().getItemHandler(food.getEtcItem());
 					if (handler != null)
 					{
 						SystemMessage sm = new SystemMessage(SystemMessageId.PET_TOOK_S1_BECAUSE_HE_WAS_HUNGRY);
@@ -564,7 +564,7 @@ public class L2PetInstance extends L2Summon
 		// Herbs
 		if (target.getItemType() == L2EtcItemType.HERB)
 		{
-			IItemHandler handler = ItemHandler.getInstance().getItemHandler(target.getItemId());
+			IItemHandler handler = ItemHandler.getInstance().getItemHandler(target.getEtcItem());
 			if (handler == null)
 				_log.fine("No item handler registered for item ID " + target.getItemId() + ".");
 			else

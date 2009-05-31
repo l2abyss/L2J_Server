@@ -189,7 +189,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			}
 		}
 
-	    IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getItemId());
+	    IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
 
 	    if (handler != null)
 		{
@@ -250,7 +250,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		else
 		{
 			//_log.finest("item not equipable id:"+ item.getItemId());
-		    IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getItemId());
+		    IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
 
 		    if (handler == null)
 		        _log.warning("no itemhandler registered for itemId:" + item.getItemId());
