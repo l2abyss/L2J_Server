@@ -84,7 +84,7 @@ public class ItemHandler
 			return null;
 		for (IItemHandler iih : _datatable)
 		{
-			if (iih.getClass().getName() == handler)
+			if (iih.getClass().getName().endsWith(handler))
 				return iih;
 		}
 		return null;
