@@ -49,21 +49,27 @@ public final class Elementals
 		325, // Level 8
 		375, // Level 9
 		450, // Level 10
+		475, // Level 11
+		525, // Level 12
+		600, // Level 13
 		Integer.MAX_VALUE  // TODO: Higher stones
 	};
 
 	public final static int[] ARMOR_VALUES =
 	{
 		0,  // Level 1
-		6,  // Level 2
-		15, // Level 3
-		30, // Level 4
-		36, // Level 5
-		45, // Level 6
-		60, // Level 7
-		66, // Level 8
-		75, // Level 9
-		90, // Level 10
+		12, // Level 2
+		30, // Level 3
+		60, // Level 4
+		72, // Level 5
+		90, // Level 6
+		120, // Level 7
+		132, // Level 8
+		150, // Level 9
+		180, // Level 10
+		192, // Level 11
+		210, // Level 12
+		240, // Level 13
 		Integer.MAX_VALUE  // TODO: Higher stones
 	};
 
