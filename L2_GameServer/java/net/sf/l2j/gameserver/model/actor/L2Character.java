@@ -1727,7 +1727,8 @@ public abstract class L2Character extends L2Object
             {
                 if (this instanceof L2PcInstance)
                 {
-                    ((L2PcInstance)this).decreaseSouls(skill.getSoulConsumeCount(),skill);
+                   if ( !((L2PcInstance)this).decreaseSouls(skill.getSoulConsumeCount(),skill))
+                	   return;
                 }
             }
             
@@ -6135,7 +6136,10 @@ public abstract class L2Character extends L2Object
 				}
 				// Consume Souls if necessary
 				if (skill.getSoulConsumeCount() > 0 || skill.getMaxSoulConsumeCount() > 0)
-					((L2PcInstance)this).decreaseSouls(skill.getSoulConsumeCount() > 0 ? skill.getSoulConsumeCount():skill.getMaxSoulConsumeCount(),skill);
+				{
+					if (!((L2PcInstance)this).decreaseSouls(skill.getSoulConsumeCount() > 0 ? skill.getSoulConsumeCount():skill.getMaxSoulConsumeCount(),skill))
+						return;
+				}
 
 			}
 			// Launch the magic skill in order to calculate its effects
