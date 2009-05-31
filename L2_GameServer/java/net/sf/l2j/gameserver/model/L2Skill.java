@@ -1031,6 +1031,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
             case BETRAY:
             case DISARM:
             case AGGDAMAGE:
+            case STEAL_BUFF:
                 return true;
             default:
                 return false;
