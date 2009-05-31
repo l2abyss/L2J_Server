@@ -642,6 +642,7 @@ abstract class DocumentBase
             	int distance = Integer.decode(getValue(a.getNodeValue(),null));
             	cond = joinAnd(cond, new ConditionMinDistance(distance*distance));
             }
+            // used for npc race
             else if ("race_id".equalsIgnoreCase(a.getNodeName()))
             {
             	ArrayList<Integer> array = new ArrayList<Integer>();
@@ -652,6 +653,12 @@ abstract class DocumentBase
             		array.add(Integer.decode(getValue(item, null)));
             	}
             	cond = joinAnd(cond, new ConditionTargetRaceId(array));
+            }
+            // used for pc race
+            else if ("race".equalsIgnoreCase(a.getNodeName()))
+            {
+                Race race = Race.valueOf(a.getNodeValue());
+                cond = joinAnd(cond, new ConditionTargetRace(race));
             }
             else if ("using".equalsIgnoreCase(a.getNodeName()))
             {
