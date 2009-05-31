@@ -176,6 +176,8 @@ public enum L2SkillType
 	// Skill is done within the core.
 	COREDONE,
 	
+	CHANGE_APPEARANCE,
+	
 	// unimplemented
 	NOTDONE, BALLISTA;
 	
