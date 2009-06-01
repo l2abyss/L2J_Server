@@ -2226,7 +2226,7 @@ public final class Config
 		else if (pName.equalsIgnoreCase("PvPVsPvPTime")) PVP_PVP_TIME = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("GlobalChat")) DEFAULT_GLOBAL_CHAT = pValue;
 		else if (pName.equalsIgnoreCase("TradeChat"))	DEFAULT_TRADE_CHAT = pValue;
-		else if (pName.equalsIgnoreCase("MenuStyle"))	GM_ADMIN_MENU_STYLE = pValue;
+		else if (pName.equalsIgnoreCase("GMAdminMenuStyle"))	GM_ADMIN_MENU_STYLE = pValue;
 		else return false;
 		return true;
 	}

@@ -297,6 +297,9 @@ public final class L2AuctioneerInstance extends L2NpcInstance
                 		"<table width=280 border=0>";
                 for(Auction a:auctions)
                 {
+                	if (a == null)
+                		continue;
+                	
                 	if(i > limit) break;
                 	else if(i < start){
                 		i++;

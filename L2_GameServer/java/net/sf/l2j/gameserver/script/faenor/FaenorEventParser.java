@@ -48,13 +48,13 @@ public class FaenorEventParser extends FaenorParser
 		Date currentDate = new Date();
 		if (_eventDates.getEndDate().before(currentDate))
 		{
-			_log.warning("Event ID: (" + ID + ") has passed... Ignored.");
+			_log.info("Event ID: (" + ID + ") has passed... Ignored.");
 			return;
 		}
 		
 		if (_eventDates.getStartDate().after(currentDate))
 		{
-			_log.warning("Event ID: (" + ID + ") is not active yet... Ignored.");
+			_log.info("Event ID: (" + ID + ") is not active yet... Ignored.");
 			ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() {
 				public void run()
 				{

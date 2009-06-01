@@ -1010,7 +1010,12 @@ public abstract class Inventory extends ItemContainer
 				item.setLastChange(L2ItemInstance.MODIFIED);
 				_wearedMask |= item.getItem().getItemMask();
 				for (PaperdollListener listener : _paperdollListeners)
+				{
+					if (listener == null)
+						continue;
+					
 					listener.notifyEquiped(slot, item);
+				}
 				item.updateDatabase();
 			}
 		}

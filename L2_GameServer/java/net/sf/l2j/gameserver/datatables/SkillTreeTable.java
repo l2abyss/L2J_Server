@@ -333,7 +333,7 @@ public class SkillTreeTable
 			}
 			catch (Exception e)
 			{
-				_log.severe("Error while creating fishing skill table: " + e);
+				_log.severe("Error while creating pledge skill table: " + e);
 			}
 			try
 			{

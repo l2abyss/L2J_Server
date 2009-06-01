@@ -79,7 +79,7 @@ public class DoorTable
 			lnr = new LineNumberReader(new BufferedReader(new FileReader(doorData)));
 			
 			String line = null;
-			_log.warning("Searching clan halls doors:");
+			_log.info("Searching clan halls doors:");
 			
 			while ((line = lnr.readLine()) != null)
 			{
@@ -95,7 +95,7 @@ public class DoorTable
 					clanhall.getDoors().add(door);
 					door.setClanHall(clanhall);
 					if (Config.DEBUG)
-						_log.warning("door " + door.getDoorName() + " attached to ch " + clanhall.getName());
+						_log.info("door " + door.getDoorName() + " attached to ch " + clanhall.getName());
 				}
 			}
 			

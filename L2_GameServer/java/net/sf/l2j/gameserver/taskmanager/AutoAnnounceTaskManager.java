@@ -81,13 +81,13 @@ public class AutoAnnounceTaskManager
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "AutoAnnoucements: Fail to load announcements data.", e);
+			_log.log(Level.SEVERE, "AutoAnnoucements: Failed to load announcements data.", e);
 		}
 		finally
 		{
 			try { conn.close(); } catch (Exception e) {}
 		}
-		_log.log(Level.SEVERE, "AutoAnnoucements: Load "+count+" Auto Annoucement Data.");
+		_log.log(Level.INFO, "AutoAnnoucements: Loaded "+count+" Auto Annoucement Data.");
 	}
 	
 	private class AutoAnnouncement implements Runnable

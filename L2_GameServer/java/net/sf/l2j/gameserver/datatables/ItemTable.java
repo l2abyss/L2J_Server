@@ -136,7 +136,6 @@ public class ItemTable
 		_armorTypes.put("sigil", L2ArmorType.SIGIL);
 		
 		_slots.put("shirt", L2Item.SLOT_UNDERWEAR);
-		_slots.put("belt", L2Item.SLOT_ALLDRESS);
 		_slots.put("lbracelet", L2Item.SLOT_L_BRACELET);
 		_slots.put("rbracelet", L2Item.SLOT_R_BRACELET);
 		_slots.put("talisman", L2Item.SLOT_DECO);
@@ -732,7 +731,7 @@ public class ItemTable
 		}
 		
 		// Create a FastLookUp Table called _allTemplates of size : value of the highest item ID
-		_log.severe("highest item id used:" + highestId);
+		_log.info("Highest item id used:" + highestId);
 		_allTemplates = new L2Item[highestId + 1];
 		
 		// Insert armor item in Fast Look Up Table
