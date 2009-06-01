@@ -33,7 +33,7 @@ public class ConditionTargetNpcType extends Condition {
 		boolean mt;
 		for (int i = 0; i < _npcType.length;i++)
 		{
-			mt = (env.target.getClass().getName() == _npcType[i] + "Instance");
+			mt = (env.target.getClass().getName().endsWith(_npcType[i] + "Instance"));
 			if (mt)
 				return true;
 		}
