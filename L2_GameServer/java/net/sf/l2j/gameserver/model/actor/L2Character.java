@@ -2658,10 +2658,10 @@ public abstract class L2Character extends L2Object
 
 	public static final int ABNORMAL_EFFECT_BLEEDING		= 0x000001;
 	public static final int ABNORMAL_EFFECT_POISON 			= 0x000002;
-	public static final int ABNORMAL_EFFECT_UNKNOWN_3		= 0x000004;
-	public static final int ABNORMAL_EFFECT_UNKNOWN_4		= 0x000008;
-	public static final int ABNORMAL_EFFECT_UNKNOWN_5		= 0x000010;
-	public static final int ABNORMAL_EFFECT_UNKNOWN_6		= 0x000020;
+	public static final int ABNORMAL_EFFECT_REDCIRCLE		= 0x000004;
+	public static final int ABNORMAL_EFFECT_ICE				= 0x000008;
+	public static final int ABNORMAL_EFFECT_WIND			= 0x000010;
+	public static final int ABNORMAL_EFFECT_FEAR			= 0x000020;
 	public static final int ABNORMAL_EFFECT_STUN			= 0x000040;
 	public static final int ABNORMAL_EFFECT_SLEEP			= 0x000080;
 	public static final int ABNORMAL_EFFECT_MUTED			= 0x000100;
@@ -2680,10 +2680,10 @@ public abstract class L2Character extends L2Object
 	public static final int ABNORMAL_EFFECT_IMPRISIONING_1	= 0x200000;
 	public static final int ABNORMAL_EFFECT_IMPRISIONING_2	= 0x400000;
 	public static final int ABNORMAL_EFFECT_MAGIC_CIRCLE	= 0x800000;
-	public static final int ABNORMAL_EFFECT_ICE_FREEZE		= 0x1000000;
+	public static final int ABNORMAL_EFFECT_ICE2			= 0x1000000;
 	public static final int ABNORMAL_EFFECT_EARTHQUAKE		= 0x2000000;
 	public static final int ABNORMAL_EFFECT_UNKNOWN_27		= 0x4000000;
-	public static final int ABNORMAL_EFFECT_UNKNOWN_28		= 0x8000000;
+	public static final int ABNORMAL_EFFECT_INVULNERABLE	= 0x8000000;
 	public static final int ABNORMAL_EFFECT_VITALITY		= 0x10000000;
 
 	// XXX TEMP HACKS (get the proper mask for these effects)
