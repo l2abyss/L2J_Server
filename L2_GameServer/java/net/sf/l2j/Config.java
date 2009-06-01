@@ -147,7 +147,7 @@ public final class Config
 	public static boolean REMOVE_CASTLE_CIRCLETS;
 	public static int ALT_PARTY_RANGE;
 	public static int ALT_PARTY_RANGE2;
-	public static int STARTING_ADENA;
+	public static long STARTING_ADENA;
 	public static boolean AUTO_LOOT;
 	public static boolean AUTO_LOOT_RAIDS;
 	public static int UNSTUCK_INTERVAL;
@@ -1213,7 +1213,7 @@ public final class Config
 					REMOVE_CASTLE_CIRCLETS = Boolean.parseBoolean(Character.getProperty("RemoveCastleCirclets", "true"));
 					ALT_PARTY_RANGE = Integer.parseInt(Character.getProperty("AltPartyRange", "1600"));
 					ALT_PARTY_RANGE2 = Integer.parseInt(Character.getProperty("AltPartyRange2", "1400"));
-					STARTING_ADENA = Integer.parseInt(Character.getProperty("StartingAdena", "0"));
+					STARTING_ADENA = Long.parseLong(Character.getProperty("StartingAdena", "0"));
 					AUTO_LOOT = Boolean.parseBoolean(Character.getProperty("AutoLoot", "false"));
 					AUTO_LOOT_RAIDS = Boolean.parseBoolean(Character.getProperty("AutoLootRaids", "false"));
 					UNSTUCK_INTERVAL = Integer.parseInt(Character.getProperty("UnstuckInterval", "300"));
@@ -2092,7 +2092,7 @@ public final class Config
 		else if (pName.equalsIgnoreCase("RaidMDefenceMultiplier")) RAID_MDEFENCE_MULTIPLIER = Double.parseDouble(pValue) /100;
 		else if (pName.equalsIgnoreCase("RaidMinionRespawnTime")) RAID_MINION_RESPAWN_TIMER =Integer.parseInt(pValue);
 
-		else if (pName.equalsIgnoreCase("StartingAdena")) STARTING_ADENA = Integer.parseInt(pValue);
+		else if (pName.equalsIgnoreCase("StartingAdena")) STARTING_ADENA = Long.parseLong(pValue);
 		else if (pName.equalsIgnoreCase("UnstuckInterval")) UNSTUCK_INTERVAL = Integer.parseInt(pValue);
 
 		else if (pName.equalsIgnoreCase("PlayerSpawnProtection")) PLAYER_SPAWN_PROTECTION = Integer.parseInt(pValue);
