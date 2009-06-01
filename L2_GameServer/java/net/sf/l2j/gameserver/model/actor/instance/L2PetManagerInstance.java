@@ -38,6 +38,8 @@ import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
+import net.sf.l2j.gameserver.util.IllegalPlayerAction;
+import net.sf.l2j.gameserver.util.Util;
 
 /**
  * This class ...
@@ -207,6 +209,12 @@ public class L2PetManagerInstance extends L2MerchantInstance
 		{
 			html.setFile("data/html/petmanager/evolve_no.htm");
 			player.sendPacket(html);
+			return;
+		}
+		
+		if (curpet.isAlikeDead())
+		{
+			Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to use death pet exploit!", IllegalPlayerAction.PUNISH_KICK);
 			return;
 		}
 		
