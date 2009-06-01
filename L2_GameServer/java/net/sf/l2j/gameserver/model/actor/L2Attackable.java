@@ -1261,7 +1261,7 @@ public class L2Attackable extends L2Npc
 				if ((drop.getItemId() == 57 || (drop.getItemId() >= 6360 && drop.getItemId() <= 6362)) && isChampion())
 					itemCount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;
 			
-			if (!Config.MULTIPLE_ITEM_DROP && !ItemTable.getInstance().getTemplate(drop.getItemId()).isStackable())
+			if (!Config.MULTIPLE_ITEM_DROP && !ItemTable.getInstance().getTemplate(drop.getItemId()).isStackable() && itemCount > 1)
 				itemCount = 1;
 
 			if (itemCount > 0)
