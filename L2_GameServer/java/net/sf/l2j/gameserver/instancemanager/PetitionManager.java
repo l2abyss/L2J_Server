@@ -558,7 +558,7 @@ public final class PetitionManager
 
 		// Notify all GMs that a new petition has been submitted.
 		String msgContent = petitioner.getName() + " has submitted a new petition."; //(ID: " + newPetitionId + ").";
-		GmListTable.broadcastToGMs(new CreatureSay(petitioner.getObjectId(), 17, "Petition System", msgContent));
+		GmListTable.broadcastToGMs(new CreatureSay(petitioner.getObjectId(), Say2.HERO_VOICE, "Petition System", msgContent));
 
 		return newPetitionId;
 	}

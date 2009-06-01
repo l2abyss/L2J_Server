@@ -29,6 +29,7 @@ import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.clientpackets.Say2;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
@@ -434,14 +435,14 @@ public class Instance
 		{
 			timeLeft = remaining / 1000;
 			interval = 30000;
-			cs = new CreatureSay(0, 9, "Notice", timeLeft + " seconds left.");
+			cs = new CreatureSay(0, Say2.ALLIANCE, "Notice", timeLeft + " seconds left.");
 			remaining = remaining - 30000;
 		}
 		else
 		{
 			timeLeft = remaining / 1000;
 			interval = 10000;
-			cs = new CreatureSay(0, 9, "Notice", timeLeft + " seconds left.");
+			cs = new CreatureSay(0, Say2.ALLIANCE, "Notice", timeLeft + " seconds left.");
 			remaining = remaining - 10000;
 		}
 		if (cs != null)

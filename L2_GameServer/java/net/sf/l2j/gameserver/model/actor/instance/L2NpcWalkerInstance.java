@@ -22,6 +22,7 @@ import net.sf.l2j.gameserver.ai.L2NpcWalkerAI;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.network.clientpackets.Say2;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 import net.sf.l2j.gameserver.util.Broadcast;
@@ -83,7 +84,7 @@ public class L2NpcWalkerInstance extends L2Npc
 		//we send message to known players only!
 		if(!_knownPlayers.isEmpty())
 		{
-			CreatureSay cs = new CreatureSay(getObjectId(), 0, getName(), chat);
+			CreatureSay cs = new CreatureSay(getObjectId(), Say2.ALL, getName(), chat);
 			Broadcast.toKnownPlayers(this, cs);
 		}
 	}

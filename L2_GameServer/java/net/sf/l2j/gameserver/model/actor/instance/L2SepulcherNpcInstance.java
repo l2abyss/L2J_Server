@@ -28,6 +28,7 @@ import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.quest.Quest;
+import net.sf.l2j.gameserver.network.clientpackets.Say2;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
@@ -438,7 +439,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 		Collection<L2PcInstance> knownPlayers = L2World.getInstance().getAllPlayers().values();
 		if (knownPlayers == null || knownPlayers.isEmpty())
 			return;
-		CreatureSay sm = new CreatureSay(0, 1, this.getName(), msg);
+		CreatureSay sm = new CreatureSay(0, Say2.SHOUT, this.getName(), msg);
 		for (L2PcInstance player : knownPlayers)
 		{
 			if (player == null)

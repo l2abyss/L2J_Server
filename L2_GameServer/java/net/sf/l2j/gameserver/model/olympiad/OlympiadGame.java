@@ -34,6 +34,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.olympiad.Olympiad.COMP_TYPE;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.clientpackets.Say2;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 import net.sf.l2j.gameserver.network.serverpackets.ExAutoSoulShot;
 import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadMatchEnd;
@@ -912,7 +913,7 @@ class OlympiadGame
 			{
 				int objId = manager.getLastSpawn().getObjectId();
 				String npcName = manager.getLastSpawn().getName();
-				manager.getLastSpawn().broadcastPacket(new CreatureSay(objId, 1, npcName, "Olympiad is going to begin in Arena " + (_stadiumID + 1) + " in a moment."));
+				manager.getLastSpawn().broadcastPacket(new CreatureSay(objId, Say2.SHOUT, npcName, "Olympiad is going to begin in Arena " + (_stadiumID + 1) + " in a moment."));
 			}
 		}
 	}

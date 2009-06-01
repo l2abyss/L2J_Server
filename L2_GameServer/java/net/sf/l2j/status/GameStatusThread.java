@@ -337,7 +337,7 @@ public class GameStatusThread extends Thread
                     try
                     {
                         _usrCommand = _usrCommand.substring(7);
-                        CreatureSay cs = new CreatureSay(0, 9, "Telnet GM Broadcast from " + _cSocket.getInetAddress().getHostAddress(), _usrCommand);
+                        CreatureSay cs = new CreatureSay(0, Say2.ALLIANCE, "Telnet GM Broadcast from " + _cSocket.getInetAddress().getHostAddress(), _usrCommand);
                         GmListTable.broadcastToGMs(cs);
                         _print.println("Your Message Has Been Sent To " + getOnlineGMS() + " GM(s).");
                     }

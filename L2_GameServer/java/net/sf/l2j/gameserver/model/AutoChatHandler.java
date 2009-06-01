@@ -32,6 +32,7 @@ import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
+import net.sf.l2j.gameserver.network.clientpackets.Say2;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
 import net.sf.l2j.util.Rnd;
 
@@ -800,7 +801,7 @@ public class AutoChatHandler implements SpawnListener
                             || text.contains("%player_cabal_winner%")
                             || text.contains("%player_random%")) return;
 
-                        CreatureSay cs = new CreatureSay(chatNpc.getObjectId(), 0, creatureName, text);
+                        CreatureSay cs = new CreatureSay(chatNpc.getObjectId(), Say2.ALL, creatureName, text);
 
                         for (L2PcInstance nearbyPlayer : nearbyPlayers)
                             nearbyPlayer.sendPacket(cs);
