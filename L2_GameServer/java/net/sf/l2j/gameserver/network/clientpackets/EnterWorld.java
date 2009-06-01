@@ -189,6 +189,10 @@ public class EnterWorld extends L2GameClientPacket
 		// Set dead status if applies
 		if (activeChar.getCurrentHp() < 0.5)
 			activeChar.setIsDead(true);
+		
+		// Set Hero status if it applies
+		if (Hero.getInstance().getHeroes() != null && Hero.getInstance().getHeroes().containsKey(activeChar.getObjectId()))
+			activeChar.setHero(true);
 
 		setPledgeClass(activeChar);
 
@@ -247,10 +251,6 @@ public class EnterWorld extends L2GameClientPacket
 
 			showClanNotice = activeChar.getClan().isNoticeEnabled();
 		}
-
-		// Set Hero status if it applies
-		if (Hero.getInstance().getHeroes() != null && Hero.getInstance().getHeroes().containsKey(activeChar.getObjectId()))
-			activeChar.setHero(true);
 
 		// Updating Seal of Strife Buff/Debuff 
 		if (SevenSigns.getInstance().isSealValidationPeriod() && SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE) != SevenSigns.CABAL_NULL)
