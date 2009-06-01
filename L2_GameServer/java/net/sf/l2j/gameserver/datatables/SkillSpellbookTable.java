@@ -29,25 +29,25 @@ public class SkillSpellbookTable
 {
 	private static Logger _log = Logger.getLogger(SkillTreeTable.class.getName());
 	private static SkillSpellbookTable _instance;
-	
+
 	private static Map<Integer, Integer> _skillSpellbooks;
-	
+
 	public static SkillSpellbookTable getInstance()
 	{
-		if (!Config.SP_BOOK_NEEDED)
-			throw new RuntimeException("Trying to load SP book table with config option disabled");
-		
 		if (_instance == null)
 			_instance = new SkillSpellbookTable();
-		
+
 		return _instance;
 	}
-	
+
 	private SkillSpellbookTable()
 	{
+		if (!Config.SP_BOOK_NEEDED)
+			return;
+
 		_skillSpellbooks = new FastMap<Integer, Integer>();
 		Connection con = null;
-		
+
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -77,7 +77,7 @@ public class SkillSpellbookTable
 			}
 		}
 	}
-	
+
 	public int getBookForSkill(int skillId, int level)
 	{
 		if (skillId == L2Skill.SKILL_DIVINE_INSPIRATION && level != -1)
@@ -96,18 +96,21 @@ public class SkillSpellbookTable
 					return -1;
 			}
 		}
-		
+
+		if (!Config.SP_BOOK_NEEDED)
+			return (-1);
+
 		if (!_skillSpellbooks.containsKey(skillId))
 			return -1;
-		
+
 		return _skillSpellbooks.get(skillId);
 	}
-	
+
 	public int getBookForSkill(L2Skill skill)
 	{
 		return getBookForSkill(skill.getId(), -1);
 	}
-	
+
 	public int getBookForSkill(L2Skill skill, int level)
 	{
 		return getBookForSkill(skill.getId(), level);

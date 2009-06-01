@@ -170,28 +170,30 @@ public class RequestAquireSkill extends L2GameClientPacket
 
 				if (player.getSp() >= _requiredSp)
 				{
-					if (Config.SP_BOOK_NEEDED)
+					int spbId = -1;
+
+					// divine inspiration require book for each level
+					if (Config.DIVINE_SP_BOOK_NEEDED
+							&& skill.getId() == L2Skill.SKILL_DIVINE_INSPIRATION)
+						spbId = SkillSpellbookTable.getInstance().getBookForSkill(skill, _level);
+					else if (Config.SP_BOOK_NEEDED
+							&& skill.getLevel() == 1)
+						spbId = SkillSpellbookTable.getInstance().getBookForSkill(skill);
+
+					// spellbook required
+					if (spbId > -1)
 					{
-						int spbId = -1;
-						if (skill.getId() == L2Skill.SKILL_DIVINE_INSPIRATION)
-							spbId = SkillSpellbookTable.getInstance().getBookForSkill(skill, _level);
-						else
-							spbId = SkillSpellbookTable.getInstance().getBookForSkill(skill);
+						L2ItemInstance spb = player.getInventory().getItemByItemId(spbId);
 
-						if (skill.getId() == L2Skill.SKILL_DIVINE_INSPIRATION || skill.getLevel() == 1 && spbId > -1)
+						if (spb == null)
 						{
-							L2ItemInstance spb = player.getInventory().getItemByItemId(spbId);
-
-							if (spb == null)
-							{
-								// Haven't spellbook
-								player.sendPacket(new SystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
-								return;
-							}
-
-							// ok
-							player.destroyItem("Consume", spb.getObjectId(), 1, trainer, true);
+							// Haven't spellbook
+							player.sendPacket(new SystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+							return;
 						}
+
+						// ok
+						player.destroyItem("Consume", spb.getObjectId(), 1, trainer, true);
 					}
 				}
 				else

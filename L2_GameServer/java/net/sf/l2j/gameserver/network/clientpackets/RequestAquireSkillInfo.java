@@ -81,34 +81,31 @@ public class RequestAquireSkillInfo extends L2GameClientPacket
 		{
 			if (trainer instanceof L2TransformManagerInstance)
 			{
-            int itemId = 0;
-            L2TransformSkillLearn[] skillst = SkillTreeTable.getInstance().getAvailableTransformSkills(activeChar);
+				int itemId = 0;
+				L2TransformSkillLearn[] skillst = SkillTreeTable.getInstance().getAvailableTransformSkills(activeChar);
 
-			for (L2TransformSkillLearn s : skillst)
-			{
-				if (s.getId() == _id && s.getLevel() == _level)
+				for (L2TransformSkillLearn s : skillst)
 				{
-					canteach = true;
-					itemId = s.getItemId();
-					break;
+					if (s.getId() == _id && s.getLevel() == _level)
+					{
+						canteach = true;
+						itemId = s.getItemId();
+						break;
+					}
 				}
-			}
 
-			if (!canteach)
-				return; // cheater
+				if (!canteach)
+					return; // cheater
 
-			int requiredSp = 0;
-			AcquireSkillInfo asi = new AcquireSkillInfo(skill.getId(), skill.getLevel(), requiredSp,0);
+				int requiredSp = 0;
+				AcquireSkillInfo asi = new AcquireSkillInfo(skill.getId(), skill.getLevel(), requiredSp,0);
 
-            if (Config.SP_BOOK_NEEDED)
-            {
-                asi.addRequirement(99, itemId, 1, 50);
-            }
-
-			sendPacket(asi);
-			return;
+				// all transformations require scrolls
+				asi.addRequirement(99, itemId, 1, 50);
+				sendPacket(asi);
+				return;
 		    }
-			
+
 			if (!trainer.getTemplate().canTeach(activeChar.getSkillLearningClassId()))
                 return; // cheater
 
@@ -129,17 +126,14 @@ public class RequestAquireSkillInfo extends L2GameClientPacket
 			int requiredSp = SkillTreeTable.getInstance().getSkillCost(activeChar, skill);
 			AcquireSkillInfo asi = new AcquireSkillInfo(skill.getId(), skill.getLevel(), requiredSp,0);
 
-            if (Config.SP_BOOK_NEEDED)
-            {
-            	int spbId = -1;
-            	if (skill.getId() == L2Skill.SKILL_DIVINE_INSPIRATION)
-            		spbId = SkillSpellbookTable.getInstance().getBookForSkill(skill, _level);
-            	else
-            		spbId = SkillSpellbookTable.getInstance().getBookForSkill(skill);
+        	int spbId = -1;
+			if (Config.DIVINE_SP_BOOK_NEEDED && skill.getId() == L2Skill.SKILL_DIVINE_INSPIRATION)
+        		spbId = SkillSpellbookTable.getInstance().getBookForSkill(skill, _level);
+			else if (Config.SP_BOOK_NEEDED && skill.getLevel() == 1)
+        		spbId = SkillSpellbookTable.getInstance().getBookForSkill(skill);
 
-                if (skill.getId() == L2Skill.SKILL_DIVINE_INSPIRATION || skill.getLevel() == 1 && spbId > -1)
-                    asi.addRequirement(99, spbId, 1, 50);
-            }
+			if (spbId > -1)
+				asi.addRequirement(99, spbId, 1, 50);
 
 			sendPacket(asi);
 		}
@@ -164,7 +158,6 @@ public class RequestAquireSkillInfo extends L2GameClientPacket
 
             if (!canteach)
                 return; // cheater
-
 
             AcquireSkillInfo asi = new AcquireSkillInfo(skill.getId(), skill.getLevel(), requiredRep, 2);
 
