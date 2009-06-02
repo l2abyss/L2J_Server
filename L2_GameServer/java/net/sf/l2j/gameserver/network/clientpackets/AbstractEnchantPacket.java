@@ -257,11 +257,21 @@ public class AbstractEnchantPacket extends L2GameClientPacket
 		_supports.put(12364, new EnchantItem(true, L2Item.CRYSTAL_B, 9, 15));
 		_supports.put(12365, new EnchantItem(true, L2Item.CRYSTAL_A, 9, 12));
 		_supports.put(12366, new EnchantItem(true, L2Item.CRYSTAL_S, 9, 10));
-		_supports.put(12367, new EnchantItem(true, L2Item.CRYSTAL_D, 9, 35));
-		_supports.put(12368, new EnchantItem(true, L2Item.CRYSTAL_C, 9, 27));
-		_supports.put(12369, new EnchantItem(true, L2Item.CRYSTAL_B, 9, 23));
-		_supports.put(12370, new EnchantItem(true, L2Item.CRYSTAL_A, 9, 18));
-		_supports.put(12371, new EnchantItem(true, L2Item.CRYSTAL_S, 9, 15));
+		_supports.put(12367, new EnchantItem(false, L2Item.CRYSTAL_D, 9, 35));
+		_supports.put(12368, new EnchantItem(false, L2Item.CRYSTAL_C, 9, 27));
+		_supports.put(12369, new EnchantItem(false, L2Item.CRYSTAL_B, 9, 23));
+		_supports.put(12370, new EnchantItem(false, L2Item.CRYSTAL_A, 9, 18));
+		_supports.put(12371, new EnchantItem(false, L2Item.CRYSTAL_S, 9, 15));
+		_supports.put(14702, new EnchantItem(true, L2Item.CRYSTAL_D, 9, 20));
+		_supports.put(14703, new EnchantItem(true, L2Item.CRYSTAL_C, 9, 18));
+		_supports.put(14704, new EnchantItem(true, L2Item.CRYSTAL_B, 9, 15));
+		_supports.put(14705, new EnchantItem(true, L2Item.CRYSTAL_A, 9, 12));
+		_supports.put(14706, new EnchantItem(true, L2Item.CRYSTAL_S, 9, 10));
+		_supports.put(14707, new EnchantItem(false, L2Item.CRYSTAL_D, 9, 35));
+		_supports.put(14708, new EnchantItem(false, L2Item.CRYSTAL_C, 9, 27));
+		_supports.put(14709, new EnchantItem(false, L2Item.CRYSTAL_B, 9, 23));
+		_supports.put(14710, new EnchantItem(false, L2Item.CRYSTAL_A, 9, 18));
+		_supports.put(14711, new EnchantItem(false, L2Item.CRYSTAL_S, 9, 15));
 	}
 
 	/**
