@@ -555,7 +555,7 @@ public class L2Npc extends L2Character
 		//if (!canTarget(player))
 		//    return false;
 
-		if (!isInsideRadius(player, INTERACTION_DISTANCE, false, false))
+		if (!isInsideRadius(player, INTERACTION_DISTANCE, true, false))
 			return false;
 
 		return true;
