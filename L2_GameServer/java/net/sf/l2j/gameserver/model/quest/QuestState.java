@@ -524,9 +524,9 @@ public final class QuestState
 	 * @param itemId : ID of the item wanted to be count
 	 * @return int
 	 */
-	public int getQuestItemsCount(int itemId)
+	public long getQuestItemsCount(int itemId)
 	{
-		int count = 0;
+		long count = 0;
 		
 		for (L2ItemInstance item : getPlayer().getInventory().getItems())
 			if (item.getItemId() == itemId)
@@ -555,7 +555,7 @@ public final class QuestState
 	 * @param count
 	 * @param applyRates
 	 */
-	public void giveAdena(int count, boolean applyRates)
+	public void giveAdena(long count, boolean applyRates)
 	{
 		giveItems(57, count, applyRates ? 0 : 1);
 	}
@@ -565,19 +565,19 @@ public final class QuestState
 	 * @param itemId
 	 * @param count
 	 */
-	public void giveItems(int itemId, int count)
+	public void giveItems(int itemId, long count)
 	{
 		giveItems(itemId, count, 0);
 	}
 	
-	public synchronized void giveItems(int itemId, int count, int enchantlevel)
+	public synchronized void giveItems(int itemId, long count, int enchantlevel)
 	{
 		if (count <= 0)
 			return;
 		
 		// If item for reward is adena (ID=57), modify count with rate for quest reward if rates available
 		if (itemId == 57 && !(enchantlevel > 0))
-			count = (int) (count * Config.RATE_QUESTS_REWARD);
+			count = (long) (count * Config.RATE_QUESTS_REWARD);
 		boolean have = false;
 		if (getQuestItemsCount(itemId)>0)
 			have = true;
@@ -605,7 +605,7 @@ public final class QuestState
 			{
 				SystemMessage smsg = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
 				smsg.addItemName(item);
-				smsg.addNumber(count);
+				smsg.addItemNumber(count);
 				getPlayer().sendPacket(smsg);
 			}
 			else
@@ -628,7 +628,7 @@ public final class QuestState
 		getPlayer().sendPacket(su);
 	}
 	
-	public void giveItems(int itemId, int count, byte attributeId, int attributeLevel)
+	public void giveItems(int itemId, long count, byte attributeId, int attributeLevel)
 	{
 		if (count <= 0)
 			return;
@@ -663,7 +663,7 @@ public final class QuestState
 			{
 				SystemMessage smsg = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
 				smsg.addItemName(item);
-				smsg.addNumber(count);
+				smsg.addItemNumber(count);
 				getPlayer().sendPacket(smsg);
 			}
 			else
@@ -695,15 +695,15 @@ public final class QuestState
 	 * @param sound : boolean indicating whether to play sound
 	 * @return boolean indicating whether player has requested number of items
 	 */
-	public boolean dropQuestItems(int itemId, int count, int neededCount, int dropChance, boolean sound)
+	public boolean dropQuestItems(int itemId, int count, long neededCount, int dropChance, boolean sound)
 	{
 		return dropQuestItems(itemId, count, count, neededCount, dropChance, sound);
 	}
 	
-	public boolean dropQuestItems(int itemId, int minCount, int maxCount, int neededCount, int dropChance, boolean sound)
+	public boolean dropQuestItems(int itemId, int minCount, int maxCount, long neededCount, int dropChance, boolean sound)
 	{
 		dropChance *= Config.RATE_DROP_QUEST / ((getPlayer().getParty() != null) ? getPlayer().getParty().getMemberCount() : 1);
-		int currentCount = getQuestItemsCount(itemId);
+		long currentCount = getQuestItemsCount(itemId);
 		
 		if (neededCount > 0 && currentCount >= neededCount)
 			return true;
@@ -711,7 +711,7 @@ public final class QuestState
 		if (currentCount >= neededCount)
 			return true;
 		
-		int itemCount = 0;
+		long itemCount = 0;
 		int random = Rnd.get(L2DropData.MAX_CHANCE);
 		
 		while (random < dropChance)
