@@ -104,6 +104,14 @@ public final class Logout extends L2GameClientPacket
 		}
 
 		TvTEvent.onLogout(player);
+		
+		if ((player.isInStoreMode() && Config.OFFLINE_TRADE_ENABLE)
+				|| (player.isInCraftMode() && Config.OFFLINE_CRAFT_ENABLE))
+		{
+			player.closeNetConnection();
+			return;
+		}
+
 		RegionBBSManager.getInstance().changeCommunityBoard();
 
 		player.deleteMe();

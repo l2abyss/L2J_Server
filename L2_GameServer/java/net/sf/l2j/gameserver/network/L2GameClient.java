@@ -40,6 +40,7 @@ import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.L2Event;
+import net.sf.l2j.gameserver.model.entity.TvTEvent;
 import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
 import net.sf.l2j.util.EventData;
 
@@ -593,9 +594,28 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 			{
 				isDetached(true);
 				L2PcInstance player = L2GameClient.this.getActiveChar();
-				if (player != null && player.isInCombat())
+				if (player != null)
 				{
-					fast = false;
+					if (!player.isInOlympiadMode()
+							&& !player.isFestivalParticipant()
+							&& !TvTEvent.isPlayerParticipant(player.getObjectId()) && !player.isInJail())
+					{
+						if ((player.isInStoreMode() && Config.OFFLINE_TRADE_ENABLE)
+								|| (player.isInCraftMode() && Config.OFFLINE_CRAFT_ENABLE))
+						{
+							player.leaveParty();
+							if (Config.OFFLINE_SET_NAME_COLOR)
+							{
+								player.getAppearance().setNameColor(Config.OFFLINE_NAME_COLOR);
+								player.broadcastUserInfo();
+							}
+							return;
+						}
+					}
+					if (player.isInCombat())
+					{
+						fast = false;
+					}
 				}
 				cleanMe(fast);
 			}
@@ -643,7 +663,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 					e.printStackTrace();
 				}
 
-				// we are going to mannually save the char bellow thus we can force the cancel
+				// we are going to manually save the char bellow thus we can force the cancel
 				if (_autoSaveInDB != null)
                 {
 				    _autoSaveInDB.cancel(true);
