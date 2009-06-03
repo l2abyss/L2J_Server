@@ -1110,7 +1110,7 @@ public class L2Clan
             }
             catch (Exception e)
             {
-                _log.warning("Error could not store char skills: " + e);
+                _log.warning("Error could not store clan skills: " + e);
             }
             finally
             {

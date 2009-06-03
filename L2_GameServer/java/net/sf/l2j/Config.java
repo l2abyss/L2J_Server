@@ -1362,7 +1362,7 @@ public final class Config
 					ALLOW_DISCARDITEM = Boolean.parseBoolean(General.getProperty("AllowDiscardItem", "True"));
 					AUTODESTROY_ITEM_AFTER = Integer.parseInt(General.getProperty("AutoDestroyDroppedItemAfter", "600"));
 					HERB_AUTO_DESTROY_TIME = Integer.parseInt(General.getProperty("AutoDestroyHerbTime","15"))*1000;
-					PROTECTED_ITEMS = General.getProperty("ListOfProtectedItems", "");
+					PROTECTED_ITEMS = General.getProperty("ListOfProtectedItems", "0");
 					LIST_PROTECTED_ITEMS = new FastList<Integer>();
 					for (String id : PROTECTED_ITEMS.split(","))
 					{
