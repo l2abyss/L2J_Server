@@ -1360,9 +1360,9 @@ public final class Config
 					DEADLOCK_CHECK_INTERVAL = Integer.parseInt(General.getProperty("DeadLockCheckInterval", "20"));
 					RESTART_ON_DEADLOCK = Boolean.parseBoolean(General.getProperty("RestartOnDeadlock", "False"));
 					ALLOW_DISCARDITEM = Boolean.parseBoolean(General.getProperty("AllowDiscardItem", "True"));
-					AUTODESTROY_ITEM_AFTER = Integer.parseInt(General.getProperty("AutoDestroyDroppedItemAfter", "0"));
+					AUTODESTROY_ITEM_AFTER = Integer.parseInt(General.getProperty("AutoDestroyDroppedItemAfter", "600"));
 					HERB_AUTO_DESTROY_TIME = Integer.parseInt(General.getProperty("AutoDestroyHerbTime","15"))*1000;
-					PROTECTED_ITEMS = General.getProperty("ListOfProtectedItems", "57,5575,6673");
+					PROTECTED_ITEMS = General.getProperty("ListOfProtectedItems", "");
 					LIST_PROTECTED_ITEMS = new FastList<Integer>();
 					for (String id : PROTECTED_ITEMS.split(","))
 					{
