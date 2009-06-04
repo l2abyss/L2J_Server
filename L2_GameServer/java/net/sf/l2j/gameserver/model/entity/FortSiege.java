@@ -552,7 +552,7 @@ public class FortSiege
 	/** Commander was killed */
 	public void killedCommander(L2FortCommanderInstance instance)
 	{
-		if (_commanders != null && _commanders.get(getFort().getFortId()).size() != 0)
+		if (_commanders != null && getFort() != null && _commanders.get(getFort().getFortId()).size() != 0)
 		{
 			L2Spawn spawn = instance.getSpawn();
 			if (spawn != null)
