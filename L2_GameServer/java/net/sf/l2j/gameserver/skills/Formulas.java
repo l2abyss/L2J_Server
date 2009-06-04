@@ -2376,7 +2376,7 @@ public final class Formulas
 		}
 				
 		// if target reflect this skill then the effect will fail
-		if (calcSkillReflect(target, skill) == SKILL_REFLECT_FAILED)
+		if (calcSkillReflect(target, skill) != SKILL_REFLECT_FAILED)
 			return false;
 		
 		int value = (int) skill.getPower();
