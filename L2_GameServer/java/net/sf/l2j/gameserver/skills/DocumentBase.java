@@ -540,6 +540,11 @@ abstract class DocumentBase
                 int size = Integer.decode(getValue(a.getNodeValue(), null));
                 cond = joinAnd(cond, new ConditionPlayerInvSize(size));
             }
+            else if ("isClanLeader".equalsIgnoreCase(a.getNodeName()))
+            {
+            	boolean val = Boolean.valueOf(a.getNodeValue());
+                cond = joinAnd(cond, new ConditionPlayerIsClanLeader(val));
+            }
             else if ("pledgeClass".equalsIgnoreCase(a.getNodeName()))
             {
                 int pledgeClass = Integer.decode(getValue(a.getNodeValue(), null));
@@ -592,6 +597,17 @@ abstract class DocumentBase
             	int skill_id = Integer.decode(getValue(val.split(",")[0], template));
         		int skill_lvl = Integer.decode(getValue(val.split(",")[1], template));
                 cond = joinAnd(cond, new ConditionPlayerActiveSkillId(skill_id, skill_lvl));
+            }
+            else if ("class_id_restriction".equalsIgnoreCase(a.getNodeName()))
+            {
+            	FastList<Integer> array = new FastList<Integer>();
+            	StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+            	while (st.hasMoreTokens())
+                {
+                    String item = st.nextToken().trim();
+                    array.add(Integer.decode(getValue(item, null)));
+                }
+            	cond = joinAnd(cond, new ConditionPlayerClassIdRestriction(array));
             }
         }
 
