@@ -48,7 +48,7 @@ public enum L2ArmorType
 	 */
 	public int mask()
 	{
-		return 1 << (_id + 16);
+		return 1 << (_id + 18);
 	}
 	
 	/**
