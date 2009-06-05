@@ -1343,6 +1343,15 @@ public final class Formulas
 				case BIGBLUNT:
 					stat = Stats.BIGBLUNT_WPN_VULN;
 					break;
+				case DUAL_DAGGER:
+					stat = Stats.DUALDAGGER_WPN_VULN;
+					break;
+				case RAPIER:
+					stat = Stats.RAPIER_WPN_VULN;
+					break;
+				case ANCIENT_SWORD:
+					stat = Stats.ANCIENT_WPN_VULN;
+					break;
 			}
 		}
 
