@@ -333,6 +333,7 @@ public final class Config
 	public static boolean GM_STARTUP_DIET_MODE;
 	public static String GM_ADMIN_MENU_STYLE;
 	public static boolean GM_ITEM_RESTRICTION;
+	public static boolean GM_SKILL_RESTRICTION;
 	public static boolean BYPASS_VALIDATION;
 	public static boolean GAMEGUARD_ENFORCE;
 	public static boolean GAMEGUARD_PROHIBITACTION;
@@ -1333,6 +1334,7 @@ public final class Config
 					GM_STARTUP_DIET_MODE = Boolean.parseBoolean(General.getProperty("GMStartupDietMode", "False"));
 					GM_ADMIN_MENU_STYLE = General.getProperty("GMAdminMenuStyle", "modern");
 					GM_ITEM_RESTRICTION = Boolean.parseBoolean(General.getProperty("GmItemRestriction", "False"));
+					GM_SKILL_RESTRICTION = Boolean.parseBoolean(General.getProperty("GmSkillRestriction", "False"));
 					BYPASS_VALIDATION = Boolean.parseBoolean(General.getProperty("BypassValidation", "True"));
 					GAMEGUARD_ENFORCE = Boolean.parseBoolean(General.getProperty("GameGuardEnforce", "True"));
 					GAMEGUARD_PROHIBITACTION = Boolean.parseBoolean(General.getProperty("GameGuardProhibitAction", "True"));

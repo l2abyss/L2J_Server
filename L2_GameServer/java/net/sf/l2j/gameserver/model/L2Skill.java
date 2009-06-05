@@ -1237,6 +1237,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
     public boolean checkCondition(L2Character activeChar, L2Object target, boolean itemOrWeapon)
     {
+        if (activeChar.isGM() && !Config.GM_SKILL_RESTRICTION)
+            return true;
         if ((getCondition() & L2Skill.COND_SHIELD) != 0)
         {
             /*
