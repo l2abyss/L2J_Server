@@ -472,9 +472,9 @@ public class CharEffectList
 	{
 		if (!_queuesInitialized)
 		{
-			_queuesInitialized = true;
 			_addQueue = new LinkedBlockingQueue<L2Effect>();
 			_removeQueue = new LinkedBlockingQueue<L2Effect>();
+			_queuesInitialized = true;
 		}
 	}
 
