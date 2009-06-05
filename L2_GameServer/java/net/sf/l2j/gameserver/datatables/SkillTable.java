@@ -48,7 +48,7 @@ public class SkillTable
 		SkillsEngine.getInstance().loadAllSkills(_skills);
 	}
 	
-	public void reload()
+	public static void reload()
 	{
 		_instance = new SkillTable();
 	}

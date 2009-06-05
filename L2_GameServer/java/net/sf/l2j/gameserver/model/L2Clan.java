@@ -690,10 +690,11 @@ public class L2Clan
 	public void updateClanInDB()
 	{
 		Connection con = null;
+		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE clan_data SET leader_id=?,ally_id=?,ally_name=?,reputation_score=?,ally_penalty_expiry_time=?,ally_penalty_type=?,char_penalty_expiry_time=?,dissolving_expiry_time=? WHERE clan_id=?");
+			statement = con.prepareStatement("UPDATE clan_data SET leader_id=?,ally_id=?,ally_name=?,reputation_score=?,ally_penalty_expiry_time=?,ally_penalty_type=?,char_penalty_expiry_time=?,dissolving_expiry_time=? WHERE clan_id=?");
 			statement.setInt(1, getLeaderId());
 			statement.setInt(2, getAllyId());
 			statement.setString(3, getAllyName());
@@ -704,7 +705,6 @@ public class L2Clan
 			statement.setLong(8, getDissolvingExpiryTime());
 			statement.setInt(9, getClanId());
 			statement.execute();
-			statement.close();
 			if (Config.DEBUG) _log.fine("New clan leader saved in db: "+getClanId());
 		}
 		catch (Exception e)
@@ -713,13 +713,24 @@ public class L2Clan
 		}
 		finally
 		{
-			try
-            {
-                con.close();
-            }
-            catch (Exception e)
-            {
-            }
+			if (statement != null)
+				try
+				{
+					statement.close();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			if (con != null)
+				try
+				{
+					con.close();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 		}
 	}
 

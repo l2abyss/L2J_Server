@@ -79,4 +79,40 @@ public class GeoNodeLoc extends AbstractNodeLoc
 		return _y;
 	}
 
+	/**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+	    final int prime = 31;
+	    int result = 1;
+	    result = prime * result + _x;
+	    result = prime * result + _y;
+	    result = prime * result + _z;
+	    return result;
+    }
+
+	/**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+	    if (this == obj)
+		    return true;
+	    if (obj == null)
+		    return false;
+	    if (!(obj instanceof GeoNodeLoc))
+		    return false;
+	    final GeoNodeLoc other = (GeoNodeLoc) obj;
+	    if (_x != other._x)
+		    return false;
+	    if (_y != other._y)
+		    return false;
+	    if (_z != other._z)
+		    return false;
+	    return true;
+    }
+
 }

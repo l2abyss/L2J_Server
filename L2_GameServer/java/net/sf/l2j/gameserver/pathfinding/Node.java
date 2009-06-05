@@ -70,16 +70,38 @@ public class Node
 	}
 
 	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object arg0)
-	{
-		if(!(arg0 instanceof Node))
-			return false;
-		Node n = (Node)arg0;
-		
-		return _loc.getX() == n.getLoc().getX() && _loc.getY() == n.getLoc().getY()
-		&& _loc.getZ() == n.getLoc().getZ();
-	}
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+	    final int prime = 31;
+	    int result = 1;
+	    result = prime * result + ((_loc == null) ? 0 : _loc.hashCode());
+	    return result;
+    }
+
+	/**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+	    if (this == obj)
+		    return true;
+	    if (obj == null)
+		    return false;
+	    if (!(obj instanceof Node))
+		    return false;
+	    final Node other = (Node) obj;
+	    if (_loc == null)
+	    {
+		    if (other._loc != null)
+			    return false;
+	    }
+	    else if (!_loc.equals(other._loc))
+		    return false;
+	    return true;
+    }
+	
 }
