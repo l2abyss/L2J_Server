@@ -67,7 +67,7 @@ public final class L2Radar
 			_player.sendPacket(new RadarControl(0, 1, tempMarker._x, tempMarker._y, tempMarker._z));
 	}
 
-    public class RadarMarker
+    public static class RadarMarker
     {
         // Simple class to model radar points.
         public int _type, _x, _y, _z;
@@ -88,23 +88,43 @@ public final class L2Radar
             _z = z;
         }
 
+        /**
+         * @see java.lang.Object#hashCode()
+         */
         @Override
-		public boolean equals(Object obj)
+        public int hashCode()
         {
-            try
-            {
-                RadarMarker temp = (RadarMarker) obj;
+	        final int prime = 31;
+	        int result = 1;
+	        result = prime * result + _type;
+	        result = prime * result + _x;
+	        result = prime * result + _y;
+	        result = prime * result + _z;
+	        return result;
+        }
 
-                if ((temp._x == _x) && (temp._y == _y)
-                        && (temp._z == _z) && (temp._type == _type))
-                    return true;
-
-                return false;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
+		/**
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        @Override
+        public boolean equals(Object obj)
+        {
+	        if (this == obj)
+		        return true;
+	        if (obj == null)
+		        return false;
+	        if (!(obj instanceof RadarMarker))
+		        return false;
+	        final RadarMarker other = (RadarMarker) obj;
+	        if (_type != other._type)
+		        return false;
+	        if (_x != other._x)
+		        return false;
+	        if (_y != other._y)
+		        return false;
+	        if (_z != other._z)
+		        return false;
+	        return true;
         }
     }
 }
