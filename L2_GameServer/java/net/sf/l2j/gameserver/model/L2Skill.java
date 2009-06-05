@@ -2921,8 +2921,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
         if (_effectTemplates == null) 
         	return _emptyEffectSet;
         
-        if ((!effector.equals(effected)) && effected.isInvul())
-            return _emptyEffectSet;
+        if (effected.isInvul()) return _emptyEffectSet;
         
         if ((isDebuff() || isOffensive()) && effector.getOwner() != effected &&
         		effector.getOwner().isGM() && 
