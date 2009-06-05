@@ -617,7 +617,9 @@ public abstract class L2Character extends L2Object
 		if (heading != 0)
 			getPosition().setHeading(heading);
 
-		if (!(this instanceof L2PcInstance))
+		if (!(this instanceof L2PcInstance)
+				// allow recall of the detached characters
+				|| (((L2PcInstance)this).getClient() != null && ((L2PcInstance)this).getClient().isDetached()))
             onTeleported();
 		
 		revalidateZone(true);
