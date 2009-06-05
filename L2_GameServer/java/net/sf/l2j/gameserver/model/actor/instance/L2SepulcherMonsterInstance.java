@@ -21,6 +21,7 @@ import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.instancemanager.FourSepulchersManager;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.network.serverpackets.NpcSay;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
@@ -229,7 +230,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 			case 25342:
 			case 25346:
 			case 25349:
-				giveCup((L2PcInstance) killer);
+				giveCup(killer);
 				if (_onDeadEventTask != null)
 					_onDeadEventTask.cancel(true);
 				_onDeadEventTask = ThreadPoolManager.getInstance().scheduleEffect(new OnDeadEvent(this), 8500);
@@ -255,7 +256,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 		super.deleteMe();
 	}
 	
-	private void giveCup(L2PcInstance player)
+	private void giveCup(L2Character killer)
 	{
 		String questId = "620_FourGoblets";
 		int cupId = 0;
@@ -276,7 +277,15 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 				cupId = 7259;
 				break;
 		}
-		
+
+		L2PcInstance player;
+		if (killer instanceof L2PcInstance)
+			player = (L2PcInstance)killer;
+		else if (killer instanceof L2Summon)
+			player = ((L2Summon)killer).getOwner();
+		else
+			return;
+
 		if (player.getParty() != null)
 		{
 			for (L2PcInstance mem : player.getParty().getPartyMembers())
