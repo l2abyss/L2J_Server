@@ -46,7 +46,7 @@ public class Lottery
 	private static final String SELECT_LOTTERY_TICKET = "SELECT number1, number2, prize1, prize2, prize3 FROM games WHERE id = 1 and idnr = ?";
 	
 	protected int _number;
-	protected int _prize;
+	protected long _prize;
 	protected boolean _isSellingTickets;
 	protected boolean _isStarted;
 	protected long _enddate;
@@ -76,7 +76,7 @@ public class Lottery
 		return _number;
 	}
 	
-	public int getPrize()
+	public long getPrize()
 	{
 		return _prize;
 	}
@@ -86,7 +86,7 @@ public class Lottery
 		return _enddate;
 	}
 	
-	public void increasePrize(int count)
+	public void increasePrize(long count)
 	{
 		_prize += count;
 		Connection con = null;
@@ -95,8 +95,8 @@ public class Lottery
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
 			statement = con.prepareStatement(UPDATE_PRICE);
-			statement.setInt(1, getPrize());
-			statement.setInt(2, getPrize());
+			statement.setLong(1, getPrize());
+			statement.setLong(2, getPrize());
 			statement.setInt(3, getId());
 			statement.execute();
 			statement.close();
@@ -151,11 +151,11 @@ public class Lottery
 					if (rset.getInt("finished") == 1)
 					{
 						_number++;
-						_prize = rset.getInt("newprize");
+						_prize = rset.getLong("newprize");
 					}
 					else
 					{
-						_prize = rset.getInt("prize");
+						_prize = rset.getLong("prize");
 						_enddate = rset.getLong("enddate");
 						
 						if (_enddate <= System.currentTimeMillis() + 2 * MINUTE)
@@ -234,8 +234,8 @@ public class Lottery
 				statement.setInt(1, 1);
 				statement.setInt(2, getId());
 				statement.setLong(3, getEndDate());
-				statement.setInt(4, getPrize());
-				statement.setInt(5, getPrize());
+				statement.setLong(4, getPrize());
+				statement.setLong(5, getPrize());
 				statement.execute();
 				statement.close();
 			}
@@ -389,19 +389,19 @@ public class Lottery
 				}
 			}
 			
-			int prize4 = count4 * Config.ALT_LOTTERY_2_AND_1_NUMBER_PRIZE;
-			int prize1 = 0;
-			int prize2 = 0;
-			int prize3 = 0;
+			long prize4 = count4 * Config.ALT_LOTTERY_2_AND_1_NUMBER_PRIZE;
+			long prize1 = 0;
+			long prize2 = 0;
+			long prize3 = 0;
 			
 			if (count1 > 0)
-				prize1 = (int) ((getPrize() - prize4) * Config.ALT_LOTTERY_5_NUMBER_RATE / count1);
+				prize1 = (long) ((getPrize() - prize4) * Config.ALT_LOTTERY_5_NUMBER_RATE / count1);
 			
 			if (count2 > 0)
-				prize2 = (int) ((getPrize() - prize4) * Config.ALT_LOTTERY_4_NUMBER_RATE / count2);
+				prize2 = (long) ((getPrize() - prize4) * Config.ALT_LOTTERY_4_NUMBER_RATE / count2);
 			
 			if (count3 > 0)
-				prize3 = (int) ((getPrize() - prize4) * Config.ALT_LOTTERY_3_NUMBER_RATE / count3);
+				prize3 = (long) ((getPrize() - prize4) * Config.ALT_LOTTERY_3_NUMBER_RATE / count3);
 			
 			if (Config.DEBUG)
 			{
@@ -411,7 +411,7 @@ public class Lottery
 				_log.info("Lottery: " + count4 + " players with ONE or TWO numbers each win " + prize4 + ".");
 			}
 			
-			int newprize = getPrize() - (prize1 + prize2 + prize3 + prize4);
+			long newprize = getPrize() - (prize1 + prize2 + prize3 + prize4);
 			if (Config.DEBUG)
 				_log.info("Lottery: Jackpot for next lottery is " + newprize + ".");
 			
@@ -438,13 +438,13 @@ public class Lottery
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
 				statement = con.prepareStatement(UPDATE_LOTTERY);
-				statement.setInt(1, getPrize());
-				statement.setInt(2, newprize);
+				statement.setLong(1, getPrize());
+				statement.setLong(2, newprize);
 				statement.setInt(3, enchant);
 				statement.setInt(4, type2);
-				statement.setInt(5, prize1);
-				statement.setInt(6, prize2);
-				statement.setInt(7, prize3);
+				statement.setLong(5, prize1);
+				statement.setLong(6, prize2);
+				statement.setLong(7, prize3);
 				statement.setInt(8, getId());
 				statement.execute();
 				statement.close();
@@ -504,14 +504,14 @@ public class Lottery
 		return res;
 	}
 	
-	public int[] checkTicket(L2ItemInstance item)
+	public long[] checkTicket(L2ItemInstance item)
 	{
 		return checkTicket(item.getCustomType1(), item.getEnchantLevel(), item.getCustomType2());
 	}
 	
-	public int[] checkTicket(int id, int enchant, int type2)
+	public long[] checkTicket(int id, int enchant, int type2)
 	{
-		int res[] =
+		long res[] =
 		{
 			0, 0
 		};
@@ -558,15 +558,15 @@ public class Lottery
 						break;
 					case 5:
 						res[0] = 1;
-						res[1] = rset.getInt("prize1");
+						res[1] = rset.getLong("prize1");
 						break;
 					case 4:
 						res[0] = 2;
-						res[1] = rset.getInt("prize2");
+						res[1] = rset.getLong("prize2");
 						break;
 					case 3:
 						res[0] = 3;
-						res[1] = rset.getInt("prize3");
+						res[1] = rset.getLong("prize3");
 						break;
 					default:
 						res[0] = 4;

@@ -1771,7 +1771,7 @@ public class L2Npc extends L2Character
 				return;
 			}
 
-			int price = Config.ALT_LOTTERY_TICKET_PRICE;
+			long price = Config.ALT_LOTTERY_TICKET_PRICE;
 			int lotonumber = Lottery.getInstance().getId();
 			int enchant = 0;
 			int type2 = 0;
@@ -1841,10 +1841,10 @@ public class L2Npc extends L2Character
 					{
 						message += numbers[i] + " ";
 					}
-					int[] check = Lottery.getInstance().checkTicket(item);
+					long[] check = Lottery.getInstance().checkTicket(item);
 					if (check[0] > 0)
 					{
-						switch (check[0])
+						switch ((int)check[0])
 						{
 							case 1:
 								message += "- 1st Prize";
@@ -1876,14 +1876,14 @@ public class L2Npc extends L2Character
 			L2ItemInstance item = player.getInventory().getItemByObjectId(val);
 			if (item == null || item.getItemId() != 4442 || item.getCustomType1() >= lotonumber)
 				return;
-			int[] check = Lottery.getInstance().checkTicket(item);
+			long[] check = Lottery.getInstance().checkTicket(item);
 
 			sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 			sm.addItemName(4442);
 			sm.addItemNumber(1);
 			player.sendPacket(sm);
 
-			int adena = check[1];
+			long adena = check[1];
 			if (adena > 0)
 				player.addAdena("Loto", adena, this, true);
 			player.destroyItem("Loto", item, this, false);
