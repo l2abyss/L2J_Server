@@ -419,7 +419,11 @@ public class EnterWorld extends L2GameClientPacket
 		}
 
 		// Attacker or spectator logging in to a siege zone. Actually should be checked for inside castle only?
-		if (!activeChar.isGM() && activeChar.getSiegeState() < 2 && activeChar.isInsideZone(L2Character.ZONE_SIEGE))
+		if (!activeChar.isGM()
+				// inside siege zone
+				&& activeChar.isInsideZone(L2Character.ZONE_SIEGE)
+				// but non-participant or attacker
+				&& (!activeChar.isInSiege() || activeChar.getSiegeState() < 2))
 			activeChar.teleToLocation(MapRegionTable.TeleportWhereType.Town);
 
 		RegionBBSManager.getInstance().changeCommunityBoard();

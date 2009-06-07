@@ -185,8 +185,8 @@ public class ConfirmDlg extends L2GameServerPacket
 		if (_info.isEmpty())
 		{
 			writeD(0x00);
-			writeD(0x00);
-			writeD(0x00);
+			writeD(_time);
+			writeD(_requesterId);
 		}
 		else
 		{
@@ -218,7 +218,6 @@ public class ConfirmDlg extends L2GameServerPacket
 						break;
 				}
 			}
-			// timed dialog (Summon Friend skill request)
 			if (_time != 0)
 				writeD(_time);
 			if (_requesterId != 0)

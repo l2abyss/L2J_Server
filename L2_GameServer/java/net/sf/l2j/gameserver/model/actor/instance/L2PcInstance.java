@@ -5104,9 +5104,8 @@ public final class L2PcInstance extends L2Playable
 					{
 						if (pk != null && pk.getClan() != null && getClan() != null && !isAcademyMember() && !(pk.isAcademyMember()) )
 						{
-							if ((_clan.isAtWarWith(pk.getClanId()) && pk.getClan().isAtWarWith(_clan.getClanId()))||
-									((isInsideZone(ZONE_SIEGE) && pk.isInsideZone(ZONE_SIEGE))&&
-											(isInSiege() && pk.isInSiege())))
+							if ((_clan.isAtWarWith(pk.getClanId()) && pk.getClan().isAtWarWith(_clan.getClanId()))
+									|| (isInSiege() && pk.isInSiege()))
 							{
 								// 	when your reputation score is 0 or below, the other clan cannot acquire any reputation points
 								if (getClan().getReputationScore() > 0)
@@ -5134,7 +5133,7 @@ public final class L2PcInstance extends L2Playable
 					}
 					else
 					{
-						if (!(isInsideZone(ZONE_PVP) && !isInsideZone(ZONE_SIEGE)) || pk == null)
+						if (!(isInsideZone(ZONE_PVP) && !isInSiege()) || pk == null)
 							onDieUpdateKarma(); // Update karma if delevel is not allowed
 					}
 				}
@@ -5180,7 +5179,7 @@ public final class L2PcInstance extends L2Playable
 		
 		if (isPhoenixBlessed())
 			reviveRequest(this, null, false);
-		else if (getCharmOfCourage() && this.isInsideZone(ZONE_SIEGE) && getSiegeState() != 0) // could check it more accurately too
+		else if (getCharmOfCourage() && this.isInSiege())
 		{
 			reviveRequest(this, null, false);
 		}
@@ -5630,7 +5629,7 @@ public final class L2PcInstance extends L2Playable
 			// No xp loss for siege participants inside siege zone
 			if (isInsideZone(ZONE_SIEGE))
 			{
-				if (getSiegeState() > 0 && (killed_by_pc || killed_by_siege_npc))
+				if (isInSiege() && (killed_by_pc || killed_by_siege_npc))
 					lostExp = 0;
 			}
 			else if (killed_by_pc)
@@ -10438,6 +10437,7 @@ public final class L2PcInstance extends L2Playable
 	public void doRevive()
 	{
 		super.doRevive();
+		stopEffects(L2EffectType.CHARMOFCOURAGE);
 		updateEffectIcons();
 		sendPacket(new EtcStatusUpdate(this));
 		_reviveRequested = 0;
@@ -10492,7 +10492,14 @@ public final class L2PcInstance extends L2Playable
 			restoreExp = (int)Math.round((getExpBeforeDeath() - getExp()) * _revivePower / 100);
 			    
 			_revivePet = Pet;
-			
+
+			if (getCharmOfCourage())
+			{
+				ConfirmDlg dlg = new ConfirmDlg(SystemMessageId.RESURRECT_USING_CHARM_OF_COURAGE.getId());
+				dlg.addTime(60000);
+				sendPacket(dlg);
+				return;
+			}
 			ConfirmDlg dlg = new ConfirmDlg(SystemMessageId.RESSURECTION_REQUEST_BY_C1_FOR_S2_XP.getId());
 			dlg.addPcName(Reviver);
 			dlg.addString(String.valueOf(restoreExp));

@@ -2112,8 +2112,7 @@ public abstract class L2Character extends L2Object
 			if(((L2Playable)this).isPhoenixBlessed())
 				((L2PcInstance)this).reviveRequest(((L2PcInstance)this),null,false);
 			else if (((L2PcInstance)this).getCharmOfCourage() 
-					&& this.isInsideZone(ZONE_SIEGE)
-					&& ((L2PcInstance)this).getSiegeState() != 0) // could check it more accurately too
+					&& ((L2PcInstance)this).isInSiege())
 			{
 				((L2PcInstance)this).reviveRequest(((L2PcInstance)this),null,false);
 			}

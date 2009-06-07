@@ -13702,6 +13702,13 @@ public enum SystemMessageId
 	S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1(2305),
 
 	/**
+	 * ID: 2306<br>
+	 * Message: Resurrection is possible because of the courage charm's effect.
+	 * Would you like to resurrect now?
+	 */
+	RESURRECT_USING_CHARM_OF_COURAGE(2306),
+
+	/**
 	* ID: 2319<br>
 	* Message: You have acquired $s1 reputation score.
 	*/
