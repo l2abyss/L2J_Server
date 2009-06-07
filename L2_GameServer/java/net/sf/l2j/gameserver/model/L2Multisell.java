@@ -180,7 +180,7 @@ public class L2Multisell
     {
     	MultiSellEntry newEntry = L2Multisell.getInstance().new MultiSellEntry();
     	newEntry.setEntryId(templateEntry.getEntryId()*100000+enchantLevel);
-    	int adenaAmount = 0;
+    	long adenaAmount = 0;
 
         for (MultiSellIngredient ing : templateEntry.getIngredients())
         {
@@ -191,7 +191,7 @@ public class L2Multisell
         	if ( ing.getItemId() == 57 && ing.isTaxIngredient() )
         	{
         		if (applyTaxes)
-        			adenaAmount += (int)Math.round(ing.getItemCount()*taxRate);
+        			adenaAmount += Math.round(ing.getItemCount()*taxRate);
         		continue;	// do not adena yet, as non-taxIngredient adena entries might occur next (order not guaranteed)
         	}
         	else if ( ing.getItemId() == 57 )  // && !ing.isTaxIngredient()
@@ -336,15 +336,16 @@ public class L2Multisell
 
     public class MultiSellIngredient
     {
-        private int _itemId, _itemCount, _enchantmentLevel,_element,_elementVal,_augment, _fireVal, _waterVal,_windVal,_earthVal,_holyVal,_darkVal;
+        private int _itemId, _enchantmentLevel,_element,_elementVal,_augment, _fireVal, _waterVal,_windVal,_earthVal,_holyVal,_darkVal;
+        private long _itemCount;
         private boolean _isTaxIngredient, _mantainIngredient;
 
-        public MultiSellIngredient(int itemId, int itemCount, boolean isTaxIngredient, boolean mantainIngredient)
+        public MultiSellIngredient(int itemId, long itemCount, boolean isTaxIngredient, boolean mantainIngredient)
         {
         	this(itemId, itemCount, 0, 0, -2, 0,0,0,0,0,0,0, isTaxIngredient, mantainIngredient);
         }
 
-        public MultiSellIngredient(int itemId, int itemCount, int enchantmentLevel, int augmentId, int elementId, int elementVal, int fireVal, int waterVal, int windVal, int earthVal, int holyVal, int darkVal,boolean isTaxIngredient, boolean mantainIngredient)
+        public MultiSellIngredient(int itemId, long itemCount, int enchantmentLevel, int augmentId, int elementId, int elementVal, int fireVal, int waterVal, int windVal, int earthVal, int holyVal, int darkVal,boolean isTaxIngredient, boolean mantainIngredient)
         {
             setItemId(itemId);
             setItemCount(itemCount);
@@ -471,7 +472,7 @@ public class L2Multisell
         /**
          * @param itemCount The itemCount to set.
          */
-        public void setItemCount(int itemCount)
+        public void setItemCount(long itemCount)
         {
             _itemCount = itemCount;
         }
@@ -479,7 +480,7 @@ public class L2Multisell
         /**
          * @return Returns the itemCount.
          */
-        public int getItemCount()
+        public long getItemCount()
         {
             return _itemCount;
         }
@@ -685,7 +686,7 @@ public class L2Multisell
             	Node attribute;
 
                 int id = Integer.parseInt(n.getAttributes().getNamedItem("id").getNodeValue());
-                int count = Integer.parseInt(n.getAttributes().getNamedItem("count").getNodeValue());
+                long count = Long.parseLong(n.getAttributes().getNamedItem("count").getNodeValue());
                 boolean isTaxIngredient = false, mantainIngredient = false;
 
                 attribute = n.getAttributes().getNamedItem("isTaxIngredient");
@@ -704,7 +705,7 @@ public class L2Multisell
             else if ("production".equalsIgnoreCase(n.getNodeName()))
             {
                 int id = Integer.parseInt(n.getAttributes().getNamedItem("id").getNodeValue());
-                int count = Integer.parseInt(n.getAttributes().getNamedItem("count").getNodeValue());
+                long count = Long.parseLong(n.getAttributes().getNamedItem("count").getNodeValue());
 
                 MultiSellIngredient e = new MultiSellIngredient(id, count, false, false);
                 entry.addProduct(e);

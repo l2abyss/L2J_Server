@@ -457,7 +457,7 @@ public class MultiSellChoose extends L2GameClientPacket
 	{
 		MultiSellEntry newEntry = L2Multisell.getInstance().new MultiSellEntry();
 		newEntry.setEntryId(templateEntry.getEntryId());
-		int totalAdenaCount = 0;
+		long totalAdenaCount = 0;
 		boolean hasIngredient = false;
 		
 		for (MultiSellIngredient ing : templateEntry.getIngredients())
