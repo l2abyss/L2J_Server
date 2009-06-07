@@ -95,7 +95,7 @@ public final class RequestPackageSend extends L2GameClientPacket
         	if (!Config.ALT_GAME_KARMA_PLAYER_CAN_USE_WAREHOUSE && player.getKarma() > 0) return;
 
         	// Freight price from config or normal price per item slot (30)
-        	int fee = _count * Config.ALT_GAME_FREIGHT_PRICE;
+        	long fee = _count * Config.ALT_GAME_FREIGHT_PRICE;
         	long currentAdena = player.getAdena();
         	int slots = 0;
 

@@ -201,8 +201,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 				continue;
 
 			long sellPrice = (count * crop.getPrice());
-			long rewardPrice = ItemTable.getInstance().getTemplate(rewardItem)
-					.getReferencePrice();
+			long rewardPrice = ItemTable.getInstance().getTemplate(rewardItem).getReferencePrice();
 
 			if (rewardPrice == 0)
 				continue;

@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2MerchantInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetManagerInstance;
+import net.sf.l2j.gameserver.model.itemcontainer.PcInventory;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
@@ -178,9 +179,9 @@ public final class RequestSellItem extends L2GameClientPacket
         	if (item == null || (!item.isSellable())) continue;
 
             totalPrice += item.getReferencePrice() * count /2;
-            if (totalPrice > Integer.MAX_VALUE)
+            if (totalPrice > PcInventory.MAX_ADENA)
             {
-                Util.handleIllegalPlayerAction(player,"Warning!! Character "+player.getName()+" of account "+player.getAccountName()+" tried to purchase over "+Integer.MAX_VALUE+" adena worth of goods.",  Config.DEFAULT_PUNISH);
+                Util.handleIllegalPlayerAction(player,"Warning!! Character "+player.getName()+" of account "+player.getAccountName()+" tried to purchase over "+PcInventory.MAX_ADENA+" adena worth of goods.",  Config.DEFAULT_PUNISH);
                 return;
             }
 
@@ -207,7 +208,7 @@ public final class RequestSellItem extends L2GameClientPacket
 				}
 */
 		}
-		player.addAdena("Sell", (int)totalPrice, merchant, false);
+		player.addAdena("Sell", totalPrice, merchant, false);
 		String html;
 		if (merchant instanceof L2MerchantInstance)
 			html = HtmCache.getInstance().getHtm("data/html/"+ htmlFolder +"/" + ((L2MerchantInstance)merchant).getNpcId() + "-sold.htm");

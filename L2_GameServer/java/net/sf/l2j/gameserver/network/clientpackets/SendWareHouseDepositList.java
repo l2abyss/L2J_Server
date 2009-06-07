@@ -100,7 +100,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
         if (!Config.ALT_GAME_KARMA_PLAYER_CAN_USE_WAREHOUSE && player.getKarma() > 0) return;
 
         // Freight price from config or normal price per item slot (30)
-		int fee = _count * 30;
+		long fee = _count * 30;
 		long currentAdena = player.getAdena();
         int slots = 0;
 

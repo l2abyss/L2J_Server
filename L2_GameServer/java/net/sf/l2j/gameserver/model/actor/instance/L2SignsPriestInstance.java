@@ -351,11 +351,11 @@ public class L2SignsPriestInstance extends L2NpcInstance
                     }
                     break;
                 case 7: // Exchange Ancient Adena for Adena - SevenSigns 7 xxxxxxx
-                    int ancientAdenaConvert = 0;
+                    long ancientAdenaConvert = 0;
 
                     try
                     {
-                        ancientAdenaConvert = Integer.parseInt(command.substring(13).trim());
+                        ancientAdenaConvert = Long.parseLong(command.substring(13).trim());
                     }
                     catch (NumberFormatException e)
                     {

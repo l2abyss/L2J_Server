@@ -47,7 +47,7 @@ public class MultiSellChoose extends L2GameClientPacket
 	private int _entryId;
 	private long _amount;
 	private int _enchantment;
-	private int _transactionTax; // local handling of taxation
+	private long _transactionTax; // local handling of taxation
 	@SuppressWarnings("unused")
     private int _unk1;
 	@SuppressWarnings("unused")
@@ -474,7 +474,7 @@ public class MultiSellChoose extends L2GameClientPacket
 						taxRate = merchant.getCastle().getTaxRate();
 				}
 				
-				_transactionTax = (int) Math.round(newIngredient.getItemCount() * taxRate);
+				_transactionTax = Math.round(newIngredient.getItemCount() * taxRate);
 				totalAdenaCount += _transactionTax;
 				continue; // do not yet add this adena amount to the list as non-taxIngredient adena might be entered later (order not guaranteed)
 			}

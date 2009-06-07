@@ -22,6 +22,7 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.TradeList;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.itemcontainer.PcInventory;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.util.Util;
 
@@ -73,7 +74,7 @@ public final class RequestPrivateStoreSell extends L2GameClientPacket
 			priceTotal += price * count;
 		}
 
-		if(priceTotal < 0 || priceTotal > Integer.MAX_VALUE)
+		if(priceTotal < 0 || priceTotal > PcInventory.MAX_ADENA)
         {
             String msgErr = "[RequestPrivateStoreSell] player "+getClient().getActiveChar().getName()+" tried an overflow exploit, ban this player!";
             Util.handleIllegalPlayerAction(getClient().getActiveChar(),msgErr,Config.DEFAULT_PUNISH);

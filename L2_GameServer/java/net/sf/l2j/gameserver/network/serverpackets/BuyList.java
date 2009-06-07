@@ -122,9 +122,9 @@ public final class BuyList extends L2GameServerPacket
 				}
 
 	            if (item.getItemId() >= 3960 && item.getItemId() <= 4026)//Config.RATE_SIEGE_GUARDS_PRICE-//'
-	                writeQ((int)(item.getPrice() * Config.RATE_SIEGE_GUARDS_PRICE * (1 + _taxRate)));
+	                writeQ((long) (item.getPrice() * Config.RATE_SIEGE_GUARDS_PRICE * (1 + _taxRate)));
 	            else
-	                writeQ((int)(item.getPrice() * (1 + _taxRate)));
+	                writeQ((long) (item.getPrice() * (1 + _taxRate)));
                 
                 // T1
 				for (byte i = 0; i < 8; i++)

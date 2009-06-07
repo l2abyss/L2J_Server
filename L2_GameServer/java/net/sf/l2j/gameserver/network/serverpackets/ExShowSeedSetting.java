@@ -65,7 +65,7 @@ public class ExShowSeedSetting extends L2GameServerPacket
             _seedData[i * 12 + 3] = L2Manor.getInstance().getRewardItemBySeed(
                     s, 2);
             _seedData[i * 12 + 4] = L2Manor.getInstance().getSeedSaleLimit(s);
-            _seedData[i * 12 + 5] = (int)L2Manor.getInstance().getSeedBuyPrice(s);
+            _seedData[i * 12 + 5] = L2Manor.getInstance().getSeedBuyPrice(s);
             _seedData[i * 12 + 6] = L2Manor.getInstance().getSeedBasicPrice(s) * 60 / 100;
             _seedData[i * 12 + 7] = L2Manor.getInstance().getSeedBasicPrice(s) * 10;
             SeedProduction seedPr = c.getSeed(s,

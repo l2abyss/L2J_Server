@@ -23,6 +23,7 @@ import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.TradeList;
 import net.sf.l2j.gameserver.model.TradeList.TradeItem;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.itemcontainer.PcInventory;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
@@ -119,7 +120,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
         }
 
         // FIXME: this check should be (and most probably is) done in the TradeList mechanics
-		if(priceTotal < 0 || priceTotal > Integer.MAX_VALUE)
+		if(priceTotal < 0 || priceTotal > PcInventory.MAX_ADENA)
         {
             String msgErr = "[RequestPrivateStoreBuy] player "+getClient().getActiveChar().getName()+" tried an overflow exploit, ban this player!";
             Util.handleIllegalPlayerAction(getClient().getActiveChar(),msgErr,Config.DEFAULT_PUNISH);

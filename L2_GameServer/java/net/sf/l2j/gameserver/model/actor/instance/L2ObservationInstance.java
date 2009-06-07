@@ -84,7 +84,7 @@ public final class L2ObservationInstance extends L2NpcInstance
     private void doObserve(L2PcInstance player, String val)
     {
         StringTokenizer st = new StringTokenizer(val);
-        int cost = Integer.parseInt(st.nextToken());
+        long cost = Long.parseLong(st.nextToken());
         int x = Integer.parseInt(st.nextToken());
         int y = Integer.parseInt(st.nextToken());
         int z = Integer.parseInt(st.nextToken());
