@@ -24,6 +24,7 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.instance.L2ManorManagerInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
+import net.sf.l2j.gameserver.model.itemcontainer.PcInventory;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
@@ -137,12 +138,12 @@ public class RequestBuySeed extends L2GameClientPacket
 				slots++;
 		}
 
-		if (totalPrice > Integer.MAX_VALUE)
+		if (totalPrice > PcInventory.MAX_ADENA)
 		{
 			Util.handleIllegalPlayerAction(player, "Warning!! Character "
 					+ player.getName() + " of account "
 					+ player.getAccountName() + " tried to purchase over "
-					+ Integer.MAX_VALUE + " adena worth of goods.",
+					+ PcInventory.MAX_ADENA + " adena worth of goods.",
 					Config.DEFAULT_PUNISH);
 			return;
 		}
@@ -160,14 +161,14 @@ public class RequestBuySeed extends L2GameClientPacket
 		}
 
 		// Charge buyer
-		if ((totalPrice < 0) || !player.reduceAdena("Buy", (int) totalPrice, target, false))
+		if ((totalPrice < 0) || !player.reduceAdena("Buy", totalPrice, target, false))
 		{
 			sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
 			return;
 		}
 
 		// Adding to treasury for Manor Castle
-		castle.addToTreasuryNoTax((int) totalPrice);
+		castle.addToTreasuryNoTax(totalPrice);
 
 		// Proceed the purchase
 		InventoryUpdate playerIU = new InventoryUpdate();

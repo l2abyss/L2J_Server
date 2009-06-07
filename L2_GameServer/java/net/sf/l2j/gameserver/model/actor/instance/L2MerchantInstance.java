@@ -246,7 +246,7 @@ public class L2MerchantInstance extends L2NpcInstance
         price *= cost[val - 1];
         int time = ridetime[val - 1];
 
-        if (!player.reduceAdena("Rent", (int) price, player.getLastFolkNPC(), true)) return;
+        if (!player.reduceAdena("Rent", (long) price, player.getLastFolkNPC(), true)) return;
 
         player.mount(petId, 0, false);
         SetupGauge sg = new SetupGauge(3, time*1000);

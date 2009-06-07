@@ -320,11 +320,11 @@ public final class Util
 	 * @param amount
 	 * @return String formatted adena amount
 	 */
-	public static String formatAdena(int amount)
+	public static String formatAdena(long amount)
 	{
 		String s = "";
-		int rem = amount % 1000;
-		s = Integer.toString(rem);
+		long rem = amount % 1000;
+		s = Long.toString(rem);
 		amount = (amount - rem) / 1000;
 		while (amount > 0)
 		{
@@ -333,7 +333,7 @@ public final class Util
 			if (rem < 9)
 				s = '0' + s;
 			rem = amount % 1000;
-			s = Integer.toString(rem) + "," + s;
+			s = Long.toString(rem) + "," + s;
 			amount = (amount - rem) / 1000;
 		}
 		return s;

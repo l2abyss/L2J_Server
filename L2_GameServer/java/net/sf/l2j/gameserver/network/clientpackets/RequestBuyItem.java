@@ -34,6 +34,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2MerchantInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetManagerInstance;
+import net.sf.l2j.gameserver.model.itemcontainer.PcInventory;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
@@ -194,8 +195,8 @@ public final class RequestBuyItem extends L2GameClientPacket
             baseTaxRate = ((L2MerchantInstance)merchant).getMpc().getBaseTaxRate();
         }
 		long subTotal = 0;
-		int castleTax = 0;
-        int baseTax = 0;
+		long castleTax = 0;
+        long baseTax = 0;
 
 		// Check for buylist validity and calculates summary values
 		long slots = 0;
@@ -260,11 +261,11 @@ public final class RequestBuyItem extends L2GameClientPacket
             }
             
 			subTotal += count * price;	// Before tax
-			castleTax = (int) (subTotal * castleTaxRate);
-            baseTax = (int) (subTotal * baseTaxRate);
-            if (subTotal + castleTax + baseTax > Integer.MAX_VALUE)
+			castleTax = (long) (subTotal * castleTaxRate);
+            baseTax = (long) (subTotal * baseTaxRate);
+            if (subTotal + castleTax + baseTax > PcInventory.MAX_ADENA)
             {
-                Util.handleIllegalPlayerAction(player,"Warning!! Character "+player.getName()+" of account "+player.getAccountName()+" tried to purchase over "+Integer.MAX_VALUE+" adena worth of goods.", Config.DEFAULT_PUNISH);
+                Util.handleIllegalPlayerAction(player,"Warning!! Character "+player.getName()+" of account "+player.getAccountName()+" tried to purchase over "+PcInventory.MAX_ADENA+" adena worth of goods.", Config.DEFAULT_PUNISH);
                 return;
             }
 
@@ -286,7 +287,7 @@ public final class RequestBuyItem extends L2GameClientPacket
 		}
 
 		// Charge buyer and add tax to castle treasury if not owned by npc clan
-		if ((subTotal < 0) || !player.reduceAdena("Buy", (int)(subTotal + baseTax + castleTax), player.getLastFolkNPC(), false))
+		if ((subTotal < 0) || !player.reduceAdena("Buy", (subTotal + baseTax + castleTax), player.getLastFolkNPC(), false))
 		{
 			sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
 			return;

@@ -47,6 +47,7 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.itemcontainer.PcInventory;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.gameserver.model.zone.type.L2CastleTeleportZone;
 import net.sf.l2j.gameserver.model.zone.type.L2CastleZone;
@@ -84,7 +85,7 @@ public class Castle
     private Calendar _siegeTimeRegistrationEndDate; // last siege end date + 1 day
 	private int _taxPercent = 0;
 	private double _taxRate = 0;
-	private int _treasury = 0;
+	private long _treasury = 0;
 	private L2CastleZone _zone = null;
 	private L2CastleTeleportZone _teleZone;
 	private L2Clan _formerOwner = null;
@@ -333,7 +334,7 @@ public class Castle
 			Castle rune = CastleManager.getInstance().getCastle("rune");
 			if (rune != null)
 			{
-				int runeTax = (int) (amount * rune.getTaxRate());
+				long runeTax = (long) (amount * rune.getTaxRate());
 				if (rune.getOwnerId() > 0)
 					rune.addToTreasury(runeTax);
 				amount -= runeTax;
@@ -344,7 +345,7 @@ public class Castle
 			Castle aden = CastleManager.getInstance().getCastle("aden");
 			if (aden != null)
 			{
-				int adenTax = (int) (amount * aden.getTaxRate()); // Find out what Aden gets from the current castle instance's income
+				long adenTax = (long) (amount * aden.getTaxRate()); // Find out what Aden gets from the current castle instance's income
 				if (aden.getOwnerId() > 0)
 					aden.addToTreasury(adenTax); // Only bother to really add the tax to the treasury if not npc owned
 					
@@ -370,8 +371,8 @@ public class Castle
 		}
 		else
 		{
-			if (_treasury + amount > Integer.MAX_VALUE) // TODO is this valid after gracia final?
-				_treasury = Integer.MAX_VALUE;
+			if (_treasury + amount > PcInventory.MAX_ADENA) // TODO is this valid after gracia final?
+				_treasury = PcInventory.MAX_ADENA;
 			else
 				_treasury += amount;
 		}
@@ -381,7 +382,7 @@ public class Castle
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("Update castle set treasury = ? where id = ?");
-			statement.setInt(1, getTreasury());
+			statement.setLong(1, getTreasury());
 			statement.setInt(2, getCastleId());
 			statement.execute();
 			statement.close();
@@ -698,7 +699,7 @@ public class Castle
         	    _isTimeRegistrationOver = rs.getBoolean("regTimeOver");
 				
 				_taxPercent = rs.getInt("taxPercent");
-				_treasury = rs.getInt("treasury");
+				_treasury = rs.getLong("treasury");
 			}
 			rs.close();
 			statement.close();
@@ -1110,7 +1111,7 @@ public class Castle
 		return _taxRate;
 	}
 	
-	public final int getTreasury()
+	public final long getTreasury()
 	{
 		return _treasury;
 	}
@@ -1165,7 +1166,7 @@ public class Castle
 		return null;
 	}
 	
-	public int getManorCost(int period)
+	public long getManorCost(int period)
 	{
 		FastList<CropProcure> procure;
 		FastList<SeedProduction> production;
@@ -1181,7 +1182,7 @@ public class Castle
 			production = _productionNext;
 		}
 		
-		int total = 0;
+		long total = 0;
 		if (production != null)
 		{
 			for (SeedProduction seed : production)

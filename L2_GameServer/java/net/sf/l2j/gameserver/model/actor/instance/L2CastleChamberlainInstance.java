@@ -32,6 +32,7 @@ import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2TeleportLocation;
 import net.sf.l2j.gameserver.model.entity.Castle;
+import net.sf.l2j.gameserver.model.itemcontainer.PcInventory;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ExShowCropInfo;
@@ -292,17 +293,17 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 				if ((player.getClanPrivileges() & L2Clan.CP_CS_TAXES) == L2Clan.CP_CS_TAXES)
 				{
 					String filename = "data/html/chamberlain/chamberlain-vault.htm";
-					int amount = 0;
+					long amount = 0;
 					if (val.equalsIgnoreCase("deposit"))
 					{
 						try
 						{
-							amount = Integer.parseInt(st.nextToken());
+							amount = Long.parseLong(st.nextToken());
 						}
 						catch (NoSuchElementException e)
 						{
 						}
-						if (amount > 0 && (long) getCastle().getTreasury() + amount < Integer.MAX_VALUE)
+						if (amount > 0 && getCastle().getTreasury() + amount < PcInventory.MAX_ADENA)
 						{
 							if (player.reduceAdena("Castle", amount, this, true))
 								getCastle().addToTreasuryNoTax(amount);
@@ -314,7 +315,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 					{
 						try
 						{
-							amount = Integer.parseInt(st.nextToken());
+							amount = Long.parseLong(st.nextToken());
 						}
 						catch (NoSuchElementException e)
 						{
