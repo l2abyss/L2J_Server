@@ -68,7 +68,7 @@ public class L2TradeList
         }
 	}
 
-    public void replaceItem(int itemID, int price)
+    public void replaceItem(int itemID, long price)
     {
         L2TradeItem item = _items.get(itemID);
         if (item != null)
