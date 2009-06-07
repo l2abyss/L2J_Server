@@ -28,6 +28,8 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
  * This class ...
  *
  * @version $Revision: 1.2.2.1.2.5 $ $Date: 2005/03/27 15:29:30 $
+ * CPU Disasm 
+ * Packets: ddhhQQ cddb
  */
 public final class SetPrivateStoreListBuy extends L2GameClientPacket
 {
@@ -64,6 +66,11 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
 			}
 			_items[x * 3 + 1] = (int)cnt;
 			_items[x * 3 + 2] = (int) readQ(); //price
+			
+			readC(); // FE
+			readD(); // FF 00 00 00
+			readD(); // 00 00 00 00
+			readB(new byte[7]); // Completely Unknown
 		}
 	}
 
