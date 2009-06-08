@@ -12,9 +12,7 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-import java.util.List;
-
-import javolution.util.FastList;
+import net.sf.l2j.gameserver.model.L2Party;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -35,27 +33,27 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 public final class PartySmallWindowAll extends L2GameServerPacket
 {
 	private static final String _S__63_PARTYSMALLWINDOWALL = "[S] 4e PartySmallWindowAll";
-	private List<L2PcInstance> _partyMembers = new FastList<L2PcInstance>();
+	private L2Party _party;
 	private L2PcInstance _exclude;
 	
-	public PartySmallWindowAll(L2PcInstance exclude, List<L2PcInstance> party)
+	public PartySmallWindowAll(L2PcInstance exclude, L2Party party)
 	{
 		_exclude = exclude;
-		_partyMembers = party;
+		_party = party;
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x4e);
-		writeD(_partyMembers.get(0).getObjectId()); // c3 party leader id
-		writeD(_partyMembers.get(0).getParty().getLootDistribution());// c3 party loot type
-																	  // (0,1,2,....)
-		writeD(_partyMembers.size() - 1);
+		writeD(_party.getPartyLeaderOID());
+		writeD(_party.getLootDistribution());
+
+		writeD(_party.getMemberCount() - 1);
 		
-		for (L2PcInstance member : _partyMembers)
+		for (L2PcInstance member : _party.getPartyMembers())
 		{
-			if (member != _exclude)
+			if (member != null && member != _exclude)
 			{
 				writeD(member.getObjectId());
 				writeS(member.getName());
