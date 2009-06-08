@@ -534,6 +534,7 @@ public final class Config
 	public static int TVT_EVENT_RUNNING_TIME;
 	public static int TVT_EVENT_PARTICIPATION_NPC_ID;
 	public static int[] TVT_EVENT_PARTICIPATION_NPC_COORDINATES = new int[3];
+	public static int[] TVT_EVENT_PARTICIPATION_FEE = new int[2];
 	public static int TVT_EVENT_MIN_PLAYERS_IN_TEAMS;
 	public static int TVT_EVENT_MAX_PLAYERS_IN_TEAMS;
 	public static int TVT_EVENT_RESPAWN_TELEPORT_DELAY;
@@ -552,6 +553,7 @@ public final class Config
 	public static boolean TVT_REWARD_TEAM_TIE;
 	public static byte TVT_EVENT_MIN_LVL;
 	public static byte TVT_EVENT_MAX_LVL;
+	public static int TVT_EVENT_EFFECTS_REMOVAL;
 	public static boolean L2JMOD_ALLOW_WEDDING;
 	public static int L2JMOD_WEDDING_PRICE;
 	public static boolean L2JMOD_WEDDING_PUNISH_INFIDELITY;
@@ -1727,6 +1729,7 @@ public final class Config
 							TVT_EVENT_MAX_LVL = (byte)Integer.parseInt(L2JModSettings.getProperty("TvTEventMaxPlayerLevel", "80"));
 							TVT_EVENT_RESPAWN_TELEPORT_DELAY = Integer.parseInt(L2JModSettings.getProperty("TvTEventRespawnTeleportDelay", "20"));
 							TVT_EVENT_START_LEAVE_TELEPORT_DELAY = Integer.parseInt(L2JModSettings.getProperty("TvTEventStartLeaveTeleportDelay", "20"));
+							TVT_EVENT_EFFECTS_REMOVAL = Integer.parseInt(L2JModSettings.getProperty("TvTEventEffectsRemoval", "0"));
 							TVT_EVENT_TEAM_1_NAME = L2JModSettings.getProperty("TvTEventTeam1Name", "Team1");
 							propertySplit = L2JModSettings.getProperty("TvTEventTeam1Coordinates", "0,0,0").split(",");
 							if (propertySplit.length < 3)
@@ -1751,6 +1754,17 @@ public final class Config
 									TVT_EVENT_TEAM_2_COORDINATES[0] = Integer.parseInt(propertySplit[0]);
 									TVT_EVENT_TEAM_2_COORDINATES[1] = Integer.parseInt(propertySplit[1]);
 									TVT_EVENT_TEAM_2_COORDINATES[2] = Integer.parseInt(propertySplit[2]);
+									propertySplit = L2JModSettings.getProperty("TvTEventParticipationFee", "0,0").split(",");
+									try
+									{
+										TVT_EVENT_PARTICIPATION_FEE[0] = Integer.parseInt(propertySplit[0]);
+										TVT_EVENT_PARTICIPATION_FEE[1] = Integer.parseInt(propertySplit[1]);
+									}
+									catch (NumberFormatException nfe)
+									{
+										if (propertySplit.length > 0)
+											_log.warning("TvTEventEngine[Config.load()]: invalid config property -> TvTEventParticipationFee");
+									}
 									propertySplit = L2JModSettings.getProperty("TvTEventReward", "57,100000").split(";");
 									for (String reward : propertySplit)
 									{

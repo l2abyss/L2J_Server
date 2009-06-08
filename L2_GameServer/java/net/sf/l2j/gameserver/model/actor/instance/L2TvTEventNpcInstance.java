@@ -24,6 +24,8 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 public class L2TvTEventNpcInstance extends L2Npc
 {
+	private static final String htmlPath="data/html/mods/TvTEvent/";
+
 	public L2TvTEventNpcInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
@@ -43,16 +45,13 @@ public class L2TvTEventNpcInstance extends L2Npc
 
 		if (TvTEvent.isParticipating())
 		{
-			String htmFile = "data/html/mods/";
+			final boolean isParticipant = TvTEvent.isPlayerParticipant(playerInstance.getObjectId()); 
+			final String htmContent;
 
-			if (!TvTEvent.isPlayerParticipant(playerInstance.getObjectId()))
-				htmFile += "TvTEventParticipation";
+			if (!isParticipant)
+				htmContent = HtmCache.getInstance().getHtm(htmlPath + "Participation.htm");
 			else
-				htmFile += "TvTEventRemoveParticipation";
-
-			htmFile += ".htm";
-
-			String htmContent = HtmCache.getInstance().getHtm(htmFile);
+				htmContent = HtmCache.getInstance().getHtm(htmlPath + "RemoveParticipation.htm");
 
 	    	if (htmContent != null)
 	    	{
@@ -66,13 +65,15 @@ public class L2TvTEventNpcInstance extends L2Npc
 				npcHtmlMessage.replace("%team2name%", Config.TVT_EVENT_TEAM_2_NAME);
 				npcHtmlMessage.replace("%team2playercount%", String.valueOf(teamsPlayerCounts[1]));
 				npcHtmlMessage.replace("%playercount%", String.valueOf(teamsPlayerCounts[0]+teamsPlayerCounts[1]));
-	    		playerInstance.sendPacket(npcHtmlMessage);
+				if (!isParticipant)
+					npcHtmlMessage.replace("%fee%", TvTEvent.getParticipationFee());
+
+				playerInstance.sendPacket(npcHtmlMessage);
 	    	}
 		}
 		else if (TvTEvent.isStarting() || TvTEvent.isStarted())
 		{
-			String htmFile = "data/html/mods/TvTEventStatus.htm";
-			String htmContent = HtmCache.getInstance().getHtm(htmFile);
+			final String htmContent = HtmCache.getInstance().getHtm(htmlPath + "Status.htm");
 
 	    	if (htmContent != null)
 	    	{

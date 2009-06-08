@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.datatables.DoorTable;
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
@@ -42,6 +43,7 @@ import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
+import net.sf.l2j.gameserver.util.StringUtil;
 import net.sf.l2j.util.Rnd;
 
 /**
@@ -60,6 +62,8 @@ public class TvTEvent
 	}
 	
 	protected static final Logger _log = Logger.getLogger(TvTEvent.class.getName());
+	/** html path **/
+	private static final String htmlPath = "data/html/mods/TvTEvent/";
 	/**	The teams of the TvTEvent<br> */
 	private static TvTEventTeam[] _teams = new TvTEventTeam[2];
 	/** The state of the TvTEvent<br> */
@@ -333,7 +337,7 @@ public class TvTEvent
 			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(0);
 			
 			statusUpdate.addAttribute(StatusUpdate.CUR_LOAD, playerInstance.getCurrentLoad());
-			npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>Your team won the event. Look in your inventory, there should be your reward.</body></html>");
+			npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(htmlPath+"Reward.htm"));
 			playerInstance.sendPacket(statusUpdate);
 			playerInstance.sendPacket(npcHtmlMessage);
 		}
@@ -394,7 +398,7 @@ public class TvTEvent
 			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(0);
 			
 			statusUpdate.addAttribute(StatusUpdate.CUR_LOAD, playerInstance.getCurrentLoad());
-			npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>Your team won the event. Look in your inventory, there should be your reward.</body></html>");
+			npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(htmlPath+"Reward.htm"));
 			playerInstance.sendPacket(statusUpdate);
 			playerInstance.sendPacket(npcHtmlMessage);
 		}
@@ -494,7 +498,31 @@ public class TvTEvent
 		
 		return false;
 	}
-	
+
+	public static boolean payParticipationFee(L2PcInstance playerInstance)
+	{
+		int itemId = Config.TVT_EVENT_PARTICIPATION_FEE[0];
+		int itemNum = Config.TVT_EVENT_PARTICIPATION_FEE[1];
+		if (itemId == 0 || itemNum == 0)
+			return true;
+
+		if (playerInstance.getInventory().getInventoryItemCount(itemId, -1) < itemNum)
+			return false;
+
+		return playerInstance.destroyItemByItemId("TvT Participation Fee", itemId, itemNum, _lastNpcSpawn, true);
+	}
+
+	public static String getParticipationFee()
+	{
+		int itemId = Config.TVT_EVENT_PARTICIPATION_FEE[0];
+		int itemNum = Config.TVT_EVENT_PARTICIPATION_FEE[1];
+
+		if (itemId == 0 || itemNum == 0)
+			return "-";
+		
+		return StringUtil.concat(String.valueOf(itemNum), " ", ItemTable.getInstance().getTemplate(itemId).getName());
+	}
+
 	/**
 	 * Send a SystemMessage to all participated players<br>
 	 * 1. Send the message to all players of team number one<br>
@@ -612,10 +640,10 @@ public class TvTEvent
 	public static synchronized void onBypass(String command, L2PcInstance playerInstance)
 	{
 		if (playerInstance == null || !isParticipating())
-		{
 			return;
-		}
 		
+		final String htmContent;
+
 		if (command.equals("tvt_event_participation"))
 		{
 			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(0);
@@ -623,32 +651,54 @@ public class TvTEvent
 			
 			if (playerInstance.isCursedWeaponEquipped())
 			{
-				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>Cursed weapon owners are not allowed to participate.</body></html>");
+				htmContent = HtmCache.getInstance().getHtm(htmlPath+"CursedWeaponEquipped.htm");
+				if (htmContent != null)
+					npcHtmlMessage.setHtml(htmContent);
 			}
 			else if (Olympiad.getInstance().isRegistered(playerInstance))
 			{
-				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>You can not participate when registered for Olympiad.</body></html>");
+				htmContent = HtmCache.getInstance().getHtm(htmlPath+"Olympiad.htm");
+				if (htmContent != null)
+					npcHtmlMessage.setHtml(htmContent);
 			}
 			else if (playerInstance.getKarma() > 0)
 			{
-				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>Chaotic players are not allowed to participate.</body></html>");
+				htmContent = HtmCache.getInstance().getHtm(htmlPath+"Karma.htm");
+				if (htmContent != null)
+					npcHtmlMessage.setHtml(htmContent);
 			}
 			else if (playerLevel < Config.TVT_EVENT_MIN_LVL || playerLevel > Config.TVT_EVENT_MAX_LVL)
 			{
-				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>Only players from level " + Config.TVT_EVENT_MIN_LVL + " to level " + Config.TVT_EVENT_MAX_LVL + " are allowed tro participate.</body></html>");
+				htmContent = HtmCache.getInstance().getHtm(htmlPath+"Level.htm");
+				if (htmContent != null)
+				{
+					npcHtmlMessage.setHtml(htmContent);
+					npcHtmlMessage.replace("%min%", String.valueOf(Config.TVT_EVENT_MIN_LVL));
+					npcHtmlMessage.replace("%max%", String.valueOf(Config.TVT_EVENT_MAX_LVL));
+				}
 			}
 			else if (_teams[0].getParticipatedPlayerCount() == Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS && _teams[1].getParticipatedPlayerCount() == Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS)
 			{
-				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>The event is full! Only " + Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS + " players are allowed per team.</body></html>");
+				htmContent = HtmCache.getInstance().getHtm(htmlPath+"TeamsFull.htm");
+				if (htmContent != null)
+				{
+					npcHtmlMessage.setHtml(htmContent);
+					npcHtmlMessage.replace("%max%", String.valueOf(Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS));
+				}
+			}
+			else if (!payParticipationFee(playerInstance))
+			{
+				htmContent = HtmCache.getInstance().getHtm(htmlPath+"ParticipationFee.htm");
+				if (htmContent != null)
+				{
+					npcHtmlMessage.setHtml(htmContent);
+					npcHtmlMessage.replace("%fee%", getParticipationFee());
+				}
 			}
 			else if (addParticipant(playerInstance))
-			{
-				npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>You are on the registration list now.</body></html>");
-			}
+				npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(htmlPath+"Registered.htm"));
 			else
-			{
 				return;
-			}
 			
 			playerInstance.sendPacket(npcHtmlMessage);
 		}
@@ -658,7 +708,7 @@ public class TvTEvent
 			
 			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(0);
 			
-			npcHtmlMessage.setHtml("<html><head><title>TvT Event</title></head><body>You are not longer on the registration list.</body></html>");
+			npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(htmlPath+"Unregistered.htm"));
 			playerInstance.sendPacket(npcHtmlMessage);
 		}
 	}

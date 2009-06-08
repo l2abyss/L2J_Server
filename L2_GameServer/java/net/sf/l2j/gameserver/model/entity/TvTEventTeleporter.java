@@ -16,7 +16,6 @@ package net.sf.l2j.gameserver.model.entity;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
-import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.util.Rnd;
@@ -62,25 +61,17 @@ public class TvTEventTeleporter implements Runnable
 	public void run()
 	{
 		if (_playerInstance == null)
-		{
 			return;
-		}
 		
 		L2Summon summon = _playerInstance.getPet();
 		
 		if (summon != null)
-		{
 			summon.unSummon(_playerInstance);
-		}
-		
-		for (L2Effect effect : _playerInstance.getAllEffects())
-		{
-			if (effect != null)
-			{
-				effect.exit();
-			}
-		}
-		
+
+		if (Config.TVT_EVENT_EFFECTS_REMOVAL == 0
+				|| (Config.TVT_EVENT_EFFECTS_REMOVAL == 1 && _playerInstance.getTeam() == 0))
+			_playerInstance.stopAllEffectsExceptThoseThatLastThroughDeath();
+
 		_playerInstance.doRevive();
 		_playerInstance.setCurrentCp(_playerInstance.getMaxCp());
 		_playerInstance.setCurrentHp(_playerInstance.getMaxHp());
@@ -89,13 +80,9 @@ public class TvTEventTeleporter implements Runnable
 		_playerInstance.teleToLocation( _coordinates[ 0 ] + Rnd.get(101)-50, _coordinates[ 1 ] + Rnd.get(101)-50, _coordinates[ 2 ], false );
 		
 		if (TvTEvent.isStarted() && !_adminRemove)
-		{
 			_playerInstance.setTeam(TvTEvent.getParticipantTeamId(_playerInstance.getObjectId()) + 1);
-		}
 		else
-		{
 			_playerInstance.setTeam(0);
-		}
 		
 		_playerInstance.broadcastStatusUpdate();
 		_playerInstance.broadcastUserInfo();
