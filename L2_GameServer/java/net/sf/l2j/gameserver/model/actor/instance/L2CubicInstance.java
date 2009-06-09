@@ -564,6 +564,8 @@ public class L2CubicInstance
 								        + Math.sqrt(_target.getDistanceSq(_owner.getX(), _owner.getY(), _owner.getZ())));
 							}
 							
+							_owner.broadcastPacket(new MagicSkillUse(_owner, _target, skill.getId(), skill.getLevel(), 0, 0));
+
 							L2SkillType type = skill.getSkillType();
 							ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
 							L2Character[] targets = { _target };
@@ -602,8 +604,6 @@ public class L2CubicInstance
 								if (Config.DEBUG)
 									_log.info("L2CubicInstance: Action.run(); other handler");
 							}
-							MagicSkillUse msu = new MagicSkillUse(_owner, _target, skill.getId(), skill.getLevel(), 0, 0);
-							_owner.broadcastPacket(msu);
 						}
 					}
 				}
