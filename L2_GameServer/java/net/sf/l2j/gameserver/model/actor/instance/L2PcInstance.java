@@ -924,6 +924,8 @@ public final class L2PcInstance extends L2Playable
 
 	public String getAccountName()
 	{
+		if (getClient() == null || getClient().isDetached())
+			return "disconnected";
 		return getClient().getAccountName();
 	}
 
