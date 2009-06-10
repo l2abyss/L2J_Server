@@ -21,7 +21,6 @@ import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.instancemanager.FourSepulchersManager;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
-import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.network.serverpackets.NpcSay;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
@@ -278,12 +277,9 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 				break;
 		}
 
-		L2PcInstance player;
-		if (killer instanceof L2PcInstance)
-			player = (L2PcInstance)killer;
-		else if (killer instanceof L2Summon)
-			player = ((L2Summon)killer).getOwner();
-		else
+		L2PcInstance player = killer.getActingPlayer();
+
+		if (player == null)
 			return;
 
 		if (player.getParty() != null)
