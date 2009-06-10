@@ -79,18 +79,8 @@ public class AbstractEnchantPacket extends L2GameClientPacket
 			}
 
 			// check for crystal types
-			switch (enchantItem.getItem().getCrystalType())
-			{
-				case L2Item.CRYSTAL_S:
-				case L2Item.CRYSTAL_S80:
-				case L2Item.CRYSTAL_S84:
-					if (_grade != L2Item.CRYSTAL_S)
-						return false;
-					break;
-				default:
-					if (_grade != enchantItem.getItem().getCrystalType())
-						return false;
-			}
+			if (_grade != enchantItem.getItem().getItemGradeSPlus())
+				return false;
 
 			// check for maximum enchant level
 			if (_maxEnchantLevel != 0 && enchantItem.getEnchantLevel() >= _maxEnchantLevel)

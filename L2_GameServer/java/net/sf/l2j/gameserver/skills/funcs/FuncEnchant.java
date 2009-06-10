@@ -76,11 +76,9 @@ public class FuncEnchant extends Func
 
         if (stat == Stats.MAGIC_ATTACK)
         {
-            switch (item.getItem().getCrystalType())
+            switch (item.getItem().getItemGradeSPlus())
             {
                 case L2Item.CRYSTAL_S:
-                case L2Item.CRYSTAL_S80:
-                case L2Item.CRYSTAL_S84:
                     env.value += 4 * enchant + 8 * overenchant;
                     break;
                 case L2Item.CRYSTAL_A:
@@ -104,11 +102,9 @@ public class FuncEnchant extends Func
         {
             L2WeaponType type = (L2WeaponType) item.getItemType();
             
-            switch (item.getItem().getCrystalType())
+            switch (item.getItem().getItemGradeSPlus())
             {
             	case L2Item.CRYSTAL_S:
-                case L2Item.CRYSTAL_S80:
-                case L2Item.CRYSTAL_S84:
                     switch(type)
                     {
                         case BOW:

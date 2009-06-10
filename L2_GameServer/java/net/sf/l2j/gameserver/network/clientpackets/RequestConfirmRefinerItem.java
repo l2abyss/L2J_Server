@@ -67,7 +67,6 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 			Util.handleIllegalPlayerAction(getClient().getActiveChar(),"Warning!! Character "+getClient().getActiveChar().getName()+" of account "+getClient().getActiveChar().getAccountName()+" tryied to augment item that doesn't own.",Config.DEFAULT_PUNISH);
 			return;
 		}
-		int itemGrade = targetItem.getItem().getItemGrade();
 		int refinerItemId = refinerItem.getItem().getItemId();
 
 		// is the item a life stone?
@@ -86,7 +85,7 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 		int gemstoneCount=0;
 		int gemstoneItemId=0;
 		SystemMessage sm = new SystemMessage(SystemMessageId.REQUIRES_S1_S2);
-		switch (itemGrade)
+		switch (targetItem.getItem().getItemGradeSPlus())
 		{
 			case L2Item.CRYSTAL_C:
 				gemstoneCount = 20;
@@ -107,8 +106,6 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 				sm.addString("Gemstone C");
 				break;
 			case L2Item.CRYSTAL_S:
-			case L2Item.CRYSTAL_S80:
-			case L2Item.CRYSTAL_S84:
 				gemstoneCount = 25;
 				gemstoneItemId = GEMSTONE_C;
 				sm.addItemNumber(gemstoneCount);

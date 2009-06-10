@@ -22,7 +22,6 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExAutoSoulShot;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.templates.item.L2Item;
 
 /**
  * This class ...
@@ -87,9 +86,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 						{
 							if (activeChar.getActiveWeaponItem() != activeChar.getFistsWeaponItem())
 							{
-								if (item.getItem().getCrystalType() == activeChar.getActiveWeaponItem().getCrystalType() 
-										|| (item.getItem().getCrystalType() == L2Item.CRYSTAL_S && activeChar.getActiveWeaponItem().getCrystalType() == L2Item.CRYSTAL_S80) 
-										|| (item.getItem().getCrystalType() == L2Item.CRYSTAL_S && activeChar.getActiveWeaponItem().getCrystalType() == L2Item.CRYSTAL_S84))
+								if (item.getItem().getCrystalType() == activeChar.getActiveWeaponItem().getItemGradeSPlus()) 
 								{
 									activeChar.addAutoSoulShot(_itemId);
 									ExAutoSoulShot atk = new ExAutoSoulShot(_itemId, _type);

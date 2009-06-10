@@ -1459,7 +1459,7 @@ public abstract class Inventory extends ItemContainer
 	{
 		int arrowsId = 0;
 
-		switch (bow.getCrystalType())
+		switch (bow.getItemGradeSPlus())
 		{
 			default: 
 			case L2Item.CRYSTAL_NONE:	 arrowsId = 17;
@@ -1472,9 +1472,7 @@ public abstract class Inventory extends ItemContainer
 				break; // Silver arrow
 			case L2Item.CRYSTAL_A:			arrowsId = 1344;
 				break; // Mithril arrow
-			case L2Item.CRYSTAL_S:
-			case L2Item.CRYSTAL_S80:
-			case L2Item.CRYSTAL_S84:        arrowsId = 1345;
+			case L2Item.CRYSTAL_S:			arrowsId = 1345;
 				break; // Shining arrow
 		}
 
@@ -1491,7 +1489,7 @@ public abstract class Inventory extends ItemContainer
 	{
 		int boltsId = 0;
 
-		switch (crossbow.getCrystalType())
+		switch (crossbow.getItemGradeSPlus())
 		{
 			default: 
 			case L2Item.CRYSTAL_NONE:	 boltsId = 9632;
@@ -1504,9 +1502,7 @@ public abstract class Inventory extends ItemContainer
 				break; // Silver Bolt
 			case L2Item.CRYSTAL_A:			boltsId = 9636;
 				break; // Mithril Bolt
-			case L2Item.CRYSTAL_S:
-			case L2Item.CRYSTAL_S80:
-			case L2Item.CRYSTAL_S84:        boltsId = 9637;
+			case L2Item.CRYSTAL_S:			boltsId = 9637;
 				break; // Shining Bolt
 		}
 

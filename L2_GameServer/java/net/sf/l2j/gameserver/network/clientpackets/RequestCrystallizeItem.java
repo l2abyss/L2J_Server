@@ -132,7 +132,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
         // Check if the char can crystallize items and return if false;
         boolean canCrystallize = true;
 
-        switch (itemToRemove.getItem().getCrystalType())
+        switch (itemToRemove.getItem().getItemGradeSPlus())
         {
             case L2Item.CRYSTAL_C:
             {
@@ -159,8 +159,6 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
                 break;
             }
             case L2Item.CRYSTAL_S:
-            case L2Item.CRYSTAL_S80:
-            case L2Item.CRYSTAL_S84:
             {
                 if (skillLevel <= 4)
                 {

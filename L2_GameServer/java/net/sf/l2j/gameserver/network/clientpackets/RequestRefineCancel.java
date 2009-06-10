@@ -70,7 +70,7 @@ public final class RequestRefineCancel extends L2GameClientPacket
 
 		// get the price
 		int price=0;
-		switch (targetItem.getItem().getItemGrade())
+		switch (targetItem.getItem().getItemGradeSPlus())
 		{
 			case L2Item.CRYSTAL_C:
 				if (targetItem.getCrystalCount() < 1720)
@@ -95,8 +95,6 @@ public final class RequestRefineCancel extends L2GameClientPacket
 					price = 420000;
 				break;
 			case L2Item.CRYSTAL_S:
-			case L2Item.CRYSTAL_S80:
-			case L2Item.CRYSTAL_S84:
 				price = 480000;
 				break;
 			// any other item type is not augmentable

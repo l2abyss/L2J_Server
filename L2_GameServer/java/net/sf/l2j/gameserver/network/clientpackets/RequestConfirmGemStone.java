@@ -79,7 +79,7 @@ public final class RequestConfirmGemStone extends L2GameClientPacket
 		}
 
 		// Check if the gemstoneCount is sufficant
-		int itemGrade = targetItem.getItem().getItemGrade();
+		int itemGrade = targetItem.getItem().getItemGradeSPlus();
 		switch (itemGrade)
 		{
 			case L2Item.CRYSTAL_C:
@@ -104,8 +104,6 @@ public final class RequestConfirmGemStone extends L2GameClientPacket
 				}
 				break;
 			case L2Item.CRYSTAL_S:
-			case L2Item.CRYSTAL_S80:
-			case L2Item.CRYSTAL_S84:
 				if (_gemstoneCount != 25 || gemstoneItemId != 2131)
 				{
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.GEMSTONE_QUANTITY_IS_INCORRECT));
