@@ -25,17 +25,15 @@ public class SqlUtils
 {
 	private static Logger _log = Logger.getLogger(SqlUtils.class.getName());
 	
-	// =========================================================
-	// Data Field
-	private static SqlUtils _instance;
+	private SqlUtils()
+	{
+	}
 	
 	// =========================================================
 	// Property - Public
 	public static SqlUtils getInstance()
 	{
-		if (_instance == null)
-			_instance = new SqlUtils();
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	// =========================================================
@@ -50,10 +48,7 @@ public class SqlUtils
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			query = L2DatabaseFactory.getInstance().prepQuerySelect(new String[]
-			{
-				resultField
-			}, tableName, whereClause, true);
+			query = L2DatabaseFactory.getInstance().prepQuerySelect(new String[] { resultField }, tableName, whereClause, true);
 			
 			PreparedStatement statement = con.prepareStatement(query);
 			ResultSet rset = statement.executeQuery();
@@ -93,10 +88,7 @@ public class SqlUtils
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			query = L2DatabaseFactory.getInstance().prepQuerySelect(new String[]
-			{
-				resultField
-			}, tableName, whereClause, false);
+			query = L2DatabaseFactory.getInstance().prepQuerySelect(new String[] { resultField }, tableName, whereClause, false);
 			PreparedStatement statement = con.prepareStatement(query);
 			ResultSet rset = statement.executeQuery();
 			
@@ -192,5 +184,11 @@ public class SqlUtils
 		
 		_log.fine("Get all rows in query '" + query + "' in " + (System.currentTimeMillis() - start) + "ms");
 		return res;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final SqlUtils _instance = new SqlUtils();
 	}
 }

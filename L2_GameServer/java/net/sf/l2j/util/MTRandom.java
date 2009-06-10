@@ -20,8 +20,6 @@ public class MTRandom
 {
 	private Random _random = new Random();
 	
-	private static MTRandom _instance;
-	
 	public Random getSecureRandom()
 	{
 		return _random;
@@ -29,12 +27,16 @@ public class MTRandom
 	
 	public static final MTRandom getInstance()
 	{
-		if (_instance == null)
-			_instance = new MTRandom();
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private MTRandom()
 	{
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final MTRandom _instance = new MTRandom();
 	}
 }

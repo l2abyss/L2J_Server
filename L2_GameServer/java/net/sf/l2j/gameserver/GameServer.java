@@ -152,7 +152,7 @@ public class GameServer
 	
 	public long getUsedMemoryMB()
 	{
-		return (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576;																				   // ;
+		return (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576; // ;
 	}
 	
 	public SelectorThread<L2GameClient> getSelectorThread()
@@ -226,7 +226,7 @@ public class GameServer
 		ExtractableItemsData.getInstance();
 		SummonItemsData.getInstance();
 		ZoneManager.getInstance();
-		MerchantPriceConfigTable.getInstance();
+		MerchantPriceConfigTable.getInstance().loadInstances();
 		TradeController.getInstance();
 		InstanceManager.getInstance();
 		
@@ -286,9 +286,9 @@ public class GameServer
 		if (Config.GEODATA == 2)
 			PathFinding.getInstance();
 		
-		CastleManager.getInstance();
+		CastleManager.getInstance().loadInstances();
 		SiegeManager.getInstance();
-		FortManager.getInstance();
+		FortManager.getInstance().loadInstances();
 		FortSiegeManager.getInstance();
 		
 		TeleportLocationTable.getInstance();
@@ -367,8 +367,7 @@ public class GameServer
 		if (Config.SAVE_DROPPED_ITEM)
 			ItemsOnGroundManager.getInstance();
 		
-		if (Config.AUTODESTROY_ITEM_AFTER > 0
-		        || Config.HERB_AUTO_DESTROY_TIME > 0)
+		if (Config.AUTODESTROY_ITEM_AFTER > 0 || Config.HERB_AUTO_DESTROY_TIME > 0)
 			ItemsAutoDestroy.getInstance();
 		
 		MonsterRace.getInstance();
@@ -410,6 +409,10 @@ public class GameServer
 		// read pet stats from db
 		L2PetDataTable.getInstance().loadPetsData();
 		
+		MerchantPriceConfigTable.getInstance().updateReferences();
+		CastleManager.getInstance().activateInstances();
+		FortManager.getInstance().activateInstances();
+		
 		Universe.getInstance();
 		
 		if (Config.ACCEPT_GEOEDITOR_CONN)
@@ -442,8 +445,7 @@ public class GameServer
 		
 		ForumsBBSManager.getInstance();
 		
-		_log.config("IdFactory: Free ObjectID's remaining: "
-		        + IdFactory.getInstance().size());
+		_log.config("IdFactory: Free ObjectID's remaining: " + IdFactory.getInstance().size());
 		
 		// initialize the dynamic extension loader
 		try

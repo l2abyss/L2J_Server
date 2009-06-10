@@ -35,17 +35,11 @@ public class TeleportLocationTable
 {
 	private static Logger _log = Logger.getLogger(TeleportLocationTable.class.getName());
 	
-	private static TeleportLocationTable _instance;
-	
 	private Map<Integer, L2TeleportLocation> _teleports;
 	
 	public static TeleportLocationTable getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new TeleportLocationTable();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private TeleportLocationTable()
@@ -149,5 +143,11 @@ public class TeleportLocationTable
 	public L2TeleportLocation getTemplate(int id)
 	{
 		return _teleports.get(id);
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final TeleportLocationTable _instance = new TeleportLocationTable();
 	}
 }

@@ -32,26 +32,20 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 public class GmListTable
 {
 	private static Logger _log = Logger.getLogger(GmListTable.class.getName());
-	private static GmListTable _instance;
-	
 	
 	/** Set(L2PcInstance>) containing all the GM in game */
 	private FastMap<L2PcInstance, Boolean> _gmList;
 	
 	public static GmListTable getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new GmListTable();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public FastList<L2PcInstance> getAllGms(boolean includeHidden)
 	{
 		FastList<L2PcInstance> tmpGmList = new FastList<L2PcInstance>();
 		
-		for (FastMap.Entry<L2PcInstance, Boolean> n = _gmList.head(), end = _gmList.tail(); (n = n.getNext())!=end;)
+		for (FastMap.Entry<L2PcInstance, Boolean> n = _gmList.head(), end = _gmList.tail(); (n = n.getNext()) != end;)
 			if (includeHidden || !n.getValue())
 				tmpGmList.add(n.getKey());
 		
@@ -62,18 +56,18 @@ public class GmListTable
 	{
 		FastList<String> tmpGmList = new FastList<String>();
 		
-		for (FastMap.Entry<L2PcInstance, Boolean> n = _gmList.head(), end = _gmList.tail(); (n = n.getNext())!=end;)
+		for (FastMap.Entry<L2PcInstance, Boolean> n = _gmList.head(), end = _gmList.tail(); (n = n.getNext()) != end;)
 			if (!n.getValue())
 				tmpGmList.add(n.getKey().getName());
 			else if (includeHidden)
-				tmpGmList.add(n.getKey().getName()+" (invis)");
+				tmpGmList.add(n.getKey().getName() + " (invis)");
 		
 		return tmpGmList;
 	}
 	
 	private GmListTable()
 	{
-		_gmList = new FastMap<L2PcInstance,Boolean>().setShared(true);
+		_gmList = new FastMap<L2PcInstance, Boolean>().setShared(true);
 	}
 	
 	/**
@@ -81,13 +75,15 @@ public class GmListTable
 	 */
 	public void addGm(L2PcInstance player, boolean hidden)
 	{
-		if (Config.DEBUG) _log.fine("added gm: "+player.getName());
-		_gmList.put(player,hidden);
+		if (Config.DEBUG)
+			_log.fine("added gm: " + player.getName());
+		_gmList.put(player, hidden);
 	}
 	
 	public void deleteGm(L2PcInstance player)
 	{
-		if (Config.DEBUG) _log.fine("deleted gm: "+player.getName());
+		if (Config.DEBUG)
+			_log.fine("deleted gm: " + player.getName());
 		
 		_gmList.remove(player);
 	}
@@ -99,7 +95,8 @@ public class GmListTable
 	public void showGm(L2PcInstance player)
 	{
 		FastMap.Entry<L2PcInstance, Boolean> gm = _gmList.getEntry(player);
-		if (gm != null) gm.setValue(false);
+		if (gm != null)
+			gm.setValue(false);
 	}
 	
 	/**
@@ -109,12 +106,13 @@ public class GmListTable
 	public void hideGm(L2PcInstance player)
 	{
 		FastMap.Entry<L2PcInstance, Boolean> gm = _gmList.getEntry(player);
-		if (gm != null) gm.setValue(true);
+		if (gm != null)
+			gm.setValue(true);
 	}
 	
 	public boolean isGmOnline(boolean includeHidden)
 	{
-		for (FastMap.Entry<L2PcInstance, Boolean> n = _gmList.head(), end = _gmList.tail(); (n = n.getNext())!=end;)
+		for (FastMap.Entry<L2PcInstance, Boolean> n = _gmList.head(), end = _gmList.tail(); (n = n.getNext()) != end;)
 		{
 			if (includeHidden || !n.getValue())
 				return true;
@@ -123,19 +121,20 @@ public class GmListTable
 		return false;
 	}
 	
-	public void sendListToPlayer (L2PcInstance player)
+	public void sendListToPlayer(L2PcInstance player)
 	{
 		if (!isGmOnline(player.isGM()))
 		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.NO_GM_PROVIDING_SERVICE_NOW); //There are not any GMs that are providing customer service currently.
 			player.sendPacket(sm);
-		} else
+		}
+		else
 		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.GM_LIST);
 			player.sendPacket(sm);
 			
-            for (String name : getAllGmNames(player.isGM()))
-            {
+			for (String name : getAllGmNames(player.isGM()))
+			{
 				sm = new SystemMessage(SystemMessageId.GM_C1);
 				sm.addString(name);
 				player.sendPacket(sm);
@@ -157,5 +156,11 @@ public class GmListTable
 		{
 			gm.sendMessage(message);
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final GmListTable _instance = new GmListTable();
 	}
 }

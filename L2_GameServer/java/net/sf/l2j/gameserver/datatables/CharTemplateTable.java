@@ -37,17 +37,11 @@ public class CharTemplateTable
 {
 	private static final Logger LOG = Logger.getLogger(CharTemplateTable.class.getName());
 	
-	private static CharTemplateTable _instance;
-	
 	private final Map<Integer, L2PcTemplate> _templates = new FastMap<Integer, L2PcTemplate>();
 	
 	public static CharTemplateTable getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new CharTemplateTable();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private CharTemplateTable()
@@ -57,7 +51,9 @@ public class CharTemplateTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM class_list, char_templates, lvlupgain" + " WHERE class_list.id = char_templates.classId" + " AND class_list.id = lvlupgain.classId" + " ORDER BY class_list.id");
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM class_list, char_templates, lvlupgain"
+					+ " WHERE class_list.id = char_templates.classId" + " AND class_list.id = lvlupgain.classId"
+					+ " ORDER BY class_list.id");
 			ResultSet rset = statement.executeQuery();
 			
 			while (rset.next())
@@ -209,5 +205,11 @@ public class CharTemplateTable
 			throw new IllegalArgumentException("No template for classId: " + classId);
 		}
 		return pcTemplate.className;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final CharTemplateTable _instance = new CharTemplateTable();
 	}
 }

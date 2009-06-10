@@ -37,15 +37,12 @@ import net.sf.l2j.gameserver.model.L2ArmorSet;
 public class ArmorSetsTable
 {
 	private static Logger _log = Logger.getLogger(ArmorSetsTable.class.getName());
-	private static ArmorSetsTable _instance;
 	
 	private FastMap<Integer, L2ArmorSet> _armorSets;
 	
 	public static ArmorSetsTable getInstance()
 	{
-		if (_instance == null)
-			_instance = new ArmorSetsTable();
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private ArmorSetsTable()
@@ -75,10 +72,10 @@ public class ArmorSetsTable
 				int shield = rset.getInt("shield");
 				int shield_skill_id = rset.getInt("shield_skill_id");
 				int enchant6skill = rset.getInt("enchant6skill");
-				int mw_legs = rset.getInt("mw_legs"); 
-				int mw_head = rset.getInt("mw_head"); 
-				int mw_gloves = rset.getInt("mw_gloves"); 
-				int mw_feet = rset.getInt("mw_feet"); 
+				int mw_legs = rset.getInt("mw_legs");
+				int mw_head = rset.getInt("mw_head");
+				int mw_gloves = rset.getInt("mw_gloves");
+				int mw_feet = rset.getInt("mw_feet");
 				int mw_shield = rset.getInt("mw_shield");
 				_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet, skill_id, skill_lvl, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield));
 			}
@@ -122,10 +119,10 @@ public class ArmorSetsTable
 					int shield = rset.getInt("shield");
 					int shield_skill_id = rset.getInt("shield_skill_id");
 					int enchant6skill = rset.getInt("enchant6skill");
-					int mw_legs = rset.getInt("mw_legs"); 
-					int mw_head = rset.getInt("mw_head"); 
-					int mw_gloves = rset.getInt("mw_gloves"); 
-					int mw_feet = rset.getInt("mw_feet"); 
+					int mw_legs = rset.getInt("mw_legs");
+					int mw_head = rset.getInt("mw_head");
+					int mw_gloves = rset.getInt("mw_gloves");
+					int mw_feet = rset.getInt("mw_feet");
 					int mw_shield = rset.getInt("mw_shield");
 					_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet, skill_id, skill_lvl, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield));
 				}
@@ -158,5 +155,11 @@ public class ArmorSetsTable
 	public L2ArmorSet getSet(int chestId)
 	{
 		return _armorSets.get(chestId);
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final ArmorSetsTable _instance = new ArmorSetsTable();
 	}
 }

@@ -27,17 +27,13 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 public class L2PetDataTable
 {
 	private static Logger _log = Logger.getLogger(L2PetInstance.class.getName());
-	private static L2PetDataTable _instance;
 	
 	//private static final int[] PET_LIST = { 12077, 12312, 12313, 12311, 12527, 12528, 12526 };
 	private static Map<Integer, Map<Integer, L2PetData>> _petTable;
 	
 	public static L2PetDataTable getInstance()
 	{
-		if (_instance == null)
-			_instance = new L2PetDataTable();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private L2PetDataTable()
@@ -252,19 +248,19 @@ public class L2PetDataTable
 		{
 			case 12077:// Wolf
 			case 12564://Sin Eater
-				return new int[]{2515};
+				return new int[] { 2515 };
 				
 			case 16030:// Great Wolf 
 			case 16025:// Black Wolf
 			case 16037:// White Great Wolf	
 			case 16041:// Fenrir  
 			case 16042:// White Fenrir  
-				return new int[]{9668};
+				return new int[] { 9668 };
 				
 			case 12311:// hatchling of wind
 			case 12312:// hatchling of star
 			case 12313:// hatchling of twilight
-				return new int[]{4038};
+				return new int[] { 4038 };
 				
 			case 12526:// wind strider
 			case 12527:// Star strider
@@ -272,23 +268,23 @@ public class L2PetDataTable
 			case 16038:// red wind strider
 			case 16039:// red Star strider
 			case 16040:// red Twilight strider
-				return new int[]{5168,5169};
+				return new int[] { 5168, 5169 };
 				
 			case 12621: // wyvern
-				return new int[]{6316};
+				return new int[] { 6316 };
 				
 			case 12780:// Baby Buffalo
 			case 12782:// Baby Cougar
 			case 12781:// Baby Kookaburra
-				
-				return new int[]{7582};
+			
+				return new int[] { 7582 };
 			case 16034:// Improved Baby Buffalo
 			case 16036:// Improved Baby Cougar	
 			case 16035:// Improved Baby Kookaburra
-				return new int[]{10425};
+				return new int[] { 10425 };
 				
 			default:
-				return new int[]{0};
+				return new int[] { 0 };
 		}
 	}
 	
@@ -335,48 +331,24 @@ public class L2PetDataTable
 		switch (npcId)
 		{
 			case 12077:// Wolf
-				return new int[]
-				{
-					2375
-				};
+				return new int[] { 2375 };
 			case 16025:// Great Wolf
-				return new int[]
-				{
-					9882
-				};
+				return new int[] { 9882 };
 			case 16030:// Black Wolf 
-				return new int[]
-				{
-					10163
-				};
+				return new int[] { 10163 };
 			case 16037:// White Great Wolf 
-				return new int[]
-				{
-					10307
-				};
+				return new int[] { 10307 };
 			case 16041:// Fenrir 
-				return new int[]
-				{
-					10426
-				};
+				return new int[] { 10426 };
 			case 16042:// White Fenrir 
-				return new int[]
-				{
-					10611
-				};
+				return new int[] { 10611 };
 			case 12564://Sin Eater
-				return new int[]
-				{
-					4425
-				};
+				return new int[] { 4425 };
 				
 			case 12311:// hatchling of wind
 			case 12312:// hatchling of star
 			case 12313:// hatchling of twilight
-				return new int[]
-				{
-					3500, 3501, 3502
-				};
+				return new int[] { 3500, 3501, 3502 };
 				
 			case 12526:// wind strider
 			case 12527:// Star strider
@@ -384,39 +356,24 @@ public class L2PetDataTable
 			case 16038: // red strider of wind
 			case 16039: // red strider of star
 			case 16040: // red strider of dusk
-				return new int[]
-				{
-					4422, 4423, 4424, 10308, 10309, 10310
-				};
+				return new int[] { 4422, 4423, 4424, 10308, 10309, 10310 };
 				
 			case 12621:// Wyvern
-				return new int[]
-				{
-					8663
-				};
+				return new int[] { 8663 };
 				
 			case 12780:// Baby Buffalo
 			case 12782:// Baby Cougar
 			case 12781:// Baby Kookaburra
-				return new int[]
-				{
-					6648, 6649, 6650
-				};
+				return new int[] { 6648, 6649, 6650 };
 				
 			case 16034:// Improved Baby Buffalo
 			case 16036:// Improved Baby Cougar
 			case 16035:// Improved Baby Kookaburra	
-				return new int[]
-				{
-					10311, 10312, 10313
-				};
+				return new int[] { 10311, 10312, 10313 };
 				
 				// unknown item id.. should never happen
 			default:
-				return new int[]
-				{
-					0
-				};
+				return new int[] { 0 };
 		}
 	}
 	
@@ -433,5 +390,11 @@ public class L2PetDataTable
 				|| npcId == 16039 // Red Star Strider
 				|| npcId == 16040 // Red Twilight Strider
 				|| npcId == 16040; // horse
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final L2PetDataTable _instance = new L2PetDataTable();
 	}
 }

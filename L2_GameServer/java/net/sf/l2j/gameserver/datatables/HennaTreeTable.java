@@ -37,13 +37,12 @@ import net.sf.l2j.gameserver.templates.item.L2Henna;
 public class HennaTreeTable
 {
 	private static Logger _log = Logger.getLogger(HennaTreeTable.class.getName());
-	private static final HennaTreeTable _instance = new HennaTreeTable();
 	private Map<ClassId, List<L2HennaInstance>> _hennaTrees;
 	private boolean _initialized = true;
 	
 	public static HennaTreeTable getInstance()
 	{
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private HennaTreeTable()
@@ -134,7 +133,7 @@ public class HennaTreeTable
 			return new L2HennaInstance[0];
 		}
 		
-		for (L2HennaInstance temp: henna)
+		for (L2HennaInstance temp : henna)
 		{
 			result.add(temp);
 		}
@@ -147,4 +146,9 @@ public class HennaTreeTable
 		return _initialized;
 	}
 	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final HennaTreeTable _instance = new HennaTreeTable();
+	}
 }

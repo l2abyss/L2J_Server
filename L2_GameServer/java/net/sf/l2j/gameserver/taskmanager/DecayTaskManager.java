@@ -34,19 +34,14 @@ public class DecayTaskManager
 	public static final int RAID_BOSS_DECAY_TIME = 30000;
 	public static final int ATTACKABLE_DECAY_TIME = 8500;
 	
-	private static DecayTaskManager _instance;
-	
-	public DecayTaskManager()
+	private DecayTaskManager()
 	{
 		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new DecayScheduler(), 10000, 5000);
 	}
 	
 	public static DecayTaskManager getInstance()
 	{
-		if (_instance == null)
-			_instance = new DecayTaskManager();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public void addDecayTask(L2Character actor)
@@ -86,7 +81,7 @@ public class DecayTaskManager
 				if (_decayTasks != null)
 					for (L2Character actor : _decayTasks.keySet())
 					{
-						if (actor.isRaid()&& !actor.isRaidMinion())
+						if (actor.isRaid() && !actor.isRaidMinion())
 							delay = RAID_BOSS_DECAY_TIME;
 						else
 							delay = ATTACKABLE_DECAY_TIME;
@@ -117,7 +112,8 @@ public class DecayTaskManager
 		Long current = System.currentTimeMillis();
 		for (L2Character actor : _decayTasks.keySet())
 		{
-			ret += "Class/Name: " + actor.getClass().getSimpleName() + "/" + actor.getName() + " decay timer: " + (current - _decayTasks.get(actor)) + "\r\n";
+			ret += "Class/Name: " + actor.getClass().getSimpleName() + "/" + actor.getName() + " decay timer: "
+					+ (current - _decayTasks.get(actor)) + "\r\n";
 		}
 		
 		return ret;
@@ -129,5 +125,11 @@ public class DecayTaskManager
 	public Map<L2Character, Long> getTasks()
 	{
 		return _decayTasks;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final DecayTaskManager _instance = new DecayTaskManager();
 	}
 }

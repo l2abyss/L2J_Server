@@ -51,7 +51,6 @@ public class SkillTreeTable
 	public static final int UNTRAIN_ENCHANT_BOOK = 9625;
 	
 	private static Logger _log = Logger.getLogger(SkillTreeTable.class.getName());
-	private static SkillTreeTable _instance;
 	
 	private Map<ClassId, Map<Integer, L2SkillLearn>> _skillTrees;
 	private List<L2SkillLearn> _fishingSkillTrees; //all common skills (teached by Fisherman)
@@ -63,10 +62,7 @@ public class SkillTreeTable
 	
 	public static SkillTreeTable getInstance()
 	{
-		if (_instance == null)
-			_instance = new SkillTreeTable();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	/**
@@ -422,7 +418,7 @@ public class SkillTreeTable
 		}
 		
 		_log.config("FishingSkillTreeTable: Loaded " + count2 + " general skills.");
-		_log.config("FishingSkillTreeTable: Loaded " + count3 + " dwarven skills.");
+		_log.config("DwarvenCraftSkillTreeTable: Loaded " + count3 + " dwarven skills.");
 		_log.config("EnchantSkillTreeTable: Loaded " + count4 + " enchant skills.");
 		_log.config("PledgeSkillTreeTable: Loaded " + count5 + " pledge skills");
 		_log.config("TransformSkillTreeTable: Loaded " + count6 + " transform skills");
@@ -553,13 +549,13 @@ public class SkillTreeTable
 		for (L2SkillLearn temp : skills)
 		{
 			boolean knownSkill = false;
-				
+			
 			for (int j = 0; j < oldSkills.length && !knownSkill; j++)
 			{
 				if (oldSkills[j].getId() == temp.getId())
 				{
 					knownSkill = true;
-						
+					
 					if (oldSkills[j].getLevel() == temp.getLevel() - 1)
 					{
 						// this is the next level of a skill that we know
@@ -567,7 +563,7 @@ public class SkillTreeTable
 					}
 				}
 			}
-				
+			
 			if (!knownSkill && temp.getLevel() == 1)
 			{
 				// this is a new skill
@@ -577,6 +573,7 @@ public class SkillTreeTable
 		
 		return result.toArray(new L2SkillLearn[result.size()]);
 	}
+	
 	public L2EnchantSkillLearn getSkillEnchantmentForSkill(L2Skill skill)
 	{
 		L2EnchantSkillLearn esl = this.getSkillEnchantmentBySkillId(skill.getId());
@@ -783,7 +780,7 @@ public class SkillTreeTable
 			{
 				skillCost = skillLearn.getSpCost();
 				if (!player.getClassId().equalsOrChildOf(classId))
-						return skillCost;
+					return skillCost;
 			}
 		}
 		
@@ -833,5 +830,11 @@ public class SkillTreeTable
 		}
 		
 		return 0;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final SkillTreeTable _instance = new SkillTreeTable();
 	}
 }

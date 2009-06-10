@@ -40,22 +40,16 @@ public class DoorTable
 {
 	private static Logger _log = Logger.getLogger(DoorTable.class.getName());
 	
-	private Map<Integer, L2DoorInstance> _staticItems;
+	private Map<Integer, L2DoorInstance> _staticItems = new FastMap<Integer, L2DoorInstance>();
 	private boolean _initialized;
-	
-	private static DoorTable _instance;
 	
 	public static DoorTable getInstance()
 	{
-		if (_instance == null)
-			_instance = new DoorTable();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private DoorTable()
 	{
-		_staticItems = new FastMap<Integer, L2DoorInstance>();
 		_initialized = true;
 		parseData();
 	}
@@ -67,7 +61,8 @@ public class DoorTable
 	
 	public void respawn()
 	{
-		_instance = new DoorTable();
+		_staticItems.clear();
+		parseData();
 	}
 	
 	public void parseData()
@@ -86,7 +81,7 @@ public class DoorTable
 				if (line.trim().length() == 0 || line.startsWith("#"))
 					continue;
 				
-				L2DoorInstance door = parseList(line);
+				L2DoorInstance door = parseList(line, false);
 				_staticItems.put(door.getDoorId(), door);
 				door.spawnMe(door.getX(), door.getY(), door.getZ());
 				ClanHall clanhall = ClanHallManager.getInstance().getNearbyClanHall(door.getX(), door.getY(), 500);
@@ -123,7 +118,15 @@ public class DoorTable
 		}
 	}
 	
-	public static L2DoorInstance parseList(String line)
+	/**
+	 * Parses door list.
+	 *
+	 * @param line string
+	 * @param commanderDoor whether the door is commander door (fortress)
+	 *
+	 * @return created door instance
+	*/
+	public static L2DoorInstance parseList(final String line, final boolean commanderDoor)
 	{
 		StringTokenizer st = new StringTokenizer(line, ";");
 		L2DoorInstance door = null;
@@ -149,77 +152,77 @@ public class DoorTable
 			boolean startOpen = false;
 			if (st.hasMoreTokens())
 				startOpen = Boolean.parseBoolean(st.nextToken());
-		if (rangeXMin > rangeXMax)
-			_log.severe("Error in door data, ID:" + id);
-		if (rangeYMin > rangeYMax)
-			_log.severe("Error in door data, ID:" + id);
-		if (rangeZMin > rangeZMax)
-			_log.severe("Error in door data, ID:" + id);
-		int collisionRadius; // (max) radius for movement checks
-		if ((rangeXMax - rangeXMin) > (rangeYMax - rangeYMin))
-			collisionRadius = rangeYMax - rangeYMin;
-		else
-			collisionRadius = rangeXMax - rangeXMin;
-		
-		StatsSet npcDat = new StatsSet();
-		npcDat.set("npcId", id);
-		npcDat.set("level", 0);
-		npcDat.set("jClass", "door");
-		
-		npcDat.set("baseSTR", 0);
-		npcDat.set("baseCON", 0);
-		npcDat.set("baseDEX", 0);
-		npcDat.set("baseINT", 0);
-		npcDat.set("baseWIT", 0);
-		npcDat.set("baseMEN", 0);
-		
-		npcDat.set("baseShldDef", 0);
-		npcDat.set("baseShldRate", 0);
-		npcDat.set("baseAccCombat", 38);
-		npcDat.set("baseEvasRate", 38);
-		npcDat.set("baseCritRate", 38);
-		
-		//npcDat.set("name", "");
-		npcDat.set("collision_radius", collisionRadius);
-		npcDat.set("collision_height", rangeZMax - rangeZMin);
-		npcDat.set("sex", "male");
-		npcDat.set("type", "");
-		npcDat.set("baseAtkRange", 0);
-		npcDat.set("baseMpMax", 0);
-		npcDat.set("baseCpMax", 0);
-		npcDat.set("rewardExp", 0);
-		npcDat.set("rewardSp", 0);
-		npcDat.set("basePAtk", 0);
-		npcDat.set("baseMAtk", 0);
-		npcDat.set("basePAtkSpd", 0);
-		npcDat.set("aggroRange", 0);
-		npcDat.set("baseMAtkSpd", 0);
-		npcDat.set("rhand", 0);
-		npcDat.set("lhand", 0);
-		npcDat.set("armor", 0);
-		npcDat.set("baseWalkSpd", 0);
-		npcDat.set("baseRunSpd", 0);
-		npcDat.set("name", name);
-		npcDat.set("baseHpMax", hp);
-		npcDat.set("baseHpReg", 3.e-3f);
-		npcDat.set("baseMpReg", 3.e-3f);
-		npcDat.set("basePDef", pdef);
-		npcDat.set("baseMDef", mdef);
-		
-		L2CharTemplate template = new L2CharTemplate(npcDat);
-		door = new L2DoorInstance(IdFactory.getInstance().getNextId(), template, id, name, unlockable);
-		door.setRange(rangeXMin, rangeYMin, rangeZMin, rangeXMax, rangeYMax, rangeZMax);
-		door.setCurrentHpMp(door.getMaxHp(), door.getMaxMp());
-		door.setXYZInvisible(x, y, z);
-		
-		if (door.getFort() != null)
-			door.setIsCommanderDoor(startOpen);
-		else
-			door.setOpen(startOpen);
+			if (rangeXMin > rangeXMax)
+				_log.severe("Error in door data, ID:" + id);
+			if (rangeYMin > rangeYMax)
+				_log.severe("Error in door data, ID:" + id);
+			if (rangeZMin > rangeZMax)
+				_log.severe("Error in door data, ID:" + id);
+			int collisionRadius; // (max) radius for movement checks
+			if ((rangeXMax - rangeXMin) > (rangeYMax - rangeYMin))
+				collisionRadius = rangeYMax - rangeYMin;
+			else
+				collisionRadius = rangeXMax - rangeXMin;
+			
+			StatsSet npcDat = new StatsSet();
+			npcDat.set("npcId", id);
+			npcDat.set("level", 0);
+			npcDat.set("jClass", "door");
+			
+			npcDat.set("baseSTR", 0);
+			npcDat.set("baseCON", 0);
+			npcDat.set("baseDEX", 0);
+			npcDat.set("baseINT", 0);
+			npcDat.set("baseWIT", 0);
+			npcDat.set("baseMEN", 0);
+			
+			npcDat.set("baseShldDef", 0);
+			npcDat.set("baseShldRate", 0);
+			npcDat.set("baseAccCombat", 38);
+			npcDat.set("baseEvasRate", 38);
+			npcDat.set("baseCritRate", 38);
+			
+			//npcDat.set("name", "");
+			npcDat.set("collision_radius", collisionRadius);
+			npcDat.set("collision_height", rangeZMax - rangeZMin);
+			npcDat.set("sex", "male");
+			npcDat.set("type", "");
+			npcDat.set("baseAtkRange", 0);
+			npcDat.set("baseMpMax", 0);
+			npcDat.set("baseCpMax", 0);
+			npcDat.set("rewardExp", 0);
+			npcDat.set("rewardSp", 0);
+			npcDat.set("basePAtk", 0);
+			npcDat.set("baseMAtk", 0);
+			npcDat.set("basePAtkSpd", 0);
+			npcDat.set("aggroRange", 0);
+			npcDat.set("baseMAtkSpd", 0);
+			npcDat.set("rhand", 0);
+			npcDat.set("lhand", 0);
+			npcDat.set("armor", 0);
+			npcDat.set("baseWalkSpd", 0);
+			npcDat.set("baseRunSpd", 0);
+			npcDat.set("name", name);
+			npcDat.set("baseHpMax", hp);
+			npcDat.set("baseHpReg", 3.e-3f);
+			npcDat.set("baseMpReg", 3.e-3f);
+			npcDat.set("basePDef", pdef);
+			npcDat.set("baseMDef", mdef);
+			
+			L2CharTemplate template = new L2CharTemplate(npcDat);
+			door = new L2DoorInstance(IdFactory.getInstance().getNextId(), template, id, name, unlockable);
+			door.setRange(rangeXMin, rangeYMin, rangeZMin, rangeXMax, rangeYMax, rangeZMax);
+			door.setCurrentHpMp(door.getMaxHp(), door.getMaxMp());
+			door.setXYZInvisible(x, y, z);
+			
+			if (commanderDoor)
+				door.setIsCommanderDoor(startOpen);
+			else
+				door.setOpen(startOpen);
 		}
 		catch (Exception e)
 		{
-			_log.severe("Error in door data at line: " +line);
+			_log.severe("Error in door data at line: " + line);
 		}
 		return door;
 	}
@@ -264,22 +267,22 @@ public class DoorTable
 		// devils (every 5 minutes)
 		else if (doorInst.getDoorName().startsWith("pirate_isle"))
 		   doorInst.setAutoActionDelay(300000);
-		    
+			
 		// Cruma Tower (every 20 minutes) 
 		else if (doorInst.getDoorName().startsWith("cruma")) 
-		    doorInst.setAutoActionDelay(1200000);
-		    
+			doorInst.setAutoActionDelay(1200000);
+			
 		// Coral Garden Gate (every 15 minutes) 
 		else if (doorInst.getDoorName().startsWith("Coral_garden")) 
-		    doorInst.setAutoActionDelay(900000);
-		    
+			doorInst.setAutoActionDelay(900000);
+			
 		// Normil's cave (every 5 minutes) 
 		else if (doorInst.getDoorName().startsWith("Normils_cave")) 
-		    doorInst.setAutoActionDelay(300000);
-		    
+			doorInst.setAutoActionDelay(300000);
+			
 		// Normil's Garden (every 15 minutes) 
 		else if (doorInst.getDoorName().startsWith("Normils_garden")) 
-		    doorInst.setAutoActionDelay(900000);
+			doorInst.setAutoActionDelay(900000);
 		*/
 	}
 	
@@ -309,7 +312,7 @@ public class DoorTable
 		// there are quite many doors, maybe they should be splitted
 		for (L2DoorInstance doorInst : allDoors)
 		{
-			if (doorInst.getMapRegion() != region) 
+			if (doorInst.getMapRegion() != region)
 				continue;
 			if (doorInst.getXMax() == 0)
 				continue;
@@ -325,7 +328,7 @@ public class DoorTable
 					// phase 3, basically only z remains but now we calculate it with another formula (by rage)
 					// in some cases the direct line check (only) in the beginning isn't sufficient, 
 					// when char z changes a lot along the path
-					if (doorInst.getCurrentHp() > 0 && !doorInst.getOpen()) 
+					if (doorInst.getCurrentHp() > 0 && !doorInst.getOpen())
 					{
 						int px1 = doorInst.getXMin();
 						int py1 = doorInst.getYMin();
@@ -340,22 +343,22 @@ public class DoorTable
 						
 						int dk;
 						
-						if ((dk = (doorInst.getA() * l + doorInst.getB() * m + doorInst.getC() * n)) == 0) continue; // Parallel
+						if ((dk = (doorInst.getA() * l + doorInst.getB() * m + doorInst.getC() * n)) == 0)
+							continue; // Parallel
+							
+						float p = (float) (doorInst.getA() * x + doorInst.getB() * y + doorInst.getC() * z + doorInst.getD()) / (float) dk;
 						
-						float p = (float)(doorInst.getA() * x + doorInst.getB() * y + doorInst.getC() * z + doorInst.getD()) / (float)dk;
+						int fx = (int) (x - l * p);
+						int fy = (int) (y - m * p);
+						int fz = (int) (z - n * p);
 						
-						int fx = (int)(x - l * p);
-						int fy = (int)(y - m * p);
-						int fz = (int)(z - n * p);
-						
-						if((Math.min(x,tx) <= fx && fx <= Math.max(x,tx)) &&
-								(Math.min(y,ty) <= fy && fy <= Math.max(y,ty)) &&
-								(Math.min(z,tz) <= fz && fz <= Math.max(z,tz)))
+						if ((Math.min(x, tx) <= fx && fx <= Math.max(x, tx)) && (Math.min(y, ty) <= fy && fy <= Math.max(y, ty))
+								&& (Math.min(z, tz) <= fz && fz <= Math.max(z, tz)))
 						{
-
-							if (((fx >= px1 && fx <= px2) || (fx >= px2 && fx <= px1)) &&
-									((fy >= py1 && fy <= py2) || (fy >= py2 && fy <= py1)) &&
-									((fz >= pz1 && fz <= pz2) || (fz >= pz2 && fz <= pz1)))
+							
+							if (((fx >= px1 && fx <= px2) || (fx >= px2 && fx <= px1))
+									&& ((fy >= py1 && fy <= py2) || (fy >= py2 && fy <= py1))
+									&& ((fz >= pz1 && fz <= pz2) || (fz >= pz2 && fz <= pz1)))
 								return true; // Door between
 						}
 					}
@@ -363,5 +366,11 @@ public class DoorTable
 			}
 		}
 		return false;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final DoorTable _instance = new DoorTable();
 	}
 }

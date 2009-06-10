@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
-
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.Announcements;
@@ -81,8 +80,8 @@ public class Castle
 	private int _ownerId = 0;
 	private Siege _siege = null;
 	private Calendar _siegeDate;
-    private boolean _isTimeRegistrationOver = true; // true if Castle Lords set the time, or 24h is elapsed after the siege
-    private Calendar _siegeTimeRegistrationEndDate; // last siege end date + 1 day
+	private boolean _isTimeRegistrationOver = true; // true if Castle Lords set the time, or 24h is elapsed after the siege
+	private Calendar _siegeTimeRegistrationEndDate; // last siege end date + 1 day
 	private int _taxPercent = 0;
 	private double _taxRate = 0;
 	private long _treasury = 0;
@@ -253,7 +252,8 @@ public class Castle
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "Exception: Castle.updateFunctions(int type, int lvl, int lease, long rate, long time, boolean addNew): " + e.getMessage(), e);
+				_log.log(Level.SEVERE, "Exception: Castle.updateFunctions(int type, int lvl, int lease, long rate, long time, boolean addNew): "
+						+ e.getMessage(), e);
 			}
 			finally
 			{
@@ -425,9 +425,9 @@ public class Castle
 		{
 			for (L2ZoneType zone : ZoneManager.getInstance().getAllZones())
 			{
-				if (zone instanceof L2CastleZone && ((L2CastleZone)zone).getCastleId() == getCastleId())
+				if (zone instanceof L2CastleZone && ((L2CastleZone) zone).getCastleId() == getCastleId())
 				{
-					_zone = (L2CastleZone)zone;
+					_zone = (L2CastleZone) zone;
 					break;
 				}
 			}
@@ -441,9 +441,9 @@ public class Castle
 		{
 			for (L2ZoneType zone : ZoneManager.getInstance().getAllZones())
 			{
-				if (zone instanceof L2CastleTeleportZone && ((L2CastleTeleportZone)zone).getCastleId() == getCastleId())
+				if (zone instanceof L2CastleTeleportZone && ((L2CastleTeleportZone) zone).getCastleId() == getCastleId())
 				{
-					_teleZone = (L2CastleTeleportZone)zone;
+					_teleZone = (L2CastleTeleportZone) zone;
 					break;
 				}
 			}
@@ -530,7 +530,7 @@ public class Castle
 		
 		if (getSiege().getIsInProgress()) // If siege in progress
 			getSiege().midVictory(); // Mid victory phase of siege
-		
+			
 		for (L2PcInstance member : clan.getOnlineMembers(0))
 		{
 			giveResidentialSkills(member);
@@ -641,7 +641,7 @@ public class Castle
 			if (door.getCurrentHp() <= 0)
 			{
 				door.decayMe(); // Kill current if not killed already
-				door = DoorTable.parseList(_doorDefault.get(i));
+				door = DoorTable.parseList(_doorDefault.get(i), false);
 				DoorTable.getInstance().putDoor(door); //Readd the new door to the DoorTable By Erb
 				if (isDoorWeak)
 					door.setCurrentHp(door.getMaxHp() / 2);
@@ -696,7 +696,7 @@ public class Castle
 				_siegeDate.setTimeInMillis(rs.getLong("siegeDate"));
 				_siegeTimeRegistrationEndDate = Calendar.getInstance();
 				_siegeTimeRegistrationEndDate.setTimeInMillis(rs.getLong("regTimeEnd"));
-        	    _isTimeRegistrationOver = rs.getBoolean("regTimeOver");
+				_isTimeRegistrationOver = rs.getBoolean("regTimeOver");
 				
 				_taxPercent = rs.getInt("taxPercent");
 				_treasury = rs.getLong("treasury");
@@ -844,6 +844,14 @@ public class Castle
 		return true;
 	}
 	
+	public void activateInstance()
+	{
+		for (final L2DoorInstance door : _doors)
+		{
+			door.spawnMe(door.getX(), door.getY(), door.getZ());
+		}
+	}
+	
 	// This method loads castle door data from database
 	private void loadDoor()
 	{
@@ -858,11 +866,12 @@ public class Castle
 			while (rs.next())
 			{
 				// Create list of the door default for use when respawning dead doors
-				_doorDefault.add(rs.getString("name") + ";" + rs.getInt("id") + ";" + rs.getInt("x") + ";" + rs.getInt("y") + ";" + rs.getInt("z") + ";" + rs.getInt("range_xmin") + ";" + rs.getInt("range_ymin") + ";"
-						+ rs.getInt("range_zmin") + ";" + rs.getInt("range_xmax") + ";" + rs.getInt("range_ymax") + ";" + rs.getInt("range_zmax") + ";" + rs.getInt("hp") + ";" + rs.getInt("pDef") + ";" + rs.getInt("mDef"));
+				_doorDefault.add(rs.getString("name") + ";" + rs.getInt("id") + ";" + rs.getInt("x") + ";" + rs.getInt("y") + ";"
+						+ rs.getInt("z") + ";" + rs.getInt("range_xmin") + ";" + rs.getInt("range_ymin") + ";" + rs.getInt("range_zmin")
+						+ ";" + rs.getInt("range_xmax") + ";" + rs.getInt("range_ymax") + ";" + rs.getInt("range_zmax") + ";"
+						+ rs.getInt("hp") + ";" + rs.getInt("pDef") + ";" + rs.getInt("mDef"));
 				
-				L2DoorInstance door = DoorTable.parseList(_doorDefault.get(_doorDefault.size() - 1));
-				door.spawnMe(door.getX(), door.getY(), door.getZ());
+				L2DoorInstance door = DoorTable.parseList(_doorDefault.get(_doorDefault.size() - 1), false);
 				_doors.add(door);
 				DoorTable.getInstance().putDoor(door);
 			}
@@ -1047,7 +1056,7 @@ public class Castle
 		if (doorId <= 0)
 			return null;
 		
-		for (L2DoorInstance door: getDoors())
+		for (L2DoorInstance door : getDoors())
 		{
 			if (door.getDoorId() == doorId)
 				return door;
@@ -1073,10 +1082,7 @@ public class Castle
 	public final Siege getSiege()
 	{
 		if (_siege == null)
-			_siege = new Siege(new Castle[]
-			{
-				this
-			});
+			_siege = new Siege(new Castle[] { this });
 		return _siege;
 	}
 	
@@ -1097,7 +1103,8 @@ public class Castle
 	
 	public Calendar getTimeRegistrationOverDate()
 	{
-		if (_siegeTimeRegistrationEndDate == null) _siegeTimeRegistrationEndDate = Calendar.getInstance();
+		if (_siegeTimeRegistrationEndDate == null)
+			_siegeTimeRegistrationEndDate = Calendar.getInstance();
 		return _siegeTimeRegistrationEndDate;
 	}
 	
@@ -1223,7 +1230,8 @@ public class Castle
 				String values[] = new String[_production.size()];
 				for (SeedProduction s : _production)
 				{
-					values[count++] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + "," + s.getPrice() + "," + CastleManorManager.PERIOD_CURRENT + ")";
+					values[count++] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + ","
+							+ s.getPrice() + "," + CastleManorManager.PERIOD_CURRENT + ")";
 				}
 				if (values.length > 0)
 				{
@@ -1245,7 +1253,8 @@ public class Castle
 				String values[] = new String[_productionNext.size()];
 				for (SeedProduction s : _productionNext)
 				{
-					values[count++] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + "," + s.getPrice() + "," + CastleManorManager.PERIOD_NEXT + ")";
+					values[count++] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + ","
+							+ s.getPrice() + "," + CastleManorManager.PERIOD_NEXT + ")";
 				}
 				if (values.length > 0)
 				{
@@ -1301,7 +1310,8 @@ public class Castle
 				String values[] = new String[prod.size()];
 				for (SeedProduction s : prod)
 				{
-					values[count++] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + "," + s.getPrice() + "," + period + ")";
+					values[count++] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + ","
+							+ s.getPrice() + "," + period + ")";
 				}
 				if (values.length > 0)
 				{
@@ -1352,7 +1362,8 @@ public class Castle
 				String values[] = new String[_procure.size()];
 				for (CropProcure cp : _procure)
 				{
-					values[count++] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + "," + cp.getPrice() + "," + cp.getReward() + "," + CastleManorManager.PERIOD_CURRENT + ")";
+					values[count++] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + ","
+							+ cp.getPrice() + "," + cp.getReward() + "," + CastleManorManager.PERIOD_CURRENT + ")";
 				}
 				if (values.length > 0)
 				{
@@ -1373,7 +1384,8 @@ public class Castle
 				String values[] = new String[_procureNext.size()];
 				for (CropProcure cp : _procureNext)
 				{
-					values[count++] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + "," + cp.getPrice() + "," + cp.getReward() + "," + CastleManorManager.PERIOD_NEXT + ")";
+					values[count++] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + ","
+							+ cp.getPrice() + "," + cp.getReward() + "," + CastleManorManager.PERIOD_NEXT + ")";
 				}
 				if (values.length > 0)
 				{
@@ -1430,7 +1442,8 @@ public class Castle
 				
 				for (CropProcure cp : proc)
 				{
-					values[count++] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + "," + cp.getPrice() + "," + cp.getReward() + "," + period + ")";
+					values[count++] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + ","
+							+ cp.getPrice() + "," + cp.getReward() + "," + period + ")";
 				}
 				if (values.length > 0)
 				{
@@ -1559,12 +1572,12 @@ public class Castle
 			}
 		}
 	}
-
+	
 	public FastList<L2Skill> getResidentialSkills()
 	{
 		return _residentialSkills;
 	}
-
+	
 	public void giveResidentialSkills(L2PcInstance player)
 	{
 		if (_residentialSkills != null && _residentialSkills.size() > 0)
@@ -1573,7 +1586,7 @@ public class Castle
 				player.addSkill(sk, false);
 		}
 	}
-
+	
 	public void removeResidentialSkills(L2PcInstance player)
 	{
 		if (_residentialSkills != null && _residentialSkills.size() > 0)

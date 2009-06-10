@@ -31,15 +31,13 @@ public class PetNameTable
 {
 	private static Logger _log = Logger.getLogger(PetNameTable.class.getName());
 	
-	private static PetNameTable _instance;
+	private PetNameTable()
+	{
+	}
 	
 	public static PetNameTable getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new PetNameTable();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public boolean doesPetNameExist(String name, int petNpcId)
@@ -121,5 +119,11 @@ public class PetNameTable
 			}
 		}
 		return result;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final PetNameTable _instance = new PetNameTable();
 	}
 }

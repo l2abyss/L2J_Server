@@ -169,39 +169,34 @@ public class ItemTable
 		
 	}
 	
-	private static ItemTable _instance;
-	
 	/** Table of SQL request in order to obtain items from tables [etcitem], [armor], [weapon] */
-	private static final String[] SQL_ITEM_SELECTS =
-	{
-		"SELECT item_id, name, crystallizable, item_type, weight, consume_type, material," + " crystal_type, duration, time, price, crystal_count, sellable, dropable, destroyable, tradeable, handler, skill FROM etcitem",
-		
-		"SELECT item_id, name, bodypart, crystallizable, armor_type, weight," + " material, crystal_type, avoid_modify, duration, time, p_def, m_def, mp_bonus,"
-				+ " price, crystal_count, sellable, dropable, destroyable, tradeable, enchant4_skill, skill FROM armor",
-		
-		"SELECT item_id, name, bodypart, crystallizable, weight, soulshots, spiritshots," + " material, crystal_type, p_dam, rnd_dam, weaponType, critical, hit_modify, avoid_modify,"
-				+ " shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, time, price, crystal_count," + " sellable, dropable, destroyable, tradeable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl,"
-				+ " onCast_skill_chance, onCrit_skill_id, onCrit_skill_lvl, onCrit_skill_chance, change_weaponId FROM weapon"
-	};
+	private static final String[] SQL_ITEM_SELECTS = {
+			"SELECT item_id, name, crystallizable, item_type, weight, consume_type, material,"
+					+ " crystal_type, duration, time, price, crystal_count, sellable, dropable, destroyable, tradeable, handler, skill FROM etcitem",
+			
+			"SELECT item_id, name, bodypart, crystallizable, armor_type, weight,"
+					+ " material, crystal_type, avoid_modify, duration, time, p_def, m_def, mp_bonus,"
+					+ " price, crystal_count, sellable, dropable, destroyable, tradeable, enchant4_skill, skill FROM armor",
+			
+			"SELECT item_id, name, bodypart, crystallizable, weight, soulshots, spiritshots,"
+					+ " material, crystal_type, p_dam, rnd_dam, weaponType, critical, hit_modify, avoid_modify,"
+					+ " shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, time, price, crystal_count,"
+					+ " sellable, dropable, destroyable, tradeable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl,"
+					+ " onCast_skill_chance, onCrit_skill_id, onCrit_skill_lvl, onCrit_skill_chance, change_weaponId FROM weapon" };
 	
-	private static final String[] SQL_CUSTOM_ITEM_SELECTS =
-	{
-		"SELECT item_id, name, crystallizable, item_type, weight, consume_type, material," + " crystal_type, duration, time, price, crystal_count, sellable, dropable, destroyable, tradeable, handler, skill FROM custom_etcitem",
-		
-		"SELECT item_id, name, bodypart, crystallizable, armor_type, weight," + " material, crystal_type, avoid_modify, duration, time, p_def, m_def, mp_bonus,"
-				+ " price, crystal_count, sellable, dropable, destroyable, tradeable, enchant4_skill, skill FROM custom_armor",
-		
-		"SELECT item_id, name, bodypart, crystallizable, weight, soulshots, spiritshots," + " material, crystal_type, p_dam, rnd_dam, weaponType, critical, hit_modify, avoid_modify,"
-				+ " shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, time, price, crystal_count," + " sellable, dropable, destroyable, tradeable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl,"
-				+ " onCast_skill_chance, onCrit_skill_id, onCrit_skill_lvl, onCrit_skill_chance, change_weaponId FROM custom_weapon"
-	};
-	
-	/** List of etcItem */
-	private static final Map<Integer, Item> itemData = new FastMap<Integer, Item>();
-	/** List of weapons */
-	private static final Map<Integer, Item> weaponData = new FastMap<Integer, Item>();
-	/** List of armor */
-	private static final Map<Integer, Item> armorData = new FastMap<Integer, Item>();
+	private static final String[] SQL_CUSTOM_ITEM_SELECTS = {
+			"SELECT item_id, name, crystallizable, item_type, weight, consume_type, material,"
+					+ " crystal_type, duration, time, price, crystal_count, sellable, dropable, destroyable, tradeable, handler, skill FROM custom_etcitem",
+			
+			"SELECT item_id, name, bodypart, crystallizable, armor_type, weight,"
+					+ " material, crystal_type, avoid_modify, duration, time, p_def, m_def, mp_bonus,"
+					+ " price, crystal_count, sellable, dropable, destroyable, tradeable, enchant4_skill, skill FROM custom_armor",
+			
+			"SELECT item_id, name, bodypart, crystallizable, weight, soulshots, spiritshots,"
+					+ " material, crystal_type, p_dam, rnd_dam, weaponType, critical, hit_modify, avoid_modify,"
+					+ " shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, time, price, crystal_count,"
+					+ " sellable, dropable, destroyable, tradeable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl,"
+					+ " onCast_skill_chance, onCrit_skill_id, onCrit_skill_lvl, onCrit_skill_chance, change_weaponId FROM custom_weapon" };
 	
 	/**
 	 * Returns instance of ItemTable
@@ -209,11 +204,7 @@ public class ItemTable
 	 */
 	public static ItemTable getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new ItemTable();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	/**
@@ -228,11 +219,22 @@ public class ItemTable
 	/**
 	 * Constructor.
 	 */
-	public ItemTable()
+	private ItemTable()
 	{
 		_etcItems = new FastMap<Integer, L2EtcItem>();
 		_armors = new FastMap<Integer, L2Armor>();
 		_weapons = new FastMap<Integer, L2Weapon>();
+		load();
+	}
+	
+	private void load()
+	{
+		/** List of etcItem */
+		final Map<Integer, Item> itemData = new FastMap<Integer, Item>();
+		/** List of weapons */
+		final Map<Integer, Item> weaponData = new FastMap<Integer, Item>();
+		/** List of armor */
+		final Map<Integer, Item> armorData = new FastMap<Integer, Item>();
 		
 		Connection con = null;
 		try
@@ -343,18 +345,21 @@ public class ItemTable
 			}
 		}
 		
+		_armors.clear();
 		for (L2Armor armor : SkillsEngine.getInstance().loadArmors(armorData))
 		{
 			_armors.put(armor.getItemId(), armor);
 		}
 		_log.config("ItemTable: Loaded " + _armors.size() + " Armors.");
 		
+		_etcItems.clear();
 		for (L2EtcItem item : SkillsEngine.getInstance().loadItems(itemData))
 		{
 			_etcItems.put(item.getItemId(), item);
 		}
 		_log.config("ItemTable: Loaded " + _etcItems.size() + " Items.");
 		
+		_weapons.clear();
 		for (L2Weapon weapon : SkillsEngine.getInstance().loadWeapons(weaponData))
 		{
 			_weapons.put(weapon.getItemId(), weapon);
@@ -367,9 +372,7 @@ public class ItemTable
 	/**
 	 * Returns object Item from the record of the database
 	 * 
-	 * @param rset :
-	 *            ResultSet designating a record of the [weapon] table of
-	 *            database
+	 * @param rset : ResultSet designating a record of the [weapon] table of database
 	 * @return Item : object created from the database record
 	 * @throws SQLException
 	 */
@@ -483,7 +486,8 @@ public class ItemTable
 		item.set.set("enchant4_skill", rset.getString("enchant4_skill"));
 		item.set.set("skill", rset.getString("skill"));
 		
-		if (bodypart == L2Item.SLOT_NECK || bodypart == L2Item.SLOT_HAIR || bodypart == L2Item.SLOT_HAIR2 || bodypart == L2Item.SLOT_HAIRALL || (bodypart & L2Item.SLOT_L_EAR) != 0 || (bodypart & L2Item.SLOT_L_FINGER) != 0)
+		if (bodypart == L2Item.SLOT_NECK || bodypart == L2Item.SLOT_HAIR || bodypart == L2Item.SLOT_HAIR2
+				|| bodypart == L2Item.SLOT_HAIRALL || (bodypart & L2Item.SLOT_L_EAR) != 0 || (bodypart & L2Item.SLOT_L_FINGER) != 0)
 		{
 			item.set.set("type1", L2Item.TYPE1_WEAPON_RING_EARRING_NECKLACE);
 			item.set.set("type2", L2Item.TYPE2_ACCESSORY);
@@ -660,41 +664,41 @@ public class ItemTable
 	/*
 	private void fillEtcItemsTable()
 	{
-	    for (Item itemInfo : itemData.values())
-	    {
-	        L2EtcItem item = SkillsEngine.getInstance().loadEtcItem(itemInfo.id, itemInfo.type, itemInfo.name, itemInfo.set);
-	        if (item == null)
-	        {
-	            item = new L2EtcItem((L2EtcItemType)itemInfo.type, itemInfo.set);
+		for (Item itemInfo : itemData.values())
+		{
+			L2EtcItem item = SkillsEngine.getInstance().loadEtcItem(itemInfo.id, itemInfo.type, itemInfo.name, itemInfo.set);
+			if (item == null)
+			{
+				item = new L2EtcItem((L2EtcItemType)itemInfo.type, itemInfo.set);
 			}
 
-	        _etcItems.put(item.getItemId(), item);
+			_etcItems.put(item.getItemId(), item);
 		}
 	}
 
 	private void fillArmorsTable()
 	{
-	    List<L2Armor> armorList = SkillsEngine.getInstance().loadArmors(armorData);
+		List<L2Armor> armorList = SkillsEngine.getInstance().loadArmors(armorData);
 
-	    /*for (Item itemInfo : armorData.values())
+		/*for (Item itemInfo : armorData.values())
 			{
 
-	        L2Armor armor = SkillsEngine.getInstance().loadArmor(itemInfo.id, itemInfo.type, itemInfo.name, itemInfo.set);
-	        if (armor == null)
-	            armor = new L2Armor((L2ArmorType)itemInfo.type, itemInfo.set);
+			L2Armor armor = SkillsEngine.getInstance().loadArmor(itemInfo.id, itemInfo.type, itemInfo.name, itemInfo.set);
+			if (armor == null)
+				armor = new L2Armor((L2ArmorType)itemInfo.type, itemInfo.set);
 
-	        _armors.put(armor.getItemId(), armor);
-	    }*
+			_armors.put(armor.getItemId(), armor);
+		}*
 				}
 
 	private void FillWeaponsTable()
 				{
 
-	    for (Item itemInfo : weaponData.values())
-	    {
-	        L2Weapon weapon = SkillsEngine.getInstance().loadWeapon(itemInfo.id, itemInfo.type, itemInfo.name, itemInfo.set);
+		for (Item itemInfo : weaponData.values())
+		{
+			L2Weapon weapon = SkillsEngine.getInstance().loadWeapon(itemInfo.id, itemInfo.type, itemInfo.name, itemInfo.set);
 				if (weapon == null)
-	            weapon = new L2Weapon((L2WeaponType)itemInfo.type, itemInfo.set);
+				weapon = new L2Weapon((L2WeaponType)itemInfo.type, itemInfo.set);
 
 				_weapons.put(weapon.getItemId(), weapon);
 				}
@@ -796,7 +800,8 @@ public class ItemTable
 			// if in CommandChannel and was killing a World/RaidBoss
 			if (reference instanceof L2GrandBossInstance || reference instanceof L2RaidBossInstance)
 			{
-				if (((L2Attackable) reference).getFirstCommandChannelAttacked() != null && ((L2Attackable) reference).getFirstCommandChannelAttacked().meetRaidWarCondition(reference))
+				if (((L2Attackable) reference).getFirstCommandChannelAttacked() != null
+						&& ((L2Attackable) reference).getFirstCommandChannelAttacked().meetRaidWarCondition(reference))
 				{
 					item.setOwnerId(((L2Attackable) reference).getFirstCommandChannelAttacked().getChannelLeader().getObjectId());
 					delay = 300000;
@@ -830,10 +835,7 @@ public class ItemTable
 		{
 			LogRecord record = new LogRecord(Level.INFO, "CREATE:" + process);
 			record.setLoggerName("item");
-			record.setParameters(new Object[]
-			{
-				item, actor, reference
-			});
+			record.setParameters(new Object[] { item, actor, reference });
 			_logItems.log(record);
 		}
 		
@@ -848,8 +850,8 @@ public class ItemTable
 				}
 				String targetName = (actor.getTarget() != null ? actor.getTarget().getName() : "no-target");
 				if (Config.GMAUDIT)
-					GMAudit.auditGMAction(actor.getName(), process + "(id: " + itemId + " count: " + count + " name: " + item.getItemName() + " objId: " + item.getObjectId() + ")", targetName, "L2Object referencing this action is: "
-						+ referenceName);
+					GMAudit.auditGMAction(actor.getName(), process + "(id: " + itemId + " count: " + count + " name: " + item.getItemName()
+							+ " objId: " + item.getObjectId() + ")", targetName, "L2Object referencing this action is: " + referenceName);
 			}
 		}
 		
@@ -920,10 +922,7 @@ public class ItemTable
 			{
 				LogRecord record = new LogRecord(Level.INFO, "DELETE:" + process);
 				record.setLoggerName("item");
-				record.setParameters(new Object[]
-				{
-					item, actor, reference
-				});
+				record.setParameters(new Object[] { item, actor, reference });
 				_logItems.log(record);
 			}
 			
@@ -938,7 +937,9 @@ public class ItemTable
 					}
 					String targetName = (actor.getTarget() != null ? actor.getTarget().getName() : "no-target");
 					if (Config.GMAUDIT)
-						GMAudit.auditGMAction(actor.getName(), process + "(id: " + item.getItemId() + " count: " + item.getCount() + " itemObjId: " + item.getObjectId() + ")", targetName, "L2Object referencing this action is: " + referenceName);
+						GMAudit.auditGMAction(actor.getName(), process + "(id: " + item.getItemId() + " count: " + item.getCount()
+								+ " itemObjId: " + item.getObjectId() + ")", targetName, "L2Object referencing this action is: "
+								+ referenceName);
 				}
 			}
 			
@@ -975,11 +976,7 @@ public class ItemTable
 	
 	public void reload()
 	{
-		synchronized (_instance)
-		{
-			_instance = null;
-			_instance = new ItemTable();
-		}
+		load();
 	}
 	
 	protected class resetOwner implements Runnable
@@ -998,4 +995,9 @@ public class ItemTable
 		}
 	}
 	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final ItemTable _instance = new ItemTable();
+	}
 }

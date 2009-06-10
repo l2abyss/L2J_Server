@@ -28,20 +28,13 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
 public class CommunityBoard
 {
-	private static CommunityBoard _instance;
-	
-	public CommunityBoard()
+	private CommunityBoard()
 	{
 	}
 	
 	public static CommunityBoard getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new CommunityBoard();
-		}
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public void handleCommands(L2GameClient client, String command)
@@ -90,7 +83,8 @@ public class CommunityBoard
 				}
 				else
 				{
-					ShowBoard sb = new ShowBoard("<html><body><br><br><center>the command: " + command + " is not implemented yet</center><br><br></body></html>", "101");
+					ShowBoard sb = new ShowBoard("<html><body><br><br><center>the command: " + command
+							+ " is not implemented yet</center><br><br></body></html>", "101");
 					activeChar.sendPacket(sb);
 					activeChar.sendPacket(new ShowBoard(null, "102"));
 					activeChar.sendPacket(new ShowBoard(null, "103"));
@@ -135,7 +129,8 @@ public class CommunityBoard
 				}
 				else
 				{
-					ShowBoard sb = new ShowBoard("<html><body><br><br><center>the command: " + url + " is not implemented yet</center><br><br></body></html>", "101");
+					ShowBoard sb = new ShowBoard("<html><body><br><br><center>the command: " + url
+							+ " is not implemented yet</center><br><br></body></html>", "101");
 					activeChar.sendPacket(sb);
 					activeChar.sendPacket(new ShowBoard(null, "102"));
 					activeChar.sendPacket(new ShowBoard(null, "103"));
@@ -152,5 +147,11 @@ public class CommunityBoard
 				activeChar.sendPacket(new ShowBoard(null, "103"));
 				break;
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final CommunityBoard _instance = new CommunityBoard();
 	}
 }

@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.pathfinding.cellnodes;
 
-
 import java.util.List;
 
 import net.sf.l2j.gameserver.GeoData;
@@ -29,16 +28,11 @@ import net.sf.l2j.gameserver.pathfinding.PathFinding;
  */
 public class CellPathFinding extends PathFinding
 {
-	//private static Logger _log = Logger.getLogger(WorldPathFinding.class.getName());
-	private static CellPathFinding _instance;
-  	
 	public static CellPathFinding getInstance()
 	{
-		if (_instance == null)
-			_instance = new CellPathFinding();
-		return _instance;
+		return SingletonHolder._instance;
 	}
-
+	
 	/**
 	 * @see net.sf.l2j.gameserver.pathfinding.PathFinding#PathNodesExist(short)
 	 */
@@ -47,7 +41,7 @@ public class CellPathFinding extends PathFinding
 	{
 		return false;
 	}
-
+	
 	/**
 	 * @see net.sf.l2j.gameserver.pathfinding.PathFinding#FindPath(int, int, short, int, int, short)
 	 */
@@ -56,17 +50,19 @@ public class CellPathFinding extends PathFinding
 	{
 		int gx = (x - L2World.MAP_MIN_X) >> 4;
 		int gy = (y - L2World.MAP_MIN_Y) >> 4;
-		if (!GeoData.getInstance().hasGeo(x, y)) return null;
-		short gz = GeoData.getInstance().getHeight(x, y, z); 
+		if (!GeoData.getInstance().hasGeo(x, y))
+			return null;
+		short gz = GeoData.getInstance().getHeight(x, y, z);
 		int gtx = (tx - L2World.MAP_MIN_X) >> 4;
 		int gty = (ty - L2World.MAP_MIN_Y) >> 4;
-		if (!GeoData.getInstance().hasGeo(tx, ty)) return null;
+		if (!GeoData.getInstance().hasGeo(tx, ty))
+			return null;
 		short gtz = GeoData.getInstance().getHeight(tx, ty, tz);
-		Node start = readNode(gx,gy,gz);
-		Node end = readNode(gtx,gty,gtz);
+		Node start = readNode(gx, gy, gz);
+		Node end = readNode(gtx, gty, gtz);
 		return searchByClosest(start, end);
 	}
-
+	
 	/**
 	 * @see net.sf.l2j.gameserver.pathfinding.PathFinding#ReadNeighbors(short, short)
 	 */
@@ -75,17 +71,22 @@ public class CellPathFinding extends PathFinding
 	{
 		return GeoData.getInstance().getNeighbors(n);
 	}
-
 	
 	//Private
-
+	
 	public Node readNode(int gx, int gy, short z)
 	{
-		return new Node(new NodeLoc(gx,gy,z), 0);
+		return new Node(new NodeLoc(gx, gy, z), 0);
 	}
 	
 	private CellPathFinding()
 	{
 		//
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final CellPathFinding _instance = new CellPathFinding();
 	}
 }

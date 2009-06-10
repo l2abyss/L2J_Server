@@ -32,7 +32,6 @@ public class ForumsBBSManager extends BaseBBSManager
 	private static Logger _log = Logger.getLogger(ForumsBBSManager.class.getName());
 	private Map<Integer, Forum> _root;
 	private List<Forum> _table;
-	private static ForumsBBSManager _instance;
 	private int _lastid = 1;
 	
 	/**
@@ -40,38 +39,14 @@ public class ForumsBBSManager extends BaseBBSManager
 	 */
 	public static ForumsBBSManager getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new ForumsBBSManager();
-			_instance.load();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
-	public ForumsBBSManager()
+	private ForumsBBSManager()
 	{
 		_root = new FastMap<Integer, Forum>();
 		_table = new FastList<Forum>();
-	}
-	
-	public void addForum(Forum ff)
-	{
-		if (ff == null)
-			return;
-			
-		_table.add(ff);
 		
-		if (ff.getID() > _lastid)
-		{
-			_lastid = ff.getID();
-		}
-	}
-	
-	/**
-	 *
-	 */
-	private void load()
-	{
 		Connection con = null;
 		try
 		{
@@ -80,9 +55,9 @@ public class ForumsBBSManager extends BaseBBSManager
 			ResultSet result = statement.executeQuery();
 			while (result.next())
 			{
-				
 				Forum f = new Forum(Integer.parseInt(result.getString("forum_id")), null);
 				_root.put(Integer.parseInt(result.getString("forum_id")), f);
+				addForum(f);
 			}
 			result.close();
 			statement.close();
@@ -101,6 +76,19 @@ public class ForumsBBSManager extends BaseBBSManager
 			catch (Exception e)
 			{
 			}
+		}
+	}
+	
+	public void addForum(Forum ff)
+	{
+		if (ff == null)
+			return;
+		
+		_table.add(ff);
+		
+		if (ff.getID() > _lastid)
+		{
+			_lastid = ff.getID();
 		}
 	}
 	
@@ -141,6 +129,7 @@ public class ForumsBBSManager extends BaseBBSManager
 		Forum forum;
 		forum = new Forum(name, parent, type, perm, oid);
 		forum.insertindb();
+		addForum(forum);
 		return forum;
 	}
 	
@@ -176,5 +165,11 @@ public class ForumsBBSManager extends BaseBBSManager
 	{
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final ForumsBBSManager _instance = new ForumsBBSManager();
 	}
 }

@@ -25,11 +25,9 @@ public class memcache
 	private HashMap<Integer, Integer> _hmi;
 	private HashMap<Integer, Long> _lastAccess;
 	
-	private static final memcache _instance = new memcache();
-	
 	public static memcache getInstance()
 	{
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private memcache()
@@ -59,7 +57,7 @@ public class memcache
 	public void set(String type, String key, int value)
 	{
 		int hash = (type + "->" + key).hashCode();
-		//	    _log.fine("Set memcache "+type+"("+key+")["+hash+"] to "+value);
+		//_log.fine("Set memcache "+type+"("+key+")["+hash+"] to "+value);
 		_hmi.put(hash, value);
 		_lastAccess.put(hash, System.currentTimeMillis());
 		checkExpired();
@@ -86,5 +84,11 @@ public class memcache
 		checkExpired();
 		_log.fine("Get memcache " + type + "(" + key + ")[" + hash + "] = " + _hmi.get(hash));
 		return _hmi.get(hash);
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final memcache _instance = new memcache();
 	}
 }

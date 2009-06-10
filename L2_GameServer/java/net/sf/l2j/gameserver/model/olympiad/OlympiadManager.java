@@ -20,8 +20,6 @@ import java.util.logging.Logger;
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.olympiad.Olympiad.COMP_TYPE;
-import net.sf.l2j.gameserver.model.olympiad.OlympiadGame;
-import net.sf.l2j.gameserver.model.olympiad.OlympiadGameTask;
 import net.sf.l2j.util.L2FastList;
 import net.sf.l2j.util.Rnd;
 
@@ -33,52 +31,47 @@ class OlympiadManager implements Runnable
 {
 	protected static final Logger _log = Logger.getLogger(OlympiadManager.class.getName());
 	private Map<Integer, OlympiadGame> _olympiadInstances;
-	protected static OlympiadManager _instance;
 	
 	protected static final OlympiadStadium[] STADIUMS = {
-	    new OlympiadStadium(-88000, -252637, -3331, 17100001, 17100002),
-	    new OlympiadStadium(-83760, -252637, -3331, 17100003, 17100004),
-	    new OlympiadStadium(-79600, -252637, -3331, 17100005, 17100006),
-	    new OlympiadStadium(-75648, -252637, -3331, 17100007, 17100008),
-	    new OlympiadStadium(-88000, -249762, -3331, 17100009, 17100010),
-	    new OlympiadStadium(-83760, -249762, -3331, 17100011, 17100012),
-	    new OlympiadStadium(-79600, -249762, -3331, 17100013, 17100014),
-	    new OlympiadStadium(-75648, -249762, -3331, 17100015, 17100016),
-	    new OlympiadStadium(-88000, -246951, -3331, 17100017, 17100018),
-	    new OlympiadStadium(-83760, -246951, -3331, 17100019, 17100020),
-	    new OlympiadStadium(-79600, -246951, -3331, 17100021, 17100022),
-	    new OlympiadStadium(-75648, -246951, -3331, 17100023, 17100024),
-	    new OlympiadStadium(-88000, -244290, -3331, 17100025, 17100026),
-	    new OlympiadStadium(-83760, -244290, -3331, 17100027, 17100028),
-	    new OlympiadStadium(-79600, -244290, -3331, 17100029, 17100030),
-	    new OlympiadStadium(-75648, -244290, -3331, 17100031, 17100032),
-	    new OlympiadStadium(-88000, -241490, -3331, 17100033, 17100034),
-	    new OlympiadStadium(-83760, -241490, -3331, 17100035, 17100036),
-	    new OlympiadStadium(-79600, -241490, -3331, 17100037, 17100038),
-	    new OlympiadStadium(-75648, -241490, -3331, 17100039, 17100040),
-	    new OlympiadStadium(-88000, -238825, -3331, 17100041, 17100042),
-	    new OlympiadStadium(-83760, -238825, -3331, 17100043, 17100044) };
-		
-	public OlympiadManager()
+			new OlympiadStadium(-88000, -252637, -3331, 17100001, 17100002),
+			new OlympiadStadium(-83760, -252637, -3331, 17100003, 17100004),
+			new OlympiadStadium(-79600, -252637, -3331, 17100005, 17100006),
+			new OlympiadStadium(-75648, -252637, -3331, 17100007, 17100008),
+			new OlympiadStadium(-88000, -249762, -3331, 17100009, 17100010),
+			new OlympiadStadium(-83760, -249762, -3331, 17100011, 17100012),
+			new OlympiadStadium(-79600, -249762, -3331, 17100013, 17100014),
+			new OlympiadStadium(-75648, -249762, -3331, 17100015, 17100016),
+			new OlympiadStadium(-88000, -246951, -3331, 17100017, 17100018),
+			new OlympiadStadium(-83760, -246951, -3331, 17100019, 17100020),
+			new OlympiadStadium(-79600, -246951, -3331, 17100021, 17100022),
+			new OlympiadStadium(-75648, -246951, -3331, 17100023, 17100024),
+			new OlympiadStadium(-88000, -244290, -3331, 17100025, 17100026),
+			new OlympiadStadium(-83760, -244290, -3331, 17100027, 17100028),
+			new OlympiadStadium(-79600, -244290, -3331, 17100029, 17100030),
+			new OlympiadStadium(-75648, -244290, -3331, 17100031, 17100032),
+			new OlympiadStadium(-88000, -241490, -3331, 17100033, 17100034),
+			new OlympiadStadium(-83760, -241490, -3331, 17100035, 17100036),
+			new OlympiadStadium(-79600, -241490, -3331, 17100037, 17100038),
+			new OlympiadStadium(-75648, -241490, -3331, 17100039, 17100040),
+			new OlympiadStadium(-88000, -238825, -3331, 17100041, 17100042),
+			new OlympiadStadium(-83760, -238825, -3331, 17100043, 17100044)
+	};
+	
+	private OlympiadManager()
 	{
 		_olympiadInstances = new FastMap<Integer, OlympiadGame>();
-		_instance = this;
 	}
 	
 	public static OlympiadManager getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new OlympiadManager();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public synchronized void run()
 	{
 		if (Olympiad.getInstance().isOlympiadEnd())
 			return;
-
+		
 		Map<Integer, OlympiadGameTask> _gamesQueue = new FastMap<Integer, OlympiadGameTask>();
 		while (Olympiad.getInstance().inCompPeriod())
 		{
@@ -105,7 +98,7 @@ class OlympiadManager implements Runnable
 				for (int i = 0; i < STADIUMS.length; i++)
 				{
 					if (!existNextOpponents(Olympiad.getRegisteredNonClassBased())
-					        && !existNextOpponents(getRandomClassList(Olympiad.getRegisteredClassBased(), readyClasses)))
+							&& !existNextOpponents(getRandomClassList(Olympiad.getRegisteredClassBased(), readyClasses)))
 					{
 						break;
 					}
@@ -144,7 +137,8 @@ class OlympiadManager implements Runnable
 								}
 							}
 							
-							else if (readyClasses != null && existNextOpponents(getRandomClassList(Olympiad.getRegisteredClassBased(), readyClasses)))
+							else if (readyClasses != null
+									&& existNextOpponents(getRandomClassList(Olympiad.getRegisteredClassBased(), readyClasses)))
 							{
 								try
 								{
@@ -177,7 +171,8 @@ class OlympiadManager implements Runnable
 						}
 						else
 						{
-							if (readyClasses != null && existNextOpponents(getRandomClassList(Olympiad.getRegisteredClassBased(), readyClasses)))
+							if (readyClasses != null
+									&& existNextOpponents(getRandomClassList(Olympiad.getRegisteredClassBased(), readyClasses)))
 							{
 								try
 								{
@@ -241,8 +236,7 @@ class OlympiadManager implements Runnable
 					}
 					else
 					{
-						if (_gamesQueue.get(i) == null || _gamesQueue.get(i).isTerminated()
-						        || _gamesQueue.get(i)._game == null)
+						if (_gamesQueue.get(i) == null || _gamesQueue.get(i).isTerminated() || _gamesQueue.get(i)._game == null)
 						{
 							try
 							{
@@ -266,14 +260,12 @@ class OlympiadManager implements Runnable
 				catch (InterruptedException e)
 				{
 				}*/
-				
+
 				// Start games
 				_gamesQueueSize = _gamesQueue.size();
 				for (int i = 0; i < _gamesQueueSize; i++)
 				{
-					if (_gamesQueue.get(i) != null
-							&& !_gamesQueue.get(i).isTerminated()
-					        && !_gamesQueue.get(i).isStarted())
+					if (_gamesQueue.get(i) != null && !_gamesQueue.get(i).isTerminated() && !_gamesQueue.get(i).isStarted())
 					{
 						// start new games
 						Thread T = new Thread(_gamesQueue.get(i));
@@ -323,8 +315,7 @@ class OlympiadManager implements Runnable
 			{
 				for (OlympiadGameTask game : _gamesQueue.values())
 				{
-					allGamesTerminated = allGamesTerminated
-					        || game.isTerminated();
+					allGamesTerminated = allGamesTerminated || game.isTerminated();
 				}
 			}
 		}
@@ -368,12 +359,11 @@ class OlympiadManager implements Runnable
 	{
 		if (list == null || classList == null || list.isEmpty() || classList.isEmpty())
 			return null;
-
+		
 		return list.get(classList.get(Rnd.nextInt(classList.size())));
 	}
 	
-	protected L2FastList<L2PcInstance> nextOpponents(
-	        L2FastList<L2PcInstance> list)
+	protected L2FastList<L2PcInstance> nextOpponents(L2FastList<L2PcInstance> list)
 	{
 		L2FastList<L2PcInstance> opponents = new L2FastList<L2PcInstance>();
 		if (list.isEmpty())
@@ -421,10 +411,16 @@ class OlympiadManager implements Runnable
 		{
 			if (instance._gamestarted != true)
 				continue;
-
+			
 			titles.put(instance._stadiumID, instance.getTitle());
 		}
 		
 		return titles;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final OlympiadManager _instance = new OlympiadManager();
 	}
 }

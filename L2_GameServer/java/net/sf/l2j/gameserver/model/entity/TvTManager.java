@@ -29,9 +29,6 @@ public class TvTManager
 {
 	protected static final Logger _log = Logger.getLogger(TvTManager.class.getName());
 	
-	/** The one and only instance of this class<br> */
-	private static TvTManager _instance = null;
-	
 	/** Task for event cycles<br> */
 	private TvTStartTask _task;
 	
@@ -60,7 +57,7 @@ public class TvTManager
 	 */
 	public static TvTManager getInstance()
 	{
-		return _instance == null ? (_instance = new TvTManager()) : _instance;
+		return SingletonHolder._instance;
 	}
 	
 	/**
@@ -68,11 +65,13 @@ public class TvTManager
 	 */
 	public void scheduleEventStart()
 	{
-		try {
+		try
+		{
 			Calendar currentTime = Calendar.getInstance();
 			Calendar nextStartTime = null;
 			Calendar testStartTime = null;
-			for (String timeOfDay : Config.TVT_EVENT_INTERVAL) {
+			for (String timeOfDay : Config.TVT_EVENT_INTERVAL)
+			{
 				// Creating a Calendar object from the specified interval value
 				testStartTime = Calendar.getInstance();
 				testStartTime.setLenient(true);
@@ -113,7 +112,8 @@ public class TvTManager
 		}
 		else
 		{
-			Announcements.getInstance().announceToAll("TvT Event: Registration opened for " + Config.TVT_EVENT_PARTICIPATION_TIME + " minute(s).");
+			Announcements.getInstance().announceToAll("TvT Event: Registration opened for " + Config.TVT_EVENT_PARTICIPATION_TIME
+					+ " minute(s).");
 			
 			// schedule registration end
 			_task.setStartTime(System.currentTimeMillis() + 60000L * Config.TVT_EVENT_PARTICIPATION_TIME);
@@ -135,7 +135,8 @@ public class TvTManager
 		}
 		else
 		{
-			TvTEvent.sysMsgToAllParticipants("TvT Event: Teleporting participants to an arena in " + Config.TVT_EVENT_START_LEAVE_TELEPORT_DELAY + " second(s).");
+			TvTEvent.sysMsgToAllParticipants("TvT Event: Teleporting participants to an arena in "
+					+ Config.TVT_EVENT_START_LEAVE_TELEPORT_DELAY + " second(s).");
 			_task.setStartTime(System.currentTimeMillis() + 60000L * Config.TVT_EVENT_RUNNING_TIME);
 			ThreadPoolManager.getInstance().executeTask(_task);
 		}
@@ -147,12 +148,13 @@ public class TvTManager
 	public void endEvent()
 	{
 		Announcements.getInstance().announceToAll(TvTEvent.calculateRewards());
-		TvTEvent.sysMsgToAllParticipants("TvT Event: Teleporting back to the registration npc in " + Config.TVT_EVENT_START_LEAVE_TELEPORT_DELAY + " second(s).");
+		TvTEvent.sysMsgToAllParticipants("TvT Event: Teleporting back to the registration npc in "
+				+ Config.TVT_EVENT_START_LEAVE_TELEPORT_DELAY + " second(s).");
 		TvTEvent.stopFight();
 		
 		this.scheduleEventStart();
 	}
-
+	
 	public void skipDelay()
 	{
 		if (_task.nextRun.cancel(false))
@@ -161,7 +163,7 @@ public class TvTManager
 			ThreadPoolManager.getInstance().executeTask(_task);
 		}
 	}
-
+	
 	/**
 	 * Class for TvT cycles
 	 */
@@ -244,7 +246,7 @@ public class TvTManager
 			
 			if (delay > 0)
 			{
-				nextRun = ThreadPoolManager.getInstance().scheduleGeneral(this, nextMsg*1000);
+				nextRun = ThreadPoolManager.getInstance().scheduleGeneral(this, nextMsg * 1000);
 			}
 		}
 		
@@ -284,5 +286,11 @@ public class TvTManager
 				}
 			}
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final TvTManager _instance = new TvTManager();
 	}
 }

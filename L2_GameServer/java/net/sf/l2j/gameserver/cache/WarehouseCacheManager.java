@@ -25,15 +25,12 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
  */
 public class WarehouseCacheManager
 {
-	private static WarehouseCacheManager _instance;
 	protected final FastMap<L2PcInstance, Long> _cachedWh;
 	protected final long _cacheTime;
 	
 	public static WarehouseCacheManager getInstance()
 	{
-		if (_instance == null)
-			_instance = new WarehouseCacheManager();
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private WarehouseCacheManager()
@@ -67,5 +64,11 @@ public class WarehouseCacheManager
 				}
 			}
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final WarehouseCacheManager _instance = new WarehouseCacheManager();
 	}
 }

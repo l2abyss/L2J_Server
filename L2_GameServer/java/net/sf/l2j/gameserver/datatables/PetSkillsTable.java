@@ -31,23 +31,25 @@ public class PetSkillsTable
 {
 	private static Logger _log = Logger.getLogger(PetSkillsTable.class.getName());
 	private FastMap<Integer, Map<Integer, L2PetSkillLearn>> _skillTrees;
-	private static PetSkillsTable _instance;
 	
 	public static PetSkillsTable getInstance()
 	{
-		if (_instance == null)
-			_instance = new PetSkillsTable();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public void reload()
 	{
 		_skillTrees.clear();
-		_instance = new PetSkillsTable();
+		load();
 	}
 	
 	private PetSkillsTable()
+	{
+		_skillTrees = new FastMap<Integer, Map<Integer, L2PetSkillLearn>>();
+		load();
+	}
+	
+	private void load()
 	{
 		int npcId = 0;
 		int count = 0;
@@ -77,9 +79,9 @@ public class PetSkillsTable
 						int minLvl = skilltree.getInt("minLvl");
 						
 						skillLearn = new L2PetSkillLearn(id, lvl, minLvl);
-						map.put(SkillTable.getSkillHashCode(id, lvl+1), skillLearn);
+						map.put(SkillTable.getSkillHashCode(id, lvl + 1), skillLearn);
 					}
-					getPetSkillTrees().put(npcId, map);
+					_skillTrees.put(npcId, map);
 					skilltree.close();
 					statement2.close();
 					
@@ -111,19 +113,12 @@ public class PetSkillsTable
 		}
 	}
 	
-	private Map<Integer, Map<Integer, L2PetSkillLearn>> getPetSkillTrees()
-	{
-		if (_skillTrees == null)
-			_skillTrees = new FastMap<Integer, Map<Integer, L2PetSkillLearn>>();
-		
-		return _skillTrees;
-	}
 	public int getAvailableLevel(L2Summon cha, int skillId)
 	{
 		int lvl = 0;
-		if (!getPetSkillTrees().containsKey(cha.getNpcId()))
+		if (!_skillTrees.containsKey(cha.getNpcId()))
 			return lvl;
-		Collection<L2PetSkillLearn> skills = getPetSkillTrees().get(cha.getNpcId()).values();
+		Collection<L2PetSkillLearn> skills = _skillTrees.get(cha.getNpcId()).values();
 		for (L2PetSkillLearn temp : skills)
 		{
 			if (temp.getId() != skillId)
@@ -138,7 +133,7 @@ public class PetSkillsTable
 				}
 				else
 					lvl = (7 + ((cha.getLevel() - 70) / 5));
-					
+				
 				// formula usable for skill that have 10 or more skill levels
 				int maxLvl = SkillTable.getInstance().getMaxLevel(temp.getId(), 10);
 				if (lvl > maxLvl)
@@ -157,9 +152,9 @@ public class PetSkillsTable
 	public FastList<Integer> getAvailableSkills(L2Summon cha)
 	{
 		FastList<Integer> skillIds = new FastList<Integer>();
-		if (!getPetSkillTrees().containsKey(cha.getNpcId()))
+		if (!_skillTrees.containsKey(cha.getNpcId()))
 			return null;
-		Collection<L2PetSkillLearn> skills = getPetSkillTrees().get(cha.getNpcId()).values();
+		Collection<L2PetSkillLearn> skills = _skillTrees.get(cha.getNpcId()).values();
 		for (L2PetSkillLearn temp : skills)
 		{
 			if (skillIds.contains(temp.getId()))
@@ -168,6 +163,7 @@ public class PetSkillsTable
 		}
 		return skillIds;
 	}
+	
 	public final class L2PetSkillLearn
 	{
 		private final int _id;
@@ -180,17 +176,26 @@ public class PetSkillsTable
 			_level = lvl;
 			_minLevel = minLvl;
 		}
+		
 		public int getId()
 		{
 			return _id;
 		}
+		
 		public int getLevel()
 		{
 			return _level;
 		}
+		
 		public int getMinLevel()
 		{
 			return _minLevel;
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final PetSkillsTable _instance = new PetSkillsTable();
 	}
 }

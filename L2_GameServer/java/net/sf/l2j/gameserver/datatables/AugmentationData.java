@@ -44,16 +44,9 @@ public class AugmentationData
 {
 	private static final Logger _log = Logger.getLogger(AugmentationData.class.getName());
 	
-	// =========================================================
-	private static AugmentationData _instance;
-	
 	public static final AugmentationData getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new AugmentationData();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	// =========================================================
@@ -66,7 +59,7 @@ public class AugmentationData
 	//private static final int STAT_NUMBEROF_BLOCKS = 4;
 	private static final int STAT_SUBBLOCKSIZE = 91;
 	//private static final int STAT_NUMBEROF_SUBBLOCKS = 40;
-
+	
 	// skills
 	private static final int BLUE_START = 14561;
 	// private static final int PURPLE_START = 14578;
@@ -80,13 +73,13 @@ public class AugmentationData
 	private static final int BASESTAT_MEN = 16344;
 	
 	private FastList<?> _augmentationStats[];
-	private Map<Integer,FastList<augmentationSkill>> _blueSkills;
-	private Map<Integer,FastList<augmentationSkill>> _purpleSkills;
-	private Map<Integer,FastList<augmentationSkill>> _redSkills;
+	private Map<Integer, FastList<augmentationSkill>> _blueSkills;
+	private Map<Integer, FastList<augmentationSkill>> _purpleSkills;
+	private Map<Integer, FastList<augmentationSkill>> _redSkills;
 	
 	// =========================================================
 	// Constructor
-	public AugmentationData()
+	private AugmentationData()
 	{
 		_log.info("Initializing AugmentationData.");
 		
@@ -99,7 +92,7 @@ public class AugmentationData
 		_blueSkills = new FastMap<Integer, FastList<augmentationSkill>>();
 		_purpleSkills = new FastMap<Integer, FastList<augmentationSkill>>();
 		_redSkills = new FastMap<Integer, FastList<augmentationSkill>>();
-		for(int i = 1; i <= 10; i++)
+		for (int i = 1; i <= 10; i++)
 		{
 			_blueSkills.put(i, new FastList<augmentationSkill>());
 			_purpleSkills.put(i, new FastList<augmentationSkill>());
@@ -110,9 +103,10 @@ public class AugmentationData
 		
 		// Use size*4: since theres 4 blocks of stat-data with equivalent size
 		_log.info("AugmentationData: Loaded: " + (_augmentationStats[0].size() * 4) + " augmentation stats.");
-		for(int i = 1; i <= 10; i++)
+		for (int i = 1; i <= 10; i++)
 		{
-			_log.info("AugmentationData: Loaded: " + _blueSkills.get(i).size() + " blue, " + _purpleSkills.get(i).size() + " purple and " + _redSkills.get(i).size() + " red skills for lifeStoneLevel " + i);
+			_log.info("AugmentationData: Loaded: " + _blueSkills.get(i).size() + " blue, " + _purpleSkills.get(i).size() + " purple and "
+					+ _redSkills.get(i).size() + " red skills for lifeStoneLevel " + i);
 		}
 	}
 	
@@ -251,14 +245,16 @@ public class AugmentationData
 							if (skillId == 0)
 							{
 								if (Config.DEBUG)
-									_log.log(Level.SEVERE, "Bad skillId in augmentation_skillmap.xml in the augmentationId:" + augmentationId);
+									_log.log(Level.SEVERE, "Bad skillId in augmentation_skillmap.xml in the augmentationId:"
+											+ augmentationId);
 								badAugmantData++;
 								continue;
 							}
 							else if (skillLvL == 0)
 							{
 								if (Config.DEBUG)
-									_log.log(Level.SEVERE, "Bad skillLevel in augmentation_skillmap.xml in the augmentationId:" + augmentationId);
+									_log.log(Level.SEVERE, "Bad skillLevel in augmentation_skillmap.xml in the augmentationId:"
+											+ augmentationId);
 								badAugmantData++;
 								continue;
 							}
@@ -361,7 +357,7 @@ public class AugmentationData
 	
 	// =========================================================
 	// Properties - Public
-
+	
 	/**
 	 * Generate a new random augmentation
 	 * @param item
@@ -375,10 +371,10 @@ public class AugmentationData
 		// this is because a value can contain up to 2 stat modifications
 		// (there are two short values packed in one integer value, meaning 4 stat modifications at max)
 		// for more info take a look at getAugStatsById(...)
-
+		
 		// Note: lifeStoneGrade: (0 means low grade, 3 top grade)
 		// First: determine whether we will add a skill/baseStatModifier or not
-		//        because this determine which color could be the result 
+		// because this determine which color could be the result 
 		int skill_Chance = 0;
 		int stat34 = 0;
 		boolean generateSkill = false;
@@ -391,35 +387,35 @@ public class AugmentationData
 		{
 			case 0:
 				skill_Chance = Config.AUGMENTATION_NG_SKILL_CHANCE;
-				if (Rnd.get(1,100) <= Config.AUGMENTATION_NG_GLOW_CHANCE)
+				if (Rnd.get(1, 100) <= Config.AUGMENTATION_NG_GLOW_CHANCE)
 					generateGlow = true;
 				break;
 			case 1:
 				skill_Chance = Config.AUGMENTATION_MID_SKILL_CHANCE;
-				if (Rnd.get(1,100) <= Config.AUGMENTATION_MID_GLOW_CHANCE)
+				if (Rnd.get(1, 100) <= Config.AUGMENTATION_MID_GLOW_CHANCE)
 					generateGlow = true;
 				break;
 			case 2:
 				skill_Chance = Config.AUGMENTATION_HIGH_SKILL_CHANCE;
-				if (Rnd.get(1,100) <= Config.AUGMENTATION_HIGH_GLOW_CHANCE)
+				if (Rnd.get(1, 100) <= Config.AUGMENTATION_HIGH_GLOW_CHANCE)
 					generateGlow = true;
 				break;
 			case 3:
 				skill_Chance = Config.AUGMENTATION_TOP_SKILL_CHANCE;
-				if (Rnd.get(1,100) <= Config.AUGMENTATION_TOP_GLOW_CHANCE)
+				if (Rnd.get(1, 100) <= Config.AUGMENTATION_TOP_GLOW_CHANCE)
 					generateGlow = true;
 		}
-
+		
 		if (Rnd.get(1, 100) <= skill_Chance)
 			generateSkill = true;
 		else if (Rnd.get(1, 100) <= Config.AUGMENTATION_BASESTAT_CHANCE)
 			stat34 = Rnd.get(BASESTAT_STR, BASESTAT_MEN);
-
+		
 		// Second: decide which grade the augmentation result is going to have:
 		// 0:yellow, 1:blue, 2:purple, 3:red
 		// The chances used here are most likely custom,
 		// whats known is: you cant have yellow with skill(or baseStatModifier)
-		//                 noGrade stone can not have glow, mid only with skill, high has a chance(custom), top allways glow
+		// noGrade stone can not have glow, mid only with skill, high has a chance(custom), top allways glow
 		if (stat34 == 0 && !generateSkill)
 		{
 			resultColor = Rnd.get(0, 100);
@@ -463,15 +459,17 @@ public class AugmentationData
 		int stat12 = 0;
 		if (stat34 == 0 && !generateSkill)
 		{
-			int temp = Rnd.get(2,3);
+			int temp = Rnd.get(2, 3);
 			int colorOffset = resultColor * (10 * STAT_SUBBLOCKSIZE) + temp * STAT_BLOCKSIZE + 1;
 			int offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + colorOffset;
 			
 			stat34 = Rnd.get(offset, offset + STAT_SUBBLOCKSIZE - 1);
 			if (generateGlow && lifeStoneGrade >= 2)
-				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + (temp - 2) * STAT_BLOCKSIZE + lifeStoneGrade * (10 * STAT_SUBBLOCKSIZE) + 1;
+				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + (temp - 2) * STAT_BLOCKSIZE + lifeStoneGrade
+						* (10 * STAT_SUBBLOCKSIZE) + 1;
 			else
-				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + (temp - 2) * STAT_BLOCKSIZE + Rnd.get(0, 1) * (10 * STAT_SUBBLOCKSIZE) + 1;
+				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + (temp - 2) * STAT_BLOCKSIZE + Rnd.get(0, 1)
+						* (10 * STAT_SUBBLOCKSIZE) + 1;
 			stat12 = Rnd.get(offset, offset + STAT_SUBBLOCKSIZE - 1);
 		}
 		else
@@ -480,7 +478,8 @@ public class AugmentationData
 			if (!generateGlow)
 				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + Rnd.get(0, 1) * STAT_BLOCKSIZE + 1;
 			else
-				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + Rnd.get(0, 1) * STAT_BLOCKSIZE + (lifeStoneGrade + resultColor) / 2 * (10 * STAT_SUBBLOCKSIZE) + 1;
+				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + Rnd.get(0, 1) * STAT_BLOCKSIZE + (lifeStoneGrade + resultColor) / 2
+						* (10 * STAT_SUBBLOCKSIZE) + 1;
 			stat12 = Rnd.get(offset, offset + STAT_SUBBLOCKSIZE - 1);
 		}
 		
@@ -510,7 +509,8 @@ public class AugmentationData
 		}
 		
 		if (Config.DEBUG)
-			_log.info("Augmentation success: stat12=" + stat12 + "; stat34=" + stat34 + "; resultColor=" + resultColor + "; level=" + lifeStoneLevel + "; grade=" + lifeStoneGrade);
+			_log.info("Augmentation success: stat12=" + stat12 + "; stat34=" + stat34 + "; resultColor=" + resultColor + "; level="
+					+ lifeStoneLevel + "; grade=" + lifeStoneGrade);
 		return new L2Augmentation(((stat34 << 16) + stat12), skill);
 	}
 	
@@ -631,5 +631,11 @@ public class AugmentationData
 		}
 		
 		return temp;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final AugmentationData _instance = new AugmentationData();
 	}
 }

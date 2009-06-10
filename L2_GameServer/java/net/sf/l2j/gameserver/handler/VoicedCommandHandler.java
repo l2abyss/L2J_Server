@@ -29,17 +29,11 @@ public class VoicedCommandHandler
 {
 	private static Logger _log = Logger.getLogger(ItemHandler.class.getName());
 	
-	private static VoicedCommandHandler _instance;
-	
 	private Map<String, IVoicedCommandHandler> _datatable;
 	
 	public static VoicedCommandHandler getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new VoicedCommandHandler();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private VoicedCommandHandler()
@@ -76,5 +70,11 @@ public class VoicedCommandHandler
 	public int size()
 	{
 		return _datatable.size();
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final VoicedCommandHandler _instance = new VoicedCommandHandler();
 	}
 }

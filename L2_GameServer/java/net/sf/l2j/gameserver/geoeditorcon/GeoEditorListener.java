@@ -33,18 +33,23 @@ public class GeoEditorListener extends Thread
 	
 	public static GeoEditorListener getInstance()
 	{
-		if (_instance == null)
-			try
+		synchronized (GeoEditorListener.class)
+		{
+			if (_instance == null)
 			{
-				_instance = new GeoEditorListener();
-				_instance.start();
-				_log.info("GeoEditorListener Initialized.");
+				try
+				{
+					_instance = new GeoEditorListener();
+					_instance.start();
+					_log.info("GeoEditorListener Initialized.");
+				}
+				catch (IOException e)
+				{
+					_log.severe("Error creating geoeditor listener! " + e.getMessage());
+					System.exit(1);
+				}
 			}
-			catch (IOException e)
-			{
-				_log.severe("Error creating geoeditor listener! " + e.getMessage());
-				System.exit(1);
-			}
+		}
 		return _instance;
 	}
 	

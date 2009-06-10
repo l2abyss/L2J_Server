@@ -22,7 +22,6 @@ import net.sf.l2j.gameserver.model.L2Skill;
  */
 public class HeroSkillTable
 {
-	private static HeroSkillTable _instance;
 	private static L2Skill[] _heroSkills;
 	
 	private HeroSkillTable()
@@ -37,9 +36,7 @@ public class HeroSkillTable
 	
 	public static HeroSkillTable getInstance()
 	{
-		if (_instance == null)
-			_instance = new HeroSkillTable();
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public static L2Skill[] getHeroSkills()
@@ -49,10 +46,7 @@ public class HeroSkillTable
 	
 	public static boolean isHeroSkill(int skillid)
 	{
-		Integer[] _HeroSkillsId = new Integer[]
-		{
-			395, 396, 1374, 1375, 1376
-		};
+		Integer[] _HeroSkillsId = new Integer[] { 395, 396, 1374, 1375, 1376 };
 		
 		for (int id : _HeroSkillsId)
 		{
@@ -61,5 +55,11 @@ public class HeroSkillTable
 		}
 		
 		return false;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final HeroSkillTable _instance = new HeroSkillTable();
 	}
 }

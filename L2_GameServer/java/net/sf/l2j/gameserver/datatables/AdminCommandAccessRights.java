@@ -34,8 +34,6 @@ public class AdminCommandAccessRights
 	/** The logger<br> */
 	private static Logger _log = Logger.getLogger(AdminCommandAccessRights.class.getName());
 	
-	/** The one and only instance of this class, retrievable by getInstance()<br> */
-	private static AdminCommandAccessRights _instance = null;
 	private Map<String, L2AdminCommandAccessRight> _adminCommandAccessRights;
 	
 	/**
@@ -45,10 +43,7 @@ public class AdminCommandAccessRights
 	 */
 	public static AdminCommandAccessRights getInstance()
 	{
-		if (_instance == null)
-			_instance = new AdminCommandAccessRights();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	/** The access rights<br> */
@@ -124,5 +119,11 @@ public class AdminCommandAccessRights
 	public void reloadAdminCommandAccessRights()
 	{
 		loadAdminCommandAccessRights();
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final AdminCommandAccessRights _instance = new AdminCommandAccessRights();
 	}
 }

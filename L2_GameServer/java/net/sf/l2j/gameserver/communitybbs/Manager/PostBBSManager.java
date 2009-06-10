@@ -33,18 +33,13 @@ public class PostBBSManager extends BaseBBSManager
 {
 	
 	private Map<Topic, Post> _postByTopic;
-	private static PostBBSManager _instance;
 	
 	public static PostBBSManager getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new PostBBSManager();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
-	public PostBBSManager()
+	private PostBBSManager()
 	{
 		_postByTopic = new FastMap<Topic, Post>();
 	}
@@ -130,7 +125,8 @@ public class PostBBSManager extends BaseBBSManager
 		}
 		else
 		{
-			ShowBoard sb = new ShowBoard("<html><body><br><br><center>the command: " + command + " is not implemented yet</center><br><br></body></html>", "101");
+			ShowBoard sb = new ShowBoard("<html><body><br><br><center>the command: " + command
+					+ " is not implemented yet</center><br><br></body></html>", "101");
 			activeChar.sendPacket(sb);
 			activeChar.sendPacket(new ShowBoard(null, "102"));
 			activeChar.sendPacket(new ShowBoard(null, "103"));
@@ -181,7 +177,8 @@ public class PostBBSManager extends BaseBBSManager
 		}
 		else
 		{
-			ShowBoard sb = new ShowBoard("<html><body><br><br><center>the forum: " + forum.getName() + " is not implemented yet</center><br><br></body></html>", "101");
+			ShowBoard sb = new ShowBoard("<html><body><br><br><center>the forum: " + forum.getName()
+					+ " is not implemented yet</center><br><br></body></html>", "101");
 			activeChar.sendPacket(sb);
 			activeChar.sendPacket(new ShowBoard(null, "102"));
 			activeChar.sendPacket(new ShowBoard(null, "103"));
@@ -196,57 +193,35 @@ public class PostBBSManager extends BaseBBSManager
 	 */
 	private void showHtmlEditPost(Topic topic, L2PcInstance activeChar, Forum forum, Post p)
 	{
-            final String html = StringUtil.concat(
-                    "<html>" +
-                    "<body><br><br>" +
-                    "<table border=0 width=610><tr><td width=10></td><td width=600 align=left>" +
-                    "<a action=\"bypass _bbshome\">HOME</a>&nbsp;>&nbsp;<a action=\"bypass _bbsmemo\">",
-                    forum.getName(),
-                    " Form</a>" +
-                    "</td></tr>" +
-                    "</table>" +
-                    "<img src=\"L2UI.squareblank\" width=\"1\" height=\"10\">" +
-                    "<center>" +
-                    "<table border=0 cellspacing=0 cellpadding=0>" +
-                    "<tr><td width=610><img src=\"sek.cbui355\" width=\"610\" height=\"1\"><br1><img src=\"sek.cbui355\" width=\"610\" height=\"1\"></td></tr>" +
-                    "</table>" +
-                    "<table fixwidth=610 border=0 cellspacing=0 cellpadding=0>" +
-                    "<tr><td><img src=\"l2ui.mini_logo\" width=5 height=20></td></tr>" +
-                    "<tr>" +
-                    "<td><img src=\"l2ui.mini_logo\" width=5 height=1></td>" +
-                    "<td align=center FIXWIDTH=60 height=29>&$413;</td>" +
-                    "<td FIXWIDTH=540>",
-                    topic.getName(),
-                    "</td>" +
-                    "<td><img src=\"l2ui.mini_logo\" width=5 height=1></td>" +
-                    "</tr></table>" +
-                    "<table fixwidth=610 border=0 cellspacing=0 cellpadding=0>" +
-                    "<tr><td><img src=\"l2ui.mini_logo\" width=5 height=10></td></tr>" +
-                    "<tr>" +
-                    "<td><img src=\"l2ui.mini_logo\" width=5 height=1></td>" +
-                    "<td align=center FIXWIDTH=60 height=29 valign=top>&$427;</td>" +
-                    "<td align=center FIXWIDTH=540><MultiEdit var =\"Content\" width=535 height=313></td>" +
-                    "<td><img src=\"l2ui.mini_logo\" width=5 height=1></td>" +
-                    "</tr>" +
-                    "<tr><td><img src=\"l2ui.mini_logo\" width=5 height=10></td></tr>" +
-                    "</table>" +
-                    "<table fixwidth=610 border=0 cellspacing=0 cellpadding=0>" +
-                    "<tr><td><img src=\"l2ui.mini_logo\" width=5 height=10></td></tr>" +
-                    "<tr>" +
-                    "<td><img src=\"l2ui.mini_logo\" width=5 height=1></td>" +
-                    "<td align=center FIXWIDTH=60 height=29>&nbsp;</td>" +
-                    "<td align=center FIXWIDTH=70><button value=\"&$140;\" action=\"Write Post ",
-                    String.valueOf(forum.getID()),
-                    ";",
-                    String.valueOf(topic.getID()),
-		    ";0 _ Content Content Content\" back=\"l2ui_ch3.smallbutton2_down\" width=65 height=20 fore=\"l2ui_ch3.smallbutton2\" ></td>" +
-                    "<td align=center FIXWIDTH=70><button value = \"&$141;\" action=\"bypass _bbsmemo\" back=\"l2ui_ch3.smallbutton2_down\" width=65 height=20 fore=\"l2ui_ch3.smallbutton2\"> </td>" +
-                    "<td align=center FIXWIDTH=400>&nbsp;</td>" +
-                    "<td><img src=\"l2ui.mini_logo\" width=5 height=1></td>" +
-                    "</tr></table>" +
-                    "</center>" +
-                    "</body>" +
-                    "</html>");
+		final String html = StringUtil.concat("<html>" + "<body><br><br>"
+				+ "<table border=0 width=610><tr><td width=10></td><td width=600 align=left>"
+				+ "<a action=\"bypass _bbshome\">HOME</a>&nbsp;>&nbsp;<a action=\"bypass _bbsmemo\">", forum.getName(), " Form</a>"
+				+ "</td></tr>"
+				+ "</table>"
+				+ "<img src=\"L2UI.squareblank\" width=\"1\" height=\"10\">"
+				+ "<center>"
+				+ "<table border=0 cellspacing=0 cellpadding=0>"
+				+ "<tr><td width=610><img src=\"sek.cbui355\" width=\"610\" height=\"1\"><br1><img src=\"sek.cbui355\" width=\"610\" height=\"1\"></td></tr>"
+				+ "</table>" + "<table fixwidth=610 border=0 cellspacing=0 cellpadding=0>"
+				+ "<tr><td><img src=\"l2ui.mini_logo\" width=5 height=20></td></tr>" + "<tr>"
+				+ "<td><img src=\"l2ui.mini_logo\" width=5 height=1></td>" + "<td align=center FIXWIDTH=60 height=29>&$413;</td>"
+				+ "<td FIXWIDTH=540>", topic.getName(), "</td>" + "<td><img src=\"l2ui.mini_logo\" width=5 height=1></td>"
+				+ "</tr></table>" + "<table fixwidth=610 border=0 cellspacing=0 cellpadding=0>"
+				+ "<tr><td><img src=\"l2ui.mini_logo\" width=5 height=10></td></tr>" + "<tr>"
+				+ "<td><img src=\"l2ui.mini_logo\" width=5 height=1></td>"
+				+ "<td align=center FIXWIDTH=60 height=29 valign=top>&$427;</td>"
+				+ "<td align=center FIXWIDTH=540><MultiEdit var =\"Content\" width=535 height=313></td>"
+				+ "<td><img src=\"l2ui.mini_logo\" width=5 height=1></td>" + "</tr>"
+				+ "<tr><td><img src=\"l2ui.mini_logo\" width=5 height=10></td></tr>" + "</table>"
+				+ "<table fixwidth=610 border=0 cellspacing=0 cellpadding=0>"
+				+ "<tr><td><img src=\"l2ui.mini_logo\" width=5 height=10></td></tr>" + "<tr>"
+				+ "<td><img src=\"l2ui.mini_logo\" width=5 height=1></td>" + "<td align=center FIXWIDTH=60 height=29>&nbsp;</td>"
+				+ "<td align=center FIXWIDTH=70><button value=\"&$140;\" action=\"Write Post ", String.valueOf(forum.getID()), ";", String.valueOf(topic.getID()), ";0 _ Content Content Content\" back=\"l2ui_ch3.smallbutton2_down\" width=65 height=20 fore=\"l2ui_ch3.smallbutton2\" ></td>"
+				+ "<td align=center FIXWIDTH=70><button value = \"&$141;\" action=\"bypass _bbsmemo\" back=\"l2ui_ch3.smallbutton2_down\" width=65 height=20 fore=\"l2ui_ch3.smallbutton2\"> </td>"
+				+ "<td align=center FIXWIDTH=400>&nbsp;</td>"
+				+ "<td><img src=\"l2ui.mini_logo\" width=5 height=1></td>"
+				+ "</tr></table>"
+				+ "</center>" + "</body>" + "</html>");
 		send1001(html, activeChar);
 		send1002(activeChar, p.getCPost(0).postTxt, topic.getName(), DateFormat.getInstance().format(new Date(topic.getDate())));
 	}
@@ -262,87 +237,43 @@ public class PostBBSManager extends BaseBBSManager
 		Post p = getGPosttByTopic(topic);
 		Locale locale = Locale.getDefault();
 		DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, locale);
-
+		
 		String mes = p.getCPost(0).postTxt.replace(">", "&gt;");
 		mes = mes.replace("<", "&lt;");
 		mes = mes.replace("\n", "<br1>");
-
-                final String html = StringUtil.concat(
-                        "<html><body><br><br>" +
-                        "<table border=0 width=610><tr><td width=10></td><td width=600 align=left>" +
-                        "<a action=\"bypass _bbshome\">HOME</a>&nbsp;>&nbsp;<a action=\"bypass _bbsmemo\">Memo Form</a>" +
-                        "</td></tr>" +
-                        "</table>" +
-                        "<img src=\"L2UI.squareblank\" width=\"1\" height=\"10\">" +
-                        "<center>" +
-                        "<table border=0 cellspacing=0 cellpadding=0 bgcolor=333333>" +
-                        "<tr><td height=10></td></tr>" +
-                        "<tr>" +
-                        "<td fixWIDTH=55 align=right valign=top>&$413; : &nbsp;</td>" +
-                        "<td fixWIDTH=380 valign=top>",
-                        topic.getName(),
-                        "</td>" +
-                        "<td fixwidth=5></td>" +
-                        "<td fixwidth=50></td>" +
-                        "<td fixWIDTH=120></td>" +
-                        "</tr>" +
-                        "<tr><td height=10></td></tr>" +
-                        "<tr>" +
-                        "<td align=right><font color=\"AAAAAA\" >&$417; : &nbsp;</font></td>" +
-                        "<td><font color=\"AAAAAA\">",
-                        topic.getOwnerName() +
-                        "</font></td>" +
-                        "<td></td>" +
-                        "<td><font color=\"AAAAAA\">&$418; :</font></td>" +
-                        "<td><font color=\"AAAAAA\">",
-                        dateFormat.format(p.getCPost(0).postDate),
-                        "</font></td>" +
-                        "</tr>" +
-                        "<tr><td height=10></td></tr>" +
-                        "</table>" +
-                        "<br>" +
-                        "<table border=0 cellspacing=0 cellpadding=0>" +
-                        "<tr>" +
-                        "<td fixwidth=5></td>" +
-                        "<td FIXWIDTH=600 align=left>",
-                        mes,
-                        "</td>" +
-                        "<td fixqqwidth=5></td>" +
-                        "</tr>" +
-                        "</table>" +
-                        "<br>" +
-                        "<img src=\"L2UI.squareblank\" width=\"1\" height=\"5\">" +
-                        "<img src=\"L2UI.squaregray\" width=\"610\" height=\"1\">" +
-                        "<img src=\"L2UI.squareblank\" width=\"1\" height=\"5\">" +
-                        "<table border=0 cellspacing=0 cellpadding=0 FIXWIDTH=610>" +
-                        "<tr>" +
-                        "<td width=50>" +
-                        "<button value=\"&$422;\" action=\"bypass _bbsmemo\" back=\"l2ui_ch3.smallbutton2_down\" width=65 height=20 fore=\"l2ui_ch3.smallbutton2\">" +
-                        "</td>" +
-                        "<td width=560 align=right><table border=0 cellspacing=0><tr>" +
-                        "<td FIXWIDTH=300></td><td><button value = \"&$424;\" action=\"bypass _bbsposts;edit;",
-                        String.valueOf(forum.getID()),
-                        ";",
-                        String.valueOf(topic.getID()),
-			";0\" back=\"l2ui_ch3.smallbutton2_down\" width=65 height=20 fore=\"l2ui_ch3.smallbutton2\" ></td>&nbsp;" +
-                        "<td><button value = \"&$425;\" action=\"bypass _bbstopics;del;",
-                        String.valueOf(forum.getID()),
-                        ";",
-                        String.valueOf(topic.getID()),
-                        "\" back=\"l2ui_ch3.smallbutton2_down\" width=65 height=20 fore=\"l2ui_ch3.smallbutton2\" ></td>&nbsp;" +
-                        "<td><button value = \"&$421;\" action=\"bypass _bbstopics;crea;",
-                        String.valueOf(forum.getID()),
-                        "\" back=\"l2ui_ch3.smallbutton2_down\" width=65 height=20 fore=\"l2ui_ch3.smallbutton2\" ></td>&nbsp;" +
-                        "</tr></table>" +
-                        "</td>" +
-                        "</tr>" +
-                        "</table>" +
-                        "<br>" +
-                        "<br>" +
-                        "<br></center>" +
-                        "</body>" +
-                        "</html>"
-                        );
+		
+		final String html = StringUtil.concat("<html><body><br><br>"
+				+ "<table border=0 width=610><tr><td width=10></td><td width=600 align=left>"
+				+ "<a action=\"bypass _bbshome\">HOME</a>&nbsp;>&nbsp;<a action=\"bypass _bbsmemo\">Memo Form</a>" + "</td></tr>"
+				+ "</table>" + "<img src=\"L2UI.squareblank\" width=\"1\" height=\"10\">" + "<center>"
+				+ "<table border=0 cellspacing=0 cellpadding=0 bgcolor=333333>" + "<tr><td height=10></td></tr>" + "<tr>"
+				+ "<td fixWIDTH=55 align=right valign=top>&$413; : &nbsp;</td>" + "<td fixWIDTH=380 valign=top>", topic.getName(), "</td>"
+				+ "<td fixwidth=5></td>" + "<td fixwidth=50></td>" + "<td fixWIDTH=120></td>" + "</tr>" + "<tr><td height=10></td></tr>"
+				+ "<tr>" + "<td align=right><font color=\"AAAAAA\" >&$417; : &nbsp;</font></td>" + "<td><font color=\"AAAAAA\">", topic.getOwnerName()
+				+ "</font></td>" + "<td></td>" + "<td><font color=\"AAAAAA\">&$418; :</font></td>" + "<td><font color=\"AAAAAA\">", dateFormat.format(p.getCPost(0).postDate), "</font></td>"
+				+ "</tr>"
+				+ "<tr><td height=10></td></tr>"
+				+ "</table>"
+				+ "<br>"
+				+ "<table border=0 cellspacing=0 cellpadding=0>"
+				+ "<tr>"
+				+ "<td fixwidth=5></td>" + "<td FIXWIDTH=600 align=left>", mes, "</td>"
+				+ "<td fixqqwidth=5></td>"
+				+ "</tr>"
+				+ "</table>"
+				+ "<br>"
+				+ "<img src=\"L2UI.squareblank\" width=\"1\" height=\"5\">"
+				+ "<img src=\"L2UI.squaregray\" width=\"610\" height=\"1\">"
+				+ "<img src=\"L2UI.squareblank\" width=\"1\" height=\"5\">"
+				+ "<table border=0 cellspacing=0 cellpadding=0 FIXWIDTH=610>"
+				+ "<tr>"
+				+ "<td width=50>"
+				+ "<button value=\"&$422;\" action=\"bypass _bbsmemo\" back=\"l2ui_ch3.smallbutton2_down\" width=65 height=20 fore=\"l2ui_ch3.smallbutton2\">"
+				+ "</td>" + "<td width=560 align=right><table border=0 cellspacing=0><tr>"
+				+ "<td FIXWIDTH=300></td><td><button value = \"&$424;\" action=\"bypass _bbsposts;edit;", String.valueOf(forum.getID()), ";", String.valueOf(topic.getID()), ";0\" back=\"l2ui_ch3.smallbutton2_down\" width=65 height=20 fore=\"l2ui_ch3.smallbutton2\" ></td>&nbsp;"
+				+ "<td><button value = \"&$425;\" action=\"bypass _bbstopics;del;", String.valueOf(forum.getID()), ";", String.valueOf(topic.getID()), "\" back=\"l2ui_ch3.smallbutton2_down\" width=65 height=20 fore=\"l2ui_ch3.smallbutton2\" ></td>&nbsp;"
+				+ "<td><button value = \"&$421;\" action=\"bypass _bbstopics;crea;", String.valueOf(forum.getID()), "\" back=\"l2ui_ch3.smallbutton2_down\" width=65 height=20 fore=\"l2ui_ch3.smallbutton2\" ></td>&nbsp;"
+				+ "</tr></table>" + "</td>" + "</tr>" + "</table>" + "<br>" + "<br>" + "<br></center>" + "</body>" + "</html>");
 		separateAndSend(html, activeChar);
 	}
 	
@@ -361,7 +292,8 @@ public class PostBBSManager extends BaseBBSManager
 		Forum f = ForumsBBSManager.getInstance().getForumByID(idf);
 		if (f == null)
 		{
-			ShowBoard sb = new ShowBoard("<html><body><br><br><center>the forum: " + idf + " does not exist !</center><br><br></body></html>", "101");
+			ShowBoard sb = new ShowBoard("<html><body><br><br><center>the forum: " + idf
+					+ " does not exist !</center><br><br></body></html>", "101");
 			activeChar.sendPacket(sb);
 			activeChar.sendPacket(new ShowBoard(null, "102"));
 			activeChar.sendPacket(new ShowBoard(null, "103"));
@@ -371,7 +303,8 @@ public class PostBBSManager extends BaseBBSManager
 			Topic t = f.gettopic(idt);
 			if (t == null)
 			{
-				ShowBoard sb = new ShowBoard("<html><body><br><br><center>the topic: " + idt + " does not exist !</center><br><br></body></html>", "101");
+				ShowBoard sb = new ShowBoard("<html><body><br><br><center>the topic: " + idt
+						+ " does not exist !</center><br><br></body></html>", "101");
 				activeChar.sendPacket(sb);
 				activeChar.sendPacket(new ShowBoard(null, "102"));
 				activeChar.sendPacket(new ShowBoard(null, "103"));
@@ -386,7 +319,8 @@ public class PostBBSManager extends BaseBBSManager
 				}
 				if (cp == null)
 				{
-					ShowBoard sb = new ShowBoard("<html><body><br><br><center>the post: " + idp + " does not exist !</center><br><br></body></html>", "101");
+					ShowBoard sb = new ShowBoard("<html><body><br><br><center>the post: " + idp
+							+ " does not exist !</center><br><br></body></html>", "101");
 					activeChar.sendPacket(sb);
 					activeChar.sendPacket(new ShowBoard(null, "102"));
 					activeChar.sendPacket(new ShowBoard(null, "103"));
@@ -399,5 +333,11 @@ public class PostBBSManager extends BaseBBSManager
 				}
 			}
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final PostBBSManager _instance = new PostBBSManager();
 	}
 }

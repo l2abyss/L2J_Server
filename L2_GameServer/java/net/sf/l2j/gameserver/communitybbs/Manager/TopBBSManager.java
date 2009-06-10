@@ -22,6 +22,9 @@ import net.sf.l2j.gameserver.network.serverpackets.ShowBoard;
 
 public class TopBBSManager extends BaseBBSManager
 {
+	private TopBBSManager()
+	{
+	}
 	
 	/**
 	 * 
@@ -56,13 +59,15 @@ public class TopBBSManager extends BaseBBSManager
 			String content = HtmCache.getInstance().getHtm("data/html/CommunityBoard/" + idp + ".htm");
 			if (content == null)
 			{
-				content = "<html><body><br><br><center>404 :File Not foud: 'data/html/CommunityBoard/" + idp + ".htm' </center></body></html>";
+				content = "<html><body><br><br><center>404 :File Not foud: 'data/html/CommunityBoard/" + idp
+						+ ".htm' </center></body></html>";
 			}
 			separateAndSend(content, activeChar);
 		}
 		else
 		{
-			ShowBoard sb = new ShowBoard("<html><body><br><br><center>the command: " + command + " is not implemented yet</center><br><br></body></html>", "101");
+			ShowBoard sb = new ShowBoard("<html><body><br><br><center>the command: " + command
+					+ " is not implemented yet</center><br><br></body></html>", "101");
 			activeChar.sendPacket(sb);
 			activeChar.sendPacket(new ShowBoard(null, "102"));
 			activeChar.sendPacket(new ShowBoard(null, "103"));
@@ -80,14 +85,17 @@ public class TopBBSManager extends BaseBBSManager
 		
 	}
 	
-	private static TopBBSManager _instance = new TopBBSManager();
-	
 	/**
 	 * @return
 	 */
 	public static TopBBSManager getInstance()
 	{
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final TopBBSManager _instance = new TopBBSManager();
+	}
 }

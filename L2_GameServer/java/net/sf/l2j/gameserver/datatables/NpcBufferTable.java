@@ -59,10 +59,7 @@ public class NpcBufferTable
 			if (skillId == null || skillLevel == null || skillFeeId == null || skillFeeAmount == null)
 				return null;
 			
-			return new int[]
-			{
-				skillId, skillLevel, skillFeeId, skillFeeAmount
-			};
+			return new int[] { skillId, skillLevel, skillFeeId, skillFeeAmount };
 		}
 		
 		public int getNpcId()
@@ -71,7 +68,6 @@ public class NpcBufferTable
 		}
 	}
 	
-	private static NpcBufferTable _instance = null;
 	private Map<Integer, NpcBufferSkills> _buffers = new FastMap<Integer, NpcBufferSkills>();
 	
 	private NpcBufferTable()
@@ -137,10 +133,7 @@ public class NpcBufferTable
 	
 	public static NpcBufferTable getInstance()
 	{
-		if (_instance == null)
-			_instance = new NpcBufferTable();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public int[] getSkillInfo(int npcId, int buffGroup)
@@ -151,5 +144,11 @@ public class NpcBufferTable
 			return null;
 		
 		return skills.getSkillGroupInfo(buffGroup);
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final NpcBufferTable _instance = new NpcBufferTable();
 	}
 }

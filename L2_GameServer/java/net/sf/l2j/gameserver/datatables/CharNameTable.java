@@ -31,15 +31,13 @@ public class CharNameTable
 {
 	private static Logger _log = Logger.getLogger(CharNameTable.class.getName());
 	
-	private static CharNameTable _instance;
+	private CharNameTable()
+	{
+	}
 	
 	public static CharNameTable getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new CharNameTable();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public synchronized boolean doesCharNameExist(String name)
@@ -108,5 +106,11 @@ public class CharNameTable
 		}
 		
 		return number;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final CharNameTable _instance = new CharNameTable();
 	}
 }

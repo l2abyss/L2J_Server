@@ -32,18 +32,14 @@ public class AutoAnnounceTaskManager
 {
 	protected static final Logger _log = Logger.getLogger(AutoAnnounceTaskManager.class.getName());
 	
-	private static AutoAnnounceTaskManager _instance;
 	protected List<AutoAnnouncement> _announces = new FastList<AutoAnnouncement>();
 	
 	public static AutoAnnounceTaskManager getInstance()
 	{
-		if (_instance == null)
-			_instance = new AutoAnnounceTaskManager();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
-	public AutoAnnounceTaskManager()
+	private AutoAnnounceTaskManager()
 	{
 		restore();
 	}
@@ -65,7 +61,7 @@ public class AutoAnnounceTaskManager
 			conn = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = conn.prepareStatement("SELECT id, initial, delay, cycle, memo FROM auto_announcements");
 			ResultSet data = statement.executeQuery();
-			while(data.next())
+			while (data.next())
 			{
 				int id = data.getInt("id");
 				long initial = data.getLong("initial");
@@ -85,9 +81,15 @@ public class AutoAnnounceTaskManager
 		}
 		finally
 		{
-			try { conn.close(); } catch (Exception e) {}
+			try
+			{
+				conn.close();
+			}
+			catch (Exception e)
+			{
+			}
 		}
-		_log.log(Level.INFO, "AutoAnnoucements: Loaded "+count+" Auto Annoucement Data.");
+		_log.log(Level.INFO, "AutoAnnoucements: Loaded " + count + " Auto Annoucement Data.");
 	}
 	
 	private class AutoAnnouncement implements Runnable
@@ -128,5 +130,11 @@ public class AutoAnnounceTaskManager
 	{
 		Broadcast.announceToOnlinePlayers(text);
 		_log.warning("AutoAnnounce: " + text);
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final AutoAnnounceTaskManager _instance = new AutoAnnounceTaskManager();
 	}
 }

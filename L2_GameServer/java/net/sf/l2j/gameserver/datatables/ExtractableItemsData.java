@@ -39,17 +39,12 @@ public class ExtractableItemsData
 	//          Map<FastMap<itemid, skill>, L2ExtractableItem>
 	private Map<Integer, L2ExtractableItem> _items = new FastMap<Integer, L2ExtractableItem>();
 	
-	private static ExtractableItemsData _instance = null;
-	
 	public static ExtractableItemsData getInstance()
 	{
-		if (_instance == null)
-			_instance = new ExtractableItemsData();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
-	public ExtractableItemsData()
+	private ExtractableItemsData()
 	{
 		_items.clear();
 		
@@ -99,22 +94,22 @@ public class ExtractableItemsData
 			L2Skill skill = SkillTable.getInstance().getInfo(skillID, skillLvl);
 			if (skill == null)
 			{
-					_log.warning("Extractable items data: Error in line " + lineCount + " -> skill is null!");
-					_log.warning("		" + line);
-					ok = false;
+				_log.warning("Extractable items data: Error in line " + lineCount + " -> skill is null!");
+				_log.warning("		" + line);
+				ok = false;
 			}
 			if (!ok)
 				continue;
 			
 			FastList<L2ExtractableProductItem> product_temp = new FastList<L2ExtractableProductItem>();
 			
-			for (int i = 2; i < lineSplit.length -1 ; i++)
+			for (int i = 2; i < lineSplit.length - 1; i++)
 			{
 				ok = true;
 				
 				String[] lineSplit2 = lineSplit[i + 1].split(",");
 				
-				if (lineSplit2.length < 3 )//|| lineSplit2.length-1 %2 != 0)
+				if (lineSplit2.length < 3)//|| lineSplit2.length-1 %2 != 0)
 				{
 					_log.warning("Extractable items data: Error in line " + lineCount + " -> wrong seperator!");
 					_log.warning("		" + line);
@@ -124,27 +119,28 @@ public class ExtractableItemsData
 				if (!ok)
 					continue;
 				
-				int[] production =null;
+				int[] production = null;
 				int[] amount = null;
 				int chance = 0;
 				
 				try
 				{
-					int k =0;
-					production = new int[lineSplit2.length-1/2];
-					amount = new int[lineSplit2.length-1/2];
-					for (int j = 0; j < lineSplit2.length-1 ;j++)
+					int k = 0;
+					production = new int[lineSplit2.length - 1 / 2];
+					amount = new int[lineSplit2.length - 1 / 2];
+					for (int j = 0; j < lineSplit2.length - 1; j++)
 					{
 						production[k] = Integer.parseInt(lineSplit2[j]);
-						amount[k] = Integer.parseInt(lineSplit2[j+=1]);
+						amount[k] = Integer.parseInt(lineSplit2[j += 1]);
 						k++;
 					}
-
-					chance = Integer.parseInt(lineSplit2[lineSplit2.length-1]);
+					
+					chance = Integer.parseInt(lineSplit2[lineSplit2.length - 1]);
 				}
 				catch (Exception e)
 				{
-					_log.warning("Extractable items data: Error in line " + lineCount + " -> incomplete/invalid production data or wrong seperator!");
+					_log.warning("Extractable items data: Error in line " + lineCount
+							+ " -> incomplete/invalid production data or wrong seperator!");
 					_log.warning("		" + line);
 					ok = false;
 				}
@@ -167,7 +163,7 @@ public class ExtractableItemsData
 				_log.warning("		" + line);
 				continue;
 			}
-
+			
 			L2ExtractableItem product = new L2ExtractableItem(itemID, product_temp);
 			_items.put(itemID, product);
 		}
@@ -191,5 +187,11 @@ public class ExtractableItemsData
 			result[i++] = ei.getItemId();
 		}
 		return result;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final ExtractableItemsData _instance = new ExtractableItemsData();
 	}
 }

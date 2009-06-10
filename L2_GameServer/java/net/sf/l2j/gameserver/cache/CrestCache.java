@@ -40,8 +40,6 @@ public class CrestCache
 {
 	private static Logger _log = Logger.getLogger(CrestCache.class.getName());
 	
-	private static CrestCache _instance;
-	
 	private FastMRUCache<Integer, byte[]> _cachePledge = new FastMRUCache<Integer, byte[]>();
 	
 	private FastMRUCache<Integer, byte[]> _cachePledgeLarge = new FastMRUCache<Integer, byte[]>();
@@ -54,15 +52,10 @@ public class CrestCache
 	
 	public static CrestCache getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new CrestCache();
-		}
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
-	public CrestCache()
+	private CrestCache()
 	{
 		convertOldPedgeFiles();
 		reload();
@@ -133,7 +126,9 @@ public class CrestCache
 			}
 		}
 		
-		_log.info("Cache[Crest]: " + String.format("%.3f", getMemoryUsage()) + "MB on " + getLoadedFiles() + " files loaded. (Forget Time: " + (_cachePledge.getForgetTime() / 1000) + "s , Capacity: " + _cachePledge.capacity() + ")");
+		_log.info("Cache[Crest]: " + String.format("%.3f", getMemoryUsage()) + "MB on " + getLoadedFiles()
+				+ " files loaded. (Forget Time: " + (_cachePledge.getForgetTime() / 1000) + "s , Capacity: " + _cachePledge.capacity()
+				+ ")");
 	}
 	
 	public void convertOldPedgeFiles()
@@ -370,5 +365,11 @@ public class CrestCache
 		{
 			return (file.getName().startsWith("Pledge_"));
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final CrestCache _instance = new CrestCache();
 	}
 }

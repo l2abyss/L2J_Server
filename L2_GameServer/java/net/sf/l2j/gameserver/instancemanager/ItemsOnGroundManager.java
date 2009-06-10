@@ -42,8 +42,6 @@ public class ItemsOnGroundManager
 {
 	static final Logger _log = Logger.getLogger(ItemsOnGroundManager.class.getName());
 	
-	private static ItemsOnGroundManager _instance;
-	
 	protected ArrayList<L2ItemInstance> _items = null;
 	
 	private ItemsOnGroundManager()
@@ -52,16 +50,12 @@ public class ItemsOnGroundManager
 			_items = new ArrayList<L2ItemInstance>();
 		if (Config.SAVE_DROPPED_ITEM_INTERVAL > 0)
 			ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new storeInDb(), Config.SAVE_DROPPED_ITEM_INTERVAL, Config.SAVE_DROPPED_ITEM_INTERVAL);
+		load();
 	}
 	
 	public static final ItemsOnGroundManager getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new ItemsOnGroundManager();
-			_instance.load();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private void load()
@@ -92,8 +86,7 @@ public class ItemsOnGroundManager
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "error while updating table ItemsOnGround "
-				        + e);
+				_log.log(Level.SEVERE, "error while updating table ItemsOnGround " + e);
 				e.printStackTrace();
 			}
 			finally
@@ -143,7 +136,7 @@ public class ItemsOnGroundManager
 					if (result.getLong(8) > -1)
 					{
 						if ((Config.AUTODESTROY_ITEM_AFTER > 0 && item.getItemType() != L2EtcItemType.HERB)
-						        || (Config.HERB_AUTO_DESTROY_TIME > 0 && item.getItemType() == L2EtcItemType.HERB))
+								|| (Config.HERB_AUTO_DESTROY_TIME > 0 && item.getItemType() == L2EtcItemType.HERB))
 							ItemsAutoDestroy.getInstance().addItem(item);
 					}
 				}
@@ -151,8 +144,7 @@ public class ItemsOnGroundManager
 			result.close();
 			s.close();
 			if (count > 0)
-				_log.info("ItemsOnGroundManager: restored " + count
-				        + " items.");
+				_log.info("ItemsOnGroundManager: restored " + count + " items.");
 			else
 				_log.info("Initializing ItemsOnGroundManager.");
 		}
@@ -212,8 +204,7 @@ public class ItemsOnGroundManager
 		}
 		catch (Exception e1)
 		{
-			_log.log(Level.SEVERE, "error while cleaning table ItemsOnGround "
-			        + e1);
+			_log.log(Level.SEVERE, "error while cleaning table ItemsOnGround " + e1);
 			e1.printStackTrace();
 		}
 		finally
@@ -279,8 +270,7 @@ public class ItemsOnGroundManager
 				}
 				catch (Exception e)
 				{
-					_log.log(Level.SEVERE, "error while inserting into table ItemsOnGround "
-					        + e);
+					_log.log(Level.SEVERE, "error while inserting into table ItemsOnGround " + e);
 					e.printStackTrace();
 				}
 				finally
@@ -295,8 +285,13 @@ public class ItemsOnGroundManager
 				}
 			}
 			if (Config.DEBUG)
-				_log.warning("ItemsOnGroundManager: " + _items.size()
-				        + " items on ground saved");
+				_log.warning("ItemsOnGroundManager: " + _items.size() + " items on ground saved");
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final ItemsOnGroundManager _instance = new ItemsOnGroundManager();
 	}
 }

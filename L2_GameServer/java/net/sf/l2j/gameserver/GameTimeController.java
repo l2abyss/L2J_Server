@@ -37,57 +37,55 @@ import net.sf.l2j.gameserver.model.actor.L2Character;
 public class GameTimeController
 {
 	static final Logger _log = Logger.getLogger(GameTimeController.class.getName());
-
+	
 	public static final int TICKS_PER_SECOND = 10; // not able to change this without checking through code
 	public static final int MILLIS_IN_TICK = 1000 / TICKS_PER_SECOND;
-
-	private static GameTimeController _instance = new GameTimeController();
-
+	
 	protected static int _gameTicks;
 	protected static long _gameStartTime;
 	protected static boolean _isNight = false;
-
-	private static Map<Integer,L2Character> _movingObjects = new FastMap<Integer,L2Character>().setShared(true);
-
+	
+	private static Map<Integer, L2Character> _movingObjects = new FastMap<Integer, L2Character>().setShared(true);
+	
 	protected static TimerThread _timer;
 	private ScheduledFuture<?> _timerWatcher;
-
+	
 	/**
 	 * one ingame day is 240 real minutes
 	 */
 	public static GameTimeController getInstance()
 	{
-		return _instance;
+		return SingletonHolder._instance;
 	}
-
+	
 	private GameTimeController()
 	{
 		_gameStartTime = System.currentTimeMillis() - 3600000; // offset so that the server starts a day begin
 		_gameTicks = 3600000 / MILLIS_IN_TICK; // offset so that the server starts a day begin
-
+		
 		_timer = new TimerThread();
 		_timer.start();
-
+		
 		_timerWatcher = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new TimerWatcher(), 0, 1000);
-        ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new BroadcastSunState(), 0, 600000);
-
+		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new BroadcastSunState(), 0, 600000);
+		
 	}
-
+	
 	public boolean isNowNight()
 	{
 		return _isNight;
 	}
-
+	
 	public int getGameTime()
 	{
 		return (_gameTicks / (TICKS_PER_SECOND * 10));
 	}
-
+	
 	public static int getGameTicks()
 	{
 		return _gameTicks;
 	}
-
+	
 	/**
 	 * Add a L2Character to movingObjects of GameTimeController.<BR><BR>
 	 *
@@ -99,10 +97,12 @@ public class GameTimeController
 	 */
 	public void registerMovingObject(L2Character cha)
 	{
-		if(cha == null) return;
-		if (!_movingObjects.containsKey(cha.getObjectId())) _movingObjects.put(cha.getObjectId(),cha);   
+		if (cha == null)
+			return;
+		if (!_movingObjects.containsKey(cha.getObjectId()))
+			_movingObjects.put(cha.getObjectId(), cha);
 	}
-
+	
 	/**
 	 * Move all L2Characters contained in movingObjects of GameTimeController.<BR><BR>
 	 *
@@ -145,17 +145,17 @@ public class GameTimeController
 			}
 		}
 	}
-
+	
 	public void stopTimer()
 	{
 		_timerWatcher.cancel(true);
 		_timer.interrupt();
 	}
-
+	
 	class TimerThread extends Thread
 	{
 		protected Exception _error;
-
+		
 		public TimerThread()
 		{
 			super("GameTimeController");
@@ -163,7 +163,7 @@ public class GameTimeController
 			setPriority(MAX_PRIORITY);
 			_error = null;
 		}
-
+		
 		@Override
 		public void run()
 		{
@@ -171,20 +171,21 @@ public class GameTimeController
 			{
 				for (;;)
 				{
-					int _oldTicks=_gameTicks; // save old ticks value to avoid moving objects 2x in same tick
+					int _oldTicks = _gameTicks; // save old ticks value to avoid moving objects 2x in same tick
 					long runtime = System.currentTimeMillis() - _gameStartTime; // from server boot to now
-
+					
 					_gameTicks = (int) (runtime / MILLIS_IN_TICK); // new ticks value (ticks now)
-
-					if (_oldTicks != _gameTicks) moveObjects(); // Runs possibly too often
-
+					
+					if (_oldTicks != _gameTicks)
+						moveObjects(); // Runs possibly too often
+						
 					runtime = (System.currentTimeMillis() - _gameStartTime) - runtime;
-
+					
 					// calculate sleep time... time needed to next tick minus time it takes to call moveObjects()
 					int sleepTime = 1 + MILLIS_IN_TICK - ((int) runtime) % MILLIS_IN_TICK;
-
+					
 					//_log.finest("TICK: "+_gameTicks);
-
+					
 					sleep(sleepTime);
 				}
 			}
@@ -194,7 +195,7 @@ public class GameTimeController
 			}
 		}
 	}
-
+	
 	class TimerWatcher implements Runnable
 	{
 		public void run()
@@ -203,43 +204,45 @@ public class GameTimeController
 			{
 				String time = (new SimpleDateFormat("HH:mm:ss")).format(new Date());
 				_log.warning(time + " TimerThread stop with following error. restart it.");
-				if (_timer._error != null) _timer._error.printStackTrace();
-
+				if (_timer._error != null)
+					_timer._error.printStackTrace();
+				
 				_timer = new TimerThread();
 				_timer.start();
 			}
 		}
 	}
-
+	
 	/**
 	 * Update the _knownObject and _knowPlayers of each L2Character that finished its movement and of their already known L2Object then notify AI with EVT_ARRIVED.<BR><BR>
 	 */
 	class MovingObjectArrived implements Runnable
-    {
-        private final L2Character _ended;
-        
-        MovingObjectArrived(L2Character ended)
-        {
-            _ended = ended;
-        }
-        
-        public void run()
-        {
-            try
-            {
-            	if (_ended.hasAI()) // AI could be just disabled due to region turn off
-            	{
-            		if (Config.MOVE_BASED_KNOWNLIST) _ended.getKnownList().findObjects();
-            		_ended.getAI().notifyEvent(CtrlEvent.EVT_ARRIVED);
-            	}
-            }
-            catch (NullPointerException e)
-            {
-            	e.printStackTrace();
-            }
-        }
-    }
-
+	{
+		private final L2Character _ended;
+		
+		MovingObjectArrived(L2Character ended)
+		{
+			_ended = ended;
+		}
+		
+		public void run()
+		{
+			try
+			{
+				if (_ended.hasAI()) // AI could be just disabled due to region turn off
+				{
+					if (Config.MOVE_BASED_KNOWNLIST)
+						_ended.getKnownList().findObjects();
+					_ended.getAI().notifyEvent(CtrlEvent.EVT_ARRIVED);
+				}
+			}
+			catch (NullPointerException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	/**
 	 * @param rise
 	 */
@@ -249,12 +252,18 @@ public class GameTimeController
 		{
 			int h = (getGameTime() / 60) % 24; // Time in hour
 			boolean tempIsNight = (h < 6);
-
-			if (tempIsNight != _isNight) { // If diff day/night state
-                _isNight = tempIsNight; // Set current day/night varible to value of temp varible
-
-                DayNightSpawnManager.getInstance().notifyChangeMode();
-            }
+			
+			if (tempIsNight != _isNight)
+			{ // If diff day/night state
+				_isNight = tempIsNight; // Set current day/night varible to value of temp varible
+				DayNightSpawnManager.getInstance().notifyChangeMode();
+			}
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final GameTimeController _instance = new GameTimeController();
 	}
 }

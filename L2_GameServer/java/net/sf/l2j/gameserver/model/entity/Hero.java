@@ -48,16 +48,17 @@ public class Hero
 {
 	private static Logger _log = Logger.getLogger(Hero.class.getName());
 	
-	private static Hero _instance;
 	private static final String GET_HEROES = "SELECT * FROM heroes WHERE played = 1";
 	private static final String GET_ALL_HEROES = "SELECT * FROM heroes";
 	private static final String UPDATE_ALL = "UPDATE heroes SET played = 0";
 	private static final String INSERT_HERO = "INSERT INTO heroes VALUES (?,?,?,?,?)";
 	private static final String UPDATE_HERO = "UPDATE heroes SET count = ?, played = ?" + " WHERE charId = ?";
-	private static final String GET_CLAN_ALLY = "SELECT characters.clanid AS clanid, coalesce(clan_data.ally_Id, 0) AS allyId FROM characters LEFT JOIN clan_data ON clan_data.clan_id = characters.clanid " + " WHERE characters.charId = ?";
+	private static final String GET_CLAN_ALLY = "SELECT characters.clanid AS clanid, coalesce(clan_data.ally_Id, 0) AS allyId FROM characters LEFT JOIN clan_data ON clan_data.clan_id = characters.clanid "
+			+ " WHERE characters.charId = ?";
 	private static final String GET_CLAN_NAME = "SELECT clan_name FROM clan_data WHERE clan_id = (SELECT clanid FROM characters WHERE char_name = ?)";
 	// delete hero items
-	private static final String DELETE_ITEMS = "DELETE FROM items WHERE item_id IN " + "(6842, 6611, 6612, 6613, 6614, 6615, 6616, 6617, 6618, 6619, 6620, 6621, 9388, 9389, 9390) "
+	private static final String DELETE_ITEMS = "DELETE FROM items WHERE item_id IN "
+			+ "(6842, 6611, 6612, 6613, 6614, 6615, 6616, 6617, 6618, 6619, 6620, 6621, 9388, 9389, 9390) "
 			+ "AND owner_id NOT IN (SELECT charId FROM characters WHERE accesslevel > 0)";
 	
 	private static Map<Integer, StatsSet> _heroes;
@@ -72,12 +73,10 @@ public class Hero
 	
 	public static Hero getInstance()
 	{
-		if (_instance == null)
-			_instance = new Hero();
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
-	public Hero()
+	private Hero()
 	{
 		init();
 	}
@@ -251,13 +250,13 @@ public class Hero
 				{
 					player.setHero(false);
 					
-			    	for (int i = 0; i < Inventory.PAPERDOLL_TOTALSLOTS; i++)
-			    	{
-			    		L2ItemInstance equippedItem = player.getInventory().getPaperdollItem(i);
-			    		if (equippedItem != null && equippedItem.isHeroItem())
-			    			player.getInventory().unEquipItemInSlotAndRecord(i);
-			    	}
-
+					for (int i = 0; i < Inventory.PAPERDOLL_TOTALSLOTS; i++)
+					{
+						L2ItemInstance equippedItem = player.getInventory().getPaperdollItem(i);
+						if (equippedItem != null && equippedItem.isHeroItem())
+							player.getInventory().unEquipItemInSlotAndRecord(i);
+					}
+					
 					for (L2ItemInstance item : player.getInventory().getAvailableItems(false))
 					{
 						if (item != null && item.isHeroItem())
@@ -519,5 +518,11 @@ public class Hero
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final Hero _instance = new Hero();
 	}
 }

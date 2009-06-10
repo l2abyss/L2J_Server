@@ -34,25 +34,18 @@ public class HennaTable
 {
 	private static Logger _log = Logger.getLogger(HennaTable.class.getName());
 	
-	private static HennaTable _instance;
-	
 	private Map<Integer, L2Henna> _henna;
 	private boolean _initialized = true;
 	
 	public static HennaTable getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new HennaTable();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private HennaTable()
 	{
 		_henna = new FastMap<Integer, L2Henna>();
 		restoreHennaData();
-		
 	}
 	
 	/**
@@ -124,4 +117,9 @@ public class HennaTable
 		return _henna.get(id);
 	}
 	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final HennaTable _instance = new HennaTable();
+	}
 }

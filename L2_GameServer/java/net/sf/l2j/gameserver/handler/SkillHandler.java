@@ -26,17 +26,11 @@ import net.sf.l2j.gameserver.templates.skills.L2SkillType;
  */
 public class SkillHandler
 {
-	private static SkillHandler _instance;
-	
 	private Map<L2SkillType, ISkillHandler> _datatable;
 	
 	public static SkillHandler getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new SkillHandler();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private SkillHandler()
@@ -64,5 +58,11 @@ public class SkillHandler
 	public int size()
 	{
 		return _datatable.size();
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final SkillHandler _instance = new SkillHandler();
 	}
 }

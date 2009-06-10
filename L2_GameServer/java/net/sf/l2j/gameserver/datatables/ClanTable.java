@@ -53,17 +53,11 @@ public class ClanTable
 {
 	private static Logger _log = Logger.getLogger(ClanTable.class.getName());
 	
-	private static ClanTable _instance;
-	
 	private Map<Integer, L2Clan> _clans;
 	
 	public static ClanTable getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new ClanTable();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public L2Clan[] getClans()
@@ -283,12 +277,12 @@ public class ClanTable
 			statement.setInt(2, clanId);
 			statement.execute();
 			statement.close();
-
+			
 			statement = con.prepareStatement("DELETE FROM clan_notices WHERE clan_id=?");
 			statement.setInt(1, clanId);
 			statement.execute();
 			statement.close();
-
+			
 			if (castleId != 0)
 			{
 				statement = con.prepareStatement("UPDATE castle SET taxPercent = 0 WHERE id = ?");
@@ -413,12 +407,12 @@ public class ClanTable
 		clan2.broadcastClanStatus();
 		//for(L2ClanMember player: clan1.getMembers())
 		//{
-		//    if(player.getPlayerInstance()!=null)
+		//	if(player.getPlayerInstance()!=null)
 		//			player.getPlayerInstance().setWantsPeace(0);
 		//}
 		//for(L2ClanMember player: clan2.getMembers())
 		//{
-		//    if(player.getPlayerInstance()!=null)
+		//	if(player.getPlayerInstance()!=null)
 		//			player.getPlayerInstance().setWantsPeace(0);
 		//}
 		Connection con = null;
@@ -509,5 +503,11 @@ public class ClanTable
 			{
 			}
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final ClanTable _instance = new ClanTable();
 	}
 }

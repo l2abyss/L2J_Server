@@ -26,8 +26,6 @@ import net.sf.l2j.gameserver.templates.item.L2EtcItem;
  */
 public class ItemHandler
 {
-	private static ItemHandler _instance;
-	
 	private List<IItemHandler> _datatable;
 	
 	/**
@@ -36,11 +34,7 @@ public class ItemHandler
 	 */
 	public static ItemHandler getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new ItemHandler();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	/**
@@ -88,5 +82,11 @@ public class ItemHandler
 				return iih;
 		}
 		return null;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final ItemHandler _instance = new ItemHandler();
 	}
 }

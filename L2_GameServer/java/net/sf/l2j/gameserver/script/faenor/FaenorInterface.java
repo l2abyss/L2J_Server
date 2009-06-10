@@ -41,78 +41,73 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
  */
 public class FaenorInterface implements EngineInterface
 {
-    protected static final Logger _log = Logger.getLogger(FaenorInterface.class.getName());
-    private static FaenorInterface _instance;
-
-    public static FaenorInterface getInstance()
-    {
-        if (_instance == null)
-        {
-            _instance = new FaenorInterface();
-        }
-        return _instance;
-    }
-
-    public FaenorInterface()
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see net.sf.l2j.gameserver.script.EngineInterface#getAllPlayers()
-     */
-    public List<?> getAllPlayers()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     *
-     * Adds a new Quest Drop to an NPC
-     *
-     * @see net.sf.l2j.gameserver.script.EngineInterface#addQuestDrop(int)
-     */
-    public void addQuestDrop(int npcID, int itemID, int min, int max, int chance, String questID, String[] states)
-    {
-        L2NpcTemplate npc = npcTable.getTemplate(npcID);
-        if (npc == null)
-        {
-            throw new NullPointerException();
-        }
-        L2DropData drop = new L2DropData();
-        drop.setItemId(itemID);
-        drop.setMinDrop(min);
-        drop.setMaxDrop(max);
-        drop.setChance(chance);
-        drop.setQuestID(questID);
-        drop.addStates(states);
-        addDrop(npc, drop, false);
-    }
-
-    /**
-     *
-     * Adds a new Drop to an NPC
-     *
-     * @see net.sf.l2j.gameserver.script.EngineInterface#addQuestDrop(int)
-     */
-    public void addDrop(int npcID, int itemID, int min, int max, boolean sweep, int chance) throws NullPointerException
-    {
-        L2NpcTemplate npc = npcTable.getTemplate(npcID);
-        if (npc == null)
-        {
-            if (Config.DEBUG)
-                _log.warning("Npc doesnt Exist");
-            throw new NullPointerException();
-        }
-        L2DropData drop = new L2DropData();
-        drop.setItemId(itemID);
-        drop.setMinDrop(min);
-        drop.setMaxDrop(max);
-        drop.setChance(chance);
-
-        addDrop(npc, drop, sweep);
-    }
-
+	protected static final Logger _log = Logger.getLogger(FaenorInterface.class.getName());
+	
+	public static FaenorInterface getInstance()
+	{
+		return SingletonHolder._instance;
+	}
+	
+	private FaenorInterface()
+	{
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.sf.l2j.gameserver.script.EngineInterface#getAllPlayers()
+	 */
+	public List<?> getAllPlayers()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/**
+	 *
+	 * Adds a new Quest Drop to an NPC
+	 *
+	 * @see net.sf.l2j.gameserver.script.EngineInterface#addQuestDrop(int)
+	 */
+	public void addQuestDrop(int npcID, int itemID, int min, int max, int chance, String questID, String[] states)
+	{
+		L2NpcTemplate npc = npcTable.getTemplate(npcID);
+		if (npc == null)
+		{
+			throw new NullPointerException();
+		}
+		L2DropData drop = new L2DropData();
+		drop.setItemId(itemID);
+		drop.setMinDrop(min);
+		drop.setMaxDrop(max);
+		drop.setChance(chance);
+		drop.setQuestID(questID);
+		drop.addStates(states);
+		addDrop(npc, drop, false);
+	}
+	
+	/**
+	 *
+	 * Adds a new Drop to an NPC
+	 *
+	 * @see net.sf.l2j.gameserver.script.EngineInterface#addQuestDrop(int)
+	 */
+	public void addDrop(int npcID, int itemID, int min, int max, boolean sweep, int chance) throws NullPointerException
+	{
+		L2NpcTemplate npc = npcTable.getTemplate(npcID);
+		if (npc == null)
+		{
+			if (Config.DEBUG)
+				_log.warning("Npc doesnt Exist");
+			throw new NullPointerException();
+		}
+		L2DropData drop = new L2DropData();
+		drop.setItemId(itemID);
+		drop.setMinDrop(min);
+		drop.setMaxDrop(max);
+		drop.setChance(chance);
+		
+		addDrop(npc, drop, sweep);
+	}
+	
 	/**
 	 * Adds a new drop to an NPC.  If the drop is sweep, it adds it to the NPC's Sweep category
 	 * If the drop is non-sweep, it creates a new category for this drop.
@@ -121,26 +116,26 @@ public class FaenorInterface implements EngineInterface
 	 * @param drop
 	 * @param sweep
 	 */
-    public void addDrop(L2NpcTemplate npc, L2DropData drop, boolean sweep)
-    {
-    	if(sweep)
-    		addDrop(npc, drop,-1);
-    	else
-    	{
-        	int maxCategory = -1;
-
-        	if (npc.getDropData()!=null)
-	    	for(L2DropCategory cat: npc.getDropData())
-	    	{
-	    		if(maxCategory < cat.getCategoryType())
-	    			maxCategory = cat.getCategoryType();
-	    	}
-	    	maxCategory++;
-	    	npc.addDropData(drop, maxCategory);
-    	}
-
-    }
-
+	public void addDrop(L2NpcTemplate npc, L2DropData drop, boolean sweep)
+	{
+		if (sweep)
+			addDrop(npc, drop, -1);
+		else
+		{
+			int maxCategory = -1;
+			
+			if (npc.getDropData() != null)
+				for (L2DropCategory cat : npc.getDropData())
+				{
+					if (maxCategory < cat.getCategoryType())
+						maxCategory = cat.getCategoryType();
+				}
+			maxCategory++;
+			npc.addDropData(drop, maxCategory);
+		}
+		
+	}
+	
 	/**
 	 * Adds a new drop to an NPC, in the specified category.  If the category does not exist,
 	 * it is created.
@@ -149,65 +144,69 @@ public class FaenorInterface implements EngineInterface
 	 * @param drop
 	 * @param sweep
 	 */
-    public void addDrop(L2NpcTemplate npc, L2DropData drop, int category)
-    {
-    	npc.addDropData(drop, category);
-    }
-
-
-    /**
-     * @return Returns the _questDrops.
-     */
-    public List<L2DropData> getQuestDrops(int npcID)
-    {
-        L2NpcTemplate npc = npcTable.getTemplate(npcID);
-        if (npc == null)
-        {
-            return null;
-        }
-        List<L2DropData> questDrops = new FastList<L2DropData>();
-        if (npc.getDropData()!=null)
-        for (L2DropCategory cat:npc.getDropData())
-        for (L2DropData drop : cat.getAllDrops() )
-        {
-            if (drop.getQuestID() != null)
-            {
-                questDrops.add(drop);
-            }
-        }
-        return questDrops;
-    }
-
-    public void addEventDrop(int[] items, int[] count, double chance, DateRange range)
-    {
-        EventDroplist.getInstance().addGlobalDrop(items, count, (int)(chance * L2DropData.MAX_CHANCE), range);
-    }
-
-    public void onPlayerLogin(String[] message, DateRange validDateRange)
-    {
-        Announcements.getInstance().addEventAnnouncement(validDateRange, message);
-    }
-
-    public void addPetData(ScriptContext context, int petID, int levelStart, int levelEnd, Map<String, String> stats)
-		throws ScriptException
-    {
-        L2PetData[] petData = new L2PetData[levelEnd - levelStart + 1];
-        int value           = 0;
-        for (int level = levelStart; level <= levelEnd; level++)
-        {
-            petData[level - 1]  = new L2PetData();
-            petData[level - 1].setPetID(petID);
-            petData[level - 1].setPetLevel(level);
-
-	        context.setAttribute("level", new Double(level), ScriptContext.ENGINE_SCOPE);
-            for (String stat : stats.keySet())
-            {
-				value = ((Number)Expression.eval(context, "beanshell", stats.get(stat))).intValue();
-                petData[level - 1].setStat(stat, value);
-            }
-            context.removeAttribute("level", ScriptContext.ENGINE_SCOPE);
-        }
-
-    }
-
+	public void addDrop(L2NpcTemplate npc, L2DropData drop, int category)
+	{
+		npc.addDropData(drop, category);
+	}
+	
+	/**
+	 * @return Returns the _questDrops.
+	 */
+	public List<L2DropData> getQuestDrops(int npcID)
+	{
+		L2NpcTemplate npc = npcTable.getTemplate(npcID);
+		if (npc == null)
+		{
+			return null;
+		}
+		List<L2DropData> questDrops = new FastList<L2DropData>();
+		if (npc.getDropData() != null)
+			for (L2DropCategory cat : npc.getDropData())
+				for (L2DropData drop : cat.getAllDrops())
+				{
+					if (drop.getQuestID() != null)
+					{
+						questDrops.add(drop);
+					}
+				}
+		return questDrops;
+	}
+	
+	public void addEventDrop(int[] items, int[] count, double chance, DateRange range)
+	{
+		EventDroplist.getInstance().addGlobalDrop(items, count, (int) (chance * L2DropData.MAX_CHANCE), range);
+	}
+	
+	public void onPlayerLogin(String[] message, DateRange validDateRange)
+	{
+		Announcements.getInstance().addEventAnnouncement(validDateRange, message);
+	}
+	
+	public void addPetData(ScriptContext context, int petID, int levelStart, int levelEnd, Map<String, String> stats)
+			throws ScriptException
+	{
+		L2PetData[] petData = new L2PetData[levelEnd - levelStart + 1];
+		int value = 0;
+		for (int level = levelStart; level <= levelEnd; level++)
+		{
+			petData[level - 1] = new L2PetData();
+			petData[level - 1].setPetID(petID);
+			petData[level - 1].setPetLevel(level);
+			
+			context.setAttribute("level", new Double(level), ScriptContext.ENGINE_SCOPE);
+			for (String stat : stats.keySet())
+			{
+				value = ((Number) Expression.eval(context, "beanshell", stats.get(stat))).intValue();
+				petData[level - 1].setStat(stat, value);
+			}
+			context.removeAttribute("level", ScriptContext.ENGINE_SCOPE);
+		}
+		
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final FaenorInterface _instance = new FaenorInterface();
+	}
 }

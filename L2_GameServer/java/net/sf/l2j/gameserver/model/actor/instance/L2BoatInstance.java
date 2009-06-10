@@ -111,10 +111,8 @@ public class L2BoatInstance extends L2Character
 		 * @param sysmess1_1
 		 * @param sysmessb_1
 		 */
-		public L2BoatTrajet(int pIdWaypoint1, int pIdWTicket1, int pNtx1,
-		        int pNty1, int pNtz1, String pNpc1, String pSysmess10_1,
-		        String pSysmess5_1, String pSysmess1_1, String pSysmess0_1,
-		        String pSysmessb_1, String pBoatname)
+		public L2BoatTrajet(int pIdWaypoint1, int pIdWTicket1, int pNtx1, int pNty1, int pNtz1, String pNpc1, String pSysmess10_1,
+				String pSysmess5_1, String pSysmess1_1, String pSysmess0_1, String pSysmessb_1, String pBoatname)
 		{
 			idWaypoint1 = pIdWaypoint1;
 			idWTicket1 = pIdWTicket1;
@@ -169,8 +167,7 @@ public class L2BoatInstance extends L2Character
 				String line = null;
 				while ((line = lnr.readLine()) != null)
 				{
-					if (line.trim().length() == 0
-					        || !line.startsWith(idWaypoint1 + ";"))
+					if (line.trim().length() == 0 || !line.startsWith(idWaypoint1 + ";"))
 						continue;
 					parseLine(line);
 					return;
@@ -313,8 +310,7 @@ public class L2BoatInstance extends L2Character
 		getPosition().setHeading(heading);
 		
 		if (Config.DEBUG)
-			_logBoat.fine("dist:" + distance + "speed:" + speed + " ttt:"
-			        + ticksToMove + " heading:" + heading);
+			_logBoat.fine("dist:" + distance + "speed:" + speed + " ttt:" + ticksToMove + " heading:" + heading);
 		
 		m._xDestination = x;
 		m._yDestination = y;
@@ -538,10 +534,10 @@ public class L2BoatInstance extends L2Character
 				lasty = y;
 			}
 			else if ((x - lastx) * (x - lastx) + (y - lasty) * (y - lasty) > 2250000) // 1500
-																						// *
-																						// 1500
-																						// =
-																						// 2250000
+			// *
+			// 1500
+			// =
+			// 2250000
 			{
 				check = true;
 				lastx = x;
@@ -803,16 +799,14 @@ public class L2BoatInstance extends L2Character
 	 * @param sysmess1_1
 	 * @param sysmessb_1
 	 */
-	public void setTrajet1(int idWaypoint1, int idWTicket1, int ntx1, int nty1,
-	        int ntz1, String idnpc1, String sysmess10_1, String sysmess5_1,
-	        String sysmess1_1, String sysmess0_1, String sysmessb_1)
+	public void setTrajet1(int idWaypoint1, int idWTicket1, int ntx1, int nty1, int ntz1, String idnpc1, String sysmess10_1,
+			String sysmess5_1, String sysmess1_1, String sysmess0_1, String sysmessb_1)
 	{
 		_t1 = new L2BoatTrajet(idWaypoint1, idWTicket1, ntx1, nty1, ntz1, idnpc1, sysmess10_1, sysmess5_1, sysmess1_1, sysmess0_1, sysmessb_1, _name);
 	}
 	
-	public void setTrajet2(int idWaypoint1, int idWTicket1, int ntx1, int nty1,
-	        int ntz1, String idnpc1, String sysmess10_1, String sysmess5_1,
-	        String sysmess1_1, String sysmess0_1, String sysmessb_1)
+	public void setTrajet2(int idWaypoint1, int idWTicket1, int ntx1, int nty1, int ntz1, String idnpc1, String sysmess10_1,
+			String sysmess5_1, String sysmess1_1, String sysmess0_1, String sysmessb_1)
 	{
 		_t2 = new L2BoatTrajet(idWaypoint1, idWTicket1, ntx1, nty1, ntz1, idnpc1, sysmess10_1, sysmess5_1, sysmess1_1, sysmess0_1, sysmessb_1, _name);
 	}
@@ -900,7 +894,7 @@ public class L2BoatInstance extends L2Character
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
 	/*
 	 * Allow setup of the boat AI only once 
 	 */
@@ -918,7 +912,8 @@ public class L2BoatInstance extends L2Character
 	{
 		@Override
 		public void detachAI()
-		{}
+		{
+		}
 	}
 	
 	/**

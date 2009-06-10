@@ -22,7 +22,6 @@ import net.sf.l2j.gameserver.model.L2Skill;
  */
 public class NobleSkillTable
 {
-	private static NobleSkillTable _instance;
 	private static L2Skill[] _nobleSkills;
 	
 	private NobleSkillTable()
@@ -40,13 +39,17 @@ public class NobleSkillTable
 	
 	public static NobleSkillTable getInstance()
 	{
-		if (_instance == null)
-			_instance = new NobleSkillTable();
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public L2Skill[] getNobleSkills()
 	{
 		return _nobleSkills;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final NobleSkillTable _instance = new NobleSkillTable();
 	}
 }

@@ -20,7 +20,6 @@ import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.skills.SkillsEngine;
-import net.sf.l2j.gameserver.templates.item.L2WeaponType;
 
 /**
  * This class ...
@@ -30,27 +29,24 @@ import net.sf.l2j.gameserver.templates.item.L2WeaponType;
 public class SkillTable
 {
 	//private static Logger _log = Logger.getLogger(SkillTable.class.getName());
-	private static SkillTable _instance;
-	
-	private Map<Integer, L2Skill> _skills;
+	private static Map<Integer, L2Skill> _skills = new FastMap<Integer, L2Skill>();
 	private boolean _initialized = true;
 	
 	public static SkillTable getInstance()
 	{
-		if (_instance == null)
-			_instance = new SkillTable();
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private SkillTable()
 	{
-		_skills = new FastMap<Integer, L2Skill>();
 		SkillsEngine.getInstance().loadAllSkills(_skills);
 	}
 	
-	public static void reload()
+	public void reload()
 	{
-		_instance = new SkillTable();
+		final Map<Integer, L2Skill> skills = new FastMap<Integer, L2Skill>();
+		SkillsEngine.getInstance().loadAllSkills(skills);
+		_skills = skills;
 	}
 	
 	public boolean isInitialized()
@@ -95,25 +91,6 @@ public class SkillTable
 		return level;
 	}
 	
-	private static final L2WeaponType[] weaponDbMasks =
-	{
-		L2WeaponType.ETC, L2WeaponType.BOW, L2WeaponType.POLE, L2WeaponType.DUALFIST, L2WeaponType.DUAL, L2WeaponType.BLUNT, L2WeaponType.SWORD, L2WeaponType.DAGGER, L2WeaponType.BIGSWORD, L2WeaponType.ROD, L2WeaponType.BIGBLUNT,
-		L2WeaponType.ANCIENT_SWORD, L2WeaponType.RAPIER, L2WeaponType.CROSSBOW
-	};
-	
-	public int calcWeaponsAllowed(int mask)
-	{
-		if (mask == 0)
-			return 0;
-		
-		int weaponsAllowed = 0;
-		
-		for (int i = 0; i < weaponDbMasks.length; i++)
-			if ((mask & (1 << i)) != 0)
-				weaponsAllowed |= weaponDbMasks[i].mask();
-		
-		return weaponsAllowed;
-	}
 	
 	/**
 	 * Returns an array with siege skills. If addNoble == true, will add also Advanced headquarters.
@@ -132,5 +109,11 @@ public class SkillTable
 		list.toArray(temp);
 		
 		return temp;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final SkillTable _instance = new SkillTable();
 	}
 }

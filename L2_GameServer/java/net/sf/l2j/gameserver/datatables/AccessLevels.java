@@ -33,8 +33,6 @@ public class AccessLevels
 {
 	/** The logger<br> */
 	private static Logger _log = Logger.getLogger(AccessLevels.class.getName());
-	/** The one and only instance of this class, retrievable by getInstance()<br> */
-	private static AccessLevels _instance = null;
 	/** Reserved master access level<br> */
 	public static final int _masterAccessLevelNum = Config.MASTERACCESS_LEVEL;
 	/** The master access level which can use everything<br> */
@@ -53,10 +51,7 @@ public class AccessLevels
 	 */
 	public static AccessLevels getInstance()
 	{
-		if (_instance == null)
-			_instance = new AccessLevels();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private AccessLevels()
@@ -100,17 +95,20 @@ public class AccessLevels
 				
 				if (accessLevel == _userAccessLevelNum)
 				{
-					_log.warning("AccessLevels: Access level with name " + name + " is using reserved user access level " + _userAccessLevelNum + ". Ignoring it!");
+					_log.warning("AccessLevels: Access level with name " + name + " is using reserved user access level "
+							+ _userAccessLevelNum + ". Ignoring it!");
 					continue;
 				}
 				else if (accessLevel == _masterAccessLevelNum)
 				{
-					_log.warning("AccessLevels: Access level with name " + name + " is using reserved master access level " + _masterAccessLevelNum + ". Ignoring it!");
+					_log.warning("AccessLevels: Access level with name " + name + " is using reserved master access level "
+							+ _masterAccessLevelNum + ". Ignoring it!");
 					continue;
 				}
 				else if (accessLevel < 0)
 				{
-					_log.warning("AccessLevels: Access level with name " + name + " is using banned access level state(below 0). Ignoring it!");
+					_log.warning("AccessLevels: Access level with name " + name
+							+ " is using banned access level state(below 0). Ignoring it!");
 					continue;
 				}
 				
@@ -215,5 +213,11 @@ public class AccessLevels
 	public void reloadAccessLevels()
 	{
 		loadAccessLevels();
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final AccessLevels _instance = new AccessLevels();
 	}
 }

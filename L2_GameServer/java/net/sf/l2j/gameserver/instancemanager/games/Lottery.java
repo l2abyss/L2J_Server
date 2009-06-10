@@ -35,7 +35,6 @@ public class Lottery
 	public static final long SECOND = 1000;
 	public static final long MINUTE = 60000;
 	
-	private static Lottery _instance;
 	protected static final Logger _log = Logger.getLogger(Lottery.class.getName());
 	
 	private static final String INSERT_LOTTERY = "INSERT INTO games(id, idnr, enddate, prize, newprize) VALUES (?, ?, ?, ?, ?)";
@@ -65,10 +64,7 @@ public class Lottery
 	
 	public static Lottery getInstance()
 	{
-		if (_instance == null)
-			_instance = new Lottery();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public int getId()
@@ -511,10 +507,7 @@ public class Lottery
 	
 	public long[] checkTicket(int id, int enchant, int type2)
 	{
-		long res[] =
-		{
-			0, 0
-		};
+		long res[] = { 0, 0 };
 		
 		Connection con = null;
 		PreparedStatement statement;
@@ -596,5 +589,11 @@ public class Lottery
 		}
 		
 		return res;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final Lottery _instance = new Lottery();
 	}
 }

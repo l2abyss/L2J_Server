@@ -28,17 +28,11 @@ public class ChatHandler
 {
 	private static Logger _log = Logger.getLogger(ChatHandler.class.getName());
 	
-	private static ChatHandler _instance;
-	
 	private FastMap<Integer, IChatHandler> _datatable;
 	
 	public static ChatHandler getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new ChatHandler();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	/**
@@ -81,5 +75,11 @@ public class ChatHandler
 	public int size()
 	{
 		return _datatable.size();
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final ChatHandler _instance = new ChatHandler();
 	}
 }

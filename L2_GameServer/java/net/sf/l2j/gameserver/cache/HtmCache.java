@@ -31,7 +31,6 @@ import net.sf.l2j.gameserver.util.Util;
 public class HtmCache
 {
 	private static Logger _log = Logger.getLogger(HtmCache.class.getName());
-	private static HtmCache _instance;
 	
 	private FastMap<Integer, String> _cache;
 	
@@ -40,13 +39,10 @@ public class HtmCache
 	
 	public static HtmCache getInstance()
 	{
-		if (_instance == null)
-			_instance = new HtmCache();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
-	public HtmCache()
+	private HtmCache()
 	{
 		_cache = new FastMap<Integer, String>();
 		reload();
@@ -216,5 +212,11 @@ public class HtmCache
 			return true;
 		
 		return false;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final HtmCache _instance = new HtmCache();
 	}
 }

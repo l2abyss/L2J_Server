@@ -47,23 +47,17 @@ public class Announcements
 {
 	private static Logger _log = Logger.getLogger(Announcements.class.getName());
 	
-	private static Announcements _instance;
 	private List<String> _announcements = new FastList<String>();
 	private List<List<Object>> _eventAnnouncements = new FastList<List<Object>>();
 	
-	public Announcements()
+	private Announcements()
 	{
 		loadAnnouncements();
 	}
 	
 	public static Announcements getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new Announcements();
-		}
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public void loadAnnouncements()
@@ -126,8 +120,7 @@ public class Announcements
 		for (int i = 0; i < _announcements.size(); i++)
 		{
 			StringUtil.append(replyMSG, "<table width=260><tr><td width=220>", _announcements.get(i), "</td><td width=40>"
-			        + "<button value=\"Delete\" action=\"bypass -h admin_del_announcement ", String.valueOf(i),
-			        "\" width=60 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr></table>");
+					+ "<button value=\"Delete\" action=\"bypass -h admin_del_announcement ", String.valueOf(i), "\" width=60 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr></table>");
 		}
 		adminReply.replace("%announces%", replyMSG.toString());
 		activeChar.sendPacket(adminReply);
@@ -237,7 +230,7 @@ public class Announcements
 		{
 			// Announce string to everyone on server
 			String text = command.substring(lengthToTrim);
-			Announcements.getInstance().announceToAll(text);
+			SingletonHolder._instance.announceToAll(text);
 		}
 		
 		// No body cares!
@@ -245,5 +238,11 @@ public class Announcements
 		{
 			// empty message.. ignore
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final Announcements _instance = new Announcements();
 	}
 }

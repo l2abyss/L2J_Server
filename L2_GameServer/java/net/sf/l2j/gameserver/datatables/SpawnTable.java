@@ -38,8 +38,6 @@ public class SpawnTable
 {
 	private static Logger _log = Logger.getLogger(SpawnTable.class.getName());
 	
-	private static final SpawnTable _instance = new SpawnTable();
-	
 	private Map<Integer, L2Spawn> _spawntable = new FastMap<Integer, L2Spawn>().setShared(true);
 	private int _npcSpawnCount;
 	private int _customSpawnCount;
@@ -48,7 +46,7 @@ public class SpawnTable
 	
 	public static SpawnTable getInstance()
 	{
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private SpawnTable()
@@ -284,7 +282,8 @@ public class SpawnTable
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("INSERT INTO " + spawnTable + "(id,count,npc_templateid,locx,locy,locz,heading,respawn_delay,loc_id) values(?,?,?,?,?,?,?,?,?)");
+				PreparedStatement statement = con.prepareStatement("INSERT INTO " + spawnTable
+						+ "(id,count,npc_templateid,locx,locy,locz,heading,respawn_delay,loc_id) values(?,?,?,?,?,?,?,?,?)");
 				statement.setInt(1, spawn.getId());
 				statement.setInt(2, spawn.getAmount());
 				statement.setInt(3, spawn.getNpcid());
@@ -356,7 +355,8 @@ public class SpawnTable
 				try
 				{
 					con = L2DatabaseFactory.getInstance().getConnection();
-					PreparedStatement statement = con.prepareStatement("DELETE FROM " + (spawn.isCustom() ? "custom_spawnlist" : "spawnlist") + " WHERE id=?");
+					PreparedStatement statement = con.prepareStatement("DELETE FROM "
+							+ (spawn.isCustom() ? "custom_spawnlist" : "spawnlist") + " WHERE id=?");
 					statement.setInt(1, spawn.getId());
 					statement.execute();
 					statement.close();
@@ -408,12 +408,19 @@ public class SpawnTable
 				}
 				else
 				{
-					activeChar.sendMessage(index + " - " + spawn.getTemplate().name + " (" + spawn.getId() + "): " + spawn.getLocx() + " " + spawn.getLocy() + " " + spawn.getLocz());
+					activeChar.sendMessage(index + " - " + spawn.getTemplate().name + " (" + spawn.getId() + "): " + spawn.getLocx() + " "
+							+ spawn.getLocy() + " " + spawn.getLocz());
 				}
 			}
 		}
 		
 		if (index == 0)
 			activeChar.sendMessage("No current spawns found.");
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final SpawnTable _instance = new SpawnTable();
 	}
 }

@@ -34,17 +34,12 @@ public class SummonItemsData
 	protected static final Logger _log = Logger.getLogger(SummonItemsData.class.getName());
 	private FastMap<Integer, L2SummonItem> _summonitems;
 	
-	private static SummonItemsData _instance;
-	
 	public static SummonItemsData getInstance()
 	{
-		if (_instance == null)
-			_instance = new SummonItemsData();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
-	public SummonItemsData()
+	private SummonItemsData()
 	{
 		_summonitems = new FastMap<Integer, L2SummonItem>();
 		
@@ -118,5 +113,11 @@ public class SummonItemsData
 			result[i++] = si.getItemId();
 		}
 		return result;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final SummonItemsData _instance = new SummonItemsData();
 	}
 }

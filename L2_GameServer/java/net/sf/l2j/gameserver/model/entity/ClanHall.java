@@ -222,7 +222,8 @@ public class ClanHall
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "Exception: ClanHall.updateFunctions(int type, int lvl, int lease, long rate, long time, boolean addNew): " + e.getMessage(), e);
+				_log.log(Level.SEVERE, "Exception: ClanHall.updateFunctions(int type, int lvl, int lease, long rate, long time, boolean addNew): "
+						+ e.getMessage(), e);
 			}
 			finally
 			{
@@ -237,7 +238,8 @@ public class ClanHall
 		}
 	}
 	
-	public ClanHall(int clanHallId, String name, int ownerId, int lease, String desc, String location, long paidUntil, int Grade, boolean paid)
+	public ClanHall(int clanHallId, String name, int ownerId, int lease, String desc, String location, long paidUntil, int Grade,
+			boolean paid)
 	{
 		_clanHallId = clanHallId;
 		_name = name;
@@ -402,7 +404,7 @@ public class ClanHall
 			if (door.getCurrentHp() <= 0)
 			{
 				door.decayMe(); // Kill current if not killed already
-				door = DoorTable.parseList(_doorDefault.get(i));
+				door = DoorTable.parseList(_doorDefault.get(i), false);
 				DoorTable.getInstance().putDoor(door); //Readd the new door to the DoorTable By Erb
 				if (isDoorWeak)
 					door.setCurrentHp(door.getMaxHp() / 2);
@@ -642,7 +644,8 @@ public class ClanHall
 						_paidUntil = System.currentTimeMillis() + _chRate;
 					ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CH_rental_fee", 57, getLease(), null, null);
 					if (Config.DEBUG)
-						_log.warning("deducted " + getLease() + " adena from " + getName() + " owner's cwh for ClanHall _paidUntil" + _paidUntil);
+						_log.warning("deducted " + getLease() + " adena from " + getName() + " owner's cwh for ClanHall _paidUntil"
+								+ _paidUntil);
 					ThreadPoolManager.getInstance().scheduleGeneral(new FeeTask(), _paidUntil - System.currentTimeMillis());
 					_paid = true;
 					updateDb();
@@ -668,9 +671,11 @@ public class ClanHall
 						sm.addNumber(getLease());
 						Clan.broadcastToOnlineMembers(sm);
 						if (System.currentTimeMillis() + (1000 * 60 * 60 * 24) <= _paidUntil + _chRate)
-							ThreadPoolManager.getInstance().scheduleGeneral(new FeeTask(), System.currentTimeMillis() + (1000 * 60 * 60 * 24));
+							ThreadPoolManager.getInstance().scheduleGeneral(new FeeTask(), System.currentTimeMillis()
+									+ (1000 * 60 * 60 * 24));
 						else
-							ThreadPoolManager.getInstance().scheduleGeneral(new FeeTask(), (_paidUntil + _chRate) - System.currentTimeMillis());
+							ThreadPoolManager.getInstance().scheduleGeneral(new FeeTask(), (_paidUntil + _chRate)
+									- System.currentTimeMillis());
 						
 					}
 				}

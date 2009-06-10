@@ -29,33 +29,32 @@ public class InstanceManager
 {
 	private final static Logger _log = Logger.getLogger(InstanceManager.class.getName());
 	private FastMap<Integer, Instance> _instanceList = new FastMap<Integer, Instance>();
-	private static InstanceManager _instance;
 	private int _dynamic = 300000;
-
+	
+	private InstanceManager()
+	{
+		_log.info("Initializing InstanceManager");
+		createWorld();
+	}
+	
 	public static final InstanceManager getInstance()
 	{
-		if (_instance == null)
-		{
-			_log.info("Initializing InstanceManager");
-			_instance = new InstanceManager();
-			_instance.createWorld();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
-
+	
 	private void createWorld()
 	{
 		Instance themultiverse = new Instance(-1);
 		themultiverse.setName("multiverse");
 		_instanceList.put(-1, themultiverse);
 		_log.info("Multiverse Instance created");
-
+		
 		Instance universe = new Instance(0);
 		universe.setName("universe");
 		_instanceList.put(0, universe);
 		_log.info("Universe Instance created");
 	}
-
+	
 	public void destroyInstance(int instanceid)
 	{
 		if (instanceid <= 0)
@@ -70,17 +69,17 @@ public class InstanceManager
 			_instanceList.remove(instanceid);
 		}
 	}
-
+	
 	public Instance getInstance(int instanceid)
 	{
 		return _instanceList.get(instanceid);
 	}
 	
-	public FastMap<Integer,Instance> getInstances()
+	public FastMap<Integer, Instance> getInstances()
 	{
 		return _instanceList;
 	}
-
+	
 	public int getPlayerInstance(int objectId)
 	{
 		for (Instance temp : _instanceList.values())
@@ -92,22 +91,22 @@ public class InstanceManager
 		// 0 is default instance aka the world
 		return 0;
 	}
-
+	
 	public boolean createInstance(int id)
 	{
 		if (getInstance(id) != null)
 			return false;
-
+		
 		Instance instance = new Instance(id);
 		_instanceList.put(id, instance);
 		return true;
 	}
-
+	
 	public boolean createInstanceFromTemplate(int id, String template) throws FileNotFoundException
 	{
 		if (getInstance(id) != null)
 			return false;
-
+		
 		Instance instance = new Instance(id);
 		instance.loadInstanceTemplate(template);
 		_instanceList.put(id, instance);
@@ -121,7 +120,7 @@ public class InstanceManager
 	 */
 	public int createDynamicInstance(String template)
 	{
-
+		
 		while (getInstance(_dynamic) != null)
 		{
 			_dynamic++;
@@ -146,5 +145,11 @@ public class InstanceManager
 		}
 		_instanceList.put(_dynamic, instance);
 		return _dynamic;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final InstanceManager _instance = new InstanceManager();
 	}
 }

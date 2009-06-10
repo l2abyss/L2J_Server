@@ -29,19 +29,13 @@ public class AdminCommandHandler
 {
 	private static Logger _log = Logger.getLogger(AdminCommandHandler.class.getName());
 	
-	private static AdminCommandHandler _instance;
-	
 	private Map<String, IAdminCommandHandler> _datatable;
 	
 	public static AdminCommandHandler getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new AdminCommandHandler();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
-
+	
 	private AdminCommandHandler()
 	{
 		_datatable = new FastMap<String, IAdminCommandHandler>();
@@ -76,5 +70,11 @@ public class AdminCommandHandler
 	public int size()
 	{
 		return _datatable.size();
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final AdminCommandHandler _instance = new AdminCommandHandler();
 	}
 }

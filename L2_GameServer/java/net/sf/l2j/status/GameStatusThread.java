@@ -714,7 +714,7 @@ public class GameStatusThread extends Thread
                 		else if(type.equals("skill"))
                 		{
                 			_print.print("Reloading skills... ");
-                			SkillTable.reload();
+                			SkillTable.getInstance().reload();
                 			_print.print("done\n");
                 		}
                 		else if(type.equals("npc"))

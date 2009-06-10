@@ -29,17 +29,11 @@ public class UserCommandHandler
 {
 	private static Logger _log = Logger.getLogger(UserCommandHandler.class.getName());
 	
-	private static UserCommandHandler _instance;
-	
 	private Map<Integer, IUserCommandHandler> _datatable;
 	
 	public static UserCommandHandler getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new UserCommandHandler();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private UserCommandHandler()
@@ -71,5 +65,11 @@ public class UserCommandHandler
 	public int size()
 	{
 		return _datatable.size();
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final UserCommandHandler _instance = new UserCommandHandler();
 	}
 }

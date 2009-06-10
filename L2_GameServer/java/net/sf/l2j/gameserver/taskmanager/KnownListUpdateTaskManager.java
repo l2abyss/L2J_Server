@@ -36,19 +36,15 @@ public class KnownListUpdateTaskManager
 	
 	// Do full update every FULL_UPDATE_TIMER * KNOWNLIST_UPDATE_INTERVAL
 	public static int _fullUpdateTimer = FULL_UPDATE_TIMER;
-	private static KnownListUpdateTaskManager _instance;
 	
-	public KnownListUpdateTaskManager()
+	private KnownListUpdateTaskManager()
 	{
 		ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(), 1000);
 	}
 	
 	public static KnownListUpdateTaskManager getInstance()
 	{
-		if (_instance == null)
-			_instance = new KnownListUpdateTaskManager();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public Object getSync()
@@ -114,7 +110,8 @@ public class KnownListUpdateTaskManager
 						
 					if (forgetObjects)
 					{
-						object.getKnownList().forgetObjects((object instanceof L2Playable || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate));
+						object.getKnownList().forgetObjects((object instanceof L2Playable
+								|| (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate));
 						continue;
 					}
 					if (object instanceof L2Playable || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate)
@@ -147,5 +144,11 @@ public class KnownListUpdateTaskManager
 				}
 			}
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final KnownListUpdateTaskManager _instance = new KnownListUpdateTaskManager();
 	}
 }

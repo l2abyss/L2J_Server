@@ -53,12 +53,10 @@ public final class TaskManager
 {
 	protected static final Logger _log = Logger.getLogger(TaskManager.class.getName());
 	
-	private static TaskManager _instance;
-	
-	protected static final String[] SQL_STATEMENTS =
-	{
-		"SELECT id,task,type,last_activation,param1,param2,param3 FROM global_tasks", "UPDATE global_tasks SET last_activation=? WHERE id=?", "SELECT id FROM global_tasks WHERE task=?",
-		"INSERT INTO global_tasks (task,type,last_activation,param1,param2,param3) VALUES(?,?,?,?,?,?)"
+	protected static final String[] SQL_STATEMENTS = {
+			"SELECT id,task,type,last_activation,param1,param2,param3 FROM global_tasks",
+			"UPDATE global_tasks SET last_activation=? WHERE id=?", "SELECT id FROM global_tasks WHERE task=?",
+			"INSERT INTO global_tasks (task,type,last_activation,param1,param2,param3) VALUES(?,?,?,?,?,?)"
 	};
 	
 	private final FastMap<Integer, Task> _tasks = new FastMap<Integer, Task>();
@@ -79,10 +77,7 @@ public final class TaskManager
 			type = ptype;
 			id = rset.getInt("id");
 			lastActivation = rset.getLong("last_activation");
-			params = new String[]
-			{
-				rset.getString("param1"), rset.getString("param2"), rset.getString("param3")
-			};
+			params = new String[] { rset.getString("param1"), rset.getString("param2"), rset.getString("param3") };
 		}
 		
 		public void run()
@@ -167,14 +162,10 @@ public final class TaskManager
 	
 	public static TaskManager getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new TaskManager();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
-	public TaskManager()
+	private TaskManager()
 	{
 		initializate();
 		startAllTasks();
@@ -433,5 +424,11 @@ public final class TaskManager
 		}
 		
 		return false;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final TaskManager _instance = new TaskManager();
 	}
 }

@@ -42,19 +42,14 @@ public class AttackStanceTaskManager
 	
 	protected Map<L2Character, Long> _attackStanceTasks = new FastMap<L2Character, Long>().setShared(true);
 	
-	private static AttackStanceTaskManager _instance;
-	
-	public AttackStanceTaskManager()
+	private AttackStanceTaskManager()
 	{
 		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new FightModeScheduler(), 0, 1000);
 	}
 	
 	public static AttackStanceTaskManager getInstance()
 	{
-		if (_instance == null)
-			_instance = new AttackStanceTaskManager();
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	public void addAttackStanceTask(L2Character actor)
@@ -114,8 +109,8 @@ public class AttackStanceTaskManager
 							if ((current - _attackStanceTasks.get(actor)) > 15000)
 							{
 								actor.broadcastPacket(new AutoAttackStop(actor.getObjectId()));
-								if (actor instanceof L2PcInstance && ((L2PcInstance)actor).getPet() != null)
-									((L2PcInstance)actor).getPet().broadcastPacket(new AutoAttackStop(((L2PcInstance)actor).getPet().getObjectId()));
+								if (actor instanceof L2PcInstance && ((L2PcInstance) actor).getPet() != null)
+									((L2PcInstance) actor).getPet().broadcastPacket(new AutoAttackStop(((L2PcInstance) actor).getPet().getObjectId()));
 								actor.getAI().setAutoAttacking(false);
 								_attackStanceTasks.remove(actor);
 							}
@@ -129,5 +124,11 @@ public class AttackStanceTaskManager
 				_log.warning(e.toString());
 			}
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final AttackStanceTaskManager _instance = new AttackStanceTaskManager();
 	}
 }

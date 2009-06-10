@@ -37,8 +37,6 @@ public class HelperBuffTable
 	
 	private static Logger _log = Logger.getLogger(HennaTable.class.getName());
 	
-	private static HelperBuffTable _instance;
-	
 	/** The table containing all Buff of the Newbie Helper */
 	private List<L2HelperBuff> _helperBuff;
 	
@@ -53,18 +51,14 @@ public class HelperBuffTable
 	 *  Used to generate message : "Only novice character of level ... or less can receive my support magic.") */
 	private int _magicClassHighestLevel = 1;
 	private int _physicClassHighestLevel = 1;
-
+	
 	private int _servitorLowestLevel = 100;
-
+	
 	private int _servitorHighestLevel = 1;
 	
 	public static HelperBuffTable getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new HelperBuffTable();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	/**
@@ -188,7 +182,6 @@ public class HelperBuffTable
 		return _magicClassHighestLevel;
 	}
 	
-	
 	/**
 	 * @return Returns the magicClassLowestLevel.
 	 */
@@ -227,5 +220,11 @@ public class HelperBuffTable
 	public int getServitorHighestLevel()
 	{
 		return _servitorHighestLevel;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final HelperBuffTable _instance = new HelperBuffTable();
 	}
 }

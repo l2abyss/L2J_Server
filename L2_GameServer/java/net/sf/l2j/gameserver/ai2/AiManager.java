@@ -38,7 +38,6 @@ import net.sf.l2j.gameserver.ai2.AiInstance.QueueEventRunner;
 public class AiManager
 {
 	protected static final Logger _log = Logger.getLogger(AiManager.class.getName());
-	private static AiManager _instance;
 	private List<AiInstance> _aiList;
 	private Map<Integer, AiInstance> _aiMap;
 	private ThreadPoolManager _tpm;
@@ -46,11 +45,7 @@ public class AiManager
 	
 	public static AiManager getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new AiManager();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private AiManager()
@@ -231,5 +226,11 @@ public class AiManager
 		{
 			return ids.isEmpty();
 		}
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final AiManager _instance = new AiManager();
 	}
 }

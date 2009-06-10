@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 public class QuestStateManager
 {
 	protected static final Logger _log = Logger.getLogger(QuestStateManager.class.getName());
+	
 	// =========================================================
 	// Schedule Task
 	public class ScheduleTimerTask implements Runnable
@@ -45,12 +46,11 @@ public class QuestStateManager
 	
 	// =========================================================
 	// Data Field
-	private static QuestStateManager _instance;
 	private List<QuestState> _questStates = new FastList<QuestState>();
 	
 	// =========================================================
 	// Constructor
-	public QuestStateManager()
+	private QuestStateManager()
 	{
 		ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTimerTask(), 60000);
 	}
@@ -96,9 +96,7 @@ public class QuestStateManager
 	// Property - Public
 	public static final QuestStateManager getInstance()
 	{
-		if (_instance == null)
-			_instance = new QuestStateManager();
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	/**
@@ -106,7 +104,7 @@ public class QuestStateManager
 	 */
 	public QuestState getQuestState(L2PcInstance player)
 	{
-		for (QuestState q: getQuestStates())
+		for (QuestState q : getQuestStates())
 		{
 			if (q.getPlayer() != null && q.getPlayer().getObjectId() == player.getObjectId())
 				return q;
@@ -123,5 +121,11 @@ public class QuestStateManager
 		if (_questStates == null)
 			_questStates = new FastList<QuestState>();
 		return _questStates;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final QuestStateManager _instance = new QuestStateManager();
 	}
 }

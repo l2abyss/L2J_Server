@@ -46,7 +46,6 @@ import net.sf.l2j.gameserver.util.Broadcast;
 public class Shutdown extends Thread
 {
 	private static Logger _log = Logger.getLogger(Shutdown.class.getName());
-	private static Shutdown _instance;
 	private static Shutdown _counterInstance = null;
 	
 	private int _secondsShut;
@@ -55,17 +54,14 @@ public class Shutdown extends Thread
 	public static final int GM_SHUTDOWN = 1;
 	public static final int GM_RESTART = 2;
 	public static final int ABORT = 3;
-	private static final String[] MODE_TEXT =
-	{
-		"SIGTERM", "shutting down", "restarting", "aborting"
-	};
+	private static final String[] MODE_TEXT = { "SIGTERM", "shutting down", "restarting", "aborting" };
 	
 	/**
 	 * This function starts a shutdown countdown from Telnet (Copied from Function startShutdown())
 	 *
-	 * @param ip            IP Which Issued shutdown command
-	 * @param seconds       seconds untill shutdown
-	 * @param restart       true if the server will restart after shutdown
+	 * @param ip IP Which Issued shutdown command
+	 * @param seconds seconds untill shutdown
+	 * @param restart true if the server will restart after shutdown
 	 */
 	private void SendServerQuit(int seconds)
 	{
@@ -125,7 +121,7 @@ public class Shutdown extends Thread
 	/**
 	 * This function aborts a running countdown
 	 *
-	 * @param IP            IP Which Issued shutdown command
+	 * @param IP IP Which Issued shutdown command
 	 */
 	public void telnetAbort(String IP)
 	{
@@ -143,7 +139,7 @@ public class Shutdown extends Thread
 	 * Default constucter is only used internal to create the shutdown-hook instance
 	 *
 	 */
-	public Shutdown()
+	private Shutdown()
 	{
 		_secondsShut = -1;
 		_shutdownMode = SIGTERM;
@@ -182,11 +178,7 @@ public class Shutdown extends Thread
 	 */
 	public static Shutdown getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new Shutdown();
-		}
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	/**
@@ -208,7 +200,7 @@ public class Shutdown extends Thread
 	@Override
 	public void run()
 	{
-		if (this == _instance)
+		if (this == SingletonHolder._instance)
 		{
 			// ensure all services are stopped
 			try
@@ -265,7 +257,7 @@ public class Shutdown extends Thread
 			}
 			
 			// server will quit, when this function ends.
-			if (_instance._shutdownMode == GM_RESTART)
+			if (SingletonHolder._instance._shutdownMode == GM_RESTART)
 			{
 				Runtime.getRuntime().halt(2);
 			}
@@ -283,11 +275,11 @@ public class Shutdown extends Thread
 			switch (_shutdownMode)
 			{
 				case GM_SHUTDOWN:
-					_instance.setMode(GM_SHUTDOWN);
+					SingletonHolder._instance.setMode(GM_SHUTDOWN);
 					System.exit(0);
 					break;
 				case GM_RESTART:
-					_instance.setMode(GM_RESTART);
+					SingletonHolder._instance.setMode(GM_RESTART);
 					System.exit(2);
 					break;
 			}
@@ -303,7 +295,8 @@ public class Shutdown extends Thread
 	 */
 	public void startShutdown(L2PcInstance activeChar, int seconds, boolean restart)
 	{
-		_log.warning("GM: " + activeChar.getName() + "(" + activeChar.getObjectId() + ") issued shutdown command. " + MODE_TEXT[_shutdownMode] + " in " + seconds + " seconds!");
+		_log.warning("GM: " + activeChar.getName() + "(" + activeChar.getObjectId() + ") issued shutdown command. "
+				+ MODE_TEXT[_shutdownMode] + " in " + seconds + " seconds!");
 		
 		if (restart)
 		{
@@ -357,7 +350,8 @@ public class Shutdown extends Thread
 	 */
 	public void abort(L2PcInstance activeChar)
 	{
-		_log.warning("GM: " + activeChar.getName() + "(" + activeChar.getObjectId() + ") issued shutdown ABORT. " + MODE_TEXT[_shutdownMode] + " has been stopped!");
+		_log.warning("GM: " + activeChar.getName() + "(" + activeChar.getObjectId() + ") issued shutdown ABORT. "
+				+ MODE_TEXT[_shutdownMode] + " has been stopped!");
 		if (_counterInstance != null)
 		{
 			_counterInstance._abort();
@@ -586,4 +580,9 @@ public class Shutdown extends Thread
 		}
 	}
 	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final Shutdown _instance = new Shutdown();
+	}
 }
