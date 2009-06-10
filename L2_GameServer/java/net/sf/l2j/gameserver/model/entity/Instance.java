@@ -233,6 +233,9 @@ public class Instance
 
 	public void removePlayers()
 	{
+		if (_players == null || _players.isEmpty())
+			return;
+
 		for (int objectId : _players)
 		{
 			ejectPlayer(objectId);
@@ -242,6 +245,9 @@ public class Instance
 
 	public void removeNpcs()
 	{
+		if (_npcs == null || _npcs.isEmpty())
+			return;
+
 		for (L2Npc mob : _npcs)
 		{
 			if (mob != null)
@@ -255,6 +261,9 @@ public class Instance
 	
 	public void removeDoors()
 	{
+		if (_doors == null || _doors.isEmpty())
+			return;
+
 		for (L2DoorInstance door: _doors)
 		{
 			if (door != null)
@@ -456,8 +465,7 @@ public class Instance
 				}
 			}
 		}
-		if (_CheckTimeUpTask != null)
-			_CheckTimeUpTask.cancel(true);
+		cancelTimer();
 		if (remaining >= 10000)
 			_CheckTimeUpTask = ThreadPoolManager.getInstance().scheduleGeneral(new CheckTimeUp(remaining), interval);
 		else
@@ -466,7 +474,8 @@ public class Instance
 
 	public void cancelTimer()
 	{
-		_CheckTimeUpTask.cancel(true);
+		if (_CheckTimeUpTask != null)
+			_CheckTimeUpTask.cancel(true);
 	}
 
 	public class CheckTimeUp implements Runnable
