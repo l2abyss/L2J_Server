@@ -5233,15 +5233,14 @@ public final class L2PcInstance extends L2Playable
 				dropLimit = Config.PLAYER_DROP_LIMIT;
 			}
 
-            int dropCount = 0;
-			while (dropPercent > 0 && Rnd.get(100) < dropPercent && dropCount < dropLimit)
+			if (dropPercent > 0 && Rnd.get(100) < dropPercent)
 			{
-                int itemDropPercent = 0;
-				List<Integer> nonDroppableList = new FastList<Integer>();
-				List<Integer> nonDroppableListPet = new FastList<Integer>();
+				int dropCount = 0;
 
-				nonDroppableList = Config.KARMA_LIST_NONDROPPABLE_ITEMS;
-				nonDroppableListPet = Config.KARMA_LIST_NONDROPPABLE_ITEMS;
+				int itemDropPercent = 0;
+
+				List<Integer> nonDroppableList = Config.KARMA_LIST_NONDROPPABLE_ITEMS;
+				List<Integer> nonDroppableListPet = Config.KARMA_LIST_NONDROPPABLE_ITEMS;
 
 				for (L2ItemInstance itemDrop : getInventory().getItems())
 				{
@@ -5260,7 +5259,7 @@ public final class L2PcInstance extends L2Playable
 					if (itemDrop.isEquipped())
 					{
 						// Set proper chance according to Item type of equipped Item
-                        itemDropPercent = itemDrop.getItem().getType2() == L2Item.TYPE2_WEAPON ? dropEquipWeapon : dropEquip;
+						itemDropPercent = itemDrop.getItem().getType2() == L2Item.TYPE2_WEAPON ? dropEquipWeapon : dropEquip;
 						getInventory().unEquipItemInSlotAndRecord(itemDrop.getLocationSlot());
 					}
 					else itemDropPercent = dropItem; // Item in inventory
@@ -5275,8 +5274,8 @@ public final class L2PcInstance extends L2Playable
 						else
 							_log.warning(getName() + " dropped id = " + itemDrop.getItemId() + ", count = " + itemDrop.getCount());
 
-						dropCount++;
-						break;
+						if (++dropCount >= dropLimit)
+							break;
 					}
 				}
 			}
