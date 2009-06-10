@@ -36,8 +36,8 @@ public final class RelationChanged extends L2GameServerPacket
 	public static final int RELATION_ATTACKER     = 0x00400; // true when attacker
 	public static final int RELATION_ALLY         = 0x00800; // blue siege icon, cannot have if red
 	public static final int RELATION_ENEMY        = 0x01000; // true when red icon, doesn't matter with blue
-	public static final int RELATION_MUTUAL_WAR   = 0x08000; // double fist
-	public static final int RELATION_1SIDED_WAR   = 0x10000; // single fist
+	public static final int RELATION_1SIDED_WAR   = 0x08000; // single fist
+	public static final int RELATION_MUTUAL_WAR   = 0x04000; // double fist
 
 	private static final String _S__CE_RELATIONCHANGED = "[S] ce RelationChanged";
 
