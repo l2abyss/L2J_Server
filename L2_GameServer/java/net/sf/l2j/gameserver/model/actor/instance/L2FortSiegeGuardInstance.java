@@ -70,9 +70,15 @@ public class L2FortSiegeGuardInstance extends L2Attackable
     @Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
-    	boolean isFort = (attacker != null && getFort() != null && getFort().getFortId() > 0 
+    	if (!(attacker instanceof L2Playable))
+    		return false;
+
+    	L2PcInstance player = attacker.getActingPlayer();
+
+    	boolean isFort = (player != null
+    			&& getFort() != null && getFort().getFortId() > 0 
                 && getFort().getSiege().getIsInProgress()
-                && !getFort().getSiege().checkIsDefender(attacker.getActingPlayer().getClan()));
+                && !getFort().getSiege().checkIsDefender(player.getClan()));
         
         // Attackable during siege by all except defenders
 		return isFort;
