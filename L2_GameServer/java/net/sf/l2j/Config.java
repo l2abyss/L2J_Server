@@ -447,6 +447,7 @@ public final class Config
 	public static long ALT_OLY_VPERIOD;
 	public static int ALT_OLY_CLASSED;
 	public static int ALT_OLY_NONCLASSED;
+	public static int ALT_OLY_REG_DISPLAY;
 	public static int ALT_OLY_BATTLE_REWARD_ITEM;
 	public static int ALT_OLY_CLASSED_RITEM_C;
 	public static int ALT_OLY_NONCLASSED_RITEM_C;
@@ -1438,6 +1439,7 @@ public final class Config
 					ALT_OLY_VPERIOD = Long.parseLong(General.getProperty("AltOlyVPeriod","86400000"));
 					ALT_OLY_CLASSED = Integer.parseInt(General.getProperty("AltOlyClassedParticipants","5"));
 					ALT_OLY_NONCLASSED = Integer.parseInt(General.getProperty("AltOlyNonClassedParticipants","9"));
+					ALT_OLY_REG_DISPLAY = Integer.parseInt(General.getProperty("AltOlyRegistrationDisplayNumber","100"));
 					ALT_OLY_BATTLE_REWARD_ITEM = Integer.parseInt(General.getProperty("AltOlyBattleRewItem","6651"));
 					ALT_OLY_CLASSED_RITEM_C = Integer.parseInt(General.getProperty("AltOlyClassedRewItemCount","50"));
 					ALT_OLY_NONCLASSED_RITEM_C = Integer.parseInt(General.getProperty("AltOlyNonClassedRewItemCount","30"));

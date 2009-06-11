@@ -43,6 +43,8 @@ public class L2OlympiadManagerInstance extends L2NpcInstance
 	private static Logger _logOlymp = Logger.getLogger(L2OlympiadManagerInstance.class.getName());
 
 	private static final int GATE_PASS = Config.ALT_OLY_COMP_RITEM;
+	private static final String FEWER_THAN = "Fewer than" + String.valueOf(Config.ALT_OLY_REG_DISPLAY);
+	private static final String MORE_THAN = "More than" + String.valueOf(Config.ALT_OLY_REG_DISPLAY);
 
 	public L2OlympiadManagerInstance (int objectId, L2NpcTemplate template)
 	{
@@ -84,9 +86,18 @@ public class L2OlympiadManagerInstance extends L2NpcInstance
 						nonClassed = array[1];
 					}
 					html.setFile(Olympiad.OLYMPIAD_HTML_PATH + "noble_registered.htm");
-					html.replace("%listClassed%", String.valueOf(classed < 100 ? "Fewer than 100" : "More than 100"));
-					html.replace("%listNonClassedTeam%", String.valueOf("Fewer than 100"));
-					html.replace("%listNonClassed%", String.valueOf(nonClassed < 100 ? "Fewer than 100" : "More than 100"));
+					if (Config.ALT_OLY_REG_DISPLAY > 0)
+					{
+						html.replace("%listClassed%", classed < Config.ALT_OLY_REG_DISPLAY ? FEWER_THAN : MORE_THAN);
+						html.replace("%listNonClassedTeam%", FEWER_THAN);
+						html.replace("%listNonClassed%", nonClassed < Config.ALT_OLY_REG_DISPLAY ? FEWER_THAN : MORE_THAN);
+					}
+					else
+					{
+						html.replace("%listClassed%", String.valueOf(classed));
+						html.replace("%listNonClassedTeam%", "0");
+						html.replace("%listNonClassed%", String.valueOf(nonClassed));
+					}
 					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
 					break;
