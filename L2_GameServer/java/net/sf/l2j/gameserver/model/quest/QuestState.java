@@ -391,6 +391,7 @@ public final class QuestState
 			}
 			catch (Exception e)
 			{
+				e.printStackTrace();
 			}
 		}
 	}
@@ -433,6 +434,7 @@ public final class QuestState
 			}
 			catch (Exception e)
 			{
+				e.printStackTrace();
 			}
 		}
 		return result;
@@ -467,6 +469,7 @@ public final class QuestState
 			}
 			catch (Exception e)
 			{
+				e.printStackTrace();
 			}
 		}
 	}
