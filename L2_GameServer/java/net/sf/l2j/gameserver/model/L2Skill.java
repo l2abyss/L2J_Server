@@ -110,15 +110,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
         TARGET_OWNER_PET,
         TARGET_GROUND
     }
-
-    //elements
-    public final static int ELEMENT_FIRE = 1;
-    public final static int ELEMENT_WATER = 2;
-    public final static int ELEMENT_WIND = 3;
-    public final static int ELEMENT_EARTH = 4;
-    public final static int ELEMENT_HOLY = 5;
-    public final static int ELEMENT_DARK = 6;
-
     
     //conditional values
     public final static int COND_RUNNING = 0x0001;
@@ -228,6 +219,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     
     private final boolean _ispotion;
     private final int _element;
+    private final int _elementPower;
 
     private final Stats _stat;
 
@@ -438,7 +430,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _effectId = set.getInteger("effectId", 0);
         _effectLvl = set.getInteger("effectLevel", 0);
 
-        _element = set.getInteger("element", 0);
+        _element = set.getInteger("element", -1);
+        _elementPower = set.getInteger("elementPower", 0);
 
         _condition = set.getInteger("condition", 0);
         _conditionValue = set.getInteger("conditionValue", 0);
@@ -510,6 +503,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
     public final int getElement()
     {
         return _element;
+    }
+
+    public final int getElementPower()
+    {
+    	return _elementPower;
     }
 
     /**

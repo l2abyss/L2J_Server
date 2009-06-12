@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.network.serverpackets;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.instancemanager.CursedWeaponsManager;
+import net.sf.l2j.gameserver.model.Elementals;
 import net.sf.l2j.gameserver.model.L2Transformation;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -332,12 +333,12 @@ public final class UserInfo extends L2GameServerPacket
         int attackAttribute = _activeChar.getAttackElement();
 		writeH(attackAttribute);
 		writeH(_activeChar.getAttackElementValue(attackAttribute));
-        writeH(_activeChar.getDefAttrFire());
-        writeH(_activeChar.getDefAttrWater());
-        writeH(_activeChar.getDefAttrWind());
-        writeH(_activeChar.getDefAttrEarth());
-        writeH(_activeChar.getDefAttrHoly());
-        writeH(_activeChar.getDefAttrUnholy());
+        writeH(_activeChar.getDefenseElementValue(Elementals.FIRE));
+        writeH(_activeChar.getDefenseElementValue(Elementals.WATER));
+        writeH(_activeChar.getDefenseElementValue(Elementals.WIND));
+        writeH(_activeChar.getDefenseElementValue(Elementals.EARTH));
+        writeH(_activeChar.getDefenseElementValue(Elementals.HOLY));
+        writeH(_activeChar.getDefenseElementValue(Elementals.DARK));
         
         writeD(_activeChar.getAgathionId());
         

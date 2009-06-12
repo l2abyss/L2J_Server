@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.model.actor.stat;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.model.Elementals;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2PetDataTable;
 import net.sf.l2j.gameserver.model.L2Skill;
@@ -692,36 +693,6 @@ public class CharStat
 		return (int) calcStat(Stats.MP_CONSUME, skill.getMpInitialConsume(), null, skill);
 	}
 
-	public double getElementAttributeFire()
-	{
-		return (int) calcStat(Stats.FIRE_RES, _activeChar.getTemplate().baseFireRes, null, null);
-	}
-
-	public double getElementAttributeWater()
-	{
-		return (int) calcStat(Stats.WATER_RES, _activeChar.getTemplate().baseWaterRes, null, null);
-	}
-
-	public double getElementAttributeEarth()
-	{
-		return (int) calcStat(Stats.EARTH_RES, _activeChar.getTemplate().baseEarthRes, null, null);
-	}
-
-	public double getElementAttributeWind()
-	{
-		return (int) calcStat(Stats.WIND_RES, _activeChar.getTemplate().baseWindRes, null, null);
-	}
-
-	public double getElementAttributeHoly()
-	{
-		return (int) calcStat(Stats.HOLY_RES, _activeChar.getTemplate().baseHolyRes, null, null);
-	}
-
-	public double getElementAttributeUnholy()
-	{
-		return (int) calcStat(Stats.DARK_RES, _activeChar.getTemplate().baseDarkRes, null, null);
-	}
-
 	public int getAttackElement()
 	{
 		L2ItemInstance weaponInstance = _activeChar.getActiveWeaponInstance();
@@ -730,7 +701,7 @@ public class CharStat
 			return weaponInstance.getAttackElementType();
 		
 		// temp fix starts
-		double tempVal =0,stats[] = { 0, 0, 0, 0, 0, 0 };
+		int tempVal =0, stats[] = { 0, 0, 0, 0, 0, 0 };
 
 		int returnVal = -2;
 		stats[0] = (int) calcStat(Stats.FIRE_POWER, _activeChar.getTemplate().baseFire, null, null);
@@ -762,18 +733,39 @@ public class CharStat
 	{
 		switch (attackAttribute)
 		{
-		case 0:
+		case Elementals.FIRE:
 			return (int) calcStat(Stats.FIRE_POWER, _activeChar.getTemplate().baseFire, null, null);
-		case 1:
+		case Elementals.WATER:
 			return (int) calcStat(Stats.WATER_POWER, _activeChar.getTemplate().baseWater, null, null);
-		case 2:
+		case Elementals.WIND:
 			return (int) calcStat(Stats.WIND_POWER, _activeChar.getTemplate().baseWind, null, null);
-		case 3:
+		case Elementals.EARTH:
 			return (int) calcStat(Stats.EARTH_POWER, _activeChar.getTemplate().baseEarth, null, null);
-		case 4:
+		case Elementals.HOLY:
 			return (int) calcStat(Stats.HOLY_POWER, _activeChar.getTemplate().baseHoly, null, null);
-		case 5:
+		case Elementals.DARK:
 			return (int) calcStat(Stats.DARK_POWER, _activeChar.getTemplate().baseDark, null, null);
+		default:
+			return 0;
+		}
+	}
+	
+	public int getDefenseElementValue(int defenseAttribute)
+	{
+		switch (defenseAttribute)
+		{
+		case Elementals.FIRE:
+			return (int) calcStat(Stats.FIRE_RES, _activeChar.getTemplate().baseFireRes, null, null);
+		case Elementals.WATER:
+			return (int) calcStat(Stats.WATER_RES, _activeChar.getTemplate().baseWaterRes, null, null);
+		case Elementals.WIND:
+			return (int) calcStat(Stats.WIND_RES, _activeChar.getTemplate().baseWindRes, null, null);
+		case Elementals.EARTH:
+			return (int) calcStat(Stats.EARTH_RES, _activeChar.getTemplate().baseEarthRes, null, null);
+		case Elementals.HOLY:
+			return (int) calcStat(Stats.HOLY_RES, _activeChar.getTemplate().baseHolyRes, null, null);
+		case Elementals.DARK:
+			return (int) calcStat(Stats.DARK_RES, _activeChar.getTemplate().baseDarkRes, null, null);
 		default:
 			return 0;
 		}

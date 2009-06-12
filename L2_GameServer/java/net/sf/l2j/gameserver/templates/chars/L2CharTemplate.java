@@ -79,12 +79,12 @@ public class L2CharTemplate
 	public final double baseMovementVuln;
 	public final double baseConfusionVuln;
 	public final double baseSleepVuln;
-	public final double baseFireRes;
-	public final double baseWindRes;
-	public final double baseWaterRes;
-	public final double baseEarthRes;
-	public final double baseHolyRes;
-	public final double baseDarkRes;
+	public double baseFireRes;
+	public double baseWindRes;
+	public double baseWaterRes;
+	public double baseEarthRes;
+	public double baseHolyRes;
+	public double baseDarkRes;
 	public final double baseCritVuln;
 	
 	public final boolean isUndead;

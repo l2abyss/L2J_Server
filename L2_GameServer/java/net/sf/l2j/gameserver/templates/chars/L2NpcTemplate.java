@@ -195,6 +195,14 @@ public final class L2NpcTemplate extends L2CharTemplate
 			AI = AIType.HEALER;
 		else
 			AI = AIType.FIGHTER;
+
+		// all NPCs has 20 resistance to all attributes
+		baseFireRes += 20;
+		baseWindRes += 20;
+		baseWaterRes += 20;
+		baseEarthRes += 20;
+		baseHolyRes += 20;
+		baseDarkRes += 20;
 	}
 	
 	public void addTeachInfo(ClassId classId)

@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
+import net.sf.l2j.gameserver.model.Elementals;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 /**
@@ -255,12 +256,12 @@ public class GMViewCharacterInfo extends L2GameServerPacket
         int attackAttribute = _activeChar.getAttackElement();
 		writeH(attackAttribute);
 		writeH(_activeChar.getAttackElementValue(attackAttribute));
-        writeH(_activeChar.getDefAttrFire());
-        writeH(_activeChar.getDefAttrWater());
-        writeH(_activeChar.getDefAttrWind());
-        writeH(_activeChar.getDefAttrEarth());
-        writeH(_activeChar.getDefAttrHoly());
-        writeH(_activeChar.getDefAttrUnholy());
+        writeH(_activeChar.getDefenseElementValue(Elementals.FIRE));
+        writeH(_activeChar.getDefenseElementValue(Elementals.WATER));
+        writeH(_activeChar.getDefenseElementValue(Elementals.WIND));
+        writeH(_activeChar.getDefenseElementValue(Elementals.EARTH));
+        writeH(_activeChar.getDefenseElementValue(Elementals.HOLY));
+        writeH(_activeChar.getDefenseElementValue(Elementals.DARK));
         writeD(_activeChar.getFame());
 	}
 
