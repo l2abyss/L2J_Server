@@ -43,7 +43,7 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 {
 	private static Logger _log = Logger.getLogger(L2LoginClient.class.getName());
 
-	public static enum LoginClientState { CONNECTED, AUTHED_GG, AUTHED_LOGIN}
+	public static enum LoginClientState { CONNECTED, AUTHED_GG, AUTHED_LOGIN};
 
 	private LoginClientState _state;
 

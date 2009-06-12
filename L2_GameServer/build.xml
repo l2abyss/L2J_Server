@@ -30,7 +30,9 @@
 	<property name="build.dist.login" location="${build.dist}/login"/>
 	<property name="build.dist.game" location="${build.dist}/gameserver"/>
     <property name="build.dist.libs" location="${build.dist}/libs"/>
-    
+	<property name="build.dist.languages" location="${build.dist}/languages"/>
+	<property name="build.dist.images" location="${build.dist}/images"/>
+	
     <path id="classpath">
         <fileset dir="${lib}">
             <include name="c3p0-0.9.1.2.jar"/>
@@ -122,8 +124,21 @@
 			</fileset>
 		</copy>
     	
+    	<copy todir="${build.dist.languages}">
+    	     <fileset dir="${src}/../languages">
+    	         <include name="**/*"/>
+    	     </fileset>
+    	</copy>
+    	
+        <copy todir="${build.dist.images}">
+             <fileset dir="${src}/../images">
+                 <include name="**/*"/>
+             </fileset>
+        </copy>
+    	
         <copy todir="${build.dist}">
             <fileset dir="${basedir}">
+                <include name="changes.txt"/>
                 <include name="LICENSE.txt"/>
                 <include name="README.txt"/>
             </fileset>
@@ -142,12 +157,18 @@
                 <include name="LoginServer_loop.sh"/>
                 <include name="startLoginServer.*"/>
             	<include name="RegisterGameServer.*"/>
+            	<include name="GSRegister.exe"/>
+                <include name="L2JConfig.exe"/>
+            	<include name="L2JConfig.sh"/>
             </fileset>
         </copy>
     	<copy todir="${build.dist.game}">
             <fileset dir="dist">
                 <include name="GameServer_loop.sh"/>
                 <include name="startGameServer.*"/>
+                <include name="L2JConfig.exe"/>
+            	 <include name="L2JConfig.sh"/>
+            	<include name="hibernate.cfg.xml"/>
             </fileset>
         </copy>
     	
@@ -254,7 +275,6 @@
 
     <target name="clean"
             description="Remove the output directories">
-
         <delete dir="${build}"/>
     </target>
 </project>

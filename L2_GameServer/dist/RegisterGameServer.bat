@@ -1,2 +1,3 @@
-@java -Djava.util.logging.config.file=console.cfg -cp ./../libs/*;l2jserver.jar net.sf.l2j.gsregistering.GameServerRegister
-@pause
+@echo off
+javaw -Djava.util.logging.config.file=console.cfg -cp ./../libs/*;l2jserver.jar net.sf.l2j.gsregistering.BaseGameServerRegister
+exit

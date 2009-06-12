@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.io.UTF8StreamReader;
@@ -236,7 +237,7 @@ public class GameServerTable
 		}
 		catch (SQLException e)
 		{
-			_log.warning("SQL error while saving gameserver: " + e);
+			_log.log(Level.SEVERE, "SQL error while saving gameserver.", e);
 		}
 		finally
 		{
@@ -273,7 +274,9 @@ public class GameServerTable
 	private String hexToString(byte[] hex)
 	{
 		if (hex == null)
+		{
 			return "null";
+		}
 		return new BigInteger(hex).toString(16);
 	}
 	

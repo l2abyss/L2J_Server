@@ -25,6 +25,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -79,6 +80,7 @@ public class L2LoginServer
 		{
 			is = new FileInputStream(new File(LOG_NAME));
 			LogManager.getLogManager().readConfiguration(is);
+			is.close();
 		}
 		catch (IOException e)
 		{
@@ -89,9 +91,12 @@ public class L2LoginServer
 		{
 			try
 			{
-				is.close();
+				if (is != null)
+				{
+					is.close();
+				}
 			}
-			catch (Exception e)
+			catch (IOException e)
 			{
 				e.printStackTrace();
 			}
@@ -107,7 +112,7 @@ public class L2LoginServer
 		}
 		catch (SQLException e)
 		{
-			_log.severe("FATAL: Failed initializing database. Reason: "+e.getMessage());
+			_log.log(Level.SEVERE, "FATAL: Failed initializing database. Reason: "+e.getMessage(), e);
 			if (Config.DEVELOPER)
 			{
 				e.printStackTrace();
@@ -121,7 +126,7 @@ public class L2LoginServer
 		}
 		catch (GeneralSecurityException e)
 		{
-			_log.severe("FATAL: Failed initializing LoginController. Reason: "+e.getMessage());
+			_log.log(Level.SEVERE, "FATAL: Failed initializing LoginController. Reason: "+e.getMessage(), e);
 			if (Config.DEVELOPER)
 			{
 				e.printStackTrace();
@@ -135,7 +140,7 @@ public class L2LoginServer
 		}
 		catch (GeneralSecurityException e)
 		{
-			_log.severe("FATAL: Failed to load GameServerTable. Reason: "+e.getMessage());
+			_log.log(Level.SEVERE, "FATAL: Failed to load GameServerTable. Reason: "+e.getMessage(), e);
 			if (Config.DEVELOPER)
 			{
 				e.printStackTrace();
@@ -144,7 +149,7 @@ public class L2LoginServer
 		}
 		catch (SQLException e)
 		{
-			_log.severe("FATAL: Failed to load GameServerTable. Reason: "+e.getMessage());
+			_log.log(Level.SEVERE, "FATAL: Failed to load GameServerTable. Reason: "+e.getMessage(), e);
 			if (Config.DEVELOPER)
 			{
 				e.printStackTrace();
@@ -161,12 +166,12 @@ public class L2LoginServer
 			{
 				bindAddress = InetAddress.getByName(Config.LOGIN_BIND_ADDRESS);
 			}
-			catch (UnknownHostException e1)
+			catch (UnknownHostException e)
 			{
-				_log.severe("WARNING: The LoginServer bind address is invalid, using all avaliable IPs. Reason: "+e1.getMessage());
+				_log.warning("WARNING: The LoginServer bind address is invalid, using all avaliable IPs. Reason: "+e.getMessage());
 				if (Config.DEVELOPER)
 				{
-					e1.printStackTrace();
+					e.printStackTrace();
 				}
 			}
 		}
@@ -182,7 +187,7 @@ public class L2LoginServer
 		}
 		catch (IOException e)
 		{
-			_log.severe("FATAL: Failed to open Selector. Reason: "+e.getMessage());
+			_log.log(Level.SEVERE, "FATAL: Failed to open Selector. Reason: "+e.getMessage(), e);
 			if (Config.DEVELOPER)
 			{
 				e.printStackTrace();
@@ -198,7 +203,7 @@ public class L2LoginServer
 		}
 		catch (IOException e)
 		{
-			_log.severe("FATAL: Failed to start the Game Server Listener. Reason: "+e.getMessage());
+			_log.log(Level.SEVERE, "FATAL: Failed to start the Game Server Listener. Reason: "+e.getMessage(), e);
 			if (Config.DEVELOPER)
 			{
 				e.printStackTrace();
@@ -215,7 +220,7 @@ public class L2LoginServer
 			}
 			catch (IOException e)
 			{
-				_log.severe("Failed to start the Telnet Server. Reason: "+e.getMessage());
+				_log.warning("Failed to start the Telnet Server. Reason: "+e.getMessage());
 				if (Config.DEVELOPER)
 				{
 					e.printStackTrace();
@@ -233,7 +238,7 @@ public class L2LoginServer
 		}
 		catch (IOException e)
 		{
-			_log.severe("FATAL: Failed to open server socket. Reason: "+e.getMessage());
+			_log.log(Level.SEVERE, "FATAL: Failed to open server socket. Reason: "+e.getMessage(), e);
 			if (Config.DEVELOPER)
 			{
 				e.printStackTrace();
