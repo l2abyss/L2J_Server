@@ -14,9 +14,12 @@
  */
 package net.sf.l2j.gameserver.skills.effects;
 
+import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.model.L2CharPosition;
 import net.sf.l2j.gameserver.model.L2Effect;
+import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FortCommanderInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FortSiegeGuardInstance;
@@ -119,8 +122,17 @@ public class EffectFear extends L2Effect
 		
 		posX += _dX * FEAR_RANGE;
 		posY += _dY * FEAR_RANGE;
+		
+		if (Config.GEODATA > 0)
+		{
+			Location destiny = GeoData.getInstance().moveCheck(getEffected().getX(), getEffected().getY(), getEffected().getZ(), posX, posY, posZ, getEffected().getInstanceId());
+			posX = destiny.getX();
+			posY = destiny.getY();
+		}
+		
 		if (!(getEffected() instanceof L2PetInstance))
 			getEffected().setRunning();
+		
 		getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(posX, posY, posZ, 0));
 		return true;
 	}
