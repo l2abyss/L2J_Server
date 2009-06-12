@@ -133,6 +133,8 @@ public final class RequestExEnchantSkillInfo extends L2GameClientPacket
             {
                 for (List<EnchantSkillDetail> esd : enchantLearn.getEnchantRoutes())
                 {
+                	if (esd == null)
+                		continue;
                     // add first level (+1) of all routes
                     asi.addEnchantSkillDetail(activeChar, esd.get(0));
                 }
