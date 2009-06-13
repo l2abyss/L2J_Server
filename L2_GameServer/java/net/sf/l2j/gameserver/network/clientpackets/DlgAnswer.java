@@ -52,9 +52,9 @@ public final class DlgAnswer extends L2GameClientPacket
 			getClient().getActiveChar().teleportAnswer(_answer, _requesterId);
 		else if (_messageId == SystemMessageId.S1.getId() && Config.L2JMOD_ALLOW_WEDDING)
 			getClient().getActiveChar().EngageAnswer(_answer);
-		else if (_messageId == 1140 )
+		else if (_messageId == SystemMessageId.WOULD_YOU_LIKE_TO_OPEN_THE_GATE.getId())
 			getClient().getActiveChar().gatesAnswer(_answer, 1);
-		else if (_messageId == 1141)
+		else if (_messageId == SystemMessageId.WOULD_YOU_LIKE_TO_CLOSE_THE_GATE.getId())
 			getClient().getActiveChar().gatesAnswer(_answer, 0);
 	}
 
