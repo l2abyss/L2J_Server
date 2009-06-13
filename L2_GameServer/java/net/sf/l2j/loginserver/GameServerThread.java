@@ -568,7 +568,7 @@ public class GameServerThread extends Thread
 	 * @param ipAddress
 	 * @return
 	 */
-	public static boolean isBannedGameserverIP(@SuppressWarnings("unused") String ipAddress)
+	public static boolean isBannedGameserverIP(String ipAddress)
 	{
 		// TODO Auto-generated method stub
 		return false;
