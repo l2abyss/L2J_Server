@@ -23,6 +23,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.datatables.HeroSkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
+import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.model.actor.L2Attackable;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
@@ -36,6 +37,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
+import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
@@ -1512,7 +1514,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 							if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
 								continue;
 
-							if (onlyFirst == false)
+							if (!onlyFirst)
 								targetList.add(obj);
 							else
 								return new L2Character[] { obj };
@@ -1608,7 +1610,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 							if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
 								continue;
 							
-							if (onlyFirst == false)
+							if (!onlyFirst)
 								targetList.add(obj);
 							else
 								return new L2Character[] { obj };
@@ -1704,7 +1706,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 							if (!GeoData.getInstance().canSeeTarget(activeChar, obj))
 								continue;
 							
-							if (onlyFirst == false)
+							if (!onlyFirst)
 								targetList.add(obj);
 							else
 								return new L2Character[] { obj };
@@ -2169,7 +2171,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                     return _emptyTargetList;
                 }
 
-                if (onlyFirst == false) targetList.add(target);
+                if (!onlyFirst) targetList.add(target);
                 else return new L2Character[] {target};
 
                 int radius = getSkillRadius();
@@ -2321,7 +2323,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
                     if (targetType != SkillTargetType.TARGET_CORPSE_ALLY)
                     {
-                        if (onlyFirst == false) targetList.add(player);
+                        if (!onlyFirst) targetList.add(player);
                         else return new L2Character[] {player};
                     }
                     
@@ -2354,7 +2356,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 										if ((targetType != SkillTargetType.TARGET_CORPSE_ALLY)
 												&& !(((L2PcInstance) newTarget).getPet().isDead())
 												&& player.checkPvpSkill(newTarget, this)
-												&& onlyFirst == false)
+												&& !onlyFirst)
 											targetList.add(((L2PcInstance) newTarget).getPet());
 
 								if (targetType == SkillTargetType.TARGET_CORPSE_ALLY)
@@ -2377,7 +2379,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 								if (!player.checkPvpSkill(newTarget, this))
 									continue;
 								
-								if (onlyFirst == false) targetList.add((L2Character) newTarget);
+								if (!onlyFirst) targetList.add((L2Character) newTarget);
 								else return new L2Character[] { (L2Character) newTarget };
 								
 							}
@@ -2405,7 +2407,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
                     if (targetType != SkillTargetType.TARGET_CORPSE_CLAN)
                     {
-                        if (onlyFirst == false) targetList.add(player);
+                        if (!onlyFirst) targetList.add(player);
                         else return new L2Character[] {player};
                     }
 
@@ -2433,7 +2435,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                         		if (Util.checkIfInRange(radius, activeChar, newTarget.getPet(), true))
                         			if ((targetType != SkillTargetType.TARGET_CORPSE_CLAN) && !(newTarget.getPet().isDead())
                         					&& player.checkPvpSkill(newTarget, this)
-									        && onlyFirst == false)
+									        && !onlyFirst)
                         				targetList.add(newTarget.getPet());
 
                             if (targetType == SkillTargetType.TARGET_CORPSE_CLAN)
@@ -2453,7 +2455,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                             // Don't add this target if this is a Pc->Pc pvp casting and pvp condition not met
                             if (!player.checkPvpSkill(newTarget, this)) continue;
 
-                            if (onlyFirst == false) targetList.add(newTarget);
+                            if (!onlyFirst) targetList.add(newTarget);
                             else return new L2Character[] {newTarget};
 
                         }
@@ -2494,14 +2496,16 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 if (target != null && target.isDead())
                 {
                     L2PcInstance player = null;
-
-                    if (activeChar instanceof L2PcInstance) player = (L2PcInstance) activeChar;
+                    if (activeChar instanceof L2PcInstance)
+                    	player = (L2PcInstance) activeChar;
+                    
                     L2PcInstance targetPlayer = null;
-
-                    if (target instanceof L2PcInstance) targetPlayer = (L2PcInstance) target;
+                    if (target instanceof L2PcInstance)
+                    	targetPlayer = (L2PcInstance) target;
+                    
                     L2PetInstance targetPet = null;
-
-                    if (target instanceof L2PetInstance) targetPet = (L2PetInstance) target;
+                    if (target instanceof L2PetInstance)
+                    	targetPet = (L2PetInstance) target;
 
                     if (player != null && (targetPlayer != null || targetPet != null))
                     {
@@ -2509,15 +2513,27 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
                         if (getSkillType() == L2SkillType.RESURRECT)
                         {
-                            // check target is not in a active siege zone
-                        	if (target.isInsideZone(L2Character.ZONE_SIEGE))
-                            {
-                                condGood = false;
-                                player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_BE_RESURRECTED_DURING_SIEGE));
-                            }
+                        	//check target is not in a active siege zone
+            				Castle castle = null;
+            				
+            				if (targetPlayer != null)
+            					castle = CastleManager.getInstance().getCastle(targetPlayer.getX(), targetPlayer.getY(), targetPlayer.getZ());
+            				else
+            					castle = CastleManager.getInstance().getCastle(targetPet.getOwner().getX(), targetPet.getOwner().getY(), targetPet.getOwner().getZ());
+            				
+            				if (castle != null && castle.getSiege().getIsInProgress())
+            				{
+            					condGood = false;
+            					activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_BE_RESURRECTED_DURING_SIEGE));
+            				}
 
                             if (targetPlayer != null)
                             {
+                            	if (targetPlayer.isFestivalParticipant()) // Check to see if the current player target is in a festival.
+            					{
+            						condGood = false;
+            						activeChar.sendMessage("You may not resurrect participants in a festival.");
+            					}
                             	if (targetPlayer.isReviveRequested())
                             	{
                             		if (targetPlayer.isRevivingPet())
@@ -2531,15 +2547,21 @@ public abstract class L2Skill implements IChanceSkillTrigger
                             {
                                 if (targetPet.getOwner() != player)
                                 {
-                                    condGood = false;
-                                    player.sendMessage("You are not the owner of this pet");
+                                	if (targetPet.getOwner().isReviveRequested())
+            						{
+            							if (targetPet.getOwner().isRevivingPet())
+            								player.sendPacket(new SystemMessage(SystemMessageId.RES_HAS_ALREADY_BEEN_PROPOSED)); // Resurrection is already been proposed.
+            							else
+            								player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_RES_PET2)); // A pet cannot be resurrected while it's owner is in the process of resurrecting.
+            							condGood = false;
+            						}
                                 }
                             }
                         }
 
                         if (condGood)
                         {
-                            if (onlyFirst == false)
+                            if (!onlyFirst)
                             {
                                 targetList.add(target);
                                 return targetList.toArray(new L2Object[targetList.size()]);
@@ -2575,7 +2597,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 	}
                 }
 
-                if (onlyFirst == false)
+                if (!onlyFirst)
                 {
                     targetList.add(target);
                     return targetList.toArray(new L2Object[targetList.size()]);
@@ -2591,7 +2613,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                     return _emptyTargetList;
                 }
 
-                if (onlyFirst == false) targetList.add(target);
+                if (!onlyFirst) targetList.add(target);
                 else return new L2Character[] {target};
 
                 boolean srcInArena = (activeChar.isInsideZone(L2Character.ZONE_PVP) && !activeChar.isInsideZone(L2Character.ZONE_SIEGE));
@@ -2687,7 +2709,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                     return _emptyTargetList;
                 }
 
-                if (onlyFirst == false)
+                if (!onlyFirst)
                 {
                     targetList.add(target);
                     return targetList.toArray(new L2Object[targetList.size()]);
@@ -2705,7 +2727,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                         return _emptyTargetList;
                     }
 
-                    if (onlyFirst == false) targetList.add(target);
+                    if (!onlyFirst) targetList.add(target);
                     else return new L2Character[] {target};
 
                     return targetList.toArray(new L2Object[targetList.size()]);
@@ -2725,7 +2747,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 {
                     cha = target;
 
-                    if (onlyFirst == false) targetList.add(cha); // Add target to target list
+                    if (!onlyFirst) targetList.add(cha); // Add target to target list
                     else return new L2Character[] {cha};
 
                 }
@@ -2753,7 +2775,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 							if (!GeoData.getInstance().canSeeTarget(activeChar, target))
 								continue;
 							
-							if (onlyFirst == false)
+							if (!onlyFirst)
 								targetList.add(obj);
 							else
 								return new L2Character[] { obj };
