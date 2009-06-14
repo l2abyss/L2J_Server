@@ -20,20 +20,20 @@ package net.sf.l2j.gameserver.templates.item;
 
 public enum L2EtcItemType
 {
-	ARROW(0, "Arrow"),
-	MATERIAL(1, "Material"),
-	PET_COLLAR(2, "PetCollar"),
-	POTION(3, "Potion"),
-	RECEIPE(4, "Receipe"),
-	SCROLL(5, "Scroll"),
-	QUEST(6, "Quest"),
-	MONEY(7, "Money"),
-	OTHER(8, "Other"),
-	SPELLBOOK(9, "Spellbook"),
-	SEED(10, "Seed"),
-	SHOT(11, "Shot"),
-	HERB(12, "Herb"),
-	BOLT(13, "Bolt");
+	ARROW(1, "Arrow"),
+	BOLT(2, "Bolt"),
+	MATERIAL(3, "Material"),
+	PET_COLLAR(4, "PetCollar"),
+	POTION(5, "Potion"),
+	RECEIPE(6, "Receipe"),
+	SCROLL(7, "Scroll"),
+	QUEST(8, "Quest"),
+	MONEY(9, "Money"),
+	OTHER(10, "Other"),
+	SPELLBOOK(11, "Spellbook"),
+	SEED(12, "Seed"),
+	SHOT(13, "Shot"),
+	HERB(14, "Herb");
 	
 	final int _id;
 	final String _name;
@@ -55,7 +55,7 @@ public enum L2EtcItemType
 	 */
 	public int mask()
 	{
-		return 1 << (_id + 21);
+		return 1 << (_id + 24);
 	}
 	
 	/**
