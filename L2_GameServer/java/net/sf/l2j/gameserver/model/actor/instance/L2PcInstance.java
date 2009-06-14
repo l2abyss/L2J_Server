@@ -12475,17 +12475,17 @@ public final class L2PcInstance extends L2Playable
 		int itemConsumeCount = summonSkill.getTargetConsume();
 		if (itemConsumeId != 0 && itemConsumeCount != 0)
 		{
-			String ItemName = ItemTable.getInstance().getTemplate(itemConsumeId).getName();
+			//Delete by rocknow
 			if (targetChar.getInventory().getInventoryItemCount(itemConsumeId, 0) < itemConsumeCount)
 			{
     			SystemMessage sm =  new SystemMessage(SystemMessageId.S1_REQUIRED_FOR_SUMMONING);
-    			sm.addString(ItemName);
+    			sm.addItemName(summonSkill.getTargetConsumeId());
     			targetChar.sendPacket(sm);
 				return;
 			}
 			targetChar.getInventory().destroyItemByItemId("Consume", itemConsumeId, itemConsumeCount, summonerChar, targetChar);
-			SystemMessage sm = new SystemMessage(SystemMessageId.S1_HAS_DISAPPEARED);
-			sm.addString(ItemName);
+			SystemMessage sm = new SystemMessage(SystemMessageId.S1_DISAPPEARED);
+			sm.addItemName(summonSkill.getTargetConsumeId());
 			targetChar.sendPacket(sm);
 		}
 		targetChar.teleToLocation(summonerChar.getX(), summonerChar.getY(), summonerChar.getZ(), true);
