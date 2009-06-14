@@ -184,10 +184,10 @@ public abstract class Inventory extends ItemContainer
 	{
 		public void notifyUnequiped(int slot, L2ItemInstance item)
 		{
-			if (slot != PAPERDOLL_LRHAND)
+			if (slot != PAPERDOLL_RHAND)
 				return;
 
-			if (Config.ASSERT) assert null == getPaperdollItem(PAPERDOLL_LRHAND);
+			if (Config.ASSERT) assert null == getPaperdollItem(PAPERDOLL_RHAND);
 
 			if (item.getItemType() == L2WeaponType.CROSSBOW)
 			{
@@ -200,10 +200,10 @@ public abstract class Inventory extends ItemContainer
 
 		public void notifyEquiped(int slot, L2ItemInstance item)
 		{
-			if (slot != PAPERDOLL_LRHAND)
+			if (slot != PAPERDOLL_RHAND)
 				return;
 
-			if (Config.ASSERT) assert item == getPaperdollItem(PAPERDOLL_LRHAND);
+			if (Config.ASSERT) assert item == getPaperdollItem(PAPERDOLL_RHAND);
 
 			if (item.getItemType() == L2WeaponType.CROSSBOW)
 			{
@@ -1457,27 +1457,33 @@ public abstract class Inventory extends ItemContainer
 	 */
 	public L2ItemInstance findArrowForBow(L2Item bow)
 	{
-		int arrowsId = 0;
+		L2ItemInstance arrow = null;
 
 		switch (bow.getItemGradeSPlus())
 		{
 			default: 
-			case L2Item.CRYSTAL_NONE:	 arrowsId = 17;
+			case L2Item.CRYSTAL_NONE:
+				arrow = getItemByItemId(17);
 				break; // Wooden arrow
-			case L2Item.CRYSTAL_D:			arrowsId = 1341;
+			case L2Item.CRYSTAL_D:
+				arrow = (arrow = getItemByItemId(1341)) != null ? arrow : getItemByItemId(22067);
 				break; // Bone arrow
-			case L2Item.CRYSTAL_C:			arrowsId = 1342;
+			case L2Item.CRYSTAL_C:
+				arrow = (arrow = getItemByItemId(1342)) != null ? arrow : getItemByItemId(22068);
 				break; // Fine steel arrow
-			case L2Item.CRYSTAL_B:			arrowsId = 1343;
+			case L2Item.CRYSTAL_B:
+				arrow = (arrow = getItemByItemId(1343)) != null ? arrow : getItemByItemId(22069);
 				break; // Silver arrow
-			case L2Item.CRYSTAL_A:			arrowsId = 1344;
+			case L2Item.CRYSTAL_A:
+				arrow = (arrow = getItemByItemId(1344)) != null ? arrow : getItemByItemId(22070);
 				break; // Mithril arrow
-			case L2Item.CRYSTAL_S:			arrowsId = 1345;
+			case L2Item.CRYSTAL_S:
+				arrow = (arrow = getItemByItemId(1345)) != null ? arrow : getItemByItemId(22071);
 				break; // Shining arrow
 		}
 
 		// Get the L2ItemInstance corresponding to the item identifier and return it
-		return getItemByItemId(arrowsId);
+		return arrow;
 	}
 
 	/**
@@ -1487,27 +1493,33 @@ public abstract class Inventory extends ItemContainer
 	 */
 	public L2ItemInstance findBoltForCrossBow(L2Item crossbow)
 	{
-		int boltsId = 0;
+		L2ItemInstance bolt = null;
 
 		switch (crossbow.getItemGradeSPlus())
 		{
 			default: 
-			case L2Item.CRYSTAL_NONE:	 boltsId = 9632;
+			case L2Item.CRYSTAL_NONE:
+				bolt = getItemByItemId(9632);
 				break; // Wooden Bolt
-			case L2Item.CRYSTAL_D:			boltsId = 9633;
+			case L2Item.CRYSTAL_D:
+				bolt = (bolt = getItemByItemId(9633)) != null ? bolt : getItemByItemId(22144);
 				break; // Bone Bolt
-			case L2Item.CRYSTAL_C:			boltsId = 9634;
+			case L2Item.CRYSTAL_C:
+				bolt = (bolt = getItemByItemId(9634)) != null ? bolt : getItemByItemId(22145);
 				break; // Steel Bolt
-			case L2Item.CRYSTAL_B:			boltsId = 9635;
+			case L2Item.CRYSTAL_B:
+				bolt = (bolt = getItemByItemId(9635)) != null ? bolt : getItemByItemId(22146);
 				break; // Silver Bolt
-			case L2Item.CRYSTAL_A:			boltsId = 9636;
+			case L2Item.CRYSTAL_A:
+				bolt = (bolt = getItemByItemId(9636)) != null ? bolt : getItemByItemId(22147);
 				break; // Mithril Bolt
-			case L2Item.CRYSTAL_S:			boltsId = 9637;
+			case L2Item.CRYSTAL_S:
+				bolt = (bolt = getItemByItemId(9637)) != null ? bolt : getItemByItemId(22148);
 				break; // Shining Bolt
 		}
 
 		// Get the L2ItemInstance corresponding to the item identifier and return it
-		return getItemByItemId(boltsId);
+		return bolt;
 	}
 
 	/**
