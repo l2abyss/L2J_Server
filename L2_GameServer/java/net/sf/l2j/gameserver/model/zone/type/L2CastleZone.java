@@ -17,7 +17,10 @@ package net.sf.l2j.gameserver.model.zone.type;
 import javolution.util.FastList;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.MapRegionTable;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
+import net.sf.l2j.gameserver.model.L2Effect;
+import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeSummonInstance;
@@ -121,6 +124,32 @@ public class L2CastleZone extends L2ZoneType
 	@Override
 	public void onDieInside(L2Character character)
 	{
+		if (getCastle() != null && getCastle().getSiege().getIsInProgress())
+		{
+			// debuff participants only if they die inside siege zone
+			if (character instanceof L2PcInstance && ((L2PcInstance) character).getClan() != null)
+			{
+				int lvl = 1;
+				for (L2Effect effect: character.getAllEffects())
+				{
+					if (effect != null && effect.getSkill().getId() == 5660)
+					{
+						lvl = lvl+effect.getLevel();
+						if (lvl > 5)
+							lvl = 5;
+						break;
+					}
+				}
+				L2Skill skill;
+				if (getCastle().getSiege().getAttackerClans().contains(((L2PcInstance) character).getClan())
+						|| getCastle().getSiege().getDefenderClans().contains(((L2PcInstance) character).getClan()))
+				{
+					skill = SkillTable.getInstance().getInfo(5660, lvl);
+					if (skill != null)
+						skill.getEffects(character, character);
+				}
+			}
+		}
 	}
 	
 	@Override

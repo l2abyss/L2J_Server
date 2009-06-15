@@ -1318,6 +1318,8 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 				{
 					if (Config.CL_SET_SIEGE_TIME_LIST.contains("day"))
 						getCastle().getSiegeDate().set(Calendar.DAY_OF_WEEK, _preDay);
+					else
+						getCastle().getSiegeDate().set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 					if (Config.CL_SET_SIEGE_TIME_LIST.contains("hour"))
 						getCastle().getSiegeDate().set(Calendar.HOUR_OF_DAY, _preHour);
 					if (Config.CL_SET_SIEGE_TIME_LIST.contains("minute"))
