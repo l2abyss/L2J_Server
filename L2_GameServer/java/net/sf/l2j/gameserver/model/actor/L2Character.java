@@ -6856,17 +6856,17 @@ public abstract class L2Character extends L2Object
 		_fusionSkill = fb;
 	}
 
-	public int getAttackElement()
+	public byte getAttackElement()
 	{
 		return getStat().getAttackElement();
 	}
 
-	public int getAttackElementValue(int attackAttribute)
+	public int getAttackElementValue(byte attackAttribute)
 	{
 		return getStat().getAttackElementValue(attackAttribute);
 	}
 
-	public int getDefenseElementValue(int defenseAttribute)
+	public int getDefenseElementValue(byte defenseAttribute)
 	{
 		return getStat().getDefenseElementValue(defenseAttribute);
 	}

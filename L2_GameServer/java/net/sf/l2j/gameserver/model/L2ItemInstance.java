@@ -947,7 +947,7 @@ public final class L2ItemInstance extends L2Object
 		return _elementals;
 	}
 
-	public int getAttackElementType()
+	public byte getAttackElementType()
 	{
 		if (isWeapon() && _elementals != null)
 			return _elementals.getElement();

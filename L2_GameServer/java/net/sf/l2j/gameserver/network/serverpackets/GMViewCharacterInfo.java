@@ -253,7 +253,7 @@ public class GMViewCharacterInfo extends L2GameServerPacket
         writeD(_activeChar.getAppearance().getNameColor());
         writeD(_activeChar.getAppearance().getTitleColor());
         
-        int attackAttribute = _activeChar.getAttackElement();
+        byte attackAttribute = _activeChar.getAttackElement();
 		writeH(attackAttribute);
 		writeH(_activeChar.getAttackElementValue(attackAttribute));
         writeH(_activeChar.getDefenseElementValue(Elementals.FIRE));

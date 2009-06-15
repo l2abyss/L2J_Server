@@ -220,7 +220,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final int _effectLvl; // normal effect level
     
     private final boolean _ispotion;
-    private final int _element;
+    private final byte _element;
     private final int _elementPower;
 
     private final Stats _stat;
@@ -432,7 +432,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _effectId = set.getInteger("effectId", 0);
         _effectLvl = set.getInteger("effectLevel", 0);
 
-        _element = set.getInteger("element", -1);
+        _element = set.getByte("element", (byte)-1);
         _elementPower = set.getInteger("elementPower", 0);
 
         _condition = set.getInteger("condition", 0);
@@ -502,7 +502,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
         return _skillType;
     }
 
-    public final int getElement()
+    public final byte getElement()
     {
         return _element;
     }

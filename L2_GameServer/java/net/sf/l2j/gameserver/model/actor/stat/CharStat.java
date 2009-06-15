@@ -693,7 +693,7 @@ public class CharStat
 		return (int) calcStat(Stats.MP_CONSUME, skill.getMpInitialConsume(), null, skill);
 	}
 
-	public int getAttackElement()
+	public byte getAttackElement()
 	{
 		L2ItemInstance weaponInstance = _activeChar.getActiveWeaponInstance();
 		// 1st order - weapon element
@@ -703,7 +703,7 @@ public class CharStat
 		// temp fix starts
 		int tempVal =0, stats[] = { 0, 0, 0, 0, 0, 0 };
 
-		int returnVal = -2;
+		byte returnVal = -2;
 		stats[0] = (int) calcStat(Stats.FIRE_POWER, _activeChar.getTemplate().baseFire, null, null);
 		stats[1] = (int) calcStat(Stats.WATER_POWER, _activeChar.getTemplate().baseWater, null, null);
 		stats[2] = (int) calcStat(Stats.WIND_POWER, _activeChar.getTemplate().baseWind, null, null);
@@ -711,7 +711,7 @@ public class CharStat
 		stats[4] = (int) calcStat(Stats.HOLY_POWER, _activeChar.getTemplate().baseHoly, null, null);
 		stats[5] = (int) calcStat(Stats.DARK_POWER, _activeChar.getTemplate().baseDark, null, null);
 
-		for (int x = 0; x < 6; x++)
+		for (byte x = 0; x < 6; x++)
 		{
 			if (stats[x] > tempVal)
 			{
@@ -729,7 +729,7 @@ public class CharStat
 		*/
 	}
 
-	public int getAttackElementValue(int attackAttribute)
+	public int getAttackElementValue(byte attackAttribute)
 	{
 		switch (attackAttribute)
 		{
@@ -750,7 +750,7 @@ public class CharStat
 		}
 	}
 	
-	public int getDefenseElementValue(int defenseAttribute)
+	public int getDefenseElementValue(byte defenseAttribute)
 	{
 		switch (defenseAttribute)
 		{

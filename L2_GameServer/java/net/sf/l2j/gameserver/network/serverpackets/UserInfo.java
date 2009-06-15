@@ -330,7 +330,7 @@ public final class UserInfo extends L2GameServerPacket
         // T1 Starts
         writeD(_activeChar.getTransformationId());
         
-        int attackAttribute = _activeChar.getAttackElement();
+        byte attackAttribute = _activeChar.getAttackElement();
 		writeH(attackAttribute);
 		writeH(_activeChar.getAttackElementValue(attackAttribute));
         writeH(_activeChar.getDefenseElementValue(Elementals.FIRE));
