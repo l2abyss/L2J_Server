@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -613,8 +614,8 @@ public final class Config
 	public static int KARMA_PK_LIMIT;
 	public static String KARMA_NONDROPPABLE_PET_ITEMS;
 	public static String KARMA_NONDROPPABLE_ITEMS;
-	public static List<Integer> KARMA_LIST_NONDROPPABLE_PET_ITEMS = new FastList<Integer>();
-	public static List<Integer> KARMA_LIST_NONDROPPABLE_ITEMS = new FastList<Integer>();
+	public static int[] KARMA_LIST_NONDROPPABLE_PET_ITEMS;
+	public static int[] KARMA_LIST_NONDROPPABLE_ITEMS;
 
 
 	//--------------------------------------------------
@@ -1858,16 +1859,23 @@ public final class Config
 					KARMA_PK_LIMIT = Integer.parseInt(pvpSettings.getProperty("MinimumPKRequiredToDrop", "5"));
 					KARMA_NONDROPPABLE_PET_ITEMS = pvpSettings.getProperty("ListOfPetItems", "2375,3500,3501,3502,4422,4423,4424,4425,6648,6649,6650,9882");
 					KARMA_NONDROPPABLE_ITEMS = pvpSettings.getProperty("ListOfNonDroppableItems", "57,1147,425,1146,461,10,2368,7,6,2370,2369,6842,6611,6612,6613,6614,6615,6616,6617,6618,6619,6620,6621,7694,8181,5575,7694,9388,9389,9390");
-					KARMA_LIST_NONDROPPABLE_PET_ITEMS = new FastList<Integer>();
-					for (String id : KARMA_NONDROPPABLE_PET_ITEMS.split(","))
-					{
-						KARMA_LIST_NONDROPPABLE_PET_ITEMS.add(Integer.parseInt(id));
-					}
-					KARMA_LIST_NONDROPPABLE_ITEMS = new FastList<Integer>();
-					for (String id : KARMA_NONDROPPABLE_ITEMS.split(","))
-					{
-						KARMA_LIST_NONDROPPABLE_ITEMS.add(Integer.parseInt(id));
-					}
+					
+					String[] array = KARMA_NONDROPPABLE_PET_ITEMS.split(",");
+					KARMA_LIST_NONDROPPABLE_PET_ITEMS = new int[array.length];
+					
+					for (int i = 0; i < array.length; i++)
+						KARMA_LIST_NONDROPPABLE_PET_ITEMS[i] = Integer.parseInt(array[i]);
+					
+					array = KARMA_NONDROPPABLE_ITEMS.split(",");
+					KARMA_LIST_NONDROPPABLE_ITEMS = new int[array.length];
+					
+					for (int i = 0; i < array.length; i++)
+						KARMA_LIST_NONDROPPABLE_ITEMS[i] = Integer.parseInt(array[i]);
+					
+					// sorting so binarySearch can be used later
+					Arrays.sort(KARMA_LIST_NONDROPPABLE_PET_ITEMS);
+					Arrays.sort(KARMA_LIST_NONDROPPABLE_ITEMS);
+					
 					PVP_NORMAL_TIME = Integer.parseInt(pvpSettings.getProperty("PvPVsNormalTime", "120000"));
 					PVP_PVP_TIME = Integer.parseInt(pvpSettings.getProperty("PvPVsPvPTime", "60000"));
 				}
