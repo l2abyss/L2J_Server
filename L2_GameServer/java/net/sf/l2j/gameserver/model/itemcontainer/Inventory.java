@@ -780,15 +780,20 @@ public abstract class Inventory extends ItemContainer
 		// Adjust item quantity and create new instance to drop
 		if (item.getCount() > count)
 		{
-			item.changeCount(process, -count, actor, reference);
-			item.setLastChange(L2ItemInstance.MODIFIED);
-			item.updateDatabase();
-			
-			item = ItemTable.getInstance().createItem(process, item.getItemId(), count, actor, reference);
+			synchronized (item)
+			{
+				if (!_items.contains(item))
+					return null;
 
-			item.updateDatabase();
-			refreshWeight();
-			return item;
+				item.changeCount(process, -count, actor, reference);
+				item.setLastChange(L2ItemInstance.MODIFIED);
+				item.updateDatabase();
+				
+				item = ItemTable.getInstance().createItem(process, item.getItemId(), count, actor, reference);
+				item.updateDatabase();
+				refreshWeight();
+				return item;
+			}
 		}
 		// Directly drop entire item
 		else return dropItem(process, item, actor, reference);
