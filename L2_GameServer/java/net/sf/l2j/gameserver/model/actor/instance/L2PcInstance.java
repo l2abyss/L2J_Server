@@ -11061,6 +11061,16 @@ public final class L2PcInstance extends L2Playable
 			}
 		}
 		
+		// TvT Event removal
+		try
+		{
+			TvTEvent.onLogout(this);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+
 		// Update database with items in its inventory and remove them from the world
 		try
 		{
