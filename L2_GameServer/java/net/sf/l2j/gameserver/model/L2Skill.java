@@ -2366,7 +2366,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 									// Siege battlefield resurrect has been made possible for participants
 									if (getSkillType() == L2SkillType.RESURRECT)
 									{
-										if (((L2PcInstance) newTarget).isInsideZone(L2Character.ZONE_SIEGE) && ((L2PcInstance) newTarget).getSiegeState() == 0)
+										if (((L2PcInstance) newTarget).isInsideZone(L2Character.ZONE_SIEGE) && !((L2PcInstance) newTarget).isInSiege())
 													continue;
 									}
 								}
