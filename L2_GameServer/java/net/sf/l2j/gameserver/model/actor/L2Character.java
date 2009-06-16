@@ -5260,20 +5260,24 @@ public abstract class L2Character extends L2Object
                             absorbDamage = maxCanAbsorb; // Can't absord more than max hp
 
                         if (absorbDamage > 0)
-                        {
-                            setCurrentHp(getCurrentHp() + absorbDamage);
-
-                            // Custom messages - nice but also more network load
-    						/*
-                            if (this instanceof L2PcInstance)
-                                ((L2PcInstance)this).sendMessage("You absorbed " + absorbDamage + " damage.");
-                            else if (this instanceof L2Summon)
-                                ((L2Summon)this).getOwner().sendMessage("Summon absorbed " + absorbDamage + " damage.");
-                            else if (Config.DEBUG)
-                                _log.info(getName() + " absorbed " + absorbDamage + " damage.");
-                            */
-                        }
+                        	setCurrentHp(getCurrentHp() + absorbDamage);
 					}
+					
+					// Absorb MP from the damage inflicted
+					absorbPercent = getStat().calcStat(Stats.ABSORB_MANA_DAMAGE_PERCENT, 0, null, null);
+					
+					if (absorbPercent > 0)
+					{
+						int maxCanAbsorb = (int) (getMaxMp() - getCurrentMp());
+						int absorbDamage = (int) (absorbPercent / 100. * damage);
+						
+						if (absorbDamage > maxCanAbsorb)
+							absorbDamage = maxCanAbsorb; // Can't absord more than max hp
+							
+						if (absorbDamage > 0)
+							setCurrentMp(getCurrentMp() + absorbDamage);
+					}
+					
 				}
 
                 // Notify AI with EVT_ATTACKED
