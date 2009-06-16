@@ -14,7 +14,8 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-import javolution.util.FastList;
+import java.util.List;
+
 import net.sf.l2j.gameserver.instancemanager.CastleManorManager.CropProcure;
 import net.sf.l2j.gameserver.model.L2Manor;
 
@@ -46,30 +47,31 @@ import net.sf.l2j.gameserver.model.L2Manor;
 public class ExShowCropInfo extends L2GameServerPacket
 {
 	private static final String _S__FE_1C_EXSHOWSEEDINFO = "[S] FE:24 ExShowCropInfo";
-	private FastList<CropProcure> _crops;
+	private List<CropProcure> _crops;
 	private int _manorId;
 
-    public ExShowCropInfo(int manorId, FastList<CropProcure> crops)
-    {
+	public ExShowCropInfo(int manorId, List<CropProcure> crops)
+	{
 		_manorId = manorId;
 		_crops = crops;
-		if (_crops == null)
-        {
-			_crops = new FastList<CropProcure>();
-		}
-    }
+	}
 
 	@Override
-    protected void writeImpl()
-    {
+	protected void writeImpl()
+	{
 		writeC(0xFE);     // Id
 		writeH(0x24);     // SubId
 		writeC(0);
 		writeD(_manorId); // Manor ID
 		writeD(0);
+		if (_crops == null)
+		{
+			writeD(0);
+			return;
+		}
 		writeD(_crops.size());
 		for (CropProcure crop : _crops)
-        {
+		{
 			writeD(crop.getId());          // Crop id
 			writeQ(crop.getAmount());      // Buy residual
 			writeQ(crop.getStartAmount()); // Buy
@@ -81,13 +83,11 @@ public class ExShowCropInfo extends L2GameServerPacket
 			writeC(1); // rewrad 2 Type
 			writeD(L2Manor.getInstance().getRewardItem(crop.getId(),2));    // Rewrad 2 Type Item Id
 		}
-    }
+	}
 
 	@Override
-    public String getType()
-    {
+	public String getType()
+	{
 		return _S__FE_1C_EXSHOWSEEDINFO;
-    }
-
-
+	}
 }

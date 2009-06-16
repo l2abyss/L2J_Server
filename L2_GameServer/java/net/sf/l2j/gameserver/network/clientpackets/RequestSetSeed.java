@@ -14,12 +14,22 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
-import javolution.util.FastList;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.CastleManorManager;
 import net.sf.l2j.gameserver.instancemanager.CastleManorManager.SeedProduction;
+import net.sf.l2j.gameserver.model.L2Clan;
+import net.sf.l2j.gameserver.model.L2Object;
+import net.sf.l2j.gameserver.model.actor.instance.L2CastleChamberlainInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.entity.Castle;
+import net.sf.l2j.gameserver.util.Util;
 
+import static net.sf.l2j.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
+import static net.sf.l2j.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
 
 /**
  * Format: (ch) dd [ddd]
@@ -35,12 +45,12 @@ import net.sf.l2j.gameserver.instancemanager.CastleManorManager.SeedProduction;
  */
 public class RequestSetSeed extends L2GameClientPacket {
 	private static final String _C__D0_0A_REQUESTSETSEED = "[C] D0:0A RequestSetSeed";
+	//private static Logger _log = Logger.getLogger(RequestSetSeed.class.getName());
 
-	private int _size;
+	private static final int BATCH_LENGTH = 20; // length of the one item
 
 	private int _manorId;
-
-	private long[] _items; // _size*3
+	private Seed _items[] = null;
 
 	/**
 	 * @param buf
@@ -50,47 +60,102 @@ public class RequestSetSeed extends L2GameClientPacket {
 	protected void readImpl()
 	{
 		_manorId = readD();
-		_size = readD();
-		if (_size * 12 > _buf.remaining() || _size > 500)
+		int count = readD();
+		if (count <= 0
+				|| count > Config.MAX_ITEM_IN_PACKET
+				|| count * BATCH_LENGTH != _buf.remaining())
 		{
-			_size = 0;
 			return;
 		}
-		_items = new long[_size * 3];
-		for (int i = 0; i < _size; i++)
+
+		_items = new Seed[count];
+		for (int i = 0; i < count; i++)
 		{
 			int itemId = readD();
-			_items[i * 3 + 0] = itemId;
 			long sales = readQ();
-			_items[i * 3 + 1] = sales;
 			long price = readQ();
-			_items[i * 3 + 2] = price;
+			if (itemId < 1 || sales < 0 || price < 0)
+			{
+				_items = null;
+				return;
+			}
+			_items[i] = new Seed(itemId, sales, price);
 		}
 	}
 
 	@Override
 	protected void runImpl()
 	{
-		if (_size < 1)
+		if (_items == null)
 			return;
 
-		FastList<SeedProduction> seeds = new FastList<SeedProduction>();
-		for (int i = 0; i < _size; i++)
+		L2PcInstance player = getClient().getActiveChar();
+		// check player privileges
+		if (player == null
+				|| player.getClan() == null
+				|| (player.getClanPrivileges() & L2Clan.CP_CS_MANOR_ADMIN) == 0)
+			return;
+
+		// check castle owner
+		Castle currentCastle = CastleManager.getInstance().getCastleById(_manorId);
+		if (currentCastle.getOwnerId() != player.getClanId())
+			return;
+
+		L2Object manager = player.getTarget();
+
+		if (!(manager instanceof L2CastleChamberlainInstance))
+			manager = player.getLastFolkNPC();
+		
+		if (!(manager instanceof L2CastleChamberlainInstance))
+			return;
+
+		if (((L2CastleChamberlainInstance)manager).getCastle() != currentCastle)
+			return;
+
+		if (!player.isInsideRadius(manager, INTERACTION_DISTANCE, true, false))
+			return;
+
+		List<SeedProduction> seeds = new ArrayList<SeedProduction>(_items.length);
+		for (Seed i : _items)
 		{
-			int id = (int) _items[i * 3 + 0];
-			long sales = _items[i * 3 + 1];
-			long price = _items[i * 3 + 2];
-			if (id > 0)
+			SeedProduction s = i.getSeed();
+			if (s == null)
 			{
-				SeedProduction s = CastleManorManager.getInstance()
-						.getNewSeedProduction(id, sales, price, sales);
-				seeds.add(s);
+				Util.handleIllegalPlayerAction(player, "Warning!! Character "
+						+ player.getName() + " of account "
+						+ player.getAccountName()
+						+ " tried to overflow while setting manor.",
+						Config.DEFAULT_PUNISH);
+				return;
 			}
+			seeds.add(s);
 		}
 
-		CastleManager.getInstance().getCastleById(_manorId).setSeedProduction(seeds, CastleManorManager.PERIOD_NEXT);
+		currentCastle.setSeedProduction(seeds, CastleManorManager.PERIOD_NEXT);
 		if (Config.ALT_MANOR_SAVE_ALL_ACTIONS)
-			CastleManager.getInstance().getCastleById(_manorId).saveSeedData(CastleManorManager.PERIOD_NEXT);
+			currentCastle.saveSeedData(CastleManorManager.PERIOD_NEXT);
+	}
+
+	private class Seed
+	{
+		private final int _itemId;
+		private final long _sales;
+		private final long _price;
+		
+		public Seed(int id, long s, long p)
+		{
+			_itemId = id;
+			_sales = s;
+			_price = p;
+		}
+
+		public SeedProduction getSeed()
+		{
+			if (_sales != 0 && (MAX_ADENA / _sales) < _price)
+				return null;
+
+			return CastleManorManager.getInstance().getNewSeedProduction(_itemId, _sales, _price, _sales); 
+		}
 	}
 
 	@Override

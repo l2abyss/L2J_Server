@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.model.entity;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -59,10 +60,10 @@ public class Castle
 	
 	// =========================================================
 	// Data Field
-	private FastList<CropProcure> _procure = new FastList<CropProcure>();
-	private FastList<SeedProduction> _production = new FastList<SeedProduction>();
-	private FastList<CropProcure> _procureNext = new FastList<CropProcure>();
-	private FastList<SeedProduction> _productionNext = new FastList<SeedProduction>();
+	private List<CropProcure> _procure = new ArrayList<CropProcure>();
+	private List<SeedProduction> _production = new ArrayList<SeedProduction>();
+	private List<CropProcure> _procureNext = new ArrayList<CropProcure>();
+	private List<SeedProduction> _productionNext = new ArrayList<SeedProduction>();
 	private boolean _isNextPeriodApproved = false;
 	
 	private static final String CASTLE_MANOR_DELETE_PRODUCTION = "DELETE FROM castle_manor_production WHERE castle_id=?;";
@@ -1123,17 +1124,17 @@ public class Castle
 		return _treasury;
 	}
 	
-	public FastList<SeedProduction> getSeedProduction(int period)
+	public List<SeedProduction> getSeedProduction(int period)
 	{
 		return (period == CastleManorManager.PERIOD_CURRENT ? _production : _productionNext);
 	}
 	
-	public FastList<CropProcure> getCropProcure(int period)
+	public List<CropProcure> getCropProcure(int period)
 	{
 		return (period == CastleManorManager.PERIOD_CURRENT ? _procure : _procureNext);
 	}
 	
-	public void setSeedProduction(FastList<SeedProduction> seed, int period)
+	public void setSeedProduction(List<SeedProduction> seed, int period)
 	{
 		if (period == CastleManorManager.PERIOD_CURRENT)
 			_production = seed;
@@ -1141,7 +1142,7 @@ public class Castle
 			_productionNext = seed;
 	}
 	
-	public void setCropProcure(FastList<CropProcure> crop, int period)
+	public void setCropProcure(List<CropProcure> crop, int period)
 	{
 		if (period == CastleManorManager.PERIOD_CURRENT)
 			_procure = crop;
@@ -1175,8 +1176,8 @@ public class Castle
 	
 	public long getManorCost(int period)
 	{
-		FastList<CropProcure> procure;
-		FastList<SeedProduction> production;
+		List<CropProcure> procure;
+		List<SeedProduction> production;
 		
 		if (period == CastleManorManager.PERIOD_CURRENT)
 		{
@@ -1300,7 +1301,7 @@ public class Castle
 			statement.execute();
 			statement.close();
 			
-			FastList<SeedProduction> prod = null;
+			List<SeedProduction> prod = null;
 			prod = getSeedProduction(period);
 			
 			if (prod != null)
@@ -1431,7 +1432,7 @@ public class Castle
 			statement.execute();
 			statement.close();
 			
-			FastList<CropProcure> proc = null;
+			List<CropProcure> proc = null;
 			proc = getCropProcure(period);
 			
 			if (proc != null)

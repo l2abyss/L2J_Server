@@ -14,7 +14,8 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
-import javolution.util.FastList;
+import java.util.List;
+
 import net.sf.l2j.gameserver.instancemanager.CastleManorManager.SeedProduction;
 import net.sf.l2j.gameserver.model.L2Manor;
 
@@ -42,47 +43,49 @@ import net.sf.l2j.gameserver.model.L2Manor;
  *
  * @author l3x
  */
-public class ExShowSeedInfo extends L2GameServerPacket {
+public class ExShowSeedInfo extends L2GameServerPacket
+{
 	private static final String _S__FE_1C_EXSHOWSEEDINFO = "[S] FE:23 ExShowSeedInfo";
-    private FastList<SeedProduction> _seeds;
-    private int _manorId;
+	private List<SeedProduction> _seeds;
+	private int _manorId;
 
-    public ExShowSeedInfo(int manorId, FastList<SeedProduction> seeds)
-    {
-        _manorId = manorId;
-        _seeds = seeds;
-        if (_seeds == null)
-        {
-            _seeds = new FastList<SeedProduction>();
-        }
-    }
+	public ExShowSeedInfo(int manorId, List<SeedProduction> seeds)
+	{
+		_manorId = manorId;
+		_seeds = seeds;
+	}
 
-    @Override
-    protected void writeImpl()
-    {
-        writeC(0xFE); // Id
-        writeH(0x23); // SubId
-        writeC(0);
-        writeD(_manorId); // Manor ID
-        writeD(0);
-        writeD(_seeds.size());
-        for (SeedProduction seed : _seeds)
-        {
-        	 writeD(seed.getId()); // Seed id
-             writeQ(seed.getCanProduce()); // Left to buy
-             writeQ(seed.getStartProduce()); // Started amount
-             writeQ(seed.getPrice());        // Sell Price
-             writeD(L2Manor.getInstance().getSeedLevel(seed.getId())); // Seed Level
-             writeC(1); // reward 1 Type
-             writeD(L2Manor.getInstance().getRewardItemBySeed(seed.getId(),1)); // Reward 1 Type Item Id
-             writeC(1); // reward 2 Type
-             writeD(L2Manor.getInstance().getRewardItemBySeed(seed.getId(),2)); // Reward 2 Type Item Id
-        }
-    }
+	@Override
+	protected void writeImpl()
+	{
+		writeC(0xFE); // Id
+		writeH(0x23); // SubId
+		writeC(0);
+		writeD(_manorId); // Manor ID
+		writeD(0);
+		if (_seeds == null)
+		{
+			writeD(0);
+			return;
+		}
+		writeD(_seeds.size());
+		for (SeedProduction seed : _seeds)
+		{
+			writeD(seed.getId()); // Seed id
+			writeQ(seed.getCanProduce()); // Left to buy
+			writeQ(seed.getStartProduce()); // Started amount
+			writeQ(seed.getPrice());        // Sell Price
+			writeD(L2Manor.getInstance().getSeedLevel(seed.getId())); // Seed Level
+			writeC(1); // reward 1 Type
+			writeD(L2Manor.getInstance().getRewardItemBySeed(seed.getId(),1)); // Reward 1 Type Item Id
+			writeC(1); // reward 2 Type
+			writeD(L2Manor.getInstance().getRewardItemBySeed(seed.getId(),2)); // Reward 2 Type Item Id
+		}
+	}
 
-    @Override
-    public String getType()
-    {
-        return _S__FE_1C_EXSHOWSEEDINFO;
-    }
+	@Override
+	public String getType()
+	{
+		return _S__FE_1C_EXSHOWSEEDINFO;
+	}
 }
