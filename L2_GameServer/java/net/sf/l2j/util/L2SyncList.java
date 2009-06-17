@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +26,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 /**
  * Highly concurrent List wrapping class, thread-safe<br>
+ * The default constructor sets a wrapped class to ArrayList<T> to minimize code line
+ * when wrapped class type is not that importent.<br>
  * <br>
  * Note: Iterator returned does not support element removal!
  * @author  Julian
@@ -35,6 +38,13 @@ public class L2SyncList<T extends Object> implements List<T>
 	private final ReentrantReadWriteLock _rw = new ReentrantReadWriteLock();
 	private final ReadLock _rl = _rw.readLock();
 	private final WriteLock _wl = _rw.writeLock();
+	
+	/**
+	 * Default constructor use ArrayList as it internal
+	 */
+	public L2SyncList() {
+		_list = new ArrayList<T>();
+	}
 	
 	public L2SyncList(List<T> list) {
 		_list = list;
