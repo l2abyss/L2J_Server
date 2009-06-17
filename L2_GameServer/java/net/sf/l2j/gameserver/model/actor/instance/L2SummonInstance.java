@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
+import net.sf.l2j.gameserver.model.Elementals;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
@@ -281,5 +282,32 @@ public class L2SummonInstance extends L2Summon
 			_log.warning("L2SummonInstance: " + getTemplate().name + " (" + getOwner().getName() + ") consume.");
 		
 		return getOwner().destroyItemByItemId(process, itemId, count, reference, sendMessage);
+	}
+
+	@Override
+	public byte getAttackElement()
+	{
+		if (getOwner() == null)
+			return Elementals.NONE;
+
+		return getOwner().getAttackElement();
+	}
+
+	@Override
+	public int getAttackElementValue(byte attribute)
+	{
+		if (getOwner() == null)
+			return 0;
+		// 80% of the owner
+		return (10 * getOwner().getAttackElementValue(attribute)) / 8; 
+	}
+
+	@Override
+	public int getDefenseElementValue(byte attribute)
+	{
+		if (getOwner() == null)
+			return 0;
+
+		return getOwner().getDefenseElementValue(attribute);
 	}
 }

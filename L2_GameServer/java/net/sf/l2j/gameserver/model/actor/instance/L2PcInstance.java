@@ -79,6 +79,7 @@ import net.sf.l2j.gameserver.instancemanager.ItemsOnGroundManager;
 import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.BlockList;
+import net.sf.l2j.gameserver.model.Elementals;
 import net.sf.l2j.gameserver.model.FishData;
 import net.sf.l2j.gameserver.model.L2AccessLevel;
 import net.sf.l2j.gameserver.model.L2CharPosition;
@@ -5767,6 +5768,11 @@ public final class L2PcInstance extends L2Playable
 	public void setPet(L2Summon summon)
 	{
 		_summon = summon;
+		// update attack element value display
+		if ((_summon == null || _summon instanceof L2SummonInstance)
+				&& getAttackElement() != Elementals.NONE)
+			sendPacket(new UserInfo(this));
+			
 	}
     /**
      * Set the L2Decoy of the L2PcInstance.<BR><BR>
@@ -12872,6 +12878,18 @@ public final class L2PcInstance extends L2Playable
     	}
     }
     /** End of section for mounted pets */
+
+    @Override
+    public int getAttackElementValue(byte attribute)
+    {
+    	int value = super.getAttackElementValue(attribute);
+
+    	// 20% if summon exist
+    	if (getPet() != null && (getPet() instanceof L2SummonInstance))
+    		return value / 5;
+
+    	return value;
+    }
 
 	/**
      * @return afro haircut id
