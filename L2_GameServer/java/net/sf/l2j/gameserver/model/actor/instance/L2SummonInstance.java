@@ -299,7 +299,7 @@ public class L2SummonInstance extends L2Summon
 		if (getOwner() == null)
 			return 0;
 		// 80% of the owner
-		return (10 * getOwner().getAttackElementValue(attribute)) / 8; 
+		return (8 * getOwner().getAttackElementValue(attribute)) / 10; 
 	}
 
 	@Override
