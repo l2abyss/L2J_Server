@@ -145,10 +145,10 @@ public class RequestProcureCropList extends L2GameClientPacket
 
 		for (Crop i : _items)
 		{
-			long fee = i.getFee(castleId); // fee for selling to other manors
-
 			if (i.getReward() == 0)
 				continue;
+
+			long fee = i.getFee(castleId); // fee for selling to other manors
 
 			long rewardPrice = ItemTable.getInstance().getTemplate(i.getReward()).getReferencePrice();
 			if (rewardPrice == 0)
