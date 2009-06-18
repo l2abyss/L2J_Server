@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -269,7 +270,15 @@ public class L2TradeList
             }
             
             // exec asynchronously
-            ThreadPoolManager.getInstance().executeTask(new TimerSave());
+            try
+            {
+                ThreadPoolManager.getInstance().executeTask(new TimerSave());
+            }
+            catch (RejectedExecutionException e)
+            {
+            	// during shutdown executeTask() failed
+            	saveDataTimer();
+            }
         }
 
         /**
