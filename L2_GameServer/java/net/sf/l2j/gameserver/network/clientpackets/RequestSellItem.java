@@ -19,20 +19,19 @@ import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.L2Character;
-import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2FishermanInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MerchantInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetManagerInstance;
-import net.sf.l2j.gameserver.model.itemcontainer.PcInventory;
-import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
-import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.util.Util;
+
+import static net.sf.l2j.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
+import static net.sf.l2j.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;;
 
 /**
  * This class ...
@@ -44,15 +43,11 @@ public final class RequestSellItem extends L2GameClientPacket
 	private static final String _C__1E_REQUESTSELLITEM = "[C] 1E RequestSellItem";
     //private static Logger _log = Logger.getLogger(RequestSellItem.class.getName());
 
-	private int _listId;
-	private int _count;
-	private int[] _items; // count*3
+	private static final int BATCH_LENGTH = 16; // length of the one item
 
-    public RequestSellItem()
-    {
-        
-    }
-    
+	private int _listId;
+	private Item[] _items = null;
+
 	/**
 	 * packet type id 0x1e
 	 *
@@ -73,28 +68,31 @@ public final class RequestSellItem extends L2GameClientPacket
 	 * format:		cdd (ddd)
 	 * @param decrypt
 	 */
+
 	@Override
 	protected void readImpl()
 	{
 		_listId = readD();
-		_count = readD();
-		if (_count <= 0  || _count * 12 > _buf.remaining() || _count > Config.MAX_ITEM_IN_PACKET)
+		int count = readD();
+		if (count <= 0
+				|| count > Config.MAX_ITEM_IN_PACKET
+				|| count * BATCH_LENGTH != _buf.remaining())
 		{
-		    _count = 0; _items = null;
 		    return;
 		}
-		_items = new int[_count * 3];
-		for (int i = 0; i < _count; i++)
+
+		_items = new Item[count];
+		for (int i = 0; i < count; i++)
 		{
-			int objectId = readD(); _items[i * 3 + 0] = objectId;
-			int itemId   = readD(); _items[i * 3 + 1] = itemId;
-			long cnt      = readQ();
-			if (cnt > Integer.MAX_VALUE || cnt <= 0)
+			int objectId = readD();
+			int itemId = readD();
+			long cnt = readQ();
+			if (objectId < 1 || itemId < 1 || cnt < 1)
 			{
-			    _count = 0; _items = null;
-			    return;
+				_items = null;
+				return;
 			}
-			_items[i * 3 + 2] = (int)cnt;
+			_items[i] = new Item(objectId, itemId, cnt);
 		}
 	}
 
@@ -109,39 +107,47 @@ public final class RequestSellItem extends L2GameClientPacket
 		L2PcInstance player = getClient().getActiveChar();
         
 		if (player == null)
-        	return;
+			return;
 
-        // Alt game - Karma punishment
-        if (!Config.ALT_GAME_KARMA_PLAYER_CAN_SHOP && player.getKarma() > 0)
-        	return;
+		if(_items == null)
+		{
+			sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
 
-        L2Object target = player.getTarget();
-        if (!player.isGM() && (target == null								// No target (ie GM Shop)
-        		|| !(target instanceof L2MerchantInstance || target instanceof L2MerchantSummonInstance)	// Target not a merchant
-			    || !player.isInsideRadius(target, L2Npc.INTERACTION_DISTANCE, false, false) 	// Distance is too far
-			        )) return;
+		// Alt game - Karma punishment
+		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_SHOP && player.getKarma() > 0)
+			return;
 
-        boolean ok = true;
-        String htmlFolder = "";
+		L2Object target = player.getTarget();
+		if (!player.isGM() && (target == null								// No target (ie GM Shop)
+				|| !(target instanceof L2MerchantInstance
+						|| target instanceof L2MerchantSummonInstance)	// Target not a merchant
+						|| !player.isInsideRadius(target, INTERACTION_DISTANCE, true, false))) // Distance is too far
+			return;
 
-        if (target != null)
-        {
-        	if (target instanceof L2MerchantInstance || target instanceof L2MerchantSummonInstance)
-        		htmlFolder = "merchant";
-        	else if (target instanceof L2FishermanInstance)
-        		htmlFolder = "fisherman";
-        	else if (target instanceof L2PetManagerInstance)
-        		htmlFolder = "petmanager";
-        	else
-        		ok = false;
-        }
-        else
-        	ok = false;
+		boolean ok = true;
+		String htmlFolder = "";
 
-        L2Character merchant = null;
+		if (target != null)
+		{
+			if (target instanceof L2MerchantInstance
+					|| target instanceof L2MerchantSummonInstance)
+				htmlFolder = "merchant";
+			else if (target instanceof L2FishermanInstance)
+				htmlFolder = "fisherman";
+			else if (target instanceof L2PetManagerInstance)
+				htmlFolder = "petmanager";
+			else
+				ok = false;
+		}
+		else
+			ok = false;
 
-        if (ok)
-        	merchant = (L2Character)target;
+		L2Character merchant = null;
+
+		if (ok)
+			merchant = (L2Character)target;
 
 		if (merchant != null && _listId > 1000000) // lease
 		{
@@ -159,33 +165,21 @@ public final class RequestSellItem extends L2GameClientPacket
 
 		long totalPrice = 0;
 		// Proceed the sell
-		for (int i = 0; i < _count; i++)
+		for (Item i : _items)
 		{
-			int objectId = _items[i * 3 + 0];
-			@SuppressWarnings("unused")
-			int itemId   = _items[i * 3 + 1];
-			int count   = _items[i * 3 + 2];
+			L2ItemInstance item = player.checkItemManipulation(i.getObjectId(), i.getCount(), "sell");
+			if (item == null || (!item.isSellable()))
+				continue;
 
-			if (count < 0 || count > Integer.MAX_VALUE)
+			long price = item.getReferencePrice() / 2;
+			totalPrice += price * i.getCount();
+			if ((MAX_ADENA / i.getCount()) < price || totalPrice > MAX_ADENA)
 			{
-				Util.handleIllegalPlayerAction(player,"Warning!! Character "+player.getName()+" of account "+player.getAccountName()+" tried to purchase over "+Integer.MAX_VALUE+" items at the same time.",  Config.DEFAULT_PUNISH);
-				SystemMessage sm = new SystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED);
-				sendPacket(sm);
-				sm = null;
+				Util.handleIllegalPlayerAction(player,"Warning!! Character "+player.getName()+" of account "+player.getAccountName()+" tried to purchase over "+MAX_ADENA+" adena worth of goods.",  Config.DEFAULT_PUNISH);
 				return;
 			}
 
-			L2ItemInstance item = player.checkItemManipulation(objectId, count, "sell");
-        	if (item == null || (!item.isSellable())) continue;
-
-            totalPrice += item.getReferencePrice() * count /2;
-            if (totalPrice > PcInventory.MAX_ADENA)
-            {
-                Util.handleIllegalPlayerAction(player,"Warning!! Character "+player.getName()+" of account "+player.getAccountName()+" tried to purchase over "+PcInventory.MAX_ADENA+" adena worth of goods.",  Config.DEFAULT_PUNISH);
-                return;
-            }
-
-			item = player.getInventory().destroyItem("Sell", objectId, count, player, null);
+			item = player.getInventory().destroyItem("Sell", i.getObjectId(), i.getCount(), player, null);
 
 /* TODO: Disabled until Leaseholders are rewritten ;-)
 			int price = item.getReferencePrice()*(int)count/2;
@@ -222,11 +216,40 @@ public final class RequestSellItem extends L2GameClientPacket
 			player.sendPacket(soldMsg);
 		}
 
-    	// Update current load as well
+		// Update current load as well
 		StatusUpdate su = new StatusUpdate(player.getObjectId());
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
 		player.sendPacket(su);
 		player.sendPacket(new ItemList(player, true));
+	}
+
+	private class Item
+	{
+		private final int _objectId;
+		private final int _itemId;
+		private final long _count;
+		
+		public Item(int objId, int id, long num)
+		{
+			_objectId = objId;
+			_itemId = id;
+			_count = num;
+		}
+
+		public int getObjectId()
+		{
+			return _objectId;
+		}
+
+		public int getItemId()
+		{
+			return _itemId;
+		}
+
+		public long getCount()
+		{
+			return _count;
+		}
 	}
 
 	/* (non-Javadoc)

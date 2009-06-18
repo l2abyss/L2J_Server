@@ -23,6 +23,9 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.RecipeShopMsg;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.util.Util;
+
+import static net.sf.l2j.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
 
 /**
  * This class ...
@@ -34,20 +37,32 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 	private static final String _C__B2_RequestRecipeShopListSet = "[C] b2 RequestRecipeShopListSet";
 	//private static Logger _log = Logger.getLogger(RequestRecipeShopListSet.class.getName());
 
-	private int _count;
-	private long[] _items; // count*2
+	private static final int BATCH_LENGTH = 12; // length of the one item
+
+	private Recipe[] _items = null;
 
 	@Override
 	protected void readImpl()
 	{
-		_count = readD();
-		if (_count < 0  || _count * 8 > _buf.remaining() || _count > Config.MAX_ITEM_IN_PACKET)
-			_count = 0;
-		_items = new long[_count * 2];
-		for (int x = 0; x < _count ; x++)
+		int count = readD();
+		if (count <= 0
+				|| count > Config.MAX_ITEM_IN_PACKET
+				|| count * BATCH_LENGTH != _buf.remaining())
 		{
-			_items[x*2 + 0] = readD(); //recipeId
-			_items[x*2 + 1] = readQ(); //cost
+			return;
+		}
+
+		_items = new Recipe[count];
+		for (int i = 0; i < count ; i++)
+		{
+			int id = readD();
+			long cost = readQ();
+			if (cost < 0)
+			{
+				_items = null;
+				return;
+			}
+			_items[i] = new Recipe(id, cost);
 		}
 	}
 
@@ -57,6 +72,13 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;
+
+		if (_items == null)
+		{
+			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
+			player.broadcastUserInfo();
+			return;
+		}
 
 		if (player.isInDuel())
 		{
@@ -71,31 +93,49 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 			return;
 		}
 
-		if (_count == 0)
-		{
-			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
-			player.broadcastUserInfo();
-			player.standUp();
-		}
-		else
-		{
-			L2ManufactureList createList = new L2ManufactureList();
+		L2ManufactureList createList = new L2ManufactureList();
 
-			for (int x = 0; x < _count ; x++)
+		for (Recipe i : _items)
+		{
+			if (!i.addToList(createList))
 			{
-				int recipeID = (int) _items[x*2 + 0];
-				long cost     = _items[x*2 + 1];
-				createList.add(new L2ManufactureItem(recipeID, cost));
+				Util.handleIllegalPlayerAction(player, "Warning!! Character "
+						+ player.getName() + " of account "
+						+ player.getAccountName() + " tried to set price more than "
+						+ MAX_ADENA + " adena in Private Manufacture.",
+						Config.DEFAULT_PUNISH);
+				return;
 			}
+		}
 
-			createList.setStoreName(player.getCreateList() != null ? player.getCreateList().getStoreName() : "");
-			player.setCreateList(createList);
+		createList.setStoreName(player.getCreateList() != null ? player.getCreateList().getStoreName() : "");
+		player.setCreateList(createList);
 
-			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_MANUFACTURE);
-			player.sitDown();
-			player.broadcastUserInfo();
-			player.sendPacket(new RecipeShopMsg(player));
-			player.broadcastPacket(new RecipeShopMsg(player));
+		player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_MANUFACTURE);
+		player.sitDown();
+		player.broadcastUserInfo();
+		player.sendPacket(new RecipeShopMsg(player));
+		player.broadcastPacket(new RecipeShopMsg(player));
+	}
+
+	private class Recipe
+	{
+		private final int _recipeId;
+		private final long _cost;
+		
+		public Recipe(int id, long c)
+		{
+			_recipeId = id;
+			_cost = c;
+		}
+
+		public boolean addToList(L2ManufactureList list)
+		{
+			if (_cost > MAX_ADENA)
+				return false;
+
+			list.add(new L2ManufactureItem(_recipeId, _cost));
+			return true;
 		}
 	}
 

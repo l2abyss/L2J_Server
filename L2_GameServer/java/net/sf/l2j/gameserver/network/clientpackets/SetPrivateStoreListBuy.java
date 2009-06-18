@@ -23,6 +23,9 @@ import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreManageListBuy;
 import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreMsgBuy;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.util.Util;
+
+import static net.sf.l2j.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
 
 /**
  * This class ...
@@ -35,42 +38,41 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
 {
 	private static final String _C__91_SETPRIVATESTORELISTBUY = "[C] 91 SetPrivateStoreListBuy";
 
-	//private static Logger _log = Logger.getLogger(SetPrivateStoreListBuy.class.getName());
+	private static final int BATCH_LENGTH = 40; // length of the one item
 
-	private int _count;
-	private int[] _items; // count * 3
+	private Item[] _items = null;
 
 	@Override
-
 	protected void readImpl()
 	{
-		_count = readD();
-		if (_count <= 0  || _count * 12 > _buf.remaining() || _count > Config.MAX_ITEM_IN_PACKET)
+		int count = readD();
+		if (count < 0
+				|| count > Config.MAX_ITEM_IN_PACKET
+				|| count * BATCH_LENGTH != _buf.remaining())
 		{
-			_count = 0;
-			_items = null;
 			return;
 		}
-		_items = new int[_count * 3];
-		for (int x = 0; x < _count; x++)
+
+		_items = new Item[count];
+		for (int i = 0; i < count; i++)
 		{
-			_items[x * 3 + 0] = readD(); // itemId
+			int itemId = readD();
 			readH();//TODO analyse this
 			readH();//TODO analyse this
 			long cnt = readQ();
+			long price = readQ();
 
-			if (cnt > Integer.MAX_VALUE || cnt < 0)
+			if (itemId < 1 || cnt < 1 || price < 0)
 			{
-				_count = 0; _items = null;
+				_items = null;
 				return;
 			}
-			_items[x * 3 + 1] = (int)cnt;
-			_items[x * 3 + 2] = (int) readQ(); //price
-			
 			readC(); // FE
 			readD(); // FF 00 00 00
 			readD(); // 00 00 00 00
 			readB(new byte[7]); // Completely Unknown
+
+			_items[i] = new Item(itemId, cnt, price);
 		}
 	}
 
@@ -80,6 +82,13 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;
+
+		if (_items == null)
+		{
+			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
+			player.broadcastUserInfo();
+			return;
+		}
 
 		if (!player.getAccessLevel().allowTransaction())
 		{
@@ -98,34 +107,41 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
 		TradeList tradeList = player.getBuyList();
 		tradeList.clear();
 
-		int cost = 0;
-		for (int i = 0; i < _count; i++)
-		{
-			int itemId = _items[i * 3 + 0];
-			int count    = _items[i * 3 + 1];
-			int price    = _items[i * 3 + 2];
-
-			tradeList.addItemByItemId(itemId, count, price);
-			cost += count * price;
-		}
-
-		if (_count <= 0)
-		{
-			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
-			player.broadcastUserInfo();
-			return;
-		}
-
 		// Check maximum number of allowed slots for pvt shops
-		if (_count > player.getPrivateBuyStoreLimit())
+		if (_items.length > player.getPrivateBuyStoreLimit())
 		{
 			player.sendPacket(new PrivateStoreManageListBuy(player));
 			player.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED));
 			return;
 		}
 
+		int totalCost = 0;
+		for (Item i : _items)
+		{
+			if (!i.addToTradeList(tradeList))
+			{
+				Util.handleIllegalPlayerAction(player, "Warning!! Character "
+						+ player.getName() + " of account "
+						+ player.getAccountName() + " tried to set price more than "
+						+ MAX_ADENA + " adena in Private Store - Buy.",
+						Config.DEFAULT_PUNISH);
+				return;
+			}
+
+			totalCost += i.getCost();
+			if (totalCost > MAX_ADENA)
+			{
+				Util.handleIllegalPlayerAction(player, "Warning!! Character "
+						+ player.getName() + " of account "
+						+ player.getAccountName() + " tried to set total price more than "
+						+ MAX_ADENA + " adena in Private Store - Buy.",
+						Config.DEFAULT_PUNISH);
+				return;
+			}
+		}
+
 		// Check for available funds
-		if (cost > player.getAdena() || cost <= 0)
+		if (totalCost > player.getAdena())
 		{
 			player.sendPacket(new PrivateStoreManageListBuy(player));
 			player.sendPacket(new SystemMessage(SystemMessageId.THE_PURCHASE_PRICE_IS_HIGHER_THAN_MONEY));
@@ -136,6 +152,34 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
 		player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_BUY);
 		player.broadcastUserInfo();
 		player.broadcastPacket(new PrivateStoreMsgBuy(player));
+	}
+
+	private class Item
+	{
+		private final int _itemId;
+		private final long _count;
+		private final long _price;
+		
+		public Item(int id, long num, long pri)
+		{
+			_itemId = id;
+			_count = num;
+			_price = pri;
+		}
+
+		public boolean addToTradeList(TradeList list)
+		{
+			if ((MAX_ADENA / _count) < _price)
+				return false;
+
+			list.addItemByItemId(_itemId, _count, _price);
+			return true;
+		}
+
+		public long getCost()
+		{
+			return _count * _price;
+		}
 	}
 
 	@Override

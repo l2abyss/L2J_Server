@@ -23,9 +23,9 @@ public final class TradeItem
 {
     private int _objectId;
     private int _itemId;
-    private int _price;
-    private int _storePrice;
-    private int _count;
+    private long _price;
+    private long _storePrice;
+    private long _count;
 	private int _enchantLevel;
 
 	public TradeItem() {}
@@ -50,32 +50,32 @@ public final class TradeItem
         return _itemId;
     }
 
-    public void setOwnersPrice(int price)
+    public void setOwnersPrice(long price)
     {
         _price = price;
     }
 
-    public int getOwnersPrice()
+    public long getOwnersPrice()
     {
         return _price;
     }
 
-    public void setstorePrice(int price)
+    public void setstorePrice(long price)
     {
         _storePrice = price;
     }
 
-    public int getStorePrice()
+    public long getStorePrice()
     {
         return _storePrice;
     }
 
-    public void setCount(int count)
+    public void setCount(long count)
     {
         _count = count;
     }
 
-    public int getCount()
+    public long getCount()
     {
         return _count;
     }

@@ -42,13 +42,13 @@ public class TradeList
         private L2Item _item;
         private int _enchant;
         private long _count;
-        private int _price;
+        private long _price;
  
-        private int _elemAtkType = -2;
+        private byte _elemAtkType = Elementals.NONE;
         private int _elemAtkPower = 0;
         private int[] _elemDefAttr = {0, 0, 0, 0, 0, 0};
 
-        public TradeItem(L2ItemInstance item, long count, int price)
+        public TradeItem(L2ItemInstance item, long count, long price)
         {
             _objectId = item.getObjectId();
             _item = item.getItem();
@@ -62,7 +62,7 @@ public class TradeList
                 _elemDefAttr[i] = item.getElementDefAttr(i);
         }
 
-        public TradeItem(L2Item item, long count, int price)
+        public TradeItem(L2Item item, long count, long price)
         {
             _objectId = 0;
             _item = item;
@@ -71,7 +71,7 @@ public class TradeList
             _price = price;
         }
 
-        public TradeItem(TradeItem item, long count, int price)
+        public TradeItem(TradeItem item, long count, long price)
         {
             _objectId = item.getObjectId();
             _item = item.getItem();
@@ -120,17 +120,17 @@ public class TradeList
             return _count;
         }
 
-        public void setPrice(int price)
+        public void setPrice(long price)
         {
             _price = price;
         }
 
-        public int getPrice()
+        public long getPrice()
         {
             return _price;
         }
 
-        public int getAttackElementType()
+        public byte getAttackElementType()
         {
              return _elemAtkType;
         }
@@ -301,10 +301,10 @@ public class TradeList
      * Add item to TradeList
      * @param objectId : int
      * @param count : long
-     * @param price : int
+     * @param price : long
      * @return
      */
-    public synchronized TradeItem addItem(int objectId, long count, int price)
+    public synchronized TradeItem addItem(int objectId, long count, long price)
     {
         if (isLocked())
         {
@@ -321,21 +321,30 @@ public class TradeList
 
         L2ItemInstance item = (L2ItemInstance)o;
 
-	if (!item.isTradeable() || item.getItemType() == L2EtcItemType.QUEST)
+        if (!item.isTradeable() || item.getItemType() == L2EtcItemType.QUEST)
              return null;
 
-	if (count > item.getCount()) return null;
+        if (count <= 0 || count > item.getCount())
+        	return null;
 
-	if (!item.isStackable() && count > 1)
+        if (!item.isStackable() && count > 1)
         {
-            _log.warning(_owner.getName() + ": Attempt to add non-stackable item to TradeList with count > 1!");
-            return null;
+        	_log.warning(_owner.getName() + ": Attempt to add non-stackable item to TradeList with count > 1!");
+        	return null;
         }
+
+        if ((PcInventory.MAX_ADENA / count) < price)
+        {
+        	_log.warning(_owner.getName() + ": Attempt to overflow adena !");
+        	return null;
+        }
+
         for (TradeItem checkitem : _items)
         {
-            if (checkitem.getObjectId() == objectId) return null;
+        	if (checkitem.getObjectId() == objectId)
+        		return null;
         }
-	TradeItem titem = new TradeItem(item, count, price);
+        TradeItem titem = new TradeItem(item, count, price);
         _items.add(titem);
 
         // If Player has already confirmed this trade, invalidate the confirmation
@@ -346,11 +355,11 @@ public class TradeList
     /**
      * Add item to TradeList
      * @param objectId : int
-     * @param count : int
-     * @param price : int
+     * @param count : long
+     * @param price : long
      * @return
      */
-    public synchronized TradeItem addItemByItemId(int itemId, int count, int price)
+    public synchronized TradeItem addItemByItemId(int itemId, long count, long price)
     {
         if (isLocked())
         {
@@ -654,7 +663,7 @@ public class TradeList
      * Buy items from this PrivateStore list
      * @return : boolean true if success
      */
-    public synchronized boolean privateStoreBuy(L2PcInstance player, ItemRequest[] items, int price)
+    public synchronized boolean privateStoreBuy(L2PcInstance player, ItemRequest[] items, long price)
     {
         if (_locked) return false;
         if (!validate())
@@ -801,7 +810,7 @@ public class TradeList
         InventoryUpdate ownerIU = new InventoryUpdate();
         InventoryUpdate playerIU = new InventoryUpdate();
 
-        int totalprice = 0;
+        long totalprice = 0;
         
         // Transfer items
         for (ItemRequest item : items)
@@ -810,7 +819,7 @@ public class TradeList
             adjustItemRequestByItemId(item);
             if (item.getCount() == 0) continue;
             
-            int price = -1;
+            long price = -1;
             
             for (TradeItem ti : _items)
             {

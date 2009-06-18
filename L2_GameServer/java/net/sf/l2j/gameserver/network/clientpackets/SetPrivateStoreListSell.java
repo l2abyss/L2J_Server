@@ -24,6 +24,9 @@ import net.sf.l2j.gameserver.network.serverpackets.ExPrivateStoreSetWholeMsg;
 import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreManageListSell;
 import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreMsgSell;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.util.Util;
+
+import static net.sf.l2j.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
 
 /**
  * This class ...
@@ -33,37 +36,37 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 public class SetPrivateStoreListSell extends L2GameClientPacket
 {
 	private static final String _C__74_SETPRIVATESTORELISTSELL = "[C] 74 SetPrivateStoreListSell";
-	//private static Logger _log = Logger.getLogger(SetPrivateStoreListSell.class.getName());
 
-	private int _count;
+	private static final int BATCH_LENGTH = 20; // length of the one item
+
 	private boolean _packageSale;
-	private int[] _items; // count * 3
+	private Item[] _items = null;
 
 	@Override
 	protected void readImpl()
 	{
 		_packageSale = (readD() == 1);
-		_count = readD();
-		if (_count <= 0  || _count * 12 > _buf.remaining() || _count > Config.MAX_ITEM_IN_PACKET)
+		int count = readD();
+		if (count < 0
+				|| count > Config.MAX_ITEM_IN_PACKET
+				|| count * BATCH_LENGTH != _buf.remaining())
 		{
-			_count = 0;
-			_items = null;
 			return;
 		}
-		_items = new int[_count * 3];
-		for (int x = 0; x < _count ; x++)
-		{
-			_items[x * 3 + 0] = readD(); // objectId
-			long cnt = readQ();
 
-			if (cnt > Integer.MAX_VALUE || cnt < 0)
+		_items = new Item[count];
+		for (int i = 0; i < count ; i++)
+		{
+			int itemId = readD();
+			long cnt = readQ();
+			long price = readQ();
+
+			if (itemId < 1 || cnt < 1 || price < 0)
 			{
-				_count = 0;
 				_items = null;
 				return;
 			}
-			_items[x * 3 + 1] = (int) cnt;
-			_items[x * 3 + 2] = (int)readQ(); //price
+			_items[i] = new Item(itemId, cnt, price);
 		}
 	}
 
@@ -71,7 +74,15 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
-		if (player == null) return;
+		if (player == null)
+			return;
+
+		if (_items == null)
+		{
+			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
+			player.broadcastUserInfo();
+			return;
+		}
 
 		if (!player.getAccessLevel().allowTransaction())
 		{
@@ -87,52 +98,82 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 			return;
 		}
 
-		TradeList tradeList = player.getSellList();
-		tradeList.clear();
-		tradeList.setPackaged(_packageSale);
-
-		for (int i = 0; i < _count; i++)
-		{
-			int objectId = _items[i * 3 + 0];
-			int count    = _items[i * 3 + 1];
-			int price    = _items[i * 3 + 2];
-
-			tradeList.addItem(objectId, count, price);
-		}
-
-		if (_count <= 0)
-		{
-			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
-			player.broadcastUserInfo();
-			return;
-		}
-
 		// Check maximum number of allowed slots for pvt shops
-		if (_count > player.getPrivateSellStoreLimit())
+		if (_items.length > player.getPrivateSellStoreLimit())
 		{
 			player.sendPacket(new PrivateStoreManageListSell(player, _packageSale));
 			player.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED));
 			return;
 		}
 
+		TradeList tradeList = player.getSellList();
+		tradeList.clear();
+		tradeList.setPackaged(_packageSale);
+
+		long totalCost = player.getAdena();
+		for (Item i : _items)
+		{
+			if (!i.addToTradeList(tradeList))
+			{
+				Util.handleIllegalPlayerAction(player, "Warning!! Character "
+						+ player.getName() + " of account "
+						+ player.getAccountName() + " tried to set price more than "
+						+ MAX_ADENA + " adena in Private Store - Sell.",
+						Config.DEFAULT_PUNISH);
+				return;
+			}
+
+			totalCost += i.getPrice();
+			if (totalCost > MAX_ADENA)
+			{
+				Util.handleIllegalPlayerAction(player, "Warning!! Character "
+						+ player.getName() + " of account "
+						+ player.getAccountName() + " tried to set total price more than "
+						+ MAX_ADENA + " adena in Private Store - Sell.",
+						Config.DEFAULT_PUNISH);
+				return;
+			}
+		}
+
 		player.sitDown();
 		if (_packageSale)
-		{
 			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_PACKAGE_SELL);
-		}
 		else
-		{
 			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_SELL);
-		}
+
 		player.broadcastUserInfo();
 
 		if (_packageSale)
-		{
 			player.broadcastPacket(new ExPrivateStoreSetWholeMsg(player));
-		}
 		else
-		{
 			player.broadcastPacket(new PrivateStoreMsgSell(player));
+	}
+
+	private class Item
+	{
+		private final int _itemId;
+		private final long _count;
+		private final long _price;
+		
+		public Item(int id, long num, long pri)
+		{
+			_itemId = id;
+			_count = num;
+			_price = pri;
+		}
+
+		public boolean addToTradeList(TradeList list)
+		{
+			if ((MAX_ADENA / _count) < _price)
+				return false;
+
+			list.addItem(_itemId, _count, _price);
+			return true;
+		}
+
+		public long getPrice()
+		{
+			return _count * _price;
 		}
 	}
 
