@@ -43,7 +43,7 @@ import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.util.Util;
 
 import static net.sf.l2j.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
-import static net.sf.l2j.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;;
+import static net.sf.l2j.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
 
 /**
  * This class ...
