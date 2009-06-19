@@ -7897,12 +7897,12 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean removeHenna(int slot)
 	{
-		if (slot<1 || slot>3)
+		if (slot < 1 || slot > 3)
 			return false;
 
 		slot--;
 
-		if (_henna[slot]==null)
+		if (_henna[slot] == null)
 			return false;
 
 		L2HennaInstance henna = _henna[slot];
@@ -7956,18 +7956,11 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean addHenna(L2HennaInstance henna)
 	{
-		if (getHennaEmptySlots()==0)
+		for (int i = 0; i < 3; i++)
 		{
-			sendMessage("You may not have more than three equipped symbols at a time.");
-			return false;
-		}
-
-		// int slot = 0;
-		for (int i=0;i<3;i++)
-		{
-			if (_henna[i]==null)
+			if (_henna[i] == null)
 			{
-				_henna[i]=henna;
+				_henna[i] = henna;
 
 				// Calculate Henna modifiers of this L2PcInstance
 				recalcHennaStats();
@@ -8006,7 +7999,6 @@ public final class L2PcInstance extends L2Playable
 				return true;
 			}
 		}
-
 		return false;
 	}
 
