@@ -54,7 +54,7 @@ public class L2SiegeFlagInstance extends L2Npc
 		}
 		else
 		{
-			L2SiegeClan sc = _siege.getAttackerClan(_player.getClan());
+			L2SiegeClan sc = _siege.getAttackerClan(_clan);
 			if (sc == null)
 				deleteMe();
 			else
@@ -91,9 +91,12 @@ public class L2SiegeFlagInstance extends L2Npc
     {
     	if (!super.doDie(killer))
     		return false;
-    	L2SiegeClan sc = _siege.getAttackerClan(_player.getClan());
-        if (sc != null)
-        	sc.removeFlag(this);
+    	if (_siege != null && _clan != null)
+    	{
+        	L2SiegeClan sc = _siege.getAttackerClan(_clan);
+            if (sc != null)
+            	sc.removeFlag(this);
+    	}
         return true;
     }
 
