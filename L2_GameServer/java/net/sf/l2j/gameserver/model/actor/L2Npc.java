@@ -949,7 +949,10 @@ public class L2Npc extends L2Character
 				{
 					for (L2DropData drop : cat.getAllDrops())
 					{
-						final String name = ItemTable.getInstance().getTemplate(drop.getItemId()).getName();
+						final L2Item item = ItemTable.getInstance().getTemplate(drop.getItemId());
+						if (item == null)
+							continue;
+
 						final String color;
 
 						if (drop.getChance() >= 500000)
@@ -963,7 +966,7 @@ public class L2Npc extends L2Character
 								"<tr><td><font color=\"",
 								color,
 								"\">",
-								name,
+								item.getName(),
 								"</font></td><td>",
 								(drop.isQuestDrop() ? "Quest" : (cat.isSweep() ? "Sweep" : "Drop")),
 								"</td></tr>"
