@@ -42,6 +42,7 @@ import net.sf.l2j.gameserver.datatables.MapRegionTable.TeleportWhereType;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.handler.SkillHandler;
 import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
+import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.TownManager;
 import net.sf.l2j.gameserver.model.ChanceSkillList;
 import net.sf.l2j.gameserver.model.CharEffectList;
@@ -253,7 +254,17 @@ public abstract class L2Character extends L2Object
 	 */
 	public final boolean isInsideZone(final byte zone)
 	{
-		return zone == ZONE_PVP ? _zones[ZONE_PVP] > 0 && _zones[ZONE_PEACE] == 0 : _zones[zone] > 0;
+		switch (zone)
+		{
+			case ZONE_PVP:
+				if (InstanceManager.getInstance().getInstance(this.getInstanceId()).isPvPInstance())
+					return true;
+				return _zones[ZONE_PVP] > 0 && _zones[ZONE_PEACE] == 0;
+			case ZONE_PEACE:
+				if (InstanceManager.getInstance().getInstance(this.getInstanceId()).isPvPInstance())
+					return false;
+		}
+		return _zones[zone] > 0;
 	}
 	
 	/**
@@ -5491,6 +5502,8 @@ public abstract class L2Character extends L2Object
 		if (target == null)
 			return false;
 		if (!(target instanceof L2Playable && attacker instanceof L2Playable))
+			return false;
+		if (InstanceManager.getInstance().getInstance(this.getInstanceId()).isPvPInstance())
 			return false;
 
 		if (Config.ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE)
