@@ -1754,7 +1754,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
                 boolean srcInArena = (activeChar.isInsideZone(L2Character.ZONE_PVP) && !activeChar.isInsideZone(L2Character.ZONE_SIEGE));
 
-                Collection<L2Character> objs = activeChar.getKnownList().getKnownCharactersInRadius(radius);
+                Collection<L2Character> objs = cha.getKnownList().getKnownCharactersInRadius(radius);
                 //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
 					for (L2Character obj : objs)
@@ -1903,7 +1903,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
                 boolean srcInArena = (activeChar.isInsideZone(L2Character.ZONE_PVP) && !activeChar.isInsideZone(L2Character.ZONE_SIEGE));
 
-                Collection<L2Character> objs = activeChar.getKnownList().getKnownCharactersInRadius(radius);
+                Collection<L2Character> objs = cha.getKnownList().getKnownCharactersInRadius(radius);
                 //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
 					for (L2Character obj : objs)
@@ -2054,7 +2054,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
                 boolean srcInArena = (activeChar.isInsideZone(L2Character.ZONE_PVP) && !activeChar.isInsideZone(L2Character.ZONE_SIEGE));
 
-                Collection<L2Character> objs = activeChar.getKnownList().getKnownCharactersInRadius(radius);
+                Collection<L2Character> objs = cha.getKnownList().getKnownCharactersInRadius(radius);
                 //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
 					for (L2Character obj : objs)
@@ -2623,7 +2623,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 L2PcInstance trg = null;
 
                 int radius = getSkillRadius();
-                Collection<L2Character> objs = activeChar.getKnownList().getKnownCharactersInRadius(radius);
+                Collection<L2Character> objs = target.getKnownList().getKnownCharactersInRadius(radius);
                 //synchronized (activeChar.getKnownList().getKnownObjects())
 				{
 					for (L2Object obj : objs)
