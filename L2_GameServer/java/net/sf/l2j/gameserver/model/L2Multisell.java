@@ -710,7 +710,7 @@ public class L2Multisell
 				Node attribute;
 				
 				int id = Integer.parseInt(n.getAttributes().getNamedItem("id").getNodeValue());
-				long count = Integer.parseInt(n.getAttributes().getNamedItem("count").getNodeValue());
+				long count = Long.parseLong(n.getAttributes().getNamedItem("count").getNodeValue());
 				boolean isTaxIngredient = false, mantainIngredient = false;
 				
 				attribute = n.getAttributes().getNamedItem("isTaxIngredient");
@@ -729,7 +729,7 @@ public class L2Multisell
 			else if ("production".equalsIgnoreCase(n.getNodeName()))
 			{
 				int id = Integer.parseInt(n.getAttributes().getNamedItem("id").getNodeValue());
-				long count = Integer.parseInt(n.getAttributes().getNamedItem("count").getNodeValue());
+				long count = Long.parseLong(n.getAttributes().getNamedItem("count").getNodeValue());
 				
 				MultiSellIngredient e = new MultiSellIngredient(id, count, false, false);
 				entry.addProduct(e);
