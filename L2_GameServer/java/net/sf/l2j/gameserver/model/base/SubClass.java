@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.model.base;
 
+import net.sf.l2j.Config;
+
 /**
  * Character Sub-Class Definition
  * <BR>
@@ -23,6 +25,8 @@ package net.sf.l2j.gameserver.model.base;
  */
 public final class SubClass
 {
+	private static final byte _maxLevel = Config.MAX_SUBCLASS_LEVEL < Experience.MAX_LEVEL ? Config.MAX_SUBCLASS_LEVEL : Experience.MAX_LEVEL - 1;
+
 	private PlayerClass _class;
 	private long _exp = Experience.LEVEL[40];
 	private int _sp = 0;
@@ -88,8 +92,8 @@ public final class SubClass
 	
 	public void setExp(long expValue)
 	{
-		if (expValue > (Experience.LEVEL[81] - 1))
-			expValue = (Experience.LEVEL[81] - 1);
+		if (expValue > (Experience.LEVEL[_maxLevel + 1] - 1))
+			expValue = (Experience.LEVEL[_maxLevel + 1] - 1);
 		
 		_exp = expValue;
 	}
@@ -106,8 +110,8 @@ public final class SubClass
 	
 	public void setLevel(byte levelValue)
 	{
-		if (levelValue > 80)
-			levelValue = 80;
+		if (levelValue >= _maxLevel)
+			levelValue = _maxLevel;
 		else if (levelValue < 40)
 			levelValue = 40;
 		
@@ -116,7 +120,7 @@ public final class SubClass
 	
 	public void incLevel()
 	{
-		if (getLevel() == 80)
+		if (getLevel() == _maxLevel)
 			return;
 		
 		_level++;
