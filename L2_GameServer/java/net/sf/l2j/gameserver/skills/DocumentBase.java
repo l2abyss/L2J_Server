@@ -586,6 +586,18 @@ abstract class DocumentBase
             	boolean val = Boolean.valueOf(a.getNodeValue());
                 cond = joinAnd(cond, new ConditionPlayerLandingZone(val));
             }
+            else if ("active_effect_id".equalsIgnoreCase(a.getNodeName()))
+            {
+            	int effect_id = Integer.decode(getValue(a.getNodeValue(), template));
+                cond = joinAnd(cond, new ConditionPlayerActiveEffectId(effect_id));
+            }
+            else if ("active_effect_id_lvl".equalsIgnoreCase(a.getNodeName()))
+            {
+            	String val = getValue(a.getNodeValue(), template);
+            	int effect_id = Integer.decode(getValue(val.split(",")[0], template));
+        		int effect_lvl = Integer.decode(getValue(val.split(",")[1], template));
+        		cond = joinAnd(cond, new ConditionPlayerActiveEffectId(effect_id, effect_lvl));
+            }
             else if ("active_skill_id".equalsIgnoreCase(a.getNodeName()))
             {
                 int skill_id = Integer.decode(getValue(a.getNodeValue(), template));
@@ -670,6 +682,13 @@ abstract class DocumentBase
                 int skill_id = Integer.decode(getValue(a.getNodeValue(), template));
                 cond = joinAnd(cond, new ConditionTargetActiveSkillId(skill_id));
             }
+			else if ("active_skill_id_lvl".equalsIgnoreCase(a.getNodeName()))
+			{
+				String val = getValue(a.getNodeValue(), template);
+				int skill_id = Integer.decode(getValue(val.split(",")[0], template));
+				int skill_lvl = Integer.decode(getValue(val.split(",")[1], template));
+				cond = joinAnd(cond, new ConditionTargetActiveSkillId(skill_id, skill_lvl));
+			}
             else if("mindistance".equalsIgnoreCase(a.getNodeName()))
             {
             	int distance = Integer.decode(getValue(a.getNodeValue(),null));
