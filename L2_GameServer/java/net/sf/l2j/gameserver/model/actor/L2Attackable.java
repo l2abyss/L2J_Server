@@ -811,29 +811,23 @@ public class L2Attackable extends L2Npc
 	{
 		if (attacker == null)
 			return;
+		if ((attacker instanceof L2PcInstance || attacker instanceof L2Summon) && !attacker.isAlikeDead())
+		{
+			L2PcInstance targetPlayer = (attacker instanceof L2PcInstance)? (L2PcInstance) attacker: ((L2Summon) attacker).getOwner();
 
+			if (getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER) !=null)
+				for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER))
+			quest.notifyAggroRangeEnter(this, targetPlayer, (attacker instanceof L2Summon));
+		}
 		// Get the AggroInfo of the attacker L2Character from the _aggroList of the L2Attackable
 		AggroInfo ai = getAggroListRP().get(attacker);
 
-		if (ai == null)
+		// aggro ai created in L2attackableAI script if not overriden in other AI files
+		if (ai != null)
 		{
-			ai = new AggroInfo(attacker);
-			ai._damage = 0;
-			ai._hate = 0;
-			getAggroListRP().put(attacker, ai);
-
-			if ((attacker instanceof L2PcInstance || attacker instanceof L2Summon) && !attacker.isAlikeDead())
-			{
-				L2PcInstance targetPlayer = (attacker instanceof L2PcInstance)? (L2PcInstance) attacker: ((L2Summon) attacker).getOwner();
-
-				if (getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER) !=null)
-					for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER))
-				quest.notifyAggroRangeEnter(this, targetPlayer, (attacker instanceof L2Summon));
-			}
+			ai._hate += aggro;
+			ai._damage += damage;
 		}
-		ai._hate += aggro;
-		ai._damage += damage;
-
 		// Set the intention to the L2Attackable to AI_INTENTION_ACTIVE
 		if (aggro > 0 && getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
 			getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
@@ -2463,5 +2457,19 @@ public class L2Attackable extends L2Npc
 
 		if (hasAI())
 			getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(getSpawn().getLocx(), getSpawn().getLocy(), getSpawn().getLocz(), 0));
+	}
+	
+	public AggroInfo addToAggroList(L2Character character)
+	{
+		// Get the AggroInfo of the attacker L2Character from the _aggroList of the L2Attackable
+		AggroInfo ai = getAggroListRP().get(character);
+		if (ai == null)
+		{
+			ai = new AggroInfo(character);
+			ai._damage = 0;
+			ai._hate = 0;
+			getAggroListRP().put(character, ai);
+		}
+    	return ai;
 	}
 }
