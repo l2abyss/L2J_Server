@@ -178,7 +178,8 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			}
 			player.sendPacket(sm);
 			item.setElementAttr(elementToAdd, newPower);
-			item.updateElementAttrBonus(player); 
+			if (item.isEquipped())
+				item.updateElementAttrBonus(player); 
 
 			// send packets
 			InventoryUpdate iu = new InventoryUpdate();
