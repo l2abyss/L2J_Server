@@ -14,35 +14,27 @@
  */
 package net.sf.l2j.gameserver.model;
 
-/**
- *
- * @author -Nemesiss-
- */
-public class L2ExtractableProductItem
-{
-	private final int[] _id;
-	private final int[] _ammount;
-	private final int _chance;
+import javolution.util.FastList;
 
-	public L2ExtractableProductItem(int[] id, int[] ammount, int chance)
+public class L2ExtractableSkill
 	{
-		_id = id;
-		_ammount = ammount;
-		_chance = chance;
-	}
+		private final int _hash;
+		private final L2ExtractableProductItem[] _product;
 
-	public int[] getId()
-	{
-		return _id;
-	}
+		public L2ExtractableSkill(int hash, FastList<L2ExtractableProductItem> products)
+		{
+			_hash = hash;
+			_product = new L2ExtractableProductItem[products.size()];
+			products.toArray(_product);
+		}
 
-	public int[] getAmmount()
-	{
-		return _ammount;
-	}
+		public int getSkillHash()
+		{
+			return _hash;
+		}
 
-	public int getChance()
-	{
-		return _chance;
+		public L2ExtractableProductItem[] getProductItemsArray()
+		{
+			return _product;
+		}
 	}
-}

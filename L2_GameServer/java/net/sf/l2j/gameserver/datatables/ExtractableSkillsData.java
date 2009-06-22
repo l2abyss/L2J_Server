@@ -22,39 +22,41 @@
 package net.sf.l2j.gameserver.datatables;
 
 import java.io.File;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.model.L2ExtractableItem;
 import net.sf.l2j.gameserver.model.L2ExtractableProductItem;
+import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.L2ExtractableSkill;
 
-public class ExtractableItemsData
+public class ExtractableSkillsData
 {
-	protected static final Logger _log = Logger.getLogger(ExtractableItemsData.class.getName());
-	//          Map<itemid, L2ExtractableItem>
-	private FastMap<Integer, L2ExtractableItem> _items;
+	protected static final Logger _log = Logger.getLogger(ExtractableSkillsData.class.getName());
+	//          Map<FastMap<itemid, skill>, L2ExtractableItem>
+	private Map<Integer, L2ExtractableSkill> _items = new FastMap<Integer, L2ExtractableSkill>();
 	
-	public static ExtractableItemsData getInstance()
+	public static ExtractableSkillsData getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
-	public ExtractableItemsData()
+	public ExtractableSkillsData()
 	{
-		_items = new FastMap<Integer, L2ExtractableItem>();
+		_items.clear();
 		
 		Scanner s;
 		
 		try
 		{
-			s = new Scanner(new File(Config.DATAPACK_ROOT + "/data/extractable_items.csv"));
+			s = new Scanner(new File(Config.DATAPACK_ROOT + "/data/extractable_skills.csv"));
 		}
 		catch (Exception e)
 		{
-			_log.warning("Extractable items data: Can not find '" + Config.DATAPACK_ROOT + "/data/extractable_items.csv'");
+			_log.warning("Extractable items data: Can not find '" + Config.DATAPACK_ROOT + "/data/extractable_skills.csv'");
 			return;
 		}
 		
@@ -64,42 +66,50 @@ public class ExtractableItemsData
 		{
 			lineCount++;
 			
-			String line = s.nextLine();
+			String line = s.nextLine().trim();
 			
 			if (line.startsWith("#"))
 				continue;
-			else if (line.equals(""))
+			else if (line.isEmpty())
 				continue;
 			
 			String[] lineSplit = line.split(";");
 			boolean ok = true;
-			int itemID = 0;
+			int skillID = 0;
+			int skillLvl = 0;
 			
 			try
 			{
-				itemID = Integer.parseInt(lineSplit[0]);
+				skillID = Integer.parseInt(lineSplit[0]);
+				skillLvl = Integer.parseInt(lineSplit[1]);
 			}
 			catch (Exception e)
 			{
-				_log.warning("Extractable items data: Error in line " + lineCount + " -> invalid item id or wrong seperator after item id!");
+				_log.warning("Extractable skills data: Error in line " + lineCount + " -> invalid item id or wrong seperator after skill id!");
 				_log.warning("		" + line);
 				ok = false;
 			}
-			
+			L2Skill skill = SkillTable.getInstance().getInfo(skillID, skillLvl);
+			if (skill == null)
+			{
+					_log.warning("Extractable skills data: Error in line " + lineCount + " -> skill is null!");
+					_log.warning("		" + line);
+					ok = false;
+			}
 			if (!ok)
 				continue;
 			
 			FastList<L2ExtractableProductItem> product_temp = new FastList<L2ExtractableProductItem>();
 			
-			for (int i = 0; i < lineSplit.length - 1; i++)
+			for (int i = 1; i < lineSplit.length -1 ; i++)
 			{
 				ok = true;
 				
 				String[] lineSplit2 = lineSplit[i + 1].split(",");
 				
-				if (lineSplit2.length < 3)
+				if (lineSplit2.length < 3 )//|| lineSplit2.length-1 %2 != 0)
 				{
-					_log.warning("Extractable items data: Error in line " + lineCount + " -> wrong seperator!");
+					_log.warning("Extractable skills data: Error in line " + lineCount + " -> wrong seperator!");
 					_log.warning("		" + line);
 					ok = false;
 				}
@@ -127,7 +137,7 @@ public class ExtractableItemsData
 				}
 				catch (Exception e)
 				{
-					_log.warning("Extractable items data: Error in line " + lineCount + " -> incomplete/invalid production data or wrong seperator!");
+					_log.warning("Extractable skills data: Error in line " + lineCount + " -> incomplete/invalid production data or wrong seperator!");
 					_log.warning("		" + line);
 					ok = false;
 				}
@@ -146,25 +156,26 @@ public class ExtractableItemsData
 			
 			if (fullChances > 100)
 			{
-				_log.warning("Extractable items data: Error in line " + lineCount + " -> all chances together are more then 100!");
+				_log.warning("Extractable skills data: Error in line " + lineCount + " -> all chances together are more then 100!");
 				_log.warning("		" + line);
 				continue;
 			}
-			L2ExtractableItem product = new L2ExtractableItem(itemID, product_temp);
-			_items.put(itemID, product);
+			int hash = SkillTable.getSkillHashCode(skill);
+			L2ExtractableSkill product = new L2ExtractableSkill(hash, product_temp);
+			_items.put(hash, product);
 		}
 		
 		s.close();
-		_log.info("Extractable items data: Loaded " + _items.size() + " extractable items!");
+		_log.info("Extractable skills data: Loaded " + _items.size() + " extractable skills!");
 	}
 	
-	public L2ExtractableItem getExtractableItem(int itemID)
+	public L2ExtractableSkill getExtractableItem(L2Skill skill)
 	{
-		return _items.get(itemID);
+		return _items.get(SkillTable.getSkillHashCode(skill));
 	}
 	
 	private static class SingletonHolder
 	{
-		protected static final ExtractableItemsData _instance = new ExtractableItemsData();
+		protected static final ExtractableSkillsData _instance = new ExtractableSkillsData();
 	}
 }

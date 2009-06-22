@@ -42,6 +42,7 @@ import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.DoorTable;
 import net.sf.l2j.gameserver.datatables.EventDroplist;
 import net.sf.l2j.gameserver.datatables.ExtractableItemsData;
+import net.sf.l2j.gameserver.datatables.ExtractableSkillsData;
 import net.sf.l2j.gameserver.datatables.FishTable;
 import net.sf.l2j.gameserver.datatables.HelperBuffTable;
 import net.sf.l2j.gameserver.datatables.HennaTable;
@@ -224,6 +225,7 @@ public class GameServer
 		_cHManager = ClanHallManager.getInstance();
 		
 		ExtractableItemsData.getInstance();
+		ExtractableSkillsData.getInstance();
 		SummonItemsData.getInstance();
 		ZoneManager.getInstance();
 		MerchantPriceConfigTable.getInstance().loadInstances();
