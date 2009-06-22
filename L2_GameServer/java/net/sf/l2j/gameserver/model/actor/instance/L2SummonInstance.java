@@ -306,8 +306,9 @@ public class L2SummonInstance extends L2Summon
 	public int getDefenseElementValue(byte attribute)
 	{
 		if (getOwner() == null)
-			return 0;
+			return super.getDefenseElementValue(attribute);
 
-		return getOwner().getDefenseElementValue(attribute);
+		// bonus from owner
+		return super.getDefenseElementValue(attribute) + getOwner().getDefenseElementValue(attribute);
 	}
 }
