@@ -89,7 +89,7 @@ public final class CharacterCreate extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if ((_name.length() < 3) || (_name.length() > 16) || !Util.isAlphaNumeric(_name) || !isValidName(_name))
+		if ((_name.length() < 2) || (_name.length() > 16) || !Util.isAlphaNumeric(_name) || !isValidName(_name))
 		{
 			if (Config.DEBUG)
 				_log.fine("charname: " + _name + " is invalid. creation failed.");
