@@ -129,6 +129,7 @@ public final class Config
 	public static int CASTLE_ZONE_FAME_TASK_FREQUENCY;
 	public static int CASTLE_ZONE_FAME_AQUIRE_POINTS;
 	public static boolean IS_CRAFTING_ENABLED;
+	public static boolean CRAFT_MASTERWORK;
 	public static int DWARF_RECIPE_LIMIT;
 	public static int COMMON_RECIPE_LIMIT;
 	public static boolean ALT_GAME_CREATION;
@@ -1207,6 +1208,7 @@ public final class Config
 					CASTLE_ZONE_FAME_TASK_FREQUENCY = Integer.parseInt(Character.getProperty("CastleZoneFameTaskFrequency","300"));
 					CASTLE_ZONE_FAME_AQUIRE_POINTS = Integer.parseInt(Character.getProperty("CastleZoneFameAquirePoints","125"));
 					IS_CRAFTING_ENABLED = Boolean.parseBoolean(Character.getProperty("CraftingEnabled", "true"));
+					CRAFT_MASTERWORK = Boolean.parseBoolean(Character.getProperty("CraftMasterwork", "True"));
 					DWARF_RECIPE_LIMIT = Integer.parseInt(Character.getProperty("DwarfRecipeLimit","50"));
 					COMMON_RECIPE_LIMIT = Integer.parseInt(Character.getProperty("CommonRecipeLimit","50"));
 					ALT_GAME_CREATION = Boolean.parseBoolean(Character.getProperty("AltGameCreation", "false"));
@@ -2194,6 +2196,7 @@ public final class Config
 		else if (pName.equalsIgnoreCase("AltPartyRange2")) ALT_PARTY_RANGE2 = Integer.parseInt(pValue);
 
 		else if (pName.equalsIgnoreCase("CraftingEnabled")) IS_CRAFTING_ENABLED = Boolean.parseBoolean(pValue);
+		else if (pName.equalsIgnoreCase("CraftMasterwork")) CRAFT_MASTERWORK = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("LifeCrystalNeeded")) LIFE_CRYSTAL_NEEDED = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("SpBookNeeded")) SP_BOOK_NEEDED = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AutoLoot")) AUTO_LOOT = Boolean.parseBoolean(pValue);

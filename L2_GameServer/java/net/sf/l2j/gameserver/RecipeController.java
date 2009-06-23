@@ -916,7 +916,7 @@ public class RecipeController
 			L2Item template = ItemTable.getInstance().getTemplate(itemId);
 			
 			// check that the current recipe has a rare production or not
-			if (rareProdId != -1)
+			if (rareProdId != -1 && (rareProdId == itemId || Config.CRAFT_MASTERWORK))
 			{
 				if (Rnd.get(100) < _recipeList.getRarity())
 				{
