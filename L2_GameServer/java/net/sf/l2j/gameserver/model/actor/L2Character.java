@@ -5160,13 +5160,9 @@ public abstract class L2Character extends L2Object
 			// Check Raidboss attack
 			// Character will be petrified if attacking a raid that's more
 			// than 8 levels lower
-			if (target.isRaid())
+			if (target.isRaid() && !Config.RAID_DISABLE_CURSE && getActingPlayer() != null)
 			{
-				int level = 0;
-				if (this instanceof L2PcInstance)
-					level = getLevel();
-				else if (this instanceof L2Summon)
-					level = ((L2Summon)this).getOwner().getLevel();
+				int level = getActingPlayer().getLevel();
 
 				if (level > target.getLevel() + 8)
 				{
@@ -6379,8 +6375,8 @@ public abstract class L2Character extends L2Object
 						targetsAttackTarget = target.getAI().getAttackTarget();
 						targetsCastTarget = target.getAI().getCastTarget();
 					}
-					if (
-							(target.isRaid() && getLevel() > target.getLevel() + 8)
+					if (!Config.RAID_DISABLE_CURSE
+							&& ((target.isRaid() && getLevel() > target.getLevel() + 8)
 							||
 							(!skill.isOffensive() && targetsAttackTarget != null && targetsAttackTarget.isRaid() 
 									&& targetsAttackTarget.getAttackByList().contains(target) // has attacked raid
@@ -6388,7 +6384,7 @@ public abstract class L2Character extends L2Object
 							||
 							(!skill.isOffensive() && targetsCastTarget != null && targetsCastTarget.isRaid() 
 									&& targetsCastTarget.getAttackByList().contains(target) // has attacked raid
-									&& getLevel() > targetsCastTarget.getLevel() + 8)
+									&& getLevel() > targetsCastTarget.getLevel() + 8))
 					)
 					{
 						if (skill.isMagic())

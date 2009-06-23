@@ -1043,7 +1043,8 @@ public class L2Attackable extends L2Npc
 
 		int deepBlueDrop = 1;
 
-		if (Config.DEEPBLUE_DROP_RULES)
+		if ((!isRaid() && Config.DEEPBLUE_DROP_RULES)
+				|| (isRaid() && Config.DEEPBLUE_DROP_RULES_RAID))
 		{
 			if (levelModifier > 0)
 			{
@@ -1060,7 +1061,8 @@ public class L2Attackable extends L2Npc
 			deepBlueDrop = 1;
 
 		// Check if we should apply our maths so deep blue mobs will not drop that easy
-		if (Config.DEEPBLUE_DROP_RULES)
+		if ((!isRaid() && Config.DEEPBLUE_DROP_RULES)
+				|| (isRaid() && Config.DEEPBLUE_DROP_RULES_RAID))
 			dropChance = ((drop.getChance() - ((drop.getChance() * levelModifier)/100)) / deepBlueDrop);
 
 		// Applies Drop rates
@@ -1149,7 +1151,8 @@ public class L2Attackable extends L2Npc
 
 		int deepBlueDrop = 1;
 
-		if (Config.DEEPBLUE_DROP_RULES)
+		if ((!isRaid() && Config.DEEPBLUE_DROP_RULES)
+				|| (isRaid() && Config.DEEPBLUE_DROP_RULES_RAID))
 		{
 			// We should multiply by the server's drop rate, so we always get a low chance of drop for deep blue mobs.
 			// NOTE: This is valid only for adena drops! Others drops will still obey server's rate
@@ -1162,7 +1165,8 @@ public class L2Attackable extends L2Npc
 			deepBlueDrop = 1;
 
 		// Check if we should apply our maths so deep blue mobs will not drop that easy
-		if (Config.DEEPBLUE_DROP_RULES)
+		if ((!isRaid() && Config.DEEPBLUE_DROP_RULES)
+				|| (isRaid() && Config.DEEPBLUE_DROP_RULES_RAID))
 			categoryDropChance = ((categoryDropChance - ((categoryDropChance * levelModifier)/100)) / deepBlueDrop);
 
 		// Applies Drop rates
@@ -1273,7 +1277,8 @@ public class L2Attackable extends L2Npc
 	 */
 	private int calculateLevelModifierForDrop(L2PcInstance lastAttacker)
 	{
-		if (Config.DEEPBLUE_DROP_RULES)
+		if ((!isRaid() && Config.DEEPBLUE_DROP_RULES)
+				|| (isRaid() && Config.DEEPBLUE_DROP_RULES_RAID))
 		{
 			int highestLevel = lastAttacker.getLevel();
 
