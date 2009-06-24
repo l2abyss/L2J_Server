@@ -73,6 +73,8 @@ public class ItemHandler
 	 */
 	public IItemHandler getItemHandler(L2EtcItem item)
 	{
+		if (item == null)
+			return null;
 		String handler = item.getHandlerName();
 		if (handler.equalsIgnoreCase("none") || item == null)
 			return null;
