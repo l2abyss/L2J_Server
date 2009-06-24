@@ -22,7 +22,6 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExVariationResult;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
-import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.item.L2Item;
@@ -260,14 +259,13 @@ public final class RequestRefine extends L2GameClientPacket
 		// finish and send the inventory update packet
 		InventoryUpdate iu = new InventoryUpdate();
 		iu.addModifiedItem(targetItem);
+		iu.addItem(gemstoneItem);
+		iu.addItem(refinerItem);
 		player.sendPacket(iu);
 
 		StatusUpdate su = new StatusUpdate(player.getObjectId());
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
 		player.sendPacket(su);
-		
-		player.sendPacket(new ItemList(player, false));
-		player.broadcastUserInfo();
 
 		return true;
 	}
