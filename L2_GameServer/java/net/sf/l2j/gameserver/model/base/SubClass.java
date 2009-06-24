@@ -110,7 +110,7 @@ public final class SubClass
 	
 	public void setLevel(byte levelValue)
 	{
-		if (levelValue >= _maxLevel)
+		if (levelValue > _maxLevel)
 			levelValue = _maxLevel;
 		else if (levelValue < 40)
 			levelValue = 40;

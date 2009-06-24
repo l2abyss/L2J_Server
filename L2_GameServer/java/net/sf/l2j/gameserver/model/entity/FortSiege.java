@@ -441,7 +441,7 @@ public class FortSiege
 	 */
 	public boolean checkIsDefender(L2Clan clan)
 	{
-		if (getFort().getOwnerClan() == clan)
+		if (clan != null && getFort().getOwnerClan() == clan)
 			return true;
 		return false;
 	}
