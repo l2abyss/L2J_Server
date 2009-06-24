@@ -786,10 +786,9 @@ public class L2Attackable extends L2Npc
 		{
 			try
 			{
-				if (attacker instanceof L2PcInstance || attacker instanceof L2Summon)
+				L2PcInstance player = attacker.getActingPlayer();
+				if (player != null)
 				{
-					L2PcInstance player = attacker instanceof L2PcInstance ? (L2PcInstance)attacker : ((L2Summon)attacker).getOwner();
-
 					if (getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK) !=null)
 						for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK))
 					quest.notifyAttack(this, player, damage, attacker instanceof L2Summon, skill);
@@ -811,14 +810,6 @@ public class L2Attackable extends L2Npc
 	{
 		if (attacker == null)
 			return;
-		if ((attacker instanceof L2PcInstance || attacker instanceof L2Summon) && !attacker.isAlikeDead())
-		{
-			L2PcInstance targetPlayer = (attacker instanceof L2PcInstance)? (L2PcInstance) attacker: ((L2Summon) attacker).getOwner();
-
-			if (getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER) !=null)
-				for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER))
-			quest.notifyAggroRangeEnter(this, targetPlayer, (attacker instanceof L2Summon));
-		}
 		// Get the AggroInfo of the attacker L2Character from the _aggroList of the L2Attackable
 		AggroInfo ai = getAggroListRP().get(attacker);
 
@@ -827,6 +818,16 @@ public class L2Attackable extends L2Npc
 		{
 			ai._hate += aggro;
 			ai._damage += damage;
+		}
+		else
+		{
+			L2PcInstance targetPlayer = attacker.getActingPlayer();
+			if (targetPlayer != null)
+			{
+				if (getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER) !=null)
+					for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER))
+				quest.notifyAggroRangeEnter(this, targetPlayer, (attacker instanceof L2Summon));
+			}
 		}
 		// Set the intention to the L2Attackable to AI_INTENTION_ACTIVE
 		if (aggro > 0 && getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
