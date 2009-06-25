@@ -23,6 +23,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2WarehouseInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.ItemContainer;
 import net.sf.l2j.gameserver.model.itemcontainer.PcFreight;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -76,7 +77,7 @@ public final class RequestPackageSend extends L2GameClientPacket
 	protected
 	void runImpl()
 	{
-		if (_items == null || _items.isEmpty())
+		if (_items == null || _items.isEmpty() || !Config.ALLOW_FREIGHT)
 			return;
 
 		L2PcInstance player = getClient().getActiveChar();
@@ -87,8 +88,11 @@ public final class RequestPackageSend extends L2GameClientPacket
 		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_USE_WAREHOUSE && player.getKarma() > 0)
 			return;
 
-		PcFreight freight = new PcFreight(null);
-		freight.doQuickRestore(_objectID);
+		// player attempts to send freight to the different account
+		if (!player.getAccountChars().containsKey(_objectID))
+			return;
+
+		PcFreight freight = player.getDepositedFreight(_objectID);
 
 		player.setActiveWarehouse(freight);
 		ItemContainer warehouse = player.getActiveWarehouse();
@@ -96,7 +100,9 @@ public final class RequestPackageSend extends L2GameClientPacket
 			return;
 
 		L2NpcInstance manager = player.getLastFolkNPC();
-		if ((manager == null || !player.isInsideRadius(manager, INTERACTION_DISTANCE, false, false)) && !player.isGM())
+		if ((manager == null
+				|| !(manager instanceof L2WarehouseInstance)
+				|| !player.isInsideRadius(manager, INTERACTION_DISTANCE, false, false)) && !player.isGM())
 			return;
 
 		if (warehouse instanceof PcFreight && !player.getAccessLevel().allowTransaction())
@@ -143,7 +149,7 @@ public final class RequestPackageSend extends L2GameClientPacket
 		}
 
 		// Check if enough adena and charge the fee
-		if (currentAdena < fee || !player.reduceAdena("Warehouse", fee, player.getLastFolkNPC(), false))
+		if (currentAdena < fee || !player.reduceAdena(warehouse.getName(), fee, player.getLastFolkNPC(), false))
 		{
 			sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
 			return;
@@ -163,7 +169,7 @@ public final class RequestPackageSend extends L2GameClientPacket
 			if (oldItem.isHeroItem())
 				continue;
 
-			L2ItemInstance newItem = player.getInventory().transferItem("Warehouse", i.objectId, i.count, warehouse, player, manager);
+			L2ItemInstance newItem = player.getInventory().transferItem(warehouse.getName(), i.objectId, i.count, warehouse, player, manager);
 			if (newItem == null)
 			{
 				_log.warning("Error depositing a warehouse object for char "+player.getName()+" (newitem == null)");

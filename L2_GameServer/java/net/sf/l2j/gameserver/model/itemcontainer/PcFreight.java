@@ -35,12 +35,13 @@ public class PcFreight extends ItemContainer
         _owner = owner;
     }
 
+    public String getName() { return "Freight"; }
+
 	@Override
 	public L2PcInstance getOwner() { return _owner; }
     @Override
 	public ItemLocation getBaseLocation() { return ItemLocation.FREIGHT; }
     public void setActiveLocation(int locationId) { _activeLocationId = locationId; }
-    public int getactiveLocation() { return _activeLocationId; }
 
 	/**
 	 * Returns the quantity of items in the inventory

@@ -90,7 +90,9 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 			return;
 
 		L2NpcInstance manager = player.getLastFolkNPC();
-		if ((manager == null || !player.isInsideRadius(manager, L2Npc.INTERACTION_DISTANCE, false, false)) && !player.isGM())
+		if ((manager == null
+				|| !manager.isWarehouse()
+				|| !player.isInsideRadius(manager, L2Npc.INTERACTION_DISTANCE, false, false)) && !player.isGM())
 			return;
 
 		if ((warehouse instanceof ClanWarehouse) && !player.getAccessLevel().allowTransaction())
@@ -140,7 +142,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 		}
 
 		// Check if enough adena and charge the fee
-		if (currentAdena < fee || !player.reduceAdena("Warehouse", fee, player.getLastFolkNPC(), false))
+		if (currentAdena < fee || !player.reduceAdena(warehouse.getName(), fee, player.getLastFolkNPC(), false))
 		{
 			sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
 			return;
@@ -163,7 +165,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 					|| oldItem.getItemType() == L2EtcItemType.QUEST)
 				continue;
 
-			L2ItemInstance newItem = player.getInventory().transferItem("Warehouse", i.getObjectId(), i.getCount(), warehouse, player, manager);
+			L2ItemInstance newItem = player.getInventory().transferItem(warehouse.getName(), i.getObjectId(), i.getCount(), warehouse, player, manager);
 			if (newItem == null)
 			{
 				_log.warning("Error depositing a warehouse object for char "+player.getName()+" (newitem == null)");

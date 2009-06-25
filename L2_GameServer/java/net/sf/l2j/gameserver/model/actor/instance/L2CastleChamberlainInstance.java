@@ -255,7 +255,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 				{
 					if (val.isEmpty())
 						return;
-					player.tempInvetoryDisable();
+					player.tempInventoryDisable();
 
 					if (Config.DEBUG)
 						_log.fine("Showing chamberlain buylist");

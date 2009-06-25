@@ -44,6 +44,12 @@ public class L2CastleWarehouseInstance extends L2NpcInstance
 		super(objectId, template);
 	}
 
+	@Override
+	public boolean isWarehouse()
+	{
+		return true;
+	}
+
 	private void showRetrieveWindow(L2PcInstance player, WarehouseListType itemtype, byte sortorder)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
@@ -65,7 +71,7 @@ public class L2CastleWarehouseInstance extends L2NpcInstance
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 		player.setActiveWarehouse(player.getWarehouse());
-		player.tempInvetoryDisable();
+		player.tempInventoryDisable();
 		player.sendPacket(new WareHouseDepositList(player, WareHouseDepositList.PRIVATE));
 	}
 
@@ -83,7 +89,7 @@ public class L2CastleWarehouseInstance extends L2NpcInstance
 					player.sendPacket(new SystemMessage(SystemMessageId.ONLY_CLAN_LEADER_CAN_RETRIEVE_ITEMS_FROM_CLAN_WAREHOUSE));
 
 				player.setActiveWarehouse(player.getClan().getWarehouse());
-				player.tempInvetoryDisable();
+				player.tempInventoryDisable();
 				WareHouseDepositList dl = new WareHouseDepositList(player, WareHouseDepositList.CLAN);
 				player.sendPacket(dl);
 			}

@@ -53,6 +53,12 @@ public class L2FortManagerInstance extends L2MerchantInstance
 		super(objectId, template);
 	}
 
+	@Override
+	public boolean isWarehouse()
+	{
+		return true;
+	}
+
 	private void sendHtmlMessage(L2PcInstance player, NpcHtmlMessage html)
 	{
 		html.replace("%objectId%", String.valueOf(getObjectId()));

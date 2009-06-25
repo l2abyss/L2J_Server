@@ -530,6 +530,14 @@ public class L2Npc extends L2Character
 		_busyMessage = message;
 	}
 
+	/**
+	 * Return true if this L2Npc instance can be warehouse manager.<BR><BR> 
+	 */
+	public boolean isWarehouse()
+	{
+		return false;
+	}
+
 	protected boolean canTarget(L2PcInstance player)
 	{
 		if (player.isOutOfControl())

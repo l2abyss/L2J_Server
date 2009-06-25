@@ -42,6 +42,12 @@ public final class L2WarehouseInstance extends L2NpcInstance
 	}
 
 	@Override
+	public boolean isWarehouse()
+	{
+		return true;
+	}
+
+	@Override
 	public String getHtmlPath(int npcId, int val)
 	{
 		String pom = "";
@@ -78,7 +84,7 @@ public final class L2WarehouseInstance extends L2NpcInstance
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 		player.setActiveWarehouse(player.getWarehouse());
-		player.tempInvetoryDisable();
+		player.tempInventoryDisable();
 
 		if (Config.DEBUG) _log.fine("Source: L2WarehouseInstance.java; Player: "+player.getName()+"; Command: showDepositWindow; Message: Showing items to deposit.");
 			player.sendPacket(new WareHouseDepositList(player, WareHouseDepositList.PRIVATE));
@@ -95,7 +101,7 @@ public final class L2WarehouseInstance extends L2NpcInstance
 			else
 			{
 				player.setActiveWarehouse(player.getClan().getWarehouse());
-				player.tempInvetoryDisable();
+				player.tempInventoryDisable();
 				WareHouseDepositList dl = new WareHouseDepositList(player, WareHouseDepositList.CLAN);
 				player.sendPacket(dl);
 
@@ -189,8 +195,7 @@ public final class L2WarehouseInstance extends L2NpcInstance
 	private void showDepositWindowFreight(L2PcInstance player, int obj_Id)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
-		PcFreight freight = new PcFreight(null);
-		freight.doQuickRestore(obj_Id);
+		PcFreight freight = player.getDepositedFreight(obj_Id);
 
 		if (Config.ALT_GAME_FREIGHTS)
 			freight.setActiveLocation(0);
@@ -198,7 +203,7 @@ public final class L2WarehouseInstance extends L2NpcInstance
 			freight.setActiveLocation(getWorldRegion().hashCode());
 
 		player.setActiveWarehouse(freight);
-		player.tempInvetoryDisable();
+		player.tempInventoryDisable();
 
 		if (Config.DEBUG)
 			_log.fine("Source: L2WarehouseInstance.java; Player: "+player.getName()+"; Command: showDepositWindowFreight; Message: Showing items to freight.");

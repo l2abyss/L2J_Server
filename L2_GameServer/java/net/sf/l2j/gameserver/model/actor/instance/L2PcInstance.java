@@ -497,7 +497,8 @@ public final class L2PcInstance extends L2Playable
 
 	private PcInventory _inventory = new PcInventory(this);
 	private PcWarehouse _warehouse;
-	private PcFreight _freight = new PcFreight(this);
+	private PcFreight _freight;
+	private List<PcFreight> _depositedFreight;
 
 	/** The Private Store type of the L2PcInstance (STORE_PRIVATE_NONE=0, STORE_PRIVATE_SELL=1, sellmanage=2, STORE_PRIVATE_BUY=3, buymanage=4, STORE_PRIVATE_MANUFACTURE=5) */
 	private int _privatestore;
@@ -1073,7 +1074,7 @@ public final class L2PcInstance extends L2Playable
 		getInventory().restore();
 		if (!Config.WAREHOUSE_CACHE)
 			getWarehouse();
-		getFreight().restore();
+		getFreight();
 	}
 
 	private L2PcInstance(int objectId)
@@ -2943,7 +2944,71 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public PcFreight getFreight()
 	{
+		if (_freight == null)
+		{
+			_freight = new PcFreight(this);
+			_freight.restore();
+		}
 		return _freight;
+	}
+
+	/**
+	 * Free memory used by Freight
+	 */
+	public void clearFreight()
+	{
+		if (_freight != null)
+			_freight.deleteMe();
+		_freight = null;
+	}
+
+	/**
+	 * Return deposited PcFreight object for the objectId
+	 * or create new if not exist 
+	 */
+	public PcFreight getDepositedFreight(int objectId)
+	{
+		if (_depositedFreight == null)
+			_depositedFreight = new FastList<PcFreight>();
+		else
+		{
+			for (PcFreight freight : _depositedFreight)
+			{
+				if (freight != null && freight.getOwnerId() == objectId)
+					return freight;
+			}
+		}
+
+		PcFreight freight = new PcFreight(null);
+		freight.doQuickRestore(objectId);
+		_depositedFreight.add(freight);
+		return freight;
+	}
+
+	/**
+	 * Clear memory used by deposited freight
+	 */
+	public void clearDepositedFreight()
+	{
+		if (_depositedFreight == null)
+			return;
+
+		for (PcFreight freight : _depositedFreight)
+		{
+			if (freight != null)
+			{
+				try
+				{
+					freight.deleteMe();
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.SEVERE, "clearDepositedFreight()", e);
+				}
+			}
+		}
+		_depositedFreight.clear();
+		_depositedFreight = null;
 	}
 
 	/**
@@ -9062,7 +9127,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * Disable the Inventory and create a new task to enable it after 1.5s.<BR><BR>
 	 */
-	public void tempInvetoryDisable()
+	public void tempInventoryDisable()
 	{
 		_inventoryDisable  = true;
 
@@ -9072,7 +9137,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * Return True if the Inventory is disabled.<BR><BR>
 	 */
-	public boolean isInvetoryDisabled()
+	public boolean isInventoryDisabled()
 	{
 		return _inventoryDisable;
 	}
@@ -11094,13 +11159,22 @@ public final class L2PcInstance extends L2Playable
 		// Update database with items in its freight and remove them from the world
 		try
 		{
-			getFreight().deleteMe();
+			clearFreight();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "deleteMe()", e);
 		}
-		
+
+		try
+		{
+			clearDepositedFreight();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+
 		// Remove all L2Object from _knownObjects and _knownPlayer of the L2Character then cancel Attak or Cast and notify AI
 		try
 		{

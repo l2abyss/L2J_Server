@@ -81,7 +81,7 @@ public class L2MerchantInstance extends L2NpcInstance
 
     private final void showWearWindow(L2PcInstance player, int val)
     {
-        player.tempInvetoryDisable();
+        player.tempInventoryDisable();
 
         if (Config.DEBUG) _log.fine("Showing wearlist");
 
@@ -105,7 +105,7 @@ public class L2MerchantInstance extends L2NpcInstance
 
         taxRate = this.getMpc().getTotalTaxRate();
         
-        player.tempInvetoryDisable();
+        player.tempInventoryDisable();
 
         if (Config.DEBUG)
         {

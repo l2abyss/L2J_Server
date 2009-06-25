@@ -101,7 +101,7 @@ public class L2MerchantSummonInstance extends L2SummonInstance
 
         taxRate = 50;
         
-        player.tempInvetoryDisable();
+        player.tempInventoryDisable();
 
         if (Config.DEBUG)
         {

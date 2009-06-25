@@ -55,6 +55,12 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 		super(objectId, template);
 	}
 
+	@Override
+	public boolean isWarehouse()
+	{
+		return true;
+	}
+
     @Override
     public void onBypassFeedback(L2PcInstance player, String command)
     {
