@@ -60,6 +60,8 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 		else
 		{
 			activeChar.reduceAdena("RemoveElement", 50000, activeChar, true);
+			if (targetItem.isEquipped())
+				targetItem.getElementals().removeBonus(activeChar); 
 			targetItem.clearElementAttr();
 			InventoryUpdate iu = new InventoryUpdate();
 			iu.addModifiedItem(targetItem);
