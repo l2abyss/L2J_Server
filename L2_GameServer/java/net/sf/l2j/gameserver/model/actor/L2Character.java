@@ -367,11 +367,27 @@ public abstract class L2Character extends L2Object
 		}
 		else
 		{
-			// Initialize the FastMap _skills to null
-			_skills = new FastMap<Integer,L2Skill>().setShared(true);
-
 			// If L2Character is a L2PcInstance or a L2Summon, create the basic calculator set
 			_calculators = new Calculator[Stats.NUM_STATS];
+
+			if (this instanceof L2Summon)
+			{
+				// Copy the skills of the L2Summon from its template to the L2Character Instance
+				// The skills list can be affected by spell effects so it's necessary to make a copy
+				// to avoid that a spell affecting a L2Summon, affects others L2Summon of the same type too.
+				_skills = ((L2NpcTemplate)template).getSkills();
+				if (_skills != null)
+				{
+					for(Map.Entry<Integer, L2Skill> skill : _skills.entrySet())
+						addStatFuncs(skill.getValue().getStatFuncs(null, this));
+				}
+			}
+			else
+			{
+				// Initialize the FastMap _skills to null
+				_skills = new FastMap<Integer,L2Skill>().setShared(true);
+			}
+
 			Formulas.addFuncsToNewCharacter(this);
 		}
 
@@ -3769,7 +3785,7 @@ public abstract class L2Character extends L2Object
 		
 		for (Stats stat : stats)
 		{
-			if (this instanceof L2Summon)
+			if (this instanceof L2Summon && ((L2Summon)this).getOwner() != null)
 			{
 				((L2Summon)this).updateAndBroadcastStatus(1);
 				break;
