@@ -628,7 +628,7 @@ public class L2PetInstance extends L2Summon
 	public void deleteMe(L2PcInstance owner)
     {
         super.deleteMe(owner);
-        destroyControlItem(owner); //this should also delete the pet from the db
+        destroyControlItem(owner, false); //this should also delete the pet from the db
     }
     
 	@Override
@@ -763,7 +763,7 @@ public class L2PetInstance extends L2Summon
 	 * Remove the Pet from DB and its associated item from the player inventory
      * @param owner The owner from whose invenory we should delete the item
 	 */
-	public void destroyControlItem(L2PcInstance owner)
+	public void destroyControlItem(L2PcInstance owner, boolean evolve)
 	{
 		// remove the pet instance from world
 		L2World.getInstance().removePet(owner.getObjectId());
@@ -771,8 +771,16 @@ public class L2PetInstance extends L2Summon
 		// delete from inventory
 		try
 		{
-			L2ItemInstance removedItem = owner.getInventory().destroyItem("PetDestroy", getControlItemId(), 1, getOwner(), this);
-			owner.sendPacket(new SystemMessage(SystemMessageId.S1_DISAPPEARED).addItemName(removedItem));
+			L2ItemInstance removedItem;
+			if (evolve)
+			{
+				removedItem = owner.getInventory().destroyItem("Evolve", getControlItemId(), 1, getOwner(), this);
+			}
+			else
+			{
+				removedItem = owner.getInventory().destroyItem("PetDestroy", getControlItemId(), 1, getOwner(), this);
+				owner.sendPacket(new SystemMessage(SystemMessageId.S1_DISAPPEARED).addItemName(removedItem));
+			}
 
 			InventoryUpdate iu = new InventoryUpdate();
 			iu.addRemovedItem(removedItem);
