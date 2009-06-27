@@ -533,7 +533,7 @@ public class LoginController
 	public boolean loginValid(String user, String password, L2LoginClient client)// throws HackingException
 	{
 		boolean ok = false;
-		InetAddress address = client.getConnection().getSocket().getInetAddress();
+		InetAddress address = client.getConnection().getInetAddress();
 		// log it anyway
 		if (Config.LOG_LOGIN_CONTROLLER)
 			Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()), "logins_ip");

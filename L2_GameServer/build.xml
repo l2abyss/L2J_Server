@@ -209,6 +209,7 @@
     	<copy todir="${build.dist.login}/config">
 			<fileset dir="java/config">
 				<include name="loginserver.properties"/>
+				<include name="mmo.properties"/>
 				<include name="telnet.properties"/>
 			</fileset>
 		</copy>

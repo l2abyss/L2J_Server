@@ -177,17 +177,21 @@ public class L2LoginServer
 		}
 
 		
-		L2LoginPacketHandler loginPacketHandler = new L2LoginPacketHandler();
-		SelectorHelper sh = new SelectorHelper();
-        SelectorConfig ssc = new SelectorConfig(null, null, sh, loginPacketHandler);
+		final SelectorConfig sc = new SelectorConfig();
+		sc.MAX_READ_PER_PASS = Config.MMO_MAX_READ_PER_PASS;
+		sc.MAX_SEND_PER_PASS = Config.MMO_MAX_SEND_PER_PASS;
+		sc.SLEEP_TIME = Config.MMO_SELECTOR_SLEEP_TIME;
+		sc.HELPER_BUFFER_COUNT = Config.MMO_HELPER_BUFFER_COUNT;
+		
+		final L2LoginPacketHandler lph = new L2LoginPacketHandler();
+		final SelectorHelper sh = new SelectorHelper();
 		try
 		{
-			_selectorThread = new SelectorThread<L2LoginClient>(ssc, sh, sh, sh);
-			_selectorThread.setAcceptFilter(sh);
+			_selectorThread = new SelectorThread<L2LoginClient>(sc, sh, lph, sh, sh);
 		}
 		catch (IOException e)
 		{
-			_log.log(Level.SEVERE, "FATAL: Failed to open Selector. Reason: "+e.getMessage(), e);
+			_log.log(Level.SEVERE, "FATAL: Failed to open Selector. Reason: " + e.getMessage(), e);
 			if (Config.DEVELOPER)
 			{
 				e.printStackTrace();

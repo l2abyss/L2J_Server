@@ -57,6 +57,7 @@ public final class Config
 	public static final String SIEGE_CONFIGURATION_FILE = "./config/siege.properties";
 	public static final String TELNET_FILE = "./config/telnet.properties";
 	public static final String FLOOD_PROTECTOR_FILE = "./config/floodprotector.properties";
+	public static final String MMO_CONFIG_FILE = "./config/mmo.properties";
 
 
 	//--------------------------------------------------
@@ -709,6 +710,20 @@ public final class Config
 	public static int MIN_PROTOCOL_REVISION;
 	public static int MAX_PROTOCOL_REVISION;
 	public static boolean LOG_LOGIN_CONTROLLER;
+	
+	/** ************************************************** **/
+	/** MMO Settings - Begin **/
+	/** ************************************************** **/
+	
+	public static int MMO_SELECTOR_SLEEP_TIME;
+	public static int MMO_MAX_SEND_PER_PASS;
+	public static int MMO_MAX_READ_PER_PASS;
+	public static int MMO_HELPER_BUFFER_COUNT;
+	public static int MMO_IO_SELECTOR_THREAD_COUNT;
+	
+	/** ************************************************** **/
+	/** MMO Settings - End **/
+	/** ************************************************** **/
 
 
 	//--------------------------------------------------
@@ -1304,6 +1319,25 @@ public final class Config
 				{
 					e.printStackTrace();
 					throw new Error("Failed to Load "+TELNET_FILE+" File.");
+				}
+				
+				// MMO
+				try
+				{
+					_log.info("Loading " + MMO_CONFIG_FILE.replaceAll("./config/", ""));
+					Properties mmoSettings = new Properties();
+					is = new FileInputStream(new File(MMO_CONFIG_FILE));
+					mmoSettings.load(is);
+					MMO_SELECTOR_SLEEP_TIME = Integer.parseInt(mmoSettings.getProperty("SleepTime", "20"));
+					MMO_IO_SELECTOR_THREAD_COUNT = Integer.parseInt(mmoSettings.getProperty("IOSelectorThreadCount", "2"));
+					MMO_MAX_SEND_PER_PASS = Integer.parseInt(mmoSettings.getProperty("MaxSendPerPass", "12"));
+					MMO_MAX_READ_PER_PASS = Integer.parseInt(mmoSettings.getProperty("MaxReadPerPass", "12"));
+					MMO_HELPER_BUFFER_COUNT = Integer.parseInt(mmoSettings.getProperty("HelperBufferCount", "20"));
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+					throw new Error("Failed to Load " + MMO_CONFIG_FILE + " File.");
 				}
 
 				// Load IdFactory Properties file (if exists)
@@ -1975,6 +2009,25 @@ public final class Config
 				{
 					e.printStackTrace();
 					throw new Error("Failed to Load "+CONFIGURATION_FILE+" File.");
+				}
+				
+				// MMO 
+				try
+				{
+					_log.info("Loading " + MMO_CONFIG_FILE.replaceAll("./config/", ""));
+					Properties mmoSettings = new Properties();
+					is = new FileInputStream(new File(MMO_CONFIG_FILE));
+					mmoSettings.load(is);
+					MMO_SELECTOR_SLEEP_TIME = Integer.parseInt(mmoSettings.getProperty("SleepTime", "20"));
+					MMO_IO_SELECTOR_THREAD_COUNT = Integer.parseInt(mmoSettings.getProperty("IOSelectorThreadCount", "2"));
+					MMO_MAX_SEND_PER_PASS = Integer.parseInt(mmoSettings.getProperty("MaxSendPerPass", "12"));
+					MMO_MAX_READ_PER_PASS = Integer.parseInt(mmoSettings.getProperty("MaxReadPerPass", "12"));
+					MMO_HELPER_BUFFER_COUNT = Integer.parseInt(mmoSettings.getProperty("HelperBufferCount", "20"));
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+					throw new Error("Failed to Load " + MMO_CONFIG_FILE + " File.");
 				}
 
 				// Load Telnet Properties file (if exists)

@@ -69,7 +69,7 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 	{
 		super(con);
 		_state = LoginClientState.CONNECTED;
-		String ip = getConnection().getSocket().getInetAddress().getHostAddress();
+		String ip = getConnection().getInetAddress().getHostAddress();
 
 		if (Util.isInternalIP(ip))
 		{
@@ -103,7 +103,7 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			closeNow();
+			super.getConnection().close(null);
 			return false;
 		}
 
@@ -112,7 +112,7 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 			byte[] dump = new byte[size];
 			System.arraycopy(buf.array(), buf.position(), dump, 0, size);
 			_log.warning("Wrong checksum from client: "+toString());
-			closeNow();
+			super.getConnection().close(null);
 		}
 
 		return ret;
@@ -265,7 +265,7 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 	@Override
 	public String toString()
 	{
-		InetAddress address = getConnection().getSocket().getInetAddress();
+		InetAddress address = getConnection().getInetAddress();
 		if (getState() == LoginClientState.AUTHED_LOGIN)
 		{
 			return "["+getAccount()+" ("+(address == null ? "disconnected" : address.getHostAddress())+")]";
@@ -274,5 +274,11 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 		{
 			return "["+(address == null ? "disconnected" : address.getHostAddress())+"]";
 		}
+	}
+	
+	@Override
+	protected void onForcedDisconnection()
+	{
+		// Empty
 	}
 }

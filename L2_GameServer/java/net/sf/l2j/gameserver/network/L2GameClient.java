@@ -546,10 +546,9 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
     	}
     }
 
-    @Override
     public void closeNow()
     {
-    	super.closeNow();
+    	super.getConnection().close(null);
     	cleanMe(true);
     }
     
@@ -561,7 +560,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	{
 		try
 		{
-			InetAddress address = getConnection().getSocket().getInetAddress();
+			InetAddress address = getConnection().getInetAddress();
 			switch (getState())
 			{
 				case CONNECTED:

@@ -480,12 +480,14 @@ public class GameServer
 		_loginThread = LoginServerThread.getInstance();
 		_loginThread.start();
 		
-		L2GamePacketHandler gph = new L2GamePacketHandler();
-		SelectorConfig<L2GameClient> sc = new SelectorConfig<L2GameClient>(null, null, gph, gph);
-		sc.setMaxSendPerPass(12);
-		sc.setSelectorSleepTime(20);
+		final SelectorConfig sc = new SelectorConfig();
+		sc.MAX_READ_PER_PASS = Config.MMO_MAX_READ_PER_PASS;
+		sc.MAX_SEND_PER_PASS = Config.MMO_MAX_SEND_PER_PASS;
+		sc.SLEEP_TIME = Config.MMO_SELECTOR_SLEEP_TIME;
+		sc.HELPER_BUFFER_COUNT = Config.MMO_HELPER_BUFFER_COUNT;
 		
-		_selectorThread = new SelectorThread<L2GameClient>(sc, gph, gph, null);
+		final L2GamePacketHandler gph = new L2GamePacketHandler();
+		_selectorThread = new SelectorThread<L2GameClient>(sc, gph, gph, gph, null);
 		
 		InetAddress bindAddress = null;
 		if (!Config.GAMESERVER_HOSTNAME.equals("*"))

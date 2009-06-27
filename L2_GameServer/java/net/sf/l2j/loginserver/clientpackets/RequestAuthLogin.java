@@ -72,7 +72,7 @@ public class RequestAuthLogin extends L2LoginClientPacket
 	@Override
 	public boolean readImpl()
 	{
-		if (getAvaliableBytes() >= 128)
+		if (super._buf.remaining() >= 128)
 		{
 			readB(_raw);
 			return true;
@@ -162,7 +162,7 @@ public class RequestAuthLogin extends L2LoginClientPacket
 		}
 		catch (HackingException e)
 		{
-			InetAddress address = getClient().getConnection().getSocket().getInetAddress();
+			InetAddress address = getClient().getConnection().getInetAddress();
 			lc.addBanForAddress(address, Config.LOGIN_BLOCK_AFTER_BAN*1000);
 			_log.info("Banned ("+address+") for "+Config.LOGIN_BLOCK_AFTER_BAN+" seconds, due to "+e.getConnects()+" incorrect login attempts.");
 		}
