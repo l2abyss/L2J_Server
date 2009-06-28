@@ -800,9 +800,6 @@ public final class Config
 	public static boolean ACCEPT_NEW_GAMESERVER;
 	public static int SERVER_ID;
 	public static byte[] HEX_ID;
-	public static int MINIMUM_UPDATE_DISTANCE;
-	public static int KNOWNLIST_FORGET_DELAY;
-	public static int MINIMUN_UPDATE_TIME;
 	public static boolean AUTO_CREATE_ACCOUNTS;
 	public static boolean FLOOD_PROTECTION;
 	public static int FAST_CONNECTION_LIMIT;
@@ -1377,8 +1374,8 @@ public final class Config
 					GM_STARTUP_AUTO_LIST = Boolean.parseBoolean(General.getProperty("GMStartupAutoList", "False"));
 					GM_STARTUP_DIET_MODE = Boolean.parseBoolean(General.getProperty("GMStartupDietMode", "False"));
 					GM_ADMIN_MENU_STYLE = General.getProperty("GMAdminMenuStyle", "modern");
-					GM_ITEM_RESTRICTION = Boolean.parseBoolean(General.getProperty("GmItemRestriction", "True"));
-					GM_SKILL_RESTRICTION = Boolean.parseBoolean(General.getProperty("GmSkillRestriction", "True"));
+					GM_ITEM_RESTRICTION = Boolean.parseBoolean(General.getProperty("GMItemRestriction", "True"));
+					GM_SKILL_RESTRICTION = Boolean.parseBoolean(General.getProperty("GMSkillRestriction", "True"));
 					BYPASS_VALIDATION = Boolean.parseBoolean(General.getProperty("BypassValidation", "True"));
 					GAMEGUARD_ENFORCE = Boolean.parseBoolean(General.getProperty("GameGuardEnforce", "True"));
 					GAMEGUARD_PROHIBITACTION = Boolean.parseBoolean(General.getProperty("GameGuardProhibitAction", "True"));
@@ -1461,7 +1458,6 @@ public final class Config
 					ALLOW_MANOR = Boolean.parseBoolean(General.getProperty("AllowManor", "True"));
 					ALLOW_BOAT = Boolean.parseBoolean(General.getProperty("AllowBoat", "True"));
 					ALLOW_CURSED_WEAPONS = Boolean.parseBoolean(General.getProperty("AllowCursedWeapons", "True"));
-					ALLOW_MANOR = Boolean.parseBoolean(General.getProperty("AllowManor", "True"));
 					ALLOW_NPC_WALKERS = Boolean.parseBoolean(General.getProperty("AllowNpcWalkers", "true"));
 					ALLOW_PET_WALKERS = Boolean.parseBoolean(General.getProperty("AllowPetWalkers", "True"));
 					SERVER_NEWS = Boolean.parseBoolean(General.getProperty("ShowServerNews", "False"));
@@ -2143,10 +2139,7 @@ public final class Config
 
 		else if (pName.equalsIgnoreCase("ZoneTown")) ZONE_TOWN = Integer.parseInt(pValue);
 
-		else if (pName.equalsIgnoreCase("MaximumUpdateDistance")) MINIMUM_UPDATE_DISTANCE = Integer.parseInt(pValue);
-		else if (pName.equalsIgnoreCase("MinimumUpdateTime")) MINIMUN_UPDATE_TIME = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("CheckKnownList")) CHECK_KNOWN = Boolean.parseBoolean(pValue);
-		else if (pName.equalsIgnoreCase("KnownListForgetDelay")) KNOWNLIST_FORGET_DELAY = Integer.parseInt(pValue);
 
 		else if (pName.equalsIgnoreCase("UseDeepBlueDropRules")) DEEPBLUE_DROP_RULES = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AllowGuards")) GUARD_ATTACK_AGGRO_MOB = Boolean.parseBoolean(pValue);
@@ -2386,6 +2379,7 @@ public final class Config
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_SUBCLASS, "Subclass", "20");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_DROP_ITEM, "DropItem", "10");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_SERVER_BYPASS, "ServerBypass", "5");
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_MULTISELL, "MultiSell", "1");
 	}
 	
 	/**
