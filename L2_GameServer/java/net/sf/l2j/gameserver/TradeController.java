@@ -307,6 +307,7 @@ public class TradeController
 	{
 		Connection con = null;
 		PreparedStatement statement;
+		int listId;
 		
 		try
 		{
@@ -316,8 +317,7 @@ public class TradeController
 			{
 				if (list.hasLimitedStockItem())
 				{
-					
-					int listId = list.getListId();
+					listId = list.getListId();
 					
 					for (L2TradeItem item : list.getItems())
 					{
