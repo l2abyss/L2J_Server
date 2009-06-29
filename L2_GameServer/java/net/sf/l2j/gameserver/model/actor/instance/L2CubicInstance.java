@@ -619,6 +619,9 @@ public class L2CubicInstance
 	{
 		for (L2Character target: (L2Character[]) targets)
 		{
+			if (target == null || target.isDead())
+				continue;
+
 			if (skill.isOffensive())
 			{
 				byte shld = Formulas.calcShldUse(activeCubic.getOwner(), target, skill);
