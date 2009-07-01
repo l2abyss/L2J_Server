@@ -652,9 +652,9 @@ public abstract class L2Character extends L2Object
 		revalidateZone(true);
 	}
 
-	public void teleToLocation(int x, int y, int z) { teleToLocation(x, y, z, 0, false); }
+	public void teleToLocation(int x, int y, int z) { teleToLocation(x, y, z, getHeading(), false); }
 	
-	public void teleToLocation(int x, int y, int z, boolean allowRandomOffset) { teleToLocation(x, y, z, 0, allowRandomOffset); }
+	public void teleToLocation(int x, int y, int z, boolean allowRandomOffset) { teleToLocation(x, y, z, getHeading(), allowRandomOffset); }
 	
 	public void teleToLocation(Location loc, boolean allowRandomOffset)
 	{
