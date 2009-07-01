@@ -3979,9 +3979,11 @@ public final class L2PcInstance extends L2Playable
 			return;
 		}
 
+		// Aggression target lock effect
 		if (player.isLockedTarget() && player.getLockedTarget() != this)
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
+			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 
