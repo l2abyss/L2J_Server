@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
+import java.util.Arrays;
+
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.SkillTable;
@@ -25,6 +27,7 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 public class L2WyvernManagerInstance extends L2CastleChamberlainInstance
 {
+	private static final int[] STRIDERS = { 12526, 12527, 12528, 16038, 16039, 16040 };
 
     public L2WyvernManagerInstance (int objectId, L2NpcTemplate template)
     {
@@ -59,7 +62,7 @@ public class L2WyvernManagerInstance extends L2CastleChamberlainInstance
         			return;
         		}
         	}
-        	else if ((player.getPet().getNpcId()==12526) || (player.getPet().getNpcId()==12527) || (player.getPet().getNpcId()==12528))
+        	else if (Arrays.binarySearch(STRIDERS, player.getPet().getNpcId()) >= 0 )
             {
         		if (player.getInventory().getItemByItemId(1460) != null && player.getInventory().getItemByItemId(1460).getCount() >= 25)
         		{
