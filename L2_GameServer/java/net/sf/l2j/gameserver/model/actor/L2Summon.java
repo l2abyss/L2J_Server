@@ -198,7 +198,7 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public void onAction(L2PcInstance player)
     {
-		L2Character target = player.getLockedTarget();
+		L2Object target = player.getTarget();
 
 		// Aggression target lock effect
 		if (player.isLockedTarget() && target != this)
