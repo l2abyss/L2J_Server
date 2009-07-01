@@ -218,12 +218,16 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 							return;
 						}
 
-						L2ItemInstance crystals = activeChar.getInventory().addItem("Enchant", crystalId, count, activeChar, destroyItem);
+						L2ItemInstance crystals = null;
+						if (crystalId != 0)
+						{
+							crystals = activeChar.getInventory().addItem("Enchant", crystalId, count, activeChar, destroyItem);
 
-						sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
-						sm.addItemName(crystals);
-						sm.addItemNumber(count);
-						activeChar.sendPacket(sm);
+							sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
+							sm.addItemName(crystals);
+							sm.addItemNumber(count);
+							activeChar.sendPacket(sm);
+						}
 
 						if (!Config.FORCE_INVENTORY_UPDATE)
 						{
@@ -232,7 +236,8 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 								iu.addRemovedItem(destroyItem);
 							else
 								iu.addModifiedItem(destroyItem);
-							iu.addItem(crystals);
+							if (crystals != null)
+								iu.addItem(crystals);
 
 							activeChar.sendPacket(iu);
 						}
@@ -241,9 +246,11 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 
 						L2World world = L2World.getInstance();
 						world.removeObject(destroyItem);
-						activeChar.sendPacket(new EnchantResult(1, crystalId, count));
+						if (crystalId == 0)
+							activeChar.sendPacket(new EnchantResult(4, 0, 0));
+						else
+							activeChar.sendPacket(new EnchantResult(1, crystalId, count));
 					}
-
 				}
 			}
 			sm = null;
