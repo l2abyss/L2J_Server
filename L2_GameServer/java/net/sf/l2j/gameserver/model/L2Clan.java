@@ -119,24 +119,25 @@ public class L2Clan
     public static final int CP_CL_DISMISS = 64;
     /** Privilege to register clan crest */
     public static final int CP_CL_REGISTER_CREST = 128;
-    public static final int CP_CL_MASTER_RIGHTS = 256;
-    public static final int CP_CL_MANAGE_LEVELS = 512;
+    public static final int CP_CL_APPRENTICE = 256;
+    public static final int CP_CL_TROOPS_FAME = 512;
+    public static final int CP_CL_SUMMON_AIRSHIP = 1024;
     /** Privilege to open a door */
-    public static final int CP_CH_OPEN_DOOR = 1024;
-    public static final int CP_CH_OTHER_RIGHTS = 2048;
-    public static final int CP_CH_AUCTION = 4096;
-    public static final int CP_CH_DISMISS = 8192;
-    public static final int CP_CH_SET_FUNCTIONS = 16384;
-    public static final int CP_CS_OPEN_DOOR = 32768;
-    public static final int CP_CS_MANOR_ADMIN = 65536;
-    public static final int CP_CS_MANAGE_SIEGE = 131072;
-    public static final int CP_CS_USE_FUNCTIONS = 262144;
-    public static final int CP_CS_DISMISS = 524288;
-    public static final int CP_CS_TAXES =1048576;
-    public static final int CP_CS_MERCENARIES =2097152;
-    public static final int CP_CS_SET_FUNCTIONS =4194304;
+    public static final int CP_CH_OPEN_DOOR = 2048;
+    public static final int CP_CH_OTHER_RIGHTS = 4096;
+    public static final int CP_CH_AUCTION = 8192;
+    public static final int CP_CH_DISMISS = 16384;
+    public static final int CP_CH_SET_FUNCTIONS = 32768;
+    public static final int CP_CS_OPEN_DOOR = 65536;
+    public static final int CP_CS_MANOR_ADMIN = 131072;
+    public static final int CP_CS_MANAGE_SIEGE = 262144;
+    public static final int CP_CS_USE_FUNCTIONS = 524288;
+    public static final int CP_CS_DISMISS = 1048576;
+    public static final int CP_CS_TAXES = 2097152;
+    public static final int CP_CS_MERCENARIES = 4194304;
+    public static final int CP_CS_SET_FUNCTIONS = 8388608;
     /** Privilege to manage all clan activity */
-    public static final int CP_ALL = 8388606;
+    public static final int CP_ALL = 16777214;
 
     // Sub-unit types
     /** Clan subunit type of Academy */
