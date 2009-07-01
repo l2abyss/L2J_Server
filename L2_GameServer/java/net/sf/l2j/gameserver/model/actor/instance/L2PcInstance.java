@@ -2185,7 +2185,8 @@ public final class L2PcInstance extends L2Playable
 	{
 		// Equip or unEquip
         L2ItemInstance[] items = null;
-        boolean isEquiped = item.isEquipped();
+        final boolean isEquiped = item.isEquipped();
+        final int oldInvLimit = getInventoryLimit();
         SystemMessage sm = null;
         L2ItemInstance old = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LRHAND);
         if (old == null)
@@ -2273,8 +2274,13 @@ public final class L2PcInstance extends L2Playable
 		InventoryUpdate iu = new InventoryUpdate();
 		iu.addItems(Arrays.asList(items));
 		sendPacket(iu);
+		
 		if (abortAttack) abortAttack();
-		broadcastUserInfo();		
+		
+		broadcastUserInfo();
+		
+		if (getInventoryLimit() != oldInvLimit)
+			sendPacket(new ExStorageMaxCount(this));
 	}
     
 	/**
