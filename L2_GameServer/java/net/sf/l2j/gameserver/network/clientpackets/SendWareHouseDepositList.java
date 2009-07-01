@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.ClanWarehouse;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
+import net.sf.l2j.gameserver.model.TradeList;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -148,6 +149,9 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 			return;
 		}
 
+		// get current tradelist if any
+		TradeList trade = player.getActiveTradeList();
+
 		// Proceed to the transfer
 		InventoryUpdate playerIU = Config.FORCE_INVENTORY_UPDATE ? null : new InventoryUpdate();
 		for (WarehouseItem i : _items)
@@ -163,6 +167,10 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 			if (oldItem.isHeroItem()
 					|| ((warehouse instanceof ClanWarehouse) && !oldItem.isTradeable())
 					|| oldItem.getItemType() == L2EtcItemType.QUEST)
+				continue;
+
+			// skip items from active tradelist, even for stackable
+			if (trade != null && trade.getItem(i.getObjectId()) != null)
 				continue;
 
 			L2ItemInstance newItem = player.getInventory().transferItem(warehouse.getName(), i.getObjectId(), i.getCount(), warehouse, player, manager);
