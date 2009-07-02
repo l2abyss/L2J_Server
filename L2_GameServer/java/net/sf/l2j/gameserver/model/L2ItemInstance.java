@@ -1085,7 +1085,7 @@ public final class L2ItemInstance extends L2Object
 		if (resetConsumingMana) _consumingMana = false;
 
 		L2PcInstance player = ((L2PcInstance)L2World.getInstance().findObject(getOwnerId()));
-		if (player != null && !player.isDead())
+		if (player != null)
 		{
 			SystemMessage sm;
 			switch (_mana)
