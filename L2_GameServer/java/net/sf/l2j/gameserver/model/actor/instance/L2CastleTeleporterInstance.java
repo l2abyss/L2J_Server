@@ -134,6 +134,8 @@ public final class L2CastleTeleporterInstance extends L2NpcInstance
 	{
 		if (!canTarget(player)) return;
 
+		player.setLastFolkNPC(this);
+
 		// Check if the L2PcInstance already target the L2NpcInstance
 		if (this != player.getTarget())
 		{

@@ -17,7 +17,6 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.util.StringTokenizer;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
-import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ExBrExtraUserInfo;
@@ -32,7 +31,7 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
  * Reputation score manager
  * @author Kerberos
  */
-public class L2FameManagerInstance extends L2Npc
+public class L2FameManagerInstance extends L2NpcInstance
 {
 	public L2FameManagerInstance(int objectId, L2NpcTemplate template)
 	{
@@ -47,7 +46,9 @@ public class L2FameManagerInstance extends L2Npc
 	public void onAction(L2PcInstance player)
 	{
 		if (!canTarget(player)) return;
-		
+
+		player.setLastFolkNPC(this);
+
 		// Check if the L2PcInstance already target the L2NpcInstance
 		if (this != player.getTarget())
 		{

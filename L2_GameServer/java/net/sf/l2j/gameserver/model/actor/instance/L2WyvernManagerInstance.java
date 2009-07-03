@@ -104,6 +104,8 @@ public class L2WyvernManagerInstance extends L2CastleChamberlainInstance
 	{
 		if (!canTarget(player)) return;
 
+		player.setLastFolkNPC(this);
+
 		// Check if the L2PcInstance already target the L2NpcInstance
 		if (this != player.getTarget())
 		{
