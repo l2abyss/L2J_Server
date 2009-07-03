@@ -318,6 +318,8 @@ public class AbstractEnchantPacket extends L2GameClientPacket
 			return false;
 		if (item.getItem().getBodyPart() == L2Item.SLOT_R_BRACELET)
 			return false;
+		if (item.getItem().getBodyPart() == L2Item.SLOT_BACK)
+			return false;
 		// only items in inventory and equipped can be enchanted
 		if (item.getLocation() != L2ItemInstance.ItemLocation.INVENTORY
 				&& item.getLocation() != L2ItemInstance.ItemLocation.PAPERDOLL)
