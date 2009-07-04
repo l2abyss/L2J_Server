@@ -2004,7 +2004,7 @@ public final class Config
 				catch (Exception e)
 				{
 					e.printStackTrace();
-					throw new Error("Failed to Load "+CONFIGURATION_FILE+" File.");
+					throw new Error("Failed to Load " + LOGIN_CONFIGURATION_FILE + " File.");
 				}
 				
 				// MMO 
