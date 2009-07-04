@@ -37,7 +37,7 @@ public final class FloodProtectorConfig
 	 */
 	public int PUNISHMENT_LIMIT;
 	/**
-	 * Punishment type. Either 'none', 'ban' or 'jail'.
+	 * Punishment type. Either 'none', 'kick', 'ban' or 'jail'.
 	 */
 	public String PUNISHMENT_TYPE;
 	/**

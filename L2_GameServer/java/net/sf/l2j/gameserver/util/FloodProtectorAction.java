@@ -99,7 +99,11 @@ public final class FloodProtectorAction
 			{
 				_punishmentInProgress = true;
 				
-				if ("ban".equals(_config.PUNISHMENT_TYPE))
+				if ("kick".equals(_config.PUNISHMENT_TYPE))
+				{
+					kickPlayer();
+				}
+				else if ("ban".equals(_config.PUNISHMENT_TYPE))
 				{
 					banAccount();
 				}
@@ -129,7 +133,20 @@ public final class FloodProtectorAction
 		
 		return true;
 	}
-	
+
+	/**
+	 * Kick player from game (close network connection).
+	 */
+	private void kickPlayer()
+	{
+		_player.closeNetConnection();
+
+		if (_log.isLoggable(Level.WARNING))
+		{
+			_log.warning(StringUtil.concat(_config.FLOOD_PROTECTOR_TYPE, ": Account [", _player.getAccountName(), "] kicked for flooding [char ", _player.getName(), "]"));
+		}
+	}
+
 	/**
 	 * Bans char account and logs out the char.
 	 */
