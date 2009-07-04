@@ -53,6 +53,7 @@ import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.cache.WarehouseCacheManager;
 import net.sf.l2j.gameserver.communitybbs.BB.Forum;
 import net.sf.l2j.gameserver.communitybbs.Manager.ForumsBBSManager;
+import net.sf.l2j.gameserver.communitybbs.Manager.RegionBBSManager;
 import net.sf.l2j.gameserver.datatables.AccessLevels;
 import net.sf.l2j.gameserver.datatables.AdminCommandAccessRights;
 import net.sf.l2j.gameserver.datatables.CharTemplateTable;
@@ -11879,8 +11880,20 @@ public final class L2PcInstance extends L2Playable
 	            teleToLocation(-114356, -249645, -2984, false);  // Jail
 	            break;
 	        }
-    		case CHAR: // Ban Character
-	    	case ACC: // Ban Account
+			case CHAR: // Ban Character
+			{
+				setAccessLevel(-100);
+				logout();
+				RegionBBSManager.getInstance().changeCommunityBoard();
+				break;
+			}
+			case ACC: // Ban Account
+			{
+				setAccountAccesslevel(-100);
+				logout();
+				RegionBBSManager.getInstance().changeCommunityBoard();
+				break;
+			}
 	    	default:
 	    	{
 	    		_punishLevel = state;
