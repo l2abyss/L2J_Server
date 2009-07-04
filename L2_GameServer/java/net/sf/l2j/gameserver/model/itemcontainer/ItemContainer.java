@@ -615,7 +615,7 @@ public abstract class ItemContainer
 				
 				// If stackable item is found in inventory just add to current quantity
 				if (item.isStackable() && getItemByItemId(item.getItemId()) != null)
-					addItem("Restore", item, null, getOwner());
+					addItem("Restore", item, getOwner().getActingPlayer(), null);
 				else
 					addItem(item);
 			}
