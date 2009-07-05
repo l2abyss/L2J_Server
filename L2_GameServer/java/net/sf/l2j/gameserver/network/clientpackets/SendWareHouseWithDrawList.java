@@ -20,10 +20,10 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.ClanWarehouse;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
-import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.ItemContainer;
+import net.sf.l2j.gameserver.model.itemcontainer.PcWarehouse;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
@@ -50,7 +50,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		int count = readD();
+		final int count = readD();
 		if (count <= 0
 				|| count > Config.MAX_ITEM_IN_PACKET
 				|| count * BATCH_LENGTH != _buf.remaining())
@@ -78,21 +78,21 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		if (_items == null)
 			return;
 
-		L2PcInstance player = getClient().getActiveChar();
+		final L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;
 
-		ItemContainer warehouse = player.getActiveWarehouse();
+		final ItemContainer warehouse = player.getActiveWarehouse();
 		if (warehouse == null)
 			return;
 
-		L2NpcInstance manager = player.getLastFolkNPC();
+		final L2NpcInstance manager = player.getLastFolkNPC();
 		if ((manager == null
 				|| !manager.isWarehouse()
-				|| !player.isInsideRadius(manager, L2Npc.INTERACTION_DISTANCE, false, false)) && !player.isGM())
+				|| !manager.canInteract(player)) && !player.isGM())
 			return;
 
-		if ((warehouse instanceof ClanWarehouse) && !player.getAccessLevel().allowTransaction())
+		if (!(warehouse instanceof PcWarehouse) && !player.getAccessLevel().allowTransaction())
 		{
 			player.sendMessage("Transactions are disable for your Access Level");
 			return;
@@ -165,7 +165,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 				_log.warning("Error withdrawing a warehouse object for char " + player.getName() + " (olditem == null)");
 				return;
 			}
-			L2ItemInstance newItem = warehouse.transferItem(warehouse.getName(), i.getObjectId(), i.getCount(), player.getInventory(), player, manager);
+			final L2ItemInstance newItem = warehouse.transferItem(warehouse.getName(), i.getObjectId(), i.getCount(), player.getInventory(), player, manager);
 			if (newItem == null)
 			{
 				_log.warning("Error withdrawing a warehouse object for char " + player.getName() + " (newitem == null)");

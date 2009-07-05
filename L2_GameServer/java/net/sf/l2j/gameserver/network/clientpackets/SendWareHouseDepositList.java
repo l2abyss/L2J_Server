@@ -17,19 +17,17 @@ package net.sf.l2j.gameserver.network.clientpackets;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.model.ClanWarehouse;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.TradeList;
-import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.ItemContainer;
+import net.sf.l2j.gameserver.model.itemcontainer.PcWarehouse;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.templates.item.L2EtcItemType;
 import net.sf.l2j.gameserver.util.IllegalPlayerAction;
 import net.sf.l2j.gameserver.util.Util;
 
@@ -54,7 +52,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		int count = readD();
+		final int count = readD();
 		if (count <= 0
 				|| count > Config.MAX_ITEM_IN_PACKET
 				|| count * BATCH_LENGTH != _buf.remaining())
@@ -82,21 +80,22 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 		if (_items == null)
 			return;
 
-		L2PcInstance player = getClient().getActiveChar();
+		final L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;
 
-		ItemContainer warehouse = player.getActiveWarehouse();
+		final ItemContainer warehouse = player.getActiveWarehouse();
 		if (warehouse == null)
 			return;
+		final boolean isPrivate = warehouse instanceof PcWarehouse;
 
-		L2NpcInstance manager = player.getLastFolkNPC();
+		final L2NpcInstance manager = player.getLastFolkNPC();
 		if ((manager == null
 				|| !manager.isWarehouse()
-				|| !player.isInsideRadius(manager, L2Npc.INTERACTION_DISTANCE, false, false)) && !player.isGM())
+				|| !manager.canInteract(player)) && !player.isGM())
 			return;
 
-		if ((warehouse instanceof ClanWarehouse) && !player.getAccessLevel().allowTransaction())
+		if (!isPrivate && !player.getAccessLevel().allowTransaction())
 		{
 			player.sendMessage("Transactions are disable for your Access Level");
 			return;
@@ -113,7 +112,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 			return;
 
 		// Freight price from config or normal price per item slot (30)
-		long fee = _items.length * 30;
+		final long fee = _items.length * 30;
 		long currentAdena = player.getAdena();
 		int slots = 0;
 
@@ -150,7 +149,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 		}
 
 		// get current tradelist if any
-		TradeList trade = player.getActiveTradeList();
+		final TradeList trade = player.getActiveTradeList();
 
 		// Proceed to the transfer
 		InventoryUpdate playerIU = Config.FORCE_INVENTORY_UPDATE ? null : new InventoryUpdate();
@@ -164,16 +163,14 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 				return;
 			}
 
-			if (oldItem.isHeroItem()
-					|| ((warehouse instanceof ClanWarehouse) && !oldItem.isTradeable())
-					|| oldItem.getItemType() == L2EtcItemType.QUEST)
+			if (!oldItem.isDepositable(isPrivate))
 				continue;
 
 			// skip items from active tradelist, even for stackable
 			if (trade != null && trade.getItem(i.getObjectId()) != null)
 				continue;
 
-			L2ItemInstance newItem = player.getInventory().transferItem(warehouse.getName(), i.getObjectId(), i.getCount(), warehouse, player, manager);
+			final L2ItemInstance newItem = player.getInventory().transferItem(warehouse.getName(), i.getObjectId(), i.getCount(), warehouse, player, manager);
 			if (newItem == null)
 			{
 				_log.warning("Error depositing a warehouse object for char "+player.getName()+" (newitem == null)");

@@ -29,9 +29,7 @@ import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.templates.item.L2EtcItemType;
 
-import static net.sf.l2j.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
 import static net.sf.l2j.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
 
 /**
@@ -100,7 +98,7 @@ public final class RequestPackageSend extends L2GameClientPacket
 		L2NpcInstance manager = player.getLastFolkNPC();
 		if ((manager == null
 				|| !(manager instanceof L2WarehouseInstance)
-				|| !player.isInsideRadius(manager, INTERACTION_DISTANCE, false, false)) && !player.isGM())
+				|| !manager.canInteract(player)) && !player.isGM())
 			return;
 
 		if (warehouse instanceof PcFreight && !player.getAccessLevel().allowTransaction())
@@ -123,9 +121,6 @@ public final class RequestPackageSend extends L2GameClientPacket
 				_log.warning("Error depositing a warehouse object for char "+player.getName()+" (validity check)");
 				return;
 			}
-
-			if (!item.isTradeable() || item.getItemType() == L2EtcItemType.QUEST)
-				return;
 
 			// Calculate needed adena and slots
 			if (item.getItemId() == ADENA_ID)
@@ -164,7 +159,7 @@ public final class RequestPackageSend extends L2GameClientPacket
 				continue;
 			}
 
-			if (oldItem.isHeroItem())
+			if (!oldItem.isDepositable(false))
 				continue;
 
 			// skip items from active tradelist, even for stackable

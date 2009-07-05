@@ -14,7 +14,6 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
-import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.network.serverpackets.PackageSendableList;
 
 /**
@@ -40,14 +39,7 @@ public final class RequestPackageSendableItemList extends L2GameClientPacket
 	@Override
 	public void runImpl()
 	{
-		/*
-		L2PcInstance target = (L2PcInstance) L2World.getInstance().findObject(_objectID);
-		if(target == null)
-			return;
-		*/
-		L2ItemInstance[] items = getClient().getActiveChar().getInventory().getAvailableItems(true);
-		// build list...
-		sendPacket(new PackageSendableList(items, _objectID));
+		sendPacket(new PackageSendableList(getClient().getActiveChar(), _objectID));
 	}
 
 	/**

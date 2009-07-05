@@ -14,7 +14,9 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
+import javolution.util.FastList;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  *
@@ -24,13 +26,21 @@ import net.sf.l2j.gameserver.model.L2ItemInstance;
 public class PackageSendableList extends L2GameServerPacket
 {
 	private static final String _S__C3_PACKAGESENDABLELIST = "[S] d2 PackageSendableList";
-	private L2ItemInstance[] _items;
-	private int _playerObjId;
+	private final int _targetPlayerObjId;
+	private final long _playerAdena;
+	private final FastList<L2ItemInstance> _items;
 
-	public PackageSendableList(L2ItemInstance[] items, int playerObjId)
+	public PackageSendableList(L2PcInstance player, int targetPlayerObjId)
 	{
-		_items = items;
-		_playerObjId = playerObjId;
+		_targetPlayerObjId = targetPlayerObjId;
+		_playerAdena = player.getAdena();
+
+		_items = new FastList<L2ItemInstance>();
+		for (L2ItemInstance temp : player.getInventory().getAvailableItems(true))
+		{
+			if (temp != null && temp.isDepositable(false))
+				_items.add(temp);
+		}
 	}
 
 	/**
@@ -42,9 +52,9 @@ public class PackageSendableList extends L2GameServerPacket
 	{
 		writeC(0xd2);
 
-		writeD(_playerObjId);
-		writeQ(getClient().getActiveChar().getAdena());
-		writeD(_items.length);
+		writeD(_targetPlayerObjId);
+		writeQ(_playerAdena);
+		writeD(_items.size());
 		for(L2ItemInstance item : _items) // format inside the for taken from SellList part use should be about the same
 		{
 			writeH(item.getItem().getType1());
@@ -61,11 +71,14 @@ public class PackageSendableList extends L2GameServerPacket
 			//T1
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
-			for (byte i = 0; i < 6; i++)
-			{
-				writeH(item.getElementDefAttr(i));
-			}
+			writeH(item.getElementDefAttr((byte)0));
+			writeH(item.getElementDefAttr((byte)1));
+			writeH(item.getElementDefAttr((byte)2));
+			writeH(item.getElementDefAttr((byte)3));
+			writeH(item.getElementDefAttr((byte)4));
+			writeH(item.getElementDefAttr((byte)5));
 		}
+		_items.clear();
 	}
 
 	/**

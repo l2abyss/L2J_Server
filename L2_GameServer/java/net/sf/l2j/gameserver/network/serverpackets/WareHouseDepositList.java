@@ -34,34 +34,24 @@ public final class WareHouseDepositList extends L2GameServerPacket
 	public static final int FREIGHT = 1;
 	private static Logger _log = Logger.getLogger(WareHouseDepositList.class.getName());
 	private static final String _S__53_WAREHOUSEDEPOSITLIST = "[S] 41 WareHouseDepositList";
-	private L2PcInstance _activeChar;
-	private long _playerAdena;
-	private FastList<L2ItemInstance> _items;
-	private int _whType;
-	
+	private final long _playerAdena;
+	private final FastList<L2ItemInstance> _items;
+	private final int _whType;
+
 	public WareHouseDepositList(L2PcInstance player, int type)
 	{
-		_activeChar = player;
 		_whType = type;
-		_playerAdena = _activeChar.getAdena();
+		_playerAdena = player.getAdena();
 		_items = new FastList<L2ItemInstance>();
-		
-		for (L2ItemInstance temp : _activeChar.getInventory().getAvailableItems(true))
-			_items.add(temp);
-		
-		// non-tradeable, augmented and shadow items can be stored in private wh
-		if (_whType == PRIVATE)
+
+		final boolean isPrivate = _whType == PRIVATE; 
+		for (L2ItemInstance temp : player.getInventory().getAvailableItems(true))
 		{
-			for (L2ItemInstance temp : player.getInventory().getItems())
-			{
-				if (temp != null && !temp.isEquipped()
-						&& (temp.isShadowItem() || temp.isAugmented() || !temp.isTradeable())
-						&& temp.getItem().getType2() != 3) // exclude quest items
-					_items.add(temp);
-			}
+			if (temp != null && temp.isDepositable(isPrivate))
+				_items.add(temp);
 		}
 	}
-	
+
 	@Override
 	protected final void writeImpl()
 	{
@@ -72,11 +62,11 @@ public final class WareHouseDepositList extends L2GameServerPacket
 		* 0x04-Warehouse */
 		writeH(_whType);
 		writeQ(_playerAdena);
-		int count = _items.size();
+		final int count = _items.size();
 		if (Config.DEBUG)
 			_log.fine("count:" + count);
 		writeH(count);
-		
+
 		for (L2ItemInstance item : _items)
 		{
 			writeH(item.getItem().getType1());
@@ -97,20 +87,22 @@ public final class WareHouseDepositList extends L2GameServerPacket
 			}
 			else
 				writeQ(0x00);
-			
+
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
-			for (byte i = 0; i < 6; i++)
-			{
-				writeH(item.getElementDefAttr(i));
-			}
-			
+			writeH(item.getElementDefAttr((byte)0));
+			writeH(item.getElementDefAttr((byte)1));
+			writeH(item.getElementDefAttr((byte)2));
+			writeH(item.getElementDefAttr((byte)3));
+			writeH(item.getElementDefAttr((byte)4));
+			writeH(item.getElementDefAttr((byte)5));
 			writeD(item.getMana());
 			// T2
 			writeD(item.isTimeLimitedItem() ? (int) (item.getRemainingTime()/1000) : -1);
 		}
+		_items.clear();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see net.sf.l2j.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

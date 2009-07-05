@@ -556,7 +556,7 @@ public class L2Npc extends L2Character
 		return true;
 	}
 
-	protected boolean canInteract(L2PcInstance player)
+	public boolean canInteract(L2PcInstance player)
 	{
 		// TODO: NPC busy check etc...
 

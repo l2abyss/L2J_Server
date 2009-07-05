@@ -46,6 +46,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.templates.item.L2Armor;
 import net.sf.l2j.gameserver.templates.item.L2EtcItem;
+import net.sf.l2j.gameserver.templates.item.L2EtcItemType;
 import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
 import net.sf.l2j.gameserver.util.GMAudit;
@@ -669,7 +670,29 @@ public final class L2ItemInstance extends L2Object
 	{
 		return isAugmented() ? false : _item.isSellable();
 	}
-	
+
+	/**
+	 * Returns if item can be deposited in warehouse or freight
+	 * @return boolean
+	 */
+	public boolean isDepositable(boolean isPrivateWareHouse)
+	{
+		// equipped, hero and quest items
+		if (isEquipped() || isHeroItem() || _item.getItemType() == L2EtcItemType.QUEST)
+			return false;
+		// Staff of Master Yogi
+		if (_itemId == 13539)
+			return false;
+		if (!isPrivateWareHouse)
+		{
+			// augmented not tradeable
+			if (!isTradeable() || isShadowItem())
+				return false;
+		}
+
+		return true;
+	}
+
     /**
      * Returns if item is consumable
      * @return boolean
