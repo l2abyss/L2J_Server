@@ -983,7 +983,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
     	switch (getSkillType())
     	{
     		case PDAM:
-    		case STUN:
     		case CHARGEDAM:
     		case BLOW:
     			return true;
