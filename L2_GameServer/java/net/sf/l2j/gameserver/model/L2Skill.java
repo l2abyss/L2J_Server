@@ -288,7 +288,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _learnSkillId;
 	private final int _learnSkillLvl;
 
-	private final boolean _useShield;
 	private final boolean _ignoreShield;
 	private final boolean _isSuicideAttack;
 	private final boolean _canBeReflected;
@@ -425,7 +424,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _levelDepend = set.getInteger("lvlDepend", 0);
         _ignoreResists = set.getBool("ignoreResists", false);
         _stat = set.getEnum("stat", Stats.class, null);
-        _useShield = set.getBool("useShield", false);
         _ignoreShield = set.getBool("ignoreShld", false);
         _skillType = set.getEnum("skillType", L2SkillType.class);
         _effectType = set.getEnum("effectType", L2SkillType.class, null);
@@ -3167,11 +3165,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _attribute;
 	}
 	
-	public boolean useShield()
-	{
-		return _useShield;
-	}
-
 	public boolean ignoreShield()
 	{
 		return _ignoreShield;
