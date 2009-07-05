@@ -697,11 +697,11 @@ public class CursedWeapon
     {
     	if (player == null) return;
 
-    	if (_isActivated)
+    	if (_isActivated && _player != null)
     	{
     		// Go to player holding the weapon
     		player.teleToLocation(_player.getX(), _player.getY(), _player.getZ() + 20, true);
-    	} else if (_isDropped)
+    	} else if (_isDropped && _item != null)
     	{
     		// Go to item on the ground
     		player.teleToLocation(_item.getX(), _item.getY(), _item.getZ() + 20, true);
