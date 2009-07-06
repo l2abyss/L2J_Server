@@ -621,6 +621,11 @@ abstract class DocumentBase
                 }
             	cond = joinAnd(cond, new ConditionPlayerClassIdRestriction(array));
             }
+			else if ("subclass".equalsIgnoreCase(a.getNodeName()))
+			{
+				boolean val = Boolean.valueOf(a.getNodeValue());
+				cond = joinAnd(cond, new ConditionPlayerSubclass(val));
+			}
         }
 
         if(forces[0] + forces[1] > 0)
