@@ -2271,8 +2271,11 @@ public final class L2PcInstance extends L2Playable
 
         refreshExpertisePenalty();
 
+		/**
+		// remove effects which doesn't match weapon type (but not party buffs)
 		if (item.getItem().getType2() == L2Item.TYPE2_WEAPON)
 			checkIfWeaponIsAllowed();
+		**/
 
 		InventoryUpdate iu = new InventoryUpdate();
 		iu.addItems(Arrays.asList(items));
