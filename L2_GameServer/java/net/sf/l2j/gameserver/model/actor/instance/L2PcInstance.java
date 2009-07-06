@@ -67,6 +67,8 @@ import net.sf.l2j.gameserver.datatables.NobleSkillTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
+import net.sf.l2j.gameserver.handler.AdminCommandHandler;
+import net.sf.l2j.gameserver.handler.IAdminCommandHandler;
 import net.sf.l2j.gameserver.handler.IItemHandler;
 import net.sf.l2j.gameserver.handler.ItemHandler;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
@@ -4055,7 +4057,37 @@ public final class L2PcInstance extends L2Playable
 			}
 		}
 	}
-
+	
+	@Override
+	public void onActionShift(L2GameClient client)
+	{
+		L2PcInstance player = client.getActiveChar();
+		if (player == null)
+			return;
+		
+		if (player.isGM())
+		{
+			// Check if the gm already target this l2pcinstance
+			if (player.getTarget() != this)
+			{
+				// Set the target of the L2PcInstance player
+				player.setTarget(this);
+				
+				// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
+				player.sendPacket(new MyTargetSelected(getObjectId(), 0));
+			}
+			
+			// Send a Server->Client packet ValidateLocation to correct the L2PcInstance position and heading on the client
+			if (player != this)
+				player.sendPacket(new ValidateLocation(this));
+			
+			IAdminCommandHandler ach = AdminCommandHandler.getInstance().getAdminCommandHandler("admin_character_info");
+			if (ach != null)
+				ach.useAdminCommand("admin_character_info " + getName(), player);
+		}
+		player.sendPacket(ActionFailed.STATIC_PACKET);
+	}
+	
 	/**
 	 * Returns true if cp update should be done, false if not
 	 * @return boolean
