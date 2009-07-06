@@ -432,8 +432,7 @@ public class Instance
 							else
 								spawnDat.startRespawn();
 							spawnDat.setInstanceId(getId());
-							L2Npc newmob = spawnDat.doSpawn();
-							_npcs.add(newmob);
+							spawnDat.doSpawn();
 						}
 						else
 						{

@@ -141,8 +141,8 @@ public class InstanceManager
 			return false;
 		
 		Instance instance = new Instance(id);
-		instance.loadInstanceTemplate(template);
 		_instanceList.put(id, instance);
+		instance.loadInstanceTemplate(template);
 		return true;
 	}
 	
