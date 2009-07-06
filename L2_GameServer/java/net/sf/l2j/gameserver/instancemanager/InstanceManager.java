@@ -17,8 +17,10 @@ package net.sf.l2j.gameserver.instancemanager;
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
 import javolution.util.FastMap;
 
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Instance;
 
 /** 
@@ -29,7 +31,36 @@ public class InstanceManager
 {
 	private final static Logger _log = Logger.getLogger(InstanceManager.class.getName());
 	private FastMap<Integer, Instance> _instanceList = new FastMap<Integer, Instance>();
+	private FastMap<Integer, InstanceWorld> _instanceWorlds = new FastMap<Integer, InstanceWorld>();
 	private int _dynamic = 300000;
+	
+	public class InstanceWorld
+	{
+		public int instanceId;
+		public FastList<L2PcInstance> allowed = new FastList<L2PcInstance>();
+		public int status;
+	}
+	
+	public void addWorld(InstanceWorld world)
+	{
+		_instanceWorlds.put(world.instanceId, world);
+	}
+	
+	public InstanceWorld getWorld(int instanceId)
+	{
+		return _instanceWorlds.get(instanceId);
+	}
+	
+	public InstanceWorld getPlayerWorld(L2PcInstance player)
+	{
+		for (InstanceWorld temp : _instanceWorlds.values())
+		{
+			// check if the player have a World Instance where he/she is allowed to enter
+			if (temp.allowed.contains(player))
+				return temp;
+		}
+		return null;
+	}
 	
 	private InstanceManager()
 	{
@@ -67,6 +98,8 @@ public class InstanceManager
 			temp.removeDoors();
 			temp.cancelTimer();
 			_instanceList.remove(instanceid);
+			if (_instanceWorlds.containsKey(instanceid))
+				_instanceWorlds.remove(instanceid);
 		}
 	}
 	

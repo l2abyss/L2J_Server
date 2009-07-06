@@ -19,6 +19,7 @@ import net.sf.l2j.gameserver.idfactory.IdFactory;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.ItemsOnGroundManager;
 import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.knownlist.ObjectKnownList;
 import net.sf.l2j.gameserver.model.actor.poly.ObjectPoly;
@@ -129,7 +130,14 @@ public abstract class L2Object
 			
 			if (((L2PcInstance)this).getPet() != null)
 				((L2PcInstance)this).getPet().setInstanceId(instanceId);
-		} 
+		}
+		else if (this instanceof L2Npc)
+		{
+			if (_instanceId > 0)
+				InstanceManager.getInstance().getInstance(_instanceId).removeNpc(((L2Npc)this).getSpawn());
+			if (instanceId > 0)
+				InstanceManager.getInstance().getInstance(instanceId).addNpc(((L2Npc)this));
+		}
 		
 		_instanceId = instanceId;
 
