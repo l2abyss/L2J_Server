@@ -36,7 +36,7 @@ public class PackageSendableList extends L2GameServerPacket
 		_playerAdena = player.getAdena();
 
 		_items = new FastList<L2ItemInstance>();
-		for (L2ItemInstance temp : player.getInventory().getAvailableItems(true))
+		for (L2ItemInstance temp : player.getInventory().getAvailableItems(true, false))
 		{
 			if (temp != null && temp.isDepositable(false))
 				_items.add(temp);

@@ -721,7 +721,7 @@ public final class L2ItemInstance extends L2Object
      * Returns if item is available for manipulation
      * @return boolean
      */
-    public boolean isAvailable(L2PcInstance player, boolean allowAdena)
+    public boolean isAvailable(L2PcInstance player, boolean allowAdena, boolean allowNonTradeable)
     {
     	return (
 		(!isEquipped()) // Not equipped
@@ -732,7 +732,7 @@ public final class L2ItemInstance extends L2Object
     		&& (allowAdena || getItemId() != 57) // Not adena
     		&& (player.getCurrentSkill() == null || player.getCurrentSkill().getSkill().getItemConsumeId() != getItemId())
     		&& (!player.isCastingSimultaneouslyNow() || player.getLastSimultaneousSkillCast() == null || player.getLastSimultaneousSkillCast().getItemConsumeId() != getItemId())
-		&& (isTradeable())
+		&& (allowNonTradeable || isTradeable())
     		);
     }
 

@@ -159,7 +159,7 @@ public final class RequestPackageSend extends L2GameClientPacket
 				continue;
 			}
 
-			if (!oldItem.isDepositable(false))
+			if (!oldItem.isDepositable(false) || !oldItem.isAvailable(player, true, false))
 				continue;
 
 			// skip items from active tradelist, even for stackable

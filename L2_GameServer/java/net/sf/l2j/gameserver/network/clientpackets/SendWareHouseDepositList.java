@@ -163,7 +163,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 				return;
 			}
 
-			if (!oldItem.isDepositable(isPrivate))
+			if (!oldItem.isDepositable(isPrivate) || !oldItem.isAvailable(player, true, isPrivate))
 				continue;
 
 			// skip items from active tradelist, even for stackable

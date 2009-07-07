@@ -257,7 +257,7 @@ public class Hero
 							player.getInventory().unEquipItemInSlotAndRecord(i);
 					}
 					
-					for (L2ItemInstance item : player.getInventory().getAvailableItems(false))
+					for (L2ItemInstance item : player.getInventory().getAvailableItems(false, false))
 					{
 						if (item != null && item.isHeroItem())
 						{

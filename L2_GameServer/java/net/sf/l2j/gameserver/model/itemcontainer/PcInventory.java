@@ -98,7 +98,7 @@ public class PcInventory extends Inventory
 					break;
 				}
 			}
-			if (!isDuplicate && (!onlyAvailable || (item.isSellable() && item.isAvailable(getOwner(), false)))) list.add(item);
+			if (!isDuplicate && (!onlyAvailable || (item.isSellable() && item.isAvailable(getOwner(), false, false)))) list.add(item);
 		}
 
 		return list.toArray(new L2ItemInstance[list.size()]);
@@ -131,7 +131,7 @@ public class PcInventory extends Inventory
 					isDuplicate = true;
 					break;
 				}
-			if (!isDuplicate && (!onlyAvailable || (item.isSellable() && item.isAvailable(getOwner(), false)))) list.add(item);
+			if (!isDuplicate && (!onlyAvailable || (item.isSellable() && item.isAvailable(getOwner(), false, false)))) list.add(item);
 		}
 
 		return list.toArray(new L2ItemInstance[list.size()]);
@@ -173,11 +173,11 @@ public class PcInventory extends Inventory
 	 * Returns the list of items in inventory available for transaction
 	 * @return L2ItemInstance : items in inventory
 	 */
-	public L2ItemInstance[] getAvailableItems(boolean allowAdena)
+	public L2ItemInstance[] getAvailableItems(boolean allowAdena, boolean allowNonTradeable)
 	{
 		List<L2ItemInstance> list = new FastList<L2ItemInstance>();
 		for (L2ItemInstance item : _items)
-			if (item != null && item.isAvailable(getOwner(), allowAdena)) list.add(item);
+			if (item != null && item.isAvailable(getOwner(), allowAdena, allowNonTradeable)) list.add(item);
 
 		return list.toArray(new L2ItemInstance[list.size()]);
 	}
@@ -218,7 +218,7 @@ public class PcInventory extends Inventory
 	{
 		List<TradeList.TradeItem> list = new FastList<TradeList.TradeItem>();
 		for (L2ItemInstance item : _items)
-			if (item.isAvailable(getOwner(), false))
+			if (item.isAvailable(getOwner(), false, false))
 				{
 				TradeList.TradeItem adjItem = tradeList.adjustAvailableItem(item);
 					if (adjItem != null) list.add(adjItem);
