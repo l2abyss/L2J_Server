@@ -704,12 +704,12 @@ public final class L2ItemInstance extends L2Object
     
     public boolean isHeroItem()
     {
-        return ((_itemId >= 6611 && _itemId <= 6621) || (_itemId >= 9388 && _itemId <= 9390) || _itemId == 6842);
+        return _item.isHeroItem();
     }
 
     public boolean isCommonItem()
     {
-        return ((_itemId >= 12006 && _itemId <= 12361) || (_itemId >= 11605 && _itemId <= 12308));
+        return _item.isCommon();
     }
     
     public boolean isOlyRestrictedItem()
@@ -1049,7 +1049,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public class ScheduleConsumeManaTask implements Runnable
 	{
-		private L2ItemInstance _shadowItem;
+		private final L2ItemInstance _shadowItem;
 		
 		public ScheduleConsumeManaTask(L2ItemInstance item)
 		{
@@ -1107,7 +1107,7 @@ public final class L2ItemInstance extends L2Object
 		if (_storedInDb) _storedInDb = false;
 		if (resetConsumingMana) _consumingMana = false;
 
-		L2PcInstance player = ((L2PcInstance)L2World.getInstance().findObject(getOwnerId()));
+		final L2PcInstance player = ((L2PcInstance)L2World.getInstance().findObject(getOwnerId()));
 		if (player != null)
 		{
 			SystemMessage sm;
@@ -1189,8 +1189,10 @@ public final class L2ItemInstance extends L2Object
 		}
 	}
 
-	private void scheduleConsumeManaTask()
+	public void scheduleConsumeManaTask()
 	{
+		if (_consumingMana)
+			return;
 		_consumingMana = true;
 		ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleConsumeManaTask(this), MANA_CONSUMPTION_RATE);
 	}
@@ -1354,8 +1356,12 @@ public final class L2ItemInstance extends L2Object
 		inst._mana = manaLeft;
 		inst._time = time;
 		// consume 1 mana
-		if (inst._mana > 0 && inst.getLocation() == ItemLocation.PAPERDOLL)
-		    inst.decreaseMana(false);
+		if (inst.isShadowItem() && inst.isEquipped())
+		{
+			inst.decreaseMana(false);
+			// if player still not loaded and not found in the world - force task creation
+			inst.scheduleConsumeManaTask();
+		}
 
 		// if mana left is 0 return nothing, item already deleted from decreaseMana()
 		if (inst._mana == 0)
@@ -1650,6 +1656,7 @@ public final class L2ItemInstance extends L2Object
     {
     	return _time - System.currentTimeMillis();
     }
+
     public void endOfLife()
     {
     	L2PcInstance player = ((L2PcInstance)L2World.getInstance().findObject(getOwnerId()));
@@ -1707,7 +1714,7 @@ public final class L2ItemInstance extends L2Object
     
     public class ScheduleLifeTimeTask implements Runnable
     {
-    	private L2ItemInstance _limitedItem;
+    	private final L2ItemInstance _limitedItem;
     	
     	public ScheduleLifeTimeTask(L2ItemInstance item)
     	{
