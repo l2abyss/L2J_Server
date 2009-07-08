@@ -813,22 +813,25 @@ public class L2Attackable extends L2Npc
 		// Get the AggroInfo of the attacker L2Character from the _aggroList of the L2Attackable
 		AggroInfo ai = getAggroListRP().get(attacker);
 
-		// aggro ai created in L2attackableAI script if not overriden in other AI files
-		if (ai != null)
+		if (ai == null)
 		{
-			ai._hate += aggro;
-			ai._damage += damage;
+			ai = new AggroInfo(attacker);
+			getAggroListRP().put(attacker, ai);
+
+			ai._damage = 0;
+			ai._hate = 0;
 		}
-		else
+		ai._damage += damage;
+		ai._hate += aggro;
+
+		L2PcInstance targetPlayer = attacker.getActingPlayer();
+		if (targetPlayer != null && aggro == 0)
 		{
-			L2PcInstance targetPlayer = attacker.getActingPlayer();
-			if (targetPlayer != null)
-			{
-				if (getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER) !=null)
-					for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER))
-				quest.notifyAggroRangeEnter(this, targetPlayer, (attacker instanceof L2Summon));
-			}
+			if (getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER) !=null)
+				for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER))
+					quest.notifyAggroRangeEnter(this, targetPlayer, (attacker instanceof L2Summon));
 		}
+
 		// Set the intention to the L2Attackable to AI_INTENTION_ACTIVE
 		if (aggro > 0 && getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
 			getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
@@ -2463,19 +2466,5 @@ public class L2Attackable extends L2Npc
 
 		if (hasAI())
 			getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(getSpawn().getLocx(), getSpawn().getLocy(), getSpawn().getLocz(), 0));
-	}
-	
-	public AggroInfo addToAggroList(L2Character character)
-	{
-		// Get the AggroInfo of the attacker L2Character from the _aggroList of the L2Attackable
-		AggroInfo ai = getAggroListRP().get(character);
-		if (ai == null)
-		{
-			ai = new AggroInfo(character);
-			ai._damage = 0;
-			ai._hate = 0;
-			getAggroListRP().put(character, ai);
-		}
-    	return ai;
 	}
 }

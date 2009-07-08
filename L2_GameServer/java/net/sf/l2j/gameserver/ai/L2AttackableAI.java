@@ -466,7 +466,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						
 						// Add the attacker to the L2Attackable _aggroList with 0 damage and 1 hate
 						if (hating == 0)
-							npc.addDamageHate(target, 0, 1);
+							npc.addDamageHate(target, 0, 0);
 					}
 				}
 			}
