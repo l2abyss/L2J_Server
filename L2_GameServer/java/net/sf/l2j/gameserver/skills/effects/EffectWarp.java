@@ -110,18 +110,11 @@ public class EffectWarp extends L2Effect
 		_actor.broadcastPacket(new FlyToLocation(_actor, x, y, z, FlyType.DUMMY));
 		_actor.abortAttack();
 		_actor.abortCast();
-		return true;
-	}
-	
-	/**
-	 * 
-	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
-	 */
-	@Override
-	public void onExit()
-	{
+		
 		_actor.setXYZ(x, y, z);
 		_actor.broadcastPacket(new ValidateLocation(_actor));
+		
+		return true;
 	}
 	
 	/**
