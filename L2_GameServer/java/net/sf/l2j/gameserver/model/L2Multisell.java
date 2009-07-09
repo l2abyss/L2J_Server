@@ -101,7 +101,7 @@ public class L2Multisell
 	 *
 	 * @see net.sf.l2j.gameserver.serverpackets.ServerBasePacket#runImpl()
 	 */
-	private MultiSellListContainer generateMultiSell(int listId, boolean inventoryOnly, L2PcInstance player, double taxRate)
+	private MultiSellListContainer generateMultiSell(int listId, boolean inventoryOnly, L2PcInstance player, int npcId, double taxRate)
 	{
 		MultiSellListContainer listTemplate = L2Multisell.getInstance().getList(listId);
 		MultiSellListContainer list = new MultiSellListContainer();
@@ -109,6 +109,8 @@ public class L2Multisell
 			return list;
 		list = L2Multisell.getInstance().new MultiSellListContainer();
 		list.setListId(listId);
+		if (npcId != 0 && !listTemplate.checkNpcId(npcId))
+			listTemplate.addNpcId(npcId);
 		
 		if (inventoryOnly)
 		{
@@ -261,9 +263,9 @@ public class L2Multisell
 		return newEntry;
 	}
 	
-	public void separateAndSend(int listId, L2PcInstance player, boolean inventoryOnly, double taxRate)
+	public void separateAndSend(int listId, L2PcInstance player, int npcId, boolean inventoryOnly, double taxRate)
 	{
-		MultiSellListContainer list = generateMultiSell(listId, inventoryOnly, player, taxRate);
+		MultiSellListContainer list = generateMultiSell(listId, inventoryOnly, player, npcId, taxRate);
 		MultiSellListContainer temp = new MultiSellListContainer();
 		int page = 1;
 		
@@ -551,6 +553,7 @@ public class L2Multisell
 		private int _listId;
 		private boolean _applyTaxes = false;
 		private boolean _maintainEnchantment = false;
+		private List<Integer> _npcIds;
 		
 		List<MultiSellEntry> _entriesC;
 		
@@ -577,6 +580,11 @@ public class L2Multisell
 			_maintainEnchantment = maintainEnchantment;
 		}
 		
+		public void addNpcId(int objId)
+		{
+			_npcIds.add(objId);
+		}
+		
 		/**
 		 * @return Returns the listId.
 		 */
@@ -593,6 +601,21 @@ public class L2Multisell
 		public boolean getMaintainEnchantment()
 		{
 			return _maintainEnchantment;
+		}
+		
+		public boolean checkNpcId(int npcId)
+		{
+			if (_npcIds == null)
+			{
+				synchronized (this)
+				{
+					if (_npcIds == null)
+						_npcIds = new FastList<Integer>();
+				}
+				return false;
+			}
+
+			return _npcIds.contains(npcId);
 		}
 		
 		public void addEntry(MultiSellEntry e)

@@ -1206,11 +1206,13 @@ public class L2Npc extends L2Character
 			}
 			else if (command.startsWith("multisell"))
 			{
-				L2Multisell.getInstance().separateAndSend(Integer.parseInt(command.substring(9).trim()), player, false, getCastle().getTaxRate());
+				int listId = Integer.parseInt(command.substring(9).trim());
+				L2Multisell.getInstance().separateAndSend(listId, player, getNpcId(), false, getCastle().getTaxRate());
 			}
 			else if (command.startsWith("exc_multisell"))
 			{
-				L2Multisell.getInstance().separateAndSend(Integer.parseInt(command.substring(13).trim()), player, true, getCastle().getTaxRate());
+				int listId = Integer.parseInt(command.substring(13).trim());
+				L2Multisell.getInstance().separateAndSend(listId, player, getNpcId(), true, getCastle().getTaxRate());
 			}
 			else if (command.startsWith("Augment"))
 			{

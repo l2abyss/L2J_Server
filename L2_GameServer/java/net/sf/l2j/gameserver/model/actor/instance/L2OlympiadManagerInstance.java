@@ -137,10 +137,10 @@ public class L2OlympiadManagerInstance extends L2NpcInstance
 					}
 					break;
 				case 7:
-					L2Multisell.getInstance().separateAndSend(102, player, false, getCastle().getTaxRate());
+					L2Multisell.getInstance().separateAndSend(102, player, getNpcId(), false, getCastle().getTaxRate());
 					break;
 				case 9:
-					L2Multisell.getInstance().separateAndSend(103, player, false, getCastle().getTaxRate());
+					L2Multisell.getInstance().separateAndSend(103, player, getNpcId(), false, getCastle().getTaxRate());
 					break;
 				case 8:
 					int point = Olympiad.getInstance().getNoblePoints(player.getObjectId());

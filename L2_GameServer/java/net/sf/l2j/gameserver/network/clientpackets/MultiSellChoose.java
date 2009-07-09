@@ -23,6 +23,7 @@ import net.sf.l2j.gameserver.model.Elementals;
 import net.sf.l2j.gameserver.model.L2Augmentation;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Multisell;
+import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Multisell.MultiSellEntry;
 import net.sf.l2j.gameserver.model.L2Multisell.MultiSellIngredient;
 import net.sf.l2j.gameserver.model.L2Multisell.MultiSellListContainer;
@@ -109,7 +110,14 @@ public class MultiSellChoose extends L2GameClientPacket
 		MultiSellListContainer list = L2Multisell.getInstance().getList(_listId);
 		if (list == null)
 			return;
-		
+
+		L2Object target = player.getTarget();
+		if (!player.isGM() && (target == null
+				|| !(target instanceof L2Npc)
+				|| !list.checkNpcId(((L2Npc)target).getNpcId())
+				|| !((L2Npc)target).canInteract(player)))
+			return;
+
 		for (MultiSellEntry entry : list.getEntries())
 		{
 			if (entry.getEntryId() == _entryId)

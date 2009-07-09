@@ -183,14 +183,14 @@ public class L2MerchantInstance extends L2NpcInstance
             if (st.countTokens() < 1) return;
 
             int val = Integer.parseInt(st.nextToken());
-            L2Multisell.getInstance().separateAndSend(val, player, false, getCastle().getTaxRate());
+            L2Multisell.getInstance().separateAndSend(val, player, getNpcId(), false, getCastle().getTaxRate());
         }
         else if (actualCommand.equalsIgnoreCase("Exc_Multisell"))
         {
             if (st.countTokens() < 1) return;
 
             int val = Integer.parseInt(st.nextToken());
-            L2Multisell.getInstance().separateAndSend(val, player, true, getCastle().getTaxRate());
+            L2Multisell.getInstance().separateAndSend(val, player, getNpcId(), true, getCastle().getTaxRate());
         }
         else
         {
