@@ -4192,33 +4192,24 @@ public final class L2PcInstance extends L2Playable
 			getParty().broadcastToPartyMembers(this, update);
 		}
 
-        if (isInOlympiadMode())
+        if (isInOlympiadMode() && isOlympiadStart())
         {
-        	// TODO: implement new OlympiadUserInfo
-        	Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
         	//synchronized (getKnownList().getKnownPlayers())
 			{
-				for (L2PcInstance player : plrs)
+				for (L2PcInstance player : Olympiad.getInstance().getPlayers(_olympiadGameId))
 				{
-					if (player.getOlympiadGameId() == getOlympiadGameId()
-					        && player.isOlympiadStart())
+					if (player != null && player != this)
 					{
-						if (Config.DEBUG)
-							_log.fine("Send status for Olympia window of "
-							        + getObjectId() + "(" + getName() + ") to "
-							        + player.getObjectId() + "("
-							        + player.getName() + "). CP: "
-							        + getCurrentCp() + " HP: " + getCurrentHp()
-							        + " MP: " + getCurrentMp());
-						player.sendPacket(new ExOlympiadUserInfo(this, 1));
+						player.sendPacket(new ExOlympiadUserInfo(this, 2));
 					}
 				}
 			}
-            if(Olympiad.getInstance().getSpectators(_olympiadGameId) != null && this.isOlympiadStart())
+            if(Olympiad.getInstance().getSpectators(_olympiadGameId) != null)
             {
                 for(L2PcInstance spectator : Olympiad.getInstance().getSpectators(_olympiadGameId))
                 {
-                    if (spectator == null) continue;
+                    if (spectator == null)
+                    	continue;
                     spectator.sendPacket(new ExOlympiadUserInfo(this, getOlympiadSide()));
                 }
             }

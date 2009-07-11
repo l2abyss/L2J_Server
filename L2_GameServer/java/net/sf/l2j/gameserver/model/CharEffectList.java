@@ -27,10 +27,8 @@ import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.AbnormalStatusUpdate;
-import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadSpelledInfo;
 import net.sf.l2j.gameserver.network.serverpackets.PartySpelled;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
@@ -841,7 +839,6 @@ public class CharEffectList
 
 		AbnormalStatusUpdate mi = null;
 		PartySpelled ps = null;
-		ExOlympiadSpelledInfo os = null;
 		
 		if (_owner instanceof L2PcInstance)
 		{
@@ -852,9 +849,6 @@ public class CharEffectList
 
 			if (_owner.isInParty())
 				ps = new PartySpelled(_owner);
-
-			if(((L2PcInstance)_owner).isInOlympiadMode() && ((L2PcInstance)_owner).isOlympiadStart())
-				os = new ExOlympiadSpelledInfo((L2PcInstance)_owner);
 		}
 		else
 			if (_owner instanceof L2Summon)
@@ -883,9 +877,6 @@ public class CharEffectList
 						
 						if (ps != null)
 							e.addPartySpelledIcon(ps);
-						
-						if (os != null && !e.getSkill().isToggle())
-							e.addOlympiadSpelledIcon(os);
 					}
 				}
 			}
@@ -912,9 +903,6 @@ public class CharEffectList
 						
 						if (ps != null)
 							e.addPartySpelledIcon(ps);
-
-						if (os != null)
-							e.addOlympiadSpelledIcon(os);
 					}
 				}
 			}
@@ -940,20 +928,6 @@ public class CharEffectList
 			else
 				if (_owner instanceof L2PcInstance && _owner.isInParty())
 					_owner.getParty().broadcastToPartyMembers(ps);
-		}
-		
-		if (os != null)
-		{
-			if (Olympiad.getInstance().getSpectators(((L2PcInstance)_owner).getOlympiadGameId()) != null)
-			{
-				for (L2PcInstance spec : Olympiad.getInstance().getSpectators(((L2PcInstance)_owner).getOlympiadGameId()))
-				{
-					if (spec != null)
-					{
-						spec.sendPacket(os);
-					}
-				}
-			}
 		}
 	}
 
