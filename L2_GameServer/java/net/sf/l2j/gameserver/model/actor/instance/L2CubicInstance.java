@@ -653,13 +653,15 @@ public class L2CubicInstance
 	{
 		for (L2Character target: (L2Character[]) targets)
 		{
-			if (target instanceof L2PcInstance && target.isAlikeDead())
-			{
-				target.stopFakeDeath(null);
-			}
-			else if (target.isAlikeDead())
-			{
+			if (target == null)
 				continue;
+			
+			if (target.isAlikeDead())
+			{
+				if (target instanceof L2PcInstance)
+					target.stopFakeDeath(null);
+				else
+					continue;
 			}
 			
 			boolean mcrit = Formulas.calcMCrit(activeCubic.getMCriticalHit(target, skill));
