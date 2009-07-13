@@ -928,17 +928,18 @@ public class FortSiege
 	/** Remove commanders. */
 	private void removeCommanders()
 	{
-		if (_commanders != null)
+		if (_commanders != null && !_commanders.isEmpty())
 		{
 			// Remove all instance of commanders for this fort
 			for (L2Spawn spawn : _commanders.get(getFort().getFortId()))
 			{
 				if (spawn != null)
 				{
+					spawn.stopRespawn();
 					spawn.getLastSpawn().deleteMe();
-					_commanders.get(getFort().getFortId()).remove(spawn);
 				}
 			}
+			_commanders.clear();
 		}
 	}
 	
