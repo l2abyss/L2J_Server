@@ -44,7 +44,7 @@ public class EffectInvincible extends L2Effect
 	public boolean onStart()
 	{
 		getEffected().setIsInvulByEffect(true, this);
-		return true;
+		return super.onStart();
 	}
 	
 	/**
@@ -66,5 +66,6 @@ public class EffectInvincible extends L2Effect
 	public void onExit()
 	{
 		getEffected().setIsInvulByEffect(false, null);
+		super.onExit();
 	}
 }

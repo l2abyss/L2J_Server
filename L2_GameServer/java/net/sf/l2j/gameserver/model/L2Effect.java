@@ -99,7 +99,8 @@ public abstract class L2Effect
 	
 	// abnormal effect mask
 	private int _abnormalEffect;
-	
+	// special effect mask
+	private int _specialEffect;
 	// show icon
 	private boolean _icon;
 	
@@ -185,6 +186,7 @@ public abstract class L2Effect
 		
 		_period = temp;
 		_abnormalEffect = template.abnormalEffect;
+		_specialEffect = template.specialEffect;
 		_stackType = template.stackType;
 		_stackOrder = template.stackOrder;
 		_periodStartTicks = GameTimeController.getGameTicks();
@@ -223,6 +225,7 @@ public abstract class L2Effect
 		_totalCount = _template.counter;
 		_period = _template.period - effect.getTime();
 		_abnormalEffect = _template.abnormalEffect;
+		_specialEffect = _template.specialEffect;
 		_stackType = _template.stackType;
 		_stackOrder = _template.stackOrder;
 		_periodStartTicks = effect.getPeriodStartTicks();
@@ -428,6 +431,8 @@ public abstract class L2Effect
 	{
 		if (_abnormalEffect != 0)
 			getEffected().startAbnormalEffect(_abnormalEffect);
+		if (_specialEffect != 0)
+			getEffected().startSpecialEffect(_specialEffect);
 		return true;
 	}
 	
@@ -438,6 +443,8 @@ public abstract class L2Effect
 	{
 		if (_abnormalEffect != 0)
 			getEffected().stopAbnormalEffect(_abnormalEffect);
+		if (_specialEffect != 0)
+			getEffected().stopSpecialEffect(_specialEffect);
 	}
 	
 	/** Return true for continuation of this effect */

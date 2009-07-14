@@ -265,6 +265,23 @@ abstract class DocumentBase
             else if (abn.equals("unknown27")) abnormal = L2Character.ABNORMAL_EFFECT_UNKNOWN_27;
             else if (abn.equals("invulnerable")) abnormal = L2Character.ABNORMAL_EFFECT_INVULNERABLE;
             else if (abn.equals("vitality")) abnormal = L2Character.ABNORMAL_EFFECT_VITALITY;
+            else if (abn.equals("unknown30")) abnormal = L2Character.ABNORMAL_EFFECT_UNKNOWN_30;
+            else if (abn.equals("deathmark")) abnormal = L2Character.ABNORMAL_EFFECT_DEATH_MARK;
+            else if (abn.equals("unknown32")) abnormal = L2Character.ABNORMAL_EFFECT_UNKNOWN_32;
+        }
+        int special = 0;
+        if (attrs.getNamedItem("special") != null)
+        {
+            String spc = attrs.getNamedItem("special").getNodeValue();
+            if (spc.equals("invulnerable")) special = L2Character.SPECIAL_EFFECT_INVULNERABLE;
+            else if (spc.equals("redglow")) special = L2Character.SPECIAL_EFFECT_RED_GLOW;
+            else if (spc.equals("redglow2")) special = L2Character.SPECIAL_EFFECT_RED_GLOW2;
+            else if (spc.equals("baguettesword")) special = L2Character.SPECIAL_EFFECT_BAGUETTE_SWORD;
+            else if (spc.equals("yellowafro")) special = L2Character.SPECIAL_EFFECT_YELLOW_AFFRO;
+            else if (spc.equals("pinkafro")) special = L2Character.SPECIAL_EFFECT_PINK_AFFRO;
+            else if (spc.equals("blackafro")) special = L2Character.SPECIAL_EFFECT_BLACK_AFFRO;
+            else if (spc.equals("unknown8")) special = L2Character.SPECIAL_EFFECT_UNKNOWN8;
+            else if (spc.equals("unknown9")) special = L2Character.SPECIAL_EFFECT_UNKNOWN9;
         }
         float stackOrder = 0;
         String stackType = "none";
@@ -330,7 +347,7 @@ abstract class DocumentBase
 			throw new NoSuchElementException("Invalid chance condition: " + chanceCond + " "
 			        + activationChance);        	
         	
-        lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, time, abnormal, stackType, stackOrder, icon, effectPower, type, trigId, trigLvl, chance);
+        lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, time, abnormal, special, stackType, stackOrder, icon, effectPower, type, trigId, trigLvl, chance);
 		parseTemplate(n, lt);
 		if (template instanceof L2Item)
 			((L2Item) template).attach(lt);
