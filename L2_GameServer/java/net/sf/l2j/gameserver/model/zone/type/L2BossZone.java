@@ -201,6 +201,8 @@ public class L2BossZone extends L2ZoneType
 						for (int i = 0; i < _raidList.size(); i++)
 						{
 							L2Attackable raid = (L2Attackable) _raidList.get(i);
+							if (raid == null || raid.isDead())
+								continue;
 							if (!raid.isInsideRadius(raid.getSpawn().getLocx(), raid.getSpawn().getLocy(), 150, false))
 								raid.returnHome();
 						}
