@@ -55,17 +55,19 @@ public class RequestAquireSkillInfo extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getClient().getActiveChar();
 
 		if (activeChar == null)
             return;
 
-		L2NpcInstance trainer = activeChar.getLastFolkNPC();
+		final L2Npc trainer = activeChar.getLastFolkNPC();
+		if (!(trainer instanceof L2NpcInstance))
+			return;
 
-        if ((trainer == null || !activeChar.isInsideRadius(trainer, L2Npc.INTERACTION_DISTANCE, false, false)) && !activeChar.isGM())
+        if (!trainer.canInteract(activeChar) && !activeChar.isGM())
             return;
 
-		L2Skill skill = SkillTable.getInstance().getInfo(_id, _level);
+		final L2Skill skill = SkillTable.getInstance().getInfo(_id, _level);
 
 		boolean canteach = false;
 

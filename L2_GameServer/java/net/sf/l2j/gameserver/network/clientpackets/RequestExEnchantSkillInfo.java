@@ -73,9 +73,11 @@ public final class RequestExEnchantSkillInfo extends L2GameClientPacket
         if (activeChar.getLevel() < 76)
             return;
 
-        L2NpcInstance trainer = activeChar.getLastFolkNPC();
+        L2Npc trainer = activeChar.getLastFolkNPC();
+        if (!(trainer instanceof L2NpcInstance))
+        	return;
 
-        if ((trainer == null || !activeChar.isInsideRadius(trainer, L2Npc.INTERACTION_DISTANCE, false, false)) && !activeChar.isGM())
+        if (!trainer.canInteract(activeChar) && !activeChar.isGM())
             return;
 
         L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLvl);

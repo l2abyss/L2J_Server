@@ -602,6 +602,8 @@ public class L2Npc extends L2Character
 		if (!canTarget(player))
 			return;
 
+		player.setLastFolkNPC(this);
+
 		// Check if the L2PcInstance already target the L2NpcInstance
 		if (this != player.getTarget())
 		{

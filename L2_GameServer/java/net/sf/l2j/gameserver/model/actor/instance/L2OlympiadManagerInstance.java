@@ -23,6 +23,7 @@ import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Multisell;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExHeroList;
@@ -38,7 +39,7 @@ import net.sf.l2j.util.L2FastList;
  * @author godson
  */
 
-public class L2OlympiadManagerInstance extends L2NpcInstance
+public class L2OlympiadManagerInstance extends L2Npc
 {
 	private static Logger _logOlymp = Logger.getLogger(L2OlympiadManagerInstance.class.getName());
 

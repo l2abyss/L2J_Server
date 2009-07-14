@@ -20,6 +20,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -33,7 +34,7 @@ import net.sf.l2j.gameserver.util.StringUtil;
  *
  * @author Tempy
  */
-public class L2SignsPriestInstance extends L2NpcInstance
+public class L2SignsPriestInstance extends L2Npc
 {
     //private static Logger _log = Logger.getLogger(L2SignsPriestInstance.class.getName());
 

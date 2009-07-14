@@ -68,11 +68,11 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
         if (player == null)
             return;
         
-        L2NpcInstance trainer = player.getLastFolkNPC();
-        if (trainer == null)
+        L2Npc trainer = player.getLastFolkNPC();
+        if (!(trainer instanceof L2NpcInstance))
             return;
         
-        if ((trainer == null || !player.isInsideRadius(trainer, L2Npc.INTERACTION_DISTANCE, false, false)) && !player.isGM())
+        if (!trainer.canInteract(player) && !player.isGM())
             return;
         
         if (player.getClassId().level() < 3) // requires to have 3rd class quest completed
@@ -161,7 +161,7 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
                     sm.addSkillName(_skillId);
                     player.sendPacket(sm);
                 }
-                trainer.showEnchantSkillList(player, true);
+                ((L2NpcInstance)trainer).showEnchantSkillList(player, true);
                 
                 this.updateSkillShortcuts(player);
             }

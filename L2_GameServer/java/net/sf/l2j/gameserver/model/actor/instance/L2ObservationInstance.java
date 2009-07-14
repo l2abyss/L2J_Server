@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.util.StringTokenizer;
 
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
@@ -28,7 +29,7 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
  * @version $Revision: 1.3.2.2.2.5 $ $Date: 2005/03/27 15:29:32 $
  *
  */
-public final class L2ObservationInstance extends L2NpcInstance
+public final class L2ObservationInstance extends L2Npc
 {
     //private static Logger _log = Logger.getLogger(L2TeleporterInstance.class.getName());
 

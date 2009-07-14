@@ -49,7 +49,6 @@ public class L2NpcInstance extends L2Npc
 	@Override
 	public void onAction(L2PcInstance player)
 	{
-		player.setLastFolkNPC(this);
 		super.onAction(player);
 	}
 	

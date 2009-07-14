@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.model.actor.instance;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.cache.HtmCache;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.serverpackets.ExShowDominionRegistry;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
@@ -23,7 +24,7 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
  * NPC that gives information about territory wars
  * @author  GodKratos
  */
-public class L2MercenaryManagerInstance extends L2NpcInstance
+public class L2MercenaryManagerInstance extends L2Npc
 {
     /**
      * @param objectId

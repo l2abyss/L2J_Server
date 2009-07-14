@@ -19,90 +19,91 @@ import java.util.Arrays;
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.SkillTable;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
-public class L2WyvernManagerInstance extends L2CastleChamberlainInstance
+public class L2WyvernManagerInstance extends L2Npc
 {
 	private static final int[] STRIDERS = { 12526, 12527, 12528, 16038, 16039, 16040 };
 
-    public L2WyvernManagerInstance (int objectId, L2NpcTemplate template)
-    {
-        super(objectId, template);
-    }
+	public L2WyvernManagerInstance (int objectId, L2NpcTemplate template)
+	{
+		super(objectId, template);
+	}
 
-    @Override
+	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
-    {
-        if (command.startsWith("RideWyvern"))
-        {
-        	if (!player.isClanLeader())
-        	{
-        		player.sendMessage("Only clan leaders are allowed.");
-        		return;
-        	}
-        	if ((SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE) == SevenSigns.CABAL_DUSK) && SevenSigns.getInstance().isSealValidationPeriod())
-        	{
-        		player.sendMessage("You cannot ride wyvern while Seal of Strife controlled by Dusk.");
-        		return;     		
-        	}
-        	if(player.getPet() == null)
-        	{
-        		if(player.isMounted())
-        		{
-        			player.sendMessage("You already have a pet.");
-        			return;
-        		}
-        		else
-        		{
-        			player.sendMessage("Summon your Strider first.");
-        			return;
-        		}
-        	}
-        	else if (Arrays.binarySearch(STRIDERS, player.getPet().getNpcId()) >= 0 )
-            {
-        		if (player.getInventory().getItemByItemId(1460) != null && player.getInventory().getItemByItemId(1460).getCount() >= 25)
-        		{
-        			if (player.getPet().getLevel() < 55)
-        			{
-                		player.sendMessage("Your Strider Has not reached the required level.");
-                		return;
-        			}
-        			else
-        			{
-        				player.getPet().unSummon(player);
-        				if (player.mount(12621, 0, true))
-        				{
-        				    player.getInventory().destroyItemByItemId("Wyvern", 1460, 25, player, player.getTarget());
-        				    player.addSkill(SkillTable.getInstance().getInfo(4289, 1));
-        				    player.sendMessage("The Wyvern has been summoned successfully!");
-        				}
-                        return;
-        			}
-        		}
-        		else
-        		{
-            		player.sendMessage("You need 25 Crystals: B Grade.");
-            		return;
-        		}
-            }
-        	else
-        	{
-        		player.sendMessage("Unsummon your pet.");
-        		return;
-        	}
-        }
+	{
+		if (command.startsWith("RideWyvern"))
+		{
+			if (!isOwnerClan(player))
+			{
+				return;
+			}
+			if ((SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE) == SevenSigns.CABAL_DUSK) && SevenSigns.getInstance().isSealValidationPeriod())
+			{
+				player.sendMessage("You cannot ride wyvern while Seal of Strife controlled by Dusk.");
+				return;     		
+			}
+			if(player.getPet() == null)
+			{
+				if(player.isMounted())
+				{
+					player.sendMessage("You already have a pet.");
+					return;
+				}
+				else
+				{
+					player.sendMessage("Summon your Strider first.");
+					return;
+				}
+			}
+			else if (Arrays.binarySearch(STRIDERS, player.getPet().getNpcId()) >= 0 )
+			{
+				if (player.getInventory().getItemByItemId(1460) != null && player.getInventory().getItemByItemId(1460).getCount() >= 25)
+				{
+					if (player.getPet().getLevel() < 55)
+					{
+						player.sendMessage("Your Strider Has not reached the required level.");
+						return;
+					}
+					else
+					{
+						player.getPet().unSummon(player);
+						if (player.mount(12621, 0, true))
+						{
+							player.getInventory().destroyItemByItemId("Wyvern", 1460, 25, player, player.getTarget());
+							player.addSkill(SkillTable.getInstance().getInfo(4289, 1));
+							player.sendMessage("The Wyvern has been summoned successfully!");
+						}
+						return;
+					}
+				}
+				else
+				{
+					player.sendMessage("You need 25 Crystals: B Grade.");
+					return;
+				}
+			}
+			else
+			{
+				player.sendMessage("Unsummon your pet.");
+				return;
+			}
+		}
 		else
 			super.onBypassFeedback(player, command);
-    }
+	}
 
 	@Override
 	public void onAction(L2PcInstance player)
 	{
-		if (!canTarget(player)) return;
+		if (!canTarget(player))
+			return;
 
 		player.setLastFolkNPC(this);
 
@@ -135,21 +136,25 @@ public class L2WyvernManagerInstance extends L2CastleChamberlainInstance
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 
-    private void showMessageWindow(L2PcInstance player)
-    {
-        player.sendPacket( ActionFailed.STATIC_PACKET );
-        String filename = "data/html/wyvernmanager/wyvernmanager-no.htm";
+	private void showMessageWindow(L2PcInstance player)
+	{
+		player.sendPacket( ActionFailed.STATIC_PACKET );
+		String filename = "data/html/wyvernmanager/wyvernmanager-no.htm";
 
-        int condition = validateCondition(player);
-        if (condition > COND_ALL_FALSE)
-        {
-            if (condition == COND_OWNER)                                     // Clan owns castle
-                filename = "data/html/wyvernmanager/wyvernmanager.htm";      // Owner message window
-        }
-        NpcHtmlMessage html = new NpcHtmlMessage(1);
-        html.setFile(filename);
-        html.replace("%objectId%", String.valueOf(getObjectId()));
-        html.replace("%npcname%", getName());
-        player.sendPacket(html);
-    }
+		if (isOwnerClan(player))
+		{
+            filename = "data/html/wyvernmanager/wyvernmanager.htm";      // Owner message window
+		}
+
+		NpcHtmlMessage html = new NpcHtmlMessage(1);
+		html.setFile(filename);
+		html.replace("%objectId%", String.valueOf(getObjectId()));
+		html.replace("%npcname%", getName());
+		player.sendPacket(html);
+	}
+
+	protected boolean isOwnerClan(L2PcInstance player)
+	{
+		return true;
+	}
 }

@@ -20,7 +20,7 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.ClanWarehouse;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.ItemContainer;
 import net.sf.l2j.gameserver.model.itemcontainer.PcWarehouse;
@@ -86,7 +86,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		if (warehouse == null)
 			return;
 
-		final L2NpcInstance manager = player.getLastFolkNPC();
+		final L2Npc manager = player.getLastFolkNPC();
 		if ((manager == null
 				|| !manager.isWarehouse()
 				|| !manager.canInteract(player)) && !player.isGM())

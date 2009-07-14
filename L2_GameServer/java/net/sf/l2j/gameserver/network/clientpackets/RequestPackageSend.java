@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.TradeList;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2WarehouseInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.ItemContainer;
@@ -95,7 +95,7 @@ public final class RequestPackageSend extends L2GameClientPacket
 		if (warehouse == null)
 			return;
 
-		L2NpcInstance manager = player.getLastFolkNPC();
+		L2Npc manager = player.getLastFolkNPC();
 		if ((manager == null
 				|| !(manager instanceof L2WarehouseInstance)
 				|| !manager.canInteract(player)) && !player.isGM())

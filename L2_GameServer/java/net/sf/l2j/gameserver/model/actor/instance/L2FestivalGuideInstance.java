@@ -22,6 +22,7 @@ import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.SevenSignsFestival;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Party;
+import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -35,7 +36,7 @@ import net.sf.l2j.gameserver.util.StringUtil;
  *
  * @author Tempy
  */
-public final class L2FestivalGuideInstance extends L2NpcInstance
+public final class L2FestivalGuideInstance extends L2Npc
 {
     protected int _festivalType;
     protected int _festivalOracle;
