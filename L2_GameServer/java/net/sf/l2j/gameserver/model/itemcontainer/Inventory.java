@@ -821,10 +821,12 @@ public abstract class Inventory extends ItemContainer
 	{
 		// Unequip item if equiped
 		for (int i = 0; i < _paperdoll.length; i++)
-
-		if (_paperdoll[i] == item) unEquipItemInSlot(i);
-			return super.removeItem(item);
+		{
+			if (_paperdoll[i] == item)
+				unEquipItemInSlotAndRecord(i);
 		}
+		return super.removeItem(item);
+	}
 
 	/**
 	 * Returns the item in the paperdoll slot
