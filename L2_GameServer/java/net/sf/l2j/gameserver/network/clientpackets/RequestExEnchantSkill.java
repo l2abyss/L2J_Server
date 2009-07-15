@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -47,7 +49,8 @@ import net.sf.l2j.util.Rnd;
 public final class RequestExEnchantSkill extends L2GameClientPacket
 {
     private static final String _C__D0_07_REQUESTEXENCHANTSKILL = "[C] D0:07 RequestExEnchantSkill";
-    private static Logger _log = Logger.getLogger(RequestAquireSkill.class.getName());
+    private static final Logger _log = Logger.getLogger(RequestAquireSkill.class.getName());
+	private static final Logger _logEnchant = Logger.getLogger("enchant");
     
     private int _skillId;
     private int _skillLvl;
@@ -149,6 +152,13 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
                 // ok.  Destroy ONE copy of the book
                 if (Rnd.get(100) <= rate)
                 {
+                	if (Config.LOG_SKILL_ENCHANTS)
+                	{
+                        LogRecord record = new LogRecord(Level.INFO, "Success");
+        				record.setParameters(new Object[]{player, skill, spb, rate});
+        				record.setLoggerName("skill");
+        				_logEnchant.log(record);
+                	}
                     
                     player.addSkill(skill, true);
                     
@@ -163,12 +173,21 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
                     SystemMessage sm = new SystemMessage(SystemMessageId.YOU_HAVE_SUCCEEDED_IN_ENCHANTING_THE_SKILL_S1);
                     sm.addSkillName(_skillId);
                     player.sendPacket(sm);
+
                 }
                 else
                 {
                     player.addSkill(SkillTable.getInstance().getInfo(_skillId, s.getBaseLevel()), true);
                     player.sendSkillList(); 
                     player.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_FAILED_TO_ENCHANT_THE_SKILL_S1));
+
+                    if (Config.LOG_SKILL_ENCHANTS)
+                    {
+                        LogRecord record = new LogRecord(Level.INFO, "Fail");
+        				record.setParameters(new Object[]{player, skill, spb, rate});
+        				record.setLoggerName("skill");
+        				_logEnchant.log(record);
+                    }
                 }
                 ((L2NpcInstance)trainer).showEnchantSkillList(player, false);
                 

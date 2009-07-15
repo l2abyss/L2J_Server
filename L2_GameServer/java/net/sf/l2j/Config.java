@@ -343,6 +343,8 @@ public final class Config
 	public static boolean GAMEGUARD_PROHIBITACTION;
 	public static boolean LOG_CHAT;
 	public static boolean LOG_ITEMS;
+	public static boolean LOG_ITEM_ENCHANTS;
+	public static boolean LOG_SKILL_ENCHANTS;
 	public static boolean GMAUDIT;
 	public static boolean LOG_GAME_DAMAGE;
 	public static boolean DEBUG;
@@ -1380,6 +1382,8 @@ public final class Config
 					GAMEGUARD_PROHIBITACTION = Boolean.parseBoolean(General.getProperty("GameGuardProhibitAction", "True"));
 					LOG_CHAT = Boolean.parseBoolean(General.getProperty("LogChat", "false"));
 					LOG_ITEMS = Boolean.parseBoolean(General.getProperty("LogItems", "false"));
+					LOG_ITEM_ENCHANTS = Boolean.parseBoolean(General.getProperty("LogItemEnchants", "false"));
+					LOG_SKILL_ENCHANTS = Boolean.parseBoolean(General.getProperty("LogSkillEnchants", "false"));
 					GMAUDIT = Boolean.parseBoolean(General.getProperty("GMAudit", "False"));
 					LOG_GAME_DAMAGE = Boolean.parseBoolean(General.getProperty("LogGameDamage", "False"));
 					DEBUG = Boolean.parseBoolean(General.getProperty("Debug", "false"));

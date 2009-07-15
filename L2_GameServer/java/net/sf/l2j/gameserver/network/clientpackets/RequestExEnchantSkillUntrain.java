@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -44,7 +46,9 @@ import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
  */
 public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 {
-	protected static final Logger _log = Logger.getLogger(RequestExEnchantSkillUntrain.class.getName());
+	private static final Logger _log = Logger.getLogger(RequestExEnchantSkillUntrain.class.getName());
+	private static final Logger _logEnchant = Logger.getLogger("enchant");
+
 	private int _skillId;
 	private int _skillLvl;
 	
@@ -124,7 +128,15 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 		{
 			_skillLvl = s.getBaseLevel();
 		}
-		
+
+		if (Config.LOG_SKILL_ENCHANTS)
+		{
+	        LogRecord record = new LogRecord(Level.INFO, "Untrain");
+			record.setParameters(new Object[]{player, skill, spb});
+			record.setLoggerName("skill");
+			_logEnchant.log(record);
+		}
+
 		player.addSkill(skill, true);
 		
 		if (Config.DEBUG)

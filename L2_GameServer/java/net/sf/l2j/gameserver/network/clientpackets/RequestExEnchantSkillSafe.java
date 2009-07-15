@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -46,7 +48,9 @@ import net.sf.l2j.util.Rnd;
  */
 public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 {
-    protected static final Logger _log = Logger.getLogger(RequestExEnchantSkillSafe.class.getName());
+    private static final Logger _log = Logger.getLogger(RequestExEnchantSkillSafe.class.getName());
+	private static final Logger _logEnchant = Logger.getLogger("enchant");
+
 	private int _skillId;
 	private int _skillLvl;
 	
@@ -140,6 +144,13 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
                 // ok.  Destroy ONE copy of the book
                 if (Rnd.get(100) <= rate)
                 {
+                	if (Config.LOG_SKILL_ENCHANTS)
+                	{
+                        LogRecord record = new LogRecord(Level.INFO, "Safe Success");
+        				record.setParameters(new Object[]{player, skill, spb, rate});
+        				record.setLoggerName("skill");
+        				_logEnchant.log(record);
+                	}
                     
                     player.addSkill(skill, true);
                     
@@ -157,7 +168,15 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
                 }
                 else
                 {
-                    SystemMessage sm = new SystemMessage(SystemMessageId.SKILL_ENCHANT_FAILED_S1_LEVEL_WILL_REMAIN);
+                	if (Config.LOG_SKILL_ENCHANTS)
+                	{
+                        LogRecord record = new LogRecord(Level.INFO, "Safe Fail");
+        				record.setParameters(new Object[]{player, skill, spb, rate});
+        				record.setLoggerName("skill");
+        				_logEnchant.log(record);
+                	}
+
+                	SystemMessage sm = new SystemMessage(SystemMessageId.SKILL_ENCHANT_FAILED_S1_LEVEL_WILL_REMAIN);
                     sm.addSkillName(_skillId);
                     player.sendPacket(sm);
                 }

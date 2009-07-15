@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -32,6 +34,7 @@ import net.sf.l2j.util.Rnd;
 public final class RequestEnchantItem extends AbstractEnchantPacket
 {
 	protected static final Logger _log = Logger.getLogger(RequestEnchantItem.class.getName());
+	protected static final Logger _logEnchant = Logger.getLogger("enchant");
 
 	private static final String _C__58_REQUESTENCHANTITEM = "[C] 58 RequestEnchantItem";
 
@@ -152,6 +155,14 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 				item.setEnchantLevel(item.getEnchantLevel() + 1);
 				item.updateDatabase();
 				activeChar.sendPacket(new EnchantResult(0, 0, 0));
+
+				if (Config.LOG_ITEM_ENCHANTS)
+				{
+					LogRecord record = new LogRecord(Level.INFO, "Success");
+					record.setParameters(new Object[]{activeChar, item, scroll, support, chance});
+					record.setLoggerName("item");
+					_logEnchant.log(record);
+				}
 			}
 			else
 			{
@@ -160,6 +171,14 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 					// safe enchant - remain old value
 					// need retail message
 					activeChar.sendPacket(new EnchantResult(5, 0, 0));
+
+					if (Config.LOG_ITEM_ENCHANTS)
+					{
+						LogRecord record = new LogRecord(Level.INFO, "Safe Fail");
+						record.setParameters(new Object[]{activeChar, item, scroll, support, chance});
+						record.setLoggerName("item");
+						_logEnchant.log(record);
+					}
 				}
 				else
 				{
@@ -199,6 +218,14 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 						item.setEnchantLevel(0);
 						item.updateDatabase();
 						activeChar.sendPacket(new EnchantResult(3, 0, 0));
+
+						if (Config.LOG_ITEM_ENCHANTS)
+						{
+							LogRecord record = new LogRecord(Level.INFO, "Blessed Fail");
+							record.setParameters(new Object[]{activeChar, item, scroll, support, chance});
+							record.setLoggerName("item");
+							_logEnchant.log(record);
+						}
 					}
 					else 
 					{
@@ -215,6 +242,14 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 							Util.handleIllegalPlayerAction(activeChar, "Unable to delete item on enchant failure from player " + activeChar.getName() + ", possible cheater !", Config.DEFAULT_PUNISH);
 							activeChar.setActiveEnchantItem(null);
 							activeChar.sendPacket(new EnchantResult(2, 0, 0));
+
+							if (Config.LOG_ITEM_ENCHANTS)
+							{
+								LogRecord record = new LogRecord(Level.INFO, "Unable to destroy");
+								record.setParameters(new Object[]{activeChar, item, scroll, support, chance});
+								record.setLoggerName("item");
+								_logEnchant.log(record);
+							}
 							return;
 						}
 
@@ -250,6 +285,14 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 							activeChar.sendPacket(new EnchantResult(4, 0, 0));
 						else
 							activeChar.sendPacket(new EnchantResult(1, crystalId, count));
+
+						if (Config.LOG_ITEM_ENCHANTS)
+						{
+							LogRecord record = new LogRecord(Level.INFO, "Fail");
+							record.setParameters(new Object[]{activeChar, item, scroll, support, chance});
+							record.setLoggerName("item");
+							_logEnchant.log(record);
+						}
 					}
 				}
 			}

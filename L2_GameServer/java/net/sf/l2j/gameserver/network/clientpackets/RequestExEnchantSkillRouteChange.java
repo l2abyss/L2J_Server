@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -47,6 +49,8 @@ import net.sf.l2j.util.Rnd;
 public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 {
     protected static final Logger _log = Logger.getLogger(RequestExEnchantSkillRouteChange.class.getName());
+	private static final Logger _logEnchant = Logger.getLogger("enchant");
+
 	private int _skillId;
 	private int _skillLvl;
 	
@@ -163,7 +167,15 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
                 
                 if (skill != null)
                 {
-                    player.addSkill(skill, true);
+                	if (Config.LOG_SKILL_ENCHANTS)
+                	{
+                        LogRecord record = new LogRecord(Level.INFO, "Route Change");
+        				record.setParameters(new Object[]{player, skill, spb});
+        				record.setLoggerName("skill");
+        				_logEnchant.log(record);
+                	}
+
+    				player.addSkill(skill, true);
                 }
                 
                 if (Config.DEBUG)
