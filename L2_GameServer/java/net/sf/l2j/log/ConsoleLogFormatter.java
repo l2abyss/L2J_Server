@@ -12,10 +12,10 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j;
+package net.sf.l2j.log;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 import net.sf.l2j.gameserver.util.StringUtil;
@@ -23,10 +23,9 @@ import net.sf.l2j.gameserver.util.StringUtil;
 /**
  * This class ...
  * 
- * @version $Revision: 1.1.4.1 $ $Date: 2005/03/27 15:30:08 $
+ * @version $Revision: 1.1.4.2 $ $Date: 2005/03/27 15:30:08 $
  */
-
-public class FileLogFormatter extends Formatter
+public class ConsoleLogFormatter extends Formatter
 {
 	
 	/*
@@ -34,15 +33,53 @@ public class FileLogFormatter extends Formatter
 	 * 
 	 * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
 	 */
+	// private static final String _ = " ";
 	private static final String CRLF = "\r\n";
-	private static final String _ = "\t";
-	private SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss,SSS");
 	
 	@Override
 	public String format(LogRecord record)
 	{
-		return StringUtil.concat(dateFmt.format(new Date(record.getMillis())), _,
-				record.getLevel().getName(), _, String.valueOf(record.getThreadID()), _,
-				record.getLoggerName(), _, record.getMessage(), CRLF);
+		final StringBuilder output = new StringBuilder(500);
+		// output.append(record.getLevel().getName());
+		// output.append(_);
+		// output.append(record.getLoggerName());
+		// output.append(_);
+		StringUtil.append(output, record.getMessage(), CRLF);
+		
+		if (record.getThrown() != null)
+		{
+			StringWriter sw = null;
+			PrintWriter pw = null;
+			try
+			{
+				sw = new StringWriter();
+				pw = new PrintWriter(sw);
+				record.getThrown().printStackTrace(pw);
+				StringUtil.append(output, sw.toString(), CRLF);
+			}
+			catch (Exception ex)
+			{
+			}
+			finally
+			{
+				try
+				{
+					pw.close();
+				}
+				catch (Exception e)
+				{
+				}
+				
+				try
+				{
+					sw.close();
+				}
+				catch (Exception e)
+				{
+				}
+			}
+		}
+		
+		return output.toString();
 	}
 }

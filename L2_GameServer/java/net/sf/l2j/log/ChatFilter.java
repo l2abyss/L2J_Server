@@ -12,19 +12,17 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j;
+package net.sf.l2j.log;
 
-import java.io.IOException;
-import java.util.logging.FileHandler;
+import java.util.logging.Filter;
+import java.util.logging.LogRecord;
 
-/**
- * @author zabbix
- * Lets drink to code!
- */
-public class AuditLogHandler extends FileHandler
+public class ChatFilter implements Filter
 {
-	public AuditLogHandler() throws IOException, SecurityException
+
+	public boolean isLoggable(LogRecord record)
 	{
-		super();
+		return "chat".equals(record.getLoggerName());
 	}
+
 }

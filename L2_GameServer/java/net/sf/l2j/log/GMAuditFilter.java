@@ -12,19 +12,16 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j;
+package net.sf.l2j.log;
 
 import java.util.logging.Filter;
 import java.util.logging.LogRecord;
 
-/**
- * @author zabbix
- * Lets drink to code!
- */
-public class AuditFilter implements Filter
+public class GMAuditFilter implements Filter
 {
+
 	public boolean isLoggable(LogRecord record)
 	{
-		return record.getLoggerName().equalsIgnoreCase("audit");
+		return record.getLoggerName().equalsIgnoreCase("gmaudit");
 	}
 }

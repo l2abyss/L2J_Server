@@ -12,16 +12,19 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j;
 
-import java.io.IOException;
-import java.util.logging.FileHandler;
+package net.sf.l2j.log;
 
-public class ChatLogHandler extends FileHandler
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
+
+public class GMAuditFormatter extends Formatter
 {
 
-	public ChatLogHandler() throws IOException, SecurityException
+	@Override
+	public String format(LogRecord record)
 	{
-		super();
+		return record.getMessage()+"\r\n";
 	}
+
 }

@@ -12,16 +12,16 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j;
+package net.sf.l2j.log;
 
-import java.util.logging.Filter;
-import java.util.logging.LogRecord;
+import java.io.IOException;
+import java.util.logging.FileHandler;
 
-public class GMAuditFilter implements Filter
+public class ErrorLogHandler extends FileHandler
 {
 
-	public boolean isLoggable(LogRecord record)
+	public ErrorLogHandler() throws IOException, SecurityException
 	{
-		return record.getLoggerName().equalsIgnoreCase("gmaudit");
+		super();
 	}
 }

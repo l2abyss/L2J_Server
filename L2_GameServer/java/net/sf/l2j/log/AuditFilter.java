@@ -12,19 +12,19 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package net.sf.l2j.log;
 
-package net.sf.l2j;
-
-import java.util.logging.Formatter;
+import java.util.logging.Filter;
 import java.util.logging.LogRecord;
 
-public class GMAuditFormatter extends Formatter
+/**
+ * @author zabbix
+ * Lets drink to code!
+ */
+public class AuditFilter implements Filter
 {
-
-	@Override
-	public String format(LogRecord record)
+	public boolean isLoggable(LogRecord record)
 	{
-		return record.getMessage()+"\r\n";
+		return record.getLoggerName().equalsIgnoreCase("audit");
 	}
-
 }

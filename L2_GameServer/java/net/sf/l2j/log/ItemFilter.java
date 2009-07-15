@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j;
+package net.sf.l2j.log;
 
 import java.util.logging.Filter;
 import java.util.logging.LogRecord;

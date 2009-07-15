@@ -12,17 +12,16 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.sf.l2j;
+package net.sf.l2j.log;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;
 
-public class GMAuditLogHandler extends FileHandler
+public class ChatLogHandler extends FileHandler
 {
 
-	public GMAuditLogHandler() throws IOException, SecurityException
+	public ChatLogHandler() throws IOException, SecurityException
 	{
 		super();
 	}
 }
-
