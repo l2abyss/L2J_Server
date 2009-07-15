@@ -1363,11 +1363,6 @@ public final class L2ItemInstance extends L2Object
 			inst.scheduleConsumeManaTask();
 		}
 
-		// if mana left is 0 return nothing, item already deleted from decreaseMana()
-		if (inst._mana == 0)
-		{
-		    return null;
-		}
 		if (inst.isTimeLimitedItem())
 			inst.scheduleLifeTimeTask();
 
