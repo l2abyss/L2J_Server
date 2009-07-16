@@ -736,6 +736,7 @@ public final class Config
 	public static String GAME_SERVER_LOGIN_HOST;
 	public static String INTERNAL_HOSTNAME;
 	public static String EXTERNAL_HOSTNAME;
+	public static String ROUTER_HOSTNAME;
 	public static int PATH_NODE_RADIUS;
 	public static int NEW_NODE_ID;
 	public static int SELECTED_NODE_ID;
@@ -1983,6 +1984,7 @@ public final class Config
 
 					INTERNAL_HOSTNAME = serverSettings.getProperty("InternalHostname", "localhost");
 					EXTERNAL_HOSTNAME = serverSettings.getProperty("ExternalHostname", "localhost");
+					ROUTER_HOSTNAME = serverSettings.getProperty("RouterHostname", "");
 
 					DATABASE_DRIVER = serverSettings.getProperty("Driver", "com.mysql.jdbc.Driver");
 					DATABASE_URL = serverSettings.getProperty("URL", "jdbc:mysql://localhost/l2jdb");

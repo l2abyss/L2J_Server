@@ -71,7 +71,7 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 		_state = LoginClientState.CONNECTED;
 		String ip = getConnection().getInetAddress().getHostAddress();
 
-		if (Util.isInternalIP(ip))
+		if (Util.isInternalIP(ip) && !Config.ROUTER_HOSTNAME.equalsIgnoreCase(ip))
 		{
 			_usesInternalIP = true;
 		}
