@@ -49,21 +49,14 @@ public class L2DoormenInstance extends L2NpcInstance
 		}
 		else if (command.startsWith("open_doors"))
 		{
-			StringTokenizer st = new StringTokenizer(command.substring(10), ", ");
-			while (st.hasMoreTokens())
-			{
-				DoorTable.getInstance().getDoor(Integer.parseInt(st.nextToken())).openMe();
-			}
+			if (isOwnerClan(player) && !isUnderSiege())
+				openDoors(player, command);
 			return;
 		}
 		else if (command.startsWith("close_doors"))
 		{
-			StringTokenizer st = new StringTokenizer(command.substring(11), ", ");
-			while (st.hasMoreTokens())
-			{
-				DoorTable.getInstance().getDoor(Integer.parseInt(st.nextToken())).closeMe();
-			}
-			return;
+			if (isOwnerClan(player))
+				closeDoors(player, command);
 		}
 		super.onBypassFeedback(player, command);
 	}
@@ -113,10 +106,55 @@ public class L2DoormenInstance extends L2NpcInstance
 	public void showMessageWindow(L2PcInstance player)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
-
+		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-		html.setFile("data/html/doormen/"+ getTemplate().npcId + ".htm");
+
+		if (!isOwnerClan(player))
+		{
+			html.setFile("data/html/doormen/"+ getTemplate().npcId + "-no.htm");
+		}
+		else if (isUnderSiege())
+		{
+			html.setFile("data/html/doormen/"+ getTemplate().npcId + "-busy.htm");
+		}
+		else
+		{
+			html.setFile("data/html/doormen/"+ getTemplate().npcId + ".htm");
+		}
+
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
+	}
+
+	protected void openDoors(L2PcInstance player, String command)
+	{
+		StringTokenizer st = new StringTokenizer(command.substring(10), ", ");
+		st.nextToken();
+
+		while (st.hasMoreTokens())
+		{
+			DoorTable.getInstance().getDoor(Integer.parseInt(st.nextToken())).openMe();
+		}
+	}
+
+	protected void closeDoors(L2PcInstance player, String command)
+	{
+		StringTokenizer st = new StringTokenizer(command.substring(11), ", ");
+		st.nextToken();
+
+		while (st.hasMoreTokens())
+		{
+			DoorTable.getInstance().getDoor(Integer.parseInt(st.nextToken())).closeMe();
+		}
+	}
+
+	protected boolean isOwnerClan(L2PcInstance player)
+	{
+		return true;
+	}
+
+	protected boolean isUnderSiege()
+	{
+		return false;
 	}
 }

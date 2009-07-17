@@ -16,8 +16,6 @@ package net.sf.l2j.gameserver.model.actor.instance;
 
 import java.util.StringTokenizer;
 
-import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
-import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 public class L2FortDoormenInstance extends L2DoormenInstance
@@ -28,69 +26,31 @@ public class L2FortDoormenInstance extends L2DoormenInstance
 	}
 
 	@Override
-	public void onBypassFeedback(L2PcInstance player, String command)
+	protected final void openDoors(L2PcInstance player, String command)
 	{
-		if (command.startsWith("Chat"))
-		{
-			showMessageWindow(player);
-			return;
-		}
-		else if (command.startsWith("open_doors"))
-		{
-			if (isOwnerClan(player) && !getFort().getSiege().getIsInProgress())
-			{
-				StringTokenizer st = new StringTokenizer(command.substring(10), ", ");
-				st.nextToken();
+		StringTokenizer st = new StringTokenizer(command.substring(10), ", ");
+		st.nextToken();
 
-				while (st.hasMoreTokens())
-				{
-					getFort().openDoor(player, Integer.parseInt(st.nextToken()));
-				}
-			}
-			return;
-		}
-		else if (command.startsWith("close_doors"))
+		while (st.hasMoreTokens())
 		{
-			if (isOwnerClan(player))
-			{
-				StringTokenizer st = new StringTokenizer(command.substring(11), ", ");
-				st.nextToken();
-
-				while (st.hasMoreTokens())
-				{
-					getFort().closeDoor(player, Integer.parseInt(st.nextToken()));
-				}
-			}
-			return;
+			getFort().openDoor(player, Integer.parseInt(st.nextToken()));
 		}
-		super.onBypassFeedback(player, command);
 	}
 
 	@Override
-	public void showMessageWindow(L2PcInstance player)
+	protected final void closeDoors(L2PcInstance player, String command)
 	{
-		player.sendPacket(ActionFailed.STATIC_PACKET);
-		
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		StringTokenizer st = new StringTokenizer(command.substring(11), ", ");
+		st.nextToken();
 
-		if (!isOwnerClan(player))
+		while (st.hasMoreTokens())
 		{
-			html.setFile("data/html/doormen/"+ getTemplate().npcId + "-no.htm");
+			getFort().closeDoor(player, Integer.parseInt(st.nextToken()));
 		}
-		else if (getFort().getSiege().getIsInProgress())
-		{
-			html.setFile("data/html/doormen/"+ getTemplate().npcId + "-busy.htm");
-		}
-		else
-		{
-			html.setFile("data/html/doormen/"+ getTemplate().npcId + ".htm");
-		}
-
-		html.replace("%objectId%", String.valueOf(getObjectId()));
-		player.sendPacket(html);
 	}
 
-	private final boolean isOwnerClan(L2PcInstance player)
+	@Override
+	protected final boolean isOwnerClan(L2PcInstance player)
 	{
 		if (player.getClan() != null && getFort() != null && getFort().getOwnerClan() != null)
 		{
@@ -98,5 +58,11 @@ public class L2FortDoormenInstance extends L2DoormenInstance
 				return true;
 		}
 		return false;
+	}
+
+	@Override
+	protected final boolean isUnderSiege()
+	{
+		return getFort().getSiege().getIsInProgress();
 	}
 }
