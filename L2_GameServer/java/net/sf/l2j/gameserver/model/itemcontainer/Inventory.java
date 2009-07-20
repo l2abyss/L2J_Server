@@ -680,6 +680,8 @@ public abstract class Inventory extends ItemContainer
 					else
 						_log.warning("Inventory.ArmorSetListener: Incorrect skill: "+removeSkillId3+".");
 				}
+
+				player.checkItemRestriction();
 				player.sendSkillList();
 			}
 		}
