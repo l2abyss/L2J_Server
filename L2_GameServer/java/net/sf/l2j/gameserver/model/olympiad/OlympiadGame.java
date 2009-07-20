@@ -15,6 +15,8 @@
 package net.sf.l2j.gameserver.model.olympiad;
 
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -54,6 +56,7 @@ import net.sf.l2j.util.L2FastList;
 class OlympiadGame
 {
 	protected static final Logger _log = Logger.getLogger(OlympiadGame.class.getName());
+	protected static final Logger _logResults = Logger.getLogger("olympiad");
 	protected final COMP_TYPE _type;
 	protected boolean _aborted;
 	protected boolean _gamestarted;
@@ -514,8 +517,13 @@ class OlympiadGame
 
 				if (Config.DEBUG)
 					_log.info("Olympia Result: " + _playerOneName + " lost " + lostPoints + " points for defaulting");
-				
-				Olympiad.logResult(_playerOneName,_playerTwoName,0D,0D,0,0,_playerOneName+" default",lostPoints,classed);
+
+				if (Config.ALT_OLY_LOG_FIGHTS)
+				{
+					LogRecord record = new LogRecord(Level.INFO, _playerOneName+" default");
+					record.setParameters(new Object[]{_playerOneName, _playerTwoName, 0, 0, 0, 0, lostPoints, classed});
+					_logResults.log(record);
+				}
 			}
 			if (_playerTwoDefaulted)
 			{
@@ -530,7 +538,12 @@ class OlympiadGame
 				if (Config.DEBUG)
 					_log.info("Olympia Result: " + _playerTwoName + " lost " + lostPoints + " points for defaulting");
 				
-				Olympiad.logResult(_playerOneName,_playerTwoName,0D,0D,0,0,_playerTwoName+" default",lostPoints,classed);
+				if (Config.ALT_OLY_LOG_FIGHTS)
+				{
+					LogRecord record = new LogRecord(Level.INFO, _playerTwoName+" default");
+					record.setParameters(new Object[]{_playerOneName, _playerTwoName, 0, 0, 0, 0, lostPoints, classed});
+					_logResults.log(record);
+				}
 			}
 			return;
 		}
@@ -549,7 +562,12 @@ class OlympiadGame
 						_log.info("Olympia Result: " + _playerOneName + " vs " + _playerTwoName + " ... "
 						        + _playerOneName + " lost " + pointDiff + " points for crash");
 					
-					Olympiad.logResult(_playerOneName,_playerTwoName,0D,0D,0,0,_playerOneName+" crash",pointDiff,classed);
+					if (Config.ALT_OLY_LOG_FIGHTS)
+					{
+						LogRecord record = new LogRecord(Level.INFO, _playerOneName+" crash");
+						record.setParameters(new Object[]{_playerOneName, _playerTwoName, 0, 0, 0, 0, pointDiff, classed});
+						_logResults.log(record);
+					}
 					
 					playerTwoStat.set(POINTS, playerTwoPoints + pointDiff);
 					playerTwoStat.set(COMP_WON, playerTwoWon + 1);
@@ -583,7 +601,12 @@ class OlympiadGame
 						_log.info("Olympia Result: " + _playerTwoName + " vs " + _playerOneName + " ... " 
 								+ _playerTwoName + " lost " + pointDiff + " points for crash");
 					
-					Olympiad.logResult(_playerOneName,_playerTwoName,0D,0D,0,0,_playerTwoName+" crash",pointDiff,classed);
+					if (Config.ALT_OLY_LOG_FIGHTS)
+					{
+						LogRecord record = new LogRecord(Level.INFO, _playerTwoName+" crash");
+						record.setParameters(new Object[]{_playerOneName, _playerTwoName, 0, 0, 0, 0, pointDiff, classed});
+						_logResults.log(record);
+					}
 					
 					playerOneStat.set(POINTS, playerOnePoints + pointDiff);
 					playerOneStat.set(COMP_WON, playerOneWon + 1);
@@ -619,7 +642,12 @@ class OlympiadGame
 						_log.info("Olympia Result: " + _playerOneName + " vs " + _playerTwoName + " ... " 
 								+ " both lost " + pointDiff + " points for crash");
 					
-					Olympiad.logResult(_playerOneName,_playerTwoName,0D,0D,0,0,"both crash",pointDiff,classed);
+					if (Config.ALT_OLY_LOG_FIGHTS)
+					{
+						LogRecord record = new LogRecord(Level.INFO, "both crash");
+						record.setParameters(new Object[]{_playerOneName, _playerTwoName, 0, 0, 0, 0, pointDiff, classed});
+						_logResults.log(record);
+					}
 				}
 				catch (Exception e)
 				{
@@ -777,7 +805,12 @@ class OlympiadGame
 		Olympiad.updateNobleStats(_playerOneID, playerOneStat);
 		Olympiad.updateNobleStats(_playerTwoID, playerTwoStat);
 		
-		Olympiad.logResult(_playerOneName, _playerTwoName, playerOneHp, playerTwoHp, _damageP1, _damageP2, winner, pointDiff, classed);
+		if (Config.ALT_OLY_LOG_FIGHTS)
+		{
+			LogRecord record = new LogRecord(Level.INFO, winner);
+			record.setParameters(new Object[]{_playerOneName, _playerTwoName, playerOneHp, playerTwoHp, _damageP1, _damageP2, pointDiff, classed});
+			_logResults.log(record);
+		}
 
 		byte step = 10;
 		for (byte i = 40; i > 0; i -= step)

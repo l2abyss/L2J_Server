@@ -21,20 +21,17 @@ package net.sf.l2j.gameserver.model.olympiad;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
@@ -56,6 +53,7 @@ import net.sf.l2j.util.L2FastList;
 public class Olympiad
 {
 	protected static final Logger _log = Logger.getLogger(Olympiad.class.getName());
+	protected static final Logger _logResults = Logger.getLogger("olympiad");
 	
 	private static Map<Integer, StatsSet> _nobles;
 	protected static L2FastList<StatsSet> _heroesToBe;
@@ -785,6 +783,7 @@ public class Olympiad
 				
 				Announcements.getInstance().announceToAll(new SystemMessage(SystemMessageId.THE_OLYMPIAD_GAME_HAS_STARTED));
 				_log.info("Olympiad System: Olympiad Game Started");
+				_logResults.info("Result,Player1,Player2,Player1 HP,Player2 HP,Player1 Damage,Player2 Damage,Points,Classed");
 				
 				Thread olyCycle = new Thread(om);
 				olyCycle.start();
@@ -1221,9 +1220,12 @@ public class Olympiad
 	{
 		if (_period != 1)
 			return;
-		
+
+		LogRecord record;
 		if (_nobles != null)
 		{
+			_logResults.info("Noble,charid,classid,compDone,points");
+
 			for (Integer nobleId : _nobles.keySet())
 			{
 				StatsSet nobleInfo = _nobles.get(nobleId);
@@ -1237,7 +1239,9 @@ public class Olympiad
 				int points = nobleInfo.getInteger(POINTS);
 				int compDone = nobleInfo.getInteger(COMP_DONE);
 				
-				logResult(charName, "", Double.valueOf(charId), Double.valueOf(classId), compDone, points, "noble-charId-classId-compdone-points", 0, "");
+				record = new LogRecord(Level.INFO, charName);
+				record.setParameters(new Object[]{charId, classId, compDone, points});
+				_logResults.log(record);
 			}
 		}
 		
@@ -1273,7 +1277,9 @@ public class Olympiad
 					}
 					else
 					{
-						logResult(hero.getString(CHAR_NAME), "", hero.getDouble(CHAR_ID), hero.getDouble(CLASS_ID), 0, 0, "awarded hero", 0, "");
+						record = new LogRecord(Level.INFO, "Hero "+hero.getString(CHAR_NAME));
+						record.setParameters(new Object[]{hero.getInteger(CHAR_ID), hero.getInteger(CLASS_ID)});
+						_logResults.log(record);
 						_heroesToBe.add(hero);
 					}
 				}
@@ -1294,7 +1300,10 @@ public class Olympiad
 					hero.set(CLASS_ID, winner.getInteger(CLASS_ID));
 					hero.set(CHAR_ID, winner.getInteger(CHAR_ID));
 					hero.set(CHAR_NAME, winner.getString(CHAR_NAME));
-					logResult(hero.getString(CHAR_NAME), "", hero.getDouble(CHAR_ID), hero.getDouble(CLASS_ID), 0, 0, "awarded hero", 0, "");
+
+					record = new LogRecord(Level.INFO, "Hero "+hero.getString(CHAR_NAME));
+					record.setParameters(new Object[]{hero.getInteger(CHAR_ID), hero.getInteger(CLASS_ID)});
+					_logResults.log(record);
 					_heroesToBe.add(hero);
 					break;
 				}
@@ -1324,7 +1333,10 @@ public class Olympiad
 					hero.set(CLASS_ID, winner.getInteger(CLASS_ID));
 					hero.set(CHAR_ID, winner.getInteger(CHAR_ID));
 					hero.set(CHAR_NAME, winner.getString(CHAR_NAME));
-					logResult(hero.getString(CHAR_NAME), "", hero.getDouble(CHAR_ID), hero.getDouble(CLASS_ID), 0, 0, "awarded hero", 0, "");
+
+					record = new LogRecord(Level.INFO, "Hero "+hero.getString(CHAR_NAME));
+					record.setParameters(new Object[]{hero.getInteger(CHAR_ID), hero.getInteger(CLASS_ID)});
+					_logResults.log(record);
 					_heroesToBe.add(hero);
 					break;
 				}
@@ -1548,62 +1560,6 @@ public class Olympiad
 		}
 		
 		_nobles.clear();
-	}
-	
-	/**
-	 * Logs result of Olympiad to a csv file.
-	 * 
-	 * @param playerOne
-	 * @param playerTwo
-	 * @param p1hp
-	 * @param p2hp
-	 * @param p1dmg
-	 * @param p2dmg
-	 * @param result
-	 * @param points
-	 */
-	public static synchronized void logResult(String playerOne, String playerTwo, Double p1hp, Double p2hp, int p1dmg, int p2dmg,
-			String result, int points, String classed)
-	{
-		if (!Config.ALT_OLY_LOG_FIGHTS)
-			return;
-		
-		SimpleDateFormat formatter;
-		formatter = new SimpleDateFormat("dd/MM/yyyy H:mm:ss");
-		String date = formatter.format(new Date());
-		FileWriter save = null;
-		try
-		{
-			File file = new File("log/olympiad.csv");
-			
-			boolean writeHead = !file.exists();
-			
-			save = new FileWriter(file, true);
-			
-			if (writeHead)
-			{
-				String header = "Date,Player1,Player2,Player1 HP,Player2 HP,Player1 Damage,Player2 Damage,Result,Points,Classed\r\n";
-				save.write(header);
-			}
-			
-			String out = date + "," + playerOne + "," + playerTwo + "," + p1hp + "," + p2hp + "," + p1dmg + "," + p2dmg + "," + result
-					+ "," + points + "," + classed + "\r\n";
-			save.write(out);
-		}
-		catch (IOException e)
-		{
-			_log.log(Level.WARNING, "Olympiad System: Olympiad log could not be saved: ", e);
-		}
-		finally
-		{
-			try
-			{
-				save.close();
-			}
-			catch (Exception e)
-			{
-			}
-		}
 	}
 	
 	public static void sendMatchList(L2PcInstance player)
