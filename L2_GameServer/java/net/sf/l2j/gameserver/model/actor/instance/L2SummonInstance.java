@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
-import net.sf.l2j.gameserver.model.Elementals;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
@@ -287,8 +286,8 @@ public class L2SummonInstance extends L2Summon
 	@Override
 	public byte getAttackElement()
 	{
-		if (getOwner() == null)
-			return Elementals.NONE;
+		if (getOwner() == null || !getOwner().getClassId().isSummoner())
+			return super.getAttackElement();
 
 		return getOwner().getAttackElement();
 	}
@@ -296,8 +295,9 @@ public class L2SummonInstance extends L2Summon
 	@Override
 	public int getAttackElementValue(byte attribute)
 	{
-		if (getOwner() == null)
-			return 0;
+		if (getOwner() == null || !getOwner().getClassId().isSummoner())
+			return super.getAttackElementValue(attribute);
+
 		// 80% of the owner (onwer already has only 20%)
 		return 4 * getOwner().getAttackElementValue(attribute); 
 	}

@@ -5870,7 +5870,7 @@ public final class L2PcInstance extends L2Playable
 		_summon = summon;
 		// update attack element value display
 		if ((_summon == null || _summon instanceof L2SummonInstance)
-				&& getAttackElement() != Elementals.NONE)
+				&& getClassId().isSummoner() && getAttackElement() != Elementals.NONE)
 			sendPacket(new UserInfo(this));
 			
 	}
@@ -12998,7 +12998,7 @@ public final class L2PcInstance extends L2Playable
     	int value = super.getAttackElementValue(attribute);
 
     	// 20% if summon exist
-    	if (getPet() != null && (getPet() instanceof L2SummonInstance))
+    	if (getPet() != null && getClassId().isSummoner() && (getPet() instanceof L2SummonInstance))
     		return value / 5;
 
     	return value;

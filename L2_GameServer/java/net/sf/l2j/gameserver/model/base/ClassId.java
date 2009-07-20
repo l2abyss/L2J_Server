@@ -44,7 +44,7 @@ public enum ClassId
 	wizard(0x0b, true, Race.Human, mage),
 	sorceror(0x0c, true, Race.Human, wizard),
 	necromancer(0x0d, true, Race.Human, wizard),
-	warlock(0x0e, true, Race.Human, wizard),
+	warlock(0x0e, true, true, Race.Human, wizard),
 	cleric(0x0f, true, Race.Human, mage),
 	bishop(0x10, true, Race.Human, cleric),
 	prophet(0x11, true, Race.Human, cleric),
@@ -60,7 +60,7 @@ public enum ClassId
 	elvenMage(0x19, true, Race.Elf, null),
 	elvenWizard(0x1a, true, Race.Elf, elvenMage),
 	spellsinger(0x1b, true, Race.Elf, elvenWizard),
-	elementalSummoner(0x1c, true, Race.Elf, elvenWizard),
+	elementalSummoner(0x1c, true, true, Race.Elf, elvenWizard),
 	oracle(0x1d, true, Race.Elf, elvenMage),
 	elder(0x1e, true, Race.Elf, oracle),
 	
@@ -75,7 +75,7 @@ public enum ClassId
 	darkMage(0x26, true, Race.DarkElf, null),
 	darkWizard(0x27, true, Race.DarkElf, darkMage),
 	spellhowler(0x28, true, Race.DarkElf, darkWizard),
-	phantomSummoner(0x29, true, Race.DarkElf, darkWizard),
+	phantomSummoner(0x29, true, true, Race.DarkElf, darkWizard),
 	shillienOracle(0x2a, true, Race.DarkElf, darkMage),
 	shillenElder(0x2b, true, Race.DarkElf, shillienOracle),
 	
@@ -148,7 +148,7 @@ public enum ClassId
 	adventurer(0x5d, false, Race.Human, treasureHunter),
 	archmage(0x5e, true, Race.Human, sorceror),
 	soultaker(0x5f, true, Race.Human, necromancer),
-	arcanaLord(0x60, true, Race.Human, warlock),
+	arcanaLord(0x60, true, true, Race.Human, warlock),
 	cardinal(0x61, true, Race.Human, bishop),
 	hierophant(0x62, true, Race.Human, prophet),
 	
@@ -157,7 +157,7 @@ public enum ClassId
 	windRider(0x65, false, Race.Elf, plainsWalker),
 	moonlightSentinel(0x66, false, Race.Elf, silverRanger),
 	mysticMuse(0x67, true, Race.Elf, spellsinger),
-	elementalMaster(0x68, true, Race.Elf, elementalSummoner),
+	elementalMaster(0x68, true, true, Race.Elf, elementalSummoner),
 	evaSaint(0x69, true, Race.Elf, elder),
 	
 	shillienTemplar(0x6a, false, Race.DarkElf, shillienKnight),
@@ -165,7 +165,7 @@ public enum ClassId
 	ghostHunter(0x6c, false, Race.DarkElf, abyssWalker),
 	ghostSentinel(0x6d, false, Race.DarkElf, phantomRanger),
 	stormScreamer(0x6e, true, Race.DarkElf, spellhowler),
-	spectralMaster(0x6f, true, Race.DarkElf, phantomSummoner),
+	spectralMaster(0x6f, true, true, Race.DarkElf, phantomSummoner),
 	shillienSaint(0x70, true, Race.DarkElf, shillenElder),
 	
 	titan(0x71, false, Race.Orc, destroyer),
@@ -202,6 +202,9 @@ public enum ClassId
 	/** True if the class is a mage class */
 	private final boolean _isMage;
 	
+	/** True if the class is a summoner class */
+	private final boolean _isSummoner;
+	
 	/** The Race object of the class */
 	private final Race _race;
 	
@@ -215,10 +218,23 @@ public enum ClassId
 	{
 		this._id = pId;
 		this._isMage = pIsMage;
+		this._isSummoner = false;
 		this._race = pRace;
 		this._parent = pParent;
 	}
 	
+	/**
+	 * Constructor of ClassId.<BR><BR>
+	 */
+	private ClassId(int pId, boolean pIsMage, boolean pIsSummoner, Race pRace, ClassId pParent)
+	{
+		this._id = pId;
+		this._isMage = pIsMage;
+		this._isSummoner = pIsSummoner;
+		this._race = pRace;
+		this._parent = pParent;
+	}
+
 	/**
 	 * Return the Identifier of the Class.<BR><BR>
 	 */
@@ -233,6 +249,14 @@ public enum ClassId
 	public final boolean isMage()
 	{
 		return _isMage;
+	}
+	
+	/**
+	 * Return True if the class is a summoner class.<BR><BR>
+	 */
+	public final boolean isSummoner()
+	{
+		return _isSummoner;
 	}
 	
 	/**
