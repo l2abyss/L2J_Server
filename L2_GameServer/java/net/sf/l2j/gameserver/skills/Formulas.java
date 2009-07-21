@@ -2529,22 +2529,16 @@ public final class Formulas
     
     public static double calculateSkillResurrectRestorePercent(double baseRestorePercent, int casterWIT)
 	{
-		double restorePercent = baseRestorePercent;
-		double modifier = WITbonus[casterWIT];
+    	if (baseRestorePercent == 0 || baseRestorePercent == 100)
+    		return baseRestorePercent;
 
-		if(restorePercent != 100 && restorePercent != 0) {
-						
-			restorePercent = baseRestorePercent * modifier;
-						
-			if(restorePercent - baseRestorePercent > 20.0) 
-				restorePercent = baseRestorePercent + 20.0;
-		}
-				
-		if(restorePercent > 100) 
-			restorePercent = 100;
-		if(restorePercent < baseRestorePercent) 
-			restorePercent = baseRestorePercent;
-					
+    	double restorePercent = baseRestorePercent * WITbonus[casterWIT];
+		if(restorePercent - baseRestorePercent > 20.0)
+			restorePercent += 20.0;
+
+		restorePercent = Math.max(restorePercent, baseRestorePercent);
+		restorePercent = Math.min(restorePercent, 90.0);
+
 		return restorePercent;
 	}
     
