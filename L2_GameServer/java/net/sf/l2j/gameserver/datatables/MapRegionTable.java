@@ -349,7 +349,7 @@ public class MapRegionTable
 				nearestTown = "Town of Goddard";
 				break;
 			case 16:
-				nearestTown = "Town of Shuttgart";
+				nearestTown = "Town of Schuttgart";
 				break;
 			case 18:
 				nearestTown = "Primeval Isle";
@@ -376,10 +376,10 @@ public class MapRegionTable
 				nearestTown = "Dimensional Gap";
 				break;
 			case 26:
-				nearestTown = "Cemetery of the Empire";
+				nearestTown = "Cemetary of the Empire";
 				break;
 			case 27:
-				nearestTown = "inside the Steel Citadel";
+				nearestTown = "Inside the Steel Citadel";
 				break;
 			case 28:
 				nearestTown = "Steel Citadel Resistance";
@@ -397,10 +397,10 @@ public class MapRegionTable
 				nearestTown = "Keucereus clan association";
 				break;
 			case 33:
-				nearestTown = "inside the Seed of Infinity";
+				nearestTown = "Inside the Seed of Infinity";
 				break;
 			case 34:
-				nearestTown = "outside the Seed of Infinity";
+				nearestTown = "Outside the Seed of Infinity";
 				break;
 			case 35:
 				nearestTown = "Aerial Cleft";
