@@ -390,7 +390,13 @@ public class MultiSellChoose extends L2GameClientPacket
 				}
 				default:
 				{
-					if (ItemTable.getInstance().createDummyItem(e.getItemId()).isStackable())
+					L2ItemInstance tempItem = ItemTable.getInstance().createDummyItem(e.getItemId());
+					if (tempItem == null)
+					{
+						_log.severe("Problem with multisell ID:"+_listId+" entry ID:"+_entryId+" - Product ID:"+e.getItemId()+" not exist.");
+						return;
+					}
+					if (tempItem.isStackable())
 					{
 						inv.addItem("Multisell", e.getItemId(), (e.getItemCount() * _amount), player, player.getTarget());
 					}
