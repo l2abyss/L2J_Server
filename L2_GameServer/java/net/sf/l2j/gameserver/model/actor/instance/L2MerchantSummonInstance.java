@@ -38,211 +38,211 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
  */
 public class L2MerchantSummonInstance extends L2SummonInstance
 {
-    public L2MerchantSummonInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2Skill skill)
-    {
-    	super(objectId, template, owner, skill);
-    }
+	public L2MerchantSummonInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2Skill skill)
+	{
+		super(objectId, template, owner, skill);
+	}
 
-    @Override
-    public boolean hasAI()
-    {
-    	return false;
-    }
+	@Override
+	public boolean hasAI()
+	{
+		return false;
+	}
 
-    @Override
-    public L2CharacterAI getAI()
-    {
-    	return null;
-    }
+	@Override
+	public L2CharacterAI getAI()
+	{
+		return null;
+	}
 
-    @Override
-    public void deleteMe(L2PcInstance owner)
-    {
+	@Override
+	public void deleteMe(L2PcInstance owner)
+	{
 
-    }
+	}
 
-    @Override
-    public void unSummon(L2PcInstance owner)
-    {
-    	if (isVisible())
-    	{
+	@Override
+	public void unSummon(L2PcInstance owner)
+	{
+		if (isVisible())
+		{
 			stopAllEffects();
-	        L2WorldRegion oldRegion = getWorldRegion();
-		    decayMe();
-		    if (oldRegion != null) oldRegion.removeFromZones(this);
-            getKnownList().removeAllKnownObjects();
-	        setTarget(null);
-    	}
-    }
+			L2WorldRegion oldRegion = getWorldRegion();
+			decayMe();
+			if (oldRegion != null)
+				oldRegion.removeFromZones(this);
+			getKnownList().removeAllKnownObjects();
+			setTarget(null);
+		}
+	}
 
-    @Override
-    public void setFollowStatus(boolean state)
-    {
-    	
-    }
+	@Override
+	public void setFollowStatus(boolean state)
+	{
 
-    @Override
-    public boolean isAutoAttackable(L2Character attacker)
-    {
-    	return false;
-    }
+	}
 
-    @Override
-    public boolean isInvul()
-    {
-    	return true;
-    }
+	@Override
+	public boolean isAutoAttackable(L2Character attacker)
+	{
+		return false;
+	}
 
-    @Override
-    public L2Party getParty()
-    {
-    	return null;
-    }
+	@Override
+	public boolean isInvul()
+	{
+		return true;
+	}
 
-    @Override
-    public boolean isInParty()
-    {
-    	return false;
-    }
+	@Override
+	public L2Party getParty()
+	{
+		return null;
+	}
 
-    @Override
-    public void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
-    {
+	@Override
+	public boolean isInParty()
+	{
+		return false;
+	}
 
-    }
+	@Override
+	public void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
+	{
 
-    @Override
-    public void doCast(L2Skill skill)
-    {
+	}
 
-    }
+	@Override
+	public void doCast(L2Skill skill)
+	{
 
-    @Override
-    public boolean isInCombat()
-    {
-    	return false;
-    }
+	}
 
-    @Override
-    public final void sendDamageMessage(L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
-    {
-    	
-    }
+	@Override
+	public boolean isInCombat()
+	{
+		return false;
+	}
 
-    @Override
-    public void reduceCurrentHp(int damage, L2Character attacker, L2Skill skill)
-    {
+	@Override
+	public final void sendDamageMessage(L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
+	{
 
-    }
+	}
 
-    @Override
-    public void updateAndBroadcastStatus(int val)
-    {
-    	
-    }
+	@Override
+	public void reduceCurrentHp(int damage, L2Character attacker, L2Skill skill)
+	{
 
-    @Override
-    public void onAction(L2PcInstance player)
-    {
-    	if (player.isOutOfControl())
+	}
+
+	@Override
+	public void updateAndBroadcastStatus(int val)
+	{
+
+	}
+
+	@Override
+	public void onAction(L2PcInstance player)
+	{
+		if (player.isOutOfControl())
 		{
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-        
-        // Check if the L2PcInstance already target the L2NpcInstance
-        if (this != player.getTarget())
+
+		// Check if the L2PcInstance already target the L2NpcInstance
+		if (this != player.getTarget())
+		{
+			// Set the target of the L2PcInstance player
+			player.setTarget(this);
+
+			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
+			final MyTargetSelected my = new MyTargetSelected(getObjectId(), 0);
+			player.sendPacket(my);
+
+			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
+			player.sendPacket(new ValidateLocation(this));
+		}
+		else
+		{
+			// Calculate the distance between the L2PcInstance and the L2NpcInstance
+			if (!isInsideRadius(player, 150, false, false))
+			{
+				// Notify the L2PcInstance AI with AI_INTENTION_INTERACT
+				player.getAI().setIntention(CtrlIntention.AI_INTENTION_INTERACT, this);
+			}
+			else
+				showMessageWindow(player);
+		}
+		// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
+		player.sendPacket(ActionFailed.STATIC_PACKET);
+	}
+
+	public void onBypassFeedback(L2PcInstance player, String command)
+	{
+		final StringTokenizer st = new StringTokenizer(command, " ");
+		final String actualCommand = st.nextToken(); // Get actual command
+
+		if (actualCommand.equalsIgnoreCase("Buy"))
+		{
+			if (st.countTokens() < 1)
+				return;
+
+			final int val = Integer.parseInt(st.nextToken());
+			showBuyWindow(player, val);
+		}
+		else if (actualCommand.equalsIgnoreCase("Sell"))
+		{
+			showSellWindow(player);
+		}
+	}
+
+	protected final void showBuyWindow(L2PcInstance player, int val)
+	{
+		double taxRate = 50;
+
+		player.tempInventoryDisable();
+
+		if (Config.DEBUG)
+			_log.fine("Showing buylist");
+
+		L2TradeList list = TradeController.getInstance().getBuyList(val);
+
+		if (list != null && list.getNpcId().equals(String.valueOf(getNpcId())))
+		{
+			final BuyList bl = new BuyList(list, player.getAdena(), taxRate);
+			player.sendPacket(bl);
+		}
+		else
         {
-            // Set the target of the L2PcInstance player
-            player.setTarget(this);
-
-            // Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-            MyTargetSelected my = new MyTargetSelected(getObjectId(), 0);
-            player.sendPacket(my);
-
-            // Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
-            player.sendPacket(new ValidateLocation(this));
-        }
-        else
-        {
-            // Calculate the distance between the L2PcInstance and the L2NpcInstance
-        	if (!isInsideRadius(player, 150, false, false))
-            {
-                // Notify the L2PcInstance AI with AI_INTENTION_INTERACT
-                player.getAI().setIntention(CtrlIntention.AI_INTENTION_INTERACT, this);
-            }
-            else
-            {
-                showMessageWindow(player);
-            }
-        }
-        // Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-        player.sendPacket(ActionFailed.STATIC_PACKET);
-    }
-
-    public void onBypassFeedback(L2PcInstance player, String command)
-    {
-    	StringTokenizer st = new StringTokenizer(command, " ");
-        String actualCommand = st.nextToken(); // Get actual command
-
-        if (actualCommand.equalsIgnoreCase("Buy"))
-        {
-            if (st.countTokens() < 1) return;
-
-            int val = Integer.parseInt(st.nextToken());
-            showBuyWindow(player, val);
-        }
-        else if (actualCommand.equalsIgnoreCase("Sell"))
-        {
-            showSellWindow(player);
-        }
-    }
-    protected final void showBuyWindow(L2PcInstance player, int val)
-    {
-        double taxRate = 0;
-
-        taxRate = 50;
-        
-        player.tempInventoryDisable();
-
-        if (Config.DEBUG)
-        {
-            _log.fine("Showing buylist");
-        }
-
-        L2TradeList list = TradeController.getInstance().getBuyList(val);
-
-        if (list != null && list.getNpcId().equals(String.valueOf(getNpcId())))
-        {
-            BuyList bl = new BuyList(list, player.getAdena(), taxRate);
-            player.sendPacket(bl);
-        }
-        else
-        {
-            _log.warning("possible client hacker: "+player.getName()+" attempting to buy from GM shop! < Ban him!");
-            _log.warning("buylist id:" + val);
+			_log.warning("possible client hacker: "+player.getName()+" attempting to buy from GM shop! < Ban him!");
+			_log.warning("buylist id:" + val);
         }
 
-        player.sendPacket(ActionFailed.STATIC_PACKET);
-    }
-    protected final void showSellWindow(L2PcInstance player)
-    {
-        if (Config.DEBUG) _log.fine("Showing selllist");
+		player.sendPacket(ActionFailed.STATIC_PACKET);
+	}
 
-        player.sendPacket(new SellList(player));
+	protected final void showSellWindow(L2PcInstance player)
+	{
+		if (Config.DEBUG)
+			_log.fine("Showing selllist");
 
-        if (Config.DEBUG) _log.fine("Showing sell window");
+		player.sendPacket(new SellList(player));
 
-        player.sendPacket(ActionFailed.STATIC_PACKET);
-    }
+		if (Config.DEBUG)
+			_log.fine("Showing sell window");
 
-    private void showMessageWindow(L2PcInstance player)
-    {
-        player.sendPacket(ActionFailed.STATIC_PACKET);
-        String filename = "data/html/merchant/"+getNpcId()+".htm";
-        NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-        html.setFile(filename);
-        html.replace("%objectId%", String.valueOf(getObjectId()));       
-        player.sendPacket(html);
-    }
+		player.sendPacket(ActionFailed.STATIC_PACKET);
+	}
+
+	private void showMessageWindow(L2PcInstance player)
+	{
+		player.sendPacket(ActionFailed.STATIC_PACKET);
+		final String filename = "data/html/merchant/"+getNpcId()+".htm";
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		html.setFile(filename);
+		html.replace("%objectId%", String.valueOf(getObjectId()));       
+		player.sendPacket(html);
+	}
 }
