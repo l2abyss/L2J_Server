@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
@@ -189,7 +190,35 @@ public class L2SummonInstance extends L2Summon
 		return true;
 		
 	}
-	
+
+	/**
+	 * Servitors' skills automatically change their level based on the servitor's level.
+	 * Until level 70, the servitor gets 1 lv of skill per 10 levels. After that, it is 1
+	 * skill level per 5 servitor levels.  If the resulting skill level doesn't exist use
+	 * the max that does exist!
+	 *
+	 * @see net.sf.l2j.gameserver.model.actor.L2Character#doCast(net.sf.l2j.gameserver.model.L2Skill)
+	 */
+	@Override
+	public void doCast(L2Skill skill)
+	{
+        final int petLevel = getLevel();
+        int skillLevel = petLevel/10;
+        if(petLevel >= 70)
+            skillLevel += (petLevel-65)/10;
+
+        // adjust the level for servitors less than lv 10
+        if (skillLevel < 1)
+            skillLevel = 1;
+
+        L2Skill skillToCast = SkillTable.getInstance().getInfo(skill.getId(),skillLevel);
+
+		if (skillToCast != null)
+            super.doCast(skillToCast);
+        else
+            super.doCast(skill);
+	}
+
 	static class SummonLifetime implements Runnable
 	{
 		private L2PcInstance _activeChar;

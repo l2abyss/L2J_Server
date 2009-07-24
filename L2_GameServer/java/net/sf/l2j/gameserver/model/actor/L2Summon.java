@@ -21,7 +21,6 @@ import net.sf.l2j.gameserver.GeoData;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
 import net.sf.l2j.gameserver.ai.L2SummonAI;
-import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Party;
@@ -153,8 +152,6 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public L2CharacterAI getAI()
     {
-		if (this instanceof L2MerchantSummonInstance)
-			return null;
 		L2CharacterAI ai = _ai; // copy handle
 		if (ai == null)
 		{
@@ -385,8 +382,6 @@ public abstract class L2Summon extends L2Playable
     
     public void deleteMe(L2PcInstance owner)
     {
-    	if (this instanceof L2MerchantSummonInstance)
-			return;
         getAI().stopFollow();
         owner.sendPacket(new PetDelete(getObjectId(), 2));
 
@@ -404,21 +399,19 @@ public abstract class L2Summon extends L2Playable
     {
 		if (isVisible() && !isDead())
 	    {
-			if (!(this instanceof L2MerchantSummonInstance))
-			{
-				getAI().stopFollow();
-		        owner.sendPacket(new PetDelete(getObjectId(), 2));
-	            L2Party party;
-	            if ((party = owner.getParty()) != null)
-	            {
-	                party.broadcastToPartyMembers(owner, new ExPartyPetWindowDelete(this));
-	            }
-	            
-		        store();
-		        giveAllToOwner();
-		        owner.setPet(null);
-			}
-			stopAllEffects();
+			getAI().stopFollow();
+	        owner.sendPacket(new PetDelete(getObjectId(), 2));
+            L2Party party;
+            if ((party = owner.getParty()) != null)
+            {
+                party.broadcastToPartyMembers(owner, new ExPartyPetWindowDelete(this));
+            }
+            
+	        store();
+	        giveAllToOwner();
+	        owner.setPet(null);
+
+	        stopAllEffects();
 	        L2WorldRegion oldRegion = getWorldRegion();
 		    decayMe();
 		    if (oldRegion != null) oldRegion.removeFromZones(this);
@@ -441,8 +434,6 @@ public abstract class L2Summon extends L2Playable
 
     public void setFollowStatus(boolean state)
     {
-    	if (this instanceof L2MerchantSummonInstance)
-    		return;
         _follow = state;
 		if (_follow)
 			getAI().setIntention(CtrlIntention.AI_INTENTION_FOLLOW, getOwner());
@@ -459,8 +450,6 @@ public abstract class L2Summon extends L2Playable
     @Override
 	public boolean isAutoAttackable(L2Character attacker)
     {
-    	if (this instanceof L2MerchantSummonInstance)
-    		return false;
         return _owner.isAutoAttackable(attacker);
     }
 
@@ -532,8 +521,6 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public boolean isInvul()
 	{
-		if (this instanceof L2MerchantSummonInstance)
-    		return true;
 		return _isInvul  || _isTeleporting ||  getOwner().isSpawnProtected();
 	}
 
@@ -543,8 +530,6 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public L2Party getParty()
 	{
-		if (this instanceof L2MerchantSummonInstance)
-    		return null;
 		if (_owner == null)
 			return null;
 		else
@@ -557,8 +542,6 @@ public abstract class L2Summon extends L2Playable
     @Override
 	public boolean isInParty()
 	{
-    	if (this instanceof L2MerchantSummonInstance)
-    		return false;
     	if (_owner == null)
     		return false;
     	else
@@ -583,8 +566,6 @@ public abstract class L2Summon extends L2Playable
 	 */
 	public void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
 	{
-		if (this instanceof L2MerchantSummonInstance)
-    		return;
 		if (skill == null || isDead())
 			return;
 
@@ -749,10 +730,8 @@ public abstract class L2Summon extends L2Playable
 	}
 
 	@Override
-	public final void sendDamageMessage(L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
+	public void sendDamageMessage(L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
 	{
-		if (this instanceof L2MerchantSummonInstance)
-    		return;
 		if (miss) return;
 
 		// Prevents the double spam of system messages, if the target is the owning player.
@@ -793,8 +772,6 @@ public abstract class L2Summon extends L2Playable
 	public void reduceCurrentHp(int damage, L2Character attacker, L2Skill skill)
 	{
 		super.reduceCurrentHp(damage, attacker, skill);
-		if (this instanceof L2MerchantSummonInstance)
-    		return;
 		SystemMessage sm;
 		if (this instanceof L2SummonInstance)
 			sm = new SystemMessage(SystemMessageId.SUMMON_RECEIVED_DAMAGE_S2_BY_S1);
@@ -806,52 +783,28 @@ public abstract class L2Summon extends L2Playable
 		getOwner().sendPacket(sm);
     }
 
-	/**
-	 * Servitors' skills automatically change their level based on the servitor's level.
-	 * Until level 70, the servitor gets 1 lv of skill per 10 levels. After that, it is 1
-	 * skill level per 5 servitor levels.  If the resulting skill level doesn't exist use
-	 * the max that does exist!
-	 *
-	 * @see net.sf.l2j.gameserver.model.actor.L2Character#doCast(net.sf.l2j.gameserver.model.L2Skill)
-	 */
 	@Override
 	public void doCast(L2Skill skill)
 	{
-		if (this instanceof L2MerchantSummonInstance)
-    		return;
         final L2PcInstance actingPlayer = getActingPlayer();
 
-        if (!actingPlayer.checkPvpSkill(getTarget(), skill) &&
-                !actingPlayer.getAccessLevel().allowPeaceAttack()) {
+        if (!actingPlayer.checkPvpSkill(getTarget(), skill)
+        		&& !actingPlayer.getAccessLevel().allowPeaceAttack())
+        {
             // Send a System Message to the L2PcInstance
             actingPlayer.sendPacket(
                     new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 
             // Send a Server->Client packet ActionFailed to the L2PcInstance
             actingPlayer.sendPacket(ActionFailed.STATIC_PACKET);
-        } else {
-            int petLevel = getLevel();
-            int skillLevel = petLevel/10;
-            if(petLevel >= 70)
-                skillLevel += (petLevel-65)/10;
-
-            // adjust the level for servitors less than lv 10
-            if (skillLevel < 1)
-                skillLevel = 1;
-
-            L2Skill skillToCast = SkillTable.getInstance().getInfo(skill.getId(),skillLevel);
-
-            if (skillToCast != null)
-                super.doCast(skillToCast);
-            else
-                super.doCast(skill);
+            return;
         }
+
+        super.doCast(skill);
 	}
 	
 	public boolean isInCombat()
 	{
-		if (this instanceof L2MerchantSummonInstance)
-    		return false;
 		return getOwner().isInCombat();
 	}
 
@@ -877,8 +830,6 @@ public abstract class L2Summon extends L2Playable
 
 	public void updateAndBroadcastStatus(int val)
 	{
-		if (this instanceof L2MerchantSummonInstance)
-    		return;
 		getOwner().sendPacket(new PetInfo(this,val));
 		getOwner().sendPacket(new PetStatusUpdate(this));
 		if (isVisible())

@@ -19,8 +19,12 @@ import java.util.StringTokenizer;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.TradeController;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
+import net.sf.l2j.gameserver.ai.L2CharacterAI;
+import net.sf.l2j.gameserver.model.L2Party;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2TradeList;
+import net.sf.l2j.gameserver.model.L2WorldRegion;
+import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.BuyList;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
@@ -37,6 +41,104 @@ public class L2MerchantSummonInstance extends L2SummonInstance
     public L2MerchantSummonInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2Skill skill)
     {
     	super(objectId, template, owner, skill);
+    }
+
+    @Override
+    public boolean hasAI()
+    {
+    	return false;
+    }
+
+    @Override
+    public L2CharacterAI getAI()
+    {
+    	return null;
+    }
+
+    @Override
+    public void deleteMe(L2PcInstance owner)
+    {
+
+    }
+
+    @Override
+    public void unSummon(L2PcInstance owner)
+    {
+    	if (isVisible())
+    	{
+			stopAllEffects();
+	        L2WorldRegion oldRegion = getWorldRegion();
+		    decayMe();
+		    if (oldRegion != null) oldRegion.removeFromZones(this);
+            getKnownList().removeAllKnownObjects();
+	        setTarget(null);
+    	}
+    }
+
+    @Override
+    public void setFollowStatus(boolean state)
+    {
+    	
+    }
+
+    @Override
+    public boolean isAutoAttackable(L2Character attacker)
+    {
+    	return false;
+    }
+
+    @Override
+    public boolean isInvul()
+    {
+    	return true;
+    }
+
+    @Override
+    public L2Party getParty()
+    {
+    	return null;
+    }
+
+    @Override
+    public boolean isInParty()
+    {
+    	return false;
+    }
+
+    @Override
+    public void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
+    {
+
+    }
+
+    @Override
+    public void doCast(L2Skill skill)
+    {
+
+    }
+
+    @Override
+    public boolean isInCombat()
+    {
+    	return false;
+    }
+
+    @Override
+    public final void sendDamageMessage(L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
+    {
+    	
+    }
+
+    @Override
+    public void reduceCurrentHp(int damage, L2Character attacker, L2Skill skill)
+    {
+
+    }
+
+    @Override
+    public void updateAndBroadcastStatus(int val)
+    {
+    	
     }
 
     @Override
