@@ -308,22 +308,18 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			}
 		}
 
-		if (item.isWeapon())
+		if (stone || crystal)
 		{
-			if (stone)
+			if (item.isWeapon())
 			{
 				if (oldValue == 0)
 					return Elementals.FIRST_WEAPON_BONUS;
 				else
 					return Elementals.NEXT_WEAPON_BONUS;
 			}
-		}
-		else if (item.isArmor())
-		{
-			if (stone)
+			else if (item.isArmor())
 				return Elementals.ARMOR_BONUS;
 		}
-
 		// Others not implemented
 		return 0;
 	}
