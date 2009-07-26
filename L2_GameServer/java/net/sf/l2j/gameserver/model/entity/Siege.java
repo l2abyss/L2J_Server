@@ -1035,7 +1035,7 @@ public class Siege
 		else if (getIsInProgress())
 			player.sendPacket(new SystemMessage(SystemMessageId.NOT_SIEGE_REGISTRATION_TIME2));
 		else if (player.getClan() == null || player.getClan().getLevel() < SiegeManager.getInstance().getSiegeClanMinLevel())
-			player.sendPacket(new SystemMessage(SystemMessageId.ONLY_CLAN_LEVEL_4_ABOVE_MAY_SIEGE));
+			player.sendPacket(new SystemMessage(SystemMessageId.ONLY_CLAN_LEVEL_5_ABOVE_MAY_SIEGE));
 		else if (player.getClan().getHasCastle() > 0)
 			player.sendPacket(new SystemMessage(SystemMessageId.CLAN_THAT_OWNS_CASTLE_CANNOT_PARTICIPATE_OTHER_SIEGE));
 		else if (player.getClan().getClanId() == getCastle().getOwnerId())

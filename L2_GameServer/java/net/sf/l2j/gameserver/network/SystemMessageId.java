@@ -3817,9 +3817,9 @@ public enum SystemMessageId
 
 	/**
 	* ID: 645<br>
-	* Message: Only clans of level 4 or higher may register for a castle siege.
+	* Message: Only clans of level 5 or higher may register for a castle siege.
 	*/
-	ONLY_CLAN_LEVEL_4_ABOVE_MAY_SIEGE(645),
+	ONLY_CLAN_LEVEL_5_ABOVE_MAY_SIEGE(645),
 
 	// 646 - 647: empty
 
