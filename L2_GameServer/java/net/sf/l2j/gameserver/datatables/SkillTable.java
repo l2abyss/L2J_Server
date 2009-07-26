@@ -77,7 +77,20 @@ public class SkillTable
 	
 	public L2Skill getInfo(int skillId, int level)
 	{
-		return _skills.get(getSkillHashCode(skillId, level));
+		L2Skill result = _skills.get(getSkillHashCode(skillId, level));
+		if (result == null)
+		{
+			// skill with such level not found, checking for existence
+			if (_skills.containsKey(getSkillHashCode(skillId, 1)))
+			{
+				// yes, such skill exist, searching for first available level
+				while (level > 0 && result == null)
+				{
+					result = _skills.get(getSkillHashCode(skillId, --level));
+				}
+			}
+		}
+		return result;
 	}
 	
 	public int getMaxLevel(int magicId, int level)
