@@ -248,11 +248,11 @@ public class CharStat
 	/** Return the Magical Attack range (base+modifier) of the L2Character. */
 	public final int getMagicalAttackRange(L2Skill skill)
 	{
-		if (skill != null)
-			return (int) calcStat(Stats.MAGIC_ATTACK_RANGE, skill.getCastRange(), null, skill);
-
     	if (_activeChar == null)
     		return 1;
+
+		if (skill != null)
+			return (int) calcStat(Stats.MAGIC_ATTACK_RANGE, skill.getCastRange(), null, skill);
 
 		return _activeChar.getTemplate().baseAtkRange;
 	}
