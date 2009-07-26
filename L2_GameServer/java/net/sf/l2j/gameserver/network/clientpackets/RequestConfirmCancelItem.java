@@ -47,17 +47,19 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 	 * @see net.sf.l2j.gameserver.clientpackets.ClientBasePacket#runImpl()
 	 */
 	@Override
-	protected
-	void runImpl()
+	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
-		L2ItemInstance item = (L2ItemInstance)L2World.getInstance().findObject(_itemId);
+		final L2PcInstance activeChar = getClient().getActiveChar();
+		final L2ItemInstance item = (L2ItemInstance)L2World.getInstance().findObject(_itemId);
+		if (activeChar == null || item == null)
+			return;
+
 		if (item.getOwnerId() != activeChar.getObjectId())
 		{
 			Util.handleIllegalPlayerAction(getClient().getActiveChar(),"Warning!! Character "+getClient().getActiveChar().getName()+" of account "+getClient().getActiveChar().getAccountName()+" tryied to destroy augment on item that doesn't own.",Config.DEFAULT_PUNISH);
 			return;
 		}
-		if (activeChar == null || item == null) return;
+
 		if (!item.isAugmented())
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.AUGMENTATION_REMOVAL_CAN_ONLY_BE_DONE_ON_AN_AUGMENTED_ITEM));
@@ -108,5 +110,4 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 	{
 		return _C__D0_2D_REQUESTCONFIRMCANCELITEM;
 	}
-
 }
