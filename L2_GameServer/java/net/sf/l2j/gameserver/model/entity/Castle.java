@@ -313,13 +313,9 @@ public class Castle
 				_engrave.clear();
 				setOwner(clan);
 			}
-			else
-				getSiege().announceToPlayer("Clan " + clan.getName() + " has finished to engrave one of the rulers.", true);
 		}
-		else
-			getSiege().announceToPlayer("Clan " + clan.getName() + " has finished to engrave one of the rulers.", true);
 	}
-	
+
 	// This method add to the treasury
 	/** Add amount to castle instance's treasury (warehouse). */
 	public void addToTreasury(long amount)
@@ -1581,7 +1577,7 @@ public class Castle
 	
 	public void giveResidentialSkills(L2PcInstance player)
 	{
-		if (_residentialSkills != null && _residentialSkills.size() > 0)
+		if (_residentialSkills != null && !_residentialSkills.isEmpty())
 		{
 			for (L2Skill sk : _residentialSkills)
 				player.addSkill(sk, false);
@@ -1590,7 +1586,7 @@ public class Castle
 	
 	public void removeResidentialSkills(L2PcInstance player)
 	{
-		if (_residentialSkills != null && _residentialSkills.size() > 0)
+		if (_residentialSkills != null && !_residentialSkills.isEmpty())
 		{
 			for (L2Skill sk : _residentialSkills)
 				player.removeSkill(sk, false);

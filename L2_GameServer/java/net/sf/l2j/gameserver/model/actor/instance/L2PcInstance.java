@@ -8925,8 +8925,10 @@ public final class L2PcInstance extends L2Playable
 		else
 		{
 			if (!isCheckOnly)
-				castle.getSiege().announceToPlayer("Clan " + getClan().getName()
-				        + " has begun to engrave the ruler.", true);
+			{
+				SystemMessage sm = new SystemMessage(SystemMessageId.OPPONENT_STARTED_ENGRAVING);
+				castle.getSiege().announceToPlayer(sm, false);
+			}
 			return true;
 		}
 		

@@ -28,8 +28,8 @@ import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
-public class L2ControlTowerInstance extends L2Npc {
-
+public class L2ControlTowerInstance extends L2Npc
+{
     private List<L2Spawn> _guards;
 
 	public L2ControlTowerInstance(int objectId, L2NpcTemplate template)
@@ -109,14 +109,23 @@ public class L2ControlTowerInstance extends L2Npc {
         {
             getCastle().getSiege().killedCT(this);
 
-            if (getGuards() != null && !getGuards().isEmpty())
+            if (_guards != null && !_guards.isEmpty())
             {
-                for (L2Spawn spawn: getGuards())
+                for (L2Spawn spawn: _guards)
                 {
-                    if (spawn == null) continue;
-                    spawn.stopRespawn();
-                    //spawn.getLastSpawn().doDie(spawn.getLastSpawn());
+                    if (spawn == null)
+                    	continue;
+                    try
+                    {
+                        spawn.stopRespawn();
+                        //spawn.getLastSpawn().doDie(spawn.getLastSpawn());
+                    }
+                    catch(Exception e)
+                    {
+                    }
                 }
+                _guards.clear();
+                _guards = null;
             }
         }
     }
@@ -128,7 +137,14 @@ public class L2ControlTowerInstance extends L2Npc {
 
     public final List<L2Spawn> getGuards()
     {
-        if (_guards == null) _guards = new FastList<L2Spawn>();
+        if (_guards == null)
+        {
+        	synchronized(this)
+        	{
+        		if (_guards == null)
+                	_guards = new FastList<L2Spawn>();
+        	}
+        }
         return _guards;
     }
 }
