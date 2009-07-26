@@ -1523,7 +1523,14 @@ public final class Formulas
 				}
 			}
 		}
-		else if (mcrit) damage *= 3;
+		else if (mcrit)
+		{
+			if (attacker instanceof L2PcInstance && target instanceof L2PcInstance)
+				damage *= 2.5;
+			else
+				damage *= 3;
+		}
+
 		damage += Rnd.get() * attacker.getRandomDamage(target);
 		// Pvp bonusses for dmg
 		if((attacker instanceof L2Playable)
