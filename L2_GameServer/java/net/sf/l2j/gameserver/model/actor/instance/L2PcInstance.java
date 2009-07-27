@@ -157,13 +157,16 @@ import net.sf.l2j.gameserver.network.serverpackets.ExDuelUpdateUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ExFishingEnd;
 import net.sf.l2j.gameserver.network.serverpackets.ExFishingStart;
 import net.sf.l2j.gameserver.network.serverpackets.ExGetBookMarkInfoPacket;
+import net.sf.l2j.gameserver.network.serverpackets.ExGetOnAirShip;
 import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadMode;
 import net.sf.l2j.gameserver.network.serverpackets.ExOlympiadUserInfo;
+import net.sf.l2j.gameserver.network.serverpackets.ExPrivateStoreSetWholeMsg;
 import net.sf.l2j.gameserver.network.serverpackets.ExSetCompassZoneCode;
 import net.sf.l2j.gameserver.network.serverpackets.ExSpawnEmitter;
 import net.sf.l2j.gameserver.network.serverpackets.ExStorageMaxCount;
 import net.sf.l2j.gameserver.network.serverpackets.GMHide;
 import net.sf.l2j.gameserver.network.serverpackets.GameGuardQuery;
+import net.sf.l2j.gameserver.network.serverpackets.GetOnVehicle;
 import net.sf.l2j.gameserver.network.serverpackets.HennaInfo;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
@@ -183,7 +186,10 @@ import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreListBuy;
 import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreListSell;
 import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreManageListBuy;
 import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreManageListSell;
+import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreMsgBuy;
+import net.sf.l2j.gameserver.network.serverpackets.PrivateStoreMsgSell;
 import net.sf.l2j.gameserver.network.serverpackets.QuestList;
+import net.sf.l2j.gameserver.network.serverpackets.RecipeShopMsg;
 import net.sf.l2j.gameserver.network.serverpackets.RecipeShopSellList;
 import net.sf.l2j.gameserver.network.serverpackets.RelationChanged;
 import net.sf.l2j.gameserver.network.serverpackets.Ride;
@@ -13432,5 +13438,129 @@ public final class L2PcInstance extends L2Playable
 		{
 			try { con.close(); } catch (Exception e) {}
 		}
+    }
+    
+    @Override
+    public void sendInfo(L2PcInstance activeChar)
+    {
+    	if(isInBoat())
+        {
+        	getPosition().setWorldPosition(getBoat().getPosition().getWorldPosition());
+
+            activeChar.sendPacket(new CharInfo(this));
+            activeChar.sendPacket(new ExBrExtraUserInfo(this));
+            int relation1 = getRelation(activeChar);
+        	int relation2 = activeChar.getRelation(this);
+        	if (getKnownList().getKnownRelations().get(activeChar.getObjectId()) != null && getKnownList().getKnownRelations().get(activeChar.getObjectId()) != relation1)
+        	{
+        		activeChar.sendPacket(new RelationChanged(this, relation1, activeChar.isAutoAttackable(this)));
+        		if (getPet() != null)
+        			activeChar.sendPacket(new RelationChanged(getPet(), relation1, activeChar.isAutoAttackable(this)));
+        	}
+        	if (activeChar.getKnownList().getKnownRelations().get(getObjectId()) != null && activeChar.getKnownList().getKnownRelations().get(getObjectId()) != relation2)
+        	{
+        		sendPacket(new RelationChanged(activeChar, relation2, isAutoAttackable(activeChar)));
+        		if (activeChar.getPet() != null)
+        			sendPacket(new RelationChanged(activeChar.getPet(), relation2, isAutoAttackable(activeChar)));
+        	}
+        	activeChar.sendPacket(new GetOnVehicle(this, getBoat(), getInBoatPosition().getX(), getInBoatPosition().getY(), getInBoatPosition().getZ()));
+        	/*if(getBoat().GetVehicleDeparture() == null)
+        	{
+
+        		int xboat = getBoat().getX();
+        		int yboat= getBoat().getY();
+        		double modifier = Math.PI/2;
+        		if (yboat == 0)
+        		{
+        			yboat = 1;
+        		}
+        		if(yboat < 0)
+        		{
+        			modifier = -modifier;
+        		}
+        		double angleboat = modifier - Math.atan(xboat/yboat);
+        		int xp = getX();
+        		int yp = getY();
+        		modifier = Math.PI/2;
+        		if (yp == 0)
+        		{
+        			yboat = 1;
+        		}
+        		if(yboat < 0)
+        		{
+        			modifier = -modifier;
+        		}
+        		double anglep = modifier - Math.atan(yp/xp);
+
+        		double finx = Math.cos(anglep - angleboat)*Math.sqrt(xp *xp +yp*yp ) + Math.cos(angleboat)*Math.sqrt(xboat *xboat +yboat*yboat );
+        		double finy = Math.sin(anglep - angleboat)*Math.sqrt(xp *xp +yp*yp ) + Math.sin(angleboat)*Math.sqrt(xboat *xboat +yboat*yboat );
+        		//getPosition().setWorldPosition(getBoat().getX() - getInBoatPosition().x,getBoat().getY() - getInBoatPosition().y,getBoat().getZ()- getInBoatPosition().z);
+        		getPosition().setWorldPosition((int)finx,(int)finy,getBoat().getZ()- getInBoatPosition().z);
+
+        	}*/
+        }
+        else if(isInAirShip())
+        {
+        	getPosition().setWorldPosition(getAirShip().getPosition().getWorldPosition());
+
+            activeChar.sendPacket(new CharInfo(this));
+            activeChar.sendPacket(new ExBrExtraUserInfo(this));
+            int relation1 = getRelation(activeChar);
+        	int relation2 = activeChar.getRelation(this);
+        	if (getKnownList().getKnownRelations().get(activeChar.getObjectId()) != null && getKnownList().getKnownRelations().get(activeChar.getObjectId()) != relation1)
+        	{
+        		activeChar.sendPacket(new RelationChanged(this, relation1, activeChar.isAutoAttackable(this)));
+        		if (getPet() != null)
+        			activeChar.sendPacket(new RelationChanged(getPet(), relation1, activeChar.isAutoAttackable(this)));
+        	}
+        	if (activeChar.getKnownList().getKnownRelations().get(getObjectId()) != null && activeChar.getKnownList().getKnownRelations().get(getObjectId()) != relation2)
+        	{
+        		sendPacket(new RelationChanged(activeChar, relation2, isAutoAttackable(activeChar)));
+        		if (activeChar.getPet() != null)
+        			sendPacket(new RelationChanged(activeChar.getPet(), relation2, isAutoAttackable(activeChar)));
+        	}
+        	activeChar.sendPacket(new ExGetOnAirShip(this, getAirShip()));
+        }
+        else
+        {
+        	activeChar.sendPacket(new CharInfo(this));
+        	activeChar.sendPacket(new ExBrExtraUserInfo(this));
+        	int relation1 = getRelation(activeChar);
+        	int relation2 = activeChar.getRelation(this);
+        	if (getKnownList().getKnownRelations().get(activeChar.getObjectId()) != null && getKnownList().getKnownRelations().get(activeChar.getObjectId()) != relation1)
+        	{
+        		activeChar.sendPacket(new RelationChanged(this, relation1, activeChar.isAutoAttackable(this)));
+        		if (getPet() != null)
+        			activeChar.sendPacket(new RelationChanged(getPet(), relation1, activeChar.isAutoAttackable(this)));
+        	}
+        	if (activeChar.getKnownList().getKnownRelations().get(getObjectId()) != null && activeChar.getKnownList().getKnownRelations().get(getObjectId()) != relation2)
+        	{
+        		sendPacket(new RelationChanged(activeChar, relation2, isAutoAttackable(activeChar)));
+        		if (activeChar.getPet() != null)
+        			sendPacket(new RelationChanged(activeChar.getPet(), relation2, isAutoAttackable(activeChar)));
+        	}
+        }
+        if (getMountType() == 4)
+        {
+               // TODO: Remove when horse mounts fixed
+               activeChar.sendPacket(new Ride(this, false, 0));
+               activeChar.sendPacket(new Ride(this, true, getMountNpcId()));
+        }
+
+        switch (getPrivateStoreType())
+        {
+        	case L2PcInstance.STORE_PRIVATE_SELL:
+        		activeChar.sendPacket(new PrivateStoreMsgSell(this));
+        		break;
+        	case L2PcInstance.STORE_PRIVATE_PACKAGE_SELL:
+        		activeChar.sendPacket(new ExPrivateStoreSetWholeMsg(this));
+        		break;
+        	case L2PcInstance.STORE_PRIVATE_BUY:
+        		activeChar.sendPacket(new PrivateStoreMsgBuy(this));
+        		break;
+        	case L2PcInstance.STORE_PRIVATE_MANUFACTURE:
+        		activeChar.sendPacket(new RecipeShopMsg(this));
+        		break;
+        }
     }
 }

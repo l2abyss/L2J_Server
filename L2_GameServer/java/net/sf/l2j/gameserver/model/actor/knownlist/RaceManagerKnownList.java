@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.gameserver.MonsterRace;
 import net.sf.l2j.gameserver.model.L2Object;
-import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RaceManagerInstance;
 import net.sf.l2j.gameserver.network.serverpackets.DeleteObject;
@@ -39,11 +38,9 @@ public class RaceManagerKnownList extends NpcKnownList
     // =========================================================
     // Method - Public
     @Override
-	public boolean addKnownObject(L2Object object) { return addKnownObject(object, null); }
-    @Override
-	public boolean addKnownObject(L2Object object, L2Character dropper)
+	public boolean addKnownObject(L2Object object)
     {
-        if (!super.addKnownObject(object, dropper)) return false;
+        if (!super.addKnownObject(object)) return false;
 
         /* DONT KNOW WHY WE NEED THIS WHEN RACE MANAGER HAS A METHOD THAT BROADCAST TO ITS KNOW PLAYERS
         if (object instanceof L2PcInstance) {

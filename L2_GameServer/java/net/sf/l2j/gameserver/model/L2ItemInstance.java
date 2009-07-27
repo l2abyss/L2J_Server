@@ -39,8 +39,10 @@ import net.sf.l2j.gameserver.model.actor.knownlist.NullKnownList;
 import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
+import net.sf.l2j.gameserver.network.serverpackets.DropItem;
 import net.sf.l2j.gameserver.network.serverpackets.GetItem;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
+import net.sf.l2j.gameserver.network.serverpackets.SpawnItem;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.funcs.Func;
@@ -79,6 +81,9 @@ public final class L2ItemInstance extends L2Object
 	/** ID of the owner */
 	private int _ownerId;
 
+	/** ID of who dropped the item last, used for knownlist */
+	private int _dropperObjectId = 0;
+	
 	/** Quantity of the item */
 	private long _count;
 	/** Initial Quantity of the item */
@@ -1432,14 +1437,14 @@ public final class L2ItemInstance extends L2Object
 	        }
 	        _itm.getPosition().getWorldRegion().addVisibleObject(_itm);
 	        _itm.setDropTime(System.currentTimeMillis());
-
+	        _itm.setDropperObjectId(_dropper.getObjectId()); //Set the dropper Id for the knownlist packets in sendInfo
 	        // this can synchronize on others instancies, so it's out of
 	        // synchronized, to avoid deadlocks
 	        // Add the L2ItemInstance dropped in the world as a visible object
-	        L2World.getInstance().addVisibleObject(_itm, _itm.getPosition().getWorldRegion(), _dropper);
+	        L2World.getInstance().addVisibleObject(_itm, _itm.getPosition().getWorldRegion());
 	        if (Config.SAVE_DROPPED_ITEM)
 	        	ItemsOnGroundManager.getInstance().save(_itm);
-			
+	        _itm.setDropperObjectId(0); //Set the dropper Id back to 0 so it no longer shows the drop packet
 		}
 	}
     public final void dropMe(L2Character dropper, int x, int y, int z)
@@ -1735,5 +1740,19 @@ public final class L2ItemInstance extends L2Object
     	if (_elementals == null)
     		return;
     	_elementals.updateBonus(player, isArmor()); 
+    }
+    
+    public void setDropperObjectId(int id)
+    {
+    	_dropperObjectId = id;
+    }
+    
+    @Override
+    public void sendInfo(L2PcInstance activeChar)
+    {
+    	if (_dropperObjectId != 0)
+            activeChar.sendPacket(new DropItem(this, _dropperObjectId));
+        else
+            activeChar.sendPacket(new SpawnItem(this));
     }
 }

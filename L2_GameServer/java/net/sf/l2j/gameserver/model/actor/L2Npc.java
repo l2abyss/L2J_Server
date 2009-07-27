@@ -2772,4 +2772,14 @@ public class L2Npc extends L2Character
 	{
 		return _inventory;
 	}
+	
+    @Override
+    public void sendInfo(L2PcInstance activeChar)
+    {
+    	if (Config.CHECK_KNOWN) activeChar.sendMessage("Added NPC: "+this.getName());
+        if (getRunSpeed() == 0)
+        	activeChar.sendPacket(new ServerObjectInfo(this, activeChar));
+        else
+        	activeChar.sendPacket(new AbstractNpcInfo.NpcInfo(this, activeChar));
+    }
 }

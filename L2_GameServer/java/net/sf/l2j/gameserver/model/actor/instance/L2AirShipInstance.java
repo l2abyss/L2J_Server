@@ -622,4 +622,13 @@ public class L2AirShipInstance extends L2Character
     {
 	    return 4000;
     }
+    
+    @Override
+    public void sendInfo(L2PcInstance activeChar)
+    {
+    	if(this != activeChar.getAirShip())
+    	{
+    		activeChar.sendPacket(new ExAirShipInfo(this));
+    	}
+    }
 }

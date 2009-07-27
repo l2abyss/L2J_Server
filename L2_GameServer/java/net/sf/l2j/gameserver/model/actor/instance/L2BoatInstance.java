@@ -923,4 +923,15 @@ public class L2BoatInstance extends L2Character
 	{
 		_id = id;
 	}
+	
+    @Override
+    public void sendInfo(L2PcInstance activeChar)
+    {
+    	if(!activeChar.isInBoat())
+        if(this != activeChar.getBoat())
+        {
+        	activeChar.sendPacket(new VehicleInfo(this));
+        	this.sendVehicleDeparture(activeChar);
+        }
+    }
 }

@@ -809,4 +809,10 @@ public class L2DoorInstance extends L2Character
 			broadcastPacket(new SystemMessage(SystemMessageId.CASTLE_GATE_BROKEN_DOWN));
 		return true;
 	}
+	
+    @Override
+    public void sendInfo(L2PcInstance activeChar)
+    {
+    	activeChar.sendPacket(new StaticObject(this, false));
+    }
 }

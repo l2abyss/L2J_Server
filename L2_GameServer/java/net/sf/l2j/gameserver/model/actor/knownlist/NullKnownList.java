@@ -15,7 +15,6 @@
 package net.sf.l2j.gameserver.model.actor.knownlist;
 
 import net.sf.l2j.gameserver.model.L2Object;
-import net.sf.l2j.gameserver.model.actor.L2Character;
 
 public class NullKnownList extends ObjectKnownList
 {
@@ -27,15 +26,6 @@ public class NullKnownList extends ObjectKnownList
 	{
 		super(activeObject);
 		// TODO Auto-generated constructor stub
-	}
-
-	/* (non-Javadoc)
-	 * @see net.sf.l2j.gameserver.model.actor.knownlist.ObjectKnownList#addKnownObject(net.sf.l2j.gameserver.model.L2Object, net.sf.l2j.gameserver.model.L2Character)
-	 */
-	@Override
-	public boolean addKnownObject(L2Object object, L2Character dropper)
-	{
-		return false;
 	}
 
 	/* (non-Javadoc)

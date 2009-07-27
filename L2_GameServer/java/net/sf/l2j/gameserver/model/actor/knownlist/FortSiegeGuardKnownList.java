@@ -16,7 +16,6 @@ package net.sf.l2j.gameserver.model.actor.knownlist;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.model.L2Object;
-import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2FortCommanderInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FortSiegeGuardInstance;
@@ -37,11 +36,9 @@ public class FortSiegeGuardKnownList extends AttackableKnownList
     // =========================================================
     // Method - Public
     @Override
-	public boolean addKnownObject(L2Object object) { return addKnownObject(object, null); }
-    @Override
-	public boolean addKnownObject(L2Object object, L2Character dropper)
+	public boolean addKnownObject(L2Object object)
     {
-        if (!super.addKnownObject(object, dropper)) return false;
+        if (!super.addKnownObject(object)) return false;
 
         // Check if siege is in progress
         if (getActiveChar().getFort() != null && getActiveChar().getFort().getSiege().getIsInProgress())

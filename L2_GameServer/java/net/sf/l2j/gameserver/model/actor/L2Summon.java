@@ -32,6 +32,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.actor.knownlist.SummonKnownList;
 import net.sf.l2j.gameserver.model.actor.stat.SummonStat;
@@ -49,6 +50,7 @@ import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.PetDelete;
 import net.sf.l2j.gameserver.network.serverpackets.PetInfo;
+import net.sf.l2j.gameserver.network.serverpackets.PetItemList;
 import net.sf.l2j.gameserver.network.serverpackets.PetStatusShow;
 import net.sf.l2j.gameserver.network.serverpackets.PetStatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.RelationChanged;
@@ -885,4 +887,22 @@ public abstract class L2Summon extends L2Playable
 	{
 		return getTemplate().baseRunSpd;
 	}
+	
+    @Override
+    public void sendInfo(L2PcInstance activeChar)
+    {
+    	// Check if the L2PcInstance is the owner of the Pet
+        if (activeChar.equals(getOwner()) && !(this instanceof L2MerchantSummonInstance))
+        {
+            activeChar.sendPacket(new PetInfo(this, 0));
+            // The PetInfo packet wipes the PartySpelled (list of active  spells' icons).  Re-add them
+            updateEffectIcons(true);
+            if (this instanceof L2PetInstance)
+            {
+                activeChar.sendPacket(new PetItemList((L2PetInstance) this));
+            }
+        }
+        else
+            activeChar.sendPacket(new AbstractNpcInfo.SummonInfo(this, activeChar, 0));
+    }
 }

@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.model.actor;
 
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.serverpackets.AbstractNpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
 import net.sf.l2j.gameserver.templates.chars.L2CharTemplate;
@@ -234,4 +235,10 @@ public class L2Trap extends L2Character
 	{
 		// Do nothing
 	}
+	
+    @Override
+    public void sendInfo(L2PcInstance activeChar)
+    {
+    	activeChar.sendPacket(new AbstractNpcInfo.TrapInfo(this, activeChar));
+    }
 }

@@ -155,4 +155,10 @@ public abstract class L2Decoy extends L2Character
     {
         return (L2NpcTemplate) super.getTemplate();
     }
+    
+    @Override
+    public void sendInfo(L2PcInstance activeChar)
+    {
+    	activeChar.sendPacket(new AbstractNpcInfo.DecoyInfo(this));
+    }
 }

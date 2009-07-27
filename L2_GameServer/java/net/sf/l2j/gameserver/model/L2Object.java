@@ -254,7 +254,7 @@ public abstract class L2Object
         // this can synchronize on others instancies, so it's out of
         // synchronized, to avoid deadlocks
         // Add the L2Object spawn in the world as a visible object
-        L2World.getInstance().addVisibleObject(this, getPosition().getWorldRegion(), null);
+        L2World.getInstance().addVisibleObject(this, getPosition().getWorldRegion());
 
         onSpawn();
     }
@@ -288,7 +288,7 @@ public abstract class L2Object
         getPosition().getWorldRegion().addVisibleObject(this);
 
         // Add the L2Object spawn in the world as a visible object
-        L2World.getInstance().addVisibleObject(this, getPosition().getWorldRegion(), null);
+        L2World.getInstance().addVisibleObject(this, getPosition().getWorldRegion());
 
         onSpawn();
     }
@@ -379,6 +379,25 @@ public abstract class L2Object
     public L2PcInstance getActingPlayer()
     {
         return null;
+    }
+
+    /**
+     * Sends the Server->Client info packet for the object.<br><br>
+     * Is Overridden in:
+     * <li>L2AirShipInstance</li>
+     * <li>L2BoatInstance</li>
+     * <li>L2DoorInstance</li>
+     * <li>L2PcInstance</li>
+     * <li>L2StaticObjectInstance</li>
+     * <li>L2Decoy</li>
+     * <li>L2Npc</li>
+     * <li>L2Summon</li>
+     * <li>L2Trap</li>
+     * <li>L2ItemInstance</li>
+     */
+    public void sendInfo(L2PcInstance activeChar)
+    {
+    	
     }
 
     @Override

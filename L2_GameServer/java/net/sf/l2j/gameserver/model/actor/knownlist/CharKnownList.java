@@ -45,11 +45,9 @@ public class CharKnownList extends ObjectKnownList
     // =========================================================
     // Method - Public
     @Override
-	public boolean addKnownObject(L2Object object) { return addKnownObject(object, null); }
-    @Override
-	public boolean addKnownObject(L2Object object, L2Character dropper)
+	public boolean addKnownObject(L2Object object)
     {
-        if (!super.addKnownObject(object, dropper)) return false;
+        if (!super.addKnownObject(object)) return false;
         if (object instanceof L2PcInstance) {
         	getKnownPlayers().put(object.getObjectId(), (L2PcInstance)object);
         	getKnownRelations().put(object.getObjectId(), -1);

@@ -42,8 +42,7 @@ public class ObjectKnownList
 
     // =========================================================
     // Method - Public
-    public boolean addKnownObject(L2Object object) { return addKnownObject(object, null); }
-    public boolean addKnownObject(L2Object object, L2Character dropper)
+    public boolean addKnownObject(L2Object object)
     {
         if (object == null) return false;
         

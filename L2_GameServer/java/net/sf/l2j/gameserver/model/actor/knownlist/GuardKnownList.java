@@ -20,7 +20,6 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.ai.L2CharacterAI;
 import net.sf.l2j.gameserver.model.L2Object;
-import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2GuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -42,11 +41,9 @@ public class GuardKnownList extends AttackableKnownList
     // =========================================================
     // Method - Public
     @Override
-	public boolean addKnownObject(L2Object object) { return addKnownObject(object, null); }
-    @Override
-	public boolean addKnownObject(L2Object object, L2Character dropper)
+	public boolean addKnownObject(L2Object object)
     {
-        if (!super.addKnownObject(object, dropper)) return false;
+        if (!super.addKnownObject(object)) return false;
 
         if (object instanceof L2PcInstance)
         {

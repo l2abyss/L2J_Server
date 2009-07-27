@@ -318,7 +318,7 @@ public final class L2World
 	 * @param dropper L2Character who has dropped the object (if necessary)
 	 *
 	 */
-	public void addVisibleObject(L2Object object, L2WorldRegion newRegion, L2Character dropper)
+	public void addVisibleObject(L2Object object, L2WorldRegion newRegion)
 	{
 		// If selected L2Object is a L2PcIntance, add it in L2ObjectHashSet(L2PcInstance) _allPlayers of L2World
 		// XXX TODO: this code should be obsoleted by protection in putObject func...
@@ -357,11 +357,11 @@ public final class L2World
 			//   - object is not already known
 			//   - object is in the watch distance
 			// If L2Object is a L2PcInstance, add L2Object in L2ObjectHashSet(L2PcInstance) _knownPlayer of the visible L2Character
-			visible.getKnownList().addKnownObject(object, dropper);
+			visible.getKnownList().addKnownObject(object);
 			
 			// Add the visible L2Object in L2ObjectHashSet(L2Object) _knownObjects of the object according to conditions
 			// If visible L2Object is a L2PcInstance, add visible L2Object in L2ObjectHashSet(L2PcInstance) _knownPlayer of the object
-			object.getKnownList().addKnownObject(visible, dropper);
+			object.getKnownList().addKnownObject(visible);
 		}
 	}
 	
