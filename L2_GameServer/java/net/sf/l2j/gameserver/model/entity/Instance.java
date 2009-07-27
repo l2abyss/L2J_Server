@@ -145,7 +145,12 @@ public class Instance
 	public void addPlayer(int objectId)
 	{
 		if (!_players.contains(objectId))
-			_players.add(objectId);
+		{
+			synchronized(_players)
+			{
+				_players.add(objectId);
+			}
+		}
 	}
 	
 	/**
@@ -155,7 +160,12 @@ public class Instance
 	public void removePlayer(int objectId)
 	{
 		if (_players.contains(objectId))
-			_players.remove(objectId);
+		{
+			synchronized(_players)
+			{
+				_players.remove(objectId);
+			}
+		}
 		if (_players.isEmpty() && _emptyDestroyTime >= 0)
 		{
 			_lastLeft = System.currentTimeMillis();
@@ -263,9 +273,6 @@ public class Instance
 
 	public void removePlayers()
 	{
-		if (_players == null || _players.isEmpty())
-			return;
-
 		for (int objectId : _players)
 		{
 			ejectPlayer(objectId);
@@ -275,9 +282,6 @@ public class Instance
 
 	public void removeNpcs()
 	{
-		if (_npcs == null || _npcs.isEmpty())
-			return;
-
 		for (L2Npc mob : _npcs)
 		{
 			if (mob != null)
@@ -291,9 +295,6 @@ public class Instance
 	
 	public void removeDoors()
 	{
-		if (_doors == null || _doors.isEmpty())
-			return;
-
 		for (L2DoorInstance door: _doors)
 		{
 			if (door != null)
