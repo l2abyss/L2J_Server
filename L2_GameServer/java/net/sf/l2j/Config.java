@@ -560,6 +560,8 @@ public final class Config
 	public static byte TVT_EVENT_MIN_LVL;
 	public static byte TVT_EVENT_MAX_LVL;
 	public static int TVT_EVENT_EFFECTS_REMOVAL;
+	public static Map<Integer, Integer> TVT_EVENT_FIGHTER_BUFFS;
+	public static Map<Integer, Integer> TVT_EVENT_MAGE_BUFFS;
 	public static boolean L2JMOD_ALLOW_WEDDING;
 	public static int L2JMOD_WEDDING_PRICE;
 	public static boolean L2JMOD_WEDDING_PUNISH_INFIDELITY;
@@ -1859,6 +1861,54 @@ public final class Config
 										{
 											if (!door.isEmpty())
 												_log.warning(StringUtil.concat("TvTEventEngine[Config.load()]: invalid config property -> TvTDoorsToClose \"", door, "\""));
+										}
+									}
+
+									propertySplit = L2JModSettings.getProperty("TvTEventFighterBuffs", "").split(";");
+									if (!propertySplit[0].equals(""))
+									{
+										TVT_EVENT_FIGHTER_BUFFS = new FastMap<Integer, Integer>();
+										for (String skill : propertySplit)
+										{
+											String[] skillSplit = skill.split(",");
+											if (skillSplit.length != 2)
+												_log.warning(StringUtil.concat("TvTEventEngine[Config.load()]: invalid config property -> TvTEventFighterBuffs \"", skill, "\""));
+											else
+											{
+												try
+												{
+													TVT_EVENT_FIGHTER_BUFFS.put(Integer.parseInt(skillSplit[0]), Integer.parseInt(skillSplit[1]));
+												}
+												catch (NumberFormatException nfe)
+												{
+													if (!skill.isEmpty())
+														_log.warning(StringUtil.concat("TvTEventEngine[Config.load()]: invalid config property -> TvTEventFighterBuffs \"", skill, "\""));
+												}
+											}
+										}
+									}
+
+									propertySplit = L2JModSettings.getProperty("TvTEventMageBuffs", "").split(";");
+									if (!propertySplit[0].equals(""))
+									{
+										TVT_EVENT_MAGE_BUFFS = new FastMap<Integer, Integer>();
+										for (String skill : propertySplit)
+										{
+											String[] skillSplit = skill.split(",");
+											if (skillSplit.length != 2)
+												_log.warning(StringUtil.concat("TvTEventEngine[Config.load()]: invalid config property -> TvTEventMageBuffs \"", skill, "\""));
+											else
+											{
+												try
+												{
+													TVT_EVENT_MAGE_BUFFS.put(Integer.parseInt(skillSplit[0]), Integer.parseInt(skillSplit[1]));
+												}
+												catch (NumberFormatException nfe)
+												{
+													if (!skill.isEmpty())
+														_log.warning(StringUtil.concat("TvTEventEngine[Config.load()]: invalid config property -> TvTEventMageBuffs \"", skill, "\""));
+												}
+											}
 										}
 									}
 								}
