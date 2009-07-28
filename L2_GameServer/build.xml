@@ -39,7 +39,7 @@
         	<include name="jython.jar"/>
         	<include name="jython-engine.jar"/>
         	<include name="javolution-5.3.1.jar"/>
-        	<include name="mysql-connector-java-5.1.7-bin.jar"/>
+        	<include name="mysql-connector-java-5.1.8-bin.jar"/>
         	<include name="mmocore.jar"/>
         </fileset>
     </path>
