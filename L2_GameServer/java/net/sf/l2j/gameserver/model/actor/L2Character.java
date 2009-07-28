@@ -171,6 +171,7 @@ public abstract class L2Character extends L2Object
 	private boolean _isPendingRevive                        = false;
 	private boolean _isRooted                               = false; // Cannot move until root timed out
 	private boolean _isRunning                              = false;
+	private boolean _isNoRndWalk                            = false; // Is no random walk
 	private boolean _isImmobileUntilAttacked				= false; // Is in immobile until attacked.
 	private boolean _isSleeping                             = false; // Cannot move/attack until sleep timed out or monster is attacked
 	private boolean _isStunned                              = false; // Cannot move/attack until stun timed out
@@ -2252,6 +2253,9 @@ public abstract class L2Character extends L2Object
 
 	public final L2Skill getLastSkillCast() { return _lastSkillCast; }
 	public void setLastSkillCast (L2Skill skill) { _lastSkillCast = skill; }
+	
+	public final boolean isNoRndWalk() { return _isNoRndWalk; }
+	public final void setIsNoRndWalk(boolean value) { _isNoRndWalk = value; }
 
 	public final boolean isAfraid() { return _isAfraid; }
 	public final void setIsAfraid(boolean value) { _isAfraid = value; }
