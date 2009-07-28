@@ -42,6 +42,7 @@ import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.PetitionManager;
+import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
@@ -298,8 +299,13 @@ public class EnterWorld extends L2GameClientPacket
 		activeChar.sendPacket(new HennaInfo(activeChar));
 
 		Quest.playerEnter(activeChar);
-		activeChar.sendPacket(new QuestList());
 		loadTutorial(activeChar);
+		for (Quest quest : QuestManager.getInstance().getAllManagedScripts())
+		{
+			if (quest != null && quest.getOnEnterWorld())
+				quest.notifyEnterWorld(activeChar);
+		}
+		activeChar.sendPacket(new QuestList());
 
 		if (Config.PLAYER_SPAWN_PROTECTION > 0)
 			activeChar.setProtection(true);

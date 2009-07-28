@@ -15,12 +15,15 @@
 package net.sf.l2j.gameserver.model.zone;
 
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.quest.Quest;
 
 /**
  * Abstract base class for any zone type
@@ -30,6 +33,8 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
  */
 public abstract class L2ZoneType
 {
+	protected static final Logger _log = Logger.getLogger(L2ZoneType.class.getName());
+
 	private final int _id;
 	protected List<L2ZoneForm> _zone;
 	protected FastMap<Integer, L2Character> _characterList;
@@ -43,6 +48,7 @@ public abstract class L2ZoneType
 	private int[] _race;
 	private int[] _class;
 	private char _classType;
+	private Map<Quest.QuestEventType, FastList<Quest>> _questEvents;
 	
 	protected L2ZoneType(int id)
 	{
@@ -306,6 +312,14 @@ public abstract class L2ZoneType
 			// Was the character not yet inside this zone?
 			if (!_characterList.containsKey(character.getObjectId()))
 			{
+				FastList<Quest> quests = this.getQuestByEvent(Quest.QuestEventType.ON_ENTER_ZONE);
+				if (quests != null)
+				{
+					for (Quest quest : quests)
+					{
+						quest.notifyEnterZone(character, this);
+					}
+				}
 				_characterList.put(character.getObjectId(), character);
 				onEnter(character);
 			}
@@ -315,6 +329,14 @@ public abstract class L2ZoneType
 			// Was the character inside this zone?
 			if (_characterList.containsKey(character.getObjectId()))
 			{
+				FastList<Quest> quests = this.getQuestByEvent(Quest.QuestEventType.ON_ENTER_ZONE);
+				if (quests != null)
+				{
+					for (Quest quest : quests)
+					{
+						quest.notifyExitZone(character, this);
+					}
+				}
 				_characterList.remove(character.getObjectId());
 				onExit(character);
 			}
@@ -356,5 +378,23 @@ public abstract class L2ZoneType
 	public FastMap<Integer, L2Character> getCharactersInside()
 	{
 		return _characterList;
+	}
+
+	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)
+	{
+		if (_questEvents == null)
+			_questEvents = new FastMap<Quest.QuestEventType, FastList<Quest>>();
+		FastList<Quest> questByEvents = _questEvents.get(EventType);
+		if (questByEvents == null)
+			questByEvents = new FastList<Quest>();
+		if (!questByEvents.contains(q))
+			questByEvents.add(q);
+		_questEvents.put(EventType, questByEvents);
+	}
+	public FastList<Quest> getQuestByEvent(Quest.QuestEventType EventType)
+	{
+		if (_questEvents == null)
+			return null;
+		return _questEvents.get(EventType);
 	}
 }

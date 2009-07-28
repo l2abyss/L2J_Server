@@ -134,23 +134,23 @@ public abstract class L2Playable extends L2Character
 		// Send the Server->Client packet StatusUpdate with current HP and MP to all other L2PcInstance to inform
 		broadcastStatusUpdate();
 		
-		// Notify L2Character AI
-		getAI().notifyEvent(CtrlEvent.EVT_DEAD);
-		
 		if (getWorldRegion() != null)
 			getWorldRegion().onDeath(this);
 		
-		// Notify Quest of character's death
-		for (QuestState qs : getNotifyQuestOfDeath())
+		// Notify Quest of L2Playable's death
+		L2PcInstance actingPlayer = getActingPlayer();
+		for (QuestState qs : actingPlayer.getNotifyQuestOfDeath())
 		{
 			qs.getQuest().notifyDeath((killer == null ? this : killer), this, qs);
 		}
-		getNotifyQuestOfDeath().clear();
 		
 		L2PcInstance player = killer.getActingPlayer();
 		
 		if (player != null)
 			player.onKillUpdatePvPKarma(this);
+		
+		// Notify L2Character AI
+		getAI().notifyEvent(CtrlEvent.EVT_DEAD);
 		
 		return true;
 	}

@@ -19,12 +19,14 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import javolution.util.FastList;
+import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.L2Object;
@@ -49,7 +51,7 @@ public class ZoneManager
 {
 	private static final Logger _log = Logger.getLogger(ZoneManager.class.getName());
 	
-	private final FastList<L2ZoneType> _zones = new FastList<L2ZoneType>();
+	private final FastMap<Integer, L2ZoneType> _zones = new FastMap<Integer,L2ZoneType>();
 	
 	public static final ZoneManager getInstance()
 	{
@@ -319,7 +321,7 @@ public class ZoneManager
 									temp.setParameter(name, val);
 								}
 							}
-							addZone(temp);
+							addZone(zoneId, temp);
 							
 							// Register the zone into any world region it
 							// intersects with...
@@ -380,9 +382,9 @@ public class ZoneManager
 	 *
 	 * @param zone
 	 */
-	public void addZone(L2ZoneType zone)
+	public void addZone(Integer id,L2ZoneType zone)
 	{
-		_zones.add(zone);
+		_zones.put(id, zone);
 	}
 	
 	/**
@@ -390,11 +392,16 @@ public class ZoneManager
 	 * To minimise iteration processing retrieve zones from L2WorldRegion for a specific location instead.
 	 * @return zones
 	 */
-	public FastList<L2ZoneType> getAllZones()
+	public Collection<L2ZoneType> getAllZones()
 	{
-		return _zones;
+		return _zones.values();
 	}
-	
+
+	public L2ZoneType getZoneById( int id)
+	{
+		return _zones.get(id);
+	}
+
 	/**
 	 * Returns all zones from where the object is located
 	 *

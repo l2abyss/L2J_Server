@@ -1633,6 +1633,48 @@ public final class L2PcInstance extends L2Playable
 		sendPacket( ActionFailed.STATIC_PACKET );
 	}
 
+	/** List of all QuestState instance that needs to be notified of this L2PcInstance's or its pet's death */
+	private List<QuestState> _NotifyQuestOfDeathList = new FastList<QuestState>();
+
+	/**
+	 * Add QuestState instance that is to be notified of L2PcInstance's death.<BR><BR>
+	 *
+	 * @param qs The QuestState that subscribe to this event
+	 *
+	 */
+	public void addNotifyQuestOfDeath (QuestState qs)
+	{
+		if (qs == null || _NotifyQuestOfDeathList.contains(qs))
+			return;
+
+		_NotifyQuestOfDeathList.add(qs);
+	}
+
+	/**
+	 * Remove QuestState instance that is to be notified of L2PcInstance's death.<BR><BR>
+	 *
+	 * @param qs The QuestState that subscribe to this event
+	 *
+	 */
+	public void removeNotifyQuestOfDeath (QuestState qs)
+	{
+		if (qs == null || !_NotifyQuestOfDeathList.contains(qs))
+			return;
+
+		_NotifyQuestOfDeathList.remove(qs);
+	}
+
+	/**
+	 * Return a list of QuestStates which registered for notify of death of this L2PcInstance.<BR><BR>
+	 */
+	public final List<QuestState> getNotifyQuestOfDeath ()
+	{
+		if (_NotifyQuestOfDeathList == null)
+			_NotifyQuestOfDeathList = new FastList<QuestState>();
+
+		return _NotifyQuestOfDeathList;
+	}
+
 	/**
 	 * Return a table containing all L2ShortCut of the L2PcInstance.<BR><BR>
 	 */

@@ -87,7 +87,6 @@ import net.sf.l2j.gameserver.model.actor.stat.CharStat;
 import net.sf.l2j.gameserver.model.actor.status.CharStatus;
 import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
 import net.sf.l2j.gameserver.model.quest.Quest;
-import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.AbstractNpcInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
@@ -2118,13 +2117,6 @@ public abstract class L2Character extends L2Object
 		if (getWorldRegion() != null)
 				getWorldRegion().onDeath(this);
 
-		// Notify Quest of character's death
-		for (QuestState qs: getNotifyQuestOfDeath())
-		{
-			qs.getQuest().notifyDeath( (killer==null?this:killer) , this, qs);
-		}
-		getNotifyQuestOfDeath().clear();
-
 		getAttackByList().clear();
 		// If character is PhoenixBlessed 
 		// or has charm of courage inside siege battlefield (exact operation to be confirmed)
@@ -3551,38 +3543,6 @@ public abstract class L2Character extends L2Object
 	private int _clientY;
 	private int _clientZ;
 	private int _clientHeading;
-
-
-
-	/** List of all QuestState instance that needs to be notified of this character's death */
-	private List<QuestState> _NotifyQuestOfDeathList = new FastList<QuestState>();
-
-	/**
-	 * Add QuestState instance that is to be notified of character's death.<BR><BR>
-	 *
-	 * @param qs The QuestState that subscribe to this event
-	 *
-	 */
-	public void addNotifyQuestOfDeath (QuestState qs)
-	{
-		if (qs == null || _NotifyQuestOfDeathList.contains(qs))
-			return;
-
-		_NotifyQuestOfDeathList.add(qs);
-	}
-
-	/**
-	 * Return a list of L2Character that attacked.<BR><BR>
-	 */
-	public final List<QuestState> getNotifyQuestOfDeath ()
-	{
-		if (_NotifyQuestOfDeathList == null)
-			_NotifyQuestOfDeathList = new FastList<QuestState>();
-
-		return _NotifyQuestOfDeathList;
-	}
-
-
 
 	/**
 	 * Add a Func to the Calculator set of the L2Character.<BR><BR>

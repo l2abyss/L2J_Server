@@ -33,6 +33,7 @@ import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.instancemanager.QuestManager;
+import net.sf.l2j.gameserver.instancemanager.ZoneManager;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Party;
 import net.sf.l2j.gameserver.model.L2Skill;
@@ -40,6 +41,7 @@ import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.zone.L2ZoneType;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.NpcQuestHtmlMessage;
@@ -67,6 +69,7 @@ public class Quest extends ManagedScript
 	private final String _name;
 	private final String _descr;
 	private final byte _initialState = State.CREATED;
+	private boolean _onEnterWorld = false;
 	// NOTE: questItemIds will be overridden by child classes.  Ideally, it should be
 	// protected instead of public.  However, quest scripts written in Jython will
 	// have trouble with protected, as Jython only knows private and public...
@@ -138,7 +141,10 @@ public class Quest extends ManagedScript
 		ON_SKILL_SEE(true), // NPC or Mob saw a person casting a skill (regardless what the target is). 
 		ON_FACTION_CALL(true), // NPC or Mob saw a person casting a skill (regardless what the target is). 
 		ON_AGGRO_RANGE_ENTER(true), // a person came within the Npc/Mob's range
-		ON_SPELL_FINISHED(true);  // on spell finished action when npc finish casting skill  
+		ON_SPELL_FINISHED(true), // on spell finished action when npc finish casting skill
+		ON_ENTER_ZONE(true), // on zone enter
+		ON_EXIT_ZONE(true); // on zone exit
+
 		
 		// control whether this event type is allowed for the same npc template in multiple quests
 		// or if the npc must be registered in at most one quest for the specified event 
@@ -405,6 +411,20 @@ public class Quest extends ManagedScript
 		return showResult(player, res);
 	}
 	
+	public final boolean notifyEnterWorld(L2PcInstance player)
+	{
+		String res = null;
+		try
+		{
+			res = onEnterWorld(player);
+		}
+		catch (Exception e)
+		{
+			return showError(player, e);
+		}
+		return showResult(player, res);
+	}
+	
 	public final boolean notifyKill(L2Npc npc, L2PcInstance killer, boolean isPet)
 	{
 		String res = null;
@@ -543,6 +563,42 @@ public class Quest extends ManagedScript
 		return true;
 	}
 	
+	public final boolean notifyEnterZone(L2Character character, L2ZoneType zone)
+	{
+		L2PcInstance player = character.getActingPlayer();
+		String res = null;
+		try
+		{
+			res = this.onEnterZone(character, zone);
+		}
+		catch (Exception e)
+		{
+			if (player != null)
+				return showError(player, e);
+		}
+		if (player != null)
+			return showResult(player, res);
+		return true;
+	}
+	
+	public final boolean notifyExitZone(L2Character character, L2ZoneType zone)
+	{
+		L2PcInstance player = character.getActingPlayer();
+		String res = null;
+		try
+		{
+			res = this.onExitZone(character, zone);
+		}
+		catch (Exception e)
+		{
+			if (player != null)
+				return showError(player, e);
+		}
+		if (player != null)
+			return showResult(player, res);
+		return true;
+	}
+	
 	// these are methods that java calls to invoke scripts
 	public String onAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet)
 	{
@@ -614,6 +670,21 @@ public class Quest extends ManagedScript
 	}
 	
 	public String onAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isPet)
+	{
+		return null;
+	}
+	
+	public String onEnterWorld(L2PcInstance player)
+	{
+		return null;
+	}
+	
+	public String onEnterZone(L2Character character, L2ZoneType zone)
+	{
+		return null;
+	}
+
+	public String onExitZone(L2Character character, L2ZoneType zone)
 	{
 		return null;
 	}
@@ -1224,6 +1295,42 @@ public class Quest extends ManagedScript
 		return addEventId(npcId, Quest.QuestEventType.ON_AGGRO_RANGE_ENTER);
 	}
 	
+	public L2ZoneType addEnterZoneId(int zoneId)
+	{
+		try
+		{
+			L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
+			if (zone != null)
+			{
+				zone.addQuestEvent(Quest.QuestEventType.ON_ENTER_ZONE, this);
+			}
+			return zone;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public L2ZoneType addExitZoneId(int zoneId)
+	{
+		try
+		{
+			L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
+			if (zone != null)
+			{
+				zone.addQuestEvent(Quest.QuestEventType.ON_EXIT_ZONE, this);
+			}
+			return zone;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	// returns a random party member's L2PcInstance for the passed player's party
 	// returns the passed player if he has no party.
 	public L2PcInstance getRandomPartyMember(L2PcInstance player)
@@ -1572,5 +1679,15 @@ public class Quest extends ManagedScript
 	public ScriptManager<?> getScriptManager()
 	{
 		return QuestManager.getInstance();
+	}
+	
+	public void setOnEnterWorld(boolean val)
+	{
+		_onEnterWorld = val;
+	}
+	
+	public boolean getOnEnterWorld()
+	{
+		return _onEnterWorld;
 	}
 }

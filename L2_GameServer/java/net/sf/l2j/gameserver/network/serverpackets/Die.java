@@ -18,6 +18,7 @@ import net.sf.l2j.gameserver.datatables.AccessLevels;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.model.L2AccessLevel;
+import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2SiegeClan;
 import net.sf.l2j.gameserver.model.actor.L2Attackable;
 import net.sf.l2j.gameserver.model.actor.L2Character;
@@ -44,7 +45,7 @@ public class Die extends L2GameServerPacket
     private boolean _canTeleport;
     private boolean _sweepable;
     private L2AccessLevel _access = AccessLevels._userAccessLevel;
-    private net.sf.l2j.gameserver.model.L2Clan _clan;
+    private L2Clan _clan;
     L2Character _activeChar;
 
     /**
@@ -60,7 +61,7 @@ public class Die extends L2GameServerPacket
 
         }
         _charObjId = cha.getObjectId();
-        _canTeleport = !(cha instanceof L2PcInstance && TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(_charObjId));
+        _canTeleport = !((cha instanceof L2PcInstance && TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(_charObjId)) || cha.isPendingRevive());
         if (cha instanceof L2Attackable)
             _sweepable = ((L2Attackable)cha).isSweepActive();
 
