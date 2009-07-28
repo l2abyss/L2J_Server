@@ -1398,78 +1398,88 @@ public final class L2ItemInstance extends L2Object
      * <li> Call Pet</li><BR>
      *
      */
-	public class doItemDropTask implements Runnable {
+	public class doItemDropTask implements Runnable
+	{
 		private int _x,_y,_z;
-		private L2Character _dropper;
-		private L2ItemInstance _itm;
-		public doItemDropTask(L2ItemInstance item, L2Character dropper, int x, int y, int z) {
+		private final L2Character _dropper;
+		private final L2ItemInstance _itm;
+
+		public doItemDropTask(L2ItemInstance item, L2Character dropper, int x, int y, int z)
+		{
 			_x = x;
 			_y = y;
 			_z = z;
 			_dropper = dropper;
 			_itm = item;
 		}
-		public final void run() {
-	        if (Config.ASSERT) assert _itm.getPosition().getWorldRegion() == null;
 
-	        if (Config.GEODATA > 0 && _dropper != null)
-	        {
-	            Location dropDest = GeoData.getInstance().moveCheck(_dropper.getX(), _dropper.getY(), _dropper.getZ(), _x, _y, _z, _dropper.getInstanceId());
-	            _x = dropDest.getX();
-	            _y = dropDest.getY();
-	            _z = dropDest.getZ();
-	        }
-	        
-	        if(_dropper != null)
-		        setInstanceId(_dropper.getInstanceId()); // Inherit instancezone when dropped in visible world
-	        else
-		        setInstanceId(0); // No dropper? Make it a global item...
-	        
-	        synchronized (this)
-	        {
-	            // Set the x,y,z position of the L2ItemInstance dropped and update its _worldregion
-	            _itm.setIsVisible(true);
-	            _itm.getPosition().setWorldPosition(_x, _y ,_z);
-	            _itm.getPosition().setWorldRegion(L2World.getInstance().getRegion(getPosition().getWorldPosition()));
+		public final void run()
+		{
+			if (Config.ASSERT)
+				assert _itm.getPosition().getWorldRegion() == null;
 
-	            // Add the L2ItemInstance dropped to _visibleObjects of its L2WorldRegion
-	            
-	        }
-	        _itm.getPosition().getWorldRegion().addVisibleObject(_itm);
-	        _itm.setDropTime(System.currentTimeMillis());
-	        _itm.setDropperObjectId(_dropper.getObjectId()); //Set the dropper Id for the knownlist packets in sendInfo
-	        // this can synchronize on others instancies, so it's out of
-	        // synchronized, to avoid deadlocks
-	        // Add the L2ItemInstance dropped in the world as a visible object
-	        L2World.getInstance().addVisibleObject(_itm, _itm.getPosition().getWorldRegion());
-	        if (Config.SAVE_DROPPED_ITEM)
-	        	ItemsOnGroundManager.getInstance().save(_itm);
-	        _itm.setDropperObjectId(0); //Set the dropper Id back to 0 so it no longer shows the drop packet
+			if (Config.GEODATA > 0 && _dropper != null)
+			{
+				Location dropDest = GeoData.getInstance().moveCheck(_dropper.getX(), _dropper.getY(), _dropper.getZ(), _x, _y, _z, _dropper.getInstanceId());
+				_x = dropDest.getX();
+				_y = dropDest.getY();
+				_z = dropDest.getZ();
+			}
+
+			if(_dropper != null)
+				setInstanceId(_dropper.getInstanceId()); // Inherit instancezone when dropped in visible world
+			else
+				setInstanceId(0); // No dropper? Make it a global item...
+
+			synchronized (_itm)
+			{
+				// Set the x,y,z position of the L2ItemInstance dropped and update its _worldregion
+				_itm.setIsVisible(true);
+				_itm.getPosition().setWorldPosition(_x, _y ,_z);
+				_itm.getPosition().setWorldRegion(L2World.getInstance().getRegion(getPosition().getWorldPosition()));
+
+				// Add the L2ItemInstance dropped to _visibleObjects of its L2WorldRegion
+			}
+
+			_itm.getPosition().getWorldRegion().addVisibleObject(_itm);
+			_itm.setDropTime(System.currentTimeMillis());
+			_itm.setDropperObjectId(_dropper != null ? _dropper.getObjectId() : 0); //Set the dropper Id for the knownlist packets in sendInfo
+
+			// this can synchronize on others instancies, so it's out of
+			// synchronized, to avoid deadlocks
+			// Add the L2ItemInstance dropped in the world as a visible object
+			L2World.getInstance().addVisibleObject(_itm, _itm.getPosition().getWorldRegion());
+			if (Config.SAVE_DROPPED_ITEM)
+				ItemsOnGroundManager.getInstance().save(_itm);
+			_itm.setDropperObjectId(0); //Set the dropper Id back to 0 so it no longer shows the drop packet
 		}
 	}
-    public final void dropMe(L2Character dropper, int x, int y, int z)
-    {
-    	ThreadPoolManager.getInstance().executeTask(new doItemDropTask(this, dropper, x, y, z));
-    }
+
+	public final void dropMe(L2Character dropper, int x, int y, int z)
+	{
+		ThreadPoolManager.getInstance().executeTask(new doItemDropTask(this, dropper, x, y, z));
+	}
 
 	/**
 	 * Update the database with values of the item
 	 */
 	private void updateInDb()
     {
-        if (Config.ASSERT) assert _existsInDb;
-        
+		if (Config.ASSERT)
+			assert _existsInDb;
+
 		if (_wear)
 			return;
-        
+
 		if (_storedInDb)
 			return;
 
 		Connection con = null;
+		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(
+			statement = con.prepareStatement(
 					"UPDATE items SET owner_id=?,count=?,loc=?,loc_data=?,enchant_level=?,custom_type1=?,custom_type2=?,mana_left=?,time=? " +
 					"WHERE object_id = ?");
 			statement.setInt(1, _ownerId);
@@ -1485,7 +1495,6 @@ public final class L2ItemInstance extends L2Object
 			statement.executeUpdate();
 			_existsInDb = true;
 			_storedInDb = true;
-            statement.close();
         }
         catch (Exception e)
         {
@@ -1493,22 +1502,39 @@ public final class L2ItemInstance extends L2Object
 		}
         finally
         {
-			try { con.close(); } catch (Exception e) {}
+			try
+			{
+				statement.close();
+			} catch (Exception e)
+			{
+			}
+
+			try
+			{
+				con.close();
+			} catch (Exception e)
+			{
+			}
 		}
 	}
 
 	/**
 	 * Insert the item in database
 	 */
-	private void insertIntoDb() {
+	private void insertIntoDb()
+	{
+		if (Config.ASSERT)
+			assert !_existsInDb && getObjectId() != 0;
+
 		if (_wear)
 			return;
-		if (Config.ASSERT) assert !_existsInDb && getObjectId() != 0;
+
 		Connection con = null;
+		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(
+			statement = con.prepareStatement(
 					"INSERT INTO items (owner_id,item_id,count,loc,loc_data,enchant_level,object_id,custom_type1,custom_type2,mana_left,time) " +
 					"VALUES (?,?,?,?,?,?,?,?,?,?,?)");
 			statement.setInt(1, _ownerId);
@@ -1526,7 +1552,6 @@ public final class L2ItemInstance extends L2Object
 			statement.executeUpdate();
 			_existsInDb = true;
 			_storedInDb = true;
-            statement.close();
         }
         catch (Exception e)
         {
@@ -1534,9 +1559,21 @@ public final class L2ItemInstance extends L2Object
 		}
         finally
         {
-			try { con.close(); } catch (Exception e) {}
+			try
+			{
+				statement.close();
+			} catch (Exception e)
+			{
+			}
+
+			try
+			{
+				con.close();
+			} catch (Exception e)
+			{
+			}
 		}
-        
+
         if (_elementals != null)
         	updateItemAttributes();
 	}
@@ -1546,15 +1583,18 @@ public final class L2ItemInstance extends L2Object
 	 */
 	private void removeFromDb()
     {
+		if (Config.ASSERT)
+			assert _existsInDb;
+
 		if (_wear)
 			return;
-		if (Config.ASSERT) assert _existsInDb;
 
 		Connection con = null;
+		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM items WHERE object_id=?");
+			statement = con.prepareStatement("DELETE FROM items WHERE object_id=?");
 			statement.setInt(1, getObjectId());
 			statement.executeUpdate();
 			_existsInDb = false;
@@ -1564,7 +1604,6 @@ public final class L2ItemInstance extends L2Object
 			statement = con.prepareStatement("DELETE FROM item_attributes WHERE itemId = ?");
 			statement.setInt(1, getObjectId());
 			statement.executeUpdate();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -1572,7 +1611,19 @@ public final class L2ItemInstance extends L2Object
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			try
+			{
+				statement.close();
+			} catch (Exception e)
+			{
+			}
+
+			try
+			{
+				con.close();
+			} catch (Exception e)
+			{
+			}
 		}
 	}
 
@@ -1585,64 +1636,70 @@ public final class L2ItemInstance extends L2Object
 	{
 		return ""+_item;
 	}
-    public void resetOwnerTimer()
+
+	public void resetOwnerTimer()
     {
     	if(itemLootShedule != null)
     		itemLootShedule.cancel(true);
     	itemLootShedule = null;
     }
-    public void setItemLootShedule(ScheduledFuture<?> sf)
+
+	public void setItemLootShedule(ScheduledFuture<?> sf)
     {
     	itemLootShedule = sf;
     }
-    public ScheduledFuture<?> getItemLootShedule()
+
+	public ScheduledFuture<?> getItemLootShedule()
     {
     	return itemLootShedule;
     }
-    public void setProtected(boolean is_protected)
+
+	public void setProtected(boolean is_protected)
     {
     	_protected = is_protected;
     }
-    public boolean isProtected()
+
+	public boolean isProtected()
     {
     	return _protected;
     }
-    public boolean isNightLure()
+
+	public boolean isNightLure()
     {
     	return ((_itemId >= 8505 && _itemId <= 8513) || _itemId == 8485);
     }
-    
+
     public void setCountDecrease(boolean decrease)
     {
     	_decrease = decrease;
     }
-    
+
     public boolean getCountDecrease()
     {
     	return _decrease;
     }
-    
+
     public void setInitCount(int InitCount)
     {
     	_initCount = InitCount;
     }
-    
+
     public long getInitCount()
     {
     	return _initCount;
     }
-    
+
     public void restoreInitCount()
     {
     	if(_decrease)
     		setCount(_initCount);
     }
-    
+
     public boolean isTimeLimitedItem()
     {
     	return (_time > 0);
     }
-    
+
     /**
      * Returns (current system time + time) of this time limited item
      * @return Time
@@ -1651,7 +1708,7 @@ public final class L2ItemInstance extends L2Object
     {
     	return _time;
     }
-    
+
     public long getRemainingTime()
     {
     	return _time - System.currentTimeMillis();
