@@ -1030,6 +1030,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
             case AGGDAMAGE:
             case STEAL_BUFF:
             case AGGREDUCE_CHAR:
+            case MANADAM:
                 return true;
             default:
                 return false;
