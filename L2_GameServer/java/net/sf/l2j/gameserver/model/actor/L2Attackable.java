@@ -839,7 +839,7 @@ public class L2Attackable extends L2Npc
 
 	public void reduceHate(L2Character target, int amount)
 	{
-		if (getAI() instanceof L2SiegeGuardAI)
+		if (getAI() instanceof L2SiegeGuardAI || getAI() instanceof L2FortSiegeGuardAI)
 		{
 			// TODO: this just prevents error until siege guards are handled properly
 			stopHating(target);
