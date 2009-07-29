@@ -633,6 +633,7 @@ public class Siege
 			statement = con.prepareStatement("DELETE FROM siege_clans WHERE castle_id=?");
 			statement.setInt(1, getCastle().getCastleId());
 			statement.execute();
+			statement.close();
 
 			if (getCastle().getOwnerId() > 0)
 			{

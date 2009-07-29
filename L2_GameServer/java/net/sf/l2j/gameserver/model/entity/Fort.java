@@ -432,7 +432,7 @@ public class Fort
 		//	if clan already have castle, don't store him in fortress
 		if (clan.getHasCastle() > 0)
 		{
-			getSiege().announceToPlayer(new SystemMessage(SystemMessageId.NPCS_RECAPTURED_FORTRESS), 0, false);
+			getSiege().announceToPlayer(new SystemMessage(SystemMessageId.NPCS_RECAPTURED_FORTRESS));
 			return false;
 		}
 		else
@@ -1514,7 +1514,7 @@ public class Fort
 	
 	public void giveResidentialSkills(L2PcInstance player)
 	{
-		if (_residentialSkills != null && _residentialSkills.size() > 0)
+		if (_residentialSkills != null && !_residentialSkills.isEmpty())
 		{
 			for (L2Skill sk : _residentialSkills)
 				player.addSkill(sk, false);
@@ -1523,7 +1523,7 @@ public class Fort
 	
 	public void removeResidentialSkills(L2PcInstance player)
 	{
-		if (_residentialSkills != null && _residentialSkills.size() > 0)
+		if (_residentialSkills != null && !_residentialSkills.isEmpty())
 		{
 			for (L2Skill sk : _residentialSkills)
 				player.removeSkill(sk, false);
