@@ -264,9 +264,9 @@ public class L2TradeList
             _nextRestoreTime = _nextRestoreTime + this.getRestoreDelay();
             
             // consume until next update is on future
-            while (this.isPendingStockUpdate() && this.getRestoreDelay() > 0)
+            if (this.isPendingStockUpdate() && this.getRestoreDelay() > 0)
             {
-                _nextRestoreTime = _nextRestoreTime + this.getRestoreDelay();
+                _nextRestoreTime = System.currentTimeMillis() + this.getRestoreDelay();
             }
             
             // exec asynchronously
@@ -352,9 +352,10 @@ public class L2TradeList
             try
             {
                 con = L2DatabaseFactory.getInstance().getConnection();
-                PreparedStatement statement = con.prepareStatement("UPDATE merchant_buylists SET savetimer =? WHERE time =?");
+                PreparedStatement statement = con.prepareStatement("UPDATE merchant_buylists SET savetimer =? WHERE time =? and item_id =?");
                 statement.setLong(1, _nextRestoreTime);
                 statement.setInt(2, (int) (this.getRestoreDelay()/60/60/1000));
+                statement.setInt(3, this.getItemId());
                 statement.executeUpdate();
                 statement.close();
             } 

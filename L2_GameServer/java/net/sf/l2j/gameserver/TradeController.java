@@ -321,10 +321,11 @@ public class TradeController
 					
 					for (L2TradeItem item : list.getItems())
 					{
-						if (item.hasLimitedStock() && item.getCurrentCount() < item.getMaxCount()) //needed?
+						long currentCount;
+						if (item.hasLimitedStock() && (currentCount = item.getCurrentCount()) < item.getMaxCount())
 						{
 							statement = con.prepareStatement("UPDATE merchant_buylists SET currentCount=? WHERE item_id=? AND shop_id=?");
-							statement.setLong(1, item.getCurrentCount());
+							statement.setLong(1, currentCount);
 							statement.setInt(2, item.getItemId());
 							statement.setInt(3, listId);
 							statement.executeUpdate();
