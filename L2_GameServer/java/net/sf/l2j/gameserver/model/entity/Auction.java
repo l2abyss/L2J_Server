@@ -202,6 +202,10 @@ public class Auction
 	/** Load bidders **/
 	private void loadBid()
 	{
+		_highestBidderId = 0;
+		_highestBidderName = "";
+		_highestBidderMaxBid = 0;
+		
 		Connection con = null;
 		try
 		{
