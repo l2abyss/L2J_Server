@@ -193,7 +193,7 @@ public class SiegeManager
 				
 				for (int i = 1; i < 0xFF; i++)
 				{
-					String _spawnParams = siegeSettings.getProperty(castle.getName() + "ControlTower" + Integer.toString(i), "");
+					String _spawnParams = siegeSettings.getProperty(castle.getName() + "ControlTower" + i, "");
 					
 					if (_spawnParams.length() == 0)
 						break;
@@ -220,7 +220,7 @@ public class SiegeManager
 				
 				for (int i = 1; i < 0xFF; i++)
 				{
-					String _spawnParams = siegeSettings.getProperty(castle.getName() + "Artefact" + Integer.toString(i), "");
+					String _spawnParams = siegeSettings.getProperty(castle.getName() + "Artefact" + i, "");
 					
 					if (_spawnParams.length() == 0)
 						break;

@@ -202,10 +202,7 @@ public class L2WeddingManagerInstance extends L2Npc
                 		}
                 		else
                 		{
-	                		String strItem = Integer.toString(item3.getItemId());
-	                		String frmWear = Integer.toString(6408);
-	                		player.sendMessage(strItem);
-	                		if(strItem.equals(frmWear))
+	                		if(item3.getItemId() == 6408)
 	                		{
 	                			player.setIsWearingFormalWear(true);
 	                		}else{
@@ -240,11 +237,7 @@ public class L2WeddingManagerInstance extends L2Npc
                 		}
                 		else
                 		{
-	                		String frmWear = Integer.toString(6408);
-	                		String strItem = null;
-	               			strItem = Integer.toString(item3.getItemId());
-
-	                		if(null != strItem && strItem.equals(frmWear))
+	                		if(item3.getItemId() == 6408)
 	                		{
 	                			player.setIsWearingFormalWear(true);
 	                		}else{

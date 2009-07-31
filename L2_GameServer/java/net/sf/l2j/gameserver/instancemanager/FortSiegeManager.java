@@ -191,7 +191,7 @@ public class FortSiegeManager
 				FastList<CombatFlag> _flagSpawns = new FastList<CombatFlag>();
 				for (int i = 1; i < 5; i++)
 				{
-					String _spawnParams = siegeSettings.getProperty(fort.getName() + "Commander" + Integer.toString(i), "");
+					String _spawnParams = siegeSettings.getProperty(fort.getName() + "Commander" + i, "");
 					if (_spawnParams.length() == 0)
 						break;
 					StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
@@ -216,7 +216,7 @@ public class FortSiegeManager
 				
 				for (int i = 1; i < 4; i++)
 				{
-					String _spawnParams = siegeSettings.getProperty(fort.getName() + "Flag" + Integer.toString(i), "");
+					String _spawnParams = siegeSettings.getProperty(fort.getName() + "Flag" + i, "");
 					if (_spawnParams.length() == 0)
 						break;
 					StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");

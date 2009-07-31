@@ -76,7 +76,7 @@ public class ItemHandler
 		if (item == null)
 			return null;
 		String handler = item.getHandlerName();
-		if (handler.equalsIgnoreCase("none") || item == null)
+		if (handler.equalsIgnoreCase("none"))
 			return null;
 		for (IItemHandler iih : _datatable)
 		{
