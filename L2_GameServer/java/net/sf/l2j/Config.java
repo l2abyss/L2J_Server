@@ -299,6 +299,9 @@ public final class Config
 	public static int KNIGHT_UNIT_COST;
 	public static int KNIGHT_REINFORCE_COST;
 	public static int BALLISTA_POINTS;
+	public static int BLOODALLIANCE_POINTS;
+	public static int BLOODOATH_POINTS;
+	public static int KNIGHTSEPAULETTE_POINTS;
 	public static int REPUTATION_SCORE_PER_KILL;
 	public static int JOIN_ACADEMY_MIN_REP_SCORE;
 	public static int JOIN_ACADEMY_MAX_REP_SCORE;
@@ -1047,6 +1050,9 @@ public final class Config
 					KNIGHT_UNIT_COST = Integer.parseInt(Feature.getProperty("CreateKnightUnitCost", "10000"));
 					KNIGHT_REINFORCE_COST = Integer.parseInt(Feature.getProperty("ReinforceKnightUnitCost", "5000"));
 					BALLISTA_POINTS = Integer.parseInt(Feature.getProperty("KillBallistaPoints", "30"));
+					BLOODALLIANCE_POINTS = Integer.parseInt(Feature.getProperty("BloodAlliancePoints", "500"));
+					BLOODOATH_POINTS = Integer.parseInt(Feature.getProperty("BloodOathPoints", "200"));
+					KNIGHTSEPAULETTE_POINTS = Integer.parseInt(Feature.getProperty("KnightsEpaulettePoints", "20"));
 					REPUTATION_SCORE_PER_KILL = Integer.parseInt(Feature.getProperty("ReputationScorePerKill", "1"));
 					JOIN_ACADEMY_MIN_REP_SCORE = Integer.parseInt(Feature.getProperty("CompleteAcademyMinPoints", "190"));
 					JOIN_ACADEMY_MAX_REP_SCORE = Integer.parseInt(Feature.getProperty("CompleteAcademyMaxPoints", "650"));
