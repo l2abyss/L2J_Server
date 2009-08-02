@@ -49,7 +49,9 @@ public class L2DoormenInstance extends L2NpcInstance
 		}
 		else if (command.startsWith("open_doors"))
 		{
-			if (isOwnerClan(player) && !isUnderSiege())
+			// TODO: uncomment after siege teleporters will be done
+			//if (isOwnerClan(player) && !isUnderSiege())
+			if (isOwnerClan(player))
 				openDoors(player, command);
 			return;
 		}
