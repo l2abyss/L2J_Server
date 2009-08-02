@@ -1604,9 +1604,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 L2PcInstance player = activeChar.getActingPlayer();
                 if (activeChar instanceof L2Summon)
                 {
-                	if (!player.isDead()
-                			&& Util.checkIfInRange(radius, activeChar, player, true)
-                			&& (!geoEnabled || GeoData.getInstance().canSeeTarget(activeChar, player)))
+                	if (addCharacter(activeChar, player, radius, false))
                         targetList.add(player);
                 }
                 else if (activeChar instanceof L2PcInstance)
@@ -1623,9 +1621,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 						if (partyMember == null || partyMember == player)
 							continue;
 
-						if (!partyMember.isDead()
-								&& Util.checkIfInRange(radius, activeChar, partyMember, true)
-								&& (!geoEnabled || GeoData.getInstance().canSeeTarget(activeChar, partyMember)))
+						if (addCharacter(activeChar, partyMember, radius, false))
 							targetList.add(partyMember);
 
 	                    if (addSummon(activeChar, partyMember, radius, false))
@@ -1742,8 +1738,14 @@ public abstract class L2Skill implements IChanceSkillTrigger
 								if ((obj.getAllyId() == 0 || obj.getAllyId() != player.getAllyId())
 								        && (obj.getClan() == null || obj.getClanId() != player.getClanId()))
 									continue;
-								if (player.getParty() != null && !player.getParty().getPartyMembers().contains(obj))
-									continue;
+
+								if (player.isInDuel())
+								{
+									if (player.getDuelId() != obj.getDuelId())
+										continue;
+									if (player.getParty() != null && !player.getParty().getPartyMembers().contains(obj))
+										continue;
+								}
 
 								// Don't add this target if this is a Pc->Pc pvp
 								// casting and pvp condition not met
@@ -1756,10 +1758,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 								if (!onlyFirst && addSummon(activeChar, obj, radius, isCorpseType))
 									targetList.add(obj.getPet());
 
+								if (!addCharacter(activeChar, obj, radius, isCorpseType))
+									continue;
+
 								if (isCorpseType)
 								{
-									if (!obj.isDead())
-										continue;
 									// Siege battlefield resurrect has been made possible for participants
 									if (getSkillType() == L2SkillType.RESURRECT)
 									{
@@ -1768,12 +1771,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 									}
 								}
 								
-								if (!Util.checkIfInRange(radius, activeChar, obj, true))
-									continue;
-								
-								if (geoEnabled && !GeoData.getInstance().canSeeTarget(activeChar, obj))
-									continue;
-
 								if (onlyFirst)
 									return new L2Character[] { obj };
 								
@@ -1815,51 +1812,50 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
                     if (clan != null)
                     {
-                    	L2PcInstance newTarget;
+                    	L2PcInstance obj;
                         // Get Clan Members
                         for (L2ClanMember member : clan.getMembers())
                         {
-                            newTarget = member.getPlayerInstance();
+                            obj = member.getPlayerInstance();
 
-                            if (newTarget == null || newTarget == player)
+                            if (obj == null || obj == player)
                             	continue;
 
-                            if (player.getParty() != null 
-                            		&& !player.getParty().getPartyMembers().contains(newTarget))
-                            	continue;
-                            
+							if (player.isInDuel())
+							{
+								if (player.getDuelId() != obj.getDuelId())
+									continue;
+								if (player.getParty() != null && !player.getParty().getPartyMembers().contains(obj))
+									continue;
+							}
+
 							// Don't add this target if this is a Pc->Pc pvp casting and pvp condition not met
-                            if (!player.checkPvpSkill(newTarget, this))
+                            if (!player.checkPvpSkill(obj, this))
                             	continue;
 
-							if (!TvTEvent.checkForTvTSkill(player, newTarget, this))
+							if (!TvTEvent.checkForTvTSkill(player, obj, this))
 								continue;
 
-							if (!onlyFirst && addSummon(activeChar, newTarget, radius, isCorpseType))
-								targetList.add(newTarget.getPet());
+							if (!onlyFirst && addSummon(activeChar, obj, radius, isCorpseType))
+								targetList.add(obj.getPet());
+
+							if (!addCharacter(activeChar, obj, radius, isCorpseType))
+								continue;
 
                             if (isCorpseType)
                             {
-                            	if (!newTarget.isDead())
-                            		continue;
                             	if (getSkillType() == L2SkillType.RESURRECT)
                             	{
                             		// check target is not in a active siege zone
-                                 	if (newTarget.isInsideZone(L2Character.ZONE_SIEGE) && !newTarget.isInSiege())
+                                 	if (obj.isInsideZone(L2Character.ZONE_SIEGE) && !obj.isInSiege())
                                  		continue;
                             	}
                             }
-                            
-                            if (!Util.checkIfInRange(radius, activeChar, newTarget, true))
-                            	continue;
-
-							if (geoEnabled && !GeoData.getInstance().canSeeTarget(activeChar, newTarget))
-								continue;
 
                             if (onlyFirst)
-                                return new L2Character[] {newTarget};
+                                return new L2Character[] {obj};
 
-                            targetList.add(newTarget);
+                            targetList.add(obj);
                         }
                     }
                 }
@@ -1906,11 +1902,14 @@ public abstract class L2Skill implements IChanceSkillTrigger
                 targetList.add(player);
 
                 final int radius = getSkillRadius();
+                final boolean hasClan = player.getClan() != null;
+                final boolean hasParty = player.getParty() != null;
 
                 if (addSummon(activeChar, player, radius, false))
                 	targetList.add(player.getPet());
 
-                if (player.isInOlympiadMode())
+                // if player in olympiad mode or not in clan and not in party
+                if (player.isInOlympiadMode() || (!hasClan && !hasParty))
                     return targetList.toArray(new L2Character[targetList.size()]);
 
                 // Get all visible objects in a spherical area near the L2Character
@@ -1921,9 +1920,18 @@ public abstract class L2Skill implements IChanceSkillTrigger
 					{
 						if (obj == null)
 							continue;
-						if (obj.getClan() == null || obj.getClanId() != player.getClanId())
-							continue;
-						if (player.getParty() != null && !player.getParty().getPartyMembers().contains(obj))
+
+						if (player.isInDuel())
+						{
+							if (player.getDuelId() != obj.getDuelId())
+								continue;
+
+							if (hasParty && !player.getParty().getPartyMembers().contains(obj))
+								continue;
+						}
+
+						if ((hasClan && obj.getClanId() != player.getClanId())
+								|| (hasParty && !player.getParty().getPartyMembers().contains(obj)))
 							continue;
 
 						// Don't add this target if this is a Pc->Pc pvp
@@ -1937,10 +1945,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 						if (!onlyFirst && addSummon(activeChar, obj, radius, false))
 							targetList.add(obj.getPet());
 
-						if (!Util.checkIfInRange(radius, activeChar, obj, true))
-							continue;
-						
-						if (geoEnabled && !GeoData.getInstance().canSeeTarget(activeChar, obj))
+						if (!addCharacter(activeChar, obj, radius, false))
 							continue;
 
 						if (onlyFirst)
@@ -1949,10 +1954,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 						targetList.add(obj);
 					}
 				}
-                if (player.getClan() != null)
-                {
-                }
-                return targetList.toArray(new L2Character[targetList.size()]);
+
+				return targetList.toArray(new L2Character[targetList.size()]);
             }
             case TARGET_CORPSE_PLAYER:
             {
@@ -2260,7 +2263,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
     			if (target.isInsideZone(L2Character.ZONE_PEACE))
     				return false;
-    			
+
     			if ((player.getParty() != null && targetPlayer.getParty() != null)
     			        && player.getParty().getPartyLeaderOID() == targetPlayer.getParty().getPartyLeaderOID())
     				return false;
@@ -2272,7 +2275,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     			{
     				if (player.getAllyId() != 0 && player.getAllyId() == targetPlayer.getAllyId())
     					return false;
-    				
+
     				if (player.getClanId() != 0 && player.getClanId() == targetPlayer.getClanId())
     					return false;
 
@@ -2296,21 +2299,24 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
     public static final boolean addSummon(L2Character caster, L2PcInstance owner, int radius, boolean isDead)
     {
-        L2Summon summon = owner.getPet();
+        final L2Summon summon = owner.getPet();
 
         if (summon == null)
         	return false;
 
-        if (isDead != summon.isDead())
-        	return false;
+        return addCharacter(caster, summon, radius, isDead);
+    }
 
-        if (!Util.checkIfInRange(radius, caster, summon, true))
-        	return false;
+    public static final boolean addCharacter(L2Character caster, L2Character target, int radius, boolean isDead)
+    {
+    	if (isDead != target.isDead())
+    		return false;
 
-        if (geoEnabled && !GeoData.getInstance().canSeeTarget(caster, summon))
-        	return false;
+    	if (radius > 0 && !Util.checkIfInRange(radius, caster, target, true))
+			return false;
 
-        return true;
+    	return true;
+
     }
 
     public final Func[] getStatFuncs(L2Effect effect, L2Character player)
