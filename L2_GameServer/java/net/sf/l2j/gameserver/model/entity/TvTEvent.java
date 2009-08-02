@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.datatables.DoorTable;
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
+import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
@@ -893,7 +894,35 @@ public class TvTEvent
 			}
 		}
 	}
-	
+
+    /*
+     * Return true if player valid for skill
+     */
+    public static final boolean checkForTvTSkill(L2PcInstance source, L2PcInstance target, L2Skill skill)
+    {
+    	if (!isStarted())
+    		return true;
+    	// TvT is started
+    	final int sourcePlayerId = source.getObjectId();
+    	final int targetPlayerId = target.getObjectId();
+    	final boolean isSourceParticipant = isPlayerParticipant(sourcePlayerId);
+    	final boolean isTargetParticipant = isPlayerParticipant(targetPlayerId);
+
+    	// both players not participating
+    	if (!isSourceParticipant && !isTargetParticipant)
+    		return true;
+    	// one player not participating
+    	if (!(isSourceParticipant && isTargetParticipant))
+    		return false;
+    	// players in the different teams ?
+    	if (getParticipantTeamId(sourcePlayerId) != getParticipantTeamId(targetPlayerId))
+    	{
+    		if (!skill.isOffensive())
+    			return false;
+    	}
+    	return true;
+    }
+
 	/**
 	 * Sets the TvTEvent state<br><br>
 	 *
