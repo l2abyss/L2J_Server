@@ -648,4 +648,24 @@ public abstract class L2Effect
 	{
 		return _effectSkillType;
 	}
+	
+	/**
+	 * Returns the elapsed time of the task.
+	 *
+	 * @return Time in seconds.
+	 */
+	public int getElapsedTaskTime()
+	{
+		return (getTotalCount() - _count) * _period + getTime() + 1;
+	}
+
+	public int getTotalTaskTime()
+	{
+		return getTotalCount() * _period;
+	}
+	
+	public int getRemainingTaskTime()
+	{
+		return getTotalTaskTime() - getElapsedTaskTime();
+	}
 }
