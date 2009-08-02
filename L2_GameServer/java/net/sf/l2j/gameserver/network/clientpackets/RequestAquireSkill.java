@@ -53,9 +53,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 	private static Logger _log = Logger.getLogger(RequestAquireSkill.class.getName());
 
 	private int _id;
-
 	private int _level;
-
 	private int _skillType;
 
 	@Override
@@ -72,6 +70,12 @@ public class RequestAquireSkill extends L2GameClientPacket
 		final L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;
+
+		if (_level < 1 || _level > 1000 || _id < 1 || _id > 32000)
+		{
+			_log.warning("Recived Wrong Packet Data in Aquired Skill - id:" + _id + " level:" + _level);
+			return;
+		}
 
 		final L2Npc trainer = player.getLastFolkNPC();
 		if (!(trainer instanceof L2NpcInstance))
@@ -154,7 +158,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 				{
 					L2Skill sk = SkillTable.getInstance().getInfo(s.getId(),
 					s.getLevel());
-					if (sk == null)
+					if (sk == null || sk != skill)
 						continue;
 					counts++;
 					_requiredSp = SkillTreeTable.getInstance().getSkillCost(player,skill);
