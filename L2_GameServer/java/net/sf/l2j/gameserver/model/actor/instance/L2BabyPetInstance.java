@@ -208,7 +208,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 					&& !_baby.isBetrayed()
 					&& !_baby.isMuted()
 					&& _baby.getAI().getIntention() != CtrlIntention.AI_INTENTION_CAST
-					&& _buffControlTimestamp > System.currentTimeMillis())
+					&& _buffControlTimestamp < System.currentTimeMillis())
 			{
 				L2Skill skill = null;
 
