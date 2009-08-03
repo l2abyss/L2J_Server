@@ -57,6 +57,8 @@ public final class L2BabyPetInstance extends L2PetInstance
 	@Override
 	public void onSpawn()
 	{
+		super.onSpawn();
+
 		L2Skill skill;
 		for (int id : PetSkillsTable.getInstance().getAvailableSkills(this))
 		{
