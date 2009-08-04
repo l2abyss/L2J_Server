@@ -2464,7 +2464,7 @@ public class L2Attackable extends L2Npc
 	{
 		clearAggroList();
 
-		if (hasAI())
+		if (hasAI() && getSpawn() != null)
 			getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(getSpawn().getLocx(), getSpawn().getLocy(), getSpawn().getLocz(), 0));
 	}
 }
