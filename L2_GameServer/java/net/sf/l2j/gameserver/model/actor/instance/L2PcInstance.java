@@ -8527,6 +8527,7 @@ public final class L2PcInstance extends L2Playable
         	case TARGET_PARTY:
         	case TARGET_ALLY:
         	case TARGET_CLAN:
+        	case TARGET_PARTY_CLAN:
         	case TARGET_GROUND:
         	case TARGET_SELF:
         		target = this;
@@ -8682,6 +8683,7 @@ public final class L2PcInstance extends L2Playable
 					case TARGET_FRONT_AURA:
 					case TARGET_BEHIND_AURA:
 					case TARGET_CLAN:
+					case TARGET_PARTY_CLAN:
 					case TARGET_ALLY:
 					case TARGET_PARTY:
 					case TARGET_SELF:
@@ -8761,6 +8763,7 @@ public final class L2PcInstance extends L2Playable
 				case TARGET_FRONT_AURA:
 				case TARGET_BEHIND_AURA:
 				case TARGET_CLAN:
+				case TARGET_PARTY_CLAN:
 				case TARGET_SELF:
 				case TARGET_PARTY:
 				case TARGET_ALLY:
@@ -8848,6 +8851,7 @@ public final class L2PcInstance extends L2Playable
 			case TARGET_PARTY:
 			case TARGET_ALLY:   // For such skills, checkPvpSkill() is called from L2Skill.getTargetList()
 			case TARGET_CLAN:   // For such skills, checkPvpSkill() is called from L2Skill.getTargetList()
+			case TARGET_PARTY_CLAN:   // For such skills, checkPvpSkill() is called from L2Skill.getTargetList()
 			case TARGET_AURA:
 			case TARGET_FRONT_AURA:
 			case TARGET_BEHIND_AURA:

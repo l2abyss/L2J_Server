@@ -1505,8 +1505,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
                 if (getCastRange() >= 0)
                 {
-                	if (!Util.checkIfInRange(getCastRange(), activeChar, target, true)
-        					|| !checkForAreaOffensiveSkills(activeChar, target, this, srcInArena))
+                	if (!checkForAreaOffensiveSkills(activeChar, target, this, srcInArena))
                 		return _emptyTargetList;
 
                 	if(onlyFirst)
@@ -1613,7 +1612,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
                     	targetList.add(player.getPet());
                 }
 
-				if (activeChar.getParty() != null)
+				if (activeChar.isInParty())
 				{
 					// Get a list of Party Members
 					for(L2PcInstance partyMember : activeChar.getParty().getPartyMembers())
@@ -1635,8 +1634,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				if ((target != null
 						&& target == activeChar)
 					|| (target != null
-							&& activeChar.getParty() != null
-							&& target.getParty() != null
+							&& activeChar.isInParty()
+							&& target.isInParty()
 							&& activeChar.getParty().getPartyLeaderOID() == target.getParty().getPartyLeaderOID())
 					|| (target != null
 							&& activeChar instanceof L2PcInstance
@@ -1664,7 +1663,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			case TARGET_PARTY_OTHER:
             {
                 if (target != null && target != activeChar
-                        && activeChar.getParty() != null && target.getParty() != null
+                        && activeChar.isInParty() && target.isInParty()
                         && activeChar.getParty().getPartyLeaderOID() == target.getParty().getPartyLeaderOID())
                 {
                     if (!target.isDead())
@@ -1743,7 +1742,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 								{
 									if (player.getDuelId() != obj.getDuelId())
 										continue;
-									if (player.getParty() != null && !player.getParty().getPartyMembers().contains(obj))
+									if (player.isInParty() && obj.isInParty() && player.getParty().getPartyLeaderOID() != obj.getParty().getPartyLeaderOID())
 										continue;
 								}
 
@@ -1825,7 +1824,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 							{
 								if (player.getDuelId() != obj.getDuelId())
 									continue;
-								if (player.getParty() != null && !player.getParty().getPartyMembers().contains(obj))
+								if (player.isInParty() && obj.isInParty() && player.getParty().getPartyLeaderOID() != obj.getParty().getPartyLeaderOID())
 									continue;
 							}
 
@@ -1903,13 +1902,13 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
                 final int radius = getSkillRadius();
                 final boolean hasClan = player.getClan() != null;
-                final boolean hasParty = player.getParty() != null;
+                final boolean hasParty = player.isInParty();
 
                 if (addSummon(activeChar, player, radius, false))
                 	targetList.add(player.getPet());
 
                 // if player in olympiad mode or not in clan and not in party
-                if (player.isInOlympiadMode() || (!hasClan && !hasParty))
+                if (player.isInOlympiadMode() || !(hasClan || hasParty))
                     return targetList.toArray(new L2Character[targetList.size()]);
 
                 // Get all visible objects in a spherical area near the L2Character
@@ -1926,12 +1925,12 @@ public abstract class L2Skill implements IChanceSkillTrigger
 							if (player.getDuelId() != obj.getDuelId())
 								continue;
 
-							if (hasParty && !player.getParty().getPartyMembers().contains(obj))
+							if (hasParty && obj.isInParty() && player.getParty().getPartyLeaderOID() != obj.getParty().getPartyLeaderOID())
 								continue;
 						}
 
-						if ((hasClan && obj.getClanId() != player.getClanId())
-								|| (hasParty && !player.getParty().getPartyMembers().contains(obj)))
+						if (!((hasClan && obj.getClanId() == player.getClanId())
+								|| (hasParty && obj.isInParty() && player.getParty().getPartyLeaderOID() == obj.getParty().getPartyLeaderOID())))
 							continue;
 
 						// Don't add this target if this is a Pc->Pc pvp
@@ -2264,7 +2263,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     			if (target.isInsideZone(L2Character.ZONE_PEACE))
     				return false;
 
-    			if ((player.getParty() != null && targetPlayer.getParty() != null)
+    			if ((player.isInParty() && targetPlayer.isInParty())
     			        && player.getParty().getPartyLeaderOID() == targetPlayer.getParty().getPartyLeaderOID())
     				return false;
 
