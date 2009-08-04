@@ -295,9 +295,6 @@ public class Shutdown extends Thread
 	 */
 	public void startShutdown(L2PcInstance activeChar, int seconds, boolean restart)
 	{
-		_log.warning("GM: " + activeChar.getName() + "(" + activeChar.getObjectId() + ") issued shutdown command. "
-				+ MODE_TEXT[_shutdownMode] + " in " + seconds + " seconds!");
-		
 		if (restart)
 		{
 			_shutdownMode = GM_RESTART;
@@ -306,6 +303,9 @@ public class Shutdown extends Thread
 		{
 			_shutdownMode = GM_SHUTDOWN;
 		}
+		
+		_log.warning("GM: " + activeChar.getName() + "(" + activeChar.getObjectId() + ") issued shutdown command. "
+				+ MODE_TEXT[_shutdownMode] + " in " + seconds + " seconds!");
 		
 		if (_shutdownMode > 0)
 		{
