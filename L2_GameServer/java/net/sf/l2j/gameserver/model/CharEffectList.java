@@ -107,38 +107,44 @@ public class CharEffectList
 	{
 		L2Effect effectNotInUse = null;
 
-		if (_buffs != null && !_buffs.isEmpty())
+		if (_buffs != null)
 		{
 			synchronized (_buffs)
 			{
-				for (L2Effect e: _buffs)
+				if (!_buffs.isEmpty())
 				{
-					if (e == null)
-						continue;
-					if (e.getEffectType() == tp)
+					for (L2Effect e: _buffs)
 					{
-						if (e.getInUse())
-							return e;
-						else
-							effectNotInUse = e;
+						if (e == null)
+							continue;
+						if (e.getEffectType() == tp)
+						{
+							if (e.getInUse())
+								return e;
+							else
+								effectNotInUse = e;
+						}
 					}
 				}
 			}
 		}
-		if (effectNotInUse == null && _debuffs != null && !_debuffs.isEmpty())
+		if (effectNotInUse == null && _debuffs != null)
 		{
 			synchronized (_debuffs)
 			{
-				for (L2Effect e: _debuffs)
+				if (!_debuffs.isEmpty())
 				{
-					if (e == null)
-						continue;
-					if (e.getEffectType() == tp)
+					for (L2Effect e: _debuffs)
 					{
-						if (e.getInUse())
-							return e;
-						else
-							effectNotInUse = e;
+						if (e == null)
+							continue;
+						if (e.getEffectType() == tp)
+						{
+							if (e.getInUse())
+								return e;
+							else
+								effectNotInUse = e;
+						}
 					}
 				}
 			}
@@ -157,11 +163,14 @@ public class CharEffectList
 
 		if (skill.isDebuff())
 		{
-			if (_debuffs == null || _debuffs.isEmpty())
+			if (_debuffs == null)
 				return null;
 
 			synchronized (_debuffs)
 			{
+				if (_debuffs.isEmpty())
+					return null;
+
 				for (L2Effect e: _debuffs)
 				{
 					if (e == null)
@@ -179,11 +188,14 @@ public class CharEffectList
 		}
 		else
 		{
-			if (_buffs == null || _buffs.isEmpty())
+			if (_buffs == null)
 				return null;
 
 			synchronized (_buffs)
 			{
+				if (_buffs.isEmpty())
+					return null;
+
 				for (L2Effect e: _buffs)
 				{
 					if (e == null)
@@ -210,39 +222,45 @@ public class CharEffectList
 	{
 		L2Effect effectNotInUse = null;
 
-		if (_buffs != null && !_buffs.isEmpty())
+		if (_buffs != null)
 		{
 			synchronized (_buffs)
 			{
-				for (L2Effect e: _buffs)
+				if (!_buffs.isEmpty())
 				{
-					if (e == null)
-						continue;
-					if (e.getSkill().getId() == skillId)
+					for (L2Effect e: _buffs)
 					{
-						if (e.getInUse())
-							return e;
-						else
-							effectNotInUse = e;
+						if (e == null)
+							continue;
+						if (e.getSkill().getId() == skillId)
+						{
+							if (e.getInUse())
+								return e;
+							else
+								effectNotInUse = e;
+						}
 					}
 				}
 			}
 		}
 		
-		if (effectNotInUse == null && _debuffs != null && !_debuffs.isEmpty())
+		if (effectNotInUse == null && _debuffs != null)
 		{
 			synchronized (_debuffs)
 			{
-				for (L2Effect e: _debuffs)
+				if (!_debuffs.isEmpty())
 				{
-					if (e == null)
-						continue;
-					if (e.getSkill().getId() == skillId)
+					for (L2Effect e: _debuffs)
 					{
-						if (e.getInUse())
-							return e;
-						else
-							effectNotInUse = e;
+						if (e == null)
+							continue;
+						if (e.getSkill().getId() == skillId)
+						{
+							if (e.getInUse())
+								return e;
+							else
+								effectNotInUse = e;
+						}
 					}
 				}
 			}
@@ -287,11 +305,14 @@ public class CharEffectList
 	 */
 	public int getBuffCount()
 	{
-		if (_buffs == null || _buffs.isEmpty()) return 0;
+		if (_buffs == null) return 0;
 		int buffCount=0;
 		
 		synchronized(_buffs)
 		{
+			if (_buffs.isEmpty())
+				return 0;
+
 			for (L2Effect e : _buffs)
 			{
 				if (e != null && e.getShowIcon() && !e.getSkill().isDance() && !e.getSkill().is7Signs())
@@ -316,11 +337,14 @@ public class CharEffectList
 	 */
 	public int getDanceCount()
 	{
-		if (_buffs == null || _buffs.isEmpty()) return 0;
+		if (_buffs == null) return 0;
 		int danceCount = 0;
 
 		synchronized(_buffs)
 		{
+			if (_buffs.isEmpty())
+				return 0;
+
 			for (L2Effect e : _buffs)
 			{
 				if (e != null && e.getSkill().isDance() && e.getInUse())
@@ -372,24 +396,30 @@ public class CharEffectList
 	{
 		// Go through all active skills effects
 		FastList<L2Effect> temp = new FastList<L2Effect>();
-		if (_buffs != null && !_buffs.isEmpty()) 
+		if (_buffs != null) 
 		{
 			synchronized (_buffs)
 			{
-				for (L2Effect e : _buffs)
-					// Get active skills effects of the selected type
-					if (e != null && e.getEffectType() == type)
-						temp.add(e);
+				if (!_buffs.isEmpty())
+				{
+					for (L2Effect e : _buffs)
+						// Get active skills effects of the selected type
+						if (e != null && e.getEffectType() == type)
+							temp.add(e);
+				}
 			}
 		}
-		if (_debuffs != null && !_debuffs.isEmpty()) 
+		if (_debuffs != null) 
 		{
 			synchronized (_debuffs)
 			{
-				for (L2Effect e : _debuffs)
-					// Get active skills effects of the selected type
-					if (e != null && e.getEffectType() == type)
-						temp.add(e);
+				if (!_debuffs.isEmpty())
+				{
+					for (L2Effect e : _debuffs)
+						// Get active skills effects of the selected type
+						if (e != null && e.getEffectType() == type)
+							temp.add(e);
+				}
 			}
 		}
 		if (temp != null && !temp.isEmpty())
@@ -408,22 +438,28 @@ public class CharEffectList
 	{
 		// Go through all active skills effects
 		FastList<L2Effect> temp = new FastList<L2Effect>();
-		if (_buffs != null && !_buffs.isEmpty()) 
+		if (_buffs != null) 
 		{
 			synchronized (_buffs)
 			{
-				for (L2Effect e : _buffs)
-					if (e != null && e.getSkill().getId() == skillId)
-						temp.add(e);
+				if (!_buffs.isEmpty())
+				{
+					for (L2Effect e : _buffs)
+						if (e != null && e.getSkill().getId() == skillId)
+							temp.add(e);
+				}
 			}
 		}
-		if (_debuffs != null && !_debuffs.isEmpty()) 
+		if (_debuffs != null) 
 		{
 			synchronized (_debuffs)
 			{
-				for (L2Effect e : _debuffs)
-					if (e != null && e.getSkill().getId() == skillId)
-						temp.add(e);
+				if (!_debuffs.isEmpty())
+				{
+					for (L2Effect e : _debuffs)
+						if (e != null && e.getSkill().getId() == skillId)
+							temp.add(e);
+				}
 			}
 		}
 		if (temp != null && !temp.isEmpty())
@@ -944,6 +980,4 @@ public class CharEffectList
 			return effect;
 		return null;
 	}
-	
-
 }
