@@ -573,7 +573,7 @@ public final class QuestState
 		giveItems(itemId, count, 0);
 	}
 
-	public synchronized void giveItems(int itemId, long count, int enchantlevel)
+	public void giveItems(int itemId, long count, int enchantlevel)
 	{
 		if (count <= 0)
 			return;
