@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import net.sf.l2j.gameserver.cache.HtmCache;
@@ -22,6 +23,7 @@ import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -31,152 +33,153 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 public class L2NpcBufferInstance extends L2Npc
 {
-    @SuppressWarnings("hiding")
-    static final Logger _log = Logger.getLogger(L2NpcBufferInstance.class.getName());
+	@SuppressWarnings("hiding")
+	static final Logger _log = Logger.getLogger(L2NpcBufferInstance.class.getName());
 	
-    public L2NpcBufferInstance (int objectId, L2NpcTemplate template)
-    {
-        super(objectId, template);
-    }
-
+	public L2NpcBufferInstance(int objectId, L2NpcTemplate template)
+	{
+		super(objectId, template);
+	}
+	
 	@Override
 	public void showChatWindow(L2PcInstance playerInstance, int val)
 	{
 		if (playerInstance == null)
-		{
 			return;
-		}
 		
 		String htmContent = HtmCache.getInstance().getHtm("data/html/mods/NpcBuffer.htm");
 		
 		if (val > 0)
-		{
 			htmContent = HtmCache.getInstance().getHtm("data/html/mods/NpcBuffer-" + val + ".htm");
-		}
-
+		
 		if (htmContent != null)
 		{
-	    	NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
-
+			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
+			
 			npcHtmlMessage.setHtml(htmContent);
-	    	npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));
-	    	playerInstance.sendPacket(npcHtmlMessage);
-	    }
+			npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));
+			playerInstance.sendPacket(npcHtmlMessage);
+		}
 		
 		playerInstance.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	
 	int pageVal = 0;
-
+	
 	@Override
-    public void onBypassFeedback(L2PcInstance playerInstance, String command)
+	public void onBypassFeedback(L2PcInstance player, String command)
 	{
-    	if (playerInstance == null)
-    	{
-    		return;
-    	}
-
-    	int npcId = getNpcId();
-
-    	if (command.startsWith("Chat"))
-        {
-            int val = Integer.parseInt(command.substring(5));
-
-            pageVal = val;
-            
-            showChatWindow(playerInstance, val);
-        }
-    	else if (command.startsWith("Buff"))
-    	{
-    		String[] buffGroupArray = command.substring(5).split(" ");
-
-    		for (String buffGroupList : buffGroupArray)
-    		{
-    			if (buffGroupList == null)
-            	{
-            		_log.warning("NPC Buffer Warning: npcId = " + npcId + " has no buffGroup set in the bypass for the buff selected.");
-            		return;
-            	}
-    			
-    			int buffGroup = Integer.parseInt(buffGroupList);
-
-    			int[] npcBuffGroupInfo = NpcBufferTable.getInstance().getSkillInfo(npcId, buffGroup);
-
-    			if (npcBuffGroupInfo == null)
-    			{
-    				_log.warning("NPC Buffer Warning: npcId = " + npcId + " Location: " + getX() + ", " + getY() + ", " + getZ() + " Player: " + playerInstance.getName() + " has tried to use skill group (" + buffGroup + ") not assigned to the NPC Buffer!");
-    				return;
-    			}
-
-    			int skillId = npcBuffGroupInfo[0];
-    			int skillLevel = npcBuffGroupInfo[1];
-    			int skillFeeId = npcBuffGroupInfo[2];
-    			int skillFeeAmount = npcBuffGroupInfo[3];
-    		
-    			if (skillFeeId != 0)
-     			{
-    				L2ItemInstance itemInstance = playerInstance.getInventory().getItemByItemId(skillFeeId);
-     			
-    				if (itemInstance == null || (!itemInstance.isStackable() && playerInstance.getInventory().getInventoryItemCount(skillFeeId, -1) < skillFeeAmount))
-    				{
-    					SystemMessage sm = new SystemMessage(SystemMessageId.THERE_ARE_NOT_ENOUGH_NECESSARY_ITEMS_TO_USE_THE_SKILL);
-    					playerInstance.sendPacket(sm);
-    					continue;
-    				}
-     			
-    				if (itemInstance.isStackable())
-    				{
-    					if (!playerInstance.destroyItemByItemId("Npc Buffer", skillFeeId, skillFeeAmount, playerInstance.getTarget(), true))
-    					{
-    						SystemMessage sm = new SystemMessage(SystemMessageId.THERE_ARE_NOT_ENOUGH_NECESSARY_ITEMS_TO_USE_THE_SKILL);
-    						playerInstance.sendPacket(sm);
-    						continue;
-    					}
-    				} else
-    				{
-    					for (int i = 0;i < skillFeeAmount;++ i)
-    					{
-    						playerInstance.destroyItemByItemId("Npc Buffer", skillFeeId, 1, playerInstance.getTarget(), true);
-    					}
-    				}
-     			}
-     		
-    			L2Skill skill;
-    			skill = SkillTable.getInstance().getInfo(skillId,skillLevel);
-        	
-    			if (skill != null)
-    				skill.getEffects(playerInstance, playerInstance);
+		// BypassValidation Exploit plug.
+		if (player == null || player.getLastFolkNPC() == null || player.getLastFolkNPC().getObjectId() != this.getObjectId())
+			return;
+		
+		int npcId = getNpcId();
+		
+		if (command.startsWith("Chat"))
+		{
+			int val = Integer.parseInt(command.substring(5));
+			
+			pageVal = val;
+			
+			showChatWindow(player, val);
+		}
+		else if (command.startsWith("Buff"))
+		{
+			String[] buffGroupArray = command.substring(5).split(" ");
+			
+			for (String buffGroupList : buffGroupArray)
+			{
+				if (buffGroupList == null)
+				{
+					_log.warning("NPC Buffer Warning: npcId = " + npcId + " has no buffGroup set in the bypass for the buff selected.");
+					return;
 				}
-    			
-    			showChatWindow(playerInstance, pageVal);
-    	}
-    	else if (command.startsWith("Heal"))
-    	{
-    		if (!playerInstance.isInCombat() && !AttackStanceTaskManager.getInstance().getAttackStanceTask(playerInstance))
-    		{
+				
+				int buffGroup = Integer.parseInt(buffGroupList);
+				
+				int[] npcBuffGroupInfo = NpcBufferTable.getInstance().getSkillInfo(npcId, buffGroup);
+				
+				if (npcBuffGroupInfo == null)
+				{
+					_log.warning("NPC Buffer Warning: npcId = " + npcId + " Location: " + getX() + ", " + getY() + ", " + getZ() + " Player: " + player.getName() + " has tried to use skill group (" + buffGroup + ") not assigned to the NPC Buffer!");
+					return;
+				}
+				
+				int skillId = npcBuffGroupInfo[0];
+				int skillLevel = npcBuffGroupInfo[1];
+				int skillFeeId = npcBuffGroupInfo[2];
+				int skillFeeAmount = npcBuffGroupInfo[3];
+				
+				if (skillFeeId != 0)
+				{
+					L2ItemInstance itemInstance = player.getInventory().getItemByItemId(skillFeeId);
+					
+					if (itemInstance == null || (!itemInstance.isStackable() && player.getInventory().getInventoryItemCount(skillFeeId, -1) < skillFeeAmount))
+					{
+						SystemMessage sm = new SystemMessage(SystemMessageId.THERE_ARE_NOT_ENOUGH_NECESSARY_ITEMS_TO_USE_THE_SKILL);
+						player.sendPacket(sm);
+						continue;
+					}
+					
+					if (itemInstance.isStackable())
+					{
+						if (!player.destroyItemByItemId("Npc Buffer", skillFeeId, skillFeeAmount, player.getTarget(), true))
+						{
+							SystemMessage sm = new SystemMessage(SystemMessageId.THERE_ARE_NOT_ENOUGH_NECESSARY_ITEMS_TO_USE_THE_SKILL);
+							player.sendPacket(sm);
+							continue;
+						}
+					}
+					else
+					{
+						for (int i = 0; i < skillFeeAmount; ++i)
+						{
+							player.destroyItemByItemId("Npc Buffer", skillFeeId, 1, player.getTarget(), true);
+						}
+					}
+				}
+				
+				L2Skill skill;
+				skill = SkillTable.getInstance().getInfo(skillId, skillLevel);
+				
+				if (skill != null)
+					skill.getEffects(player, player);
+			}
+			
+			showChatWindow(player, pageVal);
+		}
+		else if (command.startsWith("Heal"))
+		{
+			if (!player.isInCombat() && !AttackStanceTaskManager.getInstance().getAttackStanceTask(player))
+			{
 				String[] healArray = command.substring(5).split(" ");
 				
-				for (String healType: healArray)
+				for (String healType : healArray)
 				{
 					if (healType.equalsIgnoreCase("HP"))
-		    		{
-		    			playerInstance.setCurrentHp(playerInstance.getMaxHp());
-		    		}
+					{
+						player.setCurrentHp(player.getMaxHp());
+					}
 					else if (healType.equalsIgnoreCase("MP"))
 					{
-						playerInstance.setCurrentMp(playerInstance.getMaxMp());
+						player.setCurrentMp(player.getMaxMp());
 					}
 					else if (healType.equalsIgnoreCase("CP"))
 					{
-						playerInstance.setCurrentCp(playerInstance.getMaxCp());
+						player.setCurrentCp(player.getMaxCp());
 					}
 				}
-    		}
-    		showChatWindow(playerInstance, 0); // 0 = main window
-    	}
+			}
+			showChatWindow(player, 0); // 0 = main window
+		}
+		else if (command.startsWith("RemoveBuffs"))
+		{
+			player.stopAllEffects();
+			showChatWindow(player, 0); // 0 = main window
+		}
 		else
 		{
-			super.onBypassFeedback(playerInstance, command);
-		}	
+			super.onBypassFeedback(player, command);
+		}
 	}
 }
