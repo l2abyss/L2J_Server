@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.item.L2Item;
+import net.sf.l2j.gameserver.templates.item.L2WeaponType;
 import net.sf.l2j.gameserver.util.Util;
 
 /**
@@ -91,7 +92,12 @@ public final class RequestRefine extends L2GameClientPacket
 
 	boolean tryAugmentItem(L2PcInstance player, L2ItemInstance targetItem,L2ItemInstance refinerItem, L2ItemInstance gemstoneItem)
 	{
-		if (targetItem.isAugmented() || targetItem.isWear())
+		if (targetItem.isAugmented()
+				|| targetItem.isWear()
+				|| targetItem.isTimeLimitedItem()
+				|| targetItem.isCommonItem()
+				|| targetItem.isShadowItem()
+				|| targetItem.getItem().getItemType() == L2WeaponType.ROD)
 			return false;
 		
 		if (player.isDead())
