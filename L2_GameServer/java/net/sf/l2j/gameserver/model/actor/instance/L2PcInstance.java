@@ -10747,7 +10747,8 @@ public final class L2PcInstance extends L2Playable
 			getPet().setFollowStatus(true);
 			getPet().updateAndBroadcastStatus(0);
 		}
-		
+
+		TvTEvent.onTeleported(this);
 	}
 
 	public void setLastPartyPosition(int x, int y, int z)

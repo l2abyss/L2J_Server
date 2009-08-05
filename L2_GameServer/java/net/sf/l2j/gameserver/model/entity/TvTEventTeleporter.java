@@ -16,8 +16,6 @@ package net.sf.l2j.gameserver.model.entity;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
-import net.sf.l2j.gameserver.datatables.SkillTable;
-import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.util.Rnd;
@@ -84,32 +82,6 @@ public class TvTEventTeleporter implements Runnable
 		else
 			_playerInstance.setTeam(0);
 		
-		L2Skill skill;
-		if (_playerInstance.isMageClass())
-		{
-			if (Config.TVT_EVENT_MAGE_BUFFS != null && !Config.TVT_EVENT_MAGE_BUFFS.isEmpty())
-			{
-				for (int i : Config.TVT_EVENT_MAGE_BUFFS.keySet())
-				{
-					skill = SkillTable.getInstance().getInfo(i, Config.TVT_EVENT_MAGE_BUFFS.get(i));
-					if (skill != null)
-						skill.getEffects(_playerInstance, _playerInstance);
-				}
-			}
-		}
-		else
-		{
-			if (Config.TVT_EVENT_FIGHTER_BUFFS != null && !Config.TVT_EVENT_FIGHTER_BUFFS.isEmpty())
-			{
-				for (int i : Config.TVT_EVENT_FIGHTER_BUFFS.keySet())
-				{
-					skill = SkillTable.getInstance().getInfo(i, Config.TVT_EVENT_FIGHTER_BUFFS.get(i));
-					if (skill != null)
-						skill.getEffects(_playerInstance, _playerInstance);
-				}
-			}
-		}
-
 		_playerInstance.setCurrentCp(_playerInstance.getMaxCp());
 		_playerInstance.setCurrentHp(_playerInstance.getMaxHp());
 		_playerInstance.setCurrentMp(_playerInstance.getMaxMp());

@@ -24,6 +24,7 @@ import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.datatables.DoorTable;
 import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
+import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Spawn;
@@ -890,6 +891,42 @@ public class TvTEvent
 				if (playerInstance != null)
 				{
 					playerInstance.sendPacket(cs);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Called on Appearing packet received (player finished teleporting)<br><br>
+	 * 
+	 * @param L2PcInstance playerInstance
+	 */
+	public static void onTeleported(L2PcInstance playerInstance)
+	{
+		if (!isStarted() || playerInstance == null || !isPlayerParticipant(playerInstance.getObjectId()))
+			return;
+
+		if (playerInstance.isMageClass())
+		{
+			if (Config.TVT_EVENT_MAGE_BUFFS != null && !Config.TVT_EVENT_MAGE_BUFFS.isEmpty())
+			{
+				for (int i : Config.TVT_EVENT_MAGE_BUFFS.keySet())
+				{
+					L2Skill skill = SkillTable.getInstance().getInfo(i, Config.TVT_EVENT_MAGE_BUFFS.get(i));
+					if (skill != null)
+						skill.getEffects(playerInstance, playerInstance);
+				}
+			}
+		}
+		else
+		{
+			if (Config.TVT_EVENT_FIGHTER_BUFFS != null && !Config.TVT_EVENT_FIGHTER_BUFFS.isEmpty())
+			{
+				for (int i : Config.TVT_EVENT_FIGHTER_BUFFS.keySet())
+				{
+					L2Skill skill = SkillTable.getInstance().getInfo(i, Config.TVT_EVENT_FIGHTER_BUFFS.get(i));
+					if (skill != null)
+						skill.getEffects(playerInstance, playerInstance);
 				}
 			}
 		}
