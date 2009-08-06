@@ -182,6 +182,8 @@ public class ZoneManager
 								temp = new L2WaterZone(zoneId);
 							else if (zoneType.equals("NoStoreZone"))
 								temp = new L2NoStoreZone(zoneId);
+							else if (zoneType.equals("ScriptZone"))
+								temp = new L2ScriptZone(zoneId);
 							
 							// Check for unknown type
 							if (temp == null)
