@@ -17,10 +17,8 @@ package net.sf.l2j.gameserver.model.actor.stat;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.Elementals;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
-import net.sf.l2j.gameserver.model.L2PetDataTable;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
-import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.skills.Calculator;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.Stats;
@@ -422,10 +420,6 @@ public class CharStat
 	{
     	if (_activeChar == null)
     		return 1;
-    	
-    	if (_activeChar instanceof L2PcInstance && ((L2PcInstance)_activeChar).isMounted())
-    		return getRunSpeed() * 1f / L2PetDataTable.getInstance().getPetData(
-    				((L2PcInstance)_activeChar).getMountNpcId(), ((L2PcInstance)_activeChar).getMountLevel()).getPetSpeed();
 
 		return getRunSpeed() * 1f / _activeChar.getTemplate().baseRunSpd;
 	}
@@ -604,18 +598,7 @@ public class CharStat
 		// err we should be adding TO the persons run speed
 		// not making it a constant
 		double baseRunSpd = _activeChar.getTemplate().baseRunSpd;
-		if (_activeChar instanceof L2PcInstance)
-		{
-			L2PcInstance player = (L2PcInstance)_activeChar;
-			if (player.isMounted())
-				baseRunSpd = L2PetDataTable.getInstance().getPetData(player.getMountNpcId(), player.getMountLevel()).getPetSpeed();
-		}
 		int val = (int) calcStat(Stats.RUN_SPEED, baseRunSpd, null, null);
-		if (_activeChar instanceof L2PcInstance)
-		{
-			val += Config.RUN_SPD_BOOST;
-			val /= _activeChar.getArmourExpertisePenalty();
-		}
 		
 		return val;
 	}
@@ -647,20 +630,11 @@ public class CharStat
 
 	/** Return the WalkSpeed (base+modifier) of the L2Character. */
 	public int getWalkSpeed()
-	{
-    	
+	{    	
 		if (_activeChar == null)
     		return 1;
 
-		if(_activeChar instanceof L2PcInstance )
-		{
-			return (getRunSpeed() * 70) / 100;	
-		}
-		else
-		{	
-			return (int) calcStat(Stats.WALK_SPEED, _activeChar.getTemplate().baseWalkSpd, null, null);
-		}
-		
+		return (int) calcStat(Stats.WALK_SPEED, _activeChar.getTemplate().baseWalkSpd, null, null);		
 	}
 
 	/** Return the WIT of the L2Character (base+modifier). */

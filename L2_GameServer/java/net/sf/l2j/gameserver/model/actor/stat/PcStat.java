@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.model.actor.stat;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.model.L2PetDataTable;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
@@ -27,6 +28,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SocialAction;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
+import net.sf.l2j.gameserver.skills.Stats;
 
 public class PcStat extends PlayableStat
 {
@@ -323,16 +325,29 @@ public class PcStat extends PlayableStat
     }
     
     @Override
-    public final int getRunSpeed()
-    {
-    	int val = super.getRunSpeed();
-    	
+	public int getRunSpeed()
+	{
+		if (getActiveChar() == null)
+			return 1;
+		
+		int val = super.getRunSpeed();
+		
+		L2PcInstance player = getActiveChar();
+		if (player.isMounted())
+		{
+			int baseRunSpd = L2PetDataTable.getInstance().getPetData(player.getMountNpcId(), player.getMountLevel()).getPetSpeed();
+			val = (int) calcStat(Stats.RUN_SPEED, baseRunSpd, null, null);
+		}
+		
+		val += Config.RUN_SPD_BOOST;
+		val /= player.getArmourExpertisePenalty();
+		
     	// Apply max run speed cap.
 		if (val > Config.MAX_RUN_SPEED && !getActiveChar().isGM())
 			return Config.MAX_RUN_SPEED;
-    	
-    	return val;
-    }
+		
+		return val;
+	}
     
     @Override
     public int getPAtkSpd()
@@ -365,5 +380,27 @@ public class PcStat extends PlayableStat
 			return Config.MAX_MATK_SPEED;
 		
     	return val;
+	}
+    
+    @Override
+    public float getMovementSpeedMultiplier()
+	{
+    	if (getActiveChar() == null)
+    		return 1;
+    	
+    	if (getActiveChar().isMounted())
+    		return getRunSpeed() * 1f / L2PetDataTable.getInstance().getPetData(
+    				getActiveChar().getMountNpcId(), getActiveChar().getMountLevel()).getPetSpeed();
+
+		return super.getMovementSpeedMultiplier();
+	}
+    
+    @Override
+	public int getWalkSpeed()
+	{    	
+		if (getActiveChar() == null)
+    		return 1;
+
+		return (getRunSpeed() * 70) / 100;			
 	}
 }
