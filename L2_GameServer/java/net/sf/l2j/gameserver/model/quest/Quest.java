@@ -142,6 +142,7 @@ public class Quest extends ManagedScript
 		ON_FACTION_CALL(true), // NPC or Mob saw a person casting a skill (regardless what the target is). 
 		ON_AGGRO_RANGE_ENTER(true), // a person came within the Npc/Mob's range
 		ON_SPELL_FINISHED(true), // on spell finished action when npc finish casting skill
+		ON_SKILL_LEARN(false), // control the AcquireSkill dialog from quest script
 		ON_ENTER_ZONE(true), // on zone enter
 		ON_EXIT_ZONE(true); // on zone exit
 
@@ -476,6 +477,53 @@ public class Quest extends ManagedScript
 		// call npc.showChatWindow(player) and then return null.
 		return true;
 	}
+	
+	public final boolean notifyAcquireSkillList(L2Npc npc, L2PcInstance player)
+	{
+		String res = null;
+		try
+		{
+			res = onAcquireSkillList(npc, player);
+		}
+		catch (Exception e)
+		{
+			return showError(player, e);
+		}
+		return showResult(player, res);
+	}
+	
+	public final boolean notifyAcquireSkillInfo(L2Npc npc, L2PcInstance player, L2Skill skill)
+	{
+		String res = null;
+		try
+		{
+			res = onAcquireSkillInfo(npc, player, skill);
+		}
+		catch (Exception e)
+		{
+			return showError(player, e);
+		}
+		return showResult(player, res);
+	}
+
+	public final boolean notifyAcquireSkill(L2Npc npc, L2PcInstance player, L2Skill skill)
+	{
+		String res = null;
+		try
+		{
+			res = onAcquireSkill(npc, player, skill);
+			if (res == "true")
+				return true;
+			else if (res == "false")
+				return false;
+		}
+		catch (Exception e)
+		{
+			return showError(player, e);
+		}
+		return showResult(player, res);
+	}
+
 	public class tmpOnSkillSee implements Runnable
 	{
 		private L2Npc _npc;
@@ -645,6 +693,21 @@ public class Quest extends ManagedScript
 	}
 	
 	public String onFirstTalk(L2Npc npc, L2PcInstance player)
+	{
+		return null;
+	}
+
+	public String onAcquireSkillList(L2Npc npc, L2PcInstance player)
+	{
+		return null;
+	}
+
+	public String onAcquireSkillInfo(L2Npc npc, L2PcInstance player, L2Skill skill)
+	{
+		return null;
+	}
+	
+	public String onAcquireSkill(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
 		return null;
 	}
@@ -1220,7 +1283,17 @@ public class Quest extends ManagedScript
 	{
 		return addEventId(npcId, Quest.QuestEventType.ON_FIRST_TALK);
 	}
-	
+
+	/**
+	 * Add the NPC to the AcquireSkill dialog
+	 * @param npcId
+	 * @return L2NpcTemplate : NPC
+	 */
+	public L2NpcTemplate addAcquireSkillId(int npcId)
+	{
+		return addEventId(npcId, Quest.QuestEventType.ON_SKILL_LEARN);
+	}
+
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for Attack Events.<BR><BR>
 	 * @param attackId

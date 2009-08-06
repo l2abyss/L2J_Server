@@ -32,6 +32,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2TransformManagerInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2VillageMasterInstance;
+import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExStorageMaxCount;
 import net.sf.l2j.gameserver.network.serverpackets.PledgeSkillList;
@@ -342,6 +343,24 @@ public class RequestAquireSkill extends L2GameClientPacket
 				((L2VillageMasterInstance)trainer).showPledgeSkillList(player); //Maybe we shoud add a check here...
 	            return;
 			}
+			case 4:
+			{
+				_requiredSp = 0;
+				Quest[] qlst = trainer.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_LEARN);
+				if ((qlst != null) && qlst.length == 1)
+				{
+					if (!qlst[0].notifyAcquireSkill(trainer, player, skill))
+					{
+						qlst[0].notifyAcquireSkillList(trainer, player);
+						return;
+					}
+				}
+				else
+				{
+					return;
+				}
+				break;
+			}
 			case 6:
 			{
 				int costid = 0;
@@ -434,7 +453,12 @@ public class RequestAquireSkill extends L2GameClientPacket
 			}
 		}
 		player.sendSkillList();
-		if (trainer instanceof L2FishermanInstance)
+		if (_skillType == 4)
+		{
+			Quest[] qlst = trainer.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_LEARN);
+			qlst[0].notifyAcquireSkillList(trainer, player);
+		}
+		else if (trainer instanceof L2FishermanInstance)
 			((L2FishermanInstance) trainer).showSkillList(player);
 		else if (trainer instanceof L2TransformManagerInstance)
 	        ((L2TransformManagerInstance) trainer).showTransformSkillList(player);

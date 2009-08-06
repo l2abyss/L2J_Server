@@ -965,7 +965,7 @@ public final class L2VillageMasterInstance extends L2NpcInstance
         return classNameStr;
     }
 
-    private final Race getVillageMasterRace()
+    public final Race getVillageMasterRace()
     {
         String npcClass = getTemplate().jClass.toLowerCase();
 
@@ -982,7 +982,7 @@ public final class L2VillageMasterInstance extends L2NpcInstance
         return Race.Kamael;
     }
 
-    private final ClassType getVillageMasterTeachType()
+    public final ClassType getVillageMasterTeachType()
     {
         String npcClass = getTemplate().jClass.toLowerCase();
 
