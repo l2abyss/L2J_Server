@@ -39,7 +39,6 @@ import net.sf.l2j.gameserver.network.serverpackets.PledgeSkillList;
 import net.sf.l2j.gameserver.network.serverpackets.ShortCutRegister;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.util.IllegalPlayerAction;
 import net.sf.l2j.gameserver.util.Util;
 
 /**
@@ -124,7 +123,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 					if (counts == 0)
 					{
 						player.sendMessage("You are trying to learn skill that u can't..");
-						Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", IllegalPlayerAction.PUNISH_KICK);
+						Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", Config.DEFAULT_PUNISH);
 						return;
 					}
 
@@ -150,7 +149,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 						sm = null;
 						return;
 					}
-					break;					
+					break;
 				}
 				// normal skills
 				L2SkillLearn[] skills = SkillTreeTable.getInstance().getAvailableSkills(player, player.getSkillLearningClassId());
@@ -168,7 +167,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 				if (counts == 0 && !Config.ALT_GAME_SKILL_LEARN)
 				{
 					player.sendMessage("You are trying to learn skill that u can't..");
-					Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", IllegalPlayerAction.PUNISH_KICK);
+					Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", Config.DEFAULT_PUNISH);
 					return;
 				}
 
@@ -233,7 +232,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 				if (counts == 0)
 				{
 					player.sendMessage("You are trying to learn skill that u can't..");
-					Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", IllegalPlayerAction.PUNISH_KICK);
+					Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", Config.DEFAULT_PUNISH);
 					return;
 				}
 
@@ -292,7 +291,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 				if (counts == 0)
 				{
 					player.sendMessage("You are trying to learn skill that u can't..");
-					Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", IllegalPlayerAction.PUNISH_KICK);
+					Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", Config.DEFAULT_PUNISH);
 					return;
 				}
 
@@ -319,7 +318,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 					SystemMessage sm = new SystemMessage(SystemMessageId.ACQUIRE_SKILL_FAILED_BAD_CLAN_REP_SCORE);
 					player.sendPacket(sm);
 					return;
-	            }
+				}
 				player.getClan().setReputationScore(player.getClan().getReputationScore()-repCost, true);
 				player.getClan().addNewSkill(skill);
 
@@ -337,11 +336,11 @@ public class RequestAquireSkill extends L2GameClientPacket
 				player.getClan().broadcastToOnlineMembers(new PledgeSkillList(player.getClan()));
 
 				for(L2PcInstance member: player.getClan().getOnlineMembers(0)) 
-	            {
+				{
 					member.sendSkillList();
-	            }
+				}
 				((L2VillageMasterInstance)trainer).showPledgeSkillList(player); //Maybe we shoud add a check here...
-	            return;
+				return;
 			}
 			case 4:
 			{
@@ -384,7 +383,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 				if (counts == 0)
 				{
 					player.sendMessage("You are trying to learn skill that u can't..");
-					Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", IllegalPlayerAction.PUNISH_KICK);
+					Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", Config.DEFAULT_PUNISH);
 					return;
 				}
 
@@ -461,7 +460,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 		else if (trainer instanceof L2FishermanInstance)
 			((L2FishermanInstance) trainer).showSkillList(player);
 		else if (trainer instanceof L2TransformManagerInstance)
-	        ((L2TransformManagerInstance) trainer).showTransformSkillList(player);
+			((L2TransformManagerInstance) trainer).showTransformSkillList(player);
 		else
 			((L2NpcInstance)trainer).showSkillList(player, player.getSkillLearningClassId());
 

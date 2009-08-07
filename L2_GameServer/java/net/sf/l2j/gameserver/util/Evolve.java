@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.util;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SummonItemsData;
@@ -29,7 +30,6 @@ import net.sf.l2j.gameserver.network.serverpackets.MagicSkillLaunched;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
-import net.sf.l2j.gameserver.util.IllegalPlayerAction;
 
 public final class Evolve
 {
@@ -47,7 +47,7 @@ public final class Evolve
 
 		if (currentPet.isAlikeDead())
 		{
-			Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to use death pet exploit!", IllegalPlayerAction.PUNISH_KICK);
+			Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to use death pet exploit!", Config.DEFAULT_PUNISH);
 			return false;
 		}
 

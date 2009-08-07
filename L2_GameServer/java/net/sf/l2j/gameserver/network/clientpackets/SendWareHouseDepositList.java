@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import static net.sf.l2j.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
+
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
@@ -28,10 +30,7 @@ import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.util.IllegalPlayerAction;
 import net.sf.l2j.gameserver.util.Util;
-
-import static net.sf.l2j.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
 
 /**
  * This class ...
@@ -57,7 +56,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 				|| count > Config.MAX_ITEM_IN_PACKET
 				|| count * BATCH_LENGTH != _buf.remaining())
 		{
-            return;
+			return;
 		}
 
 		_items = new WarehouseItem[count];
@@ -67,8 +66,8 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 			long cnt = readQ();
 			if (objId < 1 || cnt < 0)
 			{
-			    _items = null;
-			    return;
+				_items = null;
+				return;
 			}
 			_items[i] = new WarehouseItem(objId, cnt);
 		}
@@ -103,7 +102,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 
 		if (player.getActiveEnchantItem() != null)
 		{
-			Util.handleIllegalPlayerAction(player,"Player "+player.getName()+" tried to use enchant Exploit!", IllegalPlayerAction.PUNISH_KICKBAN);
+			Util.handleIllegalPlayerAction(player,"Player "+player.getName()+" tried to use enchant Exploit!", Config.DEFAULT_PUNISH);
 			return;
 		}
 

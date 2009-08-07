@@ -30,42 +30,43 @@ public final class RequestGetItemFromPet extends L2GameClientPacket
 {
 	private static final String REQUESTGETITEMFROMPET__C__8C = "[C] 8C RequestGetItemFromPet";
 	private static Logger _log = Logger.getLogger(RequestGetItemFromPet.class.getName());
-
+	
 	private int _objectId;
 	private long _amount;
 	@SuppressWarnings("unused")
-    private int _unknown;
-
+	private int _unknown;
+	
 	@Override
 	protected void readImpl()
 	{
 		_objectId = readD();
-		_amount   = readQ();
-		_unknown  = readD();// = 0 for most trades
+		_amount = readQ();
+		_unknown = readD();// = 0 for most trades
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
-        if (player == null || !(player.getPet() instanceof L2PetInstance)) return;
-        L2PetInstance pet = (L2PetInstance)player.getPet();
-        if (player.getActiveEnchantItem() != null)
-        	return;
-        if(_amount < 0)
-        {
-        	Util.handleIllegalPlayerAction(player,"[RequestGetItemFromPet] count < 0! ban! oid: "+_objectId+" owner: "+player.getName(),Config.DEFAULT_PUNISH);
-        	return;
-        }
-        else if(_amount == 0)
-        	return;
-
+		if (player == null || !(player.getPet() instanceof L2PetInstance))
+			return;
+		L2PetInstance pet = (L2PetInstance) player.getPet();
+		if (player.getActiveEnchantItem() != null)
+			return;
+		if (_amount < 0)
+		{
+			Util.handleIllegalPlayerAction(player, "[RequestGetItemFromPet] Character " + player.getName() + " of account " + player.getAccountName() + " tried to get item with oid " + _objectId + " from pet but has count < 0!", Config.DEFAULT_PUNISH);
+			return;
+		}
+		else if (_amount == 0)
+			return;
+		
 		if (pet.transferItem("Transfer", _objectId, _amount, player.getInventory(), player, pet) == null)
 		{
 			_log.warning("Invalid item transfer request: " + pet.getName() + "(pet) --> " + player.getName());
 		}
 	}
-
+	
 	@Override
 	public String getType()
 	{

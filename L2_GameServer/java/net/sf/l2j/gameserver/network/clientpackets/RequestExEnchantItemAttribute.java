@@ -26,7 +26,6 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.templates.item.L2WeaponType;
-import net.sf.l2j.gameserver.util.IllegalPlayerAction;
 import net.sf.l2j.gameserver.util.Util;
 import net.sf.l2j.util.Rnd;
 
@@ -90,7 +89,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 
 		if (item.isWear())
 		{
-			Util.handleIllegalPlayerAction(player, "Player "+player.getName()+" tried to enchant a weared Item", IllegalPlayerAction.PUNISH_KICK);
+			Util.handleIllegalPlayerAction(player, "Player "+player.getName()+" tried to enchant a weared Item", Config.DEFAULT_PUNISH);
 			return;
 		}
 
@@ -122,7 +121,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			default:
 			{
 				player.setActiveEnchantAttrItem(null);
-				Util.handleIllegalPlayerAction(player, "Player "+player.getName()+" tried to use enchant Exploit!", IllegalPlayerAction.PUNISH_KICK);
+				Util.handleIllegalPlayerAction(player, "Player "+player.getName()+" tried to use enchant Exploit!", Config.DEFAULT_PUNISH);
 				return;
 			}
 		}

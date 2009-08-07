@@ -58,21 +58,22 @@ public final class RequestDestroyItem extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
-		    return;
+			return;
 
 		if(_count <= 0)
 		{
-			if (_count < 0) Util.handleIllegalPlayerAction(activeChar,"[RequestDestroyItem] count < 0! ban! oid: "+_objectId+" owner: "+activeChar.getName(),Config.DEFAULT_PUNISH);
+			if (_count < 0)
+				Util.handleIllegalPlayerAction(activeChar,"[RequestDestroyItem] Character " + activeChar.getName() + " of account " + activeChar.getAccountName() + " tried to destroy item with oid " + _objectId + " but has count < 0!", Config.DEFAULT_PUNISH);
 			return;
 		}
 
 		long count = _count;
 
-        if (activeChar.getPrivateStoreType() != 0)
-        {
-            activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
-            return;
-        }
+		if (activeChar.getPrivateStoreType() != 0)
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
+			return;
+		}
 
 		L2ItemInstance itemToRemove = activeChar.getInventory().getItemByObjectId(_objectId);
 		// if we can't find the requested item, its actually a cheat
@@ -87,8 +88,8 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		{
 			if (activeChar.getCurrentSkill() != null && activeChar.getCurrentSkill().getSkill().getItemConsumeId() == itemToRemove.getItemId())
 			{
-	            activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
-	            return;
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
+				return;
 			}
 		}
 		// Cannot discard item that the skill is consuming
@@ -96,8 +97,8 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		{
 			if (activeChar.getLastSimultaneousSkillCast() != null && activeChar.getLastSimultaneousSkillCast().getItemConsumeId() == itemToRemove.getItemId())
 			{
-	            activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
-	            return;
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
+				return;
 			}
 		}
 
@@ -112,12 +113,12 @@ public final class RequestDestroyItem extends L2GameClientPacket
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
 			return;
 		}
-
-        if(!itemToRemove.isStackable() && count > 1)
-        {
-            Util.handleIllegalPlayerAction(activeChar,"[RequestDestroyItem] count > 1 but item is not stackable! oid: "+_objectId+" owner: "+activeChar.getName(),Config.DEFAULT_PUNISH);
-            return;
-        }
+		
+		if (!itemToRemove.isStackable() && count > 1)
+		{
+			Util.handleIllegalPlayerAction(activeChar, "[RequestDestroyItem] Character " + activeChar.getName() + " of account " + activeChar.getAccountName() + " tried to destroy a non-stackable item with oid " + _objectId + " but has count > 1!", Config.DEFAULT_PUNISH);
+			return;
+		}
 
 		if (_count > itemToRemove.getCount())
 			count = itemToRemove.getCount();

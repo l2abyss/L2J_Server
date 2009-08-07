@@ -29,7 +29,6 @@ import net.sf.l2j.gameserver.network.serverpackets.ItemList;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.item.L2Item;
-import net.sf.l2j.gameserver.util.IllegalPlayerAction;
 import net.sf.l2j.gameserver.util.Util;
 
 /**
@@ -66,27 +65,20 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 
 		if (_count <= 0)
 		{
-			Util.handleIllegalPlayerAction(activeChar,
-					"[RequestCrystallizeItem] count <= 0! ban! oid: "
-							+ _objectId + " owner: " + activeChar.getName(),
-					IllegalPlayerAction.PUNISH_KICK);
+			Util.handleIllegalPlayerAction(activeChar, "[RequestCrystallizeItem] Character " + activeChar.getName() + " of account " + activeChar.getAccountName() + " tried to crystalize item with oid " + _objectId + " but has count <= 0!", Config.DEFAULT_PUNISH);
 			return;
 		}
 
-		if (activeChar.getPrivateStoreType() != 0
-				|| activeChar.isInCrystallize())
+		if (activeChar.getPrivateStoreType() != 0 || activeChar.isInCrystallize())
 		{
-			activeChar
-					.sendPacket(new SystemMessage(
-							SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
 			return;
 		}
 
 		int skillLevel = activeChar.getSkillLevel(L2Skill.SKILL_CRYSTALLIZE);
 		if (skillLevel <= 0)
 		{
-			SystemMessage sm = new SystemMessage(
-					SystemMessageId.CRYSTALLIZE_LEVEL_TOO_LOW);
+			SystemMessage sm = new SystemMessage(SystemMessageId.CRYSTALLIZE_LEVEL_TOO_LOW);
 			activeChar.sendPacket(sm);
 			sm = null;
 			ActionFailed af = ActionFailed.STATIC_PACKET;
@@ -110,13 +102,11 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 
 			if (_count > item.getCount())
 			{
-				_count = activeChar.getInventory().getItemByObjectId(_objectId)
-						.getCount();
+				_count = activeChar.getInventory().getItemByObjectId(_objectId).getCount();
 			}
 		}
 
-		L2ItemInstance itemToRemove = activeChar.getInventory()
-				.getItemByObjectId(_objectId);
+		L2ItemInstance itemToRemove = activeChar.getInventory().getItemByObjectId(_objectId);
 		if (itemToRemove == null || itemToRemove.isWear())
 		{
 			return;
@@ -183,8 +173,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		// unequip if needed
 		if (itemToRemove.isEquipped())
 		{
-			L2ItemInstance[] unequiped = activeChar.getInventory()
-					.unEquipItemInSlotAndRecord(itemToRemove.getLocationSlot());
+			L2ItemInstance[] unequiped = activeChar.getInventory().unEquipItemInSlotAndRecord(itemToRemove.getLocationSlot());
 			InventoryUpdate iu = new InventoryUpdate();
 			for (L2ItemInstance item: unequiped)
 			{
@@ -200,15 +189,12 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		}
 
 		// remove from inventory
-		L2ItemInstance removedItem = activeChar.getInventory().destroyItem(
-				"Crystalize", _objectId, _count, activeChar, null);
+		L2ItemInstance removedItem = activeChar.getInventory().destroyItem("Crystalize", _objectId, _count, activeChar, null);
 
 		// add crystals
 		int crystalId = itemToRemove.getItem().getCrystalItemId();
 		int crystalAmount = itemToRemove.getCrystalCount();
-		L2ItemInstance createditem = activeChar.getInventory().addItem(
-				"Crystalize", crystalId, crystalAmount, activeChar,
-				itemToRemove);
+		L2ItemInstance createditem = activeChar.getInventory().addItem("Crystalize", crystalId, crystalAmount, activeChar, itemToRemove);
 
 		SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
 		sm.addItemName(createditem);
