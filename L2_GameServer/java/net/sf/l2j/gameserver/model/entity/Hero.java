@@ -48,14 +48,23 @@ public class Hero
 {
 	private static Logger _log = Logger.getLogger(Hero.class.getName());
 	
-	private static final String GET_HEROES = "SELECT * FROM heroes WHERE played = 1";
-	private static final String GET_ALL_HEROES = "SELECT * FROM heroes";
+	private static final String GET_HEROES = "SELECT heroes.charId, "
+	+ "characters.char_name, heroes.class_id, heroes.count, heroes.played "
+	+"FROM heroes, characters WHERE characters.charId = heroes.charId "
+	+"AND heroes.played = 1";
+	private static final String GET_ALL_HEROES = "SELECT heroes.charId, "
+		+ "characters.char_name, heroes.class_id, heroes.count, heroes.played "
+		+"FROM heroes, characters WHERE characters.charId = heroes.charId";
 	private static final String UPDATE_ALL = "UPDATE heroes SET played = 0";
-	private static final String INSERT_HERO = "INSERT INTO heroes VALUES (?,?,?,?,?)";
-	private static final String UPDATE_HERO = "UPDATE heroes SET count = ?, played = ?" + " WHERE charId = ?";
-	private static final String GET_CLAN_ALLY = "SELECT characters.clanid AS clanid, coalesce(clan_data.ally_Id, 0) AS allyId FROM characters LEFT JOIN clan_data ON clan_data.clan_id = characters.clanid "
-			+ " WHERE characters.charId = ?";
-	private static final String GET_CLAN_NAME = "SELECT clan_name FROM clan_data WHERE clan_id = (SELECT clanid FROM characters WHERE char_name = ?)";
+	private static final String INSERT_HERO = "INSERT INTO heroes VALUES (?,?,?,?)";
+	private static final String UPDATE_HERO = "UPDATE heroes SET count = ?, "
+		+"played = ?" + " WHERE charId = ?";
+	private static final String GET_CLAN_ALLY = "SELECT characters.clanid "
+		+"AS clanid, coalesce(clan_data.ally_Id, 0) AS allyId FROM characters "
+		+"LEFT JOIN clan_data ON clan_data.clan_id = characters.clanid "
+		+"WHERE characters.charId = ?";
+	private static final String GET_CLAN_NAME = "SELECT clan_name FROM clan_data "
+		+"WHERE clan_id = (SELECT clanid FROM characters WHERE char_name = ?)";
 	// delete hero items
 	private static final String DELETE_ITEMS = "DELETE FROM items WHERE item_id IN "
 			+ "(6842, 6611, 6612, 6613, 6614, 6615, 6616, 6617, 6618, 6619, 6620, 6621, 9388, 9389, 9390) "
@@ -412,10 +421,9 @@ public class Hero
 					{
 						statement = con.prepareStatement(INSERT_HERO);
 						statement.setInt(1, heroId);
-						statement.setString(2, hero.getString(Olympiad.CHAR_NAME));
-						statement.setInt(3, hero.getInteger(Olympiad.CLASS_ID));
-						statement.setInt(4, hero.getInteger(COUNT));
-						statement.setInt(5, hero.getInteger(PLAYED));
+						statement.setInt(2, hero.getInteger(Olympiad.CLASS_ID));
+						statement.setInt(3, hero.getInteger(COUNT));
+						statement.setInt(4, hero.getInteger(PLAYED));
 						statement.execute();
 						
 						Connection con2 = L2DatabaseFactory.getInstance().getConnection();

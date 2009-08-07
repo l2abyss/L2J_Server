@@ -237,7 +237,7 @@ public final class L2PcInstance extends L2Playable
 {
     // Character Skill SQL String Definitions:
 	private static final String RESTORE_SKILLS_FOR_CHAR = "SELECT skill_id,skill_level FROM character_skills WHERE charId=? AND class_index=?";
-	private static final String ADD_NEW_SKILL = "INSERT INTO character_skills (charId,skill_id,skill_level,skill_name,class_index) VALUES (?,?,?,?,?)";
+	private static final String ADD_NEW_SKILL = "INSERT INTO character_skills (charId,skill_id,skill_level,skill_name,class_index) VALUES (?,?,?,?)";
 	private static final String UPDATE_CHARACTER_SKILL_LEVEL = "UPDATE character_skills SET skill_level=? WHERE skill_id=? AND charId=? AND class_index=?";
 	private static final String DELETE_SKILL_FROM_CHAR = "DELETE FROM character_skills WHERE skill_id=? AND charId=? AND class_index=?";
 	private static final String DELETE_CHAR_SKILLS = "DELETE FROM character_skills WHERE charId=? AND class_index=?";
@@ -7768,8 +7768,7 @@ public final class L2PcInstance extends L2Playable
 				statement.setInt(1, getObjectId());
 				statement.setInt(2, newSkill.getId());
 				statement.setInt(3, newSkill.getLevel());
-				statement.setString(4, newSkill.getName());
-				statement.setInt(5, classIndex);
+				statement.setInt(4, classIndex);
 				statement.execute();
 				statement.close();
 			}
