@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
@@ -994,7 +995,17 @@ public class ItemTable
 			_item.setItemLootShedule(null);
 		}
 	}
-	
+
+	public Collection <Integer> getAllArmorsId()
+	{
+		return _armors.keySet();
+	}
+
+	public Collection <Integer> getAllWeaponsId()
+	{
+		return _weapons.keySet();
+	}
+
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{

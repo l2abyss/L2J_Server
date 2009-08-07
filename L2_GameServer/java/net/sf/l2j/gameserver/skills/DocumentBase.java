@@ -147,8 +147,8 @@ abstract class DocumentBase
             else if ("basemul".equalsIgnoreCase(n.getNodeName())) attachFunc(n, template, "BaseMul", condition);
             else if ("div".equalsIgnoreCase(n.getNodeName())) attachFunc(n, template, "Div", condition);
             else if ("set".equalsIgnoreCase(n.getNodeName())) attachFunc(n, template, "Set", condition);
-            else if ("enchant".equalsIgnoreCase(n.getNodeName())) attachFunc(n, template, "Enchant",
-                                                                             condition);
+            else if ("enchant".equalsIgnoreCase(n.getNodeName())) attachFunc(n, template, "Enchant", condition);
+            else if ("enchanthp".equalsIgnoreCase(n.getNodeName())) attachFunc(n, template, "EnchantHp", condition);
             //else if ("skill".equalsIgnoreCase(n.getNodeName())) attachSkill(n, template, condition);
             else if ("effect".equalsIgnoreCase(n.getNodeName()))
             {

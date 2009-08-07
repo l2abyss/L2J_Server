@@ -40,6 +40,7 @@ import net.sf.l2j.gameserver.datatables.CharNameTable;
 import net.sf.l2j.gameserver.datatables.CharTemplateTable;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.datatables.DoorTable;
+import net.sf.l2j.gameserver.datatables.EnchantHPBonusData;
 import net.sf.l2j.gameserver.datatables.EventDroplist;
 import net.sf.l2j.gameserver.datatables.ExtractableItemsData;
 import net.sf.l2j.gameserver.datatables.ExtractableSkillsData;
@@ -229,6 +230,7 @@ public class GameServer
 		SummonItemsData.getInstance();
 		ZoneManager.getInstance();
 		MerchantPriceConfigTable.getInstance().loadInstances();
+		EnchantHPBonusData.getInstance();
 		TradeController.getInstance();
 		InstanceManager.getInstance();
 		
