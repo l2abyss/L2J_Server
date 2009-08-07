@@ -632,9 +632,9 @@ public class RecipeController
 			}
 			else
 			{
-				_player.sendMessage("Item(s) failed to create");
+				_player.sendPacket(new SystemMessage(SystemMessageId.ITEM_MIXING_FAILED));
 				if (_target != _player)
-					_target.sendMessage("Item(s) failed to create");
+					_target.sendPacket(new SystemMessage(SystemMessageId.ITEM_MIXING_FAILED));
 				updateMakeInfo(false);
 			}
 			// update load and mana bar of craft window
@@ -790,6 +790,7 @@ public class RecipeController
 			L2RecipeInstance[] recipes = _recipeList.getRecipes();
 			Inventory inv = _target.getInventory();
 			List<TempItem> materials = new FastList<TempItem>();
+			SystemMessage sm;
 			
 			for (L2RecipeInstance recipe : recipes)
 			{
@@ -798,13 +799,16 @@ public class RecipeController
 				if (quantity > 0)
 				{
 					L2ItemInstance item = inv.getItemByItemId(recipe.getItemId());
+					long itemQuantityAmount = item == null ? 0 : item.getCount();
 					
 					// check materials
 					if (item == null || item.getCount() < quantity)
 					{
-						_target.sendMessage("You dont have the right elements for making this item"
-								+ ((_recipeList.isConsumable() && Config.RATE_CONSUMABLE_COST != 1) ? ".\nDue to server rates you need "
-										+ Config.RATE_CONSUMABLE_COST + "x more material than listed in recipe" : ""));
+						sm = new SystemMessage(SystemMessageId.MISSING_S2_S1_TO_CREATE);
+						sm.addItemName(recipe.getItemId());
+						sm.addItemNumber(recipe.getQuantity() - itemQuantityAmount);
+						_target.sendPacket(sm);
+
 						abort();
 						return null;
 					}
@@ -821,6 +825,10 @@ public class RecipeController
 				for (TempItem tmp : materials)
 				{
 					inv.destroyItemByItemId("Manufacture", tmp.getItemId(), tmp.getQuantity(), _target, _player);
+					sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+					sm.addItemName(tmp.getItemId());
+					sm.addItemNumber(tmp.getQuantity());
+					_target.sendPacket(sm);
 				}
 			}
 			return materials;
