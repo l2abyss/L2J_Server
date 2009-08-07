@@ -362,7 +362,7 @@ public class LoginServerThread extends Thread
 			}
 			catch (InterruptedException e)
 			{
-				//
+				return; // never swallow an interrupt!
 			}
 		}
 	}
