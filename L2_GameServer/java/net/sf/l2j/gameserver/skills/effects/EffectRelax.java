@@ -90,8 +90,7 @@ public class EffectRelax extends L2Effect
 		{
 			if (getSkill().isToggle())
 			{
-				getEffected().sendMessage("Fully rested. Effect of "
-				        + getSkill().getName() + " has been removed.");
+				getEffected().sendPacket(new SystemMessage(SystemMessageId.SKILL_DEACTIVATED_HP_FULL));
 				retval = false;
 			}
 		}
