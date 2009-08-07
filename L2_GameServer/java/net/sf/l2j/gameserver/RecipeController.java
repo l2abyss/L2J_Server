@@ -34,8 +34,8 @@ import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2ManufactureItem;
 import net.sf.l2j.gameserver.model.L2RecipeInstance;
-import net.sf.l2j.gameserver.model.L2RecipeStatInstance;
 import net.sf.l2j.gameserver.model.L2RecipeList;
+import net.sf.l2j.gameserver.model.L2RecipeStatInstance;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
@@ -132,9 +132,8 @@ public class RecipeController
 			player.sendPacket(response);
 			return;
 		}
-		
-		SystemMessage sm = new SystemMessage(SystemMessageId.CANT_ALTER_RECIPEBOOK_WHILE_CRAFTING);
-		player.sendPacket(sm);
+
+		player.sendPacket(new SystemMessage(SystemMessageId.CANT_ALTER_RECIPEBOOK_WHILE_CRAFTING));
 	}
 	
 	public synchronized void requestMakeItemAbort(L2PcInstance player)
@@ -417,7 +416,6 @@ public class RecipeController
 			
 			if (_player.isAlikeDead())
 			{
-				_player.sendMessage("Dead people don't craft.");
 				_player.sendPacket(ActionFailed.STATIC_PACKET);
 				abort();
 				return;
@@ -425,7 +423,6 @@ public class RecipeController
 			
 			if (_target.isAlikeDead())
 			{
-				_target.sendMessage("Dead customers can't use manufacture.");
 				_target.sendPacket(ActionFailed.STATIC_PACKET);
 				abort();
 				return;
@@ -433,7 +430,6 @@ public class RecipeController
 			
 			if (_target.isProcessingTransaction())
 			{
-				_target.sendMessage("You are busy.");
 				_target.sendPacket(ActionFailed.STATIC_PACKET);
 				abort();
 				return;
@@ -441,10 +437,6 @@ public class RecipeController
 			
 			if (_player.isProcessingTransaction())
 			{
-				if (_player != _target)
-				{
-					_target.sendMessage("Manufacturer " + _player.getName() + " is busy.");
-				}
 				_player.sendPacket(ActionFailed.STATIC_PACKET);
 				abort();
 				return;
@@ -453,7 +445,6 @@ public class RecipeController
 			// validate recipe list
 			if (_recipeList.getRecipes().length == 0)
 			{
-				_player.sendMessage("No such recipe");
 				_player.sendPacket(ActionFailed.STATIC_PACKET);
 				abort();
 				return;
@@ -462,7 +453,6 @@ public class RecipeController
 			// validate skill level
 			if (_recipeList.getLevel() > _skillLevel)
 			{
-				_player.sendMessage("Need skill level " + _recipeList.getLevel());
 				_player.sendPacket(ActionFailed.STATIC_PACKET);
 				abort();
 				return;
@@ -632,8 +622,21 @@ public class RecipeController
 			}
 			else
 			{
-				_player.sendPacket(new SystemMessage(SystemMessageId.ITEM_MIXING_FAILED));
 				if (_target != _player)
+				{
+					SystemMessage msg = new SystemMessage(SystemMessageId.CREATION_OF_S2_FOR_C1_AT_S3_ADENA_FAILED);
+					msg.addString(_target.getName());
+					msg.addItemName(_recipeList.getItemId());
+					msg.addItemNumber(_price);
+					_player.sendPacket(msg);
+
+					msg = new SystemMessage(SystemMessageId.C1_FAILED_TO_CREATE_S2_FOR_S3_ADENA);
+					msg.addString(_player.getName());
+					msg.addItemName(_recipeList.getItemId());
+					msg.addItemNumber(_price);
+					_target.sendPacket(msg);
+				}
+				else
 					_target.sendPacket(new SystemMessage(SystemMessageId.ITEM_MIXING_FAILED));
 				updateMakeInfo(false);
 			}
@@ -937,6 +940,41 @@ public class RecipeController
 			
 			// inform customer of earned item
 			SystemMessage sm = null;
+			if (_target != _player)
+			{
+				// inform manufacturer of earned profit
+				if (itemCount == 1)
+				{
+					sm = new SystemMessage(SystemMessageId.S2_CREATED_FOR_C1_FOR_S3_ADENA);
+					sm.addString(_target.getName());
+					sm.addItemName(itemId);
+					sm.addItemNumber(_price);
+					_player.sendPacket(sm);
+
+					sm = new SystemMessage(SystemMessageId.C1_CREATED_S2_FOR_S3_ADENA);
+					sm.addString(_player.getName());
+					sm.addItemName(itemId);
+					sm.addItemNumber(_price);
+					_target.sendPacket(sm);
+				}
+				else
+				{
+					sm = new SystemMessage(SystemMessageId.S2_S3_S_CREATED_FOR_C1_FOR_S4_ADENA);
+					sm.addString(_target.getName());
+					sm.addNumber(itemCount);
+					sm.addItemName(itemId);
+					sm.addItemNumber(_price);
+					_player.sendPacket(sm);
+
+					sm = new SystemMessage(SystemMessageId.C1_CREATED_S2_S3_S_FOR_S4_ADENA);
+					sm.addString(_player.getName());
+					sm.addNumber(itemCount);
+					sm.addItemName(itemId);
+					sm.addItemNumber(_price);
+					_target.sendPacket(sm);
+				}
+			}
+
 			if (itemCount > 1)
 			{
 				sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
@@ -950,15 +988,7 @@ public class RecipeController
 				sm.addItemName(itemId);
 				_target.sendPacket(sm);
 			}
-			
-			if (_target != _player)
-			{
-				// inform manufacturer of earned profit
-				sm = new SystemMessage(SystemMessageId.EARNED_ADENA);
-				sm.addItemNumber(_price);
-				_player.sendPacket(sm);
-			}
-			
+
 			if (Config.ALT_GAME_CREATION)
 			{
 				int recipeLevel = _recipeList.getLevel();
