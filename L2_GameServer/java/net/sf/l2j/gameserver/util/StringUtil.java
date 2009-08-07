@@ -286,7 +286,10 @@ public final class StringUtil
 		
 		for (final String string : strings)
 		{
-			length += string.length();
+			if (string == null)
+				length += 4;
+			else
+				length += string.length();
 		}
 		
 		return length;
