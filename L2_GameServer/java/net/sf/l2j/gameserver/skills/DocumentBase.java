@@ -711,6 +711,11 @@ abstract class DocumentBase
 				int skill_lvl = Integer.decode(getValue(val.split(",")[1], template));
 				cond = joinAnd(cond, new ConditionTargetActiveSkillId(skill_id, skill_lvl));
 			}
+			else if ("abnormal".equalsIgnoreCase(a.getNodeName()))
+			{
+				int abnormalId = Integer.decode(getValue(a.getNodeValue(), template));
+				cond = joinAnd(cond, new ConditionTargetAbnormal(abnormalId));
+			}
             else if("mindistance".equalsIgnoreCase(a.getNodeName()))
             {
             	int distance = Integer.decode(getValue(a.getNodeValue(),null));
