@@ -222,10 +222,6 @@ public class Shutdown extends Thread
 				// ignore
 			}
 			
-			// last byebye, save all data and quit this server
-			// logging doesnt work here :(
-			saveData();
-			
 			try
 			{
 				LoginServerThread.getInstance().interrupt();
@@ -234,6 +230,10 @@ public class Shutdown extends Thread
 			{
 				// ignore
 			}
+			
+			// last byebye, save all data and quit this server
+			// logging doesnt work here :(
+			saveData();
 			
 			// saveData sends messages to exit players, so sgutdown selector after it
 			try

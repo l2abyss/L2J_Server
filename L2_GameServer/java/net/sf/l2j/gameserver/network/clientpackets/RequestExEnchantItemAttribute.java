@@ -49,7 +49,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 		if (player == null)
 			return;
 
-		if (_objectId == 0xFFFF)
+		if (_objectId == 0xFFFFFFFF)
 		{
 			// Player canceled enchant
 			player.setActiveEnchantAttrItem(null);
@@ -94,10 +94,13 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			return;
 		}
 
-		//can't enchant rods, shadow items, adventurers', hero items
-		if (item.getItem().getItemType() == L2WeaponType.ROD || item.isShadowItem() || item.isHeroItem() || item.isTimeLimitedItem()
-		|| (item.getItemId() >= 7816 && item.getItemId() <= 7831) || (item.getItem().getItemType() == L2WeaponType.NONE) ||
-			item.getItem().getItemGradeSPlus() != L2Item.CRYSTAL_S || item.getItem().getBodyPart() == L2Item.SLOT_BACK)
+		//can't enchant rods, shadow items, adventurers', hero items, cloaks, bracelets, underwear (e.g. shirt), belt, necklace, earring, ring
+		if (item.getItem().getItemType() == L2WeaponType.ROD || item.isShadowItem() || item.isHeroItem() || item.isTimeLimitedItem() ||
+			(item.getItemId() >= 7816 && item.getItemId() <= 7831) || (item.getItem().getItemType() == L2WeaponType.NONE) ||
+			item.getItem().getItemGradeSPlus() != L2Item.CRYSTAL_S || item.getItem().getBodyPart() == L2Item.SLOT_BACK ||
+			item.getItem().getBodyPart() == L2Item.SLOT_R_BRACELET || item.getItem().getBodyPart() == L2Item.SLOT_UNDERWEAR ||
+			item.getItem().getBodyPart() == L2Item.SLOT_BELT || item.getItem().getBodyPart() == L2Item.SLOT_NECK ||
+			item.getItem().getBodyPart() == L2Item.SLOT_R_EAR || item.getItem().getBodyPart() == L2Item.SLOT_R_FINGER)
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.ELEMENTAL_ENHANCE_REQUIREMENT_NOT_SUFFICIENT));
 			player.setActiveEnchantAttrItem(null);
