@@ -1440,14 +1440,14 @@ public abstract class Inventory extends ItemContainer
 	@Override
 	protected void refreshWeight()
 	{
-		int weight = 0;
+		long weight = 0;
 
 		for (L2ItemInstance item : _items)
 		{
 			if (item != null && item.getItem() != null)
 				weight += item.getItem().getWeight() * item.getCount();
 		}
-		_totalWeight = weight;
+		_totalWeight = (int)Math.min(weight, Integer.MAX_VALUE);
 	}
 
 	/**
