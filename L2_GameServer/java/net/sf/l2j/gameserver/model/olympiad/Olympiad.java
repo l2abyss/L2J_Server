@@ -1420,7 +1420,7 @@ public class Olympiad
 		
 	}
 	
-	public int getNoblessePasses(L2PcInstance player)
+	public int getNoblessePasses(L2PcInstance player, boolean clear)
 	{
 		if (_period != 1 || _noblesRank.isEmpty())
 			return 0;
@@ -1452,9 +1452,12 @@ public class Olympiad
 			default:
 				points += Config.ALT_OLY_RANK5_POINTS;
 		}
-		
-		noble.set(POINTS, 0);
-		updateNobleStats(objId, noble);
+
+		if (clear)
+		{
+			noble.set(POINTS, 0);
+			updateNobleStats(objId, noble);
+		}
 		
 		points *= Config.ALT_OLY_GP_PER_POINT;
 		
