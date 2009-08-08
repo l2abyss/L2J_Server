@@ -350,6 +350,7 @@ public final class Config
 	public static boolean LOG_SKILL_ENCHANTS;
 	public static boolean GMAUDIT;
 	public static boolean LOG_GAME_DAMAGE;
+	public static int LOG_GAME_DAMAGE_THRESHOLD;
 	public static boolean DEBUG;
 	public static boolean PACKET_HANDLER_DEBUG;
 	public static boolean ASSERT;
@@ -1395,6 +1396,7 @@ public final class Config
 					LOG_SKILL_ENCHANTS = Boolean.parseBoolean(General.getProperty("LogSkillEnchants", "false"));
 					GMAUDIT = Boolean.parseBoolean(General.getProperty("GMAudit", "False"));
 					LOG_GAME_DAMAGE = Boolean.parseBoolean(General.getProperty("LogGameDamage", "False"));
+					LOG_GAME_DAMAGE_THRESHOLD = Integer.parseInt(General.getProperty("LogGameDamageThreshold", "5000"));
 					DEBUG = Boolean.parseBoolean(General.getProperty("Debug", "false"));
 					PACKET_HANDLER_DEBUG = Boolean.parseBoolean(General.getProperty("PacketHandlerDebug", "false"));
 					ASSERT = Boolean.parseBoolean(General.getProperty("Assert", "false"));

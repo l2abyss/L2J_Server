@@ -198,6 +198,8 @@ public class GameServer
 		_threadpools = ThreadPoolManager.getInstance();
 		
 		new File(Config.DATAPACK_ROOT, "data/crests").mkdirs();
+		if (Config.LOG_GAME_DAMAGE)
+			new File("log/game").mkdirs();
 		
 		// load script engines
 		L2ScriptEngineManager.getInstance();
