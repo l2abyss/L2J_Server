@@ -196,6 +196,7 @@
 
         
         <mkdir dir="${build.dist.game}/log" />
+        <mkdir dir="${build.dist.game}/log/game" />
     	<mkdir dir="${build.dist.login}/log" />
 
         <mkdir dir="${build.dist.game}/config" />
