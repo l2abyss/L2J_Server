@@ -28,7 +28,6 @@ import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
-import net.sf.l2j.gameserver.Announcements;
 import net.sf.l2j.gameserver.CastleUpdater;
 import net.sf.l2j.gameserver.SevenSigns;
 import net.sf.l2j.gameserver.ThreadPoolManager;
@@ -515,7 +514,6 @@ public class Castle
 					}
 				}
 				oldOwner.setHasCastle(0); // Unset has castle flag for old owner
-				Announcements.getInstance().announceToAll(oldOwner.getName() + " has lost " + getName() + " castle!");
 			}
 		}
 		
@@ -550,7 +548,6 @@ public class Castle
 				member.sendSkillList();
 			}
 			clan.setHasCastle(0);
-			Announcements.getInstance().announceToAll(clan.getName() + " has lost " + getName() + " castle");
 			clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 		}
 		
@@ -1018,7 +1015,6 @@ public class Castle
 			if (clan != null)
 			{
 				clan.setHasCastle(getCastleId()); // Set has castle flag for new owner
-				Announcements.getInstance().announceToAll(clan.getName() + " has taken " + getName() + " castle!");
 				clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 				clan.broadcastToOnlineMembers(new PlaySound(1, "Siege_Victory", 0, 0, 0, 0, 0));
 				ThreadPoolManager.getInstance().scheduleGeneral(new CastleUpdater(clan, 1), 3600000); // Schedule owner tasks to start running
