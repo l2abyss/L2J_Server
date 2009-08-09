@@ -312,6 +312,7 @@ public class NpcTable
 	
 	private void fillNpcTable(ResultSet NpcData, boolean customData) throws Exception
 	{
+		int count = 0;
 		while (NpcData.next())
 		{
 			StatsSet npcDat = new StatsSet();
@@ -392,12 +393,13 @@ public class NpcTable
 			template.addVulnerability(Stats.DAGGER_WPN_VULN, 1);
 			
 			_npcs.put(id, template);
+			count++;
 		}
 		
 		if (!customData)
-			_log.config("NpcTable: Loaded " + _npcs.size() + " NPC templates.");
+			_log.config("NpcTable: (Re)Loaded " + count + " NPC template(s).");
 		else
-			_log.config("NpcTable: Loaded " + _npcs.size() + " custom NPC templates.");
+			_log.config("NpcTable: (Re)Loaded " + count + " custom NPC template(s).");
 	}
 	
 	public void reloadNpc(int id)
@@ -449,6 +451,7 @@ public class NpcTable
 								"pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "walkspd", "runspd",
 								"faction_id", "faction_range", "isUndead", "absorb_level", "absorb_type", "ss", "bss", "ss_rate", "AI",
 								"drop_herbs" }) + " FROM custom_npc WHERE id=?");
+				st.setInt(1, id);
 				rs = st.executeQuery();
 				fillNpcTable(rs, true);
 			}
@@ -526,14 +529,30 @@ public class NpcTable
 				}
 			}
 			
-			final StringBuilder sbQuery = new StringBuilder(sbValues.length() + 28);
-			sbQuery.append("UPDATE npc SET ");
-			sbQuery.append(sbValues.toString());
-			sbQuery.append(" WHERE id = ?");
-			PreparedStatement statement = con.prepareStatement(sbQuery.toString());
-			statement.setInt(1, npc.getInteger("npcId"));
-			statement.execute();
-			statement.close();
+			
+			int updated = 0;
+			if (Config.CUSTOM_NPC_TABLE)
+			{
+				final StringBuilder sbQuery = new StringBuilder(sbValues.length() + 28);
+				sbQuery.append("UPDATE custom_npc SET ");
+				sbQuery.append(sbValues.toString());
+				sbQuery.append(" WHERE id = ?");
+				PreparedStatement statement = con.prepareStatement(sbQuery.toString());
+				statement.setInt(1, npc.getInteger("npcId"));
+				updated = statement.executeUpdate();
+				statement.close();
+			}
+			if (updated == 0)
+			{
+				final StringBuilder sbQuery = new StringBuilder(sbValues.length() + 28);
+				sbQuery.append("UPDATE npc SET ");
+				sbQuery.append(sbValues.toString());
+				sbQuery.append(" WHERE id = ?");
+				PreparedStatement statement = con.prepareStatement(sbQuery.toString());
+				statement.setInt(1, npc.getInteger("npcId"));
+				statement.executeUpdate();
+				statement.close();
+			}
 		}
 		catch (Exception e)
 		{
