@@ -61,7 +61,6 @@ public class L2LoginServer
 		return _instance;
 	}
 
-	@SuppressWarnings("unchecked")
     public L2LoginServer()
 	{
 		Server.serverMode = Server.MODE_LOGINSERVER;

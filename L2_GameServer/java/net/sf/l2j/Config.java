@@ -743,7 +743,6 @@ public final class Config
 	public static String INTERNAL_HOSTNAME;
 	public static String EXTERNAL_HOSTNAME;
 	public static String ROUTER_HOSTNAME;
-	public static int PATH_NODE_RADIUS;
 	public static int NEW_NODE_ID;
 	public static int SELECTED_NODE_ID;
 	public static int LINKED_NODE_ID;
@@ -752,13 +751,8 @@ public final class Config
 	public static String SERVER_VERSION;
 	public static String SERVER_BUILD_DATE;
 	public static String DATAPACK_VERSION;
-	public static String NONDROPPABLE_ITEMS;
-	public static List<Integer> LIST_NONDROPPABLE_ITEMS = new FastList<Integer>();
 	public static int PVP_NORMAL_TIME;
 	public static int PVP_PVP_TIME;
-	public static boolean COUNT_PACKETS = false;
-	public static boolean DUMP_PACKET_COUNTS = false;
-	public static int DUMP_INTERVAL_SECONDS = 60;
 	public static enum IdFactoryType
 	{
 		Compaction,

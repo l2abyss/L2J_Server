@@ -798,8 +798,7 @@ public abstract class L2Character extends L2Object
 			sendPacket(new SystemMessage(SystemMessageId.CANNOT_ATTACK_WITH_FISHING_POLE));
 			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 
-            ActionFailed af = ActionFailed.STATIC_PACKET;
-            sendPacket(af);
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 

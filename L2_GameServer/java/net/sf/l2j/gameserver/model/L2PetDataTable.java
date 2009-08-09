@@ -388,8 +388,7 @@ public class L2PetDataTable
 				|| npcId == 16042 // White Fenrir Wolf
 				|| npcId == 16038 // Red Wind Strider
 				|| npcId == 16039 // Red Star Strider
-				|| npcId == 16040 // Red Twilight Strider
-				|| npcId == 16040; // horse
+				|| npcId == 16040; // Red Twilight Strider
 	}
 	
 	@SuppressWarnings("synthetic-access")

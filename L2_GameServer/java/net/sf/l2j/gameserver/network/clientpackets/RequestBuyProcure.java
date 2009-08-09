@@ -46,7 +46,7 @@ public class RequestBuyProcure extends L2GameClientPacket {
 	private static final int BATCH_LENGTH = 12; // length of the one item
 
 	private int _listId;
-	private Procure[] _items = null;;
+	private Procure[] _items = null;
 
 	@Override
 	protected void readImpl()
