@@ -115,10 +115,11 @@ public class L2DoormenInstance extends L2NpcInstance
 		{
 			html.setFile("data/html/doormen/"+ getTemplate().npcId + "-no.htm");
 		}
-		else if (isUnderSiege())
-		{
-			html.setFile("data/html/doormen/"+ getTemplate().npcId + "-busy.htm");
-		}
+// TODO: uncomment after siege teleporters will be done
+//		else if (isUnderSiege())
+//		{
+//			html.setFile("data/html/doormen/"+ getTemplate().npcId + "-busy.htm");
+//		}
 		else
 		{
 			html.setFile("data/html/doormen/"+ getTemplate().npcId + ".htm");
