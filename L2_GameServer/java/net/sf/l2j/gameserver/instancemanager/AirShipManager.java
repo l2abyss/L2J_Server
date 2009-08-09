@@ -33,22 +33,18 @@ import net.sf.l2j.gameserver.templates.chars.L2CharTemplate;
 public class AirShipManager
 {
 	private static final Logger _log = Logger.getLogger(AirShipManager.class.getName());
-	private static AirShipManager _instance = null;
+	
 	private L2AirShipInstance _airShip = null;
 	private ArrayList<L2AirShipControllerInstance> _atcs = new ArrayList<L2AirShipControllerInstance>(2);
-	public static AirShipManager getInstance()
+	
+	public static final AirShipManager getInstance()
 	{
-		if (_instance == null)
-		{
-			_instance = new AirShipManager();
-			_instance.load();
-		}
-		
-		return _instance;
+		return SingletonHolder._instance;
 	}
 	
 	private AirShipManager()
 	{
+		load();
 	}
 	
 	private final void load()
@@ -179,4 +175,9 @@ public class AirShipManager
 		return _atcs;
 	}
 
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final AirShipManager _instance = new AirShipManager();
+	}
 }
