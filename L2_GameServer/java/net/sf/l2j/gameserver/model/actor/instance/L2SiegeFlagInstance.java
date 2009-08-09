@@ -151,9 +151,13 @@ public class L2SiegeFlagInstance extends L2Npc
 	@Override
 	public SiegeFlagStatus getStatus()
 	{
-		if (!(super.getStatus() instanceof SiegeFlagStatus))
-			setStatus(new SiegeFlagStatus(this));
 		return (SiegeFlagStatus) super.getStatus();
+	}
+	
+	@Override
+	public void initCharStatus()
+	{
+		setStatus(new SiegeFlagStatus(this));
 	}
 	
     @Override

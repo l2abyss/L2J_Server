@@ -47,15 +47,18 @@ public class L2SiegeGuardInstance extends L2Attackable
     public L2SiegeGuardInstance(int objectId, L2NpcTemplate template)
     {
         super(objectId, template);
-        getKnownList(); //inits the knownlist
     }
 
     @Override
 	public SiegeGuardKnownList getKnownList()
     {
-    	if(!(super.getKnownList() instanceof SiegeGuardKnownList))
-    		setKnownList(new SiegeGuardKnownList(this));
     	return (SiegeGuardKnownList)super.getKnownList();
+    }
+    
+	@Override
+    public void initKnownList()
+    {
+		setKnownList(new SiegeGuardKnownList(this));
     }
 
 	@Override

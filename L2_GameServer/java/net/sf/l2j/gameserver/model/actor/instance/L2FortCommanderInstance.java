@@ -36,7 +36,6 @@ public class L2FortCommanderInstance extends L2FortSiegeGuardInstance
 	public L2FortCommanderInstance(int objectId, L2NpcTemplate template)
     {
         super(objectId, template);
-        getKnownList(); // init knownlist
         _canTalk = true;
     }
 

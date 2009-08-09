@@ -190,9 +190,14 @@ public class L2AirShipInstance extends L2Character
 	public L2AirShipInstance(int objectId, L2CharTemplate template)
 	{
 		super(objectId, template);
-		super.setKnownList(new AirShipKnownList(this));
 		setAI(new L2CharacterAI(new AIAccessor()));
 	}	
+	
+	@Override
+    public void initKnownList()
+    {
+		setKnownList(new AirShipKnownList(this));
+    }
 	
 	/**
 	 * @param x

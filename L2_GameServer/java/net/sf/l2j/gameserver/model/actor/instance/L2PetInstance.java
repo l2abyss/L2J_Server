@@ -234,7 +234,6 @@ public class L2PetInstance extends L2Summon
 	public L2PetInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2ItemInstance control)
 	{
 		super(objectId, template, owner);
-        super.setStat(new PetStat(this));
 
         _controlItemId = control.getObjectId();
 
@@ -260,10 +259,14 @@ public class L2PetInstance extends L2Summon
     @Override
 	public PetStat getStat()
     {
-    	if(!(super.getStat() instanceof PetStat))
-    		setStat(new PetStat(this));
     	return (PetStat)super.getStat();
     }
+	
+	@Override
+	public void initCharStat()
+	{
+		setStat(new PetStat(this));
+	}
 
     @Override
 	public double getLevelMod() { return (100.0 - 11 + getLevel()) / 100.0; }

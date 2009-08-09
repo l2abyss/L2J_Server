@@ -33,9 +33,6 @@ public abstract class L2Decoy extends L2Character
     public L2Decoy(int objectId, L2CharTemplate template, L2PcInstance owner)
     {
         super(objectId, template);
-        getKnownList();
-        getStat();
-        getStatus();
         _owner = owner;
         setXYZInvisible(owner.getX(), owner.getY(), owner.getZ());
     }

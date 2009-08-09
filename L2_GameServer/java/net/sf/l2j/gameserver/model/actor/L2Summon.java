@@ -92,9 +92,6 @@ public abstract class L2Summon extends L2Playable
 	public L2Summon(int objectId, L2NpcTemplate template, L2PcInstance owner)
 	{
 		super(objectId, template);
-        getKnownList();	// init knownlist
-        getStat();			// init stats
-        getStatus();		// init status
 
         setInstanceId(owner.getInstanceId()); // set instance to same as owner
         
@@ -130,26 +127,38 @@ public abstract class L2Summon extends L2Playable
     @Override
 	public final SummonKnownList getKnownList()
     {
-    	if(!(super.getKnownList() instanceof SummonKnownList))
-    		setKnownList(new SummonKnownList(this));
     	return (SummonKnownList)super.getKnownList();
+    }
+    
+	@Override
+    public void initKnownList()
+    {
+		setKnownList(new SummonKnownList(this));
     }
 
     @Override
 	public SummonStat getStat()
     {
-    	if(!(super.getStat() instanceof SummonStat))
-    		setStat(new SummonStat(this));
     	return (SummonStat)super.getStat();
     }
+	
+	@Override
+	public void initCharStat()
+	{
+		setStat(new SummonStat(this));
+	}
 
     @Override
 	public SummonStatus getStatus()
     {
-    	if(!(super.getStatus() instanceof SummonStatus))
-    		setStatus(new SummonStatus(this));
     	return (SummonStatus)super.getStatus();
     }
+	
+	@Override
+	public void initCharStatus()
+	{
+		setStatus(new SummonStatus(this));
+	}
 
 	@Override
 	public L2CharacterAI getAI()

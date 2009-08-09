@@ -93,35 +93,44 @@ public class L2StaticObjectInstance extends L2Character
     public L2StaticObjectInstance(int objectId,L2CharTemplate template, int staticId)
     {
     	super(objectId, template);
-    	getKnownList();
-    	getStat();
-    	getStatus();
     	_staticObjectId = staticId;
     }
 
     @Override
 	public final StaticObjectKnownList getKnownList()
     {
-    	if(!(super.getKnownList() instanceof StaticObjectKnownList))
-    		setKnownList(new StaticObjectKnownList(this));
     	return (StaticObjectKnownList)super.getKnownList();
+    }
+    
+	@Override
+    public void initKnownList()
+    {
+		setKnownList(new StaticObjectKnownList(this));
     }
 
     @Override
 	public final StaticObjStat getStat()
     {
-    	if(!(super.getStat() instanceof StaticObjStat))
-    		setStat(new StaticObjStat(this));
     	return (StaticObjStat)super.getStat();
     }
+	
+	@Override
+	public void initCharStat()
+	{
+		setStat(new StaticObjStat(this));
+	}
 
     @Override
 	public final StaticObjStatus getStatus()
     {
-    	if(!(super.getStatus() instanceof StaticObjStatus))
-    		setStatus(new StaticObjStatus(this));
     	return (StaticObjStatus)super.getStatus();
     }
+	
+	@Override
+	public void initCharStatus()
+	{
+		setStatus(new StaticObjStatus(this));
+	}
 
     public int getType()
     {

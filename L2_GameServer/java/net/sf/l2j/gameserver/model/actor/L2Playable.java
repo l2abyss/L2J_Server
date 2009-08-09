@@ -57,34 +57,43 @@ public abstract class L2Playable extends L2Character
 	public L2Playable(int objectId, L2CharTemplate template)
 	{
 		super(objectId, template);
-		getKnownList();	// init knownlist
-        getStat();			// init stats
-        getStatus();		// init status
 	}
 
     @Override
 	public PlayableKnownList getKnownList()
     {
-    	if(!(super.getKnownList() instanceof PlayableKnownList))
-    		setKnownList(new PlayableKnownList(this));
     	return (PlayableKnownList)super.getKnownList();
+    }
+    
+	@Override
+    public void initKnownList()
+    {
+		setKnownList(new PlayableKnownList(this));
     }
 
     @Override
 	public PlayableStat getStat()
     {
-    	if(!(super.getStat() instanceof PlayableStat))
-    		setStat(new PlayableStat(this));
     	return (PlayableStat)super.getStat();
     }
+	
+	@Override
+	public void initCharStat()
+	{
+		setStat(new PlayableStat(this));
+	}
 
     @Override
 	public PlayableStatus getStatus()
     {
-    	if(!(super.getStatus() instanceof PlayableStatus))
-    		setStatus(new PlayableStatus(this));
     	return (PlayableStatus)super.getStatus();
     }
+	
+	@Override
+	public void initCharStatus()
+	{
+		setStatus(new PlayableStatus(this));
+	}
 
 	@Override
 	public boolean doDie(L2Character killer)

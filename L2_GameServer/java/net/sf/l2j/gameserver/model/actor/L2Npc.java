@@ -242,9 +242,6 @@ public class L2Npc extends L2Character
 		// Call the L2Character constructor to set the _template of the L2Character, copy skills from template to object
 		// and link _calculators to NPC_STD_CALCULATOR
 		super(objectId, template);
-		getKnownList(); // init knownlist
-		getStat(); // init stats
-		getStatus(); // init status
 		initCharStatusUpdateValues();
 
 		// initialize the "current" equipment
@@ -269,25 +266,37 @@ public class L2Npc extends L2Character
 	@Override
 	public NpcKnownList getKnownList()
 	{
-		if (!(super.getKnownList() instanceof NpcKnownList))
-			setKnownList(new NpcKnownList(this));
 		return (NpcKnownList) super.getKnownList();
 	}
+	
+	@Override
+    public void initKnownList()
+    {
+		setKnownList(new NpcKnownList(this));
+    }
 
 	@Override
 	public NpcStat getStat()
 	{
-		if (!(super.getStat() instanceof NpcStat))
-			setStat(new NpcStat(this));
 		return (NpcStat) super.getStat();
+	}
+	
+	@Override
+	public void initCharStat()
+	{
+		setStat(new NpcStat(this));
 	}
 
 	@Override
 	public NpcStatus getStatus()
 	{
-		if (!(super.getStatus() instanceof NpcStatus))
-			setStatus(new NpcStatus(this));
 		return (NpcStatus) super.getStatus();
+	}
+	
+	@Override
+	public void initCharStatus()
+	{
+		setStatus(new NpcStatus(this));
 	}
 
 	/** Return the L2NpcTemplate of the L2NpcInstance. */

@@ -21,7 +21,6 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2WorldRegion;
 import net.sf.l2j.gameserver.model.actor.L2Character;
-import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.util.Point3D;
 
 public class ObjectPosition
@@ -68,15 +67,19 @@ public class ObjectPosition
         catch (Exception e)
         {
             _log.warning("Object Id at bad coords: (x: " + getX() + ", y: " + getY() + ", z: " + getZ() + ").");
-            if (getActiveObject() instanceof L2Character)
-                getActiveObject().decayMe();
-            else if (getActiveObject() instanceof L2PcInstance)
-            {
-                //((L2PcInstance)obj).deleteMe();
-                ((L2PcInstance)getActiveObject()).teleToLocation(0,0,0, false);
-                ((L2PcInstance)getActiveObject()).sendMessage("Error with your coords, Please ask a GM for help!");
-            }
+            badCoords();
         }
+    }
+    
+    /**
+     * Called on setXYZ exception.<BR><BR>
+     * <B><U> Overwritten in </U> :</B><BR><BR>
+     * <li> CharPosition</li>
+     * <li> PcPosition</li><BR>
+     */
+    protected void badCoords()
+    {
+    	
     }
 
     /**
@@ -128,7 +131,7 @@ public class ObjectPosition
 
     // =========================================================
     // Property - Public
-    public final L2Object getActiveObject()
+    public L2Object getActiveObject()
     {
         return _activeObject;
     }
@@ -163,7 +166,7 @@ public class ObjectPosition
     public final void setWorldPosition(Point3D newPosition) { setWorldPosition(newPosition.getX(), newPosition.getY(), newPosition.getZ()); }
 
     public final L2WorldRegion getWorldRegion() { return _worldRegion; }
-    public final void setWorldRegion(L2WorldRegion value)
+    public void setWorldRegion(L2WorldRegion value)
     {
         if(_worldRegion != null && getActiveObject() instanceof L2Character) // confirm revalidation of old region's zones
         {

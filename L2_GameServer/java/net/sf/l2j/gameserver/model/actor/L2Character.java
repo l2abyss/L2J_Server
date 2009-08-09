@@ -83,6 +83,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2TrapInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance.SkillDat;
 import net.sf.l2j.gameserver.model.actor.knownlist.CharKnownList;
+import net.sf.l2j.gameserver.model.actor.position.CharPosition;
 import net.sf.l2j.gameserver.model.actor.stat.CharStat;
 import net.sf.l2j.gameserver.model.actor.status.CharStatus;
 import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
@@ -343,7 +344,8 @@ public abstract class L2Character extends L2Object
 	public L2Character(int objectId, L2CharTemplate template)
 	{
 		super(objectId);
-		getKnownList();
+		initCharStat();
+		initCharStatus();
 
 		// Set its template to the new L2Character
 		_template = template;
@@ -2385,25 +2387,59 @@ public abstract class L2Character extends L2Object
 	@Override
 	public CharKnownList getKnownList()
 	{
-		if(super.getKnownList() == null || !(super.getKnownList() instanceof CharKnownList))
-			setKnownList(new CharKnownList(this));
 		return ((CharKnownList)super.getKnownList());
 	}
+	
+    @Override
+    public void initKnownList()
+    {
+    	setKnownList(new CharKnownList(this));
+    }
 
 	public CharStat getStat()
 	{
-		if (_stat == null) _stat = new CharStat(this);
 		return _stat;
 	}
+    /**
+     * Initializes the CharStat class of the L2Object,
+     * is overwritten in classes that require a different CharStat Type.
+     * 
+     * Removes the need for instanceof checks.
+     */
+    public void initCharStat()
+    {
+    	_stat = new CharStat(this);
+    }
 	public final void setStat(CharStat value) { _stat = value; }
 
 	public CharStatus getStatus()
 	{
-		if (_status == null) _status = new CharStatus(this);
 		return _status;
 	}
+    /**
+     * Initializes the CharStatus class of the L2Object,
+     * is overwritten in classes that require a different CharStatus Type.
+     * 
+     * Removes the need for instanceof checks.
+     */
+    public void initCharStatus()
+    {
+    	_status = new CharStatus(this);
+    }
 	public final void setStatus(CharStatus value) { _status = value; }
-
+	
+	@Override
+	public CharPosition getPosition()
+	{
+		return (CharPosition)super.getPosition();
+	}	
+	
+    @Override
+    public void initPosition()
+    {
+    	setObjectPosition(new CharPosition(this));
+    }
+    
 	public L2CharTemplate getTemplate() { return _template; }
 	/**
 	 * Set the template of the L2Character.<BR><BR>

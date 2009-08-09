@@ -202,9 +202,6 @@ public class L2DoorInstance extends L2Character
 	public L2DoorInstance(int objectId, L2CharTemplate template, int doorId, String name, boolean unlockable)
 	{
 		super(objectId, template);
-		getKnownList(); // init knownlist
-		getStat(); // init stats
-		getStatus(); // init status
 		_doorId = doorId;
 		_name = name;
 		_unlockable = unlockable;
@@ -213,25 +210,37 @@ public class L2DoorInstance extends L2Character
 	@Override
 	public final DoorKnownList getKnownList()
 	{
-		if (!(super.getKnownList() instanceof DoorKnownList))
-			setKnownList(new DoorKnownList(this));
 		return (DoorKnownList) super.getKnownList();
 	}
 	
 	@Override
+    public void initKnownList()
+    {
+		setKnownList(new DoorKnownList(this));
+    }
+	
+	@Override
 	public final DoorStat getStat()
 	{
-		if (!(super.getStat() instanceof DoorStat))
-			setStat(new DoorStat(this));
 		return (DoorStat) super.getStat();
+	}
+	
+	@Override
+	public void initCharStat()
+	{
+		setStat(new DoorStat(this));
 	}
 	
 	@Override
 	public final DoorStatus getStatus()
 	{
-		if (!(super.getStatus() instanceof DoorStatus))
-			setStatus(new DoorStatus(this));
 		return (DoorStatus) super.getStatus();
+	}
+	
+	@Override
+	public void initCharStatus()
+	{
+		setStatus(new DoorStatus(this));
 	}
 	
 	public final boolean isUnlockable()

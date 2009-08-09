@@ -35,16 +35,19 @@ public class L2FortSiegeGuardInstance extends L2Attackable
 	public L2FortSiegeGuardInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
-		getKnownList(); //inits the knownlist
 	}
 
 	@Override
 	public FortSiegeGuardKnownList getKnownList()
 	{
-		if(!(super.getKnownList() instanceof FortSiegeGuardKnownList))
-			setKnownList(new FortSiegeGuardKnownList(this));
 		return (FortSiegeGuardKnownList)super.getKnownList();
 	}
+	
+	@Override
+    public void initKnownList()
+    {
+		setKnownList(new FortSiegeGuardKnownList(this));
+    }
 
 	@Override
 	public L2CharacterAI getAI()

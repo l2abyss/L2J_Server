@@ -282,18 +282,20 @@ public class L2Attackable extends L2Npc
 	public L2Attackable(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
-		getKnownList();
 		_mustGiveExpSp = true;
 	}
 
 	@Override
 	public AttackableKnownList getKnownList()
 	{
-		if (super.getKnownList() == null || !(super.getKnownList() instanceof AttackableKnownList))
-			setKnownList(new AttackableKnownList(this));
-
 		return (AttackableKnownList)super.getKnownList();
 	}
+	
+	@Override
+    public void initKnownList()
+    {
+		setKnownList(new AttackableKnownList(this));
+    }
 
 	/**
 	 * Return the L2Character AI of the L2Attackable and if its null create a new one.

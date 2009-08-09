@@ -120,6 +120,7 @@ import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.L2Trap;
 import net.sf.l2j.gameserver.model.actor.appearance.PcAppearance;
 import net.sf.l2j.gameserver.model.actor.knownlist.PcKnownList;
+import net.sf.l2j.gameserver.model.actor.position.PcPosition;
 import net.sf.l2j.gameserver.model.actor.stat.PcStat;
 import net.sf.l2j.gameserver.model.actor.status.PcStatus;
 import net.sf.l2j.gameserver.model.base.ClassId;
@@ -1062,9 +1063,6 @@ public final class L2PcInstance extends L2Playable
 	private L2PcInstance(int objectId, L2PcTemplate template, String accountName, PcAppearance app)
 	{
 		super(objectId, template);
-		getKnownList();	// init knownlist
-        getStat();			// init stats
-        getStatus();		// init status
         super.initCharStatusUpdateValues();
         initPcStatusUpdateValues();
 
@@ -1089,9 +1087,6 @@ public final class L2PcInstance extends L2Playable
 	private L2PcInstance(int objectId)
 	{
 		super(objectId, null);
-		getKnownList();	// init knownlist
-        getStat();			// init stats
-        getStatus();		// init status
         super.initCharStatusUpdateValues();
         initPcStatusUpdateValues();
 	}
@@ -1099,26 +1094,50 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public final PcKnownList getKnownList()
 	{
-		if(!(super.getKnownList() instanceof PcKnownList))
-    		setKnownList(new PcKnownList(this));
 		return (PcKnownList)super.getKnownList();
 	}
+	
+    @Override
+    public void initKnownList()
+    {
+    	setKnownList(new PcKnownList(this));
+    }
 
 	@Override
 	public final PcStat getStat()
 	{
-		if(!(super.getStat() instanceof PcStat))
-    		setStat(new PcStat(this));
 		return (PcStat)super.getStat();
 	}
+    
+    @Override
+    public void initCharStat()
+    {
+    	setStat(new PcStat(this));
+    }
 
 	@Override
 	public final PcStatus getStatus()
 	{
-		if(!(super.getStatus() instanceof PcStatus))
-    		setStatus(new PcStatus(this));
 		return (PcStatus)super.getStatus();
 	}
+	
+    @Override
+    public void initCharStatus()
+    {
+    	setStatus(new PcStatus(this));
+    }
+	
+	@Override
+	public PcPosition getPosition()
+	{
+		return (PcPosition)super.getPosition();
+	}
+	
+    @Override
+    public void initPosition()
+    {
+    	setObjectPosition(new PcPosition(this));
+    }
 
 	public final PcAppearance getAppearance()
 	{

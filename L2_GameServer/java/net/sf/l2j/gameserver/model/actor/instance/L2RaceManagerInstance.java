@@ -66,7 +66,6 @@ public class L2RaceManagerInstance extends L2Npc
     public L2RaceManagerInstance(int objectId, L2NpcTemplate template)
     {
         super(objectId, template);
-        getKnownList();	// init knownlist
         if (_notInitialized)
         {
             _notInitialized = false;
@@ -143,11 +142,15 @@ public class L2RaceManagerInstance extends L2Npc
     @Override
 	public final RaceManagerKnownList getKnownList()
     {
-    	if(!(super.getKnownList() instanceof RaceManagerKnownList))
-    		setKnownList(new RaceManagerKnownList(this));
         return (RaceManagerKnownList) super.getKnownList();
     }
 
+	@Override
+    public void initKnownList()
+    {
+		setKnownList(new RaceManagerKnownList(this));
+    }
+	
     class Announcement implements Runnable
     {
     	private SystemMessageId _type;

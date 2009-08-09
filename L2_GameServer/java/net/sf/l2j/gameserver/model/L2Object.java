@@ -56,6 +56,8 @@ public abstract class L2Object
     public L2Object(int objectId)
     {
         _objectId = objectId;
+        initKnownList();
+        initPosition();
     }
 
     // =========================================================
@@ -337,10 +339,24 @@ public abstract class L2Object
 
     public ObjectKnownList getKnownList()
     {
-        if (_knownList == null) _knownList = new ObjectKnownList(this);
         return _knownList;
     }
-    public final void setKnownList(ObjectKnownList value) { _knownList = value; }
+    
+    /**
+     * Initializes the KnownList of the L2Object,
+     * is overwritten in classes that require a different knownlist Type.
+     * 
+     * Removes the need for instanceof checks.
+     */
+    public void initKnownList()
+    {
+    	_knownList = new ObjectKnownList(this);
+    }
+    
+    public final void setKnownList(ObjectKnownList value)
+    {
+    	_knownList = value;
+    }
 
     public final String getName()
     {
@@ -362,10 +378,24 @@ public abstract class L2Object
         return _poly;
     }
 
-    public final ObjectPosition getPosition()
+    public ObjectPosition getPosition()
     {
-        if (_position == null) _position = new ObjectPosition(this);
         return _position;
+    }
+    
+    /**
+     * Initializes the Position class of the L2Object,
+     * is overwritten in classes that require a different position Type.
+     * 
+     * Removes the need for instanceof checks.
+     */
+    public void initPosition()
+    {
+    	_position = new ObjectPosition(this);
+    }
+    public final void setObjectPosition(ObjectPosition value)
+    {
+    	_position = value;
     }
 
     /**

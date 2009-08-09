@@ -28,9 +28,16 @@ public class NpcStat extends CharStat
     {
         super(activeChar);
 
-        setLevel(getActiveChar().getTemplate().level);
+        //TODO: Since this class is now init BEFORE the Npc is fully init, we can not do this here. Overwritten getLevel() is a temp solution.  
+        //setLevel(getActiveChar().getTemplate().level);
     }
 
+    @Override
+    public byte getLevel()
+    {
+    	return getActiveChar().getTemplate().level;
+    }
+    
     // =========================================================
     // Method - Public
 

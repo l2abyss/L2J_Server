@@ -70,7 +70,6 @@ public final class L2GuardInstance extends L2Attackable
 	public L2GuardInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
-		getKnownList(); // init knownlist
 
         ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new ReturnTask(),RETURN_INTERVAL,RETURN_INTERVAL+Rnd.nextInt(60000));
 	}
@@ -78,9 +77,13 @@ public final class L2GuardInstance extends L2Attackable
     @Override
 	public final GuardKnownList getKnownList()
     {
-    	if(!(super.getKnownList() instanceof GuardKnownList))
-    		setKnownList(new GuardKnownList(this));
     	return (GuardKnownList)super.getKnownList();
+    }
+    
+	@Override
+    public void initKnownList()
+    {
+		setKnownList(new GuardKnownList(this));
     }
 
 	/**

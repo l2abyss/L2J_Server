@@ -160,7 +160,6 @@ public final class L2ItemInstance extends L2Object
 	public L2ItemInstance(int objectId, int itemId)
 	{
 		super(objectId);
-		super.setKnownList(new NullKnownList(this));
 		_itemId = itemId;
 		_item = ItemTable.getInstance().getTemplate(itemId);
 		if (_itemId == 0 || _item == null)
@@ -184,7 +183,6 @@ public final class L2ItemInstance extends L2Object
 	public L2ItemInstance(int objectId, L2Item item)
 	{
 		super(objectId);
-		super.setKnownList(new NullKnownList(this));
 		_itemId = item.getItemId();
 		_item = item;
 		if (_itemId == 0)
@@ -196,6 +194,12 @@ public final class L2ItemInstance extends L2Object
 		_time = _item.getTime() == -1 ? -1 : System.currentTimeMillis() + ((long)_item.getTime()*60*1000);
 		scheduleLifeTimeTask();
 	}
+	
+	@Override
+    public void initKnownList()
+    {
+		setKnownList(new NullKnownList(this));
+    }
 	
 	/**
      * Remove a L2ItemInstance from the world and send server->client GetItem packets.<BR><BR>

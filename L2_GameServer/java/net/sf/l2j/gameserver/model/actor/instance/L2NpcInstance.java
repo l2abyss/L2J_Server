@@ -55,9 +55,13 @@ public class L2NpcInstance extends L2Npc
 	@Override
 	public FolkStatus getStatus()
 	{
-		if(!(super.getStatus() instanceof FolkStatus))
-			setStatus(new FolkStatus(this));
 		return (FolkStatus)super.getStatus();
+	}
+	
+	@Override
+	public void initCharStatus()
+	{
+		setStatus(new FolkStatus(this));
 	}
 	
 	@Override
