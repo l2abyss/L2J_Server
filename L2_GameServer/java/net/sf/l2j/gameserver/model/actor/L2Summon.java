@@ -185,6 +185,20 @@ public abstract class L2Summon extends L2Playable
     public abstract int getSummonType();
 
 	@Override
+	public final void stopAllEffects()
+	{
+		super.stopAllEffects();
+		updateAndBroadcastStatus(1);
+ 	}
+
+	@Override
+	public final void stopAllEffectsExceptThoseThatLastThroughDeath()
+	{
+		super.stopAllEffectsExceptThoseThatLastThroughDeath();
+		updateAndBroadcastStatus(1);
+	}
+    
+	@Override
 	public void updateAbnormalEffect()
     {
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();

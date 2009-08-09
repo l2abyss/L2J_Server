@@ -9209,7 +9209,20 @@ public final class L2PcInstance extends L2Playable
 	{
 		return _mountType;
 	}
+	
+	@Override
+	public final void stopAllEffects()
+	{
+		super.stopAllEffects();
+		updateAndBroadcastStatus(2);
+ 	}
 
+	@Override
+	public final void stopAllEffectsExceptThoseThatLastThroughDeath()
+	{
+		super.stopAllEffectsExceptThoseThatLastThroughDeath();
+		updateAndBroadcastStatus(2);
+	}
 	/**
 	 * Send a Server->Client packet UserInfo to this L2PcInstance and CharInfo to all L2PcInstance in its _KnownPlayers.<BR><BR>
 	 *

@@ -2993,18 +2993,14 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Stop all active skills effects in progress on the L2Character.<BR><BR>
 	 */
-	public final void stopAllEffects()
+	public void stopAllEffects()
 	{
 		_effects.stopAllEffects();
-		if (this instanceof L2PcInstance) ((L2PcInstance)this).updateAndBroadcastStatus(2);
-		if (this instanceof L2Summon) ((L2Summon)this).updateAndBroadcastStatus(1);
  	}
 
-	public final void stopAllEffectsExceptThoseThatLastThroughDeath()
+	public void stopAllEffectsExceptThoseThatLastThroughDeath()
 	{
 		_effects.stopAllEffectsExceptThoseThatLastThroughDeath();
-		if (this instanceof L2PcInstance) ((L2PcInstance)this).updateAndBroadcastStatus(2);
-		if (this instanceof L2Summon) ((L2Summon)this).updateAndBroadcastStatus(1);
 	}
 	
 	/**
