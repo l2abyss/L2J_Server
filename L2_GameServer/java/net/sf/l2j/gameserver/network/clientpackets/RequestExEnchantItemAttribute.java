@@ -132,7 +132,6 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 		int limit = getLimit(stoneId, item);
 		int powerToAdd = getPowerToAdd(stoneId, elementValue, item);
 		byte elementToAdd = getElementFromItemId(stoneId);
-		String elementName = Elementals.getElementName(elementToAdd);
 
 		// Armors have the opposite element
 		if (item.isArmor())
@@ -173,15 +172,15 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			if (item.getEnchantLevel() == 0)
 			{
 				sm = new SystemMessage(SystemMessageId.ELEMENTAL_POWER_S2_SUCCESSFULLY_ADDED_TO_S1);
-				sm.addString(elementName);
 				sm.addItemName(item);
+				sm.addString(Elementals.getElementName(elementToAdd));
 			}
 			else
 			{
 				sm = new SystemMessage(SystemMessageId.ELEMENTAL_POWER_S3_SUCCESSFULLY_ADDED_TO_S1_S2);
-				sm.addString(elementName);
 				sm.addNumber(item.getEnchantLevel());
 				sm.addItemName(item);
+				sm.addString(Elementals.getElementName(elementToAdd));
 			}
 			player.sendPacket(sm);
 			item.setElementAttr(elementToAdd, newPower);
