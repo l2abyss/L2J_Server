@@ -243,7 +243,7 @@ public class GameStatusThread extends Thread
                     _print.println("restart <time>      - restarts down server in <time> seconds.");
                     _print.println("abort               - aborts shutdown/restart.");
                     _print.println("give <player> <itemid> <amount>");
-                    _print.println("enchant <player> <itemType> <enchant> (itemType: 1 - Helmet, 2 - Chest, 3 - Gloves, 4 - Feet, 5 - Legs, 6 - Right Hand, 7 - Left Hand, 8 - Left Ear, 9 - Right Ear , 10 - Left Finger, 11 - Right Finger, 12- Necklace, 13 - Underwear, 14 - Back, 0 - No Enchant)");
+                    _print.println("enchant <player> <itemType> <enchant> (itemType: 1 - Helmet, 2 - Chest, 3 - Gloves, 4 - Feet, 5 - Legs, 6 - Right Hand, 7 - Left Hand, 8 - Left Ear, 9 - Right Ear , 10 - Left Finger, 11 - Right Finger, 12- Necklace, 13 - Underwear, 14 - Back, 15 - Belt, 0 - No Enchant)");
                     _print.println("extlist             - list all loaded extension classes");
                     _print.println("extreload <name>    - reload and initializes the named extension or all if used without argument");
                     _print.println("extinit <name>      - initilizes the named extension or all if used without argument");
@@ -521,6 +521,9 @@ public class GameStatusThread extends Thread
                         		break;
                         	case 14: 	
                         		itemType = Inventory.PAPERDOLL_BACK;
+                        		break;
+                        	case 15:
+                        		itemType = Inventory.PAPERDOLL_BELT;
                         		break;
                         	default: 
                         		itemType = 0;
