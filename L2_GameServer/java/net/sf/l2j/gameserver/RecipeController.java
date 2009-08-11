@@ -462,6 +462,7 @@ public class RecipeController
 			if (_player != _target)
 			{
 				for (L2ManufactureItem temp : _player.getCreateList().getList())
+				{
 					if (temp.getRecipeId() == _recipeList.getId()) // find recipe for item we want manufactured
 					{
 						_price = temp.getCost();
@@ -473,6 +474,7 @@ public class RecipeController
 						}
 						break;
 					}
+				}
 			}
 			
 			// make temporary items

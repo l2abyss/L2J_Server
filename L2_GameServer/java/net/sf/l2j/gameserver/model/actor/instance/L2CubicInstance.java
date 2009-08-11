@@ -398,14 +398,14 @@ public class L2CubicInstance
 				// target mob which has aggro on you or your summon
 				if (ownerTarget instanceof L2Attackable)
 				{
-					if (((L2Attackable) ownerTarget).getAggroListRP().get(_owner) != null
+					if (((L2Attackable) ownerTarget).getAggroList().get(_owner) != null
 					        && !((L2Attackable) ownerTarget).isDead())
 					{
 						_target = (L2Character) ownerTarget;
 						return;
 					}
 					if (_owner.getPet() != null)
-						if (((L2Attackable) ownerTarget).getAggroListRP().get(_owner.getPet()) != null
+						if (((L2Attackable) ownerTarget).getAggroList().get(_owner.getPet()) != null
 						        && !((L2Attackable) ownerTarget).isDead())
 						{
 							_target = (L2Character) ownerTarget;

@@ -362,7 +362,7 @@ public abstract class L2Summon extends L2Playable
 					if (((L2Attackable) TgMob).isDead())
 						continue;
 					
-					AggroInfo info = ((L2Attackable) TgMob).getAggroListRP().get(this);
+					AggroInfo info = ((L2Attackable) TgMob).getAggroList().get(this);
 					if (info != null)
 						((L2Attackable) TgMob).addDamageHate(owner, info._damage, info._hate);
 				}

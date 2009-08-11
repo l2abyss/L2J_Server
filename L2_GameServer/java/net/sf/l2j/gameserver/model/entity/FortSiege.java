@@ -179,11 +179,11 @@ public class FortSiege
 		}
 	}
 
-	public class ScheduleSuspicoiusMerchantSpawn implements Runnable
+	public class ScheduleSuspiciousMerchantSpawn implements Runnable
 	{
 		private final Fort _fortInst;
 
-		public ScheduleSuspicoiusMerchantSpawn(Fort pFort)
+		public ScheduleSuspiciousMerchantSpawn(Fort pFort)
 		{
 			_fortInst = pFort;
 		}
@@ -281,7 +281,7 @@ public class FortSiege
 
 			updatePlayerSiegeStateFlags(true);
 
-			ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSuspicoiusMerchantSpawn(getFort()), FortSiegeManager.getInstance().getSuspiciousMerchantRespawnDelay()*60*1000); // Prepare 3hr task for suspicious merchant respawn
+			ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSuspiciousMerchantSpawn(getFort()), FortSiegeManager.getInstance().getSuspiciousMerchantRespawnDelay()*60*1000); // Prepare 3hr task for suspicious merchant respawn
 			if (_siegeEnd != null)
 				_siegeEnd.cancel(true);
 			if (_siegeRestore != null)
@@ -517,7 +517,7 @@ public class FortSiege
 			{
 				_siegeStartTask.cancel(true);
 				_siegeStartTask = null;
-				ThreadPoolManager.getInstance().executeTask(new ScheduleSuspicoiusMerchantSpawn(getFort()));
+				ThreadPoolManager.getInstance().executeTask(new ScheduleSuspiciousMerchantSpawn(getFort()));
 			}
 		}
 		catch (Exception e)
@@ -734,7 +734,7 @@ public class FortSiege
 				{
 					_siegeStartTask.cancel(true);
 					_siegeStartTask = null;
-					ThreadPoolManager.getInstance().executeTask(new ScheduleSuspicoiusMerchantSpawn(getFort()));
+					ThreadPoolManager.getInstance().executeTask(new ScheduleSuspiciousMerchantSpawn(getFort()));
 				}
 			}
 		}

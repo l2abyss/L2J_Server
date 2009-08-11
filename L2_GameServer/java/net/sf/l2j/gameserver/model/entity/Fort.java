@@ -487,7 +487,7 @@ public class Fort
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
 			
-			statement = con.prepareStatement("UPDATE fort SET blood=? where id = ?");
+			statement = con.prepareStatement("UPDATE fort SET blood=? WHERE id = ?");
 			statement.setInt(1, _blood);
 			statement.setInt(2, getFortId());
 			statement.execute();
@@ -575,7 +575,7 @@ public class Fort
 			
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement("Select * from fort where id = ?");
+			statement = con.prepareStatement("SELECT * FROM fort WHERE id = ?");
 			statement.setInt(1, getFortId());
 			rs = statement.executeQuery();
 			int ownerId = 0;
@@ -641,7 +641,7 @@ public class Fort
 			PreparedStatement statement;
 			ResultSet rs;
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("Select * from fort_functions where fort_id = ?");
+			statement = con.prepareStatement("SELECT * FROM fort_functions WHERE fort_id = ?");
 			statement.setInt(1, getFortId());
 			rs = statement.executeQuery();
 			while (rs.next())
@@ -750,7 +750,7 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("Select * from fort_staticobjects where fortId = ? and objectType = ?");
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_staticobjects WHERE fortId = ? AND objectType = ?");
 			statement.setInt(1, getFortId());
 			statement.setInt(2, 0);
 			ResultSet rs = statement.executeQuery();
@@ -797,7 +797,7 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("Select * from fort_staticobjects where fortId = ? and objectType = ?");
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_staticobjects WHERE fortId = ? AND objectType = ?");
 			statement.setInt(1, getFortId());
 			statement.setInt(2, 1);
 			ResultSet rs = statement.executeQuery();
@@ -838,7 +838,7 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("Select * from fort_doorupgrade where doorId in (Select Id from fort_staticobjects where fortId = ? and objectType = ?)");
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_doorupgrade WHERE doorId IN (SELECT Id FROM fort_staticobjects WHERE fortId = ? AND objectType = ?)");
 			statement.setInt(1, getFortId());
 			statement.setInt(2, 0);
 			ResultSet rs = statement.executeQuery();
@@ -875,7 +875,7 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("delete from fort_doorupgrade where doorId in (select id from fort_staticobjects where fortId=? and objectType = ?)");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM fort_doorupgrade WHERE doorId IN (SELECT id FROM fort_staticobjects WHERE fortId=? AND objectType = ?)");
 			statement.setInt(1, getFortId());
 			statement.setInt(2, 0);
 			statement.execute();
@@ -906,7 +906,7 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO fort_doorupgrade (doorId, hp, pDef, mDef) values (?,?,?,?)");
+			PreparedStatement statement = con.prepareStatement("INSERT INTO fort_doorupgrade (doorId, hp, pDef, mDef) VALUES (?,?,?,?)");
 			statement.setInt(1, doorId);
 			statement.setInt(2, hp);
 			statement.setInt(3, pDef);
@@ -951,7 +951,7 @@ public class Fort
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
 			
-			statement = con.prepareStatement("UPDATE fort SET owner=?,lastOwnedTime=?,state=?,castleId=?,blood=? where id = ?");
+			statement = con.prepareStatement("UPDATE fort SET owner=?,lastOwnedTime=?,state=?,castleId=?,blood=? WHERE id = ?");
 			statement.setInt(1, clanId);
 			statement.setLong(2, _lastOwnedTime.getTimeInMillis());
 			statement.setInt(3, 0);
@@ -1141,7 +1141,7 @@ public class Fort
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
 			
-			statement = con.prepareStatement("UPDATE fort SET state=?,castleId=? where id = ?");
+			statement = con.prepareStatement("UPDATE fort SET state=?,castleId=? WHERE id = ?");
 			statement.setInt(1, getFortState());
 			statement.setInt(2, getCastleId());
 			statement.setInt(3, getFortId());
@@ -1280,7 +1280,7 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_spawnlist Where fortId = ? and spawnType = ? ");
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ");
 			statement.setInt(1, getFortId());
 			statement.setInt(2, 0);
 			ResultSet rset = statement.executeQuery();
@@ -1340,7 +1340,7 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT id, npcId, x, y, z, heading FROM fort_spawnlist Where fortId = ? and spawnType = ? ORDER BY id");
+			PreparedStatement statement = con.prepareStatement("SELECT id, npcId, x, y, z, heading FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ORDER BY id");
 			statement.setInt(1, getFortId());
 			statement.setInt(2, 2);
 			ResultSet rset = statement.executeQuery();
@@ -1396,7 +1396,7 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT id, npcId, x, y, z, heading FROM fort_spawnlist Where fortId = ? and spawnType = ? ORDER BY id");
+			PreparedStatement statement = con.prepareStatement("SELECT id, npcId, x, y, z, heading FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ORDER BY id");
 			statement.setInt(1, getFortId());
 			statement.setInt(2, 1);
 			ResultSet rset = statement.executeQuery();
@@ -1454,7 +1454,7 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT id, npcId, x, y, z, heading, castleId FROM fort_spawnlist Where fortId = ? and spawnType = ? ORDER BY id");
+			PreparedStatement statement = con.prepareStatement("SELECT id, npcId, x, y, z, heading, castleId FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ORDER BY id");
 			statement.setInt(1, getFortId());
 			statement.setInt(2, 3);
 			ResultSet rset = statement.executeQuery();

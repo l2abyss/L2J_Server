@@ -212,11 +212,6 @@ public class L2Attackable extends L2Npc
 
 	private FastMap<L2Character, AggroInfo> _aggroList = new FastMap<L2Character, AggroInfo>().setShared(true);
 
-	public final FastMap<L2Character, AggroInfo> getAggroListRP()
-	{
-		return _aggroList;
-	}
-
 	public final FastMap<L2Character, AggroInfo> getAggroList()
 	{
 		return _aggroList;
@@ -492,7 +487,7 @@ public class L2Attackable extends L2Npc
 		FastMap<L2Character, RewardInfo> rewards = new FastMap<L2Character, RewardInfo>().setShared(true);
 		try
 		{
-			if (getAggroListRP().isEmpty())
+			if (getAggroList().isEmpty())
 				return;
 
 			// Manage Base, Quests and Sweep drops of the L2Attackable
@@ -512,7 +507,7 @@ public class L2Attackable extends L2Npc
 			synchronized (getAggroList())
 			{
 				// Go through the _aggroList of the L2Attackable
-				for (AggroInfo info : getAggroListRP().values())
+				for (AggroInfo info : getAggroList().values())
 				{
 					if (info == null)
 						continue;
@@ -813,12 +808,12 @@ public class L2Attackable extends L2Npc
 		if (attacker == null)
 			return;
 		// Get the AggroInfo of the attacker L2Character from the _aggroList of the L2Attackable
-		AggroInfo ai = getAggroListRP().get(attacker);
+		AggroInfo ai = getAggroList().get(attacker);
 
 		if (ai == null)
 		{
 			ai = new AggroInfo(attacker);
-			getAggroListRP().put(attacker, ai);
+			getAggroList().put(attacker, ai);
 
 			ai._damage = 0;
 			ai._hate = 0;
@@ -861,9 +856,9 @@ public class L2Attackable extends L2Npc
 			}
 			else
 			{
-				for(L2Character aggroed : getAggroListRP().keySet())
+				for(L2Character aggroed : getAggroList().keySet())
 				{
-					AggroInfo ai = getAggroListRP().get(aggroed);
+					AggroInfo ai = getAggroList().get(aggroed);
 
 					if (ai == null)
 						return;
@@ -882,7 +877,7 @@ public class L2Attackable extends L2Npc
 			}
 			return;
 		}
-		AggroInfo ai = getAggroListRP().get(target);
+		AggroInfo ai = getAggroList().get(target);
 
 		if (ai == null)
 			return;
@@ -907,7 +902,7 @@ public class L2Attackable extends L2Npc
 	{
 		if (target == null)
 			return;
-		AggroInfo ai = getAggroListRP().get(target);
+		AggroInfo ai = getAggroList().get(target);
 
 		if (ai == null)
 			return;
@@ -919,7 +914,7 @@ public class L2Attackable extends L2Npc
 	 */
 	public L2Character getMostHated()
 	{
-		if (getAggroListRP().isEmpty() || isAlikeDead()) return null;
+		if (getAggroList().isEmpty() || isAlikeDead()) return null;
 
 		L2Character mostHated = null;
 		int maxHate = 0;
@@ -928,7 +923,7 @@ public class L2Attackable extends L2Npc
 		synchronized (getAggroList())
 		{
 			// Go through the aggroList of the L2Attackable
-			for (AggroInfo ai : getAggroListRP().values())
+			for (AggroInfo ai : getAggroList().values())
 			{
 				if (ai == null)
 					continue;
@@ -956,7 +951,7 @@ public class L2Attackable extends L2Npc
 	 */
 	public List<L2Character> get2MostHated()
 	{
-		if (getAggroListRP().isEmpty() || isAlikeDead())
+		if (getAggroList().isEmpty() || isAlikeDead())
 			return null;
 
 		L2Character mostHated = null;
@@ -968,7 +963,7 @@ public class L2Attackable extends L2Npc
 		synchronized (getAggroList())
 		{
 			// Go through the aggroList of the L2Attackable
-			for (AggroInfo ai : getAggroListRP().values())
+			for (AggroInfo ai : getAggroList().values())
 			{
 				if (ai == null)
 					continue;
@@ -1005,10 +1000,10 @@ public class L2Attackable extends L2Npc
 	 */
 	public int getHating(L2Character target)
 	{
-		if (getAggroListRP().isEmpty())
+		if (getAggroList().isEmpty())
 			return 0;
 
-		AggroInfo ai = getAggroListRP().get(target);
+		AggroInfo ai = getAggroList().get(target);
 
 		if (ai == null)
 			return 0;
@@ -1746,7 +1741,7 @@ public class L2Attackable extends L2Npc
 	 */
 	public boolean noTarget()
 	{
-		return getAggroListRP().isEmpty();
+		return getAggroList().isEmpty();
 	}
 
 	/**
@@ -1756,7 +1751,7 @@ public class L2Attackable extends L2Npc
 	 */
 	public boolean containsTarget(L2Character player)
 	{
-		return getAggroListRP().containsKey(player);
+		return getAggroList().containsKey(player);
 	}
 
 	/**
@@ -2445,7 +2440,7 @@ public class L2Attackable extends L2Npc
 		{
 			_monster.setCommandChannelTimer(null);
 			_monster.setFirstCommandChannelAttacked(null);
-			for (L2Character player : _monster.getAggroListRP().keySet())
+			for (L2Character player : _monster.getAggroList().keySet())
 			{
 				if (player.isInParty() && player.getParty().isInCommandChannel())
 				{
