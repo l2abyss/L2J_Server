@@ -9385,7 +9385,7 @@ public final class L2PcInstance extends L2Playable
 						{
 							switch(itemId)
 							{
-								case 2509: case 2510: case 2512:
+								case 2509: case 2510: case 2511: case 2512:
 								case 2513: case 2514: case 3947:
 								case 3948: case 3949: case 3950:
 								case 3951: case 3952: case 5790:
