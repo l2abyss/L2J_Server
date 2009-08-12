@@ -92,6 +92,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 						_buffs.add(id);
 						break;
 					case MANAHEAL:
+					case MANARECHARGE:
 						_recharge = id;
 						break;
 				}
