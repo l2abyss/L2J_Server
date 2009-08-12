@@ -357,7 +357,6 @@ public final class Config
 	public static boolean DEVELOPER;
 	public static boolean ACCEPT_GEOEDITOR_CONN;
 	public static boolean TEST_SERVER;
-	public static boolean ALT_DEV_NO_QUESTS;
 	public static boolean ALT_DEV_NO_SPAWNS;
 	public static boolean SERVER_LIST_TESTSERVER;
 	public static int THREAD_P_EFFECTS;
@@ -369,24 +368,6 @@ public final class Config
 	public static boolean DEADLOCK_DETECTOR;
 	public static int DEADLOCK_CHECK_INTERVAL;
 	public static boolean RESTART_ON_DEADLOCK;
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_USE_ITEM =
-		new FloodProtectorConfig("UseItemFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_ROLL_DICE =
-		new FloodProtectorConfig("RollDiceFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_FIREWORK =
-		new FloodProtectorConfig("FireworkFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_ITEM_PET_SUMMON =
-		new FloodProtectorConfig("ItemPetSummonFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_HERO_VOICE =
-		new FloodProtectorConfig("HeroVoiceFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_SUBCLASS =
-		new FloodProtectorConfig("SubclassFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_DROP_ITEM =
-		new FloodProtectorConfig("DropItemFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_SERVER_BYPASS =
-		new FloodProtectorConfig("ServerBypassFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_MULTISELL =
-		new FloodProtectorConfig("MultiSellFloodProtector");
 	public static boolean ALLOW_DISCARDITEM;
 	public static int AUTODESTROY_ITEM_AFTER;
 	public static int HERB_AUTO_DESTROY_TIME;
@@ -517,6 +498,31 @@ public final class Config
 	public static boolean CUSTOM_TELEPORT_TABLE;
 	public static boolean CUSTOM_DROPLIST_TABLE;
 	public static boolean CUSTOM_MERCHANT_TABLES;
+
+
+	//--------------------------------------------------
+	// FloodProtector Settings
+	//--------------------------------------------------
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_USE_ITEM =
+		new FloodProtectorConfig("UseItemFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_ROLL_DICE =
+		new FloodProtectorConfig("RollDiceFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_FIREWORK =
+		new FloodProtectorConfig("FireworkFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_ITEM_PET_SUMMON =
+		new FloodProtectorConfig("ItemPetSummonFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_HERO_VOICE =
+		new FloodProtectorConfig("HeroVoiceFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_GLOBAL_CHAT =
+		new FloodProtectorConfig("GlobalChatFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_SUBCLASS =
+		new FloodProtectorConfig("SubclassFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_DROP_ITEM =
+		new FloodProtectorConfig("DropItemFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_SERVER_BYPASS =
+		new FloodProtectorConfig("ServerBypassFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_MULTISELL =
+		new FloodProtectorConfig("MultiSellFloodProtector");
 
 
 	//--------------------------------------------------
@@ -717,20 +723,16 @@ public final class Config
 	public static int MIN_PROTOCOL_REVISION;
 	public static int MAX_PROTOCOL_REVISION;
 	public static boolean LOG_LOGIN_CONTROLLER;
-	
-	/** ************************************************** **/
-	/** MMO Settings - Begin **/
-	/** ************************************************** **/
-	
+
+
+	//--------------------------------------------------
+	// MMO Settings
+	//--------------------------------------------------
 	public static int MMO_SELECTOR_SLEEP_TIME;
 	public static int MMO_MAX_SEND_PER_PASS;
 	public static int MMO_MAX_READ_PER_PASS;
 	public static int MMO_HELPER_BUFFER_COUNT;
 	public static int MMO_IO_SELECTOR_THREAD_COUNT;
-	
-	/** ************************************************** **/
-	/** MMO Settings - End **/
-	/** ************************************************** **/
 
 
 	//--------------------------------------------------
@@ -1398,7 +1400,6 @@ public final class Config
 					ACCEPT_GEOEDITOR_CONN = Boolean.parseBoolean(General.getProperty("AcceptGeoeditorConn", "false"));
 					TEST_SERVER = Boolean.parseBoolean(General.getProperty("TestServer", "false"));
 					SERVER_LIST_TESTSERVER = Boolean.parseBoolean(General.getProperty("ListTestServers", "false"));
-					ALT_DEV_NO_QUESTS = Boolean.parseBoolean(General.getProperty("AltDevNoQuests", "False"));
 					ALT_DEV_NO_SPAWNS = Boolean.parseBoolean(General.getProperty("AltDevNoSpawns", "False"));
 					THREAD_P_EFFECTS = Integer.parseInt(General.getProperty("ThreadPoolSizeEffects", "10"));
 					THREAD_P_GENERAL = Integer.parseInt(General.getProperty("ThreadPoolSizeGeneral", "13"));
@@ -1448,7 +1449,7 @@ public final class Config
 					ZONE_TOWN = Integer.parseInt(General.getProperty("ZoneTown", "0"));
 					ACTIVATE_POSITION_RECORDER = Boolean.parseBoolean(General.getProperty("ActivatePositionRecorder", "False"));
 					DEFAULT_GLOBAL_CHAT = General.getProperty("GlobalChat", "ON");
-					DEFAULT_TRADE_CHAT = General.getProperty("TradeChat", "LIMITED");
+					DEFAULT_TRADE_CHAT = General.getProperty("TradeChat", "ON");
 					ALLOW_WAREHOUSE = Boolean.parseBoolean(General.getProperty("AllowWarehouse", "True"));
 					WAREHOUSE_CACHE = Boolean.parseBoolean(General.getProperty("WarehouseCache", "False"));
 					WAREHOUSE_CACHE_TIME = Integer.parseInt(General.getProperty("WarehouseCacheTime", "15"));
@@ -1573,7 +1574,6 @@ public final class Config
 					security.load(is);
 					
 					loadFloodProtectorConfigs(security);
-					
 				}
 				catch (Exception e)
 				{
@@ -1695,7 +1695,6 @@ public final class Config
 						_log.warning("Error while loading Player XP percent lost");
 						e.printStackTrace();
 					}
-					
 				}
 				catch (Exception e)
 				{
@@ -1977,7 +1976,6 @@ public final class Config
 					e.printStackTrace();
 					throw new Error("Failed to Load "+PVP_CONFIG_FILE+" File.");
 				}
-
 				try
 				{
 					Properties Settings = new Properties();
@@ -2062,7 +2060,6 @@ public final class Config
 					e.printStackTrace();
 					throw new Error("Failed to Load " + LOGIN_CONFIGURATION_FILE + " File.");
 				}
-				
 				// MMO 
 				try
 				{
@@ -2373,8 +2370,8 @@ public final class Config
 		else if (pName.equalsIgnoreCase("PvPVsNormalTime")) PVP_NORMAL_TIME = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("PvPVsPvPTime")) PVP_PVP_TIME = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("GlobalChat")) DEFAULT_GLOBAL_CHAT = pValue;
-		else if (pName.equalsIgnoreCase("TradeChat"))	DEFAULT_TRADE_CHAT = pValue;
-		else if (pName.equalsIgnoreCase("GMAdminMenuStyle"))	GM_ADMIN_MENU_STYLE = pValue;
+		else if (pName.equalsIgnoreCase("TradeChat")) DEFAULT_TRADE_CHAT = pValue;
+		else if (pName.equalsIgnoreCase("GMAdminMenuStyle")) GM_ADMIN_MENU_STYLE = pValue;
 		else return false;
 		return true;
 	}
@@ -2421,9 +2418,6 @@ public final class Config
 	
 	/**
 	 * Loads flood protector configurations.
-	 * 
-	 * @param properties
-	 *            properties file reader
 	 */
 	private static void loadFloodProtectorConfigs(final Properties properties)
 	{
@@ -2432,6 +2426,7 @@ public final class Config
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_FIREWORK, "Firework", "42");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_ITEM_PET_SUMMON, "ItemPetSummon", "16");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_HERO_VOICE, "HeroVoice", "100");
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_GLOBAL_CHAT, "GlobalChat", "5");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_SUBCLASS, "Subclass", "20");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_DROP_ITEM, "DropItem", "10");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_SERVER_BYPASS, "ServerBypass", "5");
@@ -2451,15 +2446,12 @@ public final class Config
 	 * @param defaultInterval
 	 *            default flood protector interval
 	 */
-	private static void loadFloodProtectorConfig(final Properties properties,
-	        final FloodProtectorConfig config, final String configString,
-	        final String defaultInterval)
+	private static void loadFloodProtectorConfig(final Properties properties, final FloodProtectorConfig config, final String configString, final String defaultInterval)
 	{
 		config.FLOOD_PROTECTION_INTERVAL = Integer.parseInt(properties.getProperty(StringUtil.concat("FloodProtector", configString, "Interval"), defaultInterval));
 		config.LOG_FLOODING = Boolean.parseBoolean(properties.getProperty(StringUtil.concat("FloodProtector", configString, "LogFlooding"), "False"));
 		config.PUNISHMENT_LIMIT = Integer.parseInt(properties.getProperty(StringUtil.concat("FloodProtector", configString, "PunishmentLimit"), "0"));
 		config.PUNISHMENT_TYPE = properties.getProperty(StringUtil.concat("FloodProtector", configString, "PunishmentType"), "none");
 		config.PUNISHMENT_TIME = Integer.parseInt(properties.getProperty(StringUtil.concat("FloodProtector", configString, "PunishmentTime"), "0"));
-		
 	}
 }

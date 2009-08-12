@@ -44,6 +44,10 @@ public final class FloodProtectors
 	 */
 	private final FloodProtectorAction _heroVoice;
 	/**
+	 * Global-chat flood protector.
+	 */
+	private final FloodProtectorAction _globalChat;
+	/**
 	 * Subclass flood protector.
 	 */
 	private final FloodProtectorAction _subclass;
@@ -74,6 +78,7 @@ public final class FloodProtectors
 		_firework = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_FIREWORK);
 		_itemPetSummon = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_ITEM_PET_SUMMON);
 		_heroVoice = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_HERO_VOICE);
+		_globalChat = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_GLOBAL_CHAT);
 		_subclass = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_SUBCLASS);
 		_dropItem = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_DROP_ITEM);
 		_serverBypass = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_SERVER_BYPASS);
@@ -128,6 +133,16 @@ public final class FloodProtectors
 	public FloodProtectorAction getHeroVoice()
 	{
 		return _heroVoice;
+	}
+	
+	/**
+	 * Returns {@link #_globalChat}.
+	 * 
+	 * @return {@link #_globalChat}
+	 */
+	public FloodProtectorAction getGlobalChat()
+	{
+		return _globalChat;
 	}
 	
 	/**
