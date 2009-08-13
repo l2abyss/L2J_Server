@@ -87,15 +87,13 @@ public final class FloodProtectorAction
 		{
 			if (_config.LOG_FLOODING && !_logged && _log.isLoggable(Level.WARNING))
 			{
-				_log.warning(StringUtil.concat(_config.FLOOD_PROTECTOR_TYPE, ": Player [", _player.getName(), "] called command [", command, "] [~", String.valueOf((_config.FLOOD_PROTECTION_INTERVAL - (_nextGameTick - curTick))
-				        * GameTimeController.MILLIS_IN_TICK), " ms] after previous command"));
+				_log.warning(StringUtil.concat(_config.FLOOD_PROTECTOR_TYPE, ": Player [", _player.getName(), "] called command [", command, "] [~", String.valueOf((_config.FLOOD_PROTECTION_INTERVAL - (_nextGameTick - curTick)) * GameTimeController.MILLIS_IN_TICK), " ms] after previous command"));
 				_logged = true;
 			}
 			
 			_count.incrementAndGet();
 			
-			if (!_punishmentInProgress && _config.PUNISHMENT_LIMIT > 0
-			        && _count.get() > _config.PUNISHMENT_LIMIT && _config.PUNISHMENT_TYPE != null)
+			if (!_punishmentInProgress && _config.PUNISHMENT_LIMIT > 0 && _count.get() > _config.PUNISHMENT_LIMIT && _config.PUNISHMENT_TYPE != null)
 			{
 				_punishmentInProgress = true;
 				
@@ -122,8 +120,7 @@ public final class FloodProtectorAction
 		{
 			if (_config.LOG_FLOODING && _log.isLoggable(Level.WARNING))
 			{
-				_log.warning(StringUtil.concat(_config.FLOOD_PROTECTOR_TYPE, ": Player [", _player.getName(), "] issued [", String.valueOf(_count), "] extra requests within [~", String.valueOf(_config.FLOOD_PROTECTION_INTERVAL
-				        * GameTimeController.MILLIS_IN_TICK), " ms]"));
+				_log.warning(StringUtil.concat(_config.FLOOD_PROTECTOR_TYPE, ": Player [", _player.getName(), "] issued [", String.valueOf(_count), "] extra requests within [~", String.valueOf(_config.FLOOD_PROTECTION_INTERVAL * GameTimeController.MILLIS_IN_TICK), " ms]"));
 			}
 		}
 		
@@ -156,8 +153,7 @@ public final class FloodProtectorAction
 		
 		if (_log.isLoggable(Level.WARNING))
 		{
-			_log.warning(StringUtil.concat(_config.FLOOD_PROTECTOR_TYPE, ": Account [", _player.getAccountName(), "] banned for flooding [char ", _player.getName(), "] ", _config.PUNISHMENT_TIME <= 0 ? "forever" : "for "
-			        + _config.PUNISHMENT_TIME + " mins"));
+			_log.warning(StringUtil.concat(_config.FLOOD_PROTECTOR_TYPE, ": Account [", _player.getAccountName(), "] banned for flooding [char ", _player.getName(), "] ", _config.PUNISHMENT_TIME <= 0 ? "forever" : "for " + _config.PUNISHMENT_TIME + " mins"));
 		}
 		
 		_player.logout();
@@ -172,8 +168,7 @@ public final class FloodProtectorAction
 		
 		if (_log.isLoggable(Level.WARNING))
 		{
-			_log.warning(StringUtil.concat(_config.FLOOD_PROTECTOR_TYPE, ": Player [", _player.getName(), "] jailed for flooding [char ", _player.getName(), "] ", _config.PUNISHMENT_TIME <= 0 ? "forever" : "for "
-			        + _config.PUNISHMENT_TIME + " mins"));
+			_log.warning(StringUtil.concat(_config.FLOOD_PROTECTOR_TYPE, ": Player [", _player.getName(), "] jailed for flooding [char ", _player.getName(), "] ", _config.PUNISHMENT_TIME <= 0 ? "forever" : "for " + _config.PUNISHMENT_TIME + " mins"));
 		}
 	}
 }
