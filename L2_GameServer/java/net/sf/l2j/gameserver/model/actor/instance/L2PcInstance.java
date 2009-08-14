@@ -12102,8 +12102,8 @@ public final class L2PcInstance extends L2Playable
     
     private class FameTask implements Runnable
     {
-        L2PcInstance _player;
-        protected int _value;
+        private final L2PcInstance _player;
+        private final int _value;
 
         protected FameTask(L2PcInstance player, int value)
         {
@@ -12113,6 +12113,8 @@ public final class L2PcInstance extends L2Playable
 
         public void run()
         {
+        	if (_player == null || _player.isDead())
+        		return;
             _player.setFame(_player.getFame() + _value);
             SystemMessage sm = new SystemMessage(SystemMessageId.ACQUIRED_S1_REPUTATION_SCORE);
             sm.addNumber(_value);
