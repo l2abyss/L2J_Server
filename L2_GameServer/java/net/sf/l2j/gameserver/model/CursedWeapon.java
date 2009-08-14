@@ -342,7 +342,7 @@ public class CursedWeapon
             transformationId = 301;
         }
         
-        if (_player.isTransformed())
+        if (_player.isTransformed() || _player.isInStance())
         {
             _player.stopTransformation(null);
             
@@ -350,12 +350,12 @@ public class CursedWeapon
             {
                 public void run()
                 {
-                    TransformationManager.getInstance().transformPlayer(transformationId, _player, Long.MAX_VALUE);
+                    TransformationManager.getInstance().transformPlayer(transformationId, _player);
                 }
             }, 500);
         }
         else
-            TransformationManager.getInstance().transformPlayer(transformationId, _player, Long.MAX_VALUE);
+            TransformationManager.getInstance().transformPlayer(transformationId, _player);
 	}
 
 	public void removeSkill()
@@ -366,7 +366,7 @@ public class CursedWeapon
 		_player.untransform();
 		if (_player.transformId() > 0)
 		{
-            TransformationManager.getInstance().transformPlayer(_player.transformId(), _player, Long.MAX_VALUE);
+            TransformationManager.getInstance().transformPlayer(_player.transformId(), _player);
             return;
 		}
 		_player.sendSkillList();

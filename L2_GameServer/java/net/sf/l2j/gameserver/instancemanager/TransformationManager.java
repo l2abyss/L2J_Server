@@ -62,22 +62,6 @@ public class TransformationManager
 		}
 	}
 	
-	public boolean transformPlayer(int id, L2PcInstance player, long forceDuration)
-	{
-		L2Transformation template = this.getTransformationById(id);
-		if (template != null)
-		{
-			L2Transformation trans = template.createTransformationForPlayer(player);
-			trans.setDuration(forceDuration);
-			trans.start();
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
 	public L2Transformation getTransformationById(int id)
 	{
 		return _transformations.get(id);

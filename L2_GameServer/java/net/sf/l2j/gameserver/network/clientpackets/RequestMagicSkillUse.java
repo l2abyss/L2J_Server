@@ -68,7 +68,8 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 		// Check the validity of the skill
 		if (skill != null)
 		{
-			if (activeChar.isTransformed() && !activeChar.containsAllowedTransformSkill(skill.getId()))
+			if ((activeChar.isTransformed() || activeChar.isInStance())
+					&& !activeChar.containsAllowedTransformSkill(skill.getId()))
 			{
 				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				return;

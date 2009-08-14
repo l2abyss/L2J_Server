@@ -71,9 +71,9 @@ public class EffectTransformation extends L2Effect
 		
 		int transformId = getSkill().getTransformId();
 		
-		if (!trg.isTransformed())
+		if (!trg.isTransformed() && !trg.isInStance())
 		{
-			TransformationManager.getInstance().transformPlayer(transformId, trg, Long.MAX_VALUE);
+			TransformationManager.getInstance().transformPlayer(transformId, trg);
 			return true;
 		}
 		return false;
