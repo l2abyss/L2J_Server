@@ -129,6 +129,7 @@ public final class Config
 	public static int FORTRESS_ZONE_FAME_AQUIRE_POINTS;
 	public static int CASTLE_ZONE_FAME_TASK_FREQUENCY;
 	public static int CASTLE_ZONE_FAME_AQUIRE_POINTS;
+	public static boolean FAME_FOR_DEAD_PLAYERS;
 	public static boolean IS_CRAFTING_ENABLED;
 	public static boolean CRAFT_MASTERWORK;
 	public static int DWARF_RECIPE_LIMIT;
@@ -1226,6 +1227,7 @@ public final class Config
 					FORTRESS_ZONE_FAME_AQUIRE_POINTS = Integer.parseInt(Character.getProperty("FortressZoneFameAquirePoints","31"));
 					CASTLE_ZONE_FAME_TASK_FREQUENCY = Integer.parseInt(Character.getProperty("CastleZoneFameTaskFrequency","300"));
 					CASTLE_ZONE_FAME_AQUIRE_POINTS = Integer.parseInt(Character.getProperty("CastleZoneFameAquirePoints","125"));
+					FAME_FOR_DEAD_PLAYERS = Boolean.parseBoolean(Character.getProperty("FameForDeadPlayers", "true"));
 					IS_CRAFTING_ENABLED = Boolean.parseBoolean(Character.getProperty("CraftingEnabled", "true"));
 					CRAFT_MASTERWORK = Boolean.parseBoolean(Character.getProperty("CraftMasterwork", "True"));
 					DWARF_RECIPE_LIMIT = Integer.parseInt(Character.getProperty("DwarfRecipeLimit","50"));
