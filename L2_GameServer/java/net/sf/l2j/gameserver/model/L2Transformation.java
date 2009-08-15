@@ -24,8 +24,8 @@ public abstract class L2Transformation implements Cloneable, Runnable
 {
 	private final int _id;
 	private final int _graphicalId;
-	private final double _collisionRadius;
-	private final double _collisionHeight;
+	private double _collisionRadius;
+	private double _collisionHeight;
 	private final boolean _isStance;
 
 	public static final int TRANSFORM_ZARICHE = 301;
@@ -72,8 +72,6 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	{
 		_id = id;
 		_graphicalId = id;
-		_collisionRadius = _player.getBaseTemplate().collisionRadius;
-		_collisionHeight = _player.getBaseTemplate().collisionHeight;
 		_isStance = true;
 	}
 
@@ -107,6 +105,8 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	 */
 	public double getCollisionRadius()
 	{
+		if (isStance())
+			return _player.getBaseTemplate().collisionRadius;
 		return _collisionRadius;
 	}
 
@@ -115,6 +115,8 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	 */
 	public double getCollisionHeight()
 	{
+		if (isStance())
+			return _player.getBaseTemplate().collisionHeight;
 		return _collisionHeight;
 	}
 
