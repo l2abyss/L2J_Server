@@ -196,7 +196,7 @@ public abstract class L2Character extends L2Object
 	private Calculator[] _calculators;
 
 	/** FastMap(Integer, L2Skill) containing all skills of the L2Character */
-	protected final Map<Integer, L2Skill> _skills;
+	private final Map<Integer, L2Skill> _skills;
 	/** FastMap containing the active chance skills on this character */
 	protected ChanceSkillList _chanceSkills;
 
@@ -5911,13 +5911,10 @@ public abstract class L2Character extends L2Object
 	 */
 	public int getSkillLevel(int skillId)
 	{
-		if (_skills == null)
-			return -1;
-
-		L2Skill skill = _skills.get(skillId);
-
+		final L2Skill skill = getKnownSkill(skillId);
 		if (skill == null)
 			return -1;
+
 		return skill.getLevel();
 	}
 

@@ -1100,8 +1100,10 @@ public class L2PetInstance extends L2Summon
     @Override
 	public final int getSkillLevel(int skillId)
     {
-        if (_skills == null || _skills.get(skillId) == null) return -1;
-        int lvl = getLevel();
+        if (getKnownSkill(skillId) == null)
+        	return -1;
+
+        final int lvl = getLevel();
         return lvl > 70 ? 7 + (lvl - 70) / 5 : lvl / 10;
     }
 
