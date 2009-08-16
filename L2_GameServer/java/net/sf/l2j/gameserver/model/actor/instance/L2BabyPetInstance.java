@@ -283,11 +283,11 @@ public final class L2BabyPetInstance extends L2PetInstance
 							}
 							else
 							{
-								// effect with same stacktype and greater stackorder
+								// effect with same stacktype and greater or equal stackorder
 								if (skill.hasEffects()
 										&& !"none".equals(skill.getEffectTemplates()[0].stackType)
 										&& skill.getEffectTemplates()[0].stackType == e.getStackType()
-										&& skill.getEffectTemplates()[0].stackOrder < e.getStackOrder())
+										&& skill.getEffectTemplates()[0].stackOrder <= e.getStackOrder())
 									iter.remove();
 							}
 						}
