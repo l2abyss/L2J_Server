@@ -1019,7 +1019,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 
 	private void printDebugDoubleOpcode(int opcode, int id2, ByteBuffer buf, GameClientState state, L2GameClient client)
 	{
-		if (Config.PACKET_HANDLER_DEBUG)
+		if (!Config.PACKET_HANDLER_DEBUG)
 			return;
 		int size = buf.remaining();
 		_log.warning("Unknown Packet: "+Integer.toHexString(opcode)+":" + Integer.toHexString(id2)+" on State: "+state.name()+" Client: "+client.toString());
