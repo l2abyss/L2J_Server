@@ -27,121 +27,128 @@ import net.sf.l2j.gameserver.util.Util;
 
 public class PcStatus extends PlayableStatus
 {
-    // =========================================================
-    // Data Field
+	public PcStatus(L2PcInstance activeChar)
+	{
+		super(activeChar);
+	}
 
-    // =========================================================
-    // Constructor
-    public PcStatus(L2PcInstance activeChar)
-    {
-        super(activeChar);
-    }
-
-    // =========================================================
-    // Method - Public
-    @Override
+	@Override
 	public final void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true, false, false); }
-    @Override
+
+	@Override
 	public final void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHpConsumption)
-    {
-    	if (getActiveChar().isInvul())
-    	{
-    		if (attacker == getActiveChar())
-    		{
-    			if (!isDOT && !isHpConsumption)
-    				return;
-    		}
-    		else
-    			return;
-    	}
-		if (getActiveChar().isDead())
-			return;
-		
-		if (attacker instanceof L2PcInstance)
+	{
+		if (getActiveChar().isInvul())
 		{
-			L2PcInstance pcInst = (L2PcInstance)attacker;
-			if (pcInst.isGM() && !pcInst.getAccessLevel().canGiveDamage())
+			if (attacker == getActiveChar())
+			{
+				if (!isDOT && !isHpConsumption)
+					return;
+			}
+			else
 				return;
 		}
-		
-		if (getActiveChar().isInDuel())
-		{
-			if ( attacker instanceof L2PcInstance)
-			{
-				if (getActiveChar().getDuelState() == Duel.DUELSTATE_DEAD)
-					return;
-				else if (getActiveChar().getDuelState() == Duel.DUELSTATE_WINNER)
-					return;
 
-				// cancel duel if player got hit by another player, that is not part of the duel
-				if (((L2PcInstance)attacker).getDuelId() != getActiveChar().getDuelId())
-					getActiveChar().setDuelState(Duel.DUELSTATE_INTERRUPTED);
-			
-			}
-			else if (!(attacker instanceof L2SummonInstance))
-					getActiveChar().setDuelState(Duel.DUELSTATE_INTERRUPTED);
-		}
-		
+		if (getActiveChar().isDead())
+			return;
+
 		int fullValue = (int) value;
+		int tDmg = 0;
 
-        if (attacker != null && attacker != getActiveChar())
-        {
-            // Check and calculate transfered damage
-            L2Summon summon = getActiveChar().getPet();
-            //TODO correct range
-            if (summon != null && summon instanceof L2SummonInstance && Util.checkIfInRange(900, getActiveChar(), summon, true))
-            {
-                int tDmg = (int)value * (int)getActiveChar().getStat().calcStat(Stats.TRANSFER_DAMAGE_PERCENT, 0, null, null) /100;
+		if (attacker != null && attacker != getActiveChar())
+		{
+			final L2PcInstance attackerPlayer = attacker.getActingPlayer();
 
-                // Only transfer dmg up to current HP, it should not be killed
-                if (summon.getCurrentHp() < tDmg) tDmg = (int)summon.getCurrentHp() - 1;
-                if (tDmg > 0)
-                {
-                    summon.reduceCurrentHp(tDmg, attacker, null);
-                    value -= tDmg;
-                    fullValue = (int) value; // reduce the annouced value here as player will get a message about summon dammage
-                }
-            }
+			if (attackerPlayer != null)
+			{
+				if (attackerPlayer.isGM() && !attackerPlayer.getAccessLevel().canGiveDamage())
+					return;
 
-            if (attacker instanceof L2Playable)
-            {
-                if (getCurrentCp() >= value)
-                {
-                    setCurrentCp(getCurrentCp() - value);   // Set Cp to diff of Cp vs value
-                    value = 0;                              // No need to subtract anything from Hp
-                }
-                else
-                {
-                    value -= getCurrentCp();                // Get diff from value vs Cp; will apply diff to Hp
-                    setCurrentCp(0);                        // Set Cp to 0
-                }
-            }
-        }
+				if (getActiveChar().isInDuel())
+				{
+					if (getActiveChar().getDuelState() == Duel.DUELSTATE_DEAD)
+						return;
+					else if (getActiveChar().getDuelState() == Duel.DUELSTATE_WINNER)
+						return;
 
-        super.reduceHp(value, attacker, awake, isDOT, isHpConsumption);
+					// cancel duel if player got hit by another player, that is not part of the duel
+					if (attackerPlayer.getDuelId() != getActiveChar().getDuelId())
+						getActiveChar().setDuelState(Duel.DUELSTATE_INTERRUPTED);
+				}
+			}
 
-        if (!getActiveChar().isDead() && getActiveChar().isSitting() && !isDOT)
-            getActiveChar().standUp();
+			// Check and calculate transfered damage
+			final L2Summon summon = getActiveChar().getPet();
+			//TODO correct range
+			if (summon != null && summon instanceof L2SummonInstance && Util.checkIfInRange(900, getActiveChar(), summon, true))
+			{
+				tDmg = (int)value * (int)getActiveChar().getStat().calcStat(Stats.TRANSFER_DAMAGE_PERCENT, 0, null, null) /100;
 
-        if (getActiveChar().isFakeDeath() && !isDOT)
-            getActiveChar().stopFakeDeath(null);
+				// Only transfer dmg up to current HP, it should not be killed
+				tDmg = Math.min((int)summon.getCurrentHp() - 1, tDmg);
+				if (tDmg > 0)
+				{
+					summon.reduceCurrentHp(tDmg, attacker, null);
+					value -= tDmg;
+					fullValue = (int) value; // reduce the announced value here as player will get a message about summon damage
+				}
+			}
 
-        if (attacker != null && attacker != getActiveChar() && fullValue > 0 && !isDOT)
-        {
-            // Send a System Message to the L2PcInstance
-            SystemMessage smsg = new SystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
-            smsg.addString(getActiveChar().getName());
-            smsg.addCharName(attacker);
-            smsg.addNumber(fullValue);
-            getActiveChar().sendPacket(smsg);
-        }
-    }
+			if (attacker instanceof L2Playable)
+			{
+				if (getCurrentCp() >= value)
+				{
+					setCurrentCp(getCurrentCp() - value);   // Set Cp to diff of Cp vs value
+					value = 0;                              // No need to subtract anything from Hp
+				}
+				else
+				{
+					value -= getCurrentCp();                // Get diff from value vs Cp; will apply diff to Hp
+					setCurrentCp(0);                        // Set Cp to 0
+				}
+			}
 
-    // =========================================================
-    // Method - Private
+			if (fullValue > 0 && !isDOT)
+			{
+				SystemMessage smsg;
+				// Send a System Message to the L2PcInstance
+				smsg = new SystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
+				smsg.addString(getActiveChar().getName());
+				smsg.addCharName(attacker);
+				smsg.addNumber(fullValue);
+				getActiveChar().sendPacket(smsg);
 
-    // =========================================================
-    // Property - Public
-    @Override
-	public L2PcInstance getActiveChar() { return (L2PcInstance)super.getActiveChar(); }
+				if (tDmg > 0)
+				{
+					smsg = new SystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
+					smsg.addString(getActiveChar().getPet().getName());
+					smsg.addCharName(attacker);
+					smsg.addNumber(tDmg);
+					getActiveChar().sendPacket(smsg);
+
+					if (attackerPlayer != null)
+					{
+						smsg = new SystemMessage(SystemMessageId.GIVEN_S1_DAMAGE_TO_YOUR_TARGET_AND_S2_DAMAGE_TO_SERVITOR);
+						smsg.addNumber(fullValue);
+						smsg.addNumber(tDmg);
+						attackerPlayer.sendPacket(smsg);
+					}
+				}
+			}
+		}
+
+		if (!getActiveChar().isDead() && getActiveChar().isSitting() && !isDOT)
+			getActiveChar().standUp();
+
+		if (getActiveChar().isFakeDeath() && !isDOT)
+			getActiveChar().stopFakeDeath(null);
+
+		super.reduceHp(value, attacker, awake, isDOT, isHpConsumption);
+	}
+
+	@Override
+	public L2PcInstance getActiveChar()
+	{
+		return (L2PcInstance)super.getActiveChar();
+	}
 }
