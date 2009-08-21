@@ -1286,7 +1286,7 @@ public final class L2ItemInstance extends L2Object
      * 
      * @param force if the update should necessarilly be done.
      */
-	public synchronized void updateDatabase(boolean force)
+	public void updateDatabase(boolean force)
 	{
 		if (isWear()) //avoid saving weared items
 		{
