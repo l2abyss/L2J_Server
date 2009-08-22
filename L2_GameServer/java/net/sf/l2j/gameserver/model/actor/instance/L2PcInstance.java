@@ -4262,6 +4262,7 @@ public final class L2PcInstance extends L2Playable
         if (isInOlympiadMode() && isOlympiadStart())
         {
         	//synchronized (getKnownList().getKnownPlayers())
+        	if (Olympiad.getInstance().getPlayers(_olympiadGameId) != null)
 			{
 				for (L2PcInstance player : Olympiad.getInstance().getPlayers(_olympiadGameId))
 				{
