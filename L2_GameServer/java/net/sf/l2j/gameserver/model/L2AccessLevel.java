@@ -251,7 +251,7 @@ public class L2AccessLevel
 
 		for (int i = 0;i < childsSplit.length;++ i)
 		{
-			L2AccessLevel accessLevelInst = AccessLevels.getInstance().getAccessLevel(Integer.valueOf(childsSplit[i]));
+			L2AccessLevel accessLevelInst = AccessLevels.getInstance().getAccessLevel(Integer.parseInt(childsSplit[i]));
 
 			if (accessLevelInst == null)
 			{

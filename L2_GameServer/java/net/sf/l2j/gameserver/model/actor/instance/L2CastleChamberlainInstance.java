@@ -621,7 +621,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 								NpcHtmlMessage html = new NpcHtmlMessage(1);
 								html.setFile("data/html/chamberlain/functions-apply.htm");
 								html.replace("%name%", "Fireplace (HP Recovery Device)");
-								int percent = Integer.valueOf(val);
+								int percent = Integer.parseInt(val);
 								int cost;
 								switch (percent)
 								{
@@ -660,7 +660,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 								NpcHtmlMessage html = new NpcHtmlMessage(1);
 								html.setFile("data/html/chamberlain/functions-apply.htm");
 								html.replace("%name%", "Carpet (MP Recovery)");
-								int percent = Integer.valueOf(val);
+								int percent = Integer.parseInt(val);
 								int cost;
 								switch (percent)
 								{
@@ -695,7 +695,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 								NpcHtmlMessage html = new NpcHtmlMessage(1);
 								html.setFile("data/html/chamberlain/functions-apply.htm");
 								html.replace("%name%", "Chandelier (EXP Recovery Device)");
-								int percent = Integer.valueOf(val);
+								int percent = Integer.parseInt(val);
 								int cost;
 								switch (percent)
 								{
@@ -736,7 +736,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 									html.setFile("data/html/chamberlain/functions-apply_confirmed.htm");
 									if (getCastle().getFunction(Castle.FUNC_RESTORE_HP) != null)
 									{
-										if (getCastle().getFunction(Castle.FUNC_RESTORE_HP).getLvl() == Integer.valueOf(val))
+										if (getCastle().getFunction(Castle.FUNC_RESTORE_HP).getLvl() == Integer.parseInt(val))
 										{
 											html.setFile("data/html/chamberlain/functions-used.htm");
 											html.replace("%val%", String.valueOf(val)
@@ -745,7 +745,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 											return;
 										}
 									}
-									int percent = Integer.valueOf(val);
+									int percent = Integer.parseInt(val);
 									switch (percent)
 									{
 										case 0:
@@ -789,7 +789,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 									html.setFile("data/html/chamberlain/functions-apply_confirmed.htm");
 									if (getCastle().getFunction(Castle.FUNC_RESTORE_MP) != null)
 									{
-										if (getCastle().getFunction(Castle.FUNC_RESTORE_MP).getLvl() == Integer.valueOf(val))
+										if (getCastle().getFunction(Castle.FUNC_RESTORE_MP).getLvl() == Integer.parseInt(val))
 										{
 											html.setFile("data/html/chamberlain/functions-used.htm");
 											html.replace("%val%", String.valueOf(val)
@@ -798,7 +798,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 											return;
 										}
 									}
-									int percent = Integer.valueOf(val);
+									int percent = Integer.parseInt(val);
 									switch (percent)
 									{
 										case 0:
@@ -839,7 +839,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 									html.setFile("data/html/chamberlain/functions-apply_confirmed.htm");
 									if (getCastle().getFunction(Castle.FUNC_RESTORE_EXP) != null)
 									{
-										if (getCastle().getFunction(Castle.FUNC_RESTORE_EXP).getLvl() == Integer.valueOf(val))
+										if (getCastle().getFunction(Castle.FUNC_RESTORE_EXP).getLvl() == Integer.parseInt(val))
 										{
 											html.setFile("data/html/chamberlain/functions-used.htm");
 											html.replace("%val%", String.valueOf(val)
@@ -848,7 +848,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 											return;
 										}
 									}
-									int percent = Integer.valueOf(val);
+									int percent = Integer.parseInt(val);
 									switch (percent)
 									{
 										case 0:
@@ -974,7 +974,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 								NpcHtmlMessage html = new NpcHtmlMessage(1);
 								html.setFile("data/html/chamberlain/functions-apply.htm");
 								html.replace("%name%", "Insignia (Supplementary Magic)");
-								int stage = Integer.valueOf(val);
+								int stage = Integer.parseInt(val);
 								int cost;
 								switch (stage)
 								{
@@ -1008,7 +1008,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 								NpcHtmlMessage html = new NpcHtmlMessage(1);
 								html.setFile("data/html/chamberlain/functions-apply.htm");
 								html.replace("%name%", "Mirror (Teleportation Device)");
-								int stage = Integer.valueOf(val);
+								int stage = Integer.parseInt(val);
 								int cost;
 								switch (stage)
 								{
@@ -1043,7 +1043,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 									html.setFile("data/html/chamberlain/functions-apply_confirmed.htm");
 									if (getCastle().getFunction(Castle.FUNC_TELEPORT) != null)
 									{
-										if (getCastle().getFunction(Castle.FUNC_TELEPORT).getLvl() == Integer.valueOf(val))
+										if (getCastle().getFunction(Castle.FUNC_TELEPORT).getLvl() == Integer.parseInt(val))
 										{
 											html.setFile("data/html/chamberlain/functions-used.htm");
 											html.replace("%val%", "Stage "	+ String.valueOf(val));
@@ -1051,7 +1051,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 											return;
 										}
 									}
-									int lvl = Integer.valueOf(val);
+									int lvl = Integer.parseInt(val);
 									switch (lvl)
 									{
 										case 0:
@@ -1086,7 +1086,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 									html.setFile("data/html/chamberlain/functions-apply_confirmed.htm");
 									if (getCastle().getFunction(Castle.FUNC_SUPPORT) != null)
 									{
-										if (getCastle().getFunction(Castle.FUNC_SUPPORT).getLvl() == Integer.valueOf(val))
+										if (getCastle().getFunction(Castle.FUNC_SUPPORT).getLvl() == Integer.parseInt(val))
 										{
 											html.setFile("data/html/chamberlain/functions-used.htm");
 											html.replace("%val%", "Stage "
@@ -1095,7 +1095,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 											return;
 										}
 									}
-									int lvl = Integer.valueOf(val);
+									int lvl = Integer.parseInt(val);
 									switch (lvl)
 									{
 										case 0:

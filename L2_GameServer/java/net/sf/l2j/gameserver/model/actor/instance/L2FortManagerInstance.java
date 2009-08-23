@@ -382,7 +382,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 								NpcHtmlMessage html = new NpcHtmlMessage(1);
 								html.setFile("data/html/fortress/functions-apply.htm");
 								html.replace("%name%", "(HP Recovery Device)");
-								int percent = Integer.valueOf(val);
+								int percent = Integer.parseInt(val);
 								int cost;
 								switch (percent)
 								{
@@ -412,7 +412,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 								NpcHtmlMessage html = new NpcHtmlMessage(1);
 								html.setFile("data/html/fortress/functions-apply.htm");
 								html.replace("%name%", "(MP Recovery)");
-								int percent = Integer.valueOf(val);
+								int percent = Integer.parseInt(val);
 								int cost;
 								switch (percent)
 								{
@@ -441,7 +441,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 								NpcHtmlMessage html = new NpcHtmlMessage(1);
 								html.setFile("data/html/fortress/functions-apply.htm");
 								html.replace("%name%", "(EXP Recovery Device)");
-								int percent = Integer.valueOf(val);
+								int percent = Integer.parseInt(val);
 								int cost;
 								switch (percent)
 								{
@@ -476,7 +476,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 									html.setFile("data/html/fortress/functions-apply_confirmed.htm");
 									if (getFort().getFunction(Fort.FUNC_RESTORE_HP) != null)
 									{
-										if (getFort().getFunction(Fort.FUNC_RESTORE_HP).getLvl() == Integer.valueOf(val))
+										if (getFort().getFunction(Fort.FUNC_RESTORE_HP).getLvl() == Integer.parseInt(val))
 										{
 											html.setFile("data/html/fortress/functions-used.htm");
 											html.replace("%val%", String.valueOf(val)
@@ -485,7 +485,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 											return;
 										}
 									}
-									int percent = Integer.valueOf(val);
+									int percent = Integer.parseInt(val);
 									switch (percent)
 									{
 										case 0:
@@ -520,7 +520,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 									html.setFile("data/html/fortress/functions-apply_confirmed.htm");
 									if (getFort().getFunction(Fort.FUNC_RESTORE_MP) != null)
 									{
-										if (getFort().getFunction(Fort.FUNC_RESTORE_MP).getLvl() == Integer.valueOf(val))
+										if (getFort().getFunction(Fort.FUNC_RESTORE_MP).getLvl() == Integer.parseInt(val))
 										{
 											html.setFile("data/html/fortress/functions-used.htm");
 											html.replace("%val%", String.valueOf(val)
@@ -529,7 +529,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 											return;
 										}
 									}
-									int percent = Integer.valueOf(val);
+									int percent = Integer.parseInt(val);
 									switch (percent)
 									{
 										case 0:
@@ -564,7 +564,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 									html.setFile("data/html/fortress/functions-apply_confirmed.htm");
 									if (getFort().getFunction(Fort.FUNC_RESTORE_EXP) != null)
 									{
-										if (getFort().getFunction(Fort.FUNC_RESTORE_EXP).getLvl() == Integer.valueOf(val))
+										if (getFort().getFunction(Fort.FUNC_RESTORE_EXP).getLvl() == Integer.parseInt(val))
 										{
 											html.setFile("data/html/fortress/functions-used.htm");
 											html.replace("%val%", String.valueOf(val)
@@ -573,7 +573,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 											return;
 										}
 									}
-									int percent = Integer.valueOf(val);
+									int percent = Integer.parseInt(val);
 									switch (percent)
 									{
 										case 0:
@@ -693,7 +693,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 								NpcHtmlMessage html = new NpcHtmlMessage(1);
 								html.setFile("data/html/fortress/functions-apply.htm");
 								html.replace("%name%", "Insignia (Supplementary Magic)");
-								int stage = Integer.valueOf(val);
+								int stage = Integer.parseInt(val);
 								int cost;
 								switch (stage)
 								{
@@ -721,7 +721,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 								NpcHtmlMessage html = new NpcHtmlMessage(1);
 								html.setFile("data/html/fortress/functions-apply.htm");
 								html.replace("%name%", "Mirror (Teleportation Device)");
-								int stage = Integer.valueOf(val);
+								int stage = Integer.parseInt(val);
 								int cost;
 								switch (stage)
 								{
@@ -756,7 +756,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 									html.setFile("data/html/fortress/functions-apply_confirmed.htm");
 									if (getFort().getFunction(Fort.FUNC_TELEPORT) != null)
 									{
-										if (getFort().getFunction(Fort.FUNC_TELEPORT).getLvl() == Integer.valueOf(val))
+										if (getFort().getFunction(Fort.FUNC_TELEPORT).getLvl() == Integer.parseInt(val))
 										{
 											html.setFile("data/html/fortress/functions-used.htm");
 											html.replace("%val%", "Stage "	+ String.valueOf(val));
@@ -764,7 +764,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 											return;
 										}
 									}
-									int lvl = Integer.valueOf(val);
+									int lvl = Integer.parseInt(val);
 									switch (lvl)
 									{
 										case 0:
@@ -799,7 +799,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 									html.setFile("data/html/fortress/functions-apply_confirmed.htm");
 									if (getFort().getFunction(Fort.FUNC_SUPPORT) != null)
 									{
-										if (getFort().getFunction(Fort.FUNC_SUPPORT).getLvl() == Integer.valueOf(val))
+										if (getFort().getFunction(Fort.FUNC_SUPPORT).getLvl() == Integer.parseInt(val))
 										{
 											html.setFile("data/html/fortress/functions-used.htm");
 											html.replace("%val%", "Stage "
@@ -808,7 +808,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 											return;
 										}
 									}
-									int lvl = Integer.valueOf(val);
+									int lvl = Integer.parseInt(val);
 									switch (lvl)
 									{
 										case 0:

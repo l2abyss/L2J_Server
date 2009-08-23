@@ -45,7 +45,7 @@ public class L2AdminCommandAccessRight
 		{
 			try
 			{
-				_accessLevels[i] = AccessLevels.getInstance().getAccessLevel(Integer.valueOf(accessLevelsSplit[i]));
+				_accessLevels[i] = AccessLevels.getInstance().getAccessLevel(Integer.parseInt(accessLevelsSplit[i]));
 			}
 			catch (NumberFormatException nfe)
 			{

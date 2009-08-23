@@ -35,7 +35,7 @@ public class ConditionTargetNpcId extends Condition {
 		boolean mt;
 		for (int i = 0; i < _npcIds.length;i++)
 		{
-			mt = (((env.target instanceof L2Attackable) && ((L2Attackable)env.target).getNpcId() == Integer.valueOf(_npcIds[i]))||((env.target instanceof L2Npc) && ((L2Npc)env.target).getNpcId() == Integer.valueOf(_npcIds[i])));
+			mt = (((env.target instanceof L2Attackable) && ((L2Attackable)env.target).getNpcId() == Integer.parseInt(_npcIds[i])) || ((env.target instanceof L2Npc) && ((L2Npc)env.target).getNpcId() == Integer.parseInt(_npcIds[i])));
 			if (mt)
 				return true;
 		}

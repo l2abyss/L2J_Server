@@ -308,9 +308,9 @@ public final class TaskManager
 			Calendar min = Calendar.getInstance();
 			try
 			{
-				min.set(Calendar.HOUR_OF_DAY, Integer.valueOf(hour[0]));
-				min.set(Calendar.MINUTE, Integer.valueOf(hour[1]));
-				min.set(Calendar.SECOND, Integer.valueOf(hour[2]));
+				min.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hour[0]));
+				min.set(Calendar.MINUTE, Integer.parseInt(hour[1]));
+				min.set(Calendar.SECOND, Integer.parseInt(hour[2]));
 			}
 			catch (Exception e)
 			{

@@ -406,7 +406,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
             _negateId = new int[valuesSplit.length];
     		for (int i = 0; i < valuesSplit.length;i++)
     		{
-    			_negateId[i] = Integer.valueOf(valuesSplit[i]);
+    			_negateId[i] = Integer.parseInt(valuesSplit[i]);
     		}
         }
         else

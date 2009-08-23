@@ -957,7 +957,7 @@ public final class Config
 							{
 								if (!st.equalsIgnoreCase(""))
 								{
-									int val = Integer.valueOf(st);
+									int val = Integer.parseInt(st);
 									if (val > 23 || val < 0)
 										_log.warning(StringUtil.concat("[SiegeHourList]: invalid config property -> SiegeHourList \"", st, "\""));
 									else if (val < 12)

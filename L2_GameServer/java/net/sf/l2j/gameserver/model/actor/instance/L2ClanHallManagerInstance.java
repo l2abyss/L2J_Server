@@ -278,7 +278,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                             	NpcHtmlMessage html = new NpcHtmlMessage(1);
                             	html.setFile("data/html/clanHallManager/functions-apply.htm");
                             	html.replace("%name%", "Fireplace (HP Recovery Device)");
-                            	int percent = Integer.valueOf(val);
+                            	int percent = Integer.parseInt(val);
                             	int cost;
                             	switch (percent)
                             	{
@@ -335,7 +335,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                             	NpcHtmlMessage html = new NpcHtmlMessage(1);
                             	html.setFile("data/html/clanHallManager/functions-apply.htm");
                             	html.replace("%name%", "Carpet (MP Recovery)");
-                            	int percent = Integer.valueOf(val);
+                            	int percent = Integer.parseInt(val);
                             	int cost;
                             	switch (percent)
                             	{
@@ -367,7 +367,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                             	NpcHtmlMessage html = new NpcHtmlMessage(1);
                             	html.setFile("data/html/clanHallManager/functions-apply.htm");
                             	html.replace("%name%", "Chandelier (EXP Recovery Device)");
-                            	int percent = Integer.valueOf(val);
+                            	int percent = Integer.parseInt(val);
                             	int cost;
                             	switch (percent)
                             	{
@@ -410,7 +410,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                                     html.setFile("data/html/clanHallManager/functions-apply_confirmed.htm");
                                     if (getClanHall().getFunction(ClanHall.FUNC_RESTORE_HP) != null)
                                     {
-                                    	if (getClanHall().getFunction(ClanHall.FUNC_RESTORE_HP).getLvl() == Integer.valueOf(val))
+                                    	if (getClanHall().getFunction(ClanHall.FUNC_RESTORE_HP).getLvl() == Integer.parseInt(val))
                                     	{
                                     		html.setFile("data/html/clanHallManager/functions-used.htm");
                                     		html.replace("%val%", String.valueOf(val)+"%");
@@ -418,7 +418,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                                     		return;
                                     	}
                                     }
-                                    int percent = Integer.valueOf(val);
+                                    int percent = Integer.parseInt(val);
                                     switch (percent)
                                     {
                                 		case 0:
@@ -487,7 +487,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                         			html.setFile("data/html/clanHallManager/functions-apply_confirmed.htm");
                                     if (getClanHall().getFunction(ClanHall.FUNC_RESTORE_MP) != null)
                                     {
-                                    	if (getClanHall().getFunction(ClanHall.FUNC_RESTORE_MP).getLvl() == Integer.valueOf(val))
+                                    	if (getClanHall().getFunction(ClanHall.FUNC_RESTORE_MP).getLvl() == Integer.parseInt(val))
                                     	{
                                     		html.setFile("data/html/clanHallManager/functions-used.htm");
                                     		html.replace("%val%", String.valueOf(val)+"%");
@@ -495,7 +495,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                                     		return;
                                     	}
                                     }
-                                    int percent = Integer.valueOf(val);
+                                    int percent = Integer.parseInt(val);
                                     switch (percent)
                                     {
                                 		case 0:
@@ -540,7 +540,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                         			html.setFile("data/html/clanHallManager/functions-apply_confirmed.htm");
                                     if (getClanHall().getFunction(ClanHall.FUNC_RESTORE_EXP) != null)
                                     {
-                                    	if (getClanHall().getFunction(ClanHall.FUNC_RESTORE_EXP).getLvl() == Integer.valueOf(val))
+                                    	if (getClanHall().getFunction(ClanHall.FUNC_RESTORE_EXP).getLvl() == Integer.parseInt(val))
                                     	{
                                     		html.setFile("data/html/clanHallManager/functions-used.htm");
                                     		html.replace("%val%", String.valueOf(val)+"%");
@@ -548,7 +548,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                                     		return;
                                     	}
                                     }
-                                    int percent = Integer.valueOf(val);
+                                    int percent = Integer.parseInt(val);
                                     switch (percent)
                                     {
                                     	case 0:
@@ -771,7 +771,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                             	NpcHtmlMessage html = new NpcHtmlMessage(1);
                             	html.setFile("data/html/clanHallManager/functions-apply.htm");
                             	html.replace("%name%", "Magic Equipment (Item Production Facilities)");
-                            	int stage = Integer.valueOf(val);
+                            	int stage = Integer.parseInt(val);
                             	int cost;
                             	switch (stage)
                             	{
@@ -797,7 +797,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                             	NpcHtmlMessage html = new NpcHtmlMessage(1);
                             	html.setFile("data/html/clanHallManager/functions-apply.htm");
                             	html.replace("%name%", "Insignia (Supplementary Magic)");
-                            	int stage = Integer.valueOf(val);
+                            	int stage = Integer.parseInt(val);
                             	int cost;
                             	switch (stage)
                             	{
@@ -838,7 +838,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                             	NpcHtmlMessage html = new NpcHtmlMessage(1);
                             	html.setFile("data/html/clanHallManager/functions-apply.htm");
                             	html.replace("%name%", "Mirror (Teleportation Device)");
-                            	int stage = Integer.valueOf(val);
+                            	int stage = Integer.parseInt(val);
                             	int cost;
                             	switch (stage)
                             	{
@@ -869,7 +869,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                                     html.setFile("data/html/clanHallManager/functions-apply_confirmed.htm");
                                     if (getClanHall().getFunction(ClanHall.FUNC_ITEM_CREATE) != null)
                                     {
-                                    	if (getClanHall().getFunction(ClanHall.FUNC_ITEM_CREATE).getLvl() == Integer.valueOf(val))
+                                    	if (getClanHall().getFunction(ClanHall.FUNC_ITEM_CREATE).getLvl() == Integer.parseInt(val))
                                     	{
                                     		html.setFile("data/html/clanHallManager/functions-used.htm");
                                     		html.replace("%val%","Stage " +String.valueOf(val));
@@ -878,7 +878,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                                     	}
                                     }
                                     int fee;
-                                    int lvl = Integer.valueOf(val);
+                                    int lvl = Integer.parseInt(val);
                                     switch (lvl)
                                     {
                                 		case 0:
@@ -917,7 +917,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                                     html.setFile("data/html/clanHallManager/functions-apply_confirmed.htm");
                                     if (getClanHall().getFunction(ClanHall.FUNC_TELEPORT) != null)
                                     {
-                                    	if (getClanHall().getFunction(ClanHall.FUNC_TELEPORT).getLvl() == Integer.valueOf(val))
+                                    	if (getClanHall().getFunction(ClanHall.FUNC_TELEPORT).getLvl() == Integer.parseInt(val))
                                     	{
                                     		html.setFile("data/html/clanHallManager/functions-used.htm");
                                     		html.replace("%val%","Stage " +String.valueOf(val));
@@ -925,7 +925,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                                     		return;
                                     	}
                                     }
-                                    int lvl = Integer.valueOf(val);
+                                    int lvl = Integer.parseInt(val);
                                     switch (lvl)
                                     {
                                 		case 0:
@@ -961,7 +961,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                                     html.setFile("data/html/clanHallManager/functions-apply_confirmed.htm");
                                     if (getClanHall().getFunction(ClanHall.FUNC_SUPPORT) != null)
                                     {
-                                    	if (getClanHall().getFunction(ClanHall.FUNC_SUPPORT).getLvl() == Integer.valueOf(val))
+                                    	if (getClanHall().getFunction(ClanHall.FUNC_SUPPORT).getLvl() == Integer.parseInt(val))
                                     	{
                                     		html.setFile("data/html/clanHallManager/functions-used.htm");
                                     		html.replace("%val%","Stage " +String.valueOf(val));
@@ -969,7 +969,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                                     		return;
                                     	}
                                     }
-                                    int lvl = Integer.valueOf(val);
+                                    int lvl = Integer.parseInt(val);
                                     switch (lvl)
                                     {
                                 		case 0:
@@ -1111,7 +1111,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                             	NpcHtmlMessage html = new NpcHtmlMessage(1);
                             	html.setFile("data/html/clanHallManager/functions-apply.htm");
                             	html.replace("%name%", "Curtains (Decoration)");
-                            	int stage = Integer.valueOf(val);
+                            	int stage = Integer.parseInt(val);
                             	int cost;
                             	switch (stage)
                             	{
@@ -1134,7 +1134,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                             	NpcHtmlMessage html = new NpcHtmlMessage(1);
                             	html.setFile("data/html/clanHallManager/functions-apply.htm");
                             	html.replace("%name%", "Front Platform (Decoration)");
-                            	int stage = Integer.valueOf(val);
+                            	int stage = Integer.parseInt(val);
                             	int cost;
                             	switch (stage)
                             	{
@@ -1161,7 +1161,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                                     html.setFile("data/html/clanHallManager/functions-apply_confirmed.htm");
                                     if (getClanHall().getFunction(ClanHall.FUNC_DECO_CURTAINS) != null)
                                     {
-                                    	if (getClanHall().getFunction(ClanHall.FUNC_DECO_CURTAINS).getLvl() == Integer.valueOf(val))
+                                    	if (getClanHall().getFunction(ClanHall.FUNC_DECO_CURTAINS).getLvl() == Integer.parseInt(val))
                                     	{
                                     		html.setFile("data/html/clanHallManager/functions-used.htm");
                                     		html.replace("%val%","Stage " +String.valueOf(val));
@@ -1169,7 +1169,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                                     		return;
                                     	}
                                     }
-	                                int lvl = Integer.valueOf(val);
+	                                int lvl = Integer.parseInt(val);
 	                                switch (lvl)
 	                                {
                                 		case 0:
@@ -1205,7 +1205,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                                     html.setFile("data/html/clanHallManager/functions-apply_confirmed.htm");
                                     if (getClanHall().getFunction(ClanHall.FUNC_DECO_FRONTPLATEFORM) != null)
                                     {
-                                    	if (getClanHall().getFunction(ClanHall.FUNC_DECO_FRONTPLATEFORM).getLvl() == Integer.valueOf(val))
+                                    	if (getClanHall().getFunction(ClanHall.FUNC_DECO_FRONTPLATEFORM).getLvl() == Integer.parseInt(val))
                                     	{
                                     		html.setFile("data/html/clanHallManager/functions-used.htm");
                                     		html.replace("%val%","Stage " +String.valueOf(val));
@@ -1213,7 +1213,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                                     		return;
                                     	}
                                     }
-	                                int lvl = Integer.valueOf(val);
+	                                int lvl = Integer.parseInt(val);
 	                                switch (lvl)
 	                                {
                                 		case 0:
