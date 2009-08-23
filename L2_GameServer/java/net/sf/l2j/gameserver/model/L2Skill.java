@@ -287,8 +287,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final String _attribute;
 	private final int _afroId;
 
-	private final int _learnSkillId;
-	private final int _learnSkillLvl;
+	private final int[] _learnSkillId;
+	private final int[] _learnSkillLvl;
 
 	private final boolean _ignoreShield;
 	private final boolean _isSuicideAttack;
@@ -335,7 +335,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
             String[] valuesSplit = coords.split(",");
             _teleportCoords = new int[valuesSplit.length];
     		for (int i = 0; i < valuesSplit.length;i++)
-    			_teleportCoords[i] = Integer.valueOf(valuesSplit[i]);
+    			_teleportCoords[i] = Integer.parseInt(valuesSplit[i]);
         }
         else
         	_teleportCoords = null;
@@ -351,8 +351,26 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _abnormalLvl = set.getInteger("abnormalLvl", -1);
         _effectAbnormalLvl = set.getInteger("effectAbnormalLvl", -1); // support for a separate effect abnormal lvl, e.g. poison inside a different skill
         _negateLvl = set.getInteger("negateLvl", -1);
-        _learnSkillId = set.getInteger("learnSkillId",0);
-        _learnSkillLvl = set.getInteger("learnSkillLvl",1);
+		
+		String[] ar = set.getString("learnSkillId", "0").split(",");
+		int[] ar2 = new int[ar.length];
+		
+		for (int i = 0; i < ar.length; i++)
+			ar2[i] = Integer.parseInt(ar[i]);
+		
+		_learnSkillId = ar2;
+		
+		ar = set.getString("learnSkillLvl", "1").split(",");
+		ar2 = new int[_learnSkillId.length];
+		
+		for (int i = 0; i < _learnSkillId.length; i++)
+			ar2[i] = 1;
+		
+		for (int i = 0; i < ar.length; i++)
+			ar2[i] = Integer.parseInt(ar[i]);
+		
+		_learnSkillLvl = ar2;
+		
         _attribute = set.getString("attribute","");
         String str = set.getString("negateStats", "");
         
@@ -2606,7 +2624,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	 * used for learning skills through skills
      * @return new skill id to learn (if not defined, default 0)
      */
-    public int getNewSkillId()
+    public int[] getNewSkillId()
     {
 	    return _learnSkillId;
     }
@@ -2615,7 +2633,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	 * used for learning skills through skills
      * @return skill lvl to learn (if not defined, default 1)
      */
-    public int getNewSkillLvl()
+    public int[] getNewSkillLvl()
     {
 	    return _learnSkillLvl;
     }
