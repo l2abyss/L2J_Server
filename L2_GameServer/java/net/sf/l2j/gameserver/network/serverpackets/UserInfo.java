@@ -200,7 +200,7 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_DECO5));
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_DECO6));
         writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_BELT)); // CT2.3
-        writeD(0x00); // CT2.3
+        writeD(_activeChar.getInventory().getMaxTalismanCount()); // CT2.3
         writeD(0x01); // CT2.3
         writeD(_activeChar.getPAtk(null));
         writeD(_activeChar.getPAtkSpd());
