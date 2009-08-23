@@ -226,7 +226,7 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
         {
             if (sc.getId() == _skillId && sc.getType() == L2ShortCut.TYPE_SKILL)
             {
-                L2ShortCut newsc = new L2ShortCut(sc.getSlot(), sc.getPage(), sc.getType(), sc.getId(), _skillLvl, 1);
+                L2ShortCut newsc = new L2ShortCut(sc.getSlot(), sc.getPage(), sc.getType(), sc.getId(), player.getSkillLevel(_skillId), 1);
                 player.sendPacket(new ShortCutRegister(newsc));
                 player.registerShortCut(newsc);
             }
