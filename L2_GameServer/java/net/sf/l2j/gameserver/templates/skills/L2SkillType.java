@@ -84,7 +84,10 @@ public enum L2SkillType
 	
 	// sp
 	GIVE_SP,
-	
+
+	// vitality
+	GIVE_VITALITY,
+
 	// Aggro
 	AGGDAMAGE,
 	AGGREDUCE,

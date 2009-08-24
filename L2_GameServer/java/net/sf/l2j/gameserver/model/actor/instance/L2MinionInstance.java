@@ -97,4 +97,10 @@ public class L2MinionInstance extends L2MonsterInstance
 		_master.notifyMinionDied(this);
 		return true;
 	}
+
+	@Override
+	public float getVitalityPoints(int damage)
+	{
+		return 0;
+	}
 }

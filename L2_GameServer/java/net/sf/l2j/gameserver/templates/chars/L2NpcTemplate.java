@@ -77,7 +77,8 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public final AIType AI;
 	public final boolean dropherb;
 	public boolean isQuestMonster; // doesn't include all mobs that are involved in 
-	// quests, just plain quest monsters for preventing champion spawn 
+	// quests, just plain quest monsters for preventing champion spawn
+	public final float baseVitalityDivider;
 	
 	public static enum AbsorbCrystalType
 	{
@@ -203,6 +204,9 @@ public final class L2NpcTemplate extends L2CharTemplate
 		baseEarthRes += 20;
 		baseHolyRes += 20;
 		baseDarkRes += 20;
+
+		// can be loaded from db
+		baseVitalityDivider = level > 0 && rewardExp > 0 ? baseHpMax * 9 * level * level /(100 * rewardExp) : 0;
 	}
 	
 	public void addTeachInfo(ClassId classId)

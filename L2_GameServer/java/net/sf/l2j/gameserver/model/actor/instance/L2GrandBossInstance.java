@@ -96,4 +96,16 @@ public final class L2GrandBossInstance extends L2MonsterInstance
 		}
 		return true;
 	}
+
+    @Override
+    public float getVitalityPoints(int damage)
+    {
+    	return - super.getVitalityPoints(damage) / 100;
+    }
+
+    @Override
+    public boolean useVitalityRate()
+    {
+    	return false;
+    }
 }

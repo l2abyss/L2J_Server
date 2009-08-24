@@ -222,7 +222,10 @@ public enum Stats
 	SHIELD_DEFENCE_ANGLE("shieldDefAngle"),
 	
 	//Skill mastery
-	SKILL_MASTERY			("skillMastery");
+	SKILL_MASTERY			("skillMastery"),
+
+	// vitality
+	VITALITY_CONSUME_RATE("vitalityConsumeRate");
 	
 	public static final int NUM_STATS = values().length;
 	

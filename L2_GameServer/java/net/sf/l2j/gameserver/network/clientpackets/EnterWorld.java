@@ -269,6 +269,13 @@ public class EnterWorld extends L2GameClientPacket
 			activeChar.removeSkill(SkillTable.getInstance().getInfo(5075,1));
 		}
 
+		if (Config.ENABLE_VITALITY && Config.RECOVER_VITALITY_ON_RECONNECT)
+		{
+			float points = Config.RATE_RECOVERY_ON_RECONNECT * (System.currentTimeMillis() - activeChar.getLastAccess()) / 60000;
+			if (points > 0)
+				activeChar.updateVitalityPoints(points, false, true);
+		}
+
 		activeChar.sendPacket(new UserInfo(activeChar));
 
 		sendPacket(new ExBrExtraUserInfo(activeChar));

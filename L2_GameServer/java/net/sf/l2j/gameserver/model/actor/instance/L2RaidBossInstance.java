@@ -142,4 +142,16 @@ public class L2RaidBossInstance extends L2MonsterInstance
         super.setCurrentHp(super.getMaxHp());
         super.setCurrentMp(super.getMaxMp());
     }
+
+    @Override
+    public float getVitalityPoints(int damage)
+    {
+    	return - super.getVitalityPoints(damage) / 100;
+    }
+
+    @Override
+    public boolean useVitalityRate()
+    {
+    	return false;
+    }
 }

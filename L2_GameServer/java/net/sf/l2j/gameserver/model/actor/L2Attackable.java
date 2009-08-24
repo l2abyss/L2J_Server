@@ -635,8 +635,12 @@ public class L2Attackable extends L2Npc
 										if (skill.getExpNeeded() <= addexp)
 											((L2PcInstance)attacker).absorbSoul(skill,this);
 									}
+									((L2PcInstance)attacker).addExpAndSp(addexp,addsp, useVitalityRate());
+									if (addexp > 0)
+										((L2PcInstance)attacker).updateVitalityPoints(getVitalityPoints(damage), true, false);
 								}
-								attacker.addExpAndSp(addexp,addsp);
+								else
+									attacker.addExpAndSp(addexp,addsp);
 							}
 						}
 					}
@@ -759,7 +763,7 @@ public class L2Attackable extends L2Npc
 						}
 						// Distribute Experience and SP rewards to L2PcInstance Party members in the known area of the last attacker
 						if (partyDmg > 0)
-							attackerParty.distributeXpAndSp(exp, sp, rewardedMembers, partyLvl, this);
+							attackerParty.distributeXpAndSp(exp, sp, rewardedMembers, partyLvl, partyDmg, this);
 					}
 				}
 			}
@@ -1631,6 +1635,19 @@ public class L2Attackable extends L2Npc
 				else
 					dropItem(player, item);
 			}
+			// Vitality Herb
+			if (Config.ENABLE_VITALITY && Config.ENABLE_DROP_VITALITY_HERBS)
+			{
+				random = Rnd.get(100);
+				if (random < Config.RATE_DROP_VITALITY_HERBS)
+				{
+					RewardItem item = new RewardItem(13028, 1);
+					if (Config.AUTO_LOOT && Config.AUTO_LOOT_HERBS)
+						player.addItem("Loot", item.getItemId(), item.getCount(), this, true);
+					else
+						dropItem(player, item);
+				}
+			}
 		}
 	}
 
@@ -2463,5 +2480,35 @@ public class L2Attackable extends L2Npc
 
 		if (hasAI() && getSpawn() != null)
 			getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(getSpawn().getLocx(), getSpawn().getLocy(), getSpawn().getLocz(), 0));
+	}
+
+	/*
+	 * Return vitality points decrease (if positive)
+	 * or increase (if negative) based on damage.
+	 * Maximum for damage = maxHp.
+	 */
+	public float getVitalityPoints(int damage)
+	{
+		// sanity check
+		if (damage <= 0)
+			return 0;
+
+		final float divider = getTemplate().baseVitalityDivider;
+		if (divider == 0)
+			return 0;
+
+		// negative value - vitality will be consumed
+		return - Math.min(damage, getMaxHp()) / divider;
+	}
+
+	/*
+	 * True if vitality rate for exp and sp should be applied
+	 */
+	public boolean useVitalityRate()
+	{
+		if (isChampion() && !Config.L2JMOD_CHAMPION_ENABLE_VITALITY)
+			return false;
+
+		return true;
 	}
 }

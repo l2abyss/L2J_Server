@@ -32,6 +32,7 @@ import net.sf.l2j.gameserver.model.L2ShortCut;
 import net.sf.l2j.gameserver.model.L2SkillLearn;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.model.actor.stat.PcStat;
 import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.network.L2GameClient;
@@ -193,7 +194,9 @@ public final class CharacterCreate extends L2GameClientPacket
 		
 		newChar.setXYZInvisible(template.spawnX, template.spawnY, template.spawnZ);
 		newChar.setTitle("");
-		
+
+		newChar.setVitalityPoints(PcStat.MAX_VITALITY_POINTS, true);
+
 		L2ShortCut shortcut;
 		// add attack shortcut
 		shortcut = new L2ShortCut(0, 0, 3, 2, 0, 1);

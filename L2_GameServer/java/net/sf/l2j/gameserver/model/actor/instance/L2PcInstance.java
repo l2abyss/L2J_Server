@@ -165,6 +165,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ExPrivateStoreSetWholeMsg;
 import net.sf.l2j.gameserver.network.serverpackets.ExSetCompassZoneCode;
 import net.sf.l2j.gameserver.network.serverpackets.ExSpawnEmitter;
 import net.sf.l2j.gameserver.network.serverpackets.ExStorageMaxCount;
+import net.sf.l2j.gameserver.network.serverpackets.ExVitalityPointInfo;
 import net.sf.l2j.gameserver.network.serverpackets.GMHide;
 import net.sf.l2j.gameserver.network.serverpackets.GameGuardQuery;
 import net.sf.l2j.gameserver.network.serverpackets.GetOnVehicle;
@@ -250,8 +251,8 @@ public final class L2PcInstance extends L2Playable
 
 	// Character Character SQL String Definitions:
     private static final String INSERT_CHARACTER = "INSERT INTO characters (account_name,charId,char_name,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,face,hairStyle,hairColor,sex,exp,sp,karma,fame,pvpkills,pkkills,clanid,race,classid,deletetime,cancraft,title,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,newbie,nobless,power_grade,last_recom_date) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	private static final String UPDATE_CHARACTER = "UPDATE characters SET level=?,maxHp=?,curHp=?,maxCp=?,curCp=?,maxMp=?,curMp=?,face=?,hairStyle=?,hairColor=?,sex=?,heading=?,x=?,y=?,z=?,exp=?,expBeforeDeath=?,sp=?,karma=?,fame=?,pvpkills=?,pkkills=?,rec_have=?,rec_left=?,clanid=?,race=?,classid=?,deletetime=?,title=?,accesslevel=?,online=?,isin7sdungeon=?,clan_privs=?,wantspeace=?,base_class=?,onlinetime=?,punish_level=?,punish_timer=?,newbie=?,nobless=?,power_grade=?,subpledge=?,last_recom_date=?,lvl_joined_academy=?,apprentice=?,sponsor=?,varka_ketra_ally=?,clan_join_expiry_time=?,clan_create_expiry_time=?,char_name=?,death_penalty_level=?,bookmarkslot=? WHERE charId=?";
-    private static final String RESTORE_CHARACTER = "SELECT account_name, charId, char_name, level, maxHp, curHp, maxCp, curCp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, expBeforeDeath, sp, karma, fame, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, rec_have, rec_left, accesslevel, online, char_slot, lastAccess, clan_privs, wantspeace, base_class, onlinetime, isin7sdungeon, punish_level, punish_timer, newbie, nobless, power_grade, subpledge, last_recom_date, lvl_joined_academy, apprentice, sponsor, varka_ketra_ally,clan_join_expiry_time,clan_create_expiry_time,death_penalty_level,bookmarkslot FROM characters WHERE charId=?";
+	private static final String UPDATE_CHARACTER = "UPDATE characters SET level=?,maxHp=?,curHp=?,maxCp=?,curCp=?,maxMp=?,curMp=?,face=?,hairStyle=?,hairColor=?,sex=?,heading=?,x=?,y=?,z=?,exp=?,expBeforeDeath=?,sp=?,karma=?,fame=?,pvpkills=?,pkkills=?,rec_have=?,rec_left=?,clanid=?,race=?,classid=?,deletetime=?,title=?,accesslevel=?,online=?,isin7sdungeon=?,clan_privs=?,wantspeace=?,base_class=?,onlinetime=?,punish_level=?,punish_timer=?,newbie=?,nobless=?,power_grade=?,subpledge=?,last_recom_date=?,lvl_joined_academy=?,apprentice=?,sponsor=?,varka_ketra_ally=?,clan_join_expiry_time=?,clan_create_expiry_time=?,char_name=?,death_penalty_level=?,bookmarkslot=?,vitality_points=? WHERE charId=?";
+    private static final String RESTORE_CHARACTER = "SELECT account_name, charId, char_name, level, maxHp, curHp, maxCp, curCp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, expBeforeDeath, sp, karma, fame, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, rec_have, rec_left, accesslevel, online, char_slot, lastAccess, clan_privs, wantspeace, base_class, onlinetime, isin7sdungeon, punish_level, punish_timer, newbie, nobless, power_grade, subpledge, last_recom_date, lvl_joined_academy, apprentice, sponsor, varka_ketra_ally,clan_join_expiry_time,clan_create_expiry_time,death_penalty_level,bookmarkslot,vitality_points FROM characters WHERE charId=?";
 
     // Character Teleport Bookmark:
     private static final String INSERT_TP_BOOKMARK = "INSERT INTO character_tpbookmark (charId,Id,x,y,z,icon,tag,name) values (?,?,?,?,?,?,?,?)";
@@ -391,6 +392,9 @@ public final class L2PcInstance extends L2Playable
 	private int _fame;
 	private ScheduledFuture<?> _fameTask;
 
+	/** Vitality recovery task */
+	private ScheduledFuture<?> _vitalityTask;
+
 	/** The Siege state of the L2PcInstance */
 	private byte _siegeState = 0;
 
@@ -459,9 +463,6 @@ public final class L2PcInstance extends L2Playable
 	public int _telemode = 0;
 
 	public boolean _exploring = false;
-	
-	/** Vitality Level of this L2PcInstance */
-	private int _vitalityLevel = 5;
 	
 	private boolean _inCrystallize;
 	private boolean _inCraftMode;
@@ -1083,6 +1084,7 @@ public final class L2PcInstance extends L2Playable
 		if (!Config.WAREHOUSE_CACHE)
 			getWarehouse();
 		getFreight();
+		startVitalityTask();
 	}
 
 	private L2PcInstance(int objectId)
@@ -5909,6 +5911,7 @@ public final class L2PcInstance extends L2Playable
 		stopSoulTask();
 		stopChargeTask();
 		stopFameTask();
+		stopVitalityTask();
 	}
 
 	/**
@@ -7142,7 +7145,9 @@ public final class L2PcInstance extends L2Playable
 
                 player.setDeathPenaltyBuffLevel(rset.getInt("death_penalty_level"));
 
-				// Add the L2PcInstance object in _allObjects
+                player.setVitalityPoints(rset.getInt("vitality_points"), true);
+
+                // Add the L2PcInstance object in _allObjects
 				//L2World.getInstance().storeObject(player);
 
 				// Set the x,y,z position of the L2PcInstance and make it invisible
@@ -7476,7 +7481,8 @@ public final class L2PcInstance extends L2Playable
 			statement.setString(50, getName());
 			statement.setLong(51, getDeathPenaltyBuffLevel());
 			statement.setInt(52, getBookMarkSlot());
-            statement.setInt(53, getObjectId());
+			statement.setInt(53, getVitalityPoints());
+            statement.setInt(54, getObjectId());
 
 			statement.execute();
 			statement.close();
@@ -10892,9 +10898,22 @@ public final class L2PcInstance extends L2Playable
 	}
 
 	@Override
-	public void addExpAndSp(long addToExp, int addToSp) { getStat().addExpAndSp(addToExp, addToSp); }
-    public void removeExpAndSp(long removeExp, int removeSp) { getStat().removeExpAndSp(removeExp, removeSp); }
-    @Override
+	public void addExpAndSp(long addToExp, int addToSp)
+	{
+		getStat().addExpAndSp(addToExp, addToSp, false);
+	}
+
+	public void addExpAndSp(long addToExp, int addToSp, boolean useVitality)
+	{
+		getStat().addExpAndSp(addToExp, addToSp, useVitality);
+	}
+
+	public void removeExpAndSp(long removeExp, int removeSp)
+	{
+		getStat().removeExpAndSp(removeExp, removeSp);
+	}
+
+	@Override
 	public void reduceCurrentHp(double i, L2Character attacker, L2Skill skill)
     {
     	getStatus().reduceHp(i, attacker);
@@ -12188,7 +12207,46 @@ public final class L2PcInstance extends L2Playable
         }
     }
 
-	/**
+    public void startVitalityTask()
+    {
+    	if (Config.ENABLE_VITALITY && _vitalityTask == null)
+    	{
+    		_vitalityTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new VitalityTask(this), 1000, 60000);
+    	}
+    }
+
+    public void stopVitalityTask()
+    {
+    	if (_vitalityTask != null)
+    	{
+    		_vitalityTask.cancel(false);
+    		_vitalityTask = null;
+    	}
+    }
+
+    private class VitalityTask implements Runnable
+    {
+    	private final L2PcInstance _player;
+
+    	protected VitalityTask(L2PcInstance player)
+    	{
+    		_player = player;
+    	}
+
+    	public void run()
+    	{
+    		if (!_player.isInsideZone(L2Character.ZONE_PEACE))
+    			return;
+
+    		if (_player.getVitalityPoints() >= PcStat.MAX_VITALITY_POINTS)
+    			return;
+
+    		_player.updateVitalityPoints(Config.RATE_RECOVERY_VITALITY_PEACE_ZONE, false, false);
+    		_player.sendPacket(new ExVitalityPointInfo(getVitalityPoints()));
+    	}
+    }
+
+    /**
 	 * @return
 	 */
 	public int getPowerGrade()
@@ -12693,28 +12751,20 @@ public final class L2PcInstance extends L2Playable
     {
 	    return _agathionId;
     }
-    
-    /**
-     * Returns the VL <BR><BR>
-     * @return
-     */
-    public int getVitalityLevel()
+
+    public int getVitalityPoints()
     {
-    	return _vitalityLevel;
+    	return getStat().getVitalityPoints();
     }
-    
-    /**
-     * Sets VL of this L2PcInstance<BR><BR>
-     * @param level
-     */
-    public void setVitalityLevel(int level)
+
+    public void setVitalityPoints(int points, boolean quiet)
     {
-    	if (level > 5)
-    		level = 5;
-    	else if (level < 0)
-    		level = 0;
-    	
-    	_vitalityLevel = level;
+    	getStat().setVitalityPoints(points, quiet);
+    }
+
+    public synchronized void updateVitalityPoints(float points, boolean useRates, boolean quiet)
+    {
+    	getStat().updateVitalityPoints(points, useRates, quiet);
     }
 
     /*

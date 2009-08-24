@@ -24,7 +24,6 @@ import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.instancemanager.DuelManager;
 import net.sf.l2j.gameserver.model.actor.L2Attackable;
 import net.sf.l2j.gameserver.model.actor.L2Character;
-import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -591,7 +590,7 @@ public class L2Party {
 	 * @param rewardedMembers The list of L2PcInstance to reward
 	 *
 	 */
-	public void distributeXpAndSp(long xpReward, int spReward, List<L2Playable> rewardedMembers, int topLvl, L2Npc target)
+	public void distributeXpAndSp(long xpReward, int spReward, List<L2Playable> rewardedMembers, int topLvl, int partyDmg, L2Attackable target)
 	{
 		L2SummonInstance summon = null;
 		List<L2Playable> validMembers = getValidMembers(rewardedMembers, topLvl);
@@ -607,7 +606,10 @@ public class L2Party {
 		for (L2Playable character : validMembers)
 			sqLevelSum += (character.getLevel() * character.getLevel());
 
-		// Go through the L2PcInstances and L2PetInstances (not L2SummonInstances) that must be rewarded
+        final float vitalityPoints = target.getVitalityPoints(partyDmg) * Config.RATE_PARTY_XP / validMembers.size();
+        final boolean useVitalityRate = target.useVitalityRate();
+
+        // Go through the L2PcInstances and L2PetInstances (not L2SummonInstances) that must be rewarded
 		synchronized(rewardedMembers)
 		{
 			for (L2Character member : rewardedMembers)
@@ -643,17 +645,24 @@ public class L2Party {
                     {
                         long addexp = Math.round(member.calcStat(Stats.EXPSP_RATE, xpReward * preCalculation, null, null));
                         int addsp = (int)member.calcStat(Stats.EXPSP_RATE, spReward * preCalculation, null, null);
-                        if (target != null && member instanceof L2PcInstance)
+                        if (member instanceof L2PcInstance)
                         {
-                            if (((L2PcInstance)member).getSkillLevel(467) > 0)
-                            {
-                                L2Skill skill = SkillTable.getInstance().getInfo(467,((L2PcInstance)member).getSkillLevel(467));
-                                
-                                if (skill.getExpNeeded() <= addexp)
-                                    ((L2PcInstance)member).absorbSoul(skill,target);
-                            }
+                        	if (target != null)
+                        	{
+                                if (((L2PcInstance)member).getSkillLevel(467) > 0)
+                                {
+                                    L2Skill skill = SkillTable.getInstance().getInfo(467,((L2PcInstance)member).getSkillLevel(467));
+                                    
+                                    if (skill.getExpNeeded() <= addexp)
+                                        ((L2PcInstance)member).absorbSoul(skill,target);
+                                }
+                        	}
+                            ((L2PcInstance)member).addExpAndSp(addexp, addsp, useVitalityRate);
+                            if (addexp > 0)
+                                ((L2PcInstance)member).updateVitalityPoints(vitalityPoints, true, false);
                         }
-                        member.addExpAndSp(addexp,addsp);
+                        else
+                            member.addExpAndSp(addexp, addsp);
                     }
 				}
 				else

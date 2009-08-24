@@ -345,7 +345,7 @@ public final class UserInfo extends L2GameServerPacket
         // T2 Starts
         writeD(_activeChar.getFame());  // Fame
         writeD(0x01); // Unknown
-        writeD(0x00);  // Vitality Points
+        writeD(_activeChar.getVitalityPoints());  // Vitality Points
         writeD(_activeChar.getSpecialEffect());
         writeD(0x00); // CT2.3
         writeD(0x00); // CT2.3

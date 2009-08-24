@@ -13678,6 +13678,12 @@ public enum SystemMessageId
 	LOC_STEEL_CITADEL_S1_S2_S3(2293),
 	
 	/**
+	 * ID: 2296<br>
+	 * Message: You have gained Vitality points.
+	 */
+	GAINED_VITALITY_POINTS(2296),
+	
+	/**
 	* ID: 2301<br>
 	* Message: Current location: Steel Citadel Resistance
 	*/
@@ -13707,6 +13713,30 @@ public enum SystemMessageId
 	 * Would you like to resurrect now?
 	 */
 	RESURRECT_USING_CHARM_OF_COURAGE(2306),
+	
+	/**
+	 * ID: 2314<br>
+	 * Message: Your Vitality is at maximum.
+	 */
+	VITALITY_IS_AT_MAXIMUM(2314),
+	
+	/**
+	 * ID: 2315<br>
+	 * Message: You have gained Vitality points.
+	 */
+	VITALITY_HAS_INCREASED(2315),
+	
+	/**
+	 * ID: 2316<br>
+	 * Message: You have lost Vitality points.
+	 */
+	VITALITY_HAS_DECREASED(2316),
+	
+	/**
+	 * ID: 2317<br>
+	 * Message: Your Vitality is fully exhausted.
+	 */
+	VITALITY_IS_EXHAUSTED(2317),
 
 	/**
 	* ID: 2319<br>
