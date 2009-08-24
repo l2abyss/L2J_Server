@@ -329,7 +329,7 @@ public abstract class L2ZoneType
 			// Was the character inside this zone?
 			if (_characterList.containsKey(character.getObjectId()))
 			{
-				FastList<Quest> quests = this.getQuestByEvent(Quest.QuestEventType.ON_ENTER_ZONE);
+				FastList<Quest> quests = this.getQuestByEvent(Quest.QuestEventType.ON_EXIT_ZONE);
 				if (quests != null)
 				{
 					for (Quest quest : quests)
@@ -352,6 +352,14 @@ public abstract class L2ZoneType
 	{
 		if (_characterList.containsKey(character.getObjectId()))
 		{
+			FastList<Quest> quests = this.getQuestByEvent(Quest.QuestEventType.ON_EXIT_ZONE);
+			if (quests != null)
+			{
+				for (Quest quest : quests)
+				{
+					quest.notifyExitZone(character, this);
+				}
+			}
 			_characterList.remove(character.getObjectId());
 			onExit(character);
 		}
