@@ -97,7 +97,7 @@ public final class RequestPackageSend extends L2GameClientPacket
 
 		L2Npc manager = player.getLastFolkNPC();
 		if ((manager == null
-				|| !(manager instanceof L2WarehouseInstance)
+				|| !manager.isWarehouse()
 				|| !manager.canInteract(player)) && !player.isGM())
 			return;
 
