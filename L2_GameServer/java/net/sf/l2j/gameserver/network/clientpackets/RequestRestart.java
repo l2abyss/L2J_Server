@@ -39,128 +39,129 @@ import net.sf.l2j.gameserver.taskmanager.AttackStanceTaskManager;
  */
 public final class RequestRestart extends L2GameClientPacket
 {
-    private static final String _C__46_REQUESTRESTART = "[C] 46 RequestRestart";
-    private static Logger _log = Logger.getLogger(RequestRestart.class.getName());
+	private static final String _C__46_REQUESTRESTART = "[C] 46 RequestRestart";
+	private static final Logger _log = Logger.getLogger(RequestRestart.class.getName());
 
-
-    @Override
+	@Override
 	protected void readImpl()
-    {
-    	// trigger
-    }
+	{
+		// trigger
+	}
 
-    @Override
+	@Override
 	protected void runImpl()
-    {
-        L2PcInstance player = getClient().getActiveChar();
-        if (player == null)
-        {
-            _log.warning("[RequestRestart] activeChar null!?");
-            return;
-        }
+	{
+		final L2PcInstance player = getClient().getActiveChar();
 
-        if (player.isInOlympiadMode() || Olympiad.getInstance().isRegistered(player))
-        {
-            player.sendMessage("You cant logout in olympiad mode");
-            return;
-        }
+		if (player == null)
+			return;
 
-        if(player.getActiveEnchantItem() != null)
-        {
-        	player.sendMessage("You cant logout while enchanting!");
-        	return;
-        }
-        if(player.getActiveEnchantAttrItem() != null)
-        {
-        	player.sendMessage("You cant logout while enchanting!");
-        	return;
-        }
+		if (player.isInOlympiadMode() || Olympiad.getInstance().isRegistered(player))
+		{
+			player.sendMessage("You cant logout in olympiad mode");
+			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
 
-        if (player.isTeleporting()) {
-        	player.abortCast();
-        	player.setIsTeleporting(false);
-        }
-        
-        player.getInventory().updateDatabase();
+		if(player.getActiveEnchantItem() != null || player.getActiveEnchantAttrItem() != null)
+		{
+			player.sendMessage("You cant logout while enchanting!");
+			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
 
-        if (player.getPrivateStoreType() != 0)
-        {
-            player.sendMessage("Cannot restart while trading");
-            return;
-        }
+		if (player.isLocked())
+		{
+			_log.warning("Player " + player.getName() + " tried to restart during class change.");
+			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
 
-        if (player.getActiveRequester() != null)
-        {
-            player.getActiveRequester().onTradeCancel(player);
-            player.onTradeCancel(player.getActiveRequester());
-        }
+		if (player.isTeleporting())
+		{
+			player.abortCast();
+			player.setIsTeleporting(false);
+		}
 
-        if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player))
-        {
-            if (Config.DEBUG)
-                _log.fine("Player " + player.getName() + " tried to logout while fighting.");
+		player.getInventory().updateDatabase();
 
-            player.sendPacket(new SystemMessage(SystemMessageId.CANT_RESTART_WHILE_FIGHTING));
-            player.sendPacket(ActionFailed.STATIC_PACKET);
-            return;
-        }
+		if (player.getPrivateStoreType() != 0)
+		{
+			player.sendMessage("Cannot restart while trading");
+			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
 
-        // Prevent player from restarting if they are a festival participant
-        // and it is in progress, otherwise notify party members that the player
-        // is not longer a participant.
-        if (player.isFestivalParticipant())
-        {
-            if (SevenSignsFestival.getInstance().isFestivalInitialized())
-            {
-                player.sendMessage("You cannot restart while you are a participant in a festival.");
-                player.sendPacket(ActionFailed.STATIC_PACKET);
-                return;
-            }
-            L2Party playerParty = player.getParty();
+		if (player.getActiveRequester() != null)
+		{
+			player.getActiveRequester().onTradeCancel(player);
+			player.onTradeCancel(player.getActiveRequester());
+		}
 
-            if (playerParty != null)
-                player.getParty().broadcastToPartyMembers(
-                                                          SystemMessage.sendString(player.getName()
-                                                              + " has been removed from the upcoming festival."));
-        }
-        if (player.isFlying())
-        {
-        	player.removeSkill(SkillTable.getInstance().getInfo(4289, 1));
-        }
+		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player))
+		{
+			if (Config.DEBUG)
+				_log.fine("Player " + player.getName() + " tried to logout while fighting.");
 
-        L2GameClient client = getClient();
+			player.sendPacket(new SystemMessage(SystemMessageId.CANT_RESTART_WHILE_FIGHTING));
+			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
 
-        // detach the client from the char so that the connection isnt closed in the deleteMe
-        player.setClient(null);
+		// Prevent player from restarting if they are a festival participant
+		// and it is in progress, otherwise notify party members that the player
+		// is not longer a participant.
+		if (player.isFestivalParticipant())
+		{
+			if (SevenSignsFestival.getInstance().isFestivalInitialized())
+			{
+				player.sendMessage("You cannot restart while you are a participant in a festival.");
+				player.sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
 
-        RegionBBSManager.getInstance().changeCommunityBoard();
+			final L2Party playerParty = player.getParty();
 
-        // removing player from the world
-        player.deleteMe();
-        L2GameClient.saveCharToDisk(player);
+			if (playerParty != null)
+				player.getParty().broadcastToPartyMembers(SystemMessage.sendString(player.getName() + " has been removed from the upcoming festival."));
+		}
 
+		if (player.isFlying())
+		{
+			player.removeSkill(SkillTable.getInstance().getInfo(4289, 1));
+		}
 
-        getClient().setActiveChar(null);
+		final L2GameClient client = getClient();
 
-        // return the client to the authed status
-        client.setState(GameClientState.AUTHED);
+		// detach the client from the char so that the connection isnt closed in the deleteMe
+		player.setClient(null);
 
-        RestartResponse response = new RestartResponse();
-        sendPacket(response);
+		RegionBBSManager.getInstance().changeCommunityBoard();
 
-        // send char list
-        CharSelectionInfo cl = new CharSelectionInfo(client.getAccountName(),
-        									   client.getSessionId().playOkID1);
-        sendPacket(cl);
-        client.setCharSelection(cl.getCharInfo());
-    }
+		// removing player from the world
+		player.deleteMe();
+		L2GameClient.saveCharToDisk(player);
 
-    /* (non-Javadoc)
-     * @see net.sf.l2j.gameserver.clientpackets.ClientBasePacket#getType()
-     */
-    @Override
+		getClient().setActiveChar(null);
+
+		// return the client to the authed status
+		client.setState(GameClientState.AUTHED);
+
+		final RestartResponse response = new RestartResponse();
+		sendPacket(response);
+
+		// send char list
+		final CharSelectionInfo cl = new CharSelectionInfo(client.getAccountName(), client.getSessionId().playOkID1);
+		sendPacket(cl);
+		client.setCharSelection(cl.getCharInfo());
+	}
+
+	/* (non-Javadoc)
+	 * @see net.sf.l2j.gameserver.clientpackets.ClientBasePacket#getType()
+	 */
+	@Override
 	public String getType()
-    {
-        return _C__46_REQUESTRESTART;
-    }
+	{
+		return _C__46_REQUESTRESTART;
+	}
 }

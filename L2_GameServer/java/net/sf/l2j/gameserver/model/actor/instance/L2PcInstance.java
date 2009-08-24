@@ -352,6 +352,7 @@ public final class L2PcInstance extends L2Playable
 	private long _lastAccess;
 	private long _uptime;
 
+	private final ReentrantLock _subclassLock = new ReentrantLock();
 	protected int _baseClass;
 	protected int _activeClass;
 	protected int _classIndex = 0;
@@ -10063,77 +10064,101 @@ public final class L2PcInstance extends L2Playable
      */
     public boolean addSubClass(int classId, int classIndex)
     {
-    	if (getTotalSubClasses() == Config.MAX_SUBCLASS || classIndex == 0)
+    	if (!_subclassLock.tryLock())
     		return false;
 
-    	if (getSubClasses().containsKey(classIndex))
-    		return false;
+    	try
+    	{
+        	if (getTotalSubClasses() == Config.MAX_SUBCLASS || classIndex == 0)
+        		return false;
 
-    	// Note: Never change _classIndex in any method other than setActiveClass().
+        	if (getSubClasses().containsKey(classIndex))
+        		return false;
 
-        SubClass newClass = new SubClass();
-        newClass.setClassId(classId);
-        newClass.setClassIndex(classIndex);
+        	// Note: Never change _classIndex in any method other than setActiveClass().
 
-        Connection con = null;
+            SubClass newClass = new SubClass();
+            newClass.setClassId(classId);
+            newClass.setClassIndex(classIndex);
 
-        try
-        {
-            // Store the basic info about this new sub-class.
-            con = L2DatabaseFactory.getInstance().getConnection();
-            PreparedStatement statement = con.prepareStatement(ADD_CHAR_SUBCLASS);
-            
-            statement.setInt(1, getObjectId());
-            statement.setInt(2, newClass.getClassId());
-            statement.setLong(3, newClass.getExp());
-            statement.setInt(4, newClass.getSp());
-            statement.setInt(5, newClass.getLevel());
-            statement.setInt(6, newClass.getClassIndex()); // <-- Added
-            
-            statement.execute();
-            statement.close();
-        }
-        catch (Exception e) {
-            _log.warning("WARNING: Could not add character sub class for " + getName() + ": " + e);
-            return false;
-        }
-        finally {
-            try { con.close(); } catch (Exception e) {}
-        }
+            Connection con = null;
+            PreparedStatement statement = null;
 
-        // Commit after database INSERT incase exception is thrown.
-        getSubClasses().put(newClass.getClassIndex(), newClass);
+            try
+            {
+                // Store the basic info about this new sub-class.
+                con = L2DatabaseFactory.getInstance().getConnection();
+                statement = con.prepareStatement(ADD_CHAR_SUBCLASS);
+                
+                statement.setInt(1, getObjectId());
+                statement.setInt(2, newClass.getClassId());
+                statement.setLong(3, newClass.getExp());
+                statement.setInt(4, newClass.getSp());
+                statement.setInt(5, newClass.getLevel());
+                statement.setInt(6, newClass.getClassIndex()); // <-- Added
+                
+                statement.execute();
+            }
+            catch (Exception e) {
+                _log.warning("WARNING: Could not add character sub class for " + getName() + ": " + e);
+                return false;
+            }
+            finally
+            {
+            	try
+            	{
+            		statement.close();
+            	}
+            	catch (Exception e)
+            	{
+            	}
+                try
+                {
+                	con.close();
+                }
+                catch (Exception e)
+                {
+                }
+            }
 
-        if (Config.DEBUG)
-            _log.info(getName() + " added class ID " + classId + " as a sub class at index " + classIndex + ".");
+            // Commit after database INSERT incase exception is thrown.
+            getSubClasses().put(newClass.getClassIndex(), newClass);
 
-		ClassId subTemplate = ClassId.values()[classId];
-		Collection<L2SkillLearn> skillTree = SkillTreeTable.getInstance().getAllowedSkills(subTemplate);
+            if (Config.DEBUG)
+                _log.info(getName() + " added class ID " + classId + " as a sub class at index " + classIndex + ".");
 
-		if (skillTree == null)
-			return true;
+    		ClassId subTemplate = ClassId.values()[classId];
+    		Collection<L2SkillLearn> skillTree = SkillTreeTable.getInstance().getAllowedSkills(subTemplate);
 
-		Map<Integer, L2Skill> prevSkillList = new FastMap<Integer, L2Skill>();
+    		if (skillTree == null)
+    			return true;
 
-		for (L2SkillLearn skillInfo : skillTree)
-		{
-			if (skillInfo.getMinLevel() <= 40)
-			{
-				L2Skill prevSkill = prevSkillList.get(skillInfo.getId());
-				L2Skill newSkill = SkillTable.getInstance().getInfo(skillInfo.getId(), skillInfo.getLevel());
+    		Map<Integer, L2Skill> prevSkillList = new FastMap<Integer, L2Skill>();
 
-				if (prevSkill != null && (prevSkill.getLevel() > newSkill.getLevel()))
-					continue;
+    		for (L2SkillLearn skillInfo : skillTree)
+    		{
+    			if (skillInfo.getMinLevel() <= 40)
+    			{
+    				L2Skill prevSkill = prevSkillList.get(skillInfo.getId());
+    				L2Skill newSkill = SkillTable.getInstance().getInfo(skillInfo.getId(), skillInfo.getLevel());
 
-				prevSkillList.put(newSkill.getId(), newSkill);
-				storeSkill(newSkill, prevSkill, classIndex);
-			}
-		}
+    				if (prevSkill != null && (prevSkill.getLevel() > newSkill.getLevel()))
+    					continue;
 
-        if (Config.DEBUG)
-            _log.info(getName() + " was given " + getAllSkills().length + " skills for their new sub class.");
+    				prevSkillList.put(newSkill.getId(), newSkill);
+    				storeSkill(newSkill, prevSkill, classIndex);
+    			}
+    		}
 
-        return true;
+            if (Config.DEBUG)
+                _log.info(getName() + " was given " + getAllSkills().length + " skills for their new sub class.");
+
+            return true;
+    	}
+    	finally
+    	{
+    		_subclassLock.unlock();
+    	}
     }
 
     /**
@@ -10147,67 +10172,92 @@ public final class L2PcInstance extends L2Playable
      */
     public boolean modifySubClass(int classIndex, int newClassId)
     {
-    	int oldClassId = getSubClasses().get(classIndex).getClassId();
+    	if (!_subclassLock.tryLock())
+    		return false;
 
-        if (Config.DEBUG)
-	    	_log.info(getName() + " has requested to modify sub class index " + classIndex + " from class ID " + oldClassId + " to " + newClassId + ".");
+    	try
+    	{
+        	int oldClassId = getSubClasses().get(classIndex).getClassId();
 
-    	Connection con = null;
+            if (Config.DEBUG)
+    	    	_log.info(getName() + " has requested to modify sub class index " + classIndex + " from class ID " + oldClassId + " to " + newClassId + ".");
 
-        try
-        {
-            con = L2DatabaseFactory.getInstance().getConnection();
-            PreparedStatement statement;
+        	Connection con = null;
+            PreparedStatement statement = null;
 
-            // Remove all henna info stored for this sub-class.
-            statement = con.prepareStatement(DELETE_CHAR_HENNAS);
-            statement.setInt(1, getObjectId());
-            statement.setInt(2, classIndex);
-            statement.execute();
-            statement.close();
+            try
+            {
+                con = L2DatabaseFactory.getInstance().getConnection();
 
-            // Remove all shortcuts info stored for this sub-class.
-            statement = con.prepareStatement(DELETE_CHAR_SHORTCUTS);
-            statement.setInt(1, getObjectId());
-            statement.setInt(2, classIndex);
-            statement.execute();
-            statement.close();
+                // Remove all henna info stored for this sub-class.
+                statement = con.prepareStatement(DELETE_CHAR_HENNAS);
+                statement.setInt(1, getObjectId());
+                statement.setInt(2, classIndex);
+                statement.execute();
+                statement.close();
 
-            // Remove all effects info stored for this sub-class.
-            statement = con.prepareStatement(DELETE_SKILL_SAVE);
-            statement.setInt(1, getObjectId());
-            statement.setInt(2, classIndex);
-            statement.execute();
-            statement.close();
+                // Remove all shortcuts info stored for this sub-class.
+                statement = con.prepareStatement(DELETE_CHAR_SHORTCUTS);
+                statement.setInt(1, getObjectId());
+                statement.setInt(2, classIndex);
+                statement.execute();
+                statement.close();
 
-            // Remove all skill info stored for this sub-class.
-            statement = con.prepareStatement(DELETE_CHAR_SKILLS);
-            statement.setInt(1, getObjectId());
-            statement.setInt(2, classIndex);
-            statement.execute();
-            statement.close();
+                // Remove all effects info stored for this sub-class.
+                statement = con.prepareStatement(DELETE_SKILL_SAVE);
+                statement.setInt(1, getObjectId());
+                statement.setInt(2, classIndex);
+                statement.execute();
+                statement.close();
 
-            // Remove all basic info stored about this sub-class.
-            statement = con.prepareStatement(DELETE_CHAR_SUBCLASS);
-            statement.setInt(1, getObjectId());
-            statement.setInt(2, classIndex);
-            statement.execute();
-            statement.close();
-        }
-        catch (Exception e)
-        {
-        	_log.warning("Could not modify sub class for " + getName() + " to class index " + classIndex + ": " + e);
+                // Remove all skill info stored for this sub-class.
+                statement = con.prepareStatement(DELETE_CHAR_SKILLS);
+                statement.setInt(1, getObjectId());
+                statement.setInt(2, classIndex);
+                statement.execute();
+                statement.close();
 
-        	// This must be done in order to maintain data consistency.
+                // Remove all basic info stored about this sub-class.
+                statement = con.prepareStatement(DELETE_CHAR_SUBCLASS);
+                statement.setInt(1, getObjectId());
+                statement.setInt(2, classIndex);
+                statement.execute();
+                statement.close();
+            }
+            catch (Exception e)
+            {
+            	_log.warning("Could not modify sub class for " + getName() + " to class index " + classIndex + ": " + e);
+
+            	// This must be done in order to maintain data consistency.
+                getSubClasses().remove(classIndex);
+            	return false;
+            }
+            finally
+            {
+            	try
+            	{
+            		statement.close();
+            	}
+            	catch (Exception e)
+            	{
+            	}
+                try
+                {
+                	con.close();
+                }
+                catch (Exception e)
+                {
+                }
+            }
+
             getSubClasses().remove(classIndex);
-        	return false;
-        }
-        finally {
-            try { con.close(); } catch (Exception e) {}
-        }
+    	}
+    	finally
+    	{
+    		_subclassLock.unlock();
+    	}
 
-        getSubClasses().remove(classIndex);
-        return addSubClass(newClassId, classIndex);
+    	return addSubClass(newClassId, classIndex);
     }
 
     public boolean isSubClassActive()
@@ -10271,156 +10321,171 @@ public final class L2PcInstance extends L2Playable
      */
     public boolean setActiveClass(int classIndex)
     {
-        //  Cannot switch or change subclasses while transformed
-        if (_transformation != null)
-            return false;
-        
-        // Remove active item skills before saving char to database
-        // because next time when choosing this class, weared items can
-        // be different
-        for (L2ItemInstance temp : getInventory().getAugmentedItems())
-            if (temp != null && temp.isEquipped()) temp.getAugmentation().removeBonus(this);
-        
-        // Delete a force buff upon class change.
-        if(_fusionSkill != null)
-            abortCast();
+    	if (!_subclassLock.tryLock())
+    		return false;
 
-        // Stop casting for any player that may be casting a force buff on this l2pcinstance.
-		for(L2Character character : getKnownList().getKnownCharacters())
-		{
-			if(character.getFusionSkill() != null && character.getFusionSkill().getTarget() == this)
-				character.abortCast();
-		}
-
-        /*
-         * 1. Call store() before modifying _classIndex to avoid skill effects rollover.
-         * 2. Register the correct _classId against applied 'classIndex'.
-         */
-        store(Config.SUBCLASS_STORE_SKILL_COOLTIME);
-        _reuseTimeStamps.clear();
-        
-        // clear charges
-        _charges.set(0);
-        stopChargeTask();
-        
-        if (classIndex == 0)
-        {
-        	setClassTemplate(getBaseClass());
-        }
-        else
-        {
-            try {
-            	setClassTemplate(getSubClasses().get(classIndex).getClassId());
-            }
-            catch (Exception e) {
-                _log.info("Could not switch " + getName() + "'s sub class to class index " + classIndex + ": " + e);
+    	try
+    	{
+        	//  Cannot switch or change subclasses while transformed
+            if (_transformation != null)
                 return false;
-            }
-        }
-        _classIndex = classIndex;
+            
+            // Remove active item skills before saving char to database
+            // because next time when choosing this class, weared items can
+            // be different
+            for (L2ItemInstance temp : getInventory().getAugmentedItems())
+                if (temp != null && temp.isEquipped()) temp.getAugmentation().removeBonus(this);
+            
+            // Delete a force buff upon class change.
+            if(_fusionSkill != null)
+                abortCast();
 
-        if(isInParty())
-        	getParty().recalculatePartyLevel();
+            // Stop casting for any player that may be casting a force buff on this l2pcinstance.
+    		for(L2Character character : getKnownList().getKnownCharacters())
+    		{
+    			if(character.getFusionSkill() != null && character.getFusionSkill().getTarget() == this)
+    				character.abortCast();
+    		}
 
-
-        /*
-		 * Update the character's change in class status.
-         *
-		 * 1. Remove any active cubics from the player.
-         * 2. Renovate the characters table in the database with the new class info, storing also buff/effect data.
-         * 3. Remove all existing skills.
-         * 4. Restore all the learned skills for the current class from the database.
-         * 5. Restore effect/buff data for the new class.
-         * 6. Restore henna data for the class, applying the new stat modifiers while removing existing ones.
-         * 7. Reset HP/MP/CP stats and send Server->Client character status packet to reflect changes.
-         * 8. Restore shortcut data related to this class.
-         * 9. Resend a class change animation effect to broadcast to all nearby players.
-         * 10.Unsummon any active servitor from the player.
-         */
-
-        if (getPet() instanceof L2SummonInstance)
-        	getPet().unSummon(this);
-
-        if (!getCubics().isEmpty())
-        {
-            for (L2CubicInstance cubic : getCubics().values())
+            /*
+             * 1. Call store() before modifying _classIndex to avoid skill effects rollover.
+             * 2. Register the correct _classId against applied 'classIndex'.
+             */
+            store(Config.SUBCLASS_STORE_SKILL_COOLTIME);
+            _reuseTimeStamps.clear();
+            
+            // clear charges
+            _charges.set(0);
+            stopChargeTask();
+            
+            if (classIndex == 0)
             {
-                cubic.stopAction();
-                cubic.cancelDisappear();
+            	setClassTemplate(getBaseClass());
+            }
+            else
+            {
+                try {
+                	setClassTemplate(getSubClasses().get(classIndex).getClassId());
+                }
+                catch (Exception e) {
+                    _log.info("Could not switch " + getName() + "'s sub class to class index " + classIndex + ": " + e);
+                    return false;
+                }
+            }
+            _classIndex = classIndex;
+
+            if(isInParty())
+            	getParty().recalculatePartyLevel();
+
+
+            /*
+    		 * Update the character's change in class status.
+             *
+    		 * 1. Remove any active cubics from the player.
+             * 2. Renovate the characters table in the database with the new class info, storing also buff/effect data.
+             * 3. Remove all existing skills.
+             * 4. Restore all the learned skills for the current class from the database.
+             * 5. Restore effect/buff data for the new class.
+             * 6. Restore henna data for the class, applying the new stat modifiers while removing existing ones.
+             * 7. Reset HP/MP/CP stats and send Server->Client character status packet to reflect changes.
+             * 8. Restore shortcut data related to this class.
+             * 9. Resend a class change animation effect to broadcast to all nearby players.
+             * 10.Unsummon any active servitor from the player.
+             */
+
+            if (getPet() instanceof L2SummonInstance)
+            	getPet().unSummon(this);
+
+            if (!getCubics().isEmpty())
+            {
+                for (L2CubicInstance cubic : getCubics().values())
+                {
+                    cubic.stopAction();
+                    cubic.cancelDisappear();
+                }
+
+                getCubics().clear();
+            }
+            
+            for (L2Skill oldSkill : getAllSkills())
+                super.removeSkill(oldSkill);
+
+            stopAllEffects();
+
+            if (isSubClassActive())
+            {
+                _dwarvenRecipeBook.clear();
+                // Common recipe book shared for all subclasses for now. TODO confirm this info
+                //_commonRecipeBook.clear();
+            }
+            else
+            {
+                restoreRecipeBook(false);
+    		}
+
+            // Restore any Death Penalty Buff
+            restoreDeathPenaltyBuffLevel();
+
+            restoreSkills();
+            regiveTemporarySkills();
+            rewardSkills();
+            // Prevents some issues when changing between subclases that shares skills
+            if(_disabledSkills != null && !_disabledSkills.isEmpty()) 
+            	_disabledSkills.clear();
+            restoreEffects();
+            updateEffectIcons();
+            sendPacket(new EtcStatusUpdate(this));
+            
+            //if player has quest 422: Repent Your Sins, remove it
+            QuestState st = getQuestState("422_RepentYourSins");
+            
+            if (st != null)
+            {
+            	st.exitQuest(true);
             }
 
-            getCubics().clear();
-        }
-        
-        for (L2Skill oldSkill : getAllSkills())
-            super.removeSkill(oldSkill);
+            for (int i = 0; i < 3; i++)
+                _henna[i] = null;
 
-        stopAllEffects();
+            restoreHenna();
+            sendPacket(new HennaInfo(this));
 
-        if (isSubClassActive())
-        {
-            _dwarvenRecipeBook.clear();
-            // Common recipe book shared for all subclasses for now. TODO confirm this info
-            //_commonRecipeBook.clear();
-        }
-        else
-        {
-            restoreRecipeBook(false);
-		}
+            if (getCurrentHp() > getMaxHp())
+            	setCurrentHp(getMaxHp());
+            if (getCurrentMp() > getMaxMp())
+            	setCurrentMp(getMaxMp());
+            if (getCurrentCp() > getMaxCp())
+            	setCurrentCp(getMaxCp());
+            refreshOverloaded();
+    		refreshExpertisePenalty();
+            broadcastUserInfo();
 
-        // Restore any Death Penalty Buff
-        restoreDeathPenaltyBuffLevel();
+            // Clear resurrect xp calculation
+            setExpBeforeDeath(0);
 
-        restoreSkills();
-        regiveTemporarySkills();
-        rewardSkills();
-        // Prevents some issues when changing between subclases that shares skills
-        if(_disabledSkills != null && !_disabledSkills.isEmpty()) 
-        	_disabledSkills.clear();
-        restoreEffects();
-        updateEffectIcons();
-        sendPacket(new EtcStatusUpdate(this));
-        
-        //if player has quest 422: Repent Your Sins, remove it
-        QuestState st = getQuestState("422_RepentYourSins");
-        
-        if (st != null)
-        {
-        	st.exitQuest(true);
-        }
+            //_macroses.restore();
+            //_macroses.sendUpdate();
+            _shortCuts.restore();
+            sendPacket(new ShortCutInit(this));            
 
-        for (int i = 0; i < 3; i++)
-            _henna[i] = null;
+            broadcastPacket(new SocialAction(getObjectId(), SocialAction.LEVEL_UP));
+            sendPacket(new SkillCoolTime(this));
+            sendPacket(new ExStorageMaxCount(this));
 
-        restoreHenna();
-        sendPacket(new HennaInfo(this));
+            //decayMe();
+            //spawnMe(getX(), getY(), getZ());
 
-        if (getCurrentHp() > getMaxHp())
-        	setCurrentHp(getMaxHp());
-        if (getCurrentMp() > getMaxMp())
-        	setCurrentMp(getMaxMp());
-        if (getCurrentCp() > getMaxCp())
-        	setCurrentCp(getMaxCp());
-        refreshOverloaded();
-		refreshExpertisePenalty();
-        broadcastUserInfo();
+            return true;
+    	}
+    	finally
+    	{
+    		_subclassLock.unlock();
+    	}
+    }
 
-        // Clear resurrect xp calculation
-        setExpBeforeDeath(0);
-
-        //_macroses.restore();
-        //_macroses.sendUpdate();
-        _shortCuts.restore();
-        sendPacket(new ShortCutInit(this));            
-
-        broadcastPacket(new SocialAction(getObjectId(), SocialAction.LEVEL_UP));
-        sendPacket(new SkillCoolTime(this));
-        sendPacket(new ExStorageMaxCount(this));
-
-        //decayMe();
-        //spawnMe(getX(), getY(), getZ());
-
-        return true;
+    public boolean isLocked()
+    {
+    	return _subclassLock.isLocked();
     }
 
 	public void stopWarnUserTakeBreak()

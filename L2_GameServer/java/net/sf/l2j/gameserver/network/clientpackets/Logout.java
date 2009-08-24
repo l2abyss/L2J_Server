@@ -42,8 +42,7 @@ import net.sf.l2j.gameserver.taskmanager.AttackStanceTaskManager;
 public final class Logout extends L2GameClientPacket
 {
 	private static final String _C__09_LOGOUT = "[C] 09 Logout";
-	private static Logger _log = Logger.getLogger(Logout.class.getName());
-
+	private static final Logger _log = Logger.getLogger(Logout.class.getName());
 
 	@Override
 	protected void readImpl()
@@ -55,10 +54,24 @@ public final class Logout extends L2GameClientPacket
 	protected void runImpl()
 	{
 		// Dont allow leaving if player is fighting
-		L2PcInstance player = getClient().getActiveChar();
+		final L2PcInstance player = getClient().getActiveChar();
 
 		if (player == null)
 			return;
+
+		if(player.getActiveEnchantItem() != null || player.getActiveEnchantAttrItem() != null)
+		{
+			player.sendMessage("You cant logout while enchanting!");
+			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+
+		if (player.isLocked())
+		{
+			_log.warning("Player " + player.getName() + " tried to logout during class change.");
+			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
 
 		player.getInventory().updateDatabase();
 
@@ -74,12 +87,14 @@ public final class Logout extends L2GameClientPacket
 		if(player.atEvent)
 		{
 			player.sendMessage("A superior power doesn't allow you to leave the event");
+			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 
         if (player.isInOlympiadMode() || Olympiad.getInstance().isRegistered(player))
         {
             player.sendMessage("You cant logout in olympiad mode");
+			player.sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }
 
@@ -90,9 +105,10 @@ public final class Logout extends L2GameClientPacket
 			if (SevenSignsFestival.getInstance().isFestivalInitialized())
 			{
 				player.sendMessage("You cannot log out while you are a participant in a festival.");
+				player.sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
-			L2Party playerParty = player.getParty();
+			final L2Party playerParty = player.getParty();
 
 			if (playerParty != null)
 				player.getParty().broadcastToPartyMembers(SystemMessage.sendString(player.getName() + " has been removed from the upcoming festival."));

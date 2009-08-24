@@ -611,7 +611,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 							return;
 						}
 					}
-					if (player.isInCombat())
+					if (player.isInCombat() || player.isLocked())
 					{
 						fast = false;
 					}
@@ -671,6 +671,10 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	            L2PcInstance player = L2GameClient.this.getActiveChar();
 				if (player != null)  // this should only happen on connection loss
 				{
+					if (player.isLocked())
+					{
+						_log.log(Level.WARNING, "Player "+player.getName()+" still performing subclass actions during disconnect.");
+					}
 
 	                // we store all data from players who are disconnected while in an event in order to restore it in the next login
 	                if (player.atEvent)
