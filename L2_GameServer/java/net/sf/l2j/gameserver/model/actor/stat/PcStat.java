@@ -144,7 +144,7 @@ public class PcStat extends PlayableStat
 
 	public boolean addExpAndSp(long addToExp, int addToSp, boolean useVitality)
 	{
-		if (useVitality)
+		if (useVitality && Config.ENABLE_VITALITY)
 		{
 			switch (_vitalityLevel)
 			{
@@ -494,7 +494,7 @@ public class PcStat extends PlayableStat
 
     public void updateVitalityPoints(float points, boolean useRates, boolean quiet)
     {
-    	if (points == 0)
+    	if (points == 0 || !Config.ENABLE_VITALITY)
     		return;
 
     	if (useRates)
