@@ -44,7 +44,7 @@ public class ConditionPlayerActiveEffectId extends Condition
 			{
 				if (e.getSkill().getId() == _effectId)
 				{
-					if (_effectLvl == -1 || _effectLvl == e.getSkill().getLevel())
+					if (_effectLvl == -1 || _effectLvl <= e.getSkill().getLevel())
 						return true;
 				}
 			}
