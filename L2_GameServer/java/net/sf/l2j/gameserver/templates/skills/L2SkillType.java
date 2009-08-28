@@ -118,6 +118,7 @@ public enum L2SkillType
 	AGATHION(L2SkillAgathion.class),
 	MOUNT(L2SkillMount.class),
 	INSTANT_JUMP,
+	DETECTION,
 	DUMMY,
 	
 	// Creation

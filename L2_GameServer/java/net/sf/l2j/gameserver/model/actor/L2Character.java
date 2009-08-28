@@ -1426,6 +1426,7 @@ public abstract class L2Character extends L2Object
 	{
 		beginCast(skill, false);
 	}
+	
 	public void doSimultaneousCast(L2Skill skill)
 	{
 		beginCast(skill, true);

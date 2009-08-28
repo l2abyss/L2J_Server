@@ -305,38 +305,44 @@ public final class L2PcInstance extends L2Playable
 	    SkillTreeTable.getInstance().getExpertiseLevel(7)  //S84
     };
 
-	private static final int[] COMMON_CRAFT_LEVELS =
-	{
-	 5,20,28,36,43,49,55,62
-	};
-
-	//private static Logger _log = Logger.getLogger(L2PcInstance.class.getName());
-
+	private static final int[] COMMON_CRAFT_LEVELS = { 5, 20, 28, 36, 43, 49, 55, 62 };
+	
 	public class AIAccessor extends L2Character.AIAccessor
 	{
-		protected AIAccessor() {}
-		public L2PcInstance getPlayer() { return L2PcInstance.this; }
-		public void doPickupItem(L2Object object) {
+		protected AIAccessor()
+		{
+			
+		}
+		
+		public L2PcInstance getPlayer()
+		{
+			return L2PcInstance.this;
+		}
+		
+		public void doPickupItem(L2Object object)
+		{
 			L2PcInstance.this.doPickupItem(object);
 		}
-		public void doInteract(L2Character target) {
+		
+		public void doInteract(L2Character target)
+		{
 			L2PcInstance.this.doInteract(target);
 		}
-
+		
 		@Override
 		public void doAttack(L2Character target)
-        {
+		{
 			super.doAttack(target);
-
+			
 			// cancel the recent fake-death protection instantly if the player attacks or casts spells
 			getPlayer().setRecentFakeDeath(false);
 		}
-
+		
 		@Override
 		public void doCast(L2Skill skill)
-        {
+		{
 			super.doCast(skill);
-
+			
 			// cancel the recent fake-death protection instantly if the player attacks or casts spells
 			getPlayer().setRecentFakeDeath(false);
 		}
@@ -411,31 +417,43 @@ public final class L2PcInstance extends L2Playable
 	private final FloodProtectors _floodProtectors = new FloodProtectors(this);
 
     private PunishLevel _punishLevel = PunishLevel.NONE;
-    private long _punishTimer = 0;
-    private ScheduledFuture<?> _punishTask;
-    public enum PunishLevel {
-    	NONE (0, ""),
-    	CHAT (1, "chat banned"),
-    	JAIL (2, "jailed"),
-    	CHAR (3, "banned"),
-    	ACC (4, "banned");
-    	
-    	private int punValue;
-    	private String punString;
-    	PunishLevel (int value, String string){
-    		punValue = value;
-    		punString = string;
-    	}
-    	public int value() { return punValue; }
-    	public String string() { return punString; }
-    }
+	private long _punishTimer = 0;
+	private ScheduledFuture<?> _punishTask;
     
-    /** Olympiad */
-    private boolean _inOlympiadMode = false;
-    private boolean _OlympiadStart = false;
-    private int _olympiadGameId = -1;
-    private int _olympiadSide = -1;
-    public int olyBuff = 0;
+    public enum PunishLevel
+	{
+		NONE(0, ""),
+		CHAT(1, "chat banned"),
+		JAIL(2, "jailed"),
+		CHAR(3, "banned"),
+		ACC(4, "banned");
+		
+		private int punValue;
+		private String punString;
+		
+		PunishLevel(int value, String string)
+		{
+			punValue = value;
+			punString = string;
+		}
+		
+		public int value()
+		{
+			return punValue;
+		}
+		
+		public String string()
+		{
+			return punString;
+		}
+	}
+	
+	/** Olympiad */
+	private boolean _inOlympiadMode = false;
+	private boolean _OlympiadStart = false;
+	private int _olympiadGameId = -1;
+	private int _olympiadSide = -1;
+	public int olyBuff = 0;
 
     /** Duel */
     private boolean _isInDuel = false;
@@ -758,6 +776,7 @@ public final class L2PcInstance extends L2Playable
 		private long _count;
 		private L2Object _reference;
 		private boolean _sendMessage;
+		
 		HerbTask(String process, int itemId, long count, L2Object reference, boolean sendMessage)
 		{
 			_process = process;
@@ -766,6 +785,7 @@ public final class L2PcInstance extends L2Playable
 			_reference = reference;
 			_sendMessage = sendMessage;
 		}
+		
 		public void run()
 		{
 			try
@@ -785,12 +805,12 @@ public final class L2PcInstance extends L2Playable
 	public class ShortBuffTask implements Runnable
 	{
 		private L2PcInstance _player = null;
-
-        public ShortBuffTask(L2PcInstance activeChar)
-        {
-	        _player = activeChar;
-        }
-        
+		
+		public ShortBuffTask(L2PcInstance activeChar)
+		{
+			_player = activeChar;
+		}
+		
 		public void run()
 		{
 			if (_player == null)
@@ -904,26 +924,25 @@ public final class L2PcInstance extends L2Playable
 	 * @return The L2PcInstance added to the database or null
 	 *
 	 */
-	public static L2PcInstance create(int objectId, L2PcTemplate template, String accountName,
-	                                  String name, byte hairStyle, byte hairColor, byte face, boolean sex)
+	public static L2PcInstance create(int objectId, L2PcTemplate template, String accountName, String name, byte hairStyle, byte hairColor, byte face, boolean sex)
 	{
 		// Create a new L2PcInstance with an account name
 		PcAppearance app = new PcAppearance(face, hairColor, hairStyle, sex);
 		L2PcInstance player = new L2PcInstance(objectId, template, accountName, app);
-
+		
 		// Set the name of the L2PcInstance
 		player.setName(name);
-
+		
 		// Set the base class ID to that of the actual class ID.
 		player.setBaseClass(player.getClassId());
-		//Kept for backwards compabitility.
+		// Kept for backwards compabitility.
 		player.setNewbie(1);
 		// Add the player in the characters table of the database
 		boolean ok = player.createDb();
-
+		
 		if (!ok)
 			return null;
-
+		
 		return player;
 	}
 
@@ -4022,6 +4041,34 @@ public final class L2PcInstance extends L2Playable
 	public void setCurrentSkillWorldPosition(Point3D worldPosition)
 	{
 		_currentSkillWorldPosition = worldPosition;
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.actor.L2Character#doAttack(net.sf.l2j.gameserver.model.actor.L2Character)
+	 */
+	@Override
+	protected void doAttack(L2Character target)
+	{
+		L2Effect eInvisible = getFirstEffect(L2EffectType.HIDE);
+		if (eInvisible != null)
+			eInvisible.exit();
+		
+		super.doAttack(target);
+	}
+	
+	/**
+	 * 
+	 * @see net.sf.l2j.gameserver.model.actor.L2Character#doCast(net.sf.l2j.gameserver.model.L2Skill)
+	 */
+	@Override
+	public void doCast(L2Skill skill)
+	{
+		L2Effect eInvisible = getFirstEffect(L2EffectType.HIDE);
+		if (eInvisible != null)
+			eInvisible.exit();
+		
+		super.doCast(skill);
 	}
 
 	/**
@@ -7560,6 +7607,8 @@ public final class L2PcInstance extends L2Playable
 					{
 						case HEAL_OVER_TIME:
 						case COMBAT_POINT_HEAL_OVER_TIME:
+						// TODO: Fix me.
+						case HIDE:
 							continue;
 					}
 					

@@ -68,5 +68,6 @@ public enum L2EffectType
 	FUSION,
 	CHANCE_SKILL_TRIGGER,
 	CLAN_GATE,
-	NEGATE
+	NEGATE,
+	HIDE
 }
