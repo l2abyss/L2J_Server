@@ -416,11 +416,10 @@ public abstract class L2Effect
 			// Cancel the task
 			_currentFuture.cancel(false);
 			_currentFuture = null;
-			_currentTask = null;
-			
-			if (getEffected() != null)
-				getEffected().removeEffect(this);
+			_currentTask = null;			
 		}
+		if (getEffected() != null)
+			getEffected().removeEffect(this);
 	}
 	
 	/** returns effect type */
