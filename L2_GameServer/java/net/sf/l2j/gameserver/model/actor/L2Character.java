@@ -5793,16 +5793,21 @@ public abstract class L2Character extends L2Object
 			{
 				removeSkill(oldSkill.getTriggeredId(),true);
 			}
-			// Stop casting if this skill is used right now
-			if (getLastSkillCast() != null && isCastingNow())
+
+			// does not abort casting of the transformation dispell
+			if (oldSkill.getSkillType() != L2SkillType.TRANSFORMDISPEL)
 			{
-				if (oldSkill.getId() == getLastSkillCast().getId())
-					abortCast();
-			}
-			if (getLastSimultaneousSkillCast() != null && isCastingSimultaneouslyNow())
-			{
-				if (oldSkill.getId() == getLastSimultaneousSkillCast().getId())
-					abortCast();
+				// Stop casting if this skill is used right now
+				if (getLastSkillCast() != null && isCastingNow())
+				{
+					if (oldSkill.getId() == getLastSkillCast().getId())
+						abortCast();
+				}
+				if (getLastSimultaneousSkillCast() != null && isCastingSimultaneouslyNow())
+				{
+					if (oldSkill.getId() == getLastSimultaneousSkillCast().getId())
+						abortCast();
+				}
 			}
 			
 			if (cancelEffect || oldSkill.isToggle())

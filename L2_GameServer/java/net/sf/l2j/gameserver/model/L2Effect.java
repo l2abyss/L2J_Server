@@ -302,13 +302,15 @@ public abstract class L2Effect
 		return _inUse;
 	}
 	
-	public void setInUse(boolean inUse)
+	public boolean setInUse(boolean inUse)
 	{
 		_inUse = inUse;
 		if (_inUse)
 			_startConditionsCorrect = onStart();
 		else
 			onExit();
+
+		return _startConditionsCorrect;
 	}
 	
 	public String getStackType()
@@ -417,9 +419,10 @@ public abstract class L2Effect
 			_currentFuture.cancel(false);
 			_currentFuture = null;
 			_currentTask = null;			
+
+			if (getEffected() != null)
+				getEffected().removeEffect(this);
 		}
-		if (getEffected() != null)
-			getEffected().removeEffect(this);
 	}
 	
 	/** returns effect type */

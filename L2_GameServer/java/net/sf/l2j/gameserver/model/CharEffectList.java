@@ -603,10 +603,10 @@ public class CharEffectList
 						L2Effect newStackedEffect = listsContains(stackQueue.get(0));
 						if (newStackedEffect != null)
 						{
-							// Add its list of Funcs to the Calculator set of the L2Character
-							_owner.addStatFuncs(newStackedEffect.getStatFuncs());
 							// Set the effect to In Use
-							newStackedEffect.setInUse(true);
+							if (newStackedEffect.setInUse(true))
+								// Add its list of Funcs to the Calculator set of the L2Character
+								_owner.addStatFuncs(newStackedEffect.getStatFuncs());
 						}
 					}
 				}
@@ -779,10 +779,10 @@ public class CharEffectList
 		if ("none".equals(newEffect.getStackType()))
 		{
 			// Set this L2Effect to In Use
-			newEffect.setInUse(true);
+			if (newEffect.setInUse(true))
+				// Add Funcs of this effect to the Calculator set of the L2Character
+				_owner.addStatFuncs(newEffect.getStatFuncs());
 
-			// Add Funcs of this effect to the Calculator set of the L2Character
-			_owner.addStatFuncs(newEffect.getStatFuncs());
 			return;
 		}
 
@@ -860,10 +860,9 @@ public class CharEffectList
 			if (effectToAdd != null)
 			{
 				// Set this L2Effect to In Use
-				effectToAdd.setInUse(true);
-
-				// Add all Func objects corresponding to this stacked effect to the Calculator set of the L2Character
-				_owner.addStatFuncs(effectToAdd.getStatFuncs());
+				if (effectToAdd.setInUse(true))
+					// Add all Func objects corresponding to this stacked effect to the Calculator set of the L2Character
+					_owner.addStatFuncs(effectToAdd.getStatFuncs());
 			}
 		}
 	}

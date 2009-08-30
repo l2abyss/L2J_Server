@@ -18,6 +18,8 @@ package net.sf.l2j.gameserver.skills.effects;
 import net.sf.l2j.gameserver.instancemanager.TransformationManager;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
@@ -32,13 +34,13 @@ public class EffectTransformation extends L2Effect
 	{
 		super(env, template);
 	}
-	
+
 	// Special constructor to steal this effect
 	public EffectTransformation(Env env, L2Effect effect)
 	{
 		super(env, effect);
 	}
-	
+
 	/**
 	 * 
 	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
@@ -48,7 +50,7 @@ public class EffectTransformation extends L2Effect
 	{
 		return L2EffectType.TRANSFORMATION;
 	}
-	
+
 	/**
 	 * 
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
@@ -56,30 +58,26 @@ public class EffectTransformation extends L2Effect
 	@Override
 	public boolean onStart()
 	{
-		if (getEffected().isAlikeDead())
-			return false;
-		
 		if (!(getEffected() instanceof L2PcInstance))
 			return false;
-		
+
 		L2PcInstance trg = (L2PcInstance) getEffected();
 		if (trg == null)
 			return false;
-		
+
 		if (trg.isAlikeDead() || trg.isCursedWeaponEquipped())
 			return false;
-		
-		int transformId = getSkill().getTransformId();
-		
-		if (!trg.isTransformed() && !trg.isInStance())
+
+		if (trg.getTransformation() != null)
 		{
-			TransformationManager.getInstance().transformPlayer(transformId, trg);
-			return true;
+			trg.sendPacket(new SystemMessage(SystemMessageId.YOU_ALREADY_POLYMORPHED_AND_CANNOT_POLYMORPH_AGAIN));
+			return false;
 		}
-		return false;
-		
+
+		TransformationManager.getInstance().transformPlayer(getSkill().getTransformId(), trg);
+		return true;
 	}
-	
+
 	/**
 	 * 
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
@@ -89,7 +87,7 @@ public class EffectTransformation extends L2Effect
 	{
 		return false;
 	}
-	
+
 	@Override
 	public void onExit()
 	{
