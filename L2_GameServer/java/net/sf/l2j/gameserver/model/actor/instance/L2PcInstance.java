@@ -208,6 +208,7 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.TargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.TargetUnselected;
 import net.sf.l2j.gameserver.network.serverpackets.TradeDone;
+import net.sf.l2j.gameserver.network.serverpackets.TradeOtherDone;
 import net.sf.l2j.gameserver.network.serverpackets.TradeStart;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
@@ -6142,6 +6143,7 @@ public final class L2PcInstance extends L2Playable
 		SystemMessage msg = new SystemMessage(SystemMessageId.C1_CONFIRMED_TRADE);
 		msg.addPcName(partner);
 		sendPacket(msg);
+		sendPacket(new TradeOtherDone());
 	}
 
 	public void onTradeCancel(L2PcInstance partner)
