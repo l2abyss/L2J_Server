@@ -154,6 +154,8 @@ public final class Config
 	public static int ALT_PARTY_RANGE;
 	public static int ALT_PARTY_RANGE2;
 	public static long STARTING_ADENA;
+	public static byte STARTING_LEVEL;
+	public static int STARTING_SP;
 	public static boolean AUTO_LOOT;
 	public static boolean AUTO_LOOT_RAIDS;
 	public static int UNSTUCK_INTERVAL;
@@ -1272,6 +1274,8 @@ public final class Config
 					ALT_PARTY_RANGE = Integer.parseInt(Character.getProperty("AltPartyRange", "1600"));
 					ALT_PARTY_RANGE2 = Integer.parseInt(Character.getProperty("AltPartyRange2", "1400"));
 					STARTING_ADENA = Long.parseLong(Character.getProperty("StartingAdena", "0"));
+					STARTING_LEVEL = Byte.parseByte(Character.getProperty("StartingLevel", "1"));
+					STARTING_SP = Integer.parseInt(Character.getProperty("StartingSP", "0"));
 					AUTO_LOOT = Boolean.parseBoolean(Character.getProperty("AutoLoot", "false"));
 					AUTO_LOOT_RAIDS = Boolean.parseBoolean(Character.getProperty("AutoLootRaids", "false"));
 					UNSTUCK_INTERVAL = Integer.parseInt(Character.getProperty("UnstuckInterval", "300"));
@@ -2270,6 +2274,8 @@ public final class Config
 		else if (pName.equalsIgnoreCase("RaidMinionRespawnTime")) RAID_MINION_RESPAWN_TIMER =Integer.parseInt(pValue);
 
 		else if (pName.equalsIgnoreCase("StartingAdena")) STARTING_ADENA = Long.parseLong(pValue);
+		else if (pName.equalsIgnoreCase("StartingLevel")) STARTING_LEVEL = Byte.parseByte(pValue);
+		else if (pName.equalsIgnoreCase("StartingSP")) STARTING_SP = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("UnstuckInterval")) UNSTUCK_INTERVAL = Integer.parseInt(pValue);
 
 		else if (pName.equalsIgnoreCase("PlayerSpawnProtection")) PLAYER_SPAWN_PROTECTION = Integer.parseInt(pValue);

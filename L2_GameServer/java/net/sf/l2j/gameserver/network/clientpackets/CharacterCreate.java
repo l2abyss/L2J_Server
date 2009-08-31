@@ -197,6 +197,15 @@ public final class CharacterCreate extends L2GameClientPacket
 
 		newChar.setVitalityPoints(PcStat.MAX_VITALITY_POINTS, true);
 
+		if (Config.STARTING_LEVEL > 1)
+		{
+			newChar.getStat().addLevel(--Config.STARTING_LEVEL);
+		}
+		if (Config.STARTING_SP > 0)
+		{
+			newChar.getStat().addSp(Config.STARTING_SP);
+		}
+
 		L2ShortCut shortcut;
 		// add attack shortcut
 		shortcut = new L2ShortCut(0, 0, 3, 2, 0, 1);
