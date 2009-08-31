@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -147,6 +148,8 @@ public final class L2ItemInstance extends L2Object
 	private int _lastChange = 2;	//1 ??, 2 modified, 3 removed
 	private boolean _existsInDb; // if a record exists in DB.
 	private boolean _storedInDb; // if DB data is up-to-date.
+
+	private final ReentrantLock _dbLock = new ReentrantLock();
 
 	private Elementals _elementals = null;
 
@@ -1292,29 +1295,37 @@ public final class L2ItemInstance extends L2Object
 		{
 			return;
 		}
-        
-		if (_existsInDb)
-        {
-			if (_ownerId == 0 || _loc == ItemLocation.VOID || (getCount() == 0 && _loc != ItemLocation.LEASE))
-            {
-				removeFromDb();
-            }
-			else if (!Config.LAZY_ITEMS_UPDATE || force)
-            {
-				updateInDb();
-            }
-		} 
-        else
-        {
-			if (getCount() == 0 && _loc != ItemLocation.LEASE)
-            {
-				return;
-            }
-			if (_loc == ItemLocation.VOID || _loc == ItemLocation.NPC || _ownerId == 0)
-            {
-				return;
-            }
-			insertIntoDb();
+
+		_dbLock.lock();
+		try
+		{
+			if (_existsInDb)
+	        {
+				if (_ownerId == 0 || _loc == ItemLocation.VOID || (getCount() == 0 && _loc != ItemLocation.LEASE))
+	            {
+					removeFromDb();
+	            }
+				else if (!Config.LAZY_ITEMS_UPDATE || force)
+	            {
+					updateInDb();
+	            }
+			} 
+	        else
+	        {
+				if (getCount() == 0 && _loc != ItemLocation.LEASE)
+	            {
+					return;
+	            }
+				if (_loc == ItemLocation.VOID || _loc == ItemLocation.NPC || _ownerId == 0)
+	            {
+					return;
+	            }
+				insertIntoDb();
+			}
+		}
+		finally
+		{
+			_dbLock.unlock();
 		}
 	}
 
