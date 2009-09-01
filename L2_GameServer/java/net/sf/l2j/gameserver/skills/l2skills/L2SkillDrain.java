@@ -14,6 +14,10 @@
  */
 package net.sf.l2j.gameserver.skills.l2skills;
 
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
@@ -21,6 +25,7 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2CubicInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -30,7 +35,9 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.templates.StatsSet;
 
-public class L2SkillDrain extends L2Skill {
+public class L2SkillDrain extends L2Skill
+{
+	private static final Logger _logDamage = Logger.getLogger("damage");
 
 	private float _absorbPart;
 	private int   _absorbAbs;
@@ -139,8 +146,18 @@ public class L2SkillDrain extends L2Skill {
                 }
 
             	activeChar.sendDamageMessage(target, damage, mcrit, false, false);
-                
-                if (hasEffects() && getTargetType() != SkillTargetType.TARGET_CORPSE_MOB)
+
+            	if (Config.LOG_GAME_DAMAGE
+            			&& activeChar instanceof L2Playable
+            			&& damage > Config.LOG_GAME_DAMAGE_THRESHOLD)
+            	{
+            		LogRecord record = new LogRecord(Level.INFO, "");
+            		record.setParameters(new Object[]{activeChar, " did damage ", (int)damage, this, " to ", target});
+            		record.setLoggerName("mdam");
+            		_logDamage.log(record);
+            	}
+
+            	if (hasEffects() && getTargetType() != SkillTargetType.TARGET_CORPSE_MOB)
                 {
                 	// ignoring vengance-like reflections
                 	if ((Formulas.calcSkillReflect(target, this) & Formulas.SKILL_REFLECT_SUCCEED) > 0)
