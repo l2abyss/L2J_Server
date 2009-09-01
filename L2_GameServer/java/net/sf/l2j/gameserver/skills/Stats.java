@@ -55,6 +55,10 @@ public enum Stats
 	PVP_MAGICAL_DMG("pvpMagicalDmg"),
 	PVP_PHYS_SKILL_DMG("pvpPhysSkillsDmg"),
 	
+	PVP_PHYSICAL_DEF("pvpPhysDef"),
+	PVP_MAGICAL_DEF("pvpMagicalDef"),
+	PVP_PHYS_SKILL_DEF("pvpPhysSkillsDef"),
+	
 	// Atk & Def rates
 	EVASION_RATE("rEvas"),
 	P_SKILL_EVASION("pSkillEvas"),

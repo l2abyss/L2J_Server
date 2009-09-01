@@ -1207,6 +1207,17 @@ public final class Formulas
 		double damage = attacker.getPAtk(target);
 		damage+=calcValakasAttribute(attacker, target, skill);
 		double defence = target.getPDef(attacker);
+
+		// Def bonusses in PvP fight
+		if((attacker instanceof L2Playable)
+				&& (target instanceof L2Playable))
+		{
+			if(skill == null)
+				defence *= attacker.calcStat(Stats.PVP_PHYSICAL_DEF, 1, null, null);
+			else
+				defence *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);	
+		}
+
 		if(ss)
 			damage *= 2.;
 		switch(shld)
@@ -1265,6 +1276,17 @@ public final class Formulas
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
 		damage+=calcValakasAttribute(attacker, target, skill);
+
+		// Def bonusses in PvP fight
+		if((attacker instanceof L2Playable) 
+				&& (target instanceof L2Playable))
+		{
+			if(skill == null)
+				defence *= attacker.calcStat(Stats.PVP_PHYSICAL_DEF, 1, null, null);
+			else
+				defence *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);	
+		}
+
 		switch (shld)
 		{
 			case SHIELD_DEFENSE_SUCCEED:
@@ -1462,6 +1484,16 @@ public final class Formulas
 		double mAtk = attacker.getMAtk(target, skill);
 		double mDef = target.getMDef(attacker, skill);
 		
+		// Pvp bonuses for def
+		if((attacker instanceof L2Playable)
+				&& (target instanceof L2Playable))
+		{
+			if(skill.isMagic())
+				mDef *= attacker.calcStat(Stats.PVP_MAGICAL_DEF, 1, null, null);
+			else
+				mDef *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);
+		}
+
 		switch (shld)
 		{
 			case SHIELD_DEFENSE_SUCCEED:
@@ -1532,7 +1564,7 @@ public final class Formulas
 		}
 
 		damage += Rnd.get() * attacker.getRandomDamage(target);
-		// Pvp bonusses for dmg
+		// Pvp bonuses for dmg
 		if((attacker instanceof L2Playable)
 				&& (target instanceof L2Playable))
 		{
