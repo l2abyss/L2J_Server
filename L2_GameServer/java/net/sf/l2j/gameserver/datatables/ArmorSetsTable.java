@@ -37,29 +37,30 @@ import net.sf.l2j.gameserver.model.L2ArmorSet;
 public class ArmorSetsTable
 {
 	private static Logger _log = Logger.getLogger(ArmorSetsTable.class.getName());
-	
+
 	private FastMap<Integer, L2ArmorSet> _armorSets;
-	
+
 	public static ArmorSetsTable getInstance()
 	{
 		return SingletonHolder._instance;
 	}
-	
+
 	private ArmorSetsTable()
 	{
 		_armorSets = new FastMap<Integer, L2ArmorSet>();
 		loadData();
 	}
-	
+
 	private void loadData()
 	{
 		Connection con = null;
+		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill_id, skill_lvl, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield FROM armorsets");
+			statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield FROM armorsets");
 			ResultSet rset = statement.executeQuery();
-			
+
 			while (rset.next())
 			{
 				int chest = rset.getInt("chest");
@@ -67,8 +68,7 @@ public class ArmorSetsTable
 				int head = rset.getInt("head");
 				int gloves = rset.getInt("gloves");
 				int feet = rset.getInt("feet");
-				int skill_id = rset.getInt("skill_id");
-				int skill_lvl = rset.getInt("skill_lvl");
+				String[] skills = rset.getString("skill").split(";");
 				int shield = rset.getInt("shield");
 				int shield_skill_id = rset.getInt("shield_skill_id");
 				int enchant6skill = rset.getInt("enchant6skill");
@@ -77,13 +77,9 @@ public class ArmorSetsTable
 				int mw_gloves = rset.getInt("mw_gloves");
 				int mw_feet = rset.getInt("mw_feet");
 				int mw_shield = rset.getInt("mw_shield");
-				_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet, skill_id, skill_lvl, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield));
+				_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet, skills, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield));
 			}
-			
 			_log.config("ArmorSetsTable: Loaded " + _armorSets.size() + " armor sets.");
-			
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -91,6 +87,13 @@ public class ArmorSetsTable
 		}
 		finally
 		{
+			try
+			{
+				statement.close();
+			}
+			catch (Exception e)
+			{
+			}
 			try
 			{
 				con.close();
@@ -105,7 +108,7 @@ public class ArmorSetsTable
 			{
 				int cSets = _armorSets.size();
 				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill_id, skill_lvl, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield FROM custom_armorsets");
+				statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield FROM custom_armorsets");
 				ResultSet rset = statement.executeQuery();
 				while (rset.next())
 				{
@@ -114,8 +117,7 @@ public class ArmorSetsTable
 					int head = rset.getInt("head");
 					int gloves = rset.getInt("gloves");
 					int feet = rset.getInt("feet");
-					int skill_id = rset.getInt("skill_id");
-					int skill_lvl = rset.getInt("skill_lvl");
+					String[] skills = rset.getString("skill").split(";");
 					int shield = rset.getInt("shield");
 					int shield_skill_id = rset.getInt("shield_skill_id");
 					int enchant6skill = rset.getInt("enchant6skill");
@@ -124,11 +126,9 @@ public class ArmorSetsTable
 					int mw_gloves = rset.getInt("mw_gloves");
 					int mw_feet = rset.getInt("mw_feet");
 					int mw_shield = rset.getInt("mw_shield");
-					_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet, skill_id, skill_lvl, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield));
+					_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet, skills, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield));
 				}
 				_log.config("ArmorSetsTable: Loaded " + (_armorSets.size() - cSets) + " Custom armor sets.");
-				rset.close();
-				statement.close();
 			}
 			catch (Exception e)
 			{
@@ -136,6 +136,13 @@ public class ArmorSetsTable
 			}
 			finally
 			{
+				try
+				{
+					statement.close();
+				}
+				catch (Exception e)
+				{
+				}
 				try
 				{
 					con.close();
@@ -146,17 +153,17 @@ public class ArmorSetsTable
 			}
 		}
 	}
-	
+
 	public boolean setExists(int chestId)
 	{
 		return _armorSets.containsKey(chestId);
 	}
-	
+
 	public L2ArmorSet getSet(int chestId)
 	{
 		return _armorSets.get(chestId);
 	}
-	
+
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
