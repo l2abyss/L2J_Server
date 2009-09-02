@@ -69,5 +69,6 @@ public enum L2EffectType
 	CHANCE_SKILL_TRIGGER,
 	CLAN_GATE,
 	NEGATE,
+	THROW_UP,
 	HIDE
 }
