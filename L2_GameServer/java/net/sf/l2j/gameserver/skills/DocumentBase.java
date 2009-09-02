@@ -274,8 +274,8 @@ abstract class DocumentBase
         {
             String spc = attrs.getNamedItem("special").getNodeValue();
             if (spc.equals("invulnerable")) special = L2Character.SPECIAL_EFFECT_INVULNERABLE;
-            else if (spc.equals("redglow")) special = L2Character.SPECIAL_EFFECT_RED_GLOW;
-            else if (spc.equals("redglow2")) special = L2Character.SPECIAL_EFFECT_RED_GLOW2;
+            else if (spc.equals("redglow")) special = L2Character.SPECIAL_EFFECT_AIR_STUN;
+            else if (spc.equals("redglow2")) special = L2Character.SPECIAL_EFFECT_AIR_ROOT;
             else if (spc.equals("baguettesword")) special = L2Character.SPECIAL_EFFECT_BAGUETTE_SWORD;
             else if (spc.equals("yellowafro")) special = L2Character.SPECIAL_EFFECT_YELLOW_AFFRO;
             else if (spc.equals("pinkafro")) special = L2Character.SPECIAL_EFFECT_PINK_AFFRO;
