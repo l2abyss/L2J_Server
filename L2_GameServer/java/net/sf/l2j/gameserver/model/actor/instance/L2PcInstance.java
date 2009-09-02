@@ -4051,9 +4051,12 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	protected void doAttack(L2Character target)
 	{
-		L2Effect eInvisible = getFirstEffect(L2EffectType.HIDE);
-		if (eInvisible != null)
-			eInvisible.exit();
+		if (getAppearance().getInvisible())
+		{
+			L2Effect eInvisible = getFirstEffect(L2EffectType.HIDE);
+			if (eInvisible != null)
+				eInvisible.exit();
+		}
 		
 		super.doAttack(target);
 	}
@@ -4065,9 +4068,12 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public void doCast(L2Skill skill)
 	{
-		L2Effect eInvisible = getFirstEffect(L2EffectType.HIDE);
-		if (eInvisible != null)
-			eInvisible.exit();
+		if (getAppearance().getInvisible())
+		{
+			L2Effect eInvisible = getFirstEffect(L2EffectType.HIDE);
+			if (eInvisible != null)
+				eInvisible.exit();
+		}
 		
 		super.doCast(skill);
 	}

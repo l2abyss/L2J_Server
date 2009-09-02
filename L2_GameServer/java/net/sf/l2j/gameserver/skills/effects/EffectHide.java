@@ -14,15 +14,15 @@
  */
 package net.sf.l2j.gameserver.skills.effects;
 
+import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.model.L2Effect;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.DeleteObject;
+import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
-import net.sf.l2j.gameserver.util.Broadcast;
-
 
 /**
  * 
@@ -30,18 +30,17 @@ import net.sf.l2j.gameserver.util.Broadcast;
  * @author ZaKaX - nBd
  */
 public class EffectHide extends L2Effect
-{
-	
+{	
 	public EffectHide(Env env, EffectTemplate template)
 	{
 		super(env, template);
 	}
-	
+
 	public EffectHide(Env env, L2Effect effect)
 	{
 		super(env, effect);
 	}
-	
+
 	/**
 	 * 
 	 * @see net.sf.l2j.gameserver.model.L2Effect#getEffectType()
@@ -51,7 +50,7 @@ public class EffectHide extends L2Effect
 	{
 		return L2EffectType.HIDE;
 	}
-	
+
 	/**
 	 * 
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onStart()
@@ -63,13 +62,32 @@ public class EffectHide extends L2Effect
 		{
 			L2PcInstance activeChar = ((L2PcInstance) getEffected());
 			activeChar.getAppearance().setInvisible();
-			activeChar.broadcastUserInfo();
 			activeChar.startAbnormalEffect(L2Character.ABNORMAL_EFFECT_STEALTH);
-			Broadcast.toKnownPlayers(activeChar, new DeleteObject(activeChar));
+
+			L2GameServerPacket del = new DeleteObject(activeChar);
+			for (L2Character target : activeChar.getKnownList().getKnownCharacters())
+			{
+				try
+				{
+					if (target.getTarget() == activeChar)
+					{
+						target.setTarget(null);
+						target.abortAttack();
+						target.abortCast();
+						target.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+					}
+
+					if (target instanceof L2PcInstance)
+						target.sendPacket(del);
+				}
+				catch (NullPointerException e)
+				{
+				}
+			}
 		}
 		return true;
 	}
-  
+
 	/**
 	 * 
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onExit()
@@ -81,11 +99,10 @@ public class EffectHide extends L2Effect
 		{
 			L2PcInstance activeChar = ((L2PcInstance) getEffected());
 			activeChar.getAppearance().setVisible();
-			activeChar.broadcastUserInfo();
 			activeChar.stopAbnormalEffect(L2Character.ABNORMAL_EFFECT_STEALTH);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @see net.sf.l2j.gameserver.model.L2Effect#onActionTime()
