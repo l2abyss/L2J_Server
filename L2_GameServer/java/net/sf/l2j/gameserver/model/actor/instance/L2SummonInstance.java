@@ -26,6 +26,7 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.network.serverpackets.SetSummonRemainTime;
+import net.sf.l2j.gameserver.skills.l2skills.L2SkillSummon;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 public class L2SummonInstance extends L2Summon
@@ -52,12 +53,13 @@ public class L2SummonInstance extends L2Summon
 		
 		if (skill != null)
 		{
-			_itemConsumeId = skill.getItemConsumeIdOT();
-			_itemConsumeCount = skill.getItemConsumeOT();
-			_itemConsumeSteps = skill.getItemConsumeSteps();
-			_totalLifeTime = skill.getTotalLifeTime();
-			_timeLostIdle = skill.getTimeLostIdle();
-			_timeLostActive = skill.getTimeLostActive();
+			final L2SkillSummon summonSkill = (L2SkillSummon)skill;
+			_itemConsumeId = summonSkill.getItemConsumeIdOT();
+			_itemConsumeCount = summonSkill.getItemConsumeOT();
+			_itemConsumeSteps = summonSkill.getItemConsumeSteps();
+			_totalLifeTime = summonSkill.getTotalLifeTime();
+			_timeLostIdle = summonSkill.getTimeLostIdle();
+			_timeLostActive = summonSkill.getTimeLostActive();
 		}
 		else
 		{

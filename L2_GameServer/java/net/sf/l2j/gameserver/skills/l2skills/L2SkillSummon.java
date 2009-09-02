@@ -34,9 +34,33 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 public class L2SkillSummon extends L2Skill
 {
+	public static final int SKILL_CUBIC_MASTERY = 143;
 
 	private int     _npcId;
 	private float   _expPenalty;
+	private final boolean _isCubic;
+
+	// cubic AI
+	// Activation time for a cubic
+	private final int _activationtime;
+	// Activation chance for a cubic.
+	private final int _activationchance;
+
+	// What is the total lifetime of summons (in millisecs)
+	private final int _summonTotalLifeTime;
+	// How much lifetime is lost per second of idleness (non-fighting)
+	private final int _summonTimeLostIdle;
+	// How much time is lost per second of activity (fighting)
+	private final int _summonTimeLostActive;
+
+	// item consume time in milliseconds
+	private final int _itemConsumeTime;
+	// item consume count over time
+	private final int _itemConsumeOT;
+	// item consume id over time
+	private final int _itemConsumeIdOT;
+	// how many times to consume an item
+	private final int _itemConsumeSteps;
 
 	public L2SkillSummon(StatsSet set)
 	{
@@ -44,6 +68,19 @@ public class L2SkillSummon extends L2Skill
 
 		_npcId      = set.getInteger("npcId", 0); // default for undescribed skills
 		_expPenalty = set.getFloat ("expPenalty", 0.f);
+		_isCubic    = set.getBool("isCubic", false);
+
+		_activationtime= set.getInteger("activationtime", 8);
+		_activationchance= set.getInteger("activationchance", 30);
+
+		_summonTotalLifeTime= set.getInteger("summonTotalLifeTime", 1200000);  // 20 minutes default
+		_summonTimeLostIdle= set.getInteger("summonTimeLostIdle", 0);
+		_summonTimeLostActive= set.getInteger("summonTimeLostActive", 0);
+
+		_itemConsumeOT = set.getInteger("itemConsumeCountOT", 0);
+		_itemConsumeIdOT = set.getInteger("itemConsumeIdOT", 0);
+		_itemConsumeTime = set.getInteger("itemConsumeTime", 0);
+		_itemConsumeSteps = set.getInteger("itemConsumeSteps", 0);
 	}
 
 	public boolean checkCondition(L2Character activeChar)
@@ -58,7 +95,7 @@ public class L2SkillSummon extends L2Skill
 				{
 					return true; //Player is always able to cast mass cubic skill
 				}
-				int mastery = player.getSkillLevel(L2Skill.SKILL_CUBIC_MASTERY);
+				int mastery = player.getSkillLevel(SKILL_CUBIC_MASTERY);
 				if (mastery < 0)
 					mastery = 0;
 				int count = player.getCubics().size();
@@ -83,7 +120,8 @@ public class L2SkillSummon extends L2Skill
 	}
 
 	@Override
-	public void useSkill(L2Character caster, L2Object[] targets) {
+	public void useSkill(L2Character caster, L2Object[] targets)
+	{
 		if (caster.isAlikeDead() || !(caster instanceof L2PcInstance))
 			return;
 
@@ -95,7 +133,7 @@ public class L2SkillSummon extends L2Skill
 			return;
 		}
 
-		if (isCubic())
+		if (_isCubic)
 		{
 			if (targets.length > 1) //Mass cubic skill
 			{
@@ -103,7 +141,7 @@ public class L2SkillSummon extends L2Skill
 				{
 					if (!(obj instanceof L2PcInstance)) continue;
 					L2PcInstance player = ((L2PcInstance)obj);
-					int mastery = player.getSkillLevel(L2Skill.SKILL_CUBIC_MASTERY);
+					int mastery = player.getSkillLevel(SKILL_CUBIC_MASTERY);
 					if (mastery < 0)
 						mastery = 0;
                     if (mastery == 0 && !player.getCubics().isEmpty())
@@ -126,16 +164,16 @@ public class L2SkillSummon extends L2Skill
                     }
 					if (player.getCubics().size() > mastery) continue;
 					if (player == activeChar)
-						player.addCubic(_npcId, getLevel(), getPower(), getActivationTime(), getActivationChance(), getTotalLifeTime(), false);
+						player.addCubic(_npcId, getLevel(), getPower(), _activationtime, _activationchance, _summonTotalLifeTime, false);
 					else // given by other player
-						player.addCubic(_npcId, getLevel(), getPower(), getActivationTime(), getActivationChance(), getTotalLifeTime(), true);
+						player.addCubic(_npcId, getLevel(), getPower(), _activationtime, _activationchance, _summonTotalLifeTime, true);
 					player.broadcastUserInfo();
 				}
 				return;
 			}
 			else //normal cubic skill
 			{
-				int mastery = activeChar.getSkillLevel(L2Skill.SKILL_CUBIC_MASTERY);
+				int mastery = activeChar.getSkillLevel(SKILL_CUBIC_MASTERY);
 				if (mastery < 0)
 					mastery = 0;
                 if (activeChar.getCubics().containsKey(_npcId))
@@ -151,7 +189,7 @@ public class L2SkillSummon extends L2Skill
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.CUBIC_SUMMONING_FAILED));
 					return;
 				}
-                activeChar.addCubic(_npcId, getLevel(), getPower(), getActivationTime(), getActivationChance(), getTotalLifeTime(), false);
+                activeChar.addCubic(_npcId, getLevel(), getPower(), _activationtime, _activationchance, _summonTotalLifeTime, false);
 				activeChar.broadcastUserInfo();
 				return;
 			}
@@ -198,7 +236,66 @@ public class L2SkillSummon extends L2Skill
 
     	L2World.getInstance().storeObject(summon);
         summon.spawnMe(activeChar.getX()+50, activeChar.getY()+100, activeChar.getZ());
-
 	}
 
+	public final boolean isCubic()
+	{
+		return _isCubic;
+	}
+
+	/**
+	 * @return Returns the itemConsume count over time.
+	 */
+	public final int getTotalLifeTime()
+	{
+		return _summonTotalLifeTime;
+	}
+
+	/**
+	 * @return Returns the itemConsume count over time.
+	 */
+	public final int getTimeLostIdle()
+	{
+		return _summonTimeLostIdle;
+	}
+
+	/**
+	 * @return Returns the itemConsumeId over time.
+	 */
+	public final int getTimeLostActive()
+	{
+		return _summonTimeLostActive;
+	}
+
+	/**
+	 * @return Returns the itemConsume count over time.
+	 */
+	public final int getItemConsumeOT()
+	{
+		return _itemConsumeOT;
+	}
+
+	/**
+	 * @return Returns the itemConsumeId over time.
+	 */
+	public final int getItemConsumeIdOT()
+	{
+		return _itemConsumeIdOT;
+	}
+
+	/**
+	 * @return Returns the itemConsume count over time.
+	 */
+	public final int getItemConsumeSteps()
+	{
+		return _itemConsumeSteps;
+	}
+
+	/**
+	 * @return Returns the itemConsume time in milliseconds.
+	 */
+	public final int getItemConsumeTime()
+	{
+		return _itemConsumeTime;
+	}
 }

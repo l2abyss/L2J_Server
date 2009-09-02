@@ -62,7 +62,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
     
     private static final L2Object[] _emptyTargetList = new L2Object[0];
 
-    public static final int SKILL_CUBIC_MASTERY = 143;
     public static final int SKILL_LUCKY = 194;
     public static final int SKILL_CREATE_COMMON = 1320;
     public static final int SKILL_CREATE_DWARVEN = 172;
@@ -152,28 +151,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     
     private final int _itemConsume;
     private final int _itemConsumeId;
-    // item consume count over time
-    private final int _itemConsumeOT;
-    // item consume id over time
-    private final int _itemConsumeIdOT;
-    // how many times to consume an item
-    private final int _itemConsumeSteps;
-    // for summon spells:
-    // a) What is the total lifetime of summons (in millisecs)
-    private final int _summonTotalLifeTime;
-    // b) how much lifetime is lost per second of idleness (non-fighting)
-    private final int _summonTimeLostIdle;
-    // c) how much time is lost per second of activity (fighting)
-    private final int _summonTimeLostActive;
     
-    private final boolean _isCubic;
-
-    // cubic AI
-    private final int _activationtime;
-    private final int _activationchance;
-
-    // item consume time in milliseconds
-    private final int _itemConsumeTime;
     private final int _castRange;
     private final int _effectRange;
     
@@ -221,7 +199,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final int _effectId;
     private final int _effectLvl; // normal effect level
     
-    private final boolean _ispotion;
+    private final boolean _isPotion;
     private final byte _element;
     private final int _elementPower;
 
@@ -281,7 +259,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
     private final boolean _isDebuff;
     
-	private boolean _isAdvancedFlag;
 	private final String _attribute;
 	private final int _afroId;
 
@@ -302,7 +279,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _magic = set.getBool("isMagic", false);
         _staticReuse = set.getBool("staticReuse", false);
         _staticHitTime = set.getBool("staticHitTime", false);
-        _ispotion = set.getBool("isPotion", false);
+        _isPotion = set.getBool("isPotion", false);
         _mpConsume = set.getInteger("mpConsume", 0);
         _mpInitialConsume = set.getInteger("mpInitialConsume", 0);
         _hpConsume = set.getInteger("hpConsume", 0);
@@ -311,24 +288,12 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _targetConsumeId = set.getInteger("targetConsumeId", 0);
         _itemConsume = set.getInteger("itemConsumeCount", 0);
         _itemConsumeId = set.getInteger("itemConsumeId", 0);
-        _itemConsumeOT = set.getInteger("itemConsumeCountOT", 0);
-        _itemConsumeIdOT = set.getInteger("itemConsumeIdOT", 0);
-        _itemConsumeTime = set.getInteger("itemConsumeTime", 0);
-        _itemConsumeSteps = set.getInteger("itemConsumeSteps", 0);
-        _summonTotalLifeTime= set.getInteger("summonTotalLifeTime", 1200000);  // 20 minutes default
-        _summonTimeLostIdle= set.getInteger("summonTimeLostIdle", 0);
-        _summonTimeLostActive= set.getInteger("summonTimeLostActive", 0);
         _afterEffectId = set.getInteger("afterEffectId", 0);
         _afterEffectLvl = set.getInteger("afterEffectLvl", 1);
-        _isCubic    = set.getBool("isCubic", false);
         _hairColorId = set.getInteger("hairColorId", -1);
         _faceId = set.getInteger("faceId", -1);
         _hairStyleId = set.getInteger("hairStyleId", -1);
 
-         _isAdvancedFlag = set.getBool("isAdvancedFlag", false);
-        _activationtime= set.getInteger("activationtime", 8);
-        _activationchance= set.getInteger("activationchance", 30);
-        
         _castRange = set.getInteger("castRange", -1);
         _effectRange = set.getInteger("effectRange", -1);
         
@@ -467,7 +432,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
     public final boolean isPotion()
     {
-        return _ispotion;
+        return _isPotion;
     }
 
     public final int getArmorsAllowed()
@@ -755,80 +720,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
         return _itemConsumeId;
     }
 
-    /**
-     * @return Returns the itemConsume count over time.
-     */
-    public final int getItemConsumeOT()
-    {
-        return _itemConsumeOT;
-    }
-
-    /**
-     * @return Returns the itemConsumeId over time.
-     */
-    public final int getItemConsumeIdOT()
-    {
-        return _itemConsumeIdOT;
-    }
-
-    /**
-     * @return Returns the itemConsume count over time.
-     */
-    public final int getItemConsumeSteps()
-    {
-        return _itemConsumeSteps;
-    }
-    /**
-     * @return Returns the itemConsume count over time.
-     */
-    public final int getTotalLifeTime()
-    {
-        return _summonTotalLifeTime;
-    }
-    /**
-     * @return Returns the itemConsume count over time.
-     */
-    public final int getTimeLostIdle()
-    {
-        return _summonTimeLostIdle;
-    }
-    /**
-     * @return Returns the itemConsumeId over time.
-     */
-    public final int getTimeLostActive()
-    {
-        return _summonTimeLostActive;
-    }
-    
-    public final boolean isCubic()
-    {
-    	return _isCubic;
-    }
-
-    /**
-     * @return Returns the itemConsume time in milliseconds.
-     */
-    public final int getItemConsumeTime()
-    {
-        return _itemConsumeTime;
-    }
-
-    /**
-     * @return Returns the activation time for a cubic.
-     */
-    public final int getActivationTime()
-    {
-        return _activationtime;
-    }
-
-    /**
-     * @return Returns the activation chance for a cubic.
-     */
-    public final int getActivationChance()
-    {
-        return _activationchance;
-    }
-    
     /**
      * @return Returns the level.
      */
@@ -2552,14 +2443,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
         return "" + _name + "[id=" + _id + ",lvl=" + _level + "]";
     }
 
-	/**
-	 * @return
-	 */
-	public boolean isAdvancedFlag()
-	{
-		return _isAdvancedFlag;
-	}
-	
 	/**
 	 * @return pet food
 	 */

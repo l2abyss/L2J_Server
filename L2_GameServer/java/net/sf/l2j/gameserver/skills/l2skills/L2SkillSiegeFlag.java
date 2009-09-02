@@ -37,7 +37,7 @@ public class L2SkillSiegeFlag extends L2Skill
 	public L2SkillSiegeFlag(StatsSet set)
 	{
 		super(set);
-		_isAdvanced = set.getBool("advanced", false);
+		_isAdvanced = set.getBool("isadvanced", false);
 	}
 
 	private static final L2SkillType[] SKILL_IDS =

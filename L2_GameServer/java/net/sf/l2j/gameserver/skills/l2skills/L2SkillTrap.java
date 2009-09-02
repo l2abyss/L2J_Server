@@ -28,7 +28,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2TrapInstance;
 import net.sf.l2j.gameserver.templates.StatsSet;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
-public class L2SkillTrap extends L2Skill
+public class L2SkillTrap extends L2SkillSummon
 {
     private int _triggerSkillId = 0;
     private int _triggerSkillLvl = 0;
