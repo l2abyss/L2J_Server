@@ -2269,7 +2269,7 @@ public abstract class L2Character extends L2Object
 	public final boolean isAllSkillsDisabled() { return _allSkillsDisabled || isImmobileUntilAttacked() || isStunned() || isSleeping() || isParalyzed(); }
 
 	/** Return True if the L2Character can't attack (stun, sleep, attackEndTime, fakeDeath, paralyse, attackMute). */
-	public boolean isAttackingDisabled() { return isStunned() || isImmobileUntilAttacked() || isSleeping() || _attackEndTime > GameTimeController.getGameTicks() || isAlikeDead() || isParalyzed() || isPhysicalAttackMuted() || isCoreAIDisabled(); }
+	public boolean isAttackingDisabled() { return isFlying() || isStunned() || isImmobileUntilAttacked() || isSleeping() || _attackEndTime > GameTimeController.getGameTicks() || isAlikeDead() || isParalyzed() || isPhysicalAttackMuted() || isCoreAIDisabled(); }
 
 	public final Calculator[] getCalculators() { return _calculators; }
 
@@ -2757,8 +2757,8 @@ public abstract class L2Character extends L2Object
 
 	private int _SpecialEffects;
 	public static final int SPECIAL_EFFECT_INVULNERABLE		= 0x000001;
-	public static final int SPECIAL_EFFECT_RED_GLOW			= 0x000002;
-	public static final int SPECIAL_EFFECT_RED_GLOW2		= 0x000004;
+	public static final int SPECIAL_EFFECT_AIR_STUN			= 0x000002;
+	public static final int SPECIAL_EFFECT_AIR_ROOT			= 0x000004;
 	public static final int SPECIAL_EFFECT_BAGUETTE_SWORD	= 0x000008;
 	public static final int SPECIAL_EFFECT_YELLOW_AFFRO		= 0x000010;
 	public static final int SPECIAL_EFFECT_PINK_AFFRO		= 0x000020;
@@ -3342,8 +3342,8 @@ public abstract class L2Character extends L2Object
 	public int getAbnormalEffect()
 	{
 		int ae = _AbnormalEffects;
-		if (isStunned())  ae |= ABNORMAL_EFFECT_STUN;
-		if (isRooted())   ae |= ABNORMAL_EFFECT_ROOT;
+		if (!isFlying() && isStunned())  ae |= ABNORMAL_EFFECT_STUN;
+		if (!isFlying() && isRooted())   ae |= ABNORMAL_EFFECT_ROOT;
 		if (isSleeping()) ae |= ABNORMAL_EFFECT_SLEEP;
 		if (isConfused()) ae |= ABNORMAL_EFFECT_CONFUSED;
 		if (isMuted())    ae |= ABNORMAL_EFFECT_MUTED;
@@ -3363,7 +3363,10 @@ public abstract class L2Character extends L2Object
 	 */
 	public int getSpecialEffect()
 	{
-		return _SpecialEffects;
+		int se = _SpecialEffects;
+		if (isFlying() && isStunned())  se |= SPECIAL_EFFECT_AIR_STUN;
+		if (isFlying() && isRooted())   se |= SPECIAL_EFFECT_AIR_ROOT;
+		return se;
 	}
 	/**
 	 * Return all active skills effects in progress on the L2Character.<BR><BR>
