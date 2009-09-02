@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.model;
 
+import java.util.Arrays;
+
 import net.sf.l2j.gameserver.templates.StatsSet;
 import net.sf.l2j.util.Rnd;
 
@@ -69,27 +71,28 @@ public final class ChanceCondition
 		// Evading melee attack
 		ON_EVADED_HIT(8192);
 
-		private int _mask;
+		private final int _mask;
 
 		private TriggerType(int mask)
 		{
 			_mask = mask;
 		}
 
-		public boolean check(int event)
+		public final boolean check(int event)
 		{
 			return (_mask & event) != 0; // Trigger (sub-)type contains event (sub-)type
 		}
 	}
 
-	private TriggerType _triggerType;
+	private final TriggerType _triggerType;
+	private final int _chance;
+	private final byte[] _elements;
 
-	private int _chance;
-
-	private ChanceCondition(TriggerType trigger, int chance)
+	private ChanceCondition(TriggerType trigger, int chance, byte[] elements)
 	{
 		_triggerType = trigger;
 		_chance = chance;
+		_elements = elements;
 	}
 
 	public static ChanceCondition parse(StatsSet set)
@@ -98,15 +101,19 @@ public final class ChanceCondition
 		{
 			TriggerType trigger = set.getEnum("chanceType", TriggerType.class, null);
 			int chance = set.getInteger("activationChance", 0);
+			String elements = set.getString("activationElements", null);
+
 			if (trigger != null && chance > 0)
-				return new ChanceCondition(trigger, chance);
+				return new ChanceCondition(trigger, chance, parseElements(elements));
 		}
 		catch (Exception e)
-		{}
+		{
+			e.printStackTrace();
+		}
 		return null;
 	}
-	
-	public static ChanceCondition parse(String chanceType, int chance)
+
+	public static ChanceCondition parse(String chanceType, int chance, String elements)
 	{
 		try
 		{
@@ -116,7 +123,7 @@ public final class ChanceCondition
 			TriggerType trigger = Enum.valueOf(TriggerType.class, chanceType);
 			
 			if (trigger != null)
-				return new ChanceCondition(trigger, chance);
+				return new ChanceCondition(trigger, chance, parseElements(elements));
 		}
 		catch (Exception e)
 		{
@@ -126,8 +133,25 @@ public final class ChanceCondition
 		return null;
 	}
 
-	public boolean trigger(int event)
+	public static final byte[] parseElements(String list)
 	{
+		if (list == null)
+			return null;
+
+		String[] valuesSplit = list.split(",");
+		byte[] elements = new byte[valuesSplit.length];
+		for (int i = 0; i < valuesSplit.length; i++)
+			elements[i] = Byte.parseByte(valuesSplit[i]);
+
+		Arrays.sort(elements);
+		return elements;
+	}
+
+	public boolean trigger(int event, byte element)
+	{
+		if (_elements != null && Arrays.binarySearch(_elements, element) < 0)
+			return false;
+
 		return _triggerType.check(event) && Rnd.get(100) < _chance;
 	}
 

@@ -68,15 +68,15 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 				event |= ChanceCondition.EVT_CRIT;
 		}
 
-		onEvent(event, target);
+		onEvent(event, target, Elementals.NONE);
 	}
 
 	public void onEvadedHit(L2Character attacker)
 	{
-		onEvent(ChanceCondition.EVT_EVADED_HIT, attacker);
+		onEvent(ChanceCondition.EVT_EVADED_HIT, attacker, Elementals.NONE);
 	}
 
-	public void onSkillHit(L2Character target, boolean ownerWasHit, boolean wasMagic, boolean wasOffensive)
+	public void onSkillHit(L2Character target, boolean ownerWasHit, boolean wasMagic, boolean wasOffensive, byte element)
 	{
 		int event;
 		if (ownerWasHit)
@@ -99,14 +99,14 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			event |= wasOffensive ? ChanceCondition.EVT_MAGIC_OFFENSIVE : ChanceCondition.EVT_MAGIC_GOOD;
 		}
 
-		onEvent(event, target);
+		onEvent(event, target, element);
 	}
 
-	public void onEvent(int event, L2Character target)
+	public void onEvent(int event, L2Character target, byte element)
 	{
 		for (FastMap.Entry<IChanceSkillTrigger, ChanceCondition> e = head(), end = tail(); (e = e.getNext()) != end;)
 		{
-			if (e.getValue() != null && e.getValue().trigger(event))
+			if (e.getValue() != null && e.getValue().trigger(event, element))
 			{
 				if (e.getKey() instanceof L2Skill)
 					makeCast((L2Skill)e.getKey(), target);

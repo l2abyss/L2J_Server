@@ -6488,10 +6488,10 @@ public abstract class L2Character extends L2Object
 
 					// Maybe launch chance skills on us
 					if (_chanceSkills != null)
-						_chanceSkills.onSkillHit(target, false, skill.isMagic(), skill.isOffensive());
+						_chanceSkills.onSkillHit(target, false, skill.isMagic(), skill.isOffensive(), skill.getElement());
 					// Maybe launch chance skills on target
 					if (target.getChanceSkills() != null)
-						target.getChanceSkills().onSkillHit(this, true, skill.isMagic(), skill.isOffensive());
+						target.getChanceSkills().onSkillHit(this, true, skill.isMagic(), skill.isOffensive(), skill.getElement());
 				}
 			}
 

@@ -340,8 +340,11 @@ abstract class DocumentBase
 			activationChance = Integer.parseInt(getValue(attrs.getNamedItem("activationChance").getNodeValue(), template));
 		else if (isChanceSkillTrigger)
 			throw new NoSuchElementException(name + " requires activationChance");
+		String activationElements = null;
+		if (attrs.getNamedItem("activationElements") != null)
+			activationElements = getValue(attrs.getNamedItem("activationElements").getNodeValue(), template);
 		
-		ChanceCondition chance = ChanceCondition.parse(chanceCond, activationChance);
+		ChanceCondition chance = ChanceCondition.parse(chanceCond, activationChance, activationElements);
 		
 		if (chance == null && isChanceSkillTrigger)
 			throw new NoSuchElementException("Invalid chance condition: " + chanceCond + " "
