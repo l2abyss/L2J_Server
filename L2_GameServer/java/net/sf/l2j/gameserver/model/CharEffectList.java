@@ -979,4 +979,47 @@ public class CharEffectList
 			return effect;
 		return null;
 	}
+
+	/**
+	 * Clear and null all queues and lists
+	 * Use only during delete character from the world.
+	 */
+	public void clear()
+	{
+		try
+		{
+			if (_addQueue != null)
+			{
+				_addQueue.clear();
+				_addQueue = null;
+			}
+			if (_removeQueue != null)
+			{
+				_removeQueue.clear();
+				_removeQueue = null;
+			}
+			_queuesInitialized = false;
+
+			if (_buffs != null)
+			{
+				_buffs.clear();
+				_buffs = null;
+			}
+			if (_debuffs != null)
+			{
+				_debuffs.clear();
+				_debuffs = null;
+			}
+
+			if (_stackedEffects != null)
+			{
+				_stackedEffects.clear();
+				_stackedEffects = null;
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
 }

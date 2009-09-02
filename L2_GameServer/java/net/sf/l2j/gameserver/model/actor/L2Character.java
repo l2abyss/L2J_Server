@@ -427,7 +427,7 @@ public abstract class L2Character extends L2Object
 		L2WorldRegion reg = getWorldRegion();
 		decayMe();
 		if(reg != null) reg.removeFromZones(this);
-		
+		_effects.clear();
 	}
 
 	@Override
