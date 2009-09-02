@@ -237,8 +237,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final int _armorsAllowed;
 
     private final int _minPledgeClass;
-    private final int[] _teleportCoords;
-    private final String _recallType;
     private final boolean _isOffensive;
     private final int _requiredCharges;
     private final int _maxCharges;
@@ -287,9 +285,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final String _attribute;
 	private final int _afroId;
 
-	private final int[] _learnSkillId;
-	private final int[] _learnSkillLvl;
-
 	private final boolean _ignoreShield;
 	private final boolean _isSuicideAttack;
 	private final boolean _canBeReflected;
@@ -329,18 +324,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _hairColorId = set.getInteger("hairColorId", -1);
         _faceId = set.getInteger("faceId", -1);
         _hairStyleId = set.getInteger("hairStyleId", -1);
-        String coords = set.getString("teleCoords", null);
-        if (coords != null)
-        {
-            String[] valuesSplit = coords.split(",");
-            _teleportCoords = new int[valuesSplit.length];
-    		for (int i = 0; i < valuesSplit.length;i++)
-    			_teleportCoords[i] = Integer.parseInt(valuesSplit[i]);
-        }
-        else
-        	_teleportCoords = null;
 
-        _recallType = set.getString("recallType", "");
          _isAdvancedFlag = set.getBool("isAdvancedFlag", false);
         _activationtime= set.getInteger("activationtime", 8);
         _activationchance= set.getInteger("activationchance", 30);
@@ -351,25 +335,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _abnormalLvl = set.getInteger("abnormalLvl", -1);
         _effectAbnormalLvl = set.getInteger("effectAbnormalLvl", -1); // support for a separate effect abnormal lvl, e.g. poison inside a different skill
         _negateLvl = set.getInteger("negateLvl", -1);
-		
-		String[] ar = set.getString("learnSkillId", "0").split(",");
-		int[] ar2 = new int[ar.length];
-		
-		for (int i = 0; i < ar.length; i++)
-			ar2[i] = Integer.parseInt(ar[i]);
-		
-		_learnSkillId = ar2;
-		
-		ar = set.getString("learnSkillLvl", "1").split(",");
-		ar2 = new int[_learnSkillId.length];
-		
-		for (int i = 0; i < _learnSkillId.length; i++)
-			ar2[i] = 1;
-		
-		for (int i = 0; i < ar.length; i++)
-			ar2[i] = Integer.parseInt(ar[i]);
-		
-		_learnSkillLvl = ar2;
 		
         _attribute = set.getString("attribute","");
         String str = set.getString("negateStats", "");
@@ -2620,23 +2585,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	    return _afroId;
     }
 
-	/**
-	 * used for learning skills through skills
-     * @return new skill id to learn (if not defined, default 0)
-     */
-    public int[] getNewSkillId()
-    {
-	    return _learnSkillId;
-    }
-
-	/**
-	 * used for learning skills through skills
-     * @return skill lvl to learn (if not defined, default 1)
-     */
-    public int[] getNewSkillLvl()
-    {
-	    return _learnSkillLvl;
-    }
     public final int getRequiredCharges()
     {
     	return _requiredCharges;
@@ -2691,16 +2639,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _ignoreShield;
 	}
 
-	public int[] getTeleportCoords()
-	{
-		return _teleportCoords;
-	}
-	
-	public String getRecallType()
-	{
-		return _recallType;
-	}
-	
 	public boolean canBeReflected()
 	{
 		return _canBeReflected;

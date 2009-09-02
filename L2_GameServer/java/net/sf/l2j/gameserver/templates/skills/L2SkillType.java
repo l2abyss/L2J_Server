@@ -24,11 +24,13 @@ import net.sf.l2j.gameserver.skills.l2skills.L2SkillCreateItem;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillDecoy;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillDefault;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillDrain;
+import net.sf.l2j.gameserver.skills.l2skills.L2SkillLearnSkill;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillMount;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSiegeFlag;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSignet;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSignetCasttime;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillSummon;
+import net.sf.l2j.gameserver.skills.l2skills.L2SkillTeleport;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillTrap;
 import net.sf.l2j.gameserver.templates.StatsSet;
 
@@ -127,7 +129,7 @@ public enum L2SkillType
 	CREATE_ITEM(L2SkillCreateItem.class),
 	SUMMON_TREASURE_KEY,
 	EXTRACTABLE,
-	LEARN_SKILL,
+	LEARN_SKILL(L2SkillLearnSkill.class),
 	
 	// Summons
 	SUMMON(L2SkillSummon.class),
@@ -157,8 +159,8 @@ public enum L2SkillType
 	MHOT,
 	DETECT_WEAKNESS,
 	LUCK,
-	RECALL,
-	TELEPORT,
+	RECALL(L2SkillTeleport.class),
+	TELEPORT(L2SkillTeleport.class),
 	SUMMON_FRIEND,
 	REFLECT,
 	SPOIL,
