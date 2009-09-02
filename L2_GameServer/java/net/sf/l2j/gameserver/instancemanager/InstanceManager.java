@@ -37,7 +37,7 @@ public class InstanceManager
 	public class InstanceWorld
 	{
 		public int instanceId;
-		public FastList<L2PcInstance> allowed = new FastList<L2PcInstance>();
+		public FastList<Integer> allowed = new FastList<Integer>();
 		public int status;
 	}
 	
@@ -56,7 +56,7 @@ public class InstanceManager
 		for (InstanceWorld temp : _instanceWorlds.values())
 		{
 			// check if the player have a World Instance where he/she is allowed to enter
-			if (temp.allowed.contains(player))
+			if (temp.allowed.contains(player.getObjectId()))
 				return temp;
 		}
 		return null;
