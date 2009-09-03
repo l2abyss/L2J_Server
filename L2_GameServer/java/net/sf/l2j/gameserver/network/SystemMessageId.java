@@ -13809,6 +13809,19 @@ public enum SystemMessageId
 	* Message: The number of My Teleports slots has been increased.
 	*/
 	THE_NUMBER_OF_MY_TELEPORTS_SLOTS_HAS_BEEN_INCREASED(2409),
+	
+	/**
+	* ID: 2424<br>
+	* Message: The collection has failed.
+	*/
+	THE_COLLECTION_HAS_FAILED(2424),
+	
+	/**
+	* ID: 2500<br>
+	* Message: The collection has succeeded.
+	*/
+	THE_COLLECTION_HAS_SUCCEEDED(2500),
+	
 	/**
 	* ID: 2710<br>
 	* Message: Current location: $s1, $s2, $s3 (near the Keucereus clan association location)
