@@ -105,7 +105,10 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		}
 
 		L2ItemInstance itemToRemove = activeChar.getInventory().getItemByObjectId(_objectId);
-		if (itemToRemove == null || itemToRemove.isWear())
+		if (itemToRemove == null
+				|| itemToRemove.isWear()
+				|| itemToRemove.isShadowItem()
+				|| itemToRemove.isTimeLimitedItem())
 		{
 			return;
 		}
