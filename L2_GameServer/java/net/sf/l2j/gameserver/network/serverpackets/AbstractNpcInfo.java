@@ -582,8 +582,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeS(_title);
 			writeD(0x01);// Title color 0=client default
 
-			writeD(0);
 			writeD(_summon.getPvpFlag());
+			writeD(_summon.getKarma());
 
 			if (gmSeeInvis)
 				writeD(_summon.getAbnormalEffect() | L2Character.ABNORMAL_EFFECT_STEALTH);
