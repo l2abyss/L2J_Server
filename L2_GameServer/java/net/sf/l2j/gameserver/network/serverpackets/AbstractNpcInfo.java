@@ -583,7 +583,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(0x01);// Title color 0=client default
 
 			writeD(0);
-			writeD(_summon.getOwner().getPvpFlag());
+			writeD(_summon.getPvpFlag());
 
 			if (gmSeeInvis)
 				writeD(_summon.getAbnormalEffect() | L2Character.ABNORMAL_EFFECT_STEALTH);
@@ -595,7 +595,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(0000);  // C2
 			writeC(0000);  // C2
 
-			writeC(_summon.getOwner().getTeam());// Title color 0=client default  
+			writeC(_summon.getTeam());// Title color 0=client default  
 			
 			writeF(_collisionRadius);
 			writeF(_collisionHeight);
