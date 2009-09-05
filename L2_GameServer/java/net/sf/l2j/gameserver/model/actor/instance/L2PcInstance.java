@@ -12555,7 +12555,7 @@ public final class L2PcInstance extends L2Playable
 
     public void calculateDeathPenaltyBuffLevel(L2Character killer)
     {
-    	if(Rnd.get(1,100) <= Config.DEATH_PENALTY_CHANCE 
+    	if((getKarma() > 0 || Rnd.get(1,100) <= Config.DEATH_PENALTY_CHANCE)
     			&& !(killer instanceof L2PcInstance) && !(this.isGM())
     			&& !(this.getCharmOfLuck() && killer.isRaid())
     			&& !isPhoenixBlessed()
