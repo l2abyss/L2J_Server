@@ -23,7 +23,7 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Decoy;
 import net.sf.l2j.gameserver.model.actor.knownlist.DecoyKnownList;
-import net.sf.l2j.gameserver.skills.l2skills.L2SkillSummon;
+import net.sf.l2j.gameserver.skills.l2skills.L2SkillDecoy;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
@@ -38,7 +38,7 @@ public class L2DecoyInstance extends L2Decoy
         super(objectId, template, owner);
         if (skill != null)
         {
-            _totalLifeTime = ((L2SkillSummon)skill).getTotalLifeTime();
+            _totalLifeTime = ((L2SkillDecoy)skill).getTotalLifeTime();
         }
         else
         {
