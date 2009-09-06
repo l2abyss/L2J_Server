@@ -21,15 +21,11 @@ import net.sf.l2j.gameserver.model.ItemRequest;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.TradeList;
-import net.sf.l2j.gameserver.model.TradeList.TradeItem;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
-import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
-import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.util.Util;
 
 import static net.sf.l2j.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
-import static net.sf.l2j.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
 
 /**
  * This class ...
@@ -112,47 +108,6 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 			return;
 		}
 
-		// FIXME: this check should be (and most probably is) done in the TradeList mechanics
-		long priceTotal = 0;
-		for(ItemRequest i : _items)
-		{
-			TradeItem sellersItem = storeList.getItem(i.getObjectId());
-			if(sellersItem == null)
-			{
-				String msgErr = "[RequestPrivateStoreBuy] player "+getClient().getActiveChar().getName()+" tried to buy an item not sold in a private store (buy), ban this player!";
-				Util.handleIllegalPlayerAction(getClient().getActiveChar(),msgErr,Config.DEFAULT_PUNISH);
-				return;
-			}
-			if ((MAX_ADENA / i.getCount()) < i.getPrice())
-			{
-				String msgErr = "[RequestPrivateStoreBuy] player "+getClient().getActiveChar().getName()+" tried an overflow exploit, ban this player!";
-				Util.handleIllegalPlayerAction(getClient().getActiveChar(),msgErr,Config.DEFAULT_PUNISH);
-				return;
-			}
-			if(i.getPrice() != sellersItem.getPrice())
-			{
-				String msgErr = "[RequestPrivateStoreBuy] player "+getClient().getActiveChar().getName()+" tried to change the seller's price in a private store (buy), ban this player!";
-				Util.handleIllegalPlayerAction(getClient().getActiveChar(),msgErr,Config.DEFAULT_PUNISH);
-				return;
-			}
-			priceTotal += i.getPrice() * i.getCount();
-		}
-
-		// FIXME: this check should be (and most probably is) done in the TradeList mechanics
-		if(priceTotal < 0 || priceTotal > MAX_ADENA)
-		{
-			String msgErr = "[RequestPrivateStoreBuy] player "+getClient().getActiveChar().getName()+" tried an overflow exploit, ban this player!";
-			Util.handleIllegalPlayerAction(getClient().getActiveChar(),msgErr,Config.DEFAULT_PUNISH);
-			return;
-		}
-
-		if (player.getAdena() < priceTotal)
-		{
-			sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
-			sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
-
 		if (storePlayer.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_PACKAGE_SELL)
 		{
 			if (storeList.getItemCount() > _items.length)
@@ -163,7 +118,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 			}
 		}
 
-		if (!storeList.privateStoreBuy(player, _items, priceTotal))
+		if (!storeList.privateStoreBuy(player, _items))
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			_log.warning("PrivateStore buy has failed due to invalid list or request. Player: " + player.getName() + ", Private store of: " + storePlayer.getName());

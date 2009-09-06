@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
-import net.sf.l2j.gameserver.model.TradeList;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.ItemContainer;
@@ -106,6 +105,10 @@ public final class RequestPackageSend extends L2GameClientPacket
 			return;
 		}
 
+		// get current tradelist if any
+		if (player.getActiveTradeList() != null)
+			return;
+
     	// Freight price from config or normal price per item slot (30)
 		long fee = _items.length * Config.ALT_GAME_FREIGHT_PRICE;
 		long currentAdena = player.getAdena();
@@ -144,9 +147,6 @@ public final class RequestPackageSend extends L2GameClientPacket
 			return;
 		}
 
-		// get current tradelist if any
-		TradeList trade = player.getActiveTradeList();
-
 		// Proceed to the transfer
 		InventoryUpdate playerIU = Config.FORCE_INVENTORY_UPDATE ? null : new InventoryUpdate();
 		for (Item i : _items)
@@ -159,10 +159,6 @@ public final class RequestPackageSend extends L2GameClientPacket
 			}
 
 			if (!oldItem.isDepositable(false) || !oldItem.isAvailable(player, true, false))
-				continue;
-
-			// skip items from active tradelist, even for stackable
-			if (trade != null && trade.getItem(i.getObjectId()) != null)
 				continue;
 
 			L2ItemInstance newItem = player.getInventory().transferItem(warehouse.getName(), i.getObjectId(), i.getCount(), warehouse, player, manager);
