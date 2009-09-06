@@ -272,7 +272,6 @@ public class CursedWeapon
 			//_player.getInventory().dropItem("DieDrop", item, _player, null);
 			//_player.getInventory().getItemByItemId(_itemId).dropMe(_player, _player.getX(), _player.getY(), _player.getZ());
 		}
-        _item = null;
 		_isDropped = true;
 		SystemMessage sm = new SystemMessage(SystemMessageId.S2_WAS_DROPPED_IN_THE_S1_REGION);
 		if (player != null)
