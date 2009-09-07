@@ -5281,16 +5281,22 @@ public abstract class L2Character extends L2Object
 
 				if (!isBow && !target.isInvul()) // Do not reflect if weapon is of type bow or target is invunlerable
 				{
-					// Reduce HP of the target and calculate reflection damage to reduce HP of attacker if necessary
-					double reflectPercent = target.getStat().calcStat(Stats.REFLECT_DAMAGE_PERCENT,0,null,null);
-
-					if (reflectPercent > 0)
+					// quick fix for no drop from raid if boss attack high-level char with damage reflection
+					if (!target.isRaid()
+							|| getActingPlayer() == null
+							|| getActingPlayer().getLevel() <= target.getLevel() + 8)
 					{
-						reflectedDamage = (int)(reflectPercent / 100. * damage);
-						damage -= reflectedDamage;
+						// Reduce HP of the target and calculate reflection damage to reduce HP of attacker if necessary
+						double reflectPercent = target.getStat().calcStat(Stats.REFLECT_DAMAGE_PERCENT,0,null,null);
 
-						if(reflectedDamage > target.getMaxHp()) // to prevent extreme damage when hitting a low lvl char...
-							reflectedDamage = target.getMaxHp();
+						if (reflectPercent > 0)
+						{
+							reflectedDamage = (int)(reflectPercent / 100. * damage);
+							damage -= reflectedDamage;
+
+							if(reflectedDamage > target.getMaxHp()) // to prevent extreme damage when hitting a low lvl char...
+								reflectedDamage = target.getMaxHp();
+						}
 					}
 				}
 				
