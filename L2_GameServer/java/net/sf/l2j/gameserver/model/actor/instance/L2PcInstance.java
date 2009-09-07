@@ -2432,45 +2432,57 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void setClassId(int Id)
 	{
+    	if (!_subclassLock.tryLock())
+    		return;
 
-		if (getLvlJoinedAcademy() != 0 && _clan != null && PlayerClass.values()[Id].getLevel() == ClassLevel.Third)
-        {
-			if(getLvlJoinedAcademy() <= 16)
-				_clan.setReputationScore(_clan.getReputationScore()+Config.JOIN_ACADEMY_MAX_REP_SCORE, true);
-            else if(getLvlJoinedAcademy() >= 39)
-            	_clan.setReputationScore(_clan.getReputationScore()+Config.JOIN_ACADEMY_MIN_REP_SCORE, true);
-            else
-            	_clan.setReputationScore(_clan.getReputationScore()+(Config.JOIN_ACADEMY_MAX_REP_SCORE-(getLvlJoinedAcademy()-16)*20), true);
-			setLvlJoinedAcademy(0);
-            //oust pledge member from the academy, cuz he has finished his 2nd class transfer
-            SystemMessage msg = new SystemMessage(SystemMessageId.CLAN_MEMBER_S1_EXPELLED);
-            msg.addPcName(this);
-            _clan.broadcastToOnlineMembers(msg);
-            _clan.broadcastToOnlineMembers(new PledgeShowMemberListDelete(getName()));
-            _clan.removeClanMember(getObjectId(), 0);
-            sendPacket(new SystemMessage(SystemMessageId.ACADEMY_MEMBERSHIP_TERMINATED));
+    	try
+    	{
+    		if (getLvlJoinedAcademy() != 0 && _clan != null && PlayerClass.values()[Id].getLevel() == ClassLevel.Third)
+            {
+    			if(getLvlJoinedAcademy() <= 16)
+    				_clan.setReputationScore(_clan.getReputationScore()+Config.JOIN_ACADEMY_MAX_REP_SCORE, true);
+                else if(getLvlJoinedAcademy() >= 39)
+                	_clan.setReputationScore(_clan.getReputationScore()+Config.JOIN_ACADEMY_MIN_REP_SCORE, true);
+                else
+                	_clan.setReputationScore(_clan.getReputationScore()+(Config.JOIN_ACADEMY_MAX_REP_SCORE-(getLvlJoinedAcademy()-16)*20), true);
+    			setLvlJoinedAcademy(0);
+                //oust pledge member from the academy, cuz he has finished his 2nd class transfer
+                SystemMessage msg = new SystemMessage(SystemMessageId.CLAN_MEMBER_S1_EXPELLED);
+                msg.addPcName(this);
+                _clan.broadcastToOnlineMembers(msg);
+                _clan.broadcastToOnlineMembers(new PledgeShowMemberListDelete(getName()));
+                _clan.removeClanMember(getObjectId(), 0);
+                sendPacket(new SystemMessage(SystemMessageId.ACADEMY_MEMBERSHIP_TERMINATED));
 
-            // receive graduation gift
-            getInventory().addItem("Gift",8181,1,this,null); // give academy circlet
-        }
-		if (isSubClassActive())
-		{
-			getSubClasses().get(_classIndex).setClassId(Id);
-		}
-		setTarget(this);
-		broadcastPacket(new MagicSkillUse(this, 5103, 1, 1000, 0));
-		sendPacket(new SystemMessage(SystemMessageId.CLASS_TRANSFER));
-		setClassTemplate(Id);
-		
-		// Update class icon in party and clan
-		if (isInParty())
-			getParty().broadcastToPartyMembers(new PartySmallWindowUpdate(this));
+                // receive graduation gift
+                getInventory().addItem("Gift",8181,1,this,null); // give academy circlet
+            }
+    		if (isSubClassActive())
+    		{
+    			getSubClasses().get(_classIndex).setClassId(Id);
+    		}
+    		setTarget(this);
+    		broadcastPacket(new MagicSkillUse(this, 5103, 1, 1000, 0));
+    		setClassTemplate(Id);
+    		if (getClassId().level() == 3)
+    			sendPacket(new SystemMessage(SystemMessageId.THIRD_CLASS_TRANSFER));
+    		else
+    			sendPacket(new SystemMessage(SystemMessageId.CLASS_TRANSFER));
+    		
+    		// Update class icon in party and clan
+    		if (isInParty())
+    			getParty().broadcastToPartyMembers(new PartySmallWindowUpdate(this));
 
-		if (getClan() != null)
-			getClan().broadcastToOnlineMembers(new PledgeShowMemberListUpdate(this));
-		
-		if (Config.AUTO_LEARN_SKILLS)
-			rewardSkills();
+    		if (getClan() != null)
+    			getClan().broadcastToOnlineMembers(new PledgeShowMemberListUpdate(this));
+    		
+    		if (Config.AUTO_LEARN_SKILLS)
+    			rewardSkills();
+    	}
+    	finally
+    	{
+    		_subclassLock.unlock();
+    	}
 	}
 
 	/** Return the Experience of the L2PcInstance. */
