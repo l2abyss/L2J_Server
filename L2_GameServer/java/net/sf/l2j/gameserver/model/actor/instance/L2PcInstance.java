@@ -5385,10 +5385,6 @@ public final class L2PcInstance extends L2Playable
 			}
 		}
 		
-		// Untransforms character.
-		if (!isFlyingMounted() && _transformation != null)
-			untransform();
-		
 		setPvpFlag(0); // Clear the pvp flag
 		
 		// Unsummon Cubics

@@ -131,9 +131,6 @@ public abstract class L2Playable extends L2Character
 		{
 			stopNoblesseBlessing(null);
 			
-			untransform(); // Untransforms character if transformed.
-			stopTransformation(null);
-			
 			if (getCharmOfLuck()) //remove Lucky Charm if player have Nobless blessing buff 
 				stopCharmOfLuck(null);
 		}
