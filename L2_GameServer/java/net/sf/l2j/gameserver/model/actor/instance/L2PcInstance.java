@@ -5571,19 +5571,22 @@ public final class L2PcInstance extends L2Playable
 				)
 		)
 		{
-            increasePvpKills();
+			if (target instanceof L2PcInstance)
+	            increasePvpKills();
 		}
 		else                                                                        // Target player doesn't have pvp flag set
 		{
             // check about wars
             if (targetPlayer.getClan() != null && getClan() != null)
             {
-                if (getClan().isAtWarWith(targetPlayer.getClanId()))
+                if (getClan().isAtWarWith(targetPlayer.getClanId())
+                		&& targetPlayer.getPledgeType() != L2Clan.SUBUNIT_ACADEMY)
                 {
                     if (targetPlayer.getClan().isAtWarWith(getClanId()) && targetPlayer.getPledgeType() != L2Clan.SUBUNIT_ACADEMY)
                     {
                         // 'Both way war' -> 'PvP Kill'
-                        increasePvpKills();
+                    	if (target instanceof L2PcInstance)
+                            increasePvpKills();
                         return;
                     }
                 }
@@ -5594,12 +5597,13 @@ public final class L2PcInstance extends L2Playable
 			{
 				if ( Config.KARMA_AWARD_PK_KILL )
 				{
-                    increasePvpKills();
+					if (target instanceof L2PcInstance)
+	                    increasePvpKills();
 				}
 			}
 			else if (targetPlayer.getPvpFlag() == 0)                                                                    // Target player doesn't have karma
 			{
-                increasePkKillsAndKarma(targetPlayer.getLevel());
+                increasePkKillsAndKarma(targetPlayer.getLevel(), target instanceof L2PcInstance);
 				//Unequip adventurer items
 				if(getInventory().getPaperdollItemId(7) >= 7816 && getInventory().getPaperdollItemId(7) <= 7831) 
 				{
@@ -5637,8 +5641,9 @@ public final class L2PcInstance extends L2Playable
      * Increase pk count, karma and send the info to the player
      *
      * @param targLVL : level of the killed player
+     * @param increasePk : true if PK counter should be increased too
      */
-    public void increasePkKillsAndKarma(int targLVL)
+    public void increasePkKillsAndKarma(int targLVL, boolean increasePk)
     {
         int baseKarma           = Config.KARMA_MIN_KARMA;
         int newKarma            = baseKarma;
@@ -5677,8 +5682,9 @@ public final class L2PcInstance extends L2Playable
             newKarma = Integer.MAX_VALUE - getKarma();
 
         // Add karma to attacker and increase its PK counter
-        setPkKills(getPkKills() + 1);
         setKarma(getKarma() + newKarma);
+        if (increasePk)
+            setPkKills(getPkKills() + 1);
 
         // Send a Server->Client UserInfo packet to attacker with its Karma and PK Counter
         sendPacket(new UserInfo(this));
