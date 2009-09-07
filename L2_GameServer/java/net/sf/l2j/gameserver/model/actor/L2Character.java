@@ -819,6 +819,16 @@ public abstract class L2Character extends L2Object
 				//Check for arrows and MP
 				if (this instanceof L2PcInstance)
 				{
+					// Equip arrows needed in left hand and send a Server->Client packet ItemList to the L2PcINstance then return True
+					if (!checkAndEquipArrows())
+					{
+						// Cancel the action because the L2PcInstance have no arrow
+						getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+						sendPacket(ActionFailed.STATIC_PACKET);
+						sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ARROWS));
+						return;
+					}
+					
 					// Verify if the bow can be use
 					if (_disableBowAttackEndTime <= GameTimeController.getGameTicks())
 					{
@@ -850,15 +860,6 @@ public abstract class L2Character extends L2Object
 						sendPacket(ActionFailed.STATIC_PACKET);
 						return;
 					}
-					// Equip arrows needed in left hand and send a Server->Client packet ItemList to the L2PcINstance then return True
-					if (!checkAndEquipArrows())
-					{
-						// Cancel the action because the L2PcInstance have no arrow
-						getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ARROWS));
-						return;
-					}
 				}
 			}
 			if (weaponItem.getItemType() == L2WeaponType.CROSSBOW)
@@ -874,6 +875,16 @@ public abstract class L2Character extends L2Object
 						sendPacket(ActionFailed.STATIC_PACKET);
 						return;
 					}
+					
+					// Equip bolts needed in left hand and send a Server->Client packet ItemList to the L2PcINstance then return True
+					if (!checkAndEquipBolts())
+					{
+						// Cancel the action because the L2PcInstance have no arrow
+						getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+						sendPacket(ActionFailed.STATIC_PACKET);
+						sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_BOLTS));
+						return;
+					}
 
 					// Verify if the crossbow can be use
 					if (_disableCrossBowAttackEndTime <= GameTimeController.getGameTicks())
@@ -886,16 +897,6 @@ public abstract class L2Character extends L2Object
 						// Cancel the action because the crossbow can't be re-use at this moment
 						ThreadPoolManager.getInstance().scheduleAi(new NotifyAITask(CtrlEvent.EVT_READY_TO_ACT), 1000);
 						sendPacket(ActionFailed.STATIC_PACKET);
-						return;
-					}
-
-					// Equip bolts needed in left hand and send a Server->Client packet ItemList to the L2PcINstance then return True
-					if (!checkAndEquipBolts())
-					{
-						// Cancel the action because the L2PcInstance have no arrow
-						getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-						sendPacket(ActionFailed.STATIC_PACKET);
-						sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_BOLTS));
 						return;
 					}
 				}
