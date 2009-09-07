@@ -127,6 +127,15 @@ public class Instance
 	}
 
 	/**
+	 * Set time before empty instance will be removed
+	 * @param time in milliseconds
+	 */
+	public void setEmptyDestroyTime(long time)
+	{
+		_emptyDestroyTime = time;
+	}
+
+	/**
 	 * Checks if the player exists within this instance
 	 * @param objectId
 	 * @return true if player exists in instance
@@ -286,7 +295,8 @@ public class Instance
 		{
 			if (mob != null)
 			{
-				mob.getSpawn().stopRespawn();
+				if (mob.getSpawn() != null)
+					mob.getSpawn().stopRespawn();
 				mob.deleteMe();
 			}
 		}
