@@ -5580,7 +5580,7 @@ public final class L2PcInstance extends L2Playable
             {
                 if (getClan().isAtWarWith(targetPlayer.getClanId()))
                 {
-                    if (targetPlayer.getClan().isAtWarWith(getClanId()))
+                    if (targetPlayer.getClan().isAtWarWith(getClanId()) && targetPlayer.getPledgeType() != L2Clan.SUBUNIT_ACADEMY)
                     {
                         // 'Both way war' -> 'PvP Kill'
                         increasePvpKills();
