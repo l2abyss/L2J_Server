@@ -8646,7 +8646,6 @@ public final class L2PcInstance extends L2Playable
         // Check the validity of the target
         if (target == null)
         {
-            sendPacket(new SystemMessage(SystemMessageId.TARGET_CANT_FOUND));
             sendPacket(ActionFailed.STATIC_PACKET);
             return false;
         }
