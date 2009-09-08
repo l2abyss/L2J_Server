@@ -78,8 +78,7 @@ public class CharStat
 	 *            (ex : Level...)
 	 *
 	 */
-	public final double calcStat(Stats stat, double init, L2Character target,
-	        L2Skill skill)
+	public final double calcStat(Stats stat, double init, L2Character target, L2Skill skill)
 	{
 		if (_activeChar == null)
 			return init;
@@ -100,8 +99,7 @@ public class CharStat
 		env.value = init;
 		// Launch the calculation
 		c.calc(env);
-		// avoid some troubles with negative stats (some stats should never be
-		// negative)
+		// avoid some troubles with negative stats (some stats should never be negative)
 		if (env.value <= 0 && stat != null)
 		{
 			switch(stat)
@@ -598,9 +596,11 @@ public class CharStat
 		// err we should be adding TO the persons run speed
 		// not making it a constant
 		double baseRunSpd = _activeChar.getTemplate().baseRunSpd;
-		int val = (int) calcStat(Stats.RUN_SPEED, baseRunSpd, null, null);
 		
-		return val;
+		if (baseRunSpd == 0)
+			return 0;
+		
+		return (int) calcStat(Stats.RUN_SPEED, baseRunSpd, null, null);
 	}
 
 	/** Return the ShieldDef rate (base+modifier) of the L2Character. */
@@ -630,11 +630,16 @@ public class CharStat
 
 	/** Return the WalkSpeed (base+modifier) of the L2Character. */
 	public int getWalkSpeed()
-	{    	
+	{
 		if (_activeChar == null)
-    		return 1;
-
-		return (int) calcStat(Stats.WALK_SPEED, _activeChar.getTemplate().baseWalkSpd, null, null);		
+			return 1;
+		
+		double baseWalkSpd = _activeChar.getTemplate().baseWalkSpd;
+		
+		if (baseWalkSpd == 0)
+			return 0;
+		
+		return (int) calcStat(Stats.WALK_SPEED, baseWalkSpd, null, null);
 	}
 
 	/** Return the WIT of the L2Character (base+modifier). */

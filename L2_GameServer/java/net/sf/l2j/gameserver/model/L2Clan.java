@@ -661,22 +661,22 @@ public class L2Clan
 	 */
 	public void setLevel(int level)
 	{
-	    _level = level;
-	    if(_forum == null)
-	    {
-	    	if(_level >= 2)
-	    	{
-	    		Forum forum = ForumsBBSManager.getInstance().getForumByName("ClanRoot");
-	    		
-	    		if (forum != null)
-	    			_forum = forum.getChildByName(_name);
-	    		
-            	if(_forum == null)
-            	{
-            		_forum = ForumsBBSManager.getInstance().createNewForum(_name,ForumsBBSManager.getInstance().getForumByName("ClanRoot"),Forum.CLAN,Forum.CLANMEMBERONLY,getClanId());
-            	}
-	    	}
-	    }
+		_level = level;
+		if (_level >= 2 && _forum == null && Config.COMMUNITY_TYPE > 0)
+		{
+			
+			Forum forum = ForumsBBSManager.getInstance().getForumByName("ClanRoot");
+			
+			if (forum != null)
+			{
+				_forum = forum.getChildByName(_name);
+				
+				if (_forum == null)
+				{
+					_forum = ForumsBBSManager.getInstance().createNewForum(_name, ForumsBBSManager.getInstance().getForumByName("ClanRoot"), Forum.CLAN, Forum.CLANMEMBERONLY, getClanId());
+				}
+			}
+		}
 	}
 
 	/**

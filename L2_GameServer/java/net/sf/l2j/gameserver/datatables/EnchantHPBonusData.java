@@ -52,7 +52,7 @@ public class EnchantHPBonusData
 		return SingletonHolder._instance;
 	}
 
-	public EnchantHPBonusData()
+	private EnchantHPBonusData()
 	{
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(false);

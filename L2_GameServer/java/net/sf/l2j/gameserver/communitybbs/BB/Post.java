@@ -158,12 +158,12 @@ public class Post
 			while(result.next())
 			{
 				CPost cp = new CPost();
-				cp.postId = Integer.parseInt(result.getString("post_id"));
+				cp.postId = result.getInt("post_id");
 				cp.postOwner = result.getString("post_owner_name");
-				cp.postOwnerId = Integer.parseInt(result.getString("post_ownerid"));
+				cp.postOwnerId = result.getInt("post_ownerid");
 				cp.postDate = Long.parseLong(result.getString("post_date"));
-				cp.postTopicId = Integer.parseInt(result.getString("post_topic_id"));
-				cp.postForumId = Integer.parseInt(result.getString("post_forum_id"));
+				cp.postTopicId = result.getInt("post_topic_id");
+				cp.postForumId = result.getInt("post_forum_id");
 				cp.postTxt = result.getString("post_txt");
 				_post.add(cp);
 			}

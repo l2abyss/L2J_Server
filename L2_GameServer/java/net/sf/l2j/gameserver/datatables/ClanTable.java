@@ -81,8 +81,9 @@ public class ClanTable
 			
 			while (result.next())
 			{
-				_clans.put(Integer.parseInt(result.getString("clan_id")), new L2Clan(Integer.parseInt(result.getString("clan_id"))));
-				clan = getClan(Integer.parseInt(result.getString("clan_id")));
+				int clanId = result.getInt("clan_id");
+				_clans.put(clanId, new L2Clan(clanId));
+				clan = getClan(clanId);
 				if (clan.getDissolvingExpiryTime() != 0)
 					scheduleRemoveClan(clan.getClanId());
 				clanCount++;

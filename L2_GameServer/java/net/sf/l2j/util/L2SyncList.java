@@ -272,7 +272,8 @@ public class L2SyncList<T extends Object> implements List<T>
             if (i >= size)
                 throw new NoSuchElementException();
             cursor = i + 1;
-            return elementData[lastRet = i];
+            lastRet = i;
+            return elementData[lastRet];
         }
 
         public void remove() {

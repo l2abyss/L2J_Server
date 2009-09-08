@@ -113,7 +113,13 @@ public final class Say2 extends L2GameClientPacket
 			_log.warning("[Say2.java] Active Character is null.");
 			return;
 		}
-
+		
+		if (_text.isEmpty())
+		{
+			_log.warning(activeChar.getName() + ": sending empty text. Possible packet hack!");
+			return;
+		}
+		
 		// Even though the client can handle more characters than it's current limit allows, an overflow (critical error) happens if you pass a huge (1000+) message.
 		// April 27, 2009 - Verified on Gracia P2 & Final official client as 105
 		if (_text.length() > 105)
