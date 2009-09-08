@@ -20,12 +20,15 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExShowBaseAttributeCancelWindow;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
+import net.sf.l2j.gameserver.templates.item.L2Weapon;
 
 public class RequestExRemoveItemAttribute extends L2GameClientPacket
 {
 	private static String _C__D0_23_REQUESTEXREMOVEITEMATTRIBUTE = "[C] D0:23 RequestExRemoveItemAttribute";
 
 	private int _objectId;
+	private int _adena;
 
 	public RequestExRemoveItemAttribute()
 	{
@@ -52,36 +55,42 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 		if (targetItem.getElementals() == null)
 			return;
 
-		if (activeChar.getInventory().getAdena() < 50000)
+		if (targetItem.getItem() instanceof L2Weapon)
+			_adena = 50000;
+		else
+			_adena = 40000;
+
+		if (activeChar.reduceAdena("RemoveElement", _adena, activeChar, true))
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+			if (targetItem.isEquipped())
+				targetItem.getElementals().removeBonus(activeChar);
+			targetItem.clearElementAttr();
+			activeChar.sendPacket(new UserInfo(activeChar));
+
+			InventoryUpdate iu = new InventoryUpdate();
+			iu.addModifiedItem(targetItem);
+			activeChar.sendPacket(iu);
+
+			if (targetItem.getEnchantLevel() > 0)
+			{
+				SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2_ELEMENTAL_POWER_REMOVED);
+				sm.addNumber(targetItem.getEnchantLevel());
+				sm.addItemName(targetItem);
+				activeChar.sendPacket(sm);
+			}
+			else
+			{
+				SystemMessage sm = new SystemMessage(SystemMessageId.S1_ELEMENTAL_POWER_REMOVED);
+				sm.addItemName(targetItem);
+				activeChar.sendPacket(sm);
+			}
+
+			activeChar.sendPacket(new ExShowBaseAttributeCancelWindow(activeChar));
 			return;
 		}
 		else
 		{
-			activeChar.reduceAdena("RemoveElement", 50000, activeChar, true);
-			if (targetItem.isEquipped())
-				targetItem.getElementals().removeBonus(activeChar); 
-			targetItem.clearElementAttr();
-			InventoryUpdate iu = new InventoryUpdate();
-			iu.addModifiedItem(targetItem);
-			activeChar.sendPacket(iu);
-			SystemMessage sm;
-			if (targetItem.getEnchantLevel() > 0)
-			{
-				sm = new SystemMessage(SystemMessageId.S1_S2_ELEMENTAL_POWER_REMOVED);
-				sm.addNumber(targetItem.getEnchantLevel());
-				sm.addItemName(targetItem);
-			}
-			else
-			{
-				sm = new SystemMessage(SystemMessageId.S1_ELEMENTAL_POWER_REMOVED);
-				sm.addItemName(targetItem);
-			}
-			activeChar.sendPacket(sm);
-			activeChar.getInventory().reloadEquippedItems();
-			activeChar.broadcastUserInfo();
-			activeChar.sendPacket(new ExShowBaseAttributeCancelWindow(activeChar));
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
 			return;
 		}
 	}

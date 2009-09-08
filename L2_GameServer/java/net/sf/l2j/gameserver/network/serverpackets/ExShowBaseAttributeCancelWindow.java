@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.network.serverpackets;
 
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.templates.item.L2Weapon;
 
 public class ExShowBaseAttributeCancelWindow extends L2GameServerPacket
 {
@@ -37,7 +38,10 @@ public class ExShowBaseAttributeCancelWindow extends L2GameServerPacket
 		for (L2ItemInstance item : _items)
 		{
 			writeD(item.getObjectId());
-			writeQ(50000);
+			if (item.getItem() instanceof L2Weapon)
+				writeQ(50000);
+			else
+				writeQ(40000);
 		}
 	}
 
