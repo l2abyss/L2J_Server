@@ -6470,7 +6470,7 @@ public abstract class L2Character extends L2Object
 						}
 						return;
 					}
-					
+
 					 // Check if over-hit is possible
 		            if(skill.isOverhit())
 		            {
@@ -6478,21 +6478,30 @@ public abstract class L2Character extends L2Object
 		                        ((L2Attackable)target).overhitEnabled(true);
 		            }
 
-					// Launch weapon Special ability skill effect if available
-					if (activeWeapon != null && !target.isDead())
+		            // crafting does not trigger any chance skills
+		            // possibly should be unhardcoded
+					switch (skill.getSkillType())
 					{
-						if (activeWeapon.getSkillEffects(this, target, skill).length > 0 && this instanceof L2PcInstance)
-						{
-							sendMessage("Target affected by weapon special ability!");
-						}
-					}
+						case COMMON_CRAFT:
+						case DWARVEN_CRAFT:
+							break;
+						default:
+							// Launch weapon Special ability skill effect if available
+							if (activeWeapon != null && !target.isDead())
+							{
+								if (activeWeapon.getSkillEffects(this, target, skill).length > 0 && this instanceof L2PcInstance)
+								{
+									sendMessage("Target affected by weapon special ability!");
+								}
+							}
 
-					// Maybe launch chance skills on us
-					if (_chanceSkills != null)
-						_chanceSkills.onSkillHit(target, false, skill.isMagic(), skill.isOffensive(), skill.getElement());
-					// Maybe launch chance skills on target
-					if (target.getChanceSkills() != null)
-						target.getChanceSkills().onSkillHit(this, true, skill.isMagic(), skill.isOffensive(), skill.getElement());
+							// Maybe launch chance skills on us
+							if (_chanceSkills != null)
+								_chanceSkills.onSkillHit(target, false, skill.isMagic(), skill.isOffensive(), skill.getElement());
+							// Maybe launch chance skills on target
+							if (target.getChanceSkills() != null)
+								target.getChanceSkills().onSkillHit(this, true, skill.isMagic(), skill.isOffensive(), skill.getElement());
+					}
 				}
 			}
 
