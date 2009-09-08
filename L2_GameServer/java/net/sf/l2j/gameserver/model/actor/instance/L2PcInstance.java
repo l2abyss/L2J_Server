@@ -7322,12 +7322,12 @@ public final class L2PcInstance extends L2Playable
 		if (_forumMemo == null)
 		{
 			setMemo(ForumsBBSManager.getInstance().getForumByName("MemoRoot").getChildByName(_accountName));
-
-        	if (_forumMemo == null)
-        	{
-        		ForumsBBSManager.getInstance().createNewForum(_accountName,ForumsBBSManager.getInstance().getForumByName("MemoRoot"),Forum.MEMO,Forum.OWNERONLY,getObjectId());
-        		setMemo(ForumsBBSManager.getInstance().getForumByName("MemoRoot").getChildByName(_accountName));
-        	}
+			
+			if (_forumMemo == null)
+			{
+				ForumsBBSManager.getInstance().createNewForum(_accountName, ForumsBBSManager.getInstance().getForumByName("MemoRoot"), Forum.MEMO, Forum.OWNERONLY, getObjectId());
+				setMemo(ForumsBBSManager.getInstance().getForumByName("MemoRoot").getChildByName(_accountName));
+			}
 		}
 
 		return _forumMemo;
@@ -10981,7 +10981,12 @@ public final class L2PcInstance extends L2Playable
 
 	public void removeExpAndSp(long removeExp, int removeSp)
 	{
-		getStat().removeExpAndSp(removeExp, removeSp);
+		getStat().removeExpAndSp(removeExp, removeSp, true);
+	}
+	
+	public void removeExpAndSp(long removeExp, int removeSp, boolean sendMessage)
+	{
+		getStat().removeExpAndSp(removeExp, removeSp, sendMessage);
 	}
 
 	@Override
@@ -12275,6 +12280,7 @@ public final class L2PcInstance extends L2Playable
             SystemMessage sm = new SystemMessage(SystemMessageId.ACQUIRED_S1_REPUTATION_SCORE);
             sm.addNumber(_value);
             _player.sendPacket(sm);
+            _player.sendPacket(new UserInfo(_player));
         }
     }
 
