@@ -193,13 +193,17 @@ public final class RequestRefine extends L2GameClientPacket
 				if (player.getLevel() < 61 || gemstoneItemId != 2131) return false;
 				modifyGemstoneCount = 20;
 				break;
-			case L2Item.CRYSTAL_S84:
-				if (player.getLevel() < 84 || gemstoneItemId != 2131) return false;
-			case L2Item.CRYSTAL_S80:
-				if (player.getLevel() < 80 || gemstoneItemId != 2131) return false;
 			case L2Item.CRYSTAL_S:
 				if (player.getLevel() < 76 || gemstoneItemId != 2131) return false;
 				modifyGemstoneCount = 25;
+				break;
+			case L2Item.CRYSTAL_S80:
+				if (player.getLevel() < 80 || gemstoneItemId != 2132) return false;
+				modifyGemstoneCount = 36;
+				break;
+			case L2Item.CRYSTAL_S84:
+				if (player.getLevel() < 84 || gemstoneItemId != 2132) return false;
+				modifyGemstoneCount = 36;
 				break;
 		}
 
@@ -249,15 +253,11 @@ public final class RequestRefine extends L2GameClientPacket
 
 		// consume the life stone
 		if (!player.destroyItem("RequestRefine", refinerItem, 1, null, false))
-		{
 			return false;
-		}
 
 		// consume the gemstones
 		if (!player.destroyItem("RequestRefine", gemstoneItem, modifyGemstoneCount, null, false))
-		{
 			return false;
-		}
 
 		// generate augmentation
 		targetItem.setAugmentation(AugmentationData.getInstance().generateRandomAugmentation(lifeStoneLevel, lifeStoneGrade));

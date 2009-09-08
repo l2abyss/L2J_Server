@@ -21,6 +21,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ExShowBaseAttributeCancelWind
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
+import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
 
 public class RequestExRemoveItemAttribute extends L2GameClientPacket
@@ -28,7 +29,7 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 	private static String _C__D0_23_REQUESTEXREMOVEITEMATTRIBUTE = "[C] D0:23 RequestExRemoveItemAttribute";
 
 	private int _objectId;
-	private int _adena;
+	private long _price;
 
 	public RequestExRemoveItemAttribute()
 	{
@@ -55,12 +56,7 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 		if (targetItem.getElementals() == null)
 			return;
 
-		if (targetItem.getItem() instanceof L2Weapon)
-			_adena = 50000;
-		else
-			_adena = 40000;
-
-		if (activeChar.reduceAdena("RemoveElement", _adena, activeChar, true))
+		if (activeChar.reduceAdena("RemoveElement", getPrice(targetItem), activeChar, true))
 		{
 			if (targetItem.isEquipped())
 				targetItem.getElementals().removeBonus(activeChar);
@@ -93,6 +89,33 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
 			return;
 		}
+	}
+
+	private long getPrice(L2ItemInstance item)
+	{
+		switch(item.getItem().getCrystalType())
+		{
+			case L2Item.CRYSTAL_S:
+				if (item.getItem() instanceof L2Weapon)
+					_price = 50000;
+				else
+					_price = 40000;
+				break;
+			case L2Item.CRYSTAL_S80:
+				if (item.getItem() instanceof L2Weapon)
+					_price = 100000;
+				else
+					_price = 80000;
+				break;
+			case L2Item.CRYSTAL_S84:
+				if (item.getItem() instanceof L2Weapon)
+					_price = 200000;
+				else
+					_price = 160000;
+				break;
+		}
+
+		return _price;
 	}
 
 	@Override

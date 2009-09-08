@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.network.serverpackets;
 
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
 
 public class ExShowBaseAttributeCancelWindow extends L2GameServerPacket
@@ -23,6 +24,7 @@ public class ExShowBaseAttributeCancelWindow extends L2GameServerPacket
 	private static final String		_S__FE_74_EXCSHOWBASEATTRIBUTECANCELWINDOW = "[S] FE:74 ExShowBaseAttributeCancelWindow";
 
 	private L2ItemInstance[]		_items;
+	private long					_price;
 
 	public ExShowBaseAttributeCancelWindow(L2PcInstance player)
 	{
@@ -38,11 +40,35 @@ public class ExShowBaseAttributeCancelWindow extends L2GameServerPacket
 		for (L2ItemInstance item : _items)
 		{
 			writeD(item.getObjectId());
-			if (item.getItem() instanceof L2Weapon)
-				writeQ(50000);
-			else
-				writeQ(40000);
+			writeQ(getPrice(item));
 		}
+	}
+
+	private long getPrice(L2ItemInstance item)
+	{
+		switch(item.getItem().getCrystalType())
+		{
+			case L2Item.CRYSTAL_S:
+				if (item.getItem() instanceof L2Weapon)
+					_price = 50000;
+				else
+					_price = 40000;
+				break;
+			case L2Item.CRYSTAL_S80:
+				if (item.getItem() instanceof L2Weapon)
+					_price = 100000;
+				else
+					_price = 80000;
+				break;
+			case L2Item.CRYSTAL_S84:
+				if (item.getItem() instanceof L2Weapon)
+					_price = 200000;
+				else
+					_price = 160000;
+				break;
+		}
+
+		return _price;
 	}
 
 	@Override

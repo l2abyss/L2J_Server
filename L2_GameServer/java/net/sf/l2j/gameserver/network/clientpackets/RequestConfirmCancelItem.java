@@ -66,8 +66,14 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 			return;
 		}
 
+		if (item.isPvp())
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
+			return;
+		}
+
 		int price=0;
-		switch (item.getItem().getItemGradeSPlus())
+		switch (item.getItem().getCrystalType())
 		{
 			case L2Item.CRYSTAL_C:
 				if (item.getCrystalCount() < 1720)
@@ -93,6 +99,10 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 				break;
 			case L2Item.CRYSTAL_S:
 				price = 480000;
+				break;
+			case L2Item.CRYSTAL_S80:
+			case L2Item.CRYSTAL_S84:
+				price = 920000;
 				break;
 			// any other item type is not augmentable
 			default:

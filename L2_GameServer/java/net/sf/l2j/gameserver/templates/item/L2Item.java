@@ -160,6 +160,8 @@ public abstract class L2Item
 	private final boolean _common;
 	private final boolean _heroItem;
 
+	private final boolean _pvpItem;
+
 	@SuppressWarnings("unchecked")
 	protected final Enum _type;
 	
@@ -213,6 +215,8 @@ public abstract class L2Item
 
 		_common = (_itemId >= 12006 && _itemId <= 12361) || (_itemId >= 11605 && _itemId <= 12308);
 		_heroItem = (_itemId >= 6611 && _itemId <= 6621) || (_itemId >= 9388 && _itemId <= 9390) || _itemId == 6842;
+
+		_pvpItem = (_itemId >= 10667 && _itemId <= 10792) || (_itemId >= 10793 && _itemId <= 10835) || (_itemId >= 12852 && _itemId <= 12977) || (_itemId >= 14363 && _itemId <= 14519) || (_itemId >= 14520 && _itemId <= 14525) || _itemId == 14528 || _itemId == 14529 || _itemId == 14558;
 	}
 	
 	/**
@@ -487,6 +491,15 @@ public abstract class L2Item
 	public final boolean isHeroItem()
 	{
 		return _heroItem;
+	}
+
+	/**
+	 * Returns if item is pvp
+	 * @return
+	 */
+	public final boolean isPvpItem()
+	{
+		return _pvpItem;
 	}
 
 	/**

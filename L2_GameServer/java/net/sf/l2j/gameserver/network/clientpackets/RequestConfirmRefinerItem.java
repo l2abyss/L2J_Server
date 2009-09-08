@@ -34,6 +34,7 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 
 	private static final int GEMSTONE_D = 2130;
 	private static final int GEMSTONE_C = 2131;
+	private static final int GEMSTONE_B = 2132;
 
 	private int _targetItemObjId;
 	private int _refinerItemObjId;
@@ -82,10 +83,10 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 			return;
 		}
 
-		int gemstoneCount=0;
-		int gemstoneItemId=0;
+		int gemstoneCount = 0;
+		int gemstoneItemId = 0;
 		SystemMessage sm = new SystemMessage(SystemMessageId.REQUIRES_S1_S2);
-		switch (targetItem.getItem().getItemGradeSPlus())
+		switch (targetItem.getItem().getCrystalType())
 		{
 			case L2Item.CRYSTAL_C:
 				gemstoneCount = 20;
@@ -110,6 +111,13 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 				gemstoneItemId = GEMSTONE_C;
 				sm.addItemNumber(gemstoneCount);
 				sm.addString("Gemstone C");
+				break;
+			case L2Item.CRYSTAL_S80:
+			case L2Item.CRYSTAL_S84:
+				gemstoneCount = 36;
+				gemstoneItemId = GEMSTONE_B;
+				sm.addItemNumber(gemstoneCount);
+				sm.addString("Gemstone B");
 				break;
 		}
 

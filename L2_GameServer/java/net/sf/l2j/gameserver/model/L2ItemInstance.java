@@ -724,6 +724,15 @@ public final class L2ItemInstance extends L2Object
         return _item.isCommon();
     }
     
+    /**
+	 * Returns whether this item is pvp or not
+	 * @return boolean
+	 */
+	public boolean isPvp()
+	{
+		return _item.isPvpItem();
+	}
+	
     public boolean isOlyRestrictedItem()
     {
         return (Config.LIST_OLY_RESTRICTED_ITEMS.contains(_itemId));

@@ -153,7 +153,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 
 		if (powerToAdd <= 0)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.ELEMENTAL_ENHANCE_REQUIREMENT_NOT_SUFFICIENT));
+			player.sendPacket(new SystemMessage(SystemMessageId.ELEMENTAL_ENHANCE_CANCELED));
 			player.setActiveEnchantAttrItem(null);
 			return;
 		}
@@ -166,7 +166,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			return;
 		}
 
-		if (Rnd.get(100) < Elementals.ENCHANT_CHANCE)
+		if (Rnd.get(100) <= Elementals.ENCHANT_CHANCE)
 		{
 			SystemMessage sm;
 			if (item.getEnchantLevel() == 0)
@@ -193,9 +193,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			player.sendPacket(iu);
 		}
 		else
-		{
 			player.sendPacket(new SystemMessage(SystemMessageId.FAILED_ADDING_ELEMENTAL_POWER));
-		}
 
 		player.sendPacket(new ExAttributeEnchantResult(powerToAdd));
 		player.sendPacket(new UserInfo(player));
