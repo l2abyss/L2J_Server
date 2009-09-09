@@ -82,6 +82,7 @@ public final class Config
 	public static boolean AUTO_LOOT_HERBS;
 	public static byte BUFFS_MAX_AMOUNT;
 	public static byte DANCES_MAX_AMOUNT;
+	public static boolean DANCE_CANCEL_BUFF;
 	public static boolean AUTO_LEARN_DIVINE_INSPIRATION;
 	public static boolean ALT_GAME_CANCEL_BOW;
 	public static boolean ALT_GAME_CANCEL_CAST;
@@ -1124,9 +1125,8 @@ public final class Config
 					// Create Map only if enabled
 					if (ENABLE_MODIFY_SKILL_DURATION)
 					{
-						SKILL_DURATION_LIST = new FastMap<Integer, Integer>();
-						String[] propertySplit;
-						propertySplit = Character.getProperty("SkillDurationList", "").split(";");
+						String[] propertySplit = Character.getProperty("SkillDurationList", "").split(";");
+						SKILL_DURATION_LIST = new FastMap<Integer, Integer>(propertySplit.length);
 						for (String skill : propertySplit)
 						{
 							String[] skillSplit = skill.split(",");
@@ -1152,9 +1152,8 @@ public final class Config
 					// Create Map only if enabled
 					if (ENABLE_MODIFY_SKILL_REUSE)
 					{
-						SKILL_REUSE_LIST = new FastMap<Integer, Integer>();
-						String[] propertySplit;
-						propertySplit = Character.getProperty("SkillReuseList", "").split(";");
+						String[] propertySplit = Character.getProperty("SkillReuseList", "").split(";");
+						SKILL_REUSE_LIST = new FastMap<Integer, Integer>(propertySplit.length);
 						for (String skill : propertySplit)
 						{
 							String[] skillSplit = skill.split(",");
@@ -1179,6 +1178,7 @@ public final class Config
 					AUTO_LOOT_HERBS = Boolean.parseBoolean(Character.getProperty("AutoLootHerbs", "false"));
 					BUFFS_MAX_AMOUNT = Byte.parseByte(Character.getProperty("maxbuffamount","20"));
 					DANCES_MAX_AMOUNT = Byte.parseByte(Character.getProperty("maxdanceamount","12"));
+					DANCE_CANCEL_BUFF = Boolean.parseBoolean(Character.getProperty("DanceCancelBuff", "false"));
 					AUTO_LEARN_DIVINE_INSPIRATION = Boolean.parseBoolean(Character.getProperty("AutoLearnDivineInspiration", "false"));
 					ALT_GAME_CANCEL_BOW = Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("bow") || Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("all");
 					ALT_GAME_CANCEL_CAST = Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("cast") || Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("all");
@@ -1905,7 +1905,7 @@ public final class Config
 									propertySplit = L2JModSettings.getProperty("TvTEventFighterBuffs", "").split(";");
 									if (!propertySplit[0].equals(""))
 									{
-										TVT_EVENT_FIGHTER_BUFFS = new FastMap<Integer, Integer>();
+										TVT_EVENT_FIGHTER_BUFFS = new FastMap<Integer, Integer>(propertySplit.length);
 										for (String skill : propertySplit)
 										{
 											String[] skillSplit = skill.split(",");
@@ -1929,7 +1929,7 @@ public final class Config
 									propertySplit = L2JModSettings.getProperty("TvTEventMageBuffs", "").split(";");
 									if (!propertySplit[0].equals(""))
 									{
-										TVT_EVENT_MAGE_BUFFS = new FastMap<Integer, Integer>();
+										TVT_EVENT_MAGE_BUFFS = new FastMap<Integer, Integer>(propertySplit.length);
 										for (String skill : propertySplit)
 										{
 											String[] skillSplit = skill.split(",");
