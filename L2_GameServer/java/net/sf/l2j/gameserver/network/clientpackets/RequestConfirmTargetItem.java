@@ -58,11 +58,6 @@ public final class RequestConfirmTargetItem extends L2GameClientPacket
 			Util.handleIllegalPlayerAction(getClient().getActiveChar(),"Warning!! Character "+getClient().getActiveChar().getName()+" of account "+getClient().getActiveChar().getAccountName()+" tryied to use augment on weapon that doesn't own.",Config.DEFAULT_PUNISH);
 			return;
 		}
-		if (activeChar.getLevel() < 46)
-		{
-			activeChar.sendMessage("You have to be level 46 in order to augment an item");
-			return;
-		}
 
 		// check if the item is augmentable
 		int itemGrade = item.getItem().getItemGrade();
@@ -75,7 +70,7 @@ public final class RequestConfirmTargetItem extends L2GameClientPacket
 		}
 		//TODO: can do better? : currently: using isdestroyable() as a check for hero / cursed weapons
 		else if (itemGrade < L2Item.CRYSTAL_C || itemType != L2Item.TYPE2_WEAPON || !item.isDestroyable() ||
-				item.isShadowItem() || item.isTimeLimitedItem())
+				item.isShadowItem() || item.isTimeLimitedItem() || item.isPvp())
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
 			return;
