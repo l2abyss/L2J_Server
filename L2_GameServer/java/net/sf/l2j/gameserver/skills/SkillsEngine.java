@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.skills;
 
+import gnu.trove.TIntObjectHashMap;
+
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +92,7 @@ public class SkillsEngine
 		return doc.getSkills();
 	}
 	
-	public void loadAllSkills(Map<Integer, L2Skill> allSkills)
+	public void loadAllSkills(final TIntObjectHashMap<L2Skill> allSkills)
 	{
 		int count = 0;
 		for (File file : _skillFiles)

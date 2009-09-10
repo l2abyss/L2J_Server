@@ -1,36 +1,29 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package net.sf.l2j.gameserver.datatables;
 
-import java.util.Map;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
+import gnu.trove.TIntIntHashMap;
+import gnu.trove.TIntObjectHashMap;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.skills.SkillsEngine;
 
 /**
- * This class ...
- *
- * @version $Revision: 1.8.2.6.2.18 $ $Date: 2005/04/06 16:13:25 $
+ * 
  */
 public class SkillTable
 {
-	//private static Logger _log = Logger.getLogger(SkillTable.class.getName());
-	private static Map<Integer, L2Skill> _skills = new FastMap<Integer, L2Skill>();
-	private boolean _initialized = true;
+	private final TIntObjectHashMap<L2Skill> _skills;
+	private final TIntIntHashMap _skillMaxLevel;
 	
 	public static SkillTable getInstance()
 	{
@@ -39,35 +32,47 @@ public class SkillTable
 	
 	private SkillTable()
 	{
-		SkillsEngine.getInstance().loadAllSkills(_skills);
+		_skills = new TIntObjectHashMap<L2Skill>();
+		_skillMaxLevel = new TIntIntHashMap();
+		reload();
 	}
 	
 	public void reload()
 	{
-		final Map<Integer, L2Skill> skills = new FastMap<Integer, L2Skill>();
-		SkillsEngine.getInstance().loadAllSkills(skills);
-		_skills = skills;
-	}
-	
-	public boolean isInitialized()
-	{
-		return _initialized;
+		_skills.clear();
+		SkillsEngine.getInstance().loadAllSkills(_skills);
+		
+		_skillMaxLevel.clear();
+		for (final L2Skill skill : _skills.getValues(new L2Skill[_skills.size()]))
+		{
+			final int skillId = skill.getId();
+			final int skillLvl = skill.getLevel();
+			final int maxLvl = _skillMaxLevel.get(skillId);
+			
+			if (skillLvl > maxLvl)
+				_skillMaxLevel.put(skillId, skillLvl);
+		}
 	}
 	
 	/**
 	 * Provides the skill hash
-	 * @param skill The L2Skill to be hashed
-	 * @return SkillTable.getSkillHashCode(skill.getId(), skill.getLevel())
+	 * 
+	 * @param skill
+	 *            The L2Skill to be hashed
+	 * @return getSkillHashCode(skill.getId(), skill.getLevel())
 	 */
 	public static int getSkillHashCode(L2Skill skill)
 	{
-		return SkillTable.getSkillHashCode(skill.getId(), skill.getLevel());
+		return getSkillHashCode(skill.getId(), skill.getLevel());
 	}
 	
 	/**
 	 * Centralized method for easier change of the hashing sys
-	 * @param skillId The Skill Id
-	 * @param skillLevel The Skill Level
+	 * 
+	 * @param skillId
+	 *            The Skill Id
+	 * @param skillLevel
+	 *            The Skill Level
 	 * @return The Skill hash number
 	 */
 	public static int getSkillHashCode(int skillId, int skillLevel)
@@ -75,51 +80,33 @@ public class SkillTable
 		return skillId * 1021 + skillLevel;
 	}
 	
-	public L2Skill getInfo(int skillId, int level)
+	public final L2Skill getInfo(final int skillId, final int level)
 	{
-		L2Skill result = _skills.get(getSkillHashCode(skillId, level));
-		if (result == null)
-		{
-			// skill with such level not found, checking for existence
-			if (_skills.containsKey(getSkillHashCode(skillId, 1)))
-			{
-				// yes, such skill exist, searching for first available level
-				while (level > 0 && result == null)
-				{
-					result = _skills.get(getSkillHashCode(skillId, --level));
-				}
-			}
-		}
-		return result;
+		return _skills.get(getSkillHashCode(skillId, level));
 	}
 	
-	public int getMaxLevel(int magicId, int level)
+	public final int getMaxLevel(final int skillId)
 	{
-		while (level < 100)
-		{
-			if (_skills.get(getSkillHashCode(magicId, ++level)) == null)
-				return level - 1;
-		}
-		
-		return level;
+		return _skillMaxLevel.get(skillId);
 	}
-	
 	
 	/**
 	 * Returns an array with siege skills. If addNoble == true, will add also Advanced headquarters.
 	 */
 	public L2Skill[] getSiegeSkills(boolean addNoble)
 	{
-		FastList<L2Skill> list = new FastList<L2Skill>();
-		
-		list.add(_skills.get(SkillTable.getSkillHashCode(246, 1)));
-		list.add(_skills.get(SkillTable.getSkillHashCode(247, 1)));
+		L2Skill[] temp = null;
 		
 		if (addNoble)
-			list.add(_skills.get(SkillTable.getSkillHashCode(326, 1)));
+		{
+			temp = new L2Skill[3];
+			temp[2] = _skills.get(SkillTable.getSkillHashCode(326, 1));
+		}
+		else
+			temp = new L2Skill[2];
 		
-		L2Skill[] temp = new L2Skill[list.size()];
-		list.toArray(temp);
+		temp[0] = _skills.get(SkillTable.getSkillHashCode(246, 1));
+		temp[1] = _skills.get(SkillTable.getSkillHashCode(247, 1));
 		
 		return temp;
 	}

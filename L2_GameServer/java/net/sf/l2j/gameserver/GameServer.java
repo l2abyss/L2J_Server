@@ -133,7 +133,6 @@ public class GameServer
 	
 	private final SelectorThread<L2GameClient> _selectorThread;
 	private final DeadLockDetector _deadDetectThread;
-	private final SkillTable _skillTable;
 	private final ItemTable _itemTable;
 	private final NpcTable _npcTable;
 	private final HennaTable _hennaTable;
@@ -208,13 +207,7 @@ public class GameServer
 		
 		// keep the references of Singletons to prevent garbage collection
 		CharNameTable.getInstance();
-		
-		_skillTable = SkillTable.getInstance();
-		if (!_skillTable.isInitialized())
-		{
-			_log.severe("Could not find the extraced files. Please Check Your Data.");
-			throw new Exception("Could not initialize the skill table");
-		}
+		SkillTable.getInstance();
 		
 		_itemTable = ItemTable.getInstance();
 		if (!_itemTable.isInitialized())
