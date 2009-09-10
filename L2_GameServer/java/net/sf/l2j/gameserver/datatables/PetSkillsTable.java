@@ -135,7 +135,7 @@ public class PetSkillsTable
 					lvl = (7 + ((cha.getLevel() - 70) / 5));
 				
 				// formula usable for skill that have 10 or more skill levels
-				int maxLvl = SkillTable.getInstance().getMaxLevel(temp.getId(), 10);
+				int maxLvl = SkillTable.getInstance().getMaxLevel(temp.getId());
 				if (lvl > maxLvl)
 					lvl = maxLvl;
 				break;

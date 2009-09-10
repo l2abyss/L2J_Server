@@ -83,7 +83,7 @@ public class CursedWeapon
 		_name = name;
 		_itemId = itemId;
 		_skillId = skillId;
-		_skillMaxLevel = SkillTable.getInstance().getMaxLevel(_skillId, 0);
+		_skillMaxLevel = SkillTable.getInstance().getMaxLevel(_skillId);
 	}
 
 	// =========================================================

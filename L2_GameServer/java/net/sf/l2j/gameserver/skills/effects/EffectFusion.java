@@ -33,7 +33,7 @@ public class EffectFusion extends L2Effect
 	{
 		super(env, template);
 		_effect = getSkill().getLevel();
-		_maxEffect = SkillTable.getInstance().getMaxLevel(getSkill().getId(), 99);
+		_maxEffect = SkillTable.getInstance().getMaxLevel(getSkill().getId());
 	}
 	
 	/**
