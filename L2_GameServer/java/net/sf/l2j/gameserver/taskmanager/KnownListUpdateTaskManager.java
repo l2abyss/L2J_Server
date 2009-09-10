@@ -105,7 +105,7 @@ public class KnownListUpdateTaskManager
 			{
 				for (L2Object object : vObj) // and for all members in region
 				{
-					if (!object.isVisible())
+					if (object == null || !object.isVisible())
 						continue; // skip dying objects
 						
 					if (forgetObjects)
