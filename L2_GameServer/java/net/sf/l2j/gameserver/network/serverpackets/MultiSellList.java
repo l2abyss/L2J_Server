@@ -68,7 +68,7 @@ public final class MultiSellList extends L2GameServerPacket
             for(MultiSellEntry ent : _list.getEntries())
             {
             	writeD(ent.getEntryId());
-            	writeC(1);
+            	writeC(ent.stackable());
                 writeH(0x00); // C6
                 writeD(0x00); // C6
                 writeD(0x00); // T1
