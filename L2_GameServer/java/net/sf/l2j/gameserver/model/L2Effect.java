@@ -531,6 +531,11 @@ public abstract class L2Effect
 				smsg3.addSkillName(_skill);
 				getEffected().sendPacket(smsg3);
 			}
+			// if task is null - stopEffectTask does not remove effect
+			if (_currentFuture == null && getEffected() != null)
+			{
+				getEffected().removeEffect(this);
+			}
 			// Stop the task of the L2Effect, remove it and update client magic icon
 			stopEffectTask();
 			
