@@ -343,9 +343,12 @@ public class L2Multisell
 		{
 			for (MultiSellIngredient p : _products)
 			{
-				L2Item template = ItemTable.getInstance().getTemplate(p.getItemId());
-				if (template != null && !template.isStackable())
-					return 0;
+				if (p.getItemId() > 0)
+				{
+					L2Item template = ItemTable.getInstance().getTemplate(p.getItemId());
+					if (template != null && !template.isStackable())
+						return 0;
+				}
 			}
 			return 1;
 		}
