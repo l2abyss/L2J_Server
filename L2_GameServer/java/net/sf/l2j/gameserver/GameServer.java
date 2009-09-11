@@ -133,22 +133,10 @@ public class GameServer
 	
 	private final SelectorThread<L2GameClient> _selectorThread;
 	private final DeadLockDetector _deadDetectThread;
-	private final ItemTable _itemTable;
-	private final NpcTable _npcTable;
-	private final HennaTable _hennaTable;
 	private final IdFactory _idFactory;
 	public static GameServer gameServer;
-	private static ClanHallManager _cHManager;
-	private final Shutdown _shutdownHandler;
-	private final DoorTable _doorTable;
-	private final SevenSigns _sevenSignsEngine;
-	private final AutoChatHandler _autoChatHandler;
-	private final AutoSpawnHandler _autoSpawnHandler;
 	private LoginServerThread _loginThread;
-	private final HelperBuffTable _helperBuffTable;
 	private static Status _statusServer;
-	@SuppressWarnings("unused")
-	private final ThreadPoolManager _threadpools;
 	public static final Calendar dateTimeServerStarted = Calendar.getInstance();
 	
 	public long getUsedMemoryMB()
@@ -166,11 +154,6 @@ public class GameServer
 		return _deadDetectThread;
 	}
 	
-	public ClanHallManager getCHManager()
-	{
-		return _cHManager;
-	}
-	
 	public GameServer() throws Exception
 	{
 		long serverLoadStart = System.currentTimeMillis();
@@ -186,6 +169,7 @@ public class GameServer
 		{
 			_log.info("L2J Datapack Version:  " + Config.DATAPACK_VERSION);
 		}
+		
 		_idFactory = IdFactory.getInstance();
 		
 		if (!_idFactory.isInitialized())
@@ -194,7 +178,7 @@ public class GameServer
 			throw new Exception("Could not initialize the ID factory");
 		}
 		
-		_threadpools = ThreadPoolManager.getInstance();
+		ThreadPoolManager.getInstance();
 		
 		new File(Config.DATAPACK_ROOT, "data/crests").mkdirs();
 		new File("log/game").mkdirs();
@@ -209,15 +193,15 @@ public class GameServer
 		CharNameTable.getInstance();
 		SkillTable.getInstance();
 		
-		_itemTable = ItemTable.getInstance();
-		if (!_itemTable.isInitialized())
+		ItemTable.getInstance();
+		if (!ItemTable.getInstance().isInitialized())
 		{
 			_log.severe("Could not find the extraced files. Please Check Your Data.");
 			throw new Exception("Could not initialize the item table");
 		}
 		
 		// Load clan hall data before zone data and doors table
-		_cHManager = ClanHallManager.getInstance();
+		ClanHallManager.getInstance();
 		
 		ExtractableItemsData.getInstance();
 		ExtractableSkillsData.getInstance();
@@ -251,34 +235,17 @@ public class GameServer
 		HtmCache.getInstance();
 		CrestCache.getInstance();
 		ClanTable.getInstance();
-		_npcTable = NpcTable.getInstance();
 		
-		if (!_npcTable.isInitialized())
+		NpcTable.getInstance();
+		if (!NpcTable.getInstance().isInitialized())
 		{
 			_log.severe("Could not find the extraced files. Please Check Your Data.");
 			throw new Exception("Could not initialize the npc table");
 		}
 		
-		_hennaTable = HennaTable.getInstance();
-		
-		if (!_hennaTable.isInitialized())
-		{
-			throw new Exception("Could not initialize the Henna Table");
-		}
-		
+		HennaTable.getInstance();
 		HennaTreeTable.getInstance();
-		
-		if (!_hennaTable.isInitialized())
-		{
-			throw new Exception("Could not initialize the Henna Tree Table");
-		}
-		
-		_helperBuffTable = HelperBuffTable.getInstance();
-		
-		if (!_helperBuffTable.isInitialized())
-		{
-			throw new Exception("Could not initialize the Helper Buff Table");
-		}
+		HelperBuffTable.getInstance();
 		
 		GeoData.getInstance();
 		if (Config.GEODATA == 2)
@@ -304,7 +271,7 @@ public class GameServer
 		MapRegionTable.getInstance();
 		EventDroplist.getInstance();
 		
-		_doorTable = DoorTable.getInstance();
+		DoorTable.getInstance();
 		StaticObjects.getInstance();
 		
 		/** Load Manor data */
@@ -370,13 +337,10 @@ public class GameServer
 		
 		MonsterRace.getInstance();
 		
-		_sevenSignsEngine = SevenSigns.getInstance();
+		SevenSigns.getInstance().spawnSevenSignsNPC();
 		SevenSignsFestival.getInstance();
-		_autoSpawnHandler = AutoSpawnHandler.getInstance();
-		_autoChatHandler = AutoChatHandler.getInstance();
-		
-		// Spawn the Orators/Preachers if in the Seal Validation period.
-		_sevenSignsEngine.spawnSevenSignsNPC();
+		AutoSpawnHandler.getInstance();
+		AutoChatHandler.getInstance();
 		
 		Olympiad.getInstance();
 		Hero.getInstance();
@@ -384,8 +348,8 @@ public class GameServer
 		// Init of a cursed weapon manager
 		CursedWeaponsManager.getInstance();
 		
-		_log.config("AutoChatHandler: Loaded " + _autoChatHandler.size() + " handlers in total.");
-		_log.config("AutoSpawnHandler: Loaded " + _autoSpawnHandler.size() + " handlers in total.");
+		_log.log(Level.CONFIG, "AutoChatHandler: Loaded " + AutoChatHandler.getInstance().size() + " handlers in total.");
+		_log.log(Level.CONFIG, "AutoSpawnHandler: Loaded " + AutoSpawnHandler.getInstance().size() + " handlers in total.");
 		
 		AdminCommandHandler.getInstance();
 		ChatHandler.getInstance();
@@ -416,30 +380,7 @@ public class GameServer
 		if (Config.ACCEPT_GEOEDITOR_CONN)
 			GeoEditorListener.getInstance();
 		
-		_shutdownHandler = Shutdown.getInstance();
-		Runtime.getRuntime().addShutdownHook(_shutdownHandler);
-		
-		try
-		{
-			_doorTable.getDoor(24190001).openMe();
-			_doorTable.getDoor(24190002).openMe();
-			_doorTable.getDoor(24190003).openMe();
-			_doorTable.getDoor(24190004).openMe();
-			_doorTable.getDoor(23180001).openMe();
-			_doorTable.getDoor(23180002).openMe();
-			_doorTable.getDoor(23180003).openMe();
-			_doorTable.getDoor(23180004).openMe();
-			_doorTable.getDoor(23180005).openMe();
-			_doorTable.getDoor(23180006).openMe();
-			
-			_doorTable.checkAutoOpen();
-		}
-		catch (NullPointerException e)
-		{
-			_log.warning("There is errors in your Door.csv file. Update door.csv");
-			if (Config.DEBUG)
-				e.printStackTrace();
-		}
+		Runtime.getRuntime().addShutdownHook(Shutdown.getInstance());
 		
 		ForumsBBSManager.getInstance();
 		

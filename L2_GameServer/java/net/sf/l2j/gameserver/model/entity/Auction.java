@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 import net.sf.l2j.L2DatabaseFactory;
-import net.sf.l2j.gameserver.GameServer;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
@@ -477,7 +476,7 @@ public class Auction
 	/** End of auction */
 	public void endAuction()
 	{
-		if (GameServer.gameServer.getCHManager() != null && GameServer.gameServer.getCHManager().loaded())
+		if (ClanHallManager.getInstance().loaded())
 		{
 			if (_highestBidderId == 0 && _sellerId == 0)
 			{

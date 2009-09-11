@@ -40,8 +40,6 @@ public class HelperBuffTable
 	/** The table containing all Buff of the Newbie Helper */
 	private List<L2HelperBuff> _helperBuff;
 	
-	private boolean _initialized = true;
-	
 	/** The player level since Newbie Helper can give the fisrt buff <BR>
 	 *  Used to generate message : "Come back here when you have reached level ...") */
 	private int _magicClassLowestLevel = 100;
@@ -159,11 +157,6 @@ public class HelperBuffTable
 		
 		_log.config("Helper Buff Table: Loaded " + _helperBuff.size() + " Templates.");
 		
-	}
-	
-	public boolean isInitialized()
-	{
-		return _initialized;
 	}
 	
 	/**

@@ -35,7 +35,6 @@ public class HennaTable
 	private static Logger _log = Logger.getLogger(HennaTable.class.getName());
 	
 	private Map<Integer, L2Henna> _henna;
-	private boolean _initialized = true;
 	
 	public static HennaTable getInstance()
 	{
@@ -105,11 +104,6 @@ public class HennaTable
 			_henna.put(id, template);
 		}
 		_log.config("HennaTable: Loaded " + _henna.size() + " Templates.");
-	}
-	
-	public boolean isInitialized()
-	{
-		return _initialized;
 	}
 	
 	public L2Henna getTemplate(int id)

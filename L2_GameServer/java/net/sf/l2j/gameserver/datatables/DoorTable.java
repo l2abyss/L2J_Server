@@ -23,6 +23,7 @@ import java.io.LineNumberReader;
 import java.util.Collection;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
@@ -52,6 +53,7 @@ public class DoorTable
 	{
 		_initialized = true;
 		parseData();
+		onStart();
 	}
 
 	public void reloadAll()
@@ -366,6 +368,29 @@ public class DoorTable
 			}
 		}
 		return false;
+	}
+	
+	private void onStart()
+	{
+		try
+		{
+			getDoor(24190001).openMe();
+			getDoor(24190002).openMe();
+			getDoor(24190003).openMe();
+			getDoor(24190004).openMe();
+			getDoor(23180001).openMe();
+			getDoor(23180002).openMe();
+			getDoor(23180003).openMe();
+			getDoor(23180004).openMe();
+			getDoor(23180005).openMe();
+			getDoor(23180006).openMe();
+			
+			checkAutoOpen();
+		}
+		catch (NullPointerException e)
+		{
+			_log.log(Level.WARNING, "There are errors in your Door.csv file. Update door.csv", e);
+		}
 	}
 
 	@SuppressWarnings("synthetic-access")
