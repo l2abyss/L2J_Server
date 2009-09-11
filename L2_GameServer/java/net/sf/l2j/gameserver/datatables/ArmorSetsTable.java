@@ -19,12 +19,13 @@
 
 package net.sf.l2j.gameserver.datatables;
 
+import gnu.trove.TIntObjectHashMap;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Logger;
 
-import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.L2ArmorSet;
@@ -38,7 +39,7 @@ public class ArmorSetsTable
 {
 	private static Logger _log = Logger.getLogger(ArmorSetsTable.class.getName());
 
-	private FastMap<Integer, L2ArmorSet> _armorSets;
+	private TIntObjectHashMap<L2ArmorSet> _armorSets;
 
 	public static ArmorSetsTable getInstance()
 	{
@@ -47,7 +48,7 @@ public class ArmorSetsTable
 
 	private ArmorSetsTable()
 	{
-		_armorSets = new FastMap<Integer, L2ArmorSet>();
+		_armorSets = new TIntObjectHashMap<L2ArmorSet>();
 		loadData();
 	}
 

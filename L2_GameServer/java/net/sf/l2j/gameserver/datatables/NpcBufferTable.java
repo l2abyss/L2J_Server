@@ -1,27 +1,26 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package net.sf.l2j.gameserver.datatables;
+
+import gnu.trove.TIntIntHashMap;
+import gnu.trove.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastMap;
 import net.sf.l2j.L2DatabaseFactory;
 
 public class NpcBufferTable
@@ -31,17 +30,18 @@ public class NpcBufferTable
 	private class NpcBufferSkills
 	{
 		private int _npcId = 0;
-		private Map<Integer, Integer> _skillId = new FastMap<Integer, Integer>();
-		private Map<Integer, Integer> _skillLevels = new FastMap<Integer, Integer>();
-		private Map<Integer, Integer> _skillFeeIds = new FastMap<Integer, Integer>();
-		private Map<Integer, Integer> _skillFeeAmounts = new FastMap<Integer, Integer>();
+		private TIntIntHashMap _skillId = new TIntIntHashMap();
+		private TIntIntHashMap _skillLevels = new TIntIntHashMap();
+		private TIntIntHashMap _skillFeeIds = new TIntIntHashMap();
+		private TIntIntHashMap _skillFeeAmounts = new TIntIntHashMap();
 		
 		public NpcBufferSkills(int npcId)
 		{
 			_npcId = npcId;
 		}
 		
-		public void addSkill(int skillId, int skillLevel, int skillFeeId, int skillFeeAmount, int buffGroup)
+		public void addSkill(int skillId, int skillLevel, int skillFeeId, int skillFeeAmount,
+		        int buffGroup)
 		{
 			_skillId.put(buffGroup, skillId);
 			_skillLevels.put(buffGroup, skillLevel);
@@ -56,7 +56,8 @@ public class NpcBufferTable
 			Integer skillFeeId = _skillFeeIds.get(buffGroup);
 			Integer skillFeeAmount = _skillFeeAmounts.get(buffGroup);
 			
-			if (skillId == null || skillLevel == null || skillFeeId == null || skillFeeAmount == null)
+			if (skillId == null || skillLevel == null || skillFeeId == null
+			        || skillFeeAmount == null)
 				return null;
 			
 			return new int[] { skillId, skillLevel, skillFeeId, skillFeeAmount };
@@ -68,7 +69,7 @@ public class NpcBufferTable
 		}
 	}
 	
-	private Map<Integer, NpcBufferSkills> _buffers = new FastMap<Integer, NpcBufferSkills>();
+	private TIntObjectHashMap<NpcBufferSkills> _buffers = new TIntObjectHashMap<NpcBufferSkills>();
 	
 	private NpcBufferTable()
 	{
@@ -115,7 +116,8 @@ public class NpcBufferTable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "NpcBufferSkillIdsTable: Error reading npc_buffer table: " + e.getMessage(), e);
+			_log.log(Level.SEVERE, "NpcBufferSkillIdsTable: Error reading npc_buffer table: "
+			        + e.getMessage(), e);
 		}
 		finally
 		{
@@ -128,7 +130,8 @@ public class NpcBufferTable
 			}
 		}
 		
-		_log.info("NpcBufferSkillIdsTable: Loaded " + _buffers.size() + " buffers and " + skillCount + " skills.");
+		_log.info("NpcBufferSkillIdsTable: Loaded " + _buffers.size() + " buffers and "
+		        + skillCount + " skills.");
 	}
 	
 	public static NpcBufferTable getInstance()

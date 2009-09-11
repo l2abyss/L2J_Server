@@ -1,15 +1,14 @@
 package net.sf.l2j.gameserver.datatables;
 
+import gnu.trove.TIntObjectHashMap;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
-
 import net.sf.l2j.L2DatabaseFactory;
-import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.L2Skill;
 
 /**
@@ -22,7 +21,7 @@ public class ResidentialSkillTable
 	private static Logger _log = Logger.getLogger(ArmorSetsTable.class.getName());
 
 	private static ResidentialSkillTable _instance = null;
-	private static FastMap<Integer, FastList<L2Skill>> _list;
+	private static TIntObjectHashMap<FastList<L2Skill>> _list;
 
 	ResidentialSkillTable()
 	{
@@ -31,7 +30,7 @@ public class ResidentialSkillTable
 
 	private void load()
 	{
-		_list = new FastMap<Integer, FastList<L2Skill>>();
+		_list = new TIntObjectHashMap<FastList<L2Skill>>();
 		Connection con = null;
 
 		try
@@ -89,7 +88,7 @@ public class ResidentialSkillTable
 		if (_list.containsKey(entityId))
 			return _list.get(entityId);
 
-		else return null;
+		return null;
 	}
 
 	public static ResidentialSkillTable getInstance()

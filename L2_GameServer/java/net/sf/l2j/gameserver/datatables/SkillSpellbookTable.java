@@ -14,13 +14,13 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import gnu.trove.TIntIntHashMap;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Map;
 import java.util.logging.Logger;
 
-import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.L2Skill;
@@ -29,7 +29,7 @@ public class SkillSpellbookTable
 {
 	private static Logger _log = Logger.getLogger(SkillTreeTable.class.getName());
 	
-	private static Map<Integer, Integer> _skillSpellbooks;
+	private static TIntIntHashMap _skillSpellbooks;
 	
 	public static SkillSpellbookTable getInstance()
 	{
@@ -41,7 +41,7 @@ public class SkillSpellbookTable
 		if (!Config.SP_BOOK_NEEDED)
 			return;
 		
-		_skillSpellbooks = new FastMap<Integer, Integer>();
+		_skillSpellbooks = new TIntIntHashMap();
 		Connection con = null;
 		
 		try

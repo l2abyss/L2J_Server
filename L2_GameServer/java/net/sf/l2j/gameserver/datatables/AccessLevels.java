@@ -14,14 +14,14 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import gnu.trove.TIntObjectHashMap;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.logging.Logger;
 
-import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.L2AccessLevel;
@@ -42,7 +42,7 @@ public class AccessLevels
 	/** The user access level which can do no administrative tasks<br> */
 	public static L2AccessLevel _userAccessLevel = new L2AccessLevel(_userAccessLevelNum, "User", Integer.decode("0xFFFFFF"), Integer.decode("0xFFFFFF"), null, false, false, false, true, false, true, true, true);
 	/** FastMap of access levels defined in database<br> */
-	private Map<Integer, L2AccessLevel> _accessLevels;
+	private TIntObjectHashMap<L2AccessLevel> _accessLevels;
 	
 	/**
 	 * Returns the one and only instance of this class<br><br>
@@ -64,7 +64,7 @@ public class AccessLevels
 	 */
 	private void loadAccessLevels()
 	{
-		_accessLevels = new FastMap<Integer, L2AccessLevel>();
+		_accessLevels = new TIntObjectHashMap<L2AccessLevel>();
 		
 		Connection con = null;
 		
