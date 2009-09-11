@@ -82,7 +82,17 @@ public class SkillTable
 	
 	public final L2Skill getInfo(final int skillId, final int level)
 	{
-		return _skills.get(getSkillHashCode(skillId, level));
+		final L2Skill result = _skills.get(getSkillHashCode(skillId, level));
+		if (result != null)
+			return result;
+
+		// skill/level not found, fix for transformation scripts
+		final int maxLvl = _skillMaxLevel.get(skillId);
+		// requested level too high
+		if (maxLvl > 0 && level > maxLvl)
+			return _skills.get(getSkillHashCode(skillId, maxLvl));
+
+		return null;
 	}
 	
 	public final int getMaxLevel(final int skillId)
