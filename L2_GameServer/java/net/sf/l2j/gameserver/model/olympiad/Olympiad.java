@@ -47,7 +47,6 @@ import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.StatsSet;
-import net.sf.l2j.gameserver.util.StringUtil;
 import net.sf.l2j.util.L2FastList;
 
 public class Olympiad
@@ -1496,6 +1495,38 @@ public class Olympiad
 		return points;
 	}
 	
+	public int getLastNobleOlympiadPoints(int objId)
+	{
+		int result = 0;
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement;
+			statement = con.prepareStatement("SELECT olympiad_points FROM olympiad_nobles_eom WHERE charId = ?");
+			statement.setInt(1, objId);
+			ResultSet rs = statement.executeQuery();
+			if (rs.first())
+				result = rs.getInt(1);
+			rs.close();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Could not load last olympiad points:", e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e){}
+		}
+		
+		return result;
+	}
+	
 	public int getCompetitionDone(int objId)
 	{
 		if (_nobles.isEmpty())
@@ -1568,28 +1599,27 @@ public class Olympiad
 	public static void sendMatchList(L2PcInstance player)
 	{
 		NpcHtmlMessage message = new NpcHtmlMessage(0);
-		final StringBuilder replyMSG = StringUtil.startAppend(200 + Olympiad.getStadiumCount() * 200, "<html><body>"
-				+ "<center><br>Grand Olympiad Game View<table width=270 border=0 bgcolor=\"000000\">"
-				+ "<tr><td fixwidth=30>NO.</td><td fixwidth=60>Status</td><td>Player1 / Player2</td></tr>");
-		
+		message.setFile(Olympiad.OLYMPIAD_HTML_PATH + "olympiad_observe2.htm");
+
 		FastMap<Integer, String> matches = getInstance().getMatchList();
 		for (int i = 0; i < Olympiad.getStadiumCount(); i++)
 		{
-			int arenaID = i + 1;
-			String players = "&nbsp;";
+			int arenaId = i + 1;
 			String state = "Initial State";
+			String players = "&nbsp;";
 			if (matches.containsKey(i))
 			{
-				state = "In Progress";
+				if (OlympiadGame._gameIsStarted)
+					state = "Playing";
+				else
+					state = "Standby";
 				players = matches.get(i);
 			}
-			StringUtil.append(replyMSG, "<tr><td fixwidth=30><a action=\"bypass -h OlympiadArenaChange ", String.valueOf(i), "\">", String.valueOf(arenaID), "</a></td><td fixwidth=60>", state, "</td><td>", players, "</td></tr>");
-		}
-		
-		replyMSG.append("</table></center></body></html>");
-		
-		message.setHtml(replyMSG.toString());
-		player.sendPacket(message);
+			message.replace("%state"+ arenaId +"%", state);
+			message.replace("%players"+ arenaId +"%", players);
+        }
+
+        player.sendPacket(message);
 	}
 	
 	public static void bypassChangeArena(String command, L2PcInstance player)

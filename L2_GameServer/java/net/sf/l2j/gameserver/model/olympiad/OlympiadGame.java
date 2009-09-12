@@ -76,6 +76,7 @@ class OlympiadGame
 	private static final String COMP_LOST = "competitions_lost";
 	private static final String COMP_DRAWN = "competitions_drawn";
 	protected static boolean _battleStarted;
+	protected static boolean _gameIsStarted;
 	
 	public int _damageP1 = 0;
 	public int _damageP2 = 0;
@@ -346,6 +347,8 @@ class OlympiadGame
 			_playerTwo.setIsOlympiadStart(false);
 			_playerTwo.setOlympiadSide(2);
 			_playerTwo.olyBuff = 5;
+
+			_gameIsStarted = false;
 		}
 		catch (NullPointerException e)
 		{
@@ -844,6 +847,7 @@ class OlympiadGame
 		
 		_sm = new SystemMessage(SystemMessageId.STARTS_THE_GAME);
 		broadcastMessage(_sm, true);
+		_gameIsStarted = true;
 		try
 		{
 			for (L2PcInstance player : _players)
