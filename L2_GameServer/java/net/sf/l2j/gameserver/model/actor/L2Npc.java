@@ -760,10 +760,34 @@ public class L2Npc extends L2Character
                                 className,
                                 "<br1>Faction: ",
                                 getFactionId() != null ? getFactionId() : "null",
-                                "<br1>Location ID: ",
-                                String.valueOf(getSpawn() != null ? getSpawn().getLocation() : 0),
                                 "<br1>"
                                 );
+                        StringUtil.append(html1,
+                        		"Coords ",
+                        		String.valueOf(getX()),
+                        		",",
+                        		String.valueOf(getY()),
+                        		",",
+                        		String.valueOf(getZ()),
+                        		"<br1>"
+                        		);
+                        if (getSpawn() != null)
+                        	StringUtil.append(html1,
+                        			"Spawn ",
+                        			String.valueOf(getSpawn().getLocx()),
+                        			",",
+                        			String.valueOf(getSpawn().getLocy()),
+                        			",",
+                        			String.valueOf(getSpawn().getLocz()),
+                                    " Loc ID: ",
+                                    String.valueOf(getSpawn().getLocation()),
+                                    "<br1>",
+                                    "Distance from spawn 2D ",
+                                    String.valueOf((int)Math.sqrt(getPlanDistanceSq(getSpawn().getLocx(), getSpawn().getLocy()))),
+                                    " 3D ",
+                                    String.valueOf((int)Math.sqrt(getDistanceSq(getSpawn().getLocx(), getSpawn().getLocy(), getSpawn().getLocz()))),
+                                    "<br1>"
+                            );
 
 			if (this instanceof L2ControllableMobInstance)
 			{
@@ -786,17 +810,13 @@ public class L2Npc extends L2Character
 					"<table border=\"0\" width=\"100%\">" +
 					"<tr><td>Object ID</td><td>",
 					String.valueOf(getObjectId()),
-					String.valueOf(getObjectId()),
+					"</td><td>NPC ID</td><td>",
 					String.valueOf(getTemplate().npcId),
 					"</td></tr>" +
 					"<tr><td>Castle</td><td>" +
 					String.valueOf(getCastle().getCastleId()),
-					"</td><td>Coords</td><td>",
-					String.valueOf(getX()),
-					",",
-					String.valueOf(getY()),
-					",",
-					String.valueOf(getZ()),
+					"</td><td>AI Intention </td><td>",
+					(getAI() != null ? String.valueOf(getAI().getIntention().name()) : "NULL"),
 					"</td></tr>" +
 					"<tr><td>Level</td><td>",
 					String.valueOf(getLevel()),
