@@ -339,7 +339,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 				{
 					member.sendSkillList();
 				}
-				((L2VillageMasterInstance)trainer).showPledgeSkillList(player); //Maybe we shoud add a check here...
+				L2VillageMasterInstance.showPledgeSkillList(player); //Maybe we shoud add a check here...
 				return;
 			}
 			case 4:
