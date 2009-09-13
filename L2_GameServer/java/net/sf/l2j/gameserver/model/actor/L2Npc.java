@@ -815,8 +815,8 @@ public class L2Npc extends L2Character
 					"</td></tr>" +
 					"<tr><td>Castle</td><td>" +
 					String.valueOf(getCastle().getCastleId()),
-					"</td><td>AI Intention </td><td>",
-					(getAI() != null ? String.valueOf(getAI().getIntention().name()) : "NULL"),
+					"</td><td>AI </td><td>",
+					(hasAI() ? String.valueOf(getAI().getIntention().name()) : "NULL"),
 					"</td></tr>" +
 					"<tr><td>Level</td><td>",
 					String.valueOf(getLevel()),
