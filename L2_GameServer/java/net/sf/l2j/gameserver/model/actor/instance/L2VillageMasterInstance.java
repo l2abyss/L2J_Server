@@ -310,7 +310,7 @@ public final class L2VillageMasterInstance extends L2NpcInstance
 							StringUtil.append(content,
 									"Sub-class ",
 									String.valueOf(classIndex++),
-									"<br>" +
+									"<br>",
 									"<a action=\"bypass -h npc_%objectId%_Subclass 6 ",
 									String.valueOf(subClass.getClassIndex()),
 									"\">",
