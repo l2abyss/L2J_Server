@@ -142,9 +142,7 @@ public class Instance
 	 */
 	public boolean containsPlayer(int objectId)
 	{
-		if (_players.contains(objectId))
-			return true;
-		return false;
+		return _players.contains(objectId);
 	}
 
 	/**
@@ -153,13 +151,7 @@ public class Instance
 	 */
 	public void addPlayer(int objectId)
 	{
-		if (!_players.contains(objectId))
-		{
-			synchronized(_players)
-			{
-				_players.add(objectId);
-			}
-		}
+		_players.add(objectId);
 	}
 	
 	/**
@@ -168,13 +160,8 @@ public class Instance
 	 */
 	public void removePlayer(int objectId)
 	{
-		if (_players.contains(objectId))
-		{
-			synchronized(_players)
-			{
-				_players.remove(objectId);
-			}
-		}
+		_players.remove(objectId);
+		
 		if (_players.isEmpty() && _emptyDestroyTime >= 0)
 		{
 			_lastLeft = System.currentTimeMillis();
