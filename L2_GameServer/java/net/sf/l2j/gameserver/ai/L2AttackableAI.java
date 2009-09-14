@@ -36,7 +36,6 @@ import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
-import net.sf.l2j.gameserver.model.actor.instance.L2ChestInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2FestivalMonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
@@ -316,6 +315,15 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				// If its _knownPlayer isn't empty set the Intention to AI_INTENTION_ACTIVE
 				if (!npc.getKnownList().getKnownPlayers().isEmpty())
 					intention = AI_INTENTION_ACTIVE;
+				else
+				{
+					if (npc.getSpawn() != null)
+					{
+						final int range = Config.MAX_DRIFT_RANGE;
+						if (!npc.isInsideRadius(npc.getSpawn().getLocx(), npc.getSpawn().getLocy(), npc.getSpawn().getLocz(), range + range, true, false))
+							intention = AI_INTENTION_ACTIVE;
+					}
+				}
 			}
 			
 			if (intention == AI_INTENTION_IDLE)
@@ -565,10 +573,10 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		}
 		// Order to the L2MonsterInstance to random walk (1/100)
 		else if (npc.getSpawn() != null && Rnd.nextInt(RANDOM_WALK_RATE) == 0 
-				&& !(_actor.isRaid() || _actor instanceof L2MinionInstance || _actor instanceof L2ChestInstance || _actor instanceof L2GuardInstance || _actor.isNoRndWalk()))
+				&& !_actor.isNoRndWalk())
 		{
 			int x1, y1, z1;
-			int range = Config.MAX_DRIFT_RANGE;
+			final int range = Config.MAX_DRIFT_RANGE;
 			
 			// self and clan buffs
 			for (L2Skill sk : _selfAnalysis.buffSkills)
@@ -603,7 +611,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				// Calculate the distance between the current position of the L2Character and the target (x,y)
 				double distance2 = _actor.getPlanDistanceSq(x1, y1);
 				
-				if (distance2 > range * range)
+				if (distance2 > (range + range) * (range + range))
 				{
 					npc.setisReturningToSpawnPoint(true);
 					float delay = (float) Math.sqrt(distance2) / range;
@@ -621,8 +629,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				x1 = npc.getSpawn().getLocx();
 				y1 = npc.getSpawn().getLocy();
 				z1 = npc.getSpawn().getLocz();
-				
-				if (_actor.getPlanDistanceSq(x1, y1) > range * range)
+
+				if (!_actor.isInsideRadius(x1, y1, z1, range + range, true, false))
 					npc.setisReturningToSpawnPoint(true);
 				else
 				{

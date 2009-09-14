@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model.actor.instance;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossPointsManager;
 import net.sf.l2j.gameserver.instancemanager.RaidBossSpawnManager;
@@ -54,27 +55,32 @@ public class L2RaidBossInstance extends L2MonsterInstance
 		super(objectId, template);
 	}
 
-    @Override
+	@Override
 	public void onSpawn()
-    {
-    	setIsRaid(true);
-    	super.onSpawn();
-    }
-    @Override
-    protected int getMaintenanceInterval() { return RAIDBOSS_MAINTENANCE_INTERVAL; }
+	{
+		setIsRaid(true);
+		setIsNoRndWalk(true);
+		super.onSpawn();
+	}
 
-    @Override
-    public boolean doDie(L2Character killer)
+	@Override
+	protected int getMaintenanceInterval()
+	{
+		return RAIDBOSS_MAINTENANCE_INTERVAL;
+	}
+
+	@Override
+	public boolean doDie(L2Character killer)
 	{
 		if (!super.doDie(killer))
 			return false;
-		
+
 		L2PcInstance player = null;
 		if (killer instanceof L2PcInstance)
 			player = (L2PcInstance) killer;
 		else if (killer instanceof L2Summon)
 			player = ((L2Summon) killer).getOwner();
-		
+
 		if (player != null)
 		{
 			broadcastPacket(new SystemMessage(SystemMessageId.RAID_WAS_SUCCESSFUL));
@@ -88,70 +94,86 @@ public class L2RaidBossInstance extends L2MonsterInstance
 			else
 				RaidBossPointsManager.addPoints(player, this.getNpcId(), (this.getLevel() / 2) + Rnd.get(-5, 5));
 		}
-		
+
 		RaidBossSpawnManager.getInstance().updateStatus(this, true);
 		return true;
 	}
 
-    /**
+	/**
 	 * Spawn all minions at a regular interval Also if boss is too far from home
 	 * location at the time of this check, teleport it home
 	 * 
 	 */
-    @Override
-    protected void manageMinions()
-    {
-        _minionList.spawnMinions();
-        _minionMaintainTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new Runnable() {
-            public void run()
-            {
-                // teleport raid boss home if it's too far from home location
-                L2Spawn bossSpawn = getSpawn();
-                if(!isInsideRadius(bossSpawn.getLocx(),bossSpawn.getLocy(),bossSpawn.getLocz(), 5000, true, false))
-                {
-                    teleToLocation(bossSpawn.getLocx(),bossSpawn.getLocy(),bossSpawn.getLocz(), true);
-                    healFull(); // prevents minor exploiting with it
-                }
-                _minionList.maintainMinions();
-            }
-        }, 60000, getMaintenanceInterval()+Rnd.get(5000));
-    }
+	@Override
+	protected void startMaintenanceTask()
+	{
+		if (_minionList != null)
+			_minionList.spawnMinions();
 
-    public void setRaidStatus (RaidBossSpawnManager.StatusEnum status)
-    {
-        _raidStatus = status;
-    }
+		_maintenanceTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new Runnable() {
+			public void run()
+			{
+				checkAndReturnToSpawn();
 
-    public RaidBossSpawnManager.StatusEnum getRaidStatus()
-    {
-        return _raidStatus;
-    }
+				if (_minionList != null)
+					_minionList.maintainMinions();
+			}
+		}, 60000, getMaintenanceInterval()+Rnd.get(5000));
+	}
 
-    /**
+	protected void checkAndReturnToSpawn()
+	{
+		if (isDead() || isMovementDisabled())
+			return;
+
+		// Gordon does not have permanent spawn
+		if (getNpcId() == 29095)
+			return;
+
+		final L2Spawn spawn = getSpawn();
+		if (spawn == null)
+			return;
+
+		final int spawnX = spawn.getLocx();
+		final int spawnY = spawn.getLocy();
+		final int spawnZ = spawn.getLocz();
+
+		if (!isInCombat() && !isMovementDisabled())
+		{
+			if (!isInsideRadius(spawnX, spawnY, spawnZ, Math.max(Config.MAX_DRIFT_RANGE, 200), true, false))
+				teleToLocation(spawnX, spawnY, spawnZ, false);
+		}
+	}
+
+	/**
      * Reduce the current HP of the L2Attackable, update its _aggroList and launch the doDie Task if necessary.<BR><BR>
      *
      */
-    @Override
+	@Override
     public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
     {
-        super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
+    	super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
     }
 
-    public void healFull()
-    {
-        super.setCurrentHp(super.getMaxHp());
-        super.setCurrentMp(super.getMaxMp());
-    }
+    public void setRaidStatus (RaidBossSpawnManager.StatusEnum status)
+	{
+		_raidStatus = status;
+	}
 
-    @Override
-    public float getVitalityPoints(int damage)
-    {
-    	return - super.getVitalityPoints(damage) / 100;
-    }
+	public RaidBossSpawnManager.StatusEnum getRaidStatus()
+	{
+		return _raidStatus;
+	}
 
-    @Override
-    public boolean useVitalityRate()
-    {
-    	return false;
-    }
+	@Override
+	public float getVitalityPoints(int damage)
+	{
+		return - super.getVitalityPoints(damage) / 100;
+	}
+
+	@Override
+	public boolean useVitalityRate()
+	{
+		return false;
+	}
 }
