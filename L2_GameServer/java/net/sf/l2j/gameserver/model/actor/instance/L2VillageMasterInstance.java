@@ -291,24 +291,53 @@ public final class L2VillageMasterInstance extends L2NpcInstance
 					}
 					break;
 				case 3: // Change/Cancel Subclass - Initial
-					html.setFile("data/html/villagemaster/SubClass_Modify.htm");
-					int classIndex = 1;
-
-					for (Iterator<SubClass> subList = iterSubClasses(player); subList.hasNext();)
+					if (player.getSubClasses() == null || player.getSubClasses().isEmpty())
 					{
-						SubClass subClass = subList.next();
-
-						StringUtil.append(content,
-								"Sub-class ",
-								String.valueOf(classIndex++),
-								"<br1>" +
-								"<a action=\"bypass -h npc_%objectId%_Subclass 6 ",
-								String.valueOf(subClass.getClassIndex()),
-								"\">",
-								CharTemplateTable.getInstance().getClassNameById(subClass.getClassId()),
-								"</a><br>");
+						html.setFile("data/html/villagemaster/SubClass_ModifyEmpty.htm");
+						break;
 					}
-					html.replace("%list%", content.toString());
+
+					// custom value
+					if (player.getTotalSubClasses() > 3)
+					{
+						html.setFile("data/html/villagemaster/SubClass_ModifyCustom.htm");
+						int classIndex = 1;
+
+						for (Iterator<SubClass> subList = iterSubClasses(player); subList.hasNext();)
+						{
+							SubClass subClass = subList.next();
+
+							StringUtil.append(content,
+									"Sub-class ",
+									String.valueOf(classIndex++),
+									"<br>" +
+									"<a action=\"bypass -h npc_%objectId%_Subclass 6 ",
+									String.valueOf(subClass.getClassIndex()),
+									"\">",
+									CharTemplateTable.getInstance().getClassNameById(subClass.getClassId()),
+									"</a><br>");
+						}
+						html.replace("%list%", content.toString());
+					}
+					else
+					{
+						// retail html contain only 3 subclasses
+						html.setFile("data/html/villagemaster/SubClass_Modify.htm");
+						if (player.getSubClasses().containsKey(1))
+							html.replace("%sub1%", CharTemplateTable.getInstance().getClassNameById(player.getSubClasses().get(1).getClassId()));
+						else
+							html.replace("<a action=\"bypass -h npc_%objectId%_Subclass 6 1\">%sub1%</a><br>", "");
+						
+						if (player.getSubClasses().containsKey(2))
+							html.replace("%sub2%", CharTemplateTable.getInstance().getClassNameById(player.getSubClasses().get(2).getClassId()));
+						else
+							html.replace("<a action=\"bypass -h npc_%objectId%_Subclass 6 2\">%sub2%</a><br>", "");
+
+						if (player.getSubClasses().containsKey(3))
+							html.replace("%sub2%", CharTemplateTable.getInstance().getClassNameById(player.getSubClasses().get(3).getClassId()));
+						else
+							html.replace("<a action=\"bypass -h npc_%objectId%_Subclass 6 3\">%sub3%</a><br>", "");
+					}
 					break;
 				case 4: // Add Subclass - Action (Subclass 4 x[x])
 					/*
@@ -437,29 +466,47 @@ public final class L2VillageMasterInstance extends L2NpcInstance
 					player.sendPacket(new SystemMessage(SystemMessageId.SUBCLASS_TRANSFER_COMPLETED)); // Transfer completed.
 					return;
 				case 6: // Change/Cancel Subclass - Choice
-					html.setFile("data/html/villagemaster/SubClass_ModifyChoice.htm");
+					// validity check
+					if (paramOne < 1 || paramOne > Config.MAX_SUBCLASS)
+						return;
 
 					subsAvailable = getAvailableSubClasses(player);
 
-					if (subsAvailable != null && !subsAvailable.isEmpty())
+					// another validity check
+					if (subsAvailable == null || subsAvailable.isEmpty())
 					{
-						for (PlayerClass subClass : subsAvailable)
-						{
-							StringUtil.append(content,
-									"<a action=\"bypass -h npc_%objectId%_Subclass 7 ",
-									String.valueOf(paramOne),
-									" ",
-									String.valueOf(subClass.ordinal()),
-									"\">",
-									formatClassForDisplay(subClass),
-									"</a><br>");
-						}
-					}
-					else
-					{
+						// TODO: Retail message
 						player.sendMessage("There are no sub classes available at this time.");
 						return;
 					}
+
+					for (PlayerClass subClass : subsAvailable)
+					{
+						StringUtil.append(content,
+								"<a action=\"bypass -h npc_%objectId%_Subclass 7 ",
+								String.valueOf(paramOne),
+								" ",
+								String.valueOf(subClass.ordinal()),
+								"\" msg=\"1445;",
+								"\">",
+								formatClassForDisplay(subClass),
+								"</a><br>");
+					}
+
+					switch (paramOne)
+					{
+						case 1:
+							html.setFile("data/html/villagemaster/SubClass_ModifyChoice1.htm");
+							break;
+						case 2:
+							html.setFile("data/html/villagemaster/SubClass_ModifyChoice2.htm");
+							break;
+						case 3:
+							html.setFile("data/html/villagemaster/SubClass_ModifyChoice3.htm");
+							break;
+						default:
+							html.setFile("data/html/villagemaster/SubClass_ModifyChoice.htm");
+					}						
 					html.replace("%list%", content.toString());
 					break;
 				case 7: // Change Subclass - Action
