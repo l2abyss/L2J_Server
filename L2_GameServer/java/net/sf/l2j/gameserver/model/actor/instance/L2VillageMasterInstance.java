@@ -203,6 +203,13 @@ public final class L2VillageMasterInstance extends L2NpcInstance
 			switch (cmdChoice)
 			{
 				case 0: // Subclass change menu
+					if (player.isTransformed())
+					{
+						html.setFile("data/html/villagemaster/SubClass_NoTransformed.htm");
+						player.sendPacket(html);
+						return;
+					}
+
 					if (getVillageMasterRace() == Race.Kamael)
 					{
 						if (player.getRace() == Race.Kamael)
