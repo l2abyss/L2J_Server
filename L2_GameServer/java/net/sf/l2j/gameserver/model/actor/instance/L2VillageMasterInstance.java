@@ -344,7 +344,7 @@ public final class L2VillageMasterInstance extends L2NpcInstance
 							html.replace("<a action=\"bypass -h npc_%objectId%_Subclass 6 2\">%sub2%</a><br>", "");
 
 						if (player.getSubClasses().containsKey(3))
-							html.replace("%sub2%", CharTemplateTable.getInstance().getClassNameById(player.getSubClasses().get(3).getClassId()));
+							html.replace("%sub3%", CharTemplateTable.getInstance().getClassNameById(player.getSubClasses().get(3).getClassId()));
 						else
 							html.replace("<a action=\"bypass -h npc_%objectId%_Subclass 6 3\">%sub3%</a><br>", "");
 					}
