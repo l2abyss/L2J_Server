@@ -151,7 +151,13 @@ public class Instance
 	 */
 	public void addPlayer(int objectId)
 	{
-		_players.add(objectId);
+		if (!_players.contains(objectId))
+		{
+			synchronized(_players)
+			{
+				_players.add(objectId);
+			}
+		}
 	}
 	
 	/**
@@ -160,8 +166,13 @@ public class Instance
 	 */
 	public void removePlayer(int objectId)
 	{
-		_players.remove(objectId);
-		
+		if (_players.contains(objectId))
+		{
+			synchronized(_players)
+			{
+				_players.remove(objectId);
+			}
+		}
 		if (_players.isEmpty() && _emptyDestroyTime >= 0)
 		{
 			_lastLeft = System.currentTimeMillis();
