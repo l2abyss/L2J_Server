@@ -101,6 +101,7 @@ import net.sf.l2j.gameserver.instancemanager.ZoneManager;
 import net.sf.l2j.gameserver.model.AutoChatHandler;
 import net.sf.l2j.gameserver.model.AutoSpawnHandler;
 import net.sf.l2j.gameserver.model.L2Manor;
+import net.sf.l2j.gameserver.model.L2Multisell;
 import net.sf.l2j.gameserver.model.L2PetDataTable;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.entity.Hero;
@@ -210,6 +211,7 @@ public class GameServer
 		MerchantPriceConfigTable.getInstance().loadInstances();
 		EnchantHPBonusData.getInstance();
 		TradeController.getInstance();
+		L2Multisell.getInstance();
 		InstanceManager.getInstance();
 		
 		if (Config.ALLOW_NPC_WALKERS)

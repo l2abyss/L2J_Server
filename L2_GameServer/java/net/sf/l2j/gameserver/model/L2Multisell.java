@@ -76,6 +76,7 @@ public class L2Multisell
 	{
 		_entries.clear();
 		parse();
+		_log.config("L2Multisell: Loaded " + _entries.size() + " lists.");
 	}
 	
 	/**
