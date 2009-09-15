@@ -88,7 +88,7 @@ public final class RequestExMagicSkillUseGround extends L2GameClientPacket
         else
         {
             activeChar.sendPacket(ActionFailed.STATIC_PACKET);
-            _log.warning("No skill found!!");
+            _log.warning("No skill found with id " + _skillId + " and level " + level + " !!");
         }
     }
     
