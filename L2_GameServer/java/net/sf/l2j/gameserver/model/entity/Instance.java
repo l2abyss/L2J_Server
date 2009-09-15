@@ -1,5 +1,8 @@
 package net.sf.l2j.gameserver.model.entity;
 
+import gnu.trove.TIntHashSet;
+import gnu.trove.TIntProcedure;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,7 +12,6 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import javolution.util.FastList;
-import javolution.util.FastSet;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -22,6 +24,7 @@ import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.idfactory.IdFactory;
 import net.sf.l2j.gameserver.instancemanager.InstanceManager;
+import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.L2WorldRegion;
@@ -31,6 +34,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.clientpackets.Say2;
 import net.sf.l2j.gameserver.network.serverpackets.CreatureSay;
+import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
@@ -44,7 +48,10 @@ public class Instance
 
 	private int _id;
 	private String _name;
-	private FastSet<Integer> _players = new FastSet<Integer>();
+	
+	private TIntHashSet _players = new TIntHashSet();
+	private final EjectPlayerProcedure _ejectProc;
+	
 	private FastList<L2Npc> _npcs = new FastList<L2Npc>();
 	private FastList<L2DoorInstance> _doors = new FastList<L2DoorInstance>();
 	private int[] _spawnLoc = new int[3];
@@ -59,6 +66,7 @@ public class Instance
 	public Instance(int id)
 	{
 		_id = id;
+		_ejectProc = new EjectPlayerProcedure();
 	}
 
 	/**
@@ -151,12 +159,9 @@ public class Instance
 	 */
 	public void addPlayer(int objectId)
 	{
-		if (!_players.contains(objectId))
+		synchronized(_players)
 		{
-			synchronized(_players)
-			{
-				_players.add(objectId);
-			}
+			_players.add(objectId);
 		}
 	}
 	
@@ -166,13 +171,11 @@ public class Instance
 	 */
 	public void removePlayer(int objectId)
 	{
-		if (_players.contains(objectId))
+		synchronized(_players)
 		{
-			synchronized(_players)
-			{
-				_players.remove(objectId);
-			}
+			_players.remove(objectId);
 		}
+		
 		if (_players.isEmpty() && _emptyDestroyTime >= 0)
 		{
 			_lastLeft = System.currentTimeMillis();
@@ -244,7 +247,7 @@ public class Instance
 		_doors.add(newdoor);
 	}
 
-	public FastSet<Integer> getPlayers()
+	public TIntHashSet getPlayers()
 	{
 		return _players;
 	}
@@ -280,11 +283,12 @@ public class Instance
 
 	public void removePlayers()
 	{
-		for (int objectId : _players)
+		_players.forEach(_ejectProc);
+		
+		synchronized (_players)
 		{
-			ejectPlayer(objectId);
+			_players.clear();
 		}
-		_players.clear();
 	}
 
 	public void removeNpcs()
@@ -543,16 +547,8 @@ public class Instance
 			remaining = remaining - 10000;
 		}
 		if (cs != null)
-		{
-			for (int objectId : _players)
-			{
-				L2PcInstance player = (L2PcInstance) L2World.getInstance().findObject(objectId);
-				if (player != null && player.getInstanceId() == getId())
-				{
-					player.sendPacket(cs);
-				}
-			}
-		}
+			_players.forEach(new SendPacketToPlayerProcedure(cs));
+		
 		cancelTimer();
 		if (remaining >= 10000)
 			_CheckTimeUpTask = ThreadPoolManager.getInstance().scheduleGeneral(new CheckTimeUp(remaining), interval);
@@ -586,6 +582,48 @@ public class Instance
 		public void run()
 		{
 			InstanceManager.getInstance().destroyInstance(getId());
+		}
+	}
+	
+	
+	private final class EjectPlayerProcedure implements TIntProcedure
+	{
+		EjectPlayerProcedure()
+		{
+			
+		}
+		
+		@Override
+		public final boolean execute(final int objId)
+		{
+			ejectPlayer(objId);
+			return true;
+		}
+	}
+	
+	private final class SendPacketToPlayerProcedure implements TIntProcedure
+	{
+		private final L2GameServerPacket _packet;
+		
+		SendPacketToPlayerProcedure(final L2GameServerPacket packet)
+		{
+			_packet = packet;
+		}
+		
+		@Override
+		public final boolean execute(final int objId)
+		{
+			L2Object find = L2World.getInstance().findObject(objId);
+			if (!(find instanceof L2PcInstance))
+				return true;
+			
+			L2PcInstance player = (L2PcInstance)find;
+			
+			if (player != null && player.getInstanceId() == getId())
+			{
+				player.sendPacket(_packet);
+			}
+			return true;
 		}
 	}
 }
