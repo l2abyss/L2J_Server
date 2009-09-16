@@ -18,6 +18,8 @@ import java.util.StringTokenizer;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
 import net.sf.l2j.gameserver.datatables.DoorTable;
+import net.sf.l2j.gameserver.datatables.TeleportLocationTable;
+import net.sf.l2j.gameserver.model.L2TeleportLocation;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -49,16 +51,31 @@ public class L2DoormenInstance extends L2NpcInstance
 		}
 		else if (command.startsWith("open_doors"))
 		{
-			// TODO: uncomment after siege teleporters will be done
-			//if (isOwnerClan(player) && !isUnderSiege())
 			if (isOwnerClan(player))
-				openDoors(player, command);
+			{
+				if (isUnderSiege())
+					cannotManageDoors(player);
+				else
+					openDoors(player, command);
+			}
 			return;
 		}
 		else if (command.startsWith("close_doors"))
 		{
 			if (isOwnerClan(player))
-				closeDoors(player, command);
+			{
+				if (isUnderSiege())
+					cannotManageDoors(player);
+				else
+					closeDoors(player, command);
+			}
+			return;
+		}
+		else if (command.startsWith("tele"))
+		{
+			if (isOwnerClan(player))
+				doTeleport(player, command);
+			return;
 		}
 		super.onBypassFeedback(player, command);
 	}
@@ -115,11 +132,6 @@ public class L2DoormenInstance extends L2NpcInstance
 		{
 			html.setFile("data/html/doormen/"+ getTemplate().npcId + "-no.htm");
 		}
-// TODO: uncomment after siege teleporters will be done
-//		else if (isUnderSiege())
-//		{
-//			html.setFile("data/html/doormen/"+ getTemplate().npcId + "-busy.htm");
-//		}
 		else
 		{
 			html.setFile("data/html/doormen/"+ getTemplate().npcId + ".htm");
@@ -149,6 +161,30 @@ public class L2DoormenInstance extends L2NpcInstance
 		{
 			DoorTable.getInstance().getDoor(Integer.parseInt(st.nextToken())).closeMe();
 		}
+	}
+
+	protected void cannotManageDoors(L2PcInstance player)
+	{
+		player.sendPacket(ActionFailed.STATIC_PACKET);
+
+		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		html.setFile("data/html/doormen/"+ getTemplate().npcId + "-busy.htm");
+		player.sendPacket(html);
+	}
+
+	protected void doTeleport(L2PcInstance player, String command)
+	{
+		final int whereTo = Integer.parseInt(command.substring(5).trim());
+		L2TeleportLocation list = TeleportLocationTable.getInstance().getTemplate(whereTo);
+		if (list != null)
+		{
+			if (!player.isAlikeDead())
+				player.teleToLocation(list.getLocX(), list.getLocY(), list.getLocZ(), false);
+		}
+		else
+			_log.warning("No teleport destination with id:" + whereTo);
+
+		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 
 	protected boolean isOwnerClan(L2PcInstance player)
