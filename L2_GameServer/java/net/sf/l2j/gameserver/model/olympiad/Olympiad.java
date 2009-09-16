@@ -1624,11 +1624,16 @@ public class Olympiad
 	
 	public static void bypassChangeArena(String command, L2PcInstance player)
 	{
+		if (!player.inObserverMode())
+			return;
+
 		String[] commands = command.split(" ");
 		int id = Integer.parseInt(commands[1]);
 		int arena = getSpectatorArena(player);
 		if (arena >= 0)
 			Olympiad.removeSpectator(arena, player);
+		else
+			return;
 		Olympiad.addSpectator(id, player, false);
 	}
 	
