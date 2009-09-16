@@ -35,6 +35,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExShowQuestMark;
+import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.PlaySound;
 import net.sf.l2j.gameserver.network.serverpackets.QuestList;
 import net.sf.l2j.gameserver.network.serverpackets.StatusUpdate;
@@ -637,7 +638,11 @@ public final class QuestState
 		if (attributeId >= 0 && attributeLevel > 0)
 		{
 			item.setElementAttr(attributeId, attributeLevel);
-			item.updateElementAttrBonus(getPlayer()); 
+			item.updateElementAttrBonus(getPlayer());
+
+			InventoryUpdate iu = new InventoryUpdate();
+			iu.addModifiedItem(item);
+			getPlayer().sendPacket(iu);
 		}
 
 		// If item for reward is gold, send message of gold reward to client
