@@ -317,7 +317,8 @@ public class TradeList
 
 		L2ItemInstance item = (L2ItemInstance)o;
 
-		if (!(item.isTradeable() || getOwner().isGM()) || item.getItemType() == L2EtcItemType.QUEST)
+		if (!(item.isTradeable() || (getOwner().isGM() && Config.GM_TRADE_RESTRICTED_ITEMS)) 
+				|| item.getItemType() == L2EtcItemType.QUEST)
 			return null;
 
 		if (count <= 0 || count > item.getCount())

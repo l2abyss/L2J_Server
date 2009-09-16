@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
@@ -31,7 +32,7 @@ public final class TradeStart extends L2GameServerPacket
 	public TradeStart (L2PcInstance player)
 	{
 		_activeChar = player;
-        _itemList = _activeChar.getInventory().getAvailableItems(true, _activeChar.isGM());
+        _itemList = _activeChar.getInventory().getAvailableItems(true, (_activeChar.isGM() && Config.GM_TRADE_RESTRICTED_ITEMS));
 	}
 
 	@Override

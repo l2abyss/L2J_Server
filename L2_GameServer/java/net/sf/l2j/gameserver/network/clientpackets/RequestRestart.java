@@ -98,7 +98,7 @@ public final class RequestRestart extends L2GameClientPacket
 			player.onTradeCancel(player.getActiveRequester());
 		}
 
-		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player) && !player.isGM())
+		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player) && !(player.isGM() && Config.GM_RESTART_FIGHTING))
 		{
 			if (Config.DEBUG)
 				_log.fine("Player " + player.getName() + " tried to logout while fighting.");
