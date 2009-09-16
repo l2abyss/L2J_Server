@@ -20,7 +20,6 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.templates.StatsSet;
-import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
 public class L2SkillLearnSkill extends L2Skill
 {
@@ -49,16 +48,6 @@ public class L2SkillLearnSkill extends L2Skill
 			ar2[i] = Integer.parseInt(ar[i]);
 
 		_learnSkillLvl = ar2;
-	}
-
-	private static final L2SkillType[] SKILL_IDS =
-	{
-		L2SkillType.LEARN_SKILL
-	};
-
-	public L2SkillType[] getSkillIds()
-	{
-		return SKILL_IDS;
 	}
 
 	@Override

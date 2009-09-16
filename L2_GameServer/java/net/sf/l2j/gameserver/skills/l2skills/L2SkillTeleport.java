@@ -51,17 +51,6 @@ public class L2SkillTeleport extends L2Skill
 			_teleportCoords = null;
 	}
 
-	private static final L2SkillType[] SKILL_IDS =
-	{
-		L2SkillType.RECALL,
-		L2SkillType.TELEPORT
-	};
-
-	public L2SkillType[] getSkillIds()
-	{
-		return SKILL_IDS;
-	}
-
 	@Override
 	public void useSkill(L2Character activeChar, L2Object[] targets)
 	{

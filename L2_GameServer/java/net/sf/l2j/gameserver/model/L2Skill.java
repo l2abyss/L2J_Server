@@ -205,9 +205,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
     private final Stats _stat;
 
-    private final int _hairColorId;
-    private final int _faceId;
-    private final int _hairStyleId;
     private final int _condition;
     private final int _conditionValue;
     private final boolean _overhit;
@@ -290,9 +287,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _itemConsumeId = set.getInteger("itemConsumeId", 0);
         _afterEffectId = set.getInteger("afterEffectId", 0);
         _afterEffectLvl = set.getInteger("afterEffectLvl", 1);
-        _hairColorId = set.getInteger("hairColorId", -1);
-        _faceId = set.getInteger("faceId", -1);
-        _hairStyleId = set.getInteger("hairStyleId", -1);
 
         _castRange = set.getInteger("castRange", -1);
         _effectRange = set.getInteger("effectRange", -1);
@@ -2525,20 +2519,5 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public boolean canBeReflected()
 	{
 		return _canBeReflected;
-	}
-	
-	public int getHairColorId()
-	{
-		return _hairColorId;
-	}
-	
-	public int getHairStyleId()
-	{
-		return _hairStyleId;
-	}
-	
-	public int getFaceId()
-	{
-		return _faceId;
 	}
 }

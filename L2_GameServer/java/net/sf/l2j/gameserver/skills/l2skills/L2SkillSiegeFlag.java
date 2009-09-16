@@ -28,7 +28,6 @@ import net.sf.l2j.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.Fort;
 import net.sf.l2j.gameserver.templates.StatsSet;
-import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 
 public class L2SkillSiegeFlag extends L2Skill
 {
@@ -40,11 +39,6 @@ public class L2SkillSiegeFlag extends L2Skill
 		_isAdvanced = set.getBool("isadvanced", false);
 	}
 
-	private static final L2SkillType[] SKILL_IDS =
-	{
-		L2SkillType.SIEGEFLAG
-	};
-	
 	/**
 	 * @see net.sf.l2j.gameserver.model.L2Skill#useSkill(net.sf.l2j.gameserver.model.actor.L2Character, net.sf.l2j.gameserver.model.L2Object[])
 	 */
@@ -93,11 +87,6 @@ public class L2SkillSiegeFlag extends L2Skill
 		{
 			player.sendMessage("Error placing flag:" + e);
 		}
-	}
-	
-	public L2SkillType[] getSkillIds()
-	{
-		return SKILL_IDS;
 	}
 	
 	/**

@@ -18,6 +18,7 @@ import java.lang.reflect.Constructor;
 
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillAgathion;
+import net.sf.l2j.gameserver.skills.l2skills.L2SkillAppearance;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillChangeWeapon;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillChargeDmg;
 import net.sf.l2j.gameserver.skills.l2skills.L2SkillCreateItem;
@@ -182,7 +183,7 @@ public enum L2SkillType
 	// Skill is done within the core.
 	COREDONE,
 	
-	CHANGE_APPEARANCE,
+	CHANGE_APPEARANCE(L2SkillAppearance.class),
 	
 	// unimplemented
 	NOTDONE, BALLISTA;
