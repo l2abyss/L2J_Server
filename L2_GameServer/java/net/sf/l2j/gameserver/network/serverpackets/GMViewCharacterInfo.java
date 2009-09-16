@@ -263,6 +263,7 @@ public class GMViewCharacterInfo extends L2GameServerPacket
         writeH(_activeChar.getDefenseElementValue(Elementals.HOLY));
         writeH(_activeChar.getDefenseElementValue(Elementals.DARK));
         writeD(_activeChar.getFame());
+        writeD(_activeChar.getVitalityPoints()); 
 	}
 
 	/* (non-Javadoc)

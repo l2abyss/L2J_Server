@@ -72,12 +72,12 @@ public final class RequestDropItem extends L2GameClientPacket
 				|| _count == 0
 				|| !activeChar.validateItemManipulation(_objectId, "drop")
 				|| (!Config.ALLOW_DISCARDITEM && !activeChar.isGM())
-				|| !item.isDropable())
+				|| (!item.isDropable() && !activeChar.isGM()))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
 			return;
 		}
-		if (item.getItemType() == L2EtcItemType.QUEST)
+		if (item.getItemType() == L2EtcItemType.QUEST && !activeChar.isGM())
 		{
 			return;
 		}

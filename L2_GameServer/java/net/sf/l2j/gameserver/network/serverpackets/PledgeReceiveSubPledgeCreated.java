@@ -14,6 +14,8 @@
  */
 package net.sf.l2j.gameserver.network.serverpackets;
 
+import java.util.logging.Logger;
+
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2Clan.SubPledge;
 
@@ -24,6 +26,7 @@ import net.sf.l2j.gameserver.model.L2Clan.SubPledge;
 public class PledgeReceiveSubPledgeCreated extends L2GameServerPacket
 {
 	private static final String _S__FE_3F_PLEDGERECEIVESUBPLEDGECREATED = "[S] FE:40 PledgeReceiveSubPledgeCreated";
+	private static Logger _log = Logger.getLogger(PledgeReceiveSubPledgeCreated.class.getName());
 	private SubPledge _subPledge;
 	private L2Clan _clan;
 
@@ -53,10 +56,16 @@ public class PledgeReceiveSubPledgeCreated extends L2GameServerPacket
 	
 	private String getLeaderName()
 	{
-		if (_subPledge.getId() == L2Clan.SUBUNIT_ACADEMY || _subPledge.getLeaderId() == 0)
+		int LeaderId = _subPledge.getLeaderId();
+		if (_subPledge.getId() == L2Clan.SUBUNIT_ACADEMY || LeaderId == 0)
 			return "";
+		else if (_clan.getClanMember(LeaderId) == null)
+		{
+			_log.warning("SubPledgeLeader: "+ LeaderId + " is missing from clan: "+ _clan.getName()+"["+_clan.getClanId()+"]");
+			return "";
+		}
 		else
-			return _clan.getClanMember(_subPledge.getLeaderId()).getName(); 
+			return _clan.getClanMember(LeaderId).getName(); 
 	}
 
 	/**

@@ -424,8 +424,7 @@ public class L2Attackable extends L2Npc
 		// Enhance soul crystals of the attacker if this L2Attackable had its soul absorbed
 		try
 		{
-			if (killer instanceof L2PcInstance)
-				levelSoulCrystals(killer);
+			levelSoulCrystals(killer);
 		}
 		catch (Exception e) { _log.log(Level.SEVERE, "", e); }
 

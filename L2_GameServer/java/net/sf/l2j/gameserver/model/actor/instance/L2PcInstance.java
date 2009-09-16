@@ -7419,13 +7419,16 @@ public final class L2PcInstance extends L2Playable
 
 		try {
 			con = L2DatabaseFactory.getInstance().getConnection();
-			String sql = loadCommon ? "SELECT id, type FROM character_recipebook WHERE charId=? AND classIndex=?" :
+			String sql = loadCommon ? "SELECT id, type, classIndex FROM character_recipebook WHERE charId=?" :
 											"SELECT id FROM character_recipebook WHERE charId=? AND classIndex=? AND type = 1";
 			PreparedStatement statement = con.prepareStatement(sql);
 			statement.setInt(1, getObjectId());
-			statement.setInt(2, _classIndex);
+			if (!loadCommon)
+				statement.setInt(2, _classIndex);
 			ResultSet rset = statement.executeQuery();
 
+			_dwarvenRecipeBook.clear();
+			
 			L2RecipeList recipe;
 			while (rset.next()) {
 				recipe = RecipeController.getInstance().getRecipeList(rset.getInt("id"));
@@ -7433,7 +7436,10 @@ public final class L2PcInstance extends L2Playable
 				if (loadCommon)
 				{
 					if (rset.getInt(2) == 1)
-						registerDwarvenRecipeList(recipe, false);
+					{
+						if (rset.getInt(3) == _classIndex)
+							registerDwarvenRecipeList(recipe, false);
+					}
 					else
 						registerCommonRecipeList(recipe, false);
 				}
@@ -10488,16 +10494,7 @@ public final class L2PcInstance extends L2Playable
 
             stopAllEffects();
 
-            if (isSubClassActive())
-            {
-                _dwarvenRecipeBook.clear();
-                // Common recipe book shared for all subclasses for now. TODO confirm this info
-                //_commonRecipeBook.clear();
-            }
-            else
-            {
-                restoreRecipeBook(false);
-    		}
+            restoreRecipeBook(false);
 
             // Restore any Death Penalty Buff
             restoreDeathPenaltyBuffLevel();
@@ -12153,6 +12150,7 @@ public final class L2PcInstance extends L2Playable
 	                htmlMsg.setHtml("<html><body>You have been put in jail by an admin.</body></html>");
 	            sendPacket(htmlMsg);
 	            setInstanceId(0);
+	            setIsIn7sDungeon(false);
 	
 	            teleToLocation(-114356, -249645, -2984, false);  // Jail
 	            break;

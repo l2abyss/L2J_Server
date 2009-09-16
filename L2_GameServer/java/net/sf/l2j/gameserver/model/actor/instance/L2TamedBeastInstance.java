@@ -132,8 +132,10 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
     		return false;
 
     	getAI().stopFollow();
-    	_buffTask.cancel(true);
-    	_durationCheckTask.cancel(true);
+    	if (_buffTask != null)
+    		_buffTask.cancel(true);
+    	if (_durationCheckTask != null)
+    		_durationCheckTask.cancel(true);
 
     	// clean up variables
     	if (_owner != null)

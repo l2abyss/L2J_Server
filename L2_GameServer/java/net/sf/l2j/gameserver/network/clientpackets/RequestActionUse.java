@@ -352,6 +352,12 @@ public final class RequestActionUse extends L2GameClientPacket
 				// Bot report Button.
 				activeChar.sendMessage("Action not handled yet.");
 				break;
+			case 67:
+			case 68:
+			case 69:
+			case 70:
+				activeChar.sendMessage("Action not handled yet.");
+				break;
 			case 96: // Quit Party Command Channel
 				_log.info("98 Accessed");
 				break;
@@ -592,46 +598,46 @@ public final class RequestActionUse extends L2GameClientPacket
 				break;
 			// CT2.3 Social Packets
 			case 12:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 2));
+				tryBroadcastSocial(2);
 				break;
 			case 13:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 3));
+				tryBroadcastSocial(3);
 				break;
 			case 14:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 4));
+				tryBroadcastSocial(4);
 				break;
 			case 24:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 6));
+				tryBroadcastSocial(6);
 				break;
 			case 25:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 5));
+				tryBroadcastSocial(5);
 				break;
 			case 26:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 7));
+				tryBroadcastSocial(7);
 				break;
 			case 29:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 8));
+				tryBroadcastSocial(8);
 				break;
 			case 30:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 9));
+				tryBroadcastSocial(9);
 				break;
 			case 31:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 10));
+				tryBroadcastSocial(10);
 				break;
 			case 33:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 11));
+				tryBroadcastSocial(11);
 				break;
 			case 34:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 12));
+				tryBroadcastSocial(12);
 				break;
 			case 35:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 13));
+				tryBroadcastSocial(13);
 				break;
 			case 62:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 14));
+				tryBroadcastSocial(14);
 				break;
 			case 66:
-				activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), 15));
+				tryBroadcastSocial(15);
 				break;
 			default:
 				_log.warning(activeChar.getName() + ": unhandled action type " + _actionId);
@@ -689,6 +695,34 @@ public final class RequestActionUse extends L2GameClientPacket
 			return;
 		
 		useSkill(skillId, activeChar.getTarget());
+	}
+	
+	
+	/* 
+	 * Check if player can broadcast SocialAction packet
+	 */
+	private void tryBroadcastSocial(int id)
+	{
+		L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null)
+			return;
+
+		if (Config.DEBUG)
+			_log.fine("Social Action:" + id);
+		
+		if (activeChar.isFishing())
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DO_WHILE_FISHING_3));
+			return;
+		}
+		
+		if (activeChar.getPrivateStoreType() == 0 && activeChar.getActiveRequester() == null
+		        && !activeChar.isAlikeDead() && (!activeChar.isAllSkillsDisabled() || activeChar.isInDuel())
+		        && !activeChar.isCastingNow() && !activeChar.isCastingSimultaneouslyNow()
+		        && activeChar.getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
+		{
+			activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), id));
+		}
 	}
 	
 	@Override

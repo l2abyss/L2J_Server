@@ -31,6 +31,7 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -233,7 +234,9 @@ public class GameStatusThread extends Thread
                     _print.println("help                - shows this help.");
                     _print.println("status              - displays basic server statistics.");
                     _print.println("performance         - shows server performance statistics.");
+					_print.println("forcegc             - forced garbage collection.");
                     _print.println("purge               - removes finished threads from thread pools.");
+					_print.println("memusage            - displays memory amounts in JVM.");
                     _print.println("announce <text>     - announces <text> in game.");
                     _print.println("msg <nick> <text>   - Sends a whisper to char <nick> with <text>.");
                     _print.println("gmchat <text>       - Sends a message to all GMs with <text>.");
@@ -293,6 +296,39 @@ public class GameStatusThread extends Thread
                 	}
                 	_print.flush();
                 }
+				else if (_usrCommand.startsWith("memusage"))
+				{
+					double max = Runtime.getRuntime().maxMemory() / 1024; // maxMemory is the upper
+																		  // limit the jvm can use
+					double allocated = Runtime.getRuntime().totalMemory() / 1024; // totalMemory the
+																				  // size of the
+																				  // current
+																				  // allocation pool
+					double nonAllocated = max - allocated; // non allocated memory till jvm limit
+					double cached = Runtime.getRuntime().freeMemory() / 1024; // freeMemory the
+																			  // unused memory in
+																			  // the allocation pool
+					double used = allocated - cached; // really used memory
+					double useable = max - used; // allocated, but non-used and non-allocated memory
+					
+					DecimalFormat df = new DecimalFormat(" (0.0000'%')");
+					DecimalFormat df2 = new DecimalFormat(" # 'KB'");
+					
+					_print.println("+----");// ...
+					_print.println("| Allowed Memory:" + df2.format(max));
+					_print.println("|    |= Allocated Memory:" + df2.format(allocated)
+					        + df.format(allocated / max * 100));
+					_print.println("|    |= Non-Allocated Memory:" + df2.format(nonAllocated)
+					        + df.format(nonAllocated / max * 100));
+					_print.println("| Allocated Memory:" + df2.format(allocated));
+					_print.println("|    |= Used Memory:" + df2.format(used)
+					        + df.format(used / max * 100));
+					_print.println("|    |= Unused (cached) Memory:" + df2.format(cached)
+					        + df.format(cached / max * 100));
+					_print.println("| Useable Memory:" + df2.format(useable)
+					        + df.format(useable / max * 100)); // ...
+					_print.println("+----");
+				}
                 else if (_usrCommand.startsWith("announce"))
                 {
                     try
