@@ -638,7 +638,8 @@ public final class QuestState
 		if (attributeId >= 0 && attributeLevel > 0)
 		{
 			item.setElementAttr(attributeId, attributeLevel);
-			item.updateElementAttrBonus(getPlayer());
+			if (item.isEquipped())
+				item.updateElementAttrBonus(getPlayer());
 
 			InventoryUpdate iu = new InventoryUpdate();
 			iu.addModifiedItem(item);
