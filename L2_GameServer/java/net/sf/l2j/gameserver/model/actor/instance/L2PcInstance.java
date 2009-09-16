@@ -1029,6 +1029,7 @@ public final class L2PcInstance extends L2Playable
 		if (getClan() != null && target.getClan() != null)
 		{
 			if (target.getPledgeType() != L2Clan.SUBUNIT_ACADEMY
+				&& getPledgeType() != L2Clan.SUBUNIT_ACADEMY
 				&& target.getClan().isAtWarWith(getClan().getClanId()))
 			{
 				result |= RelationChanged.RELATION_1SIDED_WAR;
@@ -5582,23 +5583,21 @@ public final class L2PcInstance extends L2Playable
 			if (target instanceof L2PcInstance)
 	            increasePvpKills();
 		}
-		else                                                                        // Target player doesn't have pvp flag set
+		else
+		// Target player doesn't have pvp flag set
 		{
-            // check about wars
-            if (targetPlayer.getClan() != null && getClan() != null)
-            {
-                if (getClan().isAtWarWith(targetPlayer.getClanId()))
-                {
-                    if (targetPlayer.getClan().isAtWarWith(getClanId())
-                    		&& targetPlayer.getPledgeType() != L2Clan.SUBUNIT_ACADEMY)
-                    {
-                        // 'Both way war' -> 'PvP Kill'
-                    	if (target instanceof L2PcInstance)
-                            increasePvpKills();
-                        return;
-                    }
-                }
-            }
+			// check about wars
+			if (targetPlayer.getClan() != null && getClan() != null
+					&& getClan().isAtWarWith(targetPlayer.getClanId())
+					&& targetPlayer.getClan().isAtWarWith(getClanId())
+					&& targetPlayer.getPledgeType() != L2Clan.SUBUNIT_ACADEMY
+					&& getPledgeType() != L2Clan.SUBUNIT_ACADEMY)
+			{
+				// 'Both way war' -> 'PvP Kill'
+				if (target instanceof L2PcInstance)
+					increasePvpKills();
+				return;
+			}
 
             // 'No war' or 'One way war' -> 'Normal PK'
 			if (targetPlayer.getKarma() > 0)                                        // Target player has karma
