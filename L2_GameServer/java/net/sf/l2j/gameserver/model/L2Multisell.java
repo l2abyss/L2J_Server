@@ -129,7 +129,7 @@ public class L2Multisell
 			{
 				// only do the matchup on equipable items that are not currently equipped
 				// so for each appropriate item, produce a set of entries for the multisell list.
-				if (!item.isWear() && ((item.getItem() instanceof L2Armor) || (item.getItem() instanceof L2Weapon)))
+				if (!item.isEquipped() && ((item.getItem() instanceof L2Armor) || (item.getItem() instanceof L2Weapon)))
 				{
 					enchantLevel = (listTemplate.getMaintainEnchantment() ? item.getEnchantLevel() : 0);
 					augmentId = (listTemplate.getMaintainEnchantment() ? (item.getAugmentation() != null ? item.getAugmentation().getAugmentationId() : 0) : 0);
