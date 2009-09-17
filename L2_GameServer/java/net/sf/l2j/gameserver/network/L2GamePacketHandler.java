@@ -50,6 +50,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 			return null;
 
 		int opcode = buf.get() & 0xFF;
+		int id3;
 
 		ReceivablePacket<L2GameClient> msg = null;
 		GameClientState state = client.getState();
@@ -115,6 +116,24 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
                              *  msg = new RequestAllFortressInfo();
                              *  break;
                              */
+		            		case 0x5a:
+		                    	id3 = 0;
+		                        if (buf.remaining() >= 2)
+		                        {
+								    id3 = buf.getInt() & 0xffffffff;
+		                        }
+		                        else
+		                        {
+		                        	_log.warning("Client: "+client.toString()+" sent a 0xd0:0x5a without the third opcode.");
+		                        	break;
+		                        }
+		                        switch (id3)
+		                        {
+		                        	case 0x00:
+		                        		msg = new RequestExCubeGameChangeTeam();
+		                        		break;
+		                        }
+		                    	break;
                             default:
                             	printDebugDoubleOpcode(opcode, id2, buf, state, client);
 		            	}
@@ -917,7 +936,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 		                    	msg = new RequestResetNickname();
 		                    	break;
 		                    case 0x51:
-		                        int id3 = 0;
+		                        id3 = 0;
 		                        if (buf.remaining() >= 2)
 		                        {
 								    id3 = buf.getShort() & 0xffff;
@@ -977,7 +996,22 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 		                    	// RequestExCleftEnter
 		                    	break;
 		                    case 0x5a:
-		                    	// RequestExBlockGameEnter
+		                    	id3 = 0;
+		                        if (buf.remaining() >= 2)
+		                        {
+								    id3 = buf.getInt() & 0xffffffff;
+		                        }
+		                        else
+		                        {
+		                        	_log.warning("Client: "+client.toString()+" sent a 0xd0:0x5a without the third opcode.");
+		                        	break;
+		                        }
+		                        switch (id3)
+		                        {
+		                        	case 0x00:
+		                        		msg = new RequestExCubeGameChangeTeam();
+		                        		break;
+		                        }
 		                    	break;
 		                    case 0x5b:
 		                    	// EndScenePlayer
