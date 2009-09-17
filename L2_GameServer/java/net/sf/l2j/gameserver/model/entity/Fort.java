@@ -607,6 +607,7 @@ public class Fort
 				long initial = System.currentTimeMillis() - _lastOwnedTime.getTimeInMillis();
 				while (initial > (Config.FS_BLOOD_OATH_FRQ * 60000))
 					initial -= (Config.FS_BLOOD_OATH_FRQ * 60000);
+				initial = (Config.FS_BLOOD_OATH_FRQ * 60000) - initial;
 				_FortUpdater = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new FortUpdater(this, clan, runCount), initial, Config.FS_BLOOD_OATH_FRQ * 60000); // Schedule owner tasks to start running
 			}
 			else

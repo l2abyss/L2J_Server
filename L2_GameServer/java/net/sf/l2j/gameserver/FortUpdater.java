@@ -45,8 +45,7 @@ public class FortUpdater implements Runnable
 		try
 		{
 			_runCount++;
-			if (_fort.getOwnerClan() == null || _fort.getOwnerClan() != _clan
-					|| (_runCount * Config.FS_BLOOD_OATH_FRQ * 60) > (_fort.getOwnedTime() + 60))
+			if (_fort.getOwnerClan() == null || _fort.getOwnerClan() != _clan)
 				return;
 			
 			_fort.setBloodOathReward(_fort.getBloodOathReward() + Config.FS_BLOOD_OATH_COUNT);
