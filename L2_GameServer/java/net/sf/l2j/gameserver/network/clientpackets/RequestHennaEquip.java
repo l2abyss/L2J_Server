@@ -18,7 +18,6 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.HennaTable;
 import net.sf.l2j.gameserver.datatables.HennaTreeTable;
 import net.sf.l2j.gameserver.model.L2HennaInstance;
-import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
@@ -34,7 +33,6 @@ import net.sf.l2j.gameserver.util.Util;
 public final class RequestHennaEquip extends L2GameClientPacket
 {
 	private static final String _C__BC_RequestHennaEquip = "[C] bc RequestHennaEquip";
-	//private static Logger _log = Logger.getLogger(RequestHennaEquip.class.getName());
 	private int _symbolId;
 	// format  cd
 
@@ -46,7 +44,7 @@ public final class RequestHennaEquip extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		_symbolId  = readD();
+		_symbolId = readD();
 	}
 
 	@Override
@@ -55,28 +53,28 @@ public final class RequestHennaEquip extends L2GameClientPacket
 		L2PcInstance activeChar = getClient().getActiveChar();
 
 		if (activeChar == null)
-			return;
+		    return;
 
 		L2Henna template = HennaTable.getInstance().getTemplate(_symbolId);
 
 		if (template == null)
 			return;
 
-		L2HennaInstance temp = new L2HennaInstance(template);
+		L2HennaInstance henna = new L2HennaInstance(template);
 		long _count = 0;
 
-		/* Prevents henna drawing exploit: 
-           1) talk to L2SymbolMakerInstance 
-    	   2) RequestHennaList
-    	   3) Don't close the window and go to a GrandMaster and change your subclass
-    	   4) Get SymbolMaker range again and press draw
-    	   You could draw any kind of henna just having the required subclass...
-    	 */
-
+		/**
+		 *  Prevents henna drawing exploit: 
+		 * 1) talk to L2SymbolMakerInstance 
+		 * 2) RequestHennaList
+		 * 3) Don't close the window and go to a GrandMaster and change your subclass
+		 * 4) Get SymbolMaker range again and press draw
+		 * You could draw any kind of henna just having the required subclass...
+		 */
 		boolean cheater = true;
 		for (L2HennaInstance h : HennaTreeTable.getInstance().getAvailableHenna(activeChar.getClassId()))
 		{
-			if (h.getSymbolId() == temp.getSymbolId()) 
+			if (h.getSymbolId() == henna.getSymbolId()) 
 			{
 				cheater = false;
 				break;
@@ -84,12 +82,9 @@ public final class RequestHennaEquip extends L2GameClientPacket
 		}
 		try
 		{
-			_count = activeChar.getInventory().getItemByItemId(temp.getItemIdDye()).getCount();
+			_count = activeChar.getInventory().getItemByItemId(henna.getItemIdDye()).getCount();
 		}
-		catch(Exception e)
-		{
-			//
-		}
+		catch(Exception e){}
 
 		if (activeChar.getHennaEmptySlots() == 0)
 		{
@@ -97,26 +92,17 @@ public final class RequestHennaEquip extends L2GameClientPacket
 			return;
 		}
 
-		if (!cheater && (_count >= temp.getAmountDyeRequire())&& (activeChar.getAdena()>= temp.getPrice()) && activeChar.addHenna(temp))
+		if (!cheater && (_count >= henna.getAmountDyeRequire()) && (activeChar.getAdena() >= henna.getPrice()) && activeChar.addHenna(henna))
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-			sm.addItemName(temp.getItemIdDye());
-			sm.addItemNumber(temp.getAmountDyeRequire());
-			activeChar.sendPacket(sm);
-			sm = null;
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.SYMBOL_ADDED));
+			activeChar.destroyItemByItemId("Henna", henna.getItemIdDye(), henna.getAmountDyeRequire(), activeChar, true);
 
-			//HennaInfo hi = new HennaInfo(temp,activeChar);
-			//activeChar.sendPacket(hi);
+			activeChar.getInventory().reduceAdena("Henna", henna.getPrice(), activeChar, activeChar.getLastFolkNPC());
 
-			activeChar.getInventory().reduceAdena("Henna", temp.getPrice(), activeChar, activeChar.getLastFolkNPC());
-			L2ItemInstance dyeToUpdate = activeChar.getInventory().destroyItemByItemId("Henna", temp.getItemIdDye(),temp.getAmountDyeRequire(), activeChar, activeChar.getLastFolkNPC());
-
-			//update inventory
 			InventoryUpdate iu = new InventoryUpdate();
 			iu.addModifiedItem(activeChar.getInventory().getAdenaInstance());
-			iu.addModifiedItem(dyeToUpdate);
 			activeChar.sendPacket(iu);
+
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.SYMBOL_ADDED));
 		}
 		else
 		{

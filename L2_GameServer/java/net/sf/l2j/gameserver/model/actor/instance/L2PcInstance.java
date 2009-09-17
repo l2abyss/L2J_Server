@@ -8135,14 +8135,20 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public int getHennaEmptySlots()
 	{
-		int totalSlots = 1 + getClassId().level();
+		int totalSlots = 0;
+		if (getClassId().level() == 1)
+			totalSlots = 2;
+		else
+			totalSlots = 3;
 
 		for (int i = 0; i < 3; i++)
+		{
 			if (_henna[i] != null)
-                totalSlots--;
+				totalSlots--;
+		}
 
 		if (totalSlots <= 0)
-            return 0;
+			return 0;
 
 		return totalSlots;
 	}
@@ -8169,11 +8175,11 @@ public final class L2PcInstance extends L2Playable
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(DELETE_CHAR_HENNA);
-			
+
 			statement.setInt(1, getObjectId());
 			statement.setInt(2, slot+1);
 			statement.setInt(3, getClassIndex());
-			
+
 			statement.execute();
 			statement.close();
 		}
@@ -8198,10 +8204,14 @@ public final class L2PcInstance extends L2Playable
 		// Add the recovered dyes to the player's inventory and notify them.
 		getInventory().addItem("Henna", henna.getItemIdDye(), henna.getAmountDyeRequire() / 2, this, null);
 
+		reduceAdena("Henna", henna.getPrice() / 5, this, false);
+
 		SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
         sm.addItemName(henna.getItemIdDye());
         sm.addItemNumber(henna.getAmountDyeRequire() / 2);
 		sendPacket(sm);
+
+		sendPacket(new SystemMessage(SystemMessageId.SYMBOL_DELETED));
 
 		return true;
 	}

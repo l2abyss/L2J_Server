@@ -1,8 +1,5 @@
 /*
- * $Header$
- *
- *
-* This program is free software: you can redistribute it and/or modify it under
+ * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
@@ -20,7 +17,6 @@ package net.sf.l2j.gameserver.network.serverpackets;
 import net.sf.l2j.gameserver.model.L2HennaInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
-
 public final class HennaInfo extends L2GameServerPacket
 {
 	private static final String _S__E4_HennaInfo = "[S] e5 HennaInfo";
@@ -36,31 +32,24 @@ public final class HennaInfo extends L2GameServerPacket
 		int j = 0;
 		for (int i = 0; i < 3; i++)
 		{
-			L2HennaInstance h = _activeChar.getHenna(i+1);
-			if (h != null)
-			{
-				_hennas[j++] = h;
-			}
+			L2HennaInstance henna = _activeChar.getHenna(i+1);
+			if (henna != null)
+				_hennas[j++] = henna;
 		}
 		_count = j;
 	}
 
-
 	@Override
 	protected final void writeImpl()
 	{
-
 		writeC(0xe5);
-
-		writeC(_activeChar.getHennaStatINT());	//equip INT
-		writeC(_activeChar.getHennaStatSTR());	//equip STR
-		writeC(_activeChar.getHennaStatCON());	//equip CON
-		writeC(_activeChar.getHennaStatMEN());	//equip MEM
-		writeC(_activeChar.getHennaStatDEX());	//equip DEX
-		writeC(_activeChar.getHennaStatWIT());	//equip WIT
-
+		writeC(_activeChar.getHennaStatINT()); //equip INT
+		writeC(_activeChar.getHennaStatSTR()); //equip STR
+		writeC(_activeChar.getHennaStatCON()); //equip CON
+		writeC(_activeChar.getHennaStatMEN()); //equip MEM
+		writeC(_activeChar.getHennaStatDEX()); //equip DEX
+		writeC(_activeChar.getHennaStatWIT()); //equip WIT
 		writeD(3); // slots?
-
 		writeD(_count); //size
 		for (int i = 0; i < _count; i++)
 		{
@@ -68,7 +57,6 @@ public final class HennaInfo extends L2GameServerPacket
 			writeD(_hennas[i].getSymbolId());
 		}
 	}
-
 
 	/* (non-Javadoc)
 	 * @see net.sf.l2j.gameserver.serverpackets.ServerBasePacket#getType()
