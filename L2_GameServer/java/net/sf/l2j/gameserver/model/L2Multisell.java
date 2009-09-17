@@ -669,10 +669,9 @@ public class L2Multisell
 		
 		for (File f : files)
 		{
-			id = Integer.parseInt(f.getName().replaceAll(".xml", ""));
 			try
 			{
-				
+				id = Integer.parseInt(f.getName().replaceAll(".xml", ""));
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 				factory.setValidating(false);
 				factory.setIgnoringComments(true);
