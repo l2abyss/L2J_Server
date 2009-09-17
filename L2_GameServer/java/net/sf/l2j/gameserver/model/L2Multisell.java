@@ -680,6 +680,7 @@ public class L2Multisell
 			catch (Exception e)
 			{
 				_log.log(Level.SEVERE, "Error loading file " + f, e);
+				continue;
 			}
 			try
 			{
