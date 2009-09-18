@@ -26,7 +26,6 @@ import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
 import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.network.serverpackets.ExHeroList;
 import net.sf.l2j.gameserver.network.serverpackets.InventoryUpdate;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -39,7 +38,6 @@ import net.sf.l2j.util.L2FastList;
  *
  * @author godson
  */
-
 public class L2OlympiadManagerInstance extends L2Npc
 {
 	private static Logger _logOlymp = Logger.getLogger(L2OlympiadManagerInstance.class.getName());
@@ -275,9 +273,6 @@ public class L2OlympiadManagerInstance extends L2Npc
                 case 3:
                 	int id = Integer.parseInt(command.substring(11));
                 	Olympiad.addSpectator(id, player, true);
-                	break;
-                case 4:
-                	player.sendPacket(new ExHeroList());
                 	break;
                 default:
                 	_logOlymp.warning("Olympiad System: Couldnt send packet for request " + val);

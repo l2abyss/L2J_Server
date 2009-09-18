@@ -33,6 +33,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.L2Event;
 import net.sf.l2j.gameserver.model.olympiad.Olympiad;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
+import net.sf.l2j.gameserver.network.serverpackets.ExHeroList;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
 import net.sf.l2j.gameserver.util.GMAudit;
 
@@ -69,7 +70,8 @@ public final class RequestBypassToServer extends L2GameClientPacket
 		if (!activeChar.getFloodProtectors().getServerBypass().tryPerformAction(_command))
 			return;
 
-		try {
+		try
+		{
 			if (_command.startsWith("admin_")) //&& activeChar.getAccessLevel() >= Config.GM_ACCESSLEVEL)
 			{
 				String command = _command.split(" ")[0];
@@ -119,11 +121,11 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				{
 					L2Object object = L2World.getInstance().findObject(Integer.parseInt(id));
 
-					if (_command.substring(endOfId+1).startsWith("event_participate")) L2Event.inscribePlayer(activeChar);
+					if (_command.substring(endOfId+1).startsWith("event_participate"))
+						L2Event.inscribePlayer(activeChar);
 					else if (object instanceof L2Npc && endOfId > 0 && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
-					{
 						((L2Npc)object).onBypassFeedback(activeChar, _command.substring(endOfId+1));
-					}
+
 					activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				}
 				catch (NumberFormatException nfe) {}
@@ -144,9 +146,8 @@ public final class RequestBypassToServer extends L2GameClientPacket
 					L2Object object = L2World.getInstance().findObject(Integer.parseInt(id));
 
 					if (object instanceof L2MerchantSummonInstance && endOfId > 0 && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
-					{
 						((L2MerchantSummonInstance)object).onBypassFeedback(activeChar, _command.substring(endOfId+1));
-					}
+
 					activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				}
 				catch (NumberFormatException nfe) {}
@@ -156,26 +157,20 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			{
                 L2Object object = activeChar.getTarget();
                 if (object instanceof L2Npc)
-                {
                     ((L2Npc) object).onBypassFeedback(activeChar, _command);
-                }
 			}
 			else if (_command.equals("menu_select?ask=-16&reply=2"))
 			{
                 L2Object object = activeChar.getTarget();
                 if (object instanceof L2Npc)
-                {
                     ((L2Npc) object).onBypassFeedback(activeChar, _command);
-                }
 			}
 			// Navigate through Manor windows
             else if (_command.startsWith("manor_menu_select?"))
             {
             	L2Object object = activeChar.getTarget();
                 if (object instanceof L2Npc)
-                {
                     ((L2Npc) object).onBypassFeedback(activeChar, _command);
-                }
             }
 			else if (_command.startsWith("bbs_"))
 			{
@@ -204,15 +199,15 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			{
 					Olympiad.bypassChangeArena(_command, activeChar);
 			}
+			else if (_command.startsWith("_herolist"))
+			{
+				activeChar.sendPacket(new ExHeroList());
+			}
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Bad RequestBypassToServer: ", e);
 		}
-//		finally
-//		{
-//			activeChar.clearBypass();
-//		}
 	}
 
 	/**
@@ -226,11 +221,8 @@ public final class RequestBypassToServer extends L2GameClientPacket
 		{
 			L2Npc temp = (L2Npc) obj;
 			temp.setTarget(activeChar);
-			temp.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO,
-					new L2CharPosition(activeChar.getX(),activeChar.getY(), activeChar.getZ(), 0 ));
-//			temp.moveTo(player.getX(),player.getY(), player.getZ(), 0 );
+			temp.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(activeChar.getX(),activeChar.getY(), activeChar.getZ(), 0 ));
 		}
-
 	}
 
 	private void playerHelp(L2PcInstance activeChar, String path)
