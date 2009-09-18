@@ -17,11 +17,14 @@ package net.sf.l2j.gameserver.model.actor.instance;
 import java.util.StringTokenizer;
 
 import net.sf.l2j.gameserver.ai.CtrlIntention;
+import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.MyTargetSelected;
 import net.sf.l2j.gameserver.network.serverpackets.NpcHtmlMessage;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
+import net.sf.l2j.util.Rnd;
 
 /**
  * @author Vice 
@@ -32,6 +35,16 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance
     {
         super(objectID, template);
     }
+
+    private final int[] TalismanIds =
+	{
+		9914,9915,9917,9918,9919,9920,9921,9922,9923,9924,
+		9926,9927,9928,9930,9931,9932,9933,9934,9935,9936,
+		9937,9938,9939,9940,9941,9942,9943,9944,9945,9946,
+		9947,9948,9949,9950,9951,9952,9953,9954,9955,9956,
+		9957,9958,9959,9960,9961,9962,9963,9964,9965,9966,
+		10141,10142,10158
+	};
 
     @Override
     public void onAction(L2PcInstance player)
@@ -93,10 +106,30 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance
             catch (NumberFormatException nfe){}
             showMessageWindow(player, val);
         }
+        else if (actualCommand.equalsIgnoreCase("ExchangeKE"))
+		{
+			int item = TalismanIds[Rnd.get(TalismanIds.length)];
+
+			if (player.destroyItemByItemId("FortSupportUnit", 9912, 10, this, false))
+			{
+				SystemMessage msg = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+				msg.addItemName(9912);
+				msg.addNumber(10);
+				player.sendPacket(msg);
+
+				player.addItem("FortSupportUnit", item, 1, player, true);
+
+				String filename = "data/html/fortress/supportunit-talisman.htm";
+				showChatWindow(player, filename);
+			}
+			else
+			{
+				String filename = "data/html/fortress/supportunit-noepau.htm";
+				showChatWindow(player, filename);
+			}
+		}
         else
-        {
             super.onBypassFeedback(player, command);
-        }
     }
     
     private void showMessageWindow(L2PcInstance player)
