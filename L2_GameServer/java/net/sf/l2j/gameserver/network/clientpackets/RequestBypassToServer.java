@@ -240,6 +240,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
         	String filename = "data/html/help/"+cmd[0];
         	NpcHtmlMessage html = new NpcHtmlMessage(1,itemId);
         	html.setFile(filename);
+        	html.disableValidation();
         	activeChar.sendPacket(html);
         }
         else
@@ -247,6 +248,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
         	String filename = "data/html/help/"+path;
         	NpcHtmlMessage html = new NpcHtmlMessage(1);
         	html.setFile(filename);
+        	html.disableValidation();
         	activeChar.sendPacket(html);
         }
 	}
