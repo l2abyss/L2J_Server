@@ -154,7 +154,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				break;
 			case 16:
 			case 22: // pet attack
-				if (target != null && pet != null && pet != target && !pet.isAttackingDisabled() && !pet.isBetrayed())
+				if (target != null && pet != null && pet != target && activeChar != target && !pet.isAttackingDisabled() && !pet.isBetrayed())
 				{
 					if (pet instanceof L2PetInstance && (pet.getLevel() - activeChar.getLevel() > 20))
 					{
@@ -676,6 +676,8 @@ public final class RequestActionUse extends L2GameClientPacket
 			
 			L2Skill skill = SkillTable.getInstance().getInfo(skillId, lvl);
 			if (skill == null)
+				return;
+			if (skill.isOffensive() && activeChar == target)
 				return;
 			
 			activeSummon.setTarget(target);
