@@ -29,6 +29,7 @@ import net.sf.l2j.gameserver.datatables.TeleportLocationTable;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.CastleManorManager;
 import net.sf.l2j.gameserver.model.L2Clan;
+import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2TeleportLocation;
 import net.sf.l2j.gameserver.model.entity.Castle;
@@ -140,19 +141,24 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 
 			if (actualCommand.equalsIgnoreCase("banish_foreigner"))
 			{
-				if ((player.getClanPrivileges() & L2Clan.CP_CS_DISMISS) == L2Clan.CP_CS_DISMISS)
-				{
-					getCastle().banishForeigners(); // Move non-clan members off castle area
-					return;
-				}
-				else
-				{
-					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-					html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
-					html.replace("%objectId%", String.valueOf(getObjectId()));
-					player.sendPacket(html);
-					return;
-				}
+				if (!validatePrivileges(player, L2Clan.CP_CS_DISMISS)) return;
+				if (siegeBlocksFunction(player)) return;
+				getCastle().banishForeigners(); // Move non-clan members off castle area
+				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				html.setFile("data/html/chamberlain/chamberlain-banishafter.htm");
+				html.replace("%objectId%", String.valueOf(getObjectId()));
+				player.sendPacket(html);
+				return;
+			}
+			else if (actualCommand.equalsIgnoreCase("banish_foreigner_show"))
+			{
+				if (!validatePrivileges(player, L2Clan.CP_CS_DISMISS)) return;
+				if (siegeBlocksFunction(player)) return;
+				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				html.setFile("data/html/chamberlain/chamberlain-banishfore.htm");
+				html.replace("%objectId%", String.valueOf(getObjectId()));
+				player.sendPacket(html);
+				return;
 			}
 			else if (actualCommand.equalsIgnoreCase("list_siege_clans"))
 			{
@@ -165,7 +171,6 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 				{
 					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 					html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
-					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
 					return;
 				}
@@ -244,7 +249,6 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 				{
 					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 					html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
-					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
 					return;
 				}
@@ -267,7 +271,6 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 				{
 					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 					html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
-					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
 					return;
 				}
@@ -283,7 +286,6 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 				{
 					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 					html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
-					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
 					return;
 				}
@@ -344,7 +346,6 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 				{
 					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 					html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
-					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
 					return;
 				}
@@ -389,7 +390,6 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 				{
 					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 					html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
-					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
 					return;
 				}
@@ -457,7 +457,18 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 					{
 						boolean open = (Integer.parseInt(val) == 1);
 						while (st.hasMoreTokens())
+						{
 							getCastle().openCloseDoor(player, Integer.parseInt(st.nextToken()), open);
+						}
+						
+						NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+						String file = "data/html/chamberlain/doors-close.htm";
+						if (open)
+							file = "data/html/chamberlain/doors-open.htm";
+						html.setFile(file);
+						html.replace("%objectId%", String.valueOf(getObjectId()));
+						player.sendPacket(html);
+						return;
 					}
 
 					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
@@ -471,7 +482,6 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 				{
 					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 					html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
-					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
 					return;
 				}
@@ -1333,6 +1343,35 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 				}
 				sendHtmlMessage(player, html);				
 			}
+			else if (actualCommand.equals("give_crown"))
+			{
+				if (siegeBlocksFunction(player))
+					return;
+
+				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+
+				if (player.isClanLeader())
+				{
+					if (player.getInventory().getItemByItemId(6841) == null)
+					{
+						L2ItemInstance crown = player.getInventory().addItem("Castle Crown", 6841, 1, player, this);
+
+						SystemMessage ms = new SystemMessage(SystemMessageId.EARNED_ITEM);
+						ms.addItemName(crown);
+						player.sendPacket(ms);
+
+						html.setFile("data/html/chamberlain/chamberlain-gavecrown.htm");
+						html.replace("%CharName%", String.valueOf(player.getName()));
+						html.replace("%FeudName%", String.valueOf(getCastle().getName()));
+					}
+					else
+						html.setFile("data/html/chamberlain/chamberlain-hascrown.htm");
+				}
+				else
+					html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
+				
+				player.sendPacket(html);
+			}
 
 			super.onBypassFeedback(player, command);
 		}
@@ -1375,27 +1414,33 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 						list = Config.SIEGE_HOUR_LIST_AFTERNOON;
 					}
 
-                                        final StringBuilder tList = new StringBuilder(list.size() * 50);
-					for (Integer hour : list) {
-						if (hour == 0) {
-                                                    StringUtil.append(tList,
-                                                            "<a action=\"bypass -h npc_%objectId%_siege_time_set 3 ",
-                                                            String.valueOf(hour + inc),
-                                                            "\">",
-                                                            String.valueOf(hour + 12),
-                                                            ":00 ",
-                                                            ampm,
-                                                            "</a><br>");
-                                                } else {
-                                                    StringUtil.append(tList,
-                                                            "<a action=\"bypass -h npc_%objectId%_siege_time_set 3 ",
-                                                            String.valueOf(hour + inc),
-                                                            "\">",
-                                                            String.valueOf(hour),
-                                                            ":00 ",
-                                                            ampm,
-                                                            "</a><br>");
-                                                }
+					final StringBuilder tList = new StringBuilder(list.size() * 50);
+					for (Integer hour : list)
+					{
+						if (hour == 0)
+						{
+							StringUtil.append(tList,
+									"<a action=\"bypass -h npc_%objectId%_siege_time_set 3 ",
+									String.valueOf(hour + inc),
+									"\">",
+									String.valueOf(hour + 12),
+									":00 ",
+									ampm,
+									"</a><br>"
+							);
+						}
+						else
+						{
+							StringUtil.append(tList,
+									"<a action=\"bypass -h npc_%objectId%_siege_time_set 3 ",
+									String.valueOf(hour + inc),
+									"\">",
+									String.valueOf(hour),
+									":00 ",
+									ampm,
+									"</a><br>"
+							);
+						}
 					}
 					ret.replace("%links%", tList.toString());
 			}
@@ -1474,5 +1519,30 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 			}
 		}
 		return COND_ALL_FALSE;
+	}
+
+	private boolean validatePrivileges(L2PcInstance player, int privilege)
+	{
+		if ((player.getClanPrivileges() & privilege) != privilege)
+		{
+			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+			html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
+			player.sendPacket(html);
+			return false;
+		}
+		return true;
+	}
+
+	private boolean siegeBlocksFunction(L2PcInstance player)
+	{
+		if (getCastle().getSiege().getIsInProgress())
+		{
+			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+			html.setFile("data/html/chamberlain/chamberlain-busy.htm");
+			html.replace("%npcname%", String.valueOf(getName()));
+			player.sendPacket(html);
+			return true;
+		}
+		return false;
 	}
 }
