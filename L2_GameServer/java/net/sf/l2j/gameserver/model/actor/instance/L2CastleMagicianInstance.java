@@ -94,11 +94,6 @@ public class L2CastleMagicianInstance extends L2NpcInstance
 			catch (NumberFormatException nfe){}
 			showChatWindow(player, val);
 		}
-		else if (command.equals("Talisman"))
-		{
-			String filename = "data/html/castlemagician/magician-Talisman.htm";
-			showChatWindow(player, filename);
-		}
 		else if (command.startsWith("ExchangeKE"))
 		{
 			String filename = null;
