@@ -14,9 +14,9 @@
  */
 package net.sf.l2j.gameserver.handler;
 
-import java.util.List;
+import java.util.Map;
 
-import javolution.util.FastList;
+import javolution.util.FastMap;
 import net.sf.l2j.gameserver.templates.item.L2EtcItem;
 
 /**
@@ -26,7 +26,7 @@ import net.sf.l2j.gameserver.templates.item.L2EtcItem;
  */
 public class ItemHandler
 {
-	private List<IItemHandler> _datatable;
+	private Map<String, IItemHandler> _datatable;
 	
 	/**
 	 * Create ItemHandler if doesn't exist and returns ItemHandler
@@ -51,19 +51,19 @@ public class ItemHandler
 	 */
 	private ItemHandler()
 	{
-		_datatable = new FastList<IItemHandler>();
+		_datatable = new FastMap<String, IItemHandler>();
 	}
 	
 	/**
 	 * Adds handler of item type in <I>datatable</I>.<BR><BR>
 	 * <B><I>Concept :</I></U><BR>
-	 * This handler is put in <I>datatable</I> Map &lt;Integer ; IItemHandler &gt; for each ID corresponding to an item type
+	 * This handler is put in <I>datatable</I> Map &lt;String ; IItemHandler &gt; for each ID corresponding to an item type
 	 * (existing in classes of package itemhandlers) sets as key of the Map.
 	 * @param handler (IItemHandler)
 	 */
 	public void registerItemHandler(IItemHandler handler)
 	{
-		_datatable.add(handler);
+		_datatable.put(handler.getClass().getSimpleName().intern(), handler);
 	}
 	
 	/**
@@ -75,15 +75,7 @@ public class ItemHandler
 	{
 		if (item == null)
 			return null;
-		String handler = item.getHandlerName();
-		if (handler.equalsIgnoreCase("none"))
-			return null;
-		for (IItemHandler iih : _datatable)
-		{
-			if (iih.getClass().getName().endsWith(handler))
-				return iih;
-		}
-		return null;
+		return _datatable.get(item.getHandlerName());
 	}
 	
 	@SuppressWarnings("synthetic-access")
