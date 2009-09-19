@@ -27,49 +27,46 @@ import net.sf.l2j.gameserver.templates.skills.L2EffectType;
  */
 public class RequestDispel extends L2GameClientPacket
 {
-
 	private int _skillId;
 	private int _skillLevel;
 
 	/**
-     * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#getType()
-     */
-    @Override
-    public String getType()
-    {
-	    return "[C] D0:4E RequestDispel";
-    }
+	 * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
+	 */
+	@Override
+	protected void readImpl()
+	{
+		_skillId = readD();
+		_skillLevel = readD();
+	}
 
 	/**
-     * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-     */
-    @Override
-    protected void readImpl()
-    {
-	    _skillId = readD();
-	    _skillLevel = readD();
-    }
-
-	/**
-     * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-     */
-    @Override
-    protected void runImpl()
+	 * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
+	 */
+	@Override
+	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar != null)
+		if (activeChar == null)
+			return;
+
+		L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLevel);
+		if (skill != null && (!skill.isDance() || Config.DANCE_CANCEL_BUFF) && !skill.isDebuff() && skill.canBeDispeled())
 		{
-			L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLevel);
-			if (skill != null && (!skill.isDance() || Config.DANCE_CANCEL_BUFF) && !skill.isDebuff())
+			for (L2Effect e : activeChar.getAllEffects())
 			{
-				for (L2Effect e : activeChar.getAllEffects())
-				{
-					if (e != null && e.getSkill() == skill && e.getEffectType() != L2EffectType.TRANSFORMATION)
-					{
-						e.exit();
-					}
-				}
+				if (e != null && e.getSkill() == skill && e.getEffectType() != L2EffectType.TRANSFORMATION)
+					e.exit();
 			}
 		}
+	}
+
+	/**
+	 * @see net.sf.l2j.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return "[C] D0:4E RequestDispel";
 	}
 }

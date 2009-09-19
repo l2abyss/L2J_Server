@@ -263,6 +263,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final boolean _isSuicideAttack;
 	private final boolean _canBeReflected;
 	
+	private final boolean _canBeDispeled;
 	
     protected L2Skill(StatsSet set)
     {
@@ -420,6 +421,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _flyRadius = set.getInteger("flyRadius", 200);
         _flyCourse = set.getFloat("flyCourse", 0);
         _canBeReflected = set.getBool("canBeReflected", true);
+
+        _canBeDispeled = set.getBool("canBeDispeled", true);
     }
 
     public abstract void useSkill(L2Character caster, L2Object[] targets);
@@ -2526,5 +2529,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public boolean canBeReflected()
 	{
 		return _canBeReflected;
+	}
+
+	public boolean canBeDispeled()
+	{
+		return _canBeDispeled;
 	}
 }

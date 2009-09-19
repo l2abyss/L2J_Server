@@ -2438,10 +2438,8 @@ public class L2Npc extends L2Character
 					filename = (getHtmlPath(npcId, val));
 				break;
 			case 36402:
-				if (player.olyBuff == 5)
-					filename = Olympiad.OLYMPIAD_HTML_PATH + "olympiad_buffs.htm";
-				else if (player.olyBuff <= 4 && player.olyBuff >= 1)
-					filename = Olympiad.OLYMPIAD_HTML_PATH + "olympiad_5buffs.htm";
+				if (player.olyBuff > 0)
+					filename = (player.olyBuff == 5 ? Olympiad.OLYMPIAD_HTML_PATH + "olympiad_buffs.htm" : Olympiad.OLYMPIAD_HTML_PATH + "olympiad_5buffs.htm");
 				else
 					filename = Olympiad.OLYMPIAD_HTML_PATH + "olympiad_nobuffs.htm";
 				break;
