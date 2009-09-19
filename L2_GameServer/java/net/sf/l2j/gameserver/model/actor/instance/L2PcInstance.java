@@ -2321,22 +2321,22 @@ public final class L2PcInstance extends L2Playable
         		// dont allow an item to replace a wear-item
         		return;
         	}
-        	else if (tempBodyPart == 0x4000) // left+right hand equipment
+        	else if (tempBodyPart == L2Item.SLOT_LR_HAND)
         	{
         		// this may not remove left OR right hand equipment
-        		tempItem = getInventory().getPaperdollItem(7);
+        		tempItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
         		if (tempItem != null && tempItem.isWear()) return;
 
-        		tempItem = getInventory().getPaperdollItem(8);
+        		tempItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LHAND);
         		if (tempItem != null && tempItem.isWear()) return;
         	}
-        	else if (tempBodyPart == 0x8000) // fullbody armor
+        	else if (tempBodyPart == L2Item.SLOT_FULL_ARMOR)
         	{
         		// this may not remove chest or leggins
-        		tempItem = getInventory().getPaperdollItem(10);
+        		tempItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_CHEST);
         		if (tempItem != null && tempItem.isWear()) return;
 
-        		tempItem = getInventory().getPaperdollItem(11);
+        		tempItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LEGS);
         		if (tempItem != null && tempItem.isWear()) return;
         	}
 
