@@ -49,11 +49,11 @@ import net.sf.l2j.gameserver.model.L2ItemInstance;
 
 public class InventoryUpdate extends L2GameServerPacket
 {
-	private static Logger _log = Logger.getLogger(InventoryUpdate.class.getName());
+	private static final Logger _log = Logger.getLogger(InventoryUpdate.class.getName());
 	private static final String _S__37_INVENTORYUPDATE = "[S] 21 InventoryUpdate";
-	
-	private List<ItemInfo> _items;
-	
+
+	private final List<ItemInfo> _items;
+
 	public InventoryUpdate()
 	{
 		_items = new FastList<ItemInfo>();
@@ -62,7 +62,7 @@ public class InventoryUpdate extends L2GameServerPacket
 			showDebug();
 		}
 	}
-	
+
 	/**
 	 * @param items
 	 */
@@ -74,31 +74,31 @@ public class InventoryUpdate extends L2GameServerPacket
 			showDebug();
 		}
 	}
-	
+
 	public void addItem(L2ItemInstance item)
 	{
 		if (item != null)
 			_items.add(new ItemInfo(item));
 	}
-	
+
 	public void addNewItem(L2ItemInstance item)
 	{
 		if (item != null)
 			_items.add(new ItemInfo(item, 1));
 	}
-	
+
 	public void addModifiedItem(L2ItemInstance item)
 	{
 		if (item != null)
 			_items.add(new ItemInfo(item, 2));
 	}
-	
+
 	public void addRemovedItem(L2ItemInstance item)
 	{
 		if (item != null)
 			_items.add(new ItemInfo(item, 3));
 	}
-	
+
 	public void addItems(List<L2ItemInstance> items)
 	{
 		if (items != null)
@@ -106,15 +106,15 @@ public class InventoryUpdate extends L2GameServerPacket
 				if (item != null)
 					_items.add(new ItemInfo(item));
 	}
-	
+
 	private void showDebug()
 	{
 		for (ItemInfo item : _items)
 		{
-			_log.fine("oid:" + Integer.toHexString(item.getObjectId()) + " item:" + item.getItem().getName() + " last change:" + item.getChange());
+			_log.severe("oid:" + Integer.toHexString(item.getObjectId()) + " item:" + item.getItem().getName() + " last change:" + item.getChange());
 		}
 	}
-	
+
 	@Override
 	protected final void writeImpl()
 	{
@@ -125,7 +125,7 @@ public class InventoryUpdate extends L2GameServerPacket
 		{
 			writeH(item.getChange()); // Update type : 01-add, 02-modify, 03-remove
 			writeH(item.getItem().getType1()); // Item Type 1 : 00-weapon/ring/earring/necklace, 01-armor/shield, 04-item/questitem/adena
-			
+
 			writeD(item.getObjectId()); // ObjectId
 			writeD(item.getItem().getItemId()); // ItemId
 			writeD(item.getLocation()); // T1
@@ -138,7 +138,7 @@ public class InventoryUpdate extends L2GameServerPacket
 			writeH(item.getCustomType2()); // Pet name exists or not shown in control item
 			writeD(item.getAugmentationBonus());
 			writeD(item.getMana());
-			
+
 			// T1
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
@@ -149,8 +149,9 @@ public class InventoryUpdate extends L2GameServerPacket
 			// T2
 			writeD(item.getTime());
 		}
+		_items.clear();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see net.sf.l2j.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

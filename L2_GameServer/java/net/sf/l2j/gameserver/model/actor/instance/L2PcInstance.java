@@ -2368,13 +2368,13 @@ public final class L2PcInstance extends L2Playable
 			checkIfWeaponIsAllowed();
 		**/
 
+		broadcastUserInfo();
+		
 		InventoryUpdate iu = new InventoryUpdate();
 		iu.addItems(Arrays.asList(items));
 		sendPacket(iu);
 		
 		if (abortAttack) abortAttack();
-		
-		broadcastUserInfo();
 		
 		if (getInventoryLimit() != oldInvLimit)
 			sendPacket(new ExStorageMaxCount(this));
