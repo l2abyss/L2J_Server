@@ -2188,19 +2188,26 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
     public final Func[] getStatFuncs(L2Effect effect, L2Character player)
     {
-        if (!(player instanceof L2PcInstance) && !(player instanceof L2Attackable)
-            && !(player instanceof L2Summon)) return _emptyFunctionSet;
-        if (_funcTemplates == null) return _emptyFunctionSet;
+        if (!(player instanceof L2Playable) && !(player instanceof L2Attackable))
+        	return _emptyFunctionSet;
+        
+        if (_funcTemplates == null)
+        	return _emptyFunctionSet;
+        
         List<Func> funcs = new FastList<Func>();
+        
         for (FuncTemplate t : _funcTemplates)
         {
             Env env = new Env();
             env.player = player;
             env.skill = this;
             Func f = t.getFunc(env, this); // skill is owner
-            if (f != null) funcs.add(f);
+            if (f != null)
+            	funcs.add(f);
         }
-        if (funcs.isEmpty()) return _emptyFunctionSet;
+        if (funcs.isEmpty())
+        	return _emptyFunctionSet;
+        
         return funcs.toArray(new Func[funcs.size()]);
     }
 
