@@ -4378,7 +4378,6 @@ public final class L2PcInstance extends L2Playable
 	{
 		// Send a Server->Client packet UserInfo to this L2PcInstance
 		sendPacket(new UserInfo(this));
-		sendPacket(new ExBrExtraUserInfo(this));
 
 		// Send a Server->Client packet CharInfo to all L2PcInstance in _KnownPlayers of the L2PcInstance
 		if (Config.DEBUG)
