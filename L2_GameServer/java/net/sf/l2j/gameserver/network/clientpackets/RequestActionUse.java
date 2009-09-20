@@ -228,12 +228,7 @@ public final class RequestActionUse extends L2GameClientPacket
 						if (pet instanceof L2PetInstance)
 						{
 							if (!pet.isHungry())
-							{
-								if (pet.isInCombat())
-									activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_SENT_BACK_DURING_BATTLE));
-								else
-									pet.unSummon(activeChar);
-							}
+								pet.unSummon(activeChar);
 							else
 								activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_RESTORE_HUNGRY_PETS));
 						}

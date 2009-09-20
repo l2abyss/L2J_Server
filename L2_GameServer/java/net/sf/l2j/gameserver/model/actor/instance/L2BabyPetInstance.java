@@ -114,8 +114,9 @@ public final class L2BabyPetInstance extends L2PetInstance
 	@Override
 	public synchronized void unSummon (L2PcInstance owner)
 	{
-		super.unSummon(owner);
 		stopCastTask();
+		abortCast();
+		super.unSummon(owner);
 	}
 
 	@Override
