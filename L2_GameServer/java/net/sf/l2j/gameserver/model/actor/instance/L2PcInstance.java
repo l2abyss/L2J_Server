@@ -2256,6 +2256,9 @@ public final class L2PcInstance extends L2Playable
 		{
 			for (L2ItemInstance ss : getInventory().getItems())
 			{
+				if (ss == null)
+					continue;
+				
 				int _itemId = ss.getItemId();
 
 				if (((_itemId >= 2509 && _itemId <= 2514) ||
