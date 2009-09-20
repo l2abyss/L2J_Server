@@ -236,6 +236,11 @@ public class GameServer
 		// Call to load caches
 		HtmCache.getInstance();
 		CrestCache.getInstance();
+		
+		// forums has to be loaded before clan data, because of last forum id used should have also memo included
+		if (Config.COMMUNITY_TYPE > 0)
+			ForumsBBSManager.getInstance().initRoot();
+		
 		ClanTable.getInstance();
 		
 		NpcTable.getInstance();
@@ -383,8 +388,6 @@ public class GameServer
 			GeoEditorListener.getInstance();
 		
 		Runtime.getRuntime().addShutdownHook(Shutdown.getInstance());
-		
-		ForumsBBSManager.getInstance();
 		
 		_log.config("IdFactory: Free ObjectID's remaining: " + IdFactory.getInstance().size());
 		

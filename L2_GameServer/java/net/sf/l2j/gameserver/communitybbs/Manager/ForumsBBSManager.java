@@ -18,11 +18,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.communitybbs.BB.Forum;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
@@ -30,7 +28,6 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 public class ForumsBBSManager extends BaseBBSManager
 {
 	private static Logger _log = Logger.getLogger(ForumsBBSManager.class.getName());
-	private Map<Integer, Forum> _root;
 	private List<Forum> _table;
 	private int _lastid = 1;
 	
@@ -44,7 +41,6 @@ public class ForumsBBSManager extends BaseBBSManager
 	
 	private ForumsBBSManager()
 	{
-		_root = new FastMap<Integer, Forum>();
 		_table = new FastList<Forum>();
 		
 		Connection con = null;
@@ -55,8 +51,8 @@ public class ForumsBBSManager extends BaseBBSManager
 			ResultSet result = statement.executeQuery();
 			while (result.next())
 			{
-				Forum f = new Forum(Integer.parseInt(result.getString("forum_id")), null);
-				_root.put(Integer.parseInt(result.getString("forum_id")), f);
+				int forumId = result.getInt("forum_id");
+				Forum f = new Forum(forumId, null);
 				addForum(f);
 			}
 			result.close();
@@ -77,6 +73,13 @@ public class ForumsBBSManager extends BaseBBSManager
 			{
 			}
 		}
+	}
+	
+	public void initRoot()
+	{
+		for (Forum f : _table)
+			f.vload();
+		_log.info("Loaded " + _table.size() + " forums. Last forum id used: " + _lastid);
 	}
 	
 	public void addForum(Forum ff)
@@ -126,10 +129,9 @@ public class ForumsBBSManager extends BaseBBSManager
 	 */
 	public Forum createNewForum(String name, Forum parent, int type, int perm, int oid)
 	{
-		Forum forum;
-		forum = new Forum(name, parent, type, perm, oid);
-		forum.insertindb();
-		addForum(forum);
+		Forum forum = new Forum(name, parent, type, perm, oid);
+		forum.insertIntoDb();
+		//addForum(forum); // not needed to addForum(Forum) because already called in new Forum(String, Forum, int, int, int)
 		return forum;
 	}
 	

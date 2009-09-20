@@ -161,7 +161,7 @@ public class Post
 				cp.postId = result.getInt("post_id");
 				cp.postOwner = result.getString("post_owner_name");
 				cp.postOwnerId = result.getInt("post_ownerid");
-				cp.postDate = Long.parseLong(result.getString("post_date"));
+				cp.postDate = result.getLong("post_date");
 				cp.postTopicId = result.getInt("post_topic_id");
 				cp.postForumId = result.getInt("post_forum_id");
 				cp.postTxt = result.getString("post_txt");

@@ -300,7 +300,7 @@ public class PostBBSManager extends BaseBBSManager
 		}
 		else
 		{
-			Topic t = f.gettopic(idt);
+			Topic t = f.getTopic(idt);
 			if (t == null)
 			{
 				ShowBoard sb = new ShowBoard("<html><body><br><br><center>the topic: " + idt
