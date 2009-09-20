@@ -1006,6 +1006,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
             case MDAM:
             case CPDAM:
             case DOT:
+            case CPDAMPERCENT:
             case BLEED:
             case POISON:
             case AGGDAMAGE:

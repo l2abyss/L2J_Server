@@ -46,6 +46,7 @@ public enum L2SkillType
 	MDAM,
 	CPDAM,
 	MANADAM,
+	CPDAMPERCENT,
 	DOT,
 	MDOT,
 	DRAIN_SOUL,
