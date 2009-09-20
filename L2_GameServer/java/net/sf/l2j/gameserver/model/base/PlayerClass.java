@@ -288,11 +288,11 @@ public enum PlayerClass
 			{
 				subclasses = getSet(Kamael, Third);
 				subclasses.remove(this);
-				//Check sex, male can't subclass female and vice versa
+				//Check sex, male subclasses female and vice versa
 				if (player.getAppearance().getSex())
-					subclasses.removeAll(EnumSet.of(maleSoulbreaker));
-				else
 					subclasses.removeAll(EnumSet.of(femaleSoulbreaker));
+				else
+					subclasses.removeAll(EnumSet.of(maleSoulbreaker));
 				if (player.getTotalSubClasses() < 2)
 					subclasses.removeAll(EnumSet.of(inspector));
 			}
