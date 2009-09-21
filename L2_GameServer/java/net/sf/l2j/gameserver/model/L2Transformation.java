@@ -33,9 +33,6 @@ public abstract class L2Transformation implements Cloneable, Runnable
 
 	private L2PcInstance _player;
 
-	protected boolean _canDoMeleeAttack = true;
-	protected boolean _startFollowToCast = true;
-
 	/**
 	 * 
 	 * @param id Internal id that server will use to associate this transformation 
@@ -187,7 +184,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	 */
 	public boolean canDoMeleeAttack()
 	{
-		return _canDoMeleeAttack;
+		return true;
 	}
 
 	/**
@@ -195,6 +192,6 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	 */
 	public boolean canStartFollowToCast()
 	{
-		return _startFollowToCast;
+		return true;
 	}
 }
