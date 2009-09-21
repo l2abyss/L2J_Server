@@ -135,7 +135,10 @@ public final class L2VillageMasterInstance extends L2NpcInstance
 			if (cmdParams.isEmpty())
 				return;
 
-			player.getClan().createAlly(player, cmdParams);
+			if (player.getClan() == null)
+				player.sendPacket(new SystemMessage(SystemMessageId.ONLY_CLAN_LEADER_CREATE_ALLIANCE));
+			else
+				player.getClan().createAlly(player, cmdParams);
 		}
 		else if (actualCommand.equalsIgnoreCase("dissolve_ally"))
 		{
