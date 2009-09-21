@@ -52,7 +52,7 @@ public class InventoryUpdate extends L2GameServerPacket
 	private static final Logger _log = Logger.getLogger(InventoryUpdate.class.getName());
 	private static final String _S__37_INVENTORYUPDATE = "[S] 21 InventoryUpdate";
 
-	private final List<ItemInfo> _items;
+	private List<ItemInfo> _items;
 
 	public InventoryUpdate()
 	{
@@ -111,7 +111,7 @@ public class InventoryUpdate extends L2GameServerPacket
 	{
 		for (ItemInfo item : _items)
 		{
-			_log.severe("oid:" + Integer.toHexString(item.getObjectId()) + " item:" + item.getItem().getName() + " last change:" + item.getChange());
+			_log.fine("oid:" + Integer.toHexString(item.getObjectId()) + " item:" + item.getItem().getName() + " last change:" + item.getChange());
 		}
 	}
 
@@ -150,6 +150,7 @@ public class InventoryUpdate extends L2GameServerPacket
 			writeD(item.getTime());
 		}
 		_items.clear();
+		_items = null;
 	}
 
 	/* (non-Javadoc)
