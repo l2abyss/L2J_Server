@@ -211,14 +211,14 @@ public final class L2VillageMasterInstance extends L2NpcInstance
 				case 0: // Subclass change menu
 					if (getVillageMasterRace() == Race.Kamael)
 					{
-						if (player.getRace() == Race.Kamael)
+						if (player.getRace() == Race.Kamael || Config.ALT_GAME_SUBCLASS_EVERYWHERE)
 							html.setFile("data/html/villagemaster/SubClass.htm");
 						else
 							html.setFile("data/html/villagemaster/SubClass_NoKamael.htm");
 					}
 					else
 					{
-						if (player.getRace() != Race.Kamael)
+						if (player.getRace() != Race.Kamael || Config.ALT_GAME_SUBCLASS_EVERYWHERE)
 							html.setFile("data/html/villagemaster/SubClass.htm");
 						else
 							html.setFile("data/html/villagemaster/SubClass_NoOther.htm");
@@ -268,7 +268,7 @@ public final class L2VillageMasterInstance extends L2NpcInstance
 					{
 						final StringBuilder content2 = StringUtil.startAppend(200);
 
-						if (checkVillageMaster(player.getBaseClass()))
+						if (checkVillageMaster(player.getBaseClass()) || Config.ALT_GAME_SUBCLASS_EVERYWHERE)
 						{
 							StringUtil.append(content2,
 									"<a action=\"bypass -h npc_%objectId%_Subclass 5 0\">",
@@ -279,7 +279,7 @@ public final class L2VillageMasterInstance extends L2NpcInstance
 						for (Iterator<SubClass> subList = iterSubClasses(player); subList.hasNext();)
 						{
 							SubClass subClass = subList.next();
-							if (checkVillageMaster(subClass.getClassDefinition()))
+							if (checkVillageMaster(subClass.getClassDefinition()) || Config.ALT_GAME_SUBCLASS_EVERYWHERE)
 							{
 								StringUtil.append(content2,
 										"<a action=\"bypass -h npc_%objectId%_Subclass 5 ",
@@ -454,14 +454,14 @@ public final class L2VillageMasterInstance extends L2NpcInstance
 
 					if (paramOne == 0)
 					{
-						if (!checkVillageMaster(player.getBaseClass()))
+						if (!checkVillageMaster(player.getBaseClass()) && !Config.ALT_GAME_SUBCLASS_EVERYWHERE)
 							return;
 					}
 					else
 					{
 						try
 						{
-							if (!checkVillageMaster(player.getSubClasses().get(paramOne).getClassDefinition()))
+							if (!checkVillageMaster(player.getSubClasses().get(paramOne).getClassDefinition()) && !Config.ALT_GAME_SUBCLASS_EVERYWHERE)
 								return;
 						}
 						catch (NullPointerException e)
