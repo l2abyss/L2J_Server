@@ -46,21 +46,10 @@ public class ClanBBSManager extends BaseBBSManager
 	{
 		if (command.equals("_bbsclan"))
 		{
-			if (activeChar.getClan() != null)
-			{
-				if (activeChar.getClan().getLevel() >= 2)
-				{
-					clanhome(activeChar);
-				}
-				else
-				{
-					clanlist(activeChar, 1);
-				}
-			}
-			else
-			{
+			if (activeChar.getClan() == null || activeChar.getClan().getLevel() < 2)
 				clanlist(activeChar, 1);
-			}
+			else
+				clanhome(activeChar);
 		}
 		else if (command.startsWith("_bbsclan_clanlist"))
 		{
