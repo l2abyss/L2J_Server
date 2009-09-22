@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="L2_GameServer" default="dist" basedir=".">
+<project name="L2J_Server" default="dist" basedir=".">
     <description>
         This script will build the L2J server.
         
@@ -39,7 +39,7 @@
         	<include name="jython.jar"/>
         	<include name="jython-engine.jar"/>
         	<include name="javolution-5.3.1.jar"/>
-        	<include name="mysql-connector-java-5.1.8-bin.jar"/>
+        	<include name="mysql-connector-java-5.1.9-bin.jar"/>
         	<include name="mmocore.jar"/>
         	<include name="trove-2.0.4.jar"/>
         </fileset>
