@@ -67,7 +67,16 @@ public final class UserInfo extends L2GameServerPacket
 {
     private static final String _S__04_USERINFO = "[S] 32 UserInfo";
     private L2PcInstance _activeChar;
-    private int _runSpd, _walkSpd, _swimRunSpd, _swimWalkSpd, _flyRunSpd,_flyWalkSpd, _relation;
+    
+    /**
+     * Run speed, swimming run speed and flying run speed
+     */
+    private int _runSpd;
+    /**
+     * Walking speed, swimming walking speed and flying walking speed
+     */
+    private int _walkSpd;
+    private int _relation;
     private float _moveMultiplier;
 
     /**
@@ -80,8 +89,6 @@ public final class UserInfo extends L2GameServerPacket
         _moveMultiplier = _activeChar.getMovementSpeedMultiplier();
         _runSpd = (int) (_activeChar.getRunSpeed() / _moveMultiplier);
         _walkSpd = (int) (_activeChar.getWalkSpeed() / _moveMultiplier);
-        _swimRunSpd = _flyRunSpd = _runSpd;
-        _swimWalkSpd = _flyWalkSpd = _walkSpd;
         _relation = _activeChar.isClanLeader() ? 0x40 : 0;
         if (_activeChar.getSiegeState() == 1) _relation |= 0x180;
         if (_activeChar.getSiegeState() == 2) _relation |= 0x80;
@@ -220,12 +227,12 @@ public final class UserInfo extends L2GameServerPacket
 
         writeD(_runSpd);
         writeD(_walkSpd);
-        writeD(_swimRunSpd); // swimspeed
-        writeD(_swimWalkSpd); // swimspeed
+        writeD(_runSpd); // swim run speed
+        writeD(_walkSpd); // swim walk speed
         writeD(0);
         writeD(0);
-        writeD(_activeChar.isFlying() ? _flyRunSpd : 0); // fly speed
-        writeD(_activeChar.isFlying() ? _flyWalkSpd : 0); // fly speed
+        writeD(_activeChar.isFlying() ? _runSpd : 0); // fly speed
+        writeD(_activeChar.isFlying() ? _walkSpd : 0); // fly speed
         writeF(_moveMultiplier);
         writeF(_activeChar.getAttackSpeedMultiplier());
 

@@ -56,7 +56,15 @@ public class CharInfo extends L2GameServerPacket
 	private Inventory _inv;
 	private int _x, _y, _z, _heading;
 	private int _mAtkSpd, _pAtkSpd;
-	private int _runSpd, _walkSpd, _swimRunSpd, _swimWalkSpd, _flRunSpd, _flWalkSpd, _flyRunSpd, _flyWalkSpd;
+	
+	/**
+     * Run speed, swimming run speed and flying run speed
+     */
+	private int _runSpd;
+	/**
+     * Walking speed, swimming walking speed and flying walking speed
+     */
+	private int _walkSpd;
     private float _moveMultiplier, _attackSpeedMultiplier;
 
 	/**
@@ -74,10 +82,8 @@ public class CharInfo extends L2GameServerPacket
     	_pAtkSpd = _activeChar.getPAtkSpd();
     	_moveMultiplier  = _activeChar.getMovementSpeedMultiplier();
     	_attackSpeedMultiplier = _activeChar.getAttackSpeedMultiplier();
-    	_runSpd         = (int)(_activeChar.getRunSpeed()/_moveMultiplier);
-    	_walkSpd        = (int)(_activeChar.getWalkSpeed()/_moveMultiplier);    
-        _swimRunSpd = _flRunSpd = _flyRunSpd = _runSpd;
-        _swimWalkSpd = _flWalkSpd = _flyWalkSpd = _walkSpd;
+    	_runSpd = (int)(_activeChar.getRunSpeed()/_moveMultiplier);
+    	_walkSpd = (int)(_activeChar.getWalkSpeed()/_moveMultiplier);
         _invisible = cha.getAppearance().getInvisible();
     }
 
@@ -112,12 +118,12 @@ public class CharInfo extends L2GameServerPacket
 				writeD(_pAtkSpd);
 				writeD(_runSpd); // TODO: the order of the speeds should be confirmed
 				writeD(_walkSpd);
-				writeD(_swimRunSpd); // swim speed
-	            writeD(_swimWalkSpd); // swim speed
-				writeD(_flRunSpd);
-				writeD(_flWalkSpd);
-				writeD(_flyRunSpd);
-				writeD(_flyWalkSpd);
+				writeD(_runSpd); // swim run speed
+	            writeD(_walkSpd); // swim walk speed
+				writeD(_runSpd); // fly run speed
+				writeD(_walkSpd); // fly walk speed
+				writeD(_runSpd); // fly run speed ?
+				writeD(_walkSpd); // fly walk speed ?
 				writeF(_moveMultiplier);
 				writeF(_attackSpeedMultiplier);
 				writeF(template.collisionRadius);
@@ -264,12 +270,12 @@ public class CharInfo extends L2GameServerPacket
 	
 			writeD(_runSpd); // TODO: the order of the speeds should be confirmed
 			writeD(_walkSpd);
-	        writeD(_swimRunSpd); // swim speed
-	        writeD(_swimWalkSpd); // swim speed
-			writeD(_flRunSpd);
-			writeD(_flWalkSpd);
-			writeD(_flyRunSpd);
-			writeD(_flyWalkSpd);
+	        writeD(_runSpd); // swim run speed
+	        writeD(_walkSpd); // swim walk speed
+			writeD(_runSpd); // fly run speed
+			writeD(_walkSpd); // fly walk speed
+			writeD(_runSpd); // fly run speed ?
+			writeD(_walkSpd); // fly walk speed ?
 			writeF(_activeChar.getMovementSpeedMultiplier()); // _activeChar.getProperMultiplier()
 			writeF(_activeChar.getAttackSpeedMultiplier()); // _activeChar.getAttackSpeedMultiplier()
             
