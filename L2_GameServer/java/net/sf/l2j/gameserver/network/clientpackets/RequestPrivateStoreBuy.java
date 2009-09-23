@@ -83,6 +83,12 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 			return;
 		}
 
+		if (!player.getFloodProtectors().getTransaction().tryPerformAction("privatestorebuy"))
+		{
+			player.sendMessage("You buying items too fast.");
+			return;
+		}
+
 		L2Object object = L2World.getInstance().findObject(_storePlayerId);
 		if (!(object instanceof L2PcInstance))
 			return;

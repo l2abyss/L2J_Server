@@ -63,6 +63,10 @@ public final class FloodProtectors
 	 * Multisell flood protector.
 	 */
 	private final FloodProtectorAction _multiSell;
+	/**
+	 * Transaction flood protector.
+	 */
+	private final FloodProtectorAction _transaction;
 	
 	/**
 	 * Creates new instance of FloodProtectors.
@@ -83,6 +87,7 @@ public final class FloodProtectors
 		_dropItem = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_DROP_ITEM);
 		_serverBypass = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_SERVER_BYPASS);
 		_multiSell = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_MULTISELL);
+		_transaction = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_TRANSACTION);
 	}
 	
 	/**
@@ -183,6 +188,16 @@ public final class FloodProtectors
 	public FloodProtectorAction getMultiSell()
 	{
 		return _multiSell;
+	}
+
+	/**
+	 * Returns {@link #_transaction}.
+	 * 
+	 * @return {@link #_transaction}
+	 */
+	public FloodProtectorAction getTransaction()
+	{
+		return _transaction;
 	}
 
 }

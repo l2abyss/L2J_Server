@@ -532,6 +532,8 @@ public final class Config
 		new FloodProtectorConfig("ServerBypassFloodProtector");
 	public static final FloodProtectorConfig FLOOD_PROTECTOR_MULTISELL =
 		new FloodProtectorConfig("MultiSellFloodProtector");
+	public static final FloodProtectorConfig FLOOD_PROTECTOR_TRANSACTION =
+		new FloodProtectorConfig("TransactionFloodProtector");
 
 
 	//--------------------------------------------------
@@ -2481,6 +2483,7 @@ public final class Config
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_DROP_ITEM, "DropItem", "10");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_SERVER_BYPASS, "ServerBypass", "5");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_MULTISELL, "MultiSell", "1");
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_TRANSACTION, "Transaction", "10");
 	}
 	
 	/**

@@ -78,6 +78,12 @@ public final class RequestPackageSend extends L2GameClientPacket
 		if (player == null)
 			return;
 
+		if (!player.getFloodProtectors().getTransaction().tryPerformAction("freight"))
+		{
+			player.sendMessage("You using freight too fast.");
+			return;
+		}
+
 		// Alt game - Karma punishment
 		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_USE_WAREHOUSE && player.getKarma() > 0)
 			return;
