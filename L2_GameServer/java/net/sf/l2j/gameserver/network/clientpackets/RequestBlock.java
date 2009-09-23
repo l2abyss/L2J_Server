@@ -35,7 +35,6 @@ public final class RequestBlock extends L2GameClientPacket
 
    private String _name;
    private Integer _type;
-   private L2PcInstance _target;
 
    @Override
 protected void readImpl()
@@ -45,14 +44,14 @@ protected void readImpl()
        if( _type == BLOCK || _type == UNBLOCK )
        {
            _name = readS();
-           _target = L2World.getInstance().getPlayer(_name);
        }
    }
 
    @Override
 protected void runImpl()
    {
-       L2PcInstance activeChar = getClient().getActiveChar();
+       final L2PcInstance activeChar = getClient().getActiveChar();
+       final L2PcInstance target = L2World.getInstance().getPlayer(_name);
 
        if (activeChar == null)
     	    return;
@@ -61,14 +60,15 @@ protected void runImpl()
        {
            case BLOCK:
            case UNBLOCK:
-               if (_target == null)
+        	   // can't use block/unblock for locating invisible characters
+               if (target == null || target.getAppearance().getInvisible())
                {
                    // Incorrect player name.
                    activeChar.sendPacket(new SystemMessage(SystemMessageId.FAILED_TO_REGISTER_TO_IGNORE_LIST));
                    return;
                }
 
-               if (_target.isGM())
+               if (target.isGM())
                {
                    // Cannot block a GM character.
                    activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_MAY_NOT_IMPOSE_A_BLOCK_ON_GM));
@@ -76,9 +76,9 @@ protected void runImpl()
                }
 
                if (_type == BLOCK)
-                   BlockList.addToBlockList(activeChar, _target);
+                   BlockList.addToBlockList(activeChar, target);
                else
-                   BlockList.removeFromBlockList(activeChar, _target);
+                   BlockList.removeFromBlockList(activeChar, target);
                break;
            case BLOCKLIST:
                BlockList.sendListToOwner(activeChar);

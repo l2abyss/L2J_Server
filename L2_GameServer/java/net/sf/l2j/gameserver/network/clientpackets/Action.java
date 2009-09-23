@@ -100,6 +100,15 @@ public final class Action extends L2GameClientPacket
 			return;
 		}
 
+		// Only GMs can directly interact with invisible characters
+		if (obj instanceof L2PcInstance
+				&& (((L2PcInstance)obj).getAppearance().getInvisible())
+				&& !activeChar.isGM())
+		{
+			getClient().sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+
 		// Check if the target is valid, if the player haven't a shop or isn't the requester of a transaction (ex : FriendInvite, JoinAlly, JoinParty...)
 		if (activeChar.getActiveRequester() == null)
 		{

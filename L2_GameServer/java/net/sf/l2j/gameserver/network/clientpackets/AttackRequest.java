@@ -52,15 +52,23 @@ public final class AttackRequest extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null) return;
 		// avoid using expensive operations if not needed
-		L2Object target;
+		final L2Object target;
 		if (activeChar.getTargetId() == _objectId)
 			target = activeChar.getTarget();
 		else
 			target = L2World.getInstance().findObject(_objectId);
-		if (target == null) return;
+		if (target == null)
+			return;
+
+		// Only GMs can directly attack invisible characters
+		if (target instanceof L2PcInstance
+				&& ((L2PcInstance)target).getAppearance().getInvisible()
+				&& !activeChar.isGM())
+			return;
+
 		if (activeChar.getTarget() != target)
 		{
 			target.onAction(activeChar);
