@@ -6269,6 +6269,7 @@ public abstract class L2Character extends L2Object
 				case DRAIN_SOUL:
 				case SOW:
 				case CHARGEDAM:
+				case SPOIL:
 					if (getTarget() instanceof L2Character && getTarget() != this && target == getTarget())
 						getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, getTarget());
 					break;
