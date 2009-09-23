@@ -64,6 +64,10 @@ public class EffectHide extends L2Effect
 			activeChar.getAppearance().setInvisible();
 			activeChar.startAbnormalEffect(L2Character.ABNORMAL_EFFECT_STEALTH);
 
+			if (activeChar.getAI().getNextIntention() != null
+					&& activeChar.getAI().getNextIntention().getCtrlIntention() == CtrlIntention.AI_INTENTION_ATTACK)
+				activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+
 			L2GameServerPacket del = new DeleteObject(activeChar);
 			for (L2Character target : activeChar.getKnownList().getKnownCharacters())
 			{
