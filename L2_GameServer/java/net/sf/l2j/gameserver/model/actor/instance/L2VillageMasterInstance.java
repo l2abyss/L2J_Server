@@ -182,7 +182,7 @@ public final class L2VillageMasterInstance extends L2NpcInstance
 
 			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 
-			if (player.isTransformed())
+			if (player.getTransformation() != null)
 			{
 				html.setFile("data/html/villagemaster/SubClass_NoTransformed.htm");
 				player.sendPacket(html);
