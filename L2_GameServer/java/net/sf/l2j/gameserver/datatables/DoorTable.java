@@ -307,7 +307,7 @@ public class DoorTable
 		}
 
 		Collection<L2DoorInstance> allDoors;
-		if (instanceId > 0)
+		if (instanceId > 0 && InstanceManager.getInstance().getInstance(instanceId) != null)
 			allDoors = InstanceManager.getInstance().getInstance(instanceId).getDoors();
 		else
 			allDoors = _staticItems.values();
