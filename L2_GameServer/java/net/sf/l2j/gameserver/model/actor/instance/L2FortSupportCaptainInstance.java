@@ -36,7 +36,7 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance
         super(objectID, template);
     }
 
-    private final int[] TalismanIds =
+    private final static int[] TalismanIds =
 	{
 		9914,9915,9917,9918,9919,9920,9921,9922,9923,9924,
 		9926,9927,9928,9930,9931,9932,9933,9934,9935,9936,

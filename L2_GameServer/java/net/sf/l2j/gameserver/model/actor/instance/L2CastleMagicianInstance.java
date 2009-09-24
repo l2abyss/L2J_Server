@@ -36,7 +36,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance
 	protected static final int COND_BUSY_BECAUSE_OF_SIEGE = 1;
 	protected static final int COND_OWNER = 2;
 
-	private final int[] TalismanIds =
+	private final static int[] TalismanIds =
 	{
 		9914,9915,9917,9918,9919,9920,9921,9922,9923,9924,
 		9926,9927,9928,9930,9931,9932,9933,9934,9935,9936,
