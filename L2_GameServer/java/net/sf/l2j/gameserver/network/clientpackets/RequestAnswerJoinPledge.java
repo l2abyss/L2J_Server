@@ -39,7 +39,7 @@ public final class RequestAnswerJoinPledge extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		_answer  = readD();
+		_answer = readD();
 	}
 
 	@Override
@@ -47,15 +47,11 @@ public final class RequestAnswerJoinPledge extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
-		{
 		    return;
-		}
 
 		L2PcInstance requestor = activeChar.getRequest().getPartner();
-        if (requestor == null)
-        {
-        	return;
-        }
+		if (requestor == null)
+			return;
 
 		if (_answer == 0)
 		{
@@ -70,18 +66,15 @@ public final class RequestAnswerJoinPledge extends L2GameClientPacket
 		}
 		else
 		{
-	        if (!(requestor.getRequest().getRequestPacket() instanceof RequestJoinPledge))
-	        {
-	        	return; // hax
-	        }
+			if (!(requestor.getRequest().getRequestPacket() instanceof RequestJoinPledge))
+				return; // hax
 
 			RequestJoinPledge requestPacket = (RequestJoinPledge) requestor.getRequest().getRequestPacket();
-	        L2Clan clan = requestor.getClan();
+			L2Clan clan = requestor.getClan();
 			// we must double check this cause during response time conditions can be changed, i.e. another player could join clan
 			if (clan.checkClanJoinCondition(requestor, activeChar, requestPacket.getPledgeType()))
-	        {
-				JoinPledge jp = new JoinPledge(requestor.getClanId());
-				activeChar.sendPacket(jp);
+			{
+				activeChar.sendPacket(new JoinPledge(requestor.getClanId()));
 
 				activeChar.setPledgeType(requestPacket.getPledgeType());
 				if(requestPacket.getPledgeType() == L2Clan.SUBUNIT_ACADEMY)
@@ -90,9 +83,8 @@ public final class RequestAnswerJoinPledge extends L2GameClientPacket
 					activeChar.setLvlJoinedAcademy(activeChar.getLevel());
 				}
 				else
-				{
 					activeChar.setPowerGrade(5); // new member starts at 5, not confirmed
-				}
+
 				clan.addClanMember(activeChar);
 				activeChar.setClanPrivileges(activeChar.getClan().getRankPrivs(activeChar.getPowerGrade()));
 
