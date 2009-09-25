@@ -1735,6 +1735,11 @@ public abstract class Inventory extends ItemContainer
 		setPaperdollItem(PAPERDOLL_DECO1, item);
 	}
 
+	public int getCloakStatus()
+	{
+		return (int)getOwner().getStat().calcStat(Stats.CLOAK_SLOT, 0, null, null);
+	}
+
 	/**
 	 * Re-notify to paperdoll listeners every equipped item
 	 */
