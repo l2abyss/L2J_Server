@@ -584,6 +584,7 @@ public final class Config
 	public static int TVT_EVENT_EFFECTS_REMOVAL;
 	public static Map<Integer, Integer> TVT_EVENT_FIGHTER_BUFFS;
 	public static Map<Integer, Integer> TVT_EVENT_MAGE_BUFFS;
+	public static boolean TVT_ALLOW_VOICED_COMMAND;
 	public static boolean L2JMOD_ALLOW_WEDDING;
 	public static int L2JMOD_WEDDING_PRICE;
 	public static boolean L2JMOD_WEDDING_PUNISH_INFIDELITY;
@@ -1826,6 +1827,7 @@ public final class Config
 							TVT_EVENT_RESPAWN_TELEPORT_DELAY = Integer.parseInt(L2JModSettings.getProperty("TvTEventRespawnTeleportDelay", "20"));
 							TVT_EVENT_START_LEAVE_TELEPORT_DELAY = Integer.parseInt(L2JModSettings.getProperty("TvTEventStartLeaveTeleportDelay", "20"));
 							TVT_EVENT_EFFECTS_REMOVAL = Integer.parseInt(L2JModSettings.getProperty("TvTEventEffectsRemoval", "0"));
+							TVT_ALLOW_VOICED_COMMAND = Boolean.parseBoolean(L2JModSettings.getProperty("TvTAllowVoicedInfoCommand", "false"));
 							TVT_EVENT_TEAM_1_NAME = L2JModSettings.getProperty("TvTEventTeam1Name", "Team1");
 							propertySplit = L2JModSettings.getProperty("TvTEventTeam1Coordinates", "0,0,0").split(",");
 							if (propertySplit.length < 3)
