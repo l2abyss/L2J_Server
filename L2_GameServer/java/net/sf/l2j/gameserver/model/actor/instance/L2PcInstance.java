@@ -4322,8 +4322,10 @@ public final class L2PcInstance extends L2Playable
 		su.addAttribute(StatusUpdate.MAX_CP, 	   getMaxCp());
 		sendPacket(su);
 
+		final boolean needCpUpdate = needCpUpdate(352);
+		final boolean needHpUpdate = needHpUpdate(352);
 		// Check if a party is in progress and party window update is usefull
-		if (isInParty() && (needCpUpdate(352) || super.needHpUpdate(352) || needMpUpdate(352)))
+		if (isInParty() && (needCpUpdate || needHpUpdate || needMpUpdate(352)))
 		{
 			if (Config.DEBUG)
 				_log.fine("Send status for party window of " + getObjectId() + "(" + getName() + ") to his party. CP: " + getCurrentCp() + " HP: " + getCurrentHp() + " MP: " + getCurrentMp());
@@ -4332,8 +4334,10 @@ public final class L2PcInstance extends L2Playable
 			getParty().broadcastToPartyMembers(this, update);
 		}
 
-        if (isInOlympiadMode() && isOlympiadStart())
+        if (isInOlympiadMode() && isOlympiadStart() && (needCpUpdate || needHpUpdate))
         {
+        	ExOlympiadUserInfo olyInfo = new ExOlympiadUserInfo(this, 2);
+
         	//synchronized (getKnownList().getKnownPlayers())
         	if (Olympiad.getInstance().getPlayers(_olympiadGameId) != null)
 			{
@@ -4341,17 +4345,19 @@ public final class L2PcInstance extends L2Playable
 				{
 					if (player != null && player != this)
 					{
-						player.sendPacket(new ExOlympiadUserInfo(this, 2));
+						player.sendPacket(olyInfo);
 					}
 				}
 			}
             if(Olympiad.getInstance().getSpectators(_olympiadGameId) != null)
             {
-                for(L2PcInstance spectator : Olympiad.getInstance().getSpectators(_olympiadGameId))
+            	olyInfo = new ExOlympiadUserInfo(this, getOlympiadSide());
+
+            	for(L2PcInstance spectator : Olympiad.getInstance().getSpectators(_olympiadGameId))
                 {
                     if (spectator == null)
                     	continue;
-                    spectator.sendPacket(new ExOlympiadUserInfo(this, getOlympiadSide()));
+                    spectator.sendPacket(olyInfo);
                 }
             }
         }
