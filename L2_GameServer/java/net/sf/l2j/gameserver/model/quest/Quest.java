@@ -1532,6 +1532,8 @@ public class Quest extends ManagedScript
 		
 		for (L2PcInstance partyMember : party.getPartyMembers())
 		{
+			if (partyMember == null)
+				continue;
 			temp = partyMember.getQuestState(getName());
 			if ((temp != null) && (temp.getState() == state) && partyMember.isInsideRadius(target, 1500, true, false))
 				candidates.add(partyMember);
