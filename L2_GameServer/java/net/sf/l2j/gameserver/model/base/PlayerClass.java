@@ -156,8 +156,8 @@ public enum PlayerClass
 	archmage(Human, Mystic, Fourth),
 	soultaker(Human, Mystic, Fourth),
 	arcanaLord(Human, Mystic, Fourth),
-	cardinal(Human, Mystic, Fourth),
-	hierophant(Human, Mystic, Fourth),
+	cardinal(Human, Priest, Fourth),
+	hierophant(Human, Priest, Fourth),
 	
 	evaTemplar(Elf, Fighter, Fourth),
 	swordMuse(Elf, Fighter, Fourth),
@@ -165,7 +165,7 @@ public enum PlayerClass
 	moonlightSentinel(Elf, Fighter, Fourth),
 	mysticMuse(Elf, Mystic, Fourth),
 	elementalMaster(Elf, Mystic, Fourth),
-	evaSaint(Elf, Mystic, Fourth),
+	evaSaint(Elf, Priest, Fourth),
 	
 	shillienTemplar(DarkElf, Fighter, Fourth),
 	spectralDancer(DarkElf, Fighter, Fourth),
@@ -173,7 +173,7 @@ public enum PlayerClass
 	ghostSentinel(DarkElf, Fighter, Fourth),
 	stormScreamer(DarkElf, Mystic, Fourth),
 	spectralMaster(DarkElf, Mystic, Fourth),
-	shillienSaint(DarkElf, Mystic, Fourth),
+	shillienSaint(DarkElf, Priest, Fourth),
 	
 	titan(Orc, Fighter, Fourth),
 	grandKhauatari(Orc, Fighter, Fourth),
