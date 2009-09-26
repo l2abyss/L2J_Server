@@ -227,7 +227,7 @@ public class L2Party {
 	{
 		for (L2PcInstance member : getPartyMembers())
 		{
-			if (!BlockList.isBlocked(member, broadcaster))
+			if (member != null && !BlockList.isBlocked(member, broadcaster))
 				member.sendPacket(msg);
 		}
 	}
@@ -259,7 +259,7 @@ public class L2Party {
         L2Summon summon;
         for (L2PcInstance pMember : getPartyMembers())
         {
-            if ((summon = pMember.getPet()) != null)
+            if (pMember != null && (summon = pMember.getPet()) != null)
             {
                 player.sendPacket(new ExPartyPetWindowAdd(summon));
             }
@@ -290,13 +290,16 @@ public class L2Party {
 		// update partySpelled
 		for(L2PcInstance member : getPartyMembers())
         {
-			member.updateEffectIcons(true); // update party icons only
-            summon = member.getPet();
-            member.broadcastUserInfo();
-            if (summon != null)
-            {
-                summon.updateEffectIcons();
-            }
+			if (member != null)
+			{
+				member.updateEffectIcons(true); // update party icons only
+	            summon = member.getPet();
+	            member.broadcastUserInfo();
+	            if (summon != null)
+	            {
+	                summon.updateEffectIcons();
+	            }
+			}
         }
 
 		if (isInDimensionalRift())
