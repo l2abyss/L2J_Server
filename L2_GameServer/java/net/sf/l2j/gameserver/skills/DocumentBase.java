@@ -343,8 +343,11 @@ abstract class DocumentBase
 		String activationElements = null;
 		if (attrs.getNamedItem("activationElements") != null)
 			activationElements = getValue(attrs.getNamedItem("activationElements").getNodeValue(), template);
+		boolean pvpOnly = false;
+		if (attrs.getNamedItem("pvpChanceOnly") != null)
+			pvpOnly = Boolean.parseBoolean(getValue(attrs.getNamedItem("pvpChanceOnly").getNodeValue(), template));
 		
-		ChanceCondition chance = ChanceCondition.parse(chanceCond, activationChance, activationElements);
+		ChanceCondition chance = ChanceCondition.parse(chanceCond, activationChance, activationElements, pvpOnly);
 		
 		if (chance == null && isChanceSkillTrigger)
 			throw new NoSuchElementException("Invalid chance condition: " + chanceCond + " "

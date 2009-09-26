@@ -19,6 +19,7 @@ import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.handler.ISkillHandler;
 import net.sf.l2j.gameserver.handler.SkillHandler;
 import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillLaunched;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.skills.effects.EffectChanceSkillTrigger;
@@ -104,9 +105,10 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 
 	public void onEvent(int event, L2Character target, byte element)
 	{
+		final boolean playable = target instanceof L2Playable;
 		for (FastMap.Entry<IChanceSkillTrigger, ChanceCondition> e = head(), end = tail(); (e = e.getNext()) != end;)
 		{
-			if (e.getValue() != null && e.getValue().trigger(event, element))
+			if (e.getValue() != null && e.getValue().trigger(event, element, playable))
 			{
 				if (e.getKey() instanceof L2Skill)
 					makeCast((L2Skill)e.getKey(), target);
@@ -120,7 +122,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 	{
 		try
         {
-			if(skill.getWeaponDependancy(_owner,true))
+			if(skill.getWeaponDependancy(_owner,true) && skill.checkCondition(_owner, target, false))
 			{
 				if(skill.triggersChanceSkill()) //skill will trigger another skill, but only if its not chance skill
 			    {

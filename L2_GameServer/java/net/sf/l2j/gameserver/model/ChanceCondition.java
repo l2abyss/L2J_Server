@@ -87,12 +87,14 @@ public final class ChanceCondition
 	private final TriggerType _triggerType;
 	private final int _chance;
 	private final byte[] _elements;
+	private final boolean _pvpOnly;
 
-	private ChanceCondition(TriggerType trigger, int chance, byte[] elements)
+	private ChanceCondition(TriggerType trigger, int chance, byte[] elements, boolean pvpOnly)
 	{
 		_triggerType = trigger;
 		_chance = chance;
 		_elements = elements;
+		_pvpOnly = pvpOnly;
 	}
 
 	public static ChanceCondition parse(StatsSet set)
@@ -102,9 +104,10 @@ public final class ChanceCondition
 			TriggerType trigger = set.getEnum("chanceType", TriggerType.class, null);
 			int chance = set.getInteger("activationChance", 0);
 			String elements = set.getString("activationElements", null);
+			boolean pvpOnly = set.getBool("pvpChanceOnly", false);
 
 			if (trigger != null && chance > 0)
-				return new ChanceCondition(trigger, chance, parseElements(elements));
+				return new ChanceCondition(trigger, chance, parseElements(elements), pvpOnly);
 		}
 		catch (Exception e)
 		{
@@ -113,7 +116,7 @@ public final class ChanceCondition
 		return null;
 	}
 
-	public static ChanceCondition parse(String chanceType, int chance, String elements)
+	public static ChanceCondition parse(String chanceType, int chance, String elements, boolean pvpOnly)
 	{
 		try
 		{
@@ -123,7 +126,7 @@ public final class ChanceCondition
 			TriggerType trigger = Enum.valueOf(TriggerType.class, chanceType);
 			
 			if (trigger != null)
-				return new ChanceCondition(trigger, chance, parseElements(elements));
+				return new ChanceCondition(trigger, chance, parseElements(elements), pvpOnly);
 		}
 		catch (Exception e)
 		{
@@ -147,8 +150,11 @@ public final class ChanceCondition
 		return elements;
 	}
 
-	public boolean trigger(int event, byte element)
+	public boolean trigger(int event, byte element, boolean playable)
 	{
+		if (_pvpOnly && !playable)
+			return false;
+
 		if (_elements != null && Arrays.binarySearch(_elements, element) < 0)
 			return false;
 
