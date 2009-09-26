@@ -1213,9 +1213,9 @@ public final class Formulas
 				&& (target instanceof L2Playable))
 		{
 			if(skill == null)
-				defence *= attacker.calcStat(Stats.PVP_PHYSICAL_DEF, 1, null, null);
+				defence *= target.calcStat(Stats.PVP_PHYSICAL_DEF, 1, null, null);
 			else
-				defence *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);	
+				defence *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);	
 		}
 
 		if(ss)
@@ -1282,9 +1282,9 @@ public final class Formulas
 				&& (target instanceof L2Playable))
 		{
 			if(skill == null)
-				defence *= attacker.calcStat(Stats.PVP_PHYSICAL_DEF, 1, null, null);
+				defence *= target.calcStat(Stats.PVP_PHYSICAL_DEF, 1, null, null);
 			else
-				defence *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);	
+				defence *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);	
 		}
 
 		switch (shld)
@@ -1489,9 +1489,9 @@ public final class Formulas
 				&& (target instanceof L2Playable))
 		{
 			if(skill.isMagic())
-				mDef *= attacker.calcStat(Stats.PVP_MAGICAL_DEF, 1, null, null);
+				mDef *= target.calcStat(Stats.PVP_MAGICAL_DEF, 1, null, null);
 			else
-				mDef *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);
+				mDef *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);
 		}
 
 		switch (shld)
