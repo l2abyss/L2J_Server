@@ -37,6 +37,7 @@ public class L2Trap extends L2Character
 	public L2Trap(int objectId, L2CharTemplate template, L2PcInstance owner)
 	{
 		super(objectId, template);
+		setIsInvul(false);
 		_owner = owner;
 		setXYZInvisible(owner.getX(), owner.getY(), owner.getZ());
 	}

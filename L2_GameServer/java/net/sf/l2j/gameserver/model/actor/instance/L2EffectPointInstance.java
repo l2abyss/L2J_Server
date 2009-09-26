@@ -27,6 +27,7 @@ public class L2EffectPointInstance extends L2Npc
     public L2EffectPointInstance(int objectId, L2NpcTemplate template, L2Character owner)
     {
     	super(objectId, template);
+    	setIsInvul(false);
     	_owner = owner;
     }
     

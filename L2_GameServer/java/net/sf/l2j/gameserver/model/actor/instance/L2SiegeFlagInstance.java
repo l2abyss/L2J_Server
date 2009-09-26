@@ -62,6 +62,7 @@ public class L2SiegeFlagInstance extends L2Npc
 		}
 		_isAdvanced = advanced;
 		getStatus();
+		setIsInvul(false);
     }
     
     /**

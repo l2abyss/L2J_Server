@@ -61,26 +61,12 @@ import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.model.actor.instance.L2AirShipInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2ArtefactInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2ControlTowerInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2DecoyInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2EffectPointInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2FortCommanderInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2FortSiegeGuardInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2FriendlyMobInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2GuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MinionInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2NpcWalkerInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2RiftInvaderInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2SiegeFlagInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2SiegeSummonInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2TrapInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance.SkillDat;
 import net.sf.l2j.gameserver.model.actor.knownlist.CharKnownList;
 import net.sf.l2j.gameserver.model.actor.position.CharPosition;
@@ -394,16 +380,7 @@ public abstract class L2Character extends L2Object
 			Formulas.addFuncsToNewCharacter(this);
 		}
 
-		if (!(this instanceof L2PcInstance) && !(this instanceof L2MonsterInstance) &&
-			!(this instanceof L2GuardInstance) && !(this instanceof L2SiegeGuardInstance) &&
-			!(this instanceof L2ControlTowerInstance) && !(this instanceof L2DoorInstance) &&
-			!(this instanceof L2TrapInstance) && !(this instanceof L2FriendlyMobInstance) &&
-			!(this instanceof L2DecoyInstance) && !(this instanceof L2SiegeSummonInstance) &&
-			!(this instanceof L2PetInstance) && !(this instanceof L2SummonInstance) &&
-			!(this instanceof L2SiegeFlagInstance) && !(this instanceof L2EffectPointInstance) &&
-			!(this instanceof L2FortCommanderInstance) && !(this instanceof L2NpcInstance) &&
-			!(this instanceof L2FortSiegeGuardInstance))
-			setIsInvul(true);
+		setIsInvul(true);
 	}
 
 	protected void initCharStatusUpdateValues()

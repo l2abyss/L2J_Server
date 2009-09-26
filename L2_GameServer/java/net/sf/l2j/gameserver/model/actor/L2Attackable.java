@@ -277,6 +277,7 @@ public class L2Attackable extends L2Npc
 	public L2Attackable(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setIsInvul(false);
 		_mustGiveExpSp = true;
 	}
 

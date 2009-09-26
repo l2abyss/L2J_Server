@@ -35,6 +35,7 @@ public abstract class L2Decoy extends L2Character
         super(objectId, template);
         _owner = owner;
         setXYZInvisible(owner.getX(), owner.getY(), owner.getZ());
+        setIsInvul(false);
     }
     
     @Override

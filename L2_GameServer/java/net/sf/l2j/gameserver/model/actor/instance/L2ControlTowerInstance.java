@@ -35,6 +35,7 @@ public class L2ControlTowerInstance extends L2Npc
 	public L2ControlTowerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setIsInvul(false);
 	}
 
     @Override
