@@ -121,23 +121,29 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 	private void makeCast(L2Skill skill, L2Character target)
 	{
 		try
-        {
+		{
 			if(skill.getWeaponDependancy(_owner,true) && skill.checkCondition(_owner, target, false))
 			{
 				if(skill.triggersChanceSkill()) //skill will trigger another skill, but only if its not chance skill
-			    {
+				{
 					skill = SkillTable.getInstance().getInfo(skill.getTriggeredChanceId(), skill.getTriggeredChanceLevel());
-			        if(skill == null || skill.getSkillType() == L2SkillType.NOTDONE)
-			        	return;
-			    } 
-				
+					if(skill == null || skill.getSkillType() == L2SkillType.NOTDONE)
+						return;
+				} 
+
+				if (_owner.isSkillDisabled(skill.getId()))
+					return;
+
+				if (skill.getReuseDelay() > 0)
+					_owner.disableSkill(skill.getId(), skill.getReuseDelay());
+
 				L2Object[] targets = skill.getTargetList(_owner, false, target);
-				
+
 				if (targets.length == 0)
 					return;
-				
+
 				L2Character firstTarget = (L2Character)targets[0];
-				
+
 				ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
 
 				_owner.broadcastPacket(new MagicSkillLaunched(_owner, skill.getDisplayId(), skill.getLevel(), targets));
@@ -166,16 +172,21 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 
 			L2Skill triggered = SkillTable.getInstance().getInfo(effect.getTriggeredChanceId(), effect.getTriggeredChanceLevel());
 
-			if (triggered == null || triggered.getSkillType() == L2SkillType.NOTDONE)
+			if (triggered == null
+					|| triggered.getSkillType() == L2SkillType.NOTDONE
+					|| _owner.isSkillDisabled(triggered.getId()))
 				return;
 
+			if (triggered.getReuseDelay() > 0)
+				_owner.disableSkill(triggered.getId(), triggered.getReuseDelay());
+
 			L2Object[] targets = triggered.getTargetList(_owner, false, target);
-			
+
 			if (targets.length == 0)
 				return;
-			
+
 			L2Character firstTarget = (L2Character)targets[0];
-			
+
 			ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(triggered.getSkillType());
 
 			_owner.broadcastPacket(new MagicSkillLaunched(_owner, triggered.getDisplayId(), triggered.getLevel(), targets));
