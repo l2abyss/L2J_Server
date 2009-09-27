@@ -78,7 +78,6 @@ public class MonRaceInfo extends L2GameServerPacket
             writeF(_monsters[i].getTemplate().collisionHeight);                  //coll. height
             writeF(_monsters[i].getTemplate().collisionRadius);                  //coll. radius
             writeD(120);            // ?? unknown
-            //*
             for (int j=0; j<20; j++)
             {
                 if  (_unknown1 == 0 )
@@ -87,15 +86,9 @@ public class MonRaceInfo extends L2GameServerPacket
                 }
                 else
                     writeC(0);
-            }//*/
-            /*
-            writeD(0x77776666);
-            writeD(0x99998888);
-            writeD(0xBBBBAAAA);
-            writeD(0xDDDDCCCC);
-            writeD(0xFFFFEEEE);
-            //*/
+            }
             writeD(0);
+            writeD(0); // CT2.3 special effect
         }
     }
 
