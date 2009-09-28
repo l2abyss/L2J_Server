@@ -14,51 +14,18 @@
  */
 package net.sf.l2j.gameserver.model.actor.status;
 
-import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Playable;
 
 public class PlayableStatus extends CharStatus
 {
-    // =========================================================
-    // Data Field
+	public PlayableStatus(L2Playable activeChar)
+	{
+		super(activeChar);
+	}
 
-    // =========================================================
-    // Constructor
-    public PlayableStatus(L2Playable activeChar)
-    {
-        super(activeChar);
-    }
-
-    // =========================================================
-    // Method - Public
-    @Override
-	public void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true, false, false); }
-    @Override
-	public void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHPConsumption)
-    {
-        if (getActiveChar().isDead()) return;
-
-        super.reduceHp(value, attacker, awake, isDOT, isHPConsumption);
-        /*
-        if (attacker != null && attacker != getActiveChar())
-        {
-            // Flag the attacker if it's a L2PcInstance outside a PvP area
-            L2PcInstance player = null;
-            if (attacker instanceof L2PcInstance)
-                player = (L2PcInstance)attacker;
-            else if (attacker instanceof L2Summon)
-                player = ((L2Summon)attacker).getOwner();
-
-            if (player != null) player.updatePvPStatus(getActiveChar());
-        }
-        */
-    }
-
-    // =========================================================
-    // Method - Private
-
-    // =========================================================
-    // Property - Public
-    @Override
-	public L2Playable getActiveChar() { return (L2Playable)super.getActiveChar(); }
+	@Override
+	public L2Playable getActiveChar()
+	{
+		return (L2Playable)super.getActiveChar();
+	}
 }

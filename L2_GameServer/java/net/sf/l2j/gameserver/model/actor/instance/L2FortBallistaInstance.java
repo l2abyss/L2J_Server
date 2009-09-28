@@ -32,7 +32,6 @@ public class L2FortBallistaInstance extends L2Npc
 	public L2FortBallistaInstance(int objectId, L2NpcTemplate template)
     {
         super(objectId, template);
-        setIsInvul(false);
     }
 	
     @Override

@@ -14,17 +14,12 @@
  */
 package net.sf.l2j.gameserver.model.actor.status;
 
-import net.sf.l2j.gameserver.ai.CtrlEvent;
+import net.sf.l2j.gameserver.model.actor.L2Attackable;
 import net.sf.l2j.gameserver.model.actor.L2Character;
-import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
-import net.sf.l2j.gameserver.network.SystemMessageId;
-import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
-public class PetStatus extends SummonStatus
+public class AttackableStatus extends NpcStatus
 {
-	private int _currentFed               = 0; //Current Fed of the L2PetInstance
-
-	public PetStatus(L2PetInstance activeChar)
+	public AttackableStatus(L2Attackable activeChar)
 	{
 		super(activeChar);
 	}
@@ -41,34 +36,26 @@ public class PetStatus extends SummonStatus
 		if (getActiveChar().isDead())
 			return;
 
+		if (value > 0)
+		{
+			if (getActiveChar().isOverhit())
+				getActiveChar().setOverhitValues(attacker, value);
+			else
+				getActiveChar().overhitEnabled(false);
+        }
+        else
+        	getActiveChar().overhitEnabled(false);
+
 		super.reduceHp(value, attacker, awake, isDOT, isHpConsumption);
 
-		if (attacker != null)
-		{
-			if (!isDOT && getActiveChar().getOwner() != null)
-			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.PET_RECEIVED_S2_DAMAGE_BY_C1);
-				sm.addCharName(attacker);
-				sm.addNumber((int)value);
-				getActiveChar().getOwner().sendPacket(sm);
-			}
-			getActiveChar().getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, attacker);
-		}
-	}
-
-	public int getCurrentFed()
-	{
-		return _currentFed;
-	}
-
-	public void setCurrentFed(int value)
-	{
-		_currentFed = value;
+		if (!getActiveChar().isDead())
+			// And the attacker's hit didn't kill the mob, clear the over-hit flag
+			getActiveChar().overhitEnabled(false);
 	}
 
 	@Override
-	public L2PetInstance getActiveChar()
+	public L2Attackable getActiveChar()
 	{
-		return (L2PetInstance)super.getActiveChar();
+		return (L2Attackable)super.getActiveChar();
 	}
 }

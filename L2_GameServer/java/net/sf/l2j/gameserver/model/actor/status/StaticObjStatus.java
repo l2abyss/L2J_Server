@@ -18,24 +18,14 @@ import net.sf.l2j.gameserver.model.actor.instance.L2StaticObjectInstance;
 
 public class StaticObjStatus extends CharStatus
 {
-    // =========================================================
-    // Data Field
+	public StaticObjStatus(L2StaticObjectInstance activeChar)
+	{
+		super(activeChar);
+	}
 
-    // =========================================================
-    // Constructor
-    public StaticObjStatus(L2StaticObjectInstance activeChar)
-    {
-        super(activeChar);
-    }
-
-    // =========================================================
-    // Method - Public
-
-    // =========================================================
-    // Method - Private
-
-    // =========================================================
-    // Property - Public
-    @Override
-	public L2StaticObjectInstance getActiveChar() { return (L2StaticObjectInstance)super.getActiveChar(); }
+	@Override
+	public L2StaticObjectInstance getActiveChar()
+	{
+		return (L2StaticObjectInstance)super.getActiveChar();
+	}
 }

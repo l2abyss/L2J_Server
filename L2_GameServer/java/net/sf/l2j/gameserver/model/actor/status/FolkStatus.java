@@ -20,31 +20,30 @@ import net.sf.l2j.gameserver.model.actor.instance.L2NpcInstance;
 
 public class FolkStatus extends NpcStatus
 {
-    // =========================================================
-    // Data Field
+	public FolkStatus(L2Npc activeChar)
+	{
+		super(activeChar);
+	}
 
-    // =========================================================
-    // Constructor
-    public FolkStatus(L2Npc activeChar)
-    {
-        super(activeChar);
-    }
+	@Override
+	public final void reduceHp(double value, L2Character attacker)
+	{
+		reduceHp(value, attacker, true, false, false);
+	}
 
-    // =========================================================
-    // Method - Public
-    @Override
-	public final void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true, false, false); }
-
-    @Override
+	@Override
 	public final void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHpConsumption)
-    {
-    }
-    
-    @Override
-    public final void reduceMp(double value)
-    {
-    }
+	{
+	}
 
-    @Override
-	public L2NpcInstance getActiveChar() { return (L2NpcInstance)super.getActiveChar(); }
+	@Override
+	public final void reduceMp(double value)
+	{
+	}
+
+	@Override
+	public L2NpcInstance getActiveChar()
+	{
+		return (L2NpcInstance)super.getActiveChar();
+	}
 }

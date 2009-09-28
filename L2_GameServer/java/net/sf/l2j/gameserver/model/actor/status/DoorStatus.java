@@ -18,24 +18,14 @@ import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 
 public class DoorStatus extends CharStatus
 {
-    // =========================================================
-    // Data Field
+	public DoorStatus(L2DoorInstance activeChar)
+	{
+		super(activeChar);
+	}
 
-    // =========================================================
-    // Constructor
-    public DoorStatus(L2DoorInstance activeChar)
-    {
-        super(activeChar);
-    }
-
-    // =========================================================
-    // Method - Public
-
-    // =========================================================
-    // Method - Private
-
-    // =========================================================
-    // Property - Public
-    @Override
-	public L2DoorInstance getActiveChar() { return (L2DoorInstance)super.getActiveChar(); }
+	@Override
+	public L2DoorInstance getActiveChar()
+	{
+		return (L2DoorInstance)super.getActiveChar();
+	}
 }

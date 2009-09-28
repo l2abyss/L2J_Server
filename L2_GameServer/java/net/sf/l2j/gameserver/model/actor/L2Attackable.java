@@ -52,6 +52,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SiegeGuardInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
 import net.sf.l2j.gameserver.model.actor.knownlist.AttackableKnownList;
+import net.sf.l2j.gameserver.model.actor.status.AttackableStatus;
 import net.sf.l2j.gameserver.model.base.SoulCrystal;
 import net.sf.l2j.gameserver.model.quest.Quest;
 import net.sf.l2j.gameserver.model.quest.QuestState;
@@ -292,6 +293,18 @@ public class L2Attackable extends L2Npc
     {
 		setKnownList(new AttackableKnownList(this));
     }
+
+	@Override
+	public AttackableStatus getStatus()
+	{
+		return (AttackableStatus) super.getStatus();
+	}
+	
+	@Override
+	public void initCharStatus()
+	{
+		setStatus(new AttackableStatus(this));
+	}
 
 	/**
 	 * Return the L2Character AI of the L2Attackable and if its null create a new one.

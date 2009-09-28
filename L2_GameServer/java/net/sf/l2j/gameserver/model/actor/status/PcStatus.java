@@ -14,43 +14,84 @@
  */
 package net.sf.l2j.gameserver.model.actor.status;
 
+import net.sf.l2j.gameserver.ai.CtrlIntention;
+import net.sf.l2j.gameserver.instancemanager.DuelManager;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Playable;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2SummonInstance;
+import net.sf.l2j.gameserver.model.actor.stat.PcStat;
 import net.sf.l2j.gameserver.model.entity.Duel;
+import net.sf.l2j.gameserver.model.quest.QuestState;
 import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.skills.Stats;
 import net.sf.l2j.gameserver.util.Util;
+import net.sf.l2j.util.Rnd;
 
 public class PcStatus extends PlayableStatus
 {
+	private double _currentCp = 0; //Current CP of the L2PcInstance
+
 	public PcStatus(L2PcInstance activeChar)
 	{
 		super(activeChar);
 	}
 
 	@Override
-	public final void reduceHp(double value, L2Character attacker) { reduceHp(value, attacker, true, false, false); }
+	public final void reduceCp(int value)
+	{
+		if (getCurrentCp() > value)
+			setCurrentCp(getCurrentCp() - value);
+		else
+			setCurrentCp(0);
+	}
 
 	@Override
-	public final void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHpConsumption)
+	public final void reduceHp(double value, L2Character attacker)
 	{
+		reduceHp(value, attacker, true, false, false);
+	}
+
+	@Override
+	public final void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHPConsumption)
+	{
+		if (getActiveChar().isDead())
+			return;
+
 		if (getActiveChar().isInvul())
 		{
 			if (attacker == getActiveChar())
 			{
-				if (!isDOT && !isHpConsumption)
+				if (!isDOT && !isHPConsumption)
 					return;
 			}
 			else
 				return;
 		}
 
-		if (getActiveChar().isDead())
-			return;
+		if (!isHPConsumption)
+		{
+			if (awake && getActiveChar().isSleeping())
+				getActiveChar().stopSleeping(null);
+			
+			if (getActiveChar().isSitting())
+				getActiveChar().standUp();
+
+			if (getActiveChar().isFakeDeath())
+				getActiveChar().stopFakeDeath(null);
+
+			if (!isDOT)
+			{
+				if (getActiveChar().isStunned() && Rnd.get(10) == 0)
+					getActiveChar().stopStunning(null);
+				if (getActiveChar().isImmobileUntilAttacked())
+					getActiveChar().stopImmobileUntilAttacked(null);
+			}
+		}
 
 		int fullValue = (int) value;
 		int tDmg = 0;
@@ -137,13 +178,132 @@ public class PcStatus extends PlayableStatus
 			}
 		}
 
-		if (!getActiveChar().isDead() && getActiveChar().isSitting() && !isDOT)
-			getActiveChar().standUp();
+		if (value > 0)
+		{
+			value = getCurrentHp() - value;
+			if (value <= 0)
+			{
+				if (getActiveChar().isInDuel())
+				{
+					getActiveChar().disableAllSkills();
+					stopHpMpRegeneration();
+					attacker.getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+					attacker.sendPacket(ActionFailed.STATIC_PACKET);
 
-		if (getActiveChar().isFakeDeath() && !isDOT)
-			getActiveChar().stopFakeDeath(null);
+					// let the DuelManager know of his defeat
+					DuelManager.getInstance().onPlayerDefeat(getActiveChar());
+					value = 1;
+				}
+				else
+					value = 0;
+			}
+			setCurrentHp(value);
+		}
 
-		super.reduceHp(value, attacker, awake, isDOT, isHpConsumption);
+		if (getActiveChar().getCurrentHp() < 0.5)
+		{
+			getActiveChar().abortAttack();
+			getActiveChar().abortCast();
+
+			if (getActiveChar().isInOlympiadMode())
+			{
+				stopHpMpRegeneration();
+				getActiveChar().setIsDead(true);
+				getActiveChar().setIsPendingRevive(true);
+				if (getActiveChar().getPet() != null)
+					getActiveChar().getPet().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
+				return;
+			}
+
+			getActiveChar().doDie(attacker);
+			QuestState qs = getActiveChar().getQuestState("255_Tutorial");
+			if (qs != null)
+				qs.getQuest().notifyEvent("CE30", null, getActiveChar());
+		}
+	}
+
+	@Override
+	public final void setCurrentHp(double newHp, boolean broadcastPacket)
+	{
+		super.setCurrentHp(newHp, broadcastPacket);
+
+		if (getCurrentHp() <= getActiveChar().getStat().getMaxHp() * .3)
+		{
+			QuestState qs = getActiveChar().getQuestState("255_Tutorial");
+			if (qs != null)
+				qs.getQuest().notifyEvent("CE45", null, getActiveChar());
+        }
+	}
+
+	@Override
+	public final double getCurrentCp()
+	{
+		return _currentCp;
+	}
+
+	@Override
+	public final void setCurrentCp(double newCp)
+	{
+		setCurrentCp(newCp, true);
+	}
+
+	public final void setCurrentCp(double newCp, boolean broadcastPacket)
+	{
+		// Get the Max CP of the L2Character
+		int maxCp = getActiveChar().getStat().getMaxCp();
+
+		synchronized (this)
+		{
+			if (getActiveChar().isDead())
+				return;
+
+			if (newCp < 0)
+				newCp = 0;
+
+			if (newCp >= maxCp)
+			{
+				// Set the RegenActive flag to false
+				_currentCp = maxCp;
+				_flagsRegenActive &= ~REGEN_FLAG_CP;
+
+				// Stop the HP/MP/CP Regeneration task
+				if (_flagsRegenActive == 0)
+					stopHpMpRegeneration();
+			}
+			else
+			{
+				// Set the RegenActive flag to true
+				_currentCp = newCp;
+				_flagsRegenActive |= REGEN_FLAG_CP;
+
+				// Start the HP/MP/CP Regeneration task with Medium priority
+				startHpMpRegeneration();
+			}
+		}
+
+		// Send the Server->Client packet StatusUpdate with current HP and MP to all other L2PcInstance to inform
+		if (broadcastPacket)
+			getActiveChar().broadcastStatusUpdate();
+	}
+
+	@Override
+	protected void doRegeneration()
+	{
+		final PcStat charstat = getActiveChar().getStat();
+
+		// Modify the current CP of the L2Character and broadcast Server->Client packet StatusUpdate
+		if (getCurrentCp() < charstat.getMaxCp())
+			setCurrentCp(getCurrentCp() + Formulas.calcCpRegen(getActiveChar()), false);
+
+		// Modify the current HP of the L2Character and broadcast Server->Client packet StatusUpdate
+		if (getCurrentHp() < charstat.getMaxHp())
+			setCurrentHp(getCurrentHp() + Formulas.calcHpRegen(getActiveChar()), false);
+
+		// Modify the current MP of the L2Character and broadcast Server->Client packet StatusUpdate
+		if (getCurrentMp() < charstat.getMaxMp())
+			setCurrentMp(getCurrentMp() + Formulas.calcMpRegen(getActiveChar()), false);
+
+		getActiveChar().broadcastStatusUpdate(); //send the StatusUpdate packet
 	}
 
 	@Override
