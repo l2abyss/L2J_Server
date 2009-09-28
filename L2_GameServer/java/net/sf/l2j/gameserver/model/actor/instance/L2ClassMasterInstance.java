@@ -145,7 +145,7 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 			else
 			{
 				final int minLevel = getMinLevel(currentClassId.level());
-				if (player.getLevel() > minLevel || Config.ALLOW_ENTIRE_TREE)
+				if (player.getLevel() >= minLevel || Config.ALLOW_ENTIRE_TREE)
 				{
 					final StringBuilder menu = new StringBuilder(100);
 					for (ClassId cid : ClassId.values())
