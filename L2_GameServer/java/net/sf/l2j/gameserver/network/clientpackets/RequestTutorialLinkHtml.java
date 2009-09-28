@@ -35,7 +35,7 @@ public class RequestTutorialLinkHtml extends L2GameClientPacket
 		if(player == null)
 			return;
 
-		L2ClassMasterInstance.onTitorialLink(player, _bypass);
+		L2ClassMasterInstance.onTutorialLink(player, _bypass);
 
 		QuestState qs = player.getQuestState("255_Tutorial");
 		if(qs != null)

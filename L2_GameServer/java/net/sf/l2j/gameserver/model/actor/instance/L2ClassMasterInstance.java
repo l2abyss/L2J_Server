@@ -86,7 +86,7 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 		}
 	}
 
-	public static final void onTitorialLink(L2PcInstance player, String request)
+	public static final void onTutorialLink(L2PcInstance player, String request)
 	{
 		if (!Config.ALTERNATE_CLASS_MASTER
 				|| request == null
