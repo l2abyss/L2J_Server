@@ -342,6 +342,10 @@ public abstract class Inventory extends ItemContainer
 			}
 			else if (it instanceof L2Armor)
 			{
+				// Remove augmentation bonuses on unequip
+				if (item.isAugmented())
+					item.getAugmentation().removeBonus(player);
+
 				if (item.getElementals() != null)
 					item.getElementals().removeBonus(player);
 				
@@ -488,6 +492,10 @@ public abstract class Inventory extends ItemContainer
 			}
 			else if (it instanceof L2Armor)
 			{
+				// Apply augmentation bonuses on equip
+				if (item.isAugmented()) 
+					item.getAugmentation().applyBonus(player); 
+				
 				if (item.getElementals() != null)
 					item.getElementals().applyBonus(player, true);
 				
