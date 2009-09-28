@@ -595,6 +595,7 @@ public abstract class Inventory extends ItemContainer
 				return;
 
 			boolean update = false;
+			boolean updateTimeStamp = false;
 			// Checks if equiped item is part of set
 			if (armorSet.containItem(slot, item.getItemId()))
 			{
@@ -628,6 +629,21 @@ public abstract class Inventory extends ItemContainer
 									if (itemSkill != null)
 									{
 										player.addSkill(itemSkill, false);
+
+										if (itemSkill.isActive())
+										{
+											if (player.getReuseTimeStamp().isEmpty() || !player.getReuseTimeStamp().containsKey(itemSkill.getId()))
+											{
+												int equipDelay = itemSkill.getEquipDelay();
+
+												if (equipDelay > 0)
+												{
+													player.addTimeStamp(itemSkill.getId(), itemSkill.getEquipDelay());
+													player.disableSkill(itemSkill.getId(), itemSkill.getEquipDelay());
+												}
+											}
+											updateTimeStamp = true;
+										}
 										update = true;
 									}
 									else
@@ -688,7 +704,12 @@ public abstract class Inventory extends ItemContainer
 			}
 
 			if (update)
+			{
 				player.sendSkillList();
+
+				if (updateTimeStamp)
+					player.sendPacket(new SkillCoolTime(player));
+			}
 		}
 
 		public void notifyUnequiped(int slot, L2ItemInstance item)
@@ -764,7 +785,7 @@ public abstract class Inventory extends ItemContainer
 							{
 								itemSkill = SkillTable.getInstance().getInfo(skillId, skillLvl);
 								if (itemSkill != null)
-									player.removeSkill(itemSkill, false);
+									player.removeSkill(itemSkill, false, itemSkill.isPassive());
 								else
 									_log.warning("Inventory.ArmorSetListener: Incorrect skill: "+skillInfo+".");
 							}
@@ -776,7 +797,7 @@ public abstract class Inventory extends ItemContainer
 				{
 					L2Skill skill = SkillTable.getInstance().getInfo(shieldSkill,1);
 					if (skill != null)
-						player.removeSkill(skill);
+						player.removeSkill(skill, false, skill.isPassive());
 					else
 						_log.warning("Inventory.ArmorSetListener: Incorrect skill: "+shieldSkill+".");
 				}
@@ -785,7 +806,7 @@ public abstract class Inventory extends ItemContainer
 				{
 					L2Skill skill = SkillTable.getInstance().getInfo(skillId6,1);
 					if (skill != null)
-						player.removeSkill(skill);
+						player.removeSkill(skill, false, skill.isPassive());
 					else
 						_log.warning("Inventory.ArmorSetListener: Incorrect skill: "+skillId6+".");
 				}

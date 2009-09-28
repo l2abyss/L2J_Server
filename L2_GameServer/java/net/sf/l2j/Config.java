@@ -94,6 +94,8 @@ public final class Config
 	public static boolean ALT_GAME_SHIELD_BLOCKS;
 	public static int ALT_PERFECT_SHLD_BLOCK;
 	public static boolean ALLOW_CLASS_MASTERS;
+	public static boolean ALLOW_ENTIRE_TREE;
+	public static boolean ALTERNATE_CLASS_MASTER;
 	public static boolean LIFE_CRYSTAL_NEEDED;
 	public static boolean SP_BOOK_NEEDED;
 	public static boolean ES_SP_BOOK_NEEDED;
@@ -1198,6 +1200,8 @@ public final class Config
 					ALT_GAME_SHIELD_BLOCKS = Boolean.parseBoolean(Character.getProperty("AltShieldBlocks", "false"));
 					ALT_PERFECT_SHLD_BLOCK = Integer.parseInt(Character.getProperty("AltPerfectShieldBlockRate", "10"));
 					ALLOW_CLASS_MASTERS = Boolean.parseBoolean(Character.getProperty("AllowClassMasters", "False"));
+					ALLOW_ENTIRE_TREE = Boolean.parseBoolean(Character.getProperty("AllowEntireTree", "False"));
+					ALTERNATE_CLASS_MASTER = Boolean.parseBoolean(Character.getProperty("AlternateClassMaster", "False"));
 					LIFE_CRYSTAL_NEEDED = Boolean.parseBoolean(Character.getProperty("LifeCrystalNeeded", "true"));
 					SP_BOOK_NEEDED = Boolean.parseBoolean(Character.getProperty("SpBookNeeded", "false"));
 					ES_SP_BOOK_NEEDED = Boolean.parseBoolean(Character.getProperty("EnchantSkillSpBookNeeded","true"));
@@ -2342,6 +2346,8 @@ public final class Config
 		else if (pName.equalsIgnoreCase("AltGameExponentSp")) ALT_GAME_EXPONENT_SP = Float.parseFloat(pValue);
 
 		else if (pName.equalsIgnoreCase("AllowClassMasters")) ALLOW_CLASS_MASTERS = Boolean.parseBoolean(pValue);
+		else if (pName.equalsIgnoreCase("AllowEntireTree")) ALLOW_ENTIRE_TREE = Boolean.parseBoolean(pValue);
+		else if (pName.equalsIgnoreCase("AlternateClassMaster")) ALTERNATE_CLASS_MASTER = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AltGameFreights")) ALT_GAME_FREIGHTS = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AltGameFreightPrice")) ALT_GAME_FREIGHT_PRICE = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("AltPartyRange")) ALT_PARTY_RANGE = Integer.parseInt(pValue);
