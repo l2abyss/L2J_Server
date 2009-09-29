@@ -60,14 +60,17 @@ public class L2MinionInstance extends L2MonsterInstance
 	@Override
 	public void onSpawn()
 	{
-		if (getLeader().isRaid())
-		{
-			setIsRaidMinion(true);
-		}
 		setIsNoRndWalk(true);
 		super.onSpawn();
-		// Notify Leader that Minion has Spawned
-		getLeader().notifyMinionSpawned(this);
+		if (getLeader() != null)
+		{
+			if (getLeader().isRaid())
+			{
+				setIsRaidMinion(true);
+			}
+			// Notify Leader that Minion has Spawned
+			getLeader().notifyMinionSpawned(this);
+		}
 		// check the region where this mob is, do not activate the AI if region is inactive.
 		L2WorldRegion region = L2World.getInstance().getRegion(getX(),getY());
 		if ((region !=null) && (!region.isActive()))
