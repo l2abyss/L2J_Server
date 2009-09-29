@@ -449,9 +449,9 @@ public class L2Spawn
 		try
 		{
 			// Check if the L2Spawn is not a L2Pet or L2Minion or L2Decoy spawn
-            if (_template.type.equalsIgnoreCase("L2Pet") || _template.type.equalsIgnoreCase("L2Minion") 
-                    || _template.type.equalsIgnoreCase("L2Decoy") || _template.type.equalsIgnoreCase("L2Trap")
-                    || _template.type.equalsIgnoreCase("L2EffectPoint"))
+            if (_template.type.equalsIgnoreCase("L2Pet") || _template.type.equalsIgnoreCase("L2Minion")
+            		|| _template.type.equalsIgnoreCase("L2FlyMinion") || _template.type.equalsIgnoreCase("L2Decoy")
+            		|| _template.type.equalsIgnoreCase("L2Trap") || _template.type.equalsIgnoreCase("L2EffectPoint"))
             {
                 _currentCount++;
 
