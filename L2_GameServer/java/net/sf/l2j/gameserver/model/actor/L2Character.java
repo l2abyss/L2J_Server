@@ -6544,6 +6544,8 @@ public abstract class L2Character extends L2Object
 										&& skill.getSkillType() != L2SkillType.AGGREDUCE_CHAR
 										&& skill.getSkillType() != L2SkillType.AGGREMOVE)
 								{
+									// add attacker into list
+									((L2Character)target).addAttackerToAttackByList(player);
 									// notify target AI about the attack
 									((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
 								}
