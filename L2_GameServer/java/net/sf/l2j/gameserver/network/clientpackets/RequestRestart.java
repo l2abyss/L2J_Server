@@ -56,16 +56,8 @@ public final class RequestRestart extends L2GameClientPacket
 		if (player == null)
 			return;
 
-		if (player.isInOlympiadMode() || Olympiad.getInstance().isRegistered(player))
-		{
-			player.sendMessage("You cant logout in olympiad mode");
-			player.sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
-
 		if(player.getActiveEnchantItem() != null || player.getActiveEnchantAttrItem() != null)
 		{
-			player.sendMessage("You cant logout while enchanting!");
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}

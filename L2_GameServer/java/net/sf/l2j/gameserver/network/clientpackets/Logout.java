@@ -61,7 +61,6 @@ public final class Logout extends L2GameClientPacket
 
 		if(player.getActiveEnchantItem() != null || player.getActiveEnchantAttrItem() != null)
 		{
-			player.sendMessage("You cant logout while enchanting!");
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -90,13 +89,6 @@ public final class Logout extends L2GameClientPacket
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
-        if (player.isInOlympiadMode() || Olympiad.getInstance().isRegistered(player))
-        {
-            player.sendMessage("You cant logout in olympiad mode");
-			player.sendPacket(ActionFailed.STATIC_PACKET);
-            return;
-        }
 
 		// Prevent player from logging out if they are a festival participant
 		// and it is in progress, otherwise notify party members that the player
