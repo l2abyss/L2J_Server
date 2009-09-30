@@ -512,6 +512,11 @@ public class Olympiad
 			noble.sendPacket(sm);
 			return false;
 		}
+		if (TvTEvent.isPlayerParticipant(noble.getObjectId()))
+		{
+			noble.sendMessage("You can't join olympiad while participating on TvT Event.");
+			return false;
+		}
 		/** End Olympiad Restrictions */
 		
 		if (_classBasedRegisters.containsKey(noble.getClassId().getId()))
