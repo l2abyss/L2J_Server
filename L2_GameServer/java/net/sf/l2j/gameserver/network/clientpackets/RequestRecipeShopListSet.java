@@ -14,10 +14,15 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.RecipeController;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.L2ManufactureItem;
 import net.sf.l2j.gameserver.model.L2ManufactureList;
+import net.sf.l2j.gameserver.model.L2RecipeList;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
@@ -95,8 +100,20 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 
 		L2ManufactureList createList = new L2ManufactureList();
 
+		List<L2RecipeList> dwarfRecipes = Arrays.asList(player.getDwarvenRecipeBook());
+		List<L2RecipeList> commonRecipes = Arrays.asList(player.getCommonRecipeBook());
+
 		for (Recipe i : _items)
 		{
+			L2RecipeList list = RecipeController.getInstance().getRecipeList(i.getRecipeId());
+
+			if (!dwarfRecipes.contains(list) && !commonRecipes.contains(list))
+			{
+				Util.handleIllegalPlayerAction(player, "Warning!! Player " + player.getName() + " of account " + player.getAccountName()
+						+ " tried to set recipe which he dont have.", Config.DEFAULT_PUNISH);
+				return;
+			}
+
 			if (!i.addToList(createList))
 			{
 				Util.handleIllegalPlayerAction(player, "Warning!! Character "
@@ -136,6 +153,11 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 
 			list.add(new L2ManufactureItem(_recipeId, _cost));
 			return true;
+		}
+
+		public int getRecipeId()
+		{
+			return _recipeId;
 		}
 	}
 
