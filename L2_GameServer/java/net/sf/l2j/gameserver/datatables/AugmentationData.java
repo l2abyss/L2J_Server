@@ -715,8 +715,9 @@ public class AugmentationData
 			// weapon augmentation - stats
 			if (stats[i] >= STAT_START && stats[i] <= STAT_END)
 			{
-				int color = stats[i] / STAT_BLOCKSIZE; // 4 color blocks
-				int subblock = stats[i] % STAT_BLOCKSIZE; // offset in color block
+				int base = stats[i] - STAT_START;
+				int color = base / STAT_BLOCKSIZE; // 4 color blocks
+				int subblock = base % STAT_BLOCKSIZE; // offset in color block
 				int level = subblock / STAT_SUBBLOCKSIZE; // stat level (sub-block number)
 				int stat = subblock % STAT_SUBBLOCKSIZE; // offset in sub-block - stat
 
