@@ -2649,14 +2649,14 @@ public abstract class L2Character extends L2Object
 	/** Task lauching the magic skill phases */
 	class FlyToLocationTask implements Runnable
 	{
-		L2Object _target;
-		L2Character _actor;
-		L2Skill _skill;
+		private final L2Object _tgt;
+		private final L2Character _actor;
+		private final L2Skill _skill;
 
 		public FlyToLocationTask(L2Character actor, L2Object target, L2Skill skill)
 		{
 			_actor = actor;
-			_target = target;
+			_tgt = target;
 			_skill = skill;
 		}
 
@@ -2668,8 +2668,8 @@ public abstract class L2Character extends L2Object
 	
 				_flyType = FlyType.valueOf(_skill.getFlyType());
 
-				broadcastPacket(new FlyToLocation(_actor,_target,_flyType));
-				setXYZ(_target.getX(), _target.getY(), _target.getZ());
+				broadcastPacket(new FlyToLocation(_actor,_tgt,_flyType));
+				setXYZ(_tgt.getX(), _tgt.getY(), _tgt.getZ());
 				broadcastPacket(new ValidateLocation(_actor));
 			}
 			catch (Exception e)
