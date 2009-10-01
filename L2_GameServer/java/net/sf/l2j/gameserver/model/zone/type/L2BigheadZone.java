@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.model.zone.type;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.zone.L2ZoneType;
+import net.sf.l2j.gameserver.skills.AbnormalEffect;
 
 /**
  * Bighead zones give entering players big heads
@@ -35,7 +36,7 @@ public class L2BigheadZone extends L2ZoneType
 	{
 		if (character instanceof L2PcInstance)
 		{
-			character.startAbnormalEffect(0x2000);
+			character.startAbnormalEffect(AbnormalEffect.BIG_HEAD);
 		}
 	}
 	
@@ -44,7 +45,7 @@ public class L2BigheadZone extends L2ZoneType
 	{
 		if (character instanceof L2PcInstance)
 		{
-			character.stopAbnormalEffect((short) 0x2000);
+			character.stopAbnormalEffect(AbnormalEffect.BIG_HEAD);
 		}
 	}
 	

@@ -25,6 +25,7 @@ import net.sf.l2j.gameserver.model.actor.L2Trap;
 import net.sf.l2j.gameserver.model.actor.instance.L2MonsterInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.itemcontainer.Inventory;
+import net.sf.l2j.gameserver.skills.AbnormalEffect;
 /**
  * This class ...
  *
@@ -588,7 +589,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_summon.getKarma());
 
 			if (gmSeeInvis)
-				writeD(_summon.getAbnormalEffect() | L2Character.ABNORMAL_EFFECT_STEALTH);
+				writeD(_summon.getAbnormalEffect() |AbnormalEffect.STEALTH.getMask());
 			else
 				writeD(_summon.getAbnormalEffect());  // C2
 			writeD(0x00); //clan id

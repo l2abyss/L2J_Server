@@ -15,8 +15,8 @@
 package net.sf.l2j.gameserver.skills.effects;
 
 import net.sf.l2j.gameserver.model.L2Effect;
-import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.L2Npc;
+import net.sf.l2j.gameserver.skills.AbnormalEffect;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
@@ -53,7 +53,7 @@ public class EffectGrow extends L2Effect
 			//npc.setCollisionHeight((int) (npc.getCollisionHeight() * 1.24));
 			npc.setCollisionRadius((int) (npc.getCollisionRadius() * 1.19));
 			
-			getEffected().startAbnormalEffect(L2Character.ABNORMAL_EFFECT_GROW);
+			getEffected().startAbnormalEffect(AbnormalEffect.GROW);
 			return true;
 		}
 		return false;
@@ -83,7 +83,7 @@ public class EffectGrow extends L2Effect
 			//npc.setCollisionHeight(npc.getTemplate().collisionHeight);
 			npc.setCollisionRadius(npc.getTemplate().collisionRadius);
 			
-			getEffected().stopAbnormalEffect(L2Character.ABNORMAL_EFFECT_GROW);
+			getEffected().stopAbnormalEffect(AbnormalEffect.GROW);
 		}
 	}
 }

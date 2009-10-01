@@ -97,6 +97,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ValidateLocation;
 import net.sf.l2j.gameserver.network.serverpackets.FlyToLocation.FlyType;
 import net.sf.l2j.gameserver.pathfinding.AbstractNodeLoc;
 import net.sf.l2j.gameserver.pathfinding.PathFinding;
+import net.sf.l2j.gameserver.skills.AbnormalEffect;
 import net.sf.l2j.gameserver.skills.Calculator;
 import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.skills.Stats;
@@ -2648,8 +2649,7 @@ public abstract class L2Character extends L2Object
 	/** Task lauching the magic skill phases */
 	class FlyToLocationTask implements Runnable
 	{
-		@SuppressWarnings("hiding")
-        L2Object _target;
+		L2Object _target;
 		L2Character _actor;
 		L2Skill _skill;
 
@@ -2691,52 +2691,7 @@ public abstract class L2Character extends L2Object
 
 	protected CharEffectList _effects = new CharEffectList(this);
 
-	public static final int ABNORMAL_EFFECT_BLEEDING		= 0x000001;
-	public static final int ABNORMAL_EFFECT_POISON 			= 0x000002;
-	public static final int ABNORMAL_EFFECT_REDCIRCLE		= 0x000004;
-	public static final int ABNORMAL_EFFECT_ICE				= 0x000008;
-	public static final int ABNORMAL_EFFECT_WIND			= 0x000010;
-	public static final int ABNORMAL_EFFECT_FEAR			= 0x000020;
-	public static final int ABNORMAL_EFFECT_STUN			= 0x000040;
-	public static final int ABNORMAL_EFFECT_SLEEP			= 0x000080;
-	public static final int ABNORMAL_EFFECT_MUTED			= 0x000100;
-	public static final int ABNORMAL_EFFECT_ROOT			= 0x000200;
-	public static final int ABNORMAL_EFFECT_HOLD_1			= 0x000400;
-	public static final int ABNORMAL_EFFECT_HOLD_2			= 0x000800;
-	public static final int ABNORMAL_EFFECT_UNKNOWN_13		= 0x001000;
-	public static final int ABNORMAL_EFFECT_BIG_HEAD		= 0x002000;
-	public static final int ABNORMAL_EFFECT_FLAME			= 0x004000;
-	public static final int ABNORMAL_EFFECT_UNKNOWN_16		= 0x008000;
-	public static final int ABNORMAL_EFFECT_GROW			= 0x010000;
-	public static final int ABNORMAL_EFFECT_FLOATING_ROOT	= 0x020000;
-	public static final int ABNORMAL_EFFECT_DANCE_STUNNED	= 0x040000;
-	public static final int ABNORMAL_EFFECT_FIREROOT_STUN	= 0x080000;
-	public static final int ABNORMAL_EFFECT_STEALTH			= 0x100000;
-	public static final int ABNORMAL_EFFECT_IMPRISIONING_1	= 0x200000;
-	public static final int ABNORMAL_EFFECT_IMPRISIONING_2	= 0x400000;
-	public static final int ABNORMAL_EFFECT_MAGIC_CIRCLE	= 0x800000;
-	public static final int ABNORMAL_EFFECT_ICE2			= 0x1000000;
-	public static final int ABNORMAL_EFFECT_EARTHQUAKE		= 0x2000000;
-	public static final int ABNORMAL_EFFECT_UNKNOWN_27		= 0x4000000;
-	public static final int ABNORMAL_EFFECT_INVULNERABLE	= 0x8000000;
-	public static final int ABNORMAL_EFFECT_VITALITY		= 0x10000000;
-	public static final int ABNORMAL_EFFECT_UNKNOWN_30		= 0x20000000;
-	public static final int ABNORMAL_EFFECT_DEATH_MARK		= 0x40000000;
-	public static final int ABNORMAL_EFFECT_UNKNOWN_32		= 0x80000000;
-
-	// XXX TEMP HACKS (get the proper mask for these effects)
-	public static final int ABNORMAL_EFFECT_CONFUSED   = 0x0020;
-
 	private int _SpecialEffects;
-	public static final int SPECIAL_EFFECT_INVULNERABLE		= 0x000001;
-	public static final int SPECIAL_EFFECT_AIR_STUN			= 0x000002;
-	public static final int SPECIAL_EFFECT_AIR_ROOT			= 0x000004;
-	public static final int SPECIAL_EFFECT_BAGUETTE_SWORD	= 0x000008;
-	public static final int SPECIAL_EFFECT_YELLOW_AFFRO		= 0x000010;
-	public static final int SPECIAL_EFFECT_PINK_AFFRO		= 0x000020;
-	public static final int SPECIAL_EFFECT_BLACK_AFFRO		= 0x000040;
-	public static final int SPECIAL_EFFECT_UNKNOWN8			= 0x000080;
-	public static final int SPECIAL_EFFECT_UNKNOWN9			= 0x000100;
 	// Method - Public
 	/**
 	 * Launch and add L2Effect (including Stack Group management) to L2Character and update client magic icon.<BR><BR>
@@ -2790,15 +2745,27 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Active abnormal effects flags in the binary mask and send Server->Client UserInfo/CharInfo packet.<BR><BR>
 	 */
-	public final void startAbnormalEffect(int mask)
+	public final void startAbnormalEffect(AbnormalEffect mask)
 	{
-		_AbnormalEffects |= mask;
+		_AbnormalEffects |= mask.getMask();
 		updateAbnormalEffect();
 	}
 
 	/**
 	 * Active special effects flags in the binary mask and send Server->Client UserInfo/CharInfo packet.<BR><BR>
 	 */
+	public final void startSpecialEffect(AbnormalEffect mask)
+	{
+		_SpecialEffects |= mask.getMask();
+		updateAbnormalEffect();
+	}
+	
+	public final void startAbnormalEffect(int mask)
+	{
+		_AbnormalEffects |= mask;
+		updateAbnormalEffect();
+	}
+	
 	public final void startSpecialEffect(int mask)
 	{
 		_SpecialEffects |= mask;
@@ -2949,15 +2916,27 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Modify the abnormal effect map according to the mask.<BR><BR>
 	 */
-	public final void stopAbnormalEffect(int mask)
+	public final void stopAbnormalEffect(AbnormalEffect mask)
 	{
-		_AbnormalEffects &= ~mask;
+		_AbnormalEffects &= ~mask.getMask();
 		updateAbnormalEffect();
 	}
 
 	/**
 	 * Modify the special effect map according to the mask.<BR><BR>
 	 */
+	public final void stopSpecialEffect(AbnormalEffect mask)
+	{
+		_SpecialEffects &= ~mask.getMask();
+		updateAbnormalEffect();
+	}
+	
+	public final void stopAbnormalEffect(int mask)
+	{
+		_AbnormalEffects &= ~mask;
+		updateAbnormalEffect();
+	}
+
 	public final void stopSpecialEffect(int mask)
 	{
 		_SpecialEffects &= ~mask;
@@ -3314,12 +3293,12 @@ public abstract class L2Character extends L2Object
 	public int getAbnormalEffect()
 	{
 		int ae = _AbnormalEffects;
-		if (!isFlying() && isStunned())  ae |= ABNORMAL_EFFECT_STUN;
-		if (!isFlying() && isRooted())   ae |= ABNORMAL_EFFECT_ROOT;
-		if (isSleeping()) ae |= ABNORMAL_EFFECT_SLEEP;
-		if (isConfused()) ae |= ABNORMAL_EFFECT_CONFUSED;
-		if (isMuted())    ae |= ABNORMAL_EFFECT_MUTED;
-		if (isPhysicalMuted()) ae |= ABNORMAL_EFFECT_MUTED;
+		if (!isFlying() && isStunned())  ae |= AbnormalEffect.STUN.getMask();
+		if (!isFlying() && isRooted())   ae |= AbnormalEffect.ROOT.getMask();
+		if (isSleeping()) ae |= AbnormalEffect.SLEEP.getMask();
+		if (isConfused()) ae |= AbnormalEffect.CONFUSED.getMask();
+		if (isMuted())    ae |= AbnormalEffect.MUTED.getMask();
+		if (isPhysicalMuted()) ae |= AbnormalEffect.MUTED.getMask();
 		return ae;
 	}
 
@@ -3336,8 +3315,8 @@ public abstract class L2Character extends L2Object
 	public int getSpecialEffect()
 	{
 		int se = _SpecialEffects;
-		if (isFlying() && isStunned())  se |= SPECIAL_EFFECT_AIR_STUN;
-		if (isFlying() && isRooted())   se |= SPECIAL_EFFECT_AIR_ROOT;
+		if (isFlying() && isStunned())  se |= AbnormalEffect.S_AIR_STUN.getMask();
+		if (isFlying() && isRooted())   se |= AbnormalEffect.S_AIR_ROOT.getMask();
 		return se;
 	}
 	/**

@@ -34,6 +34,7 @@ import net.sf.l2j.gameserver.network.serverpackets.MagicSkillLaunched;
 import net.sf.l2j.gameserver.network.serverpackets.MagicSkillUse;
 import net.sf.l2j.gameserver.network.serverpackets.PartySpelled;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.skills.AbnormalEffect;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.skills.funcs.FuncTemplate;
@@ -98,9 +99,9 @@ public abstract class L2Effect
 	private int _count;
 	
 	// abnormal effect mask
-	private int _abnormalEffect;
+	private AbnormalEffect _abnormalEffect;
 	// special effect mask
-	private int _specialEffect;
+	private AbnormalEffect _specialEffect;
 	// show icon
 	private boolean _icon;
 	
@@ -431,9 +432,9 @@ public abstract class L2Effect
 	/** Notify started */
 	public boolean onStart()
 	{
-		if (_abnormalEffect != 0)
+		if (_abnormalEffect != AbnormalEffect.NULL)
 			getEffected().startAbnormalEffect(_abnormalEffect);
-		if (_specialEffect != 0)
+		if (_specialEffect != AbnormalEffect.NULL)
 			getEffected().startSpecialEffect(_specialEffect);
 		return true;
 	}
@@ -443,9 +444,9 @@ public abstract class L2Effect
 	 */
 	public void onExit()
 	{
-		if (_abnormalEffect != 0)
+		if (_abnormalEffect != AbnormalEffect.NULL)
 			getEffected().stopAbnormalEffect(_abnormalEffect);
-		if (_specialEffect != 0)
+		if (_specialEffect != AbnormalEffect.NULL)
 			getEffected().stopSpecialEffect(_specialEffect);
 	}
 	

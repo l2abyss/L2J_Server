@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import net.sf.l2j.gameserver.model.ChanceCondition;
 import net.sf.l2j.gameserver.model.L2Effect;
+import net.sf.l2j.gameserver.skills.AbnormalEffect;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.skills.conditions.Condition;
 import net.sf.l2j.gameserver.skills.funcs.FuncTemplate;
@@ -42,8 +43,8 @@ public class EffectTemplate
 	public final Lambda lambda;
 	public final int counter;
 	public final int period; // in seconds
-	public final int abnormalEffect;
-	public final int specialEffect;
+	public final AbnormalEffect abnormalEffect;
+	public final AbnormalEffect specialEffect;
 	public FuncTemplate[] funcTemplates;
 	public final String stackType;
 	public final float stackOrder;
@@ -57,7 +58,7 @@ public class EffectTemplate
     public final ChanceCondition chanceCondition;
 	
 	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda, 
-			int pCounter, int pPeriod, int pAbnormalEffect, int pSpecialEffect, String pStackType, float pStackOrder, boolean showicon,
+			int pCounter, int pPeriod, AbnormalEffect pAbnormalEffect, AbnormalEffect pSpecialEffect, String pStackType, float pStackOrder, boolean showicon,
 			double ePower, L2SkillType eType, int trigId, int trigLvl, ChanceCondition chanceCond)
 	{
 		attachCond = pAttachCond;

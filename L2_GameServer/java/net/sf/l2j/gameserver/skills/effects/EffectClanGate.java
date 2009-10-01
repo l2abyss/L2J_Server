@@ -16,8 +16,8 @@ package net.sf.l2j.gameserver.skills.effects;
 
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2Effect;
-import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.skills.AbnormalEffect;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
@@ -42,7 +42,7 @@ public class EffectClanGate extends L2Effect
 	@Override
 	public boolean onStart()
 	{
-		getEffected().startAbnormalEffect(L2Character.ABNORMAL_EFFECT_MAGIC_CIRCLE);
+		getEffected().startAbnormalEffect(AbnormalEffect.MAGIC_CIRCLE);
 		if (getEffected() instanceof L2PcInstance)
 		{
 			L2Clan clan = ((L2PcInstance) getEffected()).getClan();
@@ -73,7 +73,7 @@ public class EffectClanGate extends L2Effect
 	@Override
 	public void onExit()
 	{
-		getEffected().stopAbnormalEffect(L2Character.ABNORMAL_EFFECT_MAGIC_CIRCLE);
+		getEffected().stopAbnormalEffect(AbnormalEffect.MAGIC_CIRCLE);
 	}
 
 	/**

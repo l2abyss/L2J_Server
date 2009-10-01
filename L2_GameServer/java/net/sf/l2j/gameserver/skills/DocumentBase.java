@@ -31,7 +31,6 @@ import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.model.ChanceCondition;
 import net.sf.l2j.gameserver.model.L2Skill;
-import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.base.PlayerState;
 import net.sf.l2j.gameserver.model.base.Race;
 import net.sf.l2j.gameserver.skills.conditions.*;
@@ -232,56 +231,17 @@ abstract class DocumentBase
         }
         Lambda lambda = getLambda(n, template);
         Condition applayCond = parseCondition(n.getFirstChild(), template);
-        int abnormal = 0;
+        AbnormalEffect abnormal = AbnormalEffect.NULL;
         if (attrs.getNamedItem("abnormal") != null)
         {
-            String abn = attrs.getNamedItem("abnormal").getNodeValue();
-            if (abn.equals("bleed")) abnormal = L2Character.ABNORMAL_EFFECT_BLEEDING;
-            else if (abn.equals("poison")) abnormal = L2Character.ABNORMAL_EFFECT_POISON;
-            else if (abn.equals("redcircle")) abnormal = L2Character.ABNORMAL_EFFECT_REDCIRCLE;
-            else if (abn.equals("ice")) abnormal = L2Character.ABNORMAL_EFFECT_ICE;
-            else if (abn.equals("wind")) abnormal = L2Character.ABNORMAL_EFFECT_WIND;
-            else if (abn.equals("fear")) abnormal = L2Character.ABNORMAL_EFFECT_FEAR;
-            else if (abn.equals("stun")) abnormal = L2Character.ABNORMAL_EFFECT_STUN;
-            else if (abn.equals("sleep")) abnormal = L2Character.ABNORMAL_EFFECT_SLEEP;
-            else if (abn.equals("mute")) abnormal = L2Character.ABNORMAL_EFFECT_MUTED;
-            else if (abn.equals("root")) abnormal = L2Character.ABNORMAL_EFFECT_ROOT;
-            else if (abn.equals("hold1")) abnormal = L2Character.ABNORMAL_EFFECT_HOLD_1;
-            else if (abn.equals("hold2")) abnormal = L2Character.ABNORMAL_EFFECT_HOLD_2;
-            else if (abn.equals("unknown13")) abnormal = L2Character.ABNORMAL_EFFECT_UNKNOWN_13;
-            else if (abn.equals("bighead")) abnormal = L2Character.ABNORMAL_EFFECT_BIG_HEAD;
-            else if (abn.equals("flame")) abnormal = L2Character.ABNORMAL_EFFECT_FLAME;
-            else if (abn.equals("unknown16")) abnormal = L2Character.ABNORMAL_EFFECT_UNKNOWN_16;
-            else if (abn.equals("grow")) abnormal = L2Character.ABNORMAL_EFFECT_GROW;
-            else if (abn.equals("floatroot")) abnormal = L2Character.ABNORMAL_EFFECT_FLOATING_ROOT;
-            else if (abn.equals("dancestun")) abnormal = L2Character.ABNORMAL_EFFECT_DANCE_STUNNED;
-            else if (abn.equals("firerootstun")) abnormal = L2Character.ABNORMAL_EFFECT_FIREROOT_STUN;
-            else if (abn.equals("stealth")) abnormal = L2Character.ABNORMAL_EFFECT_STEALTH;
-            else if (abn.equals("imprison1")) abnormal = L2Character.ABNORMAL_EFFECT_IMPRISIONING_1;
-            else if (abn.equals("imprison2")) abnormal = L2Character.ABNORMAL_EFFECT_IMPRISIONING_2;
-            else if (abn.equals("magiccircle")) abnormal = L2Character.ABNORMAL_EFFECT_MAGIC_CIRCLE;
-            else if (abn.equals("ice2")) abnormal = L2Character.ABNORMAL_EFFECT_ICE2;
-            else if (abn.equals("earthquake")) abnormal = L2Character.ABNORMAL_EFFECT_EARTHQUAKE;
-            else if (abn.equals("unknown27")) abnormal = L2Character.ABNORMAL_EFFECT_UNKNOWN_27;
-            else if (abn.equals("invulnerable")) abnormal = L2Character.ABNORMAL_EFFECT_INVULNERABLE;
-            else if (abn.equals("vitality")) abnormal = L2Character.ABNORMAL_EFFECT_VITALITY;
-            else if (abn.equals("unknown30")) abnormal = L2Character.ABNORMAL_EFFECT_UNKNOWN_30;
-            else if (abn.equals("deathmark")) abnormal = L2Character.ABNORMAL_EFFECT_DEATH_MARK;
-            else if (abn.equals("unknown32")) abnormal = L2Character.ABNORMAL_EFFECT_UNKNOWN_32;
+            String abn = attrs.getNamedItem("abnormal").getNodeValue();            
+            abnormal = AbnormalEffect.getByName(abn);
         }
-        int special = 0;
+        AbnormalEffect special = AbnormalEffect.NULL;
         if (attrs.getNamedItem("special") != null)
         {
             String spc = attrs.getNamedItem("special").getNodeValue();
-            if (spc.equals("invulnerable")) special = L2Character.SPECIAL_EFFECT_INVULNERABLE;
-            else if (spc.equals("redglow")) special = L2Character.SPECIAL_EFFECT_AIR_STUN;
-            else if (spc.equals("redglow2")) special = L2Character.SPECIAL_EFFECT_AIR_ROOT;
-            else if (spc.equals("baguettesword")) special = L2Character.SPECIAL_EFFECT_BAGUETTE_SWORD;
-            else if (spc.equals("yellowafro")) special = L2Character.SPECIAL_EFFECT_YELLOW_AFFRO;
-            else if (spc.equals("pinkafro")) special = L2Character.SPECIAL_EFFECT_PINK_AFFRO;
-            else if (spc.equals("blackafro")) special = L2Character.SPECIAL_EFFECT_BLACK_AFFRO;
-            else if (spc.equals("unknown8")) special = L2Character.SPECIAL_EFFECT_UNKNOWN8;
-            else if (spc.equals("unknown9")) special = L2Character.SPECIAL_EFFECT_UNKNOWN9;
+            special = AbnormalEffect.getByName(spc);
         }
         float stackOrder = 0;
         String stackType = "none";

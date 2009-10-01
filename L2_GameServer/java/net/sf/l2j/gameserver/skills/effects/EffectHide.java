@@ -20,6 +20,7 @@ import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.serverpackets.DeleteObject;
 import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
+import net.sf.l2j.gameserver.skills.AbnormalEffect;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
@@ -62,7 +63,7 @@ public class EffectHide extends L2Effect
 		{
 			L2PcInstance activeChar = ((L2PcInstance) getEffected());
 			activeChar.getAppearance().setInvisible();
-			activeChar.startAbnormalEffect(L2Character.ABNORMAL_EFFECT_STEALTH);
+			activeChar.startAbnormalEffect(AbnormalEffect.STEALTH);
 
 			if (activeChar.getAI().getNextIntention() != null
 					&& activeChar.getAI().getNextIntention().getCtrlIntention() == CtrlIntention.AI_INTENTION_ATTACK)
@@ -103,7 +104,7 @@ public class EffectHide extends L2Effect
 		{
 			L2PcInstance activeChar = ((L2PcInstance) getEffected());
 			activeChar.getAppearance().setVisible();
-			activeChar.stopAbnormalEffect(L2Character.ABNORMAL_EFFECT_STEALTH);
+			activeChar.stopAbnormalEffect(AbnormalEffect.STEALTH);
 		}
 	}
 

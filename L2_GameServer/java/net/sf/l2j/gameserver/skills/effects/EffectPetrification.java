@@ -16,7 +16,7 @@
 package net.sf.l2j.gameserver.skills.effects;
 
 import net.sf.l2j.gameserver.model.L2Effect;
-import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.skills.AbnormalEffect;
 import net.sf.l2j.gameserver.skills.Env;
 import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
 import net.sf.l2j.gameserver.templates.skills.L2EffectType;
@@ -45,7 +45,7 @@ public class EffectPetrification extends L2Effect
 	@Override
 	public boolean onStart()
 	{
-		getEffected().startAbnormalEffect(L2Character.ABNORMAL_EFFECT_HOLD_2);
+		getEffected().startAbnormalEffect(AbnormalEffect.HOLD_2);
 		getEffected().startParalyze();
 		getEffected().setIsInvul(true);
 		return true;
@@ -58,7 +58,7 @@ public class EffectPetrification extends L2Effect
 	@Override
 	public void onExit()
 	{
-		getEffected().stopAbnormalEffect(L2Character.ABNORMAL_EFFECT_HOLD_2);
+		getEffected().stopAbnormalEffect(AbnormalEffect.HOLD_2);
 		getEffected().stopParalyze(this);
 		getEffected().setIsInvul(false);
 	}
