@@ -184,6 +184,8 @@ public class ZoneManager
 								temp = new L2NoStoreZone(zoneId);
 							else if (zoneType.equals("ScriptZone"))
 								temp = new L2ScriptZone(zoneId);
+							else if (zoneType.equals("PaganZone"))
+								temp = new L2PaganZone(zoneId);
 							
 							// Check for unknown type
 							if (temp == null)
