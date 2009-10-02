@@ -24,7 +24,7 @@ import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.templates.item.L2WeaponType;
 
-public class AbstractEnchantPacket extends L2GameClientPacket
+public abstract class AbstractEnchantPacket extends L2GameClientPacket
 {
 
 	public static final Map<Integer, EnchantScroll> _scrolls = new FastMap<Integer, EnchantScroll>();
@@ -326,23 +326,5 @@ public class AbstractEnchantPacket extends L2GameClientPacket
 			return false;
 		
 		return true;
-	}
-
-	@Override
-	protected void readImpl()
-	{
-
-	}
-
-	@Override
-	protected void runImpl()
-	{
-
-	}
-
-	@Override
-	public String getType()
-	{
-		return "Never Used";
 	}
 }
