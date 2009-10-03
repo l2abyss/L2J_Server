@@ -402,7 +402,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				useSkill(4705);
 				break;
 			case 1014: // Nightshade - Mass Curse of Shade
-				useSkill(4706, activeChar);
+				useSkill(4706);
 				break;
 			case 1015: // Nightshade - Shade Sacrifice
 				useSkill(4707);
