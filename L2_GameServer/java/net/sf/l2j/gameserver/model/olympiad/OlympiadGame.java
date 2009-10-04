@@ -1063,7 +1063,8 @@ class OlympiadGameTask implements Runnable
 			{
 				for (L2PcInstance spec : OlympiadManager.STADIUMS[_game._stadiumID].getSpectators())
 				{
-					spec.sendPacket(new ExOlympiadMatchEnd());
+					if (spec != null)
+						spec.sendPacket(new ExOlympiadMatchEnd());
 				}
 			}
 			
@@ -1153,8 +1154,11 @@ class OlympiadGameTask implements Runnable
 		{
 			for (L2PcInstance spec : OlympiadManager.STADIUMS[_game._stadiumID].getSpectators())
 			{
-				spec.sendPacket(new ExOlympiadUserInfo(_game._playerOne, 1));
-				spec.sendPacket(new ExOlympiadUserInfo(_game._playerTwo, 2));
+				if (spec != null)
+				{
+					spec.sendPacket(new ExOlympiadUserInfo(_game._playerOne, 1));
+					spec.sendPacket(new ExOlympiadUserInfo(_game._playerTwo, 2));
+				}
 			}
 		}
 
