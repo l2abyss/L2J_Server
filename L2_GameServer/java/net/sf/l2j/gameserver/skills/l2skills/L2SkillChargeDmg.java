@@ -55,9 +55,13 @@ public class L2SkillChargeDmg extends L2Skill
 			// thanks Diego Vargas of L2Guru: 70*((0.8+0.201*No.Charges) * (PATK+POWER)) / PDEF
 			modifier = 0.8+0.201*(getNumCharges()+((L2PcInstance)caster).getCharges());
 		}
+		L2ItemInstance weapon = caster.getActiveWeaponInstance();
+		boolean soul = (weapon != null
+				&& weapon.getChargedSoulshot() == L2ItemInstance.CHARGED_SOULSHOT
+				&& weapon.getItemType() != L2WeaponType.DAGGER );
+
 		for (L2Character target: (L2Character[]) targets)
 		{
-			L2ItemInstance weapon = caster.getActiveWeaponInstance();
 			if (target.isAlikeDead())
 				continue;
 
@@ -90,10 +94,6 @@ public class L2SkillChargeDmg extends L2Skill
 			boolean crit = false;
 			if (this.getBaseCritRate() > 0)
 				crit = Formulas.calcCrit(this.getBaseCritRate() * 10 * Formulas.getSTRBonus(caster), target);
-			boolean soul = (weapon != null
-							&& weapon.getChargedSoulshot() == L2ItemInstance.CHARGED_SOULSHOT
-							&& weapon.getItemType() != L2WeaponType.DAGGER );
-
 			// damage calculation, crit is static 2x
 			double damage = Formulas.calcPhysDam(caster, target, this, shld, false, false, soul);
 			if (crit)
@@ -121,14 +121,14 @@ public class L2SkillChargeDmg extends L2Skill
 
 				caster.sendDamageMessage(target, (int)finalDamage, false, crit, false);
 
-				if (soul && weapon!= null)
-					weapon.setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
 			}
 			else
 			{
 				caster.sendDamageMessage(target, 0, false, false, true);
 			}
 		}
+		if (soul && weapon!= null)
+			weapon.setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
 		// effect self :]
 		L2Effect seffect = caster.getFirstEffect(getId());
 		if (seffect != null && seffect.isSelfEffect())
