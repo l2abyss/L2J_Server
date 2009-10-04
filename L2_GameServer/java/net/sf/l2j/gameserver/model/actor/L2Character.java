@@ -6519,14 +6519,18 @@ public abstract class L2Character extends L2Object
 							}
 							else if (target instanceof L2Attackable)
 							{
-								if (skill.getSkillType() != L2SkillType.AGGREDUCE
-										&& skill.getSkillType() != L2SkillType.AGGREDUCE_CHAR
-										&& skill.getSkillType() != L2SkillType.AGGREMOVE)
+								switch (skill.getSkillType())
 								{
-									// add attacker into list
-									((L2Character)target).addAttackerToAttackByList(player);
-									// notify target AI about the attack
-									((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
+									case AGGREDUCE:
+									case AGGREDUCE_CHAR:
+									case AGGREMOVE:
+										break;
+									default:
+										// add attacker into list
+										((L2Character)target).addAttackerToAttackByList(this);
+										// notify target AI about the attack
+										((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
+										break;
 								}
 							}
 						}
