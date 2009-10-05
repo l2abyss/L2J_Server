@@ -15,7 +15,6 @@
 package net.sf.l2j.gameserver.model.actor.instance;
 
 import net.sf.l2j.Config;
-import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
 import net.sf.l2j.gameserver.model.L2Effect;
@@ -474,17 +473,17 @@ public class L2NpcInstance extends L2Npc
 
 	private void showNoTeachHtml(L2PcInstance player)
 	{
-		int npcId = getTemplate().npcId;
+		int npcId = getNpcId();
 		String html = "";
 
 		if (this instanceof L2WarehouseInstance)
-			html = HtmCache.getInstance().getHtm("data/html/warehouse/" + npcId + "-noteach.htm");
+			html = "data/html/warehouse/" + npcId + "-noteach.htm";
 		else if (this instanceof L2TrainerInstance)
-			html = HtmCache.getInstance().getHtm("data/html/trainer/" + npcId + "-noteach.htm");
+			html = "data/html/trainer/" + npcId + "-noteach.htm";
 
 		if (html == null)
 		{
-			_log.warning("Npc "+npcId+" missing noTeach html!");
+			_log.warning("Npc " + npcId + " missing noTeach html!");
 			NpcHtmlMessage msg = new NpcHtmlMessage(getObjectId());
 			final String sb = StringUtil.concat(
 					"<html><body>" +
@@ -498,7 +497,8 @@ public class L2NpcInstance extends L2Npc
 		else
 		{
 			NpcHtmlMessage noTeachMsg = new NpcHtmlMessage(getObjectId());
-			noTeachMsg.setHtml(html.replaceAll("%objectId%", String.valueOf(getObjectId())));
+			noTeachMsg.setFile(html);
+			noTeachMsg.replace("%objectId%", String.valueOf(getObjectId()));
 			player.sendPacket(noTeachMsg);
 		}
 	}
