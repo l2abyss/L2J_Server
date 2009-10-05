@@ -15,6 +15,7 @@
 package net.sf.l2j.gameserver.model.actor.instance;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.cache.HtmCache;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SkillTreeTable;
 import net.sf.l2j.gameserver.model.L2Effect;
@@ -477,9 +478,9 @@ public class L2NpcInstance extends L2Npc
 		String html = "";
 
 		if (this instanceof L2WarehouseInstance)
-			html = "data/html/warehouse/" + npcId + "-noteach.htm";
+			html = HtmCache.getInstance().getHtm("data/html/warehouse/" + npcId + "-noteach.htm");
 		else if (this instanceof L2TrainerInstance)
-			html = "data/html/trainer/" + npcId + "-noteach.htm";
+			html = HtmCache.getInstance().getHtm("data/html/trainer/" + npcId + "-noteach.htm");
 
 		if (html == null)
 		{
