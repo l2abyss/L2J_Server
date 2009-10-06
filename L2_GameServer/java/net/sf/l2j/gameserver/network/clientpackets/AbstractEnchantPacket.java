@@ -297,6 +297,8 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 	{
 		if (item.isHeroItem())
 			return false;
+		if (item.isPvp())
+			return false;
 		if (item.isShadowItem())
 			return false;
 		if (item.isCommonItem())
