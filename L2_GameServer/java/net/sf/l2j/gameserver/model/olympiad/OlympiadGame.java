@@ -200,7 +200,7 @@ class OlympiadGame
 			try
 			{
 				// Remove Buffs
-				player.stopAllEffects();
+				player.stopAllEffectsExceptThoseThatLastThroughDeath();
 				
 				// Remove Clan Skills
 				if (player.getClan() != null)

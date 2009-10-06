@@ -2136,7 +2136,7 @@ public class SevenSignsFestival implements SpawnListener
 						participant.teleToLocation(x, y, _startLocation._z, true);
 						
 						// Remove all buffs from all participants on entry. Works like the skill Cancel.
-						participant.stopAllEffects();
+						participant.stopAllEffectsExceptThoseThatLastThroughDeath();
 						
 						// Remove any stray blood offerings in inventory
 						L2ItemInstance bloodOfferings = participant.getInventory().getItemByItemId(FESTIVAL_OFFERING_ID);

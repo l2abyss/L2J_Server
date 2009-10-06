@@ -172,7 +172,7 @@ public class L2NpcBufferInstance extends L2Npc
 		}
 		else if (command.startsWith("RemoveBuffs"))
 		{
-			player.stopAllEffects();
+			player.stopAllEffectsExceptThoseThatLastThroughDeath();
 			showChatWindow(player, 0); // 0 = main window
 		}
 		else
