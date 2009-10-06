@@ -569,6 +569,10 @@ public class L2Npc extends L2Character
 	{
 		// TODO: NPC busy check etc...
 
+		if (player.isCastingNow() || player.isCastingSimultaneouslyNow())
+			return false;
+		if (player.isDead() || player.isFakeDeath())
+			return false;
 		if (player.isSitting())
 			return false;
 		if (player.getPrivateStoreType() != 0)
@@ -1526,7 +1530,7 @@ public class L2Npc extends L2Character
 	public void showQuestChooseWindow(L2PcInstance player, Quest[] quests)
 	{
 		final StringBuilder sb = StringUtil.startAppend(150,
-				"<html><body><title>Talk about:</title><br>"
+				"<html><body>"
 		);
 		for (Quest q : quests)
 		{
@@ -1543,13 +1547,9 @@ public class L2Npc extends L2Character
 			if (qs != null)
 			{
 				if (qs.getState() == State.STARTED && qs.getInt("cond") > 0)
-				{
 					sb.append(" (In Progress)");
-				}
 				else if (qs.getState() == State.COMPLETED)
-				{
 					sb.append(" (Done)");
-				}
 			}
 			sb.append("]</a><br>");
 		}
