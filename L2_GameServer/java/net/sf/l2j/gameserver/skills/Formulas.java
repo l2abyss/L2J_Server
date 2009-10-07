@@ -46,6 +46,7 @@ import net.sf.l2j.gameserver.skills.conditions.ConditionUsingItemType;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.templates.chars.L2PcTemplate;
 import net.sf.l2j.gameserver.templates.effects.EffectTemplate;
+import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
 import net.sf.l2j.gameserver.templates.item.L2WeaponType;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
@@ -282,17 +283,20 @@ public final class Formulas
 		public void calc(Env env)
 		{
 			if (env.player instanceof L2PcInstance)
-            {
-                L2PcInstance p = (L2PcInstance) env.player;
-                boolean hasMagePDef = (p.getClassId().isMage() || p.getClassId().getId() == 0x31); // orc mystics are a special case
-    			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_HEAD) != null) env.value -= 12;
-    			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_CHEST) != null)
-    				env.value -= hasMagePDef ? 15 : 31;
-    			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_LEGS) != null)
-    				env.value -= hasMagePDef ? 8 : 18;
-    			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_GLOVES) != null) env.value -= 8;
-    			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_FEET) != null) env.value -= 7;
-            }
+			{
+				L2PcInstance p = (L2PcInstance) env.player;
+				boolean hasMagePDef = (p.getClassId().isMage() || p.getClassId().getId() == 0x31); // orc mystics are a special case
+				if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_HEAD) != null)
+					env.value -= 12;
+				if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_CHEST) != null)
+					env.value -= hasMagePDef ? 15 : 31;
+				if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_LEGS) != null || p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_CHEST).getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR)
+					env.value -= hasMagePDef ? 8 : 18;
+				if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_GLOVES) != null)
+					env.value -= 8;
+				if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_FEET) != null)
+					env.value -= 7;
+			}
 			env.value *= env.player.getLevelMod();
 		}
 	}
