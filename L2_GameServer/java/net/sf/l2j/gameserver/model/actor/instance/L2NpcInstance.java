@@ -498,7 +498,7 @@ public class L2NpcInstance extends L2Npc
 		else
 		{
 			NpcHtmlMessage noTeachMsg = new NpcHtmlMessage(getObjectId());
-			noTeachMsg.setFile(html);
+			noTeachMsg.setHtml(html);
 			noTeachMsg.replace("%objectId%", String.valueOf(getObjectId()));
 			player.sendPacket(noTeachMsg);
 		}
