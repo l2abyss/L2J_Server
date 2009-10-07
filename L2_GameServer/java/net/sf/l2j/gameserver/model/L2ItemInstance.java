@@ -49,7 +49,6 @@ import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.skills.funcs.Func;
 import net.sf.l2j.gameserver.templates.item.L2Armor;
 import net.sf.l2j.gameserver.templates.item.L2EtcItem;
-import net.sf.l2j.gameserver.templates.item.L2EtcItemType;
 import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
 import net.sf.l2j.gameserver.util.GMAudit;
@@ -690,10 +689,7 @@ public final class L2ItemInstance extends L2Object
 	public boolean isDepositable(boolean isPrivateWareHouse)
 	{
 		// equipped, hero and quest items
-		if (isEquipped() || isHeroItem() || _item.getItemType() == L2EtcItemType.QUEST)
-			return false;
-		// Staff of Master Yogi
-		if (_itemId == 13539)
+		if (isEquipped() || !_item.isDepositable())
 			return false;
 		if (!isPrivateWareHouse)
 		{

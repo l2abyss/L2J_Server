@@ -156,6 +156,7 @@ public abstract class L2Item
 	private final boolean _dropable;
 	private final boolean _destroyable;
 	private final boolean _tradeable;
+	private final boolean _depositable;
 
 	private final boolean _common;
 	private final boolean _heroItem;
@@ -212,6 +213,7 @@ public abstract class L2Item
 		_dropable = set.getBool("dropable", true);
 		_destroyable = set.getBool("destroyable", true);
 		_tradeable = set.getBool("tradeable", true);
+		_depositable = set.getBool("depositable", true);
 
 		_common = (_itemId >= 12006 && _itemId <= 12361) || (_itemId >= 11605 && _itemId <= 12308);
 		_heroItem = (_itemId >= 6611 && _itemId <= 6621) || (_itemId >= 9388 && _itemId <= 9390) || _itemId == 6842;
@@ -473,6 +475,15 @@ public abstract class L2Item
 	public final boolean isTradeable()
 	{
 		return _tradeable;
+	}
+
+	/**
+	 * Returns if the item can be put into warehouse
+	 * @return boolean
+	 */
+	public final boolean isDepositable()
+	{
+		return _depositable;
 	}
 
 	/**
