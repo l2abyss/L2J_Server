@@ -17,6 +17,7 @@ package net.sf.l2j.gameserver.network.clientpackets;
 import java.util.logging.Logger;
 
 import net.sf.l2j.Config;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 
 /**
@@ -43,19 +44,23 @@ public final class DlgAnswer extends L2GameClientPacket
 	@Override
 	public void runImpl()
 	{
+		final L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null)
+			return;
+		
 		if (Config.DEBUG)
 			_log.fine(getType()+": Answer accepted. Message ID "+_messageId+", answer "+_answer+", Requester ID "+_requesterId);
 		if (_messageId == SystemMessageId.RESSURECTION_REQUEST_BY_C1_FOR_S2_XP.getId()
 				|| _messageId == SystemMessageId.RESURRECT_USING_CHARM_OF_COURAGE.getId())
-			getClient().getActiveChar().reviveAnswer(_answer);
+			activeChar.reviveAnswer(_answer);
 		else if (_messageId==SystemMessageId.C1_WISHES_TO_SUMMON_YOU_FROM_S2_DO_YOU_ACCEPT.getId())
-			getClient().getActiveChar().teleportAnswer(_answer, _requesterId);
+			activeChar.teleportAnswer(_answer, _requesterId);
 		else if (_messageId == SystemMessageId.S1.getId() && Config.L2JMOD_ALLOW_WEDDING)
-			getClient().getActiveChar().EngageAnswer(_answer);
+			activeChar.EngageAnswer(_answer);
 		else if (_messageId == SystemMessageId.WOULD_YOU_LIKE_TO_OPEN_THE_GATE.getId())
-			getClient().getActiveChar().gatesAnswer(_answer, 1);
+			activeChar.gatesAnswer(_answer, 1);
 		else if (_messageId == SystemMessageId.WOULD_YOU_LIKE_TO_CLOSE_THE_GATE.getId())
-			getClient().getActiveChar().gatesAnswer(_answer, 0);
+			activeChar.gatesAnswer(_answer, 0);
 	}
 
 	@Override
