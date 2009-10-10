@@ -14,8 +14,10 @@
  */
 package net.sf.l2j.gameserver.datatables;
 
+import gnu.trove.TIntObjectHashMap;
+
 import java.io.File;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,11 +25,12 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2Augmentation;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.network.clientpackets.AbstractRefinePacket;
 import net.sf.l2j.gameserver.skills.Stats;
+import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.util.Rnd;
 
 import org.w3c.dom.Document;
@@ -80,7 +83,7 @@ public class AugmentationData
 	private static final int ACC_START = 16669;
 	private static final int ACC_BLOCKS_NUM = 10;
 	private static final int ACC_STAT_SUBBLOCKSIZE = 21;
-	private static final int ACC_STAT_NUM = 6; 
+	private static final int ACC_STAT_NUM = 6;
 
 	private static final int ACC_RING_START = ACC_START;
 	private static final int ACC_RING_SKILLS = 18;
@@ -101,12 +104,15 @@ public class AugmentationData
 	private static final byte[] ACC_STATS1_MAP = new byte[ACC_STAT_SUBBLOCKSIZE];
 	private static final byte[] ACC_STATS2_MAP = new byte[ACC_STAT_SUBBLOCKSIZE];
 	
-	private FastList<?> _augmentationStats[];
-	private Map<Integer, FastList<augmentationSkill>> _blueSkills;
-	private Map<Integer, FastList<augmentationSkill>> _purpleSkills;
-	private Map<Integer, FastList<augmentationSkill>> _redSkills;
+	private ArrayList<?>[] _augStats = new ArrayList[4];
+	private ArrayList<?>[] _augAccStats = new ArrayList[4];
 
-	private FastList<?> _augmentationAccStats[];
+	private ArrayList<?>[] _blueSkills = new ArrayList[10];
+	private ArrayList<?>[] _purpleSkills = new ArrayList[10];
+	private ArrayList<?>[] _redSkills = new ArrayList[10];
+	private ArrayList<?>[] _yellowSkills = new ArrayList[10];
+
+	private TIntObjectHashMap<augmentationSkill> _allSkills = new TIntObjectHashMap<augmentationSkill>(); 
 
 	// =========================================================
 	// Constructor
@@ -114,17 +120,15 @@ public class AugmentationData
 	{
 		_log.info("Initializing AugmentationData.");
 		
-		_augmentationStats = new FastList[4];
-		_augmentationStats[0] = new FastList<augmentationStat>();
-		_augmentationStats[1] = new FastList<augmentationStat>();
-		_augmentationStats[2] = new FastList<augmentationStat>();
-		_augmentationStats[3] = new FastList<augmentationStat>();
+		_augStats[0] = new ArrayList<augmentationStat>();
+		_augStats[1] = new ArrayList<augmentationStat>();
+		_augStats[2] = new ArrayList<augmentationStat>();
+		_augStats[3] = new ArrayList<augmentationStat>();
 		
-		_augmentationAccStats = new FastList[4];
-		_augmentationAccStats[0] = new FastList<augmentationStat>();
-		_augmentationAccStats[1] = new FastList<augmentationStat>();
-		_augmentationAccStats[2] = new FastList<augmentationStat>();
-		_augmentationAccStats[3] = new FastList<augmentationStat>();
+		_augAccStats[0] = new ArrayList<augmentationStat>();
+		_augAccStats[1] = new ArrayList<augmentationStat>();
+		_augAccStats[2] = new ArrayList<augmentationStat>();
+		_augAccStats[3] = new ArrayList<augmentationStat>();
 
 		// Lookup tables structure: STAT1 represent first stat, STAT2 - second.
 		// If both values are the same - use solo stat, if different - combined.
@@ -159,10 +163,11 @@ public class AugmentationData
 		// 01-01,01-02,01-03,01-04,01-05
 		// 02-02,02-03,02-04,02-05
 		// 03-03,03-04,03-05
-		// 04-04,04-05
-		// 05-05
-		// First values always solo, next are combined
-		for (int i = 0; i < ACC_STAT_NUM; i++)
+		// 04-04 \
+		// 05-05 - order is changed here
+		// 04-05 /
+		// First values always solo, next are combined, except last 3 values
+		for (int i = 0; i < ACC_STAT_NUM - 2; i++)
 		{
 			for (int j = i; j < ACC_STAT_NUM; idx++, j++)
 			{
@@ -170,26 +175,30 @@ public class AugmentationData
 				ACC_STATS2_MAP[idx] = (byte)j;				
 			}
 		}
+		ACC_STATS1_MAP[idx] = 4;
+		ACC_STATS2_MAP[idx++] = 4;
+		ACC_STATS1_MAP[idx] = 5;
+		ACC_STATS2_MAP[idx++] = 5;
+		ACC_STATS1_MAP[idx] = 4;
+		ACC_STATS2_MAP[idx] = 5;
 
-		_blueSkills = new FastMap<Integer, FastList<augmentationSkill>>();
-		_purpleSkills = new FastMap<Integer, FastList<augmentationSkill>>();
-		_redSkills = new FastMap<Integer, FastList<augmentationSkill>>();
-		for (int i = 1; i <= 10; i++)
+		for (int i = 0; i < 10; i++)
 		{
-			_blueSkills.put(i, new FastList<augmentationSkill>());
-			_purpleSkills.put(i, new FastList<augmentationSkill>());
-			_redSkills.put(i, new FastList<augmentationSkill>());
+			_blueSkills[i] = new ArrayList<Integer>();
+			_purpleSkills[i] = new ArrayList<Integer>();
+			_redSkills[i] = new ArrayList<Integer>();
+			_yellowSkills[i] = new ArrayList<Integer>();
 		}
 		
 		load();
 		
 		// Use size*4: since theres 4 blocks of stat-data with equivalent size
-		_log.info("AugmentationData: Loaded: " + (_augmentationStats[0].size() * 4) + " augmentation stats.");
-		_log.info("AugmentationData: Loaded: " + (_augmentationAccStats[0].size() * 4) + " accessory augmentation stats.");
-		for (int i = 1; i <= 10; i++)
+		_log.info("AugmentationData: Loaded: " + (_augStats[0].size() * 4) + " augmentation stats.");
+		_log.info("AugmentationData: Loaded: " + (_augAccStats[0].size() * 4) + " accessory augmentation stats.");
+		for (int i = 0; i < 10; i++)
 		{
-			_log.info("AugmentationData: Loaded: " + _blueSkills.get(i).size() + " blue, " + _purpleSkills.get(i).size() + " purple and "
-					+ _redSkills.get(i).size() + " red skills for lifeStoneLevel " + i);
+			_log.info("AugmentationData: Loaded: " + _blueSkills[i].size() + " blue, " + _purpleSkills[i].size() + " purple and "
+					+ _redSkills[i].size() + " red skills for lifeStoneLevel " + i);
 		}
 	}
 	
@@ -200,23 +209,16 @@ public class AugmentationData
 	{
 		private int _skillId;
 		private int _skillLevel;
-		private int _augmentationSkillId;
 		
-		public augmentationSkill(int skillId, int skillLevel, int augmentationSkillId)
+		public augmentationSkill(int skillId, int skillLevel)
 		{
 			_skillId = skillId;
 			_skillLevel = skillLevel;
-			_augmentationSkillId = augmentationSkillId;
 		}
 		
 		public L2Skill getSkill()
 		{
 			return SkillTable.getInstance().getInfo(_skillId, _skillLevel);
-		}
-		
-		public int getAugmentationSkillId()
-		{
-			return _augmentationSkillId;
 		}
 	}
 	
@@ -266,9 +268,6 @@ public class AugmentationData
 			return _stat;
 		}
 	}
-	
-	// =========================================================
-	// Method - Private
 	
 	@SuppressWarnings("unchecked")
 	private final void load()
@@ -341,16 +340,16 @@ public class AugmentationData
 								badAugmantData++;
 								continue;
 							}
-							int k = 1;
-							while ((augmentationId - k * SKILLS_BLOCKSIZE) >= BLUE_START)
-								k++;
-							
+							int k = (augmentationId - BLUE_START) / SKILLS_BLOCKSIZE;
+
 							if (type.equalsIgnoreCase("blue"))
-								_blueSkills.get(k).add(new augmentationSkill(skillId, skillLvL, augmentationId));
+								((ArrayList<Integer>)_blueSkills[k]).add(augmentationId);
 							else if (type.equalsIgnoreCase("purple"))
-								_purpleSkills.get(k).add(new augmentationSkill(skillId, skillLvL, augmentationId));
+								((ArrayList<Integer>)_purpleSkills[k]).add(augmentationId);
 							else
-								_redSkills.get(k).add(new augmentationSkill(skillId, skillLvL, augmentationId));
+								((ArrayList<Integer>)_redSkills[k]).add(augmentationId);
+
+							_allSkills.put(augmentationId, new augmentationSkill(skillId, skillLvL));
 						}
 					}
 				}
@@ -424,7 +423,7 @@ public class AugmentationData
 									}
 								}
 								// store this stat
-								((FastList<augmentationStat>) _augmentationStats[(i - 1)]).add(new augmentationStat(Stats.valueOfXml(statName), soloValues, combinedValues));
+								((ArrayList<augmentationStat>) _augStats[(i - 1)]).add(new augmentationStat(Stats.valueOfXml(statName), soloValues, combinedValues));
 							}
 						}
 					}
@@ -494,7 +493,7 @@ public class AugmentationData
 									}
 								}
 								// store this stat
-								((FastList<augmentationStat>) _augmentationAccStats[(i - 1)]).add(new augmentationStat(Stats.valueOfXml(statName), soloValues, combinedValues));
+								((ArrayList<augmentationStat>) _augAccStats[(i - 1)]).add(new augmentationStat(Stats.valueOfXml(statName), soloValues, combinedValues));
 							}
 						}
 					}
@@ -508,17 +507,28 @@ public class AugmentationData
 		}
 	}
 	
-	// =========================================================
-	// Properties - Public
-
 	/**
 	 * Generate a new random augmentation
 	 * @param item
 	 * @param lifeStoneLevel
 	 * @param lifeSoneGrade
+	 * @param bodyPart
 	 * @return L2Augmentation
 	 */
-	public L2Augmentation generateRandomAugmentation(int lifeStoneLevel, int lifeStoneGrade)
+	public L2Augmentation generateRandomAugmentation(int lifeStoneLevel, int lifeStoneGrade, int bodyPart)
+	{
+		switch (bodyPart)
+		{
+			case L2Item.SLOT_LR_FINGER:
+			case L2Item.SLOT_LR_EAR:
+			case L2Item.SLOT_NECK:
+				return generateRandomAccessoryAugmentation(lifeStoneLevel, bodyPart);
+			default:
+				return generateRandomWeaponAugmentation(lifeStoneLevel, lifeStoneGrade);
+		}
+	}
+
+	private L2Augmentation generateRandomWeaponAugmentation(int lifeStoneLevel, int lifeStoneGrade)
 	{
 		// Note that stat12 stands for stat 1 AND 2 (same for stat34 ;p )
 		// this is because a value can contain up to 2 stat modifications
@@ -528,40 +538,46 @@ public class AugmentationData
 		// Note: lifeStoneGrade: (0 means low grade, 3 top grade)
 		// First: determine whether we will add a skill/baseStatModifier or not
 		// because this determine which color could be the result 
-		int skill_Chance = 0;
+		int stat12 = 0;
 		int stat34 = 0;
 		boolean generateSkill = false;
 		boolean generateGlow = false;
-		int resultColor = 0;
-		//lifestonelevel is used for stat Id and skill level, but here the max level is 10
-		if (lifeStoneLevel > 10)
-			lifeStoneLevel = 10;
+
+		//lifestonelevel is used for stat Id and skill level, but here the max level is 9
+		lifeStoneLevel = Math.min(lifeStoneLevel, 9);
+
 		switch (lifeStoneGrade)
 		{
-			case 0:
-				skill_Chance = Config.AUGMENTATION_NG_SKILL_CHANCE;
+			case AbstractRefinePacket.GRADE_NONE:
+				if (Rnd.get(1, 100) <= Config.AUGMENTATION_NG_SKILL_CHANCE)
+					generateSkill = true;
 				if (Rnd.get(1, 100) <= Config.AUGMENTATION_NG_GLOW_CHANCE)
 					generateGlow = true;
 				break;
-			case 1:
-				skill_Chance = Config.AUGMENTATION_MID_SKILL_CHANCE;
+			case AbstractRefinePacket.GRADE_MID:
+				if (Rnd.get(1, 100) <= Config.AUGMENTATION_MID_SKILL_CHANCE)
+					generateSkill = true;
 				if (Rnd.get(1, 100) <= Config.AUGMENTATION_MID_GLOW_CHANCE)
 					generateGlow = true;
 				break;
-			case 2:
-				skill_Chance = Config.AUGMENTATION_HIGH_SKILL_CHANCE;
+			case AbstractRefinePacket.GRADE_HIGH:
+				if (Rnd.get(1, 100) <= Config.AUGMENTATION_HIGH_SKILL_CHANCE)
+					generateSkill = true;
 				if (Rnd.get(1, 100) <= Config.AUGMENTATION_HIGH_GLOW_CHANCE)
 					generateGlow = true;
 				break;
-			case 3:
-				skill_Chance = Config.AUGMENTATION_TOP_SKILL_CHANCE;
+			case AbstractRefinePacket.GRADE_TOP:
+				if (Rnd.get(1, 100) <= Config.AUGMENTATION_TOP_SKILL_CHANCE)
+					generateSkill = true;
 				if (Rnd.get(1, 100) <= Config.AUGMENTATION_TOP_GLOW_CHANCE)
 					generateGlow = true;
+				break;
+			case AbstractRefinePacket.GRADE_ACC:
+				if (Rnd.get(1, 100) <= Config.AUGMENTATION_ACC_SKILL_CHANCE)
+					generateSkill = true;
 		}
 		
-		if (Rnd.get(1, 100) <= skill_Chance)
-			generateSkill = true;
-		else if (Rnd.get(1, 100) <= Config.AUGMENTATION_BASESTAT_CHANCE)
+		if (!generateSkill && Rnd.get(1, 100) <= Config.AUGMENTATION_BASESTAT_CHANCE)
 			stat34 = Rnd.get(BASESTAT_STR, BASESTAT_MEN);
 		
 		// Second: decide which grade the augmentation result is going to have:
@@ -569,9 +585,9 @@ public class AugmentationData
 		// The chances used here are most likely custom,
 		// whats known is: you cant have yellow with skill(or baseStatModifier)
 		// noGrade stone can not have glow, mid only with skill, high has a chance(custom), top allways glow
+		int resultColor = Rnd.get(0, 100);
 		if (stat34 == 0 && !generateSkill)
 		{
-			resultColor = Rnd.get(0, 100);
 			if (resultColor <= (15 * lifeStoneGrade) + 40)
 				resultColor = 1;
 			else
@@ -579,7 +595,6 @@ public class AugmentationData
 		}
 		else
 		{
-			resultColor = Rnd.get(0, 100);
 			if (resultColor <= (10 * lifeStoneGrade) + 5 || stat34 != 0)
 				resultColor = 3;
 			else if (resultColor <= (10 * lifeStoneGrade) + 10)
@@ -587,7 +602,26 @@ public class AugmentationData
 			else
 				resultColor = 2;
 		}
-		
+
+		// generate a skill if neccessary
+		L2Skill skill = null;
+		if (generateSkill)
+		{
+			switch (resultColor)
+			{
+				case 1: // blue skill
+					stat34 = ((Integer)_blueSkills[lifeStoneLevel].get(Rnd.get(0, _blueSkills[lifeStoneLevel].size() - 1)));
+					break;
+				case 2: // purple skill
+					stat34 = ((Integer)_purpleSkills[lifeStoneLevel].get(Rnd.get(0, _purpleSkills[lifeStoneLevel].size() - 1)));
+					break;
+				case 3: // red skill
+					stat34 = ((Integer)_redSkills[lifeStoneLevel].get(Rnd.get(0, _redSkills[lifeStoneLevel].size() - 1)));
+					break;
+			}
+			skill = _allSkills.get(stat34).getSkill();
+		}
+
 		// Third: Calculate the subblock offset for the choosen color,
 		// and the level of the lifeStone
 		// from large number of retail augmentations:
@@ -609,64 +643,97 @@ public class AugmentationData
 		// D - strong glow, top grade LS?
 		
 		// is neither a skill nor basestat used for stat34? then generate a normal stat
-		int stat12 = 0;
-		if (stat34 == 0 && !generateSkill)
+		int offset;
+		if (stat34 == 0)
 		{
 			int temp = Rnd.get(2, 3);
 			int colorOffset = resultColor * (10 * STAT_SUBBLOCKSIZE) + temp * STAT_BLOCKSIZE + 1;
-			int offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + colorOffset;
+			offset = (lifeStoneLevel * STAT_SUBBLOCKSIZE) + colorOffset;
 			
 			stat34 = Rnd.get(offset, offset + STAT_SUBBLOCKSIZE - 1);
 			if (generateGlow && lifeStoneGrade >= 2)
-				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + (temp - 2) * STAT_BLOCKSIZE + lifeStoneGrade
+				offset = (lifeStoneLevel * STAT_SUBBLOCKSIZE) + (temp - 2) * STAT_BLOCKSIZE + lifeStoneGrade
 						* (10 * STAT_SUBBLOCKSIZE) + 1;
 			else
-				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + (temp - 2) * STAT_BLOCKSIZE + Rnd.get(0, 1)
+				offset = (lifeStoneLevel * STAT_SUBBLOCKSIZE) + (temp - 2) * STAT_BLOCKSIZE + Rnd.get(0, 1)
 						* (10 * STAT_SUBBLOCKSIZE) + 1;
-			stat12 = Rnd.get(offset, offset + STAT_SUBBLOCKSIZE - 1);
 		}
 		else
 		{
-			int offset;
 			if (!generateGlow)
-				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + Rnd.get(0, 1) * STAT_BLOCKSIZE + 1;
+				offset = (lifeStoneLevel * STAT_SUBBLOCKSIZE) + Rnd.get(0, 1) * STAT_BLOCKSIZE + 1;
 			else
-				offset = ((lifeStoneLevel - 1) * STAT_SUBBLOCKSIZE) + Rnd.get(0, 1) * STAT_BLOCKSIZE + (lifeStoneGrade + resultColor) / 2
+				offset = (lifeStoneLevel * STAT_SUBBLOCKSIZE) + Rnd.get(0, 1) * STAT_BLOCKSIZE + (lifeStoneGrade + resultColor) / 2
 						* (10 * STAT_SUBBLOCKSIZE) + 1;
-			stat12 = Rnd.get(offset, offset + STAT_SUBBLOCKSIZE - 1);
 		}
-		
-		// generate a skill if neccessary
-		L2Skill skill = null;
-		if (generateSkill)
-		{
-			augmentationSkill temp = null;
-			switch (resultColor)
-			{
-				case 1: // blue skill
-					temp = _blueSkills.get(lifeStoneLevel).get(Rnd.get(0, _blueSkills.get(lifeStoneLevel).size() - 1));
-					skill = temp.getSkill();
-					stat34 = temp.getAugmentationSkillId();
-					break;
-				case 2: // purple skill
-					temp = _purpleSkills.get(lifeStoneLevel).get(Rnd.get(0, _purpleSkills.get(lifeStoneLevel).size() - 1));
-					skill = temp.getSkill();
-					stat34 = temp.getAugmentationSkillId();
-					break;
-				case 3: // red skill
-					temp = _redSkills.get(lifeStoneLevel).get(Rnd.get(0, _redSkills.get(lifeStoneLevel).size() - 1));
-					skill = temp.getSkill();
-					stat34 = temp.getAugmentationSkillId();
-					break;
-			}
-		}
+		stat12 = Rnd.get(offset, offset + STAT_SUBBLOCKSIZE - 1);
 		
 		if (Config.DEBUG)
 			_log.info("Augmentation success: stat12=" + stat12 + "; stat34=" + stat34 + "; resultColor=" + resultColor + "; level="
 					+ lifeStoneLevel + "; grade=" + lifeStoneGrade);
 		return new L2Augmentation(((stat34 << 16) + stat12), skill);
 	}
-	
+
+	private L2Augmentation generateRandomAccessoryAugmentation(int lifeStoneLevel, int bodyPart)
+	{
+		int stat12 = 0;
+		int stat34 = 0;
+		int base = 0;
+		int skillsLength = 0;
+
+		lifeStoneLevel = Math.min(lifeStoneLevel, 9);
+
+		switch (bodyPart)
+		{
+			case L2Item.SLOT_LR_FINGER:
+				base = ACC_RING_START + ACC_RING_BLOCKSIZE * lifeStoneLevel;
+				skillsLength = ACC_RING_SKILLS;
+				break;
+			case L2Item.SLOT_LR_EAR:
+				base = ACC_EAR_START + ACC_EAR_BLOCKSIZE * lifeStoneLevel;
+				skillsLength = ACC_EAR_SKILLS;
+				break;
+			case L2Item.SLOT_NECK:
+				base = ACC_NECK_START + ACC_NECK_BLOCKSIZE * lifeStoneLevel;
+				skillsLength = ACC_NECK_SKILLS;
+				break;
+			default:
+				return null;
+		}
+
+		int resultColor = Rnd.get(0, 3);
+		L2Skill skill = null;
+
+		// first augmentation (stats only)
+		stat12 = Rnd.get(ACC_STAT_SUBBLOCKSIZE);
+
+		if (Rnd.get(1, 100) <= Config.AUGMENTATION_ACC_SKILL_CHANCE)
+		{
+			// second augmentation (skill)
+			stat34 = base + Rnd.get(skillsLength);
+			if (_allSkills.contains(stat34))
+				skill = _allSkills.get(stat34).getSkill();
+		}
+
+		if (skill == null)
+		{
+			// second augmentation (stats)
+			// calculating any different from stat12 value inside sub-block
+			// starting from next and wrapping over using remainder
+			stat34 = (stat12 + 1 + Rnd.get(ACC_STAT_SUBBLOCKSIZE - 1)) % ACC_STAT_SUBBLOCKSIZE;
+			// this is a stats - skipping skills
+			stat34 = base + skillsLength + ACC_STAT_SUBBLOCKSIZE * resultColor + stat34;
+		}
+
+		// stat12 has stats only
+		stat12 = base + skillsLength + ACC_STAT_SUBBLOCKSIZE * resultColor + stat12;
+
+		if (Config.DEBUG)
+			_log.info("Accessory augmentation success: stat12=" + stat12 + "; stat34=" + stat34 + "; level="
+					+ lifeStoneLevel);
+		return new L2Augmentation(((stat34 << 16) + stat12), skill);
+	}
+
 	public class AugStat
 	{
 		private final Stats _stat;
@@ -725,14 +792,14 @@ public class AugmentationData
 				byte stat2 = STATS2_MAP[stat];
 				if (stat1 == stat2) // solo stat
 				{
-					augmentationStat as = ((augmentationStat) _augmentationStats[color].get(stat1));
+					augmentationStat as = ((augmentationStat) _augStats[color].get(stat1));
 					temp.add(new AugStat(as.getStat(), as.getSingleStatValue(level)));
 				}
 				else // combined stat
 				{
-					augmentationStat as = ((augmentationStat) _augmentationStats[color].get(stat1));					
+					augmentationStat as = ((augmentationStat) _augStats[color].get(stat1));					
 					temp.add(new AugStat(as.getStat(), as.getCombinedStatValue(level)));
-					as = ((augmentationStat) _augmentationStats[color].get(stat2));
+					as = ((augmentationStat) _augStats[color].get(stat2));
 					temp.add(new AugStat(as.getStat(), as.getCombinedStatValue(level)));
 				}
 			}
@@ -791,14 +858,14 @@ public class AugmentationData
 					byte stat2 = ACC_STATS2_MAP[stat];
 					if (stat1 == stat2) // solo
 					{
-						augmentationStat as = ((augmentationStat) _augmentationAccStats[color].get(stat1));					
+						augmentationStat as = ((augmentationStat) _augAccStats[color].get(stat1));					
 						temp.add(new AugStat(as.getStat(), as.getSingleStatValue(level)));
 					}
 					else // combined
 					{
-						augmentationStat as = ((augmentationStat) _augmentationAccStats[color].get(stat1));					
+						augmentationStat as = ((augmentationStat) _augAccStats[color].get(stat1));					
 						temp.add(new AugStat(as.getStat(), as.getCombinedStatValue(level)));
-						as = ((augmentationStat) _augmentationAccStats[color].get(stat2));
+						as = ((augmentationStat) _augAccStats[color].get(stat2));
 						temp.add(new AugStat(as.getStat(), as.getCombinedStatValue(level)));
 					}
 				}
@@ -807,7 +874,19 @@ public class AugmentationData
 		
 		return temp;
 	}
-	
+
+	/*
+	 * Returns skill by augmentation Id or null if not valid or not found
+	 */
+	public L2Skill getAugSkillById(int augmentationId)
+	{
+		final augmentationSkill temp = _allSkills.get(augmentationId); 
+		if (temp == null)
+			return null;
+
+		return temp.getSkill();
+	}
+
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{

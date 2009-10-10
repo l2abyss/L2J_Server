@@ -14,92 +14,49 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExPutItemResultForVariationMake;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.templates.item.L2Item;
-import net.sf.l2j.gameserver.util.Util;
 
 /**
  * Format:(ch) d
  * @author  -Wooden-
  */
-public final class RequestConfirmTargetItem extends L2GameClientPacket
+public final class RequestConfirmTargetItem extends AbstractRefinePacket
 {
 	private static final String _C__D0_29_REQUESTCONFIRMTARGETITEM = "[C] D0:29 RequestConfirmTargetItem";
 	private int _itemObjId;
 
-	/**
-	 * @param buf
-	 * @param client
-	 */
 	@Override
 	protected void readImpl()
 	{
 		_itemObjId = readD();
 	}
 
-	/**
-	 * @see net.sf.l2j.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
-		L2ItemInstance item = (L2ItemInstance)L2World.getInstance().findObject(_itemObjId);
-
-		if (item == null) return;
-		if (item.getOwnerId() != activeChar.getObjectId())
-		{
-			Util.handleIllegalPlayerAction(getClient().getActiveChar(),"Warning!! Character "+getClient().getActiveChar().getName()+" of account "+getClient().getActiveChar().getAccountName()+" tryied to use augment on weapon that doesn't own.",Config.DEFAULT_PUNISH);
+		final L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null)
 			return;
-		}
 
-		// check if the item is augmentable
-		int itemGrade = item.getItem().getItemGrade();
-		int itemType = item.getItem().getType2();
-
-		if (item.isAugmented())
-		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.ONCE_AN_ITEM_IS_AUGMENTED_IT_CANNOT_BE_AUGMENTED_AGAIN));
+		final L2ItemInstance item = (L2ItemInstance)L2World.getInstance().findObject(_itemObjId);
+		if (item == null)
 			return;
-		}
-		//TODO: can do better? : currently: using isdestroyable() as a check for hero / cursed weapons
-		else if (itemGrade < L2Item.CRYSTAL_C || itemType != L2Item.TYPE2_WEAPON || !item.isDestroyable() ||
-				item.isShadowItem() || item.isTimeLimitedItem() || item.isPvp())
+
+		if (!isValid(activeChar, item))
 		{
+			// Different system message here
+			if (item.isAugmented())
+			{
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.ONCE_AN_ITEM_IS_AUGMENTED_IT_CANNOT_BE_AUGMENTED_AGAIN));
+				return;
+			}
+
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
-			return;
-		}
-
-		// check if the player can augment
-		if (activeChar.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
-		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_A_PRIVATE_STORE_OR_PRIVATE_WORKSHOP_IS_IN_OPERATION));
-			return;
-		}
-		if (activeChar.isDead())
-		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_DEAD));
-			return;
-		}
-		if (activeChar.isParalyzed())
-		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_PARALYZED));
-			return;
-		}
-		if (activeChar.isFishing())
-		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_FISHING));
-			return;
-		}
-		if (activeChar.isSitting())
-		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_SITTING_DOWN));
 			return;
 		}
 
@@ -115,5 +72,4 @@ public final class RequestConfirmTargetItem extends L2GameClientPacket
 	{
 		return _C__D0_29_REQUESTCONFIRMTARGETITEM;
 	}
-
 }

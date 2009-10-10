@@ -14,35 +14,24 @@
  */
 package net.sf.l2j.gameserver.network.clientpackets;
 
-import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.L2ItemInstance;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ExPutIntensiveResultForVariationMake;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
-import net.sf.l2j.gameserver.templates.item.L2Item;
-import net.sf.l2j.gameserver.util.Util;
 
 /**
  * Fromat(ch) dd
  * @author  -Wooden-
  */
-public class RequestConfirmRefinerItem extends L2GameClientPacket
+public class RequestConfirmRefinerItem extends AbstractRefinePacket
 {
 	private static final String _C__D0_2A_REQUESTCONFIRMREFINERITEM = "[C] D0:2A RequestConfirmRefinerItem";
-
-	private static final int GEMSTONE_D = 2130;
-	private static final int GEMSTONE_C = 2131;
-	private static final int GEMSTONE_B = 2132;
 
 	private int _targetItemObjId;
 	private int _refinerItemObjId;
 
-	/**
-	 * @param buf
-	 * @param client
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -50,79 +39,38 @@ public class RequestConfirmRefinerItem extends L2GameClientPacket
 		_refinerItemObjId = readD();
 	}
 
-	/**
-	 * @see net.sf.l2j.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected
 	void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
-		L2ItemInstance targetItem = (L2ItemInstance)L2World.getInstance().findObject(_targetItemObjId);
-		L2ItemInstance refinerItem = (L2ItemInstance)L2World.getInstance().findObject(_refinerItemObjId);
-
-		if (targetItem == null || refinerItem == null) return;
-		if (targetItem.getOwnerId() != activeChar.getObjectId()
-				|| refinerItem.getOwnerId() != activeChar.getObjectId())
-		{
-			Util.handleIllegalPlayerAction(getClient().getActiveChar(),"Warning!! Character "+getClient().getActiveChar().getName()+" of account "+getClient().getActiveChar().getAccountName()+" tryied to augment item that doesn't own.",Config.DEFAULT_PUNISH);
+		final L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null)
 			return;
-		}
-		int refinerItemId = refinerItem.getItem().getItemId();
 
-		// is the item a life stone?
-		if (refinerItemId < 8723 || (refinerItemId > 8762 && refinerItemId < 9573) || (refinerItemId > 9576 && refinerItemId < 10483) || (refinerItemId > 10486 && refinerItemId < 14166) || refinerItemId > 14169)
-		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
+		final L2ItemInstance targetItem = (L2ItemInstance)L2World.getInstance().findObject(_targetItemObjId);
+		if (targetItem == null)
 			return;
-		}
-		// check if target is common item
-		if (targetItem.isCommonItem())
+
+		final L2ItemInstance refinerItem = (L2ItemInstance)L2World.getInstance().findObject(_refinerItemObjId);
+		if (refinerItem == null)
+			return;
+
+		if (!isValid(activeChar, targetItem, refinerItem))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
 			return;
 		}
 
-		int gemstoneCount = 0;
-		int gemstoneItemId = 0;
+		final int refinerItemId = refinerItem.getItem().getItemId();
+		final int grade = targetItem.getItem().getItemGrade();
+		final LifeStone ls = getLifeStone(refinerItemId);
+		final int gemStoneId = getGemStoneId(grade);
+		final int gemStoneCount = getGemStoneCount(grade, ls.getGrade());
 		SystemMessage sm = new SystemMessage(SystemMessageId.REQUIRES_S1_S2);
-		switch (targetItem.getItem().getCrystalType())
-		{
-			case L2Item.CRYSTAL_C:
-				gemstoneCount = 20;
-				gemstoneItemId = GEMSTONE_D;
-				sm.addItemNumber(gemstoneCount);
-				sm.addString("Gemstone D");
-				break;
-			case L2Item.CRYSTAL_B:
-				gemstoneCount = 30;
-				gemstoneItemId = GEMSTONE_D;
-				sm.addItemNumber(gemstoneCount);
-				sm.addString("Gemstone D");
-				break;
-			case L2Item.CRYSTAL_A:
-				gemstoneCount = 20;
-				gemstoneItemId = GEMSTONE_C;
-				sm.addItemNumber(gemstoneCount);
-				sm.addString("Gemstone C");
-				break;
-			case L2Item.CRYSTAL_S:
-				gemstoneCount = 25;
-				gemstoneItemId = GEMSTONE_C;
-				sm.addItemNumber(gemstoneCount);
-				sm.addString("Gemstone C");
-				break;
-			case L2Item.CRYSTAL_S80:
-			case L2Item.CRYSTAL_S84:
-				gemstoneCount = 36;
-				gemstoneItemId = GEMSTONE_B;
-				sm.addItemNumber(gemstoneCount);
-				sm.addString("Gemstone B");
-				break;
-		}
+		sm.addItemNumber(gemStoneCount);
+		sm.addItemName(gemStoneId);
 
-		activeChar.sendPacket(new ExPutIntensiveResultForVariationMake(_refinerItemObjId, refinerItemId, gemstoneItemId, gemstoneCount));
-
+		activeChar.sendPacket(new ExPutIntensiveResultForVariationMake(_refinerItemObjId, refinerItemId, gemStoneId, gemStoneCount));
 		activeChar.sendPacket(sm);
 	}
 
