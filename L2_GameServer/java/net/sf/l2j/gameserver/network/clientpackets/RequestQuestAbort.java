@@ -47,28 +47,28 @@ public final class RequestQuestAbort extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
-		    return;
+			return;
 
-        Quest qe = QuestManager.getInstance().getQuest(_questId);
-        if (qe != null)
-        {
-    		QuestState qs = activeChar.getQuestState(qe.getName());
-            if(qs != null)
-            {
-        		qs.exitQuest(true);
-                activeChar.sendMessage("Quest aborted.");
-        		QuestList ql = new QuestList();
-                activeChar.sendPacket(ql);
-            }
-            else
-            {
-                if (Config.DEBUG) _log.info("Player '"+activeChar.getName()+"' try to abort quest "+qe.getName()+" but he didn't have it started.");
-            }
-        }
-        else
-        {
-            if (Config.DEBUG) _log.warning("Quest (id='"+_questId+"') not found.");
-        }
+		Quest qe = QuestManager.getInstance().getQuest(_questId);
+		if (qe != null)
+		{
+			QuestState qs = activeChar.getQuestState(qe.getName());
+			if (qs != null)
+			{
+				qs.exitQuest(true);
+				activeChar.sendPacket(new QuestList());
+			}
+			else
+			{
+				if (Config.DEBUG)
+					_log.info("Player '"+activeChar.getName()+"' try to abort quest "+qe.getName()+" but he didn't have it started.");
+			}
+		}
+		else
+		{
+			if (Config.DEBUG)
+				_log.warning("Quest (id='"+_questId+"') not found.");
+		}
 	}
 
 	/* (non-Javadoc)

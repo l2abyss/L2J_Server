@@ -769,7 +769,6 @@ public final class QuestState
 	{
 		// Get object item from player's inventory list
 		L2ItemInstance item = getPlayer().getInventory().getItemByItemId(itemId);
-
 		if (item == null)
 			return;
 
@@ -783,7 +782,14 @@ public final class QuestState
 		else
 		{
 			if (item.isEquipped())
-				getPlayer().getInventory().unEquipItemInBodySlotAndRecord(item.getItem().getBodyPart());
+			{
+				L2ItemInstance[] unequiped = getPlayer().getInventory().unEquipItemInBodySlotAndRecord(item.getItem().getBodyPart());
+				InventoryUpdate iu = new InventoryUpdate();
+				for (L2ItemInstance itm: unequiped)
+					iu.addModifiedItem(itm);
+				getPlayer().sendPacket(iu);
+				getPlayer().broadcastUserInfo();
+			}
 			getPlayer().destroyItemByItemId("Quest", itemId, count, getPlayer(), true);
 		}
 	}
@@ -988,9 +994,7 @@ public final class QuestState
 		if (itemIdList != null)
 		{
 			for (int i = 0; i < itemIdList.length; i++)
-			{
 				takeItems(itemIdList[i], -1);
-			}
 		}
 
 		// If quest is repeatable, delete quest from list of quest of the player and from database (quest CAN be created again => repeatable)
@@ -1005,8 +1009,10 @@ public final class QuestState
 		{
 			// Otherwise, delete variables for quest and update database (quest CANNOT be created again => not repeatable)
 			if (_vars != null)
+			{
 				for (String var : _vars.keySet())
 					unset(var);
+			}
 
 			Quest.updateQuestInDb(this);
 		}
