@@ -14,12 +14,24 @@
  */
 package net.sf.l2j.gameserver.instancemanager;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import javolution.io.UTF8StreamReader;
 import javolution.util.FastList;
 import javolution.util.FastMap;
+import javolution.xml.stream.XMLStreamConstants;
+import javolution.xml.stream.XMLStreamException;
+import javolution.xml.stream.XMLStreamReaderImpl;
 
+import net.sf.l2j.Config;
+import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Instance;
 
@@ -34,6 +46,154 @@ public class InstanceManager
 	private FastMap<Integer, InstanceWorld> _instanceWorlds = new FastMap<Integer, InstanceWorld>();
 	private int _dynamic = 300000;
 	
+	// InstanceId Names
+	private final static Map<Integer, String> _instanceIdNames = new FastMap<Integer, String>();
+	private Map<Integer,Map<Integer,Long>> _playerInstanceTimes = new FastMap<Integer, Map<Integer,Long>>();
+	
+	private static final String ADD_INSTANCE_TIME = "INSERT INTO character_instance_time (charId,instanceId,time) values (?,?,?) ON DUPLICATE KEY UPDATE time=?";
+	private static final String RESTORE_INSTANCE_TIMES = "SELECT instanceId,time FROM character_instance_time WHERE charId=?";
+	private static final String DELETE_INSTANCE_TIME = "DELETE FROM character_instance_time WHERE charId=? AND instanceId=?";
+	
+	public long getInstanceTime(int playerObjId, int id)
+	{
+		if (!_playerInstanceTimes.containsKey(playerObjId))
+			restoreInstanceTimes(playerObjId);
+		if (_playerInstanceTimes.get(playerObjId).containsKey(id))
+			return _playerInstanceTimes.get(playerObjId).get(id);
+		return -1;
+	}
+
+	public Map<Integer,Long> getAllInstanceTimes(int playerObjId)
+	{
+		if (!_playerInstanceTimes.containsKey(playerObjId))
+			restoreInstanceTimes(playerObjId);
+		return _playerInstanceTimes.get(playerObjId);
+	}
+
+	public void setInstanceTime(int playerObjId, int id, long time)
+	{
+		if (!_playerInstanceTimes.containsKey(playerObjId))
+			restoreInstanceTimes(playerObjId);
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = null;
+			statement = con.prepareStatement(ADD_INSTANCE_TIME);
+			statement.setInt(1, playerObjId);
+			statement.setInt(2, id);
+			statement.setLong(3, time);
+			statement.setLong(4, time);
+			statement.execute();
+			statement.close();
+			_playerInstanceTimes.get(playerObjId).put(id, time);
+		}
+		catch (Exception e) { _log.warning("Could not insert character instance time data: "+ e); }
+		finally { try { con.close(); } catch (Exception e) {} }
+	}
+
+	public void deleteInstanceTime(int playerObjId, int id)
+	{
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = null;
+			statement = con.prepareStatement(DELETE_INSTANCE_TIME);
+			statement.setInt(1, playerObjId);
+			statement.setInt(2, id);
+			statement.execute();
+			statement.close();
+			_playerInstanceTimes.get(playerObjId).remove(id);
+		}
+		catch (Exception e) { _log.warning("Could not delete character instance time data: "+ e); }
+		finally { try { con.close(); } catch (Exception e) {} }
+	}
+
+	public void restoreInstanceTimes(int playerObjId)
+	{
+		if (_playerInstanceTimes.containsKey(playerObjId))
+			return; // already restored
+		_playerInstanceTimes.put(playerObjId, new FastMap<Integer, Long>());
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(RESTORE_INSTANCE_TIMES);
+			statement.setInt(1, playerObjId);
+			ResultSet rset = statement.executeQuery();
+
+			while (rset.next())
+			{
+				int id = rset.getInt("instanceId");
+				long time = rset.getLong("time");
+				if (time < System.currentTimeMillis())
+					deleteInstanceTime(playerObjId, id);
+				else
+					_playerInstanceTimes.get(playerObjId).put(id, time);
+			}
+
+			rset.close();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.warning("Could not delete character instance time data: "+ e);
+		}
+		finally
+		{
+			try { con.close(); } catch (Exception e) {}
+		}
+	}
+
+	public String getInstanceIdName(int id)
+	{
+		if (_instanceIdNames.containsKey(id))
+			return _instanceIdNames.get(id);
+		return ("UnknownInstance");
+	}
+	
+	private void loadInstanceNames()
+	{
+		InputStream in = null;
+		try
+		{
+			in = new FileInputStream(Config.DATAPACK_ROOT + "/data/instancenames.xml");
+			XMLStreamReaderImpl xpp = new XMLStreamReaderImpl();
+			xpp.setInput(new UTF8StreamReader().setInput(in));
+			for (int e = xpp.getEventType(); e != XMLStreamConstants.END_DOCUMENT; e = xpp.next())
+			{
+				if (e == XMLStreamConstants.START_ELEMENT)
+				{
+					if (xpp.getLocalName().toString().equals("instance"))
+					{
+						Integer id = Integer.valueOf(xpp.getAttributeValue(null, "id").toString());
+						String name = xpp.getAttributeValue(null, "name").toString();
+						_instanceIdNames.put(id, name);
+					}
+				}
+			}
+		}
+		catch (FileNotFoundException e)
+		{
+			_log.warning("instancenames.xml could not be loaded: file not found");
+		}
+		catch (XMLStreamException xppe)
+		{
+			xppe.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				in.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
+	}
+
 	public class InstanceWorld
 	{
 		public int instanceId;
@@ -67,6 +227,8 @@ public class InstanceManager
 	private InstanceManager()
 	{
 		_log.info("Initializing InstanceManager");
+		loadInstanceNames();
+		_log.info("Loaded " + _instanceIdNames.size() + " instance names");
 		createWorld();
 	}
 	
