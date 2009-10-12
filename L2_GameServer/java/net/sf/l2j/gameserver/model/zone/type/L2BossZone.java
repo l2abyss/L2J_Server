@@ -273,13 +273,11 @@ public class L2BossZone extends L2ZoneType
 	
 	public void movePlayersTo(int x, int y, int z)
 	{
-		if (_characterList == null || _characterList.isEmpty())
+		if (_characterList.isEmpty())
 			return;
 		
 		for (L2Character character : _characterList.values())
 		{
-			if (character == null)
-				continue;
 			if (character instanceof L2PcInstance)
 			{
 				L2PcInstance player = (L2PcInstance) character;
@@ -299,13 +297,11 @@ public class L2BossZone extends L2ZoneType
 	 */
 	public void oustAllPlayers()
 	{
-		if (_characterList == null || _characterList.isEmpty())
+		if (_characterList.isEmpty())
 			return;
 		
 		for (L2Character character : _characterList.values())
 		{
-			if (character == null)
-				continue;
 			if (character instanceof L2PcInstance)
 			{
 				L2PcInstance player = (L2PcInstance) character;

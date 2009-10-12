@@ -24,6 +24,7 @@ import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.quest.Quest;
+import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
 
 /**
  * Abstract base class for any zone type
@@ -399,10 +400,26 @@ public abstract class L2ZoneType
 			questByEvents.add(q);
 		_questEvents.put(EventType, questByEvents);
 	}
+
 	public FastList<Quest> getQuestByEvent(Quest.QuestEventType EventType)
 	{
 		if (_questEvents == null)
 			return null;
 		return _questEvents.get(EventType);
+	}
+
+	/**
+	 * Broadcasts packet to all players inside the zone
+	 */
+	public void broadcastPacket(L2GameServerPacket packet)
+	{
+		if (_characterList.isEmpty())
+			return;
+
+		for (L2Character character : _characterList.values())
+		{
+			if (character instanceof L2PcInstance)
+				character.sendPacket(packet);
+		}
 	}
 }
