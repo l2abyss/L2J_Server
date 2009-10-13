@@ -57,14 +57,17 @@ public class Auction
 	private int _startingBid = 0;
 	
 	private Map<Integer, Bidder> _bidders = new FastMap<Integer, Bidder>();
+	
 	private static final String[] ItemTypeName =
 	{
 		"ClanHall"
 	};
+	
 	public static enum ItemTypeEnum
 	{
 		ClanHall
 	}
+	
 	public class Bidder
 	{
 		private String _name;
@@ -111,6 +114,7 @@ public class Auction
 			_bid = bid;
 		}
 	}
+	
 	/** Task Sheduler for endAuction */
 	public class AutoEndTask implements Runnable
 	{
@@ -132,7 +136,6 @@ public class Auction
 	}
 	
 	/** Constructor */
-	
 	public Auction(int auctionId)
 	{
 		_id = auctionId;
@@ -315,7 +318,7 @@ public class Auction
 				return;
 			}
 		}
-		if (bid < getStartingBid())
+		if ((bid < getStartingBid()) || (bid < getHighestBidderMaxBid()))
 			bidder.sendPacket(new SystemMessage(SystemMessageId.BID_PRICE_MUST_BE_HIGHER));
 	}
 	
