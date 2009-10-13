@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
+
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.ThreadPoolManager;
 import net.sf.l2j.gameserver.datatables.ClanTable;
@@ -32,6 +33,8 @@ import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
 import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
+import net.sf.l2j.gameserver.network.SystemMessageId;
+import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 
 public class Auction
 {
@@ -305,14 +308,15 @@ public class Auction
 			requiredAdena = bid - getHighestBidderMaxBid();
 		if ((getHighestBidderId() > 0 && bid > getHighestBidderMaxBid()) || (getHighestBidderId() == 0 && bid >= getStartingBid()))
 		{
-			if (takeItem(bidder, 57, requiredAdena))
+			if (takeItem(bidder, _adenaId, requiredAdena))
 			{
 				updateInDB(bidder, bid);
 				bidder.getClan().setAuctionBiddedAt(_id, true);
 				return;
 			}
 		}
-		bidder.sendMessage("Invalid bid!");
+		if (bid < getStartingBid())
+			bidder.sendPacket(new SystemMessage(SystemMessageId.BID_PRICE_MUST_BE_HIGHER));
 	}
 	
 	/** Return Item in WHC */
@@ -331,7 +335,7 @@ public class Auction
 			bidder.getClan().getWarehouse().destroyItemByItemId("Buy", _adenaId, quantity, bidder, bidder);
 			return true;
 		}
-		bidder.sendMessage("You do not have enough adena");
+		bidder.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ADENA_IN_CWH));
 		return false;
 	}
 	
@@ -381,7 +385,7 @@ public class Auction
 				_bidders.get(_highestBidderId).setBid(bid);
 				_bidders.get(_highestBidderId).setTimeBid(Calendar.getInstance().getTimeInMillis());
 			}
-			bidder.sendMessage("You have bidded successfully");
+			bidder.sendPacket(new SystemMessage(SystemMessageId.BID_IN_CLANHALL_AUCTION));
 		}
 		catch (Exception e)
 		{
@@ -432,7 +436,7 @@ public class Auction
 		for (Bidder b : _bidders.values())
 		{
 			if (ClanTable.getInstance().getClanByName(b.getClanName()).getHasHideout() == 0)
-				returnItem(b.getClanName(), 57, b.getBid(), true); // 10 % tax
+				returnItem(b.getClanName(), _adenaId, b.getBid(), true); // 10 % tax
 			else
 			{
 				if (L2World.getInstance().getPlayer(b.getName()) != null)
@@ -493,8 +497,8 @@ public class Auction
 			}
 			if (_sellerId > 0)
 			{
-				returnItem(_sellerClanName, 57, _highestBidderMaxBid, true);
-				returnItem(_sellerClanName, 57, ClanHallManager.getInstance().getClanHallById(_itemId).getLease(), false);
+				returnItem(_sellerClanName, _adenaId, _highestBidderMaxBid, true);
+				returnItem(_sellerClanName, _adenaId, ClanHallManager.getInstance().getClanHallById(_itemId).getLease(), false);
 			}
 			deleteAuctionFromDB();
 			L2Clan Clan = ClanTable.getInstance().getClanByName(_bidders.get(_highestBidderId).getClanName());
@@ -540,7 +544,7 @@ public class Auction
 			{
 			}
 		}
-		returnItem(_bidders.get(bidder).getClanName(), 57, _bidders.get(bidder).getBid(), true);
+		returnItem(_bidders.get(bidder).getClanName(), _adenaId, _bidders.get(bidder).getBid(), true);
 		ClanTable.getInstance().getClanByName(_bidders.get(bidder).getClanName()).setAuctionBiddedAt(0, true);
 		_bidders.clear();
 		loadBid();
