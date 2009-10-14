@@ -24,7 +24,6 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import javax.script.ScriptContext;
-import javax.script.ScriptException;
 
 import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.script.Parser;
@@ -163,7 +162,7 @@ public class FaenorScriptEngine extends ScriptEngine
 				parseScript(script, context);
 			}
 		}
-		catch (ScriptException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
