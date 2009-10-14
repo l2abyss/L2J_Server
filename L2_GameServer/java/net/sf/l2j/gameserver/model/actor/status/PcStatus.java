@@ -145,7 +145,7 @@ public class PcStatus extends PlayableStatus
 				else
 				{
 					value -= getCurrentCp();                // Get diff from value vs Cp; will apply diff to Hp
-					setCurrentCp(0);                        // Set Cp to 0
+					setCurrentCp(0, false);                        // Set Cp to 0
 				}
 			}
 
