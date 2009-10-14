@@ -318,7 +318,7 @@ public class Auction
 				return;
 			}
 		}
-		if ((bid < getStartingBid()) || (bid < getHighestBidderMaxBid()))
+		if ((bid < getStartingBid()) || (bid <= getHighestBidderMaxBid()))
 			bidder.sendPacket(new SystemMessage(SystemMessageId.BID_PRICE_MUST_BE_HIGHER));
 	}
 	
