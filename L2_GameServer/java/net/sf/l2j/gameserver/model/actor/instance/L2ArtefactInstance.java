@@ -107,6 +107,13 @@ public final class L2ArtefactInstance extends L2Npc
 	}
 
 	@Override
+	public void onForcedAttack(L2PcInstance player)
+	{
+		// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
+		player.sendPacket(ActionFailed.STATIC_PACKET);
+	}
+	
+	@Override
 	public void reduceCurrentHp(double damage, L2Character attacker, L2Skill skill){}
 	@Override
 	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill){}

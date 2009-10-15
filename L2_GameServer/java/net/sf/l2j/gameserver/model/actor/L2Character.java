@@ -59,7 +59,6 @@ import net.sf.l2j.gameserver.model.L2WorldRegion;
 import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.L2Skill.SkillTargetType;
 import net.sf.l2j.gameserver.model.actor.instance.L2AirShipInstance;
-import net.sf.l2j.gameserver.model.actor.instance.L2ArtefactInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2BoatInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2MinionInstance;
@@ -5450,8 +5449,9 @@ public abstract class L2Character extends L2Object
 			// If L2Character or target is in a peace zone, send a system message TARGET_IN_PEACEZONE a Server->Client packet ActionFailed
 			player.sendPacket(new SystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
 			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
 		}
-		else if (player.isInOlympiadMode() && player.getTarget() != null && player.getTarget() instanceof L2Playable)
+		if (player.isInOlympiadMode() && player.getTarget() != null && player.getTarget() instanceof L2Playable)
         {
         	L2PcInstance target;
         	if (player.getTarget() instanceof L2Summon)
@@ -5465,35 +5465,30 @@ public abstract class L2Character extends L2Object
         		player.sendPacket(ActionFailed.STATIC_PACKET);
         		setIsCastingSimultaneouslyNow(false);
         		setIsCastingNow(false);
+        		return;
         	}
         }
-		else if (player.getTarget() != null && !player.getTarget().isAttackable() && !player.getAccessLevel().allowPeaceAttack())
+		if (player.getTarget() != null && !player.getTarget().isAttackable() && !player.getAccessLevel().allowPeaceAttack())
 		{
 			// If target is not attackable, send a Server->Client packet ActionFailed
 			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
 		}
-		else if (player.isConfused())
+		if (player.isConfused())
 		{
 			// If target is confused, send a Server->Client packet ActionFailed
 			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
 		}
-		else if (this instanceof L2ArtefactInstance)
-		{
-			// If L2Character is a L2ArtefactInstance, send a Server->Client packet ActionFailed
-			player.sendPacket(ActionFailed.STATIC_PACKET);
-		}
-		else
-		{
-			// GeoData Los Check or dz > 1000
-	        if (!GeoData.getInstance().canSeeTarget(player, this))
-	        {
-	            player.sendPacket(new SystemMessage(SystemMessageId.CANT_SEE_TARGET));
-	            player.sendPacket(ActionFailed.STATIC_PACKET);
-	            return;
-	        }
-			// Notify AI with AI_INTENTION_ATTACK
-			player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
-		}
+		// GeoData Los Check or dz > 1000
+        if (!GeoData.getInstance().canSeeTarget(player, this))
+        {
+            player.sendPacket(new SystemMessage(SystemMessageId.CANT_SEE_TARGET));
+            player.sendPacket(ActionFailed.STATIC_PACKET);
+            return;
+        }
+		// Notify AI with AI_INTENTION_ATTACK
+		player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
 	}
 
 	/**
