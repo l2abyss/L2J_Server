@@ -18,11 +18,13 @@ import java.util.Collection;
 
 import net.sf.l2j.gameserver.datatables.ClanTable;
 import net.sf.l2j.gameserver.model.L2Clan;
+import net.sf.l2j.gameserver.model.L2ClanMember;
 import net.sf.l2j.gameserver.model.L2World;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.network.SystemMessageId;
 import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
+import net.sf.l2j.gameserver.taskmanager.AttackStanceTaskManager;
 
 public final class RequestStopPledgeWar extends L2GameClientPacket
 {
@@ -87,6 +89,17 @@ public final class RequestStopPledgeWar extends L2GameClientPacket
 		//            return;
 		//        }
 
+		for (L2ClanMember member : playerClan.getMembers())
+		{
+			if (member == null || member.getPlayerInstance() == null)
+				continue;
+			if (AttackStanceTaskManager.getInstance().getAttackStanceTask(member.getPlayerInstance()))
+			{
+				player.sendMessage("Cannot cancel war while members are fighting.");
+				return;
+			}
+		}		
+		
 		ClanTable.getInstance().deleteclanswars(playerClan.getClanId(), clan.getClanId());
 		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
 		//synchronized (L2World.getInstance().getAllPlayers())

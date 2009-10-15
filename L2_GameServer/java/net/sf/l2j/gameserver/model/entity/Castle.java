@@ -513,6 +513,19 @@ public class Castle
 						CastleManager.getInstance().removeCirclet(_formerOwner, getCastleId());
 					}
 				}
+				try
+				{
+					L2PcInstance oldleader = oldOwner.getLeader().getPlayerInstance();
+					if (oldleader != null)
+					{
+						if (oldleader.getMountType() == 2)
+							oldleader.dismount();
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 				oldOwner.setHasCastle(0); // Unset has castle flag for old owner
 			}
 		}

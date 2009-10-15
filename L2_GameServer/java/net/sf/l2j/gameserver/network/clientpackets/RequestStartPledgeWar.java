@@ -57,9 +57,9 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
             sm = null;
             return;
         }
-        else if (!player.isClanLeader())
+        else if ((player.getClanPrivileges() & L2Clan.CP_CL_PLEDGE_WAR) != L2Clan.CP_CL_PLEDGE_WAR )
         {
-            player.sendMessage("You can't declare war. You are not clan leader.");
+            player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
             player.sendPacket(ActionFailed.STATIC_PACKET);
             return;
         }

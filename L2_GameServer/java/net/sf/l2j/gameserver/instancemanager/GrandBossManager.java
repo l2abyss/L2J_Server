@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 import net.sf.l2j.L2DatabaseFactory;
+import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2GrandBossInstance;
@@ -303,6 +304,7 @@ public class GrandBossManager
 	{
 		_bossStatus.remove(bossId);
 		_bossStatus.put(bossId, status);
+		_log.info(getClass().getSimpleName()+": Updated "+NpcTable.getInstance().getTemplate(bossId).getName()+"(" +bossId+ ") status to " +status);
 	}
 	
 	/*

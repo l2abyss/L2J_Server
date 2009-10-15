@@ -16,6 +16,7 @@
 package net.sf.l2j.gameserver.network.clientpackets;
 
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
+import net.sf.l2j.gameserver.model.L2Clan;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.network.SystemMessageId;
@@ -46,15 +47,23 @@ public final class RequestJoinSiege extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
-		if(activeChar == null) return;
-		if (!activeChar.isClanLeader()) return;
-
+		if (activeChar == null)	return;
+		
+		if ((activeChar.getClanPrivileges() & L2Clan.CP_CS_MANAGE_SIEGE) != L2Clan.CP_CS_MANAGE_SIEGE)
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			return;
+		}
+		
+		L2Clan clan = activeChar.getClan();
+		if (clan == null) return;
+		
 		Castle castle = CastleManager.getInstance().getCastleById(_castleId);
-		if (castle == null) return;
-
+		if (castle == null)	return;
+		
 		if (_isJoining == 1)
 		{
-			if (System.currentTimeMillis() < activeChar.getClan().getDissolvingExpiryTime())
+			if (System.currentTimeMillis() < clan.getDissolvingExpiryTime())
 			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_PARTICIPATE_IN_SIEGE_WHILE_DISSOLUTION_IN_PROGRESS));
 				return;

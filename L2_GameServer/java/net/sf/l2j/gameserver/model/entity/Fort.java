@@ -426,6 +426,19 @@ public class Fort
 		if (getOwnerClan() != null && (clan != null && clan != getOwnerClan()))
 		{
 			updateClansReputation(clan, true);
+			try
+			{
+				L2PcInstance oldleader = getOwnerClan().getLeader().getPlayerInstance();
+				if (oldleader != null)
+				{
+					if (oldleader.getMountType() == 2)
+						oldleader.dismount();
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 			removeOwner(true);
 		}
 		setFortState(0, 0); // initialize fort state
