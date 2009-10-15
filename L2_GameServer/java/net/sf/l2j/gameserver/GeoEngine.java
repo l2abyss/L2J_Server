@@ -1212,9 +1212,13 @@ public class GeoEngine extends GeoData
 		index++;
 		if (type == 0) //flat, movement and sight always possible
 		{
+			short height = geo.getShort(index);
 			if (debug)
-				_log.warning("flatheight:" + geo.getShort(index));
-			return true;
+				_log.warning("flatheight:" + height);
+			if (z > height)
+				return inc_z > height;
+			else
+				return inc_z < height;
 		}
 		else if (type == 1) //complex
 		{
