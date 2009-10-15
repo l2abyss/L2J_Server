@@ -294,6 +294,12 @@ public class MultiSellChoose extends L2GameClientPacket
 						return;
 					}
 					
+					if (itemToTake.isEquipped())
+					{ //this is a cheat, transaction will be aborted and if any items already taken will not be returned back to inventory!
+						_log.severe("Character: " + player.getName() + " is trying to cheat in multisell, exchanging equipped item, merchatnt id:" + merchant.getNpcId());
+						return;
+					}
+
 					if (itemToTake.isWear())
 					{//Player trying to buy something from the Multisell store with an item that's just being used from the Wear option from merchants.
 						_log.severe("Character: " + player.getName() + " is trying to cheat in multisell, merchatnt id:" + merchant.getNpcId());
@@ -440,6 +446,7 @@ public class MultiSellChoose extends L2GameClientPacket
 								if (elemental != null)
 									product.setElementAttr(elemental.getElement(), elemental.getValue());
 								product.setEnchantLevel(e.getEnchantmentLevel());
+								product.updateDatabase();
 							}
 						}
 					}
