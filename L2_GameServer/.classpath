@@ -13,7 +13,7 @@
 	<classpathentry kind="lib" path="lib/jython-engine.jar"/>
 	<classpathentry kind="lib" path="lib/bsh-2.0b5.jar"/>
 	<classpathentry kind="lib" path="lib/javolution-5.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/trove-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/trove-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.10-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
