@@ -2345,7 +2345,7 @@ public abstract class L2Character extends L2Object
 	public final void setIsBetrayed(boolean value) { _isBetrayed = value; }
 
 	public final boolean isTeleporting() { return _isTeleporting; }
-	public final void setIsTeleporting(boolean value) { _isTeleporting = value; }
+	public void setIsTeleporting(boolean value) { _isTeleporting = value; }
 	public void setIsInvul(boolean b){_isInvul = b;}
 	public void setIsInvulByEffect(boolean b, L2Effect effect){
 		_isInvul = b;

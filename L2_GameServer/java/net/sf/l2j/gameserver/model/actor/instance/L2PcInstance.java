@@ -402,6 +402,8 @@ public final class L2PcInstance extends L2Playable
 	/** Vitality recovery task */
 	private ScheduledFuture<?> _vitalityTask;
 
+	private ScheduledFuture<?> _teleportWatchdog;
+
 	/** The Siege state of the L2PcInstance */
 	private byte _siegeState = 0;
 
@@ -10943,6 +10945,45 @@ public final class L2PcInstance extends L2Playable
 		TvTEvent.onTeleported(this);
 	}
 
+	@Override
+	public void setIsTeleporting(boolean teleport)
+	{
+		super.setIsTeleporting(teleport);
+		if (teleport)
+		{
+			if (_teleportWatchdog == null && Config.TELEPORT_WATCHDOG_TIMEOUT > 0)
+				_teleportWatchdog = ThreadPoolManager.getInstance().scheduleGeneral(new TeleportWatchdog(this), Config.TELEPORT_WATCHDOG_TIMEOUT * 1000);
+		}
+		else
+		{
+			if (_teleportWatchdog != null)
+			{
+				_teleportWatchdog.cancel(false);
+				_teleportWatchdog = null;
+			}
+		}
+	}
+
+	class TeleportWatchdog implements Runnable
+	{
+		private final L2PcInstance _player;
+
+		TeleportWatchdog(L2PcInstance player)
+		{
+			_player = player;
+		}
+
+		public void run()
+		{
+			if (_player == null || !_player.isTeleporting())
+				return;
+
+			if (Config.DEBUG)
+				_log.warning("Player " + _player.getName() + " teleport timeout expired");
+			_player.onTeleported();
+		}
+	}
+
 	public void setLastPartyPosition(int x, int y, int z)
 	{
 		_lastPartyPosition.setXYZ(x,y,z);
@@ -11304,6 +11345,15 @@ public final class L2PcInstance extends L2Playable
 			_log.log(Level.SEVERE, "deleteMe()", e);
 		}
 		
+		try
+		{
+			setIsTeleporting(false);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+
 		// Stop crafting, if in progress
 		try
 		{

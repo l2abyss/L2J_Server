@@ -163,6 +163,7 @@ public final class Config
 	public static boolean AUTO_LOOT;
 	public static boolean AUTO_LOOT_RAIDS;
 	public static int UNSTUCK_INTERVAL;
+	public static int TELEPORT_WATCHDOG_TIMEOUT;
 	public static int PLAYER_SPAWN_PROTECTION;
 	public static boolean RESPAWN_RANDOM_ENABLED;
 	public static int RESPAWN_RANDOM_MAX_OFFSET;
@@ -1304,6 +1305,7 @@ public final class Config
 					AUTO_LOOT = Boolean.parseBoolean(Character.getProperty("AutoLoot", "false"));
 					AUTO_LOOT_RAIDS = Boolean.parseBoolean(Character.getProperty("AutoLootRaids", "false"));
 					UNSTUCK_INTERVAL = Integer.parseInt(Character.getProperty("UnstuckInterval", "300"));
+					TELEPORT_WATCHDOG_TIMEOUT = Integer.parseInt(Character.getProperty("TeleportWatchdogTimeout", "0"));
 					PLAYER_SPAWN_PROTECTION = Integer.parseInt(Character.getProperty("PlayerSpawnProtection", "0"));
 					RESPAWN_RANDOM_ENABLED = Boolean.parseBoolean(Character.getProperty("RespawnRandomInTown", "True"));
 					RESPAWN_RANDOM_MAX_OFFSET = Integer.parseInt(Character.getProperty("RespawnRandomMaxOffset", "50"));
@@ -2307,6 +2309,7 @@ public final class Config
 		else if (pName.equalsIgnoreCase("StartingLevel")) STARTING_LEVEL = Byte.parseByte(pValue);
 		else if (pName.equalsIgnoreCase("StartingSP")) STARTING_SP = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("UnstuckInterval")) UNSTUCK_INTERVAL = Integer.parseInt(pValue);
+		else if (pName.equalsIgnoreCase("TeleportWatchdogTimeout")) TELEPORT_WATCHDOG_TIMEOUT = Integer.parseInt(pValue);
 
 		else if (pName.equalsIgnoreCase("PlayerSpawnProtection")) PLAYER_SPAWN_PROTECTION = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("PlayerFakeDeathUpProtection")) PLAYER_FAKEDEATH_UP_PROTECTION = Integer.parseInt(pValue);
