@@ -1439,8 +1439,8 @@ public final class Config
 					GM_TRADE_RESTRICTED_ITEMS = Boolean.parseBoolean(General.getProperty("GMTradeRestrictedItems", "False"));
 					GM_RESTART_FIGHTING = Boolean.parseBoolean(General.getProperty("GMRestartFighting", "False"));
 					BYPASS_VALIDATION = Boolean.parseBoolean(General.getProperty("BypassValidation", "True"));
-					GAMEGUARD_ENFORCE = Boolean.parseBoolean(General.getProperty("GameGuardEnforce", "True"));
-					GAMEGUARD_PROHIBITACTION = Boolean.parseBoolean(General.getProperty("GameGuardProhibitAction", "True"));
+					GAMEGUARD_ENFORCE = Boolean.parseBoolean(General.getProperty("GameGuardEnforce", "False"));
+					GAMEGUARD_PROHIBITACTION = Boolean.parseBoolean(General.getProperty("GameGuardProhibitAction", "False"));
 					LOG_CHAT = Boolean.parseBoolean(General.getProperty("LogChat", "false"));
 					LOG_ITEMS = Boolean.parseBoolean(General.getProperty("LogItems", "false"));
 					LOG_ITEM_ENCHANTS = Boolean.parseBoolean(General.getProperty("LogItemEnchants", "false"));
@@ -2114,7 +2114,7 @@ public final class Config
 
 					SHOW_LICENCE = Boolean.parseBoolean(serverSettings.getProperty("ShowLicence", "true"));
 					IP_UPDATE_TIME = Integer.parseInt(serverSettings.getProperty("IpUpdateTime","15"));
-					FORCE_GGAUTH = Boolean.parseBoolean(serverSettings.getProperty("ForceGGAuth", "false"));
+					FORCE_GGAUTH = Boolean.parseBoolean(serverSettings.getProperty("ForceGGAuth", "False"));
 
 					AUTO_CREATE_ACCOUNTS = Boolean.parseBoolean(serverSettings.getProperty("AutoCreateAccounts","True"));
 
