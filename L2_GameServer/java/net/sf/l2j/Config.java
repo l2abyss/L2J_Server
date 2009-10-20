@@ -330,6 +330,11 @@ public final class Config
 	public static int CLAN_LEVEL_8_COST;
 	public static int CLAN_LEVEL_9_COST;
 	public static int CLAN_LEVEL_10_COST;
+	public static int CLAN_LEVEL_6_REQUIREMENT;
+	public static int CLAN_LEVEL_7_REQUIREMENT;
+	public static int CLAN_LEVEL_8_REQUIREMENT;
+	public static int CLAN_LEVEL_9_REQUIREMENT;
+	public static int CLAN_LEVEL_10_REQUIREMENT;
 
 
 	//--------------------------------------------------
@@ -1105,6 +1110,11 @@ public final class Config
 					CLAN_LEVEL_8_COST = Integer.parseInt(Feature.getProperty("ClanLevel8Cost", "40000"));
 					CLAN_LEVEL_9_COST = Integer.parseInt(Feature.getProperty("ClanLevel9Cost", "40000"));
 					CLAN_LEVEL_10_COST = Integer.parseInt(Feature.getProperty("ClanLevel10Cost", "40000"));
+					CLAN_LEVEL_6_REQUIREMENT = Integer.parseInt(Feature.getProperty("ClanLevel6Requirement", "30"));
+					CLAN_LEVEL_7_REQUIREMENT = Integer.parseInt(Feature.getProperty("ClanLevel7Requirement", "80"));
+					CLAN_LEVEL_8_REQUIREMENT = Integer.parseInt(Feature.getProperty("ClanLevel8Requirement", "120"));
+					CLAN_LEVEL_9_REQUIREMENT = Integer.parseInt(Feature.getProperty("ClanLevel9Requirement", "120"));
+					CLAN_LEVEL_10_REQUIREMENT = Integer.parseInt(Feature.getProperty("ClanLevel10Requirement", "140"));
 				}
 				catch (Exception e)
 				{
