@@ -298,6 +298,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
         try
         {
             cha.store();
+            if (cha.getPet() != null)
+            	cha.getPet().store();
             if (Config.UPDATE_ITEMS_ON_CHAR_STORE)
             {
                 cha.getInventory().updateDatabase();
