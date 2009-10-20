@@ -298,8 +298,6 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
         try
         {
             cha.store();
-            if (cha.getPet() != null)
-            	cha.getPet().store();
             if (Config.UPDATE_ITEMS_ON_CHAR_STORE)
             {
                 cha.getInventory().updateDatabase();
@@ -727,6 +725,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 				if (player != null)
 				{
 					saveCharToDisk(player);
+		            if (player.getPet() != null)
+		            	player.getPet().store();
 				}
 			}
 			catch (Exception e)
