@@ -47,7 +47,7 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 	{
 		_packageSale = (readD() == 1);
 		int count = readD();
-		if (count < 0
+		if (count < 1
 				|| count > Config.MAX_ITEM_IN_PACKET
 				|| count * BATCH_LENGTH != _buf.remaining())
 		{
@@ -79,6 +79,7 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 
 		if (_items == null)
 		{
+			player.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_ITEM_COUNT));
 			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
 			player.broadcastUserInfo();
 			return;

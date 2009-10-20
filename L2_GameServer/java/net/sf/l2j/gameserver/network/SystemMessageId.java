@@ -2056,7 +2056,17 @@ public enum SystemMessageId
 	*/
 	CHAT_DISABLED(346),
 
-	// 347 - 348: empty
+	/**
+	* ID: 347<br>
+	* Message: Incorrect item count.
+	*/
+	INCORRECT_ITEM_COUNT(347),
+
+	/**
+	* ID: 348<br>
+	* Message: Incorrect item price.
+	*/
+	INCORRECT_ITEM_PRICE(348),
 
 	/**
 	* ID: 349<br>
