@@ -85,6 +85,7 @@ public class L2SiegeGuardInstance extends L2Attackable
     @Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
+    	attacker = attacker.getActingPlayer();
     	if (!(attacker instanceof L2PcInstance) )
     		return false;
     	
