@@ -15,6 +15,7 @@ package net.sf.l2j.gameserver.idfactory;
 import gnu.trove.TIntArrayList;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -80,7 +81,11 @@ public abstract class IdFactory
 	        "SELECT leader_id   FROM clan_data             WHERE leader_id >= ?   AND leader_id < ?",
 	        "SELECT item_obj_id FROM pets                  WHERE item_obj_id >= ? AND item_obj_id < ?",
 	        "SELECT object_id   FROM itemsonground        WHERE object_id >= ?   AND object_id < ?" };
-	
+
+	private static final String[] TIMESTAMPS_CLEAN = {
+        	"DELETE FROM character_instance_time WHERE time <= ?",
+			"DELETE FROM character_skills_save WHERE restore_type = 1 AND systime <= ?"	};
+
 	protected boolean _initialized;
 	
 	public static final int FIRST_OID = 0x10000000;
@@ -93,6 +98,7 @@ public abstract class IdFactory
 	{
 		setAllCharacterOffline();
 		cleanUpDB();
+		cleanUpTimeStamps();
 	}
 	
 	static
@@ -150,11 +156,12 @@ public abstract class IdFactory
 	private void cleanUpDB()
 	{
 		Connection con = null;
+		Statement stmt = null;
 		try
 		{
 			int cleanCount = 0;
 			con = L2DatabaseFactory.getInstance().getConnection();
-			Statement stmt = con.createStatement();
+			stmt = con.createStatement();
 			// Misc/Account Related
 			// Please read the descriptions above each before uncommenting them. If you are still
 			// unsure of what exactly it does, leave it commented out. This is for those who know
@@ -190,6 +197,7 @@ public abstract class IdFactory
 			cleanCount += stmt.executeUpdate("DELETE FROM character_skills_save WHERE character_skills_save.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_subclasses WHERE character_subclasses.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_raid_points WHERE character_raid_points.charId NOT IN (SELECT charId FROM characters);");
+			cleanCount += stmt.executeUpdate("DELETE FROM character_instance_time WHERE character_instance_time.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM items WHERE items.owner_id NOT IN (SELECT charId FROM characters) AND items.owner_id NOT IN (SELECT clan_id FROM clan_data);");
 			cleanCount += stmt.executeUpdate("DELETE FROM item_attributes WHERE item_attributes.itemId NOT IN (SELECT object_id FROM items);");
 			cleanCount += stmt.executeUpdate("DELETE FROM cursed_weapons WHERE cursed_weapons.charId NOT IN (SELECT charId FROM characters);");
@@ -233,7 +241,6 @@ public abstract class IdFactory
 			stmt.executeUpdate("UPDATE characters SET clanid=0, clan_privs=0, wantspeace=0, subpledge=0, lvl_joined_academy=0, apprentice=0, sponsor=0, clan_join_expiry_time=0, clan_create_expiry_time=0 WHERE characters.clanid > 0 AND characters.clanid NOT IN (SELECT clan_id FROM clan_data);");
 			stmt.executeUpdate("UPDATE clanhall SET ownerId=0, paidUntil=0, paid=0 WHERE clanhall.ownerId NOT IN (SELECT clan_id FROM clan_data);");
 			
-			stmt.close();
 			_log.info("Cleaned " + cleanCount + " elements from database.");
 		}
 		catch (SQLException e)
@@ -243,6 +250,13 @@ public abstract class IdFactory
 		{
 			try
 			{
+				stmt.close();
+			}
+			catch (Exception e)
+			{
+			}
+			try
+			{
 				con.close();
 			}
 			catch (Exception e)
@@ -250,7 +264,47 @@ public abstract class IdFactory
 			}
 		}
 	}
-	
+
+	private void cleanUpTimeStamps()
+	{
+		Connection con = null;
+		PreparedStatement stmt = null;
+		try
+		{
+			int cleanCount = 0;
+			con = L2DatabaseFactory.getInstance().getConnection();
+			for (String line : TIMESTAMPS_CLEAN)
+			{
+				stmt = con.prepareStatement(line);
+				stmt.setLong(1, System.currentTimeMillis());
+				cleanCount += stmt.executeUpdate();
+				stmt.close();
+			}
+
+			_log.info("Cleaned " + cleanCount + " expired timestamps from database.");
+		}
+		catch (SQLException e)
+		{
+		}
+		finally
+		{
+			try
+			{
+				stmt.close();
+			}
+			catch (Exception e)
+			{
+			}
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
+	}
+
 	/**
 	 * @param con
 	 * @return
