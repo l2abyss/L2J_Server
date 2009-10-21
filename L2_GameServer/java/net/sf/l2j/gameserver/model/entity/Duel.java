@@ -30,6 +30,7 @@ import net.sf.l2j.gameserver.network.serverpackets.ActionFailed;
 import net.sf.l2j.gameserver.network.serverpackets.ExDuelEnd;
 import net.sf.l2j.gameserver.network.serverpackets.ExDuelReady;
 import net.sf.l2j.gameserver.network.serverpackets.ExDuelStart;
+import net.sf.l2j.gameserver.network.serverpackets.ExDuelUpdateUserInfo;
 import net.sf.l2j.gameserver.network.serverpackets.L2GameServerPacket;
 import net.sf.l2j.gameserver.network.serverpackets.PlaySound;
 import net.sf.l2j.gameserver.network.serverpackets.SocialAction;
@@ -370,16 +371,16 @@ public class Duel
 				temp.cancelActiveTrade();
 				temp.setIsInDuel(_duelId);
 				temp.setTeam(1);
-				temp.broadcastStatusUpdate();
 				temp.broadcastUserInfo();
+				broadcastToTeam2(new ExDuelUpdateUserInfo(temp));
 			}
 			for (L2PcInstance temp : _playerB.getParty().getPartyMembers())
 			{
 				temp.cancelActiveTrade();
 				temp.setIsInDuel(_duelId);
 				temp.setTeam(2);
-				temp.broadcastStatusUpdate();
 				temp.broadcastUserInfo();
+				broadcastToTeam1(new ExDuelUpdateUserInfo(temp));
 			}
 			
 			// Send duel Start packets
@@ -407,9 +408,10 @@ public class Duel
 			broadcastToTeam2(ready);
 			broadcastToTeam1(start);
 			broadcastToTeam2(start);
-			
-			_playerA.broadcastStatusUpdate();
-			_playerB.broadcastStatusUpdate();
+
+			broadcastToTeam1(new ExDuelUpdateUserInfo(_playerB));
+			broadcastToTeam2(new ExDuelUpdateUserInfo(_playerA));
+
 			_playerA.broadcastUserInfo();
 			_playerB.broadcastUserInfo();
 		}

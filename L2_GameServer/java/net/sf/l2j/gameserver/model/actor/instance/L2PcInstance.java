@@ -4327,7 +4327,10 @@ public final class L2PcInstance extends L2Playable
 		final boolean needCpUpdate = needCpUpdate(352);
 		final boolean needHpUpdate = needHpUpdate(352);
 		// Check if a party is in progress and party window update is usefull
-		if (isInParty() && (needCpUpdate || needHpUpdate || needMpUpdate(352)))
+		if (isInParty()
+				&& (needCpUpdate
+						|| needHpUpdate
+						|| needMpUpdate(352)))
 		{
 			if (Config.DEBUG)
 				_log.fine("Send status for party window of " + getObjectId() + "(" + getName() + ") to his party. CP: " + getCurrentCp() + " HP: " + getCurrentHp() + " MP: " + getCurrentMp());
@@ -4336,26 +4339,34 @@ public final class L2PcInstance extends L2Playable
 			getParty().broadcastToPartyMembers(this, update);
 		}
 
-        if (isInOlympiadMode() && isOlympiadStart() && (needCpUpdate || needHpUpdate))
+        if (isInOlympiadMode()
+        		&& isOlympiadStart()
+        		&& (needCpUpdate || needHpUpdate))
         {
-        	ExOlympiadUserInfo olyInfo = new ExOlympiadUserInfo(this, 2);
+        	Collection<L2PcInstance> players = getKnownList().getKnownPlayers().values();
 
         	//synchronized (getKnownList().getKnownPlayers())
-        	if (Olympiad.getInstance().getPlayers(_olympiadGameId) != null)
+        	if (players != null && !players.isEmpty())
 			{
-				for (L2PcInstance player : Olympiad.getInstance().getPlayers(_olympiadGameId))
+            	ExOlympiadUserInfo olyInfo = new ExOlympiadUserInfo(this, 2);
+
+            	for (L2PcInstance player : players)
 				{
-					if (player != null && player != this)
+					if (player != null
+							&& player.isInOlympiadMode()
+							&& player.getOlympiadGameId() == _olympiadGameId)
 					{
 						player.sendPacket(olyInfo);
 					}
 				}
 			}
-            if(Olympiad.getInstance().getSpectators(_olympiadGameId) != null)
-            {
-            	olyInfo = new ExOlympiadUserInfo(this, getOlympiadSide());
 
-            	for(L2PcInstance spectator : Olympiad.getInstance().getSpectators(_olympiadGameId))
+        	players = Olympiad.getInstance().getSpectators(_olympiadGameId);
+            if(players != null && !players.isEmpty())
+            {
+            	ExOlympiadUserInfo olyInfo = new ExOlympiadUserInfo(this, getOlympiadSide());
+
+            	for(L2PcInstance spectator : players)
                 {
                     if (spectator == null)
                     	continue;
@@ -4363,7 +4374,9 @@ public final class L2PcInstance extends L2Playable
                 }
             }
         }
-        if (isInDuel())
+        // In duel MP updated only with CP or HP
+        if (isInDuel()
+        		&& (needCpUpdate || needHpUpdate))
         {
         	ExDuelUpdateUserInfo update = new ExDuelUpdateUserInfo(this);
         	DuelManager.getInstance().broadcastToOppositTeam(this, update);
