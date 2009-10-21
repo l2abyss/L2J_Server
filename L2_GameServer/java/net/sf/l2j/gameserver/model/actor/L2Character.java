@@ -5459,12 +5459,13 @@ public abstract class L2Character extends L2Object
         	else
         		target=(L2PcInstance)player.getTarget();
         	
-        	if (target.isInOlympiadMode() && !player.isOlympiadStart() && player.getOlympiadGameId()!=target.getOlympiadGameId())
+        	if (target == null
+        			|| (target.isInOlympiadMode()
+        					&& (!player.isOlympiadStart()
+        							|| player.getOlympiadGameId() != target.getOlympiadGameId())))
         	{
         		// if L2PcInstance is in Olympia and the match isn't already start, send a Server->Client packet ActionFailed
         		player.sendPacket(ActionFailed.STATIC_PACKET);
-        		setIsCastingSimultaneouslyNow(false);
-        		setIsCastingNow(false);
         		return;
         	}
         }
