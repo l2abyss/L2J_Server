@@ -16,6 +16,7 @@ package net.sf.l2j.gameserver.network.serverpackets;
 
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.actor.L2Character;
+import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 
 
 /**
@@ -30,82 +31,97 @@ import net.sf.l2j.gameserver.model.actor.L2Character;
  */
 public class Attack extends L2GameServerPacket
 {
-    private class Hit
-    {
-    	protected int _targetId;
-    	protected int _damage;
-    	protected int _flags;
+	public static final int HITFLAG_USESS = 0x10;
+	public static final int HITFLAG_CRIT = 0x20;
+	public static final int HITFLAG_SHLD = 0x40;
+	public static final int HITFLAG_MISS = 0x80;
 
-        Hit(L2Object target, int damage, boolean miss, boolean crit, byte shld)
-        {
-            _targetId = target.getObjectId();
-            _damage = damage;
-            if (soulshot)  _flags |= 0x10 | _grade;
-            if (crit)      _flags |= 0x20;
-            if (shld > 0)  _flags |= 0x40;
-            if (miss)      _flags |= 0x80;
+	public class Hit
+	{
+		protected final int _targetId;
+		protected final int _damage;
+		protected int _flags;
 
-        }
-    }
-
-	// dh
+		Hit(L2Object target, int damage, boolean miss, boolean crit, byte shld)
+		{
+			_targetId = target.getObjectId();
+			_damage = damage;
+			if (miss)
+			{
+				_flags = HITFLAG_MISS;
+				return;
+			}
+			if (soulshot)
+				_flags = HITFLAG_USESS | Attack.this._ssGrade;
+			if (crit)
+				_flags |= HITFLAG_CRIT;
+			// dirty fix for lags on olympiad
+			if (shld > 0 && !(target instanceof L2PcInstance && ((L2PcInstance)target).isInOlympiadMode()))
+				_flags |= HITFLAG_SHLD;
+//			if (shld > 0)
+//				_flags |= HITFLAG_SHLD;
+		}
+	}
 
 	private static final String _S__06_ATTACK = "[S] 33 Attack";
-	protected final int _attackerObjId;
+	private final int _attackerObjId;
+	private final int _targetObjId;
 	public final boolean soulshot;
-    protected int _grade;
-	private int _x;
-	private int _y;
-	private int _z;
-	private int _tx;
-	private int _ty;
-	private int _tz;
-	L2Object _defender;
+	public final int _ssGrade;
+	private final int _x;
+	private final int _y;
+	private final int _z;
+	private final int _tx;
+	private final int _ty;
+	private final int _tz;
 	private Hit[] _hits;
 
 	/**
-	 * @param attacker the attacker L2Character
-	 * @param ss true if useing SoulShots
+	 * @param attacker: the attacking L2Character<br>
+	 * @param target: the target L2Object<br>
+	 * @param useShots: true if soulshots used
+	 * @param ssGrade: the grade of the soulshots
 	 */
-	public Attack(L2Character attacker, L2Object target, boolean ss, int grade)
+	public Attack(L2Character attacker, L2Object target, boolean useShots, int ssGrade)
 	{
 		_attackerObjId = attacker.getObjectId();
-		soulshot = ss;
-        _grade = grade;
+		_targetObjId = target.getObjectId();
+		soulshot = useShots;
+		_ssGrade = ssGrade;
 		_x = attacker.getX();
 		_y = attacker.getY();
 		_z = attacker.getZ();
 		_tx = target.getX();
 		_ty = target.getY();
 		_tz = target.getZ();
-		_defender = target;
-		_hits = new Hit[0];
 	}
 
-	/**
-	 * Add this hit (target, damage, miss, critical, shield) to the Server-Client packet Attack.<BR><BR>
-	 */
-	public void addHit(L2Object target, int damage, boolean miss, boolean crit, byte shld)
+	public Hit createHit(L2Object target, int damage, boolean miss, boolean crit, byte shld)
 	{
-		// Get the last position in the hits table
-		int pos = _hits.length;
+		return new Hit( target, damage, miss, crit, shld );
+	}
 
-		// Create a new Hit object
-		Hit[] tmp = new Hit[pos+1];
+	public void hit(Hit... hits)
+	{
+		if (_hits == null)
+		{
+			_hits = hits;
+			return;
+		}
 
-		// Add the new Hit object to hits table
-		for (int i=0; i < _hits.length; i++)
-			tmp[i] = _hits[i];
-		tmp[pos] = new Hit(target, damage, miss, crit, shld);
+		// this will only happen with pole attacks
+		Hit[] tmp = new Hit[hits.length + _hits.length];
+		System.arraycopy(_hits, 0, tmp, 0, _hits.length);
+		System.arraycopy(hits, 0, tmp, _hits.length, hits.length);
 		_hits = tmp;
 	}
 
 	/**
-	 * Return True if the Server-Client packet Attack conatins at least 1 hit.<BR><BR>
+	 * Return True if the Server-Client packet Attack contains at least 1 hit.<BR><BR>
 	 */
 	public boolean hasHits()
 	{
-		return _hits.length > 0;
+		return _hits != null;
 	}
 
 	@Override
@@ -114,24 +130,25 @@ public class Attack extends L2GameServerPacket
 		writeC(0x33);
 
 		writeD(_attackerObjId);
-		writeD(_defender.getObjectId());
+		writeD(_targetObjId);
 		writeD(_hits[0]._damage);
 		writeC(_hits[0]._flags);
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
-		writeH(_hits.length-1);
-		
-		if(_hits.length > 1) // prevent sending useless packet while there is only one target.
+
+		writeH(_hits.length - 1);
+		// prevent sending useless packet while there is only one target.
+		if (_hits.length > 1)
 		{
-			for (Hit temp: _hits)
+			for (int i = 1; i < _hits.length; i++)
 			{
-				writeD(temp._targetId);
-				writeD(temp._damage);
-				writeC(temp._flags);
+				writeD(_hits[i]._targetId);
+				writeD(_hits[i]._damage);
+				writeC(_hits[i]._flags);
 			}
 		}
-		
+
 		writeD(_tx);
 		writeD(_ty);
 		writeD(_tz);		
