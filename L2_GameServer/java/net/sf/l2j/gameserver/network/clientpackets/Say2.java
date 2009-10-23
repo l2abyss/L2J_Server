@@ -53,33 +53,35 @@ public final class Say2 extends L2GameClientPacket
 	public final static int HERO_VOICE = 17;
 	public final static int BATTLEFIELD = 20;
 
-	private final static String[] CHAT_NAMES = {
-	                                          "ALL  ",
-	                                          "SHOUT",
-	                                          "TELL ",
-	                                          "PARTY",
-	                                          "CLAN ",
-	                                          "GM   ",
-	                                          "PETITION_PLAYER",
-	                                          "PETITION_GM",
-	                                          "TRADE",
-	                                          "ALLIANCE",
-	                                          "ANNOUNCEMENT", //10
-	                                          "WILLCRASHCLIENT:)",
-	                                          "FAKEALL?",
-	                                          "FAKEALL?",
-	                                          "FAKEALL?",
-	                                          "PARTYROOM_ALL",
-	                                          "PARTYROOM_COMMANDER",
-	                                          "HERO_VOICE",
-	                                          "UNKNOWN",
-	                                          "UNKNOWN",
-	                                          "BATTLEFIELD"
+	private final static String[] CHAT_NAMES =
+	{
+		"ALL",
+		"SHOUT",
+		"TELL",
+		"PARTY",
+		"CLAN",
+		"GM",
+		"PETITION_PLAYER",
+		"PETITION_GM",
+		"TRADE",
+		"ALLIANCE",
+		"ANNOUNCEMENT", //10
+		"WILLCRASHCLIENT:)",
+		"FAKEALL?",
+		"FAKEALL?",
+		"FAKEALL?",
+		"PARTYROOM_ALL",
+		"PARTYROOM_COMMANDER",
+		"HERO_VOICE",
+		"UNKNOWN",
+		"UNKNOWN",
+		"BATTLEFIELD"
 	};
 
 	private String _text;
 	private int _type;
 	private String _target;
+
 	@Override
 	protected void readImpl()
 	{
@@ -101,7 +103,7 @@ public final class Say2 extends L2GameClientPacket
 		if (Config.DEBUG)
 			_log.info("Say2: Msg Type = '" + _type + "' Text = '" + _text + "'.");
 
-		if(_type < 0 || _type >= CHAT_NAMES.length)
+		if (_type < 0 || _type >= CHAT_NAMES.length)
 		{
 			_log.warning("Say2: Invalid type: "+_type);
 			return;
@@ -138,7 +140,7 @@ public final class Say2 extends L2GameClientPacket
 		{
 			if (_type == ALL || _type == SHOUT || _type == TRADE || _type == HERO_VOICE)
 			{
-				activeChar.sendMessage("You may not chat while a chat ban is in effect.");
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.CHATTING_IS_CURRENTLY_PROHIBITED));
 				return;
 			}
 		}
@@ -170,9 +172,7 @@ public final class Say2 extends L2GameClientPacket
 
 		IChatHandler handler = ChatHandler.getInstance().getChatHandler(_type);
 		if (handler != null)
-		{
 			handler.handleChat(_type, activeChar, _target, _text);
-		}
 	}
 
 	/* (non-Javadoc)
