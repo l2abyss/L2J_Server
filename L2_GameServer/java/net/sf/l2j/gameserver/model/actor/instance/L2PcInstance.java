@@ -78,6 +78,7 @@ import net.sf.l2j.gameserver.instancemanager.DimensionalRiftManager;
 import net.sf.l2j.gameserver.instancemanager.DuelManager;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
 import net.sf.l2j.gameserver.instancemanager.FortSiegeManager;
+import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.instancemanager.ItemsOnGroundManager;
 import net.sf.l2j.gameserver.instancemanager.QuestManager;
 import net.sf.l2j.gameserver.instancemanager.SiegeManager;
@@ -132,6 +133,7 @@ import net.sf.l2j.gameserver.model.base.SubClass;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.Duel;
 import net.sf.l2j.gameserver.model.entity.Fort;
+import net.sf.l2j.gameserver.model.entity.Instance;
 import net.sf.l2j.gameserver.model.entity.L2Event;
 import net.sf.l2j.gameserver.model.entity.Siege;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
@@ -11500,7 +11502,37 @@ public final class L2PcInstance extends L2Playable
 				_log.log(Level.SEVERE, "deleteMe()", e);
 			}
 		}
-		
+
+		// remove player from instance and set spawn location if any
+		try
+		{
+			final int instanceId = getInstanceId();
+			if (instanceId != 0)
+			{
+				final Instance inst = InstanceManager.getInstance().getInstance(instanceId);
+				if (inst != null)
+				{
+					inst.removePlayer(getObjectId());
+					final int[] spawn = inst.getSpawnLoc();
+					if (spawn[0] != 0 && spawn[1] != 0 && spawn[2] != 0)
+					{
+						final int x = spawn[0] + Rnd.get(-30, 30);
+						final int y = spawn[1] + Rnd.get(-30, 30);
+						setXYZ(x, y, spawn[2]);
+						if (getPet() != null) // dead pet
+						{
+							getPet().teleToLocation(x, y, spawn[2]);
+							getPet().setInstanceId(0);
+						}
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+
 		// TvT Event removal
 		try
 		{
