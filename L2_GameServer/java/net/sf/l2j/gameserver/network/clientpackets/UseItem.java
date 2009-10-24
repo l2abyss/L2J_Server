@@ -79,15 +79,13 @@ public final class UseItem extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-
 		L2PcInstance activeChar = getClient().getActiveChar();
-
 		if (activeChar == null)
             return;
 
 		// Flood protect UseItem
 		if (!activeChar.getFloodProtectors().getUseItem().tryPerformAction("use item"))
-				return;
+			return;
 
 		if (activeChar.getPrivateStoreType() != 0)
 		{
@@ -95,7 +93,7 @@ public final class UseItem extends L2GameClientPacket
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-		
+
 		if (activeChar.getActiveTradeList() != null)
 			activeChar.cancelActiveTrade();
 
@@ -103,7 +101,6 @@ public final class UseItem extends L2GameClientPacket
 		// synchronized (activeChar.getInventory())
 		// 	{
 			L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
-
 			if (item == null)
                 return;
 
@@ -215,14 +212,16 @@ public final class UseItem extends L2GameClientPacket
 			
 			if (!item.isEquipped())
 			{
-				if ( !item.getItem().checkCondition(activeChar, activeChar))
+				if (!item.getItem().checkCondition(activeChar, activeChar, true))
 					return;
 			}
             
 			if (item.isEquipable())
 			{
 				// No unequipping/equipping while the player is in special conditions
-				if (activeChar.isStunned() || activeChar.isSleeping() || activeChar.isParalyzed()
+				if (activeChar.isStunned()
+						|| activeChar.isSleeping()
+						|| activeChar.isParalyzed()
 						|| activeChar.isAlikeDead())
 				{
 					activeChar.sendMessage("Your status does not allow you to do that.");
@@ -254,14 +253,11 @@ public final class UseItem extends L2GameClientPacket
                     		activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_USE_ITEM_WHILE_USING_MAGIC));
                     		return;
                     	}
-                    	
                         if (activeChar.isMounted())
                         {
                         	activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
                         	return;
                         }
-                        
-                       
                         if (activeChar.isDisarmed())
                         {
                             activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
@@ -270,9 +266,7 @@ public final class UseItem extends L2GameClientPacket
                         
                         // Don't allow weapon/shield equipment if a cursed weapon is equiped
                         if (activeChar.isCursedWeaponEquipped())
-                        {
                             return;
-                        }
                         
                         // Don't allow other Race to Wear Kamael exclusive Weapons.
                         if (!item.isEquipped() && item.getItem() instanceof L2Weapon && !activeChar.isGM())
@@ -339,26 +333,26 @@ public final class UseItem extends L2GameClientPacket
                 }
                 
                 if (activeChar.isCursedWeaponEquipped() && itemId == 6408) // Don't allow to put formal wear
-                {
                     return;
-                }
-                if (activeChar.isAttackingNow()){
+
+                if (activeChar.isAttackingNow())
+                {
                 	ThreadPoolManager.getInstance().scheduleGeneral( new WeaponEquipTask(item,activeChar), (activeChar.getAttackEndTime()-GameTimeController.getGameTicks())*GameTimeController.MILLIS_IN_TICK);
                 	return;
                 }
                 // Equip or unEquip
-                if(FortSiegeManager.getInstance().isCombat(item.getItemId()))
-                		return;	//no message
+                if (FortSiegeManager.getInstance().isCombat(item.getItemId()))
+                	return;	//no message
+
                 activeChar.useEquippableItem(item, true);
 			}
 			else
 			{
                 L2Weapon weaponItem = activeChar.getActiveWeaponItem();
                 int itemid = item.getItemId();
-				//_log.finest("item not equipable id:"+ item.getItemId());
                 if (itemid == 4393)
                 {
-                        activeChar.sendPacket(new ShowCalculator(4393));
+                    activeChar.sendPacket(new ShowCalculator(4393));
                 }
                 else if ((weaponItem != null && weaponItem.getItemType() == L2WeaponType.ROD)
                     && ((itemid >= 6519 && itemid <= 6527) || (itemid >= 7610 && itemid <= 7613) || (itemid >= 7807 && itemid <= 7809) || (itemid >= 8484 && itemid <= 8486) || (itemid >= 8505 && itemid <= 8513)))
@@ -373,7 +367,6 @@ public final class UseItem extends L2GameClientPacket
 				else
 				{
 					IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
-
 					if (handler == null)
 					{
 						if (Config.DEBUG)
@@ -391,5 +384,4 @@ public final class UseItem extends L2GameClientPacket
 	{
 		return _C__14_USEITEM;
 	}
-
 }

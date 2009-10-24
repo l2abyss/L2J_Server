@@ -13827,6 +13827,12 @@ public enum SystemMessageId
 	THE_COLLECTION_HAS_SUCCEEDED(2500),
 	
 	/**
+	 * ID: 2451
+	 * Message: The cloak equip has been removed because the armor set equip has been removed.
+	 */
+	CLOAK_REMOVED_BECAUSE_ARMOR_SET_REMOVED(2451),
+	
+	/**
 	 * ID: 2465
 	 * Message: You have selected a 3 vs 3 class irrelevant team match. Do you wish to participate?
 	 */

@@ -36,7 +36,6 @@ public final class RequestPetUseItem extends L2GameClientPacket
 
 	private int _objectId;
 
-
 	@Override
 	protected void readImpl()
 	{
@@ -50,17 +49,14 @@ public final class RequestPetUseItem extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
-
 		if (activeChar == null)
 		    return;
 
 		L2PetInstance pet = (L2PetInstance)activeChar.getPet();
-
 		if (pet == null)
 			return;
 
 		L2ItemInstance item = pet.getInventory().getItemByObjectId(_objectId);
-
         if (item == null)
             return;
 
@@ -83,7 +79,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		
         if (!item.isEquipped())
         {
-        	if ( !item.getItem().checkCondition(pet, pet))
+        	if (!item.getItem().checkCondition(pet, pet, true))
         		return;
         }
         
@@ -190,7 +186,6 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		}
 
 	    IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
-
 	    if (handler != null)
 		{
 			useItem(pet, item, activeChar);

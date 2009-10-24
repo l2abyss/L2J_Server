@@ -716,56 +716,60 @@ public abstract class L2Item
 		}
 	}
 	
-    public final void attach(Condition c)
-    {
-    	if (!_preConditions.contains(c))
-    		_preConditions.add(c);
-    }
-    
-    public final L2Skill[] getItemSkills()
-    {
-    	return _skills;
-    }
-    
-    public boolean checkCondition(L2Character activeChar, L2Object target)
-    {
-    	if (activeChar.isGM() && !Config.GM_ITEM_RESTRICTION)
-    		return true;
-    	for (Condition preCondition : _preConditions)
-    	{
-	        if (preCondition == null) return true;
+	public final void attach(Condition c)
+	{
+		if (!_preConditions.contains(c))
+			_preConditions.add(c);
+	}
 	
-	        Env env = new Env();
-	        env.player = activeChar;
-	        if (target instanceof L2Character) // TODO: object or char?
-	        	env.target = (L2Character)target;
+	public final L2Skill[] getItemSkills()
+	{
+		return _skills;
+	}
 	
-	        if (!preCondition.test(env))
-	        {
-	        	if (activeChar instanceof L2SummonInstance)
-	        	{
-	        		((L2SummonInstance)activeChar).getOwner().sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
-	        		return false;
-	        	}
-	            String msg = preCondition.getMessage();
-	            int msgId = preCondition.getMessageId();
-	            
-	            if (msg != null)
-	            {
-	                activeChar.sendMessage(msg);
-	            }
-	            else if (msgId !=0)
-	            {
-	            	SystemMessage sm = new SystemMessage(msgId);
-	            	if (preCondition.isAddName())
-	            		sm.addItemName(_itemId);
-	            	activeChar.sendPacket(sm);
-	            }
-	            return false;
-	        }
-    	}
-        return true;
-    }
+	public boolean checkCondition(L2Character activeChar, L2Object target, boolean sendMessage)
+	{
+		if (activeChar.isGM() && !Config.GM_ITEM_RESTRICTION)
+			return true;
+
+		for (Condition preCondition : _preConditions)
+		{
+			if (preCondition == null) return true;
+
+			Env env = new Env();
+			env.player = activeChar;
+			if (target instanceof L2Character) // TODO: object or char?
+				env.target = (L2Character)target;
+
+			if (!preCondition.test(env))
+			{
+				if (activeChar instanceof L2SummonInstance)
+				{
+					((L2SummonInstance)activeChar).getOwner().sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
+					return false;
+				}
+
+				if (sendMessage)
+				{
+					String msg = preCondition.getMessage();
+					int msgId = preCondition.getMessageId();
+					if (msg != null)
+					{
+						activeChar.sendMessage(msg);
+					}
+					else if (msgId !=0)
+					{
+						SystemMessage sm = new SystemMessage(msgId);
+						if (preCondition.isAddName())
+							sm.addItemName(_itemId);
+						activeChar.sendPacket(sm);
+					}
+				}
+				return false;
+			}
+		}
+		return true;
+	}
 	
 	/**
 	 * Returns the name of the item

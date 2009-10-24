@@ -13126,47 +13126,52 @@ public final class L2PcInstance extends L2Playable
 		return true;	
 	}
 
-    public void gatesRequest(L2DoorInstance door)
-    {
-    	_gatesRequest.setTarget(door);
-    }
+	public void gatesRequest(L2DoorInstance door)
+	{
+		_gatesRequest.setTarget(door);
+	}
 
+	public void gatesAnswer(int answer, int type)
+	{
+		if (_gatesRequest.getDoor() == null)
+			return;
 
-    public void gatesAnswer(int answer, int type)
-    {
-    	if (_gatesRequest.getDoor() == null)
-    		return;
-    	if (answer == 1 && getTarget() == _gatesRequest.getDoor() && type == 1)
-    	{
-    		_gatesRequest.getDoor().openMe();
-    	}
-    	else if (answer == 1 && getTarget() == _gatesRequest.getDoor() && type == 0)
-    	{
-    		_gatesRequest.getDoor().closeMe();
-    	}
-    	_gatesRequest.setTarget(null);
-    }
-    
-    @Override
-    public void setIsCastingNow(boolean value)
-    {
-    	if (value == false)
-    	{
-    		_currentSkill = null;
-    	}
-    	super.setIsCastingNow(value);
-    }
-    public void checkItemRestriction()
-    {
-    	for (int i = 0; i < Inventory.PAPERDOLL_TOTALSLOTS; i++)
-    	{
-    		L2ItemInstance equippedItem = getInventory().getPaperdollItem(i);
-    		if (equippedItem != null && !equippedItem.getItem().checkCondition(this, this))
-    		{
+		if (answer == 1 && getTarget() == _gatesRequest.getDoor() && type == 1)
+			_gatesRequest.getDoor().openMe();
+		else if (answer == 1 && getTarget() == _gatesRequest.getDoor() && type == 0)
+			_gatesRequest.getDoor().closeMe();
+
+		_gatesRequest.setTarget(null);
+	}
+
+	@Override
+	public void setIsCastingNow(boolean value)
+	{
+		if (value == false)
+			_currentSkill = null;
+
+		super.setIsCastingNow(value);
+	}
+
+	public void checkItemRestriction()
+	{
+		for (int i = 0; i < Inventory.PAPERDOLL_TOTALSLOTS; i++)
+		{
+			L2ItemInstance equippedItem = getInventory().getPaperdollItem(i);
+			if (equippedItem != null && !equippedItem.getItem().checkCondition(this, this, false))
+			{
 				getInventory().unEquipItemInSlotAndRecord(i);
 				if (equippedItem.isWear())
 					continue;
+
 				SystemMessage sm = null;
+				if (equippedItem.getItem().getBodyPart() == L2Item.SLOT_BACK)
+				{
+					sm = new SystemMessage(SystemMessageId.CLOAK_REMOVED_BECAUSE_ARMOR_SET_REMOVED);
+					sendPacket(sm);
+					return;
+				}
+
 				if (equippedItem.getEnchantLevel() > 0)
 				{
 					sm = new SystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
@@ -13179,10 +13184,10 @@ public final class L2PcInstance extends L2Playable
 					sm.addItemName(equippedItem);
 				}
 				sendPacket(sm);
-    		}
-    	}
-    }
-    
+			}
+		}
+	}
+
     public void setTransformAllowedSkills(int[] ids)
     {
     	_transformAllowedSkills = ids;
