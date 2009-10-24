@@ -214,7 +214,7 @@ public class L2CubicInstance
 		_disappearTask = ThreadPoolManager.getInstance().scheduleGeneral(new Disappear(), totallifetime); // disappear
 	}
 	
-	public void doAction()
+	public synchronized void doAction()
 	{
 		if (_active)
 			return;
@@ -267,12 +267,12 @@ public class L2CubicInstance
 	public void stopAction()
 	{
 		_target = null;
-		_active = false;
 		if (_actionTask != null)
 		{
 			_actionTask.cancel(true);
 			_actionTask = null;
 		}
+		_active = false;
 	}
 	
 	public void cancelDisappear()
