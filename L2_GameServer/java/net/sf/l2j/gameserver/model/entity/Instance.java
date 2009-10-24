@@ -124,7 +124,7 @@ public class Instance
 	
 	/**
 	 * Set the instance duration task
-	 * @param duration in minutes
+	 * @param duration in milliseconds
 	 */
 	public void setDuration(int duration)
 	{
@@ -132,6 +132,7 @@ public class Instance
 			_CheckTimeUpTask.cancel(true);
 
 		_CheckTimeUpTask = ThreadPoolManager.getInstance().scheduleGeneral(new CheckTimeUp(duration), 500);
+		_instanceEndTime = System.currentTimeMillis() + duration + 500;
 	}
 
 	/**
@@ -279,6 +280,16 @@ public class Instance
 	public int[] getSpawnLoc()
 	{
 		return _spawnLoc;
+	}
+
+	/**
+	 * Sets the spawn location for this instance to be used when leaving the instance
+	 */
+	public void setSpawnLoc(int[] loc)
+	{
+		if (loc == null || loc.length < 3)
+			return;
+		System.arraycopy(loc, 0, _spawnLoc, 0, 3);
 	}
 
 	public void removePlayers()
