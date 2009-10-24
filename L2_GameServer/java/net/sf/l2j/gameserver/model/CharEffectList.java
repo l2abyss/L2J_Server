@@ -15,7 +15,7 @@
 package net.sf.l2j.gameserver.model;
 
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -41,12 +41,12 @@ public class CharEffectList
 	private FastList<L2Effect> _debuffs;
 
 	// The table containing the List of all stacked effect in progress for each Stack group Identifier
-	protected Map<String, List<L2Effect>> _stackedEffects;
+	private Map<String, List<L2Effect>> _stackedEffects;
 
 	private boolean _queuesInitialized = false;
 	private LinkedBlockingQueue<L2Effect> _addQueue;
 	private LinkedBlockingQueue<L2Effect> _removeQueue;
-	private final ReentrantLock queueLock = new ReentrantLock();
+	private AtomicBoolean queueLock = new AtomicBoolean();
 
 	// only party icons need to be updated
 	private boolean _partyOnly = false;
@@ -366,9 +366,7 @@ public class CharEffectList
 		for (L2Effect e : effects)
 		{
 			if (e != null)
-			{
 				e.exit(true);
-			}
 		}
  	}
 	
@@ -488,39 +486,26 @@ public class CharEffectList
 		if (!_queuesInitialized)
 			init();
 
-		try
-		{
-			if (remove)
-				_removeQueue.put(effect);
-			else
-				_addQueue.put(effect);
-			
-		}
-		catch (InterruptedException e)
-		{
-		}
+		if (remove)
+			_removeQueue.offer(effect);
+		else
+			_addQueue.offer(effect);
+
 		queueRunner();
 	}
-	
+
 	synchronized private void init()
 	{
-		if (!_queuesInitialized)
-		{
-			_addQueue = new LinkedBlockingQueue<L2Effect>();
-			_removeQueue = new LinkedBlockingQueue<L2Effect>();
-			_queuesInitialized = true;
-		}
+		_addQueue = new LinkedBlockingQueue<L2Effect>();
+		_removeQueue = new LinkedBlockingQueue<L2Effect>();
+		_queuesInitialized = true;
 	}
 
 	private void queueRunner()
 	{
-		synchronized (this)
-		{
-			if (queueLock.isLocked())
-				return;
-			else
-				queueLock.lock();
-		}
+		if (!queueLock.compareAndSet(false, true))
+			return;
+
 		try
 		{
 			L2Effect effect;
@@ -528,16 +513,14 @@ public class CharEffectList
 			{
 				// remove has more priority than add
 				// so removing all effects from queue first
-				while (!_removeQueue.isEmpty())
+				while ((effect = _removeQueue.poll()) != null)
 				{
-					effect = _removeQueue.poll();
 					removeEffectFromQueue(effect);
 					_partyOnly = false;
 				}
 
-				if (!_addQueue.isEmpty())
+				if ((effect = _addQueue.poll()) != null)
 				{
-					effect = _addQueue.poll();
 					addEffectFromQueue(effect);
 					_partyOnly = false;
 				}
@@ -548,11 +531,11 @@ public class CharEffectList
 		}
 		finally
 		{
-			queueLock.unlock();
+			queueLock.set(false);
 		}
 	}
 	
-	private void removeEffectFromQueue(L2Effect effect)
+	protected void removeEffectFromQueue(L2Effect effect)
 	{
 		if (effect == null) return;
 
@@ -635,7 +618,7 @@ public class CharEffectList
 		}
 	}
 
-	private void addEffectFromQueue(L2Effect newEffect)
+	protected void addEffectFromQueue(L2Effect newEffect)
 	{
 		if (newEffect == null) return;
 
@@ -867,7 +850,7 @@ public class CharEffectList
 		}
 	}
 
-	private void updateEffectIcons()
+	protected void updateEffectIcons()
 	{
 		if (_owner == null || !(_owner instanceof L2Playable))
 			return;
