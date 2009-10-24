@@ -37,6 +37,7 @@ import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.model.entity.Fort;
+import net.sf.l2j.gameserver.model.entity.Instance;
 import net.sf.l2j.gameserver.model.zone.type.L2ArenaZone;
 import net.sf.l2j.gameserver.model.zone.type.L2ClanHallZone;
 
@@ -430,7 +431,9 @@ public class MapRegionTable
 			Fort fort = null;
 			ClanHall clanhall = null;
 			
-			if (player.getClan() != null && !player.isFlyingMounted()) // flying players in gracia cant use teleports to aden continent
+			if (player.getClan() != null
+					&& !player.isFlyingMounted()
+					&& !player.isFlying()) // flying players in gracia cant use teleports to aden continent
 			{
 				// If teleport to clan hall
 				if (teleportWhere == TeleportWhereType.ClanHall)
@@ -562,10 +565,12 @@ public class MapRegionTable
 			// Checking if in an instance
 			if (player.getInstanceId() > 0)
 			{
-				coord = InstanceManager.getInstance().getInstance(player.getInstanceId()).getSpawnLoc();
-				if (coord[0] != 0 && coord[1] != 0 && coord[2] != 0)
+				Instance inst = InstanceManager.getInstance().getInstance(player.getInstanceId());
+				if (inst != null)
 				{
-					return new Location(coord[0], coord[1], coord[2]);
+					coord = inst.getSpawnLoc(); 
+					if (coord[0] != 0 && coord[1] != 0 && coord[2] != 0)
+						return new Location(coord[0], coord[1], coord[2]);
 				}
 			}
 		}
