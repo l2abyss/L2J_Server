@@ -61,7 +61,6 @@ public class L2MinionInstance extends L2MonsterInstance
 	public void onSpawn()
 	{
 		setIsNoRndWalk(true);
-		super.onSpawn();
 		if (getLeader() != null)
 		{
 			if (getLeader().isRaid())
@@ -75,6 +74,7 @@ public class L2MinionInstance extends L2MonsterInstance
 		L2WorldRegion region = L2World.getInstance().getRegion(getX(),getY());
 		if ((region !=null) && (!region.isActive()))
 			((L2AttackableAI) getAI()).stopAITask();
+		super.onSpawn();
 	}
 
 	/**

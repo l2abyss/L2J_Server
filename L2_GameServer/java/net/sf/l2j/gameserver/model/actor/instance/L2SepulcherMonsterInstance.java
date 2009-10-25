@@ -47,7 +47,6 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 	@Override
 	public void onSpawn()
 	{
-		super.onSpawn();
 		setShowSummonAnimation(false);
 		switch (getNpcId())
 		{
@@ -111,6 +110,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 				setIsRaid(true);
 				break;
 		}
+		super.onSpawn();
 	}
 	
 	@Override
