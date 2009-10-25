@@ -499,10 +499,12 @@ public final class Formulas
 		}
 
 		@Override
-        public void calc(Env env)
+		public void calc(Env env)
 		{
 			L2Character p = env.player;
-			if (p instanceof L2PcInstance && p.getActiveWeaponInstance() != null)
+			if(p instanceof L2Summon)
+				env.value = 8; // TODO: needs retail value
+			else if (p instanceof L2PcInstance && p.getActiveWeaponInstance() != null)
 				env.value *= WITbonus[p.getWIT()];
 		}
 	}
