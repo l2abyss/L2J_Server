@@ -10526,7 +10526,7 @@ public final class L2PcInstance extends L2Playable
             for (L2Skill oldSkill : getAllSkills())
                 super.removeSkill(oldSkill);
 
-            stopAllEffects();
+            stopAllEffectsExceptThoseThatLastThroughDeath();
 
             restoreRecipeBook(false);
 
