@@ -13809,6 +13809,12 @@ public enum SystemMessageId
 	YOU_HAVE_NO_OPEN_MY_TELEPORTS_SLOTS(2398),
 	
 	/**
+	* ID: 2400<br>
+	* Message: Instant Zone currently in use: $s1
+	*/
+	INSTANT_ZONE_CURRENTLY_INUSE(2400),
+
+	/**
 	* ID: 2409<br>
 	* Message: The number of My Teleports slots has been increased.
 	*/
@@ -13862,6 +13868,12 @@ public enum SystemMessageId
 	*/
 	LOC_CLEFT_S1_S2_S3(2716),
 	
+	/**
+	* ID: 2720<br>
+	* Message: Instant zone from here: $s1's entry has been restricted. 
+	*/
+	INSTANT_ZONE_RESTRICTED(2720),
+
 	/**
 	* ID: 2721<br>
 	* Message: Boarding or cancellation of boarding on Airships is not allowed in the current area.
