@@ -98,7 +98,8 @@ public class L2MinionInstance extends L2MonsterInstance
 	{
 		if (!super.doDie(killer))
 			return false;
-		_master.notifyMinionDied(this);
+		if (getLeader() != null)
+			getLeader().notifyMinionDied(this);
 		return true;
 	}
 
