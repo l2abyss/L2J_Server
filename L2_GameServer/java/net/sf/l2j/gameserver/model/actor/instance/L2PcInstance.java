@@ -7490,8 +7490,8 @@ public final class L2PcInstance extends L2Playable
 	public synchronized void store(boolean storeActiveEffects)
 	{
 		//update client coords, if these look like true
-        if (isInsideRadius(getClientX(), getClientY(), 1000, true))
-            setXYZ(getClientX(), getClientY(), getClientZ());
+        // if (isInsideRadius(getClientX(), getClientY(), 1000, true))
+        //    setXYZ(getClientX(), getClientY(), getClientZ());
 
 		storeCharBase();
 		storeCharSub();
