@@ -1666,7 +1666,8 @@ public final class Formulas
 			if (target == null)
 				return true; // no effect
 			
-			return target.getStat().calcStat(Stats.CRIT_DAMAGE_EVASION, 100, null, null) > Rnd.get(100);
+			// little weird, but remember what CRIT_DAMAGE_EVASION > 1 increase chances to _evade_ crit hits
+			return Rnd.get((int)target.getStat().calcStat(Stats.CRIT_DAMAGE_EVASION, 100, null, null)) > 100;
 		}
 		return success;
 	}
