@@ -495,6 +495,7 @@ public class Shutdown extends Thread
 		_log.info("RaidBossSpawnManager: All raidboss info saved!!");
 		GrandBossManager.getInstance().cleanUp();
 		_log.info("GrandBossManager: All Grand Boss info saved!!");
+		_log.info("TradeController saving data.. This action may take some minutes! Please wait until completed!");
 		TradeController.getInstance().dataCountStore();
 		_log.info("TradeController: All count Item Saved");
 		Olympiad.getInstance().saveOlympiadStatus();
