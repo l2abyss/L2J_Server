@@ -6518,8 +6518,15 @@ public abstract class L2Character extends L2Object
 									case AGGREMOVE:
 										break;
 									default:
-										// add attacker into list
-										((L2Character)target).addAttackerToAttackByList(this);
+										switch (skill.getId())
+										{
+											case 51: // Lure
+											case 511: // Temptation
+												break;
+											default:
+												// add attacker into list
+												((L2Character)target).addAttackerToAttackByList(this);
+										}
 										// notify target AI about the attack
 										((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
 										break;
