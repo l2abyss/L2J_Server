@@ -20,6 +20,7 @@ import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.instancemanager.GrandBossManager;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
+import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
@@ -32,7 +33,7 @@ import net.sf.l2j.gameserver.templates.skills.L2SkillType;
 public class L2SkillTeleport extends L2Skill
 {
 	private final String _recallType;
-	private final int[] _teleportCoords;
+	private final Location _loc;
 
 	public L2SkillTeleport(StatsSet set)
 	{
@@ -43,12 +44,12 @@ public class L2SkillTeleport extends L2Skill
 		if (coords != null)
 		{
 			String[] valuesSplit = coords.split(",");
-			_teleportCoords = new int[valuesSplit.length];
-			for (int i = 0; i < valuesSplit.length;i++)
-				_teleportCoords[i] = Integer.parseInt(valuesSplit[i]);
+			_loc = new Location(Integer.parseInt(valuesSplit[0]),
+					Integer.parseInt(valuesSplit[1]),
+					Integer.parseInt(valuesSplit[2]));
 		}
 		else
-			_teleportCoords = null;
+			_loc = null;
 	}
 
 	@Override
@@ -110,38 +111,48 @@ public class L2SkillTeleport extends L2Skill
 						targetChar.sendMessage("You cannot use escape skills during a duel.");
 						continue;
 					}
-				}
-				target.setInstanceId(0);
-				if (target instanceof L2PcInstance)
-					((L2PcInstance)target).setIsIn7sDungeon(false);
 
+					if (targetChar != activeChar)
+					{
+						if (!TvTEvent.onEscapeUse(targetChar.getObjectId()))
+							continue;
+
+						if (targetChar.isInOlympiadMode())
+							continue;
+
+						if (GrandBossManager.getInstance().getZone(targetChar) != null)
+							continue;
+					}
+				}
+				Location loc = null;
 				if (getSkillType() == L2SkillType.TELEPORT)
 				{
-					if (_teleportCoords != null)
+					if (_loc != null)
 					{
-						if (activeChar instanceof L2PcInstance && !((L2PcInstance) activeChar).isFlyingMounted())
-							target.teleToLocation(_teleportCoords[0], _teleportCoords[1], _teleportCoords[2]);
+						// target is not player OR player is not flying or flymounted
+						// TODO: add check for gracia continent coords
+						if (!(target instanceof L2PcInstance)
+								|| !(target.isFlying() || ((L2PcInstance)target).isFlyingMounted()))
+							loc = _loc;
 					}
 				}
 				else
 				{
 					if (_recallType.equalsIgnoreCase("Castle"))
-					{
-						if (activeChar instanceof L2PcInstance && !((L2PcInstance) activeChar).isFlyingMounted())
-							target.teleToLocation(MapRegionTable.TeleportWhereType.Castle);
-					}
+						loc = MapRegionTable.getInstance().getTeleToLocation(target, MapRegionTable.TeleportWhereType.Castle);
 					else if (_recallType.equalsIgnoreCase("ClanHall"))
-					{
-						if (activeChar instanceof L2PcInstance && !((L2PcInstance) activeChar).isFlyingMounted())
-							target.teleToLocation(MapRegionTable.TeleportWhereType.ClanHall);
-					}
+						loc = MapRegionTable.getInstance().getTeleToLocation(target, MapRegionTable.TeleportWhereType.ClanHall);
 					else if (_recallType.equalsIgnoreCase("Fortress"))
-					{
-						if (activeChar instanceof L2PcInstance && !((L2PcInstance) activeChar).isFlyingMounted())
-							target.teleToLocation(MapRegionTable.TeleportWhereType.Fortress);
-					}
+						loc = MapRegionTable.getInstance().getTeleToLocation(target, MapRegionTable.TeleportWhereType.Fortress);
 					else
-						target.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+						loc = MapRegionTable.getInstance().getTeleToLocation(target, MapRegionTable.TeleportWhereType.Town);
+				}
+				if (loc != null)
+				{
+					target.setInstanceId(0);
+					if (target instanceof L2PcInstance)
+						((L2PcInstance)target).setIsIn7sDungeon(false);
+					target.teleToLocation(loc, true);
 				}
 			}
 		}
