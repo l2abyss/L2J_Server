@@ -12921,7 +12921,14 @@ public final class L2PcInstance extends L2Playable
 		final SystemMessage sm;
 		
 		if (target.isInvul() && !(target instanceof L2NpcInstance))
+		{
 			sm = new SystemMessage(SystemMessageId.ATTACK_WAS_BLOCKED);
+		}
+		else if (target instanceof L2DoorInstance || target instanceof L2ControlTowerInstance)
+		{
+			sm = new SystemMessage(SystemMessageId.YOU_DID_S1_DMG);
+			sm.addNumber(damage);
+		}
 		else
 		{
 			sm = new SystemMessage(SystemMessageId.C1_GAVE_C2_DAMAGE_OF_S3);
