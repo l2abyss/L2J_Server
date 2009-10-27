@@ -807,11 +807,11 @@ public class RecipeController
 					long itemQuantityAmount = item == null ? 0 : item.getCount();
 					
 					// check materials
-					if (item == null || item.getCount() < quantity)
+					if (itemQuantityAmount < quantity)
 					{
 						sm = new SystemMessage(SystemMessageId.MISSING_S2_S1_TO_CREATE);
 						sm.addItemName(recipe.getItemId());
-						sm.addItemNumber(recipe.getQuantity() - itemQuantityAmount);
+						sm.addItemNumber(quantity - itemQuantityAmount);
 						_target.sendPacket(sm);
 
 						abort();
