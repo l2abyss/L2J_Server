@@ -1056,6 +1056,8 @@ public final class Formulas
             // Add CON bonus
             init *= cha.getLevelMod() * CONbonus[cha.getCON()];
 		}
+		else if (cha instanceof L2PetInstance)
+			init = ((L2PetInstance) cha).getPetData().getPetRegenHP();
 
         if (init < 1) init = 1;
 
@@ -1129,6 +1131,8 @@ public final class Formulas
             // Add MEN bonus
             init *= cha.getLevelMod() * MENbonus[cha.getMEN()];
 		}
+		else if (cha instanceof L2PetInstance)
+			init = ((L2PetInstance) cha).getPetData().getPetRegenMP();
 
 		if (init < 1) init = 1;
 

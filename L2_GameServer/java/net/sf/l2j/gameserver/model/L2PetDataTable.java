@@ -81,7 +81,6 @@ public class L2PetDataTable
 				petData.setPetMaxLoad(rset.getInt("loadMax"));
 				petData.setPetRegenHP(rset.getInt("hpregen"));
 				petData.setPetRegenMP(rset.getInt("mpregen"));
-				petData.setPetRegenMP(rset.getInt("mpregen"));
 				petData.setOwnerExpTaken(rset.getFloat("owner_exp_taken"));
 				
 				// if its the first data for this petid, we initialize its level FastMap
