@@ -33,6 +33,7 @@ import net.sf.l2j.gameserver.model.L2DropData;
 import net.sf.l2j.gameserver.model.L2MinionData;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.base.ClassId;
+import net.sf.l2j.gameserver.skills.Formulas;
 import net.sf.l2j.gameserver.skills.Stats;
 import net.sf.l2j.gameserver.templates.StatsSet;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
@@ -353,12 +354,12 @@ public class NpcTable
 			npcDat.set("baseRunSpd", NpcData.getInt("runspd"));
 			
 			// constants, until we have stats in DB
-			npcDat.set("baseSTR", NpcData.getInt("str"));
-			npcDat.set("baseCON", NpcData.getInt("con"));
-			npcDat.set("baseDEX", NpcData.getInt("dex"));
-			npcDat.set("baseINT", NpcData.getInt("int"));
-			npcDat.set("baseWIT", NpcData.getInt("wit"));
-			npcDat.set("baseMEN", NpcData.getInt("men"));
+			npcDat.safeSet("baseSTR", NpcData.getInt("str"), 0, Formulas.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
+			npcDat.safeSet("baseCON", NpcData.getInt("con"), 0, Formulas.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
+			npcDat.safeSet("baseDEX", NpcData.getInt("dex"), 0, Formulas.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
+			npcDat.safeSet("baseINT", NpcData.getInt("int"), 0, Formulas.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
+			npcDat.safeSet("baseWIT", NpcData.getInt("wit"), 0, Formulas.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
+			npcDat.safeSet("baseMEN", NpcData.getInt("men"), 0, Formulas.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
 			
 			npcDat.set("baseHpMax", NpcData.getInt("hp"));
 			npcDat.set("baseCpMax", 0);

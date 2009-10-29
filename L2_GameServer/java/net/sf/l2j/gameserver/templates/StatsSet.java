@@ -15,6 +15,10 @@
 package net.sf.l2j.gameserver.templates;
 
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import net.sf.l2j.Config;
 
 import javolution.util.FastMap;
 
@@ -26,6 +30,7 @@ import javolution.util.FastMap;
  */
 public final class StatsSet  {
 
+	private static final Logger _log = Logger.getLogger(StatsSet.class.getName());
 	private final Map<String, Object> _set = new FastMap<String, Object>();
 
 	/**
@@ -461,6 +466,26 @@ public final class StatsSet  {
 	public void set(String name, int value)
 	{
 		_set.put(name, value);
+	}
+	
+	/**
+	 * Safe version of "set". Expected values are within [min, max[<br>
+	 * Add the int hold in param "value" for the key "name".
+	 * 
+	 * @param name : String designating the key in the set
+	 * @param value : int corresponding to the value associated with the key
+	 */
+	public void safeSet(String name, int value, int min, int max, String reference)
+	{
+		if (min <= max && (value < min || value >= max))
+		{
+			if (Config.ASSERT)
+				throw new AssertionError("Incorrect value: "+value+"for: "+name+ "Ref: "+ reference);
+			
+			_log.log(Level.SEVERE, "Incorrect value: "+value+"for: "+name+ "Ref: "+ reference);
+		}
+		
+		set(name, value);
 	}
 
 	/**
