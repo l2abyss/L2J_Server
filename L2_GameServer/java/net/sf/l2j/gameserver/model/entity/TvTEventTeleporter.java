@@ -68,6 +68,9 @@ public class TvTEventTeleporter implements Runnable
 		if (summon != null)
 			summon.unSummon(_playerInstance);
 
+		if (_playerInstance.isInDuel())
+			_playerInstance.setDuelState(Duel.DUELSTATE_INTERRUPTED);
+
 		if (Config.TVT_EVENT_EFFECTS_REMOVAL == 0
 				|| (Config.TVT_EVENT_EFFECTS_REMOVAL == 1 && _playerInstance.getTeam() == 0))
 			_playerInstance.stopAllEffectsExceptThoseThatLastThroughDeath();
