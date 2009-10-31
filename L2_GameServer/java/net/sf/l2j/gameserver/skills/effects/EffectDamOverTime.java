@@ -48,16 +48,6 @@ public class EffectDamOverTime extends L2Effect
 		if (getEffected().isDead())
 			return false;
 		
-		if (!getSkill().isToggle())
-		{
-			L2Effect[] effects = getEffected().getAllEffects();
-			for (L2Effect e : effects)
-			{
-				if (e != null && e.getStackType().equals("sleep"))
-					e.exit();
-			}
-		}
-		
 		double damage = calc();
 		if (damage >= getEffected().getCurrentHp() - 1)
 		{
@@ -77,7 +67,7 @@ public class EffectDamOverTime extends L2Effect
 				damage = getEffected().getCurrentHp() - 1;
 			}
 		}	
-		getEffected().reduceCurrentHpByDOT(damage, getEffector(), null);
+		getEffected().reduceCurrentHpByDOT(damage, getEffector(), getSkill());
 		
 		return true;
 	}
