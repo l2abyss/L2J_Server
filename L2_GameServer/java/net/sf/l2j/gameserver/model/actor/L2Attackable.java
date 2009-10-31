@@ -396,10 +396,13 @@ public class L2Attackable extends L2Npc
 			{
 				master = ((L2MinionInstance)this).getLeader();
 
-				if (!master.isInCombat()&&!master.isDead())
+				if (master != null && !master.isInCombat() && !master.isDead())
+				{
 					master.addDamage(attacker, 1, null);
+					master.callMinionsToAssist(attacker);
+				}
 			}
-			if (master.hasMinions())
+			else if (master.hasMinions())
 				master.callMinionsToAssist(attacker);
 		}
 		// Reduce the current HP of the L2Attackable and launch the doDie Task if necessary
