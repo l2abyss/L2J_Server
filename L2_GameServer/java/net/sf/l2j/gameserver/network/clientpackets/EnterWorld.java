@@ -81,7 +81,6 @@ import net.sf.l2j.gameserver.network.serverpackets.ShortCutInit;
 import net.sf.l2j.gameserver.network.serverpackets.SkillCoolTime;
 import net.sf.l2j.gameserver.network.serverpackets.SystemMessage;
 import net.sf.l2j.gameserver.network.serverpackets.UserInfo;
-import net.sf.l2j.gameserver.util.StringUtil;
 
 /**
  * Enter World Packet Handler<p>
@@ -365,12 +364,11 @@ public class EnterWorld extends L2GameClientPacket
 
 		if (showClanNotice)
 		{
-			final StringBuilder html = StringUtil.startAppend(2000,
-					"<html><title>Clan Announcements</title><body><br><center><font color=\"CCAA00\">",
-					activeChar.getClan().getName(),
-					"</font> <font color=\"6655FF\">Clan Alert Message</font></center><br><img src=\"L2UI.SquareWhite\" width=270 height=1><br>",
-					activeChar.getClan().getNotice().replaceAll("\r\n", "<br>"), "</body></html>");
-			sendPacket(new NpcHtmlMessage(1, html.toString())); 
+			NpcHtmlMessage notice = new NpcHtmlMessage(1);
+			notice.setFile("data/html/clanNotice.htm");
+			notice.replace("%clan_name%", activeChar.getClan().getName());
+			notice.replace("%notice_text%", activeChar.getClan().getNotice().replaceAll("\r\n", "<br>"));
+			sendPacket(notice);
 		}
 		else if (Config.SERVER_NEWS)
 		{
