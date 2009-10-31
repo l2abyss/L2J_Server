@@ -28,7 +28,6 @@ import net.sf.l2j.gameserver.model.L2ManufactureList;
 import net.sf.l2j.gameserver.model.L2Object;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.actor.L2Summon;
-import net.sf.l2j.gameserver.model.actor.instance.L2BabyPetInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2DoorInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.actor.instance.L2PetInstance;
@@ -536,9 +535,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				useSkill(5752); // Flare
 				break;
 			case 1070:
-				// Buff control
-				if (pet != null && pet instanceof L2BabyPetInstance)
-					((L2BabyPetInstance)pet).toggleBuffControl();
+				useSkill(5771);	// Buff control
 				break;
 			case 1071:
 				useSkill(5761); // Power Strike
