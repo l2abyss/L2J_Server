@@ -14,6 +14,7 @@
  */
 package net.sf.l2j.gameserver.model;
 
+import net.sf.l2j.Config;
 import net.sf.l2j.gameserver.model.actor.L2Character;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.skills.Stats;
@@ -31,7 +32,7 @@ public final class Elementals
 	public final static byte HOLY = 4;
 	public final static byte DARK = 5;
 
-	public final static int ENCHANT_CHANCE = 50;
+	public final static int ENCHANT_CHANCE = Config.ENCHANT_CHANCE_ELEMENT;
 
 	public final static int FIRST_WEAPON_BONUS = 20;
 	public final static int NEXT_WEAPON_BONUS = 5;

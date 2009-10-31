@@ -30,7 +30,7 @@ import net.sf.l2j.gameserver.model.actor.L2Character;
 public final class MagicSkillUse extends L2GameServerPacket
 {
 	private static final String _S__5A_MAGICSKILLUSER = "[S] 48 MagicSkillUser";
-	private int _targetId;
+	private int _targetId, _tx, _ty, _tz;
 	private int _skillId;
 	private int _skillLevel;
 	private int _hitTime;
@@ -49,6 +49,9 @@ public final class MagicSkillUse extends L2GameServerPacket
 		_x = cha.getX();
 		_y = cha.getY();
 		_z = cha.getZ();
+		_tx = target.getX();
+		_ty = target.getY();
+		_tz = target.getZ();
 		_flags |= 0x20;
 	}
 
@@ -63,6 +66,9 @@ public final class MagicSkillUse extends L2GameServerPacket
 		_x = cha.getX();
 		_y = cha.getY();
 		_z = cha.getZ();
+		_tx = cha.getX();
+		_ty = cha.getY();
+		_tz = cha.getZ();
 		_flags |= 0x20;
 	}
 
@@ -79,18 +85,10 @@ public final class MagicSkillUse extends L2GameServerPacket
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
-
-		writeH(0x00); // unknown loop but not AoE
-		writeH(0x00);
-		//for()
-		//{
-		//	writeH(0x00);
-		//	writeH(0x00);
-		//	writeH(0x00);
-		//}
-		writeD(0x00);
-		writeD(0x00);
-		writeD(0x00);
+		writeD(0x00); // unknown
+		writeD(_tx);
+		writeD(_ty);
+		writeD(_tz);
 	}
 
 	/* (non-Javadoc)
@@ -101,6 +99,4 @@ public final class MagicSkillUse extends L2GameServerPacket
 	{
 		return _S__5A_MAGICSKILLUSER;
 	}
-
 }
-
