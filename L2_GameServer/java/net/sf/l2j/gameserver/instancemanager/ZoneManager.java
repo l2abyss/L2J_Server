@@ -27,6 +27,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
+
 import net.sf.l2j.Config;
 import net.sf.l2j.L2DatabaseFactory;
 import net.sf.l2j.gameserver.model.L2Object;
@@ -186,6 +187,8 @@ public class ZoneManager
 								temp = new L2ScriptZone(zoneId);
 							else if (zoneType.equals("PaganZone"))
 								temp = new L2PaganZone(zoneId);
+							else if (zoneType.equals("NoHqZone"))
+								temp = new L2NoHqZone(zoneId);
 							
 							// Check for unknown type
 							if (temp == null)

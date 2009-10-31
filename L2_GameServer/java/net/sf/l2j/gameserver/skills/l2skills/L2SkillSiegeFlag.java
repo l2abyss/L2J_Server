@@ -125,15 +125,17 @@ public class L2SkillSiegeFlag extends L2Skill
 		L2PcInstance player = (L2PcInstance) activeChar;
 		
 		if (castle == null || castle.getCastleId() <= 0)
-			text = "You must be on castle ground to place a flag";
+			text = "You must be on castle ground to place a flag.";
 		else if (!castle.getSiege().getIsInProgress())
 			text = "You can only place a flag during a siege.";
 		else if (castle.getSiege().getAttackerClan(player.getClan()) == null)
-			text = "You must be an attacker to place a flag";
+			text = "You must be an attacker to place a flag.";
 		else if (player.getClan() == null || !player.isClanLeader())
-			text = "You must be a clan leader to place a flag";
+			text = "You must be a clan leader to place a flag.";
 		else if (castle.getSiege().getAttackerClan(player.getClan()).getNumFlags() >= SiegeManager.getInstance().getFlagMaxCount())
-			text = "You have already placed the maximum number of flags possible";
+			text = "You have already placed the maximum number of flags possible.";
+		else if (player.isInsideZone(L2Character.ZONE_NOHQ))
+			text = "You cannot place flag here.";
 		else
 			return true;
 		
