@@ -75,9 +75,25 @@ public class TvTEventTeleporter implements Runnable
 				|| (Config.TVT_EVENT_EFFECTS_REMOVAL == 1 && _playerInstance.getTeam() == 0))
 			_playerInstance.stopAllEffectsExceptThoseThatLastThroughDeath();
 
+		int TvTInstance = TvTEvent.getTvTEventInstance();
+		if (TvTInstance != 0)
+		{
+			if (TvTEvent.isStarted() && !_adminRemove)
+			{
+				_playerInstance.setInstanceId(TvTInstance);
+			}
+			else
+			{
+				_playerInstance.setInstanceId(0);
+			}
+		}
+		else
+		{
+			_playerInstance.setInstanceId(0);
+		}
+
 		_playerInstance.doRevive();
 
-		_playerInstance.setInstanceId(0);
 		_playerInstance.teleToLocation( _coordinates[ 0 ] + Rnd.get(101)-50, _coordinates[ 1 ] + Rnd.get(101)-50, _coordinates[ 2 ], false );
 		
 		if (TvTEvent.isStarted() && !_adminRemove)

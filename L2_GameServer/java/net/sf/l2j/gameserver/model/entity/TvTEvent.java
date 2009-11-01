@@ -26,6 +26,7 @@ import net.sf.l2j.gameserver.datatables.ItemTable;
 import net.sf.l2j.gameserver.datatables.NpcTable;
 import net.sf.l2j.gameserver.datatables.SkillTable;
 import net.sf.l2j.gameserver.datatables.SpawnTable;
+import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2Skill;
 import net.sf.l2j.gameserver.model.L2Spawn;
 import net.sf.l2j.gameserver.model.actor.L2Character;
@@ -74,6 +75,8 @@ public class TvTEvent
 	private static L2Spawn _npcSpawn = null;
 	/** the npc instance of the participation npc<br> */
 	private static L2Npc _lastNpcSpawn = null;
+	/** Instance id<br> */
+	private static int _TvTEventInstance = 0;
 	
 	/**
 	 * No instance of this class!<br>
@@ -211,7 +214,23 @@ public class TvTEvent
 			unSpawnNpc();
 			return false;
 		}
-		
+
+		if (Config.TVT_EVENT_IN_INSTANCE)
+		{
+			try
+			{
+				_TvTEventInstance = InstanceManager.getInstance().createDynamicInstance(Config.TVT_EVENT_INSTANCE_FILE);
+				InstanceManager.getInstance().getInstance(_TvTEventInstance).setAllowSummon(false);
+				InstanceManager.getInstance().getInstance(_TvTEventInstance).setPvPInstance(true);
+				InstanceManager.getInstance().getInstance(_TvTEventInstance).setEmptyDestroyTime(Config.TVT_EVENT_START_LEAVE_TELEPORT_DELAY * 1000 + 60000L);
+			}
+			catch (Exception e)
+			{
+				_TvTEventInstance = 0;
+				_log.warning("TvTEventEngine[TvTEvent.createDynamicInstance]: exception: " + e);
+			}
+		}
+
 		// Opens all doors specified in configs for tvt
 		openDoors(Config.TVT_DOORS_IDS_TO_OPEN);
 		// Closes all doors specified in configs for tvt
@@ -1187,5 +1206,10 @@ public class TvTEvent
 		{
 			_teams[0].getPoints(), _teams[1].getPoints()
 		};
+	}
+	
+	public static int getTvTEventInstance()
+	{
+		return _TvTEventInstance;
 	}
 }

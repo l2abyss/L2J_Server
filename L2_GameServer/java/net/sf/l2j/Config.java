@@ -566,6 +566,8 @@ public final class Config
 	public static int L2JMOD_CHAMPION_REWARD_QTY;
 	public static boolean	L2JMOD_CHAMPION_ENABLE_VITALITY;
 	public static boolean TVT_EVENT_ENABLED;
+	public static boolean TVT_EVENT_IN_INSTANCE;
+	public static String TVT_EVENT_INSTANCE_FILE;
 	public static String[] TVT_EVENT_INTERVAL;
 	public static int TVT_EVENT_PARTICIPATION_TIME;
 	public static int TVT_EVENT_RUNNING_TIME;
@@ -1809,6 +1811,8 @@ public final class Config
 					L2JMOD_CHAMPION_ENABLE_VITALITY = Boolean.parseBoolean(L2JModSettings.getProperty("ChampionEnableVitality", "False"));
 
 					TVT_EVENT_ENABLED = Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventEnabled", "false"));
+					TVT_EVENT_IN_INSTANCE = Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventInInstance", "false"));
+					TVT_EVENT_INSTANCE_FILE = L2JModSettings.getProperty("TvTEventInstanceFile", "coliseum.xml");
 					TVT_EVENT_INTERVAL = L2JModSettings.getProperty("TvTEventInterval", "20:00").split(",");
 					TVT_EVENT_PARTICIPATION_TIME = Integer.parseInt(L2JModSettings.getProperty("TvTEventParticipationTime", "3600"));
 					TVT_EVENT_RUNNING_TIME = Integer.parseInt(L2JModSettings.getProperty("TvTEventRunningTime", "1800"));
