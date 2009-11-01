@@ -609,6 +609,17 @@ abstract class DocumentBase
 				boolean val = Boolean.valueOf(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerSubclass(val));
 			}
+			else if ("instanceid".equalsIgnoreCase(a.getNodeName()))
+			{
+            	FastList<Integer> array = new FastList<Integer>();
+            	StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+            	while (st.hasMoreTokens())
+                {
+                    String item = st.nextToken().trim();
+                    array.add(Integer.decode(getValue(item, null)));
+                }
+            	cond = joinAnd(cond, new ConditionPlayerInstanceId(array));
+			}
         }
 
         if(forces[0] + forces[1] > 0)
