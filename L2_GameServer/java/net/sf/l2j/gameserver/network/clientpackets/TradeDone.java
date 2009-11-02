@@ -78,6 +78,14 @@ public final class TradeDone extends L2GameClientPacket
 	            player.sendMessage("Transactions are disable for your Access Level");
 	            return;
 	        }
+
+	        if (player.getInstanceId() != trade.getPartner().getInstanceId()
+	        		&& player.getInstanceId() != -1)
+	        {
+	            player.cancelActiveTrade();
+	            return;
+	        }
+
 	        trade.confirm();
 		}
 		else player.cancelActiveTrade();
