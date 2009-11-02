@@ -181,8 +181,10 @@ public class L2CastleWarehouseInstance extends L2NpcInstance
 					player.sendPacket(npcHtmlMessage);
 				}
 				else
+				{
 					_log.warning("Missing htm: " + htmFile + "!");
 					player.sendMessage("This NPC's html is missing. Please inform the server admin.");
+				}
 			}
 			else
 				showWithdrawWindowClan(player, null, (byte) 0);
