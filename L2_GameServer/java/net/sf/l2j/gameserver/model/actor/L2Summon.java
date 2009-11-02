@@ -767,7 +767,8 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public void sendDamageMessage(L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
 	{
-		if (miss) return;
+		if (miss || getOwner() == null)
+			return;
 
 		// Prevents the double spam of system messages, if the target is the owning player.
 		if (target.getObjectId() != getOwner().getObjectId())
@@ -792,11 +793,9 @@ public abstract class L2Summon extends L2Playable
 				sm = new SystemMessage(SystemMessageId.ATTACK_WAS_BLOCKED);
 			else
 			{
-				if (this instanceof L2SummonInstance)
-					sm = new SystemMessage(SystemMessageId.SUMMON_GAVE_DAMAGE_S1);
-				else
-					sm = new SystemMessage(SystemMessageId.PET_HIT_FOR_S1_DAMAGE);
-				
+				sm = new SystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
+				sm.addCharName(target);
+				sm.addNpcName(this);
 				sm.addNumber(damage);
 			}
 			
@@ -804,18 +803,18 @@ public abstract class L2Summon extends L2Playable
 		}
 	}
 
-	public void reduceCurrentHp(int damage, L2Character attacker, L2Skill skill)
+	@Override
+	public void reduceCurrentHp(double damage, L2Character attacker, L2Skill skill)
 	{
 		super.reduceCurrentHp(damage, attacker, skill);
-		SystemMessage sm;
-		if (this instanceof L2SummonInstance)
-			sm = new SystemMessage(SystemMessageId.SUMMON_RECEIVED_DAMAGE_S2_BY_S1);
-		else
-			sm = new SystemMessage(SystemMessageId.PET_RECEIVED_S2_DAMAGE_BY_C1);
-
-		sm.addCharName(attacker);
-		sm.addNumber(damage);
-		getOwner().sendPacket(sm);
+		if (getOwner() != null)
+		{
+			SystemMessage sm = new SystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
+			sm.addNpcName(this);
+			sm.addCharName(attacker);
+			sm.addNumber((int)damage);
+			getOwner().sendPacket(sm);
+		}
     }
 
 	@Override

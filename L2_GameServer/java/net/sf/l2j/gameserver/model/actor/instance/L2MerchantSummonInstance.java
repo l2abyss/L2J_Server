@@ -131,7 +131,7 @@ public class L2MerchantSummonInstance extends L2SummonInstance
 	}
 
 	@Override
-	public void reduceCurrentHp(int damage, L2Character attacker, L2Skill skill)
+	public void reduceCurrentHp(double i, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
 	{
 
 	}

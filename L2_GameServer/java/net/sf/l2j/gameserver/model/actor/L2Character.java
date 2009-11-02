@@ -5205,20 +5205,6 @@ public abstract class L2Character extends L2Object
 		              enemy.sendPacket(new SystemMessage(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL)); 
 				}*/
 			}
-            else if (target instanceof L2Summon)
-            {
-                L2Summon activeSummon = (L2Summon)target;
-                L2PcInstance owner = activeSummon.getOwner();
-
-                if (owner != null)
-                {
-                	owner.getAI().clientStartAutoAttack();
-                	SystemMessage sm = new SystemMessage(SystemMessageId.PET_RECEIVED_S2_DAMAGE_BY_C1);
-                	sm.addString(getName());
-                	sm.addNumber(damage);
-                	owner.sendPacket(sm);
-                }
-            }
 
 			if (!miss && damage > 0)
 			{
