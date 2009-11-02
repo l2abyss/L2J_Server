@@ -500,7 +500,12 @@ public class CharStat
    {
        return calcStat(Stats.PATK_GIANTS, 1, target, null);
    }
-	
+
+   /** Return the PAtk Modifier against magic creatures */
+   public final double getPAtkMCreatures(L2Character target)
+   {
+	   return calcStat(Stats.PATK_MCREATURES, 1, target, null);
+   }
 	/**
 	 * Return the PAtk Speed (base+modifier) of the L2Character in function of
 	 * the Armour Expertise Penalty.

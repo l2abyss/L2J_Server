@@ -1380,6 +1380,9 @@ public final class Formulas
 				case ANCIENT_SWORD:
 					stat = Stats.ANCIENT_WPN_VULN;
 					break;
+				case PET:
+					stat = Stats.PET_WPN_VULN;
+					break;
 			}
 		}
 

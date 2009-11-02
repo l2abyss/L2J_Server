@@ -170,6 +170,7 @@ public enum Stats
 	DUALDAGGER_WPN_VULN("dualDaggerWpnVuln"),
 	RAPIER_WPN_VULN("rapierWpnVuln"),
 	ANCIENT_WPN_VULN("ancientWpnVuln"),
+	PET_WPN_VULN("petWpnVuln"),
 	
 	REFLECT_DAMAGE_PERCENT("reflectDam"),
 	REFLECT_SKILL_MAGIC("reflectSkillMagic"),
@@ -189,6 +190,7 @@ public enum Stats
 	PATK_MONSTERS("pAtk-monsters"),
 	PATK_DRAGONS("pAtk-dragons"),
 	PATK_GIANTS("pAtk-giants"),
+	PATK_MCREATURES("pAtk-mcreatures"),
 	
 	PDEF_PLANTS("pDef-plants"),
 	PDEF_INSECTS("pDef-insects"),
