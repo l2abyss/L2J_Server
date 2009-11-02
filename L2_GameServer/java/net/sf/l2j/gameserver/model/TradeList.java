@@ -63,7 +63,6 @@ public class TradeList
 			_elemAtkPower = item.getAttackElementPower();
 			for (byte i = 0; i < 6; i++)
 				_elemDefAttr[i] = item.getElementDefAttr(i);
-			System.err.println("item "+_item.getName());
 		}
 
 		public TradeItem(L2Item item, long count, long price)
