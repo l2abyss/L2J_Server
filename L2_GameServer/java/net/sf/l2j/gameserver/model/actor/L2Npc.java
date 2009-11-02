@@ -590,6 +590,9 @@ public class L2Npc extends L2Character
 			return false;
 		if (!isInsideRadius(player, INTERACTION_DISTANCE, true, false))
 			return false;
+		if (player.getInstanceId() != getInstanceId()
+				&& player.getInstanceId() != -1)
+			return false;
 
 		return true;
 	}

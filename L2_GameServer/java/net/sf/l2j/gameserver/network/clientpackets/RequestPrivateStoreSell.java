@@ -99,6 +99,10 @@ public final class RequestPrivateStoreSell extends L2GameClientPacket
 		if (!player.isInsideRadius(storePlayer, INTERACTION_DISTANCE, true, false))
 			return;
 
+		if (player.getInstanceId() != storePlayer.getInstanceId()
+				&& player.getInstanceId() != -1)
+			return;
+
 		if (storePlayer.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_BUY)
 			return;
 

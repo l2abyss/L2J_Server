@@ -111,6 +111,7 @@ public final class RequestBuyItem extends L2GameClientPacket
 						|| target instanceof L2MercManagerInstance
 						|| target instanceof L2ClanHallManagerInstance
 						|| target instanceof L2CastleChamberlainInstance) // Target not a merchant, fisherman or mercmanager
+				|| player.getInstanceId() != target.getInstanceId()
 				|| !player.isInsideRadius(target, INTERACTION_DISTANCE, true, false))) // Distance is too far
 			return;
 

@@ -21,14 +21,12 @@ import net.sf.l2j.gameserver.datatables.MapRegionTable;
 import net.sf.l2j.gameserver.instancemanager.CastleManager;
 import net.sf.l2j.gameserver.instancemanager.ClanHallManager;
 import net.sf.l2j.gameserver.instancemanager.FortManager;
-import net.sf.l2j.gameserver.instancemanager.InstanceManager;
 import net.sf.l2j.gameserver.model.L2SiegeClan;
 import net.sf.l2j.gameserver.model.Location;
 import net.sf.l2j.gameserver.model.actor.instance.L2PcInstance;
 import net.sf.l2j.gameserver.model.entity.Castle;
 import net.sf.l2j.gameserver.model.entity.ClanHall;
 import net.sf.l2j.gameserver.model.entity.Fort;
-import net.sf.l2j.gameserver.model.entity.Instance;
 import net.sf.l2j.gameserver.model.entity.TvTEvent;
 
 /**
@@ -173,18 +171,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 					break;
 
 				default:
-					if (activeChar.getInstanceId() != 0)
-					{
-						final Instance inst = InstanceManager.getInstance().getInstance(activeChar.getInstanceId());
-						if (inst != null)
-						{
-							final int[] spawn = inst.getSpawnLoc();
-							if (spawn[0] != 0 && spawn[1] != 0 && spawn[2] != 0)
-								loc = new Location(spawn[0], spawn[1], spawn[2]);
-						}
-					}
-					if (loc == null)
-						loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Town);
+					loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Town);
 					break;
 			}
 

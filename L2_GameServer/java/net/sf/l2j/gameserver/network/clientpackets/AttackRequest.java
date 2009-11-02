@@ -63,6 +63,12 @@ public final class AttackRequest extends L2GameClientPacket
 		if (target == null)
 			return;
 
+		// Players can't attack objects in the other instances
+		// except from multiverse
+		if (target.getInstanceId() != activeChar.getInstanceId()
+				&& activeChar.getInstanceId() != -1)
+			return;
+
 		// Only GMs can directly attack invisible characters
 		if (target instanceof L2PcInstance
 				&& ((L2PcInstance)target).getAppearance().getInvisible()

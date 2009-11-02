@@ -123,6 +123,7 @@ public final class RequestSellItem extends L2GameClientPacket
 		if (!player.isGM() && (target == null								// No target (ie GM Shop)
 				|| !(target instanceof L2MerchantInstance
 						|| target instanceof L2MerchantSummonInstance)	// Target not a merchant
+						|| target.getInstanceId() != player.getInstanceId()
 						|| !player.isInsideRadius(target, INTERACTION_DISTANCE, true, false))) // Distance is too far
 			return;
 

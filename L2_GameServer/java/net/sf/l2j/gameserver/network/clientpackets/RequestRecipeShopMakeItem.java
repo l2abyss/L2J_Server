@@ -55,7 +55,11 @@ public final class RequestRecipeShopMakeItem extends L2GameClientPacket
 		if (manufacturer == null)
 		    return;
 
-        if (activeChar.getPrivateStoreType() != 0)
+		if (manufacturer.getInstanceId() != activeChar.getInstanceId()
+				&& activeChar.getInstanceId() != -1)
+			return;
+
+		if (activeChar.getPrivateStoreType() != 0)
         {
             activeChar.sendMessage("Cannot make items while trading");
             return;
