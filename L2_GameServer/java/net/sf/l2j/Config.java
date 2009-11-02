@@ -24,13 +24,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.l2j.gameserver.util.FloodProtectorConfig;
 import net.sf.l2j.gameserver.util.StringUtil;
+import net.sf.l2j.util.L2Properties;
 
 public final class Config
 {
@@ -870,7 +870,7 @@ public final class Config
 			{
 				try
 				{
-					Properties serverSettings = new Properties();
+					L2Properties serverSettings = new L2Properties();
 					is = new FileInputStream(new File(CONFIGURATION_FILE));
 					serverSettings.load(is);
 
@@ -915,10 +915,10 @@ public final class Config
 					throw new Error("Failed to Load "+CONFIGURATION_FILE+" File.");
 				}
 
-				// Load Feature Properties file (if exists)
+				// Load Feature L2Properties file (if exists)
 				try
 				{
-					Properties Feature = new Properties();
+					L2Properties Feature = new L2Properties();
 					is = new FileInputStream(new File(FEATURE_CONFIG_FILE));
 					Feature.load(is);
 
@@ -1126,10 +1126,10 @@ public final class Config
 					throw new Error("Failed to Load "+FEATURE_CONFIG_FILE+" File.");
 				}
 
-				// Load Character Properties file (if exists)
+				// Load Character L2Properties file (if exists)
 				try
 				{
-					Properties Character = new Properties();
+					L2Properties Character = new L2Properties();
 					is = new FileInputStream(new File(CHARACTER_CONFIG_FILE));
 					Character.load(is);
 
@@ -1347,10 +1347,10 @@ public final class Config
 					throw new Error("Failed to Load "+CHARACTER_CONFIG_FILE+" file.");
 				}
 
-				// Load L2J Server Version Properties file (if exists)
+				// Load L2J Server Version L2Properties file (if exists)
 				try
 				{
-					Properties serverVersion = new Properties();
+					L2Properties serverVersion = new L2Properties();
 					is = new FileInputStream(new File(SERVER_VERSION_FILE));
 					serverVersion.load(is);
 
@@ -1359,15 +1359,15 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					//Ignore Properties file if it doesnt exist
+					//Ignore L2Properties file if it doesnt exist
 					SERVER_VERSION = "Unsupported Custom Version.";
 					SERVER_BUILD_DATE = "Undefined Date.";
 				}
 
-				// Load L2J Datapack Version Properties file (if exists)
+				// Load L2J Datapack Version L2Properties file (if exists)
 				try
 				{
-					Properties serverVersion = new Properties();
+					L2Properties serverVersion = new L2Properties();
 					is = new FileInputStream(new File(DATAPACK_VERSION_FILE));
 					serverVersion.load(is);
 
@@ -1375,14 +1375,14 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					//Ignore Properties file if it doesnt exist
+					//Ignore L2Properties file if it doesnt exist
 					DATAPACK_VERSION = "Unsupported Custom Version.";
 				}
 
-				// Load Telnet Properties file (if exists)
+				// Load Telnet L2Properties file (if exists)
 				try
 				{
-					Properties telnetSettings = new Properties();
+					L2Properties telnetSettings = new L2Properties();
 					is = new FileInputStream(new File(TELNET_FILE));
 					telnetSettings.load(is);
 
@@ -1398,7 +1398,7 @@ public final class Config
 				try
 				{
 					_log.info("Loading " + MMO_CONFIG_FILE.replaceAll("./config/", ""));
-					Properties mmoSettings = new Properties();
+					L2Properties mmoSettings = new L2Properties();
 					is = new FileInputStream(new File(MMO_CONFIG_FILE));
 					mmoSettings.load(is);
 					MMO_SELECTOR_SLEEP_TIME = Integer.parseInt(mmoSettings.getProperty("SleepTime", "20"));
@@ -1413,10 +1413,10 @@ public final class Config
 					throw new Error("Failed to Load " + MMO_CONFIG_FILE + " File.");
 				}
 
-				// Load IdFactory Properties file (if exists)
+				// Load IdFactory L2Properties file (if exists)
 				try
 				{
-					Properties idSettings = new Properties();
+					L2Properties idSettings = new L2Properties();
 					is = new FileInputStream(new File(ID_CONFIG_FILE));
 					idSettings.load(is);
 
@@ -1431,10 +1431,10 @@ public final class Config
 					throw new Error("Failed to Load "+ID_CONFIG_FILE+" file.");
 				}
 
-				// Load General Properties file (if exists)
+				// Load General L2Properties file (if exists)
 				try
 				{
-					Properties General = new Properties();
+					L2Properties General = new L2Properties();
 					is = new FileInputStream(new File(GENERAL_CONFIG_FILE));
 					General.load(is);
 
@@ -1639,10 +1639,10 @@ public final class Config
 					throw new Error("Failed to Load "+GENERAL_CONFIG_FILE+" File.");
 				}
 				
-				// Load FloodProtector Properties file
+				// Load FloodProtector L2Properties file
 				try
 				{
-					Properties security = new Properties();
+					L2Properties security = new L2Properties();
 					is = new FileInputStream(new File(FLOOD_PROTECTOR_FILE));
 					security.load(is);
 					
@@ -1654,10 +1654,10 @@ public final class Config
 					throw new Error("Failed to Load "+FLOOD_PROTECTOR_FILE);
 				}
 
-				// Load NPC Properties file (if exists)
+				// Load NPC L2Properties file (if exists)
 				try
 				{
-					Properties NPC = new Properties();
+					L2Properties NPC = new L2Properties();
 					is = new FileInputStream(new File(NPC_CONFIG_FILE));
 					NPC.load(is);
 
@@ -1694,10 +1694,10 @@ public final class Config
 					throw new Error("Failed to Load "+NPC_CONFIG_FILE+" File.");
 				}
 
-				// Load Rates Properties file (if exists)
+				// Load Rates L2Properties file (if exists)
 				try
 				{
-					Properties ratesSettings = new Properties();
+					L2Properties ratesSettings = new L2Properties();
 					is = new FileInputStream(new File(RATES_CONFIG_FILE));
 					ratesSettings.load(is);
 
@@ -1785,10 +1785,10 @@ public final class Config
 					throw new Error("Failed to Load "+RATES_CONFIG_FILE+" File.");
 				}
 
-				// Load L2JMod Properties file (if exists)
+				// Load L2JMod L2Properties file (if exists)
 				try
 				{
-					Properties L2JModSettings = new Properties();
+					L2Properties L2JModSettings = new L2Properties();
 					is = new FileInputStream(new File(L2JMOD_CONFIG_FILE));
 					L2JModSettings.load(is);
 
@@ -2021,10 +2021,10 @@ public final class Config
 					throw new Error("Failed to Load "+L2JMOD_CONFIG_FILE+" File.");
 				}
 
-				// Load PvP Properties file (if exists)
+				// Load PvP L2Properties file (if exists)
 				try
 				{
-					Properties pvpSettings = new Properties();
+					L2Properties pvpSettings = new L2Properties();
 					is = new FileInputStream(new File(PVP_CONFIG_FILE));
 					pvpSettings.load(is);
 
@@ -2065,7 +2065,7 @@ public final class Config
 				}
 				try
 				{
-					Properties Settings = new Properties();
+					L2Properties Settings = new L2Properties();
 					is = new FileInputStream(HEXID_FILE);
 					Settings.load(is);
 					SERVER_ID = Integer.parseInt(Settings.getProperty("ServerID"));
@@ -2093,7 +2093,7 @@ public final class Config
 			{
 				try
 				{
-					Properties serverSettings = new Properties();
+					L2Properties serverSettings = new L2Properties();
 					is = new FileInputStream(new File(LOGIN_CONFIGURATION_FILE));
 					serverSettings.load(is);
 
@@ -2151,7 +2151,7 @@ public final class Config
 				try
 				{
 					_log.info("Loading " + MMO_CONFIG_FILE.replaceAll("./config/", ""));
-					Properties mmoSettings = new Properties();
+					L2Properties mmoSettings = new L2Properties();
 					is = new FileInputStream(new File(MMO_CONFIG_FILE));
 					mmoSettings.load(is);
 					MMO_SELECTOR_SLEEP_TIME = Integer.parseInt(mmoSettings.getProperty("SleepTime", "20"));
@@ -2166,10 +2166,10 @@ public final class Config
 					throw new Error("Failed to Load " + MMO_CONFIG_FILE + " File.");
 				}
 
-				// Load Telnet Properties file (if exists)
+				// Load Telnet L2Properties file (if exists)
 				try
 				{
-					Properties telnetSettings = new Properties();
+					L2Properties telnetSettings = new L2Properties();
 					is = new FileInputStream(new File(TELNET_FILE));
 					telnetSettings.load(is);
 
@@ -2473,7 +2473,7 @@ public final class Config
 	private Config() { }
 
 	/**
-	 * Save hexadecimal ID of the server in the properties file.
+	 * Save hexadecimal ID of the server in the L2Properties file.
 	 * @param string (String) : hexadecimal ID of the server to store
 	 * @see HEXID_FILE
 	 * @see saveHexid(String string, String fileName)
@@ -2485,15 +2485,15 @@ public final class Config
 	}
 
 	/**
-	 * Save hexadecimal ID of the server in the properties file.
+	 * Save hexadecimal ID of the server in the L2Properties file.
 	 * @param hexId (String) : hexadecimal ID of the server to store
-	 * @param fileName (String) : name of the properties file
+	 * @param fileName (String) : name of the L2Properties file
 	 */
 	public static void saveHexid(int serverId, String hexId, String fileName)
 	{
 		try
 		{
-			Properties hexSetting = new Properties();
+			L2Properties hexSetting = new L2Properties();
 			File file = new File(fileName);
 			//Create a new empty file only if it doesn't exist
 			file.createNewFile();
@@ -2513,7 +2513,7 @@ public final class Config
 	/**
 	 * Loads flood protector configurations.
 	 */
-	private static void loadFloodProtectorConfigs(final Properties properties)
+	private static void loadFloodProtectorConfigs(final L2Properties properties)
 	{
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_USE_ITEM, "UseItem", "4");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_ROLL_DICE, "RollDice", "42");
@@ -2532,7 +2532,7 @@ public final class Config
 	 * Loads single flood protector configuration.
 	 * 
 	 * @param properties
-	 *            properties file reader
+	 *            L2Properties file reader
 	 * @param config
 	 *            flood protector configuration instance
 	 * @param configString
@@ -2541,7 +2541,7 @@ public final class Config
 	 * @param defaultInterval
 	 *            default flood protector interval
 	 */
-	private static void loadFloodProtectorConfig(final Properties properties, final FloodProtectorConfig config, final String configString, final String defaultInterval)
+	private static void loadFloodProtectorConfig(final L2Properties properties, final FloodProtectorConfig config, final String configString, final String defaultInterval)
 	{
 		config.FLOOD_PROTECTION_INTERVAL = Integer.parseInt(properties.getProperty(StringUtil.concat("FloodProtector", configString, "Interval"), defaultInterval));
 		config.LOG_FLOODING = Boolean.parseBoolean(properties.getProperty(StringUtil.concat("FloodProtector", configString, "LogFlooding"), "False"));
