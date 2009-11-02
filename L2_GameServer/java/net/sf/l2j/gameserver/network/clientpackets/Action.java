@@ -100,6 +100,15 @@ public final class Action extends L2GameClientPacket
 			return;
 		}
 
+		// Players can't interact with objects in the other instances
+		// except from multiverse
+		if (obj.getInstanceId() != activeChar.getInstanceId()
+				&& activeChar.getInstanceId() != -1)
+		{
+			getClient().sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+
 		// Only GMs can directly interact with invisible characters
 		if (obj instanceof L2PcInstance
 				&& (((L2PcInstance)obj).getAppearance().getInvisible())
