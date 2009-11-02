@@ -40,8 +40,7 @@ import net.sf.l2j.util.Rnd;
  */
 public class L2SiegeGuardInstance extends L2Attackable
 {
-    @SuppressWarnings("hiding")
-	protected
+    protected
 	static Logger _log = Logger.getLogger(L2GuardInstance.class.getName());
 
     public L2SiegeGuardInstance(int objectId, L2NpcTemplate template)

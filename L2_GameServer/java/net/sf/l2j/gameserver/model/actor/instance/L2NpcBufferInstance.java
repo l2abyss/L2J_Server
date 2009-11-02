@@ -31,7 +31,6 @@ import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
 
 public class L2NpcBufferInstance extends L2Npc
 {
-	@SuppressWarnings("hiding")
 	static final Logger _log = Logger.getLogger(L2NpcBufferInstance.class.getName());
 	
 	public L2NpcBufferInstance(int objectId, L2NpcTemplate template)
