@@ -1000,14 +1000,27 @@ public class Olympiad
 	
 	public static void removeSpectator(int id, L2PcInstance spectator)
 	{
-		OlympiadManager.STADIUMS[id].removeSpectator(spectator);
+		try
+		{
+			OlympiadManager.STADIUMS[id].removeSpectator(spectator);
+		}
+		catch (ArrayIndexOutOfBoundsException e)
+		{
+		}
 	}
 	
 	public L2FastList<L2PcInstance> getSpectators(int id)
 	{
-		if (OlympiadManager.getInstance().getOlympiadGame(id) == null)
+		try
+		{
+			if (OlympiadManager.getInstance().getOlympiadGame(id) == null)
+				return null;
+			return OlympiadManager.STADIUMS[id].getSpectators();
+		}
+		catch (ArrayIndexOutOfBoundsException e)
+		{
 			return null;
-		return OlympiadManager.STADIUMS[id].getSpectators();
+		}
 	}
 	
 	public Map<Integer, OlympiadGame> getOlympiadGames()
