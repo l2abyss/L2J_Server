@@ -91,7 +91,7 @@ public class SellList extends L2GameServerPacket
 			writeD(item.getItem().getBodyPart());
 			writeH(item.getEnchantLevel());
 			writeH(0x00);
-			writeH(0x00);
+			writeH(item.getCustomType2());
 			writeQ(item.getItem().getReferencePrice()/2);
 
 			// T1
