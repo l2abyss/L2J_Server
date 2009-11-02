@@ -97,6 +97,7 @@ import net.sf.l2j.gameserver.skills.Stats;
 import net.sf.l2j.gameserver.taskmanager.DecayTaskManager;
 import net.sf.l2j.gameserver.templates.L2HelperBuff;
 import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate;
+import net.sf.l2j.gameserver.templates.chars.L2NpcTemplate.AIType;
 import net.sf.l2j.gameserver.templates.item.L2Item;
 import net.sf.l2j.gameserver.templates.item.L2Weapon;
 import net.sf.l2j.gameserver.templates.skills.L2SkillType;
@@ -149,6 +150,12 @@ public class L2Npc extends L2Character
 
 	private int _isSpoiledBy = 0;
 
+	/** Time of last social packet broadcast*/
+	private long _lastSocialBroadcast = 0;
+
+	/** Minimum interval between social packets*/
+	private int _minimalSocialInterval = 6000;
+
 	protected RandomAnimationTask _rAniTask = null;
 	private int _currentLHandId; // normally this shouldn't change from the template, but there exist exceptions
 	private int _currentRHandId; // normally this shouldn't change from the template, but there exist exceptions
@@ -194,8 +201,12 @@ public class L2Npc extends L2Character
 	public void onRandomAnimation()
 	{
 		// Send a packet SocialAction to all L2PcInstance in the _KnownPlayers of the L2NpcInstance
-		SocialAction sa = new SocialAction(getObjectId(), Rnd.get(2, 3));
-		broadcastPacket(sa);
+		long now = System.currentTimeMillis();
+		if (now - _lastSocialBroadcast > _minimalSocialInterval)
+		{
+			_lastSocialBroadcast = now;
+			broadcastPacket(new SocialAction(getObjectId(), Rnd.get(2, 3)));
+		}
 	}
 
 	/**
@@ -222,7 +233,7 @@ public class L2Npc extends L2Character
 	 */
 	public boolean hasRandomAnimation()
 	{
-		return (Config.MAX_NPC_ANIMATION > 0);
+		return (Config.MAX_NPC_ANIMATION > 0 && !getTemplate().AI.equals(AIType.CORPSE));
 	}
 
 	/**
@@ -682,8 +693,12 @@ public class L2Npc extends L2Character
 				{
 					// Send a Server->Client packet SocialAction to the all L2PcInstance on the _knownPlayer of the L2NpcInstance
 					// to display a social action of the L2NpcInstance on their client
-					SocialAction sa = new SocialAction(getObjectId(), Rnd.get(8));
-					broadcastPacket(sa);
+					long now = System.currentTimeMillis();
+					if (now - _lastSocialBroadcast > _minimalSocialInterval && !getTemplate().AI.equals(AIType.CORPSE))
+					{
+						_lastSocialBroadcast = now;
+						broadcastPacket(new SocialAction(getObjectId(), Rnd.get(8)));
+					}
 
 					// Open a chat window on client with the text of the L2NpcInstance
 					if (isEventMob)
