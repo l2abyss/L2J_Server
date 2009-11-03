@@ -2132,6 +2132,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
     			if (targetPlayer == caster || targetPlayer == player)
     				return false;
 
+    			if (targetPlayer.inObserverMode())
+    				return false;
+
     			if (target.isInsideZone(L2Character.ZONE_PEACE))
     				return false;
 
