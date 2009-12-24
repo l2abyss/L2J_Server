@@ -3,7 +3,7 @@ title Login Server Console
 :start
 echo Starting L2J Login Server.
 echo.
-java -Xmx128m  -cp ./../libs/*;l2jserver.jar net.sf.l2j.loginserver.L2LoginServer
+java -Xms128m -Xmx128m  -cp ./../libs/*;l2jserver.jar com.l2jserver.loginserver.L2LoginServer
 if ERRORLEVEL 2 goto restart
 if ERRORLEVEL 1 goto error
 goto end

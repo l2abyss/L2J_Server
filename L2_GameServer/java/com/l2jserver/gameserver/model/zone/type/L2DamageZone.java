@@ -1,0 +1,170 @@
+/*
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.l2jserver.gameserver.model.zone.type;
+
+import java.util.Collection;
+import java.util.concurrent.Future;
+
+import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.instancemanager.CastleManager;
+import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.entity.Castle;
+import com.l2jserver.gameserver.model.zone.L2ZoneType;
+
+
+/**
+ * A damage zone
+ *
+ * @author  durgus
+ */
+public class L2DamageZone extends L2ZoneType
+{
+	private int _damageHPPerSec;
+	private int _damageMPPerSec;
+	private Future<?> _task;
+
+	private int _castleId;
+	private Castle _castle;
+
+	public L2DamageZone(int id)
+	{
+		super(id);
+		
+		// Setup default damage
+		_damageHPPerSec = 200;
+		_damageMPPerSec = 0;
+
+		// no castle by default
+		_castleId = 0;
+		_castle = null;
+	}
+	
+	@Override
+	public void setParameter(String name, String value)
+	{
+		if (name.equals("dmgHPSec"))
+		{
+			_damageHPPerSec = Integer.parseInt(value);
+		}
+		else if (name.equals("dmgMPSec"))
+		{
+			_damageMPPerSec = Integer.parseInt(value);
+		}
+		else if (name.equals("castleId"))
+		{
+			_castleId = Integer.parseInt(value);
+		}
+		else
+			super.setParameter(name, value);
+	}
+	
+	@Override
+	protected void onEnter(L2Character character)
+	{
+		if (_task == null && (_damageHPPerSec != 0 || _damageMPPerSec != 0))
+		{
+			_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplyDamage(this), 10, 3300);
+		}
+	}
+	
+	@Override
+	protected void onExit(L2Character character)
+	{
+		if (_characterList.isEmpty() && _task != null)
+		{
+			_task.cancel(true);
+			_task = null;
+		}
+	}
+	
+	protected Collection<L2Character> getCharacterList()
+	{
+		return _characterList.values();
+	}
+	
+	protected int getHPDamagePerSecond()
+	{
+		return _damageHPPerSec;
+	}
+	
+	protected int getMPDamagePerSecond()
+	{
+		return _damageMPPerSec;
+	}
+
+	private Castle getCastle()
+	{
+		if (_castleId > 0 &&_castle == null)
+			_castle = CastleManager.getInstance().getCastleById(_castleId);
+
+		return _castle;
+	}
+
+	class ApplyDamage implements Runnable
+	{
+		private final L2DamageZone _dmgZone;
+		private final Castle _castle;
+		
+		ApplyDamage(L2DamageZone zone)
+		{
+			_dmgZone = zone;
+			_castle = zone.getCastle();
+		}
+		
+		public void run()
+		{
+			boolean siege = false;
+
+			if (_castle != null)
+			{
+				siege = _castle.getSiege().getIsInProgress();
+				// castle zones active only during siege
+				if (!siege)
+					return;
+			}
+
+			for (L2Character temp : _dmgZone.getCharacterList())
+			{
+				if (temp != null && !temp.isDead())
+				{
+					if (siege)
+					{
+						// during siege defenders not affected
+						final L2PcInstance player = temp.getActingPlayer();
+						if (player != null && player.isInSiege() && player.getSiegeState() == 2)
+							continue;
+					}
+
+					if (getHPDamagePerSecond() != 0)
+						temp.reduceCurrentHp(_dmgZone.getHPDamagePerSecond(), null, null);
+					if (getMPDamagePerSecond() != 0)
+						temp.reduceCurrentMp(_dmgZone.getMPDamagePerSecond());
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void onDieInside(L2Character character)
+	{
+	}
+	
+	@Override
+	public void onReviveInside(L2Character character)
+	{
+	}
+	
+}

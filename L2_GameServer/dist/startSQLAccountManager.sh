@@ -1,2 +1,2 @@
 #!/bin/sh
-java -Djava.util.logging.config.file=console.cfg -cp ./../libs/*:l2jserver.jar net.sf.l2j.accountmanager.SQLAccountManager
+java -Djava.util.logging.config.file=console.cfg -cp ./../libs/*:l2jserver.jar com.l2jserver.accountmanager.SQLAccountManager
