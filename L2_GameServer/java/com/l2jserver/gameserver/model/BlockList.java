@@ -53,7 +53,6 @@ public class BlockList
 	
 	private final L2PcInstance _owner;
 	private List<Integer> _blockList;
-	private boolean _blockAll;
 
 	public BlockList(L2PcInstance owner)
 	{
@@ -61,7 +60,6 @@ public class BlockList
 		_blockList = _offlineList.get(owner.getObjectId());
 		if (_blockList == null)
 			_blockList = loadList(_owner.getObjectId());
-		_blockAll = false;
 	}
 
 	private synchronized void addToBlockList(int target)
@@ -165,7 +163,7 @@ public class BlockList
 
 	private boolean isBlockAll()
 	{
-		return _blockAll;
+		return _owner.getMessageRefusal();
 	}
 
 	public static boolean isBlocked(L2PcInstance listOwner, L2PcInstance target)
@@ -182,7 +180,7 @@ public class BlockList
 
 	private void setBlockAll(boolean state)
 	{
-		_blockAll = state;
+		_owner.setMessageRefusal(state);
 	}
 
 	private List<Integer> getBlockList()
