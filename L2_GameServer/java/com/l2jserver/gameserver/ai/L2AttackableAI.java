@@ -851,11 +851,14 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			else if(_actor instanceof L2GrandBossInstance)
 			{
 				if(chaostime > Config.GRAND_CHAOS_TIME)
-					if(Rnd.get(100) <= 100-(_actor.getCurrentHp()*300/_actor.getMaxHp()))
+				{
+					double chaosRate = 100 - (_actor.getCurrentHp() * 300 / _actor.getMaxHp());
+					if ((chaosRate <= 10 && Rnd.get(100) <= 10) || (chaosRate > 10 && Rnd.get(100)<= chaosRate))
 					{
 						AggroReconsider();
 						chaostime = 0;
 					}
+				}
 			}
 			else
 			{
