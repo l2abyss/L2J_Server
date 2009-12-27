@@ -727,6 +727,10 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 			writeD(item.getMana());
 			// T2
 			writeD(item.getTime());
+			
+			writeH(0x00); // Enchant effect 1
+			writeH(0x00); // Enchant effect 2
+			writeH(0x00); // Enchant effect 3 
 		}
 	}
 	
