@@ -771,8 +771,8 @@ public final class Config
 	public static boolean ACCEPT_ALTERNATE_ID;
 	public static int REQUEST_ID;
 	public static boolean RESERVE_HOST_ON_LOGIN = false;
-	public static int MIN_PROTOCOL_REVISION = 146;
-	public static int MAX_PROTOCOL_REVISION = 146;
+	public static int MIN_PROTOCOL_REVISION;
+	public static int MAX_PROTOCOL_REVISION;
 	public static boolean LOG_LOGIN_CONTROLLER;
 
 	//--------------------------------------------------
@@ -958,8 +958,8 @@ public final class Config
 					MAX_CHARACTERS_NUMBER_PER_ACCOUNT = Integer.parseInt(serverSettings.getProperty("CharMaxNumber", "0"));
 					MAXIMUM_ONLINE_USERS = Integer.parseInt(serverSettings.getProperty("MaximumOnlineUsers", "100"));
 
-					//MIN_PROTOCOL_REVISION = Integer.parseInt(serverSettings.getProperty("MinProtocolRevision", "660"));
-					//MAX_PROTOCOL_REVISION = Integer.parseInt(serverSettings.getProperty("MaxProtocolRevision", "665"));
+					MIN_PROTOCOL_REVISION = Integer.parseInt(serverSettings.getProperty("MinProtocolRevision", "660"));
+					MAX_PROTOCOL_REVISION = Integer.parseInt(serverSettings.getProperty("MaxProtocolRevision", "665"));
 
 					if (MIN_PROTOCOL_REVISION > MAX_PROTOCOL_REVISION)
 					{
