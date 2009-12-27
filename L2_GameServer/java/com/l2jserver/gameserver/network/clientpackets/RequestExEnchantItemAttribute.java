@@ -231,6 +231,13 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 				return element;
 			element++;
 		}
+		element = 0;
+		for (int id : Elementals.ROUGHORES)
+		{
+			if (id == itemId)
+				return element;
+			element++;
+		}
 		return -1;
 	}
 
@@ -268,8 +275,17 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			if (id == itemId)
 			{
 				if (item.isWeapon())
-					return Elementals.WEAPON_VALUES[10]; // Should be 12
-				return Elementals.ARMOR_VALUES[10]; //
+					return Elementals.WEAPON_VALUES[12];
+				return Elementals.ARMOR_VALUES[12];
+			}
+		}
+		for (int id : Elementals.ROUGHORES)
+		{
+			if (id == itemId)
+			{
+				if (item.isWeapon())
+					return Elementals.WEAPON_VALUES[3];
+				return Elementals.ARMOR_VALUES[3];
 			}
 		}
 		return 0;
@@ -277,8 +293,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 
 	public int getPowerToAdd(int stoneId, int oldValue, L2ItemInstance item)
 	{
-		boolean stone = false, crystal = false;
-		// boolean jewel = false, energy = false;
+		boolean stone = false, crystal = false, jewel = false, energy = false, roughOre = false;
 		for (int id : Elementals.STONES)
 		{
 			if (id == stoneId)
@@ -303,16 +318,36 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 				{
 					if (id == stoneId)
 					{
-						//jewel = true;
+						jewel = true;
 						break;
 					}
 				}
-				//if (!jewel)
-				//	energy = true;
+				if (!jewel)
+				{
+					for (int id : Elementals.ENERGIES)
+					{
+						if (id == stoneId)
+						{
+							energy = true;
+							break;
+						}
+					}
+					if (!energy)
+					{
+						for (int id : Elementals.ROUGHORES)
+						{
+							if (id == stoneId)
+							{
+								roughOre = true;
+								break;
+							}
+						}
+					}
+				}
 			}
 		}
 
-		if (stone || crystal)
+		if (stone || crystal || jewel || energy || roughOre)
 		{
 			if (item.isWeapon())
 			{
@@ -324,7 +359,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			else if (item.isArmor())
 				return Elementals.ARMOR_BONUS;
 		}
-		// Others not implemented
+
 		return 0;
 	}
 

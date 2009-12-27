@@ -114,6 +114,15 @@ public final class Elementals
 		9568
 	};
 
+	public final static int[] ROUGHORES = {
+		10521,
+		10522,
+		10524,
+		10523,
+		10526,
+		10525
+	};
+
 	private byte _element = NONE;
 	private int _value = 0;
 
@@ -136,7 +145,7 @@ public final class Elementals
 	public void setValue(int val)
 	{
 		_value = val;
-		_boni.setValue(val); 
+		_boni.setValue(val);
 	}
 
 	public static String getElementName(byte element)
@@ -195,103 +204,103 @@ public final class Elementals
 		_boni = new ElementalStatBoni(_element, _value);
 	}
 	
-	public class ElementalStatBoni  
-	{  
-		private byte _elementalType;  
-		private int _elementalValue;  
-		private boolean _active;  
+	public class ElementalStatBoni
+	{
+		private byte _elementalType;
+		private int _elementalValue;
+		private boolean _active;
 		
-		public ElementalStatBoni(byte type, int value)  
-		{  
-			_elementalType = type;  
-			_elementalValue = value;  
-			_active = false;  
-		}  
+		public ElementalStatBoni(byte type, int value)
+		{
+			_elementalType = type;
+			_elementalValue = value;
+			_active = false;
+		}
 		
-		public void applyBonus(L2PcInstance player, boolean isArmor)  
-		{  
-			// make sure the bonuses are not applied twice..  
-			if (_active)  
-				return;  
+		public void applyBonus(L2PcInstance player, boolean isArmor)
+		{
+			// make sure the bonuses are not applied twice..
+			if (_active)
+				return;
 			
-			switch (_elementalType)  
-			{  
-				case FIRE:  
-					if (isArmor)  
-						player.addStatFunc(new FuncAdd(Stats.FIRE_RES, 0x40, this, new LambdaConst(_elementalValue)));  
-					else  
-						player.addStatFunc(new FuncAdd(Stats.FIRE_POWER, 0x40, this, new LambdaConst(_elementalValue)));  
-					break;  
-				case WATER:  
-					if (isArmor)  
-						player.addStatFunc(new FuncAdd(Stats.WATER_RES, 0x40, this, new LambdaConst(_elementalValue)));  
-					else  
-						player.addStatFunc(new FuncAdd(Stats.WATER_POWER, 0x40, this, new LambdaConst(_elementalValue)));  
-					break;  
-				case WIND:  
-					if (isArmor)  
-						player.addStatFunc(new FuncAdd(Stats.WIND_RES, 0x40, this, new LambdaConst(_elementalValue)));  
-					else  
-						player.addStatFunc(new FuncAdd(Stats.WIND_POWER, 0x40, this, new LambdaConst(_elementalValue)));  
-					break;  
-				case EARTH:  
-					if (isArmor)  
-						player.addStatFunc(new FuncAdd(Stats.EARTH_RES, 0x40, this, new LambdaConst(_elementalValue)));  
-					else  
-						player.addStatFunc(new FuncAdd(Stats.EARTH_POWER, 0x40, this, new LambdaConst(_elementalValue)));  
-					break;  
-				case DARK:  
-					if (isArmor)  
-						player.addStatFunc(new FuncAdd(Stats.DARK_RES, 0x40, this, new LambdaConst(_elementalValue)));  
-					else  
-						player.addStatFunc(new FuncAdd(Stats.DARK_POWER, 0x40, this, new LambdaConst(_elementalValue)));  
-					break;  
-				case HOLY:  
-					if (isArmor)  
-						player.addStatFunc(new FuncAdd(Stats.HOLY_RES, 0x40, this, new LambdaConst(_elementalValue)));  
-					else  
-						player.addStatFunc(new FuncAdd(Stats.HOLY_POWER, 0x40, this, new LambdaConst(_elementalValue)));  
-					break;  
-			}  
+			switch (_elementalType)
+			{
+				case FIRE:
+					if (isArmor)
+						player.addStatFunc(new FuncAdd(Stats.FIRE_RES, 0x40, this, new LambdaConst(_elementalValue)));
+					else
+						player.addStatFunc(new FuncAdd(Stats.FIRE_POWER, 0x40, this, new LambdaConst(_elementalValue)));
+					break;
+				case WATER:
+					if (isArmor)
+						player.addStatFunc(new FuncAdd(Stats.WATER_RES, 0x40, this, new LambdaConst(_elementalValue)));
+					else
+						player.addStatFunc(new FuncAdd(Stats.WATER_POWER, 0x40, this, new LambdaConst(_elementalValue)));
+					break;
+				case WIND:
+					if (isArmor)
+						player.addStatFunc(new FuncAdd(Stats.WIND_RES, 0x40, this, new LambdaConst(_elementalValue)));
+					else
+						player.addStatFunc(new FuncAdd(Stats.WIND_POWER, 0x40, this, new LambdaConst(_elementalValue)));
+					break;
+				case EARTH:
+					if (isArmor)
+						player.addStatFunc(new FuncAdd(Stats.EARTH_RES, 0x40, this, new LambdaConst(_elementalValue)));
+					else
+						player.addStatFunc(new FuncAdd(Stats.EARTH_POWER, 0x40, this, new LambdaConst(_elementalValue)));
+					break;
+				case DARK:
+					if (isArmor)
+						player.addStatFunc(new FuncAdd(Stats.DARK_RES, 0x40, this, new LambdaConst(_elementalValue)));
+					else
+						player.addStatFunc(new FuncAdd(Stats.DARK_POWER, 0x40, this, new LambdaConst(_elementalValue)));
+					break;
+				case HOLY:
+					if (isArmor)
+						player.addStatFunc(new FuncAdd(Stats.HOLY_RES, 0x40, this, new LambdaConst(_elementalValue)));
+					else
+						player.addStatFunc(new FuncAdd(Stats.HOLY_POWER, 0x40, this, new LambdaConst(_elementalValue)));
+					break;
+			}
 			
-			_active = true;  
-		}  
+			_active = true;
+		}
 		
-		public void removeBonus(L2PcInstance player)  
-		{  
-			// make sure the bonuses are not removed twice  
-			if (!_active)  
-				return;  
+		public void removeBonus(L2PcInstance player)
+		{
+			// make sure the bonuses are not removed twice
+			if (!_active)
+				return;
 			
-			((L2Character) player).removeStatsOwner(this);  
+			((L2Character) player).removeStatsOwner(this);
 			
-			_active = false;  
-		}  
+			_active = false;
+		}
 		
-		public void setValue(int val)  
-		{  
-			_elementalValue = val;  
-		}  
+		public void setValue(int val)
+		{
+			_elementalValue = val;
+		}
 		
-		public void setElement(byte type)  
-		{  
-			_elementalType = type;  
-		}  
-	}  
+		public void setElement(byte type)
+		{
+			_elementalType = type;
+		}
+	}
 	
-	public void applyBonus(L2PcInstance player, boolean isArmor)  
-	{  
-		_boni.applyBonus(player, isArmor);  
-	}  
+	public void applyBonus(L2PcInstance player, boolean isArmor)
+	{
+		_boni.applyBonus(player, isArmor);
+	}
 	
-	public void removeBonus(L2PcInstance player)  
-	{  
-		_boni.removeBonus(player);  
-	}  
+	public void removeBonus(L2PcInstance player)
+	{
+		_boni.removeBonus(player);
+	}
 	
-	public void updateBonus(L2PcInstance player, boolean isArmor)  
-	{  
-		_boni.removeBonus(player);  
-		_boni.applyBonus(player, isArmor);  
-	}  
-}  
+	public void updateBonus(L2PcInstance player, boolean isArmor)
+	{
+		_boni.removeBonus(player);
+		_boni.applyBonus(player, isArmor);
+	}
+}
