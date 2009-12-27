@@ -60,6 +60,7 @@ public final class ProtocolVersion extends L2GameClientPacket
 			KeyPacket pk = new KeyPacket(getClient().enableCrypt(),0);
 			getClient().sendPacket(pk);
 			getClient().setProtocolOk(false);
+			_log.info("Client: "+getClient().toString()+" -> Protocol Revision: " + _version + " is invalid. Minimum is "+Config.MIN_PROTOCOL_REVISION+" and Maximum is "+Config.MAX_PROTOCOL_REVISION+" are supported. Closing connection.");
 		}
 		else
 		{
