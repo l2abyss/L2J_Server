@@ -13797,6 +13797,78 @@ public enum SystemMessageId
 	CP_DISAPPEARS_WHEN_HIT_WITH_A_HALF_KILL_SKILL(2337),
 	
 	/**
+	* ID: 2348<br>
+	* Message: You cannot use My Teleports during a battle.
+	*/
+	YOU_CANNOT_USE_MY_TELEPORTS_DURING_A_BATTLE(2348),
+	
+	/**
+	* ID: 2349<br>
+	* Message: You cannot use My Teleports while participating a large-scale battle such as a castle siege, fortress siege, or hideout siege..
+	*/
+	YOU_CANNOT_USE_MY_TELEPORTS_WHILE_PARTICIPATING(2349),
+
+	/**
+	* ID: 2350<br>
+	* Message: You cannot use My Teleports during a duel
+	*/
+	YOU_CANNOT_USE_MY_TELEPORTS_DURING_A_DUEL(2350),
+
+	/**
+	* ID: 2351<br>
+	* Message: You cannot use My Teleports while flying
+	*/
+	YOU_CANNOT_USE_MY_TELEPORTS_WHILE_FLYING(2351),
+
+	/**
+	* ID: 2352<br>
+	* Message: You cannot use My Teleports while participating in an Olympiad match
+	*/
+	YOU_CANNOT_USE_MY_TELEPORTS_WHILE_PARTICIPATING_IN_AN_OLYMPIAD_MATCH(2352),
+
+	/**
+	* ID: 2353<br>
+	* Message: You cannot use My Teleports while you are in a flint or paralyzed state
+	*/
+	YOU_CANNOT_USE_MY_TELEPORTS_WHILE_YOU_ARE_PARALYZED(2353),
+
+	/**
+	* ID: 2354<br>
+	* Message: You cannot use My Teleports while you are dead
+	*/
+	YOU_CANNOT_USE_MY_TELEPORTS_WHILE_YOU_ARE_DEAD(2354),
+
+	/**
+	* ID: 2355<br>
+	* Message: You cannot use My Teleports in this area
+	*/
+	YOU_CANNOT_USE_MY_TELEPORTS_IN_THIS_AREA(2355),
+
+	/**
+	* ID: 2356<br>
+	* Message: You cannot use My Teleports underwater
+	*/
+	YOU_CANNOT_USE_MY_TELEPORTS_UNDERWATER(2356),
+
+	/**
+	* ID: 2357<br>
+	* Message: You cannot use My Teleports in an instant zone
+	*/
+	YOU_CANNOT_USE_MY_TELEPORTS_IN_AN_INSTANT_ZONE(2357),
+
+	/**
+	* ID: 2358<br>
+	* Message: You have no space to save the teleport location
+	*/
+	YOU_HAVE_NO_SPACE_TO_SAVE_THE_TELEPORT_LOCATION(2358),
+
+	/**
+	* ID: 2359<br>
+	* Message: You cannot teleport because you do not have a teleport item
+	*/
+	YOU_CANNOT_TELEPORT_BECAUSE_YOU_DO_NOT_HAVE_A_TELEPORT_ITEM(2359),
+	
+	/**
 	 * ID: 2366<br>
 	 * Message: The limited-time item has been deleted..
 	 */
@@ -13849,6 +13921,12 @@ public enum SystemMessageId
 	* Message: The number of My Teleports slots has been increased.
 	*/
 	THE_NUMBER_OF_MY_TELEPORTS_SLOTS_HAS_BEEN_INCREASED(2409),
+	
+	/**
+	* ID: 2410<br>
+	* Message: You cannot use My Teleports to reach this area!
+	*/
+	YOU_CANNOT_USE_MY_TELEPORTS_TO_REACH_THIS_AREA(2410),
 	
 	/**
 	* ID: 2424<br>

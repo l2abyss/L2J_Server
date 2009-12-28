@@ -13912,53 +13912,62 @@ public final class L2PcInstance extends L2Playable
     
     public boolean teleportBookmarkCondition(int type)
     {
-    	
     	if(this.isInCombat())
     	{
-    		sendPacket(new SystemMessage(2348));
+    		sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_DURING_A_BATTLE));
     		return false;
     	}
     	else if (this.isInSiege())
     	{
-    		sendPacket(new SystemMessage(2349));
+    		sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_WHILE_PARTICIPATING));
     		return false;
     	}
     	else if (this.isInDuel())
     	{
-    		sendPacket(new SystemMessage(2350));
+    		sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_DURING_A_DUEL));
     		return false;
     	}
     	else if (this.isFlying())
     	{
-    		sendPacket(new SystemMessage(2351));
+    		sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_WHILE_FLYING));
     		return false;
     	}
     	else if (this.isInOlympiadMode())
     	{
-    		sendPacket(new SystemMessage(2352));
+    		sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_WHILE_PARTICIPATING_IN_AN_OLYMPIAD_MATCH));
     		return false;
     	}
     	else if (this.isParalyzed())
     	{
-    		sendPacket(new SystemMessage(2353));
+    		sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_WHILE_YOU_ARE_PARALYZED));
     		return false;
     	}
     	else if (this.isDead())
     	{
-    		sendPacket(new SystemMessage(2354));
+    		sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_WHILE_YOU_ARE_DEAD));
+    		return false;
+    	}
+    	else if (isIn7sDungeon() && type == 1)
+    	{
+    		sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_TO_REACH_THIS_AREA));
     		return false;
     	}
     	else if (this.isInBoat() || this.isInAirShip() || this.isInJail() || this.isInsideZone(ZONE_NOSUMMONFRIEND))
     	{
     		if(type == 0)
-    			sendPacket(new SystemMessage(2355));
+    			sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_IN_THIS_AREA));
     		else if (type == 1)
-    			sendPacket(new SystemMessage(2410));
+    			sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_TO_REACH_THIS_AREA));
     		return false;
     	}
     	else if (this.isInWater())
     	{
-    		sendPacket(new SystemMessage(2356));
+    		sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_UNDERWATER));
+    		return false;
+    	}
+    	else if (type == 1 && (this.isInsideZone(ZONE_SIEGE) || this.isInsideZone(ZONE_CLANHALL) || this.isInsideZone(ZONE_JAIL) || this.isInsideZone(ZONE_CASTLE) || this.isInsideZone(ZONE_NOSUMMONFRIEND) || this.isInsideZone(ZONE_FORT)))
+    	{
+    		sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_TO_REACH_THIS_AREA));
     		return false;
     	}
     	/* TODO: Instant Zone still not implement
