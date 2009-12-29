@@ -1165,6 +1165,7 @@ public final class L2ItemInstance extends L2Object
 						iu.addModifiedItem(item);
 					}
 					player.sendPacket(iu);
+	    			player.broadcastUserInfo();
 				}
 
 				if (getLocation() != ItemLocation.WAREHOUSE)
@@ -1752,6 +1753,7 @@ public final class L2ItemInstance extends L2Object
     				iu.addModifiedItem(item);
     			}
     			player.sendPacket(iu);
+    			player.broadcastUserInfo();
     		}
     		
     		if (getLocation() != ItemLocation.WAREHOUSE)
