@@ -24,7 +24,6 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
@@ -193,9 +192,6 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		StatusUpdate su = new StatusUpdate(activeChar.getObjectId());
 		su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());
 		activeChar.sendPacket(su);
-
-		L2World world = L2World.getInstance();
-		world.removeObject(removedItem);
 	}
 
 	/* (non-Javadoc)
