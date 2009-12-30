@@ -64,10 +64,10 @@ import com.l2jserver.gameserver.datatables.FishTable;
 import com.l2jserver.gameserver.datatables.HennaTable;
 import com.l2jserver.gameserver.datatables.HeroSkillTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.NobleSkillTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreeTable;
 import com.l2jserver.gameserver.handler.AdminCommandHandler;
@@ -661,6 +661,8 @@ public final class L2PcInstance extends L2Playable
     private L2AccessLevel _accessLevel;
 
 	private boolean _messageRefusal = false;    // message refusal mode
+	
+	private boolean _silenceMode = false;     // silence mode
 	private boolean _dietMode = false;          // ignore weight penalty
 	private boolean _tradeRefusal = false;       // Trade refusal
 	private boolean _exchangeRefusal = false;   // Exchange refusal
@@ -10818,8 +10820,8 @@ public final class L2PcInstance extends L2Playable
         	sendMessage("Entering world in Invulnerable mode.");
         if (getAppearance().getInvisible())
             sendMessage("Entering world in Invisible mode.");
-        if (getMessageRefusal())
-            sendMessage("Entering world in Message Refusal mode.");
+        if (isSilenceMode())
+            sendMessage("Entering world in Silence mode.");
 
 		revalidateZone(true);
 		
@@ -14355,6 +14357,23 @@ public final class L2PcInstance extends L2Playable
 			if (obj != null)
 				obj.sendPacket(pkt);
 		}
+	}
+
+	/**
+	 * @return the _silenceMode
+	 */
+	public boolean isSilenceMode()
+	{
+		return _silenceMode;
+	}
+
+	/**
+	 * @param mode the _silenceMode to set
+	 */
+	public void setSilenceMode(boolean mode)
+	{
+		_silenceMode = mode;
+		sendPacket(new EtcStatusUpdate(this));
 	}
 
 

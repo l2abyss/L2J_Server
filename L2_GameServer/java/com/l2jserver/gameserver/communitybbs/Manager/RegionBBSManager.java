@@ -21,6 +21,9 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameServer;
 import com.l2jserver.gameserver.model.BlockList;
@@ -33,9 +36,6 @@ import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.ShowBoard;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.StringUtil;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 public class RegionBBSManager extends BaseBBSManager
 {
@@ -230,9 +230,9 @@ public class RegionBBSManager extends BaseBBSManager
 					_logChat.log(record);
 				}
 				CreatureSay cs = new CreatureSay(activeChar.getObjectId(), Say2.TELL, activeChar.getName(), ar3);
-				if (receiver != null && !BlockList.isBlocked(receiver, activeChar))
+				if (receiver != null)
 				{
-					if (!receiver.getMessageRefusal())
+					if (!receiver.isSilenceMode() && !BlockList.isBlocked(receiver, activeChar) )
 					{
 						receiver.sendPacket(cs);
 						activeChar.sendPacket(new CreatureSay(activeChar.getObjectId(), Say2.TELL, "->" + receiver.getName(), ar3));
@@ -250,7 +250,7 @@ public class RegionBBSManager extends BaseBBSManager
 				else
 				{
 					SystemMessage sm = new SystemMessage(SystemMessageId.S1_IS_NOT_ONLINE);
-					sm.addString(receiver.getName());
+					sm.addString(ar2);
 					activeChar.sendPacket(sm);
 					sm = null;
 				}

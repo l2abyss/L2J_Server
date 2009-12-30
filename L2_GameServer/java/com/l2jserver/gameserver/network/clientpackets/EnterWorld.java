@@ -173,7 +173,7 @@ public class EnterWorld extends L2GameClientPacket
 				activeChar.getAppearance().setInvisible();
  
 			if (Config.GM_STARTUP_SILENCE && AdminCommandAccessRights.getInstance().hasAccess("admin_silence", activeChar.getAccessLevel()))
-				activeChar.setMessageRefusal(true);
+				activeChar.setSilenceMode(true);
 
 			if (Config.GM_STARTUP_DIET_MODE && AdminCommandAccessRights.getInstance().hasAccess("admin_diet", activeChar.getAccessLevel()))
 			{

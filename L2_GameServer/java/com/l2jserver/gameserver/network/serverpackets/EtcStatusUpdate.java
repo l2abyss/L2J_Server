@@ -42,7 +42,7 @@ public class EtcStatusUpdate extends L2GameServerPacket
 		writeC(0xf9); // several icons to a separate line (0 = disabled)
 		writeD(_activeChar.getCharges()); // 1-7 increase force, lvl
 		writeD(_activeChar.getWeightPenalty()); // 1-4 weight penalty, lvl (1=50%, 2=66.6%, 3=80%, 4=100%)
-		writeD((_activeChar.getMessageRefusal() || _activeChar.isChatBanned()) ? 1 : 0); // 1 = block all chat 
+		writeD((_activeChar.getMessageRefusal() || _activeChar.isChatBanned() || _activeChar.isSilenceMode()) ? 1 : 0); // 1 = block all chat 
 		writeD(0x00); // 1 = danger area
 		writeD(Math.min(_activeChar.getExpertisePenalty(),1)); // 1 = grade penalty - weapon penalty [1-4]
 		writeD(0x00); // Armor Grade Penalty, need to implement it. [1-4]

@@ -313,6 +313,7 @@ public class GrandBossManager
 	{
 		_bossStatus.put(bossId, status);
 		_log.info(getClass().getSimpleName()+": Updated "+NpcTable.getInstance().getTemplate(bossId).getName()+"(" +bossId+ ") status to " +status);
+		updateDb(bossId, true);
 	}
 	
 	/*
@@ -340,7 +341,7 @@ public class GrandBossManager
 	public void setStatsSet(int bossId, StatsSet info)
 	{
 		_storedInfo.put(bossId, info);
-		storeToDb();
+		updateDb(bossId, false);
 	}
 	
 	private void storeToDb()
@@ -406,6 +407,62 @@ public class GrandBossManager
 				statement.executeUpdate();
 				statement.close();
 			}
+		}
+		catch (SQLException e)
+		{
+			_log.warning("GrandBossManager: Couldn't store grandbosses to database:" + e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void updateDb(int bossId, boolean statusOnly)
+	{
+		Connection con = null;
+		PreparedStatement statement = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			L2GrandBossInstance boss = _bosses.get(bossId);
+			StatsSet info = _storedInfo.get(bossId);
+			
+			if (statusOnly || boss == null || info == null)
+			{
+				statement = con.prepareStatement(UPDATE_GRAND_BOSS_DATA2);
+				statement.setInt(1, _bossStatus.get(bossId));
+				statement.setInt(2, bossId);
+			}
+			else
+			{
+				statement = con.prepareStatement(UPDATE_GRAND_BOSS_DATA);
+				statement.setInt(1, boss.getX());
+				statement.setInt(2, boss.getY());
+				statement.setInt(3, boss.getZ());
+				statement.setInt(4, boss.getHeading());
+				statement.setLong(5, info.getLong("respawn_time"));
+				double hp = boss.getCurrentHp();
+				double mp = boss.getCurrentMp();
+				if (boss.isDead())
+				{
+					hp = boss.getMaxHp();
+					mp = boss.getMaxMp();
+				}
+				statement.setDouble(6, hp);
+				statement.setDouble(7, mp);
+				statement.setInt(8, _bossStatus.get(bossId));
+				statement.setInt(9, bossId);
+			}
+			statement.executeUpdate();
+			statement.close();
 		}
 		catch (SQLException e)
 		{
