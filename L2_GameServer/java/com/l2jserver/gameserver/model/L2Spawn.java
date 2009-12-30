@@ -605,8 +605,11 @@ public class L2Spawn
      */
     public void respawnNpc(L2Npc oldNpc)
     {
-        oldNpc.refreshID();
-        /*L2NpcInstance instance = */intializeNpcInstance(oldNpc);
+    	if (_doRespawn)
+    	{
+            oldNpc.refreshID();
+            /*L2NpcInstance instance = */intializeNpcInstance(oldNpc);
+    	}
     }
 
     public L2NpcTemplate getTemplate()
