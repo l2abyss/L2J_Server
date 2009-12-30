@@ -706,8 +706,8 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 			writeH(item.getCustomType1()); // ?
 			writeD(item.getItem().getBodyPart()); // ?
 			writeH(item.getEnchantLevel()); // enchant level -confirmed
-			writeH(item.getCustomType2()); // ?
 			writeH(0x00); // ?
+			writeH(item.getCustomType2()); // ?
 			writeD(item.getObjectId()); // item id - confimed       
 			if (item.isAugmented())
 			{
@@ -720,9 +720,7 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
-			{
 				writeH(item.getElementDefAttr(i));
-			}
 			
 			writeD(item.getMana());
 			// T2
