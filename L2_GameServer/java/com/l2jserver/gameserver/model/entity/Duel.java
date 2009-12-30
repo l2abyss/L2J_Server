@@ -635,7 +635,7 @@ public class Duel
 			return null;
 		if (_playerA.getDuelState() == DUELSTATE_WINNER)
 			return _playerB;
-		else if (_playerA.getDuelState() == DUELSTATE_WINNER)
+		else if (_playerB.getDuelState() == DUELSTATE_WINNER)
 			return _playerA;
 		return null;
 	}
@@ -707,6 +707,7 @@ public class Duel
 		switch (result)
 		{
 			case Team1Win:
+			case Team2Surrender:
 				restorePlayerConditions(false);
 				// send SystemMessage
 				if (_partyDuel)
@@ -718,6 +719,7 @@ public class Duel
 				broadcastToTeam1(sm);
 				broadcastToTeam2(sm);
 				break;
+			case Team1Surrender:
 			case Team2Win:
 				restorePlayerConditions(false);
 				// send SystemMessage
@@ -726,32 +728,6 @@ public class Duel
 				else
 					sm = new SystemMessage(SystemMessageId.C1_HAS_WON_THE_DUEL);
 				sm.addString(_playerB.getName());
-				
-				broadcastToTeam1(sm);
-				broadcastToTeam2(sm);
-				break;
-			case Team1Surrender:
-				restorePlayerConditions(false);
-				// send SystemMessage
-				if (_partyDuel)
-					sm = new SystemMessage(SystemMessageId.SINCE_C1_PARTY_WITHDREW_FROM_THE_DUEL_S2_PARTY_HAS_WON);
-				else
-					sm = new SystemMessage(SystemMessageId.SINCE_C1_WITHDREW_FROM_THE_DUEL_S2_HAS_WON);
-				sm.addString(_playerA.getName());
-				sm.addString(_playerB.getName());
-				
-				broadcastToTeam1(sm);
-				broadcastToTeam2(sm);
-				break;
-			case Team2Surrender:
-				restorePlayerConditions(false);
-				// send SystemMessage
-				if (_partyDuel)
-					sm = new SystemMessage(SystemMessageId.SINCE_C1_PARTY_WITHDREW_FROM_THE_DUEL_S2_PARTY_HAS_WON);
-				else
-					sm = new SystemMessage(SystemMessageId.SINCE_C1_WITHDREW_FROM_THE_DUEL_S2_HAS_WON);
-				sm.addString(_playerB.getName());
-				sm.addString(_playerA.getName());
 				
 				broadcastToTeam1(sm);
 				broadcastToTeam2(sm);
