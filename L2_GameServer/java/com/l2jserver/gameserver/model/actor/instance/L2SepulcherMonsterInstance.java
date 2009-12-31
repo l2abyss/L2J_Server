@@ -43,6 +43,14 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 	{
 		super(objectId, template);
 		setShowSummonAnimation(true);
+		switch (template.npcId)
+		{
+			case 25339:
+			case 25342:
+			case 25346:
+			case 25349:
+				setIsRaid(true);
+		}
 	}
 	
 	@Override

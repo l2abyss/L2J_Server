@@ -53,12 +53,12 @@ public class L2RaidBossInstance extends L2MonsterInstance
 	public L2RaidBossInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setIsRaid(true);
 	}
 
 	@Override
 	public void onSpawn()
 	{
-		setIsRaid(true);
 		setIsNoRndWalk(true);
 		super.onSpawn();
 	}

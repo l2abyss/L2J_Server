@@ -41,6 +41,7 @@ public final class L2GrandBossInstance extends L2MonsterInstance
 	public L2GrandBossInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+    	setIsRaid(true);
 	}
 
     @Override
@@ -49,7 +50,6 @@ public final class L2GrandBossInstance extends L2MonsterInstance
     @Override
 	public void onSpawn()
     {
-    	setIsRaid(true);
     	setIsNoRndWalk(true);
     	if (getNpcId() == 29020 || getNpcId() == 29028) // baium and valakas are all the time in passive mode, theirs attack AI handled in AI scripts
     		super.disableCoreAI(true);
