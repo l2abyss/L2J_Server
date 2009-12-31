@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
 
@@ -535,6 +536,28 @@ public class L2Spawn
         {
             mob.setHeading(getHeading());
         }
+        
+        mob.setChampion(false);
+		if (Config.L2JMOD_CHAMPION_ENABLE)
+		{
+			// Set champion on next spawn
+			if
+			(
+				mob instanceof L2MonsterInstance
+				&& !getTemplate().isQuestMonster
+				&& !mob.isRaid()
+				&& !mob.isRaidMinion()
+				&& Config.L2JMOD_CHAMPION_FREQUENCY > 0 
+				&& mob.getLevel()>=Config.L2JMOD_CHAMP_MIN_LVL 
+				&& mob.getLevel()<=Config.L2JMOD_CHAMP_MAX_LVL
+			)
+			{
+				int random = Rnd.get(100);
+
+				if (random < Config.L2JMOD_CHAMPION_FREQUENCY)
+					mob.setChampion(true);
+			}
+		}
 
         // Link the L2NpcInstance to this L2Spawn
         mob.setSpawn(this);

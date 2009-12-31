@@ -2329,27 +2329,6 @@ public class L2Attackable extends L2Npc
 	@Override
 	public void onSpawn()
 	{
-		setChampion(false);
-		if (Config.L2JMOD_CHAMPION_ENABLE)
-		{
-			// Set champion on next spawn
-			if
-			(
-				this instanceof L2MonsterInstance
-				&& !getTemplate().isQuestMonster
-				&& !this.isRaid()
-				&& !this.isRaidMinion()
-				&& Config.L2JMOD_CHAMPION_FREQUENCY > 0 
-				&& getLevel()>=Config.L2JMOD_CHAMP_MIN_LVL 
-				&& getLevel()<=Config.L2JMOD_CHAMP_MAX_LVL
-			)
-			{
-				int random = Rnd.get(100);
-
-				if (random < Config.L2JMOD_CHAMPION_FREQUENCY)
-					setChampion(true);
-			}
-		}
 		super.onSpawn();
 		// Clear mob spoil, seed
 		setSpoil(false);
