@@ -14,23 +14,22 @@
  */
 package com.l2jserver.gameserver.datatables;
 
+import gnu.trove.TIntObjectHashMap;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2PetData;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 
-import javolution.util.FastMap;
-
 public class PetDataTable
 {
 	private static Logger _log = Logger.getLogger(L2PetInstance.class.getName());
 
-	private static Map<Integer, Map<Integer, L2PetData>> _petTable;
+	private static TIntObjectHashMap<TIntObjectHashMap<L2PetData>> _petTable;
 
 	public static PetDataTable getInstance()
 	{
@@ -39,7 +38,7 @@ public class PetDataTable
 
 	private PetDataTable()
 	{
-		_petTable = new FastMap<Integer, Map<Integer, L2PetData>>();
+		_petTable = new TIntObjectHashMap<TIntObjectHashMap<L2PetData>>();
 	}
 
 	public void loadPetsData()
@@ -86,7 +85,7 @@ public class PetDataTable
 
 				// if its the first data for this petid, we initialize its level FastMap
 				if (!_petTable.containsKey(petId))
-					_petTable.put(petId, new FastMap<Integer, L2PetData>());
+					_petTable.put(petId, new TIntObjectHashMap<L2PetData>());
 				
 				_petTable.get(petId).put(petLevel, petData);
 			}
@@ -112,10 +111,10 @@ public class PetDataTable
 
 	public void addPetData(L2PetData petData)
 	{
-		Map<Integer, L2PetData> h = _petTable.get(petData.getPetID());
+		TIntObjectHashMap<L2PetData> h = _petTable.get(petData.getPetID());
 		if (h == null)
 		{
-			Map<Integer, L2PetData> statTable = new FastMap<Integer, L2PetData>();
+			TIntObjectHashMap<L2PetData> statTable = new TIntObjectHashMap<L2PetData>();
 			statTable.put(petData.getPetLevel(), petData);
 			_petTable.put(petData.getPetID(), statTable);
 			return;
