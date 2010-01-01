@@ -2275,7 +2275,7 @@ public final class L2PcInstance extends L2Playable
 		else if (armorPenalty > 4)
 			armorPenalty = 4;
 		
-		if (getExpertiseArmorPenalty() != armorPenalty)
+		if (getExpertiseArmorPenalty() != armorPenalty || getSkillLevel(6213) != armorPenalty)
 		{
 			_expertiseArmorPenalty = armorPenalty;
 			
@@ -2294,14 +2294,14 @@ public final class L2PcInstance extends L2Playable
 		else if (weaponPenalty > 4)
 			weaponPenalty = 4;
 		
-		if (getExpertiseWeaponPenalty() != weaponPenalty)
+		if (getExpertiseWeaponPenalty() != weaponPenalty || getSkillLevel(6209) != weaponPenalty)
 		{
 			_expertiseWeaponPenalty = weaponPenalty;
 			
 			if (_expertiseWeaponPenalty > 0)
 				super.addSkill(SkillTable.getInstance().getInfo(6209, _expertiseWeaponPenalty)); // level used to be newPenalty
 			else
-				super.removeSkill(getKnownSkill(weaponPenalty));
+				super.removeSkill(getKnownSkill(6209));
 			
 			changed = true;
 		}
