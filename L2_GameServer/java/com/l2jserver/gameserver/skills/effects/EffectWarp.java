@@ -77,6 +77,9 @@ public class EffectWarp extends L2Effect
 	{
 		_actor = isSelfEffect() ? getEffector() : getEffected();
 		
+		if (_actor.isMovementDisabled())
+			return false;
+		
 		int _radius = getSkill().getFlyRadius();
 		
 		double angle = Util.convertHeadingToDegree(_actor.getHeading());
