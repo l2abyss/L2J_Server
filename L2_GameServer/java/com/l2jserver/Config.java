@@ -191,7 +191,8 @@ public final class Config
 	public static String PARTY_XP_CUTOFF_METHOD;
 	public static double PARTY_XP_CUTOFF_PERCENT;
 	public static int PARTY_XP_CUTOFF_LEVEL;
-
+	public static boolean DISABLE_TUTORIAL;
+	public static boolean EXPERTISE_PENALTY;
 
 	//--------------------------------------------------
 	// ClanHall Settings
@@ -636,7 +637,10 @@ public final class Config
 	public static boolean L2JMOD_ANTIFEED_DUALBOX;
 	public static boolean L2JMOD_ANTIFEED_DISCONNECTED_AS_DUALBOX;
 	public static int L2JMOD_ANTIFEED_INTERVAL;
-
+	public static boolean ANNOUNCE_PK_PVP;
+	public static boolean ANNOUNCE_PK_PVP_NORMAL_MESSAGE;
+	public static String ANNOUNCE_PK_MSG;
+	public static String ANNOUNCE_PVP_MSG;
 
 	//--------------------------------------------------
 	// NPC Settings
@@ -1415,6 +1419,8 @@ public final class Config
 					PARTY_XP_CUTOFF_METHOD = Character.getProperty("PartyXpCutoffMethod", "auto");
 					PARTY_XP_CUTOFF_PERCENT = Double.parseDouble(Character.getProperty("PartyXpCutoffPercent", "3."));
 					PARTY_XP_CUTOFF_LEVEL = Integer.parseInt(Character.getProperty("PartyXpCutoffLevel", "30"));
+					DISABLE_TUTORIAL = Boolean.parseBoolean(Character.getProperty("DisableTutorial", "False"));
+					EXPERTISE_PENALTY = Boolean.parseBoolean(Character.getProperty("ExpertisePenalty", "True"));
 				}
 				catch (Exception e)
 				{
@@ -2103,6 +2109,11 @@ public final class Config
 					L2JMOD_ANTIFEED_DUALBOX = Boolean.parseBoolean(L2JModSettings.getProperty("AntiFeedDualbox", "true"));
 					L2JMOD_ANTIFEED_DISCONNECTED_AS_DUALBOX = Boolean.parseBoolean(L2JModSettings.getProperty("AntiFeedDisconnectedAsDualbox", "true"));
 					L2JMOD_ANTIFEED_INTERVAL = 1000*Integer.parseInt(L2JModSettings.getProperty("AntiFeedInterval", "120"));
+					ANNOUNCE_PK_PVP = Boolean.parseBoolean(L2JModSettings.getProperty("AnnouncePkPvP", "False"));
+					ANNOUNCE_PK_PVP_NORMAL_MESSAGE = Boolean.parseBoolean(L2JModSettings.getProperty("AnnouncePkPvPNormalMessage", "True"));
+					ANNOUNCE_PK_MSG = L2JModSettings.getProperty("AnnouncePkMsg", "$killer has slaughtered $target");
+					ANNOUNCE_PVP_MSG = L2JModSettings.getProperty("AnnouncePvpMsg", "$killer has defeated $target");
+					
 				}
 				catch (Exception e)
 				{

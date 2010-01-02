@@ -36,6 +36,7 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.GmListTable;
@@ -2246,6 +2247,9 @@ public final class L2PcInstance extends L2Playable
 
 	public void refreshExpertisePenalty()
 	{
+		if (!Config.EXPERTISE_PENALTY)
+			return;
+		
 		int armorPenalty = 0;
 		int weaponPenalty = 0;
 		
@@ -5444,6 +5448,36 @@ public final class L2PcInstance extends L2Playable
 			if (atEvent && pk != null)
 			{
 				pk.kills.add(getName());
+			}
+			
+			//announce pvp/pk
+			if (Config.ANNOUNCE_PK_PVP && pk != null && !pk.isGM())
+			{
+				String msg = "";
+				if (getPvpFlag() == 0)
+				{
+					msg = Config.ANNOUNCE_PK_MSG.replace("$killer", pk.getName()).replace("$target", getName());
+					if (Config.ANNOUNCE_PK_PVP_NORMAL_MESSAGE)
+					{
+						SystemMessage sm = new SystemMessage(SystemMessageId.S1);
+						sm.addString(msg);
+						Announcements.getInstance().announceToAll(sm);
+					}
+					else	
+						Announcements.getInstance().announceToAll(msg);
+				}
+				else if (getPvpFlag() != 0)
+				{
+					msg = Config.ANNOUNCE_PVP_MSG.replace("$killer", pk.getName()).replace("$target", getName());
+					if (Config.ANNOUNCE_PK_PVP_NORMAL_MESSAGE)
+					{
+						SystemMessage sm = new SystemMessage(SystemMessageId.S1);
+						sm.addString(msg);
+						Announcements.getInstance().announceToAll(sm);
+					}
+					else
+						Announcements.getInstance().announceToAll(msg);
+				}
 			}
 			
 			// Clear resurrect xp calculation
