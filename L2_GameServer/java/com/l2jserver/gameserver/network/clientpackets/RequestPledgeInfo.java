@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -56,7 +57,8 @@ public final class RequestPledgeInfo extends L2GameClientPacket
 		L2Clan clan = ClanTable.getInstance().getClan(_clanId);
 		if (clan == null)
 		{
-			_log.warning("Clan data for clanId " + _clanId + " is missing for player "+activeChar.getName());
+			if (Config.DEBUG)
+				_log.warning("Clan data for clanId " + _clanId + " is missing for player "+activeChar.getName());
 			return; // we have no clan data ?!? should not happen
 		}
 

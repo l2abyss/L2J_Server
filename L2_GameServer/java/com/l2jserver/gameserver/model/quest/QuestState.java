@@ -527,7 +527,7 @@ public final class QuestState
 	/**
 	 * Return the quantity of one sort of item hold by the player
 	 * @param itemId : ID of the item wanted to be count
-	 * @return int
+	 * @return long
 	 */
 	public long getQuestItemsCount(int itemId)
 	{
@@ -680,7 +680,7 @@ public final class QuestState
 	/**
 	 * Drop Quest item using Config.RATE_DROP_QUEST
 	 * @param itemId : int Item Identifier of the item to be dropped
-	 * @param count(minCount, maxCount) : int Quantity of items to be dropped
+	 * @param count(minCount, maxCount) : long Quantity of items to be dropped
 	 * @param neededCount : Quantity of items needed for quest
 	 * @param dropChance : int Base chance of drop, same as in droplist
 	 * @param sound : boolean indicating whether to play sound
