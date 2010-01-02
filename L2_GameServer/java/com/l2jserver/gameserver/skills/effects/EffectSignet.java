@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
 /**
  * @authors Forsaiken, Sami
  */
-
 public class EffectSignet extends L2Effect
 {
 	private L2Skill _skill;
@@ -105,8 +104,6 @@ public class EffectSignet extends L2Effect
 	public void onExit()
 	{
 		if (_actor != null)
-		{
 			_actor.deleteMe();
-		}
 	}
 }

@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
 
-
 /**
  * @author Ahmed
  * 

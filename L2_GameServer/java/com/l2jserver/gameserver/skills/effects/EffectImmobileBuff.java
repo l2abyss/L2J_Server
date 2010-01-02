@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
  */
 public class EffectImmobileBuff extends EffectBuff
 {
-	
 	public EffectImmobileBuff(Env env, EffectTemplate template)
 	{
 		super(env, template);

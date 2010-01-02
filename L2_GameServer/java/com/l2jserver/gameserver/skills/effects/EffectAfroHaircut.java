@@ -49,7 +49,7 @@ public class EffectAfroHaircut extends L2Effect
 	{
 		if (getEffected() instanceof L2PcInstance)
 		{
-			((L2PcInstance) getEffected()).setAfroHaircutId(this.getSkill().getAfroColor());
+			((L2PcInstance) getEffected()).setAfroHaircutId(getSkill().getAfroColor());
 			return true;
 		}
 		return false;

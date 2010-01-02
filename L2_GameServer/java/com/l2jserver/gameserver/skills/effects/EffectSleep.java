@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
  */
 public class EffectSleep extends L2Effect
 {
-	
 	public EffectSleep(Env env, EffectTemplate template)
 	{
 		super(env, template);

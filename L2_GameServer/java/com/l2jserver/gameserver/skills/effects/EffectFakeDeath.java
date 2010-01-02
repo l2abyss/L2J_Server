@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
  */
 public class EffectFakeDeath extends L2Effect
 {
-	
 	public EffectFakeDeath(Env env, EffectTemplate template)
 	{
 		super(env, template);
@@ -80,8 +79,7 @@ public class EffectFakeDeath extends L2Effect
 		{
 			if (getSkill().isToggle())
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP);
-				getEffected().sendPacket(sm);
+				getEffected().sendPacket(new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP));
 				return false;
 			}
 		}

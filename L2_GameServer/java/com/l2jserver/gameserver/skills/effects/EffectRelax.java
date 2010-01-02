@@ -47,7 +47,6 @@ public class EffectRelax extends L2Effect
 	@Override
 	public boolean onStart()
 	{
-		
 		if (getEffected() instanceof L2PcInstance)
 		{
 			setRelax(true);
@@ -101,10 +100,7 @@ public class EffectRelax extends L2Effect
 		{
 			if (getSkill().isToggle())
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP);
-				getEffected().sendPacket(sm);
-				// if (getEffected() instanceof L2PcInstance)
-				// ((L2PcInstance)getEffected()).standUp();
+				getEffected().sendPacket(new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP));
 				retval = false;
 			}
 		}

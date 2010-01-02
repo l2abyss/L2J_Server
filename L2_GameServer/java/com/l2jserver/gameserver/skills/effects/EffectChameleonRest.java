@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.skills.effects;
 
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.model.L2Effect;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -42,7 +41,6 @@ public class EffectChameleonRest extends L2Effect
 		return L2EffectType.RELAXING;
 	}
 	
-	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onStart()
@@ -50,16 +48,14 @@ public class EffectChameleonRest extends L2Effect
 	@Override
 	public boolean onStart()
 	{
-		
-		L2Character effected = getEffected();
-		if (effected instanceof L2PcInstance)
+		if (getEffected() instanceof L2PcInstance)
 		{
 			setChameleon(true);
-			((L2PcInstance) effected).setSilentMoving(true);
-			((L2PcInstance) effected).sitDown();
+			((L2PcInstance) getEffected()).setSilentMoving(true);
+			((L2PcInstance) getEffected()).sitDown();
 		}
 		else
-			effected.getAI().setIntention(CtrlIntention.AI_INTENTION_REST);
+			getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_REST);
 		return super.onStart();
 	}
 	
@@ -71,10 +67,8 @@ public class EffectChameleonRest extends L2Effect
 	public void onExit()
 	{
 		setChameleon(false);
-		
-		L2Character effected = getEffected();
-		if (effected instanceof L2PcInstance)
-			((L2PcInstance) effected).setSilentMoving(false);
+		if (getEffected() instanceof L2PcInstance)
+			((L2PcInstance) getEffected()).setSilentMoving(false);
 		
 		super.onExit();
 	}
@@ -86,35 +80,33 @@ public class EffectChameleonRest extends L2Effect
 	@Override
 	public boolean onActionTime()
 	{
-		L2Character effected = getEffected();
 		boolean retval = true;
 		
-		if (effected.isDead())
+		if (getEffected().isDead())
 			retval = false;
 		
 		// Only cont skills shouldn't end
 		if (getSkill().getSkillType() != L2SkillType.CONT)
 			return false;
 		
-		if (effected instanceof L2PcInstance)
+		if (getEffected() instanceof L2PcInstance)
 		{
-			if (!((L2PcInstance) effected).isSitting())
+			if (!((L2PcInstance) getEffected()).isSitting())
 				retval = false;
 		}
 		
 		double manaDam = calc();
 		
-		if (manaDam > effected.getCurrentMp())
+		if (manaDam > getEffected().getCurrentMp())
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP);
-			effected.sendPacket(sm);
+			getEffected().sendPacket(new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP));
 			return false;
 		}
 		
 		if (!retval)
 			setChameleon(retval);
 		else
-			effected.reduceCurrentMp(manaDam);
+			getEffected().reduceCurrentMp(manaDam);
 		
 		return retval;
 	}
@@ -125,8 +117,7 @@ public class EffectChameleonRest extends L2Effect
 	 */
 	private void setChameleon(boolean val)
 	{
-		L2Character effected = getEffected();
-		if (effected instanceof L2PcInstance)
-			((L2PcInstance) effected).setRelax(val);
+		if (getEffected() instanceof L2PcInstance)
+			((L2PcInstance) getEffected()).setRelax(val);
 	}
 }

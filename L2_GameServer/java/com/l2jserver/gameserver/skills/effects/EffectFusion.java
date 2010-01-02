@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
 /**
  * @author Kerberos
  */
-
 public class EffectFusion extends L2Effect
 {
 	public int _effect;

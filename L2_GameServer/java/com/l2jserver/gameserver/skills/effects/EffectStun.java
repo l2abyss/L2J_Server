@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
  */
 public class EffectStun extends L2Effect
 {
-	
 	public EffectStun(Env env, EffectTemplate template)
 	{
 		super(env, template);

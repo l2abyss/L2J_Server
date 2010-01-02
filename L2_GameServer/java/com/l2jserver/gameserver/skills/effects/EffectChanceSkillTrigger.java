@@ -82,5 +82,4 @@ public class EffectChanceSkillTrigger extends L2Effect implements IChanceSkillTr
     {
 	    return _chanceCondition;
     }
-	
 }

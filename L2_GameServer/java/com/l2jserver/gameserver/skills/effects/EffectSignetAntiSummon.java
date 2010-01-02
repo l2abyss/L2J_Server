@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
 /**
  * @author Forsaiken
  */
-
 public class EffectSignetAntiSummon extends L2Effect
 {
 	private L2EffectPointInstance _actor;
@@ -112,8 +111,6 @@ public class EffectSignetAntiSummon extends L2Effect
 	public void onExit()
 	{
 		if (_actor != null)
-		{
 			_actor.deleteMe();
-		}
 	}
 }

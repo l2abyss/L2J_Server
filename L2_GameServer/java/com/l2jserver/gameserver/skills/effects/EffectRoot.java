@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
  */
 public class EffectRoot extends L2Effect
 {
-	
 	public EffectRoot(Env env, EffectTemplate template)
 	{
 		super(env, template);

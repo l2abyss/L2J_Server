@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
 
-
 public class EffectEnemyCharge extends L2Effect
 {
 	static final Logger _log = Logger.getLogger(EffectEnemyCharge.class.getName());
@@ -102,8 +101,6 @@ public class EffectEnemyCharge extends L2Effect
 			_y = destiny.getY();
 		}
 		getEffector().broadcastPacket(new FlyToLocation(getEffector(), _x, _y, _z, FlyType.CHARGE));
-		// getEffector().abortAttack();
-		// getEffector().abortCast();
 		
 		// maybe is need force set X,Y,Z
 		getEffector().setXYZ(_x, _y, _z);

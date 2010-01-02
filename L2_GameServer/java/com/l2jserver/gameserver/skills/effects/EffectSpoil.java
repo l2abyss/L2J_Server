@@ -87,13 +87,6 @@ public class EffectSpoil extends L2Effect
 				target.setIsSpoiledBy(getEffector().getObjectId());
 				getEffector().sendPacket(new SystemMessage(SystemMessageId.SPOIL_SUCCESS));
 			}
-			else
-			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
-				sm.addCharName(target);
-				sm.addSkillName(getSkill().getDisplayId());
-				getEffector().sendPacket(sm);
-			}
 			target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, getEffector());
 		}
 		return true;

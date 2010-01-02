@@ -95,16 +95,13 @@ public class EffectConfusion extends L2Effect
 		}
 		// if there is no target, exit function
 		if (targetList.isEmpty())
-		{
 			return true;
-		}
 		
 		// Choosing randomly a new target
 		int nextTargetIdx = Rnd.nextInt(targetList.size());
 		L2Object target = targetList.get(nextTargetIdx);
 		
 		// Attacking the target
-		// getEffected().setTarget(target);
 		getEffected().setTarget(target);
 		getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, target);
 		

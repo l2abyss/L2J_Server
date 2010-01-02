@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
 /**
  * @author ZaKaX (Ghost @ L2D)
  */
-
 public class EffectClanGate extends L2Effect
 {
 	public EffectClanGate(Env env, EffectTemplate template)

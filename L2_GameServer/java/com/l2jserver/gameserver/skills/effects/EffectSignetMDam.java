@@ -16,7 +16,6 @@
 /**
  * @author Forsaiken
  */
-
 package com.l2jserver.gameserver.skills.effects;
 
 import com.l2jserver.gameserver.ai.CtrlEvent;
@@ -207,8 +206,6 @@ public class EffectSignetMDam extends L2Effect
 	public void onExit()
 	{
 		if (_actor != null)
-		{
 			_actor.deleteMe();
-		}
 	}
 }

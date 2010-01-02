@@ -56,7 +56,8 @@ public class EffectBetray extends L2Effect
 			L2PcInstance targetOwner = getEffected().getActingPlayer();
 			getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, targetOwner);
 			getEffected().setIsBetrayed(true);
-			if (targetOwner != null) targetOwner.setIsBetrayed(true);
+			if (targetOwner != null)
+				targetOwner.setIsBetrayed(true);
 			return true;
 		}
 		return false;
@@ -72,7 +73,8 @@ public class EffectBetray extends L2Effect
 		getEffected().setIsBetrayed(false);
 		getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 		L2PcInstance targetOwner = getEffected().getActingPlayer();
-		if (targetOwner != null) targetOwner.setIsBetrayed(false);
+		if (targetOwner != null)
+			targetOwner.setIsBetrayed(false);
 	}
 	
 	/**

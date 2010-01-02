@@ -73,5 +73,4 @@ public class EffectCharmOfCourage extends L2Effect
 	{
 		return false;
 	}
-	
 }

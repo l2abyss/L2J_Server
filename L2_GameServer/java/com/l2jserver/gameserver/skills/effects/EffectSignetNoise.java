@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
 /**
  * @authors Forsaiken, Sami
  */
-
 public class EffectSignetNoise extends L2Effect
 {
 	private L2EffectPointInstance _actor;
@@ -73,11 +72,13 @@ public class EffectSignetNoise extends L2Effect
 			
 			L2Effect[] effects = target.getAllEffects();
 			if (effects != null)
+			{
 				for (L2Effect effect : effects)
 				{
 					if (effect.getSkill().isDance())
 						effect.exit();
 				}
+			}
 			// there doesn't seem to be a visible effect?
 		}
 		return true;
@@ -91,8 +92,6 @@ public class EffectSignetNoise extends L2Effect
 	public void onExit()
 	{
 		if (_actor != null)
-		{
 			_actor.deleteMe();
-		}
 	}
 }

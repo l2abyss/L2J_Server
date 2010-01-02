@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
 
 public class EffectGrow extends L2Effect
 {
-	
 	public EffectGrow(Env env, EffectTemplate template)
 	{
 		super(env, template);

@@ -50,7 +50,6 @@ import com.l2jserver.gameserver.util.Util;
  */
 public class EffectWarp extends L2Effect
 {
-	
 	private int x, y, z;
 	private L2Character _actor;
 	
@@ -76,11 +75,7 @@ public class EffectWarp extends L2Effect
 	@Override
 	public boolean onStart()
 	{
-		
-		if (isSelfEffect())
-			_actor = getEffector();
-		else
-			_actor = getEffected();
+		_actor = isSelfEffect() ? getEffector() : getEffected();
 		
 		int _radius = getSkill().getFlyRadius();
 		
