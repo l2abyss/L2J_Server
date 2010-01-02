@@ -2656,7 +2656,7 @@ public class L2Npc extends L2Character
 			case 31770:
 			case 31771:
 			case 31772:
-				if (player.isHero())
+				if (player.isHero() || player.isNoble())
 					filename = Olympiad.OLYMPIAD_HTML_PATH + "hero_main.htm";
 				else
 					filename = (getHtmlPath(npcId, val));

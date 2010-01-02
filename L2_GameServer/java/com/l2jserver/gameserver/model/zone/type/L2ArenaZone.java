@@ -69,7 +69,8 @@ public class L2ArenaZone extends L2ZoneType
 		
 		if (character instanceof L2PcInstance)
 		{
-			((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
+			if (!character.isInsideZone(L2Character.ZONE_PVP))
+				((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
 		}
 	}
 	
@@ -81,7 +82,8 @@ public class L2ArenaZone extends L2ZoneType
 		
 		if (character instanceof L2PcInstance)
 		{
-			((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
+			if (!character.isInsideZone(L2Character.ZONE_PVP))
+				((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
 		}
 	}
 	
