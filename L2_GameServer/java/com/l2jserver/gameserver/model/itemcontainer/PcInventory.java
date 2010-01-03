@@ -139,15 +139,25 @@ public class PcInventory extends Inventory
 	}
 
 	/**
-	 * Returns the list of all items in inventory that have a given item id.
-	 * @return L2ItemInstance[] : matching items from inventory
+	 * @see net.sf.l2j.gameserver.model.itemcontainer.PcInventory#getAllItemsByItemId(int, boolean)
 	 */
 	public L2ItemInstance[] getAllItemsByItemId(int itemId)
+	{
+		return getAllItemsByItemId(itemId, true);
+	}
+	
+	/**
+	 * Returns the list of all items in inventory that have a given item id.
+	 * @param itemId : ID of item
+	 * @param includeEquipped : include equipped items
+	 * @return L2ItemInstance[] : matching items from inventory
+	 */
+	public L2ItemInstance[] getAllItemsByItemId(int itemId, boolean includeEquipped)
 	{
 		List<L2ItemInstance> list = new FastList<L2ItemInstance>();
 		for (L2ItemInstance item : _items)
 		{
-			if (item.getItemId() == itemId)
+			if (item.getItemId() == itemId && (includeEquipped || !item.isEquipped()))
 				list.add(item);
 		}
 
@@ -155,15 +165,26 @@ public class PcInventory extends Inventory
 	}
 
 	/**
-	 * Returns the list of all items in inventory that have a given item id AND a given enchantment level.
-	 * @return L2ItemInstance[] : matching items from inventory
+	 * @see net.sf.l2j.gameserver.model.itemcontainer.PcInventory#getAllItemsByItemId(int, int, boolean)
 	 */
 	public L2ItemInstance[] getAllItemsByItemId(int itemId, int enchantment)
+	{
+		return getAllItemsByItemId(itemId, enchantment, true);
+	}
+	
+	/**
+	 * Returns the list of all items in inventory that have a given item id AND a given enchantment level.
+	 * @param itemId : ID of item
+	 * @param enchantment : enchant level of item
+	 * @param includeEquipped : include equipped items
+	 * @return L2ItemInstance[] : matching items from inventory
+	 */
+	public L2ItemInstance[] getAllItemsByItemId(int itemId, int enchantment, boolean includeEquipped)
 	{
 		List<L2ItemInstance> list = new FastList<L2ItemInstance>();
 		for (L2ItemInstance item : _items)
 		{
-			if ((item.getItemId() == itemId) && (item.getEnchantLevel() == enchantment))
+			if ((item.getItemId() == itemId) && (item.getEnchantLevel() == enchantment) && (includeEquipped || !item.isEquipped()))
 				list.add(item);
 		}
 

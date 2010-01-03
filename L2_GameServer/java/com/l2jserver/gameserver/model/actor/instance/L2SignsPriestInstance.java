@@ -24,9 +24,7 @@ import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
@@ -56,8 +54,6 @@ public class L2SignsPriestInstance extends L2Npc
 		else if (command.startsWith("SevenSigns"))
 		{
 			SystemMessage sm;
-			InventoryUpdate iu;
-			StatusUpdate su;
 
 			String path;
 
@@ -114,12 +110,7 @@ public class L2SignsPriestInstance extends L2Npc
 					player.sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
 					break;
 				}
-				L2ItemInstance recordSevenSigns = player.getInventory().addItem("SevenSigns", SevenSigns.RECORD_SEVEN_SIGNS_ID, 1, player, this);
-
-				// Send inventory update packet
-				iu = new InventoryUpdate();
-				iu.addNewItem(recordSevenSigns);
-				sendPacket(iu);
+				player.getInventory().addItem("SevenSigns", SevenSigns.RECORD_SEVEN_SIGNS_ID, 1, player, this);
 
 				sm = new SystemMessage(SystemMessageId.EARNED_ITEM);
 				sm.addItemName(SevenSigns.RECORD_SEVEN_SIGNS_ID);
@@ -554,11 +545,6 @@ public class L2SignsPriestInstance extends L2Npc
 				player.reduceAncientAdena("SevenSigns", ancientAdenaConvert, this, true);
 				player.addAdena("SevenSigns", ancientAdenaConvert, this, true);
 
-				iu = new InventoryUpdate();
-				iu.addModifiedItem(player.getInventory().getAncientAdenaInstance());
-				iu.addModifiedItem(player.getInventory().getAdenaInstance());
-				player.sendPacket(iu);
-
 				showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "blkmrkt_5.htm");
 				break;
 			case 9: // Receive Contribution Rewards
@@ -579,16 +565,6 @@ public class L2SignsPriestInstance extends L2Npc
 					}
 
 					player.addAncientAdena("SevenSigns", ancientAdenaReward, this, true);
-
-					// Send inventory update packet
-					iu = new InventoryUpdate();
-					iu.addModifiedItem(player.getInventory().getAncientAdenaInstance());
-					sendPacket(iu);
-
-					// Update current load as well
-					su = new StatusUpdate(player.getObjectId());
-					su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
-					sendPacket(su);
 
 					if (this instanceof L2DawnPriestInstance)
 						showChatWindow(player, 9, "dawn_a", false);
@@ -683,22 +659,6 @@ public class L2SignsPriestInstance extends L2Npc
 
 					player.addAncientAdena("SevenSigns", ancientAdenaRewardAll, this, true);
 
-					// Send inventory update packet
-					iu = new InventoryUpdate();
-					iu.addModifiedItem(player.getInventory().getAncientAdenaInstance());
-					if (blueStonesAll != null)
-						iu.addModifiedItem(blueStonesAll);
-					if (greenStonesAll != null)
-						iu.addModifiedItem(greenStonesAll);
-					if (redStonesAll != null)
-						iu.addModifiedItem(redStonesAll);
-					sendPacket(iu);
-
-					// Update current load as well
-					su = new StatusUpdate(player.getObjectId());
-					su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
-					sendPacket(su);
-
 					if (this instanceof L2DawnPriestInstance)
 						showChatWindow(player, 18, "dawn", false);
 					else
@@ -775,17 +735,6 @@ public class L2SignsPriestInstance extends L2Npc
 						if (player.destroyItemByItemId("SevenSigns", convertStoneId, convertCount, this, true))
 						{
 							player.addAncientAdena("SevenSigns", ancientAdenaReward, this, true);
-
-							// Send inventory update packet
-							iu = new InventoryUpdate();
-							iu.addModifiedItem(player.getInventory().getAncientAdenaInstance());
-							iu.addModifiedItem(convertItem);
-							sendPacket(iu);
-
-							// Update current load as well
-							su = new StatusUpdate(player.getObjectId());
-							su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
-							sendPacket(su);
 
 							if (this instanceof L2DawnPriestInstance)
 								showChatWindow(player, 18, "dawn", false);

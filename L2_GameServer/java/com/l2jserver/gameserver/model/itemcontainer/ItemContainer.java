@@ -153,28 +153,31 @@ public abstract class ItemContainer
 	}
 	
 	/**
+	 * @see  com.l2jserver.gameserver.model.itemcontainer.ItemContainer#getInventoryItemCount(int, int, boolean)
+	 */
+	public long getInventoryItemCount(int itemId, int enchantLevel)
+	{
+		return getInventoryItemCount(itemId, enchantLevel, true);
+	}
+	
+	/**
 	 * Gets count of item in the inventory
 	 * @param itemId : Item to look for
 	 * @param enchantLevel : enchant level to match on, or -1 for ANY enchant level
+	 * @param includeEquipped : include equipped items
 	 * @return int corresponding to the number of items matching the above conditions.
 	 */
-	public long getInventoryItemCount(int itemId, int enchantLevel)
+	public long getInventoryItemCount(int itemId, int enchantLevel, boolean includeEquipped)
 	{
 		long count = 0;
 		
 		for (L2ItemInstance item : _items)
-		{
-			if (item == null)
-				continue;
-
-			if (item.getItemId() == itemId
-					&& ((item.getEnchantLevel() == enchantLevel) || (enchantLevel < 0)))
+			if (item.getItemId() == itemId && ((item.getEnchantLevel() == enchantLevel) || (enchantLevel < 0)) && (includeEquipped || !item.isEquipped()))
 				//if (item.isAvailable((L2PcInstance)getOwner(), true) || item.getItem().getType2() == 3)//available or quest item
 				if (item.isStackable())
 					count = item.getCount();
 				else
 					count++;
-		}
 		
 		return count;
 	}
