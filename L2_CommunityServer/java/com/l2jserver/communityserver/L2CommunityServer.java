@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import com.l2jserver.communityserver.cache.HtmCache;
 import com.l2jserver.communityserver.network.GameServerListener;
 import com.l2jserver.communityserver.network.netcon.NetConnectionConfig;
+import com.l2jserver.communityserver.threading.ThreadPoolManager;
 import com.l2jserver.communityserver.Shutdown;
 
 public final class L2CommunityServer
@@ -84,6 +85,7 @@ public final class L2CommunityServer
 		
 		_shutdownHandler = Shutdown.getInstance();
 		Runtime.getRuntime().addShutdownHook(_shutdownHandler);
+		ThreadPoolManager.init();
 		
 		GameServerRegistrationTable.getInstance();
 		

@@ -74,7 +74,9 @@ public final class Config
     /** General settings */
     public static int     MIN_PLAYER_LVL_FOR_FORUM;
     public static int     MIN_CLAN_LVL_FOR_FORUM;
-    public static Long     MAIL_AUTO_DELETION_TIME;
+    public static long    MAIL_AUTO_DELETION_TIME;
+    
+    public static int	  GENERAL_THREAD_CORE_SIZE;
     
     public static final void load()
     {
@@ -94,7 +96,7 @@ public final class Config
             DATAPACK_ROOT						= new File(serverSettings.getProperty("DatapackRoot", ".")).getCanonicalFile();
 
             DATABASE_DRIVER						= serverSettings.getProperty("Driver", "com.mysql.jdbc.Driver");
-            DATABASE_URL						= serverSettings.getProperty("URL", "jdbc:mysql://localhost/l2jdb");
+            DATABASE_URL						= serverSettings.getProperty("URL", "jdbc:mysql://localhost/l2jcb");
             DATABASE_LOGIN						= serverSettings.getProperty("Login", "root");
             DATABASE_PASSWORD					= serverSettings.getProperty("Password", "");
             DATABASE_MAX_CONNECTIONS			= Integer.parseInt(serverSettings.getProperty("MaximumDbConnections", "10"));
@@ -107,6 +109,8 @@ public final class Config
             MIN_PLAYER_LVL_FOR_FORUM			= Integer.parseInt(generalSettings.getProperty("MinPlayerLvLForForum", "1"));
             MIN_CLAN_LVL_FOR_FORUM				= Integer.parseInt(generalSettings.getProperty("MinClanLvLForForum", "2"));
             MAIL_AUTO_DELETION_TIME				= Long.parseLong(generalSettings.getProperty("MailAutoDeletionTime", "90")) * 86400000;
+            
+            GENERAL_THREAD_CORE_SIZE			= Integer.parseInt(generalSettings.getProperty("ThreadPoolSize", "1"));
 		}
 		catch (Exception e)
 		{

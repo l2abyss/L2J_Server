@@ -37,6 +37,7 @@ import com.l2jserver.communityserver.network.writepackets.AuthResponse;
 import com.l2jserver.communityserver.network.writepackets.CommunityServerFail;
 import com.l2jserver.communityserver.network.writepackets.InitCS;
 import com.l2jserver.communityserver.network.writepackets.RequestWorldInfo;
+import com.l2jserver.communityserver.threading.ThreadPoolManager;
 
 /**
  * @author Forsaiken
@@ -167,7 +168,8 @@ public class GameServerThread extends NetConnection
 				}
 				
 				if (packet != null)
-					new Thread(packet).start();
+					//new Thread(packet).start();
+					ThreadPoolManager.execute(packet);
 				else
 					throw new IOException("Invalid packet!");
 			}
