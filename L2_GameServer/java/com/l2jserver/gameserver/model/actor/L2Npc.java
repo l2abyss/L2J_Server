@@ -2594,46 +2594,58 @@ public class L2Npc extends L2Character
 				filename += "blkmrkt_1.htm";
 				break;
 			case 31113: // Merchant of Mammon
-				switch (compWinner)
+				if (Config.ALT_STRICT_SEVENSIGNS)
 				{
-					case SevenSigns.CABAL_DAWN:
-						if (playerCabal != compWinner || playerCabal != sealAvariceOwner)
-						{
-							player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
-							player.sendPacket(ActionFailed.STATIC_PACKET);
+					switch (compWinner)
+					{
+						case SevenSigns.CABAL_DAWN:
+							if (playerCabal != compWinner || playerCabal != sealAvariceOwner)
+							{
+								player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
+								player.sendPacket(ActionFailed.STATIC_PACKET);
+								return;
+							}
+							break;
+						case SevenSigns.CABAL_DUSK:
+							if (playerCabal != compWinner || playerCabal != sealAvariceOwner)
+							{
+								player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
+								player.sendPacket(ActionFailed.STATIC_PACKET);
+								return;
+							}
+							break;
+						default:
+							player.sendPacket(new SystemMessage(SystemMessageId.QUEST_EVENT_PERIOD));
 							return;
-						}
-						break;
-					case SevenSigns.CABAL_DUSK:
-						if (playerCabal != compWinner || playerCabal != sealAvariceOwner)
-						{
-							player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
-							player.sendPacket(ActionFailed.STATIC_PACKET);
-							return;
-						}
-						break;
+					}
 				}
 				filename += "mammmerch_1.htm";
 				break;
 			case 31126: // Blacksmith of Mammon
-				switch (compWinner)
+				if (Config.ALT_STRICT_SEVENSIGNS)
 				{
-					case SevenSigns.CABAL_DAWN:
-						if (playerCabal != compWinner || playerCabal != sealGnosisOwner)
-						{
-							player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
-							player.sendPacket(ActionFailed.STATIC_PACKET);
+					switch (compWinner)
+					{
+						case SevenSigns.CABAL_DAWN:
+							if (playerCabal != compWinner || playerCabal != sealGnosisOwner)
+							{
+								player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
+								player.sendPacket(ActionFailed.STATIC_PACKET);
+								return;
+							}
+							break;
+						case SevenSigns.CABAL_DUSK:
+							if (playerCabal != compWinner || playerCabal != sealGnosisOwner)
+							{
+								player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
+								player.sendPacket(ActionFailed.STATIC_PACKET);
+								return;
+							}
+							break;
+						default:
+							player.sendPacket(new SystemMessage(SystemMessageId.QUEST_EVENT_PERIOD));
 							return;
-						}
-						break;
-					case SevenSigns.CABAL_DUSK:
-						if (playerCabal != compWinner || playerCabal != sealGnosisOwner)
-						{
-							player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
-							player.sendPacket(ActionFailed.STATIC_PACKET);
-							return;
-						}
-						break;
+					}
 				}
 				filename += "mammblack_1.htm";
 				break;
