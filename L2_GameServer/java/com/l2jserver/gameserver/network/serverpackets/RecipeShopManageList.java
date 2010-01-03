@@ -42,15 +42,15 @@ public class RecipeShopManageList  extends L2GameServerPacket
 			_recipes = _seller.getCommonRecipeBook();
 
 		// clean previous recipes
-        if (_seller.getCreateList() != null)
-        {
-            L2ManufactureList list = _seller.getCreateList();
-            for (L2ManufactureItem item : list.getList())
-            {
-            	if (item.isDwarven() != _isDwarven)
-            		list.getList().remove(item);
-            }
-        }
+		if (_seller.getCreateList() != null)
+		{
+			L2ManufactureList list = _seller.getCreateList();
+			for (L2ManufactureItem item : list.getList())
+			{
+				if (item.isDwarven() != _isDwarven || !seller.hasRecipeList(item.getRecipeId()))
+					list.getList().remove(item);
+			}
+		}
 	}
 
 	@Override

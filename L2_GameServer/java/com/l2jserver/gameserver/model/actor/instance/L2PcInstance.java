@@ -100,6 +100,7 @@ import com.l2jserver.gameserver.model.L2Fishing;
 import com.l2jserver.gameserver.model.L2HennaInstance;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Macro;
+import com.l2jserver.gameserver.model.L2ManufactureItem;
 import com.l2jserver.gameserver.model.L2ManufactureList;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
@@ -7554,6 +7555,10 @@ public final class L2PcInstance extends L2Playable
 
 		// Retrieve from the database the recipe book of this L2PcInstance.
 		restoreRecipeBook(true);
+		
+		// Restore Recipe Shop list
+		if(Config.STORE_RECIPE_SHOPLIST)
+			restoreRecipeShopList();
 	}
 
 	/**
@@ -7619,6 +7624,8 @@ public final class L2PcInstance extends L2Playable
 		storeCharSub();
 		storeEffect(storeActiveEffects);
 		transformInsertInfo();
+		if(Config.STORE_RECIPE_SHOPLIST)
+			storeRecipeShopList();
 	}
 	
 	public void store()
@@ -14448,6 +14455,91 @@ public final class L2PcInstance extends L2Playable
 		_silenceMode = mode;
 		sendPacket(new EtcStatusUpdate(this));
 	}
+	
+	private void storeRecipeShopList()
+	{
+		Connection con = null;
 
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement;
+			L2ManufactureList list = getCreateList();
 
+			if (list != null && list.size() > 0)
+			{
+				int	_position = 1;
+				statement = con.prepareStatement("DELETE FROM character_recipeshoplist WHERE charId=? ");
+				statement.setInt(1, getObjectId());
+				statement.execute();
+				statement.close();
+				for (L2ManufactureItem item : list.getList())
+				{
+					statement = con.prepareStatement("INSERT INTO character_recipeshoplist (charId, Recipeid, Price, Pos) VALUES (?, ?, ?, ?)");
+					statement.setInt(1, getObjectId());	
+					statement.setInt(2, item.getRecipeId());
+					statement.setLong(3, item.getCost());
+					statement.setInt(4, _position);
+					statement.execute();
+					statement.close();
+					_position++;
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "Could not store recipe shop for playerID " + getObjectId() + ": ", e);
+		}
+		finally
+		{
+			try
+			{
+				if (con != null)
+					con.close();
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void restoreRecipeShopList()
+	{
+		Connection con = null;
+
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT Recipeid,Price FROM character_recipeshoplist WHERE charId=? ORDER BY Pos ASC");
+			statement.setInt(1, getObjectId());
+			ResultSet rset = statement.executeQuery();
+			
+			
+			L2ManufactureList createList = new L2ManufactureList();
+			while (rset.next())
+			{
+				createList.add(new L2ManufactureItem(rset.getInt("Recipeid"), rset.getLong("Price")));
+			}
+			setCreateList(createList);
+			rset.close();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "Could not restore recipe shop list data for playerId: "+getObjectId(), e);
+		}
+		finally
+		{
+			try
+			{
+				if (con != null)
+					con.close();
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
 }

@@ -193,6 +193,7 @@ public final class Config
 	public static int PARTY_XP_CUTOFF_LEVEL;
 	public static boolean DISABLE_TUTORIAL;
 	public static boolean EXPERTISE_PENALTY;
+	public static boolean STORE_RECIPE_SHOPLIST;
 
 	//--------------------------------------------------
 	// ClanHall Settings
@@ -1421,6 +1422,7 @@ public final class Config
 					PARTY_XP_CUTOFF_LEVEL = Integer.parseInt(Character.getProperty("PartyXpCutoffLevel", "30"));
 					DISABLE_TUTORIAL = Boolean.parseBoolean(Character.getProperty("DisableTutorial", "False"));
 					EXPERTISE_PENALTY = Boolean.parseBoolean(Character.getProperty("ExpertisePenalty", "True"));
+					STORE_RECIPE_SHOPLIST = Boolean.parseBoolean(Character.getProperty("StoreRecipeShopList", "False"));
 				}
 				catch (Exception e)
 				{
