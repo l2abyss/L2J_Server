@@ -269,8 +269,8 @@ public class MapRegionTable
 				castle = 9;
 				break; //Town of Shuttgart
 			case 17:
-				castle = 4;
-				break; //Ivory Tower
+				castle = 2;
+				break; //Floran Village
 			case 18:
 				castle = 8;
 				break; //Primeval Isle Wharf
