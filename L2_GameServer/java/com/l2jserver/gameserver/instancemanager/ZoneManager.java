@@ -44,8 +44,7 @@ import com.l2jserver.gameserver.model.zone.form.*;
 import com.l2jserver.gameserver.model.zone.type.*;
 
 /**
- * This class manages the augmentation data and can also create new
- * augmentations.
+ * This class manages the zones
  * 
  * @author durgus
  */
@@ -98,7 +97,6 @@ public class ZoneManager
 	{
 		_log.info("Loading zones...");
 		Connection con = null;
-		int zoneCount = 0;
 		_zones.clear();
 		
 		// Get the world regions
@@ -360,9 +358,6 @@ public class ZoneManager
 							// Special managers for granbosses...
 							if (temp instanceof L2BossZone)
 								GrandBossManager.getInstance().addZone((L2BossZone) temp);
-							
-							// Increase the counter
-							zoneCount++;
 						}
 					}
 				}
@@ -384,7 +379,7 @@ public class ZoneManager
 			}
 		}
 		
-		_log.info("Done: loaded " + zoneCount + " zones.");
+		_log.info("Done: loaded " + _zones.size() + " zones.");
 	}
 	
 	/**

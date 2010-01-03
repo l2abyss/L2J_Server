@@ -1777,6 +1777,10 @@ public class L2Npc extends L2Character
 			{
 				player.sendPacket(new ExShowBaseAttributeCancelWindow(player));
 			}
+			else 
+			{
+				_log.info(getClass().getSimpleName()+": Unknown NPC bypass: \""+command+"\" NpcId: "+getNpcId());
+			}
 		}
 	}
 

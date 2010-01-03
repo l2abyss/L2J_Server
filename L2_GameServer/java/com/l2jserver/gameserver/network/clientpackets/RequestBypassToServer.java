@@ -156,19 +156,6 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				}
 				catch (NumberFormatException nfe) {}
 			}
-			//	Draw a Symbol
-			else if (_command.equals("menu_select?ask=-16&reply=1"))
-			{
-				L2Object object = activeChar.getTarget();
-				if (object instanceof L2Npc)
-					((L2Npc) object).onBypassFeedback(activeChar, _command);
-			}
-			else if (_command.equals("menu_select?ask=-16&reply=2"))
-			{
-				L2Object object = activeChar.getTarget();
-				if (object instanceof L2Npc)
-					((L2Npc) object).onBypassFeedback(activeChar, _command);
-			}
 			// Navigate through Manor windows
 			else if (_command.startsWith("manor_menu_select?"))
 			{
