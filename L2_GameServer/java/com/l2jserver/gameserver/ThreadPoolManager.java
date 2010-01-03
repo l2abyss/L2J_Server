@@ -205,6 +205,11 @@ public class ThreadPoolManager
 		_generalPacketsThreadPool.execute(pkt);
 	}
 	
+	public void executeCommunityPacket(Runnable r)
+	{
+		_generalPacketsThreadPool.execute(r);
+	}
+	
 	public void executeIOPacket(ReceivablePacket<L2GameClient> pkt)
 	{
 		_ioPacketsThreadPool.execute(pkt);
