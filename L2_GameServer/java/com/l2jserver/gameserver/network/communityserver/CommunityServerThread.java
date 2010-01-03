@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.network.communityserver.readpackets.AuthResponse;
 import com.l2jserver.gameserver.network.communityserver.readpackets.ClanNoticeInfo;
 import com.l2jserver.gameserver.network.communityserver.readpackets.ConnectionError;
@@ -243,7 +244,8 @@ public final class CommunityServerThread extends NetConnection
 					}
 					
 					if (packet != null)
-						new Thread(packet).start();
+						//new Thread(packet).start();
+						ThreadPoolManager.getInstance().executeCommunityPacket(packet);
 					else
 						throw new IOException("Invalid packet!");
 				}
