@@ -44,7 +44,7 @@ public class CharEffectList
 	// The table containing the List of all stacked effect in progress for each Stack group Identifier
 	private Map<String, List<L2Effect>> _stackedEffects;
 
-	private volatile int _numOfEffectsRemovingOnAnyAction = 0;
+	private volatile boolean _hasEffectsRemovedOnAnyAction = false;
 
 	private boolean _queuesInitialized = false;
 	private LinkedBlockingQueue<L2Effect> _addQueue;
@@ -477,7 +477,7 @@ public class CharEffectList
 	 */
 	public void stopEffectsOnAction()
 	{
-		if (_numOfEffectsRemovingOnAnyAction > 0)
+		if (_hasEffectsRemovedOnAnyAction)
 		{
 			if (_buffs != null) 
 			{
@@ -579,9 +579,6 @@ public class CharEffectList
 				return;
 			effectList = _buffs;
 		}
-
-		if (effect.getSkill().isRemovedOnAnyActionExceptMove())
-			_numOfEffectsRemovingOnAnyAction--;
 
 		if ("none".equals(effect.getStackType()))
 		{
@@ -785,9 +782,6 @@ public class CharEffectList
 				}
 				_buffs.add(pos, newEffect);
 			}
-
-			if (newSkill.isRemovedOnAnyActionExceptMove())
-				_numOfEffectsRemovingOnAnyAction++;
 		}
 
 		// Check if a stack group is defined for this effect
@@ -904,13 +898,21 @@ public class CharEffectList
 			if (_owner instanceof L2Summon)
 				ps = new PartySpelled(_owner);
 
+		boolean found = false;
+
 		if (_buffs != null && !_buffs.isEmpty())
 		{
 			synchronized (_buffs)
 			{
 				for (L2Effect e : _buffs)
 				{
-					if (e == null || !e.getShowIcon())
+					if (e == null)
+						continue;
+
+					if (e.getSkill().isRemovedOnAnyActionExceptMove())
+						found = true;
+
+					if (!e.getShowIcon())
 						continue;
 
 					switch (e.getEffectType())
@@ -937,7 +939,13 @@ public class CharEffectList
 			{
 				for (L2Effect e : _debuffs)
 				{
-					if (e == null || !e.getShowIcon())
+					if (e == null)
+						continue;
+
+					if (e.getSkill().isRemovedOnAnyActionExceptMove())
+						found = true;
+
+					if (!e.getShowIcon())
 						continue;
 
 					switch (e.getEffectType())
@@ -957,6 +965,8 @@ public class CharEffectList
 				}
 			}
 		}
+
+		_hasEffectsRemovedOnAnyAction = found;
 
 		if (mi != null)
 			_owner.sendPacket(mi);
