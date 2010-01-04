@@ -88,7 +88,7 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 				player.setIsIn7sDungeon(true);
 			}
 		}
-		if (actualCommand.startsWith("cata"))
+		else if (actualCommand.startsWith("cata"))
 		{
 			boolean canPort = true;
 			if (isSealValidationPeriod)

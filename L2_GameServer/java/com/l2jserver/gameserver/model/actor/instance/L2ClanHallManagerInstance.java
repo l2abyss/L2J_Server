@@ -175,6 +175,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                     html.setFile("data/html/clanHallManager/not_authorized.htm");
                     sendHtmlMessage(player, html);
                 }
+                return;
             }
             else if (actualCommand.equalsIgnoreCase("functions"))
             {
@@ -231,6 +232,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 	                    html.replace("%mp_regen%", "0");
 	                sendHtmlMessage(player, html);
                 }
+                return;
             }
             else if (actualCommand.equalsIgnoreCase("manage"))
             {
@@ -1346,6 +1348,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
                 html.replace("%objectId%", String.valueOf(this.getObjectId()));
                 html.replace("%npcname%", this.getName());
             	sendHtmlMessage(player, html);
+            	return;
             }
             else if (actualCommand.equalsIgnoreCase("support_back"))
             { 
@@ -1354,7 +1357,8 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
             		return; 
             	html.setFile("data/html/clanHallManager/support" + getClanHall().getFunction(ClanHall.FUNC_SUPPORT).getLvl()+".htm"); 
             	html.replace("%mp%", String.valueOf((int)getStatus().getCurrentMp())); 
-            	sendHtmlMessage(player, html); 
+            	sendHtmlMessage(player, html);
+            	return;
             }
             else if (actualCommand.equalsIgnoreCase("goto"))
             {
