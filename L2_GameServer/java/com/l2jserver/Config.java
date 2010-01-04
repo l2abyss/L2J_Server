@@ -590,7 +590,7 @@ public final class Config
 	public static int TVT_EVENT_PARTICIPATION_TIME;
 	public static int TVT_EVENT_RUNNING_TIME;
 	public static int TVT_EVENT_PARTICIPATION_NPC_ID;
-	public static int[] TVT_EVENT_PARTICIPATION_NPC_COORDINATES = new int[3];
+	public static int[] TVT_EVENT_PARTICIPATION_NPC_COORDINATES = new int[4];
 	public static int[] TVT_EVENT_PARTICIPATION_FEE = new int[2];
 	public static int TVT_EVENT_MIN_PLAYERS_IN_TEAMS;
 	public static int TVT_EVENT_MAX_PLAYERS_IN_TEAMS;
@@ -1942,12 +1942,14 @@ public final class Config
 							TVT_EVENT_REWARDS = new FastList<int[]>();
 							TVT_DOORS_IDS_TO_OPEN = new ArrayList<Integer>();
 							TVT_DOORS_IDS_TO_CLOSE = new ArrayList<Integer>();
-							TVT_EVENT_PARTICIPATION_NPC_COORDINATES = new int[3];
+							TVT_EVENT_PARTICIPATION_NPC_COORDINATES = new int[4];
 							TVT_EVENT_TEAM_1_COORDINATES = new int[3];
 							TVT_EVENT_TEAM_2_COORDINATES = new int[3];
 							TVT_EVENT_PARTICIPATION_NPC_COORDINATES[0] = Integer.parseInt(propertySplit[0]);
 							TVT_EVENT_PARTICIPATION_NPC_COORDINATES[1] = Integer.parseInt(propertySplit[1]);
 							TVT_EVENT_PARTICIPATION_NPC_COORDINATES[2] = Integer.parseInt(propertySplit[2]);
+							if (propertySplit.length == 4)
+								TVT_EVENT_PARTICIPATION_NPC_COORDINATES[3] = Integer.parseInt(propertySplit[3]);
 							TVT_EVENT_MIN_PLAYERS_IN_TEAMS = Integer.parseInt(L2JModSettings.getProperty("TvTEventMinPlayersInTeams", "1"));
 							TVT_EVENT_MAX_PLAYERS_IN_TEAMS = Integer.parseInt(L2JModSettings.getProperty("TvTEventMaxPlayersInTeams", "20"));
 							TVT_EVENT_MIN_LVL = (byte)Integer.parseInt(L2JModSettings.getProperty("TvTEventMinPlayerLevel", "1"));

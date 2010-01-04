@@ -120,7 +120,7 @@ public class TvTEvent
 			_npcSpawn.setLocy(Config.TVT_EVENT_PARTICIPATION_NPC_COORDINATES[1]);
 			_npcSpawn.setLocz(Config.TVT_EVENT_PARTICIPATION_NPC_COORDINATES[2]);
 			_npcSpawn.setAmount(1);
-			_npcSpawn.setHeading(0);
+			_npcSpawn.setHeading(Config.TVT_EVENT_PARTICIPATION_NPC_COORDINATES[3]);
 			_npcSpawn.setRespawnDelay(1);
 			// later no need to delete spawn from db, we don't store it (false)
 			SpawnTable.getInstance().addNewSpawn(_npcSpawn, false);
