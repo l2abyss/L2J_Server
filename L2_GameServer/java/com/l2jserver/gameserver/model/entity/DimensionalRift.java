@@ -56,6 +56,7 @@ public class DimensionalRift
 	
 	public DimensionalRift(L2Party party, byte type, byte room)
 	{
+		DimensionalRiftManager.getInstance().getRoom(type, room).setpartyInside(true);
 		_type = type;
 		_party = party;
 		_choosenRoom = room;
@@ -108,7 +109,7 @@ public class DimensionalRift
 			public void run()
 			{
 				if (_choosenRoom > -1)
-					DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn();
+					DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn().setpartyInside(false);;
 				
 				if (reasonTP && jumps_current < getMaxJumps() && _party.getMemberCount() > deadPlayers.size())
 				{
@@ -206,12 +207,14 @@ public class DimensionalRift
 		else
 			_hasJumped = true;
 		
-		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn();
+		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn().setpartyInside(false);;
 		_completedRooms.add(_choosenRoom);
 		_choosenRoom = -1;
 		
 		for (L2PcInstance p : _party.getPartyMembers())
 			teleportToNextRoom(p);
+		
+		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).setpartyInside(true);
 		
 		createSpawnTimer(_choosenRoom);
 		createTeleporterTimer(true);
@@ -235,13 +238,24 @@ public class DimensionalRift
 	
 	protected void teleportToNextRoom(L2PcInstance player)
 	{
+		
 		if (_choosenRoom == -1)
-		{ //Do not tp in the same room a second time
+		{
+			FastList<Byte> emptyRooms;
 			do
-				_choosenRoom = (byte) Rnd.get(1, 9);
-			while (_completedRooms.contains(_choosenRoom));
+			{
+				emptyRooms = DimensionalRiftManager.getInstance().getFreeRooms(_type);
+				// Do not tp in the same room a second time
+				emptyRooms.removeAll(_completedRooms);
+				// If no room left, find any empty
+				if (emptyRooms.isEmpty())
+					emptyRooms = DimensionalRiftManager.getInstance().getFreeRooms(_type);
+				_choosenRoom = emptyRooms.get(Rnd.get(1, emptyRooms.size())-1);
+			}
+			while (DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).ispartyInside());
 		}
 		
+		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).setpartyInside(true);
 		checkBossRoom(_choosenRoom);
 		int[] coords = getRoomCoord(_choosenRoom);
 		player.teleToLocation(coords[0], coords[1], coords[2]);
@@ -269,7 +283,7 @@ public class DimensionalRift
 		_party = null;
 		revivedInWaitingRoom = null;
 		deadPlayers = null;
-		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn();
+		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn().setpartyInside(false);
 		DimensionalRiftManager.getInstance().killRift(this);
 	}
 	
