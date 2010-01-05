@@ -293,52 +293,52 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 
 	public int getPowerToAdd(int stoneId, int oldValue, L2ItemInstance item)
 	{
-		boolean stone = false, crystal = false, jewel = false, energy = false, roughOre = false;
+		boolean found = false;
 		for (int id : Elementals.STONES)
 		{
 			if (id == stoneId)
 			{
-				stone = true;
+				found = true;
 				break;
 			}
 		}
-		if (!stone)
+		if (!found)
 		{
 			for (int id : Elementals.CRYSTALS)
 			{
 				if (id == stoneId)
 				{
-					crystal = true;
+					found = true;
 					break;
 				}
 			}
-			if (!crystal)
+			if (!found)
 			{
 				for (int id : Elementals.JEWELS)
 				{
 					if (id == stoneId)
 					{
-						jewel = true;
+						found = true;
 						break;
 					}
 				}
-				if (!jewel)
+				if (!found)
 				{
 					for (int id : Elementals.ENERGIES)
 					{
 						if (id == stoneId)
 						{
-							energy = true;
+							found = true;
 							break;
 						}
 					}
-					if (!energy)
+					if (!found)
 					{
 						for (int id : Elementals.ROUGHORES)
 						{
 							if (id == stoneId)
 							{
-								roughOre = true;
+								found = true;
 								break;
 							}
 						}
@@ -347,7 +347,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			}
 		}
 
-		if (stone || crystal || jewel || energy || roughOre)
+		if (found)
 		{
 			if (item.isWeapon())
 			{
