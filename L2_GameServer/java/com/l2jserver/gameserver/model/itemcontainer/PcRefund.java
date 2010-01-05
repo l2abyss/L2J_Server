@@ -60,7 +60,11 @@ public class PcRefund extends ItemContainer
 		{
 			if (getSize() > 12)
 			{
-				L2ItemInstance removedItem = _items.remove(0);
+				L2ItemInstance removedItem;
+				synchronized (_items)
+				{
+					removedItem = _items.remove(0);
+				}
 				if (removedItem != null)
 				{
 					ItemTable.getInstance().destroyItem("ClearRefund", removedItem, getOwner(), null);

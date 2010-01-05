@@ -93,6 +93,9 @@ public class PcInventory extends Inventory
 			boolean isDuplicate = false;
 			for (L2ItemInstance litem : list)
 			{
+				if (item == null)
+					continue;
+
 				if (litem.getItemId() == item.getItemId())
 				{
 					isDuplicate = true;
@@ -120,6 +123,8 @@ public class PcInventory extends Inventory
 		List<L2ItemInstance> list = new FastList<L2ItemInstance>();
 		for (L2ItemInstance item : _items)
 		{
+			if (item == null)
+				continue;
 			if ((!allowAdena && item.getItemId() == 57))
 				continue;
 			if ((!allowAncientAdena && item.getItemId() == 5575))
@@ -157,6 +162,9 @@ public class PcInventory extends Inventory
 		List<L2ItemInstance> list = new FastList<L2ItemInstance>();
 		for (L2ItemInstance item : _items)
 		{
+			if (item == null)
+				continue;
+
 			if (item.getItemId() == itemId && (includeEquipped || !item.isEquipped()))
 				list.add(item);
 		}
@@ -184,6 +192,9 @@ public class PcInventory extends Inventory
 		List<L2ItemInstance> list = new FastList<L2ItemInstance>();
 		for (L2ItemInstance item : _items)
 		{
+			if (item == null)
+				continue;
+
 			if ((item.getItemId() == itemId) && (item.getEnchantLevel() == enchantment) && (includeEquipped || !item.isEquipped()))
 				list.add(item);
 		}
@@ -240,7 +251,7 @@ public class PcInventory extends Inventory
 	{
 		List<TradeList.TradeItem> list = new FastList<TradeList.TradeItem>();
 		for (L2ItemInstance item : _items)
-			if (item.isAvailable(getOwner(), false, false))
+			if (item != null && item.isAvailable(getOwner(), false, false))
 				{
 				TradeList.TradeItem adjItem = tradeList.adjustAvailableItem(item);
 					if (adjItem != null) list.add(adjItem);
