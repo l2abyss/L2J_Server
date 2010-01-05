@@ -235,7 +235,7 @@ public class L2SkillSummon extends L2Skill
     		activeChar.setPet(summon);
 
     	L2World.getInstance().storeObject(summon);
-        summon.spawnMe(activeChar.getX()+50, activeChar.getY()+100, activeChar.getZ());
+        summon.spawnMe(activeChar.getX()+20, activeChar.getY()+20, activeChar.getZ());
 	}
 
 	public final boolean isCubic()

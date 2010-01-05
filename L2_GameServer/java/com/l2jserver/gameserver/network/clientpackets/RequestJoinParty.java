@@ -116,6 +116,10 @@ public final class RequestJoinParty extends L2GameClientPacket
         if (target.isInOlympiadMode() || requestor.isInOlympiadMode())
             return;
 
+	    SystemMessage info = new SystemMessage(SystemMessageId.C1_INVITED_TO_PARTY);
+	    info.addCharName(target);
+	    requestor.sendPacket(info);
+        
         if (!requestor.isInParty())     //Asker has no party
         {
             createNewParty(target, requestor);

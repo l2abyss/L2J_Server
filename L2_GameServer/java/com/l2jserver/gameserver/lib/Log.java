@@ -52,14 +52,14 @@ public class Log
 		
 		try
 		{
-			File file = new File("log/game/" + (curr != null ? curr : "" )+( cat != null ? cat : "unk" )+ ".txt");
+			File file = new File("log/game/" + (curr != null ? curr : "" )+(cat != null ? cat : "unk") + ".txt");
 			save = new FileWriter(file, true);
 			String out = "[" + date + "] " + text + "\n";
 			save.write(out);
 		}
 		catch (IOException e)
 		{
-			_log.warning("saving chat log failed: " + e);
+			_log.warning("Error saving logfile: " + e);
 			e.printStackTrace();
 		}
 		finally
@@ -72,10 +72,6 @@ public class Log
 			{
 			}
 		}
-		
-		if (cat != null)
-			add(text, null);
-		
 	}
 	
 	@Deprecated

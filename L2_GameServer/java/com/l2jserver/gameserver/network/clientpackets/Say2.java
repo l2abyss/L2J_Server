@@ -49,8 +49,9 @@ public final class Say2 extends L2GameClientPacket
 	public final static int TRADE = 8; //+
 	public final static int ALLIANCE = 9; //$
 	public final static int ANNOUNCEMENT = 10;
-	public final static int PARTYROOM_ALL = 16; //(Red)
+	public final static int PARTYMATCH_ROOM = 14;
 	public final static int PARTYROOM_COMMANDER = 15; //(Yellow)
+	public final static int PARTYROOM_ALL = 16; //(Red)
 	public final static int HERO_VOICE = 17;
 	public final static int BATTLEFIELD = 20;
 
@@ -70,7 +71,7 @@ public final class Say2 extends L2GameClientPacket
 		"WILLCRASHCLIENT:)",
 		"FAKEALL?",
 		"FAKEALL?",
-		"FAKEALL?",
+		"PARTYMATCH_ROOM",
 		"PARTYROOM_ALL",
 		"PARTYROOM_COMMANDER",
 		"HERO_VOICE",
@@ -104,16 +105,13 @@ public final class Say2 extends L2GameClientPacket
 		if (Config.DEBUG)
 			_log.info("Say2: Msg Type = '" + _type + "' Text = '" + _text + "'.");
 
-		if (_type < 0 || _type >= CHAT_NAMES.length)
-		{
-			_log.warning("Say2: Invalid type: "+_type);
-			return;
-		}
-
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+			return;
+		
+		if (_type < 0 || _type >= CHAT_NAMES.length)
 		{
-			_log.warning("[Say2.java] Active Character is null.");
+			_log.warning("Say2: Invalid type: " +_type + " Player : " + activeChar.getName() + " text: " + String.valueOf(_text));
 			return;
 		}
 		
@@ -125,7 +123,7 @@ public final class Say2 extends L2GameClientPacket
 		
 		// Even though the client can handle more characters than it's current limit allows, an overflow (critical error) happens if you pass a huge (1000+) message.
 		// April 27, 2009 - Verified on Gracia P2 & Final official client as 105
-		if (_text.length() > 105)
+		if (_text.length() > 105 && !activeChar.isGM())
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.DONT_SPAM));
 			return;
