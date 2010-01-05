@@ -2338,6 +2338,8 @@ public class L2Attackable extends L2Npc
 		_harvestItems = null;
 		// Clear mod Seeded stat
 		setSeeded(false);
+		// Clear overhit value
+		overhitEnabled(false);
 
 		_sweepItems = null;
 		resetAbsorbList();
