@@ -46,6 +46,8 @@ public class L2JailZone extends L2ZoneType
 				character.setInsideZone(L2Character.ZONE_PVP, true);
 				((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
 			}
+			if (Config.JAIL_DISABLE_TRANSACTION)
+				character.setInsideZone(L2Character.ZONE_NOSTORE, true);
 		}
 	}
 	
@@ -67,6 +69,8 @@ public class L2JailZone extends L2ZoneType
 				ThreadPoolManager.getInstance().scheduleGeneral(new BackToJail(character), 2000);
 				character.sendMessage("You cannot cheat your way out of here. You must wait until your jail time is over.");
 			}
+			if (Config.JAIL_DISABLE_TRANSACTION)
+				character.setInsideZone(L2Character.ZONE_NOSTORE, false);
 		}
 	}
 	

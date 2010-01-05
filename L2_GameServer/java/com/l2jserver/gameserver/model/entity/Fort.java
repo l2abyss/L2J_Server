@@ -428,7 +428,7 @@ public class Fort
 		// Remove old owner
 		if (getOwnerClan() != null && (clan != null && clan != getOwnerClan()))
 		{
-			updateClansReputation(clan, true);
+			updateClansReputation(getOwnerClan(), true);
 			try
 			{
 				L2PcInstance oldleader = getOwnerClan().getLeader().getPlayerInstance();

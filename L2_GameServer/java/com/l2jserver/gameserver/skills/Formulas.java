@@ -1088,7 +1088,7 @@ public final class Formulas
 			init *= cha.getLevelMod() * CONbonus[cha.getCON()];
 		}
 		else if (cha instanceof L2PetInstance)
-			init = ((L2PetInstance) cha).getPetData().getPetRegenHP();
+			init = ((L2PetInstance) cha).getPetData().getPetRegenHP() * Config.PET_HP_REGEN_MULTIPLIER;
 
 		if (init < 1)
 			init = 1;
@@ -1180,7 +1180,7 @@ public final class Formulas
 			init *= cha.getLevelMod() * MENbonus[cha.getMEN()];
 		}
 		else if (cha instanceof L2PetInstance)
-			init = ((L2PetInstance) cha).getPetData().getPetRegenMP();
+			init = ((L2PetInstance) cha).getPetData().getPetRegenMP() * Config.PET_MP_REGEN_MULTIPLIER;
 
 		if (init < 1)
 			init = 1;

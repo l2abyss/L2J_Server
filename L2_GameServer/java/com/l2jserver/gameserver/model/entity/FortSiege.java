@@ -268,7 +268,7 @@ public class FortSiege
 			removeFlags(); // Removes all flags. Note: Remove flag before teleporting players
 			unSpawnFlags();
 
-			teleportPlayer(FortSiege.TeleportWhoType.Attacker, MapRegionTable.TeleportWhereType.Town);
+			getFort().getZone().banishForeigners(getFort().getOwnerClan());
 			_isInProgress = false; // Flag so that siege instance can be started
 			getFort().getZone().setIsActive(false);
 			getFort().getZone().updateZoneStatusForCharactersInside();
@@ -302,7 +302,10 @@ public class FortSiege
 		if (!getIsInProgress())
 		{
 			if (_siegeStartTask != null) // used admin command "admin_startfortsiege"
+			{
 				_siegeStartTask.cancel(true);
+				getFort().despawnNpcs(getFort()._siegeNpcs);
+			}
 			_siegeStartTask = null;
 
 			if (getAttackerClans().isEmpty())

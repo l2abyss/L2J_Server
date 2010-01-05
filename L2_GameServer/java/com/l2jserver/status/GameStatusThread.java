@@ -498,6 +498,10 @@ public class GameStatusThread extends Thread
                             _print.println("ok");
                             GMAudit.auditGMAction("Telnet Admin", "Give Item", player.getName(), "item: "+itemId+" amount: "+amount);
                         }
+                        else
+                        {
+                        	_print.println("Player not found");
+                        }
                     }
                     catch(Exception e)
                     {

@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.MercTicketManager;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2World;
@@ -61,6 +62,11 @@ public final class RequestPetGetItem extends L2GameClientPacket
 		}
 		L2PetInstance pet = (L2PetInstance)getClient().getActiveChar().getPet();
 		if (pet == null || pet.isDead() || pet.isOutOfControl())
+		{
+			sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		if(FortSiegeManager.getInstance().isCombat(item.getItemId()) )
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;

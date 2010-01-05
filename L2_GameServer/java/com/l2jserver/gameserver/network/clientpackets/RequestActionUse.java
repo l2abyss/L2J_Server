@@ -31,6 +31,7 @@ import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
@@ -241,7 +242,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				activeChar.mountPlayer(pet);
 				break;
 			case 32: // Wild Hog Cannon - Mode Change
-				useSkill(4230);
+				// useSkill(4230);
 				break;
 			case 36: // Soulless - Toxic Smoke
 				useSkill(4259);
@@ -271,7 +272,10 @@ public final class RequestActionUse extends L2GameClientPacket
 				useSkill(4138);
 				break;
 			case 41: // Wild Hog Cannon - Attack
-				useSkill(4230);
+				if( target != null && (target instanceof L2DoorInstance || target instanceof L2SiegeFlagInstance))
+					useSkill(4230);
+				else
+					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 				break;
 			case 42: // Kai the Cat - Self Damage Shield
 				useSkill(4378, activeChar);

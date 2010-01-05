@@ -106,6 +106,12 @@ public final class RequestDropItem extends L2GameClientPacket
 			return;
 		}
 		
+		if (Config.JAIL_DISABLE_TRANSACTION && activeChar.isInJail())
+		{
+			activeChar.sendMessage("You cannot drop items in Jail.");
+			return;			
+		}
+		
 		if (!activeChar.getAccessLevel().allowTransaction())
 		{
 			activeChar.sendMessage("Transactions are disable for your Access Level");

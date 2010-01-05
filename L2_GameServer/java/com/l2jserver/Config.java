@@ -523,6 +523,7 @@ public final class Config
 	public static boolean ONLY_GM_ITEMS_FREE;
 	public static boolean JAIL_IS_PVP;
 	public static boolean JAIL_DISABLE_CHAT;
+	public static boolean JAIL_DISABLE_TRANSACTION;
 	public static boolean CUSTOM_SPAWNLIST_TABLE;
 	public static boolean SAVE_GMSPAWN_ON_CUSTOM;
 	public static boolean DELETE_GMSPAWN_ON_CUSTOM;
@@ -674,8 +675,10 @@ public final class Config
 	public static int GRAND_CHAOS_TIME;
 	public static int MINION_CHAOS_TIME;
 	public static int INVENTORY_MAXIMUM_PET;
-
-
+	public static double PET_HP_REGEN_MULTIPLIER;
+	public static double PET_MP_REGEN_MULTIPLIER;
+	
+	
 	//--------------------------------------------------
 	// PvP Settings
 	//--------------------------------------------------
@@ -1163,7 +1166,7 @@ public final class Config
 					ALT_STRICT_SEVENSIGNS = Boolean.parseBoolean(Feature.getProperty("StrictSevenSigns", "True"));
 
 					TAKE_FORT_POINTS = Integer.parseInt(Feature.getProperty("TakeFortPoints", "200"));
-					LOOSE_FORT_POINTS = Integer.parseInt(Feature.getProperty("LooseFortPoints", "400"));
+					LOOSE_FORT_POINTS = Integer.parseInt(Feature.getProperty("LooseFortPoints", "0"));
 					TAKE_CASTLE_POINTS = Integer.parseInt(Feature.getProperty("TakeCastlePoints", "1500"));
 					LOOSE_CASTLE_POINTS = Integer.parseInt(Feature.getProperty("LooseCastlePoints", "3000"));
 					CASTLE_DEFENDED_POINTS = Integer.parseInt(Feature.getProperty("CastleDefendedPoints", "750"));
@@ -1682,6 +1685,7 @@ public final class Config
 					ONLY_GM_ITEMS_FREE = Boolean.parseBoolean(General.getProperty("OnlyGMItemsFree", "True"));
 					JAIL_IS_PVP = Boolean.parseBoolean(General.getProperty("JailIsPvp", "True"));
 					JAIL_DISABLE_CHAT = Boolean.parseBoolean(General.getProperty("JailDisableChat", "True"));
+					JAIL_DISABLE_TRANSACTION = Boolean.parseBoolean(General.getProperty("JailDisableTransaction", "False"));
 					CUSTOM_SPAWNLIST_TABLE = Boolean.valueOf(General.getProperty("CustomSpawnlistTable", "false"));
 					SAVE_GMSPAWN_ON_CUSTOM = Boolean.valueOf(General.getProperty("SaveGmSpawnOnCustom", "false"));
 					DELETE_GMSPAWN_ON_CUSTOM = Boolean.valueOf(General.getProperty("DeleteGmSpawnOnCustom", "false"));
@@ -1753,6 +1757,8 @@ public final class Config
 					GRAND_CHAOS_TIME = Integer.parseInt(NPC.getProperty("GrandChaosTime", "10"));
 					MINION_CHAOS_TIME = Integer.parseInt(NPC.getProperty("MinionChaosTime", "10"));
 					INVENTORY_MAXIMUM_PET = Integer.parseInt(NPC.getProperty("MaximumSlotsForPet", "12"));
+					PET_HP_REGEN_MULTIPLIER = Double.parseDouble(NPC.getProperty("PetHpRegenMultiplier", "100")) /100;
+					PET_MP_REGEN_MULTIPLIER = Double.parseDouble(NPC.getProperty("PetMpRegenMultiplier", "100")) /100;
 				}
 				catch (Exception e)
 				{

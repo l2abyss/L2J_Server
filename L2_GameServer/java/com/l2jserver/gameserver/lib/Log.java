@@ -46,17 +46,15 @@ public class Log
 		 */
 
 		String date = (new SimpleDateFormat("yy.MM.dd H:mm:ss")).format(new Date());
-		
+		String curr = (new SimpleDateFormat("yyyy-MM-dd-")).format(new Date());
 		new File("log/game").mkdirs();
 		FileWriter save = null;
 		
 		try
 		{
-			File file = new File("log/game/" + (cat != null ? cat : "_all")
-			        + ".txt");
-			// file.getAbsolutePath().mkdirs();
+			File file = new File("log/game/" + (curr != null ? curr : "" )+( cat != null ? cat : "unk" )+ ".txt");
 			save = new FileWriter(file, true);
-			String out = "[" + date + "] '---': " + text + "\n"; // "+char_name()+"
+			String out = "[" + date + "] " + text + "\n";
 			save.write(out);
 		}
 		catch (IOException e)

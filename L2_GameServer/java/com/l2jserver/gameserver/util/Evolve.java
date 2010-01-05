@@ -93,6 +93,11 @@ public final class Evolve
 		if (petSummon == null)
 			return false;
 
+		// Fix for non-linear baby pet exp
+		long _minimumexp = petSummon.getStat().getExpForLevel(petminlvl);
+		if (petexp < _minimumexp)
+			petexp = _minimumexp;
+		
 		petSummon.getStat().addExp(petexp);
 		petSummon.setCurrentHp(petSummon.getMaxHp());
 		petSummon.setCurrentMp(petSummon.getMaxMp());

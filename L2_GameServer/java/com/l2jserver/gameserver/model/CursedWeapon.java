@@ -297,9 +297,9 @@ public class CursedWeapon
         
         CursedWeapon cw = CursedWeaponsManager.getInstance().getCursedWeapon(_player.getCursedWeaponEquippedId());
         SystemMessage msg2 = new SystemMessage(SystemMessageId.S2_MINUTE_OF_USAGE_TIME_ARE_LEFT_FOR_S1);
-        int timeLeftInHours = (int)(((cw.getTimeLeft()/60000)/60));
+        int timeLeft = (int)(cw.getTimeLeft()/60000);
         msg2.addItemName(_player.getCursedWeaponEquippedId());
-        msg2.addNumber(timeLeftInHours*60);
+        msg2.addNumber(timeLeft);
         _player.sendPacket(msg2);
 	}
 	

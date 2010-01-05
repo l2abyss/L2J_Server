@@ -535,9 +535,6 @@ public class LoginController
 	{
 		boolean ok = false;
 		InetAddress address = client.getConnection().getInetAddress();
-		// log it anyway
-		if (Config.LOG_LOGIN_CONTROLLER)
-			Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()), "logins_ip");
 		
 		// player disconnected meanwhile
 		if (address == null)
@@ -589,15 +586,24 @@ public class LoginController
 						statement.execute();
 						statement.close();
 						
+						if (Config.LOG_LOGIN_CONTROLLER)
+							Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()) + " - OK : AccountCreate", "loginlog");
+						
 						_log.info("Created new account for " + user);
 						return true;
 						
 					}
+					if (Config.LOG_LOGIN_CONTROLLER)
+						Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()) + " - ERR : ErrCreatingACC", "loginlog");
+
 					_log.warning("Invalid username creation/use attempt: " + user);
 					return false;
 				}
 				else 
 				{
+					if (Config.LOG_LOGIN_CONTROLLER)
+						Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()) + " - ERR : AccountMissing", "loginlog");
+
 					_log.warning("Account missing for user " + user);
 					FailedLoginAttempt failedAttempt = _hackProtection.get(address);
 					int failedCount;
@@ -626,10 +632,13 @@ public class LoginController
 				// is this account banned?
 				if (access < 0)
 				{
+					if (Config.LOG_LOGIN_CONTROLLER)
+						Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()) + " - ERR : AccountBanned", "loginlog");
+				
 					client.setAccessLevel(access);
 					return false;
 				}
-				
+
 				// check password hash
 				ok = true;
 				for (int i = 0; i < expected.length; i++)
@@ -673,7 +682,7 @@ public class LoginController
 		if (!ok)
 		{
 			if (Config.LOG_LOGIN_CONTROLLER)
-				Log.add("'" + user + "' " + address.getHostAddress(), "logins_ip_fails");
+				Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()) + " - ERR : LoginFailed", "loginlog");
 			
 			FailedLoginAttempt failedAttempt = _hackProtection.get(address);
 			int failedCount;
@@ -699,7 +708,7 @@ public class LoginController
 		{
 			_hackProtection.remove(address);
 			if (Config.LOG_LOGIN_CONTROLLER)
-				Log.add("'" + user + "' " + address.getHostAddress(), "logins_ip");
+				Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()) + " - OK : LoginOk", "loginlog");
 		}
 		
 		return ok;

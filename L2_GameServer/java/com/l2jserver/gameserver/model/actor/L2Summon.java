@@ -100,7 +100,7 @@ public abstract class L2Summon extends L2Playable
 		_owner = owner;
 		_ai = new L2SummonAI(new L2Summon.AIAccessor());
 
-		setXYZInvisible(owner.getX()+50, owner.getY()+100, owner.getZ()+100);
+		setXYZInvisible(owner.getX()+20, owner.getY()+20, owner.getZ()+100);
 	}
 
     @Override
