@@ -47,6 +47,7 @@ import com.l2jserver.gameserver.model.entity.L2Event;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.ServerClose;
+import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.EventData;
 
 /**
@@ -750,5 +751,19 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	public void setProtocolOk(boolean b)
 	{
 		_protocol = b;
+	}
+	
+	public boolean handleCheat(String punishment)
+	{
+		if (_activeChar != null)
+		{
+			Util.handleIllegalPlayerAction(_activeChar, toString()+": "+punishment, Config.DEFAULT_PUNISH);
+			return true;
+		}
+		
+		Logger _logAudit = Logger.getLogger("audit");
+		_logAudit.log(Level.INFO, "AUDIT: Client "+toString()+" kicked for reason: "+punishment);
+		closeNow();
+		return false;
 	}
 }

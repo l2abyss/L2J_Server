@@ -2021,7 +2021,7 @@ public class L2Attackable extends L2Npc
 	private void levelSoulCrystals(L2Character attacker)
 	{
 		// Only L2PcInstance can absorb a soul
-		if (!(attacker instanceof L2PcInstance) && !(attacker instanceof L2Summon))
+		if (!(attacker instanceof L2Playable))
 		{
 			resetAbsorbList(); return;
 		}

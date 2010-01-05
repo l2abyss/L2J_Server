@@ -259,13 +259,16 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
                     	// RequestTeleportPacket
                     	break;
 					case 0x34:
-						msg = new RequestSocialAction();
+						//msg = new RequestSocialAction();
+						client.handleCheat("Used obsolete RequestSocialAction packet");
 						break;
 					case 0x35:
-						msg = new ChangeMoveType2();
+						//msg = new ChangeMoveType2();
+						client.handleCheat("Used obsolete ChangeMoveType packet");
 						break;
 					case 0x36:
-						msg = new ChangeWaitType2();
+						//msg = new ChangeWaitType2();
+						client.handleCheat("Used obsolete ChangeWaitType packet");
 						break;
 					case 0x37:
 						msg = new RequestSellItem();
@@ -1085,7 +1088,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 			return;
 		
 		int size = buf.remaining();
-		_log.warning("Unknown Packet: "+Integer.toHexString(opcode)+" on State: "+state.name()+" Client: "+client.toString());
+		_log.warning("Unknown Packet: 0x"+Integer.toHexString(opcode)+" on State: "+state.name()+" Client: "+client.toString());
      	byte[] array = new byte[size];
      	buf.get(array);
      	_log.warning(Util.printData(array, size));
@@ -1096,7 +1099,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 		if (!Config.PACKET_HANDLER_DEBUG)
 			return;
 		int size = buf.remaining();
-		_log.warning("Unknown Packet: "+Integer.toHexString(opcode)+":" + Integer.toHexString(id2)+" on State: "+state.name()+" Client: "+client.toString());
+		_log.warning("Unknown Packet: 0x"+Integer.toHexString(opcode)+":0x" + Integer.toHexString(id2)+" on State: "+state.name()+" Client: "+client.toString());
      	byte[] array = new byte[size];
      	buf.get(array);
      	_log.warning(Util.printData(array, size));
