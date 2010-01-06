@@ -19,7 +19,7 @@ Stop now.
 ====================
 L2J Server 
 ====================
-$Date: 2006/12/06 19:14:22 $
+$Date: 2010/01/06 13:12:11 $
 
 TOC:
 I.    OVERVIEW
@@ -281,12 +281,12 @@ XII. CREDITS
 ====================
 
 Dev team: 
-http://forum.l2jserver.com/team.php
+http://www.l2jserver.com/forum/memberlist.php?mode=leaders
 
 Have fun playing L2J ;)
 Dev Team
 
-    L2J Server, Copyright (C) 2006-2009 
+    L2J Server, Copyright (C) 2006-2010 
     L2J Server comes with ABSOLUTELY NO WARRANTY.
     This is free software, and you are welcome to redistribute it
     under certain conditions.
