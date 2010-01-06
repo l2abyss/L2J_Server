@@ -4175,7 +4175,6 @@ public final class L2PcInstance extends L2Playable
 		// if skill generate charges and charges already at maximum - skill can't be used
 		if (charges < skill.getRequiredCharges()
 				|| (skill.getMaxCharges() == 0 && charges < skill.getNumCharges())
-				|| (skill.getMaxCharges() > 0 && charges >= skill.getMaxCharges())
 				|| isInAirShip())
 		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
