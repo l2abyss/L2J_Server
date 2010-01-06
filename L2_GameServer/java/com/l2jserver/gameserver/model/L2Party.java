@@ -107,7 +107,7 @@ public class L2Party {
 	 * returns all party members
 	 * @return
 	 */
-	public FastList<L2PcInstance> getPartyMembers()
+	public final FastList<L2PcInstance> getPartyMembers()
 	{
 		return _members;
 	}
@@ -249,6 +249,9 @@ public class L2Party {
 	 */
 	public synchronized void addPartyMember(L2PcInstance player)
 	{
+		if (getPartyMembers().contains(player))
+			return;
+		
 		//sends new member party window for all members
 		//we do all actions before adding member to a list, this speeds things up a little
 		player.sendPacket(new PartySmallWindowAll(player, this));
