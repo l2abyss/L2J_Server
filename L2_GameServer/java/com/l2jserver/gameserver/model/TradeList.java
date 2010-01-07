@@ -636,7 +636,7 @@ public class TradeList
 	 */
 	public int calcItemsWeight()
 	{
-		int weight = 0;
+		long weight = 0;
 
 		for (TradeItem item : _items)
 		{
@@ -648,7 +648,7 @@ public class TradeList
 			weight += item.getCount() * template.getWeight();
 		}
 
-		return weight;
+		return Math.min((int)weight, Integer.MAX_VALUE);
 	}
 
 	/**
