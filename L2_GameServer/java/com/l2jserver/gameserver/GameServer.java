@@ -125,6 +125,7 @@ import com.l2jserver.gameserver.taskmanager.TaskManager;
 import com.l2jserver.gameserver.util.DynamicExtension;
 import com.l2jserver.status.Status;
 import com.l2jserver.util.DeadLockDetector;
+import com.l2jserver.util.IPv4Filter;
 
 /**
  * This class ...
@@ -437,7 +438,7 @@ public class GameServer
 		sc.HELPER_BUFFER_COUNT = Config.MMO_HELPER_BUFFER_COUNT;
 		
 		final L2GamePacketHandler gph = new L2GamePacketHandler();
-		_selectorThread = new SelectorThread<L2GameClient>(sc, gph, gph, gph, null);
+		_selectorThread = new SelectorThread<L2GameClient>(sc, gph, gph, gph, new IPv4Filter());
 		
 		InetAddress bindAddress = null;
 		if (!Config.GAMESERVER_HOSTNAME.equals("*"))
