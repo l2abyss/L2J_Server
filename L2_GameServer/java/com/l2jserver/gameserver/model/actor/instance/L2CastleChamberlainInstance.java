@@ -557,6 +557,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 						html.replace("%mp_regen%", "0");
 					sendHtmlMessage(player, html);
 				}
+				return;
 			}
 			else if (actualCommand.equalsIgnoreCase("manage"))
 			{
