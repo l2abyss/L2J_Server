@@ -70,6 +70,22 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 					{
 						if (activeChar.getPet() != null)
 						{
+							if (item.getEtcItem().getHandlerName().equals("BeastSoulShot"))
+							{
+								if (activeChar.getPet().getSoulShotsPerHit() > item.getCount())
+								{
+									activeChar.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_SOULSHOTS_FOR_PET));
+									return;
+								}
+							}
+							else
+							{
+								if (activeChar.getPet().getSpiritShotsPerHit() > item.getCount())
+								{
+									activeChar.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_SOULSHOTS_FOR_PET));
+									return;
+								}
+							}
 							activeChar.addAutoSoulShot(_itemId);
 							activeChar.sendPacket(new ExAutoSoulShot(_itemId, _type));
 
