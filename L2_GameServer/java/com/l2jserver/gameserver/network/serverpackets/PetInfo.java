@@ -27,7 +27,7 @@ public class PetInfo extends L2GameServerPacket
 {
 	//private static Logger _log = Logger.getLogger(PetInfo.class.getName());
 
-	private static final String _S__CA_PETINFO = "[S] b2 PetInfo";
+	private static final String _S__B2_PETINFO = "[S] b2 PetInfo";
 	private L2Summon _summon;
 	private int _x, _y, _z, _heading;
 	private boolean _isSummoned;
@@ -186,7 +186,7 @@ public class PetInfo extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return _S__CA_PETINFO;
+		return _S__B2_PETINFO;
 	}
 
 }

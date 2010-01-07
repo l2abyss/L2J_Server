@@ -618,7 +618,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_form); //CT1.5 Pet form and skills
 			writeC(0x01);
 			writeC(0x01);
-			writeD(0x00);
+			writeD(_summon.getSpecialEffect());
 		}
 	}
 }
