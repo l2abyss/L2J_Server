@@ -73,11 +73,6 @@ public abstract class L2Summon extends L2Playable
     private int _chargedSoulShot;
     private int _chargedSpiritShot;
 
-    // TODO: currently, all servitors use 1 shot.  However, this value
-    // should vary depending on the servitor template (id and level)!
-    private int _soulShotsPerHit = 1;
-    private int _spiritShotsPerHit = 1;
-
 	public class AIAccessor extends L2Character.AIAccessor
 	{
 		protected AIAccessor() {}
@@ -358,14 +353,18 @@ public abstract class L2Summon extends L2Playable
         return 0;
     }
 
-    public final int getSoulShotsPerHit()
+    public final short getSoulShotsPerHit()
     {
-        return _soulShotsPerHit;
+    	if (getTemplate().soulShotCount > 0)
+    		return getTemplate().soulShotCount;
+    	else return 1;
     }
 
-    public final int getSpiritShotsPerHit()
+    public final short getSpiritShotsPerHit()
     {
-        return _spiritShotsPerHit;
+    	if (getTemplate().spiritShotCount > 0)
+    		return getTemplate().spiritShotCount;
+    	else return 1;
     }
 
     public void setChargedSoulShot(int shotType)

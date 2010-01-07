@@ -73,8 +73,8 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public final int factionRange;
 	public final int absorbLevel;
 	public final AbsorbCrystalType absorbType;
-	public final short ss;
-	public final short bss;
+	public final short soulShotCount;
+	public final short spiritShotCount;
 	public final short ssRate;
 	public Race race;
 	public final String jClass;
@@ -227,8 +227,8 @@ public final class L2NpcTemplate extends L2CharTemplate
 		factionRange = set.getInteger("factionRange");
 		absorbLevel = set.getInteger("absorb_level", 0);
 		absorbType = AbsorbCrystalType.valueOf(set.getString("absorb_type"));
-		ss = (short) set.getInteger("ss", 0);
-		bss = (short) set.getInteger("bss", 0);
+		soulShotCount = (short) set.getInteger("soulshot_count", 0);
+		spiritShotCount = (short) set.getInteger("spiritshot_count", 0);
 		ssRate = (short) set.getInteger("ssRate", 0);
 		race = null;
 		dropherb = set.getBool("drop_herbs", false);
