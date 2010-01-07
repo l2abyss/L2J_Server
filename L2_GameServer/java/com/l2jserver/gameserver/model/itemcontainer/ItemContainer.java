@@ -404,6 +404,7 @@ public abstract class ItemContainer
 			if (sourceitem.isAugmented())
 				sourceitem.getAugmentation().removeBonus(actor);
 			refreshWeight();
+			target.refreshWeight();
 		}
 		return targetitem;
 	}
