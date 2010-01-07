@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.skills.conditions;
 
-//import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.skills.Env;
 
 /**
@@ -24,9 +22,6 @@ import com.l2jserver.gameserver.skills.Env;
  */
 public abstract class Condition implements ConditionListener
 {
-	
-	//private static final Logger _log = Logger.getLogger(Condition.class.getName());
-
 	private ConditionListener _listener;
 	private String _msg;
 	private int _msgId;

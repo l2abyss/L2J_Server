@@ -332,7 +332,7 @@ public class L2SummonInstance extends L2Summon
 			return super.getAttackElementValue(attribute);
 
 		// 80% of the owner (onwer already has only 20%)
-		return 4 * getOwner().getAttackElementValue(attribute); 
+		return 4 * getOwner().getAttackElementValue(attribute);
 	}
 
 	@Override

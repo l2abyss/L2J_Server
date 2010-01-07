@@ -67,7 +67,7 @@ public final class AddTradeItem extends L2GameClientPacket
 			return;
 		}
 
-		final L2PcInstance partner = trade.getPartner(); 
+		final L2PcInstance partner = trade.getPartner();
 		if (partner == null
 				|| L2World.getInstance().findObject(partner.getObjectId()) == null
 				|| partner.getActiveTradeList() == null)

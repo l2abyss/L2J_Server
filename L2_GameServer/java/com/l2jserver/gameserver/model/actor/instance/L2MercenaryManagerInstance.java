@@ -40,8 +40,8 @@ public class L2MercenaryManagerInstance extends L2Npc
 	{
 		if (command.equalsIgnoreCase("Territory"))
 		{
-			int terrId = getNpcId() - 36400;
-			player.sendPacket(new ExShowDominionRegistry(terrId));
+			int castleId = getNpcId() - 36480;
+			player.sendPacket(new ExShowDominionRegistry(castleId));
 		}
 		else
 			super.onBypassFeedback(player, command);

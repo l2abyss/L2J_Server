@@ -132,19 +132,22 @@ public class PcInventory extends Inventory
 
 			boolean isDuplicate = false;
 			for (L2ItemInstance litem : list)
-				if( (litem.getItemId() == item.getItemId()) && (litem.getEnchantLevel() == item.getEnchantLevel()))
+			{
+				if ((litem.getItemId() == item.getItemId()) && (litem.getEnchantLevel() == item.getEnchantLevel()))
 				{
 					isDuplicate = true;
 					break;
 				}
-			if (!isDuplicate && (!onlyAvailable || (item.isSellable() && item.isAvailable(getOwner(), false, false)))) list.add(item);
+			}
+			if (!isDuplicate && (!onlyAvailable || (item.isSellable() && item.isAvailable(getOwner(), false, false))))
+				list.add(item);
 		}
 
 		return list.toArray(new L2ItemInstance[list.size()]);
 	}
 
 	/**
-	 * @see net.sf.l2j.gameserver.model.itemcontainer.PcInventory#getAllItemsByItemId(int, boolean)
+	 * @see com.l2jserver.gameserver.model.itemcontainer.PcInventory#getAllItemsByItemId(int, boolean)
 	 */
 	public L2ItemInstance[] getAllItemsByItemId(int itemId)
 	{
@@ -173,7 +176,7 @@ public class PcInventory extends Inventory
 	}
 
 	/**
-	 * @see net.sf.l2j.gameserver.model.itemcontainer.PcInventory#getAllItemsByItemId(int, int, boolean)
+	 * @see com.l2jserver.gameserver.model.itemcontainer.PcInventory#getAllItemsByItemId(int, int, boolean)
 	 */
 	public L2ItemInstance[] getAllItemsByItemId(int itemId, int enchantment)
 	{

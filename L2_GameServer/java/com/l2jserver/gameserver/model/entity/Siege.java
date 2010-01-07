@@ -860,7 +860,7 @@ public class Siege
 		{
 			if (player.getClan().getAllyId() == allyId && !force)
 			{
-				player.sendMessage("You cannot register as an attacker because your alliance owns the castle");
+				player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_ATTACK_ALLIANCE_CASTLE));
 				return;
 			}
 		}
@@ -1418,6 +1418,10 @@ public class Siege
 
 		if (!SevenSigns.getInstance().isDateInSealValidPeriod(getCastle().getSiegeDate()))
 			getCastle().getSiegeDate().add(Calendar.DAY_OF_MONTH, 7);
+
+		SystemMessage sm = new SystemMessage(SystemMessageId.S1_ANNOUNCED_SIEGE_TIME);
+		sm.addString(getCastle().getName());
+		Announcements.getInstance().announceToAll(sm);
 
 		_isRegistrationOver = false; // Allow registration for next siege
 	}

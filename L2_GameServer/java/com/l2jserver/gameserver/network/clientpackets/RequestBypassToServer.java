@@ -210,7 +210,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			}
 			else if (_command.startsWith("OlympiadArenaChange"))
 			{
-					Olympiad.bypassChangeArena(_command, activeChar);
+				Olympiad.bypassChangeArena(_command, activeChar);
 			}
 		}
 		catch (Exception e)

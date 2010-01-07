@@ -369,7 +369,7 @@ public final class L2PcInstance extends L2Playable
 
 	private String _accountName;
 	private long _deleteTimer;
-    private long _creationTime; 
+	private long _creationTime; 
 
 	private boolean _isOnline = false;
 	private long _onlineTime;
@@ -959,7 +959,7 @@ public final class L2PcInstance extends L2Playable
 		player.setName(name);
 		
 		// Set Character's create time 
-        player.setCreateTime(System.currentTimeMillis()); 
+		player.setCreateTime(System.currentTimeMillis());
 		
 		// Set the base class ID to that of the actual class ID.
 		player.setBaseClass(player.getClassId());
@@ -2332,7 +2332,9 @@ public final class L2PcInstance extends L2Playable
                 // Check to rest to assure current effect meets weapon requirements.
             	if (!effectSkill.getWeaponDependancy(this))
                 {
-                    sendMessage(effectSkill.getName() + " cannot be used with this weapon.");
+            		SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+            		sm.addSkillName(effectSkill);
+            		sendPacket(sm);
 
                     if (Config.DEBUG)
                         _log.info("   | Skill "+effectSkill.getName()+" has been disabled for ("+getName()+"); Reason: Incompatible Weapon Type.");
@@ -5736,7 +5738,7 @@ public final class L2PcInstance extends L2Playable
 						targetPlayer.isInsideZone(ZONE_PVP) 	 //   Target player is inside pvp zone
 				)
 		)
-            increasePvpKills(target);
+			increasePvpKills(target);
 		else
 		// Target player doesn't have pvp flag set
 		{
@@ -5755,12 +5757,12 @@ public final class L2PcInstance extends L2Playable
             // 'No war' or 'One way war' -> 'Normal PK'
 			if (targetPlayer.getKarma() > 0)                                        // Target player has karma
 			{
-				if ( Config.KARMA_AWARD_PK_KILL )
+				if (Config.KARMA_AWARD_PK_KILL)
                     increasePvpKills(target);
 			}
 			else if (targetPlayer.getPvpFlag() == 0)                                                                    // Target player doesn't have karma
 			{
-                increasePkKillsAndKarma(target);
+				increasePkKillsAndKarma(target);
 				//Unequip adventurer items
 				if(getInventory().getPaperdollItemId(7) >= 7816 && getInventory().getPaperdollItemId(7) <= 7831) 
 				{
@@ -5780,80 +5782,86 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 
-    /**
-     * Increase the pvp kills count and send the info to the player
-     *
-     */
-    public void increasePvpKills(L2Character target)
-    {
-    	if (target instanceof L2PcInstance
-    			&& AntiFeedManager.getInstance().check(this, target))
-    	{
-        	// Add karma to attacker and increase its PK counter
-            setPvpKills(getPvpKills() + 1);
+	/**
+	 * Increase the pvp kills count and send the info to the player
+	 *
+	 */
+	public void increasePvpKills(L2Character target)
+	{
+		if (target instanceof L2PcInstance
+				&& AntiFeedManager.getInstance().check(this, target))
+		{
+			// Add karma to attacker and increase its PK counter
+			setPvpKills(getPvpKills() + 1);
 
-            // Send a Server->Client UserInfo packet to attacker with its Karma and PK Counter
-            sendPacket(new UserInfo(this));
-            sendPacket(new ExBrExtraUserInfo(this));
-    	}
-    }
+			// Send a Server->Client UserInfo packet to attacker with its Karma and PK Counter
+			sendPacket(new UserInfo(this));
+			sendPacket(new ExBrExtraUserInfo(this));
+		}
+	}
 
-    /**
-     * Increase pk count, karma and send the info to the player
-     *
-     * @param targLVL : level of the killed player
-     * @param increasePk : true if PK counter should be increased too
-     */
-    public void increasePkKillsAndKarma(L2Character target)
-    {
-        int baseKarma           = Config.KARMA_MIN_KARMA;
-        int newKarma            = baseKarma;
-        int karmaLimit          = Config.KARMA_MAX_KARMA;
+	/**
+	 * Increase pk count, karma and send the info to the player
+	 *
+	 * @param targLVL : level of the killed player
+	 * @param increasePk : true if PK counter should be increased too
+	 */
+	public void increasePkKillsAndKarma(L2Character target)
+	{
+		int baseKarma           = Config.KARMA_MIN_KARMA;
+		int newKarma            = baseKarma;
+		int karmaLimit          = Config.KARMA_MAX_KARMA;
 
-        int pkLVL               = getLevel();
-        int pkPKCount           = getPkKills();
+		int pkLVL               = getLevel();
+		int pkPKCount           = getPkKills();
 
-        int targLVL             = target.getLevel();
+		int targLVL             = target.getLevel();
 
-        int lvlDiffMulti = 0;
-        int pkCountMulti = 0;
+		int lvlDiffMulti = 0;
+		int pkCountMulti = 0;
 
-        // Check if the attacker has a PK counter greater than 0
-        if ( pkPKCount > 0 )
-            pkCountMulti = pkPKCount / 2;
-        else
-            pkCountMulti = 1;
-        if ( pkCountMulti < 1 ) pkCountMulti = 1;
+		// Check if the attacker has a PK counter greater than 0
+		if (pkPKCount > 0)
+			pkCountMulti = pkPKCount / 2;
+		else
+			pkCountMulti = 1;
 
-        // Calculate the level difference Multiplier between attacker and killed L2PcInstance
-        if ( pkLVL > targLVL )
-            lvlDiffMulti = pkLVL / targLVL;
-        else
-            lvlDiffMulti = 1;
-        if ( lvlDiffMulti < 1 ) lvlDiffMulti = 1;
+		if (pkCountMulti < 1)
+			pkCountMulti = 1;
 
-        // Calculate the new Karma of the attacker : newKarma = baseKarma*pkCountMulti*lvlDiffMulti
-        newKarma *= pkCountMulti;
-        newKarma *= lvlDiffMulti;
+		// Calculate the level difference Multiplier between attacker and killed L2PcInstance
+		if (pkLVL > targLVL)
+			lvlDiffMulti = pkLVL / targLVL;
+		else
+			lvlDiffMulti = 1;
 
-        // Make sure newKarma is less than karmaLimit and higher than baseKarma
-        if ( newKarma < baseKarma ) newKarma = baseKarma;
-        if ( newKarma > karmaLimit ) newKarma = karmaLimit;
+		if (lvlDiffMulti < 1)
+			lvlDiffMulti = 1;
 
-        // Fix to prevent overflow (=> karma has a  max value of 2 147 483 647)
-        if (getKarma() > (Integer.MAX_VALUE - newKarma))
-            newKarma = Integer.MAX_VALUE - getKarma();
+		// Calculate the new Karma of the attacker : newKarma = baseKarma*pkCountMulti*lvlDiffMulti
+		newKarma *= pkCountMulti;
+		newKarma *= lvlDiffMulti;
 
-        // Add karma to attacker and increase its PK counter
-        setKarma(getKarma() + newKarma);
-        if (target instanceof L2PcInstance
-        		&& AntiFeedManager.getInstance().check(this, target))
-            setPkKills(getPkKills() + 1);
+		// Make sure newKarma is less than karmaLimit and higher than baseKarma
+		if (newKarma < baseKarma)
+			newKarma = baseKarma;
+		if (newKarma > karmaLimit)
+			newKarma = karmaLimit;
 
-        // Send a Server->Client UserInfo packet to attacker with its Karma and PK Counter
-        sendPacket(new UserInfo(this));
-        sendPacket(new ExBrExtraUserInfo(this));
-    }
+		// Fix to prevent overflow (=> karma has a  max value of 2 147 483 647)
+		if (getKarma() > (Integer.MAX_VALUE - newKarma))
+			newKarma = Integer.MAX_VALUE - getKarma();
+
+		// Add karma to attacker and increase its PK counter
+		setKarma(getKarma() + newKarma);
+		if (target instanceof L2PcInstance
+				&& AntiFeedManager.getInstance().check(this, target))
+			setPkKills(getPkKills() + 1);
+
+		// Send a Server->Client UserInfo packet to attacker with its Karma and PK Counter
+		sendPacket(new UserInfo(this));
+		sendPacket(new ExBrExtraUserInfo(this));
+	}
 
 	public int calculateKarmaLost(long exp)
 	{
@@ -8756,7 +8764,7 @@ public final class L2PcInstance extends L2Playable
 		if (skill.isToggle())
 		{
 			// Get effects of the skill
-            L2Effect effect = getFirstEffect(skill.getId());
+			L2Effect effect = getFirstEffect(skill.getId());
 
 			if (effect != null)
 			{
@@ -13404,8 +13412,7 @@ public final class L2PcInstance extends L2Playable
 			Instance summonerInstance = InstanceManager.getInstance().getInstance(summonerChar.getInstanceId());
 			if (!Config.ALLOW_SUMMON_TO_INSTANCE || !summonerInstance.isSummonAllowed())
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.YOU_MAY_NOT_SUMMON_FROM_YOUR_CURRENT_LOCATION);
-				summonerChar.sendPacket(sm);
+				summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOU_MAY_NOT_SUMMON_FROM_YOUR_CURRENT_LOCATION));
 				return false;
 			}
 		}

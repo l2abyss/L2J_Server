@@ -74,10 +74,7 @@ public class ExShowReceivedPost extends L2GameServerPacket
 				writeH(0x00); // unknown
 				writeD(0x00); // unknown
 
-				if (item.isAugmented())
-					writeD(item.getAugmentation().getAugmentationId());
-				else
-					writeD(0x00);
+				writeD(item.isAugmented() ? item.getAugmentation().getAugmentationId() : 0x00);
 
 				writeD(0x00); // unknown 
 

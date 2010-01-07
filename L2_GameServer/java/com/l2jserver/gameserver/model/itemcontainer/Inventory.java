@@ -422,10 +422,10 @@ public abstract class Inventory extends ItemContainer
 			{
 				// Apply augmentation bonuses on equip
 				if (item.isAugmented()) 
-					item.getAugmentation().applyBonus(player); 
+					item.getAugmentation().applyBonus(player);
 				
 				if (item.getElementals() != null)
-					item.getElementals().applyBonus(player, false); 
+					item.getElementals().applyBonus(player, false);
 
 				// Add skills bestowed from +4 Rapiers/Duals
 				if (item.getEnchantLevel() >= 4)
@@ -503,7 +503,7 @@ public abstract class Inventory extends ItemContainer
 				// Add skills bestowed from +4 armor
 				if (item.getEnchantLevel() >= 4)
 				{
-					enchant4Skill= ((L2Armor)it).getEnchant4Skill();
+					enchant4Skill = ((L2Armor)it).getEnchant4Skill();
 
 					if (enchant4Skill != null)
 					{

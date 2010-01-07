@@ -271,7 +271,7 @@ public class L2OlympiadManagerInstance extends L2Npc
                 	Olympiad.addSpectator(id, player, true);
                 	break;
                 case 4:
-                	player.sendPacket(new ExHeroList());  
+                	player.sendPacket(new ExHeroList());
                 	break;
                 default:
                 	_logOlymp.warning("Olympiad System: Couldnt send packet for request " + val);
