@@ -648,7 +648,7 @@ public class TradeList
 			weight += item.getCount() * template.getWeight();
 		}
 
-		return Math.min((int)weight, Integer.MAX_VALUE);
+		return (int)Math.min(weight, Integer.MAX_VALUE);
 	}
 
 	/**
