@@ -84,8 +84,10 @@ public class QuestManager extends ScriptManager<Quest>
 			for (Quest quest : _quests.values())
 			{
 				if (quest != null)
-					quest.unload();
+					quest.unload(false);
 			}
+			
+			_quests.clear();
 			// now load all scripts
 			File scripts = new File(Config.DATAPACK_ROOT + "/data/scripts.cfg");
 			L2ScriptEngineManager.getInstance().executeScriptList(scripts);

@@ -1738,6 +1738,11 @@ public class Quest extends ManagedScript
 	@Override
 	public boolean unload()
 	{
+		return unload(true);
+	}
+	
+	public boolean unload(boolean removeFromList)
+	{
 		this.saveGlobalData();
 		// cancel all pending timers before reloading.
 		// if timers ought to be restarted, the quest can take care of it
@@ -1747,7 +1752,10 @@ public class Quest extends ManagedScript
 			for (QuestTimer timer : timers)
 				timer.cancel();
 		_allEventTimers.clear();
-		return QuestManager.getInstance().removeQuest(this);
+		if (removeFromList)
+			return QuestManager.getInstance().removeQuest(this);
+		else
+			return true;
 	}
 	
 	/**
