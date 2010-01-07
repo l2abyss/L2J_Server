@@ -77,6 +77,8 @@ public class MercTicketManager
 			20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, // Rune
 			20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20 // Schuttgart
 	};
+	
+	//TODO: not retail like: clan lvl 5 - 30 ticks max, lvl 7+ - 50 max
 	private static final int[] MERCS_MAX_PER_CASTLE = {
 			100, // Gludio
 			150, // Dion
@@ -374,6 +376,7 @@ public class MercTicketManager
 	 */
 	public void deleteTickets(int castleId)
 	{
+		List<L2ItemInstance> toDelete = new FastList<L2ItemInstance>();
 		for (L2ItemInstance item : getDroppedTickets())
 		{
 			if ((item != null) && (getTicketCastleId(item.getItemId()) == castleId))
@@ -382,9 +385,10 @@ public class MercTicketManager
 				L2World.getInstance().removeObject(item);
 				
 				// remove from the list
-				getDroppedTickets().remove(item);
+				toDelete.add(item);
 			}
 		}
+		getDroppedTickets().removeAll(toDelete);
 	}
 	
 	/**
@@ -422,7 +426,11 @@ public class MercTicketManager
 	public final List<L2ItemInstance> getDroppedTickets()
 	{
 		if (_droppedTickets == null)
-			_droppedTickets = new FastList<L2ItemInstance>();
+			synchronized (this)
+			{
+				if (_droppedTickets == null)
+					_droppedTickets = new FastList<L2ItemInstance>();
+			}
 		return _droppedTickets;
 	}
 	
