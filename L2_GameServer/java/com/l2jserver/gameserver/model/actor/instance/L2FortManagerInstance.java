@@ -294,6 +294,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 						html.replace("%mp_regen%", "0");
 					sendHtmlMessage(player, html);
 				}
+				return;
 			}
 			else if (actualCommand.equalsIgnoreCase("manage"))
 			{
