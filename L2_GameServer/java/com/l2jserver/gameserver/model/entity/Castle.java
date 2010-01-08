@@ -194,19 +194,11 @@ public class Castle
 					if (ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().getAdena() >= _fee || !_cwh)
 					{
 						int fee = _fee;
-						boolean newfc = true;
-						if (getEndTime() == 0 || getEndTime() == -1)
-						{
-							if (getEndTime() == -1)
-							{
-								newfc = false;
-								fee = _tempFee;
-							}
-						}
-						else
-							newfc = false;
+						if (getEndTime() == -1)
+							fee = _tempFee;
+						
 						setEndTime(System.currentTimeMillis() + getRate());
-						dbSave(newfc);
+						dbSave();
 						if (_cwh)
 						{
 							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CS_function_fee", 57, fee, null, null);
@@ -225,7 +217,7 @@ public class Castle
 			}
 		}
 		
-		public void dbSave(boolean newFunction)
+		public void dbSave()
 		{
 			Connection con = null;
 			try
@@ -233,25 +225,13 @@ public class Castle
 				PreparedStatement statement;
 				
 				con = L2DatabaseFactory.getInstance().getConnection();
-				if (newFunction)
-				{
-					statement = con.prepareStatement("INSERT INTO castle_functions (castle_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)");
-					statement.setInt(1, getCastleId());
-					statement.setInt(2, getType());
-					statement.setInt(3, getLvl());
-					statement.setInt(4, getLease());
-					statement.setLong(5, getRate());
-					statement.setLong(6, getEndTime());
-				}
-				else
-				{
-					statement = con.prepareStatement("UPDATE castle_functions SET lvl=?, lease=?, endTime=? WHERE castle_id=? AND type=?");
-					statement.setInt(1, getLvl());
-					statement.setInt(2, getLease());
-					statement.setLong(3, getEndTime());
-					statement.setInt(4, getCastleId());
-					statement.setInt(5, getType());
-				}
+				statement = con.prepareStatement("REPLACE INTO castle_functions (castle_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)");
+				statement.setInt(1, getCastleId());
+				statement.setInt(2, getType());
+				statement.setInt(3, getLvl());
+				statement.setInt(4, getLease());
+				statement.setLong(5, getRate());
+				statement.setLong(6, getEndTime());
 				statement.execute();
 				statement.close();
 			}
@@ -850,7 +830,7 @@ public class Castle
 				{
 					_function.get(type).setLease(lease);
 					_function.get(type).setLvl(lvl);
-					_function.get(type).dbSave(false);
+					_function.get(type).dbSave();
 				}
 			}
 		}

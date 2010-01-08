@@ -413,7 +413,7 @@ class DocumentSkill extends DocumentBase {
 					}
                     _currentSkill.currentSkills.get(i).attach(condition, false);
 				}
-				if ("for".equalsIgnoreCase(n.getNodeName()))
+				else if ("for".equalsIgnoreCase(n.getNodeName()))
 				{
 					parseTemplate(n, _currentSkill.currentSkills.get(i));
 				}
@@ -422,31 +422,31 @@ class DocumentSkill extends DocumentBase {
         for (int i=lastLvl; i < lastLvl+enchantLevels1; i++)
         {
             _currentSkill.currentLevel = i-lastLvl;
-            boolean found = false;
+            boolean foundCond = false, foundFor = false;
             for (n=first; n != null; n = n.getNextSibling())
             {
                 if ("enchant1cond".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundCond = true;
                 	Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
                     Node msg = n.getAttributes().getNamedItem("msg");
                     if (condition != null && msg != null)
                         condition.setMessage(msg.getNodeValue());
                     _currentSkill.currentSkills.get(i).attach(condition,false);
                 }
-                if ("enchant1for".equalsIgnoreCase(n.getNodeName()))
+                else if ("enchant1for".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundFor = true;
                 	parseTemplate(n, _currentSkill.currentSkills.get(i));
                 }
             }
            	// If none found, the enchanted skill will take effects from maxLvL of norm skill
-        	if (!found)
+        	if (!foundCond || !foundFor)
         	{
         		_currentSkill.currentLevel = lastLvl-1;
         		for (n=first; n != null; n = n.getNextSibling())
         		{
-        			if ("cond".equalsIgnoreCase(n.getNodeName()))
+        			if (!foundCond && "cond".equalsIgnoreCase(n.getNodeName()))
         			{
         				Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
         				Node msg = n.getAttributes().getNamedItem("msg");
@@ -454,7 +454,7 @@ class DocumentSkill extends DocumentBase {
         					condition.setMessage(msg.getNodeValue());
         				_currentSkill.currentSkills.get(i).attach(condition,false);
         			}
-        			if ("for".equalsIgnoreCase(n.getNodeName()))
+        			else if (!foundFor && "for".equalsIgnoreCase(n.getNodeName()))
         			{
         				parseTemplate(n, _currentSkill.currentSkills.get(i));
         			}
@@ -463,32 +463,32 @@ class DocumentSkill extends DocumentBase {
         }
         for (int i=lastLvl+enchantLevels1; i < lastLvl+enchantLevels1+enchantLevels2; i++)
         {
-        	boolean found = false;
+        	boolean foundCond = false, foundFor = false;
         	_currentSkill.currentLevel = i-lastLvl-enchantLevels1;
             for (n=first; n != null; n = n.getNextSibling())
             {
                 if ("enchant2cond".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundCond = true;
                 	Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
                     Node msg = n.getAttributes().getNamedItem("msg");
                     if (condition != null && msg != null)
                         condition.setMessage(msg.getNodeValue());
                     _currentSkill.currentSkills.get(i).attach(condition,false);
                 }
-                if ("enchant2for".equalsIgnoreCase(n.getNodeName()))
+                else if ("enchant2for".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundFor = true;
                 	parseTemplate(n, _currentSkill.currentSkills.get(i));
                 }
             }
             // If none found, the enchanted skill will take effects from maxLvL of norm skill
-            if(!found)
+            if(!foundCond || !foundFor)
             {
             	_currentSkill.currentLevel = lastLvl-1;
             	for (n=first; n != null; n = n.getNextSibling())
             	{
-            		if ("cond".equalsIgnoreCase(n.getNodeName()))
+            		if (!foundCond && "cond".equalsIgnoreCase(n.getNodeName()))
             		{
             			Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
             			Node msg = n.getAttributes().getNamedItem("msg");
@@ -496,7 +496,7 @@ class DocumentSkill extends DocumentBase {
             				condition.setMessage(msg.getNodeValue());
             			_currentSkill.currentSkills.get(i).attach(condition,false);
             		}
-            		if ("for".equalsIgnoreCase(n.getNodeName()))
+            		else if (!foundFor && "for".equalsIgnoreCase(n.getNodeName()))
             		{
             			parseTemplate(n, _currentSkill.currentSkills.get(i));
             		}
@@ -505,32 +505,32 @@ class DocumentSkill extends DocumentBase {
         }
         for (int i=lastLvl+enchantLevels1+enchantLevels2; i < lastLvl+enchantLevels1+enchantLevels2+enchantLevels3; i++)
         {
-            boolean found = false;
+            boolean foundCond = false, foundFor = false;
             _currentSkill.currentLevel = i-lastLvl-enchantLevels1-enchantLevels2;
             for (n=first; n != null; n = n.getNextSibling())
             {
                 if ("enchant3cond".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundCond = true;
                     Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
                     Node msg = n.getAttributes().getNamedItem("msg");
                     if (condition != null && msg != null)
                         condition.setMessage(msg.getNodeValue());
                     _currentSkill.currentSkills.get(i).attach(condition,false);
                 }
-                if ("enchant3for".equalsIgnoreCase(n.getNodeName()))
+                else if ("enchant3for".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundFor = true;
                     parseTemplate(n, _currentSkill.currentSkills.get(i));
                 }
             }
             // If none found, the enchanted skill will take effects from maxLvL of norm skill
-            if(!found)
+            if(!foundCond || !foundFor)
             {
                 _currentSkill.currentLevel = lastLvl-1;
                 for (n=first; n != null; n = n.getNextSibling())
                 {
-                    if ("cond".equalsIgnoreCase(n.getNodeName()))
+                    if (!foundCond && "cond".equalsIgnoreCase(n.getNodeName()))
                     {
                         Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
                         Node msg = n.getAttributes().getNamedItem("msg");
@@ -538,7 +538,7 @@ class DocumentSkill extends DocumentBase {
                             condition.setMessage(msg.getNodeValue());
                         _currentSkill.currentSkills.get(i).attach(condition,false);
                     }
-                    if ("for".equalsIgnoreCase(n.getNodeName()))
+                    else if (!foundFor && "for".equalsIgnoreCase(n.getNodeName()))
                     {
                         parseTemplate(n, _currentSkill.currentSkills.get(i));
                     }
@@ -547,32 +547,32 @@ class DocumentSkill extends DocumentBase {
         }
         for (int i=lastLvl+enchantLevels1+enchantLevels2+enchantLevels3; i < lastLvl+enchantLevels1+enchantLevels2+enchantLevels3+enchantLevels4; i++)
         {
-            boolean found = false;
+            boolean foundCond = false, foundFor = false;
             _currentSkill.currentLevel = i-lastLvl-enchantLevels1-enchantLevels2-enchantLevels3;
             for (n=first; n != null; n = n.getNextSibling())
             {
                 if ("enchant4cond".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundCond = true;
                     Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
                     Node msg = n.getAttributes().getNamedItem("msg");
                     if (condition != null && msg != null)
                         condition.setMessage(msg.getNodeValue());
                     _currentSkill.currentSkills.get(i).attach(condition,false);
                 }
-                if ("enchant4for".equalsIgnoreCase(n.getNodeName()))
+                else if ("enchant4for".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundFor = true;
                     parseTemplate(n, _currentSkill.currentSkills.get(i));
                 }
             }
             // If none found, the enchanted skill will take effects from maxLvL of norm skill
-            if(!found)
+            if(!foundCond || !foundFor)
             {
                 _currentSkill.currentLevel = lastLvl-1;
                 for (n=first; n != null; n = n.getNextSibling())
                 {
-                    if ("cond".equalsIgnoreCase(n.getNodeName()))
+                    if (!foundCond && "cond".equalsIgnoreCase(n.getNodeName()))
                     {
                         Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
                         Node msg = n.getAttributes().getNamedItem("msg");
@@ -580,7 +580,7 @@ class DocumentSkill extends DocumentBase {
                             condition.setMessage(msg.getNodeValue());
                         _currentSkill.currentSkills.get(i).attach(condition,false);
                     }
-                    if ("for".equalsIgnoreCase(n.getNodeName()))
+                    else if (!foundFor && "for".equalsIgnoreCase(n.getNodeName()))
                     {
                         parseTemplate(n, _currentSkill.currentSkills.get(i));
                     }
@@ -589,32 +589,32 @@ class DocumentSkill extends DocumentBase {
         }
         for (int i=lastLvl+enchantLevels1+enchantLevels2+enchantLevels3+enchantLevels4; i < lastLvl+enchantLevels1+enchantLevels2+enchantLevels3+enchantLevels4+enchantLevels5; i++)
         {
-            boolean found = false;
+            boolean foundCond = false, foundFor = false;
             _currentSkill.currentLevel = i-lastLvl-enchantLevels1-enchantLevels2-enchantLevels3-enchantLevels4;
             for (n=first; n != null; n = n.getNextSibling())
             {
                 if ("enchant5cond".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundCond = true;
                     Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
                     Node msg = n.getAttributes().getNamedItem("msg");
                     if (condition != null && msg != null)
                         condition.setMessage(msg.getNodeValue());
                     _currentSkill.currentSkills.get(i).attach(condition,false);
                 }
-                if ("enchant5for".equalsIgnoreCase(n.getNodeName()))
+                else if ("enchant5for".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundFor = true;
                     parseTemplate(n, _currentSkill.currentSkills.get(i));
                 }
             }
             // If none found, the enchanted skill will take effects from maxLvL of norm skill
-            if(!found)
+            if(!foundCond || !foundFor)
             {
                 _currentSkill.currentLevel = lastLvl-1;
                 for (n=first; n != null; n = n.getNextSibling())
                 {
-                    if ("cond".equalsIgnoreCase(n.getNodeName()))
+                    if (!foundCond && "cond".equalsIgnoreCase(n.getNodeName()))
                     {
                         Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
                         Node msg = n.getAttributes().getNamedItem("msg");
@@ -622,7 +622,7 @@ class DocumentSkill extends DocumentBase {
                             condition.setMessage(msg.getNodeValue());
                         _currentSkill.currentSkills.get(i).attach(condition,false);
                     }
-                    if ("for".equalsIgnoreCase(n.getNodeName()))
+                    else if (!foundFor && "for".equalsIgnoreCase(n.getNodeName()))
                     {
                         parseTemplate(n, _currentSkill.currentSkills.get(i));
                     }
@@ -631,32 +631,32 @@ class DocumentSkill extends DocumentBase {
         }
         for (int i=lastLvl+enchantLevels1+enchantLevels2+enchantLevels3+enchantLevels4+enchantLevels5; i < lastLvl+enchantLevels1+enchantLevels2+enchantLevels3+enchantLevels4+enchantLevels5+enchantLevels6; i++)
         {
-            boolean found = false;
+            boolean foundCond = false, foundFor = false;
             _currentSkill.currentLevel = i-lastLvl-enchantLevels1-enchantLevels2-enchantLevels3-enchantLevels4-enchantLevels5;
             for (n=first; n != null; n = n.getNextSibling())
             {
                 if ("enchant6cond".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundCond = true;
                     Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
                     Node msg = n.getAttributes().getNamedItem("msg");
                     if (condition != null && msg != null)
                         condition.setMessage(msg.getNodeValue());
                     _currentSkill.currentSkills.get(i).attach(condition,false);
                 }
-                if ("enchant6for".equalsIgnoreCase(n.getNodeName()))
+                else if ("enchant6for".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundFor = true;
                     parseTemplate(n, _currentSkill.currentSkills.get(i));
                 }
             }
             // If none found, the enchanted skill will take effects from maxLvL of norm skill
-            if(!found)
+            if(!foundCond || !foundFor)
             {
                 _currentSkill.currentLevel = lastLvl-1;
                 for (n=first; n != null; n = n.getNextSibling())
                 {
-                    if ("cond".equalsIgnoreCase(n.getNodeName()))
+                    if (!foundCond && "cond".equalsIgnoreCase(n.getNodeName()))
                     {
                         Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
                         Node msg = n.getAttributes().getNamedItem("msg");
@@ -664,7 +664,7 @@ class DocumentSkill extends DocumentBase {
                             condition.setMessage(msg.getNodeValue());
                         _currentSkill.currentSkills.get(i).attach(condition,false);
                     }
-                    if ("for".equalsIgnoreCase(n.getNodeName()))
+                    else if (!foundFor && "for".equalsIgnoreCase(n.getNodeName()))
                     {
                         parseTemplate(n, _currentSkill.currentSkills.get(i));
                     }
@@ -673,32 +673,32 @@ class DocumentSkill extends DocumentBase {
         }
         for (int i=lastLvl+enchantLevels1+enchantLevels2+enchantLevels3+enchantLevels4+enchantLevels5+enchantLevels6; i < lastLvl+enchantLevels1+enchantLevels2+enchantLevels3+enchantLevels4+enchantLevels5+enchantLevels6+enchantLevels7; i++)
         {
-            boolean found = false;
+            boolean foundCond = false, foundFor = false;
             _currentSkill.currentLevel = i-lastLvl-enchantLevels1-enchantLevels2-enchantLevels3-enchantLevels4-enchantLevels5-enchantLevels6;
             for (n=first; n != null; n = n.getNextSibling())
             {
                 if ("enchant7cond".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundCond = true;
                     Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
                     Node msg = n.getAttributes().getNamedItem("msg");
                     if (condition != null && msg != null)
                         condition.setMessage(msg.getNodeValue());
                     _currentSkill.currentSkills.get(i).attach(condition,false);
                 }
-                if ("enchant7for".equalsIgnoreCase(n.getNodeName()))
+                else if ("enchant7for".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundFor = true;
                     parseTemplate(n, _currentSkill.currentSkills.get(i));
                 }
             }
             // If none found, the enchanted skill will take effects from maxLvL of norm skill
-            if(!found)
+            if(!foundCond || !foundFor)
             {
                 _currentSkill.currentLevel = lastLvl-1;
                 for (n=first; n != null; n = n.getNextSibling())
                 {
-                    if ("cond".equalsIgnoreCase(n.getNodeName()))
+                    if (!foundCond && "cond".equalsIgnoreCase(n.getNodeName()))
                     {
                         Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
                         Node msg = n.getAttributes().getNamedItem("msg");
@@ -706,7 +706,7 @@ class DocumentSkill extends DocumentBase {
                             condition.setMessage(msg.getNodeValue());
                         _currentSkill.currentSkills.get(i).attach(condition,false);
                     }
-                    if ("for".equalsIgnoreCase(n.getNodeName()))
+                    else if (!foundFor && "for".equalsIgnoreCase(n.getNodeName()))
                     {
                         parseTemplate(n, _currentSkill.currentSkills.get(i));
                     }
@@ -715,32 +715,32 @@ class DocumentSkill extends DocumentBase {
         }
         for (int i=lastLvl+enchantLevels1+enchantLevels2+enchantLevels3+enchantLevels4+enchantLevels5+enchantLevels6+enchantLevels7; i < lastLvl+enchantLevels1+enchantLevels2+enchantLevels3+enchantLevels4+enchantLevels5+enchantLevels6+enchantLevels7+enchantLevels8; i++)
         {
-            boolean found = false;
+            boolean foundCond = false, foundFor = false;
             _currentSkill.currentLevel = i-lastLvl-enchantLevels1-enchantLevels2-enchantLevels3-enchantLevels4-enchantLevels5-enchantLevels6-enchantLevels7;
             for (n=first; n != null; n = n.getNextSibling())
             {
                 if ("enchant8cond".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundCond = true;
                     Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
                     Node msg = n.getAttributes().getNamedItem("msg");
                     if (condition != null && msg != null)
                         condition.setMessage(msg.getNodeValue());
                     _currentSkill.currentSkills.get(i).attach(condition,false);
                 }
-                if ("enchant8for".equalsIgnoreCase(n.getNodeName()))
+                else if ("enchant8for".equalsIgnoreCase(n.getNodeName()))
                 {
-                    found = true;
+                    foundFor = true;
                     parseTemplate(n, _currentSkill.currentSkills.get(i));
                 }
             }
             // If none found, the enchanted skill will take effects from maxLvL of norm skill
-            if(!found)
+            if(!foundCond || !foundFor)
             {
                 _currentSkill.currentLevel = lastLvl-1;
                 for (n=first; n != null; n = n.getNextSibling())
                 {
-                    if ("cond".equalsIgnoreCase(n.getNodeName()))
+                    if (!foundCond && "cond".equalsIgnoreCase(n.getNodeName()))
                     {
                         Condition condition = parseCondition(n.getFirstChild(), _currentSkill.currentSkills.get(i));
                         Node msg = n.getAttributes().getNamedItem("msg");
@@ -748,7 +748,7 @@ class DocumentSkill extends DocumentBase {
                             condition.setMessage(msg.getNodeValue());
                         _currentSkill.currentSkills.get(i).attach(condition,false);
                     }
-                    if ("for".equalsIgnoreCase(n.getNodeName()))
+                    else if (!foundFor && "for".equalsIgnoreCase(n.getNodeName()))
                     {
                         parseTemplate(n, _currentSkill.currentSkills.get(i));
                     }

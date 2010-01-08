@@ -159,19 +159,11 @@ public class ClanHall
 					if (ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().getAdena() >= _fee || !_cwh)
 					{
 						int fee = _fee;
-						boolean newfc = true;
-						if (getEndTime() == 0 || getEndTime() == -1)
-						{
-							if (getEndTime() == -1)
-							{
-								newfc = false;
-								fee = _tempFee;
-							}
-						}
-						else
-							newfc = false;
+						if (getEndTime() == -1)
+							fee = _tempFee;
+						
 						setEndTime(System.currentTimeMillis() + getRate());
-						dbSave(newfc);
+						dbSave();
 						if (_cwh)
 						{
 							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CH_function_fee", 57, fee, null, null);
@@ -190,7 +182,7 @@ public class ClanHall
 			}
 		}
 		
-		public void dbSave(boolean newFunction)
+		public void dbSave()
 		{
 			Connection con = null;
 			try
@@ -198,25 +190,13 @@ public class ClanHall
 				PreparedStatement statement;
 				
 				con = L2DatabaseFactory.getInstance().getConnection();
-				if (newFunction)
-				{
-					statement = con.prepareStatement("INSERT INTO clanhall_functions (hall_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)");
-					statement.setInt(1, getId());
-					statement.setInt(2, getType());
-					statement.setInt(3, getLvl());
-					statement.setInt(4, getLease());
-					statement.setLong(5, getRate());
-					statement.setLong(6, getEndTime());
-				}
-				else
-				{
-					statement = con.prepareStatement("UPDATE clanhall_functions SET lvl=?, lease=?, endTime=? WHERE hall_id=? AND type=?");
-					statement.setInt(1, getLvl());
-					statement.setInt(2, getLease());
-					statement.setLong(3, getEndTime());
-					statement.setInt(4, getId());
-					statement.setInt(5, getType());
-				}
+				statement = con.prepareStatement("REPLACE INTO clanhall_functions (hall_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)");
+				statement.setInt(1, getId());
+				statement.setInt(2, getType());
+				statement.setInt(3, getLvl());
+				statement.setInt(4, getLease());
+				statement.setLong(5, getRate());
+				statement.setLong(6, getEndTime());
 				statement.execute();
 				statement.close();
 			}
@@ -561,7 +541,7 @@ public class ClanHall
 				{
 					_functions.get(type).setLease(lease);
 					_functions.get(type).setLvl(lvl);
-					_functions.get(type).dbSave(false);
+					_functions.get(type).dbSave();
 				}
 			}
 		}

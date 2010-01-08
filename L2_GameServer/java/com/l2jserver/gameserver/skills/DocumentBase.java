@@ -481,11 +481,6 @@ abstract class DocumentBase
                 int hp = Integer.decode(getValue(a.getNodeValue(), null));
                 cond = joinAnd(cond, new ConditionPlayerHp(hp));
             }
-            else if ("hprate".equalsIgnoreCase(a.getNodeName()))
-            {
-                double rate = Double.parseDouble(getValue(a.getNodeValue(), null));
-                cond = joinAnd(cond, new ConditionPlayerHpPercentage(rate));
-            }
             else if ("mp".equalsIgnoreCase(a.getNodeName()))
             {
                 int hp = Integer.decode(getValue(a.getNodeValue(), null));
