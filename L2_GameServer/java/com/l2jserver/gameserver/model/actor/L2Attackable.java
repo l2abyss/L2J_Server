@@ -1080,9 +1080,9 @@ public class L2Attackable extends L2Npc
 	 *
 	 * @param target The L2Character whose hate level must be returned
 	 */
-	public int getHating(L2Character target)
+	public int getHating(final L2Character target)
 	{
-		if (getAggroList().isEmpty())
+		if (getAggroList().isEmpty() || target == null)
 			return 0;
 
 		AggroInfo ai = getAggroList().get(target);
