@@ -72,8 +72,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 		int condition = validateCondition(player);
 		if (condition <= COND_ALL_FALSE)
 			return;
-
-		if (condition == COND_BUSY_BECAUSE_OF_SIEGE)
+		else if (condition == COND_BUSY_BECAUSE_OF_SIEGE)
 			return;
 		else if (condition == COND_OWNER)
 		{
@@ -913,6 +912,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 						+ getFort().getFunction(Fort.FUNC_SUPPORT).getLvl()	+ ".htm");
 				html.replace("%mp%", String.valueOf((int)getStatus().getCurrentMp()));
 				sendHtmlMessage(player, html);
+				return;
 			}
 			else if (actualCommand.equalsIgnoreCase("goto"))
 			{

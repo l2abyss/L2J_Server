@@ -49,10 +49,8 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 		int condition = validateCondition(player);
 		if (condition <= COND_ALL_FALSE)
 			return;
-
-		if (condition == COND_BUSY_BECAUSE_OF_SIEGE)
+		else if (condition == COND_BUSY_BECAUSE_OF_SIEGE)
 			return;
-
 		else if (condition == COND_OWNER)
 		{
 			if (command.startsWith("Chat"))
@@ -65,6 +63,7 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 				catch (IndexOutOfBoundsException ioobe){}
 				catch (NumberFormatException nfe){}
 				showChatWindow(player, val);
+				return;
 			}
 			else
 				super.onBypassFeedback(player, command);

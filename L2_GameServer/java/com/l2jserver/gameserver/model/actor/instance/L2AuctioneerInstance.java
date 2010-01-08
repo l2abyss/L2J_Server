@@ -52,13 +52,13 @@ public final class L2AuctioneerInstance extends L2Npc
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		int condition = validateCondition(player);
-		if (condition == COND_ALL_FALSE)
+		if (condition <= COND_ALL_FALSE)
 		{
 			//TODO: html
 			player.sendMessage("Wrong conditions.");
 			return;
 		}
-		if (condition == COND_BUSY_BECAUSE_OF_SIEGE)
+		else if (condition == COND_BUSY_BECAUSE_OF_SIEGE)
 		{
 			String filename = "data/html/auction/auction-busy.htm";
 			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
@@ -119,7 +119,7 @@ public final class L2AuctioneerInstance extends L2Npc
 				}
 				return;
 			}
-			if (actualCommand.equalsIgnoreCase("confirmAuction"))
+			else if (actualCommand.equalsIgnoreCase("confirmAuction"))
 			{
 				try
 				{
