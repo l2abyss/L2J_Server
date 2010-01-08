@@ -114,7 +114,8 @@ public final class Elementals
 		9568
 	};
 
-	public final static int[] ROUGHORES = {
+	public final static int[] ROUGHORES =
+	{
 		10521,
 		10522,
 		10524,
@@ -226,40 +227,22 @@ public final class Elementals
 			switch (_elementalType)
 			{
 				case FIRE:
-					if (isArmor)
-						player.addStatFunc(new FuncAdd(Stats.FIRE_RES, 0x40, this, new LambdaConst(_elementalValue)));
-					else
-						player.addStatFunc(new FuncAdd(Stats.FIRE_POWER, 0x40, this, new LambdaConst(_elementalValue)));
+					player.addStatFunc(new FuncAdd(isArmor ? Stats.FIRE_RES : Stats.FIRE_POWER, 0x40, this, new LambdaConst(_elementalValue)));
 					break;
 				case WATER:
-					if (isArmor)
-						player.addStatFunc(new FuncAdd(Stats.WATER_RES, 0x40, this, new LambdaConst(_elementalValue)));
-					else
-						player.addStatFunc(new FuncAdd(Stats.WATER_POWER, 0x40, this, new LambdaConst(_elementalValue)));
+					player.addStatFunc(new FuncAdd(isArmor ? Stats.WATER_RES : Stats.WATER_POWER, 0x40, this, new LambdaConst(_elementalValue)));
 					break;
 				case WIND:
-					if (isArmor)
-						player.addStatFunc(new FuncAdd(Stats.WIND_RES, 0x40, this, new LambdaConst(_elementalValue)));
-					else
-						player.addStatFunc(new FuncAdd(Stats.WIND_POWER, 0x40, this, new LambdaConst(_elementalValue)));
+					player.addStatFunc(new FuncAdd(isArmor ? Stats.WIND_RES : Stats.WIND_POWER, 0x40, this, new LambdaConst(_elementalValue)));
 					break;
 				case EARTH:
-					if (isArmor)
-						player.addStatFunc(new FuncAdd(Stats.EARTH_RES, 0x40, this, new LambdaConst(_elementalValue)));
-					else
-						player.addStatFunc(new FuncAdd(Stats.EARTH_POWER, 0x40, this, new LambdaConst(_elementalValue)));
+					player.addStatFunc(new FuncAdd(isArmor ? Stats.EARTH_RES : Stats.EARTH_POWER, 0x40, this, new LambdaConst(_elementalValue)));
 					break;
 				case DARK:
-					if (isArmor)
-						player.addStatFunc(new FuncAdd(Stats.DARK_RES, 0x40, this, new LambdaConst(_elementalValue)));
-					else
-						player.addStatFunc(new FuncAdd(Stats.DARK_POWER, 0x40, this, new LambdaConst(_elementalValue)));
+					player.addStatFunc(new FuncAdd(isArmor ? Stats.DARK_RES : Stats.DARK_POWER, 0x40, this, new LambdaConst(_elementalValue)));
 					break;
 				case HOLY:
-					if (isArmor)
-						player.addStatFunc(new FuncAdd(Stats.HOLY_RES, 0x40, this, new LambdaConst(_elementalValue)));
-					else
-						player.addStatFunc(new FuncAdd(Stats.HOLY_POWER, 0x40, this, new LambdaConst(_elementalValue)));
+					player.addStatFunc(new FuncAdd(isArmor ? Stats.HOLY_RES : Stats.HOLY_POWER, 0x40, this, new LambdaConst(_elementalValue)));
 					break;
 			}
 			

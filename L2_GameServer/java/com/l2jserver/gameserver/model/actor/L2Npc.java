@@ -428,132 +428,133 @@ public class L2Npc extends L2Character
 
     }
     
-    public FastList<L2Skill> getLrangeSkill()
-    {
-    	FastList<L2Skill> skilldata = new FastList <L2Skill>();
-    	boolean hasLrange = false;
-    	L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(getTemplate().npcId);
-    	L2NpcAIData AI = npcData.getAIDataStatic();
+	public FastList<L2Skill> getLrangeSkill()
+	{
+		FastList<L2Skill> skilldata = new FastList <L2Skill>();
+		boolean hasLrange = false;
+		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(getTemplate().npcId);
+		L2NpcAIData AI = npcData.getAIDataStatic();
 
-    		if(AI == null || AI.getLongRangeSkill() == 0)
-    			return null;
+		if (AI == null || AI.getLongRangeSkill() == 0)
+			return null;
 
-    		switch(AI.getLongRangeSkill())
-    		{
-    			case -1:
-    			{
-					L2Skill[] skills = null;
-    	    		skills = getAllSkills();
-    	    		if(skills != null)
-    				for (L2Skill sk: skills)
-    				{
-    					if(sk == null || sk.getSkillType() == L2SkillType.PASSIVE
-    					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF)
-    					{
-    						continue;
-    					}
-    					if(sk.getCastRange()>=200)
-    					{
-    						skilldata.add(sk);	
-    						hasLrange = true;
-    					}
-    				}
-    	    		break;
-    			}
-    			case 1:
-    			{
-    				if(npcData._universalskills != null)
-    				for (L2Skill sk: npcData._universalskills)
-    				{
-    					if(sk.getCastRange()>=200)
-    					{
-    						skilldata.add(sk);	
-    						hasLrange = true;
-    					}
-    				}
-    				break;
-    			}
-    			default:
-    			{
-    				for (L2Skill sk: this.getAllSkills())
-    				{
-    					if(sk.getId() == AI.getLongRangeSkill())
-    					{
-    						skilldata.add(sk);	
-    						hasLrange = true;
-    					}
-    				}
-    			}
-    		}
+		switch (AI.getLongRangeSkill())
+		{
+			case -1:
+			{
+				L2Skill[] skills = null;
+				skills = getAllSkills();
+				if (skills != null)
+				{
+					for (L2Skill sk: skills)
+					{
+						if (sk == null || sk.isPassive()
+								|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF)
+							continue;
 
-    	if(hasLrange)
-    	return skilldata;
-    	else return null;
-    }
-    
-    public FastList<L2Skill> getSrangeSkill()
-    {
-    	FastList<L2Skill> skilldata = new FastList <L2Skill>();
-    	boolean hasSrange = false;
-    	L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(getTemplate().npcId);
-    	L2NpcAIData AI = npcData.getAIDataStatic();
+						if (sk.getCastRange() >= 200)
+						{
+							skilldata.add(sk);	
+							hasLrange = true;
+						}
+					}
+				}
+				break;
+			}
+			case 1:
+			{
+				if (npcData._universalskills != null)
+				{
+					for (L2Skill sk: npcData._universalskills)
+					{
+						if (sk.getCastRange() >= 200)
+						{
+							skilldata.add(sk);	
+							hasLrange = true;
+						}
+					}
+				}
+				break;
+			}
+			default:
+			{
+				for (L2Skill sk: getAllSkills())
+				{
+					if (sk.getId() == AI.getLongRangeSkill())
+					{
+						skilldata.add(sk);	
+						hasLrange = true;
+					}
+				}
+			}
+		}
 
-    		if(AI == null || AI.getShortRangeSkill() == 0)
-    			return null;
+		return (hasLrange ? skilldata : null);
+	}
 
-    		switch(AI.getShortRangeSkill())
-    		{
-    			case -1:
-    			{
-					L2Skill[] skills = null;
-    	    		skills = getAllSkills();
-    	    		if(skills != null)
-    				for (L2Skill sk: skills)
-    				{
-    					if(sk == null || sk.getSkillType() == L2SkillType.PASSIVE
-    					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF)
-    					{
-    						continue;
-    					}
-    					if(sk.getCastRange()<=200)
-    					{
-    						skilldata.add(sk);	
-    						hasSrange = true;
-    					}
-    				}
-    	    		break;
-    			}
-    			case 1:
-    			{
-    				if(npcData._universalskills != null)
-    				for (L2Skill sk: npcData._universalskills)
-    				{
-    					if(sk.getCastRange()<=200)
-    					{
-    						skilldata.add(sk);	
-    						hasSrange = true;
-    					}
-    				}
-    				break;
-    			}
-    			default:
-    			{
-    				for (L2Skill sk: this.getAllSkills())
-    				{
-    					if(sk.getId() == AI.getShortRangeSkill())
-    					{
-    						skilldata.add(sk);	
-    						hasSrange = true;
-    					}
-    				}
-    			}
-    		}
-    		
-    	
-    	if(hasSrange)
-    	return skilldata;
-    	else return null;
-    }
+	public FastList<L2Skill> getSrangeSkill()
+	{
+		FastList<L2Skill> skilldata = new FastList <L2Skill>();
+		boolean hasSrange = false;
+		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(getTemplate().npcId);
+		L2NpcAIData AI = npcData.getAIDataStatic();
+
+		if (AI == null || AI.getShortRangeSkill() == 0)
+			return null;
+
+		switch (AI.getShortRangeSkill())
+		{
+			case -1:
+			{
+				L2Skill[] skills = null;
+				skills = getAllSkills();
+				if (skills != null)
+				{
+					for (L2Skill sk: skills)
+					{
+						if (sk == null || sk.isPassive()
+								|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF)
+							continue;
+
+						if (sk.getCastRange() <= 200)
+						{
+							skilldata.add(sk);
+							hasSrange = true;
+						}
+					}
+				}
+				break;
+			}
+			case 1:
+			{
+				if (npcData._universalskills != null)
+				{
+					for (L2Skill sk: npcData._universalskills)
+					{
+						if (sk.getCastRange() <= 200)
+						{
+							skilldata.add(sk);	
+							hasSrange = true;
+						}
+					}
+				}
+				break;
+			}
+			default:
+			{
+				for (L2Skill sk: getAllSkills())
+				{
+					if (sk.getId() == AI.getShortRangeSkill())
+					{
+						skilldata.add(sk);	
+						hasSrange = true;
+					}
+				}
+			}
+		}
+
+		return (hasSrange ? skilldata : null);
+	}
     
 	/** Task launching the function onRandomAnimation() */
 	protected class RandomAnimationTask implements Runnable

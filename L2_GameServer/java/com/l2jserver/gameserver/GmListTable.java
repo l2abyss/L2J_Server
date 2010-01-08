@@ -124,39 +124,31 @@ public class GmListTable
 	
 	public void sendListToPlayer(L2PcInstance player)
 	{
-		if (!isGmOnline(player.isGM()))
+		if (isGmOnline(player.isGM()))
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.NO_GM_PROVIDING_SERVICE_NOW); //There are not any GMs that are providing customer service currently.
-			player.sendPacket(sm);
-		}
-		else
-		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.GM_LIST);
-			player.sendPacket(sm);
+			player.sendPacket(new SystemMessage(SystemMessageId.GM_LIST));
 			
 			for (String name : getAllGmNames(player.isGM()))
 			{
-				sm = new SystemMessage(SystemMessageId.GM_C1);
+				SystemMessage sm = new SystemMessage(SystemMessageId.GM_C1);
 				sm.addString(name);
 				player.sendPacket(sm);
 			}
 		}
+		else
+			player.sendPacket(new SystemMessage(SystemMessageId.NO_GM_PROVIDING_SERVICE_NOW));
 	}
 	
 	public static void broadcastToGMs(L2GameServerPacket packet)
 	{
 		for (L2PcInstance gm : getInstance().getAllGms(true))
-		{
 			gm.sendPacket(packet);
-		}
 	}
 	
 	public static void broadcastMessageToGMs(String message)
 	{
 		for (L2PcInstance gm : getInstance().getAllGms(true))
-		{
 			gm.sendMessage(message);
-		}
 	}
 	
 	@SuppressWarnings("synthetic-access")

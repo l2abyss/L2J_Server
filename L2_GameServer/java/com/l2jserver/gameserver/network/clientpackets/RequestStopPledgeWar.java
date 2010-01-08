@@ -96,10 +96,10 @@ public final class RequestStopPledgeWar extends L2GameClientPacket
 				continue;
 			if (AttackStanceTaskManager.getInstance().getAttackStanceTask(member.getPlayerInstance()))
 			{
-				player.sendMessage("Cannot cancel war while members are fighting.");
+				player.sendPacket(new SystemMessage(SystemMessageId.CANT_STOP_CLAN_WAR_WHILE_IN_COMBAT));
 				return;
 			}
-		}		
+		}
 		
 		ClanTable.getInstance().deleteclanswars(playerClan.getClanId(), clan.getClanId());
 		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();

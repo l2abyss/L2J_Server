@@ -55,10 +55,7 @@ public final class InitWorldInfo extends BaseWritePacket
 				super.writeD(info);
 				break;
 			case TYPE_CLAN:
-				if (info != -1)
-					super.writeD(info);
-				else
-					super.writeD(clans.length);
+				super.writeD(info != -1 ? info : clans.length);
 				i = 0;
 				for (L2Clan c : clans)
 				{
@@ -83,10 +80,7 @@ public final class InitWorldInfo extends BaseWritePacket
 				}
 				break;
 			case TYPE_PLAYER:
-				if (info != -1)
-					super.writeD(info);
-				else
-					super.writeD(players.length);
+				super.writeD(info != -1 ? info : players.length);
 				i = 0;
 				for (StatsSet p : players)
 				{
@@ -102,7 +96,8 @@ public final class InitWorldInfo extends BaseWritePacket
 					java.sql.Connection con = null;
 					FastList<Integer> list = new FastList<Integer>();
 					
-					try {
+					try
+					{
 						con = L2DatabaseFactory.getInstance().getConnection();
 						PreparedStatement statement;
 						statement = con.prepareStatement("SELECT friendId FROM character_friends WHERE charId=?");

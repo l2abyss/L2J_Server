@@ -5170,7 +5170,8 @@ public abstract class L2Character extends L2Object
 			// Check Raidboss attack
 			// Character will be petrified if attacking a raid that's more
 			// than 8 levels lower
-			if (target.isRaid() && !Config.RAID_DISABLE_CURSE && getActingPlayer() != null)
+			if (target.isRaid() && !Config.RAID_DISABLE_CURSE && getActingPlayer() != null
+					&& ((L2Npc)target).getNpcId() != 29020) // Baium do not give raid curse.
 			{
 				int level = getActingPlayer().getLevel();
 
@@ -6374,6 +6375,7 @@ public abstract class L2Character extends L2Object
 						targetsCastTarget = target.getAI().getCastTarget();
 					}
 					if (!Config.RAID_DISABLE_CURSE
+							&& ((L2Npc)target).getNpcId() != 29020 // Baium dont give raid curse.
 							&& ((target.isRaid() && getLevel() > target.getLevel() + 8)
 							||
 							(!skill.isOffensive() && targetsAttackTarget != null && targetsAttackTarget.isRaid() 
@@ -6404,15 +6406,15 @@ public abstract class L2Character extends L2Object
 						return;
 					}
 
-					 // Check if over-hit is possible
-		            if(skill.isOverhit())
-		            {
-		            	if(target instanceof L2Attackable)
-		                        ((L2Attackable)target).overhitEnabled(true);
-		            }
+					// Check if over-hit is possible
+					if (skill.isOverhit())
+					{
+						if (target instanceof L2Attackable)
+							((L2Attackable)target).overhitEnabled(true);
+					}
 
-		            // crafting does not trigger any chance skills
-		            // possibly should be unhardcoded
+					// crafting does not trigger any chance skills
+					// possibly should be unhardcoded
 					switch (skill.getSkillType())
 					{
 						case COMMON_CRAFT:
@@ -6424,7 +6426,9 @@ public abstract class L2Character extends L2Object
 							{
 								if (activeWeapon.getSkillEffects(this, target, skill).length > 0 && this instanceof L2PcInstance)
 								{
-									sendMessage("Target affected by weapon special ability!");
+									SystemMessage sm = new SystemMessage(SystemMessageId.S1_HAS_BEEN_ACTIVATED);
+									sm.addSkillName(skill);
+									sendPacket(sm);
 								}
 							}
 

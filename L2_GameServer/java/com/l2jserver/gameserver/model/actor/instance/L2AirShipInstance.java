@@ -171,9 +171,7 @@ public class L2AirShipInstance extends L2Character
 				return bp.time;
 			}
 			else
-			{
 				return 0;
-			}
 		}
 		
 	}
@@ -344,7 +342,6 @@ public class L2AirShipInstance extends L2Character
 					teleportAirShip(-157261,255664,221,64781);
 					AirShiprun asr = new AirShiprun(0, _airShip);
 					ThreadPoolManager.getInstance().scheduleGeneral(asr, 5000);
-
 				}
 				else
 					_state++;
@@ -390,16 +387,10 @@ public class L2AirShipInstance extends L2Character
 		switch (npcId)
 		{
 			case 32607:
-				if (isArraived)
-					message = "The regurarly scheduled airship has arrived. It will depart for the Aden continent in 1 minute. ";
-				else
-					message = "The regurarly scheduled airship that flies to the Aden continent has departed.";
+				message = (isArraived ? "The regurarly scheduled airship has arrived. It will depart for the Aden continent in 1 minute." : "The regurarly scheduled airship that flies to the Aden continent has departed.");
 				break;
 			case 32609:
-				if (isArraived)
-					message = "The regurarly scheduled airship has arrived. It will depart for the Gracia continent in 1 minute. ";
-				else
-					message = "The regurarly scheduled airship that flies to the Gracia continent has departed.";
+				message = (isArraived ? "The regurarly scheduled airship has arrived. It will depart for the Gracia continent in 1 minute." : "The regurarly scheduled airship that flies to the Gracia continent has departed.");
 				break;
 			default:
 				_log.warning("Invalid AirShipController npcId: " + npcId);
@@ -573,68 +564,76 @@ public class L2AirShipInstance extends L2Character
 			player.sendPacket(new ExAirShipInfo(this));
 		}
 	}
+	
 	@Override
 	public void updateAbnormalEffect()
 	{
 	}
+	
 	@Override
 	public L2ItemInstance getActiveWeaponInstance()
 	{
 		return null;
 	}
+	
 	@Override
 	public L2Weapon getActiveWeaponItem()
 	{
 		return null;
 	}
+	
 	@Override
 	public L2ItemInstance getSecondaryWeaponInstance()
 	{
 		return null;
 	}
+	
 	@Override
 	public L2Weapon getSecondaryWeaponItem()
 	{
 		return null;
 	}
+	
 	@Override
 	public int getLevel()
 	{
 		return 0;
 	}
+	
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		return false;
 	}
+	
 	@Override
 	public void setAI(L2CharacterAI newAI)
 	{
 		if (_ai == null)
 			_ai = newAI;
 	}
+	
 	public class AIAccessor extends L2Character.AIAccessor
 	{
 		@Override
 		public void detachAI()
 		{}
 	}
-
-    public int getSpeed1()
-    {
-	    return 300;
-    }
-    public int getSpeed2()
-    {
-	    return 4000;
-    }
+	
+	public int getSpeed1()
+	{
+		return 300;
+	}
+	
+	public int getSpeed2()
+	{
+		return 4000;
+	}
     
-    @Override
-    public void sendInfo(L2PcInstance activeChar)
-    {
-    	if(this != activeChar.getAirShip())
-    	{
-    		activeChar.sendPacket(new ExAirShipInfo(this));
-    	}
-    }
+	@Override
+	public void sendInfo(L2PcInstance activeChar)
+	{
+		if (this != activeChar.getAirShip())
+			activeChar.sendPacket(new ExAirShipInfo(this));
+	}
 }

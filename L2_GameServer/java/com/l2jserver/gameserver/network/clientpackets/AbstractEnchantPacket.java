@@ -147,7 +147,7 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 		{
 			// blessed scrolls can't use support items
 			if (supportItem != null && (!supportItem.isValid(enchantItem) || isBlessed()))
-					return false;
+				return false;
 
 			return isValid(enchantItem);
 		}
