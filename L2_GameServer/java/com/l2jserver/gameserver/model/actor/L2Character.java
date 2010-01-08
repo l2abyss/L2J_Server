@@ -5170,8 +5170,7 @@ public abstract class L2Character extends L2Object
 			// Check Raidboss attack
 			// Character will be petrified if attacking a raid that's more
 			// than 8 levels lower
-			if (target.isRaid() && !Config.RAID_DISABLE_CURSE && getActingPlayer() != null
-					&& ((L2Npc)target).getNpcId() != 29020) // Baium do not give raid curse.
+			if (target.isRaid() && !Config.RAID_DISABLE_CURSE && getActingPlayer() != null)
 			{
 				int level = getActingPlayer().getLevel();
 
@@ -6375,7 +6374,6 @@ public abstract class L2Character extends L2Object
 						targetsCastTarget = target.getAI().getCastTarget();
 					}
 					if (!Config.RAID_DISABLE_CURSE
-							&& ((L2Npc)target).getNpcId() != 29020 // Baium dont give raid curse.
 							&& ((target.isRaid() && getLevel() > target.getLevel() + 8)
 							||
 							(!skill.isOffensive() && targetsAttackTarget != null && targetsAttackTarget.isRaid() 
