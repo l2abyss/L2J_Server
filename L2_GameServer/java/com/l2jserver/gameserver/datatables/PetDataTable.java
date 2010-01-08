@@ -48,7 +48,7 @@ public class PetDataTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT typeID, level, expMax, hpMax, mpMax, patk, pdef, matk, mdef, acc, evasion, crit, speed, atk_speed, cast_speed, feedMax, feedbattle, feednormal, loadMax, hpregen, mpregen, owner_exp_taken FROM pets_stats");
+			PreparedStatement statement = con.prepareStatement("SELECT typeID, level, expMax, hpMax, mpMax, patk, pdef, matk, mdef, acc, evasion, crit, speed, atk_speed, cast_speed, feedMax, feedbattle, feednormal, loadMax, hpregen, mpregen, owner_exp_taken, soulshot_count, spiritshot_count FROM pets_stats");
 			ResultSet rset = statement.executeQuery();
 
 			int petId, petLevel;
@@ -82,6 +82,8 @@ public class PetDataTable
 				petData.setPetRegenHP(rset.getInt("hpregen"));
 				petData.setPetRegenMP(rset.getInt("mpregen"));
 				petData.setOwnerExpTaken(rset.getFloat("owner_exp_taken"));
+				petData.setPetSoulShot((short) rset.getInt("soulshot_count"));
+				petData.setPetSpiritShot((short) rset.getInt("spiritshot_count"));
 
 				// if its the first data for this petid, we initialize its level FastMap
 				if (!_petTable.containsKey(petId))
