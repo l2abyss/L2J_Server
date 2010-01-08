@@ -237,6 +237,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 
 					showBuyWindow(player,Integer.parseInt(val + "1"));
 					player.sendPacket(ActionFailed.STATIC_PACKET);
+					return;
 				}
 				else
 				{
@@ -418,6 +419,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 							player.sendPacket(new ExShowCropSetting(getCastle().getCastleId()));
 						break;
 				}
+				return;
 			}
 			else if (actualCommand.equalsIgnoreCase("operate_door")) // door
 			// control
@@ -1230,6 +1232,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 						+ getCastle().getFunction(Castle.FUNC_SUPPORT).getLvl()	+ ".htm");
 				html.replace("%mp%", String.valueOf((int)getStatus().getCurrentMp()));
 				sendHtmlMessage(player, html);
+				return;
 			}
 			else if (actualCommand.equalsIgnoreCase("goto"))
 			{
@@ -1273,6 +1276,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 					html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
 					sendHtmlMessage(player, html);
 				}
+				return;
 			}
 			else if (actualCommand.equalsIgnoreCase("siege_time_set")) // set preDay
 			{
@@ -1313,7 +1317,8 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 					html.setFile("data/html/chamberlain/siegetime8.htm");
 					html.replace("%time%", String.valueOf(getCastle().getSiegeDate().getTime()));
 				}
-				sendHtmlMessage(player, html);				
+				sendHtmlMessage(player, html);
+				return;
 			}
 			else if (actualCommand.equals("give_crown"))
 			{
@@ -1343,9 +1348,10 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 					html.setFile("data/html/chamberlain/chamberlain-noprivs.htm");
 				
 				player.sendPacket(html);
+				return;
 			}
-
-			super.onBypassFeedback(player, command);
+			else
+				super.onBypassFeedback(player, command);
 		}
 	}
 	

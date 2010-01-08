@@ -159,8 +159,11 @@ public class L2MerchantInstance extends L2NpcInstance
 				}
 			}
 		}
-		else if (actualCommand.equalsIgnoreCase("Wear") && Config.ALLOW_WEAR)
+		else if (actualCommand.equalsIgnoreCase("Wear"))
 		{
+			if (!Config.ALLOW_WEAR)
+				return;
+			
 			if (st.countTokens() < 1)
 				return;
 
@@ -184,12 +187,7 @@ public class L2MerchantInstance extends L2NpcInstance
 			L2Multisell.getInstance().separateAndSend(val, player, getNpcId(), true, getCastle().getTaxRate());
 		}
 		else
-		{
-			// this class dont know any other commands, let forward
-			// the command to the parent class
-
 			super.onBypassFeedback(player, command);
-		}
 	}
 
 	public final void showRentPetWindow(L2PcInstance player)
