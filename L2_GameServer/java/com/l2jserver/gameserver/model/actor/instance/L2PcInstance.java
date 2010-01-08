@@ -10907,12 +10907,15 @@ public final class L2PcInstance extends L2Playable
         // jail task
         updatePunishState();
 
-        if (_isInvul)
-        	sendMessage("Entering world in Invulnerable mode.");
-        if (getAppearance().getInvisible())
-            sendMessage("Entering world in Invisible mode.");
-        if (isSilenceMode())
-            sendMessage("Entering world in Silence mode.");
+        if (isGM())
+        {
+        	if (_isInvul)
+        		sendMessage("Entering world in Invulnerable mode.");
+        	if (getAppearance().getInvisible())
+        		sendMessage("Entering world in Invisible mode.");
+        	if (isSilenceMode())
+        		sendMessage("Entering world in Silence mode.");
+        }
 
 		revalidateZone(true);
 		
