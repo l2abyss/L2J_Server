@@ -109,7 +109,7 @@ public final class RequestActionUse extends L2GameClientPacket
 		
 		switch (_actionId)
 		{
-			case 0:
+			case 0: // Sit/Stand
 				if (activeChar.getMountType() != 0)
 					break;
 				
@@ -132,7 +132,7 @@ public final class RequestActionUse extends L2GameClientPacket
 					_log.fine("new wait type: " + (activeChar.isSitting() ? "SITTING" : "STANDING"));
 				
 				break;
-			case 1:
+			case 1: // Walk/Run
 				if (activeChar.isRunning())
 					activeChar.setWalking();
 				else
@@ -141,20 +141,19 @@ public final class RequestActionUse extends L2GameClientPacket
 				if (Config.DEBUG)
 					_log.fine("new move type: " + (activeChar.isRunning() ? "RUNNING" : "WALKIN"));
 				break;
-			case 10:
-				// Private Store Sell
+			case 10: // Private Store - Sell
 				activeChar.tryOpenPrivateSellStore(false);
 				break;
-			case 28:
+			case 28: // Private Store - Buy
 				activeChar.tryOpenPrivateBuyStore();
 				break;
 			case 15:
-			case 21: // pet follow/stop
+			case 21: // Change Movement Mode (pet follow/stop)
 				if (pet != null && !activeChar.isBetrayed())
 					((L2SummonAI) pet.getAI()).notifyFollowStatusChange();
 				break;
 			case 16:
-			case 22: // pet attack
+			case 22: // Attack (pet attack)
 				if (target != null && pet != null && pet != target && activeChar != target && !pet.isAttackingDisabled() && !pet.isBetrayed())
 				{
 					if (pet instanceof L2PetInstance && (pet.getLevel() - activeChar.getLevel() > 20))
@@ -208,11 +207,11 @@ public final class RequestActionUse extends L2GameClientPacket
 				}
 				break;
 			case 17:
-			case 23: // pet - cancel action
+			case 23: // Stop (pet - cancel action)
 				if (pet != null && !pet.isMovementDisabled() && !pet.isBetrayed())
 					pet.getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
 				break;
-			case 19: // pet unsummon
+			case 19: // Unsummon Pet
 				if (pet != null)
 				{
 					//returns pet to control item
@@ -237,17 +236,16 @@ public final class RequestActionUse extends L2GameClientPacket
 					}
 				}
 				break;
-			case 38: // pet mount
-				// mount
+			case 38: // Mount/Dismount
 				activeChar.mountPlayer(pet);
 				break;
-			case 32: // Wild Hog Cannon - Mode Change
+			case 32: // Wild Hog Cannon - Switch Mode
 				// useSkill(4230);
 				break;
 			case 36: // Soulless - Toxic Smoke
 				useSkill(4259);
 				break;
-			case 37:
+			case 37: // Dwarven Manufacture
 				if (activeChar.isAlikeDead())
 				{
 					getClient().sendPacket(ActionFailed.STATIC_PACKET);
@@ -298,7 +296,7 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 48: // Mechanic Golem - Mech. Cannon
 				useSkill(4068);
 				break;
-			case 51:
+			case 51: // General Manufacture
 				// Player shouldn't be able to set stores if he/she is alike dead (dead or fake death)
 				if (activeChar.isAlikeDead())
 				{
@@ -318,7 +316,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				
 				activeChar.sendPacket(new RecipeShopManageList(activeChar, false));
 				break;
-			case 52: // unsummon
+			case 52: // Unsummon
 				if (pet != null && pet instanceof L2SummonInstance)
 				{
 					if (pet.isBetrayed())
@@ -331,48 +329,37 @@ public final class RequestActionUse extends L2GameClientPacket
 						pet.unSummon(activeChar);
 				}
 				break;
-			case 53: // move to target
+			case 53: // Move to target
 				if (target != null && pet != null && pet != target && !pet.isMovementDisabled() && !pet.isBetrayed())
 				{
 					pet.setFollowStatus(false);
 					pet.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(target.getX(), target.getY(), target.getZ(), 0));
 				}
 				break;
-			case 54: // move to target hatch/strider
+			case 54: // Move to target hatch/strider
 				if (target != null && pet != null && pet != target && !pet.isMovementDisabled() && !pet.isBetrayed())
 				{
 					pet.setFollowStatus(false); 
 					pet.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(target.getX(), target.getY(), target.getZ(), 0));
 				}
 				break;
-			case 61:
-				// Private Store Package Sell
+			case 61: // Private Store Package Sell
 				activeChar.tryOpenPrivateSellStore(true);
 				break;
-			case 65:
-				// Bot report Button.
+			case 65: // Bot Report Button
 				activeChar.sendMessage("Action not handled yet.");
 				break;
-			case 67:
-			case 68:
-			case 69:
-			case 70:
+			case 67: // Steer
+			case 68: // Cancel Control
+			case 69: // Destination Map
+			case 70: // Exit Airship
 				activeChar.sendMessage("Action not handled yet.");
-				break;
-			case 96: // Quit Party Command Channel
-				_log.info("98 Accessed");
-				break;
-			case 97: // Request Party Command Channel Info
-				//if (!PartyCommandManager.getInstance().isPlayerInChannel(activeChar))
-				//return;
-				_log.info("97 Accessed");
-				//PartyCommandManager.getInstance().getActiveChannelInfo(activeChar);
 				break;
 			case 1000: // Siege Golem - Siege Hammer
 				if (target instanceof L2DoorInstance)
 					useSkill(4079);
 				break;
-			case 1001:
+			case 1001: // Sin Eater - Ultimate Bombastic Buster
 				break;
 			case 1003: // Wind Hatchling/Strider - Wild Stun
 				useSkill(4710);
@@ -466,11 +453,9 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 1045: // Great Wolf - Howl
 				useSkill(5584);
 				break;
-			//Add by rocknow
 			case 1046: // Strider - Roar
 				useSkill(5585);
 				break;
-			// CT2.3
 			case 1047: // Divine Beast - Bite
 				useSkill(5580);
 				break;
@@ -513,87 +498,96 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 1060: //Nightshade - Guidance
 				useSkill(5654);
 				break;
-			//Add by rocknow
-			case 1061:
-				useSkill(5745); // Death blow
+			case 1061: // Death blow
+				useSkill(5745);
 				break;
-			case 1062:
-				useSkill(5746); // Double attack
+			case 1062: // Double attack
+				useSkill(5746);
 				break;
-			case 1063:
-				useSkill(5747); // Spin attack
+			case 1063: // Spin attack
+				useSkill(5747);
 				break;
-			case 1064:
-				useSkill(5748); // Meteor Shower
+			case 1064: // Meteor Shower
+				useSkill(5748);
 				break;
-			case 1065:
-				useSkill(5753); // Awakening
+			case 1065: // Awakening
+				useSkill(5753);
 				break;
-			case 1066:
-				useSkill(5749); // Thunder Bolt
+			case 1066: // Thunder Bolt
+				useSkill(5749);
 				break;
-			case 1067:
-				useSkill(5750); // Flash
+			case 1067: // Flash
+				useSkill(5750);
 				break;
-			case 1068:
-				useSkill(5751); // Lightning Wave
+			case 1068: // Lightning Wave
+				useSkill(5751);
 				break;
-			case 1069:
-				useSkill(5752); // Flare
+			case 1069: // Flare
+				useSkill(5752);
 				break;
-			case 1070:
-				useSkill(5771);	// Buff control
+			case 1070: // Buff control
+				useSkill(5771);
 				break;
-			case 1071:
-				useSkill(5761); // Power Strike
+			case 1071: // Power Strike
+				useSkill(5761);
 				break;
-			case 1072:
-				useSkill(6046); // Piercing attack
+			case 1072: // Toy Knight - Piercing attack
+				useSkill(6046);
 				break;
-			case 1073:
-				useSkill(6047); // Whirlwind
+			case 1073: // Toy Knight - Whirlwind
+				useSkill(6047);
 				break;
-			case 1074:
-				useSkill(6048); // Lance Smash
+			case 1074: // Toy Knight - Lance Smash
+				useSkill(6048);
 				break;
-			case 1075:
-				useSkill(6049); // Battle Cry
+			case 1075: // Toy Knight - Battle Cry
+				useSkill(6049);
 				break;
-			case 1076:
-				useSkill(6050); // Power Smash
+			case 1076: // Turtle Ascetic - Power Smash
+				useSkill(6050);
 				break;
-			case 1077:
-				useSkill(6051); // Energy Burst
+			case 1077: // Turtle Ascetic - Energy Burst
+				useSkill(6051);
 				break;
-			case 1078:
-				useSkill(6052); // Shockwave
+			case 1078: // Turtle Ascetic - Shockwave
+				useSkill(6052);
 				break;
-			case 1079:
-				useSkill(6053); // Howl
+			case 1079: // Turtle Ascetic - Howl
+				useSkill(6053);
 				break;
-			case 1080:
-				useSkill(6041); // Phoenix Rush
+			case 1080: // Phoenix Rush
+				useSkill(6041);
 				break;
-			case 1081:
-				useSkill(6042); // Phoenix Cleanse
+			case 1081: // Phoenix Cleanse
+				useSkill(6042);
 				break;
-			case 1082:
-				useSkill(6043); // Phoenix Flame Feather
+			case 1082: // Phoenix Flame Feather
+				useSkill(6043);
 				break;
-			case 1083:
-				useSkill(6044); // Phoenix Flame Beak
+			case 1083: // Phoenix Flame Beak
+				useSkill(6044);
 				break;
-			case 1084:
-				useSkill(6054); // Switch State
+			case 1084: // Switch State
+				useSkill(6054);
 				break;
-			case 1086:
-				useSkill(6094); // Panther Cancel
+			case 1086: // Panther Cancel
+				useSkill(6094);
 				break;
-			case 1087:
-				useSkill(6095); // Panther Dark Claw
+			case 1087: // Panther Dark Claw
+				useSkill(6095);
 				break;
-			case 1088:
-				useSkill(6096); // Panther Fatal Claw
+			case 1088: // Panther Fatal Claw
+				useSkill(6096);
+				break;
+			case 1089: // TODO Deinonychus - Tail Strike
+				break;
+			case 1090: // TODO Guardian's Strider - Strider Bite
+				break;
+			case 1091: // TODO Guardian's Strider - Strider Fear
+				break;
+			case 1092: // TODO Guardian's Strider - Strider Dash
+				break;
+			case 5000: // TODO Baby Rudolph - Reindeer Scratch
 				break;
 			// CT2.3 Social Packets
 			case 12:
