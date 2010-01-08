@@ -16,8 +16,12 @@ package com.l2jserver.gameserver.model.entity;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Future;
+
+import javolution.util.FastList;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.DimensionalRiftManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.L2Party;
@@ -25,9 +29,8 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
+import com.l2jserver.gameserver.network.serverpackets.Earthquake;
 import com.l2jserver.util.Rnd;
-
-import javolution.util.FastList;
 
 /**
 * Thanks to L2Fortress and balancer.ru - kombat
@@ -45,6 +48,8 @@ public class DimensionalRift
 	private TimerTask teleporterTimerTask;
 	private Timer spawnTimer;
 	private TimerTask spawnTimerTask;
+	
+	private Future<?> earthQuakeTask;
 	
 	protected byte _choosenRoom = -1;
 	private boolean _hasJumped = false;
@@ -103,6 +108,12 @@ public class DimensionalRift
 			teleporterTimer = null;
 		}
 		
+		if (earthQuakeTask != null)
+		{
+			earthQuakeTask.cancel(false);
+			earthQuakeTask = null;
+		}
+		
 		teleporterTimer = new Timer();
 		teleporterTimerTask = new TimerTask() {
 			@Override
@@ -136,7 +147,20 @@ public class DimensionalRift
 		};
 		
 		if (reasonTP)
-			teleporterTimer.schedule(teleporterTimerTask, calcTimeToNextJump()); //Teleporter task, 8-10 minutes
+		{
+			long jumpTime = calcTimeToNextJump();
+			teleporterTimer.schedule(teleporterTimerTask, jumpTime); //Teleporter task, 8-10 minutes
+			
+			earthQuakeTask = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() {
+				public void run()
+				{
+					for (L2PcInstance p : _party.getPartyMembers())
+						if (!revivedInWaitingRoom.contains(p))
+							p.sendPacket(new Earthquake(p.getX(), p.getY(), p.getZ(), 65, 9));
+				}
+			}
+			, jumpTime - 7000);
+		}
 		else
 			teleporterTimer.schedule(teleporterTimerTask, seconds_5); //incorrect party member invited.
 	}
@@ -283,6 +307,13 @@ public class DimensionalRift
 		_party = null;
 		revivedInWaitingRoom = null;
 		deadPlayers = null;
+		
+		if (earthQuakeTask != null)
+		{
+			earthQuakeTask.cancel(false);
+			earthQuakeTask = null;
+		}
+		
 		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn().setpartyInside(false);
 		DimensionalRiftManager.getInstance().killRift(this);
 	}
