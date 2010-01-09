@@ -67,6 +67,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExBirthdayPopup;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExGetBookMarkInfoPacket;
 import com.l2jserver.gameserver.network.serverpackets.ExNoticePostArrived;
+import com.l2jserver.gameserver.network.serverpackets.ExShowScreenMessage;
 import com.l2jserver.gameserver.network.serverpackets.ExStorageMaxCount;
 import com.l2jserver.gameserver.network.serverpackets.FriendList;
 import com.l2jserver.gameserver.network.serverpackets.HennaInfo;
@@ -467,6 +468,9 @@ public class EnterWorld extends L2GameClientPacket
 		CommunityServerThread.getInstance().sendPacket(new WorldInfo(activeChar, null, WorldInfo.TYPE_UPDATE_PLAYER_STATUS));
 
 		TvTEvent.onLogin(activeChar);
+
+		if (Config.WELCOME_MESSAGE_ENABLED)
+			activeChar.sendPacket(new ExShowScreenMessage(Config.WELCOME_MESSAGE_TEXT, Config.WELCOME_MESSAGE_TIME));
 
 		L2ClassMasterInstance.showQuestionMark(activeChar);
 		

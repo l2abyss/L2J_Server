@@ -636,6 +636,9 @@ public final class Config
 	public static int OFFLINE_NAME_COLOR;
 	public static boolean L2JMOD_ENABLE_MANA_POTIONS_SUPPORT;
 	public static boolean L2JMOD_DISPLAY_SERVER_TIME;
+	public static boolean WELCOME_MESSAGE_ENABLED;
+	public static String WELCOME_MESSAGE_TEXT;
+	public static int WELCOME_MESSAGE_TIME;
 	public static boolean L2JMOD_ANTIFEED_ENABLE;
 	public static boolean L2JMOD_ANTIFEED_DUALBOX;
 	public static boolean L2JMOD_ANTIFEED_DISCONNECTED_AS_DUALBOX;
@@ -2118,6 +2121,10 @@ public final class Config
 					L2JMOD_ENABLE_MANA_POTIONS_SUPPORT = Boolean.parseBoolean(L2JModSettings.getProperty("EnableManaPotionSupport", "false"));
 
 					L2JMOD_DISPLAY_SERVER_TIME = Boolean.parseBoolean(L2JModSettings.getProperty("DisplayServerTime", "false"));
+
+					WELCOME_MESSAGE_ENABLED = Boolean.parseBoolean(L2JModSettings.getProperty("ScreenWelcomeMessageEnable", "false"));
+					WELCOME_MESSAGE_TEXT = L2JModSettings.getProperty("ScreenWelcomeMessageText", "Welcome to L2J server!");
+					WELCOME_MESSAGE_TIME = Integer.parseInt(L2JModSettings.getProperty("ScreenWelcomeMessageTime", "10")) * 1000;
 
 					L2JMOD_ANTIFEED_ENABLE = Boolean.parseBoolean(L2JModSettings.getProperty("AntiFeedEnable", "false"));
 					L2JMOD_ANTIFEED_DUALBOX = Boolean.parseBoolean(L2JModSettings.getProperty("AntiFeedDualbox", "true"));
