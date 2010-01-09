@@ -2167,7 +2167,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     				if (player.getClanId() != 0 && player.getClanId() == targetPlayer.getClanId())
     					return false;
 
-    				if (!player.checkPvpSkill(targetPlayer, skill))
+    				if (!player.checkPvpSkill(targetPlayer, skill, (caster instanceof L2Summon)))
     					return false;
     			}
     		}

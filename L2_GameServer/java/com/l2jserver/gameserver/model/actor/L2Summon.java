@@ -649,6 +649,9 @@ public abstract class L2Summon extends L2Playable
             return;
 		}
 
+        // Set current pet skill
+        getOwner().setCurrentPetSkill(skill, forceUse, dontMove);
+        
         //************************************* Check Target *******************************************
 
 		// Get the target for the skill
@@ -765,7 +768,6 @@ public abstract class L2Summon extends L2Playable
 				}
 			}
 		}
-        getOwner().setCurrentPetSkill(skill, forceUse, dontMove);
 		// Notify the AI with AI_INTENTION_CAST and target
 		getAI().setIntention(CtrlIntention.AI_INTENTION_CAST, skill, target);
 	}
@@ -852,7 +854,7 @@ public abstract class L2Summon extends L2Playable
 	{
         final L2PcInstance actingPlayer = getActingPlayer();
 
-        if (!actingPlayer.checkPvpSkill(getTarget(), skill)
+        if (!actingPlayer.checkPvpSkill(getTarget(), skill, true)
         		&& !actingPlayer.getAccessLevel().allowPeaceAttack())
         {
             // Send a System Message to the L2PcInstance

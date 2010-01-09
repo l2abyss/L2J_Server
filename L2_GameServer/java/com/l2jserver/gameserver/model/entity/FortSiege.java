@@ -268,6 +268,8 @@ public class FortSiege
 			removeFlags(); // Removes all flags. Note: Remove flag before teleporting players
 			unSpawnFlags();
 
+			updatePlayerSiegeStateFlags(true);
+
 			getFort().getZone().banishForeigners(getFort().getOwnerClan());
 			_isInProgress = false; // Flag so that siege instance can be started
 			getFort().getZone().setIsActive(false);
@@ -280,8 +282,6 @@ public class FortSiege
 			getFort().spawnNpcs(getFort()._npcCommanders); // Spawn NPC commanders
 			getSiegeGuardManager().unspawnSiegeGuard(); // Remove all spawned siege guard from this fort
 			getFort().resetDoors(); // Respawn door to fort
-
-			updatePlayerSiegeStateFlags(true);
 
 			ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSuspiciousMerchantSpawn(getFort()), FortSiegeManager.getInstance().getSuspiciousMerchantRespawnDelay()*60*1000); // Prepare 3hr task for suspicious merchant respawn
 			if (_siegeEnd != null)

@@ -8571,15 +8571,18 @@ public final class L2PcInstance extends L2Playable
 		if (getKarma() > 0 || getPvpFlag() > 0)
 			return true;
 
-		// Check if the attacker is a L2PcInstance
-		if (attacker instanceof L2PcInstance)
+		// Check if the attacker is a L2Playable
+		if (attacker instanceof L2Playable)
 		{
+			// Get L2PcInstance
+			L2PcInstance cha = attacker.getActingPlayer();
+			
 			// is AutoAttackable if both players are in the same duel and the duel is still going on
 			if ( getDuelState() == Duel.DUELSTATE_DUELLING
-					&& getDuelId() == ((L2PcInstance)attacker).getDuelId() )
+					&& getDuelId() == cha.getDuelId())
 				return true;
 			// Check if the L2PcInstance is in an arena or a siege area
-			if (isInsideZone(ZONE_PVP) && ((L2PcInstance)attacker).isInsideZone(ZONE_PVP))
+			if (isInsideZone(ZONE_PVP) && cha.isInsideZone(ZONE_PVP))
 				return true;
 
 			if (getClan() != null)
@@ -8588,23 +8591,23 @@ public final class L2PcInstance extends L2Playable
 				if (siege != null)
 				{
 					// Check if a siege is in progress and if attacker and the L2PcInstance aren't in the Defender clan
-					if (siege.checkIsDefender(((L2PcInstance)attacker).getClan()) &&
+					if (siege.checkIsDefender(cha.getClan()) &&
 							siege.checkIsDefender(getClan()))
 						return false;
 
 					// Check if a siege is in progress and if attacker and the L2PcInstance aren't in the Attacker clan
-					if (siege.checkIsAttacker(((L2PcInstance)attacker).getClan()) &&
+					if (siege.checkIsAttacker(cha.getClan()) &&
 							siege.checkIsAttacker(getClan()))
 						return false;
 				}
 
 				// Check if clan is at war
-				if (getClan() != null && ((L2PcInstance)attacker).getClan() != null
-				                           && (getClan().isAtWarWith(((L2PcInstance)attacker).getClanId())
-				                           && ((L2PcInstance)attacker).getClan().isAtWarWith(getClanId())
+				if (getClan() != null && cha.getClan() != null
+				                           && getClan().isAtWarWith(cha.getClanId())
+				                           && cha.getClan().isAtWarWith(getClanId())
 				                           && getWantsPeace() == 0
-				                           && ((L2PcInstance)attacker).getWantsPeace() == 0
-				                           && !isAcademyMember()))
+				                           && cha.getWantsPeace() == 0
+				                           && !isAcademyMember())
 				return true;
 			}
 		}
@@ -8845,13 +8848,19 @@ public final class L2PcInstance extends L2Playable
 
         // Are the target and the player in the same duel?
         if (isInDuel())
-        {
-        	if (!(target instanceof L2PcInstance && ((L2PcInstance)target).getDuelId() == getDuelId()))
-        	{
-        		sendMessage("You cannot do this while duelling.");
-        		sendPacket(ActionFailed.STATIC_PACKET);
-        		return false;
-        	}
+        {        	
+        	// Get L2PcInstance
+    		if (target instanceof L2Playable)
+    		{
+    			// Get L2PcInstance
+    			L2PcInstance cha = target.getActingPlayer();
+    			if (cha.getDuelId() != getDuelId())
+    			{
+            		sendMessage("You cannot do this while duelling.");
+            		sendPacket(ActionFailed.STATIC_PACKET);
+            		return false;    				
+    			}
+    		}
         }
 
         //************************************* Check skill availability *******************************************
@@ -9355,6 +9364,8 @@ public final class L2PcInstance extends L2Playable
 	public boolean checkPvpSkill(L2Object target, L2Skill skill, boolean srcIsSummon)
 	{
 		// check for PC->PC Pvp status
+		if(target instanceof L2Summon)
+			target = target.getActingPlayer();
 		if (
 				target != null &&                                           			// target not null and
 				target != this &&                                           			// target is not self and
@@ -9769,6 +9780,21 @@ public final class L2PcInstance extends L2Playable
 		{
 			
 		}
+	}
+	
+	public boolean disableAutoShot(int itemId)
+	{
+		if (getAutoSoulShot().containsKey(itemId))
+		{
+			removeAutoSoulShot(itemId);
+			sendPacket(new ExAutoSoulShot(itemId, 0));
+			
+			SystemMessage sm = new SystemMessage(SystemMessageId.AUTO_USE_OF_S1_CANCELLED);
+			sm.addString(ItemTable.getInstance().getTemplate(itemId).getName());
+			sendPacket(sm);
+			return true;
+		}
+		else return false;
 	}
 
 	private ScheduledFuture<?> _taskWarnUserTakeBreak;
