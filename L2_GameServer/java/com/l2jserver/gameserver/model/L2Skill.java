@@ -216,7 +216,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
     private final int _minPledgeClass;
     private final boolean _isOffensive;
-    private final int _requiredCharges;
     private final int _maxCharges;
     private final int _numCharges;
     private final int _triggeredId;
@@ -395,7 +394,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _isOffensive = set.getBool("offensive", isSkillTypeOffensive());
         _maxCharges = set.getInteger("maxCharges", 0);
         _numCharges = set.getInteger("numCharges", 0);
-        _requiredCharges = set.getInteger("requiredCharges", 0);
         _triggeredId = set.getInteger("triggeredId", 0);
         _triggeredLevel = set.getInteger("triggeredLevel", 0);
         _chanceType = set.getString("chanceType", "");
@@ -2492,11 +2490,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	    return _afroId;
     }
 
-    public final int getRequiredCharges()
-    {
-    	return _requiredCharges;
-    }
-    
     public final int getMaxCharges()
     {
     	return _maxCharges;

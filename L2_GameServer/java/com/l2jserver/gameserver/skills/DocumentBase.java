@@ -509,6 +509,11 @@ abstract class DocumentBase
             {
                 forces[1] = Byte.decode(getValue(a.getNodeValue(), null));
             }
+            else if ("charges".equalsIgnoreCase(a.getNodeName()))
+            {
+                int value = Integer.decode(getValue(a.getNodeValue(), template));
+                cond = joinAnd(cond, new ConditionPlayerCharges(value));
+            }
             else if ("weight".equalsIgnoreCase(a.getNodeName()))
             {
                 int weight = Integer.decode(getValue(a.getNodeValue(), null));

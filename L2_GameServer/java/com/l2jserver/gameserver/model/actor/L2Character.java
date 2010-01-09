@@ -6126,8 +6126,7 @@ public abstract class L2Character extends L2Object
 			{
 				int charges = ((L2PcInstance)this).getCharges();
 				// check for charges
-				if (charges < skill.getRequiredCharges()
-						|| (skill.getMaxCharges() == 0 && charges < skill.getNumCharges()))
+				if (skill.getMaxCharges() == 0 && charges < skill.getNumCharges())
 				{
 					SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 					sm.addSkillName(skill);
