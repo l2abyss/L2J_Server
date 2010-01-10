@@ -84,18 +84,18 @@ public class Olympiad
 			+ "olympiad_points = ?, competitions_done = ?, competitions_won = ?, competitions_lost = ?, competitions_drawn = ? WHERE charId = ?";
 	private static final String OLYMPIAD_GET_HEROS = "SELECT olympiad_nobles.charId, characters.char_name "
 			+ "FROM olympiad_nobles, characters WHERE characters.charId = olympiad_nobles.charId "
-			+ "AND olympiad_nobles.class_id = ? AND olympiad_nobles.competitions_done >= 9 "
-			+ "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC";
+			+ "AND olympiad_nobles.class_id = ? AND olympiad_nobles.competitions_done >= 9 AND olympiad_nobles.competitions_won > 0 "
+			+ "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC, olympiad_nobles.competitions_won DESC";
 	private static final String GET_ALL_CLASSIFIED_NOBLESS = "SELECT charId from olympiad_nobles_eom "
-			+ "WHERE competitions_done >= 9 ORDER BY olympiad_points DESC, competitions_done DESC";
+			+ "WHERE competitions_done >= 9 ORDER BY olympiad_points DESC, competitions_done DESC, competitions_won DESC";
 	private static final String GET_EACH_CLASS_LEADER = "SELECT characters.char_name from olympiad_nobles_eom, characters "
 			+ "WHERE characters.charId = olympiad_nobles_eom.charId AND olympiad_nobles_eom.class_id = ? "
 			+ "AND olympiad_nobles_eom.competitions_done >= 9 "
-			+ "ORDER BY olympiad_nobles_eom.olympiad_points DESC, olympiad_nobles_eom.competitions_done DESC LIMIT 10";
+			+ "ORDER BY olympiad_nobles_eom.olympiad_points DESC, olympiad_nobles_eom.competitions_done DESC, olympiad_nobles_eom.competitions_won DESC LIMIT 10";
 	private static final String GET_EACH_CLASS_LEADER_CURRENT = "SELECT characters.char_name from olympiad_nobles, characters "
 			+ "WHERE characters.charId = olympiad_nobles.charId AND olympiad_nobles.class_id = ? "
 			+ "AND olympiad_nobles.competitions_done >= 9 "
-			+ "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC LIMIT 10";
+			+ "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC, olympiad_nobles.competitions_won DESC LIMIT 10";
 	private static final String OLYMPIAD_DELETE_ALL = "TRUNCATE olympiad_nobles";
 	private static final String OLYMPIAD_MONTH_CLEAR = "TRUNCATE olympiad_nobles_eom";
 	private static final String OLYMPIAD_MONTH_CREATE = "INSERT INTO olympiad_nobles_eom SELECT * FROM olympiad_nobles";
@@ -1339,6 +1339,8 @@ public class Olympiad
 					int hero2Points = hero2.getInteger(POINTS);
 					int hero1Comps = hero1.getInteger(COMP_DONE);
 					int hero2Comps = hero2.getInteger(COMP_DONE);
+					int hero1Wins = hero1.getInteger(COMP_WON);
+					int hero2Wins = hero2.getInteger(COMP_WON);
 					
 					if (hero1Points > hero2Points)
 						winner = hero1;
@@ -1348,8 +1350,15 @@ public class Olympiad
 					{
 						if (hero1Comps > hero2Comps)
 							winner = hero1;
-						else
+						else if (hero2Comps > hero1Comps)
 							winner = hero2;
+						else
+						{
+							if (hero1Wins > hero2Wins)
+								winner = hero1;
+							else
+								winner = hero2;
+						}
 					}
 					
 					hero.set(CLASS_ID, winner.getInteger(CLASS_ID));
