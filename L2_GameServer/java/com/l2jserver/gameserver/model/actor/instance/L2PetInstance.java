@@ -137,7 +137,8 @@ public class L2PetInstance extends L2Summon
 				}
 
 				int[] foodIds = PetDataTable.getFoodItemId(getTemplate().npcId);
-				if (foodIds[0] == 0) return;
+				if (foodIds[0] == 0)
+					return;
 				L2ItemInstance food = null;
 				food = getInventory().getItemByItemId(foodIds[0]);
 				
