@@ -14,12 +14,8 @@
  */
 package com.l2jserver.gameserver.taskmanager;
 
-import static com.l2jserver.gameserver.taskmanager.TaskTypes.TYPE_FIXED_SHEDULED;
-import static com.l2jserver.gameserver.taskmanager.TaskTypes.TYPE_GLOBAL_TASK;
 import static com.l2jserver.gameserver.taskmanager.TaskTypes.TYPE_NONE;
 import static com.l2jserver.gameserver.taskmanager.TaskTypes.TYPE_SHEDULED;
-import static com.l2jserver.gameserver.taskmanager.TaskTypes.TYPE_SPECIAL;
-import static com.l2jserver.gameserver.taskmanager.TaskTypes.TYPE_STARTUP;
 import static com.l2jserver.gameserver.taskmanager.TaskTypes.TYPE_TIME;
 
 import java.sql.Connection;
