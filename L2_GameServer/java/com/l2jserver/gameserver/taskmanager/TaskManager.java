@@ -246,89 +246,85 @@ public final class TaskManager
 	{
 		final ThreadPoolManager scheduler = ThreadPoolManager.getInstance();
 		final TaskTypes type = task.getType();
+		long delay, interval;
 		
-		if (type == TYPE_STARTUP)
+		switch(type)
 		{
-			task.run();
-			return false;
-		}
-		else if (type == TYPE_SHEDULED)
-		{
-			long delay = Long.valueOf(task.getParams()[0]);
-			task.scheduled = scheduler.scheduleGeneral(task, delay);
-			return true;
-		}
-		else if (type == TYPE_FIXED_SHEDULED)
-		{
-			long delay = Long.valueOf(task.getParams()[0]);
-			long interval = Long.valueOf(task.getParams()[1]);
-			
-			task.scheduled = scheduler.scheduleGeneralAtFixedRate(task, delay, interval);
-			return true;
-		}
-		else if (type == TYPE_TIME)
-		{
-			try
-			{
-				Date desired = DateFormat.getInstance().parse(task.getParams()[0]);
-				long diff = desired.getTime() - System.currentTimeMillis();
-				if (diff >= 0)
+			case TYPE_STARTUP:
+				task.run();
+				return false;
+			case TYPE_SHEDULED:
+				delay = Long.valueOf(task.getParams()[0]);
+				task.scheduled = scheduler.scheduleGeneral(task, delay);
+				return true;
+			case TYPE_FIXED_SHEDULED:
+				delay = Long.valueOf(task.getParams()[0]);
+				interval = Long.valueOf(task.getParams()[1]);
+				task.scheduled = scheduler.scheduleGeneralAtFixedRate(task, delay, interval);
+				return true;
+			case TYPE_TIME:
+				try
 				{
-					task.scheduled = scheduler.scheduleGeneral(task, diff);
+					Date desired = DateFormat.getInstance().parse(task.getParams()[0]);
+					long diff = desired.getTime() - System.currentTimeMillis();
+					if (diff >= 0)
+					{
+						task.scheduled = scheduler.scheduleGeneral(task, diff);
+						return true;
+					}
+					_log.info("Task " + task.getId() + " is obsoleted.");
+				}
+				catch (Exception e)
+				{
+				}
+				break;
+			case TYPE_SPECIAL:
+				ScheduledFuture<?> result = task.getTask().launchSpecial(task);
+				if (result != null)
+				{
+					task.scheduled = result;
 					return true;
 				}
-				_log.info("Task " + task.getId() + " is obsoleted.");
-			}
-			catch (Exception e)
-			{
-			}
-		}
-		else if (type == TYPE_SPECIAL)
-		{
-			ScheduledFuture<?> result = task.getTask().launchSpecial(task);
-			if (result != null)
-			{
-				task.scheduled = result;
+				break;
+			case TYPE_GLOBAL_TASK:
+				interval = Long.valueOf(task.getParams()[0]) * 86400000L;
+				String[] hour = task.getParams()[1].split(":");
+				
+				if (hour.length != 3)
+				{
+					_log.warning("Task " + task.getId() + " has incorrect parameters");
+					return false;
+				}
+				
+				Calendar check = Calendar.getInstance();
+				check.setTimeInMillis(task.getLastActivation() + interval);
+				
+				Calendar min = Calendar.getInstance();
+				try
+				{
+					min.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hour[0]));
+					min.set(Calendar.MINUTE, Integer.parseInt(hour[1]));
+					min.set(Calendar.SECOND, Integer.parseInt(hour[2]));
+				}
+				catch (Exception e)
+				{
+					_log.warning("Bad parameter on task " + task.getId() + ": " + e.getMessage());
+					return false;
+				}
+				
+				delay = min.getTimeInMillis() - System.currentTimeMillis();
+				
+				if (check.after(min) || delay < 0)
+				{
+					delay += interval;
+				}
+				
+				task.scheduled = scheduler.scheduleGeneralAtFixedRate(task, delay, interval);
+				
 				return true;
-			}
-		}
-		else if (type == TYPE_GLOBAL_TASK)
-		{
-			long interval = Long.valueOf(task.getParams()[0]) * 86400000L;
-			String[] hour = task.getParams()[1].split(":");
-			
-			if (hour.length != 3)
-			{
-				_log.warning("Task " + task.getId() + " has incorrect parameters");
+				
+			default:
 				return false;
-			}
-			
-			Calendar check = Calendar.getInstance();
-			check.setTimeInMillis(task.getLastActivation() + interval);
-			
-			Calendar min = Calendar.getInstance();
-			try
-			{
-				min.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hour[0]));
-				min.set(Calendar.MINUTE, Integer.parseInt(hour[1]));
-				min.set(Calendar.SECOND, Integer.parseInt(hour[2]));
-			}
-			catch (Exception e)
-			{
-				_log.warning("Bad parameter on task " + task.getId() + ": " + e.getMessage());
-				return false;
-			}
-			
-			long delay = min.getTimeInMillis() - System.currentTimeMillis();
-			
-			if (check.after(min) || delay < 0)
-			{
-				delay += interval;
-			}
-			
-			task.scheduled = scheduler.scheduleGeneralAtFixedRate(task, delay, interval);
-			
-			return true;
 		}
 		
 		return false;
