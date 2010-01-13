@@ -11167,7 +11167,9 @@ public final class L2PcInstance extends L2Playable
 		
 		// Force a revalidation
 		revalidateZone(true);
-		
+
+		checkItemRestriction();
+
 		if ((Config.PLAYER_SPAWN_PROTECTION > 0) && !isInOlympiadMode())
 			setProtection(true);
 		
