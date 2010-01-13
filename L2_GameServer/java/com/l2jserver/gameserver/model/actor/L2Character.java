@@ -90,7 +90,6 @@ import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TeleportToLocation;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.network.serverpackets.FlyToLocation.FlyType;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 import com.l2jserver.gameserver.pathfinding.PathFinding;
@@ -2657,7 +2656,6 @@ public abstract class L2Character extends L2Object
 
 				broadcastPacket(new FlyToLocation(_actor,_tgt,_flyType));
 				setXYZ(_tgt.getX(), _tgt.getY(), _tgt.getZ());
-				broadcastPacket(new ValidateLocation(_actor));
 			}
 			catch (Exception e)
 			{
@@ -6986,4 +6984,13 @@ public abstract class L2Character extends L2Object
     	_isRaid = val;
     	_isMinion = val;
     }
+    
+	/**
+	 * Overridden in L2GrandBossInstance
+	 * @return true
+	 */
+	public boolean giveRaidCurse()
+	{
+		return true;
+	}
 }
