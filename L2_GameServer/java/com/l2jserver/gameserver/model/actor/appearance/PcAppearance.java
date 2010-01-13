@@ -194,7 +194,10 @@ public class PcAppearance
     
     public void setNameColor(int nameColor)
     {
-        _nameColor = nameColor;
+    	if (nameColor < 0)
+    		return;
+
+    	_nameColor = nameColor;
     }
     
     public void setNameColor(int red, int green, int blue)
@@ -210,7 +213,10 @@ public class PcAppearance
     
     public void setTitleColor(int titleColor)
     {
-        _titleColor = titleColor;
+    	if (titleColor < 0)
+    		return;
+
+    	_titleColor = titleColor;
     }
     
     public void setTitleColor(int red, int green, int blue)

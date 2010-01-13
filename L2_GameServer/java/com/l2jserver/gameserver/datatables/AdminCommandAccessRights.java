@@ -100,9 +100,6 @@ public class AdminCommandAccessRights
 	
 	public boolean hasAccess(String adminCommand, L2AccessLevel accessLevel)
 	{
-		if (!accessLevel.isGm())
-			return false;
-		
 		if (accessLevel.getLevel() == AccessLevels._masterAccessLevelNum)
 			return true;
 		

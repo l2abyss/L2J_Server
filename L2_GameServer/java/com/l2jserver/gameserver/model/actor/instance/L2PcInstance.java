@@ -4177,7 +4177,6 @@ public final class L2PcInstance extends L2Playable
 
 		final int charges = getCharges();
 		// Check if the spell using charges or not in AirShip
-		// if skill generate charges and charges already at maximum - skill can't be used
 		if ((skill.getMaxCharges() == 0 && charges < skill.getNumCharges())
 				|| isInAirShip())
 		{
