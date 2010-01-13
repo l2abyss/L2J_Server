@@ -27,6 +27,7 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.gameserver.util.StringUtil;
 import com.l2jserver.util.Rnd;
 
@@ -129,6 +130,11 @@ public class L2PoisonZone extends L2ZoneType
 				}
 			}
 		}
+		if (character instanceof L2PcInstance)
+		{
+			character.setInsideZone(L2Character.ZONE_DANGERAREA, true);
+			character.sendPacket(new EtcStatusUpdate((L2PcInstance) character));
+		}
 	}
 	
 	@Override
@@ -138,6 +144,12 @@ public class L2PoisonZone extends L2ZoneType
 		{
 			_task.cancel(true);
 			_task = null;
+		}
+		if (character instanceof L2PcInstance)
+		{
+			character.setInsideZone(L2Character.ZONE_DANGERAREA, false);
+			if (!character.isInsideZone(L2Character.ZONE_DANGERAREA))
+				character.sendPacket(new EtcStatusUpdate((L2PcInstance) character));
 		}
 	}
 	
@@ -199,7 +211,8 @@ public class L2PoisonZone extends L2ZoneType
 							for (int skillId : _skills.keys())
 							{
 								if (_bypassConditions || getSkill(skillId, _skills.get(skillId)).checkCondition(temp, temp, false))
-									getSkill(skillId, _skills.get(skillId)).getEffects(temp, temp);
+									if (temp.getFirstEffect(skillId) == null)
+										getSkill(skillId, _skills.get(skillId)).getEffects(temp, temp);
 							}
 						}
 					}

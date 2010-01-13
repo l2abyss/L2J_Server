@@ -22,6 +22,7 @@ public class ExSetCompassZoneCode extends L2GameServerPacket
 {
 	private static final String _S__FE_32_EXSETCOMPASSZONECODE = "[S] FE:33 ExSetCompassZoneCode";
 
+	public static final int ALTEREDZONE = 0x08;
 	public static final int SIEGEWARZONE1 = 0x0A;
 	public static final int SIEGEWARZONE2 = 0x0B;
 	public static final int PEACEZONE = 0x0C;
