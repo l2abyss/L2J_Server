@@ -1915,7 +1915,14 @@ public final class L2PcInstance extends L2Playable
         if (Config.ALLOW_WATER)
             checkWaterState();
 
-        if (isInsideZone(ZONE_SIEGE))
+        if (isInsideZone(ZONE_DANGERAREA))
+        {
+        	if (_lastCompassZone == ExSetCompassZoneCode.ALTEREDZONE) return;
+        	_lastCompassZone = ExSetCompassZoneCode.ALTEREDZONE;
+        	ExSetCompassZoneCode cz = new ExSetCompassZoneCode(ExSetCompassZoneCode.ALTEREDZONE);
+        	sendPacket(cz);
+        }
+        else if (isInsideZone(ZONE_SIEGE))
         {
         	if (_lastCompassZone == ExSetCompassZoneCode.SIEGEWARZONE2) return;
         	_lastCompassZone = ExSetCompassZoneCode.SIEGEWARZONE2;
