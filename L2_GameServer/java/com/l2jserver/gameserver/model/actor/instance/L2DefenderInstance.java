@@ -139,7 +139,7 @@ public class L2DefenderInstance extends L2Attackable
 		_fort = FortManager.getInstance().getFort(getX(), getY(), getZ());
 		_castle = CastleManager.getInstance().getCastle(getX(), getY(), getZ());
 		if (_fort == null && _castle == null)
-			_log.warning("L2DefenderInstance spawned outside of Fortress and Castle Zone!");
+			_log.warning("L2DefenderInstance spawned outside of Fortress or Castle Zone! NpcId: "+getNpcId()+ " x="+getX()+ " y="+getY()+ " z="+getZ());
 	}
 
 	/**
