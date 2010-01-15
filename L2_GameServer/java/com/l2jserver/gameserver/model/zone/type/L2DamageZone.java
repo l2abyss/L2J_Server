@@ -76,7 +76,15 @@ public class L2DamageZone extends L2ZoneType
 	{
 		if (_task == null && (_damageHPPerSec != 0 || _damageMPPerSec != 0))
 		{
-			_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplyDamage(this), 10, 3300);
+			L2PcInstance player = character.getActingPlayer();
+			if (getCastle() != null) // Castle zone
+				if (!(getCastle().getSiege().getIsInProgress() && player != null && player.getSiegeState() != 2)) // Siege and no defender
+					return;
+			synchronized(this)
+			{
+				if (_task == null)
+					_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplyDamage(this), 10, 3300);
+			}
 		}
 	}
 	
@@ -85,8 +93,7 @@ public class L2DamageZone extends L2ZoneType
 	{
 		if (_characterList.isEmpty() && _task != null)
 		{
-			_task.cancel(true);
-			_task = null;
+			stopTask();
 		}
 	}
 	
@@ -103,6 +110,15 @@ public class L2DamageZone extends L2ZoneType
 	protected int getMPDamagePerSecond()
 	{
 		return _damageMPPerSec;
+	}
+	
+	protected void stopTask()
+	{
+		if (_task != null)
+		{
+			_task.cancel(false);
+			_task = null;
+		}
 	}
 
 	private Castle getCastle()
@@ -133,7 +149,10 @@ public class L2DamageZone extends L2ZoneType
 				siege = _castle.getSiege().getIsInProgress();
 				// castle zones active only during siege
 				if (!siege)
+				{
+					_dmgZone.stopTask();
 					return;
+				}
 			}
 
 			for (L2Character temp : _dmgZone.getCharacterList())
