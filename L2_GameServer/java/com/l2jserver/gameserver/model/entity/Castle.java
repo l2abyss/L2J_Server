@@ -1361,7 +1361,7 @@ public class Castle
 			statement.setInt(1, getCastleId());
 			statement.execute();
 			statement.close();
-			if (_procure != null)
+			if (_procure != null && _procure.size() > 0)
 			{
 				int count = 0;
 				String query = "INSERT INTO castle_manor_procure VALUES ";
@@ -1383,7 +1383,7 @@ public class Castle
 					statement.close();
 				}
 			}
-			if (_procureNext != null)
+			if (_procureNext != null && _procureNext.size() > 0)
 			{
 				int count = 0;
 				String query = "INSERT INTO castle_manor_procure VALUES ";
@@ -1440,7 +1440,7 @@ public class Castle
 			List<CropProcure> proc = null;
 			proc = getCropProcure(period);
 			
-			if (proc != null)
+			if (proc != null && proc.size() > 0)
 			{
 				int count = 0;
 				String query = "INSERT INTO castle_manor_procure VALUES ";
@@ -1646,5 +1646,18 @@ public class Castle
 	public List<L2ArtefactInstance> getArtefacts()
 	{
 		return _artefacts;
+	}
+	
+	public void resetManor()
+	{
+		setCropProcure(new FastList<CropProcure>(), CastleManorManager.PERIOD_CURRENT);
+		setCropProcure(new FastList<CropProcure>(), CastleManorManager.PERIOD_NEXT);
+		setSeedProduction(new FastList<SeedProduction>(), CastleManorManager.PERIOD_CURRENT);
+		setSeedProduction(new FastList<SeedProduction>(), CastleManorManager.PERIOD_NEXT);
+		if (Config.ALT_MANOR_SAVE_ALL_ACTIONS)
+		{
+			saveCropData();
+			saveSeedData();
+		}
 	}
 }
