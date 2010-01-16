@@ -69,6 +69,7 @@ import com.l2jserver.gameserver.model.actor.knownlist.CharKnownList;
 import com.l2jserver.gameserver.model.actor.position.CharPosition;
 import com.l2jserver.gameserver.model.actor.stat.CharStat;
 import com.l2jserver.gameserver.model.actor.status.CharStatus;
+import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -243,14 +244,15 @@ public abstract class L2Character extends L2Object
 	 */
 	public final boolean isInsideZone(final byte zone)
 	{
+		Instance instance = InstanceManager.getInstance().getInstance(getInstanceId());
 		switch (zone)
 		{
 			case ZONE_PVP:
-				if (InstanceManager.getInstance().getInstance(this.getInstanceId()).isPvPInstance())
+				if (instance != null && instance.isPvPInstance())
 					return true;
 				return _zones[ZONE_PVP] > 0 && _zones[ZONE_PEACE] == 0;
 			case ZONE_PEACE:
-				if (InstanceManager.getInstance().getInstance(this.getInstanceId()).isPvPInstance())
+				if (instance != null && instance.isPvPInstance())
 					return false;
 		}
 		return _zones[zone] > 0;

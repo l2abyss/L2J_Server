@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.ObjectKnownList;
 import com.l2jserver.gameserver.model.actor.poly.ObjectPoly;
 import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
+import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
@@ -135,22 +136,28 @@ public abstract class L2Object
 		if (_instanceId == instanceId)
 			return;
 		
+		Instance oldI = InstanceManager.getInstance().getInstance(_instanceId);
+		Instance newI = InstanceManager.getInstance().getInstance(instanceId);
+		
+		if (newI == null)
+			return;
+		
 		if (this instanceof L2PcInstance)
 		{
-			if (_instanceId > 0)
-				InstanceManager.getInstance().getInstance(_instanceId).removePlayer(getObjectId());
+			if (_instanceId > 0 && oldI != null)
+				oldI.removePlayer(getObjectId());
 			if (instanceId > 0)
-				InstanceManager.getInstance().getInstance(instanceId).addPlayer(getObjectId());
+				newI.addPlayer(getObjectId());
 			
 			if (((L2PcInstance)this).getPet() != null)
 				((L2PcInstance)this).getPet().setInstanceId(instanceId);
 		}
 		else if (this instanceof L2Npc)
 		{
-			if (_instanceId > 0)
-				InstanceManager.getInstance().getInstance(_instanceId).removeNpc(((L2Npc)this));
+			if (_instanceId > 0 && oldI != null)
+				oldI.removeNpc(((L2Npc)this));
 			if (instanceId > 0)
-				InstanceManager.getInstance().getInstance(instanceId).addNpc(((L2Npc)this));
+				newI.addNpc(((L2Npc)this));
 		}
 		
 		_instanceId = instanceId;
