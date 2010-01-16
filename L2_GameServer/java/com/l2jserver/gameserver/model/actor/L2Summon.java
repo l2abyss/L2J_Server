@@ -21,6 +21,7 @@ import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.ai.L2SummonAI;
+import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.handler.AdminCommandHandler;
 import com.l2jserver.gameserver.handler.IAdminCommandHandler;
 import com.l2jserver.gameserver.model.L2ItemInstance;
@@ -61,6 +62,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.templates.item.L2EtcItem;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
 
 public abstract class L2Summon extends L2Playable
@@ -462,33 +464,33 @@ public abstract class L2Summon extends L2Playable
 
     public void unSummon(L2PcInstance owner)
     {
-		if (isVisible() && !isDead())
-	    {
-			getAI().stopFollow();
-	        owner.sendPacket(new PetDelete(getObjectId(), 2));
-            L2Party party;
-            if ((party = owner.getParty()) != null)
-            {
-                party.broadcastToPartyMembers(owner, new ExPartyPetWindowDelete(this));
-            }
-            
-	        store();
-	        giveAllToOwner();
-	        owner.setPet(null);
-
-	        stopAllEffects();
-	        L2WorldRegion oldRegion = getWorldRegion();
-		    decayMe();
-		    if (oldRegion != null) oldRegion.removeFromZones(this);
-            getKnownList().removeAllKnownObjects();
-	        setTarget(null);
-	        for (int itemId : owner.getAutoSoulShot().keySet())
-	        {
-	        	String handler = owner.getInventory().getItemByItemId(itemId).getEtcItem().getHandlerName();
-	        	if (handler.contains("Beast"))
-	        		owner.disableAutoShot(itemId);
-	        }
-	    }
+    	if (isVisible() && !isDead())
+    	{
+    		getAI().stopFollow();
+    		owner.sendPacket(new PetDelete(getObjectId(), 2));
+    		L2Party party;
+    		if ((party = owner.getParty()) != null)
+    		{
+    			party.broadcastToPartyMembers(owner, new ExPartyPetWindowDelete(this));
+    		}
+    		
+    		store();
+    		giveAllToOwner();
+    		owner.setPet(null);
+    		
+    		stopAllEffects();
+    		L2WorldRegion oldRegion = getWorldRegion();
+    		decayMe();
+    		if (oldRegion != null) oldRegion.removeFromZones(this);
+    		getKnownList().removeAllKnownObjects();
+    		setTarget(null);
+    		for (int itemId : owner.getAutoSoulShot().keySet())
+    		{
+    			String handler = ((L2EtcItem)ItemTable.getInstance().getTemplate(itemId)).getHandlerName();
+    			if (handler.contains("Beast"))
+    				owner.disableAutoShot(itemId);
+    		}
+    	}
     }
 
     public int getAttackRange()
