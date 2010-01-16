@@ -115,7 +115,7 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
 			return;
 		}
 
-		int totalCost = 0;
+		long totalCost = 0;
 		for (Item i : _items)
 		{
 			if (!i.addToTradeList(tradeList))
