@@ -671,6 +671,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			// Go through all L2Object that belong to its faction
 			Collection<L2Object> objs = _actor.getKnownList().getKnownObjects().values();
 			//synchronized (_actor.getKnownList().getKnownObjects())
+			try
 			{
 				for (L2Object obj : objs)
 				{
@@ -725,6 +726,12 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						}
 					}
 				}
+			}
+			catch (NullPointerException e)
+			{
+				_log.info("L2AttackableAI: thinkAttack() faction call failed.");
+				if (Config.DEBUG)
+					e.printStackTrace();
 			}
 		}
 
