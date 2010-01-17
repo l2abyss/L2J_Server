@@ -2206,7 +2206,7 @@ public final class Config
 					ALT_OLY_REG_DISPLAY = Integer.parseInt(olympiad.getProperty("AltOlyRegistrationDisplayNumber","100"));
 					ALT_OLY_BATTLE_REWARD_ITEM = Integer.parseInt(olympiad.getProperty("AltOlyBattleRewItem","6651"));
 					ALT_OLY_CLASSED_RITEM_C = Integer.parseInt(olympiad.getProperty("AltOlyClassedRewItemCount","50"));
-					ALT_OLY_NONCLASSED_RITEM_C = Integer.parseInt(olympiad.getProperty("AltOlyNonClassedRewItemCount","30"));
+					ALT_OLY_NONCLASSED_RITEM_C = Integer.parseInt(olympiad.getProperty("AltOlyNonClassedRewItemCount","40"));
 					ALT_OLY_COMP_RITEM = Integer.parseInt(olympiad.getProperty("AltOlyCompRewItem","13722"));
 					ALT_OLY_GP_PER_POINT = Integer.parseInt(olympiad.getProperty("AltOlyGPPerPoint","1000"));
 					ALT_OLY_HERO_POINTS = Integer.parseInt(olympiad.getProperty("AltOlyHeroPoints","180"));
