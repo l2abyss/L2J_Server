@@ -364,10 +364,11 @@ public final class L2Weapon extends L2Item
 			return _emptyEffectSet;
 		if (trigger.isOffensive() != _skillsOnCast.isOffensive())
 			return _emptyEffectSet; // Trigger only same type of skill
-			
 		if (trigger.isToggle() && _skillsOnCast.getSkillType() == L2SkillType.BUFF)
 			return _emptyEffectSet; // No buffing with toggle skills
-			
+		if (!trigger.isMagic() && _skillsOnCast.getSkillType() == L2SkillType.BUFF)
+			return _emptyEffectSet; // No buffing with not magic skills
+		
 		Env env = new Env();
 		env.player = caster;
 		env.target = target;
