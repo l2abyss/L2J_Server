@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
@@ -70,6 +71,10 @@ public class ClanTable
 	
 	private ClanTable()
 	{
+		// forums has to be loaded before clan data, because of last forum id used should have also memo included
+		if (Config.COMMUNITY_TYPE > 0)
+			ForumsBBSManager.getInstance().initRoot();
+		
 		_clans = new FastMap<Integer, L2Clan>();
 		L2Clan clan;
 		Connection con = null;

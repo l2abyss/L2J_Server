@@ -35,7 +35,6 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.Server;
 import com.l2jserver.gameserver.cache.CrestCache;
 import com.l2jserver.gameserver.cache.HtmCache;
-import com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager;
 import com.l2jserver.gameserver.datatables.AccessLevels;
 import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
 import com.l2jserver.gameserver.datatables.ArmorSetsTable;
@@ -240,10 +239,6 @@ public class GameServer
 		// Call to load caches
 		HtmCache.getInstance();
 		CrestCache.getInstance();
-		
-		// forums has to be loaded before clan data, because of last forum id used should have also memo included
-		if (Config.COMMUNITY_TYPE > 0)
-			ForumsBBSManager.getInstance().initRoot();
 		
 		ClanTable.getInstance();
 		
