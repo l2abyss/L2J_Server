@@ -42,6 +42,7 @@ public final class L2ClanTraderInstance extends L2Npc
 				html.setFile("data/html/clantrader/" + getNpcId() + "-1.htm");
 
 			sendHtmlMessage(player, html);
+			return;
 		}
 		else if (command.startsWith("exchange"))
 		{
@@ -88,9 +89,10 @@ public final class L2ClanTraderInstance extends L2Npc
 				html.setFile("data/html/clantrader/" + getNpcId() + "-ExchangeFailed.htm");
 
 			sendHtmlMessage(player, html);
+			return;
 		}
-
-		super.onBypassFeedback(player, command);
+		else
+			super.onBypassFeedback(player, command);
 	}
 
 	private void sendHtmlMessage(L2PcInstance player, NpcHtmlMessage html)

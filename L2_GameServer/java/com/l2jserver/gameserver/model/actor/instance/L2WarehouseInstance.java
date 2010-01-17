@@ -180,8 +180,9 @@ public final class L2WarehouseInstance extends L2NpcInstance
 				showRetrieveWindow(player, WarehouseListType.ALL, SortedWareHouseWithdrawalList.A2Z);
 		}
 		else if (command.equals("DepositP"))
+		{
 			showDepositWindow(player);
-
+		}
 		else if (command.startsWith("WithdrawC"))
 		{
 			if (Config.L2JMOD_ENABLE_WAREHOUSESORTING_CLAN)
@@ -215,7 +216,9 @@ public final class L2WarehouseInstance extends L2NpcInstance
 				showWithdrawWindowClan(player, WarehouseListType.ALL, SortedWareHouseWithdrawalList.A2Z);
 		}
 		else if (command.equals("DepositC"))
+		{
 			showDepositWindowClan(player);
+		}
 		else
 		{
 			super.onBypassFeedback(player, command);
