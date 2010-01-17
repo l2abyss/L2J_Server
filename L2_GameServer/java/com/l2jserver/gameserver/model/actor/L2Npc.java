@@ -3021,9 +3021,10 @@ public class L2Npc extends L2Character
 		}
 	}
 	
-	public void scheduleDespawn(long delay)
+	public L2Npc scheduleDespawn(long delay)
 	{
 		ThreadPoolManager.getInstance().scheduleGeneral(this.new DespawnTask(this), delay);
+		return this;
 	}
 	
 	public class DespawnTask implements Runnable

@@ -15,8 +15,6 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.ai.CtrlEvent;
-import com.l2jserver.gameserver.datatables.SpawnTable;
-import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
@@ -35,25 +33,15 @@ public class L2PenaltyMonsterInstance extends L2MonsterInstance
 	@Override
 	public L2Character getMostHated()
 	{
-		return _ptk; //zawsze attakuje tylko 1 osobe chodzby nie wiem co xD
-	}
-	@Deprecated
-	public void notifyPlayerDead()
-	{
-		// Monster kill player and can by deleted
-		deleteMe();
-
-		L2Spawn spawn = getSpawn();
-		if (spawn != null)
-		{
-			spawn.stopRespawn();
-			SpawnTable.getInstance().deleteSpawn(spawn, false);
-		}
+		if (_ptk != null)
+			return _ptk; //always attack only one person
+		else
+			return super.getMostHated();
 	}
 
 	public void setPlayerToKill(L2PcInstance ptk)
 	{
-		if (Rnd.nextInt(100) <= 80)
+		if (Rnd.get(100) <= 80)
 		{
 			CreatureSay cs = new CreatureSay(getObjectId(), Say2.ALL, getName(), "mmm your bait was delicious");
 			this.broadcastPacket(cs);
@@ -70,12 +58,11 @@ public class L2PenaltyMonsterInstance extends L2MonsterInstance
 		if (!super.doDie(killer))
 			return false;
 
-		if (Rnd.nextInt(100) <= 75)
+		if (Rnd.get(100) <= 75)
 		{
 			CreatureSay cs = new CreatureSay(getObjectId(), Say2.ALL, getName(), "I will tell fishes not to take your bait");
 			this.broadcastPacket(cs);
 		}
 		return true;
 	}
-
 }
