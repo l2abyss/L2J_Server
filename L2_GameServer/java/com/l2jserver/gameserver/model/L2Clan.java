@@ -2465,6 +2465,19 @@ public class L2Clan
                 	}
                 }
                 break;
+			case 10:
+				// Upgrade to 11
+				//TODO: Must own a territory
+				if (getReputationScore() >= Config.CLAN_LEVEL_11_COST && getMembersCount() >= Config.CLAN_LEVEL_11_REQUIREMENT)
+				{
+					setReputationScore(getReputationScore() - Config.CLAN_LEVEL_11_COST, true);
+					SystemMessage cr = new SystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
+					cr.addNumber(Config.CLAN_LEVEL_11_COST);
+					player.sendPacket(cr);
+					cr = null;
+					increaseClanLevel = true;
+				}
+				break;
             default:
             	return false;
         }
