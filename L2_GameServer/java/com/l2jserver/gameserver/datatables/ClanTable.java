@@ -516,6 +516,12 @@ public class ClanTable
 		}
 	}
 	
+	public void storeClanScore()
+	{
+		for (L2Clan clan : _clans.values())
+			clan.updateClanScoreInDB();
+	}
+	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{

@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.GrandBossManager;
@@ -203,6 +204,7 @@ public class Shutdown extends Thread
 			try
 			{
 				disconnectAllCharacters();
+				_log.info("All players disconnected.");
 			}
 			catch (Throwable t)
 			{
@@ -239,10 +241,9 @@ public class Shutdown extends Thread
 			}
 			
 			// last byebye, save all data and quit this server
-			// logging doesnt work here :(
 			saveData();
 			
-			// saveData sends messages to exit players, so sgutdown selector after it
+			// saveData sends messages to exit players, so shutdown selector after it
 			try
 			{
 				GameServer.gameServer.getSelectorThread().shutdown();
@@ -504,6 +505,8 @@ public class Shutdown extends Thread
 		_log.info("TradeController: All count Item Saved");
 		Olympiad.getInstance().saveOlympiadStatus();
 		_log.info("Olympiad System: Data saved!!");
+		ClanTable.getInstance().storeClanScore();
+		_log.info("Clan System: Data saved!!");
 		
 		// Save Cursed Weapons data before closing.
 		CursedWeaponsManager.getInstance().saveData();
@@ -521,7 +524,6 @@ public class Shutdown extends Thread
 			ItemsOnGroundManager.getInstance().cleanUp();
 			_log.info("ItemsOnGroundManager: All items on ground saved!!");
 		}
-		_log.info("Data saved. All players disconnected, shutting down.");
 		
 		try
 		{
