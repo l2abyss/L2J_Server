@@ -53,7 +53,7 @@ public class EffectImmobileBuff extends EffectBuff
 	public boolean onStart()
 	{
 		getEffected().setIsImmobilized(true);
-		return true;
+		return super.onStart();
 	}
 	
 	/**
@@ -64,6 +64,7 @@ public class EffectImmobileBuff extends EffectBuff
 	public void onExit()
 	{
 		getEffected().setIsImmobilized(false);
+		super.onExit();
 	}
 	
 	/**
