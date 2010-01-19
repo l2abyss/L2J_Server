@@ -1887,9 +1887,9 @@ public final class L2PcInstance extends L2Playable
 		{
 			for (L2PcInstance target : plrs)
 			{
-				target.sendPacket(new RelationChanged(this, getRelation(this), isAutoAttackable(target)));
+				target.sendPacket(new RelationChanged(this, getRelation(target), isAutoAttackable(target)));
 				if (getPet() != null)
-					target.sendPacket(new RelationChanged(getPet(), getRelation(this), isAutoAttackable(target)));
+					target.sendPacket(new RelationChanged(getPet(), getRelation(target), isAutoAttackable(target)));
 			}
 		}
 	}
@@ -9022,7 +9022,7 @@ public final class L2PcInstance extends L2Playable
         if(skill.getSkillType() == L2SkillType.INSTANT_JUMP)
         {
         	// You cannot jump while rooted right ;)
-        	if(this.isRooted())
+        	if(isMovementDisabled())
         	{
         		// Sends message that skill cannot be used...
         		SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
