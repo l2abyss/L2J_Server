@@ -392,8 +392,6 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 		if (target.isInvul())
 			return; // speeding it up for siege guards
 		
-		if (Rnd.get(10) > 4) return; // test for reducing CPU load
-			
 		String faction_id = ((L2Npc) _actor).getFactionId();
 		
 		// Go through all L2Character that belong to its faction
@@ -452,6 +450,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 				{
 					// Notify the L2Object AI with EVT_AGGRESSION
 					npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, getAttackTarget(), 1);
+					return;
 				}
 				// heal friends
 				if (_selfAnalysis.hasHealOrResurrect && !_actor.isAttackingDisabled() && npc.getCurrentHp() < npc.getMaxHp() * 0.6 && _actor.getCurrentHp() > _actor.getMaxHp() / 2 && _actor.getCurrentMp() > _actor.getMaxMp() / 2
