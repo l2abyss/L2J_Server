@@ -132,6 +132,8 @@ public class GeoEngine extends GeoData
 	@Override
 	public boolean canSeeTarget(L2Object cha, L2Object target)
 	{
+		if (cha == null || target == null)
+			return false;
 		// To be able to see over fences and give the player the viewpoint
 		// game client has, all coordinates are lifted 45 from ground.
 		// Because of layer selection in LOS algorithm (it selects -45 there
