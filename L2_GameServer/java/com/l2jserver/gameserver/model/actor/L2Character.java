@@ -2593,7 +2593,8 @@ public abstract class L2Character extends L2Object
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.WARNING, "", e);
+				_log.info("NotifyAITask failed. "+ e);
+				e.printStackTrace();
 			}
 		}
 	}
@@ -6568,7 +6569,8 @@ public abstract class L2Character extends L2Object
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "", e);
+			_log.info(getClass().getSimpleName()+": callSkill() failed. "+ e);
+			e.printStackTrace();
 		}
 	}
 	

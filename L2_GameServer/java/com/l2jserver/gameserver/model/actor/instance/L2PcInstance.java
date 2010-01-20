@@ -8103,7 +8103,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			_log.warning("Could not restore character skills: " + e);
+			_log.warning("Could not restore character "+getClient()+ " skills: " + e);
 		}
 		finally
 		{
@@ -8205,7 +8205,8 @@ public final class L2PcInstance extends L2Playable
 			statement.close();
 		}
 		catch (Exception e) {
-			_log.warning("Could not restore active effect data: " + e);
+			_log.warning("Could not restore "+getClient()+" active effect data: " + e);
+			e.printStackTrace();
 		}
 		finally {
 			try {con.close();} catch (Exception e) {}

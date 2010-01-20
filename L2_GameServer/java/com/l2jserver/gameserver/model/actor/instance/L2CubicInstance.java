@@ -552,7 +552,8 @@ public class L2CubicInstance
 							if (!isInCubicRange(_owner, _target))
 								_target = null;
 						}
-						if ((_target != null) && (!_target.isDead()))
+						L2Character target = _target; // copy to avoid npe
+						if ((target != null) && (!target.isDead()))
 						{
 							if (Config.DEBUG)
 							{
@@ -560,16 +561,16 @@ public class L2CubicInstance
 								_log.info("Cubic Id: "
 								        + _id
 								        + " Target: "
-								        + _target.getName()
+								        + target.getName()
 								        + " distance: "
-								        + Math.sqrt(_target.getDistanceSq(_owner.getX(), _owner.getY(), _owner.getZ())));
+								        + Math.sqrt(target.getDistanceSq(_owner.getX(), _owner.getY(), _owner.getZ())));
 							}
 							
-							_owner.broadcastPacket(new MagicSkillUse(_owner, _target, skill.getId(), skill.getLevel(), 0, 0));
+							_owner.broadcastPacket(new MagicSkillUse(_owner, target, skill.getId(), skill.getLevel(), 0, 0));
 
 							L2SkillType type = skill.getSkillType();
 							ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
-							L2Character[] targets = { _target };
+							L2Character[] targets = { target };
 							
 							if ((type == L2SkillType.PARALYZE) || (type == L2SkillType.STUN)
 							        || (type == L2SkillType.ROOT)
