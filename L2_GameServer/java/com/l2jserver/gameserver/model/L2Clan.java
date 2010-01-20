@@ -2530,14 +2530,11 @@ public class L2Clan
             if (4 < level)
             {
             	SiegeManager.getInstance().addSiegeSkills(leader);
+            	leader.sendPacket(new SystemMessage(SystemMessageId.CLAN_CAN_ACCUMULATE_CLAN_REPUTATION_POINTS));
             }
             else if (5 > level)
             {
             	SiegeManager.getInstance().removeSiegeSkills(leader);
-            }
-            if (4 < level)
-            {
-                leader.sendPacket(new SystemMessage(SystemMessageId.CLAN_CAN_ACCUMULATE_CLAN_REPUTATION_POINTS));
             }
         }
 

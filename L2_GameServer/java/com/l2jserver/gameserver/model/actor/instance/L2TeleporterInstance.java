@@ -193,8 +193,7 @@ public final class L2TeleporterInstance extends L2Npc
 				filename = "data/html/teleporter/castleteleporter-busy.htm"; // Busy because of siege
 			else if (condition == COND_OWNER) // Clan owns castle
 			{
-				if (player.getLevel()<40)
-					filename = getHtmlPath(getNpcId(), 0); // Owner message window
+				filename = getHtmlPath(getNpcId(), 0); // Owner message window
 			}
 		}
 

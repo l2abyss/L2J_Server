@@ -45,8 +45,8 @@ public class L2OlympiadManagerInstance extends L2Npc
 	private static Logger _logOlymp = Logger.getLogger(L2OlympiadManagerInstance.class.getName());
 
 	private static final int GATE_PASS = Config.ALT_OLY_COMP_RITEM;
-	private static final String FEWER_THAN = "Fewer than" + String.valueOf(Config.ALT_OLY_REG_DISPLAY);
-	private static final String MORE_THAN = "More than" + String.valueOf(Config.ALT_OLY_REG_DISPLAY);
+	private static final String FEWER_THAN = "Fewer than " + String.valueOf(Config.ALT_OLY_REG_DISPLAY);
+	private static final String MORE_THAN = "More than " + String.valueOf(Config.ALT_OLY_REG_DISPLAY);
 
 	public L2OlympiadManagerInstance (int objectId, L2NpcTemplate template)
 	{
