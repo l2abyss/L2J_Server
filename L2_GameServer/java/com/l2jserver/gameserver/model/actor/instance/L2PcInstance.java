@@ -14588,4 +14588,21 @@ public final class L2PcInstance extends L2Playable
 			}
 		}
 	}
+
+	public double getCollisionRadius()
+	{
+		if (getAppearance().getSex())
+			return getTemplate().fCollisionRadius_female;
+		else
+			return getTemplate().fCollisionRadius;
+	}
+	
+	public double getCollisionHeight()
+	{
+		if (getAppearance().getSex())
+			return getTemplate().fCollisionHeight_female;
+		else
+			return getTemplate().fCollisionHeight;
+	}
+	
 }

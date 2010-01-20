@@ -101,6 +101,8 @@ public class CharTemplateTable
 				
 				set.set("collision_radius", rset.getDouble("m_col_r"));
 				set.set("collision_height", rset.getDouble("m_col_h"));
+				set.set("collision_radius_female", rset.getDouble("f_col_r"));
+				set.set("collision_height_female", rset.getDouble("f_col_h"));
 				ct = new L2PcTemplate(set);
 				
 				_templates.put(ct.classId.getId(), ct);

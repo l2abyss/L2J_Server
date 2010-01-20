@@ -148,6 +148,10 @@ public class PcAppearance
         _hairStyle = (byte) value;
     }
     
+    /**
+     * 
+     * @return true if char is female
+     */
     public final boolean getSex()
     {
         return _sex;

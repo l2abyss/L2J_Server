@@ -48,6 +48,9 @@ public class L2PcTemplate extends L2CharTemplate
 	public final float lvlMpAdd;
 	public final float lvlMpMod;
 	
+	public final double fCollisionHeight_female;
+	public final double fCollisionRadius_female;
+	
 	private List<PcTemplateItem> _items = new FastList<PcTemplateItem>();
 	
 	public L2PcTemplate(StatsSet set)
@@ -68,6 +71,9 @@ public class L2PcTemplate extends L2CharTemplate
 		lvlCpMod = set.getFloat("lvlCpMod");
 		lvlMpAdd = set.getFloat("lvlMpAdd");
 		lvlMpMod = set.getFloat("lvlMpMod");
+		
+		fCollisionRadius_female = set.getDouble("collision_radius_female");
+		fCollisionHeight_female = set.getDouble("collision_height_female");
 	}
 	
 	/**
