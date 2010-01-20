@@ -186,14 +186,34 @@ public final class L2ScriptEngineManager
 	
 	public void executeScriptList(File list) throws IOException
 	{
+		File file;
+		
+		if(!Config.ALT_DEV_NO_HANDLERS && Config.ALT_DEV_NO_QUESTS) {
+			file = new File(SCRIPT_FOLDER, "handlers/MasterHandler.java");
+			
+			try {
+				this.executeScript(file);
+				_log.info("Handlers loaded, all other scripts skipped");
+				return;
+			}
+			catch(ScriptException se) {
+				se.printStackTrace();
+			}
+		}
+		
+		if (Config.ALT_DEV_NO_QUESTS)
+			return;
+
 		if (list.isFile())
 		{
 			LineNumberReader lnr = new LineNumberReader(new InputStreamReader(new FileInputStream(list)));
 			String line;
-			File file;
 			
 			while ((line = lnr.readLine()) != null)
 			{
+				if (Config.ALT_DEV_NO_HANDLERS && line.contains("MasterHandler.java"))
+					continue;
+				
 				String[] parts = line.trim().split("#");
 				
 				if (parts.length > 0 && !parts[0].startsWith("#") && parts[0].length() > 0)
