@@ -771,7 +771,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		//------------------------------------------------------
 		// In case many mobs are trying to hit from same place, move a bit,
 		// circling around the target
-		if (!_actor.isRooted() && Rnd.nextInt(100) <= 33) // check it once per 3 seconds
+		if (!_actor.isMovementDisabled() && Rnd.nextInt(100) <= 33) // check it once per 3 seconds
 		{
 			int combinedCollision = _actor.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius;
 			int collision = _actor.getTemplate().collisionRadius;
@@ -789,7 +789,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			}
 		}
 		//Dodge if its needed
-		if(!_actor.isRooted() && ((L2Attackable)_actor).getCanDodge()>0)
+		if(!_actor.isMovementDisabled() && ((L2Attackable)_actor).getCanDodge()>0)
 		if (Rnd.get(100) <= ((L2Attackable)_actor).getCanDodge())
 		{
 			// Micht: kepping this one otherwise we should do 2 sqrt
@@ -988,7 +988,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 							continue;
 						}
 						if(!Util.checkIfInRange((sk.getCastRange()+_actor.getTemplate().collisionRadius + leader.getTemplate().collisionRadius),_actor,leader,false) 
-								&& !isParty(sk) && !_actor.isRooted())
+								&& !isParty(sk) && !_actor.isMovementDisabled())
 						{
 							moveToPawn(leader,sk.getCastRange()
 									+_actor.getTemplate().collisionRadius + leader.getTemplate().collisionRadius);
@@ -1046,7 +1046,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 
 		//-------------------------------------------------------------------------------
 		//Immobilize Condition
-		if((_actor.isRooted() && (dist > range || getAttackTarget().isMoving()))
+		if((_actor.isMovementDisabled() && (dist > range || getAttackTarget().isMoving()))
 				||(dist > range && getAttackTarget().isMoving()))
 		{
 			MovementDisable();
@@ -1104,7 +1104,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		// Starts Melee or Primary Skill
 		if(dist2>range || !GeoData.getInstance().canSeeTarget(_actor, getAttackTarget()))
 		{
-			if (_actor.isRooted())
+			if (_actor.isMovementDisabled())
 			{
 				TargetReconsider();
 				return;
@@ -1238,7 +1238,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						if(leader != null && !leader.isDead() && Rnd.get(100) > (leader.getCurrentHp()/leader.getMaxHp()*100))
 						{
 							if(!Util.checkIfInRange((sk.getCastRange() + _actor.getTemplate().collisionRadius + leader.getTemplate().collisionRadius),_actor,leader,false) 
-									&& !isParty(sk) && !_actor.isRooted())
+									&& !isParty(sk) && !_actor.isMovementDisabled())
 							{
 								moveToPawn(leader,sk.getCastRange() +_actor.getTemplate().collisionRadius + leader.getTemplate().collisionRadius);
 							}
@@ -1313,7 +1313,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 							L2Character leader = ((L2MinionInstance)_actor).getLeader();
 							if(leader != null && leader.isDead())
 								if(!Util.checkIfInRange((sk.getCastRange() + _actor.getTemplate().collisionRadius + leader.getTemplate().collisionRadius),_actor,leader,false) 
-										&& !isParty(sk) && !_actor.isRooted())
+										&& !isParty(sk) && !_actor.isMovementDisabled())
 								{
 									moveToPawn(leader,sk.getCastRange() +_actor.getTemplate().collisionRadius + leader.getTemplate().collisionRadius);
 								}
@@ -1907,7 +1907,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			*/
 		}
 		//timepass = timepass + 1;
-		if (_actor.isRooted())
+		if (_actor.isMovementDisabled())
 		{
 			//timepass = 0;
 			TargetReconsider();

@@ -28,7 +28,7 @@ public final class ServerObjectInfo extends L2GameServerPacket
 	private int _x, _y, _z, _heading;
 	private int _idTemplate;
 	private boolean _isAttackable;
-	private int _collisionHeight, _collisionRadius;
+	private double _collisionHeight, _collisionRadius;
 	private String _name;
 
 	public ServerObjectInfo(L2Npc activeChar, L2Character actor)

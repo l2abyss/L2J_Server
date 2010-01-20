@@ -93,8 +93,22 @@ public class L2CharTemplate
 	public final int baseMpConsumeRate;
 	public final int baseHpConsumeRate;
 	
+	/**
+	 * <FONT COLOR=#FF0000><B> <U>Caution</U> :
+	 * For client info use {@link fCollisionRadius}
+	 * </B></FONT><BR><BR>
+	 */
 	public final int collisionRadius;
+
+	/**
+	 * <FONT COLOR=#FF0000><B> <U>Caution</U> :
+	 * For client info use {@link fCollisionHeight}
+	 * </B></FONT><BR><BR>
+	 */
 	public final int collisionHeight;
+	
+	public final double fCollisionRadius;
+	public final double fCollisionHeight;
 	
 	public L2CharTemplate(StatsSet set)
 	{
@@ -164,7 +178,9 @@ public class L2CharTemplate
 		baseHpConsumeRate = set.getInteger("baseHpConsumeRate", 0);
 		
 		// Geometry
-		collisionRadius = set.getInteger("collision_radius");
-		collisionHeight = set.getInteger("collision_height");
+		fCollisionHeight = set.getDouble("collision_height");
+		fCollisionRadius = set.getDouble("collision_radius");
+		collisionRadius = (int) fCollisionRadius;
+		collisionHeight = (int) fCollisionHeight;
 	}
 }

@@ -101,8 +101,8 @@ public class PetInfo extends L2GameServerPacket
 
 		writeF(_multiplier); // movement multiplier
 		writeF(1); // attack speed multiplier
-		writeF(_summon.getTemplate().collisionRadius);
-		writeF(_summon.getTemplate().collisionHeight);
+		writeF(_summon.getTemplate().fCollisionRadius);
+		writeF(_summon.getTemplate().fCollisionHeight);
 		writeD(_summon.getWeapon()); // right hand weapon
 		writeD(_summon.getArmor()); // body armor
 		writeD(0); // left hand weapon

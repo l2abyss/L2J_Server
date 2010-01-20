@@ -58,7 +58,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 	protected int _walkSpd;
 	
 	protected int _rhand, _lhand, _chest, _enchantEffect;
-	protected int _collisionHeight, _collisionRadius;
+	protected double _collisionHeight, _collisionRadius;
 	protected String _name = "";
 	protected String _title = "";
 	
@@ -213,8 +213,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_isAttackable = cha.isAutoAttackable(attacker);
 			_rhand = 0;
 			_lhand = 0;
-			_collisionHeight = _trap.getTemplate().collisionHeight;
-			_collisionRadius = _trap.getTemplate().collisionRadius;
+			_collisionHeight = _trap.getTemplate().fCollisionHeight;
+			_collisionRadius = _trap.getTemplate().fCollisionRadius;
 			_name = cha.getName();
 			_title = cha.getOwner() != null ? cha.getOwner().getName() : "";
 			_runSpd = _trap.getRunSpeed();
@@ -408,8 +408,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			L2Transformation trans;
 			if (_decoy.getOwner().getMountType() != 0 && pet != null)
 			{
-				writeF(pet.getTemplate().collisionRadius);
-				writeF(pet.getTemplate().collisionHeight);
+				writeF(pet.getTemplate().fCollisionRadius);
+				writeF(pet.getTemplate().fCollisionHeight);
 			}
 			else if ((trans = _decoy.getOwner().getTransformation()) != null)
 			{
@@ -418,8 +418,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			}
 			else
 			{
-				writeF(_decoy.getOwner().getBaseTemplate().collisionRadius);
-				writeF(_decoy.getOwner().getBaseTemplate().collisionHeight);
+				writeF(_decoy.getOwner().getBaseTemplate().fCollisionRadius);
+				writeF(_decoy.getOwner().getBaseTemplate().fCollisionHeight);
 			}
 			
 			writeD(_decoy.getOwner().getAppearance().getHairStyle());
@@ -542,8 +542,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_name = cha.getName();
 			_title = cha.getOwner() != null ? (cha.getOwner().isOnline() == 0 ? "" : cha.getOwner().getName()) : ""; // when owner online, summon will show in title owner name
 			_idTemplate = cha.getTemplate().idTemplate;
-			_collisionHeight = cha.getTemplate().collisionHeight;
-			_collisionRadius = cha.getTemplate().collisionRadius;
+			_collisionHeight = cha.getTemplate().fCollisionHeight;
+			_collisionRadius = cha.getTemplate().fCollisionRadius;
 			_invisible = cha.getOwner() != null ? cha.getOwner().getAppearance().getInvisible() : false;
 			
 			// few fields needing fix from AbstractNpcInfo

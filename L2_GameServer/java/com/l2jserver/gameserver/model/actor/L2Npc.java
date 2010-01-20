@@ -160,8 +160,8 @@ public class L2Npc extends L2Character
 	private int _currentLHandId; // normally this shouldn't change from the template, but there exist exceptions
 	private int _currentRHandId; // normally this shouldn't change from the template, but there exist exceptions
 	private int _currentEnchant; // normally this shouldn't change from the template, but there exist exceptions
-	private int _currentCollisionHeight; // used for npc grow effect skills
-	private int _currentCollisionRadius; // used for npc grow effect skills
+	private double _currentCollisionHeight; // used for npc grow effect skills
+	private double _currentCollisionRadius; // used for npc grow effect skills
 	
     public boolean _soulshotcharged = false;
     public boolean _spiritshotcharged = false;
@@ -654,8 +654,8 @@ public class L2Npc extends L2Character
 		_currentRHandId = getTemplate().rhand;
 		_currentEnchant = Config.ENABLE_RANDOM_ENCHANT_EFFECT ? Rnd.get(4,21) : getTemplate().enchantEffect;
 		// initialize the "current" collisions
-		_currentCollisionHeight = getTemplate().collisionHeight;
-		_currentCollisionRadius = getTemplate().collisionRadius;
+		_currentCollisionHeight = getTemplate().fCollisionHeight;
+		_currentCollisionRadius = getTemplate().fCollisionRadius;
 
 		if (template == null)
 		{
@@ -2785,8 +2785,8 @@ public class L2Npc extends L2Character
 		// we do need to reset the weapons back to the initial templated weapon.
 		_currentLHandId = getTemplate().lhand;
 		_currentRHandId = getTemplate().rhand;
-		_currentCollisionHeight = getTemplate().collisionHeight;
-		_currentCollisionRadius = getTemplate().collisionRadius;
+		_currentCollisionHeight = getTemplate().fCollisionHeight;
+		_currentCollisionRadius = getTemplate().fCollisionRadius;
 		DecayTaskManager.getInstance().addDecayTask(this);
 		return true;
 	}
@@ -2957,22 +2957,22 @@ public class L2Npc extends L2Character
 		updateAbnormalEffect();
 	}
 
-	public void setCollisionHeight(int height)
+	public void setCollisionHeight(double height)
 	{
 		_currentCollisionHeight = height;
 	}
 
-	public void setCollisionRadius(int radius)
+	public void setCollisionRadius(double radius)
 	{
 		_currentCollisionRadius = radius;
 	}
 
-	public int getCollisionHeight()
+	public double getCollisionHeight()
 	{
 		return _currentCollisionHeight;
 	}
 
-	public int getCollisionRadius()
+	public double getCollisionRadius()
 	{
 		return _currentCollisionRadius;
 	}

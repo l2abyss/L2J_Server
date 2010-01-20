@@ -240,8 +240,8 @@ public final class UserInfo extends L2GameServerPacket
         L2Transformation trans;
         if (_activeChar.getMountType() != 0 && pet != null)
         {
-            writeF(pet.getTemplate().collisionRadius);
-            writeF(pet.getTemplate().collisionHeight);
+            writeF(pet.getTemplate().fCollisionRadius);
+            writeF(pet.getTemplate().fCollisionHeight);
         }
         else if ((trans = _activeChar.getTransformation()) != null)
         {
@@ -250,8 +250,8 @@ public final class UserInfo extends L2GameServerPacket
         }
         else
         {
-            writeF(_activeChar.getBaseTemplate().collisionRadius);
-            writeF(_activeChar.getBaseTemplate().collisionHeight);
+            writeF(_activeChar.getBaseTemplate().fCollisionRadius);
+            writeF(_activeChar.getBaseTemplate().fCollisionHeight);
         }
 
         writeD(_activeChar.getAppearance().getHairStyle());
