@@ -1589,25 +1589,6 @@ public class Quest extends ManagedScript
 		return content;
 	}
 	
-	// =========================================================
-	//  QUEST SPAWNS
-	// =========================================================
-	
-	public class DeSpawnScheduleTimerTask implements Runnable
-	{
-		L2Npc _npc = null;
-		
-		public DeSpawnScheduleTimerTask(L2Npc npc)
-		{
-			_npc = npc;
-		}
-		
-		public void run()
-		{
-			_npc.onDecay();
-		}
-	}
-	
 	// Method - Public
 	/**
 	 * Add a temporary (quest) spawn
@@ -1628,17 +1609,17 @@ public class Quest extends ManagedScript
 		return addSpawn(npcId, cha.getX(), cha.getY(), cha.getZ(), cha.getHeading(), false, 0, isSummonSpawn);
 	}
 	
-	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffSet, int despawnDelay)
+	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffSet, long despawnDelay)
 	{
 		return addSpawn(npcId, x, y, z, heading, randomOffSet, despawnDelay, false);
 	}
 	
-	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
+	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, long despawnDelay, boolean isSummonSpawn)
 	{
 		return addSpawn(npcId, x, y, z, heading, randomOffset, despawnDelay, isSummonSpawn, 0);
 	}
 	
-	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn, int instanceId)
+	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, long despawnDelay, boolean isSummonSpawn, int instanceId)
 	{
 		L2Npc result = null;
 		try
@@ -1686,7 +1667,7 @@ public class Quest extends ManagedScript
 				result = spawn.spawnOne(isSummonSpawn);
 				
 				if (despawnDelay > 0)
-					ThreadPoolManager.getInstance().scheduleGeneral(new DeSpawnScheduleTimerTask(result), despawnDelay);
+					result.scheduleDespawn(despawnDelay);
 				
 				return result;
 			}

@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.RecipeShopMsg;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.util.Util;
 
 
@@ -86,9 +87,10 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 			return;
 		}
 
-		if (player.isInDuel())
+		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player) || player.isInDuel())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CANT_CRAFT_DURING_COMBAT));
+			player.sendPacket(new SystemMessage(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT));
+			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 

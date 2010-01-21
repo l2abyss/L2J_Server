@@ -6769,7 +6769,7 @@ public enum SystemMessageId
 	* ID: 1135<br>
 	* Message: While you are engaged in combat, you cannot operate a private store or private workshop.
 	*/
-	CANT_CRAFT_DURING_COMBAT(1135),
+	CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT(1135),
 
 	/**
 	* ID: 1136<br>

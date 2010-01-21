@@ -4902,65 +4902,67 @@ public final class L2PcInstance extends L2Playable
 			else addItem("Pickup", target, null, true);
 		}
 	}
-    
-    public boolean canOpenPrivateStore()
-    {
-        return !this.isAlikeDead() && !this.isInOlympiadMode() && !this.isMounted();
-    }
-    
-    public void tryOpenPrivateBuyStore()
-    {
-        // Player shouldn't be able to set stores if he/she is alike dead (dead or fake death)
-        if (this.canOpenPrivateStore())
-        {
-            if (this.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_BUY || this.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_BUY +1)
-            {
-                this.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
-            }
-            if (this.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_NONE)
-            {
-                if (this.isSitting())
-                {
-                    this.standUp();
-                }
-                this.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_BUY +1);
-                this.sendPacket(new PrivateStoreManageListBuy(this));
-            }
-        }
-        else
-        {
-            this.sendPacket(ActionFailed.STATIC_PACKET);
-        }
-    }
-    
-    public void tryOpenPrivateSellStore(boolean isPackageSale)
-    {
-        // Player shouldn't be able to set stores if he/she is alike dead (dead or fake death)
-        if (this.canOpenPrivateStore())
-        {
-            if (this.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_SELL
-                    || this.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_SELL + 1
-                    || this.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_PACKAGE_SELL)
-            {
-                this.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
-            }
-            
-
-            if (this.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_NONE)
-            {
-                if (this.isSitting())
-                {
-                    this.standUp();
-                }
-                this.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_SELL + 1);
-                this.sendPacket(new PrivateStoreManageListSell(this, isPackageSale));
-            }
-        }
-        else
-        {
-            this.sendPacket(ActionFailed.STATIC_PACKET);
-        }
-    }
+	
+	public boolean canOpenPrivateStore()
+	{
+		return !isAlikeDead() && !isInOlympiadMode() && !isMounted() 
+				&& !isInsideZone(ZONE_NOSTORE) && !isCastingNow();
+	}
+	
+	public void tryOpenPrivateBuyStore()
+	{
+		// Player shouldn't be able to set stores if he/she is alike dead (dead or fake death)
+		if (canOpenPrivateStore())
+		{
+			if (getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_BUY || getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_BUY + 1)
+			{
+				setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
+			}
+			if (getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_NONE)
+			{
+				if (isSitting())
+				{
+					standUp();
+				}
+				setPrivateStoreType(L2PcInstance.STORE_PRIVATE_BUY + 1);
+				sendPacket(new PrivateStoreManageListBuy(this));
+			}
+		}
+		else
+		{
+			if (isInsideZone(ZONE_NOSTORE))
+				sendPacket(new SystemMessage(SystemMessageId.NO_PRIVATE_STORE_HERE));
+			sendPacket(ActionFailed.STATIC_PACKET);
+		}
+	}
+	
+	public void tryOpenPrivateSellStore(boolean isPackageSale)
+	{
+		// Player shouldn't be able to set stores if he/she is alike dead (dead or fake death)
+		if (canOpenPrivateStore())
+		{
+			if (getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_SELL || getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_SELL + 1 || getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_PACKAGE_SELL)
+			{
+				this.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
+			}
+			
+			if (getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_NONE)
+			{
+				if (isSitting())
+				{
+					standUp();
+				}
+				setPrivateStoreType(L2PcInstance.STORE_PRIVATE_SELL + 1);
+				sendPacket(new PrivateStoreManageListSell(this, isPackageSale));
+			}
+		}
+		else
+		{
+			if (isInsideZone(ZONE_NOSTORE))
+				sendPacket(new SystemMessage(SystemMessageId.NO_PRIVATE_STORE_HERE));
+			sendPacket(ActionFailed.STATIC_PACKET);
+		}
+	}
     
     public boolean isTransformed()
     {

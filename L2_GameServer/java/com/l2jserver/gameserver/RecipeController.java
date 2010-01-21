@@ -56,6 +56,7 @@ import com.l2jserver.gameserver.network.serverpackets.SetupGauge;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.Stats;
+import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.Util;
@@ -182,9 +183,9 @@ public class RecipeController
 	
 	public synchronized void requestMakeItem(L2PcInstance player, int recipeListId)
 	{
-		if (player.isInDuel())
+		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player) || player.isInDuel())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CANT_CRAFT_DURING_COMBAT));
+			player.sendPacket(new SystemMessage(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT));
 			return;
 		}
 		

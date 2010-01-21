@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExPrivateStoreSetWholeMsg;
 import com.l2jserver.gameserver.network.serverpackets.PrivateStoreManageListSell;
 import com.l2jserver.gameserver.network.serverpackets.PrivateStoreMsgSell;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.util.Util;
 
 import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
@@ -88,6 +89,14 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 		if (!player.getAccessLevel().allowTransaction())
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			return;
+		}
+		
+		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player) || player.isInDuel())
+		{
+			player.sendPacket(new SystemMessage(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT));
+			player.sendPacket(new PrivateStoreManageListSell(player, _packageSale));
+			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 
