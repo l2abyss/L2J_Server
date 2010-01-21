@@ -17,9 +17,11 @@ package com.l2jserver.gameserver.model.actor.instance;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
+import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.TutorialCloseHtml;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowHtml;
@@ -125,6 +127,9 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 		final ClassId classId = player.getClassId();
 		if (getMinLevel(classId.level()) > player.getLevel())
 			return;
+		
+		if (!Config.CLASS_MASTER_SETTINGS.isAllowed(classId.level()+1))
+			return;
 
 		player.sendPacket(new TutorialShowQuestionMark(1001));
 	}
@@ -136,6 +141,44 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 		if (!Config.ALLOW_CLASS_MASTERS)
 		{
 			html.setFile("data/html/classmaster/disabled.htm");
+		}
+		else if (!Config.CLASS_MASTER_SETTINGS.isAllowed(level))
+		{
+			int jobLevel = player.getClassId().level();
+			final StringBuilder sb = new StringBuilder(100);
+			sb.append("<html><body>");
+			switch (jobLevel)
+			{
+				case 0:
+					if (Config.CLASS_MASTER_SETTINGS.isAllowed(1))
+						sb.append("Come back here when you reached level 20 to change your class.<br>");
+					else if (Config.CLASS_MASTER_SETTINGS.isAllowed(2))
+						sb.append("Come back after your first occupation change.<br>");
+					else if (Config.CLASS_MASTER_SETTINGS.isAllowed(3))
+						sb.append("Come back after your second occupation change.<br>");
+					else
+						sb.append("I can't change your occupation.<br>");
+					break;
+				case 1:
+					if (Config.CLASS_MASTER_SETTINGS.isAllowed(2))
+						sb.append("Come back here when you reached level 40 to change your class.<br>");
+					else if (Config.CLASS_MASTER_SETTINGS.isAllowed(3))
+						sb.append("Come back after your second occupation change.<br>");
+					else
+						sb.append("I can't change your occupation.<br>");
+					break;
+				case 2:
+					if (Config.CLASS_MASTER_SETTINGS.isAllowed(3))
+						sb.append("Come back here when you reached level 76 to change your class.<br>");
+					else
+						sb.append("I can't change your occupation.<br>");
+					break;
+				case 3:
+					sb.append("There is no class change available for you anymore.<br>");
+					break;
+			}
+			sb.append("</body></html>");
+			html.setHtml(sb.toString());
 		}
 		else
 		{
@@ -190,6 +233,7 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 		}
 
 		html.replace("%objectId%", String.valueOf(objectId));
+		html.replace("%req_items%", getRequiredItems(level));
 		player.sendPacket(html);
 	}
 
@@ -220,6 +264,7 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 		}
 
 		msg = msg.replaceAll("%menu%", menu.toString());
+		msg = msg.replace("%req_items%", getRequiredItems(currentClassId.level()+1));
 		player.sendPacket(new TutorialShowHtml(msg));
 	}
 
@@ -232,7 +277,34 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 
 		if (!validateClassId(currentClassId, val))
 			return false;
+		
+		int newJobLevel = currentClassId.level() + 1;
+		// check if player have all required items for class transfer
+		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).keys())
+		{
+			int _count = Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).get(_itemId);
+			if (player.getInventory().getInventoryItemCount(_itemId, -1) < _count)
+			{
+				player.sendPacket(SystemMessageId.NOT_ENOUGH_ITEMS);
+				return false;
+			}
+		}
 
+		// get all required items for class transfer
+		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).keys())
+		{
+			int _count = Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).get(_itemId);
+			if (!player.destroyItemByItemId("ClassMaster", _itemId, _count, player, true))
+				return false;
+		}
+
+		// reward player with items
+		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).keys())
+		{
+			int _count = Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).get(_itemId);
+			player.addItem("ClassMaster", _itemId, _count, player, true);
+		}	
+		
 		player.setClassId(val);
 
 		if (player.isSubClassActive())
@@ -305,5 +377,18 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 			return true;
 
 		return false;
+	}
+	
+	private static String getRequiredItems(int level)
+	{
+		if (Config.CLASS_MASTER_SETTINGS.getRequireItems(level) == null || Config.CLASS_MASTER_SETTINGS.getRequireItems(level).isEmpty())
+			return "<tr><td>none</td></r>";
+		StringBuilder sb = new StringBuilder();
+		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(level).keys())
+		{
+			int _count = Config.CLASS_MASTER_SETTINGS.getRequireItems(level).get(_itemId);
+			sb.append("<tr><td><font color=\"LEVEL\">" + _count + "</font></td><td>" + ItemTable.getInstance().getTemplate(_itemId).getName() + "</td></tr>");
+		}
+		return sb.toString();
 	}
 }

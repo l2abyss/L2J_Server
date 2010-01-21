@@ -16,6 +16,7 @@ package com.l2jserver;
 
 import gnu.trove.TIntFloatHashMap;
 import gnu.trove.TIntIntHashMap;
+import gnu.trove.TIntObjectHashMap;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,6 +30,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -104,6 +106,7 @@ public final class Config
 	public static boolean ALT_GAME_SHIELD_BLOCKS;
 	public static int ALT_PERFECT_SHLD_BLOCK;
 	public static boolean ALLOW_CLASS_MASTERS;
+	public static ClassMasterSettings CLASS_MASTER_SETTINGS;
 	public static boolean ALLOW_ENTIRE_TREE;
 	public static boolean ALTERNATE_CLASS_MASTER;
 	public static boolean LIFE_CRYSTAL_NEEDED;
@@ -1313,6 +1316,8 @@ public final class Config
 					ALT_GAME_SHIELD_BLOCKS = Boolean.parseBoolean(Character.getProperty("AltShieldBlocks", "false"));
 					ALT_PERFECT_SHLD_BLOCK = Integer.parseInt(Character.getProperty("AltPerfectShieldBlockRate", "10"));
 					ALLOW_CLASS_MASTERS = Boolean.parseBoolean(Character.getProperty("AllowClassMasters", "False"));
+					if (ALLOW_CLASS_MASTERS)
+						CLASS_MASTER_SETTINGS = new ClassMasterSettings(Character.getProperty("ConfigClassMaster"));
 					ALLOW_ENTIRE_TREE = Boolean.parseBoolean(Character.getProperty("AllowEntireTree", "False"));
 					ALTERNATE_CLASS_MASTER = Boolean.parseBoolean(Character.getProperty("AlternateClassMaster", "False"));
 					LIFE_CRYSTAL_NEEDED = Boolean.parseBoolean(Character.getProperty("LifeCrystalNeeded", "true"));
@@ -2861,5 +2866,94 @@ public final class Config
 		config.PUNISHMENT_LIMIT = Integer.parseInt(properties.getProperty(StringUtil.concat("FloodProtector", configString, "PunishmentLimit"), "0"));
 		config.PUNISHMENT_TYPE = properties.getProperty(StringUtil.concat("FloodProtector", configString, "PunishmentType"), "none");
 		config.PUNISHMENT_TIME = Integer.parseInt(properties.getProperty(StringUtil.concat("FloodProtector", configString, "PunishmentTime"), "0"));
+	}
+	
+	public static class ClassMasterSettings
+	{
+		private TIntObjectHashMap<TIntIntHashMap> _claimItems;
+		private TIntObjectHashMap<TIntIntHashMap> _rewardItems;
+		private TIntObjectHashMap<Boolean> _allowedClassChange;
+
+		public ClassMasterSettings(String _configLine)
+		{
+			_claimItems = new TIntObjectHashMap<TIntIntHashMap>(3);
+			_rewardItems = new TIntObjectHashMap<TIntIntHashMap>(3);
+			_allowedClassChange = new TIntObjectHashMap<Boolean>(3);
+			if (_configLine != null)
+				parseConfigLine(_configLine.trim());
+		}
+
+		private void parseConfigLine(String _configLine)
+		{
+			StringTokenizer st = new StringTokenizer(_configLine, ";");
+
+			while (st.hasMoreTokens())
+			{
+				// get allowed class change
+				int job = Integer.parseInt(st.nextToken());
+
+				_allowedClassChange.put(job, true);
+
+				TIntIntHashMap _items = new TIntIntHashMap();
+				// parse items needed for class change
+				if (st.hasMoreTokens())
+				{
+					StringTokenizer st2 = new StringTokenizer(st.nextToken(), "[],");
+
+					while (st2.hasMoreTokens())
+					{
+						StringTokenizer st3 = new StringTokenizer(st2.nextToken(), "()");
+						int _itemId = Integer.parseInt(st3.nextToken());
+						int _quantity = Integer.parseInt(st3.nextToken());
+						_items.put(_itemId, _quantity);
+					}
+				}
+
+				_claimItems.put(job, _items);
+
+				_items = new TIntIntHashMap();
+				// parse gifts after class change
+				if (st.hasMoreTokens())
+				{
+					StringTokenizer st2 = new StringTokenizer(st.nextToken(), "[],");
+
+					while (st2.hasMoreTokens())
+					{
+						StringTokenizer st3 = new StringTokenizer(st2.nextToken(), "()");
+						int _itemId = Integer.parseInt(st3.nextToken());
+						int _quantity = Integer.parseInt(st3.nextToken());
+						_items.put(_itemId, _quantity);
+					}
+				}
+
+				_rewardItems.put(job, _items);
+			}
+		}
+
+		public boolean isAllowed(int job)
+		{
+			if (_allowedClassChange == null)
+				return false;
+			if (_allowedClassChange.containsKey(job))
+				return _allowedClassChange.get(job);
+
+			return false;
+		}
+
+		public TIntIntHashMap getRewardItems(int job)
+		{
+			if (_rewardItems.containsKey(job))
+				return _rewardItems.get(job);
+
+			return null;
+		}
+
+		public TIntIntHashMap getRequireItems(int job)
+		{
+			if (_claimItems.containsKey(job))
+				return _claimItems.get(job);
+
+			return null;
+		}
 	}
 }
