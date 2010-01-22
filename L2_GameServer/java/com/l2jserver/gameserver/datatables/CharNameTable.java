@@ -44,8 +44,8 @@ public class CharNameTable
 
 	private CharNameTable()
 	{
-		_chars = new FastMap<Integer, String>();
-		_accessLevels = new FastMap<Integer, Integer>();
+		_chars = new FastMap<Integer, String>().setShared(true);
+		_accessLevels = new FastMap<Integer, Integer>().setShared(true);
 		if (Config.CACHE_CHAR_NAMES)
 			loadAll();
 	}
@@ -81,9 +81,11 @@ public class CharNameTable
 	public final int getIdByName(String name)
 	{
 		Iterator<Entry<Integer, String>> it = _chars.entrySet().iterator();
+		
+		Map.Entry<Integer, String> pair;
 		while (it.hasNext())
 		{
-			Map.Entry<Integer, String> pair = it.next();
+			pair = it.next();
 			if (pair.getValue().equalsIgnoreCase(name))
 				return pair.getKey();
 		}
