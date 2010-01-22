@@ -565,7 +565,7 @@ public class EnterWorld extends L2GameClientPacket
 	{
 		if (activeChar.getSponsor() != 0)
 		{
-			L2PcInstance sponsor = (L2PcInstance)L2World.getInstance().getPlayer(activeChar.getSponsor());
+			L2PcInstance sponsor = L2World.getInstance().getPlayer(activeChar.getSponsor());
 
 			if (sponsor != null)
 			{
@@ -576,7 +576,7 @@ public class EnterWorld extends L2GameClientPacket
 		}
 		else if (activeChar.getApprentice() != 0)
 		{
-			L2PcInstance apprentice = (L2PcInstance)L2World.getInstance().getPlayer(activeChar.getApprentice());
+			L2PcInstance apprentice = L2World.getInstance().getPlayer(activeChar.getApprentice());
 
 			if (apprentice != null)
 			{

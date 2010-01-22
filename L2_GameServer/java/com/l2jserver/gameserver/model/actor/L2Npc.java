@@ -2903,7 +2903,7 @@ public class L2Npc extends L2Character
 	@Override
 	public String toString()
 	{
-		return getTemplate().name;
+		return getClass().getSimpleName()+":"+getTemplate().name+"("+getNpcId()+")"+"["+getObjectId()+"]";
 	}
 
 	public boolean isDecayed()

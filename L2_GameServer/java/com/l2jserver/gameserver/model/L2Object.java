@@ -452,7 +452,7 @@ public abstract class L2Object
     @Override
     public String toString()
     {
-        return "" + getObjectId();
+        return (getClass().getSimpleName() + ":"+getName()+"[" + getObjectId() + "]");
     }
     
 	/**

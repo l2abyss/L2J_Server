@@ -8105,7 +8105,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			_log.warning("Could not restore character "+getClient()+ " skills: " + e);
+			_log.warning("Could not restore character "+this+ " skills: " + e);
 		}
 		finally
 		{
@@ -8207,7 +8207,7 @@ public final class L2PcInstance extends L2Playable
 			statement.close();
 		}
 		catch (Exception e) {
-			_log.warning("Could not restore "+getClient()+" active effect data: " + e);
+			_log.warning("Could not restore "+this+" active effect data: " + e);
 			e.printStackTrace();
 		}
 		finally {
@@ -8261,7 +8261,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-		    _log.log(Level.SEVERE, "Failed restoing character hennas.", e);
+		    _log.log(Level.SEVERE, "Failed restoing character "+this+" hennas.", e);
 		}
 		finally
 		{
@@ -8295,7 +8295,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Failed restoring character recommendations.", e);
+			_log.log(Level.SEVERE, "Failed restoring character "+this+" recommendations.", e);
 		}
 		finally
 		{
@@ -9633,12 +9633,6 @@ public final class L2PcInstance extends L2Playable
 	public L2CubicInstance getCubic(int id)
 	{
 		return _cubics.get(id);
-	}
-
-	@Override
-	public String toString()
-	{
-		return "player "+getName();
 	}
 
 	/**

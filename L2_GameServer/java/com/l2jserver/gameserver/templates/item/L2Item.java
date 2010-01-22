@@ -779,6 +779,6 @@ public abstract class L2Item
 	@Override
 	public String toString()
 	{
-		return _name;
+		return _name+"("+_itemId+")";
 	}
 }

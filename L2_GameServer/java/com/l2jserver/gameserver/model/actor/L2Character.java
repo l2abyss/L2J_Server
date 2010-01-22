@@ -6719,12 +6719,6 @@ public abstract class L2Character extends L2Object
 		return weaponItem.getRandomDamage();
 	}
 
-	@Override
-	public String toString()
-	{
-		return "mob "+getObjectId();
-	}
-
 	public int getAttackEndTime()
 	{
 		return _attackEndTime;

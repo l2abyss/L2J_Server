@@ -1658,7 +1658,7 @@ public final class L2ItemInstance extends L2Object
 	@Override
 	public String toString()
 	{
-		return ""+_item;
+		return _item+"["+getObjectId()+"]";
 	}
 
 	public void resetOwnerTimer()
