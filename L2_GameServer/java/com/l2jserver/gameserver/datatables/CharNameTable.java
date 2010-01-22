@@ -44,8 +44,8 @@ public class CharNameTable
 
 	private CharNameTable()
 	{
-		_chars = new FastMap<Integer, String>().setShared(true);
-		_accessLevels = new FastMap<Integer, Integer>().setShared(true);
+		_chars = new FastMap<Integer, String>();
+		_accessLevels = new FastMap<Integer, Integer>();
 		if (Config.CACHE_CHAR_NAMES)
 			loadAll();
 	}
@@ -64,7 +64,7 @@ public class CharNameTable
 		}
 	}
 
-	public final void addName(int objId, String name)
+	private final void addName(int objId, String name)
 	{
 		if (name != null)
 		{
@@ -80,6 +80,9 @@ public class CharNameTable
 
 	public final int getIdByName(String name)
 	{
+		if (name == null || name.isEmpty())
+			return -1;
+		
 		Iterator<Entry<Integer, String>> it = _chars.entrySet().iterator();
 		
 		Map.Entry<Integer, String> pair;
@@ -131,13 +134,17 @@ public class CharNameTable
 		{
 			_chars.put(id, name);
 			_accessLevels.put(id, accessLevel);
+			return id;
 		}
 
-		return id;
+		return -1; // not found
 	}
 
 	public final String getNameById(int id)
 	{
+		if (id <= 0)
+			return null;
+		
 		String name = _chars.get(id);
 		if (name != null)
 			return name;
@@ -182,9 +189,10 @@ public class CharNameTable
 		{
 			_chars.put(id, name);
 			_accessLevels.put(id, accessLevel);
+			return name;
 		}
 
-		return name;
+		return null; //not found
 	}
 
 	public final int getAccessLevelById(int objectId)

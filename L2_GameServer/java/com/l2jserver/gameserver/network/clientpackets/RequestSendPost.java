@@ -197,7 +197,7 @@ public final class RequestSendPost extends L2GameClientPacket
 		}
 
 		final int receiverId = CharNameTable.getInstance().getIdByName(_receiver);
-		if (receiverId < 0)
+		if (receiverId <= 0)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.RECIPIENT_NOT_EXIST));
 			return;
