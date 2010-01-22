@@ -3043,4 +3043,24 @@ public class L2Npc extends L2Character
 				_npc.deleteMe();
 		}		
 	}
+	
+	@Override
+	protected final void notifyQuestEventSkillFinished(L2Skill skill, L2Object target)
+	{
+		try
+		{
+			if (getTemplate().getEventQuests(Quest.QuestEventType.ON_SPELL_FINISHED) != null)
+			{
+				L2PcInstance player = target.getActingPlayer();
+				for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_SPELL_FINISHED))
+				{
+					quest.notifySpellFinished(((L2Npc) this), player, skill);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "", e);
+		}
+	}
 }

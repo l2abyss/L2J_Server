@@ -6237,26 +6237,9 @@ public abstract class L2Character extends L2Object
 	}
 
 	// Quest event ON_SPELL_FNISHED
-	private void notifyQuestEventSkillFinished(L2Skill skill, L2Object target)
+	protected void notifyQuestEventSkillFinished(L2Skill skill, L2Object target)
 	{
-		if (this instanceof L2Npc)
-		{
-			try
-			{
-				if (((L2NpcTemplate) getTemplate()).getEventQuests(Quest.QuestEventType.ON_SPELL_FINISHED) != null)
-				{
-					L2PcInstance player = target.getActingPlayer();
-					for (Quest quest : ((L2NpcTemplate) getTemplate()).getEventQuests(Quest.QuestEventType.ON_SPELL_FINISHED))
-					{
-						quest.notifySpellFinished(((L2Npc) this), player, skill);
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				_log.log(Level.SEVERE, "", e);
-			}
-		}
+
 	}
 	
 	/**
