@@ -653,6 +653,7 @@ public final class Config
 	public static boolean ANNOUNCE_PK_PVP_NORMAL_MESSAGE;
 	public static String ANNOUNCE_PK_MSG;
 	public static String ANNOUNCE_PVP_MSG;
+	public static boolean L2JMOD_CHAT_ADMIN;
 
 	//--------------------------------------------------
 	// NPC Settings
@@ -2146,6 +2147,7 @@ public final class Config
 					ANNOUNCE_PK_MSG = L2JModSettings.getProperty("AnnouncePkMsg", "$killer has slaughtered $target");
 					ANNOUNCE_PVP_MSG = L2JModSettings.getProperty("AnnouncePvpMsg", "$killer has defeated $target");
 					
+					L2JMOD_CHAT_ADMIN = Boolean.parseBoolean(L2JModSettings.getProperty("ChatAdmin", "false"));
 				}
 				catch (Exception e)
 				{
