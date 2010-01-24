@@ -110,11 +110,9 @@ public final class L2BabyPetInstance extends L2PetInstance
 	@Override
 	public boolean doDie(L2Character killer)
 	{
-		if (!super.doDie(killer))
-			return false;
-
 		stopCastTask();
-		return true;
+		abortCast();
+		return super.doDie(killer);
 	}
 
 	@Override
@@ -143,8 +141,9 @@ public final class L2BabyPetInstance extends L2PetInstance
 
 	private final void startCastTask()
 	{
-		if (_majorHeal > 0 || _buffs != null || _recharge > 0)
-			_castTask = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new CastTask(this), 3000, 1000);
+		if ((_majorHeal > 0 || _buffs != null || _recharge > 0) 
+			&& _castTask == null && !isDead()) // cast task is not yet started and not dead (will start on revive)
+				_castTask = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new CastTask(this), 3000, 1000);
 	}
 
 	private final void stopCastTask()
