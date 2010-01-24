@@ -1757,7 +1757,7 @@ public abstract class L2Character extends L2Object
 		if (effectWhileCasting)
 		{
 			// Consume Items if necessary and Send the Server->Client packet InventoryUpdate with Item modification to all the L2Character
-			if (skill.getItemConsume() > 0)
+			if (skill.getItemConsumeId() > 0)
 			{
 				if (!destroyItemByItemId("Consume", skill.getItemConsumeId(), skill.getItemConsume(), null, true))
 				{
@@ -1803,7 +1803,7 @@ public abstract class L2Character extends L2Object
 
 		if (this instanceof L2Playable)
 		{
-			if (!effectWhileCasting && skill.getItemConsume() > 0)
+			if (!effectWhileCasting && skill.getItemConsumeId() > 0)
 			{
 				if (!destroyItemByItemId("Consume", skill.getItemConsumeId(), skill.getItemConsume(), null, true))
 				{
@@ -1962,7 +1962,7 @@ public abstract class L2Character extends L2Object
         
         // Check if the spell consumes an Item
         // TODO: combine check and consume
-        if (skill.getItemConsume() > 0 && getInventory() != null)
+        if (skill.getItemConsumeId() > 0 && getInventory() != null)
         {
             // Get the L2ItemInstance consumed by the spell
             L2ItemInstance requiredItems = getInventory().getItemByItemId(skill.getItemConsumeId());
