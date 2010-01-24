@@ -136,9 +136,6 @@ public class L2Npc extends L2Character
 	/** True if endDecayTask has already been called */
 	volatile boolean _isDecayed = false;
 
-	/** True if a Dwarf has used Spoil on this L2NpcInstance */
-	private boolean _isSpoil = false;
-
 	/** The castle index in the array of L2Castle this L2NpcInstance belongs to */
 	private int _castleIndex = -2;
 
@@ -147,8 +144,6 @@ public class L2Npc extends L2Character
 
 	public boolean isEventMob = false;
 	private boolean _isInTown = false;
-
-	private int _isSpoiledBy = 0;
 
 	/** Time of last social packet broadcast*/
 	private long _lastSocialBroadcast = 0;
@@ -888,32 +883,6 @@ public class L2Npc extends L2Character
 	public int getEnchantEffect()
 	{
 		return _currentEnchant;
-	}
-
-	/**
-	 * Return True if this L2NpcInstance has drops that can be sweeped.<BR><BR>
-	 */
-	public boolean isSpoil()
-	{
-		return _isSpoil;
-	}
-
-	/**
-	 * Set the spoil state of this L2NpcInstance.<BR><BR>
-	 */
-	public void setSpoil(boolean isSpoil)
-	{
-		_isSpoil = isSpoil;
-	}
-
-	public final int getIsSpoiledBy()
-	{
-		return _isSpoiledBy;
-	}
-
-	public final void setIsSpoiledBy(int value)
-	{
-		_isSpoiledBy = value;
 	}
 
 	/**

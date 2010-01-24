@@ -270,6 +270,11 @@ public class L2Attackable extends L2Npc
 
 	private boolean _mustGiveExpSp;
 
+	/** True if a Dwarf has used Spoil on this L2NpcInstance */
+	private boolean _isSpoil = false;
+
+	private int _isSpoiledBy = 0;
+
 	/**
 	 * Constructor of L2Attackable (use L2Character and L2NpcInstance constructor).
 	 *
@@ -2361,6 +2366,32 @@ public class L2Attackable extends L2Npc
 			else
 				((L2AttackableAI) getAI()).stopAITask();
 		}
+	}
+
+	/**
+	 * Return True if this L2NpcInstance has drops that can be sweeped.<BR><BR>
+	 */
+	public boolean isSpoil()
+	{
+		return _isSpoil;
+	}
+
+	/**
+	 * Set the spoil state of this L2NpcInstance.<BR><BR>
+	 */
+	public void setSpoil(boolean isSpoil)
+	{
+		_isSpoil = isSpoil;
+	}
+
+	public final int getIsSpoiledBy()
+	{
+		return _isSpoiledBy;
+	}
+
+	public final void setIsSpoiledBy(int value)
+	{
+		_isSpoiledBy = value;
 	}
 
 	/**
