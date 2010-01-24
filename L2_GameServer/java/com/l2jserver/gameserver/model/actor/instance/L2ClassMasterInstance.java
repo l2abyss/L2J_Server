@@ -128,7 +128,7 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 		if (getMinLevel(classId.level()) > player.getLevel())
 			return;
 		
-		if (!Config.CLASS_MASTER_SETTINGS.isAllowed(classId.level()+1))
+		if (Config.ALLOW_CLASS_MASTERS && !Config.CLASS_MASTER_SETTINGS.isAllowed(classId.level()+1))
 			return;
 
 		player.sendPacket(new TutorialShowQuestionMark(1001));
