@@ -110,9 +110,11 @@ public final class L2BabyPetInstance extends L2PetInstance
 	@Override
 	public boolean doDie(L2Character killer)
 	{
+		if (!super.doDie(killer))
+			return false;
 		stopCastTask();
 		abortCast();
-		return super.doDie(killer);
+		return true;
 	}
 
 	@Override
