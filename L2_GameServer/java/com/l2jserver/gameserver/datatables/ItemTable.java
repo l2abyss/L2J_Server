@@ -141,10 +141,10 @@ public class ItemTable
 		_slots.put("chest", L2Item.SLOT_CHEST);
 		_slots.put("fullarmor", L2Item.SLOT_FULL_ARMOR);
 		_slots.put("head", L2Item.SLOT_HEAD);
-		_slots.put("hair", L2Item.SLOT_HAIR);
+		_slots.put("hair", L2Item.SLOT_HAIR2);
 		_slots.put("face", L2Item.SLOT_HAIR);
-		_slots.put("hair2", L2Item.SLOT_HAIR2);
-		_slots.put("dhair", L2Item.SLOT_HAIRALL);
+		//_slots.put("hair2", L2Item.SLOT_HAIR2); //not used in db anymore
+		//_slots.put("dhair", L2Item.SLOT_HAIRALL); //not used in db anymore
 		_slots.put("hairall", L2Item.SLOT_HAIRALL);
 		_slots.put("underwear", L2Item.SLOT_UNDERWEAR);
 		_slots.put("back", L2Item.SLOT_BACK);

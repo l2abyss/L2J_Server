@@ -1699,7 +1699,7 @@ public final class Config
 					DEFAULT_PUNISH = Integer.parseInt(General.getProperty("DefaultPunish", "2"));
 					DEFAULT_PUNISH_PARAM = Integer.parseInt(General.getProperty("DefaultPunishParam", "0"));
 					ONLY_GM_ITEMS_FREE = Boolean.parseBoolean(General.getProperty("OnlyGMItemsFree", "True"));
-					JAIL_IS_PVP = Boolean.parseBoolean(General.getProperty("JailIsPvp", "True"));
+					JAIL_IS_PVP = Boolean.parseBoolean(General.getProperty("JailIsPvp", "False"));
 					JAIL_DISABLE_CHAT = Boolean.parseBoolean(General.getProperty("JailDisableChat", "True"));
 					JAIL_DISABLE_TRANSACTION = Boolean.parseBoolean(General.getProperty("JailDisableTransaction", "False"));
 					CUSTOM_SPAWNLIST_TABLE = Boolean.valueOf(General.getProperty("CustomSpawnlistTable", "false"));
