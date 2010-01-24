@@ -50,8 +50,7 @@ public final class RequestRefine extends AbstractRefinePacket
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
 	 */
 	@Override
-	protected
-	void runImpl()
+	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
@@ -76,6 +75,7 @@ public final class RequestRefine extends AbstractRefinePacket
 		final LifeStone ls = getLifeStone(refinerItem.getItemId());
 		if (ls == null)
 			return;
+
 		final int lifeStoneLevel = ls.getLevel();
 		final int lifeStoneGrade = ls.getGrade();
 		if (_gemStoneCount != getGemStoneCount(targetItem.getItem().getItemGrade(), lifeStoneGrade))
@@ -91,9 +91,7 @@ public final class RequestRefine extends AbstractRefinePacket
 			L2ItemInstance[] unequiped = activeChar.getInventory().unEquipItemInSlotAndRecord(targetItem.getLocationSlot());
 			InventoryUpdate iu = new InventoryUpdate();
 			for (L2ItemInstance itm : unequiped)
-			{
 				iu.addModifiedItem(itm);
-			}
 			activeChar.sendPacket(iu);
 			activeChar.broadcastUserInfo();
 		}
@@ -112,7 +110,6 @@ public final class RequestRefine extends AbstractRefinePacket
 		final int stat12 = 0x0000FFFF & aug.getAugmentationId();
 		final int stat34 = aug.getAugmentationId() >> 16;
 		activeChar.sendPacket(new ExVariationResult(stat12,stat34,1));
-		activeChar.sendPacket(new SystemMessage(SystemMessageId.THE_ITEM_WAS_SUCCESSFULLY_AUGMENTED));
 
 		InventoryUpdate iu = new InventoryUpdate();
 		iu.addModifiedItem(targetItem);

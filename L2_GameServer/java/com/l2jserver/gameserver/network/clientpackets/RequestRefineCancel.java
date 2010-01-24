@@ -47,9 +47,10 @@ public final class RequestRefineCancel extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
-		L2ItemInstance targetItem = (L2ItemInstance)L2World.getInstance().findObject(_targetItemObjId);
+		if (activeChar == null)
+			return;
 
-		if (activeChar == null) return;
+		L2ItemInstance targetItem = (L2ItemInstance)L2World.getInstance().findObject(_targetItemObjId);
 		if (targetItem == null)
 		{
 			activeChar.sendPacket(new ExVariationCancelResult(0));
@@ -69,7 +70,7 @@ public final class RequestRefineCancel extends L2GameClientPacket
 		}
 
 		// get the price
-		int price=0;
+		int price = 0;
 		switch (targetItem.getItem().getCrystalType())
 		{
 			case L2Item.CRYSTAL_C:
@@ -111,7 +112,8 @@ public final class RequestRefineCancel extends L2GameClientPacket
 		if (!activeChar.reduceAdena("RequestRefineCancel", price, null, true)) return;
 
 		// unequip item
-		if (targetItem.isEquipped()) activeChar.disarmWeapons();
+		if (targetItem.isEquipped())
+			activeChar.disarmWeapons();
 
 		// remove the augmentation
 		targetItem.removeAugmentation();
@@ -123,11 +125,6 @@ public final class RequestRefineCancel extends L2GameClientPacket
 		InventoryUpdate iu = new InventoryUpdate();
 		iu.addModifiedItem(targetItem);
 		activeChar.sendPacket(iu);
-
-		// send system message
-		SystemMessage sm = new SystemMessage(SystemMessageId.AUGMENTATION_HAS_BEEN_SUCCESSFULLY_REMOVED_FROM_YOUR_S1);
-		sm.addString(targetItem.getItemName());
-		activeChar.sendPacket(sm);
 	}
 
 	/**
@@ -138,5 +135,4 @@ public final class RequestRefineCancel extends L2GameClientPacket
 	{
 		return _C__D0_2E_REQUESTREFINECANCEL;
 	}
-
 }
