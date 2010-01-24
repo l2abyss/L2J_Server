@@ -136,9 +136,6 @@ public final class CharacterCreate extends L2GameClientPacket
 			
 			template = CharTemplateTable.getInstance().getTemplate(_classId);
 			
-			if (Config.DEBUG)
-				_log.fine("Character Creation Failure: Character name " + _name + " is invalid. Message generated: This name already exists.");
-			
 			if (template == null || template.classBaseLevel > 1)
 			{
 				if (Config.DEBUG)
