@@ -275,6 +275,8 @@ public class L2Attackable extends L2Npc
 
 	private int _isSpoiledBy = 0;
 
+	private int _onKillDelay = 5000;
+
 	/**
 	 * Constructor of L2Attackable (use L2Character and L2NpcInstance constructor).
 	 *
@@ -483,7 +485,7 @@ public class L2Attackable extends L2Npc
 			{
 				if (getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL) != null)
 					for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL))
-						ThreadPoolManager.getInstance().scheduleEffect(new OnKillNotifyTask(this, quest, player, killer instanceof L2Summon), 5000);
+						ThreadPoolManager.getInstance().scheduleEffect(new OnKillNotifyTask(this, quest, player, killer instanceof L2Summon), _onKillDelay);
 			}
 		}
 		catch (Exception e) { _log.log(Level.SEVERE, "", e); }
@@ -2490,6 +2492,16 @@ public class L2Attackable extends L2Npc
 	public boolean isSeeded()
 	{
 		return _seeded;
+	}
+
+	/**
+	 * Set delay for onKill() call, in ms
+	 * Default: 5000 ms
+	 * @param delay
+	 */
+	public final void setOnKillDelay(int delay)
+	{
+		_onKillDelay = delay;
 	}
 
 	private int getAbsorbLevel()

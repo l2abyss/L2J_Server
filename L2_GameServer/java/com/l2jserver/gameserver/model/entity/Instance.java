@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
+import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -433,7 +434,7 @@ public class Instance
 			{
 				for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 				{
-					int npcId = 0, x = 0, y = 0, z = 0, respawn = 0, heading = 0;
+					int npcId = 0, x = 0, y = 0, z = 0, respawn = 0, heading = 0, delay = -1;
 
 					if ("spawn".equalsIgnoreCase(d.getNodeName()))
 					{
@@ -444,6 +445,8 @@ public class Instance
 						z = Integer.parseInt(d.getAttributes().getNamedItem("z").getNodeValue());
 						heading = Integer.parseInt(d.getAttributes().getNamedItem("heading").getNodeValue());
 						respawn = Integer.parseInt(d.getAttributes().getNamedItem("respawn").getNodeValue());
+						if (d.getAttributes().getNamedItem("onKillDelay") != null)
+							delay = Integer.parseInt(d.getAttributes().getNamedItem("onKillDelay").getNodeValue());
 
 						npcTemplate = NpcTable.getInstance().getTemplate(npcId);
 						if (npcTemplate != null)
@@ -460,7 +463,9 @@ public class Instance
 							else
 								spawnDat.startRespawn();
 							spawnDat.setInstanceId(getId());
-							spawnDat.doSpawn();
+							L2Npc spawned = spawnDat.doSpawn();
+							if (delay >= 0 && spawned instanceof L2Attackable)
+								((L2Attackable)spawned).setOnKillDelay(delay);
 						}
 						else
 						{
