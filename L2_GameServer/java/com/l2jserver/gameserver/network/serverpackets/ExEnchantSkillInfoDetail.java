@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.SkillTreeTable;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn.EnchantSkillDetail;
@@ -107,7 +108,9 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 		default:
 			return;
 		}
-			
+		
+		if (type != TYPE_SAFE_ENCHANT && !Config.ES_SP_BOOK_NEEDED)
+			reqCount = 0;
 	}
 
 	/**
