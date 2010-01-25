@@ -12711,6 +12711,8 @@ public final class L2PcInstance extends L2Playable
         {
         	if (_player == null || (_player.isDead() && !Config.FAME_FOR_DEAD_PLAYERS))
         		return;
+        	if ((_player.getClient() == null || _player.getClient().isDetached()) && !Config.OFFLINE_FAME)
+        		return;
             _player.setFame(_player.getFame() + _value);
             SystemMessage sm = new SystemMessage(SystemMessageId.ACQUIRED_S1_REPUTATION_SCORE);
             sm.addNumber(_value);

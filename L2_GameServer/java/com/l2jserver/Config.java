@@ -640,6 +640,7 @@ public final class Config
 	public static boolean OFFLINE_CRAFT_ENABLE;
 	public static boolean OFFLINE_SET_NAME_COLOR;
 	public static int OFFLINE_NAME_COLOR;
+	public static boolean OFFLINE_FAME;
 	public static boolean L2JMOD_ENABLE_MANA_POTIONS_SUPPORT;
 	public static boolean L2JMOD_DISPLAY_SERVER_TIME;
 	public static boolean WELCOME_MESSAGE_ENABLED;
@@ -2129,6 +2130,7 @@ public final class Config
 					OFFLINE_CRAFT_ENABLE = Boolean.parseBoolean(L2JModSettings.getProperty("OfflineCraftEnable", "false"));
 					OFFLINE_SET_NAME_COLOR = Boolean.parseBoolean(L2JModSettings.getProperty("OfflineSetNameColor", "false"));
 					OFFLINE_NAME_COLOR = Integer.decode("0x" + L2JModSettings.getProperty("OfflineNameColor", "808080"));
+					OFFLINE_FAME = Boolean.parseBoolean(L2JModSettings.getProperty("OfflineFame", "true"));
 
 					L2JMOD_ENABLE_MANA_POTIONS_SUPPORT = Boolean.parseBoolean(L2JModSettings.getProperty("EnableManaPotionSupport", "false"));
 
