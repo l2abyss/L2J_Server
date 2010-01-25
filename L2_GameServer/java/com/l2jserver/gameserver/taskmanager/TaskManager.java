@@ -36,6 +36,7 @@ import com.l2jserver.gameserver.taskmanager.tasks.TaskOlympiadSave;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskRaidPointsReset;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskRecom;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskRestart;
+import com.l2jserver.gameserver.taskmanager.tasks.TaskScript;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskSevenSignsUpdate;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskShutdown;
 
@@ -171,6 +172,7 @@ public final class TaskManager
 	private void initializate()
 	{
 		registerTask(new TaskCleanUp());
+		registerTask(new TaskScript());
 		registerTask(new TaskJython());
 		registerTask(new TaskOlympiadSave());
 		registerTask(new TaskRaidPointsReset());
