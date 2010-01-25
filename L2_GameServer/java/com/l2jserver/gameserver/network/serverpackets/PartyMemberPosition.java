@@ -34,17 +34,23 @@ public class PartyMemberPosition extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		writeC(0xba);
-		writeD(_party.getMemberCount());
-
-		for(L2PcInstance pm : _party.getPartyMembers())
+		if (_party != null)
 		{
-            if (pm == null) continue;
+			writeD(_party.getMemberCount());
 
-			writeD(pm.getObjectId());
-			writeD(pm.getX());
-			writeD(pm.getY());
-			writeD(pm.getZ());
+			for(L2PcInstance pm : _party.getPartyMembers())
+			{
+	            if (pm == null)
+	            	continue;
+
+				writeD(pm.getObjectId());
+				writeD(pm.getX());
+				writeD(pm.getY());
+				writeD(pm.getZ());
+			}
 		}
+		else
+			writeD(0x00);
 	}
 
 	@Override
@@ -52,5 +58,4 @@ public class PartyMemberPosition extends L2GameServerPacket
 	{
 		return "[S] ba PartyMemberPosition";
 	}
-
 }
