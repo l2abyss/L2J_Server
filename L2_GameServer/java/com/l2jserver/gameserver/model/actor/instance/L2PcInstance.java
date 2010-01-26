@@ -10768,8 +10768,8 @@ public final class L2PcInstance extends L2Playable
 			restoreDeathPenaltyBuffLevel();
 
 			restoreSkills();
-			regiveTemporarySkills();
 			rewardSkills();
+			regiveTemporarySkills();
 
 			// Prevents some issues when changing between subclases that shares skills
 			if (_disabledSkills != null && !_disabledSkills.isEmpty()) 
