@@ -55,7 +55,7 @@ public class ExGetOnAirShip extends L2GameClientPacket
     @Override
     public String getType()
     {
-        return "[C] 0xD0:0x35 ExGetOnAirShip";
+        return "[C] 0xD0:0x36 ExGetOnAirShip";
     }
 
 }

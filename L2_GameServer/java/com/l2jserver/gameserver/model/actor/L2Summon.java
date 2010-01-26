@@ -357,15 +357,15 @@ public abstract class L2Summon extends L2Playable
 
     public short getSoulShotsPerHit()
     {
-    	if (getTemplate().soulShotCount > 0)
-    		return getTemplate().soulShotCount;
+    	if (getTemplate().getAIDataStatic().getSoulShot() > 0)
+    		return (short) getTemplate().getAIDataStatic().getSoulShot();
     	else return 1;
     }
 
     public short getSpiritShotsPerHit()
     {
-    	if (getTemplate().spiritShotCount > 0)
-    		return getTemplate().spiritShotCount;
+    	if (getTemplate().getAIDataStatic().getSpiritShot() > 0)
+    		return (short) getTemplate().getAIDataStatic().getSpiritShot();
     	else return 1;
     }
 

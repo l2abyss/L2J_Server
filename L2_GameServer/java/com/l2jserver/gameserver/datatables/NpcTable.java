@@ -80,7 +80,7 @@ public class NpcTable
 								"title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type",
 								"attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con", "dex", "int", "wit", "men", "exp", "sp", "patk",
 								"pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "enchant", "walkspd", "runspd",
-								"faction_id", "faction_range", "isUndead", "absorb_level", "absorb_type", "soulshot_count", "spiritshot_count", "ss_rate", "AI",
+								"faction_id", "faction_range", "isUndead", "absorb_level", "absorb_type", "AI",
 								"drop_herbs" }) + " FROM npc");
 				ResultSet npcdata = statement.executeQuery();
 				
@@ -103,8 +103,8 @@ public class NpcTable
 									"title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type",
 									"attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con", "dex", "int", "wit", "men", "exp", "sp",
 									"patk", "pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "enchant", "walkspd",
-									"runspd", "faction_id", "faction_range", "isUndead", "absorb_level", "absorb_type", "soulshot_count", "spiritshot_count",
-									"ss_rate", "AI", "drop_herbs" }) + " FROM custom_npc");
+									"runspd", "faction_id", "faction_range", "isUndead", "absorb_level", "absorb_type", "AI",
+									"drop_herbs" }) + " FROM custom_npc");
 					ResultSet npcdata = statement.executeQuery();
 					
 					fillNpcTable(npcdata, true);
@@ -443,10 +443,6 @@ public class NpcTable
 			npcDat.set("absorb_level", NpcData.getString("absorb_level"));
 			npcDat.set("absorb_type", NpcData.getString("absorb_type"));
 			
-			npcDat.set("soulshot_count", NpcData.getInt("soulshot_count"));
-			npcDat.set("spiritshot_count", NpcData.getInt("spiritshot_count"));
-			npcDat.set("ssRate", NpcData.getInt("ss_rate"));
-			
 			npcDat.set("AI", NpcData.getString("AI"));
 			
 			npcDat.set("drop_herbs", Boolean.valueOf(NpcData.getString("drop_herbs")));
@@ -502,7 +498,7 @@ public class NpcTable
 							"serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type", "attackrange",
 							"hp", "mp", "hpreg", "mpreg", "str", "con", "dex", "int", "wit", "men", "exp", "sp", "patk", "pdef", "matk",
 							"mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "enchant", "walkspd", "runspd", "faction_id",
-							"faction_range", "isUndead", "absorb_level", "absorb_type", "soulshot_count", "spiritshot_count", "ss_rate", "AI", "drop_herbs" })
+							"faction_range", "isUndead", "absorb_level", "absorb_type", "AI", "drop_herbs" })
 					+ " FROM npc WHERE id=?");
 			st.setInt(1, id);
 			ResultSet rs = st.executeQuery();
@@ -514,7 +510,7 @@ public class NpcTable
 								"title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type",
 								"attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con", "dex", "int", "wit", "men", "exp", "sp", "patk",
 								"pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "enchant", "walkspd", "runspd",
-								"faction_id", "faction_range", "isUndead", "absorb_level", "absorb_type", "soulshot_count", "spiritshot_count", "ss_rate", "AI",
+								"faction_id", "faction_range", "isUndead", "absorb_level", "absorb_type", "AI",
 								"drop_herbs" }) + " FROM custom_npc WHERE id=?");
 				st.setInt(1, id);
 				rs = st.executeQuery();
