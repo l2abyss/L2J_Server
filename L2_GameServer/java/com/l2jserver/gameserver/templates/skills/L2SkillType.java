@@ -132,6 +132,7 @@ public enum L2SkillType
 	CREATE_ITEM(L2SkillCreateItem.class),
 	SUMMON_TREASURE_KEY,
 	EXTRACTABLE,
+	EXTRACTABLE_FISH,
 	LEARN_SKILL(L2SkillLearnSkill.class),
 	
 	// Summons
