@@ -12166,12 +12166,10 @@ public final class L2PcInstance extends L2Playable
 	}
 	private int GetRandomFishLvl()
 	{
-		L2Effect[] effects = getAllEffects();
 		int skilllvl = getSkillLevel(1315);
-		for (L2Effect e : effects) {
-			if (e.getSkill().getId() == 2274)
-				skilllvl = (int)e.getSkill().getPower(this);
-		}
+		final L2Effect e = getFirstEffect(2274);
+		if (e != null)
+			skilllvl = (int)e.getSkill().getPower();
 		if (skilllvl <= 0) return 1;
 		int randomlvl;
 		int check = Rnd.get(100);
