@@ -184,6 +184,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final int _feed;
     // base success chance
     private final double _power;
+    private final double _pvpPower;
     private final int _magicLevel;
     private final int _levelDepend;
     private final boolean _ignoreResists;
@@ -369,6 +370,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
         _targetType = set.getEnum("target", SkillTargetType.class);
         _power = set.getFloat("power", 0.f);
+        _pvpPower = set.getFloat("pvpPower", (float)getPower());
         _magicLevel = set.getInteger("magicLvl", SkillTreeTable.getInstance().getMinSkillLevel(_id, _level));
         _levelDepend = set.getInteger("lvlDepend", 0);
         _ignoreResists = set.getBool("ignoreResists", false);
@@ -498,16 +500,16 @@ public abstract class L2Skill implements IChanceSkillTrigger
     /**
      * Return the power of the skill.<BR><BR>
      */
-    public final double getPower(L2Character activeChar)
+    public final double getPower(L2Character activeChar, boolean isPvP)
     {
     	if (activeChar == null)
-    		return _power;
+    		return getPower(isPvP);
     	
     	switch (_skillType)
     	{
     		case DEATHLINK:
     		{
-    			return _power * Math.pow(1.7165 - activeChar.getCurrentHp() / activeChar.getMaxHp(), 2) * 0.577; 
+    			return getPower(isPvP) * Math.pow(1.7165 - activeChar.getCurrentHp() / activeChar.getMaxHp(), 2) * 0.577; 
     			/*
     			 * DrHouse:
     			 * Rolling back to old formula (look below) for DEATHLINK due to this one based on logarithm is not
@@ -520,16 +522,21 @@ public abstract class L2Skill implements IChanceSkillTrigger
     		}
     		case FATAL:
     		{
-    			return _power*3.5*(1-activeChar.getCurrentHp()/activeChar.getMaxHp());
+    			return getPower(isPvP)*3.5*(1-activeChar.getCurrentHp()/activeChar.getMaxHp());
     		}
     		default:
-    			return _power;
+    			return getPower(isPvP);
     	}
     }
 
     public final double getPower()
     {
-        return _power;
+    	return _power;
+    }
+
+    public final double getPower(boolean isPvP)
+    {
+        return isPvP ? _pvpPower : _power;
     }
 
     public final L2SkillType[] getNegateStats()

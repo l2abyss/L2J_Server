@@ -1271,7 +1271,8 @@ public final class Formulas
 	/** Calculate blow damage based on cAtk */
 	public static double calcBlowDamage(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss)
 	{
-		double power = skill.getPower();
+		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable); 
+		double power = skill.getPower(isPvP);
 		double damage = attacker.getPAtk(target);
 		damage+=calcValakasAttribute(attacker, target, skill);
 		double defence = target.getPDef(attacker);
@@ -1287,8 +1288,7 @@ public final class Formulas
 		}
 
 		// Def bonusses in PvP fight
-		if((attacker instanceof L2Playable)
-				&& (target instanceof L2Playable))
+		if(isPvP)
 		{
 			if(skill == null)
 				defence *= target.calcStat(Stats.PVP_PHYSICAL_DEF, 1, null, null);
@@ -1326,8 +1326,7 @@ public final class Formulas
 		damage += Rnd.get() * attacker.getRandomDamage(target);
 		
 		// Dmg bonusses in PvP fight
-		if((attacker instanceof L2Playable)
-				&& (target instanceof L2Playable))
+		if(isPvP)
 		{
 			if(skill == null)
 				damage *= attacker.calcStat(Stats.PVP_PHYSICAL_DMG, 1, null, null);
@@ -1355,6 +1354,7 @@ public final class Formulas
 	public static final double calcPhysDam(L2Character attacker, L2Character target, L2Skill skill,
 									byte shld, boolean crit, boolean dual, boolean ss)
 	{
+		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable); 
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
 		damage+=calcValakasAttribute(attacker, target, skill);
@@ -1369,8 +1369,7 @@ public final class Formulas
 			((L2Npc)attacker)._soulshotcharged = false;
 		}
 		// Def bonusses in PvP fight
-		if((attacker instanceof L2Playable) 
-				&& (target instanceof L2Playable))
+		if(isPvP)
 		{
 			if(skill == null)
 				defence *= target.calcStat(Stats.PVP_PHYSICAL_DEF, 1, null, null);
@@ -1391,7 +1390,7 @@ public final class Formulas
 		if (ss) damage *= 2;
 		if (skill != null)
 		{
-			double skillpower = skill.getPower(attacker);
+			double skillpower = skill.getPower(attacker, isPvP);
 			float ssboost = skill.getSSBoost();
 			if (ssboost <= 0)
 				damage += skillpower;
@@ -1558,8 +1557,7 @@ public final class Formulas
 		}
 		
 		// Dmg bonusses in PvP fight
-		if((attacker instanceof L2Playable) 
-				&& (target instanceof L2Playable))
+		if(isPvP)
 		{
 			if(skill == null)
 				damage *= attacker.calcStat(Stats.PVP_PHYSICAL_DMG, 1, null, null);
@@ -1579,6 +1577,7 @@ public final class Formulas
 	public static final double calcMagicDam(L2Character attacker, L2Character target, L2Skill skill,
 										byte shld, boolean ss, boolean bss, boolean mcrit)
 	{	
+		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable); 
 		double mAtk = attacker.getMAtk(target, skill);
 		double mDef = target.getMDef(attacker, skill);
 		// AI SpiritShot
@@ -1594,8 +1593,7 @@ public final class Formulas
 		}
 		// --------------------------------
 		// Pvp bonuses for def
-		if((attacker instanceof L2Playable)
-				&& (target instanceof L2Playable))
+		if(isPvP)
 		{
 			if(skill.isMagic())
 				mDef *= target.calcStat(Stats.PVP_MAGICAL_DEF, 1, null, null);
@@ -1615,7 +1613,7 @@ public final class Formulas
 		if (bss) mAtk *= 4;
 		else if (ss) mAtk *= 2;
 
-		double damage = 91 * Math.sqrt(mAtk) / mDef * skill.getPower(attacker); 
+		double damage = 91 * Math.sqrt(mAtk) / mDef * skill.getPower(attacker, isPvP); 
 		
 		// In C5 summons make 10 % less dmg in PvP.
 		if(attacker instanceof L2Summon && target instanceof L2PcInstance) damage *= 0.9;
@@ -1674,8 +1672,7 @@ public final class Formulas
 
 		damage += Rnd.get() * attacker.getRandomDamage(target);
 		// Pvp bonuses for dmg
-		if((attacker instanceof L2Playable)
-				&& (target instanceof L2Playable))
+		if(isPvP)
 		{
 			if(skill.isMagic())
 				damage *= attacker.calcStat(Stats.PVP_MAGICAL_DMG, 1, null, null);
@@ -1712,7 +1709,7 @@ public final class Formulas
 				return 1;
 		}
 		
-		double damage = 91 * Math.sqrt(mAtk) / mDef * skill.getPower();
+		double damage = 91 * Math.sqrt(mAtk) / mDef * skill.getPower(target instanceof L2Playable);
 		L2PcInstance owner = attacker.getOwner();
 		// Failure calculation
 		if (Config.ALT_GAME_MAGICFAILURES && !calcMagicSuccess(owner, target, skill))
@@ -2414,15 +2411,16 @@ public final class Formulas
 
 	public static boolean calcSkillSuccess(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
 	{
+		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable); 
 		if (skill.ignoreResists())
-			return (Rnd.get(100) < skill.getPower());
+			return (Rnd.get(100) < skill.getPower(isPvP));
 
 		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK) // perfect block
 			return false;
 		
 		L2SkillType type = skill.getSkillType();
 
-		int value = (int) skill.getPower();
+		int value = (int) skill.getPower(isPvP);
 		int lvlDepend = skill.getLevelDepend();
 
 		// TODO: Temporary fix for skills with Power = 0 or LevelDepend not set
@@ -2545,7 +2543,7 @@ public final class Formulas
 		if (calcSkillReflect(target, skill) != SKILL_REFLECT_FAILED)
 			return false;
 		
-		int value = (int) skill.getPower();
+		int value = (int) skill.getPower(target instanceof L2Playable);
 		int lvlDepend = skill.getLevelDepend();
 		
 		// TODO: Temporary fix for skills with Power = 0 or LevelDepend not set
@@ -2691,11 +2689,12 @@ public final class Formulas
     	//Mana Burnt = (SQR(M.Atk)*Power*(Target Max MP/97))/M.Def
     	double mAtk = attacker.getMAtk(target, skill);
 		double mDef = target.getMDef(attacker, skill);
+		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable); 
 		double mp = target.getMaxMp();
 		if (bss) mAtk *= 4;
 		else if (ss) mAtk *= 2;
 
-		double damage = (Math.sqrt(mAtk) * skill.getPower(attacker) * (mp/97)) / mDef;
+		double damage = (Math.sqrt(mAtk) * skill.getPower(attacker, isPvP) * (mp/97)) / mDef;
 		damage *= calcSkillVulnerability(attacker, target, skill);
 		if (target instanceof L2Attackable && !target.isRaid() && !target.isRaidMinion()
 				&& target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY && attacker.getActingPlayer() != null
