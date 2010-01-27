@@ -790,6 +790,12 @@ public final class L2PcInstance extends L2Playable
 	*/
 	private boolean _isRidingStrider = false;
 	private boolean _isFlyingMounted = false;
+	
+	/** Char Coords from Client */
+	private int _clientX;
+	private int _clientY;
+	private int _clientZ;
+	private int _clientHeading;
 
 	/** Herbs Task Time **/
 	private int _herbstask = 0;
@@ -14599,4 +14605,36 @@ public final class L2PcInstance extends L2Playable
 			return getBaseTemplate().fCollisionHeight;
 	}
 	
+	public final int getClientX()
+	{
+		return _clientX;
+	}
+	public final int getClientY()
+	{
+		return _clientY;
+	}
+	public final int getClientZ()
+	{
+		return _clientZ;
+	}
+	public final int getClientHeading()
+	{
+		return _clientHeading;
+	}
+	public final void setClientX(int val)
+	{
+		_clientX=val;
+	}
+	public final void setClientY(int val)
+	{
+		_clientY=val;
+	}
+	public final void setClientZ(int val)
+	{
+		_clientZ=val;
+	}
+	public final void setClientHeading(int val)
+	{
+		_clientHeading=val;
+	}
 }

@@ -223,9 +223,9 @@ public final class UseItem extends L2GameClientPacket
 				if (activeChar.isStunned()
 						|| activeChar.isSleeping()
 						|| activeChar.isParalyzed()
-						|| activeChar.isAlikeDead())
+						|| activeChar.isAlikeDead()
+						|| activeChar.isCastingNow())
 				{
-					activeChar.sendMessage("Your status does not allow you to do that.");
 					return;
 				}
 

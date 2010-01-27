@@ -69,12 +69,6 @@ public final class RequestRestart extends L2GameClientPacket
 			return;
 		}
 
-		if (player.isTeleporting())
-		{
-			player.abortCast();
-			player.setIsTeleporting(false);
-		}
-
 		if (player.getPrivateStoreType() != 0)
 		{
 			player.sendMessage("Cannot restart while trading");

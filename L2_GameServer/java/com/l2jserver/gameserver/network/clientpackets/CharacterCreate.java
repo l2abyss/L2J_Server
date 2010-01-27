@@ -109,6 +109,30 @@ public final class CharacterCreate extends L2GameClientPacket
 			return;
 		}
 		
+		if (_face > 2 || _face < 0)
+		{
+			_log.warning("Character Creation Failure: Character face " + _face + " is invalid. Possible client hack. "+getClient());
+			
+			sendPacket(new CharCreateFail(CharCreateFail.REASON_CREATION_FAILED));
+			return;
+		}
+		
+		if (_hairStyle < 0 || (_sex == 0 && _hairStyle > 4) || (_sex != 0 && _hairStyle > 6))
+		{
+			_log.warning("Character Creation Failure: Character hair style " + _hairStyle + " is invalid. Possible client hack. "+getClient());
+			
+			sendPacket(new CharCreateFail(CharCreateFail.REASON_CREATION_FAILED));
+			return;
+		}
+		
+		if (_hairColor > 3 || _hairColor < 0)
+		{
+			_log.warning("Character Creation Failure: Character hair color " + _hairColor + " is invalid. Possible client hack. "+getClient());
+			
+			sendPacket(new CharCreateFail(CharCreateFail.REASON_CREATION_FAILED));
+			return;
+		}
+		
 		L2PcInstance newChar = null;
 		L2PcTemplate template = null;
 		

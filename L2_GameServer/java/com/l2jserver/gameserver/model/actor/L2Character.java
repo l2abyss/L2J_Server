@@ -3534,12 +3534,6 @@ public abstract class L2Character extends L2Object
 	protected Future<?> _skillCast;
 	protected Future<?> _skillCast2;
 
-	/** Char Coords from Client */
-	private int _clientX;
-	private int _clientY;
-	private int _clientZ;
-	private int _clientHeading;
-
 	/**
 	 * Add a Func to the Calculator set of the L2Character.<BR><BR>
 	 *
@@ -3896,41 +3890,6 @@ public abstract class L2Character extends L2Object
 		_heading = heading;
 	}
 
-	/**
-	 * Return the X destination of the L2Character or the X position if not in movement.<BR><BR>
-	 */
-	public final int getClientX()
-	{
-		return _clientX;
-	}
-	public final int getClientY()
-	{
-		return _clientY;
-	}
-	public final int getClientZ()
-	{
-		return _clientZ;
-	}
-	public final int getClientHeading()
-	{
-		return _clientHeading;
-	}
-	public final void setClientX(int val)
-	{
-		_clientX=val;
-	}
-	public final void setClientY(int val)
-	{
-		_clientY=val;
-	}
-	public final void setClientZ(int val)
-	{
-		_clientZ=val;
-	}
-	public final void setClientHeading(int val)
-	{
-		_clientHeading=val;
-	}
 	public final int getXdestination()
 	{
 		MoveData m = _move;
