@@ -4990,10 +4990,7 @@ public final class L2PcInstance extends L2Playable
         }
         
         _transformation = transformation;
-        for (L2Effect e : getAllEffects())
-        {
-        	if (e != null && e.getSkill().isToggle()) e.exit();
-        }
+        stopAllToggles();
         transformation.onTransform();
         sendSkillList();
         sendPacket(new SkillCoolTime(this));
@@ -6710,12 +6707,8 @@ public final class L2PcInstance extends L2Playable
         	return false;
         if (isTransformed())
         	return false;
-        
-        for (L2Effect e : getAllEffects())
-        {
-        	if (e != null && e.getSkill().isToggle())
-        		e.exit();
-        }
+
+        stopAllToggles();
         Ride mount = new Ride(this, true, pet.getTemplate().npcId);
         setMount(pet.getNpcId(), pet.getLevel(), mount.getMountType());
         setMountObjectID(pet.getControlItemId());
@@ -6739,12 +6732,8 @@ public final class L2PcInstance extends L2Playable
         	return false;
         if (isTransformed())
         	return false;
-        
-        for (L2Effect e : getAllEffects())
-        {
-        	if (e != null && e.getSkill().isToggle())
-        		e.exit();
-        }
+
+        stopAllToggles();
         Ride mount = new Ride(this, true, npcId);
         if (setMount(npcId, getLevel(), mount.getMountType()))
         {
@@ -9518,6 +9507,14 @@ public final class L2PcInstance extends L2Playable
 	{
 		super.stopAllEffectsExceptThoseThatLastThroughDeath();
 		updateAndBroadcastStatus(2);
+	}
+
+	/**
+	 * Stop all toggle-type effects
+	 */
+	public final void stopAllToggles()
+	{
+		_effects.stopAllToggles();
 	}
 
 	public final void stopCubics()

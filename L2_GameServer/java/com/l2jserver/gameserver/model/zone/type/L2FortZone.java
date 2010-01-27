@@ -151,17 +151,11 @@ public class L2FortZone extends L2ZoneType
 			if (character instanceof L2PcInstance && ((L2PcInstance)character).isRegisteredOnThisSiegeField(getFort().getFortId()))
 			{
 				int lvl = 1;
-				for (L2Effect effect: character.getAllEffects())
-				{
-					if (effect != null && effect.getSkill().getId() == 5660)
-					{
-						lvl = lvl+effect.getLevel();
-						if (lvl > 5)
-							lvl = 5;
-						break;
-					}
-				}
-				L2Skill skill = SkillTable.getInstance().getInfo(5660, lvl);
+				final L2Effect e = character.getFirstEffect(5660);
+				if (e != null)
+					lvl = Math.min(lvl + e.getLevel(), 5);
+
+				final L2Skill skill = SkillTable.getInstance().getInfo(5660, lvl);
 				if (skill != null)
 					skill.getEffects(character, character);
 			}

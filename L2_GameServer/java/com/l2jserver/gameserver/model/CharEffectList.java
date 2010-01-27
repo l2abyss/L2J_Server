@@ -390,6 +390,25 @@ public class CharEffectList
  	}
 
 	/**
+	 * Exit all toggle-type effects
+	 */
+	public void stopAllToggles()
+	{
+		if (_buffs != null) 
+		{
+			synchronized (_buffs)
+			{
+				if (!_buffs.isEmpty())
+				{
+					for (L2Effect e : _buffs)
+						if (e != null && e.getSkill().isToggle())
+							e.exit();
+				}
+			}
+		}
+	}
+
+	/**
 	 * Exit all effects having a specified type
 	 * @param type
 	 */
@@ -423,11 +442,12 @@ public class CharEffectList
 				}
 			}
 		}
-		if (temp != null && !temp.isEmpty())
+		if (!temp.isEmpty())
 		{
 			for (L2Effect e : temp)
 				if (e != null)
 					e.exit();
+			temp.clear();
 		}
 	}
 
@@ -463,11 +483,12 @@ public class CharEffectList
 				}
 			}
 		}
-		if (temp != null && !temp.isEmpty())
+		if (!temp.isEmpty())
 		{
 			for (L2Effect e : temp)
 				if (e != null)
 					e.exit();
+			temp.clear();
 		}
 	}
 

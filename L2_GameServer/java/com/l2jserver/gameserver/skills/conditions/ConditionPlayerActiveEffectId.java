@@ -38,17 +38,10 @@ public class ConditionPlayerActiveEffectId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		for (L2Effect e : env.player.getAllEffects())
-		{
-			if (e != null)
-			{
-				if (e.getSkill().getId() == _effectId)
-				{
-					if (_effectLvl == -1 || _effectLvl <= e.getSkill().getLevel())
-						return true;
-				}
-			}
-		}
+		final L2Effect e = env.player.getFirstEffect(_effectId);
+		if (e != null && (_effectLvl == -1 || _effectLvl <= e.getSkill().getLevel()))
+			return true;
+
 		return false;
 	}
 }
