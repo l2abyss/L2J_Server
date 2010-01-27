@@ -475,57 +475,65 @@ public class L2Clan
 	public int getMaxNrOfMembers(int pledgetype)
 	{
 		int limit = 0;
-
+		
 		switch (pledgetype)
 		{
-		case 0:
-			switch (getLevel())
-			{
-			case 4:
-				limit   = 40;
-				break;
-			case 3:
-				limit   = 30;
-				break;
-			case 2:
-				limit   = 20;
-				break;
-			case 1:
-				limit   = 15;
-				break;
 			case 0:
-				limit   = 10;
+				switch (getLevel())
+				{
+					case 3:
+						limit = 30;
+						break;
+					case 2:
+						limit = 20;
+						break;
+					case 1:
+						limit = 15;
+						break;
+					case 0:
+						limit = 10;
+						break;
+					default:
+						limit = 40;
+						break;
+				}
+				break;
+			case -1:
+				limit = 20;
+				break;
+			case 100:
+			case 200:
+				switch (getLevel())
+				{
+					case 11:
+						limit = 30;
+						break;
+					default:
+						limit = 20;
+						break;
+				}
+				break;
+			case 1001:
+			case 1002:
+			case 2001:
+			case 2002:
+				switch (getLevel())
+				{
+					case 9:
+					case 10:
+					case 11:
+						limit = 25;
+						break;
+					default:
+						limit = 10;
+						break;
+				}
 				break;
 			default:
-				limit   = 40;
-			break;
-			}
-			break;
-		case -1:
-		case 100:
-		case 200:
-			limit   = 20;
-			break;
-		case 1001:
-		case 1002:
-		case 2001:
-		case 2002:
-			switch (getLevel())
-			{
-				case 9:
-				case 10:
-					limit	= 25;
-					break;
-				default:
-					limit   = 10;
-					break;
-			}
-			break;
-		default:
-			break;
-        }
-
-        return limit;
+				break;
+		}
+		
+		return limit;
 	}
 
 	public L2PcInstance[] getOnlineMembers(int exclude)
