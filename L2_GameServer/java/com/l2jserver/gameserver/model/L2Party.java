@@ -476,7 +476,7 @@ public class L2Party {
 	{
 		for(L2PcInstance member : getPartyMembers())
 		{
-			if (member.getName().equals(name)) return member;
+			if (member.getName().equalsIgnoreCase(name)) return member;
 		}
 		return null;
 	}
