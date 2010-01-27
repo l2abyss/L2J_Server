@@ -520,7 +520,7 @@ public class L2CubicInstance
 					
 					for (L2Effect e : effects)
 					{
-						if (e.getSkill().isDebuff())
+						if (e != null && e.getSkill().isDebuff())
 						{
 							UseCubicCure = true;
 							e.exit();
