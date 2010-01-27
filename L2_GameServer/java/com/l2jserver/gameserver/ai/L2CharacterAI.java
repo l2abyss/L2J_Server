@@ -1215,7 +1215,7 @@ public class L2CharacterAI extends AbstractAI
 		
 		public void init()
 		{
-			switch (((L2NpcTemplate) _actor.getTemplate()).AI)
+			switch (((L2NpcTemplate) _actor.getTemplate()).getAIDataStatic().getAiType())
 			{
 				case FIGHTER:
 					isFighter = true;
@@ -1446,7 +1446,7 @@ public class L2CharacterAI extends AbstractAI
 		    				L2Npc targets = ((L2Npc)target);
 		    				L2Npc actors = ((L2Npc)_actor);
 		    				
-		    				if(targets.getEnemyClan() == null || actors.getClan() == null || !targets.getEnemyClan().equals(actors.getClan()) || ("none".equals(actors.getClan()) && actors.getIsChaos() == 0))
+		    				if(targets.getEnemyClan() == null || actors.getClan() == null || !targets.getEnemyClan().equals(actors.getClan()) || (actors.getClan() == null && actors.getIsChaos() == 0))
 		    					continue;
 		    			}
 		    			L2Effect[] effects = target.getAllEffects();
@@ -1476,7 +1476,7 @@ public class L2CharacterAI extends AbstractAI
 		    			{
 		    				L2Npc targets = ((L2Npc)target);
 		    				L2Npc actors = ((L2Npc)_actor);
-		    				if(targets.getEnemyClan() == null || actors.getClan() == null || !targets.getEnemyClan().equals(actors.getClan()) || (("none".equals(actors.getClan())) && actors.getIsChaos() == 0))
+		    				if(targets.getEnemyClan() == null || actors.getClan() == null || !targets.getEnemyClan().equals(actors.getClan()) || (actors.getClan() == null && actors.getIsChaos() == 0))
 		    					continue;
 		    			}
 		    			L2Effect[] effects = target.getAllEffects();

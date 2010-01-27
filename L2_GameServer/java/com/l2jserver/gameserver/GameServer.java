@@ -243,11 +243,6 @@ public class GameServer
 		ClanTable.getInstance();
 		
 		NpcTable.getInstance();
-		if (!NpcTable.getInstance().isInitialized())
-		{
-			_log.severe("Could not find the extraced files. Please Check Your Data.");
-			throw new Exception("Could not initialize the npc table");
-		}
 		
 		HennaTable.getInstance();
 		HennaTreeTable.getInstance();

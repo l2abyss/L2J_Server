@@ -77,9 +77,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 
 	/** The flag used to indicate that a thinking action is in progress */
 	private boolean _thinking; // to prevent recursive thinking
-	
-	private String clan;
-	private String enemyClan;
 
 	private int timepass = 0;
 	private int chaostime = 0;
@@ -98,8 +95,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		//_selfAnalysis.init();
 		_attackTimeout = Integer.MAX_VALUE;
 		_globalAggro = -10; // 10 seconds timeout of ATTACK after respawn
-		if (((L2Attackable)_actor).getEnemyClan() != "none")
-			setEnemyClan(((L2Attackable)_actor).getEnemyClan());
 	}
 
 	public void run()
@@ -148,11 +143,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			
 		L2Attackable me = (L2Attackable) _actor;
 
-		if(target instanceof L2Attackable)
-		{
-			setClan(((L2Attackable)target).getClan());
-		}
-
 			
 		// Check if the target isn't invulnerable
 		if (target.isInvul())
@@ -168,8 +158,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		if (target instanceof L2DoorInstance) return false;
 
 		// Check if the target isn't dead, is in the Aggro range and is at the same height
-		if (target.isAlikeDead() || (target instanceof L2PcInstance && !me.isInsideRadius(target, me.getAggroRange(), false, false)) 
-				|| Math.abs(me.getZ() - target.getZ()) > 300 || (target instanceof L2Summon && !me.isInsideRadius(target, me.getAggroRange(), false, false))) return false;
+		if (target.isAlikeDead() || (target instanceof L2Playable && !me.isInsideRadius(target, me.getAggroRange(), true, false))) 
+				return false;
 
 		// Check if the target is a L2PlayableInstance
 		if (target instanceof L2Playable)
@@ -265,7 +255,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		{
 			if(target instanceof L2Attackable)
 			{
-				if ("none".equals(((L2Attackable)_actor).getEnemyClan()) || "none".equals(((L2Attackable)target).getClan()))
+				if (((L2Attackable)_actor).getEnemyClan() == null || ((L2Attackable)target).getClan() == null)
 					return false;
 				
 				if (((L2Attackable)_actor).getEnemyClan().equals(((L2Attackable)target).getClan()))
@@ -1995,7 +1985,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					}
 					if(obj instanceof L2Attackable)
 					{
-						if(((L2Attackable)_actor).getEnemyClan() != null && (((L2Attackable)_actor).getEnemyClan().equals(((L2Attackable)obj).getClan())) && !"none".equals(((L2Attackable)_actor).getEnemyClan()))
+						if(((L2Attackable)_actor).getEnemyClan() != null && ((L2Attackable)_actor).getEnemyClan().equals(((L2Attackable)obj).getClan()))
 						{
 							if(dist2<=range)
 							{
@@ -2075,7 +2065,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				if(obj instanceof L2Attackable)
 				{
-					if(((L2Attackable)_actor).getEnemyClan() != null && (((L2Attackable)_actor).getEnemyClan().equals(((L2Attackable)obj).getClan())) && !"none".equals(((L2Attackable)_actor).getEnemyClan()))
+					if(((L2Attackable)_actor).getEnemyClan() != null && ((L2Attackable)_actor).getEnemyClan().equals(((L2Attackable)obj).getClan()))
 					{
 						if(dist2<=range)
 						{
@@ -2158,7 +2148,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				if(obj instanceof L2Attackable)
 				{
-					if(((L2Attackable)_actor).getEnemyClan() != null && (((L2Attackable)_actor).getEnemyClan().equals(((L2Attackable)obj).getClan())) && !"none".equals(((L2Attackable)_actor).getEnemyClan()))
+					if(((L2Attackable)_actor).getEnemyClan() != null && ((L2Attackable)_actor).getEnemyClan().equals(((L2Attackable)obj).getClan()))
 					{
 						return obj;
 					}
@@ -2238,7 +2228,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				else if(obj instanceof L2Attackable)
 				{
-					if(((L2Attackable)_actor).getEnemyClan() != null && (((L2Attackable)_actor).getEnemyClan().equals(((L2Attackable)obj).getClan())) && !"none".equals(((L2Attackable)_actor).getEnemyClan()))
+					if(((L2Attackable)_actor).getEnemyClan() != null && ((L2Attackable)_actor).getEnemyClan().equals(((L2Attackable)obj).getClan()))
 					{
 						actor.addDamageHate(obj,0,actor.getHating(MostHate));
 						_actor.setTarget(obj);
@@ -2339,7 +2329,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				else if(obj instanceof L2Attackable)
 				{
-					if(((L2Attackable)_actor).getEnemyClan() != null && (((L2Attackable)_actor).getEnemyClan().equals(((L2Attackable)obj).getClan())) && !"none".equals(((L2Attackable)_actor).getEnemyClan()))
+					if(((L2Attackable)_actor).getEnemyClan() != null && (((L2Attackable)_actor).getEnemyClan().equals(((L2Attackable)obj).getClan())))
 					{
 						if(MostHate != null)
 							actor.addDamageHate(obj,actor.getHating(MostHate),actor.getHating(MostHate));
@@ -2499,38 +2489,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	public void setGlobalAggro(int value)
 	{
 		_globalAggro = value;
-	}
-
-	/**
-	 * @param clan The clan to set.
-	 */
-	public void setClan(String CL)
-	{
-		this.clan = CL;
-	}
-
-	/**
-	 * @return Returns the clan.
-	 */
-	public String getClan()
-	{
-		return clan;
-	}
-
-	/**
-	 * @param enemyClan The enemyClan to set.
-	 */
-	public void setEnemyClan(String EC)
-	{
-		this.enemyClan = EC;
-	}
-
-	/**
-	 * @return Returns the enemyClan.
-	 */
-	public String getEnemyClan()
-	{
-		return enemyClan;
 	}
 
 	/**

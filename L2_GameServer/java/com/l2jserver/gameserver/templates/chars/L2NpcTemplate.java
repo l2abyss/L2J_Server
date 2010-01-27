@@ -69,13 +69,10 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public final int lhand;
 	public final int armor;
 	public final int enchantEffect;
-	public final String factionId;
-	public final int factionRange;
 	public final int absorbLevel;
 	public final AbsorbCrystalType absorbType;
 	public Race race;
 	public final String jClass;
-	public final AIType AI;
 	public final boolean dropherb;
 	public boolean isQuestMonster; // doesn't include all mobs that are involved in 
 	// quests, just plain quest monsters for preventing champion spawn
@@ -216,12 +213,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 		lhand = set.getInteger("lhand");
 		armor = set.getInteger("armor");
 		enchantEffect = set.getInteger("enchant"); 
-		String f = set.getString("factionId", null);
-		if (f == null)
-			factionId = null;
-		else
-			factionId = f.intern();
-		factionRange = set.getInteger("factionRange");
 		absorbLevel = set.getInteger("absorb_level", 0);
 		absorbType = AbsorbCrystalType.valueOf(set.getString("absorb_type"));
 		race = null;
@@ -229,19 +220,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 		//_npcStatsSet = set;
 		_teachInfo = null;
 		jClass = set.getString("jClass");
-		String ai = set.getString("AI", "fighter");
-		if (ai.equalsIgnoreCase("archer"))
-			AI = AIType.ARCHER;
-		else if (ai.equalsIgnoreCase("balanced"))
-			AI = AIType.BALANCED;
-		else if (ai.equalsIgnoreCase("mage"))
-			AI = AIType.MAGE;
-		else if (ai.equalsIgnoreCase("healer"))
-			AI = AIType.HEALER;
-		else if (ai.equalsIgnoreCase("corpse"))
-			AI = AIType.CORPSE;
-		else
-			AI = AIType.FIGHTER;
 
 		// all NPCs has 20 resistance to all attributes
 		baseFireRes += 20;

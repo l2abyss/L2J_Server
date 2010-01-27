@@ -32,7 +32,6 @@ import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.HelperBuffTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
@@ -168,47 +167,27 @@ public class L2Npc extends L2Character
 	//AI Recall
 	public int getSoulShot()
 	{
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null)
-			return 0;
-		else
-			return AI.getSoulShot();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getSoulShot();
 		
 	}
 	public int getSpiritShot()
 	{
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null)
-			return 0;
-		else
-			return AI.getSpiritShot();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getSpiritShot();
 		
 	}
 	public int getSoulShotChance()
 	{
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null)
-			return 0;
-		else
-			return AI.getSoulShotChance();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getSoulShotChance();
 		
 	}
 	
 	public int getSpiritShotChance()
 	{
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null)
-			return 0;
-		else
-			return AI.getSpiritShotChance();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getSpiritShotChance();
 		
 	}
 	
@@ -263,147 +242,89 @@ public class L2Npc extends L2Character
 	}
 	public int getEnemyRange()
 	{
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null)
-			return 0;
-		else
-			return AI.getEnemyRange();
-		
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getEnemyRange();
 	}
 	
 	public String getEnemyClan()
 	{
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null || AI.getEnemyClan() == null || "".equals(AI.getEnemyClan()))
-			return "none";
-		else
-			return AI.getEnemyClan();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getEnemyClan();
+	}
+	
+	public int getClanRange()
+	{
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getClanRange();
 	}
 	
 	public String getClan()
 	{
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null || AI.getClan() == null || "".equals(AI.getClan()))
-			return "none";
-		else
-			return AI.getClan();
-		
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getClan();
 	}
 	
 	// GET THE PRIMARY ATTACK
 	public int getPrimaryAttack()
 	{
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null)
-			return 0;
-		else
-			return AI.getPrimaryAttack();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getPrimaryAttack();
 		
 	}
 	
 	public int getSkillChance()
 	{
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null)
-			return 20;
-		else
-			return AI.getSkillChance();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getSkillChance();
 		
 	}
 	
 	public int getCanMove()
 	{
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null)
-			return 0;
-		else
-			return AI.getCanMove();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getCanMove();
 	}
 	
 	public int getIsChaos()
 	{
-		
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null)
-			return 0;
-		else
-			return AI.getIsChaos();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getIsChaos();
 		
 	}
 	
 	public int getCanDodge()
 	{
-		
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null)
-			return 0;
-		else
-			return AI.getDodge();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getDodge();
 		
 	}
 	
 	public int getSSkillChance()
 	{
-		
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null)
-			return 0;
-		else
-			return AI.getShortRangeChance();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getShortRangeChance();
 		
 	}
 	
 	public int getLSkillChance()
 	{
-		
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null)
-			return 0;
-		else
-			return AI.getLongRangeChance();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getLongRangeChance();
 		
 	}
 	
 	public int getSwitchRangeChance()
 	{
-		
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null)
-			return 0;
-		else
-			return AI.getSwitchRangeChance();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getSwitchRangeChance();
 		
 	}
 	
 	public boolean hasLSkill()
 	{
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
 		
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null || AI.getLongRangeSkill() == 0)
+		if (AI.getLongRangeSkill() == 0)
 			return false;
 		else
 			return true;
@@ -412,11 +333,9 @@ public class L2Npc extends L2Character
 	
 	public boolean hasSSkill()
 	{
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
 		
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(this.getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
-		
-		if (AI == null || AI.getShortRangeSkill() == 0)
+		if (AI.getShortRangeSkill() == 0)
 			return false;
 		else
 			return true;
@@ -427,8 +346,7 @@ public class L2Npc extends L2Character
 	{
 		FastList<L2Skill> skilldata = new FastList <L2Skill>();
 		boolean hasLrange = false;
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
 
 		if (AI == null || AI.getLongRangeSkill() == 0)
 			return null;
@@ -458,9 +376,9 @@ public class L2Npc extends L2Character
 			}
 			case 1:
 			{
-				if (npcData._universalskills != null)
+				if (getTemplate()._universalskills != null)
 				{
-					for (L2Skill sk: npcData._universalskills)
+					for (L2Skill sk: getTemplate()._universalskills)
 					{
 						if (sk.getCastRange() >= 200)
 						{
@@ -491,8 +409,7 @@ public class L2Npc extends L2Character
 	{
 		FastList<L2Skill> skilldata = new FastList <L2Skill>();
 		boolean hasSrange = false;
-		L2NpcTemplate npcData = NpcTable.getInstance().getTemplate(getTemplate().npcId);
-		L2NpcAIData AI = npcData.getAIDataStatic();
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
 
 		if (AI == null || AI.getShortRangeSkill() == 0)
 			return null;
@@ -522,9 +439,9 @@ public class L2Npc extends L2Character
 			}
 			case 1:
 			{
-				if (npcData._universalskills != null)
+				if (getTemplate()._universalskills != null)
 				{
-					for (L2Skill sk: npcData._universalskills)
+					for (L2Skill sk: getTemplate()._universalskills)
 					{
 						if (sk.getCastRange() <= 200)
 						{
@@ -622,7 +539,7 @@ public class L2Npc extends L2Character
 	 */
 	public boolean hasRandomAnimation()
 	{
-		return (Config.MAX_NPC_ANIMATION > 0 && !getTemplate().AI.equals(AIType.CORPSE));
+		return (Config.MAX_NPC_ANIMATION > 0 && !getAiType().equals(AIType.CORPSE));
 	}
 
 	/**
@@ -726,9 +643,10 @@ public class L2Npc extends L2Character
 	 * If a NPC belows to a Faction, other NPC of the faction inside the Faction range will help it if it's attacked<BR><BR>
 	 *
 	 */
+	//@Deprecated
 	public final String getFactionId()
 	{
-		return getTemplate().factionId;
+		return getClan();
 	}
 
 	/**
@@ -759,9 +677,10 @@ public class L2Npc extends L2Character
 	/**
 	 * Return the Faction Range of this L2NpcInstance contained in the L2NpcTemplate.<BR><BR>
 	 */
+	//@Deprecated
 	public int getFactionRange()
 	{
-		return getTemplate().factionRange;
+		return getClanRange();
 	}
 
 	/**
@@ -1064,7 +983,7 @@ public class L2Npc extends L2Character
 					// Send a Server->Client packet SocialAction to the all L2PcInstance on the _knownPlayer of the L2NpcInstance
 					// to display a social action of the L2NpcInstance on their client
 					long now = System.currentTimeMillis();
-					if (now - _lastSocialBroadcast > _minimalSocialInterval && !getTemplate().AI.equals(AIType.CORPSE))
+					if (now - _lastSocialBroadcast > _minimalSocialInterval && !getAiType().equals(AIType.CORPSE))
 					{
 						_lastSocialBroadcast = now;
 						broadcastPacket(new SocialAction(getObjectId(), Rnd.get(8)));
@@ -3037,6 +2956,11 @@ public class L2Npc extends L2Character
 	@Override
 	public boolean isMovementDisabled()
 	{
-		return super.isMovementDisabled() || getCanMove() > 0;
+		return super.isMovementDisabled() || getCanMove() > 0 || getAiType().equals(AIType.CORPSE);
+	}
+	
+	public AIType getAiType()
+	{
+		return getTemplate().getAIDataStatic().getAiType();
 	}
 }

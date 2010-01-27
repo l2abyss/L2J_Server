@@ -18,6 +18,8 @@
  */
 package com.l2jserver.gameserver.model;
 
+import com.l2jserver.gameserver.templates.chars.L2NpcTemplate.AIType;
+
 import javolution.util.FastList;
 
 /**
@@ -45,6 +47,7 @@ public class L2NpcAIData
 	private int _spiritshotchance;
 	private int _ischaos;
 	private String _clan;
+	private int _clanRange;
 	private String _enemyClan;
 	private int _enemyRange;
 	//private int _baseShldRate;
@@ -55,6 +58,7 @@ public class L2NpcAIData
 	private int _longrangechance;
 	private int _shortrangechance;
 	private int _switchrangechance;
+	private AIType _aiType = AIType.FIGHTER;
 	
 	//Skill AI
 	public FastList<L2Skill> _buffskills;
@@ -170,16 +174,19 @@ public class L2NpcAIData
 	
 	public void setClan(String clan)
 	{
-		
-		_clan = clan;
-		
+		if (clan != null && !clan.equals("") && !clan.equalsIgnoreCase("null"))
+			_clan = clan;
+	}
+	
+	public void setClanRange(int clanRange)
+	{
+		_clanRange = clanRange;
 	}
 	
 	public void setEnemyClan(String enemyClan)
 	{
-		
-		_enemyClan = enemyClan;
-		
+		if (enemyClan != null && !enemyClan.equals("") && !enemyClan.equalsIgnoreCase("null"))
+			_enemyClan = enemyClan;
 	}
 	
 	public void setEnemyRange(int enemyRange)
@@ -192,6 +199,22 @@ public class L2NpcAIData
 	public void setDodge(int dodge)
 	{
 		_dodge = dodge;
+	}
+	
+	public void setAi(String ai)
+	{
+		if (ai.equalsIgnoreCase("archer"))
+			_aiType = AIType.ARCHER;
+		else if (ai.equalsIgnoreCase("balanced"))
+			_aiType = AIType.BALANCED;
+		else if (ai.equalsIgnoreCase("mage"))
+			_aiType = AIType.MAGE;
+		else if (ai.equalsIgnoreCase("healer"))
+			_aiType = AIType.HEALER;
+		else if (ai.equalsIgnoreCase("corpse"))
+			_aiType = AIType.CORPSE;
+		else
+			_aiType = AIType.FIGHTER;
 	}
 	
 	/*
@@ -312,6 +335,11 @@ public class L2NpcAIData
 		
 	}
 	
+	public int getClanRange()
+	{
+		return _clanRange;
+	}
+	
 	public String getEnemyClan()
 	{
 		
@@ -331,6 +359,11 @@ public class L2NpcAIData
 		
 		return _dodge;
 		
+	}
+	
+	public AIType getAiType()
+	{
+		return _aiType;	
 	}
 	
 	/*

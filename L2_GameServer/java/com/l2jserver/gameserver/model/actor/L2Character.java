@@ -103,6 +103,7 @@ import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillAgathion;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillMount;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillSummon;
+import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
@@ -935,7 +936,10 @@ public abstract class L2Character extends L2Object
 
         // Flag the attacker if it's a L2PcInstance outside a PvP area
         L2PcInstance player = getActingPlayer();
-
+        
+        if (player != null)
+        	AttackStanceTaskManager.getInstance().addAttackStanceTask(player);
+        
         if (player != null)
         {
         	if (player.getPet() != target)
@@ -1322,7 +1326,7 @@ public abstract class L2Character extends L2Object
 					if(this instanceof L2Attackable && obj instanceof L2PcInstance && getTarget() instanceof L2Attackable)
 	                    continue;
 	                
-	                if(this instanceof L2Attackable && obj instanceof L2Attackable && ((L2Attackable)this).getEnemyClan().equals("none") && ((L2Attackable)this).getIsChaos()==0)
+	                if(this instanceof L2Attackable && obj instanceof L2Attackable && ((L2Attackable)this).getEnemyClan() == null && ((L2Attackable)this).getIsChaos()==0)
 	                continue;
 	                
 	                if(this instanceof L2Attackable && obj instanceof L2Attackable && !((L2Attackable)this).getEnemyClan().equals(((L2Attackable)obj).getClan()) && ((L2Attackable)this).getIsChaos()==0)
