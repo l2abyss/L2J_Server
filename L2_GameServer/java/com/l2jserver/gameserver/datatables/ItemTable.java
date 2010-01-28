@@ -365,6 +365,20 @@ public class ItemTable
 		}
 		_log.config("ItemTable: Loaded " + _weapons.size() + " Weapons.");
 		
+		weaponData.keySet().removeAll(_weapons.keySet());
+		if (!weaponData.isEmpty())
+		{
+			for (int id : weaponData.keySet())
+				_log.info("Weapon id: "+id+" missing XML info!");
+		}
+		
+		armorData.keySet().removeAll(_armors.keySet());
+		if (!armorData.isEmpty())
+		{
+			for (int id : armorData.keySet())
+				_log.info("Armor id: "+id+" missing XML info!");
+		}
+		
 		buildFastLookupTable();
 	}
 	
