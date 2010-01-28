@@ -138,7 +138,7 @@ public class AccessLevels
 				{
 					try
 					{
-						titleColor = Integer.decode("0x77FFFF");
+						titleColor = Integer.decode("0xFFFF77");
 					}
 					catch (NumberFormatException nfe2)
 					{
