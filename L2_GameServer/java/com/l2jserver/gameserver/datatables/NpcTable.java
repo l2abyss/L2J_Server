@@ -97,7 +97,6 @@ public class NpcTable
 			{
 				try
 				{
-					con = L2DatabaseFactory.getInstance().getConnection();
 					PreparedStatement statement;
 					statement = con.prepareStatement("SELECT "
 							+ L2DatabaseFactory.getInstance().safetyString(new String[] { "id", "idTemplate", "name", "serverSideName",
@@ -119,7 +118,6 @@ public class NpcTable
 			}
 			try
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
 				PreparedStatement statement = con.prepareStatement("SELECT npcid, skillid, level FROM npcskills");
 				ResultSet npcskills = statement.executeQuery();
 				L2NpcTemplate npcDat = null;
@@ -308,8 +306,7 @@ public class NpcTable
 			
 			try 
 			{
-				PreparedStatement statement10 = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] 
-				                                                                                                                         {"npc_id", "primary_attack","skill_chance","canMove","soulshot","spiritshot","sschance","spschance","minrangeskill","minrangechance","maxrangeskill","maxrangechance","ischaos","clan","clan_range","enemyClan","enemyRange","ai_type","dodge"}) + " FROM npcAIData ORDER BY npc_id");
+				PreparedStatement statement10 = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] {"npc_id", "primary_attack","skill_chance","canMove","soulshot","spiritshot","sschance","spschance","minrangeskill","minrangechance","maxrangeskill","maxrangechance","ischaos","clan","clan_range","enemyClan","enemyRange","ai_type","dodge"}) + " FROM npcAIData ORDER BY npc_id");
 				ResultSet NpcAIDataTable = statement10.executeQuery();
 				L2NpcAIData npcAIDat = null;
 				L2NpcTemplate npcDat = null;
@@ -357,10 +354,67 @@ public class NpcTable
 				statement10.close();
 				_log.config("NPC AI Data Table: Loaded " + cont + " AI Data.");
 			} 
-			catch (Exception e) {
+			catch (Exception e) 
+			{
 				_log.severe("NPCTable: Error reading NPC AI Data: " + e);
 			}
 			
+			if (Config.CUSTOM_NPC_TABLE)
+			{
+				try
+				{
+					PreparedStatement statement = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] { "npc_id", "primary_attack", "skill_chance", "canMove", "soulshot", "spiritshot", "sschance", "spschance", "minrangeskill", "minrangechance", "maxrangeskill", "maxrangechance", "ischaos", "clan", "clan_range", "enemyClan", "enemyRange", "ai_type", "dodge" }) + " FROM custom_npcAIData ORDER BY npc_id");
+					ResultSet NpcAIDataTable = statement.executeQuery();
+					L2NpcAIData npcAIDat = null;
+					L2NpcTemplate npcDat = null;
+					int cont = 0;
+					while (NpcAIDataTable.next())
+					{
+						int npc_id = NpcAIDataTable.getInt("npc_id");
+						npcDat = _npcs.get(npc_id);
+						if (npcDat == null)
+						{
+							_log.severe("NPCTable: Custom AI Data Error with id : " + npc_id);
+							continue;
+						}
+						npcAIDat = new L2NpcAIData();
+						
+						npcAIDat.setPrimaryAttack(NpcAIDataTable.getInt("primary_attack"));
+						npcAIDat.setSkillChance(NpcAIDataTable.getInt("skill_chance"));
+						npcAIDat.setCanMove(NpcAIDataTable.getInt("canMove"));
+						npcAIDat.setSoulShot(NpcAIDataTable.getInt("soulshot"));
+						npcAIDat.setSpiritShot(NpcAIDataTable.getInt("spiritshot"));
+						npcAIDat.setSoulShotChance(NpcAIDataTable.getInt("sschance"));
+						npcAIDat.setSpiritShotChance(NpcAIDataTable.getInt("spschance"));
+						npcAIDat.setIsChaos(NpcAIDataTable.getInt("ischaos"));
+						npcAIDat.setShortRangeSkill(NpcAIDataTable.getInt("minrangeskill"));
+						npcAIDat.setShortRangeChance(NpcAIDataTable.getInt("minrangechance"));
+						npcAIDat.setLongRangeSkill(NpcAIDataTable.getInt("maxrangeskill"));
+						npcAIDat.setLongRangeChance(NpcAIDataTable.getInt("maxrangechance"));
+						//npcAIDat.setSwitchRangeChance(NpcAIDataTable.getInt("rangeswitchchance"));
+						npcAIDat.setClan(NpcAIDataTable.getString("clan"));
+						npcAIDat.setClanRange(NpcAIDataTable.getInt("clan_range"));
+						npcAIDat.setEnemyClan(NpcAIDataTable.getString("enemyClan"));
+						npcAIDat.setEnemyRange(NpcAIDataTable.getInt("enemyRange"));
+						npcAIDat.setDodge(NpcAIDataTable.getInt("dodge"));
+						npcAIDat.setAi(NpcAIDataTable.getString("ai_type"));
+						//npcAIDat.setBaseShldRate(NpcAIDataTable.getInt("baseShldRate"));
+						//npcAIDat.setBaseShldDef(NpcAIDataTable.getInt("baseShldDef"));
+						
+						//npcDat.addAIData(npcAIDat);
+						npcDat.setAIData(npcAIDat);
+						cont++;
+					}
+					
+					NpcAIDataTable.close();
+					statement.close();
+					_log.config("NPC AI Data Table: Loaded " + cont + " Custom AI Data.");
+				}
+				catch (Exception e)
+				{
+					_log.severe("NPCTable: Error reading NPC Custom AI Data: " + e);
+				}
+			}
 		}
 		finally
 		{

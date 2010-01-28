@@ -540,6 +540,7 @@ public final class Config
 	public static boolean CUSTOM_TELEPORT_TABLE;
 	public static boolean CUSTOM_DROPLIST_TABLE;
 	public static boolean CUSTOM_MERCHANT_TABLES;
+	public static boolean CUSTOM_NPCBUFFER_TABLES;
 
 
 	//--------------------------------------------------
@@ -1713,6 +1714,7 @@ public final class Config
 					CUSTOM_TELEPORT_TABLE = Boolean.valueOf(General.getProperty("CustomTeleportTable", "false"));
 					CUSTOM_DROPLIST_TABLE = Boolean.valueOf(General.getProperty("CustomDroplistTable", "false"));
 					CUSTOM_MERCHANT_TABLES = Boolean.valueOf(General.getProperty("CustomMerchantTables", "false"));
+					CUSTOM_NPCBUFFER_TABLES = Boolean.valueOf(General.getProperty("CustomNpcBufferTables", "false"));
 				}
 				catch (Exception e)
 				{

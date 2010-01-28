@@ -881,7 +881,7 @@ public abstract class L2Character extends L2Object
         // Verify if soulshots are charged.
         boolean wasSSCharged;
 
-        if (this instanceof L2Summon && !(this instanceof L2PetInstance))
+        if (this instanceof L2Summon && !(this instanceof L2PetInstance && weaponInst != null))
             wasSSCharged = (((L2Summon)this).getChargedSoulShot() != L2ItemInstance.CHARGED_NONE);
         else
             wasSSCharged = (weaponInst != null && weaponInst.getChargedSoulshot() != L2ItemInstance.CHARGED_NONE);
@@ -958,7 +958,7 @@ public abstract class L2Character extends L2Object
              */
 
             // If we didn't miss the hit, discharge the shoulshots, if any
-            if (this instanceof L2Summon && !(this instanceof L2PetInstance))
+            if (this instanceof L2Summon && !(this instanceof L2PetInstance && weaponInst != null))
                 ((L2Summon)this).setChargedSoulShot(L2ItemInstance.CHARGED_NONE);
             else
                 if (weaponInst != null)
