@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 
 
@@ -123,46 +124,49 @@ public class NpcBufferTable
 				_log.log(Level.SEVERE, "NpcBufferTable: Error reading npc_buffer table: " + e.getMessage(), e);
 			}
 			
-			try
+			if (Config.CUSTOM_NPCBUFFER_TABLES)
 			{
-				PreparedStatement statement = con.prepareStatement("SELECT `npc_id`,`skill_id`,`skill_level`,`skill_fee_id`,`skill_fee_amount`,`buff_group` FROM `custom_npc_buffer` ORDER BY `npc_id` ASC");
-				ResultSet rset = statement.executeQuery();
-				
-				int lastNpcId = 0;
-				NpcBufferSkills skills = null;
-				
-				while (rset.next())
+				try
 				{
-					int npcId = rset.getInt("npc_id");
-					int skillId = rset.getInt("skill_id");
-					int skillLevel = rset.getInt("skill_level");
-					int skillFeeId = rset.getInt("skill_fee_id");
-					int skillFeeAmount = rset.getInt("skill_fee_amount");
-					int buffGroup = rset.getInt("buff_group");
+					PreparedStatement statement = con.prepareStatement("SELECT `npc_id`,`skill_id`,`skill_level`,`skill_fee_id`,`skill_fee_amount`,`buff_group` FROM `custom_npc_buffer` ORDER BY `npc_id` ASC");
+					ResultSet rset = statement.executeQuery();
 					
-					if (npcId != lastNpcId)
+					int lastNpcId = 0;
+					NpcBufferSkills skills = null;
+					
+					while (rset.next())
 					{
-						if (lastNpcId != 0)
-							_buffers.put(lastNpcId, skills);
+						int npcId = rset.getInt("npc_id");
+						int skillId = rset.getInt("skill_id");
+						int skillLevel = rset.getInt("skill_level");
+						int skillFeeId = rset.getInt("skill_fee_id");
+						int skillFeeAmount = rset.getInt("skill_fee_amount");
+						int buffGroup = rset.getInt("buff_group");
 						
-						skills = new NpcBufferSkills(npcId);
-						skills.addSkill(skillId, skillLevel, skillFeeId, skillFeeAmount, buffGroup);
+						if (npcId != lastNpcId)
+						{
+							if (lastNpcId != 0)
+								_buffers.put(lastNpcId, skills);
+							
+							skills = new NpcBufferSkills(npcId);
+							skills.addSkill(skillId, skillLevel, skillFeeId, skillFeeAmount, buffGroup);
+						}
+						else
+							skills.addSkill(skillId, skillLevel, skillFeeId, skillFeeAmount, buffGroup);
+						
+						lastNpcId = npcId;
+						skillCount++;
 					}
-					else
-						skills.addSkill(skillId, skillLevel, skillFeeId, skillFeeAmount, buffGroup);
 					
-					lastNpcId = npcId;
-					skillCount++;
+					if (lastNpcId != 0)
+						_buffers.put(lastNpcId, skills);
+					rset.close();
+					statement.close();
 				}
-				
-				if (lastNpcId != 0)
-					_buffers.put(lastNpcId, skills);
-				rset.close();
-				statement.close();
-			}
-			catch (Exception e)
-			{
-				_log.log(Level.SEVERE, "NpcBufferTable: Error reading custom_npc_buffer table: " + e.getMessage(), e);
+				catch (Exception e)
+				{
+					_log.log(Level.SEVERE, "NpcBufferTable: Error reading custom_npc_buffer table: " + e.getMessage(), e);
+				}
 			}
 		}
 		finally
