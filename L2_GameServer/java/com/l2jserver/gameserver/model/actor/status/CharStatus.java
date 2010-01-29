@@ -376,8 +376,7 @@ public class CharStatus
 		{
 			// no broadcast necessary for characters that are in inactive regions.
 			// stop regeneration for characters who are filled up and in an inactive region.
-			if ((getCurrentCp() == charstat.getMaxCp())
-					&& (getCurrentHp() == charstat.getMaxHp())
+			if ((getCurrentHp() == charstat.getMaxHp())
 					&& (getCurrentMp() == charstat.getMaxMp()))
 				stopHpMpRegeneration();
 		}
