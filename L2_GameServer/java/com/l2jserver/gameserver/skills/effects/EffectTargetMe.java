@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.skills.effects;
 
-import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -59,13 +58,10 @@ public class EffectTargetMe extends L2Effect
 
 			if (getEffected().getTarget() != getEffector())
 			{
-				// Target is different - stop autoattack and break cast
+				// Target is different
 				getEffected().setTarget(getEffector());
-				getEffected().abortAttack();
-				getEffected().abortCast();
 				if (getEffected() instanceof L2PcInstance)
 					getEffected().sendPacket(new MyTargetSelected(getEffector().getObjectId(), 0));
-				getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 			}
 			((L2Playable)getEffected()).setLockedTarget(getEffector());
 			return true;
