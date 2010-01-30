@@ -26,14 +26,14 @@ public class PrivateStoreMsgBuy extends L2GameServerPacket
 	private static final String _S__D2_PRIVATESTOREMSGBUY = "[S] bf PrivateStoreMsgBuy";
 	private int _objId;
 	private String _storeMsg;
-
+	
 	public PrivateStoreMsgBuy(L2PcInstance player)
 	{
 		_objId = player.getObjectId();
-		if (player.getBuyList() != null) 
+		if (player.getBuyList() != null)
 			_storeMsg = player.getBuyList().getTitle();
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -41,7 +41,7 @@ public class PrivateStoreMsgBuy extends L2GameServerPacket
 		writeD(_objId);
 		writeS(_storeMsg);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -50,5 +50,5 @@ public class PrivateStoreMsgBuy extends L2GameServerPacket
 	{
 		return _S__D2_PRIVATESTOREMSGBUY;
 	}
-
+	
 }

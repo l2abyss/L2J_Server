@@ -30,51 +30,51 @@ public final class AnswerTradeRequest extends L2GameClientPacket
 {
 	private static final String _C__40_ANSWERTRADEREQUEST = "[C] 40 AnswerTradeRequest";
 	//private static Logger _log = Logger.getLogger(AnswerTradeRequest.class.getName());
-
+	
 	private int _response;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_response = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
-        if (player == null) return;
-
-        if (!player.getAccessLevel().allowTransaction())
-        {
-        	player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
-            sendPacket(ActionFailed.STATIC_PACKET);
-            return;
-        }
-
-
-        L2PcInstance partner = player.getActiveRequester();
-        if (partner == null)
-        {
-            // Trade partner not found, cancel trade
+		if (player == null)
+			return;
+		
+		if (!player.getAccessLevel().allowTransaction())
+		{
+			player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		
+		L2PcInstance partner = player.getActiveRequester();
+		if (partner == null)
+		{
+			// Trade partner not found, cancel trade
 			player.sendPacket(new TradeDone(0));
-            SystemMessage msg = new SystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
-            player.sendPacket(msg);
+			SystemMessage msg = new SystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
+			player.sendPacket(msg);
 			player.setActiveRequester(null);
 			msg = null;
-            return;
-        }
-        else if (L2World.getInstance().findObject(partner.getObjectId()) == null)
-        {
-        	// Trade partner not found, cancel trade
+			return;
+		}
+		else if (L2World.getInstance().findObject(partner.getObjectId()) == null)
+		{
+			// Trade partner not found, cancel trade
 			player.sendPacket(new TradeDone(0));
-            SystemMessage msg = new SystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
-            player.sendPacket(msg);
+			SystemMessage msg = new SystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
+			player.sendPacket(msg);
 			player.setActiveRequester(null);
 			msg = null;
-            return;
-        }
-
+			return;
+		}
+		
 		if (_response == 1 && !partner.isRequestExpired())
 			player.startTrade(partner);
 		else
@@ -84,12 +84,12 @@ public final class AnswerTradeRequest extends L2GameClientPacket
 			partner.sendPacket(msg);
 			msg = null;
 		}
-
+		
 		// Clears requesting status
 		player.setActiveRequester(null);
 		partner.onTransactionResponse();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

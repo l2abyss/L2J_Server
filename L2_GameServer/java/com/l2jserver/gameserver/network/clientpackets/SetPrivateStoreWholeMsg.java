@@ -23,37 +23,38 @@ import com.l2jserver.gameserver.network.serverpackets.ExPrivateStoreSetWholeMsg;
  */
 public class SetPrivateStoreWholeMsg extends L2GameClientPacket
 {
-    private String _msg;
-    
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-     */
-    @Override
-    public String getType()
-    {
-        return "[C] D0:4D SetPrivateStoreWholeMsg";
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-     */
-    @Override
-    protected void readImpl()
-    {
-        _msg = readS();
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-     */
-    @Override
-    protected void runImpl()
-    {
-        L2PcInstance player = getClient().getActiveChar();
-        if (player == null || player.getSellList() == null) return;
-
-        player.getSellList().setTitle(_msg);
-        sendPacket(new ExPrivateStoreSetWholeMsg(player));
-    }
-    
+	private String _msg;
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return "[C] D0:4D SetPrivateStoreWholeMsg";
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
+	 */
+	@Override
+	protected void readImpl()
+	{
+		_msg = readS();
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
+	 */
+	@Override
+	protected void runImpl()
+	{
+		L2PcInstance player = getClient().getActiveChar();
+		if (player == null || player.getSellList() == null)
+			return;
+		
+		player.getSellList().setTitle(_msg);
+		sendPacket(new ExPrivateStoreSetWholeMsg(player));
+	}
+	
 }

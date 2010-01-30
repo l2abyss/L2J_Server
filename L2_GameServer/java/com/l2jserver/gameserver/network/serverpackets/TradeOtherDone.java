@@ -17,18 +17,18 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class TradeOtherDone extends L2GameServerPacket
 {
 	private static final String _S__82_SENDTRADEOTHERDONE = "[S] 82 SendTradeOtherDone";
-
+	
 	public TradeOtherDone()
 	{
 		// trigger packet
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x82);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

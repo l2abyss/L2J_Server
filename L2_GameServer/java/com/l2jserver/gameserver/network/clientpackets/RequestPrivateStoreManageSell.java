@@ -25,9 +25,9 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 public final class RequestPrivateStoreManageSell extends L2GameClientPacket
 {
 	private static final String _C__73_REQUESTPRIVATESTOREMANAGESELL = "[C] 73 RequestPrivateStoreManageSell";
+	
 	//private static Logger _log = Logger.getLogger(RequestPrivateStoreManage.class.getName());
-
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -35,35 +35,33 @@ public final class RequestPrivateStoreManageSell extends L2GameClientPacket
 		//readD();
 		//readQ();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
-        {
-            
-        }
-
-        // Player shouldn't be able to set stores if he/she is alike dead (dead or fake death)
-        if (player.isAlikeDead())
-        {
-            sendPacket(ActionFailed.STATIC_PACKET);
-            return;
-        }
-
-        if (player.isInOlympiadMode())
-        {
-            sendPacket(ActionFailed.STATIC_PACKET);
-            return;
-        }
-        if (player.getMountType() != 0)
-        {
-        	return;
-        }
-        
+			return;
+		
+		// Player shouldn't be able to set stores if he/she is alike dead (dead or fake death)
+		if (player.isAlikeDead())
+		{
+			sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		
+		if (player.isInOlympiadMode())
+		{
+			sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		if (player.getMountType() != 0)
+		{
+			return;
+		}
+		
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

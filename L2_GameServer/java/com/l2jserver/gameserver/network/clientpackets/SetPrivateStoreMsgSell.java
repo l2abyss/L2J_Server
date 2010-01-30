@@ -26,25 +26,26 @@ public class SetPrivateStoreMsgSell extends L2GameClientPacket
 {
 	private static final String _C__77_SETPRIVATESTOREMSGSELL = "[C] 77 SetPrivateStoreMsgSell";
 	//private static Logger _log = Logger.getLogger(SetPrivateStoreMsgSell.class.getName());
-
+	
 	private String _storeMsg;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_storeMsg = readS();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
-		if (player == null || player.getSellList() == null) return;
-
+		if (player == null || player.getSellList() == null)
+			return;
+		
 		player.getSellList().setTitle(_storeMsg);
 		sendPacket(new PrivateStoreMsgSell(player));
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */
@@ -53,5 +54,5 @@ public class SetPrivateStoreMsgSell extends L2GameClientPacket
 	{
 		return _C__77_SETPRIVATESTOREMSGSELL;
 	}
-
+	
 }

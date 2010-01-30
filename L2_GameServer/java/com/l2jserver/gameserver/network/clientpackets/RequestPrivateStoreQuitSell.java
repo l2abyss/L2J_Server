@@ -24,25 +24,27 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public final class RequestPrivateStoreQuitSell extends L2GameClientPacket
 {
 	private static final String _C__76_REQUESTPRIVATESTOREQUITSELL = "[C] 76 RequestPrivateStoreQuitSell";
+	
 	//private static Logger _log = Logger.getLogger(RequestPrivateStoreQuitSell.class.getName());
-
+	
 	@Override
 	protected void readImpl()
 	{
 		// trigger
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
-		if (player == null) return;
-
+		if (player == null)
+			return;
+		
 		player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
 		player.standUp();
 		player.broadcastUserInfo();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

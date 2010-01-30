@@ -29,7 +29,7 @@ public class PrivateStoreListSell extends L2GameServerPacket
 	private long _playerAdena;
 	private boolean _packageSale;
 	private TradeList.TradeItem[] _items;
-
+	
 	// player's private shop
 	public PrivateStoreListSell(L2PcInstance player, L2PcInstance storePlayer)
 	{
@@ -38,7 +38,7 @@ public class PrivateStoreListSell extends L2GameServerPacket
 		_items = storePlayer.getSellList().getItems();
 		_packageSale = storePlayer.getSellList().isPackaged();
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -52,7 +52,7 @@ public class PrivateStoreListSell extends L2GameServerPacket
 			writeD(item.getItem().getType2());
 			writeD(item.getObjectId());
 			writeD(item.getItem().getItemId());
-            writeQ(item.getCount());
+			writeQ(item.getCount());
 			writeH(0x00);
 			writeH(item.getEnchant());
 			writeH(item.getCustomType2());
@@ -65,13 +65,13 @@ public class PrivateStoreListSell extends L2GameServerPacket
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 				writeH(item.getElementDefAttr(i));
-
+			
 			writeH(0x00); // Enchant effect 1
 			writeH(0x00); // Enchant effect 2
 			writeH(0x00); // Enchant effect 3 
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

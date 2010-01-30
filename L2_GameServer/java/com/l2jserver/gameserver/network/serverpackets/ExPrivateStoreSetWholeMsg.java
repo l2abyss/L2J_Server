@@ -22,39 +22,39 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class ExPrivateStoreSetWholeMsg extends L2GameServerPacket
 {
-    private final int _objectId;
-    private final String _msg;
-    
-    public ExPrivateStoreSetWholeMsg(L2PcInstance player, String msg)
-    {
-        _objectId = player.getObjectId();
-        _msg = msg;
-    }
-    
-    public ExPrivateStoreSetWholeMsg(L2PcInstance player)
-    {
-        this(player, player.getSellList().getTitle());
-    }
-    
-    /**
-     * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-     */
-    @Override
-    public String getType()
-    {
-        return "[S] FE:80 ExPrivateStoreSetWholeMsg";
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-     */
-    @Override
-    protected void writeImpl()
-    {
-        writeC(0xfe);
-        writeH(0x80);
-        writeD(_objectId);
-        writeS(_msg);
-    }
-    
+	private final int _objectId;
+	private final String _msg;
+	
+	public ExPrivateStoreSetWholeMsg(L2PcInstance player, String msg)
+	{
+		_objectId = player.getObjectId();
+		_msg = msg;
+	}
+	
+	public ExPrivateStoreSetWholeMsg(L2PcInstance player)
+	{
+		this(player, player.getSellList().getTitle());
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return "[S] FE:80 ExPrivateStoreSetWholeMsg";
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
+	 */
+	@Override
+	protected void writeImpl()
+	{
+		writeC(0xfe);
+		writeH(0x80);
+		writeD(_objectId);
+		writeS(_msg);
+	}
+	
 }

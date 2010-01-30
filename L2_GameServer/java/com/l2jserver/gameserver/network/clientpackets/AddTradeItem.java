@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TradeOtherAdd;
 import com.l2jserver.gameserver.network.serverpackets.TradeOwnAdd;
 
-
 /**
  * This class ...
  *
@@ -34,15 +33,15 @@ public final class AddTradeItem extends L2GameClientPacket
 {
 	private static final String _C__16_ADDTRADEITEM = "[C] 16 AddTradeItem";
 	private static final Logger _log = Logger.getLogger(AddTradeItem.class.getName());
-
+	
 	private int _tradeId;
 	private int _objectId;
 	private long _count;
-
+	
 	public AddTradeItem()
 	{
 	}
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -50,57 +49,52 @@ public final class AddTradeItem extends L2GameClientPacket
 		_objectId = readD();
 		_count = readQ();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		final L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;
-
+		
 		final TradeList trade = player.getActiveTradeList();
 		if (trade == null)
 		{
-			_log.warning("Character: " + player.getName()
-					+ " requested item:" + _objectId
-					+ " add without active tradelist:" + _tradeId);
+			_log.warning("Character: " + player.getName() + " requested item:" + _objectId + " add without active tradelist:" + _tradeId);
 			return;
 		}
-
+		
 		final L2PcInstance partner = trade.getPartner();
-		if (partner == null
-				|| L2World.getInstance().findObject(partner.getObjectId()) == null
-				|| partner.getActiveTradeList() == null)
+		if (partner == null || L2World.getInstance().findObject(partner.getObjectId()) == null || partner.getActiveTradeList() == null)
 		{
 			// Trade partner not found, cancel trade
 			if (partner != null)
-				_log.warning("Character:" + player.getName()
-						+ " requested invalid trade object: " + _objectId);
+				_log.warning("Character:" + player.getName() + " requested invalid trade object: " + _objectId);
 			SystemMessage msg = new SystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
 			player.sendPacket(msg);
 			player.cancelActiveTrade();
 			return;
 		}
-
+		
 		if (trade.isConfirmed() || partner.getActiveTradeList().isConfirmed())
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_ADJUST_ITEMS_AFTER_TRADE_CONFIRMED));
 			return;
 		}
-
+		
 		if (!player.getAccessLevel().allowTransaction())
 		{
 			player.sendMessage("Transactions are disable for your Access Level");
 			player.cancelActiveTrade();
 			return;
 		}
-
+		
 		if (!player.validateItemManipulation(_objectId, "trade"))
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
 			return;
 		}
-
+		
 		final TradeList.TradeItem item = trade.addItem(_objectId, _count);
 		if (item != null)
 		{
@@ -108,7 +102,7 @@ public final class AddTradeItem extends L2GameClientPacket
 			trade.getPartner().sendPacket(new TradeOtherAdd(item));
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

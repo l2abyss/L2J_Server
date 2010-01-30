@@ -23,19 +23,19 @@ public class TradeDone extends L2GameServerPacket
 {
 	private static final String _S__32_SENDTRADEDONE = "[S] 1c SendTradeDone";
 	private int _num;
-
-	public TradeDone (int num)
+	
+	public TradeDone(int num)
 	{
 		_num = num;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x1c);
 		writeD(_num);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -44,5 +44,5 @@ public class TradeDone extends L2GameServerPacket
 	{
 		return _S__32_SENDTRADEDONE;
 	}
-
+	
 }

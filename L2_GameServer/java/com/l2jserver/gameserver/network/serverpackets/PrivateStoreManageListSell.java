@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  * 3 section to this packet
  * 1)playerinfo which is always sent
@@ -39,7 +38,7 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 	private boolean _packageSale;
 	private TradeList.TradeItem[] _itemList;
 	private TradeList.TradeItem[] _sellList;
-
+	
 	public PrivateStoreManageListSell(L2PcInstance player, boolean isPackageSale)
 	{
 		_objId = player.getObjectId();
@@ -49,7 +48,7 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 		_itemList = player.getInventory().getAvailableItems(player.getSellList());
 		_sellList = player.getSellList().getItems();
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -58,7 +57,7 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 		writeD(_objId);
 		writeD(_packageSale ? 1 : 0); // Package sell
 		writeQ(_playerAdena);
-
+		
 		//section2
 		writeD(_itemList.length); //for potential sells
 		for (TradeList.TradeItem item : _itemList)
@@ -78,7 +77,7 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 				writeH(item.getElementDefAttr(i));
-
+			
 			writeH(0x00); // Enchant effect 1
 			writeH(0x00); // Enchant effect 2
 			writeH(0x00); // Enchant effect 3 
@@ -103,13 +102,13 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 				writeH(item.getElementDefAttr(i));
-
+			
 			writeH(0x00); // Enchant effect 1
 			writeH(0x00); // Enchant effect 2
 			writeH(0x00); // Enchant effect 3 
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
