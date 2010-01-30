@@ -40,6 +40,9 @@ public final class ChanceCondition
 	public static final int EVT_HIT_BY_OFFENSIVE_SKILL = 2048;
 	public static final int EVT_HIT_BY_GOOD_MAGIC = 4096;
 	public static final int EVT_EVADED_HIT = 8192;
+	public static final int EVT_ON_START = 16384;
+	public static final int EVT_ON_ACTION_TIME = 32768;
+	public static final int EVT_ON_EXIT = 65536;
 
 	public static enum TriggerType
 	{
@@ -70,7 +73,13 @@ public final class ChanceCondition
 		// A good skill was casted on you
 		ON_HIT_BY_GOOD_MAGIC(4096),
 		// Evading melee attack
-		ON_EVADED_HIT(8192);
+		ON_EVADED_HIT(8192),
+		// Effect only - on start
+		ON_START(16384),
+		// Effect only - each second
+		ON_ACTION_TIME(32768),
+		// Effect only - on exit
+		ON_EXIT(65536);
 
 		private final int _mask;
 
@@ -103,11 +112,11 @@ public final class ChanceCondition
 		try
 		{
 			TriggerType trigger = set.getEnum("chanceType", TriggerType.class, null);
-			int chance = set.getInteger("activationChance", 0);
+			int chance = set.getInteger("activationChance", -1);
 			String elements = set.getString("activationElements", null);
 			boolean pvpOnly = set.getBool("pvpChanceOnly", false);
 
-			if (trigger != null && chance > 0)
+			if (trigger != null)
 				return new ChanceCondition(trigger, chance, parseElements(elements), pvpOnly);
 		}
 		catch (Exception e)
@@ -121,7 +130,7 @@ public final class ChanceCondition
 	{
 		try
 		{
-			if (chance <= 0 || chanceType == null)
+			if (chanceType == null)
 				return null;
 			
 			TriggerType trigger = Enum.valueOf(TriggerType.class, chanceType);
@@ -159,7 +168,7 @@ public final class ChanceCondition
 		if (_elements != null && Arrays.binarySearch(_elements, element) < 0)
 			return false;
 
-		return _triggerType.check(event) && Rnd.get(100) < _chance;
+		return _triggerType.check(event) && (_chance < 0 || Rnd.get(100) < _chance);
 	}
 
 	@Override

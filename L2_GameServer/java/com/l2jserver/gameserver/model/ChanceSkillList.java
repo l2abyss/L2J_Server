@@ -104,6 +104,21 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 		onEvent(event, target, element);
 	}
 
+	public void onStart(byte element)
+	{
+		onEvent(ChanceCondition.EVT_ON_START, _owner, element);
+	}
+
+	public void onActionTime(byte element)
+	{
+		onEvent(ChanceCondition.EVT_ON_ACTION_TIME, _owner, element);
+	}
+
+	public void onExit(byte element)
+	{
+		onEvent(ChanceCondition.EVT_ON_EXIT, _owner, element);
+	}
+
 	public void onEvent(int event, L2Character target, byte element)
 	{
 		final boolean playable = target instanceof L2Playable;
@@ -151,7 +166,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 				_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, skill.getDisplayId(), skill.getLevel(), 0, 0));
 
 				// Launch the magic skill and calculate its effects
-				// TODO: once core will support all posible effects, use effects (not handler)
+				// TODO: once core will support all possible effects, use effects (not handler)
 				if (handler != null)
 					handler.useSkill(_owner, skill, targets);
 				else
@@ -172,16 +187,18 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 				return;
 
 			L2Skill triggered = SkillTable.getInstance().getInfo(effect.getTriggeredChanceId(), effect.getTriggeredChanceLevel());
+			L2Character caster = effect.getEffector();
 
-			if (triggered == null
+			if (caster == null
+					|| triggered == null
 					|| triggered.getSkillType() == L2SkillType.NOTDONE
-					|| _owner.isSkillDisabled(triggered.getId()))
+					|| caster.isSkillDisabled(triggered.getId()))
 				return;
 
 			if (triggered.getReuseDelay() > 0)
-				_owner.disableSkill(triggered.getId(), triggered.getReuseDelay());
+				caster.disableSkill(triggered.getId(), triggered.getReuseDelay());
 
-			L2Object[] targets = triggered.getTargetList(_owner, false, target);
+			L2Object[] targets = triggered.getTargetList(caster, false, target);
 
 			if (targets.length == 0)
 				return;
@@ -194,11 +211,11 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, triggered.getDisplayId(), triggered.getLevel(), 0, 0));
 
 			// Launch the magic skill and calculate its effects
-			// TODO: once core will support all posible effects, use effects (not handler)
+			// TODO: once core will support all possible effects, use effects (not handler)
 			if (handler != null)
-				handler.useSkill(_owner, triggered, targets);
+				handler.useSkill(caster, triggered, targets);
 			else
-				triggered.useSkill(_owner, targets);
+				triggered.useSkill(caster, targets);
 		}
 		catch (Exception e)
 		{

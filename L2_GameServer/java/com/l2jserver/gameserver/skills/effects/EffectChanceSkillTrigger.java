@@ -45,18 +45,24 @@ public class EffectChanceSkillTrigger extends L2Effect implements IChanceSkillTr
 	public boolean onStart()
 	{
 		getEffected().addChanceEffect(this);
-		return true;
+		getEffected().onStartChanceEffect(getSkill().getElement());
+		return super.onStart();
 	}
 
-	@Override
     public boolean onActionTime()
     {
+		getEffected().onActionTimeChanceEffect(getSkill().getElement());
 	    return false;
     }
-	
+
+	@Override
 	public void onExit()
 	{
+		// trigger only if effect in use and successfully ticked to the end
+		if (getInUse() && getCount() == 0)
+			getEffected().onExitChanceEffect(getSkill().getElement());
 		getEffected().removeChanceEffect(this);
+		super.onExit();
 	}
 
 	@Override

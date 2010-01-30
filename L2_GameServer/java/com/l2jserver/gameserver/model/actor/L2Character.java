@@ -5796,6 +5796,30 @@ public abstract class L2Character extends L2Object
 			_chanceSkills = null;
 	}
 
+	public void onStartChanceEffect(byte element)
+	{
+		if (_chanceSkills == null)
+			return;
+
+		_chanceSkills.onStart(element);
+	}
+
+	public void onActionTimeChanceEffect(byte element)
+	{
+		if (_chanceSkills == null)
+			return;
+
+		_chanceSkills.onActionTime(element);
+	}
+
+	public void onExitChanceEffect(byte element)
+	{
+		if (_chanceSkills == null)
+			return;
+
+		_chanceSkills.onExit(element);
+	}
+
 	/**
 	 * Return all skills own by the L2Character in a table of L2Skill.<BR><BR>
 	 *

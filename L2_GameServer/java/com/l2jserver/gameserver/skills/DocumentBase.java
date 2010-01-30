@@ -296,11 +296,9 @@ abstract class DocumentBase
 		else if (isChanceSkillTrigger)
 			throw new NoSuchElementException(name + " requires chanceType");
 		
-		int activationChance = 0;
+		int activationChance = -1;
 		if (attrs.getNamedItem("activationChance") != null)
 			activationChance = Integer.parseInt(getValue(attrs.getNamedItem("activationChance").getNodeValue(), template));
-		else if (isChanceSkillTrigger)
-			throw new NoSuchElementException(name + " requires activationChance");
 		String activationElements = null;
 		if (attrs.getNamedItem("activationElements") != null)
 			activationElements = getValue(attrs.getNamedItem("activationElements").getNodeValue(), template);
