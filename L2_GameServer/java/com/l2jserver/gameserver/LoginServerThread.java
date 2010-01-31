@@ -455,14 +455,20 @@ public class LoginServerThread extends Thread
 		if (_accountsInGameServer.get(account) != null)
 		{
 			L2GameClient client = _accountsInGameServer.get(account);
-	    	LogRecord record = new LogRecord(Level.WARNING, "Kicked");
+	    	LogRecord record = new LogRecord(Level.WARNING, "Kicked by login");
 	    	record.setParameters(new Object[]{client});
 			_logAccounting.log(record);
-			L2PcInstance player = client.getActiveChar();
+			final L2PcInstance player = client.getActiveChar();
 			if (player != null)
 			{
 				player.sendPacket(SystemMessageId.ANOTHER_LOGIN_WITH_ACCOUNT);
-				player.logout(false);
+				ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
+				{
+					public void run()
+					{
+						player.logout(false);
+					}
+				} , 400);
 			}
 			else
 				client.closeNow();

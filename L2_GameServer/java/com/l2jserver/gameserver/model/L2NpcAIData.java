@@ -46,9 +46,9 @@ public class L2NpcAIData
 	private int _soulshotchance;
 	private int _spiritshotchance;
 	private int _ischaos;
-	private String _clan;
+	private String _clan = null;
 	private int _clanRange;
-	private String _enemyClan;
+	private String _enemyClan = null;
 	private int _enemyRange;
 	//private int _baseShldRate;
 	//private int _baseShldDef;

@@ -474,7 +474,7 @@ public class L2Spawn
 			if (!(tmp instanceof L2Npc))
 				return mob;
 			mob = (L2Npc)tmp;
-            return intializeNpcInstance(mob);
+            return initializeNpcInstance(mob);
 		}
 		catch (Exception e)
 		{
@@ -487,7 +487,7 @@ public class L2Spawn
      * @param mob
      * @return
      */
-    private L2Npc intializeNpcInstance(L2Npc mob)
+    private L2Npc initializeNpcInstance(L2Npc mob)
     {
         int newlocx, newlocy, newlocz;
 
@@ -631,7 +631,7 @@ public class L2Spawn
     	if (_doRespawn)
     	{
             oldNpc.refreshID();
-            /*L2NpcInstance instance = */intializeNpcInstance(oldNpc);
+            /*L2NpcInstance instance = */initializeNpcInstance(oldNpc);
     	}
     }
 
