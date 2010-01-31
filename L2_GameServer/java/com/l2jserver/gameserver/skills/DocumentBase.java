@@ -499,6 +499,11 @@ abstract class DocumentBase
             	int expIndex = Integer.decode(getValue(a.getNodeValue(), template));
             	cond = joinAnd(cond, new ConditionPlayerGrade(expIndex));
             }
+            else if ("pkCount".equalsIgnoreCase(a.getNodeName()))
+            {
+            	int expIndex = Integer.decode(getValue(a.getNodeValue(), template));
+            	cond = joinAnd(cond, new ConditionPlayerPkCount(expIndex));
+            }
             else if ("siegezone".equalsIgnoreCase(a.getNodeName()))
             {
                 int value = Integer.decode(getValue(a.getNodeValue(), null));
