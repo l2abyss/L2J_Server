@@ -18,7 +18,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -67,13 +69,17 @@ public final class L2Properties extends Properties
 	@Override
 	public void load(InputStream inStream) throws IOException
 	{
+		InputStreamReader reader = null;
 		try
 		{
-			super.load(inStream);
+			reader = new InputStreamReader(inStream, Charset.defaultCharset());
+			super.load(reader);
 		}
 		finally
 		{
 			inStream.close();
+			if (reader != null)
+				reader.close();
 		}
 	}
 
