@@ -474,6 +474,11 @@ abstract class DocumentBase
                 boolean val = Boolean.valueOf(a.getNodeValue());
                 cond = joinAnd(cond, new ConditionPlayerState(PlayerState.OLYMPIAD, val));
             }
+            else if ("ishero".equalsIgnoreCase(a.getNodeName()))
+            {
+                boolean val = Boolean.valueOf(a.getNodeValue());
+                cond = joinAnd(cond, new ConditionPlayerIsHero(val));
+            }
             else if ("hp".equalsIgnoreCase(a.getNodeName()))
             {
                 int hp = Integer.decode(getValue(a.getNodeValue(), null));
