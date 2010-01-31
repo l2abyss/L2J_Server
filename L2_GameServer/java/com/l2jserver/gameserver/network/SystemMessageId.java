@@ -13881,6 +13881,12 @@ public enum SystemMessageId
 	YOUR_NUMBER_OF_MY_TELEPORTS_SLOTS_HAS_REACHED_ITS_MAXIMUM_LIMIT(2390),
 	
 	/**
+	 * ID: 2396<br>
+	 * Message: That pet/servitor skill cannot be used because it is recharging.
+	 */
+	PET_SKILL_CANNOT_BE_USED_RECHARCHING(2396),
+	
+	/**
 	* ID: 2398<br>
 	* Message: You have no open My Teleports slots.
 	*/

@@ -699,11 +699,7 @@ public abstract class L2Summon extends L2Playable
         if (isSkillDisabled(skill.getId()))
         {
         	if (getOwner() != null) 
-        	{
-        		SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
-                sm.addSkillName(skill);
-            	getOwner().sendPacket(sm);
-        	}
+            	getOwner().sendPacket(new SystemMessage(SystemMessageId.PET_SKILL_CANNOT_BE_USED_RECHARCHING));
             return;
         }
 
