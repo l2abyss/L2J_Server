@@ -120,6 +120,8 @@ public class L2DefenderInstance extends L2Attackable
 	{
 		if (getWalkSpeed() <= 0)
 			return;
+		if (getSpawn() == null) // just in case
+			return;
 		if (!isInsideRadius(getSpawn().getLocx(), getSpawn().getLocy(), 40, false))
 		{
 			if (Config.DEBUG) _log.info(getObjectId()+": moving home");
