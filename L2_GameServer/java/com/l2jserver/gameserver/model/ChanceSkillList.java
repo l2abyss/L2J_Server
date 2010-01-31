@@ -187,7 +187,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 				return;
 
 			L2Skill triggered = SkillTable.getInstance().getInfo(effect.getTriggeredChanceId(), effect.getTriggeredChanceLevel());
-			L2Character caster = effect.getEffector();
+			L2Character caster = triggered.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF ? _owner : effect.getEffector();
 
 			if (caster == null
 					|| triggered == null
