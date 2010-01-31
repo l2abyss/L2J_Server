@@ -13513,6 +13513,10 @@ public final class L2PcInstance extends L2Playable
 				if (equippedItem.isWear())
 					continue;
 
+				// prevent double message for two-hand weapons
+				if (i == Inventory.PAPERDOLL_LRHAND)
+					continue;
+
 				SystemMessage sm = null;
 				if (equippedItem.getItem().getBodyPart() == L2Item.SLOT_BACK)
 				{
