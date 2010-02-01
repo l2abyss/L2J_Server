@@ -121,6 +121,9 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 
 	public void onEvent(int event, L2Character target, byte element)
 	{
+		if (_owner.isDead())
+			return;
+
 		final boolean playable = target instanceof L2Playable;
 		for (FastMap.Entry<IChanceSkillTrigger, ChanceCondition> e = head(), end = tail(); (e = e.getNext()) != end;)
 		{
