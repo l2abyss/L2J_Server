@@ -511,6 +511,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			super(cha);
 			_summon = cha;
 			_val = val;
+			if (_summon.isShowSummonAnimation())
+				_val = 2; //override for spawn
 			
 			int npcId = cha.getTemplate().npcId;
 			
