@@ -40,7 +40,7 @@ public class HellboundManager
 	 */
 	public boolean isLocked()
 	{
-		return true;
+		return false;
 	}
 
 	public static final HellboundManager getInstance()
