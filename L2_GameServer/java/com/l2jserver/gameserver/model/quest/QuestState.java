@@ -25,6 +25,7 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.cache.HtmCache;
+import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2ItemInstance;
@@ -44,6 +45,7 @@ import com.l2jserver.gameserver.network.serverpackets.TutorialEnableClientEvent;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowHtml;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowQuestionMark;
 import com.l2jserver.gameserver.skills.Stats;
+import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 import com.l2jserver.util.Rnd;
 
 import javolution.util.FastMap;
@@ -566,6 +568,84 @@ public final class QuestState
 	}
 
 	/**
+	 * Give reward to player using multiplier's
+	 * @param itemId
+	 * @param count
+	 */
+	public void rewardItems(int itemId, long count)
+	{
+		if (count <= 0)
+			return;
+
+		L2ItemInstance _tmpItem = ItemTable.getInstance().createDummyItem(itemId);
+
+		if (_tmpItem == null)
+			return;
+		
+		if (itemId == 57)
+		{
+			count = (long) (count * Config.RATE_QUEST_REWARD_ADENA);
+		}
+		else if (Config.RATE_QUEST_REWARD_USE_MULTIPLIERS)
+		{
+			if(_tmpItem.isEtcItem())
+			{
+				L2EtcItemType _type = _tmpItem.getEtcItem().getItemType();
+				
+				if (_type == L2EtcItemType.POTION)
+					count = (long) (count * Config.RATE_QUEST_REWARD_POTION);
+				else if (_type == L2EtcItemType.SCROLL)
+					count = (long) (count * Config.RATE_QUEST_REWARD_SCROLL);
+				else if (_type == L2EtcItemType.RECEIPE)
+					count = (long) (count * Config.RATE_QUEST_REWARD_RECIPE);
+				else if (_type == L2EtcItemType.MATERIAL)
+					count = (long) (count * Config.RATE_QUEST_REWARD_MATERIAL);
+				else
+					count = (long) (count * Config.RATE_QUEST_REWARD);
+			}
+		}
+		else
+		{
+			count = (long) (count * Config.RATE_QUEST_REWARD);
+		}
+		
+		// Add items to player's inventory
+		L2ItemInstance item = getPlayer().getInventory().addItem("Quest", itemId, count, getPlayer(), getPlayer().getTarget());
+
+		if (item == null)
+			return;
+
+		// If item for reward is gold, send message of gold reward to client
+		if (itemId == 57)
+		{
+			SystemMessage smsg = new SystemMessage(SystemMessageId.EARNED_ADENA);
+			smsg.addItemNumber(count);
+			getPlayer().sendPacket(smsg);
+		}
+		// Otherwise, send message of object reward to client
+		else
+		{
+			if (count > 1)
+			{
+				SystemMessage smsg = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
+				smsg.addItemName(item);
+				smsg.addItemNumber(count);
+				getPlayer().sendPacket(smsg);
+			}
+			else
+			{
+				SystemMessage smsg = new SystemMessage(SystemMessageId.EARNED_ITEM);
+				smsg.addItemName(item);
+				getPlayer().sendPacket(smsg);
+			}
+		}
+		// send packets
+		StatusUpdate su = new StatusUpdate(getPlayer().getObjectId());
+		su.addAttribute(StatusUpdate.CUR_LOAD, getPlayer().getCurrentLoad());
+		getPlayer().sendPacket(su);
+	}
+	
+	/**
 	 * Give item/reward to the player
 	 * @param itemId
 	 * @param count
@@ -582,7 +662,7 @@ public final class QuestState
 
 		// If item for reward is adena (ID=57), modify count with rate for quest reward if rates available
 		if (itemId == 57 && !(enchantlevel > 0))
-			count = (long) (count * Config.RATE_QUESTS_REWARD);
+			count = (long) (count * Config.RATE_QUEST_REWARD_ADENA);
 
 		// Add items to player's inventory
 		L2ItemInstance item = getPlayer().getInventory().addItem("Quest", itemId, count, getPlayer(), getPlayer().getTarget());
@@ -678,7 +758,7 @@ public final class QuestState
 	}
 
 	/**
-	 * Drop Quest item using Config.RATE_DROP_QUEST
+	 * Drop Quest item using Config.RATE_QUEST_DROP
 	 * @param itemId : int Item Identifier of the item to be dropped
 	 * @param count(minCount, maxCount) : long Quantity of items to be dropped
 	 * @param neededCount : Quantity of items needed for quest
@@ -693,7 +773,7 @@ public final class QuestState
 
 	public boolean dropQuestItems(int itemId, int minCount, int maxCount, long neededCount, int dropChance, boolean sound)
 	{
-		dropChance *= Config.RATE_DROP_QUEST / ((getPlayer().getParty() != null) ? getPlayer().getParty().getMemberCount() : 1);
+		dropChance *= Config.RATE_QUEST_DROP / ((getPlayer().getParty() != null) ? getPlayer().getParty().getMemberCount() : 1);
 		long currentCount = getQuestItemsCount(itemId);
 
 		if (neededCount > 0 && currentCount >= neededCount)
@@ -811,7 +891,7 @@ public final class QuestState
 	 */
 	public void addExpAndSp(int exp, int sp)
 	{
-		getPlayer().addExpAndSp((int) getPlayer().calcStat(Stats.EXPSP_RATE, exp * Config.RATE_QUESTS_REWARD, null, null), (int) getPlayer().calcStat(Stats.EXPSP_RATE, sp * Config.RATE_QUESTS_REWARD, null, null));
+		getPlayer().addExpAndSp((int) getPlayer().calcStat(Stats.EXPSP_RATE, exp * Config.RATE_QUEST_REWARD_XP, null, null), (int) getPlayer().calcStat(Stats.EXPSP_RATE, sp * Config.RATE_QUEST_REWARD_SP, null, null));
 	}
 
 	/**
