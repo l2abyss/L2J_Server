@@ -14,13 +14,6 @@
  */
 package com.l2jserver.gameserver;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -28,16 +21,17 @@ import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.instancemanager.DayNightSpawnManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 
+import javolution.util.FastList;
 import javolution.util.FastMap;
 
 /**
- * This class ...
+ * Removed TimerThread watcher [DrHouse]
  *
- * @version $Revision: 1.1.4.8 $ $Date: 2005/04/06 16:13:24 $
+ * @version $Date: 2010/02/02 22:43:00 $
  */
 public class GameTimeController
 {
-	static final Logger _log = Logger.getLogger(GameTimeController.class.getName());
+	protected static final Logger _log = Logger.getLogger(GameTimeController.class.getName());
 	
 	public static final int TICKS_PER_SECOND = 10; // not able to change this without checking through code
 	public static final int MILLIS_IN_TICK = 1000 / TICKS_PER_SECOND;
@@ -45,11 +39,12 @@ public class GameTimeController
 	protected static int _gameTicks;
 	protected static long _gameStartTime;
 	protected static boolean _isNight = false;
+	protected static boolean _interruptRequest = false;
 	
-	private static Map<Integer, L2Character> _movingObjects = new FastMap<Integer, L2Character>().setShared(true);
+	private static final FastMap<Integer, L2Character> _movingObjects = new FastMap<Integer, L2Character>().setShared(true);
+	private static final FastList<L2Character> _toDelete = new FastList<L2Character>(20);
 	
 	protected static TimerThread _timer;
-	private ScheduledFuture<?> _timerWatcher;
 	
 	/**
 	 * one ingame day is 240 real minutes
@@ -67,7 +62,6 @@ public class GameTimeController
 		_timer = new TimerThread();
 		_timer.start();
 		
-		_timerWatcher = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new TimerWatcher(), 0, 1000);
 		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new BroadcastSunState(), 0, 600000);
 		
 	}
@@ -100,8 +94,8 @@ public class GameTimeController
 	{
 		if (cha == null)
 			return;
-		if (!_movingObjects.containsKey(cha.getObjectId()))
-			_movingObjects.put(cha.getObjectId(), cha);
+		
+		_movingObjects.putIfAbsent(cha.getObjectId(), cha);
 	}
 	
 	/**
@@ -118,98 +112,100 @@ public class GameTimeController
 	 */
 	protected void moveObjects()
 	{
-		// Create an FastList to contain all L2Character that are arrived to
-		// destination
-		List<L2Character> ended = null;
-		
 		// Go throw the table containing L2Character in movement
-		Collection<L2Character> mObjs = _movingObjects.values();
-		//synchronized (_movingObjects)
+		for (L2Character ch : _movingObjects.values())
 		{
-			for (L2Character ch : mObjs)
+			// If movement is finished, the L2Character is removed from
+			// movingObjects and added to the ArrayList ended
+			if (ch.updatePosition(_gameTicks))
+				_toDelete.add(ch);				
+		}
+		
+		if (_toDelete.isEmpty())
+			return;
+		
+		/*
+		 * Synchronizing on _movingObjects since this map is set as shared so,
+		 * on every write operation (add/remove) there is already an internal 
+		 * synchronization. This way we avoid the time that every remove()
+		 * call would have to wait until acquiring _movingObjects lock due to
+		 * concurrent writes.
+		 * 
+		 * TODO: Possibly this could be done on the fly, removing while iterating over
+		 * the map, without using any extra list.
+		 * 
+		 * TODO: On the other hand, perhaps we could avoid executing some MovingObjectArrived
+		 * tasks performing some checks in this thread (during loop): for instance,
+		 * only execute it if AI think() will be eventually run.
+		 *   
+		 * [DrHouse]
+		 */
+		synchronized (_movingObjects)
+		{
+			for (L2Character ch : _toDelete)
 			{
-				// If movement is finished, the L2Character is removed from
-				// movingObjects and added to the ArrayList ended
-				if (ch.updatePosition(_gameTicks))
-				{
-					if (ended == null)
-						ended = new ArrayList<L2Character>();
-					ended.add(ch);
-				}
-			}
-			if (ended != null)
-			{
-				_movingObjects.values().removeAll(ended);
-				for (L2Character ch : ended)
-					ThreadPoolManager.getInstance().executeTask(new MovingObjectArrived(ch));
-				ended.clear();
+				_movingObjects.remove(ch.getObjectId());
+				ThreadPoolManager.getInstance().executeTask(new MovingObjectArrived(ch));			
 			}
 		}
+		_toDelete.clear();
 	}
 	
 	public void stopTimer()
 	{
-		_timerWatcher.cancel(true);
+		_interruptRequest = true;
 		_timer.interrupt();
 	}
 	
 	class TimerThread extends Thread
 	{
-		protected Exception _error;
-		
 		public TimerThread()
 		{
 			super("GameTimeController");
 			setDaemon(true);
 			setPriority(MAX_PRIORITY);
-			_error = null;
 		}
 		
 		@Override
 		public void run()
 		{
-			try
+			int oldTicks;
+			long runtime;
+			int sleepTime;
+			
+			for(;;)
 			{
-				for (;;)
+				try
 				{
-					int _oldTicks = _gameTicks; // save old ticks value to avoid moving objects 2x in same tick
-					long runtime = System.currentTimeMillis() - _gameStartTime; // from server boot to now
+					oldTicks = _gameTicks; // save old ticks value to avoid moving objects 2x in same tick
+					runtime = System.currentTimeMillis() - _gameStartTime; // from server boot to now
 					
 					_gameTicks = (int) (runtime / MILLIS_IN_TICK); // new ticks value (ticks now)
 					
-					if (_oldTicks != _gameTicks)
+					if (oldTicks != _gameTicks)
 						moveObjects(); // Runs possibly too often
 						
 					runtime = (System.currentTimeMillis() - _gameStartTime) - runtime;
 					
 					// calculate sleep time... time needed to next tick minus time it takes to call moveObjects()
-					int sleepTime = 1 + MILLIS_IN_TICK - ((int) runtime) % MILLIS_IN_TICK;
+					sleepTime = 1 + MILLIS_IN_TICK - ((int) runtime) % MILLIS_IN_TICK;
 					
 					//_log.finest("TICK: "+_gameTicks);
 					
-					sleep(sleepTime);
+					if (sleepTime > 0)
+						Thread.sleep(sleepTime);
 				}
-			}
-			catch (Exception e)
-			{
-				_error = e;
-			}
-		}
-	}
-	
-	class TimerWatcher implements Runnable
-	{
-		public void run()
-		{
-			if (!_timer.isAlive())
-			{
-				String time = (new SimpleDateFormat("HH:mm:ss")).format(new Date());
-				_log.warning(time + " TimerThread stop with following error. restart it.");
-				if (_timer._error != null)
-					_timer._error.printStackTrace();
-				
-				_timer = new TimerThread();
-				_timer.start();
+				catch (InterruptedException ie)
+				{
+					if (_interruptRequest)
+						return;
+					
+					ie.printStackTrace();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -249,10 +245,13 @@ public class GameTimeController
 	 */
 	class BroadcastSunState implements Runnable
 	{
+		int h;
+		boolean tempIsNight;
+		
 		public void run()
 		{
-			int h = (getGameTime() / 60) % 24; // Time in hour
-			boolean tempIsNight = (h < 6);
+			h = (getGameTime() / 60) % 24; // Time in hour
+			tempIsNight = (h < 6);
 			
 			if (tempIsNight != _isNight)
 			{ // If diff day/night state
