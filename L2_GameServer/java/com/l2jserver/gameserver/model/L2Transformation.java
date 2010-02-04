@@ -30,6 +30,8 @@ public abstract class L2Transformation implements Cloneable, Runnable
 
 	public static final int TRANSFORM_ZARICHE = 301;
 	public static final int TRANSFORM_AKAMANAH = 302;
+	
+	protected static final int[] EMPTY_ARRAY = {};
 
 	private L2PcInstance _player;
 
