@@ -305,7 +305,7 @@ public final class L2Weapon extends L2Item
 	@Override
 	public Func[] getStatFuncs(L2ItemInstance instance, L2Character player)
 	{
-		if (_funcTemplates != null || _funcTemplates.length == 0)
+		if (_funcTemplates == null || _funcTemplates.length == 0)
 			return _emptyFunctionSet;
 		
 		ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
