@@ -48,10 +48,7 @@ public final class EndScenePlayer extends L2GameClientPacket
 			_log.warning("Player "+getClient()+" sent EndScenePlayer with wrong movie id: "+_moviveId);
 			return;
 		}
-		activeChar.setIsTeleporting(true, false); //just make sure not deleted from l2world
-		activeChar.decayMe(); // to make sure everything got updated
-		activeChar.spawnMe();
-		activeChar.setIsTeleporting(false, false);
+		activeChar.teleToLocation(activeChar.getX(), activeChar.getY(), activeChar.getZ());
 		activeChar.setMovieId(0);
 	}
 	
