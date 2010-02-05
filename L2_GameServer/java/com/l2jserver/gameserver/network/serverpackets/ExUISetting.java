@@ -27,13 +27,14 @@ import com.l2jserver.gameserver.model.entity.ActionKey;
 public class ExUISetting extends L2GameServerPacket
 {
 	
-	L2PcInstance _player;
-	L2UIKeysSettings _uiSettings;
+	private final L2UIKeysSettings _uiSettings;
+	private int buffsize, categories;
+	
 	
 	public ExUISetting(L2PcInstance player)
 	{
-		_player = player;
 		_uiSettings = player.getUISettings();
+		calcSize();
 	}
 	
 	/**
@@ -45,6 +46,38 @@ public class ExUISetting extends L2GameServerPacket
 		return null;
 	}
 	
+	private void calcSize()
+	{
+		int size = 16; //initial header and footer
+		int category = 0;
+		int numKeyCt = _uiSettings.getKeys().size();
+		for (int i = 0; i < numKeyCt; i++)
+		{
+			size++;
+			if (_uiSettings.getCategories().containsKey(category))
+			{
+				List<Integer> catElList1 = _uiSettings.getCategories().get(category);
+				size = size + catElList1.size();
+			}
+			category++;
+			size++;
+			if (_uiSettings.getCategories().containsKey(category))
+			{
+				List<Integer> catElList2 = _uiSettings.getCategories().get(category);
+				size = size + catElList2.size();
+			}
+			category++;
+			size = size+4;
+			if (_uiSettings.getKeys().containsKey(i))
+			{
+				List<ActionKey> keyElList = _uiSettings.getKeys().get(i);
+				size = size + (keyElList.size()*20);
+			}
+		}
+		buffsize = size;
+		categories = category;
+	}
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
 	 */
@@ -54,8 +87,8 @@ public class ExUISetting extends L2GameServerPacket
 		writeC(0xFE);
 		writeH(0x70);
 		
-		writeD(4514);
-		writeD(0x08);
+		writeD(buffsize);
+		writeD(categories);
 		
 		int category = 0;
 		
