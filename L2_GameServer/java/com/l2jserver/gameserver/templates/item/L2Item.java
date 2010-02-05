@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.templates.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.Config;
@@ -172,7 +173,7 @@ public abstract class L2Item
 	protected L2Skill[] _skills;
 	protected List <Condition> _preConditions = new FastList<Condition>();
 	
-	private static final Func[] _emptyFunctionSet = new Func[0];
+	protected static final Func[] _emptyFunctionSet = new Func[0];
 	protected static final L2Effect[] _emptyEffectSet = new L2Effect[0];
 	
 	/**
@@ -567,21 +568,28 @@ public abstract class L2Item
 	 */
 	public Func[] getStatFuncs(L2ItemInstance instance, L2Character player)
 	{
-		if (_funcTemplates == null)
+		if (_funcTemplates == null || _funcTemplates.length == 0)
 			return _emptyFunctionSet;
-		List<Func> funcs = new FastList<Func>();
+		
+		ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
+		
+		Env env = new Env();
+		env.player = player;
+		env.target = player;
+		env.item = instance;
+		
+		Func f;
+		
 		for (FuncTemplate t : _funcTemplates)
 		{
-			Env env = new Env();
-			env.player = player;
-			env.target = player;
-			env.item = instance;
-			Func f = t.getFunc(env, this); // skill is owner
+			f = t.getFunc(env, this); // skill is owner
 			if (f != null)
 				funcs.add(f);
 		}
+		
 		if (funcs.isEmpty())
 			return _emptyFunctionSet;
+		
 		return funcs.toArray(new Func[funcs.size()]);
 	}
 	
@@ -593,24 +601,32 @@ public abstract class L2Item
 	 */
 	public L2Effect[] getEffects(L2ItemInstance instance, L2Character player)
 	{
-		if (_effectTemplates == null)
+		if (_effectTemplates == null || _effectTemplates.length == 0)
 			return _emptyEffectSet;
-		List<L2Effect> effects = new FastList<L2Effect>();
+		
+		ArrayList<L2Effect> effects = new ArrayList<L2Effect>(_effectTemplates.length);
+		
+		Env env = new Env();
+		env.player = player;
+		env.target = player;
+		env.item = instance;
+		
+		L2Effect e;
+		
 		for (EffectTemplate et : _effectTemplates)
 		{
-			Env env = new Env();
-			env.player = player;
-			env.target = player;
-			env.item = instance;
-			L2Effect e = et.getEffect(env);
+			
+			e = et.getEffect(env);
 			if (e != null)
 			{
 				e.scheduleEffect();
 				effects.add(e);
 			}
 		}
+		
 		if (effects.isEmpty())
 			return _emptyEffectSet;
+		
 		return effects.toArray(new L2Effect[effects.size()]);
 	}
 	
@@ -733,14 +749,15 @@ public abstract class L2Item
 		if (activeChar.isGM() && !Config.GM_ITEM_RESTRICTION)
 			return true;
 
+		Env env = new Env();
+		env.player = activeChar;
+		if (target instanceof L2Character) // TODO: object or char?
+			env.target = (L2Character)target;
+		
 		for (Condition preCondition : _preConditions)
 		{
-			if (preCondition == null) return true;
-
-			Env env = new Env();
-			env.player = activeChar;
-			if (target instanceof L2Character) // TODO: object or char?
-				env.target = (L2Character)target;
+			if (preCondition == null)
+				return true;			
 
 			if (!preCondition.test(env))
 			{

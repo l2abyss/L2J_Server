@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.templates.item;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -304,19 +305,23 @@ public final class L2Weapon extends L2Item
 	@Override
 	public Func[] getStatFuncs(L2ItemInstance instance, L2Character player)
 	{
-		List<Func> funcs = new FastList<Func>();
-		if (_funcTemplates != null)
+		if (_funcTemplates != null || _funcTemplates.length == 0)
+			return _emptyFunctionSet;
+		
+		ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
+		
+		Env env = new Env();
+		env.player = player;
+		env.item = instance;
+		Func f;
+		
+		for (FuncTemplate t : _funcTemplates)
 		{
-			for (FuncTemplate t : _funcTemplates)
-			{
-				Env env = new Env();
-				env.player = player;
-				env.item = instance;
-				Func f = t.getFunc(env, instance);
-				if (f != null)
-					funcs.add(f);
-			}
+			f = t.getFunc(env, instance);
+			if (f != null)
+				funcs.add(f);
 		}
+		
 		return funcs.toArray(new Func[funcs.size()]);
 	}
 	
@@ -417,6 +422,7 @@ public final class L2Weapon extends L2Item
 		}
 		catch (IOException e)
 		{
+			e.printStackTrace(); // IO ?!
 		}
 		return _emptyEffectSet;
 	}
