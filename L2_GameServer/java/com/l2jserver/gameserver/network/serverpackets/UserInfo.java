@@ -22,6 +22,7 @@ import com.l2jserver.gameserver.model.L2Transformation;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
+import com.l2jserver.gameserver.skills.AbnormalEffect;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
@@ -288,7 +289,10 @@ public final class UserInfo extends L2GameServerPacket
 
         writeC(0x00); //1-find party members
 
-        writeD(_activeChar.getAbnormalEffect());
+        if (_activeChar.getAppearance().getInvisible() && _activeChar.isGM())
+        	writeD(_activeChar.getAbnormalEffect() | AbnormalEffect.STEALTH.getMask());
+        else
+        	writeD(_activeChar.getAbnormalEffect());
         writeC(_activeChar.isFlyingMounted() ? 2 : 0);
 
         writeD(_activeChar.getClanPrivileges());
