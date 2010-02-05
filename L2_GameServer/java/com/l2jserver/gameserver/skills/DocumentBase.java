@@ -639,6 +639,11 @@ abstract class DocumentBase
                 }
             	cond = joinAnd(cond, new ConditionPlayerInstanceId(array));
 			}
+			else if ("agathionId".equalsIgnoreCase(a.getNodeName()))
+			{
+				int agathionId = Integer.decode(a.getNodeValue());
+				cond = joinAnd(cond, new ConditionPlayerAgathionId(agathionId));
+			}
 			else if ("cloakStatus".equalsIgnoreCase(a.getNodeName()))
 			{
 				int val = Integer.valueOf(a.getNodeValue());

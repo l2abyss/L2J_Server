@@ -18,6 +18,8 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.StatsSet;
 
 public class L2SkillAgathion extends L2Skill 
@@ -37,6 +39,13 @@ public class L2SkillAgathion extends L2Skill
 			return;
 
 		L2PcInstance activeChar = (L2PcInstance)caster;
+		
+		if (activeChar.isInOlympiadMode())
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_SKILL_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
+			return;
+		}
+		
 		activeChar.setAgathionId(_npcId);
 		activeChar.broadcastUserInfo();
 	}

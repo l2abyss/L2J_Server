@@ -361,7 +361,8 @@ class OlympiadGame
 				player.stopAllEffectsExceptThoseThatLastThroughDeath();
 				player.clearSouls();
 				player.clearCharges();
-
+				if(player.getAgathionId() > 0)
+					player.setAgathionId(0);
 				if (player.getPet() != null)
 				{
 					L2Summon summon = player.getPet();
