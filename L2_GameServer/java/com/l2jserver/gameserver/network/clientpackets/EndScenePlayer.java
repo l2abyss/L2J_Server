@@ -14,47 +14,53 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.Config;
+import java.util.logging.Logger;
+
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.network.serverpackets.ExUISetting;
 
 /**
- *
- * @author  KenM / mrTJO
+ * 
+ * @author JIV
  */
-public class RequestKeyMapping extends L2GameClientPacket
+public final class EndScenePlayer extends L2GameClientPacket
 {
+	private static final String _C__d05b_EndScenePlayer = "[C] d0:5b EndScenePlayer";
+	private static Logger _log = Logger.getLogger(EndScenePlayer.class.getName());
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[C] D0:21 RequestKeyMapping";
-	}
+	private int _moviveId;
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
 	@Override
 	protected void readImpl()
 	{
-		// trigger (no data)
+		_moviveId = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-		
-		if (Config.STORE_UI_SETTINGS)
-			activeChar.sendPacket(new ExUISetting(activeChar));
+		if (_moviveId == 0)
+			return;
+		if (activeChar.getMovieId() != _moviveId)
+		{
+			_log.warning("Player "+getClient()+" sent EndScenePlayer with wrong movie id: "+_moviveId);
+			return;
+		}
+		activeChar.setIsTeleporting(true, false); //just make sure not deleted from l2world
+		activeChar.decayMe(); // to make sure everything got updated
+		activeChar.spawnMe();
+		activeChar.setIsTeleporting(false, false);
+		activeChar.setMovieId(0);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return _C__d05b_EndScenePlayer;
+	}
 }

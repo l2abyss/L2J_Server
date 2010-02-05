@@ -112,6 +112,7 @@ import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2Transformation;
+import com.l2jserver.gameserver.model.L2UIKeysSettings;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.MacroList;
@@ -796,7 +797,12 @@ public final class L2PcInstance extends L2Playable
 	private int _clientY;
 	private int _clientZ;
 	private int _clientHeading;
-
+	
+	private int _movieId = 0;
+	
+	// Character UI
+	private L2UIKeysSettings _uiKeySettings;
+	
 	/** Herbs Task Time **/
 	private int _herbstask = 0;
 	/** Task for Herbs */
@@ -7412,14 +7418,18 @@ public final class L2PcInstance extends L2Playable
 
 			// Restore pet if exists in the world
 			player.setPet(L2World.getInstance().getPet(player.getObjectId()));
-			if(player.getPet() != null) player.getPet().setOwner(player);
-
+			if (player.getPet() != null)
+				player.getPet().setOwner(player);
+			
 			// Update the overloaded status of the L2PcInstance
 			player.refreshOverloaded();
-	        // Update the expertise status of the L2PcInstance
-	        player.refreshExpertisePenalty();
-	        
-	        player.restoreFriendList(); 
+			// Update the expertise status of the L2PcInstance
+			player.refreshExpertisePenalty();
+			
+			player.restoreFriendList();
+			
+			if (Config.STORE_UI_SETTINGS)
+				player.restoreUISettings();
 		}
 		catch (Exception e)
 		{
@@ -7625,6 +7635,8 @@ public final class L2PcInstance extends L2Playable
 		transformInsertInfo();
 		if(Config.STORE_RECIPE_SHOPLIST)
 			storeRecipeShopList();
+		if (Config.STORE_UI_SETTINGS)
+			storeUISettings();
 	}
 	
 	public void store()
@@ -11191,7 +11203,14 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public void setIsTeleporting(boolean teleport)
 	{
+		setIsTeleporting(teleport, true);
+	}
+	
+	public void setIsTeleporting(boolean teleport, boolean useWatchDog)
+	{
 		super.setIsTeleporting(teleport);
+		if (!useWatchDog)
+			return;
 		if (teleport)
 		{
 			if (_teleportWatchdog == null && Config.TELEPORT_WATCHDOG_TIMEOUT > 0)
@@ -14337,38 +14356,41 @@ public final class L2PcInstance extends L2Playable
     
     public void showQuestMovie(int id)
 	{
+		if (_movieId > 0) //already in movie
+			return;
 		abortAttack();
 		abortCast();
 		stopMove(null);
+		_movieId = id;
 		sendPacket(new ExStartScenePlayer(id));
 	}
-    
-    public boolean isAllowedToEnchantSkills()
-    {
-    	if (isLocked())
-    		return false;
-    	if (isTransformed())
-    		return false;
-    	if (AttackStanceTaskManager.getInstance().getAttackStanceTask(this))
-    		return false;
-    	if (isCastingNow() || isCastingSimultaneouslyNow())
-    		return false;
-    	if (isInBoat() || isInAirShip())
-    		return false;
-    	return true;
-    }
-
+	
+	public boolean isAllowedToEnchantSkills()
+	{
+		if (isLocked())
+			return false;
+		if (isTransformed())
+			return false;
+		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(this))
+			return false;
+		if (isCastingNow() || isCastingSimultaneouslyNow())
+			return false;
+		if (isInBoat() || isInAirShip())
+			return false;
+		return true;
+	}
+	
 	/** 
- 	 * Set the _creationTime of the L2PcInstance.<BR><BR> 
- 	 */ 
+	 * Set the _creationTime of the L2PcInstance.<BR><BR> 
+	 */
 	public void setCreateTime(long creationTime)
 	{
 		_creationTime = creationTime;
 	}
 
 	/** 
- 	 * Return the _creationTime of the L2PcInstance.<BR><BR> 
- 	 */ 
+	 * Return the _creationTime of the L2PcInstance.<BR><BR> 
+	 */ 
 	public long getCreateTime()
 	{
 		return _creationTime;
@@ -14627,5 +14649,46 @@ public final class L2PcInstance extends L2Playable
 	public final void setClientHeading(int val)
 	{
 		_clientHeading=val;
+	}
+
+	/**
+	 * @return the _movieId
+	 */
+	public int getMovieId()
+	{
+		return _movieId;
+	}
+	
+	public void setMovieId(int id)
+	{
+		_movieId = id;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.actor.L2Character#isMovementDisabled()
+	 */
+	@Override
+	public boolean isMovementDisabled()
+	{
+		return super.isMovementDisabled() || _movieId > 0;
+	}
+	
+	private void restoreUISettings()
+	{
+		_uiKeySettings = new L2UIKeysSettings(this);
+	}
+	
+	private void storeUISettings()
+	{
+		if (_uiKeySettings == null)
+			return;
+		
+		if (!_uiKeySettings.isSaved())
+			_uiKeySettings.saveInDB();
+	}
+	
+	public L2UIKeysSettings getUISettings()
+	{
+		return _uiKeySettings;
 	}
 }

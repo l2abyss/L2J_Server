@@ -31,8 +31,6 @@ public final class RequestModifyBookMarkSlot extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-
-		readH();
 		id = readD();
 		name = readS();
 		icon = readD();

@@ -407,6 +407,18 @@ public class SQLAccountManager
                 statement.setString(1, objIds.get(index));
                 statement.executeUpdate();
                 
+                // ui categories
+                statement.close();
+                statement = con.prepareStatement("DELETE FROM character_ui_categories WHERE charId=?;");
+                statement.setString(1, objIds.get(index));
+                statement.executeUpdate();
+                
+                // ui keys
+                statement.close();
+                statement = con.prepareStatement("DELETE FROM character_ui_keys WHERE charId=?;");
+                statement.setString(1, objIds.get(index));
+                statement.executeUpdate();
+                
                 // characters
                 statement.close();
                 statement = con.prepareStatement("DELETE FROM characters WHERE charId=?;");

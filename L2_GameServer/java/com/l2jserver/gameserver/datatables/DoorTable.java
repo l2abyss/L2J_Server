@@ -43,7 +43,6 @@ public class DoorTable
 	private static final Logger _log = Logger.getLogger(DoorTable.class.getName());
 
 	private Map<Integer, L2DoorInstance> _staticItems = new FastMap<Integer, L2DoorInstance>();
-	private boolean _initialized;
 
 	public static DoorTable getInstance()
 	{
@@ -52,7 +51,6 @@ public class DoorTable
 
 	private DoorTable()
 	{
-		_initialized = true;
 		parseData();
 		onStart();
 	}
@@ -101,12 +99,10 @@ public class DoorTable
 		}
 		catch (FileNotFoundException e)
 		{
-			_initialized = false;
 			_log.warning("door.csv is missing in data folder");
 		}
 		catch (IOException e)
 		{
-			_initialized = false;
 			_log.warning("error while creating door table " + e);
 		}
 		finally
@@ -229,11 +225,6 @@ public class DoorTable
 			_log.severe("Error in door data at line: " + line);
 		}
 		return door;
-	}
-
-	public boolean isInitialized()
-	{
-		return _initialized;
 	}
 
 	public L2DoorInstance getDoor(Integer id)

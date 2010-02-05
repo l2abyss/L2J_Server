@@ -805,7 +805,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
                                 msg = new RequestKeyMapping(); 
                                 break;
                             case 0x22:
-                            	// RequestSaveKeyMapping
+                            	msg = new RequestSaveKeyMapping();
                                 break;
 		                    case 0x23: 
 		                     	msg = new RequestExRemoveItemAttribute(); 
@@ -941,9 +941,9 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 		                    	break;
 		                    case 0x51:
 		                        id3 = 0;
-		                        if (buf.remaining() >= 2)
+		                        if (buf.remaining() >= 4)
 		                        {
-								    id3 = buf.getShort() & 0xffff;
+								    id3 = buf.getInt() & 0xffffffff;
 		                        }
 		                        else
 		                        {
@@ -1018,7 +1018,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 		                        }
 		                    	break;
 		                    case 0x5b:
-		                    	// EndScenePlayer
+		                    	msg = new EndScenePlayer();
 		                    	break;
 		                    case 0x5c:
 		                    	// RequestExBlockGameVote

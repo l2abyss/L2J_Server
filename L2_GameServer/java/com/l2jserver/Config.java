@@ -197,6 +197,7 @@ public final class Config
 	public static boolean DISABLE_TUTORIAL;
 	public static boolean EXPERTISE_PENALTY;
 	public static boolean STORE_RECIPE_SHOPLIST;
+	public static boolean STORE_UI_SETTINGS;
 
 	//--------------------------------------------------
 	// ClanHall Settings
@@ -1453,6 +1454,7 @@ public final class Config
 					DISABLE_TUTORIAL = Boolean.parseBoolean(Character.getProperty("DisableTutorial", "False"));
 					EXPERTISE_PENALTY = Boolean.parseBoolean(Character.getProperty("ExpertisePenalty", "True"));
 					STORE_RECIPE_SHOPLIST = Boolean.parseBoolean(Character.getProperty("StoreRecipeShopList", "False"));
+					STORE_UI_SETTINGS = Boolean.parseBoolean(Character.getProperty("StoreCharUiSettings", "False"));
 				}
 				catch (Exception e)
 				{

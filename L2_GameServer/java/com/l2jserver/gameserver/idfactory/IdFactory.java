@@ -49,6 +49,8 @@ public abstract class IdFactory
 	        "UPDATE character_skills      SET charId = ? WHERE charId = ?",
 	        "UPDATE character_skills_save SET charId = ? WHERE charId = ?",
 	        "UPDATE character_subclasses  SET charId = ? WHERE charId = ?",
+	        "UPDATE character_ui_actions  SET charId = ? WHERE charId = ?",
+	        "UPDATE character_ui_categories  SET charId = ? WHERE charId = ?",
 	        "UPDATE characters            SET charId = ? WHERE charId = ?",
 	        "UPDATE characters            SET clanid = ?      WHERE clanid = ?",
 	        "UPDATE clan_data             SET clan_id = ?     WHERE clan_id = ?",
@@ -76,6 +78,8 @@ public abstract class IdFactory
 	        "SELECT charId     FROM character_skills      WHERE charId >= ? AND charId < ?",
 	        "SELECT charId     FROM character_skills_save WHERE charId >= ? AND charId < ?",
 	        "SELECT charId     FROM character_subclasses  WHERE charId >= ? AND charId < ?",
+	        "SELECT charId     FROM character_ui_actions  WHERE charId >= ? AND charId < ?",
+	        "SELECT charId     FROM character_ui_categories  WHERE charId >= ? AND charId < ?",
 	        "SELECT charId      FROM characters            WHERE charId >= ?      AND charId < ?",
 	        "SELECT clanid      FROM characters            WHERE clanid >= ?      AND clanid < ?",
 	        "SELECT clan_id     FROM clan_data             WHERE clan_id >= ?     AND clan_id < ?",
@@ -202,6 +206,8 @@ public abstract class IdFactory
 			cleanCount += stmt.executeUpdate("DELETE FROM character_subclasses WHERE character_subclasses.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_raid_points WHERE character_raid_points.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_instance_time WHERE character_instance_time.charId NOT IN (SELECT charId FROM characters);");
+			cleanCount += stmt.executeUpdate("DELETE FROM character_ui_actions WHERE character_ui_actions.charId NOT IN (SELECT charId FROM characters);");
+			cleanCount += stmt.executeUpdate("DELETE FROM character_ui_categories WHERE character_ui_categories.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM items WHERE items.owner_id NOT IN (SELECT charId FROM characters) AND items.owner_id NOT IN (SELECT clan_id FROM clan_data);");
 			cleanCount += stmt.executeUpdate("DELETE FROM item_attributes WHERE item_attributes.itemId NOT IN (SELECT object_id FROM items);");
 			cleanCount += stmt.executeUpdate("DELETE FROM cursed_weapons WHERE cursed_weapons.charId NOT IN (SELECT charId FROM characters);");

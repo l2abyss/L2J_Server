@@ -70,6 +70,7 @@ import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.datatables.StaticObjects;
 import com.l2jserver.gameserver.datatables.SummonItemsData;
 import com.l2jserver.gameserver.datatables.TeleportLocationTable;
+import com.l2jserver.gameserver.datatables.UITable;
 import com.l2jserver.gameserver.geoeditorcon.GeoEditorListener;
 import com.l2jserver.gameserver.handler.AdminCommandHandler;
 import com.l2jserver.gameserver.handler.ChatHandler;
@@ -274,6 +275,7 @@ public class GameServer
 		
 		DoorTable.getInstance();
 		StaticObjects.getInstance();
+		UITable.getInstance();
 		
 		/** Load Manor data */
 		L2Manor.getInstance();

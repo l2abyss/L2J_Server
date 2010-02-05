@@ -29,7 +29,6 @@ public final class RequestTeleportBookMark extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		readH();
 		id = readD();
 	}
 
