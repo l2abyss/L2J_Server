@@ -20,6 +20,7 @@ import java.util.Map;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.ActionKey;
 import com.l2jserver.gameserver.network.L2GameClient.GameClientState;
@@ -125,7 +126,7 @@ public class RequestSaveKeyMapping extends L2GameClientPacket
 			return;
 		if (getClient().getState() != GameClientState.IN_GAME)
 			return;
-		
-		player.getUISettings().storeAll(_catMap, _keyMap);
+		if (Config.STORE_UI_SETTINGS)
+			player.getUISettings().storeAll(_catMap, _keyMap);
 	}
 }
