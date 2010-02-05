@@ -16,17 +16,20 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 /**
  * Format: (chd)
+ * 
  * @author mrTJO
- *
  */
 public class ExCubeGameCloseUI extends L2GameServerPacket
 {
 	private static final String _S__FE_97_FFFFFFFF_EXCUBEGAMECLOSEUI = "[S] FE:97:FFFFFFFF ExCubeGameCloseUI";
 	int _seconds;
 	
-	public ExCubeGameCloseUI(int seconds)
+	/**
+	 * Close Minigame Waiting List
+	 */
+	public ExCubeGameCloseUI()
 	{
-		_seconds = seconds;
+		
 	}
 
 	/* (non-Javadoc)

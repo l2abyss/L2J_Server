@@ -118,23 +118,8 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
                              *  break;
                              */
 		            		case 0x5a:
-		                    	id3 = 0;
-		                        if (buf.remaining() >= 4)
-		                        {
-								    id3 = buf.getInt() & 0xffffffff;
-		                        }
-		                        else
-		                        {
-		                        	_log.warning("Client: "+client.toString()+" sent a 0xd0:0x5a without the third opcode.");
-		                        	break;
-		                        }
-		                        switch (id3)
-		                        {
-		                        	case 0x00:
-		                        		msg = new RequestExCubeGameChangeTeam();
-		                        		break;
-		                        }
-		                    	break;
+		                        msg = new RequestExCubeGameChangeTeam();
+		                        break;
                             default:
                             	printDebugDoubleOpcode(opcode, id2, buf, state, client);
 		            	}
@@ -1000,28 +985,13 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 		                    	// RequestExCleftEnter
 		                    	break;
 		                    case 0x5a:
-		                    	id3 = 0;
-		                        if (buf.remaining() >= 4)
-		                        {
-								    id3 = buf.getInt() & 0xffffffff;
-		                        }
-		                        else
-		                        {
-		                        	_log.warning("Client: "+client.toString()+" sent a 0xd0:0x5a without the third opcode.");
-		                        	break;
-		                        }
-		                        switch (id3)
-		                        {
-		                        	case 0x00:
-		                        		msg = new RequestExCubeGameChangeTeam();
-		                        		break;
-		                        }
-		                    	break;
+		                        msg = new RequestExCubeGameChangeTeam();
+		                        break;
 		                    case 0x5b:
 		                    	msg = new EndScenePlayer();
 		                    	break;
 		                    case 0x5c:
-		                    	// RequestExBlockGameVote
+		                    	msg = new RequestExCubeGameReadyAnswer();
 		                    	break;
 		                    case 0x63:
 		                    	// RequestSeedPhase

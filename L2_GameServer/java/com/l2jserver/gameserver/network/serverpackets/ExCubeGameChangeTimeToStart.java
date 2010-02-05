@@ -16,15 +16,20 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 /**
  * Format: (chd) d
- * d: seconds left
+ * d: Seconds Left
+ * 
  * @author mrTJO
- *
  */
 public class ExCubeGameChangeTimeToStart extends L2GameServerPacket
 {
 	private static final String _S__FE_97_03_EXCUBEGAMECHANGETIMETOSTART = "[S] FE:97:03 ExCubeGameChangeTimeToStart";
 	int _seconds;
 	
+	/**
+	 * Update Minigame Waiting List Time to Start
+	 * 
+	 * @param seconds
+	 */
 	public ExCubeGameChangeTimeToStart(int seconds)
 	{
 		_seconds = seconds;

@@ -18,12 +18,12 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * Format: (chd) dddS
- * d: always -1
- * d: player team
- * d: player object id
- * S: player name
+ * d: Always -1
+ * d: Player Team
+ * d: Player Object ID
+ * S: Player Name
+ * 
  * @author mrTJO
- *
  */
 public class ExCubeGameAddPlayer extends L2GameServerPacket
 {
@@ -31,6 +31,12 @@ public class ExCubeGameAddPlayer extends L2GameServerPacket
 	L2PcInstance _player;
 	boolean _isRedTeam;
 	
+	/**
+	 * Add Player To Minigame Waiting List
+	 * 
+	 * @param player Player Instance
+	 * @param isRedTeam Is Player from Red Team?
+	 */
 	public ExCubeGameAddPlayer(L2PcInstance player, boolean isRedTeam)
 	{
 		_player = player;

@@ -17,41 +17,40 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.logging.Logger;
 
 /**
- * Format: chdd
- * d: Arena
- * d: Team
- * 
  * @author mrTJO
+ * Format: chddd
+ * 
+ * d: Arena
+ * d: Answer
  */
-public final class RequestExCubeGameChangeTeam extends L2GameClientPacket
+public final class RequestExCubeGameReadyAnswer extends L2GameClientPacket
 {
-	private static final String _C__D0_5A_REQUESTEXCUBEGAMECHANGETEAM = "[C] D0:5A RequestExCubeGameChangeTeam";
-	private static Logger _log = Logger.getLogger(RequestExCubeGameChangeTeam.class.getName());
+	private static final String _C__D0_5C_REQUESTEXCUBEGAMEREADYANSWER = "[C] D0:5C RequestExCubeGameReadyAnswer";
+	private static Logger _log = Logger.getLogger(RequestExCubeGameReadyAnswer.class.getName());
 	
 	int _arena;
-	int _team;
+	int _answer;
 	
 	@Override
 	protected void readImpl()
 	{
 		_arena = readD();
-		_team = readD();
+		_answer = readD();
 	}
 
 	@Override
 	public void runImpl()
-	{	
-		switch (_team)
+	{
+		switch (_answer)
 		{
 			case 0:
-			case 1:
-				// Change Player Team
+				// Cancel
 				break;
-			case -1:
-				// Remove Player (me)
+			case 1:
+				// OK or Time Over
 				break;
 			default:
-				_log.warning("Wrong Cube Game Team ID: "+_team);
+				_log.warning("Unknown Cube Game Answer ID: "+_answer);
 				break;
 		}
 	}
@@ -59,6 +58,6 @@ public final class RequestExCubeGameChangeTeam extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_5A_REQUESTEXCUBEGAMECHANGETEAM;
+		return _C__D0_5C_REQUESTEXCUBEGAMEREADYANSWER;
 	}
 }

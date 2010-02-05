@@ -18,11 +18,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * Format: (chd) ddd
- * d: always -1
- * d: player team
- * d: player object id
+ * d: Always -1
+ * d: Player Team
+ * d: Player Object ID
+ * 
  * @author mrTJO
- *
  */
 public class ExCubeGameRemovePlayer extends L2GameServerPacket
 {
@@ -30,6 +30,12 @@ public class ExCubeGameRemovePlayer extends L2GameServerPacket
 	L2PcInstance _player;
 	boolean _isRedTeam;
 	
+	/**
+	 * Remove Player from Minigame Waiting List
+	 * 
+	 * @param player: Player to Remove
+	 * @param isRedTeam: Is Player from Red Team?
+	 */
 	public ExCubeGameRemovePlayer(L2PcInstance player, boolean isRedTeam)
 	{
 		_player = player;

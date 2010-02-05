@@ -33,16 +33,28 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  * 		d: player object id
  * 		S: player name
  * ]
+ * 
  * @author mrTJO
- *
  */
 public class ExCubeGameTeamList extends L2GameServerPacket
 {
 	private static final String _S__FE_97_00_EXCUBEGAMETEAMLIST = "[S] FE:97:00 ExCubeGameTeamList";
+	
+	// Players Lists
 	List<L2PcInstance> _bluePlayers;
 	List<L2PcInstance> _redPlayers;
+	
+	// Common Values
 	int _roomNumber;
 
+	/**
+	 * 
+	 * Show Minigame Waiting List to Player
+	 * 
+	 * @param redPlayers Red Players List
+	 * @param bluePlayers Blue Players List
+	 * @param roomNumber Arena/Room ID
+	 */
 	public ExCubeGameTeamList(List<L2PcInstance> redPlayers, List<L2PcInstance> bluePlayers, int roomNumber)
 	{
 		_redPlayers = redPlayers;

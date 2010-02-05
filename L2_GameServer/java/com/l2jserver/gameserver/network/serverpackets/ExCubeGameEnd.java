@@ -16,15 +16,20 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 /**
  * Format: (chd) ddd
- * d: winner team
+ * d: Winner Team
+ * 
  * @author mrTJO
- *
  */
 public class ExCubeGameEnd extends L2GameServerPacket
 {
 	private static final String _S__FE_98_01_EXCUBEGAMEEND = "[S] FE:98:01 ExCubeGameEnd";
 	boolean _isRedTeamWin;
 	
+	/**
+	 * Show Minigame Results
+	 * 
+	 * @param isRedTeamWin: Is Red Team Winner?
+	 */
 	public ExCubeGameEnd(boolean isRedTeamWin)
 	{
 		_isRedTeamWin = isRedTeamWin;
