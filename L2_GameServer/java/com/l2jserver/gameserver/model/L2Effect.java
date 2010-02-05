@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -41,8 +41,6 @@ import com.l2jserver.gameserver.skills.funcs.Lambda;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
-
-import javolution.util.FastList;
 
 /**
  * This class ...
@@ -563,19 +561,23 @@ public abstract class L2Effect
 	{
 		if (_funcTemplates == null)
 			return _emptyFunctionSet;
-		List<Func> funcs = new FastList<Func>();
+		ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
+		
+		Env env = new Env();
+		env.player = getEffector();
+		env.target = getEffected();
+		env.skill = getSkill();
+		Func f;
+		
 		for (FuncTemplate t : _funcTemplates)
 		{
-			Env env = new Env();
-			env.player = getEffector();
-			env.target = getEffected();
-			env.skill = getSkill();
-			Func f = t.getFunc(env, this); // effect is owner
+			f = t.getFunc(env, this); // effect is owner
 			if (f != null)
 				funcs.add(f);
 		}
 		if (funcs.isEmpty())
 			return _emptyFunctionSet;
+		
 		return funcs.toArray(new Func[funcs.size()]);
 	}
 	

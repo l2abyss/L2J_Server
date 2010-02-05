@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
@@ -2216,20 +2217,24 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
     public final Func[] getStatFuncs(L2Effect effect, L2Character player)
     {
-        if (!(player instanceof L2Playable) && !(player instanceof L2Attackable))
+    	if (_funcTemplates == null)
+        	return _emptyFunctionSet;
+    	
+    	if (!(player instanceof L2Playable) && !(player instanceof L2Attackable))
         	return _emptyFunctionSet;
         
-        if (_funcTemplates == null)
-        	return _emptyFunctionSet;
+        ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
         
-        List<Func> funcs = new FastList<Func>();
+        Env env = new Env();
+        env.player = player;
+        env.skill = this;
+        
+        Func f;
         
         for (FuncTemplate t : _funcTemplates)
         {
-            Env env = new Env();
-            env.player = player;
-            env.skill = this;
-            Func f = t.getFunc(env, this); // skill is owner
+            
+            f = t.getFunc(env, this); // skill is owner
             if (f != null)
             	funcs.add(f);
         }
@@ -2277,7 +2282,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
             }
         }
             
-        List<L2Effect> effects = new FastList<L2Effect>();
+        ArrayList<L2Effect> effects = new ArrayList<L2Effect>(_effectTemplates.length);
 
         if (env == null)
         	env = new Env();
@@ -2354,7 +2359,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
         }
 
 
-        List<L2Effect> effects = new FastList<L2Effect>();
+        ArrayList<L2Effect> effects = new ArrayList<L2Effect>(_effectTemplates.length);
         
         if (env == null)
         	env = new Env();
