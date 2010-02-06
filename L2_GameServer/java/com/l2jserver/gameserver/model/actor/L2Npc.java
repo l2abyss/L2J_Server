@@ -144,6 +144,9 @@ public class L2Npc extends L2Character
 	public boolean isEventMob = false;
 	private boolean _isInTown = false;
 
+	/** True if this L2Npc is autoattackable **/
+	private boolean _isAutoAttackable = false;
+
 	/** Time of last social packet broadcast*/
 	private long _lastSocialBroadcast = 0;
 
@@ -780,7 +783,12 @@ public class L2Npc extends L2Character
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
-		return false;
+		return _isAutoAttackable;
+	}
+
+	public void setAutoAttackable(boolean flag)
+	{
+		_isAutoAttackable = flag;
 	}
 
 	/**

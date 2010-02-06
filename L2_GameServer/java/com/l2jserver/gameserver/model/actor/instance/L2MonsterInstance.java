@@ -60,6 +60,7 @@ public class L2MonsterInstance extends L2Attackable
 	public L2MonsterInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setAutoAttackable(true);
 		if (getTemplate().getMinionData() != null)
 			_minionList  = new MinionList(this);
 		else
@@ -87,7 +88,7 @@ public class L2MonsterInstance extends L2Attackable
 		if (attacker instanceof L2MonsterInstance)
 			return false;
 
-		return !isEventMob;
+		return super.isAutoAttackable(attacker) && !isEventMob;
 	}
 
 	/**
