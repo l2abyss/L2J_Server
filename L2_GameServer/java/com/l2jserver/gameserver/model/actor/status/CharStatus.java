@@ -185,7 +185,8 @@ public class CharStatus
 		if (value > 0) // Reduce Hp if any, and Hp can't be negative
 			setCurrentHp(Math.max(getCurrentHp() - value, 0));
 
-		if (getActiveChar().getCurrentHp() < 0.5) // Die
+		if (getActiveChar().getCurrentHp() < 0.5
+				&& getActiveChar().isMortal()) // Die
 		{
 			getActiveChar().abortAttack();
 			getActiveChar().abortCast();

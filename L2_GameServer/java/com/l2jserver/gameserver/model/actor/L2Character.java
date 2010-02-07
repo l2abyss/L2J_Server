@@ -169,6 +169,7 @@ public abstract class L2Character extends L2Object
 	protected boolean _isTeleporting                        = false;
 	private L2Character _lastBuffer							= null;
 	protected boolean _isInvul                              = false;
+	private boolean _isMortal                               = true; // Char will die when HP decreased to 0 
 	private int _lastHealAmount								= 0;
 	private CharStat _stat;
 	private CharStatus _status;
@@ -2346,6 +2347,8 @@ public abstract class L2Character extends L2Object
 	public void setIsTeleporting(boolean value) { _isTeleporting = value; }
 	public void setIsInvul(boolean b){_isInvul = b;}
 	public boolean isInvul(){return _isInvul  || _isTeleporting;}
+	public void setIsMortal(boolean b) { _isMortal = b; }
+	public boolean isMortal(){ return _isMortal; }
 	public boolean isUndead() { return _template.isUndead; }
 	
 	public final boolean isFlying() { return _isFlying; }
