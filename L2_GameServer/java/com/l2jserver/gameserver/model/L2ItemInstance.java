@@ -990,21 +990,33 @@ public final class L2ItemInstance extends L2Object
 
 	public byte getAttackElementType()
 	{
-		if (isWeapon() && _elementals != null)
+		if (!isWeapon())
+			return -2;
+		else if (getItem().getElementals() != null)
+			return getItem().getElementals().getElement();
+		else if (_elementals != null)
 			return _elementals.getElement();
 		return -2;
 	}
 
 	public int getAttackElementPower()
 	{
-		if (isWeapon() && _elementals != null)
+		if (!isWeapon())
+			return 0;
+		else if (getItem().getElementals() != null)
+			return getItem().getElementals().getValue();
+		else if (_elementals != null)
 			return _elementals.getValue();
 		return 0;
 	}
 
 	public int getElementDefAttr(byte element)
 	{
-		if (isArmor() && _elementals != null && _elementals.getElement() == element)
+		if (!isArmor())
+			return 0;
+		else if (getItem().getElementals() != null && getItem().getElementals().getElement() == element)
+			return getItem().getElementals().getValue();
+		else if (_elementals != null && _elementals.getElement() == element)
 			return _elementals.getValue();
 		return 0;
 	}

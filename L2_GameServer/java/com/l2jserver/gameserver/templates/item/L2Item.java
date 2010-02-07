@@ -16,8 +16,10 @@ package com.l2jserver.gameserver.templates.item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
@@ -168,6 +170,7 @@ public abstract class L2Item
 	@SuppressWarnings("unchecked")
 	protected final Enum _type;
 	
+	protected Elementals _elementals = null;
 	protected FuncTemplate[] _funcTemplates;
 	protected EffectTemplate[] _effectTemplates;
 	protected L2Skill[] _skills;
@@ -175,6 +178,8 @@ public abstract class L2Item
 	
 	protected static final Func[] _emptyFunctionSet = new Func[0];
 	protected static final L2Effect[] _emptyEffectSet = new L2Effect[0];
+	
+	protected static final Logger _log = Logger.getLogger(L2Item.class.getName());
 	
 	/**
 	 * Constructor of the L2Item that fill class variables.<BR><BR>
@@ -393,6 +398,28 @@ public abstract class L2Item
 		return _name;
 	}
 	
+	/**
+	 * Returns the base elemental of the item
+	 * @return Elementals
+	 */
+	public final Elementals getElementals()
+	{
+		return _elementals;
+	}
+
+	/**
+	 * Sets the base elemental of the item
+	 */
+	public final void setElementals(Elementals element)
+	{
+		if (_elementals != null)
+		{
+			_log.warning("Item " + getName() + "(" + getItemId() + ") has more than one element definition!");
+			return;
+		}
+		_elementals = element;
+	}
+
 	/**
 	 * Return the part of the body used with the item.
 	 * @return int
@@ -663,6 +690,33 @@ public abstract class L2Item
 	 */
 	public void attach(FuncTemplate f)
 	{
+		switch(f.stat)
+		{
+			case FIRE_RES:
+			case FIRE_POWER:
+				setElementals(new Elementals(Elementals.FIRE, (int) f.lambda.calc(null)));
+				break;
+			case WATER_RES:
+			case WATER_POWER:
+				setElementals(new Elementals(Elementals.WATER, (int) f.lambda.calc(null)));
+				break;
+			case WIND_RES:
+			case WIND_POWER:
+				setElementals(new Elementals(Elementals.WIND, (int) f.lambda.calc(null)));
+				break;
+			case EARTH_RES:
+			case EARTH_POWER:
+				setElementals(new Elementals(Elementals.EARTH, (int) f.lambda.calc(null)));
+				break;
+			case HOLY_RES:
+			case HOLY_POWER:
+				setElementals(new Elementals(Elementals.HOLY, (int) f.lambda.calc(null)));
+				break;
+			case DARK_RES:
+			case DARK_POWER:
+				setElementals(new Elementals(Elementals.DARK, (int) f.lambda.calc(null)));
+				break;
+		}
 		// If _functTemplates is empty, create it and add the FuncTemplate f in it
 		if (_funcTemplates == null)
 		{
