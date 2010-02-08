@@ -732,11 +732,14 @@ public class SevenSigns
 					+ "ancient_adena_amount, contribution_score FROM seven_signs");
 			rset = statement.executeQuery();
 			
+			StatsSet sevenDat = null;
+			int charObjId;
+			
 			while (rset.next())
 			{
-				int charObjId = rset.getInt("charId");
+				charObjId = rset.getInt("charId");
 				
-				StatsSet sevenDat = new StatsSet();
+				sevenDat = new StatsSet();
 				sevenDat.set("charId", charObjId);
 				sevenDat.set("cabal", rset.getString("cabal"));
 				sevenDat.set("seal", rset.getInt("seal"));
@@ -926,10 +929,12 @@ public class SevenSigns
 		if (Config.DEBUG)
 			_log.info("SevenSigns: Resetting player data for new event period.");
 		
+		int charObjId;
+		
 		// Reset each player's contribution data as well as seal and cabal.
 		for (StatsSet sevenDat : _signsPlayerData.values())
 		{
-			int charObjId = sevenDat.getInteger("charId");
+			charObjId = sevenDat.getInteger("charId");
 			
 			// Reset the player's cabal and seal information
 			sevenDat.set("cabal", "");
@@ -1370,9 +1375,10 @@ public class SevenSigns
 		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
 		//synchronized (L2World.getInstance().getAllPlayers())
 		{
+			StatsSet currPlayer;
 			for (L2PcInstance onlinePlayer : pls)
 			{
-				StatsSet currPlayer = getPlayerData(onlinePlayer);
+				currPlayer = getPlayerData(onlinePlayer);
 				
 				if (isSealValidationPeriod() || isCompResultsPeriod())
 				{
