@@ -130,6 +130,15 @@ public final class QuestState
 	}
 
 	/**
+	 * Return true if quest just created, false otherwise
+	 * @return
+	 */
+	public boolean isCreated()
+	{
+		return (getState() == State.CREATED);
+	}
+
+	/**
 	 * Return true if quest completed, false otherwise
 	 * @return boolean
 	 */
@@ -163,12 +172,15 @@ public final class QuestState
 		// set new state if it is not already in that state
 		if (_state != state)
 		{
+			final boolean newQuest = isCreated();
 			_state = state;
-			
-			Quest.updateQuestInDb(this);
-			QuestList ql = new QuestList();
-			
-			getPlayer().sendPacket(ql);
+
+			if (newQuest)
+				Quest.createQuestInDb(this);
+			else
+				Quest.updateQuestInDb(this);
+
+			getPlayer().sendPacket(new QuestList());
 		}
 		return state;
 	}
@@ -1064,7 +1076,7 @@ public final class QuestState
 		// remove this quest from the notifyDeath list of this character if its on this list
 		_player.removeNotifyQuestOfDeath(this);
 
-		if (isCompleted())
+		if (isCompleted() || isCreated())
 			return this;
 
 		// Say quest is completed

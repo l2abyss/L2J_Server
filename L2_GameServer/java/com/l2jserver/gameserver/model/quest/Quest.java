@@ -181,7 +181,6 @@ public class Quest extends ManagedScript
 	public QuestState newQuestState(L2PcInstance player)
 	{
 		QuestState qs = new QuestState(this, player, getInitialState());
-		Quest.createQuestInDb(qs);
 		return qs;
 	}
 	
