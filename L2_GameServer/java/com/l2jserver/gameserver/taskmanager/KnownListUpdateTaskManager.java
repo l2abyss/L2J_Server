@@ -22,6 +22,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
+import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2GuardInstance;
@@ -108,16 +109,21 @@ public class KnownListUpdateTaskManager
 				{
 					if (object == null || !object.isVisible())
 						continue; // skip dying objects
-						
+
+					// Some mobs need faster knownlist update
+					final boolean aggro = (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance)
+							|| (object instanceof L2Attackable && ((L2Attackable)object).getEnemyClan() != null);
+
 					if (forgetObjects)
 					{
-						object.getKnownList().forgetObjects((object instanceof L2Playable
-								|| (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate));
+						object.getKnownList().forgetObjects(aggro || fullUpdate);
 						continue;
 					}
-					if (object instanceof L2Playable || (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance) || fullUpdate)
+					for (L2WorldRegion regi : region.getSurroundingRegions())
 					{
-						for (L2WorldRegion regi : region.getSurroundingRegions())
+						if (object instanceof L2Playable
+								|| (aggro && regi.isActive())
+								|| fullUpdate)
 						{
 							Collection<L2Object> inrObj = regi.getVisibleObjects().values();
 							// synchronized (regi.getVisibleObjects())
@@ -127,18 +133,17 @@ public class KnownListUpdateTaskManager
 										object.getKnownList().addKnownObject(_object);
 							}
 						}
-					}
-					else if (object instanceof L2Character)
-					{
-						for (L2WorldRegion regi : region.getSurroundingRegions())
+						else if (object instanceof L2Character)
 						{
-							Collection<L2Playable> inrPls = regi.getVisiblePlayable().values();
-							// synchronized (regi.getVisiblePlayable())
+							if (regi.isActive())
 							{
-								if (regi.isActive())
+								Collection<L2Playable> inrPls = regi.getVisiblePlayable().values();
+								// synchronized (regi.getVisiblePlayable())
+								{
 									for (L2Object _object : inrPls)
 										if (_object != object)
 											object.getKnownList().addKnownObject(_object);
+								}
 							}
 						}
 					}
