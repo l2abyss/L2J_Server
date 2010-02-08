@@ -49,6 +49,7 @@ import com.l2jserver.gameserver.network.gameserverpackets.GameServerBasePacket;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerAuthRequest;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerInGame;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerLogout;
+import com.l2jserver.gameserver.network.gameserverpackets.PlayerTracert;
 import com.l2jserver.gameserver.network.gameserverpackets.ServerStatus;
 import com.l2jserver.gameserver.network.loginserverpackets.AuthResponse;
 import com.l2jserver.gameserver.network.loginserverpackets.InitLS;
@@ -67,7 +68,7 @@ public class LoginServerThread extends Thread
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
 
 	/** {@see com.l2jserver.loginserver.LoginServer#PROTOCOL_REV } */
-	private static final int REVISION = 0x0102;
+	private static final int REVISION = 0x0103;
 	private RSAPublicKey _publicKey;
 	private String _hostname;
 	private int _port;
@@ -437,6 +438,21 @@ public class LoginServerThread extends Thread
 		try
 		{
 			sendPacket(cal);
+		}
+		catch (IOException e)
+		{
+			if (Config.DEBUG)
+				e.printStackTrace();
+		}
+	}
+	
+	public void sendClientTracert(String account, String pcIp, 
+			String hop1, String hop2, String hop3, String hop4)
+	{
+		PlayerTracert ptc = new PlayerTracert(account, pcIp, hop1, hop2, hop3, hop4);
+		try
+		{
+			sendPacket(ptc);
 		}
 		catch (IOException e)
 		{

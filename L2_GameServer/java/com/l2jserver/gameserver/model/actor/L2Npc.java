@@ -152,6 +152,11 @@ public class L2Npc extends L2Character
 
 	/** Minimum interval between social packets*/
 	private int _minimalSocialInterval = 6000;
+	
+	static final int[] pen_clear_price =
+	{
+		3600, 8640, 25200, 50400, 86400, 144000, 144000, 144000
+	};
 
 	protected RandomAnimationTask _rAniTask = null;
 	private int _currentLHandId; // normally this shouldn't change from the template, but there exist exceptions
@@ -1609,10 +1614,6 @@ public class L2Npc extends L2Character
 			else if (command.startsWith("remove_dp"))
 			{
 				int cmdChoice = Integer.parseInt(command.substring(10, 11).trim());
-				int[] pen_clear_price =
-				{
-					3600, 8640, 25200, 50400, 86400, 144000, 144000, 144000
-				};
 				switch (cmdChoice)
 				{
 					case 1:

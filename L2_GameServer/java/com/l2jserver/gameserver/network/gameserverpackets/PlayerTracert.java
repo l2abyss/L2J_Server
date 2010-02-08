@@ -12,44 +12,35 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.network.serverpackets;
+package com.l2jserver.gameserver.network.gameserverpackets;
 
-import com.l2jserver.gameserver.SevenSigns;
+import java.io.IOException;
 
 /**
- * sample
-
- * format
- * d
+ * @author mrTJO
  *
- * @version $Revision: 1.1.2.1.2.3 $ $Date: 2005/03/27 15:29:39 $
  */
-public class ShowMiniMap extends L2GameServerPacket
+public class PlayerTracert extends GameServerBasePacket
 {
-	private static final String _S__A3_SHOWMINIMAP = "[S] a3 ShowMiniMap";
-	private int _mapId;
-
-	/**
-	 */
-	public ShowMiniMap(int mapId)
+	public PlayerTracert(String account, String pcIp, 
+			String hop1, String hop2, String hop3, String hop4)
 	{
-		_mapId = mapId;
-	}
-
-	@Override
-	protected final void writeImpl()
-	{
-		writeC(0xa3);
-		writeD(_mapId);
-		writeC(SevenSigns.getInstance().getCurrentPeriod());
+		writeC(0x07);
+		writeS(account);
+		writeS(pcIp);
+		writeS(hop1);
+		writeS(hop2);
+		writeS(hop3);
+		writeS(hop4);
 	}
 
 	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	 * @see com.l2jserver.gameserver.gameserverpackets.GameServerBasePacket#getContent()
 	 */
 	@Override
-	public String getType()
+	public byte[] getContent() throws IOException
 	{
-		return _S__A3_SHOWMINIMAP;
+		return getBytes();
 	}
+
 }

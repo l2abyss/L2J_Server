@@ -475,6 +475,42 @@ public class LoginController
 		}
 	}
 	
+	public void setAccountLastTracert(String account, String pcIp, 
+			String hop1, String hop2, String hop3, String hop4)
+	{
+		Connection con = null;
+		PreparedStatement statement = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			
+			String stmt = "UPDATE accounts SET pcIp=?, hop1=?, hop2=?, hop3=?, hop4=? WHERE login=?";
+			statement = con.prepareStatement(stmt);
+			statement.setString(1, pcIp);
+			statement.setString(2, hop1);
+			statement.setString(3, hop2);
+			statement.setString(4, hop3);
+			statement.setString(5, hop4);
+			statement.setString(6, account);
+			statement.executeUpdate();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.warning("Could not set last tracert: " + e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
+	}
+	
 	public boolean isGM(String user)
 	{
 		boolean ok = false;
@@ -552,9 +588,10 @@ public class LoginController
 			byte[] expected = null;
 			int access = 0;
 			int lastServer = 1;
+			String userIP = null;
 			
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT password, accessLevel, lastServer FROM accounts WHERE login=?");
+			PreparedStatement statement = con.prepareStatement("SELECT password, accessLevel, lastServer, userIP FROM accounts WHERE login=?");
 			statement.setString(1, user);
 			ResultSet rset = statement.executeQuery();
 			if (rset.next())
@@ -562,6 +599,7 @@ public class LoginController
 				expected = Base64.decode(rset.getString("password"));
 				access = rset.getInt("accessLevel");
 				lastServer = rset.getInt("lastServer");
+				userIP = rset.getString("userIP");
 				if (lastServer <= 0)
 					lastServer = 1; // minServerId is 1 in Interlude
 				if (Config.DEBUG)
@@ -638,7 +676,14 @@ public class LoginController
 					client.setAccessLevel(access);
 					return false;
 				}
-
+				// Check IP
+				if ( address != null && userIP != null && !address.getHostAddress().equalsIgnoreCase(userIP))
+				{
+					if (Config.LOG_LOGIN_CONTROLLER)
+						Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()) + "/" + userIP + " - ERR : INCORRECT IP", "loginlog");
+					
+					return false;
+				}
 				// check password hash
 				ok = true;
 				for (int i = 0; i < expected.length; i++)

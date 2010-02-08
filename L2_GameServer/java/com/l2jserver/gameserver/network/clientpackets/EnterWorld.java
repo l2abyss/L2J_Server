@@ -21,6 +21,7 @@ import com.l2jserver.Base64;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.GmListTable;
+import com.l2jserver.gameserver.LoginServerThread;
 import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.cache.HtmCache;
@@ -88,7 +89,7 @@ import com.l2jserver.gameserver.network.serverpackets.UserInfo;
  * Enter World Packet Handler<p>
  * <p>
  * 0000: 03 <p>
- * packet format rev656 cbdddd
+ * packet format rev87 bddddbdcccccccccccccccccccc
  * <p>
  */
 public class EnterWorld extends L2GameClientPacket
@@ -96,6 +97,12 @@ public class EnterWorld extends L2GameClientPacket
 	private static final String _C__03_ENTERWORLD = "[C] 03 EnterWorld";
 
 	private static Logger _log = Logger.getLogger(EnterWorld.class.getName());
+	
+	private String _userHost;
+	private String _routeHop1;
+	private String _routeHop2;
+	private String _routeHop3;
+	private String _routeHop4;
 
 	public TaskPriority getPriority()
 	{
@@ -105,35 +112,18 @@ public class EnterWorld extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		// This is just a trigger packet. It has no content.
-		/*
-		readD();
-		readD();
-		readD();
-		readD();
-		readB();
-		readD();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		readC();
-		*/
+		readB(new byte[32]);	// Unknown Byte Array
+		readD();				// Unknown Value
+		readD();				// Unknown Value
+		readD();				// Unknown Value
+		readD();				// Unknown Value
+		readB(new byte[32]);	// Unknown Byte Array
+		readD();				// Unknown Value
+		_userHost  = readC()+"."+readC()+"."+readC()+"."+readC();
+		_routeHop1 = readC()+"."+readC()+"."+readC()+"."+readC();
+		_routeHop2 = readC()+"."+readC()+"."+readC()+"."+readC();
+		_routeHop3 = readC()+"."+readC()+"."+readC()+"."+readC();
+		_routeHop4 = readC()+"."+readC()+"."+readC()+"."+readC();
 	}
 
 	@Override
@@ -147,6 +137,9 @@ public class EnterWorld extends L2GameClientPacket
 			getClient().closeNow();
 			return;
 		}
+		
+		LoginServerThread.getInstance().sendClientTracert(activeChar.getAccountName(),
+				_userHost, _routeHop1, _routeHop2, _routeHop3, _routeHop4);
 
 		// Restore to instanced area if enabled
 		if (Config.RESTORE_PLAYER_INSTANCE)

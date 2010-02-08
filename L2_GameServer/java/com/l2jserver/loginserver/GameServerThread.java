@@ -38,6 +38,7 @@ import com.l2jserver.loginserver.gameserverpackets.GameServerAuth;
 import com.l2jserver.loginserver.gameserverpackets.PlayerAuthRequest;
 import com.l2jserver.loginserver.gameserverpackets.PlayerInGame;
 import com.l2jserver.loginserver.gameserverpackets.PlayerLogout;
+import com.l2jserver.loginserver.gameserverpackets.PlayerTracert;
 import com.l2jserver.loginserver.gameserverpackets.ServerStatus;
 import com.l2jserver.loginserver.loginserverpackets.AuthResponse;
 import com.l2jserver.loginserver.loginserverpackets.InitLS;
@@ -161,6 +162,9 @@ public class GameServerThread extends Thread
 						break;
 					case 06:
 						onReceiveServerStatus(data);
+						break;
+					case 07:
+						onReceivePlayerTracert(data);
 						break;
 					default:
 						_log.warning("Unknown Opcode ("+Integer.toHexString(packetType).toUpperCase()+") from GameServer, closing connection.");
@@ -333,6 +337,25 @@ public class GameServerThread extends Thread
 			}
 			@SuppressWarnings("unused")
 			ServerStatus ss = new ServerStatus(data,getServerId()); //will do the actions by itself
+		}
+		else
+		{
+			forceClose(LoginServerFail.NOT_AUTHED);
+		}
+	}
+	
+	private void onReceivePlayerTracert(byte[] data)
+	{
+		if (isAuthed())
+		{
+			PlayerTracert plt = new PlayerTracert(data);
+			LoginController.getInstance().setAccountLastTracert(plt.getAccount(),
+					plt.getPcIp(), plt.getFirstHop(), plt.getSecondHop(),
+					plt.getThirdHop(), plt.getFourthHop());
+			if (Config.DEBUG)
+			{
+				_log.info("Saved "+plt.getAccount()+" last tracert");
+			}
 		}
 		else
 		{
