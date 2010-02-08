@@ -257,7 +257,10 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			{
 				if (((L2Attackable)_actor).getEnemyClan() == null || ((L2Attackable)target).getClan() == null)
 					return false;
-				
+
+				if (!target.isAutoAttackable(_actor))
+					return false;
+
 				if (((L2Attackable)_actor).getEnemyClan().equals(((L2Attackable)target).getClan()))
 				{
 					if (_actor.isInsideRadius(target, ((L2Attackable)_actor).getEnemyRange(), false, false))

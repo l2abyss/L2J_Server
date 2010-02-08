@@ -87,9 +87,6 @@ public class L2MonsterInstance extends L2Attackable
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
-		if (attacker instanceof L2MonsterInstance)
-			return false;
-
 		return super.isAutoAttackable(attacker) && !isEventMob;
 	}
 
