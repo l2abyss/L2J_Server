@@ -17,6 +17,8 @@ package com.l2jserver.gameserver.taskmanager;
 import java.util.Collection;
 import java.util.logging.Logger;
 
+import javolution.util.FastSet;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2Object;
@@ -33,25 +35,21 @@ public class KnownListUpdateTaskManager
 	protected static final Logger _log = Logger.getLogger(KnownListUpdateTaskManager.class.getName());
 	
 	private final static int FULL_UPDATE_TIMER = 100;
-	private Object syncObject = new Object();
 	public static boolean updatePass = true;
 	
 	// Do full update every FULL_UPDATE_TIMER * KNOWNLIST_UPDATE_INTERVAL
 	public static int _fullUpdateTimer = FULL_UPDATE_TIMER;
 	
+	private static final FastSet<L2WorldRegion> _failedRegions = new FastSet<L2WorldRegion>(1);
+	
 	private KnownListUpdateTaskManager()
 	{
-		ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(), 1000);
+		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new KnownListUpdate(), 1000, Config.KNOWNLIST_UPDATE_INTERVAL);
 	}
 	
 	public static KnownListUpdateTaskManager getInstance()
 	{
 		return SingletonHolder._instance;
-	}
-	
-	public Object getSync()
-	{
-		return syncObject;
 	}
 	
 	private class KnownListUpdate implements Runnable
@@ -64,6 +62,7 @@ public class KnownListUpdateTaskManager
 		{
 			try
 			{
+				boolean failed;
 				for (L2WorldRegion regions[] : L2World.getInstance().getAllWorldRegions())
 				{
 					for (L2WorldRegion r : regions) // go through all world regions
@@ -71,30 +70,34 @@ public class KnownListUpdateTaskManager
 						// avoid stopping update if something went wrong in updateRegion()
 						try
 						{
+							failed = _failedRegions.contains(r); // failed on last pass
 							if (r.isActive()) // and check only if the region is active
 							{
-								updateRegion(r, (_fullUpdateTimer == FULL_UPDATE_TIMER), updatePass);
+								updateRegion(r, (_fullUpdateTimer == FULL_UPDATE_TIMER || failed), updatePass);
 							}
+							if (failed)
+								_failedRegions.remove(r); // if all ok, remove
 						}
 						catch (Exception e)
 						{
-							e.printStackTrace();
+							_log.info("KnownListUpdateTaskManager: updateRegion(" + _fullUpdateTimer + "," + updatePass + ") failed for region " + r.getName() + ". Full update scheduled. " + e);
+							if (Config.DEBUG)
+								e.printStackTrace();
+							_failedRegions.add(r);
 						}
 					}
 				}
+				updatePass = !updatePass;
+				
+				if (_fullUpdateTimer > 0)
+					_fullUpdateTimer--;
+				else
+					_fullUpdateTimer = FULL_UPDATE_TIMER;
 			}
 			catch (Exception e)
 			{
-				_log.warning(e.toString());
+				e.printStackTrace();
 			}
-			updatePass = !updatePass;
-			
-			if (_fullUpdateTimer > 0)
-				_fullUpdateTimer--;
-			else
-				_fullUpdateTimer = FULL_UPDATE_TIMER;
-			
-			ThreadPoolManager.getInstance().scheduleAi(new KnownListUpdate(), Config.KNOWNLIST_UPDATE_INTERVAL);
 		}
 	}
 	
