@@ -23,14 +23,12 @@ import com.l2jserver.gameserver.model.L2Skill;
 public class HeroSkillTable
 {
 	private static final L2Skill[] _heroSkills = new L2Skill[5];
+	private static final int[] _heroSkillsId = {395, 396, 1374, 1375, 1376};
 	
 	private HeroSkillTable()
 	{
-		_heroSkills[0] = SkillTable.getInstance().getInfo(395, 1);
-		_heroSkills[1] = SkillTable.getInstance().getInfo(396, 1);
-		_heroSkills[2] = SkillTable.getInstance().getInfo(1374, 1);
-		_heroSkills[3] = SkillTable.getInstance().getInfo(1375, 1);
-		_heroSkills[4] = SkillTable.getInstance().getInfo(1376, 1);
+		for (int i=0; i<_heroSkillsId.length; i++)
+			_heroSkills[i] = SkillTable.getInstance().getInfo(i, 1);
 	}
 	
 	public static HeroSkillTable getInstance()
@@ -45,9 +43,13 @@ public class HeroSkillTable
 	
 	public static boolean isHeroSkill(int skillid)
 	{
-		for (L2Skill sk : _heroSkills)
+		/*
+		 * Do not perform checks directly on L2Skill array,
+		 * it will cause errors due to SkillTable not initialized
+		 */
+		for (int id : _heroSkillsId)
 		{
-			if (sk.getId() == skillid)
+			if (id == skillid)
 				return true;
 		}
 		

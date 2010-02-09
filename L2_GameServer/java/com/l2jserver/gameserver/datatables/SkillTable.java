@@ -54,7 +54,9 @@ public class SkillTable
 				_skillMaxLevel.put(skillId, skillLvl);
 		}
 		
-		FrequentSkill.onReload();
+		// Reloading as well FrequentSkill enumeration values 
+		for (FrequentSkill sk : FrequentSkill.values())
+			sk._skill = getInfo(sk._id, sk._level);
 	}
 	
 	/**
@@ -166,17 +168,6 @@ public class SkillTable
 		{
 			_id = id;
 			_level = level;
-		}
-		
-		protected static void onReload()
-		{
-			for (FrequentSkill sk : FrequentSkill.values())
-				sk.reload();
-		}
-		
-		public L2Skill reload()
-		{
-			return (_skill = SkillTable.getInstance().getInfo(_id, _level));
 		}
 		
 		public L2Skill getSkill()
