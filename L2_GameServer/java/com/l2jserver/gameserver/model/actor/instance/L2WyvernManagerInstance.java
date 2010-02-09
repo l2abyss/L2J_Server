@@ -80,7 +80,7 @@ public class L2WyvernManagerInstance extends L2Npc
 						if (player.mount(12621, 0, true))
 						{
 							player.getInventory().destroyItemByItemId("Wyvern", 1460, 25, player, player.getTarget());
-							player.addSkill(SkillTable.getInstance().getInfo(4289, 1));
+							player.addSkill(SkillTable.FrequentSkill.WYVERN_BREATH.getSkill());
 							player.sendMessage("The Wyvern has been summoned successfully!");
 						}
 						return;

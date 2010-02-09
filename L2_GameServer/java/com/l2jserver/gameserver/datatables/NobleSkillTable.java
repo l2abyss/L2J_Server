@@ -22,11 +22,10 @@ import com.l2jserver.gameserver.model.L2Skill;
  */
 public class NobleSkillTable
 {
-	private static L2Skill[] _nobleSkills;
+	private static final L2Skill[] _nobleSkills = new L2Skill[8];
 	
 	private NobleSkillTable()
 	{
-		_nobleSkills = new L2Skill[8];
 		_nobleSkills[0] = SkillTable.getInstance().getInfo(1323, 1);
 		_nobleSkills[1] = SkillTable.getInstance().getInfo(325, 1);
 		_nobleSkills[2] = SkillTable.getInstance().getInfo(326, 1);

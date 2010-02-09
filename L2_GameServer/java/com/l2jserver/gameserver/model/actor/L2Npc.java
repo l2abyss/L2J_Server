@@ -1731,7 +1731,7 @@ public class L2Npc extends L2Character
 			insertObjectIdAndShowChatWindow(player, content);
 			return;
 		}
-		L2Skill skill = SkillTable.getInstance().getInfo(5182, 1);
+		L2Skill skill = SkillTable.FrequentSkill.BLESSING_OF_PROTECTION.getSkill();
 		doCast(skill);
 	}
 

@@ -78,8 +78,8 @@ public class FortSiegeManager
 	// Method - Public
 	public final void addSiegeSkills(L2PcInstance character)
 	{
-		character.addSkill(SkillTable.getInstance().getInfo(246, 1), false);
-		character.addSkill(SkillTable.getInstance().getInfo(247, 1), false);
+		character.addSkill(SkillTable.FrequentSkill.SEAL_OF_RULER.getSkill(), false);
+		character.addSkill(SkillTable.FrequentSkill.BUILD_HEADQUARTERS.getSkill(), false);
 	}
 	
 	/**
@@ -159,8 +159,8 @@ public class FortSiegeManager
 	
 	public final void removeSiegeSkills(L2PcInstance character)
 	{
-		character.removeSkill(SkillTable.getInstance().getInfo(246, 1));
-		character.removeSkill(SkillTable.getInstance().getInfo(247, 1));
+		character.removeSkill(SkillTable.FrequentSkill.SEAL_OF_RULER.getSkill());
+		character.removeSkill(SkillTable.FrequentSkill.BUILD_HEADQUARTERS.getSkill());
 	}
 	
 	// =========================================================

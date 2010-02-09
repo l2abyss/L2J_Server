@@ -112,7 +112,7 @@ public class L2WeddingManagerInstance extends L2Npc
                     ptarget.broadcastPacket(MSU);
 
                     // fireworks
-                    L2Skill skill = SkillTable.getInstance().getInfo(2025,1);
+                    L2Skill skill = SkillTable.FrequentSkill.LARGE_FIREWORK.getSkill();
                     if (skill != null)
                     {
                         MSU = new MagicSkillUse(player, player, 2025, 1, 1, 0);

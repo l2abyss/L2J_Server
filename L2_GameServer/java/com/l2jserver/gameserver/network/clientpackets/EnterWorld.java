@@ -265,15 +265,15 @@ public class EnterWorld extends L2GameClientPacket
 			if (SevenSigns.getInstance().getPlayerCabal(activeChar) != SevenSigns.CABAL_NULL)
 			{
 				if (SevenSigns.getInstance().getPlayerCabal(activeChar) == SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE))
-					activeChar.addSkill(SkillTable.getInstance().getInfo(5074,1));
+					activeChar.addSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
 				else
-					activeChar.addSkill(SkillTable.getInstance().getInfo(5075,1));
+					activeChar.addSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
 			}
 		}
 		else
 		{
-			activeChar.removeSkill(SkillTable.getInstance().getInfo(5074,1));
-			activeChar.removeSkill(SkillTable.getInstance().getInfo(5075,1));
+			activeChar.removeSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
+			activeChar.removeSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
 		}
 
 		if (Config.ENABLE_VITALITY && Config.RECOVER_VITALITY_ON_RECONNECT)

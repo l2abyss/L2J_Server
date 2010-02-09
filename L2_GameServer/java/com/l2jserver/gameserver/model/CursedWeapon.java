@@ -75,7 +75,9 @@ public class CursedWeapon
 	private L2ItemInstance _item = null;
 	private int _playerKarma = 0;
 	private int _playerPkKills = 0;
-    	protected int transformationId = 0;
+    protected int transformationId = 0;
+    
+    private static final int[] TRANSFORM_IDS = new int[]{3630,3631};
 
 	// =========================================================
 	// Constructor
@@ -321,11 +323,11 @@ public class CursedWeapon
 		_player.addSkill(skill, false);
 
 		// Void Burst, Void Flow
-		skill = SkillTable.getInstance().getInfo(3630, 1);
+		skill = SkillTable.FrequentSkill.VOID_BURST.getSkill();
 		_player.addSkill(skill, false);
-		skill = SkillTable.getInstance().getInfo(3631, 1);
+		skill = SkillTable.FrequentSkill.VOID_FLOW.getSkill();
 		_player.addSkill(skill, false);
-		_player.setTransformAllowedSkills(new int[]{3630,3631});
+		_player.setTransformAllowedSkills(TRANSFORM_IDS);
 		if (Config.DEBUG)
 			_log.info("Player "+_player.getName() +" has been awarded with skill "+skill);
 		_player.sendSkillList();
@@ -361,8 +363,8 @@ public class CursedWeapon
 	public void removeSkill()
 	{
 		_player.removeSkill(SkillTable.getInstance().getInfo(_skillId, _player.getSkillLevel(_skillId)), false);
-		_player.removeSkill(SkillTable.getInstance().getInfo(3630, 1), false);
-		_player.removeSkill(SkillTable.getInstance().getInfo(3631, 1), false);
+		_player.removeSkill(SkillTable.FrequentSkill.VOID_BURST.getSkill(), false);
+		_player.removeSkill(SkillTable.FrequentSkill.VOID_FLOW.getSkill(), false);
 		_player.untransform();
 		if (_player.transformId() > 0)
 		{

@@ -2775,7 +2775,7 @@ public final class L2PcInstance extends L2Playable
 		// Remove beginner Lucky skill
 		if (lvl == 10)
 		{
-			L2Skill skill = SkillTable.getInstance().getInfo(194, 1);
+			L2Skill skill = SkillTable.FrequentSkill.LUCKY.getSkill();
 			skill = removeSkill(skill);
 
 			if (Config.DEBUG && skill != null) _log.fine("removed skill 'Lucky' from "+getName());
@@ -2806,14 +2806,14 @@ public final class L2PcInstance extends L2Playable
 
 		if (getSkillLevel(1321) < 1 && getRace() == Race.Dwarf)
 		{
-			L2Skill skill = SkillTable.getInstance().getInfo(1321,1);
+			L2Skill skill = SkillTable.FrequentSkill.DWARVEN_CRAFT.getSkill();
 			addSkill(skill, true);
 		}
 
 		//Active skill common craft
 		if (getSkillLevel(1322) < 1)
 		{
-			L2Skill skill = SkillTable.getInstance().getInfo(1322,1);
+			L2Skill skill = SkillTable.FrequentSkill.COMMON_CRAFT.getSkill();
 			addSkill(skill, true);
 		}
 
@@ -6860,7 +6860,7 @@ public final class L2PcInstance extends L2Playable
 	    	stopFeed();
 	    	clearPetData();
 	        if (wasFlying) 
-	            removeSkill(SkillTable.getInstance().getInfo(4289, 1));
+	            removeSkill(SkillTable.FrequentSkill.WYVERN_BREATH.getSkill());
 	        Ride dismount = new Ride(this, false, 0);
 	        broadcastPacket(dismount);
 	        setMountObjectID(0);
@@ -9461,7 +9461,7 @@ public final class L2PcInstance extends L2Playable
                 setIsRidingStrider(true);
                 if(isNoble())
                 {
-                	L2Skill striderAssaultSkill = SkillTable.getInstance().getInfo(325, 1);
+                	L2Skill striderAssaultSkill = SkillTable.FrequentSkill.STRIDER_SIEGE_ASSAULT.getSkill();
                 	addSkill(striderAssaultSkill, false); // not saved to DB
                 }
                 break;

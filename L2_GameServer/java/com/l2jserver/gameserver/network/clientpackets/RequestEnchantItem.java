@@ -181,7 +181,7 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 					sm.addItemName(item);
 					activeChar.broadcastPacket(sm);
 
-					L2Skill skill = SkillTable.getInstance().getInfo(5965, 1);
+					L2Skill skill = SkillTable.FrequentSkill.FIREWORK.getSkill();
 					if (skill != null)
 						activeChar.broadcastPacket(new MagicSkillUse(activeChar, activeChar, skill.getId(), skill.getLevel(), skill.getHitTime(), skill.getReuseDelay()));
 				}

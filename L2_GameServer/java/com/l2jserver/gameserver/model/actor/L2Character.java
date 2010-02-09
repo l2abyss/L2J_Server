@@ -5142,7 +5142,7 @@ public abstract class L2Character extends L2Object
 			{
 				if (getLevel() > target.getLevel() + 8)
 				{
-					L2Skill skill = SkillTable.getInstance().getInfo(4515, 1);
+					L2Skill skill = SkillTable.FrequentSkill.RAID_CURSE2.getSkill();
 
 					if (skill != null)
 					{
@@ -6364,7 +6364,7 @@ public abstract class L2Character extends L2Object
 					{
 						if (skill.isMagic())
 						{
-							L2Skill tempSkill = SkillTable.getInstance().getInfo(4215, 1);
+							L2Skill tempSkill = SkillTable.FrequentSkill.RAID_CURSE.getSkill();
 							if(tempSkill != null)
 							{
 								abortAttack();
@@ -6372,12 +6372,12 @@ public abstract class L2Character extends L2Object
 								getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 								tempSkill.getEffects(target, this);
 							}
-							else
-								_log.warning("Skill 4215 at level 1 is missing in DP.");
+							else if (_log.isLoggable(Level.WARNING))
+								_log.log(Level.WARNING, "Skill 4215 at level 1 is missing in DP.");
 						}
 						else
 						{
-							L2Skill tempSkill = SkillTable.getInstance().getInfo(4515, 1);
+							L2Skill tempSkill = SkillTable.FrequentSkill.RAID_CURSE.getSkill();
 							if(tempSkill != null)
 							{
 								abortAttack();
@@ -6385,8 +6385,8 @@ public abstract class L2Character extends L2Object
 								getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 								tempSkill.getEffects(target, this);
 							}
-							else
-								_log.warning("Skill 4515 at level 1 is missing in DP.");
+							else if (_log.isLoggable(Level.WARNING))
+								_log.log(Level.WARNING, "Skill 4515 at level 1 is missing in DP.");
 						}
 						return;
 					}

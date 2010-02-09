@@ -1559,10 +1559,10 @@ public class SevenSigns
 		{
 			if (getPlayerCabal(character) != SevenSigns.CABAL_NULL)
 				if (getPlayerCabal(character) == StrifeOwner)
-					character.addSkill(SkillTable.getInstance().getInfo(5074, 1));
+					character.addSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
 				else
 					//Gives "The Vanquished of War" passive skill to all online characters with Cabal, which does not control Seal of Strife
-					character.addSkill(SkillTable.getInstance().getInfo(5075, 1));
+					character.addSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
 		}
 	}
 	
@@ -1571,8 +1571,8 @@ public class SevenSigns
 		for (L2PcInstance character : L2World.getInstance().getAllPlayers().values())
 		{
 			//Remove SevenSigns' buffs/debuffs.
-			character.removeSkill(SkillTable.getInstance().getInfo(5074, 1));
-			character.removeSkill(SkillTable.getInstance().getInfo(5075, 1));
+			character.removeSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
+			character.removeSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
 		}
 	}
 	
