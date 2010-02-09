@@ -56,7 +56,7 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import javolution.util.FastList;
 
 
-public class Siege
+public class Siege implements Siegable
 {
 	protected static final Logger _log = Logger.getLogger(Siege.class.getName());
 

@@ -54,7 +54,7 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 
-public class FortSiege
+public class FortSiege implements Siegable
 {
 	protected static final Logger _log = Logger.getLogger(FortSiege.class.getName());
 
@@ -1270,5 +1270,35 @@ public class FortSiege
 	public FastMap<Integer, FastList<L2Spawn>> getCommanders()
 	{
 		return _commanders;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClan(int)
+	 */
+	@Override
+	public L2SiegeClan getDefenderClan(int clanId)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClan(com.l2jserver.gameserver.model.L2Clan)
+	 */
+	@Override
+	public L2SiegeClan getDefenderClan(L2Clan clan)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClans()
+	 */
+	@Override
+	public List<L2SiegeClan> getDefenderClans()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

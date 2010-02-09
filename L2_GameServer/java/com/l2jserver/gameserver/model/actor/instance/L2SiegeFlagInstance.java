@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2SiegeClan;
@@ -23,7 +24,7 @@ import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.status.SiegeFlagStatus;
-import com.l2jserver.gameserver.model.entity.Siege;
+import com.l2jserver.gameserver.model.entity.Siegable;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
@@ -36,7 +37,7 @@ public class L2SiegeFlagInstance extends L2Npc
 {
     private L2Clan _clan;
     private L2PcInstance _player;
-    private Siege _siege;
+    private Siegable _siege;
     private final boolean _isAdvanced;
     private boolean _canTalk;
 
@@ -48,15 +49,17 @@ public class L2SiegeFlagInstance extends L2Npc
 		_player = player;
 		_canTalk = true;
 		_siege = SiegeManager.getInstance().getSiege(_player.getX(), _player.getY(), _player.getZ());
+		if (_siege == null)
+			_siege = FortSiegeManager.getInstance().getSiege(_player.getX(), _player.getY(), _player.getZ());
 		if (_clan == null || _siege == null)
 		{
-			deleteMe();
+			throw new NullPointerException(getClass().getSimpleName()+": Initialization failed.");
 		}
 		else
 		{
 			L2SiegeClan sc = _siege.getAttackerClan(_clan);
 			if (sc == null)
-				deleteMe();
+				throw new NullPointerException(getClass().getSimpleName()+": Cannot find siege clan.");
 			else
 				sc.addFlag(this);
 		}
