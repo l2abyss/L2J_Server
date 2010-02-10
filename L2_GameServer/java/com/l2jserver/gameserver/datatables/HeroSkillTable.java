@@ -28,7 +28,7 @@ public class HeroSkillTable
 	private HeroSkillTable()
 	{
 		for (int i=0; i<_heroSkillsId.length; i++)
-			_heroSkills[i] = SkillTable.getInstance().getInfo(i, 1);
+			_heroSkills[i] = SkillTable.getInstance().getInfo(_heroSkillsId[i], 1);
 	}
 	
 	public static HeroSkillTable getInstance()
