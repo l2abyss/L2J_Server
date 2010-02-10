@@ -392,7 +392,7 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "", e);
+			e.printStackTrace();
 			return true;
 		}
 		return false;
