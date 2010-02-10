@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.nio.BufferUnderflowException;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -88,14 +87,7 @@ public final class Say2 extends L2GameClientPacket
 	protected void readImpl()
 	{
 		_text = readS();
-		try
-		{
-			_type = readD();
-		}
-		catch (BufferUnderflowException e)
-		{
-			_type = CHAT_NAMES.length;
-		}
+		_type = readD();
 		_target = (_type == TELL) ? readS() : null;
 	}
 
