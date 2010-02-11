@@ -64,6 +64,7 @@ public class SiegeManager
 	private int _flagMaxCount = 1; // Changeable in siege.config
 	private int _siegeClanMinLevel = 5; // Changeable in siege.config
 	private int _siegeLength = 120; // Time in minute. Changeable in siege.config
+	private int _bloodAllianceReward = 0; // Number of Blood Alliance items reward for successful castle defending
 	
 	// =========================================================
 	// Constructor
@@ -185,6 +186,7 @@ public class SiegeManager
 			_flagMaxCount = Integer.decode(siegeSettings.getProperty("MaxFlags", "1"));
 			_siegeClanMinLevel = Integer.decode(siegeSettings.getProperty("SiegeClanMinLevel", "5"));
 			_siegeLength = Integer.decode(siegeSettings.getProperty("SiegeLength", "120"));
+			_bloodAllianceReward = Integer.decode(siegeSettings.getProperty("BloodAllianceReward", "0"));
 			
 			// Siege spawns settings
 			_controlTowerSpawnList = new TIntObjectHashMap<FastList<SiegeSpawn>>();
@@ -358,6 +360,11 @@ public class SiegeManager
 		return _siegeLength;
 	}
 	
+	public final int getBloodAllianceReward()
+	{
+		return _bloodAllianceReward;
+	}
+
 	public final List<Siege> getSieges()
 	{
 		FastList<Siege> sieges = new FastList<Siege>();

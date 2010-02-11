@@ -66,6 +66,8 @@ public class Siege implements Siegable
 	public static final byte ATTACKER = 1;
 	public static final byte DEFENDER_NOT_APPROWED = 2;
 
+	private static final int BLOOD_ALLIANCE = 9911;
+
 	public static enum TeleportWhoType
 	{
 		All,
@@ -231,6 +233,7 @@ public class Siege implements Siegable
 	protected Calendar _siegeEndDate;
 	private SiegeGuardManager _siegeGuardManager;
 	protected ScheduledFuture<?> _scheduledStartSiegeTask = null;
+	protected int _firstOwnerClanId = -1;
 
 	public Siege(Castle[] castle)
 	{
@@ -255,6 +258,14 @@ public class Siege implements Siegable
 				sm.addString(clan.getName());
 				sm.addString(getCastle().getName());
 				Announcements.getInstance().announceToAll(sm);
+
+				if (clan.getClanId() == _firstOwnerClanId)
+				{
+					// Owner is unchanged
+					final int num = SiegeManager.getInstance().getBloodAllianceReward();
+					if (num > 0)
+						clan.getWarehouse().addItem("DefendSuccess", BLOOD_ALLIANCE, num, null, null);
+				}
 			}
 			else
 			{
@@ -417,6 +428,8 @@ public class Siege implements Siegable
 	{
 		if (!getIsInProgress())
 		{
+			_firstOwnerClanId = getCastle().getOwnerId();
+
 			if (getAttackerClans().isEmpty())
 			{
 				SystemMessage sm;
