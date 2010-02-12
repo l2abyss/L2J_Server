@@ -51,6 +51,9 @@ public class ConditionChangeWeapon extends Condition
 			
 			if (weaponItem.getChangeWeaponId() == 0)
 				return false;
+			
+			if (((L2PcInstance)env.player).isEnchanting())
+				return false;
 		}
 		return true;
 	}
