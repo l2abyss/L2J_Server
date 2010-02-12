@@ -1012,7 +1012,13 @@ public final class L2PcInstance extends L2Playable
 		int result = 0;
 
 		if (getClan() != null)
+		{
 			result |= RelationChanged.RELATION_CLAN_MEMBER;
+			if (getClan() == target.getClan())
+				result |= RelationChanged.RELATION_CLAN_MATE;
+			if (getAllyId() != 0)
+				result |= RelationChanged.RELATION_ALLY_MEMBER;
+		}
 		if (isClanLeader())
 			result |= RelationChanged.RELATION_LEADER;
 		if (getParty() != null && getParty() == target.getParty())
