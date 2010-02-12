@@ -1070,11 +1070,12 @@ public class Quest extends ManagedScript
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
-			statement = con.prepareStatement("INSERT INTO character_quests (charId,name,var,value) VALUES (?,?,?,?)");
+			statement = con.prepareStatement("INSERT INTO character_quests (charId,name,var,value) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE value=?");
 			statement.setInt(1, qs.getPlayer().getObjectId());
 			statement.setString(2, qs.getQuestName());
 			statement.setString(3, var);
 			statement.setString(4, value);
+			statement.setString(5, value);
 			statement.executeUpdate();
 			statement.close();
 		}
