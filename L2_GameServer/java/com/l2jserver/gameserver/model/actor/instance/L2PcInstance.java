@@ -608,6 +608,8 @@ public final class L2PcInstance extends L2Playable
 	// apparently, a L2PcInstance CAN have both a summon AND a tamed beast at the same time!!
 	private L2TamedBeastInstance _tamedBeast = null;
 
+	private boolean _minimapAllowed = false;
+
 	// client radar
 	//TODO: This needs to be better intergrated and saved/loaded
 	private L2Radar _radar;
@@ -2958,7 +2960,19 @@ public final class L2PcInstance extends L2Playable
         return _radar;
     }
 
-	/** Return the SP amount of the L2PcInstance. */
+    /* Return true if Hellbound minimap allowed */
+    public boolean isMinimapAllowed()
+    {
+    	return _minimapAllowed;
+    }
+
+    /* Enable or disable minimap on Hellbound */
+    public void setMinmapAllowed(boolean b)
+    {
+    	_minimapAllowed = b;
+    }
+
+    /** Return the SP amount of the L2PcInstance. */
 	public int getSp() { return getStat().getSp(); }
 
 	/** Set the SP amount of the L2PcInstance. */
