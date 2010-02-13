@@ -37,6 +37,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.stat.PcStat;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
+import com.l2jserver.gameserver.model.quest.State;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.serverpackets.CharCreateFail;
 import com.l2jserver.gameserver.network.serverpackets.CharCreateOk;
@@ -279,7 +280,10 @@ public final class CharacterCreate extends L2GameClientPacket
 			if (Config.DEBUG)
 				_log.fine("Adding starter skill:" + skill.getId() + " / " + skill.getLevel());
 		}
-		startTutorialQuest(newChar);
+
+		if (!Config.DISABLE_TUTORIAL)
+			startTutorialQuest(newChar);
+
 		newChar.logout();
 		
 		CharSelectionInfo cl = new CharSelectionInfo(client.getAccountName(), client.getSessionId().playOkID1);
@@ -297,7 +301,7 @@ public final class CharacterCreate extends L2GameClientPacket
 		if (qs == null)
 			q = QuestManager.getInstance().getQuest("255_Tutorial");
 		if (q != null)
-			q.newQuestState(player);
+			q.newQuestState(player).setState(State.STARTED);
 	}
 	
 	/*

@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.model.actor.status;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.instancemanager.DuelManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -216,9 +217,12 @@ public class PcStatus extends PlayableStatus
 			}
 
 			getActiveChar().doDie(attacker);
-			QuestState qs = getActiveChar().getQuestState("255_Tutorial");
-			if (qs != null)
-				qs.getQuest().notifyEvent("CE30", null, getActiveChar());
+			if (!Config.DISABLE_TUTORIAL)
+			{
+				QuestState qs = getActiveChar().getQuestState("255_Tutorial");
+				if (qs != null)
+					qs.getQuest().notifyEvent("CE30", null, getActiveChar());
+			}
 		}
 	}
 
@@ -227,7 +231,8 @@ public class PcStatus extends PlayableStatus
 	{
 		super.setCurrentHp(newHp, broadcastPacket);
 
-		if (getCurrentHp() <= getActiveChar().getStat().getMaxHp() * .3)
+		if (!Config.DISABLE_TUTORIAL
+				&& getCurrentHp() <= getActiveChar().getStat().getMaxHp() * .3)
 		{
 			QuestState qs = getActiveChar().getQuestState("255_Tutorial");
 			if (qs != null)

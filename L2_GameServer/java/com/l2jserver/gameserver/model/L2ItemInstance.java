@@ -248,7 +248,7 @@ public final class L2ItemInstance extends L2Object
         	ItemsOnGroundManager.getInstance().removeObject(this);
         }
         
-        if (itemId == 57 || itemId == 6353)
+        if (!Config.DISABLE_TUTORIAL && (itemId == 57 || itemId == 6353))
         {
         	L2PcInstance actor = player.getActingPlayer();
         	if (actor != null)

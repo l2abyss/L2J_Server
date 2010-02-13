@@ -203,9 +203,12 @@ public class PcStat extends PlayableStat
 
         if (levelIncreased)
         {
-        	QuestState qs = getActiveChar().getQuestState("255_Tutorial"); 
+        	if (!Config.DISABLE_TUTORIAL)
+        	{
+            	QuestState qs = getActiveChar().getQuestState("255_Tutorial"); 
         		if (qs != null)
         			qs.getQuest().notifyEvent("CE40", null, getActiveChar());
+        	}
 
         	getActiveChar().setCurrentCp(getMaxCp());
             getActiveChar().broadcastPacket(new SocialAction(getActiveChar().getObjectId(), SocialAction.LEVEL_UP));

@@ -312,7 +312,10 @@ public class EnterWorld extends L2GameClientPacket
 		activeChar.sendPacket(new HennaInfo(activeChar));
 
 		Quest.playerEnter(activeChar);
-		loadTutorial(activeChar);
+
+		if (!Config.DISABLE_TUTORIAL)
+			loadTutorial(activeChar);
+
 		for (Quest quest : QuestManager.getInstance().getAllManagedScripts())
 		{
 			if (quest != null && quest.getOnEnterWorld())
