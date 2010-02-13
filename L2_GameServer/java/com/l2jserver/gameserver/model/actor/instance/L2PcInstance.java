@@ -2967,7 +2967,7 @@ public final class L2PcInstance extends L2Playable
     }
 
     /* Enable or disable minimap on Hellbound */
-    public void setMinmapAllowed(boolean b)
+    public void setMinimapAllowed(boolean b)
     {
     	_minimapAllowed = b;
     }
