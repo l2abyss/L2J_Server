@@ -6516,12 +6516,6 @@ public abstract class L2Character extends L2Object
 					}
 				}
 				
-				// Launch the magic skill and calculate its effects
-				if (handler != null)
-					handler.useSkill(this, skill, targets);
-				else
-					skill.useSkill(this, targets);
-				
 				// Mobs in range 1000 see spell
 				Collection<L2Object> objs = player.getKnownList().getKnownObjects().values();
 				//synchronized (player.getKnownList().getKnownObjects())
@@ -6540,6 +6534,13 @@ public abstract class L2Character extends L2Object
 					}
 				}
 			}
+			
+			// Launch the magic skill and calculate its effects
+			if (handler != null)
+				handler.useSkill(this, skill, targets);
+			else
+				skill.useSkill(this, targets);
+			
 		}
 		catch (Exception e)
 		{
