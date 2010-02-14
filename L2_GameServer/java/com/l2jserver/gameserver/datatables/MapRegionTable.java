@@ -28,12 +28,14 @@ import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TownManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Fort;
@@ -445,9 +447,7 @@ public class MapRegionTable
 					{
 						L2ClanHallZone zone = clanhall.getZone();
 						if (zone != null && !player.isFlyingMounted())
-						{
-							return zone.getSpawn();
-						}
+							return zone.getSpawnLoc();
 					}
 				}
 				
@@ -465,10 +465,7 @@ public class MapRegionTable
 					}
 					
 					if (castle != null && castle.getCastleId() > 0)
-					{
-						coord = castle.getZone().getSpawn();
-						return new Location(coord[0], coord[1], coord[2]);
-					}
+						return castle.getZone().getSpawnLoc();;
 				}
 				
 				// If teleport to fortress
@@ -485,10 +482,7 @@ public class MapRegionTable
 					}
 					
 					if (fort != null && fort.getFortId() > 0)
-					{
-						coord = fort.getZone().getSpawn();
-						return new Location(coord[0], coord[1], coord[2]);
-					}
+						return fort.getZone().getSpawnLoc();
 				}
 				
 				// If teleport to SiegeHQ
@@ -496,7 +490,10 @@ public class MapRegionTable
 				{
 					castle = CastleManager.getInstance().getCastle(player);
 					fort = FortManager.getInstance().getFort(player);
-					if (castle != null)
+					L2SiegeFlagInstance tw_flag = TerritoryWarManager.getInstance().getFlagForClan(player.getClan());
+					if (tw_flag != null)
+						return new Location(tw_flag.getX(), tw_flag.getY(), tw_flag.getZ());
+					else if (castle != null)
 					{
 						if (castle.getSiege().getIsInProgress())
 						{
@@ -543,10 +540,8 @@ public class MapRegionTable
 			// Checking if in arena
 			L2ArenaZone arena = ZoneManager.getInstance().getArena(player);
 			if (arena != null)
-			{
-				coord = arena.getSpawnLoc();
-				return new Location(coord[0], coord[1], coord[2]);
-			}
+				return arena.getSpawnLoc();
+
 			//Checking if needed to be respawned in "far" town from the castle;
 			castle = CastleManager.getInstance().getCastle(player);
 			if (castle != null)
@@ -556,10 +551,7 @@ public class MapRegionTable
 					// Check if player's clan is participating
 					if ((castle.getSiege().checkIsDefender(player.getClan()) || castle.getSiege().checkIsAttacker(player.getClan()))
 							&& SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE) == SevenSigns.CABAL_DAWN)
-					{
-						coord = TownManager.getSecondClosestTown(activeChar).getSpawnLoc();
-						return new Location(coord[0], coord[1], coord[2]);
-					}
+						return TownManager.getSecondClosestTown(activeChar).getSpawnLoc();
 				}
 			}
 			
@@ -579,15 +571,13 @@ public class MapRegionTable
 		// Get the nearest town
 		try
 		{
-			coord = TownManager.getClosestTown(activeChar).getSpawnLoc();
+			return TownManager.getClosestTown(activeChar).getSpawnLoc();
 		}
 		catch (NullPointerException e)
 		{
 			// port to the Talking Island if no closest town found
 			return new Location(-84176, 243382, -3126);
 		}
-		
-		return new Location(coord[0], coord[1], coord[2]);
 	}
 	
 	@SuppressWarnings("synthetic-access")

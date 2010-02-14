@@ -16,11 +16,10 @@ package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
-import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.ClanHall;
-import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.L2SpawnZone;
 import com.l2jserver.gameserver.network.serverpackets.AgitDecoInfo;
 
 /**
@@ -28,16 +27,13 @@ import com.l2jserver.gameserver.network.serverpackets.AgitDecoInfo;
  *
  * @author  durgus
  */
-public class L2ClanHallZone extends L2ZoneType
+public class L2ClanHallZone extends L2SpawnZone
 {
 	private int _clanHallId;
-	private int[] _spawnLoc;
 	
 	public L2ClanHallZone(int id)
 	{
 		super(id);
-		
-		_spawnLoc = new int[3];
 	}
 	
 	@Override
@@ -48,18 +44,6 @@ public class L2ClanHallZone extends L2ZoneType
 			_clanHallId = Integer.parseInt(value);
 			// Register self to the correct clan hall
 			ClanHallManager.getInstance().getClanHallById(_clanHallId).setZone(this);
-		}
-		else if (name.equals("spawnX"))
-		{
-			_spawnLoc[0] = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnY"))
-		{
-			_spawnLoc[1] = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnZ"))
-		{
-			_spawnLoc[2] = Integer.parseInt(value);
 		}
 		else
 			super.setParameter(name, value);
@@ -122,15 +106,6 @@ public class L2ClanHallZone extends L2ZoneType
 		}
 	}
 	
-	/**
-	 * Get the clan hall's spawn
-	 * @return
-	 */
-	public Location getSpawn()
-	{
-		return new Location(_spawnLoc[0], _spawnLoc[1], _spawnLoc[2]);
-	}
-
 	/**
 	 * @return the clanHallId
 	 */

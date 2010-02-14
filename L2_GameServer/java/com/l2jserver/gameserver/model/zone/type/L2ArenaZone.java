@@ -16,7 +16,7 @@ package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.L2SpawnZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
@@ -25,17 +25,14 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  *
  * @author  durgus
  */
-public class L2ArenaZone extends L2ZoneType
+public class L2ArenaZone extends L2SpawnZone
 {
 	@SuppressWarnings("unused")
 	private String _arenaName;
-	private int[] _spawnLoc;
 	
 	public L2ArenaZone(int id)
 	{
 		super(id);
-		
-		_spawnLoc = new int[3];
 	}
 	
 	@Override
@@ -44,18 +41,6 @@ public class L2ArenaZone extends L2ZoneType
 		if (name.equals("name"))
 		{
 			_arenaName = value;
-		}
-		else if (name.equals("spawnX"))
-		{
-			_spawnLoc[0] = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnY"))
-		{
-			_spawnLoc[1] = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnZ"))
-		{
-			_spawnLoc[2] = Integer.parseInt(value);
 		}
 		else
 			super.setParameter(name, value);
@@ -95,10 +80,5 @@ public class L2ArenaZone extends L2ZoneType
 	@Override
 	public void onReviveInside(L2Character character)
 	{
-	}
-	
-	public final int[] getSpawnLoc()
-	{
-		return _spawnLoc;
 	}
 }

@@ -17,28 +17,26 @@ package com.l2jserver.gameserver.model.zone.type;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.L2SpawnZone;
 
 /**
  * A Town zone
  *
  * @author  durgus
  */
-public class L2TownZone extends L2ZoneType
+public class L2TownZone extends L2SpawnZone
 {
 	private String _townName;
 	private int _townId;
 	private int _redirectTownId;
 	private int _taxById;
 	private boolean _isPeaceZone;
-	private int[] _spawnLoc;
 	
 	public L2TownZone(int id)
 	{
 		super(id);
 		
 		_taxById = 0;
-		_spawnLoc = new int[3];
 		
 		// Default to Giran
 		_redirectTownId = 9;
@@ -65,18 +63,6 @@ public class L2TownZone extends L2ZoneType
 		else if (name.equals("taxById"))
 		{
 			_taxById = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnX"))
-		{
-			_spawnLoc[0] = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnY"))
-		{
-			_spawnLoc[1] = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnZ"))
-		{
-			_spawnLoc[2] = Integer.parseInt(value);
 		}
 		else if (name.equals("isPeaceZone"))
 		{
@@ -157,15 +143,6 @@ public class L2TownZone extends L2ZoneType
 	public int getRedirectTownId()
 	{
 		return _redirectTownId;
-	}
-	
-	/**
-	 * Returns this zones spawn location
-	 * @return
-	 */
-	public final int[] getSpawnLoc()
-	{
-		return _spawnLoc;
 	}
 	
 	/**

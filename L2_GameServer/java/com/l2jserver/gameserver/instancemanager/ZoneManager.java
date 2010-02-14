@@ -39,6 +39,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.zone.L2SpawnZone;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.form.*;
 import com.l2jserver.gameserver.model.zone.type.*;
@@ -327,6 +328,16 @@ public class ZoneManager
 									String val = attrs.getNamedItem("val").getNodeValue();
 									
 									temp.setParameter(name, val);
+								}
+								else if ("spawn".equalsIgnoreCase(cd.getNodeName())
+										&& temp instanceof L2SpawnZone)
+								{
+									attrs = cd.getAttributes();
+									int spawnX = Integer.parseInt(attrs.getNamedItem("X").getNodeValue());
+									int spawnY = Integer.parseInt(attrs.getNamedItem("Y").getNodeValue());
+									int spawnZ = Integer.parseInt(attrs.getNamedItem("Z").getNodeValue());
+
+									((L2SpawnZone)temp).addSpawn(spawnX, spawnY, spawnZ);
 								}
 							}
 							addZone(zoneId, temp);

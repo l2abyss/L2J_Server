@@ -24,7 +24,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
-import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.L2SpawnZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
@@ -35,18 +35,15 @@ import javolution.util.FastList;
  *
  * @author  durgus
  */
-public class L2CastleZone extends L2ZoneType
+public class L2CastleZone extends L2SpawnZone
 {
 	private int _castleId;
 	private Castle _castle = null;
-	private int[] _spawnLoc;
 	private boolean _isActiveSiege = false;
 	
 	public L2CastleZone(int id)
 	{
 		super(id);
-		
-		_spawnLoc = new int[3];
 	}
 	
 	@Override
@@ -55,18 +52,6 @@ public class L2CastleZone extends L2ZoneType
 		if (name.equals("castleId"))
 		{
 			_castleId = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnX"))
-		{
-			_spawnLoc[0] = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnY"))
-		{
-			_spawnLoc[1] = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnZ"))
-		{
-			_spawnLoc[2] = Integer.parseInt(value);
 		}
 		else
 			super.setParameter(name, value);
@@ -263,14 +248,5 @@ public class L2CastleZone extends L2ZoneType
 		if (_castle == null)
 			_castle = CastleManager.getInstance().getCastleById(_castleId);
 		return _castle;
-	}
-	
-	/**
-	 * Get the castles defender spawn
-	 * @return
-	 */
-	public int[] getSpawn()
-	{
-		return _spawnLoc;
 	}
 }
