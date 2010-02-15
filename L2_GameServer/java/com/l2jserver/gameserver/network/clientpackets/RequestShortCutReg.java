@@ -26,14 +26,14 @@ import com.l2jserver.gameserver.network.serverpackets.ShortCutRegister;
 public final class RequestShortCutReg extends L2GameClientPacket
 {
 	private static final String _C__33_REQUESTSHORTCUTREG = "[C] 33 RequestShortCutReg";
-
+	
 	private int _type;
 	private int _id;
 	private int _slot;
 	private int _page;
 	private int _lvl;
 	private int _characterType; // 1 - player, 2 - pet
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -42,50 +42,50 @@ public final class RequestShortCutReg extends L2GameClientPacket
 		_id = readD();
 		_lvl = readD();
 		_characterType = readD();
-
+		
 		_slot = slot % 12;
 		_page = slot / 12;
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
-		    return;
-
+			return;
+		
 		if (_page > 10 || _page < 0)
 			return;
-
+		
 		switch (_type)
 		{
-			case 0x01:	// item
-			case 0x02:	// skill
+			case 0x01: // item
+			case 0x02: // skill
 			{
 				L2ShortCut sc = new L2ShortCut(_slot, _page, _type, _id, _lvl, _characterType);
-				sendPacket(new ShortCutRegister(sc));
 				activeChar.registerShortCut(sc);
+				sendPacket(new ShortCutRegister(sc));
 				break;
 			}
-			case 0x03:	// action
-			case 0x04:	// macro
-            case 0x05:  // recipe
+			case 0x03: // action
+			case 0x04: // macro
+			case 0x05: // recipe
 			{
 				L2ShortCut sc = new L2ShortCut(_slot, _page, _type, _id, _lvl, _characterType);
-				sendPacket(new ShortCutRegister(sc));
 				activeChar.registerShortCut(sc);
+				sendPacket(new ShortCutRegister(sc));
 				break;
 			}
-            case 0x06: // Teleport Bookmark
-            {
+			case 0x06: // Teleport Bookmark
+			{
 				L2ShortCut sc = new L2ShortCut(_slot, _page, _type, _id, _lvl, _characterType);
-				sendPacket(new ShortCutRegister(sc));
 				activeChar.registerShortCut(sc);
+				sendPacket(new ShortCutRegister(sc));
 				break;
-            }
+			}
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */
