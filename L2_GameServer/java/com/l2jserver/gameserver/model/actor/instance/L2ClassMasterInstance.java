@@ -23,6 +23,7 @@ import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TutorialCloseHtml;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowHtml;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowQuestionMark;
@@ -279,6 +280,17 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 			return false;
 		
 		int newJobLevel = currentClassId.level() + 1;
+
+		// Weight/Inventory check
+		if(!Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).isEmpty())
+		{
+			if (player.getWeightPenalty() >= 3 || (player.getInventoryLimit() * 0.8 <= player.getInventory().getSize()))
+			{
+				player.sendPacket(new SystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+				return false;
+			}
+		}
+
 		// check if player have all required items for class transfer
 		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).keys())
 		{

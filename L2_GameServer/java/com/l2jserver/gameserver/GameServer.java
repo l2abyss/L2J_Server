@@ -48,6 +48,7 @@ import com.l2jserver.gameserver.datatables.EventDroplist;
 import com.l2jserver.gameserver.datatables.ExtractableItemsData;
 import com.l2jserver.gameserver.datatables.ExtractableSkillsData;
 import com.l2jserver.gameserver.datatables.FishTable;
+import com.l2jserver.gameserver.datatables.GMSkillTable;
 import com.l2jserver.gameserver.datatables.HelperBuffTable;
 import com.l2jserver.gameserver.datatables.HennaTable;
 import com.l2jserver.gameserver.datatables.HennaTreeTable;
@@ -235,6 +236,7 @@ public class GameServer
 		SkillSpellbookTable.getInstance();
 		CharTemplateTable.getInstance();
 		NobleSkillTable.getInstance();
+		GMSkillTable.getInstance();
 		HeroSkillTable.getInstance();
 		ResidentialSkillTable.getInstance();
 		

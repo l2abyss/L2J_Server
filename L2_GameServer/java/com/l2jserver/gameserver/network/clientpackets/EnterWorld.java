@@ -27,6 +27,7 @@ import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.communitybbs.Manager.RegionBBSManager;
 import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
+import com.l2jserver.gameserver.datatables.GMSkillTable;
 import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -179,6 +180,9 @@ public class EnterWorld extends L2GameClientPacket
 				GmListTable.getInstance().addGm(activeChar, false);
 			else
 				GmListTable.getInstance().addGm(activeChar, true);
+
+			if (Config.GM_GIVE_SPECIAL_SKILLS)
+				GMSkillTable.getInstance().addSkills(activeChar);
 		}
 
 		// Set dead status if applies
