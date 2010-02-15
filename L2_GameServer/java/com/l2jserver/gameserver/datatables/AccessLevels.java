@@ -41,7 +41,7 @@ public class AccessLevels
 	/** Reserved user access level<br> */
 	public static final int _userAccessLevelNum = 0;
 	/** The user access level which can do no administrative tasks<br> */
-	public static L2AccessLevel _userAccessLevel = new L2AccessLevel(_userAccessLevelNum, "User", Integer.decode("0xFFFFFF"), Integer.decode("0xFFFFFF"), null, false, false, false, true, false, true, true, true);
+	public static L2AccessLevel _userAccessLevel = new L2AccessLevel(_userAccessLevelNum, "User", -1, -1, null, false, false, false, true, false, true, true, true);
 	/** FastMap of access levels defined in database<br> */
 	private TIntObjectHashMap<L2AccessLevel> _accessLevels;
 	
@@ -207,7 +207,7 @@ public class AccessLevels
 				return;
 			}
 			
-			_accessLevels.put(accessLevel, new L2AccessLevel(accessLevel, "Banned", Integer.decode("0x000000"), Integer.decode("0x000000"), null, false, false, false, false, false, false, false, false));
+			_accessLevels.put(accessLevel, new L2AccessLevel(accessLevel, "Banned", -1, -1, null, false, false, false, false, false, false, false, false));
 		}
 	}
 	

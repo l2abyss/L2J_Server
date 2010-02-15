@@ -530,7 +530,7 @@ public abstract class ItemContainer
 		
 		for (L2ItemInstance item : _items)
 		{
-			if (item.getItemId() == 57)
+			if (item != null && item.getItemId() == 57)
 			{
 				count = item.getCount();
 				return count;

@@ -2972,7 +2972,7 @@ public final class L2PcInstance extends L2Playable
     	_minimapAllowed = b;
     }
 
-    /** Return the SP amount of the L2PcInstance. */
+	/** Return the SP amount of the L2PcInstance. */
 	public int getSp() { return getStat().getSp(); }
 
 	/** Set the SP amount of the L2PcInstance. */
@@ -7025,13 +7025,11 @@ public final class L2PcInstance extends L2Playable
 			else
 				_accessLevel = accessLevel;
 		}
-
-		if (_accessLevel != AccessLevels._userAccessLevel)
-		{
-			getAppearance().setNameColor(_accessLevel.getNameColor());
-			getAppearance().setTitleColor(_accessLevel.getTitleColor());
-			broadcastUserInfo();
-		}
+		
+		getAppearance().setNameColor(_accessLevel.getNameColor());
+		getAppearance().setTitleColor(_accessLevel.getTitleColor());
+		broadcastUserInfo();
+		
 		CharNameTable.getInstance().addName(this);
 	}
 
