@@ -14,31 +14,27 @@
  */
 package com.l2jserver.gameserver.skills.conditions;
 
-import com.l2jserver.gameserver.model.actor.L2Attackable;
+import java.util.ArrayList;
+
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.skills.Env;
 
 
-public class ConditionTargetNpcId extends Condition {
+public class ConditionTargetNpcId extends Condition
+{
+	private final ArrayList<Integer> _npcIds;
 
-	private final String[] _npcIds;
-
-	public ConditionTargetNpcId(String[] ids)
+	public ConditionTargetNpcId(ArrayList<Integer> npcIds)
 	{
-		_npcIds = ids;
+		_npcIds = npcIds;
 	}
 
 	@Override
-	public boolean testImpl(Env env) {
-		if (env.target == null)
+	public boolean testImpl(Env env)
+	{
+		if (!(env.target instanceof L2Npc))
 			return false;
-		boolean mt;
-		for (int i = 0; i < _npcIds.length;i++)
-		{
-			mt = (((env.target instanceof L2Attackable) && ((L2Attackable)env.target).getNpcId() == Integer.parseInt(_npcIds[i])) || ((env.target instanceof L2Npc) && ((L2Npc)env.target).getNpcId() == Integer.parseInt(_npcIds[i])));
-			if (mt)
-				return true;
-		}
-		return false;
+
+		return _npcIds.contains(((L2Npc)env.target).getNpcId());
 	}
 }

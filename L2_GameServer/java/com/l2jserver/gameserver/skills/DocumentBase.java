@@ -771,9 +771,14 @@ abstract class DocumentBase
             }
             else if ("npcId".equalsIgnoreCase(a.getNodeName()))
             {
-            	String values = getValue(a.getNodeValue(), template).trim();
-                String[] valuesSplit = values.split(" ");
-                cond = joinAnd(cond, new ConditionTargetNpcId(valuesSplit));
+            	ArrayList<Integer> array = new ArrayList<Integer>();
+            	StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+            	while (st.hasMoreTokens())
+            	{
+            		String item = st.nextToken().trim();
+            		array.add(Integer.decode(getValue(item, null)));
+            	}
+            	cond = joinAnd(cond, new ConditionTargetNpcId(array));
             }
             else if ("npcType".equalsIgnoreCase(a.getNodeName()))
             {
