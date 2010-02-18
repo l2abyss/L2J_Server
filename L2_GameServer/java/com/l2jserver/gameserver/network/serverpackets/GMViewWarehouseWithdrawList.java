@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
@@ -35,7 +36,14 @@ public class GMViewWarehouseWithdrawList extends L2GameServerPacket
 		_activeChar = cha;
 		_items = _activeChar.getWarehouse().getItems();
 		_playerName = _activeChar.getName();
-		_money = _activeChar.getAdena();
+		_money = _activeChar.getWarehouse().getAdena();
+	}
+	
+	public GMViewWarehouseWithdrawList(L2Clan clan)
+	{
+		_playerName = clan.getLeaderName();
+		_items = clan.getWarehouse().getItems();
+		_money = clan.getWarehouse().getAdena();
 	}
 	
 	@Override

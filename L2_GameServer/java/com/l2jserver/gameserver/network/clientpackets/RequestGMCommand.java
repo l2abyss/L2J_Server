@@ -16,6 +16,8 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.logging.Logger;
 
+import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.GMHennaInfo;
@@ -58,9 +60,13 @@ public final class RequestGMCommand extends L2GameClientPacket
 
 		L2PcInstance player = L2World.getInstance().getPlayer(_targetName);
 
+		L2Clan clan = ClanTable.getInstance().getClanByName(_targetName);;
+		
 		// player name was incorrect?
-		if (player == null)
+		if (player == null && (clan == null || _command != 6))
+		{
 			return;
+		}
 
 		switch(_command)
 		{
@@ -94,7 +100,11 @@ public final class RequestGMCommand extends L2GameClientPacket
 		    case 6: // player warehouse
 		    {
 		        // gm warehouse view to be implemented
-		        sendPacket(new GMViewWarehouseWithdrawList(player));
+		    	if (player != null)
+		    		sendPacket(new GMViewWarehouseWithdrawList(player));
+		    	// clan warehouse
+		    	else
+		    		sendPacket(new GMViewWarehouseWithdrawList(clan));
 		        break;
 		    }
 		    
