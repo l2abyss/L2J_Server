@@ -16,41 +16,33 @@ package com.l2jserver.gameserver.skills.conditions;
 
 import java.util.ArrayList;
 
-import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.skills.Env;
 
-/**
- * @author MrPoke
- *
- */
-public final class ConditionPlayerHasClanHall extends Condition
+public class ConditionPlayerHasPet extends Condition
 {
-	private final ArrayList<Integer> _clanHall;
+	private final ArrayList<Integer> _controlItemIds;
 
-	public ConditionPlayerHasClanHall(ArrayList<Integer> clanHall)
+	public ConditionPlayerHasPet(ArrayList<Integer> itemIds)
 	{
-		_clanHall = clanHall;
+		_controlItemIds = itemIds;
 	}
 
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
-	 */
 	@Override
 	public boolean testImpl(Env env)
 	{
 		if (!(env.player instanceof L2PcInstance))
 			return false;
 
-		L2Clan clan = ((L2PcInstance)env.player).getClan();
-		if (clan == null)
-			return (_clanHall.size() == 1 && _clanHall.get(0) == 0);
+		if (!(env.player.getPet() instanceof L2PetInstance))
+			return false;
 
-		// All Clan Hall
-		if (_clanHall.size() == 1 && _clanHall.get(0) == -1)
-			return clan.getHasHideout() > 0;
+		final L2ItemInstance controlItem = ((L2PetInstance)env.player.getPet()).getControlItem();
+		if (controlItem == null)
+			return false;
 
-		return _clanHall.contains(clan.getHasHideout());
+		return _controlItemIds.contains(controlItem.getItemId());
 	}
 }

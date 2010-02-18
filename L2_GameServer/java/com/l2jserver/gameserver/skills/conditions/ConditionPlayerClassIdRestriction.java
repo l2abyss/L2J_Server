@@ -14,16 +14,16 @@
  */
 package com.l2jserver.gameserver.skills.conditions;
 
+import java.util.ArrayList;
+
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
-import javolution.util.FastList;
-
 public class ConditionPlayerClassIdRestriction extends Condition
 {
-	private final FastList<Integer> _classIds;
+	private final ArrayList<Integer> _classIds;
 
-	public ConditionPlayerClassIdRestriction(FastList<Integer> classId)
+	public ConditionPlayerClassIdRestriction(ArrayList<Integer> classId)
 	{
 		_classIds = classId;
 	}

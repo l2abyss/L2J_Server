@@ -14,18 +14,18 @@
  */
 package com.l2jserver.gameserver.skills.conditions;
 
+import java.util.ArrayList;
+
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager.InstanceWorld;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
-import javolution.util.FastList;
-
 public class ConditionPlayerInstanceId extends Condition
 {
-	private final FastList<Integer> _instanceIds;
+	private final ArrayList<Integer> _instanceIds;
 
-	public ConditionPlayerInstanceId(FastList<Integer> instanceIds)
+	public ConditionPlayerInstanceId(ArrayList<Integer> instanceIds)
 	{
 		_instanceIds = instanceIds;
 	}

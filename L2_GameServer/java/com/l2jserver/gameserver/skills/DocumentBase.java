@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import org.w3c.dom.Document;
@@ -554,8 +553,8 @@ abstract class DocumentBase
             }
             else if ("clanHall".equalsIgnoreCase(a.getNodeName()))
             {
-            	FastList<Integer> array = new FastList<Integer>();
             	StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+            	ArrayList<Integer> array = new ArrayList<Integer>(st.countTokens());
             	while (st.hasMoreTokens())
                 {
                     String item = st.nextToken().trim();
@@ -614,8 +613,8 @@ abstract class DocumentBase
             }
             else if ("class_id_restriction".equalsIgnoreCase(a.getNodeName()))
             {
-            	FastList<Integer> array = new FastList<Integer>();
             	StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+            	ArrayList<Integer> array = new ArrayList<Integer>(st.countTokens());
             	while (st.hasMoreTokens())
                 {
                     String item = st.nextToken().trim();
@@ -628,10 +627,10 @@ abstract class DocumentBase
 				boolean val = Boolean.valueOf(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerSubclass(val));
 			}
-			else if ("instanceid".equalsIgnoreCase(a.getNodeName()))
+			else if ("instanceId".equalsIgnoreCase(a.getNodeName()))
 			{
-            	FastList<Integer> array = new FastList<Integer>();
             	StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+	        	ArrayList<Integer> array = new ArrayList<Integer>(st.countTokens());
             	while (st.hasMoreTokens())
                 {
                     String item = st.nextToken().trim();
@@ -648,6 +647,17 @@ abstract class DocumentBase
 			{
 				int val = Integer.valueOf(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerCloakStatus(val));
+			}
+			else if ("hasPet".equalsIgnoreCase(a.getNodeName()))
+			{
+	        	StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+	        	ArrayList<Integer> array = new ArrayList<Integer>(st.countTokens());
+	        	while (st.hasMoreTokens())
+	        	{
+	        		String item = st.nextToken().trim();
+	        		array.add(Integer.decode(getValue(item, null)));
+	        	}
+	        	cond = joinAnd(cond, new ConditionPlayerHasPet(array));
 			}
         }
 
@@ -682,8 +692,8 @@ abstract class DocumentBase
             }
             else if ("class_id_restriction".equalsIgnoreCase(a.getNodeName()))
             {
-            	FastList<Integer> array = new FastList<Integer>();
             	StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+            	ArrayList<Integer> array = new ArrayList<Integer>(st.countTokens());
             	while (st.hasMoreTokens())
                 {
                     String item = st.nextToken().trim();
@@ -728,8 +738,8 @@ abstract class DocumentBase
             // used for npc race
             else if ("race_id".equalsIgnoreCase(a.getNodeName()))
             {
-            	ArrayList<Integer> array = new ArrayList<Integer>();
             	StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+            	ArrayList<Integer> array = new ArrayList<Integer>(st.countTokens());
             	while (st.hasMoreTokens())
             	{
             		String item = st.nextToken().trim();
@@ -771,8 +781,8 @@ abstract class DocumentBase
             }
             else if ("npcId".equalsIgnoreCase(a.getNodeName()))
             {
-            	ArrayList<Integer> array = new ArrayList<Integer>();
             	StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+            	ArrayList<Integer> array = new ArrayList<Integer>(st.countTokens());
             	while (st.hasMoreTokens())
             	{
             		String item = st.nextToken().trim();
@@ -888,16 +898,10 @@ abstract class DocumentBase
         String name = attrs.getNamedItem("name").getNodeValue();
         if (name.charAt(0) != '#') throw new IllegalArgumentException("Table name must start with #");
         StringTokenizer data = new StringTokenizer(n.getFirstChild().getNodeValue());
-        List<String> array = new FastList<String>();
+        List<String> array = new ArrayList<String>(data.countTokens());
         while (data.hasMoreTokens())
             array.add(data.nextToken());
-        String[] res = new String[array.size()];
-        int i = 0;
-        for (String str : array)
-        {
-            res[i++] = str;
-        }
-        setTable(name, res);
+        setTable(name, array.toArray(new String[array.size()]));
     }
 
     protected void parseBeanSet(Node n, StatsSet set, Integer level)
