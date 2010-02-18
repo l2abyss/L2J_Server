@@ -16,21 +16,20 @@ package com.l2jserver.gameserver.skills.conditions;
 
 import java.util.ArrayList;
 
-import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.skills.Env;
 
-public class ConditionPlayerHasPet extends Condition
+public class ConditionPlayerServitorNpcId extends Condition
 {
-	private final ArrayList<Integer> _controlItemIds;
+	private final ArrayList<Integer> _npcIds;
 
-	public ConditionPlayerHasPet(ArrayList<Integer> itemIds)
+	public ConditionPlayerServitorNpcId(ArrayList<Integer> npcIds)
 	{
-		if (itemIds.size() == 1 && itemIds.get(0) == 0)
-			_controlItemIds = null;
+		if (npcIds.size() == 1 && npcIds.get(0) == 0)
+			_npcIds = null;
 		else
-			_controlItemIds = itemIds;
+			_npcIds = npcIds;
 	}
 
 	@Override
@@ -39,16 +38,9 @@ public class ConditionPlayerHasPet extends Condition
 		if (!(env.player instanceof L2PcInstance))
 			return false;
 
-		if (!(env.player.getPet() instanceof L2PetInstance))
+		if (!(env.player.getPet() instanceof L2Summon))
 			return false;
 
-		if (_controlItemIds == null)
-			return true;
-
-		final L2ItemInstance controlItem = ((L2PetInstance)env.player.getPet()).getControlItem();
-		if (controlItem == null)
-			return false;
-
-		return _controlItemIds.contains(controlItem.getItemId());
+		return _npcIds == null || _npcIds.contains(env.player.getPet().getNpcId());
 	}
 }

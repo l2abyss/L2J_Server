@@ -659,6 +659,17 @@ abstract class DocumentBase
 	        	}
 	        	cond = joinAnd(cond, new ConditionPlayerHasPet(array));
 			}
+			else if ("servitorNpcId".equalsIgnoreCase(a.getNodeName()))
+			{
+	        	StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+	        	ArrayList<Integer> array = new ArrayList<Integer>(st.countTokens());
+	        	while (st.hasMoreTokens())
+	        	{
+	        		String item = st.nextToken().trim();
+	        		array.add(Integer.decode(getValue(item, null)));
+	        	}
+	        	cond = joinAnd(cond, new ConditionPlayerServitorNpcId(array));
+			}
         }
 
         if (forces[0] + forces[1] > 0)
