@@ -21,7 +21,14 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class ExNoticePostArrived extends L2GameServerPacket
 {
 	private static final String _S__FE_A9_EXNOTICEPOSTARRIVED = "[S] A9 ExNoticePostArrived";
-
+	private static final ExNoticePostArrived STATIC_PACKET_TRUE = new ExNoticePostArrived(true);
+	private static final ExNoticePostArrived STATIC_PACKET_FALSE = new ExNoticePostArrived(false);
+	
+	public static final ExNoticePostArrived valueOf(boolean result)
+	{
+		return result ? STATIC_PACKET_TRUE : STATIC_PACKET_FALSE;
+	}
+	
 	boolean _showAnim;
 
 	public ExNoticePostArrived(boolean showAnimation)

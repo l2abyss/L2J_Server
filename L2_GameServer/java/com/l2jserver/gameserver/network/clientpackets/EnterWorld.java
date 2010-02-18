@@ -461,7 +461,7 @@ public class EnterWorld extends L2GameClientPacket
 		if (Config.ALLOW_MAIL)
 		{
 			if (MailManager.getInstance().hasUnreadPost(activeChar))
-				sendPacket(new ExNoticePostArrived(false));
+				sendPacket(ExNoticePostArrived.valueOf(false));
 		}
 
 		RegionBBSManager.getInstance().changeCommunityBoard();

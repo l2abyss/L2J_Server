@@ -248,7 +248,7 @@ public final class RequestSendPost extends L2GameClientPacket
 		if (removeItems(activeChar, msg))
 		{
 			MailManager.getInstance().sendMessage(msg);
-			activeChar.sendPacket(new ExNoticePostSent(true));
+			activeChar.sendPacket(ExNoticePostSent.valueOf(true));
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.MAIL_SUCCESSFULLY_SENT));
 		}
 	}

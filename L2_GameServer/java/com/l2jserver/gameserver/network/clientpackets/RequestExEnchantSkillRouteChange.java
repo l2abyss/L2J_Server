@@ -178,7 +178,7 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 				}
 
 				player.addSkill(skill, true);
-				player.sendPacket(new ExEnchantSkillResult(true));
+				player.sendPacket(ExEnchantSkillResult.valueOf(true));
 			}
 
 			if (Config.DEBUG)

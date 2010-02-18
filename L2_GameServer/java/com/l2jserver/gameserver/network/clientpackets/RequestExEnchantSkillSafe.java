@@ -161,7 +161,7 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 					_log.fine("Learned skill ID: " + _skillId + " Level: " + _skillLvl + " for " + requiredSp + " SP, " + requireditems + " Adena.");
 				}
 
-				player.sendPacket(new ExEnchantSkillResult(true));
+				player.sendPacket(ExEnchantSkillResult.valueOf(true));
 
 				SystemMessage sm = new SystemMessage(SystemMessageId.YOU_HAVE_SUCCEEDED_IN_ENCHANTING_THE_SKILL_S1);
 				sm.addSkillName(_skillId);
@@ -183,7 +183,7 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 				SystemMessage sm = new SystemMessage(SystemMessageId.SKILL_ENCHANT_FAILED_S1_LEVEL_WILL_REMAIN);
 				sm.addSkillName(_skillId);
 				player.sendPacket(sm);
-				player.sendPacket(new ExEnchantSkillResult(false));
+				player.sendPacket(ExEnchantSkillResult.valueOf(false));
 			}
 			
 			player.sendPacket(new UserInfo(player));

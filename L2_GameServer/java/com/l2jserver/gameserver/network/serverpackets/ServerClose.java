@@ -21,6 +21,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class ServerClose extends L2GameServerPacket
 {
 	private static final String _S__26_SERVERCLOSE = "[S] 20 ServerClose";
+	public static final ServerClose STATIC_PACKET = new ServerClose();
 
 	/**
 	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()

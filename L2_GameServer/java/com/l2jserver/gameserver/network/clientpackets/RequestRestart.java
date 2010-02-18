@@ -58,21 +58,21 @@ public final class RequestRestart extends L2GameClientPacket
 
 		if(player.getActiveEnchantItem() != null || player.getActiveEnchantAttrItem() != null)
 		{
-			sendPacket(new RestartResponse(false));
+			sendPacket(RestartResponse.valueOf(false));
 			return;
 		}
 
 		if (player.isLocked())
 		{
 			_log.warning("Player " + player.getName() + " tried to restart during class change.");
-			sendPacket(new RestartResponse(false));
+			sendPacket(RestartResponse.valueOf(false));
 			return;
 		}
 
 		if (player.getPrivateStoreType() != 0)
 		{
 			player.sendMessage("Cannot restart while trading");
-			sendPacket(new RestartResponse(false));
+			sendPacket(RestartResponse.valueOf(false));
 			return;
 		}
 
@@ -88,7 +88,7 @@ public final class RequestRestart extends L2GameClientPacket
 				_log.fine("Player " + player.getName() + " tried to logout while fighting.");
 
 			player.sendPacket(new SystemMessage(SystemMessageId.CANT_RESTART_WHILE_FIGHTING));
-			sendPacket(new RestartResponse(false));
+			sendPacket(RestartResponse.valueOf(false));
 			return;
 		}
 
@@ -100,7 +100,7 @@ public final class RequestRestart extends L2GameClientPacket
 			if (SevenSignsFestival.getInstance().isFestivalInitialized())
 			{
 				player.sendMessage("You cannot restart while you are a participant in a festival.");
-				sendPacket(new RestartResponse(false));
+				sendPacket(RestartResponse.valueOf(false));
 				return;
 			}
 
@@ -126,7 +126,7 @@ public final class RequestRestart extends L2GameClientPacket
 		// return the client to the authed status
 		client.setState(GameClientState.AUTHED);
 
-		sendPacket(new RestartResponse(true));
+		sendPacket(RestartResponse.valueOf(true));
 
 		// send char list
 		final CharSelectionInfo cl = new CharSelectionInfo(client.getAccountName(), client.getSessionId().playOkID1);

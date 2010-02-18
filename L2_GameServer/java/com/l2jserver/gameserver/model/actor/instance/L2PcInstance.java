@@ -4144,9 +4144,9 @@ public final class L2PcInstance extends L2Playable
 				if (!client.getConnection().isClosed())
 				{
 					if (closeClient)
-						client.close(new LeaveWorld());
+						client.close(LeaveWorld.STATIC_PACKET);
 					else
-						client.close(new ServerClose());
+						client.close(ServerClose.STATIC_PACKET);
 				}
 			}
 		}
@@ -4686,7 +4686,7 @@ public final class L2PcInstance extends L2Playable
             {
                 GmListTable.broadcastMessageToGMs("Client "+client+" failed to reply GameGuard query and is being kicked!");
                 _log.info("Client "+client+" failed to reply GameGuard query and is being kicked!");
-                client.close(new LeaveWorld());
+                client.close(LeaveWorld.STATIC_PACKET);
             }
         }
     }

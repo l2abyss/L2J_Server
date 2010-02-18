@@ -573,7 +573,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 
     public void closeNow()
     {
-    	super.getConnection().close(new ServerClose());
+    	super.getConnection().close(ServerClose.STATIC_PACKET);
     	cleanMe(true);
     }
     

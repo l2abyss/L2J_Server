@@ -48,7 +48,7 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 		switch(type)
 		{
 			case -1: // mail arraived
-				player.sendPacket(new ExMailArrived());
+				player.sendPacket(ExMailArrived.STATIC_PACKET);
 				break;
 			case 0: // text message
 				player.sendMessage(super.readS());

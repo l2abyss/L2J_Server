@@ -213,7 +213,7 @@ public class MailManager
 
 		final L2PcInstance receiver = L2World.getInstance().getPlayer(msg.getReceiverId());
 		if (receiver != null)
-			receiver.sendPacket(new ExNoticePostArrived(true));
+			receiver.sendPacket(ExNoticePostArrived.valueOf(true));
 
 		ThreadPoolManager.getInstance().scheduleGeneral(new MessageDeletionTask(msg.getId()), msg.getExpiration() - System.currentTimeMillis());
 	}

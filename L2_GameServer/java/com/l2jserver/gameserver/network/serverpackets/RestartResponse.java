@@ -23,6 +23,14 @@ package com.l2jserver.gameserver.network.serverpackets;
 public final class RestartResponse extends L2GameServerPacket
 {
 	private static final String _S__74_RESTARTRESPONSE = "[S] 71 RestartResponse";
+	private static final RestartResponse STATIC_PACKET_TRUE = new RestartResponse(true);
+	private static final RestartResponse STATIC_PACKET_FALSE = new RestartResponse(false);
+	
+	public static final RestartResponse valueOf(boolean result)
+	{
+		return result ? STATIC_PACKET_TRUE : STATIC_PACKET_FALSE;
+	}
+	
 	private boolean _result;
 
 	public RestartResponse(boolean result)
