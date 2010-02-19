@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -194,6 +195,18 @@ public class L2UIKeysSettings
 		{
 			_log.warning("Exception: getCatsFromDB(): " + e.getMessage());
 			e.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (SQLException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		if (_storedCategories.size() < 1)
