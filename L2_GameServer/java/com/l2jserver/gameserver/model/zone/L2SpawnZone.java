@@ -28,21 +28,40 @@ import com.l2jserver.util.Rnd;
  */
 public abstract class L2SpawnZone extends L2ZoneType
 {
-	private final List<Location> _spawnLocs;
+	private List<Location> _spawnLocs = null;
+	private List<Location> _chaoticSpawnLocs = null;
 
 	public L2SpawnZone(int id)
 	{
 		super(id);
-		_spawnLocs = new FastList<Location>();
 	}
 
 	public final void addSpawn(int x, int y, int z)
 	{
+		if (_spawnLocs == null)
+			_spawnLocs = new FastList<Location>();
+
 		_spawnLocs.add(new Location(x, y, z));
+	}
+
+	public final void addChaoticSpawn(int x, int y, int z)
+	{
+		if (_chaoticSpawnLocs == null)
+			_chaoticSpawnLocs = new FastList<Location>();
+
+		_chaoticSpawnLocs.add(new Location(x, y, z));
 	}
 
 	public Location getSpawnLoc()
 	{
 		return _spawnLocs.get(Rnd.get(_spawnLocs.size()));
+	}
+
+	public Location getChaoticSpawnLoc()
+	{
+		if (_chaoticSpawnLocs != null)
+			return _chaoticSpawnLocs.get(Rnd.get(_chaoticSpawnLocs.size()));
+		else
+			return getSpawnLoc();
 	}
 }

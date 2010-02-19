@@ -337,7 +337,11 @@ public class ZoneManager
 									int spawnY = Integer.parseInt(attrs.getNamedItem("Y").getNodeValue());
 									int spawnZ = Integer.parseInt(attrs.getNamedItem("Z").getNodeValue());
 
-									((L2SpawnZone)temp).addSpawn(spawnX, spawnY, spawnZ);
+									Node val = attrs.getNamedItem("isChaotic");
+									if (val != null && Boolean.parseBoolean(val.getNodeValue()))
+											((L2SpawnZone)temp).addChaoticSpawn(spawnX, spawnY, spawnZ);
+									else
+										((L2SpawnZone)temp).addSpawn(spawnX, spawnY, spawnZ);
 								}
 							}
 							addZone(zoneId, temp);

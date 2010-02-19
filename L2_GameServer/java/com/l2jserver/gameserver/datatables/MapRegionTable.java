@@ -51,8 +51,6 @@ public class MapRegionTable
 	
 	private final int[][] _regions = new int[16][18];
 	
-	private final int[][] _pointsWithKarmas;
-	
 	public static enum TeleportWhereType
 	{
 		Castle,
@@ -110,80 +108,6 @@ public class MapRegionTable
 			{
 			}
 		}
-		
-		_pointsWithKarmas = new int[21][3];
-		//Talking Island
-		_pointsWithKarmas[0][0] = -79077;
-		_pointsWithKarmas[0][1] = 240355;
-		_pointsWithKarmas[0][2] = -3440;
-		//Elven
-		_pointsWithKarmas[1][0] = 43503;
-		_pointsWithKarmas[1][1] = 40398;
-		_pointsWithKarmas[1][2] = -3450;
-		//DarkElven
-		_pointsWithKarmas[2][0] = 1675;
-		_pointsWithKarmas[2][1] = 19581;
-		_pointsWithKarmas[2][2] = -3110;
-		//Orc
-		_pointsWithKarmas[3][0] = -44413;
-		_pointsWithKarmas[3][1] = -121762;
-		_pointsWithKarmas[3][2] = -235;
-		//Dwalf
-		_pointsWithKarmas[4][0] = 12009;
-		_pointsWithKarmas[4][1] = -187319;
-		_pointsWithKarmas[4][2] = -3309;
-		//Gludio
-		_pointsWithKarmas[5][0] = -18872;
-		_pointsWithKarmas[5][1] = 126216;
-		_pointsWithKarmas[5][2] = -3280;
-		//Gludin
-		_pointsWithKarmas[6][0] = -85915;
-		_pointsWithKarmas[6][1] = 150402;
-		_pointsWithKarmas[6][2] = -3060;
-		//Dion
-		_pointsWithKarmas[7][0] = 23652;
-		_pointsWithKarmas[7][1] = 144823;
-		_pointsWithKarmas[7][2] = -3330;
-		//Giran
-		_pointsWithKarmas[8][0] = 79125;
-		_pointsWithKarmas[8][1] = 154197;
-		_pointsWithKarmas[8][2] = -3490;
-		//Oren
-		_pointsWithKarmas[9][0] = 73840;
-		_pointsWithKarmas[9][1] = 58193;
-		_pointsWithKarmas[9][2] = -2730;
-		//Aden
-		_pointsWithKarmas[10][0] = 44413;
-		_pointsWithKarmas[10][1] = 22610;
-		_pointsWithKarmas[10][2] = 235;
-		//Hunters
-		_pointsWithKarmas[11][0] = 114137;
-		_pointsWithKarmas[11][1] = 72993;
-		_pointsWithKarmas[11][2] = -2445;
-		//Giran
-		_pointsWithKarmas[12][0] = 79125;
-		_pointsWithKarmas[12][1] = 154197;
-		_pointsWithKarmas[12][2] = -3490;
-		// heine
-		_pointsWithKarmas[13][0] = 119536;
-		_pointsWithKarmas[13][1] = 218558;
-		_pointsWithKarmas[13][2] = -3495;
-		// Rune Castle Town
-		_pointsWithKarmas[14][0] = 42931;
-		_pointsWithKarmas[14][1] = -44733;
-		_pointsWithKarmas[14][2] = -1326;
-		// Goddard
-		_pointsWithKarmas[15][0] = 147419;
-		_pointsWithKarmas[15][1] = -64980;
-		_pointsWithKarmas[15][2] = -3457;
-		// Schuttgart
-		_pointsWithKarmas[16][0] = 85184;
-		_pointsWithKarmas[16][1] = -138560;
-		_pointsWithKarmas[16][2] = -2256;
-		// Kamael Village
-		_pointsWithKarmas[19][0] = -121425;
-		_pointsWithKarmas[19][1] = 59778;
-		_pointsWithKarmas[19][2] = -2264;
 	}
 	
 	public final int getMapRegion(int posX, int posY)
@@ -523,13 +447,17 @@ public class MapRegionTable
 			//Karma player land out of city
 			if (player.getKarma() > 1)
 			{
-				int closest = getMapRegion(activeChar.getX(), activeChar.getY());
-				if (closest >= 0 && closest < _pointsWithKarmas.length)
-					return new Location(_pointsWithKarmas[closest][0], _pointsWithKarmas[closest][1], _pointsWithKarmas[closest][2]);
-				else if (player.isFlyingMounted()) // prevent flying players to teleport outside of gracia
-					return new Location(-186330, 242944, 2544);
-				else
-					return new Location(17817, 170079, -3530);
+				try
+				{
+					return TownManager.getClosestTown(activeChar).getChaoticSpawnLoc();
+				}
+				catch (Exception e)
+				{
+					if (player.isFlyingMounted()) // prevent flying players to teleport outside of gracia
+						return new Location(-186330, 242944, 2544);
+					else
+						return new Location(17817, 170079, -3530);
+				}
 			}
 			
 			// Checking if in arena
