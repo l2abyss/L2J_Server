@@ -246,6 +246,18 @@ public class L2UIKeysSettings
 			_log.warning("Exception: getKeysFromDB(): " + e.getMessage());
 			e.printStackTrace();
 		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (SQLException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		if (_storedKeys.size() < 1)
 			_storedKeys = UITable.getInstance().getKeys();
