@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.l2jserver.gameserver.ThreadPoolManager;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class L2DatabaseFactory
@@ -218,6 +219,8 @@ public class L2DatabaseFactory
 			try
 			{
 				con = _source.getConnection();
+				if (Config.DEBUG)
+					ThreadPoolManager.getInstance().scheduleGeneral(new ConnectionCloser(con, new RuntimeException()), 40000);
 			}
 			catch (SQLException e)
 			{
@@ -225,6 +228,39 @@ public class L2DatabaseFactory
 			}
 		}
 		return con;
+	}
+	
+	private class ConnectionCloser implements Runnable
+	{
+		private Connection c ;
+		private RuntimeException exp;
+		
+		public ConnectionCloser(Connection con, RuntimeException e)
+		{
+			c = con;
+			exp = e;
+		}
+		/* (non-Javadoc)
+		 * @see java.lang.Runnable#run()
+		 */
+		@Override
+		public void run()
+		{
+			try
+			{
+				if (!c.isClosed())
+				{
+					_log.warning("Unclosed connection! Trace:");
+					exp.printStackTrace();
+				}
+			}
+			catch (SQLException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 	}
 	
 	public int getBusyConnectionCount() throws SQLException
