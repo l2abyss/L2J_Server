@@ -18,27 +18,27 @@ package com.l2jserver.gameserver.network.serverpackets;
  */
 public class PetDelete extends L2GameServerPacket
 {
-	private static final String _S__CF_PETDELETE = "[S] b7 PetDelete";
-	private int _petId;
+	private static final String _S__B7_PETDELETE = "[S] b7 PetDelete";
+	private int _petType;
 	private int _petObjId;
 
-	public PetDelete(int petId, int petObjId)
+	public PetDelete(int petType, int petObjId)
 	{
-		_petId = petId;		// summonType?
-		_petObjId= petObjId;	//objectId
+		_petType = petType;     // Summon Type
+		_petObjId= petObjId;    // objectId
 	}
 
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0xb7);
-		writeD(_petId);// dont really know what these two are since i never needed them
-		writeD(_petObjId);//objectId
+		writeD(_petType);
+		writeD(_petObjId);
 	}
 
 	@Override
 	public String getType()
 	{
-		return _S__CF_PETDELETE;
+		return _S__B7_PETDELETE;
 	}
 }
