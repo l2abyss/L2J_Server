@@ -431,7 +431,7 @@ public class L2DoorInstance extends L2Character
 	{
 		if (!(object instanceof L2PcInstance))
 			return 0;
-		return 2000;
+		return 3000;
 	}
 	
 	/**
