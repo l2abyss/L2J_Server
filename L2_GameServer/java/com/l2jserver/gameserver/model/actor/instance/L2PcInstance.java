@@ -6240,6 +6240,11 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public L2PcInstance getActiveRequester()
 	{
+		if (_activeRequester != null)
+		{
+			if (_activeRequester.isRequestExpired() && _activeTradeList == null)
+				_activeRequester = null;
+		}
 		return _activeRequester;
 	}
 
@@ -6248,13 +6253,16 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean isProcessingRequest()
 	{
-		return _activeRequester != null || _requestExpireTime > GameTimeController.getGameTicks();
+		return getActiveRequester() != null || _requestExpireTime > GameTimeController.getGameTicks();
 	}
 
 	/**
 	 * Return True if a transaction is in progress.<BR><BR>
 	 */
-	public boolean isProcessingTransaction() { return _activeRequester != null || _activeTradeList != null || _requestExpireTime > GameTimeController.getGameTicks(); }
+	public boolean isProcessingTransaction()
+	{
+		return getActiveRequester() != null || _activeTradeList != null || _requestExpireTime > GameTimeController.getGameTicks();
+	}
 
 	/**
 	 * Select the Warehouse to be used in next activity.<BR><BR>
