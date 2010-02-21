@@ -14,7 +14,9 @@
  */
 package com.l2jserver.gameserver.templates.item;
 
+import com.l2jserver.gameserver.skills.SkillHolder;
 import com.l2jserver.gameserver.templates.StatsSet;
+import com.l2jserver.gameserver.util.StringUtil;
 
 /**
  * This class is dedicated to the management of EtcItem.
@@ -23,8 +25,9 @@ import com.l2jserver.gameserver.templates.StatsSet;
  */
 public final class L2EtcItem  extends L2Item
 {
-	private final String[] _skill;
+	// private final String[] _skill;
 	private final String _handler;
+	private SkillHolder[] _skillHolder;
 	/**
 	 * Constructor for EtcItem.
 	 * @see L2Item constructor
@@ -34,7 +37,41 @@ public final class L2EtcItem  extends L2Item
 	public L2EtcItem(L2EtcItemType type, StatsSet set)
 	{
 		super(type, set);
-		_skill = set.getString("skill").split(";");
+		String[] skills = set.getString("skill").split(";");
+		
+		_skillHolder = new SkillHolder[skills.length];
+		byte iterator = 0;
+		
+		for(String st : skills)
+		{
+			String[] info = st.split("-");
+			
+			if(info == null || info.length != 2)
+				continue;
+
+			int id = 0;
+			int level = 0;
+			
+			try
+			{
+				id = Integer.parseInt(info[0]);
+				level = Integer.parseInt(info[1]);
+			}
+			catch(Exception nfe)
+			{
+				// Incorrect syntax, dont add new skill
+				System.out.println(StringUtil.concat("> Couldnt parse " , st, " in etcitem skills!"));
+				continue;
+			}
+			
+			// If skill can exist, add it
+			if(id > 0 && level > 0)
+			{
+				_skillHolder[iterator] = new SkillHolder(id, level);
+				iterator++;
+			}
+		}
+		
 		_handler = set.getString("handler");
 	}
 
@@ -72,9 +109,9 @@ public final class L2EtcItem  extends L2Item
 	 * Returns skills linked to that EtcItem
 	 * @return
 	 */
-	public String[] getSkills()
+	public SkillHolder[] getSkills()
 	{
-		return _skill;
+		return _skillHolder;
 	}
 	
 	public String getHandlerName()

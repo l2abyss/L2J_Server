@@ -21,9 +21,11 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.skills.Env;
+import com.l2jserver.gameserver.skills.SkillHolder;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.templates.StatsSet;
+import com.l2jserver.gameserver.util.StringUtil;
 
 /**
  * This class is dedicated to the management of armors.
@@ -38,7 +40,8 @@ public final class L2Armor extends L2Item
 	private final int _mpBonus;
 	private final int _hpBonus;
 	private L2Skill _enchant4Skill = null; // skill that activates when armor is enchanted +4
-	private final String[] _skill;
+	// private final String[] _skill;
+	private SkillHolder[] _skillHolder;
 
     /**
      * Constructor for Armor.<BR><BR>
@@ -69,7 +72,38 @@ public final class L2Armor extends L2Item
 				_enchant4Skill = SkillTable.getInstance().getInfo(skill_Id, skillLvl);
 		}
 
-		_skill = set.getString("skill").split(";");
+		String[] skills = set.getString("skill").split(";");
+		_skillHolder = new SkillHolder[skills.length];
+		byte iterator = 0;
+		for(String st : skills)
+		{
+			String[] info = st.split("-");
+			
+			if(info == null || info.length != 2)
+				continue;
+			
+			int id = 0;
+			int level = 0;
+			
+			try
+			{
+				id = Integer.parseInt(info[0]);
+				level = Integer.parseInt(info[1]);
+			}
+			catch(Exception nfe)
+			{
+				// Incorrect syntax, dont add new skill
+				System.out.println(StringUtil.concat("> Couldnt parse " , st, " in armor skills!"));
+				continue;
+			}
+			
+			// If skill can exist, add it
+			if(id > 0 && level > 0)
+			{
+				_skillHolder[iterator] = new SkillHolder(id, level);
+				iterator++;
+			}
+		}
 	}
 
 	/**
@@ -150,9 +184,9 @@ public final class L2Armor extends L2Item
 	 * Returns passive skill linked to that armor
 	 * @return
 	 */
-	public String[] getSkills()
+	public SkillHolder[] getSkills()
 	{
-		return _skill;
+		return _skillHolder;
 	}
 
 	/**

@@ -32,12 +32,14 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.skills.Formulas;
+import com.l2jserver.gameserver.skills.SkillHolder;
 import com.l2jserver.gameserver.skills.conditions.Condition;
 import com.l2jserver.gameserver.skills.conditions.ConditionGameChance;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.util.StringUtil;
 
 import javolution.util.FastList;
 
@@ -63,7 +65,8 @@ public final class L2Weapon extends L2Item
 	private final int _mDam;
 	private L2Skill _enchant4Skill = null; // skill that activates when item is enchanted +4 (for duals)
 	private final int _changeWeaponId;
-	private final String[] _skill;
+	// private final String[] _skill;
+	private SkillHolder[] _skillHolder;
 	
 	// Attached skills for Special Abilities
 	protected L2Skill _skillsOnCast;
@@ -103,7 +106,38 @@ public final class L2Weapon extends L2Item
 		_mpConsume = set.getInteger("mp_consume");
 		_mDam = set.getInteger("m_dam");
 		
-		_skill = set.getString("skill").split(";");
+		String[] skills = set.getString("skill").split(";");
+		_skillHolder = new SkillHolder[skills.length];
+		byte iterator = 0;
+		for(String st : skills)
+		{
+			String[] info = st.split("-");
+			
+			if(info == null || info.length != 2)
+				continue;
+
+			int id = 0;
+			int level = 0;
+			
+			try
+			{
+				id = Integer.parseInt(info[0]);
+				level = Integer.parseInt(info[1]);
+			}
+			catch(Exception nfe)
+			{
+				// Incorrect syntax, dont add new skill
+				System.out.println(StringUtil.concat("> Couldnt parse " , st, " in weapon skills!"));
+				continue;
+			}
+			
+			// If skill can exist, add it
+			if(id > 0 && level > 0)
+			{
+				_skillHolder[iterator] = new SkillHolder(id, level);
+				iterator++;
+			}
+		}
 		
 		int sId = set.getInteger("enchant4_skill_id");
 		int sLv = set.getInteger("enchant4_skill_lvl");
@@ -273,9 +307,9 @@ public final class L2Weapon extends L2Item
 	 * Returns passive skill linked to that weapon
 	 * @return
 	 */
-	public String[] getSkills()
+	public SkillHolder[] getSkills()
 	{
-		return _skill;
+		return _skillHolder;
 	}
 	
 	/**
