@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.entity.Auction;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.zone.type.L2ClanHallZone;
 
@@ -112,7 +113,10 @@ public class ClanHallManager
 						ch.free();
 				}
 				_freeClanHall.put(id, ch);
-				AuctionManager.getInstance().initNPC(id);
+
+				Auction auc = AuctionManager.getInstance().getAuction(id);
+				if (auc == null && lease > 0)
+					AuctionManager.getInstance().initNPC(id);
 			}
 
 			statement.close();
