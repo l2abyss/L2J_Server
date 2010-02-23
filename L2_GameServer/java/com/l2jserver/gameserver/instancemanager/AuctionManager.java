@@ -178,6 +178,7 @@ public class AuctionManager
 			statement.execute();
 			statement.close();
 			_auctions.add(new Auction(id));
+			_log.info("Created auction for ClanHall: " + id);
 		}
 		catch (Exception e)
 		{
