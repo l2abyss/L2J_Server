@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.skills.conditions;
 import java.util.ArrayList;
 
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.skills.Env;
 
 
@@ -32,9 +33,12 @@ public class ConditionTargetNpcId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.target instanceof L2Npc))
-			return false;
+		if (env.target instanceof L2Npc)
+			return _npcIds.contains(((L2Npc)env.target).getNpcId());
 
-		return _npcIds.contains(((L2Npc)env.target).getNpcId());
+		if (env.target instanceof L2DoorInstance)
+			return _npcIds.contains(((L2DoorInstance)env.target).getDoorId());
+
+		return false;
 	}
 }
