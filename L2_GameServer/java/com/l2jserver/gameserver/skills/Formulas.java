@@ -2635,43 +2635,6 @@ public final class Formulas
 		return (Rnd.get(10000) > rate);
 	}
 
-	public static boolean calculateUnlockChance(L2Skill skill)
-	{
-		int level = skill.getLevel();
-		int chance = 0;
-		switch (level)
-		{
-			case 1:
-				chance = 30;
-				break;
-
-			case 2:
-				chance = 50;
-				break;
-
-			case 3:
-				chance = 75;
-				break;
-
-			case 4:
-			case 5:
-			case 6:
-			case 7:
-			case 8:
-			case 9:
-			case 10:
-			case 11:
-			case 12:
-			case 13:
-			case 14:
-				chance = 100;
-				break;
-		}
-		if (Rnd.get(120) > chance)		
-			return false;
-		return true;
-	}
-	
     public static double calcManaDam(L2Character attacker, L2Character target, L2Skill skill,
 			boolean ss, boolean bss)
     {
