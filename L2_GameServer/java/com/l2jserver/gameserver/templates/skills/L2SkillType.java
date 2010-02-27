@@ -30,6 +30,7 @@ import com.l2jserver.gameserver.skills.l2skills.L2SkillMount;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillSiegeFlag;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillSignet;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillSignetCasttime;
+import com.l2jserver.gameserver.skills.l2skills.L2SkillSpawn;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillTeleport;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillTrap;
@@ -144,6 +145,7 @@ public enum L2SkillType
 	ERASE,
 	BETRAY,
 	DECOY(L2SkillDecoy.class),
+	SPAWN(L2SkillSpawn.class),
 	
 	// Cancel
 	CANCEL,
