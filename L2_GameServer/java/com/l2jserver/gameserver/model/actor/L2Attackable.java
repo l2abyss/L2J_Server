@@ -82,30 +82,68 @@ public class L2Attackable extends L2Npc
 	 */
 	public final class AggroInfo
 	{
-		protected L2Character _attacker;
-
-		protected int _hate;
-
-		protected int _damage;
+		private final L2Character _attacker;
+		private int _hate = 0;
+		private int _damage = 0;
 
 		AggroInfo(L2Character pAttacker)
 		{
 			_attacker = pAttacker;
 		}
 
-		public boolean equals(Object obj)
+		public final L2Character getAttacker()
+		{
+			return _attacker;
+		}
+
+		public final int getHate()
+		{
+			return _hate;
+		}
+
+		public final int checkHate(L2Character owner)
+		{
+			if (_attacker.isAlikeDead()
+					|| !_attacker.isVisible()
+					|| !owner.getKnownList().knowsObject(_attacker))
+				_hate = 0;
+
+			return _hate;
+		}
+
+		public final void addHate(int value)
+		{
+			_hate = Math.min(_hate + value, 999999999);
+		}
+
+		public final void stopHate()
+		{
+			_hate = 0;
+		}
+
+		public final int getDamage()
+		{
+			return _damage;
+		}
+
+		public final void addDamage(int value)
+		{
+			_damage = Math.min(_damage + value, 999999999);
+		}
+
+		public final boolean equals(Object obj)
 		{
 			if (this == obj)
 				return true;
 
 			if (obj instanceof AggroInfo)
-				return (((AggroInfo)obj)._attacker == _attacker);
+				return (((AggroInfo)obj).getAttacker() == _attacker);
 
 			return false;
 		}
 
 		@Override
-		public int hashCode()
+		public final int hashCode()
 		{
 			return _attacker.getObjectId();
 		}
@@ -557,10 +595,10 @@ public class L2Attackable extends L2Npc
 						continue;
 
 					// Get the L2Character corresponding to this attacker
-					attacker = info._attacker;
+					attacker = info.getAttacker();
 
 					// Get damages done by this attacker
-					damage = info._damage;
+					damage = info.getDamage();
 
 					// Prevent unwanted behavior
 					if (damage > 1)
@@ -568,7 +606,7 @@ public class L2Attackable extends L2Npc
 						if ((attacker instanceof L2SummonInstance) || ((attacker instanceof L2PetInstance) && ((L2PetInstance)attacker).getPetData().getOwnerExpTaken() > 0))
 							ddealer = ((L2Summon)attacker).getOwner();
 						else
-							ddealer = info._attacker;
+							ddealer = info.getAttacker();
 
 						// Check if ddealer isn't too far from this (killed monster)
 						if (!Util.checkIfInRange(Config.ALT_PARTY_RANGE, this, ddealer, true))
@@ -873,18 +911,15 @@ public class L2Attackable extends L2Npc
 		{
 			ai = new AggroInfo(attacker);
 			getAggroList().put(attacker, ai);
-
-			ai._damage = 0;
-			ai._hate = 0;
 		}
-		ai._damage += damage;
+		ai.addDamage(damage);
 		// traps does not cause aggro
 		// making this hack because not possible to determine if damage made by trap
 		// so just check for triggered trap here
 		if (targetPlayer == null
 				|| targetPlayer.getTrap() == null
 				|| !targetPlayer.getTrap().isTriggered())
-		ai._hate += aggro;
+		ai.addHate(aggro);
 
 		if (targetPlayer != null && aggro == 0)
 		{
@@ -895,7 +930,7 @@ public class L2Attackable extends L2Npc
 		else if (targetPlayer == null && aggro == 0)
 		{
 			aggro = 1;
-			ai._hate ++;
+			ai.addHate(1);
 		}
 
 		// Set the intention to the L2Attackable to AI_INTENTION_ACTIVE
@@ -931,7 +966,7 @@ public class L2Attackable extends L2Npc
 
 					if (ai == null)
 						return;
-					ai._hate -= amount;
+					ai.addHate(-amount);
 				}
 			}
 
@@ -950,9 +985,9 @@ public class L2Attackable extends L2Npc
 
 		if (ai == null)
 			return;
-		ai._hate -= amount;
+		ai.addHate(-amount);
 
-		if (ai._hate <= 0)
+		if (ai.getHate() <= 0)
 		{
 			if (getMostHated() == null)
 			{
@@ -972,10 +1007,8 @@ public class L2Attackable extends L2Npc
 		if (target == null)
 			return;
 		AggroInfo ai = getAggroList().get(target);
-
-		if (ai == null)
-			return;
-		ai._hate = 0;
+		if (ai != null)
+			ai.stopHate();
 	}
 
 	/**
@@ -997,18 +1030,10 @@ public class L2Attackable extends L2Npc
 				if (ai == null)
 					continue;
 
-				if
-				(
-					ai._attacker.isAlikeDead()
-					|| !getKnownList().knowsObject(ai._attacker)
-					|| !ai._attacker.isVisible()
-				)
-					ai._hate = 0;
-
-				if (ai._hate > maxHate)
+				if (ai.checkHate(this) > maxHate)
 				{
-					mostHated = ai._attacker;
-					maxHate = ai._hate;
+					mostHated = ai.getAttacker();
+					maxHate = ai.getHate();
 				}
 			}
 		}
@@ -1037,19 +1062,11 @@ public class L2Attackable extends L2Npc
 				if (ai == null)
 					continue;
 
-				if
-				(
-					ai._attacker.isAlikeDead() 
-					|| !getKnownList().knowsObject(ai._attacker)
-					|| !ai._attacker.isVisible()
-				)
-					ai._hate = 0;
-
-				if (ai._hate > maxHate)
+				if (ai.checkHate(this) > maxHate)
 				{
 					secondMostHated = mostHated;
-					mostHated = ai._attacker;
-					maxHate = ai._hate;
+					mostHated = ai.getAttacker();
+					maxHate = ai.getHate();
 				}
 			}
 		}
@@ -1071,12 +1088,11 @@ public class L2Attackable extends L2Npc
 		{
 			for (AggroInfo ai : getAggroList().values())
 			{
-				if (ai == null) continue;
-	            if (ai._attacker.isAlikeDead() 
-	            		|| !getKnownList().knowsObject(ai._attacker)
-	            		||!ai._attacker.isVisible())
-	            	ai._hate = 0;
-	            result.add(ai._attacker);
+				if (ai == null)
+					continue;
+				ai.checkHate(this);
+
+				result.add(ai.getAttacker());
 	        }
 		}
 
@@ -1097,25 +1113,27 @@ public class L2Attackable extends L2Npc
 		if (ai == null)
 			return 0;
 
-		if (ai._attacker instanceof L2PcInstance && (((L2PcInstance)ai._attacker).getAppearance().getInvisible() || ai._attacker.isInvul()))
+		if (ai.getAttacker() instanceof L2PcInstance
+				&& (((L2PcInstance)ai.getAttacker()).getAppearance().getInvisible()
+						|| ai.getAttacker().isInvul()))
 		{
 			//Remove Object Should Use This Method and Can be Blocked While Interating
 			getAggroList().remove(target);
 			return 0;
 		}
 
-		if (!ai._attacker.isVisible())
+		if (!ai.getAttacker().isVisible())
 		{
 			getAggroList().remove(target);
 			return 0;
 		}
 
-		if (ai._attacker.isAlikeDead())
+		if (ai.getAttacker().isAlikeDead())
 		{
-			ai._hate = 0;
+			ai.stopHate();
 			return 0;
 		}
-		return ai._hate;
+		return ai.getHate();
 	}
 
 	/**
