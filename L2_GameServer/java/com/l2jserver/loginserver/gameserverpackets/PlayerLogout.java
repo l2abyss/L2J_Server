@@ -14,13 +14,13 @@
  */
 package com.l2jserver.loginserver.gameserverpackets;
 
-import com.l2jserver.loginserver.clientpackets.ClientBasePacket;
+import com.l2jserver.util.network.BaseRecievePacket;
 
 /**
  * @author -Wooden-
  *
  */
-public class PlayerLogout extends ClientBasePacket
+public class PlayerLogout extends BaseRecievePacket
 {
 
 	private String _account;

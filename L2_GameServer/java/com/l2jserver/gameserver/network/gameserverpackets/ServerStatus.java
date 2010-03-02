@@ -17,11 +17,13 @@ package com.l2jserver.gameserver.network.gameserverpackets;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.l2jserver.util.network.BaseSendablePacket;
+
 /**
  * @author -Wooden-
  *
  */
-public class ServerStatus extends GameServerBasePacket
+public class ServerStatus extends BaseSendablePacket
 {
     private ArrayList<Attribute> _attributes;
 

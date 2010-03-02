@@ -24,7 +24,7 @@ public class ExRestartClient extends L2GameServerPacket
 	private static final String _S__FE_47_EXRESTARTCLIENT = "[S] FE:48 ExRestartClient";
 
 	/**
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
+	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
 	@Override
 	protected

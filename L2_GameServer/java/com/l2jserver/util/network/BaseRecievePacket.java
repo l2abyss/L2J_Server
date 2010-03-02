@@ -12,19 +12,19 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.loginserver.clientpackets;
+package com.l2jserver.util.network;
 
 /**
  * This class ...
  *
  * @version $Revision: 1.2.4.1 $ $Date: 2005/03/27 15:30:12 $
  */
-public abstract class ClientBasePacket
+public abstract class BaseRecievePacket
 {
 	private byte[] _decrypt;
 	private int _off;
 
-	public ClientBasePacket(byte[] decrypt)
+	public BaseRecievePacket(byte[] decrypt)
 	{
 		_decrypt = decrypt;
 		_off = 1;		// skip packet type id
@@ -54,14 +54,14 @@ public abstract class ClientBasePacket
 
 	public double readF()
 	{
-		long result = _decrypt[_off++] &0xff;
-		result |= _decrypt[_off++] << 8 &0xff00;
-		result |= _decrypt[_off++] << 0x10 &0xff0000;
-		result |= _decrypt[_off++] << 0x18 &0xff000000;
-		result |= _decrypt[_off++] << 0x20 &0xff00000000l;
-		result |= _decrypt[_off++] << 0x28 &0xff0000000000l;
-		result |= _decrypt[_off++] << 0x30 &0xff000000000000l;
-		result |= _decrypt[_off++] << 0x38 &0xff00000000000000l;
+		long result = _decrypt[_off++] & 0xff;
+		result |= _decrypt[_off++] & 0xff << 8;
+		result |= _decrypt[_off++] & 0xff << 16;
+		result |= (_decrypt[_off++] & 0xffl) << 24l;
+		result |= (_decrypt[_off++] & 0xffl) << 32l;
+		result |= (_decrypt[_off++] & 0xffl) << 40l;
+		result |= (_decrypt[_off++] & 0xffl) << 48l;
+		result |= (_decrypt[_off++] & 0xffl) << 56l;
 		return Double.longBitsToDouble(result);
 	}
 
@@ -89,6 +89,19 @@ public abstract class ClientBasePacket
 			result[i]=_decrypt[_off+i];
 		}
 		_off += length;
+		return result;
+	}
+	
+	public long readQ()
+	{
+		long result = _decrypt[_off++] & 0xff;
+		result |= _decrypt[_off++] & 0xff << 8;
+		result |= _decrypt[_off++] & 0xff << 16;
+		result |= (_decrypt[_off++] & 0xffl) << 24l;
+		result |= (_decrypt[_off++] & 0xffl) << 32l;
+		result |= (_decrypt[_off++] & 0xffl) << 40l;
+		result |= (_decrypt[_off++] & 0xffl) << 48l;
+		result |= (_decrypt[_off++] & 0xffl) << 56l;
 		return result;
 	}
 }

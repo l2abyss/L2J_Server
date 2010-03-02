@@ -24,7 +24,7 @@ public class ExShowVariationMakeWindow extends L2GameServerPacket
 	private static final String _S__FE_50_EXSHOWVARIATIONMAKEWINDOW = "[S] FE:51 ExShowVariationMakeWindow";
 
 	/**
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
+	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
 	@Override
 	protected void writeImpl()

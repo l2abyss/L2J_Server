@@ -16,7 +16,7 @@ package com.l2jserver.loginserver.gameserverpackets;
 
 import java.util.List;
 
-import com.l2jserver.loginserver.clientpackets.ClientBasePacket;
+import com.l2jserver.util.network.BaseRecievePacket;
 
 import javolution.util.FastList;
 
@@ -24,7 +24,7 @@ import javolution.util.FastList;
  * @author -Wooden-
  *
  */
-public class PlayerInGame extends ClientBasePacket
+public class PlayerInGame extends BaseRecievePacket
 {
 	private List<String> _accounts;
 

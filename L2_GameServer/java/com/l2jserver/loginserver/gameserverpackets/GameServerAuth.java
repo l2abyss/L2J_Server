@@ -16,7 +16,7 @@ package com.l2jserver.loginserver.gameserverpackets;
 
 import java.util.logging.Logger;
 
-import com.l2jserver.loginserver.clientpackets.ClientBasePacket;
+import com.l2jserver.util.network.BaseRecievePacket;
 
 
 /**
@@ -32,7 +32,7 @@ import com.l2jserver.loginserver.clientpackets.ClientBasePacket;
  * @author -Wooden-
  *
  */
-public class GameServerAuth extends ClientBasePacket
+public class GameServerAuth extends BaseRecievePacket
 {
 	protected static Logger _log = Logger.getLogger(GameServerAuth.class.getName());
 	private byte[] _hexId;

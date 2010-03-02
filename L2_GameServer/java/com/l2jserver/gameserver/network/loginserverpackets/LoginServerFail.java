@@ -14,8 +14,10 @@
  */
 package com.l2jserver.gameserver.network.loginserverpackets;
 
+import com.l2jserver.util.network.BaseRecievePacket;
 
-public class LoginServerFail extends LoginServerBasePacket
+
+public class LoginServerFail extends BaseRecievePacket
 {
 
 	private static final String[] REASONS = {"None" ,

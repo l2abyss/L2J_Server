@@ -17,14 +17,14 @@ package com.l2jserver.loginserver.loginserverpackets;
 import java.io.IOException;
 
 import com.l2jserver.loginserver.GameServerTable;
-import com.l2jserver.loginserver.serverpackets.ServerBasePacket;
+import com.l2jserver.util.network.BaseSendablePacket;
 
 
 /**
  * @author -Wooden-
  *
  */
-public class AuthResponse extends ServerBasePacket
+public class AuthResponse extends BaseSendablePacket
 {
 
 	/**

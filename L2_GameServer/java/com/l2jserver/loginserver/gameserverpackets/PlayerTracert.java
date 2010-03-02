@@ -14,13 +14,13 @@
  */
 package com.l2jserver.loginserver.gameserverpackets;
 
-import com.l2jserver.loginserver.clientpackets.ClientBasePacket;
+import com.l2jserver.util.network.BaseRecievePacket;
 
 /**
  * @author mrTJO
  *
  */
-public class PlayerTracert extends ClientBasePacket
+public class PlayerTracert extends BaseRecievePacket
 {
 	private String _account;
 	private String _pcIp;

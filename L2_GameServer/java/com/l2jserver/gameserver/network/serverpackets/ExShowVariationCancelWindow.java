@@ -24,7 +24,7 @@ public class ExShowVariationCancelWindow extends L2GameServerPacket
 	private static final String _S__FE_51_EXSHOWVARIATIONCANCELWINDOW = "[S] FE:52 ExShowVariationCancelWindow";
 
 	/**
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
+	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
 	@Override
 	protected void writeImpl()

@@ -24,7 +24,7 @@ public class ExRequestHackShield extends L2GameServerPacket
 	private static final String _S__FE_48_EXREQUESTHACKSHIELD = "[S] FE:49 ExRequestHackShield";
 
 	/**
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
+	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
 	@Override
 	protected void writeImpl()

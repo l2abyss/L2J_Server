@@ -16,11 +16,13 @@ package com.l2jserver.gameserver.network.gameserverpackets;
 
 import java.io.IOException;
 
+import com.l2jserver.util.network.BaseSendablePacket;
+
 /**
  * @author -Wooden-
  *
  */
-public class ChangeAccessLevel extends GameServerBasePacket
+public class ChangeAccessLevel extends BaseSendablePacket
 {
 	public ChangeAccessLevel(String player, int access)
 	{

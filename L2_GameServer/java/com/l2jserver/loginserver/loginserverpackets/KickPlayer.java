@@ -16,14 +16,14 @@ package com.l2jserver.loginserver.loginserverpackets;
 
 import java.io.IOException;
 
-import com.l2jserver.loginserver.serverpackets.ServerBasePacket;
+import com.l2jserver.util.network.BaseSendablePacket;
 
 
 /**
  * @author -Wooden-
  *
  */
-public class KickPlayer extends ServerBasePacket
+public class KickPlayer extends BaseSendablePacket
 {
 	public KickPlayer(String account)
 	{

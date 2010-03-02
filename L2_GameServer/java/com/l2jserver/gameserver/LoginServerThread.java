@@ -45,7 +45,6 @@ import com.l2jserver.gameserver.network.L2GameClient.GameClientState;
 import com.l2jserver.gameserver.network.gameserverpackets.AuthRequest;
 import com.l2jserver.gameserver.network.gameserverpackets.BlowFishKey;
 import com.l2jserver.gameserver.network.gameserverpackets.ChangeAccessLevel;
-import com.l2jserver.gameserver.network.gameserverpackets.GameServerBasePacket;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerAuthRequest;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerInGame;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerLogout;
@@ -61,6 +60,7 @@ import com.l2jserver.gameserver.network.serverpackets.LoginFail;
 import com.l2jserver.loginserver.crypt.NewCrypt;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.Util;
+import com.l2jserver.util.network.BaseSendablePacket;
 
 public class LoginServerThread extends Thread
 {
@@ -505,7 +505,7 @@ public class LoginServerThread extends Thread
 	 * @param sl
 	 * @throws IOException
 	 */
-	private void sendPacket(GameServerBasePacket sl) throws IOException
+	private void sendPacket(BaseSendablePacket sl) throws IOException
 	{
 		byte[] data = sl.getContent();
 		NewCrypt.appendChecksum(data);

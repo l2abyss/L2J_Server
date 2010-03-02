@@ -12,23 +12,21 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.network.gameserverpackets;
+package com.l2jserver.util.network;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import com.l2jserver.gameserver.TaskPriority;
-
-
 /**
- * @author -Wooden-
+ * This class ...
  *
+ * @version $Revision: 1.2.4.1 $ $Date: 2005/03/27 15:30:11 $
  */
-public abstract class GameServerBasePacket
+public abstract class BaseSendablePacket
 {
-	private ByteArrayOutputStream _bao;
+	ByteArrayOutputStream _bao;
 
-	protected GameServerBasePacket()
+	protected BaseSendablePacket()
 	{
 		_bao = new ByteArrayOutputStream();
 	}
@@ -95,6 +93,18 @@ public abstract class GameServerBasePacket
 			e.printStackTrace();
 		}
 	}
+	
+	protected void writeQ(long value)
+	{
+		_bao.write((int) (value & 0xff));
+		_bao.write((int) (value >> 8 & 0xff));
+		_bao.write((int) (value >> 16 & 0xff));
+		_bao.write((int) (value >> 24 & 0xff));
+		_bao.write((int) (value >> 32 & 0xff));
+		_bao.write((int) (value >> 40 & 0xff));
+		_bao.write((int) (value >> 48 & 0xff));
+		_bao.write((int) (value >> 56 & 0xff));
+	}
 
 	public int getLength()
 	{
@@ -103,7 +113,10 @@ public abstract class GameServerBasePacket
 
 	public byte[] getBytes()
 	{
-		writeD(0x00);	// reserve for checksum
+		//if (this instanceof Init)
+		//	writeD(0x00); //reserve for XOR initial key
+
+		writeD(0x00); // reserve for checksum
 
 		int padding = _bao.size() % 8;
 		if (padding != 0)
@@ -117,6 +130,5 @@ public abstract class GameServerBasePacket
 		return _bao.toByteArray();
 	}
 
-	public TaskPriority getPriority() { return TaskPriority.PR_HIGH; }
 	public abstract byte[] getContent() throws IOException;
 }

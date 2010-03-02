@@ -15,13 +15,13 @@
 package com.l2jserver.loginserver.gameserverpackets;
 
 import com.l2jserver.loginserver.SessionKey;
-import com.l2jserver.loginserver.clientpackets.ClientBasePacket;
+import com.l2jserver.util.network.BaseRecievePacket;
 
 /**
  * @author -Wooden-
  *
  */
-public class PlayerAuthRequest extends ClientBasePacket
+public class PlayerAuthRequest extends BaseRecievePacket
 {
 
 	private String _account;

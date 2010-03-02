@@ -14,12 +14,14 @@
  */
 package com.l2jserver.gameserver.network.loginserverpackets;
 
+import com.l2jserver.util.network.BaseRecievePacket;
+
 
 /**
  * @author -Wooden-
  *
  */
-public class AuthResponse extends LoginServerBasePacket
+public class AuthResponse extends BaseRecievePacket
 {
 
 	private int _serverId;

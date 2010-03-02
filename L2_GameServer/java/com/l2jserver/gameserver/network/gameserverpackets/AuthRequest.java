@@ -16,7 +16,9 @@ package com.l2jserver.gameserver.network.gameserverpackets;
 
 import java.io.IOException;
 
-public class AuthRequest extends GameServerBasePacket
+import com.l2jserver.util.network.BaseSendablePacket;
+
+public class AuthRequest extends BaseSendablePacket
 {
 	/**
 	 * Format: cccSddb

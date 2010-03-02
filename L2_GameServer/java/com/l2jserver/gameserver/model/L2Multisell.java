@@ -101,7 +101,7 @@ public class L2Multisell
 	 * 		  be at +0
 	 * 3) apply taxes: Uses the "taxIngredient" entry in order to add a certain amount of adena to the ingredients
 	 *
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#runImpl()
+	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#runImpl()
 	 */
 	private MultiSellListContainer generateMultiSell(int listId, boolean inventoryOnly, L2PcInstance player, int npcId, double taxRate)
 	{

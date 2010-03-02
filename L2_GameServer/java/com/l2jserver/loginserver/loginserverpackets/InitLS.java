@@ -15,13 +15,13 @@
 package com.l2jserver.loginserver.loginserverpackets;
 
 import com.l2jserver.loginserver.L2LoginServer;
-import com.l2jserver.loginserver.serverpackets.ServerBasePacket;
+import com.l2jserver.util.network.BaseSendablePacket;
 
 /**
  * @author -Wooden-
  *
  */
-public class InitLS extends ServerBasePacket
+public class InitLS extends BaseSendablePacket
 {
 	// ID 0x00
 	// format

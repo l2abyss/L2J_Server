@@ -18,11 +18,13 @@ import java.io.IOException;
 
 import javolution.util.FastList;
 
+import com.l2jserver.util.network.BaseSendablePacket;
+
 /**
  * @author -Wooden-
  *
  */
-public class PlayerInGame extends GameServerBasePacket
+public class PlayerInGame extends BaseSendablePacket
 {
 	public PlayerInGame (String player)
 	{

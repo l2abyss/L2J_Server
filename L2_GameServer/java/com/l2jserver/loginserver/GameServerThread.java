@@ -45,8 +45,8 @@ import com.l2jserver.loginserver.loginserverpackets.InitLS;
 import com.l2jserver.loginserver.loginserverpackets.KickPlayer;
 import com.l2jserver.loginserver.loginserverpackets.LoginServerFail;
 import com.l2jserver.loginserver.loginserverpackets.PlayerAuthResponse;
-import com.l2jserver.loginserver.serverpackets.ServerBasePacket;
 import com.l2jserver.util.Util;
+import com.l2jserver.util.network.BaseSendablePacket;
 
 import javolution.util.FastSet;
 
@@ -622,7 +622,7 @@ public class GameServerThread extends Thread
 	 * @param sl
 	 * @throws IOException
 	 */
-	private void sendPacket(ServerBasePacket sl) throws IOException
+	private void sendPacket(BaseSendablePacket sl) throws IOException
 	{
 		byte[] data = sl.getContent();
 		NewCrypt.appendChecksum(data);

@@ -16,11 +16,13 @@ package com.l2jserver.gameserver.network.gameserverpackets;
 
 import java.io.IOException;
 
+import com.l2jserver.util.network.BaseSendablePacket;
+
 /**
  * @author mrTJO
  *
  */
-public class PlayerTracert extends GameServerBasePacket
+public class PlayerTracert extends BaseSendablePacket
 {
 	public PlayerTracert(String account, String pcIp, 
 			String hop1, String hop2, String hop3, String hop4)

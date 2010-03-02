@@ -21,11 +21,13 @@ import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 
+import com.l2jserver.util.network.BaseSendablePacket;
+
 /**
  * @author -Wooden-
  *
  */
-public class BlowFishKey extends GameServerBasePacket
+public class BlowFishKey extends BaseSendablePacket
 {
 	private static Logger _log = Logger.getLogger(BlowFishKey.class.getName());
 	/**

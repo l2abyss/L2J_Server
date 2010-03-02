@@ -17,13 +17,14 @@ package com.l2jserver.gameserver.network.gameserverpackets;
 import java.io.IOException;
 
 import com.l2jserver.gameserver.LoginServerThread.SessionKey;
+import com.l2jserver.util.network.BaseSendablePacket;
 
 
 /**
  * @author -Wooden-
  *
  */
-public class PlayerAuthRequest extends GameServerBasePacket
+public class PlayerAuthRequest extends BaseSendablePacket
 {
 	public PlayerAuthRequest(String account, SessionKey key)
 	{

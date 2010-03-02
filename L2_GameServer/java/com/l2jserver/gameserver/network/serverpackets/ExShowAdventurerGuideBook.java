@@ -23,7 +23,7 @@ public class ExShowAdventurerGuideBook extends L2GameServerPacket
 	private static final String _S__FE_37_EXSHOWADVENTURERGUIDEBOOK = "[S] FE:38 ExShowAdventurerGuideBook";
 
 	/**
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
+	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
 	@Override
 	protected void writeImpl()

@@ -20,14 +20,14 @@ import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 
-import com.l2jserver.loginserver.clientpackets.ClientBasePacket;
+import com.l2jserver.util.network.BaseRecievePacket;
 
 
 /**
  * @author -Wooden-
  *
  */
-public class BlowFishKey extends ClientBasePacket
+public class BlowFishKey extends BaseRecievePacket
 {
 	byte[] _key;
 	protected static final Logger _log = Logger.getLogger(BlowFishKey.class.getName());

@@ -18,14 +18,14 @@ import java.util.logging.Logger;
 
 import com.l2jserver.loginserver.GameServerTable;
 import com.l2jserver.loginserver.GameServerTable.GameServerInfo;
-import com.l2jserver.loginserver.clientpackets.ClientBasePacket;
+import com.l2jserver.util.network.BaseRecievePacket;
 
 
 /**
  * @author -Wooden-
  *
  */
-public class ServerStatus extends ClientBasePacket
+public class ServerStatus extends BaseRecievePacket
 {
 	protected static Logger _log = Logger.getLogger(ServerStatus.class.getName());
 

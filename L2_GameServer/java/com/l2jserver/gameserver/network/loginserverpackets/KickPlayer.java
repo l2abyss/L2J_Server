@@ -14,8 +14,10 @@
  */
 package com.l2jserver.gameserver.network.loginserverpackets;
 
+import com.l2jserver.util.network.BaseRecievePacket;
 
-public class KickPlayer extends LoginServerBasePacket
+
+public class KickPlayer extends BaseRecievePacket
 {
 
 	private String _account;

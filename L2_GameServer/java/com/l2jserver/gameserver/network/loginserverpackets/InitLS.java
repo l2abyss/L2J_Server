@@ -14,8 +14,10 @@
  */
 package com.l2jserver.gameserver.network.loginserverpackets;
 
+import com.l2jserver.util.network.BaseRecievePacket;
 
-public class InitLS extends LoginServerBasePacket
+
+public class InitLS extends BaseRecievePacket
 {
 	private int _rev;
 	private byte[] _key;

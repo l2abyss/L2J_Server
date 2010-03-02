@@ -47,7 +47,7 @@ public final class RequestRefine extends AbstractRefinePacket
 	}
 
 	/**
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
+	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
 	 */
 	@Override
 	protected void runImpl()
