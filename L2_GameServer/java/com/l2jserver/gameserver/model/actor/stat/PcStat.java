@@ -507,7 +507,7 @@ public class PcStat extends PlayableStat
 		getActiveChar().sendPacket(new ExVitalityPointInfo(getVitalityPoints()));
     }
 
-    public void updateVitalityPoints(float points, boolean useRates, boolean quiet)
+    public synchronized void updateVitalityPoints(float points, boolean useRates, boolean quiet)
     {
     	if (points == 0 || !Config.ENABLE_VITALITY)
     		return;

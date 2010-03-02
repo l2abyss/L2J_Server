@@ -11385,41 +11385,55 @@ public final class L2PcInstance extends L2Playable
 		_snoopedPlayer.remove(pci);
 	}
 
-	public synchronized void addBypass(String bypass)
+	public void addBypass(String bypass)
 	{
 		if (bypass == null) return;
-		_validBypass.add(bypass);
+		synchronized(_validBypass)
+		{
+			_validBypass.add(bypass);
+		}
 		//_log.warning("[BypassAdd]"+getName()+" '"+bypass+"'");
 	}
 
-	public synchronized void addBypass2(String bypass)
+	public void addBypass2(String bypass)
 	{
 		if (bypass == null) return;
-		_validBypass2.add(bypass);
+		synchronized(_validBypass2)
+		{
+			_validBypass2.add(bypass);
+		}
 		//_log.warning("[BypassAdd]"+getName()+" '"+bypass+"'");
 	}
 
-	public synchronized boolean validateBypass(String cmd)
+	public boolean validateBypass(String cmd)
 	{
 		if (!Config.BYPASS_VALIDATION)
 			return true;
 
-		for (String bp : _validBypass)
+		synchronized (_validBypass)
 		{
-		    if (bp == null) continue;
-
-			//_log.warning("[BypassValidation]"+getName()+" '"+bp+"'");
-			if (bp.equals(cmd))
-				return true;
+			for (String bp : _validBypass)
+			{
+				if (bp == null)
+					continue;
+				
+				//_log.warning("[BypassValidation]"+getName()+" '"+bp+"'");
+				if (bp.equals(cmd))
+					return true;
+			}
 		}
-
-		for (String bp : _validBypass2)
+		
+		synchronized (_validBypass2)
 		{
-		    if (bp == null) continue;
-
-			//_log.warning("[BypassValidation]"+getName()+" '"+bp+"'");
-			if (cmd.startsWith(bp))
-				return true;
+			for (String bp : _validBypass2)
+			{
+				if (bp == null)
+					continue;
+				
+				//_log.warning("[BypassValidation]"+getName()+" '"+bp+"'");
+				if (cmd.startsWith(bp))
+					return true;
+			}
 		}
 		_log.warning("[L2PcInstance] player ["+getName()+"] sent invalid bypass '"+cmd+"', ban this player!");
 		return false;
@@ -11481,10 +11495,16 @@ public final class L2PcInstance extends L2Playable
 		return true;
 	}
 
-	public synchronized void clearBypass()
+	public void clearBypass()
 	{
-        _validBypass.clear();
-        _validBypass2.clear();
+		synchronized (_validBypass)
+		{
+			_validBypass.clear();
+		}
+		synchronized (_validBypass2)
+		{
+			_validBypass2.clear();
+		}
 	}
 
 	/**
@@ -13326,7 +13346,7 @@ public final class L2PcInstance extends L2Playable
     	getStat().setVitalityPoints(points, quiet);
     }
 
-    public synchronized void updateVitalityPoints(float points, boolean useRates, boolean quiet)
+    public void updateVitalityPoints(float points, boolean useRates, boolean quiet)
     {
     	getStat().updateVitalityPoints(points, useRates, quiet);
     }
