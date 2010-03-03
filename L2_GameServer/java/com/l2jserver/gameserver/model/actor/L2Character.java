@@ -1567,6 +1567,7 @@ public abstract class L2Character extends L2Object
     						case MANAHEAL:
     						case MANAHEAL_PERCENT:
     						case BALANCE_LIFE:
+    						case HPMPCPHEAL_PERCENT:
     							target.setLastBuffer(this);
     							break;
     					}
@@ -1642,6 +1643,7 @@ public abstract class L2Character extends L2Object
 				{
 					case BUFF:
 					case MANAHEAL:
+					case MANARECHARGE:
 					case RESURRECT:
 					case RECALL:
 					case DOT:
