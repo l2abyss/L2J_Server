@@ -17,7 +17,6 @@ package com.l2jserver.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 
 
@@ -145,7 +144,7 @@ public final class L2ObjectHashSet<T extends L2Object> extends L2ObjectSet<T>
 		if (_count >= _table.length/2)
 			expand();
 		final int hashcode = obj.getObjectId();
-		if (Config.ASSERT) assert hashcode > 0;
+		assert hashcode > 0;
 		int seed = hashcode;
 		int incr = 1 + (((seed >> 5) + 1) % (_table.length - 1));
 		int ntry = 0;
@@ -174,7 +173,7 @@ public final class L2ObjectHashSet<T extends L2Object> extends L2ObjectSet<T>
 				if (_table[pos] == obj)
 					return;
 				// this should never happen
-				if (Config.ASSERT) assert obj.getObjectId() != _table[pos].getObjectId();
+				assert obj.getObjectId() != _table[pos].getObjectId();
 				// if there was no collisions at this slot, and we found a free
 				// slot previously - use found slot
 				if (slot >= 0 && (_collisions[pos>>5] & (1<<(pos&31))) == 0)
@@ -207,7 +206,7 @@ public final class L2ObjectHashSet<T extends L2Object> extends L2ObjectSet<T>
 		if (!contains(obj))
 		    return;
 		int hashcode = obj.getObjectId();
-		if (Config.ASSERT) assert hashcode > 0;
+		assert hashcode > 0;
 		int seed = hashcode;
 		int incr = 1 + (((seed >> 5) + 1) % (_table.length - 1));
 		int ntry = 0;
@@ -253,7 +252,7 @@ public final class L2ObjectHashSet<T extends L2Object> extends L2ObjectSet<T>
 			return false;
 		}
 		int hashcode = obj.getObjectId();
-		if (Config.ASSERT) assert hashcode > 0;
+		assert hashcode > 0;
 		int seed = hashcode;
 		int incr = 1 + (((seed >> 5) + 1) % (size - 1));
 		int ntry = 0;

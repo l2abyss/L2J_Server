@@ -225,7 +225,7 @@ public final class L2ItemInstance extends L2Object
      */
     public final void pickupMe(L2Character player)
     {
-        if (Config.ASSERT) assert getPosition().getWorldRegion() != null;
+        assert getPosition().getWorldRegion() != null;
 
         L2WorldRegion oldregion = getPosition().getWorldRegion();
 
@@ -460,7 +460,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public int getLocationSlot()
 	{
-		if (Config.ASSERT) assert _loc == ItemLocation.PAPERDOLL || _loc == ItemLocation.PET_EQUIP || _loc == ItemLocation.INVENTORY || _loc == ItemLocation.MAIL;
+		assert _loc == ItemLocation.PAPERDOLL || _loc == ItemLocation.PET_EQUIP || _loc == ItemLocation.INVENTORY || _loc == ItemLocation.MAIL;
 		return _locData;
 	}
 
@@ -1451,8 +1451,7 @@ public final class L2ItemInstance extends L2Object
 
 		public final void run()
 		{
-			if (Config.ASSERT)
-				assert _itm.getPosition().getWorldRegion() == null;
+			assert _itm.getPosition().getWorldRegion() == null;
 
 			if (Config.GEODATA > 0 && _dropper != null)
 			{
@@ -1501,8 +1500,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	private void updateInDb()
     {
-		if (Config.ASSERT)
-			assert _existsInDb;
+		assert _existsInDb;
 
 		if (_wear)
 			return;
@@ -1559,8 +1557,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	private void insertIntoDb()
 	{
-		if (Config.ASSERT)
-			assert !_existsInDb && getObjectId() != 0;
+		assert !_existsInDb && getObjectId() != 0;
 
 		if (_wear)
 			return;
@@ -1619,8 +1616,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	private void removeFromDb()
     {
-		if (Config.ASSERT)
-			assert _existsInDb;
+		assert _existsInDb;
 
 		if (_wear)
 			return;

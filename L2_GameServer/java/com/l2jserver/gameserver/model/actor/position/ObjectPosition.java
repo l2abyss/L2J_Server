@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.model.actor.position;
 
 import java.util.logging.Logger;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
@@ -56,7 +55,7 @@ public class ObjectPosition
      */
     public final void setXYZ(int x, int y, int z)
     {
-        if (Config.ASSERT) assert getWorldRegion() != null;
+        assert getWorldRegion() != null;
 
         setWorldPosition(x, y ,z);
 
@@ -98,7 +97,7 @@ public class ObjectPosition
      */
     public final void setXYZInvisible(int x, int y, int z)
     {
-        if (Config.ASSERT) assert getWorldRegion() == null;
+        assert getWorldRegion() == null;
         if (x > L2World.MAP_MAX_X) x = L2World.MAP_MAX_X - 5000;
         if (x < L2World.MAP_MIN_X) x = L2World.MAP_MIN_X + 5000;
         if (y > L2World.MAP_MAX_Y) y = L2World.MAP_MAX_Y - 5000;

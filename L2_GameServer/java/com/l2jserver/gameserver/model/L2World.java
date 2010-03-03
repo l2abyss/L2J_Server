@@ -104,13 +104,12 @@ public final class L2World
 	 */
 	public void storeObject(L2Object object)
 	{
+		assert !_allObjects.containsKey(object.getObjectId());
+		
 		if (_allObjects.containsKey(object.getObjectId()))
 		{
 			if (Config.DEBUG)
 				_log.warning("[L2World] objectId " + object.getObjectId() + " already exist in OID map!");
-			if (Config.ASSERT)
-				throw new AssertionError();
-			
 			return;
 		}
 		

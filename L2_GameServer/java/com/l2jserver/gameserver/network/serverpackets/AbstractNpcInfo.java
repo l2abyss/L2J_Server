@@ -303,12 +303,11 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_runSpd = cha.getOwner().getRunSpeed();
 			_walkSpd = cha.getOwner().getWalkSpeed();
 			
+			assert _idTemplate >= 13071 && _idTemplate <= 13076;
+			
 			if (_idTemplate < 13071 || _idTemplate > 13076)
 			{
-				if (Config.ASSERT)
-					throw new AssertionError("Using DecoyInfo packet with an unsupported decoy template: " + _idTemplate);
-				else
-					throw new IllegalArgumentException("Using DecoyInfo packet with an unsupported decoy template: " + _idTemplate);
+				throw new IllegalArgumentException("Using DecoyInfo packet with an unsupported decoy template: " + _idTemplate);
 			}
 			
 		}

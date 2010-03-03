@@ -116,7 +116,7 @@ public abstract class L2Object
 
     public final int getX()
     {
-        if (Config.ASSERT) assert getPosition().getWorldRegion() != null || _isVisible;
+    	assert getPosition().getWorldRegion() != null || _isVisible;
         return getPosition().getX();
     }
 	/**
@@ -182,13 +182,13 @@ public abstract class L2Object
 
     public final int getY()
     {
-        if (Config.ASSERT) assert getPosition().getWorldRegion() != null || _isVisible;
+        assert getPosition().getWorldRegion() != null || _isVisible;
         return getPosition().getY();
     }
 
     public final int getZ()
     {
-        if (Config.ASSERT) assert getPosition().getWorldRegion() != null || _isVisible;
+        assert getPosition().getWorldRegion() != null || _isVisible;
         return getPosition().getZ();
     }
 
@@ -212,7 +212,7 @@ public abstract class L2Object
      */
     public final void decayMe()
     {
-        if (Config.ASSERT) assert getPosition().getWorldRegion() != null;
+        assert getPosition().getWorldRegion() != null;
 
         L2WorldRegion reg = getPosition().getWorldRegion();
 
@@ -257,7 +257,7 @@ public abstract class L2Object
      */
     public final void spawnMe()
     {
-        if (Config.ASSERT) assert getPosition().getWorldRegion() == null && getPosition().getWorldPosition().getX() != 0 && getPosition().getWorldPosition().getY() != 0 && getPosition().getWorldPosition().getZ() != 0;
+        assert getPosition().getWorldRegion() == null && getPosition().getWorldPosition().getX() != 0 && getPosition().getWorldPosition().getY() != 0 && getPosition().getWorldPosition().getZ() != 0;
 
         synchronized (this)
         {
@@ -282,7 +282,7 @@ public abstract class L2Object
 
     public final void spawnMe(int x, int y, int z)
     {
-        if (Config.ASSERT) assert getPosition().getWorldRegion() == null;
+        assert getPosition().getWorldRegion() == null;
 
         synchronized (this)
         {

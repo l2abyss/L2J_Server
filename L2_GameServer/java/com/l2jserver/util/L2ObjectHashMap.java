@@ -17,7 +17,6 @@ package com.l2jserver.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 
 
@@ -144,7 +143,7 @@ public final class L2ObjectHashMap<T extends L2Object>
 		if (_count >= _table.length/2)
 			expand();
 		final int hashcode = obj.getObjectId();
-		if (Config.ASSERT) assert hashcode > 0;
+		assert hashcode > 0;
 		int seed = hashcode;
 		int incr = 1 + (((seed >> 5) + 1) % (_table.length - 1));
 		int ntry = 0;
@@ -173,7 +172,7 @@ public final class L2ObjectHashMap<T extends L2Object>
 				if (_table[pos] == obj)
 					return;
 				// this should never happen
-				if (Config.ASSERT) assert obj.getObjectId() != _table[pos].getObjectId();
+				 assert obj.getObjectId() != _table[pos].getObjectId();
 				// if there was no collisions at this slot, and we found a free
 				// slot previously - use found slot
 				if (slot >= 0 && _keys[pos] > 0)
@@ -203,7 +202,7 @@ public final class L2ObjectHashMap<T extends L2Object>
 	public synchronized void remove(T obj)
 	{
 		int hashcode = obj.getObjectId();
-		if (Config.ASSERT) assert hashcode > 0;
+		assert hashcode > 0;
 		int seed = hashcode;
 		int incr = 1 + (((seed >> 5) + 1) % (_table.length - 1));
 		int ntry = 0;
@@ -293,7 +292,7 @@ public final class L2ObjectHashMap<T extends L2Object>
 			if (obj == null)
 				continue;
 			final int hashcode = _keys[i] & 0x7FFFFFFF;
-			if (Config.ASSERT) assert hashcode == obj.getObjectId();
+			assert hashcode == obj.getObjectId();
 			int seed = hashcode;
 			int incr = 1 + (((seed >> 5) + 1) % (newSize - 1));
 			int ntry = 0;
@@ -302,7 +301,7 @@ public final class L2ObjectHashMap<T extends L2Object>
 				int pos = (seed % newSize) & 0x7FFFFFFF;
 				if (newTable[pos] == null)
 				{
-					if (Config.ASSERT) assert newKeys[pos] == 0 && hashcode != 0;
+					assert newKeys[pos] == 0 && hashcode != 0;
 					// found an empty slot without previous collisions,
 					// but use previously found slot
 					newKeys[pos] = hashcode;

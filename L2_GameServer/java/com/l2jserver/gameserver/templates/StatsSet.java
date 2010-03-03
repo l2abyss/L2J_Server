@@ -18,9 +18,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.Config;
-
-
 import javolution.util.FastMap;
 
 /**
@@ -478,11 +475,9 @@ public final class StatsSet  {
 	 */
 	public void safeSet(String name, int value, int min, int max, String reference)
 	{
+		assert !((min <= max && (value < min || value >= max)));
 		if (min <= max && (value < min || value >= max))
 		{
-			if (Config.ASSERT)
-				throw new AssertionError("Incorrect value: "+value+"for: "+name+ "Ref: "+ reference);
-			
 			_log.log(Level.SEVERE, "Incorrect value: "+value+"for: "+name+ "Ref: "+ reference);
 		}
 		

@@ -187,7 +187,7 @@ public abstract class Inventory extends ItemContainer
 			if (slot != PAPERDOLL_RHAND)
 				return;
 
-			if (Config.ASSERT) assert null == getPaperdollItem(PAPERDOLL_RHAND);
+			assert null == getPaperdollItem(PAPERDOLL_RHAND);
 
 			if (item.getItemType() == L2WeaponType.CROSSBOW)
 			{
@@ -203,7 +203,7 @@ public abstract class Inventory extends ItemContainer
 			if (slot != PAPERDOLL_RHAND)
 				return;
 
-			if (Config.ASSERT) assert item == getPaperdollItem(PAPERDOLL_RHAND);
+			assert item == getPaperdollItem(PAPERDOLL_RHAND);
 
 			if (item.getItemType() == L2WeaponType.CROSSBOW)
 			{
@@ -222,7 +222,7 @@ public abstract class Inventory extends ItemContainer
 			if (slot != PAPERDOLL_LRHAND)
 				return;
 
-			if (Config.ASSERT) assert null == getPaperdollItem(PAPERDOLL_LRHAND);
+			assert null == getPaperdollItem(PAPERDOLL_LRHAND);
 
 			if (item.getItemType() == L2WeaponType.BOW)
 			{
@@ -238,7 +238,7 @@ public abstract class Inventory extends ItemContainer
 			if (slot != PAPERDOLL_LRHAND)
 				return;
 
-			if (Config.ASSERT) assert item == getPaperdollItem(PAPERDOLL_LRHAND);
+			assert item == getPaperdollItem(PAPERDOLL_LRHAND);
 
 			if (item.getItemType() == L2WeaponType.BOW)
 			{
@@ -1026,8 +1026,8 @@ public abstract class Inventory extends ItemContainer
 	 */
 	public synchronized void addPaperdollListener(PaperdollListener listener)
 	{
-		if (Config.ASSERT) assert !_paperdollListeners.contains(listener);
-			_paperdollListeners.add(listener);
+		assert !_paperdollListeners.contains(listener);
+		_paperdollListeners.add(listener);
 	}
 
 	/** 

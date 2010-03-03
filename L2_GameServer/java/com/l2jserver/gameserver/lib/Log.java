@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 
@@ -115,7 +114,7 @@ public class Log
 	
 	public static final void Assert(boolean exp, String cmt)
 	{
-		if (exp || !Config.ASSERT)
+		if (exp)
 			return;
 		
 		_log.warning("Assertion error [" + cmt + "]");

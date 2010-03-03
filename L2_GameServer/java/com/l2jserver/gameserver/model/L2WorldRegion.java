@@ -360,7 +360,7 @@ public final class L2WorldRegion
      */
     public void addVisibleObject(L2Object object)
     {
-        if (Config.ASSERT) assert object.getWorldRegion() == this;
+        assert object.getWorldRegion() == this;
         
         if (object == null) return;
         _visibleObjects.put(object.getObjectId(),object);
@@ -383,7 +383,7 @@ public final class L2WorldRegion
      */
     public void removeVisibleObject(L2Object object)
     {
-        if (Config.ASSERT) assert object.getWorldRegion() == this || object.getWorldRegion() == null;
+        assert object.getWorldRegion() == this || object.getWorldRegion() == null;
 
         if (object == null) return;
         _visibleObjects.remove(object.getObjectId());

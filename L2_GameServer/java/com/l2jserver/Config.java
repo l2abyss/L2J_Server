@@ -388,7 +388,6 @@ public final class Config
 	public static int LOG_GAME_DAMAGE_THRESHOLD;
 	public static boolean DEBUG;
 	public static boolean PACKET_HANDLER_DEBUG;
-	public static boolean ASSERT;
 	public static boolean DEVELOPER;
 	public static boolean ACCEPT_GEOEDITOR_CONN;
 	public static boolean TEST_SERVER;
@@ -1584,7 +1583,6 @@ public final class Config
 					LOG_GAME_DAMAGE_THRESHOLD = Integer.parseInt(General.getProperty("LogGameDamageThreshold", "5000"));
 					DEBUG = Boolean.parseBoolean(General.getProperty("Debug", "false"));
 					PACKET_HANDLER_DEBUG = Boolean.parseBoolean(General.getProperty("PacketHandlerDebug", "false"));
-					ASSERT = Boolean.parseBoolean(General.getProperty("Assert", "false"));
 					DEVELOPER = Boolean.parseBoolean(General.getProperty("Developer", "false"));
 					ACCEPT_GEOEDITOR_CONN = Boolean.parseBoolean(General.getProperty("AcceptGeoeditorConn", "false"));
 					TEST_SERVER = Boolean.parseBoolean(General.getProperty("TestServer", "false"));
@@ -2423,7 +2421,6 @@ public final class Config
 					DEBUG = Boolean.parseBoolean(serverSettings.getProperty("Debug", "false"));
 					PACKET_HANDLER_DEBUG = Boolean.parseBoolean(serverSettings.getProperty("PacketHandlerDebug", "false"));
 					DEVELOPER = Boolean.parseBoolean(serverSettings.getProperty("Developer", "false"));
-					ASSERT = Boolean.parseBoolean(serverSettings.getProperty("Assert", "false"));
 
 					ACCEPT_NEW_GAMESERVER = Boolean.parseBoolean(serverSettings.getProperty("AcceptNewGameServer","True"));
 					REQUEST_ID = Integer.parseInt(serverSettings.getProperty("RequestServerID","0"));

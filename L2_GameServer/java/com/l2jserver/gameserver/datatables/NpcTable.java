@@ -436,12 +436,12 @@ public class NpcTable
 		{
 			StatsSet npcDat = new StatsSet();
 			int id = NpcData.getInt("id");
+			int idTemp = NpcData.getInt("idTemplate");
 			
-			if (Config.ASSERT)
-				assert id < 1000000;
+			assert idTemp < 1000000;
 			
 			npcDat.set("npcId", id);
-			npcDat.set("idTemplate", NpcData.getInt("idTemplate"));
+			npcDat.set("idTemplate", idTemp);
 			int level = NpcData.getInt("level");
 			npcDat.set("level", level);
 			npcDat.set("jClass", NpcData.getString("class"));
