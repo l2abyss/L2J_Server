@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.GmListTable;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
@@ -171,7 +170,7 @@ public class RaidBossSpawnManager
 
 				_storedInfo.put(bossId, info);
 
-				GmListTable.broadcastMessageToGMs("Spawning Raid Boss " + raidboss.getName());
+				_log.info("Spawning Raid Boss " + raidboss.getName());
 
 				_bosses.put(bossId, raidboss);
 			}
@@ -512,7 +511,7 @@ public class RaidBossSpawnManager
 
 		_storedInfo.put(raidboss.getNpcId(), info);
 
-		GmListTable.broadcastMessageToGMs("Spawning Raid Boss " + raidboss.getName());
+		_log.info("Spawning Night Raid Boss " + raidboss.getName());
 
 		_bosses.put(raidboss.getNpcId(), raidboss);
 	}
