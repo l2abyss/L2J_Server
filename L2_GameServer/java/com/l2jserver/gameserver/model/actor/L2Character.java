@@ -6174,26 +6174,12 @@ public abstract class L2Character extends L2Object
 			_castInterruptTime = 0;
 		}
 
-		// If the skill type is listed here, notify the AI of the target with AI_INTENTION_ATTACK
-		// for offensive skills the nextintention is always null unless player wants action after skill
-		// Note: this might also work
-		// if (skill.isOffensive() && getAI().getNextIntention() == null
-		// && !(skill.getSkillType() == SkillType.UNLOCK) && !(skill.getSkillType() == SkillType.DELUXE_KEY_UNLOCK) && !(skill.getSkillType() == SkillType.MDAM))
-		if (getAI().getNextIntention() == null)
-		{
-			switch (skill.getSkillType())
-			{
-				case PDAM:
-				case BLOW:
-				case DRAIN_SOUL:
-				case SOW:
-				case CHARGEDAM:
-				case SPOIL:
-					if (getTarget() instanceof L2Character && getTarget() != this && target == getTarget())
-						getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, getTarget());
-					break;
-			}
-		}
+		// Attack target after skill use
+		if (skill.nextActionIsAttack()
+				&& getTarget() instanceof L2Character
+				&& getTarget() != this
+				&& getTarget() == target)
+			getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, target);
 
         if (skill.isOffensive() && !skill.isNeutral() && !(skill.getSkillType() == L2SkillType.UNLOCK) && !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK))
             getAI().clientStartAutoAttack();

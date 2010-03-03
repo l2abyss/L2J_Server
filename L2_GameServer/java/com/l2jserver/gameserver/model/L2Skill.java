@@ -203,7 +203,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final int _effectAbnormalLvl; // abnormal level for the additional effect type, e.g. poison lvl 1
     private final int _effectId;
     private final int _effectLvl; // normal effect level
-    
+
+    private final boolean _nextActionIsAttack;
+
     private final boolean _isPotion;
     private final byte _element;
     private final int _elementPower;
@@ -382,6 +384,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _effectType = set.getEnum("effectType", L2SkillType.class, null);
         _effectId = set.getInteger("effectId", 0);
         _effectLvl = set.getInteger("effectLevel", 0);
+
+        _nextActionIsAttack = set.getBool("nextActionAttack", false);
 
         _element = set.getByte("element", (byte)-1);
         _elementPower = set.getInteger("elementPower", 0);
@@ -617,6 +621,14 @@ public abstract class L2Skill implements IChanceSkillTrigger
     public final L2SkillType getEffectType()
     {
         return _effectType;
+    }
+
+    /**
+     * Return true if character should attack target after skill
+     */
+    public final boolean nextActionIsAttack()
+    {
+    	return _nextActionIsAttack;
     }
 
     /**
