@@ -55,7 +55,6 @@ public class L2SkillAppearance extends L2Skill
 					if (_hairStyleId >= 0)
 						targetPlayer.getAppearance().setHairStyle(_hairStyleId);
 
-					targetPlayer.store();
 					targetPlayer.broadcastUserInfo();
 				}
 			}
