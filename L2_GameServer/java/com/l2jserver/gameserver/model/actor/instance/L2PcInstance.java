@@ -61,6 +61,7 @@ import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.datatables.FishTable;
 import com.l2jserver.gameserver.datatables.HennaTable;
 import com.l2jserver.gameserver.datatables.HeroSkillTable;
@@ -10418,7 +10419,7 @@ public final class L2PcInstance extends L2Playable
 				boolean isEnchantable = skillMaxLevel > 100;
 				if (isEnchantable)
 				{
-					L2EnchantSkillLearn esl = SkillTreeTable.getInstance().getSkillEnchantmentBySkillId(s.getId());
+					L2EnchantSkillLearn esl = EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(s.getId());
 					if (esl != null)
 					{
 						//if player dont have min level to enchant 

@@ -19,13 +19,13 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.datatables.SkillTreeTable;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2EnchantSkillLearn.EnchantSkillDetail;
+import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
@@ -89,7 +89,7 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
         	return;
         }
 
-		L2EnchantSkillLearn s = SkillTreeTable.getInstance().getSkillEnchantmentBySkillId(_skillId);
+		L2EnchantSkillLearn s = EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(_skillId);
 		if (s == null)
 			return;
 		
@@ -102,7 +102,7 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 		if (skill == null)
 			return;
 		
-		int reqItemId = SkillTreeTable.UNTRAIN_ENCHANT_BOOK;
+		int reqItemId = EnchantGroupsTable.UNTRAIN_ENCHANT_BOOK;
 		
 		int currentLevel = player.getSkillLevel(_skillId);
 		if (currentLevel - 1 != _skillLvl && (currentLevel % 100 != 1 || _skillLvl != s.getBaseLevel()))
@@ -111,7 +111,7 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 		EnchantSkillDetail esd = s.getEnchantSkillDetail(currentLevel);
 		
 		int requiredSp = esd.getSpCost();
-		int requireditems = esd.getAdena();
+		int requireditems = esd.getAdenaCost();
 		
 		L2ItemInstance spb = player.getInventory().getItemByItemId(reqItemId);
 		if (Config.ES_SP_BOOK_NEEDED)

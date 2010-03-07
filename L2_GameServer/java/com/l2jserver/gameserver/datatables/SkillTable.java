@@ -53,6 +53,7 @@ public class SkillTable
 			if (skillLvl > maxLvl)
 				_skillMaxLevel.put(skillId, skillLvl);
 		}
+		//SkillTreeTable.getInstance().reload();
 		
 		// Reloading as well FrequentSkill enumeration values 
 		for (FrequentSkill sk : FrequentSkill.values())

@@ -14,12 +14,10 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.List;
-
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.SkillTreeTable;
+import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
-import com.l2jserver.gameserver.model.L2EnchantSkillLearn.EnchantSkillDetail;
+import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -46,43 +44,31 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 	public ExEnchantSkillInfoDetail(int type, int skillid, int skilllvl, L2PcInstance ply)
 	{
 
-		L2EnchantSkillLearn enchantLearn = SkillTreeTable.getInstance().getSkillEnchantmentBySkillId(skillid);
+		L2EnchantSkillLearn enchantLearn = EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(skillid);
 		EnchantSkillDetail esd = null;
 		// do we have this skill?
 		if (enchantLearn != null)
 		{
 			if (skilllvl > 100)
 			{
-				int route = (skilllvl / 100) -1;
-				if (skilllvl % 100 == 0)
-					esd = enchantLearn.getEnchantRoutes()[route].get(0);
-				else if (skilllvl % 100 >= enchantLearn.getEnchantRoutes()[route].size())
-					esd = enchantLearn.getEnchantRoutes()[route].get(enchantLearn.getEnchantRoutes()[route].size()-1);
-				else
-					esd = enchantLearn.getEnchantSkillDetail(skilllvl);
+				esd = enchantLearn.getEnchantSkillDetail(skilllvl);
 			}
 			else
-				//find first enchant route
-				for (List<EnchantSkillDetail> list : enchantLearn.getEnchantRoutes())
-					if (list != null)
-					{
-						esd = list.get(0);
-						break;
-					}
+				esd = enchantLearn.getFirstRouteGroup().getEnchantGroupDetails().get(0);
 		}
 
 		if (esd == null)
 			throw new IllegalArgumentException("Skill "+skillid + " dont have enchant data for level "+skilllvl);
 
 		if (type == 0)
-			multi = SkillTreeTable.NORMAL_ENCHANT_COST_MULTIPLIER;
+			multi = EnchantGroupsTable.NORMAL_ENCHANT_COST_MULTIPLIER;
 		else if (type == 1)
-			multi = SkillTreeTable.SAFE_ENCHANT_COST_MULTIPLIER;
+			multi = EnchantGroupsTable.SAFE_ENCHANT_COST_MULTIPLIER;
 		_chance = esd.getRate(ply);
 		_sp = esd.getSpCost();
 		if (type == TYPE_UNTRAIN_ENCHANT)
 			_sp = (int) (0.8 * _sp);
-		_adenacount = esd.getAdena() * multi;
+		_adenacount = esd.getAdenaCost() * multi;
 		_type = type;
 		_skillid = skillid;
 		_skilllvl = skilllvl;
@@ -90,19 +76,19 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 		switch (type)
 		{
 		case TYPE_NORMAL_ENCHANT:
-			bookId = SkillTreeTable.NORMAL_ENCHANT_BOOK;
+			bookId = EnchantGroupsTable.NORMAL_ENCHANT_BOOK;
 			reqCount = ((_skilllvl % 100 > 1) ? 0 : 1) ;
 			break;
 		case TYPE_SAFE_ENCHANT:
-			bookId = SkillTreeTable.SAFE_ENCHANT_BOOK;
+			bookId = EnchantGroupsTable.SAFE_ENCHANT_BOOK;
 			reqCount = 1;
 			break;
 		case TYPE_UNTRAIN_ENCHANT:
-			bookId = SkillTreeTable.UNTRAIN_ENCHANT_BOOK;
+			bookId = EnchantGroupsTable.UNTRAIN_ENCHANT_BOOK;
 			reqCount = 1;
 			break;
 		case TYPE_CHANGE_ENCHANT:
-			bookId = SkillTreeTable.CHANGE_ENCHANT_BOOK;
+			bookId = EnchantGroupsTable.CHANGE_ENCHANT_BOOK;
 			reqCount = 1;
 			break;
 		default:

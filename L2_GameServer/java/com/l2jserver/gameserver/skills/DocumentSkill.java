@@ -24,6 +24,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.skills.conditions.Condition;
 import com.l2jserver.gameserver.templates.StatsSet;
@@ -149,22 +150,22 @@ class DocumentSkill extends DocumentBase {
 		String skillName = attrs.getNamedItem("name").getNodeValue();
 		String levels = attrs.getNamedItem("levels").getNodeValue();
 		int lastLvl = Integer.parseInt(levels);
-        if (attrs.getNamedItem("enchantLevels1") != null)
-            enchantLevels1 = Integer.parseInt(attrs.getNamedItem("enchantLevels1").getNodeValue());
-        if (attrs.getNamedItem("enchantLevels2") != null)
-            enchantLevels2 = Integer.parseInt(attrs.getNamedItem("enchantLevels2").getNodeValue());
-        if (attrs.getNamedItem("enchantLevels3") != null)
-            enchantLevels3 = Integer.parseInt(attrs.getNamedItem("enchantLevels3").getNodeValue());
-        if (attrs.getNamedItem("enchantLevels4") != null)
-            enchantLevels4 = Integer.parseInt(attrs.getNamedItem("enchantLevels4").getNodeValue());
-        if (attrs.getNamedItem("enchantLevels5") != null)
-            enchantLevels5 = Integer.parseInt(attrs.getNamedItem("enchantLevels5").getNodeValue());
-        if (attrs.getNamedItem("enchantLevels6") != null)
-            enchantLevels6 = Integer.parseInt(attrs.getNamedItem("enchantLevels6").getNodeValue());
-        if (attrs.getNamedItem("enchantLevels7") != null)
-            enchantLevels7 = Integer.parseInt(attrs.getNamedItem("enchantLevels7").getNodeValue());
-        if (attrs.getNamedItem("enchantLevels8") != null)
-            enchantLevels8 = Integer.parseInt(attrs.getNamedItem("enchantLevels8").getNodeValue());
+        if (attrs.getNamedItem("enchantGroup1") != null)
+            enchantLevels1 = EnchantGroupsTable.getInstance().addNewRouteForSkill(skillId, lastLvl, 1, Integer.parseInt(attrs.getNamedItem("enchantGroup1").getNodeValue()));
+        if (attrs.getNamedItem("enchantGroup2") != null)
+        	enchantLevels2 = EnchantGroupsTable.getInstance().addNewRouteForSkill(skillId, lastLvl, 2, Integer.parseInt(attrs.getNamedItem("enchantGroup2").getNodeValue()));
+        if (attrs.getNamedItem("enchantGroup3") != null)
+        	enchantLevels3 = EnchantGroupsTable.getInstance().addNewRouteForSkill(skillId, lastLvl, 3, Integer.parseInt(attrs.getNamedItem("enchantGroup3").getNodeValue()));
+        if (attrs.getNamedItem("enchantGroup4") != null)
+        	enchantLevels4 = EnchantGroupsTable.getInstance().addNewRouteForSkill(skillId, lastLvl, 4, Integer.parseInt(attrs.getNamedItem("enchantGroup4").getNodeValue()));
+        if (attrs.getNamedItem("enchantGroup5") != null)
+        	enchantLevels5 = EnchantGroupsTable.getInstance().addNewRouteForSkill(skillId, lastLvl, 5, Integer.parseInt(attrs.getNamedItem("enchantGroup5").getNodeValue()));
+        if (attrs.getNamedItem("enchantGroup6") != null)
+        	enchantLevels6 = EnchantGroupsTable.getInstance().addNewRouteForSkill(skillId, lastLvl, 6, Integer.parseInt(attrs.getNamedItem("enchantGroup6").getNodeValue()));
+        if (attrs.getNamedItem("enchantGroup7") != null)
+        	enchantLevels7 = EnchantGroupsTable.getInstance().addNewRouteForSkill(skillId, lastLvl, 7, Integer.parseInt(attrs.getNamedItem("enchantGroup7").getNodeValue()));
+        if (attrs.getNamedItem("enchantGroup8") != null)
+        	enchantLevels8 = EnchantGroupsTable.getInstance().addNewRouteForSkill(skillId, lastLvl, 8, Integer.parseInt(attrs.getNamedItem("enchantGroup8").getNodeValue()));
 
         _currentSkill.id     = skillId;
         _currentSkill.name   = skillName;

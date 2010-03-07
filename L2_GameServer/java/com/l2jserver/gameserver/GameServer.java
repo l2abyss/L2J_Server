@@ -43,6 +43,7 @@ import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.DoorTable;
+import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.datatables.EnchantHPBonusData;
 import com.l2jserver.gameserver.datatables.EventDroplist;
 import com.l2jserver.gameserver.datatables.ExtractableItemsData;
@@ -198,6 +199,7 @@ public class GameServer
 		
 		// keep the references of Singletons to prevent garbage collection
 		CharNameTable.getInstance();
+		EnchantGroupsTable.getInstance();
 		SkillTable.getInstance();
 		
 		ItemTable.getInstance();

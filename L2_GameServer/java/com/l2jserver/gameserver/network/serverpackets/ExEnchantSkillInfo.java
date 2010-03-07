@@ -14,11 +14,9 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.List;
-
-import com.l2jserver.gameserver.datatables.SkillTreeTable;
+import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
-import com.l2jserver.gameserver.model.L2EnchantSkillLearn.EnchantSkillDetail;
+import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
 
 import javolution.util.FastList;
 
@@ -37,16 +35,14 @@ public final class ExEnchantSkillInfo extends L2GameServerPacket
 		_id = id;
 		_lvl = lvl;
 
-		L2EnchantSkillLearn enchantLearn = SkillTreeTable.getInstance().getSkillEnchantmentBySkillId(_id);
+		L2EnchantSkillLearn enchantLearn = EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(_id);
 		// do we have this skill?
 		if (enchantLearn != null)
 		{
 			// skill already enchanted?
 			if (_lvl > 100)
 			{
-				int route = (_lvl / 100) -1;
-				if (_lvl % 100 >= enchantLearn.getEnchantRoutes()[route].size())
-					_maxEnchanted = true;
+				_maxEnchanted = enchantLearn.isMaxEnchant(_lvl);
 				
 				// get detail for next level
 				EnchantSkillDetail esd = enchantLearn.getEnchantSkillDetail(_lvl);
@@ -54,32 +50,28 @@ public final class ExEnchantSkillInfo extends L2GameServerPacket
 				// if it exists add it
 				if (esd != null)
 				{
-					_routes.add(esd.getLevel()); // current enchant add firts
+					_routes.add(_lvl); // current enchant add firts
 				}
 
-				int diff = (_lvl % 100) - 1; // indexed form 0
+				int skillLvL = (_lvl % 100);
 
-				for (List<EnchantSkillDetail> esd1 : enchantLearn.getEnchantRoutes())
+				for (int route : enchantLearn.getAllRoutes())
 				{
-					if (esd1 == null)
-						continue;
-					if (esd1.get(0).getLevel() == _lvl) // skip current
+					if ((route * 100 + skillLvL) == _lvl) // skip current
 						continue;
 					// add other levels of all routes - same lvl as enchanted
 					// lvl
-					_routes.add(esd1.get(diff).getLevel());
+					_routes.add(route * 100 + skillLvL);
 				}
 
 			}
 			else
 			// not already enchanted
 			{
-				for (List<EnchantSkillDetail> esd : enchantLearn.getEnchantRoutes())
+				for (int route : enchantLearn.getAllRoutes())
 				{
-					if (esd == null)
-						continue;
 					// add first level (+1) of all routes
-					_routes.add(esd.get(0).getLevel());
+					_routes.add(route * 100 + 1);
 				}
 			}
 		}
