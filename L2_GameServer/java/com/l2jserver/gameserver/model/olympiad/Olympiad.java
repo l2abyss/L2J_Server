@@ -95,7 +95,16 @@ public class Olympiad
 	private static final String GET_EACH_CLASS_LEADER_CURRENT = "SELECT characters.char_name from olympiad_nobles, characters "
 			+ "WHERE characters.charId = olympiad_nobles.charId AND olympiad_nobles.class_id = ? "
 			+ "AND olympiad_nobles.competitions_done >= 9 "
+			+ "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC, olympiad_nobles.competitions_won DESC LIMIT 10";	
+	private static final String GET_EACH_CLASS_LEADER_SOULHOUND = "SELECT characters.char_name from olympiad_nobles_eom, characters "
+			+ "WHERE characters.charId = olympiad_nobles_eom.charId AND (olympiad_nobles_eom.class_id = ? OR olympiad_nobles_eom.class_id = 133) "
+			+ "AND olympiad_nobles_eom.competitions_done >= 9 "
+			+ "ORDER BY olympiad_nobles_eom.olympiad_points DESC, olympiad_nobles_eom.competitions_done DESC, olympiad_nobles_eom.competitions_won DESC LIMIT 10";
+	private static final String GET_EACH_CLASS_LEADER_CURRENT_SOULHOUND = "SELECT characters.char_name from olympiad_nobles, characters "
+			+ "WHERE characters.charId = olympiad_nobles.charId AND (olympiad_nobles.class_id = ? OR olympiad_nobles.class_id = 133) "
+			+ "AND olympiad_nobles.competitions_done >= 9 "
 			+ "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC, olympiad_nobles.competitions_won DESC LIMIT 10";
+
 	private static final String OLYMPIAD_DELETE_ALL = "TRUNCATE olympiad_nobles";
 	private static final String OLYMPIAD_MONTH_CLEAR = "TRUNCATE olympiad_nobles_eom";
 	private static final String OLYMPIAD_MONTH_CREATE = "INSERT INTO olympiad_nobles_eom SELECT * FROM olympiad_nobles";
@@ -1405,9 +1414,19 @@ public class Olympiad
 			PreparedStatement statement;
 			ResultSet rset;
 			if (Config.ALT_OLY_SHOW_MONTHLY_WINNERS)
-				statement = con.prepareStatement(GET_EACH_CLASS_LEADER);
+			{
+				if(classId == 132)
+					statement = con.prepareStatement(GET_EACH_CLASS_LEADER_SOULHOUND);
+				else
+					statement = con.prepareStatement(GET_EACH_CLASS_LEADER);
+			}
 			else
-				statement = con.prepareStatement(GET_EACH_CLASS_LEADER_CURRENT);
+			{
+				if(classId == 132)
+					statement = con.prepareStatement(GET_EACH_CLASS_LEADER_CURRENT_SOULHOUND);
+				else
+					statement = con.prepareStatement(GET_EACH_CLASS_LEADER_CURRENT);
+			}
 			statement.setInt(1, classId);
 			rset = statement.executeQuery();
 			
@@ -1415,17 +1434,7 @@ public class Olympiad
 			{
 				names.add(rset.getString(CHAR_NAME));
 			}
-			
-			if (classId == 132) // Male & Female SoulHounds are ranked together
-			{
-				statement.setInt(1, 133);
-				rset = statement.executeQuery();
-				while (rset.next())
-				{
-					names.add(rset.getString(CHAR_NAME));
-				}
-			}
-			
+
 			statement.close();
 			rset.close();
 			
