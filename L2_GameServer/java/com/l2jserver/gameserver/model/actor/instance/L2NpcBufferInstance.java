@@ -49,10 +49,10 @@ public class L2NpcBufferInstance extends L2Npc
 		if (playerInstance == null)
 			return;
 		
-		String htmContent = HtmCache.getInstance().getHtm("data/html/mods/NpcBuffer.htm");
+		String htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), "data/html/mods/NpcBuffer.htm");
 		
 		if (val > 0)
-			htmContent = HtmCache.getInstance().getHtm("data/html/mods/NpcBuffer-" + val + ".htm");
+			htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), "data/html/mods/NpcBuffer-" + val + ".htm");
 		
 		if (htmContent != null)
 		{

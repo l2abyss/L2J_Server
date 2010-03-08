@@ -310,7 +310,7 @@ public class L2RaceManagerInstance extends L2Npc
         String filename, search;
         NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
         filename = getHtmlPath(npcId, 5);
-        html.setFile(filename);
+        html.setFile(player.getHtmlPrefix(), filename);
         for (int i = 0; i < 8; i++)
         {
             int n = i + 1;
@@ -329,7 +329,7 @@ public class L2RaceManagerInstance extends L2Npc
         String filename, search;
         NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
         filename = getHtmlPath(npcId, 6);
-        html.setFile(filename);
+        html.setFile(player.getHtmlPrefix(), filename);
         for (int i = 0; i < 8; i++)
         {
             int n = i + 1;
@@ -351,7 +351,7 @@ public class L2RaceManagerInstance extends L2Npc
         if (val < 10)
         {
             filename = getHtmlPath(npcId, 2);
-            html.setFile(filename);
+            html.setFile(player.getHtmlPrefix(), filename);
             for (int i = 0; i < 8; i++)
             {
                 int n = i + 1;
@@ -370,7 +370,7 @@ public class L2RaceManagerInstance extends L2Npc
         {
             if (player.getRace(0) == 0) return;
             filename = getHtmlPath(npcId, 3);
-            html.setFile(filename);
+            html.setFile(player.getHtmlPrefix(), filename);
             html.replace("0place", "" + player.getRace(0));
             search = "Mob1";
             replace = MonsterRace.getInstance().getMonsters()[player.getRace(0) - 1].getTemplate().name;
@@ -387,7 +387,7 @@ public class L2RaceManagerInstance extends L2Npc
         {
             if (player.getRace(0) == 0 || player.getRace(1) == 0) return;
             filename = getHtmlPath(npcId, 4);
-            html.setFile(filename);
+            html.setFile(player.getHtmlPrefix(), filename);
             html.replace("0place", "" + player.getRace(0));
             search = "Mob1";
             replace = MonsterRace.getInstance().getMonsters()[player.getRace(0) - 1].getTemplate().name;

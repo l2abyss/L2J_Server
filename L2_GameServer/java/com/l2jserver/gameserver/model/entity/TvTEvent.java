@@ -359,7 +359,7 @@ public class TvTEvent
 			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(0);
 			
 			statusUpdate.addAttribute(StatusUpdate.CUR_LOAD, playerInstance.getCurrentLoad());
-			npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(htmlPath+"Reward.htm"));
+			npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"Reward.htm"));
 			playerInstance.sendPacket(statusUpdate);
 			playerInstance.sendPacket(npcHtmlMessage);
 		}
@@ -420,7 +420,7 @@ public class TvTEvent
 			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(0);
 			
 			statusUpdate.addAttribute(StatusUpdate.CUR_LOAD, playerInstance.getCurrentLoad());
-			npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(htmlPath+"Reward.htm"));
+			npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"Reward.htm"));
 			playerInstance.sendPacket(statusUpdate);
 			playerInstance.sendPacket(npcHtmlMessage);
 		}
@@ -676,25 +676,25 @@ public class TvTEvent
 			
 			if (playerInstance.isCursedWeaponEquipped())
 			{
-				htmContent = HtmCache.getInstance().getHtm(htmlPath+"CursedWeaponEquipped.htm");
+				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"CursedWeaponEquipped.htm");
 				if (htmContent != null)
 					npcHtmlMessage.setHtml(htmContent);
 			}
 			else if (Olympiad.getInstance().isRegistered(playerInstance))
 			{
-				htmContent = HtmCache.getInstance().getHtm(htmlPath+"Olympiad.htm");
+				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"Olympiad.htm");
 				if (htmContent != null)
 					npcHtmlMessage.setHtml(htmContent);
 			}
 			else if (playerInstance.getKarma() > 0)
 			{
-				htmContent = HtmCache.getInstance().getHtm(htmlPath+"Karma.htm");
+				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"Karma.htm");
 				if (htmContent != null)
 					npcHtmlMessage.setHtml(htmContent);
 			}
 			else if (playerLevel < Config.TVT_EVENT_MIN_LVL || playerLevel > Config.TVT_EVENT_MAX_LVL)
 			{
-				htmContent = HtmCache.getInstance().getHtm(htmlPath+"Level.htm");
+				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"Level.htm");
 				if (htmContent != null)
 				{
 					npcHtmlMessage.setHtml(htmContent);
@@ -704,7 +704,7 @@ public class TvTEvent
 			}
 			else if (_teams[0].getParticipatedPlayerCount() == Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS && _teams[1].getParticipatedPlayerCount() == Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS)
 			{
-				htmContent = HtmCache.getInstance().getHtm(htmlPath+"TeamsFull.htm");
+				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"TeamsFull.htm");
 				if (htmContent != null)
 				{
 					npcHtmlMessage.setHtml(htmContent);
@@ -713,7 +713,7 @@ public class TvTEvent
 			}
 			else if (!payParticipationFee(playerInstance))
 			{
-				htmContent = HtmCache.getInstance().getHtm(htmlPath+"ParticipationFee.htm");
+				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"ParticipationFee.htm");
 				if (htmContent != null)
 				{
 					npcHtmlMessage.setHtml(htmContent);
@@ -721,7 +721,7 @@ public class TvTEvent
 				}
 			}
 			else if (addParticipant(playerInstance))
-				npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(htmlPath+"Registered.htm"));
+				npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"Registered.htm"));
 			else
 				return;
 			
@@ -733,7 +733,7 @@ public class TvTEvent
 			
 			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(0);
 			
-			npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(htmlPath+"Unregistered.htm"));
+			npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"Unregistered.htm"));
 			playerInstance.sendPacket(npcHtmlMessage);
 		}
 	}

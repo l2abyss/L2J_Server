@@ -270,8 +270,8 @@ public final class L2PcInstance extends L2Playable
 
 	// Character Character SQL String Definitions:
     private static final String INSERT_CHARACTER = "INSERT INTO characters (account_name,charId,char_name,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,face,hairStyle,hairColor,sex,exp,sp,karma,fame,pvpkills,pkkills,clanid,race,classid,deletetime,cancraft,title,title_color,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,newbie,nobless,power_grade,last_recom_date,createTime) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	private static final String UPDATE_CHARACTER = "UPDATE characters SET level=?,maxHp=?,curHp=?,maxCp=?,curCp=?,maxMp=?,curMp=?,face=?,hairStyle=?,hairColor=?,sex=?,heading=?,x=?,y=?,z=?,exp=?,expBeforeDeath=?,sp=?,karma=?,fame=?,pvpkills=?,pkkills=?,rec_have=?,rec_left=?,clanid=?,race=?,classid=?,deletetime=?,title=?,title_color=?,accesslevel=?,online=?,isin7sdungeon=?,clan_privs=?,wantspeace=?,base_class=?,onlinetime=?,punish_level=?,punish_timer=?,newbie=?,nobless=?,power_grade=?,subpledge=?,last_recom_date=?,lvl_joined_academy=?,apprentice=?,sponsor=?,varka_ketra_ally=?,clan_join_expiry_time=?,clan_create_expiry_time=?,char_name=?,death_penalty_level=?,bookmarkslot=?,vitality_points=? WHERE charId=?";
-    private static final String RESTORE_CHARACTER = "SELECT account_name, charId, char_name, level, maxHp, curHp, maxCp, curCp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, expBeforeDeath, sp, karma, fame, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, title_color, rec_have, rec_left, accesslevel, online, char_slot, lastAccess, clan_privs, wantspeace, base_class, onlinetime, isin7sdungeon, punish_level, punish_timer, newbie, nobless, power_grade, subpledge, last_recom_date, lvl_joined_academy, apprentice, sponsor, varka_ketra_ally,clan_join_expiry_time,clan_create_expiry_time,death_penalty_level,bookmarkslot,vitality_points,createTime FROM characters WHERE charId=?";
+	private static final String UPDATE_CHARACTER = "UPDATE characters SET level=?,maxHp=?,curHp=?,maxCp=?,curCp=?,maxMp=?,curMp=?,face=?,hairStyle=?,hairColor=?,sex=?,heading=?,x=?,y=?,z=?,exp=?,expBeforeDeath=?,sp=?,karma=?,fame=?,pvpkills=?,pkkills=?,rec_have=?,rec_left=?,clanid=?,race=?,classid=?,deletetime=?,title=?,title_color=?,accesslevel=?,online=?,isin7sdungeon=?,clan_privs=?,wantspeace=?,base_class=?,onlinetime=?,punish_level=?,punish_timer=?,newbie=?,nobless=?,power_grade=?,subpledge=?,last_recom_date=?,lvl_joined_academy=?,apprentice=?,sponsor=?,varka_ketra_ally=?,clan_join_expiry_time=?,clan_create_expiry_time=?,char_name=?,death_penalty_level=?,bookmarkslot=?,vitality_points=?,language=? WHERE charId=?";
+    private static final String RESTORE_CHARACTER = "SELECT account_name, charId, char_name, level, maxHp, curHp, maxCp, curCp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, expBeforeDeath, sp, karma, fame, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, title_color, rec_have, rec_left, accesslevel, online, char_slot, lastAccess, clan_privs, wantspeace, base_class, onlinetime, isin7sdungeon, punish_level, punish_timer, newbie, nobless, power_grade, subpledge, last_recom_date, lvl_joined_academy, apprentice, sponsor, varka_ketra_ally,clan_join_expiry_time,clan_create_expiry_time,death_penalty_level,bookmarkslot,vitality_points,createTime,language FROM characters WHERE charId=?";
 
     // Character Teleport Bookmark:
     private static final String INSERT_TP_BOOKMARK = "INSERT INTO character_tpbookmark (charId,Id,x,y,z,icon,tag,name) values (?,?,?,?,?,?,?,?)";
@@ -372,6 +372,9 @@ public final class L2PcInstance extends L2Playable
 	private String _accountName;
 	private long _deleteTimer;
 	private long _creationTime; 
+
+	private String _lang = null;
+	private String _htmlPrefix = null;
 
 	private boolean _isOnline = false;
 	private long _onlineTime;
@@ -1723,7 +1726,7 @@ public final class L2PcInstance extends L2Playable
 	private void showQuestWindow(String questId, String stateId)
 	{
 		String path = "data/scripts/quests/"+questId+"/"+stateId+".htm";
-		String content = HtmCache.getInstance().getHtm(path);  //TODO path for quests html
+		String content = HtmCache.getInstance().getHtm(getHtmlPrefix(), path);  //TODO path for quests html
 
 		if (content != null)
 		{
@@ -7401,7 +7404,10 @@ public final class L2PcInstance extends L2Playable
 				
 				//character creation Time 
 				player.setCreateTime(rset.getLong("createTime")); 
-				
+
+				// Language
+				player.setLang(rset.getString("language"));
+
 				// Retrieve the name and ID of the other characters assigned to this account.
 				PreparedStatement stmt = con.prepareStatement("SELECT charId, char_name FROM characters WHERE account_name=? AND charId<>?");
 				stmt.setString(1, player._accountName);
@@ -7749,7 +7755,8 @@ public final class L2PcInstance extends L2Playable
 			statement.setLong(52, getDeathPenaltyBuffLevel());
 			statement.setInt(53, getBookMarkSlot());
 			statement.setInt(54, getVitalityPoints());
-            statement.setInt(55, getObjectId());
+			statement.setString(55, getLang());
+            statement.setInt(56, getObjectId());
 
 			statement.execute();
 			statement.close();
@@ -12575,7 +12582,7 @@ public final class L2PcInstance extends L2Playable
 		    			_punishLevel = state;
 		    			// Open a Html message to inform the player
 		        		NpcHtmlMessage htmlMsg = new NpcHtmlMessage(0);
-			            String jailInfos = HtmCache.getInstance().getHtm("data/html/jail_out.htm");
+			            String jailInfos = HtmCache.getInstance().getHtm(getHtmlPrefix(), "data/html/jail_out.htm");
 			            if (jailInfos != null)
 			                htmlMsg.setHtml(jailInfos);
 			            else
@@ -12635,7 +12642,7 @@ public final class L2PcInstance extends L2Playable
 	
 	            // Open a Html message to inform the player
 	            NpcHtmlMessage htmlMsg = new NpcHtmlMessage(0);
-	            String jailInfos = HtmCache.getInstance().getHtm("data/html/jail_in.htm");
+	            String jailInfos = HtmCache.getInstance().getHtm(getHtmlPrefix(), "data/html/jail_in.htm");
 	            if (jailInfos != null)
 	                htmlMsg.setHtml(jailInfos);
 	            else
@@ -14737,5 +14744,42 @@ public final class L2PcInstance extends L2Playable
 	public L2UIKeysSettings getUISettings()
 	{
 		return _uiKeySettings;
+	}
+
+	public String getHtmlPrefix()
+	{
+		if (!Config.L2JMOD_MULTILANG_ENABLE)
+			return null;
+
+		return _htmlPrefix;
+	}
+
+	public String getLang()
+	{
+		return _lang;
+	}
+
+	public boolean setLang(String lang)
+	{
+		boolean result = false;
+		if (Config.L2JMOD_MULTILANG_ENABLE)
+		{
+			if (Config.L2JMOD_MULTILANG_ALLOWED.contains(lang))
+			{
+				_lang = lang;
+				result = true;
+			}
+			else
+				_lang = Config.L2JMOD_MULTILANG_DEFAULT;
+
+			_htmlPrefix = "data/lang/" + _lang + "/";
+		}
+		else
+		{
+			_lang = null;
+			_htmlPrefix = null;
+		}
+
+		return result;
 	}
 }

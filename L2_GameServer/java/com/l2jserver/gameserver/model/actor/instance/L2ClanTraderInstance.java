@@ -37,9 +37,9 @@ public final class L2ClanTraderInstance extends L2Npc
 		if (command.equalsIgnoreCase("crp"))
 		{
 			if (player.getClan().getLevel() > 4)
-				html.setFile("data/html/clantrader/" + getNpcId() + "-2.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-2.htm");
 			else
-				html.setFile("data/html/clantrader/" + getNpcId() + "-1.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-1.htm");
 
 			sendHtmlMessage(player, html);
 			return;
@@ -83,10 +83,10 @@ public final class L2ClanTraderInstance extends L2Npc
 				sm.addItemNumber(reputation);
 				player.sendPacket(sm);*/
 
-				html.setFile("data/html/clantrader/" + getNpcId() + "-ExchangeSuccess.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-ExchangeSuccess.htm");
 			}
 			else
-				html.setFile("data/html/clantrader/" + getNpcId() + "-ExchangeFailed.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-ExchangeFailed.htm");
 
 			sendHtmlMessage(player, html);
 			return;
@@ -110,7 +110,7 @@ public final class L2ClanTraderInstance extends L2Npc
 			filename = "data/html/clantrader/" + getNpcId() + ".htm";
 
 		NpcHtmlMessage html = new NpcHtmlMessage(1);
-		html.setFile(filename);
+		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
 	}

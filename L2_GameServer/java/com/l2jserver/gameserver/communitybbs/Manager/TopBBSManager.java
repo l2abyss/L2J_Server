@@ -36,7 +36,7 @@ public class TopBBSManager extends BaseBBSManager
 	{
 		if (command.equals("_bbstop"))
 		{
-			String content = HtmCache.getInstance().getHtm("data/html/CommunityBoard/index.htm");
+			String content = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(), "data/html/CommunityBoard/index.htm");
 			if (content == null)
 			{
 				content = "<html><body><br><br><center>404 :File Not foud: 'data/html/CommunityBoard/index.htm' </center></body></html>";
@@ -45,7 +45,7 @@ public class TopBBSManager extends BaseBBSManager
 		}
 		else if (command.equals("_bbshome"))
 		{
-			String content = HtmCache.getInstance().getHtm("data/html/CommunityBoard/index.htm");
+			String content = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(), "data/html/CommunityBoard/index.htm");
 			if (content == null)
 			{
 				content = "<html><body><br><br><center>404 :File Not foud: 'data/html/CommunityBoard/index.htm' </center></body></html>";
@@ -57,7 +57,7 @@ public class TopBBSManager extends BaseBBSManager
 			StringTokenizer st = new StringTokenizer(command, ";");
 			st.nextToken();
 			int idp = Integer.parseInt(st.nextToken());
-			String content = HtmCache.getInstance().getHtm("data/html/CommunityBoard/" + idp + ".htm");
+			String content = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(), "data/html/CommunityBoard/" + idp + ".htm");
 			if (content == null)
 			{
 				content = "<html><body><br><br><center>404 :File Not foud: 'data/html/CommunityBoard/" + idp

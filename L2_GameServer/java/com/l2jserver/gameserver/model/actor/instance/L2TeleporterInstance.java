@@ -153,7 +153,7 @@ public final class L2TeleporterInstance extends L2Npc
 		if (!HtmCache.getInstance().isLoadable(filename))
 			filename = "data/html/teleporter/" + getTemplate().npcId + "-1.htm";
 
-		html.setFile(filename);
+		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcname%", getName());
 		player.sendPacket(html);
@@ -170,7 +170,7 @@ public final class L2TeleporterInstance extends L2Npc
 		if (!HtmCache.getInstance().isLoadable(filename))
 			filename = "data/html/teleporter/" + getNpcId() + "-1.htm";
 
-		html.setFile(filename);
+		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcname%", getName());
 		player.sendPacket(html);
@@ -198,7 +198,7 @@ public final class L2TeleporterInstance extends L2Npc
 		}
 
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-		html.setFile(filename);
+		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcname%", getName());
 		player.sendPacket(html);
@@ -230,7 +230,7 @@ public final class L2TeleporterInstance extends L2Npc
 			{
 				String filename = "data/html/teleporter/nobleteleporter-no.htm";
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-				html.setFile(filename);
+				html.setFile(player.getHtmlPrefix(), filename);
 				html.replace("%objectId%", String.valueOf(getObjectId()));
 				html.replace("%npcname%", getName());
 				player.sendPacket(html);

@@ -452,7 +452,7 @@ public final class L2FestivalGuideInstance extends L2Npc
 
         // Send a Server->Client NpcHtmlMessage containing the text of the L2NpcInstance to the L2PcInstance
         NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-        html.setFile(filename);
+        html.setFile(player.getHtmlPrefix(), filename);
         html.replace("%objectId%",String.valueOf(getObjectId()));
         html.replace("%festivalType%", SevenSignsFestival.getFestivalName(_festivalType));
         html.replace("%cycleMins%", String.valueOf(SevenSignsFestival.getInstance().getMinsToNextCycle()));

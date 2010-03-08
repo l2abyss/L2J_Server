@@ -1554,16 +1554,11 @@ public class Quest extends ManagedScript
 	 */
 	public String showHtmlFile(L2PcInstance player, String fileName)
 	{
-		String questName = getName();
 		int questId = getQuestIntId(); 
 		//Create handler to file linked to the quest
-		String directory = getDescr().toLowerCase();
-		String content = HtmCache.getInstance().getHtm("data/scripts/" + directory + "/" + questName + "/" + fileName);
+		String content = getHtm(player.getHtmlPrefix(), fileName);
 		
-		if (content == null)
-			content = HtmCache.getInstance().getHtmForce("data/scripts/quests/" + questName + "/" + fileName);
-		
-		if (player != null && player.getTarget() != null)
+		if (player.getTarget() != null)
 			content = content.replaceAll("%objectId%", String.valueOf(player.getTarget().getObjectId()));
 		
 		//Send message to client if message not empty     
@@ -1588,7 +1583,23 @@ public class Quest extends ManagedScript
 		
 		return content;
 	}
-	
+
+	/**
+	 * Return HTML file contents
+	 * @param player
+	 * @param fileName
+	 * @return
+	 */
+	public String getHtm(String prefix, String fileName)
+	{
+		String content = HtmCache.getInstance().getHtm(prefix, "data/scripts/" + getDescr().toLowerCase() + "/" + getName() + "/" + fileName);
+		
+		if (content == null)
+			content = HtmCache.getInstance().getHtmForce(prefix, "data/scripts/quests/" + getName() + "/" + fileName);
+
+		return content;
+	}
+
 	// Method - Public
 	/**
 	 * Add a temporary (quest) spawn

@@ -137,7 +137,7 @@ public class L2CastleWarehouseInstance extends L2NpcInstance
 			if (Config.L2JMOD_ENABLE_WAREHOUSESORTING_PRIVATE)
 			{
 				String htmFile = "data/html/mods/WhSortedP.htm";
-				String htmContent = HtmCache.getInstance().getHtm(htmFile);
+				String htmContent = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), htmFile);
 
 				if (htmContent != null)
 				{
@@ -171,7 +171,7 @@ public class L2CastleWarehouseInstance extends L2NpcInstance
 			if (Config.L2JMOD_ENABLE_WAREHOUSESORTING_CLAN)
 			{
 				String htmFile = "data/html/mods/WhSortedC.htm";
-				String htmContent = HtmCache.getInstance().getHtm(htmFile);
+				String htmContent = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), htmFile);
 
 				if (htmContent != null)
 				{
@@ -236,7 +236,7 @@ public class L2CastleWarehouseInstance extends L2NpcInstance
 			}
 		}
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-		html.setFile(filename);
+		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcname%", getName());
 		player.sendPacket(html);

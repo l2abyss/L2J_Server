@@ -152,7 +152,7 @@ public final class L2WarehouseInstance extends L2NpcInstance
 			if (Config.L2JMOD_ENABLE_WAREHOUSESORTING_PRIVATE)
 			{
 				String htmFile = "data/html/mods/WhSortedP.htm";
-				String htmContent = HtmCache.getInstance().getHtm(htmFile);
+				String htmContent = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), htmFile);
 
 				if (htmContent != null)
 				{
@@ -188,7 +188,7 @@ public final class L2WarehouseInstance extends L2NpcInstance
 			if (Config.L2JMOD_ENABLE_WAREHOUSESORTING_CLAN)
 			{
 				String htmFile = "data/html/mods/WhSortedC.htm";
-				String htmContent = HtmCache.getInstance().getHtm(htmFile);
+				String htmContent = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), htmFile);
 
 				if (htmContent != null)
 				{

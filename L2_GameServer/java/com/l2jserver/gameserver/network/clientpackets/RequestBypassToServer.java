@@ -24,6 +24,8 @@ import com.l2jserver.gameserver.communitybbs.CommunityBoard;
 import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
 import com.l2jserver.gameserver.handler.AdminCommandHandler;
 import com.l2jserver.gameserver.handler.IAdminCommandHandler;
+import com.l2jserver.gameserver.handler.IVoicedCommandHandler;
+import com.l2jserver.gameserver.handler.VoicedCommandHandler;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
@@ -212,6 +214,33 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			{
 				Olympiad.bypassChangeArena(_command, activeChar);
 			}
+			else if (_command.startsWith("voice "))
+			{
+				// only voice commands allowed in bypass
+				if (_command.length() > 7
+						&& _command.charAt(6) == '.')
+				{
+					final String vc, vparams;
+					int endOfCommand = _command.indexOf(" ", 7);
+					if (endOfCommand > 0)
+					{
+						vc = _command.substring(7, endOfCommand).trim();
+						vparams = _command.substring(endOfCommand).trim();
+					}
+					else
+					{
+						vc = _command.substring(7).trim();
+						vparams = null;
+					}
+
+					if (vc.length() > 0)
+					{
+						IVoicedCommandHandler vch = VoicedCommandHandler.getInstance().getVoicedCommandHandler(vc);
+						if (vch != null)
+							vch.useVoicedCommand(vc, activeChar, vparams);
+					}
+				}
+			}
 		}
 		catch (Exception e)
 		{
@@ -248,7 +277,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			itemId = Integer.parseInt(cmd[1]);
 			String filename = "data/html/help/"+cmd[0];
 			NpcHtmlMessage html = new NpcHtmlMessage(1,itemId);
-			html.setFile(filename);
+			html.setFile(activeChar.getHtmlPrefix(), filename);
 			html.disableValidation();
 			activeChar.sendPacket(html);
 		}
@@ -256,7 +285,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 		{
 			String filename = "data/html/help/"+path;
 			NpcHtmlMessage html = new NpcHtmlMessage(1);
-			html.setFile(filename);
+			html.setFile(activeChar.getHtmlPrefix(), filename);
 			html.disableValidation();
 			activeChar.sendPacket(html);
 		}

@@ -62,7 +62,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 			if (player.getClan() != null && getFort().getOwnerClan() != null && player.getClan() == getFort().getOwnerClan() && player.isClanLeader())
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-				html.setFile("data/html/fortress/logistics-rewards.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-rewards.htm");
 				int blood = getFort().getBloodOathReward();
 				html.replace("%objectId%", String.valueOf(getObjectId()));
 				html.replace("%bloodoath%", String.valueOf(blood));
@@ -72,7 +72,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 			else
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-				html.setFile("data/html/fortress/logistics-noprivs.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-noprivs.htm");
 				html.replace("%objectId%", String.valueOf(getObjectId()));
 				player.sendPacket(html);
 				return;
@@ -86,12 +86,12 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 				int blood = getFort().getBloodOathReward();
 				if (blood > 0)
 				{
-					html.setFile("data/html/fortress/logistics-blood.htm");
+					html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-blood.htm");
 					player.addItem("Quest", BLOOD_OATH, blood, this, true);
 					getFort().setBloodOathReward(0);
 				}
 				else
-					html.setFile("data/html/fortress/logistics-noblood.htm");
+					html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-noblood.htm");
 				html.replace("%objectId%", String.valueOf(getObjectId()));
 				player.sendPacket(html);
 				return;
@@ -99,7 +99,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 			else
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-				html.setFile("data/html/fortress/logistics-noprivs.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-noprivs.htm");
 				html.replace("%objectId%", String.valueOf(getObjectId()));
 				player.sendPacket(html);
 				return;
@@ -126,7 +126,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 			filename = "data/html/fortress/logistics-" + val + ".htm";
 
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-		html.setFile(filename);
+		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcId%", String.valueOf(getNpcId()));
 		if (getFort().getOwnerClan() != null) 

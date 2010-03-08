@@ -495,7 +495,7 @@ public class L2SignsPriestInstance extends L2Npc
 					else
 						path = SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_6_dusk_contribute.htm";
 
-					String contentContr = HtmCache.getInstance().getHtm(path);
+					String contentContr = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), path);
 
 					if (contentContr != null)
 					{
@@ -676,7 +676,7 @@ public class L2SignsPriestInstance extends L2Npc
 				else
 					path = SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_17_dusk.htm";
 
-				String content = HtmCache.getInstance().getHtm(path);
+				String content = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), path);
 
 				if (content != null)
 				{

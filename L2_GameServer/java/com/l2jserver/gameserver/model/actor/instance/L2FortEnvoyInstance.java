@@ -43,7 +43,7 @@ public class L2FortEnvoyInstance extends L2Npc
 			filename = "data/html/fortress/envoy-no.htm";
 
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-		html.setFile(filename);
+		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%castleName%", String.valueOf(CastleManager.getInstance().getCastleById(getFort().getCastleIdFromEnvoy(getNpcId())).getName()));
 		player.sendPacket(html);
@@ -81,7 +81,7 @@ public class L2FortEnvoyInstance extends L2Npc
 				}
 			}
 			getFort().setFortState(val, castleId);
-			html.setFile("data/html/fortress/envoy-ok.htm");
+			html.setFile(player.getHtmlPrefix(), "data/html/fortress/envoy-ok.htm");
 			html.replace("%castleName%", String.valueOf(CastleManager.getInstance().getCastleById(getFort().getCastleIdFromEnvoy(getNpcId())).getName()));
 			player.sendPacket(html);
 		}

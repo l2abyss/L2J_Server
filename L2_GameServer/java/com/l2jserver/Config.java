@@ -657,6 +657,10 @@ public final class Config
 	public static String ANNOUNCE_PK_MSG;
 	public static String ANNOUNCE_PVP_MSG;
 	public static boolean L2JMOD_CHAT_ADMIN;
+	public static boolean L2JMOD_MULTILANG_ENABLE;
+	public static List<String> L2JMOD_MULTILANG_ALLOWED = new ArrayList<String>();
+	public static String L2JMOD_MULTILANG_DEFAULT;
+	public static boolean L2JMOD_MULTILANG_VOICED_ALLOW;
 
 	//--------------------------------------------------
 	// NPC Settings
@@ -2171,6 +2175,16 @@ public final class Config
 					ANNOUNCE_PVP_MSG = L2JModSettings.getProperty("AnnouncePvpMsg", "$killer has defeated $target");
 					
 					L2JMOD_CHAT_ADMIN = Boolean.parseBoolean(L2JModSettings.getProperty("ChatAdmin", "false"));
+
+					L2JMOD_MULTILANG_ENABLE = Boolean.parseBoolean(L2JModSettings.getProperty("MultiLangEnable", "false"));
+					String[] allowed = L2JModSettings.getProperty("MultiLangAllowed", "en").split(";");
+					L2JMOD_MULTILANG_ALLOWED = new ArrayList<String>(allowed.length);
+					for (String lang : allowed)
+						L2JMOD_MULTILANG_ALLOWED.add(lang);
+					L2JMOD_MULTILANG_DEFAULT = L2JModSettings.getProperty("MultiLangDefault", "en");
+					if (!L2JMOD_MULTILANG_ALLOWED.contains(L2JMOD_MULTILANG_DEFAULT))
+						_log.warning("MultiLang[Config.load()]: default language: " + L2JMOD_MULTILANG_DEFAULT + " is not in allowed list !");
+					L2JMOD_MULTILANG_VOICED_ALLOW = Boolean.parseBoolean(L2JModSettings.getProperty("MultiLangVoiceCommand", "True"));
 				}
 				catch (Exception e)
 				{

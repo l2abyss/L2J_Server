@@ -191,9 +191,9 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 		_html = text; // html code must not exceed 8192 bytes
 	}
 
-	public boolean setFile(String path)
+	public boolean setFile(String prefix, String path)
 	{
-        String content = HtmCache.getInstance().getHtm(path);
+        String content = HtmCache.getInstance().getHtm(prefix, path);
 
 		if (content == null)
 		{

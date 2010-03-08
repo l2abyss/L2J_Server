@@ -167,7 +167,7 @@ public final class NpcQuestHtmlMessage extends L2GameServerPacket
 
 	public boolean setFile(String path)
 	{
-        String content = HtmCache.getInstance().getHtm(path);
+        String content = HtmCache.getInstance().getHtm(getClient().getActiveChar().getHtmlPrefix(), path);
 
 		if (content == null)
 		{

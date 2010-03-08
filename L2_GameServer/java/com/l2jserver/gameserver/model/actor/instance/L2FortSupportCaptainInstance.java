@@ -99,7 +99,7 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance
 		if (player.getClan() == null || getFort().getOwnerClan() == null || player.getClan() != getFort().getOwnerClan())
 		{
 			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-			html.setFile("data/html/fortress/supportunit-noclan.htm");
+			html.setFile(player.getHtmlPrefix(), "data/html/fortress/supportunit-noclan.htm");
 			html.replace("%objectId%", String.valueOf(getObjectId()));
 			player.sendPacket(html);
 			return;
@@ -120,7 +120,7 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance
 			filename = "data/html/fortress/supportunit-" + val + ".htm";
 
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-		html.setFile(filename);
+		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcId%", String.valueOf(getNpcId()));
 		if (getFort().getOwnerClan() != null) 

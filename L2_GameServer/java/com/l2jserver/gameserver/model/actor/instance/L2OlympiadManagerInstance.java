@@ -88,7 +88,7 @@ public class L2OlympiadManagerInstance extends L2Npc
 						classed = array[0];
 						nonClassed = array[1];
 					}
-					html.setFile(Olympiad.OLYMPIAD_HTML_PATH + "noble_registered.htm");
+					html.setFile(player.getHtmlPrefix(), Olympiad.OLYMPIAD_HTML_PATH + "noble_registered.htm");
 					if (Config.ALT_OLY_REG_DISPLAY > 0)
 					{
 						html.replace("%listClassed%", classed < Config.ALT_OLY_REG_DISPLAY ? FEWER_THAN : MORE_THAN);
@@ -106,7 +106,7 @@ public class L2OlympiadManagerInstance extends L2Npc
 					break;
 				case 3:
 					int points = Olympiad.getInstance().getNoblePoints(player.getObjectId());
-					html.setFile(Olympiad.OLYMPIAD_HTML_PATH + "noble_points1.htm");
+					html.setFile(player.getHtmlPrefix(), Olympiad.OLYMPIAD_HTML_PATH + "noble_points1.htm");
 					html.replace("%points%", String.valueOf(points));
 					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
@@ -121,13 +121,13 @@ public class L2OlympiadManagerInstance extends L2Npc
 					passes = Olympiad.getInstance().getNoblessePasses(player, false);
 					if (passes > 0)
 					{
-						html.setFile(Olympiad.OLYMPIAD_HTML_PATH + "noble_settle.htm");
+						html.setFile(player.getHtmlPrefix(), Olympiad.OLYMPIAD_HTML_PATH + "noble_settle.htm");
 						html.replace("%objectId%", String.valueOf(getObjectId()));
 						player.sendPacket(html);
 					}
 					else
 					{
-						html.setFile(Olympiad.OLYMPIAD_HTML_PATH + "noble_nopoints.htm");
+						html.setFile(player.getHtmlPrefix(), Olympiad.OLYMPIAD_HTML_PATH + "noble_nopoints.htm");
 						html.replace("%objectId%", String.valueOf(getObjectId()));
 						player.sendPacket(html);
 					}
@@ -140,7 +140,7 @@ public class L2OlympiadManagerInstance extends L2Npc
 					break;
 				case 9:
 					int point = Olympiad.getInstance().getLastNobleOlympiadPoints(player.getObjectId());
-					html.setFile(Olympiad.OLYMPIAD_HTML_PATH + "noble_points2.htm");
+					html.setFile(player.getHtmlPrefix(), Olympiad.OLYMPIAD_HTML_PATH + "noble_points2.htm");
 					html.replace("%points%", String.valueOf(point));
 					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
@@ -205,13 +205,13 @@ public class L2OlympiadManagerInstance extends L2Npc
 
 			if (player.olyBuff > 0)
 			{
-				html.setFile(player.olyBuff == 5 ? Olympiad.OLYMPIAD_HTML_PATH + "olympiad_buffs.htm" : Olympiad.OLYMPIAD_HTML_PATH + "olympiad_5buffs.htm");
+				html.setFile(player.getHtmlPrefix(), player.olyBuff == 5 ? Olympiad.OLYMPIAD_HTML_PATH + "olympiad_buffs.htm" : Olympiad.OLYMPIAD_HTML_PATH + "olympiad_5buffs.htm");
 				html.replace("%objectId%", String.valueOf(getObjectId()));
 				player.sendPacket(html);
 			}
 			else
 			{
-				html.setFile(Olympiad.OLYMPIAD_HTML_PATH + "olympiad_nobuffs.htm");
+				html.setFile(player.getHtmlPrefix(), Olympiad.OLYMPIAD_HTML_PATH + "olympiad_nobuffs.htm");
 				html.replace("%objectId%", String.valueOf(getObjectId()));
 				player.sendPacket(html);
 				deleteMe();
@@ -227,7 +227,7 @@ public class L2OlympiadManagerInstance extends L2Npc
 			{
 				case 1:
 					FastMap<Integer, String> matches = Olympiad.getInstance().getMatchList();
-					reply.setFile(Olympiad.OLYMPIAD_HTML_PATH + "olympiad_observe1.htm");
+					reply.setFile(player.getHtmlPrefix(), Olympiad.OLYMPIAD_HTML_PATH + "olympiad_observe1.htm");
 
 					for (int i = 0; i < Olympiad.getStadiumCount(); i++)
 					{
@@ -245,7 +245,7 @@ public class L2OlympiadManagerInstance extends L2Npc
 					if ((classId >= 88 && classId <= 118) || (classId >= 131 && classId <= 134) || classId == 136)
 					{
 						L2FastList<String> names = Olympiad.getInstance().getClassLeaderBoard(classId);
-						reply.setFile(Olympiad.OLYMPIAD_HTML_PATH + "olympiad_ranking.htm");
+						reply.setFile(player.getHtmlPrefix(), Olympiad.OLYMPIAD_HTML_PATH + "olympiad_ranking.htm");
 
 						int index = 1;
 						for (String name : names)

@@ -241,7 +241,7 @@ public class L2MerchantSummonInstance extends L2SummonInstance
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 		final String filename = "data/html/merchant/"+getNpcId()+".htm";
 		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-		html.setFile(filename);
+		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));       
 		player.sendPacket(html);
 	}

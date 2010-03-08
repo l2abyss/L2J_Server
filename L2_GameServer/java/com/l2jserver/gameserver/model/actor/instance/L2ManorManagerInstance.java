@@ -126,7 +126,7 @@ public class L2ManorManagerInstance extends L2MerchantInstance
 		if (CastleManorManager.getInstance().isDisabled())
 		{
 			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-			html.setFile("data/html/npcdefault.htm");
+			html.setFile(player.getHtmlPrefix(), "data/html/npcdefault.htm");
 			html.replace("%objectId%", String.valueOf(getObjectId()));
 			html.replace("%npcname%", getName());
 			player.sendPacket(html);
@@ -140,7 +140,7 @@ public class L2ManorManagerInstance extends L2MerchantInstance
 	public void showChatWindow(L2PcInstance player, String filename)
 	{
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-		html.setFile(getHtmlPath() + filename);
+		html.setFile(player.getHtmlPrefix(), getHtmlPath() + filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcId%", String.valueOf(getNpcId()));
 		html.replace("%npcname%", getName());

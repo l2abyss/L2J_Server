@@ -1409,7 +1409,7 @@ public class L2Npc extends L2Character
 				player.sendPacket(ActionFailed.STATIC_PACKET);
 
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-				html.setFile("data/html/npcbusy.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/npcbusy.htm");
 				html.replace("%busymessage%", getBusyMessage());
 				html.replace("%npcname%", getName());
 				html.replace("%playername%", player.getName());
@@ -1421,14 +1421,14 @@ public class L2Npc extends L2Character
 				{
 					if (getCastle().getOwnerId() > 0)
 					{
-						html.setFile("data/html/territorystatus.htm");
+						html.setFile(player.getHtmlPrefix(), "data/html/territorystatus.htm");
 						L2Clan clan = ClanTable.getInstance().getClan(getCastle().getOwnerId());
 						html.replace("%clanname%", clan.getName());
 						html.replace("%clanleadername%", clan.getLeaderName());
 					}
 					else
 					{
-						html.setFile("data/html/territorynoclan.htm");
+						html.setFile(player.getHtmlPrefix(), "data/html/territorynoclan.htm");
 					}
 				}
 				html.replace("%castlename%", getCastle().getName());
@@ -1483,7 +1483,7 @@ public class L2Npc extends L2Character
 					return;
 				String filename = "data/html/" + path;
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-				html.setFile(filename);
+				html.setFile(player.getHtmlPrefix(), filename);
 				html.replace("%objectId%", String.valueOf(getObjectId()));
 				player.sendPacket(html);
 			}
@@ -1493,7 +1493,7 @@ public class L2Npc extends L2Character
 				{
 					String filename = "data/html/teleporter/nobleteleporter-no.htm";
 					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-					html.setFile(filename);
+					html.setFile(player.getHtmlPrefix(), filename);
 					html.replace("%objectId%", String.valueOf(getObjectId()));
 					html.replace("%npcname%", getName());
 					player.sendPacket(html);
@@ -1619,7 +1619,7 @@ public class L2Npc extends L2Character
 					case 1:
 						String filename = "data/html/default/30981-1.htm";
 						NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-						html.setFile(filename);
+						html.setFile(player.getHtmlPrefix(), filename);
 						html.replace("%objectId%", String.valueOf(getObjectId()));
 						html.replace("%dp_price%", String.valueOf(pen_clear_price[player.getExpertiseIndex()]));
 						player.sendPacket(html);
@@ -1938,7 +1938,7 @@ public class L2Npc extends L2Character
 			questId = qs.getQuest().getName();
 			String stateId = State.getStateName(qs.getState());
 			String path = "data/scripts/quests/" + questId + "/" + stateId + ".htm";
-			content = HtmCache.getInstance().getHtm(path); //TODO path for quests html
+			content = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), path); //TODO path for quests html
 
 			if (Config.DEBUG)
 			{
@@ -2041,7 +2041,7 @@ public class L2Npc extends L2Character
 		if (val == 0) // 0 - first buy lottery ticket window
 		{
 			filename = (getHtmlPath(npcId, 1));
-			html.setFile(filename);
+			html.setFile(player.getHtmlPrefix(), filename);
 		}
 		else if (val >= 1 && val <= 21) // 1-20 - buttons, 21 - second buy lottery ticket window
 		{
@@ -2059,7 +2059,7 @@ public class L2Npc extends L2Character
 			}
 
 			filename = (getHtmlPath(npcId, 5));
-			html.setFile(filename);
+			html.setFile(player.getHtmlPrefix(), filename);
 
 			int count = 0;
 			int found = 0;
@@ -2167,17 +2167,17 @@ public class L2Npc extends L2Character
 			player.sendPacket(iu);
 
 			filename = (getHtmlPath(npcId, 3));
-			html.setFile(filename);
+			html.setFile(player.getHtmlPrefix(), filename);
 		}
 		else if (val == 23) //23 - current lottery jackpot
 		{
 			filename = (getHtmlPath(npcId, 3));
-			html.setFile(filename);
+			html.setFile(player.getHtmlPrefix(), filename);
 		}
 		else if (val == 24) // 24 - Previous winning numbers/Prize claim
 		{
 			filename = (getHtmlPath(npcId, 4));
-			html.setFile(filename);
+			html.setFile(player.getHtmlPrefix(), filename);
 
 			int lotonumber = Lottery.getInstance().getId();
 			String message = "";
@@ -2401,7 +2401,7 @@ public class L2Npc extends L2Character
 	 */
 	private boolean showPkDenyChatWindow(L2PcInstance player, String type)
 	{
-		String html = HtmCache.getInstance().getHtm("data/html/" + type + "/" + getNpcId() + "-pk.htm");
+		String html = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/html/" + type + "/" + getNpcId() + "-pk.htm");
 
 		if (html != null)
 		{
@@ -2597,7 +2597,7 @@ public class L2Npc extends L2Character
 
 		// Send a Server->Client NpcHtmlMessage containing the text of the L2NpcInstance to the L2PcInstance 
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-		html.setFile(filename);
+		html.setFile(player.getHtmlPrefix(), filename);
 
 		if (this instanceof L2MerchantInstance)
 		{
@@ -2626,7 +2626,7 @@ public class L2Npc extends L2Character
 	{
 		// Send a Server->Client NpcHtmlMessage containing the text of the L2NpcInstance to the L2PcInstance 
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-		html.setFile(filename);
+		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
 		
@@ -2890,9 +2890,9 @@ public class L2Npc extends L2Character
 		String html = "";
 
 		if (this instanceof L2WarehouseInstance)
-			html = HtmCache.getInstance().getHtm("data/html/warehouse/" + npcId + "-noteach.htm");
+			html = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/html/warehouse/" + npcId + "-noteach.htm");
 		else if (this instanceof L2TrainerInstance)
-			html = HtmCache.getInstance().getHtm("data/html/trainer/" + npcId + "-noteach.htm");
+			html = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/html/trainer/" + npcId + "-noteach.htm");
 
 		if (html == null)
 		{

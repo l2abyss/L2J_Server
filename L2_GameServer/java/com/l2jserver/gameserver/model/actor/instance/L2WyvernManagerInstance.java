@@ -111,7 +111,7 @@ public class L2WyvernManagerInstance extends L2Npc
 			filename = "data/html/wyvernmanager/wyvernmanager.htm";      // Owner message window
 
 		NpcHtmlMessage html = new NpcHtmlMessage(1);
-		html.setFile(filename);
+		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcname%", getName());
 		player.sendPacket(html);

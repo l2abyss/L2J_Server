@@ -222,7 +222,7 @@ public class L2StaticObjectInstance extends L2Character
             } else {
 			if(_type == 2) {
 				String filename = "data/html/signboard.htm";
-				String content = HtmCache.getInstance().getHtm(filename);
+				String content = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), filename);
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 
 				if (content == null) html.setHtml("<html><body>Signboard is missing:<br>"+filename+"</body></html>");

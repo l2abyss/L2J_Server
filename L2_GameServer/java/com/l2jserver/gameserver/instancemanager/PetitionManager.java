@@ -571,7 +571,7 @@ public final class PetitionManager
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
 		NpcHtmlMessage html = new NpcHtmlMessage(0);
-		html.setFile("data/html/admin/petition.htm");
+		html.setFile(activeChar.getHtmlPrefix(), "data/html/admin/petition.htm");
 		html.replace("%petition%", String.valueOf(currPetition.getId()));
 		html.replace("%time%", dateFormat.format(new Date(currPetition.getSubmitTime())));
 		html.replace("%type%", currPetition.getTypeAsString());

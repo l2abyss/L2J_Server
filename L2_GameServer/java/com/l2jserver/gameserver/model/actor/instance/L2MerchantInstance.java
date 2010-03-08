@@ -138,9 +138,9 @@ public class L2MerchantInstance extends L2NpcInstance
 		{
 			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 			if (player.getLevel() >= 40)
-				html.setFile("data/html/merchant/shadow_item.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/merchant/shadow_item.htm");
 			else
-				html.setFile("data/html/merchant/shadow_item-lowlevel.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/merchant/shadow_item-lowlevel.htm");
 			html.replace("%objectId%", String.valueOf(getObjectId()));
 			player.sendPacket(html);
 		}

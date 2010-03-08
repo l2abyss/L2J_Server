@@ -1640,7 +1640,7 @@ public class Olympiad
 	public static void sendMatchList(L2PcInstance player)
 	{
 		NpcHtmlMessage message = new NpcHtmlMessage(0);
-		message.setFile(Olympiad.OLYMPIAD_HTML_PATH + "olympiad_observe2.htm");
+		message.setFile(player.getHtmlPrefix(), Olympiad.OLYMPIAD_HTML_PATH + "olympiad_observe2.htm");
 
 		FastMap<Integer, String> matches = getInstance().getMatchList();
 		for (int i = 0; i < Olympiad.getStadiumCount(); i++)

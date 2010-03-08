@@ -65,7 +65,7 @@ public class L2TransformManagerInstance extends L2MerchantInstance
 			else
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-				html.setFile("data/html/default/" + getNpcId() + "-cantlearn.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/default/" + getNpcId() + "-cantlearn.htm");
 				player.sendPacket(html);
 			}
 		}
@@ -78,7 +78,7 @@ public class L2TransformManagerInstance extends L2MerchantInstance
 			else
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-				html.setFile("data/html/default/" + getNpcId() + "-cantbuy.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/default/" + getNpcId() + "-cantbuy.htm");
 				player.sendPacket(html);
 			}
 		}

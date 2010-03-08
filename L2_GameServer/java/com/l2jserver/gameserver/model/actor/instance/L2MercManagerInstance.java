@@ -73,7 +73,7 @@ public final class L2MercManagerInstance extends L2MerchantInstance
 			filename = "data/html/mercmanager/mercmanager.htm"; // Owner message window
 
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-		html.setFile(filename);
+		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcId%", String.valueOf(getNpcId()));
 		html.replace("%npcname%", getName());

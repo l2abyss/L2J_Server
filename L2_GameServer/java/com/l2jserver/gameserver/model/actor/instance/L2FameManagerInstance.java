@@ -52,13 +52,13 @@ public class L2FameManagerInstance extends L2Npc
 					player.setPkKills(player.getPkKills()-1);
 					player.sendPacket(new UserInfo(player));
 					player.sendPacket(new ExBrExtraUserInfo(player));
-					html.setFile("data/html/famemanager/"+getNpcId()+"-3.htm");
+					html.setFile(player.getHtmlPrefix(), "data/html/famemanager/"+getNpcId()+"-3.htm");
 				}
 				else
-					html.setFile("data/html/famemanager/"+getNpcId()+"-4.htm");
+					html.setFile(player.getHtmlPrefix(), "data/html/famemanager/"+getNpcId()+"-4.htm");
 			}
 			else
-				html.setFile("data/html/famemanager/"+getNpcId()+"-lowfame.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/famemanager/"+getNpcId()+"-lowfame.htm");
 
 			sendHtmlMessage(player, html);
 			return;
@@ -75,13 +75,13 @@ public class L2FameManagerInstance extends L2Npc
 					player.sendPacket(new ExBrExtraUserInfo(player));
 					player.getClan().addReputationScore(50, true);
 					player.sendPacket(new SystemMessage(SystemMessageId.ACQUIRED_50_CLAN_FAME_POINTS));
-					html.setFile("data/html/famemanager/"+getNpcId()+"-5.htm");
+					html.setFile(player.getHtmlPrefix(), "data/html/famemanager/"+getNpcId()+"-5.htm");
 				}
 				else
-					html.setFile("data/html/famemanager/"+getNpcId()+"-lowfame.htm");
+					html.setFile(player.getHtmlPrefix(), "data/html/famemanager/"+getNpcId()+"-lowfame.htm");
 			}
 			else
-				html.setFile("data/html/famemanager/"+getNpcId()+"-noclan.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/famemanager/"+getNpcId()+"-noclan.htm");
 
 			sendHtmlMessage(player, html);
 			return;
@@ -105,7 +105,7 @@ public class L2FameManagerInstance extends L2Npc
 			filename = "data/html/famemanager/"+getNpcId()+".htm";
 
 		NpcHtmlMessage html = new NpcHtmlMessage(1);
-		html.setFile(filename);
+		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
 	}

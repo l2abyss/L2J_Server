@@ -388,14 +388,14 @@ public class EnterWorld extends L2GameClientPacket
 		if (showClanNotice)
 		{
 			NpcHtmlMessage notice = new NpcHtmlMessage(1);
-			notice.setFile("data/html/clanNotice.htm");
+			notice.setFile(activeChar.getHtmlPrefix(), "data/html/clanNotice.htm");
 			notice.replace("%clan_name%", activeChar.getClan().getName());
 			notice.replace("%notice_text%", activeChar.getClan().getNotice().replaceAll("\r\n", "<br>"));
 			sendPacket(notice);
 		}
 		else if (Config.SERVER_NEWS)
 		{
-			String serverNews = HtmCache.getInstance().getHtm("data/html/servnews.htm");
+			String serverNews = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(), "data/html/servnews.htm");
 			if (serverNews != null)
 				sendPacket(new NpcHtmlMessage(1, serverNews));
 		}
