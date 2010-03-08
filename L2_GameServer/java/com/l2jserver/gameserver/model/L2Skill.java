@@ -1465,7 +1465,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
             }
             case TARGET_MULTIFACE:
             {
-                if ((!(target instanceof L2Attackable) && !(target instanceof L2PcInstance)))
+                if ((!(target instanceof L2Attackable) && !(target instanceof L2Playable)))
                 {
                     activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
                     return _emptyTargetList;
