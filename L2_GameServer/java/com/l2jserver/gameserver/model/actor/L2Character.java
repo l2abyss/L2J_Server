@@ -409,7 +409,6 @@ public abstract class L2Character extends L2Object
 		L2WorldRegion reg = getWorldRegion();
 		decayMe();
 		if(reg != null) reg.removeFromZones(this);
-		_effects.clear();
 	}
 
 	@Override
@@ -2442,29 +2441,6 @@ public abstract class L2Character extends L2Object
 	/** Set the L2Character movement type to walk and send Server->Client packet ChangeMoveType to all others L2PcInstance. */
 	public final void setWalking() { if (isRunning()) setIsRunning(false); }
 
-	/** Task lauching the function enableSkill() */
-	class EnableSkill implements Runnable
-	{
-		int _skillId;
-
-		public EnableSkill(int skillId)
-		{
-			_skillId = skillId;
-		}
-
-		public void run()
-		{
-			try
-			{
-				enableSkill(_skillId);
-			}
-            catch (Exception e)
-            {
-				_log.log(Level.SEVERE, "Failed executing enableSkill().", e);
-			}
-		}
-	}
-
 	/**
 	 * Task lauching the function onHitTimer().<BR><BR>
 	 *
@@ -3502,7 +3478,7 @@ public abstract class L2Character extends L2Object
 
 
 	/** Table containing all skillId that are disabled */
-	protected List<Integer> _disabledSkills;
+	protected Map<Integer, Long> _disabledSkills;
 	private boolean _allSkillsDisabled;
 
 //	private int _flyingRunSpeed;
@@ -6231,7 +6207,8 @@ public abstract class L2Character extends L2Object
 	 */
 	public void enableSkill(int skillId)
 	{
-		if (_disabledSkills == null) return;
+		if (_disabledSkills == null)
+			return;
 
 		_disabledSkills.remove(Integer.valueOf(skillId));
 
@@ -6250,9 +6227,7 @@ public abstract class L2Character extends L2Object
 	 */
 	public void disableSkill(int skillId)
 	{
-		if (_disabledSkills == null) _disabledSkills = Collections.synchronizedList(new FastList<Integer>());
-
-		_disabledSkills.add(skillId);
+		disableSkill(skillId, 0);
 	}
 
 	/**
@@ -6262,8 +6237,10 @@ public abstract class L2Character extends L2Object
 	 */
 	public void disableSkill(int skillId, long delay)
 	{
-	    disableSkill(skillId);
-	    if (delay > 10) ThreadPoolManager.getInstance().scheduleAi(new EnableSkill(skillId), delay);
+		if (_disabledSkills == null)
+			_disabledSkills = Collections.synchronizedMap(new FastMap<Integer, Long>());
+
+		_disabledSkills.put(skillId, delay > 0 ? System.currentTimeMillis() + delay : Long.MAX_VALUE);
 	}
 
 	/**
@@ -6277,11 +6254,20 @@ public abstract class L2Character extends L2Object
 	 */
 	public boolean isSkillDisabled(int skillId)
 	{
-		if (isAllSkillsDisabled()) return true;
+		if (isAllSkillsDisabled())
+			return true;
 
-		if (_disabledSkills == null) return false;
+		if (_disabledSkills == null)
+			return false;
 
-		return _disabledSkills.contains(skillId);
+		if (!_disabledSkills.containsKey(skillId))
+			return false;
+
+		final boolean result = _disabledSkills.get(skillId) > System.currentTimeMillis();
+		if (!result)
+			_disabledSkills.remove(Integer.valueOf(skillId));
+
+		return result;
 	}
 
 	/**
