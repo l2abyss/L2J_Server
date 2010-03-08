@@ -141,6 +141,11 @@ public class ThreadPoolManager
 		}
 	}
 	
+	public boolean removeEffect(Runnable r)
+	{
+		return _effectsScheduledThreadPool.remove(r);
+	}
+	
 	public ScheduledFuture<?> scheduleGeneral(Runnable r, long delay)
 	{
 		try
