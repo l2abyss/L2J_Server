@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.concurrent.Future;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -118,7 +119,8 @@ public class L2PoisonZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (((character instanceof L2Playable) && _target.equalsIgnoreCase("pc")) || ((character instanceof L2PcInstance) && _target.equalsIgnoreCase("pc_only"))
+		if (((character instanceof L2Playable) && _target.equalsIgnoreCase("pc"))
+				|| ((character instanceof L2PcInstance) && _target.equalsIgnoreCase("pc_only"))
 				|| ((character instanceof L2MonsterInstance) && _target.equalsIgnoreCase("npc")))
 		{
 			if (_task == null)
@@ -185,7 +187,7 @@ public class L2PoisonZone extends L2ZoneType
 	
 	class ApplySkill implements Runnable
 	{
-		private L2PoisonZone _poisonZone;
+		private final L2PoisonZone _poisonZone;
 		
 		ApplySkill(L2PoisonZone zone)
 		{
@@ -205,7 +207,12 @@ public class L2PoisonZone extends L2ZoneType
 				{
 					if (temp != null && !temp.isDead())
 					{
-						if (((temp instanceof L2Playable && getTargetType().equalsIgnoreCase("pc")) || (temp instanceof L2PcInstance && getTargetType().equalsIgnoreCase("pc_only")) || (temp instanceof L2MonsterInstance && getTargetType().equalsIgnoreCase("npc")))
+						if (((temp instanceof L2PcInstance && getTargetType().equalsIgnoreCase("pc_only"))
+								|| (temp instanceof L2Playable && getTargetType().equalsIgnoreCase("pc"))
+								|| (temp instanceof L2MonsterInstance
+										&& temp.hasAI()
+										&& temp.getAI().getIntention() != CtrlIntention.AI_INTENTION_IDLE
+										&& getTargetType().equalsIgnoreCase("npc")))
 								&& Rnd.get(100) < getChance())
 						{
 							for (int skillId : _skills.keys())
