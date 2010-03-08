@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
+import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -87,8 +89,9 @@ public final class L2AuctioneerInstance extends L2Npc
 					try
 					{
 						SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-						int bid = 0;
-						if (st.countTokens() >= 1) bid = Integer.parseInt(st.nextToken());
+						long bid = 0;
+						if (st.countTokens() >= 1)
+							bid = Math.min(Long.parseLong(st.nextToken()), MAX_ADENA);
 
 						Auction a = new Auction(player.getClan().getHasHideout(), player.getClan(), days*86400000L, bid, ClanHallManager.getInstance().getClanHallByOwner(player.getClan()).getName());
 						if (_pendingAuctions.get(a.getId()) != null)
@@ -192,9 +195,9 @@ public final class L2AuctioneerInstance extends L2Npc
 					int auctionId = Integer.parseInt(val);
 					try
 					{
-						int bid = 0;
+						long bid = 0;
 						if (st.countTokens() >= 1)
-							bid = Integer.parseInt(st.nextToken());
+							bid = Math.min(Long.parseLong(st.nextToken()), MAX_ADENA);
 
 						AuctionManager.getInstance().getAuction(auctionId).setBid(player, bid);
 					}
@@ -230,7 +233,7 @@ public final class L2AuctioneerInstance extends L2Npc
 				{
 					String filename = "data/html/auction/AgitBid1.htm";
 
-					int minimumBid = AuctionManager.getInstance().getAuction(Integer.parseInt(val)).getHighestBidderMaxBid();
+					long minimumBid = AuctionManager.getInstance().getAuction(Integer.parseInt(val)).getHighestBidderMaxBid();
 					if (minimumBid == 0)
 						minimumBid = AuctionManager.getInstance().getAuction(Integer.parseInt(val)).getStartingBid();
 
@@ -445,12 +448,12 @@ public final class L2AuctioneerInstance extends L2Npc
 			}
 			else if (actualCommand.equalsIgnoreCase("cancelBid"))
 			{
-				int bid = AuctionManager.getInstance().getAuction(player.getClan().getAuctionBiddedAt()).getBidders().get(player.getClanId()).getBid();
+				long bid = AuctionManager.getInstance().getAuction(player.getClan().getAuctionBiddedAt()).getBidders().get(player.getClanId()).getBid();
 				String filename = "data/html/auction/AgitBidCancel.htm";
 				NpcHtmlMessage html = new NpcHtmlMessage(1);
 				html.setFile(filename);
 				html.replace("%AGIT_BID%", String.valueOf(bid));
-				html.replace("%AGIT_BID_REMAIN%", String.valueOf((int)(bid*0.9)));
+				html.replace("%AGIT_BID_REMAIN%", String.valueOf((long)(bid*0.9)));
 				html.replace("%AGIT_LINK_BACK%", "bypass -h npc_"+getObjectId()+"_selectedItems");
 				html.replace("%objectId%", String.valueOf(getObjectId()));
 				player.sendPacket(html);
