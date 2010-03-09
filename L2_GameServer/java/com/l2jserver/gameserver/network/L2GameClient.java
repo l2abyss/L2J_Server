@@ -730,7 +730,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 			try
 			{
 				L2PcInstance player = L2GameClient.this.getActiveChar();
-				if (player != null)
+				if (player != null && player.isOnline() > 0) // safety precaution
 				{
 					saveCharToDisk(player, true);
 					if (player.getPet() != null)
