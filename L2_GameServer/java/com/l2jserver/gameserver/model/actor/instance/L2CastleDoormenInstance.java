@@ -25,6 +25,7 @@ public class L2CastleDoormenInstance extends L2DoormenInstance
 	public L2CastleDoormenInstance(int objectID, L2NpcTemplate template)
 	{
 		super(objectID, template);
+		setInstanceType(InstanceType.L2CastleDoormenInstance);
 	}
 
 	@Override

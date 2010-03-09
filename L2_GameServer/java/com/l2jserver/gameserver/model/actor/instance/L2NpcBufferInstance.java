@@ -41,6 +41,7 @@ public class L2NpcBufferInstance extends L2Npc
 	public L2NpcBufferInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2NpcBufferInstance);
 	}
 	
 	@Override

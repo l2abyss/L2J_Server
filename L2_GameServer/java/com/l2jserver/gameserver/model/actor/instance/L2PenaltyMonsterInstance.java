@@ -28,6 +28,7 @@ public class L2PenaltyMonsterInstance extends L2MonsterInstance
 	public L2PenaltyMonsterInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2PenaltyMonsterInstance);
 	}
 
 	@Override

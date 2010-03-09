@@ -31,6 +31,7 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance
 	public L2FortSupportCaptainInstance(int objectID, L2NpcTemplate template)
 	{
 		super(objectID, template);
+		setInstanceType(InstanceType.L2FortSupportCaptainInstance);
 	}
 
 	private final static int[] TalismanIds =

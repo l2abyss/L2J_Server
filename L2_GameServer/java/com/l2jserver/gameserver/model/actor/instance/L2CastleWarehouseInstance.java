@@ -42,6 +42,7 @@ public class L2CastleWarehouseInstance extends L2NpcInstance
 	public L2CastleWarehouseInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2CastleWarehouseInstance);
 	}
 
 	@Override

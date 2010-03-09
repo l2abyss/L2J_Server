@@ -32,6 +32,7 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 	public L2DungeonGatekeeperInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2DungeonGatekeeperInstance);
 	}
 
 	@Override

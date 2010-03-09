@@ -36,6 +36,7 @@ public class L2DoormenInstance extends L2NpcInstance
 	public L2DoormenInstance(int objectID, L2NpcTemplate template)
 	{
 		super(objectID, template);
+		setInstanceType(InstanceType.L2DoormenInstance);
 	}
 
 	@Override

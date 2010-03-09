@@ -34,6 +34,7 @@ public class L2FlameTowerInstance extends L2Npc
 	public L2FlameTowerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2FlameTowerInstance);
 		setIsInvul(false);
 	}
 

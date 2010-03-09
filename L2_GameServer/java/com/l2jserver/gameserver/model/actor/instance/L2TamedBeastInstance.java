@@ -57,6 +57,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	public L2TamedBeastInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2TamedBeastInstance);
 		setHome(this);
 	}
 

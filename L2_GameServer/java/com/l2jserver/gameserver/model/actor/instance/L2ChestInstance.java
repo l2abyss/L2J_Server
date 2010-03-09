@@ -35,6 +35,7 @@ public final class L2ChestInstance extends L2MonsterInstance
 	public L2ChestInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2ChestInstance);
 		setIsNoRndWalk(true);
 		_isInteracted = false;
 		_specialDrop = false;

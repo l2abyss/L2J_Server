@@ -335,6 +335,7 @@ public abstract class L2Character extends L2Object
 	public L2Character(int objectId, L2CharTemplate template)
 	{
 		super(objectId);
+		setInstanceType(InstanceType.L2Character);
 		initCharStat();
 		initCharStatus();
 

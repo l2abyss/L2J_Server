@@ -27,6 +27,7 @@ public class L2SiegeSummonInstance extends L2SummonInstance
 	public L2SiegeSummonInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2Skill skill)
     {
         super(objectId, template, owner, skill);
+        setInstanceType(InstanceType.L2SiegeSummonInstance);
     }
 
 	@Override

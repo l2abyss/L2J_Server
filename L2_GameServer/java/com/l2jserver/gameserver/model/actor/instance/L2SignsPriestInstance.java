@@ -38,6 +38,7 @@ public class L2SignsPriestInstance extends L2Npc
 	public L2SignsPriestInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2SignsPriestInstance);
 	}
 
 	@Override

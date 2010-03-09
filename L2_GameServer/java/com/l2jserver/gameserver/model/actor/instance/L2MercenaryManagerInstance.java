@@ -33,6 +33,7 @@ public class L2MercenaryManagerInstance extends L2Npc
     public L2MercenaryManagerInstance(int objectId, L2NpcTemplate template)
     {
            super(objectId, template);
+           setInstanceType(InstanceType.L2MercenaryManagerInstance);
     }
 
 	@Override

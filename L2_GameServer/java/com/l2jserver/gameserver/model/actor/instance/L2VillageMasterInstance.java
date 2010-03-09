@@ -66,6 +66,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 	public L2VillageMasterInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2VillageMasterInstance);
 	}
 
 	@Override

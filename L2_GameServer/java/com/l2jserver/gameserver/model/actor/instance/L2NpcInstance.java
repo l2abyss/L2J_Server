@@ -40,6 +40,7 @@ public class L2NpcInstance extends L2Npc
 	public L2NpcInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2NpcInstance);
 		setIsInvul(false);
 		_classesToTeach = template.getTeachInfo();
 	}

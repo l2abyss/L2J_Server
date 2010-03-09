@@ -34,6 +34,7 @@ public class L2FameManagerInstance extends L2Npc
 	public L2FameManagerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2FameManagerInstance);
 	}
 
 	@Override

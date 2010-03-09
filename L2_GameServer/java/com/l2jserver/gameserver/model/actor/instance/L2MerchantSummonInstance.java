@@ -42,6 +42,7 @@ public class L2MerchantSummonInstance extends L2SummonInstance
 	public L2MerchantSummonInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2Skill skill)
 	{
 		super(objectId, template, owner, skill);
+		setInstanceType(InstanceType.L2MerchantSummonInstance);
 	}
 
 	@Override

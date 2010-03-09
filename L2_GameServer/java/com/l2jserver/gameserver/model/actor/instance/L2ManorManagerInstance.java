@@ -35,6 +35,7 @@ public class L2ManorManagerInstance extends L2MerchantInstance
 	public L2ManorManagerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2ManorManagerInstance);
 	}
 
 	@Override

@@ -29,6 +29,7 @@ public final class L2TrainerInstance extends L2NpcInstance
     public L2TrainerInstance(int objectId, L2NpcTemplate template)
     {
         super(objectId, template);
+        setInstanceType(InstanceType.L2TrainerInstance);
     }
 
     @Override

@@ -67,6 +67,7 @@ public class L2RaceManagerInstance extends L2Npc
     public L2RaceManagerInstance(int objectId, L2NpcTemplate template)
     {
         super(objectId, template);
+        setInstanceType(InstanceType.L2RaceManagerInstance);
         if (_notInitialized)
         {
             _notInitialized = false;

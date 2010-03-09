@@ -16,9 +16,7 @@ package com.l2jserver.gameserver.model.actor;
 
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
 
-import java.text.DateFormat;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 
 import javolution.util.FastList;
@@ -29,23 +27,15 @@ import com.l2jserver.gameserver.SevenSignsFestival;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.cache.HtmCache;
-import com.l2jserver.gameserver.datatables.ClanTable;
-import com.l2jserver.gameserver.datatables.HelperBuffTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.datatables.SpawnTable;
-import com.l2jserver.gameserver.idfactory.IdFactory;
+import com.l2jserver.gameserver.handler.BypassHandler;
+import com.l2jserver.gameserver.handler.IBypassHandler;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
-import com.l2jserver.gameserver.instancemanager.DimensionalRiftManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
-import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.TownManager;
-import com.l2jserver.gameserver.instancemanager.games.Lottery;
-import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2DropCategory;
 import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2Multisell;
 import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
@@ -61,7 +51,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2FishermanInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TeleporterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TrainerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2WarehouseInstance;
@@ -73,21 +62,13 @@ import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.L2Event;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.quest.QuestState;
-import com.l2jserver.gameserver.model.quest.State;
 import com.l2jserver.gameserver.model.zone.type.L2TownZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
-import com.l2jserver.gameserver.network.serverpackets.ExShowBaseAttributeCancelWindow;
-import com.l2jserver.gameserver.network.serverpackets.ExShowVariationCancelWindow;
-import com.l2jserver.gameserver.network.serverpackets.ExShowVariationMakeWindow;
-import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.RadarControl;
 import com.l2jserver.gameserver.network.serverpackets.ServerObjectInfo;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
@@ -95,12 +76,10 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
-import com.l2jserver.gameserver.templates.L2HelperBuff;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate.AIType;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
-import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.gameserver.util.StringUtil;
 import com.l2jserver.util.Rnd;
@@ -153,11 +132,6 @@ public class L2Npc extends L2Character
 	/** Minimum interval between social packets*/
 	private int _minimalSocialInterval = 6000;
 	
-	static final int[] pen_clear_price =
-	{
-		3600, 8640, 25200, 50400, 86400, 144000, 144000, 144000
-	};
-
 	protected RandomAnimationTask _rAniTask = null;
 	private int _currentLHandId; // normally this shouldn't change from the template, but there exist exceptions
 	private int _currentRHandId; // normally this shouldn't change from the template, but there exist exceptions
@@ -567,6 +541,7 @@ public class L2Npc extends L2Character
 		// Call the L2Character constructor to set the _template of the L2Character, copy skills from template to object
 		// and link _calculators to NPC_STD_CALCULATOR
 		super(objectId, template);
+		setInstanceType(InstanceType.L2Npc);
 		initCharStatusUpdateValues();
 
 		// initialize the "current" equipment
@@ -1415,267 +1390,13 @@ public class L2Npc extends L2Character
 				html.replace("%playername%", player.getName());
 				player.sendPacket(html);
 			}
-			else if (command.equalsIgnoreCase("TerritoryStatus"))
-			{
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-				{
-					if (getCastle().getOwnerId() > 0)
-					{
-						html.setFile(player.getHtmlPrefix(), "data/html/territorystatus.htm");
-						L2Clan clan = ClanTable.getInstance().getClan(getCastle().getOwnerId());
-						html.replace("%clanname%", clan.getName());
-						html.replace("%clanleadername%", clan.getLeaderName());
-					}
-					else
-					{
-						html.setFile(player.getHtmlPrefix(), "data/html/territorynoclan.htm");
-					}
-				}
-				html.replace("%castlename%", getCastle().getName());
-				html.replace("%taxpercent%", "" + getCastle().getTaxPercent());
-				html.replace("%objectId%", String.valueOf(getObjectId()));
-				{
-					if (getCastle().getCastleId() > 6)
-					{
-						html.replace("%territory%", "The Kingdom of Elmore");
-					}
-					else
-					{
-						html.replace("%territory%", "The Kingdom of Aden");
-					}
-				}
-				player.sendPacket(html);
-			}
-			else if (command.startsWith("Quest"))
-			{
-				String quest = "";
-				try
-				{
-					quest = command.substring(5).trim();
-				}
-				catch (IndexOutOfBoundsException ioobe)
-				{
-				}
-				if (quest.length() == 0)
-					showQuestWindow(player);
-				else
-					showQuestWindow(player, quest);
-			}
-			else if (command.startsWith("Chat"))
-			{
-				int val = 0;
-				try
-				{
-					val = Integer.parseInt(command.substring(5));
-				}
-				catch (IndexOutOfBoundsException ioobe)
-				{
-				}
-				catch (NumberFormatException nfe)
-				{
-				}
-				showChatWindow(player, val);
-			}
-			else if (command.startsWith("Link"))
-			{
-				String path = command.substring(5).trim();
-				if (path.indexOf("..") != -1)
-					return;
-				String filename = "data/html/" + path;
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-				html.setFile(player.getHtmlPrefix(), filename);
-				html.replace("%objectId%", String.valueOf(getObjectId()));
-				player.sendPacket(html);
-			}
-			else if (command.startsWith("NobleTeleport"))
-			{
-				if (!player.isNoble())
-				{
-					String filename = "data/html/teleporter/nobleteleporter-no.htm";
-					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-					html.setFile(player.getHtmlPrefix(), filename);
-					html.replace("%objectId%", String.valueOf(getObjectId()));
-					html.replace("%npcname%", getName());
-					player.sendPacket(html);
-					return;
-				}
-				int val = 0;
-				try
-				{
-					val = Integer.parseInt(command.substring(5));
-				}
-				catch (IndexOutOfBoundsException ioobe)
-				{
-				}
-				catch (NumberFormatException nfe)
-				{
-				}
-				showChatWindow(player, val);
-			}
-			else if (command.startsWith("Loto"))
-			{
-				int val = 0;
-				try
-				{
-					val = Integer.parseInt(command.substring(5));
-				}
-				catch (IndexOutOfBoundsException ioobe)
-				{
-				}
-				catch (NumberFormatException nfe)
-				{
-				}
-				if (val == 0)
-				{
-					// new loto ticket
-					for (int i = 0; i < 5; i++)
-						player.setLoto(i, 0);
-				}
-				showLotoWindow(player, val);
-			}
-			else if (command.startsWith("CPRecovery"))
-			{
-				makeCPRecovery(player);
-			}
-			else if (command.startsWith("SupportMagicServitor"))
-			{
-				makeSupportMagic(player,true);
-			}
-			else if (command.startsWith("SupportMagic"))
-			{
-				makeSupportMagic(player,false);
-			}
-			else if (command.startsWith("GiveBlessing"))
-			{
-				giveBlessingSupport(player);
-			}
-			else if (command.startsWith("multisell"))
-			{
-				int listId = Integer.parseInt(command.substring(9).trim());
-				L2Multisell.getInstance().separateAndSend(listId, player, getNpcId(), false, getCastle().getTaxRate());
-			}
-			else if (command.startsWith("exc_multisell"))
-			{
-				int listId = Integer.parseInt(command.substring(13).trim());
-				L2Multisell.getInstance().separateAndSend(listId, player, getNpcId(), true, getCastle().getTaxRate());
-			}
-			else if (command.startsWith("Augment"))
-			{
-				int cmdChoice = Integer.parseInt(command.substring(8, 9).trim());
-				switch (cmdChoice)
-				{
-					case 1:
-						player.sendPacket(new ExShowVariationMakeWindow());
-						break;
-					case 2:
-						player.sendPacket(new ExShowVariationCancelWindow());
-						break;
-				}
-			}
-			else if (command.startsWith("npcfind_byid"))
-			{
-				try
-				{
-					L2Spawn spawn = SpawnTable.getInstance().getTemplate(Integer.parseInt(command.substring(12).trim()));
-					
-					if (spawn != null)
-					{
-						player.sendPacket(new RadarControl(2, 2, spawn.getLocx(), spawn.getLocy(), spawn.getLocz()));
-						player.sendPacket(new RadarControl(0, 1, spawn.getLocx(), spawn.getLocy(), spawn.getLocz()));
-					}
-				}
-				catch (NumberFormatException nfe)
-				{
-					player.sendMessage("Wrong command parameters");
-				}
-			}
-			else if (command.startsWith("EnterRift"))
-			{
-				try
-				{
-					Byte b1 = Byte.parseByte(command.substring(10)); // Selected Area: Recruit, Soldier etc
-					DimensionalRiftManager.getInstance().start(player, b1, this);
-				}
-				catch (Exception e)
-				{
-				}
-			}
-			else if (command.startsWith("ChangeRiftRoom"))
-			{
-				if (player.isInParty() && player.getParty().isInDimensionalRift())
-				{
-					player.getParty().getDimensionalRift().manualTeleport(player, this);
-				}
-				else
-				{
-					DimensionalRiftManager.getInstance().handleCheat(player, this);
-				}
-			}
-			else if (command.startsWith("remove_dp"))
-			{
-				int cmdChoice = Integer.parseInt(command.substring(10, 11).trim());
-				switch (cmdChoice)
-				{
-					case 1:
-						String filename = "data/html/default/30981-1.htm";
-						NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-						html.setFile(player.getHtmlPrefix(), filename);
-						html.replace("%objectId%", String.valueOf(getObjectId()));
-						html.replace("%dp_price%", String.valueOf(pen_clear_price[player.getExpertiseIndex()]));
-						player.sendPacket(html);
-						break;
-					case 2:
-						NpcHtmlMessage Reply = new NpcHtmlMessage(getObjectId());
-                                                final StringBuilder replyMSG = StringUtil.startAppend(400,
-                                                        "<html><body>Black Judge:<br>"
-                                                        );
-
-						if (player.getDeathPenaltyBuffLevel() > 0)
-						{
-							if (player.getAdena() >= pen_clear_price[player.getExpertiseIndex()])
-							{
-								if (!player.reduceAdena("DeathPenality", pen_clear_price[player.getExpertiseIndex()], this, true))
-									return;
-								player.setDeathPenaltyBuffLevel(player.getDeathPenaltyBuffLevel() - 1);
-								player.sendPacket(new SystemMessage(SystemMessageId.DEATH_PENALTY_LIFTED));
-								player.sendPacket(new EtcStatusUpdate(player));
-								return;
-							}
-							else
-							{
-								replyMSG.append("The wound you have received from death's touch is too deep to be healed for the money you have to give me. Find more money if you wish death's mark to be fully removed from you.");
-							}
-						}
-						else 
-						{
-							replyMSG.append("You have no more death wounds that require healing.<br>" +
-                                                                "Go forth and fight, both for this world and your own glory.");
-						}
-						
-						replyMSG.append("</body></html>");
-						Reply.setHtml(replyMSG.toString());
-						player.sendPacket(Reply);
-						break;
-				}
-			}
-			else if (command.startsWith("ExitRift"))
-			{
-				if (player.isInParty() && player.getParty().isInDimensionalRift())
-				{
-					player.getParty().getDimensionalRift().manualExitRift(player, this);
-				}
-				else
-				{
-					DimensionalRiftManager.getInstance().handleCheat(player, this);
-				}
-			}
-			else if (command.startsWith("ReleaseAttribute"))
-			{
-				player.sendPacket(new ExShowBaseAttributeCancelWindow(player));
-			}
 			else 
 			{
-				_log.info(getClass().getSimpleName()+": Unknown NPC bypass: \""+command+"\" NpcId: "+getNpcId());
+				IBypassHandler handler = BypassHandler.getInstance().getBypassHandler(command);
+				if (handler != null)
+					handler.useBypass(command, player, this);
+				else
+					_log.info(getClass().getSimpleName()+": Unknown NPC bypass: \""+command+"\" NpcId: "+getNpcId());
 			}
 		}
 	}
@@ -1709,30 +1430,6 @@ public class L2Npc extends L2Character
 			return null;
 
 		return (L2Weapon) item;
-	}
-
-	public void giveBlessingSupport(L2PcInstance player)
-	{
-		if (player == null)
-			return;
-
-		// Blessing of protection - author kerberos_20. Used codes from Rayan - L2Emu project.
-		// Prevent a cursed weapon weilder of being buffed - I think no need of that becouse karma check > 0
-		// if (player.isCursedWeaponEquiped()) 
-		//   return; 
-
-		int player_level = player.getLevel();
-		// Select the player 
-		setTarget(player);
-		// If the player is too high level, display a message and return 
-		if (player_level > 39 || player.getClassId().level() >= 2)
-		{
-			String content = "<html><body>Newbie Guide:<br>I'm sorry, but you are not eligible to receive the protection blessing.<br1>It can only be bestowed on <font color=\"LEVEL\">characters below level 39 who have not made a seccond transfer.</font></body></html>";
-			insertObjectIdAndShowChatWindow(player, content);
-			return;
-		}
-		L2Skill skill = SkillTable.FrequentSkill.BLESSING_OF_PROTECTION.getSkill();
-		doCast(skill);
 	}
 
 	/**
@@ -1822,570 +1519,6 @@ public class L2Npc extends L2Character
 
 		// If the file is not found, the standard message "I have nothing to say to you" is returned
 		return "data/html/npcdefault.htm";
-	}
-
-	/**
-	 * Open a choose quest window on client with all quests available of the L2NpcInstance.<BR><BR>
-	 * 
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Send a Server->Client NpcHtmlMessage containing the text of the L2NpcInstance to the L2PcInstance </li><BR><BR>
-	 * 
-	 * @param player The L2PcInstance that talk with the L2NpcInstance
-	 * @param quests The table containing quests of the L2NpcInstance
-	 * 
-	 */
-	public void showQuestChooseWindow(L2PcInstance player, Quest[] quests)
-	{
-		final StringBuilder sb = StringUtil.startAppend(150,
-				"<html><body>"
-		);
-		for (Quest q : quests)
-		{
-			StringUtil.append(sb,
-					"<a action=\"bypass -h npc_",
-					String.valueOf(getObjectId()),
-					"_Quest ",
-					q.getName(),
-					"\">[",
-					q.getDescr()
-			);
-
-			QuestState qs = player.getQuestState(q.getScriptName());
-			if (qs != null)
-			{
-				if (qs.getState() == State.STARTED && qs.getInt("cond") > 0)
-					sb.append(" (In Progress)");
-				else if (qs.getState() == State.COMPLETED)
-					sb.append(" (Done)");
-			}
-			sb.append("]</a><br>");
-		}
-
-		sb.append("</body></html>");
-
-		// Send a Server->Client packet NpcHtmlMessage to the L2PcInstance in order to display the message of the L2NpcInstance
-		insertObjectIdAndShowChatWindow(player, sb.toString());
-	}
-
-	/**
-	 * Open a quest window on client with the text of the L2NpcInstance.<BR><BR>
-	 * 
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Get the text of the quest state in the folder data/scripts/quests/questId/stateId.htm </li>
-	 * <li>Send a Server->Client NpcHtmlMessage containing the text of the L2NpcInstance to the L2PcInstance </li>
-	 * <li>Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet </li><BR><BR>
-	 * 
-	 * @param player The L2PcInstance that talk with the L2NpcInstance
-	 * @param questId The Identifier of the quest to display the message
-	 * 
-	 */
-	public void showQuestWindow(L2PcInstance player, String questId)
-	{
-		String content = null;
-
-		Quest q = QuestManager.getInstance().getQuest(questId);
-
-		// Get the state of the selected quest
-		QuestState qs = player.getQuestState(questId);
-
-		if (q == null)
-		{
-			// no quests found
-			content = "<html><body>You are either not on a quest that involves this NPC, or you don't meet this NPC's minimum quest requirements.</body></html>";
-		}
-		else
-		{
-			if ((q.getQuestIntId() >= 1 && q.getQuestIntId() < 20000) && (player.getWeightPenalty() >= 3 || player.getInventoryLimit() * 0.8 <= player.getInventory().getSize()))
-			{
-				player.sendPacket(new SystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
-				return;
-			}
-
-			if (qs == null)
-			{
-				if (q.getQuestIntId() >= 1 && q.getQuestIntId() < 20000)
-				{
-					Quest[] questList = player.getAllActiveQuests();
-					if (questList.length >= 25) // if too many ongoing quests, don't show window and send message
-					{
-						player.sendPacket(new SystemMessage(SystemMessageId.TOO_MANY_QUESTS));
-						return;
-					}
-				}
-				// check for start point
-				Quest[] qlst = getTemplate().getEventQuests(Quest.QuestEventType.QUEST_START);
-
-				if (qlst != null && qlst.length > 0)
-				{
-					for (Quest temp : qlst)
-					{
-						if (temp == q)
-						{
-							qs = q.newQuestState(player);
-							break;
-						}
-					}
-				}
-			}
-		}
-
-		if (qs != null)
-		{
-			// If the quest is alreday started, no need to show a window
-			if (!qs.getQuest().notifyTalk(this, qs))
-				return;
-
-			questId = qs.getQuest().getName();
-			String stateId = State.getStateName(qs.getState());
-			String path = "data/scripts/quests/" + questId + "/" + stateId + ".htm";
-			content = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), path); //TODO path for quests html
-
-			if (Config.DEBUG)
-			{
-				if (content != null)
-				{
-					_log.fine("Showing quest window for quest " + questId + " html path: " + path);
-				}
-				else
-				{
-					_log.fine("File not exists for quest " + questId + " html path: " + path);
-				}
-			}
-		}
-
-		// Send a Server->Client packet NpcHtmlMessage to the L2PcInstance in order to display the message of the L2NpcInstance
-		if (content != null)
-			insertObjectIdAndShowChatWindow(player, content);
-
-		// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-		player.sendPacket(ActionFailed.STATIC_PACKET);
-	}
-
-	/**
-	 * Collect awaiting quests/start points and display a QuestChooseWindow (if several available) or QuestWindow.<BR><BR>
-	 * 
-	 * @param player The L2PcInstance that talk with the L2NpcInstance
-	 * 
-	 */
-	public void showQuestWindow(L2PcInstance player)
-	{
-		// collect awaiting quests and start points
-		List<Quest> options = new FastList<Quest>();
-
-		QuestState[] awaits = player.getQuestsForTalk(getTemplate().npcId);
-		Quest[] starts = getTemplate().getEventQuests(Quest.QuestEventType.QUEST_START);
-
-		// Quests are limited between 1 and 999 because those are the quests that are supported by the client.  
-		// By limiting them there, we are allowed to create custom quests at higher IDs without interfering  
-		if (awaits != null)
-		{
-			for (QuestState x : awaits)
-			{
-				if (!options.contains(x.getQuest()))
-					if ((x.getQuest().getQuestIntId() > 0) && (x.getQuest().getQuestIntId() < 20000))
-						options.add(x.getQuest());
-			}
-		}
-
-		if (starts != null)
-		{
-			for (Quest x : starts)
-			{
-				if (!options.contains(x))
-					if ((x.getQuestIntId() > 0) && (x.getQuestIntId() < 20000))
-						options.add(x);
-			}
-		}
-
-		// Display a QuestChooseWindow (if several quests are available) or QuestWindow
-		if (options.size() > 1)
-		{
-			showQuestChooseWindow(player, options.toArray(new Quest[options.size()]));
-		}
-		else if (options.size() == 1)
-		{
-			showQuestWindow(player, options.get(0).getName());
-		}
-		else
-		{
-			showQuestWindow(player, "");
-		}
-	}
-
-	/**
-	 * Open a Loto window on client with the text of the L2NpcInstance.<BR><BR>
-	 * 
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Get the text of the selected HTML file in function of the npcId and of the page number </li>
-	 * <li>Send a Server->Client NpcHtmlMessage containing the text of the L2NpcInstance to the L2PcInstance </li>
-	 * <li>Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet </li><BR>
-	 * 
-	 * @param player The L2PcInstance that talk with the L2NpcInstance
-	 * @param val The number of the page of the L2NpcInstance to display
-	 * 
-	 */
-	// 0 - first buy lottery ticket window
-	// 1-20 - buttons
-	// 21 - second buy lottery ticket window
-	// 22 - selected ticket with 5 numbers
-	// 23 - current lottery jackpot
-	// 24 - Previous winning numbers/Prize claim
-	// >24 - check lottery ticket by item object id
-	public void showLotoWindow(L2PcInstance player, int val)
-	{
-		int npcId = getTemplate().npcId;
-		String filename;
-		SystemMessage sm;
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-
-		if (val == 0) // 0 - first buy lottery ticket window
-		{
-			filename = (getHtmlPath(npcId, 1));
-			html.setFile(player.getHtmlPrefix(), filename);
-		}
-		else if (val >= 1 && val <= 21) // 1-20 - buttons, 21 - second buy lottery ticket window
-		{
-			if (!Lottery.getInstance().isStarted())
-			{
-				//tickets can't be sold
-				player.sendPacket(new SystemMessage(SystemMessageId.NO_LOTTERY_TICKETS_CURRENT_SOLD));
-				return;
-			}
-			if (!Lottery.getInstance().isSellableTickets())
-			{
-				//tickets can't be sold
-				player.sendPacket(new SystemMessage(SystemMessageId.NO_LOTTERY_TICKETS_AVAILABLE));
-				return;
-			}
-
-			filename = (getHtmlPath(npcId, 5));
-			html.setFile(player.getHtmlPrefix(), filename);
-
-			int count = 0;
-			int found = 0;
-			// counting buttons and unsetting button if found
-			for (int i = 0; i < 5; i++)
-			{
-				if (player.getLoto(i) == val)
-				{
-					//unsetting button
-					player.setLoto(i, 0);
-					found = 1;
-				}
-				else if (player.getLoto(i) > 0)
-				{
-					count++;
-				}
-			}
-
-			//if not rearched limit 5 and not unseted value
-			if (count < 5 && found == 0 && val <= 20)
-				for (int i = 0; i < 5; i++)
-					if (player.getLoto(i) == 0)
-					{
-						player.setLoto(i, val);
-						break;
-					}
-
-			//setting pusshed buttons
-			count = 0;
-			for (int i = 0; i < 5; i++)
-				if (player.getLoto(i) > 0)
-				{
-					count++;
-					String button = String.valueOf(player.getLoto(i));
-					if (player.getLoto(i) < 10)
-						button = "0" + button;
-					String search = "fore=\"L2UI.lottoNum" + button + "\" back=\"L2UI.lottoNum" + button + "a_check\"";
-					String replace = "fore=\"L2UI.lottoNum" + button + "a_check\" back=\"L2UI.lottoNum" + button + "\"";
-					html.replace(search, replace);
-				}
-
-			if (count == 5)
-			{
-				String search = "0\">Return";
-				String replace = "22\">The winner selected the numbers above.";
-				html.replace(search, replace);
-			}
-		}
-		else if (val == 22) //22 - selected ticket with 5 numbers
-		{
-			if (!Lottery.getInstance().isStarted())
-			{
-				//tickets can't be sold
-				player.sendPacket(new SystemMessage(SystemMessageId.NO_LOTTERY_TICKETS_CURRENT_SOLD));
-				return;
-			}
-			if (!Lottery.getInstance().isSellableTickets())
-			{
-				//tickets can't be sold
-				player.sendPacket(new SystemMessage(SystemMessageId.NO_LOTTERY_TICKETS_AVAILABLE));
-				return;
-			}
-
-			long price = Config.ALT_LOTTERY_TICKET_PRICE;
-			int lotonumber = Lottery.getInstance().getId();
-			int enchant = 0;
-			int type2 = 0;
-
-			for (int i = 0; i < 5; i++)
-			{
-				if (player.getLoto(i) == 0)
-					return;
-				
-				if (player.getLoto(i) < 17)
-					enchant += Math.pow(2, player.getLoto(i) - 1);
-				else
-					type2 += Math.pow(2, player.getLoto(i) - 17);
-			}
-			if (player.getAdena() < price)
-			{
-				sm = new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
-				player.sendPacket(sm);
-				return;
-			}
-			if (!player.reduceAdena("Loto", price, this, true))
-				return;
-			Lottery.getInstance().increasePrize(price);
-
-			sm = new SystemMessage(SystemMessageId.ACQUIRED_S1_S2);
-			sm.addNumber(lotonumber);
-			sm.addItemName(4442);
-			player.sendPacket(sm);
-
-			L2ItemInstance item = new L2ItemInstance(IdFactory.getInstance().getNextId(), 4442);
-			item.setCount(1);
-			item.setCustomType1(lotonumber);
-			item.setEnchantLevel(enchant);
-			item.setCustomType2(type2);
-			player.getInventory().addItem("Loto", item, player, this);
-
-			InventoryUpdate iu = new InventoryUpdate();
-			iu.addItem(item);
-			L2ItemInstance adenaupdate = player.getInventory().getItemByItemId(57);
-			iu.addModifiedItem(adenaupdate);
-			player.sendPacket(iu);
-
-			filename = (getHtmlPath(npcId, 3));
-			html.setFile(player.getHtmlPrefix(), filename);
-		}
-		else if (val == 23) //23 - current lottery jackpot
-		{
-			filename = (getHtmlPath(npcId, 3));
-			html.setFile(player.getHtmlPrefix(), filename);
-		}
-		else if (val == 24) // 24 - Previous winning numbers/Prize claim
-		{
-			filename = (getHtmlPath(npcId, 4));
-			html.setFile(player.getHtmlPrefix(), filename);
-
-			int lotonumber = Lottery.getInstance().getId();
-			String message = "";
-			for (L2ItemInstance item : player.getInventory().getItems())
-			{
-				if (item == null)
-					continue;
-				if (item.getItemId() == 4442 && item.getCustomType1() < lotonumber)
-				{
-					message = message + "<a action=\"bypass -h npc_%objectId%_Loto " + item.getObjectId() + "\">" + item.getCustomType1() + " Event Number ";
-					int[] numbers = Lottery.getInstance().decodeNumbers(item.getEnchantLevel(), item.getCustomType2());
-					for (int i = 0; i < 5; i++)
-					{
-						message += numbers[i] + " ";
-					}
-					long[] check = Lottery.getInstance().checkTicket(item);
-					if (check[0] > 0)
-					{
-						switch ((int)check[0])
-						{
-							case 1:
-								message += "- 1st Prize";
-								break;
-							case 2:
-								message += "- 2nd Prize";
-								break;
-							case 3:
-								message += "- 3th Prize";
-								break;
-							case 4:
-								message += "- 4th Prize";
-								break;
-						}
-						message += " " + check[1] + "a.";
-					}
-					message += "</a><br>";
-				}
-			}
-			if (message.isEmpty())
-			{
-				message += "There is no winning lottery ticket...<br>";
-			}
-			html.replace("%result%", message);
-		}
-		else if (val > 24) // >24 - check lottery ticket by item object id
-		{
-			int lotonumber = Lottery.getInstance().getId();
-			L2ItemInstance item = player.getInventory().getItemByObjectId(val);
-			if (item == null || item.getItemId() != 4442 || item.getCustomType1() >= lotonumber)
-				return;
-			long[] check = Lottery.getInstance().checkTicket(item);
-
-			sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-			sm.addItemName(4442);
-			sm.addItemNumber(1);
-			player.sendPacket(sm);
-
-			long adena = check[1];
-			if (adena > 0)
-				player.addAdena("Loto", adena, this, true);
-			player.destroyItem("Loto", item, this, false);
-			return;
-		}
-		html.replace("%objectId%", String.valueOf(getObjectId()));
-		html.replace("%race%", "" + Lottery.getInstance().getId());
-		html.replace("%adena%", "" + Lottery.getInstance().getPrize());
-		html.replace("%ticket_price%", "" + Config.ALT_LOTTERY_TICKET_PRICE);
-		html.replace("%prize5%", "" + (Config.ALT_LOTTERY_5_NUMBER_RATE * 100));
-		html.replace("%prize4%", "" + (Config.ALT_LOTTERY_4_NUMBER_RATE * 100));
-		html.replace("%prize3%", "" + (Config.ALT_LOTTERY_3_NUMBER_RATE * 100));
-		html.replace("%prize2%", "" + Config.ALT_LOTTERY_2_AND_1_NUMBER_PRIZE);
-		html.replace("%enddate%", "" + DateFormat.getDateInstance().format(Lottery.getInstance().getEndDate()));
-		player.sendPacket(html);
-
-		// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-		player.sendPacket(ActionFailed.STATIC_PACKET);
-	}
-
-	public void makeCPRecovery(L2PcInstance player)
-	{
-		if (getNpcId() != 31225 && getNpcId() != 31226)
-			return;
-		if (player.isCursedWeaponEquipped())
-		{
-			player.sendMessage("Go away, you're not welcome here.");
-			player.sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
-
-		int neededmoney = 100;
-		if (!player.reduceAdena("RestoreCP", neededmoney, player.getLastFolkNPC(), true))
-			return;
-		L2Skill skill = SkillTable.getInstance().getInfo(4380, 1);
-		if (skill != null)
-		{
-			setTarget(player);
-			doCast(skill);
-		}
-		player.sendPacket(ActionFailed.STATIC_PACKET);
-	}
-
-	/**
-	 * Add Newbie helper buffs to L2Player according to its level.<BR><BR>
-	 * 
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Get the range level in wich player must be to obtain buff </li>
-	 * <li>If player level is out of range, display a message and return </li>
-	 * <li>According to player level cast buff </li><BR><BR>
-	 * 
-	 * <FONT COLOR=#FF0000><B> Newbie Helper Buff list is define in sql table helper_buff_list</B></FONT><BR><BR>
-	 * 
-	 * @param player The L2PcInstance that talk with the L2NpcInstance
-	 * 
-	 */
-	public void makeSupportMagic(L2PcInstance player, boolean isSummon)
-	{
-		if (player == null)
-			return;
-
-		// Prevent a cursed weapon weilder of being buffed
-		if (player.isCursedWeaponEquipped())
-			return;
-
-		int player_level = player.getLevel();
-		int lowestLevel = 0;
-		int highestLevel = 0;
-
-		if (isSummon)
-		{
-			if (player.getPet() == null || !(player.getPet() instanceof L2SummonInstance))
-			{
-				String content = "<html><body>Only servitors can receive this Support Magic. If you do not have a servitor, you cannot access these spells.</body></html>";
-				insertObjectIdAndShowChatWindow(player, content);
-				return;
-			}
-			setTarget(player.getPet());
-		}
-		else
-			// 	Select the player
-			setTarget(player);
-
-		if (isSummon)
-		{
-			lowestLevel = HelperBuffTable.getInstance().getServitorLowestLevel();
-			highestLevel = HelperBuffTable.getInstance().getServitorHighestLevel();
-		}
-		else
-		{
-			// 	Calculate the min and max level between which the player must be to obtain buff
-			if (player.isMageClass())
-			{
-				lowestLevel = HelperBuffTable.getInstance().getMagicClassLowestLevel();
-				highestLevel = HelperBuffTable.getInstance().getMagicClassHighestLevel();
-			}
-			else
-			{
-				lowestLevel = HelperBuffTable.getInstance().getPhysicClassLowestLevel();
-				highestLevel = HelperBuffTable.getInstance().getPhysicClassHighestLevel();
-			}
-		}
-		// If the player is too high level, display a message and return
-		if (player_level > highestLevel)
-		{
-			String content = "<html><body>Newbie Guide:<br>Only a <font color=\"LEVEL\">novice character of level " + highestLevel
-					+ " or less</font> can receive my support magic.<br>Your novice character is the first one that you created and raised in this world.</body></html>";
-			insertObjectIdAndShowChatWindow(player, content);
-			return;
-		}
-
-		// If the player is too low level, display a message and return
-		if (player_level < lowestLevel)
-		{
-			String content = "<html><body>Come back here when you have reached level " + lowestLevel + ". I will give you support magic then.</body></html>";
-			insertObjectIdAndShowChatWindow(player, content);
-			return;
-		}
-
-		L2Skill skill = null;
-		if (isSummon)
-		{
-			for (L2HelperBuff helperBuffItem : HelperBuffTable.getInstance().getHelperBuffTable())
-			{
-				if (helperBuffItem.isForSummon())
-				{
-					skill = SkillTable.getInstance().getInfo(helperBuffItem.getSkillID(), helperBuffItem.getSkillLevel());
-					if (skill != null)
-						doCast(skill);
-				}
-			}
-		}
-		else
-		{
-			// 	Go through the Helper Buff list define in sql table helper_buff_list and cast skill
-			for (L2HelperBuff helperBuffItem : HelperBuffTable.getInstance().getHelperBuffTable())
-			{
-				if (helperBuffItem.isMagicClassBuff() == player.isMageClass())
-				{
-					if (player_level >= helperBuffItem.getLowerLevel() && player_level <= helperBuffItem.getUpperLevel())
-					{
-						skill = SkillTable.getInstance().getInfo(helperBuffItem.getSkillID(), helperBuffItem.getSkillLevel());
-						if (skill.getSkillType() == L2SkillType.SUMMON)
-							player.doSimultaneousCast(skill);
-						else
-							doCast(skill);
-					}
-				}
-			}
-		}
 	}
 
 	public void showChatWindow(L2PcInstance player)

@@ -36,6 +36,7 @@ public final class L2WarehouseInstance extends L2NpcInstance
 	public L2WarehouseInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2WarehouseInstance);
 	}
 
 	@Override

@@ -91,6 +91,7 @@ public class L2StaticObjectInstance extends L2Character
     public L2StaticObjectInstance(int objectId,L2CharTemplate template, int staticId)
     {
     	super(objectId, template);
+    	setInstanceType(InstanceType.L2StaticObjectInstance);
     	_staticObjectId = staticId;
     }
 

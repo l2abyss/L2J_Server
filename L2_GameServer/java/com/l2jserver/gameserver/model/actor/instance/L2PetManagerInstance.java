@@ -30,6 +30,7 @@ public class L2PetManagerInstance extends L2MerchantInstance
 	public L2PetManagerInstance(int objectID, L2NpcTemplate template)
 	{
 		super(objectID, template);
+		setInstanceType(InstanceType.L2PetManagerInstance);
 	}
 
 	@Override

@@ -43,6 +43,7 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 	public L2ClassMasterInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2ClassMasterInstance);
 	}
 
 	@Override

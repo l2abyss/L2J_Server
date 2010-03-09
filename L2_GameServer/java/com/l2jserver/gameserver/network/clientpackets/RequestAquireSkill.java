@@ -459,9 +459,9 @@ public class RequestAquireSkill extends L2GameClientPacket
 			qlst[0].notifyAcquireSkillList(trainer, player);
 		}
 		else if (trainer instanceof L2FishermanInstance)
-			((L2FishermanInstance) trainer).showSkillList(player);
+			L2FishermanInstance.showFishSkillList(player);
 		else if (trainer instanceof L2TransformManagerInstance)
-			((L2TransformManagerInstance) trainer).showTransformSkillList(player);
+			L2TransformManagerInstance.showTransformSkillList(player);
 		else
 			((L2NpcInstance)trainer).showSkillList(player, player.getSkillLearningClassId());
 

@@ -22,6 +22,7 @@ public final class L2FlyMonsterInstance extends L2MonsterInstance
 	public L2FlyMonsterInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2FlyMonsterInstance);
 	}
 
     @Override

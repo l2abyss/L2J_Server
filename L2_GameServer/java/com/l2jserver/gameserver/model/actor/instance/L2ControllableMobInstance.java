@@ -57,6 +57,7 @@ public class L2ControllableMobInstance extends L2MonsterInstance
 	public L2ControllableMobInstance(int objectId, L2NpcTemplate template)
     {
 		super(objectId, template);
+		setInstanceType(InstanceType.L2ControllableMobInstance);
 	}
 
 	@Override

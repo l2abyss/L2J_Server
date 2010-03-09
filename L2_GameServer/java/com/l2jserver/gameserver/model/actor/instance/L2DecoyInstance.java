@@ -37,6 +37,7 @@ public class L2DecoyInstance extends L2Decoy
     public L2DecoyInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2Skill skill)
     {
         super(objectId, template, owner);
+        setInstanceType(InstanceType.L2DecoyInstance);
         if (skill != null)
         {
             _totalLifeTime = ((L2SkillDecoy)skill).getTotalLifeTime();

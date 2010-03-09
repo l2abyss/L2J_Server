@@ -236,6 +236,7 @@ public class L2PetInstance extends L2Summon
 	public L2PetInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2ItemInstance control)
 	{
 		super(objectId, template, owner);
+		setInstanceType(InstanceType.L2PetInstance);
 
         _controlItemId = control.getObjectId();
 

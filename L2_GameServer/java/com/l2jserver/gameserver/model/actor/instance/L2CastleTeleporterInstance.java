@@ -39,6 +39,7 @@ public final class L2CastleTeleporterInstance extends L2Npc
 	public L2CastleTeleporterInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2CastleTeleporterInstance);
 	}
 
 	@Override

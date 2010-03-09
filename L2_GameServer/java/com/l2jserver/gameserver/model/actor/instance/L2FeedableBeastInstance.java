@@ -27,5 +27,6 @@ public class L2FeedableBeastInstance extends L2MonsterInstance
     public L2FeedableBeastInstance(int objectId, L2NpcTemplate template)
     {
         super(objectId, template);
+        setInstanceType(InstanceType.L2FeedableBeastInstance);
     }
 }

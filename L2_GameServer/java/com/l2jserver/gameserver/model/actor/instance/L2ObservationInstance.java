@@ -14,15 +14,8 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import java.util.StringTokenizer;
-
-import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
@@ -34,63 +27,7 @@ public final class L2ObservationInstance extends L2Npc
 	public L2ObservationInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
-	}
-
-	@Override
-	public void onBypassFeedback(L2PcInstance player, String command)
-	{
-		if (command.startsWith("Chat"))
-		{
-			int val = 0;
-			try
-			{
-				val = Integer.parseInt(command.substring(5));
-			}
-			catch (IndexOutOfBoundsException ioobe){}
-			catch (NumberFormatException nfe){}
-
-			showChatWindow(player, val);
-		}
-		else if (command.startsWith("observeSiege"))
-		{
-			String val = command.substring(13);
-			StringTokenizer st = new StringTokenizer(val);
-			st.nextToken(); // Bypass cost
-
-			if (SiegeManager.getInstance().getSiege(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())) != null)
-				doObserve(player, val);
-			else
-				player.sendPacket(new SystemMessage(SystemMessageId.ONLY_VIEW_SIEGE));
-		}
-		else if (command.startsWith("observeOracle"))
-		{
-			String val = command.substring(13);
-			StringTokenizer st = new StringTokenizer(val);
-			st.nextToken(); // Bypass cost
-
-			doObserve(player, val);
-		}
-		else if (command.startsWith("observe"))
-			doObserve(player, command.substring(8));
-		else
-			super.onBypassFeedback(player, command);
-	}
-
-	private void doObserve(L2PcInstance player, String val)
-	{
-		StringTokenizer st = new StringTokenizer(val);
-		long cost = Long.parseLong(st.nextToken());
-		int x = Integer.parseInt(st.nextToken());
-		int y = Integer.parseInt(st.nextToken());
-		int z = Integer.parseInt(st.nextToken());
-
-		if (player.reduceAdena("Broadcast", cost, this, true))
-		{
-			// enter mode
-			player.enterObserverMode(x, y, z);
-			player.sendPacket(new ItemList(player, false));
-		}
-		player.sendPacket(ActionFailed.STATIC_PACKET);
+		setInstanceType(InstanceType.L2ObservationInstance);
 	}
 
 	public void showChatWindow(L2PcInstance player, int val)

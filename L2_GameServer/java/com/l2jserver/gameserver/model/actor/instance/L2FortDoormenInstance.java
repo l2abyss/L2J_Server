@@ -26,6 +26,7 @@ public class L2FortDoormenInstance extends L2DoormenInstance
 	public L2FortDoormenInstance(int objectID, L2NpcTemplate template)
 	{
 		super(objectID, template);
+		setInstanceType(InstanceType.L2FortDoormenInstance);
 	}
 
 	public void showChatWindow(L2PcInstance player)

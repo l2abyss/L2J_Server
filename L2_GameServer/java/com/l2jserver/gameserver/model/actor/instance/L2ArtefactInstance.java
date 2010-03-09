@@ -53,6 +53,7 @@ public final class L2ArtefactInstance extends L2Npc
 	public L2ArtefactInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2ArtefactInstance);
 	}
 
 	/**

@@ -50,6 +50,7 @@ public class L2SummonInstance extends L2Summon
 	public L2SummonInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2Skill skill)
 	{
 		super(objectId, template, owner);
+		setInstanceType(InstanceType.L2SummonInstance);
 		setShowSummonAnimation(true);
 		
 		if (skill != null)

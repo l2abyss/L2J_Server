@@ -42,6 +42,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 	public L2SepulcherMonsterInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2SepulcherMonsterInstance);
 		setShowSummonAnimation(true);
 		switch (template.npcId)
 		{

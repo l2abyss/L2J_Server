@@ -1137,6 +1137,7 @@ public final class L2PcInstance extends L2Playable
 	private L2PcInstance(int objectId, L2PcTemplate template, String accountName, PcAppearance app)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2PcInstance);
         super.initCharStatusUpdateValues();
         initPcStatusUpdateValues();
 
@@ -1161,6 +1162,7 @@ public final class L2PcInstance extends L2Playable
 	private L2PcInstance(int objectId)
 	{
 		super(objectId, null);
+		setInstanceType(InstanceType.L2PcInstance);
         super.initCharStatusUpdateValues();
         initPcStatusUpdateValues();
 	}

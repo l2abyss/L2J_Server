@@ -53,13 +53,161 @@ public abstract class L2Object
     private ObjectPosition _position;
 	private int _instanceId = 0;
 
+    private InstanceType _instanceType = null; 
+
     // =========================================================
     // Constructor
     public L2Object(int objectId)
     {
-        _objectId = objectId;
+    	setInstanceType(InstanceType.L2Object);
+    	_objectId = objectId;
         initKnownList();
         initPosition();
+    }
+
+    public static enum InstanceType
+    {
+    	L2Object(),
+    	L2Character(L2Object),
+    	L2Npc(L2Object, L2Character),
+    	L2Playable(L2Object, L2Character, L2Npc),
+    	L2Summon(L2Object, L2Character, L2Playable),
+    	L2Decoy(L2Object, L2Character),
+    	L2Trap(L2Object, L2Character),
+    	L2PcInstance(L2Object, L2Character, L2Playable),
+    	L2NpcInstance(L2Object, L2Character, L2Npc),
+    	L2MerchantInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2StaticObjectInstance(L2Object, L2Character),
+    	L2DoorInstance(L2Object, L2Character),
+    	L2EffectPointInstance(L2Object, L2Character, L2Npc),
+    	// Summons, Pets, Decoys and Traps
+    	L2SummonInstance(L2Object, L2Character, L2Playable, L2Summon),
+    	L2SiegeSummonInstance(L2Object, L2Character, L2Playable, L2Summon, L2SummonInstance),
+    	L2MerchantSummonInstance(L2Object, L2Character, L2Playable, L2Summon, L2SummonInstance),
+    	L2PetInstance(L2Object, L2Character, L2Playable, L2Summon),
+    	L2BabyPetInstance(L2Object, L2Character, L2Playable, L2Summon, L2PetInstance),
+    	L2DecoyInstance(L2Object, L2Character, L2Decoy),
+    	L2TrapInstance(L2Object, L2Character, L2Trap),
+    	// Attackable
+    	L2Attackable(L2Object, L2Character, L2Npc),
+    	L2GuardInstance(L2Object, L2Character, L2Npc, L2Attackable),
+    	L2MonsterInstance(L2Object, L2Character, L2Npc, L2Attackable),
+    	L2ChestInstance(L2Object, L2Character, L2Npc, L2Attackable, L2MonsterInstance),
+    	L2ControllableMobInstance(L2Object, L2Character, L2Npc, L2Attackable, L2MonsterInstance),
+    	L2FeedableBeastInstance(L2Object, L2Character, L2Npc, L2Attackable, L2MonsterInstance),
+    	L2TamedBeastInstance(L2Object, L2Character, L2Npc, L2Attackable, L2MonsterInstance, L2FeedableBeastInstance),
+    	L2FriendlyMobInstance(L2Object, L2Character, L2Npc, L2Attackable),
+    	L2PenaltyMonsterInstance(L2Object, L2Character, L2Npc, L2Attackable, L2MonsterInstance),
+    	L2RiftInvaderInstance(L2Object, L2Character, L2Npc, L2Attackable, L2MonsterInstance),
+    	L2MinionInstance(L2Object, L2Character, L2Npc, L2Attackable, L2MonsterInstance),
+    	L2RaidBossInstance(L2Object, L2Character, L2Npc, L2Attackable, L2MonsterInstance),
+    	L2GrandBossInstance(L2Object, L2Character, L2Npc, L2Attackable, L2MonsterInstance, L2RaidBossInstance),
+    	// FlyMobs
+    	L2FlyNpcInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2FlyMonsterInstance(L2Object, L2Character, L2Npc, L2Attackable, L2MonsterInstance),
+    	L2FlyMinionInstance(L2Object, L2Character, L2Npc, L2Attackable, L2MonsterInstance, L2MinionInstance),
+    	L2FlyRaidBossInstance(L2Object, L2Character, L2Npc, L2Attackable, L2MonsterInstance, L2RaidBossInstance),
+    	// Sepulchers
+    	L2SepulcherNpcInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2SepulcherMonsterInstance(L2Object, L2Character, L2Npc, L2Attackable, L2MonsterInstance),
+    	// Festival
+    	L2FestivalGiudeInstance(L2Object, L2Character, L2Npc),
+    	L2FestivalMonsterInstance(L2Object, L2Character, L2Npc, L2Attackable, L2MonsterInstance),
+    	// Ships and controllers
+    	L2BoatInstance(L2Object, L2Character),
+    	L2AirShipInstance(L2Object, L2Character),
+    	L2AirShipControllerInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	// Siege
+    	L2DefenderInstance(L2Object, L2Character, L2Npc, L2Attackable),
+    	L2ArtefactInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2ControlTowerInstance(L2Object, L2Character, L2Npc),
+    	L2FlameTowerInstance(L2Object, L2Character, L2Npc),
+    	L2SiegeFlagInstance(L2Object, L2Character, L2Npc),
+    	L2SiegeNpcInstance(L2Object, L2Character, L2Npc),
+    	// Fort Siege
+    	L2FortBallistaInstance(L2Object, L2Character, L2Npc),
+    	L2FortCommanderInstance(L2Object, L2Character, L2Npc, L2Attackable, L2DefenderInstance),
+    	// Castle NPCs
+    	L2CastleBlacksmithInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2CastleChamberlainInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2CastleMagicianInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2CastleTeleporterInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2CastleWarehouseInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2MercManagerInstance(L2Object, L2Character, L2Npc, L2NpcInstance, L2MerchantInstance),
+    	// Fort NPCs
+    	L2FortEnvoyInstance(L2Object, L2Character, L2Npc),
+    	L2FortLogisticsInstance(L2Object, L2Character, L2Npc, L2NpcInstance, L2MerchantInstance),
+    	L2FortManagerInstance(L2Object, L2Character, L2Npc, L2NpcInstance, L2MerchantInstance),
+    	L2FortSiegeNpcInstance(L2Object, L2Character, L2Npc),
+    	L2FortSupportCaptainInstance(L2Object, L2Character, L2Npc, L2NpcInstance, L2MerchantInstance),
+    	// Seven Signs
+    	L2CabaleBufferInstance(L2Object, L2Character, L2Npc),
+    	L2SignsPriestInstance(L2Object, L2Character, L2Npc),
+    	L2DawnPriestInstance(L2Object, L2Character, L2Npc, L2SignsPriestInstance),
+    	L2DuskPriestInstance(L2Object, L2Character, L2Npc, L2SignsPriestInstance),
+    	L2DungeonGatekeeperInstance(L2Object, L2Character, L2Npc),
+    	// City NPCs
+    	L2AdventurerInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2AuctioneerInstance(L2Object, L2Character, L2Npc),
+    	L2ClanHallManagerInstance(L2Object, L2Character, L2Npc, L2NpcInstance, L2MerchantInstance),
+    	L2ClanTraderInstance(L2Object, L2Character, L2Npc),
+    	L2FameManagerInstance(L2Object, L2Character, L2Npc),
+    	L2FishermanInstance(L2Object, L2Character, L2Npc, L2NpcInstance, L2MerchantInstance),
+    	L2ManorManagerInstance(L2Object, L2Character, L2Npc, L2NpcInstance, L2MerchantInstance),
+    	L2MercenaryManagerInstance(L2Object, L2Character, L2Npc),
+    	L2NpcWalkerInstance(L2Object, L2Character, L2Npc),
+    	L2ObservationInstance(L2Object, L2Character, L2Npc),
+    	L2OlympiadManagerInstance(L2Object, L2Character, L2Npc),
+    	L2PetManagerInstance(L2Object, L2Character, L2Npc, L2NpcInstance, L2MerchantInstance),
+    	L2RaceManagerInstance(L2Object, L2Character, L2Npc),
+    	L2SymbolMakerInstance(L2Object, L2Character, L2Npc),
+    	L2TeleporterInstance(L2Object, L2Character, L2Npc),
+    	L2TownPetInstance(L2Object, L2Character, L2Npc),
+    	L2TrainerInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2TransformManagerInstance(L2Object, L2Character, L2Npc, L2NpcInstance, L2MerchantInstance),
+    	L2VillageMasterInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2WarehouseInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2WyvernManagerInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2XmassTreeInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	// Doormens
+    	L2DoormenInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2CastleDoormenInstance(L2Object, L2Character, L2Npc, L2NpcInstance, L2DoormenInstance),
+    	L2FortDoormenInstance(L2Object, L2Character, L2Npc, L2NpcInstance, L2DoormenInstance),
+    	L2ClanHallDoormenInstance(L2Object, L2Character, L2Npc, L2NpcInstance, L2DoormenInstance),
+    	// Custom
+    	L2ClassMasterInstance(L2Object, L2Character, L2Npc, L2NpcInstance),
+    	L2NpcBufferInstance(L2Object, L2Character, L2Npc),
+    	L2TvTEventNpcInstance(L2Object, L2Character, L2Npc),
+    	L2WeddingManagerInstance(L2Object, L2Character, L2Npc);
+
+    	private final long _type;
+
+    	private InstanceType(InstanceType... parents)
+    	{
+    		long type = 1 << this.ordinal();
+    		if (type == 0)
+    			throw new Error("Too many instance types, failed to load " + this.name());
+
+    		for (InstanceType i : parents)
+    			type |= 1 << i.ordinal();
+
+    		_type = type;
+    	}
+
+    	public final boolean isType(InstanceType i)
+    	{
+    		return (_type & i._type) > 0;
+    	}
+    }
+
+    protected final void setInstanceType(InstanceType i)
+    {
+		_instanceType = i;
+    }
+
+    public final boolean isInstanceType(InstanceType i)
+    {
+    	return _instanceType.isType(i);
     }
 
     // =========================================================

@@ -42,6 +42,7 @@ public class L2DefenderInstance extends L2Attackable
 	public L2DefenderInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2DefenderInstance);
 	}
 
 	@Override

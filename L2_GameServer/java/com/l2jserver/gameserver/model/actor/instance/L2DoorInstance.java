@@ -202,6 +202,7 @@ public class L2DoorInstance extends L2Character
 	public L2DoorInstance(int objectId, L2CharTemplate template, int doorId, String name, boolean unlockable)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2DoorInstance);
 		setIsInvul(false);
 		_doorId = doorId;
 		_name = name;

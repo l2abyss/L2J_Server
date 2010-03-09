@@ -32,6 +32,7 @@ public class L2FortSiegeNpcInstance extends L2Npc
 	public L2FortSiegeNpcInstance(int objectID, L2NpcTemplate template)
 	{
 		super(objectID, template);
+		setInstanceType(InstanceType.L2FortSiegeNpcInstance);
 	}
 
 	public void onBypassFeedback(L2PcInstance player, String command)

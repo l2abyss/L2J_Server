@@ -53,6 +53,7 @@ public class L2RaidBossInstance extends L2MonsterInstance
 	public L2RaidBossInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2RaidBossInstance);
 		setIsRaid(true);
 	}
 

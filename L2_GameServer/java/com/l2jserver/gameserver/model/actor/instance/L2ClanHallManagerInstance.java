@@ -51,6 +51,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 	public L2ClanHallManagerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2ClanHallManagerInstance);
 	}
 
 	@Override

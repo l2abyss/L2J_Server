@@ -41,6 +41,7 @@ public final class L2GrandBossInstance extends L2MonsterInstance
 	public L2GrandBossInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2GrandBossInstance);
 		setIsRaid(true);
 	}
 	

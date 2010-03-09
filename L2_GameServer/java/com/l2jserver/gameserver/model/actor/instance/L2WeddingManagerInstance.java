@@ -36,6 +36,7 @@ public class L2WeddingManagerInstance extends L2Npc
 	public L2WeddingManagerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2WeddingManagerInstance);
 	}
 
 	public void showChatWindow(L2PcInstance player)

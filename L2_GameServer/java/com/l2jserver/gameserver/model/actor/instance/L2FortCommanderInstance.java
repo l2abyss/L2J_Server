@@ -37,6 +37,7 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 	public L2FortCommanderInstance(int objectId, L2NpcTemplate template)
     {
         super(objectId, template);
+        setInstanceType(InstanceType.L2FortCommanderInstance);
         _canTalk = true;
     }
 

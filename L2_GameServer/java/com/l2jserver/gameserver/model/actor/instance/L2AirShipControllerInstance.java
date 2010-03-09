@@ -36,6 +36,7 @@ public class L2AirShipControllerInstance extends L2NpcInstance
 	public L2AirShipControllerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2AirShipControllerInstance);
 		AirShipManager.getInstance().registerATC(this);
 	}
 

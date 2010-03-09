@@ -70,6 +70,7 @@ public final class L2GuardInstance extends L2Attackable
 	public L2GuardInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2GuardInstance);
 
         ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new ReturnTask(),RETURN_INTERVAL,RETURN_INTERVAL+Rnd.nextInt(60000));
 	}

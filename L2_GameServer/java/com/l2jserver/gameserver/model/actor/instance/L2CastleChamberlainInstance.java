@@ -63,6 +63,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 	public L2CastleChamberlainInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2CastleChamberlainInstance);
 	}
 
 	private void sendHtmlMessage(L2PcInstance player, NpcHtmlMessage html)

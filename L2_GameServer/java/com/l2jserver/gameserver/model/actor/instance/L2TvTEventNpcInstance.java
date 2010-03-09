@@ -29,6 +29,7 @@ public class L2TvTEventNpcInstance extends L2Npc
 	public L2TvTEventNpcInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2TvTEventNpcInstance);
 	}
 
 	@Override

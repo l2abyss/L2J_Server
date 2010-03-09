@@ -53,6 +53,7 @@ public class L2Trap extends L2Character
 	public L2Trap(int objectId, L2NpcTemplate template, int lifeTime, L2Skill skill)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2Trap);
 		setName(template.name);
 		setIsInvul(false);
 

@@ -14,12 +14,8 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import com.l2jserver.gameserver.datatables.HennaTreeTable;
-import com.l2jserver.gameserver.model.L2HennaInstance;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.network.serverpackets.HennaEquipList;
-import com.l2jserver.gameserver.network.serverpackets.HennaRemoveList;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 public class L2SymbolMakerInstance extends L2Npc
@@ -27,32 +23,7 @@ public class L2SymbolMakerInstance extends L2Npc
 	public L2SymbolMakerInstance(int objectID, L2NpcTemplate template)
 	{
 		super(objectID, template);
-	}
-
-	@Override
-	public void onBypassFeedback(L2PcInstance player, String command)
-	{
-		if (command.equals("Draw"))
-		{
-			L2HennaInstance[] henna = HennaTreeTable.getInstance().getAvailableHenna(player.getClassId());
-			player.sendPacket(new HennaEquipList(player, henna));
-		}
-		else if (command.equals("RemoveList"))
-		{
-			boolean hasHennas = false;
-
-			for (int i = 1; i <= 3; i++)
-			{
-				L2HennaInstance henna = player.getHenna(i);
-
-				if (henna != null)
-					hasHennas = true;
-			}
-			if (hasHennas)
-				player.sendPacket(new HennaRemoveList(player));
-		}
-		else
-			super.onBypassFeedback(player, command);
+		setInstanceType(InstanceType.L2SymbolMakerInstance);
 	}
 
 	@Override

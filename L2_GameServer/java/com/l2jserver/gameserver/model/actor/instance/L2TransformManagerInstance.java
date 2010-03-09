@@ -16,15 +16,11 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreeTable;
-import com.l2jserver.gameserver.model.L2Multisell;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2TransformSkillLearn;
-import com.l2jserver.gameserver.model.quest.QuestState;
-import com.l2jserver.gameserver.model.quest.State;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
@@ -37,6 +33,7 @@ public class L2TransformManagerInstance extends L2MerchantInstance
 	public L2TransformManagerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2TransformManagerInstance);
 	}
 
 	@Override
@@ -52,54 +49,11 @@ public class L2TransformManagerInstance extends L2MerchantInstance
 		return "data/html/default/" + pom + ".htm";
 	}
 
-	@Override
-	public void onBypassFeedback(L2PcInstance player, String command)
-	{
-		if (command.startsWith("TransformSkillList"))
-		{
-			if (canTransform(player))
-			{
-				player.setSkillLearningClassId(player.getClassId());
-				showTransformSkillList(player);
-			}
-			else
-			{
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-				html.setFile(player.getHtmlPrefix(), "data/html/default/" + getNpcId() + "-cantlearn.htm");
-				player.sendPacket(html);
-			}
-		}
-		else if (command.startsWith("BuyTransform"))
-		{
-			if (canTransform(player))
-			{				
-				L2Multisell.getInstance().separateAndSend(32323001, player, getNpcId(), false, getCastle().getTaxRate());
-			}
-			else
-			{
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-				html.setFile(player.getHtmlPrefix(), "data/html/default/" + getNpcId() + "-cantbuy.htm");
-				player.sendPacket(html);
-			}
-		}
-		else
-			super.onBypassFeedback(player, command);
-	}
-
-	public static boolean canTransform(L2PcInstance player)
-	{
-		QuestState st = player.getQuestState("136_MoreThanMeetsTheEye");
-		if (st != null && st.getState() == State.COMPLETED)
-			return true;
-
-		return false;
-	}
-
 	/**
 	 * this displays TransformationSkillList to the player.
 	 * @param player
 	 */
-	public void showTransformSkillList(L2PcInstance player)
+	public static void showTransformSkillList(L2PcInstance player)
 	{        
 		L2TransformSkillLearn[] skills = SkillTreeTable.getInstance().getAvailableTransformSkills(player);
 		AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.SkillType.Usual);

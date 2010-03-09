@@ -51,6 +51,7 @@ public final class L2TeleporterInstance extends L2Npc
 	public L2TeleporterInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2TeleporterInstance);
 	}
 
 	@Override

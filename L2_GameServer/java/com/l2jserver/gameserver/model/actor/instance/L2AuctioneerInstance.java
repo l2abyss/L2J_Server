@@ -48,6 +48,7 @@ public final class L2AuctioneerInstance extends L2Npc
 	public L2AuctioneerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2AuctioneerInstance);
 	}
 
 	@Override

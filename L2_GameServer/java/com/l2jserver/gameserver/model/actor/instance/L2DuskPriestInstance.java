@@ -24,6 +24,7 @@ public class L2DuskPriestInstance extends L2SignsPriestInstance
 	public L2DuskPriestInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2DuskPriestInstance);
 	}
 
 	@Override

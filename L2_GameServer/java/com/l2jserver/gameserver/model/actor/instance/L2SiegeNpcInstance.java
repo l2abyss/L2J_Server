@@ -28,6 +28,7 @@ public class L2SiegeNpcInstance extends L2NpcInstance
 	public L2SiegeNpcInstance(int objectID, L2NpcTemplate template)
 	{
 		super(objectID, template);
+		setInstanceType(InstanceType.L2SiegeNpcInstance);
 	}
 
 	public void showChatWindow(L2PcInstance player)

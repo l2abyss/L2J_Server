@@ -30,6 +30,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 	public L2FortLogisticsInstance(int objectID, L2NpcTemplate template)
 	{
 		super(objectID, template);
+		setInstanceType(InstanceType.L2FortLogisticsInstance);
 	}
 
 	public void onBypassFeedback(L2PcInstance player, String command)

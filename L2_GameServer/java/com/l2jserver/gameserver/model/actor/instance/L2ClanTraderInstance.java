@@ -27,6 +27,7 @@ public final class L2ClanTraderInstance extends L2Npc
 	public L2ClanTraderInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2ClanTraderInstance);
 	}
 
 	@Override

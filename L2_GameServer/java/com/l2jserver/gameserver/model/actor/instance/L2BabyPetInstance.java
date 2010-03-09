@@ -55,6 +55,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 	public L2BabyPetInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2ItemInstance control)
 	{
 		super(objectId, template, owner, control);
+		setInstanceType(InstanceType.L2BabyPetInstance);
 	}
 
 	@Override

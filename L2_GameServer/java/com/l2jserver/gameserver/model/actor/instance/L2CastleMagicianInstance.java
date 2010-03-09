@@ -52,6 +52,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance
 	public L2CastleMagicianInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2CastleMagicianInstance);
 	}
 
 	@Override

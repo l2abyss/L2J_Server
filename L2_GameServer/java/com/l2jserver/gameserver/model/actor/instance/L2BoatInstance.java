@@ -257,6 +257,7 @@ public class L2BoatInstance extends L2Character
 	public L2BoatInstance(int objectId, L2CharTemplate template, String name)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2BoatInstance);
 		setAI(new L2CharacterAI(new AIAccessor()));
 		/*
 		 * super.setStat(new DoorStat(new L2DoorInstance[] {this}));

@@ -24,7 +24,7 @@ public class L2FortWyvernManagerInstance extends L2WyvernManagerInstance
 	}
 
 	@Override
-	protected final boolean isOwnerClan(L2PcInstance player)
+	public final boolean isOwnerClan(L2PcInstance player)
 	{
 		if (player.getClan() != null && getFort() != null && getFort().getOwnerClan() != null)
 		{
@@ -38,7 +38,7 @@ public class L2FortWyvernManagerInstance extends L2WyvernManagerInstance
 	 * @see com.l2jserver.gameserver.model.actor.instance.L2WyvernManagerInstance#isInSiege(com.l2jserver.gameserver.model.actor.instance.L2PcInstance)
 	 */
 	@Override
-	protected boolean isInSiege()
+	public boolean isInSiege()
 	{
 		return getFort().getSiege().getIsInProgress();
 	}

@@ -31,6 +31,7 @@ public class L2FriendlyMobInstance extends L2Attackable
 	public L2FriendlyMobInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2FriendlyMobInstance);
 	}
 
     @Override

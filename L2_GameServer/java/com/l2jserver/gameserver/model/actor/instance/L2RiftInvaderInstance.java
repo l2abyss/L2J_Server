@@ -22,5 +22,6 @@ public class L2RiftInvaderInstance extends L2MonsterInstance
 	public L2RiftInvaderInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2RiftInvaderInstance);
 	}
 }

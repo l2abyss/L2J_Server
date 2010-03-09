@@ -47,6 +47,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 	public L2FortManagerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2FortManagerInstance);
 	}
 
 	@Override

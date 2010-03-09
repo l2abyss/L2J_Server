@@ -22,6 +22,7 @@ public final class L2FlyMinionInstance extends L2MinionInstance
 	public L2FlyMinionInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2FlyMinionInstance);
 	}
 
     @Override

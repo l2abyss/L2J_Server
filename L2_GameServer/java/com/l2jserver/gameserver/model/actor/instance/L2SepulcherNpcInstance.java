@@ -54,6 +54,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 	public L2SepulcherNpcInstance(int objectID, L2NpcTemplate template)
 	{
 		super(objectID, template);
+		setInstanceType(InstanceType.L2SepulcherNpcInstance);
 		setShowSummonAnimation(true);
 
 		if (_closeTask != null)

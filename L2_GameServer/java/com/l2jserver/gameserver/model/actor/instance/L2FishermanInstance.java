@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
@@ -34,6 +33,7 @@ public class L2FishermanInstance extends L2MerchantInstance
 	public L2FishermanInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2FishermanInstance);
 	}
 
 	@Override
@@ -49,55 +49,7 @@ public class L2FishermanInstance extends L2MerchantInstance
 		return "data/html/fisherman/" + pom + ".htm";
 	}
 
-	/*private void showBuyWindow(L2PcInstance player, int val)
-    {
-        double taxRate = 0;
-        if (getIsInTown()) taxRate = getCastle().getTaxRate();
-        player.tempInvetoryDisable();
-        if (Config.DEBUG) _log.fine("Showing buylist");
-        L2TradeList list = TradeController.getInstance().getBuyList(val);
-
-        if (list != null && list.getNpcId().equals(String.valueOf(getNpcId())))
-        {
-            BuyList bl = new BuyList(list, player.getAdena(), taxRate);
-            player.sendPacket(bl);
-        }
-        else
-        {
-            _log.warning("possible client hacker: " + player.getName()
-                + " attempting to buy from GM shop! < Ban him!");
-            _log.warning("buylist id:" + val);
-        }
-
-        player.sendPacket(ActionFailed.STATIC_PACKET);
-    }*/
-
-	/*private void showSellWindow(L2PcInstance player)
-    {
-        if (Config.DEBUG) _log.fine("Showing selllist");
-
-        player.sendPacket(new SellList(player));
-
-        if (Config.DEBUG) _log.fine("Showing sell window");
-
-        player.sendPacket(ActionFailed.STATIC_PACKET);
-    }*/
-
-	@Override
-	public void onBypassFeedback(L2PcInstance player, String command)
-	{
-		if (command.startsWith("FishSkillList"))
-		{
-			player.setSkillLearningClassId(player.getClassId());
-			showSkillList(player);
-		}
-		else
-		{
-			super.onBypassFeedback(player, command);
-		}
-	}
-
-	public void showSkillList(L2PcInstance player)
+	public static void showFishSkillList(L2PcInstance player)
 	{
 		L2SkillLearn[] skills = SkillTreeTable.getInstance().getAvailableSkills(player);
 		AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.SkillType.Fishing);
@@ -117,7 +69,6 @@ public class L2FishermanInstance extends L2MerchantInstance
 
 		if (counts == 0)
 		{
-		    NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		    int minlevel = SkillTreeTable.getInstance().getMinLevelForNewSkill(player);
 
 		    if (minlevel > 0)
@@ -128,13 +79,7 @@ public class L2FishermanInstance extends L2MerchantInstance
 		        player.sendPacket(sm);
 		    }
             else
-            {
-                html.setHtml(
-                        "<html><head><body>" +
-                        "You've learned all skills.<br>" +
-                        "</body></html>");
-                player.sendPacket(html);
-		    }
+				player.sendPacket(new SystemMessage(SystemMessageId.NO_MORE_SKILLS_TO_LEARN));
 		}
 		else
 		{

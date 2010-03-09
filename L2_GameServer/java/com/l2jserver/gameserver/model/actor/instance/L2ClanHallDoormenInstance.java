@@ -38,6 +38,7 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 	public L2ClanHallDoormenInstance(int objectID, L2NpcTemplate template)
 	{
 		super(objectID, template);
+		setInstanceType(InstanceType.L2ClanHallDoormenInstance);
 	}
 
 	@Override

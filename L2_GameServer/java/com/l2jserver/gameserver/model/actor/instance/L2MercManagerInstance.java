@@ -29,6 +29,7 @@ public final class L2MercManagerInstance extends L2MerchantInstance
 	public L2MercManagerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2MercManagerInstance);
 	}
 
 	@Override

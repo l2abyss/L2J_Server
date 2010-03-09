@@ -27,6 +27,7 @@ public class L2FortEnvoyInstance extends L2Npc
 	public L2FortEnvoyInstance(int objectID, L2NpcTemplate template)
 	{
 		super(objectID, template);
+		setInstanceType(InstanceType.L2FortEnvoyInstance);
 	}
 
 	public void showChatWindow(L2PcInstance player)

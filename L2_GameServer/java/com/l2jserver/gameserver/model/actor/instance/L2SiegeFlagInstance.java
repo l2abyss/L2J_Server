@@ -44,6 +44,7 @@ public class L2SiegeFlagInstance extends L2Npc
     public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template, boolean advanced)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2SiegeFlagInstance);
 		
 		_clan = player.getClan();
 		_player = player;

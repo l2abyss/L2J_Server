@@ -62,6 +62,7 @@ public class L2MonsterInstance extends L2Attackable
 	public L2MonsterInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2MonsterInstance);
 		setAutoAttackable(true);
 		if (getTemplate().getMinionData() != null)
 			_minionList  = new MinionList(this);

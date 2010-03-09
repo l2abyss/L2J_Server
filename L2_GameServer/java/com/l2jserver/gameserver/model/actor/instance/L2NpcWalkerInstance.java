@@ -45,6 +45,7 @@ public class L2NpcWalkerInstance extends L2Npc
 	public L2NpcWalkerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2NpcWalkerInstance);
 		setAI(new L2NpcWalkerAI(new L2NpcWalkerAIAccessor()));
 	}
 

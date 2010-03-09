@@ -51,6 +51,7 @@ public class L2OlympiadManagerInstance extends L2Npc
 	public L2OlympiadManagerInstance (int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2OlympiadManagerInstance);
 	}
 
 	@Override

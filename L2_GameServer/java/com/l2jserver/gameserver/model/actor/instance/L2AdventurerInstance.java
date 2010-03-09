@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import com.l2jserver.gameserver.network.serverpackets.ExShowQuestInfo;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
@@ -28,15 +27,7 @@ public class L2AdventurerInstance extends L2NpcInstance
 	public L2AdventurerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
-	}
-
-	@Override
-	public void onBypassFeedback(L2PcInstance player, String command)
-	{
-		if (command.equalsIgnoreCase("questlist"))
-			player.sendPacket(new ExShowQuestInfo());
-		else
-			super.onBypassFeedback(player, command);
+		setInstanceType(InstanceType.L2AdventurerInstance);
 	}
 
 	@Override

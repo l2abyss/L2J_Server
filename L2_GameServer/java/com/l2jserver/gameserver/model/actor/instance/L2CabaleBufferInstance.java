@@ -193,6 +193,7 @@ public class L2CabaleBufferInstance extends L2Npc
     public L2CabaleBufferInstance(int objectId, L2NpcTemplate template)
     {
         super(objectId, template);
+        setInstanceType(InstanceType.L2CabaleBufferInstance);
 
         if (_aiTask != null)
         	_aiTask.cancel(true);

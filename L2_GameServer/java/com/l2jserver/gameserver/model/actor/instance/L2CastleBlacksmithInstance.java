@@ -31,6 +31,7 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 	public L2CastleBlacksmithInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
+		setInstanceType(InstanceType.L2CastleBlacksmithInstance);
 	}
 
 	@Override

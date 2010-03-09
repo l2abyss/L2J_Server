@@ -36,6 +36,7 @@ public class L2TownPetInstance extends L2Npc
     public L2TownPetInstance(int objectId, L2NpcTemplate template)
     {
         super(objectId, template);
+        setInstanceType(InstanceType.L2TownPetInstance);
 
         if (Config.ALLOW_PET_WALKERS)
         	ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new RandomWalkTask(), 2000, 4000);
