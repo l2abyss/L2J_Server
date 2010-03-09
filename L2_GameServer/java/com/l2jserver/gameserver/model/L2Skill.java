@@ -1257,6 +1257,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 					case WARRIOR_BANE:
 					case BETRAY:
 					case BALANCE_LIFE:
+					case HPMPCPHEAL_PERCENT:
 						canTargetSelf = true;
 						break;
 				}
@@ -2172,9 +2173,17 @@ public abstract class L2Skill implements IChanceSkillTrigger
     			if (target.isInsideZone(L2Character.ZONE_PEACE))
     				return false;
 
-    			if ((player.isInParty() && targetPlayer.isInParty())
-    			        && player.getParty().getPartyLeaderOID() == targetPlayer.getParty().getPartyLeaderOID())
-    				return false;
+    			if (player.isInParty() && targetPlayer.isInParty())
+    			{
+    				// Same party
+    				if (player.getParty().getPartyLeaderOID() == targetPlayer.getParty().getPartyLeaderOID())
+    					return false;
+
+    				// Same commandchannel
+    				if (player.getParty().getCommandChannel() != null
+    						&& player.getParty().getCommandChannel() == targetPlayer.getParty().getCommandChannel())
+    					return false;
+    			}
 
     			if (!TvTEvent.checkForTvTSkill(player, targetPlayer, skill))
     				return false;
