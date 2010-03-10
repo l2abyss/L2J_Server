@@ -17,11 +17,19 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 /**
  * @author Kerberos
+ * @author mrTJO
+ * Packet Format: dddddddSS
  */
 public class ExBrBroadcastEventState extends L2GameServerPacket
 {
 	private int _eventId;
 	private int _eventState;
+	
+	public static final int APRIL_FOOLS = 20090401;
+	public static final int EVAS_INFERNO = 20090801;
+	public static final int HALLOWEEN_EVENT = 20091031;
+	public static final int RAISING_RUDOLPH = 20091225;
+	public static final int LOVERS_JUBILEE = 20100214;
 
 	public ExBrBroadcastEventState(int eventId, int eventState)
 	{
@@ -33,9 +41,19 @@ public class ExBrBroadcastEventState extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0xfe);
-		writeH(0xab);
+		writeH(0xbd);
 		writeD(_eventId);
 		writeD(_eventState);
+		// Parameters
+		writeD(0x00);
+		writeD(0x00);
+		writeD(0x00);
+		writeD(0x00);
+		writeD(0x00);
+		writeD(0x00);
+		writeD(0x00);
+		writeS(null);
+		writeS(null);
 	}
 
 	/* (non-Javadoc)
@@ -44,6 +62,6 @@ public class ExBrBroadcastEventState extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return "[S] FE:8C ExBrBroadcastEventState";
+		return "[S] FE:BD ExBrBroadcastEventState";
 	}
 }

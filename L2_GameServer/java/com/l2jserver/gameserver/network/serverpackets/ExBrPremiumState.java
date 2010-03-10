@@ -16,43 +16,40 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
- * @author Kerberos
+ * format: dc
+ * @author  GodKratos
  */
-public class ExBrExtraUserInfo extends L2GameServerPacket
+public class ExBrPremiumState extends L2GameServerPacket
 {
-	private int _charObjId;
-	private int _val;
-
-	public ExBrExtraUserInfo(L2PcInstance player)
+	private static final String _S__FE_BC_EXBRPREMIUMSTATE = "[S] FE:BC ExBrPremiumState";
+	private L2PcInstance _activeChar;
+	private int _state;
+	
+	public ExBrPremiumState(L2PcInstance activeChar, int state)
 	{
-		_charObjId = player.getObjectId();
-		_val = player.getAfroHaircutId();
-		_invisible = player.getAppearance().getInvisible();
+		_activeChar = activeChar;
+		_state = state;
 	}
 
-	@Override
 	/**
-	 * This packet should belong to Quest windows, not UserInfo in T3.
+	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
-	protected final void writeImpl()
+	@Override
+	protected void writeImpl()
 	{
-		
 		writeC(0xfe);
-		writeH(0xbe);
-		writeD(_charObjId); //object ID of Player
-		writeD(_val);		// Afro Hair Cut
-		writeC(0x00);		// Unknown
-
+		writeH(0xbc);
+		writeD(_activeChar.getObjectId());
+		writeC(_state);
 	}
-
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	
+	/**
+	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
 	@Override
 	public String getType()
 	{
-		return "[S] FE:BE ExBrExtraUSerInfo";
+		return _S__FE_BC_EXBRPREMIUMSTATE;
 	}
 }

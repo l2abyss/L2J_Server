@@ -1011,29 +1011,71 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 		                    case 0x69:
 		                    	msg = new RequestReceivedPost();
 		                    	break;
-		                    case 0x6A:
+		                    case 0x6a:
 		                    	msg = new RequestPostAttachment();
 		                    	break;
-		                    case 0x6B:
+		                    case 0x6b:
 		                    	msg = new RequestRejectPostAttachment();
 		                    	break;
-		                    case 0x6C:
+		                    case 0x6c:
 		                    	msg = new RequestSentPostList();
 		                    	break;
-		                    case 0x6D:
+		                    case 0x6d:
 		                    	msg = new RequestDeleteSentPost();
 		                    	break;
-		                    case 0x6E:
+		                    case 0x6e:
 		                    	msg = new RequestSentPost();
 		                    	break;
-		                    case 0x6F:
+		                    case 0x6f:
 		                    	msg = new RequestCancelPost();
+		                    	break;
+		                    case 0x70:
+		                    	// RequestShowNewUserPetition
+		                    	break;
+		                    case 0x71:
+		                    	// RequestShowStepThree
+		                    	break;
+		                    case 0x72:
+		                    	// RequestShowStepTwo
+		                    	break;
+		                    case 0x73:
+		                    	// ExRaidReserveResult
 		                    	break;
 		                    case 0x75:
 		                    	msg = new RequestRefundItem();
 		                    	break;
 		                    case 0x76:
 		                    	msg = new RequestBuySellUIClose();
+		                    	break;
+		                    case 0x77:
+		                    	// RequestEventMatchObserverEnd
+		                    	break;
+		                    case 0x78:
+		                    	// BrGamePoint
+		                    	break;
+		                    case 0x79:
+		                    	// BrProductList
+		                    	break;
+		                    case 0x7a:
+		                    	// BrProductInfo
+		                    	break;
+		                    case 0x7b:
+		                    	// BrBuyProduct
+		                    	break;
+		                    case 0x7c:
+		                    	// BrRecentProductList
+		                    	break;
+		                    case 0x7d:
+		                    	// BrEventRankerList
+		                    	break;
+		                    case 0x7e:
+		                    	// BrMinigameLoadScores
+		                    	break;
+		                    case 0x7f:
+		                    	// BrMinigameInsertScore
+		                    	break;
+		                    case 0x80:
+		                    	// BrLectureMark
 		                    	break;
 		                    default: 
 		                     	this.printDebugDoubleOpcode(opcode, id2, buf, state, client);
