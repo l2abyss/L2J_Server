@@ -1066,7 +1066,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 		                    	// BrRecentProductList
 		                    	break;
 		                    case 0x7d:
-		                    	// BrEventRankerList
+		                    	msg = new BrEventRankerList();
 		                    	break;
 		                    case 0x7e:
 		                    	// BrMinigameLoadScores
