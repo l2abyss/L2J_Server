@@ -43,7 +43,7 @@ public class ExBrExtraUserInfo extends L2GameServerPacket
 		writeH(0xbe);
 		writeD(_charObjId); //object ID of Player
 		writeD(_val);		// Afro Hair Cut
-		writeC(0x00);		// Unknown
+		//writeC(0x00);		// Event flag, added only if event is active
 
 	}
 
