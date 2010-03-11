@@ -66,16 +66,21 @@ public class L2NpcInstance extends L2Npc
 			newEffect.stopEffectTask();
 	}
 
+	public ClassId[] getClassesToTeach()
+	{
+		return _classesToTeach;
+	}
+
 	/**
 	 * this displays SkillList to the player.
 	 * @param player
 	 */
-	public void showSkillList(L2PcInstance player, ClassId classId)
+	public static void showSkillList(L2PcInstance player, L2Npc npc, ClassId classId)
 	{
 		if (Config.DEBUG)
-			_log.fine("SkillList activated on: "+getObjectId());
+			_log.fine("SkillList activated on: "+npc.getObjectId());
 
-		int npcId = getTemplate().npcId;
+		int npcId = npc.getTemplate().npcId;
 
 		if (npcId == 32611)
 		{
@@ -103,9 +108,16 @@ public class L2NpcInstance extends L2Npc
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-		if (_classesToTeach == null)
+
+		if (!npc.getTemplate().canTeach(classId))
 		{
-			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+			npc.showNoTeachHtml(player);
+			return;
+		}
+
+		if (((L2NpcInstance)npc).getClassesToTeach() == null)
+		{
+			NpcHtmlMessage html = new NpcHtmlMessage(npc.getObjectId());
 			final String sb = StringUtil.concat(
 					"<html><body>" +
 					"I cannot teach you. My class list is empty.<br> Ask admin to fix it. Need add my npcid and classes to skill_learn.sql.<br>NpcId:",
@@ -117,12 +129,6 @@ public class L2NpcInstance extends L2Npc
 			);
 			html.setHtml(sb);
 			player.sendPacket(html);
-			return;
-		}
-
-		if (!getTemplate().canTeach(classId))
-		{
-			showNoTeachHtml(player);
 			return;
 		}
 
@@ -158,88 +164,5 @@ public class L2NpcInstance extends L2Npc
 			player.sendPacket(asl);
 
 		player.sendPacket(ActionFailed.STATIC_PACKET);
-	}
-
-	@Override
-	public void onBypassFeedback(L2PcInstance player, String command)
-	{       		
-		if (command.startsWith("SkillList"))
-		{
-			if (Config.ALT_GAME_SKILL_LEARN)
-			{
-				String id = command.substring(9).trim();
-				if (id.length() != 0)
-				{
-					player.setSkillLearningClassId(ClassId.values()[Integer.parseInt(id)]);
-					showSkillList(player, ClassId.values()[Integer.parseInt(id)]);
-				}
-				else
-				{
-					boolean own_class = false;
-
-					if (_classesToTeach != null)
-					{
-						for (ClassId cid : _classesToTeach)
-						{
-							if (cid.equalsOrChildOf(player.getClassId()))
-							{
-								own_class = true;
-								break;
-							}
-						}
-					}
-
-					String text = "<html><body><center>Skill learning:</center><br>";
-
-					if (!own_class)
-					{
-						String charType = player.getClassId().isMage() ? "fighter" : "mage";
-						text +=
-							"Skills of your class are the easiest to learn.<br>"+
-							"Skills of another class of your race are a little harder.<br>"+
-							"Skills for classes of another race are extremely difficult.<br>"+
-							"But the hardest of all to learn are the  "+ charType +"skills!<br>";
-					}
-
-					// make a list of classes
-					if (_classesToTeach != null)
-					{
-						int count = 0;
-						ClassId classCheck = player.getClassId();
-
-						while ((count == 0) && (classCheck != null))
-						{
-							for (ClassId cid : _classesToTeach)
-							{
-								if (cid.level() > classCheck.level()) 
-									continue;
-
-								if (SkillTreeTable.getInstance().getAvailableSkills(player, cid).length == 0)
-									continue;
-
-								text += "<a action=\"bypass -h npc_%objectId%_SkillList "+cid.getId()+"\">Learn "+cid+"'s class Skills</a><br>\n";
-								count++;
-							}
-							classCheck = classCheck.getParent();
-						}
-						classCheck = null;
-					}
-					else
-						text += "No Skills.<br>";
-
-					text += "</body></html>";
-
-					insertObjectIdAndShowChatWindow(player, text);
-					player.sendPacket(ActionFailed.STATIC_PACKET);
-				}
-			}
-			else
-			{
-				player.setSkillLearningClassId(player.getClassId());
-				showSkillList(player, player.getClassId());
-			}
-		}
-		else
-			super.onBypassFeedback(player, command);
 	}
 }

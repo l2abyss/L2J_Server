@@ -463,7 +463,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 		else if (trainer instanceof L2TransformManagerInstance)
 			L2TransformManagerInstance.showTransformSkillList(player);
 		else
-			((L2NpcInstance)trainer).showSkillList(player, player.getSkillLearningClassId());
+			L2NpcInstance.showSkillList(player, trainer, player.getSkillLearningClassId());
 
 		if (_id >= 1368 && _id <= 1372) // if skill is expand sendpacket :)
 		{
