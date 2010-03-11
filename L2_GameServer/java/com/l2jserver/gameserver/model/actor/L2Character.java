@@ -6241,7 +6241,7 @@ public abstract class L2Character extends L2Object
 		if (_disabledSkills == null)
 			_disabledSkills = Collections.synchronizedMap(new FastMap<Integer, Long>());
 
-		_disabledSkills.put(skillId, delay > 0 ? System.currentTimeMillis() + delay : Long.MAX_VALUE);
+		_disabledSkills.put(skillId, delay > 10 ? System.currentTimeMillis() + delay : Long.MAX_VALUE);
 	}
 
 	/**
@@ -6261,14 +6261,17 @@ public abstract class L2Character extends L2Object
 		if (_disabledSkills == null)
 			return false;
 
-		if (!_disabledSkills.containsKey(skillId))
+		final Long timeStamp = _disabledSkills.get(Integer.valueOf(skillId));
+		if (timeStamp == null)
 			return false;
 
-		final boolean result = _disabledSkills.get(skillId) > System.currentTimeMillis();
-		if (!result)
+		if (timeStamp < System.currentTimeMillis())
+		{
 			_disabledSkills.remove(Integer.valueOf(skillId));
+			return false;
+		}
 
-		return result;
+		return true;
 	}
 
 	/**
