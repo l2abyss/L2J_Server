@@ -422,9 +422,12 @@ public abstract class L2Effect
 		{
 			synchronized (_currentFuture)
 			{
-				// Cancel the task
-				_currentFuture.cancel(false);
-				ThreadPoolManager.getInstance().removeEffect(_currentTask);
+				if (_currentFuture != null)
+				{
+					// Cancel the task
+					_currentFuture.cancel(false);
+					ThreadPoolManager.getInstance().removeEffect(_currentTask);
+				}
 			}
 			_currentFuture = null;
 			_currentTask = null;			
