@@ -116,6 +116,7 @@ public class NpcTable
 					_log.log(Level.SEVERE, "NPCTable: Error creating custom NPC table.", e);
 				}
 			}
+
 			try
 			{
 				PreparedStatement statement = con.prepareStatement("SELECT npcid, skillid, level FROM npcskills");
@@ -159,6 +160,52 @@ public class NpcTable
 				_log.log(Level.SEVERE, "NPCTable: Error reading NPC skills table.", e);
 			}
 			
+			if (Config.CUSTOM_NPC_SKILLS_TABLE)
+			{
+				try
+				{
+					PreparedStatement statement = con.prepareStatement("SELECT npcid, skillid, level FROM custom_npcskills");
+					ResultSet npcskills = statement.executeQuery();
+					L2NpcTemplate npcDat = null;
+					L2Skill npcSkill = null;
+					
+					while (npcskills.next())
+					{
+						int mobId = npcskills.getInt("npcid");
+						npcDat = _npcs.get(mobId);
+						
+						if (npcDat == null)
+						{
+							_log.warning("Custom NPCTable: Skill data for undefined NPC. npcId: " + mobId);
+							continue;
+						}
+						
+						int skillId = npcskills.getInt("skillid");
+						int level = npcskills.getInt("level");
+						
+						if (npcDat.race == null && skillId == 4416)
+						{
+							npcDat.setRace(level);
+							continue;
+						}
+						
+						npcSkill = SkillTable.getInstance().getInfo(skillId, level);
+						
+						if (npcSkill == null)
+							continue;
+						
+						npcDat.addSkill(npcSkill);
+					}
+					
+					npcskills.close();
+					statement.close();
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.SEVERE, "Custom NPCTable: Error reading NPC skills table.", e);
+				}
+			}
+
 			try
 			{
 				PreparedStatement statement2 = con.prepareStatement("SELECT "
