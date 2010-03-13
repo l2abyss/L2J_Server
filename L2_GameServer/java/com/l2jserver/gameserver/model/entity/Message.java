@@ -261,6 +261,11 @@ public class Message
 		return _news;
 	}
 
+	public final void setIsNews(boolean val)
+	{
+		_news = val;
+	}
+
 	public final long getReqAdena()
 	{
 		return _reqAdena;
