@@ -251,6 +251,12 @@ public final class CharacterCreate extends L2GameClientPacket
 		{
 			L2ItemInstance item = newChar.getInventory().addItem("Init", ia.getItemId(), ia.getAmount(), newChar, null);
 			
+			if (item == null)
+			{
+				_log.warning("Could not create item during char creation: itemId " + ia.getItemId() + ", amount " + ia.getAmount() + ".");
+				continue;
+			}
+			
 			// add tutbook shortcut
 			if (item.getItemId() == 5588)
 			{

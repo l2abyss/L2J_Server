@@ -64,7 +64,15 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 				_items = null;
 				return;
 			}
-			_items[i] = new ItemRequest(objectId, cnt, price);
+			// check if object id already present in buy list
+			if (!checkId(objectId))
+			{
+				Util.handleIllegalPlayerAction(getClient().getActiveChar(), "Duplicate object id in private store buy list", Config.DEFAULT_PUNISH);
+				_items = null;
+				return;
+			} else {
+				_items[i] = new ItemRequest(objectId, cnt, price);
+			}
 		}
 	}
 	
@@ -170,6 +178,23 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 						ladena.updateDatabase();
 					}
 				}*/
+	}
+	
+	/**
+	 * Check if the buy list already contains given object id.
+	 * @param objId object id to check for duplicate in the buy list
+	 * @return true if object id not found in buy list, else return false
+	 */
+	private boolean checkId(int objId)
+	{
+		for (ItemRequest i : _items)
+		{
+			if (i != null && i.getObjectId() == objId)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	@Override
