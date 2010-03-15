@@ -26,6 +26,7 @@ public class BrEventRankerList extends L2GameClientPacket
 {
 	private int _eventId;
 	private int _day;
+	@SuppressWarnings("unused")
 	private int _ranking;
 	
 	/* (non-Javadoc)

@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.communityserver.readpackets;
 
+import java.util.logging.Logger;
+
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.CSShowComBoard;
@@ -25,6 +27,8 @@ import org.netcon.BaseReadPacket;
  */
 public final class RequestPlayerShowBoard extends BaseReadPacket
 {
+	private static final Logger _log = Logger.getLogger(RequestPlayerShowBoard.class.getName());
+	
 	public RequestPlayerShowBoard(final byte[] data)
 	{
 		super(data);
@@ -37,16 +41,13 @@ public final class RequestPlayerShowBoard extends BaseReadPacket
 		final int length = super.readD();
 		final byte[] html = super.readB(length);
 		
-		// System.out.println(html.length); // XXX LOG
-		
 		L2PcInstance player = (L2PcInstance)L2World.getInstance().findObject(playerObjId);
 		if (player == null)
 		{
-			System.out.println("error: player not found!!!");
-			return; // XXX LOG
+			_log.info("error: player not found!!!");
+			return;
 		}
 		
 		player.sendPacket(new CSShowComBoard(html));
-		// System.out.println("Packet sended: " + html);
 	}
 }

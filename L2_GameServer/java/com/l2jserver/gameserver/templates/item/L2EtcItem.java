@@ -60,7 +60,7 @@ public final class L2EtcItem  extends L2Item
 			catch(Exception nfe)
 			{
 				// Incorrect syntax, dont add new skill
-				System.out.println(StringUtil.concat("> Couldnt parse " , st, " in etcitem skills!"));
+				_log.info(StringUtil.concat("> Couldnt parse " , st, " in etcitem skills!"));
 				continue;
 			}
 			

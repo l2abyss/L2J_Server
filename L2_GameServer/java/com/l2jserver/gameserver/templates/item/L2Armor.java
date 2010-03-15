@@ -93,7 +93,7 @@ public final class L2Armor extends L2Item
 			catch(Exception nfe)
 			{
 				// Incorrect syntax, dont add new skill
-				System.out.println(StringUtil.concat("> Couldnt parse " , st, " in armor skills!"));
+				_log.info(StringUtil.concat("> Couldnt parse " , st, " in armor skills!"));
 				continue;
 			}
 			

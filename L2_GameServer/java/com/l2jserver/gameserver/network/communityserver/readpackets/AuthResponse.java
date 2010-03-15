@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.communityserver.readpackets;
 
+import java.util.logging.Logger;
+
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 
 import org.netcon.BaseReadPacket;
@@ -23,6 +25,8 @@ import org.netcon.BaseReadPacket;
  */
 public final class AuthResponse extends BaseReadPacket
 {
+	private static final Logger _log = Logger.getLogger(AuthResponse.class.getName());
+	
 	public static final byte AUTHED						= 0;
 	public static final byte REASON_WRONG_HEX_ID		= 1;
 	public static final byte REASON_HEX_ID_IN_USE		= 2;
@@ -49,6 +53,6 @@ public final class AuthResponse extends BaseReadPacket
 				break;
 		}
 		
-		System.out.println("COMMUNITY_SERVER_THREAD: Auth "+status);
+		_log.info("COMMUNITY_SERVER_THREAD: Auth "+status);
 	}
 }

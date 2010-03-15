@@ -127,7 +127,7 @@ public final class L2Weapon extends L2Item
 			catch(Exception nfe)
 			{
 				// Incorrect syntax, dont add new skill
-				System.out.println(StringUtil.concat("> Couldnt parse " , st, " in weapon skills!"));
+				_log.info(StringUtil.concat("> Couldnt parse " , st, " in weapon skills!"));
 				continue;
 			}
 			

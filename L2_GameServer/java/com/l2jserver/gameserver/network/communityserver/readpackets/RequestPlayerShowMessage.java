@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.communityserver.readpackets;
 
+import java.util.logging.Logger;
+
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -27,6 +29,8 @@ import org.netcon.BaseReadPacket;
  */
 public final class RequestPlayerShowMessage extends BaseReadPacket
 {
+	private static final Logger _log = Logger.getLogger(RequestPlayerShowMessage.class.getName());
+	
 	public RequestPlayerShowMessage(final byte[] data)
 	{
 		super(data);
@@ -41,8 +45,8 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 		L2PcInstance player = (L2PcInstance)L2World.getInstance().findObject(playerObjId);
 		if (player == null)
 		{
-			System.out.println("error: player not found!!!");
-			return; // XXX LOG
+			_log.info("error: player not found!!!");
+			return;
 		}
 		
 		switch(type)
@@ -81,7 +85,7 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 				}
 				catch (Exception e)
 				{
-					System.out.println("Incorrect packet from CBserver!");
+					_log.info("Incorrect packet from CBserver!");
 				}
 				break;
 			case 1228:
@@ -94,7 +98,7 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 				}
 				catch (Exception e)
 				{
-					System.out.println("Incorrect packet from CBserver!");
+					_log.info("Incorrect packet from CBserver!");
 				}
 				break;
 			case 1229:
@@ -128,11 +132,11 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 				}
 				catch (Exception e)
 				{
-					System.out.println("Incorrect packet from CBserver!");
+					_log.info("Incorrect packet from CBserver!");
 				}
 				break;
 			default:
-				System.out.println("error: Unknown message request from CB server: " + type);
+				_log.info("error: Unknown message request from CB server: " + type);
 		}
 	}
 }

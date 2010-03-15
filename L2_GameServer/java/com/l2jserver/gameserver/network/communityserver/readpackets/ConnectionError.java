@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.communityserver.readpackets;
 
+import java.util.logging.Logger;
+
 import org.netcon.BaseReadPacket;
 
 /**
@@ -21,6 +23,8 @@ import org.netcon.BaseReadPacket;
  */
 public final class ConnectionError extends BaseReadPacket
 {
+	private static final Logger _log = Logger.getLogger(ConnectionError.class.getName());
+	
 	public ConnectionError(final byte[] data)
 	{
 		super(data);
@@ -29,6 +33,6 @@ public final class ConnectionError extends BaseReadPacket
 	@Override
 	public final void run()
 	{
-		System.out.println("ConnectionErrorPacket received: "+super.readC());
+		_log.info("ConnectionErrorPacket received: "+super.readC());
 	}
 }
