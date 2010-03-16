@@ -380,7 +380,10 @@ public class L2DoorInstance extends L2Character
 		// Doors can`t be attacked by NPCs
 		if (!(attacker instanceof L2Playable))
 			return false;
-		
+
+		if (getClanHall() != null)
+			return false;
+
 		// Attackable  only during siege by everyone (not owner)
 		boolean isCastle = (getCastle() != null && getCastle().getCastleId() > 0 && getCastle().getSiege().getIsInProgress());
         boolean isFort = (getFort() != null && getFort().getFortId() > 0 && getFort().getSiege().getIsInProgress() && !getIsCommanderDoor());
