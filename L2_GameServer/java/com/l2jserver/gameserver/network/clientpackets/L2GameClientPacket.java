@@ -72,7 +72,7 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 	{
 		try
 		{
-            // flood protection
+			// flood protection
 			if (GameTimeController.getGameTicks() - getClient().packetsSentStartTick > 10)
 			{
 				getClient().packetsSentStartTick = GameTimeController.getGameTicks();
@@ -101,9 +101,11 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 			 * 
 			 * it could include pickup and talk too, but less is better
 			 */
-            if (triggersOnActionRequest() && getClient().getActiveChar() != null)
-            	getClient().getActiveChar().onActionRequest();
-            
+			if (triggersOnActionRequest() && getClient().getActiveChar() != null)
+				getClient().getActiveChar().onActionRequest();
+			
+			cleanUp();
+			
 		}
 		catch (Throwable t)
 		{
@@ -131,4 +133,7 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 	{
 		return false;
 	}
+	
+	protected void cleanUp()
+	{}
 }

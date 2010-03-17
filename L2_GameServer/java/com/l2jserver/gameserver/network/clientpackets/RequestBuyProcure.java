@@ -14,18 +14,15 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
-import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.instance.L2ManorManagerInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -34,18 +31,13 @@ import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.item.L2Item;
-import com.l2jserver.gameserver.util.Util;
 
-import javolution.util.FastList;
-
-import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
-
-@SuppressWarnings("unused")
 public class RequestBuyProcure extends L2GameClientPacket {
 	private static final String _C__C3_REQUESTBUYPROCURE = "[C] C3 RequestBuyProcure";
 
 	private static final int BATCH_LENGTH = 12; // length of the one item
 
+	@SuppressWarnings("unused")
 	private int _listId;
 	private Procure[] _items = null;
 
@@ -105,8 +97,6 @@ public class RequestBuyProcure extends L2GameClientPacket {
 			return;
 
 		Castle castle = ((L2ManorManagerInstance)manager).getCastle();
-		long subTotal = 0;
-		int tax = 0;
 		int slots = 0;
 		int weight = 0;
 

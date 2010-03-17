@@ -14,7 +14,11 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
+
 import java.util.logging.Logger;
+
+import javolution.util.FastSet;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.ItemRequest;
@@ -24,8 +28,6 @@ import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.util.Util;
-
-import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
 
 /**
  * This class ...
@@ -40,7 +42,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 	private static final int BATCH_LENGTH = 20; // length of the one item
 	
 	private int _storePlayerId;
-	private ItemRequest[] _items = null;
+	private FastSet<ItemRequest> _items = null;
 	
 	@Override
 	protected void readImpl()
@@ -51,7 +53,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 		{
 			return;
 		}
-		_items = new ItemRequest[count];
+		_items = FastSet.newInstance();
 		
 		for (int i = 0; i < count; i++)
 		{
@@ -64,15 +66,8 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 				_items = null;
 				return;
 			}
-			// check if object id already present in buy list
-			if (!checkId(objectId))
-			{
-				Util.handleIllegalPlayerAction(getClient().getActiveChar(), "Duplicate object id in private store buy list", Config.DEFAULT_PUNISH);
-				_items = null;
-				return;
-			} else {
-				_items[i] = new ItemRequest(objectId, cnt, price);
-			}
+
+			_items.add(new ItemRequest(objectId, cnt, price));
 		}
 	}
 	
@@ -125,7 +120,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 		
 		if (storePlayer.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_PACKAGE_SELL)
 		{
-			if (storeList.getItemCount() > _items.length)
+			if (storeList.getItemCount() > _items.size())
 			{
 				String msgErr = "[RequestPrivateStoreBuy] player " + getClient().getActiveChar().getName() + " tried to buy less items than sold by package-sell, ban this player for bot usage!";
 				Util.handleIllegalPlayerAction(getClient().getActiveChar(), msgErr, Config.DEFAULT_PUNISH);
@@ -180,26 +175,18 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 				}*/
 	}
 	
-	/**
-	 * Check if the buy list already contains given object id.
-	 * @param objId object id to check for duplicate in the buy list
-	 * @return true if object id not found in buy list, else return false
-	 */
-	private boolean checkId(int objId)
-	{
-		for (ItemRequest i : _items)
-		{
-			if (i != null && i.getObjectId() == objId)
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-	
 	@Override
 	public String getType()
 	{
 		return _C__79_REQUESTPRIVATESTOREBUY;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#cleanUp()
+	 */
+	@Override
+	protected void cleanUp()
+	{
+		FastSet.recycle(_items);
 	}
 }

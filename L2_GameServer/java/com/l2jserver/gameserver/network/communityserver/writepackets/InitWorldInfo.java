@@ -69,7 +69,7 @@ public final class InitWorldInfo extends BaseWritePacket
 					super.writeD(c.getMembersCount());
 					super.writeC((c.isNoticeEnabled() ? 1:0));
 					super.writeS(c.getAllyName());
-					FastList<Integer> allyClanIdList = new FastList<Integer>();
+					FastList<Integer> allyClanIdList = FastList.newInstance();
 					if (c.getAllyId() != 0)
 						for (L2Clan clan : ClanTable.getInstance().getClans())
 							if (clan.getAllyId() == c.getAllyId() && c != clan)
@@ -77,6 +77,7 @@ public final class InitWorldInfo extends BaseWritePacket
 					super.writeD(allyClanIdList.size());
 					for (int k : allyClanIdList)
 						super.writeD(k);
+					FastList.recycle(allyClanIdList);
 				}
 				break;
 			case TYPE_PLAYER:
@@ -94,7 +95,7 @@ public final class InitWorldInfo extends BaseWritePacket
 					super.writeD(p.getInteger("accesslevel"));
 					super.writeC(p.getInteger("online"));
 					java.sql.Connection con = null;
-					FastList<Integer> list = new FastList<Integer>();
+					FastList<Integer> list = FastList.newInstance();
 					
 					try
 					{
@@ -121,6 +122,7 @@ public final class InitWorldInfo extends BaseWritePacket
 					super.writeD(list.size());
 					for (int j : list)
 						super.writeD(j);
+					FastList.recycle(list);
 				}
 				break;
 			case TYPE_CASTLE:

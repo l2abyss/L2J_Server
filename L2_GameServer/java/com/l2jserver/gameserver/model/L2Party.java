@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSignsFestival;
 import com.l2jserver.gameserver.datatables.ItemTable;
@@ -59,7 +60,7 @@ public class L2Party {
 
 	//private static Logger _log = Logger.getLogger(L2Party.class.getName());
 
-	private final FastList<L2PcInstance> _members = new FastList<L2PcInstance>();
+	private final FastList<L2PcInstance> _members = FastList.newInstance();
 	private boolean _pendingInvitation = false;
 	private int _partyLvl = 0;
 	private int _itemDistribution = 0;
@@ -415,7 +416,7 @@ public class L2Party {
 					if (leader.isInDuel())
 						DuelManager.getInstance().onRemoveFromParty(leader);
 				}
-				_members.clear();
+				FastList.recycle(_members);
 			}
 		}
 	}

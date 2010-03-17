@@ -33,6 +33,7 @@ import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.Util;
 
 import javolution.util.FastList;
+import javolution.util.FastSet;
 
 /**
  * @author Advi
@@ -716,7 +717,7 @@ public class TradeList
 	 * Buy items from this PrivateStore list
 	 * @return : boolean true if success
 	 */
-	public synchronized boolean privateStoreBuy(L2PcInstance player, ItemRequest[] items)
+	public synchronized boolean privateStoreBuy(L2PcInstance player, FastSet<ItemRequest> items)
 	{
 		if (_locked)
 			return false;

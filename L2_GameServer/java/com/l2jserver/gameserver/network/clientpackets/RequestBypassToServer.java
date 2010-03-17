@@ -175,6 +175,10 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				else
 					CommunityBoard.getInstance().handleCommands(getClient(), _command);
 			}
+			else if (_command.startsWith("_bbsloc"))
+			{
+				CommunityBoard.getInstance().handleCommands(getClient(), _command);
+			}
 			else if (_command.startsWith("_bbs"))
 			{
 				if (Config.ENABLE_COMMUNITY_BOARD)

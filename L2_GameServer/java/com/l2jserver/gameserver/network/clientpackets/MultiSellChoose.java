@@ -171,7 +171,7 @@ public class MultiSellChoose extends L2GameClientPacket
 		
 		// Generate a list of distinct ingredients and counts in order to check if the correct item-counts
 		// are possessed by the player
-		FastList<MultiSellIngredient> _ingredientsList = new FastList<MultiSellIngredient>();
+		FastList<MultiSellIngredient> _ingredientsList = FastList.newInstance();
 		boolean newIng = true;
 		for (MultiSellIngredient e : entry.getIngredients())
 		{
@@ -258,9 +258,8 @@ public class MultiSellChoose extends L2GameClientPacket
 			}
 		}
 		
-		_ingredientsList.clear();
-		_ingredientsList = null;
-		FastList<L2Augmentation> augmentation = new FastList<L2Augmentation>();
+		FastList.recycle(_ingredientsList);
+		FastList<L2Augmentation> augmentation = FastList.newInstance();
 		Elementals elemental = null;
 		/** All ok, remove items and add final product */
 		
@@ -491,6 +490,8 @@ public class MultiSellChoose extends L2GameClientPacket
 		// finally, give the tax to the castle...
 		if (merchant != null && merchant.getIsInTown() && merchant.getCastle().getOwnerId() > 0)
 			merchant.getCastle().addToTreasury(_transactionTax * _amount);
+		
+		FastList.recycle(augmentation);
 	}
 	
 	// Regarding taxation, the following appears to be the case:

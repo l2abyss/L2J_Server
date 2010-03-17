@@ -63,7 +63,7 @@ public final class WorldInfo extends BaseWritePacket
 				super.writeD(player.getAccessLevel().getLevel());
 				super.writeC(player.isOnline());
 				java.sql.Connection con = null;
-				FastList<Integer> list = new FastList<Integer>();
+				FastList<Integer> list = FastList.newInstance();
 				
 				try {
 					con = L2DatabaseFactory.getInstance().getConnection();
@@ -89,6 +89,7 @@ public final class WorldInfo extends BaseWritePacket
 				super.writeD(list.size());
 				for (int j : list)
 					super.writeD(j);
+				FastList.recycle(list);
 				break;
 			}
 
@@ -112,7 +113,7 @@ public final class WorldInfo extends BaseWritePacket
 				super.writeD(clan.getMembersCount());
 				super.writeC((clan.isNoticeEnabled() ? 1:0));
 				super.writeS(clan.getAllyName());
-				FastList<Integer> allyClanIdList = new FastList<Integer>();
+				FastList<Integer> allyClanIdList = FastList.newInstance();
 				if (clan.getAllyId() != 0)
 					for (L2Clan c : ClanTable.getInstance().getClans())
 						if (clan.getAllyId() == c.getAllyId() && c != clan)
@@ -120,6 +121,7 @@ public final class WorldInfo extends BaseWritePacket
 				super.writeD(allyClanIdList.size());
 				for (int k : allyClanIdList)
 					super.writeD(k);
+				FastList.recycle(allyClanIdList);
 				break;
 			}
 			case TYPE_SEND_CLAN_NOTICE:
