@@ -36,6 +36,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
 import com.l2jserver.gameserver.model.base.PlayerState;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
@@ -487,9 +488,9 @@ public final class Formulas
 		public void calc(Env env)
 		{
 			L2Character p = env.player;
-			if( p instanceof L2Summon) env.value = 40;
+			if( p instanceof L2SummonInstance) env.value = 40;
 			else if (p instanceof L2PcInstance && p.getActiveWeaponInstance() == null) env.value = 40;
-			else
+			else if (p instanceof L2PcInstance)
 			{
 				env.value *= DEXbonus[p.getDEX()];
 				env.value *= 10;
@@ -980,10 +981,11 @@ public final class Formulas
 		}
 		else if (cha instanceof L2PetInstance)
 		{
-			cha.addStatFunc(FuncPAtkMod.getInstance());
-			cha.addStatFunc(FuncMAtkMod.getInstance());
+			//cha.addStatFunc(FuncPAtkMod.getInstance());
+			//cha.addStatFunc(FuncMAtkMod.getInstance());
 			cha.addStatFunc(FuncPDefMod.getInstance());
 			cha.addStatFunc(FuncMDefMod.getInstance());
+			cha.addStatFunc(FuncAtkCritical.getInstance());
 		}
 		else if (cha instanceof L2Summon)
 		{
