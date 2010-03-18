@@ -48,8 +48,11 @@ public class SkillTable
 		{
 			final int skillId = skill.getId();
 			final int skillLvl = skill.getLevel();
+			// only non-enchanted skills
+			if (skillLvl > 99)
+				continue;
+
 			final int maxLvl = _skillMaxLevel.get(skillId);
-			
 			if (skillLvl > maxLvl)
 				_skillMaxLevel.put(skillId, skillLvl);
 		}
