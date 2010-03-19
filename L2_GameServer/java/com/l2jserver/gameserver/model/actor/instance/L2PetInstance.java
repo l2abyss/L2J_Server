@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.ItemTable;
@@ -49,14 +48,11 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.PetInventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.PetItemList;
-import com.l2jserver.gameserver.network.serverpackets.PetStatusShow;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -278,84 +274,6 @@ public class L2PetInstance extends L2Summon
 
     @Override
 	public int getSummonType() { return 2; }
-
-	@Override
-	public void onAction(L2PcInstance player, boolean interact)
-	{
-		// Aggression target lock effect
-		if (player.isLockedTarget() && player.getLockedTarget() != this)
-		{
-			player.sendPacket(new SystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
-			player.sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
-
-		boolean isOwner = player.getObjectId() == getOwner().getObjectId();
-
-		player.sendPacket(new ValidateLocation(this));
-		if(isOwner && player != getOwner())
-			updateRefOwner(player);
-		if (this != player.getTarget())
-		{
-			if (Config.DEBUG)
-				_log.fine("new target selected:" + getObjectId());
-			
-			// Set the target of the L2PcInstance player
-			player.setTarget(this);
-			
-			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
-			player.sendPacket(my);
-			
-			// Send a Server->Client packet StatusUpdate of the L2PetInstance to the L2PcInstance to update its HP bar
-			StatusUpdate su = new StatusUpdate(getObjectId());
-			su.addAttribute(StatusUpdate.CUR_HP, (int) getCurrentHp());
-			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
-			player.sendPacket(su);
-		}
-		else if (interact)
-		{
-			// Check if the pet is attackable (without a forced attack) and isn't dead
-			if (isAutoAttackable(player) && !isOwner)
-			{
-				if (Config.GEODATA > 0)
-				{
-					if (GeoData.getInstance().canSeeTarget(player, this))
-					{
-						// Set the L2PcInstance Intention to AI_INTENTION_ATTACK
-						player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
-						player.onActionRequest();
-					}
-				}
-				else
-				{
-					player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
-					player.onActionRequest();
-				}
-			}
-			else if (!isInsideRadius(player, 150, false, false))
-			{
-				if (Config.GEODATA > 0)
-				{
-					if (GeoData.getInstance().canSeeTarget(player, this))
-					{
-						player.getAI().setIntention(CtrlIntention.AI_INTENTION_INTERACT, this);
-						player.onActionRequest();
-					}
-				}
-				else
-				{
-					player.getAI().setIntention(CtrlIntention.AI_INTENTION_INTERACT, this);
-					player.onActionRequest();
-				}
-			}
-			else 
-			{
-				if (isOwner)
-					player.sendPacket(new PetStatusShow(this));
-			}
-		}
-		player.sendPacket(ActionFailed.STATIC_PACKET);
-	}
 
 	@Override
 	public int getControlItemId() { return _controlItemId; }

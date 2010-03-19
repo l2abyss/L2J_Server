@@ -72,8 +72,6 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreeTable;
-import com.l2jserver.gameserver.handler.AdminCommandHandler;
-import com.l2jserver.gameserver.handler.IAdminCommandHandler;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
@@ -189,7 +187,6 @@ import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.LeaveWorld;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.NicknameChanged;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.ObservationMode;
@@ -226,7 +223,6 @@ import com.l2jserver.gameserver.network.serverpackets.TradeDone;
 import com.l2jserver.gameserver.network.serverpackets.TradeOtherDone;
 import com.l2jserver.gameserver.network.serverpackets.TradeStart;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.skills.Formulas;
 import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillSiegeFlag;
@@ -4234,143 +4230,6 @@ public final class L2PcInstance extends L2Playable
 		return true;
 	}
 
-	/**
-	 * Manage actions when a player click on this L2PcInstance.<BR><BR>
-	 *
-	 * <B><U> Actions on first click on the L2PcInstance (Select it)</U> :</B><BR><BR>
-	 * <li>Set the target of the player</li>
-	 * <li>Send a Server->Client packet MyTargetSelected to the player (display the select window)</li><BR><BR>
-	 *
-	 * <B><U> Actions on second click on the L2PcInstance (Follow it/Attack it/Intercat with it)</U> :</B><BR><BR>
-	 * <li>Send a Server->Client packet MyTargetSelected to the player (display the select window)</li>
-	 * <li>If this L2PcInstance has a Private Store, notify the player AI with AI_INTENTION_INTERACT</li>
-	 * <li>If this L2PcInstance is autoAttackable, notify the player AI with AI_INTENTION_ATTACK</li><BR><BR>
-	 * <li>If this L2PcInstance is NOT autoAttackable, notify the player AI with AI_INTENTION_FOLLOW</li><BR><BR>
-	 *
-	 * <B><U> Example of use </U> :</B><BR><BR>
-	 * <li> Client packet : Action, AttackRequest</li><BR><BR>
-	 *
-	 * @param player The player that start an action on this L2PcInstance
-	 *
-	 */
-
-	public void onAction(L2PcInstance player, boolean interact)
-	{
-		// See description in TvTEvent.java
-		if (!TvTEvent.onAction( player, getObjectId()))
-		{
-			player.sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
-
-		// Check if the L2PcInstance is confused
-		if (player.isOutOfControl())
-		{
-			// Send a Server->Client packet ActionFailed to the player
-			player.sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
-
-		// Aggression target lock effect
-		if (player.isLockedTarget() && player.getLockedTarget() != this)
-		{
-			player.sendPacket(new SystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
-			player.sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
-
-		// Check if the player already target this L2PcInstance
-		if (player.getTarget() != this)
-		{
-			// Set the target of the player
-			player.setTarget(this);
-
-			// Send a Server->Client packet MyTargetSelected to the player
-			// The color to display in the select window is White
-			player.sendPacket(new MyTargetSelected(getObjectId(), 0));
-			if (player != this) player.sendPacket(new ValidateLocation(this));
-		}
-		else if (interact)
-		{
-			if (player != this) player.sendPacket(new ValidateLocation(this));
-			// Check if this L2PcInstance has a Private Store
-			if (getPrivateStoreType() != 0)
-            {
-				player.getAI().setIntention(CtrlIntention.AI_INTENTION_INTERACT, this);
-            }
-			else
-			{
-				// Check if this L2PcInstance is autoAttackable
-				if (isAutoAttackable(player))
-				{
-					// Player with lvl < 21 can't attack a cursed weapon holder
-					// And a cursed weapon holder  can't attack players with lvl < 21
-					if ((isCursedWeaponEquipped() && player.getLevel() < 21)
-							|| (player.isCursedWeaponEquipped() && getLevel() < 21))
-					{
-						player.sendPacket(ActionFailed.STATIC_PACKET);
-					} else
-					{
-						if (Config.GEODATA > 0)
-						{
-							if (GeoData.getInstance().canSeeTarget(player, this))
-							{
-								player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
-								player.onActionRequest();
-							}
-						}
-						else
-						{
-							player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
-							player.onActionRequest();
-						}
-					}
-				} else
-				{
-					// This Action Failed packet avoids player getting stuck when clicking three or more times
-					player.sendPacket(ActionFailed.STATIC_PACKET);
-					if (Config.GEODATA > 0)
-					{
-						if(GeoData.getInstance().canSeeTarget(player, this))
-							player.getAI().setIntention(CtrlIntention.AI_INTENTION_FOLLOW, this);
-					}
-					else
-						player.getAI().setIntention(CtrlIntention.AI_INTENTION_FOLLOW, this);
-				}
-			}
-		}
-		player.sendPacket(ActionFailed.STATIC_PACKET);
-	}
-	
-	@Override
-	public void onActionShift(L2PcInstance player)
-	{
-		if (player == null)
-			return;
-		
-		if (player.isGM())
-		{
-			// Check if the gm already target this l2pcinstance
-			if (player.getTarget() != this)
-			{
-				// Set the target of the L2PcInstance player
-				player.setTarget(this);
-				
-				// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-				player.sendPacket(new MyTargetSelected(getObjectId(), 0));
-			}
-			
-			// Send a Server->Client packet ValidateLocation to correct the L2PcInstance position and heading on the client
-			if (player != this)
-				player.sendPacket(new ValidateLocation(this));
-			
-			IAdminCommandHandler ach = AdminCommandHandler.getInstance().getAdminCommandHandler("admin_character_info");
-			if (ach != null)
-				ach.useAdminCommand("admin_character_info " + getName(), player);
-		}
-		player.sendPacket(ActionFailed.STATIC_PACKET);
-	}
-	
 	/**
 	 * Returns true if cp update should be done, false if not
 	 * @return boolean

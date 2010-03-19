@@ -21,11 +21,7 @@ import com.l2jserver.gameserver.datatables.MerchantPriceConfigTable.MerchantPric
 import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExBuySellListPacket;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
-import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-import com.l2jserver.gameserver.util.StringUtil;
 
 /**
  * This class ...
@@ -90,77 +86,6 @@ public class L2MerchantInstance extends L2NpcInstance
 		{
 			_log.warning("possible client hacker: "+player.getName()+" attempting to buy from GM shop! < Ban him!");
 			_log.warning("buylist id:" + val);
-		}
-
-		player.sendPacket(ActionFailed.STATIC_PACKET);
-	}
-
-	@Override
-	public final void onActionShift(L2PcInstance player)
-	{
-		if (player == null)
-			return;
-
-		if (player.isGM())
-		{
-			player.setTarget(this);
-
-			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
-			player.sendPacket(my);
-
-			if (isAutoAttackable(player))
-			{
-				StatusUpdate su = new StatusUpdate(getObjectId());
-				su.addAttribute(StatusUpdate.CUR_HP, (int) getCurrentHp());
-				su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
-				player.sendPacket(su);
-			}
-
-			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-			final StringBuilder html1 = StringUtil.startAppend(2000,
-					"<html><body><center><font color=\"LEVEL\">Merchant Info</font></center><br><table border=0><tr><td>Object ID: </td><td>",
-					String.valueOf(getObjectId()),
-					"</td></tr><tr><td>Template ID: </td><td>",
-					String.valueOf(getTemplate().npcId),
-					"</td></tr><tr><td><br></td></tr><tr><td>HP: </td><td>",
-					String.valueOf(getCurrentHp()),
-					"</td></tr><tr><td>MP: </td><td>",
-					String.valueOf(getCurrentMp()),
-					"</td></tr><tr><td>Level: </td><td>",
-					String.valueOf(getLevel()),
-					"</td></tr><tr><td><br></td></tr><tr><td>Class: </td><td>",
-					getClass().getSimpleName(),
-					"</td></tr><tr><td><br></td></tr></table><table><tr><td><button value=\"Edit NPC\" action=\"bypass -h admin_edit_npc ",
-					String.valueOf(getTemplate().npcId),
-					"\" width=100 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>" +
-					"<td><button value=\"Kill\" action=\"bypass -h admin_kill\" width=40 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>" +
-					"<tr><td><button value=\"Show DropList\" action=\"bypass -h admin_show_droplist ",
-					String.valueOf(getTemplate().npcId),
-					"\" width=100 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>" +
-					"<td><button value=\"Delete\" action=\"bypass -h admin_delete\" width=40 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>" +
-					"<tr><td><button value=\"View Shop\" action=\"bypass -h admin_showShop ",
-					String.valueOf(getTemplate().npcId),
-					"\" width=100 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr></table>"
-			);
-
-			/** Lease doesn't work at all for now!!!
-			StringUtil.append(html1,
-				"<button value=\"Lease next week\" action=\"bypass -h npc_",
-				String.valueOf(getObjectId()),
-				"_Lease\" width=100 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
-				"<button value=\"Abort current leasing\" action=\"bypass -h npc_",
-				String.valueOf(getObjectId()),
-				"_Lease next\" width=100 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">" +
-				"<button value=\"Manage items\" action=\"bypass -h npc_",
-				String.valueOf(getObjectId()),
-				"_Lease manage\" width=100 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">"
-			);
-			 */
-
-			html1.append("</body></html>");
-
-			html.setHtml(html1.toString());
-			player.sendPacket(html);
 		}
 
 		player.sendPacket(ActionFailed.STATIC_PACKET);

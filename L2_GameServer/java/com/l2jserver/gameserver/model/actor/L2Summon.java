@@ -16,14 +16,10 @@ package com.l2jserver.gameserver.model.actor;
 
 import java.util.Collection;
 
-import com.l2jserver.Config;
-import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.ai.L2SummonAI;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.handler.AdminCommandHandler;
-import com.l2jserver.gameserver.handler.IAdminCommandHandler;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
@@ -50,16 +46,12 @@ import com.l2jserver.gameserver.network.serverpackets.ExPartyPetWindowAdd;
 import com.l2jserver.gameserver.network.serverpackets.ExPartyPetWindowDelete;
 import com.l2jserver.gameserver.network.serverpackets.ExPartyPetWindowUpdate;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.PetDelete;
 import com.l2jserver.gameserver.network.serverpackets.PetInfo;
 import com.l2jserver.gameserver.network.serverpackets.PetItemList;
-import com.l2jserver.gameserver.network.serverpackets.PetStatusShow;
 import com.l2jserver.gameserver.network.serverpackets.PetStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.RelationChanged;
-import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.item.L2EtcItem;
@@ -214,98 +206,6 @@ public abstract class L2Summon extends L2Playable
 	public boolean isMountable()
 	{
 		return false;
-	}
-
-	@Override
-	public void onAction(L2PcInstance player, boolean interact)
-	{
-		// Aggression target lock effect
-		if (player.isLockedTarget() && player.getLockedTarget() != this)
-		{
-			player.sendPacket(new SystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
-			player.sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
-
-
-		if (player == _owner && player.getTarget() == this)
-		{
-			player.sendPacket(new PetStatusShow(this));
-			player.sendPacket(ActionFailed.STATIC_PACKET);
-		}
-		else if (player.getTarget() != this)
-		{
-			if (Config.DEBUG) _log.fine("new target selected:"+getObjectId());
-			player.setTarget(this);
-			player.sendPacket(new ValidateLocation(this));
-			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
-			player.sendPacket(my);
-
-			//sends HP/MP status of the summon to other characters
-			StatusUpdate su = new StatusUpdate(getObjectId());
-			su.addAttribute(StatusUpdate.CUR_HP, (int) getCurrentHp());
-			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
-			player.sendPacket(su);
-		}
-		else if (interact)
-		{
-			player.sendPacket(new ValidateLocation(this));
-			if (isAutoAttackable(player))
-			{
-				if (Config.GEODATA > 0)
-				{
-					if (GeoData.getInstance().canSeeTarget(player, this))
-					{
-						player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
-						player.onActionRequest();
-					}
-				}
-				else
-				{
-					player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
-					player.onActionRequest();
-				}
-			}
-			else
-			{
-				// This Action Failed packet avoids player getting stuck when clicking three or more times
-				player.sendPacket(ActionFailed.STATIC_PACKET);
-				if (Config.GEODATA > 0)
-				{
-					if (GeoData.getInstance().canSeeTarget(player, this))
-						player.getAI().setIntention(CtrlIntention.AI_INTENTION_FOLLOW, this);
-				}
-				else
-					player.getAI().setIntention(CtrlIntention.AI_INTENTION_FOLLOW, this);
-			}
-		}
-	}
-
-	@Override
-	public void onActionShift(L2PcInstance player)
-	{
-		if (player == null)
-			return;
-
-		if (player.isGM())
-		{
-			if (player.getTarget() != this)
-			{
-				// Set the target of the L2PcInstance player
-				player.setTarget(this);
-
-				// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-				player.sendPacket(new MyTargetSelected(getObjectId(), 0));
-			}
-
-			// Send a Server->Client packet ValidateLocation to correct the L2PcInstance position and heading on the client
-			player.sendPacket(new ValidateLocation(this));
-
-			IAdminCommandHandler ach = AdminCommandHandler.getInstance().getAdminCommandHandler("admin_summon_info");
-			if (ach != null)
-				ach.useAdminCommand("admin_summon_info", player);
-		}
-		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 
 	public long getExpForThisLevel()

@@ -22,13 +22,9 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.TrapKnownList;
-import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
-import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
@@ -116,22 +112,6 @@ public class L2Trap extends L2Character
 		return getTemplate().npcId;
 	}
 	
-	@Override
-	public void onAction(L2PcInstance player, boolean interact)
-	{
-		// Aggression target lock effect
-		if (player.isLockedTarget() && player.getLockedTarget() != this)
-		{
-			player.sendPacket(new SystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
-			player.sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
-
-		player.setTarget(this);
-		MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel()- getLevel());
-		player.sendPacket(my);
-	}
-
     /**
 	 * 
 	 * @see com.l2jserver.gameserver.model.actor.L2Character#doDie(com.l2jserver.gameserver.model.actor.L2Character)

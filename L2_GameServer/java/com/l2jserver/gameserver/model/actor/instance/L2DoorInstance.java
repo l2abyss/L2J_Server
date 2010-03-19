@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.ai.L2DoorAI;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -32,7 +31,6 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.knownlist.DoorKnownList;
 import com.l2jserver.gameserver.model.actor.stat.DoorStat;
@@ -41,17 +39,11 @@ import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.ConfirmDlg;
 import com.l2jserver.gameserver.network.serverpackets.DoorStatusUpdate;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
-import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.StaticObject;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
-import com.l2jserver.gameserver.util.StringUtil;
 
 import javolution.util.FastList;
 
@@ -479,139 +471,6 @@ public class L2DoorInstance extends L2Character
 	public L2Weapon getSecondaryWeaponItem()
 	{
 		return null;
-	}
-	
-	@Override
-	public void onAction(L2PcInstance player, boolean interact)
-	{
-		if (player == null)
-			return;
-		
-		// Check if the L2PcInstance already target the L2NpcInstance
-		if (this != player.getTarget())
-		{
-			// Set the target of the L2PcInstance player
-			player.setTarget(this);
-			
-			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-			MyTargetSelected my = new MyTargetSelected(getObjectId(), 0);
-			player.sendPacket(my);
-			
-			StaticObject su = new StaticObject(this, false);
-			
-			// send HP amount if doors are inside castle/fortress zone
-			// TODO: needed to be added here doors from conquerable clanhalls
-			if ((getCastle() != null && getCastle().getCastleId() > 0) || (getFort() != null && getFort().getFortId() > 0 && !getIsCommanderDoor()))
-				su = new StaticObject(this, true);
-			player.sendPacket(su);
-			
-			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
-			player.sendPacket(new ValidateLocation(this));
-		}
-		else if (interact)
-		{
-			//            MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel());
-			//            player.sendPacket(my);
-			if (isAutoAttackable(player))
-			{
-				if (Math.abs(player.getZ() - getZ()) < 400) // this max heigth difference might need some tweaking
-					player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
-			}
-			else if (player.getClan() != null && getClanHall() != null && player.getClanId() == getClanHall().getOwnerId())
-			{
-				if (!isInsideRadius(player, L2Npc.INTERACTION_DISTANCE, false, false))
-				{
-					player.getAI().setIntention(CtrlIntention.AI_INTENTION_INTERACT, this);
-				}
-				else
-				{
-					player.gatesRequest(this);
-					if (!getOpen())
-						player.sendPacket(new ConfirmDlg(1140));
-					else
-						player.sendPacket(new ConfirmDlg(1141));
-				}
-			}
-			else if (player.getClan() != null && getFort() != null && player.getClan() == getFort().getOwnerClan() && isUnlockable() && !getFort().getSiege().getIsInProgress())
-			{
-				if (!isInsideRadius(player, L2Npc.INTERACTION_DISTANCE, false, false))
-				{
-					player.getAI().setIntention(CtrlIntention.AI_INTENTION_INTERACT, this);
-				}
-				else
-				{
-					player.gatesRequest(this);
-					if (!getOpen())
-						player.sendPacket(new ConfirmDlg(1140));
-					else
-						player.sendPacket(new ConfirmDlg(1141));
-				}
-			}
-		}
-		// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-		player.sendPacket(ActionFailed.STATIC_PACKET);
-	}
-	
-	@Override
-	public void onActionShift(L2PcInstance player)
-	{
-		if (player == null)
-			return;
-		
-		if (player.getAccessLevel().isGm())
-		{
-			player.setTarget(this);
-			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel());
-			player.sendPacket(my);
-			
-			StaticObject su = new StaticObject(this, false);
-			
-			// send HP amount if doors are inside castle/fortress zone
-			// TODO: needed to be added here doors from conquerable clanhalls
-			if ((getCastle() != null && getCastle().getCastleId() > 0) || (getFort() != null && getFort().getFortId() > 0 && !getIsCommanderDoor()))
-				su = new StaticObject(this, true);
-			
-			player.sendPacket(su);
-			
-			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-                        final String html1 = StringUtil.concat(
-                                "<html><body><center><font color=\"LEVEL\">Door Info</font></center><br><table border=0><tr><td>HP: </td><td>",
-                                String.valueOf(getCurrentHp()),
-                                " / ",
-                                String.valueOf(getMaxHp()),
-                                "</td></tr><tr><td>Max X,Y,Z: </td><td>",
-                                String.valueOf(getXMax()),
-                                ", ",
-                                String.valueOf(getYMax()),
-                                ", ",
-                                String.valueOf(getZMax()),
-                                "</td></tr><tr><td>Min X,Y,Z: </td><td>",
-                                String.valueOf(getXMin()),
-                                ", ",
-                                String.valueOf(getYMin()),
-                                ", ",
-                                String.valueOf(getZMin()),
-                                "</td></tr><tr><td>Object ID: </td><td>",
-                                String.valueOf(getObjectId()),
-                                "</td></tr><tr><td>Door ID: </td><td>",
-                                String.valueOf(getDoorId()),
-                                "</td></tr><tr><td><br></td></tr><tr><td>Class: </td><td>",
-                                getClass().getSimpleName(),
-                                "</td></tr></table><br><table><tr><td><button value=\"Open\" action=\"bypass -h admin_open ",
-                                String.valueOf(getDoorId()),
-                                "\" width=40 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td><td><button value=\"Close\" action=\"bypass -h admin_close ",
-                                String.valueOf(getDoorId()),
-                                "\" width=40 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td><td><button value=\"Kill\" action=\"bypass -h admin_kill\" width=40 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td><td><button value=\"Delete\" action=\"bypass -h admin_delete\" width=40 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr></table></body></html>"
-                                );
-			html.setHtml(html1);
-			player.sendPacket(html);
-		}
-		else
-		{
-			// ATTACK the mob without moving?
-		}
-		
-		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	
 	@Override

@@ -19,11 +19,7 @@ import java.util.Collection;
 
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
-import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -48,23 +44,6 @@ public abstract class L2Decoy extends L2Character
     {
         super.onSpawn();
         this.getOwner().sendPacket(new AbstractNpcInfo.DecoyInfo(this));
-    }
-    
-    @Override
-	public void onAction(L2PcInstance player, boolean interact)
-    {
-    	// Aggression target lock effect
-    	if (player.isLockedTarget() && player.getLockedTarget() != this)
-    	{
-    		player.sendPacket(new SystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
-    		player.sendPacket(ActionFailed.STATIC_PACKET);
-    		return;
-    	}
-
-		player.setTarget(this);
-        MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel()
-                - getLevel());
-        player.sendPacket(my);
     }
     
     @Override

@@ -25,7 +25,6 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.SevenSignsFestival;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.handler.BypassHandler;
@@ -33,8 +32,6 @@ import com.l2jserver.gameserver.handler.IBypassHandler;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.TownManager;
-import com.l2jserver.gameserver.model.L2DropCategory;
-import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.L2Object;
@@ -42,9 +39,7 @@ import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
-import com.l2jserver.gameserver.model.MobGroupTable;
 import com.l2jserver.gameserver.model.actor.instance.L2ClanHallManagerInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2ControllableMobInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoormenInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FestivalGuideInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FishermanInstance;
@@ -59,7 +54,6 @@ import com.l2jserver.gameserver.model.actor.stat.NpcStat;
 import com.l2jserver.gameserver.model.actor.status.NpcStatus;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
-import com.l2jserver.gameserver.model.entity.L2Event;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.zone.type.L2TownZone;
@@ -67,13 +61,10 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.ServerObjectInfo;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
-import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -472,7 +463,7 @@ public class L2Npc extends L2Character
 				}
 
 				if (!(isDead() || isStunned() || isSleeping() || isParalyzed()))
-					onRandomAnimation();
+					onRandomAnimation(Rnd.get(2, 3));
 
 				startRandomAnimationTimer();
 			}
@@ -486,14 +477,14 @@ public class L2Npc extends L2Character
 	/**
 	 * Send a packet SocialAction to all L2PcInstance in the _KnownPlayers of the L2NpcInstance and create a new RandomAnimation Task.<BR><BR>
 	 */
-	public void onRandomAnimation()
+	public void onRandomAnimation(int animationId)
 	{
 		// Send a packet SocialAction to all L2PcInstance in the _KnownPlayers of the L2NpcInstance
 		long now = System.currentTimeMillis();
 		if (now - _lastSocialBroadcast > _minimalSocialInterval)
 		{
 			_lastSocialBroadcast = now;
-			broadcastPacket(new SocialAction(getObjectId(), Rnd.get(2, 3)));
+			broadcastPacket(new SocialAction(getObjectId(), animationId));
 		}
 	}
 
@@ -832,7 +823,7 @@ public class L2Npc extends L2Character
 		return false;
 	}
 
-	protected boolean canTarget(L2PcInstance player)
+	public boolean canTarget(L2PcInstance player)
 	{
 		if (player.isOutOfControl())
 		{
@@ -869,448 +860,6 @@ public class L2Npc extends L2Character
 			return false;
 
 		return true;
-	}
-
-	/**
-	 * Manage actions when a player click on the L2NpcInstance.<BR><BR>
-	 *
-	 * <B><U> Actions on first click on the L2NpcInstance (Select it)</U> :</B><BR><BR>
-	 * <li>Set the L2NpcInstance as target of the L2PcInstance player (if necessary)</li>
-	 * <li>Send a Server->Client packet MyTargetSelected to the L2PcInstance player (display the select window)</li>
-	 * <li>If L2NpcInstance is autoAttackable, send a Server->Client packet StatusUpdate to the L2PcInstance in order to update L2NpcInstance HP bar </li>
-	 * <li>Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client </li><BR><BR>
-	 *
-	 * <B><U> Actions on second click on the L2NpcInstance (Attack it/Intercat with it)</U> :</B><BR><BR>
-	 * <li>Send a Server->Client packet MyTargetSelected to the L2PcInstance player (display the select window)</li>
-	 * <li>If L2NpcInstance is autoAttackable, notify the L2PcInstance AI with AI_INTENTION_ATTACK (after a height verification)</li>
-	 * <li>If L2NpcInstance is NOT autoAttackable, notify the L2PcInstance AI with AI_INTENTION_INTERACT (after a distance verification) and show message</li><BR><BR>
-	 *
-	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : Each group of Server->Client packet must be terminated by a ActionFailed packet in order to avoid
-	 * that client wait an other packet</B></FONT><BR><BR>
-	 *
-	 * <B><U> Example of use </U> :</B><BR><BR>
-	 * <li> Client packet : Action, AttackRequest</li><BR><BR>
-	 *
-	 * <B><U> Overridden in </U> :</B><BR><BR>
-	 * <li> L2ArtefactInstance : Manage only fisrt click to select Artefact</li><BR><BR>
-	 * <li> L2GuardInstance : </li><BR><BR>
-	 *
-	 * @param player The L2PcInstance that start an action on the L2NpcInstance
-	 *
-	 */
-	@Override
-	public void onAction(L2PcInstance player, boolean interact)
-	{
-		if (!canTarget(player))
-			return;
-
-		player.setLastFolkNPC(this);
-
-		// Check if the L2PcInstance already target the L2NpcInstance
-		if (this != player.getTarget())
-		{
-			if (Config.DEBUG)
-				_log.fine("new target selected:" + getObjectId());
-
-			// Set the target of the L2PcInstance player
-			player.setTarget(this);
-
-			// Check if the player is attackable (without a forced attack)
-			if (isAutoAttackable(player))
-			{
-				// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-				// The player.getLevel() - getLevel() permit to display the correct color in the select window
-				MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
-				player.sendPacket(my);
-
-				// Send a Server->Client packet StatusUpdate of the L2NpcInstance to the L2PcInstance to update its HP bar
-				StatusUpdate su = new StatusUpdate(getObjectId());
-				su.addAttribute(StatusUpdate.CUR_HP, (int) getCurrentHp());
-				su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
-				player.sendPacket(su);
-			}
-			else
-			{
-				// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-				MyTargetSelected my = new MyTargetSelected(getObjectId(), 0);
-				player.sendPacket(my);
-			}
-
-			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
-			player.sendPacket(new ValidateLocation(this));
-		}
-		else if (interact)
-		{
-			player.sendPacket(new ValidateLocation(this));
-			// Check if the player is attackable (without a forced attack) and isn't dead
-			if (isAutoAttackable(player) && !isAlikeDead())
-			{
-				// Check the height difference
-				if (Math.abs(player.getZ() - getZ()) < 400) // this max heigth difference might need some tweaking
-				{
-					// Set the L2PcInstance Intention to AI_INTENTION_ATTACK
-					player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
-					// player.startAttack(this);
-				}
-				else
-				{
-					// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-					player.sendPacket(ActionFailed.STATIC_PACKET);
-				}
-			}
-			else if (!isAutoAttackable(player))
-			{
-				// Calculate the distance between the L2PcInstance and the L2NpcInstance
-				if (!canInteract(player))
-				{
-					// Notify the L2PcInstance AI with AI_INTENTION_INTERACT
-					player.getAI().setIntention(CtrlIntention.AI_INTENTION_INTERACT, this);
-				}
-				else
-				{
-					// Send a Server->Client packet SocialAction to the all L2PcInstance on the _knownPlayer of the L2NpcInstance
-					// to display a social action of the L2NpcInstance on their client
-					long now = System.currentTimeMillis();
-					if (now - _lastSocialBroadcast > _minimalSocialInterval && !getAiType().equals(AIType.CORPSE))
-					{
-						_lastSocialBroadcast = now;
-						broadcastPacket(new SocialAction(getObjectId(), Rnd.get(8)));
-					}
-
-					// Open a chat window on client with the text of the L2NpcInstance
-					if (isEventMob)
-					{
-						L2Event.showEventHtml(player, String.valueOf(getObjectId()));
-					}
-					else
-					{
-						Quest[] qlsa = getTemplate().getEventQuests(Quest.QuestEventType.QUEST_START);
-						if ((qlsa != null) && qlsa.length > 0)
-							player.setLastQuestNpcObject(getObjectId());
-						Quest[] qlst = getTemplate().getEventQuests(Quest.QuestEventType.ON_FIRST_TALK);
-						if ((qlst != null) && qlst.length == 1)
-							qlst[0].notifyFirstTalk(this, player);
-						else
-							showChatWindow(player);
-					}
-				}
-			}
-		}
-		player.sendPacket(ActionFailed.STATIC_PACKET);
-	}
-
-	/**
-	 * Manage and Display the GM console to modify the L2NpcInstance (GM only).<BR><BR>
-	 * 
-	 * <B><U> Actions (If the L2PcInstance is a GM only)</U> :</B><BR><BR>
-	 * <li>Set the L2NpcInstance as target of the L2PcInstance player (if necessary)</li>
-	 * <li>Send a Server->Client packet MyTargetSelected to the L2PcInstance player (display the select window)</li>
-	 * <li>If L2NpcInstance is autoAttackable, send a Server->Client packet StatusUpdate to the L2PcInstance in order to update L2NpcInstance HP bar </li>
-	 * <li>Send a Server->Client NpcHtmlMessage() containing the GM console about this L2NpcInstance </li><BR><BR>
-	 * 
-	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : Each group of Server->Client packet must be terminated by a ActionFailed packet in order to avoid
-	 * that client wait an other packet</B></FONT><BR><BR>
-	 * 
-	 * <B><U> Example of use </U> :</B><BR><BR>
-	 * <li> Client packet : Action</li><BR><BR>
-	 * 
-	 * @param client The thread that manage the player that pessed Shift and click on the L2NpcInstance
-	 * 
-	 */
-	@Override
-	public void onActionShift(L2PcInstance player)
-	{
-		if (player == null)
-			return;
-
-		// Check if the L2PcInstance is a GM
-		if (player.getAccessLevel().isGm())
-		{
-			// Set the target of the L2PcInstance player
-			player.setTarget(this);
-
-			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-			// The player.getLevel() - getLevel() permit to display the correct color in the select window
-			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
-			player.sendPacket(my);
-
-			// Check if the player is attackable (without a forced attack)
-			if (isAutoAttackable(player))
-			{
-				// Send a Server->Client packet StatusUpdate of the L2NpcInstance to the L2PcInstance to update its HP bar
-				StatusUpdate su = new StatusUpdate(getObjectId());
-				su.addAttribute(StatusUpdate.CUR_HP, (int) getCurrentHp());
-				su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
-				player.sendPacket(su);
-			}
-
-			// Send a Server->Client NpcHtmlMessage() containing the GM console about this L2NpcInstance
-			NpcHtmlMessage html = new NpcHtmlMessage(0);
-                        final StringBuilder html1 = StringUtil.startAppend(500,
-                                "<html><body><center><font color=\"LEVEL\">NPC Info</font></center><br>" +
-                                "Instance Type: ",
-                                getClass().getSimpleName(),
-                                "<br1>Faction: ",
-                                getFactionId() != null ? getFactionId() : "null"
-                                );
-                        StringUtil.append(html1,
-                        		"<br1>Coords: ",
-                        		String.valueOf(getX()),
-                        		", ",
-                        		String.valueOf(getY()),
-                        		", ",
-                        		String.valueOf(getZ())
-                        		);
-                        if (getSpawn() != null)
-                        	StringUtil.append(html1,
-                        			"<br1>Spawn: ",
-                        			String.valueOf(getSpawn().getLocx()),
-                        			", ",
-                        			String.valueOf(getSpawn().getLocy()),
-                        			", ",
-                        			String.valueOf(getSpawn().getLocz()),
-                                    " ; Loc ID: ",
-                                    String.valueOf(getSpawn().getLocation()),
-                                    "<br1>Distance from spawn 2D: ",
-                                    String.valueOf((int)Math.sqrt(getPlanDistanceSq(getSpawn().getLocx(), getSpawn().getLocy()))),
-                                    " ; 3D: ",
-                                    String.valueOf((int)Math.sqrt(getDistanceSq(getSpawn().getLocx(), getSpawn().getLocy(), getSpawn().getLocz())))
-                            );
-
-			if (this instanceof L2ControllableMobInstance)
-			{
-				StringUtil.append(html1,
-						"<br1>Mob Group: ",
-						String.valueOf(MobGroupTable.getInstance().getGroupForMob((L2ControllableMobInstance) this).getGroupId()),
-						"<br>"
-				);
-			}
-			else
-			{
-				StringUtil.append(html1,
-						"<br1>Respawn Time: ",
-						(getSpawn() != null ? String.valueOf(getSpawn().getRespawnDelay() / 1000) : "?"),
-						"  Seconds<br>"
-				);
-			}
-
-			StringUtil.append(html1,
-					"<table border=\"0\" width=\"100%\">" +
-					"<tr><td>Level</td><td>",
-					String.valueOf(getLevel()),
-					"</td><td>    </td><td>NPC ID</td><td>",
-					String.valueOf(getTemplate().npcId),
-					"</td></tr>" +
-					"<tr><td>Aggro</td><td>" +
-					String.valueOf((this instanceof L2Attackable) ? ((L2Attackable) this).getAggroRange() : 0),
-					"</td><td>    </td><td>Object ID</td><td>",
-					String.valueOf(getObjectId()),
-					"</td></tr>" +
-					"<tr><td>Castle</td><td>",
-					String.valueOf(getCastle().getCastleId()),
-					"</td><td>    </td><td>AI </td><td>",
-					(hasAI() ? String.valueOf(getAI().getIntention().name()) : "NULL"),
-					"</td></tr>" +
-					"</table><br>" +
-					"<font color=\"LEVEL\">Combat</font>" +
-					"<table border=\"0\" width=\"100%\">" +
-					"<tr><td>Current HP</td><td>",
-					String.valueOf(getCurrentHp()),
-					"</td><td>Current MP</td><td>",
-					String.valueOf(getCurrentMp()),
-					"</td></tr>" +
-					"<tr><td>Max.HP</td><td>",
-					String.valueOf((int) (getMaxHp() / getStat().calcStat(Stats.MAX_HP, 1, this, null))),
-					"*",
-					String.valueOf((int) (getStat().calcStat(Stats.MAX_HP, 1, this, null))),
-					"</td><td>Max.MP</td><td>",
-					String.valueOf(getMaxMp()),
-					"</td></tr>" +
-					"<tr><td>P.Atk.</td><td>",
-					String.valueOf(getPAtk(null)),
-					"</td><td>M.Atk.</td><td>",
-					String.valueOf(getMAtk(null, null)),
-					"</td></tr>" +
-					"<tr><td>P.Def.</td><td>",
-					String.valueOf(getPDef(null)),
-					"</td><td>M.Def.</td><td>",
-					String.valueOf(getMDef(null, null)),
-					"</td></tr>" +
-					"<tr><td>Accuracy</td><td>" +
-					String.valueOf(getAccuracy()),
-					"</td><td>Evasion</td><td>",
-					String.valueOf(getEvasionRate(null)),
-					"</td></tr>" +
-					"<tr><td>Critical</td><td>",
-					String.valueOf(getCriticalHit(null, null)),
-					"</td><td>Speed</td><td>",
-					String.valueOf(getRunSpeed()),
-					"</td></tr>" +
-					"<tr><td>Atk.Speed</td><td>",
-					String.valueOf(getPAtkSpd()),
-					"</td><td>Cast.Speed</td><td>",
-					String.valueOf(getMAtkSpd()),
-					"</td></tr>" +
-					"</table><br>" +
-					"<font color=\"LEVEL\">Basic Stats</font>" +
-					"<table border=\"0\" width=\"100%\">" +
-					"<tr><td>STR</td><td>",
-					String.valueOf(getSTR()),
-					"</td><td>DEX</td><td>",
-					String.valueOf(getDEX()),
-					"</td><td>CON</td><td>",
-					String.valueOf(getCON()),
-					"</td></tr>" +
-					"<tr><td>INT</td><td>",
-					String.valueOf(getINT()),
-					"</td><td>WIT</td><td>",
-					String.valueOf(getWIT()),
-					"</td><td>MEN</td><td>",
-					String.valueOf(getMEN()),
-					"</td></tr>" +
-					"</table>" +
-					"<br><center><table><tr><td><button value=\"Edit NPC\" action=\"bypass -h admin_edit_npc ",
-					String.valueOf(getTemplate().npcId),
-					"\" width=100 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"><br1></td>" +
-					"<td><button value=\"Kill\" action=\"bypass -h admin_kill\" width=40 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td><br1></tr>" +
-					"<tr><td><button value=\"Show DropList\" action=\"bypass -h admin_show_droplist ",
-					String.valueOf(getTemplate().npcId),
-					"\" width=100 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>" +
-					"<td><button value=\"Delete\" action=\"bypass -h admin_delete\" width=40 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr>" +
-					"<tr><td><button value=\"Show SkillList\" action=\"bypass -h admin_show_skilllist_npc ",
-					String.valueOf(getTemplate().npcId),
-				 	"\" width=100 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td><td></td></tr></table></center><br></body></html>"
-					);
-
-			html.setHtml(html1.toString());
-			player.sendPacket(html);
-		}
-		else if (Config.ALT_GAME_VIEWNPC)
-		{
-			// Set the target of the L2PcInstance player
-			player.setTarget(this);
-
-			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-			// The player.getLevel() - getLevel() permit to display the correct color in the select window
-			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
-			player.sendPacket(my);
-
-			// Check if the player is attackable (without a forced attack)
-			if (isAutoAttackable(player))
-			{
-				// Send a Server->Client packet StatusUpdate of the L2NpcInstance to the L2PcInstance to update its HP bar
-				StatusUpdate su = new StatusUpdate(getObjectId());
-				su.addAttribute(StatusUpdate.CUR_HP, (int) getCurrentHp());
-				su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
-				player.sendPacket(su);
-			}
-
-			NpcHtmlMessage html = new NpcHtmlMessage(0);
-			final StringBuilder html1 = StringUtil.startAppend(
-					1000,
-					"<html><body>" +
-					"<br><center><font color=\"LEVEL\">[Combat Stats]</font></center>" +
-					"<table border=0 width=\"100%\">" +
-					"<tr><td>Max.HP</td><td>",
-					String.valueOf((int) (getMaxHp() / getStat().calcStat(Stats.MAX_HP, 1, this, null))),
-					"*",
-					String.valueOf((int) getStat().calcStat(Stats.MAX_HP, 1, this, null)),
-					"</td><td>Max.MP</td><td>",
-					String.valueOf(getMaxMp()),
-					"</td></tr>" +
-					"<tr><td>P.Atk.</td><td>",
-					String.valueOf(getPAtk(null)),
-					"</td><td>M.Atk.</td><td>",
-					String.valueOf(getMAtk(null, null)),
-					"</td></tr>" +
-					"<tr><td>P.Def.</td><td>",
-					String.valueOf(getPDef(null)),
-					"</td><td>M.Def.</td><td>",
-					String.valueOf(getMDef(null, null)),
-					"</td></tr>" +
-					"<tr><td>Accuracy</td><td>",
-					String.valueOf(getAccuracy()),
-					"</td><td>Evasion</td><td>",
-					String.valueOf(getEvasionRate(null)),
-					"</td></tr>" +
-					"<tr><td>Critical</td><td>",
-					String.valueOf(getCriticalHit(null, null)),
-					"</td><td>Speed</td><td>",
-					String.valueOf(getRunSpeed()),
-					"</td></tr>" +
-					"<tr><td>Atk.Speed</td><td>",
-					String.valueOf(getPAtkSpd()),
-					"</td><td>Cast.Speed</td><td>",
-					String.valueOf(getMAtkSpd()),
-					"</td></tr>" +
-					"<tr><td>Race</td><td>",
-					getTemplate().getRace().toString(),
-					"</td><td></td><td></td></tr>" +
-					"</table>" +
-					"<br><center><font color=\"LEVEL\">[Basic Stats]</font></center>" +
-					"<table border=0 width=\"100%\">" +
-					"<tr><td>STR</td><td>",
-					String.valueOf(getSTR()),
-					"</td><td>DEX</td><td>",
-					String.valueOf(getDEX()),
-					"</td><td>CON</td><td>",
-					String.valueOf(getCON()),
-					"</td></tr>" +
-					"<tr><td>INT</td><td>",
-					String.valueOf(getINT()),
-					"</td><td>WIT</td><td>",
-					String.valueOf(getWIT()),
-					"</td><td>MEN</td><td>",
-					String.valueOf(getMEN()),
-					"</td></tr>" +
-					"</table>"
-					);
-
-			if (getTemplate().getDropData() != null)
-			{
-				StringUtil.append(html1,
-						"<br><center><font color=\"LEVEL\">[Drop Info]</font></center>" +
-						"<br>Rates legend: <font color=\"ff0000\">50%+</font> <font color=\"00ff00\">30%+</font> <font color=\"0000ff\">less than 30%</font>" +
-						"<table border=0 width=\"100%\">"
-						);
-				for (L2DropCategory cat : getTemplate().getDropData())
-				{
-					for (L2DropData drop : cat.getAllDrops())
-					{
-						final L2Item item = ItemTable.getInstance().getTemplate(drop.getItemId());
-						if (item == null)
-							continue;
-
-						final String color;
-
-						if (drop.getChance() >= 500000)
-							color = "ff0000";
-						else if (drop.getChance() >= 300000)
-							color = "00ff00";
-						else
-							color = "0000ff";
-
-						StringUtil.append(html1,
-								"<tr><td><font color=\"",
-								color,
-								"\">",
-								item.getName(),
-								"</font></td><td>",
-								(drop.isQuestDrop() ? "Quest" : (cat.isSweep() ? "Sweep" : "Drop")),
-								"</td></tr>"
-								);
-					}
-				}
-				html1.append("</table>");
-			}
-			html1.append("</body></html>");
-
-			html.setHtml(html1.toString());
-			player.sendPacket(html);
-		}
-
-		// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 
 	/** Return the L2Castle this L2NpcInstance belongs to. */
