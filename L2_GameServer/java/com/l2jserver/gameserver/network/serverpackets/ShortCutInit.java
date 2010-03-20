@@ -57,7 +57,7 @@ public final class ShortCutInit extends L2GameServerPacket
             case L2ShortCut.TYPE_ITEM: //1
             	writeD(sc.getId());
             	writeD(0x01);
-            	writeD(-1);
+            	writeD(sc.getSharedReuseGroup());
             	writeD(0x00);
             	writeD(0x00);
             	writeH(0x00);

@@ -69,6 +69,15 @@ public class ShortCuts
 
     public synchronized void registerShortCut(L2ShortCut shortcut)
     {
+		// verify shortcut
+		if (shortcut.getType() == L2ShortCut.TYPE_ITEM)
+        {
+			L2ItemInstance item = _owner.getInventory().getItemByObjectId(shortcut.getId());
+			if (item == null)
+				return;
+			if (item.isEtcItem())
+				shortcut.setSharedReuseGroup(item.getEtcItem().getSharedReuseGroup());
+		}
         L2ShortCut oldShortCut = _shortCuts.put(shortcut.getSlot() + 12 * shortcut.getPage(), shortcut);
         registerShortCutInDb(shortcut, oldShortCut);
     }
@@ -221,8 +230,11 @@ public class ShortCuts
         {
 			if (sc.getType() == L2ShortCut.TYPE_ITEM)
             {
-				if (_owner.getInventory().getItemByObjectId(sc.getId()) == null)
+				L2ItemInstance item = _owner.getInventory().getItemByObjectId(sc.getId());
+				if (item == null)
 					deleteShortCut(sc.getSlot(), sc.getPage());
+				else if (item.isEtcItem())
+					sc.setSharedReuseGroup(item.getEtcItem().getSharedReuseGroup());
             }
 		}
     }

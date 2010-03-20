@@ -65,7 +65,7 @@ public final class ShortCutRegister extends L2GameServerPacket
         case L2ShortCut.TYPE_ITEM: //1
         	writeD(_shortcut.getId());
         	writeD(_shortcut.getCharacterType());
-        	writeD(-1); // here should be item type
+        	writeD(_shortcut.getSharedReuseGroup());
         	writeD(0x00);  // unknown
         	writeD(0x00);  // unknown
         	writeD(0x00);  // item augment id

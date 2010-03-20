@@ -34,6 +34,7 @@ public class L2ShortCut
 	private final int _id;
 	private final int _level;
 	private final int _characterType;
+	private int _sharedReuseGroup = -1;
 
 	public L2ShortCut(int slotId, int pageId, int shortcutType,
                       int shortcutId, int shortcutLevel, int characterType)
@@ -74,5 +75,15 @@ public class L2ShortCut
     public int getCharacterType()
     {
     	return _characterType;
+    }
+
+    public int getSharedReuseGroup()
+    {
+    	return _sharedReuseGroup;
+    }
+
+    public void setSharedReuseGroup(int g)
+    {
+    	_sharedReuseGroup = g;
     }
 }

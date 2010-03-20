@@ -28,6 +28,8 @@ public final class L2EtcItem  extends L2Item
 	// private final String[] _skill;
 	private final String _handler;
 	private SkillHolder[] _skillHolder;
+	private int _sharedReuseGroup;
+
 	/**
 	 * Constructor for EtcItem.
 	 * @see L2Item constructor
@@ -73,6 +75,7 @@ public final class L2EtcItem  extends L2Item
 		}
 		
 		_handler = set.getString("handler");
+		_sharedReuseGroup = set.getInteger("shared_reuse_group", -1);
 	}
 
 	/**
@@ -117,5 +120,10 @@ public final class L2EtcItem  extends L2Item
 	public String getHandlerName()
 	{
 		return _handler;
+	}
+
+	public int getSharedReuseGroup()
+	{
+		return _sharedReuseGroup;
 	}
 }
