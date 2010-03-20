@@ -10283,8 +10283,7 @@ public final class L2PcInstance extends L2Playable
 				if (player.getClan() != null)
 					isDisabled = s.isClanSkill() && player.getClan().getReputationScore() < 0;
 
-				int skillMaxLevel = SkillTable.getInstance().getMaxLevel(s.getId());
-				boolean isEnchantable = skillMaxLevel > 100;
+				boolean isEnchantable = SkillTable.getInstance().isEnchantable(s.getId());
 				if (isEnchantable)
 				{
 					L2EnchantSkillLearn esl = EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(s.getId());

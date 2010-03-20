@@ -15,6 +15,7 @@ package com.l2jserver.gameserver.datatables;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.skills.SkillsEngine;
 
+import gnu.trove.TIntArrayList;
 import gnu.trove.TIntIntHashMap;
 import gnu.trove.TIntObjectHashMap;
 
@@ -25,6 +26,7 @@ public class SkillTable
 {
 	private final TIntObjectHashMap<L2Skill> _skills;
 	private final TIntIntHashMap _skillMaxLevel;
+	private final TIntArrayList _enchantable;
 	
 	public static SkillTable getInstance()
 	{
@@ -35,6 +37,7 @@ public class SkillTable
 	{
 		_skills = new TIntObjectHashMap<L2Skill>();
 		_skillMaxLevel = new TIntIntHashMap();
+		_enchantable = new TIntArrayList();
 		reload();
 	}
 	
@@ -48,16 +51,23 @@ public class SkillTable
 		{
 			final int skillId = skill.getId();
 			final int skillLvl = skill.getLevel();
-			// only non-enchanted skills
 			if (skillLvl > 99)
+			{
+				if (!_enchantable.contains(skillId))
+					_enchantable.add(skillId);
 				continue;
+			}
 
+			// only non-enchanted skills
 			final int maxLvl = _skillMaxLevel.get(skillId);
 			if (skillLvl > maxLvl)
 				_skillMaxLevel.put(skillId, skillLvl);
 		}
 		//SkillTreeTable.getInstance().reload();
-		
+
+		// Sorting for binarySearch
+		_enchantable.sort();
+
 		// Reloading as well FrequentSkill enumeration values 
 		for (FrequentSkill sk : FrequentSkill.values())
 			sk._skill = getInfo(sk._id, sk._level);
@@ -108,7 +118,12 @@ public class SkillTable
 	{
 		return _skillMaxLevel.get(skillId);
 	}
-	
+
+	public final boolean isEnchantable(final int skillId)
+	{
+		return _enchantable.binarySearch(skillId) >= 0;
+	}
+
 	/**
 	 * Returns an array with siege skills. If addNoble == true, will add also Advanced headquarters.
 	 */

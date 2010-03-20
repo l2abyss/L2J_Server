@@ -50,9 +50,7 @@ public class GMViewSkillInfo extends L2GameServerPacket
 			writeD(skill.getLevel());
 			writeD(skill.getId());
 			writeC(isDisabled && skill.isClanSkill() ? 1 : 0);
-			int skillMaxLevel = SkillTable.getInstance().getMaxLevel(skill.getId());
-			boolean isEnchanted = skillMaxLevel > 100;
-			writeC(isEnchanted ? 1 : 0);
+			writeC(SkillTable.getInstance().isEnchantable(skill.getId()) ? 1 : 0);
 		}
 	}
 
