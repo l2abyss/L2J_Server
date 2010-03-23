@@ -69,10 +69,12 @@ public class ExShowReceivedPost extends L2GameServerPacket
 				writeD(item.getItemId());
 				writeQ(item.getCount());
 
-				writeD(item.getEnchantLevel());
+				writeD(0x00); // unknown
+				writeD(item.getEnchantLevel()); 
 				writeH(item.getCustomType2());
 				writeH(0x00); // unknown
-				writeD(0x00); // unknown
+				
+
 
 				writeD(item.isAugmented() ? item.getAugmentation().getAugmentationId() : 0x00);
 
