@@ -76,6 +76,7 @@ public abstract class L2Object
     	L2PcInstance(L2Playable),
     	L2NpcInstance(L2Npc),
     	L2MerchantInstance(L2NpcInstance),
+    	L2WarehouseInstance(L2NpcInstance),
     	L2StaticObjectInstance(L2Character),
     	L2DoorInstance(L2Character),
     	L2EffectPointInstance(L2Npc),
@@ -128,10 +129,10 @@ public abstract class L2Object
     	L2FortCommanderInstance(L2DefenderInstance),
     	// Castle NPCs
     	L2CastleBlacksmithInstance(L2NpcInstance),
-    	L2CastleChamberlainInstance(L2NpcInstance),
+    	L2CastleChamberlainInstance(L2MerchantInstance),
     	L2CastleMagicianInstance(L2NpcInstance),
-    	L2CastleTeleporterInstance(L2NpcInstance),
-    	L2CastleWarehouseInstance(L2NpcInstance),
+    	L2CastleTeleporterInstance(L2Npc),
+    	L2CastleWarehouseInstance(L2WarehouseInstance),
     	L2MercManagerInstance(L2MerchantInstance),
     	// Fort NPCs
     	L2FortEnvoyInstance(L2Npc),
@@ -165,7 +166,6 @@ public abstract class L2Object
     	L2TrainerInstance(L2NpcInstance),
     	L2TransformManagerInstance(L2MerchantInstance),
     	L2VillageMasterInstance(L2NpcInstance),
-    	L2WarehouseInstance(L2NpcInstance),
     	L2WyvernManagerInstance(L2NpcInstance),
     	L2XmassTreeInstance(L2NpcInstance),
     	// Doormens
