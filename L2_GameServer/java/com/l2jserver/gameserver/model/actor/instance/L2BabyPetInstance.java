@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.skills.SkillHolder;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
 
@@ -41,16 +42,16 @@ import javolution.util.FastList;
  */
 public final class L2BabyPetInstance extends L2PetInstance
 {
-	protected static final int BUFF_CONTROL = 5771;
+	private static final int BUFF_CONTROL = 5771;
 
-	protected FastList<Integer> _buffs = null;
-	protected int _majorHeal = 0;
-	protected int _minorHeal = 0;
-	protected int _recharge = 0;
+	private FastList<SkillHolder> _buffs = null;
+	private SkillHolder _majorHeal = null;
+	private SkillHolder _minorHeal = null;
+	private SkillHolder _recharge = null;
 
 	private Future<?> _castTask;
 
-	protected long _buffControlTimestamp = 0;
+	private int _buffControlReuseHashcode = 0;
 
 	public L2BabyPetInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2ItemInstance control)
 	{
@@ -72,7 +73,10 @@ public final class L2BabyPetInstance extends L2PetInstance
 			if (skill != null)
 			{
 				if (skill.getId() == BUFF_CONTROL)
+				{
+					_buffControlReuseHashcode = skill.getReuseHashCode();
 					continue;
+				}
 
 				switch (skill.getSkillType())
 				{
@@ -80,27 +84,27 @@ public final class L2BabyPetInstance extends L2PetInstance
 						if (healPower == 0)
 						{
 							// set both heal types to the same skill
-							_majorHeal = id;
-							_minorHeal = id;
+							_majorHeal = new SkillHolder(skill);
+							_minorHeal = _majorHeal;
 							healPower = skill.getPower();
 						}
 						else
 						{
 							// another heal skill found - search for most powerful
 							if (skill.getPower() > healPower)
-								_majorHeal = id;
+								_majorHeal = new SkillHolder(skill);
 							else
-								_minorHeal = id;
+								_minorHeal = new SkillHolder(skill);
 						}
 						break;
 					case BUFF:
 						if (_buffs == null)
-							_buffs = new FastList<Integer>();
-						_buffs.add(id);
+							_buffs = new FastList<SkillHolder>();
+						_buffs.add(new SkillHolder(skill));
 						break;
 					case MANAHEAL:
 					case MANARECHARGE:
-						_recharge = id;
+						_recharge = new SkillHolder(skill);
 						break;
 				}
 			}
@@ -144,7 +148,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 
 	private final void startCastTask()
 	{
-		if ((_majorHeal > 0 || _buffs != null || _recharge > 0) 
+		if ((_majorHeal != null || _buffs != null || _recharge != null) 
 			&& _castTask == null && !isDead()) // cast task is not yet started and not dead (will start on revive)
 				_castTask = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new CastTask(this), 3000, 1000);
 	}
@@ -212,39 +216,51 @@ public final class L2BabyPetInstance extends L2PetInstance
 			{
 				L2Skill skill = null;
 
-				if (_majorHeal > 0)
+				if (_majorHeal != null)
 				{
 					// if the owner's HP is more than 80%, do nothing.
 					// if the owner's HP is very low (less than 20%) have a high chance for strong heal
 					// otherwise, have a low chance for weak heal
 					final double hpPercent = owner.getCurrentHp()/owner.getMaxHp();
-					if (hpPercent < 0.15
-							&& !_baby.isSkillDisabled(_majorHeal)
-							&& Rnd.get(100) <= 75)
-						skill = SkillTable.getInstance().getInfo(_majorHeal, PetSkillsTable.getInstance().getAvailableLevel(_baby, _majorHeal));
-					else if (hpPercent < 0.8
-							&& !_baby.isSkillDisabled(_minorHeal)
-							&& Rnd.get(100) <= 25)
-						skill = SkillTable.getInstance().getInfo(_minorHeal, PetSkillsTable.getInstance().getAvailableLevel(_baby, _minorHeal));
-
-					if (skill != null && _baby.getCurrentMp() >= skill.getMpConsume())
+					if (hpPercent < 0.15)
 					{
-						castSkill(skill);
-						return;
+						skill = _majorHeal.getSkill();
+						if (!_baby.isSkillDisabled(skill)
+								&& Rnd.get(100) <= 75)
+						{
+							if (_baby.getCurrentMp() >= skill.getMpConsume())
+							{
+								castSkill(skill);
+								return;
+							}
+						}
+					}
+					if (hpPercent < 0.8)
+					{
+						skill = _minorHeal.getSkill();
+						if (!_baby.isSkillDisabled(skill)
+								&& Rnd.get(100) <= 25)
+						{
+							if (_baby.getCurrentMp() >= skill.getMpConsume())
+							{
+								castSkill(skill);
+								return;
+							}
+						}
 					}
 				}
 
-				if (!_baby.isSkillDisabled(BUFF_CONTROL)) // Buff Control is not active
+				if (!_baby.isSkillDisabled(_buffControlReuseHashcode)) // Buff Control is not active
 				{
 					// searching for usable buffs
 					if (_buffs != null && !_buffs.isEmpty())
 					{
-						for (int id : _buffs)
+						for (SkillHolder i : _buffs)
 						{
-							if (_baby.isSkillDisabled(id))
+							skill = i.getSkill();
+							if (_baby.isSkillDisabled(skill))
 								continue;
-							skill = SkillTable.getInstance().getInfo(id, PetSkillsTable.getInstance().getAvailableLevel(_baby, id));
-							if (skill != null && _baby.getCurrentMp() >= skill.getMpConsume())
+							if (_baby.getCurrentMp() >= skill.getMpConsume())
 								_currentBuffs.add(skill);
 						}
 					}
@@ -304,14 +320,14 @@ public final class L2BabyPetInstance extends L2PetInstance
 				}
 
 				// buffs/heal not casted, trying recharge, if exist
-				if (_recharge > 0
-						&& !_baby.isSkillDisabled(_recharge)
-						&& owner.getCurrentMp()/owner.getMaxMp() < 0.7
+				if (_recharge != null
 						&& owner.isInCombat() // recharge casted only if owner in combat stance
+						&& owner.getCurrentMp()/owner.getMaxMp() < 0.7
 						&& Rnd.get(100) <= 60)
 				{
-					skill = SkillTable.getInstance().getInfo(_recharge, PetSkillsTable.getInstance().getAvailableLevel(_baby, _recharge));
-					if (skill != null && _baby.getCurrentMp() >= skill.getMpConsume())
+					skill = _recharge.getSkill();
+					if (!_baby.isSkillDisabled(skill)
+							&& _baby.getCurrentMp() >= skill.getMpConsume())
 					{
 						castSkill(skill);
 						return;

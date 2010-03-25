@@ -271,7 +271,7 @@ class OlympiadGame
 				// enable skills with cool time <= 15 minutes
 				for (L2Skill skill : player.getAllSkills())
 					if (skill.getReuseDelay() <= 900000)
-						player.enableSkill(skill.getId());
+						player.enableSkill(skill);
 					
 				player.sendSkillList();
 				player.sendPacket(new SkillCoolTime(player));

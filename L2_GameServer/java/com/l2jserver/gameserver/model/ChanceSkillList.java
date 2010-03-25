@@ -150,11 +150,11 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 						return;
 				} 
 
-				if (_owner.isSkillDisabled(skill.getId()))
+				if (_owner.isSkillDisabled(skill))
 					return;
 
 				if (skill.getReuseDelay() > 0)
-					_owner.disableSkill(skill.getId(), skill.getReuseDelay());
+					_owner.disableSkill(skill, skill.getReuseDelay());
 
 				L2Object[] targets = skill.getTargetList(_owner, false, target);
 
@@ -195,11 +195,11 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			if (caster == null
 					|| triggered == null
 					|| triggered.getSkillType() == L2SkillType.NOTDONE
-					|| caster.isSkillDisabled(triggered.getId()))
+					|| caster.isSkillDisabled(triggered))
 				return;
 
 			if (triggered.getReuseDelay() > 0)
-				caster.disableSkill(triggered.getId(), triggered.getReuseDelay());
+				caster.disableSkill(triggered, triggered.getReuseDelay());
 
 			L2Object[] targets = triggered.getTargetList(caster, false, target);
 

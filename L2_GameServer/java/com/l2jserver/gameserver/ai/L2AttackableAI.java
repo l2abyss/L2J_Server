@@ -887,7 +887,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF)
 							continue;
 						if((sk.getMpConsume()>=_actor.getCurrentMp()
-								|| _actor.isSkillDisabled(sk.getId())
+								|| _actor.isSkillDisabled(sk)
 								||(sk.isMagic()&&_actor.isMuted())
 								||(!sk.isMagic()&&_actor.isPhysicalMuted())))
 						{
@@ -912,7 +912,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				for(L2Skill sk:_skillrender._healskills)
 				{
 					if((sk.getMpConsume() >= _actor.getCurrentMp()
-							|| _actor.isSkillDisabled(sk.getId())
+							|| _actor.isSkillDisabled(sk)
 							||(sk.isMagic() && _actor.isMuted()))
 							||(!sk.isMagic() && _actor.isPhysicalMuted()))
 					{
@@ -926,7 +926,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			for(L2Skill sk:_skillrender._healskills)
 			{
 				if((sk.getMpConsume() >= _actor.getCurrentMp()
-						|| _actor.isSkillDisabled(sk.getId())
+						|| _actor.isSkillDisabled(sk)
 						||(sk.isMagic() && _actor.isMuted()))
 						||(!sk.isMagic() && _actor.isPhysicalMuted()))
 				{
@@ -974,7 +974,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF)
 							continue;
 						if((sk.getMpConsume() >= _actor.getCurrentMp()
-								|| _actor.isSkillDisabled(sk.getId())
+								|| _actor.isSkillDisabled(sk)
 								||(sk.isMagic() && _actor.isMuted())
 								||(!sk.isMagic() && _actor.isPhysicalMuted())))
 						{
@@ -998,7 +998,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			for(L2Skill sk:_skillrender._resskills)
 			{
 				if((sk.getMpConsume() >= _actor.getCurrentMp()
-						|| _actor.isSkillDisabled(sk.getId())
+						|| _actor.isSkillDisabled(sk)
 						||(sk.isMagic() && _actor.isMuted()))
 						||(!sk.isMagic() && _actor.isPhysicalMuted()))
 				{
@@ -1159,7 +1159,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	{
 		if (sk == null)
 			return false;
-		if (sk.getMpConsume() >= _actor.getCurrentMp() || _actor.isSkillDisabled(sk.getId())
+		if (sk.getMpConsume() >= _actor.getCurrentMp() || _actor.isSkillDisabled(sk)
 				|| (sk.isMagic() && _actor.isMuted()) || (!sk.isMagic() && _actor.isPhysicalMuted()))
 			return false;
 		if(getAttackTarget() == null)
@@ -1747,7 +1747,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				for(L2Skill sk : _skillrender._immobiliseskills)
 				{
 					if(sk.getMpConsume() >= _actor.getCurrentMp()
-							|| _actor.isSkillDisabled(sk.getId())
+							|| _actor.isSkillDisabled(sk)
 							|| (sk.getCastRange()+ _actor.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius <= dist2 && !canAura(sk))
 							|| (sk.isMagic()&&_actor.isMuted())
 							|| (!sk.isMagic()&&_actor.isPhysicalMuted()))
@@ -1774,7 +1774,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				for(L2Skill sk:_skillrender._cotskills)
 				{
 					if(sk.getMpConsume()>=_actor.getCurrentMp()
-							|| _actor.isSkillDisabled(sk.getId())
+							|| _actor.isSkillDisabled(sk)
 							||(sk.getCastRange()+ _actor.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius <= dist2 && !canAura(sk))
 							||(sk.isMagic()&&_actor.isMuted())
 							||(!sk.isMagic()&&_actor.isPhysicalMuted()))
@@ -1800,7 +1800,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				for(L2Skill sk:_skillrender._debuffskills)
 				{
 					if(sk.getMpConsume()>=_actor.getCurrentMp()
-							|| _actor.isSkillDisabled(sk.getId())
+							|| _actor.isSkillDisabled(sk)
 							||(sk.getCastRange()+ _actor.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius <= dist2 && !canAura(sk))
 							||(sk.isMagic()&&_actor.isMuted())
 							||(!sk.isMagic()&&_actor.isPhysicalMuted()))
@@ -1827,7 +1827,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				for(L2Skill sk : _skillrender._negativeskills)
 				{
 					if(sk.getMpConsume() >= _actor.getCurrentMp()
-							|| _actor.isSkillDisabled(sk.getId())
+							|| _actor.isSkillDisabled(sk)
 							||(sk.getCastRange() + _actor.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius <= dist2 && !canAura(sk))
 							||(sk.isMagic()&&_actor.isMuted())
 							||(!sk.isMagic()&&_actor.isPhysicalMuted()))
@@ -1854,7 +1854,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				for(L2Skill sk:_skillrender._atkskills)
 				{
 					if(sk.getMpConsume()>=_actor.getCurrentMp()
-							|| _actor.isSkillDisabled(sk.getId())
+							|| _actor.isSkillDisabled(sk)
 							||(sk.getCastRange()+ _actor.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius <= dist2 && !canAura(sk))
 							||(sk.isMagic()&&_actor.isMuted())
 							||(!sk.isMagic()&&_actor.isPhysicalMuted()))

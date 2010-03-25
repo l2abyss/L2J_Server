@@ -422,14 +422,15 @@ public abstract class Inventory extends ItemContainer
 
 							if (itemSkill.isActive())
 							{
-								if (player.getReuseTimeStamp().isEmpty() || !player.getReuseTimeStamp().containsKey(itemSkill.getId()))
+								if (player.getReuseTimeStamp().isEmpty()
+										|| !player.getReuseTimeStamp().containsKey(itemSkill.getReuseHashCode()))
 								{
 									int equipDelay = itemSkill.getEquipDelay();
 
 									if (equipDelay > 0)
 									{
-										player.addTimeStamp(itemSkill.getId(), equipDelay);
-										player.disableSkill(itemSkill.getId(), equipDelay);
+										player.addTimeStamp(itemSkill, equipDelay);
+										player.disableSkill(itemSkill, equipDelay);
 									}
 								}
 								updateTimeStamp = true;
@@ -479,14 +480,15 @@ public abstract class Inventory extends ItemContainer
 
 							if (itemSkill.isActive())
 							{
-								if (player.getReuseTimeStamp().isEmpty() || !player.getReuseTimeStamp().containsKey(itemSkill.getId()))
+								if (player.getReuseTimeStamp().isEmpty()
+										|| !player.getReuseTimeStamp().containsKey(itemSkill.getReuseHashCode()))
 								{
 									int equipDelay = itemSkill.getEquipDelay();
 
 									if (equipDelay > 0)
 									{
-										player.addTimeStamp(itemSkill.getId(), itemSkill.getEquipDelay());
-										player.disableSkill(itemSkill.getId(), itemSkill.getEquipDelay());
+										player.addTimeStamp(itemSkill, itemSkill.getEquipDelay());
+										player.disableSkill(itemSkill, itemSkill.getEquipDelay());
 									}
 								}
 								updateTimeStamp = true;
@@ -567,14 +569,15 @@ public abstract class Inventory extends ItemContainer
 
 										if (itemSkill.isActive())
 										{
-											if (player.getReuseTimeStamp().isEmpty() || !player.getReuseTimeStamp().containsKey(itemSkill.getId()))
+											if (player.getReuseTimeStamp().isEmpty()
+													|| !player.getReuseTimeStamp().containsKey(itemSkill.getReuseHashCode()))
 											{
 												int equipDelay = itemSkill.getEquipDelay();
 
 												if (equipDelay > 0)
 												{
-													player.addTimeStamp(itemSkill.getId(), itemSkill.getEquipDelay());
-													player.disableSkill(itemSkill.getId(), itemSkill.getEquipDelay());
+													player.addTimeStamp(itemSkill, itemSkill.getEquipDelay());
+													player.disableSkill(itemSkill, itemSkill.getEquipDelay());
 												}
 											}
 											updateTimeStamp = true;

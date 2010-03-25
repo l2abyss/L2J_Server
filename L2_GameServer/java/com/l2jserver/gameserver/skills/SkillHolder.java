@@ -34,6 +34,12 @@ public final class SkillHolder
 		_skillLvl = skillLvl;
 	}
 
+	public SkillHolder(L2Skill skill)
+	{
+		_skillId = skill.getId();
+		_skillLvl = skill.getLevel();
+	}
+
 	public final int getSkillId()
 	{
 		return _skillId;

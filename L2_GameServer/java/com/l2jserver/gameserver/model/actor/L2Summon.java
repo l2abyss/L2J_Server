@@ -597,7 +597,7 @@ public abstract class L2Summon extends L2Playable
         //************************************* Check skill availability *******************************************
 
         // Check if this skill is enabled (e.g. reuse time)
-        if (isSkillDisabled(skill.getId()))
+        if (isSkillDisabled(skill))
         {
         	if (getOwner() != null) 
             	getOwner().sendPacket(new SystemMessage(SystemMessageId.PET_SKILL_CANNOT_BE_USED_RECHARCHING));

@@ -33,6 +33,7 @@ import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.TimeStamp;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
@@ -274,8 +275,11 @@ public class L2Clan
         	{
         		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(newLeader.isNoble()))
         		{
-        			if (exLeader.getReuseTimeStamp().containsKey(sk.getId()))
-        				newLeader.addTimeStamp(exLeader.getReuseTimeStamp().get(sk.getId()));
+        			if (exLeader.getReuseTimeStamp().containsKey(sk.getReuseHashCode()))
+        			{
+        				TimeStamp t = exLeader.getReuseTimeStamp().get(sk.getReuseHashCode());
+        				newLeader.addTimeStamp(sk, t.getReuse(), t.getStamp());
+        			}
         		}
         		newLeader.sendPacket(new SkillCoolTime(newLeader));
         	}       	

@@ -1717,7 +1717,7 @@ public abstract class L2Character extends L2Object
 		boolean skillMastery = Formulas.calcSkillMastery(this, skill);
 
 		// Skill reuse check
-		if (reuseDelay > 30000 && !skillMastery) addTimeStamp(skill.getId(),reuseDelay);
+		if (reuseDelay > 30000 && !skillMastery) addTimeStamp(skill, reuseDelay);
 
 		// Check if this skill consume mp on start casting
 		int initmpcons = getStat().getMpInitialConsume(skill);
@@ -1755,7 +1755,7 @@ public abstract class L2Character extends L2Object
 				}
 			}
 			
-			disableSkill(skill.getId(), reuseDelay);
+			disableSkill(skill, reuseDelay);
 		}
 		
 		// Make sure that char is facing selected target
@@ -1878,7 +1878,7 @@ public abstract class L2Character extends L2Object
 	 */
 	protected boolean checkDoCastConditions(L2Skill skill)
 	{
-		if (skill == null || isSkillDisabled(skill.getId()) || (skill.getFlyType() != null && isMovementDisabled()))
+		if (skill == null || isSkillDisabled(skill) || (skill.getFlyType() != null && isMovementDisabled()))
 		{
 			// Send a Server->Client packet ActionFailed to the L2PcInstance
             sendPacket(ActionFailed.STATIC_PACKET);
@@ -2007,16 +2007,8 @@ public abstract class L2Character extends L2Object
 	 * @param reuse delay
 	 * <BR><B>Overridden in :</B>  (L2PcInstance)
 	 */
-	public void addTimeStamp(int s, int r) {/***/}
+	public void addTimeStamp(L2Skill skill, long reuse) {/***/}
 
-	/**
-	 * Index according to skill id the current timestamp of use.<br><br>
-	 *
-	 * @param skill id
-	 * <BR><B>Overridden in :</B>  (L2PcInstance)
-	 */
-	public void removeTimeStamp(int s) {/***/}
-	
 	public void startFusionSkill(L2Character target, L2Skill skill)
 	{
 		if (skill.getSkillType() != L2SkillType.FUSION)
@@ -6229,54 +6221,57 @@ public abstract class L2Character extends L2Object
 	 * @param skillId The identifier of the L2Skill to enable
 	 *
 	 */
-	public void enableSkill(int skillId)
+	public void enableSkill(L2Skill skill)
 	{
-		if (_disabledSkills == null)
+		if (skill == null || _disabledSkills == null)
 			return;
 
-		_disabledSkills.remove(Integer.valueOf(skillId));
-
-		if (this instanceof L2PcInstance)
-			removeTimeStamp(skillId);
-	}
-
-	/**
-	 * Disable a skill (add it to _disabledSkills of the L2Character).<BR><BR>
-	 *
-	 * <B><U> Concept</U> :</B><BR><BR>
-	 * All skills disabled are identified by their skillId in <B>_disabledSkills</B> of the L2Character <BR><BR>
-	 *
-	 * @param skillId The identifier of the L2Skill to disable
-	 *
-	 */
-	public void disableSkill(int skillId)
-	{
-		disableSkill(skillId, 0);
+		_disabledSkills.remove(Integer.valueOf(skill.getReuseHashCode()));
 	}
 
 	/**
 	 * Disable this skill id for the duration of the delay in milliseconds.
-	 * @param skillId
+	 * @param skill
 	 * @param delay (seconds * 1000)
 	 */
-	public void disableSkill(int skillId, long delay)
+	public void disableSkill(L2Skill skill, long delay)
 	{
+		if (skill == null)
+			return;
+
 		if (_disabledSkills == null)
 			_disabledSkills = Collections.synchronizedMap(new FastMap<Integer, Long>());
 
-		_disabledSkills.put(skillId, delay > 10 ? System.currentTimeMillis() + delay : Long.MAX_VALUE);
+		_disabledSkills.put(Integer.valueOf(skill.getReuseHashCode()), delay > 10 ? System.currentTimeMillis() + delay : Long.MAX_VALUE);
 	}
 
 	/**
 	 * Check if a skill is disabled.<BR><BR>
 	 *
 	 * <B><U> Concept</U> :</B><BR><BR>
-	 * All skills disabled are identified by their skillId in <B>_disabledSkills</B> of the L2Character <BR><BR>
+	 * All skills disabled are identified by their reuse hashcodes in <B>_disabledSkills</B> of the L2Character <BR><BR>
 	 *
-	 * @param skillId The identifier of the L2Skill to disable
+	 * @param skill The L2Skill to check
 	 *
 	 */
-	public boolean isSkillDisabled(int skillId)
+	public boolean isSkillDisabled(L2Skill skill)
+	{
+		if (skill == null)
+			return true;
+
+		return isSkillDisabled(skill.getReuseHashCode());
+	}
+
+	/**
+	 * Check if a skill is disabled.<BR><BR>
+	 *
+	 * <B><U> Concept</U> :</B><BR><BR>
+	 * All skills disabled are identified by their reuse hashcodes in <B>_disabledSkills</B> of the L2Character <BR><BR>
+	 *
+	 * @param reuseHashcode The reuse hashcode of the skillId/level to check
+	 *
+	 */
+	public boolean isSkillDisabled(int reuseHashcode)
 	{
 		if (isAllSkillsDisabled())
 			return true;
@@ -6284,13 +6279,13 @@ public abstract class L2Character extends L2Object
 		if (_disabledSkills == null)
 			return false;
 
-		final Long timeStamp = _disabledSkills.get(Integer.valueOf(skillId));
+		final Long timeStamp = _disabledSkills.get(Integer.valueOf(reuseHashcode));
 		if (timeStamp == null)
 			return false;
 
 		if (timeStamp < System.currentTimeMillis())
 		{
-			_disabledSkills.remove(Integer.valueOf(skillId));
+			_disabledSkills.remove(Integer.valueOf(reuseHashcode));
 			return false;
 		}
 
