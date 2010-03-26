@@ -40,6 +40,7 @@ public class ThreadPoolManager
 			return false;
 		
 		_mainPool = new ThreadPoolExecutor(Config.GENERAL_THREAD_CORE_SIZE, Config.GENERAL_THREAD_CORE_SIZE + 2, 5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new PriorityThreadFactory("CommunityServer Executor pool", Thread.NORM_PRIORITY));
+		_mainPool.prestartAllCoreThreads();
 		return true;
 	}
 	

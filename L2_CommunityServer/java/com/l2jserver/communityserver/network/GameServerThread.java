@@ -57,6 +57,7 @@ public class GameServerThread extends NetConnection
 	public GameServerThread(final NetConnectionConfig config) throws IOException
 	{
 		super(config);
+		setName(getClass().getSimpleName()+"-"+getId());
 		final KeyPair pair = GameServerRegistrationTable.getInstance().getRandomKeyPair();
 		_privateKey = (RSAPrivateKey)pair.getPrivate();
 		_publicKey = (RSAPublicKey)pair.getPublic();
@@ -168,7 +169,6 @@ public class GameServerThread extends NetConnection
 				}
 				
 				if (packet != null)
-					//new Thread(packet).start();
 					ThreadPoolManager.execute(packet);
 				else
 					throw new IOException("Invalid packet!");

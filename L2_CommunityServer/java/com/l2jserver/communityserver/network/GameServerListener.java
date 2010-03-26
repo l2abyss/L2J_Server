@@ -29,6 +29,7 @@ public final class GameServerListener extends NetConnectionListener
 	public GameServerListener(final NetConnectionConfig config) throws IOException
 	{
 		super(config);
+		setName(getClass().getSimpleName());
 	}
 	
 	@Override
