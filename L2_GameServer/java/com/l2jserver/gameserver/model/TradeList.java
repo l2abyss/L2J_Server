@@ -19,6 +19,9 @@ import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA
 import java.util.List;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastSet;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -31,9 +34,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.Util;
-
-import javolution.util.FastList;
-import javolution.util.FastSet;
 
 /**
  * @author Advi
@@ -243,15 +243,16 @@ public class TradeList
 	 */
 	public TradeList.TradeItem[] getAvailableItems(PcInventory inventory)
 	{
-		final List<TradeList.TradeItem> list = new FastList<TradeList.TradeItem>();
+		FastList<TradeList.TradeItem> list = FastList.newInstance();
 		for (TradeList.TradeItem item : _items)
 		{
 			item = new TradeItem(item, item.getCount(), item.getPrice());
 			inventory.adjustAvailableItem(item);
 			list.add(item);
 		}
-		
-		return list.toArray(new TradeList.TradeItem[list.size()]);
+		TradeList.TradeItem[] result = list.toArray(new TradeList.TradeItem[list.size()]);
+		FastList.recycle(list);
+		return result;
 	}
 	
 	/**
