@@ -2085,7 +2085,8 @@ public abstract class L2Character extends L2Object
 		broadcastStatusUpdate();
 
 		// Notify L2Character AI
-		getAI().notifyEvent(CtrlEvent.EVT_DEAD);
+		if (hasAI())
+			getAI().notifyEvent(CtrlEvent.EVT_DEAD);
 		
 		if (getWorldRegion() != null)
 				getWorldRegion().onDeath(this);
