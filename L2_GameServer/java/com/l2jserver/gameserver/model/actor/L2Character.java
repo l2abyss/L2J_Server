@@ -2147,7 +2147,7 @@ public abstract class L2Character extends L2Object
 			}
 			if(restorefull)
 			{
-				//_status.setCurrentCp(getMaxCp()); //this is not confirmed... 
+				_status.setCurrentCp(getCurrentCp()); //this is not confirmed, so just trigger regeneration 
 				_status.setCurrentHp(getMaxHp()); //confirmed
 				_status.setCurrentMp(getMaxMp()); //and also confirmed
 			}
