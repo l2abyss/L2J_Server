@@ -79,6 +79,7 @@ public abstract class L2Object
     	L2WarehouseInstance(L2NpcInstance),
     	L2StaticObjectInstance(L2Character),
     	L2DoorInstance(L2Character),
+    	L2NpcWalkerInstance(L2Npc),
     	L2EffectPointInstance(L2Npc),
     	// Summons, Pets, Decoys and Traps
     	L2SummonInstance(L2Summon),
@@ -138,7 +139,7 @@ public abstract class L2Object
     	L2FortEnvoyInstance(L2Npc),
     	L2FortLogisticsInstance(L2MerchantInstance),
     	L2FortManagerInstance(L2MerchantInstance),
-    	L2FortSiegeNpcInstance(L2Npc),
+    	L2FortSiegeNpcInstance(L2NpcWalkerInstance),
     	L2FortSupportCaptainInstance(L2MerchantInstance),
     	// Seven Signs
     	L2CabaleBufferInstance(L2Npc),
@@ -155,7 +156,6 @@ public abstract class L2Object
     	L2FishermanInstance(L2MerchantInstance),
     	L2ManorManagerInstance(L2MerchantInstance),
     	L2MercenaryManagerInstance(L2Npc),
-    	L2NpcWalkerInstance(L2Npc),
     	L2ObservationInstance(L2Npc),
     	L2OlympiadManagerInstance(L2Npc),
     	L2PetManagerInstance(L2MerchantInstance),
@@ -221,13 +221,16 @@ public abstract class L2Object
     		return _parent;
     	}
 
-    	public final boolean isType(InstanceType... it)
+    	public final boolean isType(InstanceType it)
+    	{
+    		return (_maskL & it._typeL) > 0 || (_maskH & it._typeH) > 0;
+    	}
+
+    	public final boolean isTypes(InstanceType... it)
     	{
     		for (InstanceType i : it)
     		{
-    			if ((_maskL & i._typeL) > 0)
-    				return true;
-    			if ((_maskH & i._typeH) > 0)
+    			if (isType(i))
     				return true;
     		}
     		return false;
@@ -244,9 +247,14 @@ public abstract class L2Object
     	return _instanceType;
     }
 
-    public final boolean isInstanceType(InstanceType... i)
+    public final boolean isInstanceType(InstanceType i)
     {
     	return _instanceType.isType(i);
+    }
+
+    public final boolean isInstanceTypes(InstanceType... i)
+    {
+    	return _instanceType.isTypes(i);
     }
 
     // =========================================================

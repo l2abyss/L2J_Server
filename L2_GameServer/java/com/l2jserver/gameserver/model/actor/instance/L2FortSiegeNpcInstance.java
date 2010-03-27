@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.model.actor.instance;
 import java.util.StringTokenizer;
 
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -27,7 +26,7 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 /**
  * @author Vice 
  */
-public class L2FortSiegeNpcInstance extends L2Npc
+public class L2FortSiegeNpcInstance extends L2NpcWalkerInstance
 {
 	public L2FortSiegeNpcInstance(int objectID, L2NpcTemplate template)
 	{
