@@ -40,6 +40,6 @@ public class L2FortWyvernManagerInstance extends L2WyvernManagerInstance
 	@Override
 	public boolean isInSiege()
 	{
-		return getFort().getSiege().getIsInProgress();
+		return getFort().getZone().isActive();
 	}
 }

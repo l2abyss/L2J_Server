@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2Transformation;
 import com.l2jserver.gameserver.model.actor.L2Summon;
@@ -79,6 +80,8 @@ public final class UserInfo extends L2GameServerPacket
     private int _walkSpd;
     private int _relation;
     private float _moveMultiplier;
+    private int _territoryId;
+    private boolean _isDisguised;
 
     /**
      * @param _characters
@@ -90,9 +93,17 @@ public final class UserInfo extends L2GameServerPacket
         _moveMultiplier = _activeChar.getMovementSpeedMultiplier();
         _runSpd = (int) (_activeChar.getRunSpeed() / _moveMultiplier);
         _walkSpd = (int) (_activeChar.getWalkSpeed() / _moveMultiplier);
+        _territoryId = TerritoryWarManager.getInstance().getRegisteredTerritoryId(character);
         _relation = _activeChar.isClanLeader() ? 0x40 : 0;
-        if (_activeChar.getSiegeState() == 1) _relation |= 0x180;
+        if (_activeChar.getSiegeState() == 1)
+        {
+        	if (_territoryId == 0)
+        		_relation |= 0x180;
+        	else
+        		_relation |= 0x1000;
+        }
         if (_activeChar.getSiegeState() == 2) _relation |= 0x80;
+        _isDisguised = TerritoryWarManager.getInstance().isDisguised(character.getObjectId());
     }
 
     @Override
@@ -358,9 +369,9 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.isMinimapAllowed() ? 1: 0); // Minimap on Hellbound
         writeD(_activeChar.getVitalityPoints());  // Vitality Points
         writeD(_activeChar.getSpecialEffect());
-        writeD(0x00); // CT2.3
-        writeD(0x00); // CT2.3
-        writeD(0x00); // CT2.3
+        writeD(_territoryId); // CT2.3
+        writeD((_isDisguised ? 0x01: 0x00)); // CT2.3
+        writeD(_territoryId); // CT2.3
     }
 
     /* (non-Javadoc)

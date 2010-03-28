@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.network.serverpackets.ExReplyDominionInfo;
+import com.l2jserver.gameserver.network.serverpackets.ExShowOwnthingPos;
 
 /**
  *
@@ -47,5 +48,6 @@ public class RequestDominionInfo extends L2GameClientPacket
 	protected void runImpl()
 	{
 		sendPacket(new ExReplyDominionInfo());
+		sendPacket(new ExShowOwnthingPos());
 	}
 }

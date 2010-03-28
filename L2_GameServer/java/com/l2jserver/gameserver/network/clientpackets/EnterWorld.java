@@ -42,6 +42,7 @@ import com.l2jserver.gameserver.instancemanager.MailManager;
 import com.l2jserver.gameserver.instancemanager.PetitionManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
@@ -261,6 +262,13 @@ public class EnterWorld extends L2GameClientPacket
 				FortManager.getInstance().getFortByOwner(activeChar.getClan()).giveResidentialSkills(activeChar);
 
 			showClanNotice = activeChar.getClan().isNoticeEnabled();
+		}
+
+		if (TerritoryWarManager.getInstance().getRegisteredTerritoryId(activeChar) > 0)
+		{
+			if (TerritoryWarManager.getInstance().isTWInProgress())
+				activeChar.setSiegeState((byte)1);
+			activeChar.setSiegeSide(TerritoryWarManager.getInstance().getRegisteredTerritoryId(activeChar));
 		}
 
 		// Updating Seal of Strife Buff/Debuff 

@@ -78,7 +78,7 @@ public class L2CastleWarehouseInstance extends L2WarehouseInstance
 		{
 			if (player.getClan() != null)
 			{
-				if (getCastle().getSiege().getIsInProgress())
+				if (getCastle().getZone().isActive())
 					return COND_BUSY_BECAUSE_OF_SIEGE;
 				else if (getCastle().getOwnerId() == player.getClanId())
 					return COND_OWNER;

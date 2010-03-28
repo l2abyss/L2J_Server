@@ -135,7 +135,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 			{
 				if ((player.getClanPrivileges() & L2Clan.CP_CS_MANAGE_SIEGE) == L2Clan.CP_CS_MANAGE_SIEGE)
 				{
-					player.sendPacket(new ExShowDominionRegistry(getCastle().getCastleId()));
+					player.sendPacket(new ExShowDominionRegistry(getCastle().getCastleId(), player));
 					return;
 				}
 				else
@@ -1490,7 +1490,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 		{
 			if (player.getClan() != null)
 			{
-				if (getCastle().getSiege().getIsInProgress())
+				if (getCastle().getZone().isActive())
 					return COND_BUSY_BECAUSE_OF_SIEGE; // Busy because of siege
 				else if (getCastle().getOwnerId() == player.getClanId()) // Clan owns castle
 					return COND_OWNER; // Owner

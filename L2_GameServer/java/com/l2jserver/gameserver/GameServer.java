@@ -105,6 +105,7 @@ import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.RaidBossPointsManager;
 import com.l2jserver.gameserver.instancemanager.RaidBossSpawnManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TransformationManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.AutoChatHandler;
@@ -262,6 +263,7 @@ public class GameServer
 		SiegeManager.getInstance().getSieges();
 		FortManager.getInstance().loadInstances();
 		FortSiegeManager.getInstance();
+		TerritoryWarManager.getInstance();
 		
 		TeleportLocationTable.getInstance();
 		LevelUpData.getInstance();

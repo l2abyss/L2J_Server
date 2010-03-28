@@ -23,10 +23,12 @@ import com.l2jserver.gameserver.ai.L2SummonAI;
 import com.l2jserver.gameserver.datatables.PetSkillsTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2ManufactureList;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -166,6 +168,19 @@ public final class RequestActionUse extends L2GameClientPacket
 					{
 						// if L2PcInstance is in Olympia and the match isn't already start, send a Server->Client packet ActionFailed
 						activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+						return;
+					}
+					
+					if (target.getActingPlayer() != null && pet.getOwner().getSiegeState() > 0 && pet.getOwner().isInsideZone(L2Character.ZONE_SIEGE)
+							&& target.getActingPlayer().getSiegeState() == pet.getOwner().getSiegeState()
+							&& target.getActingPlayer() != pet.getOwner() && target.getActingPlayer().getSiegeSide() == pet.getOwner().getSiegeSide())
+					{
+						// 
+						if (TerritoryWarManager.getInstance().isTWInProgress())
+							sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY));
+						else
+							sendPacket(new SystemMessage(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS));
+						sendPacket(ActionFailed.STATIC_PACKET);
 						return;
 					}
 					

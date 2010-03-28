@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.skills.conditions;
 
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
@@ -36,6 +37,8 @@ public final class ConditionSiegeZone extends Condition
     public final static int COND_FORT_ATTACK = 0x0010;
     public final static int COND_FORT_DEFEND = 0x0020;
     public final static int COND_FORT_NEUTRAL = 0x0040;
+    public final static int COND_TW_CHANNEL = 0x0080;
+    public final static int COND_TW_PROGRESS = 0x0100;
     
     private final int _value;
     private final boolean _self;
@@ -56,7 +59,11 @@ public final class ConditionSiegeZone extends Condition
         Castle castle = CastleManager.getInstance().getCastle(target);
         Fort fort = FortManager.getInstance().getFort(target);
 
-        if ((castle == null) && (fort == null))
+        if ((_value & COND_TW_PROGRESS) != 0 && !TerritoryWarManager.getInstance().isTWInProgress())
+        	return false;
+        else if ((_value & COND_TW_CHANNEL) != 0 && !TerritoryWarManager.getInstance().isTWChannelOpen())
+        	return false;
+        else if ((castle == null) && (fort == null))
         {
         	if ((_value & COND_NOT_ZONE) != 0)
         		return true;
@@ -81,16 +88,18 @@ public final class ConditionSiegeZone extends Condition
         	if ((value & COND_NOT_ZONE) != 0)
         		return true;
         }
-        else if (!castle.getSiege().getIsInProgress())
+        else if (!castle.getZone().isActive())
         {
         	if ((value & COND_NOT_ZONE) != 0)
         		return true;
         }
-        else if ((castle.getSiege().getAttackerClan(player.getClan()) != null) && (value & COND_CAST_ATTACK) != 0)
+        else if ((value & COND_CAST_ATTACK) != 0 && player.isRegisteredOnThisSiegeField(castle.getCastleId())
+        		&& player.getSiegeState() == 1)
         	return true;
-        else if ((castle.getSiege().getDefenderClan(player.getClan()) != null) && (value & COND_CAST_DEFEND) != 0)
+        else if ((value & COND_CAST_DEFEND) != 0 && player.isRegisteredOnThisSiegeField(castle.getCastleId())
+        		&& player.getSiegeState() == 2)
         	return true;
-        else if ((castle.getSiege().getAttackerClan(player.getClan()) == null) && (castle.getSiege().getDefenderClan(player.getClan()) == null) && (value & COND_CAST_NEUTRAL) != 0)
+        else if ((value & COND_CAST_NEUTRAL) != 0 && player.getSiegeState() == 0)
         	return true;
         
         return false;
@@ -108,16 +117,18 @@ public final class ConditionSiegeZone extends Condition
         	if ((value & COND_NOT_ZONE) != 0)
         		return true;
         }
-        else if (!fort.getSiege().getIsInProgress())
+        else if (!fort.getZone().isActive())
         {
         	if ((value & COND_NOT_ZONE) != 0)
         		return true;
         }
-        else if ((fort.getSiege().getAttackerClan(player.getClan()) != null) && (value & COND_FORT_ATTACK) != 0)
+        else if ((value & COND_FORT_ATTACK) != 0 && player.isRegisteredOnThisSiegeField(fort.getFortId())
+        		&& player.getSiegeState() == 1)
         	return true;
-        else if ((fort.getOwnerClan() == player.getClan()) && (value & COND_FORT_DEFEND) != 0)
+        else if ((value & COND_FORT_DEFEND) != 0 && player.isRegisteredOnThisSiegeField(fort.getFortId())
+        		&& player.getSiegeState() == 2)
         	return true;
-        else if ((fort.getSiege().getAttackerClan(player.getClan()) == null) && (fort.getOwnerClan() != player.getClan()) && (value & COND_FORT_NEUTRAL) != 0)
+        else if ((value & COND_FORT_NEUTRAL) != 0 && player.getSiegeState() == 0)
         	return true;
         
         return false;

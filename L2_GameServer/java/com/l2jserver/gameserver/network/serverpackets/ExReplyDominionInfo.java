@@ -14,13 +14,11 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.Calendar;
-import java.util.List;
-import java.util.logging.Logger;
+import javolution.util.FastList;
 
-import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
-import com.l2jserver.gameserver.model.entity.Castle;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager.Territory;
 
 /**
  *
@@ -31,8 +29,8 @@ public class ExReplyDominionInfo extends L2GameServerPacket
 	/**
 	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
-	private static Logger _log = Logger.getLogger(ExReplyDominionInfo.class.getName());
-	private int _warTime = (int) (Calendar.getInstance().getTimeInMillis() / 1000);
+	// private static Logger _log = Logger.getLogger(ExReplyDominionInfo.class.getName());
+	private int _warTime = (int) (TerritoryWarManager.getInstance().getTWStartTimeInMillis() / 1000);
 
 	/**
 	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
@@ -42,29 +40,16 @@ public class ExReplyDominionInfo extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x92);
-		List<Castle> castles = CastleManager.getInstance().getCastles();
-		writeD(castles.size());
-		for (Castle castle : castles)
+		FastList<Territory> territoryList = TerritoryWarManager.getInstance().getAllTerritories();
+		writeD(territoryList.size()); // Territory Count
+		for (Territory t : territoryList)
 		{
-			writeD(0x50 + castle.getCastleId()); // territory ID
-			writeS(castle.getName().toLowerCase() + "_dominion"); // territory name
-			if (castle.getOwnerId() > 0)
-			{
-				if (ClanTable.getInstance().getClan(castle.getOwnerId()) != null)
-					writeS(ClanTable.getInstance().getClan(castle.getOwnerId()).getName());
-				else
-				{
-					_log.warning("Castle owner with no name! Castle: " + castle.getName()
-					        + " has an OwnerId = " + castle.getOwnerId()
-					        + " who does not have a  name!");
-					writeS("");
-				}
-			}
-			else
-				writeS("");
-
-			writeD(1); // wards count
-			writeD(0x50 + castle.getCastleId()); // territory ID's
+			writeD(t.getTerritoryId()); // Territory Id
+			writeS(CastleManager.getInstance().getCastleById(t.getCastleId()).getName().toLowerCase() + "_dominion"); // territory name
+			writeS(t.getOwnerClan().getName());
+			writeD(t.getOwnedWardIds().size()); // Emblem Count
+			for(int i:t.getOwnedWardIds())
+				writeD(i); // Emblem ID - should be in for loop for emblem count
 			writeD(_warTime);
 		}
 	}

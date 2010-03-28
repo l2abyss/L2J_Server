@@ -185,6 +185,17 @@ public final class QuestState
 		return state;
 	}
 
+	public Object setStateAndNotSave(byte state)
+	{
+		// set new state if it is not already in that state
+		if (_state != state)
+		{
+			_state = state;
+			getPlayer().sendPacket(new QuestList());
+		}
+		return state;
+	}
+
 	/**
 	 * Add parameter used in quests.
 	 * @param var : String pointing out the name of the variable for quest

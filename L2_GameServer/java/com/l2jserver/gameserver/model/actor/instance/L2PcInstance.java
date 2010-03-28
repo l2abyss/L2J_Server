@@ -86,6 +86,7 @@ import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.FishData;
@@ -116,6 +117,7 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.MacroList;
 import com.l2jserver.gameserver.model.ShortCuts;
+import com.l2jserver.gameserver.model.TerritoryWard;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.L2Skill.SkillTargetType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
@@ -1064,15 +1066,19 @@ public final class L2PcInstance extends L2Playable
 		}
 		if (getSiegeState() != 0)
 		{
-			result |= RelationChanged.RELATION_INSIEGE;
-			if (getSiegeState() != target.getSiegeState())
-				result |= RelationChanged.RELATION_ENEMY;
+			if (TerritoryWarManager.getInstance().getRegisteredTerritoryId(this) != 0)
+				result |= RelationChanged.RELATION_TERRITORY_WAR;
 			else
-				result |= RelationChanged.RELATION_ALLY;
-			if (getSiegeState() == 1)
-				result |= RelationChanged.RELATION_ATTACKER;
+			{
+				result |= RelationChanged.RELATION_INSIEGE;
+				if (getSiegeState() != target.getSiegeState())
+					result |= RelationChanged.RELATION_ENEMY;
+				else
+					result |= RelationChanged.RELATION_ALLY;
+				if (getSiegeState() == 1)
+					result |= RelationChanged.RELATION_ATTACKER;
+			}
 		}
-
 		if (getClan() != null && target.getClan() != null)
 		{
 			if (target.getPledgeType() != L2Clan.SUBUNIT_ACADEMY
@@ -3487,6 +3493,13 @@ public final class L2PcInstance extends L2Playable
             		fort.getSiege().announceToPlayer(new SystemMessage(SystemMessageId.C1_ACQUIRED_THE_FLAG), this.getName());
             	}
             }
+			// Territory Ward
+			else if (item.getItemId() >= 13560 && item.getItemId() <= 13568)
+			{
+				TerritoryWard ward = TerritoryWarManager.getInstance().getTerritoryWard(item.getItemId() - 13479);
+				if (ward != null)
+					ward.activate(this, item);
+			}
 		}
 	}
 
@@ -3592,6 +3605,13 @@ public final class L2PcInstance extends L2Playable
 						Fort fort = FortManager.getInstance().getFort(this);
 						fort.getSiege().announceToPlayer(new SystemMessage(SystemMessageId.C1_ACQUIRED_THE_FLAG), this.getName());
 					}
+				}
+				// Territory Ward
+				else if (createdItem.getItemId() >= 13560 && createdItem.getItemId() <= 13568)
+				{
+					TerritoryWard ward = TerritoryWarManager.getInstance().getTerritoryWard(createdItem.getItemId() - 13479);
+					if (ward != null)
+						ward.activate(this, createdItem);
 				}
 			}
 		}
@@ -5407,7 +5427,10 @@ public final class L2PcInstance extends L2Playable
 			}
 			else if (isCombatFlagEquipped())
 			{
-				FortSiegeManager.getInstance().dropCombatFlag(this);
+				if (TerritoryWarManager.getInstance().isTWInProgress())
+					TerritoryWarManager.getInstance().dropCombatFlag(this, true);
+				else
+					FortSiegeManager.getInstance().dropCombatFlag(this);
 			}
 			else
 			{
@@ -6522,6 +6545,9 @@ public final class L2PcInstance extends L2Playable
 	{
         // Don't allow disarming a cursed weapon
         if (isCursedWeaponEquipped()) return false;
+
+        // Don't allow disarming a Combat Flag or Territory Ward
+        if (isCombatFlagEquipped()) return false;
 
         // Unequip the weapon
         L2ItemInstance wpn = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
@@ -8838,6 +8864,19 @@ public final class L2PcInstance extends L2Playable
 				return false;
 			}
 
+			if (target.getActingPlayer() != null && getSiegeState() > 0 && isInsideZone(L2Character.ZONE_SIEGE)
+					&& target.getActingPlayer().getSiegeState() == getSiegeState()
+					&& target.getActingPlayer() != this && target.getActingPlayer().getSiegeSide() == getSiegeSide())
+			{
+				// 
+				if (TerritoryWarManager.getInstance().isTWInProgress())
+					sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY));
+				else
+					sendPacket(new SystemMessage(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS));
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return false;
+			}
+
             // Check if the target is attackable
             if (!target.isAttackable() && !getAccessLevel().allowPeaceAttack())
 			{
@@ -9042,9 +9081,10 @@ public final class L2PcInstance extends L2Playable
 				}
 		}
 
+		// TODO: Unhardcode skillId 844 which is the outpost construct skill
 		if ((sklTargetType == SkillTargetType.TARGET_HOLY && !checkIfOkToCastSealOfRule(CastleManager.getInstance().getCastle(this), false, skill))
 				|| (sklTargetType == SkillTargetType.TARGET_FLAGPOLE && !checkIfOkToCastFlagDisplay(FortManager.getInstance().getFort(this), false, skill))
-				|| (sklType == L2SkillType.SIEGEFLAG && !L2SkillSiegeFlag.checkIfOkToPlaceFlag(this, false))
+				|| (sklType == L2SkillType.SIEGEFLAG && !L2SkillSiegeFlag.checkIfOkToPlaceFlag(this, false, skill.getId() == 844))
 				|| (sklType == L2SkillType.STRSIEGEASSAULT && !checkIfOkToUseStriderSiegeAssault())
 				|| (sklType == L2SkillType.SUMMON_FRIEND && !(checkSummonerStatus(this) && checkSummonTargetStatus(target, this))))
 		{
@@ -11512,6 +11552,10 @@ public final class L2PcInstance extends L2Playable
 					destroyItem("CombatFlag", getInventory().getItemByItemId(9819), null, true);
 				}
 			}
+			else if (isCombatFlagEquipped())
+			{
+				TerritoryWarManager.getInstance().dropCombatFlag(this, false);
+			}
 		}
 		catch (Exception e)
 		{
@@ -12697,6 +12741,12 @@ public final class L2PcInstance extends L2Playable
 		return _cursedWeaponEquippedId;
 	}
 	
+	@Override
+	public boolean isAttackingDisabled()
+	{
+		return (super.isAttackingDisabled() || _combatFlagEquippedId);
+	}
+	
 	public boolean isCombatFlagEquipped()
     {
         return _combatFlagEquippedId ;
@@ -13325,6 +13375,12 @@ public final class L2PcInstance extends L2Playable
 
 		if (targetChar.inObserverMode())
 		{
+			summonerChar.sendPacket(new SystemMessage(SystemMessageId.C1_STATE_FORBIDS_SUMMONING).addCharName(targetChar));
+			return false;
+		}
+
+		if (targetChar.isCombatFlagEquipped())
+		{
 			summonerChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_IS_IN_AN_AREA_WHICH_BLOCKS_SUMMONING));
 			return false;
 		}
@@ -13946,7 +14002,7 @@ public final class L2PcInstance extends L2Playable
     		sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_DURING_A_BATTLE));
     		return false;
     	}
-    	else if (this.isInSiege())
+    	else if (this.isInSiege() || this.getSiegeState() != 0)
     	{
     		sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_WHILE_PARTICIPATING));
     		return false;

@@ -1389,7 +1389,12 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
         L2TeleportLocation list = TeleportLocationTable.getInstance().getTemplate(val);
         if (list != null)
         {
-            if(player.reduceAdena("Teleport", list.getPrice(), this, true))
+        	if (player.isCombatFlagEquipped())
+        	{
+        		player.sendMessage("You can't teleport with a Combat Flag or Territory Ward!");
+        		return;
+        	}
+        	else if(player.reduceAdena("Teleport", list.getPrice(), this, true))
             {
                 if (Config.DEBUG)
                  _log.warning("Teleporting player "+player.getName()+" for CH to new location: "+list.getLocX()+":"+list.getLocY()+":"+list.getLocZ());

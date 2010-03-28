@@ -16,8 +16,8 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.cache.HtmCache;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.network.serverpackets.ExShowDominionRegistry;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
@@ -26,36 +26,36 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
  */
 public class L2MercenaryManagerInstance extends L2Npc
 {
-    /**
-     * @param objectId
-     * @param template
-     */
-    public L2MercenaryManagerInstance(int objectId, L2NpcTemplate template)
-    {
-           super(objectId, template);
-           setInstanceType(InstanceType.L2MercenaryManagerInstance);
-    }
-
-	@Override
-	public void onBypassFeedback(L2PcInstance player, String command)
+	// private int[] TW_BADGE_IDS = { 13757, 13758, 13759, 13760, 13761, 13762, 13763, 13764, 13765 };
+	/**
+	 * @param objectId
+	 * @param template
+	 */
+	public L2MercenaryManagerInstance(int objectId, L2NpcTemplate template)
 	{
-		if (command.equalsIgnoreCase("Territory"))
-		{
-			int castleId = getNpcId() - 36480;
-			player.sendPacket(new ExShowDominionRegistry(castleId));
-		}
-		else
-			super.onBypassFeedback(player, command);
+		super(objectId, template);
+		setInstanceType(InstanceType.L2MercenaryManagerInstance);
 	}
-    
+	
+	@Override
+	public void showChatWindow(L2PcInstance player)
+	{
+		if (player.getLevel() < 40 || player.getClassId().level() < 2)
+			super.showChatWindow(player, 2);
+		else if (TerritoryWarManager.getInstance().isTWInProgress())
+			super.showChatWindow(player, 10);
+		else
+			super.showChatWindow(player, 0);
+	}
+	
 	@Override
 	public String getHtmlPath(int npcId, int val)
 	{
 		String temp = "";
 		if (val == 0)
-			temp = "data/html/mercmanager/MercenaryManager.htm";
+			temp = "data/html/mercmanager/" + npcId + ".htm";
 		else
-			temp = "data/html/mercmanager/MercenaryManager-" + val + ".htm";
+			temp = "data/html/mercmanager/" + npcId + "-" + val + ".htm";
 		
 		if (!Config.LAZY_CACHE)
 		{

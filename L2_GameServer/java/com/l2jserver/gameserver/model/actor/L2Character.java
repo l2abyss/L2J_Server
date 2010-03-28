@@ -43,6 +43,7 @@ import com.l2jserver.gameserver.handler.ISkillHandler;
 import com.l2jserver.gameserver.handler.SkillHandler;
 import com.l2jserver.gameserver.instancemanager.DimensionalRiftManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TownManager;
 import com.l2jserver.gameserver.model.ChanceSkillList;
 import com.l2jserver.gameserver.model.CharEffectList;
@@ -721,6 +722,19 @@ public abstract class L2Character extends L2Object
 	            return;
 	        }
 
+			if (target.getActingPlayer() != null && ((L2PcInstance)this).getSiegeState() > 0 && this.isInsideZone(L2Character.ZONE_SIEGE)
+					&& target.getActingPlayer().getSiegeState() == ((L2PcInstance)this).getSiegeState()
+					&& target.getActingPlayer() != this && target.getActingPlayer().getSiegeSide() == ((L2PcInstance)this).getSiegeSide())
+			{
+				// 
+				if (TerritoryWarManager.getInstance().isTWInProgress())
+					sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY));
+				else
+					sendPacket(new SystemMessage(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS));
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
+			
 			// Checking if target has moved to peace zone
 			if (target.isInsidePeaceZone((L2PcInstance)this))
 			{
@@ -5466,6 +5480,13 @@ public abstract class L2Character extends L2Object
 			return false;
 		if (InstanceManager.getInstance().getInstance(this.getInstanceId()).isPvPInstance())
 			return false;
+
+		if (TerritoryWarManager.PLAYER_WITH_WARD_CAN_BE_KILLED_IN_PEACEZONE
+				&& TerritoryWarManager.getInstance().isTWInProgress())
+		{
+			if (target instanceof L2PcInstance && ((L2PcInstance)target).isCombatFlagEquipped())
+				return false;
+		}
 
 		if (Config.ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE)
 		{

@@ -977,6 +977,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 		                    	break;
 		                    case 0x57:
 		                    	// RequestJoinDominionWar
+		                    	msg = new RequestJoinDominionWar();
 		                    	break;
 		                    case 0x58:
 		                    	msg = new RequestDominionInfo();

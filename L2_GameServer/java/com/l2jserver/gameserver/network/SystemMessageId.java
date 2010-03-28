@@ -13893,6 +13893,24 @@ public enum SystemMessageId
 	YOU_HAVE_NO_OPEN_MY_TELEPORTS_SLOTS(2398),
 	
 	/**
+	* ID: 2936<br>
+	* Message: The disguise scroll cannot be used because it is meant for use in a different territory.
+	*/
+	THE_DISGUISE_SCROLL_MEANT_FOR_DIFFERENT_TERRITORY(2936),
+	
+	/**
+	* ID: 2937<br>
+	* Message: A territory owning clan member cannot use a disguise scroll.
+	*/
+	TERRITORY_OWNING_CLAN_CANNOT_USE_DISGUISE_SCROLL(2937),
+	
+	/**
+	* ID: 2955<br>
+	* Message: The territory war exclusive disguise and transformation can be used 20 minutes before the start of the territory war to 10 minutes after its end.
+	*/
+	TERRITORY_WAR_SCROLL_CAN_NOT_USED_NOW(2955),
+	
+	/**
 	* ID: 2400<br>
 	* Message: Instant Zone currently in use: $s1
 	*/
@@ -14019,6 +14037,18 @@ public enum SystemMessageId
 	YOU_CANNOT_MOUNT_NOT_MEET_REQUEIREMENTS(2727),
 	
 	/**
+	* ID: 2750<br>
+	* Message: The $s1 ward has been destroyed! $c2 now has the territory ward.
+	*/
+	THE_S1_WARD_HAS_BEEN_DESTROYED(2750),
+	
+	/**
+	* ID: 2751<br>
+	* Message: The character that acquired $s1 ward has been killed.
+	*/
+	THE_CHAR_THAT_ACQUIRED_S1_WARD_HAS_BEEN_KILLED(2751),
+
+	/**
 	* ID: 2795<br>
 	* Message: You've already requested a territory war in another territory elsewhere.
 	*/
@@ -14055,6 +14085,18 @@ public enum SystemMessageId
 	S1_SECONDS_TO_THE_END_OF_TERRITORY_WAR(2900),
 	
 	/**
+	* ID: 2901<br>
+	* Message: You cannot force attack a member of the same territory.
+	*/
+	YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY(2901),
+	
+	/**
+	* ID: 2902<br>
+	* Message: You've acquired the ward. Move quickly to your forces' outpost.
+	*/
+	YOU_VE_ACQUIRED_THE_WARD(2902),
+	
+	/**
 	* ID: 2903<br>
 	* Message: Territory war has begun.
 	*/
@@ -14071,6 +14113,12 @@ public enum SystemMessageId
 	 * You've requested $c1 to be on your Friends List.
 	 */
 	YOU_REQUESTED_C1_TO_BE_FRIEND(2911),
+	
+	/**
+	 * ID: 2913
+	 * Message: Clan $s1 has succeeded in capturing $s2's territory ward.
+	 */
+	CLAN_S1_HAS_SUCCEDED_IN_CAPTURING_S2_TERRITORY_WARD(2913),
 	
 	/**
 	* ID: 2914<br>

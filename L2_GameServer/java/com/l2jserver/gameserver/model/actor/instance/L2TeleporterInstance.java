@@ -227,6 +227,11 @@ public final class L2TeleporterInstance extends L2Npc
 				player.sendMessage("Go away, you're not welcome here.");
 				return;
 			}
+			else if (player.isCombatFlagEquipped())
+			{
+				player.sendMessage("You can't port with a Combat Flag or Territory Ward!");
+				return;
+			}
 			else if (list.getIsForNoble() && !player.isNoble())
 			{
 				String filename = "data/html/teleporter/nobleteleporter-no.htm";

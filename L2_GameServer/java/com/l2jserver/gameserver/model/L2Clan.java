@@ -273,7 +273,7 @@ public class L2Clan
         	// Transferring siege skills TimeStamps from old leader to new leader to prevent unlimited headquarters
         	if (!exLeader.getReuseTimeStamp().isEmpty())
         	{
-        		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(newLeader.isNoble()))
+        		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(newLeader.isNoble(), getHasCastle() > 0))
         		{
         			if (exLeader.getReuseTimeStamp().containsKey(sk.getReuseHashCode()))
         			{

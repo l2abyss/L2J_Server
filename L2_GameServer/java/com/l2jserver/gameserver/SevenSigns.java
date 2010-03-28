@@ -29,12 +29,15 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
+import com.l2jserver.gameserver.instancemanager.QuestManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.AutoChatHandler;
 import com.l2jserver.gameserver.model.AutoSpawnHandler;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.AutoSpawnHandler.AutoSpawnInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
+import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SSQInfo;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -1461,6 +1464,11 @@ public class SevenSigns
 					GiveCPMult(getSealOwner(SEAL_STRIFE));
 					// Send message that Seal Validation has begun.
 					sendMessageToAll(SystemMessageId.SEAL_VALIDATION_PERIOD_BEGUN);
+					
+					// Change next Territory War date
+					Quest twQuest = QuestManager.getInstance().getQuest(TerritoryWarManager.qn);
+					if (twQuest != null)
+						twQuest.startQuestTimer("setNextTWDate", 30000, null, null);
 					
 					_log.info("SevenSigns: The " + getCabalName(_previousWinner) + " have won the competition with " + getCurrentScore(_previousWinner) + " points!");
 					break;

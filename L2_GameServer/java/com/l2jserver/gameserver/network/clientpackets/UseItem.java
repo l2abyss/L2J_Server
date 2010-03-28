@@ -83,7 +83,7 @@ public final class UseItem extends L2GameClientPacket
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
             return;
-
+		
 		// Flood protect UseItem
 		if (!activeChar.getFloodProtectors().getUseItem().tryPerformAction("use item"))
 			return;
@@ -104,7 +104,7 @@ public final class UseItem extends L2GameClientPacket
 			L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
 			if (item == null)
                 return;
-
+			
 			if (item.isWear())
 			{
 				// No unequipping wear-items
@@ -344,6 +344,8 @@ public final class UseItem extends L2GameClientPacket
                 // Equip or unEquip
                 if (FortSiegeManager.getInstance().isCombat(item.getItemId()))
                 	return;	//no message
+                else if (activeChar.isCombatFlagEquipped())
+                	return;
 
                 activeChar.useEquippableItem(item, true);
 			}

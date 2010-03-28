@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.skills.AbnormalEffect;
@@ -59,34 +60,38 @@ public class CharInfo extends L2GameServerPacket
 	private int _mAtkSpd, _pAtkSpd;
 	
 	/**
-     * Run speed, swimming run speed and flying run speed
-     */
+	 * Run speed, swimming run speed and flying run speed
+	 */
 	private int _runSpd;
 	/**
-     * Walking speed, swimming walking speed and flying walking speed
-     */
+	 * Walking speed, swimming walking speed and flying walking speed
+	 */
 	private int _walkSpd;
-    private float _moveMultiplier, _attackSpeedMultiplier;
+	private float _moveMultiplier, _attackSpeedMultiplier;
+	private int _territoryId;
+	private boolean _isDisguised;
 
 	/**
 	 * @param _characters
 	 */
-    public CharInfo(L2PcInstance cha)
-    {
-    	_activeChar = cha;
-    	_inv = cha.getInventory();
-    	_x = _activeChar.getX();
-    	_y = _activeChar.getY();
-    	_z = _activeChar.getZ();
-    	_heading = _activeChar.getHeading();
-    	_mAtkSpd = _activeChar.getMAtkSpd();
-    	_pAtkSpd = _activeChar.getPAtkSpd();
-    	_moveMultiplier  = _activeChar.getMovementSpeedMultiplier();
-    	_attackSpeedMultiplier = _activeChar.getAttackSpeedMultiplier();
-    	_runSpd = (int)(_activeChar.getRunSpeed()/_moveMultiplier);
-    	_walkSpd = (int)(_activeChar.getWalkSpeed()/_moveMultiplier);
-        _invisible = cha.getAppearance().getInvisible();
-    }
+	public CharInfo(L2PcInstance cha)
+	{
+		_activeChar = cha;
+		_inv = cha.getInventory();
+		_x = _activeChar.getX();
+		_y = _activeChar.getY();
+		_z = _activeChar.getZ();
+		_heading = _activeChar.getHeading();
+		_mAtkSpd = _activeChar.getMAtkSpd();
+		_pAtkSpd = _activeChar.getPAtkSpd();
+		_moveMultiplier  = _activeChar.getMovementSpeedMultiplier();
+		_attackSpeedMultiplier = _activeChar.getAttackSpeedMultiplier();
+		_runSpd = (int)(_activeChar.getRunSpeed()/_moveMultiplier);
+		_walkSpd = (int)(_activeChar.getWalkSpeed()/_moveMultiplier);
+		_invisible = cha.getAppearance().getInvisible();
+		_territoryId = TerritoryWarManager.getInstance().getRegisteredTerritoryId(cha);
+		_isDisguised = TerritoryWarManager.getInstance().isDisguised(cha.getObjectId());
+	}
 
 	@Override
 	protected final void writeImpl()
@@ -120,7 +125,7 @@ public class CharInfo extends L2GameServerPacket
 				writeD(_runSpd); // TODO: the order of the speeds should be confirmed
 				writeD(_walkSpd);
 				writeD(_runSpd); // swim run speed
-	            writeD(_walkSpd); // swim walk speed
+				writeD(_walkSpd); // swim walk speed
 				writeD(_runSpd); // fly run speed
 				writeD(_walkSpd); // fly walk speed
 				writeD(_runSpd); // fly run speed ?
@@ -175,18 +180,18 @@ public class CharInfo extends L2GameServerPacket
 				writeD(0);  // C2
 				writeD(0);  // C2
 				writeC(0);  // C2
-                writeC(0x00);  // C3  team circle 1-blue, 2-red
-                writeF(template.fCollisionRadius);
-                writeF(template.fCollisionHeight);
-                writeD(0x00);  // C4
-                writeD(0x00);  // C6
-                writeD(0x00);
-                writeD(0x00);
-    	        writeC(0x01);
-                writeC(0x01);
-                writeD(0x00);
+				writeC(0x00);  // C3  team circle 1-blue, 2-red
+				writeF(template.fCollisionRadius);
+				writeF(template.fCollisionHeight);
+				writeD(0x00);  // C4
+				writeD(0x00);  // C6
+				writeD(0x00);
+				writeD(0x00);
+				writeC(0x01);
+				writeC(0x01);
+				writeD(0x00);
 			}
-            else
+			else
 			{
 				_log.warning("Character "+_activeChar.getName()+" ("+_activeChar.getObjectId()+") morphed in a Npc ("+_activeChar.getPoly().getPolyId()+") w/o template.");
 			}
@@ -271,31 +276,31 @@ public class CharInfo extends L2GameServerPacket
 	
 			writeD(_runSpd); // TODO: the order of the speeds should be confirmed
 			writeD(_walkSpd);
-	        writeD(_runSpd); // swim run speed
-	        writeD(_walkSpd); // swim walk speed
+			writeD(_runSpd); // swim run speed
+			writeD(_walkSpd); // swim walk speed
 			writeD(_runSpd); // fly run speed
 			writeD(_walkSpd); // fly walk speed
 			writeD(_runSpd); // fly run speed ?
 			writeD(_walkSpd); // fly walk speed ?
 			writeF(_activeChar.getMovementSpeedMultiplier()); // _activeChar.getProperMultiplier()
 			writeF(_activeChar.getAttackSpeedMultiplier()); // _activeChar.getAttackSpeedMultiplier()
-            
+			
 			if (_activeChar.getMountType() != 0)
-            {
-            	writeF(NpcTable.getInstance().getTemplate(_activeChar.getMountNpcId()).fCollisionRadius);
-            	writeF(NpcTable.getInstance().getTemplate(_activeChar.getMountNpcId()).fCollisionHeight);
-            }
-            else if (_activeChar.getTransformation() != null)
-            {
-            	writeF(_activeChar.getTransformation().getCollisionRadius());
-            	writeF(_activeChar.getTransformation().getCollisionHeight());
-            }
-            else
-            {
-                writeF(_activeChar.getCollisionRadius());
-                writeF(_activeChar.getCollisionHeight());
-            }
-            
+			{
+				writeF(NpcTable.getInstance().getTemplate(_activeChar.getMountNpcId()).fCollisionRadius);
+				writeF(NpcTable.getInstance().getTemplate(_activeChar.getMountNpcId()).fCollisionHeight);
+			}
+			else if (_activeChar.getTransformation() != null)
+			{
+				writeF(_activeChar.getTransformation().getCollisionRadius());
+				writeF(_activeChar.getTransformation().getCollisionHeight());
+			}
+			else
+			{
+				writeF(_activeChar.getCollisionRadius());
+				writeF(_activeChar.getCollisionHeight());
+			}
+			
 			writeD(_activeChar.getAppearance().getHairStyle());
 			writeD(_activeChar.getAppearance().getHairColor());
 			writeD(_activeChar.getAppearance().getFace());
@@ -323,9 +328,9 @@ public class CharInfo extends L2GameServerPacket
 				writeD(0);
 				writeD(0);
 			}
-	        // In UserInfo leader rights and siege flags, but here found nothing??
-	        // Therefore RelationChanged packet with that info is required
-	        writeD(0);
+			// In UserInfo leader rights and siege flags, but here found nothing??
+			// Therefore RelationChanged packet with that info is required
+			writeD(0);
 
 			writeC(_activeChar.isSitting() ? 0 : 1);	// standing = 1  sitting = 0
 			writeC(_activeChar.isRunning() ? 1 : 0);	// running = 1   walking = 0
@@ -365,14 +370,14 @@ public class CharInfo extends L2GameServerPacket
 
 			writeD(_activeChar.getClassId().getId());
 			writeD(0x00); //?
-	        writeC(_activeChar.isMounted() ? 0 : _activeChar.getEnchantEffect());
+			writeC(_activeChar.isMounted() ? 0 : _activeChar.getEnchantEffect());
 
-	        if(_activeChar.getTeam()==1)
-	        	writeC(0x01); //team circle around feet 1= Blue, 2 = red
-	        else if(_activeChar.getTeam()==2)
-	        	writeC(0x02); //team circle around feet 1= Blue, 2 = red
-	        else
-	        	writeC(0x00); //team circle around feet 1= Blue, 2 = red
+			if(_activeChar.getTeam()==1)
+				writeC(0x01); //team circle around feet 1= Blue, 2 = red
+			else if(_activeChar.getTeam()==2)
+				writeC(0x02); //team circle around feet 1= Blue, 2 = red
+			else
+				writeC(0x00); //team circle around feet 1= Blue, 2 = red
 
 			writeD(_activeChar.getClanCrestLargeId());
 			writeC(_activeChar.isNoble() ? 1 : 0); // Symbol on char menu ctrl+I
@@ -383,37 +388,37 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_activeChar.getFishy());
 			writeD(_activeChar.getFishz());
 
-	        writeD(_activeChar.getAppearance().getNameColor());
+			writeD(_activeChar.getAppearance().getNameColor());
 
-	        writeD(_heading);
+			writeD(_heading);
 
-	        writeD(_activeChar.getPledgeClass());
-	        writeD(_activeChar.getPledgeType());
+			writeD(_activeChar.getPledgeClass());
+			writeD(_activeChar.getPledgeType());
 
-	        writeD(_activeChar.getAppearance().getTitleColor());
+			writeD(_activeChar.getAppearance().getTitleColor());
 
-	        if (_activeChar.isCursedWeaponEquipped())
-	        	writeD(CursedWeaponsManager.getInstance().getLevel(_activeChar.getCursedWeaponEquippedId()));
-	        else
-	        	writeD(0x00);
+			if (_activeChar.isCursedWeaponEquipped())
+				writeD(CursedWeaponsManager.getInstance().getLevel(_activeChar.getCursedWeaponEquippedId()));
+			else
+				writeD(0x00);
 
-	        if (_activeChar.getClanId() > 0)
-	        	writeD(_activeChar.getClan().getReputationScore());
-	        else
-	        	writeD(0x00); 
+			if (_activeChar.getClanId() > 0)
+				writeD(_activeChar.getClan().getReputationScore());
+			else
+				writeD(0x00); 
 
-	        // T1
-	        writeD(_activeChar.getTransformationId());
-	        writeD(_activeChar.getAgathionId());
-	        
-	        // T2
-	        writeD(0x01);
-	        
-	        // T2.3
-	        writeD(_activeChar.getSpecialEffect());
-	        writeD(0x00);
-	        writeD(0x00);
-	        writeD(0x00);
+			// T1
+			writeD(_activeChar.getTransformationId());
+			writeD(_activeChar.getAgathionId());
+			
+			// T2
+			writeD(0x01);
+			
+			// T2.3
+			writeD(_activeChar.getSpecialEffect());
+			writeD(_territoryId); // territory Id
+			writeD((_isDisguised ? 0x01: 0x00)); // is Disguised
+			writeD(_territoryId); // territory Id
 		}
 	}
 

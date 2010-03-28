@@ -71,6 +71,12 @@ public class L2SkillTeleport extends L2Skill
 				return;
 			}
 
+			if (((L2PcInstance)activeChar).isCombatFlagEquipped())
+			{
+				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
+
 			if (((L2PcInstance) activeChar).isInOlympiadMode())
 			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
@@ -122,6 +128,9 @@ public class L2SkillTeleport extends L2Skill
 							continue;
 
 						if (GrandBossManager.getInstance().getZone(targetChar) != null)
+							continue;
+
+						if (targetChar.isCombatFlagEquipped())
 							continue;
 					}
 				}

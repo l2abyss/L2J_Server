@@ -21,6 +21,7 @@ import com.l2jserver.gameserver.ai.L2FortSiegeGuardAI;
 import com.l2jserver.gameserver.ai.L2SiegeGuardAI;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -99,7 +100,8 @@ public class L2DefenderInstance extends L2Attackable
 
 			// Check if player is an enemy of this defender npc
 			if (player != null && ((player.getSiegeState() == 2 && !player.isRegisteredOnThisSiegeField(activeSiegeId))
-					|| player.getSiegeState() == 1 || player.getSiegeState() == 0))
+					|| (player.getSiegeState() == 1 && !TerritoryWarManager.getInstance().isAllyField(player, activeSiegeId))
+					|| player.getSiegeState() == 0))
 			{
 				return true;
 			}
@@ -218,7 +220,8 @@ public class L2DefenderInstance extends L2Attackable
 						|| (_castle != null && _castle.getZone().isActive()))
 				{
 					int activeSiegeId = (_fort != null ? _fort.getFortId() : (_castle != null ? _castle.getCastleId() : 0));
-					if (player != null && player.getSiegeState() == 2 && player.isRegisteredOnThisSiegeField(activeSiegeId))
+					if (player != null && ((player.getSiegeState() == 2 && player.isRegisteredOnThisSiegeField(activeSiegeId))
+							|| (player.getSiegeState() == 1 && TerritoryWarManager.getInstance().isAllyField(player, activeSiegeId))))
 						return;
 				}
 			}

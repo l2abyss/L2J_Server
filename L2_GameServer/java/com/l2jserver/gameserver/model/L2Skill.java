@@ -2194,6 +2194,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
     			if (targetPlayer.inObserverMode())
     				return false;
 
+    			if (skill.isOffensive() && player.getSiegeState() > 0 && player.isInsideZone(L2Character.ZONE_SIEGE)
+    					&& player.getSiegeState() == targetPlayer.getSiegeState()
+    					&& player.getSiegeSide() == targetPlayer.getSiegeSide())
+    				return false;
+    			
     			if (target.isInsideZone(L2Character.ZONE_PEACE))
     				return false;
 

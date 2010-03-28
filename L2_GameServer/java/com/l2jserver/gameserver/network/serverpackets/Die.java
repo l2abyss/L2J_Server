@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.datatables.AccessLevels;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2SiegeClan;
@@ -111,9 +112,9 @@ public class Die extends L2GameServerPacket
             writeD(_clan.getHasHideout() > 0 ? 0x01 : 0x00);            // 6d 01 00 00 00 - to hide away
             writeD(_clan.getHasCastle() > 0  ||
             		isInCastleDefense? 0x01 : 0x00);             		// 6d 02 00 00 00 - to castle
-            writeD(siegeClan != null &&
-            	   !isInCastleDefense && ! isInFortDefense &&
-                   !siegeClan.getFlag().isEmpty() ? 0x01 : 0x00);       // 6d 03 00 00 00 - to siege HQ
+            writeD((TerritoryWarManager.getInstance().getFlagForClan(_clan) != null)
+            		|| (siegeClan != null && !isInCastleDefense && !isInFortDefense
+            		&& !siegeClan.getFlag().isEmpty()) ? 0x01 : 0x00);       // 6d 03 00 00 00 - to siege HQ
             writeD(_sweepable ? 0x01 : 0x00);                               // sweepable  (blue glow)
             writeD(_access.allowFixedRes() ? 0x01: 0x00);                  // 6d 04 00 00 00 - to FIXED
             writeD(_clan.getHasFort() > 0  || isInFortDefense? 0x01 : 0x00);    // 6d 05 00 00 00 - to fortress

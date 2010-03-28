@@ -78,7 +78,7 @@ public class SiegeManager
 	// Method - Public
 	public final void addSiegeSkills(L2PcInstance character)
 	{
-		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble()))
+		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble(), character.getClan().getHasCastle() > 0))
 		{
 			character.addSkill(sk, false);
 		}
@@ -162,7 +162,7 @@ public class SiegeManager
 	
 	public final void removeSiegeSkills(L2PcInstance character)
 	{
-		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble()))
+		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble(), character.getClan().getHasCastle() > 0))
 		{
 			character.removeSkill(sk);
 		}

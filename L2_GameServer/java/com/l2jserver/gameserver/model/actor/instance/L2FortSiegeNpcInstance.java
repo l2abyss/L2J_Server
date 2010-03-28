@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.StringTokenizer;
 
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -59,7 +60,13 @@ public class L2FortSiegeNpcInstance extends L2NpcWalkerInstance
 		{
 			if ((player.getClanPrivileges() & L2Clan.CP_CS_MANAGE_SIEGE) == L2Clan.CP_CS_MANAGE_SIEGE)
 			{
-				if (getFort().getSiege().registerAttacker(player, false))
+				if (System.currentTimeMillis() < TerritoryWarManager.getInstance().getTWStartTimeInMillis()
+						&& TerritoryWarManager.getInstance().getIsRegistrationOver())
+					player.sendPacket(new SystemMessage(SystemMessageId.NOT_SIEGE_REGISTRATION_TIME2));
+				else if (System.currentTimeMillis() > TerritoryWarManager.getInstance().getTWStartTimeInMillis()
+						&& TerritoryWarManager.getInstance().isTWChannelOpen())
+					player.sendPacket(new SystemMessage(SystemMessageId.NOT_SIEGE_REGISTRATION_TIME2));
+				else if (getFort().getSiege().registerAttacker(player, false))
 				{
 					SystemMessage sm = new SystemMessage(SystemMessageId.REGISTERED_TO_S1_FORTRESS_BATTLE);
 					sm.addString(getFort().getName());

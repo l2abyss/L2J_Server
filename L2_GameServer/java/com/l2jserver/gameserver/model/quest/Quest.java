@@ -70,7 +70,7 @@ public class Quest extends ManagedScript
 	private final String _name;
 	private final String _descr;
 	private final byte _initialState = State.CREATED;
-	private boolean _onEnterWorld = false;
+	protected boolean _onEnterWorld = false;
 	// NOTE: questItemIds will be overridden by child classes.  Ideally, it should be
 	// protected instead of public.  However, quest scripts written in Jython will
 	// have trouble with protected, as Jython only knows private and public...

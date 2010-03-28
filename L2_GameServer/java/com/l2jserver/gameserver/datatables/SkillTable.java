@@ -127,21 +127,20 @@ public class SkillTable
 	/**
 	 * Returns an array with siege skills. If addNoble == true, will add also Advanced headquarters.
 	 */
-	public L2Skill[] getSiegeSkills(boolean addNoble)
+	public L2Skill[] getSiegeSkills(boolean addNoble, boolean hasCastle)
 	{
-		L2Skill[] temp = null;
-		
+		L2Skill[] temp = new L2Skill[2 + (addNoble ? 1 : 0) + (hasCastle ? 2 : 0)];
+		int i = 0;
+		temp[i++] = _skills.get(SkillTable.getSkillHashCode(246, 1));
+		temp[i++] = _skills.get(SkillTable.getSkillHashCode(247, 1));
+
 		if (addNoble)
+			temp[i++] = _skills.get(SkillTable.getSkillHashCode(326, 1));
+		if (hasCastle)
 		{
-			temp = new L2Skill[3];
-			temp[2] = _skills.get(SkillTable.getSkillHashCode(326, 1));
+			temp[i++] = _skills.get(SkillTable.getSkillHashCode(844, 1));
+			temp[i++] = _skills.get(SkillTable.getSkillHashCode(845, 1));
 		}
-		else
-			temp = new L2Skill[2];
-		
-		temp[0] = _skills.get(SkillTable.getSkillHashCode(246, 1));
-		temp[1] = _skills.get(SkillTable.getSkillHashCode(247, 1));
-		
 		return temp;
 	}
 	

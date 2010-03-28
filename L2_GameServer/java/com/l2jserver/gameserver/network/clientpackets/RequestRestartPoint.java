@@ -21,9 +21,11 @@ import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Fort;
@@ -144,13 +146,14 @@ public final class RequestRestartPoint extends L2GameClientPacket
 					L2SiegeClan siegeClan = null;
 					castle = CastleManager.getInstance().getCastle(activeChar);
 					fort = FortManager.getInstance().getFort(activeChar);
+					L2SiegeFlagInstance flag = TerritoryWarManager.getInstance().getFlagForClan(activeChar.getClan());
 
 					if (castle != null && castle.getSiege().getIsInProgress())
 						siegeClan = castle.getSiege().getAttackerClan(activeChar.getClan());
 					else if (fort != null && fort.getSiege().getIsInProgress())
 						siegeClan = fort.getSiege().getAttackerClan(activeChar.getClan());
 
-					if (siegeClan == null || siegeClan.getFlag().isEmpty())
+					if ((siegeClan == null || siegeClan.getFlag().isEmpty()) && flag == null)
 					{
 						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Siege HQ and he doesn't have Siege HQ!");
 						return;

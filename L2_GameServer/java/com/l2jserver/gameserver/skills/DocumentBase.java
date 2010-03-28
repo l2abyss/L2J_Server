@@ -508,6 +508,11 @@ abstract class DocumentBase
                 int value = Integer.decode(getValue(a.getNodeValue(), null));
                 cond = joinAnd(cond, new ConditionSiegeZone(value, true));
             }
+            else if ("siegeside".equalsIgnoreCase(a.getNodeName()))
+            {
+                int value = Integer.decode(getValue(a.getNodeValue(), null));
+                cond = joinAnd(cond, new ConditionPlayerSiegeSide(value));
+            }
             else if ("battle_force".equalsIgnoreCase(a.getNodeName()))
             {
                 forces[0] = Byte.decode(getValue(a.getNodeValue(), null));

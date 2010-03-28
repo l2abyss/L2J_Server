@@ -25,6 +25,7 @@ import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.ai.L2DoorAI;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ItemInstance;
@@ -356,9 +357,9 @@ public class L2DoorInstance extends L2Character
 	
 	public boolean isEnemy()
 	{
-		if (getCastle() != null && getCastle().getCastleId() > 0 && getCastle().getSiege().getIsInProgress())
+		if (getCastle() != null && getCastle().getCastleId() > 0 && getCastle().getZone().isActive())
 			return true;
-		if (getFort() != null && getFort().getFortId() > 0 && getFort().getSiege().getIsInProgress() && !getIsCommanderDoor())
+		if (getFort() != null && getFort().getFortId() > 0 && getFort().getZone().isActive() && !getIsCommanderDoor())
 			return true;
 		return false;
 	}
@@ -377,38 +378,29 @@ public class L2DoorInstance extends L2Character
 			return false;
 
 		// Attackable  only during siege by everyone (not owner)
-		boolean isCastle = (getCastle() != null && getCastle().getCastleId() > 0 && getCastle().getSiege().getIsInProgress());
-        boolean isFort = (getFort() != null && getFort().getFortId() > 0 && getFort().getSiege().getIsInProgress() && !getIsCommanderDoor());
+		boolean isCastle = (getCastle() != null && getCastle().getCastleId() > 0 && getCastle().getZone().isActive());
+		boolean isFort = (getFort() != null && getFort().getFortId() > 0 && getFort().getZone().isActive() && !getIsCommanderDoor());
+		int activeSiegeId = (getFort() != null ? getFort().getFortId() : (getCastle() != null ? getCastle().getCastleId() : 0));
+		L2PcInstance actingPlayer = attacker.getActingPlayer();
 		
-		if (isFort)
+		if (TerritoryWarManager.getInstance().isTWInProgress())
 		{
-			if (attacker instanceof L2SummonInstance)
-			{
-				L2Clan clan = ((L2SummonInstance)attacker).getOwner().getClan();
-				if (clan != null && clan == getFort().getOwnerClan())
-					return false;
-			}
-			else if (attacker instanceof L2PcInstance)
-			{
-				L2Clan clan = ((L2PcInstance)attacker).getClan();
-				if (clan != null && clan == getFort().getOwnerClan())
-					return false;
-			}
+			if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, activeSiegeId))
+				return false;
+			else
+				return true;
+		}
+		else if (isFort)
+		{
+			L2Clan clan = actingPlayer.getClan();
+			if (clan != null && clan == getFort().getOwnerClan())
+				return false;
 		}
 		else if (isCastle)
 		{
-			if (attacker instanceof L2SummonInstance)
-			{
-				L2Clan clan = ((L2SummonInstance)attacker).getOwner().getClan();
-				if (clan != null && clan.getClanId() == getCastle().getOwnerId())
-					return false;
-			}
-			else if (attacker instanceof L2PcInstance)
-			{
-				L2Clan clan = ((L2PcInstance)attacker).getClan();
-				if (clan != null && clan.getClanId() == getCastle().getOwnerId())
-					return false;
-			}
+			L2Clan clan = actingPlayer.getClan();
+			if (clan != null && clan.getClanId() == getCastle().getOwnerId())
+				return false;
 		}
 		return (isCastle || isFort);
 	}

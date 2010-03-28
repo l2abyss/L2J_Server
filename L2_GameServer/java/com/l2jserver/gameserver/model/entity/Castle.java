@@ -37,9 +37,11 @@ import com.l2jserver.gameserver.datatables.ResidentialSkillTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.SeedProduction;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager.Territory;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.L2Object;
@@ -510,6 +512,11 @@ public class Castle
 					e.printStackTrace();
 				}
 				oldOwner.setHasCastle(0); // Unset has castle flag for old owner
+				for (L2PcInstance member : oldOwner.getOnlineMembers(0))
+				{
+					removeResidentialSkills(member);
+					member.sendSkillList();
+				}
 			}
 		}
 		
@@ -522,7 +529,9 @@ public class Castle
 		
 		if (getSiege().getIsInProgress()) // If siege in progress
 			getSiege().midVictory(); // Mid victory phase of siege
-			
+		
+		TerritoryWarManager.getInstance().getTerritory(_castleId).setOwnerClan(clan);
+		
 		for (L2PcInstance member : clan.getOnlineMembers(0))
 		{
 			giveResidentialSkills(member);
@@ -1621,6 +1630,12 @@ public class Castle
 			for (L2Skill sk : _residentialSkills)
 				player.addSkill(sk, false);
 		}
+		Territory territory = TerritoryWarManager.getInstance().getTerritory(getCastleId());
+		if (territory != null && territory.getOwnedWardIds().contains(getCastleId() + 80))
+			for(int wardId : territory.getOwnedWardIds())
+				if (ResidentialSkillTable.getInstance().getSkills(wardId) != null)
+					for (L2Skill sk : ResidentialSkillTable.getInstance().getSkills(wardId))
+						player.addSkill(sk, false);
 	}
 	
 	public void removeResidentialSkills(L2PcInstance player)
@@ -1630,6 +1645,11 @@ public class Castle
 			for (L2Skill sk : _residentialSkills)
 				player.removeSkill(sk, false);
 		}
+		if (TerritoryWarManager.getInstance().getTerritory(getCastleId()) != null)
+			for(int wardId : TerritoryWarManager.getInstance().getTerritory(getCastleId()).getOwnedWardIds())
+				if (ResidentialSkillTable.getInstance().getSkills(wardId) != null)
+					for (L2Skill sk : ResidentialSkillTable.getInstance().getSkills(wardId))
+						player.removeSkill(sk, false);
 	}
 	
 	/**

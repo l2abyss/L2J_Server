@@ -62,6 +62,7 @@ public final class Config
 	public static final String RATES_CONFIG_FILE = "./config/rates.properties";
 	public static final String CONFIGURATION_FILE = "./config/server.properties";
 	public static final String SIEGE_CONFIGURATION_FILE = "./config/siege.properties";
+	public static final String TW_CONFIGURATION_FILE = "./config/territorywar.properties";
 	public static final String TELNET_FILE = "./config/telnet.properties";
 	public static final String FLOOD_PROTECTOR_FILE = "./config/floodprotector.properties";
 	public static final String MMO_CONFIG_FILE = "./config/mmo.properties";

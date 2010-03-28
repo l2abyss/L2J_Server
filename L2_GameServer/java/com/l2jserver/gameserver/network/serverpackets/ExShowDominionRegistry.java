@@ -15,12 +15,13 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.Calendar;
-import java.util.List;
 
-import com.l2jserver.gameserver.datatables.ClanTable;
-import com.l2jserver.gameserver.instancemanager.CastleManager;
+import javolution.util.FastList;
+
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager.Territory;
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.entity.Castle;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * format: dSSSdddddddd (dd(d))
@@ -28,33 +29,30 @@ import com.l2jserver.gameserver.model.entity.Castle;
  */
 public class ExShowDominionRegistry extends L2GameServerPacket
 {
-	private int _territoryId;
+	private final static int MINID = 80;
+	private final int _castleId;
 	private int _clanReq = 0x00;
 	private int _mercReq = 0x00;
-	private String _clanName = "";
-	private String _clanLeader = "";
-	private String _allyName = "";
+	private int _isMercRegistered = 0x00;
+	private int _isClanRegistered = 0x00;
 	private int _warTime = (int) (Calendar.getInstance().getTimeInMillis() / 1000);
 	private int _currentTime = (int) (Calendar.getInstance().getTimeInMillis() / 1000);
 
-	public ExShowDominionRegistry(int castleId)
+	public ExShowDominionRegistry(int castleId, L2PcInstance player)
 	{
-		_territoryId = 0x50 + castleId;
-		int owner = CastleManager.getInstance().getCastleById(castleId).getOwnerId();
-		if (owner != 0)
+		_castleId = castleId;
+		if (TerritoryWarManager.getInstance().getRegisteredClans(castleId) != null)
 		{
-			try
-			{
-				L2Clan clan = ClanTable.getInstance().getClan(owner);
-				_clanName = clan.getName();
-				_clanLeader = clan.getLeaderName();
-				_allyName = clan.getAllyName();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			_clanReq = TerritoryWarManager.getInstance().getRegisteredClans(castleId).size();
+			if (player.getClan() != null)
+				_isClanRegistered = (TerritoryWarManager.getInstance().getRegisteredClans(castleId).contains(player.getClan()) ? 0x01 : 0x00);
 		}
+		if (TerritoryWarManager.getInstance().getRegisteredMercenaries(castleId) != null)
+		{
+			_mercReq = TerritoryWarManager.getInstance().getRegisteredMercenaries(castleId).size();
+			_isMercRegistered = (TerritoryWarManager.getInstance().getRegisteredMercenaries(castleId).contains(player.getObjectId()) ? 0x01 : 0x00);
+		}
+		_warTime = (int) (TerritoryWarManager.getInstance().getTWStartTimeInMillis() / 1000);
 	}
 
 	/**
@@ -74,25 +72,36 @@ public class ExShowDominionRegistry extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x90);
-		writeD(_territoryId); // Current Territory Id
-		writeS(_clanName); // Owners Clan
-		writeS(_clanLeader); // Owner Clan Leader
-		writeS(_allyName); // Owner Alliance
+		writeD(MINID+_castleId); // Current Territory Id
+		if (TerritoryWarManager.getInstance().getTerritory(_castleId) == null)
+		{
+			// something is wrong
+			writeS("No Owner"); // Owners Clan
+			writeS("No Owner"); // Owner Clan Leader
+			writeS("No Ally"); // Owner Alliance
+		}
+		else
+		{
+			L2Clan clan = TerritoryWarManager.getInstance().getTerritory(_castleId).getOwnerClan();
+			writeS(clan.getName()); // Owners Clan
+			writeS(clan.getLeaderName()); // Owner Clan Leader
+			writeS(clan.getAllyName()); // Owner Alliance
+		}
 		writeD(_clanReq); // Clan Request
 		writeD(_mercReq); // Merc Request
 		writeD(_warTime); // War Time
 		writeD(_currentTime); // Current Time
-		writeD(0x00); // unknown
-		writeD(0x00); // unknown
+		writeD(_isClanRegistered); // is Cancel clan registration
+		writeD(_isMercRegistered); // is Cancel mercenaries registration
 		writeD(0x01); // unknown
-		List<Castle> castles = CastleManager.getInstance().getCastles();
-		writeD(castles.size());
-		for (Castle castle : castles)
+		FastList<Territory> territoryList = TerritoryWarManager.getInstance().getAllTerritories();
+		writeD(territoryList.size()); // Territory Count
+		for (Territory t : territoryList)
 		{
-			writeD(0x50 + castle.getCastleId()); // Territory Id
-			writeD(0x01); // Emblem Count
-			writeD(0x50 + castle.getCastleId()); // Emblem ID - should be in for loop for emblem
-												 // count
+			writeD(t.getTerritoryId()); // Territory Id
+			writeD(t.getOwnedWardIds().size()); // Emblem Count
+			for(int i:t.getOwnedWardIds())
+				writeD(i); // Emblem ID - should be in for loop for emblem count
 		}
 	}
 }

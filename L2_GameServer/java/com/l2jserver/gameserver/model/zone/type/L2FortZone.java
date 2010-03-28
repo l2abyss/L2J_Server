@@ -42,6 +42,7 @@ public class L2FortZone extends L2SpawnZone
 	private int _fortId;
 	private Fort _fort = null;
 	private boolean _isActiveSiege = false;
+	private static final int DISMOUNT_DELAY = 5;
 	
 	public L2FortZone(int id)
 	{
@@ -77,6 +78,11 @@ public class L2FortZone extends L2SpawnZone
 					((L2PcInstance) character).startFameTask(Config.FORTRESS_ZONE_FAME_TASK_FREQUENCY * 1000, Config.FORTRESS_ZONE_FAME_AQUIRE_POINTS);
 					((L2PcInstance) character).setIsInSiege(true);
 				}
+				if (!Config.ALLOW_WYVERN_DURING_SIEGE && ((L2PcInstance) character).getMountType() == 2)
+				{
+					character.sendPacket(new SystemMessage(SystemMessageId.AREA_CANNOT_BE_ENTERED_WHILE_MOUNTED_WYVERN));
+					((L2PcInstance) character).enteredNoLanding(DISMOUNT_DELAY);
+				}
 			}
 		}
 	}
@@ -94,6 +100,10 @@ public class L2FortZone extends L2SpawnZone
 			{
 				((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
 
+				if (((L2PcInstance) character).getMountType() == 2)
+				{
+					((L2PcInstance) character).exitedNoLanding();
+				}
 				// Set pvp flag
 				if (((L2PcInstance) character).getPvpFlag() == 0)
 					((L2PcInstance) character).startPvPFlag();
@@ -180,6 +190,10 @@ public class L2FortZone extends L2SpawnZone
 					{
 						((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
 						((L2PcInstance) character).stopFameTask();
+						if (((L2PcInstance) character).getMountType() == 2)
+						{
+							((L2PcInstance) character).exitedNoLanding();
+						}
 					}
 					if (character instanceof L2SiegeSummonInstance)
 					{

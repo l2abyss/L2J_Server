@@ -18,6 +18,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2Skill;
@@ -41,11 +42,31 @@ public class L2SiegeFlagInstance extends L2Npc
     private final boolean _isAdvanced;
     private boolean _canTalk;
 
-    public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template, boolean advanced)
+    public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template, boolean advanced, boolean outPost)
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2SiegeFlagInstance);
 		
+		if (TerritoryWarManager.getInstance().isTWInProgress())
+		{
+			_clan = player.getClan();
+			_player = player;
+			_canTalk = false;
+			if (_clan == null)
+				deleteMe();
+			if (outPost)
+			{
+				_isAdvanced = false;
+				setIsInvul(true);
+			}
+			else
+			{
+				_isAdvanced = advanced;
+				setIsInvul(false);
+			}
+			getStatus();
+			return;
+		}
 		_clan = player.getClan();
 		_player = player;
 		_canTalk = true;
@@ -82,13 +103,13 @@ public class L2SiegeFlagInstance extends L2Npc
     @Override
 	public boolean isAttackable()
     {
-        return true;
+        return !isInvul();
     }
 
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
-		return true;
+		return !isInvul();
 	}
 
     @Override
@@ -102,6 +123,8 @@ public class L2SiegeFlagInstance extends L2Npc
             if (sc != null)
             	sc.removeFlag(this);
     	}
+    	else if (_clan != null)
+    		TerritoryWarManager.getInstance().removeClanFlag(_clan);
         return true;
     }
 
