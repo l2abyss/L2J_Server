@@ -412,12 +412,12 @@ public abstract class PathFinding
 	
 	public byte getRegionX(int node_pos)
 	{
-		return (byte) ((node_pos >> 8) + 10);
+		return (byte) ((node_pos >> 8) + Config.WORLD_X_MIN);
 	}
 	
 	public byte getRegionY(int node_pos)
 	{
-		return (byte) ((node_pos >> 8) + 10);
+		return (byte) ((node_pos >> 8) + Config.WORLD_Y_MIN);
 	}
 	
 	public short getRegionOffset(byte rx, byte ry)

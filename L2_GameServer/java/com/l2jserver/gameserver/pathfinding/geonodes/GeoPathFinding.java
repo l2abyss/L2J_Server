@@ -304,6 +304,11 @@ public class GeoPathFinding extends PathFinding
 	
 	private void LoadPathNodeFile(byte rx, byte ry)
 	{
+		if (rx < Config.WORLD_X_MIN || rx > Config.WORLD_X_MAX || ry < Config.WORLD_Y_MIN || ry > Config.WORLD_Y_MAX)
+		{
+			_log.warning("Failed to Load PathNode File: invalid region " + rx +","+ ry + "\n");
+			return;
+		}
 		String fname = "./data/pathnode/" + rx + "_" + ry + ".pn";
 		short regionoffset = getRegionOffset(rx, ry);
 		_log.info("PathFinding Engine: - Loading: " + fname + " -> region offset: " + regionoffset + "X: " + rx + " Y: " + ry);

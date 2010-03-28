@@ -432,6 +432,10 @@ public final class Config
 	public static boolean GRIDS_ALWAYS_ON;
 	public static int GRID_NEIGHBOR_TURNON_TIME;
 	public static int GRID_NEIGHBOR_TURNOFF_TIME;
+	public static int WORLD_X_MIN;
+	public static int WORLD_X_MAX;
+	public static int WORLD_Y_MIN;
+	public static int WORLD_Y_MAX;
 	public static int GEODATA;
 	public static boolean GEODATA_CELLFINDING;
 	public static boolean FORCE_GEODATA;
@@ -1637,6 +1641,10 @@ public final class Config
 					GRIDS_ALWAYS_ON = Boolean.parseBoolean(General.getProperty("GridsAlwaysOn", "False"));
 					GRID_NEIGHBOR_TURNON_TIME = Integer.parseInt(General.getProperty("GridNeighborTurnOnTime", "1"));
 					GRID_NEIGHBOR_TURNOFF_TIME = Integer.parseInt(General.getProperty("GridNeighborTurnOffTime", "90"));
+					WORLD_X_MIN = Integer.parseInt(General.getProperty("WorldXMin", "11"));
+					WORLD_X_MAX = Integer.parseInt(General.getProperty("WorldXMax", "26"));
+					WORLD_Y_MIN = Integer.parseInt(General.getProperty("WorldYMin", "10"));
+					WORLD_Y_MAX = Integer.parseInt(General.getProperty("WorldYMax", "26"));
 					GEODATA = Integer.parseInt(General.getProperty("GeoData", "0"));
 					GEODATA_CELLFINDING = Boolean.parseBoolean(General.getProperty("CellPathFinding", "False"));
 					FORCE_GEODATA = Boolean.parseBoolean(General.getProperty("ForceGeodata", "True"));

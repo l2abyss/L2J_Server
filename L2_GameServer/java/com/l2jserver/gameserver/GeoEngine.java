@@ -223,8 +223,8 @@ public class GeoEngine extends GeoData
 		int by = getBlock(gy);
 		int cx = getCell(gx);
 		int cy = getCell(gy);
-		int rx = (gx >> 11) + 10;
-		int ry = (gy >> 11) + 10;
+		int rx = (gx >> 11) + Config.WORLD_X_MIN;
+		int ry = (gy >> 11) + Config.WORLD_X_MAX;
 		String out = rx + ";" + ry + ";" + bx + ";" + by + ";" + cx + ";" + cy + ";" + gm.getZ() + ";" + comment + "\n";
 		try
 		{
@@ -701,6 +701,11 @@ public class GeoEngine extends GeoData
 	
 	public static boolean loadGeodataFile(byte rx, byte ry)
 	{
+		if (rx < Config.WORLD_X_MIN || rx > Config.WORLD_X_MAX || ry < Config.WORLD_Y_MIN || ry > Config.WORLD_Y_MAX)
+		{
+			_log.warning("Failed to Load GeoFile: invalid region " + rx +","+ ry + "\n");
+			return false;
+		}
 		String fname = "./data/geodata/" + rx + "_" + ry + ".l2j";
 		short regionoffset = (short) ((rx << 5) + ry);
 		_log.info("Geo Engine: - Loading: " + fname + " -> region offset: " + regionoffset + "X: " + rx + " Y: " + ry);
@@ -781,7 +786,7 @@ public class GeoEngine extends GeoData
 	{
 		int rx = x >> 11; // =/(256 * 8)
 		int ry = y >> 11;
-		return (short) (((rx + 10) << 5) + (ry + 10));
+		return (short) (((rx + Config.WORLD_X_MIN) << 5) + (ry + Config.WORLD_Y_MIN));
 	}
 	
 	/**

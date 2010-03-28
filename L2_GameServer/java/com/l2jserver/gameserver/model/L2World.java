@@ -39,7 +39,7 @@ import javolution.util.FastMap;
 public final class L2World
 {
 	private static Logger _log = Logger.getLogger(L2World.class.getName());
-	
+
 	/*
 	* biteshift, defines number of regions
 	* note, shifting by 15 will result in regions corresponding to map tiles
@@ -48,11 +48,14 @@ public final class L2World
 	public static final int SHIFT_BY = 12;
 	
 	/** Map dimensions */
-	public static final int MAP_MIN_X = -327680;
-	public static final int MAP_MAX_X = 229376;
-	public static final int MAP_MIN_Y = -262144;
-	public static final int MAP_MAX_Y = 294912;
-	
+	public static final int MAP_MIN_X = (Config.WORLD_X_MIN - 20) << 15;
+	public static final int MAP_MAX_X = (Config.WORLD_X_MAX - 19) << 15;
+	public static final int MAP_MIN_Y = (Config.WORLD_Y_MIN - 18) << 15;
+	public static final int MAP_MAX_Y = (Config.WORLD_Y_MAX - 17) << 15;
+
+	public static final int WORLD_SIZE_X = Config.WORLD_X_MAX - Config.WORLD_X_MIN + 1;
+	public static final int WORLD_SIZE_Y = Config.WORLD_Y_MAX - Config.WORLD_Y_MIN + 1;
+
 	/** calculated offset used so top left region is 0,0 */
 	public static final int OFFSET_X = Math.abs(MAP_MIN_X >> SHIFT_BY);
 	public static final int OFFSET_Y = Math.abs(MAP_MIN_Y >> SHIFT_BY);
