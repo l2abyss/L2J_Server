@@ -41,7 +41,8 @@ public class Mail extends ItemContainer
     	_messageId = messageId;
     }
 
-    public String getName()
+    @Override
+	public String getName()
     {
     	return "Mail";
     }

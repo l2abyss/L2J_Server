@@ -4892,7 +4892,8 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
     
-    public boolean isTransformed()
+    @Override
+	public boolean isTransformed()
     {
         return _transformation != null && !_transformation.isStance();
     }
@@ -4925,7 +4926,8 @@ public final class L2PcInstance extends L2Playable
         broadcastUserInfo();
     }
     
-    public void untransform()
+    @Override
+	public void untransform()
     {
         if (_transformation != null)
         {
@@ -6898,6 +6900,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * Return True if the L2PcInstance is a GM.<BR><BR>
 	 */
+	@Override
 	public boolean isGM()
 	{
 		return getAccessLevel().isGm();
@@ -7857,6 +7860,7 @@ public final class L2PcInstance extends L2Playable
 		return oldSkill;
 	}
 	
+	@Override
 	public L2Skill removeSkill(L2Skill skill, boolean store)
 	{
 		if (store)

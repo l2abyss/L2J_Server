@@ -80,6 +80,7 @@ public class EffectImmobilePetBuff extends L2Effect
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onActionTime()
 	 */
+	@Override
 	public boolean onActionTime()
 	{
 		// just stop this effect

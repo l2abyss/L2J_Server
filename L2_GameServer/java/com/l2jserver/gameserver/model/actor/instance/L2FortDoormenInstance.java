@@ -29,6 +29,7 @@ public class L2FortDoormenInstance extends L2DoormenInstance
 		setInstanceType(InstanceType.L2FortDoormenInstance);
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);

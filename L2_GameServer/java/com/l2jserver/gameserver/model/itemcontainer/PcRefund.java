@@ -35,6 +35,7 @@ public class PcRefund extends ItemContainer
 		_owner = owner;
 	}
 
+	@Override
 	public String getName() 
 	{
 		return "Refund";

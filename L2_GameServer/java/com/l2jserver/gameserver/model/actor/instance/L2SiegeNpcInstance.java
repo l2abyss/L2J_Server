@@ -31,6 +31,7 @@ public class L2SiegeNpcInstance extends L2NpcInstance
 		setInstanceType(InstanceType.L2SiegeNpcInstance);
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		showSiegeInfoWindow(player);

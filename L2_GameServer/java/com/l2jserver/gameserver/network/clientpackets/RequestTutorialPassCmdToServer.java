@@ -21,10 +21,12 @@ public class RequestTutorialPassCmdToServer extends L2GameClientPacket
 {
 	String _bypass = null;
 
+	@Override
 	protected void readImpl()
 	{
 		_bypass = readS();
 	} 
+	@Override
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
@@ -37,6 +39,7 @@ public class RequestTutorialPassCmdToServer extends L2GameClientPacket
 			qs.getQuest().notifyEvent(_bypass, null, player);
        	}
 
+	@Override
 	public String getType()
 	{
 		return "[C] 86 RequestTutorialPassCmdToServer";

@@ -131,6 +131,7 @@ public class L2Attackable extends L2Npc
 			_damage = Math.min(_damage + value, 999999999);
 		}
 
+		@Override
 		public final boolean equals(Object obj)
 		{
 			if (this == obj)

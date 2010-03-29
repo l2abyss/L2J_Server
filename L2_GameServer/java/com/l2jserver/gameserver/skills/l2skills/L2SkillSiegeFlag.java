@@ -45,6 +45,7 @@ public class L2SkillSiegeFlag extends L2Skill
 	/**
 	 * @see com.l2jserver.gameserver.model.L2Skill#useSkill(com.l2jserver.gameserver.model.actor.L2Character, com.l2jserver.gameserver.model.L2Object[])
 	 */
+	@Override
 	public void useSkill(L2Character activeChar, L2Object[] targets)
 	{
 		if (!(activeChar instanceof L2PcInstance))

@@ -71,6 +71,7 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 		}
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player, int val)
 	{
 		if (CastleManorManager.getInstance().isDisabled())

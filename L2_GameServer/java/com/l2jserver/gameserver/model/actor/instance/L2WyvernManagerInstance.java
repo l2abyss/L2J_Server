@@ -27,6 +27,7 @@ public class L2WyvernManagerInstance extends L2Npc
 		setInstanceType(InstanceType.L2WyvernManagerInstance);
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		player.sendPacket( ActionFailed.STATIC_PACKET );

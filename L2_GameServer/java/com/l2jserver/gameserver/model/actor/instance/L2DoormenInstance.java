@@ -78,6 +78,7 @@ public class L2DoormenInstance extends L2NpcInstance
 		super.onBypassFeedback(player, command);
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);

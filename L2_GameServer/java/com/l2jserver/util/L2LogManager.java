@@ -12,6 +12,7 @@ public class L2LogManager extends LogManager {
 		super();
 	}
 
+	@Override
 	public void reset() {
 		// do nothing
 	}

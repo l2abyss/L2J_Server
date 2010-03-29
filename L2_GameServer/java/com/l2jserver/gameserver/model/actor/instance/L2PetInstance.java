@@ -1131,11 +1131,13 @@ public class L2PetInstance extends L2Summon
 		_jewel = id;
 	}
 	
+	@Override
 	public final int getWeapon()
 	{
 		return _weapon;
 	}
 	
+	@Override
 	public final int getArmor()
 	{
 		return _armor;

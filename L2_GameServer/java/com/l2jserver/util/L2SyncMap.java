@@ -91,15 +91,18 @@ public class L2SyncMap<K extends Object, V extends Object> implements Map<K, V>
         return _map.containsValue(value);
     }
 
-    public synchronized boolean equals(Object o) {
+    @Override
+	public synchronized boolean equals(Object o) {
         return _map.equals(o);
     }
     
-    public synchronized int hashCode() {
+    @Override
+	public synchronized int hashCode() {
         return _map.hashCode();
     }
     
-    public synchronized String toString() {
+    @Override
+	public synchronized String toString() {
         return _map.toString();
     }
     

@@ -100,6 +100,7 @@ public final class L2GuardInstance extends L2Attackable
 	/**
 	 * Notify the L2GuardInstance to return to its home location (AI_INTENTION_MOVE_TO) and clear its _aggroList.<BR><BR>
 	 */
+	@Override
 	public void returnHome()
 	{
         if (!isInsideRadius(getSpawn().getLocx(), getSpawn().getLocy(), 150, false))

@@ -28,6 +28,7 @@ public class PcWarehouse extends Warehouse
 		_owner = owner;
 	}
 
+	@Override
 	public String getName() { return "Warehouse"; };
 
 	@Override

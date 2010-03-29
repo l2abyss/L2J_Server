@@ -30,6 +30,7 @@ public class L2FortEnvoyInstance extends L2Npc
 		setInstanceType(InstanceType.L2FortEnvoyInstance);
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
@@ -50,6 +51,7 @@ public class L2FortEnvoyInstance extends L2Npc
 		player.sendPacket(html);
 	}
 
+	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		StringTokenizer st = new StringTokenizer(command, " ");

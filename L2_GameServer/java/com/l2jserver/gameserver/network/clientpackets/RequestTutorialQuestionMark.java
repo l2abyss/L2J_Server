@@ -23,10 +23,12 @@ public class RequestTutorialQuestionMark extends L2GameClientPacket
 	//     private static Logger _log = Logger.getLogger(RequestTutorialQuestionMark.class.getName());
 	int _number = 0;
 
+	@Override
 	protected void readImpl()
 	{
 		_number = readD();
 	}
+	@Override
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();

@@ -587,6 +587,7 @@ public final class L2AuctioneerInstance extends L2Npc
 		super.onBypassFeedback(player, command);
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		String filename = "data/html/auction/auction-no.htm";

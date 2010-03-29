@@ -79,6 +79,7 @@ public class L2Trap extends L2Character
 		setKnownList(new TrapKnownList(this));
     }
 	
+	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		return !canSee(attacker);

@@ -36,6 +36,7 @@ public class L2DawnPriestInstance extends L2SignsPriestInstance
 			super.onBypassFeedback(player, command);
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);

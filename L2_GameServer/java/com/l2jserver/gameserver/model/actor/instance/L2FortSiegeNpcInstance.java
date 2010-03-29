@@ -35,6 +35,7 @@ public class L2FortSiegeNpcInstance extends L2NpcWalkerInstance
 		setInstanceType(InstanceType.L2FortSiegeNpcInstance);
 	}
 
+	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		StringTokenizer st = new StringTokenizer(command, " ");
@@ -91,6 +92,7 @@ public class L2FortSiegeNpcInstance extends L2NpcWalkerInstance
 			super.onBypassFeedback(player, command);
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		showMessageWindow(player, 0);

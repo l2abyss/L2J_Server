@@ -266,6 +266,7 @@ public class L2WarehouseItem
 	 * Returns the name of the item
 	 * @return String
 	 */
+	@Override
 	public String toString()
 	{
 		return _item.toString();

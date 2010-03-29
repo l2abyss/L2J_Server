@@ -123,6 +123,7 @@ public class JIPTextField extends JPanel implements FocusListener
 		}
 	}
 
+	@Override
 	public void addFocusListener(FocusListener fl)
 	{
 		if (_focusListeners == null)
@@ -136,6 +137,7 @@ public class JIPTextField extends JPanel implements FocusListener
 		}
 	}
 
+	@Override
 	public void removeFocusListener(FocusListener fl)
 	{
 		if (_focusListeners != null)
@@ -200,6 +202,7 @@ public class JIPTextField extends JPanel implements FocusListener
 		}
 	}
 
+	@Override
 	public void setEnabled(boolean enabled)
 	{
 		for(int i=0;i<_textFields.length;i++)
@@ -283,6 +286,7 @@ public class JIPTextField extends JPanel implements FocusListener
 			setNext(next);
 		}
 		
+		@Override
 		public void insertString(int offset, String str, AttributeSet a) throws BadLocationException
 		{
 			if (getLength() + str.length() > _max)

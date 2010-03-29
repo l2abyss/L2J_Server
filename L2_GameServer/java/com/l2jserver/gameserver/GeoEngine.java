@@ -245,6 +245,7 @@ public class GeoEngine extends GeoData
 		return canSee((x - L2World.MAP_MIN_X) >> 4, (y - L2World.MAP_MIN_Y) >> 4, z, (tx - L2World.MAP_MIN_X) >> 4, (ty - L2World.MAP_MIN_Y) >> 4, tz);
 	}
 	
+	@Override
 	public boolean hasGeo(int x, int y)
 	{
 		int gx = (x - L2World.MAP_MIN_X) >> 4;

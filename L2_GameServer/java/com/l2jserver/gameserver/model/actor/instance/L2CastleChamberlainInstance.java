@@ -1442,6 +1442,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 		player.sendPacket(html);
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);

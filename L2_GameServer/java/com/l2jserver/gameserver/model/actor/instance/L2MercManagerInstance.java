@@ -63,6 +63,7 @@ public final class L2MercManagerInstance extends L2MerchantInstance
 		super.onBypassFeedback(player, command);
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		String filename = "data/html/mercmanager/mercmanager-no.htm";

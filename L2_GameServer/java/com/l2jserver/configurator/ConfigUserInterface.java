@@ -192,7 +192,8 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 	    for (ConfigFile cf : getConfigs())
 	    {
 	    	JPanel panel = new JPanel() {
-	    		public void scrollRectToVisible(Rectangle r ) {}
+	    		@Override
+				public void scrollRectToVisible(Rectangle r ) {}
 	    	};
 	    	panel.setLayout(new GridBagLayout());
 	    	
@@ -607,7 +608,8 @@ public class ConfigUserInterface extends JFrame implements ActionListener
             	}
             }
             
-            public void save(Writer writer) throws IOException
+            @Override
+			public void save(Writer writer) throws IOException
             {
             	String value;
             	if (this.getValueComponent() instanceof JCheckBox)

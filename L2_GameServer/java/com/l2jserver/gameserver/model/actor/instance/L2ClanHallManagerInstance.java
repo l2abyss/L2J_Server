@@ -1336,7 +1336,8 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
         player.sendPacket(html);
     }
 
-    public void showChatWindow(L2PcInstance player)
+    @Override
+	public void showChatWindow(L2PcInstance player)
     {
         player.sendPacket(ActionFailed.STATIC_PACKET);
         String filename = "data/html/clanHallManager/chamberlain-no.htm";

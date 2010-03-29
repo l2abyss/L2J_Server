@@ -32,7 +32,8 @@ public class PcPosition extends CharPosition
         super(activeObject);
     }
     
-    public L2PcInstance getActiveObject()
+    @Override
+	public L2PcInstance getActiveObject()
     {
     	return ((L2PcInstance)super.getActiveObject());
     }

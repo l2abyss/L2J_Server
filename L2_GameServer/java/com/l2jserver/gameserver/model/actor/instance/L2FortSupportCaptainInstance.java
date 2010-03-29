@@ -44,6 +44,7 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance
 		10141,10142,10158
 	};
 
+	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		// BypassValidation Exploit plug.
@@ -95,6 +96,7 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance
 			super.onBypassFeedback(player, command);
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		if (player.getClan() == null || getFort().getOwnerClan() == null || player.getClan() != getFort().getOwnerClan())

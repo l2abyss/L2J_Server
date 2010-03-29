@@ -46,6 +46,7 @@ public class L2PetManagerInstance extends L2MerchantInstance
 		return "data/html/petmanager/" + pom + ".htm";
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		String filename = "data/html/petmanager/" + getNpcId() + ".htm";
@@ -63,6 +64,7 @@ public class L2PetManagerInstance extends L2MerchantInstance
 		player.sendPacket(html);
 	}
 
+	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		if (command.startsWith("exchange"))

@@ -42,6 +42,7 @@ public class EffectChanceSkillTrigger extends L2Effect implements IChanceSkillTr
 	    return L2EffectType.CHANCE_SKILL_TRIGGER;
     }
 	
+	@Override
 	public boolean onStart()
 	{
 		getEffected().addChanceEffect(this);
@@ -49,7 +50,8 @@ public class EffectChanceSkillTrigger extends L2Effect implements IChanceSkillTr
 		return super.onStart();
 	}
 
-    public boolean onActionTime()
+    @Override
+	public boolean onActionTime()
     {
 		getEffected().onActionTimeChanceEffect(getSkill().getElement());
 	    return false;

@@ -925,6 +925,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 		}
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);

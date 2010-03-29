@@ -30,6 +30,7 @@ public final class ClanWarehouse extends Warehouse
 		_clan = clan;
 	}
 
+	@Override
 	public String getName() { return "ClanWarehouse"; };
 
 	@Override

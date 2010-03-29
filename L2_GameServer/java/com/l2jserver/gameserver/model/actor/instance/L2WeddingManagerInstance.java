@@ -39,6 +39,7 @@ public class L2WeddingManagerInstance extends L2Npc
 		setInstanceType(InstanceType.L2WeddingManagerInstance);
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
     {
         String filename = "data/html/mods/Wedding_start.htm";

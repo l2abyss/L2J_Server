@@ -90,7 +90,8 @@ public class L2FortCommanderInstance extends L2DefenderInstance
      * This method forces guard to return to home location previously set
      *
      */
-    public void returnHome()
+    @Override
+	public void returnHome()
     {
         if (!isInsideRadius(getSpawn().getLocx(), getSpawn().getLocy(), 200, false))
         {

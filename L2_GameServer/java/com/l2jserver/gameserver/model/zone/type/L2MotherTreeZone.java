@@ -37,6 +37,7 @@ public class L2MotherTreeZone extends L2ZoneType
 		super(id);
 	}
 	
+	@Override
 	public void setParameter(String name, String value)
 	{
 		if (name.equals("enterMsgId"))

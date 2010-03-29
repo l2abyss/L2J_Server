@@ -33,6 +33,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 		setInstanceType(InstanceType.L2FortLogisticsInstance);
 	}
 
+	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		// BypassValidation Exploit plug.
@@ -110,6 +111,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 			super.onBypassFeedback(player, command);
 	}
 
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		showMessageWindow(player, 0);

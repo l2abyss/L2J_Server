@@ -59,7 +59,8 @@ public class L2SyncList<T extends Object> implements List<T>
 		}
 	}
 	
-    public boolean equals(Object o) {
+    @Override
+	public boolean equals(Object o) {
     	_rl.lock();
     	try {
     		return _list.equals(o);
@@ -67,7 +68,8 @@ public class L2SyncList<T extends Object> implements List<T>
     		_rl.unlock();
     	}
     }
-    public int hashCode() {
+    @Override
+	public int hashCode() {
     	_rl.lock();
     	try {
     		return _list.hashCode();

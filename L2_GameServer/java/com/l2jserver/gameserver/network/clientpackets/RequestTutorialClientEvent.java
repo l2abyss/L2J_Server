@@ -22,11 +22,13 @@ public class RequestTutorialClientEvent extends L2GameClientPacket
 	private static final String _C__88_REQUESTTUTORIALCLIENTEVENT = "[C] 88 RequestTutorialClientEvent";
 	int eventId = 0;
 
+	@Override
 	protected void readImpl()
 	{
 		eventId = readD();
 	}
 
+	@Override
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
@@ -39,6 +41,7 @@ public class RequestTutorialClientEvent extends L2GameClientPacket
 			qs.getQuest().notifyEvent("CE" + eventId + "",null,player);
 	}
 
+	@Override
 	public String getType()
 	{
 		return _C__88_REQUESTTUTORIALCLIENTEVENT;

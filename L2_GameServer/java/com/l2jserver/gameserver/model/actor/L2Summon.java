@@ -788,6 +788,7 @@ public abstract class L2Summon extends L2Playable
         super.doCast(skill);
 	}
 	
+	@Override
 	public boolean isInCombat()
 	{
 		return getOwner().isInCombat();

@@ -119,6 +119,7 @@ public class L2DefenderInstance extends L2Attackable
 	 * This method forces guard to return to home location previously set
 	 *
 	 */
+	@Override
 	public void returnHome()
 	{
 		if (getWalkSpeed() <= 0)
