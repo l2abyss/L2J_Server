@@ -389,7 +389,7 @@ public class MapRegionTable
 					}
 					
 					if (castle != null && castle.getCastleId() > 0)
-						return castle.getZone().getSpawnLoc();;
+						return castle.getZone().getSpawnLoc();
 				}
 				
 				// If teleport to fortress

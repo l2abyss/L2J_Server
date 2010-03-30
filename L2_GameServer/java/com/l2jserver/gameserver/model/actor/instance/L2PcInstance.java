@@ -195,6 +195,7 @@ import com.l2jserver.gameserver.network.serverpackets.ObservationMode;
 import com.l2jserver.gameserver.network.serverpackets.ObservationReturn;
 import com.l2jserver.gameserver.network.serverpackets.PartySmallWindowUpdate;
 import com.l2jserver.gameserver.network.serverpackets.PetInventoryUpdate;
+import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowMemberListDelete;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowMemberListUpdate;
 import com.l2jserver.gameserver.network.serverpackets.PrivateStoreListBuy;
@@ -4893,7 +4894,7 @@ public final class L2PcInstance extends L2Playable
 	}
     
     @Override
-	public boolean isTransformed()
+    public boolean isTransformed()
     {
         return _transformation != null && !_transformation.isStance();
     }
@@ -4927,7 +4928,7 @@ public final class L2PcInstance extends L2Playable
     }
     
     @Override
-	public void untransform()
+    public void untransform()
     {
         if (_transformation != null)
         {
@@ -11905,7 +11906,7 @@ public final class L2PcInstance extends L2Playable
         _fishx = _x;
         _fishy = _y;
         _fishz = _z;
-        broadcastUserInfo();
+        //broadcastUserInfo();
         //Starts fishing
     	int lvl = GetRandomFishLvl();
 		int group = GetRandomGroup();
@@ -11923,12 +11924,11 @@ public final class L2PcInstance extends L2Playable
 		fishs.clear();
 		fishs = null;
         sendPacket(new SystemMessage(SystemMessageId.CAST_LINE_AND_START_FISHING));
-        ExFishingStart efs = null;
         if (!GameTimeController.getInstance().isNowNight() && _lure.isNightLure())
         	_fish.setType(-1);
 		//sendMessage("Hook x,y: " + _x + "," + _y + " - Water Z, Player Z:" + _z + ", " + getZ()); //debug line, uncoment to show coordinates used in fishing.
-    	efs = new ExFishingStart(this,_fish.getType(),_x,_y,_z,_lure.isNightLure());
-        broadcastPacket(efs);
+        broadcastPacket(new ExFishingStart(this,_fish.getType(),_x,_y,_z,_lure.isNightLure()));
+        sendPacket(new PlaySound(1, "SF_P_01", 0, 0, 0, 0, 0));
         startLookingForFishTask();
     }
     public void stopLookingForFishTask()
@@ -12156,18 +12156,17 @@ public final class L2PcInstance extends L2Playable
     
 	public void endFishing(boolean win)
     {
-        ExFishingEnd efe = new ExFishingEnd(win, this);
-        broadcastPacket(efe);
         _fishing = false;
         _fishx = 0;
         _fishy = 0;
         _fishz = 0;
-        broadcastUserInfo();
+        //broadcastUserInfo();
         if (_fishCombat == null)
             sendPacket(new SystemMessage(SystemMessageId.BAIT_LOST_FISH_GOT_AWAY));
         _fishCombat = null;
         _lure = null;
         //Ends fishing
+        broadcastPacket(new ExFishingEnd(win, this));
         sendPacket(new SystemMessage(SystemMessageId.REEL_LINE_AND_STOP_FISHING));
         setIsImmobilized(false);
         stopLookingForFishTask();

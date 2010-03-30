@@ -26,7 +26,6 @@ public class ExFishingStart extends L2GameServerPacket
 	private static final String _S__FE_13_EXFISHINGSTART = "[S] FE:1e ExFishingStart";
 	private L2Character _activeChar;
 	private int _x,_y,_z, _fishType;
-	@SuppressWarnings("unused")
 	private boolean _isNightLure;
 
 	public ExFishingStart(L2Character character, int fishType, int x, int y,int z, boolean isNightLure)
@@ -49,13 +48,11 @@ public class ExFishingStart extends L2GameServerPacket
 		writeH(0x1e);
 		writeD(_activeChar.getObjectId());
 		writeD(_fishType); // fish type
-		writeD(_x); // x poisson
-		writeD(_y); // y poisson
-		writeD(_z); // z poisson
-		writeC(0x00); // night lure
-		writeC(0x00); //??
-		writeC((_fishType >= 7 && _fishType <= 9) ? 0x01 : 0x00); // 0 = day lure  1 = night lure
-		writeC(0x00);
+		writeD(_x); // x position
+		writeD(_y); // y position
+		writeD(_z); // z position
+		writeC(_isNightLure ? 0x01 : 0x00); // night lure
+		writeC(0x00); //show fish rank result button
 	}
 
 	/* (non-Javadoc)

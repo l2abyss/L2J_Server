@@ -53,7 +53,7 @@ public class MonRaceInfo extends L2GameServerPacket
         _speeds     = speeds;
     }
 
-//  0xf3;;EtcStatusUpdatePacket;ddddd
+//  0xf3;EtcStatusUpdatePacket;ddddd
 
 
     @Override

@@ -118,7 +118,6 @@ public class Die extends L2GameServerPacket
             writeD(_sweepable ? 0x01 : 0x00);                               // sweepable  (blue glow)
             writeD(_access.allowFixedRes() ? 0x01: 0x00);                  // 6d 04 00 00 00 - to FIXED
             writeD(_clan.getHasFort() > 0  || isInFortDefense? 0x01 : 0x00);    // 6d 05 00 00 00 - to fortress
-
         }
         else
         {
@@ -129,7 +128,12 @@ public class Die extends L2GameServerPacket
             writeD(_access.allowFixedRes() ? 0x01: 0x00);                  // 6d 04 00 00 00 - to FIXED
             writeD(0x00);    // 6d 05 00 00 00 - to fortress
         }
-
+        //TODO: protocol 152
+        /*
+        writeC(0); //?
+        writeD(0); //agathion ress button
+        writeD(0); //?
+        */
     }
 
     /* (non-Javadoc)

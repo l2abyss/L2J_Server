@@ -105,7 +105,7 @@ public final class Util
 		return (int) (angleTarget * 182.044444444);
 	}
 	
-	public static double calculateDistance(int x1, int y1, int z1, int x2, int y2)
+	public static double calculateDistance(int x1, int y1, int x2, int y2)
 	{
 		return calculateDistance(x1, y1, 0, x2, y2, 0, false);
 	}

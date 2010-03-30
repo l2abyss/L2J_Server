@@ -170,7 +170,8 @@ public final class RequestRestartPoint extends L2GameClientPacket
 					instanceId = activeChar.getInstanceId();
 					loc = new Location(activeChar.getX(), activeChar.getY(), activeChar.getZ()); // spawn them where they died
 					break;
-
+				case 6: // TODO: agathion ress
+					break;
 				case 27: // to jail
 					if (!activeChar.isInJail()) return;
 					loc = new Location(-114356, -249645, -2984);

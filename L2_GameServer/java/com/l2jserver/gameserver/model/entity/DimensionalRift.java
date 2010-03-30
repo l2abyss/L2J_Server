@@ -120,7 +120,7 @@ public class DimensionalRift
 			public void run()
 			{
 				if (_choosenRoom > -1)
-					DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn().setpartyInside(false);;
+					DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn().setpartyInside(false);
 				
 				if (reasonTP && jumps_current < getMaxJumps() && _party.getMemberCount() > deadPlayers.size())
 				{
@@ -231,7 +231,7 @@ public class DimensionalRift
 		else
 			_hasJumped = true;
 		
-		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn().setpartyInside(false);;
+		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn().setpartyInside(false);
 		_completedRooms.add(_choosenRoom);
 		_choosenRoom = -1;
 		
