@@ -234,7 +234,7 @@ public class ClanTable
 		{
 			for (Siege siege : SiegeManager.getInstance().getSieges())
 			{
-				siege.removeSiegeClan(clanId);
+				siege.removeSiegeClan(clan);
 			}
 		}
 		int fortId = clan.getHasFort();
@@ -242,7 +242,7 @@ public class ClanTable
 		{
 			for (FortSiege siege : FortSiegeManager.getInstance().getSieges())
 			{
-				siege.removeSiegeClan(clanId);
+				siege.removeSiegeClan(clan);
 			}
 		}
 		L2ClanMember leaderMember = clan.getLeader();

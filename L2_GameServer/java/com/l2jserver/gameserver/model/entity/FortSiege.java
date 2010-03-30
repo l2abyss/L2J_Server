@@ -726,7 +726,7 @@ public class FortSiege implements Siegable
 	 * This function does not do any checks and should not be called from bypass !
 	 * @param clanId The int of player's clan id
 	 */
-	public void removeSiegeClan(int clanId)
+	private void removeSiegeClan(int clanId)
 	{
 		Connection con = null;
 		PreparedStatement statement = null;
