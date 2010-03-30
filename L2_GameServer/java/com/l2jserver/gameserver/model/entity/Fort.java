@@ -84,9 +84,10 @@ public class Fort
 	private ScheduledFuture<?> _FortUpdater;
 	
 	// Spawn Data
-	protected FastList<L2Spawn> _siegeNpcs = new FastList<L2Spawn>();
-	protected FastList<L2Spawn> _npcCommanders = new FastList<L2Spawn>();
-	protected FastList<L2Spawn> _specialEnvoys = new FastList<L2Spawn>();
+	private boolean _isSuspiciousMerchantSpawned = false;
+	private FastList<L2Spawn> _siegeNpcs = new FastList<L2Spawn>();
+	private FastList<L2Spawn> _npcCommanders = new FastList<L2Spawn>();
+	private FastList<L2Spawn> _specialEnvoys = new FastList<L2Spawn>();
 	
 	private TIntIntHashMap _envoyCastles = new TIntIntHashMap(2);
 	
@@ -238,7 +239,6 @@ public class Fort
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
 				}
 			}
 		}
@@ -261,13 +261,13 @@ public class Fort
 		}
 		initNpcs(); // load and spawn npcs (Always spawned)
 		initSiegeNpcs(); // load suspicious merchants (Despawned 10mins before siege)
-		spawnNpcs(_siegeNpcs);// spawn suspicious merchants
+		//spawnSuspiciousMerchant();// spawn suspicious merchants
 		initNpcCommanders(); // npc Commanders (not monsters) (Spawned during siege)
-		spawnNpcs(_npcCommanders); // spawn npc Commanders
+		spawnNpcCommanders(); // spawn npc Commanders
 		initSpecialEnvoys(); // envoys from castles  (Spawned after fort taken)
 		if (getOwnerClan() != null && getFortState() == 0)
 		{
-			spawnNpcs(_specialEnvoys);
+			spawnSpecialEnvoys();
 			ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSpecialEnvoysDeSpawn(this), 1 * 60 * 60 * 1000); // Prepare 1hr task for special envoys despawn
 		}
 	}
@@ -296,7 +296,7 @@ public class Fort
 				// if state not decided, change state to indenpendent
 				if (_fortInst.getFortState() == 0)
 					_fortInst.setFortState(1, 0);
-				_fortInst.despawnNpcs(_specialEnvoys);
+				_fortInst.despawnSpecialEnvoys();
 			}
 			catch (Exception e)
 			{
@@ -432,7 +432,7 @@ public class Fort
 		}
 		else
 		{
-			spawnNpcs(_specialEnvoys);
+			spawnSpecialEnvoys();
 			ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSpecialEnvoysDeSpawn(this), 1 * 60 * 60 * 1000); // Prepare 1hr task for special envoys despawn
 			// if clan have already fortress, remove it
 			if (clan.getHasFort() > 0)
@@ -502,8 +502,6 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}
@@ -545,9 +543,6 @@ public class Fort
 	public void upgradeDoor(int doorId, int hp, int pDef, int mDef)
 	{
 		L2DoorInstance door = getDoor(doorId);
-		if (door == null)
-			return;
-		
 		if (door != null && door.getDoorId() == doorId)
 		{
 			door.setCurrentHp(door.getMaxHp() + hp);
@@ -622,8 +617,6 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}
@@ -780,8 +773,6 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}
@@ -821,8 +812,6 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}
@@ -859,8 +848,6 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}
@@ -890,8 +877,6 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}
@@ -923,8 +908,6 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}
@@ -996,8 +979,6 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}
@@ -1158,8 +1139,6 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}
@@ -1195,36 +1174,25 @@ public class Fort
 		return getFortType() == 0 ? 3 : 5;
 	}
 	
-	public void spawnNpcs(FastList<L2Spawn> spawnList)
-	{
-		for (L2Spawn spawnDat : spawnList)
-		{
-			spawnDat.doSpawn();
-			spawnDat.startRespawn();
-		}
-	}
-	
-	public void despawnNpcs(FastList<L2Spawn> spawnList)
-	{
-		for (L2Spawn spawnDat : spawnList)
-		{
-			spawnDat.stopRespawn();
-			spawnDat.getLastSpawn().deleteMe();
-		}
-	}
-	
-	/** FIXME: deleted
 	public void spawnSuspiciousMerchant()
 	{
+		if (_isSuspiciousMerchantSpawned)
+			return;
+		_isSuspiciousMerchantSpawned = true;
+
 		for (L2Spawn spawnDat : _siegeNpcs)
 		{
 			spawnDat.doSpawn();
 			spawnDat.startRespawn();
 		}
 	}
-	
+
 	public void despawnSuspiciousMerchant()
 	{
+		if (!_isSuspiciousMerchantSpawned)
+			return;
+		_isSuspiciousMerchantSpawned = false;
+
 		for (L2Spawn spawnDat : _siegeNpcs)
 		{
 			spawnDat.stopRespawn();
@@ -1267,7 +1235,6 @@ public class Fort
 			spawnDat.getLastSpawn().deleteMe();
 		}
 	}
-	**/
 	
 	private void initNpcs()
 	{
@@ -1323,8 +1290,6 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}
@@ -1379,8 +1344,6 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}
@@ -1436,8 +1399,6 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}
@@ -1497,8 +1458,6 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}
