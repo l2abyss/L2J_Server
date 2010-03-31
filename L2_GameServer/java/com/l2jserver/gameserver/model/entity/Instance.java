@@ -6,6 +6,7 @@ import gnu.trove.TIntProcedure;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
 
@@ -55,7 +56,7 @@ public class Instance
 	private final EjectPlayerProcedure _ejectProc;
 	
 	private FastList<L2Npc> _npcs = new FastList<L2Npc>();
-	private FastList<L2DoorInstance> _doors = new FastList<L2DoorInstance>();
+	private ArrayList<L2DoorInstance> _doors = null;
 	private int[] _spawnLoc = new int[3];
 	private boolean _allowSummon = true;
 	private long _emptyDestroyTime = -1;
@@ -222,8 +223,11 @@ public class Instance
 	 * @param doorId - from doors.csv
 	 * @param open - initial state of the door 
 	 */
-	public void addDoor(int doorId, boolean open)
+	private void addDoor(int doorId, boolean open)
 	{
+		if (_doors == null)
+			_doors = new ArrayList<L2DoorInstance>(2);
+
 		for (L2DoorInstance door: _doors)
 		{
 			if (door.getDoorId() == doorId)
@@ -263,7 +267,7 @@ public class Instance
 		return _npcs;
 	}
 
-	public FastList<L2DoorInstance> getDoors()
+	public ArrayList<L2DoorInstance> getDoors()
 	{
 		return _doors;
 	}
@@ -323,6 +327,9 @@ public class Instance
 	
 	public void removeDoors()
 	{
+		if (_doors == null)
+			return;
+
 		for (L2DoorInstance door: _doors)
 		{
 			if (door != null)
@@ -338,6 +345,7 @@ public class Instance
 			}
 		}
 		_doors.clear();
+		_doors = null;
 	}
 
 	public void loadInstanceTemplate(String filename) throws FileNotFoundException
@@ -639,7 +647,7 @@ public class Instance
 			
 			L2PcInstance player = (L2PcInstance)find;
 			
-			if (player != null && player.getInstanceId() == getId())
+			if (player.getInstanceId() == getId())
 			{
 				player.sendPacket(_packet);
 			}
