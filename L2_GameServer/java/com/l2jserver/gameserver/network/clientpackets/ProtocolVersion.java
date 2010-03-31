@@ -51,8 +51,7 @@ public final class ProtocolVersion extends L2GameClientPacket
 			// this is just a ping attempt from the new C2 client
 			getClient().closeNow();
 		}
-		else if (_version < Config.MIN_PROTOCOL_REVISION
-				|| _version > Config.MAX_PROTOCOL_REVISION)
+		else if (!Config.PROTOCOL_LIST.contains(_version))
 		{
 			LogRecord record = new LogRecord(Level.WARNING, "Wrong protocol");
 			record.setParameters(new Object[]{_version, getClient()});
