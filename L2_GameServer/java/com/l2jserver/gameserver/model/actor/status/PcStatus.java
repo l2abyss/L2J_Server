@@ -65,12 +65,12 @@ public class PcStatus extends PlayableStatus
 
 		if (getActiveChar().isInvul())
 		{
-			// other chars can't damage
-			if (attacker != getActiveChar())
-				return;
-
-			// only DOT and HP consumption allowed for damage self
-			if (!isDOT && !isHPConsumption)
+			if (attacker == getActiveChar())
+			{
+				if (!isDOT && !isHPConsumption)
+					return;
+			}
+			else
 				return;
 		}
 

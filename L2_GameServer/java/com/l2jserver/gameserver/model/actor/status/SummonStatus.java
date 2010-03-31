@@ -46,7 +46,6 @@ public class SummonStatus extends PlayableStatus
 							|| getActiveChar().getOwner().getDuelId() != attackerPlayer.getDuelId()))
 				attackerPlayer.setDuelState(Duel.DUELSTATE_INTERRUPTED);
 		}
-		
 		super.reduceHp(value, attacker, awake, isDOT, isHPConsumption);
 	}
 
