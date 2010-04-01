@@ -101,11 +101,15 @@ public abstract class NetConnection extends Thread
 		
 		int receivedBytes = 0;
 		int newBytes = 0;
-		
-		while (newBytes != -1 && receivedBytes < length - 2)
+		int left = length - 2;
+		while ((newBytes != -1) && (receivedBytes < length - 2))
 		{
-			newBytes = _tcpIn.read(data, 0, length - 2);
+			if (receivedBytes == 0)
+				newBytes = this._tcpIn.read(data, 0, left);
+			else
+				newBytes = this._tcpIn.read(data, receivedBytes, left);
 			receivedBytes += newBytes;
+			left -= newBytes;
 		}
 		
 		if (receivedBytes != length - 2)
