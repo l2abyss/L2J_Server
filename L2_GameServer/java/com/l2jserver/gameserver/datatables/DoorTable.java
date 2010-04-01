@@ -239,14 +239,14 @@ public class DoorTable
 	{
 		_staticItems.put(door.getDoorId(), door);
 
-		final ArrayList<L2DoorInstance> region;
 		if (_regions.contains(door.getMapRegion()))
-			region = _regions.get(door.getMapRegion());
+			_regions.get(door.getMapRegion()).add(door);
 		else
-			region = new ArrayList<L2DoorInstance>();
-
-		region.add(door);
-		_regions.put(door.getMapRegion(), region);
+		{
+			final ArrayList<L2DoorInstance> region = new ArrayList<L2DoorInstance>();
+			region.add(door);
+			_regions.put(door.getMapRegion(), region);
+		}
 	}
 
 	public L2DoorInstance[] getDoors()
