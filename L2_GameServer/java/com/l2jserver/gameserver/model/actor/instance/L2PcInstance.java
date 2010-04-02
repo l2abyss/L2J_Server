@@ -11527,6 +11527,16 @@ public final class L2PcInstance extends L2Playable
 	{
 		try
 		{
+			if (closeClient && getClient() != null)
+				getClient().isDetached(true); // stop receiving any packets
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+
+		try
+		{
 			abortAttack();
 			abortCast();
 			stopMove(null);
