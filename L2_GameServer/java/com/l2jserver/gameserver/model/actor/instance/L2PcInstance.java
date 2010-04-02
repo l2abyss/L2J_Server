@@ -7747,7 +7747,7 @@ public final class L2PcInstance extends L2Playable
 
 					storedSkills.add(skill.getReuseHashCode());
 
-					if (effect != null && !effect.isHerbEffect() && effect.getInUse()
+					if (!effect.isHerbEffect() && effect.getInUse()
 					        && !skill.isToggle())
 					{
 						
@@ -11525,16 +11525,6 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void deleteMe(boolean closeClient)
 	{
-		try
-		{
-			if (closeClient && getClient() != null)
-				getClient().isDetached(true); // stop receiving any packets
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "deleteMe()", e);
-		}
-
 		try
 		{
 			abortAttack();

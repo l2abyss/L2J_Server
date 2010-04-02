@@ -219,7 +219,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 		return _isDetached;
 	}
 	
-	public void isDetached(boolean b)
+	public void setDetached(boolean b)
 	{
 		_isDetached = b;
 	}
@@ -619,7 +619,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 				final L2PcInstance player = L2GameClient.this.getActiveChar();
 				if (player != null && !isDetached())
 				{
-					isDetached(true);
+					setDetached(true);
 					if (!player.isInOlympiadMode()
 							&& !player.isFestivalParticipant()
 							&& !TvTEvent.isPlayerParticipant(player.getObjectId()) && !player.isInJail())
@@ -704,7 +704,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 						L2Event.connectionLossData.put(player.getName(), data);
 					}
 					// to prevent call cleanMe() again
-					isDetached(false);
+					setDetached(false);
 
 					player.logout();
 
