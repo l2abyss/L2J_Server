@@ -60,7 +60,7 @@ public class L2Party {
 
 	//private static Logger _log = Logger.getLogger(L2Party.class.getName());
 
-	private final FastList<L2PcInstance> _members = FastList.newInstance();
+	private FastList<L2PcInstance> _members;
 	private boolean _pendingInvitation = false;
 	private int _partyLvl = 0;
 	private int _itemDistribution = 0;
@@ -82,6 +82,7 @@ public class L2Party {
 	 */
 	public L2Party(L2PcInstance leader, int itemDistribution)
 	{
+		_members = FastList.newInstance();
 		_itemDistribution = itemDistribution;
 		getPartyMembers().add(leader);
 		_partyLvl = leader.getLevel();
@@ -417,6 +418,7 @@ public class L2Party {
 						DuelManager.getInstance().onRemoveFromParty(leader);
 				}
 				FastList.recycle(_members);
+				_members = null;
 			}
 		}
 	}
@@ -562,26 +564,30 @@ public class L2Party {
 	 */
 	public void distributeAdena(L2PcInstance player, long adena, L2Character target)
 	{
-        // Get all the party members
-        List<L2PcInstance> membersList = getPartyMembers();
-
-        // Check the number of party members that must be rewarded
-        // (The party member must be in range to receive its reward)
-        List<L2PcInstance> ToReward = new FastList<L2PcInstance>();
+		// Get all the party members
+		List<L2PcInstance> membersList = getPartyMembers();
+		
+		// Check the number of party members that must be rewarded
+		// (The party member must be in range to receive its reward)
+		List<L2PcInstance> ToReward = FastList.newInstance();
 		for(L2PcInstance member : membersList)
 		{
-            if (!Util.checkIfInRange(Config.ALT_PARTY_RANGE2, target, member, true)) continue;
-            ToReward.add(member);
+			if (!Util.checkIfInRange(Config.ALT_PARTY_RANGE2, target, member, true)) continue;
+			ToReward.add(member);
 		}
-
-        // Avoid null exceptions, if any
-        if (ToReward == null || ToReward.isEmpty()) return;
-
-        // Now we can actually distribute the adena reward
-        // (Total adena splitted by the number of party members that are in range and must be rewarded)
-        long count = adena / ToReward.size();
-        for (L2PcInstance member : ToReward)
-            member.addAdena("Party", count, player, true);
+		
+		// Avoid null exceptions, if any
+		if (ToReward.isEmpty()) return;
+		
+		// Now we can actually distribute the adena reward
+		// (Total adena splitted by the number of party members that are in range and must be rewarded)
+		long count = adena / ToReward.size();
+		for (L2PcInstance member : ToReward)
+		{
+			member.addAdena("Party", count, player, true);
+		}
+		
+		FastList.recycle((FastList<?>) ToReward);
 	}
 
 	/**

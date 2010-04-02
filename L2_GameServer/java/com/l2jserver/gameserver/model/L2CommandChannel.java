@@ -119,6 +119,7 @@ public class L2CommandChannel
 			}
 		}
 		FastList.recycle((FastList<?>) _partys);
+		_partys = null;
 	}
 
 	/**
