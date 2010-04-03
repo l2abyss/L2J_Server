@@ -35,7 +35,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class L2CommandChannel
 {
-	private List<L2Party> _partys = null;
+	private final List<L2Party> _partys;
 	private L2PcInstance _commandLeader = null;
 	private int _channelLvl;
 
@@ -48,7 +48,7 @@ public class L2CommandChannel
 	public L2CommandChannel(L2PcInstance leader)
 	{
 		_commandLeader = leader;
-		_partys = FastList.newInstance();
+		_partys = new FastList<L2Party>();
 		_partys.add(leader.getParty());
 		_channelLvl = leader.getParty().getLevel();
 		leader.getParty().setCommandChannel(this);
@@ -118,8 +118,7 @@ public class L2CommandChannel
 					removeParty(party);
 			}
 		}
-		FastList.recycle((FastList<?>) _partys);
-		_partys = null;
+		_partys.clear();
 	}
 
 	/**

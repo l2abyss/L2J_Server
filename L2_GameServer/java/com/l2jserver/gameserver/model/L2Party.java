@@ -60,7 +60,7 @@ public class L2Party {
 
 	//private static Logger _log = Logger.getLogger(L2Party.class.getName());
 
-	private FastList<L2PcInstance> _members;
+	private final FastList<L2PcInstance> _members;
 	private boolean _pendingInvitation = false;
 	private int _partyLvl = 0;
 	private int _itemDistribution = 0;
@@ -82,7 +82,7 @@ public class L2Party {
 	 */
 	public L2Party(L2PcInstance leader, int itemDistribution)
 	{
-		_members = FastList.newInstance();
+		_members = new FastList<L2PcInstance>();
 		_itemDistribution = itemDistribution;
 		getPartyMembers().add(leader);
 		_partyLvl = leader.getLevel();
@@ -417,8 +417,7 @@ public class L2Party {
 					if (leader.isInDuel())
 						DuelManager.getInstance().onRemoveFromParty(leader);
 				}
-				FastList.recycle(_members);
-				_members = null;
+				_members.clear();
 			}
 		}
 	}
