@@ -72,8 +72,8 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate.AIType;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.util.Broadcast;
-import com.l2jserver.gameserver.util.StringUtil;
 import com.l2jserver.util.Rnd;
+import com.l2jserver.util.StringUtil;
 
 /**
  * This class represents a Non-Player-Character in the world. It can be a monster or a friendly character.
@@ -1631,7 +1631,7 @@ public class L2Npc extends L2Character
 				L2PcInstance player = target.getActingPlayer();
 				for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_SPELL_FINISHED))
 				{
-					quest.notifySpellFinished(((L2Npc) this), player, skill);
+					quest.notifySpellFinished(this, player, skill);
 				}
 			}
 		}

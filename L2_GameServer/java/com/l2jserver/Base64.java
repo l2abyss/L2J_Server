@@ -18,7 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import com.l2jserver.gameserver.util.StringUtil;
+import com.l2jserver.util.StringUtil;
 
 /**
  * Encodes and decodes to and from Base64 notation.

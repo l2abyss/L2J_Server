@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.skills.conditions;
 
 import java.util.ArrayList;
 
-import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
@@ -38,7 +37,7 @@ public class ConditionPlayerServitorNpcId extends Condition
 		if (!(env.player instanceof L2PcInstance))
 			return false;
 
-		if (!(env.player.getPet() instanceof L2Summon))
+		if ((env.player.getPet() == null))
 			return false;
 
 		return _npcIds == null || _npcIds.contains(env.player.getPet().getNpcId());

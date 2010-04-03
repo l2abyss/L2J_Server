@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.util.StringUtil;
 
 /**
  * Flood protector implementation.

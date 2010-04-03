@@ -27,8 +27,8 @@ package com.l2jserver.gameserver;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.lib.SqlUtils;
 import com.l2jserver.gameserver.model.L2Territory;
+import com.l2jserver.util.lib.SqlUtils;
 
 import javolution.util.FastMap;
 

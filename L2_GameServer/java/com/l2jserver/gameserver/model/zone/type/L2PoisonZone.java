@@ -29,8 +29,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
-import com.l2jserver.gameserver.util.StringUtil;
 import com.l2jserver.util.Rnd;
+import com.l2jserver.util.StringUtil;
 
 
 /**

@@ -61,7 +61,7 @@ public class DimensionalRift
 	
 	public DimensionalRift(L2Party party, byte type, byte room)
 	{
-		DimensionalRiftManager.getInstance().getRoom(type, room).setpartyInside(true);
+		DimensionalRiftManager.getInstance().getRoom(type, room).setPartyInside(true);
 		_type = type;
 		_party = party;
 		_choosenRoom = room;
@@ -120,7 +120,7 @@ public class DimensionalRift
 			public void run()
 			{
 				if (_choosenRoom > -1)
-					DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn().setpartyInside(false);
+					DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn().setPartyInside(false);
 				
 				if (reasonTP && jumps_current < getMaxJumps() && _party.getMemberCount() > deadPlayers.size())
 				{
@@ -231,14 +231,14 @@ public class DimensionalRift
 		else
 			_hasJumped = true;
 		
-		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn().setpartyInside(false);
+		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn().setPartyInside(false);
 		_completedRooms.add(_choosenRoom);
 		_choosenRoom = -1;
 		
 		for (L2PcInstance p : _party.getPartyMembers())
 			teleportToNextRoom(p);
 		
-		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).setpartyInside(true);
+		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).setPartyInside(true);
 		
 		createSpawnTimer(_choosenRoom);
 		createTeleporterTimer(true);
@@ -279,7 +279,7 @@ public class DimensionalRift
 			while (DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).ispartyInside());
 		}
 		
-		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).setpartyInside(true);
+		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).setPartyInside(true);
 		checkBossRoom(_choosenRoom);
 		int[] coords = getRoomCoord(_choosenRoom);
 		player.teleToLocation(coords[0], coords[1], coords[2]);
@@ -314,7 +314,7 @@ public class DimensionalRift
 			earthQuakeTask = null;
 		}
 		
-		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn().setpartyInside(false);
+		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).unspawn().setPartyInside(false);
 		DimensionalRiftManager.getInstance().killRift(this);
 	}
 	

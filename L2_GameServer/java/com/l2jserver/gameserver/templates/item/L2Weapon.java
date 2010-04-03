@@ -39,7 +39,7 @@ import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
-import com.l2jserver.gameserver.util.StringUtil;
+import com.l2jserver.util.StringUtil;
 
 import javolution.util.FastList;
 

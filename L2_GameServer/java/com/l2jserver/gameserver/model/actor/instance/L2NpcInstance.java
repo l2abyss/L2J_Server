@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.effects.EffectBuff;
 import com.l2jserver.gameserver.skills.effects.EffectDebuff;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-import com.l2jserver.gameserver.util.StringUtil;
+import com.l2jserver.util.StringUtil;
 
 public class L2NpcInstance extends L2Npc
 {

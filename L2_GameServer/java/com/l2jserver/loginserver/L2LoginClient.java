@@ -25,8 +25,6 @@ import org.mmocore.network.MMOClient;
 import org.mmocore.network.MMOConnection;
 
 import com.l2jserver.Config;
-import com.l2jserver.loginserver.crypt.LoginCrypt;
-import com.l2jserver.loginserver.crypt.ScrambledKeyPair;
 import com.l2jserver.loginserver.serverpackets.L2LoginServerPacket;
 import com.l2jserver.loginserver.serverpackets.LoginFail;
 import com.l2jserver.loginserver.serverpackets.PlayFail;
@@ -34,6 +32,8 @@ import com.l2jserver.loginserver.serverpackets.LoginFail.LoginFailReason;
 import com.l2jserver.loginserver.serverpackets.PlayFail.PlayFailReason;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.Util;
+import com.l2jserver.util.crypt.LoginCrypt;
+import com.l2jserver.util.crypt.ScrambledKeyPair;
 
 /**
  * Represents a client connected into the LoginServer

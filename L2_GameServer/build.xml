@@ -67,11 +67,20 @@
 
 	<target name="jar" depends="compile" description="Create the jar file">
 		<jar destfile="${build}/l2jserver.jar">
-			<fileset dir="${build.classes}" />
+			<fileset dir="${build.classes}" >
+				<exclude name="**/loginserver/**"/>
+				<exclude name="**/accountmanager/**"/>
+				<exclude name="**/gsregistering/**"/>
+			</fileset>
+		</jar>
+		<jar destfile="${build}/l2jlogin.jar">
+			<fileset dir="${build.classes}" >
+				<exclude name="**/gameserver/**"/>
+			</fileset>
 		</jar>
 		<copy todir="${build.dist.login}">
 			<fileset dir="${build}">
-				<include name="l2jserver.jar" />
+				<include name="l2jlogin.jar" />
 			</fileset>
 		</copy>
 		<copy todir="${build.dist.game}">

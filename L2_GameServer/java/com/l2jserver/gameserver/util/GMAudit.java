@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.lib.Log;
+import com.l2jserver.util.lib.Log;
 
 
 public class GMAudit

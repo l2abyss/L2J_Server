@@ -27,7 +27,7 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2Macro.L2MacroCmd;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.SendMacroList;
-import com.l2jserver.gameserver.util.StringUtil;
+import com.l2jserver.util.StringUtil;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;

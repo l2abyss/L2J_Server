@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.loginserver.GameServerTable.GameServerInfo;
-import com.l2jserver.loginserver.crypt.NewCrypt;
 import com.l2jserver.loginserver.gameserverpackets.BlowFishKey;
 import com.l2jserver.loginserver.gameserverpackets.ChangeAccessLevel;
 import com.l2jserver.loginserver.gameserverpackets.GameServerAuth;
@@ -46,6 +45,7 @@ import com.l2jserver.loginserver.loginserverpackets.KickPlayer;
 import com.l2jserver.loginserver.loginserverpackets.LoginServerFail;
 import com.l2jserver.loginserver.loginserverpackets.PlayerAuthResponse;
 import com.l2jserver.util.Util;
+import com.l2jserver.util.crypt.NewCrypt;
 import com.l2jserver.util.network.BaseSendablePacket;
 
 import javolution.util.FastSet;

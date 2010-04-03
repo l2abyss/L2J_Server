@@ -37,8 +37,8 @@ import java.util.logging.Logger;
 import javolution.util.FastList;
 
 import com.l2jserver.gameserver.util.FloodProtectorConfig;
-import com.l2jserver.gameserver.util.StringUtil;
 import com.l2jserver.util.L2Properties;
+import com.l2jserver.util.StringUtil;
 
 public final class Config
 {
@@ -554,30 +554,30 @@ public final class Config
 	//--------------------------------------------------
 	// FloodProtector Settings
 	//--------------------------------------------------
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_USE_ITEM =
-		new FloodProtectorConfig("UseItemFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_ROLL_DICE =
-		new FloodProtectorConfig("RollDiceFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_FIREWORK =
-		new FloodProtectorConfig("FireworkFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_ITEM_PET_SUMMON =
-		new FloodProtectorConfig("ItemPetSummonFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_HERO_VOICE =
-		new FloodProtectorConfig("HeroVoiceFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_GLOBAL_CHAT =
-		new FloodProtectorConfig("GlobalChatFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_SUBCLASS =
-		new FloodProtectorConfig("SubclassFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_DROP_ITEM =
-		new FloodProtectorConfig("DropItemFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_SERVER_BYPASS =
-		new FloodProtectorConfig("ServerBypassFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_MULTISELL =
-		new FloodProtectorConfig("MultiSellFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_TRANSACTION =
-		new FloodProtectorConfig("TransactionFloodProtector");
-	public static final FloodProtectorConfig FLOOD_PROTECTOR_SENDMAIL =
-		new FloodProtectorConfig("SendMailFloodProtector");
+	public static  FloodProtectorConfig FLOOD_PROTECTOR_USE_ITEM;
+		
+	public static  FloodProtectorConfig FLOOD_PROTECTOR_ROLL_DICE;
+		
+	public static  FloodProtectorConfig FLOOD_PROTECTOR_FIREWORK;
+		
+	public static  FloodProtectorConfig FLOOD_PROTECTOR_ITEM_PET_SUMMON;
+		
+	public static  FloodProtectorConfig FLOOD_PROTECTOR_HERO_VOICE;
+		
+	public static  FloodProtectorConfig FLOOD_PROTECTOR_GLOBAL_CHAT;
+		
+	public static  FloodProtectorConfig FLOOD_PROTECTOR_SUBCLASS;
+		
+	public static  FloodProtectorConfig FLOOD_PROTECTOR_DROP_ITEM;
+		
+	public static  FloodProtectorConfig FLOOD_PROTECTOR_SERVER_BYPASS;
+		
+	public static  FloodProtectorConfig FLOOD_PROTECTOR_MULTISELL;
+		
+	public static  FloodProtectorConfig FLOOD_PROTECTOR_TRANSACTION;
+		
+	public static  FloodProtectorConfig FLOOD_PROTECTOR_SENDMAIL;
+		
 
 
 	//--------------------------------------------------
@@ -962,6 +962,31 @@ public final class Config
 	{
 		if(Server.serverMode == Server.MODE_GAMESERVER)
 		{
+			FLOOD_PROTECTOR_USE_ITEM =
+				new FloodProtectorConfig("UseItemFloodProtector");
+			FLOOD_PROTECTOR_ROLL_DICE =
+				new FloodProtectorConfig("RollDiceFloodProtector");
+			FLOOD_PROTECTOR_FIREWORK =
+				new FloodProtectorConfig("FireworkFloodProtector");
+			FLOOD_PROTECTOR_ITEM_PET_SUMMON =
+				new FloodProtectorConfig("ItemPetSummonFloodProtector");
+			FLOOD_PROTECTOR_HERO_VOICE =
+				new FloodProtectorConfig("HeroVoiceFloodProtector");
+			FLOOD_PROTECTOR_GLOBAL_CHAT =
+				new FloodProtectorConfig("GlobalChatFloodProtector");
+			FLOOD_PROTECTOR_SUBCLASS =
+				new FloodProtectorConfig("SubclassFloodProtector");
+			FLOOD_PROTECTOR_DROP_ITEM =
+				new FloodProtectorConfig("DropItemFloodProtector");
+			FLOOD_PROTECTOR_SERVER_BYPASS =
+				new FloodProtectorConfig("ServerBypassFloodProtector");
+			FLOOD_PROTECTOR_MULTISELL =
+				new FloodProtectorConfig("MultiSellFloodProtector");
+			FLOOD_PROTECTOR_TRANSACTION =
+				new FloodProtectorConfig("TransactionFloodProtector");
+			FLOOD_PROTECTOR_SENDMAIL =
+				new FloodProtectorConfig("SendMailFloodProtector");
+			
 			_log.info("Loading GameServer Configuration Files...");
 			InputStream is = null;
 			try

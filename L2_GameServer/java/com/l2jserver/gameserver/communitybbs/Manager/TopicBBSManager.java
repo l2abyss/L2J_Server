@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.communitybbs.BB.Topic;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ShowBoard;
-import com.l2jserver.gameserver.util.StringUtil;
+import com.l2jserver.util.StringUtil;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;

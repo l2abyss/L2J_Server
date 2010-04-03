@@ -191,7 +191,7 @@ public class PlayableStat extends CharStat
 			L2ZoneType zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
 			int bonus = zone == null ? 0 : ((L2SwampZone) zone).getMoveBonus();
 			double dbonus = bonus / 100.0; //%
-			val += (int) val * dbonus;
+			val += val * dbonus;
 		}
 		
 		return val;

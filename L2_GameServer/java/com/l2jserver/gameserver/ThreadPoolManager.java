@@ -29,7 +29,7 @@ import org.mmocore.network.ReceivablePacket;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.network.L2GameClient;
-import com.l2jserver.gameserver.util.StringUtil;
+import com.l2jserver.util.StringUtil;
 
 /**
  * <p>This class is made to handle all the ThreadPools used in L2j.</p>

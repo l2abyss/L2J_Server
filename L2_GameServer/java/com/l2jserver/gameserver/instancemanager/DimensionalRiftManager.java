@@ -500,7 +500,7 @@ public class DimensionalRiftManager
 			return _partyInside;
 		}
 
-		public void setpartyInside(boolean partyInside)
+		public void setPartyInside(boolean partyInside)
 		{
 			_partyInside = partyInside;
 		}

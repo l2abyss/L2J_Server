@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.util;
+package com.l2jserver.util;
 
 /**
  * String utilities optimized for the best performance.

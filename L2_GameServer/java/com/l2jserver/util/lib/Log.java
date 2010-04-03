@@ -20,7 +20,7 @@
 	version 0.1, 2005-06-06
 */
 
-package com.l2jserver.gameserver.lib;
+package com.l2jserver.util.lib;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -28,9 +28,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
-
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-
 
 public class Log
 {
@@ -73,45 +70,7 @@ public class Log
 		}
 	}
 	
-	@Deprecated
-	public static final void addEvent(L2PcInstance pc, String text)
-	{
-		String date = (new SimpleDateFormat("yy.MM.dd H:mm:ss")).format(new Date());
-		String filedate = (new SimpleDateFormat("yyMMdd_H")).format(new Date());
-		
-		new File("log/game").mkdirs();
-		File file = new File("log/game/actions_" + filedate + ".txt");
-		FileWriter save = null;
-		
-		try
-		{
-			save = new FileWriter(file, true);
-			String out = "[" + date + "] '<" + pc.getName() + ">': " + text + "\n"; // "+char_name()+"
-			save.write(out);
-		}
-		catch (IOException e)
-		{
-			_log.warning("saving actions log failed: " + e);
-			e.printStackTrace();
-		}
-		finally
-		{
-			try
-			{
-				save.close();
-			}
-			catch (Exception e1)
-			{
-			}
-		}
-	}
-	
-	@Deprecated
-	public static final void Assert(boolean exp)
-	{
-		Assert(exp, "");
-	}
-	
+
 	public static final void Assert(boolean exp, String cmt)
 	{
 		if (exp)

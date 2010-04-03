@@ -57,9 +57,9 @@ import com.l2jserver.gameserver.network.loginserverpackets.LoginServerFail;
 import com.l2jserver.gameserver.network.loginserverpackets.PlayerAuthResponse;
 import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
 import com.l2jserver.gameserver.network.serverpackets.LoginFail;
-import com.l2jserver.loginserver.crypt.NewCrypt;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.Util;
+import com.l2jserver.util.crypt.NewCrypt;
 import com.l2jserver.util.network.BaseSendablePacket;
 
 public class LoginServerThread extends Thread

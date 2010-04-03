@@ -2,7 +2,7 @@
 cls
 title L2J - SQL Account Manager
 color 17
-java -Djava.util.logging.config.file=console.cfg -cp ./../libs/*;l2jserver.jar com.l2jserver.accountmanager.SQLAccountManager 2> NUL
+java -Djava.util.logging.config.file=console.cfg -cp ./../libs/*;l2jlogin.jar com.l2jserver.accountmanager.SQLAccountManager 2> NUL
 if %errorlevel% == 0 (
 echo.
 echo Execution succesful
