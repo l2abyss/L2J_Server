@@ -17,8 +17,8 @@ package com.l2jserver.util;
 
 import java.net.InetAddress;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.mmocore.network.IAcceptFilter;
@@ -117,23 +117,14 @@ public class IPv4Filter implements IAcceptFilter, Runnable
 		while (true)
 		{
 			long reference = System.currentTimeMillis() - (1000 * 300);
-			ArrayList<Integer> toRemove = new ArrayList<Integer>(50);
-			
 			synchronized (_ipFloodMap)
 			{
-				for (Entry<Integer, Flood> e : _ipFloodMap.entrySet())
+				Iterator<Entry<Integer, Flood>> it = _ipFloodMap.entrySet().iterator();
+				while (it.hasNext())
 				{
-					Flood f = e.getValue();
+					Flood f = it.next().getValue();
 					if (f.lastAccess < reference)
-						toRemove.add(e.getKey());
-				}
-			}
-			
-			synchronized (_ipFloodMap)
-			{
-				for (Integer i : toRemove)
-				{
-					_ipFloodMap.remove(i);
+						it.remove();
 				}
 			}
 			
@@ -143,7 +134,7 @@ public class IPv4Filter implements IAcceptFilter, Runnable
 			}
 			catch (InterruptedException e)
 			{
-				
+				return;
 			}
 		}
 	}
