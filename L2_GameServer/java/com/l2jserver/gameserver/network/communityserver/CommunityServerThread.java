@@ -139,7 +139,7 @@ public final class CommunityServerThread extends NetConnection
 		BaseReadPacket packet = null;
 		byte[] data = null;
 		
-		while (true)
+		while (!isInterrupted())
 		{
 			try
 			{
@@ -147,7 +147,7 @@ public final class CommunityServerThread extends NetConnection
 			}
 			catch (InterruptedException e)
 			{
-				e.printStackTrace();
+				return;
 			}
 			
 			_log.log(Level.INFO, "CommunityServerThread: Trying to connect to " + Config.COMMUNITY_SERVER_ADDRESS + " on port " + Config.COMMUNITY_SERVER_PORT + ".");
@@ -167,11 +167,12 @@ public final class CommunityServerThread extends NetConnection
 				e.printStackTrace();
 				continue;
 			}
+
 			
 			try
 			{
 				long gameServerConnectStart = System.currentTimeMillis();
-				while (true)
+				while (!isInterrupted())
 				{
 					data = super.read();
 					packetType1 = data[0] & 0xFF;
@@ -249,6 +250,8 @@ public final class CommunityServerThread extends NetConnection
 					else
 						throw new IOException("Invalid packet!");
 				}
+				if (isInterrupted())
+					forceClose(null);
 			}
 			catch (IOException e)
 			{

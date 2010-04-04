@@ -143,4 +143,11 @@ public class Util
 		return hex;
 	}
 	
+	public static byte[] generateHex(int size)
+	{
+		byte[] array = new byte[size];
+		Rnd.nextBytes(array);
+		return array;
+	}
+	
 }

@@ -33,9 +33,9 @@ import javax.swing.UIManager;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.Server;
-import com.l2jserver.gameserver.LoginServerThread;
 import com.l2jserver.i18n.LanguageControl;
 import com.l2jserver.loginserver.GameServerTable;
+import com.l2jserver.util.Util;
 
 
 /**
@@ -59,10 +59,7 @@ public abstract class BaseGameServerRegister
 		ResourceBundle bundle = null;
 		try
 		{
-			if (locale == null)
-			{
-				locale = Locale.getDefault();
-			}
+			locale = Locale.getDefault();
 			bundle = ResourceBundle.getBundle("gsregister.GSRegister", locale, LanguageControl.INSTANCE);
 		}
 		catch (Throwable t)
@@ -431,7 +428,7 @@ public abstract class BaseGameServerRegister
     
     public static void registerGameServer(int id, String outDir) throws IOException
     {
-    	byte[] hexId = LoginServerThread.generateHex(16);
+    	byte[] hexId = Util.generateHex(16);
     	GameServerTable.getInstance().registerServerOnDB(hexId, id, "");
 		
     	Properties hexSetting = new Properties();

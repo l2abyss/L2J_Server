@@ -57,7 +57,6 @@ import com.l2jserver.gameserver.network.loginserverpackets.LoginServerFail;
 import com.l2jserver.gameserver.network.loginserverpackets.PlayerAuthResponse;
 import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
 import com.l2jserver.gameserver.network.serverpackets.LoginFail;
-import com.l2jserver.util.Rnd;
 import com.l2jserver.util.Util;
 import com.l2jserver.util.crypt.NewCrypt;
 import com.l2jserver.util.network.BaseSendablePacket;
@@ -111,7 +110,7 @@ public class LoginServerThread extends Thread
 		if (_hexID == null)
 		{
 			_requestID = Config.REQUEST_ID;
-			_hexID = generateHex(16);
+			_hexID = Util.generateHex(16);
 		}
 		else
 		{
@@ -149,7 +148,7 @@ public class LoginServerThread extends Thread
 				_out = new BufferedOutputStream(_loginSocket.getOutputStream());
 				
 				//init Blowfish
-				_blowfishKey = generateHex(40);
+				_blowfishKey = Util.generateHex(40);
 				_blowfish = new NewCrypt("_;v.]05-31!|+-%xT!^[$\00");
 				while (true)
 				{
@@ -492,14 +491,7 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
-	public static byte[] generateHex(int size)
-	{
-		byte[] array = new byte[size];
-		Rnd.nextBytes(array);
-		if (Config.DEBUG)
-			_log.fine("Generated random String:  \"" + array + "\"");
-		return array;
-	}
+
 	
 	/**
 	 * @param sl
