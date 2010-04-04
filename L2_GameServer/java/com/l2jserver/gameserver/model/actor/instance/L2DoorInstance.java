@@ -82,6 +82,8 @@ public class L2DoorInstance extends L2Character
 	private boolean _open;
 	private boolean _isCommanderDoor;
 	private boolean _unlockable;
+	private boolean _isAttackableDoor = false;
+	private boolean _ShowHp = false;
 	
 	private ClanHall _clanHall;
 	
@@ -289,6 +291,26 @@ public class L2DoorInstance extends L2Character
 	{
 		return _isCommanderDoor;
 	}
+
+	public boolean getIsAttackableDoor()
+	{
+		return _isAttackableDoor;
+	}
+
+	public boolean getIsShowHp()
+	{
+		return _ShowHp;
+	}
+
+	public void setIsAttackableDoor(boolean val)
+	{
+		_isAttackableDoor = val;
+	}
+
+	public void setIsShowHp(boolean val)
+	{
+		_ShowHp = val;
+	}
 	
 	/**
 	 * Sets the delay in milliseconds for automatic opening/closing
@@ -402,7 +424,7 @@ public class L2DoorInstance extends L2Character
 			if (clan != null && clan.getClanId() == getCastle().getOwnerId())
 				return false;
 		}
-		return (isCastle || isFort);
+		return (isCastle || isFort || getIsAttackableDoor());
 	}
 	
 	public boolean isAttackable(L2Character attacker)

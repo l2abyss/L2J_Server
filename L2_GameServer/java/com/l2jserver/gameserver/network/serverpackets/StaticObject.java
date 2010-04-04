@@ -62,7 +62,7 @@ public class StaticObject extends L2GameServerPacket
         _isEnemy = door.isEnemy();
         _maxHp = door.getMaxHp();
         _currentHp = (int) door.getCurrentHp();
-        _showHp = showHp;
+        _showHp = door.getIsShowHp() || showHp;
         _damageGrade = door.getDamage();
     }
     
