@@ -156,6 +156,7 @@ public class HtmCache
 			catch (Exception e)
 			{
 				_log.warning("problem with htm file " + e);
+				e.printStackTrace();
 			}
 			finally
 			{
