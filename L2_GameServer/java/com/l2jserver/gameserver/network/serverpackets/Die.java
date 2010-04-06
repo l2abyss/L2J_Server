@@ -130,9 +130,9 @@ public class Die extends L2GameServerPacket
         }
         //TODO: protocol 152
         /*
-        writeC(0); //?
+        writeC(0); //show die animation
         writeD(0); //agathion ress button
-        writeD(0); //?
+        writeD(0); //additional free space
         */
     }
 

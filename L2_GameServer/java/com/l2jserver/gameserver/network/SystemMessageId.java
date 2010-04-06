@@ -9373,7 +9373,7 @@ public enum SystemMessageId
 	* Message: The clan, $s1, cannot declare a Clan War because their clan is less than level three,
 	* or they do not have enough members.
 	*/
-	CANNOT_DECLARE_WAR_TOO_LOW_LEVEL_OR_NOT_ENOUGH_MEMBERS(1562),
+	CANNOT_DECLARE_WAR_TOO_LOW_LEVEL_OR_NOT_ENOUGH_MEMBERS(1563),
 
 	/**
 	* ID: 1564<br>
