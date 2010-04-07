@@ -207,7 +207,6 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 	    JOptionPane.showMessageDialog(this.getFrame(), msg, title, JOptionPane.ERROR_MESSAGE);
     }
 
-	int i = 0;
 	protected void refreshServers()
 	{
 		if (!this.isLoaded())

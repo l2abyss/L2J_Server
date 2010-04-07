@@ -235,6 +235,8 @@ public class GameServerTable
 			statement.setString(3, externalHost);
 			statement.executeUpdate();
 			statement.close();
+			
+			this.register(id, new GameServerInfo(id, hexId));
 		}
 		catch (SQLException e)
 		{
