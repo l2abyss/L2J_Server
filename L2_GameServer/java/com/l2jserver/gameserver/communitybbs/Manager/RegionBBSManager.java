@@ -230,29 +230,19 @@ public class RegionBBSManager extends BaseBBSManager
 					_logChat.log(record);
 				}
 				CreatureSay cs = new CreatureSay(activeChar.getObjectId(), Say2.TELL, activeChar.getName(), ar3);
-				if (receiver != null)
+				if (!receiver.isSilenceMode() && !BlockList.isBlocked(receiver, activeChar) )
 				{
-					if (!receiver.isSilenceMode() && !BlockList.isBlocked(receiver, activeChar) )
-					{
-						receiver.sendPacket(cs);
-						activeChar.sendPacket(new CreatureSay(activeChar.getObjectId(), Say2.TELL, "->" + receiver.getName(), ar3));
-						StringUtil.append(htmlCode, "Message Sent<br><button value=\"Back\" action=\"bypass _bbsloc;playerinfo;", receiver.getName(), "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">"
-								+ "</td></tr></table></body></html>");
-						separateAndSend(htmlCode.toString(), activeChar);
-					}
-					else
-					{
-						SystemMessage sm = new SystemMessage(SystemMessageId.THE_PERSON_IS_IN_MESSAGE_REFUSAL_MODE);
-						activeChar.sendPacket(sm);
-						parsecmd("_bbsloc;playerinfo;" + receiver.getName(), activeChar);
-					}
+					receiver.sendPacket(cs);
+					activeChar.sendPacket(new CreatureSay(activeChar.getObjectId(), Say2.TELL, "->" + receiver.getName(), ar3));
+					StringUtil.append(htmlCode, "Message Sent<br><button value=\"Back\" action=\"bypass _bbsloc;playerinfo;", receiver.getName(), "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">"
+							+ "</td></tr></table></body></html>");
+					separateAndSend(htmlCode.toString(), activeChar);
 				}
 				else
 				{
-					SystemMessage sm = new SystemMessage(SystemMessageId.S1_IS_NOT_ONLINE);
-					sm.addString(ar2);
+					SystemMessage sm = new SystemMessage(SystemMessageId.THE_PERSON_IS_IN_MESSAGE_REFUSAL_MODE);
 					activeChar.sendPacket(sm);
-					sm = null;
+					parsecmd("_bbsloc;playerinfo;" + receiver.getName(), activeChar);
 				}
 			}
 			catch (StringIndexOutOfBoundsException e)

@@ -660,14 +660,10 @@ public class Castle
 		L2DoorInstance door = getDoor(doorId);
 		if (door == null)
 			return;
-		
-		if (door != null && door.getDoorId() == doorId)
-		{
-			door.setCurrentHp(door.getMaxHp() + hp);
-			
-			saveDoorUpgrade(doorId, hp, pDef, mDef);
-			return;
-		}
+
+		door.setCurrentHp(door.getMaxHp() + hp);
+
+		saveDoorUpgrade(doorId, hp, pDef, mDef);
 	}
 	
 	// =========================================================

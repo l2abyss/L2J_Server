@@ -1412,19 +1412,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
             case TARGET_FRONT_AREA:
             case TARGET_BEHIND_AREA:
             {
-                if ((!(target instanceof L2Attackable || target instanceof L2Playable)) ||  // Target
-																									// is
-																									// not
-																									// L2Attackable
-																									// or
-																									// L2PlayableInstance
-                    (getCastRange() >= 0 && (target == null || target == activeChar || target.isAlikeDead()))) // target
-																												// is
-																												// null
-																												// or
-																												// self
-																												// or
-																												// dead/faking
+                if (((target == null || target == activeChar || target.isAlikeDead()) && getCastRange() >= 0) ||
+                		(!(target instanceof L2Attackable || target instanceof L2Playable)))
                 {
                     activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
                     return _emptyTargetList;

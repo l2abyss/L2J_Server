@@ -573,7 +573,7 @@ public class LoginController
 		InetAddress address = client.getConnection().getInetAddress();
 		
 		// player disconnected meanwhile
-		if (address == null)
+		if (address == null || user == null)
 		{
 			return false;
 		}
@@ -625,14 +625,14 @@ public class LoginController
 						statement.close();
 						
 						if (Config.LOG_LOGIN_CONTROLLER)
-							Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()) + " - OK : AccountCreate", "loginlog");
+							Log.add("'" + user + "' " + address.getHostAddress() + " - OK : AccountCreate", "loginlog");
 						
 						_log.info("Created new account for " + user);
 						return true;
 						
 					}
 					if (Config.LOG_LOGIN_CONTROLLER)
-						Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()) + " - ERR : ErrCreatingACC", "loginlog");
+						Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : ErrCreatingACC", "loginlog");
 
 					_log.warning("Invalid username creation/use attempt: " + user);
 					return false;
@@ -640,7 +640,7 @@ public class LoginController
 				else 
 				{
 					if (Config.LOG_LOGIN_CONTROLLER)
-						Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()) + " - ERR : AccountMissing", "loginlog");
+						Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : AccountMissing", "loginlog");
 
 					_log.warning("Account missing for user " + user);
 					FailedLoginAttempt failedAttempt = _hackProtection.get(address);
@@ -671,16 +671,16 @@ public class LoginController
 				if (access < 0)
 				{
 					if (Config.LOG_LOGIN_CONTROLLER)
-						Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()) + " - ERR : AccountBanned", "loginlog");
+						Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : AccountBanned", "loginlog");
 				
 					client.setAccessLevel(access);
 					return false;
 				}
 				// Check IP
-				if ( address != null && userIP != null && !address.getHostAddress().equalsIgnoreCase(userIP))
+				if (userIP != null && !address.getHostAddress().equalsIgnoreCase(userIP))
 				{
 					if (Config.LOG_LOGIN_CONTROLLER)
-						Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()) + "/" + userIP + " - ERR : INCORRECT IP", "loginlog");
+						Log.add("'" + user + "' " + address.getHostAddress() + "/" + userIP + " - ERR : INCORRECT IP", "loginlog");
 					
 					return false;
 				}
@@ -727,7 +727,7 @@ public class LoginController
 		if (!ok)
 		{
 			if (Config.LOG_LOGIN_CONTROLLER)
-				Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()) + " - ERR : LoginFailed", "loginlog");
+				Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : LoginFailed", "loginlog");
 			
 			FailedLoginAttempt failedAttempt = _hackProtection.get(address);
 			int failedCount;
@@ -753,7 +753,7 @@ public class LoginController
 		{
 			_hackProtection.remove(address);
 			if (Config.LOG_LOGIN_CONTROLLER)
-				Log.add("'" + (user == null ? "null" : user) + "' " + (address == null ? "null" : address.getHostAddress()) + " - OK : LoginOk", "loginlog");
+				Log.add("'" + user + "' " + address.getHostAddress() + " - OK : LoginOk", "loginlog");
 		}
 		
 		return ok;

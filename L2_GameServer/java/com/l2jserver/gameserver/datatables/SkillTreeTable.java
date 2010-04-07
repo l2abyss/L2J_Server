@@ -428,7 +428,7 @@ public class SkillTreeTable
 		
 		skills.addAll(_fishingSkillTrees);
 		
-		if (skills == null)
+		if (skills.size() < 1)
 		{
 			// the skilltree for this class is undefined, so we give an empty list
 			_log.warning("Skilltree for fishing is not defined !");
@@ -480,7 +480,7 @@ public class SkillTreeTable
 		
 		skills.addAll(_specialSkillTrees);
 		
-		if (skills == null)
+		if (skills.size() < 1)
 		{
 			// the skilltree for this class is undefined, so we give an empty list
 			_log.warning("Skilltree for special is not defined !");
@@ -648,7 +648,7 @@ public class SkillTreeTable
 		
 		skills.addAll(_fishingSkillTrees);
 		
-		if (skills == null)
+		if (skills.size() < 1)
 		{
 			// the skilltree for this class is undefined, so we give an empty list
 			_log.warning("SkillTree for fishing is not defined !");
@@ -677,7 +677,7 @@ public class SkillTreeTable
 		
 		skills.addAll(_TransformSkillTrees);
 		
-		if (skills == null)
+		if (skills.size() < 1)
 		{
 			// the skilltree for this class is undefined, so we give an empty list
 			_log.warning("SkillTree for fishing is not defined !");

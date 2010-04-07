@@ -238,11 +238,8 @@ public class L2PlayerAI extends L2PlayableAI
 			return;
 		if (checkTargetLostOrDead(target))
 		{
-			if (target != null)
-			{
-				// Notify the target
-				setAttackTarget(null);
-			}
+			// Notify the target
+			setAttackTarget(null);
 			return;
 		}
 		if (maybeMoveToPawn(target, _actor.getPhysicalAttackRange()))

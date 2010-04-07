@@ -1291,12 +1291,7 @@ public final class Formulas
 
 		// Def bonusses in PvP fight
 		if(isPvP)
-		{
-			if(skill == null)
-				defence *= target.calcStat(Stats.PVP_PHYSICAL_DEF, 1, null, null);
-			else
-				defence *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);	
-		}
+			defence *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);	
 
 		if(ss)
 			damage *= 2.;
@@ -1329,12 +1324,7 @@ public final class Formulas
 		
 		// Dmg bonusses in PvP fight
 		if(isPvP)
-		{
-			if(skill == null)
-				damage *= attacker.calcStat(Stats.PVP_PHYSICAL_DMG, 1, null, null);
-			else
-				damage *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);	
-		}
+			damage *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);	
 		else if (target instanceof L2Attackable && !target.isRaid() && !target.isRaidMinion()
 				&& target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY && attacker.getActingPlayer() != null
 				&& (target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2)

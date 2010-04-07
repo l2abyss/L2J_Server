@@ -87,9 +87,6 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 	 */
 	public static void main(String[] args)
 	{
-		Locale locale = null;
-		
-		
 		try
         {
 	        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -98,11 +95,8 @@ public class ConfigUserInterface extends JFrame implements ActionListener
         {
         	// couldn't care less
         }
-		if (locale == null)
-			{
-				locale = Locale.getDefault();
-			}
-		final ResourceBundle bundle = ResourceBundle.getBundle("configurator.Configurator", locale, LanguageControl.INSTANCE);
+
+        final ResourceBundle bundle = ResourceBundle.getBundle("configurator.Configurator", Locale.getDefault(), LanguageControl.INSTANCE);
 
         SwingUtilities.invokeLater
         (

@@ -17,7 +17,6 @@ package com.l2jserver.i18n;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
@@ -54,18 +53,15 @@ public class LanguageControl extends Control
 			format = "properties";
 			String bundleName = toBundleName(baseName, locale);
 			String resourceName = LANGUAGES_DIRECTORY + toResourceName(bundleName, format);
-			InputStream stream = new FileInputStream(resourceName);
-			if (stream != null)
+			BufferedInputStream bis = null;
+			try
 			{
-				BufferedInputStream bis = new BufferedInputStream(stream);
-				try
-				{
-					bundle = new PropertyResourceBundle(bis);
-				}
-				finally
-				{
-					bis.close();
-				}
+				bis = new BufferedInputStream(new FileInputStream(resourceName));
+				bundle = new PropertyResourceBundle(bis);
+			}
+			finally
+			{
+				bis.close();
 			}
 		}
 		return bundle;

@@ -113,8 +113,7 @@ public class L2UIKeysSettings
 		
 		try
 		{
-			if (con == null)
-				con = L2DatabaseFactory.getInstance().getConnection();
+			con = L2DatabaseFactory.getInstance().getConnection();
 			
 			statement = con.prepareStatement(query);
 			statement.execute();

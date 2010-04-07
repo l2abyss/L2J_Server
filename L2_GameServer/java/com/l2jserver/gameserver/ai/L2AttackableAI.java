@@ -1420,13 +1420,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				{
 					if(sk.getTargetType() == SkillTargetType.TARGET_ONE)
 					{
-						
-						if(attackTarget != null && !attackTarget.isDead() && dist2<=srange)
+						if(!attackTarget.isDead() && dist2 <= srange)
 						{
-							
-
-							
-							if(dist2>range || attackTarget.isMoving())
+							if(dist2 > range || attackTarget.isMoving())
 							{
 								if (attackTarget.getFirstEffect(sk) == null)
 								{
@@ -1437,7 +1433,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 								}
 							}
 						}
-
 
 						L2Character target = EffectTargetReconsider(sk,false);
 						if (target != null)
@@ -1971,7 +1966,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				//If there is nearby Target with aggro, start going on random target that is attackable
 				for (L2Character obj : _actor.getKnownList().getKnownCharactersInRadius(range))
 				{
-					if(obj.isDead() || obj == null || !GeoData.getInstance().canSeeTarget(_actor,obj))
+					if(obj.isDead() || !GeoData.getInstance().canSeeTarget(_actor,obj))
 						continue;
 					try
 					{
@@ -2014,7 +2009,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				int range = 0;
 				for(L2Character obj: _actor.getKnownList().getKnownCharactersInRadius(range))
 				{
-					if(!(obj instanceof L2Attackable) || obj.isDead() || obj == null || !GeoData.getInstance().canSeeTarget(_actor,obj))
+					if(!(obj instanceof L2Attackable) || obj.isDead() || !GeoData.getInstance().canSeeTarget(_actor,obj))
 						continue;
 					
 					L2Attackable targets = ((L2Attackable)obj);

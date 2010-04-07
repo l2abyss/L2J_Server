@@ -872,7 +872,7 @@ public class CharEffectList
 		_stackedEffects.put(newEffect.getStackType(), stackQueue);
 
 		// Get the first stacked effect of the Stack group selected
-		if (stackQueue != null && !stackQueue.isEmpty())
+		if (!stackQueue.isEmpty())
 		{
 			effectToAdd = listsContains(stackQueue.get(0));
 		}
