@@ -6371,11 +6371,13 @@ public abstract class L2Character extends L2Object
 					if (!Config.RAID_DISABLE_CURSE
 							&& ((target.isRaid() && target.giveRaidCurse() && getLevel() > target.getLevel() + 8)
 							||
-							(!skill.isOffensive() && targetsAttackTarget != null && targetsAttackTarget.isRaid() 
+							(!skill.isOffensive() && targetsAttackTarget != null && targetsAttackTarget.isRaid()
+									&& targetsAttackTarget.giveRaidCurse()
 									&& targetsAttackTarget.getAttackByList().contains(target) // has attacked raid
 									&& getLevel() > targetsAttackTarget.getLevel() + 8)
 							||
-							(!skill.isOffensive() && targetsCastTarget != null && targetsCastTarget.isRaid() 
+							(!skill.isOffensive() && targetsCastTarget != null && targetsCastTarget.isRaid()
+									&& targetsCastTarget.giveRaidCurse()
 									&& targetsCastTarget.getAttackByList().contains(target) // has attacked raid
 									&& getLevel() > targetsCastTarget.getLevel() + 8))
 					)
@@ -6395,7 +6397,7 @@ public abstract class L2Character extends L2Object
 						}
 						else
 						{
-							L2Skill tempSkill = SkillTable.FrequentSkill.RAID_CURSE.getSkill();
+							L2Skill tempSkill = SkillTable.FrequentSkill.RAID_CURSE2.getSkill();
 							if(tempSkill != null)
 							{
 								abortAttack();
