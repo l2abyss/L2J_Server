@@ -712,15 +712,15 @@ public class RecipeController
 			
 			for (L2RecipeStatInstance altStatChange : _recipeList.getAltStatChange())
 			{
-				if (altStatChange.getType() == L2RecipeStatInstance.statType.XP)
+				if (altStatChange.getType() == L2RecipeStatInstance.StatType.XP)
 				{
 					_exp = altStatChange.getValue();
 				}
-				else if (altStatChange.getType() == L2RecipeStatInstance.statType.SP)
+				else if (altStatChange.getType() == L2RecipeStatInstance.StatType.SP)
 				{
 					_sp = altStatChange.getValue();
 				}
-				else if (altStatChange.getType() == L2RecipeStatInstance.statType.GIM)
+				else if (altStatChange.getType() == L2RecipeStatInstance.StatType.GIM)
 				{
 					_itemGrab *= altStatChange.getValue();
 				}
@@ -738,7 +738,7 @@ public class RecipeController
 			for (L2RecipeStatInstance statUse : _recipeList.getStatUse())
 			{
 				double modifiedValue = statUse.getValue() / _creationPasses;
-				if (statUse.getType() == L2RecipeStatInstance.statType.HP)
+				if (statUse.getType() == L2RecipeStatInstance.StatType.HP)
 				{
 					// we do not want to kill the player, so its CurrentHP must be greater than the reduce value 
 					if (_player.getCurrentHp() <= modifiedValue)
@@ -760,7 +760,7 @@ public class RecipeController
 					else if (isReduce)
 						_player.reduceCurrentHp(modifiedValue, _player, _skill);
 				}
-				else if (statUse.getType() == L2RecipeStatInstance.statType.MP)
+				else if (statUse.getType() == L2RecipeStatInstance.StatType.MP)
 				{
 					if (_player.getCurrentMp() < modifiedValue)
 					{

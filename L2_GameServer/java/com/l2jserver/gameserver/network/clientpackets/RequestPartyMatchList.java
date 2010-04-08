@@ -17,8 +17,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.network.serverpackets.ListPartyWating;
 
 
 /**
@@ -33,16 +31,11 @@ public class RequestPartyMatchList extends L2GameClientPacket
 	private static Logger _log = Logger.getLogger(RequestPartyMatchList.class.getName());
 
 	private int _status;
-    @SuppressWarnings("unused")
-	private int _unk1;
-    @SuppressWarnings("unused")
-	private int _unk2;
-    @SuppressWarnings("unused")
-	private int _unk3;
-    @SuppressWarnings("unused")
-	private int _unk4;
-    @SuppressWarnings("unused")
-	private String _unk5;
+    /*private int _unk1;
+    private int _unk2;
+    private int _unk3;
+    private int _unk4;
+    private String _unk5;*/
 
 
 	@Override
@@ -70,9 +63,8 @@ public class RequestPartyMatchList extends L2GameClientPacket
 
 			//Collection<L2PcInstance> players = L2World.getInstance().getAllPlayers();
 			//L2PcInstance[] allPlayers = players.toArray(new L2PcInstance[players.size()]);
-			L2PcInstance[] empty = new L2PcInstance[] { };
-			@SuppressWarnings("unused")
-			ListPartyWating matchList = new ListPartyWating(empty);
+			//L2PcInstance[] empty = new L2PcInstance[] { };
+			//ListPartyWating matchList = new ListPartyWating(empty);
 			//sendPacket(matchList);
 		}
 		else if (_status == 3)

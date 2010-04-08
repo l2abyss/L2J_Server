@@ -127,7 +127,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 					break;
 
 				case 3: // to fortress
-					fort = FortManager.getInstance().getFort(activeChar);
+					//fort = FortManager.getInstance().getFort(activeChar);
 
 					if ((activeChar.getClan() == null || activeChar.getClan().getHasFort() == 0) && !isInDefense)
 					{

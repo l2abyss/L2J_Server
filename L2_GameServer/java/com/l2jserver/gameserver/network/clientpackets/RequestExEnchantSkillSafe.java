@@ -132,14 +132,14 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 			boolean check = player.getStat().removeExpAndSp(0, requiredSp, false);
 			check &= player.destroyItem("Consume", spb.getObjectId(), 1, player, true);
 
+			check &= player.destroyItemByItemId("Consume", 57, requireditems, player, true);
+
 			if (!check)
 			{
 				player.sendPacket(new SystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
 				return;
 			}
-
-			check &= player.destroyItemByItemId("Consume", 57, requireditems, player, true);
-
+			
 			// ok. Destroy ONE copy of the book
 			if (Rnd.get(100) <= rate)
 			{

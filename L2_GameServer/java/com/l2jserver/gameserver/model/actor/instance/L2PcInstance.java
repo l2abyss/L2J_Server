@@ -908,9 +908,9 @@ public final class L2PcInstance extends L2Playable
     }
 
     //summon friend
-    private summonRequest _summonRequest = new summonRequest();
+    private SummonRequest _summonRequest = new SummonRequest();
 
-    public class summonRequest
+    public class SummonRequest
     {
     	private L2PcInstance _target = null;
     	private L2Skill _skill = null;
@@ -933,9 +933,9 @@ public final class L2PcInstance extends L2Playable
     }
     
     // open/close gates
-    private gatesRequest _gatesRequest = new gatesRequest();
+    private GatesRequest _gatesRequest = new GatesRequest();
     
-    public class gatesRequest
+    public class GatesRequest
     {
     	private L2DoorInstance _target = null;
     	public void setTarget(L2DoorInstance door)
@@ -6140,7 +6140,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * Return the L2PcInstance requester of a transaction (ex : FriendInvite, JoinAlly, JoinParty...).<BR><BR>
 	 */
-	public L2PcInstance getActiveRequester()
+	public synchronized L2PcInstance getActiveRequester()
 	{
 		if (_activeRequester != null)
 		{
@@ -9888,6 +9888,13 @@ public final class L2PcInstance extends L2Playable
 
 		broadcastUserInfo();
 	}
+	
+	public void setObserverCords(int x, int y, int z)
+	{
+		_obsX = getX();
+		_obsY = getY();
+		_obsZ = getZ();
+	}
 
 	public void enterOlympiadObserverMode(int x, int y, int z, int id, boolean storeCoords)
     {
@@ -9943,6 +9950,7 @@ public final class L2PcInstance extends L2Playable
 			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 
         _observerMode = false;
+		setObserverCords(0, 0, 0);
 		sendPacket(new ObservationReturn(this));
 		broadcastUserInfo();
 	}
@@ -9963,6 +9971,7 @@ public final class L2PcInstance extends L2Playable
         Olympiad.removeSpectator(_olympiadGameId, this);
         _olympiadGameId = -1;
         _observerMode = false;
+        setObserverCords(0, 0, 0);
 		broadcastUserInfo();
     }
 
@@ -13666,7 +13675,7 @@ public final class L2PcInstance extends L2Playable
     	return _canFeed ? (getCurrentFeed() < (0.55 * getPetData(getMountNpcId()).getPetMaxFeed())):false;
     }
     
-	public class dismount implements Runnable
+	public class Dismount implements Runnable
 	{
 		public void run()
 		{
@@ -13683,7 +13692,7 @@ public final class L2PcInstance extends L2Playable
 
 	public void enteredNoLanding(int delay)
 	{
-		_dismountTask = ThreadPoolManager.getInstance().scheduleGeneral(new L2PcInstance.dismount(), delay * 1000);
+		_dismountTask = ThreadPoolManager.getInstance().scheduleGeneral(new L2PcInstance.Dismount(), delay * 1000);
 	}
 
 	public void exitedNoLanding()

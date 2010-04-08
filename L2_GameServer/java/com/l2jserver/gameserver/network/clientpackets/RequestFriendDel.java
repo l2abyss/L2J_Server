@@ -97,7 +97,7 @@ public final class RequestFriendDel extends L2GameClientPacket{
 		    L2PcInstance player = L2World.getInstance().getPlayer(_name);
 		    if (player != null)
 		    {
-		    	player.getFriendList().remove(new Integer(activeChar.getObjectId()));
+		    	player.getFriendList().remove(Integer.valueOf(activeChar.getObjectId()));
 		    	player.sendPacket(new FriendPacket(false, activeChar.getObjectId()));
 		    }
 		}

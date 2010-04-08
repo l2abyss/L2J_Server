@@ -524,7 +524,7 @@ public class Quest extends ManagedScript
 		return showResult(player, res);
 	}
 
-	public class tmpOnSkillSee implements Runnable
+	public class TmpOnSkillSee implements Runnable
 	{
 		private L2Npc _npc;
 		private L2PcInstance _caster;
@@ -532,7 +532,7 @@ public class Quest extends ManagedScript
 		private L2Object[] _targets;
 		private boolean _isPet;
 		
-		public tmpOnSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
+		public TmpOnSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
 		{
 			_npc = npc;
 			_caster = caster;
@@ -559,7 +559,7 @@ public class Quest extends ManagedScript
 	
 	public final boolean notifySkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
 	{
-		ThreadPoolManager.getInstance().executeAi(new tmpOnSkillSee(npc, caster, skill, targets, isPet));
+		ThreadPoolManager.getInstance().executeAi(new TmpOnSkillSee(npc, caster, skill, targets, isPet));
 		return true;
 	}
 	
@@ -577,13 +577,13 @@ public class Quest extends ManagedScript
 		return showResult(attacker, res);
 	}
 
-	public class tmpOnAggroEnter implements Runnable
+	public class TmpOnAggroEnter implements Runnable
 	{
 		private L2Npc _npc;
 		private L2PcInstance _pc;
 		private boolean _isPet;
 		
-		public tmpOnAggroEnter(L2Npc npc, L2PcInstance pc, boolean isPet)
+		public TmpOnAggroEnter(L2Npc npc, L2PcInstance pc, boolean isPet)
 		{
 			_npc = npc;
 			_pc = pc;
@@ -607,7 +607,7 @@ public class Quest extends ManagedScript
 	}
 	public final boolean notifyAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isPet)
 	{
-		ThreadPoolManager.getInstance().executeAi(new tmpOnAggroEnter(npc, player, isPet));
+		ThreadPoolManager.getInstance().executeAi(new TmpOnAggroEnter(npc, player, isPet));
 		return true;
 	}
 	

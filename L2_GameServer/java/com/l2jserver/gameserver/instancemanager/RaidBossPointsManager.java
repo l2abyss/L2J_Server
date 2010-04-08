@@ -124,7 +124,7 @@ public class RaidBossPointsManager
     public final static void addPoints(L2PcInstance player, int bossId, int points)
     {
     	int ownerId = player.getObjectId();
-    	Map<Integer, Integer> tmpPoint = new FastMap<Integer, Integer>();
+    	Map<Integer, Integer> tmpPoint;
 		if (_list == null)
 			_list = new FastMap<Integer, Map<Integer, Integer>>();
     	tmpPoint = _list.get(ownerId);
@@ -147,7 +147,7 @@ public class RaidBossPointsManager
 
 	public final static int getPointsByOwnerId(int ownerId)
 	{
-		Map<Integer, Integer> tmpPoint = new FastMap<Integer, Integer>();
+		Map<Integer, Integer> tmpPoint;
 		if (_list == null)
 			_list = new FastMap<Integer, Map<Integer, Integer>>();
 		tmpPoint = _list.get(ownerId);

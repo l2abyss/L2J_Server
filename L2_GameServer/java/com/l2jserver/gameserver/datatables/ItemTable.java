@@ -821,14 +821,14 @@ public class ItemTable
 				if (raid.getFirstCommandChannelAttacked() != null && !Config.AUTO_LOOT_RAIDS)
 				{
 					item.setOwnerId(raid.getFirstCommandChannelAttacked().getChannelLeader().getObjectId());
-					itemLootShedule = ThreadPoolManager.getInstance().scheduleGeneral(new resetOwner(item), Config.LOOT_RAIDS_PRIVILEGE_INTERVAL);
+					itemLootShedule = ThreadPoolManager.getInstance().scheduleGeneral(new ResetOwner(item), Config.LOOT_RAIDS_PRIVILEGE_INTERVAL);
 					item.setItemLootShedule(itemLootShedule);
 				}
 			}
 			else if (!Config.AUTO_LOOT) // other mobs loot privilege
 			{
 				item.setOwnerId(actor.getObjectId());
-				itemLootShedule = ThreadPoolManager.getInstance().scheduleGeneral(new resetOwner(item), 15000);
+				itemLootShedule = ThreadPoolManager.getInstance().scheduleGeneral(new ResetOwner(item), 15000);
 				item.setItemLootShedule(itemLootShedule);
 			}
 		}
@@ -991,11 +991,11 @@ public class ItemTable
 		load();
 	}
 	
-	protected class resetOwner implements Runnable
+	protected class ResetOwner implements Runnable
 	{
 		L2ItemInstance _item;
 		
-		public resetOwner(L2ItemInstance item)
+		public ResetOwner(L2ItemInstance item)
 		{
 			_item = item;
 		}

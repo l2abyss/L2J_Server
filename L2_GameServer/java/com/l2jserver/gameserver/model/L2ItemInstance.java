@@ -900,7 +900,6 @@ public final class L2ItemInstance extends L2Object
 			PreparedStatement statement = con.prepareStatement("SELECT augAttributes,augSkillId,augSkillLevel,elemType,elemValue FROM item_attributes WHERE itemId=?");
 			statement.setInt(1, getObjectId());
 			ResultSet rs = statement.executeQuery();
-			rs = statement.executeQuery();
 			if (rs.next())
 			{
 				int aug_attributes = rs.getInt(1);
@@ -1434,13 +1433,13 @@ public final class L2ItemInstance extends L2Object
      * <li> Call Pet</li><BR>
      *
      */
-	public class doItemDropTask implements Runnable
+	public class ItemDropTask implements Runnable
 	{
 		private int _x,_y,_z;
 		private final L2Character _dropper;
 		private final L2ItemInstance _itm;
 
-		public doItemDropTask(L2ItemInstance item, L2Character dropper, int x, int y, int z)
+		public ItemDropTask(L2ItemInstance item, L2Character dropper, int x, int y, int z)
 		{
 			_x = x;
 			_y = y;
@@ -1492,7 +1491,7 @@ public final class L2ItemInstance extends L2Object
 
 	public final void dropMe(L2Character dropper, int x, int y, int z)
 	{
-		ThreadPoolManager.getInstance().executeTask(new doItemDropTask(this, dropper, x, y, z));
+		ThreadPoolManager.getInstance().executeTask(new ItemDropTask(this, dropper, x, y, z));
 	}
 
 	/**

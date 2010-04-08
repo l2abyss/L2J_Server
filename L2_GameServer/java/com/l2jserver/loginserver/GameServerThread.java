@@ -335,8 +335,7 @@ public class GameServerThread extends Thread
 			{
 				_log.info("ServerStatus received");
 			}
-			@SuppressWarnings("unused")
-			ServerStatus ss = new ServerStatus(data,getServerId()); //will do the actions by itself
+			new ServerStatus(data,getServerId()); //will do the actions by itself
 		}
 		else
 		{

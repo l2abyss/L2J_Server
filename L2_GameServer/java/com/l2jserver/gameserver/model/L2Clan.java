@@ -1418,7 +1418,7 @@ public class L2Clan
     		if(sk.getId() == id)
     		{
     			deleteSkill = sk;
-    			return;
+    			break;
     		}
     	}
     	_skillList.remove(deleteSkill);

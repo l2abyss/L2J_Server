@@ -1272,7 +1272,7 @@ public abstract class L2Character extends L2Object
 	 */
 	private boolean doAttackHitByPole(Attack attack, L2Character target, int sAtk)
 	{
-		double angleChar;
+		//double angleChar;
 		int maxRadius = getPhysicalAttackRange();
 		int maxAngleDiff = (int)getStat().calcStat(Stats.POWER_ATTACK_ANGLE, 120, null, null);
 
@@ -1304,12 +1304,12 @@ public abstract class L2Character extends L2Object
 		// Degree of o2 in respect to 01 = -40 (320) degree
 
 		// Get char's heading degree
-		angleChar = Util.convertHeadingToDegree(getHeading());
+		//angleChar = Util.convertHeadingToDegree(getHeading());
 		int attackRandomCountMax = (int)getStat().calcStat(Stats.ATTACK_COUNT_MAX, 3, null, null) - 1;
 		int attackcount = 0;
 
-		if (angleChar <= 0)
-            angleChar += 360;
+		/*if (angleChar <= 0)
+            angleChar += 360;*/
 		// ===========================================================
 
 		boolean hitted = doAttackHitSimple(attack, target, 100, sAtk);

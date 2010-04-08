@@ -171,7 +171,7 @@ abstract class AbstractAI implements Ctrl
 		return _intention;
 	}
 	
-	protected synchronized void setCastTarget(L2Character target)
+	protected void setCastTarget(L2Character target)
 	{
 		_castTarget = target;
 	}
@@ -184,7 +184,7 @@ abstract class AbstractAI implements Ctrl
 		return _castTarget;
 	}
 	
-	protected synchronized void setAttackTarget(L2Character target)
+	protected void setAttackTarget(L2Character target)
 	{
 		_attackTarget = target;
 	}
@@ -936,7 +936,7 @@ abstract class AbstractAI implements Ctrl
 		return _target;
 	}
 	
-	protected synchronized void setTarget(L2Object target)
+	protected void setTarget(L2Object target)
 	{
 		_target = target;
 	}

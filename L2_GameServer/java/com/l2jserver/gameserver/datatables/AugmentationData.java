@@ -113,7 +113,7 @@ public class AugmentationData
 	private ArrayList<?>[] _redSkills = new ArrayList[10];
 	private ArrayList<?>[] _yellowSkills = new ArrayList[10];
 
-	private TIntObjectHashMap<augmentationSkill> _allSkills = new TIntObjectHashMap<augmentationSkill>(); 
+	private TIntObjectHashMap<AugmentationSkill> _allSkills = new TIntObjectHashMap<AugmentationSkill>(); 
 
 	// =========================================================
 	// Constructor
@@ -121,15 +121,15 @@ public class AugmentationData
 	{
 		_log.info("Initializing AugmentationData.");
 		
-		_augStats[0] = new ArrayList<augmentationStat>();
-		_augStats[1] = new ArrayList<augmentationStat>();
-		_augStats[2] = new ArrayList<augmentationStat>();
-		_augStats[3] = new ArrayList<augmentationStat>();
+		_augStats[0] = new ArrayList<AugmentationStat>();
+		_augStats[1] = new ArrayList<AugmentationStat>();
+		_augStats[2] = new ArrayList<AugmentationStat>();
+		_augStats[3] = new ArrayList<AugmentationStat>();
 		
-		_augAccStats[0] = new ArrayList<augmentationStat>();
-		_augAccStats[1] = new ArrayList<augmentationStat>();
-		_augAccStats[2] = new ArrayList<augmentationStat>();
-		_augAccStats[3] = new ArrayList<augmentationStat>();
+		_augAccStats[0] = new ArrayList<AugmentationStat>();
+		_augAccStats[1] = new ArrayList<AugmentationStat>();
+		_augAccStats[2] = new ArrayList<AugmentationStat>();
+		_augAccStats[3] = new ArrayList<AugmentationStat>();
 
 		// Lookup tables structure: STAT1 represent first stat, STAT2 - second.
 		// If both values are the same - use solo stat, if different - combined.
@@ -206,12 +206,12 @@ public class AugmentationData
 	// =========================================================
 	// Nested Class
 	
-	public class augmentationSkill
+	public class AugmentationSkill
 	{
 		private int _skillId;
 		private int _skillLevel;
 		
-		public augmentationSkill(int skillId, int skillLevel)
+		public AugmentationSkill(int skillId, int skillLevel)
 		{
 			_skillId = skillId;
 			_skillLevel = skillLevel;
@@ -223,7 +223,7 @@ public class AugmentationData
 		}
 	}
 	
-	public class augmentationStat
+	public class AugmentationStat
 	{
 		private final Stats _stat;
 		private final int _singleSize;
@@ -231,7 +231,7 @@ public class AugmentationData
 		private final float _singleValues[];
 		private final float _combinedValues[];
 		
-		public augmentationStat(Stats stat, float sValues[], float cValues[])
+		public AugmentationStat(Stats stat, float sValues[], float cValues[])
 		{
 			_stat = stat;
 			_singleSize = sValues.length;
@@ -350,7 +350,7 @@ public class AugmentationData
 							else
 								((ArrayList<Integer>)_redSkills[k]).add(augmentationId);
 
-							_allSkills.put(augmentationId, new augmentationSkill(skillId, skillLvL));
+							_allSkills.put(augmentationId, new AugmentationSkill(skillId, skillLvL));
 						}
 					}
 				}
@@ -424,7 +424,7 @@ public class AugmentationData
 									}
 								}
 								// store this stat
-								((ArrayList<augmentationStat>) _augStats[(i - 1)]).add(new augmentationStat(Stats.valueOfXml(statName), soloValues, combinedValues));
+								((ArrayList<AugmentationStat>) _augStats[(i - 1)]).add(new AugmentationStat(Stats.valueOfXml(statName), soloValues, combinedValues));
 							}
 						}
 					}
@@ -494,7 +494,7 @@ public class AugmentationData
 									}
 								}
 								// store this stat
-								((ArrayList<augmentationStat>) _augAccStats[(i - 1)]).add(new augmentationStat(Stats.valueOfXml(statName), soloValues, combinedValues));
+								((ArrayList<AugmentationStat>) _augAccStats[(i - 1)]).add(new AugmentationStat(Stats.valueOfXml(statName), soloValues, combinedValues));
 							}
 						}
 					}
@@ -793,14 +793,14 @@ public class AugmentationData
 				byte stat2 = STATS2_MAP[stat];
 				if (stat1 == stat2) // solo stat
 				{
-					augmentationStat as = ((augmentationStat) _augStats[color].get(stat1));
+					AugmentationStat as = ((AugmentationStat) _augStats[color].get(stat1));
 					temp.add(new AugStat(as.getStat(), as.getSingleStatValue(level)));
 				}
 				else // combined stat
 				{
-					augmentationStat as = ((augmentationStat) _augStats[color].get(stat1));					
+					AugmentationStat as = ((AugmentationStat) _augStats[color].get(stat1));					
 					temp.add(new AugStat(as.getStat(), as.getCombinedStatValue(level)));
-					as = ((augmentationStat) _augStats[color].get(stat2));
+					as = ((AugmentationStat) _augStats[color].get(stat2));
 					temp.add(new AugStat(as.getStat(), as.getCombinedStatValue(level)));
 				}
 			}
@@ -859,14 +859,14 @@ public class AugmentationData
 					byte stat2 = ACC_STATS2_MAP[stat];
 					if (stat1 == stat2) // solo
 					{
-						augmentationStat as = ((augmentationStat) _augAccStats[color].get(stat1));					
+						AugmentationStat as = ((AugmentationStat) _augAccStats[color].get(stat1));					
 						temp.add(new AugStat(as.getStat(), as.getSingleStatValue(level)));
 					}
 					else // combined
 					{
-						augmentationStat as = ((augmentationStat) _augAccStats[color].get(stat1));					
+						AugmentationStat as = ((AugmentationStat) _augAccStats[color].get(stat1));					
 						temp.add(new AugStat(as.getStat(), as.getCombinedStatValue(level)));
-						as = ((augmentationStat) _augAccStats[color].get(stat2));
+						as = ((AugmentationStat) _augAccStats[color].get(stat2));
 						temp.add(new AugStat(as.getStat(), as.getCombinedStatValue(level)));
 					}
 				}
@@ -881,7 +881,7 @@ public class AugmentationData
 	 */
 	public L2Skill getAugSkillById(int augmentationId)
 	{
-		final augmentationSkill temp = _allSkills.get(augmentationId); 
+		final AugmentationSkill temp = _allSkills.get(augmentationId); 
 		if (temp == null)
 			return null;
 

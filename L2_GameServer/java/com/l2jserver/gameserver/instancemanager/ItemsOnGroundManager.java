@@ -46,14 +46,14 @@ public class ItemsOnGroundManager
 	static final Logger _log = Logger.getLogger(ItemsOnGroundManager.class.getName());
 	
 	protected FastList<L2ItemInstance> _items = null;
-	private final storeInDb _task = new storeInDb();
+	private final StoreInDb _task = new StoreInDb();
 	
 	private ItemsOnGroundManager()
 	{
 		if (Config.SAVE_DROPPED_ITEM)
 			_items = new FastList<L2ItemInstance>();
 		if (Config.SAVE_DROPPED_ITEM_INTERVAL > 0)
-			ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new storeInDb(), Config.SAVE_DROPPED_ITEM_INTERVAL, Config.SAVE_DROPPED_ITEM_INTERVAL);
+			ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new StoreInDb(), Config.SAVE_DROPPED_ITEM_INTERVAL, Config.SAVE_DROPPED_ITEM_INTERVAL);
 		load();
 	}
 	
@@ -221,7 +221,7 @@ public class ItemsOnGroundManager
 		}
 	}
 	
-	protected class storeInDb extends Thread
+	protected class StoreInDb extends Thread
 	{
 		@Override
 		public synchronized void run()

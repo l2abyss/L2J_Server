@@ -19,7 +19,7 @@ package com.l2jserver.gameserver.model;
  */
 public class L2RecipeStatInstance
 {
-    public static enum statType
+    public static enum StatType
     {
     	HP,
     	MP,
@@ -32,7 +32,7 @@ public class L2RecipeStatInstance
     }
 
 	/** The Identifier of the statType */
-    private statType _type;
+    private StatType _type;
 
 	/** The value of the statType */
     private int _value;
@@ -43,7 +43,7 @@ public class L2RecipeStatInstance
     public L2RecipeStatInstance(String type, int value)
     {
 		try {
-			_type = Enum.valueOf(statType.class, type);
+			_type = Enum.valueOf(StatType.class, type);
 		} catch (Exception e) {
 			throw new IllegalArgumentException();
 		}
@@ -53,7 +53,7 @@ public class L2RecipeStatInstance
 	/**
 	 * Return the the type of the L2RecipeStatInstance.<BR><BR>
 	 */
-    public statType getType()
+    public StatType getType()
     {
         return _type;
     }
