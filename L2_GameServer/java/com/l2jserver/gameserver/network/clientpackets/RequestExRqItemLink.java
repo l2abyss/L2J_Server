@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import java.util.logging.Logger;
+
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
@@ -26,41 +28,47 @@ import com.l2jserver.gameserver.network.serverpackets.ExRpItemLink;
  */
 public class RequestExRqItemLink extends L2GameClientPacket
 {
-    private int _objectId;
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-     */
-    @Override
-    public String getType()
-    {
-        return "[C] DO:1E RequestExRqItemLink";
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-     */
-    @Override
-    protected void readImpl()
-    {
-        _objectId = readD();
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-     */
-    @Override
-    protected void runImpl()
-    {
-        L2GameClient client = this.getClient();
-        if (client != null)
-        {
-            L2Object object = L2World.getInstance().findObject(_objectId);
-            if (object instanceof L2ItemInstance)
-            {
-                L2ItemInstance item = (L2ItemInstance)object;
-                client.sendPacket(new ExRpItemLink(item));
-            }
-        }
-    }
-    
+	private static String name = "[C] DO:1E RequestExRqItemLink";
+	private int _objectId;
+	private Logger _log = Logger.getLogger(RequestExRqItemLink.class.getName());
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return name;
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
+	 */
+	@Override
+	protected void readImpl()
+	{
+		_objectId = readD();
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
+	 */
+	@Override
+	protected void runImpl()
+	{
+		L2GameClient client = this.getClient();
+		if (client != null)
+		{
+			L2Object object = L2World.getInstance().findObject(_objectId);
+			if (object instanceof L2ItemInstance)
+			{
+				L2ItemInstance item = (L2ItemInstance)object;
+				if (item.isPublished())
+					client.sendPacket(new ExRpItemLink(item));
+				else
+					_log.info(getClient()+" requested "+name+" for item which wasnt published! ID:"+_objectId);
+			}
+		}
+	}
+	
 }

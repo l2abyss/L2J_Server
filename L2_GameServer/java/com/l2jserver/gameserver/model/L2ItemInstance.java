@@ -125,6 +125,8 @@ public final class L2ItemInstance extends L2Object
 	private int _type2;
 
 	private long _dropTime;
+	
+	private boolean _published = false;
 
 	public static final int CHARGED_NONE				=	0;
 	public static final int CHARGED_SOULSHOT				=	1;
@@ -1844,4 +1846,14 @@ public final class L2ItemInstance extends L2Object
         else
             activeChar.sendPacket(new SpawnItem(this));
     }
+    
+	public boolean isPublished()
+	{
+		return _published;
+	}
+	
+	public void publish()
+	{
+		_published = true;
+	}
 }

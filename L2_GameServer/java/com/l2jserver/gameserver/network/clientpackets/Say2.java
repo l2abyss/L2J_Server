@@ -21,6 +21,9 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.handler.ChatHandler;
 import com.l2jserver.gameserver.handler.IChatHandler;
+import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -164,6 +167,10 @@ public final class Say2 extends L2GameClientPacket
 		// Say Filter implementation
 		if (Config.USE_SAY_FILTER)
 			checkText();
+		
+		if (((byte)_text.charAt(0)) == 8)
+			if (!parseAndPublishItem(activeChar))
+				return;;
 
 		IChatHandler handler = ChatHandler.getInstance().getChatHandler(_type);
 		if (handler != null)
@@ -176,6 +183,34 @@ public final class Say2 extends L2GameClientPacket
 		for (String pattern : Config.FILTER_LIST)
 			filteredText = filteredText.replaceAll("(?i)" + pattern, Config.CHAT_FILTER_CHARS);
 		_text = filteredText;
+	}
+	
+	private boolean parseAndPublishItem(L2PcInstance owner)
+	{
+		int pos = _text.indexOf("ID=");
+		if (pos == -1) 
+			return false;
+		StringBuilder result = new StringBuilder(9);
+		pos += 3;
+		while(Character.isDigit(_text.charAt(pos)))
+			result.append(_text.charAt(pos++));
+		int id = Integer.parseInt(result.toString());
+		L2Object item = L2World.getInstance().findObject(id);
+		if(item instanceof L2ItemInstance)
+		{
+			if (owner.getInventory().getItemByObjectId(id) == null)
+			{
+				_log.info(getClient()+ " trying publish item which doesnt own! ID:"+id);
+				return false;
+			}
+			((L2ItemInstance) item).publish();
+		}
+		else
+		{
+			_log.info(getClient()+ " trying publish object which is not item! ID:"+id);
+			return false;
+		}
+		return true;
 	}
 
 	/* (non-Javadoc)
