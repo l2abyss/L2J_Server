@@ -20,6 +20,7 @@ import java.util.NoSuchElementException;
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.SevenSignsFestival;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
@@ -62,6 +63,7 @@ public class L2Party {
 
 	private final FastList<L2PcInstance> _members;
 	private boolean _pendingInvitation = false;
+	private long _pendingInviteTimeout;
 	private int _partyLvl = 0;
 	private int _itemDistribution = 0;
 	private int _itemLastLoot = 0;
@@ -93,18 +95,32 @@ public class L2Party {
 	 * @return
 	 */
 	public int getMemberCount() { return getPartyMembers().size(); }
-
-    /**
-     * returns number of players that already been invited, but not replied yet
-     * @return
-     */
-    public boolean getPendingInvitation() { return _pendingInvitation; }
-
-    /**
-     * decrease number of players that already been invited but not replied yet
-     * happens when: player join party or player decline to join
-     */
-    public void setPendingInvitation(boolean val) { _pendingInvitation = val; }
+	
+	/**
+	 * Check if another player can start invitation process
+	 * @return boolean if party waits for invitation respond
+	 */
+	public boolean getPendingInvitation() { return _pendingInvitation; }
+	
+	/**
+	 * set invitation process flag and store time for expiration
+	 * happens when: player join party or player decline to join
+	 */
+	public void setPendingInvitation(boolean val) 
+	{ 
+		_pendingInvitation = val;
+		_pendingInviteTimeout = GameTimeController.getGameTicks() + L2PcInstance.REQUEST_TIMEOUT * GameTimeController.TICKS_PER_SECOND;
+	}
+	
+	/**
+	 * Check if player invitation is expired
+	 * @return boolean if time is expired
+	 * @see com.l2jserver.gameserver.model.actor.instance.L2PcInstance#isRequestExpired()
+	 */
+	public boolean isInvitationRequestExpired()
+	{
+		return !(_pendingInviteTimeout > GameTimeController.getGameTicks());
+	}
 
 	/**
 	 * returns all party members
