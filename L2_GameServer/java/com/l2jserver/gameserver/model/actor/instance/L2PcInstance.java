@@ -713,10 +713,10 @@ public final class L2PcInstance extends L2Playable
 
 	protected boolean _inventoryDisable = false;
 
-	protected Map<Integer, L2CubicInstance> _cubics = new FastMap<Integer, L2CubicInstance>().setShared(true);
+	protected Map<Integer, L2CubicInstance> _cubics = new FastMap<Integer, L2CubicInstance>().shared();
 
 	/** Active shots. A FastSet variable would actually suffice but this was changed to fix threading stability... */
-	protected Map<Integer, Integer> _activeSoulShots = new FastMap<Integer, Integer>().setShared(true);
+	protected Map<Integer, Integer> _activeSoulShots = new FastMap<Integer, Integer>().shared();
 
 	public final ReentrantLock soulShotLock = new ReentrantLock();
 
@@ -4913,6 +4913,7 @@ public final class L2PcInstance extends L2Playable
             sendPacket(msg);
             return;
         }
+        setQueuedSkill(null, false, false);
         if(isMounted())
         {
         	// Get off the strider or something else if character is mounted
@@ -13053,7 +13054,7 @@ public final class L2PcInstance extends L2Playable
     	}
     }
 
-	private FastMap<Integer, TimeStamp> _reuseTimeStamps = new FastMap<Integer, TimeStamp>().setShared(true);
+	private FastMap<Integer, TimeStamp> _reuseTimeStamps = new FastMap<Integer, TimeStamp>().shared();
 	private boolean _canFeed;
 	private int _afroId = 0;
 	private boolean _isInSiege;

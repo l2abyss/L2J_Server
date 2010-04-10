@@ -303,7 +303,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 			{
 				return false;
 			}
-			if (_crop == null || _crop.getId() == 0 || _crop.getPrice() == 0)
+			if (_crop == null || _crop.getId() == 0 || _crop.getPrice() == 0 || _count == 0)
 				return false;
 
 			if (_count > _crop.getAmount())

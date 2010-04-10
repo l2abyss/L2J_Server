@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.logging.Logger;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
@@ -64,11 +65,15 @@ public class RequestExRqItemLink extends L2GameClientPacket
 			{
 				L2ItemInstance item = (L2ItemInstance)object;
 				if (item.isPublished())
+				{
 					client.sendPacket(new ExRpItemLink(item));
+				}
 				else
-					_log.info(getClient()+" requested "+name+" for item which wasnt published! ID:"+_objectId);
+				{
+					if (Config.DEBUG)
+						_log.info(getClient()+" requested "+name+" for item which wasnt published! ID:"+_objectId);
+				}
 			}
 		}
 	}
-	
 }

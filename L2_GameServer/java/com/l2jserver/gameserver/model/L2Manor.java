@@ -42,7 +42,7 @@ public class L2Manor
 	
 	private L2Manor()
 	{
-		_seeds = new FastMap<Integer, SeedData>().setShared(true);
+		_seeds = new FastMap<Integer, SeedData>().shared();
 		parseData();
 	}
 	

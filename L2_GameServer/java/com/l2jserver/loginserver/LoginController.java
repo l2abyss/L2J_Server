@@ -62,9 +62,9 @@ public class LoginController
 	protected FastSet<L2LoginClient> _clients = new FastSet<L2LoginClient>();
 	
 	/** Authed Clients on LoginServer*/
-	protected FastMap<String, L2LoginClient> _loginServerClients = new FastMap<String, L2LoginClient>().setShared(true);
+	protected FastMap<String, L2LoginClient> _loginServerClients = new FastMap<String, L2LoginClient>().shared();
 	
-	private Map<String, BanInfo> _bannedIps = new FastMap<String, BanInfo>().setShared(true);
+	private Map<String, BanInfo> _bannedIps = new FastMap<String, BanInfo>().shared();
 	
 	private Map<InetAddress, FailedLoginAttempt> _hackProtection;
 	

@@ -251,7 +251,7 @@ public class L2Attackable extends L2Npc
 		public int getCount() { return _count;}
 	}
 
-	private FastMap<L2Character, AggroInfo> _aggroList = new FastMap<L2Character, AggroInfo>().setShared(true);
+	private FastMap<L2Character, AggroInfo> _aggroList = new FastMap<L2Character, AggroInfo>().shared();
 
 	public final FastMap<L2Character, AggroInfo> getAggroList()
 	{
@@ -305,7 +305,7 @@ public class L2Attackable extends L2Npc
 
 	private boolean _absorbed;
 
-	private FastMap<L2PcInstance, AbsorberInfo> _absorbersList = new FastMap<L2PcInstance, AbsorberInfo>().setShared(true);
+	private FastMap<L2PcInstance, AbsorberInfo> _absorbersList = new FastMap<L2PcInstance, AbsorberInfo>().shared();
 
 	private boolean _mustGiveExpSp;
 
@@ -568,7 +568,7 @@ public class L2Attackable extends L2Npc
 	protected void calculateRewards(L2Character lastAttacker)
 	{
 		// Creates an empty list of rewards
-		FastMap<L2Character, RewardInfo> rewards = new FastMap<L2Character, RewardInfo>().setShared(true);
+		FastMap<L2Character, RewardInfo> rewards = new FastMap<L2Character, RewardInfo>().shared();
 		try
 		{
 			if (getAggroList().isEmpty())

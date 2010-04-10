@@ -60,8 +60,8 @@ public final class L2WorldRegion
 
     public L2WorldRegion(int pTileX, int pTileY)
     {
-        _allPlayable = new FastMap<Integer, L2Playable>().setShared(true);
-        _visibleObjects = new FastMap<Integer, L2Object>().setShared(true);
+        _allPlayable = new FastMap<Integer, L2Playable>().shared();
+        _visibleObjects = new FastMap<Integer, L2Object>().shared();
         _surroundingRegions = new ArrayList<L2WorldRegion>();
 
         _tileX = pTileX;

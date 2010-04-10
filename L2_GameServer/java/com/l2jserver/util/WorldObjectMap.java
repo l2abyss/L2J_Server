@@ -39,7 +39,7 @@ import javolution.util.FastMap;
 
 public class WorldObjectMap<T extends L2Object> extends L2ObjectMap<T>
 {
-    Map<Integer, T> _objectMap = new FastMap<Integer, T>().setShared(true);
+    Map<Integer, T> _objectMap = new FastMap<Integer, T>().shared();
 
     /* (non-Javadoc)
      * @see com.l2jserver.util.L2ObjectMap#size()

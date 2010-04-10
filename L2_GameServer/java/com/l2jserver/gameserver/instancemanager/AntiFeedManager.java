@@ -34,7 +34,7 @@ public class AntiFeedManager
 
 	private AntiFeedManager()
 	{
-		_lastDeathTimes = new FastMap<Integer,Long>().setShared(true);
+		_lastDeathTimes = new FastMap<Integer,Long>().shared();
 	}
 
 	/**

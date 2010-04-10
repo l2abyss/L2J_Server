@@ -41,7 +41,7 @@ public class GameTimeController
 	protected static boolean _isNight = false;
 	protected static boolean _interruptRequest = false;
 	
-	private static final FastMap<Integer, L2Character> _movingObjects = new FastMap<Integer, L2Character>().setShared(true);
+	private static final FastMap<Integer, L2Character> _movingObjects = new FastMap<Integer, L2Character>().shared();
 	private static final FastList<L2Character> _toDelete = new FastList<L2Character>(20);
 	
 	protected static TimerThread _timer;
