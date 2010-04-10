@@ -358,7 +358,8 @@ public final class L2WorldRegion
      * containing L2PcInstance of all player in game in this L2WorldRegion <BR>
      * Assert : object.getCurrentWorldRegion() == this
      */
-    public void addVisibleObject(L2Object object)
+    @SuppressWarnings("null")
+	public void addVisibleObject(L2Object object)
     {
         assert object.getWorldRegion() == this;
         
@@ -381,7 +382,8 @@ public final class L2WorldRegion
      * If L2Object is a L2PcInstance, remove it from the L2ObjectHashSet(L2PcInstance) _allPlayable of this L2WorldRegion <BR>
      * Assert : object.getCurrentWorldRegion() == this || object.getCurrentWorldRegion() == null
      */
-    public void removeVisibleObject(L2Object object)
+    @SuppressWarnings("null")
+	public void removeVisibleObject(L2Object object)
     {
         assert object.getWorldRegion() == this || object.getWorldRegion() == null;
 

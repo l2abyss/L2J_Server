@@ -872,6 +872,7 @@ public class Base64
 	 * @return The decoded and deserialized object
 	 * @since 1.5
 	 */
+	@SuppressWarnings("null")
 	public static Object decodeToObject(String encodedObject)
 	{
 		// Decode and gunzip if necessary
