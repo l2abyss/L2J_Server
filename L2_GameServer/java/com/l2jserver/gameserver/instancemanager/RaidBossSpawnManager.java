@@ -223,7 +223,6 @@ public class RaidBossSpawnManager
 			info.set("respawnTime", 0L);
 		}
 
-		_storedInfo.remove(boss.getNpcId());
 		_storedInfo.put(boss.getNpcId(), info);
 	}
 
@@ -385,55 +384,58 @@ public class RaidBossSpawnManager
 
 	private void updateDb()
 	{
-		for (Integer bossId : _storedInfo.keySet())
+		Connection con = null;
+		try
 		{
-			Connection con = null;
+			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = null;
-
-			try
+			
+			for (Integer bossId : _storedInfo.keySet())
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-
+				if (bossId == null)
+					continue;
+				
 				L2RaidBossInstance boss = _bosses.get(bossId);
-
+				
 				if (boss == null)
 					continue;
-
+				
 				if (boss.getRaidStatus().equals(StatusEnum.ALIVE))
 					updateStatus(boss, false);
-
+				
 				StatsSet info = _storedInfo.get(bossId);
-
+				
 				if (info == null)
 					continue;
-
-				statement = con.prepareStatement("UPDATE raidboss_spawnlist SET respawn_time = ?, currentHP = ?, currentMP = ? WHERE boss_id = ?");
-				statement.setLong(1, info.getLong("respawnTime"));
-				statement.setDouble(2, info.getDouble("currentHP"));
-				statement.setDouble(3, info.getDouble("currentMP"));
-				statement.setInt(4, bossId);
-				statement.execute();
-			}
-			catch (SQLException e)
-			{
-				_log.warning("RaidBossSpawnManager: Couldnt update raidboss_spawnlist table " + e);
-			}
-			finally
-			{
+				
 				try
 				{
+					statement = con.prepareStatement("UPDATE raidboss_spawnlist SET respawn_time = ?, currentHP = ?, currentMP = ? WHERE boss_id = ?");
+					statement.setLong(1, info.getLong("respawnTime"));
+					statement.setDouble(2, info.getDouble("currentHP"));
+					statement.setDouble(3, info.getDouble("currentMP"));
+					statement.setInt(4, bossId);
+					statement.execute();
 					statement.close();
 				}
-				catch (Exception e)
+				catch (SQLException e)
 				{
+					_log.warning("RaidBossSpawnManager: Couldnt update raidboss_spawnlist table " + e);
 				}
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+			}
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
 			}
 		}
 	}
