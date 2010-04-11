@@ -5116,31 +5116,35 @@ public abstract class L2Character extends L2Object
 			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
 			return;
 		}
-
+		
 		if ((this instanceof L2Npc && target.isAlikeDead()) || target.isDead()
-                || (!getKnownList().knowsObject(target) && !(this instanceof L2DoorInstance)))
+				|| (!getKnownList().knowsObject(target) && !(this instanceof L2DoorInstance)))
 		{
 			//getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
 			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
-
+			
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
-        if (miss)
-        {
-        	// ON_EVADED_HIT 
-         	if (target.getChanceSkills() != null) 
-         		target.getChanceSkills().onEvadedHit(this); 
-         	
-            if (target instanceof L2PcInstance)
-            {
-                SystemMessage sm = new SystemMessage(SystemMessageId.C1_EVADED_C2_ATTACK);
-                sm.addCharName(target);
-                sm.addCharName(this);
-                target.sendPacket(sm);
-            }
-        }
+		
+		if (miss)
+		{
+			// ON_EVADED_HIT 
+			if (target.getChanceSkills() != null) 
+				target.getChanceSkills().onEvadedHit(this); 
+			
+			if (target instanceof L2PcInstance)
+			{
+				SystemMessage sm = new SystemMessage(SystemMessageId.C1_EVADED_C2_ATTACK);
+				sm.addPcName((L2PcInstance) target);
+				sm.addCharName(this);
+				target.sendPacket(sm);
+			}
+			if (this instanceof L2PcInstance)
+			{
+				sendPacket(new SystemMessage(SystemMessageId.C1_ATTACK_WENT_ASTRAY).addPcName((L2PcInstance)this)); 
+			}
+		}
 
 		// If attack isn't aborted, send a message system (critical hit, missed...) to attacker/target if they are L2PcInstance
 		if (!isAttackAborted())
