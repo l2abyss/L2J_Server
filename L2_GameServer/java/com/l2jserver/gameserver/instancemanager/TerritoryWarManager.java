@@ -955,9 +955,11 @@ public class TerritoryWarManager
 				}
 		}
 		if (_territoryWards != null)
+		{
 			for(TerritoryWard twWard : _territoryWards)
 				twWard.unSpawnMe();
-		_territoryWards.clear();
+			_territoryWards.clear();
+		}
 		for(L2SiegeFlagInstance flag : _clanFlags.values())
 			flag.deleteMe();
 		_clanFlags.clear();

@@ -189,7 +189,7 @@ public abstract class L2Character extends L2Object
 	/** FastMap(Integer, L2Skill) containing all skills of the L2Character */
 	private final Map<Integer, L2Skill> _skills;
 	/** FastMap containing the active chance skills on this character */
-	protected ChanceSkillList _chanceSkills;
+	private ChanceSkillList _chanceSkills;
 
 	/** Current force buff this caster is casting to a target */
 	protected FusionSkill _fusionSkill;
@@ -5654,7 +5654,7 @@ public abstract class L2Character extends L2Object
 			}
 			if (newSkill.isChance())
 			{
-				addChanceSkill(newSkill);
+				addChanceTrigger(newSkill);
 			}
 			
 			/*if (!newSkill.isChance() && newSkill.triggerAnotherSkill() )
@@ -5776,48 +5776,38 @@ public abstract class L2Character extends L2Object
 		return oldSkill;
 	}
 
-	public synchronized void addChanceSkill(L2Skill skill)
-	{
-		if (_chanceSkills == null)
-				_chanceSkills = new ChanceSkillList(this);
-			
-		_chanceSkills.put(skill, skill.getChanceCondition());
-	}
-
-	public synchronized void removeChanceSkill(int id)
+	public void removeChanceSkill(int id)
 	{
 		if (_chanceSkills == null) return;
-		for (IChanceSkillTrigger trigger : _chanceSkills.keySet())
+		synchronized (_chanceSkills)
 		{
-			if (!(trigger instanceof L2Skill))
-				continue;
-			
-			L2Skill skill = (L2Skill)trigger;
-			
-			if (skill.getId() == id)
-				_chanceSkills.remove(skill);
+			for (IChanceSkillTrigger trigger : _chanceSkills.keySet())
+			{
+				if (!(trigger instanceof L2Skill))
+					continue;
+				if (((L2Skill) trigger).getId() == id)
+					_chanceSkills.remove(trigger);
+			}
 		}
-		
-		if (_chanceSkills.isEmpty())
-				_chanceSkills = null;
 	}
 	
-	public synchronized void addChanceEffect(EffectChanceSkillTrigger effect)
+	public void addChanceTrigger(IChanceSkillTrigger trigger)
 	{
 		if (_chanceSkills == null)
-			_chanceSkills = new ChanceSkillList(this);
-		
-		_chanceSkills.put(effect, effect.getTriggeredChanceCondition());
+		{
+			synchronized(this)
+			{
+				if (_chanceSkills == null)
+					_chanceSkills = new ChanceSkillList(this);
+			}
+		}
+		_chanceSkills.put(trigger, trigger.getTriggeredChanceCondition());
 	}
 
-	public synchronized void removeChanceEffect(EffectChanceSkillTrigger effect)
+	public void removeChanceEffect(EffectChanceSkillTrigger effect)
 	{
 		if (_chanceSkills == null) return;
-
 		_chanceSkills.remove(effect);
-
-		if (_chanceSkills.isEmpty())
-			_chanceSkills = null;
 	}
 
 	public void onStartChanceEffect(byte element)
@@ -6534,7 +6524,6 @@ public abstract class L2Character extends L2Object
 									&& !(skill.getSkillType() == L2SkillType.BEAST_FEED) 
 									&& !(skill.getSkillType() == L2SkillType.UNLOCK)
 									&& !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK)
-									&& (!(target instanceof L2Summon) || player.getPet() != target)
 							)
 								player.updatePvPStatus();
 						}

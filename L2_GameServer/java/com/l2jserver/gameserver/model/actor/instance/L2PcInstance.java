@@ -5295,7 +5295,7 @@ public final class L2PcInstance extends L2Playable
         _coupleId = coupleId;
     }
 
-    public void EngageAnswer(int answer)
+    public void engageAnswer(int answer)
     {
         if(_engagerequest==false)
             return;
@@ -8784,7 +8784,7 @@ public final class L2PcInstance extends L2Playable
         // siege golem (13), Wild Hog Cannon (299), Swoop Cannon (448)
         if ((skill.getId() == 13 || skill.getId() == 299 || skill.getId() == 448)
         		&& ((!SiegeManager.getInstance().checkIfOkToSummon(this, false) 
-                && !FortSiegeManager.getInstance().checkIfOkToSummon(this, false))||(SevenSigns.getInstance().CheckSummonConditions(this))))
+                && !FortSiegeManager.getInstance().checkIfOkToSummon(this, false))||(SevenSigns.getInstance().checkSummonConditions(this))))
 			return false;
         
         // Check if this skill is enabled (ex : reuse time)
@@ -11867,12 +11867,6 @@ public final class L2PcInstance extends L2Playable
 		for (L2PcInstance player : _snoopListener)
 			player.removeSnooped(this);
 		
-		if (_chanceSkills != null)
-		{
-			_chanceSkills.setOwner(null);
-			_chanceSkills = null;
-		}
-		
 		// Remove L2Object object from _allObjects of L2World
 		L2World.getInstance().removeObject(this);
 		L2World.getInstance().removeFromAllPlayers(this); // force remove in case of crash during teleport
@@ -14079,7 +14073,7 @@ public final class L2PcInstance extends L2Playable
     		return true;
     }
     
-    public void TeleportBookmarkAdd(int x,int y,int z,int icon, String tag, String name)
+    public void teleportBookmarkAdd(int x,int y,int z,int icon, String tag, String name)
     {
     	if(this == null)
     		return;

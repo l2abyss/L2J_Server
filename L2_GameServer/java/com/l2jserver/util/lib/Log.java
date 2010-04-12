@@ -69,14 +69,4 @@ public class Log
 			}
 		}
 	}
-	
-
-	public static final void Assert(boolean exp, String cmt)
-	{
-		if (exp)
-			return;
-		
-		_log.warning("Assertion error [" + cmt + "]");
-		Thread.dumpStack();
-	}
 }

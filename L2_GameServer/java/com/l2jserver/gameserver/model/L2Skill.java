@@ -882,11 +882,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
         return _chanceCondition != null && isPassive();
     }
 
-    public ChanceCondition getChanceCondition()
-    {
-        return _chanceCondition;
-    }
-
     public final boolean isDance()
     {
         return _isDance;

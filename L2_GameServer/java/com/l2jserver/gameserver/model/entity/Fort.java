@@ -309,12 +309,12 @@ public class Fort
 	// =========================================================
 	// Method - Public
 	
-	public void EndOfSiege(L2Clan clan)
+	public void endOfSiege(L2Clan clan)
 	{
 		ThreadPoolManager.getInstance().scheduleGeneral(new endFortressSiege(this, clan), 1000);
 	}
 	
-	public void Engrave(L2Clan clan)
+	public void engrave(L2Clan clan)
 	{
 		setOwner(clan, true);
 	}
@@ -1078,7 +1078,7 @@ public class Fort
 		{
 			try
 			{
-				_f.Engrave(_clan);
+				_f.engrave(_clan);
 			}
 			catch (Exception e)
 			{

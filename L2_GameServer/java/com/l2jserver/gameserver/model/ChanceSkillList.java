@@ -35,7 +35,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 {
 	private static final long serialVersionUID = 1L;
 
-	private L2Character _owner;
+	private final L2Character _owner;
 
 	public ChanceSkillList(L2Character owner)
 	{
@@ -47,11 +47,6 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 	public L2Character getOwner()
 	{
 		return _owner;
-	}
-
-	public void setOwner(L2Character owner)
-	{
-		_owner = owner;
 	}
 
 	public void onHit(L2Character target, boolean ownerWasHit, boolean wasCrit)

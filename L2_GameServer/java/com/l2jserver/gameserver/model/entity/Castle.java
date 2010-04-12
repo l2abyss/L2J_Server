@@ -283,7 +283,7 @@ public class Castle
 		return null;
 	}
 	
-	public synchronized void Engrave(L2Clan clan, L2Object target)
+	public synchronized void engrave(L2Clan clan, L2Object target)
 	{
 		if (!_artefacts.contains(target))
 			return;
