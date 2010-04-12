@@ -66,17 +66,13 @@ public class ThreadPoolManager
 {
 	protected static final Logger _log = Logger.getLogger(ThreadPoolManager.class.getName());
 	
-	public ScheduledThreadPoolExecutor _effectsScheduledThreadPool;
+	private ScheduledThreadPoolExecutor _effectsScheduledThreadPool;
 	private ScheduledThreadPoolExecutor _generalScheduledThreadPool;
-	
+	private ScheduledThreadPoolExecutor _aiScheduledThreadPool;
 	private ThreadPoolExecutor _generalPacketsThreadPool;
 	private ThreadPoolExecutor _ioPacketsThreadPool;
-	// will be really used in the next AI implementation.
-	private ThreadPoolExecutor _aiThreadPool;
 	private ThreadPoolExecutor _generalThreadPool;
-	
-	// temp
-	private ScheduledThreadPoolExecutor _aiScheduledThreadPool;
+
 	
 	/** temp workaround for VM issue */
 	private static final long MAX_DELAY = Long.MAX_VALUE / 1000000 / 2;
@@ -92,16 +88,9 @@ public class ThreadPoolManager
 	{
 		_effectsScheduledThreadPool = new ScheduledThreadPoolExecutor(Config.THREAD_P_EFFECTS, new PriorityThreadFactory("EffectsSTPool", Thread.NORM_PRIORITY));
 		_generalScheduledThreadPool = new ScheduledThreadPoolExecutor(Config.THREAD_P_GENERAL, new PriorityThreadFactory("GeneralSTPool", Thread.NORM_PRIORITY));
-		
 		_ioPacketsThreadPool = new ThreadPoolExecutor(Config.IO_PACKET_THREAD_CORE_SIZE, Integer.MAX_VALUE, 5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new PriorityThreadFactory("I/O Packet Pool", Thread.NORM_PRIORITY + 1));
-		
 		_generalPacketsThreadPool = new ThreadPoolExecutor(Config.GENERAL_PACKET_THREAD_CORE_SIZE, Config.GENERAL_PACKET_THREAD_CORE_SIZE + 2, 15L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new PriorityThreadFactory("Normal Packet Pool", Thread.NORM_PRIORITY + 1));
-		
 		_generalThreadPool = new ThreadPoolExecutor(Config.GENERAL_THREAD_CORE_SIZE, Config.GENERAL_THREAD_CORE_SIZE + 2, 5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new PriorityThreadFactory("General Pool", Thread.NORM_PRIORITY));
-		
-		// will be really used in the next AI implementation.
-		_aiThreadPool = new ThreadPoolExecutor(1, Config.AI_MAX_THREAD, 10L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-		
 		_aiScheduledThreadPool = new ScheduledThreadPoolExecutor(Config.AI_MAX_THREAD, new PriorityThreadFactory("AISTPool", Thread.NORM_PRIORITY));
 	}
 	
@@ -227,7 +216,7 @@ public class ThreadPoolManager
 	
 	public void executeAi(Runnable r)
 	{
-		_aiThreadPool.execute(r);
+		_aiScheduledThreadPool.execute(r);
 	}
 	
 	public String[] getStats()
@@ -284,9 +273,7 @@ public class ThreadPoolManager
 				" |- PoolSize:        " + _generalThreadPool.getPoolSize(),
 				" |- CompletedTasks:  " + _generalThreadPool.getCompletedTaskCount(),
 				" |- QueuedTasks:     " + _generalThreadPool.getQueue().size(),
-				" | -------",
-				" + AI:",
-				" |- Not Done"
+				" | -------"
 		};
 	}
 	
@@ -334,13 +321,11 @@ public class ThreadPoolManager
 			_generalPacketsThreadPool.awaitTermination(1, TimeUnit.SECONDS);
 			_ioPacketsThreadPool.awaitTermination(1, TimeUnit.SECONDS);
 			_generalThreadPool.awaitTermination(1, TimeUnit.SECONDS);
-			_aiThreadPool.awaitTermination(1, TimeUnit.SECONDS);
 			_effectsScheduledThreadPool.shutdown();
 			_generalScheduledThreadPool.shutdown();
 			_generalPacketsThreadPool.shutdown();
 			_ioPacketsThreadPool.shutdown();
 			_generalThreadPool.shutdown();
-			_aiThreadPool.shutdown();
 			_log.info("All ThreadPools are now stopped");
 			
 		}
@@ -367,7 +352,6 @@ public class ThreadPoolManager
 		_ioPacketsThreadPool.purge();
 		_generalPacketsThreadPool.purge();
 		_generalThreadPool.purge();
-		_aiThreadPool.purge();
 	}
 	
 	/**

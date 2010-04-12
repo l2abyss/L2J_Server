@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.instancemanager.RaidBossPointsManager;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -55,16 +54,6 @@ public final class L2GrandBossInstance extends L2MonsterInstance
 		if (getNpcId() == 29020 || getNpcId() == 29028) // baium and valakas are all the time in passive mode, theirs attack AI handled in AI scripts
 			super.disableCoreAI(true);
 		super.onSpawn();
-	}
-	
-	/**
-	 * Reduce the current HP of the L2Attackable, update its _aggroList and launch the doDie Task if necessary.<BR><BR>
-	 *
-	 */
-	@Override
-	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
-	{
-		super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
 	}
 	
 	/**

@@ -75,7 +75,7 @@ public class CharEffectList
 		}
 
 		// Create a copy of the effects
-		FastList<L2Effect> temp = new FastList<L2Effect>();
+		FastList<L2Effect> temp = FastList.newInstance();
 
 		// Add all buffs and all debuffs
 		if (_buffs != null) 
@@ -98,6 +98,7 @@ public class CharEffectList
 		// Return all effects in an array
 		L2Effect[] tempArray = new L2Effect[temp.size()];
 		temp.toArray(tempArray);
+		FastList.recycle(temp);
 		return tempArray;
 	}
 
@@ -415,7 +416,7 @@ public class CharEffectList
 	public final void stopEffects(L2EffectType type)
 	{
 		// Go through all active skills effects
-		FastList<L2Effect> temp = new FastList<L2Effect>();
+		FastList<L2Effect> temp = FastList.newInstance();
 		if (_buffs != null) 
 		{
 			synchronized (_buffs)
@@ -447,8 +448,8 @@ public class CharEffectList
 			for (L2Effect e : temp)
 				if (e != null)
 					e.exit();
-			temp.clear();
 		}
+		FastList.recycle(temp);
 	}
 
 	/**
@@ -458,7 +459,7 @@ public class CharEffectList
 	public final void stopSkillEffects(int skillId)
 	{
 		// Go through all active skills effects
-		FastList<L2Effect> temp = new FastList<L2Effect>();
+		FastList<L2Effect> temp = FastList.newInstance();
 		if (_buffs != null) 
 		{
 			synchronized (_buffs)
@@ -488,8 +489,8 @@ public class CharEffectList
 			for (L2Effect e : temp)
 				if (e != null)
 					e.exit();
-			temp.clear();
 		}
+		FastList.recycle(temp);
 	}
 
 	/**

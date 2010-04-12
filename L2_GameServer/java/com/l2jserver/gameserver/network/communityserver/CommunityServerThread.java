@@ -255,7 +255,7 @@ public final class CommunityServerThread extends NetConnection
 			}
 			catch (IOException e)
 			{
-				//e.printStackTrace();
+				e.printStackTrace();
 				
 				_log.log(Level.WARNING, "CommunityServerThread: TCP Connection lost!");
 				
