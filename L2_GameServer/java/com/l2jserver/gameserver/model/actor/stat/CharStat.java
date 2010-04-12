@@ -300,6 +300,8 @@ public class CharStat
     	float bonusAtk = 1;
     	if (Config.L2JMOD_CHAMPION_ENABLE && _activeChar.isChampion())
     		bonusAtk = Config.L2JMOD_CHAMPION_ATK;
+    	if (_activeChar.isRaid())
+    		bonusAtk *= Config.RAID_MATTACK_MULTIPLIER;
     	double attack = _activeChar.getTemplate().baseMAtk * bonusAtk;
 		// Get the skill type to calculate its effect in function of base stats
 		// of the L2Character target
@@ -460,6 +462,8 @@ public class CharStat
     	if (_activeChar == null)
     		return 1;
     	float bonusAtk = 1;
+		if (_activeChar.isRaid())
+			bonusAtk *= Config.RAID_PATTACK_MULTIPLIER;
 		if  (Config.L2JMOD_CHAMPION_ENABLE && _activeChar.isChampion())
 			bonusAtk = Config.L2JMOD_CHAMPION_ATK;
 		return (int) calcStat(Stats.POWER_ATTACK, _activeChar.getTemplate().basePAtk * bonusAtk, target, null);
