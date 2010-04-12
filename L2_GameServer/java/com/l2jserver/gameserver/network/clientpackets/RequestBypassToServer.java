@@ -30,6 +30,7 @@ import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.actor.instance.L2ManorManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.L2Event;
@@ -161,8 +162,8 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			// Navigate through Manor windows
 			else if (_command.startsWith("manor_menu_select?"))
 			{
-				L2Object object = activeChar.getTarget();
-				if (object instanceof L2Npc)
+				L2Object object = activeChar.getLastFolkNPC();
+				if (object instanceof L2ManorManagerInstance && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
 					((L2Npc) object).onBypassFeedback(activeChar, _command);
 			}
 			else if (_command.startsWith("bbs_"))
@@ -249,6 +250,22 @@ public final class RequestBypassToServer extends L2GameClientPacket
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, getClient()+" sent bad RequestBypassToServer: ", e);
+			if (activeChar.isGM())
+			{
+				StringBuilder sb = new StringBuilder(200);
+				sb.append("<html><body>");
+				sb.append("Bypass error: "+e+"<br1>");
+				sb.append("Bypass command: "+_command+"<br1>");
+				sb.append("StackTrace:<br1>");
+				for (StackTraceElement ste : e.getStackTrace())
+					sb.append(ste.toString()+"<br1>");
+				sb.append("</body></html>");
+				// item html
+				NpcHtmlMessage msg = new NpcHtmlMessage(0,12807);
+				msg.setHtml(sb.toString());
+				msg.disableValidation();
+				activeChar.sendPacket(msg);
+			}
 		}
 	}
 
