@@ -73,9 +73,10 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 
 		if (_data == null)
 		{
-			CrestCache.getInstance().removePledgeCrestLarge(clan.getCrestId());
-
+			CrestCache.getInstance().removePledgeCrestLarge(clan.getCrestLargeId());
+			clan.setCrestLargeId(0);
             clan.setHasCrestLarge(false);
+
             activeChar.sendMessage("The insignia has been removed.");
 
             for (L2PcInstance member : clan.getOnlineMembers(0))
@@ -102,15 +103,15 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 
 			int newId = IdFactory.getInstance().getNextId();
 
+            if (clan.hasCrestLarge())
+            {
+                crestCache.removePledgeCrestLarge(clan.getCrestLargeId());
+            }
+
             if (!crestCache.savePledgeCrestLarge(newId,_data))
             {
                 _log.log(Level.INFO, "Error loading large crest of clan:" + clan.getName());
                 return;
-            }
-
-            if (clan.hasCrestLarge())
-            {
-                crestCache.removePledgeCrestLarge(clan.getCrestLargeId());
             }
 
             Connection con = null;

@@ -84,8 +84,9 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 		if (_length == 0 || _data.length == 0)
 		{
 			CrestCache.getInstance().removePledgeCrest(clan.getCrestId());
-
+			clan.setCrestId(0);
             clan.setHasCrest(false);
+            
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_CREST_HAS_BEEN_DELETED));
 
             for (L2PcInstance member : clan.getOnlineMembers(0))
@@ -109,7 +110,7 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 
             if(clan.hasCrest())
             {
-            	crestCache.removePledgeCrest(newId);
+            	crestCache.removePledgeCrest(clan.getCrestId());
             }
 
             if (!crestCache.savePledgeCrest(newId,_data))

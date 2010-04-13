@@ -84,15 +84,15 @@ public final class RequestSetAllyCrest extends L2GameClientPacket
 
             int newId = IdFactory.getInstance().getNextId();
 
+            if (leaderclan.getAllyCrestId() != 0)
+            {
+                crestCache.removeAllyCrest(leaderclan.getAllyCrestId());
+            }
+
             if (!crestCache.saveAllyCrest(newId,_data))
             {
                 _log.log(Level.INFO, "Error loading crest of ally:" + leaderclan.getAllyName());
                 return;
-            }
-
-            if (leaderclan.getAllyCrestId() != 0)
-            {
-                crestCache.removeAllyCrest(leaderclan.getAllyCrestId());
             }
 
             Connection con = null;
