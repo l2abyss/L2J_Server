@@ -614,6 +614,7 @@ public class GameServerThread extends Thread
 		_privateKey = (RSAPrivateKey) pair.getPrivate();
 		_publicKey = (RSAPublicKey) pair.getPublic();
 		_blowfish = new NewCrypt("_;v.]05-31!|+-%xT!^[$\00");
+		setName(getClass().getSimpleName()+"-"+getId()+"@"+_connectionIp);
 		start();
 	}
 

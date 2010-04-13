@@ -20,6 +20,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.AccessLevels;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.instancemanager.MailManager;
+import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -110,12 +111,6 @@ public final class RequestSendPost extends L2GameClientPacket
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
-		if (!activeChar.getFloodProtectors().getSendMail().tryPerformAction("sendmail"))
-		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_FORWARD_LESS_THAN_MINUTE));
-			return;
-		}
 
 		if (!Config.ALLOW_ATTACHMENTS)
 		{
@@ -231,6 +226,18 @@ public final class RequestSendPost extends L2GameClientPacket
 			activeChar.sendPacket(sm);
 			return;
 		}
+		
+		if (activeChar.isInJail())
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_FORWARD_NOT_IN_PEACE_ZONE));
+			return;
+		}
+		
+		if (BlockList.isInBlockList(receiverId, activeChar.getObjectId()))
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.C1_BLOCKED_YOU_CANNOT_MAIL).addString(_receiver));
+			return;
+		}
 
 		if (MailManager.getInstance().getOutboxSize(activeChar.getObjectId()) >= OUTBOX_SIZE)
 		{
@@ -241,6 +248,12 @@ public final class RequestSendPost extends L2GameClientPacket
 		if (MailManager.getInstance().getInboxSize(receiverId) >= INBOX_SIZE)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_FORWARD_MAIL_LIMIT_EXCEEDED));
+			return;
+		}
+		
+		if (!activeChar.getFloodProtectors().getSendMail().tryPerformAction("sendmail"))
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_FORWARD_LESS_THAN_MINUTE));
 			return;
 		}
 

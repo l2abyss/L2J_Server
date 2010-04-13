@@ -38,6 +38,7 @@ public class IPv4Filter implements IAcceptFilter, Runnable
 	{
 		_ipFloodMap = new HashMap<Integer, Flood>();
 		Thread t = new Thread(this);
+		t.setName(getClass().getSimpleName());
 		t.setDaemon(true);
 		t.start();
 	}
