@@ -164,13 +164,14 @@ public final class Say2 extends L2GameClientPacket
 			_logChat.log(record);
 		}
 		
+
+		if (_text.indexOf(8) >= 0)
+			if (!parseAndPublishItem(activeChar))
+				return;
+		
 		// Say Filter implementation
 		if (Config.USE_SAY_FILTER)
 			checkText();
-		
-		if (((byte)_text.charAt(0)) == 8)
-			if (!parseAndPublishItem(activeChar))
-				return;;
 
 		IChatHandler handler = ChatHandler.getInstance().getChatHandler(_type);
 		if (handler != null)
@@ -187,7 +188,8 @@ public final class Say2 extends L2GameClientPacket
 	
 	private boolean parseAndPublishItem(L2PcInstance owner)
 	{
-		int pos = _text.indexOf("ID=");
+		int pos1 = _text.indexOf(8);
+		int pos = _text.indexOf("ID=",pos1);
 		if (pos == -1) 
 			return false;
 		StringBuilder result = new StringBuilder(9);
