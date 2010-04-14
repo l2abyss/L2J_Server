@@ -18,6 +18,7 @@ import java.util.List;
 
 import javolution.util.FastList;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.util.Rnd;
 
@@ -54,7 +55,10 @@ public abstract class L2SpawnZone extends L2ZoneType
 
 	public Location getSpawnLoc()
 	{
-		return _spawnLocs.get(Rnd.get(_spawnLocs.size()));
+		if (Config.RANDOM_RESPAWN_IN_TOWN_ENABLED)
+			return _spawnLocs.get(Rnd.get(_spawnLocs.size()));
+		else
+			return _spawnLocs.get(0);
 	}
 
 	public Location getChaoticSpawnLoc()

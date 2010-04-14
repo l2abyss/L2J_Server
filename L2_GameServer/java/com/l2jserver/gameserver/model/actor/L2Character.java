@@ -597,10 +597,10 @@ public abstract class L2Character extends L2Object
 
 		getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 
-        if (Config.RESPAWN_RANDOM_ENABLED && allowRandomOffset)
+        if (Config.OFFSET_ON_TELEPORT_ENABLED && allowRandomOffset)
         {
-            x += Rnd.get(-Config.RESPAWN_RANDOM_MAX_OFFSET, Config.RESPAWN_RANDOM_MAX_OFFSET);
-            y += Rnd.get(-Config.RESPAWN_RANDOM_MAX_OFFSET, Config.RESPAWN_RANDOM_MAX_OFFSET);
+            x += Rnd.get(-Config.MAX_OFFSET_ON_TELEPORT, Config.MAX_OFFSET_ON_TELEPORT);
+            y += Rnd.get(-Config.MAX_OFFSET_ON_TELEPORT, Config.MAX_OFFSET_ON_TELEPORT);
         }
 
         z += 5;

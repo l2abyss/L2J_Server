@@ -281,7 +281,7 @@ public class SQLAccountManager
                     
                     String clanName = rcln.getString("clan_name");
                     
-                    System.out.println("Deleting clan " + rcln.getString("clan_name") + ".");
+                    System.out.println("Deleting clan " + clanName + ".");
                     
                     // Delete Clan Wars
                     statement.close();

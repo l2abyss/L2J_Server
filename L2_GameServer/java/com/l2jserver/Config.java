@@ -181,8 +181,9 @@ public final class Config
 	public static int UNSTUCK_INTERVAL;
 	public static int TELEPORT_WATCHDOG_TIMEOUT;
 	public static int PLAYER_SPAWN_PROTECTION;
-	public static boolean RESPAWN_RANDOM_ENABLED;
-	public static int RESPAWN_RANDOM_MAX_OFFSET;
+	public static boolean RANDOM_RESPAWN_IN_TOWN_ENABLED;
+	public static boolean OFFSET_ON_TELEPORT_ENABLED;
+	public static int MAX_OFFSET_ON_TELEPORT;
 	public static boolean RESTORE_PLAYER_INSTANCE;
 	public static boolean ALLOW_SUMMON_TO_INSTANCE;
 	public static boolean PETITIONING_ALLOWED;
@@ -1480,8 +1481,9 @@ public final class Config
 					UNSTUCK_INTERVAL = Integer.parseInt(Character.getProperty("UnstuckInterval", "300"));
 					TELEPORT_WATCHDOG_TIMEOUT = Integer.parseInt(Character.getProperty("TeleportWatchdogTimeout", "0"));
 					PLAYER_SPAWN_PROTECTION = Integer.parseInt(Character.getProperty("PlayerSpawnProtection", "0"));
-					RESPAWN_RANDOM_ENABLED = Boolean.parseBoolean(Character.getProperty("RespawnRandomInTown", "True"));
-					RESPAWN_RANDOM_MAX_OFFSET = Integer.parseInt(Character.getProperty("RespawnRandomMaxOffset", "50"));
+					RANDOM_RESPAWN_IN_TOWN_ENABLED = Boolean.parseBoolean(Character.getProperty("RandomRespawnInTownEnabled", "True"));
+					OFFSET_ON_TELEPORT_ENABLED = Boolean.parseBoolean(Character.getProperty("OffsetOnTeleportEnabled", "True"));
+					MAX_OFFSET_ON_TELEPORT = Integer.parseInt(Character.getProperty("MaxOffsetOnTeleport", "50"));
 					RESTORE_PLAYER_INSTANCE = Boolean.parseBoolean(Character.getProperty("RestorePlayerInstance", "False"));
 					ALLOW_SUMMON_TO_INSTANCE = Boolean.parseBoolean(Character.getProperty("AllowSummonToInstance", "True"));
 					PETITIONING_ALLOWED = Boolean.parseBoolean(Character.getProperty("PetitioningAllowed", "True"));

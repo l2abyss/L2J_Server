@@ -197,6 +197,7 @@ public class ClanHallManager
 			return _clanHall.get(clanHallId);
 		if (_freeClanHall.containsKey(clanHallId))
 			return _freeClanHall.get(clanHallId);
+		_log.warning("Clan hall id " + clanHallId + " not found in clanhall table!");
 		return null;
 	}
 	
