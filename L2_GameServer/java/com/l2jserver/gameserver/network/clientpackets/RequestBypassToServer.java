@@ -30,6 +30,7 @@ import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.actor.instance.L2CastleChamberlainInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2ManorManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -57,9 +58,6 @@ public final class RequestBypassToServer extends L2GameClientPacket
 	// S
 	private String _command;
 
-	/**
-	 * @param decrypt
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -162,8 +160,12 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			// Navigate through Manor windows
 			else if (_command.startsWith("manor_menu_select?"))
 			{
+				if(!activeChar.validateBypass(_command))
+					return;
+				
 				L2Object object = activeChar.getLastFolkNPC();
-				if (object instanceof L2ManorManagerInstance && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
+				if ((object instanceof L2ManorManagerInstance || object instanceof L2CastleChamberlainInstance) 
+						&& activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
 					((L2Npc) object).onBypassFeedback(activeChar, _command);
 			}
 			else if (_command.startsWith("bbs_"))
