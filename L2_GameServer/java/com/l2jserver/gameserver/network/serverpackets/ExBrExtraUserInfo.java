@@ -28,7 +28,7 @@ public class ExBrExtraUserInfo extends L2GameServerPacket
 	public ExBrExtraUserInfo(L2PcInstance player)
 	{
 		_charObjId = player.getObjectId();
-		_val = player.getAfroHaircutId();
+		_val = player.getEventEffectId();
 		_invisible = player.getAppearance().getInvisible();
 	}
 
@@ -42,7 +42,7 @@ public class ExBrExtraUserInfo extends L2GameServerPacket
 		writeC(0xfe);
 		writeH(0xbe);
 		writeD(_charObjId); //object ID of Player
-		writeD(_val);		// Afro Hair Cut
+		writeD(_val);		// event effect id
 		//writeC(0x00);		// Event flag, added only if event is active
 
 	}

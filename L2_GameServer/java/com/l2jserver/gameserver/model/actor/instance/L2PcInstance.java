@@ -226,6 +226,7 @@ import com.l2jserver.gameserver.network.serverpackets.TradeDone;
 import com.l2jserver.gameserver.network.serverpackets.TradeOtherDone;
 import com.l2jserver.gameserver.network.serverpackets.TradeStart;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
+import com.l2jserver.gameserver.skills.AbnormalEffect;
 import com.l2jserver.gameserver.skills.Formulas;
 import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillSiegeFlag;
@@ -13050,7 +13051,7 @@ public final class L2PcInstance extends L2Playable
 
 	private FastMap<Integer, TimeStamp> _reuseTimeStamps = new FastMap<Integer, TimeStamp>().shared();
 	private boolean _canFeed;
-	private int _afroId = 0;
+	private int _eventEffectId = 0;
 	private boolean _isInSiege;
 
     public Collection<TimeStamp> getReuseTimeStamps()
@@ -13747,18 +13748,24 @@ public final class L2PcInstance extends L2Playable
     }
 
 	/**
-     * @return afro haircut id
-     */
-    public int getAfroHaircutId()
-    {
-	    return _afroId ;
-    }
-    
-    public void setAfroHaircutId(int id)
-    {
-	    _afroId = id;
-	    broadcastUserInfo();
-    }
+	 * @return event effect id
+	 */
+	public int getEventEffectId()
+	{
+		return _eventEffectId ;
+	}
+
+	public void startEventEffect(AbnormalEffect mask)
+	{
+		_eventEffectId |= mask.getMask();
+		broadcastUserInfo();
+	}
+
+	public void stopEventEffect(AbnormalEffect mask)
+	{
+		_eventEffectId &= ~mask.getMask();
+		broadcastUserInfo();
+	}
 
     public void setIsInSiege(boolean b)
     {

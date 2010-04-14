@@ -265,7 +265,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final boolean _isDebuff;
     
 	private final String _attribute;
-	private final int _afroId;
 
 	private final boolean _ignoreShield;
 	private final boolean _isSuicideAttack;
@@ -280,7 +279,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _id = set.getInteger("skill_id");
         _level = set.getInteger("level");
         _refId = set.getInteger("referenceId", set.getInteger("itemConsumeId", 0));
-        _afroId = set.getInteger("afroId",0);
         _displayId = set.getInteger("displayId", _id);
         _name = set.getString("name");
         _operateType = set.getEnum("operateType", SkillOpType.class);
@@ -2526,14 +2524,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
     public int getReferenceItemId()
     {
 	    return _refId;
-    }
-
-	/**
-     * @return
-     */
-    public int getAfroColor()
-    {
-	    return _afroId;
     }
 
     public final int getMaxCharges()

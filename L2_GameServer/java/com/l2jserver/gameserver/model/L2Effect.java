@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
@@ -101,6 +102,8 @@ public abstract class L2Effect
 	private AbnormalEffect _abnormalEffect;
 	// special effect mask
 	private AbnormalEffect _specialEffect;
+	// event effect mask
+	private AbnormalEffect _eventEffect;
 	// show icon
 	private boolean _icon;
 	
@@ -187,6 +190,7 @@ public abstract class L2Effect
 		_period = temp;
 		_abnormalEffect = template.abnormalEffect;
 		_specialEffect = template.specialEffect;
+		_eventEffect = template.eventEffect;
 		_stackType = template.stackType;
 		_stackOrder = template.stackOrder;
 		_periodStartTicks = GameTimeController.getGameTicks();
@@ -226,6 +230,7 @@ public abstract class L2Effect
 		_period = _template.period - effect.getTime();
 		_abnormalEffect = _template.abnormalEffect;
 		_specialEffect = _template.specialEffect;
+		_eventEffect = _template.eventEffect;
 		_stackType = _template.stackType;
 		_stackOrder = _template.stackOrder;
 		_periodStartTicks = effect.getPeriodStartTicks();
@@ -447,6 +452,8 @@ public abstract class L2Effect
 			getEffected().startAbnormalEffect(_abnormalEffect);
 		if (_specialEffect != AbnormalEffect.NULL)
 			getEffected().startSpecialEffect(_specialEffect);
+		if (_eventEffect != AbnormalEffect.NULL && getEffected().getInstanceType() == InstanceType.L2PcInstance)
+			getEffected().getActingPlayer().startEventEffect(_eventEffect);
 		return true;
 	}
 	
@@ -459,6 +466,8 @@ public abstract class L2Effect
 			getEffected().stopAbnormalEffect(_abnormalEffect);
 		if (_specialEffect != AbnormalEffect.NULL)
 			getEffected().stopSpecialEffect(_specialEffect);
+		if (_eventEffect != AbnormalEffect.NULL && getEffected().getInstanceType() == InstanceType.L2PcInstance)
+			getEffected().getActingPlayer().stopEventEffect(_eventEffect);
 	}
 	
 	/** Return true for continuation of this effect */

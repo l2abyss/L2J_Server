@@ -66,7 +66,17 @@ public enum AbnormalEffect
 	S_PINK_AFFRO("pinkafro", 0x000020),
 	S_BLACK_AFFRO("blackafro", 0x000040),
 	S_UNKNOWN8("unknown8", 0x000080),
-	STIGMA_SHILIEN("stigmashilien", 0x000100);
+	STIGMA_SHILIEN("stigmashilien", 0x000100),
+	
+	// event effects
+	E_AFRO_1("blackafro", 0x000001),
+	E_AFRO_2("pinkafro", 0x000002),
+	E_AFRO_3("yellowafro", 0x000004),
+	E_EVASWRATH("evaswrath", 0x000008),
+	E_HEADPHONE("headphone", 0x000010),
+	E_VESPER_1("vesper1", 0x000020),
+	E_VESPER_2("vesper2", 0x000040),
+	E_VESPER_3("vesper3", 0x000080);
 	
 	private final int _mask;
 	private final String _name;
