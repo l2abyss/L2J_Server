@@ -2627,6 +2627,8 @@ public final class Formulas
 				&& target.getLevel() >= Config.MIN_NPC_LVL_MAGIC_PENALTY && attacker.getActingPlayer() != null
 				&& (target.getLevel() - attacker.getActingPlayer().getLevel()) >= 3)
 			rate *= MAGIC_FAIL_RATE;
+		// general magic resist
+		rate *= target.calcStat(Stats.MAGIC_SUCCESS_RES, 1, null, skill);
 		return (Rnd.get(10000) > rate);
 	}
 
