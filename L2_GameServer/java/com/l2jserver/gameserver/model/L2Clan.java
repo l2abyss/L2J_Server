@@ -31,6 +31,8 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager.Territory;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.TimeStamp;
@@ -2479,8 +2481,16 @@ public class L2Clan
                 break;
 			case 10:
 				// Upgrade to 11
-				//TODO: Must own a territory
-				if (getReputationScore() >= Config.CLAN_LEVEL_11_COST && getMembersCount() >= Config.CLAN_LEVEL_11_REQUIREMENT)
+				boolean hasTerritory = false;
+				for (Territory terr : TerritoryWarManager.getInstance().getAllTerritories())
+				{
+					if (terr.getOwnerClan().getClanId() == getClanId())
+					{
+						hasTerritory = true;
+						break;
+					}
+				}
+				if (hasTerritory && getReputationScore() >= Config.CLAN_LEVEL_11_COST && getMembersCount() >= Config.CLAN_LEVEL_11_REQUIREMENT)
 				{
 					setReputationScore(getReputationScore() - Config.CLAN_LEVEL_11_COST, true);
 					SystemMessage cr = new SystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
