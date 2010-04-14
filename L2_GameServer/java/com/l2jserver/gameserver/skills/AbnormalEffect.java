@@ -69,9 +69,9 @@ public enum AbnormalEffect
 	STIGMA_SHILIEN("stigmashilien", 0x000100),
 	
 	// event effects
-	E_AFRO_1("blackafro", 0x000001),
-	E_AFRO_2("pinkafro", 0x000002),
-	E_AFRO_3("yellowafro", 0x000004),
+	E_AFRO_1("afrobaguette1", 0x000001),
+	E_AFRO_2("afrobaguette2", 0x000002),
+	E_AFRO_3("afrobaguette3", 0x000004),
 	E_EVASWRATH("evaswrath", 0x000008),
 	E_HEADPHONE("headphone", 0x000010),
 	E_VESPER_1("vesper1", 0x000020),

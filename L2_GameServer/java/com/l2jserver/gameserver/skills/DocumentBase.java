@@ -247,7 +247,7 @@ abstract class DocumentBase
         if (attrs.getNamedItem("event") != null)
         {
             String spc = attrs.getNamedItem("event").getNodeValue();
-            special = AbnormalEffect.getByName(spc);
+            event = AbnormalEffect.getByName(spc);
         }
         float stackOrder = 0;
         String stackType = "none";
