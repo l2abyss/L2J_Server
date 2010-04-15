@@ -495,8 +495,9 @@ public class Shutdown extends Thread
 				break;
 			
 		}
-		if (Config.ACTIVATE_POSITION_RECORDER)
-			Universe.getInstance().implode(true);
+		
+		/*if (Config.ACTIVATE_POSITION_RECORDER)
+			Universe.getInstance().implode(true);*/
 		
 		// Seven Signs data is now saved along with Festival data.
 		if (!SevenSigns.getInstance().isSealValidationPeriod())

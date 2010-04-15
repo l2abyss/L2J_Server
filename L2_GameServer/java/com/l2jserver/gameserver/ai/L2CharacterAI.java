@@ -28,7 +28,6 @@ import java.util.List;
 
 import javolution.util.FastList;
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.Universe;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
@@ -808,13 +807,13 @@ public class L2CharacterAI extends AbstractAI
 		// Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)
 		clientStopMoving(blocked_at_pos);
 		
-		if (Config.ACTIVATE_POSITION_RECORDER && Universe.getInstance().shouldLog(_accessor.getActor().getObjectId()))
+		/*if (Config.ACTIVATE_POSITION_RECORDER && Universe.getInstance().shouldLog(_accessor.getActor().getObjectId()))
 		{
 			if (!_accessor.getActor().isFlying())
 				Universe.getInstance().registerObstacle(blocked_at_pos.x, blocked_at_pos.y, blocked_at_pos.z);
 			if (_accessor.getActor() instanceof L2PcInstance)
 				((L2PcInstance) _accessor.getActor()).explore();
-		}
+		}*/
 
 		// Launch actions corresponding to the Event Think
 		onEvtThink();

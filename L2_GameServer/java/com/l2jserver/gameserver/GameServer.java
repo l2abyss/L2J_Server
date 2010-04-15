@@ -389,7 +389,7 @@ public class GameServer
 		if (Config.ALLOW_MAIL)
 			MailManager.getInstance();
 
-		Universe.getInstance();
+		//Universe.getInstance();
 		
 		if (Config.ACCEPT_GEOEDITOR_CONN)
 			GeoEditorListener.getInstance();

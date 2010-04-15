@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.TaskPriority;
-import com.l2jserver.gameserver.Universe;
 import com.l2jserver.gameserver.geoeditorcon.GeoEditorListener;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -96,10 +95,10 @@ public class ValidatePosition extends L2GameClientPacket
             		&& GeoEditorListener.getInstance().getThread().isSend(activeChar))
             	GeoEditorListener.getInstance().getThread().sendGmPosition(_x,_y,(short)_z);
         
-        if (Config.ACTIVATE_POSITION_RECORDER 
+        /*if (Config.ACTIVATE_POSITION_RECORDER 
         		&& !activeChar.isFlying() 
         		&& Universe.getInstance().shouldLog(activeChar.getObjectId()))
-            Universe.getInstance().registerHeight(realX, realY, _z);
+            Universe.getInstance().registerHeight(realX, realY, _z);*/
        
         if (activeChar.isFlying() || activeChar.isInsideZone(L2Character.ZONE_WATER))
         {
