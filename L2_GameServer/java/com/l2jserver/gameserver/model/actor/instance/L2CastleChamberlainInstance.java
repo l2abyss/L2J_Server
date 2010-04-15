@@ -369,6 +369,15 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 			else if (command.startsWith("manor_menu_select"))
 			{// input string format:
 				// manor_menu_select?ask=X&state=Y&time=X
+				
+				if ((player.getClanPrivileges() & L2Clan.CP_CS_MANOR_ADMIN) != L2Clan.CP_CS_MANOR_ADMIN)
+				{
+					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+					html.setFile(player.getHtmlPrefix(), "data/html/chamberlain/chamberlain-noprivs.htm");
+					player.sendPacket(html);
+					return;
+				}
+				
 				if (CastleManorManager.getInstance().isUnderMaintenance())
 				{
 					player.sendPacket(ActionFailed.STATIC_PACKET);
