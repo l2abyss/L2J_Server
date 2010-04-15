@@ -399,18 +399,16 @@ public class Fort
 	 */
 	public boolean setOwner(L2Clan clan, boolean updateClansReputation)
 	{
-		if (updateClansReputation)
-		{
-			// update reputation first
-			updateClansReputation(clan, false);
-		}
+		L2Clan oldowner = getOwnerClan();
+		
 		// Remove old owner
-		if (getOwnerClan() != null && (clan != null && clan != getOwnerClan()))
+		if (oldowner != null && clan != null && clan != oldowner)
 		{
-			updateClansReputation(getOwnerClan(), true);
+			// Remove points from old owner
+			updateClansReputation(oldowner, true);
 			try
 			{
-				L2PcInstance oldleader = getOwnerClan().getLeader().getPlayerInstance();
+				L2PcInstance oldleader = oldowner.getLeader().getPlayerInstance();
 				if (oldleader != null)
 				{
 					if (oldleader.getMountType() == 2)
@@ -424,6 +422,7 @@ public class Fort
 			removeOwner(true);
 		}
 		setFortState(0, 0); // initialize fort state
+		
 		//	if clan already have castle, don't store him in fortress
 		if (clan.getHasCastle() > 0)
 		{
@@ -432,6 +431,10 @@ public class Fort
 		}
 		else
 		{
+			// Give points to new owner
+			if (updateClansReputation)
+				updateClansReputation(clan, false);
+
 			spawnSpecialEnvoys();
 			ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSpecialEnvoysDeSpawn(this), 1 * 60 * 60 * 1000); // Prepare 1hr task for special envoys despawn
 			// if clan have already fortress, remove it
