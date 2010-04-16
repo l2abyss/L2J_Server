@@ -1462,7 +1462,7 @@ public class Quest extends ManagedScript
 		if ((party == null) || (party.getPartyMembers().isEmpty()))
 		{
 			temp = player.getQuestState(getName());
-			if ((temp != null) && (temp.get(var) != null) && ((String) temp.get(var)).equalsIgnoreCase(value))
+			if ((temp != null) && (temp.get(var) != null) && (temp.get(var)).equalsIgnoreCase(value))
 				return player; // match
 				
 			return null; // no match
@@ -1482,7 +1482,7 @@ public class Quest extends ManagedScript
 			if (partyMember == null)
 				continue;
 			temp = partyMember.getQuestState(getName());
-			if ((temp != null) && (temp.get(var) != null) && ((String) temp.get(var)).equalsIgnoreCase(value) && partyMember.isInsideRadius(target, 1500, true, false))
+			if ((temp != null) && (temp.get(var) != null) && (temp.get(var)).equalsIgnoreCase(value) && partyMember.isInsideRadius(target, 1500, true, false))
 				candidates.add(partyMember);
 		}
 		// if there was no match, return null...

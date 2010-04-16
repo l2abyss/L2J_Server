@@ -504,9 +504,9 @@ public final class QuestState
 	/**
 	 * Return the value of the variable of quest represented by "var"
 	 * @param var : name of the variable of quest
-	 * @return Object
+	 * @return String
 	 */
-	public Object get(String var)
+	public String get(String var)
 	{
 		if (_vars == null)
 			return null;
