@@ -441,6 +441,14 @@ public final class Config
 	public static int WORLD_Y_MAX;
 	public static int GEODATA;
 	public static boolean GEODATA_CELLFINDING;
+	public static String PATHFIND_BUFFERS;
+	public static float LOW_WEIGHT;
+	public static float MEDIUM_WEIGHT;
+	public static float HIGH_WEIGHT;
+	public static boolean ADVANCED_DIAGONAL_STRATEGY;
+	public static float DIAGONAL_WEIGHT;
+	public static int MAX_POSTFILTER_PASSES;
+	public static boolean DEBUG_PATH;
 	public static boolean FORCE_GEODATA;
 	public static boolean MOVE_BASED_KNOWNLIST;
 	public static long KNOWNLIST_UPDATE_INTERVAL;
@@ -1684,6 +1692,14 @@ public final class Config
 					WORLD_Y_MAX = Integer.parseInt(General.getProperty("WorldYMax", "26"));
 					GEODATA = Integer.parseInt(General.getProperty("GeoData", "0"));
 					GEODATA_CELLFINDING = Boolean.parseBoolean(General.getProperty("CellPathFinding", "False"));
+					PATHFIND_BUFFERS = General.getProperty("PathFindBuffers", "100x6;128x6;192x6;256x4;320x4;384x4;500x2");
+					LOW_WEIGHT = Float.parseFloat(General.getProperty("LowWeight", "0.5"));
+					MEDIUM_WEIGHT = Float.parseFloat(General.getProperty("MediumWeight", "2"));
+					HIGH_WEIGHT = Float.parseFloat(General.getProperty("HighWeight", "3"));
+					ADVANCED_DIAGONAL_STRATEGY = Boolean.parseBoolean(General.getProperty("AdvancedDiagonalStrategy", "True"));
+					DIAGONAL_WEIGHT = Float.parseFloat(General.getProperty("DiagonalWeight", "0.707"));
+					MAX_POSTFILTER_PASSES = Integer.parseInt(General.getProperty("MaxPostfilterPasses", "3"));
+					DEBUG_PATH = Boolean.parseBoolean(General.getProperty("DebugPath", "False"));
 					FORCE_GEODATA = Boolean.parseBoolean(General.getProperty("ForceGeodata", "True"));
 					COORD_SYNCHRONIZE = Integer.parseInt(General.getProperty("CoordSynchronize", "-1"));
 					ZONE_TOWN = Integer.parseInt(General.getProperty("ZoneTown", "0"));
@@ -2645,6 +2661,12 @@ public final class Config
 
 		else if (pName.equalsIgnoreCase("PreciseDropCalculation")) PRECISE_DROP_CALCULATION = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("MultipleItemDrop")) MULTIPLE_ITEM_DROP = Boolean.parseBoolean(pValue);
+		else if (pName.equalsIgnoreCase("LowWeight")) LOW_WEIGHT = Float.parseFloat(pValue);
+		else if (pName.equalsIgnoreCase("MediumWeight")) MEDIUM_WEIGHT = Float.parseFloat(pValue);
+		else if (pName.equalsIgnoreCase("HighWeight")) HIGH_WEIGHT = Float.parseFloat(pValue);
+		else if (pName.equalsIgnoreCase("AdvancedDiagonalStrategy")) ADVANCED_DIAGONAL_STRATEGY= Boolean.parseBoolean(pValue);
+		else if (pName.equalsIgnoreCase("DiagonalWeight")) DIAGONAL_WEIGHT = Float.parseFloat(pValue);
+		else if (pName.equalsIgnoreCase("MaxPostfilterPasses")) MAX_POSTFILTER_PASSES = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("CoordSynchronize")) COORD_SYNCHRONIZE = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("DeleteCharAfterDays")) DELETE_DAYS = Integer.parseInt(pValue);
 
