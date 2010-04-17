@@ -13,6 +13,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.pathfinding.cellnodes;
+import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 
@@ -22,15 +23,27 @@ import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
  */
 public class NodeLoc extends AbstractNodeLoc
 {
-	private final int _x;
-	private final int _y;
-	private short _z;
+	private int _x;
+	private int _y;
+	private short _geoHeightAndNSWE;
 
 	public NodeLoc(int x, int y, short z)
 	{
 		_x = x;
 		_y = y;
-		_z = z;
+		_geoHeightAndNSWE = GeoData.getInstance().getHeightAndNSWE(x, y, z);
+	}
+
+	public void set(int x, int y, short z)
+	{
+		_x = x;
+		_y = y;
+		_geoHeightAndNSWE = GeoData.getInstance().getHeightAndNSWE(x, y, z);
+	}
+
+	public short getNSWE()
+	{
+		return (short)(_geoHeightAndNSWE & 0x0f);
 	}
 
 	/**
@@ -57,13 +70,14 @@ public class NodeLoc extends AbstractNodeLoc
 	@Override
 	public short getZ()
 	{
-		return _z;
+		short height = (short)(_geoHeightAndNSWE & 0x0fff0);
+		return (short)(height >> 1);
 	}
 
 	@Override
 	public void setZ(short z)
 	{
-		_z = z;
+		//
 	}
 	
 	/**
@@ -72,7 +86,6 @@ public class NodeLoc extends AbstractNodeLoc
 	@Override
 	public int getNodeX()
 	{
-		// TODO Auto-generated method stub
 		return _x;
 	}
 
@@ -82,7 +95,6 @@ public class NodeLoc extends AbstractNodeLoc
 	@Override
 	public int getNodeY()
 	{
-		// TODO Auto-generated method stub
 		return _y;
 	}
 
@@ -96,7 +108,7 @@ public class NodeLoc extends AbstractNodeLoc
 	    int result = 1;
 	    result = prime * result + _x;
 	    result = prime * result + _y;
-	    result = prime * result + _z;
+	    result = prime * result + _geoHeightAndNSWE;
 	    return result;
     }
 
@@ -117,9 +129,8 @@ public class NodeLoc extends AbstractNodeLoc
 		    return false;
 	    if (_y != other._y)
 		    return false;
-	    if (_z != other._z)
+	    if (_geoHeightAndNSWE != other._geoHeightAndNSWE)
 		    return false;
 	    return true;
     }
-
 }

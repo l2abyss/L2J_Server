@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -32,9 +33,10 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.pathfinding.AbstractNode;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
-import com.l2jserver.gameserver.pathfinding.Node;
 import com.l2jserver.gameserver.pathfinding.PathFinding;
+import com.l2jserver.gameserver.pathfinding.utils.FastNodeList;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
@@ -67,7 +69,7 @@ public class GeoPathFinding extends PathFinding
 	 * @see com.l2jserver.gameserver.pathfinding.PathFinding#FindPath(int, int, short, int, int, short)
 	 */
 	@Override
-	public List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz, int instanceId)
+	public List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz, int instanceId, boolean playable)
 	{
 		int gx = (x - L2World.MAP_MIN_X) >> 4;
 		int gy = (y - L2World.MAP_MIN_Y) >> 4;
@@ -76,8 +78,8 @@ public class GeoPathFinding extends PathFinding
 		int gty = (ty - L2World.MAP_MIN_Y) >> 4;
 		short gtz = (short) tz;
 		
-		Node start = readNode(gx, gy, gz);
-		Node end = readNode(gtx, gty, gtz);
+		GeoNode start = readNode(gx, gy, gz);
+		GeoNode end = readNode(gtx, gty, gtz);
 		if (start == null || end == null)
 			return null;
 		if (Math.abs(start.getLoc().getZ() - z) > 55)
@@ -101,11 +103,106 @@ public class GeoPathFinding extends PathFinding
 		return searchByClosest2(start, end);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.pathfinding.PathFinding#ReadNeighbors(short, short)
-	 */
-	@Override
-	public Node[] readNeighbors(Node n, int idx)
+	public List<AbstractNodeLoc> searchByClosest2(GeoNode start, GeoNode end)
+	{
+		// Always continues checking from the closest to target non-blocked
+		// node from to_visit list. There's extra length in path if needed
+		// to go backwards/sideways but when moving generally forwards, this is extra fast
+		// and accurate. And can reach insane distances (try it with 800 nodes..).
+		// Minimum required node count would be around 300-400.
+		// Generally returns a bit (only a bit) more intelligent looking routes than
+		// the basic version. Not a true distance image (which would increase CPU
+		// load) level of intelligence though.
+		
+		// List of Visited Nodes
+		FastNodeList visited = new FastNodeList(550);
+		
+		// List of Nodes to Visit
+		LinkedList<GeoNode> to_visit = new LinkedList<GeoNode>();
+		to_visit.add(start);
+		int targetX = end.getLoc().getNodeX();
+		int targetY = end.getLoc().getNodeY();
+
+		int dx, dy;
+		boolean added;
+		int i = 0;
+		while (i < 550)
+		{
+			GeoNode node;
+			try
+			{
+				node = to_visit.removeFirst();
+			}
+			catch (Exception e)
+			{
+				// No Path found
+				return null;
+			}
+			if (node.equals(end)) //path found!
+				return constructPath2(node);
+			else
+			{
+				i++;
+				visited.add(node);
+				node.attachNeighbors();
+				GeoNode[] neighbors = node.getNeighbors();
+				if (neighbors == null)
+					continue;
+				for (GeoNode n : neighbors)
+				{
+					if (!visited.containsRev(n) && !to_visit.contains(n))
+					{
+						added = false;
+						n.setParent(node);
+						dx = targetX - n.getLoc().getNodeX();
+						dy = targetY - n.getLoc().getNodeY();
+						n.setCost(dx * dx + dy * dy);
+						for (int index = 0; index < to_visit.size(); index++)
+						{
+							// supposed to find it quite early..
+							if (to_visit.get(index).getCost() > n.getCost())
+							{
+								to_visit.add(index, n);
+								added = true;
+								break;
+							}
+						}
+						if (!added)
+							to_visit.addLast(n);
+					}
+				}
+			}
+		}
+		//No Path found
+		return null;
+	}
+
+	public List<AbstractNodeLoc> constructPath2(AbstractNode node)
+	{
+		LinkedList<AbstractNodeLoc> path = new LinkedList<AbstractNodeLoc>();
+		int previousDirectionX = -1000;
+		int previousDirectionY = -1000;
+		int directionX;
+		int directionY;
+
+		while (node.getParent() != null)
+		{
+			// only add a new route point if moving direction changes
+			directionX = node.getLoc().getNodeX() - node.getParent().getLoc().getNodeX();
+			directionY = node.getLoc().getNodeY() - node.getParent().getLoc().getNodeY();
+
+			if (directionX != previousDirectionX || directionY != previousDirectionY)
+			{
+				previousDirectionX = directionX;
+				previousDirectionY = directionY;
+				path.addFirst(node.getLoc());
+			}
+			node = node.getParent();
+		}
+		return path;
+	}
+
+	public GeoNode[] readNeighbors(GeoNode n, int idx)
 	{
 		int node_x = n.getLoc().getNodeX();
 		int node_y = n.getLoc().getNodeY();
@@ -114,8 +211,8 @@ public class GeoPathFinding extends PathFinding
 		short regoffset = getRegionOffset(getRegionX(node_x), getRegionY(node_y));
 		ByteBuffer pn = _pathNodes.get(regoffset);
 		
-		List<Node> Neighbors = new FastList<Node>(8);
-		Node newNode;
+		List<AbstractNode> Neighbors = new FastList<AbstractNode>(8);
+		GeoNode newNode;
 		short new_node_x, new_node_y;
 		
 		//Region for sure will change, we must read from correct file
@@ -199,13 +296,13 @@ public class GeoPathFinding extends PathFinding
 			if (newNode != null)
 				Neighbors.add(newNode);
 		}
-		Node[] result = new Node[Neighbors.size()];
+		GeoNode[] result = new GeoNode[Neighbors.size()];
 		return Neighbors.toArray(result);
 	}
 	
 	//Private
 	
-	private Node readNode(short node_x, short node_y, byte layer)
+	private GeoNode readNode(short node_x, short node_y, byte layer)
 	{
 		short regoffset = getRegionOffset(getRegionX(node_x), getRegionY(node_y));
 		if (!this.pathNodesExist(regoffset))
@@ -223,10 +320,10 @@ public class GeoPathFinding extends PathFinding
 		}
 		short node_z = pn.getShort(idx);
 		idx += 2;
-		return new Node(new GeoNodeLoc(node_x, node_y, node_z), idx);
+		return new GeoNode(new GeoNodeLoc(node_x, node_y, node_z), idx);
 	}
 	
-	private Node readNode(int gx, int gy, short z)
+	private GeoNode readNode(int gx, int gy, short z)
 	{
 		short node_x = getNodePos(gx);
 		short node_y = getNodePos(gy);
@@ -252,7 +349,7 @@ public class GeoPathFinding extends PathFinding
 			idx += 10; //short + 8 byte
 			nodes--;
 		}
-		return new Node(new GeoNodeLoc(node_x, node_y, last_z), idx2);
+		return new GeoNode(new GeoNodeLoc(node_x, node_y, last_z), idx2);
 	}
 	
 	private GeoPathFinding()

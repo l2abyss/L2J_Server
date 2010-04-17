@@ -20,7 +20,6 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.pathfinding.Node;
 import com.l2jserver.util.Point3D;
 
 
@@ -140,7 +139,12 @@ public class GeoData
 	{
 		return 15;
 	}
-	
+
+	public short getHeightAndNSWE(int x, int y, int z)
+	{
+		return (short)((z << 1) | 15);
+	}
+
 	/**
 	 * @param x
 	 * @param y
@@ -183,11 +187,6 @@ public class GeoData
 	public boolean hasGeo(int x, int y)
 	{
 		return false;
-	}
-	
-	public Node[] getNeighbors(Node n)
-	{
-		return null;
 	}
 	
 	@SuppressWarnings("synthetic-access")

@@ -12,39 +12,46 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.pathfinding.utils;
+package com.l2jserver.gameserver.pathfinding.geonodes;
 
 import com.l2jserver.gameserver.pathfinding.AbstractNode;
+import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 
 /**
  *
  * @author -Nemesiss-
  */
-public class FastNodeList
+public class GeoNode extends AbstractNode
 {
-	private AbstractNode[] _list;
-	private int _size;
+	private final int _neighborsIdx;
+	private short _cost;
+	private GeoNode[] _neighbors;
 
-	public FastNodeList(int size)
+	public GeoNode(AbstractNodeLoc Loc, int Neighbors_idx)
 	{
-		_list = new AbstractNode[size];
+		super(Loc);
+		_neighborsIdx = Neighbors_idx;
 	}
-	public void add(AbstractNode n)
+
+	public short getCost()
 	{
-		_list[_size++] = n;
+		return _cost;
 	}
-	public boolean contains(AbstractNode n)
+
+	public void setCost(int cost)
 	{
-		for (int i =0; i < _size; i++)
-			if(_list[i].equals(n))
-				return true;
-		return false;
+		_cost = (short)cost;
 	}
-	public boolean containsRev(AbstractNode n)
+
+	public GeoNode[] getNeighbors()
 	{
-		for (int i=_size-1; i >= 0; i--)
-			if(_list[i].equals(n))
-				return true;
-		return false;
+		return _neighbors;
 	}
+
+	public void attachNeighbors()
+	{
+		if(getLoc() == null) _neighbors = null;
+		else _neighbors = GeoPathFinding.getInstance().readNeighbors(this, _neighborsIdx);
+	}
+	
 }

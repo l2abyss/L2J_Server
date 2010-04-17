@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver;
 
+import gnu.trove.TShortObjectHashMap;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,8 +28,6 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
@@ -39,12 +39,7 @@ import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.pathfinding.Node;
-import com.l2jserver.gameserver.pathfinding.cellnodes.CellPathFinding;
 import com.l2jserver.util.Point3D;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 /**
  *
@@ -53,12 +48,13 @@ import javolution.util.FastMap;
 public class GeoEngine extends GeoData
 {
 	private static Logger _log = Logger.getLogger(GeoData.class.getName());
-	private final static byte _e = 1;
-	private final static byte _w = 2;
-	private final static byte _s = 4;
-	private final static byte _n = 8;
-	private static Map<Short, MappedByteBuffer> _geodata = new FastMap<Short, MappedByteBuffer>();
-	private static Map<Short, IntBuffer> _geodataIndex = new FastMap<Short, IntBuffer>();
+	private static final byte EAST = 1;
+	private static final byte WEST = 2;
+	private static final byte SOUTH = 4;
+	private static final byte NORTH = 8;
+	private static final byte NSWE_ALL = 15;
+	private static TShortObjectHashMap<MappedByteBuffer> _geodata = new TShortObjectHashMap<MappedByteBuffer>();
+	private static TShortObjectHashMap<IntBuffer> _geodataIndex = new TShortObjectHashMap<IntBuffer>();
 	private static BufferedOutputStream _geoBugsOut;
 	
 	public static GeoEngine getInstance()
@@ -251,7 +247,7 @@ public class GeoEngine extends GeoData
 		int gx = (x - L2World.MAP_MIN_X) >> 4;
 		int gy = (y - L2World.MAP_MIN_Y) >> 4;
 		short region = getRegionOffset(gx, gy);
-		if (_geodata.get(region) != null)
+		if (_geodata.contains(region))
 			return true;
 		return false;
 	}
@@ -279,7 +275,7 @@ public class GeoEngine extends GeoData
 				short region = getRegionOffset(x, y);
 				// geodata is loaded for region and mobs should have correct Z coordinate...
 				// so there would likely be a floor in between the two
-				if (_geodata.get(region) != null)
+				if (_geodata.contains(region))
 					return false;
 			}
 			return true;
@@ -821,12 +817,13 @@ public class GeoEngine extends GeoData
 		int blockX = getBlock(x);
 		int blockY = getBlock(y);
 		int index = 0;
+		final IntBuffer idx = _geodataIndex.get(region);
 		//Geodata without index - it is just empty so index can be calculated on the fly
-		if (_geodataIndex.get(region) == null)
+		if (idx == null)
 			index = ((blockX << 8) + blockY) * 3;
 		//Get Index for current block of current geodata region
 		else
-			index = _geodataIndex.get(region).get((blockX << 8) + blockY);
+			index = idx.get((blockX << 8) + blockY);
 		//Buffer that Contains current Region GeoData
 		ByteBuffer geo = _geodata.get(region);
 		if (geo == null)
@@ -850,12 +847,13 @@ public class GeoEngine extends GeoData
 		int blockX = getBlock(geox);
 		int blockY = getBlock(geoy);
 		int cellX, cellY, index;
+		final IntBuffer idx = _geodataIndex.get(region);
 		//Geodata without index - it is just empty so index can be calculated on the fly
-		if (_geodataIndex.get(region) == null)
+		if (idx == null)
 			index = ((blockX << 8) + blockY) * 3;
 		//Get Index for current block of current region geodata
 		else
-			index = _geodataIndex.get(region).get(((blockX << 8)) + (blockY));
+			index = idx.get(((blockX << 8)) + (blockY));
 		//Buffer that Contains current Region GeoData
 		ByteBuffer geo = _geodata.get(region);
 		if (geo == null)
@@ -928,11 +926,12 @@ public class GeoEngine extends GeoData
 		int blockY = getBlock(geoy);
 		int cellX, cellY, index;
 		//Geodata without index - it is just empty so index can be calculated on the fly
-		if (_geodataIndex.get(region) == null)
+		final IntBuffer idx = _geodataIndex.get(region);
+		if (idx == null)
 			index = ((blockX << 8) + blockY) * 3;
 		//Get Index for current block of current region geodata
 		else
-			index = _geodataIndex.get(region).get(((blockX << 8)) + (blockY));
+			index = idx.get(((blockX << 8)) + (blockY));
 		//Buffer that Contains current Region GeoData
 		ByteBuffer geo = _geodata.get(region);
 		if (geo == null)
@@ -1007,12 +1006,13 @@ public class GeoEngine extends GeoData
 		int blockY = getBlock(geoy);
 		int cellX, cellY, index;
 		short temph = Short.MIN_VALUE;
+		final IntBuffer idx = _geodataIndex.get(region);
 		//Geodata without index - it is just empty so index can be calculated on the fly
-		if (_geodataIndex.get(region) == null)
+		if (idx == null)
 			index = ((blockX << 8) + blockY) * 3;
 		//Get Index for current block of current region geodata
 		else
-			index = _geodataIndex.get(region).get(((blockX << 8)) + (blockY));
+			index = idx.get(((blockX << 8)) + (blockY));
 		//Buffer that Contains current Region GeoData
 		ByteBuffer geo = _geodata.get(region);
 		if (geo == null)
@@ -1104,12 +1104,13 @@ public class GeoEngine extends GeoData
 		short NSWE = 0;
 		
 		int index = 0;
+		final IntBuffer idx = _geodataIndex.get(region);
 		//Geodata without index - it is just empty so index can be calculated on the fly
-		if (_geodataIndex.get(region) == null)
+		if (idx == null)
 			index = ((blockX << 8) + blockY) * 3;
 		//Get Index for current block of current region geodata
 		else
-			index = _geodataIndex.get(region).get(((blockX << 8)) + (blockY));
+			index = idx.get(((blockX << 8)) + (blockY));
 		//Buffer that Contains current Region GeoData
 		ByteBuffer geo = _geodata.get(region);
 		if (geo == null)
@@ -1201,12 +1202,13 @@ public class GeoEngine extends GeoData
 		short NSWE = 0;
 		
 		int index;
+		final IntBuffer idx = _geodataIndex.get(region);
 		//Geodata without index - it is just empty so index can be calculated on the fly
-		if (_geodataIndex.get(region) == null)
+		if (idx == null)
 			index = ((blockX << 8) + blockY) * 3;
 		//Get Index for current block of current region geodata
 		else
-			index = _geodataIndex.get(region).get(((blockX << 8)) + (blockY));
+			index = idx.get(((blockX << 8)) + (blockY));
 		//Buffer that Contains current Region GeoData
 		ByteBuffer geo = _geodata.get(region);
 		if (geo == null)
@@ -1344,7 +1346,7 @@ public class GeoEngine extends GeoData
 	 * @param z
 	 * @return NSWE: 0-15
 	 */
-	private short nGetNSWE(int x, int y, int z)
+	private static short nGetNSWE(int x, int y, int z)
 	{
 		short region = getRegionOffset(x, y);
 		int blockX = getBlock(x);
@@ -1353,12 +1355,13 @@ public class GeoEngine extends GeoData
 		short NSWE = 0;
 		
 		int index = 0;
+		final IntBuffer idx = _geodataIndex.get(region);
 		//Geodata without index - it is just empty so index can be calculated on the fly
-		if (_geodataIndex.get(region) == null)
+		if (idx == null)
 			index = ((blockX << 8) + blockY) * 3;
 		//Get Index for current block of current region geodata
 		else
-			index = _geodataIndex.get(region).get(((blockX << 8)) + (blockY));
+			index = idx.get(((blockX << 8)) + (blockY));
 		//Buffer that Contains current Region GeoData
 		ByteBuffer geo = _geodata.get(region);
 		if (geo == null)
@@ -1419,115 +1422,48 @@ public class GeoEngine extends GeoData
 		}
 		return NSWE;
 	}
-	
+
 	/**
 	 * @param x
 	 * @param y
 	 * @param z
-	 * @return NSWE: 0-15
+	 * @return array [0] - height, [1] - NSWE
 	 */
 	@Override
-	public Node[] getNeighbors(Node n)
+	public short getHeightAndNSWE(int x, int y, int z)
 	{
-		List<Node> Neighbors = new FastList<Node>(4);
-		Node newNode;
-		int x = n.getLoc().getNodeX();
-		int y = n.getLoc().getNodeY();
-		int parentdirection = 0;
-		if (n.getParent() != null) // check for not adding parent again
-		{
-			if (n.getParent().getLoc().getNodeX() > x)
-				parentdirection = 1;
-			if (n.getParent().getLoc().getNodeX() < x)
-				parentdirection = -1;
-			if (n.getParent().getLoc().getNodeY() > y)
-				parentdirection = 2;
-			if (n.getParent().getLoc().getNodeY() < y)
-				parentdirection = -2;
-		}
-		short z = n.getLoc().getZ();
 		short region = getRegionOffset(x, y);
 		int blockX = getBlock(x);
 		int blockY = getBlock(y);
 		int cellX, cellY;
-		short NSWE = 0;
+		
 		int index = 0;
+		final IntBuffer idx = _geodataIndex.get(region);
 		//Geodata without index - it is just empty so index can be calculated on the fly
-		if (_geodataIndex.get(region) == null)
+		if (idx == null)
 			index = ((blockX << 8) + blockY) * 3;
 		//Get Index for current block of current region geodata
 		else
-			index = _geodataIndex.get(region).get(((blockX << 8)) + (blockY));
+			index = idx.get(((blockX << 8)) + (blockY));
 		//Buffer that Contains current Region GeoData
 		ByteBuffer geo = _geodata.get(region);
 		if (geo == null)
 		{
 			if (Config.DEBUG)
 				_log.warning("Geo Region - Region Offset: " + region + " dosnt exist!!");
-			return null;
+			return (short)((z << 1) | NSWE_ALL);
 		}
 		//Read current block type: 0-flat,1-complex,2-multilevel
 		byte type = geo.get(index);
 		index++;
 		if (type == 0)//flat
-		{
-			short height = geo.getShort(index);
-			n.getLoc().setZ(height);
-			if (parentdirection != 1)
-			{
-				newNode = CellPathFinding.getInstance().readNode(x + 1, y, height);
-				//newNode.setCost(0);
-				Neighbors.add(newNode);
-			}
-			if (parentdirection != 2)
-			{
-				newNode = CellPathFinding.getInstance().readNode(x, y + 1, height);
-				Neighbors.add(newNode);
-			}
-			if (parentdirection != -2)
-			{
-				newNode = CellPathFinding.getInstance().readNode(x, y - 1, height);
-				Neighbors.add(newNode);
-			}
-			if (parentdirection != -1)
-			{
-				newNode = CellPathFinding.getInstance().readNode(x - 1, y, height);
-				Neighbors.add(newNode);
-			}
-		}
+			return (short)((geo.getShort(index) << 1) | NSWE_ALL);
 		else if (type == 1)//complex
 		{
 			cellX = getCell(x);
 			cellY = getCell(y);
 			index += ((cellX << 3) + cellY) << 1;
-			short height = geo.getShort(index);
-			NSWE = (short) (height & 0x0F);
-			height = (short) (height & 0x0fff0);
-			height = (short) (height >> 1); //height / 2
-			n.getLoc().setZ(height);
-			if (NSWE != 15 && parentdirection != 0)
-				return null; // no node with a block will be used
-			if (parentdirection != 1 && checkNSWE(NSWE, x, y, x + 1, y))
-			{
-				newNode = CellPathFinding.getInstance().readNode(x + 1, y, height);
-				//newNode.setCost(basecost+50);
-				Neighbors.add(newNode);
-			}
-			if (parentdirection != 2 && checkNSWE(NSWE, x, y, x, y + 1))
-			{
-				newNode = CellPathFinding.getInstance().readNode(x, y + 1, height);
-				Neighbors.add(newNode);
-			}
-			if (parentdirection != -2 && checkNSWE(NSWE, x, y, x, y - 1))
-			{
-				newNode = CellPathFinding.getInstance().readNode(x, y - 1, height);
-				Neighbors.add(newNode);
-			}
-			if (parentdirection != -1 && checkNSWE(NSWE, x, y, x - 1, y))
-			{
-				newNode = CellPathFinding.getInstance().readNode(x - 1, y, height);
-				Neighbors.add(newNode);
-			}
+			return geo.getShort(index);
 		}
 		else
 		//multilevel
@@ -1546,54 +1482,28 @@ public class GeoEngine extends GeoData
 			short height = -1;
 			if (layers <= 0 || layers > 125)
 			{
-				_log.warning("Broken geofile (case5), region: " + region + " - invalid layer count: " + layers + " at: " + x + " " + y);
-				return null;
+				_log.warning("Broken geofile (case1), region: " + region + " - invalid layer count: " + layers + " at: " + x + " " + y);
+				return (short)((z << 1) | NSWE_ALL);
 			}
-			short tempz = Short.MIN_VALUE;
+			short temph = Short.MIN_VALUE;
+			short result = 0;
 			while (layers > 0)
 			{
-				height = geo.getShort(index);
-				height = (short) (height & 0x0fff0);
+				short block = geo.getShort(index);
+				height = (short) (block & 0x0fff0);
 				height = (short) (height >> 1); //height / 2
-				
-				if ((z - tempz) * (z - tempz) > (z - height) * (z - height))
+				if ((z - temph) * (z - temph) > (z - height) * (z - height))
 				{
-					tempz = height;
-					NSWE = geo.get(index);
-					NSWE = (short) (NSWE & 0x0F);
+					temph = height;
+					result = block;
 				}
 				layers--;
 				index += 2;
 			}
-			n.getLoc().setZ(tempz);
-			if (NSWE != 15 && parentdirection != 0)
-				return null; // no node with a block will be used
-			if (parentdirection != 1 && checkNSWE(NSWE, x, y, x + 1, y))
-			{
-				newNode = CellPathFinding.getInstance().readNode(x + 1, y, tempz);
-				//newNode.setCost(basecost+50);
-				Neighbors.add(newNode);
-			}
-			if (parentdirection != 2 && checkNSWE(NSWE, x, y, x, y + 1))
-			{
-				newNode = CellPathFinding.getInstance().readNode(x, y + 1, tempz);
-				Neighbors.add(newNode);
-			}
-			if (parentdirection != -2 && checkNSWE(NSWE, x, y, x, y - 1))
-			{
-				newNode = CellPathFinding.getInstance().readNode(x, y - 1, tempz);
-				Neighbors.add(newNode);
-			}
-			if (parentdirection != -1 && checkNSWE(NSWE, x, y, x - 1, y))
-			{
-				newNode = CellPathFinding.getInstance().readNode(x - 1, y, tempz);
-				Neighbors.add(newNode);
-			}
+			return result;
 		}
-		Node[] result = new Node[Neighbors.size()];
-		return Neighbors.toArray(result);
 	}
-	
+
 	/**
 	 * @param NSWE
 	 * @param x
@@ -1609,22 +1519,22 @@ public class GeoEngine extends GeoData
 			return true;
 		if (tx > x)//E
 		{
-			if ((NSWE & _e) == 0)
+			if ((NSWE & EAST) == 0)
 				return false;
 		}
 		else if (tx < x)//W
 		{
-			if ((NSWE & _w) == 0)
+			if ((NSWE & WEST) == 0)
 				return false;
 		}
 		if (ty > y)//S
 		{
-			if ((NSWE & _s) == 0)
+			if ((NSWE & SOUTH) == 0)
 				return false;
 		}
 		else if (ty < y)//N
 		{
-			if ((NSWE & _n) == 0)
+			if ((NSWE & NORTH) == 0)
 				return false;
 		}
 		return true;

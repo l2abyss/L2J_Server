@@ -62,11 +62,8 @@ import com.l2jserver.gameserver.model.L2Skill.SkillTargetType;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2MinionInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2NpcWalkerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2RiftInvaderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.SkillDat;
 import com.l2jserver.gameserver.model.actor.knownlist.CharKnownList;
 import com.l2jserver.gameserver.model.actor.position.CharPosition;
@@ -4489,7 +4486,7 @@ public abstract class L2Character extends L2Object
 		if (Config.GEODATA > 0 
 			&& !isFlying() // flying chars not checked - even canSeeTarget doesn't work yet
 			&& (!isInsideZone(ZONE_WATER) || isInsideZone(ZONE_SIEGE)) // swimming also not checked unless in siege zone - but distance is limited
-			&& !(this instanceof L2NpcWalkerInstance)) // npc walkers not checked
+			&& !isInstanceType(InstanceType.L2NpcWalkerInstance)) // npc walkers not checked
 		{
 			double originalDistance = distance;
 			int originalX = x;
@@ -4501,11 +4498,10 @@ public abstract class L2Character extends L2Object
 			// Movement checks:
 			// when geodata == 2, for all characters except mobs returning home (could be changed later to teleport if pathfinding fails)
 			// when geodata == 1, for l2playableinstance and l2riftinstance only
-			if ((Config.GEODATA == 2 &&	!(this instanceof L2Attackable && ((L2Attackable)this).isReturningToSpawnPoint())) 
-					|| this instanceof L2PcInstance 
-					|| (this instanceof L2Summon && !(this.getAI().getIntention() == AI_INTENTION_FOLLOW)) // assuming intention_follow only when following owner
-					|| isAfraid()
-					|| this instanceof L2RiftInvaderInstance)
+			if ((Config.GEODATA == 2 &&	!(isInstanceType(InstanceType.L2Attackable) && ((L2Attackable)this).isReturningToSpawnPoint())) 
+					|| isInstanceTypes(InstanceType.L2Playable, InstanceType.L2RiftInvaderInstance) 
+					|| (isInstanceType(InstanceType.L2Summon) && !(this.getAI().getIntention() == AI_INTENTION_FOLLOW)) // assuming intention_follow only when following owner
+					|| isAfraid())
 			{
 				if (isOnGeodataPath())
 				{
@@ -4545,10 +4541,10 @@ public abstract class L2Character extends L2Object
 			{
 				// Path calculation
 				// Overrides previous movement check
-				if(this instanceof L2Playable || this.isInCombat() || this instanceof L2MinionInstance)
+				if(isInstanceTypes(InstanceType.L2Playable, InstanceType.L2MinionInstance) || this.isInCombat())
 				{
 		
-					m.geoPath = PathFinding.getInstance().findPath(curX, curY, curZ, originalX, originalY, originalZ, getInstanceId());
+					m.geoPath = PathFinding.getInstance().findPath(curX, curY, curZ, originalX, originalY, originalZ, getInstanceId(), isInstanceType(InstanceType.L2Playable));
                 	if (m.geoPath == null || m.geoPath.size() < 2) // No path found
                 	{
                 		// * Even though there's no path found (remember geonodes aren't perfect), 
@@ -4559,11 +4555,10 @@ public abstract class L2Character extends L2Object
                 		// * Summons will follow their masters no matter what.
                 		// * Currently minions also must move freely since L2AttackableAI commands
                 		// them to move along with their leader
-                		if (this instanceof L2PcInstance 
-                				|| (!(this instanceof L2Playable) 
-                						&& !(this instanceof L2MinionInstance)
+                		if (isInstanceType(InstanceType.L2PcInstance) 
+                				|| (!isInstanceTypes(InstanceType.L2Playable, InstanceType.L2MinionInstance) 
                 						&& Math.abs(z - curZ) > 140)
-                				|| (this instanceof L2Summon && !((L2Summon)this).getFollowStatus())) 
+                				|| (isInstanceType(InstanceType.L2Summon) && !((L2Summon)this).getFollowStatus())) 
                 		{
                 			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
                 			return;
@@ -4616,11 +4611,10 @@ public abstract class L2Character extends L2Object
 			}
 			// If no distance to go through, the movement is canceled
 			if (distance < 1 && (Config.GEODATA == 2 
-					|| this instanceof L2Playable
-					|| this.isAfraid()
-					|| this instanceof L2RiftInvaderInstance))
+					|| isInstanceTypes(InstanceType.L2Playable, InstanceType.L2RiftInvaderInstance) 
+					|| this.isAfraid()))
 			{
-				if(this instanceof L2Summon) ((L2Summon)this).setFollowStatus(false);
+				if(isInstanceType(InstanceType.L2Summon)) ((L2Summon)this).setFollowStatus(false);
 				getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 				return;
 			}

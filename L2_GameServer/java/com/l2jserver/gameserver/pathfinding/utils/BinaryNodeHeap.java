@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.pathfinding.utils;
 
-import com.l2jserver.gameserver.pathfinding.Node;
+import com.l2jserver.gameserver.pathfinding.geonodes.GeoNode;
 
 /**
  *
@@ -22,15 +22,15 @@ import com.l2jserver.gameserver.pathfinding.Node;
  */
 public class BinaryNodeHeap
 {
-	private final Node[] _list;
+	private final GeoNode[] _list;
 	private int _size;
 
 	public BinaryNodeHeap(int size)
 	{
-		_list = new Node[size+1];
+		_list = new GeoNode[size+1];
 		_size = 0;
 	}
-	public void add(Node n) {
+	public void add(GeoNode n) {
 		_size++;
 		int pos  = _size;
 		_list[pos] = n;
@@ -39,7 +39,7 @@ public class BinaryNodeHeap
 			int p2 = pos/2;
 			if (_list[pos].getCost() <= _list[p2].getCost())
 			{
-				Node temp = _list[p2];
+				GeoNode temp = _list[p2];
 				_list[p2] = _list[pos];
 				_list[pos] = temp;
 		        pos = p2;
@@ -48,16 +48,16 @@ public class BinaryNodeHeap
 				break;
 		}
 	}
-	public Node removeFirst()
+	public GeoNode removeFirst()
 	{
-		Node first = _list[1];
+		GeoNode first = _list[1];
 		_list[1] = _list[_size];
 		_list[_size] = null;
 		_size--;
 		int pos = 1;
 		int cpos;
 		int dblcpos;
-		Node temp;
+		GeoNode temp;
 		while(true)
 		{
 			cpos = pos;
@@ -86,7 +86,7 @@ public class BinaryNodeHeap
 		}
 		return first;
 	}
-	public boolean contains(Node n)
+	public boolean contains(GeoNode n)
 	{
 		if (_size == 0)
 			return false;

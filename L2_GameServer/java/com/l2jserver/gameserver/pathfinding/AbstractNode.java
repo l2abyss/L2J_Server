@@ -14,47 +14,22 @@
  */
 package com.l2jserver.gameserver.pathfinding;
 
-/**
- *
- * @author -Nemesiss-
- */
-public class Node
+public abstract class AbstractNode
 {
-	private final AbstractNodeLoc _loc;
-	private final int _neighborsIdx;
-	private Node[] _neighbors;
-	private Node _parent;
-	private short _cost;
+	private AbstractNodeLoc _loc;
+	private AbstractNode _parent;
 
-
-	public Node(AbstractNodeLoc Loc, int Neighbors_idx)
+	public AbstractNode(AbstractNodeLoc loc)
 	{
-		_loc = Loc;
-		_neighborsIdx = Neighbors_idx;
+		_loc = loc;
 	}
 
-	public void setParent(Node p)
+	public void setParent(AbstractNode p)
 	{
 		_parent = p;
 	}
 
-	public void setCost(int cost)
-	{
-		_cost = (short)cost;
-	}
-
-	public void attachNeighbors()
-	{
-		if(_loc == null) _neighbors = null;
-		else _neighbors = PathFinding.getInstance().readNeighbors(this, _neighborsIdx);
-	}
-
-	public Node[] getNeighbors()
-	{
-		return _neighbors;
-	}
-
-	public Node getParent()
+	public AbstractNode getParent()
 	{
 		return _parent;
 	}
@@ -64,9 +39,9 @@ public class Node
 		return _loc;
 	}
 
-	public short getCost()
+	public void setLoc(AbstractNodeLoc l)
 	{
-		return _cost;
+		_loc = l;
 	}
 
 	/**
@@ -91,9 +66,9 @@ public class Node
 		    return true;
 	    if (obj == null)
 		    return false;
-	    if (!(obj instanceof Node))
+	    if (!(obj instanceof AbstractNode))
 		    return false;
-	    final Node other = (Node) obj;
+	    final AbstractNode other = (AbstractNode) obj;
 	    if (_loc == null)
 	    {
 		    if (other._loc != null)
@@ -103,5 +78,4 @@ public class Node
 		    return false;
 	    return true;
     }
-	
 }

@@ -12,39 +12,57 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.pathfinding.utils;
+package com.l2jserver.gameserver.pathfinding.cellnodes;
 
 import com.l2jserver.gameserver.pathfinding.AbstractNode;
+import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 
-/**
- *
- * @author -Nemesiss-
- */
-public class FastNodeList
+public class CellNode extends AbstractNode
 {
-	private AbstractNode[] _list;
-	private int _size;
+	private CellNode _next = null;
+	private boolean _isInUse = true;
+	private float _cost = -1000;
 
-	public FastNodeList(int size)
+	public CellNode(AbstractNodeLoc loc)
 	{
-		_list = new AbstractNode[size];
+		super(loc);
 	}
-	public void add(AbstractNode n)
+
+	public boolean isInUse()
 	{
-		_list[_size++] = n;
+		return _isInUse;
 	}
-	public boolean contains(AbstractNode n)
+
+	public void setInUse()
 	{
-		for (int i =0; i < _size; i++)
-			if(_list[i].equals(n))
-				return true;
-		return false;
+		_isInUse = true;
 	}
-	public boolean containsRev(AbstractNode n)
+
+	public CellNode getNext()
 	{
-		for (int i=_size-1; i >= 0; i--)
-			if(_list[i].equals(n))
-				return true;
-		return false;
+		return _next;
+	}
+
+	public void setNext(CellNode next)
+	{
+		_next = next;
+	}
+
+	public float getCost()
+	{
+		return _cost;
+	}
+
+	public void setCost(double cost)
+	{
+		_cost = (float)cost;
+	}
+
+	public void free()
+	{
+		setParent(null);
+		_cost = -1000;
+		_isInUse = false;
+		_next = null;
 	}
 }
