@@ -14,15 +14,15 @@
  */
 package com.l2jserver.gameserver;
 
+import java.util.Iterator;
 import java.util.logging.Logger;
+
+import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.instancemanager.DayNightSpawnManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 /**
  * Removed TimerThread watcher [DrHouse]
@@ -42,7 +42,6 @@ public class GameTimeController
 	protected static boolean _interruptRequest = false;
 	
 	private static final FastMap<Integer, L2Character> _movingObjects = new FastMap<Integer, L2Character>().shared();
-	private static final FastList<L2Character> _toDelete = new FastList<L2Character>(20);
 	
 	protected static TimerThread _timer;
 	
@@ -113,42 +112,18 @@ public class GameTimeController
 	protected void moveObjects()
 	{
 		// Go throw the table containing L2Character in movement
-		for (L2Character ch : _movingObjects.values())
+		Iterator<L2Character> it = _movingObjects.values().iterator();
+		while (it.hasNext())
 		{
 			// If movement is finished, the L2Character is removed from
 			// movingObjects and added to the ArrayList ended
+			L2Character ch = it.next();
 			if (ch.updatePosition(_gameTicks))
-				_toDelete.add(ch);				
-		}
-		
-		if (_toDelete.isEmpty())
-			return;
-		
-		/*
-		 * Synchronizing on _movingObjects since this map is set as shared so,
-		 * on every write operation (add/remove) there is already an internal 
-		 * synchronization. This way we avoid the time that every remove()
-		 * call would have to wait until acquiring _movingObjects lock due to
-		 * concurrent writes.
-		 * 
-		 * TODO: Possibly this could be done on the fly, removing while iterating over
-		 * the map, without using any extra list.
-		 * 
-		 * TODO: On the other hand, perhaps we could avoid executing some MovingObjectArrived
-		 * tasks performing some checks in this thread (during loop): for instance,
-		 * only execute it if AI think() will be eventually run.
-		 *   
-		 * [DrHouse]
-		 */
-		synchronized (_movingObjects)
-		{
-			for (L2Character ch : _toDelete)
 			{
-				_movingObjects.remove(ch.getObjectId());
-				ThreadPoolManager.getInstance().executeTask(new MovingObjectArrived(ch));			
+				ThreadPoolManager.getInstance().executeTask(new MovingObjectArrived(ch));
+				it.remove();
 			}
 		}
-		_toDelete.clear();
 	}
 	
 	public void stopTimer()

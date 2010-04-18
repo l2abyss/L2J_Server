@@ -3320,7 +3320,8 @@ public final class L2PcInstance extends L2Playable
 		if (count > 0)
 		{
 			L2ItemInstance adenaItem = _inventory.getAdenaInstance();
-			_inventory.reduceAdena(process, count, this, reference);
+			if (!_inventory.reduceAdena(process, count, this, reference))
+				return false;
 
 			// Send update packet
 			if (!Config.FORCE_INVENTORY_UPDATE)
@@ -3384,40 +3385,41 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean reduceAncientAdena(String process, long count, L2Object reference, boolean sendMessage)
 	{
-	    if (count > getAncientAdena())
-	    {
-	        if (sendMessage)
-	            sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
-
-	        return false;
-	    }
-
-	    if (count > 0)
-	    {
-	        L2ItemInstance ancientAdenaItem = _inventory.getAncientAdenaInstance();
-	        _inventory.reduceAncientAdena(process, count, this, reference);
-
-	        if (!Config.FORCE_INVENTORY_UPDATE)
-	        {
-	            InventoryUpdate iu = new InventoryUpdate();
-	            iu.addItem(ancientAdenaItem);
-	            sendPacket(iu);
-	        }
-	        else
-	        {
-	            sendPacket(new ItemList(this, false));
-	        }
-
-	        if (sendMessage)
-	        {
-	            SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-	            sm.addItemName(PcInventory.ANCIENT_ADENA_ID);
-	            sm.addItemNumber(count);
-	            sendPacket(sm);
-	        }
-	    }
-
-	    return true;
+		if (count > getAncientAdena())
+		{
+			if (sendMessage)
+				sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+			
+			return false;
+		}
+		
+		if (count > 0)
+		{
+			L2ItemInstance ancientAdenaItem = _inventory.getAncientAdenaInstance();
+			if (!_inventory.reduceAncientAdena(process, count, this, reference))
+				return false;
+			
+			if (!Config.FORCE_INVENTORY_UPDATE)
+			{
+				InventoryUpdate iu = new InventoryUpdate();
+				iu.addItem(ancientAdenaItem);
+				sendPacket(iu);
+			}
+			else
+			{
+				sendPacket(new ItemList(this, false));
+			}
+			
+			if (sendMessage)
+			{
+				SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+				sm.addItemName(PcInventory.ANCIENT_ADENA_ID);
+				sm.addItemNumber(count);
+				sendPacket(sm);
+			}
+		}
+		
+		return true;
 	}
 
 	/**
