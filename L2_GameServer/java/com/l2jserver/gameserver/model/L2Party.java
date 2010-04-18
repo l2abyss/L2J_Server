@@ -784,6 +784,10 @@ public class L2Party {
 					validMembers.add(member);
 			}
 		}
+		else if (Config.PARTY_XP_CUTOFF_METHOD.equalsIgnoreCase("none"))
+		{
+			validMembers.addAll(members);
+		}
 		return validMembers;
 	}
 
