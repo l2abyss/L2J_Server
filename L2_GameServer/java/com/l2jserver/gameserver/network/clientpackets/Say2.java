@@ -188,29 +188,38 @@ public final class Say2 extends L2GameClientPacket
 	
 	private boolean parseAndPublishItem(L2PcInstance owner)
 	{
-		int pos1 = _text.indexOf(8);
-		int pos = _text.indexOf("ID=",pos1);
-		if (pos == -1) 
-			return false;
-		StringBuilder result = new StringBuilder(9);
-		pos += 3;
-		while(Character.isDigit(_text.charAt(pos)))
-			result.append(_text.charAt(pos++));
-		int id = Integer.parseInt(result.toString());
-		L2Object item = L2World.getInstance().findObject(id);
-		if(item instanceof L2ItemInstance)
+		int pos1 = -1;
+		while ((pos1 = _text.indexOf(8, pos1)) > -1)
 		{
-			if (owner.getInventory().getItemByObjectId(id) == null)
+			int pos = _text.indexOf("ID=", pos1);
+			if (pos == -1)
+				return false;
+			StringBuilder result = new StringBuilder(9);
+			pos += 3;
+			while (Character.isDigit(_text.charAt(pos)))
+				result.append(_text.charAt(pos++));
+			int id = Integer.parseInt(result.toString());
+			L2Object item = L2World.getInstance().findObject(id);
+			if (item instanceof L2ItemInstance)
 			{
-				_log.info(getClient()+ " trying publish item which doesnt own! ID:"+id);
+				if (owner.getInventory().getItemByObjectId(id) == null)
+				{
+					_log.info(getClient() + " trying publish item which doesnt own! ID:" + id);
+					return false;
+				}
+				((L2ItemInstance) item).publish();
+			}
+			else
+			{
+				_log.info(getClient() + " trying publish object which is not item! ID:" + id);
 				return false;
 			}
-			((L2ItemInstance) item).publish();
-		}
-		else
-		{
-			_log.info(getClient()+ " trying publish object which is not item! ID:"+id);
-			return false;
+			pos1 = _text.indexOf(8, pos) + 1;
+			if (pos1 == 0) // missing ending tag
+			{
+				_log.info(getClient() + " sent invalid publish item msg! ID:" + id);
+				return false;
+			}
 		}
 		return true;
 	}
