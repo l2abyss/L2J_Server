@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.AutoChatHandler;
@@ -359,14 +358,7 @@ public class MercTicketManager
 				AutoChatHandler.getInstance().registerChat(npc, messages, chatDelay);
 			
 			if (despawnDelay > 0)
-			{
-				ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() {
-					public void run()
-					{
-						npc.deleteMe();
-					}
-				}, despawnDelay);
-			}
+				npc.scheduleDespawn(despawnDelay);
 		}
 	}
 	
