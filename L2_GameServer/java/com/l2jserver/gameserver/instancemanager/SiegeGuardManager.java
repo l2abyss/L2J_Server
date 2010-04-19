@@ -164,9 +164,9 @@ public class SiegeGuardManager
 				if (spawn != null)
 				{
 					spawn.init();
-					spawn.stopRespawn();
 					if (isHired)
-					{
+					
+						spawn.stopRespawn();{
 						if (++hiredCount > hiredMax)
 							return;
 					}

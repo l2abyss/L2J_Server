@@ -69,7 +69,7 @@ public class CharSelected extends L2GameServerPacket
 		writeD(_activeChar.getDEX());
 		writeD(_activeChar.getWIT());
 		
-		writeD(GameTimeController.getInstance().getGameTime());
+		writeD(GameTimeController.getInstance().getGameTime() % (24 * 60)); // "reset" on 24th hour
 		writeD(0x00);
 		
 		writeD(_activeChar.getClassId().getId());
