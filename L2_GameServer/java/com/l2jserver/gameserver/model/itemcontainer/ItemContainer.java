@@ -80,7 +80,10 @@ public abstract class ItemContainer
 	 */
 	public L2ItemInstance[] getItems()
 	{
-		return _items.toArray(new L2ItemInstance[_items.size()]);
+		synchronized (_items)
+		{
+			return _items.toArray(new L2ItemInstance[_items.size()]);
+		}
 	}
 	
 	/**
