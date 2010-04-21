@@ -521,11 +521,14 @@ public final class QuestState
 	 */
 	public int getInt(String var)
 	{
+		final String variable = _vars.get(var);
+		if (variable == null || variable.length() == 0)
+			return 0;
+
 		int varint = 0;
-	
 		try
 		{
-			varint = Integer.parseInt(_vars.get(var));
+			varint = Integer.parseInt(variable);
 		}
 		catch (Exception e)
 		{
