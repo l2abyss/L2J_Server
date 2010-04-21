@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 public class L2TrapInstance extends L2Trap
 {
 	private L2PcInstance _owner;
+	private int _level;
 	private boolean _isInArena = false;
 	
 	/**
@@ -42,6 +43,13 @@ public class L2TrapInstance extends L2Trap
 		setInstanceId(owner.getInstanceId());
 		
 		_owner = owner;
+		_level = owner.getLevel();
+	}
+
+	@Override
+	public int getLevel()
+	{
+		return _level;
 	}
 
 	@Override
