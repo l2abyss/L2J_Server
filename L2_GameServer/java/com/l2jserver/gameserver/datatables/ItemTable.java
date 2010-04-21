@@ -862,7 +862,7 @@ public class ItemTable
 				}
 				String targetName = (actor.getTarget() != null ? actor.getTarget().getName() : "no-target");
 				if (Config.GMAUDIT)
-					GMAudit.auditGMAction(actor.getName(), process + "(id: " + itemId + " count: " + count + " name: " + item.getItemName()
+					GMAudit.auditGMAction(actor.getName()+" ["+actor.getObjectId()+"]", process + "(id: " + itemId + " count: " + count + " name: " + item.getItemName()
 							+ " objId: " + item.getObjectId() + ")", targetName, "L2Object referencing this action is: " + referenceName);
 			}
 		}
@@ -949,7 +949,7 @@ public class ItemTable
 					}
 					String targetName = (actor.getTarget() != null ? actor.getTarget().getName() : "no-target");
 					if (Config.GMAUDIT)
-						GMAudit.auditGMAction(actor.getName(), process + "(id: " + item.getItemId() + " count: " + item.getCount()
+						GMAudit.auditGMAction(actor.getName()+" ["+actor.getObjectId()+"]", process + "(id: " + item.getItemId() + " count: " + item.getCount()
 								+ " itemObjId: " + item.getObjectId() + ")", targetName, "L2Object referencing this action is: "
 								+ referenceName);
 				}

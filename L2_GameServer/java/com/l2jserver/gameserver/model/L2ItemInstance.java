@@ -295,7 +295,9 @@ public final class L2ItemInstance extends L2Object
 				}
 				String targetName = (creator.getTarget() != null?creator.getTarget().getName():"no-target");
 				if (Config.GMAUDIT)
-					GMAudit.auditGMAction(creator.getName(), process + "(id: "+getItemId()+" name: "+getName()+")", targetName, "L2Object referencing this action is: " + referenceName);
+					GMAudit.auditGMAction(creator.getName()+" ["+creator.getObjectId()+"]",
+							process + "(id: "+getItemId()+" name: "+getName()+")", targetName,
+							"L2Object referencing this action is: " + referenceName);
 			}
 		}
 	}
@@ -425,7 +427,10 @@ public final class L2ItemInstance extends L2Object
 				}
 				String targetName = (creator.getTarget() != null?creator.getTarget().getName():"no-target");
 				if (Config.GMAUDIT)
-					GMAudit.auditGMAction(creator.getName(), process + "(id: "+getItemId()+" objId: "+getObjectId()+" name: "+getName()+" count: "+count+")", targetName, "L2Object referencing this action is: " + referenceName);
+					GMAudit.auditGMAction(creator.getName()+" ["+creator.getObjectId()+"]",
+							process + "(id: "+getItemId()+" objId: "+getObjectId()+
+							" name: "+getName()+" count: "+count+")", targetName,
+							"L2Object referencing this action is: " + referenceName);
 			}
 		}
 	}

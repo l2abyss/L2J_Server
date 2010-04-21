@@ -74,7 +74,7 @@ public final class SendBypassBuildCmd extends L2GameClientPacket
 		}
 		
 		if (Config.GMAUDIT)
-			GMAudit.auditGMAction(activeChar.getName()+" S["+activeChar.getObjectId()+"]", _command, (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target"));
+			GMAudit.auditGMAction(activeChar.getName()+" ["+activeChar.getObjectId()+"]", _command, (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target"));
 
 		ach.useAdminCommand("admin_" + _command, activeChar);
 	}
