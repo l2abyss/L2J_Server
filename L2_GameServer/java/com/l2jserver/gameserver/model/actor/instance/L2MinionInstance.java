@@ -47,7 +47,7 @@ public class L2MinionInstance extends L2MonsterInstance
 	public L2MinionInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
-		setInstanceType(InstanceType.L2MonsterInstance);
+		setInstanceType(InstanceType.L2MinionInstance);
 	}
 
 	/**
