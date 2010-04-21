@@ -521,6 +521,9 @@ public final class QuestState
 	 */
 	public int getInt(String var)
 	{
+		if (_vars == null)
+			return 0;
+
 		final String variable = _vars.get(var);
 		if (variable == null || variable.length() == 0)
 			return 0;
