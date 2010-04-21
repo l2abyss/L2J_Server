@@ -52,7 +52,7 @@ public class BypassHandler
 			if (Config.DEBUG)
 				_log.log(Level.FINE, "Adding handler for command " + element);
 
-			_datatable.put(element.toLowerCase(), handler);
+			_datatable.put(element, handler);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class BypassHandler
 		if (Config.DEBUG)
 			_log.log(Level.FINE, "getting handler for command: " + command + " -> " + (_datatable.get(command) != null));
 
-		return _datatable.get(command.toLowerCase());
+		return _datatable.get(command);
 	}
 
 	public int size()
