@@ -1849,7 +1849,12 @@ public abstract class L2Character extends L2Object
 			{
 				if (_skillCast2 != null)
 				{
-					_skillCast2.cancel(true);
+					try 
+					{
+						_skillCast2.cancel(true);
+					}
+					catch (NullPointerException e) {}
+					
 					_skillCast2 = null;
 				}
 
@@ -1864,7 +1869,12 @@ public abstract class L2Character extends L2Object
 			{
 				if (_skillCast != null)
 				{
-					_skillCast.cancel(true);
+					try 
+					{
+						_skillCast.cancel(true);
+					}
+					catch (NullPointerException e) {}
+					
 					_skillCast = null;
 				}
 
