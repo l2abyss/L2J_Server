@@ -69,7 +69,7 @@ public abstract class L2Object
     	L2Object(null),
     	L2Character(L2Object),
     	L2Npc(L2Character),
-    	L2Playable(L2Npc),
+    	L2Playable(L2Character),
     	L2Summon(L2Playable),
     	L2Decoy(L2Character),
     	L2Trap(L2Character),
