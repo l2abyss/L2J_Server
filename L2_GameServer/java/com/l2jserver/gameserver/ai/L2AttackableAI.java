@@ -520,13 +520,14 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		// Minions following leader
 		if (_actor instanceof L2MinionInstance && ((L2MinionInstance) _actor).getLeader() != null)
 		{
-			int offset;
+			final int offset;
+			final int minRadius = 30;
 			
 			if (_actor.isRaidMinion())
 				offset = 500; // for Raids - need correction
 			else
 				offset = 200; // for normal minions - need correction :)
-				
+	
 			if (((L2MinionInstance) _actor).getLeader().isRunning())
 				_actor.setRunning();
 			else
@@ -535,8 +536,18 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			if (_actor.getPlanDistanceSq(((L2MinionInstance) _actor).getLeader()) > offset * offset)
 			{
 				int x1, y1, z1;
-				x1 = ((L2MinionInstance) _actor).getLeader().getX() + Rnd.nextInt((offset - 30) * 2) - (offset - 30);
-				y1 = ((L2MinionInstance) _actor).getLeader().getY() + Rnd.nextInt((offset - 30) * 2) - (offset - 30);
+				x1 = Rnd.get(minRadius * 2, offset * 2); // x
+				y1 = Rnd.get(x1, offset * 2); // distance
+				y1 = (int)Math.sqrt(y1*y1 - x1*x1); // y
+				if (x1 > offset + minRadius)
+					x1 = ((L2MinionInstance) _actor).getLeader().getX() + x1 - offset;
+				else
+					x1 = ((L2MinionInstance) _actor).getLeader().getX() - x1 + minRadius;
+				if (y1 > offset - minRadius)
+					y1 = ((L2MinionInstance) _actor).getLeader().getY() + y1 - offset;
+				else
+					y1 = ((L2MinionInstance) _actor).getLeader().getY() - y1 + minRadius;
+
 				z1 = ((L2MinionInstance) _actor).getLeader().getZ();
 				// Move the actor to Location (x,y,z) server side AND client side by sending Server->Client packet CharMoveToLocation (broadcast)
 				moveTo(x1, y1, z1);
@@ -593,12 +604,15 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				y1 = npc.getSpawn().getLocy();
 				z1 = npc.getSpawn().getLocz();
 
-				if (!_actor.isInsideRadius(x1, y1, z1, range + range, true, false))
+				if (!_actor.isInsideRadius(x1, y1, range, false))
 					npc.setisReturningToSpawnPoint(true);
 				else
 				{
-					x1 += Rnd.nextInt(range * 2) - range;
-					y1 += Rnd.nextInt(range * 2) - range;
+					x1 = Rnd.nextInt(range * 2); // x
+					y1 = Rnd.get(x1, range * 2); // distance
+					y1 = (int)Math.sqrt(y1*y1 - x1*x1); // y
+					x1 += npc.getSpawn().getLocx() - range;
+					y1 += npc.getSpawn().getLocy() - range;
 					z1 = npc.getZ();
 				}
 			}
@@ -740,27 +754,24 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		double dist = 0;
 		int dist2 = 0;
 		int range = 0;
-		L2Character MostHate = ((L2Attackable) _actor).getMostHated();
-		//L2Character ctarget = (L2Character)_actor.getTarget();
-		try
-		{
-			setAttackTarget(MostHate);
-			_actor.setTarget(MostHate);
-			dist = Math.sqrt(_actor.getPlanDistanceSq(getAttackTarget().getX(), getAttackTarget().getY()));
-			dist2= (int) dist - _actor.getTemplate().collisionRadius;
-			range = _actor.getPhysicalAttackRange() + _actor.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius;
-			if(getAttackTarget().isMoving())
-			{
-				range = range + 50;
-				if(_actor.isMoving())
-					range = range + 50;
-			}
-		}
-		catch (NullPointerException e)
+		L2Character mostHate = ((L2Attackable) _actor).getMostHated();
+		if (mostHate == null)
 		{
 			setIntention(AI_INTENTION_ACTIVE);
 			return;
 		}
+		setAttackTarget(mostHate);
+		_actor.setTarget(mostHate);
+		dist = Math.sqrt(_actor.getPlanDistanceSq(mostHate.getX(), mostHate.getY()));
+		dist2= (int) dist - _actor.getTemplate().collisionRadius;
+		range = _actor.getPhysicalAttackRange() + _actor.getTemplate().collisionRadius + mostHate.getTemplate().collisionRadius;
+		if(mostHate.isMoving())
+		{
+			range = range + 50;
+			if(_actor.isMoving())
+				range = range + 50;
+		}
+
 		//------------------------------------------------------
 		// In case many mobs are trying to hit from same place, move a bit,
 		// circling around the target
@@ -818,8 +829,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						posY=posY + Rnd.get(100);
 					else
 						posY=posY - Rnd.get(100);
-					
-					setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(posX, posY, posZ, 0));
+
+					if (Config.GEODATA == 0 || GeoData.getInstance().canMoveFromToTarget(_actor.getX(), _actor.getY(), posZ, posX, posY, posZ, _actor.getInstanceId()))
+						setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(posX, posY, posZ, 0));
 					return;
 				//}
 			}

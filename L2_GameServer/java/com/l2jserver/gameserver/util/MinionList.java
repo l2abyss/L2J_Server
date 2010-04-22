@@ -241,22 +241,21 @@ public class MinionList
 		monster.setInstanceId(instanceId);
 		
 		// Init the position of the Minion and add it in the world as a visible object
-		int spawnConstant;
-		int randSpawnLim = 170;
-		int randPlusMin = 1;
-		spawnConstant = Rnd.nextInt(randSpawnLim);
-		//randomize +/-
-		randPlusMin = Rnd.nextInt(2);
-		if (randPlusMin == 1)
-			spawnConstant *= -1;
-		int newX = master.getX() + Math.round(spawnConstant);
-		spawnConstant = Rnd.nextInt(randSpawnLim);
-		//randomize +/-
-		randPlusMin = Rnd.nextInt(2);
-		if (randPlusMin == 1)
-			spawnConstant *= -1;
-		int newY = master.getY() + Math.round(spawnConstant);
-		
+		final int offset = 200;
+		final int minRadius = 30;
+
+		int newX = Rnd.get(minRadius * 2, offset * 2); // x
+		int newY = Rnd.get(newX, offset * 2); // distance
+		newY = (int)Math.sqrt(newY*newY - newX*newX); // y
+		if (newX > offset + minRadius)
+			newX = master.getX() + newX - offset;
+		else
+			newX = master.getX() - newX + minRadius;
+		if (newY > offset - minRadius)
+			newY = master.getY() + newY - offset;
+		else
+			newY = master.getY() - newY + minRadius;
+
 		monster.spawnMe(newX, newY, master.getZ());
 		
 		if (Config.DEBUG)
