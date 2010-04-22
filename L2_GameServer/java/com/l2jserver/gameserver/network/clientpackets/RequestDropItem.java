@@ -201,7 +201,8 @@ public final class RequestDropItem extends L2GameClientPacket
 		if (activeChar.isGM())
 		{
 			String target = (activeChar.getTarget() != null ? activeChar.getTarget().getName() : "no-target");
-			GMAudit.auditGMAction(activeChar.getName(), "Drop", target, "(id: " + dropedItem.getItemId() + " name: " + dropedItem.getItemName() + " objId: " + dropedItem.getObjectId() 
+			GMAudit.auditGMAction(activeChar.getName()+" ["+activeChar.getObjectId()+"]",
+					"Drop", target, "(id: " + dropedItem.getItemId() + " name: " + dropedItem.getItemName() + " objId: " + dropedItem.getObjectId() 
 					+ " x: " + activeChar.getX() + " y: " + activeChar.getY() + " z: " + activeChar.getZ() + ")");
 		}
 		
