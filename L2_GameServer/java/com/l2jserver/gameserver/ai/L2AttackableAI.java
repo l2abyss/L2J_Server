@@ -543,7 +543,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					x1 = ((L2MinionInstance) _actor).getLeader().getX() + x1 - offset;
 				else
 					x1 = ((L2MinionInstance) _actor).getLeader().getX() - x1 + minRadius;
-				if (y1 > offset - minRadius)
+				if (y1 > offset + minRadius)
 					y1 = ((L2MinionInstance) _actor).getLeader().getY() + y1 - offset;
 				else
 					y1 = ((L2MinionInstance) _actor).getLeader().getY() - y1 + minRadius;

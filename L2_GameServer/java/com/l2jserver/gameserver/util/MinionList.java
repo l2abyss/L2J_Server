@@ -251,7 +251,7 @@ public class MinionList
 			newX = master.getX() + newX - offset;
 		else
 			newX = master.getX() - newX + minRadius;
-		if (newY > offset - minRadius)
+		if (newY > offset + minRadius)
 			newY = master.getY() + newY - offset;
 		else
 			newY = master.getY() - newY + minRadius;
