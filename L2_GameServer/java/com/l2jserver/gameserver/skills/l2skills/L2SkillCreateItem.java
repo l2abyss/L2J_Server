@@ -17,8 +17,11 @@ package com.l2jserver.gameserver.skills.l2skills;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.serverpackets.PetItemList;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.util.Rnd;
@@ -47,21 +50,30 @@ public class L2SkillCreateItem extends L2Skill
 	@Override
 	public void useSkill(L2Character activeChar, L2Object[] targets)
 	{
+		L2PcInstance player = activeChar.getActingPlayer();
 		if (activeChar.isAlikeDead())
 			return;
-		if (activeChar instanceof L2PcInstance)
+		if (activeChar instanceof L2Playable)
 		{
 			if (_createItemId == null || _createItemCount == 0)
 			{
 				SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
 				sm.addSkillName(this);
-				activeChar.sendPacket(sm);
+				player.sendPacket(sm);
 				return;
 			}
 
 			int count = _createItemCount + Rnd.nextInt(_randomCount);
 			int rndid = Rnd.nextInt(_createItemId.length);
-			((L2PcInstance)activeChar).addItem("Skill", _createItemId[rndid], count, activeChar, true);
+			if (activeChar instanceof L2PcInstance)
+			{
+				player.addItem("Skill", _createItemId[rndid], count, activeChar, true);
+			}
+			else if (activeChar instanceof L2PetInstance)
+			{
+				activeChar.getInventory().addItem("Skill", _createItemId[rndid], count, player, activeChar);
+				player.sendPacket(new PetItemList((L2PetInstance) activeChar));
+			}
 		}
 	}
 }
