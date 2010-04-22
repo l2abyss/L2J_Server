@@ -399,6 +399,7 @@ public class EnterWorld extends L2GameClientPacket
 			notice.setFile(activeChar.getHtmlPrefix(), "data/html/clanNotice.htm");
 			notice.replace("%clan_name%", activeChar.getClan().getName());
 			notice.replace("%notice_text%", activeChar.getClan().getNotice().replaceAll("\r\n", "<br>"));
+			notice.disableValidation();
 			sendPacket(notice);
 		}
 		else if (Config.SERVER_NEWS)
