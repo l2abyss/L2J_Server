@@ -69,5 +69,6 @@ public enum L2EffectType
 	CLAN_GATE,
 	NEGATE,
 	THROW_UP,
-	HIDE
+	HIDE,
+	ABORT_CAST
 }

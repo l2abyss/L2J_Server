@@ -2307,9 +2307,11 @@ public final class Formulas
 		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK) // perfect block
 			return false;
 		
-		L2SkillType type = effect.effectType  != null ? effect.effectType : skill.getSkillType();
+		final L2SkillType type = effect.effectType;
+		final int value = (int)effect.effectPower;
+		if (type == null)
+			return Rnd.get(100) < value;
 
-		int value = (int)effect.effectPower;
 		int lvlDepend = skill.getLevelDepend();
 
 		// TODO: Temporary fix for skills with Power = 0 or LevelDepend not set
