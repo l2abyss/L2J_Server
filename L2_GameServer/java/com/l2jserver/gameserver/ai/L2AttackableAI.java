@@ -499,9 +499,18 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				
 				return;
 			}
-			
 		}
-		
+
+		// Chance to forget attackers after some time
+		if (_actor.getCurrentHp() == _actor.getMaxHp()
+				&& _actor.getCurrentMp() == _actor.getMaxMp()
+				&& !_actor.getAttackByList().isEmpty()
+				&& Rnd.nextInt(500) == 0)
+		{
+			((L2Attackable)_actor).clearAggroList();
+			_actor.getAttackByList().clear();
+		}
+
 		// Check if the actor is a L2GuardInstance
 		if (_actor instanceof L2GuardInstance)
 		{

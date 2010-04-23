@@ -227,6 +227,7 @@ public final class L2WorldRegion
         				mob.stopAllEffects();
 
         				mob.clearAggroList();
+        				mob.getAttackByList().clear();
         				mob.getKnownList().removeAllKnownObjects();
 
         				mob.getAI().setIntention(com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE);
