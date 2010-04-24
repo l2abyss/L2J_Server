@@ -4380,7 +4380,7 @@ public final class L2PcInstance extends L2Playable
         	//synchronized (getKnownList().getKnownPlayers())
         	if (players != null && !players.isEmpty())
 			{
-            	ExOlympiadUserInfo olyInfo = new ExOlympiadUserInfo(this, 2);
+            	ExOlympiadUserInfo olyInfo = new ExOlympiadUserInfo(this);
 
             	for (L2PcInstance player : players)
 				{
@@ -4396,7 +4396,7 @@ public final class L2PcInstance extends L2Playable
         	players = Olympiad.getInstance().getSpectators(_olympiadGameId);
             if(players != null && !players.isEmpty())
             {
-            	ExOlympiadUserInfo olyInfo = new ExOlympiadUserInfo(this, getOlympiadSide());
+            	ExOlympiadUserInfo olyInfo = new ExOlympiadUserInfo(this);
 
             	for(L2PcInstance spectator : players)
                 {

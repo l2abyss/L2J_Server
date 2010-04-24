@@ -1168,18 +1168,18 @@ class OlympiadGameTask implements Runnable
 			return false;
 		}
 
-		_game._playerOne.sendPacket(new ExOlympiadUserInfo(_game._playerOne, 1));
-		_game._playerOne.sendPacket(new ExOlympiadUserInfo(_game._playerTwo, 2));
-		_game._playerTwo.sendPacket(new ExOlympiadUserInfo(_game._playerTwo, 1));
-		_game._playerTwo.sendPacket(new ExOlympiadUserInfo(_game._playerOne, 2));
+		_game._playerOne.sendPacket(new ExOlympiadUserInfo(_game._playerOne));
+		_game._playerOne.sendPacket(new ExOlympiadUserInfo(_game._playerTwo));
+		_game._playerTwo.sendPacket(new ExOlympiadUserInfo(_game._playerTwo));
+		_game._playerTwo.sendPacket(new ExOlympiadUserInfo(_game._playerOne));
 		if (OlympiadManager.STADIUMS[_game._stadiumID].getSpectators() != null)
 		{
 			for (L2PcInstance spec : OlympiadManager.STADIUMS[_game._stadiumID].getSpectators())
 			{
 				if (spec != null)
 				{
-					spec.sendPacket(new ExOlympiadUserInfo(_game._playerOne, 1));
-					spec.sendPacket(new ExOlympiadUserInfo(_game._playerTwo, 2));
+					spec.sendPacket(new ExOlympiadUserInfo(_game._playerOne));
+					spec.sendPacket(new ExOlympiadUserInfo(_game._playerTwo));
 				}
 			}
 		}

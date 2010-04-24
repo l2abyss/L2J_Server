@@ -1692,8 +1692,8 @@ public class Olympiad
 					|| !game._playerTwo.isOlympiadStart())
 				return;
 
-			player.sendPacket(new ExOlympiadUserInfo(game._playerOne, 1));
-			player.sendPacket(new ExOlympiadUserInfo(game._playerTwo, 2));
+			player.sendPacket(new ExOlympiadUserInfo(game._playerOne));
+			player.sendPacket(new ExOlympiadUserInfo(game._playerTwo));
 		}
 	}
 	
