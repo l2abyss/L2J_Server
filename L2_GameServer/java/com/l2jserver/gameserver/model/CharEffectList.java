@@ -25,8 +25,10 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbnormalStatusUpdate;
+import com.l2jserver.gameserver.network.serverpackets.ExOlympiadSpelledInfo;
 import com.l2jserver.gameserver.network.serverpackets.PartySpelled;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
@@ -905,6 +907,7 @@ public class CharEffectList
 
 		AbnormalStatusUpdate mi = null;
 		PartySpelled ps = null;
+		ExOlympiadSpelledInfo os = null;
 		
 		if (_owner instanceof L2PcInstance)
 		{
@@ -915,6 +918,9 @@ public class CharEffectList
 
 			if (_owner.isInParty())
 				ps = new PartySpelled(_owner);
+
+			if (((L2PcInstance)_owner).isInOlympiadMode() && ((L2PcInstance)_owner).isOlympiadStart())
+				os = new ExOlympiadSpelledInfo((L2PcInstance)_owner);
 		}
 		else
 			if (_owner instanceof L2Summon)
@@ -951,6 +957,9 @@ public class CharEffectList
 						
 						if (ps != null)
 							e.addPartySpelledIcon(ps);
+
+						if (os != null)
+							e.addOlympiadSpelledIcon(os);
 					}
 				}
 			}
@@ -983,6 +992,9 @@ public class CharEffectList
 						
 						if (ps != null)
 							e.addPartySpelledIcon(ps);
+
+						if (os != null)
+							e.addOlympiadSpelledIcon(os);
 					}
 				}
 			}
@@ -1010,6 +1022,19 @@ public class CharEffectList
 			else
 				if (_owner instanceof L2PcInstance && _owner.isInParty())
 					_owner.getParty().broadcastToPartyMembers(ps);
+		}
+
+		if (os != null)
+		{
+			final List<L2PcInstance> specs = Olympiad.getInstance().getSpectators(((L2PcInstance)_owner).getOlympiadGameId());
+			if (specs != null && !specs.isEmpty())
+			{
+				for (L2PcInstance spec : specs)
+				{
+					if (spec != null)
+						spec.sendPacket(os);
+				}
+			}
 		}
 	}
 
