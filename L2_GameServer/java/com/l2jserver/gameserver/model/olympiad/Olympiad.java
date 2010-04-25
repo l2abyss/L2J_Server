@@ -1000,6 +1000,9 @@ public class Olympiad
 		}
 		
 		OlympiadManager.STADIUMS[id].addSpectator(id, spectator, storeCoords);
+		
+		if (storeCoords)
+			handleSpectatorEnter(id, spectator); //npc bypass
 	}
 	
 	public static int getSpectatorArena(L2PcInstance player)
@@ -1663,6 +1666,25 @@ public class Olympiad
         player.sendPacket(message);
 	}
 	
+	private static void handleSpectatorEnter(int gameId, L2PcInstance player)
+	{
+		OlympiadGame game = OlympiadManager.getInstance().getOlympiadGame(gameId);
+		if (game != null)
+		{
+			if (game._playerOne == null
+					|| !game._playerOne.isInOlympiadMode()
+					|| !game._playerOne.isOlympiadStart())
+				return;
+			if (game._playerTwo == null
+					|| !game._playerTwo.isInOlympiadMode()
+					|| !game._playerTwo.isOlympiadStart())
+				return;
+			
+			player.sendPacket(new ExOlympiadUserInfo(game._playerOne));
+			player.sendPacket(new ExOlympiadUserInfo(game._playerTwo));
+		}
+	}
+	
 	public static void bypassChangeArena(String command, L2PcInstance player)
 	{
 		if (!player.inObserverMode())
@@ -1680,21 +1702,7 @@ public class Olympiad
 			return;
 		Olympiad.addSpectator(id, player, false);
 
-		OlympiadGame game = OlympiadManager.getInstance().getOlympiadGame(id);
-		if (game != null)
-		{
-			if (game._playerOne == null
-					|| !game._playerOne.isInOlympiadMode()
-					|| !game._playerOne.isOlympiadStart())
-				return;
-			if (game._playerTwo == null
-					|| !game._playerTwo.isInOlympiadMode()
-					|| !game._playerTwo.isOlympiadStart())
-				return;
-
-			player.sendPacket(new ExOlympiadUserInfo(game._playerOne));
-			player.sendPacket(new ExOlympiadUserInfo(game._playerTwo));
-		}
+		handleSpectatorEnter(id, player);
 	}
 	
 	@SuppressWarnings("synthetic-access")
