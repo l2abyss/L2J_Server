@@ -1302,7 +1302,7 @@ public abstract class L2Character extends L2Object
 
 		// Get char's heading degree
 		//angleChar = Util.convertHeadingToDegree(getHeading());
-		int attackRandomCountMax = (int)getStat().calcStat(Stats.ATTACK_COUNT_MAX, 3, null, null) - 1;
+		int attackRandomCountMax = (int)getStat().calcStat(Stats.ATTACK_COUNT_MAX, 0, null, null) - 1;
 		int attackcount = 0;
 
 		/*if (angleChar <= 0)
@@ -1351,16 +1351,15 @@ public abstract class L2Character extends L2Object
 					// Launch a simple attack against the L2Character targeted
 					if (!temp.isAlikeDead())
 					{
-						attackcount += 1;
-						if (attackcount <= attackRandomCountMax)
+						if (temp == getAI().getAttackTarget()
+						        || temp.isAutoAttackable(this))
 						{
-							if (temp == getAI().getAttackTarget()
-							        || temp.isAutoAttackable(this))
-							{
-								
-								hitted |= doAttackHitSimple(attack, temp, attackpercent, sAtk);
-								attackpercent /= 1.15;
-							}
+							hitted |= doAttackHitSimple(attack, temp, attackpercent, sAtk);
+							attackpercent /= 1.15;
+
+							attackcount++;
+							if (attackcount > attackRandomCountMax)
+								break;
 						}
 					}
 				}
