@@ -511,6 +511,7 @@ public final class Config
 	public static boolean ALT_OLY_ANNOUNCE_GAMES;
 	public static List<Integer> LIST_OLY_RESTRICTED_ITEMS = new FastList<Integer>();
 	public static int ALT_OLY_ENCHANT_LIMIT;
+	public static byte ALT_OLY_WAIT_TIME;
 	public static int ALT_MANOR_REFRESH_TIME;
 	public static int ALT_MANOR_REFRESH_MIN;
 	public static int ALT_MANOR_APPROVE_TIME;
@@ -2333,6 +2334,8 @@ public final class Config
 						LIST_OLY_RESTRICTED_ITEMS.add(Integer.parseInt(id));
 					}
 					ALT_OLY_ENCHANT_LIMIT = Integer.parseInt(olympiad.getProperty("AltOlyEnchantLimit","-1"));
+					ALT_OLY_WAIT_TIME = Byte.parseByte(olympiad.getProperty("AltOlyWaitTime","120"));
+					if (ALT_OLY_WAIT_TIME != 120 && ALT_OLY_WAIT_TIME != 60 && ALT_OLY_WAIT_TIME != 30 && ALT_OLY_WAIT_TIME != 15 && ALT_OLY_WAIT_TIME != 5) ALT_OLY_WAIT_TIME = 120;
 				}
 				catch (Exception e)
 				{

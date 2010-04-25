@@ -424,6 +424,10 @@ public class LoginServerThread extends Thread
 			if (Config.DEBUG)
 				e.printStackTrace();
 		}
+		finally
+		{
+			_accountsInGameServer.remove(account);
+		}
 	}
 	
 	public void addGameServerLogin(String account, L2GameClient client)

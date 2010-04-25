@@ -874,6 +874,7 @@ class OlympiadGame
 			for (L2PcInstance player : _players)
 			{
 				player.setIsOlympiadStart(true);
+				player.updateEffectIcons();
 			}
 		}
 		catch (Exception e)
@@ -1168,6 +1169,16 @@ class OlympiadGameTask implements Runnable
 			return false;
 		}
 
+		_game._spawnOne.getLastSpawn().deleteMe();
+		_game._spawnTwo.getLastSpawn().deleteMe();
+		_game._spawnOne = null;
+		_game._spawnTwo = null;
+		
+		if (!_game.makeCompetitionStart())
+		{
+			return false;
+		}
+		
 		_game._playerOne.sendPacket(new ExOlympiadUserInfo(_game._playerOne));
 		_game._playerOne.sendPacket(new ExOlympiadUserInfo(_game._playerTwo));
 		_game._playerTwo.sendPacket(new ExOlympiadUserInfo(_game._playerTwo));
@@ -1182,16 +1193,6 @@ class OlympiadGameTask implements Runnable
 					spec.sendPacket(new ExOlympiadUserInfo(_game._playerTwo));
 				}
 			}
-		}
-
-		_game._spawnOne.getLastSpawn().deleteMe();
-		_game._spawnTwo.getLastSpawn().deleteMe();
-		_game._spawnOne = null;
-		_game._spawnTwo = null;
-		
-		if (!_game.makeCompetitionStart())
-		{
-			return false;
 		}
 		
 		// Wait 3 mins (Battle)
@@ -1218,7 +1219,7 @@ class OlympiadGameTask implements Runnable
 		SystemMessage sm;
 		// Waiting for teleport to arena
 		byte step = 60;
-		for (byte i = 120; i > 0; i -= step)
+		for (byte i = Config.ALT_OLY_WAIT_TIME; i > 0; i -= step)
 		{
 			sm = new SystemMessage(SystemMessageId.YOU_WILL_ENTER_THE_OLYMPIAD_STADIUM_IN_S1_SECOND_S);
 			sm.addNumber(i);

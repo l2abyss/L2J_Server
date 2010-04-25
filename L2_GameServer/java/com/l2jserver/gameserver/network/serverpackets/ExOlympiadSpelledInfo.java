@@ -32,16 +32,16 @@ public class ExOlympiadSpelledInfo extends L2GameServerPacket
 {
 	// chdd(dhd)
 	private static final String _S__FE_2A_OLYMPIADSPELLEDINFO = "[S] FE:7b ExOlympiadSpelledInfo";
-	private L2PcInstance _player;
+	private int _playerID;
 	private List<Effect> _effects;
-
-
+	
+	
 	private class Effect
 	{
 		protected int _skillId;
 		protected int _level;
 		protected int _duration;
-
+		
 		public Effect(int pSkillId, int pLevel, int pDuration)
 		{
 			_skillId = pSkillId;
@@ -49,35 +49,33 @@ public class ExOlympiadSpelledInfo extends L2GameServerPacket
 			_duration = pDuration;
 		}
 	}
-
+	
 	public ExOlympiadSpelledInfo(L2PcInstance player)
 	{
 		_effects = new FastList<Effect>();
-        _player = player;
+		_playerID = player.getObjectId();
 	}
-
+	
 	public void addEffect(int skillId, int level, int duration)
 	{
 		_effects.add(new Effect(skillId, level, duration));
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
-        if (_player == null)
-            return;
 		writeC(0xfe);
 		writeH(0x7b);
-		writeD(_player.getObjectId());
+		writeD(_playerID);
 		writeD(_effects.size());
-        for (Effect temp : _effects)
-        {
-        	writeD(temp._skillId);
-        	writeH(temp._level);
-        	writeD(temp._duration/1000);
-        }
+		for (Effect temp : _effects)
+		{
+			writeD(temp._skillId);
+			writeH(temp._level);
+			writeD(temp._duration/1000);
+		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
