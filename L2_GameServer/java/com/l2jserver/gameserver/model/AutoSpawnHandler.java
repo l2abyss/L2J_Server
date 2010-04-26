@@ -596,6 +596,7 @@ public class AutoSpawnHandler
 						continue;
 					
 					npcInst.deleteMe();
+					SpawnTable.getInstance().deleteSpawn(npcInst.getSpawn(), false);
 					spawnInst.removeNpcInstance(npcInst);
 					
 					if (Config.DEBUG)
