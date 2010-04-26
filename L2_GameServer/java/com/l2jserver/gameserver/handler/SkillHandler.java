@@ -14,8 +14,7 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import java.util.Map;
-import java.util.TreeMap;
+import gnu.trove.TIntObjectHashMap;
 
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
@@ -27,7 +26,7 @@ import com.l2jserver.gameserver.templates.skills.L2SkillType;
  */
 public class SkillHandler
 {
-	private Map<L2SkillType, ISkillHandler> _datatable;
+	private TIntObjectHashMap<ISkillHandler> _datatable;
 	
 	public static SkillHandler getInstance()
 	{
@@ -36,7 +35,7 @@ public class SkillHandler
 	
 	private SkillHandler()
 	{
-		_datatable = new TreeMap<L2SkillType, ISkillHandler>();
+		_datatable = new TIntObjectHashMap<ISkillHandler>();
 	}
 	
 	public void registerSkillHandler(ISkillHandler handler)
@@ -44,13 +43,13 @@ public class SkillHandler
 		L2SkillType[] types = handler.getSkillIds();
 		for (L2SkillType t : types)
 		{
-			_datatable.put(t, handler);
+			_datatable.put(t.ordinal(), handler);
 		}
 	}
 	
 	public ISkillHandler getSkillHandler(L2SkillType skillType)
 	{
-		return _datatable.get(skillType);
+		return _datatable.get(skillType.ordinal());
 	}
 	
 	/**

@@ -14,11 +14,9 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import java.util.Map;
+import gnu.trove.TIntObjectHashMap;
 
 import com.l2jserver.gameserver.templates.item.L2EtcItem;
-
-import javolution.util.FastMap;
 
 /**
  * This class manages handlers of items
@@ -27,7 +25,7 @@ import javolution.util.FastMap;
  */
 public class ItemHandler
 {
-	private Map<String, IItemHandler> _datatable;
+	private TIntObjectHashMap<IItemHandler> _datatable;
 	
 	/**
 	 * Create ItemHandler if doesn't exist and returns ItemHandler
@@ -52,7 +50,7 @@ public class ItemHandler
 	 */
 	private ItemHandler()
 	{
-		_datatable = new FastMap<String, IItemHandler>();
+		_datatable = new TIntObjectHashMap<IItemHandler>();
 	}
 	
 	/**
@@ -64,7 +62,7 @@ public class ItemHandler
 	 */
 	public void registerItemHandler(IItemHandler handler)
 	{
-		_datatable.put(handler.getClass().getSimpleName().intern(), handler);
+		_datatable.put(handler.getClass().getSimpleName().intern().hashCode(), handler);
 	}
 	
 	/**
@@ -76,7 +74,7 @@ public class ItemHandler
 	{
 		if (item == null)
 			return null;
-		return _datatable.get(item.getHandlerName());
+		return _datatable.get(item.getHandlerName().hashCode());
 	}
 	
 	@SuppressWarnings("synthetic-access")

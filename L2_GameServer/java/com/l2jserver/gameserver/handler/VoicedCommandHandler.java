@@ -14,12 +14,11 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import java.util.Map;
+import gnu.trove.TIntObjectHashMap;
+
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-
-import javolution.util.FastMap;
 
 /**
  * This class ...
@@ -30,7 +29,7 @@ public class VoicedCommandHandler
 {
 	private static Logger _log = Logger.getLogger(ItemHandler.class.getName());
 	
-	private Map<String, IVoicedCommandHandler> _datatable;
+	private TIntObjectHashMap<IVoicedCommandHandler> _datatable;
 	
 	public static VoicedCommandHandler getInstance()
 	{
@@ -39,7 +38,7 @@ public class VoicedCommandHandler
 	
 	private VoicedCommandHandler()
 	{
-		_datatable = new FastMap<String, IVoicedCommandHandler>();
+		_datatable = new TIntObjectHashMap<IVoicedCommandHandler>();
 	}
 	
 	public void registerVoicedCommandHandler(IVoicedCommandHandler handler)
@@ -49,7 +48,7 @@ public class VoicedCommandHandler
 		{
 			if (Config.DEBUG)
 				_log.fine("Adding handler for command " + ids[i]);
-			_datatable.put(ids[i], handler);
+			_datatable.put(ids[i].hashCode(), handler);
 		}
 	}
 	
@@ -61,8 +60,8 @@ public class VoicedCommandHandler
 			command = voicedCommand.substring(0, voicedCommand.indexOf(" "));
 		}
 		if (Config.DEBUG)
-			_log.fine("getting handler for command: " + command + " -> " + (_datatable.get(command) != null));
-		return _datatable.get(command);
+			_log.fine("getting handler for command: " + command + " -> " + (_datatable.get(command.hashCode()) != null));
+		return _datatable.get(command.hashCode());
 	}
 	
 	/**

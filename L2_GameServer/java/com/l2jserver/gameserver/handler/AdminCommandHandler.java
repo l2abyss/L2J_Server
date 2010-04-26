@@ -14,12 +14,11 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import java.util.Map;
+import gnu.trove.TIntObjectHashMap;
+
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-
-import javolution.util.FastMap;
 
 /**
  * This class ...
@@ -30,7 +29,7 @@ public class AdminCommandHandler
 {
 	private static Logger _log = Logger.getLogger(AdminCommandHandler.class.getName());
 	
-	private Map<String, IAdminCommandHandler> _datatable;
+	private TIntObjectHashMap<IAdminCommandHandler> _datatable;
 	
 	public static AdminCommandHandler getInstance()
 	{
@@ -39,7 +38,7 @@ public class AdminCommandHandler
 	
 	private AdminCommandHandler()
 	{
-		_datatable = new FastMap<String, IAdminCommandHandler>();
+		_datatable = new TIntObjectHashMap<IAdminCommandHandler>();
 	}
 	
 	public void registerAdminCommandHandler(IAdminCommandHandler handler)
@@ -49,7 +48,7 @@ public class AdminCommandHandler
 		{
 			if (Config.DEBUG)
 				_log.fine("Adding handler for command " + ids[i]);
-			_datatable.put(ids[i], handler);
+			_datatable.put(ids[i].hashCode(), handler);
 		}
 	}
 	
@@ -61,8 +60,8 @@ public class AdminCommandHandler
 			command = adminCommand.substring(0, adminCommand.indexOf(" "));
 		}
 		if (Config.DEBUG)
-			_log.fine("getting handler for command: " + command + " -> " + (_datatable.get(command) != null));
-		return _datatable.get(command);
+			_log.fine("getting handler for command: " + command + " -> " + (_datatable.get(command.hashCode()) != null));
+		return _datatable.get(command.hashCode());
 	}
 	
 	/**

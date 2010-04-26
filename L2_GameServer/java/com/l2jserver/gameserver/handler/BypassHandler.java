@@ -14,13 +14,12 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import java.util.Map;
+import gnu.trove.TIntObjectHashMap;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-
-import javolution.util.FastMap;
 
 /**
  * 
@@ -31,7 +30,7 @@ public class BypassHandler
 {
 	private static Logger _log = Logger.getLogger(BypassHandler.class.getName());
 
-	private Map<String, IBypassHandler> _datatable;
+	private TIntObjectHashMap<IBypassHandler> _datatable;
 
 	public static BypassHandler getInstance()
 	{
@@ -40,7 +39,7 @@ public class BypassHandler
 
 	private BypassHandler()
 	{
-		_datatable = new FastMap<String, IBypassHandler>();
+		_datatable = new TIntObjectHashMap<IBypassHandler>();
 	}
 
 	public void registerBypassHandler(IBypassHandler handler)
@@ -52,7 +51,7 @@ public class BypassHandler
 			if (Config.DEBUG)
 				_log.log(Level.FINE, "Adding handler for command " + element);
 
-			_datatable.put(element, handler);
+			_datatable.put(element.hashCode(), handler);
 		}
 	}
 
@@ -66,9 +65,9 @@ public class BypassHandler
 		}
 
 		if (Config.DEBUG)
-			_log.log(Level.FINE, "getting handler for command: " + command + " -> " + (_datatable.get(command) != null));
+			_log.log(Level.FINE, "getting handler for command: " + command + " -> " + (_datatable.get(command.hashCode()) != null));
 
-		return _datatable.get(command);
+		return _datatable.get(command.hashCode());
 	}
 
 	public int size()
