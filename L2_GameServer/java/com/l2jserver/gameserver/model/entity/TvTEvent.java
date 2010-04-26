@@ -610,7 +610,8 @@ public class TvTEvent
 	{
 		// Delete the npc
 		_lastNpcSpawn.deleteMe();
-		// Stop respawningof the npc
+		SpawnTable.getInstance().deleteSpawn(_lastNpcSpawn.getSpawn(), false);
+		// Stop respawning of the npc
 		_npcSpawn.stopRespawn();
 		_npcSpawn = null;
 		_lastNpcSpawn = null;

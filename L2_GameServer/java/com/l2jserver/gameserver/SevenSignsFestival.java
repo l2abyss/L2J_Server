@@ -2411,6 +2411,7 @@ public class SevenSignsFestival implements SpawnListener
 			{
 				_witchInst.getSpawn().stopRespawn();
 				_witchInst.deleteMe();
+				SpawnTable.getInstance().deleteSpawn(_witchInst.getSpawn(), false);
 			}
 			
 			if (_npcInsts != null)
@@ -2419,6 +2420,7 @@ public class SevenSignsFestival implements SpawnListener
 					{
 						monsterInst.getSpawn().stopRespawn();
 						monsterInst.deleteMe();
+						SpawnTable.getInstance().deleteSpawn(monsterInst.getSpawn(), false);
 					}
 		}
 		
