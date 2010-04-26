@@ -1881,6 +1881,11 @@ public class L2Attackable extends L2Npc
 	public void clearAggroList()
 	{
 		getAggroList().clear();
+
+		// clear overhit values
+		_overhit = false;
+		_overhitDamage = 0;
+		_overhitAttacker = null;
 	}
 
 	/**
