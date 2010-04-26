@@ -185,7 +185,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
     	}
     	else
     	{
-    		doDespawn();	// despawn if no owner
+    		deleteMe();	// despawn if no owner
     	}
     }
 
@@ -194,7 +194,8 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
     	return !(this.isInsideRadius(_homeX, _homeY, _homeZ, MAX_DISTANCE_FROM_HOME, true, true));
     }
 
-    public void doDespawn()
+    @Override
+	public void deleteMe()
     {
     	// stop running tasks
     	getAI().stopFollow();
@@ -213,7 +214,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
     	_remainingTime = 0;
 
     	// remove the spawn
-    	onDecay();
+    	super.deleteMe();
     }
 
     // notification triggered by the owner when the owner is attacked.
@@ -223,7 +224,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
     	// check if the owner is no longer around...if so, despawn
 		if ((_owner == null) || (_owner.isOnline()==0) )
 		{
-			doDespawn();
+			deleteMe();
 			return;
 		}
 		// if the owner is too far away, stop anything else and immediately run towards the owner.
@@ -363,7 +364,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
     		*/
 
     		if (_tamedBeast.getRemainingTime() <= 0)
-    			_tamedBeast.doDespawn();
+    			_tamedBeast.deleteMe();
     	}
     }
 
@@ -385,7 +386,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
         	// check if the owner is no longer around...if so, despawn
     		if ((owner == null) || (owner.isOnline()==0) )
     		{
-    			doDespawn();
+    			deleteMe();
     			return;
     		}
     		// if the owner is too far away, stop anything else and immediately run towards the owner.
