@@ -75,7 +75,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		
 		long count = _count;
 
-		if (activeChar.getPrivateStoreType() != 0)
+		if (activeChar.isProcessingTransaction() || activeChar.getPrivateStoreType() != 0)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
 			return;
