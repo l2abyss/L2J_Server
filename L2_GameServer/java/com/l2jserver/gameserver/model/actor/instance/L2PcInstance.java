@@ -11543,12 +11543,6 @@ public final class L2PcInstance extends L2Playable
 			abortAttack();
 			abortCast();
 			stopMove(null);
-			// Check if the L2PcInstance is in observer mode to set its position to its position
-			// before entering in observer mode
-			if (inObserverMode())
-				setXYZ(_obsX, _obsY, _obsZ);
-			else if (isInAirShip())
-				getAirShip().oustPlayer(this);
 		}
 		catch (Exception e)
 		{
@@ -11668,6 +11662,12 @@ public final class L2PcInstance extends L2Playable
 		{
 			for (L2Effect effect : getAllEffects())
 			{
+				if (effect.getSkill().isToggle())
+				{
+					effect.exit();
+					continue;
+				}
+
 				switch (effect.getEffectType())
 				{
 					case SIGNET_GROUND:
@@ -11686,15 +11686,14 @@ public final class L2PcInstance extends L2Playable
 		L2WorldRegion oldRegion = getWorldRegion();
 		
 		// Remove the L2PcInstance from the world
-		if (isVisible())
-			try
-			{
-				decayMe();
-			}
-			catch (Exception e)
-			{
-				_log.log(Level.SEVERE, "deleteMe()", e);
-			}
+		try
+		{
+			decayMe();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
 		
 		if (oldRegion != null)
 			oldRegion.removeFromZones(this);
@@ -11729,12 +11728,12 @@ public final class L2PcInstance extends L2Playable
 			}// returns pet to control item
 		}
 		
-		if (getClanId() != 0 && getClan() != null)
+		if (getClan() != null)
 		{
 			// set the status for pledge member list to OFFLINE
 			try
 			{
-				L2ClanMember clanMember = getClan().getClanMember(getName());
+				L2ClanMember clanMember = getClan().getClanMember(getObjectId());
 				if (clanMember != null)
 					clanMember.setPlayerInstance(null);
 					
@@ -11764,6 +11763,20 @@ public final class L2PcInstance extends L2Playable
 			}
 		}
 
+		try
+		{
+			// Check if the L2PcInstance is in observer mode to set its position to its position
+			// before entering in observer mode
+			if (inObserverMode())
+				setXYZInvisible(_obsX, _obsY, _obsZ);
+			else if (isInAirShip())
+				getAirShip().oustPlayer(this);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+
 		// remove player from instance and set spawn location if any
 		try
 		{
@@ -11779,7 +11792,7 @@ public final class L2PcInstance extends L2Playable
 					{
 						final int x = spawn[0] + Rnd.get(-30, 30);
 						final int y = spawn[1] + Rnd.get(-30, 30);
-						setXYZ(x, y, spawn[2]);
+						setXYZInvisible(x, y, spawn[2]);
 						if (getPet() != null) // dead pet
 						{
 							getPet().teleToLocation(x, y, spawn[2]);

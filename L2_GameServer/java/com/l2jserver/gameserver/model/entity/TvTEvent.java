@@ -650,7 +650,7 @@ public class TvTEvent
 		if (playerInstance != null && (isStarting() || isStarted() || isParticipating()))
 		{
 			if (removeParticipant(playerInstance.getObjectId()))
-				playerInstance.setXYZ(Config.TVT_EVENT_PARTICIPATION_NPC_COORDINATES[0] + Rnd.get(101)-50,
+				playerInstance.setXYZInvisible(Config.TVT_EVENT_PARTICIPATION_NPC_COORDINATES[0] + Rnd.get(101)-50,
 						Config.TVT_EVENT_PARTICIPATION_NPC_COORDINATES[1] + Rnd.get(101)-50,
 						Config.TVT_EVENT_PARTICIPATION_NPC_COORDINATES[2]);
 		}
