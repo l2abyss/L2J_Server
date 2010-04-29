@@ -43,7 +43,7 @@ public class L2DawnPriestInstance extends L2SignsPriestInstance
 
 		String filename = SevenSigns.SEVEN_SIGNS_HTML_PATH;
 		int sealGnosisOwner = SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_GNOSIS);
-		int playerCabal = SevenSigns.getInstance().getPlayerCabal(player);
+		int playerCabal = SevenSigns.getInstance().getPlayerCabal(player.getObjectId());
 		boolean isSealValidationPeriod = SevenSigns.getInstance().isSealValidationPeriod();
 		boolean isCompResultsPeriod = SevenSigns.getInstance().isCompResultsPeriod();
 		int recruitPeriod = SevenSigns.getInstance().getCurrentPeriod();

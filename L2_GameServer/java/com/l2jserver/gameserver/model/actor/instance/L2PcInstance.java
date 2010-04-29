@@ -7576,6 +7576,7 @@ public final class L2PcInstance extends L2Playable
 			storeRecipeShopList();
 		if (Config.STORE_UI_SETTINGS)
 			storeUISettings();
+		SevenSigns.getInstance().saveSevenSignsData(getObjectId());
 	}
 	
 	public void store()
@@ -10852,7 +10853,7 @@ public final class L2PcInstance extends L2Playable
 
         if (SevenSigns.getInstance().isSealValidationPeriod() || SevenSigns.getInstance().isCompResultsPeriod())
         {
-            if (!isGM() && isIn7sDungeon() && SevenSigns.getInstance().getPlayerCabal(this) != SevenSigns.getInstance().getCabalHighestScore())
+            if (!isGM() && isIn7sDungeon() && SevenSigns.getInstance().getPlayerCabal(getObjectId()) != SevenSigns.getInstance().getCabalHighestScore())
             {
                 teleToLocation(MapRegionTable.TeleportWhereType.Town);
                 setIsIn7sDungeon(false);
@@ -10861,7 +10862,7 @@ public final class L2PcInstance extends L2Playable
         }
         else
         {
-            if (!isGM() && isIn7sDungeon() && SevenSigns.getInstance().getPlayerCabal(this) == SevenSigns.CABAL_NULL)
+            if (!isGM() && isIn7sDungeon() && SevenSigns.getInstance().getPlayerCabal(getObjectId()) == SevenSigns.CABAL_NULL)
             {
                 teleToLocation(MapRegionTable.TeleportWhereType.Town);
                 setIsIn7sDungeon(false);
@@ -13437,7 +13438,7 @@ public final class L2PcInstance extends L2Playable
 		// because currently this is not working in L2J we do not allowing summoning
 		if (summonerChar.isIn7sDungeon())
 		{
-			int targetCabal = SevenSigns.getInstance().getPlayerCabal(targetChar);
+			int targetCabal = SevenSigns.getInstance().getPlayerCabal(targetChar.getObjectId());
 			if (SevenSigns.getInstance().isSealValidationPeriod())
 			{
 				if (targetCabal != SevenSigns.getInstance().getCabalHighestScore())

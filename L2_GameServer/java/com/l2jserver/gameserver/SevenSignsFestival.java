@@ -96,7 +96,7 @@ public class SevenSignsFestival implements SpawnListener
 	private static final int FESTIVAL_MAX_OFFSET_Y = 230;
 	private static final int FESTIVAL_DEFAULT_RESPAWN = 60; // Specify in seconds!
 	
-	public static final int FESTIVAL_COUNT = 5;
+	public static final int FESTIVAL_COUNT = 5; // do not change without correcting db and SevenSigns itself !
 	public static final int FESTIVAL_LEVEL_MAX_31 = 0;
 	public static final int FESTIVAL_LEVEL_MAX_42 = 1;
 	public static final int FESTIVAL_LEVEL_MAX_53 = 2;
@@ -1090,7 +1090,7 @@ public class SevenSignsFestival implements SpawnListener
 			
 			// Updates Seven Signs DB data also, so call only if really necessary.
 			if (updateSettings)
-				SevenSigns.getInstance().saveSevenSignsData(null, true);
+				SevenSigns.getInstance().saveSevenSignsStatus();
 		}
 		catch (SQLException e)
 		{
@@ -1691,7 +1691,7 @@ public class SevenSignsFestival implements SpawnListener
 	{
 		int playerBonus = 0;
 		String playerName = player.getName();
-		int playerCabal = SevenSigns.getInstance().getPlayerCabal(player);
+		int playerCabal = SevenSigns.getInstance().getPlayerCabal(player.getObjectId());
 		
 		if (playerCabal != SevenSigns.getInstance().getCabalHighestScore())
 			return 0;
@@ -2037,16 +2037,6 @@ public class SevenSignsFestival implements SpawnListener
 			festivalId += (oracle == SevenSigns.CABAL_DUSK) ? 10 : 20;
 			return _festivalInstances.get(festivalId);
 		}
-		
-		/**
-		 * Returns the number of currently running festivals <b>WITH</b> participants.
-		 *
-		 * @return int Count
-		 */
-		public final int getInstanceCount()
-		{
-			return _festivalInstances.size();
-		}
 	}
 	
 	/**
@@ -2246,16 +2236,6 @@ public class SevenSignsFestival implements SpawnListener
 				festivalMob.setRunning();
 				festivalMob.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, moveTo);
 			}
-		}
-		
-		public void setSpawnRate(int respawnDelay)
-		{
-			if (Config.DEBUG)
-				_log.info("SevenSignsFestival: Modifying spawn rate of festival mobs to " + respawnDelay + " ms for festival "
-						+ SevenSigns.getCabalShortName(_cabal) + " (" + getFestivalName(_levelRange) + ")");
-			
-			for (L2FestivalMonsterInstance monsterInst : _npcInsts)
-				monsterInst.getSpawn().setRespawnDelay(respawnDelay);
 		}
 		
 		/**

@@ -504,7 +504,8 @@ public class Shutdown extends Thread
 			SevenSignsFestival.getInstance().saveFestivalData(false);
 		
 		// Save Seven Signs data before closing. :)
-		SevenSigns.getInstance().saveSevenSignsData(null, true);
+		SevenSigns.getInstance().saveSevenSignsData();
+		SevenSigns.getInstance().saveSevenSignsStatus();
 		
 		// Save all raidboss and GrandBoss status ^_^
 		RaidBossSpawnManager.getInstance().cleanUp();

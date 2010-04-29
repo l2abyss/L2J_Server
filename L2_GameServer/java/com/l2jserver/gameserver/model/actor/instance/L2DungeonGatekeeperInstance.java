@@ -46,7 +46,7 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 		String filename = SevenSigns.SEVEN_SIGNS_HTML_PATH;
 		int sealAvariceOwner = SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_AVARICE);
 		int sealGnosisOwner = SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_GNOSIS);
-		int playerCabal = SevenSigns.getInstance().getPlayerCabal(player);
+		int playerCabal = SevenSigns.getInstance().getPlayerCabal(player.getObjectId());
 		boolean isSealValidationPeriod = SevenSigns.getInstance().isSealValidationPeriod();
 		int compWinner = SevenSigns.getInstance().getCabalHighestScore();
 

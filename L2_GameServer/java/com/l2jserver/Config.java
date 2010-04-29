@@ -800,6 +800,7 @@ public final class Config
 	public static double ALT_SIEGE_DAWN_GATES_MDEF_MULT;
 	public static double ALT_SIEGE_DUSK_GATES_MDEF_MULT;
 	public static boolean ALT_STRICT_SEVENSIGNS;
+	public static boolean ALT_SEVENSIGNS_LAZY_UPDATE;
 
 
 	//--------------------------------------------------
@@ -1238,6 +1239,7 @@ public final class Config
 					ALT_SIEGE_DAWN_GATES_MDEF_MULT = Double.parseDouble(Feature.getProperty("AltDawnGatesMdefMult", "1.1"));
 					ALT_SIEGE_DUSK_GATES_MDEF_MULT = Double.parseDouble(Feature.getProperty("AltDuskGatesMdefMult", "0.8"));
 					ALT_STRICT_SEVENSIGNS = Boolean.parseBoolean(Feature.getProperty("StrictSevenSigns", "True"));
+					ALT_SEVENSIGNS_LAZY_UPDATE = Boolean.parseBoolean(Feature.getProperty("AltSevenSignsLazyUpdate", "True"));
 
 					TAKE_FORT_POINTS = Integer.parseInt(Feature.getProperty("TakeFortPoints", "200"));
 					LOOSE_FORT_POINTS = Integer.parseInt(Feature.getProperty("LooseFortPoints", "0"));

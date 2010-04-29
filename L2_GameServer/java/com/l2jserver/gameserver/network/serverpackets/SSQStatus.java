@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.SevenSignsFestival;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.templates.StatsSet;
 
@@ -46,12 +45,12 @@ public class SSQStatus extends L2GameServerPacket
     private static Logger _log = Logger.getLogger(SSQStatus.class.getName());
 
     private static final String _S__F5_SSQStatus = "[S] fb SSQStatus";
-    private L2PcInstance _activevChar;
+    private int _objectId;
     private int _page;
 
-    public SSQStatus(L2PcInstance player, int recordPage)
+    public SSQStatus(int objectId, int recordPage)
     {
-    	_activevChar = player;
+    	_objectId = objectId;
         _page = recordPage;
     }
 
@@ -107,11 +106,11 @@ public class SSQStatus extends L2GameServerPacket
                         break;
                 }
 
-                writeC(SevenSigns.getInstance().getPlayerCabal(_activevChar));
-                writeC(SevenSigns.getInstance().getPlayerSeal(_activevChar));
+                writeC(SevenSigns.getInstance().getPlayerCabal(_objectId));
+                writeC(SevenSigns.getInstance().getPlayerSeal(_objectId));
 
-                writeQ(SevenSigns.getInstance().getPlayerStoneContrib(_activevChar)); // Seal Stones Turned-In
-                writeQ(SevenSigns.getInstance().getPlayerAdenaCollect(_activevChar)); // Ancient Adena to Collect
+                writeQ(SevenSigns.getInstance().getPlayerStoneContrib(_objectId)); // Seal Stones Turned-In
+                writeQ(SevenSigns.getInstance().getPlayerAdenaCollect(_objectId)); // Ancient Adena to Collect
 
                 double dawnStoneScore = SevenSigns.getInstance().getCurrentStoneScore(SevenSigns.CABAL_DAWN);
                 int dawnFestivalScore = SevenSigns.getInstance().getCurrentFestivalScore(SevenSigns.CABAL_DAWN);

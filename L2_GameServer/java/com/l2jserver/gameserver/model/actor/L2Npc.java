@@ -1149,7 +1149,7 @@ public class L2Npc extends L2Character
 		String filename = SevenSigns.SEVEN_SIGNS_HTML_PATH;
 		int sealAvariceOwner = SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_AVARICE);
 		int sealGnosisOwner = SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_GNOSIS);
-		int playerCabal = SevenSigns.getInstance().getPlayerCabal(player);
+		int playerCabal = SevenSigns.getInstance().getPlayerCabal(player.getObjectId());
 		int compWinner = SevenSigns.getInstance().getCabalHighestScore();
 
 		switch (npcId)

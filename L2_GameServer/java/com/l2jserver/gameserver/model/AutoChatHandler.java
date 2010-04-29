@@ -617,11 +617,6 @@ public class AutoChatHandler implements SpawnListener
 					setActive(true);
 			}
 			
-			protected AutoChatDefinition(AutoChatInstance chatInst, L2Npc npcInst)
-			{
-				this(chatInst, npcInst, null, -1);
-			}
-			
 			protected String[] getChatTexts()
 			{
 				if (_chatTexts != null)
@@ -792,7 +787,7 @@ public class AutoChatHandler implements SpawnListener
 							{
 								for (L2PcInstance nearbyPlayer : nearbyPlayers)
 								{
-									if (SevenSigns.getInstance().getPlayerCabal(nearbyPlayer) == winningCabal)
+									if (SevenSigns.getInstance().getPlayerCabal(nearbyPlayer.getObjectId()) == winningCabal)
 									{
 										text = text.replaceAll("%player_cabal_winner%", nearbyPlayer.getName());
 										break;
@@ -804,7 +799,7 @@ public class AutoChatHandler implements SpawnListener
 							{
 								for (L2PcInstance nearbyPlayer : nearbyPlayers)
 								{
-									if (SevenSigns.getInstance().getPlayerCabal(nearbyPlayer) == losingCabal)
+									if (SevenSigns.getInstance().getPlayerCabal(nearbyPlayer.getObjectId()) == losingCabal)
 									{
 										text = text.replaceAll("%player_cabal_loser%", nearbyPlayer.getName());
 										break;

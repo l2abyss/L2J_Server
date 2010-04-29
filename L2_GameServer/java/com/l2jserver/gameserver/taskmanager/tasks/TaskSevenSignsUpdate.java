@@ -54,8 +54,8 @@ public class TaskSevenSignsUpdate extends Task
 	{
 		try
 		{
-			SevenSigns.getInstance().saveSevenSignsData(null, true);
-			
+			SevenSigns.getInstance().saveSevenSignsStatus();
+
 			if (!SevenSigns.getInstance().isSealValidationPeriod())
 				SevenSignsFestival.getInstance().saveFestivalData(false);
 			

@@ -123,7 +123,7 @@ public class L2SignsPriestInstance extends L2Npc
 					showChatWindow(player, val, "dusk", false);
 				break;
 			case 33: // "I want to participate" request
-				int oldCabal = SevenSigns.getInstance().getPlayerCabal(player);
+				int oldCabal = SevenSigns.getInstance().getPlayerCabal(player.getObjectId());
 
 				if (oldCabal != SevenSigns.CABAL_NULL)
 				{
@@ -223,7 +223,7 @@ public class L2SignsPriestInstance extends L2Npc
 						}
 					}
 				}
-				SevenSigns.getInstance().setPlayerInfo(player, cabal, newSeal);
+				SevenSigns.getInstance().setPlayerInfo(player.getObjectId(), cabal, newSeal);
 
 				if (cabal == SevenSigns.CABAL_DAWN)
 					player.sendPacket(new SystemMessage(SystemMessageId.SEVENSIGNS_PARTECIPATION_DAWN)); // Joined Dawn
@@ -249,14 +249,14 @@ public class L2SignsPriestInstance extends L2Npc
 			case 5:
 				if (this instanceof L2DawnPriestInstance)
 				{
-					if (SevenSigns.getInstance().getPlayerCabal(player) == SevenSigns.CABAL_NULL)
+					if (SevenSigns.getInstance().getPlayerCabal(player.getObjectId()) == SevenSigns.CABAL_NULL)
 						showChatWindow(player, val, "dawn_no", false);
 					else
 						showChatWindow(player, val, "dawn", false);
 				}
 				else
 				{
-					if (SevenSigns.getInstance().getPlayerCabal(player) == SevenSigns.CABAL_NULL)
+					if (SevenSigns.getInstance().getPlayerCabal(player.getObjectId()) == SevenSigns.CABAL_NULL)
 						showChatWindow(player, val, "dusk_no", false);
 					else
 						showChatWindow(player, val, "dusk", false);
@@ -273,7 +273,7 @@ public class L2SignsPriestInstance extends L2Npc
 				long contribGreenStoneCount = contribGreenStones == null ? 0 : contribGreenStones.getCount();
 				long contribRedStoneCount = contribRedStones == null ? 0 : contribRedStones.getCount();
 
-				long score = SevenSigns.getInstance().getPlayerContribScore(player);
+				long score = SevenSigns.getInstance().getPlayerContribScore(player.getObjectId());
 				long contributionCount = 0;
 
 				boolean contribStonesFound = false;
@@ -357,7 +357,7 @@ public class L2SignsPriestInstance extends L2Npc
 				}
 				else
 				{
-					score = SevenSigns.getInstance().addPlayerStoneContrib(player, blueContrib, greenContrib, redContrib);
+					score = SevenSigns.getInstance().addPlayerStoneContrib(player.getObjectId(), blueContrib, greenContrib, redContrib);
 					sm = new SystemMessage(SystemMessageId.CONTRIB_SCORE_INCREASED);
 					sm.addItemNumber(score);
 					player.sendPacket(sm);
@@ -379,7 +379,7 @@ public class L2SignsPriestInstance extends L2Npc
 				long greenStoneCount = greenStones == null ? 0 : greenStones.getCount();
 				long redStoneCount = redStones == null ? 0 : redStones.getCount();
 
-				long contribScore = SevenSigns.getInstance().getPlayerContribScore(player);
+				long contribScore = SevenSigns.getInstance().getPlayerContribScore(player.getObjectId());
 				boolean stonesFound = false;
 
 				if (contribScore == Config.ALT_MAXIMUM_PLAYER_CONTRIB)
@@ -478,7 +478,7 @@ public class L2SignsPriestInstance extends L2Npc
 						}
 						else
 						{
-							contribScore = SevenSigns.getInstance().addPlayerStoneContrib(player, blueContribCount, greenContribCount, redContribCount);
+							contribScore = SevenSigns.getInstance().addPlayerStoneContrib(player.getObjectId(), blueContribCount, greenContribCount, redContribCount);
 							sm = new SystemMessage(SystemMessageId.CONTRIB_SCORE_INCREASED);
 							sm.addItemNumber(contribScore);
 							player.sendPacket(sm);
@@ -549,12 +549,12 @@ public class L2SignsPriestInstance extends L2Npc
 				showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "blkmrkt_5.htm");
 				break;
 			case 9: // Receive Contribution Rewards
-				int playerCabal = SevenSigns.getInstance().getPlayerCabal(player);
+				int playerCabal = SevenSigns.getInstance().getPlayerCabal(player.getObjectId());
 				int winningCabal = SevenSigns.getInstance().getCabalHighestScore();
 
 				if (SevenSigns.getInstance().isSealValidationPeriod() && playerCabal == winningCabal)
 				{
-					int ancientAdenaReward = SevenSigns.getInstance().getAncientAdenaReward(player, true);
+					int ancientAdenaReward = SevenSigns.getInstance().getAncientAdenaReward(player.getObjectId(), true);
 
 					if (ancientAdenaReward < 3)
 					{

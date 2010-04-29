@@ -224,7 +224,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance
 
 		if (player.isIn7sDungeon())
 		{
-			final int targetCabal = SevenSigns.getInstance().getPlayerCabal(clanLeader);
+			final int targetCabal = SevenSigns.getInstance().getPlayerCabal(clanLeader.getObjectId());
 			if (SevenSigns.getInstance().isSealValidationPeriod())
 			{
 				if (targetCabal != SevenSigns.getInstance().getCabalHighestScore())
