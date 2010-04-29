@@ -14,18 +14,16 @@
  */
 package com.l2jserver.gameserver.network.communityserver.writepackets;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.logging.Level;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
-import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.datatables.ClanTable;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.L2Clan;
 
 import org.netcon.BaseWritePacket;
+
+import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * @authors  Forsaiken, Gigiikun
@@ -37,6 +35,7 @@ public final class WorldInfo extends BaseWritePacket
 	public static final byte TYPE_UPDATE_PLAYER_STATUS	= 2;
 	public static final byte TYPE_UPDATE_CLAN_DATA		= 3;
 	public static final byte TYPE_SEND_CLAN_NOTICE		= 4;
+	@SuppressWarnings("unused")
 	private static Logger _log = Logger.getLogger(WorldInfo.class.getName());
 	
 	public WorldInfo(L2PcInstance player, L2Clan clan, final byte type)
@@ -62,34 +61,10 @@ public final class WorldInfo extends BaseWritePacket
 				super.writeD(player.getClanId());
 				super.writeD(player.getAccessLevel().getLevel());
 				super.writeC(player.isOnline());
-				java.sql.Connection con = null;
-				FastList<Integer> list = FastList.newInstance();
-				
-				try {
-					con = L2DatabaseFactory.getInstance().getConnection();
-					PreparedStatement statement;
-					statement = con.prepareStatement("SELECT friendId FROM character_friends WHERE charId=?");
-					statement.setInt(1, player.getObjectId());
-					ResultSet rset = statement.executeQuery();
-					
-					while (rset.next())
-						list.add(rset.getInt("friendId"));
-
-					rset.close();
-					statement.close();
-				}
-				catch (Exception e)
-				{
-					_log.log(Level.SEVERE, "Error restoring friend data for Community Board transfer.", e);
-				}
-				finally
-				{
-					try {con.close();} catch (Exception e){}
-				}
+				List<Integer> list = player.getFriendList();
 				super.writeD(list.size());
 				for (int j : list)
 					super.writeD(j);
-				FastList.recycle(list);
 				break;
 			}
 
