@@ -142,7 +142,7 @@ public abstract class L2Character extends L2Object
 
 	// =========================================================
 	// Data Field
-	private List<L2Character> _attackByList;
+	private Collection<L2Character> _attackByList;
 	private volatile boolean _isCastingNow					= false;
 	private volatile boolean _isCastingSimultaneouslyNow		= false;
 	private L2Skill _lastSkillCast;
@@ -2235,9 +2235,16 @@ public abstract class L2Character extends L2Object
     }
 
 	/** Return a list of L2Character that attacked. */
-	public final List<L2Character> getAttackByList ()
+	public final Collection<L2Character> getAttackByList ()
 	{
-		if (_attackByList == null) _attackByList = new FastList<L2Character>();
+		if (_attackByList != null)
+			return _attackByList;
+
+		synchronized (this)
+		{
+			if (_attackByList == null)
+				_attackByList = new FastList<L2Character>().shared();
+		}
 		return _attackByList;
 	}
 
