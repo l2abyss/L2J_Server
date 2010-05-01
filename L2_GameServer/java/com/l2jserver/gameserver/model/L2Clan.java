@@ -557,6 +557,20 @@ public class L2Clan
 
 	}
 
+	public int getOnlineMembersCount()
+	{
+		int count = 0;
+		for (L2ClanMember temp : _members.values())
+		{
+			if (temp == null || !temp.isOnline())
+				continue;
+
+			count++;
+		}
+
+		return count;
+	}
+
 	/**
 	 * @return
 	 */
