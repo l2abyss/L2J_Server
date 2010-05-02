@@ -992,7 +992,10 @@ public class Castle
 		if (clan != null)
 			_ownerId = clan.getClanId(); // Update owner id property
 		else
+		{
 			_ownerId = 0; // Remove owner
+			resetManor();
+		}
 			
 		Connection con = null;
 		try
