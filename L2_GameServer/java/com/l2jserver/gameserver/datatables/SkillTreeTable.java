@@ -145,14 +145,16 @@ public class SkillTreeTable
 				int parentClassId;
 				L2SkillLearn skillLearn;
 				
+				PreparedStatement statement2 = con.prepareStatement("SELECT class_id, skill_id, level, name, sp, min_level FROM skill_trees where class_id=? ORDER BY skill_id, level");
 				while (classlist.next())
 				{
 					map = new FastMap<Integer, L2SkillLearn>();
 					parentClassId = classlist.getInt("parent_id");
 					classId = classlist.getInt("id");
-					PreparedStatement statement2 = con.prepareStatement("SELECT class_id, skill_id, level, name, sp, min_level FROM skill_trees where class_id=? ORDER BY skill_id, level");
+					
 					statement2.setInt(1, classId);
 					ResultSet skilltree = statement2.executeQuery();
+					statement2.clearParameters();
 					
 					if (parentClassId != -1)
 					{
@@ -179,7 +181,6 @@ public class SkillTreeTable
 					
 					getSkillTrees().put(ClassId.values()[classId], map);
 					skilltree.close();
-					statement2.close();
 					
 					count += map.size();
 					_log.fine("SkillTreeTable: skill tree for class " + classId + " has " + map.size() + " skills");
@@ -187,6 +188,7 @@ public class SkillTreeTable
 				
 				classlist.close();
 				statement.close();
+				statement2.close();
 			}
 			catch (Exception e)
 			{

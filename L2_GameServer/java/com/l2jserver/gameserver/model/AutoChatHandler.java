@@ -76,13 +76,14 @@ public class AutoChatHandler implements SpawnListener
 			statement = con.prepareStatement("SELECT * FROM auto_chat ORDER BY groupId ASC");
 			rs = statement.executeQuery();
 			
+			statement2 = con.prepareStatement("SELECT * FROM auto_chat_text WHERE groupId=?");
 			while (rs.next())
 			{
 				numLoaded++;
 				
-				statement2 = con.prepareStatement("SELECT * FROM auto_chat_text WHERE groupId=?");
 				statement2.setInt(1, rs.getInt("groupId"));
 				rs2 = statement2.executeQuery();
+				statement2.clearParameters();
 				
 				rs2.last();
 				String[] chatTexts = new String[rs2.getRow()];
@@ -95,10 +96,9 @@ public class AutoChatHandler implements SpawnListener
 				}
 				
 				registerGlobalChat(rs.getInt("npcId"), chatTexts, rs.getLong("chatDelay"));
-				
-				statement2.close();
 			}
-			
+			statement2.close();
+			rs.close();
 			statement.close();
 			
 			if (Config.DEBUG)

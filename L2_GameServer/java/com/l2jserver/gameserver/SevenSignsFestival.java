@@ -1030,7 +1030,6 @@ public class SevenSignsFestival implements SpawnListener
 	public void saveFestivalData(boolean updateSettings)
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		
 		if (Config.DEBUG)
 			_log.info("SevenSignsFestival: Saving festival data to disk.");
@@ -1038,7 +1037,8 @@ public class SevenSignsFestival implements SpawnListener
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			
+			PreparedStatement statementUpdate = con.prepareStatement("UPDATE seven_signs_festival SET date=?, score=?, members=? WHERE cycle=? AND cabal=? AND festivalId=?");
+			PreparedStatement statementInsert = con.prepareStatement("INSERT INTO seven_signs_festival (festivalId, cabal, cycle, date, score, members) VALUES (?,?,?,?,?,?)");
 			for (Map<Integer, StatsSet> currCycleData : _festivalData.values())
 			{
 				for (StatsSet festivalDat : currCycleData.values())
@@ -1048,44 +1048,37 @@ public class SevenSignsFestival implements SpawnListener
 					String cabal = festivalDat.getString("cabal");
 					
 					// Try to update an existing record.
-					statement = con.prepareStatement("UPDATE seven_signs_festival SET date=?, score=?, members=? WHERE cycle=? AND cabal=? AND festivalId=?");
-					statement.setLong(1, Long.valueOf(festivalDat.getString("date")));
-					statement.setInt(2, festivalDat.getInteger("score"));
-					statement.setString(3, festivalDat.getString("members"));
-					statement.setInt(4, festivalCycle);
-					statement.setString(5, cabal);
-					statement.setInt(6, festivalId);
+					statementUpdate.setLong(1, Long.valueOf(festivalDat.getString("date")));
+					statementUpdate.setInt(2, festivalDat.getInteger("score"));
+					statementUpdate.setString(3, festivalDat.getString("members"));
+					statementUpdate.setInt(4, festivalCycle);
+					statementUpdate.setString(5, cabal);
+					statementUpdate.setInt(6, festivalId);
 					
 					// If there was no record to update, assume it doesn't exist and add a new one,
 					// otherwise continue with the next record to store.
-					if (statement.executeUpdate() > 0)
+					if (statementUpdate.executeUpdate() > 0)
 					{
 						if (Config.DEBUG)
-							_log.info("SevenSignsFestival: Updated data in DB (Cycle = " + festivalCycle + ", Cabal = " + cabal
-									+ ", FestID = " + festivalId + ")");
-						
-						statement.close();
+							_log.info("SevenSignsFestival: Updated data in DB (Cycle = " + festivalCycle + ", Cabal = " + cabal + ", FestID = " + festivalId + ")");
 						continue;
 					}
 					
-					statement.close();
-					
-					statement = con.prepareStatement("INSERT INTO seven_signs_festival (festivalId, cabal, cycle, date, score, members) VALUES (?,?,?,?,?,?)");
-					statement.setInt(1, festivalId);
-					statement.setString(2, cabal);
-					statement.setInt(3, festivalCycle);
-					statement.setLong(4, Long.valueOf(festivalDat.getString("date")));
-					statement.setInt(5, festivalDat.getInteger("score"));
-					statement.setString(6, festivalDat.getString("members"));
-					statement.execute();
-					statement.close();
+					statementInsert.setInt(1, festivalId);
+					statementInsert.setString(2, cabal);
+					statementInsert.setInt(3, festivalCycle);
+					statementInsert.setLong(4, Long.valueOf(festivalDat.getString("date")));
+					statementInsert.setInt(5, festivalDat.getInteger("score"));
+					statementInsert.setString(6, festivalDat.getString("members"));
+					statementInsert.execute();
+					statementInsert.clearParameters();
 					
 					if (Config.DEBUG)
-						_log.info("SevenSignsFestival: Inserted data in DB (Cycle = " + festivalCycle + ", Cabal = " + cabal
-								+ ", FestID = " + festivalId + ")");
+						_log.info("SevenSignsFestival: Inserted data in DB (Cycle = " + festivalCycle + ", Cabal = " + cabal + ", FestID = " + festivalId + ")");
 				}
 			}
-			
+			statementUpdate.close();
+			statementInsert.close();
 			con.close();
 			
 			// Updates Seven Signs DB data also, so call only if really necessary.
@@ -1100,7 +1093,6 @@ public class SevenSignsFestival implements SpawnListener
 		{
 			try
 			{
-				statement.close();
 				con.close();
 			}
 			catch (Exception e)

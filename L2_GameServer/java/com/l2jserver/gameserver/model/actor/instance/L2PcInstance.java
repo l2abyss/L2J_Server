@@ -14504,22 +14504,24 @@ public final class L2PcInstance extends L2Playable
 
 			if (list != null && list.size() > 0)
 			{
-				int	_position = 1;
+				int _position = 1;
 				statement = con.prepareStatement("DELETE FROM character_recipeshoplist WHERE charId=? ");
 				statement.setInt(1, getObjectId());
 				statement.execute();
 				statement.close();
+				
+				PreparedStatement statement2 = con.prepareStatement("INSERT INTO character_recipeshoplist (charId, Recipeid, Price, Pos) VALUES (?, ?, ?, ?)");
 				for (L2ManufactureItem item : list.getList())
 				{
-					statement = con.prepareStatement("INSERT INTO character_recipeshoplist (charId, Recipeid, Price, Pos) VALUES (?, ?, ?, ?)");
-					statement.setInt(1, getObjectId());	
-					statement.setInt(2, item.getRecipeId());
-					statement.setLong(3, item.getCost());
-					statement.setInt(4, _position);
-					statement.execute();
-					statement.close();
+					statement2.setInt(1, getObjectId());
+					statement2.setInt(2, item.getRecipeId());
+					statement2.setLong(3, item.getCost());
+					statement2.setInt(4, _position);
+					statement2.execute();
+					statement2.clearParameters();
 					_position++;
 				}
+				statement2.close();
 			}
 		}
 		catch (Exception e)

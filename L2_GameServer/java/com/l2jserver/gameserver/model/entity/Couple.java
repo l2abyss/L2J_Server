@@ -56,7 +56,7 @@ public class Couple
 			
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement("Select * from mods_wedding where id = ?");
+			statement = con.prepareStatement("SELECT * FROM mods_wedding WHERE id = ?");
 			statement.setInt(1, _Id);
 			rs = statement.executeQuery();
 			

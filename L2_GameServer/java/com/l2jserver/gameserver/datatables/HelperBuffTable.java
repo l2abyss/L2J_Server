@@ -78,22 +78,18 @@ public class HelperBuffTable
 		Connection con = null;
 		try
 		{
-			try
-			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("SELECT * FROM helper_buff_list");
-				ResultSet helperbuffdata = statement.executeQuery();
-				
-				fillHelperBuffTable(helperbuffdata);
-				helperbuffdata.close();
-				statement.close();
-			}
-			catch (Exception e)
-			{
-				_log.severe("Table helper_buff_list not found : Update your DataPack" + e);
-				e.printStackTrace();
-			}
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM helper_buff_list");
+			ResultSet helperbuffdata = statement.executeQuery();
 			
+			fillHelperBuffTable(helperbuffdata);
+			helperbuffdata.close();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.severe("Table helper_buff_list not found : Update your DataPack" + e);
+			e.printStackTrace();
 		}
 		finally
 		{

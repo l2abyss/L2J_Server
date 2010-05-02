@@ -1286,15 +1286,15 @@ public class Olympiad
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
+			PreparedStatement statement = con.prepareStatement(OLYMPIAD_GET_HEROS);
 			ResultSet rset;
 			StatsSet hero;
 			L2FastList<StatsSet> soulHounds = new L2FastList<StatsSet>();
 			for (int i = 0; i < HERO_IDS.length; i++)
 			{
-				statement = con.prepareStatement(OLYMPIAD_GET_HEROS);
 				statement.setInt(1, HERO_IDS[i]);
 				rset = statement.executeQuery();
+				statement.clearParameters();
 				
 				if (rset.next())
 				{
@@ -1317,10 +1317,10 @@ public class Olympiad
 						_heroesToBe.add(hero);
 					}
 				}
-				
-				statement.close();
 				rset.close();
 			}
+			statement.close();
+			
 			switch (soulHounds.size())
 			{
 				case 0:

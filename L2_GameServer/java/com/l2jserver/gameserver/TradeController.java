@@ -83,14 +83,16 @@ public class TradeController
 			
 			int itemId, price, maxCount, currentCount, time;
 			long saveTimer;
+			PreparedStatement statement = con.prepareStatement("SELECT item_id, price, shop_id, "
+					+ L2DatabaseFactory.getInstance().safetyString("order")
+					+ ", count, currentCount, time, savetimer FROM merchant_buylists WHERE shop_id=? ORDER BY "
+					+ L2DatabaseFactory.getInstance().safetyString("order") + " ASC");
 			while (rset1.next())
 			{
-				PreparedStatement statement = con.prepareStatement("SELECT item_id, price, shop_id, "
-						+ L2DatabaseFactory.getInstance().safetyString("order")
-						+ ", count, currentCount, time, savetimer FROM merchant_buylists WHERE shop_id=? ORDER BY "
-						+ L2DatabaseFactory.getInstance().safetyString("order") + " ASC");
 				statement.setString(1, String.valueOf(rset1.getInt("shop_id")));
 				ResultSet rset = statement.executeQuery();
+				statement.clearParameters();
+				
 				int shopId = rset1.getInt("shop_id");
 				L2TradeList buy1 = new L2TradeList(shopId);
 				
@@ -150,8 +152,8 @@ public class TradeController
 				_nextListId = Math.max(_nextListId, buy1.getListId() + 1);
 				
 				rset.close();
-				statement.close();
 			}
+			statement.close();
 			rset1.close();
 			statement1.close();
 			
@@ -189,14 +191,16 @@ public class TradeController
 				
 				int itemId, price, maxCount, currentCount, time;
 				long saveTimer;
+				PreparedStatement statement = con.prepareStatement("SELECT item_id, price, shop_id, "
+						+ L2DatabaseFactory.getInstance().safetyString("order")
+						+ ", count, currentCount, time, savetimer FROM custom_merchant_buylists WHERE shop_id=? ORDER BY "
+						+ L2DatabaseFactory.getInstance().safetyString("order") + " ASC");
 				while (rset1.next())
 				{
-					PreparedStatement statement = con.prepareStatement("SELECT item_id, price, shop_id, "
-							+ L2DatabaseFactory.getInstance().safetyString("order")
-							+ ", count, currentCount, time, savetimer FROM custom_merchant_buylists WHERE shop_id=? ORDER BY "
-							+ L2DatabaseFactory.getInstance().safetyString("order") + " ASC");
 					statement.setString(1, String.valueOf(rset1.getInt("shop_id")));
 					ResultSet rset = statement.executeQuery();
+					statement.clearParameters();
+					
 					int shopId = rset1.getInt("shop_id");
 					L2TradeList buy1 = new L2TradeList(shopId);
 					
@@ -257,8 +261,8 @@ public class TradeController
 					_nextListId = Math.max(_nextListId, buy1.getListId() + 1);
 					
 					rset.close();
-					statement.close();
 				}
+				statement.close();
 				rset1.close();
 				statement1.close();
 				
@@ -309,13 +313,12 @@ public class TradeController
 	public void dataCountStore()
 	{
 		Connection con = null;
-		PreparedStatement statement;
 		int listId;
 		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			
+			PreparedStatement statement = con.prepareStatement("UPDATE merchant_buylists SET currentCount=? WHERE item_id=? AND shop_id=?");
 			for (L2TradeList list : _lists.values())
 			{
 				if (list.hasLimitedStockItem())
@@ -327,16 +330,16 @@ public class TradeController
 						long currentCount;
 						if (item.hasLimitedStock() && (currentCount = item.getCurrentCount()) < item.getMaxCount())
 						{
-							statement = con.prepareStatement("UPDATE merchant_buylists SET currentCount=? WHERE item_id=? AND shop_id=?");
 							statement.setLong(1, currentCount);
 							statement.setInt(2, item.getItemId());
 							statement.setInt(3, listId);
 							statement.executeUpdate();
-							statement.close();
+							statement.clearParameters();
 						}
 					}
 				}
 			}
+			statement.close();
 		}
 		catch (Exception e)
 		{

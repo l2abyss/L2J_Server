@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.network.communityserver.writepackets;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -22,14 +23,14 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
+import org.netcon.BaseWritePacket;
+
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.templates.StatsSet;
-
-import org.netcon.BaseWritePacket;
 
 /**
  * @authors  Forsaiken, Gigiikun
@@ -94,7 +95,7 @@ public final class InitWorldInfo extends BaseWritePacket
 					super.writeD(p.getInteger("clanid"));
 					super.writeD(p.getInteger("accesslevel"));
 					super.writeC(p.getInteger("online"));
-					java.sql.Connection con = null;
+					Connection con = null;
 					FastList<Integer> list = FastList.newInstance();
 					
 					try

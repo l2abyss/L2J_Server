@@ -136,6 +136,7 @@ public class AutoSpawnHandler
 			statement = con.prepareStatement("SELECT * FROM random_spawn ORDER BY groupId ASC");
 			rs = statement.executeQuery();
 			
+			statement2 = con.prepareStatement("SELECT * FROM random_spawn_loc WHERE groupId=?");
 			while (rs.next())
 			{
 				// Register random spawn group, set various options on the
@@ -148,19 +149,19 @@ public class AutoSpawnHandler
 				numLoaded++;
 				
 				// Restore the spawn locations for this spawn group/instance.
-				statement2 = con.prepareStatement("SELECT * FROM random_spawn_loc WHERE groupId=?");
 				statement2.setInt(1, rs.getInt("groupId"));
 				rs2 = statement2.executeQuery();
+				statement2.clearParameters();
 				
 				while (rs2.next())
 				{
 					// Add each location to the spawn group/instance.
 					spawnInst.addSpawnLocation(rs2.getInt("x"), rs2.getInt("y"), rs2.getInt("z"), rs2.getInt("heading"));
 				}
-				
-				statement2.close();
+				rs2.close();
 			}
-			
+			statement2.close();
+			rs.close();
 			statement.close();
 			
 			if (Config.DEBUG)

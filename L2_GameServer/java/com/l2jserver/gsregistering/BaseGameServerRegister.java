@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Locale;
@@ -351,7 +352,7 @@ public abstract class BaseGameServerRegister
      */
     public static void unregisterGameServer(int id) throws SQLException
     {
-    	java.sql.Connection con = null;
+    	Connection con = null;
 		PreparedStatement statement = null;
 		
 		try
@@ -390,7 +391,7 @@ public abstract class BaseGameServerRegister
     
     public static void unregisterAllGameServers() throws SQLException
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		PreparedStatement statement = null;
 		
 		try
