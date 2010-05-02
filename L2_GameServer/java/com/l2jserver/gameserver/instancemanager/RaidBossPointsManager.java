@@ -64,21 +64,24 @@ public class RaidBossPointsManager
 			}
 			rset.close();
 			statement.close();
+			
+			statement = con.prepareStatement("SELECT * FROM `character_raid_points` WHERE `charId`=?");
 			for(FastList.Node<Integer> n = _chars.head(), end = _chars.tail(); (n = n.getNext()) != end;)
 			{
 				int charId = n.getValue();
 				FastMap<Integer, Integer> values = new FastMap<Integer, Integer>();
-				statement = con.prepareStatement("SELECT * FROM `character_raid_points` WHERE `charId`=?");
+				
 				statement.setInt(1, charId);
 				rset = statement.executeQuery();
+				statement.clearParameters();
 				while(rset.next())
 				{
 					values.put(rset.getInt("boss_id"), rset.getInt("points"));
 				}
 				rset.close();
-				statement.close();
 				_list.put(charId, values);
 			}
+			statement.close();
 		}
 		catch (SQLException e)
 		{

@@ -527,14 +527,16 @@ public class FourSepulchersManager
 			PreparedStatement statement1 = con.prepareStatement("SELECT Distinct key_npc_id FROM four_sepulchers_spawnlist Where spawntype = ? ORDER BY key_npc_id");
 			statement1.setInt(1, 1);
 			ResultSet rset1 = statement1.executeQuery();
+			
+			PreparedStatement statement2 = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist Where key_npc_id = ? and spawntype = ? ORDER BY id");
 			while (rset1.next())
 			{
 				int keyNpcId = rset1.getInt("key_npc_id");
 				
-				PreparedStatement statement2 = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist Where key_npc_id = ? and spawntype = ? ORDER BY id");
 				statement2.setInt(1, keyNpcId);
 				statement2.setInt(2, 1);
 				ResultSet rset2 = statement2.executeQuery();
+				statement2.clearParameters();
 				
 				L2Spawn spawnDat;
 				L2NpcTemplate template1;
@@ -559,18 +561,18 @@ public class FourSepulchersManager
 					}
 					else
 					{
-						_log.warning("FourSepulchersManager.LoadPhysicalMonsters: Data missing in NPC table for ID: "
-								+ rset2.getInt("npc_templateid") + ".");
+						_log.warning("FourSepulchersManager.LoadPhysicalMonsters: Data missing in NPC table for ID: " + rset2.getInt("npc_templateid") + ".");
 					}
 				}
 				
 				rset2.close();
-				statement2.close();
 				_physicalMonsters.put(keyNpcId, _physicalSpawns);
 			}
 			
 			rset1.close();
 			statement1.close();
+			statement2.close();
+			
 			_log.info("FourSepulchersManager: loaded " + loaded + " Physical type monsters spawns.");
 		}
 		catch (Exception e)
@@ -605,14 +607,16 @@ public class FourSepulchersManager
 			PreparedStatement statement1 = con.prepareStatement("SELECT Distinct key_npc_id FROM four_sepulchers_spawnlist Where spawntype = ? ORDER BY key_npc_id");
 			statement1.setInt(1, 2);
 			ResultSet rset1 = statement1.executeQuery();
+			
+			PreparedStatement statement2 = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist WHERE key_npc_id = ? AND spawntype = ? ORDER BY id");
 			while (rset1.next())
 			{
 				int keyNpcId = rset1.getInt("key_npc_id");
 				
-				PreparedStatement statement2 = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist Where key_npc_id = ? and spawntype = ? ORDER BY id");
 				statement2.setInt(1, keyNpcId);
 				statement2.setInt(2, 2);
 				ResultSet rset2 = statement2.executeQuery();
+				statement2.clearParameters();
 				
 				L2Spawn spawnDat;
 				L2NpcTemplate template1;
@@ -637,18 +641,18 @@ public class FourSepulchersManager
 					}
 					else
 					{
-						_log.warning("FourSepulchersManager.LoadMagicalMonsters: Data missing in NPC table for ID: "
-								+ rset2.getInt("npc_templateid") + ".");
+						_log.warning("FourSepulchersManager.LoadMagicalMonsters: Data missing in NPC table for ID: " + rset2.getInt("npc_templateid") + ".");
 					}
 				}
 				
 				rset2.close();
-				statement2.close();
 				_magicalMonsters.put(keyNpcId, _magicalSpawns);
 			}
 			
 			rset1.close();
 			statement1.close();
+			statement2.close();
+			
 			_log.info("FourSepulchersManager: loaded " + loaded + " Magical type monsters spawns.");
 		}
 		catch (Exception e)
@@ -683,14 +687,16 @@ public class FourSepulchersManager
 			PreparedStatement statement1 = con.prepareStatement("SELECT Distinct key_npc_id FROM four_sepulchers_spawnlist Where spawntype = ? ORDER BY key_npc_id");
 			statement1.setInt(1, 5);
 			ResultSet rset1 = statement1.executeQuery();
+			
+			PreparedStatement statement2 = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist WHERE key_npc_id = ? AND spawntype = ? ORDER BY id");
 			while (rset1.next())
 			{
 				int keyNpcId = rset1.getInt("key_npc_id");
 				
-				PreparedStatement statement2 = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist Where key_npc_id = ? and spawntype = ? ORDER BY id");
 				statement2.setInt(1, keyNpcId);
 				statement2.setInt(2, 5);
 				ResultSet rset2 = statement2.executeQuery();
+				statement2.clearParameters();
 				
 				L2Spawn spawnDat;
 				L2NpcTemplate template1;
@@ -715,19 +721,19 @@ public class FourSepulchersManager
 					}
 					else
 					{
-						_log.warning("FourSepulchersManager.LoadDukeMonsters: Data missing in NPC table for ID: "
-								+ rset2.getInt("npc_templateid") + ".");
+						_log.warning("FourSepulchersManager.LoadDukeMonsters: Data missing in NPC table for ID: " + rset2.getInt("npc_templateid") + ".");
 					}
 				}
 				
 				rset2.close();
-				statement2.close();
 				_dukeFinalMobs.put(keyNpcId, _dukeFinalSpawns);
 				_archonSpawned.put(keyNpcId, false);
 			}
 			
 			rset1.close();
 			statement1.close();
+			statement2.close();
+			
 			_log.info("FourSepulchersManager: loaded " + loaded + " Church of duke monsters spawns.");
 		}
 		catch (Exception e)
@@ -762,14 +768,16 @@ public class FourSepulchersManager
 			PreparedStatement statement1 = con.prepareStatement("SELECT Distinct key_npc_id FROM four_sepulchers_spawnlist Where spawntype = ? ORDER BY key_npc_id");
 			statement1.setInt(1, 6);
 			ResultSet rset1 = statement1.executeQuery();
+			
+			PreparedStatement statement2 = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist WHERE key_npc_id = ? and spawntype = ? ORDER BY id");
 			while (rset1.next())
 			{
 				int keyNpcId = rset1.getInt("key_npc_id");
 				
-				PreparedStatement statement2 = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist Where key_npc_id = ? and spawntype = ? ORDER BY id");
 				statement2.setInt(1, keyNpcId);
 				statement2.setInt(2, 6);
 				ResultSet rset2 = statement2.executeQuery();
+				statement2.clearParameters();
 				
 				L2Spawn spawnDat;
 				L2NpcTemplate template1;
@@ -794,18 +802,18 @@ public class FourSepulchersManager
 					}
 					else
 					{
-						_log.warning("FourSepulchersManager.LoadEmperorsGraveMonsters: Data missing in NPC table for ID: "
-								+ rset2.getInt("npc_templateid") + ".");
+						_log.warning("FourSepulchersManager.LoadEmperorsGraveMonsters: Data missing in NPC table for ID: " + rset2.getInt("npc_templateid") + ".");
 					}
 				}
 				
 				rset2.close();
-				statement2.close();
 				_emperorsGraveNpcs.put(keyNpcId, _emperorsGraveSpawns);
 			}
 			
 			rset1.close();
 			statement1.close();
+			statement2.close();
+			
 			_log.info("FourSepulchersManager: loaded " + loaded + " Emperor's grave NPC spawns.");
 		}
 		catch (Exception e)

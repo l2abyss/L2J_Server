@@ -28,7 +28,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 
-
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -53,7 +52,7 @@ public class ZoneManager
 {
 	private static final Logger _log = Logger.getLogger(ZoneManager.class.getName());
 	
-	private final FastMap<Integer, L2ZoneType> _zones = new FastMap<Integer,L2ZoneType>();
+	private final FastMap<Integer, L2ZoneType> _zones = new FastMap<Integer, L2ZoneType>();
 	
 	public static final ZoneManager getInstance()
 	{
@@ -98,6 +97,7 @@ public class ZoneManager
 	{
 		_log.info("Loading zones...");
 		Connection con = null;
+		PreparedStatement statement = null;
 		_zones.clear();
 		
 		// Get the world regions
@@ -108,6 +108,7 @@ public class ZoneManager
 		{
 			// Get a sql connection here
 			con = L2DatabaseFactory.getInstance().getConnection();
+			statement = con.prepareStatement("SELECT `x`, `y` FROM `zone_vertices` WHERE `id` = ? ORDER BY `order` ASC");
 			
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setValidating(false);
@@ -202,13 +203,9 @@ public class ZoneManager
 							// Get the zone shape from sql
 							try
 							{
-								PreparedStatement statement = null;
-								
-								// Set the correct query
-								statement = con.prepareStatement("SELECT x,y FROM zone_vertices WHERE id=? ORDER BY 'order' ASC ");
-								
 								statement.setInt(1, zoneId);
 								ResultSet rset = statement.executeQuery();
+								statement.clearParameters();
 								
 								// Create this zone. Parsing for cuboids is a
 								// bit different than for other polygons
@@ -231,12 +228,11 @@ public class ZoneManager
 										else
 										{
 											_log.warning("ZoneData: Missing cuboid vertex in sql data for zone: " + zoneId);
-											rset.close();
-											statement.close();
 											successfulLoad = false;
 											break;
 										}
 									}
+									rset.close();
 									
 									if (successfulLoad)
 										temp.setZone(new ZoneCuboid(x[0], x[1], y[0], y[1], minZ, maxZ));
@@ -253,6 +249,7 @@ public class ZoneManager
 										fl_x.add(rset.getInt("x"));
 										fl_y.add(rset.getInt("y"));
 									}
+									rset.close();
 									
 									// An nPoly needs to have at least 3
 									// vertices
@@ -276,20 +273,19 @@ public class ZoneManager
 									else
 									{
 										_log.warning("ZoneData: Bad sql data for zone: " + zoneId);
-										rset.close();
-										statement.close();
 										continue;
 									}
 								}
 								else if (zoneShape.equalsIgnoreCase("Cylinder"))
 								{
-									// A Cylinder zone requires a centre point
+									// A Cylinder zone requires a center point
 									// at x,y and a radius
 									int zoneRad = Integer.parseInt(attrs.getNamedItem("rad").getNodeValue());
 									if (rset.next() && zoneRad > 0)
 									{
 										int zoneX = rset.getInt("x");
 										int zoneY = rset.getInt("y");
+										rset.close();
 										
 										// create the zone
 										temp.setZone(new ZoneCylinder(zoneX, zoneY, minZ, maxZ, zoneRad));
@@ -297,8 +293,6 @@ public class ZoneManager
 									else
 									{
 										_log.warning("ZoneData: Bad sql data for zone: " + zoneId);
-										rset.close();
-										statement.close();
 										continue;
 									}
 								}
@@ -306,19 +300,15 @@ public class ZoneManager
 								{
 									_log.warning("ZoneData: Unknown shape: " + zoneShape);
 									rset.close();
-									statement.close();
 									continue;
 								}
-								
-								rset.close();
-								statement.close();
 							}
 							catch (Exception e)
 							{
 								_log.warning("ZoneData: Failed to load zone coordinates: " + e);
 							}
 							
-							// Check for aditional parameters
+							// Check for additional parameters
 							for (Node cd = d.getFirstChild(); cd != null; cd = cd.getNextSibling())
 							{
 								if ("stat".equalsIgnoreCase(cd.getNodeName()))
@@ -329,19 +319,18 @@ public class ZoneManager
 									
 									temp.setParameter(name, val);
 								}
-								else if ("spawn".equalsIgnoreCase(cd.getNodeName())
-										&& temp instanceof L2SpawnZone)
+								else if ("spawn".equalsIgnoreCase(cd.getNodeName()) && temp instanceof L2SpawnZone)
 								{
 									attrs = cd.getAttributes();
 									int spawnX = Integer.parseInt(attrs.getNamedItem("X").getNodeValue());
 									int spawnY = Integer.parseInt(attrs.getNamedItem("Y").getNodeValue());
 									int spawnZ = Integer.parseInt(attrs.getNamedItem("Z").getNodeValue());
-
+									
 									Node val = attrs.getNamedItem("isChaotic");
 									if (val != null && Boolean.parseBoolean(val.getNodeValue()))
-											((L2SpawnZone)temp).addChaoticSpawn(spawnX, spawnY, spawnZ);
+										((L2SpawnZone) temp).addChaoticSpawn(spawnX, spawnY, spawnZ);
 									else
-										((L2SpawnZone)temp).addSpawn(spawnX, spawnY, spawnZ);
+										((L2SpawnZone) temp).addSpawn(spawnX, spawnY, spawnZ);
 								}
 							}
 							addZone(zoneId, temp);
@@ -377,6 +366,7 @@ public class ZoneManager
 					}
 				}
 			}
+			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -402,7 +392,7 @@ public class ZoneManager
 	 *
 	 * @param zone
 	 */
-	public void addZone(Integer id,L2ZoneType zone)
+	public void addZone(Integer id, L2ZoneType zone)
 	{
 		_zones.put(id, zone);
 	}
@@ -416,12 +406,12 @@ public class ZoneManager
 	{
 		return _zones.values();
 	}
-
-	public L2ZoneType getZoneById( int id)
+	
+	public L2ZoneType getZoneById(int id)
 	{
 		return _zones.get(id);
 	}
-
+	
 	/**
 	 * Returns all zones from where the object is located
 	 *

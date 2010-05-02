@@ -244,6 +244,7 @@ public class ItemsOnGroundManager
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
+				statement = con.prepareStatement("INSERT INTO itemsonground(object_id,item_id,count,enchant_level,x,y,z,drop_time,equipable) VALUES(?,?,?,?,?,?,?,?,?)");
 				
 				for (L2ItemInstance item : _items)
 				{
@@ -252,11 +253,9 @@ public class ItemsOnGroundManager
 					
 					if (CursedWeaponsManager.getInstance().isCursed(item.getItemId()))
 						continue; // Cursed Items not saved to ground, prevent double save
-						
 					
 					try
 					{
-						statement = con.prepareStatement("insert into itemsonground(object_id,item_id,count,enchant_level,x,y,z,drop_time,equipable) values(?,?,?,?,?,?,?,?,?)");
 						statement.setInt(1, item.getObjectId());
 						statement.setInt(2, item.getItemId());
 						statement.setLong(3, item.getCount());
@@ -274,7 +273,7 @@ public class ItemsOnGroundManager
 						else
 							statement.setLong(9, 0);
 						statement.execute();
-						statement.close();
+						statement.clearParameters();
 					}
 					catch (Exception e)
 					{
@@ -282,10 +281,11 @@ public class ItemsOnGroundManager
 						e.printStackTrace();
 					}
 				}
+				statement.close();
 			}
 			catch (SQLException e)
 			{
-				
+				e.printStackTrace();
 			}
 			finally
 			{

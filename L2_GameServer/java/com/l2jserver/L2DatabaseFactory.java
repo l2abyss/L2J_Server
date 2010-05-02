@@ -250,8 +250,7 @@ public class L2DatabaseFactory
 			{
 				if (!c.isClosed())
 				{
-					_log.warning("Unclosed connection! Trace:");
-					exp.printStackTrace();
+					_log.log(Level.WARNING, "Unclosed connection! Trace: " + exp.getStackTrace()[1], exp);
 				}
 			}
 			catch (SQLException e)

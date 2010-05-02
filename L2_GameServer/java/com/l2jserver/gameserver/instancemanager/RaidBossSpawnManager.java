@@ -385,10 +385,11 @@ public class RaidBossSpawnManager
 	private void updateDb()
 	{
 		Connection con = null;
+		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = null;
+			statement = con.prepareStatement("UPDATE raidboss_spawnlist SET respawn_time = ?, currentHP = ?, currentMP = ? WHERE boss_id = ?");
 			
 			for (Integer bossId : _storedInfo.keySet())
 			{
@@ -410,19 +411,19 @@ public class RaidBossSpawnManager
 				
 				try
 				{
-					statement = con.prepareStatement("UPDATE raidboss_spawnlist SET respawn_time = ?, currentHP = ?, currentMP = ? WHERE boss_id = ?");
 					statement.setLong(1, info.getLong("respawnTime"));
 					statement.setDouble(2, info.getDouble("currentHP"));
 					statement.setDouble(3, info.getDouble("currentMP"));
 					statement.setInt(4, bossId);
-					statement.execute();
-					statement.close();
+					statement.executeUpdate();
+					statement.clearParameters();
 				}
 				catch (SQLException e)
 				{
 					_log.warning("RaidBossSpawnManager: Couldnt update raidboss_spawnlist table " + e);
 				}
 			}
+			statement.close();
 		}
 		catch (SQLException e)
 		{

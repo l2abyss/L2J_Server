@@ -36,7 +36,7 @@ import com.l2jserver.gameserver.model.entity.ActionKey;
  */
 public class UITable
 {
-	private static Logger _log = Logger.getLogger(StaticObjects.class.getName());
+	private static Logger _log = Logger.getLogger(UITable.class.getName());
 	
 	private Map<Integer, List<ActionKey>> _storedKeys;
 	private Map<Integer, List<Integer>> _storedCategories;

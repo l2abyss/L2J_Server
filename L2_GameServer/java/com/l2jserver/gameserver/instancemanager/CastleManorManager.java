@@ -206,11 +206,12 @@ public class CastleManorManager
 	{
 		Connection con = null;
 		ResultSet rs;
-		PreparedStatement statement;
 		try
 		{
 			// Get Connection
 			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statementProduction = con.prepareStatement(CASTLE_MANOR_LOAD_PRODUCTION);
+			PreparedStatement statementProcure = con.prepareStatement(CASTLE_MANOR_LOAD_PROCURE);
 			for (Castle castle : CastleManager.getInstance().getCastles())
 			{
 				FastList<SeedProduction> production = new FastList<SeedProduction>();
@@ -219,9 +220,9 @@ public class CastleManorManager
 				FastList<CropProcure> procureNext = new FastList<CropProcure>();
 
 				// restore seed production info
-				statement = con.prepareStatement(CASTLE_MANOR_LOAD_PRODUCTION);
-				statement.setInt(1, castle.getCastleId());
-				rs = statement.executeQuery();
+				statementProduction.setInt(1, castle.getCastleId());
+				rs = statementProduction.executeQuery();
+				statementProduction.clearParameters();
 				while (rs.next())
 				{
 					int seedId = rs.getInt("seed_id");
@@ -235,15 +236,15 @@ public class CastleManorManager
 						productionNext.add(new SeedProduction(seedId, canProduce, price, startProduce));
 				}
 				rs.close();
-				statement.close();
 
 				castle.setSeedProduction(production, PERIOD_CURRENT);
 				castle.setSeedProduction(productionNext, PERIOD_NEXT);
 
 				// restore procure info
-				statement = con.prepareStatement(CASTLE_MANOR_LOAD_PROCURE);
-				statement.setInt(1, castle.getCastleId());
-				rs = statement.executeQuery();
+				
+				statementProcure.setInt(1, castle.getCastleId());
+				rs = statementProcure.executeQuery();
+				statementProcure.clearParameters();
 				while (rs.next())
 				{
 					int cropId = rs.getInt("crop_id");
@@ -258,7 +259,6 @@ public class CastleManorManager
 						procureNext.add(new CropProcure(cropId, canBuy, rewardType, startBuy, price));
 				}
 				rs.close();
-				statement.close();
 
 				castle.setCropProcure(procure, PERIOD_CURRENT);
 				castle.setCropProcure(procureNext, PERIOD_NEXT);
@@ -266,6 +266,8 @@ public class CastleManorManager
 				if (!procure.isEmpty() || !procureNext.isEmpty() || !production.isEmpty() || !productionNext.isEmpty())
 					_log.info(castle.getName() + ": Data loaded");
 			}
+			statementProduction.close();
+			statementProcure.close();
 		}
 		catch (Exception e)
 		{
