@@ -10,6 +10,6 @@
 	<classpathentry kind="lib" path="lib/netcon.jar"/>
 	<classpathentry kind="lib" path="lib/jython-engine.jar"/>
 	<classpathentry kind="lib" path="lib/trove-2.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/javolution-5.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/javolution-5.5.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
