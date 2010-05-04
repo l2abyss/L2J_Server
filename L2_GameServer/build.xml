@@ -38,7 +38,7 @@
 			<include name="c3p0-0.9.1.2.jar" />
 			<include name="jython.jar" />
 			<include name="jython-engine.jar" />
-			<include name="javolution-5.5.0.jar" />
+			<include name="javolution-5.5.1.jar" />
 			<include name="mmocore.jar" />
 			<include name="trove-2.1.0.jar" />
 			<include name="netcon.jar" />
