@@ -93,8 +93,7 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 			
 			updated = true;
 		}
-		
-		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_REGISTER_CREST) == L2Clan.CP_CL_REGISTER_CREST)
+		else if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_REGISTER_CREST) == L2Clan.CP_CL_REGISTER_CREST)
 		{
 			if (clan.getHasCastle() == 0 && clan.getHasHideout() == 0)
 			{
