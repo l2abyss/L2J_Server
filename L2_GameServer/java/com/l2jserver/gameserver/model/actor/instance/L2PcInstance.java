@@ -14062,7 +14062,7 @@ public final class L2PcInstance extends L2Playable
     		sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_WHILE_YOU_ARE_DEAD));
     		return false;
     	}
-    	else if (isIn7sDungeon() && type == 1)
+    	else if (type == 1 && (isIn7sDungeon() || (isInParty() && getParty().isInDimensionalRift())))
     	{
     		sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_TO_REACH_THIS_AREA));
     		return false;
