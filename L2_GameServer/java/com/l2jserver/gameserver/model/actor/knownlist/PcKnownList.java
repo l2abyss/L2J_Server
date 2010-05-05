@@ -99,9 +99,9 @@ public class PcKnownList extends PlayableKnownList
      *
      */
     @Override
-	public boolean removeKnownObject(L2Object object)
+	protected boolean removeKnownObject(L2Object object, boolean forget)
     {
-            if (!super.removeKnownObject(object)) return false;
+            if (!super.removeKnownObject(object, forget)) return false;
         // Send Server-Client Packet DeleteObject to the L2PcInstance
         getActiveChar().sendPacket(new DeleteObject(object));
        if (Config.CHECK_KNOWN && object instanceof L2Npc) getActiveChar().sendMessage("Removed NPC: "+((L2Npc)object).getName());

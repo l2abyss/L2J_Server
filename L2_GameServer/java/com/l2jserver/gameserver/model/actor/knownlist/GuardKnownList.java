@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
-import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.instance.L2GuardInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
@@ -27,80 +26,72 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public class GuardKnownList extends AttackableKnownList
 {
-    private static Logger _log = Logger.getLogger(GuardKnownList.class.getName());
+	private static final Logger _log = Logger.getLogger(GuardKnownList.class.getName());
 
-    // =========================================================
-    // Data Field
+	public GuardKnownList(L2GuardInstance activeChar)
+	{
+		super(activeChar);
+	}
 
-    // =========================================================
-    // Constructor
-    public GuardKnownList(L2GuardInstance activeChar)
-    {
-        super(activeChar);
-    }
-
-    // =========================================================
-    // Method - Public
-    @Override
+	@Override
 	public boolean addKnownObject(L2Object object)
-    {
-        if (!super.addKnownObject(object)) return false;
+	{
+		if (!super.addKnownObject(object))
+			return false;
 
-        if (object instanceof L2PcInstance)
-        {
-            // Check if the object added is a L2PcInstance that owns Karma
-            L2PcInstance player = (L2PcInstance) object;
+		if (object instanceof L2PcInstance)
+		{
+			// Check if the object added is a L2PcInstance that owns Karma
+			if (((L2PcInstance)object).getKarma() > 0)
+			{
+				if (Config.DEBUG)
+					_log.fine(getActiveChar().getObjectId()+": PK "+object.getObjectId()+" entered scan range");
 
-            if ( (player.getKarma() > 0) )
-            {
-                if (Config.DEBUG) _log.fine(getActiveChar().getObjectId()+": PK "+player.getObjectId()+" entered scan range");
+				// Set the L2GuardInstance Intention to AI_INTENTION_ACTIVE
+				if (getActiveChar().getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
+					getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
+			}
+		}
+		else if ((Config.GUARD_ATTACK_AGGRO_MOB && getActiveChar().isInActiveRegion())
+				&& object instanceof L2MonsterInstance)
+		{
+			// Check if the object added is an aggressive L2MonsterInstance
+			if (((L2MonsterInstance)object).isAggressive())
+			{
+				if (Config.DEBUG)
+					_log.fine(getActiveChar().getObjectId()+": Aggressive mob "+object.getObjectId()+" entered scan range");
 
-                // Set the L2GuardInstance Intention to AI_INTENTION_ACTIVE
-                if (getActiveChar().getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
-                    getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
-            }
-        }
-        else if ((Config.GUARD_ATTACK_AGGRO_MOB && getActiveChar().isInActiveRegion()) && object instanceof L2MonsterInstance)
-        {
-            // Check if the object added is an aggressive L2MonsterInstance
-            L2MonsterInstance mob = (L2MonsterInstance) object;
+				// Set the L2GuardInstance Intention to AI_INTENTION_ACTIVE
+				if (getActiveChar().getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
+					getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
+			}
+		}
 
-            if (mob.isAggressive() )
-            {
-                if (Config.DEBUG) _log.fine(getActiveChar().getObjectId()+": Aggressive mob "+mob.getObjectId()+" entered scan range");
+		return true;
+	}
 
-                // Set the L2GuardInstance Intention to AI_INTENTION_ACTIVE
-                if (getActiveChar().getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
-                    getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
-            }
-        }
+	@Override
+	protected boolean removeKnownObject(L2Object object, boolean forget)
+	{
+		if (!super.removeKnownObject(object, forget))
+			return false;
 
-        return true;
-    }
+		// Check if the _aggroList of the L2GuardInstance is Empty
+		if (getActiveChar().noTarget())
+		{
+			//removeAllKnownObjects();
 
-    @Override
-	public boolean removeKnownObject(L2Object object)
-    {
-        if (!super.removeKnownObject(object)) return false;
+			// Set the L2GuardInstance to AI_INTENTION_IDLE
+			if (getActiveChar().hasAI())
+				getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
+		}
 
-        // Check if the _aggroList of the L2GuardInstance is Empty
-        if (getActiveChar().noTarget())
-        {
-            //removeAllKnownObjects();
+		return true;
+	}
 
-            // Set the L2GuardInstance to AI_INTENTION_IDLE
-            L2CharacterAI ai = getActiveChar().getAI();
-            if (ai != null) ai.setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
-        }
-
-        return true;
-    }
-
-    // =========================================================
-    // Method - Private
-
-    // =========================================================
-    // Property - Public
-    @Override
-	public final L2GuardInstance getActiveChar() { return (L2GuardInstance)super.getActiveChar(); }
+	@Override
+	public final L2GuardInstance getActiveChar()
+	{
+		return (L2GuardInstance)super.getActiveChar();
+	}
 }

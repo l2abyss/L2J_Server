@@ -15,13 +15,12 @@
 package com.l2jserver.gameserver.model.actor.knownlist;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
-import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.util.Util;
 
@@ -30,178 +29,160 @@ import javolution.util.FastMap;
 
 public class CharKnownList extends ObjectKnownList
 {
-    // =========================================================
-    // Data Field
-    private Map<Integer, L2PcInstance> _knownPlayers;
-    private Map<Integer, L2Summon> _knownSummons;
-    private Map<Integer, Integer> _knownRelations;
+	private Map<Integer, L2PcInstance> _knownPlayers;
+	private Map<Integer, L2Summon> _knownSummons;
+	private Map<Integer, Integer> _knownRelations;
 
-    // =========================================================
-    // Constructor
-    public CharKnownList(L2Character activeChar)
-    {
-        super(activeChar);
-    }
+	public CharKnownList(L2Character activeChar)
+	{
+		super(activeChar);
+	}
 
-    // =========================================================
-    // Method - Public
-    @Override
+	@Override
 	public boolean addKnownObject(L2Object object)
-    {
-        if (!super.addKnownObject(object)) return false;
-        if (object instanceof L2PcInstance) {
-        	getKnownPlayers().put(object.getObjectId(), (L2PcInstance)object);
-        	getKnownRelations().put(object.getObjectId(), -1);
-        }
-        else if (object instanceof L2Summon)
-        	getKnownSummons().put(object.getObjectId(), (L2Summon)object);
-        	
-        return true;
-    }
+	{
+		if (!super.addKnownObject(object))
+			return false;
+		if (object instanceof L2PcInstance)
+		{
+			getKnownPlayers().put(object.getObjectId(), (L2PcInstance)object);
+			getKnownRelations().put(object.getObjectId(), -1);
+		}
+		else if (object instanceof L2Summon)
+			getKnownSummons().put(object.getObjectId(), (L2Summon)object);
 
-    /**
-     * Return True if the L2PcInstance is in _knownPlayer of the L2Character.<BR><BR>
-     * @param player The L2PcInstance to search in _knownPlayer
-     */
-    public final boolean knowsThePlayer(L2PcInstance player) { return getActiveChar() == player || getKnownPlayers().containsKey(player.getObjectId()); }
+		return true;
+	}
 
-    /** Remove all L2Object from _knownObjects and _knownPlayer of the L2Character then cancel Attak or Cast and notify AI. */
-    @Override
+	/**
+	 * Return True if the L2PcInstance is in _knownPlayer of the L2Character.<BR><BR>
+	 * @param player The L2PcInstance to search in _knownPlayer
+	 */
+	public final boolean knowsThePlayer(L2PcInstance player) { return getActiveChar() == player || getKnownPlayers().containsKey(player.getObjectId()); }
+
+	/** Remove all L2Object from _knownObjects and _knownPlayer of the L2Character then cancel Attack or Cast and notify AI. */
+	@Override
 	public final void removeAllKnownObjects()
-    {
-        super.removeAllKnownObjects();
-        getKnownPlayers().clear();
-        getKnownRelations().clear();
-        getKnownSummons().clear();
+	{
+		super.removeAllKnownObjects();
+		getKnownPlayers().clear();
+		getKnownRelations().clear();
+		getKnownSummons().clear();
 
-        // Set _target of the L2Character to null
-        // Cancel Attack or Cast
-        getActiveChar().setTarget(null);
+		// Set _target of the L2Character to null
+		// Cancel Attack or Cast
+		getActiveChar().setTarget(null);
 
-        // Cancel AI Task
-        if (getActiveChar().hasAI()) getActiveChar().setAI(null);
-    }
+		// Cancel AI Task
+		if (getActiveChar().hasAI())
+			getActiveChar().setAI(null);
+	}
 
-    @Override
-	public boolean removeKnownObject(L2Object object)
-    {
-        if (!super.removeKnownObject(object)) return false;
-        if (object instanceof L2PcInstance) {
-        	getKnownPlayers().remove(object.getObjectId());
-        	getKnownRelations().remove(object.getObjectId());
-        }
-        else if (object instanceof L2Summon)
-        {
-        	getKnownSummons().remove(object.getObjectId());
-        }
-        // If object is targeted by the L2Character, cancel Attack or Cast
-        if (object == getActiveChar().getTarget()) getActiveChar().setTarget(null);
+	@Override
+	protected boolean removeKnownObject(L2Object object, boolean forget)
+	{
+		if (!super.removeKnownObject(object, forget))
+			return false;
 
-        return true;
-    }
-    
-    @Override
-    public void forgetObjects(boolean fullCheck)
-    {
-    	if (!fullCheck)
-    	{
-    		Collection<L2PcInstance> plrs = getKnownPlayers().values();
-    		//synchronized (getKnownPlayers())
+		if (!forget) // on forget objects removed by iterator
+		{
+			if (object instanceof L2PcInstance)
 			{
-				for (L2PcInstance player : plrs)
+				getKnownPlayers().remove(object.getObjectId());
+				getKnownRelations().remove(object.getObjectId());
+			}
+			else if (object instanceof L2Summon)
+				getKnownSummons().remove(object.getObjectId());
+		}
+
+		// If object is targeted by the L2Character, cancel Attack or Cast
+		if (object == getActiveChar().getTarget())
+			getActiveChar().setTarget(null);
+
+		return true;
+	}
+
+	@Override
+	public void forgetObjects(boolean fullCheck)
+	{
+		if (!fullCheck)
+		{
+			final Collection<L2PcInstance> plrs = getKnownPlayers().values();
+			final Iterator<L2PcInstance> pIter = plrs.iterator();
+			L2PcInstance player;
+			//synchronized (getKnownPlayers())
+			{
+				while (pIter.hasNext())
 				{
-					// Remove all objects invisible or too far
+					player = pIter.next();
 					if (!player.isVisible()
 					        || !Util.checkIfInShortRadius(getDistanceToForgetObject(player), getActiveObject(), player, true))
-						removeKnownObject(player);
+					{
+						pIter.remove();
+						removeKnownObject(player, true);
+						getKnownRelations().remove(player.getObjectId());
+						getKnownObjects().remove(player.getObjectId());
+					}
 				}
 			}
-    		Collection<L2Summon> sums = getKnownSummons().values();
-    		//synchronized (sums)
+
+			final Collection<L2Summon> sums = getKnownSummons().values();
+			final Iterator<L2Summon> sIter = sums.iterator();
+			L2Summon summon;
+			//synchronized (sums)
 			{
-				for (L2Summon summon : sums)
+				while (sIter.hasNext())
 				{
-					// Remove all objects invisible or too far
+					summon = sIter.next();
 					if (!summon.isVisible()
 					        || !Util.checkIfInShortRadius(getDistanceToForgetObject(summon), getActiveObject(), summon, true))
-						removeKnownObject(summon);
+					{
+						sIter.remove();
+						removeKnownObject(summon, true);
+						getKnownObjects().remove(summon.getObjectId());
+					}
 				}
 			}
-        	return;
-    	}
-    	// Go through knownObjects
-    	Collection<L2Object> objs = getKnownObjects().values();
-    	//synchronized (getKnownObjects())
+			return;
+		}
+		// Go through knownObjects
+		final Collection<L2Object> objs = getKnownObjects().values();
+		final Iterator<L2Object> oIter = objs.iterator();
+		L2Object object;
+		//synchronized (getKnownObjects())
 		{
-			for (L2Object object : objs)
+			while (oIter.hasNext())
 			{
-				// Remove all objects invisible or too far
-				if (!object.isVisible() || !Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true))
+				object = oIter.next();
+				if (!object.isVisible()
+						|| !Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true))
 				{
-					if (object instanceof L2BoatInstance && getActiveObject() instanceof L2PcInstance)
+					oIter.remove();
+					removeKnownObject(object, true);
+
+					if (object instanceof L2PcInstance)
 					{
-						if (((L2BoatInstance) (object)).getVehicleDeparture() == null)
-						{
-							//
-						}
-						else if (((L2PcInstance) getActiveObject()).isInBoat())
-						{
-							if (((L2PcInstance) getActiveObject()).getBoat() != object)
-							{
-								removeKnownObject(object);
-							}
-						}
-						else
-						{
-							removeKnownObject(object);
-						}
+						getKnownPlayers().remove(object.getObjectId());
+						getKnownRelations().remove(object.getObjectId());
 					}
-					else if (object instanceof L2AirShipInstance && getActiveObject() instanceof L2PcInstance)
-					{
-						if (((L2AirShipInstance) (object)).getAirShipInfo() == null)
-						{
-							//
-						}
-						else if (((L2PcInstance) getActiveObject()).isInAirShip())
-						{
-							if (((L2PcInstance) getActiveObject()).getAirShip() != object)
-							{
-								removeKnownObject(object);
-							}
-						}
-						else
-						{
-							removeKnownObject(object);
-						}
-					}
-					else
-					{
-						removeKnownObject(object);
-					}
+					else if (object instanceof L2Summon)
+						getKnownSummons().remove(object.getObjectId());
 				}
 			}
 		}
-    }
+	}
 
-    // =========================================================
-    // Method - Private
+	public L2Character getActiveChar()
+	{
+		return (L2Character)super.getActiveObject();
+	}
 
-    // =========================================================
-    // Property - Public
-    public L2Character getActiveChar() { return (L2Character)super.getActiveObject(); }
+	public Collection<L2Character> getKnownCharacters()
+	{
+		FastList<L2Character> result = new FastList<L2Character>();
 
-    @Override
-	public int getDistanceToForgetObject(L2Object object) { return 0; }
-
-    @Override
-	public int getDistanceToWatchObject(L2Object object) { return 0; }
-
-    public Collection<L2Character> getKnownCharacters()
-    {
-        FastList<L2Character> result = new FastList<L2Character>();
-
-        Collection<L2Object> objs = getKnownObjects().values();
-        //synchronized (getKnownObjects())
+		final Collection<L2Object> objs = getKnownObjects().values();
+		//synchronized (getKnownObjects())
 		{
 			for (L2Object obj : objs)
 			{
@@ -209,17 +190,16 @@ public class CharKnownList extends ObjectKnownList
 					result.add((L2Character) obj);
 			}
 		}
-        return result;
-    }
+		return result;
+	}
 
-    public Collection<L2Character> getKnownCharactersInRadius(long radius)
-    {
-       FastList<L2Character> result = new FastList<L2Character>();
+	public Collection<L2Character> getKnownCharactersInRadius(long radius)
+	{
+		FastList<L2Character> result = new FastList<L2Character>();
 
-       Collection<L2Object> objs = getKnownObjects().values();
-       //synchronized (getKnownObjects())
-       if (objs != null && !objs.isEmpty())
-       {
+		final Collection<L2Object> objs = getKnownObjects().values();
+		//synchronized (getKnownObjects())
+		{
 			for (L2Object obj : objs)
 			{
 				if (obj instanceof L2Character)
@@ -229,39 +209,41 @@ public class CharKnownList extends ObjectKnownList
 				}
 			}
 		}
+		return result;
+	}
 
-       return result;
-    }
+	public final Map<Integer, L2PcInstance> getKnownPlayers()
+	{
+		if (_knownPlayers == null)
+			_knownPlayers = new FastMap<Integer, L2PcInstance>().shared();
+		return _knownPlayers;
+	}
 
-    public final Map<Integer, L2PcInstance> getKnownPlayers()
-    {
-        if (_knownPlayers == null) _knownPlayers = new FastMap<Integer, L2PcInstance>().shared();
-        return _knownPlayers;
-    }
+	public final Map<Integer, Integer> getKnownRelations()
+	{
+		if (_knownRelations == null)
+			_knownRelations = new FastMap<Integer, Integer>().shared();
+		return _knownRelations;
+	}
 
-    public final Map<Integer, Integer> getKnownRelations()
-    {
-        if (_knownRelations == null) _knownRelations = new FastMap<Integer, Integer>().shared();
-        return _knownRelations;
-    }
+	public final Map<Integer, L2Summon> getKnownSummons()
+	{
+		if (_knownSummons == null)
+			_knownSummons = new FastMap<Integer, L2Summon>().shared();
+		return _knownSummons;
+	}
 
-    public final Map<Integer, L2Summon> getKnownSummons()
-    {
-        if (_knownSummons == null) _knownSummons = new FastMap<Integer, L2Summon>().shared();
-        return _knownSummons;
-    }
-    
-    public final Collection<L2PcInstance> getKnownPlayersInRadius(long radius)
-    {
-        FastList<L2PcInstance> result = new FastList<L2PcInstance>();
+	public final Collection<L2PcInstance> getKnownPlayersInRadius(long radius)
+	{
+		FastList<L2PcInstance> result = new FastList<L2PcInstance>();
 
-        Collection<L2PcInstance> plrs = getKnownPlayers().values();
-        //synchronized (getKnownPlayers())
+		final Collection<L2PcInstance> plrs = getKnownPlayers().values();
+		//synchronized (getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
 				if (Util.checkIfInRange((int) radius, getActiveChar(), player, true))
 					result.add(player);
 		}
-        return result;
-    }
+		return result;
+	}
 }

@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.model.actor.knownlist;
 import java.util.Collection;
 
 import com.l2jserver.gameserver.ai.CtrlIntention;
-import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -25,73 +24,63 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 public class AttackableKnownList extends NpcKnownList
 {
-    // =========================================================
-    // Data Field
+	public AttackableKnownList(L2Attackable activeChar)
+	{
+		super(activeChar);
+	}
 
-    // =========================================================
-    // Constructor
-    public AttackableKnownList(L2Attackable activeChar)
-    {
-        super(activeChar);
-    }
+	@Override
+	protected boolean removeKnownObject(L2Object object, boolean forget)
+	{
+		if (!super.removeKnownObject(object, forget))
+			return false;
 
-    // =========================================================
-    // Method - Public
-    @Override
-	public boolean removeKnownObject(L2Object object)
-    {
-        if (!super.removeKnownObject(object)) return false;
+		// Remove the L2Object from the _aggrolist of the L2Attackable
+		if (object instanceof L2Character)
+			getActiveChar().getAggroList().remove(object);
+		// Set the L2Attackable Intention to AI_INTENTION_IDLE
+		final Collection<L2PcInstance> known = getKnownPlayers().values();
 
-        // Remove the L2Object from the _aggrolist of the L2Attackable
-        if (object instanceof L2Character)
-            getActiveChar().getAggroList().remove(object);
-        // Set the L2Attackable Intention to AI_INTENTION_IDLE
-        Collection<L2PcInstance> known = getKnownPlayers().values();
+		//FIXME: This is a temporary solution
+		if (getActiveChar().hasAI() && (known == null || known.isEmpty()))
+			getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
 
-        //FIXME: This is a temporary solution
-        L2CharacterAI ai = getActiveChar().getAI();
-        if (ai != null && (known == null || known.isEmpty()))
-        {
-            ai.setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
-        }
+		return true;
+	}
 
-        return true;
-    }
+	@Override
+	public L2Attackable getActiveChar()
+	{
+		return (L2Attackable)super.getActiveChar();
+	}
 
-    // =========================================================
-    // Method - Private
-
-    // =========================================================
-    // Property - Public
-    @Override
-	public L2Attackable getActiveChar() { return (L2Attackable)super.getActiveChar(); }
-
-    @Override
+	@Override
 	public int getDistanceToForgetObject(L2Object object)
-    {
-       	if (getActiveChar().getAggroList().get(object) != null) 
-       		return 3000;
-        return Math.min(2200, 2 * getDistanceToWatchObject(object));
-    }
+	{
+		if (getActiveChar().getAggroList().get(object) != null) 
+			return 3000;
 
-    @Override
+		return Math.min(2200, 2 * getDistanceToWatchObject(object));
+	}
+
+	@Override
 	public int getDistanceToWatchObject(L2Object object)
-    {
-        if (object instanceof L2NpcInstance || !(object instanceof L2Character))
-            return 0;
+	{
+		if (object instanceof L2NpcInstance
+				|| !(object instanceof L2Character))
+			return 0;
 
-        if (object instanceof L2Playable)
-            return 1500;
+		if (object instanceof L2Playable)
+			return 1500;
 
-        if (getActiveChar().getAggroRange() > getActiveChar().getFactionRange())
-            return getActiveChar().getAggroRange();
+		if (getActiveChar().getAggroRange() > getActiveChar().getFactionRange())
+			return getActiveChar().getAggroRange();
 
-        if (getActiveChar().getFactionRange() > 300)
-            return getActiveChar().getFactionRange();
+		if (getActiveChar().getFactionRange() > 300)
+			return getActiveChar().getFactionRange();
 
-        return 300;
-    }
+		return 300;
+	}
 }

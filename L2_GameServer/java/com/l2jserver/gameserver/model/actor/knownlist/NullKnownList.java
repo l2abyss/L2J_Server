@@ -77,7 +77,7 @@ public class NullKnownList extends ObjectKnownList
 	 * @see com.l2jserver.gameserver.model.actor.knownlist.ObjectKnownList#removeKnownObject(com.l2jserver.gameserver.model.L2Object)
 	 */
 	@Override
-	public boolean removeKnownObject(L2Object object)
+	protected boolean removeKnownObject(L2Object object, boolean forget)
 	{
 		return false;
 	}

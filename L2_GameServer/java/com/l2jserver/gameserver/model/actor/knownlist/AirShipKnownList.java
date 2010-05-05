@@ -18,27 +18,23 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  * @author Kerberos
  *
  */
 public class AirShipKnownList extends CharKnownList
 {
-
-	/**
-	 * @param activeChar
-	 */
 	public AirShipKnownList(L2Character activeChar)
 	{
 		super(activeChar);
-		// TODO Auto-generated constructor stub
 	}
+
 	@Override
 	public int getDistanceToForgetObject(L2Object object)
     {
         if (!(object instanceof L2PcInstance))
             return 0;
+
         return 8000;
     }
 
@@ -47,7 +43,7 @@ public class AirShipKnownList extends CharKnownList
     {
         if (!(object instanceof L2PcInstance))
             return 0;
+
         return 4000;
     }
-
 }
