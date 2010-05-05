@@ -364,6 +364,9 @@ public final class L2World
 		// Go through the visible objects contained in the circular area
 		for (L2Object visible : visibles)
 		{
+			if (visible == null)
+				continue;
+
 			// Add the object in L2ObjectHashSet(L2Object) _knownObjects of the visible L2Character according to conditions :
 			//   - L2Character is visible
 			//   - object is not already known
@@ -449,10 +452,8 @@ public final class L2World
 					{
 						for (L2Object obj : vObj)
 						{
-							if (obj.getKnownList() != null)
+							if (obj != null && obj.getKnownList() != null)
 								obj.getKnownList().removeKnownObject(object);
-							if (object.getKnownList() != null)
-								object.getKnownList().removeKnownObject(obj);
 						}
 					}
 				}
@@ -509,7 +510,7 @@ public final class L2World
 			{
 				for (L2Object _object : vObj)
 				{
-					if (_object.equals(object))
+					if (_object == null || _object.equals(object))
 						continue; // skip our own character
 					if (!_object.isVisible())
 						continue; // skip dying objects
@@ -558,7 +559,7 @@ public final class L2World
 			{
 				for (L2Object _object : vObj)
 				{
-					if (_object.equals(object))
+					if (_object == null || _object.equals(object))
 						continue; // skip our own character
 						
 					int x1 = _object.getX();
@@ -612,7 +613,7 @@ public final class L2World
 			{
 				for (L2Object _object : vObj)
 				{
-					if (_object.equals(object))
+					if (_object == null || _object.equals(object))
 						continue; // skip our own character
 						
 					int x1 = _object.getX();
@@ -666,7 +667,7 @@ public final class L2World
 			{
 				for (L2Playable _object : _playables)
 				{
-					if (_object.equals(object))
+					if (_object == null || _object.equals(object))
 						continue; // skip our own character
 						
 					if (!_object.isVisible()) // GM invisible is different than this...
