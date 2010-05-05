@@ -114,7 +114,7 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 				return;
 			}
 			
-			clan.setCrestLargeId(newId);
+			clan.setCrestLargeId(crestLargeId = newId);
 			clan.setHasCrestLarge(true);
 			
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_EMBLEM_WAS_SUCCESSFULLY_REGISTERED));
