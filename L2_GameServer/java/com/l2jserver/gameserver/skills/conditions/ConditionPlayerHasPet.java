@@ -21,10 +21,18 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.skills.Env;
 
+/**
+ * The Class ConditionPlayerHasPet.
+ */
 public class ConditionPlayerHasPet extends Condition
 {
 	private final ArrayList<Integer> _controlItemIds;
 
+	/**
+	 * Instantiates a new condition player has pet.
+	 *
+	 * @param itemIds the item ids
+	 */
 	public ConditionPlayerHasPet(ArrayList<Integer> itemIds)
 	{
 		if (itemIds.size() == 1 && itemIds.get(0) == 0)
@@ -33,6 +41,9 @@ public class ConditionPlayerHasPet extends Condition
 			_controlItemIds = itemIds;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

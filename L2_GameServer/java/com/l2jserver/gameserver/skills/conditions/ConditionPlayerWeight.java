@@ -21,18 +21,27 @@ import com.l2jserver.gameserver.skills.Stats;
 
 
 /**
- * @author Kerberos
+ * The Class ConditionPlayerWeight.
  *
- **/
+ * @author Kerberos
+ */
 public class ConditionPlayerWeight extends Condition {
 
 	private final int _weight;
 
+	/**
+	 * Instantiates a new condition player weight.
+	 *
+	 * @param weight the weight
+	 */
 	public ConditionPlayerWeight(int weight)
 	{
 		_weight = weight;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

@@ -24,6 +24,8 @@ import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
+ * The Class ConditionSiegeZone.
+ *
  * @author Gigiikun
  */
 
@@ -42,8 +44,12 @@ public final class ConditionSiegeZone extends Condition
     
     private final int _value;
     private final boolean _self;
+    
     /**
-     * 
+     * Instantiates a new condition siege zone.
+     *
+     * @param value the value
+     * @param self the self
      */
 
     public ConditionSiegeZone(int value, boolean self)
@@ -52,6 +58,9 @@ public final class ConditionSiegeZone extends Condition
         _self = self;
     }
 
+    /* (non-Javadoc)
+     * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+     */
     @Override
     public boolean testImpl(Env env)
     {
@@ -76,6 +85,14 @@ public final class ConditionSiegeZone extends Condition
             return checkIfOk(target, fort, _value);
     }
     
+    /**
+     * Check if ok.
+     *
+     * @param activeChar the active char
+     * @param castle the castle
+     * @param value the value
+     * @return true, if successful
+     */
     public static boolean checkIfOk(L2Character activeChar, Castle castle, int value)
     {
         if (activeChar == null || !(activeChar instanceof L2PcInstance))
@@ -105,6 +122,14 @@ public final class ConditionSiegeZone extends Condition
         return false;
     }
     
+    /**
+     * Check if ok.
+     *
+     * @param activeChar the active char
+     * @param fort the fort
+     * @param value the value
+     * @return true, if successful
+     */
     public static boolean checkIfOk(L2Character activeChar, Fort fort, int value)
     {
         if (activeChar == null || !(activeChar instanceof L2PcInstance))

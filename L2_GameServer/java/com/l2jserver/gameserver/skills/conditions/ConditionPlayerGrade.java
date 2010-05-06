@@ -21,6 +21,8 @@ import com.l2jserver.gameserver.skills.Env;
 
 
 /**
+ * The Class ConditionPlayerGrade.
+ *
  * @author Gigiikun
  */
 
@@ -39,11 +41,19 @@ public final class ConditionPlayerGrade extends Condition
 
 	private final int _value;
 
+	/**
+	 * Instantiates a new condition player grade.
+	 *
+	 * @param value the value
+	 */
 	public ConditionPlayerGrade(int value)
 	{
 		_value = value;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

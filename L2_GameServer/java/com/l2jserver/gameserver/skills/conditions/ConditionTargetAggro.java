@@ -20,6 +20,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
+ * The Class ConditionTargetAggro.
+ *
  * @author mkizub
  */
 public class ConditionTargetAggro extends Condition
@@ -27,11 +29,19 @@ public class ConditionTargetAggro extends Condition
 	
 	private final boolean _isAggro;
 	
+	/**
+	 * Instantiates a new condition target aggro.
+	 *
+	 * @param isAggro the is aggro
+	 */
 	public ConditionTargetAggro(boolean isAggro)
 	{
 		_isAggro = isAggro;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

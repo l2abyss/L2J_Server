@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
+ * The Class ConditionTargetAbnormal.
  *
  * @author  janiii
  */
@@ -24,11 +25,19 @@ public class ConditionTargetAbnormal extends Condition
 {
 	private final int _abnormalId;
 	
+	/**
+	 * Instantiates a new condition target abnormal.
+	 *
+	 * @param abnormalId the abnormal id
+	 */
 	public ConditionTargetAbnormal(int abnormalId)
 	{
 		_abnormalId = abnormalId;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	boolean testImpl(Env env)
 	{

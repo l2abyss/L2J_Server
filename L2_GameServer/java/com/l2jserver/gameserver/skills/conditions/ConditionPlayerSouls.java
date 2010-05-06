@@ -17,16 +17,27 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
+/**
+ * The Class ConditionPlayerSouls.
+ */
 public class ConditionPlayerSouls extends Condition
 {
 
 	private final int _souls;
 
+	/**
+	 * Instantiates a new condition player souls.
+	 *
+	 * @param souls the souls
+	 */
 	public ConditionPlayerSouls(int souls)
 	{
 		_souls = souls;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

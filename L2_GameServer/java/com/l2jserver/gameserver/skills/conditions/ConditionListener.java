@@ -15,11 +15,21 @@
 package com.l2jserver.gameserver.skills.conditions;
 
 /**
- * @author mkizub
+ * The listener interface for receiving condition events.
+ * The class that is interested in processing a condition
+ * event implements this interface, and the object created
+ * with that class is registered with a component using the
+ * component's <code>addConditionListener<code> method. When
+ * the condition event occurs, that object's appropriate
+ * method is invoked.
  *
+ * @author mkizub
  */
 public interface ConditionListener
 {
 	
+	/**
+	 * Notify changed.
+	 */
 	public void notifyChanged();
 }

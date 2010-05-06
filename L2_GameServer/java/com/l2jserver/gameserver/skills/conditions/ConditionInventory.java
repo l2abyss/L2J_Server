@@ -17,21 +17,30 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
- * @author mkizub
+ * The Class ConditionInventory.
  *
+ * @author mkizub
  */
 public abstract class ConditionInventory extends Condition implements ConditionListener
 {
 	
 	protected final int _slot;
 	
+	/**
+	 * Instantiates a new condition inventory.
+	 *
+	 * @param slot the slot
+	 */
 	public ConditionInventory(int slot)
 	{
 		_slot = slot;
 	}
 	
 	/**
-	 * 
+	 * Test impl.
+	 *
+	 * @param env the env
+	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override

@@ -20,6 +20,8 @@ import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
+ * The Class ConditionSlotItemId.
+ *
  * @author mkizub
  */
 public final class ConditionSlotItemId extends ConditionInventory
@@ -28,6 +30,13 @@ public final class ConditionSlotItemId extends ConditionInventory
 	private final int _itemId;
 	private final int _enchantLevel;
 	
+	/**
+	 * Instantiates a new condition slot item id.
+	 *
+	 * @param slot the slot
+	 * @param itemId the item id
+	 * @param enchantLevel the enchant level
+	 */
 	public ConditionSlotItemId(int slot, int itemId, int enchantLevel)
 	{
 		super(slot);
@@ -35,6 +44,9 @@ public final class ConditionSlotItemId extends ConditionInventory
 		_enchantLevel = enchantLevel;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.ConditionInventory#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

@@ -17,16 +17,27 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
+/**
+ * The Class ConditionPlayerSex.
+ */
 public class ConditionPlayerSex extends Condition
 {
 	//male 0 fmale 1
 	private final int _sex;
 
+	/**
+	 * Instantiates a new condition player sex.
+	 *
+	 * @param sex the sex
+	 */
 	public ConditionPlayerSex(int sex)
 	{
 		_sex = sex;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

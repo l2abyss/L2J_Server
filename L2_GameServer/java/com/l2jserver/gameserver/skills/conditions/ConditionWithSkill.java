@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
+ * The Class ConditionWithSkill.
  *
  * @author  Steuf
  */
@@ -24,11 +25,19 @@ public class ConditionWithSkill extends Condition
 {
 	private final boolean _skill;
 
+	/**
+	 * Instantiates a new condition with skill.
+	 *
+	 * @param skill the skill
+	 */
 	public ConditionWithSkill(boolean skill)
 	{
 		_skill = skill;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

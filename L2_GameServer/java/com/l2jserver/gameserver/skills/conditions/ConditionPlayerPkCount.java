@@ -17,15 +17,26 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
+/**
+ * The Class ConditionPlayerPkCount.
+ */
 public class ConditionPlayerPkCount extends Condition
 {
 	public final int _pk;
 
+	/**
+	 * Instantiates a new condition player pk count.
+	 *
+	 * @param pk the pk
+	 */
 	public ConditionPlayerPkCount(int pk)
 	{
 		_pk = pk;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

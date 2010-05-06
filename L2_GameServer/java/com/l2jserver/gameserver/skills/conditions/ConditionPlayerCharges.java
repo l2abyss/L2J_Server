@@ -17,16 +17,27 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
+/**
+ * The Class ConditionPlayerCharges.
+ */
 public class ConditionPlayerCharges extends Condition
 {
 
 	private final int _charges;
 
+	/**
+	 * Instantiates a new condition player charges.
+	 *
+	 * @param charges the charges
+	 */
 	public ConditionPlayerCharges(int charges)
 	{
 		_charges = charges;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

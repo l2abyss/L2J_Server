@@ -21,20 +21,29 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
- * @author MrPoke
+ * The Class ConditionPlayerHasClanHall.
  *
+ * @author MrPoke
  */
 public final class ConditionPlayerHasClanHall extends Condition
 {
 	private final ArrayList<Integer> _clanHall;
 
+	/**
+	 * Instantiates a new condition player has clan hall.
+	 *
+	 * @param clanHall the clan hall
+	 */
 	public ConditionPlayerHasClanHall(ArrayList<Integer> clanHall)
 	{
 		_clanHall = clanHall;
 	}
 
 	/**
-	 * 
+	 * Test impl.
+	 *
+	 * @param env the env
+	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override

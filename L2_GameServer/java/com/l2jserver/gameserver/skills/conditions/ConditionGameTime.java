@@ -18,12 +18,16 @@ import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
- * @author mkizub
+ * The Class ConditionGameTime.
  *
+ * @author mkizub
  */
 public class ConditionGameTime extends Condition
 {
 	
+	/**
+	 * The Enum CheckGameTime.
+	 */
 	public enum CheckGameTime
 	{
 		NIGHT
@@ -32,6 +36,12 @@ public class ConditionGameTime extends Condition
 	private final CheckGameTime _check;
 	private final boolean _required;
 	
+	/**
+	 * Instantiates a new condition game time.
+	 *
+	 * @param check the check
+	 * @param required the required
+	 */
 	public ConditionGameTime(CheckGameTime check, boolean required)
 	{
 		_check = check;
@@ -39,7 +49,10 @@ public class ConditionGameTime extends Condition
 	}
 	
 	/**
-	 * 
+	 * Test impl.
+	 *
+	 * @param env the env
+	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override

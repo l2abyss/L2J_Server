@@ -19,15 +19,26 @@ import java.util.ArrayList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
+/**
+ * The Class ConditionTargetClassIdRestriction.
+ */
 public class ConditionTargetClassIdRestriction extends Condition
 {
 	private final ArrayList<Integer> _classIds;
 
+	/**
+	 * Instantiates a new condition target class id restriction.
+	 *
+	 * @param classId the class id
+	 */
 	public ConditionTargetClassIdRestriction(ArrayList<Integer> classId)
 	{
 		_classIds = classId;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

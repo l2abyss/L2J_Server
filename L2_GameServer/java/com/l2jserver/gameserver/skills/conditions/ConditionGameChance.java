@@ -18,20 +18,29 @@ import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.util.Rnd;
 
 /**
- * @author Advi
+ * The Class ConditionGameChance.
  *
+ * @author Advi
  */
 public class ConditionGameChance extends Condition
 {
 	private final int _chance;
 	
+	/**
+	 * Instantiates a new condition game chance.
+	 *
+	 * @param chance the chance
+	 */
 	public ConditionGameChance(int chance)
 	{
 		_chance = chance;
 	}
 	
 	/**
-	 * 
+	 * Test impl.
+	 *
+	 * @param env the env
+	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override

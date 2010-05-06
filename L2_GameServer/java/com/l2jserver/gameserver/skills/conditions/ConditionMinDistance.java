@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
+ * The Class ConditionMinDistance.
  *
  * @author  Didldak
  */
@@ -24,11 +25,19 @@ public class ConditionMinDistance extends Condition
 {
 	private final int _sqDistance;
 	
+	/**
+	 * Instantiates a new condition min distance.
+	 *
+	 * @param sqDistance the sq distance
+	 */
 	public ConditionMinDistance(int sqDistance)
 	{
 		_sqDistance = sqDistance;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env) {
 		return env.player.getDistanceSq(env.target) >= _sqDistance;

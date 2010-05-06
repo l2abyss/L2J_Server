@@ -18,6 +18,8 @@ import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
 
 /**
+ * The Class ConditionTargetUsesWeaponKind.
+ *
  * @author mkizub
  */
 public class ConditionTargetUsesWeaponKind extends Condition
@@ -25,11 +27,19 @@ public class ConditionTargetUsesWeaponKind extends Condition
 	
 	private final int _weaponMask;
 	
+	/**
+	 * Instantiates a new condition target uses weapon kind.
+	 *
+	 * @param weaponMask the weapon mask
+	 */
 	public ConditionTargetUsesWeaponKind(int weaponMask)
 	{
 		_weaponMask = weaponMask;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

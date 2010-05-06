@@ -17,15 +17,26 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
+/**
+ * The Class ConditionPlayerCloakStatus.
+ */
 public class ConditionPlayerCloakStatus extends Condition
 {
 	private final int _val;
 
+	/**
+	 * Instantiates a new condition player cloak status.
+	 *
+	 * @param val the val
+	 */
 	public ConditionPlayerCloakStatus(int val)
 	{
 		_val = val;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

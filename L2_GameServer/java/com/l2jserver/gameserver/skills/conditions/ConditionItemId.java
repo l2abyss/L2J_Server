@@ -17,21 +17,30 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
- * @author mkizub
+ * The Class ConditionItemId.
  *
+ * @author mkizub
  */
 public final class ConditionItemId extends Condition
 {
 	
 	private final int _itemId;
 	
+	/**
+	 * Instantiates a new condition item id.
+	 *
+	 * @param itemId the item id
+	 */
 	public ConditionItemId(int itemId)
 	{
 		_itemId = itemId;
 	}
 	
 	/**
-	 * 
+	 * Test impl.
+	 *
+	 * @param env the env
+	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override

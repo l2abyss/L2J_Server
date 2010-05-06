@@ -17,16 +17,27 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
+/**
+ * The Class ConditionPlayerSiegeSide.
+ */
 public class ConditionPlayerSiegeSide extends Condition
 {
 
 	private final int _siegeSide;
 
+	/**
+	 * Instantiates a new condition player siege side.
+	 *
+	 * @param side the side
+	 */
 	public ConditionPlayerSiegeSide(int side)
 	{
 		_siegeSide = side;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

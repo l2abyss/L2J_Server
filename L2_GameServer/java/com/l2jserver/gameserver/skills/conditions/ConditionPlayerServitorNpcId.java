@@ -19,10 +19,18 @@ import java.util.ArrayList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
+/**
+ * The Class ConditionPlayerServitorNpcId.
+ */
 public class ConditionPlayerServitorNpcId extends Condition
 {
 	private final ArrayList<Integer> _npcIds;
 
+	/**
+	 * Instantiates a new condition player servitor npc id.
+	 *
+	 * @param npcIds the npc ids
+	 */
 	public ConditionPlayerServitorNpcId(ArrayList<Integer> npcIds)
 	{
 		if (npcIds.size() == 1 && npcIds.get(0) == 0)
@@ -31,6 +39,9 @@ public class ConditionPlayerServitorNpcId extends Condition
 			_npcIds = npcIds;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

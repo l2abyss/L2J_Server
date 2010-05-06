@@ -20,18 +20,27 @@ import com.l2jserver.gameserver.skills.Env;
 
 
 /**
- * @author Kerberos
+ * The Class ConditionPlayerInvSize.
  *
- **/
+ * @author Kerberos
+ */
 public class ConditionPlayerInvSize extends Condition {
 
 	private final int _size;
 
+	/**
+	 * Instantiates a new condition player inv size.
+	 *
+	 * @param size the size
+	 */
 	public ConditionPlayerInvSize(int size)
 	{
 		_size = size;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

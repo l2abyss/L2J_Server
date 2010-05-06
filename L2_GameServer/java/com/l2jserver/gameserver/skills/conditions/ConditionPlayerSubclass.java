@@ -17,15 +17,26 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
+/**
+ * The Class ConditionPlayerSubclass.
+ */
 public class ConditionPlayerSubclass extends Condition
 {
 	private final boolean _val;
 	
+	/**
+	 * Instantiates a new condition player subclass.
+	 *
+	 * @param val the val
+	 */
 	public ConditionPlayerSubclass(boolean val)
 	{
 		_val = val;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env) {
 		return (env.player instanceof L2PcInstance) ? ((L2PcInstance) env.player).isSubClassActive() == _val : true;

@@ -18,15 +18,26 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.skills.Env;
 
+/**
+ * The Class ConditionPlayerTvTEvent.
+ */
 public class ConditionPlayerTvTEvent extends Condition
 {
 	private final boolean _val;
 
+	/**
+	 * Instantiates a new condition player tv t event.
+	 *
+	 * @param val the val
+	 */
 	public ConditionPlayerTvTEvent(boolean val)
 	{
 		_val = val;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

@@ -19,6 +19,8 @@ import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.skills.effects.EffectFusion;
 
 /**
+ * The Class ConditionForceBuff.
+ *
  * @author kombat, Forsaiken
  */
 
@@ -29,13 +31,21 @@ public final class ConditionForceBuff extends Condition
 	
 	private final byte[] _forces;
 	
+	/**
+	 * Instantiates a new condition force buff.
+	 *
+	 * @param forces the forces
+	 */
 	public ConditionForceBuff(byte[] forces)
 	{
 		_forces = forces;
 	}
 	
 	/**
-	 * 
+	 * Test impl.
+	 *
+	 * @param env the env
+	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override

@@ -19,8 +19,9 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
- * @author mkizub
+ * The Class ConditionPlayerBaseStats.
  *
+ * @author mkizub
  */
 public class ConditionPlayerBaseStats extends Condition
 {
@@ -28,6 +29,13 @@ public class ConditionPlayerBaseStats extends Condition
 	private final BaseStat _stat;
 	private final int _value;
 	
+	/**
+	 * Instantiates a new condition player base stats.
+	 *
+	 * @param player the player
+	 * @param stat the stat
+	 * @param value the value
+	 */
 	public ConditionPlayerBaseStats(L2Character player, BaseStat stat, int value)
 	{
 		super();
@@ -36,7 +44,10 @@ public class ConditionPlayerBaseStats extends Condition
 	}
 	
 	/**
-	 * 
+	 * Test impl.
+	 *
+	 * @param env the env
+	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override

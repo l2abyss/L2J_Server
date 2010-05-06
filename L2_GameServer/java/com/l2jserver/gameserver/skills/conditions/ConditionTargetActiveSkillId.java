@@ -17,24 +17,41 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.skills.Env;
 
+/**
+ * The Class ConditionTargetActiveSkillId.
+ */
 public class ConditionTargetActiveSkillId extends Condition
 {
 	
 	private final int _skillId;
 	private final int _skillLevel;
 	
+	/**
+	 * Instantiates a new condition target active skill id.
+	 *
+	 * @param skillId the skill id
+	 */
 	public ConditionTargetActiveSkillId(int skillId)
 	{
 		_skillId = skillId;
 		_skillLevel = -1;
 	}
 	
+	/**
+	 * Instantiates a new condition target active skill id.
+	 *
+	 * @param skillId the skill id
+	 * @param skillLevel the skill level
+	 */
 	public ConditionTargetActiveSkillId(int skillId, int skillLevel)
 	{
 		_skillId = skillId;
 		_skillLevel = skillLevel;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

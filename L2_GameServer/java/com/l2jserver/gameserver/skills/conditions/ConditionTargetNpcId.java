@@ -21,15 +21,26 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.skills.Env;
 
 
+/**
+ * The Class ConditionTargetNpcId.
+ */
 public class ConditionTargetNpcId extends Condition
 {
 	private final ArrayList<Integer> _npcIds;
 
+	/**
+	 * Instantiates a new condition target npc id.
+	 *
+	 * @param npcIds the npc ids
+	 */
 	public ConditionTargetNpcId(ArrayList<Integer> npcIds)
 	{
 		_npcIds = npcIds;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

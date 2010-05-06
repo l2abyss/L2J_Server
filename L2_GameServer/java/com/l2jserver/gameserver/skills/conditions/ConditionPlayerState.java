@@ -19,6 +19,8 @@ import com.l2jserver.gameserver.model.base.PlayerState;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
+ * The Class ConditionPlayerState.
+ *
  * @author mkizub
  */
 public class ConditionPlayerState extends Condition
@@ -27,12 +29,21 @@ public class ConditionPlayerState extends Condition
 	private final PlayerState _check;
 	private final boolean _required;
 	
+	/**
+	 * Instantiates a new condition player state.
+	 *
+	 * @param check the check
+	 * @param required the required
+	 */
 	public ConditionPlayerState(PlayerState check, boolean required)
 	{
 		_check = check;
 		_required = required;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

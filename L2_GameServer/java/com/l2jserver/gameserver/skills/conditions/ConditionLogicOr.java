@@ -17,8 +17,9 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
- * @author mkizub
+ * The Class ConditionLogicOr.
  *
+ * @author mkizub
  */
 public class ConditionLogicOr extends Condition
 {
@@ -26,6 +27,11 @@ public class ConditionLogicOr extends Condition
 	private static Condition[] _emptyConditions = new Condition[0];
 	public Condition[] conditions = _emptyConditions;
 	
+	/**
+	 * Adds the.
+	 *
+	 * @param condition the condition
+	 */
 	public void add(Condition condition)
 	{
 		if (condition == null)
@@ -40,7 +46,9 @@ public class ConditionLogicOr extends Condition
 	}
 	
 	/**
-	 * 
+	 * Sets the listener.
+	 *
+	 * @param listener the new listener
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#setListener(com.l2jserver.gameserver.skills.conditions.ConditionListener)
 	 */
 	@Override
@@ -60,7 +68,10 @@ public class ConditionLogicOr extends Condition
 	}
 	
 	/**
-	 * 
+	 * Test impl.
+	 *
+	 * @param env the env
+	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override

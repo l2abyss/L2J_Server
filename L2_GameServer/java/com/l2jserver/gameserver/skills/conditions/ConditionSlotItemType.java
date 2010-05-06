@@ -20,6 +20,8 @@ import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
+ * The Class ConditionSlotItemType.
+ *
  * @author mkizub
  */
 public final class ConditionSlotItemType extends ConditionInventory
@@ -27,12 +29,21 @@ public final class ConditionSlotItemType extends ConditionInventory
 	
 	private final int _mask;
 	
+	/**
+	 * Instantiates a new condition slot item type.
+	 *
+	 * @param slot the slot
+	 * @param mask the mask
+	 */
 	public ConditionSlotItemType(int slot, int mask)
 	{
 		super(slot);
 		_mask = mask;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.ConditionInventory#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

@@ -18,21 +18,30 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
- * @author MrPoke
+ * The Class ConditionPlayerPledgeClass.
  *
+ * @author MrPoke
  */
 public final class ConditionPlayerPledgeClass extends Condition
 {
 	
 	private final int _pledgeClass;
 	
+	/**
+	 * Instantiates a new condition player pledge class.
+	 *
+	 * @param pledgeClass the pledge class
+	 */
 	public ConditionPlayerPledgeClass(int pledgeClass)
 	{
 		_pledgeClass = pledgeClass;
 	}
 	
 	/**
-	 * 
+	 * Test impl.
+	 *
+	 * @param env the env
+	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override

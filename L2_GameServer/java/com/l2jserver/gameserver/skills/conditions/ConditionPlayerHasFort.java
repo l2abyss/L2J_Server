@@ -19,21 +19,30 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
- * @author MrPoke
+ * The Class ConditionPlayerHasFort.
  *
+ * @author MrPoke
  */
 public final class ConditionPlayerHasFort extends Condition
 {
 	
 	private final int _fort;
 	
+	/**
+	 * Instantiates a new condition player has fort.
+	 *
+	 * @param fort the fort
+	 */
 	public ConditionPlayerHasFort(int fort)
 	{
 		_fort = fort;
 	}
 	
 	/**
-	 * 
+	 * Test impl.
+	 *
+	 * @param env the env
+	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override

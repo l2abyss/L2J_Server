@@ -17,17 +17,27 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
+ * The Class ConditionPlayerLevel.
+ *
  * @author mkizub
  */
 public class ConditionPlayerLevel extends Condition
 {
 	private final int _level;
 	
+	/**
+	 * Instantiates a new condition player level.
+	 *
+	 * @param level the level
+	 */
 	public ConditionPlayerLevel(int level)
 	{
 		_level = level;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

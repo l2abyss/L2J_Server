@@ -21,6 +21,8 @@ import com.l2jserver.gameserver.skills.Env;
 
 
 /**
+ * The Class ConditionTargetRaceId.
+ *
  * @author nBd
  */
 
@@ -28,11 +30,19 @@ public class ConditionTargetRaceId extends Condition
 {
 	private final ArrayList<Integer> _raceIds;
 	
+	/**
+	 * Instantiates a new condition target race id.
+	 *
+	 * @param raceId the race id
+	 */
 	public ConditionTargetRaceId(ArrayList<Integer> raceId)
 	{
 		_raceIds = raceId;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

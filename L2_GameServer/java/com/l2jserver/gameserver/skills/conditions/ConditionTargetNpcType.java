@@ -17,15 +17,26 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.skills.Env;
 
 
+/**
+ * The Class ConditionTargetNpcType.
+ */
 public class ConditionTargetNpcType extends Condition {
 
 	private final String[] _npcType;
 
+	/**
+	 * Instantiates a new condition target npc type.
+	 *
+	 * @param type the type
+	 */
 	public ConditionTargetNpcType(String[] type)
 	{
 		_npcType = type;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env) {
 		if (env.target == null)

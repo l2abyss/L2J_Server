@@ -16,16 +16,27 @@ package com.l2jserver.gameserver.skills.conditions;
 
 import com.l2jserver.gameserver.skills.Env;
 
+/**
+ * The Class ConditionPlayerCp.
+ */
 public class ConditionPlayerCp extends Condition
 {
 
 	private final int _cp;
 
+	/**
+	 * Instantiates a new condition player cp.
+	 *
+	 * @param cp the cp
+	 */
 	public ConditionPlayerCp(int cp)
 	{
 		_cp = cp;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

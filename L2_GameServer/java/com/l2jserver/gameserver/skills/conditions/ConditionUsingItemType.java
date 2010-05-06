@@ -22,17 +22,27 @@ import com.l2jserver.gameserver.templates.item.L2ArmorType;
 import com.l2jserver.gameserver.templates.item.L2Item;
 
 /**
+ * The Class ConditionUsingItemType.
+ *
  * @author mkizub
  */
 public final class ConditionUsingItemType extends Condition
 {
 	private final int _mask;
 	
+	/**
+	 * Instantiates a new condition using item type.
+	 *
+	 * @param mask the mask
+	 */
 	public ConditionUsingItemType(int mask)
 	{
 		_mask = mask;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
+	 */
 	@Override
 	public boolean testImpl(Env env)
 	{
