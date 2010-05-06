@@ -27,23 +27,10 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class L2ArenaZone extends L2SpawnZone
 {
-	@SuppressWarnings("unused")
-	private String _arenaName;
 	
 	public L2ArenaZone(int id)
 	{
 		super(id);
-	}
-	
-	@Override
-	public void setParameter(String name, String value)
-	{
-		if (name.equals("name"))
-		{
-			_arenaName = value;
-		}
-		else
-			super.setParameter(name, value);
 	}
 	
 	@Override
