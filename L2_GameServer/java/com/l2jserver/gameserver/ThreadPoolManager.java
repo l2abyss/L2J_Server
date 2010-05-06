@@ -291,9 +291,6 @@ public class ThreadPoolManager
 			_group = new ThreadGroup(_name);
 		}
 		
-		/* (non-Javadoc)
-		 * @see java.util.concurrent.ThreadFactory#newThread(java.lang.Runnable)
-		 */
 		public Thread newThread(Runnable r)
 		{
 			Thread t = new Thread(_group, r);
@@ -308,9 +305,6 @@ public class ThreadPoolManager
 		}
 	}
 	
-	/**
-	 *
-	 */
 	public void shutdown()
 	{
 		_shutdown = true;
@@ -331,7 +325,6 @@ public class ThreadPoolManager
 		}
 		catch (InterruptedException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -341,9 +334,6 @@ public class ThreadPoolManager
 		return _shutdown;
 	}
 	
-	/**
-	 *
-	 */
 	public void purge()
 	{
 		_effectsScheduledThreadPool.purge();
@@ -354,9 +344,6 @@ public class ThreadPoolManager
 		_generalThreadPool.purge();
 	}
 	
-	/**
-	 *
-	 */
 	public String getPacketStats()
 	{
 		final StringBuilder sb = new StringBuilder(1000);

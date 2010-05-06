@@ -363,13 +363,9 @@ public class ClanBBSManager extends BaseBBSManager
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.communitybbs.Manager.BaseBBSManager#parsewrite(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, com.l2jserver.gameserver.model.actor.instance.L2PcInstance)
-	 */
 	@Override
 	public void parsewrite(String ar1, String ar2, String ar3, String ar4, String ar5, L2PcInstance activeChar)
 	{
-		// TODO Auto-generated method stub
 		if (ar1.equals("Set"))
 		{
 			activeChar.getClan().setNotice(ar4);

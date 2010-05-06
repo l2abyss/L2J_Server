@@ -19,43 +19,37 @@ import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.GetOffVehicle;
 
-
 /**
  * @author Maktakien
- *
  */
 public final class RequestGetOffVehicle extends L2GameClientPacket
 {
-	 private int _id, _x, _y, _z;
-
+	private int _id, _x, _y, _z;
+	
 	@Override
 	protected void readImpl()
 	{
-		_id  = readD();
-		_x  = readD();
-		_y  = readD();
-		_z  = readD();
+		_id = readD();
+		_x = readD();
+		_y = readD();
+		_z = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
-		if(activeChar == null)
+		if (activeChar == null)
 			return;
-        L2BoatInstance boat = BoatManager.getInstance().getBoat(_id);
-        GetOffVehicle Gon = new GetOffVehicle(activeChar,boat,_x,_y,_z);
-        activeChar.broadcastPacket(Gon);
+		L2BoatInstance boat = BoatManager.getInstance().getBoat(_id);
+		GetOffVehicle Gon = new GetOffVehicle(activeChar, boat, _x, _y, _z);
+		activeChar.broadcastPacket(Gon);
 	}
-
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
+	
 	@Override
 	public String getType()
 	{
-		// TODO Auto-generated method stub
 		return "[S] 5d GetOffVehicle";
 	}
-
+	
 }

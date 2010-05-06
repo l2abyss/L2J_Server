@@ -32,7 +32,6 @@ import com.l2jserver.gameserver.skills.Formulas;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
 
-
 public class L2SkillChargeDmg extends L2Skill
 {
 	private static final Logger _logDamage = Logger.getLogger("damage");

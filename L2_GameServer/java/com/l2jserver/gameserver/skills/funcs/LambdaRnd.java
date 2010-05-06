@@ -19,11 +19,9 @@ import com.l2jserver.util.Rnd;
 
 /**
  * @author mkizub
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
-public final class LambdaRnd extends Lambda {
+public final class LambdaRnd extends Lambda
+{
 
 	private final Lambda _max;
 	private final boolean _linear;

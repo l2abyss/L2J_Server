@@ -94,8 +94,8 @@ public final class RequestBypassToServer extends L2GameClientPacket
 
 				if (!AdminCommandAccessRights.getInstance().hasAccess(command, activeChar.getAccessLevel()))
 				{
-					activeChar.sendMessage("You don't have the access right to use this command!");
-					_log.warning("Character " + activeChar.getName() + " tryed to use admin command " + command + ", but have no access to it!");
+					activeChar.sendMessage("You don't have the access rights to use this command!");
+					_log.warning("Character " + activeChar.getName() + " tried to use admin command " + command + ", without proper access level!");
 					return;
 				}
 				if (Config.GMAUDIT)

@@ -16,14 +16,11 @@ package com.l2jserver.gameserver.skills.funcs;
 
 import com.l2jserver.gameserver.skills.Env;
 
-
 /**
  * @author mkizub
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
-public final class LambdaStats extends Lambda {
+public final class LambdaStats extends Lambda
+{
 
 	public enum StatsType
 	{

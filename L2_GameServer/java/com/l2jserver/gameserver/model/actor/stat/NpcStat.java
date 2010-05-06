@@ -19,17 +19,9 @@ import com.l2jserver.gameserver.skills.Stats;
 
 public class NpcStat extends CharStat
 {
-    // =========================================================
-    // Data Field
-
-    // =========================================================
-    // Constructor
     public NpcStat(L2Npc activeChar)
     {
         super(activeChar);
-
-        //TODO: Since this class is now init BEFORE the Npc is fully init, we can not do this here. Overwritten getLevel() is a temp solution.  
-        //setLevel(getActiveChar().getTemplate().level);
     }
 
     @Override
@@ -38,14 +30,6 @@ public class NpcStat extends CharStat
     	return getActiveChar().getTemplate().level;
     }
     
-    // =========================================================
-    // Method - Public
-
-    // =========================================================
-    // Method - Private
-
-    // =========================================================
-    // Property - Public
     @Override
 	public L2Npc getActiveChar() { return (L2Npc)super.getActiveChar(); }
 

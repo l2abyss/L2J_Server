@@ -47,9 +47,6 @@ public class VehicleDeparture extends L2GameServerPacket
 		_z = z;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected
 	void writeImpl()
@@ -64,13 +61,9 @@ public class VehicleDeparture extends L2GameServerPacket
 
 	}
 
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		// TODO Auto-generated method stub
 		return "[S] 5A VehicleDeparture";
 	}
 

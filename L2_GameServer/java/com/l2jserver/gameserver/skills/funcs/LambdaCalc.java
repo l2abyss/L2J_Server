@@ -18,11 +18,9 @@ import com.l2jserver.gameserver.skills.Env;
 
 /**
  * @author mkizub
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
-public final class LambdaCalc extends Lambda {
+public final class LambdaCalc extends Lambda
+{
 
 	public Func[] funcs;
 	public LambdaCalc()

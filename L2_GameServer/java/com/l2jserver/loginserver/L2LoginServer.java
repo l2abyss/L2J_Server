@@ -84,7 +84,6 @@ public class L2LoginServer
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		finally

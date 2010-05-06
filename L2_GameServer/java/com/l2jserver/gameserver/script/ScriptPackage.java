@@ -24,9 +24,6 @@ import javolution.util.FastList;
 
 /**
  * @author Luis Arias
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class ScriptPackage
 {
@@ -68,11 +65,13 @@ public class ScriptPackage
             ZipEntry entry = e.nextElement();
             if (entry.getName().endsWith(".xml"))
             {
-                try {
+                try
+                {
                     ScriptDocument newScript = new ScriptDocument(entry.getName(), pack.getInputStream(entry));
                     _scriptFiles.add(newScript);
-                } catch (IOException e1) {
-                    // TODO Auto-generated catch block
+                }
+                catch (IOException e1)
+                {
                     e1.printStackTrace();
                 }
             }

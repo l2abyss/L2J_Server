@@ -243,25 +243,16 @@ public class L2SkillSummon extends L2Skill
 		return _isCubic;
 	}
 
-	/**
-	 * @return Returns the itemConsume count over time.
-	 */
 	public final int getTotalLifeTime()
 	{
 		return _summonTotalLifeTime;
 	}
 
-	/**
-	 * @return Returns the itemConsume count over time.
-	 */
 	public final int getTimeLostIdle()
 	{
 		return _summonTimeLostIdle;
 	}
 
-	/**
-	 * @return Returns the itemConsumeId over time.
-	 */
 	public final int getTimeLostActive()
 	{
 		return _summonTimeLostActive;
@@ -283,9 +274,6 @@ public class L2SkillSummon extends L2Skill
 		return _itemConsumeIdOT;
 	}
 
-	/**
-	 * @return Returns the itemConsume count over time.
-	 */
 	public final int getItemConsumeSteps()
 	{
 		return _itemConsumeSteps;

@@ -18,10 +18,8 @@ import com.l2jserver.gameserver.skills.Env;
 
 /**
  * @author mkizub
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
-public abstract class Lambda {
+public abstract class Lambda
+{
 	public abstract double calc(Env env);
 }

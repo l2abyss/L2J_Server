@@ -21,9 +21,6 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
 
 /**
  * @author mkizub
- * 
- *         TODO To change the template for this generated type comment go to
- *         Window - Preferences - Java - Code Style - Code Templates
  */
 public class EffectStun extends L2Effect
 {

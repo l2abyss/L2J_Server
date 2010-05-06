@@ -21,9 +21,6 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
 
 /**
  * @author mkizub
- * 
- *         TODO To change the template for this generated type comment go to
- *         Window - Preferences - Java - Code Style - Code Templates
  */
 public class EffectRoot extends L2Effect
 {
@@ -32,20 +29,12 @@ public class EffectRoot extends L2Effect
 		super(env, template);
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectType()
-	 */
 	@Override
 	public L2EffectType getEffectType()
 	{
 		return L2EffectType.ROOT;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Effect#onStart()
-	 */
 	@Override
 	public boolean onStart()
 	{
@@ -53,20 +42,12 @@ public class EffectRoot extends L2Effect
 		return true;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Effect#onExit()
-	 */
 	@Override
 	public void onExit()
 	{
 		getEffected().stopRooting(this);
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Effect#onActionTime()
-	 */
 	@Override
 	public boolean onActionTime()
 	{

@@ -18,11 +18,9 @@ import com.l2jserver.gameserver.skills.Env;
 
 /**
  * @author mkizub
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
-public final class LambdaConst extends Lambda {
+public final class LambdaConst extends Lambda
+{
 
 	private final double _value;
 	public LambdaConst(double value)

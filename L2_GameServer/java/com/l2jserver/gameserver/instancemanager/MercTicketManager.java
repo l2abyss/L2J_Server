@@ -115,16 +115,12 @@ public class MercTicketManager
 	
 	private static final int GUARDIAN_TYPES_COUNT = 52;
 	
-	// =========================================================
-	// Constructor
 	private MercTicketManager()
 	{
 		_log.info("Initializing MercTicketManager");
 		load();
 	}
 	
-	// =========================================================
-	// Method - Public
 	// returns the castleId for the passed ticket item id
 	public int getTicketCastleId(int itemId)
 	{
@@ -146,8 +142,6 @@ public class MercTicketManager
 		load();
 	}
 	
-	// =========================================================
-	// Method - Private
 	private final void load()
 	{
 		Connection con = null;
@@ -191,7 +185,6 @@ public class MercTicketManager
 					if (NPC_IDS[i] == npcId) // Find the index of the item used
 					{
 						// only handle tickets if a siege is not ongoing in this npc's castle
-						
 						if ((castle != null) && !(castle.getSiege().getIsInProgress()))
 						{
 							itemId = ITEM_IDS[i];
@@ -227,8 +220,6 @@ public class MercTicketManager
 		}
 	}
 	
-	// =========================================================
-	// Property - Public
 	/**
 	 * Checks if the passed item has reached the limit of number of dropped
 	 * tickets that this SPECIFIC item may have in its castle
@@ -326,7 +317,7 @@ public class MercTicketManager
 			{
 				spawnMercenary(NPC_IDS[i], x, y, z, 3000, messages, 0);
 				
-				// Hire merc for this caslte.  NpcId is at the same index as the item used.
+				// Hire merc for this castle.  NpcId is at the same index as the item used.
 				castle.getSiege().getSiegeGuardManager().hireMerc(x, y, z, heading, NPC_IDS[i]);
 				
 				// create the ticket in the gameworld

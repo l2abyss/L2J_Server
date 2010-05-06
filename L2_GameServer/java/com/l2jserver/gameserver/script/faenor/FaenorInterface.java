@@ -36,9 +36,6 @@ import javolution.util.FastList;
 
 /**
  * @author Luis Arias
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class FaenorInterface implements EngineInterface
 {
@@ -53,12 +50,8 @@ public class FaenorInterface implements EngineInterface
 	{
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.script.EngineInterface#getAllPlayers()
-	 */
 	public List<?> getAllPlayers()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
@@ -150,9 +143,6 @@ public class FaenorInterface implements EngineInterface
 		npc.addDropData(drop, category);
 	}
 	
-	/**
-	 * @return Returns the _questDrops.
-	 */
 	public List<L2DropData> getQuestDrops(int npcID)
 	{
 		L2NpcTemplate npc = npcTable.getTemplate(npcID);

@@ -131,7 +131,6 @@ public class IDFactoryTest extends TestCase
 		}
 		catch (InterruptedException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("Free ID's: "+_idFactory.size());

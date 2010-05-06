@@ -27,33 +27,25 @@ public final class RequestWithdrawPartyRoom extends L2GameClientPacket
 	private static final String _C__D0_02_REQUESTWITHDRAWPARTYROOM = "[C] D0:02 RequestWithdrawPartyRoom";
 	private int _data1;
 	private int _data2;
-
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_data1 = readD();
 		_data2 = readD();
 	}
-
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
+	
 	@Override
 	protected void runImpl()
 	{
-		// TODO Auto-generated method stub
 		_log.info("This packet is not well known : RequestWithdrawPartyRoom");
-		_log.info("Data received: d:"+_data1+" d:"+_data2);
+		_log.info("Data received: d:" + _data1 + " d:" + _data2);
 	}
-
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
+	
 	@Override
 	public String getType()
 	{
 		return _C__D0_02_REQUESTWITHDRAWPARTYROOM;
 	}
-
+	
 }

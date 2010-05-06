@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
-
 public class L2SkillTeleport extends L2Skill
 {
 	private final String _recallType;

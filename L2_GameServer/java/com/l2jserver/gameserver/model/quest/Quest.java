@@ -1696,27 +1696,18 @@ public class Quest extends ManagedScript
 		return questItemIds;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.scripting.ManagedScript#getScriptName()
-	 */
 	@Override
 	public String getScriptName()
 	{
 		return this.getName();
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.scripting.ManagedScript#setActive(boolean)
-	 */
 	@Override
 	public void setActive(boolean status)
 	{
 		// TODO implement me
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.scripting.ManagedScript#reload()
-	 */
 	@Override
 	public boolean reload()
 	{
@@ -1724,9 +1715,6 @@ public class Quest extends ManagedScript
 		return super.reload();
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.scripting.ManagedScript#unload()
-	 */
 	@Override
 	public boolean unload()
 	{
@@ -1750,9 +1738,6 @@ public class Quest extends ManagedScript
 			return true;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.scripting.ManagedScript#getScriptManager()
-	 */
 	@Override
 	public ScriptManager<?> getScriptManager()
 	{

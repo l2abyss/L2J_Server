@@ -21,15 +21,11 @@ import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.skills.conditions.Condition;
 
-
 /**
  * @author mkizub
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
-public final class FuncTemplate {
-
+public final class FuncTemplate
+{
 	public Condition attachCond;
 	public Condition applayCond;
 	public final Class<?> func;
@@ -37,7 +33,7 @@ public final class FuncTemplate {
 	public final Stats stat;
 	public final int order;
 	public final Lambda lambda;
-
+	
 	public FuncTemplate(Condition pAttachCond, Condition pApplayCond, String pFunc, Stats pStat, int pOrder, Lambda pLambda)
 	{
 		attachCond = pAttachCond;
@@ -45,43 +41,57 @@ public final class FuncTemplate {
 		stat = pStat;
 		order = pOrder;
 		lambda = pLambda;
-		try {
-			func = Class.forName("com.l2jserver.gameserver.skills.funcs.Func"+pFunc);
-		} catch (ClassNotFoundException e) {
+		try
+		{
+			func = Class.forName("com.l2jserver.gameserver.skills.funcs.Func" + pFunc);
+		}
+		catch (ClassNotFoundException e)
+		{
 			throw new RuntimeException(e);
 		}
-		try {
+		try
+		{
 			constructor = func.getConstructor(
-				new Class[]{
+				new Class[]
+				{
 						Stats.class, // stats to update
 						Integer.TYPE, // order of execution
 						Object.class, // owner
 						Lambda.class // value for function
 				});
-		} catch (NoSuchMethodException e) {
+		}
+		catch (NoSuchMethodException e)
+		{
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	public Func getFunc(Env env, Object owner)
 	{
 		if (attachCond != null && !attachCond.test(env))
 			return null;
-		try {
-			Func f = (Func)constructor.newInstance(stat, order, owner, lambda);
+		try
+		{
+			Func f = (Func) constructor.newInstance(stat, order, owner, lambda);
 			if (applayCond != null)
 				f.setCondition(applayCond);
 			return f;
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			return null;
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-			return null;
-		} catch (InvocationTargetException e) {
+		}
+		catch (IllegalAccessException e)
+		{
 			e.printStackTrace();
 			return null;
 		}
-
+		catch (InstantiationException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		catch (InvocationTargetException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 }

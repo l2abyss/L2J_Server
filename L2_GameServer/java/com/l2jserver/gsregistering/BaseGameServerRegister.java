@@ -38,9 +38,7 @@ import com.l2jserver.i18n.LanguageControl;
 import com.l2jserver.loginserver.GameServerTable;
 import com.l2jserver.util.Util;
 
-
 /**
- *
  * @author KenM
  */
 public abstract class BaseGameServerRegister

@@ -255,7 +255,6 @@ public class L2DatabaseFactory
 			}
 			catch (SQLException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			

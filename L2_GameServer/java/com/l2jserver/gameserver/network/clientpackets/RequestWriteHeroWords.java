@@ -13,6 +13,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
+
 /**
  * Format chS
  * c (id) 0xD0
@@ -26,7 +27,7 @@ public final class RequestWriteHeroWords extends L2GameClientPacket
 	private static final String _C__FE_0C_REQUESTWRITEHEROWORDS = "[C] D0:0C RequestWriteHeroWords";
 	@SuppressWarnings("unused")
 	private String _heroWords;
-
+	
 	/**
 	 * @param buf
 	 * @param client
@@ -36,24 +37,16 @@ public final class RequestWriteHeroWords extends L2GameClientPacket
 	{
 		_heroWords = readS();
 	}
-
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
+	
 	@Override
 	protected void runImpl()
 	{
-		// TODO Auto-generated method stub
-
 	}
-
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
+	
 	@Override
 	public String getType()
 	{
 		return _C__FE_0C_REQUESTWRITEHEROWORDS;
 	}
-
+	
 }

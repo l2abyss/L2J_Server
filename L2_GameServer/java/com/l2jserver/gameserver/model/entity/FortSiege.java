@@ -1303,34 +1303,22 @@ public class FortSiege implements Siegable
 	{
 		return _commanders;
 	}
-
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClan(int)
-	 */
+	
 	@Override
 	public L2SiegeClan getDefenderClan(int clanId)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
-
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClan(com.l2jserver.gameserver.model.L2Clan)
-	 */
+	
 	@Override
 	public L2SiegeClan getDefenderClan(L2Clan clan)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
-
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClans()
-	 */
+	
 	@Override
 	public List<L2SiegeClan> getDefenderClans()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

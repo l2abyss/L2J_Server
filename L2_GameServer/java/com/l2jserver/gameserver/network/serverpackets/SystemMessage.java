@@ -27,12 +27,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.item.L2Item;
 
-
-/**
- * This class ...
- *
- * @version $Revision: 1.18.2.5.2.8 $ $Date: 2005/04/05 19:41:08 $
- */
 public final class SystemMessage extends L2GameServerPacket
 {
 	// d d (d S/d d/d dd)
@@ -250,9 +244,6 @@ public final class SystemMessage extends L2GameServerPacket
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

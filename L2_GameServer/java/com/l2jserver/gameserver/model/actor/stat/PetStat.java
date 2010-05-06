@@ -27,27 +27,15 @@ import com.l2jserver.gameserver.skills.Stats;
 
 public class PetStat extends SummonStat
 {
-    // =========================================================
-    // Data Field
-
-    // =========================================================
-    // Constructor
     public PetStat(L2PetInstance activeChar)
     {
         super(activeChar);
     }
-
-    // =========================================================
-    // Method - Public
+    
     public boolean addExp(int value)
     {
         if (!super.addExp(value)) return false;
 
-		/* Micht : Use of PetInfo for C5
-        StatusUpdate su = new StatusUpdate(getActiveChar().getObjectId());
-        su.addAttribute(StatusUpdate.EXP, getExp());
-        getActiveChar().broadcastPacket(su);
-        */
         getActiveChar().updateAndBroadcastStatus(1);
         // The PetInfo packet wipes the PartySpelled (list of active  spells' icons).  Re-add them
         getActiveChar().updateEffectIcons(true);
@@ -109,12 +97,7 @@ public class PetStat extends SummonStat
     		return 5000000L*level; // temp value calculated from lvl 81 wyvern, 395734658
     	}
     }
-
-    // =========================================================
-    // Method - Private
-
-    // =========================================================
-    // Property - Public
+    
     @Override
 	public L2PetInstance getActiveChar() { return (L2PetInstance)super.getActiveChar(); }
 

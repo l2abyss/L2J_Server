@@ -131,13 +131,11 @@ public class Topic
 	 */
 	public String getName()
 	{
-		// TODO Auto-generated method stub
 		return _topicName;
 	}
 	
 	public String getOwnerName()
 	{
-		// TODO Auto-generated method stub
 		return _ownerName;
 	}
 	

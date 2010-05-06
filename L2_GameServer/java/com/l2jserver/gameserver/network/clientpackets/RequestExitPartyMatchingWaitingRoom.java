@@ -24,32 +24,25 @@ import java.util.logging.Logger;
  */
 public final class RequestExitPartyMatchingWaitingRoom extends L2GameClientPacket
 {
-    protected static final Logger _log = Logger.getLogger(RequestExitPartyMatchingWaitingRoom.class.getName());
-    private static final String _C__D0_17_REQUESTEXITPARTYMATCHINGWAITINGROOM = "[C] D0:17 RequestExitPartyMatchingWaitingRoom";
-
-    @Override
+	protected static final Logger _log = Logger.getLogger(RequestExitPartyMatchingWaitingRoom.class.getName());
+	private static final String _C__D0_17_REQUESTEXITPARTYMATCHINGWAITINGROOM = "[C] D0:17 RequestExitPartyMatchingWaitingRoom";
+	
+	@Override
 	protected void readImpl()
-    {
-    	//trigger
-    }
-
-    /**
-     * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-     */
-    @Override
+	{
+		//trigger
+	}
+	
+	@Override
 	protected void runImpl()
-    {
-        // TODO
-        _log.info("C5: RequestExitPartyMatchingWaitingRoom");
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.BasePacket#getType()
-     */
-    @Override
-    public String getType()
-    {
-        return _C__D0_17_REQUESTEXITPARTYMATCHINGWAITINGROOM;
-    }
-
+	{
+		_log.info("C5: RequestExitPartyMatchingWaitingRoom");
+	}
+	
+	@Override
+	public String getType()
+	{
+		return _C__D0_17_REQUESTEXITPARTYMATCHINGWAITINGROOM;
+	}
+	
 }

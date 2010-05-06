@@ -28,20 +28,12 @@ public class EffectGrow extends L2Effect
 		super(env, template);
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectType()
-	 */
 	@Override
 	public L2EffectType getEffectType()
 	{
 		return L2EffectType.BUFF;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Effect#onStart()
-	 */
 	@Override
 	public boolean onStart()
 	{
@@ -58,20 +50,12 @@ public class EffectGrow extends L2Effect
 		return false;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Effect#onActionTime()
-	 */
 	@Override
 	public boolean onActionTime()
 	{
 		return false;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Effect#onExit()
-	 */
 	@Override
 	public void onExit()
 	{

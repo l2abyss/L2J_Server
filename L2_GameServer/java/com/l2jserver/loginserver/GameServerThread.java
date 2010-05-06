@@ -486,10 +486,6 @@ public class GameServerThread extends Thread
 		}
 	}
 
-	/**
-	 *
-	 * @param gameServerauth
-	 */
 	/*private void handleRegisterationProcess(GameServerAuth gameServerauth)
 	{
 		try
@@ -593,7 +589,6 @@ public class GameServerThread extends Thread
 	 */
 	public static boolean isBannedGameserverIP(String ipAddress)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 

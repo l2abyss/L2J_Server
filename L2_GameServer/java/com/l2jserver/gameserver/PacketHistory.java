@@ -37,9 +37,6 @@ class PacketHistory
 
     protected static final XMLFormat<PacketHistory> PACKET_HISTORY_XML = new XMLFormat<PacketHistory>(PacketHistory.class)
     {
-        /**
-		 * @see javolution.xml.XMLFormat#read(javolution.xml.XMLFormat.InputElement, java.lang.Object)
-		 */
 		@Override
 		public void read(InputElement xml, PacketHistory packetHistory) throws XMLStreamException
 		{
@@ -47,13 +44,9 @@ class PacketHistory
 			packetHistory._info = xml.<Map<Class<?>, Long>> get("info");
 		}
 
-		/**
-		 * @see javolution.xml.XMLFormat#write(java.lang.Object, javolution.xml.XMLFormat.OutputElement)
-		 */
 		@Override
 		public void write(PacketHistory packetHistory, OutputElement xml) throws XMLStreamException
 		{
-			// TODO Auto-generated method stub
 			xml.setAttribute("time-stamp", new Date(packetHistory._timeStamp).toString());
 
 			for (Class<?> cls : packetHistory._info.keySet())

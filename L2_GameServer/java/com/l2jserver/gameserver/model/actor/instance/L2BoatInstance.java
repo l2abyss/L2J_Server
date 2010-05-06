@@ -818,87 +818,44 @@ public class L2BoatInstance extends L2Character
 		_t2 = new L2BoatTrajet(idWaypoint1, idWTicket1, ntx1, nty1, ntz1, idnpc1, sysmess10_1, sysmess5_1, sysmess1_1, sysmess0_1, sysmessb_1, _name);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Character#updateAbnormalEffect()
-	 */
 	@Override
 	public void updateAbnormalEffect()
 	{
-		// TODO Auto-generated method stub
-		
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Character#getActiveWeaponInstance()
-	 */
 	@Override
 	public L2ItemInstance getActiveWeaponInstance()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Character#getActiveWeaponItem()
-	 */
 	@Override
 	public L2Weapon getActiveWeaponItem()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Character#getSecondaryWeaponInstance()
-	 */
 	@Override
 	public L2ItemInstance getSecondaryWeaponInstance()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Character#getSecondaryWeaponItem()
-	 */
 	@Override
 	public L2Weapon getSecondaryWeaponItem()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Character#getLevel()
-	 */
 	@Override
 	public int getLevel()
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Object#isAutoAttackable(com.l2jserver.gameserver.model.L2Character)
-	 */
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 	

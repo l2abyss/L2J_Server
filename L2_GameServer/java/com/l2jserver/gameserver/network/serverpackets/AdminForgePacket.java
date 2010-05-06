@@ -71,7 +71,6 @@ public class AdminForgePacket extends L2GameServerPacket
 	 */
 	public boolean generate(byte b, String string)
 	{
-		// TODO Auto-generated method stub
 		if((b == 'C')||(b == 'c'))
 		{
 			writeC(Integer.decode(string));

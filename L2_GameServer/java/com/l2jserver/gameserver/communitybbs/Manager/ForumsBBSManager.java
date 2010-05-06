@@ -96,14 +96,9 @@ public class ForumsBBSManager extends BaseBBSManager
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.communitybbs.Manager.BaseBBSManager#parsecmd(java.lang.String, com.l2jserver.gameserver.model.actor.instance.L2PcInstance)
-	 */
 	@Override
 	public void parsecmd(String command, L2PcInstance activeChar)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 	
 	/**
@@ -132,7 +127,6 @@ public class ForumsBBSManager extends BaseBBSManager
 	{
 		Forum forum = new Forum(name, parent, type, perm, oid);
 		forum.insertIntoDb();
-		//addForum(forum); // not needed to addForum(Forum) because already called in new Forum(String, Forum, int, int, int)
 		return forum;
 	}
 	
@@ -160,14 +154,9 @@ public class ForumsBBSManager extends BaseBBSManager
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.communitybbs.Manager.BaseBBSManager#parsewrite(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, com.l2jserver.gameserver.model.actor.instance.L2PcInstance)
-	 */
 	@Override
 	public void parsewrite(String ar1, String ar2, String ar3, String ar4, String ar5, L2PcInstance activeChar)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 	
 	@SuppressWarnings("synthetic-access")

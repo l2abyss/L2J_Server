@@ -31,18 +31,12 @@ import com.l2jserver.gameserver.network.communityserver.writepackets.WorldInfo;
 public class PlayableStat extends CharStat
 {
     protected static final Logger _log = Logger.getLogger(PlayableStat.class.getName());
-    // =========================================================
-    // Data Field
 
-    // =========================================================
-    // Constructor
     public PlayableStat(L2Playable activeChar)
     {
         super(activeChar);
     }
-
-    // =========================================================
-    // Method - Public
+    
     public boolean addExp(long value)
     {
 		if ((getExp() + value) < 0 || (value > 0 && getExp() == (getExpForLevel(Experience.MAX_LEVEL) - 1)))
@@ -196,12 +190,7 @@ public class PlayableStat extends CharStat
 		
 		return val;
     }
-
-    // =========================================================
-    // Method - Private
-
-    // =========================================================
-    // Property - Public
+    
     @Override
 	public L2Playable getActiveChar() { return (L2Playable)super.getActiveChar(); }
 }
