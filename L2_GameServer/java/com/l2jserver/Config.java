@@ -678,6 +678,7 @@ public final class Config
 	public static List<String> L2JMOD_MULTILANG_ALLOWED = new ArrayList<String>();
 	public static String L2JMOD_MULTILANG_DEFAULT;
 	public static boolean L2JMOD_MULTILANG_VOICED_ALLOW;
+	public static boolean L2WALKER_PROTECTION;
 
 	//--------------------------------------------------
 	// NPC Settings
@@ -2250,6 +2251,8 @@ public final class Config
 					if (!L2JMOD_MULTILANG_ALLOWED.contains(L2JMOD_MULTILANG_DEFAULT))
 						_log.warning("MultiLang[Config.load()]: default language: " + L2JMOD_MULTILANG_DEFAULT + " is not in allowed list !");
 					L2JMOD_MULTILANG_VOICED_ALLOW = Boolean.parseBoolean(L2JModSettings.getProperty("MultiLangVoiceCommand", "True"));
+					
+					L2WALKER_PROTECTION = Boolean.parseBoolean(L2JModSettings.getProperty("L2WalkerProtection", "False"));
 				}
 				catch (Exception e)
 				{

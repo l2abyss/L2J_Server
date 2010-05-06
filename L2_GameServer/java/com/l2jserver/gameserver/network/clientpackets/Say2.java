@@ -27,6 +27,7 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.util.Util;
 
 
 /**
@@ -39,7 +40,7 @@ public final class Say2 extends L2GameClientPacket
 	private static final String _C__38_SAY2 = "[C] 38 Say2";
 	private static Logger _log = Logger.getLogger(Say2.class.getName());
 	private static Logger _logChat = Logger.getLogger("chat");
-
+	
 	public final static int ALL = 0;
 	public final static int SHOUT = 1; //!
 	public final static int TELL = 2;
@@ -51,12 +52,18 @@ public final class Say2 extends L2GameClientPacket
 	public final static int TRADE = 8; //+
 	public final static int ALLIANCE = 9; //$
 	public final static int ANNOUNCEMENT = 10;
+	public final static int CUSTOM = 11;
+	public final static int L2FRIEND = 12;
+	public final static int MSNCHAT = 13;
 	public final static int PARTYMATCH_ROOM = 14;
 	public final static int PARTYROOM_COMMANDER = 15; //(Yellow)
 	public final static int PARTYROOM_ALL = 16; //(Red)
 	public final static int HERO_VOICE = 17;
+	public final static int CRITICAL_ANNOUNCE = 18;
+	public final static int SCREEN_ANNOUNCE = 19;
 	public final static int BATTLEFIELD = 20;
-
+	public final static int MPCC_ROOM = 21;
+	
 	private final static String[] CHAT_NAMES =
 	{
 		"ALL",
@@ -70,22 +77,27 @@ public final class Say2 extends L2GameClientPacket
 		"TRADE",
 		"ALLIANCE",
 		"ANNOUNCEMENT", //10
-		"WILLCRASHCLIENT:)",
-		"FAKEALL?",
-		"FAKEALL?",
+		"CUSTOM",
+		"L2FRIEND",
+		"MSNCHAT",
 		"PARTYMATCH_ROOM",
-		"PARTYROOM_ALL",
 		"PARTYROOM_COMMANDER",
+		"PARTYROOM_ALL",
 		"HERO_VOICE",
-		"UNKNOWN",
-		"UNKNOWN",
-		"BATTLEFIELD"
+		"CRITICAL_ANNOUNCE",
+		"SCREEN_ANNOUNCE",
+		"BATTLEFIELD",
+		"MPCC_ROOM"
 	};
-
+	
+	private static final String[] WALKER_COMMAND_LIST = { "USESKILL", "USEITEM", "BUYITEM", "SELLITEM", "SAVEITEM", "LOADITEM", "MSG", "SET", "DELAY", "LABEL", "JMP", "CALL",
+		"RETURN", "MOVETO", "NPCSEL", "NPCDLG", "DLGSEL", "CHARSTATUS", "POSOUTRANGE", "POSINRANGE", "GOHOME", "SAY", "EXIT", "PAUSE", "STRINDLG", "STRNOTINDLG", "CHANGEWAITTYPE",
+		"FORCEATTACK", "ISMEMBER", "REQUESTJOINPARTY", "REQUESTOUTPARTY", "QUITPARTY", "MEMBERSTATUS", "CHARBUFFS", "ITEMCOUNT", "FOLLOWTELEPORT" };
+	
 	private String _text;
 	private int _type;
 	private String _target;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -93,7 +105,7 @@ public final class Say2 extends L2GameClientPacket
 		_type = readD();
 		_target = (_type == TELL) ? readS() : null;
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
@@ -121,6 +133,12 @@ public final class Say2 extends L2GameClientPacket
 		if (_text.length() > 105 && !activeChar.isGM())
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.DONT_SPAM));
+			return;
+		}
+		
+		if (Config.L2WALKER_PROTECTION && _type == TELL && checkBot(_text))
+		{
+			Util.handleIllegalPlayerAction(activeChar, "Client Emulator Detect: Player " + activeChar.getName() + " using l2walker.", Config.DEFAULT_PUNISH);
 			return;
 		}
 
@@ -176,6 +194,16 @@ public final class Say2 extends L2GameClientPacket
 		IChatHandler handler = ChatHandler.getInstance().getChatHandler(_type);
 		if (handler != null)
 			handler.handleChat(_type, activeChar, _target, _text);
+	}
+	
+	private boolean checkBot(String text)
+	{
+		for (String botCommand : WALKER_COMMAND_LIST)
+		{
+			if (text.startsWith(botCommand))
+				return true;
+		}
+		return false;
 	}
 	
 	private void checkText()
