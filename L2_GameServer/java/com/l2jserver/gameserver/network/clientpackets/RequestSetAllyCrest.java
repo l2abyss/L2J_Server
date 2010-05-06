@@ -14,13 +14,9 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.cache.CrestCache;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
@@ -77,7 +73,6 @@ public final class RequestSetAllyCrest extends L2GameClientPacket
 				return;
 			}
 			
-			CrestCache crestCache = CrestCache.getInstance();
 			boolean remove = false;
 			if (_length == 0 || _data.length == 0)
 				remove = true;
@@ -86,52 +81,13 @@ public final class RequestSetAllyCrest extends L2GameClientPacket
 			if (!remove)
 				newId = IdFactory.getInstance().getNextId();
 			
-			if (leaderclan.getAllyCrestId() != 0)
-			{
-				crestCache.removeAllyCrest(leaderclan.getAllyCrestId());
-			}
-			
-			if (!remove && !crestCache.saveAllyCrest(newId, _data))
+			if (!remove && !CrestCache.getInstance().saveAllyCrest(newId, _data))
 			{
 				_log.log(Level.INFO, "Error saving crest for ally " + leaderclan.getAllyName() + " [" + leaderclan.getAllyId() + "]");
 				return;
 			}
 			
-			Connection con = null;
-			
-			try
-			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("UPDATE clan_data SET ally_crest_id = ? WHERE ally_id = ?");
-				statement.setInt(1, newId);
-				statement.setInt(2, leaderclan.getAllyId());
-				statement.executeUpdate();
-				statement.close();
-			}
-			catch (SQLException e)
-			{
-				_log.warning("Could not update ally crest for ally " + leaderclan.getAllyName() + " [" + leaderclan.getAllyId() + "] : " + e.getMessage());
-			}
-			finally
-			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
-			}
-			
-			for (L2Clan clan : ClanTable.getInstance().getClans())
-			{
-				if (clan.getAllyId() == activeChar.getAllyId())
-				{
-					clan.setAllyCrestId(newId);
-					for (L2PcInstance member : clan.getOnlineMembers(0))
-						member.broadcastUserInfo();
-				}
-			}
+			leaderclan.changeAllyCrest(newId, false);
 		}
 	}
 	

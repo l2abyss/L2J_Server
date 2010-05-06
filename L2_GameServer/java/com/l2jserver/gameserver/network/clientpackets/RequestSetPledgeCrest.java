@@ -14,13 +14,9 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.cache.CrestCache;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2Clan;
@@ -80,11 +76,9 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 		}
 		boolean updated = false;
 		int crestId = -1;
-		if (_length == 0 || _data.length == 0)
+		if ((_length == 0 || _data.length == 0) && clan.getCrestId() != 0)
 		{
-			CrestCache.getInstance().removePledgeCrest(clan.getCrestId());
-			clan.setCrestId(crestId = 0);
-			clan.setHasCrest(false);
+			crestId = 0;
 			
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_CREST_HAS_BEEN_DELETED));
 			
@@ -98,54 +92,19 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 				return;
 			}
 			
-			CrestCache crestCache = CrestCache.getInstance();
+			crestId = IdFactory.getInstance().getNextId();
 			
-			int newId = IdFactory.getInstance().getNextId();
-			
-			if (clan.hasCrest())
-				crestCache.removePledgeCrest(clan.getCrestId());
-			
-			if (!crestCache.savePledgeCrest(newId, _data))
+			if (!CrestCache.getInstance().savePledgeCrest(crestId, _data))
 			{
 				_log.log(Level.INFO, "Error saving crest for clan " + clan.getName() + " [" + clan.getClanId() + "]");
 				return;
 			}
 			
-			clan.setCrestId(crestId = newId);
-			clan.setHasCrest(true);
-			
 			updated = true;
 		}
 		if (updated && crestId != -1)
 		{
-			Connection con = null;
-			
-			try
-			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("UPDATE clan_data SET crest_id = ? WHERE clan_id = ?");
-				statement.setInt(1, crestId);
-				statement.setInt(2, clan.getClanId());
-				statement.executeUpdate();
-				statement.close();
-			}
-			catch (SQLException e)
-			{
-				_log.warning("Could not update crest for clan " + clan.getName() + " [" + clan.getClanId() + "] : " + e.getMessage());
-			}
-			finally
-			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
-			}
-			
-			for (L2PcInstance member : clan.getOnlineMembers(0))
-				member.broadcastUserInfo();
+			clan.changeClanCrest(crestId);
 		}
 	}
 	

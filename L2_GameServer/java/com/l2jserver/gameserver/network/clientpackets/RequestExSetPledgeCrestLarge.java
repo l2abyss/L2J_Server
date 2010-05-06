@@ -14,13 +14,9 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.cache.CrestCache;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2Clan;
@@ -83,11 +79,9 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 		
 		boolean updated = false;
 		int crestLargeId = -1;
-		if (_length == 0 || _data == null)
+		if ((_length == 0 || _data == null) && clan.getCrestLargeId() != 0)
 		{
-			CrestCache.getInstance().removePledgeCrestLarge(clan.getCrestLargeId());
-			clan.setCrestLargeId(crestLargeId = 0);
-			clan.setHasCrestLarge(false);
+			crestLargeId = 0;
 			
 			activeChar.sendMessage("The insignia has been removed.");
 			
@@ -101,21 +95,13 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 				return;
 			}
 			
-			CrestCache crestCache = CrestCache.getInstance();
+			crestLargeId = IdFactory.getInstance().getNextId();
 			
-			int newId = IdFactory.getInstance().getNextId();
-			
-			if (clan.hasCrestLarge())
-				crestCache.removePledgeCrestLarge(clan.getCrestLargeId());
-			
-			if (!crestCache.savePledgeCrestLarge(newId, _data))
+			if (!CrestCache.getInstance().savePledgeCrestLarge(crestLargeId, _data))
 			{
 				_log.log(Level.INFO, "Error saving large crest for clan " + clan.getName() + " [" + clan.getClanId() + "]");
 				return;
 			}
-			
-			clan.setCrestLargeId(crestLargeId = newId);
-			clan.setHasCrestLarge(true);
 			
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_EMBLEM_WAS_SUCCESSFULLY_REGISTERED));
 			
@@ -124,34 +110,7 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 		
 		if (updated && crestLargeId != -1)
 		{
-			Connection con = null;
-			
-			try
-			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("UPDATE clan_data SET crest_large_id = ? WHERE clan_id = ?");
-				statement.setInt(1, crestLargeId);
-				statement.setInt(2, clan.getClanId());
-				statement.executeUpdate();
-				statement.close();
-			}
-			catch (SQLException e)
-			{
-				_log.warning("Could not update large crest for clan " + clan.getName() + " [" + clan.getClanId() + "] : " + e.getMessage());
-			}
-			finally
-			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
-			}
-			
-			for (L2PcInstance member : clan.getOnlineMembers(0))
-				member.broadcastUserInfo();
+			clan.changeLargeCrest(crestLargeId);
 		}
 	}
 	

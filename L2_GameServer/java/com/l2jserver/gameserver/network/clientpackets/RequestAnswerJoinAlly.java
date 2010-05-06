@@ -36,30 +36,30 @@ public final class RequestAnswerJoinAlly extends L2GameClientPacket
 {
 	private static final String _C__83_REQUESTANSWERJOINALLY = "[C] 83 RequestAnswerJoinAlly";
 	//private static Logger _log = Logger.getLogger(RequestAnswerJoinAlly.class.getName());
-
+	
 	private int _response;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_response = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 		{
-		    return;
+			return;
 		}
-
+		
 		L2PcInstance requestor = activeChar.getRequest().getPartner();
-        if (requestor == null)
-        {
-        	return;
-        }
-
+		if (requestor == null)
+		{
+			return;
+		}
+		
 		if (_response == 0)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_DID_NOT_RESPOND_TO_ALLY_INVITATION));
@@ -67,24 +67,24 @@ public final class RequestAnswerJoinAlly extends L2GameClientPacket
 		}
 		else
 		{
-	        if (!(requestor.getRequest().getRequestPacket() instanceof RequestJoinAlly))
-	        {
-	        	return; // hax
-	        }
-
-	        L2Clan clan = requestor.getClan();
+			if (!(requestor.getRequest().getRequestPacket() instanceof RequestJoinAlly))
+			{
+				return; // hax
+			}
+			
+			L2Clan clan = requestor.getClan();
 			// we must double check this cause of hack
 			if (clan.checkAllyJoinCondition(requestor, activeChar))
-	        {
-		        //TODO: Need correct message id
+			{
+				//TODO: Need correct message id
 				requestor.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_SUCCEEDED_INVITING_FRIEND));
-
+				
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_ACCEPTED_ALLIANCE));
-
+				
 				activeChar.getClan().setAllyId(clan.getAllyId());
 				activeChar.getClan().setAllyName(clan.getAllyName());
 				activeChar.getClan().setAllyPenaltyExpiryTime(0, 0);
-				activeChar.getClan().setAllyCrestId(clan.getAllyCrestId());
+				activeChar.getClan().changeAllyCrest(clan.getAllyCrestId(), true);
 				activeChar.getClan().updateClanInDB();
 				for (L2Clan c : ClanTable.getInstance().getClans())
 				{
@@ -94,12 +94,12 @@ public final class RequestAnswerJoinAlly extends L2GameClientPacket
 						CommunityServerThread.getInstance().sendPacket(new WorldInfo(null, c, WorldInfo.TYPE_UPDATE_CLAN_DATA));
 					}
 				}
-	        }
+			}
 		}
-
+		
 		activeChar.getRequest().onRequestResponse();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */
