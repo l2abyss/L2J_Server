@@ -2432,13 +2432,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	@Override
 	protected void onEvtAttacked(L2Character attacker)
 	{
-		//if (_actor instanceof L2ChestInstance && !((L2ChestInstance)_actor).isInteracted())
-		//{
-			//((L2ChestInstance)_actor).deleteMe();
-			//((L2ChestInstance)_actor).getSpawn().startRespawn();
-			//return;
-		//}
-
+		L2Attackable me = (L2Attackable) _actor;
+		
 		// Calculate the attack timeout
 		_attackTimeout = MAX_ATTACK_TIMEOUT + GameTimeController.getGameTicks();
 
@@ -2446,7 +2441,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		if (_globalAggro < 0) _globalAggro = 0;
 
 		// Add the attacker to the _aggroList of the actor
-		((L2Attackable) _actor).addDamageHate(attacker, 0, 1);
+		me.addDamageHate(attacker, 0, 1);
 
 		// Set the L2Character movement type to run and send Server->Client packet ChangeMoveType to all others L2PcInstance
 		if (!_actor.isRunning()) _actor.setRunning();
@@ -2456,9 +2451,26 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		{
 			setIntention(CtrlIntention.AI_INTENTION_ATTACK, attacker);
 		}
-		else if (((L2Attackable) _actor).getMostHated() != getAttackTarget())
+		else if (me.getMostHated() != getAttackTarget())
 		{
 			setIntention(CtrlIntention.AI_INTENTION_ATTACK, attacker);
+		}
+		
+		if (me instanceof L2MonsterInstance)
+		{
+			L2MonsterInstance master = (L2MonsterInstance) me;
+			
+			if (me instanceof L2MinionInstance)
+			{
+				master = ((L2MinionInstance) me).getLeader();
+				
+				if (master != null && !master.isInCombat() && !master.isDead())
+				{
+					master.notifyMinionAttacked(attacker, (L2MinionInstance) me);
+				}
+			}
+			else if (master.hasMinions())
+				master.callMinionsToAssist(attacker);
 		}
 
 		super.onEvtAttacked(attacker);
@@ -2484,7 +2496,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		{
 			// Add the target to the actor _aggroList or update hate if already present
 			me.addDamageHate(target, 0, aggro);
-
+			
 			// Set the actor AI Intention to AI_INTENTION_ATTACK
 			if (getIntention() != CtrlIntention.AI_INTENTION_ATTACK)
 			{
@@ -2492,6 +2504,23 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				if (!_actor.isRunning()) _actor.setRunning();
 
 				setIntention(CtrlIntention.AI_INTENTION_ATTACK, target);
+			}
+			
+			if (me instanceof L2MonsterInstance)
+			{
+				L2MonsterInstance master = (L2MonsterInstance) me;
+				
+				if (me instanceof L2MinionInstance)
+				{
+					master = ((L2MinionInstance) me).getLeader();
+					
+					if (master != null && !master.isInCombat() && !master.isDead())
+					{
+						master.notifyMinionAttacked(target, (L2MinionInstance) me);
+					}
+				}
+				else if (master.hasMinions())
+					master.callMinionsToAssist(target);
 			}
 		}
 	}

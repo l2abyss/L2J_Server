@@ -253,6 +253,12 @@ public class L2MonsterInstance extends L2Attackable
 
 		_minionList.addSpawnedMinion(minion);
 	}
+	
+	public void notifyMinionAttacked(L2Character attacker, L2MinionInstance minion)
+	{
+		addDamage(attacker, 1, null);
+		callMinionsToAssist(attacker);
+	}
 
 	public boolean hasMinions()
 	{
@@ -291,6 +297,8 @@ public class L2MonsterInstance extends L2Attackable
 		}
 		_minionList.clearRespawnList();
 	}
+	
+	
 
 	public void enableMinions(boolean b)
 	{
