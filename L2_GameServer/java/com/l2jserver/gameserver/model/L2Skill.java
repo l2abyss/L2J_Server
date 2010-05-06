@@ -1266,13 +1266,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 					case MANARECHARGE:
 					case MANAHEAL:
 					case NEGATE:
-					case CANCEL:
 					case CANCEL_DEBUFF:
 					case REFLECT:
 					case COMBATPOINTHEAL:
-					case MAGE_BANE:
-					case WARRIOR_BANE:
-					case BETRAY:
 					case BALANCE_LIFE:
 					case HPMPCPHEAL_PERCENT:
 						canTargetSelf = true;
