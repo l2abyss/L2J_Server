@@ -450,7 +450,7 @@ public class MapRegionTable
 			}
 			
 			//Karma player land out of city
-			if (player.getKarma() > 1)
+			if (player.getKarma() > 0)
 			{
 				try
 				{

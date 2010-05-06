@@ -26,9 +26,7 @@ import com.l2jserver.gameserver.model.zone.L2SpawnZone;
  */
 public class L2TownZone extends L2SpawnZone
 {
-	private String _townName;
 	private int _townId;
-	private int _redirectTownId;
 	private int _taxById;
 	private boolean _isPeaceZone;
 	
@@ -38,9 +36,6 @@ public class L2TownZone extends L2SpawnZone
 		
 		_taxById = 0;
 		
-		// Default to Giran
-		_redirectTownId = 9;
-		
 		// Default peace zone
 		_isPeaceZone = true;
 	}
@@ -48,17 +43,9 @@ public class L2TownZone extends L2SpawnZone
 	@Override
 	public void setParameter(String name, String value)
 	{
-		if (name.equals("name"))
-		{
-			_townName = value;
-		}
-		else if (name.equals("townId"))
+		if (name.equals("townId"))
 		{
 			_townId = Integer.parseInt(value);
-		}
-		else if (name.equals("redirectTownId"))
-		{
-			_redirectTownId = Integer.parseInt(value);
 		}
 		else if (name.equals("taxById"))
 		{
@@ -117,32 +104,12 @@ public class L2TownZone extends L2SpawnZone
 	}
 	
 	/**
-	 * Returns this town zones name
-	 * @return
-	 */
-	@Deprecated
-	public String getName()
-	{
-		return _townName;
-	}
-	
-	/**
 	 * Returns this zones town id (if any)
 	 * @return
 	 */
 	public int getTownId()
 	{
 		return _townId;
-	}
-	
-	/**
-	 * Gets the id for this town zones redir town
-	 * @return
-	 */
-	@Deprecated
-	public int getRedirectTownId()
-	{
-		return _redirectTownId;
 	}
 	
 	/**
