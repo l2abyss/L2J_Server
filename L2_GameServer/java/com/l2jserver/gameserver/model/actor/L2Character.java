@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -116,6 +117,7 @@ import com.l2jserver.util.Rnd;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
+import javolution.util.FastSet;
 /**
  * Mother class of all character objects of the world (PC, NPC...)<BR><BR>
  *
@@ -142,7 +144,7 @@ public abstract class L2Character extends L2Object
 
 	// =========================================================
 	// Data Field
-	private Collection<L2Character> _attackByList;
+	private Set<L2Character> _attackByList;
 	private volatile boolean _isCastingNow					= false;
 	private volatile boolean _isCastingSimultaneouslyNow		= false;
 	private L2Skill _lastSkillCast;
@@ -444,7 +446,8 @@ public abstract class L2Character extends L2Object
 	 */
 	public void addAttackerToAttackByList (L2Character player)
 	{
-		if (player == null || player == this || getAttackByList() == null || getAttackByList().contains(player)) return;
+		if (player == null || player == this || getAttackByList().contains(player)) 
+			return;
 		getAttackByList().add(player);
 	}
 
@@ -2235,7 +2238,7 @@ public abstract class L2Character extends L2Object
     }
 
 	/** Return a list of L2Character that attacked. */
-	public final Collection<L2Character> getAttackByList ()
+	public final Set<L2Character> getAttackByList ()
 	{
 		if (_attackByList != null)
 			return _attackByList;
@@ -2243,7 +2246,7 @@ public abstract class L2Character extends L2Object
 		synchronized (this)
 		{
 			if (_attackByList == null)
-				_attackByList = new FastList<L2Character>().shared();
+				_attackByList = new FastSet<L2Character>().shared();
 		}
 		return _attackByList;
 	}

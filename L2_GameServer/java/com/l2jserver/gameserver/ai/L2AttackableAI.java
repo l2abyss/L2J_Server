@@ -1958,7 +1958,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				int range = 0;
 				L2Attackable actor = (L2Attackable)_actor;
 				
-				if(actor.getAttackByList() != null)
 				for(L2Character obj: actor.getAttackByList())
 				{
 					if(obj == null || obj.isDead() || !GeoData.getInstance().canSeeTarget(_actor,obj) || obj == getAttackTarget())

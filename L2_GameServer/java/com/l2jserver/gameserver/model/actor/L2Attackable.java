@@ -1393,7 +1393,7 @@ public class L2Attackable extends L2Npc
 			int highestLevel = lastAttacker.getLevel();
 
 			// Check to prevent very high level player to nearly kill mob and let low level player do the last hit.
-			if (getAttackByList() != null && !getAttackByList().isEmpty())
+			if (!getAttackByList().isEmpty())
 			{
 				for (L2Character atkChar: getAttackByList())
 				if (atkChar != null && atkChar.getLevel() > highestLevel)
