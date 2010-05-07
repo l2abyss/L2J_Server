@@ -1136,14 +1136,18 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public void decreaseMana(boolean resetConsumingMana)
 	{
-		if (!isShadowItem()) return;
+		if (!isShadowItem())
+			return;
 
-		if (_mana > 0) _mana--;
+		if (_mana > 0)
+			_mana--;
 
-		if (_storedInDb) _storedInDb = false;
-		if (resetConsumingMana) _consumingMana = false;
+		if (_storedInDb)
+			_storedInDb = false;
+		if (resetConsumingMana)
+			_consumingMana = false;
 
-		final L2PcInstance player = ((L2PcInstance)L2World.getInstance().findObject(getOwnerId()));
+		final L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
 		if (player != null)
 		{
 			SystemMessage sm;
@@ -1402,22 +1406,10 @@ public final class L2ItemInstance extends L2Object
 		// Setup life time for shadow weapons
 		inst._mana = manaLeft;
 		inst._time = time;
-		// consume 1 mana
-		if (inst.isShadowItem() && inst.isEquipped())
-		{
-			inst.decreaseMana(false);
-			// if player still not loaded and not found in the world - force task creation
-			inst.scheduleConsumeManaTask();
-		}
-
-		if (inst.isTimeLimitedItem())
-			inst.scheduleLifeTimeTask();
 
 		//load augmentation and elemental enchant
 		if (inst.isEquipable())
-		{
 			inst.restoreAttributes();
-		}
 
 		return inst;
 	}
@@ -1754,7 +1746,7 @@ public final class L2ItemInstance extends L2Object
 
     public void endOfLife()
     {
-    	L2PcInstance player = ((L2PcInstance)L2World.getInstance().findObject(getOwnerId()));
+    	L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
     	if (player != null)
     	{
     		if (isEquipped())

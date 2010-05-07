@@ -426,17 +426,15 @@ public class EnterWorld extends L2GameClientPacket
 		for (L2ItemInstance i : activeChar.getInventory().getItems())
 		{
 			if (i.isTimeLimitedItem())
-			{
 				i.scheduleLifeTimeTask();
-			}
+			if (i.isShadowItem() && i.isEquipped())
+				i.decreaseMana(false);
 		}
 		
 		for (L2ItemInstance i : activeChar.getWarehouse().getItems())
 		{
 			if (i.isTimeLimitedItem())
-			{
 				i.scheduleLifeTimeTask();
-			}
 		}
 
 		if (DimensionalRiftManager.getInstance().checkIfInRiftZone(activeChar.getX(), activeChar.getY(), activeChar.getZ(), false))
