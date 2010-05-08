@@ -7672,36 +7672,46 @@ public final class L2PcInstance extends L2Playable
 		finally { try { con.close(); } catch (Exception e) {} }
 	}
 
-    private void storeCharSub()
-    {
-        Connection con = null;
-
-        try
-        {
-            con = L2DatabaseFactory.getInstance().getConnection();
-            PreparedStatement statement = con.prepareStatement(UPDATE_CHAR_SUBCLASS);
-            
-            if (getTotalSubClasses() > 0)
-            {
-            	for (SubClass subClass : getSubClasses().values())
-            	{
-                    statement.setLong(1, subClass.getExp());
-                    statement.setInt(2, subClass.getSp());
-                    statement.setInt(3, subClass.getLevel());
-                    statement.setInt(4, subClass.getClassId());
-                    statement.setInt(5, getObjectId());
-                    statement.setInt(6, subClass.getClassIndex());
-
-                    statement.execute();
-                }
-            	statement.close();
-            }
-        }
-        catch (Exception e) {
-        	_log.warning("Could not store sub class data for " + getName() + ": "+ e);
+	private void storeCharSub()
+	{
+		Connection con = null;
+		
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(UPDATE_CHAR_SUBCLASS);
+			
+			if (getTotalSubClasses() > 0)
+			{
+				for (SubClass subClass : getSubClasses().values())
+				{
+					statement.setLong(1, subClass.getExp());
+					statement.setInt(2, subClass.getSp());
+					statement.setInt(3, subClass.getLevel());
+					statement.setInt(4, subClass.getClassId());
+					statement.setInt(5, getObjectId());
+					statement.setInt(6, subClass.getClassIndex());
+					
+					statement.execute();
+				}
+			}
+			statement.close();
 		}
-        finally { try { con.close(); } catch (Exception e) {} }
-    }
+		catch (Exception e)
+		{
+			_log.warning("Could not store sub class data for " + getName() + ": " + e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
+	}
     
     private void storeEffect(boolean storeEffects)
 	{
