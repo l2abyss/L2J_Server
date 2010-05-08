@@ -1052,7 +1052,8 @@ public class FortSiege implements Siegable
 				if (spawn != null)
 				{
 					spawn.stopRespawn();
-					spawn.getLastSpawn().deleteMe();
+					if (spawn.getLastSpawn() != null)
+						spawn.getLastSpawn().deleteMe();
 				}
 			}
 			_commanders.clear();

@@ -941,4 +941,11 @@ abstract class AbstractAI implements Ctrl
 		_target = target;
 	}
 	
+	/**
+	 * Stop all Ai tasks and futures.
+	 */
+	public void stopAITask()
+	{
+		stopFollow();
+	}
 }

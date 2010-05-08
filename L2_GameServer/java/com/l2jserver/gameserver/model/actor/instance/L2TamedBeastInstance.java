@@ -197,8 +197,6 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	@Override
 	public void deleteMe()
 	{
-		// stop running tasks
-		getAI().stopFollow();
 		_buffTask.cancel(true);
 		_durationCheckTask.cancel(true);
 		stopHpMpRegeneration();

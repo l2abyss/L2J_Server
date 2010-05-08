@@ -304,6 +304,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		}
 	}
 
+	@Override
 	public void stopAITask()
 	{
 		if (_aiTask != null)
@@ -311,6 +312,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			_aiTask.cancel(false);
 			_aiTask = null;
 		}
+		super.stopAITask();
 	}
 
 	@Override

@@ -886,6 +886,21 @@ public class L2Npc extends L2Character
 
 		return CastleManager.getInstance().getCastles().get(_castleIndex);
 	}
+	
+	/**
+	 * Return closest castle in defined distance
+	 * @param maxDistance long
+	 * @return Castle
+	 */
+	public final Castle getCastle(long maxDistance)
+	{
+		int index = CastleManager.getInstance().findNearestCastleIndex(this, maxDistance);
+		
+		if (index < 0)
+			return null;
+
+		return CastleManager.getInstance().getCastles().get(index);
+	}
 
 	/** Return the L2Fort this L2NpcInstance belongs to. */
 	public final Fort getFort()
@@ -905,6 +920,21 @@ public class L2Npc extends L2Character
 			return null;
 
 		return FortManager.getInstance().getForts().get(_fortIndex);
+	}
+	
+	/**
+	 * Return closest Fort in defined distance
+	 * @param maxDistance long
+	 * @return Fort
+	 */
+	public final Fort getFort(long maxDistance)
+	{
+		int index = FortManager.getInstance().findNearestFortIndex(this, maxDistance);
+		
+		if (index < 0)
+			return null;
+
+		return FortManager.getInstance().getForts().get(index);
 	}
 
 	public final boolean getIsInTown()
@@ -1427,6 +1457,7 @@ public class L2Npc extends L2Character
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T SEND Server->Client packets to players</B></FONT><BR><BR>
 	 * 
 	 */
+	@Override
 	public void deleteMe()
 	{
 		L2WorldRegion oldRegion = getWorldRegion();
@@ -1467,6 +1498,8 @@ public class L2Npc extends L2Character
 
 		// Remove L2Object object from _allObjects of L2World
 		L2World.getInstance().removeObject(this);
+		
+		super.deleteMe();
 	}
 
 	/**

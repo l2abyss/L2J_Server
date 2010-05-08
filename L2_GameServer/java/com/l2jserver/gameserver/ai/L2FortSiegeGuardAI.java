@@ -868,6 +868,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 		super.onEvtDead();
 	}
 	
+	@Override
 	public void stopAITask()
 	{
 		if (_aiTask != null)
@@ -876,6 +877,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 			_aiTask = null;
 		}
 		_accessor.detachAI();
+		super.stopAITask();
 	}
 	
 }

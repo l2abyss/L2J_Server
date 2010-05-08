@@ -84,7 +84,8 @@ public class FortSiegeGuardManager
 				for (L2Spawn spawnDat : monsterList)
 				{
 					spawnDat.stopRespawn();
-					spawnDat.getLastSpawn().doDie(spawnDat.getLastSpawn());
+					if (spawnDat.getLastSpawn() != null)
+						spawnDat.getLastSpawn().doDie(spawnDat.getLastSpawn());
 				}
 			}
 		}

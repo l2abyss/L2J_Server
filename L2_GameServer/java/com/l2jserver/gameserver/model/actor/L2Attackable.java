@@ -2384,7 +2384,7 @@ public class L2Attackable extends L2Npc
 		{
 			if (this instanceof L2DefenderInstance)
 			{
-				if (getCastle() != null)
+				if (getCastle(10000) != null)
 					((L2SiegeGuardAI) getAI()).stopAITask();
 				else if (getFort() != null)
 					((L2FortSiegeGuardAI) getAI()).stopAITask();

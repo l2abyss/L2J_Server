@@ -351,7 +351,6 @@ public abstract class L2Summon extends L2Playable
     
     public void deleteMe(L2PcInstance owner)
     {
-        getAI().stopFollow();
         owner.sendPacket(new PetDelete(getSummonType(), getObjectId()));
 
         //pet will be deleted along with all his items

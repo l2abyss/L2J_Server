@@ -131,10 +131,12 @@ public class L2Trap extends L2Character
 	 * 
 	 * @param owner
 	 */
+	@Override
 	public void deleteMe()
 	{
 		decayMe();
 		getKnownList().removeAllKnownObjects();
+		super.deleteMe();
 	}
 	
 	/**

@@ -67,7 +67,7 @@ public class L2DefenderInstance extends L2Attackable
 			synchronized(this)
 			{
 				if (_ai == null)
-					if (getCastle() == null)
+					if (getCastle(10000) == null)
 						_ai = new L2FortSiegeGuardAI(new AIAccessor());
 					else
 						_ai = new L2SiegeGuardAI(new AIAccessor());
