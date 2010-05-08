@@ -361,6 +361,7 @@ public abstract class L2Summon extends L2Playable
         decayMe();
         getKnownList().removeAllKnownObjects();
         owner.setPet(null);
+    	super.deleteMe();
     }
 
     public void unSummon(L2PcInstance owner)
