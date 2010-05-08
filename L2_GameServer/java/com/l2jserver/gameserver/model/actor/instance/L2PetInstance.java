@@ -571,7 +571,13 @@ public class L2PetInstance extends L2Summon
 		stopFeed();
 		getOwner().sendPacket(new SystemMessage(SystemMessageId.MAKE_SURE_YOU_RESSURECT_YOUR_PET_WITHIN_24_HOURS));
 		DecayTaskManager.getInstance().addDecayTask(this, PET_DECAY_DELAY);
-		deathPenalty();
+		// do not decrease exp if is in duel, arena
+		L2PcInstance owner = getOwner();
+		if (owner != null && !owner.isInDuel()
+			&& (!isInsideZone(ZONE_PVP) || isInsideZone(ZONE_SIEGE)))
+		{
+			deathPenalty();
+		}
 		return true;
 	}
 
@@ -962,33 +968,33 @@ public class L2PetInstance extends L2Summon
 			_expBeforeDeath = 0;
 		}
 	}
-
-
-    private void deathPenalty()
-    {
-        // TODO Need Correct Penalty
-
-        int lvl = getStat().getLevel();
-        double percentLost = -0.07 * lvl + 6.5;
-
-        // Calculate the Experience loss
-        long lostExp = Math.round((getStat().getExpForLevel(lvl+1) - getStat().getExpForLevel(lvl)) * percentLost /100);
-
+	
+	
+	private void deathPenalty()
+	{
+		// TODO Need Correct Penalty
+		
+		int lvl = getStat().getLevel();
+		double percentLost = -0.07 * lvl + 6.5;
+		
+		// Calculate the Experience loss
+		long lostExp = Math.round((getStat().getExpForLevel(lvl+1) - getStat().getExpForLevel(lvl)) * percentLost /100);
+		
 		// Get the Experience before applying penalty
 		_expBeforeDeath = getStat().getExp();
-
-        // Set the new Experience value of the L2PetInstance
-        getStat().addExp(-lostExp);
-    }
-
-    @Override
+		
+		// Set the new Experience value of the L2PetInstance
+		getStat().addExp(-lostExp);
+	}
+	
+	@Override
 	public void addExpAndSp(long addToExp, int addToSp)
-    {
-       if (getNpcId() == 12564) //SinEater
-          getStat().addExpAndSp(Math.round(addToExp * Config.SINEATER_XP_RATE), addToSp);
-       else
-          getStat().addExpAndSp(Math.round(addToExp * Config.PET_XP_RATE), addToSp);
-    }
+	{
+		if (getNpcId() == 12564) //SinEater
+			getStat().addExpAndSp(Math.round(addToExp * Config.SINEATER_XP_RATE), addToSp);
+		else
+			getStat().addExpAndSp(Math.round(addToExp * Config.PET_XP_RATE), addToSp);
+	}
 
     @Override
 	public long getExpForThisLevel() { return getStat().getExpForLevel(getLevel()); }
