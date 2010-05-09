@@ -14,12 +14,11 @@
  */
 package com.l2jserver.log;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 import com.l2jserver.util.StringUtil;
+import com.l2jserver.util.Util;
 
 /**
  * This class ...
@@ -49,35 +48,12 @@ public class ConsoleLogFormatter extends Formatter
 		
 		if (record.getThrown() != null)
 		{
-			StringWriter sw = null;
-			PrintWriter pw = null;
 			try
 			{
-				sw = new StringWriter();
-				pw = new PrintWriter(sw);
-				record.getThrown().printStackTrace(pw);
-				StringUtil.append(output, sw.toString(), CRLF);
+				StringUtil.append(output, Util.getStackTrace(record.getThrown()), CRLF);
 			}
 			catch (Exception ex)
 			{
-			}
-			finally
-			{
-				try
-				{
-					pw.close();
-				}
-				catch (Exception e)
-				{
-				}
-				
-				try
-				{
-					sw.close();
-				}
-				catch (Exception e)
-				{
-				}
 			}
 		}
 		

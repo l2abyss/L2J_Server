@@ -21,6 +21,8 @@
  */
 package com.l2jserver.util;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
@@ -150,4 +152,10 @@ public class Util
 		return array;
 	}
 	
+	public static String getStackTrace(Throwable t)
+	{
+		StringWriter sw = new StringWriter();
+		t.printStackTrace(new PrintWriter(sw));
+		return sw.toString();
+	}
 }

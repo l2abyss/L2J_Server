@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.model.quest;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,6 +22,9 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javolution.util.FastList;
+import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
@@ -47,9 +48,7 @@ import com.l2jserver.gameserver.scripting.ManagedScript;
 import com.l2jserver.gameserver.scripting.ScriptManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
+import com.l2jserver.util.Util;
 
 /**
  * @author Luis Arias
@@ -763,11 +762,7 @@ public class Quest extends ManagedScript
 		_log.log(Level.WARNING, this.getScriptFile().getAbsolutePath(), t);
 		if (player != null && player.getAccessLevel().isGm())
 		{
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			t.printStackTrace(pw);
-			pw.close();
-			String res = "<html><body><title>Script error</title>" + sw.toString() + "</body></html>";
+			String res = "<html><body><title>Script error</title>" + Util.getStackTrace(t) + "</body></html>";
 			return showResult(player, res);
 		}
 		return false;
