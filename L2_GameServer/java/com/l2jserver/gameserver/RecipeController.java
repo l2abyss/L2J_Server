@@ -67,7 +67,7 @@ public class RecipeController
 	protected static final Logger _log = Logger.getLogger(RecipeController.class.getName());
 	
 	private Map<Integer, L2RecipeList> _lists;
-	protected static final Map<L2PcInstance, RecipeItemMaker> _activeMakers = Collections.synchronizedMap(new WeakHashMap<L2PcInstance, RecipeItemMaker>());
+	protected static final Map<Integer, RecipeItemMaker> _activeMakers = Collections.synchronizedMap(new WeakHashMap<Integer, RecipeItemMaker>());
 	private static final String RECIPES_FILE = "recipes.xml";
 	
 	public static RecipeController getInstance()
@@ -125,7 +125,7 @@ public class RecipeController
 	{
 		RecipeItemMaker maker = null;
 		if (Config.ALT_GAME_CREATION)
-			maker = _activeMakers.get(player);
+			maker = _activeMakers.get(player.getObjectId());
 		
 		if (maker == null)
 		{
@@ -140,7 +140,7 @@ public class RecipeController
 	
 	public synchronized void requestMakeItemAbort(L2PcInstance player)
 	{
-		_activeMakers.remove(player); // TODO:  anything else here?
+		_activeMakers.remove(player.getObjectId()); // TODO:  anything else here?
 	}
 	
 	public synchronized void requestManufactureItem(L2PcInstance manufacturer, int recipeListId, L2PcInstance player)
@@ -162,7 +162,7 @@ public class RecipeController
 		
 		RecipeItemMaker maker;
 		
-		if (Config.ALT_GAME_CREATION && (maker = _activeMakers.get(manufacturer)) != null) // check if busy
+		if (Config.ALT_GAME_CREATION && (maker = _activeMakers.get(manufacturer.getObjectId())) != null) // check if busy
 		{
 			player.sendMessage("Manufacturer is busy, please try later.");
 			return;
@@ -173,7 +173,7 @@ public class RecipeController
 		{
 			if (Config.ALT_GAME_CREATION)
 			{
-				_activeMakers.put(manufacturer, maker);
+				_activeMakers.put(manufacturer.getObjectId(), maker);
 				ThreadPoolManager.getInstance().scheduleGeneral(maker, 100);
 			}
 			else
@@ -207,7 +207,7 @@ public class RecipeController
 		RecipeItemMaker maker;
 		
 		// check if already busy (possible in alt mode only)
-		if (Config.ALT_GAME_CREATION && ((maker = _activeMakers.get(player)) != null))
+		if (Config.ALT_GAME_CREATION && ((maker = _activeMakers.get(player.getObjectId())) != null))
 		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1);
 			sm.addItemName(recipeList.getItemId());
@@ -221,7 +221,7 @@ public class RecipeController
 		{
 			if (Config.ALT_GAME_CREATION)
 			{
-				_activeMakers.put(player, maker);
+				_activeMakers.put(player.getObjectId(), maker);
 				ThreadPoolManager.getInstance().scheduleGeneral(maker, 100);
 			}
 			else
@@ -535,7 +535,7 @@ public class RecipeController
 				return;
 			}
 			
-			if (Config.ALT_GAME_CREATION && _activeMakers.get(_player) == null)
+			if (Config.ALT_GAME_CREATION && _activeMakers.get(_player.getObjectId()) == null)
 			{
 				if (_target != _player)
 				{
@@ -647,7 +647,7 @@ public class RecipeController
 			// update load and mana bar of craft window
 			updateCurMp();
 			updateCurLoad();
-			_activeMakers.remove(_player);
+			_activeMakers.remove(_player.getObjectId());
 			_player.isInCraftMode(false);
 			_target.sendPacket(new ItemList(_target, false));
 		}
@@ -845,7 +845,7 @@ public class RecipeController
 		{
 			updateMakeInfo(false);
 			_player.isInCraftMode(false);
-			_activeMakers.remove(_player);
+			_activeMakers.remove(_player.getObjectId());
 		}
 		
 		/**

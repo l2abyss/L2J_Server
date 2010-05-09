@@ -2052,13 +2052,13 @@ public class SevenSignsFestival implements SpawnListener
 		List<L2FestivalMonsterInstance> _npcInsts;
 		
 		private List<L2PcInstance> _participants;
-		private Map<L2PcInstance, FestivalSpawn> _originalLocations;
+		private Map<Integer, FestivalSpawn> _originalLocations;
 		
 		protected L2DarknessFestival(int cabal, int levelRange)
 		{
 			_cabal = cabal;
 			_levelRange = levelRange;
-			_originalLocations = new FastMap<L2PcInstance, FestivalSpawn>();
+			_originalLocations = new FastMap<Integer, FestivalSpawn>();
 			_npcInsts = new FastList<L2FestivalMonsterInstance>();
 			
 			if (cabal == SevenSigns.CABAL_DAWN)
@@ -2096,7 +2096,7 @@ public class SevenSignsFestival implements SpawnListener
 				{
 					for (L2PcInstance participant : _participants)
 					{
-						_originalLocations.put(participant, new FestivalSpawn(participant.getX(), participant.getY(), participant.getZ(), participant.getHeading()));
+						_originalLocations.put(participant.getObjectId(), new FestivalSpawn(participant.getX(), participant.getY(), participant.getZ(), participant.getHeading()));
 						
 						// Randomize the spawn point around the specific centerpoint for each player.
 						int x = _startLocation._x;
@@ -2400,10 +2400,10 @@ public class SevenSignsFestival implements SpawnListener
 		{
 			try
 			{
-				FestivalSpawn origPosition = _originalLocations.get(participant);
+				FestivalSpawn origPosition = _originalLocations.get(participant.getObjectId());
 				
 				if (isRemoving)
-					_originalLocations.remove(participant);
+					_originalLocations.remove(participant.getObjectId());
 				
 				participant.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 				participant.teleToLocation(origPosition._x, origPosition._y, origPosition._z, true);

@@ -305,7 +305,7 @@ public class L2Attackable extends L2Npc
 
 	private boolean _absorbed;
 
-	private FastMap<L2PcInstance, AbsorberInfo> _absorbersList = new FastMap<L2PcInstance, AbsorberInfo>().shared();
+	private FastMap<Integer, AbsorberInfo> _absorbersList = new FastMap<Integer, AbsorberInfo>().shared();
 
 	private boolean _mustGiveExpSp;
 
@@ -2024,13 +2024,13 @@ public class L2Attackable extends L2Npc
 			return;
 
 		// If we have no _absorbersList initiated, do it
-		AbsorberInfo ai = _absorbersList.get(attacker);
+		AbsorberInfo ai = _absorbersList.get(attacker.getObjectId());
 
 		// If the L2Character attacker isn't already in the _absorbersList of this L2Attackable, add it
 		if (ai == null)
 		{
 			ai = new AbsorberInfo(attacker, crystalId, getCurrentHp());
-			_absorbersList.put(attacker, ai);
+			_absorbersList.put(attacker.getObjectId(), ai);
 		}
 		else
 		{
@@ -2090,7 +2090,7 @@ public class L2Attackable extends L2Npc
 			}
 
 			// Fail if the killer isn't in the _absorbersList of this L2Attackable and mob is not boss
-			AbsorberInfo ai = _absorbersList.get(killer);
+			AbsorberInfo ai = _absorbersList.get(killer.getObjectId());
 			if (ai == null || ai._absorber.getObjectId() != killer.getObjectId())
 				isSuccess = false;
 
