@@ -2508,7 +2508,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				setIntention(CtrlIntention.AI_INTENTION_ATTACK, target);
 			}
 			
-			if (me instanceof L2MonsterInstance)
+			/*if (me instanceof L2MonsterInstance)
 			{
 				L2MonsterInstance master = (L2MonsterInstance) me;
 				
@@ -2523,7 +2523,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				else if (master.hasMinions())
 					master.callMinionsToAssist(target);
-			}
+			}*/
 		}
 	}
 

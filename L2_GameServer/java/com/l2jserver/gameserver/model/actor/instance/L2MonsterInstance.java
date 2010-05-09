@@ -189,7 +189,7 @@ public class L2MonsterInstance extends L2Attackable
 		{
 			for (L2MinionInstance minion : _minionList.getSpawnedMinions())
 			{
-				if (minion == null || minion.isDead())
+				if (minion == null || minion.isDead() || minion.isInCombat())
 					continue;
 
 				// Trigger the aggro condition of the minion
