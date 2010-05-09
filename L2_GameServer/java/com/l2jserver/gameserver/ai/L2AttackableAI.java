@@ -2315,9 +2315,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					continue;
 				}
 					if(MostHate!=null)
-						actor.addDamageHate(obj,actor.getHating(MostHate),actor.getHating(MostHate));
+						actor.addDamageHate(obj,0,actor.getHating(MostHate));
 					else
-						actor.addDamageHate(obj,2000,2000);
+						actor.addDamageHate(obj,0,2000);
 					_actor.setTarget(obj);
 					setAttackTarget(obj);
 					return;
@@ -2340,9 +2340,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				if(obj instanceof L2PcInstance)
 				{
 					if(MostHate!=null || !MostHate.isDead())
-						actor.addDamageHate(obj,actor.getHating(MostHate),actor.getHating(MostHate));
+						actor.addDamageHate(obj,0,actor.getHating(MostHate));
 					else
-						actor.addDamageHate(obj,2000,2000);
+						actor.addDamageHate(obj,0,2000);
 					_actor.setTarget(obj);
 					setAttackTarget(obj);
 					
@@ -2352,9 +2352,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					if(((L2Attackable)_actor).getEnemyClan() != null && (((L2Attackable)_actor).getEnemyClan().equals(((L2Attackable)obj).getClan())))
 					{
 						if(MostHate != null)
-							actor.addDamageHate(obj,actor.getHating(MostHate),actor.getHating(MostHate));
+							actor.addDamageHate(obj,0,actor.getHating(MostHate));
 						else
-							actor.addDamageHate(obj,2000,2000);
+							actor.addDamageHate(obj,0,2000);
 						_actor.setTarget(obj);
 					}
 					if (((L2Attackable)_actor).getIsChaos() != 0)
@@ -2364,9 +2364,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						else
 						{
 							if(MostHate != null)
-								actor.addDamageHate(obj,actor.getHating(MostHate),actor.getHating(MostHate));
+								actor.addDamageHate(obj,0,actor.getHating(MostHate));
 							else
-								actor.addDamageHate(obj,2000,2000);
+								actor.addDamageHate(obj,0,2000);
 							_actor.setTarget(obj);
 							setAttackTarget(obj);
 						}
@@ -2375,9 +2375,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				else if(obj instanceof L2Summon)
 				{
 					if(MostHate != null)
-						actor.addDamageHate(obj,actor.getHating(MostHate),actor.getHating(MostHate));
+						actor.addDamageHate(obj,0,actor.getHating(MostHate));
 					else
-						actor.addDamageHate(obj,2000,2000);
+						actor.addDamageHate(obj,0,2000);
 					_actor.setTarget(obj);
 					setAttackTarget(obj);
 				}
