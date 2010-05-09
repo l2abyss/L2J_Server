@@ -1432,8 +1432,18 @@ public class L2Clan
 	
 	public boolean isAtWarWith(Integer id)
 	{
-		if (_atWarWith != null && !_atWarWith.isEmpty())
+		if (!_atWarWith.isEmpty())
 			if (_atWarWith.contains(id))
+				return true;
+		return false;
+	}
+	
+	public boolean isAtWarWith(L2Clan clan)
+	{
+		if (clan == null)
+			return false;
+		if (!_atWarWith.isEmpty())
+			if (_atWarWith.contains(clan.getClanId()))
 				return true;
 		return false;
 	}

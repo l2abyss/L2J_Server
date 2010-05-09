@@ -12926,18 +12926,21 @@ public final class L2PcInstance extends L2Playable
         stopSoulTask();
         sendPacket(new EtcStatusUpdate(this));
     }
-
+    
     /**
      * Starts/Restarts the SoulTask to Clear Souls after 10 Mins.
      */
     private void restartSoulTask()
     {
-        if (_soulTask != null)
-        {
-            _soulTask.cancel(false);
-            _soulTask = null;
-        }
-        _soulTask = ThreadPoolManager.getInstance().scheduleGeneral(new SoulTask(this), 600000);
+    	synchronized(this)
+    	{
+    		if (_soulTask != null)
+    		{
+    			_soulTask.cancel(false);
+    			_soulTask = null;
+    		}
+    		_soulTask = ThreadPoolManager.getInstance().scheduleGeneral(new SoulTask(this), 600000);
+    	}
     }
 
     /**

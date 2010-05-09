@@ -1442,14 +1442,15 @@ public class FourSepulchersManager
 	
 	public void deleteAllMobs()
 	{
-		// _log.info("FourSepulchersManager.DeleteAllMobs: Try to delete " +
-		// _allMobs.size() + " monsters.");
-		
 		for (L2Npc mob : _allMobs)
 		{
+			if (mob == null)
+				continue;
+			
 			try
 			{
-				mob.getSpawn().stopRespawn();
+				if (mob.getSpawn() != null)
+					mob.getSpawn().stopRespawn();
 				mob.deleteMe();
 			}
 			catch (Exception e)
@@ -1458,8 +1459,6 @@ public class FourSepulchersManager
 			}
 		}
 		_allMobs.clear();
-		// _log.info("FourSepulchersManager.DeleteAllMobs: Deleted " + delCnt +
-		// " monsters.");
 	}
 	
 	protected void closeAllDoors()

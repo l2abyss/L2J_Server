@@ -39,7 +39,10 @@ public class ConditionMinDistance extends Condition
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override
-	public boolean testImpl(Env env) {
+	public boolean testImpl(Env env) 
+	{
+		if (env.target == null) 
+			return false;
 		return env.player.getDistanceSq(env.target) >= _sqDistance;
 	}
 }
