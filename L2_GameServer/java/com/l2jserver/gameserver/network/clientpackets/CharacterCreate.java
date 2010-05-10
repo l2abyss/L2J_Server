@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -225,7 +224,8 @@ public final class CharacterCreate extends L2GameClientPacket
 		newChar.setXYZInvisible(template.spawnX, template.spawnY, template.spawnZ);
 		newChar.setTitle("");
 
-		newChar.setVitalityPoints(PcStat.MAX_VITALITY_POINTS, true);
+		if (Config.ENABLE_VITALITY)
+			newChar.setVitalityPoints(Math.min(Config.STARTING_VITALITY_POINTS, PcStat.MAX_VITALITY_POINTS), true);
 
 		if (Config.STARTING_LEVEL > 1)
 		{
