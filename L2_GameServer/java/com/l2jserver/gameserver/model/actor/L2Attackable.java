@@ -113,7 +113,7 @@ public class L2Attackable extends L2Npc
 
 		public final void addHate(int value)
 		{
-			_hate = Math.min(_hate + value, 999999999);
+			_hate = (int)Math.min(_hate + (long)value, 999999999);
 		}
 
 		public final void stopHate()
@@ -128,7 +128,7 @@ public class L2Attackable extends L2Npc
 
 		public final void addDamage(int value)
 		{
-			_damage = Math.min(_damage + value, 999999999);
+			_damage = (int)Math.min(_damage + (long)value, 999999999);
 		}
 
 		@Override
