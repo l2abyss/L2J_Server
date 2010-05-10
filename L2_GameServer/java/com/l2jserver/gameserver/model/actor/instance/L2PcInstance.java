@@ -4469,6 +4469,8 @@ public final class L2PcInstance extends L2Playable
 		{
 			for (L2PcInstance player : plrs)
 			{
+				if (player == null)
+					continue;
 				player.sendPacket(mov);
 				if (mov instanceof CharInfo)
 				{
@@ -4498,6 +4500,8 @@ public final class L2PcInstance extends L2Playable
 		{
 			for (L2PcInstance player : plrs)
 			{
+				if (player == null)
+					continue;
 				if (isInsideRadius(player, radiusInKnownlist, false, false))
 				{
 					player.sendPacket(mov);
