@@ -189,14 +189,14 @@ public class L2MonsterInstance extends L2Attackable
 		{
 			for (L2MinionInstance minion : _minionList.getSpawnedMinions())
 			{
-				if (minion == null || attacker == null || minion.isDead() || minion.isInCombat()
-						|| minion.getAggroList().containsKey(attacker))
+				if (minion == null || attacker == null || minion.isDead() || minion.isInCombat())
 					continue;
 
 				// Trigger the aggro condition of the minion
-				if(isRaid()&&!isRaidMinion())
-					minion.addDamage(attacker, 100, null);
-				else minion.addDamage(attacker, 1, null);
+				if (isRaid() && !isRaidMinion())
+					minion.addDamageHate(attacker, 0, 100);
+				else
+					minion.addDamageHate(attacker, 0, 1);
 			}
 		}
 	}
@@ -257,7 +257,7 @@ public class L2MonsterInstance extends L2Attackable
 	
 	public void notifyMinionAttacked(L2Character attacker, L2MinionInstance minion)
 	{
-		addDamage(attacker, 1, null);
+		addDamageHate(attacker, 0, 1);
 		callMinionsToAssist(attacker);
 	}
 

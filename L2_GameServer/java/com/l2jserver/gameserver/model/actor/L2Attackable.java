@@ -878,7 +878,7 @@ public class L2Attackable extends L2Npc
 				{
 					if (getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK) !=null)
 						for (Quest quest: getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK))
-					quest.notifyAttack(this, player, damage, attacker instanceof L2Summon, skill);
+							quest.notifyAttack(this, player, damage, attacker instanceof L2Summon, skill);
 				}
 				// for now hard code damage hate caused by an L2Attackable
 				else

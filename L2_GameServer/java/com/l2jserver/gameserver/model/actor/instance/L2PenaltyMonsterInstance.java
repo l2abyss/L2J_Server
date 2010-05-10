@@ -48,7 +48,7 @@ public class L2PenaltyMonsterInstance extends L2MonsterInstance
 			this.broadcastPacket(cs);
 		}
 		_ptk = ptk;
-		addDamageHate(ptk, 10, 10);
+		addDamageHate(ptk, 0, 10);
 		getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, ptk);
 		addAttackerToAttackByList(ptk);
 	}
