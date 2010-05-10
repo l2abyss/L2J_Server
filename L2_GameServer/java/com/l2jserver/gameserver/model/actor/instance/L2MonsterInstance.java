@@ -189,7 +189,7 @@ public class L2MonsterInstance extends L2Attackable
 		{
 			for (L2MinionInstance minion : _minionList.getSpawnedMinions())
 			{
-				if (minion == null || minion.isDead() || minion.isInCombat()
+				if (minion == null || attacker == null || minion.isDead() || minion.isInCombat()
 						|| minion.getAggroList().containsKey(attacker))
 					continue;
 
