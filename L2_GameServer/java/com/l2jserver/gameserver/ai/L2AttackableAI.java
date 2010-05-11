@@ -64,7 +64,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 
 	private static final int RANDOM_WALK_RATE = 30; // confirmed
 	// private static final int MAX_DRIFT_RANGE = 300;
-	private static final int MAX_ATTACK_TIMEOUT = 300; // int ticks, i.e. 30 seconds
+	private static final int MAX_ATTACK_TIMEOUT = 1200; // int ticks, i.e. 2min
 
 	/** The L2Attackable AI task executed every 1s (call onEvtThink method)*/
 	private Future<?> _aiTask;
@@ -648,19 +648,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	 */
 	private void thinkAttack()
 	{
-		if (_attackTimeout < GameTimeController.getGameTicks())
-		{
-			// Check if the actor is running
-			if (_actor.isRunning())
-			{
-				// Set the actor movement type to walk and send Server->Client packet ChangeMoveType to all others L2PcInstance
-				_actor.setWalking();
-
-				// Calculate a new attack timeout
-				_attackTimeout = MAX_ATTACK_TIMEOUT + GameTimeController.getGameTicks();
-			}
-		}
-		
 		if (_actor.isCastingNow())
 			return;
 

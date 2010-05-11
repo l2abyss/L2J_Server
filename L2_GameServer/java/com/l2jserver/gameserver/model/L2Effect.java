@@ -421,22 +421,17 @@ public abstract class L2Effect
 	 * <li>Stop and remove L2Effect from L2Character and update client magic icon </li><BR><BR>
 	 *
 	 */
-	public void stopEffectTask()
+	public synchronized void stopEffectTask()
 	{
 		if (_currentFuture != null)
 		{
-			synchronized (_currentFuture)
-			{
-				if (_currentFuture != null)
-				{
-					// Cancel the task
-					_currentFuture.cancel(false);
-					ThreadPoolManager.getInstance().removeEffect(_currentTask);
-				}
-			}
+			// Cancel the task
+			_currentFuture.cancel(false);
+			ThreadPoolManager.getInstance().removeEffect(_currentTask);
+			
 			_currentFuture = null;
-			_currentTask = null;			
-
+			_currentTask = null;
+			
 			if (getEffected() != null)
 				getEffected().removeEffect(this);
 		}
