@@ -251,7 +251,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, getClient()+" sent bad RequestBypassToServer: ", e);
+			_log.log(Level.WARNING, getClient()+" sent bad RequestBypassToServer: \""+_command+"\"", e);
 			if (activeChar.isGM())
 			{
 				StringBuilder sb = new StringBuilder(200);
