@@ -291,7 +291,7 @@ public class L2Attackable extends L2Npc
 	private RewardItem[] _harvestItems;
 	private boolean _seeded;
 	private int _seedType = 0;
-	private L2PcInstance _seeder = null;
+	private int _seederObjId = 0;
 
 	private boolean _overhit;
 
@@ -2370,7 +2370,9 @@ public class L2Attackable extends L2Npc
 		// Clear Harvester Rewrard List
 		_harvestItems = null;
 		// Clear mod Seeded stat
-		setSeeded(false);
+		_seeded = false;
+		_seedType = 0;
+		_seederObjId = 0;
 		// Clear overhit value
 		overhitEnabled(false);
 
@@ -2423,14 +2425,14 @@ public class L2Attackable extends L2Npc
 	/**
 	 * Sets state of the mob to seeded. Paramets needed to be set before.
 	 */
-	public void setSeeded()
+	public void setSeeded(L2PcInstance seeder)
 	{
-		if (_seedType != 0 && _seeder != null)
-			setSeeded(_seedType, _seeder.getLevel());
+		if (_seedType != 0 && _seederObjId == seeder.getObjectId())
+			setSeeded(_seedType, seeder.getLevel());
 	}
 
 	/**
-	 * Sets the seed parametrs, but not the seed state
+	 * Sets the seed parameters, but not the seed state
 	 * @param id	- id of the seed
 	 * @param seeder - player who is sowind the seed
 	 */
@@ -2439,11 +2441,11 @@ public class L2Attackable extends L2Npc
 		if (!_seeded)
 		{
 			_seedType = id;
-			_seeder = seeder;
+			_seederObjId = seeder.getObjectId();
 		}
 	}
 
-	public void setSeeded(int id, int seederLvl)
+	private void setSeeded(int id, int seederLvl)
 	{
 		_seeded = true;
 		_seedType = id;
@@ -2498,14 +2500,9 @@ public class L2Attackable extends L2Npc
 		_harvestItems = harvested.toArray(new RewardItem[harvested.size()]);
 	}
 
-	public void setSeeded(boolean seeded)
+	public int getSeederId()
 	{
-		_seeded = seeded;
-	}
-
-	public L2PcInstance getSeeder()
-	{
-	return _seeder;
+	return _seederObjId;
 	}
 
 	public int getSeedType()
