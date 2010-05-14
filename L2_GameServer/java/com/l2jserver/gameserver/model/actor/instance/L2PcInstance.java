@@ -11696,7 +11696,18 @@ public final class L2PcInstance extends L2Playable
 		{
 			_log.log(Level.SEVERE, "deleteMe()", e);
 		}
-		
+
+		try
+		{
+			final int arena = Olympiad.getSpectatorArena(this);
+			if (arena >= 0)
+				Olympiad.removeSpectator(arena, this);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+
 		// Remove from world regions zones
 		L2WorldRegion oldRegion = getWorldRegion();
 		
