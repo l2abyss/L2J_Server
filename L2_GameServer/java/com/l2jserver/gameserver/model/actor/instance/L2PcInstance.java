@@ -3479,7 +3479,7 @@ public final class L2PcInstance extends L2Playable
 			sendPacket(su);
 
             // If over capacity, drop the item
-            if (!isGM() && !_inventory.validateCapacity(0) && newitem.isDropable())
+            if (!isGM() && !_inventory.validateCapacity(0) && newitem.isDropable() && (!newitem.isStackable() || newitem.getLastChange() != L2ItemInstance.MODIFIED))
                 dropItem("InvDrop", newitem, null, true);
 
 			// Cursed Weapon
@@ -3594,7 +3594,7 @@ public final class L2PcInstance extends L2Playable
 				L2ItemInstance createdItem = _inventory.addItem(process, itemId, count, this, reference);
 
 				// If over capacity, drop the item
-				if (!isGM() && !_inventory.validateCapacity(0) && createdItem.isDropable())
+				if (!isGM() && !_inventory.validateCapacity(0) && createdItem.isDropable() && (!createdItem.isStackable() || createdItem.getLastChange() != L2ItemInstance.MODIFIED))
 					dropItem("InvDrop", createdItem, null, true);
 
 				// Cursed Weapon
