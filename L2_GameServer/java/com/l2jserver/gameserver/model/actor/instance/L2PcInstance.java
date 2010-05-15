@@ -5257,12 +5257,12 @@ public final class L2PcInstance extends L2Playable
         _engageid = playerid;
     }
 
-    public void setMaryRequest(boolean state)
+    public void setMarryRequest(boolean state)
     {
         _marryrequest = state;
     }
 
-    public boolean isMaryRequest()
+    public boolean isMarryRequest()
     {
         return _marryrequest;
     }
