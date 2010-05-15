@@ -995,7 +995,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 		                    	msg = new RequestExCubeGameReadyAnswer();
 		                    	break;
 		                    case 0x63:
-		                    	// RequestSeedPhase
+		                    	msg = new RequestSeedPhase();
 		                    	break;
 		                    case 0x65:
 		                    	msg = new RequestPostItemList();

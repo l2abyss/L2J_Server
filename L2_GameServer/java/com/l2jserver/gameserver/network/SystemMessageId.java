@@ -14047,6 +14047,54 @@ public enum SystemMessageId
 	* Message: The character that acquired $s1 ward has been killed.
 	*/
 	THE_CHAR_THAT_ACQUIRED_S1_WARD_HAS_BEEN_KILLED(2751),
+	
+	/**
+	* ID: 2766<br>
+	* Message: Seed of Infinity Stage 1 Attack In Progress.
+	*/
+	SEED_OF_INFINITY_STAGE_1_ATTACK_IN_PROGRESS(2766),
+	
+	/**
+	* ID: 2767<br>
+	* Message: Seed of Infinity Stage 2 Attack In Progress.
+	*/
+	SEED_OF_INFINITY_STAGE_2_ATTACK_IN_PROGRESS(2767),
+	
+	/**
+	* ID: 2768<br>
+	* Message: Seed of Infinity Conquest Complete.
+	*/
+	SEED_OF_INFINITY_CONQUEST_COMPLETE(2768),
+	
+	/**
+	* ID: 2769<br>
+	* Message: Seed of Infinity Stage 1 Defense In Progress.
+	*/
+	SEED_OF_INFINITY_STAGE_1_DEFENSE_IN_PROGRESS(2769),
+	
+	/**
+	* ID: 2770<br>
+	* Message: Seed of Infinity Stage 2 Defense In Progress.
+	*/
+	SEED_OF_INFINITY_STAGE_2_DEFENSE_IN_PROGRESS(2770),
+	
+	/**
+	* ID: 2771<br>
+	* Message: Seed of Destruction Attack in Progress.
+	*/
+	SEED_OF_DESTRUCTION_ATTACK_IN_PROGRESS(2771),
+	
+	/**
+	* ID: 2772<br>
+	* Message: Seed of Destruction Conquest Complete.
+	*/
+	SEED_OF_DESTRUCTION_CONQUEST_COMPLETE(2772),
+	
+	/**
+	* ID: 2773<br>
+	* Message: Seed of Destruction Defense in Progress.
+	*/
+	SEED_OF_DESTRUCTION_DEFENSE_IN_PROGRESS(2773),
 
 	/**
 	* ID: 2795<br>
