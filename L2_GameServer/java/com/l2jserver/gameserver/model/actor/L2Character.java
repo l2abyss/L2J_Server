@@ -2637,43 +2637,7 @@ public abstract class L2Character extends L2Object
 		}
 	}
 
-	/** Task lauching the function stopPvPFlag() */
-	class PvPFlag implements Runnable
-	{
-		public PvPFlag()
-		{
-
-		}
-
-		public void run()
-		{
-			try
-			{
-				if (System.currentTimeMillis() > getPvpFlagLasts())
-				{
-					stopPvPFlag();
-				}
-				else if (System.currentTimeMillis() > (getPvpFlagLasts() - 20000))
-				{
-					updatePvPFlag(2);
-				}
-				else
-				{
-					updatePvPFlag(1);
-					// Start a new PvP timer check
-					//checkPvPFlag();
-				}
-			}
-			catch (Exception e)
-			{
-				_log.log(Level.WARNING, "error in pvp flag task:", e);
-			}
-		}
-	}
 	// =========================================================
-
-
-
 	/** Task lauching the magic skill phases */
 	class FlyToLocationTask implements Runnable
 	{
@@ -6684,45 +6648,9 @@ public abstract class L2Character extends L2Object
 		_castInterruptTime = newSkillCastEndTick-2; 
 	}
 
-	private Future<?> _PvPRegTask;
-
-	private long _pvpFlagLasts;
-
 	private boolean _AIdisabled = false;
 
 	private boolean _isMinion = false;
-
-	public void setPvpFlagLasts(long time)
-	{
-		_pvpFlagLasts = time;
-	}
-
-	public long getPvpFlagLasts()
-	{
-		return _pvpFlagLasts;
-	}
-
-	public void startPvPFlag()
-	{
-		updatePvPFlag(1);
-
-		_PvPRegTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new PvPFlag(), 1000, 1000);
-	}
-
-	public void stopPvpRegTask()
-	{
-		if (_PvPRegTask != null)
-			_PvPRegTask.cancel(true);
-	}
-
-	public void stopPvPFlag()
-	{
-		stopPvpRegTask();
-
-		updatePvPFlag(0);
-
-		_PvPRegTask = null;
-	}
 
 	public void updatePvPFlag(int value)
 	{

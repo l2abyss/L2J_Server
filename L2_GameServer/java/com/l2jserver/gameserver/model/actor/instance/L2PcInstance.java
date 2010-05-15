@@ -512,11 +512,10 @@ public final class L2PcInstance extends L2Playable
 	
 	private boolean _inCrystallize;
 	private boolean _inCraftMode;
-    
-    private L2Transformation _transformation;
-    
-    private int _transformationId = 0;
-
+	
+	private L2Transformation _transformation;
+	private int _transformationId = 0;
+	
 	/** The table containing all L2RecipeList of the L2PcInstance */
 	private Map<Integer, L2RecipeList> _dwarvenRecipeBook = new FastMap<Integer, L2RecipeList>();
 	private Map<Integer, L2RecipeList> _commonRecipeBook = new FastMap<Integer, L2RecipeList>();
@@ -806,6 +805,76 @@ public final class L2PcInstance extends L2Playable
 	
 	private int _movieId = 0;
 	
+	private Future<?> _PvPRegTask;
+
+	private long _pvpFlagLasts;
+	
+	public void setPvpFlagLasts(long time)
+	{
+		_pvpFlagLasts = time;
+	}
+
+	public long getPvpFlagLasts()
+	{
+		return _pvpFlagLasts;
+	}
+
+	public void startPvPFlag()
+	{
+		updatePvPFlag(1);
+
+		_PvPRegTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new PvPFlag(), 1000, 1000);
+	}
+
+	public void stopPvpRegTask()
+	{
+		if (_PvPRegTask != null)
+			_PvPRegTask.cancel(true);
+	}
+
+	public void stopPvPFlag()
+	{
+		stopPvpRegTask();
+
+		updatePvPFlag(0);
+
+		_PvPRegTask = null;
+	}
+	
+	/** Task lauching the function stopPvPFlag() */
+	class PvPFlag implements Runnable
+	{
+		public PvPFlag()
+		{
+
+		}
+
+		public void run()
+		{
+			try
+			{
+				if (System.currentTimeMillis() > getPvpFlagLasts())
+				{
+					stopPvPFlag();
+				}
+				else if (System.currentTimeMillis() > (getPvpFlagLasts() - 20000))
+				{
+					updatePvPFlag(2);
+				}
+				else
+				{
+					updatePvPFlag(1);
+					// Start a new PvP timer check
+					//checkPvPFlag();
+				}
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.WARNING, "error in pvp flag task:", e);
+			}
+		}
+	}
+	
 	// Character UI
 	private L2UIKeysSettings _uiKeySettings;
 	
@@ -1003,9 +1072,14 @@ public final class L2PcInstance extends L2Playable
 
 	public String getAccountName()
 	{
-		if (getClient() == null || getClient().isDetached())
-			return "disconnected";
+		if (getClient() == null)
+			return getAccountNamePlayer();
 		return getClient().getAccountName();
+	}
+	
+	public String getAccountNamePlayer()
+	{
+		return _accountName;
 	}
 
 	public Map<Integer, String> getAccountChars()
