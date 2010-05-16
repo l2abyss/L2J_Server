@@ -27,7 +27,6 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 
-
 /**
  * @author FBIagent<br>
  */
@@ -97,20 +96,17 @@ public class AccessLevels
 				
 				if (accessLevel == _userAccessLevelNum)
 				{
-					_log.warning("AccessLevels: Access level with name " + name + " is using reserved user access level "
-							+ _userAccessLevelNum + ". Ignoring it!");
+					_log.warning("AccessLevels: Access level with name " + name + " is using reserved user access level " + _userAccessLevelNum + ". Ignoring it!");
 					continue;
 				}
 				else if (accessLevel == _masterAccessLevelNum)
 				{
-					_log.warning("AccessLevels: Access level with name " + name + " is using reserved master access level "
-							+ _masterAccessLevelNum + ". Ignoring it!");
+					_log.warning("AccessLevels: Access level with name " + name + " is using reserved master access level " + _masterAccessLevelNum + ". Ignoring it!");
 					continue;
 				}
 				else if (accessLevel < 0)
 				{
-					_log.warning("AccessLevels: Access level with name " + name
-							+ " is using banned access level state(below 0). Ignoring it!");
+					_log.warning("AccessLevels: Access level with name " + name + " is using banned access level state(below 0). Ignoring it!");
 					continue;
 				}
 				

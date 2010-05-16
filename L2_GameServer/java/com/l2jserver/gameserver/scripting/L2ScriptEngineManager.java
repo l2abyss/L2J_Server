@@ -595,8 +595,8 @@ public final class L2ScriptEngineManager
 		}
 		else
 		{
-			_log.warning("Failed executing script: " + script.getAbsolutePath() + "\r\n" + e.getMessage()
-					+ "Additionally failed when trying to write an error report on script directory.");
+			_log.log(Level.WARNING, "Failed executing script: " + script.getAbsolutePath() + "\r\n" + e.getMessage()
+					+ "Additionally failed when trying to write an error report on script directory.", e);
 		}
 	}
 	

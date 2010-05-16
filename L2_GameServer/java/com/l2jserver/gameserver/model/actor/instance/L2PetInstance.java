@@ -676,7 +676,7 @@ public class L2PetInstance extends L2Summon
 		}
 		catch(Exception e)
 		{
-			_logPet.warning("Give all items error " + e);
+			_logPet.log(Level.WARNING, "Give all items error: " + e.getMessage(), e);
 		}
 	}
 
@@ -693,7 +693,7 @@ public class L2PetInstance extends L2Summon
 		}
 		catch (Exception e)
         {
-            _logPet.warning("Error while giving item to owner: " + e);
+            _logPet.log(Level.WARNING, "Error while giving item to owner: " + e.getMessage(), e);
         }
 	}
 
@@ -735,7 +735,7 @@ public class L2PetInstance extends L2Summon
 			world.removeObject(removedItem);
 		}
 		catch (Exception e){
-			_logPet.warning("Error while destroying control item: " + e);
+			_logPet.log(Level.WARNING, "Error while destroying control item: " + e.getMessage(), e);
 		}
 
 		// pet control item no longer exists, delete the pet from the db
@@ -769,7 +769,7 @@ public class L2PetInstance extends L2Summon
 		}
 		catch(Exception e)
 		{
-			_logPet.warning("Pet Drop Error: " + e);
+			_logPet.log(Level.WARNING, "Pet Drop Error: " + e.getMessage(), e);
 		}
 	}
 
@@ -858,7 +858,7 @@ public class L2PetInstance extends L2Summon
 			statement.close();
 			return pet;
 		} catch (Exception e) {
-			_logPet.warning("could not restore pet data: "+ e);
+			_logPet.log(Level.WARNING, "Could not restore pet data: "+ e.getMessage(), e);
 			return null;
 		} finally {
 			try { con.close(); } catch (Exception e) {}

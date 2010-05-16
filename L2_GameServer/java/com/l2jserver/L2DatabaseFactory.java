@@ -114,7 +114,7 @@ public class L2DatabaseFactory
 		{
 			if (Config.DEBUG)
 				_log.fine("Database Connection FAILED");
-			throw new SQLException("could not init DB connection:" + e);
+			throw new SQLException("Could not init DB connection:" + e.getMessage());
 		}
 	}
 	
@@ -224,7 +224,7 @@ public class L2DatabaseFactory
 			}
 			catch (SQLException e)
 			{
-				_log.warning("L2DatabaseFactory: getConnection() failed, trying again " + e);
+				_log.log(Level.WARNING, "L2DatabaseFactory: getConnection() failed, trying again " + e.getMessage(), e);
 			}
 		}
 		return con;

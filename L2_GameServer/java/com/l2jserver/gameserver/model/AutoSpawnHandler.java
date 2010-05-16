@@ -170,7 +170,7 @@ public class AutoSpawnHandler
 		}
 		catch (Exception e)
 		{
-			_log.warning("AutoSpawnHandler: Could not restore spawn data: " + e);
+			_log.log(Level.WARNING, "AutoSpawnHandler: Could not restore spawn data: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -270,8 +270,7 @@ public class AutoSpawnHandler
 		}
 		catch (Exception e)
 		{
-			_log.warning("AutoSpawnHandler: Could not auto spawn for NPC ID " + spawnInst._npcId + " (Object ID = " + spawnInst._objectId
-					+ "): " + e);
+			_log.log(Level.WARNING, "AutoSpawnHandler: Could not auto spawn for NPC ID " + spawnInst._npcId + " (Object ID = " + spawnInst._objectId + "): " + e.getMessage(), e);
 			return false;
 		}
 		
@@ -606,7 +605,7 @@ public class AutoSpawnHandler
 			}
 			catch (Exception e)
 			{
-				_log.warning("AutoSpawnHandler: An error occurred while despawning spawn (Object ID = " + _objectId + "): " + e);
+				_log.log(Level.WARNING, "AutoSpawnHandler: An error occurred while despawning spawn (Object ID = " + _objectId + "): " + e.getMessage(), e);
 			}
 		}
 	}

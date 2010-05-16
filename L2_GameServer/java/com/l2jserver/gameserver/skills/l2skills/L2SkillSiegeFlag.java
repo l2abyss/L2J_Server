@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.skills.l2skills;
 
+import java.util.logging.Level;
+
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -77,8 +79,8 @@ public class L2SkillSiegeFlag extends L2Skill
 			}
 			catch (Exception e)
 			{
-				player.sendMessage("Error placing flag:" + e);
-				_log.warning("Error placing flag:" + e);
+				player.sendMessage("Error placing flag: " + e);
+				_log.log(Level.WARNING, "Error placing flag: " + e.getMessage(), e);
 			}
 			return;
 		}
@@ -102,7 +104,7 @@ public class L2SkillSiegeFlag extends L2Skill
 		catch (Exception e)
 		{
 			player.sendMessage("Error placing flag:" + e);
-			_log.warning("Error placing flag:" + e);
+			_log.log(Level.WARNING, "Error placing flag: " + e.getMessage(), e);
 		}
 	}
 	

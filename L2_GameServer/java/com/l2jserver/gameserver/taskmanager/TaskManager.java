@@ -97,7 +97,7 @@ public final class TaskManager
 			}
 			catch (SQLException e)
 			{
-				_log.warning("cannot updated the Global Task " + id + ": " + e.getMessage());
+				_log.log(Level.WARNING, "Cannot updated the Global Task " + id + ": " + e.getMessage(), e);
 			}
 			finally
 			{
@@ -306,7 +306,7 @@ public final class TaskManager
 				}
 				catch (Exception e)
 				{
-					_log.warning("Bad parameter on task " + task.getId() + ": " + e.getMessage());
+					_log.log(Level.WARNING, "Bad parameter on task " + task.getId() + ": " + e.getMessage(), e);
 					return false;
 				}
 				
@@ -363,7 +363,7 @@ public final class TaskManager
 		}
 		catch (SQLException e)
 		{
-			_log.warning("cannot add the unique task: " + e.getMessage());
+			_log.log(Level.WARNING, "Cannot add the unique task: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -405,7 +405,7 @@ public final class TaskManager
 		}
 		catch (SQLException e)
 		{
-			_log.warning("cannot add the task:  " + e.getMessage());
+			_log.log(Level.WARNING, "Cannot add the task:  " + e.getMessage(), e);
 		}
 		finally
 		{

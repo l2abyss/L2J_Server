@@ -26,6 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
@@ -426,7 +427,7 @@ public class LoginController
 				}
 				catch (Exception e)
 				{
-					_log.warning("Could not set lastServer: " + e);
+					_log.log(Level.WARNING, "Could not set lastServer: " + e.getMessage(), e);
 				}
 				finally
 				{
@@ -461,7 +462,7 @@ public class LoginController
 		}
 		catch (Exception e)
 		{
-			_log.warning("Could not set accessLevel: " + e);
+			_log.log(Level.WARNING, "Could not set accessLevel: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -497,7 +498,7 @@ public class LoginController
 		}
 		catch (Exception e)
 		{
-			_log.warning("Could not set last tracert: " + e);
+			_log.log(Level.WARNING, "Could not set last tracert: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -535,7 +536,7 @@ public class LoginController
 		}
 		catch (Exception e)
 		{
-			_log.warning("could not check gm state:" + e);
+			_log.log(Level.WARNING, "Could not check gm state:" + e.getMessage(), e);
 			ok = false;
 		}
 		finally
@@ -710,7 +711,7 @@ public class LoginController
 		}
 		catch (Exception e)
 		{
-			_log.warning("Could not check password:" + e);
+			_log.log(Level.WARNING, "Could not check password:" + e.getMessage(), e);
 			ok = false;
 		}
 		finally
@@ -783,7 +784,7 @@ public class LoginController
 		{
 			// digest algo not found ??
 			// out of bounds should not be possible
-			_log.warning("could not check ban state:" + e);
+			_log.log(Level.WARNING, "Could not check ban state:" + e.getMessage(), e);
 			ok = false;
 		}
 		finally

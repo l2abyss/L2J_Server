@@ -167,7 +167,7 @@ public class CursedWeapon
 	    		}
 	    		catch (Exception e)
 	    		{
-	    			_log.warning("Could not delete : " + e);
+	    			_log.log(Level.WARNING, "Could not delete : " + e.getMessage(), e);
 	    		}
 	    		finally
 	    		{

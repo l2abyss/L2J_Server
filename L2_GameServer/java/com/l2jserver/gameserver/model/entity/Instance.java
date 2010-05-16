@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -370,11 +371,11 @@ public class Instance
 		}
 		catch (IOException e)
 		{
-			_log.warning("Instance: can not find " + xml.getAbsolutePath() + " ! " + e);
+			_log.log(Level.WARNING, "Instance: can not find " + xml.getAbsolutePath() + " ! " + e.getMessage(), e);
 		}
 		catch (Exception e)
 		{
-			_log.warning("Instance: error while loading " + xml.getAbsolutePath() + " ! " + e);
+			_log.log(Level.WARNING, "Instance: error while loading " + xml.getAbsolutePath() + " ! " + e.getMessage(), e);
 		}
 	}
 
@@ -492,7 +493,7 @@ public class Instance
 				}
 				catch (Exception e)
 				{
-					_log.warning("Error parsing instance xml: " + e);
+					_log.log(Level.WARNING, "Error parsing instance xml: " + e.getMessage(), e);
 					_spawnLoc = new int[3];
 				}
 			}

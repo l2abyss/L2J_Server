@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.templates.effects;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.ChanceCondition;
@@ -122,8 +123,7 @@ public class EffectTemplate
 		}
 		catch (InvocationTargetException e)
 		{
-			_log.warning("Error creating new instance of Class " + _func + " Exception was:");
-			e.getTargetException().printStackTrace();
+			_log.log(Level.WARNING, "Error creating new instance of Class " + _func + " Exception was: " + e.getTargetException().getMessage(), e.getTargetException());
 			return null;
 		}
 		
@@ -176,8 +176,7 @@ public class EffectTemplate
 		}
 		catch (InvocationTargetException e)
 		{
-			_log.warning("Error creating new instance of Class " + func + " Exception was:");
-			e.getTargetException().printStackTrace();
+			_log.log(Level.WARNING, "Error creating new instance of Class " + func + " Exception was: " + e.getTargetException().getMessage(), e.getTargetException());
 			return null;
 		}
 	}

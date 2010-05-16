@@ -532,7 +532,7 @@ public final class QuestState
 		}
 		catch (Exception e)
 		{
-			_log.finer(getPlayer().getName() + ": variable " + var + " isn't an integer: " + varint + e);
+			_log.log(Level.FINER, getPlayer().getName() + ": variable " + var + " isn't an integer: " + varint + " ! " + e.getMessage(), e);
 			//	    if (Config.AUTODELETE_INVALID_QUEST_DATA)
 			//		exitQuest(true);
 		}

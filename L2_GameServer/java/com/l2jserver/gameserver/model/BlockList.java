@@ -29,6 +29,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -105,7 +106,7 @@ public class BlockList
 		}
 		catch (Exception e)
 		{
-			_log.warning("Error found in " + ObjId + " FriendList while loading BlockList: " + e);
+			_log.log(Level.WARNING, "Error found in " + ObjId + " FriendList while loading BlockList: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -138,7 +139,7 @@ public class BlockList
 		}
 		catch (Exception e)
 		{
-			_log.warning("Could not add block player: " + e);
+			_log.log(Level.WARNING, "Could not add block player: " + e.getMessage(), e);
 		}
 		finally
 		{

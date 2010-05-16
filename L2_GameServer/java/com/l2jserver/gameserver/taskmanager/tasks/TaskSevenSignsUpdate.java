@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.taskmanager.tasks;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.SevenSigns;
@@ -63,8 +64,7 @@ public class TaskSevenSignsUpdate extends Task
 		}
 		catch (Exception e)
 		{
-			_log.warning("SevenSigns: Failed to save Seven Signs configuration: "
-			        + e);
+			_log.log(Level.WARNING, "SevenSigns: Failed to save Seven Signs configuration: " + e.getMessage(), e);
 		}
 	}
 	

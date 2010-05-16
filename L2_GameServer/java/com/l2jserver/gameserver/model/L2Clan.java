@@ -1084,7 +1084,7 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			_log.warning("Error could not store clan notice: " + e);
+			_log.log(Level.WARNING, "Error could not store clan notice: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -1228,7 +1228,7 @@ public class L2Clan
 			}
 			catch (Exception e)
 			{
-				_log.warning("Error could not store clan skills: " + e);
+				_log.log(Level.WARNING, "Error could not store clan skills: " + e.getMessage(), e);
 			}
 			finally
 			{
@@ -1622,7 +1622,7 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			_log.warning("Could not restore clan sub-units: " + e);
+			_log.log(Level.WARNING, "Could not restore clan sub-units: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -1900,7 +1900,7 @@ public class L2Clan
 			}
 			catch (Exception e)
 			{
-				_log.warning("Could not store clan privs for rank: " + e);
+				_log.log(Level.WARNING, "Could not store clan privs for rank: " + e.getMessage(), e);
 			}
 			finally
 			{
@@ -1946,7 +1946,7 @@ public class L2Clan
 			}
 			catch (Exception e)
 			{
-				_log.warning("Could not create new rank and store clan privs for rank: " + e);
+				_log.log(Level.WARNING, "Could not create new rank and store clan privs for rank: " + e.getMessage(), e);
 			}
 			finally
 			{
@@ -2073,7 +2073,7 @@ public class L2Clan
 			}
 			catch (Exception e)
 			{
-				_log.warning("Could not store auction for clan: " + e);
+				_log.log(Level.WARNING, "Could not store auction for clan: " + e.getMessage(), e);
 			}
 			finally
 			{
@@ -2676,7 +2676,7 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			_log.warning("could not increase clan level:" + e);
+			_log.log(Level.WARNING, "could not increase clan level:" + e.getMessage(), e);
 		}
 		finally
 		{
@@ -2749,7 +2749,7 @@ public class L2Clan
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Could not update crest for clan " + getName() + " [" + getClanId() + "] : " + e.getMessage());
+			_log.log(Level.WARNING, "Could not update crest for clan " + getName() + " [" + getClanId() + "] : " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -2794,7 +2794,7 @@ public class L2Clan
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Could not update ally crest for ally/clan id " + allyId + " : " + e.getMessage());
+			_log.log(Level.WARNING, "Could not update ally crest for ally/clan id " + allyId + " : " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -2855,7 +2855,7 @@ public class L2Clan
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Could not update large crest for clan " + getName() + " [" + getClanId() + "] : " + e.getMessage());
+			_log.log(Level.WARNING, "Could not update large crest for clan " + getName() + " [" + getClanId() + "] : " + e.getMessage(), e);
 		}
 		finally
 		{

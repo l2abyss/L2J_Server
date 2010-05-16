@@ -132,7 +132,7 @@ public class UITable
 		}
 		catch (Exception e)
 		{
-			_log.warning("error while creating UI Default Keys table " + e);
+			_log.log(Level.WARNING, "Error while creating UI Default Keys table " + e.getMessage(), e);
 		}
 		finally
 		{

@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -222,7 +223,7 @@ public class CharSelectionInfo extends L2GameServerPacket
         }
         catch (Exception e)
         {
-            _log.warning("Could not restore char info: " + e);
+            _log.log(Level.WARNING, "Could not restore char info: " + e.getMessage(), e);
         }
         finally
         {
@@ -257,7 +258,7 @@ public class CharSelectionInfo extends L2GameServerPacket
         }
         catch (Exception e)
         {
-            _log.warning("Could not restore char subclass info: " + e);
+            _log.log(Level.WARNING, "Could not restore char subclass info: " + e.getMessage(), e);
         }
         finally
         {
@@ -363,7 +364,7 @@ public class CharSelectionInfo extends L2GameServerPacket
             }
             catch (Exception e)
             {
-                _log.warning("Could not restore augmentation info: " + e);
+                _log.log(Level.WARNING, "Could not restore augmentation info: " + e.getMessage(), e);
             }
             finally { try { con.close(); } catch (Exception e) {} }
         }

@@ -77,7 +77,7 @@ public class Couple
 		}
 		catch (Exception e)
 		{
-			_log.severe("Exception: Couple.load(): " + e);
+			_log.log(Level.SEVERE, "Exception: Couple.load(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -185,7 +185,7 @@ public class Couple
 		}
 		catch (Exception e)
 		{
-			_log.severe("Exception: Couple.divorce(): " + e);
+			_log.log(Level.SEVERE, "Exception: Couple.divorce(): " + e.getMessage(), e);
 		}
 		finally
 		{

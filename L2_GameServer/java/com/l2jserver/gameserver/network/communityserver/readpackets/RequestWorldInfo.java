@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.network.communityserver.readpackets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.netcon.BaseReadPacket;
@@ -119,7 +120,7 @@ public final class RequestWorldInfo extends BaseReadPacket
 				}
 				catch (Exception e)
 				{
-					_log.warning("Could not restore char info: " + e.getMessage());
+					_log.log(Level.WARNING, "Could not restore char info: " + e.getMessage(), e);
 				}
 				finally
 				{

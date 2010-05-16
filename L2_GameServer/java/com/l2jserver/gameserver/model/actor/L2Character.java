@@ -2353,6 +2353,9 @@ public abstract class L2Character extends L2Object
 			{
 				for (L2PcInstance player : plrs)
 				{
+					if (player == null)
+						continue;
+					
 					if (getRunSpeed() == 0)
 						player.sendPacket(new ServerObjectInfo((L2Npc) this, player));
 					else
@@ -2631,8 +2634,7 @@ public abstract class L2Character extends L2Object
 			}
 			catch (Exception e)
 			{
-				_log.info("NotifyAITask failed. "+ e);
-				e.printStackTrace();
+				_log.log(Level.WARNING, "NotifyAITask failed. " + e.getMessage(), e);
 			}
 		}
 	}

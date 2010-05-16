@@ -255,7 +255,7 @@ public class L2Event
 		}
 		catch (Exception e)
 		{
-			_log.warning("error when signing in the event:" + e);
+			_log.log(Level.WARNING, "Error when signing in the event:" + e.getMessage(), e);
 		}
 	}
 	

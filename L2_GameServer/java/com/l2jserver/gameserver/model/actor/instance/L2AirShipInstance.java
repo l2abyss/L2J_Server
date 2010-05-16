@@ -22,6 +22,7 @@ import java.io.LineNumberReader;
 import java.util.Collection;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -126,7 +127,7 @@ public class L2AirShipInstance extends L2Character
 			}
 			catch (Exception e)
 			{
-				_airShiplog.warning("error while creating airship table " + e);
+				_airShiplog.log(Level.WARNING, "Error while creating airship table " + e.getMessage(), e);
 			}
 			finally
 			{

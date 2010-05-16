@@ -7206,7 +7206,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			_log.severe("Could not insert char data: " + e);
+			_log.log(Level.SEVERE, "Could not insert char data: " + e.getMessage(), e);
 			return false;
 		}
 		finally
@@ -7627,8 +7627,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			if (_log.isLoggable(Level.SEVERE))
-				_log.warning("Could not restore recipe book data:" + e);
+			_log.log(Level.SEVERE, "Could not restore recipe book data:" + e.getMessage(), e);
 		}
 		finally {
 			try { con.close(); } catch (Exception e) {}
@@ -7744,8 +7743,20 @@ public final class L2PcInstance extends L2Playable
 			statement.execute();
 			statement.close();
 		}
-		catch (Exception e) { _log.warning("Could not store char base data: "+ e); }
-		finally { try { con.close(); } catch (Exception e) {} }
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Could not store char base data: " + e.getMessage(), e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
 	}
 
 	private void storeCharSub()
@@ -7775,7 +7786,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			_log.warning("Could not store sub class data for " + getName() + ": " + e);
+			_log.log(Level.WARNING, "Could not store sub class data for " + getName() + ": " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -8012,7 +8023,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			_log.warning("Error could not delete skill: " + e);
+			_log.log(Level.WARNING, "Error could not delete skill: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -8079,7 +8090,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			_log.warning("Error could not store char skills: " + e);
+			_log.log(Level.WARNING, "Error could not store char skills: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -8125,7 +8136,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			_log.warning("Could not restore character "+this+ " skills: " + e);
+			_log.log(Level.WARNING, "Could not restore character " + this + " skills: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -10481,7 +10492,7 @@ public final class L2PcInstance extends L2Playable
                 statement.execute();
             }
             catch (Exception e) {
-                _log.warning("WARNING: Could not add character sub class for " + getName() + ": " + e);
+                _log.log(Level.WARNING, "WARNING: Could not add character sub class for " + getName() + ": " + e.getMessage(), e);
                 return false;
             }
             finally
@@ -10607,7 +10618,7 @@ public final class L2PcInstance extends L2Playable
             }
             catch (Exception e)
             {
-            	_log.warning("Could not modify sub class for " + getName() + " to class index " + classIndex + ": " + e);
+            	_log.log(Level.WARNING, "Could not modify sub class for " + getName() + " to class index " + classIndex + ": " + e.getMessage(), e);
 
             	// This must be done in order to maintain data consistency.
                 getSubClasses().remove(classIndex);
@@ -10753,7 +10764,7 @@ public final class L2PcInstance extends L2Playable
 				}
 				catch (Exception e)
 				{
-					_log.info("Could not switch " + getName() + "'s sub class to class index " + classIndex + ": " + e);
+					_log.log(Level.WARNING, "Could not switch " + getName() + "'s sub class to class index " + classIndex + ": " + e.getMessage(), e);
 					return false;
 				}
 			}
@@ -14052,8 +14063,20 @@ public final class L2PcInstance extends L2Playable
     				statement.execute();
     				statement.close();
     			}
-    			catch (Exception e) { _log.warning("Could not update character teleport bookmark data: "+ e); }
-    			finally { try { con.close(); } catch (Exception e) {} }
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, "Could not update character teleport bookmark data: " + e.getMessage(), e);
+				}
+				finally
+				{
+					try
+					{
+						con.close();
+					}
+					catch (Exception e)
+					{
+					}
+				}
     			
     		}
     		count++;
@@ -14078,8 +14101,20 @@ public final class L2PcInstance extends L2Playable
 			statement.execute();
 			statement.close();
 		}
-		catch (Exception e) { _log.warning("Could not delete character teleport bookmark data: "+ e); }
-		finally { try { con.close(); } catch (Exception e) {} }
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Could not delete character teleport bookmark data: " + e.getMessage(), e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
 		
 		int count = 0;
 		int size = tpbookmark.size();
@@ -14269,8 +14304,20 @@ public final class L2PcInstance extends L2Playable
 			statement.execute();
 			statement.close();
 		}
-		catch (Exception e) { _log.warning("Could not insert character teleport bookmark data: "+ e); }
-		finally { try { con.close(); } catch (Exception e) {} }
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Could not insert character teleport bookmark data: " + e.getMessage(), e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
 		
 		sendPacket(new ExGetBookMarkInfoPacket(this));
     }
@@ -14552,7 +14599,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			_log.warning("Error found in " + getName() + "'s FriendList: " + e);
+			_log.log(Level.WARNING, "Error found in " + getName() + "'s FriendList: " + e.getMessage(), e);
 		}
 		finally
 		{

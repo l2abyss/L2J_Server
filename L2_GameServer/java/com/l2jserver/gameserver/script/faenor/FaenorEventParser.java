@@ -136,7 +136,7 @@ public class FaenorEventParser extends FaenorParser
 		}
 		catch (Exception e)
 		{
-			_log.warning("ERROR(parseEventDrop):" + e.getMessage());
+			_log.log(Level.WARNING, "ERROR(parseEventDrop):" + e.getMessage(), e);
 		}
 	}
 	

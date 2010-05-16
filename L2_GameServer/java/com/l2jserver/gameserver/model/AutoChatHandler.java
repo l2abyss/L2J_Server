@@ -107,7 +107,7 @@ public class AutoChatHandler implements SpawnListener
 		}
 		catch (Exception e)
 		{
-			_log.warning("AutoSpawnHandler: Could not restore chat data: " + e);
+			_log.log(Level.WARNING, "AutoSpawnHandler: Could not restore chat data: " + e.getMessage(), e);
 		}
 		finally
 		{

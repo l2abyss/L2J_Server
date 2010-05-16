@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.entity;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -135,7 +136,7 @@ public class TvTEvent
 		}
 		catch (Exception e)
 		{
-			_log.warning("TvTEventEngine[TvTEvent.startParticipation()]: exception: " + e);
+			_log.log(Level.WARNING, "TvTEventEngine[TvTEvent.startParticipation()]: exception: " + e.getMessage(), e);
 			return false;
 		}
 		
@@ -228,7 +229,7 @@ public class TvTEvent
 			catch (Exception e)
 			{
 				_TvTEventInstance = 0;
-				_log.warning("TvTEventEngine[TvTEvent.createDynamicInstance]: exception: " + e);
+				_log.log(Level.WARNING, "TvTEventEngine[TvTEvent.createDynamicInstance]: exception: " + e.getMessage(), e);
 			}
 		}
 

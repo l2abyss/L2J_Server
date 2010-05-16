@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -106,7 +107,7 @@ public class ShortCuts
         }
         catch (Exception e)
         {
-			_log.warning("Could not store character shortcut: " + e);
+			_log.log(Level.WARNING, "Could not store character shortcut: " + e.getMessage(), e);
         }
         finally
         {
@@ -179,7 +180,7 @@ public class ShortCuts
         }
         catch (Exception e)
         {
-			_log.warning("Could not delete character shortcut: " + e);
+			_log.log(Level.WARNING, "Could not delete character shortcut: " + e.getMessage(), e);
         }
         finally
         {
@@ -218,7 +219,7 @@ public class ShortCuts
         }
         catch (Exception e)
         {
-			_log.warning("Could not restore character shortcuts: " + e);
+			_log.log(Level.WARNING, "Could not restore character shortcuts: " + e.getMessage(), e);
         }
         finally
         {

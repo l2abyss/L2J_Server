@@ -99,7 +99,6 @@ public class RaidBossPointsManager
 			}
 			catch(Exception e)
 			{
-				_log.warning(e.getMessage());
 			}
 		}
 	}

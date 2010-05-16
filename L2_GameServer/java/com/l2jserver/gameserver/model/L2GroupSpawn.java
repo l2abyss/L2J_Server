@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.model;
 
 import java.lang.reflect.Constructor;
+import java.util.logging.Level;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.Territory;
@@ -99,7 +100,7 @@ public class L2GroupSpawn extends L2Spawn
 		}
 		catch (Exception e)
 		{
-			_log.warning("NPC class not found: " + e);
+			_log.log(Level.WARNING, "NPC class not found: " + e.getMessage(), e);
 			return null;
 		}
 	}

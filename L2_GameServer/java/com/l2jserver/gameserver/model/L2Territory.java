@@ -168,7 +168,7 @@ public class L2Territory
 			    return p;
 			}
 		}
-		_log.warning("Can't make point for territory"+_terr);
+		_log.warning("Can't make point for territory " + _terr);
 		return p;
 	}
     public int getProcMax()

@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 
 import javolution.text.TextBuilder;
 
@@ -595,7 +596,7 @@ public class L2SignsPriestInstance extends L2Npc
 				}
 				catch (Exception e)
 				{
-					_log.warning("SevenSigns: Error occurred while teleporting player: " + e);
+					_log.log(Level.WARNING, "SevenSigns: Error occurred while teleporting player: " + e.getMessage(), e);
 				}
 				break;
 			case 16:

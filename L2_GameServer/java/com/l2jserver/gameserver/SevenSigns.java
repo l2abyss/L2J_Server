@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -180,7 +181,7 @@ public class SevenSigns
 		}
 		catch (Exception e)
 		{
-			_log.severe("SevenSigns: Failed to load configuration: " + e);
+			_log.log(Level.SEVERE, "SevenSigns: Failed to load configuration: " + e.getMessage(), e);
 		}
 		
 		_log.info("SevenSigns: Currently in the " + getCurrentPeriodName() + " period!");
@@ -802,7 +803,7 @@ public class SevenSigns
 		}
 		catch (SQLException e)
 		{
-			_log.severe("SevenSigns: Unable to load Seven Signs data from database: " + e);
+			_log.log(Level.SEVERE, "SevenSigns: Unable to load Seven Signs data from database: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -861,7 +862,7 @@ public class SevenSigns
 		}
 		catch (SQLException e)
 		{
-			_log.severe("SevenSigns: Unable to save data to database: " + e);
+			_log.log(Level.SEVERE, "SevenSigns: Unable to save data to database: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -903,7 +904,7 @@ public class SevenSigns
 		}
 		catch (SQLException e)
 		{
-			_log.severe("SevenSigns: Unable to save data to database: " + e);
+			_log.log(Level.SEVERE, "SevenSigns: Unable to save data to database: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -959,7 +960,7 @@ public class SevenSigns
 		}
 		catch (SQLException e)
 		{
-			_log.severe("SevenSigns: Unable to save data to database: " + e);
+			_log.log(Level.SEVERE, "SevenSigns: Unable to save data to database: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -1061,7 +1062,7 @@ public class SevenSigns
 			}
 			catch (SQLException e)
 			{
-				_log.severe("SevenSigns: Failed to save data: " + e);
+				_log.log(Level.SEVERE, "SevenSigns: Failed to save data: " + e.getMessage(), e);
 			}
 			finally
 			{

@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.skills.l2skills;
 
+import java.util.logging.Level;
+
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
@@ -84,7 +86,7 @@ public class L2SkillSpawn extends L2Skill
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception while spawning NPC ID:"+_npcId+", skill ID:"+this.getId()+","+e);
+			_log.log(Level.WARNING, "Exception while spawning NPC ID: " + _npcId + ", skill ID: " + this.getId() + ", exception: " + e.getMessage(), e);
 		}
 	}
 }

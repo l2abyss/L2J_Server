@@ -17,6 +17,8 @@ package com.l2jserver.gameserver.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
@@ -24,12 +26,12 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 
 /**
- * This class ...
- *
- * @version $Revision: 1.5.4.2 $ $Date: 2005/03/27 15:29:33 $
+ * Clan member class.
  */
 public class L2ClanMember
 {
+	private static final Logger _log = Logger.getLogger(L2ClanMember.class.getName());
+	
 	private L2Clan _clan;
 	private int _objectId;
 	private String _name;
@@ -248,7 +250,7 @@ public class L2ClanMember
 		}
 		catch (Exception e)
 		{
-			//_log.warning("could not set char power_grade:"+e);
+			_log.log(Level.WARNING, "Could not update pledge type: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -298,7 +300,7 @@ public class L2ClanMember
 		}
 		catch (Exception e)
 		{
-			//_log.warning("could not set char power_grade:"+e);
+			_log.log(Level.WARNING, "Could not update power _grade: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -638,7 +640,7 @@ public class L2ClanMember
          }
          catch (SQLException e)
          {
-             //_log.warning("could not set apprentice/sponsor:"+e.getMessage());
+             _log.log(Level.WARNING, "Could not save apprentice/sponsor: " + e.getMessage(), e);
          }
          finally
          {

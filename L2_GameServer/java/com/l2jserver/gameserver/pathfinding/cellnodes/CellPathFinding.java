@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.pathfinding.cellnodes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -78,7 +79,7 @@ public class CellPathFinding extends PathFinding
 		}
 		catch (Exception e)
 		{
-			_log.warning("CellPathFinding: Problem during buffer init: " + e.getMessage());
+			_log.log(Level.WARNING, "CellPathFinding: Problem during buffer init: " + e.getMessage(), e);
 			throw new Error("CellPathFinding: load aborted");
 		}
 	}

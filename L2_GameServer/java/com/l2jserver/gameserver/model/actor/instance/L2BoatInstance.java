@@ -22,6 +22,7 @@ import java.io.LineNumberReader;
 import java.util.Collection;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -181,7 +182,7 @@ public class L2BoatInstance extends L2Character
 			}
 			catch (Exception e)
 			{
-				_logBoat.warning("error while creating boat table " + e);
+				_logBoat.log(Level.WARNING, "Error while creating boat table " + e.getMessage(), e);
 			}
 			finally
 			{

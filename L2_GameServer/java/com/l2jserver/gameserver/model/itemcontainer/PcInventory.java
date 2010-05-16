@@ -667,10 +667,10 @@ public class PcInventory extends Inventory
             statement2.close();
         }
         catch (Exception e) {
-			_log.log(Level.WARNING, "could not restore inventory:", e);
+			_log.log(Level.WARNING, "Could not restore inventory: " + e.getMessage(), e);
         }
         finally {
-            try { con.close(); } catch (Exception e) { _log.warning(""); }
+            try { con.close(); } catch (Exception e) {}
         }
         return paperdoll;
     }

@@ -33,6 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
@@ -292,7 +293,7 @@ public class Universe implements java.io.Serializable
 		}
 		catch (Exception e)
 		{
-			_log.warning("cannot create universe.png: " + e);
+			_log.log(Level.WARNING, "Cannot create universe.png: " + e.getMessage(), e);
 		}
 	}
 	
