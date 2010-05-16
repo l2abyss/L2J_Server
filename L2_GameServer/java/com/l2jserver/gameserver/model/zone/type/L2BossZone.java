@@ -114,10 +114,7 @@ public class L2BossZone extends L2ZoneType
 
 				player.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
 				if (player.isGM())
-				{
-					player.sendMessage("You entered " + _zoneName);
 					return;
-				}
 				// if player has been (previously) cleared by npc/ai for entry and the zone is 
 				// set to receive players (aka not waiting for boss to respawn)
 				if (_playersAllowed.contains(player.getObjectId()))
@@ -178,10 +175,7 @@ public class L2BossZone extends L2ZoneType
 				final L2PcInstance player = (L2PcInstance) character;
 				player.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
 				if (player.isGM())
-				{
-					player.sendMessage("You left " + _zoneName);
 					return;
-				}
 				// if the player just got disconnected/logged out, store the dc
 				// time so that
 				// decisions can be made later about allowing or not the player
