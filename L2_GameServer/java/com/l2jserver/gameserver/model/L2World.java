@@ -452,8 +452,11 @@ public final class L2World
 					{
 						for (L2Object obj : vObj)
 						{
-							if (obj != null && obj.getKnownList() != null)
+							if (obj != null)
+							{
 								obj.getKnownList().removeKnownObject(object);
+								object.getKnownList().removeKnownObject(obj);
+							}
 						}
 					}
 				}

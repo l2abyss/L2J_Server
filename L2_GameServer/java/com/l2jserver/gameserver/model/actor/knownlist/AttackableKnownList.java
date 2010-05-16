@@ -73,7 +73,7 @@ public class AttackableKnownList extends NpcKnownList
 			return 0;
 
 		if (object instanceof L2Playable)
-			return 1500;
+			return object.getKnownList().getDistanceToWatchObject(getActiveObject());
 
 		if (getActiveChar().getAggroRange() > getActiveChar().getFactionRange())
 			return getActiveChar().getAggroRange();

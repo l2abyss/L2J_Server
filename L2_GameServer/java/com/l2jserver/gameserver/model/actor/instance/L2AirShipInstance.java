@@ -184,8 +184,6 @@ public class L2AirShipInstance extends L2Character
 	protected int _runstate = 0;
 	protected ExMoveToLocationAirShip _easi = null;
 	
-	private Map<Integer, L2PcInstance> _inAirShip;
-	
 	public L2AirShipInstance(int objectId, L2CharTemplate template)
 	{
 		super(objectId, template);
@@ -428,7 +426,7 @@ public class L2AirShipInstance extends L2Character
 	public void updatePeopleInTheAirShip(int x, int y, int z)
 	{
 		
-		if (_inAirShip != null)
+		if (_passengers != null && !_passengers.isEmpty())
 		{
 			if ((lastx == -1) || (lasty == -1))
 			{
@@ -440,15 +438,14 @@ public class L2AirShipInstance extends L2Character
 				lastx = x;
 				lasty = y;
 			}
-			for (int i = 0; i < _inAirShip.size(); i++)
+			for (L2PcInstance player : _passengers)
 			{
-				L2PcInstance player = _inAirShip.get(i);
 				if (player != null && player.isInAirShip())
 				{
 					if (player.getAirShip() == this)
 					{
 						// player.getKnownList().addKnownObject(this);
-						player.getPosition().setXYZ(x, y, z);
+						player.setXYZ(x, y, z);
 						player.revalidateZone(false);
 					}
 				}
@@ -549,8 +546,9 @@ public class L2AirShipInstance extends L2Character
 			z = 2608;			
 		}
 		_passengers.remove(player);
-		player.broadcastPacket(new ExGetOffAirShip(player, this, x ,y ,z));
 		player.setAirShip(null);
+		player.broadcastPacket(new ExGetOffAirShip(player, this, x ,y ,z));
+		player.teleToLocation(x, y, z);
 	}
 	
 	public void teleportAirShip(int x, int y, int z,int heading)
@@ -623,7 +621,7 @@ public class L2AirShipInstance extends L2Character
 	
 	public int getSpeed1()
 	{
-		return 300;
+		return (int)boatSpeed;
 	}
 	
 	public int getSpeed2()
