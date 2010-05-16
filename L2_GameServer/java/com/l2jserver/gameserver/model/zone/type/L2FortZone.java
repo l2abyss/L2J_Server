@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
+import java.util.logging.Level;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
@@ -172,7 +174,7 @@ public class L2FortZone extends L2SpawnZone
 				}
 				catch (NullPointerException e)
 				{
-					e.printStackTrace();
+					_log.log(Level.WARNING, "Exception on onEnter(): " + e.getMessage(), e);
 				}
 			}
 		}
@@ -202,7 +204,7 @@ public class L2FortZone extends L2SpawnZone
 				}
 				catch (NullPointerException e)
 				{
-					e.printStackTrace();
+					_log.log(Level.WARNING, "Exception on updateZoneStatusForCharactersInside(): " + e.getMessage(), e);
 				}
 			}
 		}

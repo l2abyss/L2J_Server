@@ -610,7 +610,7 @@ class OlympiadGame
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.log(Level.WARNING, "Exception on validateWinnder(): " + e.getMessage(), e);
 				}
 				
 			}
@@ -649,7 +649,7 @@ class OlympiadGame
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.log(Level.WARNING, "Exception on validateWinnder(): " + e.getMessage(), e);
 				}
 			}
 			else if (_pOneCrash && _pTwoCrash)
@@ -675,7 +675,7 @@ class OlympiadGame
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.log(Level.WARNING, "Exception on validateWinnder(): " + e.getMessage(), e);
 				}
 			}
 			playerOneStat.set(COMP_DONE, playerOnePlayed + 1);
@@ -1078,7 +1078,7 @@ class OlympiadGameTask implements Runnable
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.log(Level.WARNING, "Exception on portPlayersBack(): " + e.getMessage(), e);
 				}
 			}
 

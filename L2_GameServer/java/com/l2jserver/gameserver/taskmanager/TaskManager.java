@@ -26,6 +26,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -225,8 +226,7 @@ public final class TaskManager
 		}
 		catch (Exception e)
 		{
-			_log.severe("error while loading Global Task table " + e);
-			e.printStackTrace();
+			_log.log(Level.SEVERE, "Error while loading Global Task table: " + e.getMessage(), e);
 		}
 		finally
 		{

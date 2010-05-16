@@ -13,6 +13,7 @@
 package com.l2jserver.gameserver.script.faenor;
 
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.script.ScriptContext;
@@ -102,8 +103,7 @@ public class FaenorEventParser extends FaenorParser
 		}
 		catch (Exception e)
 		{
-			_log.warning("Error in event parser.");
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error in event parser: " + e.getMessage(), e);
 		}
 	}
 	

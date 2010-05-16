@@ -260,7 +260,7 @@ public final class QuestState
 			}
 			catch (Exception e)
 			{
-				_log.finer(getPlayer().getName() + ", " + getQuestName() + " cond [" + val + "] is not an integer.  Value stored, but no packet was sent: " + e);
+				_log.log(Level.WARNING, getPlayer().getName() + ", " + getQuestName() + " cond [" + val + "] is not an integer.  Value stored, but no packet was sent: " + e.getMessage(), e);
 			}
 		}
 
@@ -408,7 +408,7 @@ public final class QuestState
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "could not insert player's global quest variable:", e);
+			_log.log(Level.WARNING, "Could not insert player's global quest variable: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -418,7 +418,6 @@ public final class QuestState
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
 			}
 		}
 	}
@@ -451,7 +450,7 @@ public final class QuestState
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "could not load player's global quest variable:", e);
+			_log.log(Level.WARNING, "Could not load player's global quest variable: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -461,7 +460,6 @@ public final class QuestState
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
 			}
 		}
 		return result;
@@ -486,7 +484,7 @@ public final class QuestState
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "could not delete player's global quest variable:", e);
+			_log.log(Level.WARNING, "could not delete player's global quest variable: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -496,7 +494,6 @@ public final class QuestState
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
 			}
 		}
 	}

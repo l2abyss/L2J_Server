@@ -509,7 +509,7 @@ public class Castle
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.log(Level.WARNING, "Exception in setOwner: " + e.getMessage(), e);
 				}
 				oldOwner.setHasCastle(0); // Unset has castle flag for old owner
 				for (L2PcInstance member : oldOwner.getOnlineMembers(0))
@@ -723,8 +723,7 @@ public class Castle
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: loadCastleData(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: loadCastleData(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -878,8 +877,7 @@ public class Castle
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: loadCastleDoor(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: loadCastleDoor(): " + e.getMessage(),e );
 		}
 		finally
 		{
@@ -913,8 +911,7 @@ public class Castle
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: loadCastleDoorUpgrade(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: loadCastleDoorUpgrade(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -941,8 +938,7 @@ public class Castle
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: removeDoorUpgrade(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: removeDoorUpgrade(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -972,8 +968,7 @@ public class Castle
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: saveDoorUpgrade(int doorId, int hp, int pDef, int mDef): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: saveDoorUpgrade(int doorId, int hp, int pDef, int mDef): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -1029,8 +1024,7 @@ public class Castle
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: updateOwnerInDB(L2Clan clan): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: updateOwnerInDB(L2Clan clan): " + e.getMessage(), e);
 		}
 		finally
 		{

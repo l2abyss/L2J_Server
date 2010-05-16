@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import java.nio.BufferUnderflowException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -45,8 +46,7 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 		}
 		catch (Exception e)
 		{
-			_log.severe("Client: "+getClient().toString()+" - Failed reading: "+getType()+" - L2J Server Version: "+Config.SERVER_VERSION+" - DP Revision: "+Config.DATAPACK_VERSION);
-			e.printStackTrace();
+			_log.log(Level.SEVERE, "Client: " + getClient().toString() + " - Failed reading: " + getType() + " - L2J Server Version: " + Config.SERVER_VERSION + " - DP Revision: " + Config.DATAPACK_VERSION + " ; " + e.getMessage(), e);
 			
 			if (e instanceof BufferUnderflowException) // only one allowed per client per minute
 			{
@@ -109,8 +109,7 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 		}
 		catch (Throwable t)
 		{
-			_log.severe("Client: "+getClient().toString()+" - Failed running: "+getType()+" - L2J Server Version: "+Config.SERVER_VERSION+" - DP Revision: "+Config.DATAPACK_VERSION);
-			t.printStackTrace();
+			_log.log(Level.SEVERE, "Client: " + getClient().toString() + " - Failed running: " + getType() + " - L2J Server Version: " + Config.SERVER_VERSION + " - DP Revision: " + Config.DATAPACK_VERSION + " ; " + t.getMessage(), t);
 			// in case of EnterWorld error kick player from game
 			if (this instanceof EnterWorld) 
 				getClient().closeNow();

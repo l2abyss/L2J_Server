@@ -192,8 +192,7 @@ public class Auction
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: Auction.load(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: Auction.load(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -241,8 +240,7 @@ public class Auction
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: Auction.loadBid(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: Auction.loadBid(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -400,8 +398,7 @@ public class Auction
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Exception: Auction.updateInDB(L2PcInstance bidder, int bid): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.SEVERE, "Exception: Auction.updateInDB(L2PcInstance bidder, int bid): " + e.getMessage(), e);
 		}
 		finally
 		{

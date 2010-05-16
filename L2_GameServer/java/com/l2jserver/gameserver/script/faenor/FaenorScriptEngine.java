@@ -19,6 +19,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -186,8 +187,7 @@ public class FaenorScriptEngine extends ScriptEngine
 		}
 		catch (ParserNotCreatedException e)
 		{
-			_log.warning("ERROR: No parser registered for Script: " + parserClass);
-			e.printStackTrace();
+			_log.log(Level.WARNING, "ERROR: No parser registered for Script: " + parserClass + ": " + e.getMessage(), e);
 		}
 		
 		if (parser == null)
@@ -203,8 +203,7 @@ public class FaenorScriptEngine extends ScriptEngine
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
-			_log.warning("Script Parsing Failed.");
+			_log.log(Level.WARNING, "Script Parsing Failed: " + e.getMessage(), e);
 		}
 	}
 	

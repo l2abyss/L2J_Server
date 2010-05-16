@@ -678,19 +678,10 @@ public class Siege implements Siegable
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: clearSiegeClan(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: clearSiegeClan(): " + e.getMessage(), e);
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e)
-			{
-			}
-
 			try
 			{
 				con.close();
@@ -717,19 +708,10 @@ public class Siege implements Siegable
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: clearSiegeWaitingClan(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: clearSiegeWaitingClan(): " + e.getMessage(), e);
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e)
-			{
-			}
-
 			try
 			{
 				con.close();
@@ -921,19 +903,10 @@ public class Siege implements Siegable
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: removeSiegeClan(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: removeSiegeClan(): " + e.getMessage(), e);
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e)
-			{
-			}
-
 			try
 			{
 				con.close();
@@ -1175,19 +1148,10 @@ public class Siege implements Siegable
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: loadSiegeClan(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: loadSiegeClan(): " + e.getMessage(), e);
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e)
-			{
-			}
-
 			try
 			{
 				con.close();
@@ -1214,8 +1178,7 @@ public class Siege implements Siegable
 					}
 					catch (Exception e)
 					{
-						_log.warning("Exception: removeControlTower(): " + e.getMessage());
-						e.printStackTrace();
+						_log.log(Level.WARNING, "Exception: removeControlTower(): " + e.getMessage(), e);
 					}
 				}
 			}
@@ -1240,8 +1203,7 @@ public class Siege implements Siegable
 					}
 					catch (Exception e)
 					{
-						_log.warning("Exception: removeFlamelTower(): " + e.getMessage());
-						e.printStackTrace();
+						_log.log(Level.WARNING, "Exception: removeFlamelTower(): " + e.getMessage(), e);
 					}
 				}
 			}
@@ -1310,19 +1272,10 @@ public class Siege implements Siegable
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: saveSiegeDate(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: saveSiegeDate(): " + e.getMessage(), e);
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e)
-			{
-			}
-
 			try
 			{
 				con.close();
@@ -1391,19 +1344,10 @@ public class Siege implements Siegable
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: saveSiegeClan(L2Clan clan, int typeId, boolean isUpdateRegistration): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: saveSiegeClan(L2Clan clan, int typeId, boolean isUpdateRegistration): " + e.getMessage(), e);
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e)
-			{
-			}
-
 			try
 			{
 				con.close();

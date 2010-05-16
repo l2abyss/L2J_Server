@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -438,8 +439,7 @@ public class GeoPathFinding extends PathFinding
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
-			_log.warning("Failed to Load PathNode File: " + fname + "\n");
+			_log.log(Level.WARNING, "Failed to Load PathNode File: " + fname + " : " + e.getMessage(), e);
 		}
 		finally
 		{

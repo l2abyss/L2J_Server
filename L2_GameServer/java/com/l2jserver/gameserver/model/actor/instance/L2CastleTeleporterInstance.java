@@ -16,6 +16,8 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.Collection;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.MapRegionTable;
@@ -31,6 +33,8 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
  */
 public final class L2CastleTeleporterInstance extends L2Npc
 {
+	public static final Logger _log = Logger.getLogger(L2CastleTeleporterInstance.class.getName());
+	
 	private boolean _currentTask = false;
 
 	/**
@@ -119,7 +123,7 @@ public final class L2CastleTeleporterInstance extends L2Npc
 			}
 			catch (NullPointerException e)
 			{
-				e.printStackTrace();
+				_log.log(Level.WARNING, "" + e.getMessage(), e);
 			}
 		}
 	}

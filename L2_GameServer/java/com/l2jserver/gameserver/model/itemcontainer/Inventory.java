@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.logging.Level;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
@@ -1643,8 +1644,7 @@ public abstract class Inventory extends ItemContainer
 		}
 		catch (Exception e)
 		{
-			_log.warning("Could not restore inventory :");
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Could not restore inventory: " + e.getMessage(), e);
 		}
 		finally 
 		{

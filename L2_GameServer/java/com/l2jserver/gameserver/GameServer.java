@@ -448,12 +448,7 @@ public class GameServer
 			}
 			catch (UnknownHostException e1)
 			{
-				_log.severe("WARNING: The GameServer bind address is invalid, using all avaliable IPs. Reason: " + e1.getMessage());
-				
-				if (Config.DEVELOPER)
-				{
-					e1.printStackTrace();
-				}
+				_log.log(Level.SEVERE, "WARNING: The GameServer bind address is invalid, using all avaliable IPs. Reason: " + e1.getMessage(), e1);
 			}
 		}
 		
@@ -463,11 +458,7 @@ public class GameServer
 		}
 		catch (IOException e)
 		{
-			_log.severe("FATAL: Failed to open server socket. Reason: " + e.getMessage());
-			if (Config.DEVELOPER)
-			{
-				e.printStackTrace();
-			}
+			_log.log(Level.SEVERE, "FATAL: Failed to open server socket. Reason: " + e.getMessage(), e);
 			System.exit(1);
 		}
 		_selectorThread.start();

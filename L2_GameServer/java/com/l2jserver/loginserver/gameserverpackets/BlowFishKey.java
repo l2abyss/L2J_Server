@@ -16,6 +16,7 @@ package com.l2jserver.loginserver.gameserverpackets;
 
 import java.security.GeneralSecurityException;
 import java.security.interfaces.RSAPrivateKey;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
@@ -58,8 +59,7 @@ public class BlowFishKey extends BaseRecievePacket
 		}
 		catch(GeneralSecurityException e)
 		{
-			_log.severe("Error While decrypting blowfish key (RSA)");
-			e.printStackTrace();
+			_log.log(Level.SEVERE, "Error While decrypting blowfish key (RSA): " + e.getMessage(), e);
 		}
 		/*catch(IOException ioe)
 		{

@@ -56,8 +56,7 @@ public final class CommunityServerThread extends NetConnection
 				}
 				catch (Exception e)
 				{
-					_log.log(Level.WARNING, "CommunityServerThread: Failed loading config file!", e);
-					e.printStackTrace();
+					_log.log(Level.WARNING, "CommunityServerThread: Failed loading config file! " + e.getMessage(), e);
 				}
 			}
 			else
@@ -100,8 +99,7 @@ public final class CommunityServerThread extends NetConnection
 		}
 		catch (IOException e)
 		{
-			_log.log(Level.INFO, "CommunityServerThread: Failed disconnecting server, server already disconnected.");
-			e.printStackTrace();
+			_log.log(Level.INFO, "CommunityServerThread: Failed disconnecting server, server already disconnected: " + e.getMessage(), e);
 		}
 	}
 	
@@ -121,8 +119,7 @@ public final class CommunityServerThread extends NetConnection
 		}
 		catch (IOException e)
 		{
-			_log.log(Level.INFO, "CommunityServerThread: Failed sending TCP packet.");
-			e.printStackTrace();
+			_log.log(Level.INFO, "CommunityServerThread: Failed sending TCP packet: " + e.getMessage(), e);
 			return false;
 		}
 		return true;
@@ -163,8 +160,7 @@ public final class CommunityServerThread extends NetConnection
 			}
 			catch (IOException e)
 			{
-				_log.log(Level.INFO, "CommunityServerThread: Connection failed!", e);
-				e.printStackTrace();
+				_log.log(Level.INFO, "CommunityServerThread: Connection failed: " + e.getMessage(), e);
 				continue;
 			}
 
@@ -255,9 +251,7 @@ public final class CommunityServerThread extends NetConnection
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
-				
-				_log.log(Level.WARNING, "CommunityServerThread: TCP Connection lost!");
+				_log.log(Level.WARNING, "CommunityServerThread: TCP Connection lost: " + e.getMessage(), e);
 				
 				forceClose(null);
 			}

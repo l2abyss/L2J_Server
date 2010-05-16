@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.script.faenor;
 
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.script.ScriptContext;
@@ -91,8 +92,7 @@ public class FaenorWorldDataParser extends FaenorParser
         catch (Exception e)
         {
             petData.petId = -1;
-            _log.warning("Error in pet Data parser.");
-            e.printStackTrace();
+            _log.log(Level.WARNING, "Error in pet Data parser: " + e.getMessage(), e);
         }
     }
 

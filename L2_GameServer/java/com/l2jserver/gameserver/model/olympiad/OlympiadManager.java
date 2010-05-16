@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.model.olympiad;
 
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -248,7 +249,7 @@ class OlympiadManager implements Runnable
 							}
 							catch (Exception e)
 							{
-								e.printStackTrace();
+								_log.log(Level.WARNING, "Exception on OlympiadManager.run(): " + e.getMessage(), e);
 							}
 						}
 					}

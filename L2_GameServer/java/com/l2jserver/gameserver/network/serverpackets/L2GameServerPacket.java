@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -64,8 +65,7 @@ public abstract class L2GameServerPacket extends SendablePacket<L2GameClient>
 		}
 		catch (Exception e)
 		{
-			_log.severe("Client: "+getClient().toString()+" - Failed writing: "+getType()+" - L2J Server Version: "+Config.SERVER_VERSION+" - DP Revision: "+Config.DATAPACK_VERSION);
-			e.printStackTrace();
+			_log.log(Level.SEVERE, "Client: " + getClient().toString() + " - Failed writing: " + getType() + " - L2J Server Version: " + Config.SERVER_VERSION + " - DP Revision: " + Config.DATAPACK_VERSION + " ; " + e.getMessage(), e);
 		}
 	}
 

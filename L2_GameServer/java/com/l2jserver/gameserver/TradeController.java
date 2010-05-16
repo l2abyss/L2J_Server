@@ -162,8 +162,7 @@ public class TradeController
 		catch (Exception e)
 		{
 			// problem with initializing spawn, go to next one
-			_log.warning("TradeController: Buylists could not be initialized.");
-			e.printStackTrace();
+			_log.log(Level.WARNING, "TradeController: Buylists could not be initialized: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -173,7 +172,6 @@ public class TradeController
 			}
 			catch (Exception e)
 			{
-				
 			}
 		}
 		
@@ -272,8 +270,7 @@ public class TradeController
 			catch (Exception e)
 			{
 				// problem with initializing spawn, go to next one
-				_log.warning("TradeController: Buylists could not be initialized.");
-				e.printStackTrace();
+				_log.log(Level.WARNING, "TradeController: Buylists could not be initialized: " + e.getMessage(), e);
 			}
 			finally
 			{
@@ -283,7 +280,6 @@ public class TradeController
 				}
 				catch (Exception e)
 				{
-					
 				}
 			}
 		}
@@ -343,7 +339,7 @@ public class TradeController
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "TradeController: Could not store Count Item");
+			_log.log(Level.SEVERE, "TradeController: Could not store Count Item: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -353,7 +349,6 @@ public class TradeController
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
 			}
 		}
 	}

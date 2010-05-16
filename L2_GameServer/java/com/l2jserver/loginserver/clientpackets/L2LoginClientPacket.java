@@ -14,6 +14,7 @@
  */
 package com.l2jserver.loginserver.clientpackets;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -41,8 +42,7 @@ public abstract class L2LoginClientPacket extends ReceivablePacket<L2LoginClient
 		}
 		catch (Exception e)
 		{
-			_log.severe("ERROR READING: "+this.getClass().getSimpleName());
-			e.printStackTrace();
+			_log.log(Level.SEVERE, "ERROR READING: "+this.getClass().getSimpleName() + ": " + e.getMessage(), e);
 			return false;
 		}
 	}

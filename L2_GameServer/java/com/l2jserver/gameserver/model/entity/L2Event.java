@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.datatables.NpcTable;
@@ -168,7 +169,7 @@ public class L2Event
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception on showEventHtml(): " + e.getMessage(), e);
 		}
 	}
 	
@@ -208,7 +209,7 @@ public class L2Event
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception on spawn(): " + e.getMessage(), e);
 		}
 		
 	}

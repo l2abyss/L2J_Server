@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -828,7 +829,7 @@ public class AutoChatHandler implements SpawnListener
 					}
 					catch (Exception e)
 					{
-						e.printStackTrace();
+						_log.log(Level.WARNING, "Exception on AutoChatRunner.run(): " + e.getMessage(), e);
 						return;
 					}
 				}

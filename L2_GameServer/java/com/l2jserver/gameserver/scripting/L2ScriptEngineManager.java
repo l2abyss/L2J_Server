@@ -149,8 +149,7 @@ public final class L2ScriptEngineManager
 			}
 			catch (Exception e)
 			{
-				_log.warning("Failed initializing factory. ");
-				e.printStackTrace();
+				_log.log(Level.WARNING, "Failed initializing factory: " + e.getMessage(), e);
 			}
 		}
 		
@@ -580,9 +579,8 @@ public final class L2ScriptEngineManager
 			}
 			catch (IOException ioe)
 			{
-				_log.warning("Failed executing script: " + script.getAbsolutePath() + "\r\n" + e.getMessage()
-						+ "Additionally failed when trying to write an error report on script directory. Reason: " + ioe.getMessage());
-				ioe.printStackTrace();
+				_log.log(Level.WARNING, "Failed executing script: " + script.getAbsolutePath() + "\r\n" + e.getMessage()
+						+ "Additionally failed when trying to write an error report on script directory. Reason: " + ioe.getMessage(), ioe);
 			}
 			finally
 			{

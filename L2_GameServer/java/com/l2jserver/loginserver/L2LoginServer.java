@@ -112,10 +112,6 @@ public class L2LoginServer
 		catch (SQLException e)
 		{
 			_log.log(Level.SEVERE, "FATAL: Failed initializing database. Reason: " + e.getMessage(), e);
-			if (Config.DEVELOPER)
-			{
-				e.printStackTrace();
-			}
 			System.exit(1);
 		}
 		
@@ -126,10 +122,6 @@ public class L2LoginServer
 		catch (GeneralSecurityException e)
 		{
 			_log.log(Level.SEVERE, "FATAL: Failed initializing LoginController. Reason: " + e.getMessage(), e);
-			if (Config.DEVELOPER)
-			{
-				e.printStackTrace();
-			}
 			System.exit(1);
 		}
 		
@@ -140,19 +132,11 @@ public class L2LoginServer
 		catch (GeneralSecurityException e)
 		{
 			_log.log(Level.SEVERE, "FATAL: Failed to load GameServerTable. Reason: " + e.getMessage(), e);
-			if (Config.DEVELOPER)
-			{
-				e.printStackTrace();
-			}
 			System.exit(1);
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.SEVERE, "FATAL: Failed to load GameServerTable. Reason: " + e.getMessage(), e);
-			if (Config.DEVELOPER)
-			{
-				e.printStackTrace();
-			}
 			System.exit(1);
 		}
 		
@@ -167,11 +151,7 @@ public class L2LoginServer
 			}
 			catch (UnknownHostException e)
 			{
-				_log.warning("WARNING: The LoginServer bind address is invalid, using all avaliable IPs. Reason: " + e.getMessage());
-				if (Config.DEVELOPER)
-				{
-					e.printStackTrace();
-				}
+				_log.log(Level.WARNING, "WARNING: The LoginServer bind address is invalid, using all avaliable IPs. Reason: " + e.getMessage(), e);
 			}
 		}
 		
@@ -190,10 +170,6 @@ public class L2LoginServer
 		catch (IOException e)
 		{
 			_log.log(Level.SEVERE, "FATAL: Failed to open Selector. Reason: " + e.getMessage(), e);
-			if (Config.DEVELOPER)
-			{
-				e.printStackTrace();
-			}
 			System.exit(1);
 		}
 		
@@ -206,10 +182,6 @@ public class L2LoginServer
 		catch (IOException e)
 		{
 			_log.log(Level.SEVERE, "FATAL: Failed to start the Game Server Listener. Reason: " + e.getMessage(), e);
-			if (Config.DEVELOPER)
-			{
-				e.printStackTrace();
-			}
 			System.exit(1);
 		}
 		
@@ -222,11 +194,7 @@ public class L2LoginServer
 			}
 			catch (IOException e)
 			{
-				_log.warning("Failed to start the Telnet Server. Reason: " + e.getMessage());
-				if (Config.DEVELOPER)
-				{
-					e.printStackTrace();
-				}
+				_log.log(Level.WARNING, "Failed to start the Telnet Server. Reason: " + e.getMessage(), e);
 			}
 		}
 		else
@@ -241,10 +209,6 @@ public class L2LoginServer
 		catch (IOException e)
 		{
 			_log.log(Level.SEVERE, "FATAL: Failed to open server socket. Reason: " + e.getMessage(), e);
-			if (Config.DEVELOPER)
-			{
-				e.printStackTrace();
-			}
 			System.exit(1);
 		}
 		_selectorThread.start();
@@ -273,11 +237,7 @@ public class L2LoginServer
 			}
 			catch (FileNotFoundException e)
 			{
-				_log.warning("Failed to load banned IPs file (" + bannedFile.getName() + ") for reading. Reason: " + e.getMessage());
-				if (Config.DEVELOPER)
-				{
-					e.printStackTrace();
-				}
+				_log.log(Level.WARNING, "Failed to load banned IPs file (" + bannedFile.getName() + ") for reading. Reason: " + e.getMessage(), e);
 				return;
 			}
 			
@@ -332,11 +292,7 @@ public class L2LoginServer
 			}
 			catch (IOException e)
 			{
-				_log.warning("Error while reading the bans file (" + bannedFile.getName() + "). Details: " + e.getMessage());
-				if (Config.DEVELOPER)
-				{
-					e.printStackTrace();
-				}
+				_log.log(Level.WARNING, "Error while reading the bans file (" + bannedFile.getName() + "). Details: " + e.getMessage(), e);
 			}
 			finally
 			{

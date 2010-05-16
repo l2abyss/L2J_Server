@@ -391,7 +391,7 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception on onSpawn() in notifySpawn(): " + e.getMessage(), e);
 			return true;
 		}
 		return false;
@@ -1255,7 +1255,7 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception on addEventId(): " + e.getMessage(), e);
 			return null;
 		}
 	}
@@ -1377,7 +1377,7 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception on addEnterZoneId(): " + e.getMessage(), e);
 			return null;
 		}
 	}
@@ -1395,7 +1395,7 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception on addExitZoneId(): " + e.getMessage(), e);
 			return null;
 		}
 	}

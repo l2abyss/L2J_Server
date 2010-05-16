@@ -300,8 +300,7 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("Exception: ScheduleSpecialEnvoysSpawn() for Fort: " + _fortInst.getName() + " " + e.getMessage());
-				e.printStackTrace();
+				_log.log(Level.WARNING, "Exception: ScheduleSpecialEnvoysSpawn() for Fort " + _fortInst.getName() + ": " + e.getMessage(), e);
 			}
 		}
 	}
@@ -417,7 +416,7 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				_log.log(Level.WARNING, "Exception in setOwner: " + e.getMessage(), e);
 			}
 			removeOwner(true);
 		}
@@ -494,8 +493,7 @@ public class Fort
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: setBloodOathReward(int val): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: setBloodOathReward(int val): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -609,8 +607,7 @@ public class Fort
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: loadFortData(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: loadFortData(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -765,8 +762,7 @@ public class Fort
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: loadFortDoor(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: loadFortDoor(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -804,8 +800,7 @@ public class Fort
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: loadFlagPoles(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: loadFlagPoles(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -840,8 +835,7 @@ public class Fort
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: loadFortDoorUpgrade(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: loadFortDoorUpgrade(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -869,8 +863,7 @@ public class Fort
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: removeDoorUpgrade(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: removeDoorUpgrade(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -900,8 +893,7 @@ public class Fort
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: saveDoorUpgrade(int doorId, int hp, int pDef, int mDef): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: saveDoorUpgrade(int doorId, int hp, int pDef, int mDef): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -971,8 +963,7 @@ public class Fort
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: updateOwnerInDB(L2Clan clan): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: updateOwnerInDB(L2Clan clan): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -1085,8 +1076,7 @@ public class Fort
 			}
 			catch (Exception e)
 			{
-				_log.warning("Exception in endFortressSiege " + e.getMessage());
-				e.printStackTrace();
+				_log.log(Level.WARNING, "Exception in endFortressSiege " + e.getMessage(), e);
 			}
 		}
 		
@@ -1131,8 +1121,7 @@ public class Fort
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: setFortState(int state, int castleId): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: setFortState(int state, int castleId): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -1282,8 +1271,7 @@ public class Fort
 		catch (Exception e)
 		{
 			// problem with initializing spawn, go to next one
-			_log.warning("Fort " + getFortId() + " initNpcs: Spawn could not be initialized: " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Fort " + getFortId() + " initNpcs: Spawn could not be initialized: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -1336,8 +1324,7 @@ public class Fort
 		catch (Exception e)
 		{
 			// problem with initializing spawn, go to next one
-			_log.warning("Fort " + getFortId() + " initSiegeNpcs: Spawn could not be initialized: " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Fort " + getFortId() + " initSiegeNpcs: Spawn could not be initialized: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -1391,8 +1378,7 @@ public class Fort
 		catch (Exception e)
 		{
 			// problem with initializing spawn, go to next one
-			_log.warning("Fort " + getFortId() + " initNpcCommanders: Spawn could not be initialized: " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Fort " + getFortId() + " initNpcCommanders: Spawn could not be initialized: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -1450,8 +1436,7 @@ public class Fort
 		catch (Exception e)
 		{
 			// problem with initializing spawn, go to next one
-			_log.warning("Fort " + getFortId() + " initSpecialEnvoys: Spawn could not be initialized: " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Fort " + getFortId() + " initSpecialEnvoys: Spawn could not be initialized: " + e.getMessage(), e);
 		}
 		finally
 		{

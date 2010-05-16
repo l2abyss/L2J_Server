@@ -1434,8 +1434,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			_log.info("logout(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception on logout(): " + e.getMessage(), e);
 		}
 	}
 
@@ -7546,8 +7545,7 @@ public final class L2PcInstance extends L2Playable
             statement.close();
         }
         catch (Exception e) {
-            _log.warning("Could not restore classes for " + player.getName() + ": " + e);
-            e.printStackTrace();
+            _log.log(Level.WARNING, "Could not restore classes for " + player.getName() + ": " + e.getMessage(), e);
         }
         finally {
             try { con.close(); } catch (Exception e) {}
@@ -8205,8 +8203,7 @@ public final class L2PcInstance extends L2Playable
 			statement.close();
 		}
 		catch (Exception e) {
-			_log.warning("Could not restore "+this+" active effect data: " + e);
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Could not restore "+this+" active effect data: " + e.getMessage(), e);
 		}
 		finally {
 			try {con.close();} catch (Exception e) {}
@@ -11994,7 +11991,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception on deleteMe() changeCommunityBoard: " + e.getMessage(), e);
 		}
 		
 		try
@@ -12004,7 +12001,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception on deleteMe() notifyFriends: " + e.getMessage(), e);
 		}
 	}
 
@@ -13799,7 +13796,7 @@ public final class L2PcInstance extends L2Playable
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				_log.log(Level.WARNING, "Exception on dismount(): " + e.getMessage(), e);
 			}
 		}
 	}
@@ -14634,12 +14631,10 @@ public final class L2PcInstance extends L2Playable
 		{
 			try
 			{
-				if (con != null)
-					con.close();
+				con.close();
 			}
 			catch (SQLException e)
 			{
-				e.printStackTrace();
 			}
 		}
 	}
@@ -14673,12 +14668,10 @@ public final class L2PcInstance extends L2Playable
 		{
 			try
 			{
-				if (con != null)
-					con.close();
+				con.close();
 			}
 			catch (SQLException e)
 			{
-				e.printStackTrace();
 			}
 		}
 	}

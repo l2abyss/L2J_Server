@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -121,8 +122,7 @@ public class L2UIKeysSettings
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: saveInDB(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: saveInDB(): " + e.getMessage(), e);
 		}
 		
 		query = "REPLACE INTO character_ui_actions (`charId`, `cat`, `order`, `cmd`, `key`, `tgKey1`, `tgKey2`, `show`) VALUES";
@@ -147,8 +147,7 @@ public class L2UIKeysSettings
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: saveInDB(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: saveInDB(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -158,8 +157,6 @@ public class L2UIKeysSettings
 			}
 			catch (Exception e)
 			{
-				_log.warning("Exception while closing connection: saveInDB(): " + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 		_saved = true;
@@ -192,8 +189,7 @@ public class L2UIKeysSettings
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: getCatsFromDB(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: getCatsFromDB(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -203,7 +199,6 @@ public class L2UIKeysSettings
 			}
 			catch (SQLException e)
 			{
-				e.printStackTrace();
 			}
 		}
 		
@@ -241,8 +236,7 @@ public class L2UIKeysSettings
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: getKeysFromDB(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: getKeysFromDB(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -252,7 +246,6 @@ public class L2UIKeysSettings
 			}
 			catch (SQLException e)
 			{
-				e.printStackTrace();
 			}
 		}
 		

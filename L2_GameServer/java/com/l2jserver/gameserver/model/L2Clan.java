@@ -762,31 +762,16 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception on updateClanScoreInDb(): " + e.getMessage(), e);
 		}
 		finally
 		{
-			if (statement != null)
+			try
 			{
-				try
-				{
-					statement.close();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
+				con.close();
 			}
-			if (con != null)
+			catch (Exception e)
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
 			}
 		}
 	}
@@ -814,28 +799,17 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error saving clan.", e);
+			_log.log(Level.SEVERE, "Error saving clan: " + e.getMessage(), e);
 		}
 		finally
 		{
-			if (statement != null)
-				try
-				{
-					statement.close();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			if (con != null)
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
+			try
+			{
+				con.close();
+			}
+			catch (Exception e)
+			{
+			}
 		}
 	}
 	
@@ -864,7 +838,7 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error saving new clan.", e);
+			_log.log(Level.SEVERE, "Error saving new clan: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -906,7 +880,7 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error removing clan member.", e);
+			_log.log(Level.SEVERE, "Error removing clan member: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -938,7 +912,7 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error updating clan wars data.", e);
+			_log.log(Level.SEVERE, "Error updating clan wars data: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -1031,7 +1005,7 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error restoring clan data.", e);
+			_log.log(Level.SEVERE, "Error restoring clan data: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -1066,7 +1040,7 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error restoring clan notice.", e);
+			_log.log(Level.SEVERE, "Error restoring clan notice: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -1178,7 +1152,7 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error restoring clan skills.", e);
+			_log.log(Level.SEVERE, "Error restoring clan skills: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -1758,7 +1732,7 @@ public class L2Clan
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "Error saving sub clan data.", e);
+				_log.log(Level.SEVERE, "Error saving sub clan data: " + e.getMessage(), e);
 			}
 			finally
 			{
@@ -1823,7 +1797,7 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error saving new sub clan leader.", e);
+			_log.log(Level.SEVERE, "Error saving new sub clan leader: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -1868,7 +1842,7 @@ public class L2Clan
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error restoring clan privs by rank.", e);
+			_log.log(Level.SEVERE, "Error restoring clan privs by rank: " + e.getMessage(), e);
 		}
 		finally
 		{
