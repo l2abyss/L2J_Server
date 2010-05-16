@@ -19,6 +19,7 @@ import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
@@ -141,8 +142,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 		}
 		catch (NullPointerException e)
 		{
-			_log.warning("Encountered Null Value.");
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Encountered Null Value: " + e.getMessage(), e);
 		}
 		
 		if (!_actor.isMuted())
@@ -201,8 +201,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 		}
 		catch (NullPointerException e)
 		{
-			_log.warning("Encountered Null Value.");
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Encountered Null Value: " + e.getMessage(), e);
 		}
 		
 		if (!_actor.isMuted() && dist2 > (range + 20) * (range + 20))
@@ -253,8 +252,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 		}
 		catch (NullPointerException e)
 		{
-			_log.warning("Encountered Null Value.");
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Encountered Null Value: " + e.getMessage(), e);
 		}
 		
 		if (!_actor.isMuted() && dist2 > (range + 20) * (range + 20))
@@ -338,8 +336,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 			}
 			catch (NullPointerException e)
 			{
-				_log.warning("Encountered Null Value.");
-				e.printStackTrace();
+				_log.log(Level.WARNING, "Encountered Null Value: " + e.getMessage(), e);
 			}
 			
 			if (!_actor.isMuted() && dist2 > (range + 20) * (range + 20))

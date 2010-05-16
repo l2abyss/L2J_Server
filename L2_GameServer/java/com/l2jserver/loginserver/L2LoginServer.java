@@ -356,11 +356,11 @@ public class L2LoginServer
 				{
 				}
 			}
-			_log.config("Loaded " + LoginController.getInstance().getBannedIps().size() + " IP Bans.");
+			_log.info("Loaded " + LoginController.getInstance().getBannedIps().size() + " IP Bans.");
 		}
 		else
 		{
-			_log.config("IP Bans file (" + bannedFile.getName() + ") is missing or is a directory, skipped.");
+			_log.warning("IP Bans file (" + bannedFile.getName() + ") is missing or is a directory, skipped.");
 		}
 	}
 	

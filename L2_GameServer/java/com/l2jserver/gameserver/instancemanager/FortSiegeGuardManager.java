@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.instancemanager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -65,8 +66,7 @@ public class FortSiegeGuardManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Error spawning siege guards for fort " + getFort().getName() + ":" + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error spawning siege guards for fort " + getFort().getName() + ":" + e.getMessage(), e);
 		}
 	}
 	
@@ -91,8 +91,7 @@ public class FortSiegeGuardManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Error unspawning siege guards for fort " + getFort().getName() + ":" + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error unspawning siege guards for fort " + getFort().getName() + ":" + e.getMessage(), e);
 		}
 	}
 	
@@ -140,10 +139,9 @@ public class FortSiegeGuardManager
 			rs.close();
 			statement.close();
 		}
-		catch (Exception e1)
+		catch (Exception e)
 		{
-			_log.warning("Error loading siege guard for fort " + getFort().getName() + ":" + e1);
-			e1.printStackTrace();
+			_log.log(Level.WARNING, "Error loading siege guard for fort " + getFort().getName() + ": " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -153,8 +151,6 @@ public class FortSiegeGuardManager
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}

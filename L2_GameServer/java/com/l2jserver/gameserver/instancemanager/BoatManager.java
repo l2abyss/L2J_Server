@@ -21,6 +21,7 @@ import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -95,8 +96,7 @@ public class BoatManager
 		catch (Exception e)
 		{
 			_initialized = false;
-			_log.warning("error while creating boat table " + e);
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error while creating boat table " + e.getMessage(), e);
 		}
 		finally
 		{

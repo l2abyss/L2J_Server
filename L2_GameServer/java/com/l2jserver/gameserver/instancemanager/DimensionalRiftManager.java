@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -114,7 +115,7 @@ public class DimensionalRiftManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Can't load Dimension Rift zones. " + e);
+			_log.log(Level.WARNING, "Can't load Dimension Rift zones. " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -233,8 +234,7 @@ public class DimensionalRiftManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Error on loading dimensional rift spawns: " + e);
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error on loading dimensional rift spawns: " + e.getMessage(), e);
 		}
 		_log.info("DimensionalRiftManager: Loaded " + countGood + " dimensional rift spawns, " + countBad + " errors.");
 	}

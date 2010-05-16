@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -144,8 +145,7 @@ public class SiegeManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: checkIsRegistered(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: checkIsRegistered(): " + e.getMessage() ,e);
 		}
 		finally
 		{
@@ -285,8 +285,7 @@ public class SiegeManager
 		catch (Exception e)
 		{
 			//_initialized = false;
-			_log.warning("Error while loading siege data.");
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error while loading siege data: " + e.getMessage(), e);
 		}
 		finally
 		{

@@ -5,6 +5,7 @@ import gnu.trove.TIntObjectHashMap;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -67,8 +68,7 @@ public class ResidentialSkillTable
 		}
 		catch (Exception e)
 		{
-			_log.warning("ResidentialSkillTable: a problem occured while loading skills!");
-			e.printStackTrace();
+			_log.log(Level.WARNING, "ResidentialSkillTable: a problem occured while loading skills! " + e.getMessage(), e);
 		}
 		finally
 		{

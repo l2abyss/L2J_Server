@@ -24,6 +24,7 @@ import gnu.trove.TIntObjectHashMap;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -81,11 +82,11 @@ public class ArmorSetsTable
 				int mw_shield = rset.getInt("mw_shield");
 				_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet, skills, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield));
 			}
-			_log.config("ArmorSetsTable: Loaded " + _armorSets.size() + " armor sets.");
+			_log.info("ArmorSetsTable: Loaded " + _armorSets.size() + " armor sets.");
 		}
 		catch (Exception e)
 		{
-			_log.severe("ArmorSetsTable: Error reading ArmorSets table: " + e);
+			_log.log(Level.SEVERE, "ArmorSetsTable: Error reading ArmorSets table: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -130,11 +131,11 @@ public class ArmorSetsTable
 					int mw_shield = rset.getInt("mw_shield");
 					_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet, skills, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield));
 				}
-				_log.config("ArmorSetsTable: Loaded " + (_armorSets.size() - cSets) + " Custom armor sets.");
+				_log.info("ArmorSetsTable: Loaded " + (_armorSets.size() - cSets) + " Custom armor sets.");
 			}
 			catch (Exception e)
 			{
-				_log.severe("ArmorSetsTable: Error reading Custom ArmorSets table: " + e);
+				_log.log(Level.SEVERE, "ArmorSetsTable: Error reading Custom ArmorSets table: " + e.getMessage(), e);
 			}
 			finally
 			{

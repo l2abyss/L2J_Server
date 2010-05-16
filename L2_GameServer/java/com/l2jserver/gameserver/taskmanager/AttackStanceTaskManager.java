@@ -20,6 +20,7 @@
 package com.l2jserver.gameserver.taskmanager;
 
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -122,7 +123,7 @@ public class AttackStanceTaskManager
 			{
 				// TODO: Find out the reason for exception. Unless caught here,
 				// players remain in attack positions.
-				_log.warning(e.toString());
+				_log.log(Level.WARNING, "Error in FightModeScheduler: " + e.getMessage(), e);
 			}
 		}
 	}

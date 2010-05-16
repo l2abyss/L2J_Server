@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.datatables;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -82,7 +83,7 @@ public class NpcWalkerRoutesTable
 		}
 		catch (Exception e)
 		{
-			_log.severe("WalkerRoutesTable: Error while loading Npc Walkers Routes: " + e.getMessage());
+			_log.log(Level.SEVERE, "WalkerRoutesTable: Error while loading Npc Walkers Routes: " + e.getMessage(), e);
 		}
 		finally
 		{

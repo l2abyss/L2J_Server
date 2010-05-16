@@ -17,12 +17,12 @@ package com.l2jserver.gameserver.geoeditorcon;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.SocketException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-
 import javolution.util.FastList;
+
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * @author Luno, Dezmond
@@ -99,13 +99,9 @@ public class GeoEditorThread extends Thread
 				}
 			}
 		}
-		catch (SocketException e)
-		{
-			_log.warning("GeoEditor disconnected. " + e.getMessage());
-		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "GeoEditor disconnected. " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -136,14 +132,13 @@ public class GeoEditorThread extends Thread
 				_out.flush();
 			}
 		}
-		catch (SocketException e)
-		{
-			_log.warning("GeoEditor disconnected. " + e.getMessage());
-			_working = false;
-		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "GeoEditor disconnected. " + e.getMessage(), e);
+			_working = false;
+		}
+		finally
+		{
 			try
 			{
 				_geSocket.close();
@@ -174,14 +169,13 @@ public class GeoEditorThread extends Thread
 				_out.flush();
 			}
 		}
-		catch (SocketException e)
-		{
-			_log.warning("GeoEditor disconnected. " + e.getMessage());
-			_working = false;
-		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "GeoEditor disconnected. " + e.getMessage(), e);
+			_working = false;
+		}
+		finally
+		{
 			try
 			{
 				_geSocket.close();

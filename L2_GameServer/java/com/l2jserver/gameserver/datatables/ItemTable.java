@@ -349,21 +349,21 @@ public class ItemTable
 		{
 			_armors.put(armor.getItemId(), armor);
 		}
-		_log.config("ItemTable: Loaded " + _armors.size() + " Armors.");
+		_log.info("ItemTable: Loaded " + _armors.size() + " Armors.");
 		
 		_etcItems.clear();
 		for (L2EtcItem item : SkillsEngine.getInstance().loadItems(itemData))
 		{
 			_etcItems.put(item.getItemId(), item);
 		}
-		_log.config("ItemTable: Loaded " + _etcItems.size() + " Items.");
+		_log.info("ItemTable: Loaded " + _etcItems.size() + " Items.");
 		
 		_weapons.clear();
 		for (L2Weapon weapon : SkillsEngine.getInstance().loadWeapons(weaponData))
 		{
 			_weapons.put(weapon.getItemId(), weapon);
 		}
-		_log.config("ItemTable: Loaded " + _weapons.size() + " Weapons.");
+		_log.info("ItemTable: Loaded " + _weapons.size() + " Weapons.");
 		
 		weaponData.keySet().removeAll(_weapons.keySet());
 		if (!weaponData.isEmpty())

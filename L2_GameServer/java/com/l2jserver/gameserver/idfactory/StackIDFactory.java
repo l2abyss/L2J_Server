@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Stack;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -65,13 +66,12 @@ public class StackIDFactory extends IdFactory
 			}
 			
 			_curOID++;
-			_log.config("IdFactory: Next usable Object ID is: " + _curOID);
+			_log.info("IdFactory: Next usable Object ID is: " + _curOID);
 			_initialized = true;
 		}
-		catch (Exception e1)
+		catch (Exception e)
 		{
-			e1.printStackTrace();
-			_log.severe("ID Factory could not be initialized correctly:" + e1);
+			_log.log(Level.SEVERE, "ID Factory could not be initialized correctly:" + e.getMessage(), e);
 		}
 		finally
 		{

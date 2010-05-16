@@ -305,7 +305,7 @@ public class ZoneManager
 							}
 							catch (Exception e)
 							{
-								_log.warning("ZoneData: Failed to load zone coordinates: " + e);
+								_log.log(Level.WARNING, "ZoneData: Failed to load zone coordinates: " + e.getMessage(), e);
 							}
 							
 							// Check for additional parameters

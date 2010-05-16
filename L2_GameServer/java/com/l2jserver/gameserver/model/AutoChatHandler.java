@@ -102,7 +102,7 @@ public class AutoChatHandler implements SpawnListener
 			statement.close();
 			
 			if (Config.DEBUG)
-				_log.config("AutoChatHandler: Loaded " + numLoaded + " chat group(s) from the database.");
+				_log.info("AutoChatHandler: Loaded " + numLoaded + " chat group(s) from the database.");
 		}
 		catch (Exception e)
 		{
@@ -231,7 +231,7 @@ public class AutoChatHandler implements SpawnListener
 		chatInst.setActive(false);
 		
 		if (Config.DEBUG)
-			_log.config("AutoChatHandler: Removed auto chat for NPC ID " + chatInst.getNPCId());
+			_log.info("AutoChatHandler: Removed auto chat for NPC ID " + chatInst.getNPCId());
 		
 		return true;
 	}
@@ -322,7 +322,7 @@ public class AutoChatHandler implements SpawnListener
 			_globalChat = isGlobal;
 			
 			if (Config.DEBUG)
-				_log.config("AutoChatHandler: Registered auto chat for NPC ID " + _npcId + " (Global Chat = " + _globalChat + ").");
+				_log.info("AutoChatHandler: Registered auto chat for NPC ID " + _npcId + " (Global Chat = " + _globalChat + ").");
 			
 			setActive(true);
 		}

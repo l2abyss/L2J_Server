@@ -192,10 +192,10 @@ public class SkillTreeTable
 			}
 			catch (Exception e)
 			{
-				_log.severe("Error while creating skill tree (Class ID " + classId + "):" + e);
+				_log.log(Level.SEVERE, "Error while creating skill tree (Class ID " + classId + "): " + e.getMessage(), e);
 			}
 			
-			_log.config("SkillTreeTable: Loaded " + count + " skills.");
+			_log.info("SkillTreeTable: Loaded " + count + " skills.");
 			
 			//Skill tree for fishing skill (from Fisherman)
 			try
@@ -238,7 +238,7 @@ public class SkillTreeTable
 			}
 			catch (Exception e)
 			{
-				_log.severe("Error while creating fishing skill table: " + e);
+				_log.log(Level.SEVERE, "Error while creating fishing skill table: " + e.getMessage(), e);
 			}
 			
 			try
@@ -275,7 +275,7 @@ public class SkillTreeTable
 			}
 			catch (Exception e)
 			{
-				_log.severe("Error while creating pledge skill table: " + e);
+				_log.log(Level.SEVERE, "Error while creating pledge skill table: " + e.getMessage(), e);
 			}
 			try
 			{
@@ -345,7 +345,7 @@ public class SkillTreeTable
 			}
 			catch (Exception e)
 			{
-				_log.severe("Error while creating special skill table: " + e);
+				_log.log(Level.SEVERE, "Error while creating special skill table: " + e.getMessage(), e);
 			}
 		}
 		catch (Exception e)
@@ -363,11 +363,11 @@ public class SkillTreeTable
 			}
 		}
 		
-		_log.config("FishingSkillTreeTable: Loaded " + count2 + " general skills.");
-		_log.config("DwarvenCraftSkillTreeTable: Loaded " + count3 + " dwarven skills.");
-		_log.config("PledgeSkillTreeTable: Loaded " + count4 + " pledge skills");
-		_log.config("TransformSkillTreeTable: Loaded " + count5 + " transform skills");
-		_log.config("SpecialSkillTreeTable: Loaded " + count6 + " special skills");
+		_log.info("FishingSkillTreeTable: Loaded " + count2 + " general skills.");
+		_log.info("DwarvenCraftSkillTreeTable: Loaded " + count3 + " dwarven skills.");
+		_log.info("PledgeSkillTreeTable: Loaded " + count4 + " pledge skills");
+		_log.info("TransformSkillTreeTable: Loaded " + count5 + " transform skills");
+		_log.info("SpecialSkillTreeTable: Loaded " + count6 + " special skills");
 	}
 	
 	private Map<ClassId, Map<Integer, L2SkillLearn>> getSkillTrees()

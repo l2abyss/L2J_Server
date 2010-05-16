@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-
 import org.mmocore.network.SelectorConfig;
 import org.mmocore.network.SelectorThread;
 
@@ -55,7 +54,6 @@ import com.l2jserver.gameserver.datatables.HennaTable;
 import com.l2jserver.gameserver.datatables.HennaTreeTable;
 import com.l2jserver.gameserver.datatables.HeroSkillTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.LevelUpData;
 import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.MerchantPriceConfigTable;
@@ -63,6 +61,7 @@ import com.l2jserver.gameserver.datatables.NobleSkillTable;
 import com.l2jserver.gameserver.datatables.NpcBufferTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.NpcWalkerRoutesTable;
+import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.PetSkillsTable;
 import com.l2jserver.gameserver.datatables.ResidentialSkillTable;
 import com.l2jserver.gameserver.datatables.SkillSpellbookTable;
@@ -358,8 +357,8 @@ public class GameServer
 		// Init of a cursed weapon manager
 		CursedWeaponsManager.getInstance();
 		
-		_log.log(Level.CONFIG, "AutoChatHandler: Loaded " + AutoChatHandler.getInstance().size() + " handlers in total.");
-		_log.log(Level.CONFIG, "AutoSpawnHandler: Loaded " + AutoSpawnHandler.getInstance().size() + " handlers in total.");
+		_log.info("AutoChatHandler: Loaded " + AutoChatHandler.getInstance().size() + " handlers in total.");
+		_log.info("AutoSpawnHandler: Loaded " + AutoSpawnHandler.getInstance().size() + " handlers in total.");
 		
 		AdminCommandHandler.getInstance();
 		ChatHandler.getInstance();
@@ -396,7 +395,7 @@ public class GameServer
 		
 		Runtime.getRuntime().addShutdownHook(Shutdown.getInstance());
 		
-		_log.config("IdFactory: Free ObjectID's remaining: " + IdFactory.getInstance().size());
+		_log.info("IdFactory: Free ObjectID's remaining: " + IdFactory.getInstance().size());
 		
 		// initialize the dynamic extension loader
 		try
@@ -472,7 +471,7 @@ public class GameServer
 			System.exit(1);
 		}
 		_selectorThread.start();
-		_log.config("Maximum Numbers of Connected Players: " + Config.MAXIMUM_ONLINE_USERS);
+		_log.info("Maximum Numbers of Connected Players: " + Config.MAXIMUM_ONLINE_USERS);
 		long serverLoadEnd = System.currentTimeMillis();
 		_log.info("Server Loaded in " + ((serverLoadEnd - serverLoadStart) / 1000) + " seconds");
 		

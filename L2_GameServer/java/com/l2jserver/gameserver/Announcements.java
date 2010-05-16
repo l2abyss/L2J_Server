@@ -71,7 +71,7 @@ public class Announcements
 		}
 		else
 		{
-			_log.config("data/announcements.txt doesn't exist");
+			_log.warning("data/announcements.txt doesn't exist");
 		}
 	}
 	
@@ -160,7 +160,7 @@ public class Announcements
 			}
 			
 			if (Config.DEBUG)
-				_log.config("Announcements: Loaded " + i + " Announcements.");
+				_log.info("Announcements: Loaded " + i + " Announcements.");
 		}
 		catch (IOException e1)
 		{

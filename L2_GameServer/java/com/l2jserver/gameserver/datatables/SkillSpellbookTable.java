@@ -19,6 +19,7 @@ import gnu.trove.TIntIntHashMap;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -57,11 +58,11 @@ public class SkillSpellbookTable
 			spbooks.close();
 			statement.close();
 			
-			_log.config("SkillSpellbookTable: Loaded " + _skillSpellbooks.size() + " Spellbooks.");
+			_log.info("SkillSpellbookTable: Loaded " + _skillSpellbooks.size() + " Spellbooks.");
 		}
 		catch (Exception e)
 		{
-			_log.warning("Error while loading spellbook data: " + e);
+			_log.log(Level.WARNING, "Error while loading spellbook data: " + e.getMessage(), e);
 		}
 		finally
 		{

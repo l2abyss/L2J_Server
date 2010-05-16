@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -122,7 +123,7 @@ public class Couple
 		}
 		catch (Exception e)
 		{
-			_log.severe(e.toString());
+			_log.log(Level.SEVERE, "Could not create couple: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -155,7 +156,7 @@ public class Couple
 		}
 		catch (Exception e)
 		{
-			_log.severe(e.toString());
+			_log.log(Level.SEVERE, "Could not marry: " + e.getMessage(), e);
 		}
 		finally
 		{

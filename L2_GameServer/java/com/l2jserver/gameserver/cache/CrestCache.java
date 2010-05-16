@@ -112,7 +112,7 @@ public class CrestCache
 				}
 				catch (Exception e)
 				{
-					_log.warning("problem with crest bmp file " + e);
+					_log.log(Level.WARNING, "Problem with crest bmp file " + e.getMessage(), e);
 				}
 				finally
 				{
@@ -168,7 +168,7 @@ public class CrestCache
 				}
 				catch (SQLException e)
 				{
-					_log.warning("could not update the crest id:" + e.getMessage());
+					_log.log(Level.WARNING, "Could not update the crest id:" + e.getMessage(), e);
 				}
 				finally
 				{

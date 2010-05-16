@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -61,8 +62,7 @@ public class ForumsBBSManager extends BaseBBSManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("data error on Forum (root): " + e);
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Data error on Forum (root): " + e.getMessage(), e);
 		}
 		finally
 		{

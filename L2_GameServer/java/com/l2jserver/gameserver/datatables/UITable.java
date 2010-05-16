@@ -22,6 +22,7 @@ import java.io.LineNumberReader;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -53,8 +54,8 @@ public class UITable
 		
 		parseCatData();
 		parseKeyData();
-		_log.config("UITable: Loaded " + _storedCategories.size() + " Categories.");
-		_log.config("UITable: Loaded " + _storedKeys.size() + " Keys.");
+		_log.info("UITable: Loaded " + _storedCategories.size() + " Categories.");
+		_log.info("UITable: Loaded " + _storedKeys.size() + " Keys.");
 	}
 	
 	private void parseCatData()
@@ -85,7 +86,7 @@ public class UITable
 		}
 		catch (Exception e)
 		{
-			_log.warning("error while creating UI Default Categories table " + e);
+			_log.log(Level.WARNING, "Error while creating UI Default Categories table " + e.getMessage(), e);
 		}
 		finally
 		{

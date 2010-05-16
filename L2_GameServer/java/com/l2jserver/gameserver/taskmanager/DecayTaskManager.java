@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.taskmanager;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -98,7 +99,7 @@ public class DecayTaskManager
 			{
 				// TODO: Find out the reason for exception. Unless caught here,
 				// mob decay would stop.
-				_log.warning(e.toString());
+				_log.log(Level.WARNING, "Error in DecayScheduler: " + e.getMessage(), e);
 			}
 		}
 	}

@@ -134,7 +134,7 @@ public class EnchantGroupsTable
 			}
 		}
 		
-		_log.config("EnchantGroupsTable: Loaded " + count + " groups.");
+		_log.info("EnchantGroupsTable: Loaded " + count + " groups.");
 	}
 	
 	public int addNewRouteForSkill(int skillId, int maxLvL, int route, int group)

@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -124,8 +125,7 @@ public class Forum
 		}
 		catch (Exception e)
 		{
-			_log.warning("data error on Forum " + _forumId + " : " + e);
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Data error on Forum " + _forumId + " : " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -158,8 +158,7 @@ public class Forum
 		}
 		catch (Exception e)
 		{
-			_log.warning("data error on Forum " + _forumId + " : " + e);
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Data error on Forum " + _forumId + " : " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -197,8 +196,7 @@ public class Forum
 		}
 		catch (Exception e)
 		{
-			_log.warning("data error on Forum (children): " + e);
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Data error on Forum (children): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -299,7 +297,7 @@ public class Forum
 		}
 		catch (Exception e)
 		{
-			_log.warning("error while saving new Forum to db " + e);
+			_log.log(Level.WARNING, "Error while saving new Forum to db " + e.getMessage(), e);
 		}
 		finally
 		{

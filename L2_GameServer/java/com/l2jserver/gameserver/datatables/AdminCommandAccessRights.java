@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -82,7 +83,7 @@ public class AdminCommandAccessRights
 		}
 		catch (SQLException e)
 		{
-			_log.warning("AdminCommandAccessRights: Error loading from database:" + e);
+			_log.log(Level.WARNING, "AdminCommandAccessRights: Error loading from database:" + e.getMessage(), e);
 		}
 		finally
 		{

@@ -1756,7 +1756,7 @@ public class SevenSignsFestival implements SpawnListener
 		if (npcId == 31127)
 		{
 			if (Config.DEBUG)
-				_log.config("SevenSignsFestival: Instance found for NPC ID 31127 (" + npc.getObjectId() + ").");
+				_log.warning("SevenSignsFestival: Instance found for NPC ID 31127 (" + npc.getObjectId() + ").");
 			
 			_dawnChatGuide = npc;
 		}
@@ -1764,7 +1764,7 @@ public class SevenSignsFestival implements SpawnListener
 		if (npcId == 31137)
 		{
 			if (Config.DEBUG)
-				_log.config("SevenSignsFestival: Instance found for NPC ID 31137 (" + npc.getObjectId() + ").");
+				_log.warning("SevenSignsFestival: Instance found for NPC ID 31137 (" + npc.getObjectId() + ").");
 			
 			_duskChatGuide = npc;
 		}

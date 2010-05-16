@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -88,8 +89,7 @@ public class HelperBuffTable
 		}
 		catch (Exception e)
 		{
-			_log.severe("Table helper_buff_list not found : Update your DataPack" + e);
-			e.printStackTrace();
+			_log.log(Level.SEVERE, "Table helper_buff_list not found : Update your DataPack! Error : " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -152,7 +152,7 @@ public class HelperBuffTable
 			_helperBuff.add(template);
 		}
 		
-		_log.config("Helper Buff Table: Loaded " + _helperBuff.size() + " Templates.");
+		_log.info("Helper Buff Table: Loaded " + _helperBuff.size() + " Templates.");
 		
 	}
 	

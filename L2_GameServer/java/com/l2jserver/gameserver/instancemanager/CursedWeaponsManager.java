@@ -225,7 +225,7 @@ public class CursedWeaponsManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Could not restore CursedWeapons data: " + e);
+			_log.log(Level.WARNING, "Could not restore CursedWeapons data: " + e.getMessage(), e);
 			
 			if (Config.DEBUG)
 				_log.warning("ERROR");
@@ -324,7 +324,7 @@ public class CursedWeaponsManager
 		catch (Exception e)
 		{
 			if (Config.DEBUG)
-				_log.warning("Could not check CursedWeapons data: " + e);
+				_log.log(Level.WARNING, "Could not check CursedWeapons data: " + e.getMessage(), e);
 			return;
 		}
 		finally
@@ -461,7 +461,7 @@ public class CursedWeaponsManager
 		}
 		catch (SQLException e)
 		{
-			_log.severe("CursedWeaponsManager: Failed to remove data: " + e);
+			_log.log(Level.SEVERE, "CursedWeaponsManager: Failed to remove data: " + e.getMessage(), e);
 		}
 		finally
 		{

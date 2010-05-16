@@ -98,7 +98,7 @@ public class DoorTable
 				}
 			}
 
-			_log.config("DoorTable: Loaded " + _staticItems.size() + " Door Templates for " + _regions.size() + " regions.");
+			_log.info("DoorTable: Loaded " + _staticItems.size() + " Door Templates for " + _regions.size() + " regions.");
 		}
 		catch (FileNotFoundException e)
 		{
@@ -106,7 +106,7 @@ public class DoorTable
 		}
 		catch (IOException e)
 		{
-			_log.warning("error while creating door table " + e);
+			_log.log(Level.WARNING, "Error while creating door table " + e.getMessage(), e);
 		}
 		finally
 		{

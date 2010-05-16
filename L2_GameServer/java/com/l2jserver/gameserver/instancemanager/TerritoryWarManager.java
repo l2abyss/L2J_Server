@@ -589,8 +589,7 @@ public class TerritoryWarManager
 			}
 			catch (Exception e)
 			{
-				_log.warning("Territory War Manager: " + e.getMessage());
-				e.printStackTrace();
+				_log.log(Level.WARNING, "Territory War Manager: " + e.getMessage(), e);
 				return null;
 			}
 		}
@@ -618,8 +617,7 @@ public class TerritoryWarManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: Territory War registration: " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: Territory War registration: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -657,8 +655,7 @@ public class TerritoryWarManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: Territory Data update: " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: Territory Data update: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -734,8 +731,7 @@ public class TerritoryWarManager
 			}
 			catch (Exception e)
 			{
-				_log.warning("Territory War Manager: SpawnList error: " + e.getMessage());
-				e.printStackTrace();
+				_log.log(Level.WARNING, "Territory War Manager: SpawnList error: " + e.getMessage(), e);
 			}
 			finally
 			{
@@ -782,8 +778,7 @@ public class TerritoryWarManager
 			}
 			catch (Exception e)
 			{
-				_log.warning("Territory War Manager: territory list error(): " + e.getMessage());
-				e.printStackTrace();
+				_log.log(Level.WARNING, "Territory War Manager: territory list error(): " + e.getMessage(), e);
 			}
 			finally
 			{
@@ -823,8 +818,7 @@ public class TerritoryWarManager
 			}
 			catch (Exception e)
 			{
-				_log.warning("Territory War Manager: registration list error: " + e.getMessage());
-				e.printStackTrace();
+				_log.log(Level.WARNING, "Territory War Manager: registration list error: " + e.getMessage(), e);
 			}
 			finally
 			{
@@ -840,8 +834,7 @@ public class TerritoryWarManager
 		catch (Exception e)
 		{
 			//_initialized = false;
-			_log.warning("Error while loading Territory War Manager!");
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error while loading Territory War Manager! " + e.getMessage(), e);
 		}
 		finally
 		{

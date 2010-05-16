@@ -44,9 +44,7 @@ public class BypassHandler
 
 	public void registerBypassHandler(IBypassHandler handler)
 	{
-		String[] ids = handler.getBypassList();
-
-		for (String element : ids)
+		for (String element : handler.getBypassList())
 		{
 			if (Config.DEBUG)
 				_log.log(Level.FINE, "Adding handler for command " + element);

@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -126,8 +127,7 @@ public class ClanHallManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: ClanHallManager.load(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: ClanHallManager.load(): " + e.getMessage(), e);
 		}
 		finally
 		{

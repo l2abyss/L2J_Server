@@ -21,6 +21,7 @@ import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -76,8 +77,7 @@ public class AirShipManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("error while creating AirShip table " + e);
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error while creating AirShip table " + e.getMessage(), e);
 		}
 		finally
 		{

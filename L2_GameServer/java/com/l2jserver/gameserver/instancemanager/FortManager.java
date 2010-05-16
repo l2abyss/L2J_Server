@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -186,8 +187,7 @@ public class FortManager implements InstanceListManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: loadFortData(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: loadFortData(): " + e.getMessage(), e);
 		}
 		finally
 		{

@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.concurrent.ScheduledFuture;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -323,7 +324,7 @@ public class CastleManorManager
 							}
 							catch (Exception e)
 							{
-								_log.info("Manor System: Failed to save manor data: " + e);
+								_log.log(Level.WARNING, "Manor System: Failed to save manor data: " + e.getMessage(), e);
 							}
 							setUnderMaintenance(false);
 						}

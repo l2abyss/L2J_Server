@@ -76,7 +76,7 @@ public class TeleportLocationTable
 			rset.close();
 			statement.close();
 			
-			_log.config("TeleportLocationTable: Loaded " + _teleports.size() + " Teleport Location Templates.");
+			_log.info("TeleportLocationTable: Loaded " + _teleports.size() + " Teleport Location Templates.");
 		}
 		catch (Exception e)
 		{
@@ -117,11 +117,11 @@ public class TeleportLocationTable
 				statement.close();
 				_cTeleCount = _teleports.size() - _cTeleCount;
 				if (_cTeleCount > 0)
-					_log.config("TeleportLocationTable: Loaded " + _cTeleCount + " Custom Teleport Location Templates.");
+					_log.info("TeleportLocationTable: Loaded " + _cTeleCount + " Custom Teleport Location Templates.");
 			}
 			catch (Exception e)
 			{
-				_log.warning("error while creating custom teleport table " + e);
+				_log.log(Level.WARNING, "Error while creating custom teleport table " + e.getMessage(), e);
 			}
 			finally
 			{

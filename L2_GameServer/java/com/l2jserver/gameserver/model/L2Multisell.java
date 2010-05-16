@@ -77,7 +77,7 @@ public class L2Multisell
 	{
 		_entries.clear();
 		parse();
-		_log.config("L2Multisell: Loaded " + _entries.size() + " lists.");
+		_log.info("L2Multisell: Loaded " + _entries.size() + " lists.");
 	}
 	
 	/**
@@ -650,7 +650,7 @@ public class L2Multisell
 		File dir = new File(Config.DATAPACK_ROOT, "data/" + dirname);
 		if (!dir.exists())
 		{
-			_log.config("Dir " + dir.getAbsolutePath() + " not exists");
+			_log.warning("Dir " + dir.getAbsolutePath() + " not exists");
 			return;
 		}
 		File[] files = dir.listFiles();

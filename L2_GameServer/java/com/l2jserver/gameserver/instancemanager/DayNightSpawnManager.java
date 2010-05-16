@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.instancemanager;
 
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -167,7 +168,7 @@ public class DayNightSpawnManager
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error while spawning creatures: " + e.getMessage(), e);
 		}
 	}
 	
@@ -203,7 +204,7 @@ public class DayNightSpawnManager
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error while notifyChangeMode(): " + e.getMessage(), e);
 		}
 	}
 	
@@ -241,7 +242,7 @@ public class DayNightSpawnManager
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error while specialNoghtBoss(): " + e.getMessage(), e);
 		}
 	}
 	

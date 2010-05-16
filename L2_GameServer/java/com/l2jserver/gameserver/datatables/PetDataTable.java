@@ -19,6 +19,7 @@ import gnu.trove.TIntObjectHashMap;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -97,7 +98,7 @@ public class PetDataTable
 		}
 		catch (Exception e)
 		{
-			_log.warning("Could not load pets stats: " + e);
+			_log.log(Level.WARNING, "Could not load pets stats: " + e.getMessage(), e);
 		}
 		finally
 		{

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -67,7 +68,7 @@ public class AiManager
 			//TODO redo all the SpecificAiManger loading it's completely messed up:
 			@SuppressWarnings("unused")
 			JarFile jar = new JarFile("./l2jserver.jar");
-			URL url = Class.class.getResource("/net/sf/l2j/gameserver/ai/managers");
+			URL url = Class.class.getResource("/com/l2jserver/gameserver/ai/managers");
 			//jar.getJarEntry("/net/sf/l2j/gameserver/ai/managers").get;
 			if (url == null)
 			{
@@ -138,36 +139,16 @@ public class AiManager
 						}
 						
 					}
-					catch (ClassCastException e)
+					catch (Exception e)
 					{
-						e.printStackTrace();
-					}
-					catch (ClassNotFoundException e)
-					{
-						e.printStackTrace();
-					}
-					catch (IllegalArgumentException e)
-					{
-						e.printStackTrace();
-					}
-					catch (SecurityException e)
-					{
-						e.printStackTrace();
-					}
-					catch (InstantiationException e)
-					{
-						e.printStackTrace();
-					}
-					catch (IllegalAccessException e)
-					{
-						e.printStackTrace();
+						_log.log(Level.WARNING, "Error while loading AiManager: " + e.getMessage(), e);
 					}
 				}
 			}
 		}
 		catch (IOException e1)
 		{
-			e1.printStackTrace();
+			_log.log(Level.WARNING, e1.getMessage(), e1);
 		}
 		// build a mighty map
 		for (AiInstance ai : _aiList)

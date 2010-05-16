@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.instancemanager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -84,7 +85,7 @@ public class CoupleManager
 		}
 		catch (Exception e)
 		{
-			_log.severe("Exception: CoupleManager.load(): " + e);
+			_log.log(Level.SEVERE, "Exception: CoupleManager.load(): " + e.getMessage(), e);
 		}
 		
 		finally

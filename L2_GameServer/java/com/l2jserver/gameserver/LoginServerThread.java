@@ -347,8 +347,7 @@ public class LoginServerThread extends Thread
 			}
 			catch (IOException e)
 			{
-				_log.info("Deconnected from Login, Trying to reconnect:");
-				_log.info(e.toString());
+				_log.log(Level.WARNING, "Disconnected from Login, Trying to reconnect: " + e.getMessage(), e);
 			}
 			finally
 			{

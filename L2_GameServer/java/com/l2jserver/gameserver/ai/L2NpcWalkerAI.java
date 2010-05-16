@@ -14,6 +14,10 @@
  */
 package com.l2jserver.gameserver.ai;
 
+import java.util.logging.Level;
+
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.NpcWalkerRoutesTable;
@@ -21,8 +25,6 @@ import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2NpcWalkerNode;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcWalkerInstance;
-
-import javolution.util.FastList;
 
 public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 {
@@ -119,9 +121,9 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 				{
 					getActor().broadcastChat(chat);
 				}
-				catch (ArrayIndexOutOfBoundsException e)
+				catch (Exception e)
 				{
-					_log.info("L2NpcWalkerInstance: Error, " + e);
+					_log.log(Level.WARNING, "L2NpcWalkerAI.checkArrived() Error: " + e.getMessage(), e);
 				}
 			}
 			

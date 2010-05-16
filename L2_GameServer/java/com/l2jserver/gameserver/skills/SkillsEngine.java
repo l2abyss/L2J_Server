@@ -64,7 +64,7 @@ public class SkillsEngine
 		File dir = new File(Config.DATAPACK_ROOT, dirname);
 		if (!dir.exists())
 		{
-			_log.config("Dir " + dir.getAbsolutePath() + " not exists");
+			_log.warning("Dir " + dir.getAbsolutePath() + " not exists");
 			return;
 		}
 		File[] files = dir.listFiles();
@@ -82,7 +82,7 @@ public class SkillsEngine
 	{
 		if (file == null)
 		{
-			_log.config("Skill file not found.");
+			_log.warning("Skill file not found.");
 			return null;
 		}
 		DocumentSkill doc = new DocumentSkill(file);
@@ -104,7 +104,7 @@ public class SkillsEngine
 				count++;
 			}
 		}
-		_log.config("SkillsEngine: Loaded " + count + " Skill templates from XML files.");
+		_log.info("SkillsEngine: Loaded " + count + " Skill templates from XML files.");
 	}
 	
 	public List<L2Armor> loadArmors(Map<Integer, Item> armorData)

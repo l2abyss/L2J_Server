@@ -17,18 +17,16 @@ package com.l2jserver.gameserver.datatables;
 import gnu.trove.TIntObjectHashMap;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2ItemInstance;
@@ -67,17 +65,9 @@ public class EnchantHPBonusData
 			{
 				doc = factory.newDocumentBuilder().parse(file);
 			}
-			catch(SAXException e)
+			catch(Exception e)
 			{
-				e.printStackTrace();
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
-			}
-			catch(ParserConfigurationException e)
-			{
-				e.printStackTrace();
+				_log.log(Level.WARNING, "Could not parse enchantHPBonus.xml file: " + e.getMessage(), e);
 			}
 
 			for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())

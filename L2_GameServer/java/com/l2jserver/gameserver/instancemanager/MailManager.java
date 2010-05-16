@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -87,7 +88,7 @@ public class MailManager
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Mail Manager: Error loading from database:" + e.toString());
+			_log.log(Level.WARNING, "Mail Manager: Error loading from database:" + e.getMessage(), e);
 		}
 		finally
 		{
@@ -195,7 +196,7 @@ public class MailManager
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Mail Manager: Error saving message:" + e.toString());
+			_log.log(Level.WARNING, "Mail Manager: Error saving message:" + e.getMessage(), e);
 		}
 		finally
 		{
@@ -259,7 +260,7 @@ public class MailManager
 				}
 				catch (Exception e)
 				{
-					_log.warning("Mail Manager: Error returning items:" + e.toString());
+					_log.log(Level.WARNING, "Mail Manager: Error returning items:" + e.getMessage(), e);
 				}
 			}
 			deleteMessageInDb(msg.getId());
@@ -279,7 +280,7 @@ public class MailManager
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Mail Manager: Error marking as read message:" + e.toString());
+			_log.log(Level.WARNING, "Mail Manager: Error marking as read message:" + e.getMessage(), e);
 		}
 		finally
 		{
@@ -313,7 +314,7 @@ public class MailManager
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Mail Manager: Error marking as deleted by sender message:" + e.toString());
+			_log.log(Level.WARNING, "Mail Manager: Error marking as deleted by sender message:" + e.getMessage(), e);
 		}
 		finally
 		{
@@ -347,7 +348,7 @@ public class MailManager
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Mail Manager: Error marking as deleted by receiver message:" + e.toString());
+			_log.log(Level.WARNING, "Mail Manager: Error marking as deleted by receiver message:" + e.getMessage(), e);
 		}
 		finally
 		{
@@ -381,7 +382,7 @@ public class MailManager
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Mail Manager: Error removing attachments in message:" + e.toString());
+			_log.log(Level.WARNING, "Mail Manager: Error removing attachments in message:" + e.getMessage(), e);
 		}
 		finally
 		{
@@ -415,7 +416,7 @@ public class MailManager
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Mail Manager: Error deleting message:" + e.toString());
+			_log.log(Level.WARNING, "Mail Manager: Error deleting message:" + e.getMessage(), e);
 		}
 		finally
 		{

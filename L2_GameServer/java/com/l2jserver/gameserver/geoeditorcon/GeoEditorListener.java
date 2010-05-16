@@ -45,7 +45,7 @@ public class GeoEditorListener extends Thread
 				}
 				catch (IOException e)
 				{
-					_log.severe("Error creating geoeditor listener! " + e.getMessage());
+					_log.log(Level.SEVERE, "Error creating geoeditor listener! " + e.getMessage(), e);
 					System.exit(1);
 				}
 			}
@@ -94,7 +94,7 @@ public class GeoEditorListener extends Thread
 		}
 		catch (Exception e)
 		{
-			_log.info("GeoEditorListener: " + e.getMessage());
+			_log.log(Level.WARNING, "GeoEditorListener: " + e.getMessage(), e);
 			try
 			{
 				connection.close();

@@ -741,8 +741,6 @@ public final class L2World
 	 */
 	private void initRegions()
 	{
-		_log.config("L2World: Setting up World Regions");
-		
 		_worldRegions = new L2WorldRegion[REGIONS_X + 1][REGIONS_Y + 1];
 		
 		for (int i = 0; i <= REGIONS_X; i++)
@@ -770,7 +768,7 @@ public final class L2World
 			}
 		}
 		
-		_log.config("L2World: (" + REGIONS_X + " by " + REGIONS_Y + ") World Region Grid set up.");
+		_log.info("L2World: (" + REGIONS_X + " by " + REGIONS_Y + ") World Region Grid set up.");
 		
 	}
 	

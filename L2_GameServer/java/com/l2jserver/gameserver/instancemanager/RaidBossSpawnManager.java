@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -120,17 +121,10 @@ public class RaidBossSpawnManager
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error while initializing RaidBossSpawnManager: " + e.getMessage(), e);
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e)
-			{
-			}
 			try
 			{
 				con.close();
@@ -298,7 +292,7 @@ public class RaidBossSpawnManager
 			catch (Exception e)
 			{
 				// problem with storing spawn
-				_log.warning("RaidBossSpawnManager: Could not store raidboss #" + bossId + " in the DB:" + e);
+				_log.log(Level.WARNING, "RaidBossSpawnManager: Could not store raidboss #" + bossId + " in the DB:" + e.getMessage(), e);
 			}
 			finally
 			{
@@ -360,7 +354,7 @@ public class RaidBossSpawnManager
 			catch (Exception e)
 			{
 				// problem with deleting spawn
-				_log.warning("RaidBossSpawnManager: Could not remove raidboss #" + bossId + " from DB: " + e);
+				_log.log(Level.WARNING, "RaidBossSpawnManager: Could not remove raidboss #" + bossId + " from DB: " + e.getMessage(), e);
 			}
 			finally
 			{
@@ -420,14 +414,14 @@ public class RaidBossSpawnManager
 				}
 				catch (SQLException e)
 				{
-					_log.warning("RaidBossSpawnManager: Couldnt update raidboss_spawnlist table " + e);
+					_log.log(Level.WARNING, "RaidBossSpawnManager: Couldnt update raidboss_spawnlist table " + e.getMessage(), e);
 				}
 			}
 			statement.close();
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "SQL error while updating RaidBoss spawn to database: " + e.getMessage(), e);
 		}
 		finally
 		{

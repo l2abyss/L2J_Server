@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -83,7 +84,7 @@ public class Post
 		}
 		catch (Exception e)
 		{
-			_log.warning("error while saving new Post to db " + e);
+			_log.log(Level.WARNING, "Error while saving new Post to db " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -130,7 +131,7 @@ public class Post
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error while deleting post: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -173,8 +174,7 @@ public class Post
 		}
 		catch (Exception e)
 		{
-			_log.warning("data error on Post " + t.getForumID() + "/"+t.getID()+" : " + e);
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Data error on Post " + t.getForumID() + "/"+t.getID()+" : " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -207,7 +207,7 @@ public class Post
 		}
 		catch (Exception e)
 		{
-			_log.warning("error while saving new Post to db " + e);
+			_log.log(Level.WARNING, "Error while saving new Post to db " + e.getMessage(), e);
 		}
 		finally
 		{

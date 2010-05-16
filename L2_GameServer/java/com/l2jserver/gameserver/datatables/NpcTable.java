@@ -341,7 +341,7 @@ public class NpcTable
 				
 				minionData.close();
 				statement4.close();
-				_log.config("NpcTable: Loaded " + cnt + " Minions.");
+				_log.info("NpcTable: Loaded " + cnt + " Minions.");
 			}
 			catch (Exception e)
 			{
@@ -399,11 +399,11 @@ public class NpcTable
 				
 				NpcAIDataTable.close();
 				statement10.close();
-				_log.config("NPC AI Data Table: Loaded " + cont + " AI Data.");
+				_log.info("NPC AI Data Table: Loaded " + cont + " AI Data.");
 			} 
 			catch (Exception e) 
 			{
-				_log.severe("NPCTable: Error reading NPC AI Data: " + e);
+				_log.log(Level.SEVERE, "NPCTable: Error reading NPC AI Data: " + e.getMessage(), e);
 			}
 			
 			if (Config.CUSTOM_NPC_TABLE)
@@ -455,11 +455,11 @@ public class NpcTable
 					
 					NpcAIDataTable.close();
 					statement.close();
-					_log.config("NPC AI Data Table: Loaded " + cont + " Custom AI Data.");
+					_log.info("NPC AI Data Table: Loaded " + cont + " Custom AI Data.");
 				}
 				catch (Exception e)
 				{
-					_log.severe("NPCTable: Error reading NPC Custom AI Data: " + e);
+					_log.log(Level.SEVERE, "NPCTable: Error reading NPC Custom AI Data: " + e.getMessage(), e);
 				}
 			}
 		}
@@ -555,9 +555,9 @@ public class NpcTable
 		}
 		
 		if (!customData)
-			_log.config("NpcTable: (Re)Loaded " + count + " NPC template(s).");
+			_log.info("NpcTable: (Re)Loaded " + count + " NPC template(s).");
 		else
-			_log.config("NpcTable: (Re)Loaded " + count + " custom NPC template(s).");
+			_log.info("NpcTable: (Re)Loaded " + count + " custom NPC template(s).");
 	}
 	
 	public void reloadNpc(int id)
@@ -631,7 +631,7 @@ public class NpcTable
 		}
 		catch (Exception e)
 		{
-			_log.warning("NPCTable: Could not reload data for NPC " + id + ": " + e);
+			_log.log(Level.WARNING, "NPCTable: Could not reload data for NPC " + id + ": " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -714,7 +714,7 @@ public class NpcTable
 		}
 		catch (Exception e)
 		{
-			_log.warning("NPCTable: Could not store new NPC data in database: " + e);
+			_log.log(Level.WARNING, "NPCTable: Could not store new NPC data in database: " + e.getMessage(), e);
 		}
 		finally
 		{

@@ -19,6 +19,7 @@ import gnu.trove.TIntObjectHashMap;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -65,8 +66,7 @@ public class HennaTable
 		}
 		catch (Exception e)
 		{
-			_log.severe("error while creating henna table " + e);
-			e.printStackTrace();
+			_log.log(Level.SEVERE, "Error while creating henna table " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -103,7 +103,7 @@ public class HennaTable
 			L2Henna template = new L2Henna(hennaDat);
 			_henna.put(id, template);
 		}
-		_log.config("HennaTable: Loaded " + _henna.size() + " Templates.");
+		_log.info("HennaTable: Loaded " + _henna.size() + " Templates.");
 	}
 	
 	public L2Henna getTemplate(int id)

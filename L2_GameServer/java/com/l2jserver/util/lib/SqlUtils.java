@@ -17,6 +17,7 @@ package com.l2jserver.util.lib;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -62,8 +63,7 @@ public class SqlUtils
 		}
 		catch (Exception e)
 		{
-			_log.warning("Error in query '" + query + "':" + e);
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error in query '" + query + "':", e);
 		}
 		finally
 		{
@@ -115,8 +115,7 @@ public class SqlUtils
 		}
 		catch (Exception e)
 		{
-			_log.warning("mSGI: Error in query '" + query + "':" + e);
-			e.printStackTrace();
+			_log.log(Level.WARNING, "mSGI: Error in query '" + query + "':", e);
 		}
 		finally
 		{
@@ -169,8 +168,7 @@ public class SqlUtils
 		}
 		catch (Exception e)
 		{
-			_log.warning("Error in query '" + query + "':" + e);
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error in query '" + query + "':", e);
 		}
 		finally
 		{

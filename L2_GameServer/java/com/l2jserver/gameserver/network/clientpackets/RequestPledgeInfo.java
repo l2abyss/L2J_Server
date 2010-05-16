@@ -46,7 +46,7 @@ public final class RequestPledgeInfo extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (_log.isLoggable(Level.FINE))
+		if (Config.DEBUG)
 			_log.log(Level.FINE, "Info for clan " + _clanId + " requested");
 
 		L2PcInstance activeChar = getClient().getActiveChar();

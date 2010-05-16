@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -45,7 +46,7 @@ public class StaticObjects
 	{
 		_staticObjects = new TIntObjectHashMap<L2StaticObjectInstance>();
 		parseData();
-		_log.config("StaticObject: Loaded " + _staticObjects.size() + " StaticObject Templates.");
+		_log.info("StaticObject: Loaded " + _staticObjects.size() + " StaticObject Templates.");
 	}
 	
 	private void parseData()
@@ -72,7 +73,7 @@ public class StaticObjects
 		}
 		catch (Exception e)
 		{
-			_log.warning("error while creating StaticObjects table " + e);
+			_log.log(Level.WARNING, "Error while creating StaticObjects table " + e.getMessage(), e);
 		}
 		finally
 		{

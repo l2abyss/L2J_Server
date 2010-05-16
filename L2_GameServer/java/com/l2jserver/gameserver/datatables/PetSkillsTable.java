@@ -94,13 +94,13 @@ public class PetSkillsTable
 			}
 			catch (Exception e)
 			{
-				_log.severe("Error while creating pet skill tree (Pet ID " + npcId + "):" + e);
+				_log.log(Level.SEVERE, "Error while creating pet skill tree (Pet ID " + npcId + "): " + e.getMessage(), e);
 			}
-			_log.config("PetSkillsTable: Loaded " + count + " skills.");
+			_log.info("PetSkillsTable: Loaded " + count + " skills.");
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error while loading pet skills tables ", e);
+			_log.log(Level.SEVERE, "Error while loading pet skills tables: " + e.getMessage(), e);
 		}
 		finally
 		{

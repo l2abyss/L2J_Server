@@ -165,7 +165,7 @@ public class AutoSpawnHandler
 			statement.close();
 			
 			if (Config.DEBUG)
-				_log.config("AutoSpawnHandler: Loaded " + numLoaded + " spawn group(s) from the database.");
+				_log.info("AutoSpawnHandler: Loaded " + numLoaded + " spawn group(s) from the database.");
 		}
 		catch (Exception e)
 		{
@@ -219,7 +219,7 @@ public class AutoSpawnHandler
 		setSpawnActive(newSpawn, true);
 		
 		if (Config.DEBUG)
-			_log.config("AutoSpawnHandler: Registered auto spawn for NPC ID " + npcId + " (Object ID = " + newId + ").");
+			_log.info("AutoSpawnHandler: Registered auto spawn for NPC ID " + npcId + " (Object ID = " + newId + ").");
 		
 		return newSpawn;
 	}
@@ -264,7 +264,7 @@ public class AutoSpawnHandler
 			respawnTask.cancel(false);
 			
 			if (Config.DEBUG)
-				_log.config("AutoSpawnHandler: Removed auto spawn for NPC ID " + spawnInst._npcId + " (Object ID = " + spawnInst._objectId
+				_log.info("AutoSpawnHandler: Removed auto spawn for NPC ID " + spawnInst._npcId + " (Object ID = " + spawnInst._objectId
 						+ ").");
 		}
 		catch (Exception e)

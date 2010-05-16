@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Log
@@ -55,8 +56,7 @@ public class Log
 		}
 		catch (IOException e)
 		{
-			_log.warning("Error saving logfile: " + e);
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error saving logfile: ", e);
 		}
 		finally
 		{

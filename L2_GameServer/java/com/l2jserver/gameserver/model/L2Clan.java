@@ -1023,7 +1023,7 @@ public class L2Clan
 			statement.close();
 			
 			if (Config.DEBUG && getName() != null)
-				_log.config("Restored clan data for \"" + getName() + "\" from database.");
+				_log.info("Restored clan data for \"" + getName() + "\" from database.");
 			restoreSubPledges();
 			restoreRankPrivs();
 			restoreSkills();

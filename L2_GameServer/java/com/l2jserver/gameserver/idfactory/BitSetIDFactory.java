@@ -26,6 +26,7 @@ package com.l2jserver.gameserver.idfactory;
 
 import java.util.BitSet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -97,8 +98,7 @@ public class BitSetIDFactory extends IdFactory
 		catch (Exception e)
 		{
 			_initialized = false;
-			_log.severe("BitSet ID Factory could not be initialized correctly");
-			e.printStackTrace();
+			_log.log(Level.SEVERE, "BitSet ID Factory could not be initialized correctly: " + e.getMessage(), e);
 		}
 	}
 	

@@ -157,7 +157,7 @@ public class TradeController
 			rset1.close();
 			statement1.close();
 			
-			_log.config("TradeController: Loaded " + _lists.size() + " Buylists.");
+			_log.info("TradeController: Loaded " + _lists.size() + " Buylists.");
 		}
 		catch (Exception e)
 		{
@@ -266,7 +266,7 @@ public class TradeController
 				rset1.close();
 				statement1.close();
 				
-				_log.config("TradeController: Loaded " + (_lists.size() - initialSize) + " Custom Buylists.");
+				_log.info("TradeController: Loaded " + (_lists.size() - initialSize) + " Custom Buylists.");
 				
 			}
 			catch (Exception e)

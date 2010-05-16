@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -206,8 +207,7 @@ public class MercTicketManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: loadMercenaryData(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: loadMercenaryData(): " + e.getMessage(), e);
 		}
 		finally
 		{

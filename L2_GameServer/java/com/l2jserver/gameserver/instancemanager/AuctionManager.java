@@ -114,8 +114,7 @@ public class AuctionManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: AuctionManager.load(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: AuctionManager.load(): " + e.getMessage(), e);
 		}
 		
 		finally

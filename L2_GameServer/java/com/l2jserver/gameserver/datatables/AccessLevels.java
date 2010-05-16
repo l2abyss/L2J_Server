@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -164,7 +165,7 @@ public class AccessLevels
 		}
 		catch (SQLException e)
 		{
-			_log.warning("AccessLevels: Error loading from database:" + e);
+			_log.log(Level.WARNING, "AccessLevels: Error loading from database:" + e.getMessage(), e);
 		}
 		finally
 		{

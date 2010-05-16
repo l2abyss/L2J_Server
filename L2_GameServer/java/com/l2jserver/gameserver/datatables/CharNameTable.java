@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
@@ -115,7 +116,7 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.warning("could not check existing char name:" + e.getMessage());
+			_log.log(Level.WARNING, "Could not check existing char name: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -170,7 +171,7 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.warning("could not check existing char id:" + e.getMessage());
+			_log.log(Level.WARNING, "Could not check existing char id: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -220,7 +221,7 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.warning("could not check existing charname:" + e.getMessage());
+			_log.log(Level.WARNING, "Could not check existing charname: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -255,7 +256,7 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.warning("could not check existing char number:" + e.getMessage());
+			_log.log(Level.WARNING, "Could not check existing char number: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -295,7 +296,7 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.warning("could not load char name: " + e.getMessage());
+			_log.log(Level.WARNING, "Could not load char name: " + e.getMessage(), e);
 		}
 		finally
 		{

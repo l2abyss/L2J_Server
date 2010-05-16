@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -143,7 +144,7 @@ public class SpawnTable
 		catch (Exception e)
 		{
 			// problem with initializing spawn, go to next one
-			_log.warning("SpawnTable: Spawn could not be initialized: " + e);
+			_log.log(Level.WARNING, "SpawnTable: Spawn could not be initialized: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -156,7 +157,7 @@ public class SpawnTable
 			}
 		}
 		
-		_log.config("SpawnTable: Loaded " + _spawntable.size() + " Npc Spawn Locations.");
+		_log.info("SpawnTable: Loaded " + _spawntable.size() + " Npc Spawn Locations.");
 		
 		if (Config.CUSTOM_SPAWNLIST_TABLE)
 		{
@@ -239,7 +240,7 @@ public class SpawnTable
 			catch (Exception e)
 			{
 				// problem with initializing spawn, go to next one
-				_log.warning("CustomSpawnTable: Spawn could not be initialized: " + e);
+				_log.log(Level.WARNING, "CustomSpawnTable: Spawn could not be initialized: " + e.getMessage(), e);
 			}
 			finally
 			{
@@ -251,7 +252,7 @@ public class SpawnTable
 				{
 				}
 			}
-			_log.config("CustomSpawnTable: Loaded " + _customSpawnCount + " Npc Spawn Locations.");
+			_log.info("CustomSpawnTable: Loaded " + _customSpawnCount + " Npc Spawn Locations.");
 			
 		}
 		
@@ -300,7 +301,7 @@ public class SpawnTable
 			catch (Exception e)
 			{
 				// problem with storing spawn
-				_log.warning("SpawnTable: Could not store spawn in the DB:" + e);
+				_log.log(Level.WARNING, "SpawnTable: Could not store spawn in the DB:" + e.getMessage(), e);
 			}
 			finally
 			{
@@ -338,7 +339,7 @@ public class SpawnTable
 				catch (Exception e)
 				{
 					// problem with inserting nospawn
-					_log.warning("SpawnTable: Spawn " + spawn.getId() + " could not be insert into DB: " + e);
+					_log.log(Level.WARNING, "SpawnTable: Spawn " + spawn.getId() + " could not be insert into DB: " + e.getMessage(), e);
 				}
 				finally
 				{
@@ -365,7 +366,7 @@ public class SpawnTable
 				catch (Exception e)
 				{
 					// problem with deleting spawn
-					_log.warning("SpawnTable: Spawn " + spawn.getId() + " could not be removed from DB: " + e);
+					_log.log(Level.WARNING, "SpawnTable: Spawn " + spawn.getId() + " could not be removed from DB: " + e.getMessage(), e);
 				}
 				finally
 				{

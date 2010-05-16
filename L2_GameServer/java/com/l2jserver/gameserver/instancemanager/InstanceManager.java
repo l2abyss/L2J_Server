@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -89,7 +90,7 @@ public class InstanceManager
 			statement.close();
 			_playerInstanceTimes.get(playerObjId).put(id, time);
 		}
-		catch (Exception e) { _log.warning("Could not insert character instance time data: "+ e); }
+		catch (Exception e) { _log.log(Level.WARNING, "Could not insert character instance time data: "+ e.getMessage(), e); }
 		finally { try { con.close(); } catch (Exception e) {} }
 	}
 
@@ -107,7 +108,7 @@ public class InstanceManager
 			statement.close();
 			_playerInstanceTimes.get(playerObjId).remove(id);
 		}
-		catch (Exception e) { _log.warning("Could not delete character instance time data: "+ e); }
+		catch (Exception e) { _log.log(Level.WARNING, "Could not delete character instance time data: "+ e.getMessage(), e); }
 		finally { try { con.close(); } catch (Exception e) {} }
 	}
 
@@ -139,7 +140,7 @@ public class InstanceManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Could not delete character instance time data: "+ e);
+			_log.log(Level.WARNING, "Could not delete character instance time data: "+ e.getMessage(), e);
 		}
 		finally
 		{
@@ -181,7 +182,7 @@ public class InstanceManager
 		}
 		catch (XMLStreamException xppe)
 		{
-			xppe.printStackTrace();
+			_log.log(Level.WARNING, "Error while loading instance names: " + xppe.getMessage(), xppe);
 		}
 		finally
 		{
@@ -341,8 +342,7 @@ public class InstanceManager
 			}
 			catch (FileNotFoundException e)
 			{
-				_log.warning("InstanceManager: Failed creating instance from template " + template + ", " + e.getMessage());
-				e.printStackTrace();
+				_log.log(Level.WARNING, "InstanceManager: Failed creating instance from template " + template + ", " + e.getMessage(), e);
 			}
 		}
 		return _dynamic;

@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -139,8 +140,7 @@ public class FortSiegeManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: checkIsRegistered(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: checkIsRegistered(): " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -150,8 +150,6 @@ public class FortSiegeManager
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 		return register;
@@ -243,8 +241,7 @@ public class FortSiegeManager
 		catch (Exception e)
 		{
 			//_initialized = false;
-			_log.warning("Error while loading fortsiege data." + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error while loading fortsiege data." + e.getMessage(), e);
 		}
 		finally
 		{
@@ -254,8 +251,6 @@ public class FortSiegeManager
 			}
 			catch (Exception e)
 			{
-				_log.warning("" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}

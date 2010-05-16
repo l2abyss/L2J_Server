@@ -90,7 +90,7 @@ public class FishTable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "error while creating fishes table" + e);
+			_log.log(Level.SEVERE, "Error while creating fish table" + e.getMessage(), e);
 		}
 		finally
 		{
@@ -102,7 +102,7 @@ public class FishTable
 			{
 			}
 		}
-		_log.config("FishTable: Loaded " + count + " Fishes.");
+		_log.info("FishTable: Loaded " + count + " Fishes.");
 	}
 	
 	/**

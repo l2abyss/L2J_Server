@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -251,8 +252,7 @@ public class CastleManager implements InstanceListManager
 			}
 			catch (Exception e)
 			{
-				_log.warning("Failed to remove castle circlets offline for player " + member.getName());
-				e.printStackTrace();
+				_log.log(Level.WARNING, "Failed to remove castle circlets offline for player " + member.getName() + ": " + e.getMessage(), e);
 			}
 			finally
 			{
@@ -291,8 +291,7 @@ public class CastleManager implements InstanceListManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("Exception: loadCastleData(): " + e.getMessage());
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Exception: loadCastleData(): " + e.getMessage(), e);
 		}
 		finally
 		{

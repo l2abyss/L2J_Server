@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,7 +67,7 @@ public class PetNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.warning("could not check existing petname:" + e.getMessage());
+			_log.log(Level.WARNING, "Could not check existing petname:" + e.getMessage(), e);
 		}
 		finally
 		{

@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
@@ -155,11 +156,11 @@ public class GrandBossManager
 		}
 		catch (SQLException e)
 		{
-			_log.warning("GrandBossManager: Could not load grandboss_data table");
+			_log.log(Level.WARNING, "GrandBossManager: Could not load grandboss_data table: " + e.getMessage(), e);
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error while initializing GrandBossManager: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -169,7 +170,6 @@ public class GrandBossManager
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
 			}
 		}
 	}
@@ -218,12 +218,11 @@ public class GrandBossManager
 		}
 		catch (SQLException e)
 		{
-			_log.warning("GrandBossManager: Could not load grandboss_list table");
-			e.getMessage();
+			_log.log(Level.WARNING, "GrandBossManager: Could not load grandboss_list table: " + e.getMessage(), e);
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error while initializing GrandBoss zones: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -414,7 +413,7 @@ public class GrandBossManager
 		}
 		catch (SQLException e)
 		{
-			_log.warning("GrandBossManager: Couldn't store grandbosses to database:" + e);
+			_log.log(Level.WARNING, "GrandBossManager: Couldn't store grandbosses to database:" + e.getMessage(), e);
 		}
 		finally
 		{
@@ -424,7 +423,6 @@ public class GrandBossManager
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
 			}
 		}
 	}
@@ -470,7 +468,7 @@ public class GrandBossManager
 		}
 		catch (SQLException e)
 		{
-			_log.warning("GrandBossManager: Couldn't store grandbosses to database:" + e);
+			_log.log(Level.WARNING, "GrandBossManager: Couldn't update grandbosses to database:" + e.getMessage(), e);
 		}
 		finally
 		{
@@ -480,7 +478,6 @@ public class GrandBossManager
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
 			}
 		}
 	}

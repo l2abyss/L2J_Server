@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -155,8 +156,7 @@ public class HtmCache
 			}
 			catch (Exception e)
 			{
-				_log.warning("problem with htm file " + e);
-				e.printStackTrace();
+				_log.log(Level.WARNING, "Problem with htm file " + e.getMessage(), e);
 			}
 			finally
 			{

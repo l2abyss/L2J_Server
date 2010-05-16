@@ -90,8 +90,7 @@ public class ItemsOnGroundManager
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "error while updating table ItemsOnGround " + e);
-				e.printStackTrace();
+				_log.log(Level.SEVERE, "Error while updating table ItemsOnGround " + e.getMessage(), e);
 			}
 			finally
 			{
@@ -152,8 +151,7 @@ public class ItemsOnGroundManager
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "error while loading ItemsOnGround " + e);
-			e.printStackTrace();
+			_log.log(Level.SEVERE, "Error while loading ItemsOnGround " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -206,8 +204,7 @@ public class ItemsOnGroundManager
 		}
 		catch (Exception e1)
 		{
-			_log.log(Level.SEVERE, "error while cleaning table ItemsOnGround " + e1);
-			e1.printStackTrace();
+			_log.log(Level.SEVERE, "Error while cleaning table ItemsOnGround " + e1.getMessage(), e1);
 		}
 		finally
 		{
@@ -277,15 +274,14 @@ public class ItemsOnGroundManager
 					}
 					catch (Exception e)
 					{
-						_log.log(Level.SEVERE, "error while inserting into table ItemsOnGround " + e);
-						e.printStackTrace();
+						_log.log(Level.SEVERE, "Error while inserting into table ItemsOnGround: " + e.getMessage(), e);
 					}
 				}
 				statement.close();
 			}
 			catch (SQLException e)
 			{
-				e.printStackTrace();
+				_log.log(Level.SEVERE, "SQL error while storing items on ground: " + e.getMessage(), e);
 			}
 			finally
 			{

@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.communitybbs.BB;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -92,7 +93,7 @@ public class Topic
 		}
 		catch (Exception e)
 		{
-			_log.warning("error while saving new Topic to db " + e);
+			_log.log(Level.WARNING, "Error while saving new Topic to db " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -158,7 +159,7 @@ public class Topic
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Error while deleting topic: " + e.getMessage(), e);
 		}
 		finally
 		{

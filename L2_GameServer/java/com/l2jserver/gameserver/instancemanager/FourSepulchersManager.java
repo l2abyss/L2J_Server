@@ -27,6 +27,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -47,9 +50,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 /**
  * @author sandman
@@ -320,17 +320,9 @@ public class FourSepulchersManager
 				spawnDat.startRespawn();
 				_log.info("FourSepulchersManager: spawned " + spawnDat.getTemplate().getName());
 			}
-			catch (SecurityException e)
+			catch (Exception e)
 			{
-				e.printStackTrace();
-			}
-			catch (ClassNotFoundException e)
-			{
-				e.printStackTrace();
-			}
-			catch (NoSuchMethodException e)
-			{
-				e.printStackTrace();
+				_log.log(Level.WARNING, "Error while spawning managers: " + e.getMessage(), e);
 			}
 		}
 	}
@@ -464,7 +456,7 @@ public class FourSepulchersManager
 		catch (Exception e)
 		{
 			// problem with initializing spawn, go to next one
-			_log.warning("FourSepulchersManager.LoadMysteriousBox: Spawn could not be initialized: " + e);
+			_log.log(Level.WARNING, "FourSepulchersManager.LoadMysteriousBox: Spawn could not be initialized: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -508,7 +500,7 @@ public class FourSepulchersManager
 			}
 			catch (Exception e)
 			{
-				_log.warning("FourSepulchersManager.InitKeyBoxSpawns: Spawn could not be initialized: " + e);
+				_log.log(Level.WARNING, "FourSepulchersManager.InitKeyBoxSpawns: Spawn could not be initialized: " + e.getMessage(), e);
 			}
 		}
 	}
@@ -578,7 +570,7 @@ public class FourSepulchersManager
 		catch (Exception e)
 		{
 			// problem with initializing spawn, go to next one
-			_log.warning("FourSepulchersManager.LoadPhysicalMonsters: Spawn could not be initialized: " + e);
+			_log.log(Level.WARNING, "FourSepulchersManager.LoadPhysicalMonsters: Spawn could not be initialized: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -658,7 +650,7 @@ public class FourSepulchersManager
 		catch (Exception e)
 		{
 			// problem with initializing spawn, go to next one
-			_log.warning("FourSepulchersManager.LoadMagicalMonsters: Spawn could not be initialized: " + e);
+			_log.log(Level.WARNING, "FourSepulchersManager.LoadMagicalMonsters: Spawn could not be initialized: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -739,7 +731,7 @@ public class FourSepulchersManager
 		catch (Exception e)
 		{
 			// problem with initializing spawn, go to next one
-			_log.warning("FourSepulchersManager.LoadDukeMonsters: Spawn could not be initialized: " + e);
+			_log.log(Level.WARNING, "FourSepulchersManager.LoadDukeMonsters: Spawn could not be initialized: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -819,7 +811,7 @@ public class FourSepulchersManager
 		catch (Exception e)
 		{
 			// problem with initializing spawn, go to next one
-			_log.warning("FourSepulchersManager.LoadEmperorsGraveMonsters: Spawn could not be initialized: " + e);
+			_log.log(Level.WARNING, "FourSepulchersManager.LoadEmperorsGraveMonsters: Spawn could not be initialized: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -903,7 +895,7 @@ public class FourSepulchersManager
 			}
 			catch (Exception e)
 			{
-				_log.warning("FourSepulchersManager.InitExecutionerSpawns: Spawn could not be initialized: " + e);
+				_log.log(Level.WARNING, "FourSepulchersManager.InitExecutionerSpawns: Spawn could not be initialized: " + e.getMessage(), e);
 			}
 		}
 	}
@@ -1234,7 +1226,7 @@ public class FourSepulchersManager
 					}
 					catch (Exception e)
 					{
-						_log.warning("FourSepulchersManager.SpawnMonster: Spawn could not be initialized: " + e);
+						_log.log(Level.WARNING, "FourSepulchersManager.SpawnMonster: Spawn could not be initialized: " + e.getMessage(), e);
 					}
 					
 					spawnedKeyBoxMob = true;

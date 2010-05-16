@@ -103,9 +103,9 @@ public class SiegeGuardManager
 			statement.execute();
 			statement.close();
 		}
-		catch (Exception e1)
+		catch (Exception e)
 		{
-			_log.warning("Error deleting hired siege guard at " + x + ',' + y + ',' + z + ":" + e1);
+			_log.log(Level.WARNING, "Error deleting hired siege guard at " + x + ',' + y + ',' + z + ": " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -133,9 +133,9 @@ public class SiegeGuardManager
 			statement.execute();
 			statement.close();
 		}
-		catch (Exception e1)
+		catch (Exception e)
 		{
-			_log.warning("Error deleting hired siege guard for castle " + getCastle().getName() + ":" + e1);
+			_log.log(Level.WARNING, "Error deleting hired siege guard for castle " + getCastle().getName() + ": " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -242,9 +242,9 @@ public class SiegeGuardManager
 			}
 			statement.close();
 		}
-		catch (Exception e1)
+		catch (Exception e)
 		{
-			_log.warning("Error loading siege guard for castle " + getCastle().getName() + ":" + e1);
+			_log.log(Level.WARNING, "Error loading siege guard for castle " + getCastle().getName() + ": " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -282,9 +282,9 @@ public class SiegeGuardManager
 			statement.execute();
 			statement.close();
 		}
-		catch (Exception e1)
+		catch (Exception e)
 		{
-			_log.warning("Error adding siege guard for castle " + getCastle().getName() + ":" + e1);
+			_log.log(Level.WARNING, "Error adding siege guard for castle " + getCastle().getName() + ": " + e.getMessage(), e);
 		}
 		finally
 		{
