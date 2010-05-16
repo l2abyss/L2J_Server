@@ -142,9 +142,6 @@ public class Mail extends ItemContainer
 				else
 					addItem(item);
 			}
-
-			inv.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{

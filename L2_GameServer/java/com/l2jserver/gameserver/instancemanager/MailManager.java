@@ -192,7 +192,6 @@ public class MailManager
 			con = L2DatabaseFactory.getInstance().getConnection();
 			stmt = Message.getStatement(msg, con);
 			stmt.execute();
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -310,7 +309,6 @@ public class MailManager
 			stmt.setInt(1, msgId);
 
 			stmt.execute();
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -344,7 +342,6 @@ public class MailManager
 			stmt.setInt(1, msgId);
 
 			stmt.execute();
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -378,7 +375,6 @@ public class MailManager
 			stmt.setInt(1, msgId);
 
 			stmt.execute();
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -412,7 +408,6 @@ public class MailManager
 			stmt.setInt(1, msgId);
 
 			stmt.execute();
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
