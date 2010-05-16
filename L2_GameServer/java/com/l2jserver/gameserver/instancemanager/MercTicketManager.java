@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.instancemanager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -359,19 +360,17 @@ public class MercTicketManager
 	 */
 	public void deleteTickets(int castleId)
 	{
-		List<L2ItemInstance> toDelete = new FastList<L2ItemInstance>();
-		for (L2ItemInstance item : getDroppedTickets())
+		Iterator<L2ItemInstance> it = getDroppedTickets().iterator();
+		while (it.hasNext())
 		{
+			L2ItemInstance item = it.next();
 			if ((item != null) && (getTicketCastleId(item.getItemId()) == castleId))
 			{
 				item.decayMe();
 				L2World.getInstance().removeObject(item);
-				
-				// remove from the list
-				toDelete.add(item);
+				it.remove();
 			}
 		}
-		getDroppedTickets().removeAll(toDelete);
 	}
 	
 	/**
