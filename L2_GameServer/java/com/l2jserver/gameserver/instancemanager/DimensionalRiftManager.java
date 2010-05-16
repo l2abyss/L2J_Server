@@ -111,7 +111,6 @@ public class DimensionalRiftManager
 			}
 			
 			s.close();
-			con.close();
 		}
 		catch (Exception e)
 		{
@@ -124,7 +123,7 @@ public class DimensionalRiftManager
 				con.close();
 			}
 			catch (Exception e)
-			{ /*do nothing */
+			{
 			}
 		}
 		

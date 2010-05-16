@@ -20,7 +20,7 @@ import javolution.util.FastList;
  */
 public class ResidentialSkillTable
 {
-	private static Logger _log = Logger.getLogger(ArmorSetsTable.class.getName());
+	private static Logger _log = Logger.getLogger(ResidentialSkillTable.class.getName());
 
 	private static ResidentialSkillTable _instance = null;
 	private static TIntObjectHashMap<FastList<L2Skill>> _list;
@@ -63,8 +63,8 @@ public class ResidentialSkillTable
 				else
 					_list.get(entityId).add(sk);
 			}
-			statement.close();
 			rs.close();
+			statement.close();
 		}
 		catch (Exception e)
 		{

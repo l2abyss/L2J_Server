@@ -24,6 +24,9 @@ import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ai.CtrlIntention;
@@ -51,9 +54,6 @@ import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 /**
  *Seven Signs Festival of Darkness Engine
@@ -995,7 +995,6 @@ public class SevenSignsFestival implements SpawnListener
 			
 			rset.close();
 			statement.close();
-			con.close();
 			
 			if (Config.DEBUG)
 				_log.info("SevenSignsFestival: Loaded data from database.");
@@ -1008,8 +1007,6 @@ public class SevenSignsFestival implements SpawnListener
 		{
 			try
 			{
-				rset.close();
-				statement.close();
 				con.close();
 			}
 			catch (SQLException e)

@@ -92,13 +92,6 @@ public class ArmorSetsTable
 		{
 			try
 			{
-				statement.close();
-			}
-			catch (Exception e)
-			{
-			}
-			try
-			{
 				con.close();
 			}
 			catch (Exception e)
@@ -139,13 +132,6 @@ public class ArmorSetsTable
 			}
 			finally
 			{
-				try
-				{
-					statement.close();
-				}
-				catch (Exception e)
-				{
-				}
 				try
 				{
 					con.close();

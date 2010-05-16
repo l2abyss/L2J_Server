@@ -32,7 +32,7 @@ import javolution.util.FastList;
  */
 public class FishTable
 {
-	private static Logger _log = Logger.getLogger(SkillTreeTable.class.getName());
+	private static Logger _log = Logger.getLogger(FishTable.class.getName());
 	
 	private static List<FishData> _fishsNormal;
 	private static List<FishData> _fishsEasy;
@@ -56,21 +56,21 @@ public class FishTable
 			_fishsHard = new FastList<FishData>();
 			FishData fish;
 			PreparedStatement statement = con.prepareStatement("SELECT id, level, name, hp, hpregen, fish_type, fish_group, fish_guts, guts_check_time, wait_time, combat_time FROM fish ORDER BY id");
-			ResultSet Fishes = statement.executeQuery();
+			ResultSet fishes = statement.executeQuery();
 			
-			while (Fishes.next())
+			while (fishes.next())
 			{
-				int id = Fishes.getInt("id");
-				int lvl = Fishes.getInt("level");
-				String name = Fishes.getString("name");
-				int hp = Fishes.getInt("hp");
-				int hpreg = Fishes.getInt("hpregen");
-				int type = Fishes.getInt("fish_type");
-				int group = Fishes.getInt("fish_group");
-				int fish_guts = Fishes.getInt("fish_guts");
-				int guts_check_time = Fishes.getInt("guts_check_time");
-				int wait_time = Fishes.getInt("wait_time");
-				int combat_time = Fishes.getInt("combat_time");
+				int id = fishes.getInt("id");
+				int lvl = fishes.getInt("level");
+				String name = fishes.getString("name");
+				int hp = fishes.getInt("hp");
+				int hpreg = fishes.getInt("hpregen");
+				int type = fishes.getInt("fish_type");
+				int group = fishes.getInt("fish_group");
+				int fish_guts = fishes.getInt("fish_guts");
+				int guts_check_time = fishes.getInt("guts_check_time");
+				int wait_time = fishes.getInt("wait_time");
+				int combat_time = fishes.getInt("combat_time");
 				fish = new FishData(id, lvl, name, hp, hpreg, type, group, fish_guts, guts_check_time, wait_time, combat_time);
 				switch (fish.getGroup())
 				{
@@ -84,7 +84,7 @@ public class FishTable
 						_fishsHard.add(fish);
 				}
 			}
-			Fishes.close();
+			fishes.close();
 			statement.close();
 			count = _fishsEasy.size() + _fishsNormal.size() + _fishsHard.size();
 		}

@@ -114,6 +114,7 @@ public class RaidBossSpawnManager
 			_log.info("RaidBossSpawnManager: Scheduled " + _schedules.size() + " Instances");
 
 			rset.close();
+			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -288,6 +289,7 @@ public class RaidBossSpawnManager
 				statement.setDouble(8, currentHP);
 				statement.setDouble(9, currentMP);
 				statement.execute();
+				statement.close();
 			}
 			catch (Exception e)
 			{
@@ -296,13 +298,6 @@ public class RaidBossSpawnManager
 			}
 			finally
 			{
-				try
-				{
-					statement.close();
-				}
-				catch (Exception e)
-				{
-				}
 				try
 				{
 					con.close();
@@ -350,6 +345,7 @@ public class RaidBossSpawnManager
 				statement = con.prepareStatement("DELETE FROM raidboss_spawnlist WHERE boss_id=?");
 				statement.setInt(1, bossId);
 				statement.execute();
+				statement.close();
 			}
 			catch (Exception e)
 			{
@@ -358,13 +354,6 @@ public class RaidBossSpawnManager
 			}
 			finally
 			{
-				try
-				{
-					statement.close();
-				}
-				catch (Exception e)
-				{
-				}
 				try
 				{
 					con.close();

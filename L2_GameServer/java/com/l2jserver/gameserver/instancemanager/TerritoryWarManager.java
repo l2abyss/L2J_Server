@@ -614,6 +614,7 @@ public class TerritoryWarManager
 			statement.setInt(1, castleId);
 			statement.setInt(2, objId);
 			statement.execute();
+			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -621,13 +622,6 @@ public class TerritoryWarManager
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e)
-			{
-			}
 			try
 			{
 				con.close();
@@ -652,6 +646,7 @@ public class TerritoryWarManager
 			statement.setString(1, wardList);
 			statement.setInt(2, ter.getTerritoryId());
 			statement.execute();
+			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -659,13 +654,6 @@ public class TerritoryWarManager
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e)
-			{
-			}
 			try
 			{
 				con.close();

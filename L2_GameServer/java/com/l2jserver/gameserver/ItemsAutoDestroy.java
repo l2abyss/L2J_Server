@@ -27,7 +27,7 @@ import javolution.util.FastList;
 
 public class ItemsAutoDestroy
 {
-	protected static final Logger _log = Logger.getLogger("ItemsAutoDestroy");
+	protected static final Logger _log = Logger.getLogger(ItemsAutoDestroy.class.getName());
 	protected List<L2ItemInstance> _items = null;
 	protected static long _sleep;
 	
