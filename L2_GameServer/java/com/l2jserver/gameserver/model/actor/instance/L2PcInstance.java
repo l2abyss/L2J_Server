@@ -10040,6 +10040,7 @@ public final class L2PcInstance extends L2Playable
 	public void leaveObserverMode()
 	{
 		setTarget(null);
+		getKnownList().removeAllKnownObjects(); // reinit knownlist
 		setXYZ(_obsX, _obsY, _obsZ);
 		setIsParalyzed(false);
 		sendPacket(new GMHide(0));
