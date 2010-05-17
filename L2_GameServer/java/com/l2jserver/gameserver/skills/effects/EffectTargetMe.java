@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.skills.effects;
 
 import com.l2jserver.gameserver.model.L2Effect;
+import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
@@ -66,6 +67,9 @@ public class EffectTargetMe extends L2Effect
 			((L2Playable)getEffected()).setLockedTarget(getEffector());
 			return true;
 		}
+		else if (getEffected() instanceof L2Attackable && !getEffected().isRaid())
+			return true;
+
 		return false;
 	}
 	
