@@ -133,7 +133,7 @@ public class LoginServerThread extends Thread
 	@Override
 	public void run()
 	{
-		while (true)
+		while (!isInterrupted())
 		{
 			int lengthHi = 0;
 			int lengthLo = 0;
@@ -150,7 +150,7 @@ public class LoginServerThread extends Thread
 				//init Blowfish
 				_blowfishKey = Util.generateHex(40);
 				_blowfish = new NewCrypt("_;v.]05-31!|+-%xT!^[$\00");
-				while (true)
+				while (!isInterrupted())
 				{
 					lengthLo = _in.read();
 					lengthHi = _in.read();
@@ -327,8 +327,9 @@ public class LoginServerThread extends Thread
 								else
 								{
 									_log.warning("Session key is not correct. Closing connection for account " + wcToRemove.account + ".");
-									wcToRemove.gameClient.getConnection().sendPacket(new LoginFail(LoginFail.SYSTEM_ERROR_LOGIN_LATER));
-									wcToRemove.gameClient.closeNow();
+									//wcToRemove.gameClient.getConnection().sendPacket(new LoginFail(LoginFail.SYSTEM_ERROR_LOGIN_LATER));
+									wcToRemove.gameClient.close(new LoginFail(LoginFail.SYSTEM_ERROR_LOGIN_LATER));
+									_accountsInGameServer.remove(wcToRemove.account);
 								}
 								_waitingClients.remove(wcToRemove);
 							}
@@ -354,6 +355,8 @@ public class LoginServerThread extends Thread
 				try
 				{
 					_loginSocket.close();
+					if (isInterrupted())
+						return;
 				}
 				catch (Exception e)
 				{
