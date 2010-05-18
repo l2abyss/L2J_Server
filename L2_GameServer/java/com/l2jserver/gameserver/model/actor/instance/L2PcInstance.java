@@ -9985,8 +9985,8 @@ public final class L2PcInstance extends L2Playable
 		getAppearance().setInvisible();
 		sendPacket(new GMHide(1));
 		sendPacket(new ObservationMode(x, y, z));
+		getKnownList().removeAllKnownObjects(); // reinit knownlist
 		setXYZ(x, y, z);
-
 		broadcastUserInfo();
 	}
 	
