@@ -115,7 +115,9 @@ public class CharKnownList extends ObjectKnownList
 				while (pIter.hasNext())
 				{
 					player = pIter.next();
-					if (!player.isVisible()
+					if (player == null)
+						pIter.remove();
+					else if (!player.isVisible()
 					        || !Util.checkIfInShortRadius(getDistanceToForgetObject(player), getActiveObject(), player, true))
 					{
 						pIter.remove();
@@ -134,7 +136,9 @@ public class CharKnownList extends ObjectKnownList
 				while (sIter.hasNext())
 				{
 					summon = sIter.next();
-					if (!summon.isVisible()
+					if (summon == null)
+						sIter.remove();
+					else if (!summon.isVisible()
 					        || !Util.checkIfInShortRadius(getDistanceToForgetObject(summon), getActiveObject(), summon, true))
 					{
 						sIter.remove();
@@ -154,7 +158,9 @@ public class CharKnownList extends ObjectKnownList
 			while (oIter.hasNext())
 			{
 				object = oIter.next();
-				if (!object.isVisible()
+				if (object == null)
+					oIter.remove();
+				else if (!object.isVisible()
 						|| !Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true))
 				{
 					oIter.remove();

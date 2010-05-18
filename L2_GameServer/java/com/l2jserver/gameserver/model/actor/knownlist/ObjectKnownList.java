@@ -158,6 +158,12 @@ public class ObjectKnownList
 				while (oIter.hasNext())
 				{
 					object = oIter.next();
+					if (object == null)
+					{
+						oIter.remove();
+						continue;
+					}
+
 					if (!fullCheck && !(object instanceof L2Playable))
 						continue;
 
