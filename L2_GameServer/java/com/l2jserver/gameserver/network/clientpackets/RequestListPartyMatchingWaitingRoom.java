@@ -14,35 +14,45 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.serverpackets.ExListPartyMatchingWaitingRoom;
 
 /**
- * Format: (ch)
- * this is just a trigger : no data
- * @author  -Wooden-
+ * 
+ * @author  Gnacik
  *
  */
 public class RequestListPartyMatchingWaitingRoom extends L2GameClientPacket
 {
-	protected static final Logger _log = Logger.getLogger(RequestListPartyMatchingWaitingRoom.class.getName());
-	private static final String _C__D0_16_REQUESTLISTPARTYMATCHINGWAITINGROOM = "[C] D0:16 RequestListPartyMatchingWaitingRoom";
-	
-	@Override
+	private static int _page;
+	private static int _minlvl;
+	private static int _maxlvl;
+    private static int _mode; // 1 - waitlist 0 - room waitlist
+
+    @Override
 	protected void readImpl()
-	{
-		// trigger
-	}
-	
-	@Override
+    {
+    	_page = readD();
+    	_minlvl = readD();
+    	_maxlvl = readD();
+    	_mode	= readD();
+    }
+
+    @Override
 	protected void runImpl()
-	{
-		_log.info("C5: RequestListPartyMatchingWaitingRoom");
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _C__D0_16_REQUESTLISTPARTYMATCHINGWAITINGROOM;
-	}
-	
+    {
+		L2PcInstance _activeChar = getClient().getActiveChar();
+		
+		if (_activeChar == null)
+			return;
+
+		_activeChar.sendPacket(new ExListPartyMatchingWaitingRoom(_activeChar,_page,_minlvl,_maxlvl, _mode));
+    }
+
+    @Override
+    public String getType()
+    {
+        return "[C] D0:31 RequestListPartyMatchingWaitingRoom";
+    }
+
 }

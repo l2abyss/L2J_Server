@@ -298,7 +298,7 @@ public final class UserInfo extends L2GameServerPacket
         for (int id : _activeChar.getCubics().keySet())
             writeH(id);
 
-        writeC(0x00); //1-find party members
+        writeC(_activeChar.isInPartyMatchRoom() ? 1 : 0);
 
         if (_activeChar.getAppearance().getInvisible() && _activeChar.isGM())
         	writeD(_activeChar.getAbnormalEffect() | AbnormalEffect.STEALTH.getMask());

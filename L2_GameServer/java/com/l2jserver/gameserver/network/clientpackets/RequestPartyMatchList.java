@@ -16,74 +16,112 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.logging.Logger;
 
-import com.l2jserver.Config;
-
+import com.l2jserver.gameserver.model.PartyMatchRoom;
+import com.l2jserver.gameserver.model.PartyMatchRoomList;
+import com.l2jserver.gameserver.model.PartyMatchWaitingList;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.serverpackets.ExPartyRoomMember;
+import com.l2jserver.gameserver.network.serverpackets.PartyMatchDetail;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * Packetformat  Rev650  cdddddS
- *
- * @version $Revision: 1.1.4.4 $ $Date: 2005/03/27 15:29:30 $
+ * author: Gnacik
  */
 
 public class RequestPartyMatchList extends L2GameClientPacket
 {
-	private static final String _C__70_REQUESTPARTYMATCHLIST = "[C] 70 RequestPartyMatchList";
-	private static Logger _log = Logger.getLogger(RequestPartyMatchList.class.getName());
-
-	private int _status;
-    /*private int _unk1;
-    private int _unk2;
-    private int _unk3;
-    private int _unk4;
-    private String _unk5;*/
-
+	private static final Logger _log = Logger.getLogger(RequestPartyMatchList.class.getName());
+	
+	private int _roomid;
+	private int _membersmax;
+	private int _lvlmin;
+	private int _lvlmax;
+	private int _loot;
+	private String _roomtitle;
 
 	@Override
 	protected void readImpl()
 	{
-		_status = readD();
-        //TODO analyse values _unk1-unk5
-		/*
-        _unk1 = readD();
-        _unk2 = readD();
-        _unk3 = readD();
-        _unk4 = readD();
-        _unk5 = readS();
-        */
+		_roomid = readD();
+		_membersmax = readD();
+		_lvlmin = readD();
+		_lvlmax = readD();
+		_loot = readD();
+		_roomtitle = readS();
 	}
 
 	@Override
 	protected void runImpl()
 	{
-		if (_status == 1)
-		{
-			// window is open fill the list
-			// actually the client should get automatic updates for the list
-			// for now we only fill it once
+		L2PcInstance _activeChar = getClient().getActiveChar();
 
-			//Collection<L2PcInstance> players = L2World.getInstance().getAllPlayers();
-			//L2PcInstance[] allPlayers = players.toArray(new L2PcInstance[players.size()]);
-			//L2PcInstance[] empty = new L2PcInstance[] { };
-			//ListPartyWating matchList = new ListPartyWating(empty);
-			//sendPacket(matchList);
-		}
-		else if (_status == 3)
+		if (_activeChar == null)
+			return;
+
+		if (_roomid  > 0)
 		{
-			// client does not need any more updates
-			if (Config.DEBUG) _log.fine("PartyMatch window was closed.");
+			PartyMatchRoom _room = PartyMatchRoomList.getInstance().getRoom(_roomid);
+			if(_room != null)
+			{
+				_log.info("PartyMatchRoom #" + _room.getId() + " changed by "+_activeChar.getName());
+				_room.setMaxMembers(_membersmax);
+				_room.setMinLvl(_lvlmin);
+				_room.setMaxLvl(_lvlmax);
+				_room.setLootType(_loot);
+				_room.setTitle(_roomtitle);
+
+				for(L2PcInstance _member : _room.getPartyMembers())
+				{
+					if(_member == null)
+						continue;
+
+					_member.sendPacket(new PartyMatchDetail(_activeChar, _room));
+					_member.sendPacket(new SystemMessage(SystemMessageId.PARTY_ROOM_REVISED));
+				}
+			}
 		}
 		else
 		{
-			if (Config.DEBUG) _log.fine("party match status: "+_status);
+			int _maxid = PartyMatchRoomList.getInstance().getMaxId();
+			
+			PartyMatchRoom _room = new PartyMatchRoom(_maxid, _roomtitle, _loot, _lvlmin, _lvlmax, _membersmax, _activeChar);
+			
+			_log.info("PartyMatchRoom #" + _maxid + " created by " + _activeChar.getName());
+			// Remove from waiting list
+			PartyMatchWaitingList.getInstance().removePlayer(_activeChar);
+			
+			PartyMatchRoomList.getInstance().addPartyMatchRoom(_maxid, _room);
+			
+			if (_activeChar.isInParty())
+			{
+				for (L2PcInstance ptmember : _activeChar.getParty().getPartyMembers())
+				{
+					if (ptmember == null)
+						continue;
+					if (ptmember == _activeChar)
+						continue;
+					
+					ptmember.setPartyRoom(_maxid);
+					//ptmember.setPartyMatching(1);
+					
+					_room.addMember(ptmember);
+				}
+			}
+			_activeChar.sendPacket(new PartyMatchDetail(_activeChar, _room));
+			_activeChar.sendPacket(new ExPartyRoomMember(_activeChar, _room, 1));
+			
+			_activeChar.sendPacket(new SystemMessage(SystemMessageId.PARTY_ROOM_CREATED));
+			
+			_activeChar.setPartyRoom(_maxid);
+			//_activeChar.setPartyMatching(1);
+			_activeChar.broadcastUserInfo();
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__70_REQUESTPARTYMATCHLIST;
+		return "[C] 80 RequestPartyMatchList";
 	}
 }

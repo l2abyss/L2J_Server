@@ -14,35 +14,38 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
+import com.l2jserver.gameserver.model.PartyMatchWaitingList;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * Format: (ch)
- * this is just a trigger : no data
- * @author  -Wooden-
+ * 
+ * @author Gnacik
  *
  */
 public final class RequestExitPartyMatchingWaitingRoom extends L2GameClientPacket
 {
-	protected static final Logger _log = Logger.getLogger(RequestExitPartyMatchingWaitingRoom.class.getName());
 	private static final String _C__D0_17_REQUESTEXITPARTYMATCHINGWAITINGROOM = "[C] D0:17 RequestExitPartyMatchingWaitingRoom";
 	
-	@Override
+    @Override
 	protected void readImpl()
-	{
-		//trigger
-	}
-	
-	@Override
+    {
+    }
+
+    @Override
 	protected void runImpl()
-	{
-		_log.info("C5: RequestExitPartyMatchingWaitingRoom");
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _C__D0_17_REQUESTEXITPARTYMATCHINGWAITINGROOM;
-	}
-	
+    {
+    	L2PcInstance _activeChar = getClient().getActiveChar();
+    	
+    	if (_activeChar == null)
+    		return;
+    	
+    	PartyMatchWaitingList.getInstance().removePlayer(_activeChar);
+    }
+
+    @Override
+    public String getType()
+    {
+        return _C__D0_17_REQUESTEXITPARTYMATCHINGWAITINGROOM;
+    }
+
 }

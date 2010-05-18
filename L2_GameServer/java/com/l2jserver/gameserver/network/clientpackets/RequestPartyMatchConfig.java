@@ -14,6 +14,17 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.model.PartyMatchRoom;
+import com.l2jserver.gameserver.model.PartyMatchRoomList;
+import com.l2jserver.gameserver.model.PartyMatchWaitingList;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.network.serverpackets.ExPartyRoomMember;
+import com.l2jserver.gameserver.network.serverpackets.ListPartyWating;
+import com.l2jserver.gameserver.network.serverpackets.PartyMatchDetail;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+
 /**
  * This class ...
  *
@@ -22,57 +33,67 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 public final class RequestPartyMatchConfig extends L2GameClientPacket
 {
-	private static final String _C__6F_REQUESTPARTYMATCHCONFIG = "[C] 6F RequestPartyMatchConfig";
-	//private static Logger _log = Logger.getLogger(RequestPartyMatchConfig.class.getName());
+	private static final String _C__7F_REQUESTPARTYMATCHCONFIG = "[C] 7F RequestPartyMatchConfig";
 
-	private int _automaticRegistration;
-	private int _showLevel;
-	private int _showClass;
-	private String _memo;
+	private int _auto, _loc, _lvl;
 
 
 	@Override
 	protected void readImpl()
 	{
-		_automaticRegistration    = readD();
-		_showLevel                = readD();
-		_showClass                = readD();
-
-        /*
-         *  TODO: Check if this this part of the packet has been
-         *  removed by latest versions.
-         *
-		try
-        {
-            _memo                 = readS();
-        }
-		catch (BufferUnderflowException e)
-        {
-            _memo                 = "";
-            _log.warning("Memo field non existant in packet. Notify devs.");
-            e.printStackTrace();
-        }*/
+		_auto = readD();	//
+		_loc = readD();		// Location
+		_lvl = readD();		// my level
 	}
 
-	@Override
-	protected void runImpl()
-	{
-		// TODO: this packet is currently for creating a new party room
-		if (getClient().getActiveChar() == null)
-		    return;
+ 	@Override
+ 	protected void runImpl()
+ 	{
+		L2PcInstance _activeChar = getClient().getActiveChar();
+ 
+		if (_activeChar == null)
+			return;
 
-		getClient().getActiveChar().setPartyMatchingAutomaticRegistration(_automaticRegistration == 1);
-		getClient().getActiveChar().setPartyMatchingShowLevel(_showLevel == 1);
-		getClient().getActiveChar().setPartyMatchingShowClass(_showClass == 1);
-		getClient().getActiveChar().setPartyMatchingMemo(_memo);
-	}
+		if( !_activeChar.isInPartyMatchRoom() && _activeChar.getParty() != null && _activeChar.getParty().getLeader() != _activeChar)
+		{
+			_activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_VIEW_PARTY_ROOMS));
+			_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		
+		if(_activeChar.isInPartyMatchRoom())
+		{
+			// If Player is in Room show him room, not list
+			PartyMatchRoomList _list = PartyMatchRoomList.getInstance();
+			if (_list==null)
+				return;
+			
+			PartyMatchRoom _room = _list.getPlayerRoom(_activeChar);
+			if (_room == null)
+				return;
+			
+			_activeChar.sendPacket(new PartyMatchDetail(_activeChar,_room));
+			_activeChar.sendPacket(new ExPartyRoomMember(_activeChar, _room, 2));
 
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
+			_activeChar.setPartyRoom(_room.getId());
+			//_activeChar.setPartyMatching(1);
+			_activeChar.broadcastUserInfo();
+		}
+		else
+		{
+			// Add to waiting list
+			PartyMatchWaitingList.getInstance().addPlayer(_activeChar);
+
+			// Send Room list
+			ListPartyWating matchList = new ListPartyWating(_activeChar,_auto,_loc,_lvl);
+			
+			_activeChar.sendPacket(matchList);
+		}
+ 	}
+
 	@Override
 	public String getType()
 	{
-		return _C__6F_REQUESTPARTYMATCHCONFIG;
+		return _C__7F_REQUESTPARTYMATCHCONFIG;
 	}
 }

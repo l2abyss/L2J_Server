@@ -353,7 +353,7 @@ public class CharInfo extends L2GameServerPacket
 			for (int id : _activeChar.getCubics().keySet())
 				writeH(id);
 
-			writeC(0x00);	// find party members
+			writeC(_activeChar.isInPartyMatchRoom() ? 1 : 0);
 
 			if (gmSeeInvis)
 			{

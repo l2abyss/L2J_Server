@@ -112,6 +112,8 @@ import com.l2jserver.gameserver.model.AutoSpawnHandler;
 import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.L2Multisell;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.PartyMatchRoomList;
+import com.l2jserver.gameserver.model.PartyMatchWaitingList;
 import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.model.entity.TvTManager;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
@@ -291,6 +293,8 @@ public class GameServer
 		CastleManorManager.getInstance();
 		MercTicketManager.getInstance();
 		// PartyCommandManager.getInstance();
+		PartyMatchWaitingList.getInstance();
+		PartyMatchRoomList.getInstance();
 		PetitionManager.getInstance();
 		QuestManager.getInstance();
 		TransformationManager.getInstance();

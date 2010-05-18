@@ -14,40 +14,25 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.PartyMatchRoom;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-
 /**
  * @author Gnacik
  */
-public class PartyMatchDetail extends L2GameServerPacket
+public class ExClosePartyRoom extends L2GameServerPacket
 {
-	private PartyMatchRoom _room;
-
-	/**
-	 * @param allPlayers
-	 */
-	public PartyMatchDetail(L2PcInstance player, PartyMatchRoom room)
+	public ExClosePartyRoom()
 	{
-		_room = room;
-	}
-
-	@Override
-	protected final void writeImpl()
-	{
-		writeC(0x9d);
-		writeD(_room.getId());			//	Room ID
-		writeD(_room.getMaxMembers());		//	Max Members
-		writeD(_room.getMinLvl());		//	Level Min
-		writeD(_room.getMaxLvl());		//	Level Max
-		writeD(_room.getLootType());		//	Loot Type
-		writeD(_room.getLocation());	//	Room Location
-		writeS(_room.getTitle());		//	Room title
 	}
 
 	@Override
 	public String getType()
 	{
-		return "[S] 9d PartyMatchDetail";
+		return "[S] FE:09 ExClosePartyRoom";
+	}
+
+	@Override
+	protected void writeImpl()
+	{
+		writeC(0xfe);
+		writeH(0x09);
 	}
 }

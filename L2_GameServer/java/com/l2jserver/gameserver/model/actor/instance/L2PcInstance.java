@@ -116,6 +116,9 @@ import com.l2jserver.gameserver.model.L2UIKeysSettings;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.MacroList;
+import com.l2jserver.gameserver.model.PartyMatchRoom;
+import com.l2jserver.gameserver.model.PartyMatchRoomList;
+import com.l2jserver.gameserver.model.PartyMatchWaitingList;
 import com.l2jserver.gameserver.model.ShortCuts;
 import com.l2jserver.gameserver.model.TerritoryWard;
 import com.l2jserver.gameserver.model.TradeList;
@@ -617,11 +620,10 @@ public final class L2PcInstance extends L2Playable
 	//TODO: This needs to be better intergrated and saved/loaded
 	private L2Radar _radar;
 
-	// these values are only stored temporarily
-	private boolean _partyMatchingAutomaticRegistration;
-	private boolean _partyMatchingShowLevel;
-	private boolean _partyMatchingShowClass;
-	private String _partyMatchingMemo;
+	// Party matching
+	// private int _partymatching = 0;
+	private int _partyroom = 0;
+	// private int _partywait = 0;
 
 	// Clan related attributes
 	/** The Clan Identifier of the L2PcInstance */
@@ -6036,56 +6038,24 @@ public final class L2PcInstance extends L2Playable
 		getStat().addExp(-lostExp);
 	}
 
-	/**
-	 * @param b
-	 */
-	public void setPartyMatchingAutomaticRegistration(boolean b)
+	public boolean isPartyWaiting()
 	{
-		_partyMatchingAutomaticRegistration = b;
+		return PartyMatchWaitingList.getInstance().getPlayers().contains(this);
 	}
-
-	/**
-	 * @param b
-	 */
-	public void setPartyMatchingShowLevel(boolean b)
+	
+	public void setPartyRoom(int id)
 	{
-		_partyMatchingShowLevel = b;
+		_partyroom = id;
 	}
-
-	/**
-	 * @param b
-	 */
-	public void setPartyMatchingShowClass(boolean b)
+	
+	public int getPartyRoom()
 	{
-		_partyMatchingShowClass = b;
+		return _partyroom;
 	}
-
-	/**
-	 * @param memo
-	 */
-	public void setPartyMatchingMemo(String memo)
+	
+	public boolean isInPartyMatchRoom()
 	{
-		_partyMatchingMemo = memo;
-	}
-
-	public boolean isPartyMatchingAutomaticRegistration()
-	{
-		return _partyMatchingAutomaticRegistration;
-	}
-
-	public String getPartyMatchingMemo()
-	{
-		return _partyMatchingMemo;
-	}
-
-	public boolean isPartyMatchingShowClass()
-	{
-		return _partyMatchingShowClass;
-	}
-
-	public boolean isPartyMatchingShowLevel()
-	{
-		return _partyMatchingShowLevel;
+		return _partyroom > 0;
 	}
 
 	/**
@@ -11665,6 +11635,23 @@ public final class L2PcInstance extends L2Playable
 			else if (isCombatFlagEquipped())
 			{
 				TerritoryWarManager.getInstance().dropCombatFlag(this, false);
+			}
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
+		
+		try
+		{
+			PartyMatchWaitingList.getInstance().removePlayer(this);
+			if (_partyroom != 0)
+			{
+				PartyMatchRoom room = PartyMatchRoomList.getInstance().getRoom(_partyroom);
+				if (room != null)
+				{
+					room.deleteMember(this);
+				}
 			}
 		}
 		catch (Exception e)

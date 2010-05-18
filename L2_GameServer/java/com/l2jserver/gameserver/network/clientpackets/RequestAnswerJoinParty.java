@@ -14,8 +14,11 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.model.PartyMatchRoom;
+import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.serverpackets.ExManagePartyRoomMember;
 import com.l2jserver.gameserver.network.serverpackets.JoinParty;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
@@ -67,6 +70,35 @@ public final class RequestAnswerJoinParty extends L2GameClientPacket
 					}
 				}//Update by rocknow-End
     			player.joinParty(requestor.getParty());
+
+    			if(requestor.isInPartyMatchRoom() && player.isInPartyMatchRoom())
+    			{
+    				PartyMatchRoomList list = PartyMatchRoomList.getInstance();
+    				if(list != null && (list.getPlayerRoomId(requestor) == list.getPlayerRoomId(player)))
+    				{
+    					PartyMatchRoom room = list.getPlayerRoom(requestor);
+    					for(L2PcInstance member : room.getPartyMembers())
+    					{
+    						member.sendPacket(new ExManagePartyRoomMember(player, room, 1));
+    					}
+    				}
+    			}
+    			else if (requestor.isInPartyMatchRoom() && !player.isInPartyMatchRoom())
+    			{
+    				PartyMatchRoomList list = PartyMatchRoomList.getInstance();
+    				if(list != null)
+    				{
+    					PartyMatchRoom room = list.getPlayerRoom(requestor);
+    					room.addMember(player);
+    					for(L2PcInstance member : room.getPartyMembers())
+    					{
+    						member.sendPacket(new ExManagePartyRoomMember(player, room, 1));
+    					}
+    					player.setPartyRoom(room.getId());
+    					//player.setPartyMatching(1);
+    					player.broadcastUserInfo();
+    				}
+    			}
     		}
     		else
             {

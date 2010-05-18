@@ -14,88 +14,74 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import javolution.util.FastList;
+
+import com.l2jserver.gameserver.model.PartyMatchRoom;
+import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- *
- *
- * sample
- * af
- * 02 00 00 00   count
- *
- * 71 b3 70 4b  object id
- * 44 00 79 00 66 00 65 00 72 00 00 00   name
- * 14 00 00 00  level
- * 0f 00 00 00  class id
- * 00 00 00 00  sex ??
- * 00 00 00 00  clan id
- * 02 00 00 00  ??
- * 6f 5f 00 00  x
- * af a9 00 00  y
- * f7 f1 ff ff  z
- *
- *
- * c1 9c c0 4b object id
- * 43 00 6a 00 6a 00 6a 00 6a 00 6f 00 6e 00 00 00
- * 0b 00 00 00  level
- * 12 00 00 00  class id
- * 00 00 00 00  sex ??
- * b1 01 00 00  clan id
- * 00 00 00 00
- * 13 af 00 00
- * 38 b8 00 00
- * 4d f4 ff ff
- * *
- * format   d (dSdddddddd)
- *
- * @version $Revision: 1.1.2.1.2.4 $ $Date: 2005/03/27 15:29:57 $
+ * @author Gnacik
+ * 
  */
 public class ListPartyWating extends L2GameServerPacket
 {
-	private static final String _S__AF_PARTYMATCHLIST = "[S] 9c ListPartyWating";
-	private L2PcInstance[] _matchingPlayers;
-
-	/**
-	 * @param allPlayers
-	 */
-	public ListPartyWating(L2PcInstance[] allPlayers)
+	private L2PcInstance _cha;
+	private int _loc;
+	private int _lim;
+	private FastList<PartyMatchRoom> _rooms;
+	
+	public ListPartyWating(L2PcInstance player, int auto, int location, int limit)
 	{
-		_matchingPlayers = allPlayers;
+		_cha = player;
+		_loc = location;
+		_lim = limit;
+		_rooms = new FastList<PartyMatchRoom>();
 	}
 
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0x9c);
-
-		int size = _matchingPlayers.length;
-		if (size > 40)
+		for(PartyMatchRoom room : PartyMatchRoomList.getInstance().getRooms())
 		{
-			size = 40; // the client only displays 40 players, so we also limit the list to 40
+			if (room.getMembers() < 1 || room.getOwner() == null || room.getOwner().isOnline() == 0 || room.getOwner().getPartyRoom() != room.getId())
+			{
+				PartyMatchRoomList.getInstance().deleteRoom(room.getId());
+				continue;
+			}
+			if (_loc > 0 && _loc != room.getLocation())
+				continue;
+			if (_lim == 0 && ((_cha.getLevel() < room.getMinLvl()) || (_cha.getLevel() > room.getMaxLvl())))
+				continue;
+			_rooms.add(room);
 		}
+		int count = 0;
+		int size = _rooms.size();
 
-		writeD(size);
-		for (int i=0;i<size;i++)
+		writeC(0x9c);
+		if (size > 0)
+			writeD(1);
+		else
+			writeD(0);
+
+		writeD(_rooms.size());
+		while(size > count)
 		{
-			writeD(_matchingPlayers[i].getObjectId());
-			writeS(_matchingPlayers[i].getName());
-			writeD(_matchingPlayers[i].getLevel());
-			writeD(_matchingPlayers[i].getClassId().getId());
-			writeD(00);   // 00 -white name   01-red name
-			writeD(_matchingPlayers[i].getClanId());
-			writeD(00); //  00 - no affil  01-party  02-party pending  03-
-			writeD(_matchingPlayers[i].getX());
-			writeD(_matchingPlayers[i].getY());
-			writeD(_matchingPlayers[i].getZ());
+			writeD(_rooms.get(count).getId());
+			writeS(_rooms.get(count).getTitle());
+			writeD(_rooms.get(count).getLocation());
+			writeD(_rooms.get(count).getMinLvl());
+			writeD(_rooms.get(count).getMaxLvl());
+			writeD(_rooms.get(count).getMembers());
+			writeD(_rooms.get(count).getMaxMembers());
+			writeS(_rooms.get(count).getOwner().getName());
+			count++;
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _S__AF_PARTYMATCHLIST;
+		return "[S] 9c ListPartyWating";
 	}
 }

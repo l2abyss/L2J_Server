@@ -475,6 +475,11 @@ public class L2Party {
 						msg.addString(_commandChannel.getChannelLeader().getName());
 						_commandChannel.broadcastToChannelMembers(msg);
 					}
+					if(player.isInPartyMatchRoom())
+					{
+						PartyMatchRoom room = PartyMatchRoomList.getInstance().getPlayerRoom(player);
+						room.changeLeader(player);
+					}
 				}
 			}
 			else
@@ -703,16 +708,6 @@ public class L2Party {
 			}
 		}
 	}
-
-	/**
-	 * Calculates and gives final XP and SP rewards to the party member.<BR>
-	 * This method takes in consideration number of members, members' levels, rewarder's level and bonus modifier for the actual party.<BR><BR>
-	 *
-	 * @param member is the L2Character to be rewarded
-	 * @param xpReward is the total amount of XP to be "splited" and given to the member
-	 * @param spReward is the total amount of SP to be "splited" and given to the member
-	 * @param penalty is the penalty that must be applied to the XP rewards of the requested member
-	 */
 
 	/**
 	 * refresh party level
