@@ -1510,6 +1510,9 @@ public abstract class L2Character extends L2Object
         // AURA skills should always be using caster as target
         switch (skill.getTargetType())
         {
+        	case TARGET_AREA_SUMMON:	// We need it to correct facing
+        		target = getPet();
+        		break;
         	case TARGET_AURA:
         	case TARGET_FRONT_AURA:
         	case TARGET_BEHIND_AURA:
@@ -2879,6 +2882,8 @@ public abstract class L2Character extends L2Object
 		abortCast();
 		stopMove(null);
 		getAI().notifyEvent(CtrlEvent.EVT_STUNNED);
+		if (!(this instanceof L2Summon))
+			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 		updateAbnormalEffect();
 	}
 
@@ -6175,8 +6180,14 @@ public abstract class L2Character extends L2Object
 				&& getTarget() instanceof L2Character
 				&& getTarget() != this
 				&& getTarget() == target)
-			getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, target);
-
+		{
+			if(getAI() == null
+				|| getAI().getNextIntention() == null
+				|| getAI().getNextIntention().getCtrlIntention() != CtrlIntention.AI_INTENTION_MOVE_TO)
+			{
+				getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, target);
+			}
+		}
         if (skill.isOffensive() && !skill.isNeutral() && !(skill.getSkillType() == L2SkillType.UNLOCK) && !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK))
             getAI().clientStartAutoAttack();
 

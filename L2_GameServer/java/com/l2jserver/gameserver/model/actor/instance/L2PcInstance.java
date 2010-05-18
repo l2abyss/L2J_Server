@@ -8799,6 +8799,7 @@ public final class L2PcInstance extends L2Playable
         	case TARGET_PARTY_CLAN:
         	case TARGET_GROUND:
         	case TARGET_SELF:
+        	case TARGET_AREA_SUMMON:
         		target = this;
         		break;
         	case TARGET_PET:
@@ -8975,6 +8976,7 @@ public final class L2PcInstance extends L2Playable
 					case TARGET_PARTY:
 					case TARGET_SELF:
 					case TARGET_GROUND:
+					case TARGET_AREA_SUMMON:
 						break;
 					default: // Send a Server->Client packet ActionFailed to the L2PcInstance
 						sendPacket(ActionFailed.STATIC_PACKET);

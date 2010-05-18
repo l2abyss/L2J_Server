@@ -115,7 +115,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
         TARGET_ENEMY_SUMMON,
         TARGET_OWNER_PET,
         TARGET_GROUND,
-        TARGET_PARTY_NOTME
+        TARGET_PARTY_NOTME,
+        TARGET_AREA_SUMMON
     }
     
     //conditional values
@@ -1397,6 +1398,41 @@ public abstract class L2Skill implements IChanceSkillTrigger
 					}
 				}
                 return targetList.toArray(new L2Character[targetList.size()]);
+            }
+            case TARGET_AREA_SUMMON:
+            {
+            	target = activeChar.getPet();
+            	if (target == null || !(target instanceof L2SummonInstance) || target.isDead())
+            		return _emptyTargetList;            		
+
+            	if(onlyFirst)
+            		return new L2Character[]{target};
+
+            	final boolean srcInArena = (activeChar.isInsideZone(L2Character.ZONE_PVP) && !activeChar.isInsideZone(L2Character.ZONE_SIEGE));
+            	final Collection<L2Character> objs = target.getKnownList().getKnownCharacters();
+            	final int radius = getSkillRadius();
+
+            	for (L2Character obj : objs)
+            	{
+            		if (obj == null || obj == target || obj == activeChar)
+            			continue;
+
+            		if (!Util.checkIfInRange(radius, target, obj, true))
+            			continue;
+
+            		if (!(obj instanceof L2Attackable || obj instanceof L2Playable))
+            			continue;
+
+            		if (!checkForAreaOffensiveSkills(activeChar, obj, this, srcInArena))
+            			continue;
+
+            		targetList.add(obj);
+            	}
+
+            	if (targetList.isEmpty())
+            		return _emptyTargetList;
+
+            	return targetList.toArray(new L2Character[targetList.size()]);
             }
             case TARGET_AREA:
             case TARGET_FRONT_AREA:
