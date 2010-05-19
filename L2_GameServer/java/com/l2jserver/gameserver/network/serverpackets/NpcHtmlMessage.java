@@ -208,7 +208,7 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 
 	public void replace(String pattern, String value)
 	{
-		_html = _html.replaceAll(pattern, value);
+		_html = _html.replaceAll(pattern, value.replaceAll("\\$", "\\\\\\$"));
 	}
 
 	private final void buildBypassCache(L2PcInstance activeChar)
