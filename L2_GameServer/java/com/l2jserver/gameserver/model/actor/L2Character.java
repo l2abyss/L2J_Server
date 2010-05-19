@@ -465,7 +465,10 @@ public abstract class L2Character extends L2Object
 		//synchronized (getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
-				player.sendPacket(mov);
+			{
+				if (player != null)
+					player.sendPacket(mov);
+			}
 		}
 	}
 
@@ -484,7 +487,7 @@ public abstract class L2Character extends L2Object
 		{
 			for (L2PcInstance player : plrs)
 			{
-				if (isInsideRadius(player, radiusInKnownlist, false, false))
+				if (player != null && isInsideRadius(player, radiusInKnownlist, false, false))
 					player.sendPacket(mov);
 			}
 		}
