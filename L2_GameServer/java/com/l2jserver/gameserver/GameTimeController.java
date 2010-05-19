@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
@@ -112,16 +113,16 @@ public class GameTimeController
 	protected void moveObjects()
 	{
 		// Go throw the table containing L2Character in movement
-		Iterator<L2Character> it = _movingObjects.values().iterator();
+		Iterator<Map.Entry<Integer, L2Character>> it = _movingObjects.entrySet().iterator();
 		while (it.hasNext())
 		{
 			// If movement is finished, the L2Character is removed from
 			// movingObjects and added to the ArrayList ended
-			L2Character ch = it.next();
+			L2Character ch = it.next().getValue();
 			if (ch.updatePosition(_gameTicks))
 			{
-				ThreadPoolManager.getInstance().executeTask(new MovingObjectArrived(ch));
 				it.remove();
+				ThreadPoolManager.getInstance().executeTask(new MovingObjectArrived(ch));
 			}
 		}
 	}
