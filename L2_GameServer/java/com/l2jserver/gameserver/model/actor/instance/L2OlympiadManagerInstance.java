@@ -235,7 +235,7 @@ public class L2OlympiadManagerInstance extends L2Npc
 						int arenaID = i + 1;
 
 						// &$906; -> \\&\\$906;
-						reply.replace("%title"+arenaID+"%", matches.containsKey(i) ? matches.get(i) : "\\&\\$906;");
+						reply.replace("%title"+arenaID+"%", matches.containsKey(i) ? matches.get(i) : "\\&$906;");
 					}
 					reply.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(reply);
