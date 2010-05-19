@@ -281,8 +281,11 @@ class OlympiadGame
 				}
 				
 				// Discharge any active shots
-				player.getActiveWeaponInstance().setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
-				player.getActiveWeaponInstance().setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
+				if (player.getActiveWeaponInstance() != null)
+				{
+					player.getActiveWeaponInstance().setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
+					player.getActiveWeaponInstance().setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
+				}
 
 				// enable skills with cool time <= 15 minutes
 				for (L2Skill skill : player.getAllSkills())
