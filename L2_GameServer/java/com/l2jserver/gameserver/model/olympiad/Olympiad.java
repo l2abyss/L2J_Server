@@ -446,6 +446,7 @@ public class Olympiad
 			
 			_period = 1;
 			sortHerosToBe();
+			Hero.getInstance().resetData();
 			Hero.getInstance().computeNewHeroes(_heroesToBe);
 			
 			saveOlympiadStatus();

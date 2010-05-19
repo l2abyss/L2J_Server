@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 import com.l2jserver.gameserver.instancemanager.RaidBossPointsManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
+import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -80,10 +81,16 @@ public final class L2GrandBossInstance extends L2MonsterInstance
 				for (L2PcInstance member : player.getParty().getPartyMembers())
 				{
 					RaidBossPointsManager.addPoints(member, getNpcId(), (getLevel() / 2) + Rnd.get(-5, 5));
+					if(member.isNoble())
+						Hero.getInstance().setRBkilled(member.getObjectId(), getNpcId());
 				}
 			}
 			else
+			{
 				RaidBossPointsManager.addPoints(player, getNpcId(), (getLevel() / 2) + Rnd.get(-5, 5));
+				if(player.isNoble())
+					Hero.getInstance().setRBkilled(player.getObjectId(), getNpcId());
+			}
 		}
 		return true;
 	}

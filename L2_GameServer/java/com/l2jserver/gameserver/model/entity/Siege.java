@@ -37,6 +37,7 @@ import com.l2jserver.gameserver.instancemanager.SiegeGuardManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager.SiegeSpawn;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.L2ClanMember;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2Spawn;
@@ -265,6 +266,20 @@ public class Siege implements Siegable
 					final int num = SiegeManager.getInstance().getBloodAllianceReward();
 					if (num > 0)
 						clan.getWarehouse().addItem("DefendSuccess", BLOOD_ALLIANCE, num, null, null);
+				}
+				else
+				{
+					for (L2ClanMember member : clan.getMembers())
+					{
+						if (member != null)
+						{
+							L2PcInstance player = member.getPlayerInstance();
+							if(player != null && player.isNoble())
+							{
+								Hero.getInstance().setCastleTaken(player.getObjectId(), getCastle().getCastleId());
+							}
+						}
+					}
 				}
 			}
 			else

@@ -22,6 +22,7 @@ import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
+import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -90,10 +91,16 @@ public class L2RaidBossInstance extends L2MonsterInstance
 				for (L2PcInstance member : player.getParty().getPartyMembers())
 				{
 					RaidBossPointsManager.addPoints(member, this.getNpcId(), (this.getLevel() / 2) + Rnd.get(-5, 5));
+					if(member.isNoble())
+						Hero.getInstance().setRBkilled(member.getObjectId(), this.getNpcId());
 				}
 			}
 			else
+			{
 				RaidBossPointsManager.addPoints(player, this.getNpcId(), (this.getLevel() / 2) + Rnd.get(-5, 5));
+				if(player.isNoble())
+					Hero.getInstance().setRBkilled(player.getObjectId(), this.getNpcId());
+			}
 		}
 
 		RaidBossSpawnManager.getInstance().updateStatus(this, true);

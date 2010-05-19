@@ -14,12 +14,16 @@
  */
 package com.l2jserver.gameserver.model.olympiad;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
+import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.HeroSkillTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
@@ -68,6 +72,8 @@ class OlympiadGame
 	protected String _playerTwoName;
 	protected int _playerOneID = 0;
 	protected int _playerTwoID = 0;
+	protected int _playerOneClass = 0;
+	protected int _playerTwoClass = 0;
 	protected static final int OLY_BUFFER = 36402;
 	protected static final int OLY_MANAGER = 31688;
 	private static final String POINTS = "olympiad_points";
@@ -77,6 +83,8 @@ class OlympiadGame
 	private static final String COMP_DRAWN = "competitions_drawn";
 	protected static boolean _battleStarted;
 	protected static boolean _gameIsStarted;
+	
+	protected long _startTime = 0;
 	
 	public int _damageP1 = 0;
 	public int _damageP2 = 0;
@@ -117,6 +125,8 @@ class OlympiadGame
 				_playerTwo.setOlympiadGameId(id);
 				_playerOneID = _playerOne.getObjectId();
 				_playerTwoID = _playerTwo.getObjectId();
+				_playerOneClass = _playerOne.getBaseClass();
+				_playerTwoClass = _playerTwo.getBaseClass();
 			}
 			catch (Exception e)
 			{
@@ -251,6 +261,12 @@ class OlympiadGame
 				{
 					L2Party party = player.getParty();
 					party.removePartyMember(player);
+				}
+				// Remove Agathion
+				if (player.getAgathionId() > 0)
+				{
+					player.setAgathionId(0);
+					player.broadcastUserInfo();
 				}
 
 				player.checkItemRestriction();
@@ -407,6 +423,8 @@ class OlympiadGame
 					player.setCurrentMp(player.getMaxMp());
 				}
 
+				if(player.isTransformed())
+					player.untransform();
 				player.setIsInOlympiadMode(false);
 				player.setIsOlympiadStart(false);
 				player.setOlympiadSide(-1);
@@ -712,6 +730,9 @@ class OlympiadGame
 		_players.set(1, _playerTwo);
 		
 		String winner = "draw";
+
+		// Calculate Fight time
+		long _fightTime = (System.currentTimeMillis() - _startTime);
 		
 		if (_playerOne == null && _playerTwo == null)
 		{
@@ -743,6 +764,9 @@ class OlympiadGame
 			
 			try
 			{
+				// Save Fight Result
+				saveResults(_playerOneID,_playerTwoID,_playerOneClass,_playerTwoClass,1,_startTime,_fightTime, (_type == COMP_TYPE.CLASSED ? 1 : 0));
+				
 				result = " (" + playerOneHp + "hp vs " + playerTwoHp + "hp - "
 				        + _damageP1 + "dmg vs " + _damageP2 + "dmg) "
 				        + _playerOneName + " win " + pointDiff + " points";
@@ -782,6 +806,9 @@ class OlympiadGame
 			
 			try
 			{
+				// Save Fight Result
+				saveResults(_playerOneID,_playerTwoID,_playerOneClass,_playerTwoClass,2,_startTime,_fightTime,(_type == COMP_TYPE.CLASSED ? 1 : 0));
+
 				result = " (" + playerOneHp + "hp vs " + playerTwoHp + "hp - "
 				        + _damageP1 + "dmg vs " + _damageP2 + "dmg) "
 				        + _playerTwoName + " win " + pointDiff + " points";
@@ -801,6 +828,9 @@ class OlympiadGame
 		}
 		else
 		{
+			// Save Fight Result
+			saveResults(_playerOneID,_playerTwoID,_playerOneClass,_playerTwoClass,0,_startTime,_fightTime,(_type == COMP_TYPE.CLASSED ? 1 : 0));
+			
 			result = " tie";
 			_sm = new SystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE);
 			broadcastMessage(_sm, true);
@@ -869,6 +899,7 @@ class OlympiadGame
 		_sm = new SystemMessage(SystemMessageId.STARTS_THE_GAME);
 		broadcastMessage(_sm, true);
 		_gameIsStarted = true;
+		_startTime = System.currentTimeMillis();
 		try
 		{
 			for (L2PcInstance player : _players)
@@ -944,6 +975,39 @@ class OlympiadGame
 				npcName = manager.getLastSpawn().getName();
 				manager.getLastSpawn().broadcastPacket(new CreatureSay(objId, Say2.SHOUT, npcName, "Olympiad is going to begin in Arena " + (_stadiumID + 1) + " in a moment."));
 			}
+		}
+	}
+	
+	protected void saveResults(int _playerOne, int _playerTwo, int _playerOneClass, int _playerTwoClass, int _winner, long _startTime, long _fightTime, int _classed)
+	{
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("INSERT INTO olympiad_fights (charOneId, charTwoId, charOneClass, charTwoClass, winner, start, time, classed) values(?,?,?,?,?,?,?,?)");
+			statement.setInt(1, _playerOne);
+			statement.setInt(2, _playerTwo);
+			statement.setInt(3, _playerOneClass);
+			statement.setInt(4, _playerTwoClass);
+			statement.setInt(5, _winner);
+			statement.setLong(6, _startTime);
+			statement.setLong(7, _fightTime);
+			statement.setInt(8, _classed);
+			statement.execute();
+			statement.close();
+		}
+		catch (SQLException e)
+		{
+			if(_log.isLoggable(Level.SEVERE))
+				_log.log(Level.SEVERE, "SQL exception while saving olympiad fight.", e);
+		}
+		finally
+		{
+			try
+			{
+				con.close();
+			}
+			catch (Exception e){}
 		}
 	}
 }

@@ -34,6 +34,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2CastleChamberlainInstance
 import com.l2jserver.gameserver.model.actor.instance.L2ManorManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.model.entity.L2Event;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -67,6 +68,9 @@ public final class RequestBypassToServer extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
+		if (getClient() == null)
+			return;
+		
 		L2PcInstance activeChar = getClient().getActiveChar();
 
 		if (activeChar == null)
@@ -74,7 +78,14 @@ public final class RequestBypassToServer extends L2GameClientPacket
 		
 		if (!activeChar.getFloodProtectors().getServerBypass().tryPerformAction(_command))
 			return;
-
+		
+		if(_command.isEmpty())
+		{
+			_log.info(activeChar.getName()+" send empty requestbypass");			
+			activeChar.logout();
+			return;
+		}
+		
 		try
 		{
 			if (_command.startsWith("admin_")) //&& activeChar.getAccessLevel() >= Config.GM_ACCESSLEVEL)
@@ -220,6 +231,36 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			else if (_command.startsWith("OlympiadArenaChange"))
 			{
 				Olympiad.bypassChangeArena(_command, activeChar);
+			}
+			else if (_command.startsWith("_match"))
+			{
+				L2PcInstance player = getClient().getActiveChar();
+				if (player == null) return;
+				
+				String params = _command.substring(_command.indexOf("?")+1);
+				StringTokenizer st = new StringTokenizer(params, "&");
+				int heroclass = Integer.parseInt(st.nextToken().split("=")[1]);
+				int heropage = Integer.parseInt(st.nextToken().split("=")[1]);
+				int heroid = Hero.getInstance().getHeroByClass(heroclass);
+				if( heroid > 0)
+				{
+					Hero.getInstance().showHeroFights(player, heroclass, heroid, heropage);
+				}
+			}
+			else if (_command.startsWith("_diary"))
+			{
+				L2PcInstance player = getClient().getActiveChar();
+				if (player == null) return;
+				
+				String params = _command.substring(_command.indexOf("?")+1);
+				StringTokenizer st = new StringTokenizer(params, "&");
+				int heroclass = Integer.parseInt(st.nextToken().split("=")[1]);
+				int heropage = Integer.parseInt(st.nextToken().split("=")[1]);
+				int heroid = Hero.getInstance().getHeroByClass(heroclass);
+				if( heroid > 0)
+				{
+					Hero.getInstance().showHeroDiary(player, heroclass, heroid, heropage);
+				}				
 			}
 			else if (_command.startsWith("voice "))
 			{
