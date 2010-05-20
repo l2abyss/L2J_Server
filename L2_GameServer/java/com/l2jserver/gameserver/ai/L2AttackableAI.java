@@ -404,7 +404,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		{
 			if (_skillrender.hasBuffSkill())
 				for (L2Skill sk : _skillrender._buffskills)
-					if (Cast(sk))
+					if (cast(sk))
 						break;
 			
 			lastBuffTick = GameTimeController.getGameTicks();
@@ -568,7 +568,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			{
 				if (_skillrender.hasBuffSkill())
 					for (L2Skill sk : _skillrender._buffskills)
-						if (Cast(sk))
+						if (cast(sk))
 							return;
 			}
 		}
@@ -580,7 +580,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			
 			if (_skillrender.hasBuffSkill())
 				for (L2Skill sk : _skillrender._buffskills)
-					if (Cast(sk))
+					if (cast(sk))
 						return;
 			
 			// If NPC with random coord in territory
@@ -839,7 +839,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				if (chaostime > Config.RAID_CHAOS_TIME)
 					if (Rnd.get(100) <= 100 - (_actor.getCurrentHp() * 100 / _actor.getMaxHp()))
 					{
-						AggroReconsider();
+						aggroReconsider();
 						chaostime = 0;
 					}
 			}
@@ -848,7 +848,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				if (chaostime > Config.RAID_CHAOS_TIME)
 					if (Rnd.get(100) <= 100 - (_actor.getCurrentHp() * 200 / _actor.getMaxHp()))
 					{
-						AggroReconsider();
+						aggroReconsider();
 						chaostime = 0;
 					}
 			}
@@ -859,7 +859,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					double chaosRate = 100 - (_actor.getCurrentHp() * 300 / _actor.getMaxHp());
 					if ((chaosRate <= 10 && Rnd.get(100) <= 10) || (chaosRate > 10 && Rnd.get(100) <= chaosRate))
 					{
-						AggroReconsider();
+						aggroReconsider();
 						chaostime = 0;
 					}
 				}
@@ -869,7 +869,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				if (chaostime > Config.MINION_CHAOS_TIME)
 					if (Rnd.get(100) <= 100 - (_actor.getCurrentHp() * 200 / _actor.getMaxHp()))
 					{
-						AggroReconsider();
+						aggroReconsider();
 						chaostime = 0;
 					}
 			}
@@ -1027,7 +1027,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		//Immobilize Condition
 		if ((_actor.isMovementDisabled() && (dist > range || getAttackTarget().isMoving())) || (dist > range && getAttackTarget().isMoving()))
 		{
-			MovementDisable();
+			movementDisable();
 			return;
 		}
 		setTimepass(0);
@@ -1038,10 +1038,10 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			if (Rnd.get(100) <= ((L2Npc) _actor).getSkillChance())
 			{
 				L2Skill skills = _skillrender._generalskills.get(Rnd.nextInt(_skillrender._generalskills.size()));
-				if (Cast(skills))
+				if (cast(skills))
 					return;
 				for (L2Skill sk : _skillrender._generalskills)
-					if (Cast(sk))
+					if (cast(sk))
 						return;
 			}
 			
@@ -1051,27 +1051,27 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			{
 				if (((L2Npc) _actor).hasSSkill() && dist2 <= 150 && Rnd.get(100) <= ((L2Npc) _actor).getSSkillChance())
 				{
-					SSkillRender();
+					sSkillRender();
 					if (_skillrender._Srangeskills != null)
 					{
 						L2Skill skills = _skillrender._Srangeskills.get(Rnd.nextInt(_skillrender._Srangeskills.size()));
-						if (Cast(skills))
+						if (cast(skills))
 							return;
 						for (L2Skill sk : _skillrender._Srangeskills)
-							if (Cast(sk))
+							if (cast(sk))
 								return;
 					}
 				}
 				if (((L2Npc) _actor).hasLSkill() && dist2 > 150 && Rnd.get(100) <= ((L2Npc) _actor).getSSkillChance())
 				{
-					LSkillRender();
+					lSkillRender();
 					if (_skillrender._Lrangeskills != null)
 					{
 						L2Skill skills = _skillrender._Lrangeskills.get(Rnd.nextInt(_skillrender._Lrangeskills.size()));
-						if (Cast(skills))
+						if (cast(skills))
 							return;
 						for (L2Skill sk : _skillrender._Lrangeskills)
-							if (Cast(sk))
+							if (cast(sk))
 								return;
 					}
 				}
@@ -1084,7 +1084,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		{
 			if (_actor.isMovementDisabled())
 			{
-				TargetReconsider();
+				targetReconsider();
 				return;
 			}
 			else
@@ -1099,12 +1099,12 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		}
 		else
 		{
-			Melee(((L2Npc) _actor).getPrimaryAttack());
+			melee(((L2Npc) _actor).getPrimaryAttack());
 		}
 		
 	}
 	
-	private void Melee(int type)
+	private void melee(int type)
 	{
 		if (type != 0)
 		{
@@ -1114,7 +1114,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				{
 					if (_skillrender._generalskills != null)
 						for (L2Skill sk : _skillrender._generalskills)
-							if (Cast(sk))
+							if (cast(sk))
 								return;
 					break;
 				}
@@ -1122,7 +1122,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				{
 					if (_skillrender.hasAtkSkill())
 						for (L2Skill sk : _skillrender._atkskills)
-							if (Cast(sk))
+							if (cast(sk))
 								return;
 					break;
 				}
@@ -1131,7 +1131,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					if (_skillrender._generalskills != null)
 						for (L2Skill sk : _skillrender._generalskills)
 							if (sk.getId() == ((L2Npc) _actor).getPrimaryAttack())
-								if (Cast(sk))
+								if (cast(sk))
 									return;
 				}
 					break;
@@ -1141,7 +1141,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		_accessor.doAttack(getAttackTarget());
 	}
 	
-	private boolean Cast(L2Skill sk)
+	private boolean cast(L2Skill sk)
 	{
 		if (sk == null)
 			return false;
@@ -1181,7 +1181,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					return false;
 				if (sk.getTargetType() == L2Skill.SkillTargetType.TARGET_ONE)
 				{
-					L2Character target = EffectTargetReconsider(sk, true);
+					L2Character target = effectTargetReconsider(sk, true);
 					if (target != null)
 					{
 						clientStopMoving(null);
@@ -1382,7 +1382,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				else if (sk.getTargetType() == SkillTargetType.TARGET_ONE)
 				{
-					L2Character target = EffectTargetReconsider(sk, false);
+					L2Character target = effectTargetReconsider(sk, false);
 					if (target != null)
 					{
 						clientStopMoving(null);
@@ -1410,7 +1410,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						}
 					}
 					
-					L2Character target = EffectTargetReconsider(sk, false);
+					L2Character target = effectTargetReconsider(sk, false);
 					if (target != null)
 					{
 						clientStopMoving(null);
@@ -1471,7 +1471,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				else if (sk.getTargetType() == SkillTargetType.TARGET_ONE)
 				{
-					L2Character target = EffectTargetReconsider(sk, false);
+					L2Character target = effectTargetReconsider(sk, false);
 					if (target != null)
 					{
 						clientStopMoving(null);
@@ -1513,7 +1513,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				else if (sk.getTargetType() == SkillTargetType.TARGET_ONE)
 				{
-					L2Character target = EffectTargetReconsider(sk, false);
+					L2Character target = effectTargetReconsider(sk, false);
 					if (target != null)
 					{
 						clientStopMoving(null);
@@ -1537,7 +1537,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						//_actor.setTarget(target);
 						return true;
 					}
-					L2Character target = EffectTargetReconsider(sk, false);
+					L2Character target = effectTargetReconsider(sk, false);
 					if (target != null)
 					{
 						clientStopMoving(null);
@@ -1588,7 +1588,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					}
 					else
 					{
-						L2Character target = SkillTargetReconsider(sk);
+						L2Character target = skillTargetReconsider(sk);
 						if (target != null)
 						{
 							clientStopMoving(null);
@@ -1621,7 +1621,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					}
 					else
 					{
-						L2Character target = SkillTargetReconsider(sk);
+						L2Character target = skillTargetReconsider(sk);
 						if (target != null)
 						{
 							clientStopMoving(null);
@@ -1653,7 +1653,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	/**
 	 * This AI task will start when ACTOR cannot move and attack range larger than distance
 	 */
-	private void MovementDisable()
+	private void movementDisable()
 	{
 		
 		double dist = 0;
@@ -1826,7 +1826,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		if (_actor.isMovementDisabled())
 		{
 			//timepass = 0;
-			TargetReconsider();
+			targetReconsider();
 			
 			return;
 		}
@@ -1848,11 +1848,11 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			
 		}
 		
-		Melee(((L2Npc) _actor).getPrimaryAttack());
+		melee(((L2Npc) _actor).getPrimaryAttack());
 		return;
 	}
 	
-	private L2Character EffectTargetReconsider(L2Skill sk, boolean positive)
+	private L2Character effectTargetReconsider(L2Skill sk, boolean positive)
 	{
 		if (sk == null)
 			return null;
@@ -2013,7 +2013,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		}
 	}
 	
-	private L2Character SkillTargetReconsider(L2Skill sk)
+	private L2Character skillTargetReconsider(L2Skill sk)
 	{
 		double dist = 0;
 		double dist2 = 0;
@@ -2095,7 +2095,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		return null;
 	}
 	
-	private void TargetReconsider()
+	private void targetReconsider()
 	{
 		double dist = 0;
 		double dist2 = 0;
@@ -2188,7 +2188,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	}
 	
 	@SuppressWarnings("null")
-	private void AggroReconsider()
+	private void aggroReconsider()
 	{
 		
 		L2Attackable actor = (L2Attackable) _actor;
@@ -2289,13 +2289,13 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		}
 	}
 	
-	private void LSkillRender()
+	private void lSkillRender()
 	{
 		if (_skillrender._Lrangeskills == null)
 			_skillrender._Lrangeskills = ((L2Npc) _actor).getLrangeSkill();
 	}
 	
-	private void SSkillRender()
+	private void sSkillRender()
 	{
 		if (_skillrender._Srangeskills == null)
 			_skillrender._Srangeskills = ((L2Npc) _actor).getSrangeSkill();
