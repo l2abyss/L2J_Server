@@ -563,7 +563,7 @@ public class TradeList
 	private boolean validate()
 	{
 		// Check for Owner validity
-		if (_owner == null || L2World.getInstance().findObject(_owner.getObjectId()) == null)
+		if (_owner == null || L2World.getInstance().getPlayer(_owner.getObjectId()) == null)
 		{
 			_log.warning("Invalid owner of TradeList");
 			return false;

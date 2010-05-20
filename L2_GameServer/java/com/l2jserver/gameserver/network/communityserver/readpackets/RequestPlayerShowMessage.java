@@ -42,7 +42,7 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 		final int playerObjId = super.readD();
 		final int type = super.readD();
 		
-		L2PcInstance player = (L2PcInstance)L2World.getInstance().findObject(playerObjId);
+		L2PcInstance player = L2World.getInstance().getPlayer(playerObjId);
 		if (player == null)
 		{
 			_log.info("error: player not found!!!");

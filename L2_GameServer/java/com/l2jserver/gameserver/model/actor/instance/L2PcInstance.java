@@ -5386,7 +5386,7 @@ public final class L2PcInstance extends L2Playable
             return;
         else
         {
-            L2PcInstance ptarget = (L2PcInstance)L2World.getInstance().findObject(_engageid);
+            L2PcInstance ptarget = L2World.getInstance().getPlayer(_engageid);
             setEngageRequest(false,0);
             if(ptarget!=null)
             {
@@ -9332,7 +9332,7 @@ public final class L2PcInstance extends L2Playable
 
     public boolean isInLooterParty(int LooterId)
     {
-    	L2PcInstance looter = (L2PcInstance)L2World.getInstance().findObject(LooterId);
+    	L2PcInstance looter = L2World.getInstance().getPlayer(LooterId);
 
     	// if L2PcInstance is in a CommandChannel
     	if (isInParty() && getParty().isInCommandChannel() && looter != null)
@@ -14606,9 +14606,9 @@ public final class L2PcInstance extends L2Playable
 		FriendStatusPacket pkt = new FriendStatusPacket(getObjectId());
 		for(int id : _friendList)
 		{
-			L2Object obj = L2World.getInstance().findObject(id);
-			if (obj != null)
-				obj.sendPacket(pkt);
+			L2PcInstance friend = L2World.getInstance().getPlayer(id);
+			if (friend != null)
+				friend.sendPacket(pkt);
 		}
 	}
 

@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ExMPCCShowPartyMemberInfo;
@@ -41,12 +40,10 @@ public final class RequestExMPCCShowPartyMembersInfo extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2Object player = L2World.getInstance().findObject(_partyLeaderId);
-		if (player != null && 
-				player instanceof L2PcInstance && 
-				((L2PcInstance)player).getParty() != null)
+		L2PcInstance player = L2World.getInstance().getPlayer(_partyLeaderId);
+		if (player != null && player.getParty() != null)
         {
-			getClient().getActiveChar().sendPacket(new ExMPCCShowPartyMemberInfo(((L2PcInstance)player).getParty()));
+			getClient().getActiveChar().sendPacket(new ExMPCCShowPartyMemberInfo(player.getParty()));
 	        
         }
 	}

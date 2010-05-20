@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
-import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
@@ -194,7 +193,7 @@ public class Instance
 	 */
 	public void ejectPlayer(int objectId)
 	{
-		L2PcInstance player = (L2PcInstance) L2World.getInstance().findObject(objectId);
+		L2PcInstance player = L2World.getInstance().getPlayer(objectId);
 		if (player != null && player.getInstanceId() == this.getId())
 		{
 			player.setInstanceId(0);
@@ -642,11 +641,7 @@ public class Instance
 		@Override
 		public final boolean execute(final int objId)
 		{
-			L2Object find = L2World.getInstance().findObject(objId);
-			if (!(find instanceof L2PcInstance))
-				return true;
-			
-			L2PcInstance player = (L2PcInstance)find;
+			L2PcInstance player = L2World.getInstance().getPlayer(objId);
 			
 			if (player.getInstanceId() == getId())
 			{

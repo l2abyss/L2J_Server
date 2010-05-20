@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.serverpackets;
 import java.util.List;
 
 import com.l2jserver.gameserver.datatables.CharNameTable;
-import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
@@ -62,15 +61,12 @@ public class FriendList extends L2GameServerPacket
 		{
 			writeD(_friends.size());
 			for (int ObjId : _friends)
-			{				
-				String name = CharNameTable.getInstance().getNameById(ObjId);
-				L2Object obj = L2World.getInstance().findObject(ObjId);
+			{
+				String name = CharNameTable.getInstance().getNameById(ObjId); //TODO move to constructor
+				L2PcInstance player = L2World.getInstance().getPlayer(ObjId);
 				boolean online = false;
-				if (obj instanceof L2PcInstance)
-				{
-					if (((L2PcInstance) obj).isOnline() == 1)
-						online = true;
-				}
+				if (player != null && player.isOnline() == 1)
+					online = true;
 				writeD(ObjId); // character id
 				writeS(name);
 				writeD(online ? 0x01 : 0x00); // online
