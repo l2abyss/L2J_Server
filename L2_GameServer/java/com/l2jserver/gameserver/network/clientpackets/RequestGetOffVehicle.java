@@ -14,42 +14,54 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.instancemanager.BoatManager;
-import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.GetOffVehicle;
+import com.l2jserver.gameserver.network.serverpackets.StopMoveInVehicle;
 
 /**
  * @author Maktakien
  */
 public final class RequestGetOffVehicle extends L2GameClientPacket
 {
-	private int _id, _x, _y, _z;
-	
+	private int _boatId, _x, _y, _z;
+
 	@Override
 	protected void readImpl()
 	{
-		_id = readD();
+		_boatId = readD();
 		_x = readD();
 		_y = readD();
 		_z = readD();
 	}
-	
+
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-		L2BoatInstance boat = BoatManager.getInstance().getBoat(_id);
-		GetOffVehicle Gon = new GetOffVehicle(activeChar, boat, _x, _y, _z);
-		activeChar.broadcastPacket(Gon);
+		if (!activeChar.isInBoat()
+				|| activeChar.getBoat().getObjectId() != _boatId
+				|| activeChar.getBoat().isMoving()
+				|| !activeChar.isInsideRadius(_x, _y, _z, 1000, true, false))
+		{
+			sendPacket(ActionFailed.STATIC_PACKET);	
+			return;
+		}
+
+		activeChar.broadcastPacket(new StopMoveInVehicle(activeChar, _boatId));
+		activeChar.setBoat(null);
+		activeChar.setInVehiclePosition(null);
+		sendPacket(ActionFailed.STATIC_PACKET);	
+		activeChar.broadcastPacket(new GetOffVehicle(activeChar.getObjectId(), _boatId, _x, _y, _z));
+		activeChar.setXYZ(_x, _y, _z + 50);
+		activeChar.revalidateZone(true);
 	}
-	
+
 	@Override
 	public String getType()
 	{
 		return "[S] 5d GetOffVehicle";
 	}
-	
 }

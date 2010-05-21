@@ -37,9 +37,5 @@ public enum CtrlIntention
 	/** PickUp and item, (got to item, pickup it, become idle */
 	AI_INTENTION_PICK_UP,
 	/** Move to target, then interact */
-	AI_INTENTION_INTERACT,
-	/** Move to another location in a boat */
-	AI_INTENTION_MOVE_TO_IN_A_BOAT,
-	/** Move to another location in an air ship */
-	AI_INTENTION_MOVE_TO_IN_AIR_SHIP;
+	AI_INTENTION_INTERACT;
 }

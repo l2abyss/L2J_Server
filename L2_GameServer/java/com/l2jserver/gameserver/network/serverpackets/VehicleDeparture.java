@@ -22,8 +22,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
  */
 public class VehicleDeparture extends L2GameServerPacket
 {
-
-	private L2BoatInstance _boat;
+	private int _boatObjId;
 	private int _speed1;
 	private int _speed2;//rotation
 	private int _x;
@@ -37,14 +36,14 @@ public class VehicleDeparture extends L2GameServerPacket
 	 * @param y
 	 * @param z
 	 */
-	public VehicleDeparture(L2BoatInstance boat, int speed1, int speed2, int x, int y, int z)
+	public VehicleDeparture(L2BoatInstance boat)
 	{
-		_boat = boat;
-		_speed1 = speed1;
-		_speed2 = speed2;
-		_x = x;
-		_y = y;
-		_z = z;
+		_boatObjId = boat.getObjectId();
+		_speed1 = (int)boat.getStat().getMoveSpeed();
+		_speed2 = boat.getStat().getRotationSpeed();
+		_x = boat.getXdestination();
+		_y = boat.getYdestination();
+		_z = boat.getZdestination();
 	}
 
 	@Override
@@ -52,7 +51,7 @@ public class VehicleDeparture extends L2GameServerPacket
 	void writeImpl()
 	{
 		writeC(0x6c);
-		writeD(_boat.getObjectId());
+		writeD(_boatObjId);
 		writeD(_speed1);
 		writeD(_speed2);
 		writeD(_x);
@@ -66,5 +65,4 @@ public class VehicleDeparture extends L2GameServerPacket
 	{
 		return "[S] 5A VehicleDeparture";
 	}
-
 }

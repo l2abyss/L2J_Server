@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.LineNumberReader;
-import java.util.Collection;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -32,7 +31,8 @@ import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.instancemanager.AirShipManager;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.knownlist.AirShipKnownList;
+import com.l2jserver.gameserver.model.actor.knownlist.VehicleKnownList;
+import com.l2jserver.gameserver.model.actor.stat.VehicleStat;
 import com.l2jserver.gameserver.network.serverpackets.ExAirShipInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExGetOffAirShip;
 import com.l2jserver.gameserver.network.serverpackets.ExGetOnAirShip;
@@ -40,6 +40,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExMoveToLocationAirShip;
 import com.l2jserver.gameserver.network.serverpackets.ExStopMoveAirShip;
 import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
+import com.l2jserver.util.Point3D;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
@@ -51,7 +52,6 @@ import javolution.util.FastMap;
  */
 public class L2AirShipInstance extends L2Character
 {
-	public float boatSpeed;
 	protected final FastList<L2PcInstance> _passengers = new FastList<L2PcInstance>();
 	protected static final Logger _airShiplog = Logger.getLogger(L2AirShipInstance.class.getName());
 	
@@ -151,24 +151,13 @@ public class L2AirShipInstance extends L2Character
 			{
 				L2AirShipPoint bp = _path.get(state);
 				
+				getStat().setMoveSpeed(bp.speed1);
+				getStat().setRotationSpeed(4000); // hardcoded for now
 				_boat._easi = new ExMoveToLocationAirShip(L2AirShipInstance.this,bp.x, bp.y, bp.z);
-				// _boat.getTemplate().baseRunSpd = bp.speed1;
-				boatSpeed = bp.speed1;
 				_boat.moveAirShipToLocation(bp.x, bp.y, bp.z, bp.speed1);
-				Collection<L2PcInstance> knownPlayers = _boat.getKnownList().getKnownPlayers().values();
 				if (bp.time == 0)
-				{
 					bp.time = 1;
-				}
-				if (knownPlayers == null || knownPlayers.isEmpty())
-					return bp.time;
-				//synchronized (_boat.getKnownList().getKnownPlayers())
-				{
-					for (L2PcInstance player : knownPlayers)
-					{
-						player.sendPacket(_boat._easi);
-					}
-				}
+				_boat.broadcastPacket(_boat._easi);
 				return bp.time;
 			}
 			else
@@ -195,9 +184,21 @@ public class L2AirShipInstance extends L2Character
 	@Override
     public void initKnownList()
     {
-		setKnownList(new AirShipKnownList(this));
+		setKnownList(new VehicleKnownList(this));
     }
-	
+
+	@Override
+	public VehicleStat getStat()
+	{
+		return (VehicleStat)super.getStat();
+	}
+
+	@Override
+	public void initCharStat()
+	{
+		setStat(new VehicleStat(this));
+	}
+
 	/**
 	 * @param x
 	 * @param y
@@ -251,6 +252,7 @@ public class L2AirShipInstance extends L2Character
 		m._zDestination = z; // this is what was requested from client
 		m._heading = 0; // initial value for coordinate sync
 		m.onGeodataPathIndex = -1; // Initialize not on geodata path
+		m.disregardingGeodata = true;
 		m._moveStartTime = GameTimeController.getGameTicks();
 		
 		if (Config.DEBUG)
@@ -427,7 +429,7 @@ public class L2AirShipInstance extends L2Character
 	public void updatePeopleInTheAirShip(int x, int y, int z)
 	{
 		
-		if (_passengers != null && !_passengers.isEmpty())
+		if (!_passengers.isEmpty())
 		{
 			if ((lastx == -1) || (lasty == -1))
 			{
@@ -479,14 +481,9 @@ public class L2AirShipInstance extends L2Character
 	
 	public void spawn()
 	{
-		Collection<L2PcInstance> knownPlayers = getKnownList().getKnownPlayers().values();
 		_cycle = 0;
 		beginCycle();
-		if (knownPlayers == null || knownPlayers.isEmpty())
-			return;
-		ExAirShipInfo easi = new ExAirShipInfo(this);
-		for (L2PcInstance player : knownPlayers)
-			player.sendPacket(easi);
+		broadcastPacket(new ExAirShipInfo(this));
 	}
 	
 	/**
@@ -527,13 +524,16 @@ public class L2AirShipInstance extends L2Character
 			
 		_passengers.add(player);
 		player.setAirShip(this);
+		player.setInVehiclePosition(new Point3D(0,0,0));
 		player.broadcastPacket(new ExGetOnAirShip(player, this));
-		//player.sendPacket(new ExSetCompassZoneCode(ExSetCompassZoneCode.GENERALZONE));
+		player.getKnownList().removeAllKnownObjects();
+		player.setXYZ(getX(), getY(), getZ());
+		player.revalidateZone(true);
 	}
 
 	public void oustPlayer(L2PcInstance player)
 	{
-		int x,y,z;
+		final int x,y,z;
 		if (_cycle == 1 || _cycle == 4)
 		{
 			x = -149379;
@@ -546,22 +546,49 @@ public class L2AirShipInstance extends L2Character
 			y = 243590;
 			z = 2608;			
 		}
-		_passengers.remove(player);
+		removePassenger(player);
 		player.setAirShip(null);
-		player.broadcastPacket(new ExGetOffAirShip(player, this, x ,y ,z));
-		player.teleToLocation(x, y, z);
+		player.setInVehiclePosition(null);
+		if (player.isOnline() > 0)
+		{
+			player.broadcastPacket(new ExGetOffAirShip(player, this, x ,y ,z));
+			player.getKnownList().removeAllKnownObjects();
+			player.setXYZ(x, y, z);
+			player.revalidateZone(true);
+		}
+		else
+			player.setXYZInvisible(x, y, z); // disconnects handling
 	}
-	
+
+	public void removePassenger(L2PcInstance player)
+	{
+		try
+		{
+			_passengers.remove(player);
+		}
+		catch (Exception e)
+		{}
+	}
+
 	public void teleportAirShip(int x, int y, int z,int heading)
 	{
 		teleToLocation(x, y, z, heading, false);
+		final ExStopMoveAirShip as = new ExStopMoveAirShip(this);
+		final ExAirShipInfo ai = new ExAirShipInfo(this);
+		final ExGetOnAirShip[] gas = new ExGetOnAirShip[_passengers.size()];
+		int i = 0;
+		for (L2PcInstance player : _passengers)
+			gas[i++] = (new ExGetOnAirShip(player, this));
+
 		for (L2PcInstance player : _passengers)
 		{
-			if (player == null)
-				continue;
-			player.sendPacket(new ExStopMoveAirShip(this));
-			player.teleToLocation(x,y,z, heading,false);
-			player.sendPacket(new ExAirShipInfo(this));
+			player.sendPacket(as);
+			player.setXYZ(x, y, z);
+			player.sendPacket(ai);
+			for (ExGetOnAirShip packet : gas)
+				player.sendPacket(packet);
+
+			player.revalidateZone(true);
 		}
 	}
 	
@@ -620,16 +647,6 @@ public class L2AirShipInstance extends L2Character
 		{}
 	}
 	
-	public int getSpeed1()
-	{
-		return (int)boatSpeed;
-	}
-	
-	public int getSpeed2()
-	{
-		return 4000;
-	}
-    
 	@Override
 	public void sendInfo(L2PcInstance activeChar)
 	{

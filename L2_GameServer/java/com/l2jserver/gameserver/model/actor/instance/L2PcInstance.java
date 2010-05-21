@@ -492,15 +492,10 @@ public final class L2PcInstance extends L2Playable
     private int _duelId = 0;
     private SystemMessageId _noDuelReason = SystemMessageId.THERE_IS_NO_OPPONENT_TO_RECEIVE_YOUR_CHALLENGE_FOR_A_DUEL;
 
-	/** Boat */
-	private boolean _inBoat;
-    private L2BoatInstance _boat;
-    private Point3D _inBoatPosition;
-    
-    /** AirShip */
-    private L2AirShipInstance _airShip;
-	private boolean _inAirShip;
-	private Point3D _inAirShipPosition;
+	/** Boat and AirShip */
+    private L2BoatInstance _boat = null;
+    private L2AirShipInstance _airShip = null;
+    private Point3D _inVehiclePosition;
 
 	public ScheduledFuture<?> _taskforfish;
 	private int _mountType;
@@ -11174,6 +11169,17 @@ public final class L2PcInstance extends L2Playable
 	}
 
 	@Override
+	public void teleToLocation(int x, int y, int z, int heading, boolean allowRandomOffset)
+	{
+		if (isInBoat())
+			setBoat(null);
+		if (isInAirShip())
+			setAirShip(null);
+
+		super.teleToLocation(x, y, z, heading, allowRandomOffset);
+	}
+
+	@Override
 	public final void onTeleported()
 	{
 		super.onTeleported();
@@ -11493,15 +11499,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean isInBoat()
 	{
-		return _inBoat;
-	}
-
-	/**
-	 * @param inBoat The inBoat to set.
-	 */
-	public void setInBoat(boolean inBoat)
-	{
-		_inBoat = inBoat;
+		return _boat != null;
 	}
 
 	/**
@@ -11517,6 +11515,9 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void setBoat(L2BoatInstance boat)
 	{
+		if (boat == null && _boat != null)
+			_boat.removePassenger(this);
+
 		_boat = boat;
 	}
 
@@ -11525,15 +11526,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean isInAirShip()
 	{
-		return _inAirShip;
-	}
-
-	/**
-	 * @param inAirShip The inAirShip to set.
-	 */
-	public void setInAirShip(boolean inAirShip)
-	{
-		_inAirShip = inAirShip;
+		return _airShip != null;
 	}
 
 	/**
@@ -11549,10 +11542,9 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void setAirShip(L2AirShipInstance airShip)
 	{
-		if (airShip != null)
-			setInAirShip(true);
-		else
-			setInAirShip(false);
+		if (airShip == null && _airShip != null)
+			_airShip.removePassenger(this);
+
 		_airShip = airShip;
 	}
 	
@@ -11569,27 +11561,14 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * @return
 	 */
-	public Point3D getInBoatPosition()
+	public Point3D getInVehiclePosition()
 	{
-		return _inBoatPosition;
+		return _inVehiclePosition;
 	}
 
-	public void setInBoatPosition(Point3D pt)
+	public void setInVehiclePosition(Point3D pt)
 	{
-		_inBoatPosition = pt;
-	}
-
-	/**
-	 * @return
-	 */
-	public Point3D getInAirShipPosition()
-	{
-		return _inAirShipPosition;
-	}
-
-	public void setInAirShipPosition(Point3D pt)
-	{
-		_inAirShipPosition = pt;
+		_inVehiclePosition = pt;
 	}
 
 	/**
@@ -11870,6 +11849,8 @@ public final class L2PcInstance extends L2Playable
 				setXYZInvisible(_obsX, _obsY, _obsZ);
 			else if (isInAirShip())
 				getAirShip().oustPlayer(this);
+			else if (isInBoat())
+				getBoat().oustPlayer(this);
 		}
 		catch (Exception e)
 		{
@@ -14367,41 +14348,7 @@ public final class L2PcInstance extends L2Playable
         		if (activeChar.getPet() != null)
         			sendPacket(new RelationChanged(activeChar.getPet(), relation2, isAutoAttackable(activeChar)));
         	}
-        	activeChar.sendPacket(new GetOnVehicle(this, getBoat(), getInBoatPosition().getX(), getInBoatPosition().getY(), getInBoatPosition().getZ()));
-        	/*if(getBoat().GetVehicleDeparture() == null)
-        	{
-
-        		int xboat = getBoat().getX();
-        		int yboat= getBoat().getY();
-        		double modifier = Math.PI/2;
-        		if (yboat == 0)
-        		{
-        			yboat = 1;
-        		}
-        		if(yboat < 0)
-        		{
-        			modifier = -modifier;
-        		}
-        		double angleboat = modifier - Math.atan(xboat/yboat);
-        		int xp = getX();
-        		int yp = getY();
-        		modifier = Math.PI/2;
-        		if (yp == 0)
-        		{
-        			yboat = 1;
-        		}
-        		if(yboat < 0)
-        		{
-        			modifier = -modifier;
-        		}
-        		double anglep = modifier - Math.atan(yp/xp);
-
-        		double finx = Math.cos(anglep - angleboat)*Math.sqrt(xp *xp +yp*yp ) + Math.cos(angleboat)*Math.sqrt(xboat *xboat +yboat*yboat );
-        		double finy = Math.sin(anglep - angleboat)*Math.sqrt(xp *xp +yp*yp ) + Math.sin(angleboat)*Math.sqrt(xboat *xboat +yboat*yboat );
-        		//getPosition().setWorldPosition(getBoat().getX() - getInBoatPosition().x,getBoat().getY() - getInBoatPosition().y,getBoat().getZ()- getInBoatPosition().z);
-        		getPosition().setWorldPosition((int)finx,(int)finy,getBoat().getZ()- getInBoatPosition().z);
-
-        	}*/
+        	activeChar.sendPacket(new GetOnVehicle(getObjectId(), getBoat().getObjectId(), getInVehiclePosition()));
         }
         else if(isInAirShip())
         {

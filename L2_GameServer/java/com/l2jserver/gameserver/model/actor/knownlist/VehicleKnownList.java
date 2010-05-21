@@ -18,13 +18,9 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-/**
- * @author Maktakien
- *
- */
-public class BoatKnownList extends CharKnownList
+public class VehicleKnownList extends CharKnownList
 {
-	public BoatKnownList(L2Character activeChar)
+	public VehicleKnownList(L2Character activeChar)
 	{
 		super(activeChar);
 	}
@@ -35,7 +31,7 @@ public class BoatKnownList extends CharKnownList
         if (!(object instanceof L2PcInstance))
             return 0;
 
-        return 8000;
+        return object.getKnownList().getDistanceToForgetObject(getActiveObject());
     }
 
     @Override
@@ -44,6 +40,6 @@ public class BoatKnownList extends CharKnownList
         if (!(object instanceof L2PcInstance))
             return 0;
 
-        return 4000;
+        return object.getKnownList().getDistanceToWatchObject(getActiveObject());
     }
 }

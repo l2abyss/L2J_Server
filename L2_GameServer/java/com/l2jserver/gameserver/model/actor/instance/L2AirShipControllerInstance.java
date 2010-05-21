@@ -45,11 +45,25 @@ public class L2AirShipControllerInstance extends L2NpcInstance
 	{
 		if (command.equalsIgnoreCase("board"))
 		{
+			if (player.getPet() != null)
+			{
+				player.sendPacket(new SystemMessage(SystemMessageId.RELEASE_PET_ON_BOAT));
+				return;
+			}
+			if (player.isTransformed())
+			{
+				player.sendPacket(new SystemMessage(SystemMessageId.CANT_POLYMORPH_ON_BOAT));
+				return;
+			}
+			if (player.isFlyingMounted())
+			{
+				player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_MOUNT_NOT_MEET_REQUEIREMENTS));
+				return;
+			}
+
 			L2AirShipInstance ship = AirShipManager.getInstance().getAirShip();
 
-			if (player.isFlyingMounted())
-				player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_MOUNT_NOT_MEET_REQUEIREMENTS));
-			else if (ship.isInDock() && _isBoardAllowed)
+			if (ship.isInDock() && _isBoardAllowed)
 			{
 				ship.onPlayerBoarding(player);
 				return;

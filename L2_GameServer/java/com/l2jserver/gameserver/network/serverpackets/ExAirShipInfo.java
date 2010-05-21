@@ -31,8 +31,8 @@ public class ExAirShipInfo extends L2GameServerPacket
 		_z = ship.getZ();
 		_heading = ship.getPosition().getHeading();
 		_objectId = ship.getObjectId();
-		_speed1 = ship.getSpeed1();
-		_speed2 = ship.getSpeed2();
+		_speed1 = (int)ship.getStat().getMoveSpeed();
+		_speed2 = ship.getStat().getRotationSpeed();
 	}
 
 	@Override

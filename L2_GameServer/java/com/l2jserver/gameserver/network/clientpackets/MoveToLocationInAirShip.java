@@ -15,15 +15,13 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.TaskPriority;
-import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.instancemanager.AirShipManager;
-import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.network.serverpackets.ExMoveToLocationInAirShip;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.util.Point3D;
-
 
 /**
  * format: ddddddd
@@ -37,7 +35,7 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 	private int _shipId;
 	private final Point3D _pos = new Point3D(0,0,0);
 	private final Point3D _origin_pos = new Point3D(0,0,0);
-	
+
 	public TaskPriority getPriority() { return TaskPriority.PR_HIGH; }
 
 	@Override
@@ -59,23 +57,47 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-		else if (activeChar.isAttackingNow() && activeChar.getActiveWeaponItem() != null && (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
+
+		if (activeChar.isAttackingNow()
+				&& activeChar.getActiveWeaponItem() != null
+				&& (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+
+		if (activeChar.isSitting() || activeChar.isMovementDisabled())
+		{
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+
+		final L2AirShipInstance airShip;
+		if (activeChar.isInAirShip())
+		{
+			airShip = activeChar.getAirShip();
+			if (airShip.getObjectId() != _shipId)
+			{
+				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
 		}
 		else
 		{
-			L2AirShipInstance airShip = AirShipManager.getInstance().getAirShip();
-			if (airShip == null || airShip.getObjectId() != _shipId)
+			airShip = AirShipManager.getInstance().getAirShip();
+			if (airShip == null)
+			{
+				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				return;
-			activeChar.setAirShip(airShip);
-			activeChar.setInAirShip(true);
-			activeChar.setInAirShipPosition(_pos);
-			activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO_IN_AIR_SHIP, new L2CharPosition(_pos.getX(),_pos.getY(), _pos.getZ(), 0), new L2CharPosition(_origin_pos.getX(),_origin_pos.getY(),_origin_pos.getZ(), 0));
+			}
 		}
+
+		activeChar.setAirShip(airShip);
+		activeChar.setInVehiclePosition(_pos);
+		activeChar.broadcastPacket(new ExMoveToLocationInAirShip(activeChar));
 	}
 
 	/* (non-Javadoc)

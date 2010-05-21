@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.gameserver.instancemanager.BoatManager;
 import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.GetOnVehicle;
 import com.l2jserver.util.Point3D;
 
@@ -27,43 +28,66 @@ import com.l2jserver.util.Point3D;
  */
 public final class RequestGetOnVehicle extends L2GameClientPacket
 {
-    private static final String _C__5C_GETONVEHICLE = "[C] 5C GetOnVehicle";
+	private static final String _C__5C_GETONVEHICLE = "[C] 5C GetOnVehicle";
 
-    private int _id, _x, _y, _z;
+	private int _boatId;
+	private Point3D _pos;
 
-    @Override
+	@Override
 	protected void readImpl()
-    {
-        _id = readD();
-        _x = readD();
-        _y = readD();
-        _z = readD();
-    }
+	{
+		int x, y, z;
+		_boatId = readD();
+		x = readD();
+		y = readD();
+		z = readD();
+		_pos = new Point3D(x, y, z);
+	}
 
-    @Override
+	@Override
 	protected void runImpl()
-    {
-        L2PcInstance activeChar = getClient().getActiveChar();
-        if (activeChar == null) return;
+	{
+		final L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null)
+			return;
 
-        L2BoatInstance boat = BoatManager.getInstance().getBoat(_id);
-        if (boat == null) return;
+		L2BoatInstance boat;
+		if (activeChar.isInBoat())
+		{
+			boat = activeChar.getBoat();
+			if (boat.getObjectId() != _boatId)
+			{
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
+		}
+		else
+		{
+			boat = BoatManager.getInstance().getBoat(_boatId);
+			if (boat == null
+					|| boat.isMoving()
+					|| !activeChar.isInsideRadius(boat, 1000, true, false))
+			{
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
+		}
 
-        GetOnVehicle Gon = new GetOnVehicle(activeChar,boat,_x,_y,_z);
-        activeChar.setInBoatPosition(new Point3D(_x,_y,_z));
-        activeChar.getPosition().setXYZ(boat.getPosition().getX(),boat.getPosition().getY(),boat.getPosition().getZ());
-        activeChar.broadcastPacket(Gon);
-        activeChar.revalidateZone(true);
 
+		activeChar.setInVehiclePosition(_pos);
+		activeChar.setBoat(boat);
+		activeChar.broadcastPacket(new GetOnVehicle(activeChar.getObjectId(), boat.getObjectId(), _pos));
 
-    }
+		activeChar.setXYZ(boat.getX(), boat.getY(), boat.getZ());
+		activeChar.revalidateZone(true);
+	}
 
-    /* (non-Javadoc)
-     * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-     */
-    @Override
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
+	 */
+	@Override
 	public String getType()
-    {
-        return _C__5C_GETONVEHICLE;
-    }
+	{
+		return _C__5C_GETONVEHICLE;
+	}
 }

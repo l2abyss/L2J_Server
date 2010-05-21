@@ -21,10 +21,9 @@ import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.geoeditorcon.GeoEditorListener;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.network.serverpackets.ExValidateLocationInAirShip;
+import com.l2jserver.gameserver.network.serverpackets.GetOnVehicle;
 import com.l2jserver.gameserver.network.serverpackets.PartyMemberPosition;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocationInVehicle;
 
 
 /**
@@ -44,8 +43,7 @@ public class ValidatePosition extends L2GameClientPacket
 	private int _y;
 	private int _z;
 	private int _heading;
-	@SuppressWarnings("unused")
-	private int _data;
+	private int _data; // vehicle id
 
 	@Override
 	protected void readImpl()
@@ -70,28 +68,59 @@ public class ValidatePosition extends L2GameClientPacket
 		final int realY = activeChar.getY();
 		int realZ = activeChar.getZ();
 
+		if (Config.DEVELOPER)
+		{
+			_log.fine("client pos: "+ _x + " "+ _y + " "+ _z +" head "+ _heading);
+			_log.fine("server pos: "+ realX + " "+realY+ " "+realZ +" head "+activeChar.getHeading());
+		}
+
 		if (_x == 0 && _y == 0) 
 		{
 			if (realX != 0) // in this case this seems like a client error
 				return;
 		}
 
+		int dx, dy, dz;
+		double diffSq;
+
+		if (activeChar.isInBoat())
+		{
+			if (Config.COORD_SYNCHRONIZE == 2)
+			{
+				dx = _x - activeChar.getInVehiclePosition().getX();
+				dy = _y - activeChar.getInVehiclePosition().getY();
+				dz = _z - activeChar.getInVehiclePosition().getZ();
+				diffSq = (dx*dx + dy*dy);
+				if (diffSq > 250000)
+					sendPacket(new GetOnVehicle(activeChar.getObjectId(), _data, activeChar.getInVehiclePosition()));
+			}
+			return;
+		}
+		if (activeChar.isInAirShip())
+		{
+			/*if (Config.COORD_SYNCHRONIZE == 2)
+			{
+				dx = _x - activeChar.getInVehiclePosition().getX();
+				dy = _y - activeChar.getInVehiclePosition().getY();
+				dz = _z - activeChar.getInVehiclePosition().getZ();
+				diffSq = (dx*dx + dy*dy);
+				if (diffSq > 250000)
+					sendPacket(new GetOnVehicle(activeChar.getObjectId(), _data, activeChar.getInBoatPosition()));
+			}*/
+			return;
+		}
+
+		dx = _x - realX;
+		dy = _y - realY;
+		dz = _z - realZ;
+		diffSq = (dx*dx + dy*dy);
+			
 		if(activeChar.getParty() != null && activeChar.getLastPartyPositionDistance(_x, _y, _z) > 150)
 		{
 			activeChar.setLastPartyPosition(_x, _y, _z);
 			activeChar.getParty().broadcastToPartyMembers(activeChar,new PartyMemberPosition(activeChar));
 		}
 
-		final int dx = _x - realX;
-		final int dy = _y - realY;
-		final int dz = _z - realZ;
-		double diffSq = (dx*dx + dy*dy);
-
-		if (Config.DEVELOPER)
-		{
-			_log.fine("client pos: "+ _x + " "+ _y + " "+ _z +" head "+ _heading);
-			_log.fine("server pos: "+ realX + " "+realY+ " "+realZ +" head "+activeChar.getHeading());
-		}
 
 		if (Config.ACCEPT_GEOEDITOR_CONN)
 			if (GeoEditorListener.getInstance().getThread() != null  
@@ -103,14 +132,7 @@ public class ValidatePosition extends L2GameClientPacket
 		{
 			activeChar.setXYZ(realX, realY, _z);
 			if (diffSq > 90000) // validate packet, may also cause z bounce if close to land
-			{
-				if (activeChar.isInBoat())
-					sendPacket(new ValidateLocationInVehicle(activeChar));
-				else if (activeChar.isInAirShip())
-					sendPacket(new ExValidateLocationInAirShip(activeChar));
-				else
-					activeChar.sendPacket(new ValidateLocation(activeChar));
-			}
+				activeChar.sendPacket(new ValidateLocation(activeChar));
 		}
 		else if (diffSq < 360000) // if too large, messes observation
 		{
@@ -158,12 +180,7 @@ public class ValidatePosition extends L2GameClientPacket
 					if (Config.DEVELOPER)
 						_log.info(activeChar.getName() + ": Synchronizing position Server --> Client");
 
-					if (activeChar.isInBoat())
-						sendPacket(new ValidateLocationInVehicle(activeChar));
-					else if (activeChar.isInAirShip())
-						sendPacket(new ExValidateLocationInAirShip(activeChar));
-					else
-						activeChar.sendPacket(new ValidateLocation(activeChar));
+					activeChar.sendPacket(new ValidateLocation(activeChar));
 				}
 			}
 		}

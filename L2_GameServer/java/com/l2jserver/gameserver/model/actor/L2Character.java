@@ -63,8 +63,11 @@ import com.l2jserver.gameserver.model.L2Skill.SkillTargetType;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2MinionInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2NpcWalkerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2RiftInvaderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.SkillDat;
 import com.l2jserver.gameserver.model.actor.knownlist.CharKnownList;
 import com.l2jserver.gameserver.model.actor.position.CharPosition;
@@ -587,6 +590,8 @@ public abstract class L2Character extends L2Object
 	 * <li>Send a Server->Client packet TeleportToLocationt to the L2Character AND to all L2PcInstance in its _KnownPlayers</li>
 	 * <li>Modify the position of the pet if necessary</li><BR><BR>
 	 *
+	 * <B><U> Overridden in </U> :</B><BR><BR>
+	 * <li> L2PcInstance</li><BR><BR>
 	 */
 	public void teleToLocation(int x, int y, int z, int heading, boolean allowRandomOffset)
 	{
@@ -611,12 +616,12 @@ public abstract class L2Character extends L2Object
 		if (Config.DEBUG)
             _log.fine("Teleporting to: " + x + ", " + y + ", " + z);
 
-		// remove the object from its old location
-        decayMe();
-		
 		// Send a Server->Client packet TeleportToLocationt to the L2Character AND to all L2PcInstance in the _KnownPlayers of the L2Character
 		broadcastPacket(new TeleportToLocation(this, x, y, z, heading));
 
+		// remove the object from its old location
+        decayMe();
+		
 		// Set the x,y,z position of the L2Object and if necessary modify its _worldRegion
 		getPosition().setXYZ(x, y, z);
 		
@@ -4134,7 +4139,7 @@ public abstract class L2Character extends L2Object
 		int yPrev = getY();
 		int zPrev = getZ(); // the z coordinate may be modified by coordinate synchronizations
 		
-		double dx, dy, dz, distFraction;
+		double dx, dy, dz;
 		if (Config.COORD_SYNCHRONIZE == 1) 
 		// the only method that can modify x,y while moving (otherwise _move would/should be set null)
 		{
@@ -4152,14 +4157,16 @@ public abstract class L2Character extends L2Object
 			&& !isInsideZone(L2Character.ZONE_WATER)
 			&& !m.disregardingGeodata
 			&& GameTimeController.getGameTicks() % 10 == 0 // once a second to reduce possible cpu load
-			&& GeoData.getInstance().hasGeo(xPrev, yPrev)
-			&& !(this instanceof L2BoatInstance)
-			&& !(this instanceof L2AirShipInstance))
+			&& GeoData.getInstance().hasGeo(xPrev, yPrev))
+//			&& !(this instanceof L2BoatInstance)
+//			&& !(this instanceof L2AirShipInstance))
 		{
 			short geoHeight = GeoData.getInstance().getSpawnHeight(xPrev, yPrev, zPrev-30, zPrev+30, this.getObjectId());
 			dz = m._zDestination - geoHeight;
 			// quite a big difference, compare to validatePosition packet
-			if (this instanceof L2PcInstance && Math.abs(((L2PcInstance)this).getClientZ()-geoHeight) > 200 && Math.abs(((L2PcInstance)this).getClientZ()-geoHeight) < 1500)
+			if (this instanceof L2PcInstance
+					&& Math.abs(((L2PcInstance)this).getClientZ()-geoHeight) > 200
+					&& Math.abs(((L2PcInstance)this).getClientZ()-geoHeight) < 1500)
 			{	
 				dz = m._zDestination - zPrev; // allow diff 
 			}
@@ -4175,27 +4182,18 @@ public abstract class L2Character extends L2Object
 		else
 			dz = m._zDestination - zPrev;
 
-		float speed;
-		if (this instanceof L2BoatInstance)
-		{
-			speed = ((L2BoatInstance)this).boatSpeed;
-		}
-		else if (this instanceof L2AirShipInstance)
-		{
-			speed = ((L2AirShipInstance)this).boatSpeed;
-		}
-		else
-		{
-			speed = getStat().getMoveSpeed();
-		}
-		
-		double distPassed = speed * (gameTicks - m._moveTimestamp) / GameTimeController.TICKS_PER_SECOND;
+		final double delta;
 		if ((dx*dx + dy*dy) < 10000 && (dz*dz > 2500)) // close enough, allows error between client and server geodata if it cannot be avoided
-		{
-			distFraction = distPassed / Math.sqrt(dx*dx + dy*dy);
-		}
+			delta = Math.sqrt(dx*dx + dy*dy);
 		else
-			distFraction = distPassed / Math.sqrt(dx*dx + dy*dy + dz*dz);
+			delta = Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+		double distFraction = Double.MAX_VALUE;
+		if (delta > 1)
+		{
+			final double distPassed = getStat().getMoveSpeed() * (gameTicks - m._moveTimestamp) / GameTimeController.TICKS_PER_SECOND;
+			distFraction = distPassed / delta;
+		}
 
 		// if (Config.DEVELOPER) _log.warning("Move Ticks:" + (gameTicks - m._moveTimestamp) + ", distPassed:" + distPassed + ", distFraction:" + distFraction);
 		
@@ -4204,17 +4202,11 @@ public abstract class L2Character extends L2Object
 			// Set the position of the L2Character to the destination
 			super.getPosition().setXYZ(m._xDestination, m._yDestination, m._zDestination);
 			if (this instanceof L2BoatInstance)
-			{
 				((L2BoatInstance)this).updatePeopleInTheBoat(m._xDestination, m._yDestination, m._zDestination);
-			}
 			else if (this instanceof L2AirShipInstance)
-			{
 				((L2AirShipInstance)this).updatePeopleInTheAirShip(m._xDestination, m._yDestination, m._zDestination);
-			}
 			else
-			{
 				revalidateZone(false);
-			}
 		}
 		else
 		{
@@ -4224,17 +4216,11 @@ public abstract class L2Character extends L2Object
 			// Set the position of the L2Character to estimated after parcial move
 			super.getPosition().setXYZ((int)(m._xAccurate), (int)(m._yAccurate), zPrev + (int)(dz * distFraction + 0.5));
 			if(this instanceof L2BoatInstance )
-			{
 				((L2BoatInstance)this).updatePeopleInTheBoat((int)(m._xAccurate), (int)(m._yAccurate), zPrev + (int)(dz * distFraction + 0.5));
-			}
 			else if (this instanceof L2AirShipInstance)
-			{
 				((L2AirShipInstance)this).updatePeopleInTheAirShip(m._xDestination, m._yDestination, m._zDestination);
-			}
 			else
-			{
 				revalidateZone(false);
-			}
 		}
 
 		// Set the timer of last position update to now
@@ -4481,12 +4467,16 @@ public abstract class L2Character extends L2Object
 		// GEODATA MOVEMENT CHECKS AND PATHFINDING
 		m.onGeodataPathIndex = -1; // Initialize not on geodata path
 		m.disregardingGeodata = false;
-		
+
 		if (Config.GEODATA > 0 
 			&& !isFlying() // flying chars not checked - even canSeeTarget doesn't work yet
 			&& (!isInsideZone(ZONE_WATER) || isInsideZone(ZONE_SIEGE)) // swimming also not checked unless in siege zone - but distance is limited
-			&& !isInstanceType(InstanceType.L2NpcWalkerInstance)) // npc walkers not checked
+			&& !(this instanceof L2NpcWalkerInstance)) // npc walkers not checked
 		{
+			final boolean isInBoat = this instanceof L2PcInstance && ((L2PcInstance)this).isInBoat();
+			if (isInBoat)
+				m.disregardingGeodata = true;
+
 			double originalDistance = distance;
 			int originalX = x;
 			int originalY = y;
@@ -4497,10 +4487,11 @@ public abstract class L2Character extends L2Object
 			// Movement checks:
 			// when geodata == 2, for all characters except mobs returning home (could be changed later to teleport if pathfinding fails)
 			// when geodata == 1, for l2playableinstance and l2riftinstance only
-			if ((Config.GEODATA == 2 &&	!(isInstanceType(InstanceType.L2Attackable) && ((L2Attackable)this).isReturningToSpawnPoint())) 
-					|| isInstanceTypes(InstanceType.L2Playable, InstanceType.L2RiftInvaderInstance) 
-					|| (isInstanceType(InstanceType.L2Summon) && !(this.getAI().getIntention() == AI_INTENTION_FOLLOW)) // assuming intention_follow only when following owner
-					|| isAfraid())
+			if ((Config.GEODATA == 2 &&	!(this instanceof L2Attackable && ((L2Attackable)this).isReturningToSpawnPoint())) 
+					|| (this instanceof L2PcInstance && !(isInBoat && distance > 1500))
+					|| (this instanceof L2Summon && !(this.getAI().getIntention() == AI_INTENTION_FOLLOW)) // assuming intention_follow only when following owner
+					|| isAfraid()
+					|| this instanceof L2RiftInvaderInstance)
 			{
 				if (isOnGeodataPath())
 				{
@@ -4540,9 +4531,10 @@ public abstract class L2Character extends L2Object
 			{
 				// Path calculation
 				// Overrides previous movement check
-				if(isInstanceTypes(InstanceType.L2Playable, InstanceType.L2MinionInstance) || this.isInCombat())
+				if((this instanceof L2Playable && !isInBoat)
+						|| this instanceof L2MinionInstance
+						|| this.isInCombat())
 				{
-		
 					m.geoPath = PathFinding.getInstance().findPath(curX, curY, curZ, originalX, originalY, originalZ, getInstanceId(), isInstanceType(InstanceType.L2Playable));
                 	if (m.geoPath == null || m.geoPath.size() < 2) // No path found
                 	{
@@ -4554,10 +4546,11 @@ public abstract class L2Character extends L2Object
                 		// * Summons will follow their masters no matter what.
                 		// * Currently minions also must move freely since L2AttackableAI commands
                 		// them to move along with their leader
-                		if (isInstanceType(InstanceType.L2PcInstance) 
-                				|| (!isInstanceTypes(InstanceType.L2Playable, InstanceType.L2MinionInstance) 
+                		if (this instanceof L2PcInstance
+                				|| (!(this instanceof L2Playable)
+                						&& !(this instanceof L2MinionInstance) 
                 						&& Math.abs(z - curZ) > 140)
-                				|| (isInstanceType(InstanceType.L2Summon) && !((L2Summon)this).getFollowStatus())) 
+                				|| (this instanceof L2Summon && !((L2Summon)this).getFollowStatus())) 
                 		{
                 			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
                 			return;
@@ -4610,10 +4603,11 @@ public abstract class L2Character extends L2Object
 			}
 			// If no distance to go through, the movement is canceled
 			if (distance < 1 && (Config.GEODATA == 2 
-					|| isInstanceTypes(InstanceType.L2Playable, InstanceType.L2RiftInvaderInstance) 
+					|| this instanceof L2Playable
+					|| this instanceof L2RiftInvaderInstance 
 					|| this.isAfraid()))
 			{
-				if(isInstanceType(InstanceType.L2Summon)) ((L2Summon)this).setFollowStatus(false);
+				if(this instanceof L2Summon) ((L2Summon)this).setFollowStatus(false);
 				getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 				return;
 			}

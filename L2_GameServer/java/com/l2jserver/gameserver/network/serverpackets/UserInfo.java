@@ -82,6 +82,7 @@ public final class UserInfo extends L2GameServerPacket
     private float _moveMultiplier;
     private int _territoryId;
     private boolean _isDisguised;
+    private int _vehicleObjectId;
 
     /**
      * @param _characters
@@ -104,6 +105,13 @@ public final class UserInfo extends L2GameServerPacket
         }
         if (_activeChar.getSiegeState() == 2) _relation |= 0x80;
         _isDisguised = TerritoryWarManager.getInstance().isDisguised(character.getObjectId());
+        if (_activeChar.isInBoat())
+        	_vehicleObjectId = _activeChar.getBoat().getObjectId();
+        else if (_activeChar.isInAirShip())
+        	_vehicleObjectId = _activeChar.getAirShip().getObjectId();
+        else
+        	_vehicleObjectId = 0;
+        	
     }
 
     @Override
@@ -114,7 +122,7 @@ public final class UserInfo extends L2GameServerPacket
         writeD(_activeChar.getX());
         writeD(_activeChar.getY());
         writeD(_activeChar.getZ());
-        writeD(_activeChar.isInAirShip() ? _activeChar.getAirShip().getObjectId() : 0x00); // heading from CT2.3 no longer used inside userinfo, here is now vehicle id (boat,airship)
+        writeD(_vehicleObjectId); // heading from CT2.3 no longer used inside userinfo, here is now vehicle id (boat,airship)
         writeD(_activeChar.getObjectId());
         writeS(_activeChar.getName());
         writeD(_activeChar.getRace().ordinal());

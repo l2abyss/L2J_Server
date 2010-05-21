@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.util.Point3D;
 /**
  * This class ...
  *
@@ -23,42 +23,43 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class ValidateLocationInVehicle extends L2GameServerPacket
 {
-    private static final String _S__73_ValidateLocationInVehicle = "[S] 80 ValidateLocationInVehicle";
-    private L2PcInstance _activeChar;
+	private static final String _S__80_ValidateLocationInVehicle = "[S] 80 ValidateLocationInVehicle";
 
+	private int _charObjId;
+	private int _boatObjId;
+	private int _heading;
+	private Point3D _pos;
 
-    /**
-     * 0x73 ValidateLocationInVehicle         hdd
-     * @param _characters
-     */
-    public ValidateLocationInVehicle(L2Character player)
-    {
-    	if (!(player instanceof L2PcInstance)) return;
+	/**
+	 * 0x80 ValidateLocationInVehicle         hdd
+	 * @param _characters
+	 */
+	public ValidateLocationInVehicle(L2PcInstance player)
+	{
+		_charObjId = player.getObjectId();
+		_boatObjId = player.getBoat().getObjectId();
+		_heading = player.getHeading();
+		_pos = player.getInVehiclePosition();
+	}
 
-		_activeChar = (L2PcInstance)player;
-
-		if (_activeChar.getBoat() == null) return;
-    }
-
-    @Override
+	@Override
 	protected final void writeImpl()
-    {
-    	
-        writeC(0x80);
-        writeD(_activeChar.getObjectId());
-        writeD(_activeChar.getBoat().getObjectId());
-        writeD(_activeChar.getX());
-        writeD(_activeChar.getY());
-        writeD(_activeChar.getZ());
-        writeD(_activeChar.getHeading());
-    }
+	{
+		writeC(0x80);
+		writeD(_charObjId);
+		writeD(_boatObjId);
+		writeD(_pos.getX());
+		writeD(_pos.getY());
+		writeD(_pos.getZ());
+		writeD(_heading);
+	}
 
-    /* (non-Javadoc)
-     * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-     */
-    @Override
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	 */
+	@Override
 	public String getType()
-    {
-        return _S__73_ValidateLocationInVehicle;
-    }
+	{
+		return _S__80_ValidateLocationInVehicle;
+	}
 }

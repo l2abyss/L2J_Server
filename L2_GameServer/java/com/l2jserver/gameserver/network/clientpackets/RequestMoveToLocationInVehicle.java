@@ -15,12 +15,13 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.TaskPriority;
-import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.instancemanager.BoatManager;
-import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.network.serverpackets.MoveToLocationInVehicle;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.util.Point3D;
 
@@ -29,9 +30,9 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 {
 	private static final String _C__75_MOVETOLOCATIONINVEHICLE = "[C] 75 RequestMoveToLocationInVehicle";
 
-	private final Point3D _pos = new Point3D(0,0,0);
-	private final Point3D _origin_pos = new Point3D(0,0,0);
 	private int _boatId;
+	private Point3D _pos;
+	private Point3D _origin_pos;
 
 	public TaskPriority getPriority() { return TaskPriority.PR_HIGH; }
 
@@ -43,11 +44,11 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 		_x = readD();
 		_y = readD();
 		_z = readD();
-		_pos.setXYZ(_x, _y, _z);
+		_pos = new Point3D(_x, _y, _z);
 		_x = readD();
 		_y = readD();
 		_z = readD();
-		_origin_pos.setXYZ(_x, _y, _z);
+		_origin_pos = new Point3D(_x, _y, _z);
 	}
 
 	/* (non-Javadoc)
@@ -57,23 +58,61 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 	protected
 	void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-		else if (activeChar.isAttackingNow() && activeChar.getActiveWeaponItem() != null && (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
+
+		if (activeChar.isAttackingNow()
+				&& activeChar.getActiveWeaponItem() != null
+				&& (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+
+		if (activeChar.isSitting() || activeChar.isMovementDisabled())
+		{
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+
+		if (activeChar.getPet() != null)
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.RELEASE_PET_ON_BOAT));
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+
+		if (activeChar.isTransformed())
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_POLYMORPH_ON_BOAT));
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+
+		final L2BoatInstance boat;
+		if (activeChar.isInBoat())
+		{
+			boat = activeChar.getBoat();
+			if (boat.getObjectId() != _boatId)
+			{
+				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
 		}
 		else
 		{
-			L2BoatInstance boat = BoatManager.getInstance().getBoat(_boatId);
-			if (boat == null) return;
+			boat = BoatManager.getInstance().getBoat(_boatId);
+			if (boat == null)
+			{
+				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
 			activeChar.setBoat(boat);
-			activeChar.setInBoat(true);
-			activeChar.setInBoatPosition(_pos);
-			activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO_IN_A_BOAT, new L2CharPosition(_pos.getX(),_pos.getY(), _pos.getZ(), 0), new L2CharPosition(_origin_pos.getX(),_origin_pos.getY(),_origin_pos.getZ(), 0));
 		}
 
+		activeChar.setInVehiclePosition(_pos);
+		activeChar.broadcastPacket(new MoveToLocationInVehicle(activeChar, _pos, _origin_pos));
 	}
 
 	/* (non-Javadoc)
@@ -84,5 +123,4 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 	{
 		return _C__75_MOVETOLOCATIONINVEHICLE;
 	}
-
 }

@@ -14,8 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.L2Character;
 
 public class ExGetOffAirShip extends L2GameServerPacket
 {
@@ -23,16 +22,13 @@ public class ExGetOffAirShip extends L2GameServerPacket
 
 	private final int _playerId, _airShipId, _x, _y, _z;
 
-	public ExGetOffAirShip(L2PcInstance player, L2AirShipInstance ship, int x, int y, int z)
+	public ExGetOffAirShip(L2Character player, L2Character ship, int x, int y, int z)
 	{
 		_playerId = player.getObjectId();
 		_airShipId = ship.getObjectId();
 		_x = x;
 		_y = y;
 		_z = z;
-		player.setXYZ(_x, _y, _z);
-		if (player.getPet() != null)
-			player.getPet().teleToLocation(_x, _y, _z);
 	}
 
 	@Override

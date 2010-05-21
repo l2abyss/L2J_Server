@@ -121,8 +121,11 @@ public class PcKnownList extends PlayableKnownList
     @Override
 	public int getDistanceToForgetObject(L2Object object)
     {
-    	if (object instanceof L2BoatInstance || object instanceof L2AirShipInstance)
-    		return 8000;
+    	if (object instanceof L2BoatInstance)
+    		return 5000;
+
+    	if (object instanceof L2AirShipInstance)
+    		return 12000;
 
     	// when knownlist grows, the distance to forget should be at least
     	// the same as the previous watch range, or it becomes possible that
@@ -137,8 +140,11 @@ public class PcKnownList extends PlayableKnownList
     @Override
 	public int getDistanceToWatchObject(L2Object object)
     {
-    	if (object instanceof L2BoatInstance || object instanceof L2AirShipInstance)
+    	if (object instanceof L2BoatInstance)
     		return 4000;
+
+    	if (object instanceof L2AirShipInstance)
+    		return 10000;
 
     	final int knownlistSize = getKnownObjects().size();
         if (knownlistSize <= 25) return 3400; // empty field

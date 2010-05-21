@@ -14,25 +14,22 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
+import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.util.Point3D;
 
 public class ExGetOnAirShip extends L2GameServerPacket
 {
 	private static final String _S__FE_63_EXGETONAIRSHIP = "[S] FE:63 ExGetOnAirShip";
 
-	private final int _playerId, _airShipId, _x, _y, _z;
+	private final int _playerId, _airShipId;
+	private final Point3D _pos;
 
-	public ExGetOnAirShip(L2PcInstance player, L2AirShipInstance ship)
+	public ExGetOnAirShip(L2PcInstance player, L2Character ship)
 	{
 		_playerId = player.getObjectId();
 		_airShipId = ship.getObjectId();
-		_x = ship.getX();
-		_y = ship.getY();
-		_z = ship.getZ();
-		player.setXYZ(_x, _y, _z);
-		if (player.getPet() != null)
-			player.getPet().teleToLocation(_x, _y, _z);
+		_pos = player.getInVehiclePosition();
 	}
 
 	@Override
@@ -43,9 +40,9 @@ public class ExGetOnAirShip extends L2GameServerPacket
 
 		writeD(_playerId);
 		writeD(_airShipId);
-		writeD(_x);
-		writeD(_y);
-		writeD(_z);
+		writeD(_pos.getX());
+		writeD(_pos.getY());
+		writeD(_pos.getZ());
 	}
 
 	@Override

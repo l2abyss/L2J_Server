@@ -14,33 +14,27 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.L2CharPosition;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.util.Point3D;
 
 public class ExMoveToLocationInAirShip extends L2GameServerPacket
 {
 	private int _charObjId;
 	private int _airShipId;
-	private L2CharPosition _destination;
-	//private L2CharPosition _origin;
+	private Point3D _destination;
+	private int _heading;
+
 	/**
 	 * @param actor
 	 * @param destination
 	 * @param origin
 	 */
-	public ExMoveToLocationInAirShip(L2Character actor, L2CharPosition destination)
+	public ExMoveToLocationInAirShip(L2PcInstance player)
 	{
-		if (!(actor instanceof L2PcInstance)) return;
-
-		L2PcInstance player = (L2PcInstance)actor;
-
-		if (player.getAirShip() == null) return;
-		
-		_charObjId = actor.getObjectId();
+		_charObjId = player.getObjectId();
 		_airShipId = player.getAirShip().getObjectId();
-		_destination = destination;
-		//_origin = origin;
+		_destination = player.getInVehiclePosition();
+		_heading = player.getHeading();
 	}
 
 	/* (non-Javadoc)
@@ -53,10 +47,10 @@ public class ExMoveToLocationInAirShip extends L2GameServerPacket
 		writeH(0x6D);
         writeD(_charObjId);
         writeD(_airShipId);
-		writeD(_destination.x);
-		writeD(_destination.y);
-		writeD(_destination.z);
-		writeD(_destination.heading);
+		writeD(_destination.getX());
+		writeD(_destination.getY());
+		writeD(_destination.getZ());
+		writeD(_heading);
 	}
 
 	/* (non-Javadoc)
