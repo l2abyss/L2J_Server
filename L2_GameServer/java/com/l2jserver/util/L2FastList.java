@@ -14,8 +14,9 @@
  */
 package com.l2jserver.util;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javolution.util.FastList;
 
 /**
 *
@@ -27,7 +28,7 @@ import java.util.List;
 *      1.0.0 - Initial version.<br>
 *      1.0.1 - Made forEachP() final.<br>
 */
-public class L2FastList<T extends Object> extends ArrayList<T>
+public class L2FastList<T extends Object> extends FastList<T>
 {
 	static final long serialVersionUID = 1L;
 	
