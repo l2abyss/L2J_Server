@@ -103,7 +103,7 @@ public class L2FestivalMonsterInstance extends L2MonsterInstance
         if (associatedParty == null)
             return;
 
-        L2PcInstance partyLeader = associatedParty.getPartyMembers().get(0);
+        L2PcInstance partyLeader = associatedParty.getLeader();
         L2ItemInstance addedOfferings = partyLeader.getInventory().addItem("Sign", SevenSignsFestival.FESTIVAL_OFFERING_ID, _bonusMultiplier, partyLeader, this);
 
         InventoryUpdate iu = new InventoryUpdate();
