@@ -1566,7 +1566,7 @@ public final class Config
 				// MMO
 				try
 				{
-					_log.info("Loading " + MMO_CONFIG_FILE.replaceAll("./config/", ""));
+					//_log.info("Loading " + MMO_CONFIG_FILE.replaceAll("./config/", ""));
 					L2Properties mmoSettings = new L2Properties();
 					is = new FileInputStream(new File(MMO_CONFIG_FILE));
 					mmoSettings.load(is);
