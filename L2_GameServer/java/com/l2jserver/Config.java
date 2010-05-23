@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
-
 import com.l2jserver.gameserver.util.FloodProtectorConfig;
 import com.l2jserver.util.L2Properties;
 import com.l2jserver.util.StringUtil;
@@ -410,8 +408,7 @@ public final class Config
 	public static boolean ALLOW_DISCARDITEM;
 	public static int AUTODESTROY_ITEM_AFTER;
 	public static int HERB_AUTO_DESTROY_TIME;
-	public static String PROTECTED_ITEMS;
-	public static List<Integer> LIST_PROTECTED_ITEMS = new ArrayList<Integer>();
+	public static TIntArrayList LIST_PROTECTED_ITEMS;
 	public static int CHAR_STORE_INTERVAL;
 	public static boolean LAZY_ITEMS_UPDATE;
 	public static boolean UPDATE_ITEMS_ON_CHAR_STORE;
@@ -509,7 +506,7 @@ public final class Config
 	public static boolean ALT_OLY_LOG_FIGHTS;
 	public static boolean ALT_OLY_SHOW_MONTHLY_WINNERS;
 	public static boolean ALT_OLY_ANNOUNCE_GAMES;
-	public static List<Integer> LIST_OLY_RESTRICTED_ITEMS = new FastList<Integer>();
+	public static TIntArrayList LIST_OLY_RESTRICTED_ITEMS;
 	public static int ALT_OLY_ENCHANT_LIMIT;
 	public static byte ALT_OLY_WAIT_TIME;
 	public static int ALT_MANOR_REFRESH_TIME;
@@ -627,13 +624,13 @@ public final class Config
 	public static int[] TVT_EVENT_TEAM_1_COORDINATES = new int[3];
 	public static String TVT_EVENT_TEAM_2_NAME;
 	public static int[] TVT_EVENT_TEAM_2_COORDINATES = new int[3];
-	public static List<int[]> TVT_EVENT_REWARDS = new FastList<int[]>();
+	public static List<int[]> TVT_EVENT_REWARDS;
 	public static boolean TVT_EVENT_TARGET_TEAM_MEMBERS_ALLOWED;
 	public static boolean TVT_EVENT_SCROLL_ALLOWED;
 	public static boolean TVT_EVENT_POTIONS_ALLOWED;
 	public static boolean TVT_EVENT_SUMMON_BY_ITEM_ALLOWED;
-	public static List<Integer> TVT_DOORS_IDS_TO_OPEN = new ArrayList<Integer>();
-	public static List<Integer> TVT_DOORS_IDS_TO_CLOSE = new ArrayList<Integer>();
+	public static List<Integer> TVT_DOORS_IDS_TO_OPEN;
+	public static List<Integer> TVT_DOORS_IDS_TO_CLOSE;
 	public static boolean TVT_REWARD_TEAM_TIE;
 	public static byte TVT_EVENT_MIN_LVL;
 	public static byte TVT_EVENT_MAX_LVL;
@@ -697,8 +694,7 @@ public final class Config
 	public static int MIN_NPC_LVL_MAGIC_PENALTY;
 	public static boolean GUARD_ATTACK_AGGRO_MOB;
 	public static boolean ALLOW_WYVERN_UPGRADER;
-	public static String PET_RENT_NPC;
-	public static List<Integer> LIST_PET_RENT_NPC = new FastList<Integer>();
+	public static TIntArrayList LIST_PET_RENT_NPC;
 	public static double RAID_HP_REGEN_MULTIPLIER;
 	public static double RAID_MP_REGEN_MULTIPLIER;
 	public static double RAID_PDEFENCE_MULTIPLIER;
@@ -1135,9 +1131,9 @@ public final class Config
 					CH_FRONT2_FEE = Integer.parseInt(Feature.getProperty("ClanHallFrontPlatformFunctionFeeLvl2", "4000"));
 
 
-					CL_SET_SIEGE_TIME_LIST = new FastList<String>();
-					SIEGE_HOUR_LIST_MORNING = new FastList<Integer>();
-					SIEGE_HOUR_LIST_AFTERNOON = new FastList<Integer>();
+					CL_SET_SIEGE_TIME_LIST = new ArrayList<String>();
+					SIEGE_HOUR_LIST_MORNING = new ArrayList<Integer>();
+					SIEGE_HOUR_LIST_AFTERNOON = new ArrayList<Integer>();
 					String[] sstl = Feature.getProperty("CLSetSiegeTimeList", "").split(",");
 					if (sstl.length != 0)
 					{
@@ -1659,9 +1655,9 @@ public final class Config
 					ALLOW_DISCARDITEM = Boolean.parseBoolean(General.getProperty("AllowDiscardItem", "True"));
 					AUTODESTROY_ITEM_AFTER = Integer.parseInt(General.getProperty("AutoDestroyDroppedItemAfter", "600"));
 					HERB_AUTO_DESTROY_TIME = Integer.parseInt(General.getProperty("AutoDestroyHerbTime","60"))*1000;
-					PROTECTED_ITEMS = General.getProperty("ListOfProtectedItems", "0");
-					LIST_PROTECTED_ITEMS = new FastList<Integer>();
-					for (String id : PROTECTED_ITEMS.split(","))
+					String[] split = General.getProperty("ListOfProtectedItems", "0").split(",");
+					LIST_PROTECTED_ITEMS = new TIntArrayList(split.length);
+					for (String id : split)
 					{
 						LIST_PROTECTED_ITEMS.add(Integer.parseInt(id));
 					}
@@ -1839,9 +1835,9 @@ public final class Config
 					ENABLE_DROP_VITALITY_HERBS = Boolean.parseBoolean(NPC.getProperty("EnableVitalityHerbs", "True"));
 					GUARD_ATTACK_AGGRO_MOB = Boolean.parseBoolean(NPC.getProperty("GuardAttackAggroMob", "False"));
 					ALLOW_WYVERN_UPGRADER = Boolean.parseBoolean(NPC.getProperty("AllowWyvernUpgrader", "False"));
-					PET_RENT_NPC = NPC.getProperty("ListPetRentNpc", "30827");
-					LIST_PET_RENT_NPC = new FastList<Integer>();
-					for (String id : PET_RENT_NPC.split(","))
+					String[] split = NPC.getProperty("ListPetRentNpc", "30827").split(",");
+					LIST_PET_RENT_NPC = new TIntArrayList(split.length);
+					for (String id : split)
 					{
 						LIST_PET_RENT_NPC.add(Integer.parseInt(id));
 					}
@@ -2056,7 +2052,7 @@ public final class Config
 						}
 						else
 						{
-							TVT_EVENT_REWARDS = new FastList<int[]>();
+							TVT_EVENT_REWARDS = new ArrayList<int[]>();
 							TVT_DOORS_IDS_TO_OPEN = new ArrayList<Integer>();
 							TVT_DOORS_IDS_TO_CLOSE = new ArrayList<Integer>();
 							TVT_EVENT_PARTICIPATION_NPC_COORDINATES = new int[4];
@@ -2335,8 +2331,9 @@ public final class Config
 					ALT_OLY_LOG_FIGHTS = Boolean.parseBoolean(olympiad.getProperty("AltOlyLogFights","false"));
 					ALT_OLY_SHOW_MONTHLY_WINNERS = Boolean.parseBoolean(olympiad.getProperty("AltOlyShowMonthlyWinners","true"));
 					ALT_OLY_ANNOUNCE_GAMES = Boolean.parseBoolean(olympiad.getProperty("AltOlyAnnounceGames","true"));
-					LIST_OLY_RESTRICTED_ITEMS = new FastList<Integer>();
-					for (String id : olympiad.getProperty("AltOlyRestrictedItems","0").split(","))
+					String[] split = olympiad.getProperty("AltOlyRestrictedItems","0").split(",");
+					LIST_OLY_RESTRICTED_ITEMS = new TIntArrayList(split.length);					
+					for (String id : split)
 					{
 						LIST_OLY_RESTRICTED_ITEMS.add(Integer.parseInt(id));
 					}
