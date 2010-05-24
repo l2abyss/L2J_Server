@@ -1383,11 +1383,11 @@ public class SevenSignsFestival implements SpawnListener
 			return false;
 		
 		for (List<Integer> participants : _dawnFestivalParticipants.values())
-			if (participants.contains(player.getObjectId()))
+			if (participants != null && participants.contains(player.getObjectId()))
 				return true;
 		
 		for (List<Integer> participants : _duskFestivalParticipants.values())
-			if (participants.contains(player.getObjectId()))
+			if (participants != null && participants.contains(player.getObjectId()))
 				return true;
 		
 		return false;
