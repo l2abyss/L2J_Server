@@ -2101,7 +2101,7 @@ public class SevenSignsFestival implements SpawnListener
 						+ getFestivalName(_levelRange) + ")");
 			
 			// Teleport all players to arena and notify them.
-			if (!_participants.isEmpty())
+			if (_participants != null && !_participants.isEmpty())
 			{
 				try
 				{
@@ -2340,7 +2340,7 @@ public class SevenSignsFestival implements SpawnListener
 		
 		public void sendMessageToParticipants(String message)
 		{
-			if (!_participants.isEmpty())
+			if (_participants != null && !_participants.isEmpty())
 				_witchInst.broadcastPacket(new CreatureSay(_witchInst.getObjectId(), Say2.ALL, "Festival Witch", message));
 		}
 		
@@ -2350,7 +2350,7 @@ public class SevenSignsFestival implements SpawnListener
 				_log.info("SevenSignsFestival: Ending festival for " + SevenSigns.getCabalShortName(_cabal) + " ("
 						+ getFestivalName(_levelRange) + ")");
 			
-			if (!_participants.isEmpty())
+			if (_participants != null && !_participants.isEmpty())
 			{
 				for (int participantObjId : _participants)
 				{
