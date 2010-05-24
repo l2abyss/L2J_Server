@@ -884,4 +884,13 @@ abstract class AbstractAI implements Ctrl
 	{
 		stopFollow();
 	}
+	
+	@Override
+	public String toString()
+	{
+		if (_actor == null)
+			return "Actor: null";
+		else
+			return "Actor: "+_actor;
+	}
 }
