@@ -4546,8 +4546,8 @@ public final class L2PcInstance extends L2Playable
 				if (mov instanceof CharInfo)
 				{
 					int relation = getRelation(player);
-					if (getKnownList().getKnownRelations().get(player.getObjectId()) != null
-					        && getKnownList().getKnownRelations().get(player.getObjectId()) != relation)
+					Integer oldrelation = getKnownList().getKnownRelations().get(player.getObjectId());
+					if (oldrelation != null && oldrelation != relation)
 					{
 						player.sendPacket(new RelationChanged(this, relation, player.isAutoAttackable(this)));
 						if (getPet() != null)
@@ -4579,8 +4579,8 @@ public final class L2PcInstance extends L2Playable
 					if (mov instanceof CharInfo)
 					{
 						int relation = getRelation(player);
-						if (getKnownList().getKnownRelations().get(player.getObjectId()) != null
-						        && getKnownList().getKnownRelations().get(player.getObjectId()) != relation)
+						Integer oldrelation = getKnownList().getKnownRelations().get(player.getObjectId());
+						if (oldrelation != null && oldrelation != relation)
 						{
 							player.sendPacket(new RelationChanged(this, relation, player.isAutoAttackable(this)));
 							if (getPet() != null)

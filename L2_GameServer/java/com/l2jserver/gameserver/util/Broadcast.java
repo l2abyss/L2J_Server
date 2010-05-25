@@ -25,6 +25,7 @@
 package com.l2jserver.gameserver.util;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -105,13 +106,16 @@ public final class Broadcast
 		{
 			for (L2PcInstance player : plrs)
 			{
+				if (player == null)
+					continue;
 				try
 				{
 					player.sendPacket(mov);
 					if (mov instanceof CharInfo && character instanceof L2PcInstance)
 					{
 						int relation = ((L2PcInstance) character).getRelation(player);
-						if (character.getKnownList().getKnownRelations().get(player.getObjectId()) != null && character.getKnownList().getKnownRelations().get(player.getObjectId()) != relation)
+						Integer oldrelation = character.getKnownList().getKnownRelations().get(player.getObjectId());
+						if (oldrelation != null && oldrelation != relation)
 						{
 							player.sendPacket(new RelationChanged((L2PcInstance) character, relation, player.isAutoAttackable(character)));
 							if (((L2PcInstance) character).getPet() != null)
@@ -121,6 +125,7 @@ public final class Broadcast
 				}
 				catch (NullPointerException e)
 				{
+					_log.log(Level.WARNING, e.getMessage(),e);
 				}
 			}
 		}
