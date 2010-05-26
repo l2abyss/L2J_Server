@@ -2006,15 +2006,18 @@ public final class Formulas
 		if (skill != null && skill.ignoreShield())
 			return 0;
 
+		L2Weapon shld = target.getSecondaryWeaponItem();
+		if (shld == null || shld.getShieldDefRate() <= 0)
+			return 0;
+
 		double shldRate = target.calcStat(Stats.SHIELD_RATE, 0, attacker, null)
 			* DEXbonus[target.getDEX()];
 		if (shldRate == 0.0)
 			return 0;
+
 		int degreeside = (int) target.calcStat(Stats.SHIELD_DEFENCE_ANGLE, 0, null, null) + 120;
 		if (degreeside < 360 && (!target.isFacing(attacker, degreeside)))
-		{
 			return 0;
-		}
 
 		byte shldSuccess = SHIELD_DEFENSE_FAILED;
 		// if attacker 
