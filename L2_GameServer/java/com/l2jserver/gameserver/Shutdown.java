@@ -257,7 +257,6 @@ public class Shutdown extends Thread
 			try
 			{
 				GameServer.gameServer.getSelectorThread().shutdown();
-				GameServer.gameServer.getSelectorThread().setDaemon(true);
 			}
 			catch (Throwable t)
 			{
