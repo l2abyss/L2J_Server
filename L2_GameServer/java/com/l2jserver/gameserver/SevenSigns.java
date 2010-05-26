@@ -847,10 +847,10 @@ public class SevenSigns
 				statement.setDouble(7, sevenDat.getDouble("contribution_score"));
 				statement.setInt(8, sevenDat.getInteger("charId"));
 				statement.execute();
-				statement.close();
 				if (Config.DEBUG)
 					_log.info("SevenSigns: Updated data in database for char ID " + sevenDat.getInteger("charId") + " (" + sevenDat.getString("cabal") + ")");
 			}
+			statement.close();
 		}
 		catch (SQLException e)
 		{
