@@ -6456,7 +6456,8 @@ public abstract class L2Character extends L2Object
 								{
 									if (skill.getSkillType() != L2SkillType.AGGREDUCE
 											&& skill.getSkillType() != L2SkillType.AGGREDUCE_CHAR
-											&& skill.getSkillType() != L2SkillType.AGGREMOVE)
+											&& skill.getSkillType() != L2SkillType.AGGREMOVE
+											&& ((L2Character)target).hasAI())
 									{
 										// notify target AI about the attack
 										((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
@@ -6465,7 +6466,7 @@ public abstract class L2Character extends L2Object
 									{
 										((L2PcInstance)target).getAI().clientStartAutoAttack();
 									}
-									else if (target instanceof L2Summon)
+									else if (target instanceof L2Summon && ((L2Character)target).hasAI())
 									{
 										L2PcInstance owner =((L2Summon)target).getOwner();
 										if (owner != null)
