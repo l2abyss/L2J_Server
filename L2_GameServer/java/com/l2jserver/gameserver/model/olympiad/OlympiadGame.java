@@ -896,13 +896,13 @@ class OlympiadGame
 	
 	protected boolean makeCompetitionStart()
 	{
+		_startTime = System.currentTimeMillis();
 		if (_aborted)
 			return false;
 		
 		_sm = new SystemMessage(SystemMessageId.STARTS_THE_GAME);
 		broadcastMessage(_sm, true);
 		_gameIsStarted = true;
-		_startTime = System.currentTimeMillis();
 		try
 		{
 			for (L2PcInstance player : _players)
