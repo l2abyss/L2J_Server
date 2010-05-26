@@ -94,13 +94,7 @@ public class FishTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		_log.info("FishTable: Loaded " + count + " Fishes.");
 	}

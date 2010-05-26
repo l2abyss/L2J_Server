@@ -652,13 +652,7 @@ public abstract class ItemContainer
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	

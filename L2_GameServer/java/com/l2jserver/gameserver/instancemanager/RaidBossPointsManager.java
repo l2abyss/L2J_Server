@@ -93,13 +93,7 @@ public class RaidBossPointsManager
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch(Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -116,10 +110,14 @@ public class RaidBossPointsManager
             statement.setInt(3, points);
 			statement.executeUpdate();
             statement.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
 			_log.log(Level.WARNING, "could not update char raid points:", e);
-        } finally {
-            try { con.close(); } catch (Exception e) {}
+        }
+        finally
+        {
+            L2DatabaseFactory.close(con);
         }
 	}
 
@@ -182,10 +180,14 @@ public class RaidBossPointsManager
             statement.close();
             _list.clear();
             _list = new FastMap<Integer, Map<Integer, Integer>>();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
 			_log.log(Level.WARNING, "could not clean raid points: ", e);
-        } finally {
-            try { con.close(); } catch (Exception e) {}
+        }
+        finally
+        {
+            L2DatabaseFactory.close(con);
         }
 	}
 

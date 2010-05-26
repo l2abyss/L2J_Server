@@ -119,14 +119,7 @@ public class CharTemplateTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-				// nothing
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		try
@@ -178,14 +171,7 @@ public class CharTemplateTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-				// nothing
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	

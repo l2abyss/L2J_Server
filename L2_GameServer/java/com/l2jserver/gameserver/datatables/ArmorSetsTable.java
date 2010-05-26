@@ -90,13 +90,7 @@ public class ArmorSetsTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		if (Config.CUSTOM_ARMORSETS_TABLE)
 		{
@@ -132,13 +126,7 @@ public class ArmorSetsTable
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 		}
 	}

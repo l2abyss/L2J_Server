@@ -81,7 +81,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 		
 		if(_command.isEmpty())
 		{
-			_log.info(activeChar.getName()+" send empty requestbypass");			
+			_log.info(activeChar.getName()+" send empty requestbypass");
 			activeChar.logout();
 			return;
 		}

@@ -84,13 +84,7 @@ public class TeleportLocationTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+				L2DatabaseFactory.close(con);
 		}
 		
 		if (Config.CUSTOM_TELEPORT_TABLE)
@@ -125,13 +119,7 @@ public class TeleportLocationTable
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 		}
 	}

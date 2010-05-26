@@ -113,6 +113,7 @@ public class CharNameTable
 				accessLevel = rset.getInt(2);
 			}
 			rset.close();
+			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -120,16 +121,7 @@ public class CharNameTable
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 		if (id > 0)
 		{
@@ -168,6 +160,7 @@ public class CharNameTable
 				accessLevel = rset.getInt(2);
 			}
 			rset.close();
+			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -175,16 +168,7 @@ public class CharNameTable
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 		if (name != null && !name.isEmpty())
 		{
@@ -225,13 +209,7 @@ public class CharNameTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		return result;
 	}
@@ -260,13 +238,7 @@ public class CharNameTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		return number;
@@ -293,6 +265,7 @@ public class CharNameTable
 				_accessLevels.put(id, accessLevel);
 			}
 			rset.close();
+			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -300,18 +273,7 @@ public class CharNameTable
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e)
-			{}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	

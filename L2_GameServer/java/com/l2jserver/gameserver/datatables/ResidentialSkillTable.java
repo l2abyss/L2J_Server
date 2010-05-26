@@ -72,14 +72,7 @@ public class ResidentialSkillTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch(Exception e)
-			{
-
-			}
+			L2DatabaseFactory.close(con);
 			_log.info("ResidentialSkillTable: Loaded " + _list.size() + " entities with associated skills.");
 		}
 	}

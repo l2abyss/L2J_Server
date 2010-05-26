@@ -538,13 +538,7 @@ public class FortSiege implements Siegable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -750,13 +744,7 @@ public class FortSiege implements Siegable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -996,13 +984,7 @@ public class FortSiege implements Siegable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1061,13 +1043,7 @@ public class FortSiege implements Siegable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1099,13 +1075,7 @@ public class FortSiege implements Siegable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	

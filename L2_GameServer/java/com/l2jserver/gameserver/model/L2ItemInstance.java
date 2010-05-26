@@ -894,7 +894,7 @@ public final class L2ItemInstance extends L2Object
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -928,13 +928,7 @@ public final class L2ItemInstance extends L2Object
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -985,7 +979,7 @@ public final class L2ItemInstance extends L2Object
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -1075,7 +1069,7 @@ public final class L2ItemInstance extends L2Object
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -1527,6 +1521,7 @@ public final class L2ItemInstance extends L2Object
 			statement.executeUpdate();
 			_existsInDb = true;
 			_storedInDb = true;
+			statement.close();
         }
         catch (Exception e)
         {
@@ -1534,19 +1529,7 @@ public final class L2ItemInstance extends L2Object
 		}
         finally
         {
-			try
-			{
-				statement.close();
-			} catch (Exception e)
-			{
-			}
-
-			try
-			{
-				con.close();
-			} catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -1583,6 +1566,7 @@ public final class L2ItemInstance extends L2Object
 			statement.executeUpdate();
 			_existsInDb = true;
 			_storedInDb = true;
+			statement.close();
         }
         catch (Exception e)
         {
@@ -1590,19 +1574,7 @@ public final class L2ItemInstance extends L2Object
 		}
         finally
         {
-			try
-			{
-				statement.close();
-			} catch (Exception e)
-			{
-			}
-
-			try
-			{
-				con.close();
-			} catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 
         if (_elementals != null)
@@ -1634,6 +1606,7 @@ public final class L2ItemInstance extends L2Object
 			statement = con.prepareStatement("DELETE FROM item_attributes WHERE itemId = ?");
 			statement.setInt(1, getObjectId());
 			statement.executeUpdate();
+			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -1641,19 +1614,7 @@ public final class L2ItemInstance extends L2Object
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			} catch (Exception e)
-			{
-			}
-
-			try
-			{
-				con.close();
-			} catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 

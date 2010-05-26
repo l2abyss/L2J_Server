@@ -226,7 +226,7 @@ public final class Evolve
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 
 		return true;

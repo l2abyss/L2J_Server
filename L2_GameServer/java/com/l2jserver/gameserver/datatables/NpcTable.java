@@ -19,7 +19,6 @@ import gnu.trove.TIntObjectHashMap;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -465,14 +464,7 @@ public class NpcTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (SQLException e)
-			{
-				// nothing
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -635,13 +627,7 @@ public class NpcTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -718,13 +704,7 @@ public class NpcTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 

@@ -1540,12 +1540,8 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e){}
-		}		
+			L2DatabaseFactory.close(con);
+		}
 	}
 	
 	private void deleteRecipeData(int recipeId, boolean isDwarf)
@@ -1569,10 +1565,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			} catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -2205,7 +2198,7 @@ public final class L2PcInstance extends L2Playable
 			}
 			finally
 			{
-				try { con.close(); } catch (Exception e) {}
+				L2DatabaseFactory.close(con);
 			}
 		}
 		target.incRecomHave();
@@ -5077,7 +5070,7 @@ public final class L2PcInstance extends L2Playable
         }
         finally
         {
-            try { con.close(); } catch (Exception e) {}
+            L2DatabaseFactory.close(con);
         }
     }
     
@@ -5107,7 +5100,7 @@ public final class L2PcInstance extends L2Playable
         }
         finally
         {
-            try { con.close(); } catch (Exception e) {}
+            L2DatabaseFactory.close(con);
         }
         return _transformationId;
     }
@@ -7113,7 +7106,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -7177,7 +7170,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 		return true;
 	}
@@ -7419,7 +7412,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 
 		return player;
@@ -7510,11 +7503,13 @@ public final class L2PcInstance extends L2Playable
 
             statement.close();
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             _log.log(Level.WARNING, "Could not restore classes for " + player.getName() + ": " + e.getMessage(), e);
         }
-        finally {
-            try { con.close(); } catch (Exception e) {}
+        finally
+        {
+            L2DatabaseFactory.close(con);
         }
 
         return true;
@@ -7595,8 +7590,9 @@ public final class L2PcInstance extends L2Playable
 		{
 			_log.log(Level.SEVERE, "Could not restore recipe book data:" + e.getMessage(), e);
 		}
-		finally {
-			try { con.close(); } catch (Exception e) {}
+		finally
+		{
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -7715,13 +7711,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -7756,13 +7746,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
     
@@ -7878,13 +7862,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -7993,7 +7971,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 
 		if (this.transformId() > 0 || this.isCursedWeaponEquipped())
@@ -8060,7 +8038,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -8106,7 +8084,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -8179,11 +8157,13 @@ public final class L2PcInstance extends L2Playable
 			statement.executeUpdate();
 			statement.close();
 		}
-		catch (Exception e) {
+		catch (Exception e)
+		{
 			_log.log(Level.WARNING, "Could not restore "+this+" active effect data: " + e.getMessage(), e);
 		}
-		finally {
-			try {con.close();} catch (Exception e) {}
+		finally
+		{
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -8237,7 +8217,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 
 		// Calculate Henna modifiers of this L2PcInstance
@@ -8271,7 +8251,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -8334,7 +8314,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 
 		// Calculate Henna modifiers of this L2PcInstance
@@ -8396,7 +8376,7 @@ public final class L2PcInstance extends L2Playable
 				}
 				finally
 				{
-					try { con.close(); } catch (Exception e) {}
+					L2DatabaseFactory.close(con);
 				}
 
 				// Send Server->Client HennaInfo packet to this L2PcInstance
@@ -10459,6 +10439,7 @@ public final class L2PcInstance extends L2Playable
                 statement.setInt(6, newClass.getClassIndex()); // <-- Added
                 
                 statement.execute();
+                statement.close();
             }
             catch (Exception e) {
                 _log.log(Level.WARNING, "WARNING: Could not add character sub class for " + getName() + ": " + e.getMessage(), e);
@@ -10466,20 +10447,7 @@ public final class L2PcInstance extends L2Playable
             }
             finally
             {
-            	try
-            	{
-            		statement.close();
-            	}
-            	catch (Exception e)
-            	{
-            	}
-                try
-                {
-                	con.close();
-                }
-                catch (Exception e)
-                {
-                }
+               	L2DatabaseFactory.close(con);
             }
 
             // Commit after database INSERT incase exception is thrown.
@@ -10595,20 +10563,7 @@ public final class L2PcInstance extends L2Playable
             }
             finally
             {
-            	try
-            	{
-            		statement.close();
-            	}
-            	catch (Exception e)
-            	{
-            	}
-                try
-                {
-                	con.close();
-                }
-                catch (Exception e)
-                {
-                }
+              	L2DatabaseFactory.close(con);
             }
 
             getSubClasses().remove(classIndex);
@@ -10997,7 +10952,7 @@ public final class L2PcInstance extends L2Playable
 			}
 			finally
 			{
-				try { con.close(); } catch (Exception e) {}
+				L2DatabaseFactory.close(con);
 			}
 		}
 
@@ -13813,13 +13768,7 @@ public final class L2PcInstance extends L2Playable
     		}
     		finally
     		{
-    			try
-    			{
-    				con.close();
-    			}
-    			catch (Exception e)
-    			{
-    			}
+   				L2DatabaseFactory.close(con);
     		}
     	}
     }
@@ -14033,13 +13982,7 @@ public final class L2PcInstance extends L2Playable
 				}
 				finally
 				{
-					try
-					{
-						con.close();
-					}
-					catch (Exception e)
-					{
-					}
+					L2DatabaseFactory.close(con);
 				}
     			
     		}
@@ -14071,13 +14014,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		int count = 0;
@@ -14274,13 +14211,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		sendPacket(new ExGetBookMarkInfoPacket(this));
@@ -14313,7 +14244,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
     }
     
@@ -14533,7 +14464,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try	{ con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -14606,13 +14537,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (SQLException e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -14643,13 +14568,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (SQLException e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 

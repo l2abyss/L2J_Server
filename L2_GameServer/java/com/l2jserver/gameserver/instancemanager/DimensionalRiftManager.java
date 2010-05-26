@@ -118,13 +118,7 @@ public class DimensionalRiftManager
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		int typeSize = _rooms.keys().length;

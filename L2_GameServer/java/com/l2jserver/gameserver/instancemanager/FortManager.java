@@ -191,13 +191,7 @@ public class FortManager implements InstanceListManager
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	

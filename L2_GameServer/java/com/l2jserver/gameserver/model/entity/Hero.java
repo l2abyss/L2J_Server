@@ -245,14 +245,8 @@ public class Hero
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-				con2.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
+			L2DatabaseFactory.close(con2);
 		}
 		
 		_log.info("Hero System: Loaded " + _heroes.size() + " Heroes.");
@@ -333,13 +327,7 @@ public class Hero
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -477,14 +465,8 @@ public class Hero
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
-		}		
+			L2DatabaseFactory.close(con);
+		}
 	}
 	
 	public Map<Integer, StatsSet> getHeroes()
@@ -852,13 +834,7 @@ public class Hero
 				}
 				finally
 				{
-					try
-					{
-						con.close();
-					}
-					catch (Exception e)
-					{
-					}
+					L2DatabaseFactory.close(con);
 				}
 			}
 		}
@@ -961,14 +937,7 @@ public class Hero
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1048,13 +1017,7 @@ public class Hero
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1075,14 +1038,7 @@ public class Hero
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	

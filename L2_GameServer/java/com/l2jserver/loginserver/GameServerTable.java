@@ -166,7 +166,7 @@ public class GameServerTable
 		}
 		rset.close();
 		statement.close();
-		con.close();
+		L2DatabaseFactory.close(con);
 	}
 	
 	public Map<Integer, GameServerInfo> getRegisteredGameServers()
@@ -246,7 +246,7 @@ public class GameServerTable
 		{
 			try
 			{
-				con.close();
+				L2DatabaseFactory.close(con);
 			}
 			catch (Exception e)
 			{

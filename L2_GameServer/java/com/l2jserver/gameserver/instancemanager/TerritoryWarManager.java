@@ -622,13 +622,7 @@ public class TerritoryWarManager
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -654,13 +648,7 @@ public class TerritoryWarManager
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -723,13 +711,7 @@ public class TerritoryWarManager
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 			try
 			{
@@ -770,13 +752,7 @@ public class TerritoryWarManager
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 			try
 			{
@@ -810,13 +786,7 @@ public class TerritoryWarManager
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 		}
 		catch (Exception e)

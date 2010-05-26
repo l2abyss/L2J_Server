@@ -1008,13 +1008,7 @@ public class SevenSignsFestival implements SpawnListener
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (SQLException e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1079,7 +1073,6 @@ public class SevenSignsFestival implements SpawnListener
 			}
 			statementUpdate.close();
 			statementInsert.close();
-			con.close();
 			
 			// Updates Seven Signs DB data also, so call only if really necessary.
 			if (updateSettings)
@@ -1091,13 +1084,7 @@ public class SevenSignsFestival implements SpawnListener
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1198,13 +1185,7 @@ public class SevenSignsFestival implements SpawnListener
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 		}
 	}

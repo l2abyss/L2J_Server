@@ -165,14 +165,7 @@ public class AccessLevels
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-				
-			}
+			L2DatabaseFactory.close(con);
 		}
 		_log.info("AccessLevels: Loaded " + _accessLevels.size() + " from database.");
 	}

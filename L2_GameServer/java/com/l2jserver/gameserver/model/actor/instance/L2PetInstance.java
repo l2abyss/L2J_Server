@@ -754,7 +754,7 @@ public class L2PetInstance extends L2Summon
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -857,11 +857,15 @@ public class L2PetInstance extends L2Summon
             rset.close();
 			statement.close();
 			return pet;
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			_logPet.log(Level.WARNING, "Could not restore pet data: "+ e.getMessage(), e);
 			return null;
-		} finally {
-			try { con.close(); } catch (Exception e) {}
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -907,13 +911,7 @@ public class L2PetInstance extends L2Summon
         }
         finally
         {
-            try
-            {
-                con.close();
-            }
-            catch (Exception e)
-            {
-            }
+            L2DatabaseFactory.close(con);
         }
 
 		L2ItemInstance itemInst = getControlItem();

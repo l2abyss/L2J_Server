@@ -431,13 +431,7 @@ public class LoginController
 				}
 				finally
 				{
-					try
-					{
-						con.close();
-					}
-					catch (Exception e)
-					{
-					}
+					L2DatabaseFactory.close(con);
 				}
 			}
 			return loginOk;
@@ -468,7 +462,7 @@ public class LoginController
 		{
 			try
 			{
-				con.close();
+				L2DatabaseFactory.close(con);
 			}
 			catch (Exception e)
 			{
@@ -504,7 +498,7 @@ public class LoginController
 		{
 			try
 			{
-				con.close();
+				L2DatabaseFactory.close(con);
 			}
 			catch (Exception e)
 			{
@@ -543,7 +537,7 @@ public class LoginController
 		{
 			try
 			{
-				con.close();
+				L2DatabaseFactory.close(con);
 			}
 			catch (Exception e)
 			{
@@ -718,7 +712,7 @@ public class LoginController
 		{
 			try
 			{
-				con.close();
+				L2DatabaseFactory.close(con);
 			}
 			catch (Exception e)
 			{
@@ -791,7 +785,7 @@ public class LoginController
 		{
 			try
 			{
-				con.close();
+				L2DatabaseFactory.close(con);
 			}
 			catch (Exception e)
 			{

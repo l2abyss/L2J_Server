@@ -172,13 +172,7 @@ public class CrestCache
 				}
 				finally
 				{
-					try
-					{
-						con.close();
-					}
-					catch (Exception e)
-					{
-					}
+					L2DatabaseFactory.close(con);
 				}
 				
 				clan.setCrestId(newId);

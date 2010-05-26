@@ -107,7 +107,7 @@ public final class RequestFriendDel extends L2GameClientPacket{
 		}
 		finally
 		{
-		    try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 
 	}

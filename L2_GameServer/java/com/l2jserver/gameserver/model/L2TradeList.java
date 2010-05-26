@@ -368,14 +368,7 @@ public class L2TradeList
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-					// nothing
-				}
+				L2DatabaseFactory.close(con);
 			}
 		}
 	}

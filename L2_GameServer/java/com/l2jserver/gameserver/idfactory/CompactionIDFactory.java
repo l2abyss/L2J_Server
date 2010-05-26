@@ -76,13 +76,7 @@ public class CompactionIDFactory extends IdFactory
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	

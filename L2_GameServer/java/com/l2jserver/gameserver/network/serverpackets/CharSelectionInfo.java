@@ -227,7 +227,7 @@ public class CharSelectionInfo extends L2GameServerPacket
         }
         finally
         {
-            try { con.close(); } catch (Exception e) {}
+            L2DatabaseFactory.close(con);
         }
         
         return new CharSelectInfoPackage[0];
@@ -262,7 +262,7 @@ public class CharSelectionInfo extends L2GameServerPacket
         }
         finally
         {
-            try { con.close(); } catch (Exception e) {}
+            try { L2DatabaseFactory.close(con); } catch (Exception e) {}
         }
         
     }
@@ -366,7 +366,7 @@ public class CharSelectionInfo extends L2GameServerPacket
             {
                 _log.log(Level.WARNING, "Could not restore augmentation info: " + e.getMessage(), e);
             }
-            finally { try { con.close(); } catch (Exception e) {} }
+            finally { try { L2DatabaseFactory.close(con); } catch (Exception e) {} }
         }
         
         /*

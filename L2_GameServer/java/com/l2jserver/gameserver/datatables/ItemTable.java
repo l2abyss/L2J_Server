@@ -274,13 +274,7 @@ public class ItemTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		if (Config.CUSTOM_ITEM_TABLES)
@@ -334,13 +328,7 @@ public class ItemTable
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 		}
 		
@@ -974,13 +962,7 @@ public class ItemTable
 				}
 				finally
 				{
-					try
-					{
-						con.close();
-					}
-					catch (Exception e)
-					{
-					}
+					L2DatabaseFactory.close(con);
 				}
 			}
 		}

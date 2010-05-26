@@ -94,13 +94,7 @@ public class ItemsOnGroundManager
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 		}
 		
@@ -155,13 +149,7 @@ public class ItemsOnGroundManager
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		if (Config.EMPTY_DROPPED_ITEM_TABLE_AFTER_LOAD)
 			emptyTable();
@@ -285,13 +273,7 @@ public class ItemsOnGroundManager
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 			
 			if (Config.DEBUG)

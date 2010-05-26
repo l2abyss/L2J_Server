@@ -354,13 +354,7 @@ public class SkillTreeTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		_log.info("FishingSkillTreeTable: Loaded " + count2 + " general skills.");

@@ -175,7 +175,7 @@ public class SQLAccountManager
 		}
 		rset.close();
 		statement.close();
-		con.close();
+		L2DatabaseFactory.close(con);
 		System.out.println("Displayed accounts: " + count + ".");
 	}
 	
@@ -196,7 +196,7 @@ public class SQLAccountManager
 		statement.setString(3, level);
 		statement.executeUpdate();
 		statement.close();
-		con.close();
+		L2DatabaseFactory.close(con);
 	}
 	
 	private static void changeAccountLevel(String account, String level) throws SQLException
@@ -231,7 +231,7 @@ public class SQLAccountManager
 		}
 		rset.close();
 		statement.close();
-		con.close();
+		L2DatabaseFactory.close(con);
 	}
 	
 	private static void deleteAccount(String account) throws SQLException
@@ -458,7 +458,7 @@ public class SQLAccountManager
 		
 		// Close Connection
 		statement.close();
-		con.close();
+		L2DatabaseFactory.close(con);
 	}
 	
 }

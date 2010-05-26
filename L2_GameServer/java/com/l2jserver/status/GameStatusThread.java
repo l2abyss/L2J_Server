@@ -1025,13 +1025,15 @@ public class GameStatusThread extends Thread
     			_print.println("Character not found!");
     		else
     			_print.println("Character "+name+" jailed for "+(delay>0 ? delay+" minutes." : "ever!"));
-       	} catch (SQLException se)
+       	}
+       	catch (SQLException se)
        	{
        		_print.println("SQLException while jailing player");
             if (Config.DEBUG) se.printStackTrace();
-       	} finally
+       	}
+       	finally
        	{
-       		try { con.close(); } catch (Exception e) {}
+       		L2DatabaseFactory.close(con);
        	}
     }
 
@@ -1058,13 +1060,15 @@ public class GameStatusThread extends Thread
     			_print.println("Character not found!");
     		else
     			_print.println("Character "+name+" set free.");
-       	} catch (SQLException se)
+       	}
+       	catch (SQLException se)
        	{
        		_print.println("SQLException while jailing player");
             if (Config.DEBUG) se.printStackTrace();
-       	} finally
+       	}
+       	finally
        	{
-       		try { con.close(); } catch (Exception e) {}
+       		L2DatabaseFactory.close(con);
        	}
     }
     

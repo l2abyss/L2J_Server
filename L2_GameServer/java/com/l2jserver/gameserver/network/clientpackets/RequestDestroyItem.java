@@ -168,7 +168,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 			}
 			finally
 			{
-				try { con.close(); } catch (Exception e) {}
+				L2DatabaseFactory.close(con);
 			}
 		}
 		if (itemToRemove.isTimeLimitedItem())

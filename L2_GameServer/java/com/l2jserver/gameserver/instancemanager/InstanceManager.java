@@ -91,7 +91,7 @@ public class InstanceManager
 			_playerInstanceTimes.get(playerObjId).put(id, time);
 		}
 		catch (Exception e) { _log.log(Level.WARNING, "Could not insert character instance time data: "+ e.getMessage(), e); }
-		finally { try { con.close(); } catch (Exception e) {} }
+		finally { L2DatabaseFactory.close(con); }
 	}
 
 	public void deleteInstanceTime(int playerObjId, int id)
@@ -109,7 +109,7 @@ public class InstanceManager
 			_playerInstanceTimes.get(playerObjId).remove(id);
 		}
 		catch (Exception e) { _log.log(Level.WARNING, "Could not delete character instance time data: "+ e.getMessage(), e); }
-		finally { try { con.close(); } catch (Exception e) {} }
+		finally { L2DatabaseFactory.close(con); }
 	}
 
 	public void restoreInstanceTimes(int playerObjId)
@@ -144,7 +144,7 @@ public class InstanceManager
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 

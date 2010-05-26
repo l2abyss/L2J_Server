@@ -297,7 +297,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -349,7 +349,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 
 		LogRecord record = new LogRecord(Level.WARNING, "Restore");
@@ -487,7 +487,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 

@@ -229,13 +229,7 @@ public class CursedWeaponsManager
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -325,13 +319,7 @@ public class CursedWeaponsManager
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		if (Config.DEBUG)
@@ -453,7 +441,6 @@ public class CursedWeaponsManager
 			statement.executeUpdate();
 			
 			statement.close();
-			con.close();
 		}
 		catch (SQLException e)
 		{
@@ -461,13 +448,7 @@ public class CursedWeaponsManager
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	

@@ -105,13 +105,7 @@ public class Lottery
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -189,13 +183,7 @@ public class Lottery
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 			
 			if (Config.DEBUG)
@@ -243,13 +231,7 @@ public class Lottery
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 		}
 	}
@@ -378,13 +360,7 @@ public class Lottery
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 			
 			long prize4 = count4 * Config.ALT_LOTTERY_2_AND_1_NUMBER_PRIZE;
@@ -453,13 +429,7 @@ public class Lottery
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 			
 			ThreadPoolManager.getInstance().scheduleGeneral(new startLottery(), MINUTE);
@@ -581,13 +551,7 @@ public class Lottery
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		return res;

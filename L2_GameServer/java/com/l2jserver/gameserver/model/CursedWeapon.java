@@ -171,7 +171,7 @@ public class CursedWeapon
 	    		}
 	    		finally
 	    		{
-	    			try { con.close(); } catch (Exception e) {}
+	    			L2DatabaseFactory.close(con);
 	    		}
 	    	}
 		} else
@@ -509,11 +509,7 @@ public class CursedWeapon
         }
         finally
         {
-        	try
-        	{
-        	    con.close();
-        	}
-        	catch (Exception e) {}
+            L2DatabaseFactory.close(con);
         }
     }
 

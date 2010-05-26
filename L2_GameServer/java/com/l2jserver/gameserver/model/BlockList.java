@@ -110,7 +110,7 @@ public class BlockList
 		}
 		finally
 		{
-			try	{ con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 		return list;
 	}
@@ -143,12 +143,7 @@ public class BlockList
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{}
+			L2DatabaseFactory.close(con);
 		}
 	}
 

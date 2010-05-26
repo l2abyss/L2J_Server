@@ -159,7 +159,7 @@ public class MacroList
         }
         finally
         {
-            try { con.close(); } catch (Exception e) {}
+            L2DatabaseFactory.close(con);
         }
     }
 
@@ -185,7 +185,7 @@ public class MacroList
         }
         finally
         {
-            try { con.close(); } catch (Exception e) {}
+            L2DatabaseFactory.close(con);
         }
     }
 
@@ -234,7 +234,7 @@ public class MacroList
         }
         finally
         {
-            try { con.close(); } catch (Exception e) {}
+            L2DatabaseFactory.close(con);
         }
     }
 }

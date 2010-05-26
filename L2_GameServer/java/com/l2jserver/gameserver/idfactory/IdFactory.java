@@ -151,13 +151,7 @@ public abstract class IdFactory
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -268,13 +262,7 @@ public abstract class IdFactory
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -301,13 +289,7 @@ public abstract class IdFactory
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -381,14 +363,7 @@ public abstract class IdFactory
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-				
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	

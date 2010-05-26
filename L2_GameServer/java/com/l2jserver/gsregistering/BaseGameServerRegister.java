@@ -360,30 +360,11 @@ public abstract class BaseGameServerRegister
 			statement.setInt(1, id);
 			statement.executeUpdate();
 			GameServerTable.getInstance().getRegisteredGameServers().remove(id);
+			statement.close();
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (SQLException e)
-			{
-				// nothing
-			}
-			
-			if (con != null)
-			{
-				try
-				{
-					
-					con.close();
-				}
-				catch (SQLException e)
-				{
-					// nothing
-				}
-			}
+			L2DatabaseFactory.close(con);
 		}
     }
     
@@ -412,15 +393,7 @@ public abstract class BaseGameServerRegister
 			
 			if (con != null)
 			{
-				try
-				{
-					
-					con.close();
-				}
-				catch (SQLException e)
-				{
-					// nothing
-				}
+				L2DatabaseFactory.close(con);
 			}
 		}
 	}

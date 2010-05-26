@@ -85,6 +85,8 @@ public class MailManager
 				else
 					ThreadPoolManager.getInstance().scheduleGeneral(new MessageDeletionTask(msgId), expiration - System.currentTimeMillis());
 			}
+			stmt1.close();
+			stmt2.close();
 		}
 		catch (SQLException e)
 		{
@@ -92,21 +94,7 @@ public class MailManager
 		}
 		finally
 		{
-			try
-			{
-				stmt1.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				stmt2.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 		_log.info("Mail Manager: Successfully loaded " + readed + " messages.");
 	}
@@ -192,6 +180,7 @@ public class MailManager
 			con = L2DatabaseFactory.getInstance().getConnection();
 			stmt = Message.getStatement(msg, con);
 			stmt.execute();
+			stmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -199,16 +188,7 @@ public class MailManager
 		}
 		finally
 		{
-			try
-			{
-				stmt.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 
 		final L2PcInstance receiver = L2World.getInstance().getPlayer(msg.getReceiverId());
@@ -275,7 +255,8 @@ public class MailManager
 			con = L2DatabaseFactory.getInstance().getConnection();
 			stmt = con.prepareStatement("UPDATE messages SET isUnread = 'false' WHERE messageId = ?");
 			stmt.setInt(1, msgId);
-			stmt.execute();			
+			stmt.execute();
+			stmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -283,16 +264,7 @@ public class MailManager
 		}
 		finally
 		{
-			try
-			{
-				stmt.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -309,6 +281,7 @@ public class MailManager
 			stmt.setInt(1, msgId);
 
 			stmt.execute();
+			stmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -316,16 +289,7 @@ public class MailManager
 		}
 		finally
 		{
-			try
-			{
-				stmt.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -342,6 +306,7 @@ public class MailManager
 			stmt.setInt(1, msgId);
 
 			stmt.execute();
+			stmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -349,16 +314,7 @@ public class MailManager
 		}
 		finally
 		{
-			try
-			{
-				stmt.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -375,6 +331,7 @@ public class MailManager
 			stmt.setInt(1, msgId);
 
 			stmt.execute();
+			stmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -382,16 +339,7 @@ public class MailManager
 		}
 		finally
 		{
-			try
-			{
-				stmt.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -408,6 +356,7 @@ public class MailManager
 			stmt.setInt(1, msgId);
 
 			stmt.execute();
+			stmt.close();
 		}
 		catch (SQLException e)
 		{
@@ -415,16 +364,7 @@ public class MailManager
 		}
 		finally
 		{
-			try
-			{
-				stmt.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 
 		_messages.remove(msgId);

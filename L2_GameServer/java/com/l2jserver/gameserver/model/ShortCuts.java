@@ -111,7 +111,7 @@ public class ShortCuts
         }
         finally
         {
-            try { con.close(); } catch (Exception e) {}
+            L2DatabaseFactory.close(con);
         }
     }
 
@@ -184,7 +184,7 @@ public class ShortCuts
         }
         finally
         {
-            try { con.close(); } catch (Exception e) {}
+            L2DatabaseFactory.close(con);
         }
     }
 
@@ -223,7 +223,7 @@ public class ShortCuts
         }
         finally
         {
-            try { con.close(); } catch (Exception e) {}
+            L2DatabaseFactory.close(con);
         }
 
 		// verify shortcuts

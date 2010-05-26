@@ -206,14 +206,7 @@ public class Olympiad
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			L2DatabaseFactory.close(con);
 		}
 
 		if (!loaded)
@@ -309,14 +302,7 @@ public class Olympiad
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		synchronized (this)
@@ -374,13 +360,7 @@ public class Olympiad
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		int rank1 = (int) Math.round(tmpPlace.size() * 0.01);
 		int rank2 = (int) Math.round(tmpPlace.size() * 0.10);
@@ -1137,14 +1117,7 @@ public class Olympiad
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1181,14 +1154,7 @@ public class Olympiad
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			L2DatabaseFactory.close(con);
 		}
 /*		Properties OlympiadProperties = new Properties();
 		FileOutputStream fos = null;
@@ -1241,13 +1207,7 @@ public class Olympiad
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1392,14 +1352,7 @@ public class Olympiad
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 	}
@@ -1450,14 +1403,7 @@ public class Olympiad
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		return names;
@@ -1562,11 +1508,7 @@ public class Olympiad
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e){}
+			L2DatabaseFactory.close(con);
 		}
 		
 		return result;
@@ -1628,14 +1570,7 @@ public class Olympiad
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		_nobles.clear();

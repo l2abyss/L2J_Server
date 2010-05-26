@@ -254,7 +254,7 @@ public class L2ClanMember
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -304,7 +304,7 @@ public class L2ClanMember
 		}
 		finally
 		{
-			try { con.close(); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -644,7 +644,7 @@ public class L2ClanMember
          }
          finally
          {
-             try { con.close(); } catch (Exception e) {}
+             L2DatabaseFactory.close(con);
          }
     }
 }

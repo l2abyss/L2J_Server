@@ -142,6 +142,7 @@ public class Mail extends ItemContainer
 				else
 					addItem(item);
 			}
+			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -149,16 +150,7 @@ public class Mail extends ItemContainer
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 

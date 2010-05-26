@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -151,13 +150,7 @@ public class L2UIKeysSettings
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		_saved = true;
 	}
@@ -193,13 +186,7 @@ public class L2UIKeysSettings
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (SQLException e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		if (_storedCategories.size() < 1)
@@ -240,13 +227,7 @@ public class L2UIKeysSettings
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (SQLException e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		if (_storedKeys.size() < 1)

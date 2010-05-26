@@ -101,13 +101,7 @@ public final class TaskManager
 			}
 			finally
 			{
-				try
-				{
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 			
 			if (type == TYPE_SHEDULED || type == TYPE_TIME)
@@ -232,7 +226,7 @@ public final class TaskManager
 		{
 			try
 			{
-				con.close();
+				L2DatabaseFactory.close(con);
 			}
 			catch (Exception e)
 			{
@@ -369,7 +363,7 @@ public final class TaskManager
 		{
 			try
 			{
-				con.close();
+				L2DatabaseFactory.close(con);
 			}
 			catch (Exception e)
 			{
@@ -411,7 +405,7 @@ public final class TaskManager
 		{
 			try
 			{
-				con.close();
+				L2DatabaseFactory.close(con);
 			}
 			catch (Exception e)
 			{

@@ -375,13 +375,7 @@ public class ZoneManager
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		_log.info("Done: loaded " + _zones.size() + " zones.");

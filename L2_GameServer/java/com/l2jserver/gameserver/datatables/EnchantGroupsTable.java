@@ -125,13 +125,7 @@ public class EnchantGroupsTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		_log.info("EnchantGroupsTable: Loaded " + count + " groups.");

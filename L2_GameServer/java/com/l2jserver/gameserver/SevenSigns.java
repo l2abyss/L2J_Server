@@ -800,6 +800,7 @@ public class SevenSigns
 				
 				_lastSave.setTimeInMillis(rset.getLong("date"));
 			}
+			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -807,16 +808,7 @@ public class SevenSigns
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 		
 		// Festival data is loaded now after the Seven Signs engine data.
@@ -855,7 +847,7 @@ public class SevenSigns
 				statement.setDouble(7, sevenDat.getDouble("contribution_score"));
 				statement.setInt(8, sevenDat.getInteger("charId"));
 				statement.execute();
-				
+				statement.close();
 				if (Config.DEBUG)
 					_log.info("SevenSigns: Updated data in database for char ID " + sevenDat.getInteger("charId") + " (" + sevenDat.getString("cabal") + ")");
 			}
@@ -866,16 +858,7 @@ public class SevenSigns
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -901,6 +884,7 @@ public class SevenSigns
 			statement.setDouble(7, sevenDat.getDouble("contribution_score"));
 			statement.setInt(8, sevenDat.getInteger("charId"));
 			statement.execute();
+			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -908,16 +892,7 @@ public class SevenSigns
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -954,7 +929,7 @@ public class SevenSigns
 			_lastSave = Calendar.getInstance();
 			statement.setLong(18 + SevenSignsFestival.FESTIVAL_COUNT, _lastSave.getTimeInMillis());
 			statement.execute();
-
+			statement.close();
 			if (Config.DEBUG)
 				_log.info("SevenSigns: Updated data in database.");				
 		}
@@ -964,16 +939,7 @@ public class SevenSigns
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (Exception e) {}
-			try
-			{
-				con.close();
-			}
-			catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -1054,7 +1020,6 @@ public class SevenSigns
 				statement.execute();
 				
 				statement.close();
-				con.close();
 				
 				if (Config.DEBUG)
 					_log.info("SevenSigns: Inserted data in DB for char ID " + currPlayerData.getInteger("charId") + " ("
@@ -1066,14 +1031,7 @@ public class SevenSigns
 			}
 			finally
 			{
-				try
-				{
-					statement.close();
-					con.close();
-				}
-				catch (Exception e)
-				{
-				}
+				L2DatabaseFactory.close(con);
 			}
 		}
 		

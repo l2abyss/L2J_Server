@@ -118,7 +118,7 @@ public final class InitWorldInfo extends BaseWritePacket
 					}
 					finally
 					{
-						try {con.close();} catch (Exception e){}
+						L2DatabaseFactory.close(con);
 					}
 					super.writeD(list.size());
 					for (int j : list)
