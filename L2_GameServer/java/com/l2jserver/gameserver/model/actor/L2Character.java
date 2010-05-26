@@ -60,8 +60,6 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.L2Skill.SkillTargetType;
-import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MinionInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcWalkerInstance;
@@ -4158,8 +4156,6 @@ public abstract class L2Character extends L2Object
 			&& !m.disregardingGeodata
 			&& GameTimeController.getGameTicks() % 10 == 0 // once a second to reduce possible cpu load
 			&& GeoData.getInstance().hasGeo(xPrev, yPrev))
-//			&& !(this instanceof L2BoatInstance)
-//			&& !(this instanceof L2AirShipInstance))
 		{
 			short geoHeight = GeoData.getInstance().getSpawnHeight(xPrev, yPrev, zPrev-30, zPrev+30, this.getObjectId());
 			dz = m._zDestination - geoHeight;
@@ -4198,16 +4194,8 @@ public abstract class L2Character extends L2Object
 		// if (Config.DEVELOPER) _log.warning("Move Ticks:" + (gameTicks - m._moveTimestamp) + ", distPassed:" + distPassed + ", distFraction:" + distFraction);
 		
 		if (distFraction > 1) // already there
-		{
 			// Set the position of the L2Character to the destination
 			super.getPosition().setXYZ(m._xDestination, m._yDestination, m._zDestination);
-			if (this instanceof L2BoatInstance)
-				((L2BoatInstance)this).updatePeopleInTheBoat(m._xDestination, m._yDestination, m._zDestination);
-			else if (this instanceof L2AirShipInstance)
-				((L2AirShipInstance)this).updatePeopleInTheAirShip(m._xDestination, m._yDestination, m._zDestination);
-			else
-				revalidateZone(false);
-		}
 		else
 		{
 			m._xAccurate += dx * distFraction;
@@ -4215,13 +4203,8 @@ public abstract class L2Character extends L2Object
 			
 			// Set the position of the L2Character to estimated after parcial move
 			super.getPosition().setXYZ((int)(m._xAccurate), (int)(m._yAccurate), zPrev + (int)(dz * distFraction + 0.5));
-			if(this instanceof L2BoatInstance )
-				((L2BoatInstance)this).updatePeopleInTheBoat((int)(m._xAccurate), (int)(m._yAccurate), zPrev + (int)(dz * distFraction + 0.5));
-			else if (this instanceof L2AirShipInstance)
-				((L2AirShipInstance)this).updatePeopleInTheAirShip(m._xDestination, m._yDestination, m._zDestination);
-			else
-				revalidateZone(false);
 		}
+		revalidateZone(false);
 
 		// Set the timer of last position update to now
 		m._moveTimestamp = gameTicks;

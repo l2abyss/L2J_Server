@@ -42,8 +42,7 @@ public class VehicleInfo  extends L2GameServerPacket
 		writeD(_boat.getX());
 		writeD(_boat.getY());
         writeD(_boat.getZ());
-        writeD(_boat.getPosition().getHeading());
-
+        writeD(_boat.getHeading());
 	}
 
 	/* (non-Javadoc)
@@ -54,5 +53,4 @@ public class VehicleInfo  extends L2GameServerPacket
 	{
 		return "[S] 59 VehicleInfo";
 	}
-
 }

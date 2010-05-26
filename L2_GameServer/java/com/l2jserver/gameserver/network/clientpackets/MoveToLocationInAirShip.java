@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.TaskPriority;
-import com.l2jserver.gameserver.instancemanager.AirShipManager;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -75,27 +74,20 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 			return;
 		}
 
-		final L2AirShipInstance airShip;
-		if (activeChar.isInAirShip())
+		if (!activeChar.isInAirShip())
 		{
-			airShip = activeChar.getAirShip();
-			if (airShip.getObjectId() != _shipId)
-			{
-				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
-				return;
-			}
-		}
-		else
-		{
-			airShip = AirShipManager.getInstance().getAirShip();
-			if (airShip == null)
-			{
-				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
-				return;
-			}
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
 		}
 
-		activeChar.setAirShip(airShip);
+		final L2AirShipInstance airShip = activeChar.getAirShip();
+		if (airShip.getObjectId() != _shipId)
+		{
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+
+		activeChar.setVehicle(airShip);
 		activeChar.setInVehiclePosition(_pos);
 		activeChar.broadcastPacket(new ExMoveToLocationInAirShip(activeChar));
 	}

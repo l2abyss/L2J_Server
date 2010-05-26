@@ -1,0 +1,351 @@
+/*
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.l2jserver.gameserver.model.actor;
+
+import java.util.Collection;
+
+import javolution.util.FastList;
+
+import com.l2jserver.Config;
+import com.l2jserver.gameserver.GameTimeController;
+import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.ai.L2CharacterAI;
+import com.l2jserver.gameserver.datatables.MapRegionTable;
+import com.l2jserver.gameserver.model.L2CharPosition;
+import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.VehiclePathPoint;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.knownlist.VehicleKnownList;
+import com.l2jserver.gameserver.model.actor.stat.VehicleStat;
+import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.serverpackets.DeleteObject;
+import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
+import com.l2jserver.gameserver.templates.item.L2Weapon;
+import com.l2jserver.gameserver.util.Util;
+
+/**
+ * 
+ * @author DS
+ * 
+ */
+public class L2Vehicle extends L2Character
+{
+	protected final FastList<L2PcInstance> _passengers = new FastList<L2PcInstance>();
+	protected Location _oustLoc = null;
+	private Runnable _engine = null;
+	protected VehiclePathPoint[] _currentPath = null;
+	protected int _runState = 0;
+
+	public L2Vehicle(int objectId, L2CharTemplate template)
+	{
+		super(objectId, template);
+		setIsFlying(true);
+	}
+
+	public boolean isBoat()
+	{
+		return false;
+	}
+
+	public boolean isAirShip()
+	{
+		return false;
+	}
+
+	public void registerEngine(Runnable r)
+	{
+		if (_engine == null)
+			_engine = r;
+	}
+
+	public void runEngine(int delay)
+	{
+		if (_engine != null)
+			ThreadPoolManager.getInstance().scheduleGeneral(_engine, delay);
+	}
+
+	public void executePath(VehiclePathPoint[] path)
+	{
+		_currentPath = path;
+		_runState = 0;
+		if (path != null && path.length > 0)
+		{
+			final VehiclePathPoint point = _currentPath[0];
+			getStat().setMoveSpeed(point.moveSpeed);
+			getStat().setRotationSpeed(point.rotationSpeed);
+			getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(point.x, point.y, point.z, 0));
+			return;
+		}
+		getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+	}
+
+	@Override
+	public boolean moveToNextRoutePoint()
+	{
+		_move = null;
+		if (_currentPath == null)
+			return false;
+
+		_runState++;
+		if (_runState < _currentPath.length)
+		{
+			final VehiclePathPoint point = _currentPath[_runState];
+			if (!isMovementDisabled())
+			{
+				getStat().setMoveSpeed(point.moveSpeed);
+				getStat().setRotationSpeed(point.rotationSpeed);
+
+				MoveData m = new MoveData();
+				m.disregardingGeodata = false;
+				m.onGeodataPathIndex = -1;
+				m._xDestination = point.x;
+				m._yDestination = point.y;
+				m._zDestination = point.z;
+				m._heading = 0;
+				setHeading(Util.calculateHeadingFrom(getX(), getY(), point.x, point.y));
+
+				m._moveStartTime = GameTimeController.getGameTicks();
+				_move = m;
+
+				GameTimeController.getInstance().registerMovingObject(this);
+				return true;
+			}
+		}
+
+		runEngine(10);
+		return false;
+	}
+
+	@Override
+    public void initKnownList()
+    {
+		setKnownList(new VehicleKnownList(this));
+    }
+
+	@Override
+	public VehicleStat getStat()
+	{
+		return (VehicleStat)super.getStat();
+	}
+
+	@Override
+	public void initCharStat()
+	{
+		setStat(new VehicleStat(this));
+	}
+
+	public void setOustLoc(Location loc)
+	{
+		_oustLoc = loc;
+	}
+
+	public Location getOustLoc()
+	{
+		return _oustLoc != null ? _oustLoc : MapRegionTable.getInstance().getTeleToLocation(this, MapRegionTable.TeleportWhereType.Town);
+	}
+
+	public void oustPlayers()
+	{
+		if (!_passengers.isEmpty())
+		{
+			for (L2PcInstance player : _passengers)
+				oustPlayer(player);
+		}
+	}
+
+	public void oustPlayer(L2PcInstance player)
+	{
+		player.setVehicle(null);
+		player.setInVehiclePosition(null);
+	}
+
+	public boolean addPassenger(L2PcInstance player)
+	{
+		if (player == null || _passengers.contains(player))
+			return false;
+
+		_passengers.add(player);
+		return true;
+	}
+
+	public void removePassenger(L2PcInstance player)
+	{
+		try
+		{
+			_passengers.remove(player);
+		}
+		catch (Exception e)
+		{}
+	}
+
+	/**
+	 * Consume ticket(s) and teleport player from boat if no correct ticket
+	 * @param itemId Ticket itemId
+	 * @param count Ticket count
+	 * @param oustX
+	 * @param oustY
+	 * @param oustZ
+	 */
+	public void payForRide(int itemId, int count, int oustX, int oustY, int oustZ)
+	{
+		final Collection<L2PcInstance> passengers = getKnownList().getKnownPlayersInRadius(1000);
+		if (passengers != null && !passengers.isEmpty())
+		{
+			L2ItemInstance ticket;
+			InventoryUpdate iu;
+			for (L2PcInstance player : passengers)
+			{
+				if (player == null)
+					continue;
+				if (player.isInBoat() && player.getBoat() == this)
+				{
+					if (itemId > 0)
+					{
+						ticket = player.getInventory().getItemByItemId(itemId);
+						if (ticket == null || player.getInventory().destroyItem("Boat", ticket, count, player, this) == null)
+						{
+							player.sendPacket(new SystemMessage(SystemMessageId.NOT_CORRECT_BOAT_TICKET));
+							player.teleToLocation(oustX, oustY, oustZ, true);
+							continue;
+						}
+						iu = new InventoryUpdate();
+						iu.addModifiedItem(ticket);
+						player.sendPacket(iu);
+					}
+					addPassenger(player);
+				}
+			}
+		}
+	}
+
+	@Override
+	public boolean updatePosition(int gameTicks)
+	{
+		final boolean result = super.updatePosition(gameTicks);
+		if (!_passengers.isEmpty())
+		{
+			for (L2PcInstance player : _passengers)
+			{
+				if (player != null && player.getVehicle() == this)
+				{
+					player.getPosition().setXYZ(getX(), getY(), getZ());
+					player.revalidateZone(false);
+				}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public void teleToLocation(int x, int y, int z, int heading, boolean allowRandomOffset)
+	{
+		stopMove(null, false);
+		setIsTeleporting(true);
+
+		getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+
+		for (L2PcInstance player : _passengers)
+		{
+			if (player != null)
+				player.teleToLocation(x, y, z);
+		}
+
+		broadcastPacket(new DeleteObject(this));
+
+		decayMe();
+		setXYZ(x, y, z);
+
+		// temporary fix for heading on teleports
+		if (heading != 0)
+			getPosition().setHeading(heading);
+
+		onTeleported();
+		revalidateZone(true);
+	}
+
+	@Override
+	public void stopMove(L2CharPosition pos, boolean updateKnownObjects)
+	{
+		_move = null;
+		if (pos != null)
+		{
+			setXYZ(pos.x, pos.y, pos.z);
+			setHeading(pos.heading);
+			revalidateZone(true);
+		}
+
+		if (Config.MOVE_BASED_KNOWNLIST && updateKnownObjects)
+			this.getKnownList().findObjects();
+	}
+
+	@Override
+	public void updateAbnormalEffect()
+	{
+	}
+	
+	@Override
+	public L2ItemInstance getActiveWeaponInstance()
+	{
+		return null;
+	}
+	
+	@Override
+	public L2Weapon getActiveWeaponItem()
+	{
+		return null;
+	}
+	
+	@Override
+	public L2ItemInstance getSecondaryWeaponInstance()
+	{
+		return null;
+	}
+	
+	@Override
+	public L2Weapon getSecondaryWeaponItem()
+	{
+		return null;
+	}
+	
+	@Override
+	public int getLevel()
+	{
+		return 0;
+	}
+	
+	@Override
+	public boolean isAutoAttackable(L2Character attacker)
+	{
+		return false;
+	}
+
+	@Override
+	public void setAI(L2CharacterAI newAI)
+	{
+		if (_ai == null)
+			_ai = newAI;
+	}
+
+	public class AIAccessor extends L2Character.AIAccessor
+	{
+		@Override
+		public void detachAI()
+		{}
+	}
+}

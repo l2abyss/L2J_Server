@@ -130,6 +130,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.L2Trap;
+import com.l2jserver.gameserver.model.actor.L2Vehicle;
 import com.l2jserver.gameserver.model.actor.appearance.PcAppearance;
 import com.l2jserver.gameserver.model.actor.knownlist.PcKnownList;
 import com.l2jserver.gameserver.model.actor.position.PcPosition;
@@ -493,8 +494,7 @@ public final class L2PcInstance extends L2Playable
     private SystemMessageId _noDuelReason = SystemMessageId.THERE_IS_NO_OPPONENT_TO_RECEIVE_YOUR_CHALLENGE_FOR_A_DUEL;
 
 	/** Boat and AirShip */
-    private L2BoatInstance _boat = null;
-    private L2AirShipInstance _airShip = null;
+    private L2Vehicle _vehicle = null;
     private Point3D _inVehiclePosition;
 
 	public ScheduledFuture<?> _taskforfish;
@@ -11171,10 +11171,8 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public void teleToLocation(int x, int y, int z, int heading, boolean allowRandomOffset)
 	{
-		if (isInBoat())
-			setBoat(null);
-		if (isInAirShip())
-			setAirShip(null);
+		if (getVehicle() != null && !getVehicle().isTeleporting())
+			setVehicle(null);
 
 		super.teleToLocation(x, y, z, heading, allowRandomOffset);
 	}
@@ -11183,7 +11181,10 @@ public final class L2PcInstance extends L2Playable
 	public final void onTeleported()
 	{
 		super.onTeleported();
-		
+
+		if (isInAirShip())
+			getAirShip().sendInfo(this);
+
 		// Force a revalidation
 		revalidateZone(true);
 
@@ -11499,7 +11500,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean isInBoat()
 	{
-		return _boat != null;
+		return _vehicle != null && _vehicle.isBoat();
 	}
 
 	/**
@@ -11507,18 +11508,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public L2BoatInstance getBoat()
 	{
-		return _boat;
-	}
-
-	/**
-	 * @param boat
-	 */
-	public void setBoat(L2BoatInstance boat)
-	{
-		if (boat == null && _boat != null)
-			_boat.removePassenger(this);
-
-		_boat = boat;
+		return (L2BoatInstance)_vehicle;
 	}
 
 	/**
@@ -11526,7 +11516,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean isInAirShip()
 	{
-		return _airShip != null;
+		return _vehicle != null && _vehicle.isAirShip();
 	}
 
 	/**
@@ -11534,20 +11524,22 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public L2AirShipInstance getAirShip()
 	{
-		return _airShip;
+		return (L2AirShipInstance) _vehicle;
 	}
 
-	/**
-	 * @param airShip
-	 */
-	public void setAirShip(L2AirShipInstance airShip)
+	public L2Vehicle getVehicle()
 	{
-		if (airShip == null && _airShip != null)
-			_airShip.removePassenger(this);
-
-		_airShip = airShip;
+		return _vehicle;
 	}
-	
+
+	public void setVehicle(L2Vehicle v)
+	{
+		if (v == null && _vehicle != null)
+			_vehicle.removePassenger(this);
+
+		_vehicle = v;
+	}
+
 	public void setInCrystallize(boolean inCrystallize)
 	{
 		_inCrystallize = inCrystallize;

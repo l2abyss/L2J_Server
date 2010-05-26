@@ -14,17 +14,10 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.LineNumberReader;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import com.l2jserver.Config;
+import javolution.util.FastMap;
+
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipControllerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
@@ -34,9 +27,8 @@ import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 
 public class AirShipManager
 {
-	private static final Logger _log = Logger.getLogger(AirShipManager.class.getName());
-	
-	private L2AirShipInstance _airShip = null;
+	private L2CharTemplate _airShipTemplate = null;
+	private FastMap<Integer, L2AirShipInstance> _airShips = new FastMap<Integer, L2AirShipInstance>();
 	private ArrayList<L2AirShipControllerInstance> _atcs = new ArrayList<L2AirShipControllerInstance>(2);
 	
 	public static final AirShipManager getInstance()
@@ -46,84 +38,24 @@ public class AirShipManager
 	
 	private AirShipManager()
 	{
-		load();
-	}
-	
-	private final void load()
-	{
-		LineNumberReader lnr = null;
-		try
-		{
-			File doorData = new File(Config.DATAPACK_ROOT, "data/airship.csv");
-			lnr = new LineNumberReader(new BufferedReader(new FileReader(doorData)));
-			
-			String line = null;
-			while ((line = lnr.readLine()) != null)
-			{
-				if (line.trim().length() == 0 || line.startsWith("#"))
-					continue;
-				L2AirShipInstance airShip = parseLine(line);
-				airShip.spawn();
-				_airShip = airShip;
-				if (Config.DEBUG)
-				{
-					_log.info("AirShip ID : " + airShip.getObjectId());
-				}
-			}
-		}
-		catch (FileNotFoundException e)
-		{
-			_log.warning("airship.csv is missing in data folder");
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, "Error while creating AirShip table " + e.getMessage(), e);
-		}
-		finally
-		{
-			try
-			{
-				lnr.close();
-			}
-			catch (Exception e1)
-			{ /* ignore problems */
-			}
-		}
-	}
-	
-	/**
-	 * @param line
-	 * @return
-	 */
-	private L2AirShipInstance parseLine(String line)
-	{
-		L2AirShipInstance airShip;
-		StringTokenizer st = new StringTokenizer(line, ";");
-		
-		int xspawn = Integer.parseInt(st.nextToken());
-		int yspawn = Integer.parseInt(st.nextToken());
-		int zspawn = Integer.parseInt(st.nextToken());
-		int heading = Integer.parseInt(st.nextToken());
-		
 		StatsSet npcDat = new StatsSet();
 		npcDat.set("npcId", 9);
 		npcDat.set("level", 0);
 		npcDat.set("jClass", "boat");
-		
+
 		npcDat.set("baseSTR", 0);
 		npcDat.set("baseCON", 0);
 		npcDat.set("baseDEX", 0);
 		npcDat.set("baseINT", 0);
 		npcDat.set("baseWIT", 0);
 		npcDat.set("baseMEN", 0);
-		
+
 		npcDat.set("baseShldDef", 0);
 		npcDat.set("baseShldRate", 0);
 		npcDat.set("baseAccCombat", 38);
 		npcDat.set("baseEvasRate", 38);
 		npcDat.set("baseCritRate", 38);
-		
-		// npcDat.set("name", "");
+
 		npcDat.set("collision_radius", 0);
 		npcDat.set("collision_height", 0);
 		npcDat.set("sex", "male");
@@ -149,23 +81,24 @@ public class AirShipManager
 		npcDat.set("baseMpReg", 3.e-3f);
 		npcDat.set("basePDef", 100);
 		npcDat.set("baseMDef", 100);
-		L2CharTemplate template = new L2CharTemplate(npcDat);
-		airShip = new L2AirShipInstance(IdFactory.getInstance().getNextId(), template);
-		airShip.setIsFlying(true);
-		airShip.getPosition().setHeading(heading);
-		airShip.setXYZ(xspawn, yspawn, zspawn);
-		airShip.setTrajet1(1);
-		airShip.setTrajet2(2);
-		airShip.setTrajet3(3);
-		airShip.setTrajet4(4);
+		_airShipTemplate = new L2CharTemplate(npcDat);
+	}
+	
+	public L2AirShipInstance getAirShip(int objectId)
+	{
+		return _airShips.get(objectId);
+	}
+
+	public L2AirShipInstance getNewAirShip(int x, int y, int z, int heading)
+	{
+		L2AirShipInstance airShip = new L2AirShipInstance(IdFactory.getInstance().getNextId(), _airShipTemplate);
+		_airShips.put(airShip.getObjectId(), airShip);
+		airShip.setHeading(heading);
+		airShip.setXYZInvisible(x, y, z);
+		airShip.spawnMe();
 		return airShip;
 	}
-	
-	public L2AirShipInstance getAirShip()
-	{
-		return _airShip;
-	}
-	
+
 	public void registerATC(L2AirShipControllerInstance atc)
 	{
 		_atcs.add(atc);
@@ -174,6 +107,20 @@ public class AirShipManager
 	public ArrayList<L2AirShipControllerInstance> getATCs()
 	{
 		return _atcs;
+	}
+
+	public L2AirShipControllerInstance getNearestATC(L2AirShipInstance ship, int radius)
+	{
+		if (_atcs == null || _atcs.isEmpty())
+			return null;
+
+		for (L2AirShipControllerInstance atc : _atcs)
+		{
+			if (atc != null && atc.isInsideRadius(ship, radius, true, false))
+				return atc;
+		}
+
+		return null;
 	}
 
 	@SuppressWarnings("synthetic-access")

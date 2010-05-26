@@ -51,7 +51,7 @@ public final class RequestGetOffVehicle extends L2GameClientPacket
 		}
 
 		activeChar.broadcastPacket(new StopMoveInVehicle(activeChar, _boatId));
-		activeChar.setBoat(null);
+		activeChar.setVehicle(null);
 		activeChar.setInVehiclePosition(null);
 		sendPacket(ActionFailed.STATIC_PACKET);	
 		activeChar.broadcastPacket(new GetOffVehicle(activeChar.getObjectId(), _boatId, _x, _y, _z));

@@ -14,17 +14,17 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
+import com.l2jserver.gameserver.model.actor.L2Character;
+
 /**
  * @authos kerberos
  *
  */
 public class ExStopMoveAirShip extends L2GameServerPacket
 {
-    private L2AirShipInstance _ship;
+	private L2Character _ship;
 
-
-    public ExStopMoveAirShip(L2AirShipInstance ship)
+    public ExStopMoveAirShip(L2Character ship)
     {
     	_ship = ship;
     }

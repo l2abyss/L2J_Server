@@ -14,46 +14,37 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
+import com.l2jserver.gameserver.model.actor.L2Character;
 
 public class ExMoveToLocationAirShip extends L2GameServerPacket
-{
-	
-	private static final String _S__FE_65_EXAIRSHIPMOVETOLOCATION = "[S] FE:65 ExGetOnAirShip";
+{	
+	private static final String _S__FE_65_EXAIRSHIPMOVETOLOCATION = "[S] FE:65 ExMoveToLocationAirShip";
 
-	private final int _airShipId;
-	private final int _x, _y, _z, _dx, _dy, _dz;
-	
-	public ExMoveToLocationAirShip(L2AirShipInstance cha, int x, int y, int z)
+	private L2Character _ship;
+
+	public ExMoveToLocationAirShip(L2Character cha)
 	{
-		_airShipId = cha.getObjectId();
-		_x = cha.getX();
-		_y = cha.getY();
-		_z = cha.getZ();
-		_dx = x;
-		_dy = y;
-		_dz = z;
+		_ship = cha;
 	}
-	
+
 	@Override
-    protected void writeImpl()
-    {
-	    writeC(0xfe);
-	    writeH(0x65);
-	    
-	    writeD(_airShipId);
-	    writeD(_dx);
-	    writeD(_dy);
-	    writeD(_dz);
-	    writeD(_x);
-	    writeD(_y);
-	    writeD(_z);
+	protected void writeImpl()
+	{
+		writeC(0xfe);
+		writeH(0x65);
+
+		writeD(_ship.getObjectId());
+		writeD(_ship.getXdestination());
+		writeD(_ship.getYdestination());
+		writeD(_ship.getZdestination());
+		writeD(_ship.getX());
+		writeD(_ship.getY());
+		writeD(_ship.getZ());
 	}
-	
+
 	@Override
-    public String getType()
-    {
-	    return _S__FE_65_EXAIRSHIPMOVETOLOCATION;
-    }
-	
+	public String getType()
+	{
+		return _S__FE_65_EXAIRSHIPMOVETOLOCATION;
+	}	
 }

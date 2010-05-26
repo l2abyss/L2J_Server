@@ -19,8 +19,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
+import com.l2jserver.gameserver.model.actor.L2Vehicle;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.DeleteObject;
 import com.l2jserver.gameserver.network.serverpackets.SpawnItem;
@@ -121,11 +120,8 @@ public class PcKnownList extends PlayableKnownList
     @Override
 	public int getDistanceToForgetObject(L2Object object)
     {
-    	if (object instanceof L2BoatInstance)
-    		return 5000;
-
-    	if (object instanceof L2AirShipInstance)
-    		return 12000;
+    	if (object instanceof L2Vehicle)
+    		return 10000;
 
     	// when knownlist grows, the distance to forget should be at least
     	// the same as the previous watch range, or it becomes possible that
@@ -140,11 +136,8 @@ public class PcKnownList extends PlayableKnownList
     @Override
 	public int getDistanceToWatchObject(L2Object object)
     {
-    	if (object instanceof L2BoatInstance)
-    		return 4000;
-
-    	if (object instanceof L2AirShipInstance)
-    		return 10000;
+    	if (object instanceof L2Vehicle)
+    		return 8000;
 
     	final int knownlistSize = getKnownObjects().size();
         if (knownlistSize <= 25) return 3400; // empty field

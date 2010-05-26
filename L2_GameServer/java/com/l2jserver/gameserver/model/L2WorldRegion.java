@@ -29,6 +29,7 @@ import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Playable;
+import com.l2jserver.gameserver.model.actor.L2Vehicle;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.type.L2DerbyTrackZone;
 import com.l2jserver.gameserver.model.zone.type.L2PeaceZone;
@@ -234,6 +235,11 @@ public final class L2WorldRegion
 
         				// stop the ai tasks
         				((L2AttackableAI) mob.getAI()).stopAITask();
+        			}
+        			else if (o instanceof L2Vehicle)
+        			{
+        				c++;
+        				((L2Vehicle)o).getKnownList().removeAllKnownObjects();
         			}
         		}
         	}

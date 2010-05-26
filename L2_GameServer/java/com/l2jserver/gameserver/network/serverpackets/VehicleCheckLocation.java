@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
+import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
  * @author Maktakien
@@ -22,23 +22,14 @@ import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
  */
 public class VehicleCheckLocation extends L2GameServerPacket
 {
-	private L2BoatInstance _boat;
-	private int _x;
-	private int _y;
-	private int _z;
+	private L2Character _boat;
     
 	/**
 	 * @param instance
-	 * @param x
-	 * @param y
-	 * @param z
 	 */
-	public VehicleCheckLocation(L2BoatInstance instance, int x, int y, int z)
+	public VehicleCheckLocation(L2Character boat)
 	{
-		_boat = instance;
-		_x = x;
-		_y = y;
-		_z = z;
+		_boat = boat;
 	}
 
 	@Override
@@ -47,16 +38,15 @@ public class VehicleCheckLocation extends L2GameServerPacket
 	{
 		writeC(0x6d);
 		writeD(_boat.getObjectId());
-		writeD(_x);
-		writeD(_y);
-		writeD(_z);
-		writeD(_boat.getPosition().getHeading());
+		writeD(_boat.getX());
+		writeD(_boat.getY());
+		writeD(_boat.getZ());
+		writeD(_boat.getHeading());
 	}
 
 	@Override
 	public String getType()
 	{
-		return null;
+		return "[S] 6D VehicleCheckLocation";
 	}
-
 }

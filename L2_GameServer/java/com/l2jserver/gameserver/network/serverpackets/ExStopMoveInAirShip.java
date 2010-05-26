@@ -14,22 +14,20 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.L2Character;
 /**
  * @authos kerberos
  *
  */
 public class ExStopMoveInAirShip extends L2GameServerPacket
 {
-	private L2PcInstance _activeChar;
-    private L2AirShipInstance _ship;
+	private L2Character _activeChar;
+    private int _shipObjId;
 
-
-    public ExStopMoveInAirShip(L2PcInstance player, L2AirShipInstance ship)
+    public ExStopMoveInAirShip(L2Character player, int shipObjId)
     {
     	_activeChar = player;
-    	_ship = ship;
+    	_shipObjId = shipObjId;
     }
 
     @Override
@@ -38,7 +36,7 @@ public class ExStopMoveInAirShip extends L2GameServerPacket
         writeC(0xfe);
         writeH(0x6e);
         writeD(_activeChar.getObjectId());
-        writeD(_ship.getObjectId());
+        writeD(_shipObjId);
         writeD(_activeChar.getX());
         writeD(_activeChar.getY());
         writeD(_activeChar.getZ());

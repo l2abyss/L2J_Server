@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
  */
 public class L2AirShipControllerInstance extends L2NpcInstance
 {
-	private boolean _isBoardAllowed = false;
+	private L2AirShipInstance _ship = null;
 
 	/**
 	 * @param objectId
@@ -61,11 +61,9 @@ public class L2AirShipControllerInstance extends L2NpcInstance
 				return;
 			}
 
-			L2AirShipInstance ship = AirShipManager.getInstance().getAirShip();
-
-			if (ship.isInDock() && _isBoardAllowed)
+			if (_ship != null)
 			{
-				ship.onPlayerBoarding(player);
+				_ship.addPassenger(player);
 				return;
 			}
 		}
@@ -78,8 +76,8 @@ public class L2AirShipControllerInstance extends L2NpcInstance
 		broadcastPacket(new NpcSay(getObjectId(), 1, getNpcId(), message));
 	}
 
-	public void setIsBoardAllowed(boolean val)
+	public void dockShip(L2AirShipInstance ship)
 	{
-		_isBoardAllowed = val;
+		_ship = ship;
 	}
 }

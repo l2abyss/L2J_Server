@@ -108,7 +108,7 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
-			activeChar.setBoat(boat);
+			activeChar.setVehicle(boat);
 		}
 
 		activeChar.setInVehiclePosition(_pos);

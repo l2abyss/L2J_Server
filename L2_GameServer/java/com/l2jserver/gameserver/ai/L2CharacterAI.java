@@ -36,8 +36,6 @@ import com.l2jserver.gameserver.model.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -695,15 +693,6 @@ public class L2CharacterAI extends AbstractAI
 		
 		// Launch actions corresponding to the Event Think
 		onEvtThink();
-		
-		if (_actor instanceof L2BoatInstance)
-		{
-			((L2BoatInstance) _actor).evtArrived();
-		}
-		else if (_actor instanceof L2AirShipInstance)
-		{
-			((L2AirShipInstance) _actor).evtArrived();
-		}
 	}
 	
 	/**

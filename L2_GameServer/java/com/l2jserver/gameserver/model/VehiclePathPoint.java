@@ -12,38 +12,31 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.actor.stat;
+package com.l2jserver.gameserver.model;
 
-import com.l2jserver.gameserver.model.actor.L2Vehicle;
-
-public class VehicleStat extends CharStat
+public class VehiclePathPoint
 {
-	private float _moveSpeed = 0;
-	private int _rotationSpeed = 0;
+	public int x;
+	public int y;
+	public int z;
+	public int moveSpeed;
+	public int rotationSpeed;
 
-	public VehicleStat(L2Vehicle activeChar)
+	public VehiclePathPoint(int _x,int _y,int _z)
 	{
-		super(activeChar);
+		x = _x;
+		y = _y;
+		z = _z;
+		moveSpeed = 350;
+		rotationSpeed = 4000;
 	}
 
-	@Override
-	public final float getMoveSpeed()
+	public VehiclePathPoint(int _x,int _y,int _z,int _m,int _r)
 	{
-		return _moveSpeed;
-	}
-
-	public final void setMoveSpeed(float speed)
-	{
-		_moveSpeed = speed;
-	}
-
-	public final int getRotationSpeed()
-	{
-		return _rotationSpeed;
-	}
-
-	public final void setRotationSpeed(int speed)
-	{
-		_rotationSpeed = speed;
+		x = _x;
+		y = _y;
+		z = _z;
+		moveSpeed = _m;
+		rotationSpeed = _r;
 	}
 }
