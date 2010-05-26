@@ -196,13 +196,7 @@ public class ItemsOnGroundManager
 		}
 		finally
 		{
-			try
-			{
-				conn.close();
-			}
-			catch (Exception e1)
-			{
-			}
+			L2DatabaseFactory.close(conn);
 		}
 	}
 	

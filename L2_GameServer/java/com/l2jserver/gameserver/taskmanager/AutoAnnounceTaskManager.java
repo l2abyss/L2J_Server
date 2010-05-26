@@ -91,13 +91,7 @@ public class AutoAnnounceTaskManager
 		}
 		finally
 		{
-			try
-			{
-				conn.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(conn);
 		}
 		_log.log(Level.INFO, "AutoAnnoucements: Loaded " + count + " Auto Annoucement Data.");
 	}
@@ -128,13 +122,7 @@ public class AutoAnnounceTaskManager
 		}
 		finally
 		{
-			try
-			{
-				conn.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(conn);
 		}
 	}
 	
@@ -162,13 +150,7 @@ public class AutoAnnounceTaskManager
 		}
 		finally
 		{
-			try
-			{
-				conn.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(conn);
 		}
 	}
 
