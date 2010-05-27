@@ -346,9 +346,11 @@ public abstract class L2Character extends L2Object
 		_template = template;
 		
 		if (this instanceof L2DoorInstance)
+		{
 			_calculators = Formulas.getStdDoorCalculators();
-
-		if (template != null && this instanceof L2Npc)
+			_skills = null;
+		}
+		else if (template != null && this instanceof L2Npc)
 		{
 			// Copy the Standard Calcultors of the L2NPCInstance in _calculators
 			_calculators = NPC_STD_CALCULATOR;
@@ -4518,7 +4520,7 @@ public abstract class L2Character extends L2Object
 						|| this instanceof L2MinionInstance
 						|| this.isInCombat())
 				{
-					m.geoPath = PathFinding.getInstance().findPath(curX, curY, curZ, originalX, originalY, originalZ, getInstanceId(), isInstanceType(InstanceType.L2Playable));
+					m.geoPath = PathFinding.getInstance().findPath(curX, curY, curZ, originalX, originalY, originalZ, getInstanceId(), this instanceof L2Playable);
                 	if (m.geoPath == null || m.geoPath.size() < 2) // No path found
                 	{
                 		// * Even though there's no path found (remember geonodes aren't perfect), 
