@@ -88,6 +88,7 @@ public enum L2SkillType
 	MANARECHARGE,
 	MPHOT,
 	HPMPCPHEAL_PERCENT,
+	HPMPHEAL_PERCENT,
 	
 	// sp
 	GIVE_SP,
