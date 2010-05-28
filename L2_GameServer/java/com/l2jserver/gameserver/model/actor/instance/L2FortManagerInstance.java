@@ -954,12 +954,10 @@ public class L2FortManagerInstance extends L2MerchantInstance
 		L2TeleportLocation list = TeleportLocationTable.getInstance().getTemplate(val);
 		if (list != null)
 		{
-			if (player.reduceAdena("Teleport", list.getPrice(), this, true))
+			if (player.destroyItemByItemId("Teleport", list.getItemId(), list.getPrice(), this, true))
 			{
 				if (Config.DEBUG)
-					_log.warning("Teleporting player " + player.getName()
-							+ " for Fortress to new location: " + list.getLocX()
-							+ ":" + list.getLocY() + ":" + list.getLocZ());
+					_log.warning("Teleporting player " + player.getName() + " for Fortress to new location: " + list.getLocX() + ":" + list.getLocY() + ":" + list.getLocZ());
 				player.teleToLocation(list.getLocX(), list.getLocY(), list.getLocZ());
 			}
 		}

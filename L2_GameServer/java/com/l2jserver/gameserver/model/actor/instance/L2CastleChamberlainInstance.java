@@ -1480,7 +1480,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 		L2TeleportLocation list = TeleportLocationTable.getInstance().getTemplate(val);
 		if (list != null)
 		{
-			if (player.reduceAdena("Teleport", list.getPrice(), this, true))
+			if (player.destroyItemByItemId("Teleport", list.getItemId(), list.getPrice(), this, true))
 			{
 				if (Config.DEBUG)
 					_log.warning("Teleporting player " + player.getName()

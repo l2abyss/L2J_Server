@@ -1395,7 +1395,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
         		player.sendMessage("You can't teleport with a Combat Flag or Territory Ward!");
         		return;
         	}
-        	else if(player.reduceAdena("Teleport", list.getPrice(), this, true))
+        	else if (player.destroyItemByItemId("Teleport", list.getItemId(), list.getPrice(), this, true))
             {
                 if (Config.DEBUG)
                  _log.warning("Teleporting player "+player.getName()+" for CH to new location: "+list.getLocX()+":"+list.getLocY()+":"+list.getLocZ());

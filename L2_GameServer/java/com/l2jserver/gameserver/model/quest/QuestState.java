@@ -866,21 +866,16 @@ public final class QuestState
 			count = item.getCount();
 
 		// Destroy the quantity of items wanted
-		if (itemId == 57)
-			getPlayer().reduceAdena("Quest", count, getPlayer(), true);
-		else
+		if (item.isEquipped())
 		{
-			if (item.isEquipped())
-			{
-				L2ItemInstance[] unequiped = getPlayer().getInventory().unEquipItemInBodySlotAndRecord(item.getItem().getBodyPart());
-				InventoryUpdate iu = new InventoryUpdate();
-				for (L2ItemInstance itm: unequiped)
-					iu.addModifiedItem(itm);
-				getPlayer().sendPacket(iu);
-				getPlayer().broadcastUserInfo();
-			}
-			getPlayer().destroyItemByItemId("Quest", itemId, count, getPlayer(), true);
+			L2ItemInstance[] unequiped = getPlayer().getInventory().unEquipItemInBodySlotAndRecord(item.getItem().getBodyPart());
+			InventoryUpdate iu = new InventoryUpdate();
+			for (L2ItemInstance itm: unequiped)
+				iu.addModifiedItem(itm);
+			getPlayer().sendPacket(iu);
+			getPlayer().broadcastUserInfo();
 		}
+		getPlayer().destroyItemByItemId("Quest", itemId, count, getPlayer(), true);
 	}
 
 	/**

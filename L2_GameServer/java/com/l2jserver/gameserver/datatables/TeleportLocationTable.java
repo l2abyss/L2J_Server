@@ -69,6 +69,7 @@ public class TeleportLocationTable
 				teleport.setLocZ(rset.getInt("loc_z"));
 				teleport.setPrice(rset.getInt("price"));
 				teleport.setIsForNoble(rset.getInt("fornoble") == 1);
+				teleport.setItemId(rset.getInt("itemId"));
 				
 				_teleports.put(teleport.getTeleId(), teleport);
 			}
@@ -105,6 +106,8 @@ public class TeleportLocationTable
 					teleport.setLocZ(rset.getInt("loc_z"));
 					teleport.setPrice(rset.getInt("price"));
 					teleport.setIsForNoble(rset.getInt("fornoble") == 1);
+					teleport.setItemId(rset.getInt("itemId"));
+					
 					_teleports.put(teleport.getTeleId(), teleport);
 				}
 				rset.close();

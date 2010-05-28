@@ -3813,6 +3813,9 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public boolean destroyItemByItemId(String process, int itemId, long count, L2Object reference, boolean sendMessage)
 	{
+		if (itemId == 57)
+			return reduceAdena(process, count, reference, sendMessage);
+		
         L2ItemInstance item = _inventory.getItemByItemId(itemId);
 
         if (item == null || item.getCount() < count || _inventory.destroyItemByItemId(process, itemId, count, this, reference) == null)
