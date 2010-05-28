@@ -109,8 +109,6 @@ public class L2Clan
 	
 	private Forum _forum;
 	
-	private List<L2Skill> _skillList = new FastList<L2Skill>();
-	
 	//  Clan Privileges
 	/** No privilege to manage any clan activity */
 	public static final int CP_NOTHING = 0;
@@ -1185,7 +1183,7 @@ public class L2Clan
 			{
 				try
 				{
-					if (temp.isOnline())
+					if (temp != null && temp.isOnline())
 					{
 						if (newSkill.getMinPledgeClass() <= temp.getPlayerInstance().getPledgeClass())
 						{
@@ -1196,6 +1194,7 @@ public class L2Clan
 				}
 				catch (NullPointerException e)
 				{
+					_log.log(Level.WARNING, e.getMessage(),e);
 				}
 			}
 		}
@@ -1211,7 +1210,7 @@ public class L2Clan
 			{
 				try
 				{
-					if (temp.isOnline())
+					if (temp != null && temp.isOnline())
 					{
 						if (skill.getMinPledgeClass() <= temp.getPlayerInstance().getPledgeClass())
 							temp.getPlayerInstance().addSkill(skill, false); // Skill is not saved to player DB
@@ -1219,6 +1218,7 @@ public class L2Clan
 				}
 				catch (NullPointerException e)
 				{
+					_log.log(Level.WARNING, e.getMessage(),e);
 				}
 			}
 		}
@@ -1438,33 +1438,6 @@ public class L2Clan
 			member.sendPacket(new PledgeShowMemberListDeleteAll());
 			member.sendPacket(new PledgeShowMemberListAll(this, member));
 		}
-	}
-	
-	public void removeSkill(int id)
-	{
-		L2Skill deleteSkill = null;
-		for (L2Skill sk : _skillList)
-		{
-			if (sk.getId() == id)
-			{
-				deleteSkill = sk;
-				break;
-			}
-		}
-		_skillList.remove(deleteSkill);
-	}
-	
-	public void removeSkill(L2Skill deleteSkill)
-	{
-		_skillList.remove(deleteSkill);
-	}
-	
-	/**
-	 * @return
-	 */
-	public List<L2Skill> getSkills()
-	{
-		return _skillList;
 	}
 	
 	public class SubPledge
