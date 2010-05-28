@@ -93,7 +93,7 @@ public class TeleportLocationTable
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("SELECT id, loc_x, loc_y, loc_z, price, fornoble FROM custom_teleport");
+				PreparedStatement statement = con.prepareStatement("SELECT id, loc_x, loc_y, loc_z, price, fornoble, itemId FROM custom_teleport");
 				ResultSet rset = statement.executeQuery();
 				L2TeleportLocation teleport;
 				int _cTeleCount = _teleports.size();
