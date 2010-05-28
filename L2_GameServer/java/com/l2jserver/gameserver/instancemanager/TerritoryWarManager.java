@@ -82,6 +82,8 @@ public class TerritoryWarManager
 	public static int MINTWBADGEFORBIGSTRIDER;
 	public static Long WARLENGTH;
 	public static boolean PLAYER_WITH_WARD_CAN_BE_KILLED_IN_PEACEZONE;
+	public static boolean SPAWN_WARDS_WHEN_TW_IS_NOT_IN_PROGRESS;
+	public static boolean RETURN_WARDS_WHEN_TW_STARTS;
 	public final Map<Integer,Integer> TERRITORY_ITEM_IDS;
 	
 	// Territory War settings
@@ -329,7 +331,7 @@ public class TerritoryWarManager
 			door.openMe();
 	}
 	
-	public L2Npc addTerritoryWard(int territoryId, int newOwnerId, int oldOwnerId)
+	public L2Npc addTerritoryWard(int territoryId, int newOwnerId, int oldOwnerId, boolean broadcastMessage)
 	{
 		L2Npc ret = null;
 		if (_territoryList.get(newOwnerId) != null)
@@ -340,9 +342,9 @@ public class TerritoryWarManager
 			{
 				ward._npcId = territoryId;
 				ret = spawnNPC(36491 + territoryId, ward.getLocation());
-				if (!isTWInProgress())
-					ret.setIsInvul(true);
 				ward.setNPC(ret);
+				if (!isTWInProgress() && !SPAWN_WARDS_WHEN_TW_IS_NOT_IN_PROGRESS)
+					ret.decayMe();
 				if (terNew.getOwnerClan() != null && terNew.getOwnedWardIds().contains(newOwnerId + 80))
 					for(int wardId : terNew.getOwnedWardIds())
 						if (ResidentialSkillTable.getInstance().getSkills(wardId) != null)
@@ -357,10 +359,13 @@ public class TerritoryWarManager
 				terOld.removeWard(territoryId);
 				updateTerritoryData(terOld);
 				updateTerritoryData(terNew);
-				SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_S1_HAS_SUCCEDED_IN_CAPTURING_S2_TERRITORY_WARD);
-				sm.addString(terNew.getOwnerClan().getName());
-				sm.addString(ward.getNpc().getName().replaceAll(" Ward", ""));
-				announceToParticipants(sm, 135000, 13500);
+				if (broadcastMessage)
+				{
+					SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_S1_HAS_SUCCEDED_IN_CAPTURING_S2_TERRITORY_WARD);
+					sm.addString(terNew.getOwnerClan().getName());
+					sm.addString(ward.getNpc().getName().replaceAll(" Ward", ""));
+					announceToParticipants(sm, 135000, 13500);
+				}
 				if (terOld.getOwnerClan() != null)
 				{
 					if (ResidentialSkillTable.getInstance().getSkills(territoryId) != null)
@@ -459,11 +464,22 @@ public class TerritoryWarManager
 			{
 				twWard.dropIt();
 				if (isTWInProgress())
-					twWard.spawnMe();
+				{
+					if (isKilled)
+						twWard.spawnMe();
+					else
+						for(TerritoryNPCSpawn wardSpawn : _territoryList.get(twWard.getOwnerCastleId()).getOwnedWard())
+							if (wardSpawn.getNpcId() == twWard.getTerritoryId())
+							{
+								wardSpawn.setNPC(wardSpawn.getNpc().getSpawn().doSpawn());
+								twWard.unSpawnMe();
+								twWard.setNpc(wardSpawn.getNpc());
+							}
+				}
 				if (isKilled)
 				{
 					SystemMessage sm = new SystemMessage(SystemMessageId.THE_CHAR_THAT_ACQUIRED_S1_WARD_HAS_BEEN_KILLED);
-					sm.addString(twWard.itemInstance.getName().replaceAll(" Ward", ""));
+					sm.addString(twWard.getNpc().getName().replaceAll(" Ward", ""));
 					announceToParticipants(sm, 0, 0);
 				}
 			}
@@ -570,7 +586,7 @@ public class TerritoryWarManager
 	
 	// =========================================================
 	// Method - Private
-	private L2Npc spawnNPC(int npcId, Location loc)
+	public L2Npc spawnNPC(int npcId, Location loc)
 	{
 		L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);
 		if (template != null)
@@ -668,6 +684,8 @@ public class TerritoryWarManager
 			PLAYERMINLEVEL = Integer.decode(territoryWarSettings.getProperty("PlayerMinLevel", "40"));
 			WARLENGTH = Long.decode(territoryWarSettings.getProperty("WarLength", "120")) * 60000;
 			PLAYER_WITH_WARD_CAN_BE_KILLED_IN_PEACEZONE = Boolean.parseBoolean(territoryWarSettings.getProperty("PlayerWithWardCanBeKilledInPeaceZone", "False"));
+			SPAWN_WARDS_WHEN_TW_IS_NOT_IN_PROGRESS = Boolean.parseBoolean(territoryWarSettings.getProperty("SpawnWardsWhenTWIsNotInProgress", "False"));
+			RETURN_WARDS_WHEN_TW_STARTS = Boolean.parseBoolean(territoryWarSettings.getProperty("ReturnWardsWhenTWStarts", "False"));
 			MINTWBADGEFORNOBLESS = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForNobless", "100"));
 			MINTWBADGEFORSTRIDERS = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForStriders", "50"));
 			MINTWBADGEFORBIGSTRIDER = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForBigStrider", "80"));
@@ -739,7 +757,7 @@ public class TerritoryWarManager
 						{
 							for(String wardId:ownedWardIds.split(";"))
 								if (Integer.parseInt(wardId) > 0)
-									addTerritoryWard(Integer.parseInt(wardId), castleId, 0);
+									addTerritoryWard(Integer.parseInt(wardId), castleId, 0, false);
 						}
 					}
 				}
@@ -844,14 +862,23 @@ public class TerritoryWarManager
 			for(TerritoryNPCSpawn ward : t.getOwnedWard())
 				if (ward.getNpc() != null && t.getOwnerClan() != null)
 				{
-					ward.getNpc().setIsInvul(false);
-					ward.getNpc().broadcastStatusUpdate();
+					if (!ward.getNpc().isVisible())
+						ward.setNPC(ward.getNpc().getSpawn().doSpawn());
 					_territoryWards.add(new TerritoryWard(ward.getNpcId(), ward.getLocation().getX(), ward.getLocation().getY(), ward.getLocation().getZ(), 0, ward.getNpcId() + 13479, t.getCastleId(), ward.getNpc()));
 				}
 			t.getQuestDone()[0] = 0; // killed npc
 			t.getQuestDone()[1] = 0; // captured wards
 		}
 		_participantPoints.clear();
+
+		if (RETURN_WARDS_WHEN_TW_STARTS)
+			for(TerritoryWard ward : _territoryWards)
+				if (ward.getOwnerCastleId() != ward.getTerritoryId() - 80)
+				{
+					ward.unSpawnMe();
+					ward.setNpc(addTerritoryWard(ward.getTerritoryId(), ward.getTerritoryId() - 80, ward.getOwnerCastleId(), false));
+					ward.setOwnerCastleId(ward.getTerritoryId() - 80);
+				}
 
 		SystemMessage sm = new SystemMessage(SystemMessageId.TERRITORY_WAR_HAS_BEGUN);
 		Announcements.getInstance().announceToAll(sm);
@@ -868,6 +895,12 @@ public class TerritoryWarManager
 		if (!updatePlayerTWStateFlags(true))
 			return;
 
+		if (_territoryWards != null)
+		{
+			for(TerritoryWard twWard : _territoryWards)
+				twWard.unSpawnMe();
+			_territoryWards.clear();
+		}
 		// teleportPlayer(Siege.TeleportWhoType.Attacker, MapRegionTable.TeleportWhereType.Town); // Teleport to the closest town
 		for(Territory t : _territoryList.values())
 		{
@@ -899,17 +932,11 @@ public class TerritoryWarManager
 			for(TerritoryNPCSpawn ward : t.getOwnedWard())
 				if (ward.getNpc() != null)
 				{
-					if (ward.getNpc().isDecayed())
+					if (!ward.getNpc().isVisible() && SPAWN_WARDS_WHEN_TW_IS_NOT_IN_PROGRESS)
 						ward.setNPC(ward.getNpc().getSpawn().doSpawn());
-					ward.getNpc().setIsInvul(true);
-					ward.getNpc().broadcastStatusUpdate();
+					else if (ward.getNpc().isVisible() && !SPAWN_WARDS_WHEN_TW_IS_NOT_IN_PROGRESS)
+						ward.getNpc().decayMe();
 				}
-		}
-		if (_territoryWards != null)
-		{
-			for(TerritoryWard twWard : _territoryWards)
-				twWard.unSpawnMe();
-			_territoryWards.clear();
 		}
 		for(L2SiegeFlagInstance flag : _clanFlags.values())
 			flag.deleteMe();
@@ -1286,6 +1313,8 @@ public class TerritoryWarManager
 		
 		public void setNPC(L2Npc npc)
 		{
+			if (_npc != null)
+				_npc.deleteMe();
 			_npc = npc;
 		}
 		

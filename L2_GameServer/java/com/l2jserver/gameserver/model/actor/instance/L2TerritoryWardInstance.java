@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
+import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.entity.Castle;
@@ -44,14 +45,18 @@ public final class L2TerritoryWardInstance extends L2Attackable
 	{
 		if (isInvul())
 			return false;
-		else if (_castle != null && _castle.getZone().isActive())
-		{
-			L2PcInstance actingPlayer = attacker.getActingPlayer();
-			if (actingPlayer != null && actingPlayer.getSiegeSide() != 0
-					&& !TerritoryWarManager.getInstance().isAllyField(actingPlayer, _castle.getCastleId()))
-				return true;
-		}
-		return false;
+		if (_castle == null || !_castle.getZone().isActive())
+			return false;
+
+		final L2PcInstance actingPlayer = attacker.getActingPlayer();
+		if (actingPlayer == null)
+			return false;
+		if (actingPlayer.getSiegeSide() == 0)
+			return false;
+		if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, _castle.getCastleId()))
+			return false;
+
+		return true;
 	}
 	
 	@Override
@@ -69,7 +74,32 @@ public final class L2TerritoryWardInstance extends L2Attackable
 		if (_castle == null)
 			_log.warning("L2TerritoryWardInstance(" + getName() + ") spawned outside Castle Zone!");
 	}
-	
+
+	@Override
+	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
+	{
+		if (skill != null || !TerritoryWarManager.getInstance().isTWInProgress()) //wards can't be damaged by skills
+			return;
+
+		final L2PcInstance actingPlayer = attacker.getActingPlayer();
+		if (actingPlayer == null)
+			return;
+		if (actingPlayer.isCombatFlagEquipped())
+			return;
+		if (actingPlayer.getSiegeSide() == 0)
+			return;
+		if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, _castle.getCastleId()))
+			return;
+
+		super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
+	}
+
+	@Override
+	public void reduceCurrentHpByDOT(double i, L2Character attacker, L2Skill skill)
+	{
+		// wards can't be damaged by DOTs
+	}
+
 	@Override
 	public boolean doDie(L2Character killer)
 	{

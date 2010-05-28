@@ -34,7 +34,6 @@ public class TerritoryWard
 	private L2Npc _npc = null;
 
 	private Location _location;
-	public L2ItemInstance itemInstance;
 	
 	private int _itemId;
 	private int _ownerCastleId;
@@ -85,33 +84,21 @@ public class TerritoryWard
 		return _player;
 	}
 	
-	public L2ItemInstance getItemInstance()
-	{
-		return itemInstance;
-	}
-	
 	public synchronized void spawnMe()
 	{
 		if ( _player != null )
 			dropIt();
-		L2ItemInstance i;
 		
-		// Init the dropped L2ItemInstance and add it in the world as a visible object at the position where mob was last
-		i = ItemTable.getInstance().createItem("Combat", _itemId, 1, null, null);
-		i.spawnMe(_location.getX(), _location.getY(), _location.getZ());
-		itemInstance = i;
-		_npc = null;
+		// Init the dropped L2WardInstance and add it in the world as a visible object at the position where Pc was last
+		_npc = TerritoryWarManager.getInstance().spawnNPC(36491 + _territoryId, _location);
 	}
 
 	public synchronized void unSpawnMe()
 	{
 		if ( _player != null )
 			dropIt();
-		
-		if ( itemInstance != null )
-		{
-			itemInstance.decayMe();
-		}
+		if (_npc != null && !_npc.isDecayed())
+			_npc.deleteMe();
 	}
 	
 	public boolean activate(L2PcInstance player, L2ItemInstance item)
@@ -134,7 +121,6 @@ public class TerritoryWard
 		// Player holding it data
 		_player = player;
 		playerId = _player.getObjectId();
-		itemInstance = null;
 		_npc = null;
 
 		// Equip with the weapon

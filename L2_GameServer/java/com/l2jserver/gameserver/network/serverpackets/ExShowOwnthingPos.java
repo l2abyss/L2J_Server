@@ -61,12 +61,6 @@ public class ExShowOwnthingPos extends L2GameServerPacket
 					writeD(ward.getPlayer().getY());
 					writeD(ward.getPlayer().getZ());
 				}
-				else if (ward.getItemInstance() != null)
-				{
-					writeD(ward.getItemInstance().getX());
-					writeD(ward.getItemInstance().getY());
-					writeD(ward.getItemInstance().getZ());
-				}
 				else
 				{
 					writeD(0);
