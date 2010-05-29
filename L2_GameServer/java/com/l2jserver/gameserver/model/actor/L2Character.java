@@ -6208,6 +6208,11 @@ public abstract class L2Character extends L2Object
 
 	}
 	
+	public Map<Integer, Long> getDisabledSkills()
+	{
+		return _disabledSkills;
+	}
+	
 	/**
 	 * Enable a skill (remove it from _disabledSkills of the L2Character).<BR><BR>
 	 *
@@ -6460,17 +6465,17 @@ public abstract class L2Character extends L2Object
 							}
 							else if (target instanceof L2Attackable)
 							{
-								switch (skill.getId())
-								{
-									case 51: // Lure
-									case 511: // Temptation
-										break;
-									default:
-										// add attacker into list
-										((L2Character)target).addAttackerToAttackByList(this);
-								}
+										switch (skill.getId())
+										{
+											case 51: // Lure
+											case 511: // Temptation
+												break;
+											default:
+												// add attacker into list
+												((L2Character)target).addAttackerToAttackByList(this);
+										}
 							}
-							// notify target AI about the attack
+										// notify target AI about the attack
 							if (((L2Character)target).hasAI())
 							{
 								switch (skill.getSkillType())
@@ -6504,10 +6509,10 @@ public abstract class L2Character extends L2Object
 									case UNLOCK_SPECIAL:
 										break;
 									default:
-										player.updatePvPStatus();
-								}
-							}
+								player.updatePvPStatus();
 						}
+					}
+				}
 					}
 				}
 				
@@ -6535,7 +6540,7 @@ public abstract class L2Character extends L2Object
 				handler.useSkill(this, skill, targets);
 			else
 				skill.useSkill(this, targets);
-
+			
 			// Notify AI
 			if (skill.isOffensive())
 			{
@@ -6558,7 +6563,6 @@ public abstract class L2Character extends L2Object
 				}
 			}
 		}
-
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName()+": callSkill() failed.", e);
