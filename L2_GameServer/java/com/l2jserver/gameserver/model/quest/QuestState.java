@@ -551,6 +551,15 @@ public final class QuestState
 	}
 
 	/**
+	 * @param int : ID of the item you're looking for
+	 * @return true if item exists in player's inventory, false - if not
+	 */
+	public boolean hasQuestItems(int itemId)
+	{
+		return getPlayer().getInventory().getItemByItemId(itemId) != null;
+	}
+
+	/**
 	 * Return the level of enchantment on the weapon of the player(Done specifically for weapon SA's)
 	 * @param itemId : ID of the item to check enchantment
 	 * @return int
