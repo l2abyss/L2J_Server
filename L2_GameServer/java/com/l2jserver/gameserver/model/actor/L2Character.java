@@ -6440,14 +6440,6 @@ public abstract class L2Character extends L2Object
 								// Signets are a special case, casted on target_self but don't harm self
 								if (skill.getSkillType() != L2SkillType.SIGNET && skill.getSkillType() != L2SkillType.SIGNET_CASTTIME)
 								{
-									if (skill.getSkillType() != L2SkillType.AGGREDUCE
-											&& skill.getSkillType() != L2SkillType.AGGREDUCE_CHAR
-											&& skill.getSkillType() != L2SkillType.AGGREMOVE
-											&& ((L2Character)target).hasAI())
-									{
-										// notify target AI about the attack
-										((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, player);
-									}
 									if (target instanceof L2PcInstance)
 									{
 										((L2PcInstance)target).getAI().clientStartAutoAttack();
@@ -6468,6 +6460,19 @@ public abstract class L2Character extends L2Object
 							}
 							else if (target instanceof L2Attackable)
 							{
+								switch (skill.getId())
+								{
+									case 51: // Lure
+									case 511: // Temptation
+										break;
+									default:
+										// add attacker into list
+										((L2Character)target).addAttackerToAttackByList(this);
+								}
+							}
+							// notify target AI about the attack
+							if (((L2Character)target).hasAI())
+							{
 								switch (skill.getSkillType())
 								{
 									case AGGREDUCE:
@@ -6475,18 +6480,7 @@ public abstract class L2Character extends L2Object
 									case AGGREMOVE:
 										break;
 									default:
-										switch (skill.getId())
-										{
-											case 51: // Lure
-											case 511: // Temptation
-												break;
-											default:
-												// add attacker into list
-												((L2Character)target).addAttackerToAttackByList(this);
-										}
-										// notify target AI about the attack
 										((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
-										break;
 								}
 							}
 						}
@@ -6499,13 +6493,20 @@ public abstract class L2Character extends L2Object
 										(((L2PcInstance)target).getPvpFlag() > 0 ||
 												((L2PcInstance)target).getKarma() > 0)) player.updatePvPStatus();
 							}
-							else if (target instanceof L2Attackable 
-									&& !(skill.getSkillType() == L2SkillType.SUMMON)
-									&& !(skill.getSkillType() == L2SkillType.BEAST_FEED) 
-									&& !(skill.getSkillType() == L2SkillType.UNLOCK)
-									&& !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK)
-							)
-								player.updatePvPStatus();
+							else if (target instanceof L2Attackable)
+							{
+								switch (skill.getSkillType())
+								{
+									case SUMMON:
+									case BEAST_FEED:
+									case UNLOCK:
+									case DELUXE_KEY_UNLOCK:
+									case UNLOCK_SPECIAL:
+										break;
+									default:
+										player.updatePvPStatus();
+								}
+							}
 						}
 					}
 				}
@@ -6534,8 +6535,30 @@ public abstract class L2Character extends L2Object
 				handler.useSkill(this, skill, targets);
 			else
 				skill.useSkill(this, targets);
-			
+
+			// Notify AI
+			if (skill.isOffensive())
+			{
+				switch (skill.getSkillType())
+				{
+					case AGGREDUCE:
+					case AGGREDUCE_CHAR:
+					case AGGREMOVE:
+						break;
+					default:
+						for (L2Object target : targets)
+						{
+							if (target instanceof L2Character && ((L2Character)target).hasAI())
+							{
+								// notify target AI about the attack
+								((L2Character)target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
+							}
+						}
+						break;
+				}
+			}
 		}
+
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName()+": callSkill() failed.", e);
