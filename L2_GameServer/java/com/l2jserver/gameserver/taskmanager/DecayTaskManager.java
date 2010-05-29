@@ -14,8 +14,10 @@
  */
 package com.l2jserver.gameserver.taskmanager;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -76,24 +78,28 @@ public class DecayTaskManager
 		
 		public void run()
 		{
-			Long current = System.currentTimeMillis();
+			long current = System.currentTimeMillis();
 			int delay;
 			try
 			{
-				if (_decayTasks != null)
-					for (L2Character actor : _decayTasks.keySet())
+				Iterator<Entry<L2Character, Long>> it = _decayTasks.entrySet().iterator();
+				while (it.hasNext())
+				{
+					Entry<L2Character, Long> e = it.next();
+					L2Character actor = e.getKey();
+					Long next = e.getValue();
+					if (next == null)
+						 continue;
+					if (actor.isRaid() && !actor.isRaidMinion())
+						delay = RAID_BOSS_DECAY_TIME;
+					else
+						delay = ATTACKABLE_DECAY_TIME;
+					if ((current - next) > delay)
 					{
-						if (actor.isRaid() && !actor.isRaidMinion())
-							delay = RAID_BOSS_DECAY_TIME;
-						else
-							delay = ATTACKABLE_DECAY_TIME;
-						
-						if ((current - _decayTasks.get(actor)) > delay)
-						{
-							actor.onDecay();
-							_decayTasks.remove(actor);
-						}
+						actor.onDecay();
+						it.remove();
 					}
+				}
 			}
 			catch (Exception e)
 			{

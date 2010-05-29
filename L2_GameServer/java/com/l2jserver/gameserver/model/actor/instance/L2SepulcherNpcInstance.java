@@ -342,7 +342,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 						{
 							for (L2PcInstance mem : player.getParty().getPartyMembers())
 							{
-								if (mem.getInventory().getItemByItemId(HALLS_KEY) != null)
+								if (mem != null && mem.getInventory().getItemByItemId(HALLS_KEY) != null)
 									mem.destroyItemByItemId("Quest", HALLS_KEY, mem.getInventory().getItemByItemId(HALLS_KEY).getCount(), mem, true);
 							}
 						}
