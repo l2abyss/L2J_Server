@@ -15,12 +15,10 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.ai.CtrlIntention;
-import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
@@ -31,21 +29,19 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 public final class L2TerritoryWardInstance extends L2Attackable
 {
-	private Castle _castle = null; // the castle which owns this Ward
-	
 	public L2TerritoryWardInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
 		
 		disableCoreAI(true);
 	}
-	
+
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		if (isInvul())
 			return false;
-		if (_castle == null || !_castle.getZone().isActive())
+		if (getCastle() == null || !getCastle().getZone().isActive())
 			return false;
 
 		final L2PcInstance actingPlayer = attacker.getActingPlayer();
@@ -53,7 +49,7 @@ public final class L2TerritoryWardInstance extends L2Attackable
 			return false;
 		if (actingPlayer.getSiegeSide() == 0)
 			return false;
-		if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, _castle.getCastleId()))
+		if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, getCastle().getCastleId()))
 			return false;
 
 		return true;
@@ -70,8 +66,7 @@ public final class L2TerritoryWardInstance extends L2Attackable
 	{
 		super.onSpawn();
 
-		_castle = CastleManager.getInstance().getCastle(getX(), getY(), getZ());
-		if (_castle == null)
+		if (getCastle() == null)
 			_log.warning("L2TerritoryWardInstance(" + getName() + ") spawned outside Castle Zone!");
 	}
 
@@ -88,7 +83,9 @@ public final class L2TerritoryWardInstance extends L2Attackable
 			return;
 		if (actingPlayer.getSiegeSide() == 0)
 			return;
-		if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, _castle.getCastleId()))
+		if (getCastle() == null) // ?
+			return;
+		if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, getCastle().getCastleId()))
 			return;
 
 		super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
@@ -104,7 +101,7 @@ public final class L2TerritoryWardInstance extends L2Attackable
 	public boolean doDie(L2Character killer)
 	{
 		// Kill the L2NpcInstance (the corpse disappeared after 7 seconds)
-		if (!super.doDie(killer) || _castle == null || !TerritoryWarManager.getInstance().isTWInProgress())
+		if (!super.doDie(killer) || getCastle() == null || !TerritoryWarManager.getInstance().isTWInProgress())
 			return false;
 
 		if (killer instanceof L2PcInstance)
