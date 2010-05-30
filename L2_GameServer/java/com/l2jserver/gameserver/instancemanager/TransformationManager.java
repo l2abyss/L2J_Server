@@ -14,14 +14,12 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import java.util.Collection;
-import java.util.Map;
+import gnu.trove.TIntObjectHashMap;
+
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.L2Transformation;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-
-import javolution.util.FastMap;
 
 /**
  *
@@ -36,16 +34,16 @@ public class TransformationManager
 		return SingletonHolder._instance;
 	}
 	
-	private Map<Integer, L2Transformation> _transformations;
+	private TIntObjectHashMap<L2Transformation> _transformations;
 	
 	private TransformationManager()
 	{
-		_transformations = new FastMap<Integer, L2Transformation>();
+		_transformations = new TIntObjectHashMap<L2Transformation>();
 	}
 	
 	public void report()
 	{
-		_log.info("Loaded: " + this.getAllTransformations().size() + " transformations.");
+		_log.info("Loaded: " + _transformations.size() + " transformations.");
 	}
 	
 	public boolean transformPlayer(int id, L2PcInstance player)
@@ -71,11 +69,6 @@ public class TransformationManager
 	public L2Transformation registerTransformation(L2Transformation transformation)
 	{
 		return _transformations.put(transformation.getId(), transformation);
-	}
-	
-	public Collection<L2Transformation> getAllTransformations()
-	{
-		return _transformations.values();
 	}
 	
 	@SuppressWarnings("synthetic-access")

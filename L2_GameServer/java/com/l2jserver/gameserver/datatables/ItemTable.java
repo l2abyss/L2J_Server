@@ -70,8 +70,6 @@ public class ItemTable
 	private Map<Integer, L2Armor> _armors;
 	private Map<Integer, L2Weapon> _weapons;
 	
-	private boolean _initialized = true;
-	
 	static
 	{
 		_materials.put("paper", L2Item.MATERIAL_PAPER);
@@ -657,16 +655,7 @@ public class ItemTable
 		
 		return item;
 	}
-	
-	/**
-	 * Returns if ItemTable initialized
-	 * @return boolean
-	 */
-	public boolean isInitialized()
-	{
-		return _initialized;
-	}
-	
+
 	/*
 	private void fillEtcItemsTable()
 	{

@@ -194,81 +194,68 @@ public class GameServer
 		new File("log/game").mkdirs();
 		
 		// load script engines
+		printSection("Engines");
 		L2ScriptEngineManager.getInstance();
 		
+		printSection("World");
 		// start game time control early
 		GameTimeController.getInstance();
+		InstanceManager.getInstance();
+		L2World.getInstance();
+		MapRegionTable.getInstance();
+		Announcements.getInstance();
 		
-		// keep the references of Singletons to prevent garbage collection
-		CharNameTable.getInstance();
+		printSection("Skills");
 		EnchantGroupsTable.getInstance();
 		SkillTable.getInstance();
-		
-		ItemTable.getInstance();
-		if (!ItemTable.getInstance().isInitialized())
-		{
-			_log.severe("Could not find the extraced files. Please Check Your Data.");
-			throw new Exception("Could not initialize the item table");
-		}
-		
-		// Load clan hall data before zone data and doors table
-		ClanHallManager.getInstance();
-		
-		ExtractableItemsData.getInstance();
-		ExtractableSkillsData.getInstance();
-		SummonItemsData.getInstance();
-		ZoneManager.getInstance();
-		MerchantPriceConfigTable.getInstance().loadInstances();
-		EnchantHPBonusData.getInstance();
-		TradeController.getInstance();
-		L2Multisell.getInstance();
-		InstanceManager.getInstance();
-		
-		if (Config.ALLOW_NPC_WALKERS)
-		{
-			NpcWalkerRoutesTable.getInstance().load();
-		}
-		
-		NpcBufferTable.getInstance();
-		
-		RecipeController.getInstance();
-		
 		SkillTreeTable.getInstance();
 		PetSkillsTable.getInstance();
-		ArmorSetsTable.getInstance();
-		FishTable.getInstance();
-		SkillSpellbookTable.getInstance();
-		CharTemplateTable.getInstance();
 		NobleSkillTable.getInstance();
 		GMSkillTable.getInstance();
 		HeroSkillTable.getInstance();
 		ResidentialSkillTable.getInstance();
+		SkillSpellbookTable.getInstance();
 		
-		// Call to load caches
-		HtmCache.getInstance();
-		CrestCache.getInstance();
+		printSection("Items");
+		ItemTable.getInstance();
+		ExtractableItemsData.getInstance();
+		ExtractableSkillsData.getInstance();
+		SummonItemsData.getInstance();
+		EnchantHPBonusData.getInstance();
+		MerchantPriceConfigTable.getInstance().loadInstances();
+		TradeController.getInstance();
+		L2Multisell.getInstance();
+		RecipeController.getInstance();
+		ArmorSetsTable.getInstance();
+		FishTable.getInstance();
+		SkillSpellbookTable.getInstance();
 		
-		ClanTable.getInstance();
-		
-		NpcTable.getInstance();
-		
-		HennaTable.getInstance();
-		HennaTreeTable.getInstance();
-		HelperBuffTable.getInstance();
-		
-		GeoData.getInstance();
-		if (Config.GEODATA == 2)
-			PathFinding.getInstance();
-		
-		CastleManager.getInstance().loadInstances();
-		SiegeManager.getInstance().getSieges();
-		FortManager.getInstance().loadInstances();
-		FortSiegeManager.getInstance();
-		TerritoryWarManager.getInstance();
-		
-		TeleportLocationTable.getInstance();
+		printSection("Characters");
+		CharTemplateTable.getInstance();
+		CharNameTable.getInstance();
 		LevelUpData.getInstance();
-		L2World.getInstance();
+		AccessLevels.getInstance();
+		AdminCommandAccessRights.getInstance();
+		GmListTable.getInstance();
+		PetDataTable.getInstance().loadPetsData();
+		
+		printSection("Clans");
+		ClanTable.getInstance();
+		ClanHallManager.getInstance();
+		AuctionManager.getInstance();
+
+		
+		printSection("NPCs");
+		NpcTable.getInstance();
+		DoorTable.getInstance();
+		StaticObjects.getInstance();
+		CastleManager.getInstance().loadInstances();
+		FortManager.getInstance().loadInstances();
+		if (Config.ALLOW_NPC_WALKERS)
+		{
+			NpcWalkerRoutesTable.getInstance().load();
+		}
+		NpcBufferTable.getInstance();
 		SpawnTable.getInstance();
 		RaidBossSpawnManager.getInstance();
 		DayNightSpawnManager.getInstance().notifyChangeMode();
@@ -276,28 +263,48 @@ public class GameServer
 		RaidBossPointsManager.init();
 		FourSepulchersManager.getInstance().init();
 		DimensionalRiftManager.getInstance();
-		Announcements.getInstance();
-		MapRegionTable.getInstance();
 		EventDroplist.getInstance();
+
 		
-		DoorTable.getInstance();
-		StaticObjects.getInstance();
-		UITable.getInstance();
-		
-		/** Load Manor data */
-		L2Manor.getInstance();
-		
-		/** Load Manager */
-		AuctionManager.getInstance();
-		BoatManager.getInstance();
+		printSection("Siege");
+		SiegeManager.getInstance().getSieges();
+		FortSiegeManager.getInstance();
+		TerritoryWarManager.getInstance();
 		CastleManorManager.getInstance();
 		MercTicketManager.getInstance();
-		// PartyCommandManager.getInstance();
+		L2Manor.getInstance();
+		
+		//printSection("Zones");
+		ZoneManager.getInstance();
+		
+		printSection("Olympiad");
+		Olympiad.getInstance();
+		Hero.getInstance();
+		
+		// Call to load caches
+		printSection("Cache");
+		HtmCache.getInstance();
+		CrestCache.getInstance();
+		TeleportLocationTable.getInstance();
+		UITable.getInstance();
 		PartyMatchWaitingList.getInstance();
 		PartyMatchRoomList.getInstance();
 		PetitionManager.getInstance();
+		HennaTable.getInstance();
+		HennaTreeTable.getInstance();
+		HelperBuffTable.getInstance();
+		AugmentationData.getInstance();
+		CursedWeaponsManager.getInstance();
+		
+		printSection("Geodata");
+		GeoData.getInstance();
+		if (Config.GEODATA == 2)
+			PathFinding.getInstance();
+		
+		printSection("Scripts");
 		QuestManager.getInstance();
 		TransformationManager.getInstance();
+		BoatManager.getInstance();
 		AirShipManager.getInstance();
 		
 		try
@@ -340,8 +347,7 @@ public class GameServer
 		}
 		QuestManager.getInstance().report();
 		TransformationManager.getInstance().report();
-		
-		AugmentationData.getInstance();
+
 		if (Config.SAVE_DROPPED_ITEM)
 			ItemsOnGroundManager.getInstance();
 		
@@ -355,11 +361,8 @@ public class GameServer
 		AutoSpawnHandler.getInstance();
 		AutoChatHandler.getInstance();
 		
-		Olympiad.getInstance();
-		Hero.getInstance();
 		FaenorScriptEngine.getInstance();
 		// Init of a cursed weapon manager
-		CursedWeaponsManager.getInstance();
 		
 		_log.info("AutoChatHandler: Loaded " + AutoChatHandler.getInstance().size() + " handlers in total.");
 		_log.info("AutoSpawnHandler: Loaded " + AutoSpawnHandler.getInstance().size() + " handlers in total.");
@@ -371,18 +374,10 @@ public class GameServer
 		UserCommandHandler.getInstance();
 		VoicedCommandHandler.getInstance();
 		
-		AccessLevels.getInstance();
-		AdminCommandAccessRights.getInstance();
-		
 		if (Config.L2JMOD_ALLOW_WEDDING)
 			CoupleManager.getInstance();
 		
 		TaskManager.getInstance();
-		
-		GmListTable.getInstance();
-		
-		// read pet stats from db
-		PetDataTable.getInstance().loadPetsData();
 		
 		MerchantPriceConfigTable.getInstance().updateReferences();
 		CastleManager.getInstance().activateInstances();
@@ -492,6 +487,7 @@ public class GameServer
 		
 		// Initialize config
 		Config.load();
+		printSection("Database");
 		L2DatabaseFactory.getInstance();
 		gameServer = new GameServer();
 		
@@ -504,5 +500,13 @@ public class GameServer
 		{
 			_log.info("Telnet server is currently disabled.");
 		}
+	}
+	
+	public static void printSection(String s)
+	{
+		s = "=[ " + s + " ]";
+		while (s.length() < 78)
+			s = "-" + s;
+		_log.info(s);
 	}
 }
