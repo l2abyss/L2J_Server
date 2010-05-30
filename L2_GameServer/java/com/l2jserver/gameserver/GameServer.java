@@ -247,6 +247,7 @@ public class GameServer
 		
 		printSection("NPCs");
 		NpcTable.getInstance();
+		ZoneManager.getInstance();
 		DoorTable.getInstance();
 		StaticObjects.getInstance();
 		CastleManager.getInstance().loadInstances();
@@ -273,9 +274,6 @@ public class GameServer
 		CastleManorManager.getInstance();
 		MercTicketManager.getInstance();
 		L2Manor.getInstance();
-		
-		//printSection("Zones");
-		ZoneManager.getInstance();
 		
 		printSection("Olympiad");
 		Olympiad.getInstance();

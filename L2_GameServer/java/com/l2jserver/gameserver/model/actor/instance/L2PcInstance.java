@@ -1406,8 +1406,8 @@ public final class L2PcInstance extends L2Playable
 
 	/**
 	 * Manage Logout Task: <li>Remove player from world <BR>
-	 * {@link L2PcInstance#deleteMe()}</li> <li>Save player data into DB <BR>
-	 * {@link L2GameClient#saveCharToDisk(L2PcInstance)}</li> <BR>
+	 * {@link L2PcInstance#deleteMe(boolean)}</li> <li>Save player data into DB <BR>
+	 * {@link L2GameClient#saveCharToDisk(L2PcInstance, boolean)}</li> <BR>
 	 * <BR>
 	 */
 	public void logout()
@@ -1417,8 +1417,8 @@ public final class L2PcInstance extends L2Playable
 
 	/**
 	 * Manage Logout Task: <li>Remove player from world <BR>
-	 * {@link L2PcInstance#deleteMe()}</li> <li>Save player data into DB <BR>
-	 * {@link L2GameClient#saveCharToDisk(L2PcInstance)}</li> <BR>
+	 * {@link L2PcInstance#deleteMe(boolean)}</li> <li>Save player data into DB <BR>
+	 * {@link L2GameClient#saveCharToDisk(L2PcInstance, boolean)}</li> <BR>
 	 * <BR>
 	 * @param closeClient
 	 */
