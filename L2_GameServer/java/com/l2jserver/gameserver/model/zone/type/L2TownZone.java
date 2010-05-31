@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2SpawnZone;
@@ -124,5 +125,15 @@ public class L2TownZone extends L2SpawnZone
 	public final boolean isPeaceZone()
 	{
 		return _isPeaceZone;
+	}
+	
+	/**
+	 * Return town zone name<BR>
+	 * Call {@link MapRegionTable#getClosestTownName(int)}
+	 * @return String
+	 */
+	public String getName()
+	{
+		return MapRegionTable.getInstance().getClosestTownName(_townId);
 	}
 }
