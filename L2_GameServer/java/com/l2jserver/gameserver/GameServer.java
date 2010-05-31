@@ -243,7 +243,11 @@ public class GameServer
 		ClanTable.getInstance();
 		ClanHallManager.getInstance();
 		AuctionManager.getInstance();
-
+		
+		printSection("Geodata");
+		GeoData.getInstance();
+		if (Config.GEODATA == 2)
+			PathFinding.getInstance();
 		
 		printSection("NPCs");
 		NpcTable.getInstance();
@@ -265,7 +269,6 @@ public class GameServer
 		FourSepulchersManager.getInstance().init();
 		DimensionalRiftManager.getInstance();
 		EventDroplist.getInstance();
-
 		
 		printSection("Siege");
 		SiegeManager.getInstance().getSieges();
@@ -293,11 +296,6 @@ public class GameServer
 		HelperBuffTable.getInstance();
 		AugmentationData.getInstance();
 		CursedWeaponsManager.getInstance();
-		
-		printSection("Geodata");
-		GeoData.getInstance();
-		if (Config.GEODATA == 2)
-			PathFinding.getInstance();
 		
 		printSection("Scripts");
 		QuestManager.getInstance();
