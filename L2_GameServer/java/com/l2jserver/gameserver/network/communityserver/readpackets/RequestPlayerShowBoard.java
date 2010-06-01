@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.communityserver.readpackets;
 
-import java.util.logging.Logger;
-
 import org.netcon.BaseReadPacket;
 
 import com.l2jserver.gameserver.model.L2World;
@@ -27,7 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.CSShowComBoard;
  */
 public final class RequestPlayerShowBoard extends BaseReadPacket
 {
-	private static final Logger _log = Logger.getLogger(RequestPlayerShowBoard.class.getName());
+	//private static final Logger _log = Logger.getLogger(RequestPlayerShowBoard.class.getName());
 	
 	public RequestPlayerShowBoard(final byte[] data)
 	{

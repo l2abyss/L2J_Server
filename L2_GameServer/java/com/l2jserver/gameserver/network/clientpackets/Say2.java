@@ -77,7 +77,7 @@ public final class Say2 extends L2GameClientPacket
 		"TRADE",
 		"ALLIANCE",
 		"ANNOUNCEMENT", //10
-		"CUSTOM",
+		"BOAT",
 		"L2FRIEND",
 		"MSNCHAT",
 		"PARTYMATCH_ROOM",
