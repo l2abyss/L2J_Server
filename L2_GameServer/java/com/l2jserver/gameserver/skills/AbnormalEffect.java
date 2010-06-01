@@ -67,6 +67,7 @@ public enum AbnormalEffect
 	S_BLACK_AFFRO("blackafro", 0x000040),
 	S_UNKNOWN8("unknown8", 0x000080),
 	STIGMA_SHILIEN("stigmashilien", 0x000100),
+	S_UNKNOWN9("unknown9", 0x000200),
 	
 	// event effects
 	E_AFRO_1("afrobaguette1", 0x000001),

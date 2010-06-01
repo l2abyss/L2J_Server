@@ -39,11 +39,8 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.Util;
 
-
 /**
- * This class ...
- *
- * @version $Revision: 1.12.4.4 $ $Date: 2005/03/27 15:29:30 $
+ * RequestWearItem client packet class.
  */
 public final class RequestWearItem extends L2GameClientPacket
 {
@@ -133,7 +130,7 @@ public final class RequestWearItem extends L2GameClientPacket
 		if (!player.isGM() && (target == null // No target (ie GM Shop)
 				|| !(target instanceof L2MerchantInstance || target instanceof L2MercManagerInstance) // Target not a merchant and not mercmanager
 		|| !player.isInsideRadius(target, L2Npc.INTERACTION_DISTANCE, false, false) // Distance is too far
-				))
+		))
 			return;
 		
 		L2TradeList list = null;
@@ -145,7 +142,7 @@ public final class RequestWearItem extends L2GameClientPacket
 		
 		if (lists == null)
 		{
-			Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " sent a false BuyList list_id.", Config.DEFAULT_PUNISH);
+			Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " sent a false BuyList list_id " + _listId, Config.DEFAULT_PUNISH);
 			return;
 		}
 		
@@ -159,7 +156,7 @@ public final class RequestWearItem extends L2GameClientPacket
 		
 		if (list == null)
 		{
-			Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " sent a false BuyList list_id.", Config.DEFAULT_PUNISH);
+			Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " sent a false BuyList list_id " + _listId, Config.DEFAULT_PUNISH);
 			return;
 		}
 		
@@ -185,7 +182,7 @@ public final class RequestWearItem extends L2GameClientPacket
 			
 			if (!list.containsItemId(itemId))
 			{
-				Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " sent a false BuyList list_id.", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " sent a false BuyList list_id " + _listId + " and item_id " + itemId, Config.DEFAULT_PUNISH);
 				return;
 			}
 			
@@ -230,7 +227,7 @@ public final class RequestWearItem extends L2GameClientPacket
 			
 			if (!list.containsItemId(itemId))
 			{
-				Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " sent a false BuyList list_id.", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " sent a false BuyList list_id " + _listId + " and item_id " + itemId, Config.DEFAULT_PUNISH);
 				return;
 			}
 			

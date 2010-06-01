@@ -16,13 +16,13 @@ package com.l2jserver.gameserver.network.communityserver.readpackets;
 
 import java.util.logging.Logger;
 
+import org.netcon.BaseReadPacket;
+
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExMailArrived;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-
-import org.netcon.BaseReadPacket;
 
 /**
  * @authors  Forsaiken, Gigiikun
@@ -44,14 +44,11 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 		
 		L2PcInstance player = L2World.getInstance().getPlayer(playerObjId);
 		if (player == null)
-		{
-			_log.info("error: player not found!!!");
 			return;
-		}
 		
 		switch(type)
 		{
-			case -1: // mail arraived
+			case -1: // mail arrived
 				player.sendPacket(ExMailArrived.STATIC_PACKET);
 				break;
 			case 0: // text message
