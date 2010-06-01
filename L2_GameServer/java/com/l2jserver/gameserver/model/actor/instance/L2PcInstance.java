@@ -9354,6 +9354,8 @@ public final class L2PcInstance extends L2Playable
 				!((L2PcInstance)target).isInsideZone(ZONE_PVP)         	// target is not in PvP zone
 		)
 		{
+			SkillDat skilldat = getCurrentSkill();
+			SkillDat skilldatpet = getCurrentPetSkill();
 			if(skill.isPvpSkill()) // pvp skill
 			{
 				if(getClan() != null && ((L2PcInstance)target).getClan() != null)
@@ -9367,8 +9369,8 @@ public final class L2PcInstance extends L2Playable
 					)
 					return false;
 			}
-			else if ((getCurrentSkill() != null && !getCurrentSkill().isCtrlPressed() && skill.isOffensive() && !srcIsSummon) 
-					|| (getCurrentPetSkill() != null && !getCurrentPetSkill().isCtrlPressed() && skill.isOffensive() && srcIsSummon))
+			else if ((skilldat != null && !skilldat.isCtrlPressed() && skill.isOffensive() && !srcIsSummon) 
+					|| (skilldatpet != null && !skilldatpet.isCtrlPressed() && skill.isOffensive() && srcIsSummon))
 			{
 				if(getClan() != null && ((L2PcInstance)target).getClan() != null)
 				{
