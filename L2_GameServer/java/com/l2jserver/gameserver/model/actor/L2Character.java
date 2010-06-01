@@ -446,12 +446,13 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Add L2Character instance that is attacking to the attacker list.<BR><BR>
 	 * @param player The L2Character that attacks this one
+	 * 
+	 * <B><U> Overridden in </U> :</B><BR><BR>
+	 * <li> L2Attackable : Add to list only for attackables, not all other NPCs</li><BR><BR>
 	 */
 	public void addAttackerToAttackByList (L2Character player)
 	{
-		if (player == null || player == this || getAttackByList().contains(player)) 
-			return;
-		getAttackByList().add(player);
+		// DS: moved to L2Attackable
 	}
 
 	/**

@@ -857,6 +857,18 @@ public class L2Attackable extends L2Npc
 
 
 	/**
+	 * 
+	 * @see com.l2jserver.gameserver.model.actor.L2Character#addAttackerToAttackByList(com.l2jserver.gameserver.model.actor.L2Character)
+	 */
+	@Override
+	public void addAttackerToAttackByList (L2Character player)
+	{
+		if (player == null || player == this || getAttackByList().contains(player)) 
+			return;
+		getAttackByList().add(player);
+	}
+
+	/**
 	 * Add damage and hate to the attacker AggroInfo of the L2Attackable _aggroList.
 	 *
 	 * @param attacker The L2Character that gave damages to this L2Attackable
