@@ -1061,6 +1061,19 @@ public abstract class L2Character extends L2Object
 
 			// Calculate physical damages
 			damage1 = (int)Formulas.calcPhysDam(this, target, null, shld1, crit1, false, attack.soulshot);
+
+			double range = Math.sqrt(this.getDistanceSq(target));
+			if (range < 1600)
+			{
+				double dmgmod = 1 - (1 - range / 800) * 0.35;
+
+				if (dmgmod > 1)
+					dmgmod = 2 - dmgmod;
+				if (dmgmod > 0)
+					damage1 *= dmgmod;
+			}
+			else
+				damage1 *= 0.65;
 		}
 
 		// Check if the L2Character is a L2PcInstance
