@@ -14,16 +14,19 @@
  */
 package com.l2jserver.gameserver.datatables;
 
+import gnu.trove.TIntObjectHashMap;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2NpcWalkerNode;
-
-import javolution.util.FastList;
 
 /**
  * Main Table to Load Npc Walkers Routes and Chat SQL Table.<br>
@@ -37,7 +40,7 @@ public class NpcWalkerRoutesTable
 {
 	private final static Logger _log = Logger.getLogger(SpawnTable.class.getName());
 	
-	private FastList<L2NpcWalkerNode> _routes = new FastList<L2NpcWalkerNode>();
+	private TIntObjectHashMap<List<L2NpcWalkerNode>> _routes = new TIntObjectHashMap<List<L2NpcWalkerNode>>();
 	
 	public static NpcWalkerRoutesTable getInstance()
 	{
@@ -46,7 +49,11 @@ public class NpcWalkerRoutesTable
 	
 	private NpcWalkerRoutesTable()
 	{
-		_log.info("Initializing Walkers Routes Table.");
+		if (Config.ALLOW_NPC_WALKERS)
+		{
+			_log.info("Initializing Walkers Routes Table.");
+			load();
+		}
 	}
 	
 	public void load()
@@ -63,7 +70,8 @@ public class NpcWalkerRoutesTable
 			{
 				route = new L2NpcWalkerNode();
 				route.setRouteId(rset.getInt("route_id"));
-				route.setNpcId(rset.getInt("npc_id"));
+				int npcid = rset.getInt("npc_id");
+				route.setNpcId(npcid);
 				route.setMovePoint(rset.getString("move_point"));
 				route.setChatText(rset.getString("chatText"));
 				
@@ -73,11 +81,18 @@ public class NpcWalkerRoutesTable
 				route.setDelay(rset.getInt("delay"));
 				route.setRunning(rset.getBoolean("running"));
 				
-				_routes.add(route);
+				if (_routes.get(npcid) == null)
+				{
+					_routes.put(npcid, new ArrayList<L2NpcWalkerNode>());
+				}
+				_routes.get(npcid).add(route);
 			}
 			
 			rset.close();
 			statement.close();
+			
+			for (Object list : _routes.getValues())
+				((ArrayList<?>)list).trimToSize();
 			
 			_log.info("WalkerRoutesTable: Loaded " + _routes.size() + " Npc Walker Routes.");
 		}
@@ -91,19 +106,9 @@ public class NpcWalkerRoutesTable
 		}
 	}
 	
-	public FastList<L2NpcWalkerNode> getRouteForNpc(int id)
+	public List<L2NpcWalkerNode> getRouteForNpc(int id)
 	{
-		FastList<L2NpcWalkerNode> _return = new FastList<L2NpcWalkerNode>();
-		
-		for (FastList.Node<L2NpcWalkerNode> n = _routes.head(), end = _routes.tail(); (n = n.getNext()) != end;)
-		{
-			if (n.getValue().getNpcId() == id)
-			{
-				_return.add(n.getValue());
-			}
-		}
-		return _return;
-		
+		return _routes.get(id);
 	}
 	
 	@SuppressWarnings("synthetic-access")

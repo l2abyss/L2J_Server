@@ -14,9 +14,8 @@
  */
 package com.l2jserver.gameserver.ai;
 
+import java.util.List;
 import java.util.logging.Level;
-
-import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -42,7 +41,7 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 	/**
 	 * route of the current npc
 	 */
-	private FastList<L2NpcWalkerNode> _route;
+	private List<L2NpcWalkerNode> _route;
 	
 	/**
 	 * current node

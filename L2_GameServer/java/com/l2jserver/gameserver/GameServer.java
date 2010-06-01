@@ -251,15 +251,12 @@ public class GameServer
 		
 		printSection("NPCs");
 		NpcTable.getInstance();
+		NpcWalkerRoutesTable.getInstance();
 		ZoneManager.getInstance();
 		DoorTable.getInstance();
 		StaticObjects.getInstance();
 		CastleManager.getInstance().loadInstances();
 		FortManager.getInstance().loadInstances();
-		if (Config.ALLOW_NPC_WALKERS)
-		{
-			NpcWalkerRoutesTable.getInstance().load();
-		}
 		NpcBufferTable.getInstance();
 		SpawnTable.getInstance();
 		RaidBossSpawnManager.getInstance();
