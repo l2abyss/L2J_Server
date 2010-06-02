@@ -95,7 +95,7 @@ public final class FloodProtectorAction
 			
 			_count.incrementAndGet();
 			
-			if (!_punishmentInProgress && _config.PUNISHMENT_LIMIT > 0 && _count.get() > _config.PUNISHMENT_LIMIT && _config.PUNISHMENT_TYPE != null)
+			if (!_punishmentInProgress && _config.PUNISHMENT_LIMIT > 0 && _count.get() >= _config.PUNISHMENT_LIMIT && _config.PUNISHMENT_TYPE != null)
 			{
 				_punishmentInProgress = true;
 				

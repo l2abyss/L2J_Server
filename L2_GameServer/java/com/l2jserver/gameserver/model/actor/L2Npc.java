@@ -678,6 +678,8 @@ public class L2Npc extends L2Character
 		{
 			for (L2PcInstance player : plrs)
 			{
+				if (player == null)
+					continue;
 				if (getRunSpeed() == 0)
 					player.sendPacket(new ServerObjectInfo(this, player));
 				else
