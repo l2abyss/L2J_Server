@@ -55,7 +55,7 @@ public enum L2EtcItemType
 	 */
 	public int mask()
 	{
-		return 1 << (_id + 24);
+		return 0;
 	}
 	
 	/**
