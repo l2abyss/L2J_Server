@@ -69,7 +69,7 @@ public class Hero
 	private static final String INSERT_HERO = "INSERT INTO heroes VALUES (?,?,?,?)";
 	private static final String UPDATE_HERO = "UPDATE heroes SET count = ?, " + "played = ?" + " WHERE charId = ?";
 	private static final String GET_CLAN_ALLY = "SELECT characters.clanid " + "AS clanid, coalesce(clan_data.ally_Id, 0) AS allyId FROM characters " + "LEFT JOIN clan_data ON clan_data.clan_id = characters.clanid " + "WHERE characters.charId = ?";
-	private static final String GET_CLAN_NAME = "SELECT clan_name FROM clan_data " + "WHERE clan_id = (SELECT clanid FROM characters WHERE char_name = ?)";
+	private static final String GET_CLAN_NAME = "SELECT clan_name FROM clan_data " + "WHERE clan_id = (SELECT clanid FROM characters WHERE charId = ?)";
 	// delete hero items
 	private static final String DELETE_ITEMS = "DELETE FROM items WHERE item_id IN " + "(6842, 6611, 6612, 6613, 6614, 6615, 6616, 6617, 6618, 6619, 6620, 6621, 9388, 9389, 9390) " + "AND owner_id NOT IN (SELECT charId FROM characters WHERE accesslevel > 0)";
 	
@@ -762,15 +762,10 @@ public class Hero
 		heroes.clear();
 		
 		updateHeroes(false);
-		
-		for(Integer charid : _heroes.keySet())
+
+		for(Integer charId : _heroes.keySet())
 		{
-            StatsSet hero = _heroes.get(charid);
-            String name = hero.getString(Olympiad.CHAR_NAME);
-			// String name = hero.getString(Olympiad.CHAR_NAME);
-			// int charid = hero.getInteger(Olympiad.CHAR_ID);
-			
-			L2PcInstance player = L2World.getInstance().getPlayer(name);
+			L2PcInstance player = L2World.getInstance().getPlayer(charId);
 			
 			if (player != null)
 			{
@@ -780,7 +775,7 @@ public class Hero
 				{
 					clan.addReputationScore(Config.HERO_POINTS, true);
 					SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_MEMBER_C1_BECAME_HERO_AND_GAINED_S2_REPUTATION_POINTS);
-					sm.addString(name);
+					sm.addString(CharNameTable.getInstance().getNameById(charId));
 					sm.addNumber(Config.HERO_POINTS);
 					clan.broadcastToOnlineMembers(sm);
 				}
@@ -796,9 +791,9 @@ public class Hero
 			else
 			{
 				// Set Gained hero and reload data
-				setHeroGained(charid);
-				loadFights(charid);
-				loadDiary(charid);
+				setHeroGained(charId);
+				loadFights(charId);
+				loadDiary(charId);
 				
 				Connection con = null;
 				
@@ -806,7 +801,7 @@ public class Hero
 				{
 					con = L2DatabaseFactory.getInstance().getConnection();
 					PreparedStatement statement = con.prepareStatement(GET_CLAN_NAME);
-					statement.setString(1, name);
+					statement.setInt(1, charId);
 					ResultSet rset = statement.executeQuery();
 					if (rset.next())
 					{
@@ -818,7 +813,7 @@ public class Hero
 							{
 								clan.addReputationScore(Config.HERO_POINTS, true);
 								SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_MEMBER_C1_BECAME_HERO_AND_GAINED_S2_REPUTATION_POINTS);
-								sm.addString(name);
+								sm.addString(CharNameTable.getInstance().getNameById(charId));
 								sm.addNumber(Config.HERO_POINTS);
 								clan.broadcastToOnlineMembers(sm);
 							}
@@ -830,7 +825,7 @@ public class Hero
 				}
 				catch (Exception e)
 				{
-					_log.warning("could not get clan name of " + name + ": " + e);
+					_log.warning("could not get clan name of player with objectId:" + charId + ": " + e);
 				}
 				finally
 				{
