@@ -4150,10 +4150,12 @@ public abstract class L2Character extends L2Object
 			dx = m._xDestination - m._xAccurate;
 			dy = m._yDestination - m._yAccurate;
 		}
+
+		final boolean isFloating = isFlying() || isInsideZone(L2Character.ZONE_WATER);
+
 		// Z coordinate will follow geodata or client values
 		if (Config.GEODATA > 0 && Config.COORD_SYNCHRONIZE == 2 
-			&& !isFlying()
-			&& !isInsideZone(L2Character.ZONE_WATER)
+			&& !isFloating
 			&& !m.disregardingGeodata
 			&& GameTimeController.getGameTicks() % 10 == 0 // once a second to reduce possible cpu load
 			&& GeoData.getInstance().hasGeo(xPrev, yPrev))
@@ -4179,11 +4181,13 @@ public abstract class L2Character extends L2Object
 		else
 			dz = m._zDestination - zPrev;
 
-		final double delta;
-		if ((dx*dx + dy*dy) < 10000 && (dz*dz > 2500)) // close enough, allows error between client and server geodata if it cannot be avoided
-			delta = Math.sqrt(dx*dx + dy*dy);
+		double delta = dx*dx + dy*dy;
+		if (delta < 10000
+				&& (dz*dz > 2500) // close enough, allows error between client and server geodata if it cannot be avoided
+				&& !isFloating) // should not be applied on vertical movements in water or during flight
+			delta = Math.sqrt(delta);
 		else
-			delta = Math.sqrt(dx*dx + dy*dy + dz*dz);
+			delta = Math.sqrt(delta + dz*dz);
 
 		double distFraction = Double.MAX_VALUE;
 		if (delta > 1)
@@ -4366,35 +4370,41 @@ public abstract class L2Character extends L2Object
 	{
 		// Get the Move Speed of the L2Charcater
 		float speed = getStat().getMoveSpeed();
-		if (speed <= 0 || isMovementDisabled()) return;
+		if (speed <= 0 || isMovementDisabled())
+			return;
 
 		// Get current position of the L2Character
 		final int curX = super.getX();
 		final int curY = super.getY();
 		final int curZ = super.getZ();
-		
+
 		// Calculate distance (dx,dy) between current position and destination
         // TODO: improve Z axis move/follow support when dx,dy are small compared to dz
 		double dx = (x - curX);
 		double dy = (y - curY);
 		double dz = (z - curZ);
 		double distance = Math.sqrt(dx*dx + dy*dy);
-		
+
+		final boolean verticalMovementOnly = isFlying() && distance == 0 && dz != 0;
+		if (verticalMovementOnly)
+			distance = Math.abs(dz);
+
 		// make water move short and use no geodata checks for swimming chars
 		// distance in a click can easily be over 3000
 		if (Config.GEODATA > 0 && isInsideZone(ZONE_WATER) && distance > 700) 
-        {
+		{
 			double divider = 700/distance;
-        	x = curX + (int)(divider * dx);
-        	y = curY + (int)(divider * dy);
-        	z = curZ + (int)(divider * dz);
-        	dx = (x - curX);
-    		dy = (y - curY);
-    		dz = (z - curZ);
-    		distance = Math.sqrt(dx*dx + dy*dy);
-        }
+			x = curX + (int)(divider * dx);
+			y = curY + (int)(divider * dy);
+			z = curZ + (int)(divider * dz);
+			dx = (x - curX);
+			dy = (y - curY);
+			dz = (z - curZ);
+			distance = Math.sqrt(dx*dx + dy*dy);
+		}
 
-		if (Config.DEBUG) _log.fine("distance to target:" + distance);
+		if (Config.DEBUG)
+			_log.fine("distance to target:" + distance);
 
 		// Define movement angles needed
 		// ^
@@ -4436,7 +4446,6 @@ public abstract class L2Character extends L2Object
 			// Calculate the new destination with offset included
 			x = curX + (int)(distance * cos);
 			y = curY + (int)(distance * sin);
-
 		}
 		else
 		{
@@ -4457,8 +4466,8 @@ public abstract class L2Character extends L2Object
 			&& (!isInsideZone(ZONE_WATER) || isInsideZone(ZONE_SIEGE)) // swimming also not checked unless in siege zone - but distance is limited
 			&& !(this instanceof L2NpcWalkerInstance)) // npc walkers not checked
 		{
-			final boolean isInBoat = this instanceof L2PcInstance && ((L2PcInstance)this).isInBoat();
-			if (isInBoat)
+			final boolean isInVehicle = this instanceof L2PcInstance && ((L2PcInstance)this).getVehicle() != null;
+			if (isInVehicle)
 				m.disregardingGeodata = true;
 
 			double originalDistance = distance;
@@ -4472,7 +4481,7 @@ public abstract class L2Character extends L2Object
 			// when geodata == 2, for all characters except mobs returning home (could be changed later to teleport if pathfinding fails)
 			// when geodata == 1, for l2playableinstance and l2riftinstance only
 			if ((Config.GEODATA == 2 &&	!(this instanceof L2Attackable && ((L2Attackable)this).isReturningToSpawnPoint())) 
-					|| (this instanceof L2PcInstance && !(isInBoat && distance > 1500))
+					|| (this instanceof L2PcInstance && !(isInVehicle && distance > 1500))
 					|| (this instanceof L2Summon && !(this.getAI().getIntention() == AI_INTENTION_FOLLOW)) // assuming intention_follow only when following owner
 					|| isAfraid()
 					|| this instanceof L2RiftInvaderInstance)
@@ -4505,8 +4514,10 @@ public abstract class L2Character extends L2Object
 				x = destiny.getX();
 				y = destiny.getY();
 				z = destiny.getZ();
-				distance = Math.sqrt((x - curX)*(x - curX) + (y - curY)*(y - curY));
-				
+				dx = x - curX;
+				dy = y - curY;
+				dz = z - curZ;
+				distance = verticalMovementOnly ? Math.abs(dz*dz) : Math.sqrt(dx*dx + dy*dy);
 			}
 			// Pathfinding checks. Only when geodata setting is 2, the LoS check gives shorter result
 			// than the original movement was and the LoS gives a shorter distance than 2000
@@ -4515,7 +4526,7 @@ public abstract class L2Character extends L2Object
 			{
 				// Path calculation
 				// Overrides previous movement check
-				if((this instanceof L2Playable && !isInBoat)
+				if((this instanceof L2Playable && !isInVehicle)
 						|| this instanceof L2MinionInstance
 						|| this.isInCombat())
 				{
@@ -4577,9 +4588,10 @@ public abstract class L2Character extends L2Object
                 			}
                 		}
 
-                		dx = (x - curX);
-                		dy = (y - curY);
-                		distance = Math.sqrt(dx*dx + dy*dy);
+                		dx = x - curX;
+                		dy = y - curY;
+                		dz = z - curZ;
+                		distance = verticalMovementOnly ? Math.abs(dz*dz) : Math.sqrt(dx*dx + dy*dy);
                 		sin = dy/distance;
                 		cos = dx/distance;
                 	}
@@ -4597,6 +4609,10 @@ public abstract class L2Character extends L2Object
 			}
 		}
 
+		// Apply Z distance for flying or swimming for correct timing calculations
+		if ((isFlying() || isInsideZone(ZONE_WATER)) && !verticalMovementOnly)
+			distance = Math.sqrt(distance*distance + dz*dz);
+
 		// Caclulate the Nb of ticks between the current position and the destination
 		// One tick added for rounding reasons
 		int ticksToMove = 1+(int)(GameTimeController.TICKS_PER_SECOND * distance / speed);
@@ -4606,7 +4622,9 @@ public abstract class L2Character extends L2Object
 		
 		// Calculate and set the heading of the L2Character
 		m._heading = 0; // initial value for coordinate sync
-		setHeading(Util.calculateHeadingFrom(cos, sin));
+		// Does not broke heading on vertical movements
+		if (!verticalMovementOnly)
+			setHeading(Util.calculateHeadingFrom(cos, sin));
 		
 		if (Config.DEBUG)
 			_log.fine("dist:"+ distance +"speed:" + speed + " ttt:" + ticksToMove +
@@ -4677,17 +4695,14 @@ public abstract class L2Character extends L2Object
     	double dx = (m._xDestination - super.getX());
     	double dy = (m._yDestination - super.getY());
     	double distance = Math.sqrt(dx*dx + dy*dy);
-    	double sin = dy/distance;
-    	double cos = dx/distance;
-	
+    	// Calculate and set the heading of the L2Character
+    	if (distance != 0)
+    		setHeading(Util.calculateHeadingFrom(getX(), getY(),m._xDestination , m._yDestination));
+
 		// Caclulate the Nb of ticks between the current position and the destination
 		// One tick added for rounding reasons
     	int ticksToMove = 1+(int)(GameTimeController.TICKS_PER_SECOND * distance / speed);
 		
-		// Calculate and set the heading of the L2Character
-		int heading = (int) (Math.atan2(-sin, -cos) * 10430.378);
-		heading += 32768;
-		setHeading(heading);
 		m._heading = 0; // initial value for coordinate sync
 		
 		m._moveStartTime = GameTimeController.getGameTicks();
