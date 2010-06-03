@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.geoeditorcon.GeoEditorListener;
+import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.GetOnVehicle;
@@ -114,13 +115,13 @@ public class ValidatePosition extends L2GameClientPacket
 		dy = _y - realY;
 		dz = _z - realZ;
 		diffSq = (dx*dx + dy*dy);
-			
-		if(activeChar.getParty() != null && activeChar.getLastPartyPositionDistance(_x, _y, _z) > 150)
+		
+		L2Party party = activeChar.getParty();
+		if(party != null && activeChar.getLastPartyPositionDistance(_x, _y, _z) > 150)
 		{
 			activeChar.setLastPartyPosition(_x, _y, _z);
-			activeChar.getParty().broadcastToPartyMembers(activeChar,new PartyMemberPosition(activeChar));
+			party.broadcastToPartyMembers(activeChar,new PartyMemberPosition(activeChar));
 		}
-
 
 		if (Config.ACCEPT_GEOEDITOR_CONN)
 			if (GeoEditorListener.getInstance().getThread() != null  
