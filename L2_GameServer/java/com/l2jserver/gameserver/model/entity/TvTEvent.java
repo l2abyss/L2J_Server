@@ -284,8 +284,8 @@ public class TvTEvent
 			sysMsgToAllParticipants("TvT Event: Event has ended, both teams have tied.");
 			if (Config.TVT_REWARD_TEAM_TIE)
 			{
-				rewardTeamOne();
-				rewardTeamTwo();
+				rewardTeam(_teams[0]);
+				rewardTeam(_teams[1]);
 				return "TvT Event: Event has ended with both teams tying.";
 			}
 			else
@@ -297,79 +297,12 @@ public class TvTEvent
 		
 		// Get team which has more points
 		TvTEventTeam team = _teams[_teams[0].getPoints() > _teams[1].getPoints() ? 0 : 1];
-		
-		if (team == _teams[0])
-			rewardTeamOne();
-		else
-			rewardTeamTwo();
-		
+		rewardTeam(team);
 		return "TvT Event: Event finish. Team " + team.getName() + " won with " + team.getPoints() + " kills.";
 	}
 	
-	private static void rewardTeamOne()
+	private static void rewardTeam(TvTEventTeam team)
 	{
-		TvTEventTeam team = _teams[0];
-		// Iterate over all participated player instances of the winning team
-		for (L2PcInstance playerInstance : team.getParticipatedPlayers().values())
-		{
-			// Check for nullpointer
-			if (playerInstance == null)
-			{
-				continue;
-			}
-			
-			SystemMessage systemMessage = null;
-			
-			// Iterate over all tvt event rewards
-			for (int[] reward : Config.TVT_EVENT_REWARDS)
-			{
-				PcInventory inv = playerInstance.getInventory();
-				
-				// Check for stackable item, non stackabe items need to be added one by one
-				if (ItemTable.getInstance().createDummyItem(reward[0]).isStackable())
-				{
-					inv.addItem("TvT Event", reward[0], reward[1], playerInstance, playerInstance);
-					
-					if (reward[1] > 1)
-					{
-						systemMessage = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
-						systemMessage.addItemName(reward[0]);
-						systemMessage.addItemNumber(reward[1]);
-					}
-					else
-					{
-						systemMessage = new SystemMessage(SystemMessageId.EARNED_ITEM);
-						systemMessage.addItemName(reward[0]);
-					}
-					
-					playerInstance.sendPacket(systemMessage);
-				}
-				else
-				{
-					for (int i = 0; i < reward[1]; ++i)
-					{
-						inv.addItem("TvT Event", reward[0], 1, playerInstance, playerInstance);
-						systemMessage = new SystemMessage(SystemMessageId.EARNED_ITEM);
-						systemMessage.addItemName(reward[0]);
-						playerInstance.sendPacket(systemMessage);
-					}
-				}
-			}
-			
-			StatusUpdate statusUpdate = new StatusUpdate(playerInstance.getObjectId());
-			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(0);
-			
-			statusUpdate.addAttribute(StatusUpdate.CUR_LOAD, playerInstance.getCurrentLoad());
-			npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"Reward.htm"));
-			playerInstance.sendPacket(statusUpdate);
-			playerInstance.sendPacket(npcHtmlMessage);
-		}
-	}
-	
-	private static void rewardTeamTwo()
-	{
-		TvTEventTeam team = _teams[1];
-		
 		// Iterate over all participated player instances of the winning team
 		for (L2PcInstance playerInstance : team.getParticipatedPlayers().values())
 		{
