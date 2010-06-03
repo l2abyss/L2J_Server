@@ -85,6 +85,7 @@ class OlympiadManager implements Runnable
 				}
 				catch (InterruptedException ex)
 				{
+					return;
 				}
 				continue;
 			}
@@ -281,6 +282,7 @@ class OlympiadManager implements Runnable
 					}
 					catch (InterruptedException e)
 					{
+						return;
 					}
 				}
 			}
@@ -292,6 +294,7 @@ class OlympiadManager implements Runnable
 			}
 			catch (InterruptedException e)
 			{
+				return;
 			}
 		}
 		

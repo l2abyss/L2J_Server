@@ -365,7 +365,7 @@ public class EnterWorld extends L2GameClientPacket
 		//Expand Skill
 		activeChar.sendPacket(new ExStorageMaxCount(activeChar));
 
-		sendPacket(new FriendList());
+		sendPacket(new FriendList(activeChar));
 		
 		SystemMessage sm = new SystemMessage(SystemMessageId.FRIEND_S1_HAS_LOGGED_IN);
 		sm.addString(activeChar.getName());

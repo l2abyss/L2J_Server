@@ -16,6 +16,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
 
+import javolution.util.FastList;
+
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -40,16 +42,33 @@ public class FriendList extends L2GameServerPacket
 {
 	// private static Logger _log = Logger.getLogger(FriendList.class.getName());
 	private static final String _S__FA_FRIENDLIST = "[S] 75 FriendList";
-	private List<Integer> _friends;
-	private L2PcInstance _activeChar;
+	private List<FriendInfo> _info;
 	
-	@Override
-	public void runImpl()
+	private class FriendInfo
 	{
-		if (getClient() != null && getClient().getActiveChar() != null)
+		int objId;
+		String name;
+		boolean online;
+	
+		public FriendInfo(int objId, String name, boolean online)
 		{
-			_activeChar = getClient().getActiveChar();
-			_friends = _activeChar.getFriendList();
+			this.objId = objId;
+			this.name = name;
+			this.online = online;
+		}
+	}
+	
+	public FriendList(L2PcInstance player)
+	{
+		_info = new FastList<FriendInfo>(player.getFriendList().size());
+		for (int objId : player.getFriendList())
+		{
+			String name = CharNameTable.getInstance().getNameById(objId);
+			L2PcInstance player1 = L2World.getInstance().getPlayer(objId);
+			boolean online = false;
+			if (player1 != null && player1.isOnline() == 1)
+				online = true;
+			_info.add(new FriendInfo(objId, name, online));
 		}
 	}
 	
@@ -57,24 +76,14 @@ public class FriendList extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x75);
-		if (_friends != null)
+		writeD(_info.size());
+		for (FriendInfo info : _info)
 		{
-			writeD(_friends.size());
-			for (int ObjId : _friends)
-			{
-				String name = CharNameTable.getInstance().getNameById(ObjId); //TODO move to constructor
-				L2PcInstance player = L2World.getInstance().getPlayer(ObjId);
-				boolean online = false;
-				if (player != null && player.isOnline() == 1)
-					online = true;
-				writeD(ObjId); // character id
-				writeS(name);
-				writeD(online ? 0x01 : 0x00); // online
-				writeD(online ? ObjId : 0x00); // object id if online
-			}
+			writeD(info.objId); // character id
+			writeS(info.name);
+			writeD(info.online ? 0x01 : 0x00); // online
+			writeD(info.online ? info.objId : 0x00); // object id if online
 		}
-		else
-			writeD(0);
 	}
 	
 	/*
