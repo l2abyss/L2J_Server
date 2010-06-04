@@ -17,10 +17,8 @@ package com.l2jserver.gameserver;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -67,7 +65,7 @@ public class RecipeController
 	protected static final Logger _log = Logger.getLogger(RecipeController.class.getName());
 	
 	private Map<Integer, L2RecipeList> _lists;
-	protected static final Map<Integer, RecipeItemMaker> _activeMakers = Collections.synchronizedMap(new WeakHashMap<Integer, RecipeItemMaker>());
+	private static final Map<Integer, RecipeItemMaker> _activeMakers = new FastMap<Integer, RecipeItemMaker>();
 	private static final String RECIPES_FILE = "recipes.xml";
 	
 	public static RecipeController getInstance()
