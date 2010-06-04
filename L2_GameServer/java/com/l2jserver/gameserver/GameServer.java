@@ -61,6 +61,7 @@ import com.l2jserver.gameserver.datatables.NobleSkillTable;
 import com.l2jserver.gameserver.datatables.NpcBufferTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.NpcWalkerRoutesTable;
+import com.l2jserver.gameserver.datatables.OfflineTradersTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.PetSkillsTable;
 import com.l2jserver.gameserver.datatables.ResidentialSkillTable;
@@ -401,6 +402,10 @@ public class GameServer
 		
 		TvTManager.getInstance();
 		KnownListUpdateTaskManager.getInstance();
+		
+		if ((Config.OFFLINE_TRADE_ENABLE || Config.OFFLINE_CRAFT_ENABLE) && Config.RESTORE_OFFLINERS)
+			OfflineTradersTable.restoreOfflineTraders(); 
+		
 		if (Config.DEADLOCK_DETECTOR)
 		{
 			_deadDetectThread = new DeadLockDetector();

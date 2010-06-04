@@ -66,6 +66,8 @@ public abstract class IdFactory
 	        "UPDATE olympiad_fights        SET charTwoId = ?     WHERE charTwoId = ?",
 	        "UPDATE heroes_diary        SET charId = ?     WHERE charId = ?",
 	        "UPDATE olympiad_nobles        SET charId = ?     WHERE charId = ?",
+	        "UPDATE character_offline_trade SET charId = ?     WHERE charId = ?",
+	        "UPDATE character_offline_trade_items SET charId = ? WHERE charId = ?",
 	        "UPDATE clanhall             SET ownerId = ?       WHERE ownerId = ?" };
 	
 	protected static final String[] ID_CHECKS = {
@@ -222,6 +224,8 @@ public abstract class IdFactory
 			cleanCount += stmt.executeUpdate("DELETE FROM olympiad_fights WHERE olympiad_fights.charOneId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM olympiad_fights WHERE olympiad_fights.charTwoId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM heroes_diary WHERE heroes_diary.charId NOT IN (SELECT charId FROM characters);");
+			cleanCount += stmt.executeUpdate("DELETE FROM character_offline_trade WHERE character_offline_trade.charId NOT IN (SELECT charId FROM characters);");
+			cleanCount += stmt.executeUpdate("DELETE FROM character_offline_trade_items WHERE character_offline_trade_items.charId NOT IN (SELECT charId FROM characters);");
 			
 			// If the clan does not exist...
 			cleanCount += stmt.executeUpdate("DELETE FROM clan_privs WHERE clan_privs.clan_id NOT IN (SELECT clan_id FROM clan_data);");

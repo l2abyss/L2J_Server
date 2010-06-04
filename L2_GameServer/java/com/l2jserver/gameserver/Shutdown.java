@@ -15,11 +15,13 @@
 package com.l2jserver.gameserver;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.datatables.OfflineTradersTable;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.GrandBossManager;
@@ -202,6 +204,16 @@ public class Shutdown extends Thread
 	{
 		if (this == SingletonHolder._instance)
 		{
+			try
+			{
+				if ((Config.OFFLINE_TRADE_ENABLE || Config.OFFLINE_CRAFT_ENABLE) && Config.RESTORE_OFFLINERS)
+					OfflineTradersTable.storeOffliners();
+			}
+			catch (Throwable t)
+			{
+				_log.log(Level.WARNING, "Error saving offline shops.",t);
+			}
+				
 			try
 			{
 				disconnectAllCharacters();

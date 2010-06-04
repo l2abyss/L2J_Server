@@ -511,6 +511,8 @@ public final class L2PcInstance extends L2Playable
 	private boolean _inCrystallize;
 	private boolean _inCraftMode;
 	
+	private long _offlineShopStart = 0;
+	
 	private L2Transformation _transformation;
 	private int _transformationId = 0;
 	
@@ -6373,6 +6375,9 @@ public final class L2PcInstance extends L2Playable
 	public void setPrivateStoreType(int type)
 	{
 		_privatestore = type;
+		
+		if (Config.OFFLINE_DISCONNECT_FINISHED && _privatestore == STORE_PRIVATE_NONE && (getClient() == null || getClient().isDetached()))
+			logout(); 
 	}
 
 	/**
@@ -14702,5 +14707,15 @@ public final class L2PcInstance extends L2Playable
 		}
 
 		return result;
+	}
+
+	public long getOfflineStartTime()
+	{
+		return _offlineShopStart;
+	}
+	
+	public void setOfflineStartTime(long time)
+	{
+		_offlineShopStart = time;
 	}
 }

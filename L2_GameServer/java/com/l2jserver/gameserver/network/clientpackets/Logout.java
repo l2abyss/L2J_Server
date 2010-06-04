@@ -104,6 +104,8 @@ public final class Logout extends L2GameClientPacket
 		{
 			player.getInventory().updateDatabase();
 			player.closeNetConnection(true);
+			if (player.getOfflineStartTime() == 0)
+				player.setOfflineStartTime(System.currentTimeMillis());
 			return;
 		}
 
