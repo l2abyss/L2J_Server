@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
-import javolution.util.FastSet;
+import javolution.util.WeakFastSet;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
@@ -40,8 +40,8 @@ import com.l2jserver.gameserver.ai.L2AttackableAI;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.MapRegionTable;
-import com.l2jserver.gameserver.datatables.MapRegionTable.TeleportWhereType;
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.MapRegionTable.TeleportWhereType;
 import com.l2jserver.gameserver.handler.ActionHandler;
 import com.l2jserver.gameserver.handler.IActionHandler;
 import com.l2jserver.gameserver.handler.ISkillHandler;
@@ -60,17 +60,17 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2Skill.SkillTargetType;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.L2Skill.SkillTargetType;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MinionInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcWalkerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.SkillDat;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2RiftInvaderInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.SkillDat;
 import com.l2jserver.gameserver.model.actor.knownlist.CharKnownList;
 import com.l2jserver.gameserver.model.actor.position.CharPosition;
 import com.l2jserver.gameserver.model.actor.stat.CharStat;
@@ -85,7 +85,6 @@ import com.l2jserver.gameserver.network.serverpackets.Attack;
 import com.l2jserver.gameserver.network.serverpackets.ChangeMoveType;
 import com.l2jserver.gameserver.network.serverpackets.ChangeWaitType;
 import com.l2jserver.gameserver.network.serverpackets.FlyToLocation;
-import com.l2jserver.gameserver.network.serverpackets.FlyToLocation.FlyType;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillCanceld;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillLaunched;
@@ -98,6 +97,7 @@ import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TeleportToLocation;
+import com.l2jserver.gameserver.network.serverpackets.FlyToLocation.FlyType;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 import com.l2jserver.gameserver.pathfinding.PathFinding;
 import com.l2jserver.gameserver.skills.AbnormalEffect;
@@ -2270,7 +2270,7 @@ public abstract class L2Character extends L2Object
 		synchronized (this)
 		{
 			if (_attackByList == null)
-				_attackByList = new FastSet<L2Character>().shared();
+				_attackByList = new WeakFastSet<L2Character>();
 		}
 		return _attackByList;
 	}
