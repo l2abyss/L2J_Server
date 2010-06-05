@@ -160,7 +160,7 @@ public class OfflineTradersTable
 				{
 					Calendar cal = Calendar.getInstance();
 					cal.setTimeInMillis(time);
-					cal.roll(Calendar.DAY_OF_YEAR, Config.OFFLINE_MAX_DAYS);
+					cal.add(Calendar.DAY_OF_YEAR, Config.OFFLINE_MAX_DAYS);
 					if (cal.getTimeInMillis() <= System.currentTimeMillis())
 						continue;
 				}
