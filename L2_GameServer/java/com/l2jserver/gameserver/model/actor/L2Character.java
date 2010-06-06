@@ -2270,7 +2270,7 @@ public abstract class L2Character extends L2Object
 		synchronized (this)
 		{
 			if (_attackByList == null)
-				_attackByList = new WeakFastSet<L2Character>();
+				_attackByList = new WeakFastSet<L2Character>(true);
 		}
 		return _attackByList;
 	}
