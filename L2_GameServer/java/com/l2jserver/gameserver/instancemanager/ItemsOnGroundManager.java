@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,7 +30,6 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ItemsAutoDestroy;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 
@@ -45,7 +45,7 @@ public class ItemsOnGroundManager
 {
 	static final Logger _log = Logger.getLogger(ItemsOnGroundManager.class.getName());
 	
-	protected FastList<L2ItemInstance> _items = null;
+	protected List<L2ItemInstance> _items = null;
 	private final StoreInDb _task = new StoreInDb();
 	
 	private ItemsOnGroundManager()
@@ -53,7 +53,7 @@ public class ItemsOnGroundManager
 		if (Config.SAVE_DROPPED_ITEM)
 			_items = new FastList<L2ItemInstance>();
 		if (Config.SAVE_DROPPED_ITEM_INTERVAL > 0)
-			ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new StoreInDb(), Config.SAVE_DROPPED_ITEM_INTERVAL, Config.SAVE_DROPPED_ITEM_INTERVAL);
+			ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(_task, Config.SAVE_DROPPED_ITEM_INTERVAL, Config.SAVE_DROPPED_ITEM_INTERVAL);
 		load();
 	}
 	
@@ -162,7 +162,7 @@ public class ItemsOnGroundManager
 		_items.add(item);
 	}
 	
-	public void removeObject(L2Object item)
+	public void removeObject(L2ItemInstance item)
 	{
 		if (Config.SAVE_DROPPED_ITEM && _items != null)
 		{

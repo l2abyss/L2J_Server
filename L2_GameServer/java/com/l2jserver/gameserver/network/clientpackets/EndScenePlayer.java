@@ -27,12 +27,12 @@ public final class EndScenePlayer extends L2GameClientPacket
 	private static final String _C__d05b_EndScenePlayer = "[C] d0:5b EndScenePlayer";
 	private static Logger _log = Logger.getLogger(EndScenePlayer.class.getName());
 	
-	private int _moviveId;
+	private int _movieId;
 	
 	@Override
 	protected void readImpl()
 	{
-		_moviveId = readD();
+		_movieId = readD();
 	}
 	
 	@Override
@@ -41,16 +41,18 @@ public final class EndScenePlayer extends L2GameClientPacket
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-		if (_moviveId == 0)
+		if (_movieId == 0)
 			return;
-		if (activeChar.getMovieId() != _moviveId)
+		if (activeChar.getMovieId() != _movieId)
 		{
-			_log.warning("Player "+getClient()+" sent EndScenePlayer with wrong movie id: "+_moviveId);
+			_log.warning("Player "+getClient()+" sent EndScenePlayer with wrong movie id: "+_movieId);
 			return;
 		}
 		activeChar.setMovieId(0);
+		activeChar.setIsTeleporting(true, false); // avoid to get player removed from L2World
 		activeChar.decayMe();
 		activeChar.spawnMe(activeChar.getPosition().getX(), activeChar.getPosition().getY(), activeChar.getPosition().getZ());
+		activeChar.setIsTeleporting(false, false);
 	}
 	
 	/* (non-Javadoc)

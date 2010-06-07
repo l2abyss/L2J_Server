@@ -428,11 +428,6 @@ public abstract class L2Character extends L2Object
 	{
 		if (!isTeleporting())
 			return;
-		if (this instanceof L2Summon)
-		{
-			((L2Summon)this).getOwner().sendPacket(new TeleportToLocation(this, getPosition().getX(), getPosition().getY(), getPosition().getZ(), getPosition().getHeading()));
-			
-		}
 		spawnMe(getPosition().getX(), getPosition().getY(), getPosition().getZ());
 		
 		setIsTeleporting(false);

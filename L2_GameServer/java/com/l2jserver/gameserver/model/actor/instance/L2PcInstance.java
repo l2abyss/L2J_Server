@@ -11161,7 +11161,7 @@ public final class L2PcInstance extends L2Playable
 		// Trained beast is after teleport lost
 		if (getTrainedBeast() != null)
 		{
-			getTrainedBeast().decayMe();
+			getTrainedBeast().deleteMe();
 			setTrainedBeast(null);
 		}
 		

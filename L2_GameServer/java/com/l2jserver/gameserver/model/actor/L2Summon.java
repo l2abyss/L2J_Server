@@ -53,6 +53,7 @@ import com.l2jserver.gameserver.network.serverpackets.PetItemList;
 import com.l2jserver.gameserver.network.serverpackets.PetStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.RelationChanged;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.network.serverpackets.TeleportToLocation;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.item.L2EtcItem;
@@ -889,4 +890,14 @@ public abstract class L2Summon extends L2Playable
         else
             activeChar.sendPacket(new AbstractNpcInfo.SummonInfo(this, activeChar, 0));
     }
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.actor.L2Character#onTeleported()
+	 */
+	@Override
+	public void onTeleported()
+	{
+		super.onTeleported();
+		getOwner().sendPacket(new TeleportToLocation(this, getPosition().getX(), getPosition().getY(), getPosition().getZ(), getPosition().getHeading()));
+	}
 }
