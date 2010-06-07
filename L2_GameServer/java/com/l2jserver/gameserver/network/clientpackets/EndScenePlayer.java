@@ -48,8 +48,9 @@ public final class EndScenePlayer extends L2GameClientPacket
 			_log.warning("Player "+getClient()+" sent EndScenePlayer with wrong movie id: "+_moviveId);
 			return;
 		}
-		activeChar.teleToLocation(activeChar.getX(), activeChar.getY(), activeChar.getZ());
 		activeChar.setMovieId(0);
+		activeChar.decayMe();
+		activeChar.spawnMe(activeChar.getPosition().getX(), activeChar.getPosition().getY(), activeChar.getPosition().getZ());
 	}
 	
 	/* (non-Javadoc)
