@@ -2636,6 +2636,7 @@ public final class Formulas
 			rate *= MAGIC_FAIL_RATE;
 		// general magic resist
 		rate *= target.calcStat(Stats.MAGIC_SUCCESS_RES, 1, null, skill);
+		rate = (int) attacker.calcStat(Stats.MAGIC_FAILURE_RATE, rate, target, skill);
 		return (Rnd.get(10000) > rate);
 	}
 

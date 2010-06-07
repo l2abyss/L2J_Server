@@ -140,6 +140,7 @@ public enum Stats
 	CRIT_VULN("critVuln"), // Resistence to Crit DMG.
 	MAGIC_DAMAGE_VULN("magicDamVul"),
 	MAGIC_SUCCESS_RES("magicSuccRes"),
+	MAGIC_FAILURE_RATE("magicFailureRate"),
 	
 	AGGRESSION_PROF("aggressionProf"),
 	BLEED_PROF("bleedProf"),
