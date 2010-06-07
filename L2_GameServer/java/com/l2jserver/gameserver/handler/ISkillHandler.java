@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.L2Object;
@@ -38,9 +37,8 @@ public interface ISkillHandler
 	 * @param item
 	 * @param target
 	 * @return count reduction after usage
-	 * @throws IOException
 	 */
-	public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets) throws IOException;
+	public void useSkill(L2Character activeChar, L2Skill skill, L2Object[] targets);
 	
 	/**
 	 * this method is called at initialization to register all the item ids automatically

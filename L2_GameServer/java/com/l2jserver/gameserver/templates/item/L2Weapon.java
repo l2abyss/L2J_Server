@@ -14,10 +14,11 @@
  */
 package com.l2jserver.gameserver.templates.item;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import javolution.util.FastList;
 
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.handler.ISkillHandler;
@@ -40,8 +41,6 @@ import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.util.StringUtil;
-
-import javolution.util.FastList;
 
 /**
  * This class is dedicated to the management of weapons.
@@ -419,44 +418,37 @@ public final class L2Weapon extends L2Item
 		if (_skillsOnCast.isOffensive() && !Formulas.calcSkillSuccess(caster, target, _skillsOnCast, shld, false, false, false))
 			return _emptyEffectSet;
 		
-		try
+		// Get the skill handler corresponding to the skill type
+		ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(_skillsOnCast.getSkillType());
+		
+		L2Character[] targets = new L2Character[1];
+		targets[0] = target;
+		
+		// Launch the magic skill and calculate its effects
+		if (handler != null)
+			handler.useSkill(caster, _skillsOnCast, targets);
+		else
+			_skillsOnCast.useSkill(caster, targets);
+		
+		// notify quests of a skill use
+		if (caster instanceof L2PcInstance)
 		{
-			// Get the skill handler corresponding to the skill type
-			ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(_skillsOnCast.getSkillType());
-			
-			L2Character[] targets = new L2Character[1];
-			targets[0] = target;
-			
-			// Launch the magic skill and calculate its effects
-			if (handler != null)
-				handler.useSkill(caster, _skillsOnCast, targets);
-			else
-				_skillsOnCast.useSkill(caster, targets);
-			
-			// notify quests of a skill use
-			if (caster instanceof L2PcInstance)
+			// Mobs in range 1000 see spell
+			Collection<L2Object> objs = caster.getKnownList().getKnownObjects().values();
+			//synchronized (caster.getKnownList().getKnownObjects())
 			{
-				// Mobs in range 1000 see spell
-				Collection<L2Object> objs = caster.getKnownList().getKnownObjects().values();
-				//synchronized (caster.getKnownList().getKnownObjects())
+				for (L2Object spMob : objs)
 				{
-					for (L2Object spMob : objs)
+					if (spMob instanceof L2Npc)
 					{
-						if (spMob instanceof L2Npc)
-						{
-							L2Npc npcMob = (L2Npc) spMob;
-							
-							if (npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE) != null)
-								for (Quest quest : npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE))
-									quest.notifySkillSee(npcMob, (L2PcInstance) caster, _skillsOnCast, targets, false);
-						}
+						L2Npc npcMob = (L2Npc) spMob;
+						
+						if (npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE) != null)
+							for (Quest quest : npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE))
+								quest.notifySkillSee(npcMob, (L2PcInstance) caster, _skillsOnCast, targets, false);
 					}
 				}
 			}
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace(); // IO ?!
 		}
 		return _emptyEffectSet;
 	}
