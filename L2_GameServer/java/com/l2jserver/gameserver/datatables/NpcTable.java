@@ -232,6 +232,12 @@ public class NpcTable
 					
 					int category = dropData.getInt("category");
 					
+					if (ItemTable.getInstance().getTemplate(dropDat.getItemId()) == null)
+					{
+						_log.warning("Drop data for undefined item template! NpcId: " + mobId+" itemId: "+dropDat.getItemId());
+						continue;
+					}
+					
 					npcDat.addDropData(dropDat, category);
 				}
 				
@@ -269,6 +275,13 @@ public class NpcTable
 						dropDat.setMaxDrop(dropData.getInt("max"));
 						dropDat.setChance(dropData.getInt("chance"));
 						int category = dropData.getInt("category");
+						
+						if (ItemTable.getInstance().getTemplate(dropDat.getItemId()) == null)
+						{
+							_log.warning("Custom drop data for undefined item template! NpcId: " + mobId+" itemId: "+dropDat.getItemId());
+							continue;
+						}
+						
 						npcDat.addDropData(dropDat, category);
 						cCount++;
 					}
