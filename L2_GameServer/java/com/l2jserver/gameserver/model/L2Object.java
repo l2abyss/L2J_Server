@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.model;
 
+import com.l2jserver.gameserver.handler.ActionHandler;
+import com.l2jserver.gameserver.handler.IActionHandler;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -65,6 +67,7 @@ public abstract class L2Object
 	public static enum InstanceType
 	{
 		L2Object(null),
+		L2ItemInstance(L2Object),
 		L2Character(L2Object),
 		L2Npc(L2Character),
 		L2Playable(L2Character),
@@ -264,11 +267,19 @@ public abstract class L2Object
 	
 	public void onAction(L2PcInstance player, boolean interact)
 	{
+		IActionHandler handler = ActionHandler.getInstance().getActionHandler(getInstanceType());
+		if (handler != null)
+			handler.action(player, this, interact);
+
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	
 	public void onActionShift(L2PcInstance player)
 	{
+		IActionHandler handler = ActionHandler.getInstance().getActionShiftHandler(getInstanceType());
+		if (handler != null)
+			handler.action(player, this, true);
+
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	

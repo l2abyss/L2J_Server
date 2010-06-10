@@ -17,14 +17,14 @@ package com.l2jserver.gameserver.handler;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
-import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public interface IActionHandler
 {
 	public static Logger _log = Logger.getLogger(IActionHandler.class.getName());
 
-	public boolean action(L2PcInstance activeChar, L2Character target, boolean interact);
+	public boolean action(L2PcInstance activeChar, L2Object target, boolean interact);
 
 	public InstanceType getInstanceType();
 }

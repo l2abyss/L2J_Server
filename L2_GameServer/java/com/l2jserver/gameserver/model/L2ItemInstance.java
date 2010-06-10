@@ -30,7 +30,6 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.instancemanager.MercTicketManager;
@@ -39,7 +38,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.NullKnownList;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.DropItem;
 import com.l2jserver.gameserver.network.serverpackets.GetItem;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
@@ -165,6 +163,7 @@ public final class L2ItemInstance extends L2Object
 	public L2ItemInstance(int objectId, int itemId)
 	{
 		super(objectId);
+		setInstanceType(InstanceType.L2ItemInstance);
 		_itemId = itemId;
 		_item = ItemTable.getInstance().getTemplate(itemId);
 		if (_itemId == 0 || _item == null)
@@ -188,6 +187,7 @@ public final class L2ItemInstance extends L2Object
 	public L2ItemInstance(int objectId, L2Item item)
 	{
 		super(objectId);
+		setInstanceType(InstanceType.L2ItemInstance);
 		_itemId = item.getItemId();
 		_item = item;
 		if (_itemId == 0)
@@ -761,37 +761,6 @@ public final class L2ItemInstance extends L2Object
     		);
     }
 
-    /* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.L2Object#onAction(com.l2jserver.gameserver.model.L2PcInstance)
-	 * also check constraints: only soloing castle owners may pick up mercenary tickets of their castle
-	 */
-	@Override
-	public void onAction(L2PcInstance player, boolean interact)
-	{
-		// this causes the validate position handler to do the pickup if the location is reached.
-		// mercenary tickets can only be picked up by the castle owner.
-        int castleId = MercTicketManager.getInstance().getTicketCastleId(_itemId);
-        
-        if (castleId > 0 && 
-                (!player.isCastleLord(castleId) || player.isInParty()))
-        {
-            if  (player.isInParty())    //do not allow owner who is in party to pick tickets up
-                player.sendMessage("You cannot pickup mercenaries while in a party.");
-            else
-                player.sendMessage("Only the castle lord can pickup mercenaries.");
-
-            player.setTarget(this);
-            player.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-            // Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-            player.sendPacket(ActionFailed.STATIC_PACKET);
-        }
-        else if (player.isFlying()) // cannot pickup
-        {
-        	player.sendPacket(ActionFailed.STATIC_PACKET);
-        }
-		else
-			player.getAI().setIntention(CtrlIntention.AI_INTENTION_PICK_UP, this);
-	}
 	/**
 	 * Returns the level of enchantment of the item
 	 * @return int
