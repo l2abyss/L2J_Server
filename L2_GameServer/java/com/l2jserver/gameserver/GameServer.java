@@ -261,7 +261,7 @@ public class GameServer
 		NpcBufferTable.getInstance();
 		SpawnTable.getInstance();
 		RaidBossSpawnManager.getInstance();
-		DayNightSpawnManager.getInstance().notifyChangeMode();
+		DayNightSpawnManager.getInstance().trim().notifyChangeMode();
 		GrandBossManager.getInstance().initZones();
 		RaidBossPointsManager.init();
 		FourSepulchersManager.getInstance().init();

@@ -206,7 +206,7 @@ public class MacroList
                 String name = rset.getString("name");
                 String descr = rset.getString("descr");
                 String acronym = rset.getString("acronym");
-				List<L2MacroCmd> commands = new FastList<L2MacroCmd>();
+				List<L2MacroCmd> commands = FastList.newInstance();
 				StringTokenizer st1 = new StringTokenizer(rset.getString("commands"),";");
 				while (st1.hasMoreTokens()) {
 					StringTokenizer st = new StringTokenizer(st1.nextToken(),",");
@@ -223,6 +223,7 @@ public class MacroList
 				}
 
 				L2Macro m = new L2Macro(id, icon, name, descr, acronym, commands.toArray(new L2MacroCmd[commands.size()]));
+				FastList.recycle((FastList<?>) commands);
 				_macroses.put(m.id, m);
             }
             rset.close();
