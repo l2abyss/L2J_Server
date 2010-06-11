@@ -92,7 +92,7 @@ public final class UserInfo extends L2GameServerPacket
 		_activeChar = character;
 		
 		_moveMultiplier = _activeChar.getMovementSpeedMultiplier();
-		_runSpd = (int) (_activeChar.getRunSpeed() / _moveMultiplier);
+		_runSpd = Math.round((_activeChar.getRunSpeed() / _moveMultiplier));
 		_walkSpd = (int) (_activeChar.getWalkSpeed() / _moveMultiplier);
 		_territoryId = TerritoryWarManager.getInstance().getRegisteredTerritoryId(character);
 		_relation = _activeChar.isClanLeader() ? 0x40 : 0;

@@ -421,7 +421,7 @@ public class CharStat
     	if (_activeChar == null)
     		return 1;
 
-		return getRunSpeed() * 1f / _activeChar.getTemplate().baseRunSpd;
+		return getRunSpeed() / (float) _activeChar.getTemplate().baseRunSpd;
 	}
 
 	/**
@@ -609,7 +609,7 @@ public class CharStat
 		if (baseRunSpd == 0)
 			return 0;
 		
-		return (int) calcStat(Stats.RUN_SPEED, baseRunSpd, null, null);
+		return (int) Math.round(calcStat(Stats.RUN_SPEED, baseRunSpd, null, null));
 	}
 
 	/** Return the ShieldDef rate (base+modifier) of the L2Character. */
