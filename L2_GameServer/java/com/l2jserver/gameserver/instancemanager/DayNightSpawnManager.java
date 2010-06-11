@@ -107,9 +107,11 @@ public class DayNightSpawnManager
 					spawn.stopRespawn();
 					L2Npc last = spawn.getLastSpawn();
 					if (last != null)
+					{
 						last.deleteMe();
+						i++;
+					}
 					spawn.decreaseCount(null);
-					i++;
 				}
 				_log.info("DayNightSpawnManager: Removed " + i + " " + UnspawnLogInfo + " creatures");
 			}
