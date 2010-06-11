@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExOlympiadSpelledInfo;
 import com.l2jserver.gameserver.network.serverpackets.PartySpelled;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
+import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
@@ -483,6 +484,53 @@ public class CharEffectList
 					for (L2Effect e : _debuffs)
 						if (e != null && e.getSkill().getId() == skillId)
 							temp.add(e);
+				}
+			}
+		}
+		if (!temp.isEmpty())
+		{
+			for (L2Effect e : temp)
+				if (e != null)
+					e.exit();
+		}
+		FastList.recycle(temp);
+	}
+	
+	/**
+	 * Exits all effects created by a specific skill type
+	 * @param skillType skill type
+	 */
+	public final void stopSkillEffects(L2SkillType skillType, int negateLvl)
+	{
+		// Go through all active skills effects
+		FastList<L2Effect> temp = FastList.newInstance();
+		if (_buffs != null) 
+		{
+			synchronized (_buffs)
+			{
+				if (!_buffs.isEmpty())
+				{
+					for (L2Effect e : _buffs)
+					{
+						if (e != null && (e.getSkill().getSkillType() == skillType || (e.getSkill().getEffectType() != null && e.getSkill().getEffectType() == skillType)) 
+								&& (negateLvl == -1 || (e.getSkill().getEffectType() != null && e.getSkill().getEffectAbnormalLvl() >= 0 && e.getSkill().getEffectAbnormalLvl() <= negateLvl) || (e.getSkill().getAbnormalLvl() >= 0 && e.getSkill().getAbnormalLvl() <= negateLvl)))
+							temp.add(e);
+					}
+				}
+			}
+		}
+		if (_debuffs != null) 
+		{
+			synchronized (_debuffs)
+			{
+				if (!_debuffs.isEmpty())
+				{
+					for (L2Effect e : _debuffs)
+					{
+						if (e != null && (e.getSkill().getSkillType() == skillType || (e.getSkill().getEffectType() != null && e.getSkill().getEffectType() == skillType)) 
+								&& (negateLvl == -1 || (e.getSkill().getEffectType() != null && e.getSkill().getEffectAbnormalLvl() >= 0 && e.getSkill().getEffectAbnormalLvl() <= negateLvl) || (e.getSkill().getAbnormalLvl() >= 0 && e.getSkill().getAbnormalLvl() <= negateLvl)))
+							temp.add(e);
+					}
 				}
 			}
 		}

@@ -19,6 +19,7 @@ import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
+import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
 /**
  * 
@@ -42,13 +43,14 @@ public class EffectNegate extends L2Effect
 	{
 		L2Skill skill = getSkill();
 		
-		if (skill.getNegateId().length != 0)
+		for (int negateSkillId : skill.getNegateId())
 		{
-			for (int i = 0; i < skill.getNegateId().length; i++)
-			{
-				if (skill.getNegateId()[i] != 0)
-					getEffected().stopSkillEffects(skill.getNegateId()[i]);
-			}
+			if (negateSkillId != 0)
+				getEffected().stopSkillEffects(negateSkillId);
+		}
+		for (L2SkillType negateSkillType : skill.getNegateStats())
+		{
+			getEffected().stopSkillEffects(negateSkillType, skill.getNegateLvl());
 		}
 		return true;
 	}

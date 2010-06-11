@@ -2976,7 +2976,27 @@ public abstract class L2Character extends L2Object
 	{
 		_effects.stopSkillEffects(skillId);
 	}
-
+	
+	/**
+	 * Stop and remove the L2Effects corresponding to the L2SkillType and update client magic icon.<BR><BR>
+	 *
+	 * <B><U> Concept</U> :</B><BR><BR>
+	 * All active skills effects in progress on the L2Character are identified in ConcurrentHashMap(Integer,L2Effect) <B>_effects</B>.
+	 * The Integer key of _effects is the L2Skill Identifier that has created the L2Effect.<BR><BR>
+	 *
+	 * @param skillType The L2SkillType of the L2Effect to remove from _effects
+	 *
+	 */
+	public final void stopSkillEffects(L2SkillType skillType, int negateLvl)
+	{
+		_effects.stopSkillEffects(skillType, negateLvl);
+	}
+	
+	public final void stopSkillEffects(L2SkillType skillType)
+	{
+		_effects.stopSkillEffects(skillType, -1);
+	}
+	
 	/**
 	 * Stop and remove all L2Effect of the selected type (ex : BUFF, DMG_OVER_TIME...) from the L2Character and update client magic icon.<BR><BR>
 	 *
@@ -3131,10 +3151,10 @@ public abstract class L2Character extends L2Object
             removeEffect(effect);
             if (effect.getSkill().getNegateId().length != 0)
             {
-            	for (int i = 0; i < effect.getSkill().getNegateId().length; i++)
+            	for (int negateSkillId : effect.getSkill().getNegateId())
             	{
-            		if (effect.getSkill().getNegateId()[i] != 0)
-            			stopSkillEffects(effect.getSkill().getNegateId()[i]);
+            		if (negateSkillId != 0)
+            			stopSkillEffects(negateSkillId);
             	}
             }
         }
