@@ -31,11 +31,11 @@ import com.l2jserver.util.StringUtil;
  */
 public final class L2FestivalGuideInstance extends L2Npc
 {
-    private int _festivalType;
-    protected int _festivalOracle;
-    protected int _blueStonesNeeded;
-    protected int _greenStonesNeeded;
-    protected int _redStonesNeeded;
+    private final int _festivalType;
+    private final int _festivalOracle;
+    private final int _blueStonesNeeded;
+    private final int _greenStonesNeeded;
+    private final int _redStonesNeeded;
 
     /**
      * @param template
@@ -45,7 +45,8 @@ public final class L2FestivalGuideInstance extends L2Npc
         super(objectId, template);
         setInstanceType(InstanceType.L2FestivalGiudeInstance);
 
-        switch (getNpcId()) {
+        switch (getNpcId())
+        {
             case 31127:
             case 31132:
                 _festivalType = SevenSignsFestival.FESTIVAL_LEVEL_MAX_31;
@@ -127,6 +128,12 @@ public final class L2FestivalGuideInstance extends L2Npc
                 _greenStonesNeeded = 3600;
                 _redStonesNeeded = 1800;
                 break;
+            default:
+            	_festivalType = SevenSignsFestival.FESTIVAL_LEVEL_MAX_NONE;
+            	_festivalOracle = SevenSigns.CABAL_NULL;
+            	_blueStonesNeeded = 0;
+            	_greenStonesNeeded = 0;
+            	_redStonesNeeded = 0;
         }
     }
 
