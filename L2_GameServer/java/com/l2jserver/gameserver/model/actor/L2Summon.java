@@ -817,6 +817,9 @@ public abstract class L2Summon extends L2Playable
 
 	public void updateAndBroadcastStatus(int val)
 	{
+		if (getOwner() == null)
+			return;
+
 		getOwner().sendPacket(new PetInfo(this,val));
 		getOwner().sendPacket(new PetStatusUpdate(this));
 		if (isVisible())
