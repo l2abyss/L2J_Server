@@ -159,7 +159,7 @@ public final class L2Augmentation
 		if (_skill != null)
 		{
 			if (_skill.isPassive())
-				player.removeSkill(_skill);
+				player.removeSkill(_skill, false, true);
 			else
 				player.removeSkill(_skill, false, false);
 
