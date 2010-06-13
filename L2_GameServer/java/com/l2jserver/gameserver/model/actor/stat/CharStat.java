@@ -140,8 +140,7 @@ public class CharStat
 	{
 		if (_activeChar == null)
 			return 0;
-		
-		return (int) (calcStat(Stats.ACCURACY_COMBAT, 0, null, null) / _activeChar.getWeaponExpertisePenalty());
+		return (int) Math.round(calcStat(Stats.ACCURACY_COMBAT, 0, null, null));
 	}
 
 	public L2Character getActiveChar()
@@ -182,7 +181,7 @@ public class CharStat
 		if (_activeChar == null)
 			return 1;
 		
-		int criticalHit = (int) (calcStat(Stats.CRITICAL_RATE, _activeChar.getTemplate().baseCritRate, target, skill)*10.0 + 0.5);
+		int criticalHit = (int) Math.round(calcStat(Stats.CRITICAL_RATE, _activeChar.getTemplate().baseCritRate, target, skill)*10.0 + 0.5);
 		criticalHit /= 10;
 		// Set a cap of Critical Hit at 500
 		if (criticalHit > Config.MAX_PCRIT_RATE)
@@ -206,7 +205,7 @@ public class CharStat
     	if (_activeChar == null)
     		return 1;
 
-		int val = (int) (calcStat(Stats.EVASION_RATE, 0, target, null) / _activeChar.getArmourExpertisePenalty());
+		int val = (int) Math.round(calcStat(Stats.EVASION_RATE, 0, target, null));
 		if (val > Config.MAX_EVASION && !_activeChar.isGM())
 			val = Config.MAX_EVASION;
 		return val;
@@ -358,7 +357,6 @@ public class CharStat
     	if  (Config.L2JMOD_CHAMPION_ENABLE && _activeChar.isChampion())
     		bonusSpdAtk = Config.L2JMOD_CHAMPION_SPD_ATK;
 		double val = calcStat(Stats.MAGIC_ATTACK_SPEED, _activeChar.getTemplate().baseMAtkSpd * bonusSpdAtk, null, null);
-		val /= _activeChar.getArmourExpertisePenalty();
 		if (val > Config.MAX_MATK_SPEED && !_activeChar.isGM())
 			val = Config.MAX_MATK_SPEED;
 		return (int) val;
@@ -521,7 +519,7 @@ public class CharStat
     	float bonusAtk = 1;
         if  (Config.L2JMOD_CHAMPION_ENABLE && _activeChar.isChampion())
     		bonusAtk = Config.L2JMOD_CHAMPION_SPD_ATK;
-		int val = (int) (calcStat(Stats.POWER_ATTACK_SPEED, _activeChar.getTemplate().basePAtkSpd * bonusAtk, null, null) / _activeChar.getArmourExpertisePenalty());
+		int val = (int) Math.round(calcStat(Stats.POWER_ATTACK_SPEED, _activeChar.getTemplate().basePAtkSpd * bonusAtk, null, null));
 		return val;
 	}
 

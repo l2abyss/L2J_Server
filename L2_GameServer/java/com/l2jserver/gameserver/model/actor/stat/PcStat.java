@@ -379,17 +379,18 @@ public class PcStat extends PlayableStat
 		if (getActiveChar() == null)
 			return 1;
 		
-		int val = super.getRunSpeed();
+		int val;
 		
 		L2PcInstance player = getActiveChar();
 		if (player.isMounted())
 		{
 			int baseRunSpd = PetDataTable.getInstance().getPetData(player.getMountNpcId(), player.getMountLevel()).getPetSpeed();
-			val = (int) calcStat(Stats.RUN_SPEED, baseRunSpd, null, null);
+			val = (int) Math.round(calcStat(Stats.RUN_SPEED, baseRunSpd, null, null));
 		}
+		else
+			val = super.getRunSpeed();
 		
 		val += Config.RUN_SPD_BOOST;
-		val /= player.getArmourExpertisePenalty();
 		
     	// Apply max run speed cap.
 		if (val > Config.MAX_RUN_SPEED && !getActiveChar().isGM())

@@ -4970,23 +4970,6 @@ public abstract class L2Character extends L2Object
 //
 
 	/**
-	 * Return the Weapon Expertise Penalty of the L2Character.<BR><BR>
-	 */
-	public float getWeaponExpertisePenalty()
-	{
-		return 1.f;
-	}
-
-	/**
-	 * Return the Armour Expertise Penalty of the L2Character.<BR><BR>
-	 */
-	public float getArmourExpertisePenalty()
-	{
-		return 1.f;
-	}
-
-
-	/**
 	 * Set _attacking corresponding to Attacking Body part to CHEST.<BR><BR>
 	 */
 	public void setAttackingBodypart()
