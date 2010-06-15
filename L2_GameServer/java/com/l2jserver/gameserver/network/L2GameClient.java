@@ -622,7 +622,9 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 					setDetached(true);
 					if (!player.isInOlympiadMode()
 							&& !player.isFestivalParticipant()
-							&& !TvTEvent.isPlayerParticipant(player.getObjectId()) && !player.isInJail())
+							&& !TvTEvent.isPlayerParticipant(player.getObjectId())
+							&& !player.isInJail()
+							&& player.getVehicle() == null)
 					{
 						if ((player.isInStoreMode() && Config.OFFLINE_TRADE_ENABLE)
 								|| (player.isInCraftMode() && Config.OFFLINE_CRAFT_ENABLE))
