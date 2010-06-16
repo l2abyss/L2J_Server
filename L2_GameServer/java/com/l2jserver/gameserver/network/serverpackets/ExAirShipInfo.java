@@ -17,57 +17,68 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
 
 public class ExAirShipInfo extends L2GameServerPacket
-{
-	
+{	
 	private static final String _S__FE_60_EXAIRSHIPINFO = "[S] FE:60 ExAirShipInfo";
-	
-	private final int _x, _y, _z, _heading, _objectId, _speed1, _speed2;
-	
-	
+
+	// store some parameters, because they can be changed during broadcast
+	private final L2AirShipInstance _ship;
+	private final int _x, _y, _z, _heading, _moveSpeed, _rotationSpeed, _captain, _helm;
+
 	public ExAirShipInfo(L2AirShipInstance ship)
 	{
+		_ship = ship;
 		_x = ship.getX();
 		_y = ship.getY();
 		_z = ship.getZ();
-		_heading = ship.getPosition().getHeading();
-		_objectId = ship.getObjectId();
-		_speed1 = (int)ship.getStat().getMoveSpeed();
-		_speed2 = ship.getStat().getRotationSpeed();
+		_heading = ship.getHeading();
+		_moveSpeed = (int)ship.getStat().getMoveSpeed();
+		_rotationSpeed = ship.getStat().getRotationSpeed();
+		_captain = ship.getCaptainId();
+		_helm = ship.getHelmObjectId();
 	}
 
 	@Override
-    protected void writeImpl()
-    {
-	    writeC(0xfe);
-	    writeH(0x60);
-	    
-	    writeD(_objectId);
-	    writeD(_x);
-	    writeD(_y);
-	    writeD(_z);
-	    writeD(_heading);
-	    
-	    
-	    writeD(0x00); // object id of player who control ship
-	    writeD(_speed1);
-	    writeD(_speed2);
-	    
-	    // clan airship related info
-	    writeD(0x00); // owner object id?
-	    writeD(0x00); // 366?
-	    writeD(0x00); // 0
-	    writeD(0x00); // 107:
-	    writeD(0x00); // 348?
-	    writeD(0x00); // 0?
-	    writeD(0x00); // 105?
-	    writeD(0x00); // current fuel
-	    writeD(0x00); // max fuel
+	protected void writeImpl()
+	{
+		writeC(0xfe);
+		writeH(0x60);
+
+		writeD(_ship.getObjectId());
+		writeD(_x);
+		writeD(_y);
+		writeD(_z);
+		writeD(_heading);
+
+		writeD(_captain);
+		writeD(_moveSpeed);
+		writeD(_rotationSpeed);
+		writeD(_helm);
+		if (_helm != 0)
+		{
+			writeD(0x16e); // Controller X
+			writeD(0x00); // Controller Y
+			writeD(0x6b); // Controller Z
+			writeD(0x15c); // Captain X
+			writeD(0x00); // Captain Y
+			writeD(0x69); // Captain Z
+		}
+		else
+		{
+			writeD(0x00);
+			writeD(0x00);
+			writeD(0x00);
+			writeD(0x00);
+			writeD(0x00);
+			writeD(0x00);
+		}
+
+		writeD(_ship.getFuel());
+		writeD(_ship.getMaxFuel());
 	}
 
 	@Override
-    public String getType()
-    {
-	    return _S__FE_60_EXAIRSHIPINFO;
-    }
-	
+	public String getType()
+	{
+		return _S__FE_60_EXAIRSHIPINFO;
+	}
 }

@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.StartRotation;
 
 /**
@@ -28,7 +29,6 @@ public final class StartRotating extends L2GameClientPacket
 	private int _degree;
 	private int _side;
 
-
 	@Override
 	protected void readImpl()
 	{
@@ -39,10 +39,21 @@ public final class StartRotating extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (getClient().getActiveChar() == null)
+		final L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null)
 		    return;
-		StartRotation br = new StartRotation(getClient().getActiveChar().getObjectId(), _degree, _side, 0);
-		getClient().getActiveChar().broadcastPacket(br);
+
+		final StartRotation br;
+		if (activeChar.isInAirShip() && activeChar.getAirShip().isCaptain(activeChar))
+		{
+			br = new StartRotation(activeChar.getAirShip().getObjectId(), _degree, _side, 0);
+			activeChar.getAirShip().broadcastPacket(br);
+		}
+		else
+		{
+			br = new StartRotation(activeChar.getObjectId(), _degree, _side, 0);
+			activeChar.broadcastPacket(br);
+		}
 	}
 
 	/* (non-Javadoc)

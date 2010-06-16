@@ -14,9 +14,8 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.ai.L2AirShipAI;
+import com.l2jserver.gameserver.instancemanager.AirShipManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Vehicle;
@@ -35,8 +34,6 @@ import com.l2jserver.util.Point3D;
  */
 public class L2AirShipInstance extends L2Vehicle
 {
-	protected static final Logger _airShiplog = Logger.getLogger(L2AirShipInstance.class.getName());
-	
 	public L2AirShipInstance(int objectId, L2CharTemplate template)
 	{
 		super(objectId, template);
@@ -48,6 +45,61 @@ public class L2AirShipInstance extends L2Vehicle
 	public boolean isAirShip()
 	{
 		return true;
+	}
+
+	public boolean isOwner(L2PcInstance player)
+	{
+		return false;
+	}
+
+	public int getOwnerId()
+	{
+		return 0;
+	}
+
+	public boolean isCaptain(L2PcInstance player)
+	{
+		return false;
+	}
+
+	public int getCaptainId()
+	{
+		return 0;
+	}
+
+	public int getHelmObjectId()
+	{
+		return 0;
+	}
+
+	public int getHelmItemId()
+	{
+		return 0;
+	}
+
+	public boolean setCaptain(L2PcInstance player)
+	{
+		return false;
+	}
+
+	public int getFuel()
+	{
+		return 0;
+	}
+
+	public void setFuel(int f)
+	{
+		
+	}
+
+	public int getMaxFuel()
+	{
+		return 0;
+	}
+
+	public void setMaxFuel(int mf)
+	{
+		
 	}
 
 	@Override
@@ -79,7 +131,6 @@ public class L2AirShipInstance extends L2Vehicle
 	public void oustPlayer(L2PcInstance player)
 	{
 		super.oustPlayer(player);
-
 		final Location loc = getOustLoc();
 		if (player.isOnline() > 0)
 		{
@@ -93,11 +144,24 @@ public class L2AirShipInstance extends L2Vehicle
 	}
 
 	@Override
+	public void deleteMe()
+	{
+		super.deleteMe();
+		AirShipManager.getInstance().removeAirShip(this);
+	}
+
+	@Override
 	public void stopMove(L2CharPosition pos, boolean updateKnownObjects)
 	{
 		super.stopMove(pos, updateKnownObjects);
 
 		broadcastPacket(new ExStopMoveAirShip(this));
+	}
+
+	@Override
+	public void updateAbnormalEffect()
+	{
+		broadcastPacket(new ExAirShipInfo(this));
 	}
 
 	@Override

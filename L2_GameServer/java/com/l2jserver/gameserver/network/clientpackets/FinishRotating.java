@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.StopRotation;
 
 /**
@@ -39,10 +40,22 @@ public final class FinishRotating extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (getClient().getActiveChar() == null)
+		final L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null)
 		    return;
-		StopRotation sr = new StopRotation(getClient().getActiveChar().getObjectId(), _degree, 0);
-		getClient().getActiveChar().broadcastPacket(sr);
+
+		StopRotation sr;
+		if (activeChar.isInAirShip() && activeChar.getAirShip().isCaptain(activeChar))
+		{
+			activeChar.getAirShip().setHeading(_degree);
+			sr = new StopRotation(activeChar.getAirShip().getObjectId(), _degree, 0);
+			activeChar.getAirShip().broadcastPacket(sr);
+		}
+		else
+		{
+			sr = new StopRotation(activeChar.getObjectId(), _degree, 0);
+			activeChar.broadcastPacket(sr);
+		}
 	}
 
 	/* (non-Javadoc)

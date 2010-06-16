@@ -378,10 +378,10 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 						// RequestSEKCustom
 						break;
 					case 0x5b:
-						// StartRotating
+						msg = new StartRotating();
 						break;
 					case 0x5c:
-						// FinishRotating
+						msg = new FinishRotating();
 						break;
 					case 0x5e:
 						msg = new RequestShowBoard();
@@ -853,7 +853,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
                                 msg = new ExGetOnAirShip();
                                 break;
                             case 0x38:
-                            	// MoveToLocationAirShip
+                            	msg = new MoveToLocationAirShip();
                             	break;
                             case 0x39:
                             	// RequestBidItemAuction

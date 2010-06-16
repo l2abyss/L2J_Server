@@ -192,7 +192,10 @@ public enum L2SkillType
 	COREDONE,
 	
 	CHANGE_APPEARANCE(L2SkillAppearance.class),
-	
+
+	// Refuel airship
+	REFUEL,
+
 	// unimplemented
 	NOTDONE, BALLISTA;
 	

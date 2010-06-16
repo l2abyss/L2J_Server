@@ -27,11 +27,16 @@ import com.l2jserver.gameserver.model.L2Object;
 public final class DeleteObject extends L2GameServerPacket
 {
 	private static final String _S__1E_DELETEOBJECT = "[S] 08 DeleteObject";
-	private int _objectId;
+	private final int _objectId;
 
 	public DeleteObject(L2Object obj)
 	{
 		_objectId = obj.getObjectId();
+	}
+
+	public DeleteObject(int objectId)
+	{
+		_objectId = objectId;
 	}
 
 	@Override
@@ -50,5 +55,4 @@ public final class DeleteObject extends L2GameServerPacket
 	{
 		return _S__1E_DELETEOBJECT;
 	}
-
 }

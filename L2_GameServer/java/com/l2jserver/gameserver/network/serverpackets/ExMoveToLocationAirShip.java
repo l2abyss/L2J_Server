@@ -20,11 +20,17 @@ public class ExMoveToLocationAirShip extends L2GameServerPacket
 {	
 	private static final String _S__FE_65_EXAIRSHIPMOVETOLOCATION = "[S] FE:65 ExMoveToLocationAirShip";
 
-	private L2Character _ship;
+	private final int _objId, _tx, _ty, _tz, _x, _y, _z;
 
 	public ExMoveToLocationAirShip(L2Character cha)
 	{
-		_ship = cha;
+		_objId = cha.getObjectId();
+		_tx = cha.getXdestination();
+		_ty = cha.getYdestination();
+		_tz = cha.getZdestination();
+		_x = cha.getX();
+		_y = cha.getY();
+		_z = cha.getZ();
 	}
 
 	@Override
@@ -33,13 +39,13 @@ public class ExMoveToLocationAirShip extends L2GameServerPacket
 		writeC(0xfe);
 		writeH(0x65);
 
-		writeD(_ship.getObjectId());
-		writeD(_ship.getXdestination());
-		writeD(_ship.getYdestination());
-		writeD(_ship.getZdestination());
-		writeD(_ship.getX());
-		writeD(_ship.getY());
-		writeD(_ship.getZ());
+		writeD(_objId);
+		writeD(_tx);
+		writeD(_ty);
+		writeD(_tz);
+		writeD(_x);
+		writeD(_y);
+		writeD(_z);
 	}
 
 	@Override

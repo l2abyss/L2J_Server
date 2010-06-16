@@ -115,10 +115,11 @@ public abstract class L2Object
 		// Festival
 		L2FestivalGiudeInstance(L2Npc),
 		L2FestivalMonsterInstance(L2MonsterInstance),
-		// Ships and controllers
-		L2BoatInstance(L2Character),
-		L2AirShipInstance(L2Character),
-		L2AirShipControllerInstance(L2NpcInstance),
+		// Vehicles
+		L2Vehicle(L2Character),
+		L2BoatInstance(L2Vehicle),
+		L2AirShipInstance(L2Vehicle),
+		L2ControllableAirShipInstance(L2AirShipInstance),
 		// Siege
 		L2DefenderInstance(L2Attackable),
 		L2ArtefactInstance(L2NpcInstance),

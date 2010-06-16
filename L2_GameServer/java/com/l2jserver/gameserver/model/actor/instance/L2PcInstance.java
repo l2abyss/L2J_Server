@@ -4323,7 +4323,7 @@ public final class L2PcInstance extends L2Playable
 		final int charges = getCharges();
 		// Check if the spell using charges or not in AirShip
 		if ((skill.getMaxCharges() == 0 && charges < skill.getNumCharges())
-				|| isInAirShip())
+				|| (isInAirShip() && skill.getSkillType() != L2SkillType.REFUEL))
 		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addSkillName(skill);
@@ -5141,6 +5141,10 @@ public final class L2PcInstance extends L2Playable
 		{
 			// Can't target and attack festival monsters if not participant
 			if((newTarget instanceof L2FestivalMonsterInstance) && !isFestivalParticipant())
+				newTarget = null;
+
+			// vehicles cant be targeted
+			else if (newTarget instanceof L2Vehicle)
 				newTarget = null;
 
 			// Can't target and attack rift invaders if not in the same room
@@ -11804,10 +11808,9 @@ public final class L2PcInstance extends L2Playable
 			// before entering in observer mode
 			if (inObserverMode())
 				setXYZInvisible(_obsX, _obsY, _obsZ);
-			else if (isInAirShip())
-				getAirShip().oustPlayer(this);
-			else if (isInBoat())
-				getBoat().oustPlayer(this);
+
+			if (getVehicle() != null)
+				getVehicle().oustPlayer(this);
 		}
 		catch (Exception e)
 		{

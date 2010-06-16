@@ -71,6 +71,8 @@ public class CharInfo extends L2GameServerPacket
 	private int _territoryId;
 	private boolean _isDisguised;
 
+	private int _vehicleId, _airShipHelm;
+
 	/**
 	 * @param _characters
 	 */
@@ -78,9 +80,25 @@ public class CharInfo extends L2GameServerPacket
 	{
 		_activeChar = cha;
 		_inv = cha.getInventory();
-		_x = _activeChar.getX();
-		_y = _activeChar.getY();
-		_z = _activeChar.getZ();
+		if (_activeChar.getVehicle() != null && _activeChar.getInVehiclePosition() != null)
+		{
+			_x = _activeChar.getInVehiclePosition().getX();
+			_y = _activeChar.getInVehiclePosition().getY();
+			_z = _activeChar.getInVehiclePosition().getZ();
+			_vehicleId = _activeChar.getVehicle().getObjectId();
+			if (_activeChar.isInAirShip() && _activeChar.getAirShip().isCaptain(_activeChar))
+				_airShipHelm = _activeChar.getAirShip().getHelmItemId();
+			else
+				_airShipHelm = 0;
+		}
+		else
+		{
+			_x = _activeChar.getX();
+			_y = _activeChar.getY();
+			_z = _activeChar.getZ();
+			_vehicleId = 0;
+			_airShipHelm = 0;
+		}
 		_heading = _activeChar.getHeading();
 		_mAtkSpd = _activeChar.getMAtkSpd();
 		_pAtkSpd = _activeChar.getPAtkSpd();
@@ -202,7 +220,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_x);
 			writeD(_y);
 			writeD(_z);
-			writeD(0x00);
+			writeD(_vehicleId);
 			writeD(_activeChar.getObjectId());
 			writeS(_activeChar.getAppearance().getVisibleName());
 			writeD(_activeChar.getRace().ordinal());
@@ -215,8 +233,16 @@ public class CharInfo extends L2GameServerPacket
 
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_UNDER));
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_HEAD));
-			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_RHAND));
-			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_LHAND));
+			if (_airShipHelm == 0)
+			{
+				writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_RHAND));
+				writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_LHAND));
+			}
+			else
+			{
+				writeD(_airShipHelm);
+				writeD(0);
+			}
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_GLOVES));
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_CHEST));
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_LEGS));
@@ -240,8 +266,16 @@ public class CharInfo extends L2GameServerPacket
 			// c6 new h's
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_UNDER));
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_HEAD));
-			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_RHAND));
-			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_LHAND));
+			if (_airShipHelm == 0)
+			{
+				writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_RHAND));
+				writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_LHAND));
+			}
+			else
+			{
+				writeD(0);
+				writeD(0);
+			}
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_GLOVES));
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_CHEST));
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_LEGS));
@@ -370,7 +404,7 @@ public class CharInfo extends L2GameServerPacket
 
 			writeD(_activeChar.getClassId().getId());
 			writeD(0x00); //?
-			writeC(_activeChar.isMounted() ? 0 : _activeChar.getEnchantEffect());
+			writeC(_activeChar.isMounted() || _airShipHelm != 0 ? 0 : _activeChar.getEnchantEffect());
 
 			if(_activeChar.getTeam()==1)
 				writeC(0x01); //team circle around feet 1= Blue, 2 = red

@@ -87,6 +87,9 @@ public final class Action extends L2GameClientPacket
 			obj = activeChar.getTarget();
 			_removeSpawnProtection = true;
 		}
+		else if (activeChar.isInAirShip()
+				&& activeChar.getAirShip().getHelmObjectId() == _objectId)
+			obj = activeChar.getAirShip();
 		else
 			obj = L2World.getInstance().findObject(_objectId);
 

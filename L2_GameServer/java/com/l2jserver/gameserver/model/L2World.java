@@ -40,6 +40,14 @@ public final class L2World
 {
 	private static Logger _log = Logger.getLogger(L2World.class.getName());
 
+	/**
+	 * Gracia border
+	 * Flying objects not allowed to the east of it.
+	 */
+	public static final int GRACIA_MAX_X = -166168;
+	public static final int GRACIA_MAX_Z = 6105;
+	public static final int GRACIA_MIN_Z = -895;
+
 	/*
 	* biteshift, defines number of regions
 	* note, shifting by 15 will result in regions corresponding to map tiles

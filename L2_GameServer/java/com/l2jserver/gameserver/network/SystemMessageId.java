@@ -13981,13 +13981,85 @@ public enum SystemMessageId
 	 * Message: The cloak equip has been removed because the armor set equip has been removed.
 	 */
 	CLOAK_REMOVED_BECAUSE_ARMOR_SET_REMOVED(2451),
-	
+
+	/**
+	 * ID: 2455<br>
+	 * Message: The airship must be summoned in order for you to board.
+	 */
+	THE_AIRSHIP_MUST_BE_SUMMONED_TO_BOARD(2455),
+
+	/**
+	 * ID: 2456<br>
+	 * Message: In order to acquire an airship, the clan's level must be level 5 or higher.
+	 */
+	THE_AIRSHIP_NEED_CLANLVL_5_TO_SUMMON(2456),
+
+	/**
+	 * ID: 2457<br>
+	 * Message: An airship cannot be summoned because either you have not registered your airship license, or the airship has not yet been summoned
+	 */
+	THE_AIRSHIP_NEED_LICENSE_TO_SUMMON(2457),
+
+	/**
+	 * ID: 2458<br>
+	 * Message: The airship owned by the clan is already being used by another clan member.
+	 */
+	THE_AIRSHIP_ALREADY_USED(2458),
+
+	/**
+	 * ID: 2459<br>
+	 * Message: The Airship Summon License has already been acquired.
+	 */
+	THE_AIRSHIP_SUMMON_LICENSE_ALREADY_ACQUIRED(2459),
+
+	/**
+	 * ID:2460<br>
+	 * Message: The clan owned airship already exists.
+	 */
+	THE_AIRSHIP_IS_ALREADY_EXISTS(2460),
+
+	/**
+	 * ID:2461<br>
+	 * Message: The airship owned by the clan can only be purchased by the clan lord.
+	 */
+	THE_AIRSHIP_NO_PRIVILEGES(2461),
+
+	/**
+	 * ID:2462<br>
+	 * Message: The airship cannot be summoned because you don't have enough $s1%.
+	 */
+	THE_AIRSHIP_NEED_MORE_S1(2462),
+
+	/**
+	 * ID: 2463
+	 * Message: The airship's fuel (EP) will soon run out.
+	 */
+	THE_AIRSHIP_FUEL_SOON_RUN_OUT(2463),
+
+	/**
+	 * ID: 2464
+	 * Message: The airship's fuel (EP) has run out. The airship's speed will be greatly decreased in this condition.
+	 */
+	THE_AIRSHIP_FUEL_RUN_OUT(2464),
+
 	/**
 	 * ID: 2465
 	 * Message: You have selected a 3 vs 3 class irrelevant team match. Do you wish to participate?
 	 */
 	OLYMPIAD_3VS3_CONFIRM(2465),
-	
+
+	/**
+	 * ID: 2491
+	 * Message: Your ship cannot teleport because it does not have enough fuel for the trip.
+	 */
+	THE_AIRSHIP_CANNOT_TELEPORT(2491),
+
+	/**
+	 * ID: 2492
+	 * Message: The airship has been summoned. It will automatically depart in %s minutes.
+	 */
+	THE_AIRSHIP_SUMMONED(2492),
+
 	/**
 	* ID: 2500<br>
 	* Message: The collection has succeeded.
@@ -14029,7 +14101,13 @@ public enum SystemMessageId
 	* Message: Boarding or cancellation of boarding on Airships is not allowed in the current area.
 	*/
 	BOARD_OR_CANCEL_NOT_POSSIBLE_HERE(2721),
-	
+
+	/**
+	 * ID: 2722<br>
+	 * Message: Another airship has already been summoned at the wharf. Please try again later. 
+	 */
+	ANOTHER_AIRSHIP_ALREADY_SUMMONED(2722),
+
 	/**
 	* ID: 2727<br>
 	* Message: You cannot mount because you do not meet the requirements.
@@ -14047,7 +14125,13 @@ public enum SystemMessageId
 	* Message: The character that acquired $s1 ward has been killed.
 	*/
 	THE_CHAR_THAT_ACQUIRED_S1_WARD_HAS_BEEN_KILLED(2751),
-	
+
+	/**
+	 * ID: 2762<br>
+	 * Message: You cannot control because you are too far.
+	 */
+	CANT_CONTROL_TOO_FAR(2762),
+
 	/**
 	* ID: 2766<br>
 	* Message: Seed of Infinity Stage 1 Attack In Progress.
@@ -14095,6 +14179,12 @@ public enum SystemMessageId
 	* Message: Seed of Destruction Defense in Progress.
 	*/
 	SEED_OF_DESTRUCTION_DEFENSE_IN_PROGRESS(2773),
+
+	/**
+	 * ID: 2777<br>
+	 * Message: The airship's summon license has been entered. Your clan can now summon the airship.
+	 */
+	THE_AIRSHIP_SUMMON_LICENSE_ENTERED(2777),
 
 	/**
 	* ID: 2795<br>

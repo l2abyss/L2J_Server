@@ -34,9 +34,9 @@ public class BoatManager
 	private Map<Integer, L2BoatInstance> _boats = new FastMap<Integer, L2BoatInstance>();
 	private boolean[] _docksBusy = new boolean[3];
 
-	public static final int TALKING_ISLAND = 0;
-	public static final int GLUDIN_HARBOR = 1;
-	public static final int RUNE_HARBOR = 2;
+	public static final int TALKING_ISLAND = 1;
+	public static final int GLUDIN_HARBOR = 2;
+	public static final int RUNE_HARBOR = 3;
 
 	private static final double BROADCAST_DISTANCE = 400000000; // 20000
 

@@ -22,11 +22,16 @@ import com.l2jserver.gameserver.model.actor.L2Character;
  */
 public class ExStopMoveAirShip extends L2GameServerPacket
 {
-	private L2Character _ship;
+	// store coords here because they can be changed from other threads
+	final int _objectId, _x, _y, _z, _heading;
 
-    public ExStopMoveAirShip(L2Character ship)
+	public ExStopMoveAirShip(L2Character ship)
     {
-    	_ship = ship;
+		_objectId = ship.getObjectId();
+		_x = ship.getX();
+		_y = ship.getY();
+		_z = ship.getZ();
+		_heading = ship.getHeading();
     }
 
     @Override
@@ -34,11 +39,11 @@ public class ExStopMoveAirShip extends L2GameServerPacket
     {
         writeC(0xfe);
         writeH(0x66);
-        writeD(_ship.getObjectId());
-        writeD(_ship.getX());
-        writeD(_ship.getY());
-        writeD(_ship.getZ());
-        writeD(_ship.getHeading());
+        writeD(_objectId);
+        writeD(_x);
+        writeD(_y);
+        writeD(_z);
+        writeD(_heading);
     }
 
     /* (non-Javadoc)

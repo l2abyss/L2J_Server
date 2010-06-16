@@ -22,6 +22,7 @@ import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2SummonAI;
 import com.l2jserver.gameserver.datatables.PetSkillsTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.instancemanager.AirShipManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
@@ -365,10 +366,29 @@ public final class RequestActionUse extends L2GameClientPacket
 				activeChar.sendMessage("Action not handled yet.");
 				break;
 			case 67: // Steer
+				if (activeChar.isInAirShip())
+					if (activeChar.getAirShip().setCaptain(activeChar))
+						activeChar.broadcastUserInfo();
+				break;
 			case 68: // Cancel Control
+				if (activeChar.isInAirShip() && activeChar.getAirShip().isCaptain(activeChar))
+					if (activeChar.getAirShip().setCaptain(null))
+						activeChar.broadcastUserInfo();
+				break;
 			case 69: // Destination Map
+				AirShipManager.getInstance().sendAirShipTeleportList(activeChar);
+				break;
 			case 70: // Exit Airship
-				activeChar.sendMessage("Action not handled yet.");
+				if (activeChar.isInAirShip())
+				{
+					if (activeChar.getAirShip().isCaptain(activeChar))
+					{
+						if (activeChar.getAirShip().setCaptain(null))
+							activeChar.broadcastUserInfo();
+					}
+					else if (activeChar.getAirShip().isInDock())
+						activeChar.getAirShip().oustPlayer(activeChar);
+				}
 				break;
 			case 1000: // Siege Golem - Siege Hammer
 				if (target instanceof L2DoorInstance)

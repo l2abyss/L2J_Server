@@ -14,10 +14,10 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.network.serverpackets.TargetUnselected;
 
 /**
  * This class ...
@@ -27,37 +27,39 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestTargetCanceld extends L2GameClientPacket
 {
 	private static final String _C__37_REQUESTTARGETCANCELD = "[C] 37 RequestTargetCanceld";
-	//private static Logger _log = Logger.getLogger(RequestTargetCanceld.class.getName());
 
-    private int _unselect;
+	private int _unselect;
 
 	@Override
 	protected void readImpl()
 	{
-        _unselect = readH();
+		_unselect = readH();
 	}
 
 	@Override
 	protected void runImpl()
 	{
-		L2Character activeChar = getClient().getActiveChar();
-        if (activeChar != null)
-        {
-        	if (((L2PcInstance)activeChar).isLockedTarget())
-        	{
-        		activeChar.sendPacket(new SystemMessage(SystemMessageId.FAILED_DISABLE_TARGET));
-        		return;
-        	}
-            if (_unselect == 0)
-            {
-            	if (activeChar.isCastingNow() && activeChar.canAbortCast())
-            		activeChar.abortCast();
-            	else if (activeChar.getTarget() != null)
-            		activeChar.setTarget(null);
-            }
-            else if (activeChar.getTarget() != null)
-            	activeChar.setTarget(null);
-        }
+		final L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null)
+			return;
+
+		if (activeChar.isLockedTarget())
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.FAILED_DISABLE_TARGET));
+			return;
+		}
+
+		if (_unselect == 0)
+		{
+			if (activeChar.isCastingNow() && activeChar.canAbortCast())
+				activeChar.abortCast();
+			else if (activeChar.getTarget() != null)
+				activeChar.setTarget(null);
+		}
+		else if (activeChar.getTarget() != null)
+			activeChar.setTarget(null);
+		else if (activeChar.isInAirShip())
+			activeChar.broadcastPacket(new TargetUnselected(activeChar));
 	}
 
 	/* (non-Javadoc)
