@@ -1226,9 +1226,9 @@ public class GeoEngine extends GeoData
 			if (debug)
 				_log.warning("flatheight:" + height);
 			if (z > height)
-				return inc_z > height;
+				return z+inc_z > height;
 			else
-				return inc_z < height;
+				return z+inc_z < height;
 		}
 		else if (type == 1) //complex
 		{
@@ -1275,7 +1275,7 @@ public class GeoEngine extends GeoData
 			short upperHeight = Short.MAX_VALUE; // big positive value
 			short lowerHeight = Short.MIN_VALUE; // big negative value
 			byte temp_layers = layers;
-			boolean highestlayer = false;
+			boolean highestlayer = true;
 			while (temp_layers > 0) // from higher to lower
 			{
 				// reads tempZ for current layer, result in world z coordinate
