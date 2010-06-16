@@ -100,11 +100,7 @@ public class EnterWorld extends L2GameClientPacket
 
 	private static Logger _log = Logger.getLogger(EnterWorld.class.getName());
 	
-	private String _userHost;
-	private String _routeHop1;
-	private String _routeHop2;
-	private String _routeHop3;
-	private String _routeHop4;
+	private int[][] tracert = new int[5][4];
 
 	public TaskPriority getPriority()
 	{
@@ -121,11 +117,9 @@ public class EnterWorld extends L2GameClientPacket
 		readD();				// Unknown Value
 		readB(new byte[32]);	// Unknown Byte Array
 		readD();				// Unknown Value
-		_userHost  = readC()+"."+readC()+"."+readC()+"."+readC();
-		_routeHop1 = readC()+"."+readC()+"."+readC()+"."+readC();
-		_routeHop2 = readC()+"."+readC()+"."+readC()+"."+readC();
-		_routeHop3 = readC()+"."+readC()+"."+readC()+"."+readC();
-		_routeHop4 = readC()+"."+readC()+"."+readC()+"."+readC();
+		for (int i = 0; i < 5; i++)
+			for (int o = 0; o < 4; o++)
+				tracert[i][o] = readC();
 	}
 
 	@Override
@@ -140,9 +134,14 @@ public class EnterWorld extends L2GameClientPacket
 			return;
 		}
 		
-		LoginServerThread.getInstance().sendClientTracert(activeChar.getAccountName(),
-				_userHost, _routeHop1, _routeHop2, _routeHop3, _routeHop4);
-
+		String[] adress = new String[5];
+		for (int i = 0; i < 5; i++)
+			adress[i] = tracert[i][0]+"."+tracert[i][1]+"."+tracert[i][2]+"."+tracert[i][3];
+		
+		LoginServerThread.getInstance().sendClientTracert(activeChar.getAccountName(), adress);
+		
+		getClient().setClientTracert(tracert);
+		
 		// Restore to instanced area if enabled
 		if (Config.RESTORE_PLAYER_INSTANCE)
 			activeChar.setInstanceId(InstanceManager.getInstance().getPlayerInstance(activeChar.getObjectId()));

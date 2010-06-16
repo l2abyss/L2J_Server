@@ -451,10 +451,9 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
-	public void sendClientTracert(String account, String pcIp, 
-			String hop1, String hop2, String hop3, String hop4)
+	public void sendClientTracert(String account, String[] adress)
 	{
-		PlayerTracert ptc = new PlayerTracert(account, pcIp, hop1, hop2, hop3, hop4);
+		PlayerTracert ptc = new PlayerTracert(account, adress[0], adress[1], adress[2], adress[3], adress[4]);
 		try
 		{
 			sendPacket(ptc);

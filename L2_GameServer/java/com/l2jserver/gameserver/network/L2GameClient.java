@@ -96,6 +96,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	private boolean _isDetached = false;
 
 	private boolean _protocol;
+	
+	private int[][] trace;
 
 	public L2GameClient(MMOConnection<L2GameClient> con)
 	{
@@ -770,5 +772,15 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 		_logAudit.log(Level.INFO, "AUDIT: Client "+toString()+" kicked for reason: "+punishment);
 		closeNow();
 		return false;
+	}
+	
+	public void setClientTracert(int[][] tracert)
+	{
+		trace = tracert;
+	}
+
+	public int[][] getTrace()
+	{
+		return trace;
 	}
 }

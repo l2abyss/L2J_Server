@@ -1004,6 +1004,7 @@ public class Olympiad
 		}
 		catch (ArrayIndexOutOfBoundsException e)
 		{
+			_log.log(Level.SEVERE, "removeSpectator()", e);
 		}
 	}
 	
