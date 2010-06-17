@@ -39,7 +39,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	private L2PcInstance _captain = null;
 
 	private Future<?> _consumeFuelTask;
-	private Future<?> _decayTask;
+	private Future<?> _checkTask;
 
 	public L2ControllableAirShipInstance(int objectId, L2CharTemplate template, int ownerId)
 	{
@@ -47,8 +47,6 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 		setInstanceType(InstanceType.L2ControllableAirShipInstance);
 		_ownerId = ownerId;
 		_helmId = IdFactory.getInstance().getNextId(); // not forget to release !
-		_decayTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new DecayTask(), 60000, 10000);
-		_consumeFuelTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ConsumeFuelTask(), 60000, 60000);
 	}
 
 	@Override
@@ -188,12 +186,22 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	}
 
 	@Override
+	public void onSpawn()
+	{
+		super.onSpawn();
+		_checkTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new CheckTask(), 60000, 10000);
+		_consumeFuelTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ConsumeFuelTask(), 60000, 60000);
+	}
+
+	@Override
 	public void deleteMe()
 	{
-		if (_decayTask != null)
+		super.deleteMe();
+
+		if (_checkTask != null)
 		{
-			_decayTask.cancel(false);
-			_decayTask = null;
+			_checkTask.cancel(false);
+			_checkTask = null;
 		}
 		if (_consumeFuelTask != null)
 		{
@@ -209,8 +217,6 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 		{
 			_log.log(Level.SEVERE, "Failed decayMe():"+e.getMessage());
 		}
-
-		super.deleteMe();
 	}
 
 	@Override
@@ -229,7 +235,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 			_captain.sendInfo(activeChar);
 	}
 
-	private class ConsumeFuelTask implements Runnable
+	private final class ConsumeFuelTask implements Runnable
 	{
 		public void run()
 		{
@@ -246,13 +252,22 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 		}
 	}
 
-	private class DecayTask implements Runnable
+	private final class CheckTask implements Runnable
 	{
 		public void run()
 		{
 			if (isVisible()
 					&& isEmpty()
 					&& !isInDock())
+				// deleteMe() can't be called from CheckTask because task should not cancel itself
+				ThreadPoolManager.getInstance().executeTask(new DecayTask());
+		}
+	}
+
+	private final class DecayTask implements Runnable
+	{
+		public void run()
+		{
 				deleteMe();
 		}
 	}
