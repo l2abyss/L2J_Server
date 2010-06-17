@@ -724,7 +724,7 @@ public class CharEffectList
 
 		if (newSkill.isDebuff())
 		{
-			if (_debuffs == null) _debuffs = new FastList<L2Effect>();
+			if (_debuffs == null) _debuffs = new FastList<L2Effect>().shared();
 			for (L2Effect e : _debuffs)
 			{
 				if (e != null
@@ -742,7 +742,7 @@ public class CharEffectList
 		}
 		else
 		{
-			if (_buffs == null) _buffs = new FastList<L2Effect>();
+			if (_buffs == null) _buffs = new FastList<L2Effect>().shared();
 
 			for (L2Effect e : _buffs)
 			{
