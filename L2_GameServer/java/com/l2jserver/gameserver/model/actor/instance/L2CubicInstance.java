@@ -967,7 +967,7 @@ public class L2CubicInstance
 		
 		public void run()
 		{
-			if (_owner.isDead() && _owner.isOnline() == 0)
+			if (_owner.isDead() || _owner.isOnline() == 0)
 			{
 				stopAction();
 				_owner.delCubic(_id);
