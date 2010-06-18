@@ -91,7 +91,7 @@ public class RequestUnEquipItem extends L2GameClientPacket
 
 		for (L2ItemInstance itm: unequiped)
 		{
-            activeChar.checkSSMatch(null, itm);
+            activeChar.checkSShotsMatch(null, itm);
 
 			iu.addModifiedItem(itm);
 		}

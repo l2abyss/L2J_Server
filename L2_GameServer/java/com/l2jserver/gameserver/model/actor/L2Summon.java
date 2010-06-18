@@ -387,7 +387,7 @@ public abstract class L2Summon extends L2Playable
     		if (oldRegion != null) oldRegion.removeFromZones(this);
     		getKnownList().removeAllKnownObjects();
     		setTarget(null);
-    		for (int itemId : owner.getAutoSoulShot().keySet())
+    		for (int itemId : owner.getAutoSoulShot())
     		{
     			String handler = ((L2EtcItem)ItemTable.getInstance().getTemplate(itemId)).getHandlerName();
     			if (handler.contains("Beast"))

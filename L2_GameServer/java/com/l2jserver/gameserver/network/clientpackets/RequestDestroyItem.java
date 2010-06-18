@@ -137,7 +137,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 			InventoryUpdate iu = new InventoryUpdate();
 			for (L2ItemInstance item: unequiped)
 			{
-				activeChar.checkSSMatch(null, item);
+				activeChar.checkSShotsMatch(null, item);
 
 				iu.addModifiedItem(item);
 			}

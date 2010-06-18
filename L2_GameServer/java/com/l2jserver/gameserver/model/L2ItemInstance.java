@@ -1146,7 +1146,7 @@ public final class L2ItemInstance extends L2Object
 					InventoryUpdate iu = new InventoryUpdate();
 					for (L2ItemInstance item: unequiped)
 					{
-						player.checkSSMatch(null, item);
+						player.checkSShotsMatch(null, item);
 						iu.addModifiedItem(item);
 					}
 					player.sendPacket(iu);
@@ -1685,7 +1685,7 @@ public final class L2ItemInstance extends L2Object
     			InventoryUpdate iu = new InventoryUpdate();
     			for (L2ItemInstance item: unequiped)
     			{
-    				player.checkSSMatch(null, item);
+    				player.checkSShotsMatch(null, item);
     				iu.addModifiedItem(item);
     			}
     			player.sendPacket(iu);

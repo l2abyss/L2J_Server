@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.model.olympiad;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -41,7 +40,6 @@ import com.l2jserver.gameserver.model.olympiad.Olympiad.COMP_TYPE;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
-import com.l2jserver.gameserver.network.serverpackets.ExAutoSoulShot;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMatchEnd;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMode;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadUserInfo;
@@ -272,13 +270,7 @@ class OlympiadGame
 				player.checkItemRestriction();
 
 				// Remove shot automation
-				Map<Integer, Integer> activeSoulShots = player.getAutoSoulShot();
-				for (int itemId : activeSoulShots.values())
-				{
-					player.removeAutoSoulShot(itemId);
-					ExAutoSoulShot atk = new ExAutoSoulShot(itemId, 0);
-					player.sendPacket(atk);
-				}
+				player.disableAutoShotsAll();
 				
 				// Discharge any active shots
 				if (player.getActiveWeaponInstance() != null)

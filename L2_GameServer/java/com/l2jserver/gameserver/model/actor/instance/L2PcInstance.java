@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +34,7 @@ import java.util.logging.Level;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
+import javolution.util.FastSet;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
@@ -714,8 +716,8 @@ public final class L2PcInstance extends L2Playable
 
 	protected Map<Integer, L2CubicInstance> _cubics = new FastMap<Integer, L2CubicInstance>().shared();
 
-	/** Active shots. A FastSet variable would actually suffice but this was changed to fix threading stability... */
-	protected Map<Integer, Integer> _activeSoulShots = new FastMap<Integer, Integer>().shared();
+	/** Active shots. */
+	protected FastSet<Integer> _activeSoulShots = new FastSet<Integer>().shared();
 
 	public final ReentrantLock soulShotLock = new ReentrantLock();
 
@@ -2420,136 +2422,116 @@ public final class L2PcInstance extends L2Playable
 		if (changed)
 			sendPacket(new EtcStatusUpdate(this));
 	}
-
-    public void checkIfWeaponIsAllowed()
-    {
-        // Override for Gamemasters
-        if (isGM())
-            return;
-
-        // Iterate through all effects currently on the character.
-        for (L2Effect currenteffect : getAllEffects())
-        {
-            L2Skill effectSkill = currenteffect.getSkill();
-
-            // Ignore all buff skills that are party related (ie. songs, dances) while still remaining weapon dependant on cast though.
-            if (!effectSkill.isOffensive() && !(effectSkill.getTargetType() == SkillTargetType.TARGET_PARTY && effectSkill.getSkillType() == L2SkillType.BUFF))
-            {
-                // Check to rest to assure current effect meets weapon requirements.
-            	if (!effectSkill.getWeaponDependancy(this))
-                {
-            		SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-            		sm.addSkillName(effectSkill);
-            		sendPacket(sm);
-
-                    if (Config.DEBUG)
-                        _log.info("   | Skill "+effectSkill.getName()+" has been disabled for ("+getName()+"); Reason: Incompatible Weapon Type.");
-
-                    currenteffect.exit();
-                }
-            }
-
-            continue;
-        }
-    }
-
-    public void checkSSMatch(L2ItemInstance equipped, L2ItemInstance unequipped)
-    {
-    	if (unequipped == null)
-    		return;
-
-		if (unequipped.getItem().getType2() == L2Item.TYPE2_WEAPON &&
-				(equipped == null ? true : equipped.getItem().getCrystalType() != unequipped.getItem().getCrystalType()))
+	
+	public void checkIfWeaponIsAllowed()
+	{
+		// Override for Gamemasters
+		if (isGM())
+			return;
+		
+		// Iterate through all effects currently on the character.
+		for (L2Effect currenteffect : getAllEffects())
 		{
-			for (L2ItemInstance ss : getInventory().getItems())
+			L2Skill effectSkill = currenteffect.getSkill();
+			
+			// Ignore all buff skills that are party related (ie. songs, dances) while still remaining weapon dependant on cast though.
+			if (!effectSkill.isOffensive() && !(effectSkill.getTargetType() == SkillTargetType.TARGET_PARTY && effectSkill.getSkillType() == L2SkillType.BUFF))
 			{
-				if (ss == null)
-					continue;
-				
-				int _itemId = ss.getItemId();
-
-				if (((_itemId >= 2509 && _itemId <= 2514) ||
-						(_itemId >= 3947 && _itemId <= 3952) ||
-						(_itemId <= 1804 && _itemId >= 1808) ||
-						_itemId == 5789 || _itemId == 5790 || _itemId == 1835
-						|| (_itemId >=22072 && _itemId <=22086)) &&
-						ss.getItem().getCrystalType() == unequipped.getItem().getCrystalType())
+				// Check to rest to assure current effect meets weapon requirements.
+				if (!effectSkill.getWeaponDependancy(this))
 				{
-                    sendPacket(new ExAutoSoulShot(_itemId, 0));
-
-                    SystemMessage sm = new SystemMessage(SystemMessageId.AUTO_USE_OF_S1_CANCELLED);
-                    sm.addString(ss.getItemName());
-                    sendPacket(sm);
+					SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+					sm.addSkillName(effectSkill);
+					sendPacket(sm);
+					
+					if (Config.DEBUG)
+						_log.info("   | Skill "+effectSkill.getName()+" has been disabled for ("+getName()+"); Reason: Incompatible Weapon Type.");
+					
+					currenteffect.exit();
 				}
 			}
+			
+			continue;
 		}
-    }
-
-    public void useEquippableItem(L2ItemInstance item, boolean abortAttack)
+	}
+	
+	public void checkSShotsMatch(L2ItemInstance equipped, L2ItemInstance unequipped)
+	{
+		if (unequipped == null)
+			return;
+		
+		if (unequipped.getItem().getType2() == L2Item.TYPE2_WEAPON &&
+				(equipped == null ? true : equipped.getItem().getItemGradeSPlus() != unequipped.getItem().getItemGradeSPlus()))
+		{
+			disableAutoShotByCrystalType(unequipped.getItem().getCrystalType());
+		}
+	}
+	
+	public void useEquippableItem(L2ItemInstance item, boolean abortAttack)
 	{
 		// Equip or unEquip
-        L2ItemInstance[] items = null;
-        final boolean isEquiped = item.isEquipped();
-        final int oldInvLimit = getInventoryLimit();
-        SystemMessage sm = null;
-        L2ItemInstance old = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LRHAND);
-        if (old == null)
-        	old = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
-
-        checkSSMatch(item, old);
-
-        if (isEquiped)
-        {
-            if (item.getEnchantLevel() > 0)
-            {
-            	sm = new SystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
-            	sm.addNumber(item.getEnchantLevel());
-            	sm.addItemName(item);
-            }
-            else
-            {
-	            sm = new SystemMessage(SystemMessageId.S1_DISARMED);
-	            sm.addItemName(item);
-            }
-            sendPacket(sm);
-
-            int slot = getInventory().getSlotFromItem(item);
-            // we cant unequip talisman by body slot
-            if (slot == L2Item.SLOT_DECO)
-            	items = getInventory().unEquipItemInSlotAndRecord(item.getLocationSlot());
-            else
-            	items = getInventory().unEquipItemInBodySlotAndRecord(slot);
-        }
-        else
-        {
-        	int tempBodyPart = item.getItem().getBodyPart();
-        	L2ItemInstance tempItem = getInventory().getPaperdollItemByL2ItemId(tempBodyPart);
-
-        	//check if the item replaces a wear-item
-        	if (tempItem != null && tempItem.isWear())
-        	{
-        		// dont allow an item to replace a wear-item
-        		return;
-        	}
-        	else if (tempBodyPart == L2Item.SLOT_LR_HAND)
-        	{
-        		// this may not remove left OR right hand equipment
-        		tempItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
-        		if (tempItem != null && tempItem.isWear()) return;
-
-        		tempItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LHAND);
-        		if (tempItem != null && tempItem.isWear()) return;
-        	}
-        	else if (tempBodyPart == L2Item.SLOT_FULL_ARMOR)
-        	{
-        		// this may not remove chest or leggins
-        		tempItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_CHEST);
-        		if (tempItem != null && tempItem.isWear()) return;
-
-        		tempItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LEGS);
-        		if (tempItem != null && tempItem.isWear()) return;
-        	}
-
+		L2ItemInstance[] items = null;
+		final boolean isEquiped = item.isEquipped();
+		final int oldInvLimit = getInventoryLimit();
+		SystemMessage sm = null;
+		L2ItemInstance old = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LRHAND);
+		if (old == null)
+			old = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
+		
+		checkSShotsMatch(item, old);
+		
+		if (isEquiped)
+		{
+			if (item.getEnchantLevel() > 0)
+			{
+				sm = new SystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
+				sm.addNumber(item.getEnchantLevel());
+				sm.addItemName(item);
+			}
+			else
+			{
+				sm = new SystemMessage(SystemMessageId.S1_DISARMED);
+				sm.addItemName(item);
+			}
+			sendPacket(sm);
+			
+			int slot = getInventory().getSlotFromItem(item);
+			// we cant unequip talisman by body slot
+			if (slot == L2Item.SLOT_DECO)
+				items = getInventory().unEquipItemInSlotAndRecord(item.getLocationSlot());
+			else
+				items = getInventory().unEquipItemInBodySlotAndRecord(slot);
+		}
+		else
+		{
+			int tempBodyPart = item.getItem().getBodyPart();
+			L2ItemInstance tempItem = getInventory().getPaperdollItemByL2ItemId(tempBodyPart);
+			
+			//check if the item replaces a wear-item
+			if (tempItem != null && tempItem.isWear())
+			{
+				// dont allow an item to replace a wear-item
+				return;
+			}
+			else if (tempBodyPart == L2Item.SLOT_LR_HAND)
+			{
+				// this may not remove left OR right hand equipment
+				tempItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
+				if (tempItem != null && tempItem.isWear()) return;
+				
+				tempItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LHAND);
+				if (tempItem != null && tempItem.isWear()) return;
+			}
+			else if (tempBodyPart == L2Item.SLOT_FULL_ARMOR)
+			{
+				// this may not remove chest or leggins
+				tempItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_CHEST);
+				if (tempItem != null && tempItem.isWear()) return;
+				
+				tempItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LEGS);
+				if (tempItem != null && tempItem.isWear()) return;
+			}
+			
 			if (item.getEnchantLevel() > 0)
 			{
 				sm = new SystemMessage(SystemMessageId.S1_S2_EQUIPPED);
@@ -2562,22 +2544,22 @@ public final class L2PcInstance extends L2Playable
 				sm.addItemName(item);
 			}
 			sendPacket(sm);
-
+			
 			items = getInventory().equipItemAndRecord(item);
-
-            // Consume mana - will start a task if required; returns if item is not a shadow item
-            item.decreaseMana(false);
-        }
-        sm = null;
-
-        refreshExpertisePenalty();
-
+			
+			// Consume mana - will start a task if required; returns if item is not a shadow item
+			item.decreaseMana(false);
+		}
+		sm = null;
+		
+		refreshExpertisePenalty();
+		
 		/**
 		// remove effects which doesn't match weapon type (but not party buffs)
 		if (item.getItem().getType2() == L2Item.TYPE2_WEAPON)
 			checkIfWeaponIsAllowed();
-		**/
-
+		 **/
+		
 		broadcastUserInfo();
 		
 		InventoryUpdate iu = new InventoryUpdate();
@@ -2589,7 +2571,7 @@ public final class L2PcInstance extends L2Playable
 		if (getInventoryLimit() != oldInvLimit)
 			sendPacket(new ExStorageMaxCount(this));
 	}
-    
+	
 	/**
 	 * Return the the PvP Kills of the L2PcInstance (Number of player killed during a PvP).<BR><BR>
 	 */
@@ -9663,7 +9645,7 @@ public final class L2PcInstance extends L2Playable
 
 	public void addAutoSoulShot(int itemId)
 	{
-		_activeSoulShots.put(itemId, itemId);
+		_activeSoulShots.add(itemId);
 	}
 
 	public void removeAutoSoulShot(int itemId)
@@ -9671,7 +9653,7 @@ public final class L2PcInstance extends L2Playable
 		_activeSoulShots.remove(itemId);
 	}
 
-	public Map<Integer, Integer> getAutoSoulShot()
+	public Set<Integer> getAutoSoulShot()
 	{
 		return _activeSoulShots;
 	}
@@ -9686,9 +9668,7 @@ public final class L2PcInstance extends L2Playable
 		
 		try
 		{
-			Collection<Integer> vals = _activeSoulShots.values();
-			
-			for (int itemId : vals)
+			for (int itemId : _activeSoulShots)
 			{
 				item = getInventory().getItemByItemId(itemId);
 				
@@ -9770,13 +9750,33 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (NullPointerException npe)
 		{
-			
+			_log.log(Level.WARNING, " " , npe);
 		}
 	}
 	
+	/**
+	 * Cancel autoshot for all shots matching crystaltype<BR>
+	 * {@link L2Item#getCrystalType()}
+	 * 
+	 * @param crystalType int type to disable
+	 */
+	public void disableAutoShotByCrystalType(int crystalType)
+	{
+		for (int itemId : _activeSoulShots)
+		{
+			if (ItemTable.getInstance().getTemplate(itemId).getCrystalType() == crystalType)
+				disableAutoShot(itemId);
+		}
+	}
+	
+	/**
+	 * Cancel autoshot use for shot itemId
+	 * @param itemId int id to disable
+	 * @return true if canceled.
+	 */
 	public boolean disableAutoShot(int itemId)
 	{
-		if (getAutoSoulShot().containsKey(itemId))
+		if (_activeSoulShots.contains(itemId))
 		{
 			removeAutoSoulShot(itemId);
 			sendPacket(new ExAutoSoulShot(itemId, 0));
@@ -9787,6 +9787,21 @@ public final class L2PcInstance extends L2Playable
 			return true;
 		}
 		else return false;
+	}
+	
+	/**
+	 * Cancel all autoshots for player
+	 */
+	public void disableAutoShotsAll()
+	{
+		for (int itemId : _activeSoulShots)
+		{
+			sendPacket(new ExAutoSoulShot(itemId, 0));
+			SystemMessage sm = new SystemMessage(SystemMessageId.AUTO_USE_OF_S1_CANCELLED);
+			sm.addString(ItemTable.getInstance().getTemplate(itemId).getName());
+			sendPacket(sm);
+		}
+		_activeSoulShots.clear();
 	}
 
 	private ScheduledFuture<?> _taskWarnUserTakeBreak;
