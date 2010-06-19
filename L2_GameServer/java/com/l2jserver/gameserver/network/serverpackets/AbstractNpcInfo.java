@@ -215,7 +215,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_lhand = 0;
 			_collisionHeight = _trap.getTemplate().fCollisionHeight;
 			_collisionRadius = _trap.getTemplate().fCollisionRadius;
-			_name = cha.getName();
+			if (cha.getTemplate().serverSideName)
+				_name = cha.getName();
 			_title = cha.getOwner() != null ? cha.getOwner().getName() : "";
 			_runSpd = _trap.getRunSpeed();
 			_walkSpd = _trap.getWalkSpeed();
@@ -539,8 +540,9 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_rhand = cha.getWeapon();
 			_lhand = 0;
 			_chest = cha.getArmor();
-			_enchantEffect = cha.getTemplate().enchantEffect; 
-			_name = cha.getName();
+			_enchantEffect = cha.getTemplate().enchantEffect;
+			if (cha.getTemplate().serverSideName)
+				_name = cha.getName();
 			_title = cha.getOwner() != null ? (cha.getOwner().isOnline() == 0 ? "" : cha.getOwner().getName()) : ""; // when owner online, summon will show in title owner name
 			_idTemplate = cha.getTemplate().idTemplate;
 			_collisionHeight = cha.getTemplate().fCollisionHeight;
