@@ -45,7 +45,7 @@ public class TopicBBSManager extends BaseBBSManager
 	private TopicBBSManager()
 	{
 		_table = new FastList<Topic>();
-		_maxId = new FastMap<Forum, Integer>();
+		_maxId = new FastMap<Forum, Integer>().shared();
 	}
 	
 	public void addTopic(Topic tt)
