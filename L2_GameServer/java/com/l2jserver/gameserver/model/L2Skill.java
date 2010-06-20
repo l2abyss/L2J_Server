@@ -2151,7 +2151,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
                     L2Summon targetSummon = (L2Summon)target;
                     if (activeChar instanceof L2PcInstance && activeChar.getPet() != targetSummon && !targetSummon.isDead()
                             && (targetSummon.getOwner().getPvpFlag() != 0 || targetSummon.getOwner().getKarma() > 0)
-                            || (targetSummon.getOwner().isInsideZone(L2Character.ZONE_PVP) && ((L2PcInstance)activeChar).isInsideZone(L2Character.ZONE_PVP)))
+                            || (targetSummon.getOwner().isInsideZone(L2Character.ZONE_PVP) && ((L2PcInstance)activeChar).isInsideZone(L2Character.ZONE_PVP))
+                            || (targetSummon.getOwner().isInDuel() && ((L2PcInstance)activeChar).isInDuel() && targetSummon.getOwner().getDuelId() == ((L2PcInstance)activeChar).getDuelId()))
                        return new L2Character[]{targetSummon};
                 }
                 return _emptyTargetList;
