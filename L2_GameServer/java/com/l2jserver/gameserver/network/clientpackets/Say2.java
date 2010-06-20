@@ -195,7 +195,7 @@ public final class Say2 extends L2GameClientPacket
 		if (handler != null)
 			handler.handleChat(_type, activeChar, _target, _text);
 		else
-			_log.info("No handler registered for ChatType: "+_type);
+			_log.info("No handler registered for ChatType: "+_type+ " Player: "+getClient());
 	}
 	
 	private boolean checkBot(String text)
