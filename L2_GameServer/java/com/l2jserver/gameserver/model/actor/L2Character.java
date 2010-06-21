@@ -2613,7 +2613,7 @@ public abstract class L2Character extends L2Object
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.WARNING, "NotifyAITask failed. " + e.getMessage(), e);
+				_log.log(Level.WARNING, "NotifyAITask failed. " + e.getMessage() + " Actor "+L2Character.this, e);
 			}
 		}
 	}
