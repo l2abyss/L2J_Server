@@ -550,6 +550,7 @@ public class L2Spawn
 				&& Config.L2JMOD_CHAMPION_FREQUENCY > 0 
 				&& mob.getLevel()>=Config.L2JMOD_CHAMP_MIN_LVL 
 				&& mob.getLevel()<=Config.L2JMOD_CHAMP_MAX_LVL
+				&& (Config.L2JMOD_CHAMPION_ENABLE_IN_INSTANCES || getInstanceId() == 0) 
 			)
 			{
 				int random = Rnd.get(100);

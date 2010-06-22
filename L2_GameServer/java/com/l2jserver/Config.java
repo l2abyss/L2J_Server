@@ -607,6 +607,7 @@ public final class Config
 	public static int L2JMOD_CHAMPION_REWARD_ID;
 	public static int L2JMOD_CHAMPION_REWARD_QTY;
 	public static boolean	L2JMOD_CHAMPION_ENABLE_VITALITY;
+	public static boolean L2JMOD_CHAMPION_ENABLE_IN_INSTANCES;
 	public static boolean TVT_EVENT_ENABLED;
 	public static boolean TVT_EVENT_IN_INSTANCE;
 	public static String TVT_EVENT_INSTANCE_FILE;
@@ -2018,6 +2019,7 @@ public final class Config
 					L2JMOD_CHAMPION_REWARD_ID = Integer.parseInt(L2JModSettings.getProperty("ChampionRewardItemID", "6393"));
 					L2JMOD_CHAMPION_REWARD_QTY = Integer.parseInt(L2JModSettings.getProperty("ChampionRewardItemQty", "1"));
 					L2JMOD_CHAMPION_ENABLE_VITALITY = Boolean.parseBoolean(L2JModSettings.getProperty("ChampionEnableVitality", "False"));
+					L2JMOD_CHAMPION_ENABLE_IN_INSTANCES = Boolean.parseBoolean(L2JModSettings.getProperty("ChampionEnableInInstances", "False"));
 
 					TVT_EVENT_ENABLED = Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventEnabled", "false"));
 					TVT_EVENT_IN_INSTANCE = Boolean.parseBoolean(L2JModSettings.getProperty("TvTEventInInstance", "false"));
@@ -2869,6 +2871,7 @@ public final class Config
 		else if (pName.equalsIgnoreCase("ChampionRewardHigherLvlItemChance")) L2JMOD_CHAMPION_REWARD_HIGHER_LVL_ITEM_CHANCE = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("ChampionRewardItemID")) L2JMOD_CHAMPION_REWARD_ID = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("ChampionRewardItemQty")) L2JMOD_CHAMPION_REWARD_QTY = Integer.parseInt(pValue);
+		else if (pName.equalsIgnoreCase("ChampionEnableInInstances")) L2JMOD_CHAMPION_ENABLE_IN_INSTANCES =	Boolean.parseBoolean(pValue);
 
 		else if (pName.equalsIgnoreCase("AllowWedding")) L2JMOD_ALLOW_WEDDING = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("WeddingPrice")) L2JMOD_WEDDING_PRICE = Integer.parseInt(pValue);
