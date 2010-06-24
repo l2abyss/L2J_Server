@@ -38,8 +38,6 @@ public class BoatManager
 	public static final int GLUDIN_HARBOR = 2;
 	public static final int RUNE_HARBOR = 3;
 
-	private static final double BROADCAST_DISTANCE = 400000000; // 20000
-
 	public static final BoatManager getInstance()
 	{
 		return SingletonHolder._instance;
@@ -163,13 +161,13 @@ public class BoatManager
 
 			dx = (double)player.getX() - point1.x;
 			dy = (double)player.getY() - point1.y;
-			if ((dx*dx + dy*dy) < BROADCAST_DISTANCE)
+			if (Math.sqrt(dx*dx + dy*dy) < Config.BOAT_BROADCAST_RADIUS)
 				player.sendPacket(packet);
 			else
 			{
 				dx = (double)player.getX() - point2.x;
 				dy = (double)player.getY() - point2.y;
-				if ((dx*dx + dy*dy) < BROADCAST_DISTANCE)
+				if (Math.sqrt(dx*dx + dy*dy) < Config.BOAT_BROADCAST_RADIUS)
 					player.sendPacket(packet);
 			}
 		}
@@ -188,7 +186,7 @@ public class BoatManager
 				continue;
 			dx = (double)player.getX() - point1.x;
 			dy = (double)player.getY() - point1.y;
-			if ((dx*dx + dy*dy) < BROADCAST_DISTANCE)
+			if (Math.sqrt(dx*dx + dy*dy) < Config.BOAT_BROADCAST_RADIUS)
 			{
 				for (L2GameServerPacket p : packets)
 					player.sendPacket(p);
@@ -197,7 +195,7 @@ public class BoatManager
 			{
 				dx = (double)player.getX() - point2.x;
 				dy = (double)player.getY() - point2.y;
-				if ((dx*dx + dy*dy) < BROADCAST_DISTANCE)
+				if (Math.sqrt(dx*dx + dy*dy) < Config.BOAT_BROADCAST_RADIUS)
 					for (L2GameServerPacket p : packets)
 						player.sendPacket(p);
 			}

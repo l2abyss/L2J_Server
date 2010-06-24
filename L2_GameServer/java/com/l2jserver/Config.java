@@ -468,6 +468,7 @@ public final class Config
 	public static boolean ALLOW_RENTPET;
 	public static boolean ALLOWFISHING;
 	public static boolean ALLOW_BOAT;
+	public static int BOAT_BROADCAST_RADIUS;
 	public static boolean ALLOW_CURSED_WEAPONS;
 	public static boolean ALLOW_MANOR;
 	public static boolean ALLOW_NPC_WALKERS;
@@ -1725,6 +1726,7 @@ public final class Config
 					ALLOWFISHING = Boolean.parseBoolean(General.getProperty("AllowFishing", "True"));
 					ALLOW_MANOR = Boolean.parseBoolean(General.getProperty("AllowManor", "True"));
 					ALLOW_BOAT = Boolean.parseBoolean(General.getProperty("AllowBoat", "True"));
+					BOAT_BROADCAST_RADIUS = Integer.parseInt(General.getProperty("BoatBroadcastRadius", "20000"));
 					ALLOW_CURSED_WEAPONS = Boolean.parseBoolean(General.getProperty("AllowCursedWeapons", "True"));
 					ALLOW_NPC_WALKERS = Boolean.parseBoolean(General.getProperty("AllowNpcWalkers", "true"));
 					ALLOW_PET_WALKERS = Boolean.parseBoolean(General.getProperty("AllowPetWalkers", "True"));
@@ -2689,7 +2691,7 @@ public final class Config
 		else if (pName.equalsIgnoreCase("WearPrice")) WEAR_PRICE = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("AllowWater")) ALLOW_WATER = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AllowRentPet")) ALLOW_RENTPET = Boolean.parseBoolean(pValue);
-		else if (pName.equalsIgnoreCase("AllowBoat")) ALLOW_BOAT = Boolean.parseBoolean(pValue);
+		else if (pName.equalsIgnoreCase("BoatBroadcastRadius")) BOAT_BROADCAST_RADIUS = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("AllowCursedWeapons")) ALLOW_CURSED_WEAPONS = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AllowManor")) ALLOW_MANOR = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AllowNpcWalkers")) ALLOW_NPC_WALKERS = Boolean.parseBoolean(pValue);
