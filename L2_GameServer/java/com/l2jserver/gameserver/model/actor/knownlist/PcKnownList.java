@@ -112,7 +112,7 @@ public class PcKnownList extends PlayableKnownList
 			// Send Server-Client Packet DeleteObject to the L2PcInstance
 			getActiveChar().sendPacket(new DeleteObject(object));
 
-		if (Config.CHECK_KNOWN && object instanceof L2Npc)
+		if (Config.CHECK_KNOWN && object instanceof L2Npc && getActiveChar().isGM())
 			getActiveChar().sendMessage("Removed NPC: "+((L2Npc)object).getName());
 
 		return true;

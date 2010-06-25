@@ -1592,7 +1592,7 @@ public class L2Npc extends L2Character
 	@Override
 	public void sendInfo(L2PcInstance activeChar)
 	{
-		if (Config.CHECK_KNOWN)
+		if (Config.CHECK_KNOWN && activeChar.isGM())
 			activeChar.sendMessage("Added NPC: "+getName());
 
 		if (getRunSpeed() == 0)
