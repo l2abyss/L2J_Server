@@ -587,7 +587,7 @@ public class L2Attackable extends L2Npc
 			RewardInfo reward;
 
 			// While Interating over This Map Removing Object is Not Allowed
-			synchronized (getAggroList())
+			//synchronized (getAggroList())
 			{
 				// Go through the _aggroList of the L2Attackable
 				for (AggroInfo info : getAggroList().values())
@@ -1035,7 +1035,7 @@ public class L2Attackable extends L2Npc
 		int maxHate = 0;
 
 		// While Interating over This Map Removing Object is Not Allowed
-		synchronized (getAggroList())
+		//synchronized (getAggroList())
 		{
 			// Go through the aggroList of the L2Attackable
 			for (AggroInfo ai : getAggroList().values())
@@ -1067,7 +1067,7 @@ public class L2Attackable extends L2Npc
 		List<L2Character> result = new FastList<L2Character>();
 
 		// While iterating over this map removing objects is not allowed
-		synchronized (getAggroList())
+		//synchronized (getAggroList())
 		{
 			// Go through the aggroList of the L2Attackable
 			for (AggroInfo ai : getAggroList().values())
@@ -1097,7 +1097,7 @@ public class L2Attackable extends L2Npc
 		if (getAggroList().isEmpty() || isAlikeDead()) return null;
 		List<L2Character> result = new FastList<L2Character>();
 
-		synchronized (getAggroList())
+		//synchronized (getAggroList())
 		{
 			for (AggroInfo ai : getAggroList().values())
 			{
