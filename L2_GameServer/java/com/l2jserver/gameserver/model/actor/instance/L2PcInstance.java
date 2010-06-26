@@ -171,6 +171,7 @@ import com.l2jserver.gameserver.network.serverpackets.CharInfo;
 import com.l2jserver.gameserver.network.serverpackets.ConfirmDlg;
 import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ExAutoSoulShot;
+import com.l2jserver.gameserver.network.serverpackets.ExBasicActionList;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExDuelUpdateUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExFishingEnd;
@@ -4983,6 +4984,7 @@ public final class L2PcInstance extends L2Playable
         transformation.onTransform();
         sendSkillList();
         sendPacket(new SkillCoolTime(this));
+        sendPacket(new ExBasicActionList(this));
         broadcastUserInfo();
     }
     
@@ -4995,9 +4997,10 @@ public final class L2PcInstance extends L2Playable
             _transformation.onUntransform();
             _transformation = null;
             stopEffects(L2EffectType.TRANSFORMATION);
-            broadcastUserInfo();
             sendSkillList();
             sendPacket(new SkillCoolTime(this));
+            sendPacket(new ExBasicActionList(this));
+            broadcastUserInfo();
         }
     }
     
