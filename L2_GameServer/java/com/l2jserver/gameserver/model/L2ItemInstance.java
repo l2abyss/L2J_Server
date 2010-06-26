@@ -1099,11 +1099,26 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public void decreaseMana(boolean resetConsumingMana)
 	{
+		decreaseMana(resetConsumingMana, 1);
+	}
+	
+	/**
+	 * Decreases the mana of this shadow item,
+	 * sends a inventory update
+	 * schedules a new consumption task if non is running
+	 * optionally one could force a new task
+	 * @param forces a new consumption task if item is equipped
+	 * @param count how much mana decrease
+	 */
+	public void decreaseMana(boolean resetConsumingMana, int count)
+	{
 		if (!isShadowItem())
 			return;
 
-		if (_mana > 0)
-			_mana--;
+		if (_mana - count >= 0)
+			_mana -= count;
+		else
+			_mana = 0;
 
 		if (_storedInDb)
 			_storedInDb = false;

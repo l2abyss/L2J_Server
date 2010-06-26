@@ -280,7 +280,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     {
         _id = set.getInteger("skill_id");
         _level = set.getInteger("level");
-        _refId = set.getInteger("referenceId", set.getInteger("itemConsumeId", 0));
+        _refId = set.getInteger("referenceId", 0);
         _displayId = set.getInteger("displayId", _id);
         _name = set.getString("name");
         _operateType = set.getEnum("operateType", SkillOpType.class);

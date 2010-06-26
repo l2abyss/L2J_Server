@@ -39,6 +39,7 @@ import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2AttackableAI;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.datatables.DoorTable;
+import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.MapRegionTable.TeleportWhereType;
@@ -110,6 +111,7 @@ import com.l2jserver.gameserver.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
@@ -1842,6 +1844,18 @@ public abstract class L2Character extends L2Object
 					return;
 				}
 			}
+			
+			//reduce talisman mana on skill use
+			if (skill.getReferenceItemId() > 0
+					&& ItemTable.getInstance().getTemplate(skill.getReferenceItemId()).getBodyPart() == L2Item.SLOT_DECO)
+				for (L2ItemInstance item : getInventory().getItemsByItemId(skill.getReferenceItemId()))
+				{
+					if (item.isEquipped())
+					{
+						item.decreaseMana(false, skill.getReuseDelay() / 60000);
+						break;
+					}
+				}
 		}
 
 		// Before start AI Cast Broadcast Fly Effect is Need
