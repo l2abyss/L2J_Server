@@ -55,7 +55,7 @@ public class Instance
 	private TIntHashSet _players = new TIntHashSet();
 	private final EjectPlayerProcedure _ejectProc;
 	
-	private FastList<L2Npc> _npcs = new FastList<L2Npc>();
+	private FastList<L2Npc> _npcs = new FastList<L2Npc>().shared();
 	private ArrayList<L2DoorInstance> _doors = null;
 	private int[] _spawnLoc = new int[3];
 	private boolean _allowSummon = true;
