@@ -275,7 +275,7 @@ public class CharNameTable
 		{
 			L2DatabaseFactory.close(con);
 		}
-		_log.info(getClass().getSimpleName()+": loaded "+_chars.size()+" char names.");
+		_log.info(getClass().getSimpleName()+": Loaded "+_chars.size()+" char names.");
 	}
 	
 	@SuppressWarnings("synthetic-access")
