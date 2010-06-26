@@ -716,17 +716,17 @@ public class TradeList
 	
 	/**
 	 * Buy items from this PrivateStore list
-	 * @return : boolean true if success
+	 * @return int: result of trading. 0 - ok, 1 - canceled (no adena), 2 - failed (item error)
 	 */
-	public synchronized boolean privateStoreBuy(L2PcInstance player, FastSet<ItemRequest> items)
+	public synchronized int privateStoreBuy(L2PcInstance player, FastSet<ItemRequest> items)
 	{
 		if (_locked)
-			return false;
+			return 1;
 		
 		if (!validate())
 		{
 			lock();
-			return false;
+			return 1;
 		}
 		
 		int slots = 0;
@@ -759,7 +759,7 @@ public class TradeList
 				if (isPackaged())
 				{
 					Util.handleIllegalPlayerAction(player, "[TradeList.privateStoreBuy()] Player " + player.getName() + " tried to cheat the package sell and buy only a part of the package! Ban this player for bot usage!", Config.DEFAULT_PUNISH);
-					return false;
+					return 2;
 				}
 				
 				item.setCount(0);
@@ -771,7 +771,7 @@ public class TradeList
 			{
 				// private store attempting to overflow - disable it
 				lock();
-				return false;
+				return 1;
 			}
 			
 			totalPrice += item.getCount() * item.getPrice();
@@ -780,7 +780,7 @@ public class TradeList
 			{
 				// private store attempting to overflow - disable it
 				lock();
-				return false;
+				return 1;
 			}
 			
 			// Check if requested item is available for manipulation
@@ -789,7 +789,7 @@ public class TradeList
 			{
 				// private store sell invalid item - disable it
 				lock();
-				return false;
+				return 2;
 			}
 			
 			L2Item template = ItemTable.getInstance().getTemplate(item.getItemId());
@@ -805,19 +805,19 @@ public class TradeList
 		if (totalPrice > playerInventory.getAdena())
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
-			return false;
+			return 1;
 		}
 		
 		if (!playerInventory.validateWeight(weight))
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
-			return false;
+			return 1;
 		}
 		
 		if (!playerInventory.validateCapacity(slots))
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.SLOTS_FULL));
-			return false;
+			return 1;
 		}
 		
 		// Prepare inventory update packets
@@ -899,7 +899,10 @@ public class TradeList
 		// Send inventory update packet
 		_owner.sendPacket(ownerIU);
 		player.sendPacket(playerIU);
-		return ok;
+		if (ok)
+			return 0;
+		else
+			return 2;
 	}
 	
 	/**
