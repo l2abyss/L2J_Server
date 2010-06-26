@@ -14271,6 +14271,12 @@ public enum SystemMessageId
 	YOU_CANNOT_ENTER_SEED_IN_FLYING_TRANSFORM(2924),
 
 	/**
+	* ID: 2964<br>
+	* Message: Being appointed as a Noblesse will cancel all related quests. Do you wish to continue?
+	*/
+	CANCEL_NOBLESSE_QUESTS(2964),
+	
+	/**
 	* ID: 2966<br>
 	* Message: This is a Payment Request transaction. Please attach the item.
 	*/
