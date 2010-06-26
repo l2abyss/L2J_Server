@@ -44,6 +44,7 @@ public enum Stats
 	MAGIC_DEFENCE("mDef"),
 	POWER_ATTACK("pAtk"),
 	MAGIC_ATTACK("mAtk"),
+    PHYSICAL_SKILL_POWER("physicalSkillPower"),
 	POWER_ATTACK_SPEED("pAtkSpd"),
 	MAGIC_ATTACK_SPEED("mAtkSpd"), // how fast a spell is casted (including animation)
 	MAGIC_REUSE_RATE("mReuse"), // how fast spells becomes ready to reuse

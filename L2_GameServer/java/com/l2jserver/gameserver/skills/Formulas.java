@@ -1332,6 +1332,9 @@ public final class Formulas
 				&& (target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2)
 			damage *= DAMAGE_REDUCTION;
 
+        // Physical skill dmg boost
+		damage *= attacker.calcStat(Stats.PHYSICAL_SKILL_POWER, 1, null, null);
+
 		return damage < 1 ? 1. : damage;
 	}
 	/** Calculated damage caused by ATTACK of attacker on target,
@@ -1567,6 +1570,10 @@ public final class Formulas
 				&& target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY && attacker.getActingPlayer() != null
 				&& (target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2)
 			damage *= DAMAGE_REDUCTION;
+
+        // Physical skill dmg boost
+		if(skill != null)
+			damage *= attacker.calcStat(Stats.PHYSICAL_SKILL_POWER, 1, null, null);
 
 		return damage;
 	}
