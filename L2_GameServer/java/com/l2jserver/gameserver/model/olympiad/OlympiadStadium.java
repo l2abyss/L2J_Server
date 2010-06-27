@@ -14,6 +14,10 @@
  */
 package com.l2jserver.gameserver.model.olympiad;
 
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.util.L2FastList;
@@ -24,11 +28,13 @@ import com.l2jserver.util.L2FastList;
 
 class OlympiadStadium
 {
+	private static final Logger _log = Logger.getLogger(OlympiadStadium.class.getName());
+	
 	private boolean _freeToUse = true;
 	private static DoorTable _doorTable;
 	private int[] _coords = new int[3];
 	private int[] _doors = new int[2];
-	private L2FastList<L2PcInstance> _spectators;
+	private List<L2PcInstance> _spectators;
 	
 	public boolean isFreeToUse()
 	{
@@ -62,7 +68,7 @@ class OlympiadStadium
 		_coords[2] = z;
 		_doors[0] = d1;
 		_doors[1] = d2;
-		_spectators = new L2FastList<L2PcInstance>();
+		_spectators = new L2FastList<L2PcInstance>().shared();
 	}
 	
 	public void openDoors()
@@ -75,6 +81,7 @@ class OlympiadStadium
 		}
 		catch (Exception e)
 		{
+			_log.log(Level.WARNING, "", e);
 		}
 	}
 	
@@ -88,6 +95,7 @@ class OlympiadStadium
 		}
 		catch (Exception e)
 		{
+			_log.log(Level.WARNING, "", e);
 		}
 	}
 
@@ -97,7 +105,7 @@ class OlympiadStadium
 		_spectators.add(spec);
 	}
 
-	protected L2FastList<L2PcInstance> getSpectators()
+	protected List<L2PcInstance> getSpectators()
 	{
 		return _spectators;
 	}

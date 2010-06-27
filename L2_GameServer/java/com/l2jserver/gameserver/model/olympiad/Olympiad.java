@@ -29,6 +29,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
@@ -1008,7 +1009,7 @@ public class Olympiad
 		}
 	}
 	
-	public L2FastList<L2PcInstance> getSpectators(int id)
+	public List<L2PcInstance> getSpectators(int id)
 	{
 		try
 		{
