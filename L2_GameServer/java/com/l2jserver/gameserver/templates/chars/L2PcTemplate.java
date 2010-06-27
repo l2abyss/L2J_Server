@@ -132,4 +132,9 @@ public class L2PcTemplate extends L2CharTemplate
 			return _equipped;
 		}
 	}
+
+	public final int getFallHeight()
+	{
+		return 333; // TODO: unhardcode it
+	}
 }

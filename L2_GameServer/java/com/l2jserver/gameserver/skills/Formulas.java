@@ -2879,4 +2879,21 @@ public final class Formulas
 
 		return reflect;
 	}
+
+    /**
+     * Calculate and apply damage caused by falling, character will not die
+     * @param cha
+     * @param fallHeight
+     * @return
+     */
+    public static double calcFallDam(L2Character cha, int fallHeight)
+    {
+    	if (!Config.ENABLE_FALLING_DAMAGE || fallHeight < 0)
+    		return 0;
+
+    	final double damage = cha.calcStat(Stats.FALL, fallHeight * cha.getMaxHp() / 1000, null, null);
+		cha.reduceCurrentHp(Math.min(damage, cha.getCurrentHp() - 1), null, false, true, null);
+
+		return damage;
+    }
 }

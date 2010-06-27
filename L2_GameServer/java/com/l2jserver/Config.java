@@ -429,6 +429,7 @@ public final class Config
 	public static int MIN_MONSTER_ANIMATION;
 	public static int MAX_MONSTER_ANIMATION;
 	public static int COORD_SYNCHRONIZE;
+	public static boolean ENABLE_FALLING_DAMAGE;
 	public static boolean GRIDS_ALWAYS_ON;
 	public static int GRID_NEIGHBOR_TURNON_TIME;
 	public static int GRID_NEIGHBOR_TURNOFF_TIME;
@@ -1706,6 +1707,10 @@ public final class Config
 					DEBUG_PATH = Boolean.parseBoolean(General.getProperty("DebugPath", "False"));
 					FORCE_GEODATA = Boolean.parseBoolean(General.getProperty("ForceGeodata", "True"));
 					COORD_SYNCHRONIZE = Integer.parseInt(General.getProperty("CoordSynchronize", "-1"));
+
+					String str = General.getProperty("EnableFallingDamage", "auto");
+					ENABLE_FALLING_DAMAGE = "auto".equalsIgnoreCase(str) ? GEODATA > 0 : Boolean.parseBoolean(str);
+
 					ZONE_TOWN = Integer.parseInt(General.getProperty("ZoneTown", "0"));
 					ACTIVATE_POSITION_RECORDER = Boolean.parseBoolean(General.getProperty("ActivatePositionRecorder", "False"));
 					DEFAULT_GLOBAL_CHAT = General.getProperty("GlobalChat", "ON");
@@ -2799,6 +2804,7 @@ public final class Config
 		else if (pName.equalsIgnoreCase("AnnounceMammonSpawn")) ANNOUNCE_MAMMON_SPAWN = Boolean.parseBoolean(pValue);
 
 		else if (pName.equalsIgnoreCase("AltGameTiredness")) ALT_GAME_TIREDNESS = Boolean.parseBoolean(pValue);
+		else if (pName.equalsIgnoreCase("EnableFallingDamage")) ENABLE_FALLING_DAMAGE = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AltGameCreation")) ALT_GAME_CREATION = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AltGameCreationSpeed")) ALT_GAME_CREATION_SPEED = Double.parseDouble(pValue);
 		else if (pName.equalsIgnoreCase("AltGameCreationXpRate")) ALT_GAME_CREATION_XP_RATE = Double.parseDouble(pValue);

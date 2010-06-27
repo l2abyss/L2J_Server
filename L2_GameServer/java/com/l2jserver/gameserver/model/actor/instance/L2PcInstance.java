@@ -803,7 +803,11 @@ public final class L2PcInstance extends L2Playable
 	private int _clientY;
 	private int _clientZ;
 	private int _clientHeading;
-	
+
+	// during fall validations will be disabled for 10 ms.
+	private static final int FALLING_VALIDATION_DELAY = 10000;
+	private long _fallingTimestamp = 0;
+
 	private int _movieId = 0;
 	
 	private Future<?> _PvPRegTask;
@@ -10029,6 +10033,7 @@ public final class L2PcInstance extends L2Playable
 		if (getAI() != null)
 			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 
+		setFalling(); // prevent receive falling damage
         _observerMode = false;
 		setObserverCords(0, 0, 0);
 		sendPacket(new ObservationReturn(this));
@@ -14649,6 +14654,42 @@ public final class L2PcInstance extends L2Playable
 	public final void setClientHeading(int val)
 	{
 		_clientHeading=val;
+	}
+
+	/**
+	 * Return true if character falling now
+	 * On the start of fall return false for correct coord sync !
+	 */
+	public final boolean isFalling(int z)
+	{
+		if (isDead()
+				|| isFlying()
+				|| isFlyingMounted()
+				|| isInsideZone(ZONE_WATER))
+			return false;
+
+		if (System.currentTimeMillis() < _fallingTimestamp)
+			return true;
+
+		final int deltaZ = getZ() - z;
+		if (deltaZ <= getBaseTemplate().getFallHeight())
+			return false;
+
+		final int damage = (int)Formulas.calcFallDam(this, deltaZ);
+		if (damage > 0)
+			sendPacket(new SystemMessage(SystemMessageId.FALL_DAMAGE_S1).addNumber(damage));
+
+		setFalling();
+
+		return false;
+	}
+
+	/**
+	 * Set falling timestamp
+	 */
+	public final void setFalling()
+	{
+		_fallingTimestamp = System.currentTimeMillis() + FALLING_VALIDATION_DELAY;
 	}
 
 	/**

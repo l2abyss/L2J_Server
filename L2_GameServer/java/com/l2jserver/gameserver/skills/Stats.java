@@ -100,6 +100,7 @@ public enum Stats
 	
 	// stats of various abilities
 	BREATH("breath"),
+	FALL("fall"),
 	//
 	AGGRESSION("aggression"), // locks a mob on tank caster
 	BLEED("bleed"), // by daggers, like poison

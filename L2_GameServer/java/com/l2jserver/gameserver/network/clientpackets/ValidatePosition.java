@@ -111,11 +111,14 @@ public class ValidatePosition extends L2GameClientPacket
 			return;
 		}
 
+		if (activeChar.isFalling(_z))
+			return; // disable validations during fall to avoid "jumping"
+
 		dx = _x - realX;
 		dy = _y - realY;
 		dz = _z - realZ;
 		diffSq = (dx*dx + dy*dy);
-		
+
 		L2Party party = activeChar.getParty();
 		if(party != null && activeChar.getLastPartyPositionDistance(_x, _y, _z) > 150)
 		{
