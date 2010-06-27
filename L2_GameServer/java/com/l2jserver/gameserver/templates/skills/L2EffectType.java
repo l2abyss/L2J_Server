@@ -70,5 +70,6 @@ public enum L2EffectType
 	NEGATE,
 	THROW_UP,
 	HIDE,
-	ABORT_CAST
+	ABORT_CAST,
+	INCREASE_CHARGES
 }
