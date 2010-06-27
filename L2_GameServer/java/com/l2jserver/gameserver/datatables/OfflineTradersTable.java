@@ -192,7 +192,8 @@ public class OfflineTradersTable
 						case L2PcInstance.STORE_PRIVATE_BUY:
 							while (items.next())
 							{
-								player.getBuyList().addItemByItemId(items.getInt(2), items.getLong(3), items.getLong(4));
+								if (player.getBuyList().addItemByItemId(items.getInt(2), items.getLong(3), items.getLong(4)) == null)
+									throw new NullPointerException();
 							}
 							player.getBuyList().setTitle(rs.getString("title"));
 							break;
@@ -200,7 +201,8 @@ public class OfflineTradersTable
 						case L2PcInstance.STORE_PRIVATE_PACKAGE_SELL:
 							while (items.next())
 							{
-								player.getSellList().addItem(items.getInt(2), items.getLong(3), items.getLong(4));
+								if (player.getSellList().addItem(items.getInt(2), items.getLong(3), items.getLong(4)) == null)
+									throw new NullPointerException();
 							}
 							player.getSellList().setTitle(rs.getString("title"));
 							player.getSellList().setPackaged(type == L2PcInstance.STORE_PRIVATE_PACKAGE_SELL);
@@ -229,7 +231,7 @@ public class OfflineTradersTable
 				}
 				catch (Exception e)
 				{
-					_log.log(Level.WARNING, "OfflineTradersTable[loadOffliners()]: Error loading trader: ",e);
+					_log.log(Level.WARNING, "OfflineTradersTable[loadOffliners()]: Error loading trader: "+player,e);
 					if (player != null)
 						player.logout();
 				}
