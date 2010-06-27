@@ -717,22 +717,27 @@ public class L2PetInstance extends L2Summon
 			else
 			{
 				removedItem = owner.getInventory().destroyItem("PetDestroy", getControlItemId(), 1, getOwner(), this);
-				owner.sendPacket(new SystemMessage(SystemMessageId.S1_DISAPPEARED).addItemName(removedItem));
+				if (removedItem != null)
+					owner.sendPacket(new SystemMessage(SystemMessageId.S1_DISAPPEARED).addItemName(removedItem));
 			}
 
-			InventoryUpdate iu = new InventoryUpdate();
-			iu.addRemovedItem(removedItem);
-
-			owner.sendPacket(iu);
-
-			StatusUpdate su = new StatusUpdate(owner.getObjectId());
-			su.addAttribute(StatusUpdate.CUR_LOAD, owner.getCurrentLoad());
-			owner.sendPacket(su);
-
-			owner.broadcastUserInfo();
-
-			L2World world = L2World.getInstance();
-			world.removeObject(removedItem);
+			if (removedItem == null)
+				_log.warning("Couldn't destroy pet control item for "+owner+" pet: "+this+" evolve: "+evolve);
+			else
+			{
+				InventoryUpdate iu = new InventoryUpdate();
+				iu.addRemovedItem(removedItem);
+				
+				owner.sendPacket(iu);
+				
+				StatusUpdate su = new StatusUpdate(owner.getObjectId());
+				su.addAttribute(StatusUpdate.CUR_LOAD, owner.getCurrentLoad());
+				owner.sendPacket(su);
+				
+				owner.broadcastUserInfo();
+				
+				L2World.getInstance().removeObject(removedItem);
+			}
 		}
 		catch (Exception e){
 			_logPet.log(Level.WARNING, "Error while destroying control item: " + e.getMessage(), e);

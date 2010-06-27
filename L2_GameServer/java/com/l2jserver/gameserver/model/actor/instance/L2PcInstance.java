@@ -211,7 +211,6 @@ import com.l2jserver.gameserver.network.serverpackets.PrivateStoreManageListBuy;
 import com.l2jserver.gameserver.network.serverpackets.PrivateStoreManageListSell;
 import com.l2jserver.gameserver.network.serverpackets.PrivateStoreMsgBuy;
 import com.l2jserver.gameserver.network.serverpackets.PrivateStoreMsgSell;
-import com.l2jserver.gameserver.network.serverpackets.QuestList;
 import com.l2jserver.gameserver.network.serverpackets.RecipeShopMsg;
 import com.l2jserver.gameserver.network.serverpackets.RecipeShopSellList;
 import com.l2jserver.gameserver.network.serverpackets.RelationChanged;
@@ -1788,7 +1787,6 @@ public final class L2PcInstance extends L2Playable
 								retval = qs;
 							}
 						}
-						sendPacket(new QuestList());
 					}
 				}
 			}
