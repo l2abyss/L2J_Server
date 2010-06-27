@@ -1154,7 +1154,7 @@ public class TerritoryWarManager
 					updatePlayerTWStateFlags(false);
 					_scheduledStartTWTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartTWTask(), timeRemaining); // Prepare task for TW start.
 				}
-				else
+				else if ((timeRemaining + WARLENGTH) > 0)
 				{
 					_isTWChannelOpen = true;
 					_isRegistrationOver = true;
