@@ -77,6 +77,7 @@ public class CharNameTable
 	public final void removeName(int objId)
 	{
 		_chars.remove(objId);
+		_accessLevels.remove(objId);
 	}
 
 	public final int getIdByName(String name)

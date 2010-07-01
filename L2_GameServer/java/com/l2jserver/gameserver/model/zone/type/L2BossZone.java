@@ -14,10 +14,13 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
+import java.util.Map;
+
 import com.l2jserver.gameserver.GameServer;
 import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -359,4 +362,27 @@ public class L2BossZone extends L2ZoneType
 	public void onReviveInside(L2Character character)
 	{
 	}
+	
+	public void updateKnownList(L2Npc npc)
+	{
+		if (_characterList == null || _characterList.isEmpty())
+			return;
+		
+		Map<Integer, L2PcInstance> npcKnownPlayers = npc.getKnownList().getKnownPlayers();
+		for (L2Character character : _characterList.values())
+		{
+			if (character == null)
+				continue;
+			if (character instanceof L2PcInstance)
+			{
+				L2PcInstance player = (L2PcInstance) character;
+				if (player.isOnline() == 1)
+					npcKnownPlayers.put(player.getObjectId(), player);
+			}
+		}
+		return;
+	}
+	
 }
+
+
