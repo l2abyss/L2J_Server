@@ -67,6 +67,7 @@ public class NpcBufferTable
 			return new int[] { skillId, skillLevel, skillFeeId, skillFeeAmount };
 		}
 		
+		@SuppressWarnings("unused")
 		public int getNpcId()
 		{
 			return _npcId;

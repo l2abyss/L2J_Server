@@ -231,6 +231,7 @@ public final class RequestSellItem extends L2GameClientPacket
 			return _objectId;
 		}
 		
+		@SuppressWarnings("unused")
 		public int getItemId()
 		{
 			return _itemId;

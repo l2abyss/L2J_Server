@@ -167,7 +167,7 @@ public abstract class L2Item
 
 	private final boolean _pvpItem;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected final Enum _type;
 	
 	protected Elementals _elementals = null;
@@ -232,7 +232,7 @@ public abstract class L2Item
 	 * Returns the itemType.
 	 * @return Enum
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Enum getItemType()
 	{
 		return _type;

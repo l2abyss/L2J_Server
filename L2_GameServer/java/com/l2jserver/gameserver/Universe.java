@@ -75,6 +75,7 @@ public class Universe implements java.io.Serializable
 		u.implode(false);
 	}
 	
+	@SuppressWarnings("unused")
 	private class Position implements Comparable<Position>, java.io.Serializable
 	{
 		/**
@@ -127,6 +128,7 @@ public class Universe implements java.io.Serializable
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private class Coord implements Comparable<Position>, java.io.Serializable
 	{
 		/**

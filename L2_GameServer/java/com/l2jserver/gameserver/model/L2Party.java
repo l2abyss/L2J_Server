@@ -683,15 +683,12 @@ public class L2Party {
                         int addsp = (int)member.calcStat(Stats.EXPSP_RATE, spReward * preCalculation, null, null);
                         if (member instanceof L2PcInstance)
                         {
-                        	if (target != null)
+                        	if (((L2PcInstance)member).getSkillLevel(467) > 0)
                         	{
-                                if (((L2PcInstance)member).getSkillLevel(467) > 0)
-                                {
-                                    L2Skill skill = SkillTable.getInstance().getInfo(467,((L2PcInstance)member).getSkillLevel(467));
-                                    
-                                    if (skill.getExpNeeded() <= addexp)
-                                        ((L2PcInstance)member).absorbSoul(skill,target);
-                                }
+                        		L2Skill skill = SkillTable.getInstance().getInfo(467,((L2PcInstance)member).getSkillLevel(467));
+                        		
+                        		if (skill.getExpNeeded() <= addexp)
+                        			((L2PcInstance)member).absorbSoul(skill,target);
                         	}
                             ((L2PcInstance)member).addExpAndSp(addexp, addsp, useVitalityRate);
                             if (addexp > 0)

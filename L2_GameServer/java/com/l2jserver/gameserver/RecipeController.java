@@ -907,6 +907,7 @@ public class RecipeController
 			/**
 			 * @return Returns the ownerId.
 			 */
+			@SuppressWarnings("unused")
 			public int getOwnerId()
 			{
 				return _ownerId;
