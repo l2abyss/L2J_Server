@@ -592,15 +592,14 @@ public class ClanHall
 				{
 					if (_paidUntil != 0)
 					{
-						while (_paidUntil < System.currentTimeMillis())
+						while (_paidUntil <= System.currentTimeMillis())
 							_paidUntil += _chRate;
 					}
 					else
 						_paidUntil = System.currentTimeMillis() + _chRate;
 					ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CH_rental_fee", 57, getLease(), null, null);
 					if (Config.DEBUG)
-						_log.warning("deducted " + getLease() + " adena from " + getName() + " owner's cwh for ClanHall _paidUntil"
-								+ _paidUntil);
+						_log.warning("deducted " + getLease() + " adena from " + getName() + " owner's cwh for ClanHall _paidUntil: " + _paidUntil);
 					ThreadPoolManager.getInstance().scheduleGeneral(new FeeTask(), _paidUntil - System.currentTimeMillis());
 					_paid = true;
 					updateDb();
