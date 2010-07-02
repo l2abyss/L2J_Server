@@ -107,7 +107,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_collisionRadius = cha.getCollisionRadius();// On every subclass
 			_isAttackable = cha.isAutoAttackable(attacker);
 			if (cha.getTemplate().serverSideName)
-				_name = cha.getTemplate().name;// On every subclass
+				_name = cha.getName();// On every subclass
 			
 			if (Config.L2JMOD_CHAMPION_ENABLE && cha.isChampion())
 				_title = (Config.L2JMOD_CHAMP_TITLE); // On every subclass
