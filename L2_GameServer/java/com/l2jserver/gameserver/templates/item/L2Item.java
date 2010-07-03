@@ -96,6 +96,8 @@ public abstract class L2Item
 	public static final int SLOT_BABYPET = -103;
 	public static final int SLOT_GREATWOLF = -104;
 	
+	public static final int SLOT_MULTI_ALLHAND = SLOT_L_HAND | SLOT_LR_HAND | SLOT_R_HAND;
+	
 	public static final int MATERIAL_STEEL = 0x00; // ??
 	public static final int MATERIAL_FINE_STEEL = 0x01; // ??
 	public static final int MATERIAL_BLOOD_STEEL = 0x02; // ??

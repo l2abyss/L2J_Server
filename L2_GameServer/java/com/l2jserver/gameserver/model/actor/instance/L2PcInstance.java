@@ -2466,7 +2466,7 @@ public final class L2PcInstance extends L2Playable
 		if (unequipped.getItem().getType2() == L2Item.TYPE2_WEAPON &&
 				(equipped == null ? true : equipped.getItem().getItemGradeSPlus() != unequipped.getItem().getItemGradeSPlus()))
 		{
-			disableAutoShotByCrystalType(unequipped.getItem().getCrystalType());
+			disableAutoShotByCrystalType(unequipped.getItem().getItemGradeSPlus());
 		}
 	}
 	
@@ -2477,11 +2477,14 @@ public final class L2PcInstance extends L2Playable
 		final boolean isEquiped = item.isEquipped();
 		final int oldInvLimit = getInventoryLimit();
 		SystemMessage sm = null;
-		L2ItemInstance old = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LRHAND);
-		if (old == null)
-			old = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
-		
-		checkSShotsMatch(item, old);
+		if ((item.getItem().getBodyPart() & L2Item.SLOT_MULTI_ALLHAND) != 0)
+		{
+			L2ItemInstance old = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LRHAND);
+			if (old == null)
+				old = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
+			
+			checkSShotsMatch(item, old);
+		}
 		
 		if (isEquiped)
 		{
