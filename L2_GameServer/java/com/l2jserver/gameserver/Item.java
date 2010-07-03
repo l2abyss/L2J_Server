@@ -33,7 +33,7 @@ public class Item
 {
 	public int id;
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes" })
     public Enum type;
 	
 	public String name;

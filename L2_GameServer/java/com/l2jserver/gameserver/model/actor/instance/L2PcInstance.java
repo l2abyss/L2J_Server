@@ -10044,6 +10044,9 @@ public final class L2PcInstance extends L2Playable
     {
 		if (_olympiadGameId == -1)
 			return;
+		_olympiadGameId = -1;
+		_observerMode = false;
+        Olympiad.removeSpectator(_olympiadGameId, this);
 		setTarget(null);
 		sendPacket(new ExOlympiadMode(0));
         teleToLocation(_obsX, _obsY, _obsZ, true);
@@ -10054,9 +10057,6 @@ public final class L2PcInstance extends L2Playable
 			setIsInvul(false);
 		if (getAI() != null)
             getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-        Olympiad.removeSpectator(_olympiadGameId, this);
-        _olympiadGameId = -1;
-        _observerMode = false;
         setObserverCords(0, 0, 0);
 		broadcastUserInfo();
     }
