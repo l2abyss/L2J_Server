@@ -254,6 +254,27 @@ public class L2PetInstance extends L2Summon
         _mountable = PetDataTable.isMountable(npcId);
         _maxload = getPetData().getPetMaxLoad();
 	}
+	
+	public L2PetInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2ItemInstance control, byte level)
+	{
+		super(objectId, template, owner);
+		setInstanceType(InstanceType.L2PetInstance);
+
+        _controlItemId = control.getObjectId();
+
+        // Sin-eaters are defaulted at the owner's level
+        if (template.npcId == 12564)
+           getStat().setLevel((byte)getOwner().getLevel());
+        else
+           getStat().setLevel(level);
+
+		_inventory = new PetInventory(this);
+		_inventory.restore();
+
+        int npcId = template.npcId;
+        _mountable = PetDataTable.isMountable(npcId);
+        _maxload = getPetData().getPetMaxLoad();
+	}
 
     @Override
 	public PetStat getStat()
@@ -822,26 +843,30 @@ public class L2PetInstance extends L2Summon
 		try
 		{
 			L2PetInstance pet;
-			if (template.type.compareToIgnoreCase("L2BabyPet")==0)
-				pet = new L2BabyPetInstance(IdFactory.getInstance().getNextId(), template, owner, control);
-			else
-				pet = new L2PetInstance(IdFactory.getInstance().getNextId(), template, owner, control);
-
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT item_obj_id, name, level, curHp, curMp, exp, sp, fed, weapon, armor, jewel FROM pets WHERE item_obj_id=?");
 			statement.setInt(1, control.getObjectId());
 			ResultSet rset = statement.executeQuery();
 			if (!rset.next())
 			{
+				if (template.type.compareToIgnoreCase("L2BabyPet")==0)
+					pet = new L2BabyPetInstance(IdFactory.getInstance().getNextId(), template, owner, control);
+				else
+					pet = new L2PetInstance(IdFactory.getInstance().getNextId(), template, owner, control);
+
 	            rset.close();
 				statement.close();
 				return pet;
 			}
+			
+			if (template.type.compareToIgnoreCase("L2BabyPet")==0)
+				pet = new L2BabyPetInstance(IdFactory.getInstance().getNextId(), template, owner, control, rset.getByte("level"));
+			else
+				pet = new L2PetInstance(IdFactory.getInstance().getNextId(), template, owner, control, rset.getByte("level"));
 
             pet._respawned = true;
 			pet.setName(rset.getString("name"));
 
-            pet.getStat().setLevel(rset.getByte("level"));
             pet.getStat().setExp(rset.getLong("exp"));
             pet.getStat().setSp(rset.getInt("sp"));
 
