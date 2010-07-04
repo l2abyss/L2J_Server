@@ -103,11 +103,5 @@ public final class AttackRequest extends L2GameClientPacket
 	public String getType()
 	{
 		return _C__0A_ATTACKREQUEST;
-	}
-	
-	@Override
-	protected boolean triggersOnActionRequest()
-	{
-		return true;
-	}
+	}	
 }

@@ -136,4 +136,10 @@ public final class RequestPrivateStoreSell extends L2GameClientPacket
 	{
 		return _C__96_REQUESTPRIVATESTORESELL;
 	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

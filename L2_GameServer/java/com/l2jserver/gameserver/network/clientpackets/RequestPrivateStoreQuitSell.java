@@ -53,4 +53,10 @@ public final class RequestPrivateStoreQuitSell extends L2GameClientPacket
 	{
 		return _C__76_REQUESTPRIVATESTOREQUITSELL;
 	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

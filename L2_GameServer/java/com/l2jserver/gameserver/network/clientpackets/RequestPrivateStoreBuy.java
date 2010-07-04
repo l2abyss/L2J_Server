@@ -191,4 +191,10 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 	{
 		FastSet.recycle(_items);
 	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

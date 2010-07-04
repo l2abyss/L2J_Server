@@ -50,4 +50,10 @@ public final class RequestPrivateStoreManageBuy extends L2GameClientPacket
 	{
 		return _C__90_REQUESTPRIVATESTOREMANAGEBUY;
 	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

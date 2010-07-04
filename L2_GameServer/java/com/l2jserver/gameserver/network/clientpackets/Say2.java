@@ -262,4 +262,10 @@ public final class Say2 extends L2GameClientPacket
 	{
 		return _C__38_SAY2;
 	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

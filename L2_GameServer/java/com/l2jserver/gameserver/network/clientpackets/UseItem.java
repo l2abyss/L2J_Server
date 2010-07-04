@@ -49,6 +49,7 @@ public final class UseItem extends L2GameClientPacket
 	private static final String _C__14_USEITEM = "[C] 14 UseItem";
 
 	private int _objectId;
+	private int _itemId;
 
 	/** Weapon Equip Task */
 	public class WeaponEquipTask implements Runnable
@@ -117,7 +118,7 @@ public final class UseItem extends L2GameClientPacket
                 sm = null;
                 return;
             }
-			int itemId = item.getItemId();
+			_itemId = item.getItemId();
 			/*
 			 * Alt game - Karma punishment // SOE
 			 * 736  	Scroll of Escape
@@ -161,7 +162,7 @@ public final class UseItem extends L2GameClientPacket
 			 */
 			if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && activeChar.getKarma() > 0)
 			{
-				switch (itemId)
+				switch (_itemId)
 				{
 					case 736: case 1538: case 1829: case 1830: case 3958: case 5858:
 					case 5859: case 6663: case 6664: case 7554: case 7555: case 7556:
@@ -170,15 +171,15 @@ public final class UseItem extends L2GameClientPacket
 						return;
 				}
 				
-				if (itemId >= 7117 && itemId <= 7135)
+				if (_itemId >= 7117 && _itemId <= 7135)
 					return;
 			}
 
 			// Items that cannot be used
-			if (itemId == 57)
+			if (_itemId == 57)
                 return;
             
-            if (activeChar.isFishing() && (itemId < 6535 || itemId > 6540))
+            if (activeChar.isFishing() && (_itemId < 6535 || _itemId > 6540))
             {
                 // You cannot do anything else while fishing
                 SystemMessage sm = new SystemMessage(SystemMessageId.CANNOT_DO_WHILE_FISHING_3);
@@ -333,7 +334,7 @@ public final class UseItem extends L2GameClientPacket
                     }
                 }
                 
-                if (activeChar.isCursedWeaponEquipped() && itemId == 6408) // Don't allow to put formal wear
+                if (activeChar.isCursedWeaponEquipped() && _itemId == 6408) // Don't allow to put formal wear
                     return;
 
                 if (activeChar.isAttackingNow())
@@ -386,5 +387,11 @@ public final class UseItem extends L2GameClientPacket
 	public String getType()
 	{
 		return _C__14_USEITEM;
+	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return !Config.SPAWN_PROTECTION_ALLOWED_ITEMS.contains(_itemId);
 	}
 }

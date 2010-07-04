@@ -53,4 +53,10 @@ public class RequestPrivateStoreQuitBuy extends L2GameClientPacket
 	{
 		return _C__93_REQUESTPRIVATESTOREQUITBUY;
 	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

@@ -222,4 +222,10 @@ public final class RequestDropItem extends L2GameClientPacket
 	{
 		return _C__12_REQUESTDROPITEM;
 	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

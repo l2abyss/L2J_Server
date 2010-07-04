@@ -764,6 +764,6 @@ public final class RequestActionUse extends L2GameClientPacket
 	@Override
 	protected boolean triggersOnActionRequest()
 	{
-		return true;
+		return _actionId != 10 && _actionId != 28;
 	}
 }

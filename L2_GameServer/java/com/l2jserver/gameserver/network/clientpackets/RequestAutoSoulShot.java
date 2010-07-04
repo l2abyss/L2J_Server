@@ -149,4 +149,10 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 	{
 		return _C__CF_REQUESTAUTOSOULSHOT;
 	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

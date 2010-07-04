@@ -23,6 +23,7 @@ import org.mmocore.network.ReceivablePacket;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
@@ -92,20 +93,17 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 			runImpl();
 			
 			/* Removes onspawn protection - player has faster computer than average
-			 * 
-			 * True for these packets:
-			 * AttackRequest
-			 * MoveBackwardToLocation
-			 * RequestActionUse
-			 * RequestMagicSkillUse
-			 * 
-			 * it could include pickup and talk too, but less is better
+			 * Since GE: True for all packets
+			 * except RequestItemList and UseItem (in case the item is a Scroll of Escape (736) 
 			 */
-			if (triggersOnActionRequest() && getClient().getActiveChar() != null)
-				getClient().getActiveChar().onActionRequest();
+			L2PcInstance actor = getClient().getActiveChar();
+			if(actor != null && actor.isSpawnProtected())
+			{
+				if (triggersOnActionRequest())
+					getClient().getActiveChar().onActionRequest();
+			}
 			
-			cleanUp();
-			
+			cleanUp();	
 		}
 		catch (Throwable t)
 		{
@@ -130,10 +128,11 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 	
 	/**
 	 * Overriden with true value on some packets that should disable spawn protection
+	 * (RequestItemList and UseItem only)
 	 */
 	protected boolean triggersOnActionRequest()
 	{
-		return false;
+		return true;
 	}
 	
 	protected void cleanUp()

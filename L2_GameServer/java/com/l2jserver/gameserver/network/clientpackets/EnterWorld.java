@@ -644,4 +644,10 @@ public class EnterWorld extends L2GameClientPacket
 
 		activeChar.setPledgeClass(pledgeClass);
 	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

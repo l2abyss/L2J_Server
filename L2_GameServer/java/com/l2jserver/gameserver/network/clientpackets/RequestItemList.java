@@ -49,4 +49,10 @@ public final class RequestItemList extends L2GameClientPacket
 	{
 		return _C__0F_REQUESTITEMLIST;
 	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

@@ -45,10 +45,6 @@ public final class Action extends L2GameClientPacket
 	private int _originZ;
 	private int _actionId;
 
-	// player can select object as a target but can't interact,
-	// or spawn protection will be removed
-	private boolean _removeSpawnProtection = false;
-
 	@Override
 	protected void readImpl()
 	{
@@ -83,10 +79,7 @@ public final class Action extends L2GameClientPacket
 		final L2Object obj;
 
 		if (activeChar.getTargetId() == _objectId)
-		{
 			obj = activeChar.getTarget();
-			_removeSpawnProtection = true;
-		}
 		else if (activeChar.isInAirShip()
 				&& activeChar.getAirShip().getHelmObjectId() == _objectId)
 			obj = activeChar.getAirShip();
@@ -144,12 +137,6 @@ public final class Action extends L2GameClientPacket
 		else
 			// Actions prohibited when in trade
 			getClient().sendPacket(ActionFailed.STATIC_PACKET);
-	}
-
-	@Override
-	protected boolean triggersOnActionRequest()
-	{
-		return _removeSpawnProtection;
 	}
 
 	/* (non-Javadoc)
