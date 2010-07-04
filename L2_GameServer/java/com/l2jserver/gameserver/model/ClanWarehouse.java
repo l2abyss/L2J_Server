@@ -31,7 +31,7 @@ public final class ClanWarehouse extends Warehouse
 	}
 
 	@Override
-	public String getName() { return "ClanWarehouse"; };
+	public String getName() { return "ClanWarehouse"; }
 
 	@Override
 	public int getOwnerId() { return _clan.getClanId(); }

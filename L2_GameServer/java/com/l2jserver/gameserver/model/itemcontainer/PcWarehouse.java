@@ -29,7 +29,7 @@ public class PcWarehouse extends Warehouse
 	}
 
 	@Override
-	public String getName() { return "Warehouse"; };
+	public String getName() { return "Warehouse"; }
 
 	@Override
 	public L2PcInstance getOwner() { return _owner; }
