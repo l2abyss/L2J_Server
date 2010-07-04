@@ -420,7 +420,7 @@ public class L2CubicInstance
 				if ((_owner.getPvpFlag() > 0 && !_owner.isInsideZone(L2Character.ZONE_PEACE))
 				        || _owner.isInsideZone(L2Character.ZONE_PVP))
 				{
-					if (ownerTarget instanceof L2Character && !((L2Character) ownerTarget).isDead())
+					if (!((L2Character) ownerTarget).isDead())
 						enemy = ownerTarget.getActingPlayer();
 					
 					if (enemy != null)

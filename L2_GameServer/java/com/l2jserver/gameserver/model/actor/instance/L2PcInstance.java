@@ -14680,7 +14680,10 @@ public final class L2PcInstance extends L2Playable
 
 		final int damage = (int)Formulas.calcFallDam(this, deltaZ);
 		if (damage > 0)
+		{
+			reduceCurrentHp(Math.min(damage, getCurrentHp() - 1), null, false, true, null);
 			sendPacket(new SystemMessage(SystemMessageId.FALL_DAMAGE_S1).addNumber(damage));
+		}
 
 		setFalling();
 

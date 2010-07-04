@@ -2961,7 +2961,8 @@ public abstract class L2Character extends L2Object
 			removeEffect(effect);
 
 		setIsConfused(false);
-		getAI().notifyEvent(CtrlEvent.EVT_THINK);
+        if (!(this instanceof L2PcInstance))
+        	getAI().notifyEvent(CtrlEvent.EVT_THINK);
 		updateAbnormalEffect();
 	}
 
@@ -3057,7 +3058,6 @@ public abstract class L2Character extends L2Object
 		//TODO: Temp hack: players see FD on ppl that are moving: Teleport to someone who uses FD - if he gets up he will fall down again for that client -
 		// even tho he is actually standing... Probably bad info in CharInfo packet?
 		broadcastPacket(new Revive(this));
-		getAI().notifyEvent(CtrlEvent.EVT_THINK);
 	}
 
 	/**
@@ -3131,7 +3131,8 @@ public abstract class L2Character extends L2Object
 			removeEffect(effect);
 
 		setIsRooted(false);
-		getAI().notifyEvent(CtrlEvent.EVT_THINK);
+        if (!(this instanceof L2PcInstance))
+        	getAI().notifyEvent(CtrlEvent.EVT_THINK);
 		updateAbnormalEffect();
 	}
 	
@@ -3163,7 +3164,8 @@ public abstract class L2Character extends L2Object
         }
 		 	
         setIsImmobileUntilAttacked(false);
-        getAI().notifyEvent(CtrlEvent.EVT_THINK);
+        if (!(this instanceof L2PcInstance))
+        	getAI().notifyEvent(CtrlEvent.EVT_THINK);
         updateAbnormalEffect();
     }
 
@@ -3185,7 +3187,8 @@ public abstract class L2Character extends L2Object
 			removeEffect(effect);
 
 		setIsSleeping(false);
-		getAI().notifyEvent(CtrlEvent.EVT_THINK);
+        if (!(this instanceof L2PcInstance))
+        	getAI().notifyEvent(CtrlEvent.EVT_THINK);
 		updateAbnormalEffect();
 	}
 
@@ -3207,7 +3210,8 @@ public abstract class L2Character extends L2Object
 			removeEffect(effect);
 
 		setIsStunned(false);
-		getAI().notifyEvent(CtrlEvent.EVT_THINK);
+        if (!(this instanceof L2PcInstance))
+        	getAI().notifyEvent(CtrlEvent.EVT_THINK);
 		updateAbnormalEffect();
 	}
 
@@ -3219,7 +3223,8 @@ public abstract class L2Character extends L2Object
 			removeEffect(effect);
 
 		setIsParalyzed(false);
-		getAI().notifyEvent(CtrlEvent.EVT_THINK);
+        if (!(this instanceof L2PcInstance))
+        	getAI().notifyEvent(CtrlEvent.EVT_THINK);
 		updateAbnormalEffect();
 	}
 
@@ -3252,7 +3257,8 @@ public abstract class L2Character extends L2Object
             }
         }
         
-        getAI().notifyEvent(CtrlEvent.EVT_THINK);
+        if (!(this instanceof L2PcInstance))
+        	getAI().notifyEvent(CtrlEvent.EVT_THINK);
         updateAbnormalEffect();
     }
 
