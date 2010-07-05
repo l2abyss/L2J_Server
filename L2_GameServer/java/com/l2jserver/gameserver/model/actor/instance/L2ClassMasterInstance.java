@@ -330,6 +330,10 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 			q.startQuestTimer("givePormanders", 1, null, player);
 
 		player.broadcastUserInfo();
+		
+		if(Config.CLASS_MASTER_SETTINGS.isAllowed(player.getClassId().level() + 1) && Config.ALTERNATE_CLASS_MASTER && ((player.getClassId().level() == 1 && player.getLevel() >= 40) || (player.getClassId().level() == 2 && player.getLevel() >= 76)))
+			showQuestionMark(player);
+		
 		return true;
 	}
 
