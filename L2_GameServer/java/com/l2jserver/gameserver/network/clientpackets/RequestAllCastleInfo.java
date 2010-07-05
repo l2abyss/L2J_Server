@@ -55,4 +55,9 @@ public class RequestAllCastleInfo extends L2GameClientPacket
         }
     }
     
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

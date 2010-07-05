@@ -62,4 +62,10 @@ public class RequestFortressSiegeInfo extends L2GameClientPacket
         	}
         }
     }
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

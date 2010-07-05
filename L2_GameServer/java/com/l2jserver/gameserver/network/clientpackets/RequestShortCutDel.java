@@ -59,4 +59,10 @@ public final class RequestShortCutDel extends L2GameClientPacket
 	{
 		return _C__35_REQUESTSHORTCUTDEL;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

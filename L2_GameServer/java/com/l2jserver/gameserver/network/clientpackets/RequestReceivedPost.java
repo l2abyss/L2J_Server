@@ -78,4 +78,10 @@ public final class RequestReceivedPost extends L2GameClientPacket
 	{
 		return _C__D0_69_REQUESTRECEIVEDPOST;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

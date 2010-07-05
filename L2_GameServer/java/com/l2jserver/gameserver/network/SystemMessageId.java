@@ -14612,6 +14612,12 @@ public enum SystemMessageId
 	*/
 	YOU_CANNOT_SEND_MAIL_TO_CHAR_BLOCK_YOU(3082),
 
+	/**
+	* ID: 3108<br>
+	* Message: You are no longer protected from aggressive monsters.
+	*/
+	YOU_ARE_NO_LONGER_PROTECTED_FROM_AGGRESSIVE_MONSTERS(3108),
+
 	/** 
 	* ID: 6501<br>
 	* Message: You cannot bookmark this location because you do not have a My Teleport Flag.

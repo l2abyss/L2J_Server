@@ -57,4 +57,9 @@ public class RequestKeyMapping extends L2GameClientPacket
 			activeChar.sendPacket(new ExUISetting(activeChar));
 	}
 	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

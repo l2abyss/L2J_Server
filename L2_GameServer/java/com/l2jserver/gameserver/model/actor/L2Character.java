@@ -6113,7 +6113,10 @@ public abstract class L2Character extends L2Object
 			// Launch the magic skill in order to calculate its effects
 			callSkill(skill, targets);
 		}
-		catch (NullPointerException e) {}
+		catch (NullPointerException e)
+		{
+			_log.log(Level.WARNING, "", e);
+		}
 
 		if (instant || coolTime == 0)
 			onMagicFinalizer(skill, targets[0], simultaneously);

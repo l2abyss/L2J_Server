@@ -50,4 +50,10 @@ public class RequestDominionInfo extends L2GameClientPacket
 		sendPacket(new ExReplyDominionInfo());
 		sendPacket(new ExShowOwnthingPos());
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

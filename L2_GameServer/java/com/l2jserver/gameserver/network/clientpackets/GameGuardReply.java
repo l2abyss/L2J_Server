@@ -72,4 +72,9 @@ public class GameGuardReply extends L2GameClientPacket
         return _C__CA_GAMEGUARDREPLY;
     }
 
+    @Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

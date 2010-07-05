@@ -75,4 +75,10 @@ public final class RequestSentPost extends L2GameClientPacket
 	{
 		return _C__D0_6E_REQUESTSENTPOST;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 } 

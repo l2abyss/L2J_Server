@@ -250,4 +250,10 @@ public final class RequestPostAttachment extends L2GameClientPacket
 	{
 		return _C__D0_6A_REQUESTPOSTATTACHMENT;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

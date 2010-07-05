@@ -77,4 +77,10 @@ public final class RequestPledgeInfo extends L2GameClientPacket
 	{
 		return _C__66_REQUESTPLEDGEINFO;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

@@ -60,4 +60,10 @@ public class RequestManorList extends L2GameClientPacket
 	{
 		return _C__D0_01_REQUESTMANORLIST;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

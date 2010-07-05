@@ -52,4 +52,10 @@ public final class RequestShowMiniMap extends L2GameClientPacket
 	{
 		return _C__cd_REQUESTSHOWMINIMAP;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

@@ -97,4 +97,10 @@ public final class RequestSaveInventoryOrder extends L2GameClientPacket
             order = ord;
         }
     }
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

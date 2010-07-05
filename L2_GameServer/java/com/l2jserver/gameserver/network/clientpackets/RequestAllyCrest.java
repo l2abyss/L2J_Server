@@ -69,4 +69,10 @@ public final class RequestAllyCrest extends L2GameClientPacket
 	{
 		return _C__88_REQUESTALLYCREST;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

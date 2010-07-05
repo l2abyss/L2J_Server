@@ -59,4 +59,10 @@ public final class RequestPostItemList extends L2GameClientPacket
 	{
 		return _C__D0_65_REQUESTPOSTITEMLIST;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 } 

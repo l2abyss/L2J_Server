@@ -62,4 +62,10 @@ public class RequestCursedWeaponList extends L2GameClientPacket
 	{
 		return _C__D0_22_REQUESTCURSEDWEAPONLIST;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

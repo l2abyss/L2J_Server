@@ -210,4 +210,10 @@ public final class RequestCancelPost extends L2GameClientPacket
 	{
 		return _C__D0_6F_REQUESTCANCELPOSTATTACHMENT;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

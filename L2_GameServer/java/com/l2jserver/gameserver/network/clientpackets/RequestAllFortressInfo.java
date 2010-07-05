@@ -54,5 +54,10 @@ public class RequestAllFortressInfo extends L2GameClientPacket
             client.sendPacket(new ExShowFortressInfo());
         }
     }
-    
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

@@ -49,4 +49,10 @@ public final class RequestSkillList extends L2GameClientPacket
 	{
 		return _C__3F_REQUESTSKILLLIST;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

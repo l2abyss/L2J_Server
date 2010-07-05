@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestSentPostList extends L2GameClientPacket
 {
-	private static final String _C__D0_6C_REQUESTREQUESTRSENTPOSTLIST = "[C] D0:6C RequestRequestSentPostList";
+	private static final String _C__D0_6C_REQUESTSENTPOSTLIST = "[C] D0:6C RequestSentPostList";
 
 	@Override
 	protected void readImpl()
@@ -54,6 +54,12 @@ public final class RequestSentPostList extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_6C_REQUESTREQUESTRSENTPOSTLIST;
+		return _C__D0_6C_REQUESTSENTPOSTLIST;
+	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
 	}
 }

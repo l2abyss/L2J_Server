@@ -73,4 +73,10 @@ public final class RequestCursedWeaponLocation extends L2GameClientPacket
 	{
 		return _C__D0_23_REQUESTCURSEDWEAPONLOCATION;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

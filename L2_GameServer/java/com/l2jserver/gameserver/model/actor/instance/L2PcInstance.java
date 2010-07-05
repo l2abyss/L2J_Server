@@ -11144,6 +11144,7 @@ public final class L2PcInstance extends L2Playable
 	public void onActionRequest()
 	{
 		setProtection(false);
+		sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NO_LONGER_PROTECTED_FROM_AGGRESSIVE_MONSTERS));
 	}
 
 	/**

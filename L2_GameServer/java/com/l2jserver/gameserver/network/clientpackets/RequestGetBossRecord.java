@@ -71,4 +71,9 @@ public class RequestGetBossRecord extends L2GameClientPacket
         return _C__D0_18_REQUESTGETBOSSRECORD;
     }
 
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

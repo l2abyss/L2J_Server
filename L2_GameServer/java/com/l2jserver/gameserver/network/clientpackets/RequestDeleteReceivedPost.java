@@ -88,4 +88,10 @@ public final class RequestDeleteReceivedPost extends L2GameClientPacket
 	{
 		return _C__D0_68_REQUESTDELETERECEIVEDPOST;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }

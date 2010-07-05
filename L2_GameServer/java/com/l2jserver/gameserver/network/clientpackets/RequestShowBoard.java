@@ -75,4 +75,10 @@ public final class RequestShowBoard extends L2GameClientPacket
 	{
 		return _C__57_REQUESTSHOWBOARD;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }
