@@ -162,16 +162,16 @@ public class LoginServerThread extends Thread
 						break;
 					}
 					
-					byte[] incoming = new byte[length];
-					incoming[0] = (byte) lengthLo;
-					incoming[1] = (byte) lengthHi;
+					byte[] incoming = new byte[length - 2];
 					
 					int receivedBytes = 0;
 					int newBytes = 0;
-					while (newBytes != -1 && receivedBytes < length - 2)
+					int left = length - 2;
+					while (newBytes != -1 && receivedBytes < left)
 					{
-						newBytes = _in.read(incoming, 2, length - 2);
+						newBytes =  _in.read(incoming, receivedBytes, left);
 						receivedBytes = receivedBytes + newBytes;
+						left -= newBytes;
 					}
 					
 					if (receivedBytes != length - 2)
@@ -180,10 +180,8 @@ public class LoginServerThread extends Thread
 						break;
 					}
 					
-					byte[] decrypt = new byte[length - 2];
-					System.arraycopy(incoming, 2, decrypt, 0, decrypt.length);
 					// decrypt if we have a key
-					decrypt = _blowfish.decrypt(decrypt);
+					byte[] decrypt = _blowfish.decrypt(incoming);
 					checksumOk = NewCrypt.verifyChecksum(decrypt);
 					
 					if (!checksumOk)

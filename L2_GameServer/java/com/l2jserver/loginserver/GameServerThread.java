@@ -113,10 +113,12 @@ public class GameServerThread extends Thread
 
 				int receivedBytes = 0;
 				int newBytes = 0;
-				while (newBytes != -1 && receivedBytes<length-2)
+				int left = length - 2;
+				while (newBytes != -1 && receivedBytes < left)
 				{
-					newBytes =  _in.read(data, 0, length-2);
+					newBytes =  _in.read(data, receivedBytes, left);
 					receivedBytes = receivedBytes + newBytes;
+					left -= newBytes;
 				}
 
 				if (receivedBytes != length-2)
