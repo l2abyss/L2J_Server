@@ -30,6 +30,7 @@ import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.RaidBossSpawnManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
@@ -528,6 +529,8 @@ public class Shutdown extends Thread
 		_log.info("TradeController: All count Item Saved");
 		Olympiad.getInstance().saveOlympiadStatus();
 		_log.info("Olympiad System: Data saved!!");
+		Hero.getInstance().shutdown();
+		_log.info("Hero System: Data saved!!");
 		ClanTable.getInstance().storeClanScore();
 		_log.info("Clan System: Data saved!!");
 		

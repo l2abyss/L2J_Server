@@ -81,6 +81,7 @@ public class Hero
 	private static List<StatsSet> _fights;
 	
 	private static Map<Integer, List<StatsSet>> _herodiary;
+	private static Map<Integer, String> _heroMessage;
 	private static List<StatsSet> _diary;
 	
 	public static final String COUNT = "count";
@@ -112,6 +113,7 @@ public class Hero
 		_herofights = new FastMap<Integer, List<StatsSet>>();
 		_herocounts = new FastMap<Integer, StatsSet>();		
 		_herodiary = new FastMap<Integer, List<StatsSet>>();
+		_heroMessage = new FastMap<Integer, String>();
 		
 		Connection con = null;
 		Connection con2 = null;
@@ -138,8 +140,9 @@ public class Hero
 				hero.set(COUNT, rset.getInt(COUNT));
 				hero.set(PLAYED, rset.getInt(PLAYED));
 				
-				loadFights(charId);				
+				loadFights(charId);
 				loadDiary(charId);
+				loadMessage(charId);
 				
 				statement2 = con2.prepareStatement(GET_CLAN_ALLY);
 				statement2.setInt(1, charId);
@@ -261,6 +264,36 @@ public class Hero
 		String minutes = String.format(format, (FightTime % 3600) / 60);
 		String time = minutes + ":" + seconds;
 		return time;
+	}
+	
+	/**
+	 * Restore hero message from Db.
+	 * @param charId
+	 */
+	public void loadMessage(int charId)
+	{
+		Connection con = null;
+		try
+		{
+			String message = null;
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT message FROM heroes WHERE charId=?");
+			statement.setInt(1, charId);
+			ResultSet rset = statement.executeQuery();
+			rset.next();
+			message = rset.getString("message");
+			_heroMessage.put(charId, message);
+			rset.close();
+            statement.close();
+		}
+		catch (SQLException e)
+		{
+			_log.log(Level.WARNING, "Hero System: Couldnt load Hero Message for CharId: " + charId, e);
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
+		}
 	}
 	
 	public void loadDiary(int charId)
@@ -510,6 +543,8 @@ public class Hero
 			{
 				DiaryReply.setHtml(htmContent);
 				DiaryReply.replace("%heroname%", CharNameTable.getInstance().getNameById(charid));
+				DiaryReply.replace("%message%", _heroMessage.get(charid));
+				DiaryReply.disableValidation();
 				
 				if (!_mainlist.isEmpty())
 				{
@@ -597,6 +632,7 @@ public class Hero
 			{
 				FightReply.setHtml(htmContent);
 				FightReply.replace("%heroname%", CharNameTable.getInstance().getNameById(charid));
+				FightReply.disableValidation();
 				
 				if (!_list.isEmpty())
 				{
@@ -1016,6 +1052,44 @@ public class Hero
 		}
 	}
 	
+	/**
+	 * Set new hero message for hero
+	 * @param charId character objid
+	 * @param message String to set
+	 */
+	public void setHeroMessage(int charId, String message)
+	{
+		_heroMessage.put(charId, message);
+	}
+	
+	/**
+	 * Update hero message in database
+	 * @param charId character objid
+	 */
+	public void saveHeroMessage(int charId)
+	{
+		if (_heroMessage.get(charId) == null)
+			return;
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("UPDATE heroes SET message=? WHERE charId=?;");
+			statement.setString(1, _heroMessage.get(charId));
+			statement.setInt(2, charId);
+			statement.execute();
+			statement.close();
+		}
+		catch (SQLException e)
+		{
+			_log.log(Level.SEVERE, "SQL exception while saving HeroMessage.", e);
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
+		}
+	}
+	
 	private void deleteItemsInDb()
 	{
 		Connection con = null;
@@ -1036,6 +1110,19 @@ public class Hero
 			L2DatabaseFactory.close(con);
 		}
 	}
+	
+	/**
+	 * Saving task for {@link Hero}<BR>
+	 * Save all hero messages to DB.
+	 */
+	public void shutdown()
+	{
+		for (int charId: _heroMessage.keySet())
+		{
+			saveHeroMessage(charId);
+		}
+	}
+	
 	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
