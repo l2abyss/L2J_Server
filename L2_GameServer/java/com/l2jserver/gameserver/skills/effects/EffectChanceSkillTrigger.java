@@ -36,6 +36,16 @@ public class EffectChanceSkillTrigger extends L2Effect implements IChanceSkillTr
 	    _chanceCondition = template.chanceCondition;
     }
 
+	// Special constructor to steal this effect
+	public EffectChanceSkillTrigger(Env env, L2Effect effect)
+	{
+		super(env, effect);
+		
+		_triggeredId = effect.getEffectTemplate().triggeredId;
+		_triggeredLevel = effect.getEffectTemplate().triggeredLevel;
+		_chanceCondition = effect.getEffectTemplate().chanceCondition;
+	}
+
 	@Override
     public L2EffectType getEffectType()
     {

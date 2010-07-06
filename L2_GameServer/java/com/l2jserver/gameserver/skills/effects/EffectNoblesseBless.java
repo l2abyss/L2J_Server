@@ -31,6 +31,12 @@ public class EffectNoblesseBless extends L2Effect
 		super(env, template);
 	}
 	
+	// Special constructor to steal this effect
+	public EffectNoblesseBless(Env env, L2Effect effect)
+	{
+		super(env, effect);
+	}
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectType()

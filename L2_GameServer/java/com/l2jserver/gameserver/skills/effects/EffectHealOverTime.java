@@ -29,6 +29,11 @@ public class EffectHealOverTime extends L2Effect
 		super(env, template);
 	}
 	
+	// Special constructor to steal this effect
+	public EffectHealOverTime(Env env, L2Effect effect)
+	{
+		super(env, effect);
+	}
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectType()

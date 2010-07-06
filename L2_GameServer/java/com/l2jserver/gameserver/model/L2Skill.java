@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
+import com.l2jserver.gameserver.datatables.GMSkillTable;
 import com.l2jserver.gameserver.datatables.HeroSkillTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreeTable;
@@ -241,7 +242,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final int _afterEffectId;
     private final int _afterEffectLvl;
     private final boolean _isHeroSkill; // If true the skill is a Hero Skill
-
+    private final boolean _isGMSkill;	// True if skill is GM skill
+    
     private final int _baseCritRate;  // percent of success for skill critical hit (especially for PDAM & BLOW - they're not affected by rCrit values or buffs). Default loads -1 for all other skills but 0 to PDAM & BLOW
     private final int _lethalEffect1;     // percent of success for lethal 1st effect (hit cp to 1 or if mob hp to 50%) (only for PDAM skills)
     private final int _lethalEffect2;     // percent of success for lethal 2nd effect (hit cp,hp to 1 or if mob hp to 1) (only for PDAM skills)
@@ -436,7 +438,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _transformDuration = set.getInteger("transformDuration", 0);
 
         _isHeroSkill = HeroSkillTable.isHeroSkill(_id);
-
+        _isGMSkill = GMSkillTable.isGMSkill(_id);
+        
         _baseCritRate = set.getInteger("baseCritRate", (_skillType == L2SkillType.PDAM  || _skillType == L2SkillType.BLOW) ? 0 : -1);
         _lethalEffect1 = set.getInteger("lethal1",0);
         _lethalEffect2 = set.getInteger("lethal2",0);
@@ -976,6 +979,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
     public final boolean isHeroSkill()
     {
         return _isHeroSkill;
+    }
+
+    public final boolean isGMSkill()
+    {
+        return _isGMSkill;
     }
 
     public final int getNumCharges()

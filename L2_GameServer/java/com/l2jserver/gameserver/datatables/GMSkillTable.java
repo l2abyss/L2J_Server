@@ -23,8 +23,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class GMSkillTable
 {
-	private static final L2Skill[] _gmSkills = new L2Skill[33];
-	private static final int[] _gmSkillsId = { 7041, 7042, 7043, 7044, 7045, 7046, 7047, 7048, 7049, 7050, 7051, 7052, 7053, 7054, 7055, 7056, 7057, 7058, 7059, 7060, 7061, 7062, 7063, 7064, 7088, 7089, 7090, 7091, 7092, 7093, 7094 ,7095, 7096 };
+	private static final L2Skill[] _gmSkills = new L2Skill[34];
+	private static final int[] _gmSkillsId = { 7029, 7041, 7042, 7043, 7044, 7045, 7046, 7047, 7048, 7049, 7050, 7051, 7052, 7053, 7054, 7055, 7056, 7057, 7058, 7059, 7060, 7061, 7062, 7063, 7064, 7088, 7089, 7090, 7091, 7092, 7093, 7094 ,7095, 7096 };
 	
 	private GMSkillTable()
 	{
