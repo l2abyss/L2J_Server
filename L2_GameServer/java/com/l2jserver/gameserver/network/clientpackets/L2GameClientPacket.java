@@ -100,7 +100,11 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 			if(actor != null && (actor.isSpawnProtected() || actor.isInvul()))
 			{
 				if (triggersOnActionRequest())
+				{
 					actor.onActionRequest();
+					if (Config.DEBUG)
+						_log.info("Spawn protection for player " + actor.getName() + " removed by packet: " + getType());
+				}
 			}
 			
 			cleanUp();	

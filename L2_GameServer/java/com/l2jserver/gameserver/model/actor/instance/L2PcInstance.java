@@ -690,7 +690,8 @@ public final class L2PcInstance extends L2Playable
 	private long _protectEndTime = 0;
 	public boolean isSpawnProtected() { return  _protectEndTime > GameTimeController.getGameTicks(); }
 	private long _teleportProtectEndTime = 0;
-
+	public boolean isTeleportProtected() { return  _teleportProtectEndTime > GameTimeController.getGameTicks(); }
+	
 	// protects a char from agro mobs when getting up from fake death
 	private long _recentFakeDeathEndTime = 0;
 	private boolean _isFakeDeath;
@@ -11153,9 +11154,12 @@ public final class L2PcInstance extends L2Playable
 
 	public void onActionRequest()
 	{
+		if (isSpawnProtected())
+			sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NO_LONGER_PROTECTED_FROM_AGGRESSIVE_MONSTERS));
+		if (isTeleportProtected())
+			sendMessage("Teleport spawn protection ended.");
 		setProtection(false);
 		setTeleportProtection(false);
-		sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NO_LONGER_PROTECTED_FROM_AGGRESSIVE_MONSTERS));
 	}
 
 	/**

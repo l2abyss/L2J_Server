@@ -55,4 +55,10 @@ public final class Appearing extends L2GameClientPacket
 	{
 		return _C__30_APPEARING;
 	}
+
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
+	}
 }
