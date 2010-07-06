@@ -4425,7 +4425,8 @@ public final class L2PcInstance extends L2Playable
 		final boolean needCpUpdate = needCpUpdate(352);
 		final boolean needHpUpdate = needHpUpdate(352);
 		// Check if a party is in progress and party window update is usefull
-		if (isInParty()
+		L2Party party = _party;
+		if (party != null
 				&& (needCpUpdate
 						|| needHpUpdate
 						|| needMpUpdate(352)))
@@ -4434,7 +4435,7 @@ public final class L2PcInstance extends L2Playable
 				_log.fine("Send status for party window of " + getObjectId() + "(" + getName() + ") to his party. CP: " + getCurrentCp() + " HP: " + getCurrentHp() + " MP: " + getCurrentMp());
 			// Send the Server->Client packet PartySmallWindowUpdate with current HP, MP and Level to all other L2PcInstance of the Party
 			PartySmallWindowUpdate update = new PartySmallWindowUpdate(this);
-			getParty().broadcastToPartyMembers(this, update);
+			party.broadcastToPartyMembers(this, update);
 		}
 
         if (isInOlympiadMode()
