@@ -97,10 +97,10 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 			 * except RequestItemList and UseItem (in case the item is a Scroll of Escape (736) 
 			 */
 			L2PcInstance actor = getClient().getActiveChar();
-			if(actor != null && actor.isSpawnProtected())
+			if(actor != null && (actor.isSpawnProtected() || actor.isInvul()))
 			{
 				if (triggersOnActionRequest())
-					getClient().getActiveChar().onActionRequest();
+					actor.onActionRequest();
 			}
 			
 			cleanUp();	

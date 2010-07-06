@@ -1126,13 +1126,16 @@ public class L2Attackable extends L2Npc
 		if (ai == null)
 			return 0;
 
-		if (ai.getAttacker() instanceof L2PcInstance
-				&& (((L2PcInstance)ai.getAttacker()).getAppearance().getInvisible()
-						|| ai.getAttacker().isInvul()))
+		if (ai.getAttacker() instanceof L2PcInstance)
 		{
-			//Remove Object Should Use This Method and Can be Blocked While Interating
-			getAggroList().remove(target);
-			return 0;
+			L2PcInstance act = (L2PcInstance)ai.getAttacker();
+				if(act.getAppearance().getInvisible() || ai.getAttacker().isInvul()
+						|| act.isSpawnProtected())
+				{
+					//Remove Object Should Use This Method and Can be Blocked While Interating
+					getAggroList().remove(target);
+					return 0;
+				}
 		}
 
 		if (!ai.getAttacker().isVisible())

@@ -180,6 +180,7 @@ public final class Config
 	public static int TELEPORT_WATCHDOG_TIMEOUT;
 	public static int PLAYER_SPAWN_PROTECTION;
 	public static ArrayList<Integer> SPAWN_PROTECTION_ALLOWED_ITEMS;
+	public static int PLAYER_TELEPORT_PROTECTION;
 	public static boolean RANDOM_RESPAWN_IN_TOWN_ENABLED;
 	public static boolean OFFSET_ON_TELEPORT_ENABLED;
 	public static int MAX_OFFSET_ON_TELEPORT;
@@ -1513,6 +1514,7 @@ public final class Config
 							SPAWN_PROTECTION_ALLOWED_ITEMS.add(itm);
 					}
 					SPAWN_PROTECTION_ALLOWED_ITEMS.trimToSize();
+					PLAYER_TELEPORT_PROTECTION = Integer.parseInt(Character.getProperty("PlayerTeleportProtection", "0"));
 					RANDOM_RESPAWN_IN_TOWN_ENABLED = Boolean.parseBoolean(Character.getProperty("RandomRespawnInTownEnabled", "True"));
 					OFFSET_ON_TELEPORT_ENABLED = Boolean.parseBoolean(Character.getProperty("OffsetOnTeleportEnabled", "True"));
 					MAX_OFFSET_ON_TELEPORT = Integer.parseInt(Character.getProperty("MaxOffsetOnTeleport", "50"));

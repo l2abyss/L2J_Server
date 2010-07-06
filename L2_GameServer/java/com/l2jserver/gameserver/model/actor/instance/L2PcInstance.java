@@ -688,7 +688,8 @@ public final class L2PcInstance extends L2Playable
 
 	// Used for protection after teleport
 	private long _protectEndTime = 0;
-	public boolean isSpawnProtected() { return (_protectEndTime > 0); }
+	public boolean isSpawnProtected() { return  _protectEndTime > GameTimeController.getGameTicks(); }
+	private long _teleportProtectEndTime = 0;
 
 	// protects a char from agro mobs when getting up from fake death
 	private long _recentFakeDeathEndTime = 0;
@@ -4164,6 +4165,14 @@ public final class L2PcInstance extends L2Playable
 
 		_protectEndTime = protect ? GameTimeController.getGameTicks() + Config.PLAYER_SPAWN_PROTECTION * GameTimeController.TICKS_PER_SECOND : 0;
 	}
+	
+	public void setTeleportProtection(boolean protect)
+	{
+		if (Config.DEVELOPER && (protect || _protectEndTime > 0))
+                	_log.warning(getName() + ": Tele Protection " + (protect?"ON " + (GameTimeController.getGameTicks() + Config.PLAYER_TELEPORT_PROTECTION * GameTimeController.TICKS_PER_SECOND) :"OFF") + " (currently " + GameTimeController.getGameTicks() + ")");
+
+		_teleportProtectEndTime = protect? GameTimeController.getGameTicks() + Config.PLAYER_TELEPORT_PROTECTION * GameTimeController.TICKS_PER_SECOND : 0;
+	}
 
 	/**
 	 * Set protection from agro mobs when getting up from fake death, according settings.
@@ -6884,7 +6893,7 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public boolean isInvul()
 	{
-		return _isInvul  || _isTeleporting ||  _protectEndTime > GameTimeController.getGameTicks();
+		return _isInvul  || _isTeleporting || _teleportProtectEndTime > GameTimeController.getGameTicks();
 	}
 
 	/**
@@ -11144,6 +11153,7 @@ public final class L2PcInstance extends L2Playable
 	public void onActionRequest()
 	{
 		setProtection(false);
+		setTeleportProtection(false);
 		sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NO_LONGER_PROTECTED_FROM_AGGRESSIVE_MONSTERS));
 	}
 
@@ -11185,8 +11195,8 @@ public final class L2PcInstance extends L2Playable
 
 		checkItemRestriction();
 
-		if ((Config.PLAYER_SPAWN_PROTECTION > 0) && !isInOlympiadMode())
-			setProtection(true);
+		if ((Config.PLAYER_TELEPORT_PROTECTION > 0) && !isInOlympiadMode())
+			setTeleportProtection(true);
 		
 		// Trained beast is after teleport lost
 		if (getTrainedBeast() != null)

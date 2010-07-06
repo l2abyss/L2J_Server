@@ -33,6 +33,7 @@ import com.l2jserver.gameserver.model.actor.L2Character.AIAccessor;
 import com.l2jserver.gameserver.model.actor.instance.L2ControllableMobInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -425,6 +426,10 @@ public class L2ControllableMobAI extends L2AttackableAI
 		
 		// Check if the target isn't invulnerable
 		if (target.isInvul())
+			return false;
+		
+		// Spawn protection (only against mobs)
+		if(target instanceof L2PcInstance && ((L2PcInstance)target).isSpawnProtected())
 			return false;
 		
 		// Check if the target is a L2PlayableInstance
