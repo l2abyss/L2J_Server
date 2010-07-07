@@ -445,7 +445,7 @@ public class L2PetInstance extends L2Summon
 		if (!(object instanceof L2ItemInstance))
 		{
 			// dont try to pickup anything that is not an item :)
-			_logPet.warning("trying to pickup wrong target."+object);
+			_logPet.warning(this+" trying to pickup wrong target."+object);
 			getOwner().sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}

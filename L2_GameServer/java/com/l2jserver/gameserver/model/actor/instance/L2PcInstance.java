@@ -4777,7 +4777,7 @@ public final class L2PcInstance extends L2Playable
 		if (! (object instanceof L2ItemInstance))
 		{
 			// dont try to pickup anything that is not an item :)
-			_log.warning("trying to pickup wrong target."+getTarget());
+			_log.warning(this+" trying to pickup wrong target."+getTarget());
 			return;
 		}
 

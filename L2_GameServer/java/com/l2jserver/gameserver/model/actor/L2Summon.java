@@ -903,4 +903,10 @@ public abstract class L2Summon extends L2Playable
 		super.onTeleported();
 		getOwner().sendPacket(new TeleportToLocation(this, getPosition().getX(), getPosition().getY(), getPosition().getZ(), getPosition().getHeading()));
 	}
+
+	@Override
+	public String toString()
+	{
+		return super.toString()+" Owner: "+getOwner();
+	}
 }
