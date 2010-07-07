@@ -2483,7 +2483,7 @@ public final class L2PcInstance extends L2Playable
 		final boolean isEquiped = item.isEquipped();
 		final int oldInvLimit = getInventoryLimit();
 		SystemMessage sm = null;
-		if ((item.getItem().getBodyPart() & L2Item.SLOT_MULTI_ALLHAND) != 0)
+		if ((item.getItem().getBodyPart() & L2Item.SLOT_MULTI_ALLWEAPON) != 0)
 		{
 			L2ItemInstance old = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LRHAND);
 			if (old == null)
@@ -2562,7 +2562,7 @@ public final class L2PcInstance extends L2Playable
 			// Consume mana - will start a task if required; returns if item is not a shadow item
 			item.decreaseMana(false);
 			
-			if ((item.getItem().getBodyPart() & L2Item.SLOT_MULTI_ALLHAND) != 0)
+			if ((item.getItem().getBodyPart() & L2Item.SLOT_MULTI_ALLWEAPON) != 0)
 			{
 				rechargeAutoSoulShot(true, true, false);
 			}
