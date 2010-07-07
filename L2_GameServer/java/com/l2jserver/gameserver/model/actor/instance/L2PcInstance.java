@@ -2465,11 +2465,15 @@ public final class L2PcInstance extends L2Playable
 		if (unequipped == null)
 			return;
 		
-		if (unequipped.getItem().getType2() == L2Item.TYPE2_WEAPON &&
+		unequipped.setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
+		unequipped.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
+		
+		// on retail auto shots never disabled on uneqip
+		/*if (unequipped.getItem().getType2() == L2Item.TYPE2_WEAPON &&
 				(equipped == null ? true : equipped.getItem().getItemGradeSPlus() != unequipped.getItem().getItemGradeSPlus()))
 		{
 			disableAutoShotByCrystalType(unequipped.getItem().getItemGradeSPlus());
-		}
+		}*/
 	}
 	
 	public void useEquippableItem(L2ItemInstance item, boolean abortAttack)
@@ -2557,6 +2561,11 @@ public final class L2PcInstance extends L2Playable
 			
 			// Consume mana - will start a task if required; returns if item is not a shadow item
 			item.decreaseMana(false);
+			
+			if ((item.getItem().getBodyPart() & L2Item.SLOT_MULTI_ALLHAND) != 0)
+			{
+				rechargeAutoSoulShot(true, true, false);
+			}
 		}
 		sm = null;
 		
