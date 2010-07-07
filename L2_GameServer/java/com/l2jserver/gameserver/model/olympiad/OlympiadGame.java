@@ -450,6 +450,7 @@ class OlympiadGame
 			}
 			catch (Exception e)
 			{
+				_log.log(Level.WARNING, "", e);
 			}
 		}
 	}

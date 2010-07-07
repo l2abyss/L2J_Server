@@ -369,7 +369,11 @@ public class CharInfo extends L2GameServerPacket
 			writeC(_activeChar.isSitting() ? 0 : 1);	// standing = 1  sitting = 0
 			writeC(_activeChar.isRunning() ? 1 : 0);	// running = 1   walking = 0
 			writeC(_activeChar.isInCombat() ? 1 : 0);
-			writeC(_activeChar.isAlikeDead() ? 1 : 0);
+			
+			if (_activeChar.isInOlympiadMode())
+				writeC(0);
+			else
+				writeC(_activeChar.isAlikeDead() ? 1 : 0);
 
 			if (gmSeeInvis)
 			{
