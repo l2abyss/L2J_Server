@@ -395,7 +395,7 @@ public class DimensionalRift
 			//int min = Config.RIFT_MIN_PARTY_SIZE;
 			
 			for (L2PcInstance p : _party.getPartyMembers())
-				if (!revivedInWaitingRoom.contains(p))
+				if (p != null && !revivedInWaitingRoom.contains(p))
 					teleportToWaitingRoom(p);
 			killRift();
 		}

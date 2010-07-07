@@ -241,7 +241,7 @@ public final class Say2 extends L2GameClientPacket
 			}
 			else
 			{
-				_log.info(getClient() + " trying publish object which is not item! ID:" + id);
+				_log.info(getClient() + " trying publish object which is not item! Object:" + item);
 				return false;
 			}
 			pos1 = _text.indexOf(8, pos) + 1;

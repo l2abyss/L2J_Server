@@ -235,6 +235,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final int _numSouls;
     private final int _expNeeded;
     private final int _critChance;
+    private final float _dependOnTargetBuff;
     
     private final int _transformId;
     private final int _transformDuration;
@@ -458,6 +459,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _canBeDispeled = set.getBool("canBeDispeled", true);
         
         _isClanSkill = set.getBool("isClanSkill", false);
+        _dependOnTargetBuff = set.getFloat("dependOnTargetBuff", 0);
     }
 
     public abstract void useSkill(L2Character caster, L2Object[] targets);
@@ -2675,5 +2677,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public boolean isClanSkill()
 	{
 		return _isClanSkill;
+	}
+
+	public float getDependOnTargetBuff()
+	{
+		return _dependOnTargetBuff;
 	}
 }
