@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.actor.stat;
 
 import java.util.logging.Logger;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
@@ -132,7 +133,12 @@ public class PlayableStat extends CharStat
 
         // Sync up exp with current level
         if (getExp() >= getExpForLevel(getLevel() + 1) || getExpForLevel(getLevel()) > getExp()) setExp(getExpForLevel(getLevel()));
-
+        
+        if (!levelIncreased && getActiveChar() instanceof L2PcInstance && !((L2PcInstance)(getActiveChar())).isGM() && Config.DECREASE_SKILL_LEVEL) 
+        {
+        	((L2PcInstance)(getActiveChar())).checkPlayerSkills();
+        }
+        
         if (!levelIncreased) return false;
 
         getActiveChar().getStatus().setCurrentHp(getActiveChar().getStat().getMaxHp());

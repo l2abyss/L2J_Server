@@ -710,6 +710,18 @@ public class SkillTreeTable
 		return skillCost;
 	}
 	
+	public L2SkillLearn getSkillLearnBySkillIdLevel(ClassId classId, int skillId, int skillLvl)
+	{
+		for (L2SkillLearn sl : getAllowedSkills(classId))
+		{
+			if (sl.getId() == skillId && sl.getLevel() == skillLvl)
+			{
+				return sl; // found skill learn
+			}
+		}
+		return null;
+	}
+	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{

@@ -10965,6 +10965,8 @@ public final class L2PcInstance extends L2Playable
 		revalidateZone(true);
 		
 		notifyFriends();
+		if (!isGM() && Config.DECREASE_SKILL_LEVEL)
+			checkPlayerSkills();
 	}
 
 	public long getLastAccess()
@@ -14809,5 +14811,54 @@ public final class L2PcInstance extends L2Playable
 	public void setOfflineStartTime(long time)
 	{
 		_offlineShopStart = time;
+	}
+	
+	/**
+	 * Check all player skills for skill level. If player level is lower than skill learn level - 9, skill level is decreased to next possible level.
+	 */
+	public void checkPlayerSkills()
+	{
+		for (int id : _skills.keySet())
+		{
+			int level = getSkillLevel(id);
+			if (level >= 100) // enchanted skill
+				level = SkillTable.getInstance().getMaxLevel(id);
+			L2SkillLearn learn = SkillTreeTable.getInstance().getSkillLearnBySkillIdLevel(getClassId(), id, level);
+			// not found - not a learn skill?
+			if (learn == null)
+			{
+				continue;
+			}
+			else
+			{
+				// player level is too low for such skill level
+				if (getLevel() < (learn.getMinLevel() - 9))
+					deacreaseSkillLevel(id);
+			}
+		}
+	}
+	
+	private void deacreaseSkillLevel(int id)
+	{
+		int nextLevel = -1;
+		for (L2SkillLearn sl : SkillTreeTable.getInstance().getAllowedSkills(getClassId()))
+		{
+			if (sl.getId() == id && nextLevel < sl.getLevel() && getLevel() >= (sl.getMinLevel() - 9))
+			{
+				// next possible skill level
+				nextLevel = sl.getLevel();
+			}
+		}
+		
+		if (nextLevel == -1) // there is no lower skill
+		{
+			_log.info("Removing skill id "+id+ " level "+getSkillLevel(id)+" from player "+this);
+			removeSkill(_skills.get(id), true);
+		}
+		else // replace with lower one
+		{
+			_log.info("Decreasing skill id "+id+" from "+getSkillLevel(id)+" to "+nextLevel+" for "+this);
+			addSkill(SkillTable.getInstance().getInfo(id, nextLevel), true);
+		}
 	}
 }

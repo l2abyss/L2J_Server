@@ -187,7 +187,7 @@ public abstract class L2Character extends L2Object
 	private Calculator[] _calculators;
 
 	/** FastMap(Integer, L2Skill) containing all skills of the L2Character */
-	private final Map<Integer, L2Skill> _skills;
+	protected final Map<Integer, L2Skill> _skills;
 	/** FastMap containing the active chance skills on this character */
 	private ChanceSkillList _chanceSkills;
 
