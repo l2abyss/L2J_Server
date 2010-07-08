@@ -84,6 +84,7 @@ import com.l2jserver.gameserver.instancemanager.DimensionalRiftManager;
 import com.l2jserver.gameserver.instancemanager.DuelManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
+import com.l2jserver.gameserver.instancemanager.GrandBossManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
@@ -161,6 +162,7 @@ import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.quest.State;
+import com.l2jserver.gameserver.model.zone.type.L2BossZone;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
@@ -14811,6 +14813,24 @@ public final class L2PcInstance extends L2Playable
 	public void setOfflineStartTime(long time)
 	{
 		_offlineShopStart = time;
+	}
+
+	/**
+	 * Remove player from BossZones (used on char logout/exit)
+	 */
+	public void removeFromBossZone()
+	{
+		try
+		{
+			for (L2BossZone _zone : GrandBossManager.getInstance().getZones())
+			{
+				_zone.removePlayer(this);
+			}
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Exception on removeFromBossZone(): " + e.getMessage(), e);
+		}	
 	}
 	
 	/**

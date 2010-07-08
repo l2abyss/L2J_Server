@@ -109,7 +109,9 @@ public final class RequestRestart extends L2GameClientPacket
 			if (playerParty != null)
 				player.getParty().broadcastToPartyMembers(SystemMessage.sendString(player.getName() + " has been removed from the upcoming festival."));
 		}
-
+		// Remove player from Boss Zone
+		player.removeFromBossZone();
+		
 		final L2GameClient client = getClient();
 
 		LogRecord record = new LogRecord(Level.INFO, "Logged out");
