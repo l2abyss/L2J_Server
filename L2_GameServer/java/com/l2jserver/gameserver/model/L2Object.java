@@ -578,7 +578,7 @@ public abstract class L2Object
 	{
 		return _name;
 	}
-	public final void setName(String value)
+	public void setName(String value)
 	{
 		_name = value;
 	}

@@ -15,13 +15,9 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.datatables.PetNameTable;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
-import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
-import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
@@ -76,22 +72,7 @@ public final class RequestChangePetName extends L2GameClientPacket
 		}
 
 		pet.setName(_name);
-		pet.broadcastPacket(new AbstractNpcInfo.SummonInfo(pet, activeChar,1));
 		pet.updateAndBroadcastStatus(1);
-
-		// set the flag on the control item to say that the pet has a name
-		if (pet instanceof L2PetInstance)
-		{
-			L2ItemInstance controlItem = pet.getOwner().getInventory().getItemByObjectId(pet.getControlItemId());
-			if (controlItem != null)
-			{
-				controlItem.setCustomType2(1);
-				controlItem.updateDatabase();
-				InventoryUpdate iu = new InventoryUpdate();
-				iu.addModifiedItem(controlItem);
-				activeChar.sendPacket(iu);
-			}
-		}
 	}
 
 	@Override

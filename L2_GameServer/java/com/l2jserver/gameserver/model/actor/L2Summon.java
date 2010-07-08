@@ -839,16 +839,9 @@ public abstract class L2Summon extends L2Playable
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
 		for (L2PcInstance player : plrs)
 		{
-			try
-			{
-				if (player == getOwner() && !(this instanceof L2MerchantSummonInstance))
-					continue;
-				player.sendPacket(new AbstractNpcInfo.SummonInfo(this,player, val));
-			}
-			catch (NullPointerException e)
-			{
-				// ignore it
-			}
+			if (player == null || (player == getOwner() && !(this instanceof L2MerchantSummonInstance)))
+				continue;
+			player.sendPacket(new AbstractNpcInfo.SummonInfo(this,player, val));
 		}
 	}
 	public boolean isHungry()
