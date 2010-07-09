@@ -170,19 +170,16 @@ public abstract class L2Character extends L2Object
 	private boolean _isBetrayed                             = false; // Betrayed by own summon
 	protected boolean _showSummonAnimation                  = false;
 	protected boolean _isTeleporting                        = false;
-	private L2Character _lastBuffer							= null;
 	protected boolean _isInvul                              = false;
 	private boolean _isMortal                               = true; // Char will die when HP decreased to 0 
-	private int _lastHealAmount								= 0;
 	private CharStat _stat;
 	private CharStatus _status;
 	private L2CharTemplate _template;                       // The link on the L2CharTemplate object containing generic and static properties of this L2Character type (ex : Max HP, Speed...)
 	private String _title;
-	private String _aiClass = "default";
 	private double _hpUpdateIncCheck = .0;
 	private double _hpUpdateDecCheck = .0;
 	private double _hpUpdateInterval = .0;
-	private boolean _champion = false;
+
 	/** Table of Calculators containing all used calculator */
 	private Calculator[] _calculators;
 
@@ -218,7 +215,6 @@ public abstract class L2Character extends L2Object
 	private final byte[] _zones = new byte[19];
 	protected byte _zoneValidateCounter = 4;
 
-	private boolean _isRaid = false;
 
 	private boolean _isFlying;
 	
@@ -1589,34 +1585,11 @@ public abstract class L2Character extends L2Object
         		if (doit)
         		{
         			target = (L2Character) targets[0];
-
-    				if (this instanceof L2PcInstance && target instanceof L2PcInstance 
-    						&& target.getAI().getIntention() == CtrlIntention.AI_INTENTION_ATTACK)
-    				{
-    					switch (skill.getSkillType())
-    					{
-    						case BUFF:
-    						case HOT:
-    						case HEAL:
-    						case HEAL_PERCENT:
-    						case MANAHEAL:
-    						case MANAHEAL_PERCENT:
-    						case BALANCE_LIFE:
-    						case HPMPCPHEAL_PERCENT:
-    						case HPMPHEAL_PERCENT:
-    							target.setLastBuffer(this);
-    							break;
-    					}
-    					
-    					if (((L2PcInstance)this).isInParty() && skill.getTargetType() == L2Skill.SkillTargetType.TARGET_PARTY)
-    					{
-    						for (L2PcInstance member : ((L2PcInstance)this).getParty().getPartyMembers())
-    							 member.setLastBuffer(this);
-    					}
-    				}
         		}
-        		else target = (L2Character) getTarget();
-        		
+        		else 
+        		{
+        			target = (L2Character) getTarget();
+        		}
         }
 
 		if (target == null)
@@ -2245,7 +2218,7 @@ public abstract class L2Character extends L2Object
 	/** Return True if the L2Character is RaidBoss or his minion. */
 	public boolean isRaid()
     {
-        return _isRaid  ;
+        return false;
     }
     
 	/**
@@ -2254,7 +2227,6 @@ public abstract class L2Character extends L2Object
 	 */
     public void setIsRaid(boolean isRaid)
     {
-    	_isRaid = isRaid;
     }
 
 	/** Return a list of L2Character that attacked. */
@@ -6663,8 +6635,6 @@ public abstract class L2Character extends L2Object
 
 	private boolean _AIdisabled = false;
 
-	private boolean _isMinion = false;
-
 	public void updatePvPFlag(int value)
 	{
 		// Overridden in L2PcInstance
@@ -6779,45 +6749,10 @@ public abstract class L2Character extends L2Object
 	public final void setCurrentMp(double newMp) { getStatus().setCurrentMp(newMp); }
 	// =========================================================
 
-	public void setAiClass(String aiClass)
-	{
-		_aiClass = aiClass;
-	}
-
-	public String getAiClass()
-	{
-		return _aiClass;
-	}
-
-	public L2Character getLastBuffer()
-	{
-		return _lastBuffer;
-	}
-
-	public void setChampion(boolean champ)
-	{
-		_champion = champ;
-    }
-
 	public boolean isChampion()
 	{
-		return _champion;
+		return false;
     }
-
-	public int getLastHealAmount()
-	{
-		return _lastHealAmount;
-	}
-
-	public void setLastBuffer(L2Character buffer)
-	{
-		_lastBuffer = buffer;
-	}
-
-	public void setLastHealAmount(int hp)
-	{
-		_lastHealAmount = hp;
-	}
 
 	/**
 	 * Check player max buff count
@@ -6915,9 +6850,10 @@ public abstract class L2Character extends L2Object
 			}
 		}
 	}
+	
 	public boolean isRaidMinion()
     {
-        return _isMinion ;
+        return false;
     }
     
 	/**
@@ -6926,8 +6862,6 @@ public abstract class L2Character extends L2Object
 	 */
     public void setIsRaidMinion(boolean val)
     {
-    	_isRaid = val;
-    	_isMinion = val;
     }
     
 	/**

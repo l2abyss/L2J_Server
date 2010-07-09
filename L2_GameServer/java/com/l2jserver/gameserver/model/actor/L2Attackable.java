@@ -71,6 +71,10 @@ import javolution.util.FastMap;
 
 public class L2Attackable extends L2Npc
 {
+	private boolean _isRaid = false;
+	private boolean _isRaidMinion = false;
+	private boolean _champion = false;
+
 	/**
 	 * This class contains all AggroInfo of the L2Attackable against the attacker L2Character.
 	 *
@@ -2658,5 +2662,50 @@ public class L2Attackable extends L2Npc
 			return false;
 
 		return true;
+	}
+	
+	/** Return True if the L2Character is RaidBoss or his minion. */
+	@Override
+	public boolean isRaid()
+	{
+		return _isRaid;
+	}
+	
+	/**
+	 * Set this Npc as a Raid instance.<BR><BR>
+	 * @param isRaid
+	 */
+	@Override
+	public void setIsRaid(boolean isRaid)
+	{
+		_isRaid = isRaid;
+	}
+	
+	/**
+	 * Set this Npc as a Minion instance.<BR><BR>
+	 * @param val
+	 */
+	@Override
+	public void setIsRaidMinion(boolean val)
+	{
+		_isRaid = val;
+		_isRaidMinion = val;
+	}
+	
+	@Override
+	public boolean isRaidMinion()
+	{
+		return _isRaidMinion;
+	}
+	
+	public void setChampion(boolean champ)
+	{
+		_champion = champ;
+	}
+	
+	@Override
+	public boolean isChampion()
+	{
+		return _champion;
 	}
 }
