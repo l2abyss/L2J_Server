@@ -8716,7 +8716,6 @@ public final class L2PcInstance extends L2Playable
     	// Check if the player is dead
         if (isDead())
         {
-        	abortCast();
         	// Send a Server->Client packet ActionFailed to the L2PcInstance
             sendPacket(ActionFailed.STATIC_PACKET);
             return false;
