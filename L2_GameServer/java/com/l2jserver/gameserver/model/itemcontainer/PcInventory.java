@@ -719,6 +719,8 @@ public class PcInventory extends Inventory
 	@Override
 	public boolean validateWeight(int weight)
 	{
+		if (_owner.isGM() && _owner.getAccessLevel().allowTransaction())
+			return true; // disable weight check for GM
 		return (_totalWeight + weight <= _owner.getMaxLoad());
 	}
 }
