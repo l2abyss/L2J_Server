@@ -74,7 +74,7 @@ public class L2PetInstance extends L2Summon
 	
 	private int _curFed;
 	private PetInventory _inventory;
-	private final int _controlItemId;
+	private final int _controlObjectId;
 	private boolean _respawned;
 	private boolean _mountable;
 	private Future<?> _feedTask;
@@ -174,7 +174,7 @@ public class L2PetInstance extends L2Summon
 							stopFeed();
 							sm = new SystemMessage(SystemMessageId.STARVING_GRUMPY_AND_FED_UP_YOUR_PET_HAS_LEFT);
 							getOwner().sendPacket(sm);
-							_log.info("Hungry pet deleted for player :"+getOwner().getName()+" Control Item Id :"+getControlItemId());
+							_log.info("Hungry pet deleted for player :"+getOwner()+" Control Item Id :"+getControlObjectId());
 							deleteMe(getOwner());
 						}
 					}
@@ -187,7 +187,7 @@ public class L2PetInstance extends L2Summon
 							stopFeed();
 							sm = new SystemMessage(SystemMessageId.STARVING_GRUMPY_AND_FED_UP_YOUR_PET_HAS_LEFT);
 							getOwner().sendPacket(sm);
-							_log.info("Hungry pet deleted for player :"+getOwner().getName()+" Control Item Id :"+getControlItemId());
+							_log.info("Hungry pet deleted for player :"+getOwner()+" Control Item Id :"+getControlObjectId());
 							deleteMe(getOwner());
 						}
 					}
@@ -254,7 +254,7 @@ public class L2PetInstance extends L2Summon
 		super(objectId, template, owner);
 		setInstanceType(InstanceType.L2PetInstance);
 		
-		_controlItemId = control.getObjectId();
+		_controlObjectId = control.getObjectId();
 		
 		// Pet's initial level is supposed to be read from DB
 		// Pets start at :
@@ -296,11 +296,11 @@ public class L2PetInstance extends L2Summon
 	public int getSummonType() { return 2; }
 	
 	@Override
-	public int getControlItemId() { return _controlItemId; }
+	public int getControlObjectId() { return _controlObjectId; }
 	
 	public L2ItemInstance getControlItem()
 	{
-		return getOwner().getInventory().getItemByObjectId(_controlItemId);
+		return getOwner().getInventory().getItemByObjectId(_controlObjectId);
 	}
 	
 	public int getCurrentFed() { return _curFed; }
@@ -732,11 +732,11 @@ public class L2PetInstance extends L2Summon
 			L2ItemInstance removedItem;
 			if (evolve)
 			{
-				removedItem = owner.getInventory().destroyItem("Evolve", getControlItemId(), 1, getOwner(), this);
+				removedItem = owner.getInventory().destroyItem("Evolve", getControlObjectId(), 1, getOwner(), this);
 			}
 			else
 			{
-				removedItem = owner.getInventory().destroyItem("PetDestroy", getControlItemId(), 1, getOwner(), this);
+				removedItem = owner.getInventory().destroyItem("PetDestroy", getControlObjectId(), 1, getOwner(), this);
 				if (removedItem != null)
 					owner.sendPacket(new SystemMessage(SystemMessageId.S1_DISAPPEARED).addItemName(removedItem));
 			}
@@ -769,7 +769,7 @@ public class L2PetInstance extends L2Summon
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("DELETE FROM pets WHERE item_obj_id=?");
-			statement.setInt(1, getControlItemId());
+			statement.setInt(1, getControlObjectId());
 			statement.execute();
 			statement.close();
 		}
@@ -889,7 +889,7 @@ public class L2PetInstance extends L2Summon
 		}
 		catch (Exception e)
 		{
-			_logPet.log(Level.WARNING, "Could not restore pet data: "+ e.getMessage(), e);
+			_logPet.log(Level.WARNING, "Could not restore pet data for owner: "+owner+" - "+ e.getMessage(), e);
 			return null;
 		}
 		finally
@@ -901,7 +901,7 @@ public class L2PetInstance extends L2Summon
 	@Override
 	public void store()
 	{
-		if (getControlItemId() == 0)
+		if (getControlObjectId() == 0)
 		{
 			// this is a summon, not a pet, don't store anything
 			return;
@@ -929,7 +929,7 @@ public class L2PetInstance extends L2Summon
 			statement.setInt(8, getWeapon());
 			statement.setInt(9, getArmor());
 			statement.setInt(10, getJewel());
-			statement.setInt(11, getControlItemId());
+			statement.setInt(11, getControlObjectId());
 			statement.executeUpdate();
 			statement.close();
 			_respawned = true;

@@ -4138,7 +4138,7 @@ public final class L2PcInstance extends L2Playable
 		}
 
 		// Pet is summoned and not the item that summoned the pet AND not the buggle from strider you're mounting
-		if (getPet() != null && getPet().getControlItemId() == objectId || getMountObjectID() == objectId)
+		if (getPet() != null && getPet().getControlObjectId() == objectId || getMountObjectID() == objectId)
 		{
 			if (Config.DEBUG)
 				_log.finest(getObjectId()+": player tried to " + action + " item controling pet");
@@ -5680,7 +5680,7 @@ public final class L2PcInstance extends L2Playable
 							!itemDrop.isDropable() ||
 							itemDrop.getItemId() == 57 || // Adena
 							itemDrop.getItem().getType2() == L2Item.TYPE2_QUEST ||                  // Quest Items
-							getPet() != null && getPet().getControlItemId() == itemDrop.getItemId() || // Control Item of active pet
+							getPet() != null && getPet().getControlObjectId() == itemDrop.getItemId() || // Control Item of active pet
 							Arrays.binarySearch(Config.KARMA_LIST_NONDROPPABLE_ITEMS, itemDrop.getItemId()) >= 0 || // Item listed in the non droppable item list
 							Arrays.binarySearch(Config.KARMA_LIST_NONDROPPABLE_PET_ITEMS, itemDrop.getItemId()) >= 0 // Item listed in the non droppable pet item list
 					) continue;
@@ -6707,7 +6707,7 @@ public final class L2PcInstance extends L2Playable
         stopAllToggles();
         Ride mount = new Ride(this, true, pet.getTemplate().npcId);
         setMount(pet.getNpcId(), pet.getLevel(), mount.getMountType());
-        setMountObjectID(pet.getControlItemId());
+        setMountObjectID(pet.getControlObjectId());
         clearPetData();
         startFeed(pet.getNpcId());
         broadcastPacket(mount);
@@ -11474,7 +11474,7 @@ public final class L2PcInstance extends L2Playable
 		}
 
 		// Pet is summoned and not the item that summoned the pet AND not the buggle from strider you're mounting
-		if (getPet() != null && getPet().getControlItemId() == objectId || getMountObjectID() == objectId)
+		if (getPet() != null && getPet().getControlObjectId() == objectId || getMountObjectID() == objectId)
 		{
 			if (Config.DEBUG)
 				_log.finest(getObjectId()+": player tried to " + action + " item controling pet");
@@ -13707,7 +13707,7 @@ public final class L2PcInstance extends L2Playable
     	if (getPet() != null)
     	{
     		setCurrentFeed(((L2PetInstance) getPet()).getCurrentFed());
-    		_controlItemId = getPet().getControlItemId();
+    		_controlItemId = getPet().getControlObjectId();
     		sendPacket(new SetupGauge(3, getCurrentFeed()*10000/getFeedConsume(), getMaxFeed()*10000/getFeedConsume()));
     		if (!isDead())
     		{

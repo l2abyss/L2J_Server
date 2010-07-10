@@ -439,7 +439,7 @@ public abstract class L2Summon extends L2Playable
         return _chargedSpiritShot;
     }
 
-    public int getControlItemId()
+    public int getControlObjectId()
     {
         return 0;
     }

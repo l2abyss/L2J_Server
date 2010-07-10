@@ -150,7 +150,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 			Connection con = null;
 			try
 			{
-				if (activeChar.getPet() != null && activeChar.getPet().getControlItemId() == _objectId)
+				if (activeChar.getPet() != null && activeChar.getPet().getControlObjectId() == _objectId)
 				{
 					activeChar.getPet().unSummon(activeChar);
 				}
