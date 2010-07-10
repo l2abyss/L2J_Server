@@ -49,24 +49,35 @@ public final class RequestPledgeReorganizeMember extends L2GameClientPacket
 	{
 		if (_isMemberSelected == 0)
 			return;
-		L2PcInstance activeChar = getClient().getActiveChar();
+
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if(activeChar == null)
 			return;
-		//do we need powers to do that??
-		L2Clan clan = activeChar.getClan();
+
+		final L2Clan clan = activeChar.getClan();
 		if(clan == null)
 			return;
-		L2ClanMember member1 = clan.getClanMember(_memberName);
-		L2ClanMember member2 = clan.getClanMember(_selectedMember);
-		if(member1 == null || member2 == null)
+
+		if (!activeChar.isClanLeader()) // privileges check
 			return;
-		int oldPledgeType = member1.getPledgeType();
+
+		final L2ClanMember member1 = clan.getClanMember(_memberName);
+		if (member1 == null)
+			return;
+
+		final L2ClanMember member2 = clan.getClanMember(_selectedMember);
+		if(member2 == null)
+			return;
+
+		final int oldPledgeType = member1.getPledgeType();
 		if (oldPledgeType == _newPledgeType)
 			return;
+
 		member1.setPledgeType(_newPledgeType);
 		member2.setPledgeType(oldPledgeType);
 		clan.broadcastClanStatus();
 	}
+
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -75,5 +86,4 @@ public final class RequestPledgeReorganizeMember extends L2GameClientPacket
 	{
 		return _C__D0_24_REQUESTPLEDGEREORGANIZEMEMBER;
 	}
-
 }
