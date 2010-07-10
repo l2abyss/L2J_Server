@@ -39,31 +39,38 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestSendFriendMsg extends L2GameClientPacket
 {
-    private static final String _C__CC_REQUESTSENDMSG = "[C] CC RequestSendMsg";
+	private static final String _C__CC_REQUESTSENDMSG = "[C] CC RequestSendMsg";
 	private static Logger _logChat = Logger.getLogger("chat");
 
-    private String _message;
-    private String _reciever;
+	private String _message;
+	private String _reciever;
 
-    @Override
+	@Override
 	protected void readImpl()
-    {
-        _message = readS();
-        _reciever = readS();
-    }
+	{
+		_message = readS();
+		_reciever = readS();
+	}
 
-    @Override
+	@Override
 	protected void runImpl()
-    {
-    	L2PcInstance activeChar = getClient().getActiveChar();
-    	if (activeChar == null) return;
+	{
+		final L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null)
+			return;
 
-        L2PcInstance targetPlayer = L2World.getInstance().getPlayer(_reciever);
-        if (targetPlayer == null)
-        {
-        	activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME));
-        	return;
-        }
+		if (_message == null
+				|| _message.isEmpty()
+				|| _message.length() > 300)
+			return;
+
+		final L2PcInstance targetPlayer = L2World.getInstance().getPlayer(_reciever);
+		if (targetPlayer == null
+				|| !targetPlayer.getFriendList().contains(activeChar.getObjectId()))
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME));
+			return;
+		}
 
 		if (Config.LOG_CHAT)
 		{
@@ -74,13 +81,12 @@ public final class RequestSendFriendMsg extends L2GameClientPacket
 			_logChat.log(record);
 		}
 
-        L2FriendSay frm = new L2FriendSay(activeChar.getName(), _reciever, _message);
-        targetPlayer.sendPacket(frm);
-    }
+		targetPlayer.sendPacket(new L2FriendSay(activeChar.getName(), _reciever, _message));
+	}
 
-    @Override
+	@Override
 	public String getType()
-    {
-        return _C__CC_REQUESTSENDMSG;
-    }
+	{
+		return _C__CC_REQUESTSENDMSG;
+	}
 }
