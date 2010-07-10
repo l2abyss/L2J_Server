@@ -51,14 +51,14 @@ public final class RequestPledgeReorganizeMember extends L2GameClientPacket
 			return;
 
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		if(activeChar == null)
+		if (activeChar == null)
 			return;
 
 		final L2Clan clan = activeChar.getClan();
-		if(clan == null)
+		if (clan == null)
 			return;
 
-		if (!activeChar.isClanLeader()) // privileges check
+		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_MANAGE_RANKS) != L2Clan.CP_CL_MANAGE_RANKS)
 			return;
 
 		final L2ClanMember member1 = clan.getClanMember(_memberName);
@@ -66,7 +66,7 @@ public final class RequestPledgeReorganizeMember extends L2GameClientPacket
 			return;
 
 		final L2ClanMember member2 = clan.getClanMember(_selectedMember);
-		if(member2 == null)
+		if (member2 == null)
 			return;
 
 		final int oldPledgeType = member1.getPledgeType();
