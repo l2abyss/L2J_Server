@@ -1198,6 +1198,18 @@ public abstract class Inventory extends ItemContainer
 	 */
 	public L2ItemInstance unEquipItemInSlot(int pdollSlot)
 	{
+		switch (pdollSlot)
+		{
+			case PAPERDOLL_HAIRALL:
+				setPaperdollItem(PAPERDOLL_HAIR, null);
+				setPaperdollItem(PAPERDOLL_HAIR2, null);
+				break;
+			case PAPERDOLL_LRHAND:
+				setPaperdollItem(PAPERDOLL_LHAND, null);
+				setPaperdollItem(PAPERDOLL_RHAND, null);
+				break;
+		}
+
 		return setPaperdollItem(pdollSlot, null);
 	}
 
