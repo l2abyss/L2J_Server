@@ -43,21 +43,24 @@ public final class RequestPledgeSetMemberPowerGrade extends L2GameClientPacket
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		if(activeChar == null)
+		if (activeChar == null)
 			return;
 
 		final L2Clan clan = activeChar.getClan();
-		if(clan == null)
+		if (clan == null)
 			return;
 
-		if (!activeChar.isClanLeader()) // privileges check
+		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_MANAGE_RANKS) != L2Clan.CP_CL_MANAGE_RANKS)
 			return;
 
 		final L2ClanMember member = clan.getClanMember(_member);
-		if(member == null)
+		if (member == null)
 			return;
 
-		if(member.getPledgeType() == L2Clan.SUBUNIT_ACADEMY)
+		if (member.getObjectId() == clan.getLeaderId())
+			return;
+
+		if (member.getPledgeType() == L2Clan.SUBUNIT_ACADEMY)
 		{
 			// also checked from client side
 			activeChar.sendMessage("You cannot change academy member grade");

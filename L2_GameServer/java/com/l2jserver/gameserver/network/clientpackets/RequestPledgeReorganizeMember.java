@@ -62,11 +62,11 @@ public final class RequestPledgeReorganizeMember extends L2GameClientPacket
 			return;
 
 		final L2ClanMember member1 = clan.getClanMember(_memberName);
-		if (member1 == null)
+		if (member1 == null || member1.getObjectId() == clan.getLeaderId())
 			return;
 
 		final L2ClanMember member2 = clan.getClanMember(_selectedMember);
-		if (member2 == null)
+		if (member2 == null || member2.getObjectId() == clan.getLeaderId())
 			return;
 
 		final int oldPledgeType = member1.getPledgeType();
