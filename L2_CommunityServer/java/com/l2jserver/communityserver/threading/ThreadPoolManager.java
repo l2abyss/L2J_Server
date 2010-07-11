@@ -74,6 +74,7 @@ public class ThreadPoolManager
 			return t;
 		}
 		
+		@SuppressWarnings("unused")
 		public ThreadGroup getGroup()
 		{
 			return _group;
