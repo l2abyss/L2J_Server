@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.CastleUpdater;
@@ -36,12 +39,12 @@ import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.ResidentialSkillTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
-import com.l2jserver.gameserver.instancemanager.FortManager;
-import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
-import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.SeedProduction;
+import com.l2jserver.gameserver.instancemanager.FortManager;
+import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager.Territory;
+import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.L2Object;
@@ -51,13 +54,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.type.L2SiegeZone;
 import com.l2jserver.gameserver.model.zone.type.L2CastleTeleportZone;
 import com.l2jserver.gameserver.model.zone.type.L2CastleZone;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 public class Castle
 {
@@ -92,7 +93,8 @@ public class Castle
 	private double _taxRate = 0;
 	private long _treasury = 0;
 	private boolean _showNpcCrest = false;
-	private L2CastleZone _zone = null;
+	private L2SiegeZone _zone = null;
+	private L2CastleZone _castleZone = null;
 	private L2CastleTeleportZone _teleZone;
 	private L2Clan _formerOwner = null;
 	private List<L2ArtefactInstance> _artefacts = new ArrayList<L2ArtefactInstance>(1);
@@ -377,7 +379,7 @@ public class Castle
 	 */
 	public void banishForeigners()
 	{
-		getZone().banishForeigners(getOwnerId());
+		getCastleZone().banishForeigners(getOwnerId());
 	}
 	
 	/**
@@ -388,20 +390,36 @@ public class Castle
 		return getZone().isInsideZone(x, y, z);
 	}
 	
-	public L2CastleZone getZone()
+	public L2SiegeZone getZone()
 	{
 		if (_zone == null)
 		{
 			for (L2ZoneType zone : ZoneManager.getInstance().getAllZones())
 			{
-				if (zone instanceof L2CastleZone && ((L2CastleZone) zone).getCastleId() == getCastleId())
+				if (zone instanceof L2SiegeZone && ((L2SiegeZone) zone).getSiegeObjectId() == getCastleId())
 				{
-					_zone = (L2CastleZone) zone;
+					_zone = (L2SiegeZone) zone;
 					break;
 				}
 			}
 		}
 		return _zone;
+	}
+	
+	public L2CastleZone getCastleZone()
+	{
+		if (_castleZone == null)
+		{
+			for (L2ZoneType zone : ZoneManager.getInstance().getAllZones())
+			{
+				if (zone instanceof L2CastleZone && ((L2CastleZone) zone).getCastleId() == getCastleId())
+				{
+					_castleZone = (L2CastleZone) zone;
+					break;
+				}
+			}
+		}
+		return _castleZone;
 	}
 	
 	public L2CastleTeleportZone getTeleZone()

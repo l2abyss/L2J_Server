@@ -385,9 +385,9 @@ public class FortSiegeManager
 		return true;
 	}
 	
-	public void dropCombatFlag(L2PcInstance player)
+	public void dropCombatFlag(L2PcInstance player, int fortId)
 	{
-		Fort fort = FortManager.getInstance().getFort(player);
+		Fort fort = FortManager.getInstance().getFortById(fortId);
 		
 		FastList<CombatFlag> fcf = _flagList.get(fort.getFortId());
 		

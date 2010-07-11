@@ -448,7 +448,7 @@ public class EnterWorld extends L2GameClientPacket
 			Fort fort = FortManager.getInstance().getFort(activeChar);
 
 			if (fort != null)
-				FortSiegeManager.getInstance().dropCombatFlag(activeChar);
+				FortSiegeManager.getInstance().dropCombatFlag(activeChar, fort.getFortId());
 			else
 			{
 				int slot = activeChar.getInventory().getSlotFromItem(activeChar.getInventory().getItemByItemId(9819));

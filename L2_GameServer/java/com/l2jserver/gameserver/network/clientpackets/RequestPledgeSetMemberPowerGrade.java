@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public final class RequestPledgeSetMemberPowerGrade extends L2GameClientPacket
 {
-	private static final String _C__D0_1C_REQUESTPLEDGESETMEMBERPOWERGRADE = "[C] D0:1C RequestPledgeSetMemberPowerGrade";
+	private static final String _C__D0_15_REQUESTPLEDGESETMEMBERPOWERGRADE = "[C] D0:15 RequestPledgeSetMemberPowerGrade";
 	private String _member;
 	private int _powerGrade;
 
@@ -77,6 +77,6 @@ public final class RequestPledgeSetMemberPowerGrade extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_1C_REQUESTPLEDGESETMEMBERPOWERGRADE;
+		return _C__D0_15_REQUESTPLEDGESETMEMBERPOWERGRADE;
 	}
 }

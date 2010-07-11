@@ -117,9 +117,9 @@ public final class Broadcast
 						Integer oldrelation = character.getKnownList().getKnownRelations().get(player.getObjectId());
 						if (oldrelation != null && oldrelation != relation)
 						{
-							player.sendPacket(new RelationChanged((L2PcInstance) character, relation, player.isAutoAttackable(character)));
+							player.sendPacket(new RelationChanged((L2PcInstance) character, relation, character.isAutoAttackable(player)));
 							if (((L2PcInstance) character).getPet() != null)
-								player.sendPacket(new RelationChanged(((L2PcInstance) character).getPet(), relation, player.isAutoAttackable(character)));
+								player.sendPacket(new RelationChanged(((L2PcInstance) character).getPet(), relation, character.isAutoAttackable(player)));
 						}
 					}
 				}

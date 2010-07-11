@@ -154,6 +154,8 @@ public class ZoneManager
 								temp = new L2OlympiadStadiumZone(zoneId);
 							else if (zoneType.equals("CastleZone"))
 								temp = new L2CastleZone(zoneId);
+							else if (zoneType.equals("SiegeZone"))
+								temp = new L2SiegeZone(zoneId);
 							else if (zoneType.equals("CastleTeleportZone"))
 								temp = new L2CastleTeleportZone(zoneId);
 							else if (zoneType.equals("FortZone"))

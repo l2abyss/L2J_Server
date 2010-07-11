@@ -395,7 +395,7 @@ public class MapRegionTable
 					}
 					
 					if (castle != null && castle.getCastleId() > 0)
-						return castle.getZone().getSpawnLoc();
+						return castle.getCastleZone().getSpawnLoc();
 				}
 				
 				// If teleport to fortress
@@ -412,7 +412,7 @@ public class MapRegionTable
 					}
 					
 					if (fort != null && fort.getFortId() > 0)
-						return fort.getZone().getSpawnLoc();
+						return fort.getFortZone().getSpawnLoc();
 				}
 				
 				// If teleport to SiegeHQ

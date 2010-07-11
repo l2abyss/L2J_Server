@@ -306,6 +306,7 @@ public class Siege implements Siegable
 			getCastle().spawnDoor(); // Respawn door to castle
 			getCastle().getZone().setIsActive(false);
 			getCastle().getZone().updateZoneStatusForCharactersInside();
+			getCastle().getZone().setSiegeInstance(null);
 		}
 	}
 
@@ -472,6 +473,7 @@ public class Siege implements Siegable
 			getCastle().spawnDoor(); // Spawn door
 			spawnSiegeGuard(); // Spawn siege guard
 			MercTicketManager.getInstance().deleteTickets(getCastle().getCastleId()); // remove the tickets from the ground
+			getCastle().getZone().setSiegeInstance(this);
 			getCastle().getZone().setIsActive(true);
 			getCastle().getZone().updateZoneStatusForCharactersInside();
 
@@ -554,15 +556,12 @@ public class Siege implements Siegable
 				{
 					for (L2PcInstance player : member.getKnownList().getKnownPlayers().values())
 					{
-						try
-						{
-							player.sendPacket(new RelationChanged(member, member.getRelation(player), member.isAutoAttackable(player)));
-							if (member.getPet() != null)
-								player.sendPacket(new RelationChanged(member.getPet(), member.getRelation(player), member.isAutoAttackable(player)));
-						}
-						catch (NullPointerException e)
-						{
-						}
+						if (player == null)
+							continue;
+						
+						player.sendPacket(new RelationChanged(member, member.getRelation(player), member.isAutoAttackable(player)));
+						if (member.getPet() != null)
+							player.sendPacket(new RelationChanged(member.getPet(), member.getRelation(player), member.isAutoAttackable(player)));
 					}
 				}
 			}
@@ -601,15 +600,11 @@ public class Siege implements Siegable
 				{
 					for (L2PcInstance player : member.getKnownList().getKnownPlayers().values())
 					{
-						try
-						{
-							player.sendPacket(new RelationChanged(member, member.getRelation(player), member.isAutoAttackable(player)));
-							if (member.getPet() != null)
-								player.sendPacket(new RelationChanged(member.getPet(), member.getRelation(player), member.isAutoAttackable(player)));
-						}
-						catch (NullPointerException e)
-						{
-						}
+						if (player == null)
+							continue;
+						player.sendPacket(new RelationChanged(member, member.getRelation(player), member.isAutoAttackable(player)));
+						if (member.getPet() != null)
+							player.sendPacket(new RelationChanged(member.getPet(), member.getRelation(player), member.isAutoAttackable(player)));
 					}
 				}
 			}
@@ -1375,11 +1370,6 @@ public class Siege implements Siegable
 
 			L2NpcTemplate template = NpcTable.getInstance().getTemplate(_sp.getNpcId());
 
-			// TODO: Check/confirm if control towers have any special weapon resistances/vulnerabilities
-			// template.addVulnerability(Stats.BOW_WPN_VULN,0);
-			// template.addVulnerability(Stats.BLUNT_WPN_VULN,0);
-			// template.addVulnerability(Stats.DAGGER_WPN_VULN,0);
-
 			ct = new L2ControlTowerInstance(IdFactory.getInstance().getNextId(), template);
 
 			ct.setCurrentHpMp(_sp.getHp(), ct.getMaxMp());
@@ -1611,5 +1601,32 @@ public class Siege implements Siegable
 	{
 		//return true;
 		return _flameTowerCount > 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#giveFame()
+	 */
+	@Override
+	public boolean giveFame()
+	{
+		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameFrequency()
+	 */
+	@Override
+	public int getFameFrequency()
+	{
+		return Config.CASTLE_ZONE_FAME_TASK_FREQUENCY;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameAmount()
+	 */
+	@Override
+	public int getFameAmount()
+	{
+		return Config.CASTLE_ZONE_FAME_AQUIRE_POINTS;
 	}
 }

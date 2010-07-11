@@ -269,6 +269,7 @@ public class FortSiege implements Siegable
 			getFort().getZone().banishForeigners(getFort().getOwnerClan());
 			getFort().getZone().setIsActive(false);
 			getFort().getZone().updateZoneStatusForCharactersInside();
+			getFort().getZone().setSiegeInstance(null);
 			
 			saveFortSiege(); // Save fort specific data
 			clearSiegeClan(); // Clear siege clan from db
@@ -321,7 +322,7 @@ public class FortSiege implements Siegable
 			getFort().resetDoors(); // Spawn door
 			spawnSiegeGuard(); // Spawn siege guard
 			getFort().setVisibleFlag(false);
-			
+			getFort().getZone().setSiegeInstance(this);
 			getFort().getZone().setIsActive(true);
 			getFort().getZone().updateZoneStatusForCharactersInside();
 			
@@ -1231,5 +1232,32 @@ public class FortSiege implements Siegable
 	public List<L2SiegeClan> getDefenderClans()
 	{
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#giveFame()
+	 */
+	@Override
+	public boolean giveFame()
+	{
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameFrequency()
+	 */
+	@Override
+	public int getFameFrequency()
+	{
+		return Config.FORTRESS_ZONE_FAME_TASK_FREQUENCY;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameAmount()
+	 */
+	@Override
+	public int getFameAmount()
+	{
+		return Config.FORTRESS_ZONE_FAME_AQUIRE_POINTS;
 	}
 }

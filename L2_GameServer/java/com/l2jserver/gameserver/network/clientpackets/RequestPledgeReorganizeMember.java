@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public final class RequestPledgeReorganizeMember extends L2GameClientPacket
 {
-	private static final String _C__D0_24_REQUESTPLEDGEREORGANIZEMEMBER = "[C] D0:24 RequestPledgeReorganizeMember";
+	private static final String _C__D0_2C_REQUESTPLEDGEREORGANIZEMEMBER = "[C] D0:2C RequestPledgeReorganizeMember";
 
 	private int _isMemberSelected;
 	private String _memberName;
@@ -84,6 +84,6 @@ public final class RequestPledgeReorganizeMember extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_24_REQUESTPLEDGEREORGANIZEMEMBER;
+		return _C__D0_2C_REQUESTPLEDGEREORGANIZEMEMBER;
 	}
 }

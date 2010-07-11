@@ -963,13 +963,24 @@ class OlympiadGame
  	{
 		int objId;
 		String npcName;
+		String gameType = null;
+		switch (_type)
+		{
+			case NON_CLASSED:
+				gameType = "class-free individual match";
+				break;
+			default:
+				gameType = "class-specific individual match";
+				break;
+		}
+		
 		for (L2Spawn manager : SpawnTable.getInstance().getSpawnTable().values())
 		{
 			if (manager != null && manager.getNpcid() == OLY_MANAGER)
 			{
 				objId = manager.getLastSpawn().getObjectId();
 				npcName = manager.getLastSpawn().getName();
-				manager.getLastSpawn().broadcastPacket(new CreatureSay(objId, Say2.SHOUT, npcName, "Olympiad is going to begin in Arena " + (_stadiumID + 1) + " in a moment."));
+				manager.getLastSpawn().broadcastPacket(new CreatureSay(objId, Say2.SHOUT, npcName, "Olympiad " + gameType + " is going to begin in Arena " + (_stadiumID + 1) + " in a moment."));
 			}
 		}
 	}

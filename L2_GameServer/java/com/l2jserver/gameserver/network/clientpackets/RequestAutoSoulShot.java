@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestAutoSoulShot extends L2GameClientPacket
 {
-	private static final String _C__CF_REQUESTAUTOSOULSHOT = "[C] CF RequestAutoSoulShot";
+	private static final String _C__CF_REQUESTAUTOSOULSHOT = "[C] D0:0D RequestAutoSoulShot";
 	private static Logger _log = Logger.getLogger(RequestAutoSoulShot.class.getName());
 
 	// format cd

@@ -26,6 +26,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.FortUpdater;
@@ -48,14 +51,12 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.type.L2FortZone;
+import com.l2jserver.gameserver.model.zone.type.L2SiegeZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 
 public class Fort
@@ -73,7 +74,8 @@ public class Fort
 	private FortSiege _siege = null;
 	private Calendar _siegeDate;
 	private Calendar _lastOwnedTime;
-	private L2FortZone _zone;
+	private L2FortZone _fortZone;
+	private L2SiegeZone _zone;
 	private L2Clan _fortOwner = null;
 	private int _fortType = 0;
 	private int _state = 0;
@@ -317,7 +319,7 @@ public class Fort
 	 */
 	public void banishForeigners()
 	{
-		getZone().banishForeigners(getOwnerClan());
+		getFortZone().banishForeigners(getOwnerClan());
 	}
 	
 	/**
@@ -328,20 +330,36 @@ public class Fort
 		return getZone().isInsideZone(x, y, z);
 	}
 	
-	public L2FortZone getZone()
+	public L2SiegeZone getZone()
 	{
 		if (_zone == null)
 		{
 			for (L2ZoneType zone : ZoneManager.getInstance().getAllZones())
 			{
-				if (zone instanceof L2FortZone && ((L2FortZone) zone).getFortId() == getFortId())
+				if (zone instanceof L2SiegeZone && ((L2SiegeZone) zone).getSiegeObjectId() == getFortId())
 				{
-					_zone = (L2FortZone) zone;
+					_zone = (L2SiegeZone) zone;
 					break;
 				}
 			}
 		}
 		return _zone;
+	}
+	
+	public L2FortZone getFortZone()
+	{
+		if (_fortZone == null)
+		{
+			for (L2ZoneType zone : ZoneManager.getInstance().getAllZones())
+			{
+				if (zone instanceof L2FortZone && ((L2FortZone) zone).getFortId() == getFortId())
+				{
+					_fortZone = (L2FortZone) zone;
+					break;
+				}
+			}
+		}
+		return _fortZone;
 	}
 	
 	/**

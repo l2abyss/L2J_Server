@@ -4557,9 +4557,9 @@ public final class L2PcInstance extends L2Playable
 					Integer oldrelation = getKnownList().getKnownRelations().get(player.getObjectId());
 					if (oldrelation != null && oldrelation != relation)
 					{
-						player.sendPacket(new RelationChanged(this, relation, player.isAutoAttackable(this)));
+						player.sendPacket(new RelationChanged(this, relation, isAutoAttackable(player)));
 						if (getPet() != null)
-							player.sendPacket(new RelationChanged(getPet(), relation, player.isAutoAttackable(this)));
+							player.sendPacket(new RelationChanged(getPet(), relation, isAutoAttackable(player)));
 					}
 				}
 			}
@@ -4590,9 +4590,9 @@ public final class L2PcInstance extends L2Playable
 						Integer oldrelation = getKnownList().getKnownRelations().get(player.getObjectId());
 						if (oldrelation != null && oldrelation != relation)
 						{
-							player.sendPacket(new RelationChanged(this, relation, player.isAutoAttackable(this)));
+							player.sendPacket(new RelationChanged(this, relation, isAutoAttackable(player)));
 							if (getPet() != null)
-								player.sendPacket(new RelationChanged(getPet(), relation, player.isAutoAttackable(this)));
+								player.sendPacket(new RelationChanged(getPet(), relation, isAutoAttackable(player)));
 						}
 					}
 				}
@@ -5523,10 +5523,21 @@ public final class L2PcInstance extends L2Playable
 			}
 			else if (isCombatFlagEquipped())
 			{
+				//TODO: Fort siege during TW??
 				if (TerritoryWarManager.getInstance().isTWInProgress())
 					TerritoryWarManager.getInstance().dropCombatFlag(this, true);
 				else
-					FortSiegeManager.getInstance().dropCombatFlag(this);
+				{
+					Fort fort = FortManager.getInstance().getFort(this);
+					if (fort != null)
+						FortSiegeManager.getInstance().dropCombatFlag(this, fort.getFortId());
+					else
+					{
+						int slot = getInventory().getSlotFromItem(getInventory().getItemByItemId(9819));
+						getInventory().unEquipItemInBodySlotAndRecord(slot);
+						destroyItem("CombatFlag", getInventory().getItemByItemId(9819), null, true);
+					}
+				}
 			}
 			else
 			{
@@ -11620,7 +11631,7 @@ public final class L2PcInstance extends L2Playable
 			{
 				Fort fort = FortManager.getInstance().getFort(this);
 				if (fort != null)
-					FortSiegeManager.getInstance().dropCombatFlag(this);
+					FortSiegeManager.getInstance().dropCombatFlag(this, fort.getFortId());
 				else
 				{
 					int slot = getInventory().getSlotFromItem(getInventory().getItemByItemId(9819));
@@ -14327,15 +14338,15 @@ public final class L2PcInstance extends L2Playable
         	int relation2 = activeChar.getRelation(this);
         	if (getKnownList().getKnownRelations().get(activeChar.getObjectId()) != null && getKnownList().getKnownRelations().get(activeChar.getObjectId()) != relation1)
         	{
-        		activeChar.sendPacket(new RelationChanged(this, relation1, activeChar.isAutoAttackable(this)));
+        		activeChar.sendPacket(new RelationChanged(this, relation1, isAutoAttackable(activeChar)));
         		if (getPet() != null)
-        			activeChar.sendPacket(new RelationChanged(getPet(), relation1, activeChar.isAutoAttackable(this)));
+        			activeChar.sendPacket(new RelationChanged(getPet(), relation1, isAutoAttackable(activeChar)));
         	}
         	if (activeChar.getKnownList().getKnownRelations().get(getObjectId()) != null && activeChar.getKnownList().getKnownRelations().get(getObjectId()) != relation2)
         	{
-        		sendPacket(new RelationChanged(activeChar, relation2, isAutoAttackable(activeChar)));
+        		sendPacket(new RelationChanged(activeChar, relation2, activeChar.isAutoAttackable(this)));
         		if (activeChar.getPet() != null)
-        			sendPacket(new RelationChanged(activeChar.getPet(), relation2, isAutoAttackable(activeChar)));
+        			sendPacket(new RelationChanged(activeChar.getPet(), relation2, activeChar.isAutoAttackable(this)));
         	}
         	activeChar.sendPacket(new GetOnVehicle(getObjectId(), getBoat().getObjectId(), getInVehiclePosition()));
         }
@@ -14349,15 +14360,15 @@ public final class L2PcInstance extends L2Playable
         	int relation2 = activeChar.getRelation(this);
         	if (getKnownList().getKnownRelations().get(activeChar.getObjectId()) != null && getKnownList().getKnownRelations().get(activeChar.getObjectId()) != relation1)
         	{
-        		activeChar.sendPacket(new RelationChanged(this, relation1, activeChar.isAutoAttackable(this)));
+        		activeChar.sendPacket(new RelationChanged(this, relation1, isAutoAttackable(activeChar)));
         		if (getPet() != null)
-        			activeChar.sendPacket(new RelationChanged(getPet(), relation1, activeChar.isAutoAttackable(this)));
+        			activeChar.sendPacket(new RelationChanged(getPet(), relation1, isAutoAttackable(activeChar)));
         	}
         	if (activeChar.getKnownList().getKnownRelations().get(getObjectId()) != null && activeChar.getKnownList().getKnownRelations().get(getObjectId()) != relation2)
         	{
-        		sendPacket(new RelationChanged(activeChar, relation2, isAutoAttackable(activeChar)));
+        		sendPacket(new RelationChanged(activeChar, relation2, activeChar.isAutoAttackable(this)));
         		if (activeChar.getPet() != null)
-        			sendPacket(new RelationChanged(activeChar.getPet(), relation2, isAutoAttackable(activeChar)));
+        			sendPacket(new RelationChanged(activeChar.getPet(), relation2, activeChar.isAutoAttackable(this)));
         	}
         	activeChar.sendPacket(new ExGetOnAirShip(this, getAirShip()));
         }
@@ -14369,15 +14380,15 @@ public final class L2PcInstance extends L2Playable
         	int relation2 = activeChar.getRelation(this);
         	if (getKnownList().getKnownRelations().get(activeChar.getObjectId()) != null && getKnownList().getKnownRelations().get(activeChar.getObjectId()) != relation1)
         	{
-        		activeChar.sendPacket(new RelationChanged(this, relation1, activeChar.isAutoAttackable(this)));
+        		activeChar.sendPacket(new RelationChanged(this, relation1, isAutoAttackable(activeChar)));
         		if (getPet() != null)
-        			activeChar.sendPacket(new RelationChanged(getPet(), relation1, activeChar.isAutoAttackable(this)));
+        			activeChar.sendPacket(new RelationChanged(getPet(), relation1, isAutoAttackable(activeChar)));
         	}
         	if (activeChar.getKnownList().getKnownRelations().get(getObjectId()) != null && activeChar.getKnownList().getKnownRelations().get(getObjectId()) != relation2)
         	{
-        		sendPacket(new RelationChanged(activeChar, relation2, isAutoAttackable(activeChar)));
+        		sendPacket(new RelationChanged(activeChar, relation2, activeChar.isAutoAttackable(this)));
         		if (activeChar.getPet() != null)
-        			sendPacket(new RelationChanged(activeChar.getPet(), relation2, isAutoAttackable(activeChar)));
+        			sendPacket(new RelationChanged(activeChar.getPet(), relation2, activeChar.isAutoAttackable(this)));
         	}
         }
         if (getMountType() == 4)

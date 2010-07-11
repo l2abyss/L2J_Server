@@ -53,4 +53,8 @@ public interface Siegable
 	public List<L2Npc> getFlag(L2Clan clan);
 	
 	public Calendar getSiegeDate();
+	
+	public boolean giveFame();
+	public int getFameFrequency();
+	public int getFameAmount();
 }

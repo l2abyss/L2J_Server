@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
@@ -35,6 +36,7 @@ import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.ResidentialSkillTable;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
@@ -46,6 +48,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
+import com.l2jserver.gameserver.model.entity.Siegable;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.CharInfo;
@@ -61,7 +64,7 @@ import com.l2jserver.util.L2Properties;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 
-public class TerritoryWarManager
+public class TerritoryWarManager implements Siegable
 {
 	private static final Logger _log = Logger.getLogger(TerritoryWarManager.class.getName());
 	
@@ -845,6 +848,7 @@ public class TerritoryWarManager
 			{
 				t.changeNPCsSpawn(2, true);
 				castle.spawnDoor(); // Spawn door
+				castle.getZone().setSiegeInstance(this);
 				castle.getZone().setIsActive(true);
 				castle.getZone().updateZoneStatusForCharactersInside();
 			}
@@ -913,6 +917,7 @@ public class TerritoryWarManager
 				t.changeNPCsSpawn(2, false);
 				castle.getZone().setIsActive(false);
 				castle.getZone().updateZoneStatusForCharactersInside();
+				castle.getZone().setSiegeInstance(null);
 			}
 			else
 				_log.warning("TerritoryWarManager: Castle missing! CastleId: " + t.getCastleId());
@@ -987,15 +992,11 @@ public class TerritoryWarManager
 					player.sendPacket(new ExBrExtraUserInfo(player));
 					for (L2PcInstance knownPlayer : player.getKnownList().getKnownPlayers().values())
 					{
-						try
-						{
-							knownPlayer.sendPacket(new RelationChanged(player, player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
-							if (player.getPet() != null)
-								knownPlayer.sendPacket(new RelationChanged(player.getPet(), player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
-						}
-						catch (NullPointerException e)
-						{
-						}
+						if (knownPlayer == null)
+							continue;
+						knownPlayer.sendPacket(new RelationChanged(player, player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
+						if (player.getPet() != null)
+							knownPlayer.sendPacket(new RelationChanged(player.getPet(), player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
 					}
 				}
 		for(int castleId : _registeredMercenaries.keySet())
@@ -1022,15 +1023,11 @@ public class TerritoryWarManager
 				player.sendPacket(new ExBrExtraUserInfo(player));
 				for (L2PcInstance knownPlayer : player.getKnownList().getKnownPlayers().values())
 				{
-					try
-					{
-						knownPlayer.sendPacket(new RelationChanged(player, player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
-						if (player.getPet() != null)
-							knownPlayer.sendPacket(new RelationChanged(player.getPet(), player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
-					}
-					catch (NullPointerException e)
-					{
-					}
+					if (knownPlayer == null)
+						continue;
+					knownPlayer.sendPacket(new RelationChanged(player, player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
+					if (player.getPet() != null)
+						knownPlayer.sendPacket(new RelationChanged(player.getPet(), player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
 				}
 			}
 		for(Territory terr : _territoryList.values())
@@ -1059,16 +1056,12 @@ public class TerritoryWarManager
 					player.sendPacket(new ExBrExtraUserInfo(player));
 					for (L2PcInstance knownPlayer : player.getKnownList().getKnownPlayers().values())
 					{
-						try
-						{
-							knownPlayer.sendPacket(new CharInfo(player));
-							knownPlayer.sendPacket(new RelationChanged(player, player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
-							if (player.getPet() != null)
-								knownPlayer.sendPacket(new RelationChanged(player.getPet(), player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
-						}
-						catch (NullPointerException e)
-						{
-						}
+						if (knownPlayer == null)
+							continue;
+						knownPlayer.sendPacket(new CharInfo(player));
+						knownPlayer.sendPacket(new RelationChanged(player, player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
+						if (player.getPet() != null)
+							knownPlayer.sendPacket(new RelationChanged(player.getPet(), player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
 					}
 				}
 		twQuest.setOnEnterWorld(_isTWInProgress);
@@ -1485,5 +1478,163 @@ public class TerritoryWarManager
 	private static class SingletonHolder
 	{
 		protected static final TerritoryWarManager _instance = new TerritoryWarManager();
+	}
+
+	//TODO implement these
+	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#startSiege()
+	 */
+	@Override
+	public void startSiege()
+	{
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#endSiege()
+	 */
+	@Override
+	public void endSiege()
+	{
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getAttackerClan(int)
+	 */
+	@Override
+	public L2SiegeClan getAttackerClan(int clanId)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getAttackerClan(com.l2jserver.gameserver.model.L2Clan)
+	 */
+	@Override
+	public L2SiegeClan getAttackerClan(L2Clan clan)
+	{
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getAttackerClans()
+	 */
+	@Override
+	public List<L2SiegeClan> getAttackerClans()
+	{
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getAttackersInZone()
+	 */
+	@Override
+	public List<L2PcInstance> getAttackersInZone()
+	{
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#checkIsAttacker(com.l2jserver.gameserver.model.L2Clan)
+	 */
+	@Override
+	public boolean checkIsAttacker(L2Clan clan)
+	{
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClan(int)
+	 */
+	@Override
+	public L2SiegeClan getDefenderClan(int clanId)
+	{
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClan(com.l2jserver.gameserver.model.L2Clan)
+	 */
+	@Override
+	public L2SiegeClan getDefenderClan(L2Clan clan)
+	{
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClans()
+	 */
+	@Override
+	public List<L2SiegeClan> getDefenderClans()
+	{
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#checkIsDefender(com.l2jserver.gameserver.model.L2Clan)
+	 */
+	@Override
+	public boolean checkIsDefender(L2Clan clan)
+	{
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFlag(com.l2jserver.gameserver.model.L2Clan)
+	 */
+	@Override
+	public List<L2Npc> getFlag(L2Clan clan)
+	{
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getSiegeDate()
+	 */
+	@Override
+	public Calendar getSiegeDate()
+	{
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#giveFame()
+	 */
+	@Override
+	public boolean giveFame()
+	{
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameFrequency()
+	 */
+	@Override
+	public int getFameFrequency()
+	{
+		return Config.CASTLE_ZONE_FAME_TASK_FREQUENCY;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameAmount()
+	 */
+	@Override
+	public int getFameAmount()
+	{
+		return Config.CASTLE_ZONE_FAME_AQUIRE_POINTS;
 	}
 }
