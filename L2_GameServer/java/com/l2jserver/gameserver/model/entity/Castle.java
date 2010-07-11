@@ -54,9 +54,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
-import com.l2jserver.gameserver.model.zone.type.L2SiegeZone;
-import com.l2jserver.gameserver.model.zone.type.L2CastleTeleportZone;
 import com.l2jserver.gameserver.model.zone.type.L2CastleZone;
+import com.l2jserver.gameserver.model.zone.type.L2SiegeZone;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 
@@ -95,7 +94,6 @@ public class Castle
 	private boolean _showNpcCrest = false;
 	private L2SiegeZone _zone = null;
 	private L2CastleZone _castleZone = null;
-	private L2CastleTeleportZone _teleZone;
 	private L2Clan _formerOwner = null;
 	private List<L2ArtefactInstance> _artefacts = new ArrayList<L2ArtefactInstance>(1);
 	private TIntIntHashMap _engrave = new TIntIntHashMap(1);
@@ -422,25 +420,9 @@ public class Castle
 		return _castleZone;
 	}
 	
-	public L2CastleTeleportZone getTeleZone()
-	{
-		if (_teleZone == null)
-		{
-			for (L2ZoneType zone : ZoneManager.getInstance().getAllZones())
-			{
-				if (zone instanceof L2CastleTeleportZone && ((L2CastleTeleportZone) zone).getCastleId() == getCastleId())
-				{
-					_teleZone = (L2CastleTeleportZone) zone;
-					break;
-				}
-			}
-		}
-		return _teleZone;
-	}
-	
 	public void oustAllPlayers()
 	{
-		getTeleZone().oustAllPlayers();
+		getCastleZone().oustAllPlayers();
 	}
 	
 	/**
