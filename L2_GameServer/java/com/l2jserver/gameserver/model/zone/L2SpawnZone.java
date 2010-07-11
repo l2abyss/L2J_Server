@@ -20,8 +20,6 @@ import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.Location;
-import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -69,26 +67,5 @@ public abstract class L2SpawnZone extends L2ZoneType
 			return _chaoticSpawnLocs.get(Rnd.get(_chaoticSpawnLocs.size()));
 		else
 			return getSpawnLoc();
-	}
-	
-	public void oustAllPlayers()
-	{
-		if (_characterList == null)
-			return;
-		if (_characterList.isEmpty())
-			return;
-		for (L2Character character : _characterList.values())
-		{
-			if (character == null)
-				continue;
-			if (character instanceof L2PcInstance)
-			{
-				L2PcInstance player = (L2PcInstance) character;
-				if (player.getKarma() > 0)
-					player.teleToLocation(_chaoticSpawnLocs.get(Rnd.get(_chaoticSpawnLocs.size())), false);
-				else
-					player.teleToLocation(_spawnLocs.get(Rnd.get(_spawnLocs.size())), true);
-			}
-		}
 	}
 }
