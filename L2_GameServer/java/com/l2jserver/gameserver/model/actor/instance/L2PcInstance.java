@@ -4180,7 +4180,7 @@ public final class L2PcInstance extends L2Playable
 	
 	public void setTeleportProtection(boolean protect)
 	{
-		if (Config.DEVELOPER && (protect || _protectEndTime > 0))
+		if (Config.DEVELOPER && (protect || _teleportProtectEndTime > 0))
                 	_log.warning(getName() + ": Tele Protection " + (protect?"ON " + (GameTimeController.getGameTicks() + Config.PLAYER_TELEPORT_PROTECTION * GameTimeController.TICKS_PER_SECOND) :"OFF") + " (currently " + GameTimeController.getGameTicks() + ")");
 
 		_teleportProtectEndTime = protect? GameTimeController.getGameTicks() + Config.PLAYER_TELEPORT_PROTECTION * GameTimeController.TICKS_PER_SECOND : 0;
