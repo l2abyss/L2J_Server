@@ -66,7 +66,7 @@ public class Hero
 	private static final String GET_HEROES = "SELECT heroes.charId, " + "characters.char_name, heroes.class_id, heroes.count, heroes.played " + "FROM heroes, characters WHERE characters.charId = heroes.charId " + "AND heroes.played = 1";
 	private static final String GET_ALL_HEROES = "SELECT heroes.charId, " + "characters.char_name, heroes.class_id, heroes.count, heroes.played " + "FROM heroes, characters WHERE characters.charId = heroes.charId";
 	private static final String UPDATE_ALL = "UPDATE heroes SET played = 0";
-	private static final String INSERT_HERO = "INSERT INTO heroes VALUES (?,?,?,?)";
+	private static final String INSERT_HERO = "INSERT INTO heroes (charId, class_id, count, played) VALUES (?,?,?,?)";
 	private static final String UPDATE_HERO = "UPDATE heroes SET count = ?, " + "played = ?" + " WHERE charId = ?";
 	private static final String GET_CLAN_ALLY = "SELECT characters.clanid " + "AS clanid, coalesce(clan_data.ally_Id, 0) AS allyId FROM characters " + "LEFT JOIN clan_data ON clan_data.clan_id = characters.clanid " + "WHERE characters.charId = ?";
 	private static final String GET_CLAN_NAME = "SELECT clan_name FROM clan_data " + "WHERE clan_id = (SELECT clanid FROM characters WHERE charId = ?)";
