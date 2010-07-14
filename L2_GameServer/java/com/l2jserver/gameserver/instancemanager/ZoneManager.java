@@ -426,8 +426,10 @@ public class ZoneManager
 	 * @param type
 	 * @return zone
 	 */
-	public L2ZoneType getZone(L2Object object, Class<? extends L2ZoneType> type)
+	public <T extends L2ZoneType> T getZone(L2Object object, Class<T> type)
 	{
+		if (object == null)
+			return null;
 		return getZone(object.getX(), object.getY(), object.getZ(), type);
 	}
 	
@@ -472,20 +474,21 @@ public class ZoneManager
 	
 	/**
 	 * Returns zone from given coordinates 
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
 	 * @param type
 	 * @return zone
 	 */
-	public L2ZoneType getZone(int x, int y, int z, Class<? extends L2ZoneType> type)
+	@SuppressWarnings("unchecked")
+	public <T extends L2ZoneType> T getZone(int x, int y, int z, Class<T> type)
 	{
 		L2WorldRegion region = L2World.getInstance().getRegion(x, y);
 		for (L2ZoneType zone : region.getZones())
 		{
 			if (zone.isInsideZone(x, y, z) && zone.getClass().equals(type))
-				return zone;
+				return (T) zone;
 		}
 		return null;
 	}

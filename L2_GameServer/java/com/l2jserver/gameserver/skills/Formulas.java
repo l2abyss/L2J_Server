@@ -43,7 +43,6 @@ import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.Siege;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
-import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.type.L2CastleZone;
 import com.l2jserver.gameserver.model.zone.type.L2ClanHallZone;
 import com.l2jserver.gameserver.model.zone.type.L2FortZone;
@@ -1032,8 +1031,8 @@ public final class Formulas
 
 			if (player.isInsideZone(L2Character.ZONE_CLANHALL) && player.getClan() != null && player.getClan().getHasHideout() > 0)
 			{
-				L2ZoneType zone = ZoneManager.getInstance().getZone(player, L2ClanHallZone.class);
-				int posChIndex = zone == null ? -1 : ((L2ClanHallZone) zone).getClanHallId();
+				L2ClanHallZone zone = ZoneManager.getInstance().getZone(player, L2ClanHallZone.class);
+				int posChIndex = zone == null ? -1 : zone.getClanHallId();
 				int clanHallIndex = player.getClan().getHasHideout();
 				if (clanHallIndex > 0 && clanHallIndex == posChIndex)
 				{
@@ -1046,8 +1045,8 @@ public final class Formulas
 
 			if (player.isInsideZone(L2Character.ZONE_CASTLE) && player.getClan() != null && player.getClan().getHasCastle() > 0)
 			{
-				L2ZoneType zone = ZoneManager.getInstance().getZone(player, L2CastleZone.class);
-				int posCastleIndex = zone == null ? -1 : ((L2CastleZone) zone).getCastleId();
+				L2CastleZone zone = ZoneManager.getInstance().getZone(player, L2CastleZone.class);
+				int posCastleIndex = zone == null ? -1 : zone.getCastleId();
 				int castleIndex = player.getClan().getHasCastle();
 				if (castleIndex > 0 && castleIndex == posCastleIndex)
 				{
@@ -1060,8 +1059,8 @@ public final class Formulas
 
 			if (player.isInsideZone(L2Character.ZONE_FORT) && player.getClan() != null && player.getClan().getHasFort() > 0)
 			{
-				L2ZoneType zone = ZoneManager.getInstance().getZone(player, L2FortZone.class);
-				int posFortIndex = zone == null ? -1 : ((L2FortZone) zone).getFortId();
+				L2FortZone zone = ZoneManager.getInstance().getZone(player, L2FortZone.class);
+				int posFortIndex = zone == null ? -1 : zone.getFortId();
 				int fortIndex = player.getClan().getHasFort();
 				if (fortIndex > 0 && fortIndex == posFortIndex)
 				{
@@ -1075,8 +1074,8 @@ public final class Formulas
 			// Mother Tree effect is calculated at last
 			if (player.isInsideZone(L2Character.ZONE_MOTHERTREE))
 			{
-				L2ZoneType zone = ZoneManager.getInstance().getZone(player, L2MotherTreeZone.class);
-				int hpBonus = zone == null ? 0 : ((L2MotherTreeZone) zone).getHpRegenBonus();
+				L2MotherTreeZone zone = ZoneManager.getInstance().getZone(player, L2MotherTreeZone.class);
+				int hpBonus = zone == null ? 0 : zone.getHpRegenBonus();
 				hpRegenBonus += hpBonus;
 			}
 
@@ -1123,15 +1122,15 @@ public final class Formulas
 			// Mother Tree effect is calculated at last'
 			if (player.isInsideZone(L2Character.ZONE_MOTHERTREE))
 			{
-				L2ZoneType zone = ZoneManager.getInstance().getZone(player, L2MotherTreeZone.class);
-				int mpBonus = zone == null ? 0 : ((L2MotherTreeZone) zone).getMpRegenBonus();
+				L2MotherTreeZone zone = ZoneManager.getInstance().getZone(player, L2MotherTreeZone.class);
+				int mpBonus = zone == null ? 0 : zone.getMpRegenBonus();
 				mpRegenBonus += mpBonus;
 			}
 
 			if (player.isInsideZone(L2Character.ZONE_CLANHALL) && player.getClan() != null && player.getClan().getHasHideout() > 0)
 			{
-				L2ZoneType zone = ZoneManager.getInstance().getZone(player, L2ClanHallZone.class);
-				int posChIndex = zone == null ? -1 : ((L2ClanHallZone) zone).getClanHallId();
+				L2ClanHallZone zone = ZoneManager.getInstance().getZone(player, L2ClanHallZone.class);
+				int posChIndex = zone == null ? -1 : zone.getClanHallId();
 				int clanHallIndex = player.getClan().getHasHideout();
 				if (clanHallIndex > 0 && clanHallIndex == posChIndex)
 				{
@@ -1144,8 +1143,8 @@ public final class Formulas
 
 			if (player.isInsideZone(L2Character.ZONE_CASTLE) && player.getClan() != null && player.getClan().getHasCastle() > 0)
 			{
-				L2ZoneType zone = ZoneManager.getInstance().getZone(player, L2CastleZone.class);
-				int posCastleIndex = zone == null ? -1 : ((L2CastleZone) zone).getCastleId();
+				L2CastleZone zone = ZoneManager.getInstance().getZone(player, L2CastleZone.class);
+				int posCastleIndex = zone == null ? -1 : zone.getCastleId();
 				int castleIndex = player.getClan().getHasCastle();
 				if (castleIndex > 0 && castleIndex == posCastleIndex)
 				{
@@ -1160,8 +1159,8 @@ public final class Formulas
 
 			if (player.isInsideZone(L2Character.ZONE_FORT) && player.getClan() != null && player.getClan().getHasFort() > 0)
 			{
-				L2ZoneType zone = ZoneManager.getInstance().getZone(player, L2FortZone.class);
-				int posFortIndex = zone == null ? -1 : ((L2FortZone) zone).getFortId();
+				L2FortZone zone = ZoneManager.getInstance().getZone(player, L2FortZone.class);
+				int posFortIndex = zone == null ? -1 : zone.getFortId();
 				int fortIndex = player.getClan().getHasFort();
 				if (fortIndex > 0 && fortIndex == posFortIndex)
 				{

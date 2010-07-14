@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.base.Experience;
-import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.type.L2SwampZone;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.WorldInfo;
@@ -188,8 +187,8 @@ public class PlayableStat extends CharStat
 
 		if (getActiveChar().isInsideZone(L2Character.ZONE_SWAMP))
 		{
-			L2ZoneType zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
-			int bonus = zone == null ? 0 : ((L2SwampZone) zone).getMoveBonus();
+			L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
+			int bonus = zone == null ? 0 : zone.getMoveBonus();
 			double dbonus = bonus / 100.0; //%
 			val += val * dbonus;
 		}
