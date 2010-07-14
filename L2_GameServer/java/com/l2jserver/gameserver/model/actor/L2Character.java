@@ -3757,7 +3757,12 @@ public abstract class L2Character extends L2Object
 					_calculators = NPC_STD_CALCULATOR;
 			}
 		
-			if (owner instanceof L2Effect && !((L2Effect)owner).preventExitUpdate)
+			if (owner instanceof L2Effect)
+			{
+				if (!((L2Effect)owner).preventExitUpdate)
+					broadcastModifiedStats(modifiedStats);
+			}
+			else
 				broadcastModifiedStats(modifiedStats);
 		}
 	}
@@ -3767,7 +3772,6 @@ public abstract class L2Character extends L2Object
 		if (stats == null || stats.isEmpty()) return;
 		
 		boolean broadcastFull = false;
-		boolean otherStats = false;
 		StatusUpdate su = null;
 		
 		for (Stats stat : stats)
@@ -3793,14 +3797,14 @@ public abstract class L2Character extends L2Object
 			//	if (su == null) su = new StatusUpdate(getObjectId());
 			//	su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
 			//}
-			else if (stat == Stats.MAX_CP) 
+			/*else if (stat == Stats.MAX_CP) 
 			{
 				if (this instanceof L2PcInstance)
 				{
 					if (su == null) su = new StatusUpdate(getObjectId());
 					su.addAttribute(StatusUpdate.MAX_CP, getMaxCp());
 				}
-			}
+			}*/
 			//else if (stat==Stats.MAX_MP) 
 			//{
 			//	if (su == null) su = new StatusUpdate(getObjectId());
@@ -3810,8 +3814,6 @@ public abstract class L2Character extends L2Object
 			{
 				broadcastFull = true;
 			}
-			else
-				otherStats = true;
 		}
 		
 		if (this instanceof L2PcInstance)
@@ -3820,28 +3822,11 @@ public abstract class L2Character extends L2Object
 				((L2PcInstance)this).updateAndBroadcastStatus(2);
 			else
 			{
-				if (otherStats)
+				((L2PcInstance) this).updateAndBroadcastStatus(1);
+				if (su != null)
 				{
-					((L2PcInstance)this).updateAndBroadcastStatus(1);
-					if (su != null)
-					{
-						Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-						//synchronized (getKnownList().getKnownPlayers())
-						{
-							for (L2PcInstance player : plrs)
-							{
-								try
-								{
-									player.sendPacket(su);
-								}
-								catch (NullPointerException e)
-								{
-								}
-							}
-						}
-					}
+					broadcastPacket(su);
 				}
-				else if (su != null) broadcastPacket(su);
 			}
 		}
 		else if (this instanceof L2Npc)
@@ -3853,6 +3838,8 @@ public abstract class L2Character extends L2Object
 				{
 					for (L2PcInstance player : plrs)
 					{
+						if (player == null)
+							continue;
 						if (getRunSpeed() == 0)
 							player.sendPacket(new ServerObjectInfo((L2Npc)this, player));
 						else
