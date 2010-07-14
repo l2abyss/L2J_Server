@@ -1391,7 +1391,7 @@ public class Fort
 		if (_residentialSkills != null && !_residentialSkills.isEmpty())
 		{
 			for (L2Skill sk : _residentialSkills)
-				player.removeSkill(sk, false);
+				player.removeSkill(sk, false, true);
 		}
 	}
 }

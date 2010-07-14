@@ -436,7 +436,7 @@ public class L2Clan
 			}
 			// remove Clanskills from Player
 			for (L2Skill skill : player.getClan().getAllSkills())
-				player.removeSkill(skill, false);
+				player.removeSkill(skill, false, true);
 			// remove Residential skills
 			if (player.getClan().getHasCastle() > 0)
 				CastleManager.getInstance().getCastleByOwner(player.getClan()).removeResidentialSkills(player);

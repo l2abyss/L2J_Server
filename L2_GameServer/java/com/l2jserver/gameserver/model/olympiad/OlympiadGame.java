@@ -214,7 +214,7 @@ class OlympiadGame
 				if (player.getClan() != null)
 				{
 					for (L2Skill skill : player.getClan().getAllSkills())
-						player.removeSkill(skill, false);
+						player.removeSkill(skill, false, true);
 					if (player.getClan().getHasCastle() > 0)
 						CastleManager.getInstance().getCastleByOwner(player.getClan()).removeResidentialSkills(player);
 					if (player.getClan().getHasFort() > 0)

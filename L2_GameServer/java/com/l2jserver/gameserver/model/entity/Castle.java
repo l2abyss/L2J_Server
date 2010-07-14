@@ -1546,13 +1546,13 @@ public class Castle
 		if (_residentialSkills != null && !_residentialSkills.isEmpty())
 		{
 			for (L2Skill sk : _residentialSkills)
-				player.removeSkill(sk, false);
+				player.removeSkill(sk, false, true);
 		}
 		if (TerritoryWarManager.getInstance().getTerritory(getCastleId()) != null)
 			for(int wardId : TerritoryWarManager.getInstance().getTerritory(getCastleId()).getOwnedWardIds())
 				if (ResidentialSkillTable.getInstance().getSkills(wardId) != null)
 					for (L2Skill sk : ResidentialSkillTable.getInstance().getSkills(wardId))
-						player.removeSkill(sk, false);
+						player.removeSkill(sk, false, true);
 	}
 	
 	/**
