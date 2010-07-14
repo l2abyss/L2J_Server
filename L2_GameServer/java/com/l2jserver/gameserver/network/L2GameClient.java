@@ -711,11 +711,11 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 					}
 					// to prevent call cleanMe() again
 					setDetached(false);
-
+					// prevent closing again
+					player.setClient(null);
+					
 					if (player.isOnline() > 0)
 						player.logout();
-
-					player.setClient(null);
 				}
 				L2GameClient.this.setActiveChar(null);
 			}
