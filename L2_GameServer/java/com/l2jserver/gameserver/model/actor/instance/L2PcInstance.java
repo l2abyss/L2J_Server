@@ -450,8 +450,6 @@ public final class L2PcInstance extends L2Playable
 	
 	public FastList<TeleportBookmark> tpbookmark = new FastList<TeleportBookmark>();
 	
-	private final FloodProtectors _floodProtectors = new FloodProtectors(this);
-
     private PunishLevel _punishLevel = PunishLevel.NONE;
 	private long _punishTimer = 0;
 	private ScheduledFuture<?> _punishTask;
@@ -13895,7 +13893,7 @@ public final class L2PcInstance extends L2Playable
     
     public FloodProtectors getFloodProtectors()
     {
-    	return _floodProtectors;
+    	return getClient().getFloodProtectors();
     }
 
     public boolean isFlyingMounted()

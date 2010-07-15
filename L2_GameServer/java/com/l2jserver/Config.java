@@ -566,30 +566,19 @@ public final class Config
 	//--------------------------------------------------
 	// FloodProtector Settings
 	//--------------------------------------------------
-	public static  FloodProtectorConfig FLOOD_PROTECTOR_USE_ITEM;
-		
-	public static  FloodProtectorConfig FLOOD_PROTECTOR_ROLL_DICE;
-		
-	public static  FloodProtectorConfig FLOOD_PROTECTOR_FIREWORK;
-		
-	public static  FloodProtectorConfig FLOOD_PROTECTOR_ITEM_PET_SUMMON;
-		
-	public static  FloodProtectorConfig FLOOD_PROTECTOR_HERO_VOICE;
-		
-	public static  FloodProtectorConfig FLOOD_PROTECTOR_GLOBAL_CHAT;
-		
-	public static  FloodProtectorConfig FLOOD_PROTECTOR_SUBCLASS;
-		
-	public static  FloodProtectorConfig FLOOD_PROTECTOR_DROP_ITEM;
-		
-	public static  FloodProtectorConfig FLOOD_PROTECTOR_SERVER_BYPASS;
-		
-	public static  FloodProtectorConfig FLOOD_PROTECTOR_MULTISELL;
-		
-	public static  FloodProtectorConfig FLOOD_PROTECTOR_TRANSACTION;
-		
-	public static  FloodProtectorConfig FLOOD_PROTECTOR_SENDMAIL;
-		
+	public static FloodProtectorConfig FLOOD_PROTECTOR_USE_ITEM;
+	public static FloodProtectorConfig FLOOD_PROTECTOR_ROLL_DICE;
+	public static FloodProtectorConfig FLOOD_PROTECTOR_FIREWORK;
+	public static FloodProtectorConfig FLOOD_PROTECTOR_ITEM_PET_SUMMON;
+	public static FloodProtectorConfig FLOOD_PROTECTOR_HERO_VOICE;
+	public static FloodProtectorConfig FLOOD_PROTECTOR_GLOBAL_CHAT;
+	public static FloodProtectorConfig FLOOD_PROTECTOR_SUBCLASS;
+	public static FloodProtectorConfig FLOOD_PROTECTOR_DROP_ITEM;
+	public static FloodProtectorConfig FLOOD_PROTECTOR_SERVER_BYPASS;
+	public static FloodProtectorConfig FLOOD_PROTECTOR_MULTISELL;
+	public static FloodProtectorConfig FLOOD_PROTECTOR_TRANSACTION;
+	public static FloodProtectorConfig FLOOD_PROTECTOR_SENDMAIL;
+	public static FloodProtectorConfig FLOOD_PROTECTOR_CHARACTER_SELECT;
 
 
 	//--------------------------------------------------
@@ -1006,7 +995,9 @@ public final class Config
 				new FloodProtectorConfig("TransactionFloodProtector");
 			FLOOD_PROTECTOR_SENDMAIL =
 				new FloodProtectorConfig("SendMailFloodProtector");
-			
+			FLOOD_PROTECTOR_CHARACTER_SELECT =
+				new FloodProtectorConfig("CharacterSelectFloodProtector");
+
 			_log.info("Loading GameServer Configuration Files...");
 			InputStream is = null;
 			try
@@ -3014,7 +3005,8 @@ public final class Config
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_SERVER_BYPASS, "ServerBypass", "5");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_MULTISELL, "MultiSell", "1");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_TRANSACTION, "Transaction", "10");
-		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_SENDMAIL, "SendMail", "600");
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_SENDMAIL, "SendMail", "100");
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_CHARACTER_SELECT, "CharacterSelect", "30");
 	}
 	
 	/**

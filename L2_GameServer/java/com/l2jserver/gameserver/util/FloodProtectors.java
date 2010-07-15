@@ -13,7 +13,7 @@
 package com.l2jserver.gameserver.util;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.L2GameClient;
 
 /**
  * Collection of flood protectors for single player.
@@ -71,6 +71,10 @@ public final class FloodProtectors
 	 * Send mail flood protector.
 	 */
 	private final FloodProtectorAction _sendMail;
+	/**
+	 * Character Select protector
+	 */
+	private final FloodProtectorAction _characterSelect;
 
 	/**
 	 * Creates new instance of FloodProtectors.
@@ -78,21 +82,22 @@ public final class FloodProtectors
 	 * @param player
 	 *            player for which the collection of flood protectors is being created.
 	 */
-	public FloodProtectors(final L2PcInstance player)
+	public FloodProtectors(final L2GameClient client)
 	{
 		super();
-		_useItem = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_USE_ITEM);
-		_rollDice = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_ROLL_DICE);
-		_firework = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_FIREWORK);
-		_itemPetSummon = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_ITEM_PET_SUMMON);
-		_heroVoice = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_HERO_VOICE);
-		_globalChat = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_GLOBAL_CHAT);
-		_subclass = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_SUBCLASS);
-		_dropItem = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_DROP_ITEM);
-		_serverBypass = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_SERVER_BYPASS);
-		_multiSell = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_MULTISELL);
-		_transaction = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_TRANSACTION);
-		_sendMail = new FloodProtectorAction(player, Config.FLOOD_PROTECTOR_SENDMAIL);
+		_useItem = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_USE_ITEM);
+		_rollDice = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_ROLL_DICE);
+		_firework = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_FIREWORK);
+		_itemPetSummon = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_ITEM_PET_SUMMON);
+		_heroVoice = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_HERO_VOICE);
+		_globalChat = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_GLOBAL_CHAT);
+		_subclass = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_SUBCLASS);
+		_dropItem = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_DROP_ITEM);
+		_serverBypass = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_SERVER_BYPASS);
+		_multiSell = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_MULTISELL);
+		_transaction = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_TRANSACTION);
+		_sendMail = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_SENDMAIL);
+		_characterSelect = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_CHARACTER_SELECT);
 	}
 	
 	/**
@@ -213,5 +218,15 @@ public final class FloodProtectors
 	public FloodProtectorAction getSendMail()
 	{
 		return _sendMail;
+	}
+
+	/**
+	 * Returns {@link #_characterSelect}.
+	 * 
+	 * @return {@link #_characterSelect}
+	 */
+	public FloodProtectorAction getCharacterSelect()
+	{
+		return _characterSelect;
 	}
 }

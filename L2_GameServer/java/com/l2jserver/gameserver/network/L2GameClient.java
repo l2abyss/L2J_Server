@@ -47,6 +47,7 @@ import com.l2jserver.gameserver.model.entity.L2Event;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.ServerClose;
+import com.l2jserver.gameserver.util.FloodProtectors;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.EventData;
 
@@ -78,6 +79,9 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	private boolean _isAuthedGG;
 	private long _connectionStartTime;
 	private List<Integer> _charSlotMapping = new FastList<Integer>();
+
+	// floodprotectors
+	private final FloodProtectors _floodProtectors = new FloodProtectors(this);
 
 	// Task
 	protected final ScheduledFuture<?> _autoSaveInDB;
@@ -172,6 +176,11 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	public ReentrantLock getActiveCharLock()
 	{
 		return _activeCharLock;
+	}
+
+	public FloodProtectors getFloodProtectors()
+	{
+		return _floodProtectors;
 	}
 
 	public void setGameGuardOk(boolean val)

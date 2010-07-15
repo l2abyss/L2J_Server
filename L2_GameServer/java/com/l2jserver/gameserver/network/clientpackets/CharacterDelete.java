@@ -46,6 +46,9 @@ public final class CharacterDelete extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
+		if (!getClient().getFloodProtectors().getCharacterSelect().tryPerformAction("CharacterDelete"))
+			return;
+
 		if (Config.DEBUG) _log.fine("deleting slot:" + _charSlot);
 		
 		try

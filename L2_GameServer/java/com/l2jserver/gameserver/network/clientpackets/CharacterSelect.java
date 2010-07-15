@@ -64,13 +64,8 @@ public class CharacterSelect extends L2GameClientPacket
 	@Override
     protected void runImpl()
 	{
-		// if there is a playback.dat file in the current directory, it will
-		// be sent to the client instead of any regular packets
-		// to make this work, the first packet in the playback.dat has to
-		// be a  [S]0x21 packet
-		// after playback is done, the client will not work correct and need to exit
-		//playLogFile(getConnection()); // try to play log file
-
+		if (!getClient().getFloodProtectors().getCharacterSelect().tryPerformAction("CharacterSelect"))
+			return;
 
 		// we should always be abble to acquire the lock
 		// but if we cant lock then nothing should be done (ie repeated packet)
@@ -124,94 +119,6 @@ public class CharacterSelect extends L2GameClientPacket
 			_logAccounting.log(record);
 		}
 	}
-
-	/*
-	private void playLogFile(Connection connection)
-	{
-		long diff = 0;
-		long first = -1;
-
-		try
-		{
-			LineNumberReader lnr =
-			new LineNumberReader(new FileReader("playback.dat"));
-
-			String line = null;
-			while ((line = lnr.readLine()) != null)
-			{
-				if (line.length() > 0 && line.substring(0, 1).equals("1"))
-				{
-					String timestamp = line.substring(0, 13);
-					long time = Long.parseLong(timestamp);
-					if (first == -1)
-					{
-						long start = System.currentTimeMillis();
-						first = time;
-						diff = start - first;
-					}
-
-					String cs = line.substring(14, 15);
-					// read packet definition
-					ByteArrayOutputStream bais = new ByteArrayOutputStream();
-
-					while (true)
-					{
-						String temp = lnr.readLine();
-						if (temp.length() < 53)
-						{
-							break;
-						}
-
-						String bytes = temp.substring(6, 53);
-						StringTokenizer st = new StringTokenizer(bytes);
-						while (st.hasMoreTokens())
-						{
-							String b = st.nextToken();
-							int number = Integer.parseInt(b, 16);
-							bais.write(number);
-						}
-					}
-
-					if (cs.equals("S"))
-					{
-						//wait for timestamp and send packet
-						int wait =
-						(int) (time + diff - System.currentTimeMillis());
-						if (wait > 0)
-						{
-							if (Config.DEBUG) _log.fine("waiting"+ wait);
-							Thread.sleep(wait);
-						}
-						if (Config.DEBUG) _log.fine("sending:"+ time);
-						byte[] data = bais.toByteArray();
-						if (data.length != 0)
-						{
-							//connection.sendPacket(data);	
-						}
-						else
-						{
-							if (Config.DEBUG) _log.fine("skipping broken data");
-						}
-
-					}
-					else
-					{
-						// skip packet
-					}
-				}
-
-			}
-		}
-		catch (FileNotFoundException f)
-		{
-			// should not happen
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "Error:", e);
-		}
-	}
-	 */
 
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()

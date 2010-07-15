@@ -38,6 +38,9 @@ public final class CharacterRestore extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
+		if (!getClient().getFloodProtectors().getCharacterSelect().tryPerformAction("CharacterRestore"))
+			return;
+
 	    try
 	    {
 		getClient().markRestoredChar(_charSlot);
