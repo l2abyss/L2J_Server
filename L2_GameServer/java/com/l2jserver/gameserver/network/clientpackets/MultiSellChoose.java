@@ -41,6 +41,9 @@ import com.l2jserver.gameserver.templates.item.L2Weapon;
 
 import javolution.util.FastList;
 
+/**
+ * The Class MultiSellChoose.
+ */
 public class MultiSellChoose extends L2GameClientPacket
 {
 	private static final String _C__A7_MULTISELLCHOOSE = "[C] A7 MultiSellChoose";
@@ -73,6 +76,9 @@ public class MultiSellChoose extends L2GameClientPacket
 	@SuppressWarnings("unused")
 	private int _unk11;
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
+	 */
 	@Override
 	protected void readImpl()
 	{
@@ -95,6 +101,9 @@ public class MultiSellChoose extends L2GameClientPacket
 		_transactionTax = 0; // initialize tax amount to 0...
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
+	 */
 	@Override
 	public void runImpl()
 	{
@@ -129,6 +138,15 @@ public class MultiSellChoose extends L2GameClientPacket
 		}
 	}
 	
+	/**
+	 * Do exchange.
+	 *
+	 * @param player the player
+	 * @param templateEntry the template entry
+	 * @param applyTaxes the apply taxes
+	 * @param maintainEnchantment the maintain enchantment
+	 * @param enchantment the enchantment
+	 */
 	private void doExchange(L2PcInstance player, MultiSellEntry templateEntry, boolean applyTaxes, boolean maintainEnchantment, int enchantment)
 	{
 		PcInventory inv = player.getInventory();
@@ -246,7 +264,7 @@ public class MultiSellChoose extends L2GameClientPacket
 				{
 					// if this is not a list that maintains enchantment, check the count of all items that have the given id.
 					// otherwise, check only the count of items with exactly the needed enchantment level
-					if (inv.getInventoryItemCount(e.getItemId(), maintainEnchantment ? e.getEnchantmentLevel() : -1, false) < ((Config.ALT_BLACKSMITH_USE_RECIPES || !e.getMantainIngredient()) ? (e.getItemCount() * _amount) : e.getItemCount()))
+					if (inv.getInventoryItemCount(e.getItemId(), maintainEnchantment ? e.getEnchantmentLevel() : -1, false) < ((Config.ALT_BLACKSMITH_USE_RECIPES || !e.getMaintainIngredient()) ? (e.getItemCount() * _amount) : e.getItemCount()))
 					{
 						player.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_REQUIRED_ITEMS));//Update by rocknow
 						_ingredientsList.clear();
@@ -306,7 +324,7 @@ public class MultiSellChoose extends L2GameClientPacket
 						return;
 					}
 					
-					if (Config.ALT_BLACKSMITH_USE_RECIPES || !e.getMantainIngredient())
+					if (Config.ALT_BLACKSMITH_USE_RECIPES || !e.getMaintainIngredient())
 					{
 						// if it's a stackable item, just reduce the amount from the first (only) instance that is found in the inventory
 						if (itemToTake.isStackable())
@@ -503,6 +521,16 @@ public class MultiSellChoose extends L2GameClientPacket
 	// example: If the template has an item worth 120aa, and the tax is 10%,
 	// then from 120aa, take 5/6 so that is 100aa, apply the 10% tax in adena (10a)
 	// so the final price will be 120aa and 10a!
+	/**
+	 * Prepare entry.
+	 *
+	 * @param merchant the merchant
+	 * @param templateEntry the template entry
+	 * @param applyTaxes the apply taxes
+	 * @param maintainEnchantment the maintain enchantment
+	 * @param enchantLevel the enchant level
+	 * @return the multi sell entry
+	 */
 	private MultiSellEntry prepareEntry(L2Npc merchant, MultiSellEntry templateEntry, boolean applyTaxes, boolean maintainEnchantment, int enchantLevel)
 	{
 		MultiSellEntry newEntry = L2Multisell.getInstance().new MultiSellEntry();
@@ -571,6 +599,9 @@ public class MultiSellChoose extends L2GameClientPacket
 		return newEntry;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
 	@Override
 	public String getType()
 	{
