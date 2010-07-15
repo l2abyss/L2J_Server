@@ -23,7 +23,9 @@ import com.l2jserver.gameserver.datatables.NpcBufferTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -31,19 +33,30 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
-
+/**
+ * The Class L2NpcBufferInstance.
+ */
 public class L2NpcBufferInstance extends L2Npc
 {
 	static final Logger _log = Logger.getLogger(L2NpcBufferInstance.class.getName());
 	
 	private static TIntIntHashMap pageVal = new TIntIntHashMap();
 	
+	/**
+	 * Instantiates a new l2 npc buffer instance.
+	 *
+	 * @param objectId the object id
+	 * @param template the template
+	 */
 	public L2NpcBufferInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2NpcBufferInstance);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.actor.L2Npc#showChatWindow(com.l2jserver.gameserver.model.actor.instance.L2PcInstance, int)
+	 */
 	@Override
 	public void showChatWindow(L2PcInstance playerInstance, int val)
 	{
@@ -67,12 +80,29 @@ public class L2NpcBufferInstance extends L2Npc
 		playerInstance.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.actor.L2Npc#onBypassFeedback(com.l2jserver.gameserver.model.actor.instance.L2PcInstance, java.lang.String)
+	 */
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		// BypassValidation Exploit plug.
 		if (player == null || player.getLastFolkNPC() == null || player.getLastFolkNPC().getObjectId() != this.getObjectId())
 			return;
+		
+		L2Character target = player;
+		
+		if (command.startsWith("Pet"))
+		{
+			L2Summon pet = player.getPet();
+			if (pet == null)
+			{
+				player.sendMessage("You do not have your pet summoned.");
+				showChatWindow(player, 0); // 0 = main window
+				return;
+			}
+			target = pet;
+		}
 		
 		int npcId = getNpcId();
 		
@@ -84,9 +114,9 @@ public class L2NpcBufferInstance extends L2Npc
 			
 			showChatWindow(player, val);
 		}
-		else if (command.startsWith("Buff"))
+		else if (command.startsWith("Buff") || command.startsWith("PetBuff"))
 		{
-			String[] buffGroupArray = command.substring(5).split(" ");
+			String[] buffGroupArray = command.substring(command.indexOf("Buff") + 5).split(" ");
 			
 			for (String buffGroupList : buffGroupArray)
 			{
@@ -144,39 +174,39 @@ public class L2NpcBufferInstance extends L2Npc
 				skill = SkillTable.getInstance().getInfo(skillId, skillLevel);
 				
 				if (skill != null)
-					skill.getEffects(player, player);
+					skill.getEffects(player, target);
 			}
-
+			
 			showChatWindow(player, pageVal.get(player.getObjectId()));
 		}
-		else if (command.startsWith("Heal"))
+		else if (command.startsWith("Heal") || command.startsWith("PetHeal"))
 		{
-			if (!player.isInCombat() && !AttackStanceTaskManager.getInstance().getAttackStanceTask(player))
+			if (!target.isInCombat() && !AttackStanceTaskManager.getInstance().getAttackStanceTask(target))
 			{
-				String[] healArray = command.substring(5).split(" ");
+				String[] healArray = command.substring(command.indexOf("Heal") + 5).split(" ");
 				
 				for (String healType : healArray)
 				{
 					if (healType.equalsIgnoreCase("HP"))
 					{
-						player.setCurrentHp(player.getMaxHp());
+						target.setCurrentHp(target.getMaxHp());
 					}
 					else if (healType.equalsIgnoreCase("MP"))
 					{
-						player.setCurrentMp(player.getMaxMp());
+						target.setCurrentMp(target.getMaxMp());
 					}
 					else if (healType.equalsIgnoreCase("CP"))
 					{
-						player.setCurrentCp(player.getMaxCp());
+						target.setCurrentCp(target.getMaxCp());
 					}
 				}
 			}
-			showChatWindow(player, 0); // 0 = main window
+			showChatWindow(player, pageVal.get(player.getObjectId()));
 		}
-		else if (command.startsWith("RemoveBuffs"))
+		else if (command.startsWith("RemoveBuffs") || command.startsWith("PetRemoveBuffs"))
 		{
-			player.stopAllEffectsExceptThoseThatLastThroughDeath();
-			showChatWindow(player, 0); // 0 = main window
+			target.stopAllEffectsExceptThoseThatLastThroughDeath();
+			showChatWindow(player, pageVal.get(player.getObjectId()));
 		}
 		else
 		{
