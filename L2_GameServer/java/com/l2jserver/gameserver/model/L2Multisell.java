@@ -14,16 +14,16 @@
  */
 package com.l2jserver.gameserver.model;
 
+import gnu.trove.TIntObjectHashMap;
+
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -43,7 +43,7 @@ import com.l2jserver.gameserver.templates.item.L2Weapon;
 public class L2Multisell
 {
 	private static final Logger _log = Logger.getLogger(L2Multisell.class.getName());
-	private final Map<Integer, MultiSellListContainer> _entries = new FastMap<Integer, MultiSellListContainer>();
+	private final TIntObjectHashMap<MultiSellListContainer> _entries = new TIntObjectHashMap<MultiSellListContainer>();
 	
 	/**
 	 * Instantiates a new l2 multisell.
