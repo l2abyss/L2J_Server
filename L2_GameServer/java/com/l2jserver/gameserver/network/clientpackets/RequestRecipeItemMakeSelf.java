@@ -40,7 +40,7 @@ public final class RequestRecipeItemMakeSelf extends L2GameClientPacket
 		if (activeChar == null)
 			return;
 
-    	if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("RecipeMake"))
+    	if (!getClient().getFloodProtectors().getManufacture().tryPerformAction("RecipeMakeSelf"))
     		return;
 
 		if (activeChar.getPrivateStoreType() != 0)

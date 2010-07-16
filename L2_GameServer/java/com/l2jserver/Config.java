@@ -577,6 +577,8 @@ public final class Config
 	public static FloodProtectorConfig FLOOD_PROTECTOR_SERVER_BYPASS;
 	public static FloodProtectorConfig FLOOD_PROTECTOR_MULTISELL;
 	public static FloodProtectorConfig FLOOD_PROTECTOR_TRANSACTION;
+	public static FloodProtectorConfig FLOOD_PROTECTOR_MANUFACTURE;
+	public static FloodProtectorConfig FLOOD_PROTECTOR_MANOR;
 	public static FloodProtectorConfig FLOOD_PROTECTOR_SENDMAIL;
 	public static FloodProtectorConfig FLOOD_PROTECTOR_CHARACTER_SELECT;
 
@@ -993,6 +995,10 @@ public final class Config
 				new FloodProtectorConfig("MultiSellFloodProtector");
 			FLOOD_PROTECTOR_TRANSACTION =
 				new FloodProtectorConfig("TransactionFloodProtector");
+			FLOOD_PROTECTOR_MANUFACTURE =
+				new FloodProtectorConfig("ManufactureFloodProtector");
+			FLOOD_PROTECTOR_MANOR =
+				new FloodProtectorConfig("ManorFloodProtector");
 			FLOOD_PROTECTOR_SENDMAIL =
 				new FloodProtectorConfig("SendMailFloodProtector");
 			FLOOD_PROTECTOR_CHARACTER_SELECT =
@@ -3005,6 +3011,8 @@ public final class Config
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_SERVER_BYPASS, "ServerBypass", "5");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_MULTISELL, "MultiSell", "1");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_TRANSACTION, "Transaction", "10");
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_MANUFACTURE, "Manufacture", "3");
+		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_MANOR, "Manor", "30");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_SENDMAIL, "SendMail", "100");
 		loadFloodProtectorConfig(properties, FLOOD_PROTECTOR_CHARACTER_SELECT, "CharacterSelect", "30");
 	}

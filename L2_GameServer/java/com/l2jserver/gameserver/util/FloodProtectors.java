@@ -68,6 +68,14 @@ public final class FloodProtectors
 	 */
 	private final FloodProtectorAction _transaction;
 	/**
+	 * Manufacture flood protector.
+	 */
+	private final FloodProtectorAction _manufacture;
+	/**
+	 * Manor flood protector.
+	 */
+	private final FloodProtectorAction _manor;
+	/**
 	 * Send mail flood protector.
 	 */
 	private final FloodProtectorAction _sendMail;
@@ -96,6 +104,8 @@ public final class FloodProtectors
 		_serverBypass = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_SERVER_BYPASS);
 		_multiSell = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_MULTISELL);
 		_transaction = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_TRANSACTION);
+		_manufacture = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_MANUFACTURE);
+		_manor = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_MANOR);
 		_sendMail = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_SENDMAIL);
 		_characterSelect = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_CHARACTER_SELECT);
 	}
@@ -208,6 +218,26 @@ public final class FloodProtectors
 	public FloodProtectorAction getTransaction()
 	{
 		return _transaction;
+	}
+
+	/**
+	 * Returns {@link #_manufacture}.
+	 * 
+	 * @return {@link #_manufacture}
+	 */
+	public FloodProtectorAction getManufacture()
+	{
+		return _manufacture;
+	}
+
+	/**
+	 * Returns {@link #_manor}.
+	 * 
+	 * @return {@link #_manor}
+	 */
+	public FloodProtectorAction getManor()
+	{
+		return _manor;
 	}
 
 	/**
