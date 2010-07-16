@@ -177,6 +177,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final int _refId;
     // all times in milliseconds
     private final int _hitTime;
+    private final int[] _hitTimings;
     //private final int _skillInterruptTime;
     private final int _coolTime;
     private final int _reuseHashCode;
@@ -356,6 +357,24 @@ public abstract class L2Skill implements IChanceSkillTrigger
         _killByDOT = set.getBool("killByDOT", false);
         _isNeutral = set.getBool("neutral",false);
         _hitTime = set.getInteger("hitTime", 0);
+        String hitTimings = set.getString("hitTimings", null);
+        if (hitTimings != null)
+        {
+        	try
+        	{
+        		String [] valuesSplit = hitTimings.split(",");
+        		_hitTimings = new int[valuesSplit.length];
+        		for (int i = 0; i < valuesSplit.length; i++)
+        			_hitTimings[i] = Integer.parseInt(valuesSplit[i]);
+        	}
+    		catch (Exception e)
+    		{
+				throw new IllegalArgumentException("SkillId: "+_id+" invalid hitTimings value: "+hitTimings+", \"percent,percent,...percent\" required");
+			}
+        }
+        else
+        	_hitTimings = new int[0];
+
         _coolTime = set.getInteger("coolTime", 0);
         _isDebuff = set.getBool("isDebuff", false);
         _feed = set.getInteger("feed", 0);
@@ -852,6 +871,16 @@ public abstract class L2Skill implements IChanceSkillTrigger
     public final int getHitTime()
     {
         return _hitTime;
+    }
+
+    public final int getHitCounts()
+    {
+    	return _hitTimings.length;
+    }
+
+    public final int[] getHitTimings()
+    {
+    	return _hitTimings;
     }
 
     /**

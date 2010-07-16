@@ -684,22 +684,6 @@ public class GameStatusThread extends Thread
                 			out = new OutputStreamWriter(fos, "UTF-8");
                 			out.write(str);
                 		}
-                		else if(dbg.equals("IOPacketTP"))
-                		{
-                			String str = ThreadPoolManager.getInstance().getIOPacketStats();
-                			_print.println(str);
-                			int i = 0;
-                			File f = new File("./log/StackTrace-IOPacketTP-"+i+".txt");
-                			while(f.exists())
-                			{
-                				i++;
-                				f = new File("./log/StackTrace-IOPacketTP-"+i+".txt");
-                			}
-                			f.getParentFile().mkdirs();
-                			fos = new FileOutputStream(f);
-                			out = new OutputStreamWriter(fos, "UTF-8");
-                			out.write(str);
-                		}
                 		else if(dbg.equals("GeneralTP"))
                 		{
                 			String str = ThreadPoolManager.getInstance().getGeneralStats();

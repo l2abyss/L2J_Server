@@ -1633,33 +1633,43 @@ public abstract class L2Character extends L2Object
 			if (coolTime > 0) 
 				coolTime = Formulas.calcAtkSpd(this, skill, coolTime);
 		}
-			
+
+		int shotSave = L2ItemInstance.CHARGED_NONE;
+
 		// Calculate altered Cast Speed due to BSpS/SpS
 		L2ItemInstance weaponInst = getActiveWeaponInstance();
-
-		if (weaponInst != null && skill.isMagic() && !effectWhileCasting && skill.getTargetType() != SkillTargetType.TARGET_SELF)
+		if (weaponInst != null)
 		{
-			if ((weaponInst.getChargedSpiritshot() == L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT)
-					|| (weaponInst.getChargedSpiritshot() == L2ItemInstance.CHARGED_SPIRITSHOT))
+			if (skill.isMagic() && !effectWhileCasting && skill.getTargetType() != SkillTargetType.TARGET_SELF)
 			{
-				//Only takes 70% of the time to cast a BSpS/SpS cast
-				hitTime = (int)(0.70 * hitTime);
-				coolTime = (int)(0.70 * coolTime);
-
-				//Because the following are magic skills that do not actively 'eat' BSpS/SpS,
-				//I must 'eat' them here so players don't take advantage of infinite speed increase
-				switch (skill.getSkillType())
+				if ((weaponInst.getChargedSpiritshot() == L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT)
+						|| (weaponInst.getChargedSpiritshot() == L2ItemInstance.CHARGED_SPIRITSHOT))
 				{
-					case BUFF:
-					case MANAHEAL:
-					case MANARECHARGE:
-					case RESURRECT:
-					case RECALL:
-					case DOT:
-						weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
-						break;
+					//Only takes 70% of the time to cast a BSpS/SpS cast
+					hitTime = (int)(0.70 * hitTime);
+					coolTime = (int)(0.70 * coolTime);
+
+					//Because the following are magic skills that do not actively 'eat' BSpS/SpS,
+					//I must 'eat' them here so players don't take advantage of infinite speed increase
+					switch (skill.getSkillType())
+					{
+						case BUFF:
+						case MANAHEAL:
+						case MANARECHARGE:
+						case RESURRECT:
+						case RECALL:
+						case DOT:
+							weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
+							break;
+					}
 				}
 			}
+
+			// Save shots value for repeats
+			if (skill.useSoulShot())
+				shotSave = weaponInst.getChargedSoulshot();
+			else if (skill.useSpiritShot())
+				shotSave = weaponInst.getChargedSpiritshot();
 		}
 
 		if(this instanceof L2Npc)
@@ -1784,7 +1794,13 @@ public abstract class L2Character extends L2Object
 				if (this instanceof L2PcInstance)
 				{
 					if (!((L2PcInstance)this).decreaseSouls(skill.getSoulConsumeCount(),skill))
+					{
+						if (simultaneously)
+							setIsCastingSimultaneouslyNow(false);
+						else
+							setIsCastingNow(false);
 						return;
+					}
 				}
 			}
 
@@ -1835,12 +1851,25 @@ public abstract class L2Character extends L2Object
 		if (skill.getFlyType() != null && (this instanceof L2PcInstance))
 			ThreadPoolManager.getInstance().scheduleEffect(new FlyToLocationTask(this, target, skill), 50);
 
+		MagicUseTask mut = new MagicUseTask(targets, skill, hitTime, coolTime, simultaneously, shotSave);
+
 		// launch the magic in hitTime milliseconds
 		if (hitTime > 210)
 		{
 			// Send a Server->Client packet SetupGauge with the color of the gauge and the casting time
 			if (this instanceof L2PcInstance && !effectWhileCasting)
 				sendPacket(new SetupGauge(SetupGauge.BLUE, hitTime));
+
+			if (skill.getHitCounts() > 0)
+			{
+				hitTime = hitTime * skill.getHitTimings()[0] / 100;
+
+				if (hitTime < 210)
+					hitTime = 210;
+			}
+
+			if (effectWhileCasting)
+				mut.phase = 2;
 
 			if (simultaneously)
 			{
@@ -1852,11 +1881,8 @@ public abstract class L2Character extends L2Object
 				}
 
 				// Create a task MagicUseTask to launch the MagicSkill at the end of the casting time (hitTime)
-				// For client animation reasons (party buffs especially) 200 ms before! 
-				if (effectWhileCasting)
-					_skillCast2 = ThreadPoolManager.getInstance().scheduleEffect(new MagicUseTask(targets, skill, coolTime, 2, simultaneously), hitTime);
-				else
-					_skillCast2 = ThreadPoolManager.getInstance().scheduleEffect(new MagicUseTask(targets, skill, coolTime, 1, simultaneously), hitTime-200);
+				// For client animation reasons (party buffs especially) 200 ms before!
+				_skillCast2 = ThreadPoolManager.getInstance().scheduleEffect(mut, hitTime-200);
 			}
 			else
 			{
@@ -1869,14 +1895,14 @@ public abstract class L2Character extends L2Object
 
 				// Create a task MagicUseTask to launch the MagicSkill at the end of the casting time (hitTime)
 				// For client animation reasons (party buffs especially) 200 ms before! 
-				if (effectWhileCasting)
-					_skillCast = ThreadPoolManager.getInstance().scheduleEffect(new MagicUseTask(targets, skill, coolTime, 2, simultaneously), hitTime);
-				else
-					_skillCast = ThreadPoolManager.getInstance().scheduleEffect(new MagicUseTask(targets, skill, coolTime, 1, simultaneously), hitTime-200);
+				_skillCast = ThreadPoolManager.getInstance().scheduleEffect(mut, hitTime-200);
 			}
 		}
 		else
-			onMagicLaunchedTimer(targets, skill, coolTime, true, simultaneously);
+		{
+			mut.hitTime = 0;
+			onMagicLaunchedTimer(mut);
+		}
 	}
 
 	/**
@@ -2507,35 +2533,41 @@ public abstract class L2Character extends L2Object
 	/** Task lauching the magic skill phases */
 	class MagicUseTask implements Runnable
 	{
-		L2Object[] _targets;
-		L2Skill _skill;
-		int _coolTime;
-		int _phase;
-		boolean _simultaneously;
+		L2Object[] targets;
+		L2Skill skill;
+		int count;
+		int hitTime;
+		int coolTime;
+		int phase;
+		boolean simultaneously;
+		int shots;
 
-		public MagicUseTask(L2Object[] targets, L2Skill skill, int coolTime, int phase, boolean simultaneously)
+		public MagicUseTask(L2Object[] tgts, L2Skill s, int hit, int coolT, boolean simultaneous, int shot)
 		{
-			_targets = targets;
-			_skill = skill;
-			_coolTime = coolTime;
-			_phase = phase;
-			_simultaneously = simultaneously;
+			targets = tgts;
+			skill = s;
+			count = 0;
+			phase = 1;
+			hitTime = hit;
+			coolTime = coolT;
+			simultaneously = simultaneous;
+			shots = shot;
 		}
 
 		public void run()
 		{
 			try
 			{
-				switch (_phase)
+				switch (phase)
 				{
 					case 1:
-						onMagicLaunchedTimer(_targets, _skill, _coolTime, false, _simultaneously);
+						onMagicLaunchedTimer(this);
 						break;
 					case 2:
-						onMagicHitTimer(_targets, _skill, _coolTime, false, _simultaneously);
+						onMagicHitTimer(this);
 						break;
 					case 3:
-						onMagicFinalizer(_skill, _targets[0], _simultaneously);
+						onMagicFinalizer(this);
 						break;
 					default:
 						break;
@@ -2544,7 +2576,7 @@ public abstract class L2Character extends L2Object
 			catch (Exception e)
 			{
 				_log.log(Level.SEVERE, "Failed executing MagicUseTask.", e);
-				if (_simultaneously) 
+				if (simultaneously) 
 					setIsCastingSimultaneouslyNow(false);
 				else
 					setIsCastingNow(false);
@@ -5846,8 +5878,11 @@ public abstract class L2Character extends L2Object
 	 * @param skill The L2Skill to use
 	 *
 	 */
-	public void onMagicLaunchedTimer(L2Object[] targets, L2Skill skill, int coolTime, boolean instant, boolean simultaneously)
+	public void onMagicLaunchedTimer(MagicUseTask mut)
 	{
+		final L2Skill skill = mut.skill;
+		L2Object[] targets = mut.targets;
+
 		if (skill == null || targets == null || targets.length <= 0)
 		{
 			abortCast();
@@ -5861,7 +5896,7 @@ public abstract class L2Character extends L2Object
 
 		if (escapeRange > 0)
 		{
-			List<L2Character> targetList = new FastList<L2Character>();
+			List<L2Character> targetList = new FastList<L2Character>(targets.length);
 			for (L2Object target: targets)
 			{
 				if (target instanceof L2Character)
@@ -5894,21 +5929,21 @@ public abstract class L2Character extends L2Object
 				abortCast();
 				return;
 			}
-			else targets = targetList.toArray(new L2Character[targetList.size()]);
+			mut.targets = targetList.toArray(new L2Character[targetList.size()]);
 		}
 
 		// Ensure that a cast is in progress
 		// Check if player is using fake death.
 		// Potions can be used while faking death.
-		if ((simultaneously && !isCastingSimultaneouslyNow()) 
-				|| (!simultaneously && !isCastingNow()) 
+		if ((mut.simultaneously && !isCastingSimultaneouslyNow()) 
+				|| (!mut.simultaneously && !isCastingNow()) 
 				|| (isAlikeDead() && !skill.isPotion()))
 		{
 			// now cancels both, simultaneous and normal
 			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
 			return;
 		}
-		
+
 		// Get the display identifier of the skill
 		int magicId = skill.getDisplayId();
 
@@ -5920,19 +5955,22 @@ public abstract class L2Character extends L2Object
 
 		// Send a Server->Client packet MagicSkillLaunched to the L2Character AND to all L2PcInstance in the _KnownPlayers of the L2Character
 		if (!skill.isPotion()) broadcastPacket(new MagicSkillLaunched(this, magicId, level, targets));
-			
-		if (instant)
-			onMagicHitTimer(targets, skill, coolTime, true, simultaneously);
+
+		mut.phase = 2;
+		if (mut.hitTime == 0)
+			onMagicHitTimer(mut);
 		else 
-			_skillCast = ThreadPoolManager.getInstance().scheduleEffect(new MagicUseTask(targets, skill, coolTime, 2, simultaneously), 200);
-		
+			_skillCast = ThreadPoolManager.getInstance().scheduleEffect(mut, 200);		
 	}
 	
 	/*
 	 * Runs in the end of skill casting 
 	 */
-	public void onMagicHitTimer(L2Object[] targets, L2Skill skill, int coolTime, boolean instant, boolean simultaneously)
+	public void onMagicHitTimer(MagicUseTask mut)
 	{
+		final L2Skill skill = mut.skill;
+		final L2Object[] targets = mut.targets;
+
 		if (skill == null || targets == null || targets.length <= 0)
 		{
 			abortCast();
@@ -5940,7 +5978,7 @@ public abstract class L2Character extends L2Object
 		}
 		if(getFusionSkill() != null)
 		{
-			if (simultaneously)
+			if (mut.simultaneously)
 			{
 				_skillCast2 = null;
 				setIsCastingSimultaneouslyNow(false);
@@ -5957,7 +5995,7 @@ public abstract class L2Character extends L2Object
 		L2Effect mog = getFirstEffect(L2EffectType.SIGNET_GROUND);
 		if (mog != null)
 		{
-			if (simultaneously)
+			if (mut.simultaneously)
 			{
 				_skillCast2 = null;
 				setIsCastingSimultaneouslyNow(false);
@@ -6004,6 +6042,13 @@ public abstract class L2Character extends L2Object
 			
 			if (mpConsume > 0)
 			{
+				if (mpConsume > getCurrentMp())
+				{
+		            sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_MP));
+					abortCast();
+					return;
+				}
+
 				getStatus().reduceMp(mpConsume);
 				su.addAttribute(StatusUpdate.CUR_MP, (int) getCurrentMp());
 				isSendStatus = true;
@@ -6066,34 +6111,66 @@ public abstract class L2Character extends L2Object
 				if (skill.getSoulConsumeCount() > 0 || skill.getMaxSoulConsumeCount() > 0)
 				{
 					if (!((L2PcInstance)this).decreaseSouls(skill.getSoulConsumeCount() > 0 ? skill.getSoulConsumeCount():skill.getMaxSoulConsumeCount(),skill))
+					{
+						abortCast();
 						return;
+					}
 				}
 			}
+
+			// On each repeat restore shots before cast
+			if (mut.count > 0)
+			{
+				final L2ItemInstance weaponInst = getActiveWeaponInstance();
+				if (weaponInst != null)
+				{
+					if (mut.skill.useSoulShot())
+						weaponInst.setChargedSoulshot(mut.shots);
+					else if (mut.skill.useSpiritShot())
+						weaponInst.setChargedSpiritshot(mut.shots);
+				}
+			}
+
 			// Launch the magic skill in order to calculate its effects
-			callSkill(skill, targets);
+			callSkill(mut.skill, mut.targets);
 		}
 		catch (NullPointerException e)
 		{
 			_log.log(Level.WARNING, "", e);
 		}
 
-		if (instant || coolTime == 0)
-			onMagicFinalizer(skill, targets[0], simultaneously);
+		if (mut.hitTime > 0)
+		{
+			mut.count++;
+			if (mut.count < skill.getHitCounts())
+			{
+				int hitTime = mut.hitTime * skill.getHitTimings()[mut.count] / 100;
+				if (mut.simultaneously)
+					_skillCast2 = ThreadPoolManager.getInstance().scheduleEffect(mut, hitTime);
+				else
+					_skillCast = ThreadPoolManager.getInstance().scheduleEffect(mut, hitTime);
+				return;
+			}
+		}
+
+		mut.phase = 3;
+		if (mut.hitTime == 0 || mut.coolTime == 0)
+			onMagicFinalizer(mut);
 		else
 		{
-			if (simultaneously)
-				_skillCast2 = ThreadPoolManager.getInstance().scheduleEffect(new MagicUseTask(targets, skill, coolTime, 3, simultaneously), coolTime);
+			if (mut.simultaneously)
+				_skillCast2 = ThreadPoolManager.getInstance().scheduleEffect(mut, mut.coolTime);
 			else
-				_skillCast = ThreadPoolManager.getInstance().scheduleEffect(new MagicUseTask(targets, skill, coolTime, 3, simultaneously), coolTime);
+				_skillCast = ThreadPoolManager.getInstance().scheduleEffect(mut, mut.coolTime);
 		}
 	}
 
 	/*
 	 * Runs after skill hitTime+coolTime
 	 */
-	public void onMagicFinalizer(L2Skill skill, L2Object target, boolean simultaneously)
+	public void onMagicFinalizer(MagicUseTask mut)
 	{
-		if (simultaneously)
+		if (mut.simultaneously)
 		{
 			_skillCast2 = null;
 			setIsCastingSimultaneouslyNow(false);
@@ -6105,6 +6182,9 @@ public abstract class L2Character extends L2Object
 			setIsCastingNow(false);
 			_castInterruptTime = 0;
 		}
+
+		final L2Skill skill = mut.skill;
+		final L2Object target = mut.targets[0];
 
 		// Attack target after skill use
 		if (skill.nextActionIsAttack()
