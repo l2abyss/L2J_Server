@@ -42,8 +42,6 @@ import com.l2jserver.util.crypt.ScrambledKeyPair;
 import com.l2jserver.util.lib.Log;
 
 import javolution.util.FastMap;
-import javolution.util.FastSet;
-import javolution.util.FastCollection.Record;
 
 /**
  * This class ...
@@ -57,10 +55,7 @@ public class LoginController
 	private static LoginController _instance;
 	
 	/** Time before kicking the client if he didnt logged yet */
-	private final static int LOGIN_TIMEOUT = 60 * 1000;
-	
-	/** Clients that are on the LS but arent assocated with a account yet*/
-	protected FastSet<L2LoginClient> _clients = new FastSet<L2LoginClient>();
+	public final static int LOGIN_TIMEOUT = 60 * 1000;
 	
 	/** Authed Clients on LoginServer*/
 	protected FastMap<String, L2LoginClient> _loginServerClients = new FastMap<String, L2LoginClient>().shared();
@@ -70,6 +65,8 @@ public class LoginController
 	private Map<InetAddress, FailedLoginAttempt> _hackProtection;
 	
 	protected ScrambledKeyPair[] _keyPairs;
+	
+	private Thread _purge;
 	
 	protected byte[][] _blowfishKeys;
 	private static final int BLOWFISH_KEYS = 20;
@@ -119,6 +116,10 @@ public class LoginController
 		
 		// Store keys for blowfish communication
 		generateBlowFishKeys();
+		
+		_purge = new PurgeThread();
+		_purge.setDaemon(true);
+		_purge.start();
 	}
 	
 	/**
@@ -156,22 +157,6 @@ public class LoginController
 		return _blowfishKeys[(int) (Math.random() * BLOWFISH_KEYS)];
 	}
 	
-	public void addLoginClient(L2LoginClient client)
-	{
-		synchronized (_clients)
-		{
-			_clients.add(client);
-		}
-	}
-	
-	public void removeLoginClient(L2LoginClient client)
-	{
-		synchronized (_clients)
-		{
-			_clients.remove(client);
-		}
-	}
-	
 	public SessionKey assignSessionKeyToClient(String account, L2LoginClient client)
 	{
 		SessionKey key;
@@ -183,6 +168,8 @@ public class LoginController
 	
 	public void removeAuthedLoginClient(String account)
 	{
+		if (account == null)
+			return;
 		_loginServerClients.remove(account);
 	}
 	
@@ -225,9 +212,6 @@ public class LoginController
 					{
 						_loginServerClients.put(account, client);
 						ret = AuthLoginResult.AUTH_SUCCESS;
-						
-						// remove him from the non-authed list
-						removeLoginClient(client);
 					}
 				}
 			}
@@ -710,13 +694,7 @@ public class LoginController
 		}
 		finally
 		{
-			try
-			{
-				L2DatabaseFactory.close(con);
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 		if (!ok)
@@ -872,29 +850,21 @@ public class LoginController
 	
 	class PurgeThread extends Thread
 	{
+		public PurgeThread()
+		{
+			setName("PurgeThread");
+		}
 		@Override
 		public void run()
 		{
-			for (;;)
+			while (!isInterrupted())
 			{
-				synchronized (_clients)
-				{
-					for (Record e = _clients.head(), end = _clients.tail(); (e = e.getNext()) != end;)
-					{
-						L2LoginClient client = _clients.valueOf(e);
-						if (client.getConnectionStartTime() + LOGIN_TIMEOUT >= System.currentTimeMillis())
-						{
-							client.close(LoginFailReason.REASON_ACCESS_FAILED);
-						}
-					}
-				}
-				
 				synchronized (_loginServerClients)
 				{
 					for (FastMap.Entry<String, L2LoginClient> e = _loginServerClients.head(), end = _loginServerClients.tail(); (e = e.getNext()) != end;)
 					{
 						L2LoginClient client = e.getValue();
-						if (client.getConnectionStartTime() + LOGIN_TIMEOUT >= System.currentTimeMillis())
+						if ((client.getConnectionStartTime() + LOGIN_TIMEOUT) < System.currentTimeMillis())
 						{
 							client.close(LoginFailReason.REASON_ACCESS_FAILED);
 						}
@@ -903,11 +873,11 @@ public class LoginController
 				
 				try
 				{
-					Thread.sleep(2 * LOGIN_TIMEOUT);
+					Thread.sleep(LOGIN_TIMEOUT / 2);
 				}
 				catch (InterruptedException e)
 				{
-					e.printStackTrace();
+					return;
 				}
 			}
 		}
