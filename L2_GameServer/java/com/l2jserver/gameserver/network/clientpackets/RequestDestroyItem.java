@@ -67,7 +67,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 			return;
 		}
 
-		if (!activeChar.getFloodProtectors().getTransaction().tryPerformAction("destroy"))
+		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("destroy"))
 		{
 			activeChar.sendMessage("You destroying items too fast.");
 			return;

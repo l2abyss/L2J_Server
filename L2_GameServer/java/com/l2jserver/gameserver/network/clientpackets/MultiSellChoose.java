@@ -111,7 +111,7 @@ public class MultiSellChoose extends L2GameClientPacket
 		if (player == null)
 			return;
 
-		if (!player.getFloodProtectors().getMultiSell().tryPerformAction("multisell choose"))
+		if (!getClient().getFloodProtectors().getMultiSell().tryPerformAction("multisell choose"))
 			return;
 
 		if (_amount < 1 || _amount > 5000)

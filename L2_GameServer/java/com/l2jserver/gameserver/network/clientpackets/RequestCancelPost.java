@@ -54,7 +54,7 @@ public final class RequestCancelPost extends L2GameClientPacket
 		if (activeChar == null || !Config.ALLOW_MAIL || !Config.ALLOW_ATTACHMENTS)
 			return;
 
-		if (!activeChar.getFloodProtectors().getTransaction().tryPerformAction("cancelpost"))
+		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("cancelpost"))
 			return;
 
 		Message msg = MailManager.getInstance().getMessage(_msgId);

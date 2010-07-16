@@ -251,7 +251,7 @@ public final class RequestSendPost extends L2GameClientPacket
 			return;
 		}
 		
-		if (!activeChar.getFloodProtectors().getSendMail().tryPerformAction("sendmail"))
+		if (!getClient().getFloodProtectors().getSendMail().tryPerformAction("sendmail"))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_FORWARD_LESS_THAN_MINUTE));
 			return;

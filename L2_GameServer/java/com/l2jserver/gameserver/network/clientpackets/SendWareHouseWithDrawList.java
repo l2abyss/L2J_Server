@@ -83,7 +83,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		if (player == null)
 			return;
 
-		if (!player.getFloodProtectors().getTransaction().tryPerformAction("withdraw"))
+		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("withdraw"))
 		{
 			player.sendMessage("You withdrawing items too fast.");
 			return;

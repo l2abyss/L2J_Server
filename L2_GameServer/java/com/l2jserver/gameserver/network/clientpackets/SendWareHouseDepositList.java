@@ -83,7 +83,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 		if (player == null)
 			return;
 
-		if (!player.getFloodProtectors().getTransaction().tryPerformAction("deposit"))
+		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("deposit"))
 		{
 			player.sendMessage("You depositing items too fast.");
 			return;

@@ -52,7 +52,7 @@ public final class RequestGetItemFromPet extends L2GameClientPacket
 		if (player == null || !(player.getPet() instanceof L2PetInstance))
 			return;
 
-		if (!player.getFloodProtectors().getTransaction().tryPerformAction("getfrompet"))
+		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("getfrompet"))
 		{
 			player.sendMessage("You get items from pet too fast.");
 			return;

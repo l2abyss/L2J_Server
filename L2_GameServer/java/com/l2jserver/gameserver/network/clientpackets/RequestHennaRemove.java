@@ -45,8 +45,10 @@ public final class RequestHennaRemove extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
-
 		if (activeChar == null)
+			return;
+
+		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("HennaRemove"))
 			return;
 
 		for (int i = 1; i <= 3; i++)

@@ -51,7 +51,7 @@ public final class RequestRejectPostAttachment extends L2GameClientPacket
 		if (activeChar == null)
 			return;
 
-		if (!activeChar.getFloodProtectors().getTransaction().tryPerformAction("rejectattach"))
+		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("rejectattach"))
 			return;
 
 		if (!activeChar.isInsideZone(ZONE_PEACE))

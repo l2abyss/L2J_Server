@@ -56,6 +56,9 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		if (pet == null)
 			return;
 
+		if (!getClient().getFloodProtectors().getUseItem().tryPerformAction("pet use item"))
+			return;
+
 		L2ItemInstance item = pet.getInventory().getItemByObjectId(_objectId);
         if (item == null)
             return;

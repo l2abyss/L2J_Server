@@ -59,7 +59,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 		if (activeChar == null)
 			return;
 
-		if (!activeChar.getFloodProtectors().getTransaction().tryPerformAction("getattach"))
+		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("getattach"))
 			return;
 
 		if (!activeChar.getAccessLevel().allowTransaction())

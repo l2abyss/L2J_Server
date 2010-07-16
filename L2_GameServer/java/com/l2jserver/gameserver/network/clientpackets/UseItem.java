@@ -86,7 +86,7 @@ public final class UseItem extends L2GameClientPacket
             return;
 		
 		// Flood protect UseItem
-		if (!activeChar.getFloodProtectors().getUseItem().tryPerformAction("use item"))
+		if (!getClient().getFloodProtectors().getUseItem().tryPerformAction("use item"))
 			return;
 
 		if (activeChar.getPrivateStoreType() != 0)

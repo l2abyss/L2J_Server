@@ -75,6 +75,9 @@ public class RequestBuyProcure extends L2GameClientPacket {
 		if (player == null)
 			return;
 
+		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("buy"))
+			return;
+
 		if(_items == null)
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);

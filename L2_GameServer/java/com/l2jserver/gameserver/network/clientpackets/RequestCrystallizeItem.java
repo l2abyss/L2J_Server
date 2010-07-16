@@ -62,6 +62,12 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 			return;
 		}
 
+		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("crystallize"))
+		{
+			activeChar.sendMessage("You crystallizing too fast.");
+			return;
+		}
+
 		if (_count <= 0)
 		{
 			Util.handleIllegalPlayerAction(activeChar, "[RequestCrystallizeItem] count <= 0! ban! oid: " + _objectId + " owner: " + activeChar.getName(), Config.DEFAULT_PUNISH);

@@ -69,7 +69,7 @@ public final class RequestRefundItem extends L2GameClientPacket
 		if (player == null)
 			return;
 		
-		if (!player.getFloodProtectors().getTransaction().tryPerformAction("refund"))
+		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("refund"))
 		{
 			player.sendMessage("You using refund too fast.");
 			return;
