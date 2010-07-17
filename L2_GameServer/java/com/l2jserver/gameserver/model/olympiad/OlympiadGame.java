@@ -189,6 +189,7 @@ class OlympiadGame
 		}
 		catch (Exception e)
 		{
+			_log.log(Level.WARNING, "", e);
 			return null;
 		}
 	}
@@ -289,6 +290,7 @@ class OlympiadGame
 			}
 			catch (Exception e)
 			{
+				_log.log(Level.WARNING, "", e);
 			}
 		}
 	}
@@ -352,6 +354,7 @@ class OlympiadGame
 		}
 		catch (NullPointerException e)
 		{
+			_log.log(Level.WARNING, "", e);
 			return false;
 		}
 		return true;
@@ -382,6 +385,7 @@ class OlympiadGame
 			}
 			catch (Exception e)
 			{
+				_log.log(Level.WARNING, "cleanEffects()", e);
 			}
 		}
 	}
@@ -405,6 +409,8 @@ class OlympiadGame
 	{
 		for (L2PcInstance player : _players)
 		{
+			if (player == null)
+				continue;
 			try
 			{
 				if (Olympiad.getInstance().playerInStadia(player))
@@ -450,7 +456,7 @@ class OlympiadGame
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.WARNING, "", e);
+				_log.log(Level.WARNING, "portPlayersToArena()", e);
 			}
 		}
 	}
@@ -906,6 +912,7 @@ class OlympiadGame
 		}
 		catch (Exception e)
 		{
+			_log.log(Level.WARNING, "", e);
 			_aborted = true;
 			return false;
 		}
