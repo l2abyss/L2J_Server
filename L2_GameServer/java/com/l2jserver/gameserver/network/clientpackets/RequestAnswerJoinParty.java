@@ -48,72 +48,83 @@ public final class RequestAnswerJoinParty extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance player = getClient().getActiveChar();
-        if(player != null)
+		final L2PcInstance player = getClient().getActiveChar();
+		if (player == null)
+			return;
+
+		final L2PcInstance requestor = player.getActiveRequester();
+		if (requestor == null)
+			return;
+
+		requestor.sendPacket(new JoinParty(_response));
+
+		if (_response == 1)
         {
-    		L2PcInstance requestor = player.getActiveRequester();
-    		if (requestor == null)
-    			return;
-
-    		JoinParty join = new JoinParty(_response);
-    		requestor.sendPacket(join);
-
-    		if (_response == 1)
-            {
-				if (requestor.getParty() != null)//Update by rocknow-Start
+			if (requestor.isInParty())//Update by rocknow-Start
+			{
+				if (requestor.getParty().getMemberCount() >= 9)
 				{
-					if (requestor.getParty().getMemberCount() >= 9)
-					{
-						player.sendPacket(new SystemMessage(SystemMessageId.PARTY_FULL));
-						requestor.sendPacket(new SystemMessage(SystemMessageId.PARTY_FULL));
-						return;
-					}
-				}//Update by rocknow-End
-    			player.joinParty(requestor.getParty());
+					SystemMessage sm = new SystemMessage(SystemMessageId.PARTY_FULL);
+					player.sendPacket(sm);
+					requestor.sendPacket(sm);
+					return;
+				}
+			}//Update by rocknow-End
+			player.joinParty(requestor.getParty());
 
-    			if(requestor.isInPartyMatchRoom() && player.isInPartyMatchRoom())
-    			{
-    				PartyMatchRoomList list = PartyMatchRoomList.getInstance();
-    				if(list != null && (list.getPlayerRoomId(requestor) == list.getPlayerRoomId(player)))
-    				{
-    					PartyMatchRoom room = list.getPlayerRoom(requestor);
+			if(requestor.isInPartyMatchRoom() && player.isInPartyMatchRoom())
+			{
+				final PartyMatchRoomList list = PartyMatchRoomList.getInstance();
+				if(list != null && (list.getPlayerRoomId(requestor) == list.getPlayerRoomId(player)))
+				{
+					final PartyMatchRoom room = list.getPlayerRoom(requestor);
+					if (room != null)
+					{
+						final ExManagePartyRoomMember packet = new ExManagePartyRoomMember(player, room, 1);
     					for(L2PcInstance member : room.getPartyMembers())
     					{
-    						member.sendPacket(new ExManagePartyRoomMember(player, room, 1));
+    						if (member != null)
+        						member.sendPacket(packet);
     					}
-    				}
-    			}
-    			else if (requestor.isInPartyMatchRoom() && !player.isInPartyMatchRoom())
-    			{
-    				PartyMatchRoomList list = PartyMatchRoomList.getInstance();
-    				if(list != null)
-    				{
-    					PartyMatchRoom room = list.getPlayerRoom(requestor);
+					}
+				}
+			}
+			else if (requestor.isInPartyMatchRoom() && !player.isInPartyMatchRoom())
+			{
+				final PartyMatchRoomList list = PartyMatchRoomList.getInstance();
+				if(list != null)
+				{
+					final PartyMatchRoom room = list.getPlayerRoom(requestor);
+					if (room != null)
+					{
     					room.addMember(player);
+    					ExManagePartyRoomMember packet = new ExManagePartyRoomMember(player, room, 1);
     					for(L2PcInstance member : room.getPartyMembers())
     					{
-    						member.sendPacket(new ExManagePartyRoomMember(player, room, 1));
+    						if (member != null)
+        						member.sendPacket(packet);
     					}
     					player.setPartyRoom(room.getId());
     					//player.setPartyMatching(1);
     					player.broadcastUserInfo();
-    				}
-    			}
-    		}
-    		else
-            {
-    			requestor.sendPacket(new SystemMessage(SystemMessageId.PLAYER_DECLINED));
+					}
+				}
+			}
+		}
+		else
+        {
+			requestor.sendPacket(new SystemMessage(SystemMessageId.PLAYER_DECLINED));
 
-    			//activate garbage collection if there are no other members in party (happens when we were creating new one)
-    			if (requestor.getParty() != null && requestor.getParty().getMemberCount() == 1) requestor.setParty(null);
-    		}
-    		
-    		if (requestor.getParty() != null)
-    			requestor.getParty().setPendingInvitation(false); // if party is null, there is no need of decreasing
+			//activate garbage collection if there are no other members in party (happens when we were creating new one)
+			if (requestor.isInParty() && requestor.getParty().getMemberCount() == 1)
+				requestor.setParty(null);
+		}
 
-    		player.setActiveRequester(null);
-    		requestor.onTransactionResponse();
-        }
+		if (requestor.isInParty())
+			requestor.getParty().setPendingInvitation(false); // if party is null, there is no need of decreasing
+
+		player.setActiveRequester(null);
+		requestor.onTransactionResponse();
 	}
 
 	/* (non-Javadoc)
