@@ -858,6 +858,7 @@ public class TerritoryWarManager implements Siegable
 			{
 				t.changeNPCsSpawn(1, true);
 				fort.resetDoors(); // Spawn door
+				fort.getZone().setSiegeInstance(this);
 				fort.getZone().setIsActive(true);
 				fort.getZone().updateZoneStatusForCharactersInside();
 			}
