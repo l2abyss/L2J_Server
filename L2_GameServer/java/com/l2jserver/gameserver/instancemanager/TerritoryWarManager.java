@@ -928,6 +928,7 @@ public class TerritoryWarManager implements Siegable
 				t.changeNPCsSpawn(1, false);
 				fort.getZone().setIsActive(false);
 				fort.getZone().updateZoneStatusForCharactersInside();
+				fort.getZone().setSiegeInstance(null);
 			}
 			else
 				_log.warning("TerritoryWarManager: Fort missing! FortId: " + t.getFortId());
