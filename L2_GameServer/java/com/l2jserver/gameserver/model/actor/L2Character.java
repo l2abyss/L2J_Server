@@ -546,7 +546,7 @@ public abstract class L2Character extends L2Object
 			_log.fine("Broadcast Status Update for " + getObjectId() + "(" + getName() + "). HP: " + getCurrentHp());
 
 		// Create the Server->Client packet StatusUpdate with current HP
-		StatusUpdate su = new StatusUpdate(getObjectId());
+		StatusUpdate su = new StatusUpdate(this);
 		su.addAttribute(StatusUpdate.CUR_HP, (int)getCurrentHp());
 
 		// Go through the StatusListener
@@ -3816,17 +3816,17 @@ public abstract class L2Character extends L2Object
 			}
 			else if (stat == Stats.POWER_ATTACK_SPEED) 
 			{
-				if (su == null) su = new StatusUpdate(getObjectId());
+				if (su == null) su = new StatusUpdate(this);
 				su.addAttribute(StatusUpdate.ATK_SPD, getPAtkSpd());
 			}
 			else if (stat == Stats.MAGIC_ATTACK_SPEED) 
 			{
-				if (su == null) su = new StatusUpdate(getObjectId());
+				if (su == null) su = new StatusUpdate(this);
 				su.addAttribute(StatusUpdate.CAST_SPD, getMAtkSpd());
 			}
 			else if (stat == Stats.MAX_HP && this instanceof L2Attackable)
 			{
-				if (su == null) su = new StatusUpdate(getObjectId());
+				if (su == null) su = new StatusUpdate(this);
 				su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
 			}
 			/*else if (stat == Stats.MAX_CP) 
@@ -6034,7 +6034,7 @@ public abstract class L2Character extends L2Object
 				}
 			}
 
-			StatusUpdate su = new StatusUpdate(getObjectId());
+			StatusUpdate su = new StatusUpdate(this);
 			boolean isSendStatus = false;
 
 			// Consume MP of the L2Character and Send the Server->Client packet StatusUpdate with current HP and MP to all other L2PcInstance to inform

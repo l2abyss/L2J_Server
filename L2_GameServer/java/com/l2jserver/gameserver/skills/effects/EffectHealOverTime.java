@@ -75,7 +75,7 @@ public class EffectHealOverTime extends L2Effect
 			hp = maxhp;
 		
 		getEffected().setCurrentHp(hp);
-		StatusUpdate suhp = new StatusUpdate(getEffected().getObjectId());
+		StatusUpdate suhp = new StatusUpdate(getEffected());
 		suhp.addAttribute(StatusUpdate.CUR_HP, (int) hp);
 		getEffected().sendPacket(suhp);
 		return true;

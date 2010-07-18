@@ -33,9 +33,6 @@ public class ExBrExtraUserInfo extends L2GameServerPacket
 	}
 
 	@Override
-	/**
-	 * This packet should belong to Quest windows, not UserInfo in T3.
-	 */
 	protected final void writeImpl()
 	{
 		

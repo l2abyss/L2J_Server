@@ -129,9 +129,9 @@ public final class L2World
 	
 	public long timeStoreObject(L2Object object)
 	{
-		long time = System.currentTimeMillis();
+		long time = System.nanoTime();
 		_allObjects.put(object.getObjectId(), object);
-		time -= System.currentTimeMillis();
+		time = System.nanoTime() - time;
 		return time;
 	}
 	
@@ -171,9 +171,9 @@ public final class L2World
 	
 	public long timeRemoveObject(L2Object object)
 	{
-		long time = System.currentTimeMillis();
+		long time = System.nanoTime();
 		_allObjects.remove(Integer.valueOf(object.getObjectId()));
-		time -= System.currentTimeMillis();
+		time = System.nanoTime() - time;
 		return time;
 	}
 	
@@ -192,9 +192,9 @@ public final class L2World
 	
 	public long timeFindObject(int objectID)
 	{
-		long time = System.currentTimeMillis();
+		long time = System.nanoTime();
 		_allObjects.get(Integer.valueOf(objectID));
-		time -= System.currentTimeMillis();
+		time = System.nanoTime() - time;
 		return time;
 	}
 	

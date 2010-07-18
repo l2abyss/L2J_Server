@@ -127,7 +127,7 @@ public class L2SkillDrain extends L2Skill
 
             activeChar.setCurrentHp(hp);
 
-			StatusUpdate suhp = new StatusUpdate(activeChar.getObjectId());
+			StatusUpdate suhp = new StatusUpdate(activeChar);
 			suhp.addAttribute(StatusUpdate.CUR_HP, (int)hp);
 			activeChar.sendPacket(suhp);
 
@@ -221,7 +221,7 @@ public class L2SkillDrain extends L2Skill
 
             owner.setCurrentHp(hp);
             
-			StatusUpdate suhp = new StatusUpdate(owner.getObjectId());
+			StatusUpdate suhp = new StatusUpdate(owner);
 			suhp.addAttribute(StatusUpdate.CUR_HP, (int)hp); 
 			owner.sendPacket(suhp);
 			
