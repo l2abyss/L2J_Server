@@ -189,7 +189,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		}
 		else sendPacket(new ItemList(activeChar, true));
 
-		StatusUpdate su = new StatusUpdate(activeChar.getObjectId());
+		StatusUpdate su = new StatusUpdate(activeChar);
 		su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());
 		activeChar.sendPacket(su);
 	}

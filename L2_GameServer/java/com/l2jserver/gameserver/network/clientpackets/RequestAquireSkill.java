@@ -427,7 +427,7 @@ public class RequestAquireSkill extends L2GameClientPacket
 
 		player.setSp(player.getSp() - _requiredSp);
 
-		StatusUpdate su = new StatusUpdate(player.getObjectId());
+		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.SP, player.getSp());
 		player.sendPacket(su);
 

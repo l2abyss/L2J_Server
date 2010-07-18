@@ -54,7 +54,7 @@ public class EffectCombatPointHealOverTime extends L2Effect
 			cp = maxcp;
 		
 		getEffected().setCurrentCp(cp);
-		StatusUpdate sump = new StatusUpdate(getEffected().getObjectId());
+		StatusUpdate sump = new StatusUpdate(getEffected());
 		sump.addAttribute(StatusUpdate.CUR_CP, (int) cp);
 		getEffected().sendPacket(sump);
 		return true;

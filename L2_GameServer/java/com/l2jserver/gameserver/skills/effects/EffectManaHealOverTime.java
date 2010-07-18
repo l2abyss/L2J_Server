@@ -54,7 +54,7 @@ public class EffectManaHealOverTime extends L2Effect
 			mp = maxmp;
 		
 		getEffected().setCurrentMp(mp);
-		StatusUpdate sump = new StatusUpdate(getEffected().getObjectId());
+		StatusUpdate sump = new StatusUpdate(getEffected());
 		sump.addAttribute(StatusUpdate.CUR_MP, (int) mp);
 		getEffected().sendPacket(sump);
 		return true;

@@ -232,7 +232,7 @@ public class PcStat extends PlayableStat
 		if (getActiveChar().isTransformed() || getActiveChar().isInStance())
 			getActiveChar().getTransformation().onLevelUp();
 		
-		StatusUpdate su = new StatusUpdate(getActiveChar().getObjectId());
+		StatusUpdate su = new StatusUpdate(getActiveChar());
 		su.addAttribute(StatusUpdate.LEVEL, getLevel());
 		su.addAttribute(StatusUpdate.MAX_CP, getMaxCp());
 		su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
@@ -256,7 +256,7 @@ public class PcStat extends PlayableStat
 		if (!super.addSp(value))
 			return false;
 		
-		StatusUpdate su = new StatusUpdate(getActiveChar().getObjectId());
+		StatusUpdate su = new StatusUpdate(getActiveChar());
 		su.addAttribute(StatusUpdate.SP, getSp());
 		getActiveChar().sendPacket(su);
 		

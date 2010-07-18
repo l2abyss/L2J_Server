@@ -700,10 +700,10 @@ public class TradeList
 				_partner.sendPacket(new ItemList(_partner, false));
 			
 			// Update current load as well
-			StatusUpdate playerSU = new StatusUpdate(_owner.getObjectId());
+			StatusUpdate playerSU = new StatusUpdate(_owner);
 			playerSU.addAttribute(StatusUpdate.CUR_LOAD, _owner.getCurrentLoad());
 			_owner.sendPacket(playerSU);
-			playerSU = new StatusUpdate(_partner.getObjectId());
+			playerSU = new StatusUpdate(_partner);
 			playerSU.addAttribute(StatusUpdate.CUR_LOAD, _partner.getCurrentLoad());
 			_partner.sendPacket(playerSU);
 			

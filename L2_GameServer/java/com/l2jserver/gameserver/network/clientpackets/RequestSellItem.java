@@ -207,7 +207,7 @@ public final class RequestSellItem extends L2GameClientPacket
 		player.addAdena("Sell", totalPrice, merchant, false);
 		
 		// Update current load as well
-		StatusUpdate su = new StatusUpdate(player.getObjectId());
+		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
 		player.sendPacket(su);
 		player.sendPacket(new ExBuySellListPacket(player, list, taxRate, true));

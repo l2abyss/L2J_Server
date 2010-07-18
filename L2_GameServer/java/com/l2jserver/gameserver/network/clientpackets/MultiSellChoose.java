@@ -500,7 +500,7 @@ public class MultiSellChoose extends L2GameClientPacket
 		}
 		player.sendPacket(new ItemList(player, false));
 		
-		StatusUpdate su = new StatusUpdate(player.getObjectId());
+		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
 		player.sendPacket(su);
 		su = null;

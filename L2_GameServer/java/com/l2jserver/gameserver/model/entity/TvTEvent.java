@@ -350,7 +350,7 @@ public class TvTEvent
 				}
 			}
 			
-			StatusUpdate statusUpdate = new StatusUpdate(playerInstance.getObjectId());
+			StatusUpdate statusUpdate = new StatusUpdate(playerInstance);
 			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(0);
 			
 			statusUpdate.addAttribute(StatusUpdate.CUR_LOAD, playerInstance.getCurrentLoad());

@@ -166,7 +166,7 @@ public class RequestBuyProcure extends L2GameClientPacket {
 		// Send update packets
 		player.sendPacket(playerIU);
 
-		StatusUpdate su = new StatusUpdate(player.getObjectId());
+		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
 		player.sendPacket(su);
 	}

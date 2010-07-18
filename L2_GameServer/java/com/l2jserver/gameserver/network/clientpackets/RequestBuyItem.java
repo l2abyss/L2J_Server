@@ -287,7 +287,7 @@ public final class RequestBuyItem extends L2GameClientPacket
 		if (merchant instanceof L2MerchantInstance)
 			((L2MerchantInstance) merchant).getCastle().addToTreasury(castleTax);
 		
-		StatusUpdate su = new StatusUpdate(player.getObjectId());
+		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
 		player.sendPacket(su);
 		player.sendPacket(new ExBuySellListPacket(player, list, castleTaxRate + baseTaxRate, true));

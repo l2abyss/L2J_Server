@@ -441,7 +441,7 @@ public class PcInventory extends Inventory
 				actor.sendPacket(new ItemList(actor, false));
 
 			// Update current load as well
-			StatusUpdate su = new StatusUpdate(actor.getObjectId());
+			StatusUpdate su = new StatusUpdate(actor);
 			su.addAttribute(StatusUpdate.CUR_LOAD, actor.getCurrentLoad());
 			actor.sendPacket(su);
     	}

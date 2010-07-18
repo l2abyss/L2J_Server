@@ -1741,7 +1741,7 @@ public abstract class L2Character extends L2Object
 		if (initmpcons > 0)
 		{
 			getStatus().reduceMp(initmpcons);
-			StatusUpdate su = new StatusUpdate(getObjectId());
+			StatusUpdate su = new StatusUpdate(this);
 			su.addAttribute(StatusUpdate.CUR_MP, (int) getCurrentMp());
 			sendPacket(su);
 		}

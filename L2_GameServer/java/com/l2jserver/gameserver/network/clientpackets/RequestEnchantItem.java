@@ -329,7 +329,7 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 				}
 			}
 
-			StatusUpdate su = new StatusUpdate(activeChar.getObjectId());
+			StatusUpdate su = new StatusUpdate(activeChar);
 			su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());
 			activeChar.sendPacket(su);
 

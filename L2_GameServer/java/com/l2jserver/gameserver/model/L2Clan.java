@@ -2522,7 +2522,7 @@ public class L2Clan
 		}
 		
 		// the player should know that he has less sp now :p
-		StatusUpdate su = new StatusUpdate(player.getObjectId());
+		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.SP, player.getSp());
 		player.sendPacket(su);
 		

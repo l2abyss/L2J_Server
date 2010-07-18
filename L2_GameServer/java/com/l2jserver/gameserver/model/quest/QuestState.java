@@ -657,7 +657,7 @@ public final class QuestState
 			}
 		}
 		// send packets
-		StatusUpdate su = new StatusUpdate(getPlayer().getObjectId());
+		StatusUpdate su = new StatusUpdate(getPlayer());
 		su.addAttribute(StatusUpdate.CUR_LOAD, getPlayer().getCurrentLoad());
 		getPlayer().sendPacket(su);
 	}
@@ -716,7 +716,7 @@ public final class QuestState
 			}
 		}
 		// send packets
-		StatusUpdate su = new StatusUpdate(getPlayer().getObjectId());
+		StatusUpdate su = new StatusUpdate(getPlayer());
 		su.addAttribute(StatusUpdate.CUR_LOAD, getPlayer().getCurrentLoad());
 		getPlayer().sendPacket(su);
 	}
@@ -769,7 +769,7 @@ public final class QuestState
 			}
 		}
 		// send packets
-		StatusUpdate su = new StatusUpdate(getPlayer().getObjectId());
+		StatusUpdate su = new StatusUpdate(getPlayer());
 		su.addAttribute(StatusUpdate.CUR_LOAD, getPlayer().getCurrentLoad());
 		getPlayer().sendPacket(su);
 	}

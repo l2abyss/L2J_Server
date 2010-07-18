@@ -657,7 +657,7 @@ public class L2PetInstance extends L2Summon
 			targetPlayer.sendPacket(playerUI);
 			
 			// Update current load as well
-			StatusUpdate playerSU = new StatusUpdate(targetPlayer.getObjectId());
+			StatusUpdate playerSU = new StatusUpdate(targetPlayer);
 			playerSU.addAttribute(StatusUpdate.CUR_LOAD, targetPlayer.getCurrentLoad());
 			targetPlayer.sendPacket(playerSU);
 		}
@@ -750,7 +750,7 @@ public class L2PetInstance extends L2Summon
 				
 				owner.sendPacket(iu);
 				
-				StatusUpdate su = new StatusUpdate(owner.getObjectId());
+				StatusUpdate su = new StatusUpdate(owner);
 				su.addAttribute(StatusUpdate.CUR_LOAD, owner.getCurrentLoad());
 				owner.sendPacket(su);
 				

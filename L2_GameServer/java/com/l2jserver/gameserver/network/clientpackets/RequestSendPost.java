@@ -342,7 +342,7 @@ public final class RequestSendPost extends L2GameClientPacket
 			player.sendPacket(new ItemList(player, false));
 
 		// Update current load status on player
-		StatusUpdate su = new StatusUpdate(player.getObjectId());
+		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
 		player.sendPacket(su);
 

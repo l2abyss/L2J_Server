@@ -3539,7 +3539,7 @@ public final class L2PcInstance extends L2Playable
 			}
 
 			// Update current load as well
-			StatusUpdate su = new StatusUpdate(getObjectId());
+			StatusUpdate su = new StatusUpdate(this);
 			su.addAttribute(StatusUpdate.CUR_LOAD, getCurrentLoad());
 			sendPacket(su);
 
@@ -3733,7 +3733,7 @@ public final class L2PcInstance extends L2Playable
         }
 
         // Update current load as well
-        StatusUpdate su = new StatusUpdate(getObjectId());
+        StatusUpdate su = new StatusUpdate(this);
         su.addAttribute(StatusUpdate.CUR_LOAD, getCurrentLoad());
         sendPacket(su);
 
@@ -3837,7 +3837,7 @@ public final class L2PcInstance extends L2Playable
         else sendPacket(new ItemList(this, false));
 
 		// Update current load as well
-		StatusUpdate su = new StatusUpdate(getObjectId());
+		StatusUpdate su = new StatusUpdate(this);
 		su.addAttribute(StatusUpdate.CUR_LOAD, getCurrentLoad());
 		sendPacket(su);
 
@@ -3888,7 +3888,7 @@ public final class L2PcInstance extends L2Playable
 
 
         // Send the StatusUpdate Server->Client Packet to the player with new CUR_LOAD (0x0e) information
-		StatusUpdate su = new StatusUpdate(getObjectId());
+		StatusUpdate su = new StatusUpdate(this);
 		su.addAttribute(StatusUpdate.CUR_LOAD, getCurrentLoad());
 		sendPacket(su);
 
@@ -3934,7 +3934,7 @@ public final class L2PcInstance extends L2Playable
 		else sendPacket(new ItemList(this, false));
 
 		// Update current load as well
-		StatusUpdate playerSU = new StatusUpdate(getObjectId());
+		StatusUpdate playerSU = new StatusUpdate(this);
 		playerSU.addAttribute(StatusUpdate.CUR_LOAD, getCurrentLoad());
 		sendPacket(playerSU);
 
@@ -3957,7 +3957,7 @@ public final class L2PcInstance extends L2Playable
 			else targetPlayer.sendPacket(new ItemList(targetPlayer, false));
 
 			// Update current load as well
-			playerSU = new StatusUpdate(targetPlayer.getObjectId());
+			playerSU = new StatusUpdate(targetPlayer);
 			playerSU.addAttribute(StatusUpdate.CUR_LOAD, targetPlayer.getCurrentLoad());
 			targetPlayer.sendPacket(playerSU);
 		}
@@ -4022,7 +4022,7 @@ public final class L2PcInstance extends L2Playable
 		else sendPacket(new ItemList(this, false));
 
 		// Update current load as well
-		StatusUpdate su = new StatusUpdate(getObjectId());
+		StatusUpdate su = new StatusUpdate(this);
 		su.addAttribute(StatusUpdate.CUR_LOAD, getCurrentLoad());
 		sendPacket(su);
 
@@ -4091,7 +4091,7 @@ public final class L2PcInstance extends L2Playable
 		}
 
 		// Update current load as well
-		StatusUpdate su = new StatusUpdate(getObjectId());
+		StatusUpdate su = new StatusUpdate(this);
 		su.addAttribute(StatusUpdate.CUR_LOAD, getCurrentLoad());
 		sendPacket(su);
 
@@ -4425,7 +4425,7 @@ public final class L2PcInstance extends L2Playable
 		//super.broadcastStatusUpdate();
 
 		// Send the Server->Client packet StatusUpdate with current HP, MP and CP to this L2PcInstance
-		StatusUpdate su = new StatusUpdate(getObjectId());
+		StatusUpdate su = new StatusUpdate(this);
 		su.addAttribute(StatusUpdate.CUR_HP, (int) getCurrentHp());
 		su.addAttribute(StatusUpdate.CUR_MP, (int) getCurrentMp());
 		su.addAttribute(StatusUpdate.CUR_CP, (int) getCurrentCp());
@@ -7084,7 +7084,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void broadcastKarma()
 	{
-        StatusUpdate su = new StatusUpdate(getObjectId());
+        StatusUpdate su = new StatusUpdate(this);
         su.addAttribute(StatusUpdate.KARMA, getKarma());
         sendPacket(su);
 

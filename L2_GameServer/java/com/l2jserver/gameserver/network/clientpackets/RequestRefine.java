@@ -115,7 +115,7 @@ public final class RequestRefine extends AbstractRefinePacket
 		iu.addModifiedItem(targetItem);
 		activeChar.sendPacket(iu);
 
-		StatusUpdate su = new StatusUpdate(activeChar.getObjectId());
+		StatusUpdate su = new StatusUpdate(activeChar);
 		su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());
 		activeChar.sendPacket(su);
 	}

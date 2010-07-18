@@ -186,7 +186,7 @@ public final class RequestCancelPost extends L2GameClientPacket
 			activeChar.sendPacket(new ItemList(activeChar, false));
 
 		// Update current load status on player
-		StatusUpdate su = new StatusUpdate(activeChar.getObjectId());
+		StatusUpdate su = new StatusUpdate(activeChar);
 		su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());
 		activeChar.sendPacket(su);
 

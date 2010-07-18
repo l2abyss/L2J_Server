@@ -1178,7 +1178,7 @@ public final class L2ItemInstance extends L2Object
 					iu.addRemovedItem(this);
 					player.sendPacket(iu);
 
-					StatusUpdate su = new StatusUpdate(player.getObjectId());
+					StatusUpdate su = new StatusUpdate(player);
 					su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
 					player.sendPacket(su);
 
@@ -1717,7 +1717,7 @@ public final class L2ItemInstance extends L2Object
     			iu.addRemovedItem(this);
     			player.sendPacket(iu);
     			
-    			StatusUpdate su = new StatusUpdate(player.getObjectId());
+    			StatusUpdate su = new StatusUpdate(player);
     			su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
     			player.sendPacket(su);
     			

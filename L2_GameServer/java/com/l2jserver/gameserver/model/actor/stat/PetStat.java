@@ -69,7 +69,7 @@ public class PetStat extends SummonStat
         //TODO : proper system msg if is any
         //if (levelIncreased) getActiveChar().getOwner().sendMessage("Your pet has increased it's level.");
 
-        StatusUpdate su = new StatusUpdate(getActiveChar().getObjectId());
+        StatusUpdate su = new StatusUpdate(getActiveChar());
         su.addAttribute(StatusUpdate.LEVEL, getLevel());
         su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
         su.addAttribute(StatusUpdate.MAX_MP, getMaxMp());
