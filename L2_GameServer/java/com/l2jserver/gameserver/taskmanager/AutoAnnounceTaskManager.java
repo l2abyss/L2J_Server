@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.util.Broadcast;
-
-import javolution.util.FastList;
 
 /**
  * 
@@ -79,7 +79,7 @@ public class AutoAnnounceTaskManager
 				String[] text = memo.split("/n");
 				ThreadPoolManager.getInstance().scheduleGeneral(new AutoAnnouncement(id, delay, repeat, text), initial);
 				count++;
-				if (_nextId < id)
+				if (_nextId <= id)
 					_nextId = id + 1;
 			}
 			data.close();
@@ -153,7 +153,7 @@ public class AutoAnnounceTaskManager
 			L2DatabaseFactory.close(conn);
 		}
 	}
-
+	
 	public class AutoAnnouncement implements Runnable
 	{
 		private int _id;
