@@ -231,10 +231,12 @@ public final class L2WorldRegion
         				mob.getAttackByList().clear();
         				mob.getKnownList().removeAllKnownObjects();
 
-        				mob.getAI().setIntention(com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE);
-
         				// stop the ai tasks
-        				((L2AttackableAI) mob.getAI()).stopAITask();
+        				if (mob.hasAI())
+        				{
+            				mob.getAI().setIntention(com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE);
+            				mob.getAI().stopAITask();
+        				}
         			}
         			else if (o instanceof L2Vehicle)
         			{
