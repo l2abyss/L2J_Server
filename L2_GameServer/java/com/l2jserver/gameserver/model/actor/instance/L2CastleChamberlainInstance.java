@@ -25,8 +25,6 @@ import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.TeleportLocationTable;
-import com.l2jserver.gameserver.instancemanager.CastleManager;
-import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Skill;
@@ -35,12 +33,7 @@ import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.ExShowCropInfo;
-import com.l2jserver.gameserver.network.serverpackets.ExShowCropSetting;
 import com.l2jserver.gameserver.network.serverpackets.ExShowDominionRegistry;
-import com.l2jserver.gameserver.network.serverpackets.ExShowManorDefaultInfo;
-import com.l2jserver.gameserver.network.serverpackets.ExShowSeedInfo;
-import com.l2jserver.gameserver.network.serverpackets.ExShowSeedSetting;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -321,114 +314,6 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 					player.sendPacket(html);
 					return;
 				}
-			}
-			else if (actualCommand.equalsIgnoreCase("manor"))
-			{
-				if ((player.getClanPrivileges() & L2Clan.CP_CS_MANOR_ADMIN) == L2Clan.CP_CS_MANOR_ADMIN)
-				{
-					String filename = "";
-					if (CastleManorManager.getInstance().isDisabled())
-						filename = "data/html/npcdefault.htm";
-					else
-					{
-						int cmd = Integer.parseInt(val);
-						switch (cmd)
-						{
-							case 0:
-								filename = "data/html/chamberlain/manor/manor.htm";
-								break;
-							// TODO: correct in html's to 1
-							case 4:
-								filename = "data/html/chamberlain/manor/manor_help00"
-										+ st.nextToken() + ".htm";
-								break;
-							default:
-								filename = "data/html/chamberlain/chamberlain-no.htm";
-								break;
-						}
-					}
-
-					if (filename.length() != 0)
-					{
-						NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-						html.setFile(player.getHtmlPrefix(), filename);
-						html.replace("%objectId%", String.valueOf(getObjectId()));
-						html.replace("%npcname%", getName());
-						player.sendPacket(html);
-					}
-					return;
-				}
-				else
-				{
-					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-					html.setFile(player.getHtmlPrefix(), "data/html/chamberlain/chamberlain-noprivs.htm");
-					player.sendPacket(html);
-					return;
-				}
-			}
-			else if (command.startsWith("manor_menu_select"))
-			{// input string format:
-				// manor_menu_select?ask=X&state=Y&time=X
-				
-				if ((player.getClanPrivileges() & L2Clan.CP_CS_MANOR_ADMIN) != L2Clan.CP_CS_MANOR_ADMIN)
-				{
-					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-					html.setFile(player.getHtmlPrefix(), "data/html/chamberlain/chamberlain-noprivs.htm");
-					player.sendPacket(html);
-					return;
-				}
-				
-				if (CastleManorManager.getInstance().isUnderMaintenance())
-				{
-					player.sendPacket(ActionFailed.STATIC_PACKET);
-					player.sendPacket(new SystemMessage(SystemMessageId.THE_MANOR_SYSTEM_IS_CURRENTLY_UNDER_MAINTENANCE));
-					return;
-				}
-
-				String params = command.substring(command.indexOf("?") + 1);
-				StringTokenizer str = new StringTokenizer(params, "&");
-				int ask = Integer.parseInt(str.nextToken().split("=")[1]);
-				int state = Integer.parseInt(str.nextToken().split("=")[1]);
-				int time = Integer.parseInt(str.nextToken().split("=")[1]);
-
-				int castleId;
-				if (state == -1) // info for current manor
-					castleId = getCastle().getCastleId();
-				else
-					// info for requested manor
-					castleId = state;
-
-				switch (ask)
-				{ // Main action
-					case 3: // Current seeds (Manor info)
-						if (time == 1 && !CastleManager.getInstance().getCastleById(castleId).isNextPeriodApproved())
-							player.sendPacket(new ExShowSeedInfo(castleId, null));
-						else
-							player.sendPacket(new ExShowSeedInfo(castleId, CastleManager.getInstance().getCastleById(castleId).getSeedProduction(time)));
-						break;
-					case 4: // Current crops (Manor info)
-						if (time == 1 && !CastleManager.getInstance().getCastleById(castleId).isNextPeriodApproved())
-							player.sendPacket(new ExShowCropInfo(castleId, null));
-						else
-							player.sendPacket(new ExShowCropInfo(castleId, CastleManager.getInstance().getCastleById(castleId).getCropProcure(time)));
-						break;
-					case 5: // Basic info (Manor info)
-						player.sendPacket(new ExShowManorDefaultInfo());
-						break;
-					case 7: // Edit seed setup
-						if (getCastle().isNextPeriodApproved())
-							player.sendPacket(new SystemMessage(SystemMessageId.A_MANOR_CANNOT_BE_SET_UP_BETWEEN_6_AM_AND_8_PM));
-						else
-							player.sendPacket(new ExShowSeedSetting(getCastle().getCastleId()));
-						break;
-					case 8: // Edit crop setup
-						if (getCastle().isNextPeriodApproved())
-							player.sendPacket(new SystemMessage(SystemMessageId.A_MANOR_CANNOT_BE_SET_UP_BETWEEN_6_AM_AND_8_PM));
-						else
-							player.sendPacket(new ExShowCropSetting(getCastle().getCastleId()));
-						break;
-				}
-				return;
 			}
 			else if (actualCommand.equalsIgnoreCase("operate_door")) // door
 			// control
