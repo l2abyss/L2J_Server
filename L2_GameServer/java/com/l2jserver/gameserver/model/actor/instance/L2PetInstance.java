@@ -42,7 +42,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.stat.PetStat;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.itemcontainer.PetInventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -648,20 +647,7 @@ public class L2PetInstance extends L2Summon
 		getOwner().sendPacket(petIU);
 		
 		// Send target update packet
-		if (target instanceof PcInventory)
-		{
-			L2PcInstance targetPlayer = ((PcInventory)target).getOwner();
-			InventoryUpdate playerUI = new InventoryUpdate();
-			if (newItem.getCount() > count) playerUI.addModifiedItem(newItem);
-			else playerUI.addNewItem(newItem);
-			targetPlayer.sendPacket(playerUI);
-			
-			// Update current load as well
-			StatusUpdate playerSU = new StatusUpdate(targetPlayer);
-			playerSU.addAttribute(StatusUpdate.CUR_LOAD, targetPlayer.getCurrentLoad());
-			targetPlayer.sendPacket(playerSU);
-		}
-		else if (target instanceof PetInventory)
+		if (target instanceof PetInventory)
 		{
 			petIU = new PetInventoryUpdate();
 			if (newItem.getCount() > count) petIU.addRemovedItem(newItem);
