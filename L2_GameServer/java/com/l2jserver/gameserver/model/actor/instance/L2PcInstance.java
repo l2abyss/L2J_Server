@@ -7740,7 +7740,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Could not store char base data: " + e.getMessage(), e);
+			_log.log(Level.WARNING, "Could not store char base data: "+this+" - " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -9788,7 +9788,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (NullPointerException npe)
 		{
-			_log.log(Level.WARNING, " " , npe);
+			_log.log(Level.WARNING, toString() , npe);
 		}
 	}
 	
