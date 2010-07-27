@@ -2558,6 +2558,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
             L2Effect e = et.getEffect(env);
             if (e != null)
             {
+            	e.setSelfEffect();
             	e.scheduleEffect();
             	effects.add(e);
             }

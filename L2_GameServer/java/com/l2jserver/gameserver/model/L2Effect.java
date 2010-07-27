@@ -106,6 +106,8 @@ public abstract class L2Effect
 	private AbnormalEffect _eventEffect;
 	// show icon
 	private boolean _icon;
+	// is selfeffect ?
+	private boolean _isSelfEffect = false;
 	
 	public boolean preventExitUpdate;
 	
@@ -350,9 +352,14 @@ public abstract class L2Effect
 	
 	public boolean isSelfEffect()
 	{
-		return _skill._effectTemplatesSelf != null;
+		return _isSelfEffect;
 	}
-	
+
+	public void setSelfEffect()
+	{
+		_isSelfEffect = true;
+	}
+
 	public boolean isHerbEffect()
 	{
 		if (getSkill().getName().contains("Herb"))
