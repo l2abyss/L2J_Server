@@ -166,8 +166,6 @@ public final class RequestBuyItem extends L2GameClientPacket
 		_listId = list.getListId();
 		
 		long subTotal = 0;
-		long castleTax = 0;
-		long baseTax = 0;
 		
 		// Check for buylist validity and calculates summary values
 		long slots = 0;
@@ -216,7 +214,7 @@ public final class RequestBuyItem extends L2GameClientPacket
 			
 			if (tradeItem.hasLimitedStock())
 			{
-				// trying to buy more then avaliable
+				// trying to buy more then available
 				if (i.getCount() > tradeItem.getCurrentCount())
 					return;
 			}
@@ -226,10 +224,10 @@ public final class RequestBuyItem extends L2GameClientPacket
 				Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " tried to purchase over " + MAX_ADENA + " adena worth of goods.", Config.DEFAULT_PUNISH);
 				return;
 			}
-			subTotal += i.getCount() * price; // Before tax
-			castleTax = (long) (subTotal * castleTaxRate);
-			baseTax = (long) (subTotal * baseTaxRate);
-			if (subTotal + castleTax + baseTax > MAX_ADENA)
+			// first calculate price per item with tax, then multiply by count
+			price = (long) (price * (1 + castleTaxRate + baseTaxRate));
+			subTotal += i.getCount() * price;
+			if (subTotal > MAX_ADENA)
 			{
 				Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " tried to purchase over " + MAX_ADENA + " adena worth of goods.", Config.DEFAULT_PUNISH);
 				return;
@@ -257,7 +255,7 @@ public final class RequestBuyItem extends L2GameClientPacket
 		}
 		
 		// Charge buyer and add tax to castle treasury if not owned by npc clan
-		if ((subTotal < 0) || !player.reduceAdena("Buy", (subTotal + baseTax + castleTax), player.getLastFolkNPC(), false))
+		if ((subTotal < 0) || !player.reduceAdena("Buy", subTotal, player.getLastFolkNPC(), false))
 		{
 			sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
 			sendPacket(ActionFailed.STATIC_PACKET);
@@ -285,7 +283,7 @@ public final class RequestBuyItem extends L2GameClientPacket
 		
 		// add to castle treasury
 		if (merchant instanceof L2MerchantInstance)
-			((L2MerchantInstance) merchant).getCastle().addToTreasury(castleTax);
+			((L2MerchantInstance) merchant).getCastle().addToTreasury((long) (subTotal / castleTaxRate));
 		
 		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
