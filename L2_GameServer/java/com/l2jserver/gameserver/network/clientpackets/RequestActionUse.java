@@ -289,7 +289,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				if( target != null && (target instanceof L2DoorInstance || target instanceof L2SiegeFlagInstance))
 					useSkill(4230);
 				else
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+					activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
 				break;
 			case 42: // Kai the Cat - Self Damage Shield
 				useSkill(4378, activeChar);

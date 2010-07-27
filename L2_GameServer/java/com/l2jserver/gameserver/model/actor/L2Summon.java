@@ -778,8 +778,7 @@ public abstract class L2Summon extends L2Playable
         		&& !actingPlayer.getAccessLevel().allowPeaceAttack())
         {
             // Send a System Message to the L2PcInstance
-            actingPlayer.sendPacket(
-                    new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+            actingPlayer.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 
             // Send a Server->Client packet ActionFailed to the L2PcInstance
             actingPlayer.sendPacket(ActionFailed.STATIC_PACKET);

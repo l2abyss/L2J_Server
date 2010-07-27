@@ -61,7 +61,13 @@ public final class TradeRequest extends L2GameClientPacket
 		}
 		
 		L2Object target = L2World.getInstance().findObject(_objectId);
-		if (target == null || !player.getKnownList().knowsObject(target) || !(target instanceof L2PcInstance) || (target.getObjectId() == player.getObjectId()))
+		if (target == null || !player.getKnownList().knowsObject(target) || !(target instanceof L2PcInstance))
+		{
+			player.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
+			return;
+		}
+		
+		if (target.getObjectId() == player.getObjectId())
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 			return;
@@ -132,8 +138,7 @@ public final class TradeRequest extends L2GameClientPacket
 		
 		if (Util.calculateDistance(player, partner, true) > 150)
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.TARGET_TOO_FAR);
-			player.sendPacket(sm);
+			player.sendPacket(new SystemMessage(SystemMessageId.TARGET_TOO_FAR));
 			return;
 		}
 		

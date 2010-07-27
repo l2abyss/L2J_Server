@@ -8716,7 +8716,7 @@ public final class L2PcInstance extends L2Playable
 
         // Abnormal effects(ex : Stun, Sleep...) are checked in L2Character useMagic()
 
-      	if (isOutOfControl())
+      	if (isOutOfControl() || isParalyzed() || isStunned() || isSleeping())
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return false;
@@ -9091,7 +9091,7 @@ public final class L2PcInstance extends L2Playable
 			if (!(target instanceof L2MonsterInstance))
 			{
 				// Send a System Message to the L2PcInstance
-				sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+				sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
 
 				// Send a Server->Client packet ActionFailed to the L2PcInstance
 				sendPacket(ActionFailed.STATIC_PACKET);
@@ -9134,7 +9134,7 @@ public final class L2PcInstance extends L2Playable
 			if (!(target instanceof L2MonsterInstance))
 			{
 				// Send a System Message to the L2PcInstance
-				sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+				sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
 
 				// Send a Server->Client packet ActionFailed to the L2PcInstance
 				sendPacket(ActionFailed.STATIC_PACKET);

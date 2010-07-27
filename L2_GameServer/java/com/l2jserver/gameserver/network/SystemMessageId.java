@@ -1475,9 +1475,9 @@ public enum SystemMessageId
 
 	/**
 	 * ID: 242<br>
-	 * Message: You must select a target
+	 * Message: Select target.
 	 */
-	YOU_MUST_SELECT_A_TARGET(242),
+	SELECT_TARGET(242),
 
 	/**
 	 * ID: 243<br>

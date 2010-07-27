@@ -26,6 +26,12 @@ public class L2ManorManagerInstance extends L2MerchantInstance
 	}
 
 	@Override
+	public String getHtmlPath(int npcId, int val)
+	{
+		return "data/html/manormanager/manager.htm";
+	}
+
+	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		if (CastleManorManager.getInstance().isDisabled())

@@ -63,7 +63,7 @@ public final class RequestJoinParty extends L2GameClientPacket
 		
 		if (target == null)
 		{
-			requestor.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+			requestor.sendPacket(new SystemMessage(SystemMessageId.FIRST_SELECT_USER_TO_INVITE_TO_PARTY));
 			return;
 		}
 		
@@ -91,7 +91,7 @@ public final class RequestJoinParty extends L2GameClientPacket
 		
 		if (target == requestor)
 		{
-			requestor.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
+			requestor.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_INVITED_THE_WRONG_TARGET));
 			return;
 		}
 		
