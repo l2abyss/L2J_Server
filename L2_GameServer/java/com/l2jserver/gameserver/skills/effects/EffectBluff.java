@@ -56,7 +56,7 @@ public class EffectBluff extends L2Effect
 		if (getEffected() instanceof L2NpcInstance)
 			return false;
 		
-		if (getEffected() instanceof L2Npc && ((L2Npc) getEffected()).getNpcId() == 35062 || getSkill().getId() != 358)
+		if (getEffected() instanceof L2Npc && ((L2Npc) getEffected()).getNpcId() == 35062)
 			return false;
 		
 		if (getEffected() instanceof L2SiegeSummonInstance)
