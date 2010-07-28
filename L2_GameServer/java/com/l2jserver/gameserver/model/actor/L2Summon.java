@@ -381,6 +381,10 @@ public abstract class L2Summon extends L2Playable
     		giveAllToOwner();
     		owner.setPet(null);
     		
+    		// Stop AI tasks
+    		if (hasAI())
+    			getAI().stopAITask();
+
     		stopAllEffects();
     		L2WorldRegion oldRegion = getWorldRegion();
     		decayMe();

@@ -638,6 +638,15 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
+	 * Do nothing.<BR><BR>
+	 */
+	@Override
+	protected void onEvtEvaded(L2Character attacker)
+	{
+		// do nothing
+	}
+
+	/**
 	 * Launch actions corresponding to the Event ReadyToAct.<BR><BR>
 	 *
 	 * <B><U> Actions</U> :</B><BR><BR>
@@ -851,8 +860,8 @@ public class L2CharacterAI extends AbstractAI
 	@Override
 	protected void onEvtDead()
 	{
-		// Stop an AI Follow Task
-		stopFollow();
+		// Stop an AI Tasks
+		stopAITask();
 		
 		// Kill the actor client side by sending Server->Client packet AutoAttackStop, StopMove/StopRotation, Die (broadcast)
 		clientNotifyDead();

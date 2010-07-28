@@ -39,6 +39,8 @@ public enum CtrlEvent
 	EVT_SLEEPING,
 	/** Actor is in rooted state (cannot move) */
 	EVT_ROOTED,
+	/** Actor evaded hit **/
+	EVT_EVADED,
 	/** An event that previous action was completed. The action may be an attempt
 	 * to physically/magically hit an enemy, or an action that discarded
 	 * attack attempt has finished. */

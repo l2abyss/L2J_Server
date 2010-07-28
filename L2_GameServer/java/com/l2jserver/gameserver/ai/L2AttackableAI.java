@@ -319,13 +319,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		super.stopAITask();
 	}
 	
-	@Override
-	protected void onEvtDead()
-	{
-		stopAITask();
-		super.onEvtDead();
-	}
-	
 	/**
 	 * Set the Intention of this L2CharacterAI and create an  AI Task executed every 1s (call onEvtThink method) for this L2Attackable.<BR><BR>
 	 *

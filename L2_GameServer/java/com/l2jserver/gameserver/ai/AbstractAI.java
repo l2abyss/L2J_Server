@@ -54,7 +54,7 @@ abstract class AbstractAI implements Ctrl
 	
 	class FollowTask implements Runnable
 	{
-		protected int _range = 60;
+		protected int _range = 70;
 		
 		public FollowTask()
 		{
@@ -117,9 +117,9 @@ abstract class AbstractAI implements Ctrl
 	protected Object _intentionArg1 = null;
 	
 	/** Flags about client's state, in order to know which messages to send */
-	protected boolean _clientMoving;
+	protected volatile boolean _clientMoving;
 	/** Flags about client's state, in order to know which messages to send */
-	protected boolean _clientAutoAttacking;
+	protected volatile boolean _clientAutoAttacking;
 	/** Flags about client's state, in order to know which messages to send */
 	protected int _clientMovingToPawnOffset;
 	
@@ -436,6 +436,9 @@ abstract class AbstractAI implements Ctrl
 			case EVT_MUTED:
 				onEvtMuted((L2Character) arg0);
 				break;
+			case EVT_EVADED:
+				onEvtEvaded((L2Character) arg0);
+				break;
 			case EVT_READY_TO_ACT:
 				if (!_actor.isCastingNow() && !_actor.isCastingSimultaneouslyNow()) 
 					onEvtReadyToAct();
@@ -510,6 +513,8 @@ abstract class AbstractAI implements Ctrl
 	
 	protected abstract void onEvtMuted(L2Character attacker);
 	
+	protected abstract void onEvtEvaded(L2Character attacker);
+
 	protected abstract void onEvtReadyToAct();
 	
 	protected abstract void onEvtUserCmd(Object arg0, Object arg1);

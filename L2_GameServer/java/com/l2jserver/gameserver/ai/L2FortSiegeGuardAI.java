@@ -862,13 +862,6 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 	}
 	
 	@Override
-	protected void onEvtDead()
-	{
-		stopAITask();
-		super.onEvtDead();
-	}
-	
-	@Override
 	public void stopAITask()
 	{
 		if (_aiTask != null)
