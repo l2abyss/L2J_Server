@@ -33,7 +33,7 @@ import com.l2jserver.gameserver.model.L2MinionData;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.L2NpcAIData;
-import com.l2jserver.gameserver.skills.Formulas;
+import com.l2jserver.gameserver.skills.BaseStats;
 import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -525,12 +525,12 @@ public class NpcTable
 			npcDat.set("baseRunSpd", NpcData.getInt("runspd"));
 			
 			// constants, until we have stats in DB
-			npcDat.safeSet("baseSTR", NpcData.getInt("str"), 0, Formulas.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
-			npcDat.safeSet("baseCON", NpcData.getInt("con"), 0, Formulas.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
-			npcDat.safeSet("baseDEX", NpcData.getInt("dex"), 0, Formulas.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
-			npcDat.safeSet("baseINT", NpcData.getInt("int"), 0, Formulas.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
-			npcDat.safeSet("baseWIT", NpcData.getInt("wit"), 0, Formulas.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
-			npcDat.safeSet("baseMEN", NpcData.getInt("men"), 0, Formulas.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
+			npcDat.safeSet("baseSTR", NpcData.getInt("str"), 0, BaseStats.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
+			npcDat.safeSet("baseCON", NpcData.getInt("con"), 0, BaseStats.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
+			npcDat.safeSet("baseDEX", NpcData.getInt("dex"), 0, BaseStats.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
+			npcDat.safeSet("baseINT", NpcData.getInt("int"), 0, BaseStats.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
+			npcDat.safeSet("baseWIT", NpcData.getInt("wit"), 0, BaseStats.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
+			npcDat.safeSet("baseMEN", NpcData.getInt("men"), 0, BaseStats.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
 			
 			npcDat.set("baseHpMax", NpcData.getInt("hp"));
 			npcDat.set("baseCpMax", 0);

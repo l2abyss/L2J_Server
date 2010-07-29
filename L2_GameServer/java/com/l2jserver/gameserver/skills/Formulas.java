@@ -84,41 +84,6 @@ public final class Formulas
 	
 	private static final byte MELEE_ATTACK_RANGE = 40;
 
-	public static final int MAX_STAT_VALUE = 100;
-
-    private static final double[] STRCompute = new double[]{1.036, 34.845}; //{1.016, 28.515}; for C1
-    private static final double[] INTCompute = new double[]{1.020, 31.375}; //{1.020, 31.375}; for C1
-    private static final double[] DEXCompute = new double[]{1.009, 19.360}; //{1.009, 19.360}; for C1
-    private static final double[] WITCompute = new double[]{1.050, 20.000}; //{1.050, 20.000}; for C1
-    private static final double[] CONCompute = new double[]{1.030, 27.632}; //{1.015, 12.488}; for C1
-    private static final double[] MENCompute = new double[]{1.010, -0.060}; //{1.010, -0.060}; for C1
-
-    protected static final double[] WITbonus = new double[MAX_STAT_VALUE];
-    protected static final double[] MENbonus = new double[MAX_STAT_VALUE];
-    protected static final double[] INTbonus = new double[MAX_STAT_VALUE];
-    protected static final double[] STRbonus = new double[MAX_STAT_VALUE];
-    protected static final double[] DEXbonus = new double[MAX_STAT_VALUE];
-    protected static final double[] CONbonus = new double[MAX_STAT_VALUE];
-
-	// These values are 100% matching retail tables, no need to change and no need add
-	// calculation into the stat bonus when accessing (not efficient),
-	// better to have everything precalculated and use values directly (saves CPU)
-	static
-	{
-		for (int i = 0; i < STRbonus.length; i++)
-			STRbonus[i] = Math.floor(Math.pow(STRCompute[0], i - STRCompute[1]) * 100 + .5d) / 100;
-		for (int i = 0; i < INTbonus.length; i++)
-			INTbonus[i] = Math.floor(Math.pow(INTCompute[0], i - INTCompute[1]) * 100 + .5d) / 100;
-		for (int i = 0; i < DEXbonus.length; i++)
-			DEXbonus[i] = Math.floor(Math.pow(DEXCompute[0], i - DEXCompute[1]) * 100 + .5d) / 100;
-		for (int i = 0; i < WITbonus.length; i++)
-			WITbonus[i] = Math.floor(Math.pow(WITCompute[0], i - WITCompute[1]) * 100 + .5d) / 100;
-		for (int i = 0; i < CONbonus.length; i++)
-			CONbonus[i] = Math.floor(Math.pow(CONCompute[0], i - CONCompute[1]) * 100 + .5d) / 100;
-		for (int i = 0; i < MENbonus.length; i++)
-			MENbonus[i] = Math.floor(Math.pow(MENCompute[0], i - MENCompute[1]) * 100 + .5d) / 100;
-	}
-
 	static class FuncAddLevel3 extends Func
 	{
 		static final FuncAddLevel3[] _instancies = new FuncAddLevel3[Stats.NUM_STATS];
@@ -219,7 +184,7 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
-			env.value *= STRbonus[env.player.getSTR()] * env.player.getLevelMod();
+			env.value *= BaseStats.STR.calcBonus(env.player) * env.player.getLevelMod();
 		}
 	}
 
@@ -240,7 +205,7 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
-			double intb = INTbonus[env.player.getINT()];
+			double intb = BaseStats.INT.calcBonus(env.player);
 			double lvlb = env.player.getLevelMod();
 			env.value *= (lvlb * lvlb) * (intb * intb);
 		}
@@ -277,7 +242,7 @@ public final class Formulas
 				if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_NECK) != null)
 					env.value -= 13;
 			}
-			env.value *= MENbonus[env.player.getMEN()] * env.player.getLevelMod();
+			env.value *= BaseStats.MEN.calcBonus(env.player) * env.player.getLevelMod();
 		}
 	}
 
@@ -433,13 +398,16 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
-			L2Character p = env.player;
+			final int level = env.player.getLevel();
 			//[Square(DEX)]*6 + lvl + weapon hitbonus;
-			env.value += Math.sqrt(p.getDEX()) * 6;
-			env.value += p.getLevel();
-			if (p.getLevel() > 77) env.value += (p.getLevel() - 77);
-			if (p.getLevel() > 69) env.value += (p.getLevel() - 69);
-			if( p instanceof L2Summon) env.value += (p.getLevel() < 60) ? 4 : 5;
+			env.value += Math.sqrt(env.player.getDEX()) * 6;
+			env.value += level;
+			if (level > 77)
+				env.value += (level - 77);
+			if (level > 69)
+				env.value += (level - 69);
+			if (env.player instanceof L2Summon)
+				env.value += (level < 60) ? 4 : 5;
 		}
 	}
 
@@ -460,12 +428,14 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
-			L2Character p = env.player;
+			final int level = env.player.getLevel();
 			//[Square(DEX)]*6 + lvl;
-			env.value += Math.sqrt(p.getDEX()) * 6;
-			env.value += p.getLevel();
-			if (p.getLevel() > 77) env.value += (p.getLevel() - 77);
-			if (p.getLevel() > 69) env.value += (p.getLevel() - 69);
+			env.value += Math.sqrt(env.player.getDEX()) * 6;
+			env.value += level;
+			if (level > 77)
+				env.value += (level - 77);
+			if (level > 69)
+				env.value += (level - 69);
 		}
 	}
 
@@ -487,13 +457,17 @@ public final class Formulas
 		public void calc(Env env)
 		{
 			L2Character p = env.player;
-			if( p instanceof L2SummonInstance) env.value = 40;
-			else if (p instanceof L2PcInstance && p.getActiveWeaponInstance() == null) env.value = 40;
+			if (p instanceof L2SummonInstance)
+				env.value = 40;
 			else if (p instanceof L2PcInstance)
 			{
-				env.value *= DEXbonus[p.getDEX()];
-				env.value *= 10;
-
+				if (p.getActiveWeaponInstance() == null)
+					env.value = 40;
+				else
+				{
+					env.value *= BaseStats.DEX.calcBonus(p);
+					env.value *= 10;
+				}
 			}
 			env.baseValue = env.value;
 		}
@@ -520,7 +494,7 @@ public final class Formulas
 			if(p instanceof L2Summon)
 				env.value = 8; // TODO: needs retail value
 			else if (p instanceof L2PcInstance && p.getActiveWeaponInstance() != null)
-				env.value *= WITbonus[p.getWIT()];
+				env.value *= BaseStats.WIT.calcBonus(p);
 		}
 	}
 
@@ -541,8 +515,7 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
-			L2PcInstance p = (L2PcInstance) env.player;
-			env.value *= DEXbonus[p.getDEX()];
+			env.value *= BaseStats.DEX.calcBonus(env.player);
 		}
 	}
 
@@ -563,8 +536,7 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
-			L2PcInstance p = (L2PcInstance) env.player;
-			env.value *= DEXbonus[p.getDEX()];
+			env.value *= BaseStats.DEX.calcBonus(env.player);
 		}
 	}
 
@@ -585,8 +557,7 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
-			L2PcInstance p = (L2PcInstance) env.player;
-			env.value *= WITbonus[p.getWIT()];
+			env.value *= BaseStats.WIT.calcBonus(env.player);
 		}
 	}
 
@@ -771,8 +742,7 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
-			L2PcInstance p = (L2PcInstance) env.player;
-			env.value *= CONbonus[p.getCON()];
+			env.value *= BaseStats.CON.calcBonus(env.player);
 		}
 	}
 
@@ -819,8 +789,7 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
-			L2PcInstance p = (L2PcInstance) env.player;
-			env.value *= CONbonus[p.getCON()];
+			env.value *= BaseStats.CON.calcBonus(env.player);
 		}
 	}
 
@@ -867,8 +836,7 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
-			L2PcInstance p = (L2PcInstance) env.player;
-			env.value *= MENbonus[p.getMEN()];
+			env.value *= BaseStats.MEN.calcBonus(env.player);
 		}
 	}
 
@@ -912,6 +880,33 @@ public final class Formulas
 	public static Calculator[] getStdDoorCalculators()
 	{
 		Calculator[] std = new Calculator[Stats.NUM_STATS];
+
+		std[Stats.MAGIC_DEFENCE.ordinal()] = new Calculator();
+		std[Stats.MAGIC_DEFENCE.ordinal()].addFunc(FuncMDefMod.getInstance());
+
+		std[Stats.POWER_DEFENCE.ordinal()] = new Calculator();
+		std[Stats.POWER_DEFENCE.ordinal()].addFunc(FuncPDefMod.getInstance());
+
+		std[Stats.MAGIC_ATTACK.ordinal()] = new Calculator();
+		std[Stats.MAGIC_ATTACK.ordinal()].addFunc(FuncMAtkMod.getInstance());
+
+		std[Stats.POWER_ATTACK.ordinal()] = new Calculator();
+		std[Stats.POWER_ATTACK.ordinal()].addFunc(FuncPAtkMod.getInstance());
+
+		std[Stats.CRITICAL_RATE.ordinal()] = new Calculator();
+		std[Stats.CRITICAL_RATE.ordinal()].addFunc(FuncAtkCritical.getInstance());
+
+		std[Stats.MCRITICAL_RATE.ordinal()] = new Calculator();
+		std[Stats.MCRITICAL_RATE.ordinal()].addFunc(FuncMAtkCritical.getInstance());
+
+		std[Stats.MOVEMENT.ordinal()] = new Calculator();
+		std[Stats.MOVEMENT.ordinal()].addFunc(FuncMoveSpeed.getInstance());
+
+		std[Stats.POWER_ATTACK_SPEED.ordinal()] = new Calculator();
+		std[Stats.POWER_ATTACK_SPEED.ordinal()].addFunc(FuncPAtkSpeed.getInstance());
+
+		std[Stats.MAGIC_ATTACK_SPEED.ordinal()] = new Calculator();
+		std[Stats.MAGIC_ATTACK_SPEED.ordinal()].addFunc(FuncMAtkSpeed.getInstance());
 
 		// Add the FuncAtkAccuracy to the Standard Calculator of ACCURACY_COMBAT
 		std[Stats.ACCURACY_COMBAT.ordinal()] = new Calculator();
@@ -1088,7 +1083,7 @@ public final class Formulas
 				hpRegenMultiplier *= 0.7; // Running
 
 			// Add CON bonus
-			init *= cha.getLevelMod() * CONbonus[cha.getCON()];
+			init *= cha.getLevelMod() * BaseStats.CON.calcBonus(cha);
 		}
 		else if (cha instanceof L2PetInstance)
 			init = ((L2PetInstance) cha).getPetData().getPetRegenHP() * Config.PET_HP_REGEN_MULTIPLIER;
@@ -1180,7 +1175,7 @@ public final class Formulas
 				mpRegenMultiplier *= 0.7; // Running
 
 			// Add MEN bonus
-			init *= cha.getLevelMod() * MENbonus[cha.getMEN()];
+			init *= cha.getLevelMod() * BaseStats.MEN.calcBonus(cha);
 		}
 		else if (cha instanceof L2PetInstance)
 			init = ((L2PetInstance) cha).getPetData().getPetRegenMP() * Config.PET_MP_REGEN_MULTIPLIER;
@@ -1225,7 +1220,7 @@ public final class Formulas
 		}
 
 		// Apply CON bonus
-		init *= cha.getLevelMod() * CONbonus[cha.getCON()];
+		init *= cha.getLevelMod() * BaseStats.CON.calcBonus(cha);
 		if (init < 1)
 			init = 1;
 
@@ -1909,7 +1904,7 @@ public final class Formulas
         init += Math.sqrt(13*dmg);  
 
         // Chance is affected by target MEN
-        init -= (MENbonus[target.getMEN()] * 100 - 100);
+        init -= (BaseStats.MEN.calcBonus(target) * 100 - 100);
 
         // Calculate all modifiers for ATTACK_CANCEL
         double rate = target.calcStat(Stats.ATTACK_CANCEL, init, null, null); 
@@ -2019,7 +2014,7 @@ public final class Formulas
 			return 0;
 
 		double shldRate = target.calcStat(Stats.SHIELD_RATE, 0, attacker, null)
-			* DEXbonus[target.getDEX()];
+			* BaseStats.DEX.calcBonus(target);
 		if (shldRate == 0.0)
 			return 0;
 
@@ -2274,40 +2269,38 @@ public final class Formulas
     	return multiplier;
 	}
 	
-	public static double calcSkillStatModifier(L2SkillType type, L2Character target)
+	public static double calcSkillStatModifier(L2Skill skill, L2Character target)
 	{
-		double multiplier = 1;
-		if (type == null) return multiplier;
-		try 
-		{
-			switch (type)
-			{
-				case STUN:
-				case BLEED:
-				case POISON:
-					multiplier = 2 - Math.sqrt(CONbonus[target.getCON()]);
-					break;
-				case SLEEP:
-				case DEBUFF:
-				case WEAKNESS:
-				case ERASE:
-				case ROOT:
-				case MUTE:
-				case FEAR:
-				case BETRAY:
-				case CONFUSION:
-				case CONFUSE_MOB_ONLY:
-				case AGGREDUCE_CHAR:
-				case PARALYZE:
-					multiplier = 2 - Math.sqrt(MENbonus[target.getMEN()]);
-					break;
-				default:
-					return multiplier;
-			}
-		} catch (ArrayIndexOutOfBoundsException e)
-		{
-			_log.warning("Character "+target.getName()+" has been set (by a GM?) a MEN or CON stat value out of accepted range");
-		}
+		BaseStats saveVs = skill.getSaveVs();
+        if (saveVs == null)
+        {
+        	switch (skill.getSkillType())
+        	{
+        		case STUN:
+        		case BLEED:
+        		case POISON:
+        			saveVs = BaseStats.CON;
+        			break;
+        		case SLEEP:
+        		case DEBUFF:
+        		case WEAKNESS:
+        		case ERASE:
+        		case ROOT:
+        		case MUTE:
+        		case FEAR:
+        		case BETRAY:
+        		case CONFUSION:
+        		case CONFUSE_MOB_ONLY:
+        		case AGGREDUCE_CHAR:
+        		case PARALYZE:
+        			saveVs = BaseStats.MEN;
+        			break;
+        		default:
+        			return 1;
+        	}
+        }
+
+		double multiplier = 2 - Math.sqrt(saveVs.calcBonus(target));
 		if (multiplier < 0)
 			multiplier = 0;
 		return multiplier;
@@ -2332,7 +2325,7 @@ public final class Formulas
 		// int lvlmodifier = (skill.getMagicLevel() - target.getLevel()) * lvlDepend;
 		// int lvlmodifier = ((skill.getMagicLevel() > 0 ? skill.getMagicLevel() : attacker.getLevel()) - target.getLevel()) * lvlDepend;
 		
-		double statmodifier = calcSkillStatModifier(type, target);
+		double statmodifier = calcSkillStatModifier(skill, target);
 		double resmodifier = calcSkillTypeVulnerability(1, target, type);
 
 		int ssmodifier = 100;
@@ -2439,7 +2432,7 @@ public final class Formulas
 		// int lvlmodifier = (skill.getMagicLevel() - target.getLevel()) * lvlDepend;
 		// int lvlmodifier = ((skill.getMagicLevel() > 0 ? skill.getMagicLevel() : attacker.getLevel()) - target.getLevel()) * lvlDepend;
 		
-		double statmodifier = calcSkillStatModifier(type, target);
+		double statmodifier = calcSkillStatModifier(skill, target);
 		double resmodifier = calcSkillVulnerability(attacker, target, skill);
 
 		int ssmodifier = 100;
@@ -2562,7 +2555,7 @@ public final class Formulas
 		// int lvlmodifier = (skill.getMagicLevel() - target.getLevel()) * lvlDepend;
 		//int lvlmodifier = ((skill.getMagicLevel() > 0 ? skill.getMagicLevel() : attacker.getOwner().getLevel()) - target.getLevel())
 		//* lvlDepend;
-		double statmodifier = calcSkillStatModifier(type, target);
+		double statmodifier = calcSkillStatModifier(skill, target);
 		double resmodifier = calcSkillVulnerability(attacker.getOwner(), target, skill);
 		
 		int rate = (int) ((value * statmodifier) * resmodifier);
@@ -2678,12 +2671,12 @@ public final class Formulas
     	return damage;
     }
     
-    public static double calculateSkillResurrectRestorePercent(double baseRestorePercent, int casterWIT)
+    public static double calculateSkillResurrectRestorePercent(double baseRestorePercent, L2Character caster)
 	{
     	if (baseRestorePercent == 0 || baseRestorePercent == 100)
     		return baseRestorePercent;
 
-    	double restorePercent = baseRestorePercent * WITbonus[casterWIT];
+    	double restorePercent = baseRestorePercent * BaseStats.WIT.calcBonus(caster);
 		if(restorePercent - baseRestorePercent > 20.0)
 			restorePercent += 20.0;
 
@@ -2693,10 +2686,6 @@ public final class Formulas
 		return restorePercent;
 	}
     
-    public static double getSTRBonus(L2Character activeChar)
-    {
-    	return STRbonus[activeChar.getSTR()];
-    }
     public static boolean calcPhysicalSkillEvasion(L2Character target, L2Skill skill)
     {
     	if (skill.isMagic() && skill.getSkillType() != L2SkillType.BLOW)
@@ -2716,9 +2705,9 @@ public final class Formulas
 		if (actor instanceof L2PcInstance)
 		{
 			if (((L2PcInstance) actor).isMageClass())
-				val *= INTbonus[actor.getINT()];
+				val *= BaseStats.INT.calcBonus(actor);
 			else
-				val *= STRbonus[actor.getSTR()];
+				val *= BaseStats.STR.calcBonus(actor);
 		}
 		
 		return Rnd.get(100) < val;

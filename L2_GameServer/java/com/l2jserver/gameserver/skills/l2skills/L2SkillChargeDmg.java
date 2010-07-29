@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.skills.BaseStats;
 import com.l2jserver.gameserver.skills.Formulas;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
@@ -93,7 +94,7 @@ public class L2SkillChargeDmg extends L2Skill
 			byte shld = Formulas.calcShldUse(caster, target, this);
 			boolean crit = false;
 			if (this.getBaseCritRate() > 0)
-				crit = Formulas.calcCrit(this.getBaseCritRate() * 10 * Formulas.getSTRBonus(caster), target);
+				crit = Formulas.calcCrit(this.getBaseCritRate() * 10 * BaseStats.STR.calcBonus(caster), target);
 			// damage calculation, crit is static 2x
 			double damage = Formulas.calcPhysDam(caster, target, this, shld, false, false, soul);
 			if (crit)

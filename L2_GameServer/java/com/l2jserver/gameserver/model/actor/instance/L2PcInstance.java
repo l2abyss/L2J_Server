@@ -11106,7 +11106,7 @@ public final class L2PcInstance extends L2Playable
 			else if (getCharmOfCourage())
 				_revivePower=0;
 			else
-				_revivePower = Formulas.calculateSkillResurrectRestorePercent(skill.getPower(), Reviver.getWIT());
+				_revivePower = Formulas.calculateSkillResurrectRestorePercent(skill.getPower(), Reviver);
 			
 			restoreExp = (int)Math.round((getExpBeforeDeath() - getExp()) * _revivePower / 100);
 			    

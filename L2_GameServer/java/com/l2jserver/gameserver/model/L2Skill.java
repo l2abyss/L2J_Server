@@ -41,6 +41,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.skills.BaseStats;
 import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.skills.Formulas;
 import com.l2jserver.gameserver.skills.Stats;
@@ -217,6 +218,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
     private final int _elementPower;
 
     private final Stats _stat;
+    private final BaseStats _saveVs;
 
     private final int _condition;
     private final int _conditionValue;
@@ -430,6 +432,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 
         _element = set.getByte("element", (byte)-1);
         _elementPower = set.getInteger("elementPower", 0);
+
+        _saveVs = set.getEnum("saveVs", BaseStats.class, null);
 
         _condition = set.getInteger("condition", 0);
         _conditionValue = set.getInteger("conditionValue", 0);
@@ -762,7 +766,15 @@ public abstract class L2Skill implements IChanceSkillTrigger
     {
         return _stat;
     }
-    
+
+    /**
+     * Return skill saveVs base stat (STR, INT ...).<BR><BR>
+     */
+    public final BaseStats getSaveVs()
+    {
+    	return _saveVs;
+    }
+
     /**
      * @return Returns the _targetConsumeId.
      */
