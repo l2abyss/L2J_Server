@@ -392,9 +392,9 @@ public abstract class L2Character extends L2Object
 
 	protected void initCharStatusUpdateValues()
 	{
-		_hpUpdateInterval = getMaxHp()/352.0; // MAX_HP div MAX_HP_BAR_PX
-		_hpUpdateIncCheck = getMaxHp();
-		_hpUpdateDecCheck = getMaxHp()-_hpUpdateInterval;
+		_hpUpdateIncCheck = getMaxVisibleHp();
+		_hpUpdateInterval = _hpUpdateIncCheck / 352.0; // MAX_HP div MAX_HP_BAR_PX
+		_hpUpdateDecCheck = _hpUpdateIncCheck - _hpUpdateInterval;
 	}
 
 	// =========================================================
@@ -495,13 +495,14 @@ public abstract class L2Character extends L2Object
 	protected boolean needHpUpdate(int barPixels)
 	{
 		double currentHp = getCurrentHp();
+		double maxHp = getMaxVisibleHp();
 
-	    if (currentHp <= 1.0 || getMaxHp() < barPixels)
+	    if (currentHp <= 1.0 || maxHp < barPixels)
 	        return true;
 
 	    if (currentHp <= _hpUpdateDecCheck || currentHp >= _hpUpdateIncCheck)
 	    {
-	    	if (currentHp == getMaxHp())
+	    	if (currentHp == maxHp)
 	    	{
 	    		_hpUpdateIncCheck = currentHp + 1;
 	    		_hpUpdateDecCheck = currentHp - _hpUpdateInterval;
@@ -3827,7 +3828,11 @@ public abstract class L2Character extends L2Object
 			else if (stat == Stats.MAX_HP && this instanceof L2Attackable)
 			{
 				if (su == null) su = new StatusUpdate(this);
-				su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
+				su.addAttribute(StatusUpdate.MAX_HP, getMaxVisibleHp());
+			}
+			else if (stat == Stats.LIMIT_HP)
+			{
+				getStatus().setCurrentHp(getCurrentHp()); // start regeneration if needed
 			}
 			/*else if (stat == Stats.MAX_CP) 
 			{
@@ -6779,8 +6784,15 @@ public abstract class L2Character extends L2Object
 	public double getPDefMonsters(L2Character target) { return getStat().getPDefMonsters(target); }
     public double getPDefPlants(L2Character target) { return getStat().getPDefPlants(target); }
     public double getPDefGiants(L2Character target) { return getStat().getPDefGiants(target); }
-    
-    public int getPAtkSpd() { return getStat().getPAtkSpd(); }
+
+    /**
+     * Return max visible HP for display purpose.
+     * Calculated by applying non-visible HP limit
+     * getMaxHp() = getMaxVisibleHp() * limitHp
+     */
+	public int getMaxVisibleHp() { return getStat().getMaxVisibleHp(); }
+
+	public int getPAtkSpd() { return getStat().getPAtkSpd(); }
 	public int getPDef(L2Character target) { return getStat().getPDef(target); }
 	public final int getPhysicalAttackRange() { return getStat().getPhysicalAttackRange(); }
 	public int getRunSpeed() { return getStat().getRunSpeed(); }

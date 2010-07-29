@@ -101,6 +101,7 @@ public enum Stats
 	// stats of various abilities
 	BREATH("breath"),
 	FALL("fall"),
+	LIMIT_HP("limitHp"), // non-displayed hp limit
 	//
 	AGGRESSION("aggression"), // locks a mob on tank caster
 	BLEED("bleed"), // by daggers, like poison

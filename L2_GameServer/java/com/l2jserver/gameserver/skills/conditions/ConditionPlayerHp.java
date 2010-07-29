@@ -41,6 +41,6 @@ public class ConditionPlayerHp extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return env.player.getCurrentHp() * 100 / env.player.getMaxHp() <= _hp;
+		return env.player.getCurrentHp() * 100 / env.player.getMaxVisibleHp() <= _hp;
 	}
 }

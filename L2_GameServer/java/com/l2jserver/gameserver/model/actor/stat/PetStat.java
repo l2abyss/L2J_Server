@@ -123,7 +123,7 @@ public class PetStat extends SummonStat
     public final int getMaxFeed() { return getActiveChar().getPetData().getPetMaxFeed(); }
 
     @Override
-	public int getMaxHp() { return (int)calcStat(Stats.MAX_HP, getActiveChar().getPetData().getPetMaxHP(), null, null); }
+	public int getMaxVisibleHp() { return (int)calcStat(Stats.MAX_HP, getActiveChar().getPetData().getPetMaxHP(), null, null); }
 
     @Override
 	public int getMaxMp() { return (int)calcStat(Stats.MAX_MP, getActiveChar().getPetData().getPetMaxMP(), null, null); }

@@ -265,6 +265,14 @@ public class CharStat
     	if (_activeChar == null)
     		return 1;
 
+		return (int) calcStat(Stats.LIMIT_HP, getMaxVisibleHp(), null, null);
+	}
+
+	public int getMaxVisibleHp()
+	{
+    	if (_activeChar == null)
+    		return 1;
+
 		return (int) calcStat(Stats.MAX_HP, _activeChar.getTemplate().baseHpMax, null, null);
 	}
 

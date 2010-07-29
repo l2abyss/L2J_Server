@@ -65,7 +65,7 @@ public final class ServerObjectInfo extends L2GameServerPacket
 		writeF(_collisionRadius);
 		writeF(_collisionHeight);
 		writeD((int) (_isAttackable ? _activeChar.getCurrentHp() : 0));
-		writeD(_isAttackable ? _activeChar.getMaxHp() : 0);
+		writeD(_isAttackable ? _activeChar.getMaxVisibleHp() : 0);
 		writeD(0x01); // object type
 		writeD(0x00); // special effects
 	}

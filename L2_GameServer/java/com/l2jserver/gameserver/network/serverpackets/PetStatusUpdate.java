@@ -34,7 +34,7 @@ public class PetStatusUpdate extends L2GameServerPacket
 	public PetStatusUpdate(L2Summon summon)
 	{
         _summon = summon;
-        _maxHp = _summon.getMaxHp();
+        _maxHp = _summon.getMaxVisibleHp();
 		_maxMp = _summon.getMaxMp();
 		if (_summon instanceof L2PetInstance)
 		{

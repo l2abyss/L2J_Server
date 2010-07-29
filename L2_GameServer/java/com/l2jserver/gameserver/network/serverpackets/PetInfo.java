@@ -57,7 +57,7 @@ public class PetInfo extends L2GameServerPacket
 		_walkSpd =  _summon.isMountable() ? 45 : 30;
 		_swimRunSpd = _flRunSpd = _flyRunSpd = _runSpd;
 		_swimWalkSpd = _flWalkSpd = _flyWalkSpd = _walkSpd;
-		_maxHp = _summon.getMaxHp();
+		_maxHp = _summon.getMaxVisibleHp();
 		_maxMp = _summon.getMaxMp();
 		_val = val;
 		if (_summon instanceof L2PetInstance)

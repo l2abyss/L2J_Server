@@ -34,9 +34,6 @@ public class NpcStat extends CharStat
 	public L2Npc getActiveChar() { return (L2Npc)super.getActiveChar(); }
 
     @Override
-	public final int getMaxHp() { return (int)calcStat(Stats.MAX_HP, getActiveChar().getTemplate().baseHpMax , null, null); }
-    
-    @Override
 	public int getWalkSpeed(){ return (int) calcStat(Stats.WALK_SPEED, getActiveChar().getTemplate().baseWalkSpd, null, null);}
     
     @Override
