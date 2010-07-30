@@ -283,7 +283,7 @@ public final class RequestBuyItem extends L2GameClientPacket
 		
 		// add to castle treasury
 		if (merchant instanceof L2MerchantInstance)
-			((L2MerchantInstance) merchant).getCastle().addToTreasury((long) (subTotal / castleTaxRate));
+			((L2MerchantInstance) merchant).getCastle().addToTreasury((long) (subTotal * castleTaxRate));
 		
 		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
