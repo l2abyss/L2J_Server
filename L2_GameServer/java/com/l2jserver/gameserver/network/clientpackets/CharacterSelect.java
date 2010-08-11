@@ -23,6 +23,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.L2GameClient.GameClientState;
+import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.CharSelected;
 import com.l2jserver.gameserver.network.serverpackets.SSQInfo;
 
@@ -85,8 +86,11 @@ public class CharacterSelect extends L2GameClientPacket
 					//load up character from disk
 					L2PcInstance cha = getClient().loadCharFromDisk(_charSlot);
 					if (cha == null)
-						return; // handled in L2GameClient
-
+					{
+						_log.severe("Character could not be loaded (slot:"+_charSlot+")");
+						sendPacket(ActionFailed.STATIC_PACKET);
+						return;
+					}
 					if (cha.getAccessLevel().getLevel() < 0)
 					{
 						cha.logout();
