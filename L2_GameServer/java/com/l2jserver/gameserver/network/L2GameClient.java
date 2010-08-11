@@ -504,8 +504,17 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 
 	public L2PcInstance loadCharFromDisk(int charslot)
 	{
-		L2PcInstance character = L2PcInstance.load(getObjectIdForSlot(charslot));
+		final int objId = getObjectIdForSlot(charslot);
+		L2PcInstance character = L2World.getInstance().getPlayer(objId);
+		if (character != null)
+		{
+			// exploit prevention, should not happens in normal way
+			_log.severe("Attempt of double login: " + character.getName()+"("+objId+") "+getAccountName());
+			character.logout(true);
+			return null;
+		}
 
+		character = L2PcInstance.load(objId);
         if (character != null)
 		{
 
